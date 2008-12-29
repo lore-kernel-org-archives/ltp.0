@@ -1,21 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJlqo-00048v-5H
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 10:06:38 +0000
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MJlqn-0003bO-6s
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 10:06:38 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <78aaeffc0906250000i150418e8k3637acb41976c1a0@mail.gmail.com>
-References: <78aaeffc0906250000i150418e8k3637acb41976c1a0@mail.gmail.com>
-Date: Thu, 25 Jun 2009 14:41:02 +0530
-Message-Id: <1245921062.5542.51.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Can not run Test
-Reply-To: subrata@linux.vnet.ibm.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1MJCyN-0001k6-HL
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 20:52:07 +0000
+Received: from fmmailgate01.web.de ([217.72.192.221])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MJCyC-00078f-Gd
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 20:51:59 +0000
+Received: from smtp07.web.de (fmsmtp07.dlan.cinetic.de [172.20.5.215])
+	by fmmailgate01.web.de (Postfix) with ESMTP id 1CE57106AF71D
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 23 Jun 2009 22:51:53 +0200 (CEST)
+Received: from [83.208.36.163] (helo=debian)
+	by smtp07.web.de with asmtp (WEB.DE 4.110 #277) id 1MJCy8-00018u-00
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 22:51:52 +0200
+Date: Mon, 29 Dec 2008 14:48:19 +0100
+From: "Jiri Palecek" <jpalecek@web.de>
+MIME-Version: 1.0
+Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Resent-Message-ID: <op.uvzwechjcfnueu@debian>
+Subject: [LTP] [PATCH] Run the eventfd test in a temporary directory,
+ because it creates some files
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,42 +33,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Sender: ltp-list-bounces@lists.sourceforge.net
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: waqar afridi <afridi.waqar@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+Cc: ltp-list@lists.sourceforge.net
+Message-ID: <20081229134819.6ezsepjDWsbrkrFiikLrVtTkAggz9V5nkpM_kPAZ0wM@z>
 
-On Thu, 2009-06-25 at 13:00 +0600, waqar afridi wrote:
-> Hi All
-> 
-> I have downloaded ltp-full-20090531.tgz and installed it using the
-> commands make autotools, ./configure, make all, make install. but when
-> I try to run a test like
-> 
-> # ./ima_tpm.sh 
-> ./ima_tpm.sh: 163: source: not found
-> ./ima_tpm.sh: 164: setup: not found
-> 
-> I get the error above. What could be the problem, Desperately need
-> help.
+Hello,
 
-Look through:
-http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/security/integrity/ima/README,
-on instructions to setup before executing those tests.
+the eventfd test creates some files in the current directory. I think it should be creating the files in a temporary directory instead, as is already the standard with other LTP tests, because the current might be nonwriteable and the user might not want the files left there.
 
-Regards--
-Subrata
+Regards
+    Jiri Palecek
 
-> 
-> -- 
-> Waqar Afridi
-> Research Associate
-> Member: Security Engineering Research Group (SERG)
-> IM | Sciences Peshawar 
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+Signed-off-by: Jiri Palecek <jpalecek@web.de>
+---
+ testcases/kernel/syscalls/eventfd/eventfd01.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/eventfd/eventfd01.c b/testcases/kernel/syscalls/eventfd/eventfd01.c
+index ee09752..0eed8d1 100644
+--- a/testcases/kernel/syscalls/eventfd/eventfd01.c
++++ b/testcases/kernel/syscalls/eventfd/eventfd01.c
+@@ -759,6 +759,8 @@ static void setup(void)
+ 	if (tst_kvercmp(2, 6, 22) < 0)
+ 		tst_brkm(TCONF, cleanup, "2.6.22 or greater kernel required");
+ 
++	/* Create a temporary directory & chdir there */
++	tst_tmpdir();
+ 	/* Pause if that option was specified
+ 	 * TEST_PAUSE contains the code to fork the test with the -c option.
+ 	 */
+@@ -776,6 +778,7 @@ static void cleanup(void)
+ 	 */
+ 	TEST_CLEANUP;
+ 
++	tst_rmdir();
+ 	/* exit with return code appropriate for results */
+ 	tst_exit();
+  /*NOTREACHED*/}
+-- 
+1.6.3.1
+
+
 
 
 ------------------------------------------------------------------------------
