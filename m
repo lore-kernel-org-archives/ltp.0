@@ -1,27 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1MIY3L-0005PF-JR
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 01:10:31 +0000
-Received: from fmmailgate02.web.de ([217.72.192.227])
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1MIY1S-0003ba-5V
+	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 01:08:34 +0000
+Received: from fmmailgate03.web.de ([217.72.192.234])
 	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MIY3K-0001Ik-44
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 01:10:31 +0000
+	id 1MIY1M-0000j6-Jx
+	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 01:08:34 +0000
 Received: from smtp05.web.de (fmsmtp05.dlan.cinetic.de [172.20.4.166])
-	by fmmailgate02.web.de (Postfix) with ESMTP id 5E2A910439532
+	by fmmailgate03.web.de (Postfix) with ESMTP id 635FC100C624A
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 22 Jun 2009 03:10:29 +0200 (CEST)
+	Mon, 22 Jun 2009 03:07:48 +0200 (CEST)
 Received: from [83.208.36.163] (helo=debian)
-	by smtp05.web.de with asmtp (WEB.DE 4.110 #277) id 1MIY3J-0004IP-00
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 03:10:29 +0200
-Date: Tue, 05 May 2009 00:25:51 +0200
-From: "Jiri Palecek >" <"<jirka"@suse.de>(none)
+	by smtp05.web.de with asmtp (WEB.DE 4.110 #277) id 1MIY0i-00040S-00
+	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 03:07:48 +0200
+Date: Tue, 17 Feb 2009 23:58:46 +0100
+From: "Jiri Palecek" <jpalecek@web.de>
 MIME-Version: 1.0
 Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-Resent-Message-ID: <op.uvwiz8lslwynca@debian>
-Subject: [LTP] [PATCH] Report error with the correct error file in
-	tar_tests.sh
+Resent-Message-ID: <op.uvwivro7cfnueu@debian>
+Subject: [LTP] [PATCH] Fixes of the tcore test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,26 +35,132 @@ Content-Transfer-Encoding: 7bit
 Sender: ltp-list-bounces@lists.sourceforge.net
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 Cc: ltp-list@lists.sourceforge.net
-Message-ID: <20090504222551.KMiW8zxySjWJ3IIEYZzHEuf6Hu9EmeefpN2qp4ZDAQw@z>
+Message-ID: <20090217225846.DhRVhOG9_4rWhEGsyOmpo6793_FRXCaFMIrmyKkSF0w@z>
+
+Hello,
+
+these are little fixes of the tcore.sh script
+
+ - use $BIN_DIR for auxiliary files, and $TEST_DIR as temporary
+   directory
+ - don't run "cd -" if previous "cd something" failed
+ - fixup the value of core_pattern, to replace possibly customized
+   patterns using absolute paths or not using the name "core" for
+   corefiles
+ - don't hide error messages from expect
+
+Regards
+    Jiri Palecek
 
 Signed-off-by: Jiri Palecek <jpalecek@web.de>
 ---
- testcases/commands/tar/tar_tests.sh |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ testcases/misc/tcore_patch_test_suites/tcore.sh |   39 ++++++++++++++++-------
+ 1 files changed, 27 insertions(+), 12 deletions(-)
 
-diff --git a/testcases/commands/tar/tar_tests.sh b/testcases/commands/tar/tar_tests.sh
-index a3a197f..6858161 100755
---- a/testcases/commands/tar/tar_tests.sh
-+++ b/testcases/commands/tar/tar_tests.sh
-@@ -258,7 +258,7 @@ else
- 		TFAILCNT=$(( $TFAILCNT+1 ))
- 	    fi
- 	else
--	    $LTPBIN/tst_brk TBROK $LTPTMP/file.out NULL \
-+	    $LTPBIN/tst_brk TBROK $LTPTMP/tar_tst.out NULL \
- 		"tar: command failed while creating compressed archive. Reason:"
- 	    TFAILCNT=$(( $TFAILCNT+1 ))
+diff --git a/testcases/misc/tcore_patch_test_suites/tcore.sh b/testcases/misc/tcore_patch_test_suites/tcore.sh
+index d210fa5..f087fa7 100755
+--- a/testcases/misc/tcore_patch_test_suites/tcore.sh
++++ b/testcases/misc/tcore_patch_test_suites/tcore.sh
+@@ -19,7 +19,8 @@
+ # Test suite for the t-core kernel patch 
+ export TCID=tcore01
+ PTHREAD_DIR="/lib/i686"
+-TEST_DIR="."
++BIN_DIR=$LTPROOT/testcases/bin/
++TEST_DIR=$(mktemp -dt)
+ OSTYPE="redhat"
+ # Do some preparation to generate the correct core dump
+ # files
+@@ -42,6 +43,14 @@ os_check()
  	fi
+ }
+ 
++cleanup()
++{
++		rm -rf $TEST_DIR
++		[ -f /proc/sys/kernel/core_dumps_threads ] && ! [ -z "$OLD_PATTERN" ] && 
++		echo "$OLD_PATTERN" > /proc/sys/kernel/core_dumps_threads
++		exit $1
++}
++
+ prepare_dump()
+ {
+ 	ulimit -c 20000000 >/dev/null 2>&1
+@@ -52,18 +61,23 @@ prepare_dump()
+ 			echo "1">/proc/sys/kernel/core_dumps_threads
+ 		fi
+ 	fi
++	if [ -f /proc/sys/kernel/core_pattern ]; then
++			OLD_PATTERN=$(cat /proc/sys/kernel/core_pattern)
++			echo 'core.%p' > /proc/sys/kernel/core_pattern
++	fi
+ 	#Recover the lipthread.so.0 lib to generate the correct
+ 	#core dump file
+ 	os_check
+ 	if [ $OSTYPE = "redhat" ];then
+-		cd $PTHREAD_DIR
+-		if [ -f libpthread.so.0.orig ];then
+-			test=`ls -l libpthread.so.0.orig|awk '{print $11}'`
+-			if [ $test = "libpthread-0.9.so"  ];then
+-				mv libpthread.so.0.orig libpthread.so.0
++		cd $PTHREAD_DIR && {
++			if [ -f libpthread.so.0.orig ];then
++				test=`ls -l libpthread.so.0.orig|awk '{print $11}'`
++					if [ $test = "libpthread-0.9.so"  ];then
++						mv libpthread.so.0.orig libpthread.so.0
++					fi
+ 			fi
+-		fi
+-		cd -
++			cd -
++		}
+ 	fi
+ }
+ #Prepare for the gdb dump 
+@@ -71,7 +85,7 @@ prepare_gdb()
+ {
+ 	os_check
+ 	if [ $OSTYPE = "redhat" ];then
+-		cd $PTHREAD_DIR
++		cd $PTHREAD_DIR && {
+ 		if [ -f libpthread.so.0 ];then
+ 			test=`ls -l libpthread.so.0|awk '{print $11}'`
+ 			if [ $test = "libpthread-0.9.so"  ];then
+@@ -80,6 +94,7 @@ prepare_gdb()
+ 		fi
+ 		ln -s /lib/libpthread.so.0 libpthread.so.0 >/dev/null 2>&1
+ 		cd -
++    }
+ 	fi
+ }
+ #Test whether the system can generate the needed core files
+@@ -91,7 +106,7 @@ Test_gen_core()
+ 	if [ -f core.* ];then
+ 		rm -f core.*
+ 	fi
+-	pid=`$TEST_DIR/tcore |grep "consumer pid"|awk '{print $2}'|cut -d = -f 2`
++	pid=`$BIN_DIR/tcore |grep "consumer pid"|awk '{print $2}'|cut -d = -f 2`
+ 	echo -e "Test whether we can generate the needed core file"
+ 	if [ -f core.* ];then
+ 		echo -e "PASS"
+@@ -110,7 +125,7 @@ Test_core_file()
+ 	prepare_gdb
+ 	mv -f $TEST_DIR/core.* $TEST_DIR/corefile >/dev/null 2>&1
+ 	echo -e "Test whether the core support bt,fpu and threads commands "
+-	expect ./tcore.exp >/dev/null 2>&1
++	expect $BIN_DIR/tcore.exp
+ 	return=$?
+ 	pass=`expr $pass + $return`
+ 	fail=`expr 3 - $return + $fail`
+@@ -123,7 +138,7 @@ Test_core_file
+ echo "Linux Tcore test results" > results
+ echo "Total pass fail" >>  results
+ echo "  5	$pass	$fail" >> results
+-exit $fail 
++cleanup $fail 
+ 
+ 	
+ 	
 -- 
 1.6.3.1
 
