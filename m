@@ -1,137 +1,47 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
-	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M7WJI-0006DK-OK
-	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 15:05:24 +0000
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M7WJE-0007Gm-U4
-	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 15:05:24 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Fri, 22 May 2009 20:35:14 +0530
-Message-Id: <20090522150514.24856.31171.sendpatchset@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] [PATCH] LTP Build fail on System z 64 bit machine
-List-Id: Linux Test Project General Discussions
-	<ltp-list.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
-	<mailto:ltp-list-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=ltp-list>
-List-Post: <mailto:ltp-list@lists.sourceforge.net>
-List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
-	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Subject: Welcome to the "Ltp-list" mailing list
+From: ltp-list-request@lists.sourceforge.net
+Message-ID: <mailman.0.1242231381.9795.ltp-list@lists.sourceforge.net>
+Date: Wed, 13 May 2009 16:16:21 +0000
+List-Id: Linux Test Project General Discussions
+	<ltp-list.lists.sourceforge.net>
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Srinivasan Subramanian3 <srinivass@in.ibm.com>
-Cc: ltp-list@lists.sf.net
+To: chrubis@suse.cz
 
-Hi,
+Welcome to the Ltp-list@lists.sourceforge.net mailing list!
 
->On Fri, 2009-05-22 at 09:02 -0400, Srinivasan Subramanian3 wrote:
->Hi all,
-> 
-> When i tried to build ltp on a RHEL4.8 machine, the build failed with undefined reference on splice02.
-> 
-> Machine info
-> 
-> RHEL4.8 GA (64 bit)
-> 
-> Kernel version- 2.6.9-89.EL
-> 
-> Error Info
-> 
-> /root/ltp-intermediate-20090521/testcases/kernel/syscalls/splice/splice02.c:126: undefined reference to `splice'
-> collect2: ld returned 1 exit status
-> make[4]: *** [splice02] Error 1
-> make[4]: Leaving directory `/root/ltp-intermediate-20090521/testcases/kernel/syscalls/splice'
-> make[3]: *** [all] Error 2
-> make[3]: Leaving directory `/root/ltp-intermediate-20090521/testcases/kernel/syscalls'
-> make[2]: *** [all] Error 2
-> make[2]: Leaving directory `/root/ltp-intermediate-20090521/testcases/kernel'
-> make[1]: *** [all] Error 2
-> make[1]: Leaving directory `/root/ltp-intermediate-20090521/testcases'
-> make: *** [all] Error 2
-> 
-> Kindly help me on this issue.
+To post to this list, send your email to:
 
-Hope the following patch solves your problem:
+  ltp-list@lists.sourceforge.net
 
-1) Avoids build problem on your very old kernel,
-2) Will not run on on your old kernel but on kernel > 2.6.17,
+General information about the mailing list is at:
 
-Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>
----
+  https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---- ltp-intermediate-20090521/testcases/kernel/syscalls/splice/splice02.c.orig	2009-05-22 18:33:41.000000000 +0530
-+++ ltp-intermediate-20090521/testcases/kernel/syscalls/splice/splice02.c	2009-05-22 19:10:49.000000000 +0530
-@@ -52,6 +52,15 @@ char *TCID = "splice02";  /* Test progra
- int  testno;
- int  TST_TOTAL = 1;                   /* total number of tests in this file.   */
- 
-+static inline long ltp_splice(int fd_in, loff_t *off_in,
-+				int fd_out, loff_t *off_out,
-+				size_t len, unsigned int flags)
-+{
-+			return syscall(__NR_splice, fd_in, off_in, fd_out,
-+					off_out, len, flags);
-+}
-+
-+
- /* Extern Global Functions */
- /******************************************************************************/
- /*                                                                            */
-@@ -108,7 +117,15 @@ void setup() {
- 
- int main(int ac, char **av) {
- 	int fd = 0;
--	
-+	int results = 0;
-+
-+	/* Disable test if the version of the kernel is less than 2.6.17 */
-+	if (((results = tst_kvercmp(2, 6, 17)) < 0)) {
-+		tst_resm(TINFO, "This test can only run on kernels that are ");
-+		tst_resm(TINFO, "2.6.17 and higher");
-+		exit(0);
-+	}
-+
-         setup();
- 
-         if (ac < 2 ) {
-@@ -123,7 +140,7 @@ int main(int ac, char **av) {
- 	}
- 			
-         do {
--					TEST(splice(STDIN_FILENO, NULL, fd, NULL, SPLICE_SIZE, 0));
-+		TEST(ltp_splice(STDIN_FILENO, NULL, fd, NULL, SPLICE_SIZE, 0));
- 	    if (TEST_RETURN < 0) {
-             	tst_resm(TFAIL, "splice failed - errno = %d : %s", TEST_ERRNO, strerror(TEST_ERRNO));
- 	        cleanup();
+If you ever want to unsubscribe or change your options (eg, switch to
+or from digest mode, change your password, etc.), visit your
+subscription page at:
 
----
-Regards--
-Subrata
+  https://lists.sourceforge.net/lists/options/ltp-list/chrubis%40suse.cz
 
 
-> Thanks & 
-> 
-> --------------------------------- 
-> Best Regards, 
-> Srinivasan S, 
-> Linux on System z, LTC 
-> srinivass@in.ibm.com 
-> srinivass@linux.vnet.ibm.com 
-> ----------------------------------
+You can also make such adjustments via email by sending a message to:
 
-------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
-is a gathering of tech-side developers & brand creativity professionals. Meet
-the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
-Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+  Ltp-list-request@lists.sourceforge.net
+
+with the word `help' in the subject or body (don't include the
+quotes), and you will get back a message with instructions.
+
+You must know your password to change your options (including changing
+the password, itself) or to unsubscribe.  It is:
+
+  grtx*#
+
+Normally, Mailman will remind you of your lists.sourceforge.net
+mailing list passwords once every month, although you can disable this
+if you prefer.  This reminder will also include instructions on how to
+unsubscribe or change your account options.  There is also a button on
+your options page that will email your current password to you.
