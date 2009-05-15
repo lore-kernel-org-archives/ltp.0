@@ -1,22 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <rohit.170309@gmail.com>) id 1M9CsA-0003QG-8E
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 06:44:22 +0000
-Received: from mail-ew0-f168.google.com ([209.85.219.168])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1M9Cs8-0002Uo-65
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 06:44:22 +0000
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <bounces@nabble.com>) id 1M4qWp-0007Zz-7c
+	for ltp-list@lists.sourceforge.net; Fri, 15 May 2009 06:04:19 +0000
+Received: from kuber.nabble.com ([216.139.236.158])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1M4qWk-0002UW-5M
+	for ltp-list@lists.sourceforge.net; Fri, 15 May 2009 06:04:19 +0000
+Received: from isper.nabble.com ([192.168.236.156])
+	by kuber.nabble.com with esmtp (Exim 4.63)
+	(envelope-from <bounces@nabble.com>) id 1M4qWj-0002T0-GJ
+	for ltp-list@lists.sourceforge.net; Thu, 14 May 2009 23:04:13 -0700
+Message-ID: <23553926.post@talk.nabble.com>
+Date: Thu, 14 May 2009 23:04:13 -0700 (PDT)
+From: rohitv <rohit.170309@gmail.com>
+In-Reply-To: <d51f89b0904070228q4d4333c7vdd2dfc1e1f7ca8a@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <522C1DF17AF50042AD8AE87F7887BD3D0158B359A4@exch.hq.tensilica.com>
-References: <20090526142706.20166.3813.sendpatchset@subratamodak.linux.ibm.com>
-	<522C1DF17AF50042AD8AE87F7887BD3D0158B359A4@exch.hq.tensilica.com>
-Date: Wed, 27 May 2009 12:14:18 +0530
-Message-ID: <d51f89b0905262344h46722756vb255541a47904dbe@mail.gmail.com>
-From: rohit verma <rohit.170309@gmail.com>
-Subject: Re: [LTP] [PATCH] Detect test results more accurately when
-	generating HTML
+References: <d51f89b0904070228q4d4333c7vdd2dfc1e1f7ca8a@mail.gmail.com>
+Subject: Re: [LTP] HTML report generation issue.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,108 +28,35 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Marc Gauthier <marc@tensilica.com>
-Cc: Ltp-List <ltp-list@lists.sf.net>
-
-Hi Marc,
-
-I think this a possible solution. I think the tag "initiation_status=3D"
-can be moved after <<<execution_status>>>. Moving this tag to
-write_test_end() and shifting write_test_start() before fork() might
-solve the problem. However, corresponding changes have to be done in
-genhtml.pl
-
-Subrata: Just let me your view on this. I'll try and come up with a
-patch if the changes are acceptable.
-
-Regards,
-Rohit.
+To: ltp-list@lists.sourceforge.net
 
 
+Hi,
 
-On Wed, May 27, 2009 at 1:44 AM, Marc Gauthier <marc@tensilica.com> wrote:
-> Okay, so I looked at it a bit...
->
-> Isn't the fundamental race condition because pan outputs
-> <<<test_start>>> *after* doing the fork(), rather than before?
->
-> If some status info can't be output that early, maybe it just
-> needs to be output after <<<execution_status>>> as part of
-> write_test_end() ?
->
-> -Marc
->
-> P.S. =A0I find it useful to run genhtml against older LTP releases
-> (including those without genhtml), so might be useful to keep the
-> out-of-order workarounds even if ordering is fixed in this release.
->
->
-> Subrata Modak wrote:
->> How much would you want to delay ? May be to some microsecs !!
->> However delaying is not a good option, but, i am ready to consider.
->> See, what is the reasanable time so that this problem vanishes.
->>
->> Meanwhile, i have generated this small patch. It tries to
->> flush all data
->> to be written to STDOUT before the Parent (PAN) tries to write his
->> next tag. Moreover, i have included the fflush() to be executed inside
->> the if()=C2=B4s domain whenever the parent is writing from <<test_start>>
->> till <<test_output>>. See, if this can help in solving the problem.
->>
->> Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>
->> ---
->>
->> --- ltp-intermediate-20090521/pan/ltp-pan.c.orig
->> 2009-05-26 16:30:39.000000000 +0530
->> +++ ltp-intermediate-20090521/pan/ltp-pan.c =A0 2009-05-26
->> 19:44:37.000000000 +0530
->> @@ -1015,6 +1015,7 @@ static pid_t run_child(struct coll_entry
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 errbuf[errlen] =3D '\0';
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* fprintf(stderr, "%s", errbuf); */
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 waitpid(cpid, &status, 0);
->> + =A0 =A0 =A0 =A0 =A0 =A0 fflush(stdout); /* Flush any data before
->> writing <<test_end>>*/
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (WIFSIGNALED(status)) {
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 termid =3D WTERMSIG(status);
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 termtype =3D "signaled";
->> @@ -1300,14 +1301,14 @@ static void copy_buffered_output(struct
->>
->> =A0static void write_test_start(struct tag_pgrp *running, const
->> char *init_status)
->> =A0{
->> - =A0 =A0 if (!strcmp(reporttype, "rts"))
->> + =A0 =A0 if (!strcmp(reporttype, "rts")) {
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 printf("%s\ntag=3D%s
->> stime=3D%ld\ncmdline=3D\"%s\"\ncontacts=3D\"%s\"\nanalysis=3D%s\niniti
-> ation_status=3D\"%s\"\n%s\n",
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"<<<test_start>>>",
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0running->cmd->name, running->=
-mystime,
->> running->cmd->cmdline, "",
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"exit", init_status,
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"<<<test_output>>>");
->> -
->> =A0 =A0 =A0 fflush(stdout);
->> + =A0 =A0 }
->> =A0}
->>
->
+Regarding the output coming out of place, can we use the output buffered
+mode as the default? Output buffered mode can be set with the -O option.
+But, this works only when no. of instances of LTP is more than 1 (specified
+by -x option). Currently, for few of the testcases the output generated does
+not appear between <<<test_output>>> and <<<execution_status>>>, it can be
+seen anywhere before <<<test_output>>> when corresponding .output file is
+checked. This might be because of race condition in the pan driver.  I think
+by using the buffered output mode this problem can be fixed. 
 
----------------------------------------------------------------------------=
----
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT =
+Regards.
+-- 
+View this message in context: http://www.nabble.com/HTML-report-generation-issue.-tp22925527p23553926.html
+Sent from the ltp-list mailing list archive at Nabble.com.
 
-is a gathering of tech-side developers & brand creativity professionals. Me=
-et
-the minds behind Google Creative Lab, Visual Complexity, Processing, & =
 
-iPhoneDevCamp as they present alongside digital heavyweights like Barbarian =
-
-Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com =
-
+------------------------------------------------------------------------------
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables 
+unlimited royalty-free distribution of the report engine 
+for externally facing server and web deployment. 
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
