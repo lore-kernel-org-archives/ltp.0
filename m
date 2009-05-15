@@ -1,18 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1M9M1E-0005kv-Nj
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 16:30:20 +0000
-Received: from mail-gx0-f170.google.com ([209.85.217.170])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1M9M1E-0007XE-1u
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 16:30:20 +0000
-MIME-Version: 1.0
-Date: Wed, 27 May 2009 22:00:19 +0530
-Message-ID: <f5a7b3810905270930p6811d70bx17f6b2b779332e1@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Subject: Re: [LTP] patch for timer_create04 and clock_gettime03 issue.
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M4sz1-0003z0-AQ
+	for ltp-list@lists.sourceforge.net; Fri, 15 May 2009 08:41:35 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1M4syz-0005XI-FQ
+	for ltp-list@lists.sourceforge.net; Fri, 15 May 2009 08:41:35 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e3.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4F8bEng006476
+	for <ltp-list@lists.sourceforge.net>; Fri, 15 May 2009 04:37:14 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n4F8fUO5213462
+	for <ltp-list@lists.sourceforge.net>; Fri, 15 May 2009 04:41:30 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4F8dVPM029376
+	for <ltp-list@lists.sourceforge.net>; Fri, 15 May 2009 04:39:31 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4A0D13F2.8030804@cn.fujitsu.com>
+References: <4A0D13F2.8030804@cn.fujitsu.com>
+Date: Fri, 15 May 2009 14:11:27 +0530
+Message-Id: <1242376887.7224.30.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Synchronization between two processes
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,73 +39,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rohit.170309@gmail.com
-Cc: ltp-list@lists.sf.net
+To: Serge Hallyn <serue@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
->> Hi,
->>
->> In reference to the issue with timer_create04 and clock_gettime03 for
->> the kernel version 2.6.29 which was reported in the link:
->> (http://www.kernel.org/pub/linux/kernel/v2.6/ChangeLog-2.6.28). This
->> addition caused the above testcases to fail. Now, 5 clock ID's are
->> present in kernel ver 2.6.28 and later.
->>
->> Please check the same....
->>
->> Regards,
->> Rohit
+On Fri, 2009-05-15 at 15:04 +0800, Gui Xiaohua wrote:
+> The child-process wait SIGUSR1 which would be sended by parent-process,
+> if the child-process execute sigtimedwait() after parent-process send 
+> the signal, it would never receive the SIGUSR1 from parent-process.
+> I cann't make sure the SIGUSR1 be sended after child-process execute 
+> sigtimedwait() with 100 percent, and i try my best.
+> 
+> Signed-off-by: Gui Xiaohua <guixh@cn.fujitsu.com>
 
->Thanks.
+Over to Serge.
 
->Regards--
->Subrata
+Regards--
+Subrata
 
-Thanks Rohit.
-i have reported this issue two months back, since it was a pending issue.
-Tested on 2.6.29 kernels working fine. test results log is at below this mail
-Thanks for providing patch.
+> --- testcases/kernel/containers/pidns/pidns12-old.c	2009-05-14 17:00:20.000000000 +0800
+> +++ testcases/kernel/containers/pidns/pidns12.c	2009-05-15 15:15:22.000000000 +0800
+> @@ -109,7 +109,7 @@ int child_fn(void *arg)
+>  	}
+> 
+>  	/* Set timeout for sigtimedwait */
+> -	timeout.tv_sec = 3;
+> +	timeout.tv_sec = 10;
+>  	timeout.tv_nsec = 0;
+> 
+>  	/* Set mask to wait for SIGUSR1 signal */
+> @@ -182,6 +182,9 @@ int main(int argc, char *argv[])
+>  		cleanup();
+>  	}
+> 
+> +	/*Try best to make sure the SIGUSR1 be sended after child-process execute sigtimedwait*/
+> +	sleep(5);
+> +
+>  	/* Send SIGUSR1 to container init */
+>  	if (kill(cpid, SIGUSR1) == -1) {
+>  		tst_resm(TBROK, "parent: kill() failed(%s).", strerror(errno));
+> 
+> 
+> ------------------------------------------------------------------------------
+> Crystal Reports - New Free Runtime and 30 Day Trial
+> Check out the new simplified licensing option that enables 
+> unlimited royalty-free distribution of the report engine 
+> for externally facing server and web deployment. 
+> http://p.sf.net/sfu/businessobjects
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-
-Best regards,
-Naresh kamboju
-
-
--bash-3.2# ./timer_create04
-timer_create04    1  PASS  :  timer_create(2) expected failure; Got
-errno - EINVAL : Invalid parameter
-timer_create04    2  PASS  :  timer_create(2) expected failure; Got
-errno - EINVAL : Invalid parameter
-timer_create04    3  PASS  :  timer_create(2) expected failure; Got
-errno - EFAULT : Bad address
-timer_create04    4  PASS  :  timer_create(2) expected failure; Got
-errno - EFAULT : Bad address
-timer_create04    5  PASS  :  timer_create(2) expected failure; Got
-errno - EFAULT : Bad address
-timer_create04    6  PASS  :  timer_create(2) expected failure; Got
-errno - EFAULT : Bad address
--bash-3.2#
-
--bash-3.2# ./clock_gettime03
-clock_gettime03    1  PASS  :  clock_gettime(2) expected failure; Got
-errno - EFAULT : Bad address
-clock_gettime03    2  PASS  :  clock_gettime(2) expected failure; Got
-errno - EFAULT : Bad address
-clock_gettime03    3  PASS  :  clock_gettime(2) expected failure; Got
-errno - EINVAL : Invalid parameter
-clock_gettime03    4  PASS  :  clock_gettime(2) expected failure; Got
-errno - EINVAL : Invalid parameter
-clock_gettime03    5  PASS  :  clock_gettime(2) expected failure; Got
-errno - EFAULT : Bad address
-clock_gettime03    6  PASS  :  clock_gettime(2) expected failure; Got
-errno - EFAULT : Bad address
--bash-3.2#
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
-is a gathering of tech-side developers & brand creativity professionals. Meet
-the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
-Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables 
+unlimited royalty-free distribution of the report engine 
+for externally facing server and web deployment. 
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
