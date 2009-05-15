@@ -1,31 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <suzuki@in.ibm.com>) id 1M9j1a-00032Y-Uf
-	for ltp-list@lists.sourceforge.net; Thu, 28 May 2009 17:04:14 +0000
-Received: from e32.co.us.ibm.com ([32.97.110.150])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M9j1Y-0008Cl-J1
-	for ltp-list@lists.sourceforge.net; Thu, 28 May 2009 17:04:14 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e32.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4SH0Swo011502
-	for <ltp-list@lists.sourceforge.net>; Thu, 28 May 2009 11:00:28 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4SH2iU4133324
-	for <ltp-list@lists.sourceforge.net>; Thu, 28 May 2009 11:02:44 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4SH2hka013586
-	for <ltp-list@lists.sourceforge.net>; Thu, 28 May 2009 11:02:44 -0600
-Message-ID: <4A1EC3AC.2080901@in.ibm.com>
-Date: Thu, 28 May 2009 22:32:36 +0530
-From: Suzuki Poulose <suzuki@in.ibm.com>
+	(envelope-from <guixh@cn.fujitsu.com>) id 1M4rXR-0001pM-E9
+	for ltp-list@lists.sourceforge.net; Fri, 15 May 2009 07:09:01 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1M4rXH-0005ZT-88
+	for ltp-list@lists.sourceforge.net; Fri, 15 May 2009 07:09:01 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id 3D183170133
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 15 May 2009 15:11:36 +0800 (CST)
+Received: from fnst.cn.fujitsu.com (localhost.localdomain [127.0.0.1])
+	by tang.cn.fujitsu.com (8.13.1/8.13.1) with ESMTP id n4F79fts013065
+	for <ltp-list@lists.sourceforge.net>; Fri, 15 May 2009 15:09:41 +0800
+Received: from [127.0.0.1] (unknown [10.167.141.161])
+	by fnst.cn.fujitsu.com (Postfix) with ESMTPA id A09C4291CF9
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 15 May 2009 15:18:17 +0800 (CST)
+Message-ID: <4A0D13F2.8030804@cn.fujitsu.com>
+Date: Fri, 15 May 2009 15:04:18 +0800
+From: Gui Xiaohua <guixh@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------080205000001040201080301"
-Subject: [LTP] [RFC] Patch getcpu01 testcase
+Subject: [LTP] [PATCH] Synchronization between two processes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,95 +33,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, Subrata Modak <subrata@linux.vnet.ibm.com>, sharyath@in.ibm.com
-
-This is a multi-part message in MIME format.
---------------080205000001040201080301
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Hi,
-
-The getcpu01 always exits with a non-zero exit code (indicating a 
-Failure as per UNIX semantics) on non-NUMA machines.
-
-This is due to the following code :
-
-            tst_resm(TWARN,
-                    "/sys not mounted or not a numa system. Assuming one 
-node: %s",
-                         strerror(errno));
-
-
-Being a non-NUMA machine is not a failure, but an info. So it should not 
-cause the test to have a non zero exit status.
-
-I have attached a patch which could do the same and provide a more 
-friendly o/p.
-
-
-Please apply.
-
-Thanks
-Suzuki
-
---------------080205000001040201080301
-Content-Type: text/plain;
- name="fix-warning-getcpu01.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="fix-warning-getcpu01.diff"
-
-Index: ltp-20081031/testcases/kernel/syscalls/getcpu/getcpu01.c
-===================================================================
---- ltp-20081031.orig/testcases/kernel/syscalls/getcpu/getcpu01.c	2008-10-23 02:23:19.000000000 -0500
-+++ ltp-20081031/testcases/kernel/syscalls/getcpu/getcpu01.c	2009-05-28 11:52:54.000000000 -0500
-@@ -47,6 +47,8 @@
-  * HISTORY
-  *	06/2008 written by Sharyathi Nagesh <sharyathi@in.ibm.com>
-  *
-+ *	05/2009 	Suzuki K P <suzuki@in.ibm.com>
-+ *			Friendly messages for non-NUMA machines.
-  * RESTRICTIONS
-  *	none
-  */
-@@ -234,8 +236,10 @@
- 
-         directory_parent = opendir("/sys/devices/system/node");
-         if (!directory_parent)  {
--                tst_resm(TWARN,
--                   "/sys not mounted or not a numa system. Assuming one node: %s",
-+                tst_resm(TINFO,
-+                        "/sys not mounted or not a numa system. Assuming one node");
-+		tst_resm(TINFO,
-+			"Reason /sys/devices/system/node :%s",
-                         strerror(errno));
-                	return 0; //By Default assume it to belong to node Zero 
-         } else {
-
---------------080205000001040201080301
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+The child-process wait SIGUSR1 which would be sended by parent-process,
+if the child-process execute sigtimedwait() after parent-process send 
+the signal, it would never receive the SIGUSR1 from parent-process.
+I cann't make sure the SIGUSR1 be sended after child-process execute 
+sigtimedwait() with 100 percent, and i try my best.
+
+Signed-off-by: Gui Xiaohua <guixh@cn.fujitsu.com>
+--- testcases/kernel/containers/pidns/pidns12-old.c	2009-05-14 17:00:20.000000000 +0800
++++ testcases/kernel/containers/pidns/pidns12.c	2009-05-15 15:15:22.000000000 +0800
+@@ -109,7 +109,7 @@ int child_fn(void *arg)
+ 	}
+ 
+ 	/* Set timeout for sigtimedwait */
+-	timeout.tv_sec = 3;
++	timeout.tv_sec = 10;
+ 	timeout.tv_nsec = 0;
+ 
+ 	/* Set mask to wait for SIGUSR1 signal */
+@@ -182,6 +182,9 @@ int main(int argc, char *argv[])
+ 		cleanup();
+ 	}
+ 
++	/*Try best to make sure the SIGUSR1 be sended after child-process execute sigtimedwait*/
++	sleep(5);
++
+ 	/* Send SIGUSR1 to container init */
+ 	if (kill(cpid, SIGUSR1) == -1) {
+ 		tst_resm(TBROK, "parent: kill() failed(%s).", strerror(errno));
+
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
-is a gathering of tech-side developers & brand creativity professionals. Meet
-the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
-Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
---------------080205000001040201080301
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables 
+unlimited royalty-free distribution of the report engine 
+for externally facing server and web deployment. 
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------080205000001040201080301--
-
