@@ -1,30 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yjwei@cn.fujitsu.com>) id 1M9A6T-0006b0-Qt
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 03:46:57 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1M9A6N-0004A2-9S
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 03:46:52 +0000
-Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
-	by song.cn.fujitsu.com (Postfix) with ESMTP id 372CE17012D
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 27 May 2009 11:58:40 +0800 (CST)
-Received: from fnst.cn.fujitsu.com (localhost.localdomain [127.0.0.1])
-	by tang.cn.fujitsu.com (8.13.1/8.13.1) with ESMTP id n4R3n3hr005636
-	for <ltp-list@lists.sourceforge.net>; Wed, 27 May 2009 11:49:03 +0800
-Received: from [10.167.141.76] (unknown [10.167.141.76])
-	by fnst.cn.fujitsu.com (Postfix) with ESMTP id 73B47D401A
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 27 May 2009 11:47:52 +0800 (CST)
-Message-ID: <4A1CB6C7.6070302@cn.fujitsu.com>
-Date: Wed, 27 May 2009 11:43:03 +0800
-From: Wei Yongjun <yjwei@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] ltp: fix typo in
-	testcases/kernel/syscalls/chown/chown03.c
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M61Ve-0007On-0D
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 11:59:58 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1M61Va-0000dL-9C
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 11:59:57 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e37.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4IBxFOw011700
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 05:59:15 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n4IBxppI198834
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 05:59:51 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4IBxpJA005648
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 05:59:51 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <1242371868.7224.14.camel@subratamodak.linux.ibm.com>
+References: <4A0A0116.8030604@web.de>
+	<1242371868.7224.14.camel@subratamodak.linux.ibm.com>
+Date: Mon, 18 May 2009 17:29:47 +0530
+Message-Id: <1242647987.5161.13.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Add an autoconf test for
+	presence	oftaskstats.freepages_count
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,45 +42,184 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jiri Palecek <jpalecek@web.de>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Fix typo in testcases/kernel/syscalls/chown/chown03.c,
-which use ltpuser->pw_uid in call to setegid() should
-be ltpuser->pw_gid.
+On Fri, 2009-05-15 at 12:47 +0530, Subrata Modak wrote: 
+> On Wed, 2009-05-13 at 01:07 +0200, Jiri Palecek wrote: 
+> > Also, use it in getdelays.c to prevent compilation failures
+> > 
+> > Hello,
+> > 
+> > I've found that ltp didn't compile on Debian because of old kernel headers, 
+> > which contain taskstats struct without some of the needed fields. This autoconf 
+> > test detects it and disables the code that would otherwise break.
+> > 
+> > Regards
+> >      Jiri Palecek
+> > 
+> > Signed-off-by: Jiri Palecek <jpalecek@web.de>
+> 
+> Same here:
+> 
+> ERROR: patch seems to be corrupt (line wrapped?)
+> #132: FILE: configure.ac:24:
+> diff --git a/include/config.h.default b/include/config.h.default
+> total: 1 errors, 0 warnings, 83 lines checked
+> 
+> and
+> 
+> patching file configure.ac
+> patch: **** malformed patch at line 132: diff --git
+> a/include/config.h.default b/include/config.h.default
+> 
 
-Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
----
- testcases/kernel/syscalls/chown/chown03.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+How about resending this Patch as well ?
 
-diff --git a/testcases/kernel/syscalls/chown/chown03.c b/testcases/kernel/syscalls/chown/chown03.c
-index fde107a..f27cb6f 100644
---- a/testcases/kernel/syscalls/chown/chown03.c
-+++ b/testcases/kernel/syscalls/chown/chown03.c
-@@ -213,9 +213,9 @@ void setup()
- 	}
- 
- 	ltpuser = getpwnam(nobody_uid);
--	if (setegid(ltpuser->pw_uid) == -1) {
-+	if (setegid(ltpuser->pw_gid) == -1) {
- 		tst_resm(TINFO, "setegid failed to "
--			 "to set the effective uid to %d", ltpuser->pw_uid);
-+			 "to set the effective uid to %d", ltpuser->pw_gid);
- 		perror("setegid");
- 	}
- 	if (seteuid(ltpuser->pw_uid) == -1) {
--- 
-1.6.0.2.530.g67faa
+Regards--
+Subrata
 
-
+> Regards--
+> Subrata
+> 
+> > ---
+> >   configure.ac                                    |    1 +
+> >   include/config.h.default                        |    2 +
+> >   m4/ltp-taskstats.m4                             |   38 +++++++++++++++++++++++
+> >   testcases/kernel/controllers/cgroup/getdelays.c |   15 ++++++---
+> >   4 files changed, 51 insertions(+), 5 deletions(-)
+> >   create mode 100644 m4/ltp-taskstats.m4
+> > 
+> > diff --git a/configure.ac b/configure.ac
+> > index c534c97..9fc1696 100644
+> > --- a/configure.ac
+> > +++ b/configure.ac
+> > @@ -20,5 +20,6 @@ LTP_CHECK_SYSCALL_MODIFY_LDT
+> >   LTP_CHECK_SYSCALL_SIGNALFD
+> >   LTP_CHECK_SELINUX
+> >   LTP_CHECK_CRYPTO
+> > +LTP_CHECK_TASKSTATS
+> >    AC_OUTPUT
+> > diff --git a/include/config.h.default b/include/config.h.default
+> > index 9125d85..b9a6731 100644
+> > --- a/include/config.h.default
+> > +++ b/include/config.h.default
+> > @@ -14,3 +14,5 @@
+> >    /* ifaddrs.h is in glibc-2.3+ */
+> >   #define HAVE_IFADDRS_H 1
+> > +
+> > +#define HAVE_TASKSTATS_FREEPAGES_COUNT 1
+> > diff --git a/m4/ltp-taskstats.m4 b/m4/ltp-taskstats.m4
+> > new file mode 100644
+> > index 0000000..54da783
+> > --- /dev/null
+> > +++ b/m4/ltp-taskstats.m4
+> > @@ -0,0 +1,38 @@
+> > +dnl
+> > +dnl Copyright (c) Jiri Palecek 2009
+> > +dnl
+> > +dnl This program is free software;  you can redistribute it and/or modify
+> > +dnl it under the terms of the GNU General Public License as published by
+> > +dnl the Free Software Foundation; either version 2 of the License, or
+> > +dnl (at your option) any later version.
+> > +dnl
+> > +dnl This program is distributed in the hope that it will be useful,
+> > +dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> > +dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> > +dnl the GNU General Public License for more details.
+> > +dnl
+> > +dnl You should have received a copy of the GNU General Public License
+> > +dnl along with this program;  if not, write to the Free Software
+> > +dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+> > +dnl
+> > +
+> > +
+> > +AC_DEFUN([LTP_CHECK_TASKSTATS],
+> > +_LTP_CHECK_TASKSTATS_FREEPAGES
+> > +)dnl
+> > +
+> > +dnl _LTP_CHECK_TASKSTATS_FREEPAGES
+> > +dnl ----------------------------------------
+> > +dnl
+> > +dnl Check for taskstat.freepages_* members, introduced to the kernel
+> > +dnl in commit 016ae219 in July 2008
+> > +dnl
+> > +
+> > +AC_DEFUN([_LTP_CHECK_TASKSTATS_FREEPAGES],
+> > +[dnl
+> > +AC_CHECK_MEMBERS([struct taskstats.freepages_count],[],[],[dnl
+> > +#include <linux/types.h>
+> > +#include <linux/taskstats.h>
+> > +])
+> > +]dnl
+> > +)dnl
+> > diff --git a/testcases/kernel/controllers/cgroup/getdelays.c 
+> > b/testcases/kernel/controllers/cgroup/getdelays.c
+> > index 13f7b3a..9fe2831 100644
+> > --- a/testcases/kernel/controllers/cgroup/getdelays.c
+> > +++ b/testcases/kernel/controllers/cgroup/getdelays.c
+> > @@ -199,8 +199,10 @@ void print_delayacct(struct taskstats *t)
+> >   	       "SWAP  %15s%15s\n"
+> >   	       "      %15llu%15llu\n"
+> >   	       "RECLAIM  %12s%15s\n"
+> > -	       "      %15llu%15llu\n",
+> > -	       "count", "real total", "virtual total", "delay total",
+> > +#ifdef HAVE_TASKSTATS_FREEPAGES_COUNT
+> > +	       "      %15llu%15llu\n"
+> > +#endif
+> > +	       , "count", "real total", "virtual total", "delay total",
+> >   	       (unsigned long long)t->cpu_count,
+> >   	       (unsigned long long)t->cpu_run_real_total,
+> >   	       (unsigned long long)t->cpu_run_virtual_total,
+> > @@ -211,9 +213,12 @@ void print_delayacct(struct taskstats *t)
+> >   	       "count", "delay total",
+> >   	       (unsigned long long)t->swapin_count,
+> >   	       (unsigned long long)t->swapin_delay_total,
+> > -	       "count", "delay total",
+> > -	       (unsigned long long)t->freepages_count,
+> > -	       (unsigned long long)t->freepages_delay_total);
+> > +	       "count", "delay total"
+> > +#ifdef HAVE_TASKSTATS_FREEPAGES_COUNT
+> > +	       , (unsigned long long)t->freepages_count,
+> > +	       (unsigned long long)t->freepages_delay_total
+> > +#endif
+> > +	       );
+> >   }
+> >    void task_context_switch_counts(struct taskstats *t)
+> > -- 
+> > 1.6.2
+> > 
+> > 
+> > ------------------------------------------------------------------------------
+> > The NEW KODAK i700 Series Scanners deliver under ANY circumstances! Your
+> > production scanning environment may not be a perfect world - but thanks to
+> > Kodak, there's a perfect scanner to get the job done! With the NEW KODAK i700
+> > Series Scanner you'll get full speed at 300 dpi even with all image 
+> > processing features enabled. http://p.sf.net/sfu/kodak-com
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+> 
+> ------------------------------------------------------------------------------
+> Crystal Reports - New Free Runtime and 30 Day Trial
+> Check out the new simplified licensing option that enables 
+> unlimited royalty-free distribution of the report engine 
+> for externally facing server and web deployment. 
+> http://p.sf.net/sfu/businessobjects
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
-is a gathering of tech-side developers & brand creativity professionals. Meet
-the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
-Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables 
+unlimited royalty-free distribution of the report engine 
+for externally facing server and web deployment. 
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
