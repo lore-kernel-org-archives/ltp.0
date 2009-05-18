@@ -2,19 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <caiqian@cclom.cn>) id 1M7XzQ-0004U6-T3
-	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 16:53:00 +0000
-Received: from smtp108.biz.mail.re2.yahoo.com ([206.190.52.47])
+	(envelope-from <caiqian@cclom.cn>) id 1M64L8-0004cd-Eq
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 15:01:18 +0000
+Received: from smtp100.biz.mail.re2.yahoo.com ([206.190.52.46])
 	by 1b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1M7XzL-00086l-Vj
-	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 16:53:00 +0000
-Date: Sat, 23 May 2009 00:55:35 +0800 (CST)
-Message-Id: <20090523.005535.226783230.caiqian@cclom.cn>
+	id 1M64L7-0000U3-35
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 15:01:18 +0000
+Date: Mon, 18 May 2009 19:08:37 +0800 (CST)
+Message-Id: <20090518.190837.229737820.caiqian@cclom.cn>
 From: CAI Qian <caiqian@cclom.cn>
-In-Reply-To: <20090522150514.24856.31171.sendpatchset@subratamodak.linux.ibm.com>
-References: <20090522150514.24856.31171.sendpatchset@subratamodak.linux.ibm.com>
+In-Reply-To: <d51f89b0905150450l6506055dr36337f6096d17e9a@mail.gmail.com>
+References: <d51f89b0905130233r4e3b5bd4tfc3e4cae549e1194@mail.gmail.com>
+	<20090513.234703.112605595.caiqian@cclom.cn>
+	<d51f89b0905150450l6506055dr36337f6096d17e9a@mail.gmail.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] LTP Build fail on System z 64 bit machine
+Subject: Re: [LTP] Regarding ht_enable test case failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,129 +29,252 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sf.net, srinivass@in.ibm.com
+To: rohit.170309@gmail.com
+Cc: ltp-list@lists.sourceforge.net
 
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Subject: Re: [LTP] [PATCH] LTP Build fail on System z 64 bit machine
-Date: Fri, 22 May 2009 20:35:14 +0530
+Again, I am forwarding this to the mailing list, since I am not sure
+about some questions either.
 
-> Hi,
+From: rohit verma <rohit.170309@gmail.com>
+Subject: Re: [LTP] Regarding ht_enable test case failure
+Date: Fri, 15 May 2009 17:20:40 +0530
+
+> Dear CAI Qian,
 > 
->>On Fri, 2009-05-22 at 09:02 -0400, Srinivasan Subramanian3 wrote:
->>Hi all,
->> 
->> When i tried to build ltp on a RHEL4.8 machine, the build failed with undefined reference on splice02.
->> 
->> Machine info
->> 
->> RHEL4.8 GA (64 bit)
->> 
->> Kernel version- 2.6.9-89.EL
->> 
->> Error Info
->> 
->> /root/ltp-intermediate-20090521/testcases/kernel/syscalls/splice/splice02.c:126: undefined reference to `splice'
->> collect2: ld returned 1 exit status
->> make[4]: *** [splice02] Error 1
->> make[4]: Leaving directory `/root/ltp-intermediate-20090521/testcases/kernel/syscalls/splice'
->> make[3]: *** [all] Error 2
->> make[3]: Leaving directory `/root/ltp-intermediate-20090521/testcases/kernel/syscalls'
->> make[2]: *** [all] Error 2
->> make[2]: Leaving directory `/root/ltp-intermediate-20090521/testcases/kernel'
->> make[1]: *** [all] Error 2
->> make[1]: Leaving directory `/root/ltp-intermediate-20090521/testcases'
->> make: *** [all] Error 2
->> 
->> Kindly help me on this issue.
+> I am also trying to update HT_affinity also.
 > 
-> Hope the following patch solves your problem:
+> Issues:
 > 
-> 1) Avoids build problem on your very old kernel,
-> 2) Will not run on on your old kernel but on kernel > 2.6.17,
+> function: HT_GetAffinity()
 > 
-> Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>
-> ---
+> Line: mask1=get_porc_affinity(pid);
 > 
-> --- ltp-intermediate-20090521/testcases/kernel/syscalls/splice/splice02.c.orig	2009-05-22 18:33:41.000000000 +0530
-> +++ ltp-intermediate-20090521/testcases/kernel/syscalls/splice/splice02.c	2009-05-22 19:10:49.000000000 +0530
-> @@ -52,6 +52,15 @@ char *TCID = "splice02";  /* Test progra
->  int  testno;
->  int  TST_TOTAL = 1;                   /* total number of tests in this file.   */
->  
-> +static inline long ltp_splice(int fd_in, loff_t *off_in,
-> +				int fd_out, loff_t *off_out,
-> +				size_t len, unsigned int flags)
-> +{
-> +			return syscall(__NR_splice, fd_in, off_in, fd_out,
-> +					off_out, len, flags);
-> +}
-> +
+> function, get_porc_affinity() returns error ; No such file or directory.
+> 
+> This is due the that this file eg. /proc/<pid>/affinity is not present in my
+> system FC10.
+> 
+> Is it removed/changed?.
+>
 
-Well, we have so many those inconsistent situations when performing a syscall.
+I am not familiar with it.
+ 
+> Can you pls confirm that.
+>
 
-* use glibc version only.
-* use glibc version if possible. Otherwise syscall().
-* use syscall() directly.
+I can't find such files on both RHEL5 (2.6.18-128.el5) and Fedora
+(2.6.27.5-117.fc10.i686) kernels.
+ 
+> If it is removed/changed then we can simply compare the values of mask and
+> mask2 or modify the the path.
+> 
+> Test is passed on my system after removing the same
+> 
 
-Seiichi Ikarashi has posted a similar patch before, 
+I don't have an IA-32 system with a HT capable processor at the moment.
 
-http://article.gmane.org/gmane.linux.ltp/8359
+> One more thing, system call sched_getaffinity returns 4.
+> 
+> It should return 0 or -1.
+> 
+> Is it bug in the kernel?.
+> 
 
-but have been pushed back to use an autoconf version,
+Or probably glibc? From the manpage,
 
-http://article.gmane.org/gmane.linux.ltp/8360
+RETURN VALUE
+       On success, sched_setaffinity() and sched_getaffinity() return
+       0.  On error, -1 is returned, and errno is set
+       appropriately.RETURN VALUE
 
-With an autoconf, we can probably easier to manage policy -- like
-glibc() version first, and then syscall() if we don't really have
-another choice. In addition, it will work out well with kernels contain
-backport patches.
-
-> +
->  /* Extern Global Functions */
->  /******************************************************************************/
->  /*                                                                            */
-> @@ -108,7 +117,15 @@ void setup() {
->  
->  int main(int ac, char **av) {
->  	int fd = 0;
-> -	
-> +	int results = 0;
-> +
-> +	/* Disable test if the version of the kernel is less than 2.6.17 */
-> +	if (((results = tst_kvercmp(2, 6, 17)) < 0)) {
-> +		tst_resm(TINFO, "This test can only run on kernels that are ");
-> +		tst_resm(TINFO, "2.6.17 and higher");
-
-TCONF?
+Looks like only -1 or 0 is valid here.
 
 CAI Qian
 
-> +		exit(0);
-> +	}
-> +
->          setup();
->  
->          if (ac < 2 ) {
-> @@ -123,7 +140,7 @@ int main(int ac, char **av) {
->  	}
->  			
->          do {
-> -					TEST(splice(STDIN_FILENO, NULL, fd, NULL, SPLICE_SIZE, 0));
-> +		TEST(ltp_splice(STDIN_FILENO, NULL, fd, NULL, SPLICE_SIZE, 0));
->  	    if (TEST_RETURN < 0) {
->              	tst_resm(TFAIL, "splice failed - errno = %d : %s", TEST_ERRNO, strerror(TEST_ERRNO));
->  	        cleanup();
+> Thanks and Regards,
+> Rohit
 > 
-
- 
+> 
+> On Wed, May 13, 2009 at 9:17 PM, CAI Qian <caiqian@cclom.cn> wrote:
+> 
+>> From: rohit verma <rohit.170309@gmail.com>
+>> Subject: Re: [LTP] Regarding ht_enable test case failure
+>> Date: Wed, 13 May 2009 15:03:39 +0530
+>>
+>> > Hi,
+>> >
+>> > I want to update HT_enable test case in LTP.
+>> >
+>> > *HT_enabled:*Test for whether HT enabling is the default setting and the
+>> > kernel option works as expected.
+>> >
+>> > *Issue:* Reported as failed in my System. However /proc/cpuinfo shows two
+>> > cpu and ht flag.
+>> >
+>>
+>> If HT has been disabled in BIOS, you can still see the ht flag in
+>> /proc/cpuinfo, so it is not enough to just look at it there. We have
+>> looked at this before, and looks like the proper place to see if HT or
+>> more generic term -- symmetrical multithreading (SMT) is sysfs (at least
+>> for RHEL 5 kernels). There is a CPU topology information,
+>>
+>> /sys/devices/system/cpu/cpuX/topology/thread_siblings
+>>
+>> It looks like this,
+>>
+>> 00000001
+>>
+>> 00000002
+>>
+>> 00000008
+>>
+>> In all those case, It means there is no HT or SMT.
+>>
+>> If you see something like this,
+>>
+>> 00000003
+>>
+>> This one mean CPU0 and CPU1 are two threads in the same CPU core. This
+>> is because the nth CPU id is,
+>>
+>> 2 raised to n.
+>>
+>> 3 = CPU0 (1) + CPU1 (2)
+>>
+>> There is also a tool to find out this information.
+>>
+>> lscpu from the latest utils-linux-ng package,
+>> http://koji.fedoraproject.org/koji/packageinfo?packageID=4906
+>>
+>> > Can you pls tell me how to enable/disable hyperthreading in linux kernel.
+>> I
+>> > could not found proper document for the same.
+>> >
+>>
+>> I am not sure if "noht" is still working. At least it has no effect in
+>> RHEL5 kernel. Instead, it was suggested to use the following commands to
+>> enable/disable it,
+>>
+>> From a public bug in Red Hat Bugzilla,
+>> https://bugzilla.redhat.com/show_bug.cgi?id=440321
+>>
+>> "RHEL5 ships with CPU_HOTPLUG enabled.  This option allows a user to
+>> disable and enable HW or HT cores.
+>>
+>> For example,
+>>
+>> I have a 4 cpu system with two HT processors.
+>>
+>> To disable the HT processors one can do:
+>>
+>> echo 0 > /sys/devices/system/node/node0/cpu1/online
+>> echo 0 > /sys/devices/system/node/node0/cpu3/online
+>>
+>> You could write a system service script that does something similar to
+>> (please note that this code is untested and is just a suggestion):
+>>
+>> grep noht /proc/cmdline
+>>
+>> if [ $? -eq 0 ]; then
+>>     # noht specified on the command line, disabling HT cpus
+>>     echo 0 > /sys/devices/system/node/node0/cpu1/online
+>>     echo 0 > /sys/devices/system/node/node0/cpu3/online
+>> fi
+>> "
+>>
+>> > I also found that the check for kernel option "noht" is useless by
+>> looking
+>> > into code(HT_enabled.c).
+>> >
+>> > I think, we can remove that.
+>>
+>> I guess we can remove it if it is proved to be a dead option.
+>>
+>> CAI Qian
+>>
+>> >
+>> > Regards,
+>> >
+>> > Rohit
+>> >
+>> > On Sat, Apr 11, 2009 at 2:25 PM, CAI Qian <caiqian@cclom.cn> wrote:
+>> >>
+>> >> Hi,
+>> >>
+>> >> --- On Mon, 3/30/09, rohit verma <rohit.170309@gmail.com> wrote:
+>> >>
+>> >>> From: rohit verma <rohit.170309@gmail.com>
+>> >>> Subject: [LTP] Regarding ht_enable test case failure
+>> >>> To: ltp-list@lists.sourceforge.net
+>> >>> Date: Monday, March 30, 2009, 9:10 PM
+>> >>> O/P:
+>> >>>
+>> >>>
+>> >>> ht_enable    0  INFO  :
+>> >>> Begin: HyperThreading Enabled
+>> >>> ht_enable    0  INFO  :  The kernel boot paramter
+>> >>> 'noht' is not set.
+>> >>>
+>> >>> ht_enable    1  FAIL  :  HT feature is not included
+>> >>> in this Linux Kernel.
+>> >>> ht_enable    0  INFO  :  End: HyperThreading Enabled
+>> >>>
+>> >>>
+>> >>>
+>> >>>
+>> >>> but noht is for
+>> >>> disabling
+>> >>> hyperthreading.
+>> >>>
+>> >>>
+>> >>>
+>> >>> Function
+>> >>> is_ht_kernel (file:
+>> > testcases/kernel/sched/hyperthreading/ht_affinity/HTutils.c) checks for
+>> >>> string cpu_package in /proc/cpuinfo
+>> >>> .
+>> >>>
+>> >>>
+>> >>>  but
+>> >>> cpu_package string
+>> >>>  information  does not exist in  /proc/cpuinfo for
+>> >>> 2.6.29 kernel
+>> >>>
+>> >>
+>> >> From the page,
+>> >>
+>> >>
+>> >
+>> https://lists.linux-foundation.org/pipermail/cgl_discussion/2002-October/002632.html
+>> >>
+>> >> looks like cpu_package has been added in 2.4.x kernel by HT patches.
+>> >> Has this field been removed later? I can't see it with 2.6.18 kernel.
+>> >>
+>> >> I have copied the author of those tests - Sonic Zhang to see if he has
+>> any
+>> >> insight of it.
+>> >>
+>> >> Anyway, this piece of code seems check if the kernel has HT support or
+>> > not.
+>> >> I am not sure if we'll still need it, because HT support has been added
+>> >> to kernel many years ago.
+>> >>
+>> >> CAI Qian
+>> >>
+>> >>>
+>> >>>
+>> >>>
+>> >>> Regards,
+>> >>> Rohit
+>> >>>
+>>
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
-is a gathering of tech-side developers & brand creativity professionals. Meet
-the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
-Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables 
+unlimited royalty-free distribution of the report engine 
+for externally facing server and web deployment. 
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
