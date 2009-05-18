@@ -1,30 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <maknayak@in.ibm.com>) id 1M9G5C-00023b-0w
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 10:10:02 +0000
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M9G58-0000hr-FI
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 10:10:01 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e5.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4RA4P7r019202
-	for <ltp-list@lists.sourceforge.net>; Wed, 27 May 2009 06:04:25 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4RA9wJQ256018
-	for <ltp-list@lists.sourceforge.net>; Wed, 27 May 2009 06:09:58 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4RA9vSL013715
-	for <ltp-list@lists.sourceforge.net>; Wed, 27 May 2009 06:09:57 -0400
-From: Manas Kumar Nayak <maknayak@in.ibm.com>
-Date: Wed, 27 May 2009 15:39:39 +0530
-Message-Id: <20090527100935.18638.88021.sendpatchset@subratamodak.linux.ibm.com>
-In-Reply-To: <20090527100645.18638.75163.sendpatchset@subratamodak.linux.ibm.com>
-References: <20090527100645.18638.75163.sendpatchset@subratamodak.linux.ibm.com>
-Subject: [LTP] [PATCH 06/13]  Add/Port ppoll01 test for ppoll() syscall
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <boussettahichem@yahoo.fr>) id 1M5yx4-0000Pw-83
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 09:16:06 +0000
+Received: from planetmail5.outgw.tn ([193.95.97.10])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1M5yx2-000752-E7
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 09:16:06 +0000
+Message-ID: <4A1118E9.1000501@yahoo.fr>
+Date: Mon, 18 May 2009 10:14:33 +0200
+From: Hichem Boussetta <boussettahichem@yahoo.fr>
+MIME-Version: 1.0
+References: <4A1067FE.8080501@yahoo.fr>
+In-Reply-To: <4A1067FE.8080501@yahoo.fr>
+Subject: Re: [LTP] LTP cross compilation
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,553 +24,222 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3303873826026342522=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-Cc: Manas Kumar Nayak <maknayak@in.ibm.com>
+To: Hichem Boussetta <boussettahichem@yahoo.fr>
+Cc: ltp-list@lists.sourceforge.net
 
-diff -uprN ltp-intermediate-20090521.orig/testcases/kernel/syscalls/ppoll/Makefile ltp-intermediate-20090521/testcases/kernel/syscalls/ppoll/Makefile
---- ltp-intermediate-20090521.orig/testcases/kernel/syscalls/ppoll/Makefile	1970-01-01 05:30:00.000000000 +0530
-+++ ltp-intermediate-20090521/testcases/kernel/syscalls/ppoll/Makefile	2009-05-23 12:01:25.000000000 +0530
-@@ -0,0 +1,31 @@
-+#
-+#  Copyright (c) International Business Machines  Corp., 2009
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+
-+CFLAGS += -I../../../../include -Wall -O2
-+LDLIBS += -L../../../../lib -lltp 
-+
-+SRCS    = $(wildcard *.c)
-+TARGETS = $(patsubst %.c,%,$(SRCS))
-+
-+all: $(TARGETS)
-+
-+install:
-+	@set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i ; done
-+
-+clean:
-+	rm -f $(TARGETS)
-diff -uprN ltp-intermediate-20090521.orig/testcases/kernel/syscalls/ppoll/ppoll01.c ltp-intermediate-20090521/testcases/kernel/syscalls/ppoll/ppoll01.c
---- ltp-intermediate-20090521.orig/testcases/kernel/syscalls/ppoll/ppoll01.c	1970-01-01 05:30:00.000000000 +0530
-+++ ltp-intermediate-20090521/testcases/kernel/syscalls/ppoll/ppoll01.c	2009-05-27 13:00:58.000000000 +0530
-@@ -0,0 +1,482 @@
-+/******************************************************************************/
-+/* Copyright (c) Crackerjack Project., 2007-2008 ,Hitachi, Ltd                */
-+/*          Author(s): Takahiro Yasui <takahiro.yasui.mp@hitachi.com>,	      */
-+/*		       Yumiko Sugita <yumiko.sugita.yf@hitachi.com>, 	      */
-+/*		       Satoshi Fujiwara <sa-fuji@sdl.hitachi.co.jp>	      */
-+/*                                                                  	      */
-+/* This program is free software;  you can redistribute it and/or modify      */
-+/* it under the terms of the GNU General Public License as published by       */
-+/* the Free Software Foundation; either version 2 of the License, or          */
-+/* (at your option) any later version.                                        */
-+/*                                                                            */
-+/* This program is distributed in the hope that it will be useful,            */
-+/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
-+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
-+/* the GNU General Public License for more details.                           */
-+/*                                                                            */
-+/* You should have received a copy of the GNU General Public License          */
-+/* along with this program;  if not, write to the Free Software               */
-+/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
-+/*                                                                            */
-+/******************************************************************************/
-+/******************************************************************************/
-+/*                                                                            */
-+/* File:        ppoll01.c                                                     */
-+/*                                                                            */
-+/* Description: This tests the ppoll01() syscall                              */
-+/*									      */
-+/* 									      */
-+/*									      */
-+/*									      */
-+/*									      */
-+/*                                                                            */
-+/* Usage:  <for command-line>                                                 */
-+/* ppoll01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                               */
-+/*      where,  -c n : Run n copies concurrently.                             */
-+/*              -e   : Turn on errno logging.                                 */
-+/*              -i n : Execute test n times.                                  */
-+/*              -I x : Execute test for x seconds.                            */
-+/*              -P x : Pause for x seconds between iterations.                */
-+/*              -t   : Turn on syscall timing.                                */
-+/*                                                                            */
-+/* Total Tests: 1                                                             */
-+/*                                                                            */
-+/* Test Name:   ppoll01                                                       */
-+/* History:     Porting from Crackerjack to LTP is done by                    */
-+/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
-+/******************************************************************************/
-+#include <sys/syscall.h>
-+#include <sys/types.h>
-+#include <sys/select.h>
-+#include <sys/wait.h>
-+#include <getopt.h>
-+#include <string.h>
-+#include <stdlib.h>
-+#include <errno.h>
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <libgen.h>
-+#include <limits.h>
-+#include <signal.h>
-+#include "asm/poll.h"
-+
-+
-+#include "../utils/include_j_h.h"
-+#include "../utils/common_j_h.c"
-+
-+/* Harness Specific Include Files. */
-+#include "test.h"
-+#include "usctest.h"
-+#include "linux_syscall_numbers.h"
-+
-+/* Extern Global Variables */
-+extern int Tst_count;           /* counter for tst_xxx routines.         */
-+extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
-+
-+/* Global Variables */
-+char *TCID = "ppoll01";  /* Test program identifier.*/
-+int  testno;
-+int  TST_TOTAL = 1;                   /* total number of tests in this file.   */
-+
-+/* Extern Global Functions */
-+/******************************************************************************/
-+/*                                                                            */
-+/* Function:    cleanup                                                       */
-+/*                                                                            */
-+/* Description: Performs all one time clean up for this test on successful    */
-+/*              completion,  premature exit or  failure. Closes all temporary */
-+/*              files, removes all temporary directories exits the test with  */
-+/*              appropriate return code by calling tst_exit() function.       */
-+/*                                                                            */
-+/* Input:       None.                                                         */
-+/*                                                                            */
-+/* Output:      None.                                                         */
-+/*                                                                            */
-+/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
-+/*              On success - Exits calling tst_exit(). With '0' return code.  */
-+/*                                                                            */
-+/******************************************************************************/
-+extern void cleanup() {
-+        /* Remove tmp dir and all files in it */
-+        TEST_CLEANUP;
-+        tst_rmdir();
-+
-+        /* Exit with appropriate return code. */
-+        tst_exit();
-+}
-+
-+/* Local  Functions */
-+/******************************************************************************/
-+/*                                                                            */
-+/* Function:    setup                                                         */
-+/*                                                                            */
-+/* Description: Performs all one time setup for this test. This function is   */
-+/*              typically used to capture signals, create temporary dirs      */
-+/*              and temporary files that may be used in the course of this    */
-+/*              test.                                                         */
-+/*                                                                            */
-+/* Input:       None.                                                         */
-+/*                                                                            */
-+/* Output:      None.                                                         */
-+/*                                                                            */
-+/* Return:      On failure - Exits by calling cleanup().                      */
-+/*              On success - returns 0.                                       */
-+/*                                                                            */
-+/******************************************************************************/
-+void setup() {
-+        /* Capture signals if any */
-+        /* Create temporary directories */
-+        TEST_PAUSE;
-+        tst_tmpdir();
-+}
-+
-+
-+/*
-+ * Macros
-+ */
-+#define SYSCALL_NAME    "ppoll"
-+
-+#ifndef __NR_ppoll
-+#  define __NR_ppoll    309
-+#endif
-+
-+#ifndef POLLRDHUP
-+#  define POLLRDHUP     0x2000
-+#endif
-+
-+
-+/*
-+ * Global variables
-+ */
-+static int opt_debug;
-+static char *progname;
-+static char *progdir;
-+
-+enum test_type {
-+	NORMAL,
-+        MASK_SIGNAL,
-+        TIMEOUT,
-+        FD_ALREADY_CLOSED,
-+        SEND_SIGINT,
-+        INVALID_NFDS,
-+        INVALID_FDS,
-+        MINUS_NSEC,
-+        TOO_LARGE_NSEC,
-+
-+};
-+
-+
-+/*
-+ * Data Structure
-+ */
-+struct test_case {
-+	short expect_revents;
-+        int ttype;
-+        int ret;
-+        int err;
-+};
-+
-+
-+/* Test cases
-+ *
-+ *   test status of errors on man page
-+ *
-+ *   EBADF              can't check because EBADF never happen even though
-+ *                      fd was invalid. In this case, information of invalid
-+ *                      fd is set in revents
-+ *   EFAULT             v ('fds' array in the invalid address space)
-+ *   EINTR              v (a non blocked signal was caught)
-+ *   EINVAL             v ('nfds' is over the 'RLIMIT_NOFILE' value)
-+ *   ENOMEM             can't check because it's difficult to create no-memory
-+ */
-+
-+
-+static struct test_case tcase[] = {
-+	{ // case00
-+                .ttype          = NORMAL,
-+                .expect_revents = POLLOUT,
-+                .ret            = 0,
-+                .err            = 0,
-+        },
-+        { // case01
-+                .ttype          = MASK_SIGNAL,
-+                .expect_revents = 0, // don't care
-+                .ret            = 0,
-+                .err            = 0,
-+        },
-+        { // case02
-+                .ttype          = TIMEOUT,
-+                .expect_revents = 0, // don't care
-+                .ret            = 0,
-+                .err            = 0,
-+        },
-+        { // case03
-+                .ttype          = FD_ALREADY_CLOSED,
-+                .expect_revents = POLLNVAL,
-+                .ret            = 0,
-+                .err            = 0,
-+        },
-+        { // case04
-+                .ttype          = SEND_SIGINT,
-+                .ret            = -1,
-+                .err            = EINTR,
-+        },
-+        { // case05
-+                .ttype          = INVALID_NFDS,
-+                .ret            = -1,
-+                .err            = EINVAL,
-+        },
-+        { // case06
-+                .ttype          = INVALID_FDS,
-+                .ret            = -1,
-+                .err            = EFAULT,
-+        },
-+#if 0
-+        { // case07
-+                .ttype          = MINUS_NSEC,
-+                .ret            = -1,
-+                .err            = EINVAL, // RHEL4U1 + 2.6.18 returns SUCCESS
-+        },
-+        { // case08
-+                .ttype          = TOO_LARGE_NSEC,
-+                .ret            = -1,
-+                .err            = EINVAL, // RHEL4U1 + 2.6.18 returns SUCCESS
-+        },
-+#endif
-+};
-+
-+#define NUM_TEST_FDS    1
-+
-+/*
-+ * do_test()
-+ *
-+ *   Input  : TestCase Data
-+ *   Return : RESULT_OK(0), RESULT_NG(1)
-+ *
-+ */
-+
-+static int do_test(struct test_case *tc)
-+{
-+        int sys_ret;
-+        int sys_errno;
-+        int result = RESULT_OK;
-+	int fd = -1 , cmp_ok = 1;
-+	char fpath[PATH_MAX];
-+	struct pollfd *p_fds, fds[NUM_TEST_FDS];
-+        unsigned int nfds = NUM_TEST_FDS;
-+        struct timespec *p_ts, ts;
-+        sigset_t *p_sigmask, sigmask;
-+        size_t sigsetsize = 0;
-+        pid_t pid = 0;
-+
-+	TEST(fd = setup_file(progdir, "test.file", fpath));
-+        if (fd < 0)
-+                return 1;
-+        fds[0].fd = fd;
-+        fds[0].events = POLLIN | POLLPRI | POLLOUT | POLLRDHUP;
-+        fds[0].revents = 0;
-+        p_fds = fds;
-+        p_ts = NULL;
-+        p_sigmask = NULL;
-+
-+	switch (tc->ttype) {
-+        case TIMEOUT:
-+                nfds = 0;
-+                ts.tv_sec = 0;
-+                ts.tv_nsec = 50000000;  // 50msec
-+                p_ts = &ts;
-+                break;
-+	case FD_ALREADY_CLOSED:
-+                TEST(close(fd));
-+                fd = -1;
-+                TEST(cleanup_file(fpath));
-+                break;
-+        case MASK_SIGNAL:
-+                TEST(sigemptyset(&sigmask));
-+                TEST(sigaddset(&sigmask, SIGINT));
-+                p_sigmask = &sigmask;
-+                //sigsetsize = sizeof(sigmask);
-+                sigsetsize = 8;
-+                nfds = 0;
-+                ts.tv_sec = 0;
-+                ts.tv_nsec = 300000000; // 300msec => need to be enough for
-+                                        //   waiting the signal
-+                p_ts = &ts;
-+                // fallthrough
-+	case SEND_SIGINT:
-+                nfds = 0;
-+                TEST(pid = create_sig_proc(100000, SIGINT)); // 100msec
-+                if (pid < 0)
-+                        return 1;
-+                break;
-+        case INVALID_NFDS:
-+                //nfds = RLIMIT_NOFILE + 1; ==> RHEL4U1 + 2.6.18 returns SUCCESS
-+                nfds = -1;
-+                break;
-+        case INVALID_FDS:
-+                p_fds = (void*)0xc0000000;
-+                break;
-+        case MINUS_NSEC:
-+                ts.tv_sec = 0;
-+                ts.tv_nsec = -1;
-+                p_ts = &ts;
-+                break;
-+	case TOO_LARGE_NSEC:
-+                ts.tv_sec = 0;
-+                ts.tv_nsec = 1000000000;
-+                p_ts = &ts;
-+                break;
-+        }
-+
-+	/*
-+	   * Execute system call
-+         */
-+        errno = 0;
-+        TEST(sys_ret = syscall(__NR_ppoll, p_fds, nfds, p_ts, p_sigmask, sigsetsize));
-+        sys_errno = errno;
-+        if (sys_ret <= 0 || tc->ret < 0)
-+                goto TEST_END;
-+
-+        cmp_ok = fds[0].revents == tc->expect_revents;
-+        if (opt_debug) {
-+                tst_resm(TINFO,"EXPECT: revents=0x%04x", tc->expect_revents);
-+                tst_resm(TINFO,"RESULT: revents=0x%04x", fds[0].revents);
-+        }
-+
-+TEST_END:
-+        /*
-+         * Check results
-+         */
-+        result |= (sys_errno != tc->err) || !cmp_ok;
-+        PRINT_RESULT_CMP(sys_ret >= 0, tc->ret, tc->err, sys_ret, sys_errno,
-+                         cmp_ok);
-+
-+        if (fd >= 0)
-+                cleanup_file(fpath);
-+        if (pid > 0) {
-+                int st;
-+                kill(pid, SIGTERM);
-+                wait(&st);
-+        }
-+	return result;
-+}
-+
-+
-+/*
-+ * sighandler()
-+ */
-+void sighandler(int sig)
-+{
-+        if (sig == SIGINT)
-+                return;
-+        // NOTREACHED
-+        return;
-+}
-+
-+
-+/*
-+ * usage()
-+ */
-+
-+static void usage(const char *progname)
-+{
-+        tst_resm(TINFO,"usage: %s [options]", progname);
-+        tst_resm(TINFO,"This is a regression test program of %s system call.",SYSCALL_NAME);
-+        tst_resm(TINFO,"options:");
-+        tst_resm(TINFO,"    -d --debug           Show debug messages");
-+        tst_resm(TINFO,"    -h --help            Show this message");
-+        tst_resm(TINFO,"NG");
-+        exit(1);
-+}
-+
-+
-+/*
-+ * main()
-+ */
-+
-+
-+
-+int main(int ac, char **av) {
-+	int result = RESULT_OK;
-+        int c;
-+        int i;
-+        int lc;                 /* loop counter */
-+        char *msg;              /* message returned from parse_opts */
-+
-+	struct option long_options[] = {
-+                { "debug", no_argument, 0, 'd' },
-+                { "help",  no_argument, 0, 'h' },
-+                { NULL, 0, NULL, 0 }
-+        };
-+
-+	progname = strchr(av[0], '/');
-+        progname = progname ? progname + 1 : av[0];	
-+
-+	progdir = strdup(av[0]);
-+        progdir = dirname(progdir);
-+	
-+        /* parse standard options */
-+        if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
-+             tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
-+             tst_exit();
-+           }
-+
-+        setup();
-+
-+        /* Check looping state if -i option given */
-+        for (lc = 0; TEST_LOOPING(lc); ++lc) {
-+                Tst_count = 0;
-+                for (testno = 0; testno < TST_TOTAL; ++testno) {
-+			 TEST(c = getopt_long(ac, av, "dh", long_options, NULL));
-+			 while(TEST_RETURN != -1) {
-+		                switch (c) {
-+                		case 'd':
-+		                        opt_debug = 1;
-+                		        break;
-+		                default:
-+                		        usage(progname);
-+                        		// NOTREACHED
-+                		}
-+		        }
-+
-+
-+		if (ac != optind) {
-+        	        tst_resm(TINFO,"Options are not match.");
-+                	usage(progname);
-+                	// NOTREACHED
-+	        }
-+
-+		/*
-+		* Execute test
-+         	*/
-+	        for (i = 0; i < (int)(sizeof(tcase) / sizeof(tcase[0])); i++) {
-+        	        int ret;
-+	                tst_resm(TINFO,"(case%02d) START", i);
-+	                ret = do_test(&tcase[i]);
-+	                tst_resm(TINFO,"(case%02d) END => %s", i, (ret == 0) ? "OK" : "NG");
-+	                result |= ret;
-+        	}
-+		
-+		/*
-+        	 * Check results
-+         	*/
-+        	switch(result) {
-+	        case RESULT_OK:
-+        			tst_resm(TPASS, "ppoll01 call succeeded ");
-+		                break;
-+
-+	        default:
-+                 	   	tst_resm(TFAIL, "%s failed - errno = %d : %s", TCID, TEST_ERRNO, strerror(TEST_ERRNO));
-+        		        RPRINTF("NG");
-+				cleanup();
-+				tst_exit();
-+		                break;
-+        	}
-+
-+                }
-+        }	
-+        cleanup();
-+	tst_exit();
-+}
-+
---- ltp-intermediate-20090521.orig/runtest/syscalls	2009-05-27 12:58:57.000000000 +0530
-+++ ltp-intermediate-20090521/runtest/syscalls	2009-05-27 13:06:52.000000000 +0530
-@@ -706,6 +706,8 @@ pipe2_02 pipe2_02
- 
- poll01 poll01
- 
-+ppoll01 ppoll01
-+
- prctl01 prctl01
- prctl02 prctl02
- 
+This is a cryptographically signed message in MIME format.
+
+--===============3303873826026342522==
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
+	micalg=sha1; boundary="------------ms040704070609090804000207"
+
+This is a cryptographically signed message in MIME format.
+
+--------------ms040704070609090804000207
+Content-Type: multipart/mixed; boundary="------------000309060507000003080505"
+
+This is a multi-part message in MIME format.
+--------------000309060507000003080505
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+Hichem Boussetta a =E9crit :
+> Hi all,
+>
+> It is the first time that I use ltp and I am having some troubles=20
+> trying to cross compile it.
+> I have seen a cross compilation example in the installation manual. It =
+
+> is about cross compiling for a powerpc processor.
+>
+> CROSS_COMPILER=3D/opt/ppc64/powerpc64-linux/bin/powerpc64-linux-
+> CROSS_CFLAGS=3D -mpowerpc64
+> LDFLAGS=3D-static
+> LOADLIBES=3D-lpthread -lc -lresolv -lnss_dns -lnss_files -lm -lc
+> LIB_DIR=3D/lib64
+> export LOADLIBES LIB_DIR
+>
+> In my case, I a compiling for an arm processor. I tried to do the same =
+
+> by the specifying the toolchain prefix, the CC, LD, AR and the=20
+> LIB_DIR. But, I get always this error when cross compiling :
+>
+> getdelays.c: In function 'print_delayacct':
+> getdelays.c:215: error: 'struct taskstats' has no member named=20
+> 'freepages_count'
+> getdelays.c:216: error: 'struct taskstats' has no member named=20
+> 'freepages_delay_total'
+> make[5]: *** [getdelays] Erreur 1
+>
+> In fact, I omitted the libraries nss_dns and lnss_files since didn't=20
+> find them in the lib directories of my toolchain. I am not sure about=20
+> that, but I don't think the problem is related to this libraries since =
+
+> they do not exist in my host machine either, and here, the compilation =
+
+> of ltp worked well. Perhaps, the problem is due to the fact that I=20
+> didn't put any option in the CROSS_CFLAGS since I found nowhere how to =
+
+> get this information.
+>
+> If someone knows any thing about this or succeeded to cross compile=20
+> ltp, it would be really nice if he could tell me, because I am really=20
+> stuck now :-)
+>
+> Thanks,
+>
+Hi all,
+
+I think that I've figured out how to configure LTP for cross
+compilation. In fact, we need to put the right parameters during the
+configuration. We should append the cross toolchain's bin directory to
+the path and add --host=3D$(toolchain_prefix) to the configure script. By=
+
+doing that, ltp succeds to find out the binary utilities that it should
+use (gcc, ld ,ar, ranlib, ...). We should also specify the path to the
+include and lib directory of the toolchain we are using by setting the
+variables CPPFLAGS and LDFLAGS. However, I still get a compilation error
+that I think it is related to the fact that some libraries are missing
+(signalfd for example). The message I receive is this :
+
+getdelays.c: In function 'print_delayacct':
+getdelays.c:215: error: 'struct taskstats' has no member named
+'freepages_count'
+getdelays.c:216: error: 'struct taskstats' has no member named
+'freepages_delay_total'
+
+Does anyone know how to overcome this problem or does this mean that it
+is not possible to cross compile LTP ? In fact, the crosstoolchains I am
+using are generated using crosstool-ng. So, I don't think that the
+problem is due to the toolchain.
+
+Regards,
+
+--=20
+Hichem BOUSSETTA
+El=E8ve ing=E9nieur
+Ecole Polytechnique de Tunisie
+
+
+
+
+--------------000309060507000003080505
+Content-Type: text/x-vcard; charset=utf-8;
+ name="boussettahichem.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="boussettahichem.vcf"
+
+begin:vcard
+fn:Hichem
+n:Boussetta;Hichem
+org;quoted-printable:Ecole Polytechnique de Tunisie;Signaux et syst=C3=A8mes
+adr:;;;La marsa;Tunis;2078;Tunisie
+email;internet:boussettahichem@yahoo.fr
+title;quoted-printable:El=C3=A8ve ing=C3=A9nieur
+tel;cell:(+216) 21 149 549
+note:Date de naissance : 17-04-1986
+url:http://hichem.boussetta.netcv.fr/
+version:2.1
+end:vcard
+
+
+--------------000309060507000003080505--
+
+--------------ms040704070609090804000207
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJHzCC
+AuowggJToAMCAQICEGRSm8igCX7UhNKDlExgUtgwDQYJKoZIhvcNAQEFBQAwYjELMAkGA1UE
+BhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMT
+I1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMB4XDTA5MDIxNzExMjY0N1oX
+DTEwMDIxNzExMjY0N1owSjEfMB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJlcjEnMCUG
+CSqGSIb3DQEJARYYYm91c3NldHRhaGljaGVtQHlhaG9vLmZyMIIBIjANBgkqhkiG9w0BAQEF
+AAOCAQ8AMIIBCgKCAQEA1BR1FRwln/emY3z7EinJ6LVzaqmSw1x3+vsewQ7VysIhiYEv52c9
+javwizq/WOZ4XJlnMjkVGBHNWdDQWk6FCgIAUwXmmcKjXzyfw80WE5WvVsrKZ4TVQovv4KPW
+rdEXuMt/BOoP4vvGHjWcptx14XEzC9lfYideHUozk96DYVZxbQ9VQeSfhbVhEl3VLE3xV93e
+USGGJUbbm+kM1eMFaReDIcjfrxYbvg66RLJaAVA7N2igpJCSyNeD4JsueqIIqvQRBR8UKGcn
+D1V7EwPu3xkp5WRntjkxU+jEd+MdnX8jMmzBeLulfYAlSVZe5+18X8d9ydyQMGY4K9qjYumX
+HQIDAQABozUwMzAjBgNVHREEHDAagRhib3Vzc2V0dGFoaWNoZW1AeWFob28uZnIwDAYDVR0T
+AQH/BAIwADANBgkqhkiG9w0BAQUFAAOBgQA501v4uczLyKjflI5cnUOkgETMGWq9NZST5zld
+68PHz06stsBGSjlPPLVAF+aCNPGZrxkctt0tevhwnqoQilviVyHYOMkDzL6XrplKL+nXSD5P
+S1BMxbp5lj0NnVgm5yqg76c5oQTwzGwnFQkg82ADJtd0Lu9LxZUEVHCiPczlnjCCAuowggJT
+oAMCAQICEGRSm8igCX7UhNKDlExgUtgwDQYJKoZIhvcNAQEFBQAwYjELMAkGA1UEBhMCWkEx
+JTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0
+ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMB4XDTA5MDIxNzExMjY0N1oXDTEwMDIx
+NzExMjY0N1owSjEfMB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJlcjEnMCUGCSqGSIb3
+DQEJARYYYm91c3NldHRhaGljaGVtQHlhaG9vLmZyMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+MIIBCgKCAQEA1BR1FRwln/emY3z7EinJ6LVzaqmSw1x3+vsewQ7VysIhiYEv52c9javwizq/
+WOZ4XJlnMjkVGBHNWdDQWk6FCgIAUwXmmcKjXzyfw80WE5WvVsrKZ4TVQovv4KPWrdEXuMt/
+BOoP4vvGHjWcptx14XEzC9lfYideHUozk96DYVZxbQ9VQeSfhbVhEl3VLE3xV93eUSGGJUbb
+m+kM1eMFaReDIcjfrxYbvg66RLJaAVA7N2igpJCSyNeD4JsueqIIqvQRBR8UKGcnD1V7EwPu
+3xkp5WRntjkxU+jEd+MdnX8jMmzBeLulfYAlSVZe5+18X8d9ydyQMGY4K9qjYumXHQIDAQAB
+ozUwMzAjBgNVHREEHDAagRhib3Vzc2V0dGFoaWNoZW1AeWFob28uZnIwDAYDVR0TAQH/BAIw
+ADANBgkqhkiG9w0BAQUFAAOBgQA501v4uczLyKjflI5cnUOkgETMGWq9NZST5zld68PHz06s
+tsBGSjlPPLVAF+aCNPGZrxkctt0tevhwnqoQilviVyHYOMkDzL6XrplKL+nXSD5PS1BMxbp5
+lj0NnVgm5yqg76c5oQTwzGwnFQkg82ADJtd0Lu9LxZUEVHCiPczlnjCCAz8wggKooAMCAQIC
+AQ0wDQYJKoZIhvcNAQEFBQAwgdExCzAJBgNVBAYTAlpBMRUwEwYDVQQIEwxXZXN0ZXJuIENh
+cGUxEjAQBgNVBAcTCUNhcGUgVG93bjEaMBgGA1UEChMRVGhhd3RlIENvbnN1bHRpbmcxKDAm
+BgNVBAsTH0NlcnRpZmljYXRpb24gU2VydmljZXMgRGl2aXNpb24xJDAiBgNVBAMTG1RoYXd0
+ZSBQZXJzb25hbCBGcmVlbWFpbCBDQTErMCkGCSqGSIb3DQEJARYccGVyc29uYWwtZnJlZW1h
+aWxAdGhhd3RlLmNvbTAeFw0wMzA3MTcwMDAwMDBaFw0xMzA3MTYyMzU5NTlaMGIxCzAJBgNV
+BAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQD
+EyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQTCBnzANBgkqhkiG9w0BAQEF
+AAOBjQAwgYkCgYEAxKY8VXNV+065yplaHmjAdQRwnd/p/6Me7L3N9VvyGna9fww6YfK/Uc4B
+1OVQCjDXAmNaLIkVcI7dyfArhVqqP3FWy688Cwfn8R+RNiQqE88r1fOCdz0Dviv+uxg+B79A
+gAJk16emu59l0cUqVIUPSAR/p7bRPGEEQB5kGXJgt/sCAwEAAaOBlDCBkTASBgNVHRMBAf8E
+CDAGAQH/AgEAMEMGA1UdHwQ8MDowOKA2oDSGMmh0dHA6Ly9jcmwudGhhd3RlLmNvbS9UaGF3
+dGVQZXJzb25hbEZyZWVtYWlsQ0EuY3JsMAsGA1UdDwQEAwIBBjApBgNVHREEIjAgpB4wHDEa
+MBgGA1UEAxMRUHJpdmF0ZUxhYmVsMi0xMzgwDQYJKoZIhvcNAQEFBQADgYEASIzRUIPqCy7M
+DaNmrGcPf6+svsIXoUOWlJ1/TCG4+DYfqi2fNi/A9BxQIJNwPP2t4WFiw9k6GX6EsZkbAMUa
+C4J0niVQlGLH2ydxVyWN3amcOY6MIE9lX5Xa9/eH1sYITq726jTlEBpbNU1341YheILcIRk1
+3iSx0x1G/11fZU8xggNxMIIDbQIBATB2MGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3
+dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJl
+ZW1haWwgSXNzdWluZyBDQQIQZFKbyKAJftSE0oOUTGBS2DAJBgUrDgMCGgUAoIIB0DAYBgkq
+hkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0wOTA1MTgwODE0MzNaMCMG
+CSqGSIb3DQEJBDEWBBTOjTMOCZp1mxA0/kN3UizX9L3WFzBfBgkqhkiG9w0BCQ8xUjBQMAsG
+CWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAw
+BwYFKw4DAgcwDQYIKoZIhvcNAwICASgwgYUGCSsGAQQBgjcQBDF4MHYwYjELMAkGA1UEBhMC
+WkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1Ro
+YXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBAhBkUpvIoAl+1ITSg5RMYFLYMIGH
+BgsqhkiG9w0BCRACCzF4oHYwYjELMAkGA1UEBhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBDb25z
+dWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJ
+c3N1aW5nIENBAhBkUpvIoAl+1ITSg5RMYFLYMA0GCSqGSIb3DQEBAQUABIIBALpGnHNjyiEw
+zwiv5uPTwT4GWVS4d+CDkHfAJHqdW1GHegbIaxPntDdoSZFPh1Z/D+F1PCy1z3uZHcBdTCtt
+vE71jndHINzUVWpYaxgu75p3mitFKImRUvjiIYz540f59C+r3BFCcY1xGxKYwr6qv7BnP1Dj
+AdTB0EMuf+c1SkRxOKpEA80KzaJ94fcyNENo6HvH5jNhrFww8HdyMImAU9VAtiaSV+vr1++p
+66gIpDeFqAgW2NjJEi3NUyECYYh/zjte1uPJW2q3T+QfVBjj0/fhnKwnHBy4iTw77x0jKMnh
+lrIib42dBP82ix6CI3xWCNsgr4gJ7Vie+53I1rHJ/mAAAAAAAAA=
+--------------ms040704070609090804000207--
+
+
+--===============3303873826026342522==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
-is a gathering of tech-side developers & brand creativity professionals. Meet
-the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
-Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables 
+unlimited royalty-free distribution of the report engine 
+for externally facing server and web deployment. 
+http://p.sf.net/sfu/businessobjects
+--===============3303873826026342522==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3303873826026342522==--
+
