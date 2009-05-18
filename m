@@ -1,21 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yjwei@cn.fujitsu.com>) id 1M8tGY-0003OZ-6Q
-	for ltp-list@lists.sourceforge.net; Tue, 26 May 2009 09:48:14 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1M8tGO-0005Td-Ab
-	for ltp-list@lists.sourceforge.net; Tue, 26 May 2009 09:48:14 +0000
-Message-ID: <4A1BB9F6.6050107@cn.fujitsu.com>
-Date: Tue, 26 May 2009 17:44:22 +0800
-From: Wei Yongjun <yjwei@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <4A166FB6.6010208@cn.fujitsu.com>
-	<1243268093.6752.24.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1243268093.6752.24.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] [QUESTION] about test execve04 which testing for EMFILE
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M61XC-0007ak-Mr
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 12:01:34 +0000
+Received: from e6.ny.us.ibm.com ([32.97.182.146])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1M61X8-0003hK-IF
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 12:01:34 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e6.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4IC3nqA030032
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 08:03:49 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n4IC1Tg7072572
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 08:01:29 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4IC1SDq019330
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 08:01:29 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <200905160936.31857.vapier@gentoo.org>
+References: <1238499818.6818.25.camel@subratamodak.linux.ibm.com>
+	<c384c5ea0905151027x5a74ee85l294616e0ddae41ce@mail.gmail.com>
+	<200905160936.31857.vapier@gentoo.org>
+Date: Mon, 18 May 2009 17:31:06 +0530
+Message-Id: <1242648066.5161.18.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been Released
+	for	MARCH 2009
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,67 +42,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net
+To: Leon Woestenberg <leon.woestenberg@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
 
-Subrata Modak wrote:
-> On Fri, 2009-05-22 at 17:26 +0800, Wei Yongjun wrote: 
->   
->> recently kernel commit e7b9b550f53e81ea38e71d322d6f95730df058a2
->> has removed the file get code. The execve syscall will never
->> return EMFILE.
->>
->> Call to execve() will be suceess even if the the process has the
->> maximum number of files open, because execve() never open any file.
->>
->> Can anyone tell me what does this test case test for? It be wrote
->> base on which document? Just the man page?
->>     
->
-> * DESCRIPTION
-> *      Testcase to check execve(2) sets errno to EMFILE correctly
-> *
-> * ALGORITHM
-> *      Get the configured file descriptor table size. open(2) files to
-> fill
-> *      up the file descriptor table. Once file descriptor table is full,
-> *      an attempt to execve(2) any other executable fails with EMFILE.
->
-> is what the source description says. Can you please execute the test
-> against that kernel commit and share the results with/without commits ?
->   
+On Sat, 2009-05-16 at 09:36 -0400, Mike Frysinger wrote: 
+> On Friday 15 May 2009 13:27:50 Leon Woestenberg wrote:
+> > 2009/3/31 Subrata Modak <subrata@linux.vnet.ibm.com>:
+> > > Dear All,
+> > >
+> > > The Linux Test Project test suite has been released for the month of
+> > > MARCH 2009. Please see ltp/INSTALL file carefully, as, there has been
+> >
+> > OpenEmbedded builds LTP for a large number of machines / architectures.
+> >
+> > JFYI, The LTP January release required some patches, especially in the
+> > area of cross-compilation:
+> 
+> then someone should be submitting them so we can give feedback and they'll 
+> update/re-submit
 
-Test without that commit:
-# ./execve04 -F ./test3
-execve04 1 PASS : Expected failure - 24 : Too many open files
+True,
 
-Test with that commit:
-# ./execve04 -F ./test3
-<program name unknown>: error while loading shared libraries: libc.so.6:
-cannot open shared object file: Error 24
-execve04 1 FAIL :
-execve(/home/weiyj/ltp/testcases/kernel/syscalls/execve/./test3) failed:
-expected EMFILE(24), got 127 (Key has expired)
+Please submit them to the LTP mailing list.
 
-Test with that commit but I compiled test3 with --static:
-# gcc test3.c -o test3 --static
-# ./execve04 -F ./test3
-Hello World
-execve04 1 FAIL :
-execve(/home/weiyj/ltp/testcases/kernel/syscalls/execve/./test3) failed:
-expected EMFILE(24), got 0 (Success)
+Regards--
+Subrata
 
-The latest kernel do execve(2) without get file descriptor, it only
-need one file struct. It seem that this test is obsoleted.
-
+> 
+> > http://cgit.openembedded.org/cgit.cgi?url=openembedded/tree/recipes/ltp/ltp
+> >-20090131
+> 
+> the first patch (the cross compile one) is wrong -- CPP is not the C++ 
+> compiler, it's the C preprocessor.  those all need to be CXX.
+> 
+> the epoll one should be a configure test.
+> -mike
 
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
-is a gathering of tech-side developers & brand creativity professionals. Meet
-the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
-Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables 
+unlimited royalty-free distribution of the report engine 
+for externally facing server and web deployment. 
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
