@@ -1,24 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <praveen@primesoftsolutionsinc.com>)
-	id 1M6eVJ-0006KX-VY
-	for ltp-list@lists.sourceforge.net; Wed, 20 May 2009 05:38:13 +0000
-Received: from smtp102.biz.mail.in2.yahoo.com ([203.104.17.250])
-	by 1b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1M6eVA-0001bs-0g
-	for ltp-list@lists.sourceforge.net; Wed, 20 May 2009 05:38:08 +0000
-Received: from unknown (HELO SudamaRao)
-	(praveen@primesoftsolutionsinc.com@[192.168.0.9])
-	(envelope-sender <praveen@primesoftsolutionsinc.com>)
-	by 0 (qmail-ldap-1.03) with SMTP
-	for <ltp-list@lists.sourceforge.net>; 20 May 2009 05:30:12 -0000
-From: "Praveen" <praveen@primesoftsolutionsinc.com>
-Date: Wed, 20 May 2009 11:06:37 +0530
-MIME-Version: 1.0
-In-Reply-To: <1242729103.5961.44.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] Contribution to LTP
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M61W2-0002Lm-GT
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 12:00:22 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1M61Vy-0000ga-K4
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 12:00:22 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e37.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4IBxfaI012010
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 05:59:41 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n4IC0FJC057012
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 06:00:15 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4IC0EX8005375
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 06:00:15 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <op.utzemhltu2flwt@debian>
+References: <4A09F967.8030402@web.de>
+	<20090513.224735.226784134.caiqian@cclom.cn> <op.utzemhltu2flwt@debian>
+Date: Mon, 18 May 2009 17:29:59 +0530
+Message-Id: <1242647999.5161.14.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Fix the splice02 test
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,142 +38,87 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-Message-Id: <E1M6eVL-0006LJ-H0@h25xhf1.ch3.sourceforge.com>
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net, 'Nathan Straz' <nstraz@redhat.com>, 'Nate Straz' <nate@refried.org>
+To: =?UTF-8?Q?Ji=C5=99=C3=AD_Pale=C4=8Dek?= <jpalecek@web.de>
+Cc: ltp-list@lists.sourceforge.net
 
-
-Hi Subrata,
-
-Thanks for the information.
-
-I am sure LTP will satisfy my enthusiasm to participate in Opensource.
-First, I will start with registering to mailing list. 
-
-Thanks again for the information.
-
-Thanks, 
-Praveen Kumar k
-PrimeSoft IP Solutions Inc
- 
-Phone : 040-27762986/27762987 
-Skype ID: kpraveen72
-www.primesoftsolutionsinc.com 
-
------Original Message-----
-From: Subrata Modak [mailto:subrata@linux.vnet.ibm.com] 
-Sent: Tuesday, May 19, 2009 4:02 PM
-To: Praveen
-Cc: ltp-list@lists.sourceforge.net; Nate Straz; Nathan Straz
-Subject: Re: [LTP] Contribution to LTP
-
-Hi Praveen,
-
-On Tue, 2009-05-19 at 13:43 +0530, Praveen wrote: 
-> Hi,
-> 
->  
-> 
-> I am a C/Shell scripting Developer. I would like to
-> contribute/participate in LTP.
-> 
->  
-> 
-> Please let me know, if I have any opportunity to work with LTP.
-
-You have all the opportunity at your disposal to contribute to LTP. In
-fact, we need lots of volunteers to contribute to LTP. As, beginner, the
-first thing to do is just watch over the mailing list to find out how
-people work. And then there are lots of things in store for you:
-(And, off course, first subscribe to this list and this is available on
-subscription basis, which is free:
-http://sourceforge.net/mail/?group_id=3382),
-
-1) Pick up some area in kernel for which tests do not exist in LTP (Of
-course this area should be of your interest). Try to write small tests
-for them and submit to LTP. It would be better if you track
-http://kernelnewbies.org/LinuxChanges for the changes and start with a
-latest stable kernel release,
-
-2) Execute the existing LTP tests on all the machines available to you,
-and see if you can hit a LTP/Kernel bug. If it is an LTP issue(s), send
-the corresponding patch to the mailing list for review,
-
-3) Make the LTP provision system more better, so that we can be more
-efficient/effective in running these tests. You can also work towards
-making it more automated.
-
-The present LTP provisioning engine PAN has lots of drawbacks and it is
-old. This needs to be updated, or, replaced with something better.
-Sometime back Nathan Straz posted some comments on it:
-
-http://fedorahosted.org/collie/
-http://marc.info/?t=122540445800003&r=1&w=2,
-
-I need somebody, who can do a feasibility analysis of the advantages of
-PAN over collie, and show the fruits of migration from PAN to COLLIE. A
-workable version of the patch would also be welcome. The work would be
-little tough as PAN has stabilized and we would be resisting any changes
-which introduces bug(s) in our existing provisioning environment,
-
-4) Another important aspect would be to improve documentation for LTP.
-You can start with by reading individual test cases, understand the code
-(you will be assisted with the minimal existent description, so, do not
-worry), refer to man pages, google, and improve upon the test case(s)
-description. You are free to start from where ever you like.
-
-You are welcome to LTP and i would hope your enthusiasm does not die
-down soon ;-)
-
-Regards--
-Subrata
-
-> 
->  
-> 
->  
-> 
-> Thanks,
-> 
-> Praveen Kumar k
-> 
-> PrimeSoft IP Solutions Inc 
-> 
-> Phone: 040-27762986/27762987 
-> 
-> Skype ID: kpraveen72
-> 
-> www.primesoftsolutionsinc.com 
-> 
->  
-> 
-> 
->
-----------------------------------------------------------------------------
---
-> Crystal Reports - New Free Runtime and 30 Day Trial
-> Check out the new simplified licensing option that enables 
-> unlimited royalty-free distribution of the report engine 
-> for externally facing server and web deployment. 
-> http://p.sf.net/sfu/businessobjects
-> _______________________________________________ Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
-
-
-
-------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables 
-unlimited royalty-free distribution of the report engine 
-for externally facing server and web deployment. 
-http://p.sf.net/sfu/businessobjects
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gRnJpLCAyMDA5LTA1LTE1IGF0IDE5OjI0ICswMjAwLCBKacWZw60gUGFsZcSNZWsgd3JvdGU6
+IAo+IE9uIFdlZCwgMTMgTWF5IDIwMDkgMTY6NDc6MzUgKzAyMDAsIENBSSBRaWFuIDxjYWlxaWFu
+QGNjbG9tLmNuPiB3cm90ZToKPiAKPiA+IEZyb206IEppcmkgUGFsZWNlayA8anBhbGVjZWtAd2Vi
+LmRlPgo+ID4gU3ViamVjdDogW0xUUF0gW1BBVENIXSBGaXggdGhlIHNwbGljZTAyIHRlc3QKPiA+
+IERhdGU6IFdlZCwgMTMgTWF5IDIwMDkgMDA6MzQ6MTUgKzAyMDAKPiA+Cj4gPj4gICBQYXJ0aWN1
+bGFybHk6Cj4gPj4KPiA+PiAgICAtIFRFU1RfRVJSTk8gaXMgb25seSBzZXQgd2hlbiB0aGUgc3lz
+Y2FsbCBpcyBleGVjdXRlZCB1c2luZyB0aGUKPiA+PiAgICAgIFRFU1QoKSBtYWNyby4gVGhlIHRl
+c3RzIGdhdmUgYmFkIGVycm9yIG1lc3NhZ2VzIGJlY2F1c2Ugb2YgdGhhdC4KPiA+Pgo+ID4+ICAg
+IC0gVGhlIGVuZCBvZiB0aGUgdGVzdCB3YXMgZGVhZCBjb2RlOyBtb3ZlZCB0aGUgVFBBU1MgY29k
+ZSB0byBwYXNzIGF0Cj4gPj4gICAgICB0aGUgZW5kIG9mIGZpbGUuCj4gPj4KPiA+PiAgICAtIFRo
+ZSB0ZXN0IGFzc3VtZXMgc3RkLiBpbnB1dCBpcyBhIHBpcGU7IHJlZmxlY3QgdGhpcyBpbiB0aGUg
+cnVudGVzdAo+ID4+ICAgICAgZmlsZQo+ID4+Cj4gPj4gUmVnYXJkcwo+ID4+ICAgICAgSmlyaSBQ
+YWxlY2VrCj4gPj4KPiA+PiBTaWduZWQtb2ZmLWJ5OiBKaXJpIFBhbGVjZWsgPGpwYWxlY2VrQHdl
+Yi5kZT4KPiA+PiAtLS0KPiA+PiAgIHJ1bnRlc3Qvc3lzY2FsbHMgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgfCAgICAyICstCj4gPj4gICB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NwbGlj
+ZS9zcGxpY2UwMi5jIHwgICAxNiArKysrKystLS0tLS0tLS0tCj4gPj4gICAyIGZpbGVzIGNoYW5n
+ZWQsIDcgaW5zZXJ0aW9ucygrKSwgMTEgZGVsZXRpb25zKC0pCj4gPj4KPiA+PiBkaWZmIC0tZ2l0
+IGEvcnVudGVzdC9zeXNjYWxscyBiL3J1bnRlc3Qvc3lzY2FsbHMKPiA+PiBpbmRleCA5YjdiMmNh
+Li4zM2JlZmYwIDEwMDY0NAo+ID4+IC0tLSBhL3J1bnRlc3Qvc3lzY2FsbHMKPiA+PiArKysgYi9y
+dW50ZXN0L3N5c2NhbGxzCj4gPj4gQEAgLTEwMzMsNyArMTAzMyw3IEBAIHNvY2tpb2N0bDAxIHNv
+Y2tpb2N0bDAxCj4gPj4gICAgI3NwbGljZSB0ZXN0Cj4gPj4gICBzcGxpY2UwMSBzcGxpY2UwMQo+
+ID4+IC1zcGxpY2UwMiBlY2hvICJUZXN0IHNwbGljZTAyKCkiID4gc3BsaWNlMDItdGVtcDsgc3Bs
+aWNlMDIgc3BsaWNlMDItdGVtcAo+ID4+ICtzcGxpY2UwMiBzZXEgMSAxMDAwMDAwMCB8IHNwbGlj
+ZTAyIHNwbGljZTAyLXRlbXAKPiA+PiAgICB0ZWUwMSB0ZWUwMQo+ID4+ICAgZGlmZiAtLWdpdCBh
+L3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc3BsaWNlL3NwbGljZTAyLmMKPiA+PiBiL3Rlc3Rj
+YXNlcy9rZXJuZWwvc3lzY2FsbHMvc3BsaWNlL3NwbGljZTAyLmMKPiA+PiBpbmRleCAzMjFkMDAy
+Li4xNmJmZjg2IDEwMDY0NAo+ID4+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc3Bs
+aWNlL3NwbGljZTAyLmMKPiA+PiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NwbGlj
+ZS9zcGxpY2UwMi5jCj4gPj4gQEAgLTEwOCw3ICsxMDgsNiBAQCB2b2lkIHNldHVwKCkgewo+ID4+
+ICAgIGludCBtYWluKGludCBhYywgY2hhciAqKmF2KSB7Cj4gPj4gICAJaW50IGZkID0gMDsKPiA+
+PiAtCWludCByZXQgPSAwOwo+ID4+ICAgCQo+ID4+ICAgICAgICAgICBzZXR1cCgpOwo+ID4+ICAg
+QEAgLTExOCwyNiArMTE3LDIzIEBAIGludCBtYWluKGludCBhYywgY2hhciAqKmF2KSB7Cj4gPj4g
+ICAJfQo+ID4+ICAgCWZkPW9wZW4oYXZbMV0sIE9fV1JPTkxZIHwgT19DUkVBVCB8IE9fVFJVTkMs
+IDA2NDQpOwo+ID4+ICAgCWlmKGZkIDwgMCApIHsKPiA+PiAtICAgICAgICAgICB0c3RfcmVzbShU
+RkFJTCwgIiVzIGZhaWxlZCAtIGVycm5vID0gJWQgOiAlcyIsIFRDSUQsICAKPiA+PiBURVNUX0VS
+Uk5PLAo+ID4+IHN0cmVycm9yKFRFU1RfRVJSTk8pKTsKPiA+PiArCQl0c3RfcmVzbShURkFJTCwg
+Im9wZW4oJXMpIGZhaWxlZCAtIGVycm5vID0gJWQgOiAlcyIsIGF2WzFdLCBlcnJubywKPiA+PiBz
+dHJlcnJvcihlcnJubykpOwo+ID4+ICAgCSAgIGNsZWFudXAoKTsKPiA+PiAgIAkgICB0c3RfZXhp
+dCgpOwo+ID4+ICAgCX0KPiA+PiAgIAkJCQo+ID4+ICAgICAgICAgICBkbyB7Cj4gPj4gLQkgICAg
+cmV0ID0gc3BsaWNlKFNURElOX0ZJTEVOTywgTlVMTCwgZmQsIE5VTEwsIFNQTElDRV9TSVpFLCAw
+KTsKPiA+PiAtCSAgICBpZiAocmV0IDwgMCkgewo+ID4+IC0gICAgICAgICAgICAJdHN0X3Jlc20o
+VEZBSUwsICIlcyBmYWlsZWQgLSBlcnJubyA9ICVkIDogJXMiLFRDSUQsICAKPiA+PiBURVNUX0VS
+Uk5PLAo+ID4+IHN0cmVycm9yKFRFU1RfRVJSTk8pKTsKPiA+PiArCQkJCQlURVNUKHNwbGljZShT
+VERJTl9GSUxFTk8sIE5VTEwsIGZkLCBOVUxMLCBTUExJQ0VfU0laRSwgMCkpOwo+ID4+ICsJICAg
+IGlmIChURVNUX1JFVFVSTiA8IDApIHsKPiA+PiArICAgICAgICAgICAgCXRzdF9yZXNtKFRGQUlM
+LCAic3BsaWNlIGZhaWxlZCAtIGVycm5vID0gJWQgOiAlcyIsICAKPiA+PiBURVNUX0VSUk5PLAo+
+ID4+IHN0cmVycm9yKFRFU1RfRVJSTk8pKTsKPiA+PiAgIAkgICAgICAgIGNsZWFudXAoKTsKPiA+
+PiAgIAkJdHN0X2V4aXQoKTsKPiA+PiAgIAkgICAgfSBlbHNlCj4gPj4gLSAgICAgICAgICAgIGlm
+IChyZXQgPCBTUExJQ0VfU0laRSl7Cj4gPj4gKyAgICAgICAgICAgIGlmIChURVNUX1JFVFVSTiA9
+PSAwKXsKPiA+PiArCQkJCQkJCXRzdF9yZXNtKFRQQVNTLCAic3BsaWNlKCkgc3lzdGVtIGNhbGwg
+UGFzc2VkIik7Cj4gPj4gICAJICAgICAgICBjbGVhbnVwKCk7Cj4gPj4gICAJICAgICAgICB0c3Rf
+ZXhpdCgpOwo+ID4+ICAgCSAgICB9Cj4gPj4gICAJfSB3aGlsZSgxKTsKPiA+PiAtCj4gPj4gLQlj
+bG9zZShmZCk7Cj4gPj4gLSAgICAgICAgdHN0X3Jlc20oVFBBU1MsICJzcGxpY2UoKSBzeXN0ZW0g
+Y2FsbCBQYXNzZWQiKTsKPiA+PiAtICAgICAgICB0c3RfZXhpdCgpOwo+ID4+ICAgfQo+ID4+ICAg
+LS0gMS42LjIKPiA+Cj4gPiBDYW4ndCBhcHBseSB0aGlzIHBhdGNoIC0tIGxvbmcgbGluZXMgYXJl
+IHdyYXBwZWQuIFBsZWFzZSByZS1zZW5kIGl0Lgo+IAo+IEl0IHNlZW1zIG5vdCB0byBiZSBjYXVz
+ZWQgYnkgd3JhcHBlZCBsaW5lcyAtIEkgY2FuIHN0aWxsIHNlZSB0aGVtIGluIHRoZSAgCj4gZGln
+ZXN0LiBIb3dldmVyLCBzb21lIGVtcHR5IGxpbmVzIHNlZW0gdG8gYmUgbG9zdC4KPiAKPiBBbnl3
+YXksIGl0IHNob3VsZCBiZSBiZXR0ZXIgbm93IChzZWUgYXR0YWNobWVudCkuCgpUaGFua3MuCgpS
+ZWdhcmRzLS0KU3VicmF0YQoKPiAKPiBSZWdhcmRzCj4gICAgIEppcmkgUGFsZWNlawo+IC0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLSBDcnlzdGFsIFJlcG9ydHMgLSBOZXcgRnJlZSBSdW50aW1lIGFuZCAz
+MCBEYXkgVHJpYWwgQ2hlY2sgb3V0IHRoZSBuZXcgc2ltcGxpZmllZCBsaWNlbnNpbmcgb3B0aW9u
+IHRoYXQgZW5hYmxlcyB1bmxpbWl0ZWQgcm95YWx0eS1mcmVlIGRpc3RyaWJ1dGlvbiBvZiB0aGUg
+cmVwb3J0IGVuZ2luZSBmb3IgZXh0ZXJuYWxseSBmYWNpbmcgc2VydmVyIGFuZCB3ZWIgZGVwbG95
+bWVudC4gaHR0cDovL3Auc2YubmV0L3NmdS9idXNpbmVzc29iamVjdHMKPiBfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEx0cC1saXN0IG1haWxpbmcgbGlz
+dAo+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+IGh0dHBzOi8vbGlzdHMuc291cmNl
+Zm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0CgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+CkNyeXN0YWwgUmVwb3J0cyAtIE5ldyBGcmVlIFJ1bnRpbWUgYW5kIDMwIERheSBUcmlhbApDaGVj
+ayBvdXQgdGhlIG5ldyBzaW1wbGlmaWVkIGxpY2Vuc2luZyBvcHRpb24gdGhhdCBlbmFibGVzIAp1
+bmxpbWl0ZWQgcm95YWx0eS1mcmVlIGRpc3RyaWJ1dGlvbiBvZiB0aGUgcmVwb3J0IGVuZ2luZSAK
+Zm9yIGV4dGVybmFsbHkgZmFjaW5nIHNlcnZlciBhbmQgd2ViIGRlcGxveW1lbnQuIApodHRwOi8v
+cC5zZi5uZXQvc2Z1L2J1c2luZXNzb2JqZWN0cwpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMu
+c291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3Rp
+bmZvL2x0cC1saXN0Cg==
