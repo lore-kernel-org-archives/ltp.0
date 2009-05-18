@@ -1,23 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <praveen@primesoftsolutionsinc.com>)
-	id 1M6KuK-00038d-NE
-	for ltp-list@lists.sourceforge.net; Tue, 19 May 2009 08:42:44 +0000
-Received: from smtp103.biz.mail.in2.yahoo.com ([203.104.19.12])
-	by 3b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1M6KuB-0005EF-0h
-	for ltp-list@lists.sourceforge.net; Tue, 19 May 2009 08:42:44 +0000
-Received: from unknown (HELO SudamaRao)
-	(praveen@primesoftsolutionsinc.com@[192.168.0.9])
-	(envelope-sender <praveen@primesoftsolutionsinc.com>)
-	by 0 (qmail-ldap-1.03) with SMTP
-	for <ltp-list@lists.sourceforge.net>; 19 May 2009 08:08:03 -0000
-From: "Praveen" <praveen@primesoftsolutionsinc.com>
-Date: Tue, 19 May 2009 13:43:37 +0530
-MIME-Version: 1.0
-Subject: [LTP] Contribution to LTP
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M61aM-0004Eg-Gl
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 12:04:50 +0000
+Received: from e32.co.us.ibm.com ([32.97.110.150])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1M61aF-0004XH-Oq
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 12:04:50 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+Content-Type: multipart/mixed; boundary="=-l0FOxSTZlxifOG+3j2bx"
+Date: Mon, 18 May 2009 17:32:57 +0530
+Message-Id: <1242648178.5161.20.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: [LTP] Fwd: Returned mail: see transcript for details
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,304 +24,191 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6491223128847438045=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-Message-Id: <E1M6L27-0003e6-ON@h25xhf1.ch3.sourceforge.com>
-To: ltp-list@lists.sourceforge.net
-
-This is a multi-part message in MIME format.
-
---===============6491223128847438045==
-Content-Type: multipart/related;
-	boundary="----=_NextPart_000_001D_01C9D887.D0B865E0"
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_001D_01C9D887.D0B865E0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_001_001E_01C9D887.D0BAD6E0"
+To: ltp-list <ltp-list@lists.sf.net>
 
 
-------=_NextPart_001_001E_01C9D887.D0BAD6E0
-Content-Type: text/plain;
-	charset="us-ascii"
+--=-l0FOxSTZlxifOG+3j2bx
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-MIME-Autoconverted: from 8bit to quoted-printable by e32.co.us.ibm.com id
+	n4IC1H0U001028
+
+Jiri,
+
+What is your correct e-mail id ??
+
+--Subrata
+
+-------- Forwarded Message --------
+From: Mail Delivery Subsystem <MAILER-DAEMON@e37.co.us.ibm.com>
+To: subrata@linux.vnet.ibm.com
+Subject: Returned mail: see transcript for details
+Date: Mon, 18 May 2009 05:59:43 -0600
+
+The original message was received at Mon, 18 May 2009 05:59:42 -0600
+from d03relay04.boulder.ibm.com [9.17.195.106]
+
+   ----- The following addresses had permanent fatal errors -----
+<jpalecek@web.de>
+    (reason: 550 <jpalecek@web.de> Benutzer hat das Speichervolumen ueber=
+schritten. / User has exhausted allowed storage space.)
+
+   ----- Transcript of session follows -----
+... while talking to mx-ha01.web.de.:
+>>> DATA
+<<< 550 <jpalecek@web.de> Benutzer hat das Speichervolumen ueberschritten=
+. / User has exhausted allowed storage space.
+550 5.1.1 <jpalecek@web.de>... User unknown
+<<< 503 Valid RCPT TO <recipient> must precede DATA
+email message attachment
+-------- Forwarded Message --------
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+Reply-To: subrata@linux.vnet.ibm.com
+To: Ji=C5=99=C3=AD Pale=C4=8Dek <jpalecek@web.de>
+Cc: CAI Qian <caiqian@cclom.cn>, ltp-list@lists.sourceforge.net
+Subject: Re: [LTP] [PATCH] Fix the splice02 test
+Date: Mon, 18 May 2009 17:29:59 +0530
+
+On Fri, 2009-05-15 at 19:24 +0200, Ji=C5=99=C3=AD Pale=C4=8Dek wrote:=20
+> On Wed, 13 May 2009 16:47:35 +0200, CAI Qian <caiqian@cclom.cn> wrote:
+>=20
+> > From: Jiri Palecek <jpalecek@web.de>
+> > Subject: [LTP] [PATCH] Fix the splice02 test
+> > Date: Wed, 13 May 2009 00:34:15 +0200
+> >
+> >>   Particularly:
+> >>
+> >>    - TEST_ERRNO is only set when the syscall is executed using the
+> >>      TEST() macro. The tests gave bad error messages because of that.
+> >>
+> >>    - The end of the test was dead code; moved the TPASS code to pass=
+ at
+> >>      the end of file.
+> >>
+> >>    - The test assumes std. input is a pipe; reflect this in the runt=
+est
+> >>      file
+> >>
+> >> Regards
+> >>      Jiri Palecek
+> >>
+> >> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+> >> ---
+> >>   runtest/syscalls                            |    2 +-
+> >>   testcases/kernel/syscalls/splice/splice02.c |   16 ++++++---------=
+-
+> >>   2 files changed, 7 insertions(+), 11 deletions(-)
+> >>
+> >> diff --git a/runtest/syscalls b/runtest/syscalls
+> >> index 9b7b2ca..33beff0 100644
+> >> --- a/runtest/syscalls
+> >> +++ b/runtest/syscalls
+> >> @@ -1033,7 +1033,7 @@ sockioctl01 sockioctl01
+> >>    #splice test
+> >>   splice01 splice01
+> >> -splice02 echo "Test splice02()" > splice02-temp; splice02 splice02-=
+temp
+> >> +splice02 seq 1 10000000 | splice02 splice02-temp
+> >>    tee01 tee01
+> >>   diff --git a/testcases/kernel/syscalls/splice/splice02.c
+> >> b/testcases/kernel/syscalls/splice/splice02.c
+> >> index 321d002..16bff86 100644
+> >> --- a/testcases/kernel/syscalls/splice/splice02.c
+> >> +++ b/testcases/kernel/syscalls/splice/splice02.c
+> >> @@ -108,7 +108,6 @@ void setup() {
+> >>    int main(int ac, char **av) {
+> >>   	int fd =3D 0;
+> >> -	int ret =3D 0;
+> >>   =09
+> >>           setup();
+> >>   @@ -118,26 +117,23 @@ int main(int ac, char **av) {
+> >>   	}
+> >>   	fd=3Dopen(av[1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+> >>   	if(fd < 0 ) {
+> >> -           tst_resm(TFAIL, "%s failed - errno =3D %d : %s", TCID, =20
+> >> TEST_ERRNO,
+> >> strerror(TEST_ERRNO));
+> >> +		tst_resm(TFAIL, "open(%s) failed - errno =3D %d : %s", av[1], err=
+no,
+> >> strerror(errno));
+> >>   	   cleanup();
+> >>   	   tst_exit();
+> >>   	}
+> >>   		=09
+> >>           do {
+> >> -	    ret =3D splice(STDIN_FILENO, NULL, fd, NULL, SPLICE_SIZE, 0);
+> >> -	    if (ret < 0) {
+> >> -            	tst_resm(TFAIL, "%s failed - errno =3D %d : %s",TCID, =
+=20
+> >> TEST_ERRNO,
+> >> strerror(TEST_ERRNO));
+> >> +					TEST(splice(STDIN_FILENO, NULL, fd, NULL, SPLICE_SIZE, 0));
+> >> +	    if (TEST_RETURN < 0) {
+> >> +            	tst_resm(TFAIL, "splice failed - errno =3D %d : %s", =20
+> >> TEST_ERRNO,
+> >> strerror(TEST_ERRNO));
+> >>   	        cleanup();
+> >>   		tst_exit();
+> >>   	    } else
+> >> -            if (ret < SPLICE_SIZE){
+> >> +            if (TEST_RETURN =3D=3D 0){
+> >> +							tst_resm(TPASS, "splice() system call Passed");
+> >>   	        cleanup();
+> >>   	        tst_exit();
+> >>   	    }
+> >>   	} while(1);
+> >> -
+> >> -	close(fd);
+> >> -        tst_resm(TPASS, "splice() system call Passed");
+> >> -        tst_exit();
+> >>   }
+> >>   -- 1.6.2
+> >
+> > Can't apply this patch -- long lines are wrapped. Please re-send it.
+>=20
+> It seems not to be caused by wrapped lines - I can still see them in th=
+e =20
+> digest. However, some empty lines seem to be lost.
+>=20
+> Anyway, it should be better now (see attachment).
+
+Thanks.
+
+Regards--
+Subrata
+
+>=20
+> Regards
+>     Jiri Palecek
+> -----------------------------------------------------------------------=
+------- Crystal Reports - New Free Runtime and 30 Day Trial Check out the=
+ new simplified licensing option that enables unlimited royalty-free dist=
+ribution of the report engine for externally facing server and web deploy=
+ment. http://p.sf.net/sfu/businessobjects
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
+--=-l0FOxSTZlxifOG+3j2bx
+Content-Type: message/delivery-status
 Content-Transfer-Encoding: 7bit
 
-Hi,
+Reporting-MTA: dns; e37.co.us.ibm.com
+Received-From-MTA: DNS; d03relay04.boulder.ibm.com
+Arrival-Date: Mon, 18 May 2009 05:59:42 -0600
 
- 
+Final-Recipient: RFC822; jpalecek@web.de
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; mx-ha01.web.de
+Diagnostic-Code: SMTP; 550 <jpalecek@web.de> Benutzer hat das Speichervolumen
+	ueberschritten. / User has exhausted allowed storage space.
+Last-Attempt-Date: Mon, 18 May 2009 05:59:43 -0600
 
-I am a C/Shell scripting Developer. I would like to contribute/participate
-in LTP.
-
- 
-
-Please let me know, if I have any opportunity to work with LTP.
-
- 
-
- 
-
-Thanks,
-
-Praveen Kumar k
-
-PrimeSoft IP Solutions Inc 
-
-Phone: 040-27762986/27762987 
-
-Skype ID: kpraveen72
-
-www.primesoftsolutionsinc.com <http://www.primesoftsolutionsinc.com/>  
-
- 
-
-
-------=_NextPart_001_001E_01C9D887.D0BAD6E0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
-xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns:st1=3D"urn:schemas-microsoft-com:office:smarttags" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
-
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
-<!--[if !mso]>
-<style>
-v\:* {behavior:url(#default#VML);}
-o\:* {behavior:url(#default#VML);}
-w\:* {behavior:url(#default#VML);}
-.shape {behavior:url(#default#VML);}
-</style>
-<![endif]--><o:SmartTagType
- namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags" =
-name=3D"PersonName"/>
-<!--[if !mso]>
-<style>
-st1\:*{behavior:url(#default#ieooui) }
-</style>
-<![endif]-->
-<style>
-<!--
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-h3
-	{margin-top:12.0pt;
-	margin-right:0in;
-	margin-bottom:3.0pt;
-	margin-left:171.0pt;
-	text-indent:-.5in;
-	page-break-after:avoid;
-	mso-list:l0 level3 lfo1;
-	font-size:12.0pt;
-	font-family:Arial;
-	color:black;
-	layout-grid-mode:line;}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{mso-style-type:personal-compose;
-	font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.25in 1.0in 1.25in;}
-div.Section1
-	{page:Section1;}
- /* List Definitions */
- @list l0
-	{mso-list-id:1188256032;
-	mso-list-template-ids:867725992;}
-@list l0:level1
-	{mso-level-text:%1;
-	mso-level-tab-stop:.3in;
-	mso-level-number-position:left;
-	margin-left:.3in;
-	text-indent:-.3in;}
-@list l0:level2
-	{mso-level-text:"%1\.%2";
-	mso-level-tab-stop:.4in;
-	mso-level-number-position:left;
-	margin-left:.4in;
-	text-indent:-.4in;}
-@list l0:level3
-	{mso-level-style-link:"Heading 3";
-	mso-level-text:"%1\.%2\.%3";
-	mso-level-tab-stop:171.0pt;
-	mso-level-number-position:left;
-	margin-left:171.0pt;
-	text-indent:-.5in;}
-@list l0:level4
-	{mso-level-text:"%1\.%2\.%3\.%4";
-	mso-level-tab-stop:.6in;
-	mso-level-number-position:left;
-	margin-left:.6in;
-	text-indent:-.6in;}
-@list l0:level5
-	{mso-level-text:"%1\.%2\.%3\.%4\.%5";
-	mso-level-tab-stop:.7in;
-	mso-level-number-position:left;
-	margin-left:.7in;
-	text-indent:-.7in;}
-@list l0:level6
-	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6";
-	mso-level-tab-stop:.8in;
-	mso-level-number-position:left;
-	margin-left:.8in;
-	text-indent:-.8in;}
-@list l0:level7
-	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7";
-	mso-level-tab-stop:.9in;
-	mso-level-number-position:left;
-	margin-left:.9in;
-	text-indent:-.9in;}
-@list l0:level8
-	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8";
-	mso-level-tab-stop:1.0in;
-	mso-level-number-position:left;
-	margin-left:1.0in;
-	text-indent:-1.0in;}
-@list l0:level9
-	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.%9";
-	mso-level-tab-stop:1.1in;
-	mso-level-number-position:left;
-	margin-left:1.1in;
-	text-indent:-1.1in;}
-ol
-	{margin-bottom:0in;}
-ul
-	{margin-bottom:0in;}
--->
-</style>
-
-</head>
-
-<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
-
-<div class=3DSection1>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Hi,<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>I am a C/Shell scripting Developer. I would like to
-contribute/participate in LTP.<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Please let me know, if I have any opportunity to work =
-with
-LTP.<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Thanks,</span></font><o:p></o:p></p>
-
-<p class=3DMsoNormal><st1:PersonName
-style=3D"BACKGROUND-POSITION: left bottom; BACKGROUND-IMAGE: =
-url(res://ietag.dll/#34/#1001); BACKGROUND-REPEAT: repeat-x"
-tabIndex=3D"0" w:st=3D"on"><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
- font-family:Arial'>Praveen</span></font></st1:PersonName><font size=3D2
-face=3DArial><span style=3D'font-size:10.0pt;font-family:Arial'> Kumar =
-k<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><b><font size=3D2 face=3DArial><span =
-style=3D'font-size:11.0pt;
-font-family:Arial;font-weight:bold'>PrimeSoft IP Solutions Inc =
-</span></font></b><img
-width=3D39 height=3D17 id=3D"_x0000_i1025" =
-src=3D"cid:image001.jpg@01C9D887.CEC632D0"><o:p></o:p></p>
-
-<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial;font-style:italic'>Phone: 040-27762986/27762987 =
-<o:p></o:p></span></font></i></p>
-
-<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial;font-style:italic'>Skype ID: =
-kpraveen72<o:p></o:p></span></font></i></p>
-
-<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial;font-style:italic'><a
-href=3D"http://www.primesoftsolutionsinc.com/">www.primesoftsolutionsinc.=
-com</a> </span></font><o:p></o:p></i></p>
-
-<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:
-12.0pt'><o:p>&nbsp;</o:p></span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------=_NextPart_001_001E_01C9D887.D0BAD6E0--
-
-------=_NextPart_000_001D_01C9D887.D0B865E0
-Content-Type: image/jpeg;
-	name="image001.jpg"
-Content-Transfer-Encoding: base64
-Content-ID: <image001.jpg@01C9D887.CEC632D0>
-
-/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0a
-HBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIy
-MjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAARACcDASIA
-AhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQA
-AAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3
-ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWm
-p6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEA
-AwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSEx
-BhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElK
-U1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3
-uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3eNIx
-DvcDGMkk9KypPEWiNBJLbalpsiRsEeVrpAiE8AE56nsO9XrvT7bV9GuNOugzW9zE0MoVip2sMHBH
-SuWv/A/h+TT00/U9QvnhjAEYlkVdoVCigYUD5QxI9+acU29EJuy1Nd7zTzcNFceIrZJVlWBoopI0
-2yN0Qg5O44PGc1Yg1XSjOlrFqFtdTPK0IAlUneoyynH8QHOOtcm3w88MXUBhtI9SmzK03mJKVxIV
-Vd+8j7wC8Hk5Zj3qtpui6fonjTSIbC1KvFJODDK+WiMq7nk4P91UVSR0yCQac218Q6VP2jah01PR
-p40WPKjBzRTrk/uvxoqQKg60N0H1oooAe/b6Uz/lr/wD+tFFAwNFFFAj/9k=
-
-------=_NextPart_000_001D_01C9D887.D0B865E0--
-
-
-
-
---===============6491223128847438045==
+--=-l0FOxSTZlxifOG+3j2bx
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -336,7 +220,7 @@ Check out the new simplified licensing option that enables
 unlimited royalty-free distribution of the report engine 
 for externally facing server and web deployment. 
 http://p.sf.net/sfu/businessobjects
---===============6491223128847438045==
+--=-l0FOxSTZlxifOG+3j2bx
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -347,7 +231,6 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============6491223128847438045==--
-
+--=-l0FOxSTZlxifOG+3j2bx--
 
 
