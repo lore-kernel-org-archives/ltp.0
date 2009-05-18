@@ -2,26 +2,33 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <michal.simek@petalogix.com>) id 1MAqhH-0007Wa-Nh
-	for ltp-list@lists.sourceforge.net; Sun, 31 May 2009 19:27:55 +0000
-Received: from mail-fx0-f177.google.com ([209.85.220.177])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MAqhG-00089c-8G
-	for ltp-list@lists.sourceforge.net; Sun, 31 May 2009 19:27:55 +0000
-Received: by fxm25 with SMTP id 25so6962980fxm.10
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 31 May 2009 12:27:52 -0700 (PDT)
-Message-ID: <4A22DA33.5050601@petalogix.com>
-Date: Sun, 31 May 2009 21:27:47 +0200
-From: Michal Simek <michal.simek@petalogix.com>
-MIME-Version: 1.0
-References: <4A1E5847.6030807@petalogix.com>
-	<200905290912.31947.vapier@gentoo.org>
-	<4A2142A0.2040301@petalogix.com>
-	<200905301816.32273.vapier@gentoo.org>
-In-Reply-To: <200905301816.32273.vapier@gentoo.org>
-Subject: Re: [LTP] Installing outside LTP source
-Reply-To: michal.simek@petalogix.com
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M61VW-0005Oe-L7
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 11:59:50 +0000
+Received: from e31.co.us.ibm.com ([32.97.110.149])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1M61VS-0006Zn-3a
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 11:59:50 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e31.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4IBtqac024551
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 05:55:52 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n4IBxikf078512
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 05:59:44 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4IBxhrZ025362
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 05:59:43 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <20090515134519.GA21654@us.ibm.com>
+References: <4A0D13F2.8030804@cn.fujitsu.com>
+	<20090515134519.GA21654@us.ibm.com>
+Date: Mon, 18 May 2009 17:29:38 +0530
+Message-Id: <1242647979.5161.12.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Synchronization between two processes
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,114 +41,90 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: LTP <ltp-list@lists.sourceforge.net>, Jiri Palecek <jpalecek@web.de>
+To: "Serge E. Hallyn" <serue@us.ibm.com>, Gui Xiaohua <guixh@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Mike Frysinger wrote:
-> On Saturday 30 May 2009 10:28:48 Michal Simek wrote:
->   
->> Mike Frysinger wrote:
->>     
->>> On Thursday 28 May 2009 05:24:23 Michal Simek wrote:
->>>       
->>>> I would to ask you if someone works or worked on moving LTP to Kbuild.
->>>>         
->>> the Subject line doesnt really seem to line up with this question.  what
->>> exactly do you want to do and why do you think Kbuild is the solution ?
->>> saying "let's switch to Kbuild!" without any rhyme or reason sounds like
->>> a lot of work for no gain.
->>>       
->> I wanted to wrote two emails instead of one - that's why was there 2
->> different things.
->> 1. disable compilation "verbose" mode and turn on it with V=1.
->>     
->
-> meh.  `make -s` seems to work fine enough for me.  most people arent reviewing 
-> the output for warnings and similar issues, so i dont really see much point of 
-> having quiet output in LTP.
->   
-People don't do it because that warnings are hidden in huge log. It will
-be good to run
-sparse too.
->   
->> 2. Move all binaries outside of LTP source code O=/path
->>     
->
-> you mean out-of-tree compilation.  you can use lndir to get the same 
-> functionality, but it isnt really an optimal method.
->
->   
->> 3. I use only some parts of LTP for my testing and it will be good to
->> enable/disable just tests which you want to use.
->>     
->
-> you can run `make` in only the dirs you care about.  how deep do you actually 
-> want to get ?  having Kconfig entries for every single test (i.e. 
-> kernel/syscalls/{getsid,pipe}0{1,2} .....) is crazy.
->   
-Yes, I agree that make no sense to add all syscalls test for example to
-Kconfig but
-I can imagine tests for noMMU as are currently wrote in Makefile. For
-example will be good for all to know
-why are some tests exclude for noMMU.
-Maybe any handling for older glibc with missing some syscalls to prevent
-build failure.
-Setup global cflags and cross compiler.
-If you look to runtest for testing description, make sense to me have
-all that filenames as Kconfig option and
-enable/disable that tests.
+On Fri, 2009-05-15 at 08:45 -0500, Serge E. Hallyn wrote: 
+> Quoting Gui Xiaohua (guixh@cn.fujitsu.com):
+> > The child-process wait SIGUSR1 which would be sended by parent-process,
+> > if the child-process execute sigtimedwait() after parent-process send 
+> > the signal, it would never receive the SIGUSR1 from parent-process.
+> > I cann't make sure the SIGUSR1 be sended after child-process execute 
+> > sigtimedwait() with 100 percent, and i try my best.
+> 
+> Well, in theory I suppose this could happen, but you'd have to have
+> a pretty bad scheduler if the parent can do a strcmp(buf, "c:go")
+> between the pipe read and signal send, while the child goes straight
+> from pipe write to sigtimedwait.
+> 
+> Have you seen this signal be missed?  If not, then I'd rather assume
+> things are reasonable.  If you have seen this happen, then why not
+> instead set up a SIGUSR1 handler in the child before doing the pipe
+> write, then just sleep for 3 seconds instead of doing sigtimedwait?
 
->   
->> 4. If is possible clean all Makefiles
->>     
->
-> dont really know what that means
->   
-this point depended on descriptions below. I think we talked about once
-in past.
+Thanks Serge.
 
-There are a lot of additions like CFLAGS, LDLIBS.
-CFLAGS += -I../../../../include -Wall
-LDLIBS += -L../../../../lib -lltp
+Gui,
 
-I think that install and clean parts could be possible to clean too and
-have Makefiles with
-one or two lines  like  test-y +=test_name
+Are you planning any further patch(s) for this ?
 
-Is it possible to do with Kbuild? That the same question as I had in
-previous email.
+Regards--
+Subrata
 
->   
->> I don't have much experience with Kbuild I had just quick look.  I looked at
->> uClinux distribution
->>     
->
-> the uClinux distro is really an example you should look at.  the kconfig comes 
-> from the kernel, but all of the Makefiles are custom done.
-yes, but for example in LTP we don't need to use many custom Makefiles
-(There are some like ebizzy, boost, preempt-test and some others)
-the rest are LTP specific Makefiles.
-
-Michal
-
->   the features it 
-> has arent terribly relevant.
-> -mike
->   
-
-
--- 
-Michal Simek, Ing. (M.Eng)
-PetaLogix - Linux Solutions for a Reconfigurable World
-w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+> 
+> > Signed-off-by: Gui Xiaohua <guixh@cn.fujitsu.com>
+> > --- testcases/kernel/containers/pidns/pidns12-old.c	2009-05-14 17:00:20.000000000 +0800
+> > +++ testcases/kernel/containers/pidns/pidns12.c	2009-05-15 15:15:22.000000000 +0800
+> > @@ -109,7 +109,7 @@ int child_fn(void *arg)
+> >  	}
+> > 
+> >  	/* Set timeout for sigtimedwait */
+> > -	timeout.tv_sec = 3;
+> > +	timeout.tv_sec = 10;
+> >  	timeout.tv_nsec = 0;
+> > 
+> >  	/* Set mask to wait for SIGUSR1 signal */
+> > @@ -182,6 +182,9 @@ int main(int argc, char *argv[])
+> >  		cleanup();
+> >  	}
+> > 
+> > +	/*Try best to make sure the SIGUSR1 be sended after child-process execute sigtimedwait*/
+> > +	sleep(5);
+> > +
+> >  	/* Send SIGUSR1 to container init */
+> >  	if (kill(cpid, SIGUSR1) == -1) {
+> >  		tst_resm(TBROK, "parent: kill() failed(%s).", strerror(errno));
+> > 
+> > 
+> > ------------------------------------------------------------------------------
+> > Crystal Reports - New Free Runtime and 30 Day Trial
+> > Check out the new simplified licensing option that enables 
+> > unlimited royalty-free distribution of the report engine 
+> > for externally facing server and web deployment. 
+> > http://p.sf.net/sfu/businessobjects
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+> ------------------------------------------------------------------------------
+> Crystal Reports - New Free Runtime and 30 Day Trial
+> Check out the new simplified licensing option that enables 
+> unlimited royalty-free distribution of the report engine 
+> for externally facing server and web deployment. 
+> http://p.sf.net/sfu/businessobjects
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
-is a gathering of tech-side developers & brand creativity professionals. Meet
-the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
-Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables 
+unlimited royalty-free distribution of the report engine 
+for externally facing server and web deployment. 
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
