@@ -2,19 +2,20 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MA1sz-0005NS-GE
-	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 13:12:37 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MA1sw-0005xD-F8
-	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 13:12:37 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Fri, 29 May 2009 09:12:30 -0400
-References: <4A1E5847.6030807@petalogix.com>
-In-Reply-To: <4A1E5847.6030807@petalogix.com>
-MIME-Version: 1.0
-Message-Id: <200905290912.31947.vapier@gentoo.org>
-Subject: Re: [LTP] Installing outside LTP source
+	(envelope-from <caiqian@cclom.cn>) id 1M63rt-00014m-JA
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 14:31:05 +0000
+Received: from smtp105.biz.mail.re2.yahoo.com ([206.190.52.174])
+	by 1b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1M63rk-0002sE-KW
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 14:31:00 +0000
+Date: Mon, 18 May 2009 18:38:21 +0800 (CST)
+Message-Id: <20090518.183821.260105588.caiqian@cclom.cn>
+From: CAI Qian <caiqian@cclom.cn>
+Mime-Version: 1.0
+Content-Type: Multipart/Mixed;
+	boundary="--Next_Part(Mon_May_18_18_38_21_2009_964)--"
+Content-Transfer-Encoding: 7bit
+Subject: [LTP] Fw: ptrace06 is not being compiled (temporary fix)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,70 +25,120 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2215903275948500375=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: michal.simek@petalogix.com
-Cc: LTP <ltp-list@lists.sourceforge.net>, Jiri Palecek <jpalecek@web.de>
+To: ltp-list@lists.sourceforge.net
 
---===============2215903275948500375==
-Content-Type: multipart/signed; boundary="nextPart2113287.L2J1Amor6J";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
+----Next_Part(Mon_May_18_18_38_21_2009_964)--
+Content-Type: Message/Rfc822
 Content-Transfer-Encoding: 7bit
-
---nextPart2113287.L2J1Amor6J
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 
-On Thursday 28 May 2009 05:24:23 Michal Simek wrote:
-> I would to ask you if someone works or worked on moving LTP to Kbuild.
+Date: Mon, 18 May 2009 18:35:11 +0800 (CST)
+Message-Id: <20090518.183511.39155644.caiqian@cclom.cn>
+To: rohit.170309@gmail.com
+Subject: Re: ptrace06 is not being compiled (temporary fix)
+From: CAI Qian <caiqian@cclom.cn>
+In-Reply-To: <20090515.220843.226783340.caiqian@cclom.cn>
+References: <d51f89b0905150147r42311f55j349f23ccb59c4f6e@mail.gmail.com>
+	<20090515.220843.226783340.caiqian@cclom.cn>
+X-mailer: Mew/6.2.50 Emacs/22.3.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=utf-8
+Content-Transfer-Encoding: base64
 
-the Subject line doesnt really seem to line up with this question.  what=20
-exactly do you want to do and why do you think Kbuild is the solution ? =20
-saying "let's switch to Kbuild!" without any rhyme or reason sounds like a =
-lot=20
-of work for no gain.
-=2Dmike
+RnJvbTogQ0FJIFFpYW4gPGNhaXFpYW5AY2Nsb20uY24+DQpTdWJqZWN0OiBSZTogcHRyYWNlMDYg
+aXMgbm90IGJlaW5nIGNvbXBpbGVkICh0ZW1wb3JhcnkgZml4KQ0KRGF0ZTogRnJpLCAxNSBNYXkg
+MjAwOSAyMjowODo0MyArMDgwMCAoQ1NUKQ0KDQo+IEZyb206IHJvaGl0IHZlcm1hIDxyb2hpdC4x
+NzAzMDlAZ21haWwuY29tPg0KPiBTdWJqZWN0OiBwdHJhY2UwNiBpcyBub3QgYmVpbmcgY29tcGls
+ZWQgKHRlbXBvcmFyeSBmaXgpDQo+IERhdGU6IEZyaSwgMTUgTWF5IDIwMDkgMTQ6MTc6MTUgKzA1
+MzANCj4gDQo+PiBIaSwNCj4+IFBGQSB0aGUgcGF0Y2ggd2hpY2ggY2FuIGJlIGEgcG9zc2libGUg
+c29sdXRpb24gdG8gdGhlIGNvbXBpbGF0aW9uIHByb2JsZW1zDQo+PiB0aGF0IHlvdSBoYWQgbWVu
+dGlvbmVkIGFib3V0IHJlZ2FyZGluZyB0aGUgcHRyYWNlMDYgY29tcGlsYXRpb24gb24gUFBDNjQg
+YW5kDQo+PiBJQS02NC4gSSBoYXZlbid0IHRlc3RlZCBvbiBQUEM2NCBhbmQgSUEtNjQgYXMgSSBk
+byBub3QgaGF2ZSBhY2Nlc3MgdG8gdGhlbS4NCj4+IExldCBtZSBrbm93IGlmIGl0IHdvcmsgZmlu
+ZSwgYW5kIGNhbiBiZSBpbnRlZ3JhdGVkIGludG8gdGhlIExUUCB0cmVlLg0KPj4gDQo+PiBsaW5r
+IHRvIG1haWxpbmcgbGlzdCBlbnRyeSAtLQ0KPj4gDQo+PiBodHRwOi8vd3d3Lm5hYmJsZS5jb20v
+cHRyYWNlMDYtaXMtbm90LWJlaW5nLWNvbXBpbGVkLXRkMjMwMzUyMDMuaHRtbCNhMjMzMjgwNTgN
+Cj4+IA0KPj4gUmVnYXJkcywNCj4+IHJvaGl0DQo+PiANCj4+IA0KPiANCj4gSSBoYXZlIG5vIGFj
+Y2VzcyB0byBQUEM2NCBhbmQgSUEtNjQgbWFjaGluZXMgYXQgdGhlIG1vbWVudCBlaXRoZXIuIEkg
+YW0NCj4gZ29pbmcgdG8gdGVzdCB0aGlzIHBhdGNoIG5leHQgTW9uZGF5Lg0KPg0KDQpQUEM2NCBp
+cyBmaW5lIG5vdywgYnV0IHN0aWxsIGhhdmUgcHJvYmxlbSBvbiBJQS02NC4NCg0KIyB1bmFtZSAt
+cg0KMi42LjE4LTEyOC5lbDUNCg0KIyBycG0gLXEgZ2xpYmMNCmdsaWJjLTIuNS0zNA0KDQojIG1h
+a2UNCmNjIC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAtV2FsbCAgICBwdHJhY2UwMS5jICAtTC4uLy4u
+Ly4uLy4uL2xpYiAtbGx0cCAtbyBwdHJhY2UwMQ0KY2MgLUkuLi8uLi8uLi8uLi9pbmNsdWRlIC1X
+YWxsICAgIHB0cmFjZTAyLmMgIC1MLi4vLi4vLi4vLi4vbGliIC1sbHRwIC1vIHB0cmFjZTAyDQpj
+YyAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgLVdhbGwgICAgcHRyYWNlMDMuYyAgLUwuLi8uLi8uLi8u
+Li9saWIgLWxsdHAgLW8gcHRyYWNlMDMNCmNjIC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAtV2FsbCAg
+ICBwdHJhY2UwNC5jICAtTC4uLy4uLy4uLy4uL2xpYiAtbGx0cCAtbyBwdHJhY2UwNA0KY2MgLUku
+Li8uLi8uLi8uLi9pbmNsdWRlIC1XYWxsICAgIHB0cmFjZTA2LmMgIC1MLi4vLi4vLi4vLi4vbGli
+IC1sbHRwIC1vIHB0cmFjZTA2DQpJbiBmaWxlIGluY2x1ZGVkIGZyb20gL3Vzci9pbmNsdWRlL2Fz
+bS9wdHJhY2UuaDo1OCwNCiAgICAgICAgICAgICAgICAgZnJvbSAvdXNyL2luY2x1ZGUvbGludXgv
+cHRyYWNlLmg6NDksDQogICAgICAgICAgICAgICAgIGZyb20gcHRyYWNlMDYuYzoyMDoNCi91c3Iv
+aW5jbHVkZS9hc20vZnB1Lmg6NTc6IGVycm9yOiByZWRlZmluaXRpb24gb2Yg4oCYc3RydWN0IGlh
+NjRfZnByZWcnDQpJbiBmaWxlIGluY2x1ZGVkIGZyb20gL3Vzci9pbmNsdWRlL2xpbnV4L3B0cmFj
+ZS5oOjQ5LA0KICAgICAgICAgICAgICAgICBmcm9tIHB0cmFjZTA2LmM6MjA6DQovdXNyL2luY2x1
+ZGUvYXNtL3B0cmFjZS5oOjIwODogZXJyb3I6IHJlZGVmaW5pdGlvbiBvZiDigJhzdHJ1Y3QgcHRf
+YWxsX3VzZXJfcmVncycNCm1ha2U6ICoqKiBbcHRyYWNlMDZdIEVycm9yIDENCg0KSG93ZXZlciwg
+aWYgSSByZW1vdmUgdGhvc2UgdHdvIGxpbmVzLA0KDQotICNpbmNsdWRlIDxsaW51eC9wdHJhY2Uu
+aD4NCi0gI2luY2x1ZGUgPGFzbS9wdHJhY2UuaD4NCg0KaXQgd29ya3MgZmluZSBoZXJlLCBidXQg
+aXQgd2lsbCBza2lwIGEgbG90IG9mIHRlc3RzIGhlcmUsDQoNCiNpZmRlZiBQVFJBQ0VfR0VUUkVH
+Uw0KICAgICAgICB7DQogICAgICAgIFBUUkFDRV9HRVRSRUdTLC5kYXRhID0gMH0sIHsNCiAgICAg
+ICAgUFRSQUNFX0dFVFJFR1MsLmRhdGEgPSAxfSwgew0KICAgICAgICBQVFJBQ0VfR0VUUkVHUywu
+ZGF0YSA9IDJ9LCB7DQogICAgICAgIFBUUkFDRV9HRVRSRUdTLC5kYXRhID0gM30sIHsNCiAgICAg
+ICAgUFRSQUNFX0dFVFJFR1MsLmRhdGEgPSAtMX0sIHsNCiAgICAgICAgUFRSQUNFX0dFVFJFR1Ms
+LmRhdGEgPSAtMn0sIHsNCiAgICAgICAgUFRSQUNFX0dFVFJFR1MsLmRhdGEgPSAtM30sIHsNCiAg
+ICAgICAgUFRSQUNFX0dFVFJFR1MsLmRhdGEgPSAtNH0sDQojZW5kaWYNCiNpZmRlZiBQVFJBQ0Vf
+R0VURkdSRUdTDQogICAgICAgIHsNCiAgICAgICAgUFRSQUNFX0dFVEZHUkVHUywuZGF0YSA9IDB9
+LCB7DQogICAgICAgIFBUUkFDRV9HRVRGR1JFR1MsLmRhdGEgPSAxfSwgew0KICAgICAgICBQVFJB
+Q0VfR0VURkdSRUdTLC5kYXRhID0gMn0sIHsNCiAgICAgICAgUFRSQUNFX0dFVEZHUkVHUywuZGF0
+YSA9IDN9LCB7DQogICAgICAgIFBUUkFDRV9HRVRGR1JFR1MsLmRhdGEgPSAtMX0sIHsNCiAgICAg
+ICAgUFRSQUNFX0dFVEZHUkVHUywuZGF0YSA9IC0yfSwgew0KICAgICAgICBQVFJBQ0VfR0VURkdS
+RUdTLC5kYXRhID0gLTN9LCB7DQogICAgICAgIFBUUkFDRV9HRVRGR1JFR1MsLmRhdGEgPSAtNH0s
+DQojZW5kaWYNCiNpZmRlZiBQVFJBQ0VfU0VUUkVHUw0KICAgICAgICB7DQogICAgICAgIFBUUkFD
+RV9TRVRSRUdTLC5kYXRhID0gMH0sIHsNCiAgICAgICAgUFRSQUNFX1NFVFJFR1MsLmRhdGEgPSAx
+fSwgew0KICAgICAgICBQVFJBQ0VfU0VUUkVHUywuZGF0YSA9IDJ9LCB7DQogICAgICAgIFBUUkFD
+RV9TRVRSRUdTLC5kYXRhID0gM30sIHsNCiAgICAgICAgUFRSQUNFX1NFVFJFR1MsLmRhdGEgPSAt
+MX0sIHsNCiAgICAgICAgUFRSQUNFX1NFVFJFR1MsLmRhdGEgPSAtMn0sIHsNCiAgICAgICAgUFRS
+QUNFX1NFVFJFR1MsLmRhdGEgPSAtM30sIHsNCiAgICAgICAgUFRSQUNFX1NFVFJFR1MsLmRhdGEg
+PSAtNH0sDQojZW5kaWYNCiNpZmRlZiBQVFJBQ0VfU0VURkdSRUdTDQogICAgICAgIHsNCiAgICAg
+ICAgUFRSQUNFX1NFVEZHUkVHUywuZGF0YSA9IDB9LCB7DQogICAgICAgIFBUUkFDRV9TRVRGR1JF
+R1MsLmRhdGEgPSAxfSwgew0KICAgICAgICBQVFJBQ0VfU0VURkdSRUdTLC5kYXRhID0gMn0sIHsN
+CiAgICAgICAgUFRSQUNFX1NFVEZHUkVHUywuZGF0YSA9IDN9LCB7DQogICAgICAgIFBUUkFDRV9T
+RVRGR1JFR1MsLmRhdGEgPSAtMX0sIHsNCiAgICAgICAgUFRSQUNFX1NFVEZHUkVHUywuZGF0YSA9
+IC0yfSwgew0KICAgICAgICBQVFJBQ0VfU0VURkdSRUdTLC5kYXRhID0gLTN9LCB7DQogICAgICAg
+IFBUUkFDRV9TRVRGR1JFR1MsLmRhdGEgPSAtNH0sDQojZW5kaWYNCg0KSW4gYWRkaXRpb24sIHNv
+bWUgdGVzdHMgYXJlIGZhaWxlZCBmb3IgbWUgb24gUkhFTDUgeDg2XzY0LA0KDQouLi4NCnB0cmFj
+ZTA2ICAgNTcgIEZBSUwgIDogIHB0cmFjZShTRVRSRUdTLCAuLi4sIChuaWwpLCAobmlsKSkgcmV0
+dXJuZWQgMCBpbnN0ZWFkIG9mIC0xDQpwdHJhY2UwNiAgIDU4ICBGQUlMICA6ICBwdHJhY2UoU0VU
+UkVHUywgLi4uLCAobmlsKSwgMHgxKSByZXR1cm5lZCAwIGluc3RlYWQgb2YgLTENCnB0cmFjZTA2
+ICAgNTkgIEZBSUwgIDogIHB0cmFjZShTRVRSRUdTLCAuLi4sIChuaWwpLCAweDIpIHJldHVybmVk
+IDAgaW5zdGVhZCBvZiAtMQ0KcHRyYWNlMDYgICA2MCAgRkFJTCAgOiAgcHRyYWNlKFNFVFJFR1Ms
+IC4uLiwgKG5pbCksIDB4MykgcmV0dXJuZWQgMCBpbnN0ZWFkIG9mIC0xDQouLi4NCg0KQnV0IHRo
+YXQgbWlnaHQgYmUgYWN0dWFsbHkgYSBidWcgZm9yIGtlcm5lbHMuLA0KDQojIHN0cmFjZSAuL3B0
+cmFjZTA2DQouLi4NCnB0cmFjZShQVFJBQ0VfU0VUUkVHUywgMjI4MzQsIDAsIDApICAgICA9IDAN
+CnB0cmFjZShQVFJBQ0VfU0VUUkVHUywgMjI4MzQsIDAsIDB4MSkgICA9IDANCnB0cmFjZShQVFJB
+Q0VfU0VUUkVHUywgMjI4MzQsIDAsIDB4MikgICA9IDANCnB0cmFjZShQVFJBQ0VfU0VUUkVHUywg
+MjI4MzQsIDAsIDB4MykgICA9IDANCi4uLg0KDQpGZWRvcmEgSUEtMzIga2VybmVsIHJldHVybnMg
+dGhvc2UsDQoNCiMgdW5hbWUgLXINCjIuNi4yNy41LTExNy5mYzEwLmk2ODYNCg0KLi4uDQpwdHJh
+Y2UoUFRSQUNFX1NFVFJFR1MsIDU3OTksIDAsIDApICAgICAgPSAtMSBFRkFVTFQgKEJhZCBhZGRy
+ZXNzKQ0KcHRyYWNlKFBUUkFDRV9TRVRSRUdTLCA1Nzk5LCAwLCAweDEpICAgID0gLTEgRUZBVUxU
+IChCYWQgYWRkcmVzcykNCnB0cmFjZShQVFJBQ0VfU0VUUkVHUywgNTc5OSwgMCwgMHgyKSAgICA9
+IC0xIEVGQVVMVCAoQmFkIGFkZHJlc3MpDQpwdHJhY2UoUFRSQUNFX1NFVFJFR1MsIDU3OTksIDAs
+IDB4MykgICAgPSAtMSBFRkFVTFQgKEJhZCBhZGRyZXNzKQ0KLi4uDQoNCkNBSSBRaWFuDQo=
 
---nextPart2113287.L2J1Amor6J
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJKH98/AAoJEEFjO5/oN/WBULUP/Atfw5CxpvwMWsADDoMI9oro
-yzNM8qVN0wRCXxazNyy1UuMq98MLX7AXk7+2mY+YbWynuxVohHfXx//Lx+Y1FcZ2
-qrK4sVdUsNe6CYVj3CrlgpagBU67HJDPbCzaSN5cKwVvGuYj316rED0pcAs3u2Ap
-DXPerGR44wcUiH35Sb3I6ozbwkav56cZachIXIDOZNHjymXQ0X7G0kM8Q84NvnBd
-RBk+tPt+uxwF7cZtDEgQZTFoEJMyTCDgzB46pRA3iy/4NpcM1QGfOIVmKVAL5Vg3
-fUAoLZ9Ez9O1PwlKzpzeY1IgkEK2D6H+MgHDV5VVLMEHTkvtAdRyrQVuY74Kt/wX
-Jpf/PvTqyZj6wl6vZk1wNSvNyWYGUAI5+zjv59ea2kzehojfYtXJjpQuSyNr1Icd
-fxHwQ1+oe5tYG4L96qHd6NR0YOm+DTnqgPaNk7J0bVMrf+ThreYL/AWql4FvLY5B
-TEZmv1VDiuqN7PI7Sm2NR5PFJ2j2XcPpO7sAMNI0nr2TQlh9KFAoxoHjBCJbfD+T
-+WfsNK+bC757RfQptGvgmPMZkb9lfELA453j4xLFZW3+eiXc13NZRPbvSAP45DXS
-/4ytG8rxZuq86Zxmi6W8f9eihbEI2cwcP1NwJ6pKx5b2+ZWl1kt36JFnXINXrbFN
-xdx12RXeEYAKUI4Hi2Ej
-=oeoP
------END PGP SIGNATURE-----
-
---nextPart2113287.L2J1Amor6J--
-
-
---===============2215903275948500375==
+----Next_Part(Mon_May_18_18_38_21_2009_964)--
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
-is a gathering of tech-side developers & brand creativity professionals. Meet
-the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
-Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
---===============2215903275948500375==
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables 
+unlimited royalty-free distribution of the report engine 
+for externally facing server and web deployment. 
+http://p.sf.net/sfu/businessobjects
+----Next_Part(Mon_May_18_18_38_21_2009_964)--
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -98,5 +149,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============2215903275948500375==--
+----Next_Part(Mon_May_18_18_38_21_2009_964)----
 
