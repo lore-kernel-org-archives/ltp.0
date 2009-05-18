@@ -1,22 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <caiqian@cclom.cn>) id 1M72co-0001OJ-IW
-	for ltp-list@lists.sourceforge.net; Thu, 21 May 2009 07:23:34 +0000
-Received: from smtp106.biz.mail.mud.yahoo.com ([68.142.200.254])
-	by 72vjzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1M72cQ-0006wQ-0K
-	for ltp-list@lists.sourceforge.net; Thu, 21 May 2009 07:23:34 +0000
-Date: Thu, 21 May 2009 15:23:45 +0800 (CST)
-Message-Id: <20090521.152345.260099485.caiqian@cclom.cn>
-From: CAI Qian <caiqian@cclom.cn>
-In-Reply-To: <d51f89b0905190522u484b457bk9fe3f80a322027d2@mail.gmail.com>
-References: <20090518.191243.15248034.caiqian@cclom.cn>
-	<1242729134.5961.47.camel@subratamodak.linux.ibm.com>
-	<d51f89b0905190522u484b457bk9fe3f80a322027d2@mail.gmail.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Fw: Regarding ht_enable test case failure
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <maknayak@in.ibm.com>) id 1M68f5-0006RJ-7i
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 19:38:11 +0000
+Received: from e33.co.us.ibm.com ([32.97.110.151])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1M68f1-00046C-AF
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 19:38:11 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e33.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4IJ9LhY026826
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 13:09:21 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n4IJBAWi102658
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 13:11:11 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4IJBA58017607
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 13:11:10 -0600
+From: Manas Kumar Nayak <maknayak@in.ibm.com>
+Date: Tue, 19 May 2009 00:41:05 +0530
+Message-Id: <20090518191105.9777.51123.sendpatchset@subratamodak.linux.ibm.com>
+In-Reply-To: <20090518190905.9777.91288.sendpatchset@subratamodak.linux.ibm.com>
+References: <20090518190905.9777.91288.sendpatchset@subratamodak.linux.ibm.com>
+Subject: [LTP] [PATCH 12/21] Add set_thread_area01 test for set_thread_area
+	syscall
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,238 +36,256 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rohit.170309@gmail.com
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
+Cc: Deepakraj B Himavantharaj <deepakraj@in.ibm.com>, Manas Kumar Nayak <maknayak@in.ibm.com>
 
-From: rohit verma <rohit.170309@gmail.com>
-Subject: Re: [LTP] Fw: Regarding ht_enable test case failure
-Date: Tue, 19 May 2009 17:52:26 +0530
+Signed-off-by: Manas Kumar Nayak <maknayak@in.ibm.com>,
+To: LTP List <ltp-list@lists.sourceforge.net>,
+Cc: Deepakraj B Himavantharaj <deepakraj@in.ibm.com>,
+Cc: Subrata Modak <subrata@linux.vnet.ibm.com>,
+Cc: Masatake YAMATO <yamato@redhat.com>,
+---
 
-> Dear CAI Qian,
-> 
->  I want to discuss few issues/obervations regarding ht_interrupt.
-> 
->  I have  two test PC:
-> 
-> 1. Intel(R) Core(TM)2 Duo CPU     E8400  @ 3.00GHz
-> cat /etc/issue
-> Fedora release 10 (Cambridge)
-> Kernel \r on an \m (\l)
-> 
-> 2. Intel(R) Pentium(R) 4 CPU 3.00GHz
-> cat /etc/issue
-> Fedora release 10 (Cambridge)
-> Kernel \r on an \m (\l)
-> 
-> 
-> I have commented check_ht_capability( ) in test code just for testing
-> purpose.
->
-
-OK. I have also need to change,
-
-#ifndef ARCH_i386
-        tst_brkm(TCONF, NULL, "This test suite can only excute on i386 architecture.");
-#else
-
-to
-
-#ifndef __i386__
-        tst_brkm(TCONF, NULL, "This test suite can only excute on i386 architecture.");
-#else
-
-in order to get it working on 32-bit systems.
-
-> In ht_interrupt, timer interrupt is used to check whether interrupt is
-> balancable or not.
-> 
-> # cat /proc/interrupts
->         CPU0       CPU1
->   0:        142         30   IO-APIC-edge      timer
-> 
-> 
-> I have changed that check to ethernet interrupt, because on my first test PC
-> these number (142 and 30 ) remains same till the execution of test and test
-> case fails with following messages.
-> "Interrupt distribution is not balancable"
->
-
-It works fine on a RHEL5.3 here without need to change,
-
-# lscpu
-Architecture:          i686
-CPU(s):                8
-Thread(s) per core:    2
-Core(s) per socket:    2
-CPU socket(s):         2
-Vendor ID:             GenuineIntel
-CPU family:            15
-Model:                 6
-Stepping:              4
-CPU MHz:               3725.610
-...
-
-# uname -r
-2.6.18-128.el5
-
-# ./ht_interrupt
-ht_interrupt    0  INFO  :  Begin: HyperThreading Interrupt
-ht_interrupt    0  INFO  :  Get interrupts distribution with HT.
-..........
-
-Timer interrupt counts per CPU:
-1263 1260 1224 1223 1262 1262 1263 1263
-
-max value: 1263
-min value: 1223
-
-ht_interrupt    1  PASS  :  Interrupt distribution is balanceable.
-ht_interrupt    0  INFO  :  End: HyperThreading Interrupt
-
-However, it is not working on a Fedora 10 system,
-
-# lscpu
-Architecture:          i686
-CPU(s):                2
-Thread(s) per core:    2
-Core(s) per socket:    1
-CPU socket(s):         1
-Vendor ID:             GenuineIntel
-CPU family:            15
-Model:                 4
-Stepping:              3
-CPU MHz:               2992.428
-
-# uname -r
-2.6.27.5-117.fc10.i686
-
-# ./ht_interrupt
-ht_interrupt    0  INFO  :  Begin: HyperThreading Interrupt
-ht_interrupt    0  INFO  :  Get interrupts distribution with HT.
-..........
-
-Timer interrupt counts per CPU:
-0 0
-
-max value: 0
-min value: 0
-
-ht_interrupt    1  FAIL  :  Interrupt distribution is not balanceable.
-ht_interrupt    0  INFO  :  End: HyperThreading Interrupt
-
-I am not sure if that is because they are using different kernel
-versions?
+--- ltp-intermediate-20090518-manas-work-original/testcases/kernel/syscalls/set_thread_area/Makefile	1970-01-01 05:30:00.000000000 +0530
++++ ltp-intermediate-20090518-manas-work/testcases/kernel/syscalls/set_thread_area/Makefile	2009-05-18 21:42:42.000000000 +0530
+@@ -0,0 +1,31 @@
++#
++#  Copyright (c) International Business Machines  Corp., 2009
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++CFLAGS += -I../../../../include -Wall
++LDLIBS += -L../../../../lib -lltp
++
++SRCS    = $(wildcard *.c)
++TARGETS = $(patsubst %.c,%,$(SRCS))
++
++all: $(TARGETS)
++
++install:
++	@set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i ; done
++
++clean:
++	rm -f $(TARGETS)
+--- ltp-intermediate-20090518-manas-work-original/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c	1970-01-01 05:30:00.000000000 +0530
++++ ltp-intermediate-20090518-manas-work/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c	2009-05-18 21:44:11.000000000 +0530
+@@ -0,0 +1,177 @@
++/******************************************************************************/
++/* Copyright (c) Crackerjack Project., 2007                                   */
++/*                                                                            */
++/* This program is free software;  you can redistribute it and/or modify      */
++/* it under the terms of the GNU General Public License as published by       */
++/* the Free Software Foundation; either version 2 of the License, or          */
++/* (at your option) any later version.                                        */
++/*                                                                            */
++/* This program is distributed in the hope that it will be useful,            */
++/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
++/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
++/* the GNU General Public License for more details.                           */
++/*                                                                            */
++/* You should have received a copy of the GNU General Public License          */
++/* along with this program;  if not, write to the Free Software               */
++/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
++/*                                                                            */
++/******************************************************************************/
++/******************************************************************************/
++/*                                                                            */
++/* File:        set_thread_area01.c                                           */
++/*                                                                            */
++/* Description: This test two syscalls 					      */
++/*		1) get__thread_area():					      */
++/*		  get_thread_area returns an entry in the current thread's    */
++/*		  Thread Local Storage (TLS) array.get_thread_area returns 0  */
++/*	          on success. Otherwise, it returns -1			      */
++/*		2)set_thread_area():    				      */
++/*		 set_thread_area() sets an entry in the current thread's      */
++/*	         Thread Local.When  set_thread_area() is passed an            */
++/*		 entry_number of -1, it uses a free TLS entry.                */
++/*		 set_thread_area() returns 0 on success, and -1 on failure    */	
++/*									      */	
++/*              							      */
++/*                                                                            */
++/* Usage:  <for command-line>                                                 */
++/* set_tid_address01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                     */
++/*      where,  -c n : Run n copies concurrently.                             */
++/*              -e   : Turn on errno logging.                                 */
++/*              -i n : Execute test n times.                                  */
++/*              -I x : Execute test for x seconds.                            */
++/*              -P x : Pause for x seconds between iterations.                */
++/*              -t   : Turn on syscall timing.                                */
++/*                                                                            */
++/* Total Tests: 2                                                             */
++/*                                                                            */
++/* Test Name:   set_thread_area01                                             */
++/* History:     Porting from Crackerjack to LTP is done by                    */
++/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
++/******************************************************************************/
++
++#include <stdio.h>
++#include <errno.h>
++#include <linux/unistd.h>
++#include <asm/ldt.h>
++
++/* Harness Specific Include Files. */
++#include "test.h"
++#include "usctest.h"
++#include "linux_syscall_numbers.h"
++
++/* Extern Global Variables */
++extern int Tst_count;           /* counter for tst_xxx routines.         */
++extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
++
++/* Global Variables */
++char *TCID = "set_thread_area01";  /* Test program identifier.*/
++int  testno;
++int  TST_TOTAL = 2;                   /* total number of tests in this file.   */
++
++/* Extern Global Functions */
++/******************************************************************************/
++/*                                                                            */
++/* Function:    cleanup                                                       */
++/*                                                                            */
++/* Description: Performs all one time clean up for this test on successful    */
++/*              completion,  premature exit or  failure. Closes all temporary */
++/*              files, removes all temporary directories exits the test with  */
++/*              appropriate return code by calling tst_exit() function.       */
++/*                                                                            */
++/* Input:       None.                                                         */
++/*                                                                            */
++/* Output:      None.                                                         */
++/*                                                                            */
++/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
++/*              On success - Exits calling tst_exit(). With '0' return code.  */
++/*                                                                            */
++/******************************************************************************/
++extern void cleanup() {
++        /* Remove tmp dir and all files in it */
++        TEST_CLEANUP;
++        tst_rmdir();
++
++        /* Exit with appropriate return code. */
++        tst_exit();
++}
++
++/* Local  Functions */
++/******************************************************************************/
++/*                                                                            */
++/* Function:    setup                                                         */
++/*                                                                            */
++/* Description: Performs all one time setup for this test. This function is   */
++/*              typically used to capture signals, create temporary dirs      */
++/*              and temporary files that may be used in the course of this    */
++/*              test.                                                         */
++/*                                                                            */
++/* Input:       None.                                                         */
++/*                                                                            */
++/* Output:      None.                                                         */
++/*                                                                            */
++/* Return:      On failure - Exits by calling cleanup().                      */
++/*              On success - returns 0.                                       */
++/*                                                                            */
++/******************************************************************************/
++void setup() {
++        /* Capture signals if any */
++        /* Create temporary directories */
++        TEST_PAUSE;
++        tst_tmpdir();
++}
++
++int main(int ac, char **av) {
++        
++	struct user_desc u_info;
++        int result;
++        int lc;                 /* loop counter */
++        char *msg;              /* message returned from parse_opts */
++	
++        /* parse standard options */
++        if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
++             tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
++             tst_exit();
++           }
++
++        setup();
++
++        /* Check looping state if -i option given */
++        for (lc = 0; TEST_LOOPING(lc); ++lc) {
++                Tst_count = 0;
++                for (testno = 0; testno < TST_TOTAL; ++testno) {
++	             u_info.entry_number = 6;
++	
++	/*
++         * This call to get_thread_area function should be sucessful.
++         */
++
++                     TEST(result = syscall(244, &u_info));     //call get_thread_area()
++                     if(TEST_RETURN == 0) {
++        		tst_resm(TPASS, "get_thread_area call succeeded");
++                     }
++                     else {
++                 	   tst_resm(TFAIL, "%s failed - errno = %d : %s", TCID, TEST_ERRNO, strerror(TEST_ERRNO));
++                           cleanup();
++	  	           tst_exit();
++                     }
++		     
++		     u_info.entry_number = -1;
++        /*
++         * This call to set_thread_area function should be sucessful.
++         */
++
++                     TEST(result = syscall(243, &u_info));     //call set_thread_area()
++                     if(TEST_RETURN == 0) {
++        		tst_resm(TPASS, "set_thread_area call succeeded");
++                     }
++                     else {
++                 	   tst_resm(TFAIL, "%s failed----- errno = %d : %s", TCID, TEST_ERRNO, strerror(TEST_ERRNO));
++                           cleanup();
++	  	           tst_exit();
++                     }
++                }
++        }	
++	cleanup();
++        tst_exit();
++}
++
+--- ltp-intermediate-20090518-manas-work-original/runtest/syscalls	2009-05-18 21:53:22.000000000 +0530
++++ ltp-intermediate-20090518-manas-work/runtest/syscalls	2009-05-18 21:50:52.000000000 +0530
+@@ -970,6 +970,7 @@ setrlimit02 setrlimit02
+ setrlimit03 setrlimit03
  
-> Test case passes on first test PC after the change (checking ethernet
-> interrupt).
-> 
-> On second test PC with hyperthreading enabled, this test case fails:
-> 
-> #cat /proc/irq/27/smp_affinity
-> # 3
-> 
-> #cat /proc/interrupts
->           CPU0       CPU1
->    27:    2002896        449   PCI-MSI-edge      eth0
-> 
->  #cat /proc/interrupts
->           CPU0       CPU1
->    27:    20032957       449   PCI-MSI-edge      eth0
-> Interrupt count for only CPU0 is incrementing.
-> 
-> I change the smp_affinity
-> 
->  # echo 2 > /proc/irq/27/smp_affinity
->  # cat /proc/irq/27/smp_affinity
-> # 2
-> 
->  #cat /proc/interrupts
->           CPU0       CPU1
-> 27:    2004494        564   PCI-MSI-edge      eth0
-> Here, interrupt count for CPU1 is incrementing.
-> 
-> How can I get the balanced ethernet interrupts on both CPUs.
->
-
-Same here on the Fedora 10 system.
-
-# echo 3 >/proc/irq/16/smp_affinity
-
-...
- 16:    7412900       1212   IO-APIC-fasteoi   eth1
-...
- 16:    7412991       1212   IO-APIC-fasteoi   eth1
-...
-
-# echo 2 >/proc/irq/16/smp_affinity
-
-...
- 16:    7413106       1281   IO-APIC-fasteoi   eth1
-...
- 16:    7413106       1283   IO-APIC-fasteoi   eth1
-...
-
-No idea on how to get a balanced interrupts.
-
-It is rather strange on the RHEL5.3 system.
-
-# echo 3 >/proc/irq/90/smp_affinity
-
-The interrupt count is increasing on only CPU0.
-
-# cat /proc/interrupts
-...
-90: 107078 0 0 0 0 0 0 0 PCI-MS eth0
-...
-90: 107608 0 0 0 0 0 0 0 PCI-MS eth0
-
-The same for changing it to 2.
-
-# echo 2 >/proc/irq/90/smp_affinity
-
-# cat /proc/interrupts
-...
-90: 108121 0 0 0 0 0 0 0 PCI-MS eth0
-...
-90: 108163 0 0 0 0 0 0 0 PCI-MS eth0
-
-> 
-> I am also getting an error message, when i try to change smp_affinity
-> for timer interrupt.
-> 
-> # echo 3 > /proc/irq/0/smp_affinity
-> -bash: echo: write error: Input/output error
->
-
-This works fine on the RHEL5 system,
-
-# echo 3 > /proc/irq/0/smp_affinity
-
-Then, the interrupt counts on both CPU0 and CPU1 are increasing.
-
-The Fedora 10 system is not,
-
-# echo 3 > /proc/irq/0/smp_affinity
-
-CAI Qian
+ set_robust_list01 set_robust_list01
++set_thread_area01 set_thread_area01
  
->  # echo 3 > /proc/irq/<eth interrupt no>/smp_affinity works fine.
-> 
-> 
-> Regards,
-> Rohit
-> 
-> 
+ setsid01 setsid01
+ 
+
+---
+Regards--
+Manas
+
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
-is a gathering of tech-side developers & brand creativity professionals. Meet
-the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
-Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables 
+unlimited royalty-free distribution of the report engine 
+for externally facing server and web deployment. 
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
