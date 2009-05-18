@@ -1,21 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M61Yk-0002WJ-Nh
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 12:03:10 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M61Yf-00079v-U8
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 12:03:10 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4A10C4B1.2070105@cn.fujitsu.com>
-References: <4A10C4B1.2070105@cn.fujitsu.com>
-Date: Mon, 18 May 2009 17:31:41 +0530
-Message-Id: <1242648101.5161.19.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] add memcgroup regression tests to LTP
-Reply-To: subrata@linux.vnet.ibm.com
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <maknayak@in.ibm.com>) id 1M68U0-0003jw-4a
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 19:26:44 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1M68Tv-0007Pk-Mp
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 19:26:44 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e1.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4IJ5RBH031527
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 15:05:27 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n4IJ9Ks4246876
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 15:09:20 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4IJ9Jxm013079
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 15:09:20 -0400
+From: Manas Kumar Nayak <maknayak@in.ibm.com>
+Date: Tue, 19 May 2009 00:39:15 +0530
+Message-Id: <20090518190914.9777.23115.sendpatchset@subratamodak.linux.ibm.com>
+In-Reply-To: <20090518190905.9777.91288.sendpatchset@subratamodak.linux.ibm.com>
+References: <20090518190905.9777.91288.sendpatchset@subratamodak.linux.ibm.com>
+Subject: [LTP] [PATCH 01/21] Add add_key01 test for add_key syscall
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,587 +34,214 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Li Zefan <lizf@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: LTP List <ltp-list@lists.sourceforge.net>
+Cc: Deepakraj B Himavantharaj <deepakraj@in.ibm.com>, Manas Kumar Nayak <maknayak@in.ibm.com>
 
-On Mon, 2009-05-18 at 10:15 +0800, Li Zefan wrote: 
-> Those testcases can reproduce bugs we found in memcg, and is useful
-> to track future regressions.
-> 
-> Note: this test may crash the system with older kernels, so it is
-> disabled for kernels older than 2.6.30
-> 
-> How to run this test:
-> 	# runltp -f controllers
-> 
-> Result:
-> 
-> memcg_regression_test    1  PASS  :  no kernel bug was found
-> memcg_regression_test    2  PASS  :  EBUSY was returned as expected
-> memcg_regression_test    3  PASS  :  no kernel bug was found
-> ./memcg_test_4.sh: line 41: 28374 was killed               swapoff -a
-> memcg_regression_test    4  PASS  :  no kernel bug was found
-> 
-> Signed-off-by: Li Zefan <lizf@cn.fujitsu.com>
+Signed-off-by: Manas Kumar Nayak <maknayak@in.ibm.com>,
+To: LTP List <ltp-list@lists.sourceforge.net>,
+Cc: Deepakraj B Himavantharaj <deepakraj@in.ibm.com>,
+Cc: Subrata Modak <subrata@linux.vnet.ibm.com>,
+Cc: Masatake YAMATO <yamato@redhat.com>,
+---
 
-Thanks Li for these tests. Added.
+--- ltp-intermediate-20090518-manas-work-original/testcases/kernel/syscalls/add_key/add_key01.c	1970-01-01 05:30:00.000000000 +0530
++++ ltp-intermediate-20090518-manas-work/testcases/kernel/syscalls/add_key/add_key01.c	2009-05-18 18:19:45.000000000 +0530
+@@ -0,0 +1,142 @@
++/******************************************************************************/
++/* Copyright (c) Crackerjack Project., 2007                                   */
++/*                                                                            */
++/* This program is free software;  you can redistribute it and/or modify      */
++/* it under the terms of the GNU General Public License as published by       */
++/* the Free Software Foundation; either version 2 of the License, or          */
++/* (at your option) any later version.                                        */
++/*                                                                            */
++/* This program is distributed in the hope that it will be useful,            */
++/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
++/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
++/* the GNU General Public License for more details.                           */
++/*                                                                            */
++/* You should have received a copy of the GNU General Public License          */
++/* along with this program;  if not, write to the Free Software               */
++/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
++/*                                                                            */
++/******************************************************************************/
++/******************************************************************************/
++/*                                                                            */
++/* File:        add_key01.c                                           */
++/*                                                                            */
++/* Description: This tests the add_key() syscall                      */
++/*                                                                            */
++/* Usage:  <for command-line>                                                 */
++/* add_key01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                     */
++/*      where,  -c n : Run n copies concurrently.                             */
++/*              -e   : Turn on errno logging.                                 */
++/*              -i n : Execute test n times.                                  */
++/*              -I x : Execute test for x seconds.                            */
++/*              -P x : Pause for x seconds between iterations.                */
++/*              -t   : Turn on syscall timing.                                */
++/*                                                                            */
++/* Total Tests: 1                                                             */
++/*                                                                            */
++/* Test Name:   add_key01                                             */
++/* History:     Porting from Crackerjack to LTP is done by                    */
++/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
++/******************************************************************************/
++
++#include <stdio.h>
++#include <errno.h>
++#include <linux/keyctl.h>
++
++/* Harness Specific Include Files. */
++#include "test.h"
++#include "usctest.h"
++#include "linux_syscall_numbers.h"
++
++/* Extern Global Variables */
++extern int Tst_count;           /* counter for tst_xxx routines.         */
++extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
++
++/* Global Variables */
++char *TCID = "add_key01";  /* Test program identifier.*/
++int  testno;
++int  TST_TOTAL = 1;                   /* total number of tests in this file.   */
++
++/* Extern Global Functions */
++/******************************************************************************/
++/*                                                                            */
++/* Function:    cleanup                                                       */
++/*                                                                            */
++/* Description: Performs all one time clean up for this test on successful    */
++/*              completion,  premature exit or  failure. Closes all temporary */
++/*              files, removes all temporary directories exits the test with  */
++/*              appropriate return code by calling tst_exit() function.       */
++/*                                                                            */
++/* Input:       None.                                                         */
++/*                                                                            */
++/* Output:      None.                                                         */
++/*                                                                            */
++/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
++/*              On success - Exits calling tst_exit(). With '0' return code.  */
++/*                                                                            */
++/******************************************************************************/
++extern void cleanup() {
++        /* Remove tmp dir and all files in it */
++        TEST_CLEANUP;
++        tst_rmdir();
++
++        /* Exit with appropriate return code. */
++        tst_exit();
++}
++
++/* Local  Functions */
++/******************************************************************************/
++/*                                                                            */
++/* Function:    setup                                                         */
++/*                                                                            */
++/* Description: Performs all one time setup for this test. This function is   */
++/*              typically used to capture signals, create temporary dirs      */
++/*              and temporary files that may be used in the course of this    */
++/*              test.                                                         */
++/*                                                                            */
++/* Input:       None.                                                         */
++/*                                                                            */
++/* Output:      None.                                                         */
++/*                                                                            */
++/* Return:      On failure - Exits by calling cleanup().                      */
++/*              On success - returns 0.                                       */
++/*                                                                            */
++/******************************************************************************/
++void setup() {
++        /* Capture signals if any */
++        /* Create temporary directories */
++        TEST_PAUSE;
++        tst_tmpdir();
++}
++
++int main(int ac, char **av) {
++        int result;
++        int lc;                 /* loop counter */
++        char *msg;              /* message returned from parse_opts */
++	
++        /* parse standard options */
++        if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
++             tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
++             tst_exit();
++           }
++
++        setup();
++
++        /* Check looping state if -i option given */
++        for (lc = 0; TEST_LOOPING(lc); ++lc) {
++                Tst_count = 0;
++                for (testno = 0; testno < TST_TOTAL; ++testno) {
++                     TEST(result = syscall(286, "keyring", "wjkey", NULL, 0, KEY_SPEC_THREAD_KEYRING));     //call add_key()
++                     if(TEST_RETURN != -1) {
++        		tst_resm(TPASS, "add_key call succeeded");
++                        cleanup();
++                     }
++                     else {
++                 	   tst_resm(TFAIL, "%s failed - errno = %d : %s", TCID, TEST_ERRNO, strerror(TEST_ERRNO));
++                           cleanup();
++	  	           tst_exit();
++                     }
++                }
++        }	
++        tst_exit();
++}
++
+--- ltp-intermediate-20090518-manas-work-original/testcases/kernel/syscalls/add_key/Makefile	1970-01-01 05:30:00.000000000 +0530
++++ ltp-intermediate-20090518-manas-work/testcases/kernel/syscalls/add_key/Makefile	2009-05-18 18:20:35.000000000 +0530
+@@ -0,0 +1,31 @@
++#
++#  Copyright (c) International Business Machines  Corp., 2009
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++CFLAGS += -I../../../../include -Wall
++LDLIBS += -L../../../../lib -lltp
++
++SRCS    = $(wildcard *.c)
++TARGETS = $(patsubst %.c,%,$(SRCS))
++
++all: $(TARGETS)
++
++install:
++	@set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i ; done
++
++clean:
++	rm -f $(TARGETS)
+--- ltp-intermediate-20090518-manas-work-original/runtest/syscalls	2009-05-18 16:42:10.000000000 +0530
++++ ltp-intermediate-20090518-manas-work/runtest/syscalls	2009-05-18 18:22:32.000000000 +0530
+@@ -13,6 +13,8 @@ access05 access05
+ acct01 acct01
+ acct02 acct02
+ 
++add_key01 add_key01
++
+ adjtimex01 adjtimex01
+ adjtimex02 adjtimex02
+ 
 
+---
 Regards--
-Subrata
-
-> ---
->  runtest/controllers                                         |    1
->  testcases/kernel/controllers/Makefile                       |    6
->  testcases/kernel/controllers/memcg/Makefile                 |   16
->  testcases/kernel/controllers/memcg/README                   |    9
->  testcases/kernel/controllers/memcg/memcg_regression_test.sh |  227 ++++++++++++
->  testcases/kernel/controllers/memcg/memcg_test_1.c           |   71 +++
->  testcases/kernel/controllers/memcg/memcg_test_2.c           |   53 ++
->  testcases/kernel/controllers/memcg/memcg_test_4.c           |   62 +++
->  testcases/kernel/controllers/memcg/memcg_test_4.sh          |   48 ++
->  9 files changed, 493 insertions(+)
-> 
-> diff -Nurp ltp-intermediate-20090420.orig/runtest/controllers ltp-intermediate-20090420/runtest/controllers
-> --- ltp-intermediate-20090420.orig/runtest/controllers	2009-05-18 09:53:42.000000000 +0800
-> +++ ltp-intermediate-20090420/runtest/controllers	2009-05-18 09:54:02.000000000 +0800
-> @@ -1,3 +1,4 @@
->  #DESCRIPTION:Resource Management testing
->  cgroup		cgroup_regression_test.sh
-> +memcg		memcg_regression_test.sh
->  controllers	test_controllers.sh
-> diff -Nurp ltp-intermediate-20090420.orig/testcases/kernel/controllers/Makefile ltp-intermediate-20090420/testcases/kernel/controllers/Makefile
-> --- ltp-intermediate-20090420.orig/testcases/kernel/controllers/Makefile	2009-05-18 09:53:42.000000000 +0800
-> +++ ltp-intermediate-20090420/testcases/kernel/controllers/Makefile	2009-05-15 14:53:17.000000000 +0800
-> @@ -10,6 +10,12 @@ else
->  $(info "Kernel is not compiled with control cgroup support")
->  endif
-> 
-> +ifeq ($(CHECK_MEMCTL),memory)
-> +SUBDIRS += memcg
-> +else
-> +$(info "Kernel is not compiled with memory resource controller support")
-> +endif
-> +
->  ifeq ($(CHECK_CPUCTL),cpu)
->  SUBDIRS += cpuctl
->  else
-> diff -Nurp ltp-intermediate-20090420.orig/testcases/kernel/controllers/memcg/Makefile ltp-intermediate-20090420/testcases/kernel/controllers/memcg/Makefile
-> --- ltp-intermediate-20090420.orig/testcases/kernel/controllers/memcg/Makefile	1970-01-01 08:00:00.000000000 +0800
-> +++ ltp-intermediate-20090420/testcases/kernel/controllers/memcg/Makefile	2009-05-15 14:46:35.000000000 +0800
-> @@ -0,0 +1,16 @@
-> +CFLAGS += -Wall
-> +CPPFLAGS += -I../../../../include -I../libcontrollers
-> +LDLIBS += -L../../../../lib/ -lltp
-> +
-> +SRCS    = $(wildcard *.c)
-> +
-> +TARGETS = $(patsubst %.c,%,$(SRCS))
-> +
-> +all:    $(TARGETS)
-> +
-> +clean:
-> +	rm -f $(TARGETS) *.o
-> +
-> +install:
-> +	@set -e; for i in $(TARGETS) *.sh; do ln -f $$i ../../../bin/$$i ; chmod +x $$i ; done
-> +
-> diff -Nurp ltp-intermediate-20090420.orig/testcases/kernel/controllers/memcg/memcg_regression_test.sh ltp-intermediate-20090420/testcases/kernel/controllers/memcg/memcg_regression_test.sh
-> --- ltp-intermediate-20090420.orig/testcases/kernel/controllers/memcg/memcg_regression_test.sh	1970-01-01 08:00:00.000000000 +0800
-> +++ ltp-intermediate-20090420/testcases/kernel/controllers/memcg/memcg_regression_test.sh	2009-05-15 15:05:00.000000000 +0800
-> @@ -0,0 +1,227 @@
-> +#! /bin/sh
-> +
-> +################################################################################
-> +##                                                                            ##
-> +## Copyright (c) 2009 FUJITSU LIMITED                                         ##
-> +##                                                                            ##
-> +## This program is free software;  you can redistribute it and#or modify      ##
-> +## it under the terms of the GNU General Public License as published by       ##
-> +## the Free Software Foundation; either version 2 of the License, or          ##
-> +## (at your option) any later version.                                        ##
-> +##                                                                            ##
-> +## This program is distributed in the hope that it will be useful, but        ##
-> +## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
-> +## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
-> +## for more details.                                                          ##
-> +##                                                                            ##
-> +## You should have received a copy of the GNU General Public License          ##
-> +## along with this program;  if not, write to the Free Software               ##
-> +## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
-> +##                                                                            ##
-> +## Author: Li Zefan <lizf@cn.fujitsu.com>                                     ##
-> +##                                                                            ##
-> +################################################################################
-> +
-> +cd $LTPROOT/testcases/bin
-> +
-> +export TCID="memcg_regression_test"
-> +export TST_TOTAL=4
-> +export TST_COUNT=1
-> +
-> +if [ "$USER" != root ]; then
-> +	tst_brkm TBROK ignored "Test must be run as root"
-> +	exit 0
-> +fi
-> +
-> +tst_kvercmp 2 6 30
-> +if [ $? -eq 0 ]; then
-> +	tst_brkm TBROK ignored "Test should be run with kernel 2.6.30 or newer"
-> +	exit 0
-> +fi
-> +
-> +nr_bug=`dmesg | grep -c "kernel BUG"`
-> +nr_null=`dmesg | grep -c "kernel NULL pointer dereference"`
-> +nr_warning=`dmesg | grep -c "^WARNING"`
-> +nr_lockdep=`dmesg | grep -c "possible recursive locking detected"`
-> +
-> +# check_kernel_bug - check if some kind of kernel bug happened
-> +check_kernel_bug()
-> +{
-> +	new_bug=`dmesg | grep -c "kernel BUG"`
-> +	new_null=`dmesg | grep -c "kernel NULL pointer dereference"`
-> +	new_warning=`dmesg | grep -c "^WARNING"`
-> +	new_lockdep=`dmesg | grep -c "possible recursive locking detected"`
-> +
-> +	# no kernel bug is detected
-> +	if [ $new_bug -eq $nr_bug -a $new_warning -eq $nr_warning -a \
-> +	     $new_null -eq $nr_null -a $new_lockdep -eq $nr_lockdep ]; then
-> +		return 1
-> +	fi
-> +
-> +	# some kernel bug is detected
-> +	if [ $new_bug -gt $nr_bug ]; then
-> +		tst_resm TFAIL "kernel BUG was detected!"
-> +	fi
-> +	if [ $new_warning -gt $nr_warning ]; then
-> +		tst_resm TFAIL "kernel WARNING was detected!"
-> +	fi
-> +	if [ $new_null -gt $nr_null ]; then
-> +		tst_resm "kernel NULL pointer dereference!"
-> +	fi
-> +	if [ $new_lockdep -gt $nr_lockdep ]; then
-> +		tst_resm "kernel lockdep warning was detected!"
-> +	fi
-> +
-> +	nr_bug=$new_bug
-> +	nr_null=$new_null
-> +	nr_warning=$new_warning
-> +	nr_lockdep=$new_lockdep
-> +
-> +	failed=1
-> +	return 0
-> +}
-> +
-> +#---------------------------------------------------------------------------
-> +# Bug:    The bug was, while forking mass processes, trigger memcgroup OOM,
-> +#         then NULL pointer dereference may be hit.
-> +# Kernel: 2.6.25-rcX
-> +# Links:  http://lkml.org/lkml/2008/4/14/38
-> +# Fix:    commit e115f2d89253490fb2dbf304b627f8d908df26f1
-> +#---------------------------------------------------------------------------
-> +test_1()
-> +{
-> +	mkdir memcg/0/
-> +	echo 0 > memcg/0/memory.limit_in_bytes
-> +
-> +	./memcg_test_1
-> +
-> +	rmdir memcg/0/
-> +
-> +	check_kernel_bug
-> +	if [ $? -eq 1 ]; then
-> +		tst_resm TPASS "no kernel bug was found"
-> +	fi
-> +}
-> +
-> +#---------------------------------------------------------------------------
-> +# Bug:    Shrink memory might never return, unless send signal to stop it.
-> +# Kernel: 2.6.29
-> +# Links:  http://marc.info/?t=123199973900003&r=1&w=2
-> +#         http://lkml.org/lkml/2009/2/3/72
-> +# Fix:    81d39c20f5ee2437d71709beb82597e2a38efbbc
-> +#---------------------------------------------------------------------------
-> +test_2()
-> +{
-> +	./memcg_test_2 &
-> +	pid1=$!
-> +	sleep 1
-> +
-> +	mkdir memcg/0
-> +	echo $pid1 > memcg/0/tasks
-> +
-> +	# let pid1 'test_2' allocate memory
-> +	/bin/kill -SIGUSR1 $pid1
-> +	sleep 1
-> +
-> +	# shrink memory
-> +	echo 1 > memcg/0/memory.limit_in_bytes 2>&1 &
-> +	pid2=$!
-> +
-> +	# check if 'echo' will exit and exit with failure
-> +	for ((tmp = 0; tmp < 5; tmp++))
-> +	{
-> +		sleep 1
-> +		ps -p $! > /dev/null
-> +		if [ $? -ne 0 ]; then
-> +			wait $pid2
-> +			if [ $? -eq 0 ]; then
-> +				tst_resm TFAIL "echo should return failure"
-> +				failed=1
-> +				kill -9 $pid1 $pid2 > /dev/null 2>&1
-> +				wait $pid1 $pid2
-> +				rmdir memcg/0
-> +			fi
-> +			break
-> +		fi
-> +	}
-> +
-> +	if [ $tmp -eq 5 ]; then
-> +		tst_resm TFAIL "'echo' doesn't exit!"
-> +		failed=1
-> +	else
-> +		tst_resm TPASS "EBUSY was returned as expected"
-> +	fi
-> +
-> +	kill -9 $pid1 $pid2 > /dev/null 2>&1
-> +	wait $pid1 $pid2 > /dev/null 2>&1
-> +	rmdir memcg/0
-> +}
-> +
-> +#---------------------------------------------------------------------------
-> +# Bug:    crash when rmdir a cgroup on IA64
-> +# Kernel: 2.6.29-rcX
-> +# Links:  http://marc.info/?t=123235660300001&r=1&w=2
-> +# Fix:    commit 299b4eaa302138426d5a9ecd954de1f565d76c94
-> +#---------------------------------------------------------------------------
-> +test_3()
-> +{
-> +	mkdir memcg/0
-> +	for pid in `cat memcg/tasks`; do
-> +		echo $pid > memcg/0/tasks 2> /dev/null
-> +	done
-> +
-> +	for pid in `cat memcg/0/tasks`; do
-> +		echo $pid > memcg/tasks 2> /dev/null
-> +	done
-> +	rmdir memcg/0
-> +
-> +	check_kernel_bug
-> +	if [ $? -eq 1 ]; then
-> +		tst_resm TPASS "no kernel bug was found"
-> +	fi
-> +}
-> +
-> +#---------------------------------------------------------------------------
-> +# Bug:    the memcg's refcnt handling at swapoff was wrong, causing crash
-> +# Kernel: 2.6.29-rcX
-> +# Links:  http://marc.info/?t=123208656300004&r=1&w=2
-> +# Fix:    commit 85d9fc89fb0f0703df6444f260187c088a8d59ff
-> +#---------------------------------------------------------------------------
-> +test_4()
-> +{
-> +	./memcg_test_4.sh
-> +
-> +	check_kernel_bug
-> +	if [ $? -eq 1 ]; then
-> +		tst_resm TPASS "no kernel bug was found"
-> +	fi
-> +
-> +	# test_4.sh might be killed by oom, so do clean up here
-> +	killall -9 memcg_test_4 2> /dev/null
-> +	killall -9 memcg_test_4.sh 2> /dev/null
-> +	swapon -a
-> +}
-> +
-> +# main
-> +
-> +mkdir memcg/
-> +
-> +for ((cur = 1; cur <= $TST_TOTAL; cur++))
-> +{
-> +	export TST_COUNT=$cur
-> +
-> +	mount -t cgroup -o memory xxx memcg/
-> +	if [ $? -ne 0 ]; then
-> +		tst_resm TFAIL "failed to mount memory subsytem"
-> +		continue
-> +	fi
-> +
-> +	test_$cur
-> +
-> +	umount memcg/
-> +}
-> +
-> +rmdir memcg/
-> +
-> +exit $failed
-> +
-> diff -Nurp ltp-intermediate-20090420.orig/testcases/kernel/controllers/memcg/memcg_test_1.c ltp-intermediate-20090420/testcases/kernel/controllers/memcg/memcg_test_1.c
-> --- ltp-intermediate-20090420.orig/testcases/kernel/controllers/memcg/memcg_test_1.c	1970-01-01 08:00:00.000000000 +0800
-> +++ ltp-intermediate-20090420/testcases/kernel/controllers/memcg/memcg_test_1.c	2009-05-15 14:48:05.000000000 +0800
-> @@ -0,0 +1,71 @@
-> +/******************************************************************************/
-> +/*                                                                            */
-> +/* Copyright (c) 2009 FUJITSU LIMITED                                         */
-> +/*                                                                            */
-> +/* This program is free software;  you can redistribute it and/or modify      */
-> +/* it under the terms of the GNU General Public License as published by       */
-> +/* the Free Software Foundation; either version 2 of the License, or          */
-> +/* (at your option) any later version.                                        */
-> +/*                                                                            */
-> +/* This program is distributed in the hope that it will be useful,            */
-> +/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
-> +/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
-> +/* the GNU General Public License for more details.                           */
-> +/*                                                                            */
-> +/* You should have received a copy of the GNU General Public License          */
-> +/* along with this program;  if not, write to the Free Software               */
-> +/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
-> +/*                                                                            */
-> +/* Author: Li Zefan <lizf@cn.fujitsu.com>                                     */
-> +/*                                                                            */
-> +/******************************************************************************/
-> +
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <unistd.h>
-> +#include <fcntl.h>
-> +#include <sys/mman.h>
-> +#include <sys/wait.h>
-> +
-> +#define MAP_FLAGS	(MAP_PRIVATE | MAP_ANONYMOUS | MAP_LOCKED)
-> +
-> +#define LOOP		40
-> +
-> +int main(void)
-> +{
-> +	char buf[10];
-> +	int i;
-> +	int loop;
-> +	int pid;
-> +	int size = getpagesize();
-> +	int fd = open("memcg/0/tasks", O_WRONLY);
-> +
-> +	if (fd < 0)
-> +		return 1;
-> +
-> +	for (loop = 0; loop < LOOP; loop++) {
-> +		for (i = 0; i < 10; i++) {
-> +			pid = fork();
-> +			if (pid == 0) {
-> +				char *p;
-> +
-> +				sprintf(buf, "%d", getpid());
-> +				write(fd, buf, 10);
-> +				fsync(fd);
-> +
-> +				p = mmap(NULL, size, PROT_READ | PROT_WRITE,
-> +					 MAP_FLAGS, 0, 0);
-> +
-> +				return 0;
-> +			}
-> +		}
-> +
-> +		for (i = 0; i < 10; i++)
-> +			wait(NULL);
-> +	}
-> +
-> +	close(fd);
-> +
-> +	return 0;
-> +}
-> +
-> diff -Nurp ltp-intermediate-20090420.orig/testcases/kernel/controllers/memcg/memcg_test_2.c ltp-intermediate-20090420/testcases/kernel/controllers/memcg/memcg_test_2.c
-> --- ltp-intermediate-20090420.orig/testcases/kernel/controllers/memcg/memcg_test_2.c	1970-01-01 08:00:00.000000000 +0800
-> +++ ltp-intermediate-20090420/testcases/kernel/controllers/memcg/memcg_test_2.c	2009-05-15 14:48:18.000000000 +0800
-> @@ -0,0 +1,53 @@
-> +/******************************************************************************/
-> +/*                                                                            */
-> +/* Copyright (c) 2009 FUJITSU LIMITED                                         */
-> +/*                                                                            */
-> +/* This program is free software;  you can redistribute it and/or modify      */
-> +/* it under the terms of the GNU General Public License as published by       */
-> +/* the Free Software Foundation; either version 2 of the License, or          */
-> +/* (at your option) any later version.                                        */
-> +/*                                                                            */
-> +/* This program is distributed in the hope that it will be useful,            */
-> +/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
-> +/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
-> +/* the GNU General Public License for more details.                           */
-> +/*                                                                            */
-> +/* You should have received a copy of the GNU General Public License          */
-> +/* along with this program;  if not, write to the Free Software               */
-> +/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
-> +/*                                                                            */
-> +/* Author: Li Zefan <lizf@cn.fujitsu.com>                                     */
-> +/*                                                                            */
-> +/******************************************************************************/
-> +
-> +#include <unistd.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <sys/mman.h>
-> +#include <signal.h>
-> +
-> +void sigusr_handler(int __attribute__((unused)) signo)
-> +{
-> +	char *p;
-> +	int size = getpagesize() * 2;
-> +
-> +	p = mmap(NULL, size, PROT_READ | PROT_WRITE,
-> +		 MAP_PRIVATE | MAP_ANONYMOUS | MAP_LOCKED, 0, 0);
-> +	if (p == MAP_FAILED)
-> +		exit(1);
-> +}
-> +
-> +int main(void)
-> +{
-> +	struct sigaction sigusr_action;
-> +
-> +	memset(&sigusr_action, 0, sizeof(sigusr_action));
-> +	sigusr_action.sa_handler = &sigusr_handler;
-> +	sigaction(SIGUSR1, &sigusr_action, NULL);
-> +
-> +	while (1)
-> +		sleep(1);
-> +
-> +	return 0;
-> +}
-> +
-> diff -Nurp ltp-intermediate-20090420.orig/testcases/kernel/controllers/memcg/memcg_test_4.c ltp-intermediate-20090420/testcases/kernel/controllers/memcg/memcg_test_4.c
-> --- ltp-intermediate-20090420.orig/testcases/kernel/controllers/memcg/memcg_test_4.c	1970-01-01 08:00:00.000000000 +0800
-> +++ ltp-intermediate-20090420/testcases/kernel/controllers/memcg/memcg_test_4.c	2009-05-15 14:48:28.000000000 +0800
-> @@ -0,0 +1,62 @@
-> +/******************************************************************************/
-> +/*                                                                            */
-> +/* Copyright (c) 2009 FUJITSU LIMITED                                         */
-> +/*                                                                            */
-> +/* This program is free software;  you can redistribute it and/or modify      */
-> +/* it under the terms of the GNU General Public License as published by       */
-> +/* the Free Software Foundation; either version 2 of the License, or          */
-> +/* (at your option) any later version.                                        */
-> +/*                                                                            */
-> +/* This program is distributed in the hope that it will be useful,            */
-> +/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
-> +/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
-> +/* the GNU General Public License for more details.                           */
-> +/*                                                                            */
-> +/* You should have received a copy of the GNU General Public License          */
-> +/* along with this program;  if not, write to the Free Software               */
-> +/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
-> +/*                                                                            */
-> +/* Author: Li Zefan <lizf@cn.fujitsu.com>                                     */
-> +/*                                                                            */
-> +/******************************************************************************/
-> +
-> +#include <unistd.h>
-> +#include <stdlib.h>
-> +#include <stdio.h>
-> +#include <string.h>
-> +#include <signal.h>
-> +#include <sys/mman.h>
-> +
-> +#define MEM_SIZE	(1024 * 1024 * 100)
-> +
-> +void sigusr_handler(int __attribute__((unused)) signo)
-> +{
-> +	char *p;
-> +	int i;
-> +	int pagesize = getpagesize();
-> +
-> +	p = mmap(NULL, MEM_SIZE, PROT_READ | PROT_WRITE,
-> +		 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
-> +	if (p == MAP_FAILED) {
-> +		fprintf(stderr, "failed to allocate memory!\n");
-> +		exit(1);
-> +	}
-> +
-> +	for (i = 0; i < MEM_SIZE; i += pagesize)
-> +		p[i] = 'z';
-> +}
-> +
-> +int main(void)
-> +{
-> +	struct sigaction sigusr_action;
-> +
-> +	memset(&sigusr_action, 0, sizeof(sigusr_action));
-> +	sigusr_action.sa_handler = &sigusr_handler;
-> +	sigaction(SIGUSR1, &sigusr_action, NULL);
-> +
-> +	while (1)
-> +		sleep(1);
-> +
-> +	return 0;
-> +}
-> +
-> diff -Nurp ltp-intermediate-20090420.orig/testcases/kernel/controllers/memcg/memcg_test_4.sh ltp-intermediate-20090420/testcases/kernel/controllers/memcg/memcg_test_4.sh
-> --- ltp-intermediate-20090420.orig/testcases/kernel/controllers/memcg/memcg_test_4.sh	1970-01-01 08:00:00.000000000 +0800
-> +++ ltp-intermediate-20090420/testcases/kernel/controllers/memcg/memcg_test_4.sh	2009-05-15 14:59:38.000000000 +0800
-> @@ -0,0 +1,48 @@
-> +#! /bin/sh
-> +
-> +################################################################################
-> +##                                                                            ##
-> +## Copyright (c) 2009 FUJITSU LIMITED                                         ##
-> +##                                                                            ##
-> +## This program is free software;  you can redistribute it and#or modify      ##
-> +## it under the terms of the GNU General Public License as published by       ##
-> +## the Free Software Foundation; either version 2 of the License, or          ##
-> +## (at your option) any later version.                                        ##
-> +##                                                                            ##
-> +## This program is distributed in the hope that it will be useful, but        ##
-> +## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
-> +## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
-> +## for more details.                                                          ##
-> +##                                                                            ##
-> +## You should have received a copy of the GNU General Public License          ##
-> +## along with this program;  if not, write to the Free Software               ##
-> +## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
-> +##                                                                            ##
-> +## Author: Li Zefan <lizf@cn.fujitsu.com>                                     ##
-> +##                                                                            ##
-> +################################################################################
-> +
-> +# attach current task to memcg/0/
-> +mkdir memcg/0
-> +echo $$ > memcg/0/tasks
-> +
-> +./memcg_test_4 &
-> +pid=$!
-> +sleep 1
-> +
-> +# let $pid allocate 100M memory
-> +/bin/kill -SIGUSR1 $pid
-> +sleep 1
-> +
-> +# shrink memory, and then 80M will be swapped
-> +echo 40M > memcg/0/memory.limit_in_bytes
-> +
-> +# turn off swap, and swapoff will be killed
-> +swapoff -a
-> +sleep 1
-> +echo $pid > memcg/tasks 2> /dev/null
-> +echo $$ > memcg/tasks 2> /dev/null
-> +
-> +# now remove the cgroup
-> +rmdir memcg/0
-> +
-> diff -Nurp ltp-intermediate-20090420.orig/testcases/kernel/controllers/memcg/README ltp-intermediate-20090420/testcases/kernel/controllers/memcg/README
-> --- ltp-intermediate-20090420.orig/testcases/kernel/controllers/memcg/README	1970-01-01 08:00:00.000000000 +0800
-> +++ ltp-intermediate-20090420/testcases/kernel/controllers/memcg/README	2009-05-15 14:47:26.000000000 +0800
-> @@ -0,0 +1,9 @@
-> +TEST SUITE:
-> +
-> +The directory memcg contains the tests related to memory resource controller.
-> +Those testcases can reproduce bugs we found.
-> +
-> +TESTS AIM:
-> +
-> +The aim of the tests is to track any future regressions.
-> +
+Manas
 
 
 ------------------------------------------------------------------------------
