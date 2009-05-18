@@ -1,24 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M9K2y-00006G-OO
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 14:24:00 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1M64RZ-0007bF-Fk
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 15:07:57 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
 	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M9K2v-00045k-Hl
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 14:24:00 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <d51f89b0905262344h46722756vb255541a47904dbe@mail.gmail.com>
-References: <20090526142706.20166.3813.sendpatchset@subratamodak.linux.ibm.com>
-	<522C1DF17AF50042AD8AE87F7887BD3D0158B359A4@exch.hq.tensilica.com>
-	<d51f89b0905262344h46722756vb255541a47904dbe@mail.gmail.com>
-Date: Wed, 27 May 2009 19:53:51 +0530
-Message-Id: <1243434232.10447.18.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Detect test results more accurately
-	when	generating HTML
-Reply-To: subrata@linux.vnet.ibm.com
+	(Exim 4.69) id 1M64RY-00067Y-1u
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 15:07:57 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e37.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4IF7EL4025930
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 09:07:14 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n4IF7cRq030944
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 09:07:45 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4IF7Rq2023564
+	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 09:07:36 -0600
+Date: Mon, 18 May 2009 10:07:25 -0500
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20090518150725.GA9790@us.ibm.com>
+References: <4A0D13F2.8030804@cn.fujitsu.com>
+	<20090515134519.GA21654@us.ibm.com>
+	<1242647979.5161.12.camel@subratamodak.linux.ibm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1242647979.5161.12.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [PATCH] Synchronization between two processes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,78 +39,53 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rohit verma <rohit.170309@gmail.com>
-Cc: Ltp-List <ltp-list@lists.sf.net>
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-T24gV2VkLCAyMDA5LTA1LTI3IGF0IDEyOjE0ICswNTMwLCByb2hpdCB2ZXJtYSB3cm90ZTogCj4g
-SGkgTWFyYywKPiAKPiBJIHRoaW5rIHRoaXMgYSBwb3NzaWJsZSBzb2x1dGlvbi4gSSB0aGluayB0
-aGUgdGFnICJpbml0aWF0aW9uX3N0YXR1cz0iCj4gY2FuIGJlIG1vdmVkIGFmdGVyIDw8PGV4ZWN1
-dGlvbl9zdGF0dXM+Pj4uIE1vdmluZyB0aGlzIHRhZyB0bwo+IHdyaXRlX3Rlc3RfZW5kKCkgYW5k
-IHNoaWZ0aW5nIHdyaXRlX3Rlc3Rfc3RhcnQoKSBiZWZvcmUgZm9yaygpIG1pZ2h0Cj4gc29sdmUg
-dGhlIHByb2JsZW0uIEhvd2V2ZXIsIGNvcnJlc3BvbmRpbmcgY2hhbmdlcyBoYXZlIHRvIGJlIGRv
-bmUgaW4KPiBnZW5odG1sLnBsCgpZZXMsIGNoYW5nZXMgYXJlIHJlcXVpcmVkIHRoZW4gaW4gZ2Vu
-aHRtbC5wbCBhbHNvLiBTbywgZ28gYWhlYWQgYW5kIHRlc3QKeW91ciBzb2x1dGlvbi4KClJlZ2Fy
-ZHMtLQpTdWJyYXRhCgo+IAo+IFN1YnJhdGE6IEp1c3QgbGV0IG1lIHlvdXIgdmlldyBvbiB0aGlz
-LiBJJ2xsIHRyeSBhbmQgY29tZSB1cCB3aXRoIGEKPiBwYXRjaCBpZiB0aGUgY2hhbmdlcyBhcmUg
-YWNjZXB0YWJsZS4KPiAKPiBSZWdhcmRzLAo+IFJvaGl0Lgo+IAo+IAo+IAo+IE9uIFdlZCwgTWF5
-IDI3LCAyMDA5IGF0IDE6NDQgQU0sIE1hcmMgR2F1dGhpZXIgPG1hcmNAdGVuc2lsaWNhLmNvbT4g
-d3JvdGU6Cj4gPiBPa2F5LCBzbyBJIGxvb2tlZCBhdCBpdCBhIGJpdC4uLgo+ID4KPiA+IElzbid0
-IHRoZSBmdW5kYW1lbnRhbCByYWNlIGNvbmRpdGlvbiBiZWNhdXNlIHBhbiBvdXRwdXRzCj4gPiA8
-PDx0ZXN0X3N0YXJ0Pj4+ICphZnRlciogZG9pbmcgdGhlIGZvcmsoKSwgcmF0aGVyIHRoYW4gYmVm
-b3JlPwo+ID4KPiA+IElmIHNvbWUgc3RhdHVzIGluZm8gY2FuJ3QgYmUgb3V0cHV0IHRoYXQgZWFy
-bHksIG1heWJlIGl0IGp1c3QKPiA+IG5lZWRzIHRvIGJlIG91dHB1dCBhZnRlciA8PDxleGVjdXRp
-b25fc3RhdHVzPj4+IGFzIHBhcnQgb2YKPiA+IHdyaXRlX3Rlc3RfZW5kKCkgPwo+ID4KPiA+IC1N
-YXJjCj4gPgo+ID4gUC5TLiAgSSBmaW5kIGl0IHVzZWZ1bCB0byBydW4gZ2VuaHRtbCBhZ2FpbnN0
-IG9sZGVyIExUUCByZWxlYXNlcwo+ID4gKGluY2x1ZGluZyB0aG9zZSB3aXRob3V0IGdlbmh0bWwp
-LCBzbyBtaWdodCBiZSB1c2VmdWwgdG8ga2VlcCB0aGUKPiA+IG91dC1vZi1vcmRlciB3b3JrYXJv
-dW5kcyBldmVuIGlmIG9yZGVyaW5nIGlzIGZpeGVkIGluIHRoaXMgcmVsZWFzZS4KPiA+Cj4gPgo+
-ID4gU3VicmF0YSBNb2RhayB3cm90ZToKPiA+PiBIb3cgbXVjaCB3b3VsZCB5b3Ugd2FudCB0byBk
-ZWxheSA/IE1heSBiZSB0byBzb21lIG1pY3Jvc2VjcyAhIQo+ID4+IEhvd2V2ZXIgZGVsYXlpbmcg
-aXMgbm90IGEgZ29vZCBvcHRpb24sIGJ1dCwgaSBhbSByZWFkeSB0byBjb25zaWRlci4KPiA+PiBT
-ZWUsIHdoYXQgaXMgdGhlIHJlYXNhbmFibGUgdGltZSBzbyB0aGF0IHRoaXMgcHJvYmxlbSB2YW5p
-c2hlcy4KPiA+Pgo+ID4+IE1lYW53aGlsZSwgaSBoYXZlIGdlbmVyYXRlZCB0aGlzIHNtYWxsIHBh
-dGNoLiBJdCB0cmllcyB0bwo+ID4+IGZsdXNoIGFsbCBkYXRhCj4gPj4gdG8gYmUgd3JpdHRlbiB0
-byBTVERPVVQgYmVmb3JlIHRoZSBQYXJlbnQgKFBBTikgdHJpZXMgdG8gd3JpdGUgaGlzCj4gPj4g
-bmV4dCB0YWcuIE1vcmVvdmVyLCBpIGhhdmUgaW5jbHVkZWQgdGhlIGZmbHVzaCgpIHRvIGJlIGV4
-ZWN1dGVkIGluc2lkZQo+ID4+IHRoZSBpZigpw4LCtHMgZG9tYWluIHdoZW5ldmVyIHRoZSBwYXJl
-bnQgaXMgd3JpdGluZyBmcm9tIDw8dGVzdF9zdGFydD4+Cj4gPj4gdGlsbCA8PHRlc3Rfb3V0cHV0
-Pj4uIFNlZSwgaWYgdGhpcyBjYW4gaGVscCBpbiBzb2x2aW5nIHRoZSBwcm9ibGVtLgo+ID4+Cj4g
-Pj4gU2lnbmVkLW9mZi1ieTogU3VicmF0YSBNb2RhayA8c3VicmF0YUBsaW51eC52bmV0LmlibS5j
-b20+Cj4gPj4gLS0tCj4gPj4KPiA+PiAtLS0gbHRwLWludGVybWVkaWF0ZS0yMDA5MDUyMS9wYW4v
-bHRwLXBhbi5jLm9yaWcKPiA+PiAyMDA5LTA1LTI2IDE2OjMwOjM5LjAwMDAwMDAwMCArMDUzMAo+
-ID4+ICsrKyBsdHAtaW50ZXJtZWRpYXRlLTIwMDkwNTIxL3Bhbi9sdHAtcGFuLmMgICAyMDA5LTA1
-LTI2Cj4gPj4gMTk6NDQ6MzcuMDAwMDAwMDAwICswNTMwCj4gPj4gQEAgLTEwMTUsNiArMTAxNSw3
-IEBAIHN0YXRpYyBwaWRfdCBydW5fY2hpbGQoc3RydWN0IGNvbGxfZW50cnkKPiA+PiAgICAgICAg
-ICAgICAgIGVycmJ1ZltlcnJsZW5dID0gJ1wwJzsKPiA+PiAgICAgICAgICAgICAgIC8qIGZwcmlu
-dGYoc3RkZXJyLCAiJXMiLCBlcnJidWYpOyAqLwo+ID4+ICAgICAgICAgICAgICAgd2FpdHBpZChj
-cGlkLCAmc3RhdHVzLCAwKTsKPiA+PiArICAgICAgICAgICAgIGZmbHVzaChzdGRvdXQpOyAvKiBG
-bHVzaCBhbnkgZGF0YSBiZWZvcmUKPiA+PiB3cml0aW5nIDw8dGVzdF9lbmQ+PiovCj4gPj4gICAg
-ICAgICAgICAgICBpZiAoV0lGU0lHTkFMRUQoc3RhdHVzKSkgewo+ID4+ICAgICAgICAgICAgICAg
-ICAgICAgICB0ZXJtaWQgPSBXVEVSTVNJRyhzdGF0dXMpOwo+ID4+ICAgICAgICAgICAgICAgICAg
-ICAgICB0ZXJtdHlwZSA9ICJzaWduYWxlZCI7Cj4gPj4gQEAgLTEzMDAsMTQgKzEzMDEsMTQgQEAg
-c3RhdGljIHZvaWQgY29weV9idWZmZXJlZF9vdXRwdXQoc3RydWN0Cj4gPj4KPiA+PiAgc3RhdGlj
-IHZvaWQgd3JpdGVfdGVzdF9zdGFydChzdHJ1Y3QgdGFnX3BncnAgKnJ1bm5pbmcsIGNvbnN0Cj4g
-Pj4gY2hhciAqaW5pdF9zdGF0dXMpCj4gPj4gIHsKPiA+PiAtICAgICBpZiAoIXN0cmNtcChyZXBv
-cnR0eXBlLCAicnRzIikpCj4gPj4gKyAgICAgaWYgKCFzdHJjbXAocmVwb3J0dHlwZSwgInJ0cyIp
-KSB7Cj4gPj4gICAgICAgICAgICAgICBwcmludGYoIiVzXG50YWc9JXMKPiA+PiBzdGltZT0lbGRc
-bmNtZGxpbmU9XCIlc1wiXG5jb250YWN0cz1cIiVzXCJcbmFuYWx5c2lzPSVzXG5pbml0aQo+ID4g
-YXRpb25fc3RhdHVzPVwiJXNcIlxuJXNcbiIsCj4gPj4gICAgICAgICAgICAgICAgICAgICAgIjw8
-PHRlc3Rfc3RhcnQ+Pj4iLAo+ID4+ICAgICAgICAgICAgICAgICAgICAgIHJ1bm5pbmctPmNtZC0+
-bmFtZSwgcnVubmluZy0+bXlzdGltZSwKPiA+PiBydW5uaW5nLT5jbWQtPmNtZGxpbmUsICIiLAo+
-ID4+ICAgICAgICAgICAgICAgICAgICAgICJleGl0IiwgaW5pdF9zdGF0dXMsCj4gPj4gICAgICAg
-ICAgICAgICAgICAgICAgIjw8PHRlc3Rfb3V0cHV0Pj4+Iik7Cj4gPj4gLQo+ID4+ICAgICAgIGZm
-bHVzaChzdGRvdXQpOwo+ID4+ICsgICAgIH0KPiA+PiAgfQo+ID4+Cj4gPgoKCi0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLQpSZWdpc3RlciBOb3cgZm9yIENyZWF0aXZpdHkgYW5kIFRlY2hub2xvZ3kgKENh
-VCksIEp1bmUgM3JkLCBOWUMuIENhVCAKaXMgYSBnYXRoZXJpbmcgb2YgdGVjaC1zaWRlIGRldmVs
-b3BlcnMgJiBicmFuZCBjcmVhdGl2aXR5IHByb2Zlc3Npb25hbHMuIE1lZXQKdGhlIG1pbmRzIGJl
-aGluZCBHb29nbGUgQ3JlYXRpdmUgTGFiLCBWaXN1YWwgQ29tcGxleGl0eSwgUHJvY2Vzc2luZywg
-JiAKaVBob25lRGV2Q2FtcCBhcyB0aGV5IHByZXNlbnQgYWxvbmdzaWRlIGRpZ2l0YWwgaGVhdnl3
-ZWlnaHRzIGxpa2UgQmFyYmFyaWFuIApHcm91cCwgUi9HQSwgJiBCaWcgU3BhY2VzaGlwLiBodHRw
-Oi8vcC5zZi5uZXQvc2Z1L2NyZWF0aXZpdHljYXQtY29tIApfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RA
-bGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3Rz
-L2xpc3RpbmZvL2x0cC1saXN0Cg==
+Quoting Subrata Modak (subrata@linux.vnet.ibm.com):
+> On Fri, 2009-05-15 at 08:45 -0500, Serge E. Hallyn wrote: 
+> > Quoting Gui Xiaohua (guixh@cn.fujitsu.com):
+> > > The child-process wait SIGUSR1 which would be sended by parent-process,
+> > > if the child-process execute sigtimedwait() after parent-process send 
+> > > the signal, it would never receive the SIGUSR1 from parent-process.
+> > > I cann't make sure the SIGUSR1 be sended after child-process execute 
+> > > sigtimedwait() with 100 percent, and i try my best.
+> > 
+> > Well, in theory I suppose this could happen, but you'd have to have
+> > a pretty bad scheduler if the parent can do a strcmp(buf, "c:go")
+> > between the pipe read and signal send, while the child goes straight
+> > from pipe write to sigtimedwait.
+> > 
+> > Have you seen this signal be missed?  If not, then I'd rather assume
+> > things are reasonable.  If you have seen this happen, then why not
+> > instead set up a SIGUSR1 handler in the child before doing the pipe
+> > write, then just sleep for 3 seconds instead of doing sigtimedwait?
+> 
+> Thanks Serge.
+
+Or, if I'm being unreasonable, then at least have the parent only wait
+for at most 1 second, and leave the child alone.  Every every ltp test
+is going to hang for 5 seconds...
+
+But I prefer setting the signal handler ahead of time.
+
+> Gui,
+> 
+> Are you planning any further patch(s) for this ?
+
+thanks,
+-serge
+
+------------------------------------------------------------------------------
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables 
+unlimited royalty-free distribution of the report engine 
+for externally facing server and web deployment. 
+http://p.sf.net/sfu/businessobjects
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
