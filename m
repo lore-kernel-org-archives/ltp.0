@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1M4htT-0000rr-0T
-	for ltp-list@lists.sourceforge.net; Thu, 14 May 2009 20:51:07 +0000
-Received: from relay2.suse.de (relay-ext.suse.de [195.135.221.8])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx2.suse.de (Postfix) with ESMTP id 8D5EA8640B
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 14 May 2009 22:50:45 +0200 (CEST)
-Date: Thu, 14 May 2009 22:50:45 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20090514205045.GB8023@schrodinger.suse.cz>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="kORqDWCi7qDJ0mEj"
-Content-Disposition: inline
-Subject: [LTP] [PATCH] fix missing return in several files.
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <caiqian@cclom.cn>) id 1M655W-0004VI-TR
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 15:49:14 +0000
+Received: from smtp109.biz.mail.re2.yahoo.com ([206.190.53.8])
+	by 3b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1M655T-0006uz-VH
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 15:49:14 +0000
+Date: Mon, 18 May 2009 19:29:56 +0800 (CST)
+Message-Id: <20090518.192956.27798434.caiqian@cclom.cn>
+From: CAI Qian <caiqian@cclom.cn>
+In-Reply-To: <E733EF347D18094EB0D8B89116EB269C01DF32D5@MADARRMAIL4.indra.es>
+References: <E733EF347D18094EB0D8B89116EB269C01DF29F7@MADARRMAIL4.indra.es>
+	<4A0C9518.8040009@web.de>
+	<E733EF347D18094EB0D8B89116EB269C01DF32D5@MADARRMAIL4.indra.es>
+Mime-Version: 1.0
+Subject: Re: [LTP] Error installing ltp-full-20090430
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,103 +26,47 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: =?iso-8859-1?Q?Cobreces=C1lvarez@cclom.cn?=, amcobreces@eservicios.indra.es
+Cc: ltp-list@lists.sf.net, jpalecek@web.de
 
-
---kORqDWCi7qDJ0mEj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi,
-these three patches fixes missing return 0; statements.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
---kORqDWCi7qDJ0mEj
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="fix-main-return-value.patch"
-
-Index: ltp-full-20090430/testcases/kernel/io/aio/aio02/main.c
-===================================================================
---- ltp-full-20090430.orig/testcases/kernel/io/aio/aio02/main.c
-+++ ltp-full-20090430/testcases/kernel/io/aio/aio02/main.c
-@@ -34,7 +34,9 @@ int TST_TOTAL=0;
- 
- int main(void)
- {
--  tst_brkm(TCONF, tst_exit, "libaio missing");
-+	tst_brkm(TCONF, tst_exit, "libaio missing");
-+
-+	return 0;
- }
- 
- #endif
-
---kORqDWCi7qDJ0mEj
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="fix-aio01-return-value.patch"
-
-Index: ltp-full-20090430/testcases/kernel/io/aio/aio01/aio01.c
-===================================================================
---- ltp-full-20090430.orig/testcases/kernel/io/aio/aio01/aio01.c
-+++ ltp-full-20090430/testcases/kernel/io/aio/aio01/aio01.c
-@@ -426,7 +426,9 @@ void cleanup() {
- 
- int main(void)
- {
--  tst_brkm(TCONF, tst_exit, "libaio missing");
-+	tst_brkm(TCONF, tst_exit, "libaio missing");
-+
-+	return 0;
- }
- 
- #endif
-
---kORqDWCi7qDJ0mEj
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="fix-aio01-return-value.patch"
-
-Index: ltp-full-20090430/testcases/kernel/io/aio/aio01/aio01.c
-===================================================================
---- ltp-full-20090430.orig/testcases/kernel/io/aio/aio01/aio01.c
-+++ ltp-full-20090430/testcases/kernel/io/aio/aio01/aio01.c
-@@ -426,7 +426,9 @@ void cleanup() {
- 
- int main(void)
- {
--  tst_brkm(TCONF, tst_exit, "libaio missing");
-+	tst_brkm(TCONF, tst_exit, "libaio missing");
-+
-+	return 0;
- }
- 
- #endif
-
---kORqDWCi7qDJ0mEj
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-The NEW KODAK i700 Series Scanners deliver under ANY circumstances! Your
-production scanning environment may not be a perfect world - but thanks to
-Kodak, there's a perfect scanner to get the job done! With the NEW KODAK i700
-Series Scanner you'll get full speed at 300 dpi even with all image 
-processing features enabled. http://p.sf.net/sfu/kodak-com
---kORqDWCi7qDJ0mEj
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---kORqDWCi7qDJ0mEj--
-
+RnJvbTogQ29icmVjZXMgw4FsdmFyZXosIEFuYSBNYXJpYSA8YW1jb2JyZWNlc0Blc2VydmljaW9z
+LmluZHJhLmVzPg0KU3ViamVjdDogUmU6IFtMVFBdIEVycm9yIGluc3RhbGxpbmcgbHRwLWZ1bGwt
+MjAwOTA0MzANCkRhdGU6IE1vbiwgMTggTWF5IDIwMDkgMTI6MTg6MjEgKzAyMDANCg0KPiANCj4g
+DQo+IEkgc2VuZCB5b3UgdGhlIGFjdHVhbCBlcnJvcnMgaW4gdGhlIGF0dGFjaGVkIGZpbGUuDQo+
+IA0KPiBUaGFua3MgaW4gYWR2YW5jZS4gUmVnYXJkcy4NCj4gQW5hIEPDs2JyZWNlcy4NCj4gDQo+
+IC0tLS0tTWVuc2FqZSBvcmlnaW5hbC0tLS0tDQo+IERlOiBqcGFsZWNla0B3ZWIuZGUgW21haWx0
+bzpqcGFsZWNla0B3ZWIuZGVdIA0KPiBFbnZpYWRvIGVsOiB2aWVybmVzLCAxNSBkZSBtYXlvIGRl
+IDIwMDkgMDowMw0KPiBQYXJhOiBDb2JyZWNlcyDDgWx2YXJleiwgQW5hIE1hcmlhDQo+IENDOiBs
+dHAtbGlzdEBsaXN0cy5zZi5uZXQ7IEJyacOxYXMgQWxvbnNvLCBGcmFuY2lzY28gTWFudWVsDQo+
+IEFzdW50bzogUmU6IFtMVFBdIEVycm9yIGluc3RhbGxpbmcgbHRwLWZ1bGwtMjAwOTA0MzANCj4g
+DQo+IENvYnJlY2VzIMOBbHZhcmV6LCBBbmEgTWFyaWEgd3JvdGU6DQo+PiBXaGVuIEkgcnVuICJt
+YWtlIGFsbCIgd2l0aCB0aGUgZGVmYXVsdCBjb25maWd1cmF0aW9uLCBzb21lIGVycm9ycw0KPj4g
+YXBwZWFyLiBJIHNlbmQgeW91IHRoZSBjb25maWcubG9nIGZpbGUuIMK/Y291bGQgeW91IHBsZWFz
+ZSBwcm92aWRlIGFueQ0KPj4gYW5zd2VyIG9uIHdoaWNoIGlzIHRoZSBwcm9ibGVtPw0KPiANCj4g
+IEZyb20gdGhlIGxvZyBmaWxlIHlvdSBwcm92aWRlZCwgSSBjYW4gc2VlIHlvdSBoYXZlIGEgcmF0
+aGVyIG9sZCBrZXJuZWwgdGhhdCANCj4gbGFja3Mgc29tZSBvZiB0aGUgdGVzdGVkIGZlYXR1cmVz
+LiBIb3dldmVyLCB0aGlzIHNob3VsZCBub3QgYmUgYSBwcm9ibGVtIHBlciBzZS4NCj4gDQo+IENv
+dWxkIHlvdSBzZW5kIHRoZSBhY3R1YWwgZXJyb3JzIHlvdSBleHBlcmllbmNlPyBpZS4gdGhlIG91
+dHB1dCBvZiAibWFrZSBhbGwiLCANCj4gb3IgIm1ha2UgLWsgYWxsIj8NCj4gDQo+IFJlZ2FyZHMN
+Cj4gICAgICBKaXJpIFBhbGVjZWsNCj4gDQoNCkxvb2tzIGxpa2UgeW91IGFyZSBoaXR0aW5nIGEg
+R0NDIGJ1ZywNCg0KLi4uDQpnY2MgLWcgLU8yIC1XYWxsIC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAg
+ICBtZW0wMi5jIC1MLi4vLi4vLi4vLi4vbGliIC1sbHRwICAtbyBtZW0wMg0KbWVtMDIuYzogSW4g
+ZnVuY3Rpb24g4oCYbWFpbic6DQptZW0wMi5jOjcxOiBpbnRlcm5hbCBjb21waWxlciBlcnJvcjog
+aW4gbWVyZ2VfYWxpYXNfaW5mbywgYXQgdHJlZS1zc2EtY29weS5jOjIzNQ0KUGxlYXNlIHN1Ym1p
+dCBhIGZ1bGwgYnVnIHJlcG9ydCwNCndpdGggcHJlcHJvY2Vzc2VkIHNvdXJjZSBpZiBhcHByb3By
+aWF0ZS4NClNlZSA8VVJMOmh0dHA6Ly9nY2MuZ251Lm9yZy9idWdzLmh0bWw+IGZvciBpbnN0cnVj
+dGlvbnMuDQouLi4NCg0KTWF5YmUgeW91IGNhbiBzZWFyY2ggdGhlIEdDQyBCdWd6aWxsYSB0byBz
+ZWUgaWYgdGhpcyBhIGtub3duIGlzc3VlLCBhbmQNCnVwZ3JhZGUvZG93bmdyYWRlIEdDQyB2ZXJz
+aW9uIGFjY29yZGluZ2x5LCBvciByZXBvcnQgYSBidWcgZm9yIGl0IGlmIGl0DQppcyBzb21ldGhp
+bmcgbmV3Lg0KDQpDQUkgUWlhbg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkNyeXN0YWwgUmVwb3J0
+cyAtIE5ldyBGcmVlIFJ1bnRpbWUgYW5kIDMwIERheSBUcmlhbApDaGVjayBvdXQgdGhlIG5ldyBz
+aW1wbGlmaWVkIGxpY2Vuc2luZyBvcHRpb24gdGhhdCBlbmFibGVzIAp1bmxpbWl0ZWQgcm95YWx0
+eS1mcmVlIGRpc3RyaWJ1dGlvbiBvZiB0aGUgcmVwb3J0IGVuZ2luZSAKZm9yIGV4dGVybmFsbHkg
+ZmFjaW5nIHNlcnZlciBhbmQgd2ViIGRlcGxveW1lbnQuIApodHRwOi8vcC5zZi5uZXQvc2Z1L2J1
+c2luZXNzb2JqZWN0cwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0
+Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
