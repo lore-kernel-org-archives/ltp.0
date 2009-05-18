@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1M9hJp-0008CM-As
-	for ltp-list@lists.sourceforge.net; Thu, 28 May 2009 15:14:57 +0000
-Received: from yw-out-1718.google.com ([74.125.46.153])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1M9hJo-0005s1-Ct
-	for ltp-list@lists.sourceforge.net; Thu, 28 May 2009 15:14:57 +0000
-Received: by yw-out-1718.google.com with SMTP id 5so2643469ywr.82
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 28 May 2009 08:14:55 -0700 (PDT)
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <sarath.tadi@gmail.com>) id 1M6Af2-0000pZ-2b
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 21:46:16 +0000
+Received: from ctyaarimta01-1.yaariinvites.com ([63.167.241.175])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1M6Aew-0002YN-RO
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 21:46:16 +0000
+Date: Mon, 18 May 2009 17:46:07 -0400
+From: sarath babu <sarath.tadi@gmail.com>
+Message-ID: <11e2345131a95164046cf93c89a33de5@localhost.localdomain>
 MIME-Version: 1.0
-Date: Thu, 28 May 2009 20:44:55 +0530
-Message-ID: <f5a7b3810905280814gad8b6a4h9c161af8d58a739d@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Subject: [LTP] open posix sigaction/10-1.c test fix
+Subject: [LTP] sarath babu sent you a Friend Request on Yaari
+Reply-To: sarath.tadi@gmail.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,222 +23,90 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1179545925537476755=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: naresh.kernel@gmail.com, maxin john <maxinbjohn@gmail.com>
-
-Hi,
-
-I come across with this kernel issue in 2.6.27
-http://lkml.org/lkml/2008/9/23/218
-http://lkml.org/lkml/2008/9/23/228
-http://lkml.org/lkml/2008/9/24/180
-http://lkml.org/lkml/2008/9/24/186
-http://lkml.org/lkml/2008/9/24/193
-http://lkml.org/lkml/2008/9/24/243
-http://lkml.org/lkml/2008/9/24/247
 
 
-Test cases modification noticed for
-ltp/testcases/open_posix_testsuite/conformance/interfaces/sigaction/10-1.c
-I have modified patch and submitting fix patch.
-This test case is passed now.
-
-Previous results log:
-
--bash-3.2# pwd
-/tmp/open_posix_testsuite/conformance/interfaces/sigaction
--bash-3.2# ./10-1.test
---> Sending SIGSTOP
-Child has been stopped
---> Sending SIGCONT
---> Sending SIGSTOP
---> Sending SIGCONT
---> Sending SIGSTOP
---> Sending SIGCONT
---> Sending SIGSTOP
---> Sending SIGCONT
---> Sending SIGSTOP
---> Sending SIGCONT
---> Sending SIGSTOP
---> Sending SIGCONT
---> Sending SIGSTOP
---> Sending SIGCONT
---> Sending SIGSTOP
---> Sending SIGCONT
---> Sending SIGSTOP
---> Sending SIGCONT
---> Sending SIGSTOP
---> Sending SIGCONT
-Test FAILED
--bash-3.2#
+--===============1179545925537476755==
+Content-Type: multipart/alternative;
+	boundary="b1_11e2345131a95164046cf93c89a33de5"
 
 
-Current results log:
--bash-3.2# pwd
-/tmp/open_posix_testsuite/conformance/interfaces/sigaction
---> Sending SIGSTOP
-Child has been stopped
---> Sending SIGCONT
-Child has been continued
---> Sending SIGSTOP
-Child has been stopped
---> Sending SIGCONT
-Child has been continued
---> Sending SIGSTOP
-Child has been stopped
---> Sending SIGCONT
-Child has been continued
---> Sending SIGSTOP
-Child has been stopped
---> Sending SIGCONT
-Child has been continued
---> Sending SIGSTOP
-Child has been stopped
---> Sending SIGCONT
-Child has been continued
---> Sending SIGSTOP
-Child has been stopped
---> Sending SIGCONT
-Child has been continued
---> Sending SIGSTOP
-Child has been stopped
---> Sending SIGCONT
-Child has been continued
---> Sending SIGSTOP
-Child has been stopped
---> Sending SIGCONT
-Child has been continued
---> Sending SIGSTOP
-Child has been stopped
---> Sending SIGCONT
-Child has been continued
---> Sending SIGSTOP
-Child has been stopped
---> Sending SIGCONT
-Child has been continued
-Test PASSED
--bash-3.2#
+--b1_11e2345131a95164046cf93c89a33de5
+Content-Type: text/plain; charset = "iso-8859-1"
+Content-Transfer-Encoding: 8bit
+
+sarath babu wants you to join Yaari!
+
+Is sarath your friend?
+
+<a href="http://yaari.com/?controller=user&action=mailregister&friend=1&sign=YaariDSJ165BWK997KDR801NVI253">Yes, sarath is my friend!</a> <a href="http://yaari.com/?controller=user&action=mailregister&friend=0&sign=YaariDSJ165BWK997KDR801NVI253">No, sarath isn't my friend.</a>
+
+Please respond or sarath may think you said no :(
+
+Thanks,
+The Yaari Team
+
+<font color="#505050">-----------------------------------------------------------</font>
+<font color="#808080">Yaari Inc., 358 Angier Ave NE Atlanta, GA 30312</font>
+<a href="http://yaari.com/?controller=privacy">Privacy Policy</a> | <a href="http://yaari.com/?controller=absn&action=addoptout&email=ltp-list@lists.sourceforge.net">Unsubscribe</a> | <a href="http://yaari.com/?controller=termsofservice&action=index">Terms of Service</a>
+
+YaariDSJ165BWK997KDR801NVI253
 
 
-Original changes done by Oleg Nesterov and Joe Korty
-Modified by: Naresh Kamboju < naresh.kernel@gmail.com >
+--b1_11e2345131a95164046cf93c89a33de5
+Content-Type: text/html; charset = "iso-8859-1"
+Content-Transfer-Encoding: 8bit
 
-Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+sarath babu wants you to join Yaari!<br />
+<br />
+Is sarath your friend?<br />
+<br />
+<a href="http://yaari.com/?controller=user&action=mailregister&friend=1&sign=YaariDSJ165BWK997KDR801NVI253">Yes, sarath is my friend!</a> <a href="http://yaari.com/?controller=user&action=mailregister&friend=0&sign=YaariDSJ165BWK997KDR801NVI253">No, sarath isn't my friend.</a><br />
+<br />
+Please respond or sarath may think you said no :(<br />
+<br />
+Thanks,<br />
+The Yaari Team<br />
+<br />
+<font color="#505050">-----------------------------------------------------------</font><br />
+<font color="#808080">Yaari Inc., 358 Angier Ave NE Atlanta, GA 30312</font><br />
+<a href="http://yaari.com/?controller=privacy">Privacy Policy</a> | <a href="http://yaari.com/?controller=absn&action=addoptout&email=ltp-list@lists.sourceforge.net">Unsubscribe</a> | <a href="http://yaari.com/?controller=termsofservice&action=index">Terms of Service</a><br />
+<br />
+YaariDSJ165BWK997KDR801NVI253
 
-diff -Naurb ltp-full-20090430/testcases/open_posix_testsuite/conformance/interfaces/sigaction/10-1.c
-ltp-full-20090430_mod/testcases/open_posix_testsuite/conformance/interfaces/sigaction/10-1.c
---- ltp-full-20090430/testcases/open_posix_testsuite/conformance/interfaces/sigaction/10-1.c	2005-06-03
-22:04:51.000000000 +0530
-+++ ltp-full-20090430_mod/testcases/open_posix_testsuite/conformance/interfaces/sigaction/10-1.c	2009-05-28
-19:25:03.000000000 +0530
-@@ -19,19 +19,42 @@
- #define NUMSTOPS 10
 
- int child_stopped = 0;
--int waiting = 1;
-+int child_continued = 0;
-+int notification;
 
- void handler(int signo, siginfo_t *info, void *context)
- {
--	if (info && info->si_code == CLD_STOPPED) {
-+		if (!info)
-+		return;
-+
-+		
-+		notification = info->si_code;
-+
-+		switch (notification) {
-+		case CLD_STOPPED:
- 		printf("Child has been stopped\n");
--		waiting = 0;
- 		child_stopped++;
-+		break;
-+		case CLD_CONTINUED:
-+		printf("Child has been continued\n");
-+		child_continued++;
-+		break;
- 	}
- }
+--b1_11e2345131a95164046cf93c89a33de5--
 
-+void wait_for_notification(int val)
-+{
-+ struct timeval tv;
 
--int main()
-+ while (notification != val) {
-+ tv.tv_sec = 1;
-+ tv.tv_usec = 0;
-+ if (!select(0, NULL, NULL, NULL, &tv))
-+ break;
-+ }
-+}
-+
-+int main(void)
- {
- 	pid_t pid;
- 	struct sigaction act;
-@@ -58,25 +81,25 @@
- 		int i;
 
- 		for (i = 0; i < NUMSTOPS; i++) {
--			waiting = 1;
--
- 			printf("--> Sending SIGSTOP\n");
-+			notification = 0;
- 			kill(pid, SIGSTOP);
 
- 			/*
- 			  Don't let the kernel optimize away queued
- 			  SIGSTOP/SIGCONT signals.
- 			*/
--			while (waiting) {
--				tv.tv_sec = 1;
--				tv.tv_usec = 0;
--				if (!select(0, NULL, NULL, NULL, &tv))
--				  break;
--			}
-
-+			wait_for_notification(CLD_STOPPED);
-
- 			printf("--> Sending SIGCONT\n");
-+			notification = 0;
- 			kill(pid, SIGCONT);
-+			/*
-+			 SIGCHLD doesn't queue, make sure CLD_CONTINUED
-+			 doesn't mask the next CLD_STOPPED
-+			 */
-+			 wait_for_notification(CLD_CONTINUED);
- 		}
- 		
- 		/* POSIX specifies default action to be abnormal termination */
-@@ -84,7 +107,7 @@
- 		waitpid(pid, &s, 0);
- 	}
-
--	if (child_stopped == NUMSTOPS) {
-+	if (child_stopped == NUMSTOPS && child_continued == NUMSTOPS) {
- 		printf("Test PASSED\n");
- 		return 0;
- 	}
-@@ -92,4 +115,3 @@
- 	printf("Test FAILED\n");
- 	return -1;
- }
--
-Best regards,
-Naresh Kamboju
+--===============1179545925537476755==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
-is a gathering of tech-side developers & brand creativity professionals. Meet
-the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
-Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables 
+unlimited royalty-free distribution of the report engine 
+for externally facing server and web deployment. 
+http://p.sf.net/sfu/businessobjects
+--===============1179545925537476755==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1179545925537476755==--
+
+
+
