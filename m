@@ -1,21 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <leon.woestenberg@gmail.com>) id 1M51CP-0006hv-B4
-	for ltp-list@lists.sourceforge.net; Fri, 15 May 2009 17:27:57 +0000
-Received: from yw-out-2324.google.com ([74.125.46.28])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1M51CK-0008Aq-24
-	for ltp-list@lists.sourceforge.net; Fri, 15 May 2009 17:27:55 +0000
-MIME-Version: 1.0
-In-Reply-To: <1238499818.6818.25.camel@subratamodak.linux.ibm.com>
-References: <1238499818.6818.25.camel@subratamodak.linux.ibm.com>
-Date: Fri, 15 May 2009 19:27:50 +0200
-Message-ID: <c384c5ea0905151027x5a74ee85l294616e0ddae41ce@mail.gmail.com>
-From: Leon Woestenberg <leon.woestenberg@gmail.com>
-Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been Released for
-	MARCH 2009
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M6Mbk-0008CS-Qc
+	for ltp-list@lists.sourceforge.net; Tue, 19 May 2009 10:31:40 +0000
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1M6Mbg-0004TW-W0
+	for ltp-list@lists.sourceforge.net; Tue, 19 May 2009 10:31:40 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <20090518.192133.233689723.caiqian@cclom.cn>
+References: <d51f89b0905130216h36e32efbwf48f241f2d961a0a@mail.gmail.com>
+	<20090513.225510.104053150.caiqian@cclom.cn>
+	<d51f89b0905180455w514b014boedb4670610987533@mail.gmail.com>
+	<20090518.192133.233689723.caiqian@cclom.cn>
+Date: Tue, 19 May 2009 16:01:25 +0530
+Message-Id: <1242729086.5961.43.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Reg: Script to extract description of test case
+	from	LTPROOT/doc/testcases/*.txt files
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,41 +29,65 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: rohit verma <rohit.170309@gmail.com>
+Cc: Mike Frysinger <vapier@gentoo.org>, ltp-list <ltp-list@lists.sf.net>
 
-Hello all at LTP,
-
-2009/3/31 Subrata Modak <subrata@linux.vnet.ibm.com>:
-> Dear All,
->
-> The Linux Test Project test suite has been released for the month of
-> MARCH 2009. Please see ltp/INSTALL file carefully, as, there has been
->
-
-OpenEmbedded builds LTP for a large number of machines / architectures.
-
-JFYI, The LTP January release required some patches, especially in the
-area of cross-compilation:
-
-http://cgit.openembedded.org/cgit.cgi?url=openembedded/tree/recipes/ltp/ltp-20090131
-
-Thanks for LTP!
-
-Regards,
--- 
-Leon
-
-------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables 
-unlimited royalty-free distribution of the report engine 
-for externally facing server and web deployment. 
-http://p.sf.net/sfu/businessobjects
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+SGkgUm9oaXQsCgpPbiBNb24sIDIwMDktMDUtMTggYXQgMTk6MjEgKzA4MDAsIENBSSBRaWFuIHdy
+b3RlOiAKPiBGcm9tOiByb2hpdCB2ZXJtYSA8cm9oaXQuMTcwMzA5QGdtYWlsLmNvbT4KPiBTdWJq
+ZWN0OiBSZTogUmVnOiBTY3JpcHQgdG8gZXh0cmFjdCBkZXNjcmlwdGlvbiBvZiB0ZXN0IGNhc2Ug
+ZnJvbSBMVFBST09UL2RvYy90ZXN0Y2FzZXMvKi50eHQgZmlsZXMKPiBEYXRlOiBNb24sIDE4IE1h
+eSAyMDA5IDA0OjU1OjU0IC0wNzAwCj4gCj4gPiBEZWFyIFN1YnJhdGEvUWlhbiwKPiA+IAo+ID4g
+SSBhbSB0cnlpbmcgdG8gZGV2ZWxvcCBzY3JpcHQgd2hpY2ggd291bGQgZXh0cmFjdHMgZGVzY3Jp
+cHRpb24gaW5mb3JtYXRpb24KPiA+IGFib3V0IHVzZXIgcmVxdWlyZWQgdGVzdCBjYXNlIGZyb20g
+TFRQUk9PVC9kb2MvdGVzdGNhc2VzLyBmb2xkZXIuCj4gPiAKPiA+IFNvIHRvIG1ha2UgdGhlIGRl
+c2NyaXB0aW9uIHRleHQgZmlsZSAgYXMgc3RhbmRhcmQgZmlsZSwgY2FuIHdlIHJlcHJlc2VudCB0
+aGUKPiA+IGRlc2NyaXB0aW9uIGFzIG1lbnRpb25lZCBiZWxvdy4KPiA+IAo+ID4gRm9yIGV4YW1w
+bGUgaW4gc3lzY2FsbHMgY2F0ZWdvcnk6Cj4gPiAKPiA+IEN1cnJlbnRseSBhdmFpbGFibGUgZm9y
+bWF0IG9mIGRlc2NyaXB0aW9uIGluIExUUCBhcyBmb2xsb3dzLgo+ID4gCj4gPiAgIGFib3J0MDEK
+PiA+ICAgIEJhc2ljIHRlc3QgZm9yIGFib3J0KDMpLgo+ID4gCj4gPiAgIGFjY2VwdDAxCj4gPiAg
+ICBWZXJpZnkgdGhhdCBhY2NlcHQoKSByZXR1cm5zIHRoZSBwcm9wZXIgZXJybm8gZm9yIHZhcmlv
+dXMgZmFpbHVyZSBjYXNlcwo+ID4gCj4gPiAKPiA+IFRvIG1ha2UgaXQgaW4gY29uc2lzdGVudCB3
+YXksIGRlc2NyaXB0aW9uIHNob3VsZCBiZSBlbmNsb3NlZCBieSBleGVjdXRhYmxlcwo+ID4gYXMg
+Zm9sbG93cy4KPiA+IAo+ID4gIDxhYm9ydDAxPgo+ID4gICAgQmFzaWMgdGVzdCBmb3IgYWJvcnQo
+MykuCj4gPiAgPFxhYm9ydDAxPgo+ID4gCj4gPiAgPGFjY2VwdDAxPgo+ID4gICAgVmVyaWZ5IHRo
+YXQgYWNjZXB0KCkgcmV0dXJucyB0aGUgcHJvcGVyIGVycm5vIGZvciB2YXJpb3VzIGZhaWx1cmUg
+Y2FzZXMKPiA+ICA8XGFjY2VwdDAxPgo+ID4gCj4gPiBQbGVhc2UgY29uZmlybSBpZiB0aGlzIGZv
+cm1hdCBpcyBPLksgb3Igc3VnZ2VzdCBhbnkgb3RoZXIgZm9ybWF0IGJ5IHdoaWNoIHdlCj4gPiBj
+YW4gZWFzaWx5IHBhcnNlIHRoZSB0ZXN0IGNhc2VzIGFuZCBleHRyYWN0cyB0aGUgZGVzY3JpcHRp
+b24uCgpJdMWbIGFsd2F5cyBncmVhdCB0byBzZWUgc29tZWJvZHkgd29ya2luZyBvbiBMVFAgZG9j
+dW1lbnRhdGlvbi4gU28sIGxldHMKYXNrIHRoZSBjb21tdW5pdHkgYWxzbyBmb3IgdGhlaXIgb3Bp
+bmlvbiBhcyB3ZWxsLiBDYW4gd2UgYWxzbyBpbmNsdWRlCnNvbWUgbW9yZSB0YWdzIGZvciBtb3Jl
+IGRlc2NyaXB0aXZlIGluZm8gPwoKUmVnYXJkcy0tClN1YnJhdGEKCj4gPgo+IAo+IExvb2tzIGdv
+b2QgZm9yIG1lLgo+IAo+IENBSSBRaWFuCj4gCj4gPiBJZiB0aGlzIGZvcm1hdCBpcyBPLksgLCBJ
+IHdvdWxkIHNlbmQgdGhlIHBhdGNoIGZvciB0aG9zZSB0ZXh0IGZpbGVzCj4gPgo+ID4gUmVnYXJk
+cywKPiA+IFJvaGl0Cj4gPiAKPiA+IAo+ID4gCj4gPiBPbiBXZWQsIE1heSAxMywgMjAwOSBhdCA3
+OjU1IEFNLCBDQUkgUWlhbiA8Y2FpcWlhbkBjY2xvbS5jbj4gd3JvdGU6Cj4gPiAKPiA+PiBGcm9t
+OiByb2hpdCB2ZXJtYSA8cm9oaXQuMTcwMzA5QGdtYWlsLmNvbT4KPiA+PiBTdWJqZWN0OiBSZWc6
+IFNjcmlwdCB0byBleHRyYWN0IGRlc2NyaXB0aW9uIG9mIHRlc3QgY2FzZSBmcm9tCj4gPj4gTFRQ
+Uk9PVC9kb2MvdGVzdGNhc2VzLyoudHh0IGZpbGVzCj4gPj4gRGF0ZTogV2VkLCAxMyBNYXkgMjAw
+OSAwMjoxNjo1NyAtMDcwMAo+ID4+Cj4gPj4gPiBEZWFyIFN1YnJhdGEvcWlhbiwKPiA+PiA+Cj4g
+Pj4gPiBBcyBpZiB3ZSBydW4gTFRQIHRlc3RjYXNlcywgbm93aGVyZSBMVFAgdGVzdCBzdWl0ZSBw
+b3B1bGF0ZXMgdGhlCj4gPj4gPiBkZXNjcmlwdGlvbiBvZiB0ZXN0Y2FzZXMgKGVpdGhlciBpbiAu
+bG9nLCAub3V0cHV0LCAuSFRNTCBvciAuZmFpbGVkCj4gPj4gPiB0ZXN0IGNhc2VzIGZpbGVzKS4K
+PiA+PiA+Cj4gPj4gPiBEZXNjcmlwdGlvbiBvZiBlYWNoIHRlc3QgY2FzZSBpbiBjYXRlZ29yeSB3
+aXNlIGlzIGF2YWlsYWJsZSBpbgo+ID4+ID4gTFRQUk9PVC9kb2MvdGVzdGNhc2VzIGZvbGRlci4K
+PiA+PiA+Cj4gPj4gPiBNeSBRdWVzdGlvbiA6IElzIHRoZXJlIGFueSByZWFkeS1tYWRlIHNjcmlw
+dCBhdmFpbGFibGUgdG8gZXh0cmFjdCB0aGUKPiA+PiA+IGRlc2NyaXB0aW9uIG9mIHVzZXIgcmVx
+dWlyZWQgdGVzdCBjYXNlIGZyb20gYWJvdmUgc3BlY2lmaWVkIGZvbGRlcj8KPiA+PiA+Cj4gPj4g
+PiBJZiBzY3JpcHQgaXMgbm90IGF2YWlsYWJsZSwgY291bGQgeW91IHN1Z2dlc3QgdGhlIGRpcmVj
+dGlvbiB0byBleHRyYWN0Cj4gPj4gPiBkZXNjcmlwdGlvbiBvZiB0ZXN0IGNhc2VzLgo+ID4+ID4K
+PiA+PiA+Cj4gPj4gPiBSZWdhcmRzLAo+ID4+ID4gUm9oaXQuCj4gPj4KPiA+PiBOb3QgSSBhbSBh
+d2FyZSBvZi4gU3VicmF0YSBvciBzb21lb25lIGluIHRoZSBsaXN0IG1pZ2h0IGhhdmUgc29tZSBp
+ZGVhcwo+ID4+IGZvciB5b3UuCj4gPj4KPiA+PiBDQUkgUWlhbgo+ID4+CgoKLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tCkNyeXN0YWwgUmVwb3J0cyAtIE5ldyBGcmVlIFJ1bnRpbWUgYW5kIDMwIERheSBU
+cmlhbApDaGVjayBvdXQgdGhlIG5ldyBzaW1wbGlmaWVkIGxpY2Vuc2luZyBvcHRpb24gdGhhdCBl
+bmFibGVzIAp1bmxpbWl0ZWQgcm95YWx0eS1mcmVlIGRpc3RyaWJ1dGlvbiBvZiB0aGUgcmVwb3J0
+IGVuZ2luZSAKZm9yIGV4dGVybmFsbHkgZmFjaW5nIHNlcnZlciBhbmQgd2ViIGRlcGxveW1lbnQu
+IApodHRwOi8vcC5zZi5uZXQvc2Z1L2J1c2luZXNzb2JqZWN0cwpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxp
+c3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xp
+c3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
