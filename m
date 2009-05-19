@@ -1,33 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MA1ds-0000jn-Qo
-	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:57:00 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MA1dr-0001xG-U4
-	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:57:00 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e8.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4TCkZFS013365
-	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 08:46:35 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4TCuxFJ098912
-	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 08:56:59 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4TCuxj6000590
-	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 08:56:59 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090527101058.18638.71341.sendpatchset@subratamodak.linux.ibm.com>
-References: <20090527100645.18638.75163.sendpatchset@subratamodak.linux.ibm.com>
-	<20090527101058.18638.71341.sendpatchset@subratamodak.linux.ibm.com>
-Date: Fri, 29 May 2009 18:26:54 +0530
-Message-Id: <1243601814.5188.51.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH 09/13] Add/Port utimes01 test for utimes() syscall
-Reply-To: subrata@linux.vnet.ibm.com
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <praveen@primesoftsolutionsinc.com>)
+	id 1M6KuK-00038d-NE
+	for ltp-list@lists.sourceforge.net; Tue, 19 May 2009 08:42:44 +0000
+Received: from smtp103.biz.mail.in2.yahoo.com ([203.104.19.12])
+	by 3b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1M6KuB-0005EF-0h
+	for ltp-list@lists.sourceforge.net; Tue, 19 May 2009 08:42:44 +0000
+Received: from unknown (HELO SudamaRao)
+	(praveen@primesoftsolutionsinc.com@[192.168.0.9])
+	(envelope-sender <praveen@primesoftsolutionsinc.com>)
+	by 0 (qmail-ldap-1.03) with SMTP
+	for <ltp-list@lists.sourceforge.net>; 19 May 2009 08:08:03 -0000
+From: "Praveen" <praveen@primesoftsolutionsinc.com>
+Date: Tue, 19 May 2009 13:43:37 +0530
+MIME-Version: 1.0
+Subject: [LTP] Contribution to LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,494 +27,327 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6491223128847438045=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Manas Kumar Nayak <maknayak@in.ibm.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+Message-Id: <E1M6L27-0003e6-ON@h25xhf1.ch3.sourceforge.com>
+To: ltp-list@lists.sourceforge.net
 
-On Wed, 2009-05-27 at 15:41 +0530, Manas Kumar Nayak wrote: 
-> Signed-off-by: Manas Kumar Nayak <maknayak@in.ibm.com>
+This is a multi-part message in MIME format.
 
-Thanks.
+--===============6491223128847438045==
+Content-Type: multipart/related;
+	boundary="----=_NextPart_000_001D_01C9D887.D0B865E0"
 
-Regards--
-Subrata
+This is a multi-part message in MIME format.
 
-> To: LTP List <ltp-list@lists.sourceforge.net>
-> Cc: Subrata Modak <subrata@linux.vnet.ibm.com>
-> Cc: Masatake YAMATO <yamato@redhat.com>
-> ---
-> 
-> --- ltp-intermediate-20090521.orig/runtest/syscalls	2009-05-27 13:31:15.000000000 +0530
-> +++ ltp-intermediate-20090521/runtest/syscalls	2009-05-27 13:39:18.000000000 +0530
-> @@ -1227,6 +1227,8 @@ utime04 utime04
->  utime05 utime05
->  utime06 utime06
-> 
-> +utimes01 utimes01
-> +
->  # Introduced from Kernel 2.6.22 onwards
->  utimensat01 utimensat_tests.sh
-> 
-> --- ltp-intermediate-20090521.orig/testcases/kernel/syscalls/utimes/Makefile	1970-01-01 05:30:00.000000000 +0530
-> +++ ltp-intermediate-20090521/testcases/kernel/syscalls/utimes/Makefile	2009-05-23 14:53:58.000000000 +0530
-> @@ -0,0 +1,31 @@
-> +#
-> +#  Copyright (c) International Business Machines  Corp., 2009
-> +#
-> +#  This program is free software;  you can redistribute it and/or modify
-> +#  it under the terms of the GNU General Public License as published by
-> +#  the Free Software Foundation; either version 2 of the License, or
-> +#  (at your option) any later version.
-> +#
-> +#  This program is distributed in the hope that it will be useful,
-> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> +#  the GNU General Public License for more details.
-> +#
-> +#  You should have received a copy of the GNU General Public License
-> +#  along with this program;  if not, write to the Free Software
-> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> +#
-> +
-> +CFLAGS += -I../../../../include -Wall -O2
-> +LDLIBS += -L../../../../lib -lltp 
-> +
-> +SRCS    = $(wildcard *.c)
-> +TARGETS = $(patsubst %.c,%,$(SRCS))
-> +
-> +all: $(TARGETS)
-> +
-> +install:
-> +	@set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i ; done
-> +
-> +clean:
-> +	rm -f $(TARGETS)
-> --- ltp-intermediate-20090521.orig/testcases/kernel/syscalls/utimes/utimes01.c	1970-01-01 05:30:00.000000000 +0530
-> +++ ltp-intermediate-20090521/testcases/kernel/syscalls/utimes/utimes01.c	2009-05-27 13:33:45.000000000 +0530
-> @@ -0,0 +1,407 @@
-> +/******************************************************************************/
-> +/* Copyright (c) Crackerjack Project., 2007 ,Hitachi, Ltd                     */
-> +/*          Author(s): Takahiro Yasui <takahiro.yasui.mp@hitachi.com>,	      */
-> +/*                                                                  	      */
-> +/* This program is free software;  you can redistribute it and/or modify      */
-> +/* it under the terms of the GNU General Public License as published by       */
-> +/* the Free Software Foundation; either version 2 of the License, or          */
-> +/* (at your option) any later version.                                        */
-> +/*                                                                            */
-> +/* This program is distributed in the hope that it will be useful,            */
-> +/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
-> +/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
-> +/* the GNU General Public License for more details.                           */
-> +/*                                                                            */
-> +/* You should have received a copy of the GNU General Public License          */
-> +/* along with this program;  if not, write to the Free Software               */
-> +/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
-> +/*                                                                            */
-> +/******************************************************************************/
-> +/******************************************************************************/
-> +/*                                                                            */
-> +/* File:        utimes01.c                                                    */
-> +/*                                                                            */
-> +/* Description: This tests the utimes() syscall                               */
-> +/*									      */
-> +/* 									      */
-> +/*									      */
-> +/*									      */
-> +/*									      */
-> +/*                                                                            */
-> +/* Usage:  <for command-line>                                                 */
-> +/* utimes01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                              */
-> +/*      where,  -c n : Run n copies concurrently.                             */
-> +/*              -e   : Turn on errno logging.                                 */
-> +/*              -i n : Execute test n times.                                  */
-> +/*              -I x : Execute test for x seconds.                            */
-> +/*              -P x : Pause for x seconds between iterations.                */
-> +/*              -t   : Turn on syscall timing.                                */
-> +/*                                                                            */
-> +/* Total Tests: 1                                                             */
-> +/*                                                                            */
-> +/* Test Name:   utimes01                                                      */
-> +/* History:     Porting from Crackerjack to LTP is done by                    */
-> +/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
-> +/******************************************************************************/
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <sys/time.h>
-> +#include <dirent.h>
-> +#include <unistd.h>
-> +#include <getopt.h>
-> +#include <string.h>
-> +#include <stdlib.h>
-> +#include <errno.h>
-> +#include <stdio.h>
-> +#include <libgen.h>
-> +
-> +
-> +#include "../utils/include_j_h.h"
-> +#include "../utils/common_j_h.c"
-> +
-> +
-> +/* Harness Specific Include Files. */
-> +#include "test.h"
-> +#include "usctest.h"
-> +#include "linux_syscall_numbers.h"
-> +
-> +/* Extern Global Variables */
-> +extern int Tst_count;           /* counter for tst_xxx routines.         */
-> +extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
-> +
-> +/* Global Variables */
-> +char *TCID = "utimes01";  /* Test program identifier.*/
-> +int  testno;
-> +int  TST_TOTAL = 1;                   /* total number of tests in this file.   */
-> +
-> +/* Extern Global Functions */
-> +/******************************************************************************/
-> +/*                                                                            */
-> +/* Function:    cleanup                                                       */
-> +/*                                                                            */
-> +/* Description: Performs all one time clean up for this test on successful    */
-> +/*              completion,  premature exit or  failure. Closes all temporary */
-> +/*              files, removes all temporary directories exits the test with  */
-> +/*              appropriate return code by calling tst_exit() function.       */
-> +/*                                                                            */
-> +/* Input:       None.                                                         */
-> +/*                                                                            */
-> +/* Output:      None.                                                         */
-> +/*                                                                            */
-> +/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
-> +/*              On success - Exits calling tst_exit(). With '0' return code.  */
-> +/*                                                                            */
-> +/******************************************************************************/
-> +extern void cleanup() {
-> +        /* Remove tmp dir and all files in it */
-> +        TEST_CLEANUP;
-> +        tst_rmdir();
-> +
-> +        /* Exit with appropriate return code. */
-> +        tst_exit();
-> +}
-> +
-> +/* Local  Functions */
-> +/******************************************************************************/
-> +/*                                                                            */
-> +/* Function:    setup                                                         */
-> +/*                                                                            */
-> +/* Description: Performs all one time setup for this test. This function is   */
-> +/*              typically used to capture signals, create temporary dirs      */
-> +/*              and temporary files that may be used in the course of this    */
-> +/*              test.                                                         */
-> +/*                                                                            */
-> +/* Input:       None.                                                         */
-> +/*                                                                            */
-> +/* Output:      None.                                                         */
-> +/*                                                                            */
-> +/* Return:      On failure - Exits by calling cleanup().                      */
-> +/*              On success - returns 0.                                       */
-> +/*                                                                            */
-> +/******************************************************************************/
-> +void setup() {
-> +        /* Capture signals if any */
-> +        /* Create temporary directories */
-> +        TEST_PAUSE;
-> +        tst_tmpdir();
-> +}
-> +
-> +
-> +/*
-> + * Macros
-> + */
-> +#define SYSCALL_NAME    "utimes"
-> +
-> +
-> +/*
-> + * Global variables
-> + */
-> +static int opt_debug;
-> +static char *progname;
-> +static char *progdir;
-> +
-> +enum test_type {
-> +		NORMAL,
-> +		FILE_NOT_EXIST,
-> +	        NO_FNAME,
-> +};
-> +
-> +
-> +/*
-> + * Data Structure
-> + */
-> +struct test_case {
-> +	int ttype;
-> +        long a_sec;
-> +        long m_sec;
-> +        char *user;
-> +        int ret;
-> +        int err;
-> +
-> +};
-> +
-> +
-> +/* Test cases
-> + *
-> + *   test status of errors on man page
-> + *
-> + *   EACCES             v (permission denied)
-> + *   ENOENT             v (file does not exist)
-> + *
-> + *   test status of errors on man page
-> + *
-> + *   EFAULT             v (points to not process address space)
-> + */
-> +
-> +static struct test_case tcase[] = {
-> +	{ // case00
-> +                .ttype          = NORMAL,
-> +                .a_sec          = 0,
-> +                .m_sec          = 1000,
-> +                .ret            = 0,
-> +                .err            = 0,
-> +        },
-> +        { // case01
-> +                .ttype          = NORMAL,
-> +                .a_sec          = 1000,
-> +                .m_sec          = 0,
-> +                .ret            = 0,
-> +                .err            = 0,
-> +        },
-> +        { // case02
-> +                .ttype          = NORMAL,
-> +                .a_sec          = 1000,
-> +                .m_sec          = 2000,
-> +                .user           = "nobody",
-> +                .ret            = -1,
-> +                .err            = EACCES, // RHEL4U1 + 2.6.18 returns EPERM
-> +        },
-> +        { // case03
-> +                .ttype          = FILE_NOT_EXIST,
-> +                .a_sec          = 1000,
-> +                .m_sec          = 2000,
-> +                .ret            = -1,
-> +                .err            = ENOENT,
-> +        },
-> +
-> +	{ // case04
-> +                .ttype          = NO_FNAME,
-> +                .a_sec          = 1000,
-> +                .m_sec          = 2000,
-> +                .ret            = -1,
-> +                .err            = EFAULT,
-> +        },
-> +};
-> +
-> +/*
-> + * do_test()
-> + *
-> + *   Input  : TestCase Data
-> + *   Return : RESULT_OK(0), RESULT_NG(1)
-> + *
-> + */
-> +
-> +static int do_test(struct test_case *tc)
-> +{
-> +        int sys_ret;
-> +        int sys_errno;
-> +        int result = RESULT_OK;
-> +	struct timeval tv[2];
-> +        char fpath[PATH_MAX], c = '\0';
-> +        int rc, len, cmp_ok = 1;
-> +        struct stat st;
-> +        uid_t old_uid;
-> +
-> +        TEST(rc = setup_file(progdir, "test.file", fpath));
-> +        if (rc < 0)
-> +                return 1;
-> +
-> +	/*
-> +         * Change effective user id
-> +         */
-> +        if (tc->user != NULL) {
-> +                TEST(rc = setup_euid(tc->user, &old_uid));
-> +                if (rc < 0)
-> +                        goto EXIT2;
-> +        }
-> +
-> +        /*
-> +         * Execute system call
-> +         */
-> +        tv[0].tv_sec = tc->a_sec;
-> +        tv[1].tv_sec = tc->m_sec;
-> +        TEST(len = strlen(fpath));
-> +        if (tc->ttype == FILE_NOT_EXIST) {
-> +                c = fpath[len - 1];
-> +                fpath[len - 1] = '\0';
-> +        }
-> +        errno = 0;
-> +        if (tc->ttype == NO_FNAME)
-> +                TEST(sys_ret = utimes(NULL, tv));
-> +        else
-> +                TEST(sys_ret = utimes(fpath, tv));
-> +        sys_errno = errno;
-> +        if (tc->ttype == FILE_NOT_EXIST)
-> +                fpath[len - 1] = c;
-> +        if (sys_ret < 0)
-> +                goto TEST_END;
-> +
-> +	/*
-> +         * Check test file's time stamp
-> +         */
-> +        rc = stat(fpath, &st);
-> +        if (rc < 0) {
-> +                EPRINTF("stat failed.\n");
-> +                result = 1;
-> +                goto EXIT1;
-> +        }
-> +        tst_resm(TINFO,"E:%ld,%ld <=> R:%ld,%ld",tv[0].tv_sec, tv[1].tv_sec, st.st_atime, st.st_mtime);
-> +        cmp_ok = st.st_atime == tv[0].tv_sec && st.st_mtime == tv[1].tv_sec;
-> +
-> +        /*
-> +         * Check results
-> +         */
-> +TEST_END:
-> +        result |= (sys_errno != tc->err) || !cmp_ok;
-> +        PRINT_RESULT_CMP(sys_ret >= 0, tc->ret, tc->err, sys_ret, sys_errno,cmp_ok);
-> +
-> +        /*
-> +         * Restore effective user id
-> +         */
-> +EXIT1:
-> +        if (tc->user != NULL) {
-> +                TEST(rc = cleanup_euid(old_uid));
-> +                if (rc < 0)
-> +                        return 1;
-> +        }
-> +EXIT2:
-> +        TEST(cleanup_file(fpath));
-> +
-> +        return result;
-> +}
-> +
-> +/*
-> + * usage()
-> + */
-> +
-> +static void usage(const char *progname)
-> +{
-> +        tst_resm(TINFO,"usage: %s [options]", progname);
-> +        tst_resm(TINFO,"This is a regression test program of %s system call.",SYSCALL_NAME);
-> +        tst_resm(TINFO,"options:");
-> +        tst_resm(TINFO,"    -d --debug           Show debug messages");
-> +        tst_resm(TINFO,"    -h --help            Show this message");
-> +        tst_resm(TINFO,"NG");
-> +        exit(1);
-> +}
-> +
-> +
-> +/*
-> + * main()
-> + */
-> +
-> +
-> +
-> +int main(int ac, char **av) {
-> +	int result = RESULT_OK;
-> +        int c;
-> +        int i;
-> +        int lc;                 /* loop counter */
-> +        char *msg;              /* message returned from parse_opts */
-> +
-> +	struct option long_options[] = {
-> +                { "debug", no_argument, 0, 'd' },
-> +                { "help",  no_argument, 0, 'h' },
-> +                { NULL, 0, NULL, 0 }
-> +        };
-> +
-> +	progname = strchr(av[0], '/');
-> +        progname = progname ? progname + 1 : av[0];	
-> +	
-> +	progdir = strdup(av[0]);
-> +        progdir = dirname(progdir);
-> +	
-> +        /* parse standard options */
-> +        if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
-> +             tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
-> +             tst_exit();
-> +           }
-> +
-> +        setup();
-> +
-> +        /* Check looping state if -i option given */
-> +        for (lc = 0; TEST_LOOPING(lc); ++lc) {
-> +                Tst_count = 0;
-> +                for (testno = 0; testno < TST_TOTAL; ++testno) {
-> +			 TEST(c = getopt_long(ac, av, "dh", long_options, NULL));
-> +			 while(TEST_RETURN != -1) {
-> +		                switch (c) {
-> +                		case 'd':
-> +		                        opt_debug = 1;
-> +                		        break;
-> +		                default:
-> +                		        usage(progname);
-> +                        		// NOTREACHED
-> +                		}
-> +		        }
-> +
-> +
-> +		if (ac != optind) {
-> +        	        tst_resm(TINFO,"Options are not match.");
-> +                	usage(progname);
-> +                	// NOTREACHED
-> +	        }
-> +
-> +		/*
-> +		* Execute test
-> +         	*/
-> +	        for (i = 0; i < (int)(sizeof(tcase) / sizeof(tcase[0])); i++) {
-> +        	        int ret;
-> +	                tst_resm(TINFO,"(case%02d) START", i);
-> +	                ret = do_test(&tcase[i]);
-> +	                tst_resm(TINFO,"(case%02d) END => %s", i, (ret == 0) ? "OK" : "NG");
-> +	                result |= ret;
-> +        	}
-> +		
-> +		/*
-> +        	 * Check results
-> +         	*/
-> +        	switch(result) {
-> +	        case RESULT_OK:
-> +        			tst_resm(TPASS, "utimes call succeeded ");
-> +		                break;
-> +
-> +	        default:
-> +                 	   	tst_resm(TFAIL, "%s failed - errno = %d : %s", TCID, TEST_ERRNO, strerror(TEST_ERRNO));
-> +        		        tst_resm(TINFO,"NG");
-> +				cleanup();
-> +				tst_exit();
-> +		                break;
-> +        	}
-> +
-> +                }
-> +        }	
-> +        cleanup();
-> +	tst_exit();
-> +}
-> +
-> 
-> ---
-> Regards--
-> Manas
-> 
+------=_NextPart_000_001D_01C9D887.D0B865E0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_001E_01C9D887.D0BAD6E0"
 
+
+------=_NextPart_001_001E_01C9D887.D0BAD6E0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+Hi,
+
+ 
+
+I am a C/Shell scripting Developer. I would like to contribute/participate
+in LTP.
+
+ 
+
+Please let me know, if I have any opportunity to work with LTP.
+
+ 
+
+ 
+
+Thanks,
+
+Praveen Kumar k
+
+PrimeSoft IP Solutions Inc 
+
+Phone: 040-27762986/27762987 
+
+Skype ID: kpraveen72
+
+www.primesoftsolutionsinc.com <http://www.primesoftsolutionsinc.com/>  
+
+ 
+
+
+------=_NextPart_001_001E_01C9D887.D0BAD6E0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
+xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:st1=3D"urn:schemas-microsoft-com:office:smarttags" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<!--[if !mso]>
+<style>
+v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style>
+<![endif]--><o:SmartTagType
+ namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags" =
+name=3D"PersonName"/>
+<!--[if !mso]>
+<style>
+st1\:*{behavior:url(#default#ieooui) }
+</style>
+<![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+h3
+	{margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:171.0pt;
+	text-indent:-.5in;
+	page-break-after:avoid;
+	mso-list:l0 level3 lfo1;
+	font-size:12.0pt;
+	font-family:Arial;
+	color:black;
+	layout-grid-mode:line;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ @list l0
+	{mso-list-id:1188256032;
+	mso-list-template-ids:867725992;}
+@list l0:level1
+	{mso-level-text:%1;
+	mso-level-tab-stop:.3in;
+	mso-level-number-position:left;
+	margin-left:.3in;
+	text-indent:-.3in;}
+@list l0:level2
+	{mso-level-text:"%1\.%2";
+	mso-level-tab-stop:.4in;
+	mso-level-number-position:left;
+	margin-left:.4in;
+	text-indent:-.4in;}
+@list l0:level3
+	{mso-level-style-link:"Heading 3";
+	mso-level-text:"%1\.%2\.%3";
+	mso-level-tab-stop:171.0pt;
+	mso-level-number-position:left;
+	margin-left:171.0pt;
+	text-indent:-.5in;}
+@list l0:level4
+	{mso-level-text:"%1\.%2\.%3\.%4";
+	mso-level-tab-stop:.6in;
+	mso-level-number-position:left;
+	margin-left:.6in;
+	text-indent:-.6in;}
+@list l0:level5
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5";
+	mso-level-tab-stop:.7in;
+	mso-level-number-position:left;
+	margin-left:.7in;
+	text-indent:-.7in;}
+@list l0:level6
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6";
+	mso-level-tab-stop:.8in;
+	mso-level-number-position:left;
+	margin-left:.8in;
+	text-indent:-.8in;}
+@list l0:level7
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7";
+	mso-level-tab-stop:.9in;
+	mso-level-number-position:left;
+	margin-left:.9in;
+	text-indent:-.9in;}
+@list l0:level8
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8";
+	mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	margin-left:1.0in;
+	text-indent:-1.0in;}
+@list l0:level9
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.%9";
+	mso-level-tab-stop:1.1in;
+	mso-level-number-position:left;
+	margin-left:1.1in;
+	text-indent:-1.1in;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hi,<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>I am a C/Shell scripting Developer. I would like to
+contribute/participate in LTP.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Please let me know, if I have any opportunity to work =
+with
+LTP.<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Thanks,</span></font><o:p></o:p></p>
+
+<p class=3DMsoNormal><st1:PersonName
+style=3D"BACKGROUND-POSITION: left bottom; BACKGROUND-IMAGE: =
+url(res://ietag.dll/#34/#1001); BACKGROUND-REPEAT: repeat-x"
+tabIndex=3D"0" w:st=3D"on"><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+ font-family:Arial'>Praveen</span></font></st1:PersonName><font size=3D2
+face=3DArial><span style=3D'font-size:10.0pt;font-family:Arial'> Kumar =
+k<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><b><font size=3D2 face=3DArial><span =
+style=3D'font-size:11.0pt;
+font-family:Arial;font-weight:bold'>PrimeSoft IP Solutions Inc =
+</span></font></b><img
+width=3D39 height=3D17 id=3D"_x0000_i1025" =
+src=3D"cid:image001.jpg@01C9D887.CEC632D0"><o:p></o:p></p>
+
+<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial;font-style:italic'>Phone: 040-27762986/27762987 =
+<o:p></o:p></span></font></i></p>
+
+<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial;font-style:italic'>Skype ID: =
+kpraveen72<o:p></o:p></span></font></i></p>
+
+<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial;font-style:italic'><a
+href=3D"http://www.primesoftsolutionsinc.com/">www.primesoftsolutionsinc.=
+com</a> </span></font><o:p></o:p></i></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_001_001E_01C9D887.D0BAD6E0--
+
+------=_NextPart_000_001D_01C9D887.D0B865E0
+Content-Type: image/jpeg;
+	name="image001.jpg"
+Content-Transfer-Encoding: base64
+Content-ID: <image001.jpg@01C9D887.CEC632D0>
+
+/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0a
+HBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIy
+MjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAARACcDASIA
+AhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQA
+AAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3
+ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWm
+p6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEA
+AwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSEx
+BhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElK
+U1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3
+uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3eNIx
+DvcDGMkk9KypPEWiNBJLbalpsiRsEeVrpAiE8AE56nsO9XrvT7bV9GuNOugzW9zE0MoVip2sMHBH
+SuWv/A/h+TT00/U9QvnhjAEYlkVdoVCigYUD5QxI9+acU29EJuy1Nd7zTzcNFceIrZJVlWBoopI0
+2yN0Qg5O44PGc1Yg1XSjOlrFqFtdTPK0IAlUneoyynH8QHOOtcm3w88MXUBhtI9SmzK03mJKVxIV
+Vd+8j7wC8Hk5Zj3qtpui6fonjTSIbC1KvFJODDK+WiMq7nk4P91UVSR0yCQac218Q6VP2jah01PR
+p40WPKjBzRTrk/uvxoqQKg60N0H1oooAe/b6Uz/lr/wD+tFFAwNFFFAj/9k=
+
+------=_NextPart_000_001D_01C9D887.D0B865E0--
+
+
+
+
+--===============6491223128847438045==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
-is a gathering of tech-side developers & brand creativity professionals. Meet
-the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
-Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables 
+unlimited royalty-free distribution of the report engine 
+for externally facing server and web deployment. 
+http://p.sf.net/sfu/businessobjects
+--===============6491223128847438045==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6491223128847438045==--
+
+
+
