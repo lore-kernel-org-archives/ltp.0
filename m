@@ -1,34 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M4rgI-0002PX-2O
-	for ltp-list@lists.sourceforge.net; Fri, 15 May 2009 07:18:10 +0000
-Received: from e32.co.us.ibm.com ([32.97.110.150])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M4rg8-0006Rf-DN
-	for ltp-list@lists.sourceforge.net; Fri, 15 May 2009 07:18:10 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e32.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4F7EH1X019532
-	for <ltp-list@lists.sourceforge.net>; Fri, 15 May 2009 01:14:17 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4F7He9M214630
-	for <ltp-list@lists.sourceforge.net>; Fri, 15 May 2009 01:17:40 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4F7Heq0013650
-	for <ltp-list@lists.sourceforge.net>; Fri, 15 May 2009 01:17:40 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090513.224735.226784134.caiqian@cclom.cn>
-References: <4A09F967.8030402@web.de>
-	<20090513.224735.226784134.caiqian@cclom.cn>
-Date: Fri, 15 May 2009 12:47:36 +0530
-Message-Id: <1242371857.7224.13.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix the splice02 test
-Reply-To: subrata@linux.vnet.ibm.com
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <praveen@primesoftsolutionsinc.com>)
+	id 1M6eVJ-0006KX-VY
+	for ltp-list@lists.sourceforge.net; Wed, 20 May 2009 05:38:13 +0000
+Received: from smtp102.biz.mail.in2.yahoo.com ([203.104.17.250])
+	by 1b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1M6eVA-0001bs-0g
+	for ltp-list@lists.sourceforge.net; Wed, 20 May 2009 05:38:08 +0000
+Received: from unknown (HELO SudamaRao)
+	(praveen@primesoftsolutionsinc.com@[192.168.0.9])
+	(envelope-sender <praveen@primesoftsolutionsinc.com>)
+	by 0 (qmail-ldap-1.03) with SMTP
+	for <ltp-list@lists.sourceforge.net>; 20 May 2009 05:30:12 -0000
+From: "Praveen" <praveen@primesoftsolutionsinc.com>
+Date: Wed, 20 May 2009 11:06:37 +0530
+MIME-Version: 1.0
+In-Reply-To: <1242729103.5961.44.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] Contribution to LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,123 +31,130 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jpalecek@web.de
-Cc: ltp-list@lists.sourceforge.net
+Message-Id: <E1M6eVL-0006LJ-H0@h25xhf1.ch3.sourceforge.com>
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net, 'Nathan Straz' <nstraz@redhat.com>, 'Nate Straz' <nate@refried.org>
 
-On Wed, 2009-05-13 at 22:47 +0800, CAI Qian wrote: 
-> From: Jiri Palecek <jpalecek@web.de>
-> Subject: [LTP] [PATCH] Fix the splice02 test
-> Date: Wed, 13 May 2009 00:34:15 +0200
+
+Hi Subrata,
+
+Thanks for the information.
+
+I am sure LTP will satisfy my enthusiasm to participate in Opensource.
+First, I will start with registering to mailing list. 
+
+Thanks again for the information.
+
+Thanks, 
+Praveen Kumar k
+PrimeSoft IP Solutions Inc
+ 
+Phone : 040-27762986/27762987 
+Skype ID: kpraveen72
+www.primesoftsolutionsinc.com 
+
+-----Original Message-----
+From: Subrata Modak [mailto:subrata@linux.vnet.ibm.com] 
+Sent: Tuesday, May 19, 2009 4:02 PM
+To: Praveen
+Cc: ltp-list@lists.sourceforge.net; Nate Straz; Nathan Straz
+Subject: Re: [LTP] Contribution to LTP
+
+Hi Praveen,
+
+On Tue, 2009-05-19 at 13:43 +0530, Praveen wrote: 
+> Hi,
 > 
-> >   Particularly:
-> > 
-> >    - TEST_ERRNO is only set when the syscall is executed using the
-> >      TEST() macro. The tests gave bad error messages because of that.
-> > 
-> >    - The end of the test was dead code; moved the TPASS code to pass at
-> >      the end of file.
-> > 
-> >    - The test assumes std. input is a pipe; reflect this in the runtest
-> >      file
-> > 
-> > Regards
-> >      Jiri Palecek
-> > 
-> > Signed-off-by: Jiri Palecek <jpalecek@web.de>
-> > ---
-> >   runtest/syscalls                            |    2 +-
-> >   testcases/kernel/syscalls/splice/splice02.c |   16 ++++++----------
-> >   2 files changed, 7 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/runtest/syscalls b/runtest/syscalls
-> > index 9b7b2ca..33beff0 100644
-> > --- a/runtest/syscalls
-> > +++ b/runtest/syscalls
-> > @@ -1033,7 +1033,7 @@ sockioctl01 sockioctl01
-> >    #splice test
-> >   splice01 splice01
-> > -splice02 echo "Test splice02()" > splice02-temp; splice02 splice02-temp
-> > +splice02 seq 1 10000000 | splice02 splice02-temp
-> >    tee01 tee01
-> >   diff --git a/testcases/kernel/syscalls/splice/splice02.c 
-> > b/testcases/kernel/syscalls/splice/splice02.c
-> > index 321d002..16bff86 100644
-> > --- a/testcases/kernel/syscalls/splice/splice02.c
-> > +++ b/testcases/kernel/syscalls/splice/splice02.c
-> > @@ -108,7 +108,6 @@ void setup() {
-> >    int main(int ac, char **av) {
-> >   	int fd = 0;
-> > -	int ret = 0;
-> >   	
-> >           setup();
-> >   @@ -118,26 +117,23 @@ int main(int ac, char **av) {
-> >   	}
-> >   	fd=open(av[1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-> >   	if(fd < 0 ) {
-> > -           tst_resm(TFAIL, "%s failed - errno = %d : %s", TCID, TEST_ERRNO, 
-> > strerror(TEST_ERRNO));
-> > +		tst_resm(TFAIL, "open(%s) failed - errno = %d : %s", av[1], errno, 
-> > strerror(errno));
-> >   	   cleanup();
-> >   	   tst_exit();
-> >   	}
-> >   			
-> >           do {
-> > -	    ret = splice(STDIN_FILENO, NULL, fd, NULL, SPLICE_SIZE, 0);
-> > -	    if (ret < 0) {
-> > -            	tst_resm(TFAIL, "%s failed - errno = %d : %s",TCID, TEST_ERRNO, 
-> > strerror(TEST_ERRNO));
-> > +					TEST(splice(STDIN_FILENO, NULL, fd, NULL, SPLICE_SIZE, 0));
-> > +	    if (TEST_RETURN < 0) {
-> > +            	tst_resm(TFAIL, "splice failed - errno = %d : %s", TEST_ERRNO, 
-> > strerror(TEST_ERRNO));
-> >   	        cleanup();
-> >   		tst_exit();
-> >   	    } else
-> > -            if (ret < SPLICE_SIZE){
-> > +            if (TEST_RETURN == 0){
-> > +							tst_resm(TPASS, "splice() system call Passed");
-> >   	        cleanup();
-> >   	        tst_exit();
-> >   	    }
-> >   	} while(1);
-> > -
-> > -	close(fd);
-> > -        tst_resm(TPASS, "splice() system call Passed");
-> > -        tst_exit();
-> >   }
-> >   -- 1.6.2
+>  
 > 
-> Can't apply this patch -- long lines are wrapped. Please re-send it.
+> I am a C/Shell scripting Developer. I would like to
+> contribute/participate in LTP.
+> 
+>  
+> 
+> Please let me know, if I have any opportunity to work with LTP.
 
-True. Here i get:
+You have all the opportunity at your disposal to contribute to LTP. In
+fact, we need lots of volunteers to contribute to LTP. As, beginner, the
+first thing to do is just watch over the mailing list to find out how
+people work. And then there are lots of things in store for you:
+(And, off course, first subscribe to this list and this is available on
+subscription basis, which is free:
+http://sourceforge.net/mail/?group_id=3382),
 
-ERROR: patch seems to be corrupt (line wrapped?)
-#131: FILE: runtest/syscalls:1037:
-b/testcases/kernel/syscalls/splice/splice02.c
-total: 1 errors, 0 warnings, 16 lines checked
+1) Pick up some area in kernel for which tests do not exist in LTP (Of
+course this area should be of your interest). Try to write small tests
+for them and submit to LTP. It would be better if you track
+http://kernelnewbies.org/LinuxChanges for the changes and start with a
+latest stable kernel release,
 
-and
+2) Execute the existing LTP tests on all the machines available to you,
+and see if you can hit a LTP/Kernel bug. If it is an LTP issue(s), send
+the corresponding patch to the mailing list for review,
 
-patching file runtest/syscalls
-patch: **** malformed patch at line 131:
-b/testcases/kernel/syscalls/splice/splice02.c
+3) Make the LTP provision system more better, so that we can be more
+efficient/effective in running these tests. You can also work towards
+making it more automated.
+
+The present LTP provisioning engine PAN has lots of drawbacks and it is
+old. This needs to be updated, or, replaced with something better.
+Sometime back Nathan Straz posted some comments on it:
+
+http://fedorahosted.org/collie/
+http://marc.info/?t=122540445800003&r=1&w=2,
+
+I need somebody, who can do a feasibility analysis of the advantages of
+PAN over collie, and show the fruits of migration from PAN to COLLIE. A
+workable version of the patch would also be welcome. The work would be
+little tough as PAN has stabilized and we would be resisting any changes
+which introduces bug(s) in our existing provisioning environment,
+
+4) Another important aspect would be to improve documentation for LTP.
+You can start with by reading individual test cases, understand the code
+(you will be assisted with the minimal existent description, so, do not
+worry), refer to man pages, google, and improve upon the test case(s)
+description. You are free to start from where ever you like.
+
+You are welcome to LTP and i would hope your enthusiasm does not die
+down soon ;-)
 
 Regards--
 Subrata
 
-> CAI Qian
 > 
-> ------------------------------------------------------------------------------
-> The NEW KODAK i700 Series Scanners deliver under ANY circumstances! Your
-> production scanning environment may not be a perfect world - but thanks to
-> Kodak, there's a perfect scanner to get the job done! With the NEW KODAK i700
-> Series Scanner you'll get full speed at 300 dpi even with all image 
-> processing features enabled. http://p.sf.net/sfu/kodak-com
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>  
+> 
+>  
+> 
+> Thanks,
+> 
+> Praveen Kumar k
+> 
+> PrimeSoft IP Solutions Inc 
+> 
+> Phone: 040-27762986/27762987 
+> 
+> Skype ID: kpraveen72
+> 
+> www.primesoftsolutionsinc.com 
+> 
+>  
+> 
+> 
+>
+----------------------------------------------------------------------------
+--
+> Crystal Reports - New Free Runtime and 30 Day Trial
+> Check out the new simplified licensing option that enables 
+> unlimited royalty-free distribution of the report engine 
+> for externally facing server and web deployment. 
+> http://p.sf.net/sfu/businessobjects
+> _______________________________________________ Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
+
 
 
 ------------------------------------------------------------------------------
