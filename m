@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <amcobreces@eservicios.indra.es>) id 1M5zvV-0006HN-OP
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 10:18:33 +0000
-Received: from mailhost1.indra.es ([213.170.46.15] helo=mailhost3.indra.es)
-	by 1b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1M5zvT-0003Or-Mg
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 10:18:33 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C9D7A1.F911E143"
-Date: Mon, 18 May 2009 12:18:21 +0200
-Message-ID: <E733EF347D18094EB0D8B89116EB269C01DF32D5@MADARRMAIL4.indra.es>
-References: <E733EF347D18094EB0D8B89116EB269C01DF29F7@MADARRMAIL4.indra.es>
-	<4A0C9518.8040009@web.de> 
-From: =?iso-8859-1?Q?Cobreces_=C1lvarez=2C_Ana_Maria?= <amcobreces@eservicios.indra.es>
-Subject: Re: [LTP] Error installing ltp-full-20090430
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <caiqian@cclom.cn>) id 1M70Lo-00033r-DV
+	for ltp-list@lists.sourceforge.net; Thu, 21 May 2009 04:57:52 +0000
+Received: from smtp106.biz.mail.mud.yahoo.com ([68.142.200.254])
+	by 29vjzd1.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1M70Li-0006pS-Rg
+	for ltp-list@lists.sourceforge.net; Thu, 21 May 2009 04:57:52 +0000
+Date: Thu, 21 May 2009 12:58:17 +0800 (CST)
+Message-Id: <20090521.125817.183039017.caiqian@cclom.cn>
+From: CAI Qian <caiqian@cclom.cn>
+In-Reply-To: <d51f89b0905190257t4505860ej1461b32ad789e96@mail.gmail.com>
+References: <d51f89b0905072329u1d7d2e34j1fb95b09f347bf1a@mail.gmail.com>
+	<20090511.200555.226785908.caiqian@cclom.cn>
+	<d51f89b0905190257t4505860ej1461b32ad789e96@mail.gmail.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Patch for "File" test case issue of 30-April-2009 release
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,404 +26,170 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sf.net, jpalecek@web.de
-
-This is a multi-part message in MIME format.
-
-------_=_NextPart_001_01C9D7A1.F911E143
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-
-
-I send you the actual errors in the attached file.
-
-Thanks in advance. Regards.
-Ana C=F3breces.
-
------Mensaje original-----
-De: jpalecek@web.de [mailto:jpalecek@web.de]=20
-Enviado el: viernes, 15 de mayo de 2009 0:03
-Para: Cobreces =C1lvarez, Ana Maria
-CC: ltp-list@lists.sf.net; Bri=F1as Alonso, Francisco Manuel
-Asunto: Re: [LTP] Error installing ltp-full-20090430
-
-Cobreces =C1lvarez, Ana Maria wrote:
-> When I run "make all" with the default configuration, some errors
-> appear. I send you the config.log file. =BFcould you please provide =
-any
-> answer on which is the problem?
-
- From the log file you provided, I can see you have a rather old kernel =
-that=20
-lacks some of the tested features. However, this should not be a problem =
-per se.
-
-Could you send the actual errors you experience? ie. the output of "make =
-all",=20
-or "make -k all"?
-
-Regards
-     Jiri Palecek
-
-
-------_=_NextPart_001_01C9D7A1.F911E143
-Content-Type: application/octet-stream;
-	name="typescript"
-Content-Transfer-Encoding: base64
-Content-Description: typescript
-Content-Disposition: attachment;
-	filename="typescript"
-
-U2NyaXB0IHN0YXJ0ZWQgb24gTW9uIDE4IE1heSAyMDA5IDEyOjEyOjU5IFBNIENFU1QKG10wO3Jv
-b3RAZ2FsdWxzMDM6L2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMAdbcm9vdEBnYWx1
-bHMwMyBsdHAtZnVsbC0yMDA5MDQzMF0jIGV4aXQIG1tLCBtbSwgbW0sIG1tLbWFrZWEIG1tLIGFs
-bA0KbWFrZVsxXTogRW50ZXJpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxs
-LTIwMDkwNDMwL2xpYicNCm1ha2VbMV06IGBsaWJsdHAuYScgaXMgdXAgdG8gZGF0ZS4NCm1ha2Vb
-MV06IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMw
-L2xpYicNCm1ha2VbMV06IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAt
-ZnVsbC0yMDA5MDQzMC9wYW4nDQptYWtlWzFdOiBOb3RoaW5nIHRvIGJlIGRvbmUgZm9yIGBhbGwn
-Lg0KbWFrZVsxXTogTGVhdmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwt
-MjAwOTA0MzAvcGFuJw0KbWFrZVsxXTogRW50ZXJpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFu
-ZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcycNCm1ha2VbMl06IEVudGVyaW5nIGRpcmVj
-dG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMvYmFsbGlz
-dGEnDQptYWtlIC1pIC1DIGJhbGxpc3RhDQptYWtlWzNdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC9o
-b21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2JhbGxpc3RhL2JhbGxp
-c3RhJw0KbWFrZVszXTogTm90aGluZyB0byBiZSBkb25lIGZvciBgYWxsJy4NCm1ha2VbM106IExl
-YXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3Rj
-YXNlcy9iYWxsaXN0YS9iYWxsaXN0YScNCm1ha2VbMl06IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9t
-ZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9iYWxsaXN0YScNCm1ha2Vb
-Ml06IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQz
-MC90ZXN0Y2FzZXMvY29tbWFuZHMnDQptYWtlWzNdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC9ob21l
-L2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2NvbW1hbmRzL2FkZScNCm1h
-a2VbNF06IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5
-MDQzMC90ZXN0Y2FzZXMvY29tbWFuZHMvYWRlL2FyJw0KbWFrZVs0XTogTm90aGluZyB0byBiZSBk
-b25lIGZvciBgYWxsJy4NCm1ha2VbNF06IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFu
-ZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9jb21tYW5kcy9hZGUvYXInDQptYWtlWzRd
-OiBFbnRlcmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAv
-dGVzdGNhc2VzL2NvbW1hbmRzL2FkZS9vYmpkdW1wJw0KbWFrZVs0XTogTm90aGluZyB0byBiZSBk
-b25lIGZvciBgYWxsJy4NCm1ha2VbNF06IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFu
-ZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9jb21tYW5kcy9hZGUvb2JqZHVtcCcNCm1h
-a2VbNF06IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5
-MDQzMC90ZXN0Y2FzZXMvY29tbWFuZHMvYWRlL3NpemUnDQptYWtlWzRdOiBOb3RoaW5nIHRvIGJl
-IGRvbmUgZm9yIGBhbGwnLg0KbWFrZVs0XTogTGVhdmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJu
-YW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2NvbW1hbmRzL2FkZS9zaXplJw0KbWFr
-ZVs0XTogRW50ZXJpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkw
-NDMwL3Rlc3RjYXNlcy9jb21tYW5kcy9hZGUvbGQnDQptYWtlWzRdOiBOb3RoaW5nIHRvIGJlIGRv
-bmUgZm9yIGBhbGwnLg0KbWFrZVs0XTogTGVhdmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5k
-ZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2NvbW1hbmRzL2FkZS9sZCcNCm1ha2VbNF06
-IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90
-ZXN0Y2FzZXMvY29tbWFuZHMvYWRlL2xkZCcNCm1ha2VbNF06IE5vdGhpbmcgdG8gYmUgZG9uZSBm
-b3IgYGFsbCcuDQptYWtlWzRdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9s
-dHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMvY29tbWFuZHMvYWRlL2xkZCcNCm1ha2VbNF06IEVu
-dGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0
-Y2FzZXMvY29tbWFuZHMvYWRlL25tJw0KbWFrZVs0XTogTm90aGluZyB0byBiZSBkb25lIGZvciBg
-YWxsJy4NCm1ha2VbNF06IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1m
-dWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9jb21tYW5kcy9hZGUvbm0nDQptYWtlWzRdOiBFbnRlcmlu
-ZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2Vz
-L2NvbW1hbmRzL2FkZS9maWxlJw0KbWFrZVs0XTogTm90aGluZyB0byBiZSBkb25lIGZvciBgYWxs
-Jy4NCm1ha2VbNF06IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxs
-LTIwMDkwNDMwL3Rlc3RjYXNlcy9jb21tYW5kcy9hZGUvZmlsZScNCm1ha2VbM106IExlYXZpbmcg
-ZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9j
-b21tYW5kcy9hZGUnDQptYWtlWzNdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5k
-ZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2NvbW1hbmRzL2F0Jw0KbWFrZVszXTogTm90
-aGluZyB0byBiZSBkb25lIGZvciBgYWxsJy4NCm1ha2VbM106IExlYXZpbmcgZGlyZWN0b3J5IGAv
-aG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9jb21tYW5kcy9hdCcN
-Cm1ha2VbM106IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0y
-MDA5MDQzMC90ZXN0Y2FzZXMvY29tbWFuZHMvY3BpbycNCm1ha2VbM106IE5vdGhpbmcgdG8gYmUg
-ZG9uZSBmb3IgYGFsbCcuDQptYWtlWzNdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5h
-bmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMvY29tbWFuZHMvY3BpbycNCm1ha2VbM106
-IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90
-ZXN0Y2FzZXMvY29tbWFuZHMvY3JvbicNCm1ha2VbM106IE5vdGhpbmcgdG8gYmUgZG9uZSBmb3Ig
-YGFsbCcuDQptYWtlWzNdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAt
-ZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMvY29tbWFuZHMvY3JvbicNCm1ha2VbM106IEVudGVyaW5n
-IGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMv
-Y29tbWFuZHMvZWplY3QnDQptYWtlWzNdOiBOb3RoaW5nIHRvIGJlIGRvbmUgZm9yIGBhbGwnLg0K
-bWFrZVszXTogTGVhdmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAw
-OTA0MzAvdGVzdGNhc2VzL2NvbW1hbmRzL2VqZWN0Jw0KbWFrZVszXTogRW50ZXJpbmcgZGlyZWN0
-b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9jb21tYW5k
-cy9maWxldXRpbHMnDQptYWtlWzNdOiBOb3RoaW5nIHRvIGJlIGRvbmUgZm9yIGBhbGwnLg0KbWFr
-ZVszXTogTGVhdmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0
-MzAvdGVzdGNhc2VzL2NvbW1hbmRzL2ZpbGV1dGlscycNCm1ha2VbM106IEVudGVyaW5nIGRpcmVj
-dG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMvY29tbWFu
-ZHMvZ3ppcCcNCm1ha2VbM106IE5vdGhpbmcgdG8gYmUgZG9uZSBmb3IgYGFsbCcuDQptYWtlWzNd
-OiBMZWF2aW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90
-ZXN0Y2FzZXMvY29tbWFuZHMvZ3ppcCcNCm1ha2VbM106IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hv
-bWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMvY29tbWFuZHMvbG9ncm90
-YXRlJw0KbWFrZVszXTogTm90aGluZyB0byBiZSBkb25lIGZvciBgYWxsJy4NCm1ha2VbM106IExl
-YXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3Rj
-YXNlcy9jb21tYW5kcy9sb2dyb3RhdGUnDQptYWtlWzNdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC9o
-b21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2NvbW1hbmRzL21haWwn
-DQptYWtlWzNdOiBOb3RoaW5nIHRvIGJlIGRvbmUgZm9yIGBhbGwnLg0KbWFrZVszXTogTGVhdmlu
-ZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2Vz
-L2NvbW1hbmRzL21haWwnDQptYWtlWzNdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJu
-YW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2NvbW1hbmRzL3N1Jw0KbWFrZVszXTog
-Tm90aGluZyB0byBiZSBkb25lIGZvciBgYWxsJy4NCm1ha2VbM106IExlYXZpbmcgZGlyZWN0b3J5
-IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9jb21tYW5kcy9z
-dScNCm1ha2VbM106IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVs
-bC0yMDA5MDQzMC90ZXN0Y2FzZXMvY29tbWFuZHMvdGFyJw0KbWFrZVszXTogTm90aGluZyB0byBi
-ZSBkb25lIGZvciBgYWxsJy4NCm1ha2VbM106IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVy
-bmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9jb21tYW5kcy90YXInDQptYWtlWzNd
-OiBFbnRlcmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAv
-dGVzdGNhc2VzL2NvbW1hbmRzL3RwbS10b29scycNCm1ha2VbM106IE5vdGhpbmcgdG8gYmUgZG9u
-ZSBmb3IgYGFsbCcuDQptYWtlWzNdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRl
-ei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMvY29tbWFuZHMvdHBtLXRvb2xzJw0KbWFrZVsz
-XTogRW50ZXJpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMw
-L3Rlc3RjYXNlcy9jb21tYW5kcy91bnppcCcNCm1ha2VbM106IE5vdGhpbmcgdG8gYmUgZG9uZSBm
-b3IgYGFsbCcuDQptYWtlWzNdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9s
-dHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMvY29tbWFuZHMvdW56aXAnDQptYWtlWzJdOiBMZWF2
-aW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2Fz
-ZXMvY29tbWFuZHMnDQptYWtlWzJdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5k
-ZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbCcNCm1ha2VbM106IEVudGVyaW5n
-IGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMv
-a2VybmVsL3Bvd2VyX21hbmFnZW1lbnQnDQptYWtlIGNoZWNrX2t2X2FyY2ggOw0KbWFrZVs0XTog
-RW50ZXJpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rl
-c3RjYXNlcy9rZXJuZWwvcG93ZXJfbWFuYWdlbWVudCcNCm1ha2VbNF06IGBjaGVja19rdl9hcmNo
-JyBpcyB1cCB0byBkYXRlLg0KbWFrZVs0XTogTGVhdmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJu
-YW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9wb3dlcl9tYW5hZ2VtZW50
-Jw0KbWFrZVszXTogTGVhdmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwt
-MjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9wb3dlcl9tYW5hZ2VtZW50Jw0KbWFrZVszXTogRW50
-ZXJpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3Rj
-YXNlcy9rZXJuZWwvbnVtYScNCm1ha2VbM106IE5vdGhpbmcgdG8gYmUgZG9uZSBmb3IgYGFsbCcu
-DQptYWtlWzNdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0y
-MDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL251bWEnDQptYWtlWzNdOiBFbnRlcmluZyBkaXJlY3Rv
-cnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9j
-b250YWluZXJzJw0KbWFrZVs0XTogRW50ZXJpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6
-L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9saWJjbG9uZScN
-Cm1ha2VbNF06IE5vdGhpbmcgdG8gYmUgZG9uZSBmb3IgYGFsbCcuDQptYWtlWzRdOiBMZWF2aW5n
-IGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMv
-a2VybmVsL2NvbnRhaW5lcnMvbGliY2xvbmUnDQptYWtlWzRdOiBFbnRlcmluZyBkaXJlY3Rvcnkg
-YC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9jb250
-YWluZXJzL3V0c25hbWUnDQptYWtlWzRdOiBOb3RoaW5nIHRvIGJlIGRvbmUgZm9yIGBhbGwnLg0K
-bWFrZVs0XTogTGVhdmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAw
-OTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL3V0c25hbWUnDQptYWtlWzRdOiBFbnRl
-cmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNh
-c2VzL2tlcm5lbC9jb250YWluZXJzL3N5c3ZpcGMnDQptYWtlWzRdOiBOb3RoaW5nIHRvIGJlIGRv
-bmUgZm9yIGBhbGwnLg0KbWFrZVs0XTogTGVhdmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5k
-ZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL3N5c3ZpcGMn
-DQptYWtlWzRdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwt
-MjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL3BpZG5zJw0KbWFrZVs0XTogTm90
-aGluZyB0byBiZSBkb25lIGZvciBgYWxsJy4NCm1ha2VbNF06IExlYXZpbmcgZGlyZWN0b3J5IGAv
-aG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFp
-bmVycy9waWRucycNCm1ha2VbNF06IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRl
-ei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvbmV0bnMnDQpt
-YWtlWzRdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5
-MDQzMC90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvbmV0bnMnDQptYWtlWzRdOiBFbnRlcmlu
-ZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2Vz
-L2tlcm5lbC9jb250YWluZXJzL21xbnMnDQptYWtlWzRdOiBOb3RoaW5nIHRvIGJlIGRvbmUgZm9y
-IGBhbGwnLg0KbWFrZVs0XTogTGVhdmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRw
-LWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL21xbnMnDQptYWtlWzNd
-OiBMZWF2aW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90
-ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMnDQptYWtlWzNdOiBFbnRlcmluZyBkaXJlY3Rvcnkg
-YC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9jb250
-cm9sbGVycycNCm1ha2VbM106IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0
-cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMnDQptYWtlWzNdOiBF
-bnRlcmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVz
-dGNhc2VzL2tlcm5lbC9jb25uZWN0b3JzJw0Kc3lzdGVtIGRvZXMgbm90IHN1cHBvcnQgcHJvY2Vz
-cyBldmVudCBjb25uZWN0b3INCm1ha2VbM106IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVy
-bmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvY29ubmVjdG9ycycNCm1h
-a2VbM106IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5
-MDQzMC90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUnDQptYWtlWzNdOiBOb3RoaW5nIHRvIGJlIGRv
-bmUgZm9yIGBhbGwnLg0KbWFrZVszXTogTGVhdmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5k
-ZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlJw0KbWFrZVszXTog
-RW50ZXJpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rl
-c3RjYXNlcy9rZXJuZWwvZnMnDQptYWtlWzRdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC9ob21lL2pm
-ZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9mcy9hY2xzJw0KbWFr
-ZVs0XTogTm90aGluZyB0byBiZSBkb25lIGZvciBgYWxsJy4NCm1ha2VbNF06IExlYXZpbmcgZGly
-ZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJu
-ZWwvZnMvYWNscycNCm1ha2VbNF06IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRl
-ei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL2ZzL2RvaW8nDQptYWtlWzRdOiBO
-b3RoaW5nIHRvIGJlIGRvbmUgZm9yIGBhbGwnLg0KbWFrZVs0XTogTGVhdmluZyBkaXJlY3Rvcnkg
-YC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9mcy9k
-b2lvJw0KbWFrZVs0XTogRW50ZXJpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1m
-dWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZnNfaW5vZCcNCm1ha2VbNF06IE5vdGhp
-bmcgdG8gYmUgZG9uZSBmb3IgYGFsbCcuDQptYWtlWzRdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL2hv
-bWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL2ZzL2ZzX2lu
-b2QnDQptYWtlWzRdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1
-bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9mcy9mc3N0cmVzcycNCm1ha2VbNF06IE5vdGhp
-bmcgdG8gYmUgZG9uZSBmb3IgYGFsbCcuDQptYWtlWzRdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL2hv
-bWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL2ZzL2Zzc3Ry
-ZXNzJw0KbWFrZVs0XTogRW50ZXJpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1m
-dWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZnNfcGVybXMnDQptYWtlWzRdOiBOb3Ro
-aW5nIHRvIGJlIGRvbmUgZm9yIGBhbGwnLg0KbWFrZVs0XTogTGVhdmluZyBkaXJlY3RvcnkgYC9o
-b21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9mcy9mc19w
-ZXJtcycNCm1ha2VbNF06IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAt
-ZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL2ZzL2ZzeC1saW51eCcNCm1ha2VbNF06IE5v
-dGhpbmcgdG8gYmUgZG9uZSBmb3IgYGFsbCcuDQptYWtlWzRdOiBMZWF2aW5nIGRpcmVjdG9yeSBg
-L2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL2ZzL2Zz
-eC1saW51eCcNCm1ha2VbNF06IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9s
-dHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL2ZzL2Z0ZXN0Jw0KbWFrZVs0XTogTm90
-aGluZyB0byBiZSBkb25lIGZvciBgYWxsJy4NCm1ha2VbNF06IExlYXZpbmcgZGlyZWN0b3J5IGAv
-aG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZnRl
-c3QnDQptYWtlWzRdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1
-bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9mcy9pbm9kZScNCm1ha2VbNF06IE5vdGhpbmcg
-dG8gYmUgZG9uZSBmb3IgYGFsbCcuDQptYWtlWzRdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL2hvbWUv
-amZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL2ZzL2lub2RlJw0K
-bWFrZVs0XTogRW50ZXJpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIw
-MDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvbGZ0ZXN0Jw0KbWFrZVs0XTogTm90aGluZyB0byBi
-ZSBkb25lIGZvciBgYWxsJy4NCm1ha2VbNF06IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVy
-bmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvbGZ0ZXN0Jw0KbWFr
-ZVs0XTogRW50ZXJpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkw
-NDMwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvbGlua3Rlc3QnDQptYWtlWzRdOiBOb3RoaW5nIHRvIGJl
-IGRvbmUgZm9yIGBhbGwnLg0KbWFrZVs0XTogTGVhdmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJu
-YW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9mcy9saW5rdGVzdCcNCm1h
-a2VbNF06IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5
-MDQzMC90ZXN0Y2FzZXMva2VybmVsL2ZzL29wZW5maWxlJw0KbWFrZVs0XTogTm90aGluZyB0byBi
-ZSBkb25lIGZvciBgYWxsJy4NCm1ha2VbNF06IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVy
-bmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvb3BlbmZpbGUnDQpt
-YWtlWzRdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAw
-OTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9mcy9wcm9jJw0KbWFrZVs0XTogTm90aGluZyB0byBiZSBk
-b25lIGZvciBgYWxsJy4NCm1ha2VbNF06IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFu
-ZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvcHJvYycNCm1ha2VbNF06
-IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90
-ZXN0Y2FzZXMva2VybmVsL2ZzL3N0cmVhbScNCm1ha2VbNF06IE5vdGhpbmcgdG8gYmUgZG9uZSBm
-b3IgYGFsbCcuDQptYWtlWzRdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9s
-dHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL2ZzL3N0cmVhbScNCm1ha2VbNF06IEVu
-dGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0
-Y2FzZXMva2VybmVsL2ZzL2ZzX2RpJw0KbWFrZVs0XTogTm90aGluZyB0byBiZSBkb25lIGZvciBg
-YWxsJy4NCm1ha2VbNF06IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1m
-dWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZnNfZGknDQptYWtlWzRdOiBFbnRlcmlu
-ZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2Vz
-L2tlcm5lbC9mcy9mc19iaW5kJw0KbWFrZVs1XTogRW50ZXJpbmcgZGlyZWN0b3J5IGAvaG9tZS9q
-ZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZnNfYmluZC9i
-aW4nDQptYWtlWzVdOiBOb3RoaW5nIHRvIGJlIGRvbmUgZm9yIGBhbGwnLg0KbWFrZVs1XTogTGVh
-dmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNh
-c2VzL2tlcm5lbC9mcy9mc19iaW5kL2JpbicNCm1ha2VbNF06IExlYXZpbmcgZGlyZWN0b3J5IGAv
-aG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZnNf
-YmluZCcNCm1ha2VbNF06IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAt
-ZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL2ZzL3JhY2VyJw0KbWFrZVs0XTogTm90aGlu
-ZyB0byBiZSBkb25lIGZvciBgYWxsJy4NCm1ha2VbNF06IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9t
-ZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvcmFjZXIn
-DQptYWtlWzRdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwt
-MjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9mcy9xdW90YV9yZW1vdW50Jw0KbWFrZVs0XTogTm90
-aGluZyB0byBiZSBkb25lIGZvciBgYWxsJy4NCm1ha2VbNF06IExlYXZpbmcgZGlyZWN0b3J5IGAv
-aG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvcXVv
-dGFfcmVtb3VudCcNCm1ha2VbM106IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6
-L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvZnMnDQptYWtlWzNdOiBFbnRlcmlu
-ZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2Vz
-L2tlcm5lbC9pbycNCm1ha2VbNF06IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRl
-ei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL2lvL2RpcmVjdF9pbycNCm1ha2Vb
-NF06IE5vdGhpbmcgdG8gYmUgZG9uZSBmb3IgYGFsbCcuDQptYWtlWzRdOiBMZWF2aW5nIGRpcmVj
-dG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVs
-L2lvL2RpcmVjdF9pbycNCm1ha2VbNF06IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5h
-bmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL2lvL2Rpc2t0ZXN0Jw0KbWFr
-ZVs0XTogTm90aGluZyB0byBiZSBkb25lIGZvciBgYWxsJy4NCm1ha2VbNF06IExlYXZpbmcgZGly
-ZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJu
-ZWwvaW8vZGlza3Rlc3QnDQptYWtlWzRdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJu
-YW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9pby9zdHJlc3NfY2QnDQpt
-YWtlWzRdOiBOb3RoaW5nIHRvIGJlIGRvbmUgZm9yIGBhbGwnLg0KbWFrZVs0XTogTGVhdmluZyBk
-aXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2tl
-cm5lbC9pby9zdHJlc3NfY2QnDQptYWtlWzRdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC9ob21lL2pm
-ZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9pby9zdHJlc3NfZmxv
-cHB5Jw0KbWFrZVs0XTogTm90aGluZyB0byBiZSBkb25lIGZvciBgYWxsJy4NCm1ha2VbNF06IExl
-YXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3Rj
-YXNlcy9rZXJuZWwvaW8vc3RyZXNzX2Zsb3BweScNCm1ha2VbNF06IEVudGVyaW5nIGRpcmVjdG9y
-eSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL2lv
-L3dyaXRldGVzdCcNCm1ha2VbNF06IE5vdGhpbmcgdG8gYmUgZG9uZSBmb3IgYGFsbCcuDQptYWtl
-WzRdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQz
-MC90ZXN0Y2FzZXMva2VybmVsL2lvL3dyaXRldGVzdCcNCm1ha2VbNF06IEVudGVyaW5nIGRpcmVj
-dG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVs
-L2lvL2FpbycNCm1ha2VbNV06IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9s
-dHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL2lvL2Fpby9haW8wMScNCm1ha2VbNV06
-IE5vdGhpbmcgdG8gYmUgZG9uZSBmb3IgYGFsbCcuDQptYWtlWzVdOiBMZWF2aW5nIGRpcmVjdG9y
-eSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL2lv
-L2Fpby9haW8wMScNCm1ha2VbNV06IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRl
-ei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL2lvL2Fpby9haW8wMicNCm1ha2Vb
-NV06IE5vdGhpbmcgdG8gYmUgZG9uZSBmb3IgYGFsbCcuDQptYWtlWzVdOiBMZWF2aW5nIGRpcmVj
-dG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVs
-L2lvL2Fpby9haW8wMicNCm1ha2VbNF06IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFu
-ZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvaW8vYWlvJw0KbWFrZVszXTog
-TGVhdmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVz
-dGNhc2VzL2tlcm5lbC9pbycNCm1ha2VbM106IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZl
-cm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL2lwYycNCm1ha2VbNF06
-IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90
-ZXN0Y2FzZXMva2VybmVsL2lwYy9zZW1hcGhvcmUnDQptYWtlWzRdOiBOb3RoaW5nIHRvIGJlIGRv
-bmUgZm9yIGBhbGwnLg0KbWFrZVs0XTogTGVhdmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5k
-ZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9pcGMvc2VtYXBob3JlJw0KbWFr
-ZVs0XTogRW50ZXJpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkw
-NDMwL3Rlc3RjYXNlcy9rZXJuZWwvaXBjL3BpcGVpbycNCm1ha2VbNF06IE5vdGhpbmcgdG8gYmUg
-ZG9uZSBmb3IgYGFsbCcuDQptYWtlWzRdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5h
-bmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL2lwYy9waXBlaW8nDQptYWtl
-WzRdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0
-MzAvdGVzdGNhc2VzL2tlcm5lbC9pcGMvaXBjX3N0cmVzcycNCm1ha2VbNF06IE5vdGhpbmcgdG8g
-YmUgZG9uZSBmb3IgYGFsbCcuDQptYWtlWzRdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL2hvbWUvamZl
-cm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL2lwYy9pcGNfc3RyZXNz
-Jw0KbWFrZVszXTogTGVhdmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwt
-MjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9pcGMnDQptYWtlWzNdOiBFbnRlcmluZyBkaXJlY3Rv
-cnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9t
-ZW0nDQptYWtlWzRdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1
-bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9tZW0vaHVnZXRsYicNCm1ha2VbNV06IEVudGVy
-aW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2Fz
-ZXMva2VybmVsL21lbS9odWdldGxiL2xpYicNCm1ha2VbNV06IE5vdGhpbmcgdG8gYmUgZG9uZSBm
-b3IgYGFsbCcuDQptYWtlWzVdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9s
-dHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL21lbS9odWdldGxiL2xpYicNCm1ha2Vb
-NV06IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQz
-MC90ZXN0Y2FzZXMva2VybmVsL21lbS9odWdldGxiL2h1Z2VzaG1nZXQnDQptYWtlWzVdOiBOb3Ro
-aW5nIHRvIGJlIGRvbmUgZm9yIGBhbGwnLg0KbWFrZVs1XTogTGVhdmluZyBkaXJlY3RvcnkgYC9o
-b21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9tZW0vaHVn
-ZXRsYi9odWdlc2htZ2V0Jw0KbWFrZVs1XTogRW50ZXJpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVy
-bmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2h1Z2V0bGIvaHVn
-ZXNobWF0Jw0KbWFrZVs1XTogTm90aGluZyB0byBiZSBkb25lIGZvciBgYWxsJy4NCm1ha2VbNV06
-IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rl
-c3RjYXNlcy9rZXJuZWwvbWVtL2h1Z2V0bGIvaHVnZXNobWF0Jw0KbWFrZVs1XTogRW50ZXJpbmcg
-ZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9r
-ZXJuZWwvbWVtL2h1Z2V0bGIvaHVnZXNobWR0Jw0KbWFrZVs1XTogTm90aGluZyB0byBiZSBkb25l
-IGZvciBgYWxsJy4NCm1ha2VbNV06IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6
-L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2h1Z2V0bGIvaHVnZXNobWR0
-Jw0KbWFrZVs1XTogRW50ZXJpbmcgZGlyZWN0b3J5IGAvaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxs
-LTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL2h1Z2V0bGIvaHVnZXNobWN0bCcNCm1ha2Vb
-NV06IE5vdGhpbmcgdG8gYmUgZG9uZSBmb3IgYGFsbCcuDQptYWtlWzVdOiBMZWF2aW5nIGRpcmVj
-dG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVs
-L21lbS9odWdldGxiL2h1Z2VzaG1jdGwnDQptYWtlWzVdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC9o
-b21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNhc2VzL2tlcm5lbC9tZW0vaHVn
-ZXRsYi9odWdlbW1hcCcNCm1ha2VbNV06IE5vdGhpbmcgdG8gYmUgZG9uZSBmb3IgYGFsbCcuDQpt
-YWtlWzVdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5
-MDQzMC90ZXN0Y2FzZXMva2VybmVsL21lbS9odWdldGxiL2h1Z2VtbWFwJw0KbWFrZVs0XTogTGVh
-dmluZyBkaXJlY3RvcnkgYC9ob21lL2pmZXJuYW5kZXovbHRwLWZ1bGwtMjAwOTA0MzAvdGVzdGNh
-c2VzL2tlcm5lbC9tZW0vaHVnZXRsYicNCm1ha2VbNF06IEVudGVyaW5nIGRpcmVjdG9yeSBgL2hv
-bWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL21lbS9tZW0n
-DQpnY2MgLWcgLU8yIC1XYWxsIC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAgICBtZW0wMi5jIC1MLi4v
-Li4vLi4vLi4vbGliIC1sbHRwICAtbyBtZW0wMg0KbWVtMDIuYzogSW4gZnVuY3Rpb24g4oCYbWFp
-buKAmToNCm1lbTAyLmM6NzE6IGludGVybmFsIGNvbXBpbGVyIGVycm9yOiBpbiBtZXJnZV9hbGlh
-c19pbmZvLCBhdCB0cmVlLXNzYS1jb3B5LmM6MjM1DQpQbGVhc2Ugc3VibWl0IGEgZnVsbCBidWcg
-cmVwb3J0LA0Kd2l0aCBwcmVwcm9jZXNzZWQgc291cmNlIGlmIGFwcHJvcHJpYXRlLg0KU2VlIDxV
-Ukw6aHR0cDovL2djYy5nbnUub3JnL2J1Z3MuaHRtbD4gZm9yIGluc3RydWN0aW9ucy4NCm1ha2Vb
-NF06ICoqKiBbbWVtMDJdIEVycm9yIDENCm1ha2VbNF06IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9t
-ZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvbWVtL21lbScN
-Cm1ha2VbM106ICoqKiBbYWxsXSBFcnJvciAyDQptYWtlWzNdOiBMZWF2aW5nIGRpcmVjdG9yeSBg
-L2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL21lbScN
-Cm1ha2VbMl06ICoqKiBbYWxsXSBFcnJvciAyDQptYWtlWzJdOiBMZWF2aW5nIGRpcmVjdG9yeSBg
-L2hvbWUvamZlcm5hbmRlei9sdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsJw0KbWFr
-ZVsxXTogKioqIFthbGxdIEVycm9yIDINCm1ha2VbMV06IExlYXZpbmcgZGlyZWN0b3J5IGAvaG9t
-ZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcycNCm1ha2U6ICoqKiBbYWxs
-XSBFcnJvciAyDQobXTA7cm9vdEBnYWx1bHMwMzovaG9tZS9qZmVybmFuZGV6L2x0cC1mdWxsLTIw
-MDkwNDMwB1tyb290QGdhbHVsczAzIGx0cC1mdWxsLTIwMDkwNDMwXSMgZXhpdHkIG1tLDQoKU2Ny
-aXB0IGRvbmUgb24gTW9uIDE4IE1heSAyMDA5IDEyOjEzOjE2IFBNIENFU1QK
-
-------_=_NextPart_001_01C9D7A1.F911E143
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: rohit.170309@gmail.com
+Cc: ltp-list@lists.sourceforge.net
+
+From: rohit verma <rohit.170309@gmail.com>
+Subject: Re: Patch for [LTP] "File" test case issue of 30-April-2009 release
+Date: Tue, 19 May 2009 02:57:56 -0700
+
+> Dear Qian,
+> 
+> As rpmbuild path is differenet for FC10 and RHEL, I have fixed the build
+> path using following option
+> 
+>  rpmbuild --define "_topdir  <builddirectory>"
+> 
+>  builddirectory mentioned as /usr/src/redhat in test program
+> 
+> I have attached patch with this mail. I request you to check the patch
+> description  for more details and let me know if any issues.
+> 
+> Note:  I have run checkpatch.pl script on this patch and there no errors and
+> warnings.
+>
+
+Acked-by: CAI Qian <caiqian@cclom.cn>
+ 
+> Regards,
+> Rohit
+> 
+> On Mon, May 11, 2009 at 5:05 AM, CAI Qian <caiqian@cclom.cn> wrote:
+> 
+>> From: rohit verma <rohit.170309@gmail.com>
+>> Subject: Patch for [LTP] "File" test case issue of 30-April-2009 release
+>> Date: Fri, 8 May 2009 11:59:35 +0530
+>>
+>> > Dear Qian,
+>> >
+>> > Patch for "file" test case is attached with this mail.
+>> >
+>> > I have changed build directory from "/usr/src/redhat" to "$HOME/rpmbuild"
+>> at
+>> > line no.
+>> >
+>> > 394 in "ltp-full-20090430/testcases/commands/ade/file/file_test.sh"
+>> >
+>> > With these modification test case pass for any user.
+>> >
+>> > Please confirm if this solution is OK.
+>> >
+>>
+>>  $LTPBIN/tst_resm TINFO "TEST #9: file command recognizes RPM files"
+>>  if [ -f /etc/redhat-release ]; then
+>> -       bDIR=/usr/src/redhat
+>> +       bDIR=$HOME/rpmbuild
+>>        bCMD=rpmbuild
+>>  else
+>>        bDIR=/usr/src/packages
+>>
+>> This will not work for systems like RHEL, which are using the default
+>> buildroot in /usr/src/redhat. You can also tell rpmbuild command to use
+>> an user specified buildroot like this,
+>>
+>> rpmbuild --buildroot=$HOME/rpmbuild
+>>
+>> CAI Qian
+>>
+>> >
+>> > Regards,
+>> > rohit
+>> >
+>> >
+>> >
+>> > On Thu, May 7, 2009 at 1:03 PM, CAI Qian <caiqian@cclom.cn> wrote:
+>> >
+>> >> From: rohit verma <rohit.170309@gmail.com>
+>> >> Subject: [LTP] "File" test case issue with Fedoracore10 in 31-March-2009
+>> >> release
+>> >> Date: Mon, 4 May 2009 10:59:54 +0530
+>> >>
+>> >> > Hi,
+>> >> >
+>> >> > O/P of 'File' test case  with fedora core-10 as follows
+>> >> >
+>> >> > *file01      0  INFO  :  TEST #1: file commad recogizes ASCII text
+>> files
+>> >> > file01      7  PASS  :  file: Recognised ASCII file correctly
+>> >> > file02      0  INFO  :  TEST #2: file command recognizes bash shell
+>> >> scripts
+>> >> > file02      2  PASS  :  file: Recognised bash shell script correctly
+>> >> > file03      0  INFO  :  TEST #3: file command recognizes korn shell
+>> >> scripts
+>> >> > file03      3  PASS  :  file: recognised korn shell script
+>> >> > file04      0  INFO  :  TEST #4: file command recognizes C shell
+>> scripts
+>> >> > file04      4  PASS  :  file: Recognised C shell script correctly
+>> >> > file05      0  INFO  :  TEST #5: file command recognizes C programs
+>> text
+>> >> > file05      5  PASS  :  file: Recognised C program text correctly
+>> >> > file06      0  INFO  :  TEST #6: file command recognizes ELF
+>> executables
+>> >> > file06      6  PASS  :  file: Recognized ELF binary executable
+>> >> > file07      0  INFO  :  TEST #7: file command recognizes tar files.
+>> >> > file07      7  PASS  :  file: Recognised tar files
+>> >> > file08      0  INFO  :  TEST #8: file command recognizes tar zip files
+>> >> > file08      8  PASS  :  file: Recognised tar zip file
+>> >> > file09      0  INFO  :  TEST #9: file command recognizes RPM files
+>> >> > file09      9  BROK  :  rpm command brok. Reason:
+>> >> > error: File /root/rpmbuild/SOURCES/cprog.c: No such file or directory
+>> >> > file09     10  BROK  :  Remaining cases broken
+>> >> > file09      9  FAIL  :  file: Failed to Recognize RPM file. Reason:
+>> >> > /usr/src/redhat/SRPMS/cprog-0.0.7-3.src.rpm: cannot open
+>> >> > `/usr/src/redhat/SRPMS/cprog-0.0.7-3.src.rpm' (No such file or
+>> directory)
+>> >> > file10      0  INFO  :  TEST #10: file command recognizes vmlinuz file
+>> >> > file10     10  PASS  :  file: Recognised vmlinuz file correctly *
+>> >> > **
+>> >> >
+>> >> > Default path for 'rpmbuild' command in fc10  is /root/rpmbuild/SOURCES
+>> >> > folder instead of  "/usr/src/redhat" which was present in fc8
+>> rpmbuild.
+>> >> >
+>> >> > In FC10 rpmbuild looks for the cprog.c file  in user's home directory.
+>> >> (i.e
+>> >> > /root/rpmbuild  for root user)
+>> >> >
+>> >> > Please visit the below URL for more information
+>> >> >
+>> >> > http://www.mail-archive.com/fedora-list@redhat.com/msg27958.html
+>> >> >
+>> >> > As per the 'file' test program, it creates the 'cprog.c' file in
+>> >> > /usr/src/redhat and recognize RPM file in same path
+>> >> > which should be changed accordingly to user's home directory.
+>> >> >
+>> >> > Please check the  line number 394 : bDIR=/usr/src/redhat. in
+>> >> file_tests.sh
+>> >> >
+>> >> > So I request you to incorporate the changes according to rpmbuild of
+>> fc10
+>> >> in
+>> >> > file_tests.sh.
+>> >> >
+>> >> > Regards,
+>> >> > rohit
+>> >> >
+>> >>
+>> >> Yes, you are correct. Perhaps we can use,
+>> >>
+>> >> rpmbuild --buildroot=/usr/src/redhat
+>> >>
+>> >> to override the default setting?
+>> >>
+>> >> CAI Qian
+>> >>
+>>
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables 
-unlimited royalty-free distribution of the report engine 
-for externally facing server and web deployment. 
-http://p.sf.net/sfu/businessobjects
-------_=_NextPart_001_01C9D7A1.F911E143
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+is a gathering of tech-side developers & brand creativity professionals. Meet
+the minds behind Google Creative Lab, Visual Complexity, Processing, & 
+iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
+Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------_=_NextPart_001_01C9D7A1.F911E143--
-
