@@ -1,25 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <rohit.170309@gmail.com>) id 1M6M5H-0005KE-V5
-	for ltp-list@lists.sourceforge.net; Tue, 19 May 2009 09:58:07 +0000
-Received: from mail-ew0-f217.google.com ([209.85.219.217])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1M6M58-0005BD-Jh
-	for ltp-list@lists.sourceforge.net; Tue, 19 May 2009 09:58:07 +0000
-Received: by ewy17 with SMTP id 17so4942919ewy.10
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <marc@tensilica.com>) id 1M76Ez-0001XS-Je
+	for ltp-list@lists.sourceforge.net; Thu, 21 May 2009 11:15:13 +0000
+Received: from mailgw.tensilica.com ([65.205.227.134])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1M76Eu-0005yq-Mc
+	for ltp-list@lists.sourceforge.net; Thu, 21 May 2009 11:15:13 +0000
+Received: from localhost (unknown [127.0.0.1])
+	by mailgw.tensilica.com (Postfix) with ESMTP id 1F7121160513
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 19 May 2009 02:57:57 -0700 (PDT)
+	Thu, 21 May 2009 11:14:38 +0000 (UTC)
+Received: from mailgw.tensilica.com ([127.0.0.1])
+	by localhost (mailgw.tensilica.com [127.0.0.1]) (amavisd-maia,
+	port 10024)
+	with ESMTP id 02721-07 for <ltp-list@lists.sourceforge.net>;
+	Thu, 21 May 2009 04:14:37 -0700 (PDT)
+Received: from mail.tensilica.com (mail.tensilica.com [192.168.15.138])
+	by mailgw.tensilica.com (Postfix) with ESMTP id E62111160499
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 21 May 2009 04:14:34 -0700 (PDT)
+From: Marc Gauthier <marc@tensilica.com>
+Date: Thu, 21 May 2009 01:13:27 -0700
+Message-ID: <522C1DF17AF50042AD8AE87F7887BD3D0158B35583@exch.hq.tensilica.com>
+Content-Language: en-US
+Content-Type: multipart/mixed;
+	boundary="_003_522C1DF17AF50042AD8AE87F7887BD3D0158B35583exchhqtensili_"
 MIME-Version: 1.0
-In-Reply-To: <20090511.200555.226785908.caiqian@cclom.cn>
-References: <d51f89b0905072329u1d7d2e34j1fb95b09f347bf1a@mail.gmail.com>
-	<20090511.200555.226785908.caiqian@cclom.cn>
-Date: Tue, 19 May 2009 02:57:56 -0700
-Message-ID: <d51f89b0905190257t4505860ej1461b32ad789e96@mail.gmail.com>
-From: rohit verma <rohit.170309@gmail.com>
-Content-Type: multipart/mixed; boundary=0016368e2f4ff502f2046a40f1f9
-Subject: Re: [LTP] Patch for "File" test case issue of 30-April-2009 release
+Subject: [LTP] [PATCH] Detect test results more accurately when generating
+	HTML
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,325 +40,319 @@ List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@cclom.cn>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
---0016368e2f4ff502f2046a40f1f9
-Content-Type: multipart/alternative; boundary=0016368e2f4ff502e3046a40f1f7
-
---0016368e2f4ff502e3046a40f1f7
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-Dear Qian,
-
-As rpmbuild path is differenet for FC10 and RHEL, I have fixed the build
-path using following option
-
- rpmbuild --define "_topdir  <builddirectory>"
-
- builddirectory mentioned as /usr/src/redhat in test program
-
-I have attached patch with this mail. I request you to check the patch
-description  for more details and let me know if any issues.
-
-Note:  I have run checkpatch.pl script on this patch and there no errors and
-warnings.
-
-Regards,
-Rohit
-
-On Mon, May 11, 2009 at 5:05 AM, CAI Qian <caiqian@cclom.cn> wrote:
-
-> From: rohit verma <rohit.170309@gmail.com>
-> Subject: Patch for [LTP] "File" test case issue of 30-April-2009 release
-> Date: Fri, 8 May 2009 11:59:35 +0530
->
-> > Dear Qian,
-> >
-> > Patch for "file" test case is attached with this mail.
-> >
-> > I have changed build directory from "/usr/src/redhat" to "$HOME/rpmbuild"
-> at
-> > line no.
-> >
-> > 394 in "ltp-full-20090430/testcases/commands/ade/file/file_test.sh"
-> >
-> > With these modification test case pass for any user.
-> >
-> > Please confirm if this solution is OK.
-> >
->
->  $LTPBIN/tst_resm TINFO "TEST #9: file command recognizes RPM files"
->  if [ -f /etc/redhat-release ]; then
-> -       bDIR=/usr/src/redhat
-> +       bDIR=$HOME/rpmbuild
->        bCMD=rpmbuild
->  else
->        bDIR=/usr/src/packages
->
-> This will not work for systems like RHEL, which are using the default
-> buildroot in /usr/src/redhat. You can also tell rpmbuild command to use
-> an user specified buildroot like this,
->
-> rpmbuild --buildroot=$HOME/rpmbuild
->
-> CAI Qian
->
-> >
-> > Regards,
-> > rohit
-> >
-> >
-> >
-> > On Thu, May 7, 2009 at 1:03 PM, CAI Qian <caiqian@cclom.cn> wrote:
-> >
-> >> From: rohit verma <rohit.170309@gmail.com>
-> >> Subject: [LTP] "File" test case issue with Fedoracore10 in 31-March-2009
-> >> release
-> >> Date: Mon, 4 May 2009 10:59:54 +0530
-> >>
-> >> > Hi,
-> >> >
-> >> > O/P of 'File' test case  with fedora core-10 as follows
-> >> >
-> >> > *file01      0  INFO  :  TEST #1: file commad recogizes ASCII text
-> files
-> >> > file01      7  PASS  :  file: Recognised ASCII file correctly
-> >> > file02      0  INFO  :  TEST #2: file command recognizes bash shell
-> >> scripts
-> >> > file02      2  PASS  :  file: Recognised bash shell script correctly
-> >> > file03      0  INFO  :  TEST #3: file command recognizes korn shell
-> >> scripts
-> >> > file03      3  PASS  :  file: recognised korn shell script
-> >> > file04      0  INFO  :  TEST #4: file command recognizes C shell
-> scripts
-> >> > file04      4  PASS  :  file: Recognised C shell script correctly
-> >> > file05      0  INFO  :  TEST #5: file command recognizes C programs
-> text
-> >> > file05      5  PASS  :  file: Recognised C program text correctly
-> >> > file06      0  INFO  :  TEST #6: file command recognizes ELF
-> executables
-> >> > file06      6  PASS  :  file: Recognized ELF binary executable
-> >> > file07      0  INFO  :  TEST #7: file command recognizes tar files.
-> >> > file07      7  PASS  :  file: Recognised tar files
-> >> > file08      0  INFO  :  TEST #8: file command recognizes tar zip files
-> >> > file08      8  PASS  :  file: Recognised tar zip file
-> >> > file09      0  INFO  :  TEST #9: file command recognizes RPM files
-> >> > file09      9  BROK  :  rpm command brok. Reason:
-> >> > error: File /root/rpmbuild/SOURCES/cprog.c: No such file or directory
-> >> > file09     10  BROK  :  Remaining cases broken
-> >> > file09      9  FAIL  :  file: Failed to Recognize RPM file. Reason:
-> >> > /usr/src/redhat/SRPMS/cprog-0.0.7-3.src.rpm: cannot open
-> >> > `/usr/src/redhat/SRPMS/cprog-0.0.7-3.src.rpm' (No such file or
-> directory)
-> >> > file10      0  INFO  :  TEST #10: file command recognizes vmlinuz file
-> >> > file10     10  PASS  :  file: Recognised vmlinuz file correctly *
-> >> > **
-> >> >
-> >> > Default path for 'rpmbuild' command in fc10  is /root/rpmbuild/SOURCES
-> >> > folder instead of  "/usr/src/redhat" which was present in fc8
-> rpmbuild.
-> >> >
-> >> > In FC10 rpmbuild looks for the cprog.c file  in user's home directory.
-> >> (i.e
-> >> > /root/rpmbuild  for root user)
-> >> >
-> >> > Please visit the below URL for more information
-> >> >
-> >> > http://www.mail-archive.com/fedora-list@redhat.com/msg27958.html
-> >> >
-> >> > As per the 'file' test program, it creates the 'cprog.c' file in
-> >> > /usr/src/redhat and recognize RPM file in same path
-> >> > which should be changed accordingly to user's home directory.
-> >> >
-> >> > Please check the  line number 394 : bDIR=/usr/src/redhat. in
-> >> file_tests.sh
-> >> >
-> >> > So I request you to incorporate the changes according to rpmbuild of
-> fc10
-> >> in
-> >> > file_tests.sh.
-> >> >
-> >> > Regards,
-> >> > rohit
-> >> >
-> >>
-> >> Yes, you are correct. Perhaps we can use,
-> >>
-> >> rpmbuild --buildroot=/usr/src/redhat
-> >>
-> >> to override the default setting?
-> >>
-> >> CAI Qian
-> >>
->
-
---0016368e2f4ff502e3046a40f1f7
-Content-Type: text/html; charset=ISO-8859-1
+--_003_522C1DF17AF50042AD8AE87F7887BD3D0158B35583exchhqtensili_
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-<div>Dear Qian,</div>
-<div>=A0</div>
-<div>As rpmbuild path is differenet for FC10 and RHEL, I have fixed the bui=
-ld path using following option</div>
-<div>=A0</div>
-<div>=A0rpmbuild --define &quot;_topdir =A0&lt;builddirectory&gt;&quot;</di=
-v>
-<div>=A0</div>
-<div>=A0builddirectory mentioned as /usr/src/redhat in=A0test program </div=
->
-<div>=A0</div>
-<div>I have attached patch with this mail. I request you to check the=A0pat=
-ch description =A0for more details and let me know if any issues.</div>
-<div>=A0</div>
-<div>Note:=A0 I have run checkpatch.pl script on this patch and there no er=
-rors and warnings.</div>
-<div>=A0</div>
-<div>Regards,</div>
-<div>Rohit<br><br></div>
-<div class=3D"gmail_quote">On Mon, May 11, 2009 at 5:05 AM, CAI Qian <span =
-dir=3D"ltr">&lt;<a href=3D"mailto:caiqian@cclom.cn">caiqian@cclom.cn</a>&gt=
-;</span> wrote:<br>
-<blockquote class=3D"gmail_quote" style=3D"PADDING-LEFT: 1ex; MARGIN: 0px 0=
-px 0px 0.8ex; BORDER-LEFT: #ccc 1px solid">
-<div class=3D"im">From: rohit verma &lt;<a href=3D"mailto:rohit.170309@gmai=
-l.com">rohit.170309@gmail.com</a>&gt;<br></div>Subject: Patch for [LTP] &qu=
-ot;File&quot; test case issue of 30-April-2009 release<br>Date: Fri, 8 May =
-2009 11:59:35 +0530<br>
+Hi, my first patch to this list.  Actually not a patch,
+but the files themselves, to avoid line-wrapping issues
+and because the diff is twice the size of the new file.
 
-<div class=3D"im"><br>&gt; Dear Qian,<br>&gt;<br>&gt; Patch for &quot;file&=
-quot; test case is attached with this mail.<br>&gt;<br>&gt; I have changed =
-build directory from &quot;/usr/src/redhat&quot; to &quot;$HOME/rpmbuild&qu=
-ot; at<br>
-&gt; line no.<br>&gt;<br>&gt; 394 in &quot;ltp-full-20090430/testcases/comm=
-ands/ade/file/file_test.sh&quot;<br>&gt;<br>&gt; With these modification te=
-st case pass for any user.<br>&gt;<br>&gt; Please confirm if this solution =
-is OK.<br>
-&gt;<br><br></div>=A0$LTPBIN/tst_resm TINFO &quot;TEST #9: file command rec=
-ognizes RPM files&quot;<br>=A0if [ -f /etc/redhat-release ]; then<br>- =A0 =
-=A0 =A0 bDIR=3D/usr/src/redhat<br>+ =A0 =A0 =A0 bDIR=3D$HOME/rpmbuild<br>=
-=A0 =A0 =A0 =A0bCMD=3Drpmbuild<br>
-=A0else<br>=A0 =A0 =A0 =A0bDIR=3D/usr/src/packages<br><br>This will not wor=
-k for systems like RHEL, which are using the default<br>buildroot in /usr/s=
-rc/redhat. You can also tell rpmbuild command to use<br>an user specified b=
-uildroot like this,<br>
-<br>rpmbuild --buildroot=3D$HOME/rpmbuild<br><font color=3D"#888888"><br>CA=
-I Qian<br></font>
-<div>
-<div></div>
-<div class=3D"h5"><br>&gt;<br>&gt; Regards,<br>&gt; rohit<br>&gt;<br>&gt;<b=
-r>&gt;<br>&gt; On Thu, May 7, 2009 at 1:03 PM, CAI Qian &lt;<a href=3D"mail=
-to:caiqian@cclom.cn">caiqian@cclom.cn</a>&gt; wrote:<br>&gt;<br>&gt;&gt; Fr=
-om: rohit verma &lt;<a href=3D"mailto:rohit.170309@gmail.com">rohit.170309@=
-gmail.com</a>&gt;<br>
-&gt;&gt; Subject: [LTP] &quot;File&quot; test case issue with Fedoracore10 =
-in 31-March-2009<br>&gt;&gt; release<br>&gt;&gt; Date: Mon, 4 May 2009 10:5=
-9:54 +0530<br>&gt;&gt;<br>&gt;&gt; &gt; Hi,<br>&gt;&gt; &gt;<br>&gt;&gt; &g=
-t; O/P of &#39;File&#39; test case =A0with fedora core-10 as follows<br>
-&gt;&gt; &gt;<br>&gt;&gt; &gt; *file01 =A0 =A0 =A00 =A0INFO =A0: =A0TEST #1=
-: file commad recogizes ASCII text files<br>&gt;&gt; &gt; file01 =A0 =A0 =
-=A07 =A0PASS =A0: =A0file: Recognised ASCII file correctly<br>&gt;&gt; &gt;=
- file02 =A0 =A0 =A00 =A0INFO =A0: =A0TEST #2: file command recognizes bash =
-shell<br>
-&gt;&gt; scripts<br>&gt;&gt; &gt; file02 =A0 =A0 =A02 =A0PASS =A0: =A0file:=
- Recognised bash shell script correctly<br>&gt;&gt; &gt; file03 =A0 =A0 =A0=
-0 =A0INFO =A0: =A0TEST #3: file command recognizes korn shell<br>&gt;&gt; s=
-cripts<br>&gt;&gt; &gt; file03 =A0 =A0 =A03 =A0PASS =A0: =A0file: recognise=
-d korn shell script<br>
-&gt;&gt; &gt; file04 =A0 =A0 =A00 =A0INFO =A0: =A0TEST #4: file command rec=
-ognizes C shell scripts<br>&gt;&gt; &gt; file04 =A0 =A0 =A04 =A0PASS =A0: =
-=A0file: Recognised C shell script correctly<br>&gt;&gt; &gt; file05 =A0 =
-=A0 =A00 =A0INFO =A0: =A0TEST #5: file command recognizes C programs text<b=
-r>
-&gt;&gt; &gt; file05 =A0 =A0 =A05 =A0PASS =A0: =A0file: Recognised C progra=
-m text correctly<br>&gt;&gt; &gt; file06 =A0 =A0 =A00 =A0INFO =A0: =A0TEST =
-#6: file command recognizes ELF executables<br>&gt;&gt; &gt; file06 =A0 =A0=
- =A06 =A0PASS =A0: =A0file: Recognized ELF binary executable<br>
-&gt;&gt; &gt; file07 =A0 =A0 =A00 =A0INFO =A0: =A0TEST #7: file command rec=
-ognizes tar files.<br>&gt;&gt; &gt; file07 =A0 =A0 =A07 =A0PASS =A0: =A0fil=
-e: Recognised tar files<br>&gt;&gt; &gt; file08 =A0 =A0 =A00 =A0INFO =A0: =
-=A0TEST #8: file command recognizes tar zip files<br>
-&gt;&gt; &gt; file08 =A0 =A0 =A08 =A0PASS =A0: =A0file: Recognised tar zip =
-file<br>&gt;&gt; &gt; file09 =A0 =A0 =A00 =A0INFO =A0: =A0TEST #9: file com=
-mand recognizes RPM files<br>&gt;&gt; &gt; file09 =A0 =A0 =A09 =A0BROK =A0:=
- =A0rpm command brok. Reason:<br>
-&gt;&gt; &gt; error: File /root/rpmbuild/SOURCES/cprog.c: No such file or d=
-irectory<br>&gt;&gt; &gt; file09 =A0 =A0 10 =A0BROK =A0: =A0Remaining cases=
- broken<br>&gt;&gt; &gt; file09 =A0 =A0 =A09 =A0FAIL =A0: =A0file: Failed t=
-o Recognize RPM file. Reason:<br>
-&gt;&gt; &gt; /usr/src/redhat/SRPMS/cprog-0.0.7-3.src.rpm: cannot open<br>&=
-gt;&gt; &gt; `/usr/src/redhat/SRPMS/cprog-0.0.7-3.src.rpm&#39; (No such fil=
-e or directory)<br>&gt;&gt; &gt; file10 =A0 =A0 =A00 =A0INFO =A0: =A0TEST #=
-10: file command recognizes vmlinuz file<br>
-&gt;&gt; &gt; file10 =A0 =A0 10 =A0PASS =A0: =A0file: Recognised vmlinuz fi=
-le correctly *<br>&gt;&gt; &gt; **<br>&gt;&gt; &gt;<br>&gt;&gt; &gt; Defaul=
-t path for &#39;rpmbuild&#39; command in fc10 =A0is /root/rpmbuild/SOURCES<=
-br>&gt;&gt; &gt; folder instead of =A0&quot;/usr/src/redhat&quot; which was=
- present in fc8 rpmbuild.<br>
-&gt;&gt; &gt;<br>&gt;&gt; &gt; In FC10 rpmbuild looks for the cprog.c file =
-=A0in user&#39;s home directory.<br>&gt;&gt; (i.e<br>&gt;&gt; &gt; /root/rp=
-mbuild =A0for root user)<br>&gt;&gt; &gt;<br>&gt;&gt; &gt; Please visit the=
- below URL for more information<br>
-&gt;&gt; &gt;<br>&gt;&gt; &gt; <a href=3D"http://www.mail-archive.com/fedor=
-a-list@redhat.com/msg27958.html" target=3D"_blank">http://www.mail-archive.=
-com/fedora-list@redhat.com/msg27958.html</a><br>&gt;&gt; &gt;<br>&gt;&gt; &=
-gt; As per the &#39;file&#39; test program, it creates the &#39;cprog.c&#39=
-; file in<br>
-&gt;&gt; &gt; /usr/src/redhat and recognize RPM file in same path<br>&gt;&g=
-t; &gt; which should be changed accordingly to user&#39;s home directory.<b=
-r>&gt;&gt; &gt;<br>&gt;&gt; &gt; Please check the =A0line number 394 : bDIR=
-=3D/usr/src/redhat. in<br>
-&gt;&gt; file_tests.sh<br>&gt;&gt; &gt;<br>&gt;&gt; &gt; So I request you t=
-o incorporate the changes according to rpmbuild of fc10<br>&gt;&gt; in<br>&=
-gt;&gt; &gt; file_tests.sh.<br>&gt;&gt; &gt;<br>&gt;&gt; &gt; Regards,<br>
-&gt;&gt; &gt; rohit<br>&gt;&gt; &gt;<br>&gt;&gt;<br>&gt;&gt; Yes, you are c=
-orrect. Perhaps we can use,<br>&gt;&gt;<br>&gt;&gt; rpmbuild --buildroot=3D=
-/usr/src/redhat<br>&gt;&gt;<br>&gt;&gt; to override the default setting?<br=
->
-&gt;&gt;<br>&gt;&gt; CAI Qian<br>&gt;&gt;<br></div></div></blockquote></div=
-><br>
+-Marc
 
---0016368e2f4ff502e3046a40f1f7--
 
---0016368e2f4ff502f2046a40f1f9
-Content-Type: text/plain; charset=US-ASCII; name="file.txt"
-Content-Disposition: attachment; filename="file.txt"
+-----------
+Detect test results more accurately when generating HTML
+
+Process test output lines that appear between <<<test_end>>>
+and the following <<<test_start>>>.  Assign to the preceding
+test where the name matches, else to the following test.
+
+If a single test has multiple types of results (e.g. both
+FAIL and WARN), report only the most significant one, to
+avoid mis-computing the total number of PASS tests or
+total counts that don't add up to the number of tests.
+
+If a test's output has no explicit result (PASS, FAIL, etc),
+look at the exit value to determine whether it passed.
+
+Setting the SHOW_UNRESOLVED environment variable to 1
+classifies as UNRESOLVED any test with no explicit result
+and a zero exit code.
+
+Setting the SUMMARY_OUTPUT environment variable to 1
+causes only one line of output per test to be shown, for a
+tighter page that allows quickly scanning the results.
+
+Show percentage of each result type in summary section.
+
+Simplify parsing a bit.
+
+Signed-off-by:  Marc Gauthier <marc@tensilica.com>
+
+
+--_003_522C1DF17AF50042AD8AE87F7887BD3D0158B35583exchhqtensili_
+Content-Type: text/plain; name="html_report_header.txt"
+Content-Description: html_report_header.txt
+Content-Disposition: attachment; filename="html_report_header.txt"; size=2889; 
+	creation-date="Wed, 20 May 2009 22:52:43 GMT";
+	modification-date="Wed, 20 May 2009 22:52:43 GMT"
 Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fuwflqj90
 
-QXMgcnBtYnVpbGQgY29tbWFuZCBidWlsZHMgc291cmNlIHJwbSBmaWxlcyBpbiBkaWZmZXJlbnQg
-bG9jYXRpb25zIAppbiBGQzEwIGFuZCBSSEVMLiBpLmUgaW4gRkMxMCBpdCBpcyAkSE9NRS9ycG1i
-dWlsZCBhbmQgaW4gUkhFTCBpdCAKaXMgL3Vzci9zcmMvcmVkaGF0LgoKVGhpcyBwYXRjaCBwcm92
-aWRlcyB0aGUgZml4ZWQgcGF0aCBmb3IgYnVpbGRpbmcgdGhlIHJwbSwgaXJyZXNwZWN0aXZlIG9m
-IApkaXN0cmlidXRpb24uVGhlIGZpeGVkIHBhdGggd291bGQgYmUgYXMgZGVmaW5lZCBmb3IgYkRJ
-UiBpbiAKZmlsZV90ZXN0cy5zaCBwcm9ncmFtLgoKU2lnbmVkLW9mZi1ieTogcm9oaXQgdmVybWE8
-cm9oaXQuMTcwMzA5QGdtYWlsLmNvbT4KCmRpZmYgLXJ1eEIgbHRwLWZ1bGwtMjAwOTA0MzBfb3Jp
-Z2luYWwvdGVzdGNhc2VzL2NvbW1hbmRzL2FkZS9maWxlL2ZpbGVfdGVzdC5zaCBsdHAtZnVsbC0y
-MDA5MDQzMC90ZXN0Y2FzZXMvY29tbWFuZHMvYWRlL2ZpbGUvZmlsZV90ZXN0LnNoCi0tLSBsdHAt
-ZnVsbC0yMDA5MDQzMF9vcmlnaW5hbC90ZXN0Y2FzZXMvY29tbWFuZHMvYWRlL2ZpbGUvZmlsZV90
-ZXN0LnNoCTIwMDgtMTAtMjEgMTQ6MzE6NDguMDAwMDAwMDAwICswNTMwCisrKyBsdHAtZnVsbC0y
-MDA5MDQzMC90ZXN0Y2FzZXMvY29tbWFuZHMvYWRlL2ZpbGUvZmlsZV90ZXN0LnNoCTIwMDktMDct
-MTkgMDg6NDc6NDkuMDAwMDAwMDAwICswNTMwCkBAIC00NjcsNyArNDY3LDcgQEAKICAgICAkTFRQ
-QklOL3RzdF9icmttIFRCUk9LIE5VTEwgImNhdDogZmFpbGVkIHRvIGNyZWF0ZSB0ZXN0IGZpbGUg
-Y3Byb2cuYyIKIGZpCiAKLSRiQ01EIC1icyAgJExUUFRNUC9maWxlcy5zcGVjID4gJExUUFRNUC9m
-aWxlLm91dCAyPiYxCiskYkNNRCAtLWRlZmluZSAiX3RvcGRpciAkYkRJUiIgLWJzICAkTFRQVE1Q
-L2ZpbGVzLnNwZWMgPiAkTFRQVE1QL2ZpbGUub3V0IDI+JjEKIGlmIFsgJD8gLW5lIDAgXQogdGhl
-bgogICAgICRMVFBCSU4vdHN0X2JyayBUQlJPSyAkTFRQVE1QL2ZpbGUub3V0IE5VTEwgInJwbSBj
-b21tYW5kIGJyb2suIFJlYXNvbjoiCg==
---0016368e2f4ff502f2046a40f1f9
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMDEgVHJhbnNpdGlvbmFs
+Ly9FTiIgImh0dHA6Ly93d3cudzMub3JnL1RSL2h0bWw0L2xvb3NlLmR0ZCI+CjxodG1sIHhtbG5z
+PSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hodG1sIiB4bWw6bGFuZz0iZW4tVVMiPgo8aGVhZD4K
+ICA8dGl0bGU+TGludXggVGVzdCBQcm9qZWN0IC0gUmVzdWx0czwvdGl0bGU+CjwvaGVhZD4KPGJv
+ZHk+Cgo8aDE+TFRQIE91dHB1dC9Mb2cgPC9oMT4KPHRhYmxlIGJvcmRlcj0iMSIgY2VsbHNwYWNp
+bmc9IjMiPgogIDx0Ym9keT4KICAgIDx0cj4KICAgICAgPHRkIGJnY29sb3I9IiM2NmZmNjYiPjxi
+PiZuYnNwO1BBU1NFRCZuYnNwOzwvYj48L3RkPgogICAgICA8dGQgYmdjb2xvcj0iI2ZmMDAwMCI+
+PGI+Jm5ic3A7RkFJTEVEJm5ic3A7PC9iPjwvdGQ+CiAgICAgIDx0ZCBiZ2NvbG9yPSJGdWNoc2lh
+Ij48Yj4mbmJzcDtXQVJOSU5HJm5ic3A7PC9iPjwvdGQ+CiAgICAgIDx0ZCBiZ2NvbG9yPSJZZWxs
+b3ciPjxiPiZuYnNwO0JST0tFTiZuYnNwOzwvYj48L3RkPgogICAgICA8dGQgYmdjb2xvcj0iIzhk
+Yzk5NyI+PGI+Jm5ic3A7UkVUSVJFRCZuYnNwOzwvYj48L3RkPgogICAgICA8dGQgYmdjb2xvcj0i
+QXF1YSI+PGI+Jm5ic3A7Q09ORklHLUVSUk9SJm5ic3A7PC9iPjwvdGQ+CiAgICAgIDx0ZCBiZ2Nv
+bG9yPSIjYzBjMGZmIj48Yj4mbmJzcDtVTlJFU09MVkVEJm5ic3A7PC9iPjwvdGQ+CiAgICA8L3Ry
+PgogIDwvdGJvZHk+CjwvdGFibGU+Cjxicj4KPGI+TWVhbmluZyBvZiB0aGUgZm9sbG93aW5nIEtF
+WVdPUkRTIGluIHRlc3QgcmVzdWx0cy9sb2dzOjwvYj4KPGhyPgo8bGk+PGI+UEFTUyAtPC9iPiBJ
+bmRpY2F0ZXMgdGhhdCB0aGUgdGVzdCBjYXNlIGhhZCB0aGUgZXhwZWN0ZWQgcmVzdWx0IGFuZCBw
+YXNzZWQ8L2xpPgo8bGk+PGI+RkFJTCAtPC9iPiBJbmRpY2F0ZXMgdGhhdCB0aGUgdGVzdCBjYXNl
+IGhhZCBhbiB1bmV4cGVjdGVkIHJlc3VsdCBhbmQgZmFpbGVkLjwvbGk+CjxsaT48Yj5CUk9LIC08
+L2I+IEluZGljYXRlcyB0aGF0IHRoZSByZW1haW5pbmcgdGVzdCBjYXNlcyBhcmUgYnJva2VuIGFu
+ZCB3aWxsIG5vdCBleGVjdXRlIGNvcnJlY3RseSwgYmVjYXVzZSBzb21lIHByZWNvbmRpdGlvbiBu
+b3QgbWV0LCBzdWNoIGFzIGEgcmVzb3VyY2Ugbm90IGJlaW5nIGF2YWlsYWJsZS48L2xpPgo8bGk+
+PGI+Q09ORiAtPC9iPiBJbmRpY2F0ZXMgdGhhdCB0aGUgdGVzdCBjYXNlIHdhcyBub3Qgd3JpdHRl
+biB0byBydW4gb24gdGhlIGN1cnJlbnQgaGFyd2FyZSBvciBzb2Z0d2FyZSBjb25maWd1cmF0aW9u
+IHN1Y2ggYXMgbWFjaGluZSB0eXBlLCBvciwga2VybmVsIHZlcnNpb24uPC9saT4KPGxpPjxiPlJF
+VFIgLTwvYj4gSW5kaWNhdGVzIHRoYXQgdGhlIHRlc3QgY2FzZXMgaGFzIGJlZW4gcmV0aXJlZCBh
+bmQgc2hvdWxkIG5vdCBiZSBleGVjdXRlZCBhbnkgbG9uZ2VyLjwvbGk+CjxsaT48Yj5XQVJOIC08
+L2I+IEluZGljYXRlcyB0aGF0IHRoZSB0ZXN0IGNhc2UgZXhwZXJpZW5jZWQgYW4gdW5leHBlY3Rl
+ZCBvciB1bmRlc2lyYWJsZSBldmVudCB0aGF0IHNob3VsZCBub3QgYWZmZWN0IHRoZSB0ZXN0IGl0
+c2VsZiBzdWNoIGFzIGJlaW5nIHVuYWJsZSB0byBjbGVhbnVwIHJlc291cmNlcyBhZnRlciB0aGUg
+dGVzdCBmaW5pc2hlZC48L2xpPgo8bGk+PGI+SU5GTyAtPC9iPiBTcGVjaWZpZXMgdXNlZnVsIGlu
+Zm9ybWF0aW9uIGFib3V0IHRoZSBzdGF0dXMgb2YgdGhlIHRlc3QgdGhhdCBkb2VzIG5vdCBhZmZl
+Y3QgdGhlIHJlc3VsdCBhbmQgZG9lcyBub3QgaW5kaWNhdGUgYSBwcm9ibGVtLjwvbGk+Cjxocj4K
+Cjxicj4KPGxpPjxhIGhyZWY9IiNfMSI+Q2xpY2sgSGVyZSBmb3IgRGV0YWlsZWQgUmVwb3J0PC9h
+PjwvbGk+CjxsaT48YSBocmVmPSIjXzIiPkNsaWNrIEhlcmUgZm9yIFN1bW1hcnkgUmVwb3J0PC9h
+PjwvbGk+Cjxicj4KCjxoMiBpZD0iXzEiPkRldGFpbGVkIFJlcG9ydDwvaDI+CjxkaXY+Cjx0YWJs
+ZSBib3JkZXI9IjEiIGNlbGxzcGFjaW5nPSIzIj4gCjx0Ym9keT4KICAgIDx0cj4KICAgICAgPHRk
+IGJnY29sb3I9IlNpbHZlciI+PHN0cm9uZz5Obzwvc3Ryb25nPjwvdGQ+CiAgICAgIDx0ZCBiZ2Nv
+bG9yPSJTaWx2ZXIiPjxzdHJvbmc+VGVzdC1OYW1lPC9zdHJvbmc+PC90ZD4KICAgICAgPHRkIGJn
+Y29sb3I9IlNpbHZlciI+PHN0cm9uZz5TdGFydC1UaW1lPC9zdHJvbmc+PC90ZD4KICAgICAgPHRk
+IGJnY29sb3I9IlNpbHZlciI+PHN0cm9uZz5Db21tYW5kLUxpbmU8L3N0cm9uZz48L3RkPgogICAg
+ICA8dGQgYmdjb2xvcj0iU2lsdmVyIj48c3Ryb25nPkNvbnRhY3RzPC9zdHJvbmc+PC90ZD4KICAg
+ICAgPHRkIGJnY29sb3I9IlNpbHZlciI+PHN0cm9uZz5BbmFseXNpczwvc3Ryb25nPjwvdGQ+CiAg
+ICAgIDx0ZCBiZ2NvbG9yPSJTaWx2ZXIiPjxzdHJvbmc+SW5pdGlhdGlvbi1TdGF0dXM8L3N0cm9u
+Zz48L3RkPgogICAgICA8dGQgYmdjb2xvcj0iU2lsdmVyIj48c3Ryb25nPlRlc3QtT3V0cHV0PC9z
+dHJvbmc+PC90ZD4KICAgICAgPHRkIGJnY29sb3I9IlNpbHZlciI+PHN0cm9uZz5EdXJhdGlvbjwv
+c3Ryb25nPjwvdGQ+CiAgICAgIDx0ZCBiZ2NvbG9yPSJTaWx2ZXIiPjxzdHJvbmc+VGVybWluYXRp
+b24tdHlwZTwvc3Ryb25nPjwvdGQ+CiAgICAgIDx0ZCBiZ2NvbG9yPSJTaWx2ZXIiPjxzdHJvbmc+
+VGVybWluYXRpb24taWQ8L3N0cm9uZz48L3RkPgogICAgICA8dGQgYmdjb2xvcj0iU2lsdmVyIj48
+c3Ryb25nPkNvcmUtRmlsZTwvc3Ryb25nPjwvdGQ+CiAgICAgIDx0ZCBiZ2NvbG9yPSJTaWx2ZXIi
+PjxzdHJvbmc+Y3V0aW1lPC9zdHJvbmc+PC90ZD4KICAgICAgPHRkIGJnY29sb3I9IlNpbHZlciI+
+PHN0cm9uZz5jc3RpbWU8L3N0cm9uZz48L3RkPgogICAgPC90cj4K
+
+--_003_522C1DF17AF50042AD8AE87F7887BD3D0158B35583exchhqtensili_
+Content-Type: application/octet-stream; name="genhtml.pl"
+Content-Description: genhtml.pl
+Content-Disposition: attachment; filename="genhtml.pl"; size=10691;
+	creation-date="Thu, 21 May 2009 01:08:14 GMT";
+	modification-date="Thu, 21 May 2009 01:08:14 GMT"
+Content-Transfer-Encoding: base64
+
+IyEvdXNyL2Jpbi9wZXJsCiMqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqIwojIENvcHlyaWdodCAoYykgSW50
+ZXJuYXRpb25hbCBCdXNpbmVzcyBNYWNoaW5lcyAgQ29ycC4sIDIwMDEgICAgICAgICAgICAgICAg
+ICMKIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAjCiMgVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7
+ICB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbiNvciBtb2RpZnkgICAgICAgIwojIGl0IHVuZGVy
+IHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXMgcHVibGlzaGVk
+IGJ5ICAgICAgICMKIyB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lv
+biAyIG9mIHRoZSBMaWNlbnNlLCBvciAgICAgICAgICAjCiMgKGF0IHlvdXIgb3B0aW9uKSBhbnkg
+bGF0ZXIgdmVyc2lvbi4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIwoj
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICMKIyBUaGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhl
+IGhvcGUgdGhhdCBpdCB3aWxsIGJlIHVzZWZ1bCwgICAgICAgICAgICAjCiMgYnV0IFdJVEhPVVQg
+QU5ZIFdBUlJBTlRZOyAgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mICAgICAg
+ICAgICAgIwojIE1FUkNIQU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVS
+UE9TRS4gIFNlZSAgICAgICAgICAgICAgICAgICMKIyB0aGUgR05VIEdlbmVyYWwgUHVibGljIExp
+Y2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4gICAgICAgICAgICAgICAgICAgICAgICAgICAjCiMgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIwojIFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhl
+IEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlICAgICAgICAgICMKIyBhbG9uZyB3aXRoIHRoaXMg
+cHJvZ3JhbTsgIGlmIG5vdCwgd3JpdGUgdG8gdGhlIEZyZWUgU29mdHdhcmUgICAgICAgICAgICAg
+ICAjCiMgRm91bmRhdGlvbiwgSW5jLiwgNTkgVGVtcGxlIFBsYWNlLCBTdWl0ZSAzMzAsIEJvc3Rv
+biwgTUEgMDIxMTEtMTMwNyBVU0EgICAgIwojICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMKIyoqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKiojCgojKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgojCiMgRmlsZTogICAgICAgIGdlbmh0
+bWwucGwKIwojIERlc2NyaXB0aW9uOiBUaGlzIGlzIGEgUGFyc2VyIHdoaWNoIGNhbiBwYXJzZSB0
+aGUgdGV4dCBvdXRwdXQgZ2VuZXJhdGVkIGJ5CiMgICAgICAgICAgICAgIHBhbiBhbmQgY29udmVy
+dCB0aGUgc2FtZSB0byBhbiBIVE1MIGZvcm1hdCwgd2l0aCBwcm9wZXIgaGlnaC0KIyAgICAgICAg
+ICAgICAgbGlnaHRpbmcgb2YgdGVzdCByZXN1bHQgYmFja2dyb3VuZCBmb3IgZWFzeSBpZGVudGlm
+aWNhdGlvbiBvZgojICAgICAgICAgICAgICBwYXNzL2ZhaWwgb2YgdGVzdGNhc2VzCiMKIyBBdXRo
+b3I6ICAgICAgU3VicmF0YSBNb2Rhazogc3VicmF0YUBsaW51eC52bmV0LmlibS5jb20KIwojIEhp
+c3Rvcnk6ICAgICBNYXkgMjAgMjAwOSAtIE1vZGlmaWVkIC0gTWFyYyBHYXV0aGllciA8bWFyY0Bh
+bHVtbmkudXdhdGVybG9vLmNhPgojICAgICAgICAgICAgICAgLSBjYXRjaCB0ZXN0IG91dHB1dCBi
+ZXR3ZWVuIHRlc3RfZW5kIGFuZCB0ZXN0X3N0YXJ0IHRhZ3MKIyAgICAgICAgICAgICAgIC0gbG9v
+ayBhdCBleGl0IHZhbHVlIGlmIG5vIGV4cGxpY2l0IHRlc3QgcmVzdWx0IHJlcG9ydGVkCiMgICAg
+ICAgICAgICAgICAtIGFsbG93IHJlcG9ydGluZyB0ZXN0cyB3aXRob3V0IGV4cGxpY2l0IHJlc3Vs
+dCBhcyB1bnJlc29sdmVkCiMgICAgICAgICAgICAgICAtIHNpbXBsaWZ5IHBhcnNpbmcgYSBiaXQK
+IwojKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKgoKCiMgIENvbnN0YW50cwpteSAlcmVzdWx0X3ByaW9yaXR5
+ID0gKEZBSUw9PjYsIEJST0s9PjUsIFdBUk49PjQsIFJFVFI9PjMsIENPTkY9PjIsIFBBU1M9PjEs
+IFVOUkVTT0xWRUQ9PjApOwpteSAlY29sb3VycyA9ICgJRkFJTCA9PiAiI2ZmMDAwMCIsCQkjIHJl
+ZAoJCUJST0sgPT4gIlllbGxvdyIsCgkJV0FSTiA9PiAiRnVjaHNpYSIsCgkJUkVUUiA9PiAiIzhk
+Yzk5NyIsCQkjIGRhcmtlciBncmVlbgoJCUNPTkYgPT4gIkFxdWEiLAoJCVBBU1MgPT4gIiM2NmZm
+NjYiLAkJIyBsaWdodCBncmVlbgoJCVVOUkVTT0xWRUQgPT4gIiNjMGMwZmYiICk7CSMgbGlnaHQg
+Ymx1ZQoKIyAgR2xvYmFscwpteSAkdGVzdF9jb3VudGVyID0gMDsKbXkgJGVvZiA9IDA7Cm15ICV0
+b3RhbF9jb3VudCA9IChGQUlMPT4wLCBCUk9LPT4wLCBXQVJOPT4wLCBSRVRSPT4wLCBDT05GPT4w
+LCBQQVNTPT4wLCBVTlJFU09MVkVEPT4wKTsKCiMgIFNjcmlwdCBhcmd1bWVudHMKbXkgJGhlYWRl
+cl9maWxlICAgPSBzaGlmdCAoQEFSR1YpIHx8IHN5bnRheCgpOwpteSAkc3RhcnRfdGFnICAgICA9
+IHNoaWZ0IChAQVJHVikgfHwgc3ludGF4KCk7Cm15ICRlbmRfdGFnICAgICAgID0gc2hpZnQgKEBB
+UkdWKSB8fCBzeW50YXgoKTsKbXkgJG91dHB1dF90YWcgICAgPSBzaGlmdCAoQEFSR1YpIHx8IHN5
+bnRheCgpOwpteSAkZXhlY3V0aW9uX3RhZyA9IHNoaWZ0IChAQVJHVikgfHwgc3ludGF4KCk7Cgpp
+ZiAoJHN0YXJ0X3RhZyBlcSAiIiB8fCAkZW5kX3RhZyBlcSAiIiB8fCAkb3V0cHV0X3RhZyBlcSAi
+IiB8fCAkZXhlY3V0aW9uX3RhZyBlcSAiIikgewogICAgc3ludGF4KCk7Cn0KCnN1YiBzeW50YXgg
+ewogICAgcHJpbnQgInN5bnRheDogZ2VuaHRtbCBoZWFkZXJfZmlsZSBzdGFydF90YWcgZW5kX3Rh
+ZyBvdXRwdXRfdGFnIGV4ZWN1dGlvbl90YWcgZmlsZShzKVxuIjsKICAgIGV4aXQgKDEpOwp9Cgoj
+ICBHZXQgYSBsaW5lIGZyb20gPEZJTEU+LCB3aXRoIGNob21wIGFuZCBzdGlja3kgRU9GLgpzdWIg
+Z2V0X2xpbmUgewogICAgbXkgKCRsaW5lcmVmKSA9IEBfOwogICAgJCRsaW5lcmVmID0gdW5kZWY7
+CiAgICByZXR1cm4gdW5kZWYgaWYgJGVvZjsKICAgIGlmICghZGVmaW5lZCgkJGxpbmVyZWYgPSA8
+RklMRT4pKSB7CgkkZW9mID0gMTsKCXJldHVybiB1bmRlZjsKICAgIH0KICAgIGNob21wICQkbGlu
+ZXJlZjsKICAgIHJldHVybiAxOwp9CgojICBEaXNwbGF5IEhUTUwgaGVhZGVyCm9wZW4gKEZJTEUs
+ICI8JGhlYWRlcl9maWxlIikgfHwgZGllICJDYW5ub3Qgb3BlbiBmaWxlOiAkaGVhZGVyX2ZpbGUi
+OwpteSAkaGVhZGVyID0gIiI7CndoaWxlICgkaGVhZGVybGluZSA9IDxGSUxFPikgewogICAgICAg
+JGhlYWRlciAuPSAkaGVhZGVybGluZTsKfQpteSAkc3RhcnRfdGltZSA9ICRFTlZ7VEVTVF9TVEFS
+VF9USU1FfSB8fCAiW3Vua25vd24gZGF0ZS90aW1lXSI7CiRoZWFkZXIgPX4gcy9MVFBcIE91dHB1
+dFwvTG9nL0xUUFwgT3V0cHV0XC9Mb2dcIChSZXBvcnRcIEdlbmVyYXRlZFwgb25cICRzdGFydF90
+aW1lKS87CnByaW50ICRoZWFkZXI7CmNsb3NlIChGSUxFKTsKCgojICBQYXJzZSBhbmQgZGlzcGxh
+eSB0ZXN0IHJlc3VsdHMKCmZvcmVhY2ggbXkgJGZpbGUgKEBBUkdWKSB7CgoJb3BlbiAoRklMRSwg
+JGZpbGUpIHx8IGRpZSAiQ2Fubm90IG9wZW4gZmlsZTogJGZpbGVcbiI7CgoJbXkgJGxpbmUgPSAi
+IjsKCglURVNUOiB3aGlsZSAoZGVmaW5lZCgkbGluZSkpIHsKCgkJbXkgJXZhbHVlcyA9ICgpOwoJ
+CW15IEBvdXRwdXRfbGluZXMgPSAoKTsKCQlteSAkcmVhZF9vdXRwdXQgPSAwOwoKCQkjICBGaW5k
+IHN0YXJ0IG9mIHRlc3QKCQl3aGlsZSAoJGxpbmUgIX4gLyRzdGFydF90YWcvKSB7CgkJCSMgIENh
+cHR1cmUgbGluZXMgcHJlc2VudCBiZXR3ZWVuIGVuZF90YWcgYW5kIHN0YXJ0X3RhZyB0aGF0IGFw
+cGx5IHRvIHRoZSBzdWJzZXF1ZW50IHRlc3QuCgkJCXB1c2ggQG91dHB1dF9saW5lcywgJGxpbmUg
+dW5sZXNzICR0ZXN0X2NvdW50ZXIgPT0gMDsKCQkJZ2V0X2xpbmUoXCRsaW5lKSBvciBsYXN0IFRF
+U1Q7CgkJfQoKCQkjICBSZWFkIHRlc3QgcmVzdWx0IHBhcmFtZXRlcnMgYW5kIHRlc3Qgb3V0cHV0
+CgkJd2hpbGUgKCRsaW5lICF+IC8kZW5kX3RhZy8pIHsKCQkJKCRyZWFkX291dHB1dCA9IDEsIG5l
+eHQpIGlmICRsaW5lID1+IC8kb3V0cHV0X3RhZy87CgkJCSgkcmVhZF9vdXRwdXQgPSAwLCBuZXh0
+KSBpZiAkbGluZSA9fiAvJGV4ZWN1dGlvbl90YWcvOwoJCQlpZiAoJHJlYWRfb3V0cHV0KSB7CgkJ
+CSAgICBwdXNoIEBvdXRwdXRfbGluZXMsICRsaW5lOwoJCQl9IGVsc2UgewoJCQkgICAgd2hpbGUg
+KCRsaW5lID1+IHMvXlxzKihcdyspPSgiLioifFxTKikvLykgewoJCQkJJHZhbHVlc3skMX0gPSAk
+MjsKCQkJICAgIH0KCQkJfQoJCX0gY29udGludWUgewoJCQlnZXRfbGluZShcJGxpbmUpIG9yIGxh
+c3QgVEVTVDsKCQl9CgoJCSMgIFRyZWF0IGxpbmVzIHRoYXQgZm9sbG93IDw8PGVuZF90ZXN0Pj4+
+IGFzIG91dHB1dCBsaW5lcwoJCSMgIGlmIHRoZXkgc3RhcnQgd2l0aCB0aGUgc2FtZSB0ZXN0IG5h
+bWUgKHRhZykuCgkJIyAgT3RoZXJ3aXNlIHRoZXkncmUgbGlrZWx5IHBhcnQgb2YgdGhlIG5leHQg
+dGVzdC4KCQl3aGlsZSAoMSkgewoJCQlnZXRfbGluZShcJGxpbmUpIG9yIGxhc3Q7CgkJCWxhc3Qg
+dW5sZXNzICRsaW5lICF+IC8kc3RhcnRfdGFnLyBhbmQgJGxpbmUgPX4gL15ccyhcdyspXHMvIGFu
+ZCAkMSBlcSAkdmFsdWVze3RhZ307CgkJCXB1c2ggQG91dHB1dF9saW5lcywgJGxpbmU7CgkJfQoK
+CQkjICBQYXJzZSBvdXRwdXQgbGluZXMgZm9yIHRlc3QgcmVzdWx0cy4KCQkjCgkJbXkgJHJlc3Vs
+dCA9ICJVTlJFU09MVkVEIjsJIyBzaW5nbGUgcmVzdWx0IG9mIHRlc3QKCQlteSAlcmVzdWx0X2Nv
+dW50ID0gKCk7CgkJbXkgJHBpY2tlZF9saW5lID0gIiI7CQkjIG9uZSByZXByZXNlbnRhdGl2ZSBs
+aW5lIHBpY2tlZCBvdXQgb2YgdGhlIG91dHB1dAoJCWZvcmVhY2ggbXkgJG91dHB1dF9saW5lIChA
+b3V0cHV0X2xpbmVzKSB7CgkJICAgIG15ICRsaW5lX3JlcyA9ICJVTlJFU09MVkVEIjsKCQkgICAg
+JGxpbmVfcmVzID0gJDEgaWYgJG91dHB1dF9saW5lID1+IC9cIChGQUlMfEJST0t8V0FSTnxSRVRS
+fENPTkZ8UEFTUylcIC87CgkJICAgICRyZXN1bHRfY291bnR7JGxpbmVfcmVzfSsrOwoJCSAgICAj
+ICBJZiBhIHRlc3QgaGFzIG11bHRpcGxlIHJlc3VsdHMsIG9ubHkgdGFsbHkgdGhlICJtb3N0IGlt
+cG9ydGFudCIgb25lLgoJCSAgICBpZiAoJHJlc3VsdF9wcmlvcml0eXskbGluZV9yZXN9ID49ICRy
+ZXN1bHRfcHJpb3JpdHl7JHJlc3VsdH0pIHsKCQkJJHJlc3VsdCA9ICRsaW5lX3JlczsKCQkJJHBp
+Y2tlZF9saW5lID0gJG91dHB1dF9saW5lOwkjIHBpY2sgbGFzdCBsaW5lIG9mIGhpZ2hlc3QgcHJp
+b3JpdHkKCQkgICAgfQoJCX0KCgkJIyAgSWYgbm8gZXhwbGljaXQgcmVzdWx0IGZvdW5kLCBsb29r
+IGF0IHRlcm1pbmF0aW9uIHN0YXR1cyB0byBkZXRlcm1pbmUgcmVzdWx0LgoJCSMKCQlpZiAoJHJl
+c3VsdCBlcSAiVU5SRVNPTFZFRCIpIHsKCQkgICAgbXkgJGVmYWlsID0gIkJST0siOyAjIkZBSUwi
+CQkjIGZvciBub3csIHJlcG9ydCBleGl0IHN0YXR1cyBmYWlsdXJlcyBhcyBCUk9LCgkJICAgIGlm
+ICgkdmFsdWVze3Rlcm1pbmF0aW9uX3R5cGV9IGVxICJzaWduYWxlZCIpIHsKCQkJJHJlc3VsdCA9
+ICRlZmFpbDsJCSMgdGVybWluYXRpb25faWQgaXMgdGhlIHNpZ25hbCBudW1iZXIKCQkgICAgfSBl
+bHNpZiAoJHZhbHVlc3t0ZXJtaW5hdGlvbl9pZH0pIHsKCQkJaWYgKCgkdmFsdWVze3Rlcm1pbmF0
+aW9uX2lkfSAmIDEpICE9IDApIHsKCQkJICAgICRyZXN1bHQgPSAkZWZhaWw7CQkjIGJpdCAwIHNl
+dCA9PSBmYWlsdXJlCgkJCX0gZWxzaWYgKCgkdmFsdWVze3Rlcm1pbmF0aW9uX2lkfSAmIDIpICE9
+IDApIHsKCQkJICAgICRyZXN1bHQgPSAiQlJPSyI7CQkjIGJpdCAxIHNldCA9PSBicm9rZW4KCQkJ
+fSBlbHNpZiAoJHZhbHVlc3t0ZXJtaW5hdGlvbl9pZH0gPT0gNCkgewoJCQkgICAgJHJlc3VsdCA9
+ICJXQVJOIjsKCQkJfSBlbHNlIHsKCQkJICAgICRyZXN1bHQgPSAkZWZhaWw7CQkjIGFueSBvdGhl
+ciBub24temVybyB2YWx1ZSBhc3N1bWVkIHRvIG1lYW4gZmFpbHVyZQoJCQl9CgkJICAgIH0gZWxz
+ZSB7CgkJCSMgIEV4aXRlZCB3aXRoIGEgemVybyBleGl0IGNvZGUuICBEbyB3ZSBhc3N1bWUgUEFT
+Uywgb3IgbWFyayBpdCBVTlJFU09MVkVEPwoJCQkjICAoV2UgY291bGQgZ3JlcCB0aGUgb3V0cHV0
+IGZvciBvdGhlciBoaW50IGtleXdvcmRzLCBidXQgdGhhdCdzIGEgYml0IGhva2V5LikKCQkJJHJl
+c3VsdCA9ICJQQVNTIiB1bmxlc3MgJEVOVntTSE9XX1VOUkVTT0xWRUR9OwoJCSAgICB9CgkJfQoK
+CQkjICBDdW11bGF0ZSB0aGlzIHRlc3QncyByZXN1bHQuCgkJJHRvdGFsX2NvdW50eyRyZXN1bHR9
+Kys7CgoJCSMjICBQcmV2aW91cyBjdW11bGF0aW9uIG1ldGhvZDsgdGVzdHMgZXhoaWJpdGluZyBt
+dWx0aXBsZSByZXN1bHQKCQkjIyAgdHlwZXMgYXJlIGNvdW50ZWQgbWFueSB0aW1lcy4KCQkjCgkJ
+I2ZvcmVhY2ggbXkgJHJlcyAoa2V5cyAlcmVzdWx0X2NvdW50KSB7CgkJIyAgICAkdG90YWxfY291
+bnR7JHJlc30rKyBpZiAkcmVzdWx0X2NvdW50eyRyZXN9OwoJCSN9CgoJCSMgIEFsbCB0ZXN0IGRh
+dGEgc2Nhbm5lZC4gIE5vdyBvdXRwdXQgSFRNTCAocm93KSBmb3IgdGhpcyB0ZXN0LgoJCSMKCQlt
+eSAkZ2V0X3Byb3Blcl90aW1lID0gbG9jYWx0aW1lICgkdmFsdWVze3N0aW1lfSk7CgkJbXkgJGJh
+Y2tncm91bmRfY29sb3VyID0gJGNvbG91cnN7JHJlc3VsdH07CgkJbXkgJHRlc3Rfb3V0cHV0ID0g
+am9pbigiIiwgbWFwKCIkXyBcbiIsIEBvdXRwdXRfbGluZXMpKTsKCQkkdGVzdF9vdXRwdXQgPSAk
+cGlja2VkX2xpbmUgaWYgJEVOVntTVU1NQVJZX09VVFBVVH07CgkJJHRlc3RfY291bnRlcisrOwoJ
+CXByaW50CSI8dHIgYmdjb2xvcj0kYmFja2dyb3VuZF9jb2xvdXI+PHRkPjxwPjxzdHJvbmc+JHRl
+c3RfY291bnRlcjwvc3Ryb25nPjwvcD48L3RkPlxuIgoJCQkuICI8dGQ+PHA+PHN0cm9uZz4kdmFs
+dWVze3RhZ308L3N0cm9uZz48L3A+PC90ZD5cbiIKCQkJLiAiPHRkPjxwPjxwcmU+PHN0cm9uZz4k
+Z2V0X3Byb3Blcl90aW1lPC9zdHJvbmc+PC9wcmU+PC9wPjwvdGQ+XG4iCgkJCS4gIjx0ZD48cD48
+c3Ryb25nPiAkdmFsdWVze2NtZGxpbmV9IDwvc3Ryb25nPjwvcD48L3RkPlxuIgoJCQkuICI8dGQ+
+PHA+PHN0cm9uZz4kdmFsdWVze2NvbnRhY3RzfTwvc3Ryb25nPjwvcD48L3RkPlxuIgoJCQkuICI8
+dGQ+PHA+PHN0cm9uZz4kdmFsdWVze2FuYWx5c2lzfTwvc3Ryb25nPjwvcD48L3RkPlxuIgoJCQku
+ICI8dGQ+PHA+PHN0cm9uZz4kdmFsdWVze2luaXRpYXRpb25fc3RhdHVzfTwvc3Ryb25nPjwvcD48
+L3RkPlxuIgoJCQkuICI8dGQ+PHByZT48c3Ryb25nPiR0ZXN0X291dHB1dDwvc3Ryb25nPjwvcHJl
+PjwvdGQ+IgoJCQkuICI8dGQ+PHA+PHN0cm9uZz4kdmFsdWVze2R1cmF0aW9ufTwvc3Ryb25nPjwv
+cD48L3RkPlxuIgoJCQkuICI8dGQ+PHA+PHN0cm9uZz4kdmFsdWVze3Rlcm1pbmF0aW9uX3R5cGV9
+PHN0cm9uZz48L3A+PC90ZD5cbiIKCQkJLiAiPHRkPjxwPjxzdHJvbmc+JHZhbHVlc3t0ZXJtaW5h
+dGlvbl9pZH08L3N0cm9uZz48L3A+PC90ZD5cbiIKCQkJLiAiPHRkPjxwPjxzdHJvbmc+JHZhbHVl
+c3tjb3JlZmlsZX08L3N0cm9uZz48L3A+PC90ZD5cbiIKCQkJLiAiPHRkPjxwPjxzdHJvbmc+JHZh
+bHVlc3tjdXRpbWV9PC9zdHJvbmc+PC9wPjwvdGQ+XG4iCiAgICAgICAgICAgICAgICAgICAgICAg
+IC4gIjx0ZD48cD48c3Ryb25nPiR2YWx1ZXN7Y3N0aW1lfTwvc3Ryb25nPjwvcD48L3RkPjwvdHI+
+XG4iCgkJCTsgCgl9CgoJY2xvc2UgKEZJTEUpOwp9CgoKIyAgRGlzcGxheSBzdW1tYXJ5Cgpwcmlu
+dCAiPC90Ym9keT48L3RhYmxlPjwvZGl2PiBcblxuPGgyIGlkPVwiXzJcIj5TdW1tYXJ5IFJlcG9y
+dDwvaDI+XG5cbjxkaXY+XG5cbjx0YWJsZSBib3JkZXI9XCIxXCIgY2VsbHNwYWNpbmc9XCIzXCI+
+PHRib2R5PlxuPHRyPlxuPHRkICI7CmlmICgkRU5We0xUUF9FWElUX1ZBTFVFfSA9PSAxICkgewog
+ICAgcHJpbnQgImJnY29sb3I9XCIjZmYwMDAwXCI+IDxzdHJvbmc+VGVzdCBTdW1tYXJ5PC9zdHJv
+bmc+PC9wPjwvdGQ+PHRkIGJnY29sb3I9XCIjZmYwMDAwXCI+PHN0cm9uZz5QYW4gcmVwb3J0ZWQg
+c29tZSBUZXN0cyBGQUlMPC9zdHJvbmc+PC9wPjwvdGQ+PC90cj5cbiI7Cn0KZWxzZSB7CiAgICBw
+cmludCAiYmdjb2xvcj1cIiM2NmZmNjZcIj4gPHN0cm9uZz5UZXN0IFN1bW1hcnk8L3N0cm9uZz48
+L3A+PC90ZD48dGQgYmdjb2xvcj1cIiM2NmZmNjZcIj48c3Ryb25nPlBhbiByZXBvcnRlZCBhbGwg
+VGVzdCBQYXNzPC9zdHJvbmc+PC9wPjwvdGQ+PC90cj5cbiI7Cn0KCnByaW50ICI8dHI+PHRkPjxz
+dHJvbmc+TFRQIFZlcnNpb248L3N0cm9uZz4gPC90ZD48dGQ+PHN0cm9uZz4gJEVOVntMVFBfVkVS
+U0lPTn0gICAgIDwvc3Ryb25nPjwvdGQ+PC90cj5cbiI7CnByaW50ICI8dHI+PHRkPjxzdHJvbmc+
+U3RhcnQgVGltZTwvc3Ryb25nPiAgPC90ZD48dGQ+PHN0cm9uZz4gJEVOVntURVNUX1NUQVJUX1RJ
+TUV9IDwvc3Ryb25nPjwvdGQ+PC90cj5cbiI7CnByaW50ICI8dHI+PHRkPjxzdHJvbmc+RW5kIFRp
+bWU8L3N0cm9uZz4gICAgPC90ZD48dGQ+PHN0cm9uZz4gJEVOVntURVNUX0VORF9USU1FfSAgIDwv
+c3Ryb25nPjwvdGQ+PC90cj5cbiI7CnByaW50ICI8dHI+PHRkPjxzdHJvbmc+TG9nIFJlc3VsdDwv
+c3Ryb25nPiAgPC90ZD48dGQ+PGEgaHJlZj1cImZpbGU6Ly8kRU5We1RFU1RfTE9HU19ESVJFQ1RP
+Ull9L1wiPiAgICAgIDxzdHJvbmc+JEVOVntURVNUX0xPR1NfRElSRUNUT1JZfTwvc3Ryb25nPjwv
+YT48L3RkPjwvdHI+XG4iOwpwcmludCAiPHRyPjx0ZD48c3Ryb25nPk91dHB1dC9GYWlsZWQgUmVz
+dWx0PC9zdHJvbmc+PC90ZD48dGQ+PGEgaHJlZj1cImZpbGU6Ly8kRU5We1RFU1RfT1VUUFVUX0RJ
+UkVDVE9SWX0vXCI+IDxzdHJvbmc+JEVOVntURVNUX09VVFBVVF9ESVJFQ1RPUll9PC9zdHJvbmc+
+PC9hPjwvdGQ+PC90cj5cbiI7CnByaW50ICI8dHI+PHRkPjxzdHJvbmc+VG90YWwgVGVzdHM8L3N0
+cm9uZz48L3RkPjx0ZD48c3Ryb25nPiAkdGVzdF9jb3VudGVyIDwvc3Ryb25nPjwvdGQ+PC90cj5c
+biI7CiMgIFByZXZpb3VzIG1ldGhvZCBvZiBjb3VudGluZyBQQVNTOgojJHRvdGFsX2NvdW50e1BB
+U1N9ID0gJHRlc3RfY291bnRlciAtICR0b3RhbF9jb3VudHtGQUlMfSAtICR0b3RhbF9jb3VudHtC
+Uk9LfSAtICR0b3RhbF9jb3VudHtXQVJOfSAtICR0b3RhbF9jb3VudHtSRVRSfSAtICR0b3RhbF9j
+b3VudHtDT05GfSAtICR0b3RhbF9jb3VudHtVTlJFU09MVkVEfTsKc3ViIHNob3dfcmVzdWx0X3N1
+bW1hcnkgewogICAgbXkgKCRyZXN0eXBlLCAkd2hhdCkgPSBAXzsKICAgIHByaW50ZiAiPHRyPjx0
+ZD48c3Ryb25nPiR3aGF0PC9zdHJvbmc+PC90ZD4iCgkgICAgICAuIjx0ZD48c3Ryb25nPiAkdG90
+YWxfY291bnR7JHJlc3R5cGV9IDwvc3Ryb25nPjwvdGQ+IgoJICAgICAgLiI8dGQ+PHN0cm9uZz4g
+JTguMmYlJSA8L3N0cm9uZz48L3RkPjwvdHI+XG4iLAoJKCR0b3RhbF9jb3VudHskcmVzdHlwZX0q
+MTAwLjApIC8gJHRlc3RfY291bnRlcjsKfQpzaG93X3Jlc3VsdF9zdW1tYXJ5KCJQQVNTIiwgIlRl
+c3QgUEFTUyIpOwpzaG93X3Jlc3VsdF9zdW1tYXJ5KCJGQUlMIiwgIlRlc3QgRkFJTCIpOwpzaG93
+X3Jlc3VsdF9zdW1tYXJ5KCJCUk9LIiwgIlRlc3QgQlJPSyIpOwpzaG93X3Jlc3VsdF9zdW1tYXJ5
+KCJXQVJOIiwgIlRlc3QgV0FSTiIpOwpzaG93X3Jlc3VsdF9zdW1tYXJ5KCJSRVRSIiwgIlRlc3Qg
+UkVUUiIpOwpzaG93X3Jlc3VsdF9zdW1tYXJ5KCJDT05GIiwgIlRlc3QgQ09ORiIpOwpzaG93X3Jl
+c3VsdF9zdW1tYXJ5KCJVTlJFU09MVkVEIiwgIlVucmVzb2x2ZWQiKSBpZiAkRU5We1NIT1dfVU5S
+RVNPTFZFRH07CnByaW50ICI8dHI+PHRkPjxzdHJvbmc+S2VybmVsIFZlcnNpb248L3N0cm9uZz48
+L3RkPjx0ZD48c3Ryb25nPiAkRU5We0tFUk5FTF9WRVJTSU9OfSAgPC9zdHJvbmc+PC90ZD48L3Ry
+PlxuIjsKcHJpbnQgIjx0cj48dGQ+PHN0cm9uZz5NYWNoaW5lIEFyY2hpdGVjdHVyZTwvc3Ryb25n
+PjwvdGQ+PHRkPjxzdHJvbmc+ICRFTlZ7TUFDSElORV9BUkNIfSA8L3N0cm9uZz48L3RkPjwvdHI+
+XG4iOwokaG9zdG5hbWUgPSBgdW5hbWUgLW5gOyAgICAgICAgICAgICBjaG9wKCRob3N0bmFtZSk7
+IApwcmludCAiPHRyPjx0ZD48c3Ryb25nPkhvc3RuYW1lPC9zdHJvbmc+ICA8L3RkPiA8dGQ+PHN0
+cm9uZz4gJGhvc3RuYW1lIDwvc3Ryb25nPjwvdGQ+PC90cj5cbiI7CnByaW50ICI8L3Rib2R5Pjwv
+dGFibGU+PC9kaXY+PC9ib2R5PjwvaHRtbD5cbiI7Cgo=
+
+--_003_522C1DF17AF50042AD8AE87F7887BD3D0158B35583exchhqtensili_
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables 
-unlimited royalty-free distribution of the report engine 
-for externally facing server and web deployment. 
-http://p.sf.net/sfu/businessobjects
---0016368e2f4ff502f2046a40f1f9
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+is a gathering of tech-side developers & brand creativity professionals. Meet
+the minds behind Google Creative Lab, Visual Complexity, Processing, & 
+iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
+Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
+--_003_522C1DF17AF50042AD8AE87F7887BD3D0158B35583exchhqtensili_
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -359,5 +363,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---0016368e2f4ff502f2046a40f1f9--
+--_003_522C1DF17AF50042AD8AE87F7887BD3D0158B35583exchhqtensili_--
 
