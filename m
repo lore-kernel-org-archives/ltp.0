@@ -1,19 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M61aM-0004Eg-Gl
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 12:04:50 +0000
-Received: from e32.co.us.ibm.com ([32.97.110.150])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M61aF-0004XH-Oq
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 12:04:50 +0000
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M7Och-0007gx-VH
+	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 06:52:55 +0000
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1M7Ocd-0001jX-O0
+	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 06:52:55 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e8.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4M6ggkn008164
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 May 2009 02:42:42 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n4M6qp7I224494
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 May 2009 02:52:51 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4M6qpR6027879
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 May 2009 02:52:51 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Content-Type: multipart/mixed; boundary="=-l0FOxSTZlxifOG+3j2bx"
-Date: Mon, 18 May 2009 17:32:57 +0530
-Message-Id: <1242648178.5161.20.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <522C1DF17AF50042AD8AE87F7887BD3D0158B35583@exch.hq.tensilica.com>
+References: <522C1DF17AF50042AD8AE87F7887BD3D0158B35583@exch.hq.tensilica.com>
+Date: Fri, 22 May 2009 12:22:40 +0530
+Message-Id: <1242975161.8760.15.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: [LTP] Fwd: Returned mail: see transcript for details
+Subject: Re: [LTP] [PATCH] Detect test results more accurately
+	when	generating HTML
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -24,213 +37,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sf.net>
+To: Marc Gauthier <marc@tensilica.com>, rohit verma <rohit.170309@gmail.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
+On Thu, 2009-05-21 at 01:13 -0700, Marc Gauthier wrote: 
+> Hi, my first patch to this list.  Actually not a patch,
+> but the files themselves, to avoid line-wrapping issues
+> and because the diff is twice the size of the new file.
+> 
+> -Marc
 
---=-l0FOxSTZlxifOG+3j2bx
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-MIME-Autoconverted: from 8bit to quoted-printable by e32.co.us.ibm.com id
-	n4IC1H0U001028
+Thanks Marc.
 
-Jiri,
+Rohit,
 
-What is your correct e-mail id ??
-
---Subrata
-
--------- Forwarded Message --------
-From: Mail Delivery Subsystem <MAILER-DAEMON@e37.co.us.ibm.com>
-To: subrata@linux.vnet.ibm.com
-Subject: Returned mail: see transcript for details
-Date: Mon, 18 May 2009 05:59:43 -0600
-
-The original message was received at Mon, 18 May 2009 05:59:42 -0600
-from d03relay04.boulder.ibm.com [9.17.195.106]
-
-   ----- The following addresses had permanent fatal errors -----
-<jpalecek@web.de>
-    (reason: 550 <jpalecek@web.de> Benutzer hat das Speichervolumen ueber=
-schritten. / User has exhausted allowed storage space.)
-
-   ----- Transcript of session follows -----
-... while talking to mx-ha01.web.de.:
->>> DATA
-<<< 550 <jpalecek@web.de> Benutzer hat das Speichervolumen ueberschritten=
-. / User has exhausted allowed storage space.
-550 5.1.1 <jpalecek@web.de>... User unknown
-<<< 503 Valid RCPT TO <recipient> must precede DATA
-email message attachment
--------- Forwarded Message --------
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Reply-To: subrata@linux.vnet.ibm.com
-To: Ji=C5=99=C3=AD Pale=C4=8Dek <jpalecek@web.de>
-Cc: CAI Qian <caiqian@cclom.cn>, ltp-list@lists.sourceforge.net
-Subject: Re: [LTP] [PATCH] Fix the splice02 test
-Date: Mon, 18 May 2009 17:29:59 +0530
-
-On Fri, 2009-05-15 at 19:24 +0200, Ji=C5=99=C3=AD Pale=C4=8Dek wrote:=20
-> On Wed, 13 May 2009 16:47:35 +0200, CAI Qian <caiqian@cclom.cn> wrote:
->=20
-> > From: Jiri Palecek <jpalecek@web.de>
-> > Subject: [LTP] [PATCH] Fix the splice02 test
-> > Date: Wed, 13 May 2009 00:34:15 +0200
-> >
-> >>   Particularly:
-> >>
-> >>    - TEST_ERRNO is only set when the syscall is executed using the
-> >>      TEST() macro. The tests gave bad error messages because of that.
-> >>
-> >>    - The end of the test was dead code; moved the TPASS code to pass=
- at
-> >>      the end of file.
-> >>
-> >>    - The test assumes std. input is a pipe; reflect this in the runt=
-est
-> >>      file
-> >>
-> >> Regards
-> >>      Jiri Palecek
-> >>
-> >> Signed-off-by: Jiri Palecek <jpalecek@web.de>
-> >> ---
-> >>   runtest/syscalls                            |    2 +-
-> >>   testcases/kernel/syscalls/splice/splice02.c |   16 ++++++---------=
--
-> >>   2 files changed, 7 insertions(+), 11 deletions(-)
-> >>
-> >> diff --git a/runtest/syscalls b/runtest/syscalls
-> >> index 9b7b2ca..33beff0 100644
-> >> --- a/runtest/syscalls
-> >> +++ b/runtest/syscalls
-> >> @@ -1033,7 +1033,7 @@ sockioctl01 sockioctl01
-> >>    #splice test
-> >>   splice01 splice01
-> >> -splice02 echo "Test splice02()" > splice02-temp; splice02 splice02-=
-temp
-> >> +splice02 seq 1 10000000 | splice02 splice02-temp
-> >>    tee01 tee01
-> >>   diff --git a/testcases/kernel/syscalls/splice/splice02.c
-> >> b/testcases/kernel/syscalls/splice/splice02.c
-> >> index 321d002..16bff86 100644
-> >> --- a/testcases/kernel/syscalls/splice/splice02.c
-> >> +++ b/testcases/kernel/syscalls/splice/splice02.c
-> >> @@ -108,7 +108,6 @@ void setup() {
-> >>    int main(int ac, char **av) {
-> >>   	int fd =3D 0;
-> >> -	int ret =3D 0;
-> >>   =09
-> >>           setup();
-> >>   @@ -118,26 +117,23 @@ int main(int ac, char **av) {
-> >>   	}
-> >>   	fd=3Dopen(av[1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-> >>   	if(fd < 0 ) {
-> >> -           tst_resm(TFAIL, "%s failed - errno =3D %d : %s", TCID, =20
-> >> TEST_ERRNO,
-> >> strerror(TEST_ERRNO));
-> >> +		tst_resm(TFAIL, "open(%s) failed - errno =3D %d : %s", av[1], err=
-no,
-> >> strerror(errno));
-> >>   	   cleanup();
-> >>   	   tst_exit();
-> >>   	}
-> >>   		=09
-> >>           do {
-> >> -	    ret =3D splice(STDIN_FILENO, NULL, fd, NULL, SPLICE_SIZE, 0);
-> >> -	    if (ret < 0) {
-> >> -            	tst_resm(TFAIL, "%s failed - errno =3D %d : %s",TCID, =
-=20
-> >> TEST_ERRNO,
-> >> strerror(TEST_ERRNO));
-> >> +					TEST(splice(STDIN_FILENO, NULL, fd, NULL, SPLICE_SIZE, 0));
-> >> +	    if (TEST_RETURN < 0) {
-> >> +            	tst_resm(TFAIL, "splice failed - errno =3D %d : %s", =20
-> >> TEST_ERRNO,
-> >> strerror(TEST_ERRNO));
-> >>   	        cleanup();
-> >>   		tst_exit();
-> >>   	    } else
-> >> -            if (ret < SPLICE_SIZE){
-> >> +            if (TEST_RETURN =3D=3D 0){
-> >> +							tst_resm(TPASS, "splice() system call Passed");
-> >>   	        cleanup();
-> >>   	        tst_exit();
-> >>   	    }
-> >>   	} while(1);
-> >> -
-> >> -	close(fd);
-> >> -        tst_resm(TPASS, "splice() system call Passed");
-> >> -        tst_exit();
-> >>   }
-> >>   -- 1.6.2
-> >
-> > Can't apply this patch -- long lines are wrapped. Please re-send it.
->=20
-> It seems not to be caused by wrapped lines - I can still see them in th=
-e =20
-> digest. However, some empty lines seem to be lost.
->=20
-> Anyway, it should be better now (see attachment).
-
-Thanks.
+Can you test this and see if these solves the problem that you were
+discussing for long ?
 
 Regards--
 Subrata
 
->=20
-> Regards
->     Jiri Palecek
-> -----------------------------------------------------------------------=
-------- Crystal Reports - New Free Runtime and 30 Day Trial Check out the=
- new simplified licensing option that enables unlimited royalty-free dist=
-ribution of the report engine for externally facing server and web deploy=
-ment. http://p.sf.net/sfu/businessobjects
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+> 
+> -----------
+> Detect test results more accurately when generating HTML
+> 
+> Process test output lines that appear between <<<test_end>>>
+> and the following <<<test_start>>>.  Assign to the preceding
+> test where the name matches, else to the following test.
+> 
+> If a single test has multiple types of results (e.g. both
+> FAIL and WARN), report only the most significant one, to
+> avoid mis-computing the total number of PASS tests or
+> total counts that don't add up to the number of tests.
+> 
+> If a test's output has no explicit result (PASS, FAIL, etc),
+> look at the exit value to determine whether it passed.
+> 
+> Setting the SHOW_UNRESOLVED environment variable to 1
+> classifies as UNRESOLVED any test with no explicit result
+> and a zero exit code.
+> 
+> Setting the SUMMARY_OUTPUT environment variable to 1
+> causes only one line of output per test to be shown, for a
+> tighter page that allows quickly scanning the results.
+> 
+> Show percentage of each result type in summary section.
+> 
+> Simplify parsing a bit.
+> 
+> Signed-off-by:  Marc Gauthier <marc@tensilica.com>
+> 
+> ------------------------------------------------------------------------------
+> Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+> is a gathering of tech-side developers & brand creativity professionals. Meet
+> the minds behind Google Creative Lab, Visual Complexity, Processing, & 
+> iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
+> Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
+> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-
---=-l0FOxSTZlxifOG+3j2bx
-Content-Type: message/delivery-status
-Content-Transfer-Encoding: 7bit
-
-Reporting-MTA: dns; e37.co.us.ibm.com
-Received-From-MTA: DNS; d03relay04.boulder.ibm.com
-Arrival-Date: Mon, 18 May 2009 05:59:42 -0600
-
-Final-Recipient: RFC822; jpalecek@web.de
-Action: failed
-Status: 5.1.1
-Remote-MTA: DNS; mx-ha01.web.de
-Diagnostic-Code: SMTP; 550 <jpalecek@web.de> Benutzer hat das Speichervolumen
-	ueberschritten. / User has exhausted allowed storage space.
-Last-Attempt-Date: Mon, 18 May 2009 05:59:43 -0600
-
---=-l0FOxSTZlxifOG+3j2bx
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables 
-unlimited royalty-free distribution of the report engine 
-for externally facing server and web deployment. 
-http://p.sf.net/sfu/businessobjects
---=-l0FOxSTZlxifOG+3j2bx
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+is a gathering of tech-side developers & brand creativity professionals. Meet
+the minds behind Google Creative Lab, Visual Complexity, Processing, & 
+iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
+Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---=-l0FOxSTZlxifOG+3j2bx--
-
-
