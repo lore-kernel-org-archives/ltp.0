@@ -1,34 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M4rhO-0006h5-Bu
-	for ltp-list@lists.sourceforge.net; Fri, 15 May 2009 07:19:18 +0000
-Received: from e31.co.us.ibm.com ([32.97.110.149])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M4rhE-0007Nf-Tn
-	for ltp-list@lists.sourceforge.net; Fri, 15 May 2009 07:19:18 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e31.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4F7FJp5011063
-	for <ltp-list@lists.sourceforge.net>; Fri, 15 May 2009 01:15:19 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4F7HpRi214356
-	for <ltp-list@lists.sourceforge.net>; Fri, 15 May 2009 01:17:51 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4F7Hoh5022168
-	for <ltp-list@lists.sourceforge.net>; Fri, 15 May 2009 01:17:50 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4A0A0116.8030604@web.de>
-References: <4A0A0116.8030604@web.de>
-Date: Fri, 15 May 2009 12:47:48 +0530
-Message-Id: <1242371868.7224.14.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Add an autoconf test for presence
-	oftaskstats.freepages_count
-Reply-To: subrata@linux.vnet.ibm.com
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1M7aRv-0002Jf-BU
+	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 19:30:35 +0000
+Date: Fri, 22 May 2009 21:30:21 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20090522193021.GA2885@schrodinger.suse.cz>
+References: <20090518135848.GA1060@schrodinger.suse.cz>
+	<1242729123.5961.46.camel@subratamodak.linux.ibm.com>
+	<20090521122545.GA7848@schrodinger.suse.cz>
+	<1242975165.8760.16.camel@subratamodak.linux.ibm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1242975165.8760.16.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [PATCH] fix missing return in several files.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,165 +27,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Wed, 2009-05-13 at 01:07 +0200, Jiri Palecek wrote: 
-> Also, use it in getdelays.c to prevent compilation failures
+> > Well it breaks building suse rpm package as buildservice system treats these
+> > kind of warning as errors and it's IMHO harmless to add these returns in the code.
 > 
-> Hello,
-> 
-> I've found that ltp didn't compile on Debian because of old kernel headers, 
-> which contain taskstats struct without some of the needed fields. This autoconf 
-> test detects it and disables the code that would otherwise break.
-> 
-> Regards
->      Jiri Palecek
-> 
-> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+> Strange. But, in LTP convention, tst_exit() is used which in turn does a
+> return $EXIT_CODE on it?? own. We do not interfere. return 0/1 exists in
+> LTP code only when we have not detected that, or, it has been lying
+> there old. Else, for new tests and when submitting patches we convert
+> all returns to tst_exit().
 
-Same here:
+Yes tst_exit calls exit() call which does some magick that terminates running
+process and returns value passed to that function. So the code iself is
+correct. But compiler is not smart enough to see that. And as indirect call to
+exit() is only situation I'm aware of where missing return is not a bug, it's
+not so dumb to treat this kind of warning as error. And some buildsystems does
+so.
 
-ERROR: patch seems to be corrupt (line wrapped?)
-#132: FILE: configure.ac:24:
-diff --git a/include/config.h.default b/include/config.h.default
-total: 1 errors, 0 warnings, 83 lines checked
 
-and
+There are several possibilities that can avoid this kind of problem.
 
-patching file configure.ac
-patch: **** malformed patch at line 132: diff --git
-a/include/config.h.default b/include/config.h.default
+a) Add return 0, to those main() functions to make buildsystem happy. That's
+   perfectly harmless as the code never gets makes it to this return 0; But it's
+   not clean solution anyway.
 
-Regards--
-Subrata
+b) Add tst_exitval() function that do the same as tst_exit but instead of exiting
+   returns value passed to exit() call. So the code would look like: 
+   
+   return tst_exitval();
 
-> ---
->   configure.ac                                    |    1 +
->   include/config.h.default                        |    2 +
->   m4/ltp-taskstats.m4                             |   38 +++++++++++++++++++++++
->   testcases/kernel/controllers/cgroup/getdelays.c |   15 ++++++---
->   4 files changed, 51 insertions(+), 5 deletions(-)
->   create mode 100644 m4/ltp-taskstats.m4
-> 
-> diff --git a/configure.ac b/configure.ac
-> index c534c97..9fc1696 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -20,5 +20,6 @@ LTP_CHECK_SYSCALL_MODIFY_LDT
->   LTP_CHECK_SYSCALL_SIGNALFD
->   LTP_CHECK_SELINUX
->   LTP_CHECK_CRYPTO
-> +LTP_CHECK_TASKSTATS
->    AC_OUTPUT
-> diff --git a/include/config.h.default b/include/config.h.default
-> index 9125d85..b9a6731 100644
-> --- a/include/config.h.default
-> +++ b/include/config.h.default
-> @@ -14,3 +14,5 @@
->    /* ifaddrs.h is in glibc-2.3+ */
->   #define HAVE_IFADDRS_H 1
-> +
-> +#define HAVE_TASKSTATS_FREEPAGES_COUNT 1
-> diff --git a/m4/ltp-taskstats.m4 b/m4/ltp-taskstats.m4
-> new file mode 100644
-> index 0000000..54da783
-> --- /dev/null
-> +++ b/m4/ltp-taskstats.m4
-> @@ -0,0 +1,38 @@
-> +dnl
-> +dnl Copyright (c) Jiri Palecek 2009
-> +dnl
-> +dnl This program is free software;  you can redistribute it and/or modify
-> +dnl it under the terms of the GNU General Public License as published by
-> +dnl the Free Software Foundation; either version 2 of the License, or
-> +dnl (at your option) any later version.
-> +dnl
-> +dnl This program is distributed in the hope that it will be useful,
-> +dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> +dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> +dnl the GNU General Public License for more details.
-> +dnl
-> +dnl You should have received a copy of the GNU General Public License
-> +dnl along with this program;  if not, write to the Free Software
-> +dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-> +dnl
-> +
-> +
-> +AC_DEFUN([LTP_CHECK_TASKSTATS],
-> +_LTP_CHECK_TASKSTATS_FREEPAGES
-> +)dnl
-> +
-> +dnl _LTP_CHECK_TASKSTATS_FREEPAGES
-> +dnl ----------------------------------------
-> +dnl
-> +dnl Check for taskstat.freepages_* members, introduced to the kernel
-> +dnl in commit 016ae219 in July 2008
-> +dnl
-> +
-> +AC_DEFUN([_LTP_CHECK_TASKSTATS_FREEPAGES],
-> +[dnl
-> +AC_CHECK_MEMBERS([struct taskstats.freepages_count],[],[],[dnl
-> +#include <linux/types.h>
-> +#include <linux/taskstats.h>
-> +])
-> +]dnl
-> +)dnl
-> diff --git a/testcases/kernel/controllers/cgroup/getdelays.c 
-> b/testcases/kernel/controllers/cgroup/getdelays.c
-> index 13f7b3a..9fe2831 100644
-> --- a/testcases/kernel/controllers/cgroup/getdelays.c
-> +++ b/testcases/kernel/controllers/cgroup/getdelays.c
-> @@ -199,8 +199,10 @@ void print_delayacct(struct taskstats *t)
->   	       "SWAP  %15s%15s\n"
->   	       "      %15llu%15llu\n"
->   	       "RECLAIM  %12s%15s\n"
-> -	       "      %15llu%15llu\n",
-> -	       "count", "real total", "virtual total", "delay total",
-> +#ifdef HAVE_TASKSTATS_FREEPAGES_COUNT
-> +	       "      %15llu%15llu\n"
-> +#endif
-> +	       , "count", "real total", "virtual total", "delay total",
->   	       (unsigned long long)t->cpu_count,
->   	       (unsigned long long)t->cpu_run_real_total,
->   	       (unsigned long long)t->cpu_run_virtual_total,
-> @@ -211,9 +213,12 @@ void print_delayacct(struct taskstats *t)
->   	       "count", "delay total",
->   	       (unsigned long long)t->swapin_count,
->   	       (unsigned long long)t->swapin_delay_total,
-> -	       "count", "delay total",
-> -	       (unsigned long long)t->freepages_count,
-> -	       (unsigned long long)t->freepages_delay_total);
-> +	       "count", "delay total"
-> +#ifdef HAVE_TASKSTATS_FREEPAGES_COUNT
-> +	       , (unsigned long long)t->freepages_count,
-> +	       (unsigned long long)t->freepages_delay_total
-> +#endif
-> +	       );
->   }
->    void task_context_switch_counts(struct taskstats *t)
-> -- 
-> 1.6.2
-> 
-> 
-> ------------------------------------------------------------------------------
-> The NEW KODAK i700 Series Scanners deliver under ANY circumstances! Your
-> production scanning environment may not be a perfect world - but thanks to
-> Kodak, there's a perfect scanner to get the job done! With the NEW KODAK i700
-> Series Scanner you'll get full speed at 300 dpi even with all image 
-> processing features enabled. http://p.sf.net/sfu/kodak-com
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+c) Leave it this way and force people who are doing packages to patch all these
+   files on their own.
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables 
-unlimited royalty-free distribution of the report engine 
-for externally facing server and web deployment. 
-http://p.sf.net/sfu/businessobjects
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+is a gathering of tech-side developers & brand creativity professionals. Meet
+the minds behind Google Creative Lab, Visual Complexity, Processing, & 
+iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
+Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
