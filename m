@@ -1,24 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M9K3Q-0008Hn-H1
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 14:24:28 +0000
-Received: from e37.co.us.ibm.com ([32.97.110.158])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M9K3L-0005hv-A8
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 14:24:28 +0000
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M7OcE-0007e7-9w
+	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 06:52:26 +0000
+Received: from e35.co.us.ibm.com ([32.97.110.153])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1M7OcA-0007hi-D6
+	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 06:52:26 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e35.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4M6k0pb013101
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 May 2009 00:46:00 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n4M6qL23181220
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 May 2009 00:52:21 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4M6qL0t003560
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 May 2009 00:52:21 -0600
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <522C1DF17AF50042AD8AE87F7887BD3D0158B35AB4@exch.hq.tensilica.com>
-References: <20090526142706.20166.3813.sendpatchset@subratamodak.linux.ibm.com>
-	<522C1DF17AF50042AD8AE87F7887BD3D0158B359A4@exch.hq.tensilica.com>
-	<d51f89b0905262344h46722756vb255541a47904dbe@mail.gmail.com>
-	<522C1DF17AF50042AD8AE87F7887BD3D0158B35AB4@exch.hq.tensilica.com>
-Date: Wed, 27 May 2009 19:54:14 +0530
-Message-Id: <1243434255.10447.19.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1242647987.5161.13.camel@subratamodak.linux.ibm.com>
+References: <4A0A0116.8030604@web.de>
+	<1242371868.7224.14.camel@subratamodak.linux.ibm.com>
+	<1242647987.5161.13.camel@subratamodak.linux.ibm.com>
+Date: Fri, 22 May 2009 12:22:16 +0530
+Message-Id: <1242975136.8760.11.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Detect test results more accurately
-	when	generating HTML
+Subject: Re: [LTP] [PATCH] Add an autoconf test
+	for	presence	oftaskstats.freepages_count
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -29,85 +40,208 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Marc Gauthier <marc@tensilica.com>
-Cc: rohit verma <rohit.170309@gmail.com>, Ltp-List <ltp-list@lists.sf.net>
+To: Jiri Palecek <jpalecek@web.de>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-T24gV2VkLCAyMDA5LTA1LTI3IGF0IDA1OjA1IC0wNzAwLCBNYXJjIEdhdXRoaWVyIHdyb3RlOiAK
-PiBKdXN0IHNvIHlvdSBrbm93LCB0aGUgdXBkYXRlZCBnZW5odG1sLnBsIHNjcmlwdCByZWNlbnRs
-eSBzdWJtaXR0ZWQKPiBzaG91bGQgd29yayBqdXN0IGZpbmUgd2l0aG91dCBjaGFuZ2VzLCB3aGVu
-IG1vdmluZyBzdGF0dXMgYWZ0ZXIKPiA8PDxleGVjdXRpb25fc3RhdHVzPj4+IChpdCBvbmx5IGxv
-b2tzIGF0IHRhZyBuYW1lcywgbm90IHBvc2l0aW9ucykuCgpCZSBjYXJlZnVsLCBpdCBsb29rcyBm
-b3IgPDw8ZXhlY3V0aW9uX3N0YXR1cz4+PiBvbmx5IGluIGJldHdlZW4KPDx0ZXN0X3N0YXJ0Pj4g
-JiA8PHRlc3Rfb3V0cHV0Pj4uCgpSZWdhcmRzLS0KU3VicmF0YQoKPiAKPiAtTWFyYwo+IAo+IAo+
-IHJvaGl0IHZlcm1hIHdyb3RlOgo+ID4gSGkgTWFyYywKPiA+Cj4gPiBJIHRoaW5rIHRoaXMgYSBw
-b3NzaWJsZSBzb2x1dGlvbi4gSSB0aGluayB0aGUgdGFnICJpbml0aWF0aW9uX3N0YXR1cz0iCj4g
-PiBjYW4gYmUgbW92ZWQgYWZ0ZXIgPDw8ZXhlY3V0aW9uX3N0YXR1cz4+Pi4gTW92aW5nIHRoaXMg
-dGFnIHRvCj4gPiB3cml0ZV90ZXN0X2VuZCgpIGFuZCBzaGlmdGluZyB3cml0ZV90ZXN0X3N0YXJ0
-KCkgYmVmb3JlIGZvcmsoKSBtaWdodAo+ID4gc29sdmUgdGhlIHByb2JsZW0uIEhvd2V2ZXIsIGNv
-cnJlc3BvbmRpbmcgY2hhbmdlcyBoYXZlIHRvIGJlIGRvbmUgaW4KPiA+IGdlbmh0bWwucGwKPiA+
-Cj4gPiBTdWJyYXRhOiBKdXN0IGxldCBtZSB5b3VyIHZpZXcgb24gdGhpcy4gSSdsbCB0cnkgYW5k
-IGNvbWUgdXAgd2l0aCBhCj4gPiBwYXRjaCBpZiB0aGUgY2hhbmdlcyBhcmUgYWNjZXB0YWJsZS4K
-PiA+Cj4gPiBSZWdhcmRzLAo+ID4gUm9oaXQuCj4gPgo+ID4KPiA+Cj4gPiBPbiBXZWQsIE1heSAy
-NywgMjAwOSBhdCAxOjQ0IEFNLCBNYXJjIEdhdXRoaWVyCj4gPiA8bWFyY0B0ZW5zaWxpY2EuY29t
-PiB3cm90ZToKPiA+ID4gT2theSwgc28gSSBsb29rZWQgYXQgaXQgYSBiaXQuLi4KPiA+ID4KPiA+
-ID4gSXNuJ3QgdGhlIGZ1bmRhbWVudGFsIHJhY2UgY29uZGl0aW9uIGJlY2F1c2UgcGFuIG91dHB1
-dHMKPiA+ID4gPDw8dGVzdF9zdGFydD4+PiAqYWZ0ZXIqIGRvaW5nIHRoZSBmb3JrKCksIHJhdGhl
-ciB0aGFuIGJlZm9yZT8KPiA+ID4KPiA+ID4gSWYgc29tZSBzdGF0dXMgaW5mbyBjYW4ndCBiZSBv
-dXRwdXQgdGhhdCBlYXJseSwgbWF5YmUgaXQganVzdAo+ID4gPiBuZWVkcyB0byBiZSBvdXRwdXQg
-YWZ0ZXIgPDw8ZXhlY3V0aW9uX3N0YXR1cz4+PiBhcyBwYXJ0IG9mCj4gPiA+IHdyaXRlX3Rlc3Rf
-ZW5kKCkgPwo+ID4gPgo+ID4gPiAtTWFyYwo+ID4gPgo+ID4gPiBQLlMuICBJIGZpbmQgaXQgdXNl
-ZnVsIHRvIHJ1biBnZW5odG1sIGFnYWluc3Qgb2xkZXIgTFRQIHJlbGVhc2VzCj4gPiA+IChpbmNs
-dWRpbmcgdGhvc2Ugd2l0aG91dCBnZW5odG1sKSwgc28gbWlnaHQgYmUgdXNlZnVsIHRvIGtlZXAg
-dGhlCj4gPiA+IG91dC1vZi1vcmRlciB3b3JrYXJvdW5kcyBldmVuIGlmIG9yZGVyaW5nIGlzIGZp
-eGVkIGluIHRoaXMgcmVsZWFzZS4KPiA+ID4KPiA+ID4KPiA+ID4gU3VicmF0YSBNb2RhayB3cm90
-ZToKPiA+ID4+IEhvdyBtdWNoIHdvdWxkIHlvdSB3YW50IHRvIGRlbGF5ID8gTWF5IGJlIHRvIHNv
-bWUgbWljcm9zZWNzICEhCj4gPiA+PiBIb3dldmVyIGRlbGF5aW5nIGlzIG5vdCBhIGdvb2Qgb3B0
-aW9uLCBidXQsIGkgYW0gcmVhZHkgdG8gY29uc2lkZXIuCj4gPiA+PiBTZWUsIHdoYXQgaXMgdGhl
-IHJlYXNhbmFibGUgdGltZSBzbyB0aGF0IHRoaXMgcHJvYmxlbSB2YW5pc2hlcy4KPiA+ID4+Cj4g
-PiA+PiBNZWFud2hpbGUsIGkgaGF2ZSBnZW5lcmF0ZWQgdGhpcyBzbWFsbCBwYXRjaC4gSXQgdHJp
-ZXMgdG8KPiA+ID4+IGZsdXNoIGFsbCBkYXRhCj4gPiA+PiB0byBiZSB3cml0dGVuIHRvIFNURE9V
-VCBiZWZvcmUgdGhlIFBhcmVudCAoUEFOKSB0cmllcyB0byB3cml0ZSBoaXMKPiA+ID4+IG5leHQg
-dGFnLiBNb3Jlb3ZlciwgaSBoYXZlIGluY2x1ZGVkIHRoZSBmZmx1c2goKSB0byBiZQo+ID4gZXhl
-Y3V0ZWQgaW5zaWRlCj4gPiA+PiB0aGUgaWYoKcOCwrRzIGRvbWFpbiB3aGVuZXZlciB0aGUgcGFy
-ZW50IGlzIHdyaXRpbmcgZnJvbQo+ID4gPDx0ZXN0X3N0YXJ0Pj4KPiA+ID4+IHRpbGwgPDx0ZXN0
-X291dHB1dD4+LiBTZWUsIGlmIHRoaXMgY2FuIGhlbHAgaW4gc29sdmluZyB0aGUgcHJvYmxlbS4K
-PiA+ID4+Cj4gPiA+PiBTaWduZWQtb2ZmLWJ5OiBTdWJyYXRhIE1vZGFrIDxzdWJyYXRhQGxpbnV4
-LnZuZXQuaWJtLmNvbT4KPiA+ID4+IC0tLQo+ID4gPj4KPiA+ID4+IC0tLSBsdHAtaW50ZXJtZWRp
-YXRlLTIwMDkwNTIxL3Bhbi9sdHAtcGFuLmMub3JpZwo+ID4gPj4gMjAwOS0wNS0yNiAxNjozMDoz
-OS4wMDAwMDAwMDAgKzA1MzAKPiA+ID4+ICsrKyBsdHAtaW50ZXJtZWRpYXRlLTIwMDkwNTIxL3Bh
-bi9sdHAtcGFuLmMgICAyMDA5LTA1LTI2Cj4gPiA+PiAxOTo0NDozNy4wMDAwMDAwMDAgKzA1MzAK
-PiA+ID4+IEBAIC0xMDE1LDYgKzEwMTUsNyBAQCBzdGF0aWMgcGlkX3QgcnVuX2NoaWxkKHN0cnVj
-dCBjb2xsX2VudHJ5Cj4gPiA+PiAgICAgICAgICAgICAgIGVycmJ1ZltlcnJsZW5dID0gJ1wwJzsK
-PiA+ID4+ICAgICAgICAgICAgICAgLyogZnByaW50ZihzdGRlcnIsICIlcyIsIGVycmJ1Zik7ICov
-Cj4gPiA+PiAgICAgICAgICAgICAgIHdhaXRwaWQoY3BpZCwgJnN0YXR1cywgMCk7Cj4gPiA+PiAr
-ICAgICAgICAgICAgIGZmbHVzaChzdGRvdXQpOyAvKiBGbHVzaCBhbnkgZGF0YSBiZWZvcmUKPiA+
-ID4+IHdyaXRpbmcgPDx0ZXN0X2VuZD4+Ki8KPiA+ID4+ICAgICAgICAgICAgICAgaWYgKFdJRlNJ
-R05BTEVEKHN0YXR1cykpIHsKPiA+ID4+ICAgICAgICAgICAgICAgICAgICAgICB0ZXJtaWQgPSBX
-VEVSTVNJRyhzdGF0dXMpOwo+ID4gPj4gICAgICAgICAgICAgICAgICAgICAgIHRlcm10eXBlID0g
-InNpZ25hbGVkIjsKPiA+ID4+IEBAIC0xMzAwLDE0ICsxMzAxLDE0IEBAIHN0YXRpYyB2b2lkIGNv
-cHlfYnVmZmVyZWRfb3V0cHV0KHN0cnVjdAo+ID4gPj4KPiA+ID4+ICBzdGF0aWMgdm9pZCB3cml0
-ZV90ZXN0X3N0YXJ0KHN0cnVjdCB0YWdfcGdycCAqcnVubmluZywgY29uc3QKPiA+ID4+IGNoYXIg
-KmluaXRfc3RhdHVzKQo+ID4gPj4gIHsKPiA+ID4+IC0gICAgIGlmICghc3RyY21wKHJlcG9ydHR5
-cGUsICJydHMiKSkKPiA+ID4+ICsgICAgIGlmICghc3RyY21wKHJlcG9ydHR5cGUsICJydHMiKSkg
-ewo+ID4gPj4gICAgICAgICAgICAgICBwcmludGYoIiVzXG50YWc9JXMKPiA+ID4+IHN0aW1lPSVs
-ZFxuY21kbGluZT1cIiVzXCJcbmNvbnRhY3RzPVwiJXNcIlxuYW5hbHlzaXM9JXNcbmluaXRpCj4g
-PiA+IGF0aW9uX3N0YXR1cz1cIiVzXCJcbiVzXG4iLAo+ID4gPj4gICAgICAgICAgICAgICAgICAg
-ICAgIjw8PHRlc3Rfc3RhcnQ+Pj4iLAo+ID4gPj4gICAgICAgICAgICAgICAgICAgICAgcnVubmlu
-Zy0+Y21kLT5uYW1lLCBydW5uaW5nLT5teXN0aW1lLAo+ID4gPj4gcnVubmluZy0+Y21kLT5jbWRs
-aW5lLCAiIiwKPiA+ID4+ICAgICAgICAgICAgICAgICAgICAgICJleGl0IiwgaW5pdF9zdGF0dXMs
-Cj4gPiA+PiAgICAgICAgICAgICAgICAgICAgICAiPDw8dGVzdF9vdXRwdXQ+Pj4iKTsKPiA+ID4+
-IC0KPiA+ID4+ICAgICAgIGZmbHVzaChzdGRvdXQpOwo+ID4gPj4gKyAgICAgfQo+ID4gPj4gIH0K
-PiA+ID4+Cj4gPiA+Cj4gPgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpSZWdpc3RlciBOb3cgZm9y
-IENyZWF0aXZpdHkgYW5kIFRlY2hub2xvZ3kgKENhVCksIEp1bmUgM3JkLCBOWUMuIENhVCAKaXMg
-YSBnYXRoZXJpbmcgb2YgdGVjaC1zaWRlIGRldmVsb3BlcnMgJiBicmFuZCBjcmVhdGl2aXR5IHBy
-b2Zlc3Npb25hbHMuIE1lZXQKdGhlIG1pbmRzIGJlaGluZCBHb29nbGUgQ3JlYXRpdmUgTGFiLCBW
-aXN1YWwgQ29tcGxleGl0eSwgUHJvY2Vzc2luZywgJiAKaVBob25lRGV2Q2FtcCBhcyB0aGV5IHBy
-ZXNlbnQgYWxvbmdzaWRlIGRpZ2l0YWwgaGVhdnl3ZWlnaHRzIGxpa2UgQmFyYmFyaWFuIApHcm91
-cCwgUi9HQSwgJiBCaWcgU3BhY2VzaGlwLiBodHRwOi8vcC5zZi5uZXQvc2Z1L2NyZWF0aXZpdHlj
-YXQtY29tIApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
-dHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBz
-Oi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+Jiri,
+
+Any plans to resend this ?
+
+Regards--
+Subrata
+
+On Mon, 2009-05-18 at 17:29 +0530, Subrata Modak wrote: 
+> On Fri, 2009-05-15 at 12:47 +0530, Subrata Modak wrote: 
+> > On Wed, 2009-05-13 at 01:07 +0200, Jiri Palecek wrote: 
+> > > Also, use it in getdelays.c to prevent compilation failures
+> > > 
+> > > Hello,
+> > > 
+> > > I've found that ltp didn't compile on Debian because of old kernel headers, 
+> > > which contain taskstats struct without some of the needed fields. This autoconf 
+> > > test detects it and disables the code that would otherwise break.
+> > > 
+> > > Regards
+> > >      Jiri Palecek
+> > > 
+> > > Signed-off-by: Jiri Palecek <jpalecek@web.de>
+> > 
+> > Same here:
+> > 
+> > ERROR: patch seems to be corrupt (line wrapped?)
+> > #132: FILE: configure.ac:24:
+> > diff --git a/include/config.h.default b/include/config.h.default
+> > total: 1 errors, 0 warnings, 83 lines checked
+> > 
+> > and
+> > 
+> > patching file configure.ac
+> > patch: **** malformed patch at line 132: diff --git
+> > a/include/config.h.default b/include/config.h.default
+> > 
+> 
+> How about resending this Patch as well ?
+> 
+> Regards--
+> Subrata
+> 
+> > Regards--
+> > Subrata
+> > 
+> > > ---
+> > >   configure.ac                                    |    1 +
+> > >   include/config.h.default                        |    2 +
+> > >   m4/ltp-taskstats.m4                             |   38 +++++++++++++++++++++++
+> > >   testcases/kernel/controllers/cgroup/getdelays.c |   15 ++++++---
+> > >   4 files changed, 51 insertions(+), 5 deletions(-)
+> > >   create mode 100644 m4/ltp-taskstats.m4
+> > > 
+> > > diff --git a/configure.ac b/configure.ac
+> > > index c534c97..9fc1696 100644
+> > > --- a/configure.ac
+> > > +++ b/configure.ac
+> > > @@ -20,5 +20,6 @@ LTP_CHECK_SYSCALL_MODIFY_LDT
+> > >   LTP_CHECK_SYSCALL_SIGNALFD
+> > >   LTP_CHECK_SELINUX
+> > >   LTP_CHECK_CRYPTO
+> > > +LTP_CHECK_TASKSTATS
+> > >    AC_OUTPUT
+> > > diff --git a/include/config.h.default b/include/config.h.default
+> > > index 9125d85..b9a6731 100644
+> > > --- a/include/config.h.default
+> > > +++ b/include/config.h.default
+> > > @@ -14,3 +14,5 @@
+> > >    /* ifaddrs.h is in glibc-2.3+ */
+> > >   #define HAVE_IFADDRS_H 1
+> > > +
+> > > +#define HAVE_TASKSTATS_FREEPAGES_COUNT 1
+> > > diff --git a/m4/ltp-taskstats.m4 b/m4/ltp-taskstats.m4
+> > > new file mode 100644
+> > > index 0000000..54da783
+> > > --- /dev/null
+> > > +++ b/m4/ltp-taskstats.m4
+> > > @@ -0,0 +1,38 @@
+> > > +dnl
+> > > +dnl Copyright (c) Jiri Palecek 2009
+> > > +dnl
+> > > +dnl This program is free software;  you can redistribute it and/or modify
+> > > +dnl it under the terms of the GNU General Public License as published by
+> > > +dnl the Free Software Foundation; either version 2 of the License, or
+> > > +dnl (at your option) any later version.
+> > > +dnl
+> > > +dnl This program is distributed in the hope that it will be useful,
+> > > +dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> > > +dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> > > +dnl the GNU General Public License for more details.
+> > > +dnl
+> > > +dnl You should have received a copy of the GNU General Public License
+> > > +dnl along with this program;  if not, write to the Free Software
+> > > +dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+> > > +dnl
+> > > +
+> > > +
+> > > +AC_DEFUN([LTP_CHECK_TASKSTATS],
+> > > +_LTP_CHECK_TASKSTATS_FREEPAGES
+> > > +)dnl
+> > > +
+> > > +dnl _LTP_CHECK_TASKSTATS_FREEPAGES
+> > > +dnl ----------------------------------------
+> > > +dnl
+> > > +dnl Check for taskstat.freepages_* members, introduced to the kernel
+> > > +dnl in commit 016ae219 in July 2008
+> > > +dnl
+> > > +
+> > > +AC_DEFUN([_LTP_CHECK_TASKSTATS_FREEPAGES],
+> > > +[dnl
+> > > +AC_CHECK_MEMBERS([struct taskstats.freepages_count],[],[],[dnl
+> > > +#include <linux/types.h>
+> > > +#include <linux/taskstats.h>
+> > > +])
+> > > +]dnl
+> > > +)dnl
+> > > diff --git a/testcases/kernel/controllers/cgroup/getdelays.c 
+> > > b/testcases/kernel/controllers/cgroup/getdelays.c
+> > > index 13f7b3a..9fe2831 100644
+> > > --- a/testcases/kernel/controllers/cgroup/getdelays.c
+> > > +++ b/testcases/kernel/controllers/cgroup/getdelays.c
+> > > @@ -199,8 +199,10 @@ void print_delayacct(struct taskstats *t)
+> > >   	       "SWAP  %15s%15s\n"
+> > >   	       "      %15llu%15llu\n"
+> > >   	       "RECLAIM  %12s%15s\n"
+> > > -	       "      %15llu%15llu\n",
+> > > -	       "count", "real total", "virtual total", "delay total",
+> > > +#ifdef HAVE_TASKSTATS_FREEPAGES_COUNT
+> > > +	       "      %15llu%15llu\n"
+> > > +#endif
+> > > +	       , "count", "real total", "virtual total", "delay total",
+> > >   	       (unsigned long long)t->cpu_count,
+> > >   	       (unsigned long long)t->cpu_run_real_total,
+> > >   	       (unsigned long long)t->cpu_run_virtual_total,
+> > > @@ -211,9 +213,12 @@ void print_delayacct(struct taskstats *t)
+> > >   	       "count", "delay total",
+> > >   	       (unsigned long long)t->swapin_count,
+> > >   	       (unsigned long long)t->swapin_delay_total,
+> > > -	       "count", "delay total",
+> > > -	       (unsigned long long)t->freepages_count,
+> > > -	       (unsigned long long)t->freepages_delay_total);
+> > > +	       "count", "delay total"
+> > > +#ifdef HAVE_TASKSTATS_FREEPAGES_COUNT
+> > > +	       , (unsigned long long)t->freepages_count,
+> > > +	       (unsigned long long)t->freepages_delay_total
+> > > +#endif
+> > > +	       );
+> > >   }
+> > >    void task_context_switch_counts(struct taskstats *t)
+> > > -- 
+> > > 1.6.2
+> > > 
+> > > 
+> > > ------------------------------------------------------------------------------
+> > > The NEW KODAK i700 Series Scanners deliver under ANY circumstances! Your
+> > > production scanning environment may not be a perfect world - but thanks to
+> > > Kodak, there's a perfect scanner to get the job done! With the NEW KODAK i700
+> > > Series Scanner you'll get full speed at 300 dpi even with all image 
+> > > processing features enabled. http://p.sf.net/sfu/kodak-com
+> > > _______________________________________________
+> > > Ltp-list mailing list
+> > > Ltp-list@lists.sourceforge.net
+> > > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> > 
+> > 
+> > ------------------------------------------------------------------------------
+> > Crystal Reports - New Free Runtime and 30 Day Trial
+> > Check out the new simplified licensing option that enables 
+> > unlimited royalty-free distribution of the report engine 
+> > for externally facing server and web deployment. 
+> > http://p.sf.net/sfu/businessobjects
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+> 
+> ------------------------------------------------------------------------------
+> Crystal Reports - New Free Runtime and 30 Day Trial
+> Check out the new simplified licensing option that enables 
+> unlimited royalty-free distribution of the report engine 
+> for externally facing server and web deployment. 
+> http://p.sf.net/sfu/businessobjects
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
+------------------------------------------------------------------------------
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+is a gathering of tech-side developers & brand creativity professionals. Meet
+the minds behind Google Creative Lab, Visual Complexity, Processing, & 
+iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
+Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
