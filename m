@@ -1,31 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <maknayak@in.ibm.com>) id 1M68ia-0006ku-3B
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 19:41:48 +0000
-Received: from e32.co.us.ibm.com ([32.97.110.150])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M68iQ-00029g-Mk
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 19:41:48 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e32.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4IJAVlO018292
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 13:10:31 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4IJCekB189298
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 13:12:40 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4IJCeKx022102
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 13:12:40 -0600
-From: Manas Kumar Nayak <maknayak@in.ibm.com>
-Date: Tue, 19 May 2009 00:42:35 +0530
-Message-Id: <20090518191235.9777.17417.sendpatchset@subratamodak.linux.ibm.com>
-In-Reply-To: <20090518190905.9777.91288.sendpatchset@subratamodak.linux.ibm.com>
-References: <20090518190905.9777.91288.sendpatchset@subratamodak.linux.ibm.com>
-Subject: [LTP] [PATCH 21/21] Add tkill02 test for tkill syscall
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M7Occ-0007vl-FH
+	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 06:52:50 +0000
+Received: from e9.ny.us.ibm.com ([32.97.182.139])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1M7OcY-0001iL-82
+	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 06:52:50 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e9.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4M6euEe018443
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 May 2009 02:40:56 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n4M6qjfo252622
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 May 2009 02:52:45 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4M6qi4e003146
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 May 2009 02:52:44 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <20090521.222054.71107584.caiqian@cclom.cn>
+References: <20090519.201443.226787445.caiqian@cclom.cn>
+	<20090521.222054.71107584.caiqian@cclom.cn>
+Date: Fri, 22 May 2009 12:22:36 +0530
+Message-Id: <1242975157.8760.14.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Crash02: Deal with SIGSTOP and SIGSEGV
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,217 +37,128 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-Cc: Deepakraj B Himavantharaj <deepakraj@in.ibm.com>, Manas Kumar Nayak <maknayak@in.ibm.com>
+To: CAI Qian <caiqian@cclom.cn>
+Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Manas Kumar Nayak <maknayak@in.ibm.com>,
-To: LTP List <ltp-list@lists.sourceforge.net>,
-Cc: Deepakraj B Himavantharaj <deepakraj@in.ibm.com>,
-Cc: Subrata Modak <subrata@linux.vnet.ibm.com>,
-Cc: Masatake YAMATO <yamato@redhat.com>,
----
+On Thu, 2009-05-21 at 22:20 +0800, CAI Qian wrote: 
+> Please don't apply this patch, which will cause compilation failure on
+> IA-64. I'll re-sent it shortly.
+> 
 
---- ltp-intermediate-20090518-manas-work-original/testcases/kernel/syscalls/tkill/tkill02.c	1970-01-01 05:30:00.000000000 +0530
-+++ ltp-intermediate-20090518-manas-work/testcases/kernel/syscalls/tkill/tkill02.c	2009-05-18 23:58:39.000000000 +0530
-@@ -0,0 +1,172 @@
-+/******************************************************************************/
-+/* Copyright (c) Crackerjack Project., 2007                                   */
-+/*                                                                            */
-+/* This program is free software;  you can redistribute it and/or modify      */
-+/* it under the terms of the GNU General Public License as published by       */
-+/* the Free Software Foundation; either version 2 of the License, or          */
-+/* (at your option) any later version.                                        */
-+/*                                                                            */
-+/* This program is distributed in the hope that it will be useful,            */
-+/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
-+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
-+/* the GNU General Public License for more details.                           */
-+/*                                                                            */
-+/* You should have received a copy of the GNU General Public License          */
-+/* along with this program;  if not, write to the Free Software               */
-+/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
-+/*                                                                            */
-+/******************************************************************************/
-+/******************************************************************************/
-+/*                                                                            */
-+/* File:        tkill02.c                                           */
-+/*                                                                            */
-+/* Description: This tests the tkill() syscall                      */
-+/*                                                                            */
-+/* Usage:  <for command-line>                                                 */
-+/* tkill02 [-c n] [-e][-i n] [-I x] [-p x] [-t]                     */
-+/*      where,  -c n : Run n copies concurrently.                             */
-+/*              -e   : Turn on errno logging.                                 */
-+/*              -i n : Execute test n times.                                  */
-+/*              -I x : Execute test for x seconds.                            */
-+/*              -P x : Pause for x seconds between iterations.                */
-+/*              -t   : Turn on syscall timing.                                */
-+/*                                                                            */
-+/* Total Tests: 1                                                             */
-+/*                                                                            */
-+/* Test Name:   tkill02                                             */
-+/* History:     Porting from Crackerjack to LTP is done by                    */
-+/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
-+/******************************************************************************/
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <errno.h>
-+#include <unistd.h>
-+#include <signal.h>
-+#include <sys/syscall.h>
-+
-+
-+/* Harness Specific Include Files. */
-+#include "test.h"
-+#include "usctest.h"
-+#include "linux_syscall_numbers.h"
-+
-+/* Extern Global Variables */
-+extern int Tst_count;           /* counter for tst_xxx routines.         */
-+extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
-+
-+/* Global Variables */
-+char *TCID = "tkill02";  /* Test program identifier.*/
-+int  testno;
-+int  TST_TOTAL = 2;                   /* total number of tests in this file.   */
-+
-+/* Extern Global Functions */
-+/******************************************************************************/
-+/*                                                                            */
-+/* Function:    cleanup                                                       */
-+/*                                                                            */
-+/* Description: Performs all one time clean up for this test on successful    */
-+/*              completion,  premature exit or  failure. Closes all temporary */
-+/*              files, removes all temporary directories exits the test with  */
-+/*              appropriate return code by calling tst_exit() function.       */
-+/*                                                                            */
-+/* Input:       None.                                                         */
-+/*                                                                            */
-+/* Output:      None.                                                         */
-+/*                                                                            */
-+/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
-+/*              On success - Exits calling tst_exit(). With '0' return code.  */
-+/*                                                                            */
-+/******************************************************************************/
-+extern void cleanup() {
-+        /* Remove tmp dir and all files in it */
-+        TEST_CLEANUP;
-+        tst_rmdir();
-+
-+        /* Exit with appropriate return code. */
-+        tst_exit();
-+}
-+
-+/* Local  Functions */
-+/******************************************************************************/
-+/*                                                                            */
-+/* Function:    setup                                                         */
-+/*                                                                            */
-+/* Description: Performs all one time setup for this test. This function is   */
-+/*              typically used to capture signals, create temporary dirs      */
-+/*              and temporary files that may be used in the course of this    */
-+/*              test.                                                         */
-+/*                                                                            */
-+/* Input:       None.                                                         */
-+/*                                                                            */
-+/* Output:      None.                                                         */
-+/*                                                                            */
-+/* Return:      On failure - Exits by calling cleanup().                      */
-+/*              On success - returns 0.                                       */
-+/*                                                                            */
-+/******************************************************************************/
-+void setup() {
-+        /* Capture signals if any */
-+        /* Create temporary directories */
-+        TEST_PAUSE;
-+        tst_tmpdir();
-+}
-+
-+struct test_case_t {
-+        int tid;
-+        int exp_errno;
-+} test_cases[] = {
-+        { -1, EINVAL },
-+        { 99999, ESRCH }
-+};
-+
-+int main(int ac, char **av) {
-+        int lc;                 /* loop counter */
-+        char *msg;              /* message returned from parse_opts */
-+	int i, succeed=0, fail=0;
-+	
-+        /* parse standard options */
-+        if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
-+             tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
-+             tst_exit();
-+           }
-+
-+        setup();
-+
-+        /* Check looping state if -i option given */
-+        for (lc = 0; TEST_LOOPING(lc); ++lc) {
-+                Tst_count = 0;
-+                for (testno = 0; testno < TST_TOTAL; ++testno) {
-+
-+			for(i=0; i<2; i++){
-+		                TEST(syscall(238, test_cases[i].tid, SIGUSR1));
-+		     		if(TEST_RETURN == -1) {
-+			            	if(TEST_ERRNO == test_cases[i].exp_errno){
-+						tst_resm(TINFO, "%s() call with tid:%d got expected errno:%d", TCID, test_cases[i].tid,TEST_ERRNO);
-+						succeed++;
-+					}
-+					else{
-+						tst_resm(TINFO, "%s() call with tif:%d got unexpected errno = %d : %s", TCID, test_cases[i].tid, TEST_ERRNO, strerror(TEST_ERRNO));
-+						fail++;
-+					}
-+				}else{
-+					tst_resm(TINFO, "%s() with tid:%d succeed,but should fail", TCID, test_cases[i].tid);
-+				}
-+			}
-+		
-+		if(fail != 0){
-+			tst_resm(TFAIL, "tkill() call FAILED");
-+			cleanup();
-+			tst_exit();
-+        	}
-+        	else{
-+			tst_resm(TPASS, "tkill() call PASSED");
-+	        }
-+
-+                
-+	    }
-+     }	
-+	cleanup();
-+        tst_exit();
-+}
-+
---- ltp-intermediate-20090518-manas-work-original/runtest/syscalls	2009-05-18 23:53:08.000000000 +0530
-+++ ltp-intermediate-20090518-manas-work/runtest/syscalls	2009-05-19 00:01:05.000000000 +0530
-@@ -1162,6 +1162,7 @@ timer_getoverrun01 timer_getoverrun01
- timer_gettime01 timer_gettime01
- 
- tkill01 tkill01
-+tkill02 tkill02
- 
- truncate01 truncate01
- truncate01_64 truncate01_64
+OK.
 
----
-Regards--
-Manas
+> CAI Qian
+> 
+> From: CAI Qian <caiqian@cclom.cn>
+> Subject: [LTP] [PATCH] Crash02: Deal with SIGSTOP and SIGSEGV
+> Date: Tue, 19 May 2009 20:14:43 +0800 (CST)
+> 
+> > Hi,
+> > 
+> > We have seen crash02 test can not finish due to the child process got
+> > SIGSTOP or SIGSEGV when calling random syscalls like this,
+> > 
+> > # ps aux
+> > ...
+> > 168      20121  0.0  0.0   3956   336 ?        Ds   15:10   0:00 ./crash02 -e -v 100
+> > 168      20122  0.0  0.0   3956   336 ?        T    15:10   0:00 ./crash02 -e -v 100
+> > 
+> > 
+> > crash02       X ffff81007fb127a0     0 21272  21271         21273       (L-TLB)
+> >  ffff81004c185d58 0000000000000046 ffff81007b494e08 0000000000000002
+> >  0000000000000002 0000000000000002 ffff81007c5dc860 ffff81007fb127a0
+> >  00000d8ebb800862 000000000000c315 ffff81007c5dca48 0000000300000001
+> > Call Trace:
+> >  [<ffffffff800235a7>] filp_close+0x5c/0x64
+> >  [<ffffffff8001595a>] do_exit+0x913/0x91f
+> >  [<ffffffff80048c18>] cpuset_exit+0x0/0x6c
+> >  [<ffffffff8002ad05>] get_signal_to_deliver+0x42c/0x45a
+> >  [<ffffffff8005a837>] do_notify_resume+0x9c/0x7af
+> >  [<ffffffff80096e2b>] specific_send_sig_info+0x44/0xac
+> >  [<ffffffff8009710e>] force_sig_info+0xae/0xb9
+> >  [<ffffffff80066eed>] do_page_fault+0x81e/0x830
+> >  [<ffffffff8005d6dc>] retint_signal+0x3d/0x79
+> > 
+> > crash02       X ffff810002376400     0 21273  21271               21272 (L-TLB)
+> >  ffff81004d201f18 0000000000000046 ffff81007b494e08 0000000000000046
+> >  0000000000000046 0000000000000002 ffff810078d3a040 ffffffff802eeae0
+> >  00000d8ebb803430 000000000001a60c ffff810078d3a228 0000000000000000
+> > Call Trace:
+> >  [<ffffffff8001595a>] do_exit+0x913/0x91f
+> >  [<ffffffff80048c18>] cpuset_exit+0x0/0x6c
+> >  [<ffffffff8005d28d>] tracesys+0xd5/0xe0
+> > 
+> > So we use WUNTRACED option. Also, we found out that it picks up vfork(),
+> > it will generate SIGSEGV. I am not sure what else can generate the same,
+> > so only blacklist vfork() at the moment.
+> > 
+> > Signed-off-by: CAI Qian <caiqian@cclom.cn>
+> > 
+> > --- testcases/misc/crash/crash02.c.orig	2009-05-19 19:47:24.000000000 +0800
+> > +++ testcases/misc/crash/crash02.c	2009-05-19 20:03:51.000000000 +0800
+> > @@ -51,6 +51,8 @@
+> >  */
+> >  
+> >  
+> > +#define _GNU_SOURCE
+> > +#include <sys/syscall.h>
+> >  #include <stdio.h>
+> >  #include <stdlib.h>
+> >  #include <string.h>
+> > @@ -241,7 +243,7 @@
+> >        my_signal (SIGALRM, monitor_fcn);
+> >        alarm (ntries*MAX_TRY_TIME);
+> >  
+> > -	  pid = wait (&status);
+> > +	  pid = waitpid (-1, &status, WUNTRACED);
+> >  	  if (pid <= 0)
+> >  	  {
+> >  		  perror ("wait");
+> > @@ -453,7 +455,10 @@
+> >  {
+> >    long int sysno, arg1, arg2, arg3, arg4, arg5, arg6, arg7;
+> >  
+> > -  sysno = rand()%sysno_max;
+> > +  do {
+> > +    sysno = rand()%sysno_max;
+> > +  } while (sysno == SYS_vfork);
+> > +
+> >    arg1 = rand_long();
+> >    arg2 = rand_long();
+> >    arg3 = rand_long();
+> > 
+> > ------------------------------------------------------------------------------
+> > Crystal Reports - New Free Runtime and 30 Day Trial
+> > Check out the new simplified licensing option that enables 
+> > unlimited royalty-free distribution of the report engine 
+> > for externally facing server and web deployment. 
+> > http://p.sf.net/sfu/businessobjects
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+> ------------------------------------------------------------------------------
+> Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+> is a gathering of tech-side developers & brand creativity professionals. Meet
+> the minds behind Google Creative Lab, Visual Complexity, Processing, & 
+> iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
+> Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables 
-unlimited royalty-free distribution of the report engine 
-for externally facing server and web deployment. 
-http://p.sf.net/sfu/businessobjects
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+is a gathering of tech-side developers & brand creativity professionals. Meet
+the minds behind Google Creative Lab, Visual Complexity, Processing, & 
+iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
+Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
