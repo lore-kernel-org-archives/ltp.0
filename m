@@ -1,32 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <maknayak@in.ibm.com>) id 1M68f5-0006RJ-7i
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 19:38:11 +0000
-Received: from e33.co.us.ibm.com ([32.97.110.151])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M68f1-00046C-AF
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 19:38:11 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e33.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4IJ9LhY026826
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 13:09:21 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4IJBAWi102658
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 13:11:11 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4IJBA58017607
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 13:11:10 -0600
-From: Manas Kumar Nayak <maknayak@in.ibm.com>
-Date: Tue, 19 May 2009 00:41:05 +0530
-Message-Id: <20090518191105.9777.51123.sendpatchset@subratamodak.linux.ibm.com>
-In-Reply-To: <20090518190905.9777.91288.sendpatchset@subratamodak.linux.ibm.com>
-References: <20090518190905.9777.91288.sendpatchset@subratamodak.linux.ibm.com>
-Subject: [LTP] [PATCH 12/21] Add set_thread_area01 test for set_thread_area
-	syscall
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <caiqian@cclom.cn>) id 1M7SWT-0006sZ-4H
+	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 11:02:45 +0000
+Received: from smtp104.biz.mail.mud.yahoo.com ([68.142.200.252])
+	by 3b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1M7SWO-00040M-LN
+	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 11:02:45 +0000
+Date: Fri, 22 May 2009 19:03:14 +0800 (CST)
+Message-Id: <20090522.190314.02285431.caiqian@cclom.cn>
+From: CAI Qian <caiqian@cclom.cn>
+Mime-Version: 1.0
+Subject: [LTP] [PATCH] Crash02: Deal with SIGSTOP and SIGSEGV v2
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,256 +22,100 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-Cc: Deepakraj B Himavantharaj <deepakraj@in.ibm.com>, Manas Kumar Nayak <maknayak@in.ibm.com>
+To: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Manas Kumar Nayak <maknayak@in.ibm.com>,
-To: LTP List <ltp-list@lists.sourceforge.net>,
-Cc: Deepakraj B Himavantharaj <deepakraj@in.ibm.com>,
-Cc: Subrata Modak <subrata@linux.vnet.ibm.com>,
-Cc: Masatake YAMATO <yamato@redhat.com>,
----
+Hi,
 
---- ltp-intermediate-20090518-manas-work-original/testcases/kernel/syscalls/set_thread_area/Makefile	1970-01-01 05:30:00.000000000 +0530
-+++ ltp-intermediate-20090518-manas-work/testcases/kernel/syscalls/set_thread_area/Makefile	2009-05-18 21:42:42.000000000 +0530
-@@ -0,0 +1,31 @@
-+#
-+#  Copyright (c) International Business Machines  Corp., 2009
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+
-+CFLAGS += -I../../../../include -Wall
-+LDLIBS += -L../../../../lib -lltp
-+
-+SRCS    = $(wildcard *.c)
-+TARGETS = $(patsubst %.c,%,$(SRCS))
-+
-+all: $(TARGETS)
-+
-+install:
-+	@set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i ; done
-+
-+clean:
-+	rm -f $(TARGETS)
---- ltp-intermediate-20090518-manas-work-original/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c	1970-01-01 05:30:00.000000000 +0530
-+++ ltp-intermediate-20090518-manas-work/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c	2009-05-18 21:44:11.000000000 +0530
-@@ -0,0 +1,177 @@
-+/******************************************************************************/
-+/* Copyright (c) Crackerjack Project., 2007                                   */
-+/*                                                                            */
-+/* This program is free software;  you can redistribute it and/or modify      */
-+/* it under the terms of the GNU General Public License as published by       */
-+/* the Free Software Foundation; either version 2 of the License, or          */
-+/* (at your option) any later version.                                        */
-+/*                                                                            */
-+/* This program is distributed in the hope that it will be useful,            */
-+/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
-+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
-+/* the GNU General Public License for more details.                           */
-+/*                                                                            */
-+/* You should have received a copy of the GNU General Public License          */
-+/* along with this program;  if not, write to the Free Software               */
-+/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
-+/*                                                                            */
-+/******************************************************************************/
-+/******************************************************************************/
-+/*                                                                            */
-+/* File:        set_thread_area01.c                                           */
-+/*                                                                            */
-+/* Description: This test two syscalls 					      */
-+/*		1) get__thread_area():					      */
-+/*		  get_thread_area returns an entry in the current thread's    */
-+/*		  Thread Local Storage (TLS) array.get_thread_area returns 0  */
-+/*	          on success. Otherwise, it returns -1			      */
-+/*		2)set_thread_area():    				      */
-+/*		 set_thread_area() sets an entry in the current thread's      */
-+/*	         Thread Local.When  set_thread_area() is passed an            */
-+/*		 entry_number of -1, it uses a free TLS entry.                */
-+/*		 set_thread_area() returns 0 on success, and -1 on failure    */	
-+/*									      */	
-+/*              							      */
-+/*                                                                            */
-+/* Usage:  <for command-line>                                                 */
-+/* set_tid_address01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                     */
-+/*      where,  -c n : Run n copies concurrently.                             */
-+/*              -e   : Turn on errno logging.                                 */
-+/*              -i n : Execute test n times.                                  */
-+/*              -I x : Execute test for x seconds.                            */
-+/*              -P x : Pause for x seconds between iterations.                */
-+/*              -t   : Turn on syscall timing.                                */
-+/*                                                                            */
-+/* Total Tests: 2                                                             */
-+/*                                                                            */
-+/* Test Name:   set_thread_area01                                             */
-+/* History:     Porting from Crackerjack to LTP is done by                    */
-+/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
-+/******************************************************************************/
-+
-+#include <stdio.h>
-+#include <errno.h>
-+#include <linux/unistd.h>
-+#include <asm/ldt.h>
-+
-+/* Harness Specific Include Files. */
-+#include "test.h"
-+#include "usctest.h"
-+#include "linux_syscall_numbers.h"
-+
-+/* Extern Global Variables */
-+extern int Tst_count;           /* counter for tst_xxx routines.         */
-+extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
-+
-+/* Global Variables */
-+char *TCID = "set_thread_area01";  /* Test program identifier.*/
-+int  testno;
-+int  TST_TOTAL = 2;                   /* total number of tests in this file.   */
-+
-+/* Extern Global Functions */
-+/******************************************************************************/
-+/*                                                                            */
-+/* Function:    cleanup                                                       */
-+/*                                                                            */
-+/* Description: Performs all one time clean up for this test on successful    */
-+/*              completion,  premature exit or  failure. Closes all temporary */
-+/*              files, removes all temporary directories exits the test with  */
-+/*              appropriate return code by calling tst_exit() function.       */
-+/*                                                                            */
-+/* Input:       None.                                                         */
-+/*                                                                            */
-+/* Output:      None.                                                         */
-+/*                                                                            */
-+/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
-+/*              On success - Exits calling tst_exit(). With '0' return code.  */
-+/*                                                                            */
-+/******************************************************************************/
-+extern void cleanup() {
-+        /* Remove tmp dir and all files in it */
-+        TEST_CLEANUP;
-+        tst_rmdir();
-+
-+        /* Exit with appropriate return code. */
-+        tst_exit();
-+}
-+
-+/* Local  Functions */
-+/******************************************************************************/
-+/*                                                                            */
-+/* Function:    setup                                                         */
-+/*                                                                            */
-+/* Description: Performs all one time setup for this test. This function is   */
-+/*              typically used to capture signals, create temporary dirs      */
-+/*              and temporary files that may be used in the course of this    */
-+/*              test.                                                         */
-+/*                                                                            */
-+/* Input:       None.                                                         */
-+/*                                                                            */
-+/* Output:      None.                                                         */
-+/*                                                                            */
-+/* Return:      On failure - Exits by calling cleanup().                      */
-+/*              On success - returns 0.                                       */
-+/*                                                                            */
-+/******************************************************************************/
-+void setup() {
-+        /* Capture signals if any */
-+        /* Create temporary directories */
-+        TEST_PAUSE;
-+        tst_tmpdir();
-+}
-+
-+int main(int ac, char **av) {
-+        
-+	struct user_desc u_info;
-+        int result;
-+        int lc;                 /* loop counter */
-+        char *msg;              /* message returned from parse_opts */
-+	
-+        /* parse standard options */
-+        if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
-+             tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
-+             tst_exit();
-+           }
-+
-+        setup();
-+
-+        /* Check looping state if -i option given */
-+        for (lc = 0; TEST_LOOPING(lc); ++lc) {
-+                Tst_count = 0;
-+                for (testno = 0; testno < TST_TOTAL; ++testno) {
-+	             u_info.entry_number = 6;
-+	
-+	/*
-+         * This call to get_thread_area function should be sucessful.
-+         */
-+
-+                     TEST(result = syscall(244, &u_info));     //call get_thread_area()
-+                     if(TEST_RETURN == 0) {
-+        		tst_resm(TPASS, "get_thread_area call succeeded");
-+                     }
-+                     else {
-+                 	   tst_resm(TFAIL, "%s failed - errno = %d : %s", TCID, TEST_ERRNO, strerror(TEST_ERRNO));
-+                           cleanup();
-+	  	           tst_exit();
-+                     }
-+		     
-+		     u_info.entry_number = -1;
-+        /*
-+         * This call to set_thread_area function should be sucessful.
-+         */
-+
-+                     TEST(result = syscall(243, &u_info));     //call set_thread_area()
-+                     if(TEST_RETURN == 0) {
-+        		tst_resm(TPASS, "set_thread_area call succeeded");
-+                     }
-+                     else {
-+                 	   tst_resm(TFAIL, "%s failed----- errno = %d : %s", TCID, TEST_ERRNO, strerror(TEST_ERRNO));
-+                           cleanup();
-+	  	           tst_exit();
-+                     }
-+                }
-+        }	
-+	cleanup();
-+        tst_exit();
-+}
-+
---- ltp-intermediate-20090518-manas-work-original/runtest/syscalls	2009-05-18 21:53:22.000000000 +0530
-+++ ltp-intermediate-20090518-manas-work/runtest/syscalls	2009-05-18 21:50:52.000000000 +0530
-@@ -970,6 +970,7 @@ setrlimit02 setrlimit02
- setrlimit03 setrlimit03
+Version 2 fixed compilation failures on IA-64, because there is no
+SYS_vfork there. Instead, it uses clone() syscall for fork(),
+
+clone(child_stack=0, flags=CLONE_VM|CLONE_VFORK|SIGCHLD)
+
+We have seen crash02 test can not finish due to the child process got
+SIGSTOP or SIGSEGV when calling random syscalls like this,
+
+# ps aux
+...
+168      20121  0.0  0.0   3956   336 ?        Ds   15:10   0:00 ./crash02 -e -v 100
+168      20122  0.0  0.0   3956   336 ?        T    15:10   0:00 ./crash02 -e -v 100
+
+
+crash02       X ffff81007fb127a0     0 21272  21271         21273       (L-TLB)
+ ffff81004c185d58 0000000000000046 ffff81007b494e08 0000000000000002
+ 0000000000000002 0000000000000002 ffff81007c5dc860 ffff81007fb127a0
+ 00000d8ebb800862 000000000000c315 ffff81007c5dca48 0000000300000001
+Call Trace:
+ [<ffffffff800235a7>] filp_close+0x5c/0x64
+ [<ffffffff8001595a>] do_exit+0x913/0x91f
+ [<ffffffff80048c18>] cpuset_exit+0x0/0x6c
+ [<ffffffff8002ad05>] get_signal_to_deliver+0x42c/0x45a
+ [<ffffffff8005a837>] do_notify_resume+0x9c/0x7af
+ [<ffffffff80096e2b>] specific_send_sig_info+0x44/0xac
+ [<ffffffff8009710e>] force_sig_info+0xae/0xb9
+ [<ffffffff80066eed>] do_page_fault+0x81e/0x830
+ [<ffffffff8005d6dc>] retint_signal+0x3d/0x79
+
+crash02       X ffff810002376400     0 21273  21271               21272 (L-TLB)
+ ffff81004d201f18 0000000000000046 ffff81007b494e08 0000000000000046
+ 0000000000000046 0000000000000002 ffff810078d3a040 ffffffff802eeae0
+ 00000d8ebb803430 000000000001a60c ffff810078d3a228 0000000000000000
+Call Trace:
+ [<ffffffff8001595a>] do_exit+0x913/0x91f
+ [<ffffffff80048c18>] cpuset_exit+0x0/0x6c
+ [<ffffffff8005d28d>] tracesys+0xd5/0xe0
+
+So we use WUNTRACED option. Also, we found out that if it picks up
+vfork(), it will generate SIGSEGV. I am not sure what else can generate
+the same, so only blacklist vfork() at the moment.
+
+Signed-off-by: CAI Qian <caiqian@cclom.cn>
+
+--- ltp-full-20090228/testcases/misc/crash/crash02.c.orig	2009-05-19 19:47:24.000000000 +0800
++++ ltp-full-20090228/testcases/misc/crash/crash02.c	2009-05-22 15:57:56.000000000 +0800
+@@ -51,6 +51,8 @@
+ */
  
- set_robust_list01 set_robust_list01
-+set_thread_area01 set_thread_area01
  
- setsid01 setsid01
++#define _GNU_SOURCE
++#include <sys/syscall.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+@@ -241,7 +243,7 @@
+       my_signal (SIGALRM, monitor_fcn);
+       alarm (ntries*MAX_TRY_TIME);
  
-
----
-Regards--
-Manas
-
+-	  pid = wait (&status);
++	  pid = waitpid (-1, &status, WUNTRACED);
+ 	  if (pid <= 0)
+ 	  {
+ 		  perror ("wait");
+@@ -453,7 +455,14 @@
+ {
+   long int sysno, arg1, arg2, arg3, arg4, arg5, arg6, arg7;
+ 
+-  sysno = rand()%sysno_max;
++  do {
++    sysno = rand()%sysno_max;
++#ifdef __ia64__
++  } while (sysno == SYS_clone);
++#else
++  } while (sysno == SYS_vfork);
++#endif /* __ia64__ */
++
+   arg1 = rand_long();
+   arg2 = rand_long();
+   arg3 = rand_long();
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables 
-unlimited royalty-free distribution of the report engine 
-for externally facing server and web deployment. 
-http://p.sf.net/sfu/businessobjects
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+is a gathering of tech-side developers & brand creativity professionals. Meet
+the minds behind Google Creative Lab, Visual Complexity, Processing, & 
+iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
+Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
