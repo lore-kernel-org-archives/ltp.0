@@ -1,35 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M61XC-0007ak-Mr
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 12:01:34 +0000
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <srinivass@in.ibm.com>) id 1M7Vk9-0005n9-Qf
+	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 14:29:05 +0000
+Received: from e28smtp08.in.ibm.com ([59.145.155.8])
 	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M61X8-0003hK-IF
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 12:01:34 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e6.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4IC3nqA030032
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 08:03:49 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4IC1Tg7072572
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 08:01:29 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4IC1SDq019330
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 08:01:29 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200905160936.31857.vapier@gentoo.org>
-References: <1238499818.6818.25.camel@subratamodak.linux.ibm.com>
-	<c384c5ea0905151027x5a74ee85l294616e0ddae41ce@mail.gmail.com>
-	<200905160936.31857.vapier@gentoo.org>
-Date: Mon, 18 May 2009 17:31:06 +0530
-Message-Id: <1242648066.5161.18.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been Released
-	for	MARCH 2009
-Reply-To: subrata@linux.vnet.ibm.com
+	(Exim 4.69) id 1M7Vk8-0007b5-1U
+	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 14:29:05 +0000
+From: Srinivasan Subramanian3 <srinivass@in.ibm.com>
+Date: Fri, 22 May 2009 09:02:47 -0400
+Message-ID: <OF8E537471.9A2FB872-ON652575BE.004CF0F4@in.ibm.com>
+MIME-Version: 1.0
+Subject: [LTP] LTP Build fail on System z 64 bit machine
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,53 +22,125 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8472550167124707547=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Leon Woestenberg <leon.woestenberg@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
+To: ltp-list@lists.sf.net
 
-On Sat, 2009-05-16 at 09:36 -0400, Mike Frysinger wrote: 
-> On Friday 15 May 2009 13:27:50 Leon Woestenberg wrote:
-> > 2009/3/31 Subrata Modak <subrata@linux.vnet.ibm.com>:
-> > > Dear All,
-> > >
-> > > The Linux Test Project test suite has been released for the month of
-> > > MARCH 2009. Please see ltp/INSTALL file carefully, as, there has been
-> >
-> > OpenEmbedded builds LTP for a large number of machines / architectures.
-> >
-> > JFYI, The LTP January release required some patches, especially in the
-> > area of cross-compilation:
-> 
-> then someone should be submitting them so we can give feedback and they'll 
-> update/re-submit
+--===============8472550167124707547==
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-True,
+<STYLE type=3D"text/css">.container {PADDING-LEFT: 8px; font-family: Taho=
+ma, Helvetica, Arial, sans-serif; font-size: 10px; background-color: #F5F=
+5F5;} .container .name {font-weight: bold;} .container .email {color: #33=
+99FF;} .container .date, .container .to, .container .toValue, .container =
+.subject, .container .subjectValue {display:none; position: absolute; lef=
+t: -10000px;} .container .body {PADDING-LEFT: 10px; BORDER-LEFT: dotted 1=
+px black; font-size: 13px;}</STYLE><p>Hi all,</p><p>When i tried to build=
+ ltp on a RHEL4.8 machine, the build failed with undefined reference on s=
+plice02.</p><p><b>Machine info</b></p><p>RHEL4.8 GA (64 bit)</p><p>Kernel=
+ version-=C2=A02.6.9-89.EL</p><p><b>Error Info</b></p><style type=3D"text=
+/css">
+body { margin: 0 0 0 0; padding:0 0 0 0 }
+td,div { font-family:Tahoma;font-size:8pt;vertical-align:top }
+body { margin: 0 0 0 0; padding:0 0 0 0 }
+transcript { background-color:#d2d2d2; }
+messageBlock { margin-left:4px; margin-bottom:3px }
+message { margin-left:100px; word-wrap:break-word; white-space:-moz-pre-w=
+rap; _white-space:pre; }
+messageCont { margin-left:100px; word-wrap:break-word; white-space:-moz-p=
+re-wrap; _white-space:pre;}
+other { color:#39577a;vertical-align:top;font-weight:bold;font-style:norm=
+al;float:left; width:95px; }
+myself { color:#da8103;font-style:normal;font-weight:bold;font-style:norm=
+al;float:left; width:95px; }
+otherCont { font-size:8px;text-align:right; color:#39577a;font-family:Ari=
+al,Lucida Grande;font-style:normal;vertical-align:top;font-weight:bold;fl=
+oat:left; width:95px; }
+myselfCont { font-size:8px;text-align:right; color:#da8103;font-family:Ar=
+ial,Lucida Grande;font-style:normal;vertical-align:top;font-weight:bold;f=
+loat:left; width:95px; }
+system { margin-left:4px; word-wrap:break-word;color:#da8103;font-style:n=
+ormal;font-weight:normal; white-space:-moz-pre-wrap; _white-space:pre; }
+showTimestamp { margin-right:3px; float:right; color:#999999;font-style:n=
+ormal;font-weight:normal; }
+other1 { color:#ac2000;vertical-align:top;font-weight:bold;font-style:nor=
+mal;float:left; width:95px; }
+otherCont1 { font-size:8px;text-align:right; color:#ac2000;font-family:Ar=
+ial,Lucida Grande;font-style:normal;vertical-align:top;font-weight:bold;f=
+loat:left; width:95px; }
+other2 { color:#3c9fa8;vertical-align:top;font-weight:bold;font-style:nor=
+mal;float:left; width:95px; }
+otherCont2 { font-size:8px;text-align:right; color:#3c9fa8;font-family:Ar=
+ial,Lucida Grande;font-style:normal;vertical-align:top;font-weight:bold;f=
+loat:left; width:95px; }
+other3 { color:#e25614;vertical-align:top;font-weight:bold;font-style:nor=
+mal;float:left; width:95px; }
+otherCont3 { font-size:8px;text-align:right; color:#e25614;font-family:Ar=
+ial,Lucida Grande;font-style:normal;vertical-align:top;font-weight:bold;f=
+loat:left; width:95px; }
+other4 { color:#0b6ac8;vertical-align:top;font-weight:bold;font-style:nor=
+mal;float:left; width:95px; }
+otherCont4 { font-size:8px;text-align:right; color:#0b6ac8;font-family:Ar=
+ial,Lucida Grande;font-style:normal;vertical-align:top;font-weight:bold;f=
+loat:left; width:95px; }
+other5 { color:#b23290;vertical-align:top;font-weight:bold;font-style:nor=
+mal;float:left; width:95px; }
+otherCont5 { font-size:8px;text-align:right; color:#b23290;font-family:Ar=
+ial,Lucida Grande;font-style:normal;vertical-align:top;font-weight:bold;f=
+loat:left; width:95px; }
+other6 { color:#02e7c7;vertical-align:top;font-weight:bold;font-style:nor=
+mal;float:left; width:95px; }
+otherCont6 { font-size:8px;text-align:right; color:#02e7c7;font-family:Ar=
+ial,Lucida Grande;font-style:normal;vertical-align:top;font-weight:bold;f=
+loat:left; width:95px; }
+other7 { color:#5b3284;vertical-align:top;font-weight:bold;font-style:nor=
+mal;float:left; width:95px; }
+otherCont7 { font-size:8px;text-align:right; color:#5b3284;font-family:Ar=
+ial,Lucida Grande;font-style:normal;vertical-align:top;font-weight:bold;f=
+loat:left; width:95px; }
+tsDisplay { display:block }</style>
+/root/ltp-intermediate-20090521/testcases/kernel/syscalls/splice/splice02=
+.c:126: undefined reference to `splice'<br />collect2: ld returned 1 exit=
+ status<br />make[4]: *** [splice02] Error 1<br />make[4]: Leaving direct=
+ory `/root/ltp-intermediate-20090521/testcases/kernel/syscalls/splice'<br=
+ />make[3]: *** [all] Error 2<br />make[3]: Leaving directory `/root/ltp-=
+intermediate-20090521/testcases/kernel/syscalls'<br />make[2]: *** [all] =
+Error 2<br />make[2]: Leaving directory `/root/ltp-intermediate-20090521/=
+testcases/kernel'<br />make[1]: *** [all] Error 2<br />make[1]: Leaving d=
+irectory `/root/ltp-intermediate-20090521/testcases'<br />make: *** [all]=
+ Error 2<table width=3D"500px"><tbody /></table>
+<p>Kindly help me on this issue.</p><p>Thanks &amp;=C2=A0</p><p>---------=
+------------------------
+<br />Best Regards,
+<br />Srinivasan S,=20
+<br />Linux on System z, LTC
+<br />srinivass@in.ibm.com
+<br />srinivass@linux.vnet.ibm.com
+<br />----------------------------------<br /></p><p />
 
-Please submit them to the LTP mailing list.
 
-Regards--
-Subrata
-
-> 
-> > http://cgit.openembedded.org/cgit.cgi?url=openembedded/tree/recipes/ltp/ltp
-> >-20090131
-> 
-> the first patch (the cross compile one) is wrong -- CPP is not the C++ 
-> compiler, it's the C preprocessor.  those all need to be CXX.
-> 
-> the epoll one should be a configure test.
-> -mike
-
+--===============8472550167124707547==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables 
-unlimited royalty-free distribution of the report engine 
-for externally facing server and web deployment. 
-http://p.sf.net/sfu/businessobjects
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+is a gathering of tech-side developers & brand creativity professionals. Meet
+the minds behind Google Creative Lab, Visual Complexity, Processing, & 
+iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
+Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
+--===============8472550167124707547==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============8472550167124707547==--
