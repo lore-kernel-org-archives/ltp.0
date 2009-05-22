@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MAWsQ-0004za-MX
-	for ltp-list@lists.sourceforge.net; Sat, 30 May 2009 22:18:06 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MAWsP-0001pn-C9
-	for ltp-list@lists.sourceforge.net; Sat, 30 May 2009 22:18:06 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sat, 30 May 2009 18:16:30 -0400
-References: <4A1E5847.6030807@petalogix.com>
-	<200905290912.31947.vapier@gentoo.org>
-	<4A2142A0.2040301@petalogix.com>
-In-Reply-To: <4A2142A0.2040301@petalogix.com>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yjwei@cn.fujitsu.com>) id 1M7Nmz-0006Ex-Kr
+	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 05:59:29 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1M7Nmn-0003yS-2b
+	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 05:59:19 +0000
+Message-ID: <4A163E59.7030002@cn.fujitsu.com>
+Date: Fri, 22 May 2009 13:55:37 +0800
+From: Wei Yongjun <yjwei@cn.fujitsu.com>
 MIME-Version: 1.0
-Message-Id: <200905301816.32273.vapier@gentoo.org>
-Subject: Re: [LTP] Installing outside LTP source
+References: <4A0D13F2.8030804@cn.fujitsu.com>	<20090515134519.GA21654@us.ibm.com>	<1242647979.5161.12.camel@subratamodak.linux.ibm.com>
+	<20090518150725.GA9790@us.ibm.com>
+In-Reply-To: <20090518150725.GA9790@us.ibm.com>
+Subject: Re: [LTP] [PATCH] Synchronization between two processes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,117 +25,142 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5673330161888521677=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: michal.simek@petalogix.com
-Cc: LTP <ltp-list@lists.sourceforge.net>, Jiri Palecek <jpalecek@web.de>
-
---===============5673330161888521677==
-Content-Type: multipart/signed; boundary="nextPart7455389.LYMKg66FrW";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart7455389.LYMKg66FrW
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-On Saturday 30 May 2009 10:28:48 Michal Simek wrote:
-> Mike Frysinger wrote:
-> > On Thursday 28 May 2009 05:24:23 Michal Simek wrote:
-> >> I would to ask you if someone works or worked on moving LTP to Kbuild.
-> >
-> > the Subject line doesnt really seem to line up with this question.  what
-> > exactly do you want to do and why do you think Kbuild is the solution ?
-> > saying "let's switch to Kbuild!" without any rhyme or reason sounds like
-> > a lot of work for no gain.
->
-> I wanted to wrote two emails instead of one - that's why was there 2
-> different things.
-> 1. disable compilation "verbose" mode and turn on it with V=3D1.
-
-meh.  `make -s` seems to work fine enough for me.  most people arent review=
-ing=20
-the output for warnings and similar issues, so i dont really see much point=
- of=20
-having quiet output in LTP.
-
-> 2. Move all binaries outside of LTP source code O=3D/path
-
-you mean out-of-tree compilation.  you can use lndir to get the same=20
-functionality, but it isnt really an optimal method.
-
-> 3. I use only some parts of LTP for my testing and it will be good to
-> enable/disable just tests which you want to use.
-
-you can run `make` in only the dirs you care about.  how deep do you actual=
-ly=20
-want to get ?  having Kconfig entries for every single test (i.e.=20
-kernel/syscalls/{getsid,pipe}0{1,2} .....) is crazy.
-
-> 4. If is possible clean all Makefiles
-
-dont really know what that means
-
-> I don't have much experience with Kbuild I had just quick look.  I looked=
- at
-> uClinux distribution
-
-the uClinux distro is really an example you should look at.  the kconfig co=
-mes=20
-from the kernel, but all of the Makefiles are custom done.  the features it=
-=20
-has arent terribly relevant.
-=2Dmike
-
---nextPart7455389.LYMKg66FrW
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJKIbBAAAoJEEFjO5/oN/WBacUP/jniRJwDmUy9GfkROBDaC/XJ
-ro+sq3QIR8N6r9yN4SIpY1FY/miaR5vIaXDmOhCt2Qx77kQ5PlUkdXG70Rs0MImw
-vQr9Br6yX3YPiMO4vP/sXyCA4z1imDHZmqBfEJ6m2fURdZ/1/kjqY/3jCQ1hd6KI
-r6Ng6d2ZOJ7wTQ41jqqu92hJACpUCmFFA4VBbwkWVnXU9E3Sny+tlTlj8WvTXlUi
-KH6+XcwTV4ks9IRY7W+bRtZoNqh2wOzIQyLlH5w9heUcBcLsYz1MlOj6GFrxtK9E
-/ZC9e/QuN47ZuNR1uLfnqB+PFmm5NpLzd26S3wwnLbpZ0HpUtE2jnZ5Gjxv9YHK3
-r6pK1kDlh18rsnzCz1lTxQzz9u6saxpRdthLe8S4Oa5aoKw3joVyMnUyRXgvGGZw
-m8ciYx6DtwxtTTn9U11/XE7WnY4MWdA70ZdrliPZ4YliWA0sg/ctTQHd5EdaPobQ
-XGsTUf9DDAeqCNp0h4/TsyPuQOMRAUpDetv5ha0CRM75HDMA/WUIJncP/XZFHPO6
-pdiyCjDQVxu6ORCiDDPSk0bj8o4hWbODDPTqNbXfAdXARlih+wfdJ9Eq26n77pLP
-VI8cfg+uX2C2o1AyEGm9QZ/JJTqWa6TMM6tgnS5HXOa06VR0fAgaeRMXFt45Nl8z
-6jT+9vxmVzwlcq5TuyJo
-=vb4T
------END PGP SIGNATURE-----
-
---nextPart7455389.LYMKg66FrW--
-
-
---===============5673330161888521677==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: "Serge E. Hallyn" <serue@us.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Serge E. Hallyn wrote:
+> Quoting Subrata Modak (subrata@linux.vnet.ibm.com):
+>   
+>> On Fri, 2009-05-15 at 08:45 -0500, Serge E. Hallyn wrote: 
+>>     
+>>> Quoting Gui Xiaohua (guixh@cn.fujitsu.com):
+>>>       
+>>>> The child-process wait SIGUSR1 which would be sended by parent-process,
+>>>> if the child-process execute sigtimedwait() after parent-process send 
+>>>> the signal, it would never receive the SIGUSR1 from parent-process.
+>>>> I cann't make sure the SIGUSR1 be sended after child-process execute 
+>>>> sigtimedwait() with 100 percent, and i try my best.
+>>>>         
+>>> Well, in theory I suppose this could happen, but you'd have to have
+>>> a pretty bad scheduler if the parent can do a strcmp(buf, "c:go")
+>>> between the pipe read and signal send, while the child goes straight
+>>> from pipe write to sigtimedwait.
+>>>
+>>> Have you seen this signal be missed?  If not, then I'd rather assume
+>>> things are reasonable.  If you have seen this happen, then why not
+>>> instead set up a SIGUSR1 handler in the child before doing the pipe
+>>> write, then just sleep for 3 seconds instead of doing sigtimedwait?
+>>>       
+>> Thanks Serge.
+>>     
+>
+> Or, if I'm being unreasonable, then at least have the parent only wait
+> for at most 1 second, and leave the child alone.  Every every ltp test
+> is going to hang for 5 seconds...
+>
+> But I prefer setting the signal handler ahead of time.
+>
+>   
+Sorry to relpy late.
+
+As your last advice, i change the test case, and it work will.
+
+[PATCH] fix sync problem between two processes of pidns12 test
+
+The child-process wait SIGUSR1 which would be sended by parent-process,
+if the child-process execute sigtimedwait() after parent-process send
+the signal, it would never receive the SIGUSR1 from parent-process.
+
+This patch rewrite child_signal_handler() to handle to SIGUSR1 and
+instead sigtimedwait() with sleep for 3 seconds.
+ 
+Signed-off-by: Gui Xiaohua <guixh@cn.fujitsu.com>
+---
+ testcases/kernel/containers/pidns/pidns12.c |   35 ++++++--------------------
+ 1 files changed, 8 insertions(+), 27 deletions(-)
+
+diff --git a/testcases/kernel/containers/pidns/pidns12.c b/testcases/kernel/containers/pidns/pidns12.c
+index f893021..9120e82 100644
+--- a/testcases/kernel/containers/pidns/pidns12.c
++++ b/testcases/kernel/containers/pidns/pidns12.c
+@@ -72,8 +72,13 @@ void cleanup()
+  */
+ static void child_signal_handler(int sig, siginfo_t *si, void *unused)
+ {
+-	/* sigtimedwait() traps siginfo details, so this wont be called */
+-	tst_resm(TWARN, "cinit: control should have not reached here!");
++	/* Recieved SIGUSR1. Check sender pid */
++	if (si->si_pid == 0)
++		tst_resm(TPASS, "cinit: signalling PID (from other namespace)"\
++				" is 0 as expected");
++	else
++		tst_resm(TFAIL, "cinit: signalling PID (from other namespace)"\
++				" is not 0, but %d.", si->si_pid);
+ }
+ 
+ /*
+@@ -82,9 +87,6 @@ static void child_signal_handler(int sig, siginfo_t *si, void *unused)
+ int child_fn(void *arg)
+ {
+ 	struct sigaction sa;
+-	sigset_t newset;
+-	siginfo_t info;
+-	struct timespec timeout;
+ 	pid_t pid, ppid;
+ 
+ 	/* Set process id and parent pid */
+@@ -108,34 +110,13 @@ int child_fn(void *arg)
+ 		cleanup();
+ 	}
+ 
+-	/* Set timeout for sigtimedwait */
+-	timeout.tv_sec = 3;
+-	timeout.tv_nsec = 0;
+-
+-	/* Set mask to wait for SIGUSR1 signal */
+-	sigemptyset(&newset);
+-	sigaddset(&newset, SIGUSR1);
+-
+ 	/* Let parent to signal SIGUSR1 */
+ 	if (write(pipefd[1], "c:go\0", 5) != 5) {
+ 		tst_resm(TBROK, "cinit: pipe is broken to write");
+ 		cleanup();
+ 	}
+ 
+-	/* Wait for SIGUSR1 */
+-	if (sigtimedwait(&newset, &info, &timeout) != SIGUSR1) {
+-		tst_resm(TBROK, "cinit: sigtimedwait() failed(%s).",
+-				strerror(errno));
+-		cleanup();
+-	}
+-
+-	/* Recieved SIGUSR1. Check sender pid */
+-	if (info.si_pid == 0)
+-		tst_resm(TPASS, "cinit: signalling PID (from other namespace)"\
+-				" is 0 as expected");
+-	else
+-		tst_resm(TFAIL, "cinit: signalling PID (from other namespace)"\
+-				" is not 0, but %d.", info.si_pid);
++	sleep(3);
+ 
+ 	/* cleanup and exit */
+ 	close(pipefd[1]);
+-- 
+1.6.3
+
+
+
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
 is a gathering of tech-side developers & brand creativity professionals. Meet
 the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
-Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
---===============5673330161888521677==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
+Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5673330161888521677==--
-
