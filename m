@@ -1,29 +1,38 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yjwei@cn.fujitsu.com>) id 1M7R4l-00073y-26
-	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 09:30:03 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1M7R4g-0000nW-8t
-	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 09:30:03 +0000
-Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
-	by song.cn.fujitsu.com (Postfix) with ESMTP id 591D617014D
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 22 May 2009 17:38:07 +0800 (CST)
-Received: from fnst.cn.fujitsu.com (localhost.localdomain [127.0.0.1])
-	by tang.cn.fujitsu.com (8.13.1/8.13.1) with ESMTP id n4M9UbCh018637
-	for <ltp-list@lists.sourceforge.net>; Fri, 22 May 2009 17:30:37 +0800
-Received: from [10.167.141.76] (unknown [10.167.141.76])
-	by fnst.cn.fujitsu.com (Postfix) with ESMTP id DE66FD4038
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 22 May 2009 17:40:09 +0800 (CST)
-Message-ID: <4A166FB6.6010208@cn.fujitsu.com>
-Date: Fri, 22 May 2009 17:26:14 +0800
-From: Wei Yongjun <yjwei@cn.fujitsu.com>
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1M8iTn-0003Yb-4G
+	for ltp-list@lists.sourceforge.net; Mon, 25 May 2009 22:17:11 +0000
+Received: from e33.co.us.ibm.com ([32.97.110.151])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1M8iTl-0003M2-Cx
+	for ltp-list@lists.sourceforge.net; Mon, 25 May 2009 22:17:11 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e33.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4PMFEpQ026223
+	for <ltp-list@lists.sourceforge.net>; Mon, 25 May 2009 16:15:14 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n4PMH7Zv194130
+	for <ltp-list@lists.sourceforge.net>; Mon, 25 May 2009 16:17:07 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4PMH7CH025435
+	for <ltp-list@lists.sourceforge.net>; Mon, 25 May 2009 16:17:07 -0600
+Date: Mon, 25 May 2009 17:17:07 -0500
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20090525221707.GB30283@us.ibm.com>
+References: <4A0D13F2.8030804@cn.fujitsu.com>
+	<20090515134519.GA21654@us.ibm.com>
+	<1242647979.5161.12.camel@subratamodak.linux.ibm.com>
+	<20090518150725.GA9790@us.ibm.com>
+	<4A163E59.7030002@cn.fujitsu.com>
+	<1243267992.6752.18.camel@subratamodak.linux.ibm.com>
 MIME-Version: 1.0
-Subject: [LTP] [QUESTION] about test execve04 which testing for EMFILE
+Content-Disposition: inline
+In-Reply-To: <1243267992.6752.18.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [PATCH] Synchronization between two processes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,19 +45,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, Serge Hallyn <serue@linux.vnet.ibm.com>
 
-recently kernel commit e7b9b550f53e81ea38e71d322d6f95730df058a2
-has removed the file get code. The execve syscall will never
-return EMFILE.
+Quoting Subrata Modak (subrata@linux.vnet.ibm.com):
+> > Signed-off-by: Gui Xiaohua <guixh@cn.fujitsu.com>
+> 
+> Serge,
+> 
+> Your view on this new solution ?
 
-Call to execve() will be suceess even if the the process has the
-maximum number of files open, because execve() never open any file.
+Oops, i forgot to officially note:
 
-Can anyone tell me what does this test case test for? It be wrote
-base on which document? Just the man page?
+Acked-by: Serge Hallyn <serue@us.ibm.com>
 
-
+thanks,
+-serge
 
 ------------------------------------------------------------------------------
 Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
