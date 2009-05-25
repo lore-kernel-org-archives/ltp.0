@@ -1,33 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M61W2-0002Lm-GT
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 12:00:22 +0000
-Received: from e37.co.us.ibm.com ([32.97.110.158])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M61Vy-0000ga-K4
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 12:00:22 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e37.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4IBxfaI012010
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 05:59:41 -0600
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4IC0FJC057012
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 06:00:15 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4IC0EX8005375
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 06:00:15 -0600
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M8cno-0007KF-CE
+	for ltp-list@lists.sourceforge.net; Mon, 25 May 2009 16:13:28 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1M8cni-0006uC-BK
+	for ltp-list@lists.sourceforge.net; Mon, 25 May 2009 16:13:23 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e3.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4PG8oll010435
+	for <ltp-list@lists.sourceforge.net>; Mon, 25 May 2009 12:08:50 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n4PGDLGU143114
+	for <ltp-list@lists.sourceforge.net>; Mon, 25 May 2009 12:13:21 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4PGDKA8015613
+	for <ltp-list@lists.sourceforge.net>; Mon, 25 May 2009 12:13:21 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <op.utzemhltu2flwt@debian>
-References: <4A09F967.8030402@web.de>
-	<20090513.224735.226784134.caiqian@cclom.cn> <op.utzemhltu2flwt@debian>
-Date: Mon, 18 May 2009 17:29:59 +0530
-Message-Id: <1242647999.5161.14.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <4A163E59.7030002@cn.fujitsu.com>
+References: <4A0D13F2.8030804@cn.fujitsu.com>
+	<20090515134519.GA21654@us.ibm.com>
+	<1242647979.5161.12.camel@subratamodak.linux.ibm.com>
+	<20090518150725.GA9790@us.ibm.com>  <4A163E59.7030002@cn.fujitsu.com>
+Date: Mon, 25 May 2009 21:43:11 +0530
+Message-Id: <1243267992.6752.18.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix the splice02 test
+Subject: Re: [LTP] [PATCH] Synchronization between two processes
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -38,87 +39,147 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: =?UTF-8?Q?Ji=C5=99=C3=AD_Pale=C4=8Dek?= <jpalecek@web.de>
+To: "Serge E. Hallyn" <serue@us.ibm.com>, Serge Hallyn <serue@linux.vnet.ibm.com>
 Cc: ltp-list@lists.sourceforge.net
 
-T24gRnJpLCAyMDA5LTA1LTE1IGF0IDE5OjI0ICswMjAwLCBKacWZw60gUGFsZcSNZWsgd3JvdGU6
-IAo+IE9uIFdlZCwgMTMgTWF5IDIwMDkgMTY6NDc6MzUgKzAyMDAsIENBSSBRaWFuIDxjYWlxaWFu
-QGNjbG9tLmNuPiB3cm90ZToKPiAKPiA+IEZyb206IEppcmkgUGFsZWNlayA8anBhbGVjZWtAd2Vi
-LmRlPgo+ID4gU3ViamVjdDogW0xUUF0gW1BBVENIXSBGaXggdGhlIHNwbGljZTAyIHRlc3QKPiA+
-IERhdGU6IFdlZCwgMTMgTWF5IDIwMDkgMDA6MzQ6MTUgKzAyMDAKPiA+Cj4gPj4gICBQYXJ0aWN1
-bGFybHk6Cj4gPj4KPiA+PiAgICAtIFRFU1RfRVJSTk8gaXMgb25seSBzZXQgd2hlbiB0aGUgc3lz
-Y2FsbCBpcyBleGVjdXRlZCB1c2luZyB0aGUKPiA+PiAgICAgIFRFU1QoKSBtYWNyby4gVGhlIHRl
-c3RzIGdhdmUgYmFkIGVycm9yIG1lc3NhZ2VzIGJlY2F1c2Ugb2YgdGhhdC4KPiA+Pgo+ID4+ICAg
-IC0gVGhlIGVuZCBvZiB0aGUgdGVzdCB3YXMgZGVhZCBjb2RlOyBtb3ZlZCB0aGUgVFBBU1MgY29k
-ZSB0byBwYXNzIGF0Cj4gPj4gICAgICB0aGUgZW5kIG9mIGZpbGUuCj4gPj4KPiA+PiAgICAtIFRo
-ZSB0ZXN0IGFzc3VtZXMgc3RkLiBpbnB1dCBpcyBhIHBpcGU7IHJlZmxlY3QgdGhpcyBpbiB0aGUg
-cnVudGVzdAo+ID4+ICAgICAgZmlsZQo+ID4+Cj4gPj4gUmVnYXJkcwo+ID4+ICAgICAgSmlyaSBQ
-YWxlY2VrCj4gPj4KPiA+PiBTaWduZWQtb2ZmLWJ5OiBKaXJpIFBhbGVjZWsgPGpwYWxlY2VrQHdl
-Yi5kZT4KPiA+PiAtLS0KPiA+PiAgIHJ1bnRlc3Qvc3lzY2FsbHMgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgfCAgICAyICstCj4gPj4gICB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NwbGlj
-ZS9zcGxpY2UwMi5jIHwgICAxNiArKysrKystLS0tLS0tLS0tCj4gPj4gICAyIGZpbGVzIGNoYW5n
-ZWQsIDcgaW5zZXJ0aW9ucygrKSwgMTEgZGVsZXRpb25zKC0pCj4gPj4KPiA+PiBkaWZmIC0tZ2l0
-IGEvcnVudGVzdC9zeXNjYWxscyBiL3J1bnRlc3Qvc3lzY2FsbHMKPiA+PiBpbmRleCA5YjdiMmNh
-Li4zM2JlZmYwIDEwMDY0NAo+ID4+IC0tLSBhL3J1bnRlc3Qvc3lzY2FsbHMKPiA+PiArKysgYi9y
-dW50ZXN0L3N5c2NhbGxzCj4gPj4gQEAgLTEwMzMsNyArMTAzMyw3IEBAIHNvY2tpb2N0bDAxIHNv
-Y2tpb2N0bDAxCj4gPj4gICAgI3NwbGljZSB0ZXN0Cj4gPj4gICBzcGxpY2UwMSBzcGxpY2UwMQo+
-ID4+IC1zcGxpY2UwMiBlY2hvICJUZXN0IHNwbGljZTAyKCkiID4gc3BsaWNlMDItdGVtcDsgc3Bs
-aWNlMDIgc3BsaWNlMDItdGVtcAo+ID4+ICtzcGxpY2UwMiBzZXEgMSAxMDAwMDAwMCB8IHNwbGlj
-ZTAyIHNwbGljZTAyLXRlbXAKPiA+PiAgICB0ZWUwMSB0ZWUwMQo+ID4+ICAgZGlmZiAtLWdpdCBh
-L3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc3BsaWNlL3NwbGljZTAyLmMKPiA+PiBiL3Rlc3Rj
-YXNlcy9rZXJuZWwvc3lzY2FsbHMvc3BsaWNlL3NwbGljZTAyLmMKPiA+PiBpbmRleCAzMjFkMDAy
-Li4xNmJmZjg2IDEwMDY0NAo+ID4+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc3Bs
-aWNlL3NwbGljZTAyLmMKPiA+PiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NwbGlj
-ZS9zcGxpY2UwMi5jCj4gPj4gQEAgLTEwOCw3ICsxMDgsNiBAQCB2b2lkIHNldHVwKCkgewo+ID4+
-ICAgIGludCBtYWluKGludCBhYywgY2hhciAqKmF2KSB7Cj4gPj4gICAJaW50IGZkID0gMDsKPiA+
-PiAtCWludCByZXQgPSAwOwo+ID4+ICAgCQo+ID4+ICAgICAgICAgICBzZXR1cCgpOwo+ID4+ICAg
-QEAgLTExOCwyNiArMTE3LDIzIEBAIGludCBtYWluKGludCBhYywgY2hhciAqKmF2KSB7Cj4gPj4g
-ICAJfQo+ID4+ICAgCWZkPW9wZW4oYXZbMV0sIE9fV1JPTkxZIHwgT19DUkVBVCB8IE9fVFJVTkMs
-IDA2NDQpOwo+ID4+ICAgCWlmKGZkIDwgMCApIHsKPiA+PiAtICAgICAgICAgICB0c3RfcmVzbShU
-RkFJTCwgIiVzIGZhaWxlZCAtIGVycm5vID0gJWQgOiAlcyIsIFRDSUQsICAKPiA+PiBURVNUX0VS
-Uk5PLAo+ID4+IHN0cmVycm9yKFRFU1RfRVJSTk8pKTsKPiA+PiArCQl0c3RfcmVzbShURkFJTCwg
-Im9wZW4oJXMpIGZhaWxlZCAtIGVycm5vID0gJWQgOiAlcyIsIGF2WzFdLCBlcnJubywKPiA+PiBz
-dHJlcnJvcihlcnJubykpOwo+ID4+ICAgCSAgIGNsZWFudXAoKTsKPiA+PiAgIAkgICB0c3RfZXhp
-dCgpOwo+ID4+ICAgCX0KPiA+PiAgIAkJCQo+ID4+ICAgICAgICAgICBkbyB7Cj4gPj4gLQkgICAg
-cmV0ID0gc3BsaWNlKFNURElOX0ZJTEVOTywgTlVMTCwgZmQsIE5VTEwsIFNQTElDRV9TSVpFLCAw
-KTsKPiA+PiAtCSAgICBpZiAocmV0IDwgMCkgewo+ID4+IC0gICAgICAgICAgICAJdHN0X3Jlc20o
-VEZBSUwsICIlcyBmYWlsZWQgLSBlcnJubyA9ICVkIDogJXMiLFRDSUQsICAKPiA+PiBURVNUX0VS
-Uk5PLAo+ID4+IHN0cmVycm9yKFRFU1RfRVJSTk8pKTsKPiA+PiArCQkJCQlURVNUKHNwbGljZShT
-VERJTl9GSUxFTk8sIE5VTEwsIGZkLCBOVUxMLCBTUExJQ0VfU0laRSwgMCkpOwo+ID4+ICsJICAg
-IGlmIChURVNUX1JFVFVSTiA8IDApIHsKPiA+PiArICAgICAgICAgICAgCXRzdF9yZXNtKFRGQUlM
-LCAic3BsaWNlIGZhaWxlZCAtIGVycm5vID0gJWQgOiAlcyIsICAKPiA+PiBURVNUX0VSUk5PLAo+
-ID4+IHN0cmVycm9yKFRFU1RfRVJSTk8pKTsKPiA+PiAgIAkgICAgICAgIGNsZWFudXAoKTsKPiA+
-PiAgIAkJdHN0X2V4aXQoKTsKPiA+PiAgIAkgICAgfSBlbHNlCj4gPj4gLSAgICAgICAgICAgIGlm
-IChyZXQgPCBTUExJQ0VfU0laRSl7Cj4gPj4gKyAgICAgICAgICAgIGlmIChURVNUX1JFVFVSTiA9
-PSAwKXsKPiA+PiArCQkJCQkJCXRzdF9yZXNtKFRQQVNTLCAic3BsaWNlKCkgc3lzdGVtIGNhbGwg
-UGFzc2VkIik7Cj4gPj4gICAJICAgICAgICBjbGVhbnVwKCk7Cj4gPj4gICAJICAgICAgICB0c3Rf
-ZXhpdCgpOwo+ID4+ICAgCSAgICB9Cj4gPj4gICAJfSB3aGlsZSgxKTsKPiA+PiAtCj4gPj4gLQlj
-bG9zZShmZCk7Cj4gPj4gLSAgICAgICAgdHN0X3Jlc20oVFBBU1MsICJzcGxpY2UoKSBzeXN0ZW0g
-Y2FsbCBQYXNzZWQiKTsKPiA+PiAtICAgICAgICB0c3RfZXhpdCgpOwo+ID4+ICAgfQo+ID4+ICAg
-LS0gMS42LjIKPiA+Cj4gPiBDYW4ndCBhcHBseSB0aGlzIHBhdGNoIC0tIGxvbmcgbGluZXMgYXJl
-IHdyYXBwZWQuIFBsZWFzZSByZS1zZW5kIGl0Lgo+IAo+IEl0IHNlZW1zIG5vdCB0byBiZSBjYXVz
-ZWQgYnkgd3JhcHBlZCBsaW5lcyAtIEkgY2FuIHN0aWxsIHNlZSB0aGVtIGluIHRoZSAgCj4gZGln
-ZXN0LiBIb3dldmVyLCBzb21lIGVtcHR5IGxpbmVzIHNlZW0gdG8gYmUgbG9zdC4KPiAKPiBBbnl3
-YXksIGl0IHNob3VsZCBiZSBiZXR0ZXIgbm93IChzZWUgYXR0YWNobWVudCkuCgpUaGFua3MuCgpS
-ZWdhcmRzLS0KU3VicmF0YQoKPiAKPiBSZWdhcmRzCj4gICAgIEppcmkgUGFsZWNlawo+IC0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLSBDcnlzdGFsIFJlcG9ydHMgLSBOZXcgRnJlZSBSdW50aW1lIGFuZCAz
-MCBEYXkgVHJpYWwgQ2hlY2sgb3V0IHRoZSBuZXcgc2ltcGxpZmllZCBsaWNlbnNpbmcgb3B0aW9u
-IHRoYXQgZW5hYmxlcyB1bmxpbWl0ZWQgcm95YWx0eS1mcmVlIGRpc3RyaWJ1dGlvbiBvZiB0aGUg
-cmVwb3J0IGVuZ2luZSBmb3IgZXh0ZXJuYWxseSBmYWNpbmcgc2VydmVyIGFuZCB3ZWIgZGVwbG95
-bWVudC4gaHR0cDovL3Auc2YubmV0L3NmdS9idXNpbmVzc29iamVjdHMKPiBfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEx0cC1saXN0IG1haWxpbmcgbGlz
-dAo+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+IGh0dHBzOi8vbGlzdHMuc291cmNl
-Zm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0CgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-CkNyeXN0YWwgUmVwb3J0cyAtIE5ldyBGcmVlIFJ1bnRpbWUgYW5kIDMwIERheSBUcmlhbApDaGVj
-ayBvdXQgdGhlIG5ldyBzaW1wbGlmaWVkIGxpY2Vuc2luZyBvcHRpb24gdGhhdCBlbmFibGVzIAp1
-bmxpbWl0ZWQgcm95YWx0eS1mcmVlIGRpc3RyaWJ1dGlvbiBvZiB0aGUgcmVwb3J0IGVuZ2luZSAK
-Zm9yIGV4dGVybmFsbHkgZmFjaW5nIHNlcnZlciBhbmQgd2ViIGRlcGxveW1lbnQuIApodHRwOi8v
-cC5zZi5uZXQvc2Z1L2J1c2luZXNzb2JqZWN0cwpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMu
-c291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3Rp
-bmZvL2x0cC1saXN0Cg==
+On Fri, 2009-05-22 at 13:55 +0800, Wei Yongjun wrote: 
+> Serge E. Hallyn wrote:
+> > Quoting Subrata Modak (subrata@linux.vnet.ibm.com):
+> >   
+> >> On Fri, 2009-05-15 at 08:45 -0500, Serge E. Hallyn wrote: 
+> >>     
+> >>> Quoting Gui Xiaohua (guixh@cn.fujitsu.com):
+> >>>       
+> >>>> The child-process wait SIGUSR1 which would be sended by parent-process,
+> >>>> if the child-process execute sigtimedwait() after parent-process send 
+> >>>> the signal, it would never receive the SIGUSR1 from parent-process.
+> >>>> I cann't make sure the SIGUSR1 be sended after child-process execute 
+> >>>> sigtimedwait() with 100 percent, and i try my best.
+> >>>>         
+> >>> Well, in theory I suppose this could happen, but you'd have to have
+> >>> a pretty bad scheduler if the parent can do a strcmp(buf, "c:go")
+> >>> between the pipe read and signal send, while the child goes straight
+> >>> from pipe write to sigtimedwait.
+> >>>
+> >>> Have you seen this signal be missed?  If not, then I'd rather assume
+> >>> things are reasonable.  If you have seen this happen, then why not
+> >>> instead set up a SIGUSR1 handler in the child before doing the pipe
+> >>> write, then just sleep for 3 seconds instead of doing sigtimedwait?
+> >>>       
+> >> Thanks Serge.
+> >>     
+> >
+> > Or, if I'm being unreasonable, then at least have the parent only wait
+> > for at most 1 second, and leave the child alone.  Every every ltp test
+> > is going to hang for 5 seconds...
+> >
+> > But I prefer setting the signal handler ahead of time.
+> >
+> >   
+> Sorry to relpy late.
+> 
+> As your last advice, i change the test case, and it work will.
+> 
+> [PATCH] fix sync problem between two processes of pidns12 test
+> 
+> The child-process wait SIGUSR1 which would be sended by parent-process,
+> if the child-process execute sigtimedwait() after parent-process send
+> the signal, it would never receive the SIGUSR1 from parent-process.
+> 
+> This patch rewrite child_signal_handler() to handle to SIGUSR1 and
+> instead sigtimedwait() with sleep for 3 seconds.
+> 
+> Signed-off-by: Gui Xiaohua <guixh@cn.fujitsu.com>
+
+Serge,
+
+Your view on this new solution ?
+
+Regards--
+Subrata
+
+> ---
+>  testcases/kernel/containers/pidns/pidns12.c |   35 ++++++--------------------
+>  1 files changed, 8 insertions(+), 27 deletions(-)
+> 
+> diff --git a/testcases/kernel/containers/pidns/pidns12.c b/testcases/kernel/containers/pidns/pidns12.c
+> index f893021..9120e82 100644
+> --- a/testcases/kernel/containers/pidns/pidns12.c
+> +++ b/testcases/kernel/containers/pidns/pidns12.c
+> @@ -72,8 +72,13 @@ void cleanup()
+>   */
+>  static void child_signal_handler(int sig, siginfo_t *si, void *unused)
+>  {
+> -	/* sigtimedwait() traps siginfo details, so this wont be called */
+> -	tst_resm(TWARN, "cinit: control should have not reached here!");
+> +	/* Recieved SIGUSR1. Check sender pid */
+> +	if (si->si_pid == 0)
+> +		tst_resm(TPASS, "cinit: signalling PID (from other namespace)"\
+> +				" is 0 as expected");
+> +	else
+> +		tst_resm(TFAIL, "cinit: signalling PID (from other namespace)"\
+> +				" is not 0, but %d.", si->si_pid);
+>  }
+> 
+>  /*
+> @@ -82,9 +87,6 @@ static void child_signal_handler(int sig, siginfo_t *si, void *unused)
+>  int child_fn(void *arg)
+>  {
+>  	struct sigaction sa;
+> -	sigset_t newset;
+> -	siginfo_t info;
+> -	struct timespec timeout;
+>  	pid_t pid, ppid;
+> 
+>  	/* Set process id and parent pid */
+> @@ -108,34 +110,13 @@ int child_fn(void *arg)
+>  		cleanup();
+>  	}
+> 
+> -	/* Set timeout for sigtimedwait */
+> -	timeout.tv_sec = 3;
+> -	timeout.tv_nsec = 0;
+> -
+> -	/* Set mask to wait for SIGUSR1 signal */
+> -	sigemptyset(&newset);
+> -	sigaddset(&newset, SIGUSR1);
+> -
+>  	/* Let parent to signal SIGUSR1 */
+>  	if (write(pipefd[1], "c:go\0", 5) != 5) {
+>  		tst_resm(TBROK, "cinit: pipe is broken to write");
+>  		cleanup();
+>  	}
+> 
+> -	/* Wait for SIGUSR1 */
+> -	if (sigtimedwait(&newset, &info, &timeout) != SIGUSR1) {
+> -		tst_resm(TBROK, "cinit: sigtimedwait() failed(%s).",
+> -				strerror(errno));
+> -		cleanup();
+> -	}
+> -
+> -	/* Recieved SIGUSR1. Check sender pid */
+> -	if (info.si_pid == 0)
+> -		tst_resm(TPASS, "cinit: signalling PID (from other namespace)"\
+> -				" is 0 as expected");
+> -	else
+> -		tst_resm(TFAIL, "cinit: signalling PID (from other namespace)"\
+> -				" is not 0, but %d.", info.si_pid);
+> +	sleep(3);
+> 
+>  	/* cleanup and exit */
+>  	close(pipefd[1]);
+
+
+------------------------------------------------------------------------------
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+is a gathering of tech-side developers & brand creativity professionals. Meet
+the minds behind Google Creative Lab, Visual Complexity, Processing, & 
+iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
+Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
