@@ -2,20 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <dpate2006@gmail.com>) id 1MAA7d-0001i9-Em
-	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 22:00:17 +0000
-Received: from mail-ew0-f217.google.com ([209.85.219.217])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MAA7c-0004sx-GR
-	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 22:00:17 +0000
-Received: by ewy17 with SMTP id 17so6415412ewy.10
+	(envelope-from <chrubis@suse.de>) id 1M8aok-00021z-6i
+	for ltp-list@lists.sourceforge.net; Mon, 25 May 2009 14:06:18 +0000
+Received: from relay1.suse.de (relay-ext.suse.de [195.135.221.8])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mx2.suse.de (Postfix) with ESMTP id 4086379727
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 29 May 2009 15:00:15 -0700 (PDT)
+	Mon, 25 May 2009 15:52:24 +0200 (CEST)
+Date: Mon, 25 May 2009 15:52:23 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20090525135223.GA2546@schrodinger.suse.cz>
 MIME-Version: 1.0
-Date: Fri, 29 May 2009 17:00:14 -0500
-Message-ID: <f90dadbb0905291500p10eb6d04v54132a522e060d0d@mail.gmail.com>
-From: hahahahhahahaahah <dpate2006@gmail.com>
-Subject: [LTP] Want to join LTP
+Content-Type: multipart/mixed; boundary="azLHFNyN32YCQGCU"
+Content-Disposition: inline
+Subject: [LTP] [PATCH] postponing close() after aio_write() has finished
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,62 +26,79 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============9038364771425240950=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
---===============9038364771425240950==
-Content-Type: multipart/alternative; boundary=000e0cd1ea6e891ce4046b143371
 
---000e0cd1ea6e891ce4046b143371
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+--azLHFNyN32YCQGCU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Respected Sir,
+Hi,
+in aio_return/1-1.c close() is called after asynchronous I/O write was
+queued. This according to POSIX may end up in one of two ends and it's
+implementation specified. One end is writing the file correctly while the other
+one is behave like aio_cancel() was called.
+(http://www.opengroup.org/onlinepubs/9699919799/functions/close.html)
+Test mentoined above rely on finishing asynchronous I/O correctly in this case.
+To fix that you must postpone close() after asynchronous I/O has finished.
 
-I have more than two years of experience as QA Engineer and extremely
-interested in joining this open source LTP. Pl let me know the procedure to
-join this LTP as I believe I can make a lot of contributions to this
-project.
+Signed-of-by: chrubis@suse.cz
 
-Thanks
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
-Regards,
-Dev
+--azLHFNyN32YCQGCU
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="aio_write_race.patch"
 
---000e0cd1ea6e891ce4046b143371
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Index: ltp-full-20090430/testcases/open_posix_testsuite/conformance/interfaces/aio_return/1-1.c
+===================================================================
+--- ltp-full-20090430.orig/testcases/open_posix_testsuite/conformance/interfaces/aio_return/1-1.c
++++ ltp-full-20090430/testcases/open_posix_testsuite/conformance/interfaces/aio_return/1-1.c
+@@ -75,12 +75,11 @@ int main()
+ 		exit(PTS_FAIL);
+ 	}
+ 
+-	close(fd);
+-
+ 	do {
+ 		retval = aio_error( &aiocb);
+ 		if (retval == -1)
+ 		{
++			close(fd);
+ 			printf(TNAME " Error at aio_error(): %s\n",
+ 				strerror(errno));
+ 			exit(PTS_FAIL);
+@@ -90,11 +89,13 @@ int main()
+ 	retval = aio_return(&aiocb);
+ 	if (retval != BUF_SIZE)
+ 	{
++		close(fd);
+ 		printf(TNAME " Error at aio_return(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+ 	}
+ 	
++	close(fd);
+ 	printf ("Test PASSED\n");
+ 	return PTS_PASS;
+ }
 
-<div>Respected Sir,</div>
-<div>=A0</div>
-<div>I have more than two years of experience as QA Engineer and extremely =
-interested in joining this open source LTP. Pl let me know the procedure to=
- join this LTP as I believe I can make a lot of=A0contributions to this pro=
-ject.</div>
-
-<div>=A0</div>
-<div>Thanks</div>
-<div>=A0</div>
-<div>Regards,</div>
-<div>Dev</div>
-
---000e0cd1ea6e891ce4046b143371--
-
-
---===============9038364771425240950==
+--azLHFNyN32YCQGCU
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
 is a gathering of tech-side developers & brand creativity professionals. Meet
 the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
-Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
---===============9038364771425240950==
+iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
+Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
+--azLHFNyN32YCQGCU
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -91,5 +109,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============9038364771425240950==--
+--azLHFNyN32YCQGCU--
 
