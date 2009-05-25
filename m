@@ -1,34 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MA1cP-000395-9b
-	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:55:29 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MA1cN-0001W2-O7
-	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:55:29 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e39.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4TCpZCP025741
-	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 06:51:35 -0600
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4TCtOjF165024
-	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 06:55:24 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4TCtOmK018252
-	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 06:55:24 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090527100645.18638.75163.sendpatchset@subratamodak.linux.ibm.com>
-References: <20090527100645.18638.75163.sendpatchset@subratamodak.linux.ibm.com>
-Date: Fri, 29 May 2009 18:25:18 +0530
-Message-Id: <1243601718.5188.42.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH 00/13][2nd Bunch] Port Crackerjack
-	Syscall	tests(missing) to LTP
-Reply-To: subrata@linux.vnet.ibm.com
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <rohit.170309@gmail.com>) id 1M8Yk5-00040x-15
+	for ltp-list@lists.sourceforge.net; Mon, 25 May 2009 11:53:21 +0000
+Received: from mail-ew0-f168.google.com ([209.85.219.168])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1M8Yk3-0006Cw-AT
+	for ltp-list@lists.sourceforge.net; Mon, 25 May 2009 11:53:21 +0000
+MIME-Version: 1.0
+In-Reply-To: <7B7EF7F090B9804A830ACC82F2CDE95DD01ED4@insardxms01.ap.sony.com>
+References: <7B7EF7F090B9804A830ACC82F2CDE95DD01ED4@insardxms01.ap.sony.com>
+Date: Mon, 25 May 2009 17:23:17 +0530
+Message-ID: <d51f89b0905250453q62395300la1dfddc20bdb0af5@mail.gmail.com>
+From: rohit verma <rohit.170309@gmail.com>
+Content-Type: multipart/mixed; boundary=0016e6de016c7dfae0046abb4103
+Subject: [LTP] patch for timer_create04 and clock_gettime03 issue.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,91 +25,99 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Manas Kumar Nayak <maknayak@in.ibm.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sf.net, "subrata@linux.vnet.ibm.com" <subrata@linux.vnet.ibm.com>, CAI Qian <caiqian@cclom.cn>
 
-On Wed, 2009-05-27 at 15:36 +0530, Manas Kumar Nayak wrote: 
-> Hi,
-> 
-> >On Tue, 2009-05-19 at 00:39 +0530, Manas Kumar Nayak wrote:
-> >Hi,
-> > 
-> > I have ported the following tests from Crackerjack to LTP.
-> > Kindly include them to LTP:
-> > 
-> > [PATCH 01/21] Add add_key01 test for add_key syscall
-> > [PATCH 02/21] Add add_key02 test for add_key syscall
-> > [PATCH 03/21] Add bdflush01 test for bdflush syscall
-> > [PATCH 04/21] Add exit_group01 test for exit_group syscall
-> > [PATCH 05/21] Add keyctl01 test for keyctl syscall
-> > [PATCH 06/21] Add newuname01 test for newuname syscall
-> > [PATCH 07/21] Add rt_sigaction01 test for rt_sigaction syscall
-> > [PATCH 08/21] Add rt_sigprocmask01 test for rt_sigprocmask syscall
-> > [PATCH 09/21] Add rt_sigprocmask02 test for rt_sigprocmask syscall
-> > [PATCH 10/21] Add rt_sigqueueinfo01 test for rt_sigqueueinfo syscall
-> > [PATCH 11/21] Add rt_sigsuspend01 test for rt_sigsuspend syscall
-> > [PATCH 12/21] Add set_thread_area01 test for set_thread_area syscall
-> > [PATCH 13/21] Add set_thread_area02 test for set_thread_area syscall
-> > [PATCH 14/21] Add set_tid_address01 test for set_tid_address syscall
-> > [PATCH 15/21] Add sgetmask01 test for sgetmask syscall
-> > [PATCH 16/21] Add sigreturn01 test for sigreturn syscall
-> > [PATCH 17/21] Add ssetmask01 test for ssetmask syscall
-> > [PATCH 18/21] Add timer_getoverrun01 test for timer_getoverrun01 syscall
-> > [PATCH 19/21] Add timer_gettime01 test for timer_gettime syscall
-> > [PATCH 20/21] Add tkill01 test for tkill syscall
-> > [PATCH 21/21] Add tkill02 test for tkill syscall
-> > 
-> > Todo:
-> > 	1) Port the Remaining ones (next week),
-> 
-> As promised earlier, here remains the 2nd Bunch of tests ported
-> from Crackerjack to LTP:
-> 
-> __001_Add_Utility_Headers_for_these_set_of_tests.patch
-> __002_Add_get_mempolicy01_test_for_get_mempolicy_syscall.patch
-> __003_Add_clock_getres01_test_for_clock_getres_syscall.patch
-> __004_Add_clock_nanosleep01_test_for_clock_nanosleep_syscall.patch
-> __005_Add_mq_notify01_test_for_mq_notify_syscall.patch
-> __006_Add_ppoll01_test_for_ppoll_syscall.patch
-> __007_Add_mq_open01_test_for_mq_open_syscall.patch
-> __008_Add_mq_timedreceive01_test_for_mq_timedreceive_syscall.patch
-> __009_Add_utimes01_test_for_utimes_syscall.patch
-> __010_Add_mq_unlink01_test_for_mq_unlink_syscall.patch
-> __011_Add_mq_timedsend01_test_for_mq_timedsend_syscall.patch
-> __012_Add_unshare01_test_for_unshare_syscall.patch
-> __013_Add_unshare02_test_for_unshare_syscall.patch
+--0016e6de016c7dfae0046abb4103
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Thanks a ton.
+Hi,
 
-> 
-> Still TODO:
-> -> The remaining testcases will be ported soon.
+In reference to the issue with=A0timer_create04 and clock_gettime03 for
+the kernel version 2.6.29 which was reported in the link:
 
-Great to know that as well.
+http://www.nabble.com/timer_create-p22376043.html, PFA the patch for
+fixing the issue.
 
-Regards--
-Subrata
+Detail on the issue: A new clockid 'CLOCK_MONOTONIC_RAW' was added
+since the kernel 2.6.28
+(http://www.kernel.org/pub/linux/kernel/v2.6/ChangeLog-2.6.28). This
+addition caused the above testcases to fail. Now, 5 clock ID's are
+present in kernel ver 2.6.28 and later.
 
-> 
-> Regards--
-> Manas
-> 
-> > 
-> > Regards--
-> > Manas
-> > 
+Please check the same....
 
+Regards,
+Rohit
+
+--0016e6de016c7dfae0046abb4103
+Content-Type: text/plain; charset=US-ASCII; name="timers_patch.txt"
+Content-Disposition: attachment; filename="timers_patch.txt"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: 0.1
+
+UGF0Y2ggdG8gZml4IHRpbWVyX2NyZWF0ZTA0IGFuZCBjbG9ja19nZXR0aW1lMDMuIE5ldyBjbG9j
+a2lkIENMT0NLX01PTk9UT05JQ19SQVcgd2FzIGFkZGVkIHNpbmNlIGxpbnV4IDIuNi4yOC4KU2ln
+bmVkLW9mZi1ieTogcm9oaXQgdmVybWEgKHJvaGl0LjE3MDMwOUBnbWFpbC5jb20pCj09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT0KZGlmZiAtcnVOQiBsdHAtZnVsbC0yMDA5MDQzMF9vcmln
+L3Rlc3RjYXNlcy9rZXJuZWwvdGltZXJzL2luY2x1ZGUvY29tbW9uX3RpbWVycy5oIGx0cC1mdWxs
+LTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvdGltZXJzL2luY2x1ZGUvY29tbW9uX3RpbWVycy5o
+Ci0tLSBsdHAtZnVsbC0yMDA5MDQzMF9vcmlnL3Rlc3RjYXNlcy9rZXJuZWwvdGltZXJzL2luY2x1
+ZGUvY29tbW9uX3RpbWVycy5oCTIwMDgtMDItMjYgMTY6NDQ6NDUuMDAwMDAwMDAwICswNTMwCisr
+KyBsdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL3RpbWVycy9pbmNsdWRlL2NvbW1v
+bl90aW1lcnMuaAkyMDA5LTA1LTI1IDE2OjA3OjExLjAwMDAwMDAwMCArMDUzMApAQCAtMjIsMTEg
+KzIyLDE1IEBACiAjaWZuZGVmIENMT0NLX1RIUkVBRF9DUFVUSU1FX0lECiAjZGVmaW5lIENMT0NL
+X1RIUkVBRF9DUFVUSU1FX0lEIDMKICNlbmRpZgorI2lmbmRlZiBDTE9DS19NT05PVE9OSUNfUkFX
+CisjZGVmaW5lIENMT0NLX01PTk9UT05JQ19SQVcgNAorI2VuZGlmCiBjbG9ja190IGNsb2NrX2xp
+c3RbXSA9IHsKIAlDTE9DS19SRUFMVElNRSwKIAlDTE9DS19NT05PVE9OSUMsCiAJQ0xPQ0tfUFJP
+Q0VTU19DUFVUSU1FX0lELAotCUNMT0NLX1RIUkVBRF9DUFVUSU1FX0lECisJQ0xPQ0tfVEhSRUFE
+X0NQVVRJTUVfSUQsCisJQ0xPQ0tfTU9OT1RPTklDX1JBVywKIH07CiAjZGVmaW5lIE1BWF9DTE9D
+S1MgKHNpemVvZihjbG9ja19saXN0KSAvIHNpemVvZigqY2xvY2tfbGlzdCkpCiAKQEAgLTM3LDYg
+KzQxLDcgQEAKIAkJY2FzZSBDTE9DS19NT05PVE9OSUM6ICAgICAgICAgIHJldHVybiAiQ0xPQ0tf
+TU9OT1RPTklDIjsKIAkJY2FzZSBDTE9DS19QUk9DRVNTX0NQVVRJTUVfSUQ6IHJldHVybiAiQ0xP
+Q0tfUFJPQ0VTU19DUFVUSU1FX0lEIjsKIAkJY2FzZSBDTE9DS19USFJFQURfQ1BVVElNRV9JRDog
+IHJldHVybiAiQ0xPQ0tfVEhSRUFEX0NQVVRJTUVfSUQiOworCQljYXNlIENMT0NLX01PTk9UT05J
+Q19SQVc6ICAgICAgcmV0dXJuICJDTE9DS19NT05PVE9OSUNfUkFXIjsKIAkJZGVmYXVsdDogICAg
+ICAgICAgICAgICAgICAgICAgIHJldHVybiAiQ0xPQ0tfIT8hPyE/IjsKIAl9CiB9CmRpZmYgLXJ1
+TkIgbHRwLWZ1bGwtMjAwOTA0MzBfb3JpZy90ZXN0Y2FzZXMva2VybmVsL3RpbWVycy90aW1lcl9j
+cmVhdGUvdGltZXJfY3JlYXRlMDIuYyBsdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVs
+L3RpbWVycy90aW1lcl9jcmVhdGUvdGltZXJfY3JlYXRlMDIuYwotLS0gbHRwLWZ1bGwtMjAwOTA0
+MzBfb3JpZy90ZXN0Y2FzZXMva2VybmVsL3RpbWVycy90aW1lcl9jcmVhdGUvdGltZXJfY3JlYXRl
+MDIuYwkyMDA4LTAyLTI2IDE2OjQ0OjQ1LjAwMDAwMDAwMCArMDUzMAorKysgbHRwLWZ1bGwtMjAw
+OTA0MzAvdGVzdGNhc2VzL2tlcm5lbC90aW1lcnMvdGltZXJfY3JlYXRlL3RpbWVyX2NyZWF0ZTAy
+LmMJMjAwOS0wNS0yNSAxNjo0MToxNC4wMDAwMDAwMDAgKzA1MzAKQEAgLTkzLDYgKzkzLDcgQEAK
+IAkJIk5VTEwiLAogCQkiU0lHRVZfTk9ORSIKIAl9OworCWNvbnN0IGNoYXIgKm1yc3RyID0gIk1P
+Tk9UT05JQ19SQVciOwogCiAJLyogcGFyc2Ugc3RhbmRhcmQgb3B0aW9ucyAqLwogCWlmICgobXNn
+ID0gcGFyc2Vfb3B0cyhhYywgYXYsIChvcHRpb25fdCAqKSBOVUxMLCBOVUxMKSkgIT0KQEAgLTEy
+Miw2ICsxMjMsOSBAQAogCQkJCQkJY29udGludWU7CiAJCQkJCX0KIAkJCQl9CisJCQkJaWYgKHN0
+cnN0cihnZXRfY2xvY2tfc3RyKGNsb2NrX2xpc3Rbal0pLCBtcnN0cikpCisJCQkJCWNvbnRpbnVl
+OworCiAJCQkJVEVTVCh0aW1lcl9jcmVhdGUoY2xvY2tfbGlzdFtqXSwgZXZwX3B0ciwKIAkJCQkJ
+CQkmY3JlYXRlZF90aW1lcl9pZCkpOwogCg==
+--0016e6de016c7dfae0046abb4103
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
 is a gathering of tech-side developers & brand creativity professionals. Meet
 the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
-Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
+iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
+Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
+--0016e6de016c7dfae0046abb4103
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--0016e6de016c7dfae0046abb4103--
+
