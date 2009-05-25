@@ -1,21 +1,37 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <caiqian@cclom.cn>) id 1M63oS-0000nc-4i
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 14:27:32 +0000
-Received: from smtp106.biz.mail.re2.yahoo.com ([206.190.52.175])
-	by 1b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1M63oO-0002Kf-62
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 14:27:32 +0000
-Date: Mon, 18 May 2009 18:34:48 +0800 (CST)
-Message-Id: <20090518.183448.71103795.caiqian@cclom.cn>
-From: CAI Qian <caiqian@cclom.cn>
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M8co4-0007NW-4l
+	for ltp-list@lists.sourceforge.net; Mon, 25 May 2009 16:13:44 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1M8co0-00054l-Hi
+	for ltp-list@lists.sourceforge.net; Mon, 25 May 2009 16:13:44 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e1.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4PG9X9k025882
+	for <ltp-list@lists.sourceforge.net>; Mon, 25 May 2009 12:09:33 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n4PGDY26256074
+	for <ltp-list@lists.sourceforge.net>; Mon, 25 May 2009 12:13:34 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4PGDYlB016258
+	for <ltp-list@lists.sourceforge.net>; Mon, 25 May 2009 12:13:34 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <op.uugnafyfu2flwt@debian>
+References: <4A0A0116.8030604@web.de>
+	<1242371868.7224.14.camel@subratamodak.linux.ibm.com>
+	<1242647987.5161.13.camel@subratamodak.linux.ibm.com>
+	<1242975136.8760.11.camel@subratamodak.linux.ibm.com>
+	<op.uugnafyfu2flwt@debian>
+Date: Mon, 25 May 2009 21:43:25 +0530
+Message-Id: <1243268006.6752.19.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-	boundary="--Next_Part(Mon_May_18_18_34_48_2009_313)--"
-Content-Transfer-Encoding: 7bit
-Subject: [LTP] Fw: ptrace06 is not being compiled (temporary fix)
+Subject: Re: [LTP] [PATCH] Add an autoconf test
+	for	presence	oftaskstats.freepages_count
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,235 +41,163 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-----Next_Part(Mon_May_18_18_34_48_2009_313)--
-Content-Type: Message/Rfc822
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-X-Apparently-To: caiqian@cclom.cn via 74.6.114.35;
-	Fri, 15 May 2009 01:47:17 -0700
-X-Originating-IP: [72.14.220.153]
-Authentication-Results: mta119.biz.mail.mud.yahoo.com  from=gmail.com;
-	domainkeys=pass (ok); from=gmail.com; dkim=pass (ok)
-Received: from 72.14.220.153  (EHLO fg-out-1718.google.com) (72.14.220.153)
-	by mta119.biz.mail.mud.yahoo.com with SMTP;
-	Fri, 15 May 2009 01:47:17 -0700
-Received: by fg-out-1718.google.com with SMTP id 22so565410fge.12
-	for <caiqian@cclom.cn>; Fri, 15 May 2009 01:47:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=gamma;
-	h=domainkey-signature:mime-version:received:date:message-id:subject
-	:from:to:content-type;
-	bh=aiQLWxcmVuVV9DJjyZhad0FjOiMndyByu7dShbAUJTA=;
-	b=BWUv5drQrvk90fHU4IyjO9nVRCwIcD+mWS+0bqiCYwRDm8QK9Y6Qvl8ObxQl7sRtvo
-	3tN/IwEkb7bjdet3ivU2SkE/XU5pW5GMIkxNqaV1fXr00cQolU+bZV5y463UMSeJ94O2
-	tMc3vrgchX0fyGJjEmFFIEf/TNe7rUi+nHVjI=
-DomainKey-Signature: a=rsa-sha1; c=nofws; d=gmail.com; s=gamma;
-	h=mime-version:date:message-id:subject:from:to:content-type;
-	b=pZq9OKLGwdUs6pTUq0aXaFWqsztAC/+wfaRpQM1Pt8N+TsGeO6Y180DgSbANB0GdNH
-	bIm/9HFmrYNnI6a9hc2GMwuaGsYvEABhptxBycn9OdBORzWB9eL4m43xbcM0ouIsCKuR
-	A9XHyJRy31ZadpJyqzb84/m7DSHXvyth0iAKg=
-MIME-Version: 1.0
-Received: by 10.86.90.2 with SMTP id n2mr3414468fgb.61.1242377235746; Fri, 15 
-	May 2009 01:47:15 -0700 (PDT)
-Date: Fri, 15 May 2009 14:17:15 +0530
-Message-ID: <d51f89b0905150147r42311f55j349f23ccb59c4f6e@mail.gmail.com>
-Subject: ptrace06 is not being compiled (temporary fix)
-From: rohit verma <rohit.170309@gmail.com>
-To: CAI Qian <caiqian@cclom.cn>
-Content-Type: multipart/mixed; boundary=000e0cd25048d051730469ef7dab
-
---000e0cd25048d051730469ef7dab
-Content-Type: multipart/alternative; boundary=000e0cd25048d0516a0469ef7da9
-
---000e0cd25048d0516a0469ef7da9
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-Hi,
-PFA the patch which can be a possible solution to the compilation problems
-that you had mentioned about regarding the ptrace06 compilation on PPC64 and
-IA-64. I haven't tested on PPC64 and IA-64 as I do not have access to them.
-Let me know if it work fine, and can be integrated into the LTP tree.
-
-link to mailing list entry --
-
-http://www.nabble.com/ptrace06-is-not-being-compiled-td23035203.html#a23328058
-
-Regards,
-rohit
-
-
-
------------------------------
-# uname -r
-2.6.9-89.EL
-
-# rpm -q glibc
-glibc-2.3.4-2.43
-
-# make
-cc -I../../../../include -Wall    *ptrace06*.c  -L../../../../lib -lltp -o
-*ptrace06*
-In file included from *ptrace06*.c:25:
-spawn_ptrace_child.h:97: error: `*PTRACE_GETSIGINFO*' undeclared here (not
-in a function)
-spawn_ptrace_child.h:97: error: nonconstant array index in initializer
-spawn_ptrace_child.h:97: error: (near initialization for `strings')
-spawn_ptrace_child.h:98: error: `*PTRACE_SETSIGINFO*' undeclared here (not
-in a function)
-spawn_ptrace_child.h:98: error: nonconstant array index in initializer
-spawn_ptrace_child.h:98: error: (near initialization for `strings')
-*ptrace06*.c:143: error: initializer element is not constant
-*ptrace06*.c:143: error: (near initialization for
-`test_cases[48].request')
-...
-
---------------
-
---000e0cd25048d0516a0469ef7da9
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-Hi,<div><br></div><div>PFA the patch which can be a possible solution to th=
-e compilation problems that you had mentioned about regarding the ptrace06 =
-compilation on=A0PPC64 and IA-64. I haven&#39;t tested on=A0PPC64 and IA-64=
- as I do not have access to them. Let me know if it work fine, and can be i=
-ntegrated into the LTP tree.</div>
-<div><br></div><div>link to mailing list entry --</div><div><br></div><div>=
-<a href=3D"http://www.nabble.com/ptrace06-is-not-being-compiled-td23035203.=
-html#a23328058">http://www.nabble.com/ptrace06-is-not-being-compiled-td2303=
-5203.html#a23328058</a><br>
-</div><div><br></div><div>Regards,</div><div>rohit</div><div><br></div><div=
-><br></div><div><br></div><div>-----------------------------</div><div><spa=
-n class=3D"Apple-style-span" style=3D"border-collapse: collapse; font-famil=
-y: verdana; -webkit-border-horizontal-spacing: 2px; -webkit-border-vertical=
--spacing: 2px; "><span># uname -r=A0</span><br>
-<span>2.6.9-89.EL=A0</span><br><br><span># rpm -q glibc=A0</span><br><span>=
-glibc-2.3.4-2.43=A0</span><br><br><span># make=A0</span><br><span>cc -I../.=
-./../../include -Wall =A0 =A0<b class=3D"highlight" style=3D"background-ima=
-ge: initial; background-repeat: initial; background-attachment: initial; -w=
-ebkit-background-clip: initial; -webkit-background-origin: initial; backgro=
-und-color: rgb(255, 255, 102); background-position: initial initial; ">ptra=
-ce06</b>.c =A0-L../../../../lib -lltp -o=A0</span><br>
-<span><b class=3D"highlight" style=3D"background-image: initial; background=
--repeat: initial; background-attachment: initial; -webkit-background-clip: =
-initial; -webkit-background-origin: initial; background-color: rgb(255, 255=
-, 102); background-position: initial initial; ">ptrace06</b>=A0</span><br>
-<span>In file included from=A0<b class=3D"highlight" style=3D"background-im=
-age: initial; background-repeat: initial; background-attachment: initial; -=
-webkit-background-clip: initial; -webkit-background-origin: initial; backgr=
-ound-color: rgb(255, 255, 102); background-position: initial initial; ">ptr=
-ace06</b>.c:25:=A0</span><br>
-<span>spawn_ptrace_child.h:97: error: `<b class=3D"highlight" style=3D"back=
-ground-image: initial; background-repeat: initial; background-attachment: i=
-nitial; -webkit-background-clip: initial; -webkit-background-origin: initia=
-l; background-color: rgb(255, 255, 102); background-position: initial initi=
-al; ">PTRACE_GETSIGINFO</b>&#39; undeclared here (not=A0</span><br>
-<span>in a function)=A0</span><br><span>spawn_ptrace_child.h:97: error: non=
-constant array index in initializer=A0</span><br><span>spawn_ptrace_child.h=
-:97: error: (near initialization for `strings&#39;)=A0</span><br><span>spaw=
-n_ptrace_child.h:98: error: `<b class=3D"highlight" style=3D"background-ima=
-ge: initial; background-repeat: initial; background-attachment: initial; -w=
-ebkit-background-clip: initial; -webkit-background-origin: initial; backgro=
-und-color: rgb(255, 255, 102); background-position: initial initial; ">PTRA=
-CE_SETSIGINFO</b>&#39; undeclared here (not=A0</span><br>
-<span>in a function)=A0</span><br><span>spawn_ptrace_child.h:98: error: non=
-constant array index in initializer=A0</span><br><span>spawn_ptrace_child.h=
-:98: error: (near initialization for `strings&#39;)=A0</span><br><span><b c=
-lass=3D"highlight" style=3D"background-image: initial; background-repeat: i=
-nitial; background-attachment: initial; -webkit-background-clip: initial; -=
-webkit-background-origin: initial; background-color: rgb(255, 255, 102); ba=
-ckground-position: initial initial; ">ptrace06</b>.c:143: error: initialize=
-r element is not constant=A0</span><br>
-<span><b class=3D"highlight" style=3D"background-image: initial; background=
--repeat: initial; background-attachment: initial; -webkit-background-clip: =
-initial; -webkit-background-origin: initial; background-color: rgb(255, 255=
-, 102); background-position: initial initial; ">ptrace06</b>.c:143: error: =
-(near initialization for=A0</span><br>
-<span>`test_cases[48].request&#39;)=A0</span><br><span>...=A0</span></span>=
-<br></div><div><span class=3D"Apple-style-span" style=3D"border-collapse: c=
-ollapse; font-family: verdana; -webkit-border-horizontal-spacing: 2px; -web=
-kit-border-vertical-spacing: 2px;"><br>
-</span></div><div><span class=3D"Apple-style-span" style=3D"border-collapse=
-: collapse; font-family: verdana; -webkit-border-horizontal-spacing: 2px; -=
-webkit-border-vertical-spacing: 2px;">--------------</span></div>
-
---000e0cd25048d0516a0469ef7da9--
-
---000e0cd25048d051730469ef7dab
-Content-Type: text/plain; charset=US-ASCII; name="ptrace06_txt.txt"
-Content-Disposition: attachment; filename="ptrace06_txt.txt"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fuqn35ib0
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: =?UTF-8?Q?Ji=C5=99=C3=AD_Pale=C4=8Dek?= <jpalecek@web.de>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-ZGlmZiAtcnV4QiBsdHAtZnVsbC0yMDA5MDQzMF9vcmlnL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
-bHMvcHRyYWNlL01ha2VmaWxlIGx0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvc3lz
-Y2FsbHMvcHRyYWNlL01ha2VmaWxlCi0tLSBsdHAtZnVsbC0yMDA5MDQzMF9vcmlnL3Rlc3RjYXNl
-cy9rZXJuZWwvc3lzY2FsbHMvcHRyYWNlL01ha2VmaWxlCTIwMDgtMTAtMTUgMjI6Mzc6MzYuMDAw
-MDAwMDAwICswNTMwCisrKyBsdHAtZnVsbC0yMDA5MDQzMC90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
-bGxzL3B0cmFjZS9NYWtlZmlsZQkyMDA5LTA3LTE1IDA4OjUwOjM3LjAwMDAwMDAwMCArMDUzMApA
-QCAtMTksNyArMTksOCBAQAogQ0ZMQUdTICs9IC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAtV2FsbAog
-TERMSUJTICs9IC1MLi4vLi4vLi4vLi4vbGliIC1sbHRwCiAKLVNSQ1MgICAgPSAkKHdpbGRjYXJk
-ICpbXjZdLmMpCisjU1JDUyAgICA9ICQod2lsZGNhcmQgKlteNl0uYykKK1NSQ1MgICAgPSAkKHdp
-bGRjYXJkICouYykKIFRBUkdFVFMgPSAkKHBhdHN1YnN0IHB0cmFjZSUuYyxwdHJhY2UlLCQoU1JD
-UykpCiAKIGFsbDogJChUQVJHRVRTKQpkaWZmIC1ydXhCIGx0cC1mdWxsLTIwMDkwNDMwX29yaWcv
-dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9wdHJhY2UvcHRyYWNlMDYuYyBsdHAtZnVsbC0yMDA5
-MDQzMC90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3B0cmFjZS9wdHJhY2UwNi5jCi0tLSBsdHAt
-ZnVsbC0yMDA5MDQzMF9vcmlnL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcHRyYWNlL3B0cmFj
-ZTA2LmMJMjAwOS0wMy0yMyAxOTowNjowMS4wMDAwMDAwMDAgKzA1MzAKKysrIGx0cC1mdWxsLTIw
-MDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcHRyYWNlL3B0cmFjZTA2LmMJMjAwOS0w
-Ny0xNSAwODo1MDozNy4wMDAwMDAwMDAgKzA1MzAKQEAgLTEzNSw2ICsxMzUsNyBAQAogCVBUUkFD
-RV9TRVRGR1JFR1MsLmRhdGEgPSAtM30sIHsKIAlQVFJBQ0VfU0VURkdSRUdTLC5kYXRhID0gLTR9
-LAogI2VuZGlmCisjaWZkZWYgUFRSQUNFX0dFVFNJR0lORk8KIAl7CiAJUFRSQUNFX0dFVFNJR0lO
-Rk8sLmRhdGEgPSAwfSwgewogCVBUUkFDRV9HRVRTSUdJTkZPLC5kYXRhID0gMX0sIHsKQEAgLTE0
-Myw3ICsxNDQsMTAgQEAKIAlQVFJBQ0VfR0VUU0lHSU5GTywuZGF0YSA9IC0xfSwgewogCVBUUkFD
-RV9HRVRTSUdJTkZPLC5kYXRhID0gLTJ9LCB7CiAJUFRSQUNFX0dFVFNJR0lORk8sLmRhdGEgPSAt
-M30sIHsKLQlQVFJBQ0VfR0VUU0lHSU5GTywuZGF0YSA9IC00fSwgeworCVBUUkFDRV9HRVRTSUdJ
-TkZPLC5kYXRhID0gLTR9LCAKKyNlbmRpZgorI2lmZGVmIFBUUkFDRV9TRVRTSUdJTkZPCisJewog
-CVBUUkFDRV9TRVRTSUdJTkZPLC5kYXRhID0gMH0sIHsKIAlQVFJBQ0VfU0VUU0lHSU5GTywuZGF0
-YSA9IDF9LCB7CiAJUFRSQUNFX1NFVFNJR0lORk8sLmRhdGEgPSAyfSwgewpAQCAtMTUxLDcgKzE1
-NSw5IEBACiAJUFRSQUNFX1NFVFNJR0lORk8sLmRhdGEgPSAtMX0sIHsKIAlQVFJBQ0VfU0VUU0lH
-SU5GTywuZGF0YSA9IC0yfSwgewogCVBUUkFDRV9TRVRTSUdJTkZPLC5kYXRhID0gLTN9LCB7Ci1Q
-VFJBQ0VfU0VUU0lHSU5GTywuZGF0YSA9IC00fSx9OworCVBUUkFDRV9TRVRTSUdJTkZPLC5kYXRh
-ID0gLTR9LAorI2VuZGlmCit9OwogCiBpbnQgVFNUX1RPVEFMID0gQVJSQVlfU0laRSh0ZXN0X2Nh
-c2VzKTsKIApkaWZmIC1ydXhCIGx0cC1mdWxsLTIwMDkwNDMwX29yaWcvdGVzdGNhc2VzL2tlcm5l
-bC9zeXNjYWxscy9wdHJhY2Uvc3Bhd25fcHRyYWNlX2NoaWxkLmggbHRwLWZ1bGwtMjAwOTA0MzAv
-dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9wdHJhY2Uvc3Bhd25fcHRyYWNlX2NoaWxkLmgKLS0t
-IGx0cC1mdWxsLTIwMDkwNDMwX29yaWcvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9wdHJhY2Uv
-c3Bhd25fcHRyYWNlX2NoaWxkLmgJMjAwOC0xMS0wMiAxMTozNjowMC4wMDAwMDAwMDAgKzA1MzAK
-KysrIGx0cC1mdWxsLTIwMDkwNDMwL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcHRyYWNlL3Nw
-YXduX3B0cmFjZV9jaGlsZC5oCTIwMDktMDctMTUgMDg6NTA6MzYuMDAwMDAwMDAwICswNTMwCkBA
-IC05NCw4ICs5NCwxMiBAQAogI2lmZGVmIFBUUkFDRV9TRVRSRUdTCiAJU1BUKFNFVFJFR1MpCiAj
-ZW5kaWYKKyNpZmRlZiBQVFJBQ0VfR0VUU0lHSU5GTwogCVNQVChHRVRTSUdJTkZPKQorI2VuZGlm
-CisjaWZkZWYgUFRSQUNFX1NFVFNJR0lORk8KIAlTUFQoU0VUU0lHSU5GTykKKyNlbmRpZgogI2lm
-ZGVmIFBUUkFDRV9HRVRGR1JFR1MKIAlTUFQoR0VURkdSRUdTKQogI2VuZGlmCg==
---000e0cd25048d051730469ef7dab--
-
-----Next_Part(Mon_May_18_18_34_48_2009_313)--
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables 
-unlimited royalty-free distribution of the report engine 
-for externally facing server and web deployment. 
-http://p.sf.net/sfu/businessobjects
-----Next_Part(Mon_May_18_18_34_48_2009_313)--
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-----Next_Part(Mon_May_18_18_34_48_2009_313)----
-
+T24gTW9uLCAyMDA5LTA1LTI1IGF0IDAyOjUwICswMjAwLCBKacWZw60gUGFsZcSNZWsgd3JvdGU6
+IAo+IE9uIEZyaSwgMjIgTWF5IDIwMDkgMDg6NTI6MTYgKzAyMDAsIFN1YnJhdGEgTW9kYWsgIAo+
+IDxzdWJyYXRhQGxpbnV4LnZuZXQuaWJtLmNvbT4gd3JvdGU6Cj4gCj4gPiBKaXJpLAo+ID4KPiA+
+IEFueSBwbGFucyB0byByZXNlbmQgdGhpcyA/Cj4gCj4gWWVzLiBTb3JyeSwgSSBvdmVyc2F3IHRo
+aXMuCj4gCj4gUmVnYXJkcwo+ICAgICAgSmlyaSBQYWxlY2VrCgpUaGFua3MuCgpSZWdhcmRzLS0K
+U3VicmF0YQoKPiA+Cj4gPiBPbiBNb24sIDIwMDktMDUtMTggYXQgMTc6MjkgKzA1MzAsIFN1YnJh
+dGEgTW9kYWsgd3JvdGU6Cj4gPj4gT24gRnJpLCAyMDA5LTA1LTE1IGF0IDEyOjQ3ICswNTMwLCBT
+dWJyYXRhIE1vZGFrIHdyb3RlOgo+ID4+ID4gT24gV2VkLCAyMDA5LTA1LTEzIGF0IDAxOjA3ICsw
+MjAwLCBKaXJpIFBhbGVjZWsgd3JvdGU6Cj4gPj4gPiA+IEFsc28sIHVzZSBpdCBpbiBnZXRkZWxh
+eXMuYyB0byBwcmV2ZW50IGNvbXBpbGF0aW9uIGZhaWx1cmVzCj4gPj4gPiA+Cj4gPj4gPiA+IEhl
+bGxvLAo+ID4+ID4gPgo+ID4+ID4gPiBJJ3ZlIGZvdW5kIHRoYXQgbHRwIGRpZG4ndCBjb21waWxl
+IG9uIERlYmlhbiBiZWNhdXNlIG9mIG9sZCBrZXJuZWwgIAo+ID4+IGhlYWRlcnMsCj4gPj4gPiA+
+IHdoaWNoIGNvbnRhaW4gdGFza3N0YXRzIHN0cnVjdCB3aXRob3V0IHNvbWUgb2YgdGhlIG5lZWRl
+ZCBmaWVsZHMuICAKPiA+PiBUaGlzIGF1dG9jb25mCj4gPj4gPiA+IHRlc3QgZGV0ZWN0cyBpdCBh
+bmQgZGlzYWJsZXMgdGhlIGNvZGUgdGhhdCB3b3VsZCBvdGhlcndpc2UgYnJlYWsuCj4gPj4gPiA+
+Cj4gPj4gPiA+IFJlZ2FyZHMKPiA+PiA+ID4gICAgICBKaXJpIFBhbGVjZWsKPiA+PiA+ID4KPiA+
+PiA+ID4gU2lnbmVkLW9mZi1ieTogSmlyaSBQYWxlY2VrIDxqcGFsZWNla0B3ZWIuZGU+Cj4gPj4g
+Pgo+ID4+ID4gU2FtZSBoZXJlOgo+ID4+ID4KPiA+PiA+IEVSUk9SOiBwYXRjaCBzZWVtcyB0byBi
+ZSBjb3JydXB0IChsaW5lIHdyYXBwZWQ/KQo+ID4+ID4gIzEzMjogRklMRTogY29uZmlndXJlLmFj
+OjI0Ogo+ID4+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvY29uZmlnLmguZGVmYXVsdCBiL2luY2x1
+ZGUvY29uZmlnLmguZGVmYXVsdAo+ID4+ID4gdG90YWw6IDEgZXJyb3JzLCAwIHdhcm5pbmdzLCA4
+MyBsaW5lcyBjaGVja2VkCj4gPj4gPgo+ID4+ID4gYW5kCj4gPj4gPgo+ID4+ID4gcGF0Y2hpbmcg
+ZmlsZSBjb25maWd1cmUuYWMKPiA+PiA+IHBhdGNoOiAqKioqIG1hbGZvcm1lZCBwYXRjaCBhdCBs
+aW5lIDEzMjogZGlmZiAtLWdpdAo+ID4+ID4gYS9pbmNsdWRlL2NvbmZpZy5oLmRlZmF1bHQgYi9p
+bmNsdWRlL2NvbmZpZy5oLmRlZmF1bHQKPiA+PiA+Cj4gPj4KPiA+PiBIb3cgYWJvdXQgcmVzZW5k
+aW5nIHRoaXMgUGF0Y2ggYXMgd2VsbCA/Cj4gPj4KPiA+PiBSZWdhcmRzLS0KPiA+PiBTdWJyYXRh
+Cj4gPj4KPiA+PiA+IFJlZ2FyZHMtLQo+ID4+ID4gU3VicmF0YQo+ID4+ID4KPiA+PiA+ID4gLS0t
+Cj4gPj4gPiA+ICAgY29uZmlndXJlLmFjICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgfCAgICAxICsKPiA+PiA+ID4gICBpbmNsdWRlL2NvbmZpZy5oLmRlZmF1bHQgICAgICAgICAg
+ICAgICAgICAgICAgICB8ICAgIDIgKwo+ID4+ID4gPiAgIG00L2x0cC10YXNrc3RhdHMubTQgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAzOCAgCj4gPj4gKysrKysrKysrKysrKysrKysr
+KysrKysKPiA+PiA+ID4gICB0ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2Nncm91cC9nZXRk
+ZWxheXMuYyB8ICAgMTUgKysrKysrLS0tCj4gPj4gPiA+ICAgNCBmaWxlcyBjaGFuZ2VkLCA1MSBp
+bnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQo+ID4+ID4gPiAgIGNyZWF0ZSBtb2RlIDEwMDY0
+NCBtNC9sdHAtdGFza3N0YXRzLm00Cj4gPj4gPiA+Cj4gPj4gPiA+IGRpZmYgLS1naXQgYS9jb25m
+aWd1cmUuYWMgYi9jb25maWd1cmUuYWMKPiA+PiA+ID4gaW5kZXggYzUzNGM5Ny4uOWZjMTY5NiAx
+MDA2NDQKPiA+PiA+ID4gLS0tIGEvY29uZmlndXJlLmFjCj4gPj4gPiA+ICsrKyBiL2NvbmZpZ3Vy
+ZS5hYwo+ID4+ID4gPiBAQCAtMjAsNSArMjAsNiBAQCBMVFBfQ0hFQ0tfU1lTQ0FMTF9NT0RJRllf
+TERUCj4gPj4gPiA+ICAgTFRQX0NIRUNLX1NZU0NBTExfU0lHTkFMRkQKPiA+PiA+ID4gICBMVFBf
+Q0hFQ0tfU0VMSU5VWAo+ID4+ID4gPiAgIExUUF9DSEVDS19DUllQVE8KPiA+PiA+ID4gK0xUUF9D
+SEVDS19UQVNLU1RBVFMKPiA+PiA+ID4gICAgQUNfT1VUUFVUCj4gPj4gPiA+IGRpZmYgLS1naXQg
+YS9pbmNsdWRlL2NvbmZpZy5oLmRlZmF1bHQgYi9pbmNsdWRlL2NvbmZpZy5oLmRlZmF1bHQKPiA+
+PiA+ID4gaW5kZXggOTEyNWQ4NS4uYjlhNjczMSAxMDA2NDQKPiA+PiA+ID4gLS0tIGEvaW5jbHVk
+ZS9jb25maWcuaC5kZWZhdWx0Cj4gPj4gPiA+ICsrKyBiL2luY2x1ZGUvY29uZmlnLmguZGVmYXVs
+dAo+ID4+ID4gPiBAQCAtMTQsMyArMTQsNSBAQAo+ID4+ID4gPiAgICAvKiBpZmFkZHJzLmggaXMg
+aW4gZ2xpYmMtMi4zKyAqLwo+ID4+ID4gPiAgICNkZWZpbmUgSEFWRV9JRkFERFJTX0ggMQo+ID4+
+ID4gPiArCj4gPj4gPiA+ICsjZGVmaW5lIEhBVkVfVEFTS1NUQVRTX0ZSRUVQQUdFU19DT1VOVCAx
+Cj4gPj4gPiA+IGRpZmYgLS1naXQgYS9tNC9sdHAtdGFza3N0YXRzLm00IGIvbTQvbHRwLXRhc2tz
+dGF0cy5tNAo+ID4+ID4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+ID4+ID4gPiBpbmRleCAwMDAw
+MDAwLi41NGRhNzgzCj4gPj4gPiA+IC0tLSAvZGV2L251bGwKPiA+PiA+ID4gKysrIGIvbTQvbHRw
+LXRhc2tzdGF0cy5tNAo+ID4+ID4gPiBAQCAtMCwwICsxLDM4IEBACj4gPj4gPiA+ICtkbmwKPiA+
+PiA+ID4gK2RubCBDb3B5cmlnaHQgKGMpIEppcmkgUGFsZWNlayAyMDA5Cj4gPj4gPiA+ICtkbmwK
+PiA+PiA+ID4gK2RubCBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgIHlvdSBjYW4gcmVk
+aXN0cmlidXRlIGl0IGFuZC9vciAgCj4gPj4gbW9kaWZ5Cj4gPj4gPiA+ICtkbmwgaXQgdW5kZXIg
+dGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyAgCj4gPj4gcHVi
+bGlzaGVkIGJ5Cj4gPj4gPiA+ICtkbmwgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0
+aGVyIHZlcnNpb24gMiBvZiB0aGUgTGljZW5zZSwgIAo+ID4+IG9yCj4gPj4gPiA+ICtkbmwgKGF0
+IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi4KPiA+PiA+ID4gK2RubAo+ID4+ID4gPiAr
+ZG5sIFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwg
+YmUgdXNlZnVsLAo+ID4+ID4gPiArZG5sIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgIHdpdGhv
+dXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZgo+ID4+ID4gPiArZG5sIE1FUkNIQU5UQUJJ
+TElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZQo+ID4+ID4gPiAr
+ZG5sIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgo+ID4+
+ID4gPiArZG5sCj4gPj4gPiA+ICtkbmwgWW91IHNob3VsZCBoYXZlIHJlY2VpdmVkIGEgY29weSBv
+ZiB0aGUgR05VIEdlbmVyYWwgUHVibGljICAKPiA+PiBMaWNlbnNlCj4gPj4gPiA+ICtkbmwgYWxv
+bmcgd2l0aCB0aGlzIHByb2dyYW07ICBpZiBub3QsIHdyaXRlIHRvIHRoZSBGcmVlIFNvZnR3YXJl
+Cj4gPj4gPiA+ICtkbmwgRm91bmRhdGlvbiwgSW5jLiwgNTkgVGVtcGxlIFBsYWNlLCBTdWl0ZSAz
+MzAsIEJvc3RvbiwgTUEgIAo+ID4+IDAyMTExLTEzMDcgVVNBCj4gPj4gPiA+ICtkbmwKPiA+PiA+
+ID4gKwo+ID4+ID4gPiArCj4gPj4gPiA+ICtBQ19ERUZVTihbTFRQX0NIRUNLX1RBU0tTVEFUU10s
+Cj4gPj4gPiA+ICtfTFRQX0NIRUNLX1RBU0tTVEFUU19GUkVFUEFHRVMKPiA+PiA+ID4gKylkbmwK
+PiA+PiA+ID4gKwo+ID4+ID4gPiArZG5sIF9MVFBfQ0hFQ0tfVEFTS1NUQVRTX0ZSRUVQQUdFUwo+
+ID4+ID4gPiArZG5sIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiA+
+PiA+ID4gK2RubAo+ID4+ID4gPiArZG5sIENoZWNrIGZvciB0YXNrc3RhdC5mcmVlcGFnZXNfKiBt
+ZW1iZXJzLCBpbnRyb2R1Y2VkIHRvIHRoZSAgCj4gPj4ga2VybmVsCj4gPj4gPiA+ICtkbmwgaW4g
+Y29tbWl0IDAxNmFlMjE5IGluIEp1bHkgMjAwOAo+ID4+ID4gPiArZG5sCj4gPj4gPiA+ICsKPiA+
+PiA+ID4gK0FDX0RFRlVOKFtfTFRQX0NIRUNLX1RBU0tTVEFUU19GUkVFUEFHRVNdLAo+ID4+ID4g
+PiArW2RubAo+ID4+ID4gPiArQUNfQ0hFQ0tfTUVNQkVSUyhbc3RydWN0IHRhc2tzdGF0cy5mcmVl
+cGFnZXNfY291bnRdLFtdLFtdLFtkbmwKPiA+PiA+ID4gKyNpbmNsdWRlIDxsaW51eC90eXBlcy5o
+Pgo+ID4+ID4gPiArI2luY2x1ZGUgPGxpbnV4L3Rhc2tzdGF0cy5oPgo+ID4+ID4gPiArXSkKPiA+
+PiA+ID4gK11kbmwKPiA+PiA+ID4gKylkbmwKPiA+PiA+ID4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNl
+cy9rZXJuZWwvY29udHJvbGxlcnMvY2dyb3VwL2dldGRlbGF5cy5jCj4gPj4gPiA+IGIvdGVzdGNh
+c2VzL2tlcm5lbC9jb250cm9sbGVycy9jZ3JvdXAvZ2V0ZGVsYXlzLmMKPiA+PiA+ID4gaW5kZXgg
+MTNmN2IzYS4uOWZlMjgzMSAxMDA2NDQKPiA+PiA+ID4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9j
+b250cm9sbGVycy9jZ3JvdXAvZ2V0ZGVsYXlzLmMKPiA+PiA+ID4gKysrIGIvdGVzdGNhc2VzL2tl
+cm5lbC9jb250cm9sbGVycy9jZ3JvdXAvZ2V0ZGVsYXlzLmMKPiA+PiA+ID4gQEAgLTE5OSw4ICsx
+OTksMTAgQEAgdm9pZCBwcmludF9kZWxheWFjY3Qoc3RydWN0IHRhc2tzdGF0cyAqdCkKPiA+PiA+
+ID4gICAJICAgICAgICJTV0FQICAlMTVzJTE1c1xuIgo+ID4+ID4gPiAgIAkgICAgICAgIiAgICAg
+ICUxNWxsdSUxNWxsdVxuIgo+ID4+ID4gPiAgIAkgICAgICAgIlJFQ0xBSU0gICUxMnMlMTVzXG4i
+Cj4gPj4gPiA+IC0JICAgICAgICIgICAgICAlMTVsbHUlMTVsbHVcbiIsCj4gPj4gPiA+IC0JICAg
+ICAgICJjb3VudCIsICJyZWFsIHRvdGFsIiwgInZpcnR1YWwgdG90YWwiLCAiZGVsYXkgdG90YWwi
+LAo+ID4+ID4gPiArI2lmZGVmIEhBVkVfVEFTS1NUQVRTX0ZSRUVQQUdFU19DT1VOVAo+ID4+ID4g
+PiArCSAgICAgICAiICAgICAgJTE1bGx1JTE1bGx1XG4iCj4gPj4gPiA+ICsjZW5kaWYKPiA+PiA+
+ID4gKwkgICAgICAgLCAiY291bnQiLCAicmVhbCB0b3RhbCIsICJ2aXJ0dWFsIHRvdGFsIiwgImRl
+bGF5IHRvdGFsIiwKPiA+PiA+ID4gICAJICAgICAgICh1bnNpZ25lZCBsb25nIGxvbmcpdC0+Y3B1
+X2NvdW50LAo+ID4+ID4gPiAgIAkgICAgICAgKHVuc2lnbmVkIGxvbmcgbG9uZyl0LT5jcHVfcnVu
+X3JlYWxfdG90YWwsCj4gPj4gPiA+ICAgCSAgICAgICAodW5zaWduZWQgbG9uZyBsb25nKXQtPmNw
+dV9ydW5fdmlydHVhbF90b3RhbCwKPiA+PiA+ID4gQEAgLTIxMSw5ICsyMTMsMTIgQEAgdm9pZCBw
+cmludF9kZWxheWFjY3Qoc3RydWN0IHRhc2tzdGF0cyAqdCkKPiA+PiA+ID4gICAJICAgICAgICJj
+b3VudCIsICJkZWxheSB0b3RhbCIsCj4gPj4gPiA+ICAgCSAgICAgICAodW5zaWduZWQgbG9uZyBs
+b25nKXQtPnN3YXBpbl9jb3VudCwKPiA+PiA+ID4gICAJICAgICAgICh1bnNpZ25lZCBsb25nIGxv
+bmcpdC0+c3dhcGluX2RlbGF5X3RvdGFsLAo+ID4+ID4gPiAtCSAgICAgICAiY291bnQiLCAiZGVs
+YXkgdG90YWwiLAo+ID4+ID4gPiAtCSAgICAgICAodW5zaWduZWQgbG9uZyBsb25nKXQtPmZyZWVw
+YWdlc19jb3VudCwKPiA+PiA+ID4gLQkgICAgICAgKHVuc2lnbmVkIGxvbmcgbG9uZyl0LT5mcmVl
+cGFnZXNfZGVsYXlfdG90YWwpOwo+ID4+ID4gPiArCSAgICAgICAiY291bnQiLCAiZGVsYXkgdG90
+YWwiCj4gPj4gPiA+ICsjaWZkZWYgSEFWRV9UQVNLU1RBVFNfRlJFRVBBR0VTX0NPVU5UCj4gPj4g
+PiA+ICsJICAgICAgICwgKHVuc2lnbmVkIGxvbmcgbG9uZyl0LT5mcmVlcGFnZXNfY291bnQsCj4g
+Pj4gPiA+ICsJICAgICAgICh1bnNpZ25lZCBsb25nIGxvbmcpdC0+ZnJlZXBhZ2VzX2RlbGF5X3Rv
+dGFsCj4gPj4gPiA+ICsjZW5kaWYKPiA+PiA+ID4gKwkgICAgICAgKTsKPiA+PiA+ID4gICB9Cj4g
+Pj4gPiA+ICAgIHZvaWQgdGFza19jb250ZXh0X3N3aXRjaF9jb3VudHMoc3RydWN0IHRhc2tzdGF0
+cyAqdCkKPiA+PiA+ID4gLS0KPiA+PiA+ID4gMS42LjIKPiA+PiA+ID4KPiA+PiA+ID4KPiA+PiA+
+ID4gIAo+ID4+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+ID4+ID4gPiBUaGUgTkVXIEtPREFLIGk3
+MDAgU2VyaWVzIFNjYW5uZXJzIGRlbGl2ZXIgdW5kZXIgQU5ZIGNpcmN1bXN0YW5jZXMhICAKPiA+
+PiBZb3VyCj4gPj4gPiA+IHByb2R1Y3Rpb24gc2Nhbm5pbmcgZW52aXJvbm1lbnQgbWF5IG5vdCBi
+ZSBhIHBlcmZlY3Qgd29ybGQgLSBidXQgIAo+ID4+IHRoYW5rcyB0bwo+ID4+ID4gPiBLb2Rhaywg
+dGhlcmUncyBhIHBlcmZlY3Qgc2Nhbm5lciB0byBnZXQgdGhlIGpvYiBkb25lISBXaXRoIHRoZSBO
+RVcgIAo+ID4+IEtPREFLIGk3MDAKPiA+PiA+ID4gU2VyaWVzIFNjYW5uZXIgeW91J2xsIGdldCBm
+dWxsIHNwZWVkIGF0IDMwMCBkcGkgZXZlbiB3aXRoIGFsbCBpbWFnZQo+ID4+ID4gPiBwcm9jZXNz
+aW5nIGZlYXR1cmVzIGVuYWJsZWQuIGh0dHA6Ly9wLnNmLm5ldC9zZnUva29kYWstY29tCj4gPj4g
+PiA+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gPj4g
+PiA+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+ID4+ID4gPiBMdHAtbGlzdEBsaXN0cy5zb3VyY2Vm
+b3JnZS5uZXQKPiA+PiA+ID4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlz
+dGluZm8vbHRwLWxpc3QKPiA+PiA+Cj4gPj4gPgo+ID4+ID4gIAo+ID4+IC0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLQo+ID4+ID4gQ3J5c3RhbCBSZXBvcnRzIC0gTmV3IEZyZWUgUnVudGltZSBhbmQgMzAg
+RGF5IFRyaWFsCj4gPj4gPiBDaGVjayBvdXQgdGhlIG5ldyBzaW1wbGlmaWVkIGxpY2Vuc2luZyBv
+cHRpb24gdGhhdCBlbmFibGVzCj4gPj4gPiB1bmxpbWl0ZWQgcm95YWx0eS1mcmVlIGRpc3RyaWJ1
+dGlvbiBvZiB0aGUgcmVwb3J0IGVuZ2luZQo+ID4+ID4gZm9yIGV4dGVybmFsbHkgZmFjaW5nIHNl
+cnZlciBhbmQgd2ViIGRlcGxveW1lbnQuCj4gPj4gPiBodHRwOi8vcC5zZi5uZXQvc2Z1L2J1c2lu
+ZXNzb2JqZWN0cwo+ID4+ID4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KPiA+PiA+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+ID4+ID4gTHRwLWxpc3RAbGlz
+dHMuc291cmNlZm9yZ2UubmV0Cj4gPj4gPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9s
+aXN0cy9saXN0aW5mby9sdHAtbGlzdAo+ID4+Cj4gPj4KPiA+PiAtLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0KPiA+PiBDcnlzdGFsIFJlcG9ydHMgLSBOZXcgRnJlZSBSdW50aW1lIGFuZCAzMCBEYXkgVHJp
+YWwKPiA+PiBDaGVjayBvdXQgdGhlIG5ldyBzaW1wbGlmaWVkIGxpY2Vuc2luZyBvcHRpb24gdGhh
+dCBlbmFibGVzCj4gPj4gdW5saW1pdGVkIHJveWFsdHktZnJlZSBkaXN0cmlidXRpb24gb2YgdGhl
+IHJlcG9ydCBlbmdpbmUKPiA+PiBmb3IgZXh0ZXJuYWxseSBmYWNpbmcgc2VydmVyIGFuZCB3ZWIg
+ZGVwbG95bWVudC4KPiA+PiBodHRwOi8vcC5zZi5uZXQvc2Z1L2J1c2luZXNzb2JqZWN0cwo+ID4+
+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gPj4gTHRw
+LWxpc3QgbWFpbGluZyBsaXN0Cj4gPj4gTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4g
+Pj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+PiA+Cj4gCj4gCj4gCj4gLS0gCj4gVXNpbmcgT3BlcmEncyByZXZvbHV0aW9uYXJ5IGUtbWFpbCBj
+bGllbnQ6IGh0dHA6Ly93d3cub3BlcmEuY29tL21haWwvCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+ClJlZ2lzdGVyIE5vdyBmb3IgQ3JlYXRpdml0eSBhbmQgVGVjaG5vbG9neSAoQ2FUKSwgSnVuZSAz
+cmQsIE5ZQy4gQ2FUCmlzIGEgZ2F0aGVyaW5nIG9mIHRlY2gtc2lkZSBkZXZlbG9wZXJzICYgYnJh
+bmQgY3JlYXRpdml0eSBwcm9mZXNzaW9uYWxzLiBNZWV0CnRoZSBtaW5kcyBiZWhpbmQgR29vZ2xl
+IENyZWF0aXZlIExhYiwgVmlzdWFsIENvbXBsZXhpdHksIFByb2Nlc3NpbmcsICYgCmlQaG9uZURl
+dkNhbXAgYXN0aGV5IHByZXNlbnQgYWxvbmdzaWRlIGRpZ2l0YWwgaGVhdnl3ZWlnaHRzIGxpa2Ug
+QmFyYmFyaWFuCkdyb3VwLCBSL0dBLCAmIEJpZyBTcGFjZXNoaXAuIGh0dHA6Ly93d3cuY3JlYXRp
+dml0eWNhdC5jb20gCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
+aHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
