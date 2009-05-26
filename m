@@ -1,32 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <maknayak@in.ibm.com>) id 1M68ZX-00061a-CJ
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 19:32:27 +0000
-Received: from e32.co.us.ibm.com ([32.97.110.150])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M68ZM-0007y9-DF
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 19:32:27 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e32.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4IJ8uer015657
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 13:08:56 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4IJCLfx252796
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 13:12:21 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4IJCKf0029137
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 13:12:21 -0600
-From: Manas Kumar Nayak <maknayak@in.ibm.com>
-Date: Tue, 19 May 2009 00:42:16 +0530
-Message-Id: <20090518191216.9777.12249.sendpatchset@subratamodak.linux.ibm.com>
-In-Reply-To: <20090518190905.9777.91288.sendpatchset@subratamodak.linux.ibm.com>
-References: <20090518190905.9777.91288.sendpatchset@subratamodak.linux.ibm.com>
-Subject: [LTP] [PATCH 19/21] Add timer_gettime01 test for timer_gettime
-	syscall
+	(envelope-from <srinivass@in.ibm.com>) id 1M8wXA-0006Fp-CP
+	for ltp-list@lists.sourceforge.net; Tue, 26 May 2009 13:17:36 +0000
+Received: from e28smtp05.in.ibm.com ([59.145.155.5])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1M8wX6-0007ZC-4u
+	for ltp-list@lists.sourceforge.net; Tue, 26 May 2009 13:17:36 +0000
+In-Reply-To: <1243268077.6752.23.camel@subratamodak.linux.ibm.com>
+References: <OF0C37E154.CA4A0A35-ON652575C1.00256153-652575C1.0025D2AB@in.ibm.com>
+	<1243268077.6752.23.camel@subratamodak.linux.ibm.com>
+Message-ID: <OF77108762.11730212-ON652575C2.0043DF42-652575C2.004498B7@in.ibm.com>
+From: Srinivasan Subramanian3 <srinivass@in.ibm.com>
+Date: Tue, 26 May 2009 17:56:51 +0530
+MIME-Version: 1.0
+Subject: Re: [LTP] LTP on System z: runltp segfaults on RHEL 4
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,278 +25,157 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-Cc: Deepakraj B Himavantharaj <deepakraj@in.ibm.com>, Manas Kumar Nayak <maknayak@in.ibm.com>
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sf.net
 
-Signed-off-by: Manas Kumar Nayak <maknayak@in.ibm.com>,
-To: LTP List <ltp-list@lists.sourceforge.net>,
-Cc: Deepakraj B Himavantharaj <deepakraj@in.ibm.com>,
-Cc: Subrata Modak <subrata@linux.vnet.ibm.com>,
-Cc: Masatake YAMATO <yamato@redhat.com>,
----
+Hi Subrata,
 
---- ltp-intermediate-20090518-manas-work-original/testcases/kernel/syscalls/timer_gettime/Makefile	1970-01-01 05:30:00.000000000 +0530
-+++ ltp-intermediate-20090518-manas-work/testcases/kernel/syscalls/timer_gettime/Makefile	2009-04-05 00:48:47.000000000 +0530
-@@ -0,0 +1,31 @@
-+#
-+#  Copyright (c) International Business Machines  Corp., 2009
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+
-+CFLAGS += -I../../../../include -Wall
-+LDLIBS += -L../../../../lib -lltp
-+
-+SRCS    = $(wildcard *.c)
-+TARGETS = $(patsubst %.c,%,$(SRCS))
-+
-+all: $(TARGETS)
-+
-+install:
-+	@set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i ; done
-+
-+clean:
-+	rm -f $(TARGETS)
---- ltp-intermediate-20090518-manas-work-original/testcases/kernel/syscalls/timer_gettime/timer_gettime01.c	1970-01-01 05:30:00.000000000 +0530
-+++ ltp-intermediate-20090518-manas-work/testcases/kernel/syscalls/timer_gettime/timer_gettime01.c	2009-05-18 23:35:42.000000000 +0530
-@@ -0,0 +1,199 @@
-+/******************************************************************************/
-+/* Copyright (c) Crackerjack Project., 2007                                   */
-+/*                                                                            */
-+/* This program is free software;  you can redistribute it and/or modify      */
-+/* it under the terms of the GNU General Public License as published by       */
-+/* the Free Software Foundation; either version 2 of the License, or          */
-+/* (at your option) any later version.                                        */
-+/*                                                                            */
-+/* This program is distributed in the hope that it will be useful,            */
-+/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
-+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
-+/* the GNU General Public License for more details.                           */
-+/*                                                                            */
-+/* You should have received a copy of the GNU General Public License          */
-+/* along with this program;  if not, write to the Free Software               */
-+/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
-+/*                                                                            */
-+/******************************************************************************/
-+/******************************************************************************/
-+/*                                                                            */
-+/* File:        timer_gettime01.c                                           */
-+/*                                                                            */
-+/* Description: This tests the timer_gettime() syscall                      */
-+/*                                                                            */
-+/* Usage:  <for command-line>                                                 */
-+/* timer_gettime01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                     */
-+/*      where,  -c n : Run n copies concurrently.                             */
-+/*              -e   : Turn on errno logging.                                 */
-+/*              -i n : Execute test n times.                                  */
-+/*              -I x : Execute test for x seconds.                            */
-+/*              -P x : Pause for x seconds between iterations.                */
-+/*              -t   : Turn on syscall timing.                                */
-+/*                                                                            */
-+/* Total Tests: 1                                                             */
-+/*                                                                            */
-+/* Test Name:   timer_gettime01                                             */
-+/* History:     Porting from Crackerjack to LTP is done by                    */
-+/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
-+/******************************************************************************/
-+#include <time.h>
-+#include <signal.h>
-+#include <syscall.h>
-+#include <stdio.h>
-+#include <errno.h>
-+
-+/* Harness Specific Include Files. */
-+#include "test.h"
-+#include "usctest.h"
-+#include "linux_syscall_numbers.h"
-+
-+/* Extern Global Variables */
-+extern int Tst_count;           /* counter for tst_xxx routines.         */
-+extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
-+
-+/* Global Variables */
-+char *TCID = "timer_gettime01";  /* Test program identifier.*/
-+int  testno;
-+int  TST_TOTAL = 3;                   /* total number of tests in this file.   */
-+
-+/* Extern Global Functions */
-+/******************************************************************************/
-+/*                                                                            */
-+/* Function:    cleanup                                                       */
-+/*                                                                            */
-+/* Description: Performs all one time clean up for this test on successful    */
-+/*              completion,  premature exit or  failure. Closes all temporary */
-+/*              files, removes all temporary directories exits the test with  */
-+/*              appropriate return code by calling tst_exit() function.       */
-+/*                                                                            */
-+/* Input:       None.                                                         */
-+/*                                                                            */
-+/* Output:      None.                                                         */
-+/*                                                                            */
-+/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
-+/*              On success - Exits calling tst_exit(). With '0' return code.  */
-+/*                                                                            */
-+/******************************************************************************/
-+extern void cleanup() {
-+        /* Remove tmp dir and all files in it */
-+        TEST_CLEANUP;
-+        tst_rmdir();
-+        /* Exit with appropriate return code. */
-+        tst_exit();
-+}
-+
-+/* Local  Functions */
-+/******************************************************************************/
-+/*                                                                            */
-+/* Function:    setup                                                         */
-+/*                                                                            */
-+/* Description: Performs all one time setup for this test. This function is   */
-+/*              typically used to capture signals, create temporary dirs      */
-+/*              and temporary files that may be used in the course of this    */
-+/*              test.                                                         */
-+/*                                                                            */
-+/* Input:       None.                                                         */
-+/*                                                                            */
-+/* Output:      None.                                                         */
-+/*                                                                            */
-+/* Return:      On failure - Exits by calling cleanup().                      */
-+/*              On success - returns 0.                                       */
-+/*                                                                            */
-+/******************************************************************************/
-+void setup() {
-+        /* Capture signals if any */
-+        /* Create temporary directories */
-+        TEST_PAUSE;
-+
-+        tst_tmpdir();
-+}
-+
-+#define ENTER(normal) tst_resm(TINFO, "Enter block %d: test %d (%s)", \
-+                         block, Tst_count, normal?"NORMAL":"ERROR");
-+
-+char tmpname[40];
-+int parent;
-+int block = 1;
-+
-+
-+
-+int main(int ac, char **av) {
-+        int lc;                 /* loop counter */
-+        char *msg;              /* message returned from parse_opts */
-+
-+        timer_t created_timer_id;
-+        struct sigevent ev;
-+        struct itimerspec spec;
-+
-+	
-+        /* parse standard options */
-+        if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
-+             tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
-+             tst_exit();
-+           }
-+
-+        setup();
-+
-+        /* Check looping state if -i option given */
-+        for (lc = 0; TEST_LOOPING(lc); ++lc) {
-+                Tst_count = 0;
-+	        for (testno = 0; testno < TST_TOTAL; ++testno) {
-+                     ENTER(1);
-+	                ev.sigev_value = (sigval_t)0;
-+	                ev.sigev_signo = SIGALRM;
-+	                ev.sigev_notify = SIGEV_SIGNAL;
-+	                TEST(syscall(__NR_timer_create, CLOCK_REALTIME, &ev, &created_timer_id ));
-+			TEST( syscall(__NR_timer_gettime, created_timer_id, &spec ));
-+			if(TEST_RETURN == 0){
-+			      tst_resm(TPASS, "Block %d: test %d PASSED", block, Tst_count );
-+	                } else {
-+				tst_resm(TFAIL, "Block %d: test %d FAILED... errno = %d : %s", block, Tst_count,TEST_ERRNO, strerror(TEST_ERRNO) );
-+				cleanup();
-+        			tst_exit();
-+			 }
-+	
-+
-+			
-+/*
-+
-+ERRORS
-+       -EINVAL
-+              An invalid timer_id value was specified.
-+*/
-+                ENTER(0);
-+                TEST( syscall(__NR_timer_gettime, -1, &spec ));
-+		if(TEST_RETURN < 0 && TEST_ERRNO == EINVAL ) {
-+                        tst_resm(TPASS, "Block %d: test %d PASSED", block, Tst_count );
-+	        } else {
-+			tst_resm(TFAIL, "Block %d: test %d FAILED... errno = %d : %s", block, Tst_count,TEST_ERRNO, strerror(TEST_ERRNO) );
-+			cleanup();
-+        		tst_exit();
-+                }
-+
-+/*
-+
-+       -EFAULT
-+              An invalid address of setting was specified.
-+*/
-+
-+
-+                ENTER(0);
-+                TEST( syscall(__NR_timer_gettime, created_timer_id, NULL ));
-+		if(TEST_RETURN < 0 && TEST_ERRNO == EFAULT ) {
-+                       tst_resm(TPASS, "Block %d: test %d PASSED", block, Tst_count );
-+	        } else {
-+			tst_resm(TFAIL, "Block %d: test %d FAILED... errno = %d : %s", block, Tst_count,TEST_ERRNO, strerror(TEST_ERRNO) );
-+			cleanup();
-+        		tst_exit();
-+                }
-+
-+
-+
-+
-+                }
-+        }	
-+	cleanup();
-+        tst_exit();
-+}
-+
---- ltp-intermediate-20090518-manas-work-original/runtest/syscalls	2009-05-18 23:38:35.000000000 +0530
-+++ ltp-intermediate-20090518-manas-work/runtest/syscalls	2009-05-18 23:37:34.000000000 +0530
-@@ -1159,6 +1159,7 @@ timerfd02 timerfd02
- timerfd03 timerfd03
- 
- timer_getoverrun01 timer_getoverrun01
-+timer_gettime01 timer_gettime01
- 
- truncate01 truncate01
- truncate01_64 truncate01_64
+I ran runltp with syscalls command file, then ran the pan with gdb.. here
+is the output for the same
 
----
+   [root@t63lp24 ltp-intermediate-20090521]# gdb pan/ltp-pan
+   GNU gdb Red Hat Linux (6.3.0.0-1.162.el4rh)
+   Copyright 2004 Free Software Foundation, Inc.
+   GDB is free software, covered by the GNU General Public License, and you
+   are
+   welcome to change it and/or distribute copies of it under certain
+   conditions.
+   Type "show copying" to see the conditions.
+   There is absolutely no warranty for GDB.  Type "show warranty" for
+   details.
+   This GDB was configured as "s390x-redhat-linux-gnu"...Using host
+   libthread_db library "/lib64/tls/libthread_db.so.1".
+
+   (gdb) r pan/ltp-pan 0 -e -S 2 10 -a srinivass@in.ibm.com -n $$ -p -f
+   /tmp/ltp-lOGaG20871-srini/alltests -l
+   /root/ltp-intermediate-20090521/results/LTP_RUN_ON-2009_May_26-05PM-srini.log
+ -o
+   /root/ltp-intermediate-20090521/results/LTP_RUN_ON-2009_May_26-05PM-srini.out
+ -C
+   /root/ltp-intermediate-20090521/output/LTP_RUN_ON-2009_May_26-5PM-srini.failed
+   Starting program: /root/ltp-intermediate-20090521/pan/ltp-pan
+   pan/ltp-pan 0 -e -S 2 10 -a srinivass@in.ibm.com -n $$ -p -f
+   /tmp/ltp-lOGaG20871-srini/alltests -l
+   /root/ltp-intermediate-20090521/results/LTP_RUN_ON-2009_May_26-05PM-srini.log
+ -o
+   /root/ltp-intermediate-20090521/results/LTP_RUN_ON-2009_May_26-05PM-srini.out
+ -C
+   /root/ltp-intermediate-20090521/output/LTP_RUN_ON-2009_May_26-5PM-srini.failed
+
+   Program received signal SIGSEGV, Segmentation fault.
+   0x00000200000ed198 in vfprintf () from /lib64/tls/libc.so.6
+
+
+Thanks &
+---------------------------------
+Best Regards,
+Srinivasan S,
+Linux on System z, LTC
+srinivass@in.ibm.com
+srinivass@linux.vnet.ibm.com
+----------------------------------
+
+
+|------------>
+| From:      |
+|------------>
+  >--------------------------------------------------------------------------------------------------------------------------------------------------|
+  |Subrata Modak <subrata@linux.vnet.ibm.com>                                                                                                        |
+  >--------------------------------------------------------------------------------------------------------------------------------------------------|
+|------------>
+| To:        |
+|------------>
+  >--------------------------------------------------------------------------------------------------------------------------------------------------|
+  |Srinivasan Subramanian3/India/IBM@IBMIN                                                                                                           |
+  >--------------------------------------------------------------------------------------------------------------------------------------------------|
+|------------>
+| Cc:        |
+|------------>
+  >--------------------------------------------------------------------------------------------------------------------------------------------------|
+  |ltp-list@lists.sf.net                                                                                                                             |
+  >--------------------------------------------------------------------------------------------------------------------------------------------------|
+|------------>
+| Date:      |
+|------------>
+  >--------------------------------------------------------------------------------------------------------------------------------------------------|
+  |05/25/2009 09:42 PM                                                                                                                               |
+  >--------------------------------------------------------------------------------------------------------------------------------------------------|
+|------------>
+| Subject:   |
+|------------>
+  >--------------------------------------------------------------------------------------------------------------------------------------------------|
+  |Re: [LTP] LTP on System z: runltp segfaults on RHEL 4                                                                                             |
+  >--------------------------------------------------------------------------------------------------------------------------------------------------|
+
+
+
+
+
+Can you also provide a little info on running pan through gdb ?
+
 Regards--
-Manas
+Subrata
+
+On Mon, 2009-05-25 at 12:20 +0530, Srinivasan Subramanian3 wrote:
+> Hello all,
+>
+> When i ran the runltp script on a RHEL4.8 (64 bit machine) on System z,
+it
+> seg faulted..
+>
+> Running tests.......
+> ./runltp: line 166: 20024 Segmentation fault      ${LTPROOT}/pan/ltp-pan
+> $QUIET_MODE -e -S $INSTANCES $DURATION -a $$ -n $$ $PRETTY_PRT -f
+> ${TMP}/alltests $LOGFILE $OUTPUTFILE $FAILCMDFILE
+> INFO: ltp-pan reported some tests FAIL
+> LTP Version: LTP-20090430
+>
+> uname -r
+> 2.6.9-89.EL
+>
+> cat /etc/issue
+> Red Hat Enterprise Linux AS release 4 (Nahant Update 8)
+>
+> Thanks in advance &
+> ---------------------------------
+> Best Regards,
+> Srinivasan S,
+> Linux on System z, LTC
+> srinivass@in.ibm.com
+> srinivass@linux.vnet.ibm.com
+> ----------------------------------
+>
+>
+>
+>
+>
+------------------------------------------------------------------------------
+
+> Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+> is a gathering of tech-side developers & brand creativity professionals.
+Meet
+> the minds behind Google Creative Lab, Visual Complexity, Processing, &
+> iPhoneDevCamp asthey present alongside digital heavyweights like
+Barbarian
+> Group, R/GA, & Big Spaceship. http://www.creativitycat.com
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
+
 
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables 
-unlimited royalty-free distribution of the report engine 
-for externally facing server and web deployment. 
-http://p.sf.net/sfu/businessobjects
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+is a gathering of tech-side developers & brand creativity professionals. Meet
+the minds behind Google Creative Lab, Visual Complexity, Processing, & 
+iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
+Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
