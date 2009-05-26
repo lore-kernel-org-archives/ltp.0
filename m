@@ -2,17 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <srinivass@in.ibm.com>) id 1M7Vk9-0005n9-Qf
-	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 14:29:05 +0000
-Received: from e28smtp08.in.ibm.com ([59.145.155.8])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M7Vk8-0007b5-1U
-	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 14:29:05 +0000
-From: Srinivasan Subramanian3 <srinivass@in.ibm.com>
-Date: Fri, 22 May 2009 09:02:47 -0400
-Message-ID: <OF8E537471.9A2FB872-ON652575BE.004CF0F4@in.ibm.com>
+	(envelope-from <marc@tensilica.com>) id 1M95tm-0006rf-0y
+	for ltp-list@lists.sourceforge.net; Tue, 26 May 2009 23:17:34 +0000
+Received: from mailgw.tensilica.com ([65.205.227.134])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1M95tk-0006xM-SH
+	for ltp-list@lists.sourceforge.net; Tue, 26 May 2009 23:17:33 +0000
+From: Marc Gauthier <marc@tensilica.com>
+Date: Tue, 26 May 2009 13:14:59 -0700
+Message-ID: <522C1DF17AF50042AD8AE87F7887BD3D0158B359A4@exch.hq.tensilica.com>
+References: <20090526142706.20166.3813.sendpatchset@subratamodak.linux.ibm.com>
+In-Reply-To: <20090526142706.20166.3813.sendpatchset@subratamodak.linux.ibm.com>
+Content-Language: en-US
 MIME-Version: 1.0
-Subject: [LTP] LTP Build fail on System z 64 bit machine
+Subject: Re: [LTP] [PATCH] Detect test results more accurately
+	when	generating HTML
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,125 +26,90 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8472550167124707547=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sf.net
-
---===============8472550167124707547==
-Content-Type: text/html; charset=UTF-8
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Subrata Modak <subrata@linux.vnet.ibm.com>, Rohit Verma <rohit.170309@gmail.com>
+Cc: Ltp-List <ltp-list@lists.sf.net>
 
-<STYLE type=3D"text/css">.container {PADDING-LEFT: 8px; font-family: Taho=
-ma, Helvetica, Arial, sans-serif; font-size: 10px; background-color: #F5F=
-5F5;} .container .name {font-weight: bold;} .container .email {color: #33=
-99FF;} .container .date, .container .to, .container .toValue, .container =
-.subject, .container .subjectValue {display:none; position: absolute; lef=
-t: -10000px;} .container .body {PADDING-LEFT: 10px; BORDER-LEFT: dotted 1=
-px black; font-size: 13px;}</STYLE><p>Hi all,</p><p>When i tried to build=
- ltp on a RHEL4.8 machine, the build failed with undefined reference on s=
-plice02.</p><p><b>Machine info</b></p><p>RHEL4.8 GA (64 bit)</p><p>Kernel=
- version-=C2=A02.6.9-89.EL</p><p><b>Error Info</b></p><style type=3D"text=
-/css">
-body { margin: 0 0 0 0; padding:0 0 0 0 }
-td,div { font-family:Tahoma;font-size:8pt;vertical-align:top }
-body { margin: 0 0 0 0; padding:0 0 0 0 }
-transcript { background-color:#d2d2d2; }
-messageBlock { margin-left:4px; margin-bottom:3px }
-message { margin-left:100px; word-wrap:break-word; white-space:-moz-pre-w=
-rap; _white-space:pre; }
-messageCont { margin-left:100px; word-wrap:break-word; white-space:-moz-p=
-re-wrap; _white-space:pre;}
-other { color:#39577a;vertical-align:top;font-weight:bold;font-style:norm=
-al;float:left; width:95px; }
-myself { color:#da8103;font-style:normal;font-weight:bold;font-style:norm=
-al;float:left; width:95px; }
-otherCont { font-size:8px;text-align:right; color:#39577a;font-family:Ari=
-al,Lucida Grande;font-style:normal;vertical-align:top;font-weight:bold;fl=
-oat:left; width:95px; }
-myselfCont { font-size:8px;text-align:right; color:#da8103;font-family:Ar=
-ial,Lucida Grande;font-style:normal;vertical-align:top;font-weight:bold;f=
-loat:left; width:95px; }
-system { margin-left:4px; word-wrap:break-word;color:#da8103;font-style:n=
-ormal;font-weight:normal; white-space:-moz-pre-wrap; _white-space:pre; }
-showTimestamp { margin-right:3px; float:right; color:#999999;font-style:n=
-ormal;font-weight:normal; }
-other1 { color:#ac2000;vertical-align:top;font-weight:bold;font-style:nor=
-mal;float:left; width:95px; }
-otherCont1 { font-size:8px;text-align:right; color:#ac2000;font-family:Ar=
-ial,Lucida Grande;font-style:normal;vertical-align:top;font-weight:bold;f=
-loat:left; width:95px; }
-other2 { color:#3c9fa8;vertical-align:top;font-weight:bold;font-style:nor=
-mal;float:left; width:95px; }
-otherCont2 { font-size:8px;text-align:right; color:#3c9fa8;font-family:Ar=
-ial,Lucida Grande;font-style:normal;vertical-align:top;font-weight:bold;f=
-loat:left; width:95px; }
-other3 { color:#e25614;vertical-align:top;font-weight:bold;font-style:nor=
-mal;float:left; width:95px; }
-otherCont3 { font-size:8px;text-align:right; color:#e25614;font-family:Ar=
-ial,Lucida Grande;font-style:normal;vertical-align:top;font-weight:bold;f=
-loat:left; width:95px; }
-other4 { color:#0b6ac8;vertical-align:top;font-weight:bold;font-style:nor=
-mal;float:left; width:95px; }
-otherCont4 { font-size:8px;text-align:right; color:#0b6ac8;font-family:Ar=
-ial,Lucida Grande;font-style:normal;vertical-align:top;font-weight:bold;f=
-loat:left; width:95px; }
-other5 { color:#b23290;vertical-align:top;font-weight:bold;font-style:nor=
-mal;float:left; width:95px; }
-otherCont5 { font-size:8px;text-align:right; color:#b23290;font-family:Ar=
-ial,Lucida Grande;font-style:normal;vertical-align:top;font-weight:bold;f=
-loat:left; width:95px; }
-other6 { color:#02e7c7;vertical-align:top;font-weight:bold;font-style:nor=
-mal;float:left; width:95px; }
-otherCont6 { font-size:8px;text-align:right; color:#02e7c7;font-family:Ar=
-ial,Lucida Grande;font-style:normal;vertical-align:top;font-weight:bold;f=
-loat:left; width:95px; }
-other7 { color:#5b3284;vertical-align:top;font-weight:bold;font-style:nor=
-mal;float:left; width:95px; }
-otherCont7 { font-size:8px;text-align:right; color:#5b3284;font-family:Ar=
-ial,Lucida Grande;font-style:normal;vertical-align:top;font-weight:bold;f=
-loat:left; width:95px; }
-tsDisplay { display:block }</style>
-/root/ltp-intermediate-20090521/testcases/kernel/syscalls/splice/splice02=
-.c:126: undefined reference to `splice'<br />collect2: ld returned 1 exit=
- status<br />make[4]: *** [splice02] Error 1<br />make[4]: Leaving direct=
-ory `/root/ltp-intermediate-20090521/testcases/kernel/syscalls/splice'<br=
- />make[3]: *** [all] Error 2<br />make[3]: Leaving directory `/root/ltp-=
-intermediate-20090521/testcases/kernel/syscalls'<br />make[2]: *** [all] =
-Error 2<br />make[2]: Leaving directory `/root/ltp-intermediate-20090521/=
-testcases/kernel'<br />make[1]: *** [all] Error 2<br />make[1]: Leaving d=
-irectory `/root/ltp-intermediate-20090521/testcases'<br />make: *** [all]=
- Error 2<table width=3D"500px"><tbody /></table>
-<p>Kindly help me on this issue.</p><p>Thanks &amp;=C2=A0</p><p>---------=
-------------------------
-<br />Best Regards,
-<br />Srinivasan S,=20
-<br />Linux on System z, LTC
-<br />srinivass@in.ibm.com
-<br />srinivass@linux.vnet.ibm.com
-<br />----------------------------------<br /></p><p />
+Okay, so I looked at it a bit...
+
+Isn't the fundamental race condition because pan outputs
+<<<test_start>>> *after* doing the fork(), rather than before?
+
+If some status info can't be output that early, maybe it just
+needs to be output after <<<execution_status>>> as part of
+write_test_end() ?
+
+-Marc
+
+P.S.  I find it useful to run genhtml against older LTP releases
+(including those without genhtml), so might be useful to keep the
+out-of-order workarounds even if ordering is fixed in this release.
 
 
---===============8472550167124707547==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Subrata Modak wrote:
+> How much would you want to delay ? May be to some microsecs !!
+> However delaying is not a good option, but, i am ready to consider.
+> See, what is the reasanable time so that this problem vanishes.
+>
+> Meanwhile, i have generated this small patch. It tries to
+> flush all data
+> to be written to STDOUT before the Parent (PAN) tries to write his
+> next tag. Moreover, i have included the fflush() to be executed inside
+> the if()=C2=B4s domain whenever the parent is writing from <<test_start>>
+> till <<test_output>>. See, if this can help in solving the problem.
+>
+> Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>
+> ---
+>
+> --- ltp-intermediate-20090521/pan/ltp-pan.c.orig
+> 2009-05-26 16:30:39.000000000 +0530
+> +++ ltp-intermediate-20090521/pan/ltp-pan.c   2009-05-26
+> 19:44:37.000000000 +0530
+> @@ -1015,6 +1015,7 @@ static pid_t run_child(struct coll_entry
+>               errbuf[errlen] =3D '\0';
+>               /* fprintf(stderr, "%s", errbuf); */
+>               waitpid(cpid, &status, 0);
+> +             fflush(stdout); /* Flush any data before
+> writing <<test_end>>*/
+>               if (WIFSIGNALED(status)) {
+>                       termid =3D WTERMSIG(status);
+>                       termtype =3D "signaled";
+> @@ -1300,14 +1301,14 @@ static void copy_buffered_output(struct
+>
+>  static void write_test_start(struct tag_pgrp *running, const
+> char *init_status)
+>  {
+> -     if (!strcmp(reporttype, "rts"))
+> +     if (!strcmp(reporttype, "rts")) {
+>               printf("%s\ntag=3D%s
+> stime=3D%ld\ncmdline=3D\"%s\"\ncontacts=3D\"%s\"\nanalysis=3D%s\niniti
+ation_status=3D\"%s\"\n%s\n",
+>                      "<<<test_start>>>",
+>                      running->cmd->name, running->mystime,
+> running->cmd->cmdline, "",
+>                      "exit", init_status,
+>                      "<<<test_output>>>");
+> -
+>       fflush(stdout);
+> +     }
+>  }
+>
 
-------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
-is a gathering of tech-side developers & brand creativity professionals. Meet
-the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
-Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
---===============8472550167124707547==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+---------------------------------------------------------------------------=
+---
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT =
+
+is a gathering of tech-side developers & brand creativity professionals. Me=
+et
+the minds behind Google Creative Lab, Visual Complexity, Processing, & =
+
+iPhoneDevCamp as they present alongside digital heavyweights like Barbarian =
+
+Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com =
 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============8472550167124707547==--
