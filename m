@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <caiqian@cclom.cn>) id 1M655W-0004VI-TR
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 15:49:14 +0000
-Received: from smtp109.biz.mail.re2.yahoo.com ([206.190.53.8])
-	by 3b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1M655T-0006uz-VH
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 15:49:14 +0000
-Date: Mon, 18 May 2009 19:29:56 +0800 (CST)
-Message-Id: <20090518.192956.27798434.caiqian@cclom.cn>
-From: CAI Qian <caiqian@cclom.cn>
-In-Reply-To: <E733EF347D18094EB0D8B89116EB269C01DF32D5@MADARRMAIL4.indra.es>
-References: <E733EF347D18094EB0D8B89116EB269C01DF29F7@MADARRMAIL4.indra.es>
-	<4A0C9518.8040009@web.de>
-	<E733EF347D18094EB0D8B89116EB269C01DF32D5@MADARRMAIL4.indra.es>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M8xdI-0005k0-6a
+	for ltp-list@lists.sourceforge.net; Tue, 26 May 2009 14:28:00 +0000
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1M8xdF-0002Hg-UH
+	for ltp-list@lists.sourceforge.net; Tue, 26 May 2009 14:28:00 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <d51f89b0905250453q62395300la1dfddc20bdb0af5@mail.gmail.com>
+References: <7B7EF7F090B9804A830ACC82F2CDE95DD01ED4@insardxms01.ap.sony.com>
+	<d51f89b0905250453q62395300la1dfddc20bdb0af5@mail.gmail.com>
+Date: Tue, 26 May 2009 17:52:39 +0530
+Message-Id: <1243340559.6293.20.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] Error installing ltp-full-20090430
+Subject: Re: [LTP] patch for timer_create04 and clock_gettime03 issue.
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,47 +26,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: =?iso-8859-1?Q?Cobreces=C1lvarez@cclom.cn?=, amcobreces@eservicios.indra.es
-Cc: ltp-list@lists.sf.net, jpalecek@web.de
+To: rohit verma <rohit.170309@gmail.com>
+Cc: ltp-list@lists.sf.net
 
-RnJvbTogQ29icmVjZXMgw4FsdmFyZXosIEFuYSBNYXJpYSA8YW1jb2JyZWNlc0Blc2VydmljaW9z
-LmluZHJhLmVzPg0KU3ViamVjdDogUmU6IFtMVFBdIEVycm9yIGluc3RhbGxpbmcgbHRwLWZ1bGwt
-MjAwOTA0MzANCkRhdGU6IE1vbiwgMTggTWF5IDIwMDkgMTI6MTg6MjEgKzAyMDANCg0KPiANCj4g
-DQo+IEkgc2VuZCB5b3UgdGhlIGFjdHVhbCBlcnJvcnMgaW4gdGhlIGF0dGFjaGVkIGZpbGUuDQo+
-IA0KPiBUaGFua3MgaW4gYWR2YW5jZS4gUmVnYXJkcy4NCj4gQW5hIEPDs2JyZWNlcy4NCj4gDQo+
-IC0tLS0tTWVuc2FqZSBvcmlnaW5hbC0tLS0tDQo+IERlOiBqcGFsZWNla0B3ZWIuZGUgW21haWx0
-bzpqcGFsZWNla0B3ZWIuZGVdIA0KPiBFbnZpYWRvIGVsOiB2aWVybmVzLCAxNSBkZSBtYXlvIGRl
-IDIwMDkgMDowMw0KPiBQYXJhOiBDb2JyZWNlcyDDgWx2YXJleiwgQW5hIE1hcmlhDQo+IENDOiBs
-dHAtbGlzdEBsaXN0cy5zZi5uZXQ7IEJyacOxYXMgQWxvbnNvLCBGcmFuY2lzY28gTWFudWVsDQo+
-IEFzdW50bzogUmU6IFtMVFBdIEVycm9yIGluc3RhbGxpbmcgbHRwLWZ1bGwtMjAwOTA0MzANCj4g
-DQo+IENvYnJlY2VzIMOBbHZhcmV6LCBBbmEgTWFyaWEgd3JvdGU6DQo+PiBXaGVuIEkgcnVuICJt
-YWtlIGFsbCIgd2l0aCB0aGUgZGVmYXVsdCBjb25maWd1cmF0aW9uLCBzb21lIGVycm9ycw0KPj4g
-YXBwZWFyLiBJIHNlbmQgeW91IHRoZSBjb25maWcubG9nIGZpbGUuIMK/Y291bGQgeW91IHBsZWFz
-ZSBwcm92aWRlIGFueQ0KPj4gYW5zd2VyIG9uIHdoaWNoIGlzIHRoZSBwcm9ibGVtPw0KPiANCj4g
-IEZyb20gdGhlIGxvZyBmaWxlIHlvdSBwcm92aWRlZCwgSSBjYW4gc2VlIHlvdSBoYXZlIGEgcmF0
-aGVyIG9sZCBrZXJuZWwgdGhhdCANCj4gbGFja3Mgc29tZSBvZiB0aGUgdGVzdGVkIGZlYXR1cmVz
-LiBIb3dldmVyLCB0aGlzIHNob3VsZCBub3QgYmUgYSBwcm9ibGVtIHBlciBzZS4NCj4gDQo+IENv
-dWxkIHlvdSBzZW5kIHRoZSBhY3R1YWwgZXJyb3JzIHlvdSBleHBlcmllbmNlPyBpZS4gdGhlIG91
-dHB1dCBvZiAibWFrZSBhbGwiLCANCj4gb3IgIm1ha2UgLWsgYWxsIj8NCj4gDQo+IFJlZ2FyZHMN
-Cj4gICAgICBKaXJpIFBhbGVjZWsNCj4gDQoNCkxvb2tzIGxpa2UgeW91IGFyZSBoaXR0aW5nIGEg
-R0NDIGJ1ZywNCg0KLi4uDQpnY2MgLWcgLU8yIC1XYWxsIC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAg
-ICBtZW0wMi5jIC1MLi4vLi4vLi4vLi4vbGliIC1sbHRwICAtbyBtZW0wMg0KbWVtMDIuYzogSW4g
-ZnVuY3Rpb24g4oCYbWFpbic6DQptZW0wMi5jOjcxOiBpbnRlcm5hbCBjb21waWxlciBlcnJvcjog
-aW4gbWVyZ2VfYWxpYXNfaW5mbywgYXQgdHJlZS1zc2EtY29weS5jOjIzNQ0KUGxlYXNlIHN1Ym1p
-dCBhIGZ1bGwgYnVnIHJlcG9ydCwNCndpdGggcHJlcHJvY2Vzc2VkIHNvdXJjZSBpZiBhcHByb3By
-aWF0ZS4NClNlZSA8VVJMOmh0dHA6Ly9nY2MuZ251Lm9yZy9idWdzLmh0bWw+IGZvciBpbnN0cnVj
-dGlvbnMuDQouLi4NCg0KTWF5YmUgeW91IGNhbiBzZWFyY2ggdGhlIEdDQyBCdWd6aWxsYSB0byBz
-ZWUgaWYgdGhpcyBhIGtub3duIGlzc3VlLCBhbmQNCnVwZ3JhZGUvZG93bmdyYWRlIEdDQyB2ZXJz
-aW9uIGFjY29yZGluZ2x5LCBvciByZXBvcnQgYSBidWcgZm9yIGl0IGlmIGl0DQppcyBzb21ldGhp
-bmcgbmV3Lg0KDQpDQUkgUWlhbg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkNyeXN0YWwgUmVwb3J0
-cyAtIE5ldyBGcmVlIFJ1bnRpbWUgYW5kIDMwIERheSBUcmlhbApDaGVjayBvdXQgdGhlIG5ldyBz
-aW1wbGlmaWVkIGxpY2Vuc2luZyBvcHRpb24gdGhhdCBlbmFibGVzIAp1bmxpbWl0ZWQgcm95YWx0
-eS1mcmVlIGRpc3RyaWJ1dGlvbiBvZiB0aGUgcmVwb3J0IGVuZ2luZSAKZm9yIGV4dGVybmFsbHkg
-ZmFjaW5nIHNlcnZlciBhbmQgd2ViIGRlcGxveW1lbnQuIApodHRwOi8vcC5zZi5uZXQvc2Z1L2J1
-c2luZXNzb2JqZWN0cwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0
-Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+On Mon, 2009-05-25 at 17:23 +0530, rohit verma wrote: 
+> Hi,
+> 
+> In reference to the issue with timer_create04 and clock_gettime03 for
+> the kernel version 2.6.29 which was reported in the link:
+> 
+> http://www.nabble.com/timer_create-p22376043.html, PFA the patch for
+> fixing the issue.
+> 
+> Detail on the issue: A new clockid 'CLOCK_MONOTONIC_RAW' was added
+> since the kernel 2.6.28
+> (http://www.kernel.org/pub/linux/kernel/v2.6/ChangeLog-2.6.28). This
+> addition caused the above testcases to fail. Now, 5 clock ID's are
+> present in kernel ver 2.6.28 and later.
+> 
+> Please check the same....
+> 
+> Regards,
+> Rohit
+
+Thanks.
+
+Regards--
+Subrata
+
+
+
+------------------------------------------------------------------------------
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+is a gathering of tech-side developers & brand creativity professionals. Meet
+the minds behind Google Creative Lab, Visual Complexity, Processing, & 
+iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
+Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
