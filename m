@@ -1,27 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M8xXp-0004pN-Pc
-	for ltp-list@lists.sourceforge.net; Tue, 26 May 2009 14:22:21 +0000
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M8xXn-0007Mc-4v
-	for ltp-list@lists.sourceforge.net; Tue, 26 May 2009 14:22:21 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <d51f89b0905252140y39ed0666k7c8ec1ce95807e55@mail.gmail.com>
-References: <d51f89b0905130216h36e32efbwf48f241f2d961a0a@mail.gmail.com>
-	<20090513.225510.104053150.caiqian@cclom.cn>
-	<d51f89b0905180455w514b014boedb4670610987533@mail.gmail.com>
-	<20090518.192133.233689723.caiqian@cclom.cn>
-	<1242729086.5961.43.camel@subratamodak.linux.ibm.com>
-	<d51f89b0905252140y39ed0666k7c8ec1ce95807e55@mail.gmail.com>
-Date: Tue, 26 May 2009 17:52:48 +0530
-Message-Id: <1243340568.6293.22.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Reg: Script to extract description of test case
-	from	LTPROOT/doc/testcases/*.txt files
-Reply-To: subrata@linux.vnet.ibm.com
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <marc@tensilica.com>) id 1M9Kbb-0004qv-EA
+	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 14:59:47 +0000
+Received: from mailgw.tensilica.com ([65.205.227.134])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1M9KbS-0001TK-FM
+	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 14:59:47 +0000
+From: Marc Gauthier <marc@tensilica.com>
+Date: Wed, 27 May 2009 07:58:54 -0700
+Message-ID: <522C1DF17AF50042AD8AE87F7887BD3D0158B35ACE@exch.hq.tensilica.com>
+References: <20090526142706.20166.3813.sendpatchset@subratamodak.linux.ibm.com>
+	<522C1DF17AF50042AD8AE87F7887BD3D0158B359A4@exch.hq.tensilica.com>
+	<d51f89b0905262344h46722756vb255541a47904dbe@mail.gmail.com>
+	<522C1DF17AF50042AD8AE87F7887BD3D0158B35AB4@exch.hq.tensilica.com>
+	<1243434255.10447.19.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1243434255.10447.19.camel@subratamodak.linux.ibm.com>
+Content-Language: en-US
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH] Detect test results more accurately
+	when	generating HTML
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,90 +30,33 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rohit verma <rohit.170309@gmail.com>
-Cc: Mike Frysinger <vapier@gentoo.org>, ltp-list <ltp-list@lists.sf.net>
+To: "subrata@linux.vnet.ibm.com" <subrata@linux.vnet.ibm.com>
+Cc: rohit verma <rohit.170309@gmail.com>, Ltp-List <ltp-list@lists.sf.net>
 
-T24gTW9uLCAyMDA5LTA1LTI1IGF0IDIxOjQwIC0wNzAwLCByb2hpdCB2ZXJtYSB3cm90ZTogCj4g
-SGkgU3VicmF0YSwKPiAKPiBJIHJlcXVlc3QgeW91IHRvIGZpbmFsaXplIHRoZSBmb3JtYXQgb2Yg
-dGhlIGRvY3VtZW50YXRpb24gQVNBUC4KCkkgd291bGQgbGlrZSB0byBzZWUgc29tZXRoaW5nIGxp
-a2U6Cgo8dGVzdG5hbWU9YWJvcnQoMyk+CiAgPHRlc3RfZGVzY3JpcHRpb249IkJhc2ljIHRlc3Qg
-Zm9yIGFib3J0KDMpIj4KICA8XHRlc3RfZGVzY3JpcHRpb24+CiAgPHRlc3RfbG9jYXRpb249Imx0
-cC90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Fib3J0L2Fib3J0MDEuYyI+CiAgPFx0ZXN0X2xv
-Y2F0aW9uPgogIDx0ZXN0X2NtZGZpbGVfbmFtZT0ibHRwL3J1bnRlc3Qvc3lzY2FsbHMiPgogIDxc
-dGVzdF9jbWRmaWxlX25hbWU+CiAgPHRlc3RfY21kZmlsZV9lbnRyeT0iYWJvcnQwMSB1bGltaXQg
-LWMgMTAyNDthYm9ydDAxIj4KICA8XHRlc3RfY21kZmlsZV9lbnRyeT4KICA8RXhlY3V0ZV90aHJv
-dWdoX2NvbW1hbmRsaW5lPSJ1bGltaXQgLWMKMTAyNDsgLi9sdHAvdGVzdGNhc2VzL2Jpbi9hYm9y
-dDAxIj4KICA8XEV4ZWN1dGVfdGhyb3VnaF9jb21tYW5kbGluZT4KICA8RXhlY3V0ZV90aHJvdWdo
-X3J1bmx0cD0iLi9ydW5sdHAgLXMgYWJvcnQwMSI+CiAgPFxFeGVjdXRlX3Rocm91Z2hfcnVubHRw
-Pgo8XHRlc3RuYW1lPgoKVGhlIGJhc2ljIGlkZWEgaXMgdG8gaW5jbHVkZSBhbGwgaW1wb3J0YW50
-IGluZm9ybWF0aW9uIGFzIHdlIGNhbiB3aGVuIHdlCmFyZSBkb2luZyBzb21lIHBhdGNoaW5nIG9u
-IHRoaXMuIExldCBtZSBrbm93IGhvdyBvdGhlcnMgZmVlbCwgYW5kIGhvdyB3ZQpjYW4gYWNoaWV2
-ZSB0aGlzLgoKUmVnYXJkcy0tClN1YnJhdGEKCj4gCj4gTHRwLWxpc3QgOiBQbGVhc2UgcHJvdmlk
-ZSB0aGUgaW5wdXRzIHJlZ2FyZGluZyB0aGUgdGV4dCBkb2N1bWVudGF0aW9uIGZvcm1hdC4KPiAK
-PiBSZWdhcmRzLAo+IHJvaGl0Cj4gCj4gT24gVHVlLCBNYXkgMTksIDIwMDkgYXQgMzozMSBBTSwg
-U3VicmF0YSBNb2Rhawo+IDxzdWJyYXRhQGxpbnV4LnZuZXQuaWJtLmNvbT4gd3JvdGU6Cj4gPiBI
-aSBSb2hpdCwKPiA+Cj4gPiBPbiBNb24sIDIwMDktMDUtMTggYXQgMTk6MjEgKzA4MDAsIENBSSBR
-aWFuIHdyb3RlOgo+ID4+IEZyb206IHJvaGl0IHZlcm1hIDxyb2hpdC4xNzAzMDlAZ21haWwuY29t
-Pgo+ID4+IFN1YmplY3Q6IFJlOiBSZWc6IFNjcmlwdCB0byBleHRyYWN0IGRlc2NyaXB0aW9uIG9m
-IHRlc3QgY2FzZSBmcm9tIExUUFJPT1QvZG9jL3Rlc3RjYXNlcy8qLnR4dCBmaWxlcwo+ID4+IERh
-dGU6IE1vbiwgMTggTWF5IDIwMDkgMDQ6NTU6NTQgLTA3MDAKPiA+Pgo+ID4+ID4gRGVhciBTdWJy
-YXRhL1FpYW4sCj4gPj4gPgo+ID4+ID4gSSBhbSB0cnlpbmcgdG8gZGV2ZWxvcCBzY3JpcHQgd2hp
-Y2ggd291bGQgZXh0cmFjdHMgZGVzY3JpcHRpb24gaW5mb3JtYXRpb24KPiA+PiA+IGFib3V0IHVz
-ZXIgcmVxdWlyZWQgdGVzdCBjYXNlIGZyb20gTFRQUk9PVC9kb2MvdGVzdGNhc2VzLyBmb2xkZXIu
-Cj4gPj4gPgo+ID4+ID4gU28gdG8gbWFrZSB0aGUgZGVzY3JpcHRpb24gdGV4dCBmaWxlICBhcyBz
-dGFuZGFyZCBmaWxlLCBjYW4gd2UgcmVwcmVzZW50IHRoZQo+ID4+ID4gZGVzY3JpcHRpb24gYXMg
-bWVudGlvbmVkIGJlbG93Lgo+ID4+ID4KPiA+PiA+IEZvciBleGFtcGxlIGluIHN5c2NhbGxzIGNh
-dGVnb3J5Ogo+ID4+ID4KPiA+PiA+IEN1cnJlbnRseSBhdmFpbGFibGUgZm9ybWF0IG9mIGRlc2Ny
-aXB0aW9uIGluIExUUCBhcyBmb2xsb3dzLgo+ID4+ID4KPiA+PiA+ICAgYWJvcnQwMQo+ID4+ID4g
-ICAgQmFzaWMgdGVzdCBmb3IgYWJvcnQoMykuCj4gPj4gPgo+ID4+ID4gICBhY2NlcHQwMQo+ID4+
-ID4gICAgVmVyaWZ5IHRoYXQgYWNjZXB0KCkgcmV0dXJucyB0aGUgcHJvcGVyIGVycm5vIGZvciB2
-YXJpb3VzIGZhaWx1cmUgY2FzZXMKPiA+PiA+Cj4gPj4gPgo+ID4+ID4gVG8gbWFrZSBpdCBpbiBj
-b25zaXN0ZW50IHdheSwgZGVzY3JpcHRpb24gc2hvdWxkIGJlIGVuY2xvc2VkIGJ5IGV4ZWN1dGFi
-bGVzCj4gPj4gPiBhcyBmb2xsb3dzLgo+ID4+ID4KPiA+PiA+ICA8YWJvcnQwMT4KPiA+PiA+ICAg
-IEJhc2ljIHRlc3QgZm9yIGFib3J0KDMpLgo+ID4+ID4gIDxcYWJvcnQwMT4KPiA+PiA+Cj4gPj4g
-PiAgPGFjY2VwdDAxPgo+ID4+ID4gICAgVmVyaWZ5IHRoYXQgYWNjZXB0KCkgcmV0dXJucyB0aGUg
-cHJvcGVyIGVycm5vIGZvciB2YXJpb3VzIGZhaWx1cmUgY2FzZXMKPiA+PiA+ICA8XGFjY2VwdDAx
-Pgo+ID4+ID4KPiA+PiA+IFBsZWFzZSBjb25maXJtIGlmIHRoaXMgZm9ybWF0IGlzIE8uSyBvciBz
-dWdnZXN0IGFueSBvdGhlciBmb3JtYXQgYnkgd2hpY2ggd2UKPiA+PiA+IGNhbiBlYXNpbHkgcGFy
-c2UgdGhlIHRlc3QgY2FzZXMgYW5kIGV4dHJhY3RzIHRoZSBkZXNjcmlwdGlvbi4KPiA+Cj4gPiBJ
-dMWbIGFsd2F5cyBncmVhdCB0byBzZWUgc29tZWJvZHkgd29ya2luZyBvbiBMVFAgZG9jdW1lbnRh
-dGlvbi4gU28sIGxldHMKPiA+IGFzayB0aGUgY29tbXVuaXR5IGFsc28gZm9yIHRoZWlyIG9waW5p
-b24gYXMgd2VsbC4gQ2FuIHdlIGFsc28gaW5jbHVkZQo+ID4gc29tZSBtb3JlIHRhZ3MgZm9yIG1v
-cmUgZGVzY3JpcHRpdmUgaW5mbyA/Cj4gPgo+ID4gUmVnYXJkcy0tCj4gPiBTdWJyYXRhCj4gPgo+
-ID4+ID4KPiA+Pgo+ID4+IExvb2tzIGdvb2QgZm9yIG1lLgo+ID4+Cj4gPj4gQ0FJIFFpYW4KPiA+
-Pgo+ID4+ID4gSWYgdGhpcyBmb3JtYXQgaXMgTy5LICwgSSB3b3VsZCBzZW5kIHRoZSBwYXRjaCBm
-b3IgdGhvc2UgdGV4dCBmaWxlcwo+ID4+ID4KPiA+PiA+IFJlZ2FyZHMsCj4gPj4gPiBSb2hpdAo+
-ID4+ID4KPiA+PiA+Cj4gPj4gPgo+ID4+ID4gT24gV2VkLCBNYXkgMTMsIDIwMDkgYXQgNzo1NSBB
-TSwgQ0FJIFFpYW4gPGNhaXFpYW5AY2Nsb20uY24+IHdyb3RlOgo+ID4+ID4KPiA+PiA+PiBGcm9t
-OiByb2hpdCB2ZXJtYSA8cm9oaXQuMTcwMzA5QGdtYWlsLmNvbT4KPiA+PiA+PiBTdWJqZWN0OiBS
-ZWc6IFNjcmlwdCB0byBleHRyYWN0IGRlc2NyaXB0aW9uIG9mIHRlc3QgY2FzZSBmcm9tCj4gPj4g
-Pj4gTFRQUk9PVC9kb2MvdGVzdGNhc2VzLyoudHh0IGZpbGVzCj4gPj4gPj4gRGF0ZTogV2VkLCAx
-MyBNYXkgMjAwOSAwMjoxNjo1NyAtMDcwMAo+ID4+ID4+Cj4gPj4gPj4gPiBEZWFyIFN1YnJhdGEv
-cWlhbiwKPiA+PiA+PiA+Cj4gPj4gPj4gPiBBcyBpZiB3ZSBydW4gTFRQIHRlc3RjYXNlcywgbm93
-aGVyZSBMVFAgdGVzdCBzdWl0ZSBwb3B1bGF0ZXMgdGhlCj4gPj4gPj4gPiBkZXNjcmlwdGlvbiBv
-ZiB0ZXN0Y2FzZXMgKGVpdGhlciBpbiAubG9nLCAub3V0cHV0LCAuSFRNTCBvciAuZmFpbGVkCj4g
-Pj4gPj4gPiB0ZXN0IGNhc2VzIGZpbGVzKS4KPiA+PiA+PiA+Cj4gPj4gPj4gPiBEZXNjcmlwdGlv
-biBvZiBlYWNoIHRlc3QgY2FzZSBpbiBjYXRlZ29yeSB3aXNlIGlzIGF2YWlsYWJsZSBpbgo+ID4+
-ID4+ID4gTFRQUk9PVC9kb2MvdGVzdGNhc2VzIGZvbGRlci4KPiA+PiA+PiA+Cj4gPj4gPj4gPiBN
-eSBRdWVzdGlvbiA6IElzIHRoZXJlIGFueSByZWFkeS1tYWRlIHNjcmlwdCBhdmFpbGFibGUgdG8g
-ZXh0cmFjdCB0aGUKPiA+PiA+PiA+IGRlc2NyaXB0aW9uIG9mIHVzZXIgcmVxdWlyZWQgdGVzdCBj
-YXNlIGZyb20gYWJvdmUgc3BlY2lmaWVkIGZvbGRlcj8KPiA+PiA+PiA+Cj4gPj4gPj4gPiBJZiBz
-Y3JpcHQgaXMgbm90IGF2YWlsYWJsZSwgY291bGQgeW91IHN1Z2dlc3QgdGhlIGRpcmVjdGlvbiB0
-byBleHRyYWN0Cj4gPj4gPj4gPiBkZXNjcmlwdGlvbiBvZiB0ZXN0IGNhc2VzLgo+ID4+ID4+ID4K
-PiA+PiA+PiA+Cj4gPj4gPj4gPiBSZWdhcmRzLAo+ID4+ID4+ID4gUm9oaXQuCj4gPj4gPj4KPiA+
-PiA+PiBOb3QgSSBhbSBhd2FyZSBvZi4gU3VicmF0YSBvciBzb21lb25lIGluIHRoZSBsaXN0IG1p
-Z2h0IGhhdmUgc29tZSBpZGVhcwo+ID4+ID4+IGZvciB5b3UuCj4gPj4gPj4KPiA+PiA+PiBDQUkg
-UWlhbgo+ID4+ID4+Cj4gPgo+ID4KCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KUmVnaXN0ZXIgTm93
-IGZvciBDcmVhdGl2aXR5IGFuZCBUZWNobm9sb2d5IChDYVQpLCBKdW5lIDNyZCwgTllDLiBDYVQK
-aXMgYSBnYXRoZXJpbmcgb2YgdGVjaC1zaWRlIGRldmVsb3BlcnMgJiBicmFuZCBjcmVhdGl2aXR5
-IHByb2Zlc3Npb25hbHMuIE1lZXQKdGhlIG1pbmRzIGJlaGluZCBHb29nbGUgQ3JlYXRpdmUgTGFi
-LCBWaXN1YWwgQ29tcGxleGl0eSwgUHJvY2Vzc2luZywgJiAKaVBob25lRGV2Q2FtcCBhc3RoZXkg
-cHJlc2VudCBhbG9uZ3NpZGUgZGlnaXRhbCBoZWF2eXdlaWdodHMgbGlrZSBCYXJiYXJpYW4KR3Jv
-dXAsIFIvR0EsICYgQmlnIFNwYWNlc2hpcC4gaHR0cDovL3d3dy5jcmVhdGl2aXR5Y2F0LmNvbSAK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3Qg
-bWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3Rz
-LnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+Subrata Modak wrote:
+> On Wed, 2009-05-27 at 05:05 -0700, Marc Gauthier wrote:
+> > Just so you know, the updated genhtml.pl script recently submitted
+> > should work just fine without changes, when moving status after
+> > <<<execution_status>>> (it only looks at tag names, not positions).
+>
+> Be careful, it looks for <<<execution_status>>> only in between
+> <<test_start>> & <<test_output>>.
+
+You mean, between <<<test_start>>> and <<<test_end>>> ?
+(the script I submitted recently that is, was careful about this)
+
+-Marc
+
+------------------------------------------------------------------------------
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
+is a gathering of tech-side developers & brand creativity professionals. Meet
+the minds behind Google Creative Lab, Visual Complexity, Processing, & 
+iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
+Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
