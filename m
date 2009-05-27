@@ -1,38 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M61WB-0007TQ-On
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 12:00:31 +0000
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M61W9-0000iB-2i
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 12:00:31 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e5.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4IBtAwS025718
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 07:55:10 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4IC0RdP226852
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 08:00:27 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4IC0RKn001977
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 08:00:27 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <d51f89b0905172356p696a34faj82e212bf2e3fa6f6@mail.gmail.com>
-References: <d51f89b0905070410v468978ecjf6d8ee31bb4ede3c@mail.gmail.com>
-	<20090508.232031.104047613.caiqian@cclom.cn>
-	<d51f89b0905120440y8d3eacbh6874458946af6ea3@mail.gmail.com>
-	<20090513.223538.71106642.caiqian@cclom.cn>
-	<d51f89b0905132102y8a8e57dpeb6b73a24b693ea7@mail.gmail.com>
-	<1242372515.7224.18.camel@subratamodak.linux.ibm.com>
-	<d51f89b0905172356p696a34faj82e212bf2e3fa6f6@mail.gmail.com>
-Date: Mon, 18 May 2009 17:30:22 +0530
-Message-Id: <1242648023.5161.15.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Fwd: Patch for :Unzip01 Test Not Working Correctly
-Reply-To: subrata@linux.vnet.ibm.com
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <maknayak@in.ibm.com>) id 1M9G2R-0003hq-Gw
+	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 10:07:11 +0000
+Received: from e35.co.us.ibm.com ([32.97.110.153])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1M9G2M-0006s6-Vp
+	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 10:07:11 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e35.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4RA0Yfj018419
+	for <ltp-list@lists.sourceforge.net>; Wed, 27 May 2009 04:00:34 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n4RA74IH255010
+	for <ltp-list@lists.sourceforge.net>; Wed, 27 May 2009 04:07:04 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4RA746B005707
+	for <ltp-list@lists.sourceforge.net>; Wed, 27 May 2009 04:07:04 -0600
+From: Manas Kumar Nayak <maknayak@in.ibm.com>
+Date: Wed, 27 May 2009 15:36:49 +0530
+Message-Id: <20090527100645.18638.75163.sendpatchset@subratamodak.linux.ibm.com>
+Subject: [LTP] [PATCH 00/13][2nd Bunch] Port Crackerjack Syscall
+	tests(missing) to LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,143 +34,80 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rohit verma <rohit.170309@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
+Cc: Manas Kumar Nayak <maknayak@in.ibm.com>
 
-On Sun, 2009-05-17 at 23:56 -0700, rohit verma wrote: 
-> Dear Subrata,
->  
-> I  have removed the warning and error and attached the updated patch
-> with this mail.
->  
-> I request you to apply the patch and let me know if any issues.
+Hi,
 
-Thanks.
+>On Tue, 2009-05-19 at 00:39 +0530, Manas Kumar Nayak wrote:
+>Hi,
+> 
+> I have ported the following tests from Crackerjack to LTP.
+> Kindly include them to LTP:
+> 
+> [PATCH 01/21] Add add_key01 test for add_key syscall
+> [PATCH 02/21] Add add_key02 test for add_key syscall
+> [PATCH 03/21] Add bdflush01 test for bdflush syscall
+> [PATCH 04/21] Add exit_group01 test for exit_group syscall
+> [PATCH 05/21] Add keyctl01 test for keyctl syscall
+> [PATCH 06/21] Add newuname01 test for newuname syscall
+> [PATCH 07/21] Add rt_sigaction01 test for rt_sigaction syscall
+> [PATCH 08/21] Add rt_sigprocmask01 test for rt_sigprocmask syscall
+> [PATCH 09/21] Add rt_sigprocmask02 test for rt_sigprocmask syscall
+> [PATCH 10/21] Add rt_sigqueueinfo01 test for rt_sigqueueinfo syscall
+> [PATCH 11/21] Add rt_sigsuspend01 test for rt_sigsuspend syscall
+> [PATCH 12/21] Add set_thread_area01 test for set_thread_area syscall
+> [PATCH 13/21] Add set_thread_area02 test for set_thread_area syscall
+> [PATCH 14/21] Add set_tid_address01 test for set_tid_address syscall
+> [PATCH 15/21] Add sgetmask01 test for sgetmask syscall
+> [PATCH 16/21] Add sigreturn01 test for sigreturn syscall
+> [PATCH 17/21] Add ssetmask01 test for ssetmask syscall
+> [PATCH 18/21] Add timer_getoverrun01 test for timer_getoverrun01 syscall
+> [PATCH 19/21] Add timer_gettime01 test for timer_gettime syscall
+> [PATCH 20/21] Add tkill01 test for tkill syscall
+> [PATCH 21/21] Add tkill02 test for tkill syscall
+> 
+> Todo:
+> 	1) Port the Remaining ones (next week),
 
-> Request: Could you share the patch (checkpatch.pl ) which you have
-> developed, so that I can cross check it at my end for future patches
-> before sending to the ltp-list .
+As promised earlier, here remains the 2nd Bunch of tests ported
+from Crackerjack to LTP:
 
-It is available with the kernel source code:
+__001_Add_Utility_Headers_for_these_set_of_tests.patch
+__002_Add_get_mempolicy01_test_for_get_mempolicy_syscall.patch
+__003_Add_clock_getres01_test_for_clock_getres_syscall.patch
+__004_Add_clock_nanosleep01_test_for_clock_nanosleep_syscall.patch
+__005_Add_mq_notify01_test_for_mq_notify_syscall.patch
+__006_Add_ppoll01_test_for_ppoll_syscall.patch
+__007_Add_mq_open01_test_for_mq_open_syscall.patch
+__008_Add_mq_timedreceive01_test_for_mq_timedreceive_syscall.patch
+__009_Add_utimes01_test_for_utimes_syscall.patch
+__010_Add_mq_unlink01_test_for_mq_unlink_syscall.patch
+__011_Add_mq_timedsend01_test_for_mq_timedsend_syscall.patch
+__012_Add_unshare01_test_for_unshare_syscall.patch
+__013_Add_unshare02_test_for_unshare_syscall.patch
 
-linux-2.6*/scripts/checkpatch.pl
+Still TODO:
+-> The remaining testcases will be ported soon.
 
 Regards--
-Subrata
+Manas
 
->  
-> Regards,
-> Rohit
 > 
+> Regards--
+> Manas
 > 
-> On Fri, May 15, 2009 at 12:28 AM, Subrata Modak
-> <subrata@linux.vnet.ibm.com> wrote:
->         Thanks.
->         
->         I have started to do some holy job, might be in annoyance to
->         everybody,
->         to check all patches with checkpatch.pl before they are merged
->         with
->         LTP.
->         
->         So, i would inform you what needs to be changed in the patch
->         before they
->         can be merged. This exercise will help us in preventing any
->         code mess as
->         we keep growing, and help maintaining LTP better. Hope, you
->         will agree
->         too.
->         
->         Your patch contains the following errors/warning. Please
->         rectify and
->         resend :-)
->         
->         ========================================================================
->         WARNING: line over 80 characters
->         #40: FILE: testcases/commands/unzip/unzip_tests.sh:152:
->         +               diff -iwB "$PWD/tst_unzip.out"
->         "$PWD/tst_unzip.out.exp"
->         > "$PWD/tst_unzip.out.err" || RC=$?
->         
->         ERROR: Missing Signed-off-by: line(s)
->         
->         total: 1 errors, 1 warnings, 49 lines checked
->         ========================================================================
->         
->         Regards--
->         Subrata
->         
->         On Thu, 2009-05-14 at 09:32 +0530, rohit verma wrote:
->         >
->         >
->         > ---------- Forwarded message ----------
->         > From: CAI Qian <caiqian@cclom.cn>
->         > Date: Wed, May 13, 2009 at 8:05 PM
->         > Subject: Re: Patch for [LTP] :Unzip01 Test Not Working
->         Correctly
->         > To: rohit.170309@gmail.com
->         >
->         >
->         > From: rohit verma <rohit.170309@gmail.com>
->         > Subject: Re: Patch for [LTP] :Unzip01 Test Not Working
->         Correctly
->         >
->         > Date: Tue, 12 May 2009 17:10:36 +0530
->         >
->         > > Hi Qian,
->         > >
->         > > Yes you are correct. We cannot predict the output order of
->         unzip. So
->         > I
->         > > have sorted the
->         > > actual and expected output and attached the updated patch
->         with this
->         > mail.
->         > >
->         > > I request you to apply this patch and let me know if any
->         issues.
->         > >
->         > > Regards,
->         > > Rohit
->         > >
->         >
->         >
->         > Works fine. Please submit to the mailing list.
->         >
->         > Acked-by: CAI Qian <caiqian@cclom.cn>
->         >
->         > Thanks,
->         > CAI Qian
->         >
->         >
->         >
->         >
->         ------------------------------------------------------------------------------
->         > The NEW KODAK i700 Series Scanners deliver under ANY
->         circumstances! Your
->         > production scanning environment may not be a perfect world -
->         but thanks to
->         > Kodak, there's a perfect scanner to get the job done! With
->         the NEW KODAK i700
->         > Series Scanner you'll get full speed at 300 dpi even with
->         all image
->         > processing features enabled. http://p.sf.net/sfu/kodak-com
->         > _______________________________________________ Ltp-list
->         mailing list Ltp-list@lists.sourceforge.net
->         https://lists.sourceforge.net/lists/listinfo/ltp-list
->         
-> 
-
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables 
-unlimited royalty-free distribution of the report engine 
-for externally facing server and web deployment. 
-http://p.sf.net/sfu/businessobjects
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
+is a gathering of tech-side developers & brand creativity professionals. Meet
+the minds behind Google Creative Lab, Visual Complexity, Processing, & 
+iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
+Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
