@@ -1,31 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <maknayak@in.ibm.com>) id 1M9G6V-00049h-WC
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 10:11:24 +0000
-Received: from e34.co.us.ibm.com ([32.97.110.152])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M9G6R-0000v3-Na
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 10:11:23 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e34.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4RA8T5K015593
-	for <ltp-list@lists.sourceforge.net>; Wed, 27 May 2009 04:08:29 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4RABJIC213012
-	for <ltp-list@lists.sourceforge.net>; Wed, 27 May 2009 04:11:19 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4RABIfH031128
-	for <ltp-list@lists.sourceforge.net>; Wed, 27 May 2009 04:11:19 -0600
-From: Manas Kumar Nayak <maknayak@in.ibm.com>
-Date: Wed, 27 May 2009 15:41:01 +0530
-Message-Id: <20090527101058.18638.71341.sendpatchset@subratamodak.linux.ibm.com>
-In-Reply-To: <20090527100645.18638.75163.sendpatchset@subratamodak.linux.ibm.com>
-References: <20090527100645.18638.75163.sendpatchset@subratamodak.linux.ibm.com>
-Subject: [LTP] [PATCH 09/13]  Add/Port utimes01 test for utimes() syscall
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <rohit.170309@gmail.com>) id 1M9DPW-0004rI-HN
+	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 07:18:50 +0000
+Received: from mail-ew0-f168.google.com ([209.85.219.168])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1M9DPR-00072r-Nc
+	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 07:18:50 +0000
+MIME-Version: 1.0
+In-Reply-To: <1243340568.6293.22.camel@subratamodak.linux.ibm.com>
+References: <d51f89b0905130216h36e32efbwf48f241f2d961a0a@mail.gmail.com>
+	<20090513.225510.104053150.caiqian@cclom.cn>
+	<d51f89b0905180455w514b014boedb4670610987533@mail.gmail.com>
+	<20090518.192133.233689723.caiqian@cclom.cn>
+	<1242729086.5961.43.camel@subratamodak.linux.ibm.com>
+	<d51f89b0905252140y39ed0666k7c8ec1ce95807e55@mail.gmail.com>
+	<1243340568.6293.22.camel@subratamodak.linux.ibm.com>
+Date: Wed, 27 May 2009 00:18:44 -0700
+Message-ID: <d51f89b0905270018u1b447334qf38528f8dc0ed7aa@mail.gmail.com>
+From: rohit verma <rohit.170309@gmail.com>
+Subject: Re: [LTP] Reg: Script to extract description of test case from
+	LTPROOT/doc/testcases/*.txt files
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,486 +31,189 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-Cc: Manas Kumar Nayak <maknayak@in.ibm.com>
+To: subrata@linux.vnet.ibm.com
+Cc: Mike Frysinger <vapier@gentoo.org>, ltp-list <ltp-list@lists.sf.net>
 
-Signed-off-by: Manas Kumar Nayak <maknayak@in.ibm.com>
-To: LTP List <ltp-list@lists.sourceforge.net>
-Cc: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: Masatake YAMATO <yamato@redhat.com>
+Hi Subrata,
+
+As the purpose of this document is to brief the description of each
+test case to user. I feel that your format would decrease the
+readability in document .
+
+So should we include following tags   "test_location",
+"test_cmdfile_name", "test_cmdfile_entry",
+"Execute_through_commandline", "Execute_through_runltp". or only
+description tag would be sufficient.
+
+Regards,
+rohit
+
+
+On Tue, May 26, 2009 at 5:22 AM, Subrata Modak
+<subrata@linux.vnet.ibm.com> wrote:
+> On Mon, 2009-05-25 at 21:40 -0700, rohit verma wrote:
+>> Hi Subrata,
+>>
+>> I request you to finalize the format of the documentation ASAP.
+>
+> I would like to see something like:
+>
+> <testname=3Dabort(3)>
+> =A0<test_description=3D"Basic test for abort(3)">
+> =A0<\test_description>
+> =A0<test_location=3D"ltp/testcases/kernel/syscalls/abort/abort01.c">
+> =A0<\test_location>
+> =A0<test_cmdfile_name=3D"ltp/runtest/syscalls">
+> =A0<\test_cmdfile_name>
+> =A0<test_cmdfile_entry=3D"abort01 ulimit -c 1024;abort01">
+> =A0<\test_cmdfile_entry>
+> =A0<Execute_through_commandline=3D"ulimit -c
+> 1024; ./ltp/testcases/bin/abort01">
+> =A0<\Execute_through_commandline>
+> =A0<Execute_through_runltp=3D"./runltp -s abort01">
+> =A0<\Execute_through_runltp>
+> <\testname>
+>
+> The basic idea is to include all important information as we can when we
+> are doing some patching on this. Let me know how others feel, and how we
+> can achieve this.
+>
+> Regards--
+> Subrata
+>
+>>
+>> Ltp-list : Please provide the inputs regarding the text documentation fo=
+rmat.
+>>
+>> Regards,
+>> rohit
+>>
+>> On Tue, May 19, 2009 at 3:31 AM, Subrata Modak
+>> <subrata@linux.vnet.ibm.com> wrote:
+>> > Hi Rohit,
+>> >
+>> > On Mon, 2009-05-18 at 19:21 +0800, CAI Qian wrote:
+>> >> From: rohit verma <rohit.170309@gmail.com>
+>> >> Subject: Re: Reg: Script to extract description of test case from LTP=
+ROOT/doc/testcases/*.txt files
+>> >> Date: Mon, 18 May 2009 04:55:54 -0700
+>> >>
+>> >> > Dear Subrata/Qian,
+>> >> >
+>> >> > I am trying to develop script which would extracts description info=
+rmation
+>> >> > about user required test case from LTPROOT/doc/testcases/ folder.
+>> >> >
+>> >> > So to make the description text file =A0as standard file, can we re=
+present the
+>> >> > description as mentioned below.
+>> >> >
+>> >> > For example in syscalls category:
+>> >> >
+>> >> > Currently available format of description in LTP as follows.
+>> >> >
+>> >> > =A0 abort01
+>> >> > =A0 =A0Basic test for abort(3).
+>> >> >
+>> >> > =A0 accept01
+>> >> > =A0 =A0Verify that accept() returns the proper errno for various fa=
+ilure cases
+>> >> >
+>> >> >
+>> >> > To make it in consistent way, description should be enclosed by exe=
+cutables
+>> >> > as follows.
+>> >> >
+>> >> > =A0<abort01>
+>> >> > =A0 =A0Basic test for abort(3).
+>> >> > =A0<\abort01>
+>> >> >
+>> >> > =A0<accept01>
+>> >> > =A0 =A0Verify that accept() returns the proper errno for various fa=
+ilure cases
+>> >> > =A0<\accept01>
+>> >> >
+>> >> > Please confirm if this format is O.K or suggest any other format by=
+ which we
+>> >> > can easily parse the test cases and extracts the description.
+>> >
+>> > It=B6 always great to see somebody working on LTP documentation. So, l=
+ets
+>> > ask the community also for their opinion as well. Can we also include
+>> > some more tags for more descriptive info ?
+>> >
+>> > Regards--
+>> > Subrata
+>> >
+>> >> >
+>> >>
+>> >> Looks good for me.
+>> >>
+>> >> CAI Qian
+>> >>
+>> >> > If this format is O.K , I would send the patch for those text files
+>> >> >
+>> >> > Regards,
+>> >> > Rohit
+>> >> >
+>> >> >
+>> >> >
+>> >> > On Wed, May 13, 2009 at 7:55 AM, CAI Qian <caiqian@cclom.cn> wrote:
+>> >> >
+>> >> >> From: rohit verma <rohit.170309@gmail.com>
+>> >> >> Subject: Reg: Script to extract description of test case from
+>> >> >> LTPROOT/doc/testcases/*.txt files
+>> >> >> Date: Wed, 13 May 2009 02:16:57 -0700
+>> >> >>
+>> >> >> > Dear Subrata/qian,
+>> >> >> >
+>> >> >> > As if we run LTP testcases, nowhere LTP test suite populates the
+>> >> >> > description of testcases (either in .log, .output, .HTML or .fai=
+led
+>> >> >> > test cases files).
+>> >> >> >
+>> >> >> > Description of each test case in category wise is available in
+>> >> >> > LTPROOT/doc/testcases folder.
+>> >> >> >
+>> >> >> > My Question : Is there any ready-made script available to extrac=
+t the
+>> >> >> > description of user required test case from above specified fold=
+er?
+>> >> >> >
+>> >> >> > If script is not available, could you suggest the direction to e=
+xtract
+>> >> >> > description of test cases.
+>> >> >> >
+>> >> >> >
+>> >> >> > Regards,
+>> >> >> > Rohit.
+>> >> >>
+>> >> >> Not I am aware of. Subrata or someone in the list might have some =
+ideas
+>> >> >> for you.
+>> >> >>
+>> >> >> CAI Qian
+>> >> >>
+>> >
+>> >
+>
+>
+
+---------------------------------------------------------------------------=
 ---
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT =
 
---- ltp-intermediate-20090521.orig/runtest/syscalls	2009-05-27 13:31:15.000000000 +0530
-+++ ltp-intermediate-20090521/runtest/syscalls	2009-05-27 13:39:18.000000000 +0530
-@@ -1227,6 +1227,8 @@ utime04 utime04
- utime05 utime05
- utime06 utime06
- 
-+utimes01 utimes01
-+
- # Introduced from Kernel 2.6.22 onwards
- utimensat01 utimensat_tests.sh
- 
---- ltp-intermediate-20090521.orig/testcases/kernel/syscalls/utimes/Makefile	1970-01-01 05:30:00.000000000 +0530
-+++ ltp-intermediate-20090521/testcases/kernel/syscalls/utimes/Makefile	2009-05-23 14:53:58.000000000 +0530
-@@ -0,0 +1,31 @@
-+#
-+#  Copyright (c) International Business Machines  Corp., 2009
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+
-+CFLAGS += -I../../../../include -Wall -O2
-+LDLIBS += -L../../../../lib -lltp 
-+
-+SRCS    = $(wildcard *.c)
-+TARGETS = $(patsubst %.c,%,$(SRCS))
-+
-+all: $(TARGETS)
-+
-+install:
-+	@set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i ; done
-+
-+clean:
-+	rm -f $(TARGETS)
---- ltp-intermediate-20090521.orig/testcases/kernel/syscalls/utimes/utimes01.c	1970-01-01 05:30:00.000000000 +0530
-+++ ltp-intermediate-20090521/testcases/kernel/syscalls/utimes/utimes01.c	2009-05-27 13:33:45.000000000 +0530
-@@ -0,0 +1,407 @@
-+/******************************************************************************/
-+/* Copyright (c) Crackerjack Project., 2007 ,Hitachi, Ltd                     */
-+/*          Author(s): Takahiro Yasui <takahiro.yasui.mp@hitachi.com>,	      */
-+/*                                                                  	      */
-+/* This program is free software;  you can redistribute it and/or modify      */
-+/* it under the terms of the GNU General Public License as published by       */
-+/* the Free Software Foundation; either version 2 of the License, or          */
-+/* (at your option) any later version.                                        */
-+/*                                                                            */
-+/* This program is distributed in the hope that it will be useful,            */
-+/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
-+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
-+/* the GNU General Public License for more details.                           */
-+/*                                                                            */
-+/* You should have received a copy of the GNU General Public License          */
-+/* along with this program;  if not, write to the Free Software               */
-+/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
-+/*                                                                            */
-+/******************************************************************************/
-+/******************************************************************************/
-+/*                                                                            */
-+/* File:        utimes01.c                                                    */
-+/*                                                                            */
-+/* Description: This tests the utimes() syscall                               */
-+/*									      */
-+/* 									      */
-+/*									      */
-+/*									      */
-+/*									      */
-+/*                                                                            */
-+/* Usage:  <for command-line>                                                 */
-+/* utimes01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                              */
-+/*      where,  -c n : Run n copies concurrently.                             */
-+/*              -e   : Turn on errno logging.                                 */
-+/*              -i n : Execute test n times.                                  */
-+/*              -I x : Execute test for x seconds.                            */
-+/*              -P x : Pause for x seconds between iterations.                */
-+/*              -t   : Turn on syscall timing.                                */
-+/*                                                                            */
-+/* Total Tests: 1                                                             */
-+/*                                                                            */
-+/* Test Name:   utimes01                                                      */
-+/* History:     Porting from Crackerjack to LTP is done by                    */
-+/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
-+/******************************************************************************/
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <sys/time.h>
-+#include <dirent.h>
-+#include <unistd.h>
-+#include <getopt.h>
-+#include <string.h>
-+#include <stdlib.h>
-+#include <errno.h>
-+#include <stdio.h>
-+#include <libgen.h>
-+
-+
-+#include "../utils/include_j_h.h"
-+#include "../utils/common_j_h.c"
-+
-+
-+/* Harness Specific Include Files. */
-+#include "test.h"
-+#include "usctest.h"
-+#include "linux_syscall_numbers.h"
-+
-+/* Extern Global Variables */
-+extern int Tst_count;           /* counter for tst_xxx routines.         */
-+extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
-+
-+/* Global Variables */
-+char *TCID = "utimes01";  /* Test program identifier.*/
-+int  testno;
-+int  TST_TOTAL = 1;                   /* total number of tests in this file.   */
-+
-+/* Extern Global Functions */
-+/******************************************************************************/
-+/*                                                                            */
-+/* Function:    cleanup                                                       */
-+/*                                                                            */
-+/* Description: Performs all one time clean up for this test on successful    */
-+/*              completion,  premature exit or  failure. Closes all temporary */
-+/*              files, removes all temporary directories exits the test with  */
-+/*              appropriate return code by calling tst_exit() function.       */
-+/*                                                                            */
-+/* Input:       None.                                                         */
-+/*                                                                            */
-+/* Output:      None.                                                         */
-+/*                                                                            */
-+/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
-+/*              On success - Exits calling tst_exit(). With '0' return code.  */
-+/*                                                                            */
-+/******************************************************************************/
-+extern void cleanup() {
-+        /* Remove tmp dir and all files in it */
-+        TEST_CLEANUP;
-+        tst_rmdir();
-+
-+        /* Exit with appropriate return code. */
-+        tst_exit();
-+}
-+
-+/* Local  Functions */
-+/******************************************************************************/
-+/*                                                                            */
-+/* Function:    setup                                                         */
-+/*                                                                            */
-+/* Description: Performs all one time setup for this test. This function is   */
-+/*              typically used to capture signals, create temporary dirs      */
-+/*              and temporary files that may be used in the course of this    */
-+/*              test.                                                         */
-+/*                                                                            */
-+/* Input:       None.                                                         */
-+/*                                                                            */
-+/* Output:      None.                                                         */
-+/*                                                                            */
-+/* Return:      On failure - Exits by calling cleanup().                      */
-+/*              On success - returns 0.                                       */
-+/*                                                                            */
-+/******************************************************************************/
-+void setup() {
-+        /* Capture signals if any */
-+        /* Create temporary directories */
-+        TEST_PAUSE;
-+        tst_tmpdir();
-+}
-+
-+
-+/*
-+ * Macros
-+ */
-+#define SYSCALL_NAME    "utimes"
-+
-+
-+/*
-+ * Global variables
-+ */
-+static int opt_debug;
-+static char *progname;
-+static char *progdir;
-+
-+enum test_type {
-+		NORMAL,
-+		FILE_NOT_EXIST,
-+	        NO_FNAME,
-+};
-+
-+
-+/*
-+ * Data Structure
-+ */
-+struct test_case {
-+	int ttype;
-+        long a_sec;
-+        long m_sec;
-+        char *user;
-+        int ret;
-+        int err;
-+
-+};
-+
-+
-+/* Test cases
-+ *
-+ *   test status of errors on man page
-+ *
-+ *   EACCES             v (permission denied)
-+ *   ENOENT             v (file does not exist)
-+ *
-+ *   test status of errors on man page
-+ *
-+ *   EFAULT             v (points to not process address space)
-+ */
-+
-+static struct test_case tcase[] = {
-+	{ // case00
-+                .ttype          = NORMAL,
-+                .a_sec          = 0,
-+                .m_sec          = 1000,
-+                .ret            = 0,
-+                .err            = 0,
-+        },
-+        { // case01
-+                .ttype          = NORMAL,
-+                .a_sec          = 1000,
-+                .m_sec          = 0,
-+                .ret            = 0,
-+                .err            = 0,
-+        },
-+        { // case02
-+                .ttype          = NORMAL,
-+                .a_sec          = 1000,
-+                .m_sec          = 2000,
-+                .user           = "nobody",
-+                .ret            = -1,
-+                .err            = EACCES, // RHEL4U1 + 2.6.18 returns EPERM
-+        },
-+        { // case03
-+                .ttype          = FILE_NOT_EXIST,
-+                .a_sec          = 1000,
-+                .m_sec          = 2000,
-+                .ret            = -1,
-+                .err            = ENOENT,
-+        },
-+
-+	{ // case04
-+                .ttype          = NO_FNAME,
-+                .a_sec          = 1000,
-+                .m_sec          = 2000,
-+                .ret            = -1,
-+                .err            = EFAULT,
-+        },
-+};
-+
-+/*
-+ * do_test()
-+ *
-+ *   Input  : TestCase Data
-+ *   Return : RESULT_OK(0), RESULT_NG(1)
-+ *
-+ */
-+
-+static int do_test(struct test_case *tc)
-+{
-+        int sys_ret;
-+        int sys_errno;
-+        int result = RESULT_OK;
-+	struct timeval tv[2];
-+        char fpath[PATH_MAX], c = '\0';
-+        int rc, len, cmp_ok = 1;
-+        struct stat st;
-+        uid_t old_uid;
-+
-+        TEST(rc = setup_file(progdir, "test.file", fpath));
-+        if (rc < 0)
-+                return 1;
-+
-+	/*
-+         * Change effective user id
-+         */
-+        if (tc->user != NULL) {
-+                TEST(rc = setup_euid(tc->user, &old_uid));
-+                if (rc < 0)
-+                        goto EXIT2;
-+        }
-+
-+        /*
-+         * Execute system call
-+         */
-+        tv[0].tv_sec = tc->a_sec;
-+        tv[1].tv_sec = tc->m_sec;
-+        TEST(len = strlen(fpath));
-+        if (tc->ttype == FILE_NOT_EXIST) {
-+                c = fpath[len - 1];
-+                fpath[len - 1] = '\0';
-+        }
-+        errno = 0;
-+        if (tc->ttype == NO_FNAME)
-+                TEST(sys_ret = utimes(NULL, tv));
-+        else
-+                TEST(sys_ret = utimes(fpath, tv));
-+        sys_errno = errno;
-+        if (tc->ttype == FILE_NOT_EXIST)
-+                fpath[len - 1] = c;
-+        if (sys_ret < 0)
-+                goto TEST_END;
-+
-+	/*
-+         * Check test file's time stamp
-+         */
-+        rc = stat(fpath, &st);
-+        if (rc < 0) {
-+                EPRINTF("stat failed.\n");
-+                result = 1;
-+                goto EXIT1;
-+        }
-+        tst_resm(TINFO,"E:%ld,%ld <=> R:%ld,%ld",tv[0].tv_sec, tv[1].tv_sec, st.st_atime, st.st_mtime);
-+        cmp_ok = st.st_atime == tv[0].tv_sec && st.st_mtime == tv[1].tv_sec;
-+
-+        /*
-+         * Check results
-+         */
-+TEST_END:
-+        result |= (sys_errno != tc->err) || !cmp_ok;
-+        PRINT_RESULT_CMP(sys_ret >= 0, tc->ret, tc->err, sys_ret, sys_errno,cmp_ok);
-+
-+        /*
-+         * Restore effective user id
-+         */
-+EXIT1:
-+        if (tc->user != NULL) {
-+                TEST(rc = cleanup_euid(old_uid));
-+                if (rc < 0)
-+                        return 1;
-+        }
-+EXIT2:
-+        TEST(cleanup_file(fpath));
-+
-+        return result;
-+}
-+
-+/*
-+ * usage()
-+ */
-+
-+static void usage(const char *progname)
-+{
-+        tst_resm(TINFO,"usage: %s [options]", progname);
-+        tst_resm(TINFO,"This is a regression test program of %s system call.",SYSCALL_NAME);
-+        tst_resm(TINFO,"options:");
-+        tst_resm(TINFO,"    -d --debug           Show debug messages");
-+        tst_resm(TINFO,"    -h --help            Show this message");
-+        tst_resm(TINFO,"NG");
-+        exit(1);
-+}
-+
-+
-+/*
-+ * main()
-+ */
-+
-+
-+
-+int main(int ac, char **av) {
-+	int result = RESULT_OK;
-+        int c;
-+        int i;
-+        int lc;                 /* loop counter */
-+        char *msg;              /* message returned from parse_opts */
-+
-+	struct option long_options[] = {
-+                { "debug", no_argument, 0, 'd' },
-+                { "help",  no_argument, 0, 'h' },
-+                { NULL, 0, NULL, 0 }
-+        };
-+
-+	progname = strchr(av[0], '/');
-+        progname = progname ? progname + 1 : av[0];	
-+	
-+	progdir = strdup(av[0]);
-+        progdir = dirname(progdir);
-+	
-+        /* parse standard options */
-+        if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
-+             tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
-+             tst_exit();
-+           }
-+
-+        setup();
-+
-+        /* Check looping state if -i option given */
-+        for (lc = 0; TEST_LOOPING(lc); ++lc) {
-+                Tst_count = 0;
-+                for (testno = 0; testno < TST_TOTAL; ++testno) {
-+			 TEST(c = getopt_long(ac, av, "dh", long_options, NULL));
-+			 while(TEST_RETURN != -1) {
-+		                switch (c) {
-+                		case 'd':
-+		                        opt_debug = 1;
-+                		        break;
-+		                default:
-+                		        usage(progname);
-+                        		// NOTREACHED
-+                		}
-+		        }
-+
-+
-+		if (ac != optind) {
-+        	        tst_resm(TINFO,"Options are not match.");
-+                	usage(progname);
-+                	// NOTREACHED
-+	        }
-+
-+		/*
-+		* Execute test
-+         	*/
-+	        for (i = 0; i < (int)(sizeof(tcase) / sizeof(tcase[0])); i++) {
-+        	        int ret;
-+	                tst_resm(TINFO,"(case%02d) START", i);
-+	                ret = do_test(&tcase[i]);
-+	                tst_resm(TINFO,"(case%02d) END => %s", i, (ret == 0) ? "OK" : "NG");
-+	                result |= ret;
-+        	}
-+		
-+		/*
-+        	 * Check results
-+         	*/
-+        	switch(result) {
-+	        case RESULT_OK:
-+        			tst_resm(TPASS, "utimes call succeeded ");
-+		                break;
-+
-+	        default:
-+                 	   	tst_resm(TFAIL, "%s failed - errno = %d : %s", TCID, TEST_ERRNO, strerror(TEST_ERRNO));
-+        		        tst_resm(TINFO,"NG");
-+				cleanup();
-+				tst_exit();
-+		                break;
-+        	}
-+
-+                }
-+        }	
-+        cleanup();
-+	tst_exit();
-+}
-+
+is a gathering of tech-side developers & brand creativity professionals. Me=
+et
+the minds behind Google Creative Lab, Visual Complexity, Processing, & =
 
----
-Regards--
-Manas
+iPhoneDevCamp as they present alongside digital heavyweights like Barbarian =
 
+Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com =
 
-------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
-is a gathering of tech-side developers & brand creativity professionals. Meet
-the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
-Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
