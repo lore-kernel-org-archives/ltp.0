@@ -1,20 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <boussettahichem@yahoo.fr>) id 1M5yx4-0000Pw-83
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 09:16:06 +0000
-Received: from planetmail5.outgw.tn ([193.95.97.10])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1M5yx2-000752-E7
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 09:16:06 +0000
-Message-ID: <4A1118E9.1000501@yahoo.fr>
-Date: Mon, 18 May 2009 10:14:33 +0200
-From: Hichem Boussetta <boussettahichem@yahoo.fr>
-MIME-Version: 1.0
-References: <4A1067FE.8080501@yahoo.fr>
-In-Reply-To: <4A1067FE.8080501@yahoo.fr>
-Subject: Re: [LTP] LTP cross compilation
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M9K2O-0006Ae-Ce
+	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 14:23:24 +0000
+Received: from e7.ny.us.ibm.com ([32.97.182.137])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1M9K2E-0003y0-ST
+	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 14:23:24 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <d51f89b0905270018u1b447334qf38528f8dc0ed7aa@mail.gmail.com>
+References: <d51f89b0905130216h36e32efbwf48f241f2d961a0a@mail.gmail.com>
+	<20090513.225510.104053150.caiqian@cclom.cn>
+	<d51f89b0905180455w514b014boedb4670610987533@mail.gmail.com>
+	<20090518.192133.233689723.caiqian@cclom.cn>
+	<1242729086.5961.43.camel@subratamodak.linux.ibm.com>
+	<d51f89b0905252140y39ed0666k7c8ec1ce95807e55@mail.gmail.com>
+	<1243340568.6293.22.camel@subratamodak.linux.ibm.com>
+	<d51f89b0905270018u1b447334qf38528f8dc0ed7aa@mail.gmail.com>
+Date: Wed, 27 May 2009 19:53:06 +0530
+Message-Id: <1243434187.10447.15.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Reg: Script to extract description of test case
+	from	LTPROOT/doc/testcases/*.txt files
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,222 +33,110 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3303873826026342522=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Hichem Boussetta <boussettahichem@yahoo.fr>
-Cc: ltp-list@lists.sourceforge.net
-
-This is a cryptographically signed message in MIME format.
-
---===============3303873826026342522==
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
-	micalg=sha1; boundary="------------ms040704070609090804000207"
-
-This is a cryptographically signed message in MIME format.
-
---------------ms040704070609090804000207
-Content-Type: multipart/mixed; boundary="------------000309060507000003080505"
-
-This is a multi-part message in MIME format.
---------------000309060507000003080505
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-Hichem Boussetta a =E9crit :
-> Hi all,
->
-> It is the first time that I use ltp and I am having some troubles=20
-> trying to cross compile it.
-> I have seen a cross compilation example in the installation manual. It =
-
-> is about cross compiling for a powerpc processor.
->
-> CROSS_COMPILER=3D/opt/ppc64/powerpc64-linux/bin/powerpc64-linux-
-> CROSS_CFLAGS=3D -mpowerpc64
-> LDFLAGS=3D-static
-> LOADLIBES=3D-lpthread -lc -lresolv -lnss_dns -lnss_files -lm -lc
-> LIB_DIR=3D/lib64
-> export LOADLIBES LIB_DIR
->
-> In my case, I a compiling for an arm processor. I tried to do the same =
-
-> by the specifying the toolchain prefix, the CC, LD, AR and the=20
-> LIB_DIR. But, I get always this error when cross compiling :
->
-> getdelays.c: In function 'print_delayacct':
-> getdelays.c:215: error: 'struct taskstats' has no member named=20
-> 'freepages_count'
-> getdelays.c:216: error: 'struct taskstats' has no member named=20
-> 'freepages_delay_total'
-> make[5]: *** [getdelays] Erreur 1
->
-> In fact, I omitted the libraries nss_dns and lnss_files since didn't=20
-> find them in the lib directories of my toolchain. I am not sure about=20
-> that, but I don't think the problem is related to this libraries since =
-
-> they do not exist in my host machine either, and here, the compilation =
-
-> of ltp worked well. Perhaps, the problem is due to the fact that I=20
-> didn't put any option in the CROSS_CFLAGS since I found nowhere how to =
-
-> get this information.
->
-> If someone knows any thing about this or succeeded to cross compile=20
-> ltp, it would be really nice if he could tell me, because I am really=20
-> stuck now :-)
->
-> Thanks,
->
-Hi all,
-
-I think that I've figured out how to configure LTP for cross
-compilation. In fact, we need to put the right parameters during the
-configuration. We should append the cross toolchain's bin directory to
-the path and add --host=3D$(toolchain_prefix) to the configure script. By=
-
-doing that, ltp succeds to find out the binary utilities that it should
-use (gcc, ld ,ar, ranlib, ...). We should also specify the path to the
-include and lib directory of the toolchain we are using by setting the
-variables CPPFLAGS and LDFLAGS. However, I still get a compilation error
-that I think it is related to the fact that some libraries are missing
-(signalfd for example). The message I receive is this :
-
-getdelays.c: In function 'print_delayacct':
-getdelays.c:215: error: 'struct taskstats' has no member named
-'freepages_count'
-getdelays.c:216: error: 'struct taskstats' has no member named
-'freepages_delay_total'
-
-Does anyone know how to overcome this problem or does this mean that it
-is not possible to cross compile LTP ? In fact, the crosstoolchains I am
-using are generated using crosstool-ng. So, I don't think that the
-problem is due to the toolchain.
-
-Regards,
-
---=20
-Hichem BOUSSETTA
-El=E8ve ing=E9nieur
-Ecole Polytechnique de Tunisie
-
-
-
-
---------------000309060507000003080505
-Content-Type: text/x-vcard; charset=utf-8;
- name="boussettahichem.vcf"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="boussettahichem.vcf"
-
-begin:vcard
-fn:Hichem
-n:Boussetta;Hichem
-org;quoted-printable:Ecole Polytechnique de Tunisie;Signaux et syst=C3=A8mes
-adr:;;;La marsa;Tunis;2078;Tunisie
-email;internet:boussettahichem@yahoo.fr
-title;quoted-printable:El=C3=A8ve ing=C3=A9nieur
-tel;cell:(+216) 21 149 549
-note:Date de naissance : 17-04-1986
-url:http://hichem.boussetta.netcv.fr/
-version:2.1
-end:vcard
-
-
---------------000309060507000003080505--
-
---------------ms040704070609090804000207
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: rohit verma <rohit.170309@gmail.com>
+Cc: Mike Frysinger <vapier@gentoo.org>, ltp-list <ltp-list@lists.sf.net>
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJHzCC
-AuowggJToAMCAQICEGRSm8igCX7UhNKDlExgUtgwDQYJKoZIhvcNAQEFBQAwYjELMAkGA1UE
-BhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMT
-I1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMB4XDTA5MDIxNzExMjY0N1oX
-DTEwMDIxNzExMjY0N1owSjEfMB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJlcjEnMCUG
-CSqGSIb3DQEJARYYYm91c3NldHRhaGljaGVtQHlhaG9vLmZyMIIBIjANBgkqhkiG9w0BAQEF
-AAOCAQ8AMIIBCgKCAQEA1BR1FRwln/emY3z7EinJ6LVzaqmSw1x3+vsewQ7VysIhiYEv52c9
-javwizq/WOZ4XJlnMjkVGBHNWdDQWk6FCgIAUwXmmcKjXzyfw80WE5WvVsrKZ4TVQovv4KPW
-rdEXuMt/BOoP4vvGHjWcptx14XEzC9lfYideHUozk96DYVZxbQ9VQeSfhbVhEl3VLE3xV93e
-USGGJUbbm+kM1eMFaReDIcjfrxYbvg66RLJaAVA7N2igpJCSyNeD4JsueqIIqvQRBR8UKGcn
-D1V7EwPu3xkp5WRntjkxU+jEd+MdnX8jMmzBeLulfYAlSVZe5+18X8d9ydyQMGY4K9qjYumX
-HQIDAQABozUwMzAjBgNVHREEHDAagRhib3Vzc2V0dGFoaWNoZW1AeWFob28uZnIwDAYDVR0T
-AQH/BAIwADANBgkqhkiG9w0BAQUFAAOBgQA501v4uczLyKjflI5cnUOkgETMGWq9NZST5zld
-68PHz06stsBGSjlPPLVAF+aCNPGZrxkctt0tevhwnqoQilviVyHYOMkDzL6XrplKL+nXSD5P
-S1BMxbp5lj0NnVgm5yqg76c5oQTwzGwnFQkg82ADJtd0Lu9LxZUEVHCiPczlnjCCAuowggJT
-oAMCAQICEGRSm8igCX7UhNKDlExgUtgwDQYJKoZIhvcNAQEFBQAwYjELMAkGA1UEBhMCWkEx
-JTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0
-ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBMB4XDTA5MDIxNzExMjY0N1oXDTEwMDIx
-NzExMjY0N1owSjEfMB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJlcjEnMCUGCSqGSIb3
-DQEJARYYYm91c3NldHRhaGljaGVtQHlhaG9vLmZyMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
-MIIBCgKCAQEA1BR1FRwln/emY3z7EinJ6LVzaqmSw1x3+vsewQ7VysIhiYEv52c9javwizq/
-WOZ4XJlnMjkVGBHNWdDQWk6FCgIAUwXmmcKjXzyfw80WE5WvVsrKZ4TVQovv4KPWrdEXuMt/
-BOoP4vvGHjWcptx14XEzC9lfYideHUozk96DYVZxbQ9VQeSfhbVhEl3VLE3xV93eUSGGJUbb
-m+kM1eMFaReDIcjfrxYbvg66RLJaAVA7N2igpJCSyNeD4JsueqIIqvQRBR8UKGcnD1V7EwPu
-3xkp5WRntjkxU+jEd+MdnX8jMmzBeLulfYAlSVZe5+18X8d9ydyQMGY4K9qjYumXHQIDAQAB
-ozUwMzAjBgNVHREEHDAagRhib3Vzc2V0dGFoaWNoZW1AeWFob28uZnIwDAYDVR0TAQH/BAIw
-ADANBgkqhkiG9w0BAQUFAAOBgQA501v4uczLyKjflI5cnUOkgETMGWq9NZST5zld68PHz06s
-tsBGSjlPPLVAF+aCNPGZrxkctt0tevhwnqoQilviVyHYOMkDzL6XrplKL+nXSD5PS1BMxbp5
-lj0NnVgm5yqg76c5oQTwzGwnFQkg82ADJtd0Lu9LxZUEVHCiPczlnjCCAz8wggKooAMCAQIC
-AQ0wDQYJKoZIhvcNAQEFBQAwgdExCzAJBgNVBAYTAlpBMRUwEwYDVQQIEwxXZXN0ZXJuIENh
-cGUxEjAQBgNVBAcTCUNhcGUgVG93bjEaMBgGA1UEChMRVGhhd3RlIENvbnN1bHRpbmcxKDAm
-BgNVBAsTH0NlcnRpZmljYXRpb24gU2VydmljZXMgRGl2aXNpb24xJDAiBgNVBAMTG1RoYXd0
-ZSBQZXJzb25hbCBGcmVlbWFpbCBDQTErMCkGCSqGSIb3DQEJARYccGVyc29uYWwtZnJlZW1h
-aWxAdGhhd3RlLmNvbTAeFw0wMzA3MTcwMDAwMDBaFw0xMzA3MTYyMzU5NTlaMGIxCzAJBgNV
-BAYTAlpBMSUwIwYDVQQKExxUaGF3dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQD
-EyNUaGF3dGUgUGVyc29uYWwgRnJlZW1haWwgSXNzdWluZyBDQTCBnzANBgkqhkiG9w0BAQEF
-AAOBjQAwgYkCgYEAxKY8VXNV+065yplaHmjAdQRwnd/p/6Me7L3N9VvyGna9fww6YfK/Uc4B
-1OVQCjDXAmNaLIkVcI7dyfArhVqqP3FWy688Cwfn8R+RNiQqE88r1fOCdz0Dviv+uxg+B79A
-gAJk16emu59l0cUqVIUPSAR/p7bRPGEEQB5kGXJgt/sCAwEAAaOBlDCBkTASBgNVHRMBAf8E
-CDAGAQH/AgEAMEMGA1UdHwQ8MDowOKA2oDSGMmh0dHA6Ly9jcmwudGhhd3RlLmNvbS9UaGF3
-dGVQZXJzb25hbEZyZWVtYWlsQ0EuY3JsMAsGA1UdDwQEAwIBBjApBgNVHREEIjAgpB4wHDEa
-MBgGA1UEAxMRUHJpdmF0ZUxhYmVsMi0xMzgwDQYJKoZIhvcNAQEFBQADgYEASIzRUIPqCy7M
-DaNmrGcPf6+svsIXoUOWlJ1/TCG4+DYfqi2fNi/A9BxQIJNwPP2t4WFiw9k6GX6EsZkbAMUa
-C4J0niVQlGLH2ydxVyWN3amcOY6MIE9lX5Xa9/eH1sYITq726jTlEBpbNU1341YheILcIRk1
-3iSx0x1G/11fZU8xggNxMIIDbQIBATB2MGIxCzAJBgNVBAYTAlpBMSUwIwYDVQQKExxUaGF3
-dGUgQ29uc3VsdGluZyAoUHR5KSBMdGQuMSwwKgYDVQQDEyNUaGF3dGUgUGVyc29uYWwgRnJl
-ZW1haWwgSXNzdWluZyBDQQIQZFKbyKAJftSE0oOUTGBS2DAJBgUrDgMCGgUAoIIB0DAYBgkq
-hkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0wOTA1MTgwODE0MzNaMCMG
-CSqGSIb3DQEJBDEWBBTOjTMOCZp1mxA0/kN3UizX9L3WFzBfBgkqhkiG9w0BCQ8xUjBQMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAw
-BwYFKw4DAgcwDQYIKoZIhvcNAwICASgwgYUGCSsGAQQBgjcQBDF4MHYwYjELMAkGA1UEBhMC
-WkExJTAjBgNVBAoTHFRoYXd0ZSBDb25zdWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1Ro
-YXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJc3N1aW5nIENBAhBkUpvIoAl+1ITSg5RMYFLYMIGH
-BgsqhkiG9w0BCRACCzF4oHYwYjELMAkGA1UEBhMCWkExJTAjBgNVBAoTHFRoYXd0ZSBDb25z
-dWx0aW5nIChQdHkpIEx0ZC4xLDAqBgNVBAMTI1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBJ
-c3N1aW5nIENBAhBkUpvIoAl+1ITSg5RMYFLYMA0GCSqGSIb3DQEBAQUABIIBALpGnHNjyiEw
-zwiv5uPTwT4GWVS4d+CDkHfAJHqdW1GHegbIaxPntDdoSZFPh1Z/D+F1PCy1z3uZHcBdTCtt
-vE71jndHINzUVWpYaxgu75p3mitFKImRUvjiIYz540f59C+r3BFCcY1xGxKYwr6qv7BnP1Dj
-AdTB0EMuf+c1SkRxOKpEA80KzaJ94fcyNENo6HvH5jNhrFww8HdyMImAU9VAtiaSV+vr1++p
-66gIpDeFqAgW2NjJEi3NUyECYYh/zjte1uPJW2q3T+QfVBjj0/fhnKwnHBy4iTw77x0jKMnh
-lrIib42dBP82ix6CI3xWCNsgr4gJ7Vie+53I1rHJ/mAAAAAAAAA=
---------------ms040704070609090804000207--
-
-
---===============3303873826026342522==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables 
-unlimited royalty-free distribution of the report engine 
-for externally facing server and web deployment. 
-http://p.sf.net/sfu/businessobjects
---===============3303873826026342522==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============3303873826026342522==--
-
+T24gV2VkLCAyMDA5LTA1LTI3IGF0IDAwOjE4IC0wNzAwLCByb2hpdCB2ZXJtYSB3cm90ZTogCj4g
+SGkgU3VicmF0YSwKPiAKPiBBcyB0aGUgcHVycG9zZSBvZiB0aGlzIGRvY3VtZW50IGlzIHRvIGJy
+aWVmIHRoZSBkZXNjcmlwdGlvbiBvZiBlYWNoCj4gdGVzdCBjYXNlIHRvIHVzZXIuIEkgZmVlbCB0
+aGF0IHlvdXIgZm9ybWF0IHdvdWxkIGRlY3JlYXNlIHRoZQo+IHJlYWRhYmlsaXR5IGluIGRvY3Vt
+ZW50IC4KPiAKPiBTbyBzaG91bGQgd2UgaW5jbHVkZSBmb2xsb3dpbmcgdGFncyAgICJ0ZXN0X2xv
+Y2F0aW9uIiwKPiAidGVzdF9jbWRmaWxlX25hbWUiLCAidGVzdF9jbWRmaWxlX2VudHJ5IiwKPiAi
+RXhlY3V0ZV90aHJvdWdoX2NvbW1hbmRsaW5lIiwgIkV4ZWN1dGVfdGhyb3VnaF9ydW5sdHAiLiBv
+ciBvbmx5Cj4gZGVzY3JpcHRpb24gdGFnIHdvdWxkIGJlIHN1ZmZpY2llbnQuCgpGaW5lIHRoZW4s
+IGJ1dCBpIHdvdWxkIGluc2lzdCB5b3UgdG8gaW5jbHVkZSAidGVzdG5hbWUiICYKInRlc3RfbG9j
+YXRpb24iIGFwYXJ0IGZyb20gInRlc3RfZGVzY3JpcHRpb24iLgoKUmVnYXJkcy0tClN1YnJhdGEK
+Cj4gCj4gUmVnYXJkcywKPiByb2hpdAo+IAo+IAo+IE9uIFR1ZSwgTWF5IDI2LCAyMDA5IGF0IDU6
+MjIgQU0sIFN1YnJhdGEgTW9kYWsKPiA8c3VicmF0YUBsaW51eC52bmV0LmlibS5jb20+IHdyb3Rl
+Ogo+ID4gT24gTW9uLCAyMDA5LTA1LTI1IGF0IDIxOjQwIC0wNzAwLCByb2hpdCB2ZXJtYSB3cm90
+ZToKPiA+PiBIaSBTdWJyYXRhLAo+ID4+Cj4gPj4gSSByZXF1ZXN0IHlvdSB0byBmaW5hbGl6ZSB0
+aGUgZm9ybWF0IG9mIHRoZSBkb2N1bWVudGF0aW9uIEFTQVAuCj4gPgo+ID4gSSB3b3VsZCBsaWtl
+IHRvIHNlZSBzb21ldGhpbmcgbGlrZToKPiA+Cj4gPiA8dGVzdG5hbWU9YWJvcnQoMyk+Cj4gPiAg
+PHRlc3RfZGVzY3JpcHRpb249IkJhc2ljIHRlc3QgZm9yIGFib3J0KDMpIj4KPiA+ICA8XHRlc3Rf
+ZGVzY3JpcHRpb24+Cj4gPiAgPHRlc3RfbG9jYXRpb249Imx0cC90ZXN0Y2FzZXMva2VybmVsL3N5
+c2NhbGxzL2Fib3J0L2Fib3J0MDEuYyI+Cj4gPiAgPFx0ZXN0X2xvY2F0aW9uPgo+ID4gIDx0ZXN0
+X2NtZGZpbGVfbmFtZT0ibHRwL3J1bnRlc3Qvc3lzY2FsbHMiPgo+ID4gIDxcdGVzdF9jbWRmaWxl
+X25hbWU+Cj4gPiAgPHRlc3RfY21kZmlsZV9lbnRyeT0iYWJvcnQwMSB1bGltaXQgLWMgMTAyNDth
+Ym9ydDAxIj4KPiA+ICA8XHRlc3RfY21kZmlsZV9lbnRyeT4KPiA+ICA8RXhlY3V0ZV90aHJvdWdo
+X2NvbW1hbmRsaW5lPSJ1bGltaXQgLWMKPiA+IDEwMjQ7IC4vbHRwL3Rlc3RjYXNlcy9iaW4vYWJv
+cnQwMSI+Cj4gPiAgPFxFeGVjdXRlX3Rocm91Z2hfY29tbWFuZGxpbmU+Cj4gPiAgPEV4ZWN1dGVf
+dGhyb3VnaF9ydW5sdHA9Ii4vcnVubHRwIC1zIGFib3J0MDEiPgo+ID4gIDxcRXhlY3V0ZV90aHJv
+dWdoX3J1bmx0cD4KPiA+IDxcdGVzdG5hbWU+Cj4gPgo+ID4gVGhlIGJhc2ljIGlkZWEgaXMgdG8g
+aW5jbHVkZSBhbGwgaW1wb3J0YW50IGluZm9ybWF0aW9uIGFzIHdlIGNhbiB3aGVuIHdlCj4gPiBh
+cmUgZG9pbmcgc29tZSBwYXRjaGluZyBvbiB0aGlzLiBMZXQgbWUga25vdyBob3cgb3RoZXJzIGZl
+ZWwsIGFuZCBob3cgd2UKPiA+IGNhbiBhY2hpZXZlIHRoaXMuCj4gPgo+ID4gUmVnYXJkcy0tCj4g
+PiBTdWJyYXRhCj4gPgo+ID4+Cj4gPj4gTHRwLWxpc3QgOiBQbGVhc2UgcHJvdmlkZSB0aGUgaW5w
+dXRzIHJlZ2FyZGluZyB0aGUgdGV4dCBkb2N1bWVudGF0aW9uIGZvcm1hdC4KPiA+Pgo+ID4+IFJl
+Z2FyZHMsCj4gPj4gcm9oaXQKPiA+Pgo+ID4+IE9uIFR1ZSwgTWF5IDE5LCAyMDA5IGF0IDM6MzEg
+QU0sIFN1YnJhdGEgTW9kYWsKPiA+PiA8c3VicmF0YUBsaW51eC52bmV0LmlibS5jb20+IHdyb3Rl
+Ogo+ID4+ID4gSGkgUm9oaXQsCj4gPj4gPgo+ID4+ID4gT24gTW9uLCAyMDA5LTA1LTE4IGF0IDE5
+OjIxICswODAwLCBDQUkgUWlhbiB3cm90ZToKPiA+PiA+PiBGcm9tOiByb2hpdCB2ZXJtYSA8cm9o
+aXQuMTcwMzA5QGdtYWlsLmNvbT4KPiA+PiA+PiBTdWJqZWN0OiBSZTogUmVnOiBTY3JpcHQgdG8g
+ZXh0cmFjdCBkZXNjcmlwdGlvbiBvZiB0ZXN0IGNhc2UgZnJvbSBMVFBST09UL2RvYy90ZXN0Y2Fz
+ZXMvKi50eHQgZmlsZXMKPiA+PiA+PiBEYXRlOiBNb24sIDE4IE1heSAyMDA5IDA0OjU1OjU0IC0w
+NzAwCj4gPj4gPj4KPiA+PiA+PiA+IERlYXIgU3VicmF0YS9RaWFuLAo+ID4+ID4+ID4KPiA+PiA+
+PiA+IEkgYW0gdHJ5aW5nIHRvIGRldmVsb3Agc2NyaXB0IHdoaWNoIHdvdWxkIGV4dHJhY3RzIGRl
+c2NyaXB0aW9uIGluZm9ybWF0aW9uCj4gPj4gPj4gPiBhYm91dCB1c2VyIHJlcXVpcmVkIHRlc3Qg
+Y2FzZSBmcm9tIExUUFJPT1QvZG9jL3Rlc3RjYXNlcy8gZm9sZGVyLgo+ID4+ID4+ID4KPiA+PiA+
+PiA+IFNvIHRvIG1ha2UgdGhlIGRlc2NyaXB0aW9uIHRleHQgZmlsZSAgYXMgc3RhbmRhcmQgZmls
+ZSwgY2FuIHdlIHJlcHJlc2VudCB0aGUKPiA+PiA+PiA+IGRlc2NyaXB0aW9uIGFzIG1lbnRpb25l
+ZCBiZWxvdy4KPiA+PiA+PiA+Cj4gPj4gPj4gPiBGb3IgZXhhbXBsZSBpbiBzeXNjYWxscyBjYXRl
+Z29yeToKPiA+PiA+PiA+Cj4gPj4gPj4gPiBDdXJyZW50bHkgYXZhaWxhYmxlIGZvcm1hdCBvZiBk
+ZXNjcmlwdGlvbiBpbiBMVFAgYXMgZm9sbG93cy4KPiA+PiA+PiA+Cj4gPj4gPj4gPiAgIGFib3J0
+MDEKPiA+PiA+PiA+ICAgIEJhc2ljIHRlc3QgZm9yIGFib3J0KDMpLgo+ID4+ID4+ID4KPiA+PiA+
+PiA+ICAgYWNjZXB0MDEKPiA+PiA+PiA+ICAgIFZlcmlmeSB0aGF0IGFjY2VwdCgpIHJldHVybnMg
+dGhlIHByb3BlciBlcnJubyBmb3IgdmFyaW91cyBmYWlsdXJlIGNhc2VzCj4gPj4gPj4gPgo+ID4+
+ID4+ID4KPiA+PiA+PiA+IFRvIG1ha2UgaXQgaW4gY29uc2lzdGVudCB3YXksIGRlc2NyaXB0aW9u
+IHNob3VsZCBiZSBlbmNsb3NlZCBieSBleGVjdXRhYmxlcwo+ID4+ID4+ID4gYXMgZm9sbG93cy4K
+PiA+PiA+PiA+Cj4gPj4gPj4gPiAgPGFib3J0MDE+Cj4gPj4gPj4gPiAgICBCYXNpYyB0ZXN0IGZv
+ciBhYm9ydCgzKS4KPiA+PiA+PiA+ICA8XGFib3J0MDE+Cj4gPj4gPj4gPgo+ID4+ID4+ID4gIDxh
+Y2NlcHQwMT4KPiA+PiA+PiA+ICAgIFZlcmlmeSB0aGF0IGFjY2VwdCgpIHJldHVybnMgdGhlIHBy
+b3BlciBlcnJubyBmb3IgdmFyaW91cyBmYWlsdXJlIGNhc2VzCj4gPj4gPj4gPiAgPFxhY2NlcHQw
+MT4KPiA+PiA+PiA+Cj4gPj4gPj4gPiBQbGVhc2UgY29uZmlybSBpZiB0aGlzIGZvcm1hdCBpcyBP
+Lksgb3Igc3VnZ2VzdCBhbnkgb3RoZXIgZm9ybWF0IGJ5IHdoaWNoIHdlCj4gPj4gPj4gPiBjYW4g
+ZWFzaWx5IHBhcnNlIHRoZSB0ZXN0IGNhc2VzIGFuZCBleHRyYWN0cyB0aGUgZGVzY3JpcHRpb24u
+Cj4gPj4gPgo+ID4+ID4gSXTFmyBhbHdheXMgZ3JlYXQgdG8gc2VlIHNvbWVib2R5IHdvcmtpbmcg
+b24gTFRQIGRvY3VtZW50YXRpb24uIFNvLCBsZXRzCj4gPj4gPiBhc2sgdGhlIGNvbW11bml0eSBh
+bHNvIGZvciB0aGVpciBvcGluaW9uIGFzIHdlbGwuIENhbiB3ZSBhbHNvIGluY2x1ZGUKPiA+PiA+
+IHNvbWUgbW9yZSB0YWdzIGZvciBtb3JlIGRlc2NyaXB0aXZlIGluZm8gPwo+ID4+ID4KPiA+PiA+
+IFJlZ2FyZHMtLQo+ID4+ID4gU3VicmF0YQo+ID4+ID4KPiA+PiA+PiA+Cj4gPj4gPj4KPiA+PiA+
+PiBMb29rcyBnb29kIGZvciBtZS4KPiA+PiA+Pgo+ID4+ID4+IENBSSBRaWFuCj4gPj4gPj4KPiA+
+PiA+PiA+IElmIHRoaXMgZm9ybWF0IGlzIE8uSyAsIEkgd291bGQgc2VuZCB0aGUgcGF0Y2ggZm9y
+IHRob3NlIHRleHQgZmlsZXMKPiA+PiA+PiA+Cj4gPj4gPj4gPiBSZWdhcmRzLAo+ID4+ID4+ID4g
+Um9oaXQKPiA+PiA+PiA+Cj4gPj4gPj4gPgo+ID4+ID4+ID4KPiA+PiA+PiA+IE9uIFdlZCwgTWF5
+IDEzLCAyMDA5IGF0IDc6NTUgQU0sIENBSSBRaWFuIDxjYWlxaWFuQGNjbG9tLmNuPiB3cm90ZToK
+PiA+PiA+PiA+Cj4gPj4gPj4gPj4gRnJvbTogcm9oaXQgdmVybWEgPHJvaGl0LjE3MDMwOUBnbWFp
+bC5jb20+Cj4gPj4gPj4gPj4gU3ViamVjdDogUmVnOiBTY3JpcHQgdG8gZXh0cmFjdCBkZXNjcmlw
+dGlvbiBvZiB0ZXN0IGNhc2UgZnJvbQo+ID4+ID4+ID4+IExUUFJPT1QvZG9jL3Rlc3RjYXNlcy8q
+LnR4dCBmaWxlcwo+ID4+ID4+ID4+IERhdGU6IFdlZCwgMTMgTWF5IDIwMDkgMDI6MTY6NTcgLTA3
+MDAKPiA+PiA+PiA+Pgo+ID4+ID4+ID4+ID4gRGVhciBTdWJyYXRhL3FpYW4sCj4gPj4gPj4gPj4g
+Pgo+ID4+ID4+ID4+ID4gQXMgaWYgd2UgcnVuIExUUCB0ZXN0Y2FzZXMsIG5vd2hlcmUgTFRQIHRl
+c3Qgc3VpdGUgcG9wdWxhdGVzIHRoZQo+ID4+ID4+ID4+ID4gZGVzY3JpcHRpb24gb2YgdGVzdGNh
+c2VzIChlaXRoZXIgaW4gLmxvZywgLm91dHB1dCwgLkhUTUwgb3IgLmZhaWxlZAo+ID4+ID4+ID4+
+ID4gdGVzdCBjYXNlcyBmaWxlcykuCj4gPj4gPj4gPj4gPgo+ID4+ID4+ID4+ID4gRGVzY3JpcHRp
+b24gb2YgZWFjaCB0ZXN0IGNhc2UgaW4gY2F0ZWdvcnkgd2lzZSBpcyBhdmFpbGFibGUgaW4KPiA+
+PiA+PiA+PiA+IExUUFJPT1QvZG9jL3Rlc3RjYXNlcyBmb2xkZXIuCj4gPj4gPj4gPj4gPgo+ID4+
+ID4+ID4+ID4gTXkgUXVlc3Rpb24gOiBJcyB0aGVyZSBhbnkgcmVhZHktbWFkZSBzY3JpcHQgYXZh
+aWxhYmxlIHRvIGV4dHJhY3QgdGhlCj4gPj4gPj4gPj4gPiBkZXNjcmlwdGlvbiBvZiB1c2VyIHJl
+cXVpcmVkIHRlc3QgY2FzZSBmcm9tIGFib3ZlIHNwZWNpZmllZCBmb2xkZXI/Cj4gPj4gPj4gPj4g
+Pgo+ID4+ID4+ID4+ID4gSWYgc2NyaXB0IGlzIG5vdCBhdmFpbGFibGUsIGNvdWxkIHlvdSBzdWdn
+ZXN0IHRoZSBkaXJlY3Rpb24gdG8gZXh0cmFjdAo+ID4+ID4+ID4+ID4gZGVzY3JpcHRpb24gb2Yg
+dGVzdCBjYXNlcy4KPiA+PiA+PiA+PiA+Cj4gPj4gPj4gPj4gPgo+ID4+ID4+ID4+ID4gUmVnYXJk
+cywKPiA+PiA+PiA+PiA+IFJvaGl0Lgo+ID4+ID4+ID4+Cj4gPj4gPj4gPj4gTm90IEkgYW0gYXdh
+cmUgb2YuIFN1YnJhdGEgb3Igc29tZW9uZSBpbiB0aGUgbGlzdCBtaWdodCBoYXZlIHNvbWUgaWRl
+YXMKPiA+PiA+PiA+PiBmb3IgeW91Lgo+ID4+ID4+ID4+Cj4gPj4gPj4gPj4gQ0FJIFFpYW4KPiA+
+PiA+PiA+Pgo+ID4+ID4KPiA+PiA+Cj4gPgo+ID4KCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KUmVn
+aXN0ZXIgTm93IGZvciBDcmVhdGl2aXR5IGFuZCBUZWNobm9sb2d5IChDYVQpLCBKdW5lIDNyZCwg
+TllDLiBDYVQgCmlzIGEgZ2F0aGVyaW5nIG9mIHRlY2gtc2lkZSBkZXZlbG9wZXJzICYgYnJhbmQg
+Y3JlYXRpdml0eSBwcm9mZXNzaW9uYWxzLiBNZWV0CnRoZSBtaW5kcyBiZWhpbmQgR29vZ2xlIENy
+ZWF0aXZlIExhYiwgVmlzdWFsIENvbXBsZXhpdHksIFByb2Nlc3NpbmcsICYgCmlQaG9uZURldkNh
+bXAgYXMgdGhleSBwcmVzZW50IGFsb25nc2lkZSBkaWdpdGFsIGhlYXZ5d2VpZ2h0cyBsaWtlIEJh
+cmJhcmlhbiAKR3JvdXAsIFIvR0EsICYgQmlnIFNwYWNlc2hpcC4gaHR0cDovL3Auc2YubmV0L3Nm
+dS9jcmVhdGl2aXR5Y2F0LWNvbSAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZv
+cmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAt
+bGlzdAo=
