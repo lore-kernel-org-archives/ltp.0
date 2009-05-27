@@ -1,25 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M6Mbk-0008CS-Qc
-	for ltp-list@lists.sourceforge.net; Tue, 19 May 2009 10:31:40 +0000
-Received: from e4.ny.us.ibm.com ([32.97.182.144])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M6Mbg-0004TW-W0
-	for ltp-list@lists.sourceforge.net; Tue, 19 May 2009 10:31:40 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090518.192133.233689723.caiqian@cclom.cn>
-References: <d51f89b0905130216h36e32efbwf48f241f2d961a0a@mail.gmail.com>
-	<20090513.225510.104053150.caiqian@cclom.cn>
-	<d51f89b0905180455w514b014boedb4670610987533@mail.gmail.com>
-	<20090518.192133.233689723.caiqian@cclom.cn>
-Date: Tue, 19 May 2009 16:01:25 +0530
-Message-Id: <1242729086.5961.43.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Reg: Script to extract description of test case
-	from	LTPROOT/doc/testcases/*.txt files
-Reply-To: subrata@linux.vnet.ibm.com
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <maknayak@in.ibm.com>) id 1M9G7z-0002KY-Ug
+	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 10:12:55 +0000
+Received: from e7.ny.us.ibm.com ([32.97.182.137])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1M9G7w-0007Gu-1Y
+	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 10:12:55 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e7.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4RA1HEs009297
+	for <ltp-list@lists.sourceforge.net>; Wed, 27 May 2009 06:01:17 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n4RACpHk159822
+	for <ltp-list@lists.sourceforge.net>; Wed, 27 May 2009 06:12:51 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4RAAjt3012633
+	for <ltp-list@lists.sourceforge.net>; Wed, 27 May 2009 06:10:45 -0400
+From: Manas Kumar Nayak <maknayak@in.ibm.com>
+Date: Wed, 27 May 2009 15:42:32 +0530
+Message-Id: <20090527101228.18638.22844.sendpatchset@subratamodak.linux.ibm.com>
+In-Reply-To: <20090527100645.18638.75163.sendpatchset@subratamodak.linux.ibm.com>
+References: <20090527100645.18638.75163.sendpatchset@subratamodak.linux.ibm.com>
+Subject: [LTP] [PATCH 12/13] Add/Port unshare01 test for unshare() syscall
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,65 +34,311 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rohit verma <rohit.170309@gmail.com>
-Cc: Mike Frysinger <vapier@gentoo.org>, ltp-list <ltp-list@lists.sf.net>
+To: LTP List <ltp-list@lists.sourceforge.net>
+Cc: Manas Kumar Nayak <maknayak@in.ibm.com>
 
-SGkgUm9oaXQsCgpPbiBNb24sIDIwMDktMDUtMTggYXQgMTk6MjEgKzA4MDAsIENBSSBRaWFuIHdy
-b3RlOiAKPiBGcm9tOiByb2hpdCB2ZXJtYSA8cm9oaXQuMTcwMzA5QGdtYWlsLmNvbT4KPiBTdWJq
-ZWN0OiBSZTogUmVnOiBTY3JpcHQgdG8gZXh0cmFjdCBkZXNjcmlwdGlvbiBvZiB0ZXN0IGNhc2Ug
-ZnJvbSBMVFBST09UL2RvYy90ZXN0Y2FzZXMvKi50eHQgZmlsZXMKPiBEYXRlOiBNb24sIDE4IE1h
-eSAyMDA5IDA0OjU1OjU0IC0wNzAwCj4gCj4gPiBEZWFyIFN1YnJhdGEvUWlhbiwKPiA+IAo+ID4g
-SSBhbSB0cnlpbmcgdG8gZGV2ZWxvcCBzY3JpcHQgd2hpY2ggd291bGQgZXh0cmFjdHMgZGVzY3Jp
-cHRpb24gaW5mb3JtYXRpb24KPiA+IGFib3V0IHVzZXIgcmVxdWlyZWQgdGVzdCBjYXNlIGZyb20g
-TFRQUk9PVC9kb2MvdGVzdGNhc2VzLyBmb2xkZXIuCj4gPiAKPiA+IFNvIHRvIG1ha2UgdGhlIGRl
-c2NyaXB0aW9uIHRleHQgZmlsZSAgYXMgc3RhbmRhcmQgZmlsZSwgY2FuIHdlIHJlcHJlc2VudCB0
-aGUKPiA+IGRlc2NyaXB0aW9uIGFzIG1lbnRpb25lZCBiZWxvdy4KPiA+IAo+ID4gRm9yIGV4YW1w
-bGUgaW4gc3lzY2FsbHMgY2F0ZWdvcnk6Cj4gPiAKPiA+IEN1cnJlbnRseSBhdmFpbGFibGUgZm9y
-bWF0IG9mIGRlc2NyaXB0aW9uIGluIExUUCBhcyBmb2xsb3dzLgo+ID4gCj4gPiAgIGFib3J0MDEK
-PiA+ICAgIEJhc2ljIHRlc3QgZm9yIGFib3J0KDMpLgo+ID4gCj4gPiAgIGFjY2VwdDAxCj4gPiAg
-ICBWZXJpZnkgdGhhdCBhY2NlcHQoKSByZXR1cm5zIHRoZSBwcm9wZXIgZXJybm8gZm9yIHZhcmlv
-dXMgZmFpbHVyZSBjYXNlcwo+ID4gCj4gPiAKPiA+IFRvIG1ha2UgaXQgaW4gY29uc2lzdGVudCB3
-YXksIGRlc2NyaXB0aW9uIHNob3VsZCBiZSBlbmNsb3NlZCBieSBleGVjdXRhYmxlcwo+ID4gYXMg
-Zm9sbG93cy4KPiA+IAo+ID4gIDxhYm9ydDAxPgo+ID4gICAgQmFzaWMgdGVzdCBmb3IgYWJvcnQo
-MykuCj4gPiAgPFxhYm9ydDAxPgo+ID4gCj4gPiAgPGFjY2VwdDAxPgo+ID4gICAgVmVyaWZ5IHRo
-YXQgYWNjZXB0KCkgcmV0dXJucyB0aGUgcHJvcGVyIGVycm5vIGZvciB2YXJpb3VzIGZhaWx1cmUg
-Y2FzZXMKPiA+ICA8XGFjY2VwdDAxPgo+ID4gCj4gPiBQbGVhc2UgY29uZmlybSBpZiB0aGlzIGZv
-cm1hdCBpcyBPLksgb3Igc3VnZ2VzdCBhbnkgb3RoZXIgZm9ybWF0IGJ5IHdoaWNoIHdlCj4gPiBj
-YW4gZWFzaWx5IHBhcnNlIHRoZSB0ZXN0IGNhc2VzIGFuZCBleHRyYWN0cyB0aGUgZGVzY3JpcHRp
-b24uCgpJdMWbIGFsd2F5cyBncmVhdCB0byBzZWUgc29tZWJvZHkgd29ya2luZyBvbiBMVFAgZG9j
-dW1lbnRhdGlvbi4gU28sIGxldHMKYXNrIHRoZSBjb21tdW5pdHkgYWxzbyBmb3IgdGhlaXIgb3Bp
-bmlvbiBhcyB3ZWxsLiBDYW4gd2UgYWxzbyBpbmNsdWRlCnNvbWUgbW9yZSB0YWdzIGZvciBtb3Jl
-IGRlc2NyaXB0aXZlIGluZm8gPwoKUmVnYXJkcy0tClN1YnJhdGEKCj4gPgo+IAo+IExvb2tzIGdv
-b2QgZm9yIG1lLgo+IAo+IENBSSBRaWFuCj4gCj4gPiBJZiB0aGlzIGZvcm1hdCBpcyBPLksgLCBJ
-IHdvdWxkIHNlbmQgdGhlIHBhdGNoIGZvciB0aG9zZSB0ZXh0IGZpbGVzCj4gPgo+ID4gUmVnYXJk
-cywKPiA+IFJvaGl0Cj4gPiAKPiA+IAo+ID4gCj4gPiBPbiBXZWQsIE1heSAxMywgMjAwOSBhdCA3
-OjU1IEFNLCBDQUkgUWlhbiA8Y2FpcWlhbkBjY2xvbS5jbj4gd3JvdGU6Cj4gPiAKPiA+PiBGcm9t
-OiByb2hpdCB2ZXJtYSA8cm9oaXQuMTcwMzA5QGdtYWlsLmNvbT4KPiA+PiBTdWJqZWN0OiBSZWc6
-IFNjcmlwdCB0byBleHRyYWN0IGRlc2NyaXB0aW9uIG9mIHRlc3QgY2FzZSBmcm9tCj4gPj4gTFRQ
-Uk9PVC9kb2MvdGVzdGNhc2VzLyoudHh0IGZpbGVzCj4gPj4gRGF0ZTogV2VkLCAxMyBNYXkgMjAw
-OSAwMjoxNjo1NyAtMDcwMAo+ID4+Cj4gPj4gPiBEZWFyIFN1YnJhdGEvcWlhbiwKPiA+PiA+Cj4g
-Pj4gPiBBcyBpZiB3ZSBydW4gTFRQIHRlc3RjYXNlcywgbm93aGVyZSBMVFAgdGVzdCBzdWl0ZSBw
-b3B1bGF0ZXMgdGhlCj4gPj4gPiBkZXNjcmlwdGlvbiBvZiB0ZXN0Y2FzZXMgKGVpdGhlciBpbiAu
-bG9nLCAub3V0cHV0LCAuSFRNTCBvciAuZmFpbGVkCj4gPj4gPiB0ZXN0IGNhc2VzIGZpbGVzKS4K
-PiA+PiA+Cj4gPj4gPiBEZXNjcmlwdGlvbiBvZiBlYWNoIHRlc3QgY2FzZSBpbiBjYXRlZ29yeSB3
-aXNlIGlzIGF2YWlsYWJsZSBpbgo+ID4+ID4gTFRQUk9PVC9kb2MvdGVzdGNhc2VzIGZvbGRlci4K
-PiA+PiA+Cj4gPj4gPiBNeSBRdWVzdGlvbiA6IElzIHRoZXJlIGFueSByZWFkeS1tYWRlIHNjcmlw
-dCBhdmFpbGFibGUgdG8gZXh0cmFjdCB0aGUKPiA+PiA+IGRlc2NyaXB0aW9uIG9mIHVzZXIgcmVx
-dWlyZWQgdGVzdCBjYXNlIGZyb20gYWJvdmUgc3BlY2lmaWVkIGZvbGRlcj8KPiA+PiA+Cj4gPj4g
-PiBJZiBzY3JpcHQgaXMgbm90IGF2YWlsYWJsZSwgY291bGQgeW91IHN1Z2dlc3QgdGhlIGRpcmVj
-dGlvbiB0byBleHRyYWN0Cj4gPj4gPiBkZXNjcmlwdGlvbiBvZiB0ZXN0IGNhc2VzLgo+ID4+ID4K
-PiA+PiA+Cj4gPj4gPiBSZWdhcmRzLAo+ID4+ID4gUm9oaXQuCj4gPj4KPiA+PiBOb3QgSSBhbSBh
-d2FyZSBvZi4gU3VicmF0YSBvciBzb21lb25lIGluIHRoZSBsaXN0IG1pZ2h0IGhhdmUgc29tZSBp
-ZGVhcwo+ID4+IGZvciB5b3UuCj4gPj4KPiA+PiBDQUkgUWlhbgo+ID4+CgoKLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tCkNyeXN0YWwgUmVwb3J0cyAtIE5ldyBGcmVlIFJ1bnRpbWUgYW5kIDMwIERheSBU
-cmlhbApDaGVjayBvdXQgdGhlIG5ldyBzaW1wbGlmaWVkIGxpY2Vuc2luZyBvcHRpb24gdGhhdCBl
-bmFibGVzIAp1bmxpbWl0ZWQgcm95YWx0eS1mcmVlIGRpc3RyaWJ1dGlvbiBvZiB0aGUgcmVwb3J0
-IGVuZ2luZSAKZm9yIGV4dGVybmFsbHkgZmFjaW5nIHNlcnZlciBhbmQgd2ViIGRlcGxveW1lbnQu
-IApodHRwOi8vcC5zZi5uZXQvc2Z1L2J1c2luZXNzb2JqZWN0cwpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxp
-c3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xp
-c3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+Signed-off-by: Manas Kumar Nayak <maknayak@in.ibm.com>
+To: LTP List <ltp-list@lists.sourceforge.net>
+Cc: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: Masatake YAMATO <yamato@redhat.com>
+---
+
+--- ltp-intermediate-20090521.orig/testcases/kernel/syscalls/unshare/Makefile	1970-01-01 05:30:00.000000000 +0530
++++ ltp-intermediate-20090521/testcases/kernel/syscalls/unshare/Makefile	2009-05-25 15:12:47.000000000 +0530
+@@ -0,0 +1,31 @@
++#
++#  Copyright (c) International Business Machines  Corp., 2009
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++CFLAGS += -I../../../../include -Wall
++LDLIBS += -L../../../../lib -lltp
++
++SRCS    = $(wildcard *.c)
++TARGETS = $(patsubst %.c,%,$(SRCS))
++
++all: $(TARGETS)
++
++install:
++	@set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i ; done
++
++clean:
++	rm -f $(TARGETS)
+--- ltp-intermediate-20090521.orig/testcases/kernel/syscalls/unshare/unshare01.c	1970-01-01 05:30:00.000000000 +0530
++++ ltp-intermediate-20090521/testcases/kernel/syscalls/unshare/unshare01.c	2009-05-27 14:43:04.000000000 +0530
+@@ -0,0 +1,231 @@
++/********************************************************************************/
++/* Copyright (c) Crackerjack Project., 2007                                   	*/
++/*                                                                            	*/
++/* This program is free software;  you can redistribute it and/or modify      	*/
++/* it under the terms of the GNU General Public License as published by       	*/
++/* the Free Software Foundation; either version 2 of the License, or          	*/
++/* (at your option) any later version.                                        	*/
++/*                                                                            	*/
++/* This program is distributed in the hope that it will be useful,            	*/
++/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            	*/
++/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  	*/
++/* the GNU General Public License for more details.                           	*/
++/*                                                                            	*/
++/* You should have received a copy of the GNU General Public License          	*/
++/* along with this program;  if not, write to the Free Software               	*/
++/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    	*/
++/*                                                                            	*/
++/******************************************************************************	*/
++/******************************************************************************	*/
++/*                                                                            	*/
++/* File:        unshare01.c                                           	      	*/
++/*                                                                            	*/
++/* Description: This tests the unshare() syscall.                      	      	*/
++/*             unshare() allows a process to disassociate parts of its 		*/
++/*		execution context that are currently being shared with other 	*/
++/*		processes. Part of the execution context, such as the namespace	*/
++/*		,is shared implicitly when a new process is created using 	*/
++/*		fork(2) or vfork(2), while other parts, such as virtual memory	*/
++/*		, may be shared by explicit request when creating a process 	*/
++/*		using clone(2).							*/
++/*										*/
++/*		The main use of unshare() is to allow a process to control its	*/ 
++/*		shared execution context without creating a new process.	*/
++/*	         								*/
++/*										*/
++/*		The flags argument is a bit mask that specifies which parts of	*/
++/*		the execution context should be unshared. This argument is 	*/
++/*		specified by ORing together zero or more of the following cons-	*/
++/*		tants:								*/
++/*										*/
++/*		CLONE_FILES:							*/
++/*		    	Reverse the effect of the clone(2) CLONE_FILES flag. 	*/
++/*			Unshare	the file descriptor table, so that the calling 	*/
++/*			process no longer shares its file descriptors with any 	*/
++/*			other process.						*/
++/*		CLONE_FS:							*/
++/*			Reverse the effect of the clone(2) CLONE_FS flag.Unshare*/
++/*			file system attributes, so that the calling process no 	*/
++/*			longer shares its root directory, current directory, or	*/
++/*			umask attributes with any other process.		*/
++/*		CLONE_NEWNS:							*/
++/*		       This flag has the same effect as the clone(2) CLONE_NEWNS*/ 
++/*			flag. Unshare the namespace, so that the calling process*/ 
++/*			has a private copy of its namespacei which is not shared*/
++/*			with any other process. Specifying this flag automat-	*/
++/*			ically implies CLONE_FS as well. 			*/
++/*										*/
++/*		If flags is specified as zero, then unshare() is a no-op; no 	*/
++/*		changes are made to the calling process's execution context. 	*/
++/*		                                                               	*/
++/* Usage:  <for command-line>                                                 	*/
++/* unshare01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                     		*/
++/*      where,  -c n : Run n copies concurrently.                             	*/
++/*              -e   : Turn on errno logging.                                 	*/
++/*              -i n : Execute test n times.                                  	*/
++/*              -I x : Execute test for x seconds.                            	*/
++/*              -P x : Pause for x seconds between iterations.                	*/
++/*              -t   : Turn on syscall timing.                                	*/
++/*                                                                            	*/
++/* Total Tests: 1                                                             	*/
++/*                                                                            	*/
++/* Test Name:   unshare01                                             		*/
++/* History:     Porting from Crackerjack to LTP is done by                    	*/
++/*              Manas Kumar Nayak maknayak@in.ibm.com>                        	*/
++/********************************************************************************/
++
++#include <stdio.h>
++#include <sys/wait.h>
++#include <sys/types.h>
++#include <sched.h>
++#include <limits.h>
++#include <unistd.h>
++#include <sys/types.h>
++#include <sys/syscall.h>
++#include <errno.h>
++#include <pwd.h>
++#include <grp.h>
++#include <string.h>
++#include <sys/param.h>
++#include <stdio.h>
++
++/* Harness Specific Include Files. */
++#include "test.h"
++#include "usctest.h"
++#include "linux_syscall_numbers.h"
++
++/* Extern Global Variables */
++extern int Tst_count;           /* counter for tst_xxx routines.         */
++extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
++
++/* Global Variables */
++char *TCID = "unshare01";  /* Test program identifier.*/
++int  testno;
++int  TST_TOTAL =1;                   /* total number of tests in this file.   */
++
++/* Extern Global Functions */
++/******************************************************************************/
++/*                                                                            */
++/* Function:    cleanup                                                       */
++/*                                                                            */
++/* Description: Performs all one time clean up for this test on successful    */
++/*              completion,  premature exit or  failure. Closes all temporary */
++/*              files, removes all temporary directories exits the test with  */
++/*              appropriate TEST_RETURNurn code by calling tst_exit() function.       */
++/*                                                                            */
++/* Input:       None.                                                         */
++/*                                                                            */
++/* Output:      None.                                                         */
++/*                                                                            */
++/* Return:      On failure - Exits calling tst_exit(). Non '0' TEST_RETURNurn code.   */
++/*              On success - Exits calling tst_exit(). With '0' TEST_RETURNurn code.  */
++/*                                                                            */
++/******************************************************************************/
++extern void cleanup() {
++        /* Remove tmp dir and all files in it */
++        TEST_CLEANUP;
++        tst_rmdir();
++
++        /* Exit with appropriate TEST_RETURNurn code. */
++        tst_exit();
++}
++
++/* Local  Functions */
++/******************************************************************************/
++/*                                                                            */
++/* Function:    setup                                                         */
++/*                                                                            */
++/* Description: Performs all one time setup for this test. This function is   */
++/*              typically used to capture signals, create temporary dirs      */
++/*              and temporary files that may be used in the course of this    */
++/*              test.                                                         */
++/*                                                                            */
++/* Input:       None.                                                         */
++/*                                                                            */
++/* Output:      None.                                                         */
++/*                                                                            */
++/* Return:      On failure - Exits by calling cleanup().                      */
++/*              On success - TEST_RETURNurns 0.                                       */
++/*                                                                            */
++/******************************************************************************/
++void setup() {
++        /* Capture signals if any */
++        /* Create temporary directories */
++        TEST_PAUSE;
++        tst_tmpdir();
++}
++
++int main(int ac, char **av) {
++        pid_t pid1;
++	int lc;                 /* loop counter */
++        char *msg;              /* message TEST_RETURNurned from parse_opts */
++	
++        /* parse standard options */
++        if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
++             tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
++             tst_exit();
++           }
++
++        setup();
++
++        /* Check looping state if -i option given */
++        for (lc = 0; TEST_LOOPING(lc); ++lc) {
++                Tst_count = 0;
++                for (testno = 0; testno < TST_TOTAL; ++testno) {
++
++ /*
++ *fork a child process;testing which one is a child or a parent;
++ * */
++		        TEST(pid1=fork());    //call to fork()
++			if (TEST_RETURN == -1){
++				tst_resm(TFAIL, "fork() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
++				cleanup();
++				tst_exit();
++			}else if (TEST_RETURN == 0){
++				if((TEST_RETURN = unshare(CLONE_FILES)) == 0) {
++	        		tst_resm(TPASS, "unshare with CLONE_FILES call succeeded");
++				tst_exit();
++				}else if (TEST_RETURN == -1 )
++					tst_resm(TFAIL,"unshare Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
++					tst_exit();
++			}else{
++			}
++
++			TEST(pid1=fork());    //call to fork()
++                        if (TEST_RETURN == -1){
++                	        tst_resm(TFAIL, "fork() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
++	                        cleanup();
++                        	tst_exit();
++                        }else if (TEST_RETURN == 0){
++                                if((TEST_RETURN = unshare(CLONE_FS)) == 0) {
++                                	tst_resm(TPASS, "unshare with CLONE_FS call succeeded");
++					tst_exit();
++                                }else if (TEST_RETURN == -1 )
++                                        tst_resm(TFAIL,"unshare Failed 2, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
++					tst_exit();
++                        }else{
++			}
++
++			TEST(pid1=fork());    //call to fork()
++                        if (TEST_RETURN == -1){
++                	        tst_resm(TFAIL, "fork() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
++	                        cleanup();
++                        	tst_exit();
++                        }else if (TEST_RETURN == 0){
++                                if((TEST_RETURN = unshare(CLONE_NEWNS)) == 0) {
++                                	tst_resm(TPASS, "unshare call with CLONE_NEWNS succeeded");
++					tst_exit();
++                                }else if (TEST_RETURN == -1 )
++                                        tst_resm(TFAIL,"unshare Failed 2, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
++					tst_exit();
++                        }else{
++			}
++
++
++                }
++
++                }
++	cleanup();
++	tst_exit();
++}
++
+--- ltp-intermediate-20090521.orig/runtest/syscalls	2009-05-27 14:45:49.000000000 +0530
++++ ltp-intermediate-20090521/runtest/syscalls	2009-05-27 14:45:21.000000000 +0530
+@@ -1207,6 +1207,8 @@ unlink08 unlink08
+ #unlinkat test cases
+ unlinkat01 unlinkat01
+ 
++unshare01 unshare01
++
+ #
+ # These tests require an unmounted block device
+ # to run correctly. Please see individual test
+
+---
+Regards--
+Manas
+
+
+------------------------------------------------------------------------------
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
+is a gathering of tech-side developers & brand creativity professionals. Meet
+the minds behind Google Creative Lab, Visual Complexity, Processing, & 
+iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
+Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
