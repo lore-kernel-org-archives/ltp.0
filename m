@@ -1,36 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M7OcL-0001Ph-14
-	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 06:52:33 +0000
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M7OcH-0007iX-Cj
-	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 06:52:33 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e6.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4M6srcw002715
-	for <ltp-list@lists.sourceforge.net>; Fri, 22 May 2009 02:54:53 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4M6qS7t250270
-	for <ltp-list@lists.sourceforge.net>; Fri, 22 May 2009 02:52:28 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4M6qS3D014650
-	for <ltp-list@lists.sourceforge.net>; Fri, 22 May 2009 02:52:28 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1242648066.5161.18.camel@subratamodak.linux.ibm.com>
-References: <1238499818.6818.25.camel@subratamodak.linux.ibm.com>
-	<c384c5ea0905151027x5a74ee85l294616e0ddae41ce@mail.gmail.com>
-	<200905160936.31857.vapier@gentoo.org>
-	<1242648066.5161.18.camel@subratamodak.linux.ibm.com>
-Date: Fri, 22 May 2009 12:22:21 +0530
-Message-Id: <1242975141.8760.12.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been
-	Released	for	MARCH 2009
-Reply-To: subrata@linux.vnet.ibm.com
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1M9hpx-0006eJ-52
+	for ltp-list@lists.sourceforge.net; Thu, 28 May 2009 15:48:09 +0000
+Received: from relay1.suse.de (relay-ext.suse.de [195.135.221.8])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mx1.suse.de (Postfix) with ESMTP id 9809274609
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 28 May 2009 17:47:58 +0200 (CEST)
+Date: Thu, 28 May 2009 17:47:58 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20090528154758.GA29011@schrodinger.suse.cz>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="ZGiS0Q5IWpPtfppv"
+Content-Disposition: inline
+Subject: [LTP]   [PATCH] Renaming binaries to avoid conflicts II
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,72 +26,117 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Leon Woestenberg <leon.woestenberg@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
+To: ltp-list@lists.sourceforge.net
 
-On Mon, 2009-05-18 at 17:31 +0530, Subrata Modak wrote: 
-> On Sat, 2009-05-16 at 09:36 -0400, Mike Frysinger wrote: 
-> > On Friday 15 May 2009 13:27:50 Leon Woestenberg wrote:
-> > > 2009/3/31 Subrata Modak <subrata@linux.vnet.ibm.com>:
-> > > > Dear All,
-> > > >
-> > > > The Linux Test Project test suite has been released for the month of
-> > > > MARCH 2009. Please see ltp/INSTALL file carefully, as, there has been
-> > >
-> > > OpenEmbedded builds LTP for a large number of machines / architectures.
-> > >
-> > > JFYI, The LTP January release required some patches, especially in the
-> > > area of cross-compilation:
-> > 
-> > then someone should be submitting them so we can give feedback and they'll 
-> > update/re-submit
-> 
-> True,
-> 
-> Please submit them to the LTP mailing list.
 
-Any consideration to submit these to the list soon ?
+--ZGiS0Q5IWpPtfppv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Regards--
-Subrata
+Hi,
+I've missed these three in the first patch, here comes cosmetic changes.
 
-> 
-> Regards--
-> Subrata
-> 
-> > 
-> > > http://cgit.openembedded.org/cgit.cgi?url=openembedded/tree/recipes/ltp/ltp
-> > >-20090131
-> > 
-> > the first patch (the cross compile one) is wrong -- CPP is not the C++ 
-> > compiler, it's the C preprocessor.  those all need to be CXX.
-> > 
-> > the epoll one should be a configure test.
-> > -mike
-> 
-> 
-> ------------------------------------------------------------------------------
-> Crystal Reports - New Free Runtime and 30 Day Trial
-> Check out the new simplified licensing option that enables 
-> unlimited royalty-free distribution of the report engine 
-> for externally facing server and web deployment. 
-> http://p.sf.net/sfu/businessobjects
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+Signed-off-by: Cyril Hrubis chrubis@suse.cz
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+--ZGiS0Q5IWpPtfppv
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="add_ltp_prefix_to_binaries_II.patch"
+
+Index: ltp-full-20090430/INSTALL
+===================================================================
+--- ltp-full-20090430.orig/INSTALL
++++ ltp-full-20090430/INSTALL
+@@ -74,7 +74,7 @@ contributions are welcome.
+ 
+ 4. You can run all of the tests sequentially by using the example test
+    script runalltests.sh.  The script is there just to get you started.
+-   See pan(1) for more information on the test driver we have provided.
++   See ltp-pan(1) for more information on the test driver we have provided.
+    It is simple, but it can do a lot of stuff.
+ 
+    NOTE: The diskio and network tests will NOT be run by the runalltests.sh
+Index: ltp-full-20090430/README
+===================================================================
+--- ltp-full-20090430.orig/README
++++ ltp-full-20090430/README
+@@ -65,11 +65,11 @@ testcases/*
+ 		 directory, which has hardlinks to all the test executables.
+ 
+ runtest/*
+-	It houses command lists that are used by pan for automated testing.
++	It houses command lists that are used by ltp-pan for automated testing.
+ 
+ pan/*
+-	The pan directory contains a simple, lightweight test harness.  pan
+-	has the ability to run tests randomly and in parallel.  See pan's man
++	The pan directory contains a simple, lightweight test harness.  lpt-pan
++	has the ability to run tests randomly and in parallel.  See ltp-pan's man
+ 	page for more information.
+ 
+ scratch/*
+Index: ltp-full-20090430/README.ltp-devel
+===================================================================
+--- ltp-full-20090430.orig/README.ltp-devel
++++ ltp-full-20090430/README.ltp-devel
+@@ -2,9 +2,9 @@ This is a README to describe the ltp-dev
+ 
+ "make install" is to build and install:
+ 
+-	/opt/ltp/bin/bump
+-	/opt/ltp/bin/pan
+-	/opt/ltp/bin/scanner
++	/opt/ltp/bin/ltp-bump
++	/opt/ltp/bin/ltp-pan
++	/opt/ltp/bin/ltp-scanner
+ 	/opt/ltp/lib/libltp.a
+ 	/usr/share/pkgconfig/ltp.pc
+ 	/opt/ltp/include/
+@@ -24,7 +24,7 @@ To read manual pages, then the developer
+ (Most Important man pages)
+ 
+ 	man usctest
+-	man pan
++	man ltp-pan
+ 	man tst_res
+ 	man tst_sig
+ 	man tst_set_error
+@@ -32,7 +32,7 @@ To read manual pages, then the developer
+ 	man parse_opts
+ 
+ (Others)
+-	man bump
++	man ltp-bump
+ 	man doio
+ 	man iogen
+ 	man forker
+
+--ZGiS0Q5IWpPtfppv
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
 is a gathering of tech-side developers & brand creativity professionals. Meet
 the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
-Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
+iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
+Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
+--ZGiS0Q5IWpPtfppv
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--ZGiS0Q5IWpPtfppv--
+
