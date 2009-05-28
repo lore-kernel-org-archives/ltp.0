@@ -2,32 +2,17 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M7Och-0007gx-VH
-	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 06:52:55 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M7Ocd-0001jX-O0
-	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 06:52:55 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e8.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4M6ggkn008164
-	for <ltp-list@lists.sourceforge.net>; Fri, 22 May 2009 02:42:42 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4M6qp7I224494
-	for <ltp-list@lists.sourceforge.net>; Fri, 22 May 2009 02:52:51 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4M6qpR6027879
-	for <ltp-list@lists.sourceforge.net>; Fri, 22 May 2009 02:52:51 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <522C1DF17AF50042AD8AE87F7887BD3D0158B35583@exch.hq.tensilica.com>
-References: <522C1DF17AF50042AD8AE87F7887BD3D0158B35583@exch.hq.tensilica.com>
-Date: Fri, 22 May 2009 12:22:40 +0530
-Message-Id: <1242975161.8760.15.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Detect test results more accurately
-	when	generating HTML
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <chrubis@suse.de>) id 1M9cLP-0004hI-98
+	for ltp-list@lists.sourceforge.net; Thu, 28 May 2009 09:56:15 +0000
+Date: Thu, 28 May 2009 11:56:04 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20090528095604.GA6474@schrodinger.suse.cz>
+References: <20090525205010.GA21081@schrodinger.suse.cz>
+	<1243340564.6293.21.camel@subratamodak.linux.ibm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1243340564.6293.21.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] list of test that needs autoconf checks
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,72 +25,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Marc Gauthier <marc@tensilica.com>, rohit verma <rohit.170309@gmail.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Thu, 2009-05-21 at 01:13 -0700, Marc Gauthier wrote: 
-> Hi, my first patch to this list.  Actually not a patch,
-> but the files themselves, to avoid line-wrapping issues
-> and because the diff is twice the size of the new file.
+Hi,
+> > Has missing not only freepages_count and freepages_delay_total as already 
+> > mentioned in this list but also for kernel 2.6.22:
+> > 
+> > linux/cgroupstats.h: No such file or directory
+> > 'struct taskstats' has no member named 'nvcsw'
+> > 'struct taskstats' has no member named 'nivcsw'
+> > 'struct taskstats' has no member named 'read_bytes'
+> > 'struct taskstats' has no member named 'write_bytes'
+> > 'struct taskstats' has no member named 'cancelled_write_bytes'
+> > 'CGROUPSTATS_CMD_GET' undeclared (first use in this function)
+> > 'CGROUPSTATS_CMD_ATTR_FD' undeclared (first use in this function)
+> > 'CGROUPSTATS_TYPE_CGROUP_STATS' undeclared (first use in this function)
+> > 
+> > 
+> > testcases/kernel/controllers/cgroup/test_6_2.c
 > 
-> -Marc
+> Do you plan to write this ?
 
-Thanks Marc.
+I'll look at this, but it's low priority now.
 
-Rohit,
+> > 
+> > clone() is missing on ia64 machines
+> > 
+> 
+> Same here :-)
 
-Can you test this and see if these solves the problem that you were
-discussing for long ?
+Same here :-)
 
-Regards--
-Subrata
+> > 
+> > testcases/kernel/syscalls/signalfd/signalfd01.c
+> > 
+> > sys/signalfd.h: No such file or directory (for glibc-2.4.31.54)
+> > 
+> 
+> It??s already there:
+> http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/m4/ltp-signalfd.m4
+> > 
+> > testcases/kernel/syscalls/splice/splice02.c
+> > 
+> 
+> Yes, we need this also. We had some discussions on this very recently:
+> http://marc.info/?t=124300498400006&r=1&w=2&n=3,
 
-> 
-> 
-> -----------
-> Detect test results more accurately when generating HTML
-> 
-> Process test output lines that appear between <<<test_end>>>
-> and the following <<<test_start>>>.  Assign to the preceding
-> test where the name matches, else to the following test.
-> 
-> If a single test has multiple types of results (e.g. both
-> FAIL and WARN), report only the most significant one, to
-> avoid mis-computing the total number of PASS tests or
-> total counts that don't add up to the number of tests.
-> 
-> If a test's output has no explicit result (PASS, FAIL, etc),
-> look at the exit value to determine whether it passed.
-> 
-> Setting the SHOW_UNRESOLVED environment variable to 1
-> classifies as UNRESOLVED any test with no explicit result
-> and a zero exit code.
-> 
-> Setting the SUMMARY_OUTPUT environment variable to 1
-> causes only one line of output per test to be shown, for a
-> tighter page that allows quickly scanning the results.
-> 
-> Show percentage of each result type in summary section.
-> 
-> Simplify parsing a bit.
-> 
-> Signed-off-by:  Marc Gauthier <marc@tensilica.com>
-> 
-> ------------------------------------------------------------------------------
-> Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
-> is a gathering of tech-side developers & brand creativity professionals. Meet
-> the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-> iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
-> Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
-> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
+Thanks!
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
 is a gathering of tech-side developers & brand creativity professionals. Meet
 the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
-Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
+iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
+Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
