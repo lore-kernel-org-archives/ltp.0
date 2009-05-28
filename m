@@ -1,35 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <marc@tensilica.com>) id 1M76Ez-0001XS-Je
-	for ltp-list@lists.sourceforge.net; Thu, 21 May 2009 11:15:13 +0000
-Received: from mailgw.tensilica.com ([65.205.227.134])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1M76Eu-0005yq-Mc
-	for ltp-list@lists.sourceforge.net; Thu, 21 May 2009 11:15:13 +0000
-Received: from localhost (unknown [127.0.0.1])
-	by mailgw.tensilica.com (Postfix) with ESMTP id 1F7121160513
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1M9gNm-000319-Oj
+	for ltp-list@lists.sourceforge.net; Thu, 28 May 2009 14:14:58 +0000
+Received: from relay1.suse.de (relay-ext.suse.de [195.135.221.8])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mx1.suse.de (Postfix) with ESMTP id B7DF66CB00
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 21 May 2009 11:14:38 +0000 (UTC)
-Received: from mailgw.tensilica.com ([127.0.0.1])
-	by localhost (mailgw.tensilica.com [127.0.0.1]) (amavisd-maia,
-	port 10024)
-	with ESMTP id 02721-07 for <ltp-list@lists.sourceforge.net>;
-	Thu, 21 May 2009 04:14:37 -0700 (PDT)
-Received: from mail.tensilica.com (mail.tensilica.com [192.168.15.138])
-	by mailgw.tensilica.com (Postfix) with ESMTP id E62111160499
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 21 May 2009 04:14:34 -0700 (PDT)
-From: Marc Gauthier <marc@tensilica.com>
-Date: Thu, 21 May 2009 01:13:27 -0700
-Message-ID: <522C1DF17AF50042AD8AE87F7887BD3D0158B35583@exch.hq.tensilica.com>
-Content-Language: en-US
-Content-Type: multipart/mixed;
-	boundary="_003_522C1DF17AF50042AD8AE87F7887BD3D0158B35583exchhqtensili_"
+	Thu, 28 May 2009 16:14:54 +0200 (CEST)
+Date: Thu, 28 May 2009 16:14:53 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20090528141453.GA23822@schrodinger.suse.cz>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] Detect test results more accurately when generating
-	HTML
+Content-Type: multipart/mixed; boundary="gBBFr7Ir9EOA20Yy"
+Content-Disposition: inline
+Subject: [LTP] [PATCH] postponing close() after aio_write() has finished
+	II	and cleanups
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,319 +28,528 @@ List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-
---_003_522C1DF17AF50042AD8AE87F7887BD3D0158B35583exchhqtensili_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-Hi, my first patch to this list.  Actually not a patch,
-but the files themselves, to avoid line-wrapping issues
-and because the diff is twice the size of the new file.
-
--Marc
+To: ltp-list@lists.sourceforge.net
 
 
------------
-Detect test results more accurately when generating HTML
+--gBBFr7Ir9EOA20Yy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Process test output lines that appear between <<<test_end>>>
-and the following <<<test_start>>>.  Assign to the preceding
-test where the name matches, else to the following test.
+Hi,
+I've fixed all the sources in the aio_return directory (from the same errors as
+previous one) and cleaned the coding style a little.
 
-If a single test has multiple types of results (e.g. both
-FAIL and WARN), report only the most significant one, to
-avoid mis-computing the total number of PASS tests or
-total counts that don't add up to the number of tests.
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
-If a test's output has no explicit result (PASS, FAIL, etc),
-look at the exit value to determine whether it passed.
+--gBBFr7Ir9EOA20Yy
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="aio_return_cleanup.patch"
 
-Setting the SHOW_UNRESOLVED environment variable to 1
-classifies as UNRESOLVED any test with no explicit result
-and a zero exit code.
+Index: ltp-full-20090430/testcases/open_posix_testsuite/conformance/interfaces/aio_return/1-1.c
+===================================================================
+--- ltp-full-20090430.orig/testcases/open_posix_testsuite/conformance/interfaces/aio_return/1-1.c
++++ ltp-full-20090430/testcases/open_posix_testsuite/conformance/interfaces/aio_return/1-1.c
+@@ -34,15 +34,14 @@
+ #include "posixtest.h"
+ 
+ #define TNAME "aio_return/1-1.c"
++#define BUF_SIZE 111
+ 
+-int main()
++int main(void)
+ {
+ 	char tmpfname[256];
+-#define BUF_SIZE 111
+ 	char buf[BUF_SIZE];
+-	int fd;
+ 	struct aiocb aiocb;
+-	int retval;
++	int fd, retval;
+ 
+ #if _POSIX_ASYNCHRONOUS_IO != 200112L
+ 	exit(PTS_UNSUPPORTED);
+@@ -53,8 +52,8 @@ int main()
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL,
+ 		  S_IRUSR | S_IWUSR);
+-	if (fd == -1)
+-	{
++	
++	if (fd == -1) {
+ 		printf(TNAME " Error at open(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_UNRESOLVED);
+@@ -65,20 +64,19 @@ int main()
+ 	memset(buf, 0xaa, BUF_SIZE);
+ 	memset(&aiocb, 0, sizeof(struct aiocb));
+ 	aiocb.aio_fildes = fd;
+-	aiocb.aio_buf = buf;
++	aiocb.aio_buf    = buf;
+ 	aiocb.aio_nbytes = BUF_SIZE;
+ 
+-	if (aio_write(&aiocb) == -1)
+-	{
++	if (aio_write(&aiocb) == -1) {
++		close(fd);
+ 		printf(TNAME " Error at aio_write(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+ 	}
+ 
+ 	do {
+-		retval = aio_error( &aiocb);
+-		if (retval == -1)
+-		{
++		retval = aio_error(&aiocb);
++		if (retval == -1) {
+ 			close(fd);
+ 			printf(TNAME " Error at aio_error(): %s\n",
+ 				strerror(errno));
+@@ -87,8 +85,8 @@ int main()
+ 	} while (retval == EINPROGRESS);
+ 
+ 	retval = aio_return(&aiocb);
+-	if (retval != BUF_SIZE)
+-	{
++
++	if (retval != BUF_SIZE) {
+ 		close(fd);
+ 		printf(TNAME " Error at aio_return(): %s\n",
+ 		       strerror(errno));
+@@ -96,6 +94,6 @@ int main()
+ 	}
+ 	
+ 	close(fd);
+-	printf ("Test PASSED\n");
+-	return PTS_PASS;
++	printf("Test PASSED\n");
++	exit(PTS_PASS);
+ }
+Index: ltp-full-20090430/testcases/open_posix_testsuite/conformance/interfaces/aio_return/2-1.c
+===================================================================
+--- ltp-full-20090430.orig/testcases/open_posix_testsuite/conformance/interfaces/aio_return/2-1.c
++++ ltp-full-20090430/testcases/open_posix_testsuite/conformance/interfaces/aio_return/2-1.c
+@@ -31,15 +31,14 @@
+ #include "posixtest.h"
+ 
+ #define TNAME "aio_return/2-1.c"
++#define BUF_SIZE 111
+ 
+-int main()
++int main(void)
+ {
+ 	char tmpfname[256];
+-#define BUF_SIZE 111
+ 	char buf[BUF_SIZE];
+-	int fd;
+ 	struct aiocb aiocb;
+-	int retval;
++	int fd, retval;
+ 
+ #if _POSIX_ASYNCHRONOUS_IO != 200112L
+ 	exit(PTS_UNSUPPORTED);
+@@ -50,8 +49,8 @@ int main()
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL,
+ 		  S_IRUSR | S_IWUSR);
+-	if (fd == -1)
+-	{
++	
++	if (fd == -1) {
+ 		printf(TNAME " Error at open(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_UNRESOLVED);
+@@ -62,22 +61,20 @@ int main()
+ 	memset(buf, 0xaa, BUF_SIZE);
+ 	memset(&aiocb, 0, sizeof(struct aiocb));
+ 	aiocb.aio_fildes = fd;
+-	aiocb.aio_buf = buf;
++	aiocb.aio_buf    = buf;
+ 	aiocb.aio_nbytes = BUF_SIZE;
+ 
+-	if (aio_write(&aiocb) == -1)
+-	{
++	if (aio_write(&aiocb) == -1) {
++		close(fd);
+ 		printf(TNAME " Error at aio_write(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+ 	}
+ 
+-	close(fd);
+-
+ 	do {
+-		retval = aio_error( &aiocb);
+-		if (retval == -1)
+-		{
++		retval = aio_error(&aiocb);
++		if (retval == -1) {
++			close(fd);
+ 			printf(TNAME " Error at aio_error(): %s\n",
+ 				strerror(errno));
+ 			exit(PTS_FAIL);
+@@ -85,8 +82,9 @@ int main()
+ 	} while (retval == EINPROGRESS);
+ 
+ 	retval = aio_return(&aiocb);
+-	if (retval != BUF_SIZE)
+-	{
++
++	if (retval != BUF_SIZE) {
++		close(fd);
+ 		printf(TNAME " Error at aio_return(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+@@ -94,13 +92,14 @@ int main()
+ 
+ 	retval = aio_return(&aiocb);
+ 
+-	if (retval != -1)
+-	{
++	if (retval != -1) {
++		close(fd);
+ 		printf(TNAME " Second call to aio_return() should return -1 : %d\n",
+ 		       retval);
+ 		exit(PTS_FAIL);
+ 	}
+ 
+-	printf ("Test PASSED\n");
+-	return PTS_PASS;
++	close(fd);
++	printf("Test PASSED\n");
++	exit(PTS_PASS);
+ }
+Index: ltp-full-20090430/testcases/open_posix_testsuite/conformance/interfaces/aio_return/3-1.c
+===================================================================
+--- ltp-full-20090430.orig/testcases/open_posix_testsuite/conformance/interfaces/aio_return/3-1.c
++++ ltp-full-20090430/testcases/open_posix_testsuite/conformance/interfaces/aio_return/3-1.c
+@@ -37,15 +37,14 @@
+ #include "posixtest.h"
+ 
+ #define TNAME "aio_return/3-1.c"
++#define BUF_SIZE 4096
+ 
+-int main()
++int main(void)
+ {
+ 	char tmpfname[256];
+-#define BUF_SIZE 4096
+ 	char buf[BUF_SIZE];
+-	int fd;
+ 	struct aiocb aiocb;
+-	int retval;
++	int fd, retval;
+ 
+ #if _POSIX_ASYNCHRONOUS_IO != 200112L
+ 	exit(PTS_UNSUPPORTED);
+@@ -56,8 +55,8 @@ int main()
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL,
+ 		  S_IRUSR | S_IWUSR);
+-	if (fd == -1)
+-	{
++
++	if (fd == -1) {
+ 		printf(TNAME " Error at open(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_UNRESOLVED);
+@@ -68,19 +67,20 @@ int main()
+ 	memset(buf, 0xaa, BUF_SIZE);
+ 	memset(&aiocb, 0, sizeof(struct aiocb));
+ 	aiocb.aio_fildes = fd;
+-	aiocb.aio_buf = buf;
++	aiocb.aio_buf    = buf;
+ 	aiocb.aio_nbytes = BUF_SIZE;
+-	if (aio_write(&aiocb) == -1)
+-	{
++	
++	if (aio_write(&aiocb) == -1) {
++		close(fd);
+ 		printf(TNAME " Error at aio_write(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+ 	}
+ 
+ 	do {
+-		retval = aio_error( &aiocb);
+-		if (retval == -1)
+-		{
++		retval = aio_error(&aiocb);
++		if (retval == -1) {
++			close(fd);
+ 			printf(TNAME " Error at aio_error(): %s\n",
+ 				strerror(errno));
+ 			exit(PTS_FAIL);
+@@ -88,8 +88,9 @@ int main()
+ 	} while (retval == EINPROGRESS);
+ 
+ 	retval = aio_return(&aiocb);
+-	if (retval != BUF_SIZE)
+-	{
++
++	if (retval != BUF_SIZE) {
++		close(fd);
+ 		printf(TNAME " Error at aio_return(): %d, %s\n", retval,
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+@@ -97,34 +98,36 @@ int main()
+ 
+ 	memset(&aiocb, 0, sizeof(struct aiocb));
+ 	aiocb.aio_fildes = fd;
+-	aiocb.aio_buf = buf;
+-	aiocb.aio_nbytes = BUF_SIZE/2;
+-	if (aio_write(&aiocb) == -1)
+-	{
++	aiocb.aio_buf    = buf;
++	aiocb.aio_nbytes = BUF_SIZE / 2;
++	
++	if (aio_write(&aiocb) == -1) {
++		close(fd);
+ 		printf(TNAME " Error at aio_write(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+ 	}
+ 
+ 	do {
+-		retval = aio_error( &aiocb);
+-		if (retval == -1)
+-		{
++		retval = aio_error(&aiocb);
++		if (retval == -1) {
++			close(fd);
+ 			printf(TNAME " Error at aio_error(): %s\n",
+ 				strerror(errno));
+ 			exit(PTS_FAIL);
+ 		}
+ 	} while (retval == EINPROGRESS);
+ 
+-	close(fd);
+ 	retval = aio_return(&aiocb);
+-	if (retval != BUF_SIZE / 2)
+-	{
++
++	if (retval != BUF_SIZE / 2) {
++		close(fd);
+ 		printf(TNAME " Error at aio_return(): %d, %s\n", retval,
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+ 	}
+ 	
+-	printf ("Test PASSED\n");
+-	return PTS_PASS;
++	close(fd);
++	printf("Test PASSED\n");
++	exit(PTS_PASS);
+ }
+Index: ltp-full-20090430/testcases/open_posix_testsuite/conformance/interfaces/aio_return/3-2.c
+===================================================================
+--- ltp-full-20090430.orig/testcases/open_posix_testsuite/conformance/interfaces/aio_return/3-2.c
++++ ltp-full-20090430/testcases/open_posix_testsuite/conformance/interfaces/aio_return/3-2.c
+@@ -35,15 +35,14 @@
+ #include "posixtest.h"
+ 
+ #define TNAME "aio_return/3-2.c"
++#define BUF_SIZE 4096
+ 
+-int main()
++int main(void)
+ {
+ 	char tmpfname[256];
+-#define BUF_SIZE 4096
+ 	char buf[BUF_SIZE];
+-	int fd;
+ 	struct aiocb aiocb;
+-	int retval;
++	int fd, retval;
+ 
+ #if _POSIX_ASYNCHRONOUS_IO != 200112L
+ 	exit(PTS_UNSUPPORTED);
+@@ -54,8 +53,8 @@ int main()
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL,
+ 		  S_IRUSR | S_IWUSR);
+-	if (fd == -1)
+-	{
++	
++	if (fd == -1) {
+ 		printf(TNAME " Error at open(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_UNRESOLVED);
+@@ -66,19 +65,20 @@ int main()
+ 	memset(buf, 0xaa, BUF_SIZE);
+ 	memset(&aiocb, 0, sizeof(struct aiocb));
+ 	aiocb.aio_fildes = fd;
+-	aiocb.aio_buf = buf;
++	aiocb.aio_buf    = buf;
+ 	aiocb.aio_nbytes = BUF_SIZE;
+-	if (aio_write(&aiocb) == -1)
+-	{
++	
++	if (aio_write(&aiocb) == -1) {
++		close(fd);
+ 		printf(TNAME " Error at aio_write(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+ 	}
+ 
+ 	do {
+-		retval = aio_error( &aiocb);
+-		if (retval == -1)
+-		{
++		retval = aio_error(&aiocb);
++		if (retval == -1) {
++			close(fd);
+ 			printf(TNAME " Error at aio_error(): %s\n",
+ 				strerror(errno));
+ 			exit(PTS_FAIL);
+@@ -86,21 +86,23 @@ int main()
+ 	} while (retval == EINPROGRESS);
+ 
+ 	retval = aio_return(&aiocb);
+-	if (retval != BUF_SIZE)
+-	{
++
++	if (retval != BUF_SIZE) {
++		close(fd);
+ 		printf(TNAME " Error at aio_return(): %d, %s\n", retval,
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+ 	}
+ 
+ 	retval = aio_return(&aiocb);
+-	if ( (retval != -1) && (errno != EINVAL) )
+-	{
++
++	if ((retval != -1) && (errno != EINVAL)) {
++		close(fd);
+ 		printf(TNAME " aio_return() should fail\n");
+ 		exit(PTS_FAIL);
+ 	}
+-	close(fd);
+ 	
+-	printf ("Test PASSED\n");
+-	return PTS_PASS;
++	close(fd);
++	printf("Test PASSED\n");
++	exit(PTS_PASS);
+ }
+Index: ltp-full-20090430/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c
+===================================================================
+--- ltp-full-20090430.orig/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c
++++ ltp-full-20090430/testcases/open_posix_testsuite/conformance/interfaces/aio_return/4-1.c
+@@ -33,16 +33,15 @@
+ #include "posixtest.h"
+ 
+ #define TNAME "aio_return/4-1.c"
++#define BUF_SIZE 111
+ 
+-int main()
++int main(void)
+ {
+ 	char tmpfname[256];
+-#define BUF_SIZE 111
+ 	char buf[BUF_SIZE];
+-	int fd;
+ 	struct aiocb aiocb;
+ 	struct aiocb aiocb2;
+-	int retval;
++	int fd, retval;
+ 
+ #if _POSIX_ASYNCHRONOUS_IO != 200112L
+ 	exit(PTS_UNSUPPORTED);
+@@ -53,8 +52,8 @@ int main()
+ 	unlink(tmpfname);
+ 	fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL,
+ 		  S_IRUSR | S_IWUSR);
+-	if (fd == -1)
+-	{
++	
++	if (fd == -1) {
+ 		printf(TNAME " Error at open(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_UNRESOLVED);
+@@ -65,50 +64,49 @@ int main()
+ 	memset(buf, 0xaa, BUF_SIZE);
+ 	memset(&aiocb, 0, sizeof(struct aiocb));
+ 	aiocb.aio_fildes = fd;
+-	aiocb.aio_buf = buf;
++	aiocb.aio_buf    = buf;
+ 	aiocb.aio_nbytes = BUF_SIZE;
+ 
+-	if (aio_write(&aiocb) == -1)
+-	{
++	if (aio_write(&aiocb) == -1) {
++		close(fd);
+ 		printf(TNAME " Error at aio_write(): %s\n",
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+ 	}
+ 
+-	close(fd);
+-
+ 	do {
+ 		retval = aio_error( &aiocb);
+-		if (retval == -1)
+-		{
++		if (retval == -1) {
++			close(fd);
+ 			printf(TNAME " Error at aio_error(): %s\n",
+ 				strerror(errno));
+ 			exit(PTS_FAIL);
+ 		}
+ 	} while (retval == EINPROGRESS);
+ 
++	memset(&aiocb2, 0, sizeof(struct aiocb));
+ 	aiocb2.aio_fildes = fd;
+-	aiocb2.aio_buf = buf;
++	aiocb2.aio_buf    = buf;
+ 	aiocb2.aio_nbytes = BUF_SIZE;
+ 
+ 	retval = aio_return(&aiocb2);
+-	if (retval != -1)
+-	{
++
++	if (retval != -1) {
++		close(fd);
+ 		printf(TNAME " aio_return() should fail\n");
+ 		exit(PTS_FAIL);
+ 	}
+ 
+ 	retval = aio_return(&aiocb);
+-	if (retval != BUF_SIZE)
+-	{
++	
++	if (retval != BUF_SIZE) {
++		close(fd);
+ 		printf(TNAME " Error at aio_return(): %d, %s\n", retval,
+ 		       strerror(errno));
+ 		exit(PTS_FAIL);
+ 	}
+ 
+-
+ 	close(fd);
+-
+-	printf ("Test PASSED\n");
+-	return PTS_PASS;
++	printf("Test PASSED\n");
++	exit(PTS_PASS);
+ }
 
-Setting the SUMMARY_OUTPUT environment variable to 1
-causes only one line of output per test to be shown, for a
-tighter page that allows quickly scanning the results.
-
-Show percentage of each result type in summary section.
-
-Simplify parsing a bit.
-
-Signed-off-by:  Marc Gauthier <marc@tensilica.com>
-
-
---_003_522C1DF17AF50042AD8AE87F7887BD3D0158B35583exchhqtensili_
-Content-Type: text/plain; name="html_report_header.txt"
-Content-Description: html_report_header.txt
-Content-Disposition: attachment; filename="html_report_header.txt"; size=2889; 
-	creation-date="Wed, 20 May 2009 22:52:43 GMT";
-	modification-date="Wed, 20 May 2009 22:52:43 GMT"
-Content-Transfer-Encoding: base64
-
-PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMDEgVHJhbnNpdGlvbmFs
-Ly9FTiIgImh0dHA6Ly93d3cudzMub3JnL1RSL2h0bWw0L2xvb3NlLmR0ZCI+CjxodG1sIHhtbG5z
-PSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hodG1sIiB4bWw6bGFuZz0iZW4tVVMiPgo8aGVhZD4K
-ICA8dGl0bGU+TGludXggVGVzdCBQcm9qZWN0IC0gUmVzdWx0czwvdGl0bGU+CjwvaGVhZD4KPGJv
-ZHk+Cgo8aDE+TFRQIE91dHB1dC9Mb2cgPC9oMT4KPHRhYmxlIGJvcmRlcj0iMSIgY2VsbHNwYWNp
-bmc9IjMiPgogIDx0Ym9keT4KICAgIDx0cj4KICAgICAgPHRkIGJnY29sb3I9IiM2NmZmNjYiPjxi
-PiZuYnNwO1BBU1NFRCZuYnNwOzwvYj48L3RkPgogICAgICA8dGQgYmdjb2xvcj0iI2ZmMDAwMCI+
-PGI+Jm5ic3A7RkFJTEVEJm5ic3A7PC9iPjwvdGQ+CiAgICAgIDx0ZCBiZ2NvbG9yPSJGdWNoc2lh
-Ij48Yj4mbmJzcDtXQVJOSU5HJm5ic3A7PC9iPjwvdGQ+CiAgICAgIDx0ZCBiZ2NvbG9yPSJZZWxs
-b3ciPjxiPiZuYnNwO0JST0tFTiZuYnNwOzwvYj48L3RkPgogICAgICA8dGQgYmdjb2xvcj0iIzhk
-Yzk5NyI+PGI+Jm5ic3A7UkVUSVJFRCZuYnNwOzwvYj48L3RkPgogICAgICA8dGQgYmdjb2xvcj0i
-QXF1YSI+PGI+Jm5ic3A7Q09ORklHLUVSUk9SJm5ic3A7PC9iPjwvdGQ+CiAgICAgIDx0ZCBiZ2Nv
-bG9yPSIjYzBjMGZmIj48Yj4mbmJzcDtVTlJFU09MVkVEJm5ic3A7PC9iPjwvdGQ+CiAgICA8L3Ry
-PgogIDwvdGJvZHk+CjwvdGFibGU+Cjxicj4KPGI+TWVhbmluZyBvZiB0aGUgZm9sbG93aW5nIEtF
-WVdPUkRTIGluIHRlc3QgcmVzdWx0cy9sb2dzOjwvYj4KPGhyPgo8bGk+PGI+UEFTUyAtPC9iPiBJ
-bmRpY2F0ZXMgdGhhdCB0aGUgdGVzdCBjYXNlIGhhZCB0aGUgZXhwZWN0ZWQgcmVzdWx0IGFuZCBw
-YXNzZWQ8L2xpPgo8bGk+PGI+RkFJTCAtPC9iPiBJbmRpY2F0ZXMgdGhhdCB0aGUgdGVzdCBjYXNl
-IGhhZCBhbiB1bmV4cGVjdGVkIHJlc3VsdCBhbmQgZmFpbGVkLjwvbGk+CjxsaT48Yj5CUk9LIC08
-L2I+IEluZGljYXRlcyB0aGF0IHRoZSByZW1haW5pbmcgdGVzdCBjYXNlcyBhcmUgYnJva2VuIGFu
-ZCB3aWxsIG5vdCBleGVjdXRlIGNvcnJlY3RseSwgYmVjYXVzZSBzb21lIHByZWNvbmRpdGlvbiBu
-b3QgbWV0LCBzdWNoIGFzIGEgcmVzb3VyY2Ugbm90IGJlaW5nIGF2YWlsYWJsZS48L2xpPgo8bGk+
-PGI+Q09ORiAtPC9iPiBJbmRpY2F0ZXMgdGhhdCB0aGUgdGVzdCBjYXNlIHdhcyBub3Qgd3JpdHRl
-biB0byBydW4gb24gdGhlIGN1cnJlbnQgaGFyd2FyZSBvciBzb2Z0d2FyZSBjb25maWd1cmF0aW9u
-IHN1Y2ggYXMgbWFjaGluZSB0eXBlLCBvciwga2VybmVsIHZlcnNpb24uPC9saT4KPGxpPjxiPlJF
-VFIgLTwvYj4gSW5kaWNhdGVzIHRoYXQgdGhlIHRlc3QgY2FzZXMgaGFzIGJlZW4gcmV0aXJlZCBh
-bmQgc2hvdWxkIG5vdCBiZSBleGVjdXRlZCBhbnkgbG9uZ2VyLjwvbGk+CjxsaT48Yj5XQVJOIC08
-L2I+IEluZGljYXRlcyB0aGF0IHRoZSB0ZXN0IGNhc2UgZXhwZXJpZW5jZWQgYW4gdW5leHBlY3Rl
-ZCBvciB1bmRlc2lyYWJsZSBldmVudCB0aGF0IHNob3VsZCBub3QgYWZmZWN0IHRoZSB0ZXN0IGl0
-c2VsZiBzdWNoIGFzIGJlaW5nIHVuYWJsZSB0byBjbGVhbnVwIHJlc291cmNlcyBhZnRlciB0aGUg
-dGVzdCBmaW5pc2hlZC48L2xpPgo8bGk+PGI+SU5GTyAtPC9iPiBTcGVjaWZpZXMgdXNlZnVsIGlu
-Zm9ybWF0aW9uIGFib3V0IHRoZSBzdGF0dXMgb2YgdGhlIHRlc3QgdGhhdCBkb2VzIG5vdCBhZmZl
-Y3QgdGhlIHJlc3VsdCBhbmQgZG9lcyBub3QgaW5kaWNhdGUgYSBwcm9ibGVtLjwvbGk+Cjxocj4K
-Cjxicj4KPGxpPjxhIGhyZWY9IiNfMSI+Q2xpY2sgSGVyZSBmb3IgRGV0YWlsZWQgUmVwb3J0PC9h
-PjwvbGk+CjxsaT48YSBocmVmPSIjXzIiPkNsaWNrIEhlcmUgZm9yIFN1bW1hcnkgUmVwb3J0PC9h
-PjwvbGk+Cjxicj4KCjxoMiBpZD0iXzEiPkRldGFpbGVkIFJlcG9ydDwvaDI+CjxkaXY+Cjx0YWJs
-ZSBib3JkZXI9IjEiIGNlbGxzcGFjaW5nPSIzIj4gCjx0Ym9keT4KICAgIDx0cj4KICAgICAgPHRk
-IGJnY29sb3I9IlNpbHZlciI+PHN0cm9uZz5Obzwvc3Ryb25nPjwvdGQ+CiAgICAgIDx0ZCBiZ2Nv
-bG9yPSJTaWx2ZXIiPjxzdHJvbmc+VGVzdC1OYW1lPC9zdHJvbmc+PC90ZD4KICAgICAgPHRkIGJn
-Y29sb3I9IlNpbHZlciI+PHN0cm9uZz5TdGFydC1UaW1lPC9zdHJvbmc+PC90ZD4KICAgICAgPHRk
-IGJnY29sb3I9IlNpbHZlciI+PHN0cm9uZz5Db21tYW5kLUxpbmU8L3N0cm9uZz48L3RkPgogICAg
-ICA8dGQgYmdjb2xvcj0iU2lsdmVyIj48c3Ryb25nPkNvbnRhY3RzPC9zdHJvbmc+PC90ZD4KICAg
-ICAgPHRkIGJnY29sb3I9IlNpbHZlciI+PHN0cm9uZz5BbmFseXNpczwvc3Ryb25nPjwvdGQ+CiAg
-ICAgIDx0ZCBiZ2NvbG9yPSJTaWx2ZXIiPjxzdHJvbmc+SW5pdGlhdGlvbi1TdGF0dXM8L3N0cm9u
-Zz48L3RkPgogICAgICA8dGQgYmdjb2xvcj0iU2lsdmVyIj48c3Ryb25nPlRlc3QtT3V0cHV0PC9z
-dHJvbmc+PC90ZD4KICAgICAgPHRkIGJnY29sb3I9IlNpbHZlciI+PHN0cm9uZz5EdXJhdGlvbjwv
-c3Ryb25nPjwvdGQ+CiAgICAgIDx0ZCBiZ2NvbG9yPSJTaWx2ZXIiPjxzdHJvbmc+VGVybWluYXRp
-b24tdHlwZTwvc3Ryb25nPjwvdGQ+CiAgICAgIDx0ZCBiZ2NvbG9yPSJTaWx2ZXIiPjxzdHJvbmc+
-VGVybWluYXRpb24taWQ8L3N0cm9uZz48L3RkPgogICAgICA8dGQgYmdjb2xvcj0iU2lsdmVyIj48
-c3Ryb25nPkNvcmUtRmlsZTwvc3Ryb25nPjwvdGQ+CiAgICAgIDx0ZCBiZ2NvbG9yPSJTaWx2ZXIi
-PjxzdHJvbmc+Y3V0aW1lPC9zdHJvbmc+PC90ZD4KICAgICAgPHRkIGJnY29sb3I9IlNpbHZlciI+
-PHN0cm9uZz5jc3RpbWU8L3N0cm9uZz48L3RkPgogICAgPC90cj4K
-
---_003_522C1DF17AF50042AD8AE87F7887BD3D0158B35583exchhqtensili_
-Content-Type: application/octet-stream; name="genhtml.pl"
-Content-Description: genhtml.pl
-Content-Disposition: attachment; filename="genhtml.pl"; size=10691;
-	creation-date="Thu, 21 May 2009 01:08:14 GMT";
-	modification-date="Thu, 21 May 2009 01:08:14 GMT"
-Content-Transfer-Encoding: base64
-
-IyEvdXNyL2Jpbi9wZXJsCiMqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqIwojIENvcHlyaWdodCAoYykgSW50
-ZXJuYXRpb25hbCBCdXNpbmVzcyBNYWNoaW5lcyAgQ29ycC4sIDIwMDEgICAgICAgICAgICAgICAg
-ICMKIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAjCiMgVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7
-ICB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbiNvciBtb2RpZnkgICAgICAgIwojIGl0IHVuZGVy
-IHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXMgcHVibGlzaGVk
-IGJ5ICAgICAgICMKIyB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lv
-biAyIG9mIHRoZSBMaWNlbnNlLCBvciAgICAgICAgICAjCiMgKGF0IHlvdXIgb3B0aW9uKSBhbnkg
-bGF0ZXIgdmVyc2lvbi4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIwoj
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICMKIyBUaGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhl
-IGhvcGUgdGhhdCBpdCB3aWxsIGJlIHVzZWZ1bCwgICAgICAgICAgICAjCiMgYnV0IFdJVEhPVVQg
-QU5ZIFdBUlJBTlRZOyAgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mICAgICAg
-ICAgICAgIwojIE1FUkNIQU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVS
-UE9TRS4gIFNlZSAgICAgICAgICAgICAgICAgICMKIyB0aGUgR05VIEdlbmVyYWwgUHVibGljIExp
-Y2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4gICAgICAgICAgICAgICAgICAgICAgICAgICAjCiMgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIwojIFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhl
-IEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlICAgICAgICAgICMKIyBhbG9uZyB3aXRoIHRoaXMg
-cHJvZ3JhbTsgIGlmIG5vdCwgd3JpdGUgdG8gdGhlIEZyZWUgU29mdHdhcmUgICAgICAgICAgICAg
-ICAjCiMgRm91bmRhdGlvbiwgSW5jLiwgNTkgVGVtcGxlIFBsYWNlLCBTdWl0ZSAzMzAsIEJvc3Rv
-biwgTUEgMDIxMTEtMTMwNyBVU0EgICAgIwojICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMKIyoqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKiojCgojKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgojCiMgRmlsZTogICAgICAgIGdlbmh0
-bWwucGwKIwojIERlc2NyaXB0aW9uOiBUaGlzIGlzIGEgUGFyc2VyIHdoaWNoIGNhbiBwYXJzZSB0
-aGUgdGV4dCBvdXRwdXQgZ2VuZXJhdGVkIGJ5CiMgICAgICAgICAgICAgIHBhbiBhbmQgY29udmVy
-dCB0aGUgc2FtZSB0byBhbiBIVE1MIGZvcm1hdCwgd2l0aCBwcm9wZXIgaGlnaC0KIyAgICAgICAg
-ICAgICAgbGlnaHRpbmcgb2YgdGVzdCByZXN1bHQgYmFja2dyb3VuZCBmb3IgZWFzeSBpZGVudGlm
-aWNhdGlvbiBvZgojICAgICAgICAgICAgICBwYXNzL2ZhaWwgb2YgdGVzdGNhc2VzCiMKIyBBdXRo
-b3I6ICAgICAgU3VicmF0YSBNb2Rhazogc3VicmF0YUBsaW51eC52bmV0LmlibS5jb20KIwojIEhp
-c3Rvcnk6ICAgICBNYXkgMjAgMjAwOSAtIE1vZGlmaWVkIC0gTWFyYyBHYXV0aGllciA8bWFyY0Bh
-bHVtbmkudXdhdGVybG9vLmNhPgojICAgICAgICAgICAgICAgLSBjYXRjaCB0ZXN0IG91dHB1dCBi
-ZXR3ZWVuIHRlc3RfZW5kIGFuZCB0ZXN0X3N0YXJ0IHRhZ3MKIyAgICAgICAgICAgICAgIC0gbG9v
-ayBhdCBleGl0IHZhbHVlIGlmIG5vIGV4cGxpY2l0IHRlc3QgcmVzdWx0IHJlcG9ydGVkCiMgICAg
-ICAgICAgICAgICAtIGFsbG93IHJlcG9ydGluZyB0ZXN0cyB3aXRob3V0IGV4cGxpY2l0IHJlc3Vs
-dCBhcyB1bnJlc29sdmVkCiMgICAgICAgICAgICAgICAtIHNpbXBsaWZ5IHBhcnNpbmcgYSBiaXQK
-IwojKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKgoKCiMgIENvbnN0YW50cwpteSAlcmVzdWx0X3ByaW9yaXR5
-ID0gKEZBSUw9PjYsIEJST0s9PjUsIFdBUk49PjQsIFJFVFI9PjMsIENPTkY9PjIsIFBBU1M9PjEs
-IFVOUkVTT0xWRUQ9PjApOwpteSAlY29sb3VycyA9ICgJRkFJTCA9PiAiI2ZmMDAwMCIsCQkjIHJl
-ZAoJCUJST0sgPT4gIlllbGxvdyIsCgkJV0FSTiA9PiAiRnVjaHNpYSIsCgkJUkVUUiA9PiAiIzhk
-Yzk5NyIsCQkjIGRhcmtlciBncmVlbgoJCUNPTkYgPT4gIkFxdWEiLAoJCVBBU1MgPT4gIiM2NmZm
-NjYiLAkJIyBsaWdodCBncmVlbgoJCVVOUkVTT0xWRUQgPT4gIiNjMGMwZmYiICk7CSMgbGlnaHQg
-Ymx1ZQoKIyAgR2xvYmFscwpteSAkdGVzdF9jb3VudGVyID0gMDsKbXkgJGVvZiA9IDA7Cm15ICV0
-b3RhbF9jb3VudCA9IChGQUlMPT4wLCBCUk9LPT4wLCBXQVJOPT4wLCBSRVRSPT4wLCBDT05GPT4w
-LCBQQVNTPT4wLCBVTlJFU09MVkVEPT4wKTsKCiMgIFNjcmlwdCBhcmd1bWVudHMKbXkgJGhlYWRl
-cl9maWxlICAgPSBzaGlmdCAoQEFSR1YpIHx8IHN5bnRheCgpOwpteSAkc3RhcnRfdGFnICAgICA9
-IHNoaWZ0IChAQVJHVikgfHwgc3ludGF4KCk7Cm15ICRlbmRfdGFnICAgICAgID0gc2hpZnQgKEBB
-UkdWKSB8fCBzeW50YXgoKTsKbXkgJG91dHB1dF90YWcgICAgPSBzaGlmdCAoQEFSR1YpIHx8IHN5
-bnRheCgpOwpteSAkZXhlY3V0aW9uX3RhZyA9IHNoaWZ0IChAQVJHVikgfHwgc3ludGF4KCk7Cgpp
-ZiAoJHN0YXJ0X3RhZyBlcSAiIiB8fCAkZW5kX3RhZyBlcSAiIiB8fCAkb3V0cHV0X3RhZyBlcSAi
-IiB8fCAkZXhlY3V0aW9uX3RhZyBlcSAiIikgewogICAgc3ludGF4KCk7Cn0KCnN1YiBzeW50YXgg
-ewogICAgcHJpbnQgInN5bnRheDogZ2VuaHRtbCBoZWFkZXJfZmlsZSBzdGFydF90YWcgZW5kX3Rh
-ZyBvdXRwdXRfdGFnIGV4ZWN1dGlvbl90YWcgZmlsZShzKVxuIjsKICAgIGV4aXQgKDEpOwp9Cgoj
-ICBHZXQgYSBsaW5lIGZyb20gPEZJTEU+LCB3aXRoIGNob21wIGFuZCBzdGlja3kgRU9GLgpzdWIg
-Z2V0X2xpbmUgewogICAgbXkgKCRsaW5lcmVmKSA9IEBfOwogICAgJCRsaW5lcmVmID0gdW5kZWY7
-CiAgICByZXR1cm4gdW5kZWYgaWYgJGVvZjsKICAgIGlmICghZGVmaW5lZCgkJGxpbmVyZWYgPSA8
-RklMRT4pKSB7CgkkZW9mID0gMTsKCXJldHVybiB1bmRlZjsKICAgIH0KICAgIGNob21wICQkbGlu
-ZXJlZjsKICAgIHJldHVybiAxOwp9CgojICBEaXNwbGF5IEhUTUwgaGVhZGVyCm9wZW4gKEZJTEUs
-ICI8JGhlYWRlcl9maWxlIikgfHwgZGllICJDYW5ub3Qgb3BlbiBmaWxlOiAkaGVhZGVyX2ZpbGUi
-OwpteSAkaGVhZGVyID0gIiI7CndoaWxlICgkaGVhZGVybGluZSA9IDxGSUxFPikgewogICAgICAg
-JGhlYWRlciAuPSAkaGVhZGVybGluZTsKfQpteSAkc3RhcnRfdGltZSA9ICRFTlZ7VEVTVF9TVEFS
-VF9USU1FfSB8fCAiW3Vua25vd24gZGF0ZS90aW1lXSI7CiRoZWFkZXIgPX4gcy9MVFBcIE91dHB1
-dFwvTG9nL0xUUFwgT3V0cHV0XC9Mb2dcIChSZXBvcnRcIEdlbmVyYXRlZFwgb25cICRzdGFydF90
-aW1lKS87CnByaW50ICRoZWFkZXI7CmNsb3NlIChGSUxFKTsKCgojICBQYXJzZSBhbmQgZGlzcGxh
-eSB0ZXN0IHJlc3VsdHMKCmZvcmVhY2ggbXkgJGZpbGUgKEBBUkdWKSB7CgoJb3BlbiAoRklMRSwg
-JGZpbGUpIHx8IGRpZSAiQ2Fubm90IG9wZW4gZmlsZTogJGZpbGVcbiI7CgoJbXkgJGxpbmUgPSAi
-IjsKCglURVNUOiB3aGlsZSAoZGVmaW5lZCgkbGluZSkpIHsKCgkJbXkgJXZhbHVlcyA9ICgpOwoJ
-CW15IEBvdXRwdXRfbGluZXMgPSAoKTsKCQlteSAkcmVhZF9vdXRwdXQgPSAwOwoKCQkjICBGaW5k
-IHN0YXJ0IG9mIHRlc3QKCQl3aGlsZSAoJGxpbmUgIX4gLyRzdGFydF90YWcvKSB7CgkJCSMgIENh
-cHR1cmUgbGluZXMgcHJlc2VudCBiZXR3ZWVuIGVuZF90YWcgYW5kIHN0YXJ0X3RhZyB0aGF0IGFw
-cGx5IHRvIHRoZSBzdWJzZXF1ZW50IHRlc3QuCgkJCXB1c2ggQG91dHB1dF9saW5lcywgJGxpbmUg
-dW5sZXNzICR0ZXN0X2NvdW50ZXIgPT0gMDsKCQkJZ2V0X2xpbmUoXCRsaW5lKSBvciBsYXN0IFRF
-U1Q7CgkJfQoKCQkjICBSZWFkIHRlc3QgcmVzdWx0IHBhcmFtZXRlcnMgYW5kIHRlc3Qgb3V0cHV0
-CgkJd2hpbGUgKCRsaW5lICF+IC8kZW5kX3RhZy8pIHsKCQkJKCRyZWFkX291dHB1dCA9IDEsIG5l
-eHQpIGlmICRsaW5lID1+IC8kb3V0cHV0X3RhZy87CgkJCSgkcmVhZF9vdXRwdXQgPSAwLCBuZXh0
-KSBpZiAkbGluZSA9fiAvJGV4ZWN1dGlvbl90YWcvOwoJCQlpZiAoJHJlYWRfb3V0cHV0KSB7CgkJ
-CSAgICBwdXNoIEBvdXRwdXRfbGluZXMsICRsaW5lOwoJCQl9IGVsc2UgewoJCQkgICAgd2hpbGUg
-KCRsaW5lID1+IHMvXlxzKihcdyspPSgiLioifFxTKikvLykgewoJCQkJJHZhbHVlc3skMX0gPSAk
-MjsKCQkJICAgIH0KCQkJfQoJCX0gY29udGludWUgewoJCQlnZXRfbGluZShcJGxpbmUpIG9yIGxh
-c3QgVEVTVDsKCQl9CgoJCSMgIFRyZWF0IGxpbmVzIHRoYXQgZm9sbG93IDw8PGVuZF90ZXN0Pj4+
-IGFzIG91dHB1dCBsaW5lcwoJCSMgIGlmIHRoZXkgc3RhcnQgd2l0aCB0aGUgc2FtZSB0ZXN0IG5h
-bWUgKHRhZykuCgkJIyAgT3RoZXJ3aXNlIHRoZXkncmUgbGlrZWx5IHBhcnQgb2YgdGhlIG5leHQg
-dGVzdC4KCQl3aGlsZSAoMSkgewoJCQlnZXRfbGluZShcJGxpbmUpIG9yIGxhc3Q7CgkJCWxhc3Qg
-dW5sZXNzICRsaW5lICF+IC8kc3RhcnRfdGFnLyBhbmQgJGxpbmUgPX4gL15ccyhcdyspXHMvIGFu
-ZCAkMSBlcSAkdmFsdWVze3RhZ307CgkJCXB1c2ggQG91dHB1dF9saW5lcywgJGxpbmU7CgkJfQoK
-CQkjICBQYXJzZSBvdXRwdXQgbGluZXMgZm9yIHRlc3QgcmVzdWx0cy4KCQkjCgkJbXkgJHJlc3Vs
-dCA9ICJVTlJFU09MVkVEIjsJIyBzaW5nbGUgcmVzdWx0IG9mIHRlc3QKCQlteSAlcmVzdWx0X2Nv
-dW50ID0gKCk7CgkJbXkgJHBpY2tlZF9saW5lID0gIiI7CQkjIG9uZSByZXByZXNlbnRhdGl2ZSBs
-aW5lIHBpY2tlZCBvdXQgb2YgdGhlIG91dHB1dAoJCWZvcmVhY2ggbXkgJG91dHB1dF9saW5lIChA
-b3V0cHV0X2xpbmVzKSB7CgkJICAgIG15ICRsaW5lX3JlcyA9ICJVTlJFU09MVkVEIjsKCQkgICAg
-JGxpbmVfcmVzID0gJDEgaWYgJG91dHB1dF9saW5lID1+IC9cIChGQUlMfEJST0t8V0FSTnxSRVRS
-fENPTkZ8UEFTUylcIC87CgkJICAgICRyZXN1bHRfY291bnR7JGxpbmVfcmVzfSsrOwoJCSAgICAj
-ICBJZiBhIHRlc3QgaGFzIG11bHRpcGxlIHJlc3VsdHMsIG9ubHkgdGFsbHkgdGhlICJtb3N0IGlt
-cG9ydGFudCIgb25lLgoJCSAgICBpZiAoJHJlc3VsdF9wcmlvcml0eXskbGluZV9yZXN9ID49ICRy
-ZXN1bHRfcHJpb3JpdHl7JHJlc3VsdH0pIHsKCQkJJHJlc3VsdCA9ICRsaW5lX3JlczsKCQkJJHBp
-Y2tlZF9saW5lID0gJG91dHB1dF9saW5lOwkjIHBpY2sgbGFzdCBsaW5lIG9mIGhpZ2hlc3QgcHJp
-b3JpdHkKCQkgICAgfQoJCX0KCgkJIyAgSWYgbm8gZXhwbGljaXQgcmVzdWx0IGZvdW5kLCBsb29r
-IGF0IHRlcm1pbmF0aW9uIHN0YXR1cyB0byBkZXRlcm1pbmUgcmVzdWx0LgoJCSMKCQlpZiAoJHJl
-c3VsdCBlcSAiVU5SRVNPTFZFRCIpIHsKCQkgICAgbXkgJGVmYWlsID0gIkJST0siOyAjIkZBSUwi
-CQkjIGZvciBub3csIHJlcG9ydCBleGl0IHN0YXR1cyBmYWlsdXJlcyBhcyBCUk9LCgkJICAgIGlm
-ICgkdmFsdWVze3Rlcm1pbmF0aW9uX3R5cGV9IGVxICJzaWduYWxlZCIpIHsKCQkJJHJlc3VsdCA9
-ICRlZmFpbDsJCSMgdGVybWluYXRpb25faWQgaXMgdGhlIHNpZ25hbCBudW1iZXIKCQkgICAgfSBl
-bHNpZiAoJHZhbHVlc3t0ZXJtaW5hdGlvbl9pZH0pIHsKCQkJaWYgKCgkdmFsdWVze3Rlcm1pbmF0
-aW9uX2lkfSAmIDEpICE9IDApIHsKCQkJICAgICRyZXN1bHQgPSAkZWZhaWw7CQkjIGJpdCAwIHNl
-dCA9PSBmYWlsdXJlCgkJCX0gZWxzaWYgKCgkdmFsdWVze3Rlcm1pbmF0aW9uX2lkfSAmIDIpICE9
-IDApIHsKCQkJICAgICRyZXN1bHQgPSAiQlJPSyI7CQkjIGJpdCAxIHNldCA9PSBicm9rZW4KCQkJ
-fSBlbHNpZiAoJHZhbHVlc3t0ZXJtaW5hdGlvbl9pZH0gPT0gNCkgewoJCQkgICAgJHJlc3VsdCA9
-ICJXQVJOIjsKCQkJfSBlbHNlIHsKCQkJICAgICRyZXN1bHQgPSAkZWZhaWw7CQkjIGFueSBvdGhl
-ciBub24temVybyB2YWx1ZSBhc3N1bWVkIHRvIG1lYW4gZmFpbHVyZQoJCQl9CgkJICAgIH0gZWxz
-ZSB7CgkJCSMgIEV4aXRlZCB3aXRoIGEgemVybyBleGl0IGNvZGUuICBEbyB3ZSBhc3N1bWUgUEFT
-Uywgb3IgbWFyayBpdCBVTlJFU09MVkVEPwoJCQkjICAoV2UgY291bGQgZ3JlcCB0aGUgb3V0cHV0
-IGZvciBvdGhlciBoaW50IGtleXdvcmRzLCBidXQgdGhhdCdzIGEgYml0IGhva2V5LikKCQkJJHJl
-c3VsdCA9ICJQQVNTIiB1bmxlc3MgJEVOVntTSE9XX1VOUkVTT0xWRUR9OwoJCSAgICB9CgkJfQoK
-CQkjICBDdW11bGF0ZSB0aGlzIHRlc3QncyByZXN1bHQuCgkJJHRvdGFsX2NvdW50eyRyZXN1bHR9
-Kys7CgoJCSMjICBQcmV2aW91cyBjdW11bGF0aW9uIG1ldGhvZDsgdGVzdHMgZXhoaWJpdGluZyBt
-dWx0aXBsZSByZXN1bHQKCQkjIyAgdHlwZXMgYXJlIGNvdW50ZWQgbWFueSB0aW1lcy4KCQkjCgkJ
-I2ZvcmVhY2ggbXkgJHJlcyAoa2V5cyAlcmVzdWx0X2NvdW50KSB7CgkJIyAgICAkdG90YWxfY291
-bnR7JHJlc30rKyBpZiAkcmVzdWx0X2NvdW50eyRyZXN9OwoJCSN9CgoJCSMgIEFsbCB0ZXN0IGRh
-dGEgc2Nhbm5lZC4gIE5vdyBvdXRwdXQgSFRNTCAocm93KSBmb3IgdGhpcyB0ZXN0LgoJCSMKCQlt
-eSAkZ2V0X3Byb3Blcl90aW1lID0gbG9jYWx0aW1lICgkdmFsdWVze3N0aW1lfSk7CgkJbXkgJGJh
-Y2tncm91bmRfY29sb3VyID0gJGNvbG91cnN7JHJlc3VsdH07CgkJbXkgJHRlc3Rfb3V0cHV0ID0g
-am9pbigiIiwgbWFwKCIkXyBcbiIsIEBvdXRwdXRfbGluZXMpKTsKCQkkdGVzdF9vdXRwdXQgPSAk
-cGlja2VkX2xpbmUgaWYgJEVOVntTVU1NQVJZX09VVFBVVH07CgkJJHRlc3RfY291bnRlcisrOwoJ
-CXByaW50CSI8dHIgYmdjb2xvcj0kYmFja2dyb3VuZF9jb2xvdXI+PHRkPjxwPjxzdHJvbmc+JHRl
-c3RfY291bnRlcjwvc3Ryb25nPjwvcD48L3RkPlxuIgoJCQkuICI8dGQ+PHA+PHN0cm9uZz4kdmFs
-dWVze3RhZ308L3N0cm9uZz48L3A+PC90ZD5cbiIKCQkJLiAiPHRkPjxwPjxwcmU+PHN0cm9uZz4k
-Z2V0X3Byb3Blcl90aW1lPC9zdHJvbmc+PC9wcmU+PC9wPjwvdGQ+XG4iCgkJCS4gIjx0ZD48cD48
-c3Ryb25nPiAkdmFsdWVze2NtZGxpbmV9IDwvc3Ryb25nPjwvcD48L3RkPlxuIgoJCQkuICI8dGQ+
-PHA+PHN0cm9uZz4kdmFsdWVze2NvbnRhY3RzfTwvc3Ryb25nPjwvcD48L3RkPlxuIgoJCQkuICI8
-dGQ+PHA+PHN0cm9uZz4kdmFsdWVze2FuYWx5c2lzfTwvc3Ryb25nPjwvcD48L3RkPlxuIgoJCQku
-ICI8dGQ+PHA+PHN0cm9uZz4kdmFsdWVze2luaXRpYXRpb25fc3RhdHVzfTwvc3Ryb25nPjwvcD48
-L3RkPlxuIgoJCQkuICI8dGQ+PHByZT48c3Ryb25nPiR0ZXN0X291dHB1dDwvc3Ryb25nPjwvcHJl
-PjwvdGQ+IgoJCQkuICI8dGQ+PHA+PHN0cm9uZz4kdmFsdWVze2R1cmF0aW9ufTwvc3Ryb25nPjwv
-cD48L3RkPlxuIgoJCQkuICI8dGQ+PHA+PHN0cm9uZz4kdmFsdWVze3Rlcm1pbmF0aW9uX3R5cGV9
-PHN0cm9uZz48L3A+PC90ZD5cbiIKCQkJLiAiPHRkPjxwPjxzdHJvbmc+JHZhbHVlc3t0ZXJtaW5h
-dGlvbl9pZH08L3N0cm9uZz48L3A+PC90ZD5cbiIKCQkJLiAiPHRkPjxwPjxzdHJvbmc+JHZhbHVl
-c3tjb3JlZmlsZX08L3N0cm9uZz48L3A+PC90ZD5cbiIKCQkJLiAiPHRkPjxwPjxzdHJvbmc+JHZh
-bHVlc3tjdXRpbWV9PC9zdHJvbmc+PC9wPjwvdGQ+XG4iCiAgICAgICAgICAgICAgICAgICAgICAg
-IC4gIjx0ZD48cD48c3Ryb25nPiR2YWx1ZXN7Y3N0aW1lfTwvc3Ryb25nPjwvcD48L3RkPjwvdHI+
-XG4iCgkJCTsgCgl9CgoJY2xvc2UgKEZJTEUpOwp9CgoKIyAgRGlzcGxheSBzdW1tYXJ5Cgpwcmlu
-dCAiPC90Ym9keT48L3RhYmxlPjwvZGl2PiBcblxuPGgyIGlkPVwiXzJcIj5TdW1tYXJ5IFJlcG9y
-dDwvaDI+XG5cbjxkaXY+XG5cbjx0YWJsZSBib3JkZXI9XCIxXCIgY2VsbHNwYWNpbmc9XCIzXCI+
-PHRib2R5PlxuPHRyPlxuPHRkICI7CmlmICgkRU5We0xUUF9FWElUX1ZBTFVFfSA9PSAxICkgewog
-ICAgcHJpbnQgImJnY29sb3I9XCIjZmYwMDAwXCI+IDxzdHJvbmc+VGVzdCBTdW1tYXJ5PC9zdHJv
-bmc+PC9wPjwvdGQ+PHRkIGJnY29sb3I9XCIjZmYwMDAwXCI+PHN0cm9uZz5QYW4gcmVwb3J0ZWQg
-c29tZSBUZXN0cyBGQUlMPC9zdHJvbmc+PC9wPjwvdGQ+PC90cj5cbiI7Cn0KZWxzZSB7CiAgICBw
-cmludCAiYmdjb2xvcj1cIiM2NmZmNjZcIj4gPHN0cm9uZz5UZXN0IFN1bW1hcnk8L3N0cm9uZz48
-L3A+PC90ZD48dGQgYmdjb2xvcj1cIiM2NmZmNjZcIj48c3Ryb25nPlBhbiByZXBvcnRlZCBhbGwg
-VGVzdCBQYXNzPC9zdHJvbmc+PC9wPjwvdGQ+PC90cj5cbiI7Cn0KCnByaW50ICI8dHI+PHRkPjxz
-dHJvbmc+TFRQIFZlcnNpb248L3N0cm9uZz4gPC90ZD48dGQ+PHN0cm9uZz4gJEVOVntMVFBfVkVS
-U0lPTn0gICAgIDwvc3Ryb25nPjwvdGQ+PC90cj5cbiI7CnByaW50ICI8dHI+PHRkPjxzdHJvbmc+
-U3RhcnQgVGltZTwvc3Ryb25nPiAgPC90ZD48dGQ+PHN0cm9uZz4gJEVOVntURVNUX1NUQVJUX1RJ
-TUV9IDwvc3Ryb25nPjwvdGQ+PC90cj5cbiI7CnByaW50ICI8dHI+PHRkPjxzdHJvbmc+RW5kIFRp
-bWU8L3N0cm9uZz4gICAgPC90ZD48dGQ+PHN0cm9uZz4gJEVOVntURVNUX0VORF9USU1FfSAgIDwv
-c3Ryb25nPjwvdGQ+PC90cj5cbiI7CnByaW50ICI8dHI+PHRkPjxzdHJvbmc+TG9nIFJlc3VsdDwv
-c3Ryb25nPiAgPC90ZD48dGQ+PGEgaHJlZj1cImZpbGU6Ly8kRU5We1RFU1RfTE9HU19ESVJFQ1RP
-Ull9L1wiPiAgICAgIDxzdHJvbmc+JEVOVntURVNUX0xPR1NfRElSRUNUT1JZfTwvc3Ryb25nPjwv
-YT48L3RkPjwvdHI+XG4iOwpwcmludCAiPHRyPjx0ZD48c3Ryb25nPk91dHB1dC9GYWlsZWQgUmVz
-dWx0PC9zdHJvbmc+PC90ZD48dGQ+PGEgaHJlZj1cImZpbGU6Ly8kRU5We1RFU1RfT1VUUFVUX0RJ
-UkVDVE9SWX0vXCI+IDxzdHJvbmc+JEVOVntURVNUX09VVFBVVF9ESVJFQ1RPUll9PC9zdHJvbmc+
-PC9hPjwvdGQ+PC90cj5cbiI7CnByaW50ICI8dHI+PHRkPjxzdHJvbmc+VG90YWwgVGVzdHM8L3N0
-cm9uZz48L3RkPjx0ZD48c3Ryb25nPiAkdGVzdF9jb3VudGVyIDwvc3Ryb25nPjwvdGQ+PC90cj5c
-biI7CiMgIFByZXZpb3VzIG1ldGhvZCBvZiBjb3VudGluZyBQQVNTOgojJHRvdGFsX2NvdW50e1BB
-U1N9ID0gJHRlc3RfY291bnRlciAtICR0b3RhbF9jb3VudHtGQUlMfSAtICR0b3RhbF9jb3VudHtC
-Uk9LfSAtICR0b3RhbF9jb3VudHtXQVJOfSAtICR0b3RhbF9jb3VudHtSRVRSfSAtICR0b3RhbF9j
-b3VudHtDT05GfSAtICR0b3RhbF9jb3VudHtVTlJFU09MVkVEfTsKc3ViIHNob3dfcmVzdWx0X3N1
-bW1hcnkgewogICAgbXkgKCRyZXN0eXBlLCAkd2hhdCkgPSBAXzsKICAgIHByaW50ZiAiPHRyPjx0
-ZD48c3Ryb25nPiR3aGF0PC9zdHJvbmc+PC90ZD4iCgkgICAgICAuIjx0ZD48c3Ryb25nPiAkdG90
-YWxfY291bnR7JHJlc3R5cGV9IDwvc3Ryb25nPjwvdGQ+IgoJICAgICAgLiI8dGQ+PHN0cm9uZz4g
-JTguMmYlJSA8L3N0cm9uZz48L3RkPjwvdHI+XG4iLAoJKCR0b3RhbF9jb3VudHskcmVzdHlwZX0q
-MTAwLjApIC8gJHRlc3RfY291bnRlcjsKfQpzaG93X3Jlc3VsdF9zdW1tYXJ5KCJQQVNTIiwgIlRl
-c3QgUEFTUyIpOwpzaG93X3Jlc3VsdF9zdW1tYXJ5KCJGQUlMIiwgIlRlc3QgRkFJTCIpOwpzaG93
-X3Jlc3VsdF9zdW1tYXJ5KCJCUk9LIiwgIlRlc3QgQlJPSyIpOwpzaG93X3Jlc3VsdF9zdW1tYXJ5
-KCJXQVJOIiwgIlRlc3QgV0FSTiIpOwpzaG93X3Jlc3VsdF9zdW1tYXJ5KCJSRVRSIiwgIlRlc3Qg
-UkVUUiIpOwpzaG93X3Jlc3VsdF9zdW1tYXJ5KCJDT05GIiwgIlRlc3QgQ09ORiIpOwpzaG93X3Jl
-c3VsdF9zdW1tYXJ5KCJVTlJFU09MVkVEIiwgIlVucmVzb2x2ZWQiKSBpZiAkRU5We1NIT1dfVU5S
-RVNPTFZFRH07CnByaW50ICI8dHI+PHRkPjxzdHJvbmc+S2VybmVsIFZlcnNpb248L3N0cm9uZz48
-L3RkPjx0ZD48c3Ryb25nPiAkRU5We0tFUk5FTF9WRVJTSU9OfSAgPC9zdHJvbmc+PC90ZD48L3Ry
-PlxuIjsKcHJpbnQgIjx0cj48dGQ+PHN0cm9uZz5NYWNoaW5lIEFyY2hpdGVjdHVyZTwvc3Ryb25n
-PjwvdGQ+PHRkPjxzdHJvbmc+ICRFTlZ7TUFDSElORV9BUkNIfSA8L3N0cm9uZz48L3RkPjwvdHI+
-XG4iOwokaG9zdG5hbWUgPSBgdW5hbWUgLW5gOyAgICAgICAgICAgICBjaG9wKCRob3N0bmFtZSk7
-IApwcmludCAiPHRyPjx0ZD48c3Ryb25nPkhvc3RuYW1lPC9zdHJvbmc+ICA8L3RkPiA8dGQ+PHN0
-cm9uZz4gJGhvc3RuYW1lIDwvc3Ryb25nPjwvdGQ+PC90cj5cbiI7CnByaW50ICI8L3Rib2R5Pjwv
-dGFibGU+PC9kaXY+PC9ib2R5PjwvaHRtbD5cbiI7Cgo=
-
---_003_522C1DF17AF50042AD8AE87F7887BD3D0158B35583exchhqtensili_
+--gBBFr7Ir9EOA20Yy
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
 is a gathering of tech-side developers & brand creativity professionals. Meet
 the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
-Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
---_003_522C1DF17AF50042AD8AE87F7887BD3D0158B35583exchhqtensili_
+iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
+Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
+--gBBFr7Ir9EOA20Yy
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -363,5 +560,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---_003_522C1DF17AF50042AD8AE87F7887BD3D0158B35583exchhqtensili_--
+--gBBFr7Ir9EOA20Yy--
 
