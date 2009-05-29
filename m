@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M8xdI-0005k0-6a
-	for ltp-list@lists.sourceforge.net; Tue, 26 May 2009 14:28:00 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M8xdF-0002Hg-UH
-	for ltp-list@lists.sourceforge.net; Tue, 26 May 2009 14:28:00 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <d51f89b0905250453q62395300la1dfddc20bdb0af5@mail.gmail.com>
-References: <7B7EF7F090B9804A830ACC82F2CDE95DD01ED4@insardxms01.ap.sony.com>
-	<d51f89b0905250453q62395300la1dfddc20bdb0af5@mail.gmail.com>
-Date: Tue, 26 May 2009 17:52:39 +0530
-Message-Id: <1243340559.6293.20.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] patch for timer_create04 and clock_gettime03 issue.
-Reply-To: subrata@linux.vnet.ibm.com
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <dpate2006@gmail.com>) id 1MAA7d-0001i9-Em
+	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 22:00:17 +0000
+Received: from mail-ew0-f217.google.com ([209.85.219.217])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MAA7c-0004sx-GR
+	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 22:00:17 +0000
+Received: by ewy17 with SMTP id 17so6415412ewy.10
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 29 May 2009 15:00:15 -0700 (PDT)
+MIME-Version: 1.0
+Date: Fri, 29 May 2009 17:00:14 -0500
+Message-ID: <f90dadbb0905291500p10eb6d04v54132a522e060d0d@mail.gmail.com>
+From: hahahahhahahaahah <dpate2006@gmail.com>
+Subject: [LTP] Want to join LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,46 +25,71 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9038364771425240950=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rohit verma <rohit.170309@gmail.com>
-Cc: ltp-list@lists.sf.net
+To: ltp-list@lists.sourceforge.net
 
-On Mon, 2009-05-25 at 17:23 +0530, rohit verma wrote: 
-> Hi,
-> 
-> In reference to the issue with timer_create04 and clock_gettime03 for
-> the kernel version 2.6.29 which was reported in the link:
-> 
-> http://www.nabble.com/timer_create-p22376043.html, PFA the patch for
-> fixing the issue.
-> 
-> Detail on the issue: A new clockid 'CLOCK_MONOTONIC_RAW' was added
-> since the kernel 2.6.28
-> (http://www.kernel.org/pub/linux/kernel/v2.6/ChangeLog-2.6.28). This
-> addition caused the above testcases to fail. Now, 5 clock ID's are
-> present in kernel ver 2.6.28 and later.
-> 
-> Please check the same....
-> 
-> Regards,
-> Rohit
+--===============9038364771425240950==
+Content-Type: multipart/alternative; boundary=000e0cd1ea6e891ce4046b143371
 
-Thanks.
+--000e0cd1ea6e891ce4046b143371
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Regards--
-Subrata
+Respected Sir,
+
+I have more than two years of experience as QA Engineer and extremely
+interested in joining this open source LTP. Pl let me know the procedure to
+join this LTP as I believe I can make a lot of contributions to this
+project.
+
+Thanks
+
+Regards,
+Dev
+
+--000e0cd1ea6e891ce4046b143371
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<div>Respected Sir,</div>
+<div>=A0</div>
+<div>I have more than two years of experience as QA Engineer and extremely =
+interested in joining this open source LTP. Pl let me know the procedure to=
+ join this LTP as I believe I can make a lot of=A0contributions to this pro=
+ject.</div>
+
+<div>=A0</div>
+<div>Thanks</div>
+<div>=A0</div>
+<div>Regards,</div>
+<div>Dev</div>
+
+--000e0cd1ea6e891ce4046b143371--
 
 
+--===============9038364771425240950==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
 is a gathering of tech-side developers & brand creativity professionals. Meet
 the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
-Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
+iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
+Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
+--===============9038364771425240950==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============9038364771425240950==--
+
