@@ -1,35 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M7OcE-0007e7-9w
-	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 06:52:26 +0000
-Received: from e35.co.us.ibm.com ([32.97.110.153])
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MA1cP-000395-9b
+	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:55:29 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
 	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M7OcA-0007hi-D6
-	for ltp-list@lists.sourceforge.net; Fri, 22 May 2009 06:52:26 +0000
+	(Exim 4.69) id 1MA1cN-0001W2-O7
+	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:55:29 +0000
 Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
 	[9.17.195.106])
-	by e35.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4M6k0pb013101
-	for <ltp-list@lists.sourceforge.net>; Fri, 22 May 2009 00:46:00 -0600
+	by e39.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4TCpZCP025741
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 06:51:35 -0600
 Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
 	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4M6qL23181220
-	for <ltp-list@lists.sourceforge.net>; Fri, 22 May 2009 00:52:21 -0600
+	n4TCtOjF165024
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 06:55:24 -0600
 Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
 	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4M6qL0t003560
-	for <ltp-list@lists.sourceforge.net>; Fri, 22 May 2009 00:52:21 -0600
+	n4TCtOmK018252
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 06:55:24 -0600
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1242647987.5161.13.camel@subratamodak.linux.ibm.com>
-References: <4A0A0116.8030604@web.de>
-	<1242371868.7224.14.camel@subratamodak.linux.ibm.com>
-	<1242647987.5161.13.camel@subratamodak.linux.ibm.com>
-Date: Fri, 22 May 2009 12:22:16 +0530
-Message-Id: <1242975136.8760.11.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <20090527100645.18638.75163.sendpatchset@subratamodak.linux.ibm.com>
+References: <20090527100645.18638.75163.sendpatchset@subratamodak.linux.ibm.com>
+Date: Fri, 29 May 2009 18:25:18 +0530
+Message-Id: <1243601718.5188.42.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Add an autoconf test
-	for	presence	oftaskstats.freepages_count
+Subject: Re: [LTP] [PATCH 00/13][2nd Bunch] Port Crackerjack
+	Syscall	tests(missing) to LTP
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -43,204 +41,87 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Manas Kumar Nayak <maknayak@in.ibm.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Jiri,
+On Wed, 2009-05-27 at 15:36 +0530, Manas Kumar Nayak wrote: 
+> Hi,
+> 
+> >On Tue, 2009-05-19 at 00:39 +0530, Manas Kumar Nayak wrote:
+> >Hi,
+> > 
+> > I have ported the following tests from Crackerjack to LTP.
+> > Kindly include them to LTP:
+> > 
+> > [PATCH 01/21] Add add_key01 test for add_key syscall
+> > [PATCH 02/21] Add add_key02 test for add_key syscall
+> > [PATCH 03/21] Add bdflush01 test for bdflush syscall
+> > [PATCH 04/21] Add exit_group01 test for exit_group syscall
+> > [PATCH 05/21] Add keyctl01 test for keyctl syscall
+> > [PATCH 06/21] Add newuname01 test for newuname syscall
+> > [PATCH 07/21] Add rt_sigaction01 test for rt_sigaction syscall
+> > [PATCH 08/21] Add rt_sigprocmask01 test for rt_sigprocmask syscall
+> > [PATCH 09/21] Add rt_sigprocmask02 test for rt_sigprocmask syscall
+> > [PATCH 10/21] Add rt_sigqueueinfo01 test for rt_sigqueueinfo syscall
+> > [PATCH 11/21] Add rt_sigsuspend01 test for rt_sigsuspend syscall
+> > [PATCH 12/21] Add set_thread_area01 test for set_thread_area syscall
+> > [PATCH 13/21] Add set_thread_area02 test for set_thread_area syscall
+> > [PATCH 14/21] Add set_tid_address01 test for set_tid_address syscall
+> > [PATCH 15/21] Add sgetmask01 test for sgetmask syscall
+> > [PATCH 16/21] Add sigreturn01 test for sigreturn syscall
+> > [PATCH 17/21] Add ssetmask01 test for ssetmask syscall
+> > [PATCH 18/21] Add timer_getoverrun01 test for timer_getoverrun01 syscall
+> > [PATCH 19/21] Add timer_gettime01 test for timer_gettime syscall
+> > [PATCH 20/21] Add tkill01 test for tkill syscall
+> > [PATCH 21/21] Add tkill02 test for tkill syscall
+> > 
+> > Todo:
+> > 	1) Port the Remaining ones (next week),
+> 
+> As promised earlier, here remains the 2nd Bunch of tests ported
+> from Crackerjack to LTP:
+> 
+> __001_Add_Utility_Headers_for_these_set_of_tests.patch
+> __002_Add_get_mempolicy01_test_for_get_mempolicy_syscall.patch
+> __003_Add_clock_getres01_test_for_clock_getres_syscall.patch
+> __004_Add_clock_nanosleep01_test_for_clock_nanosleep_syscall.patch
+> __005_Add_mq_notify01_test_for_mq_notify_syscall.patch
+> __006_Add_ppoll01_test_for_ppoll_syscall.patch
+> __007_Add_mq_open01_test_for_mq_open_syscall.patch
+> __008_Add_mq_timedreceive01_test_for_mq_timedreceive_syscall.patch
+> __009_Add_utimes01_test_for_utimes_syscall.patch
+> __010_Add_mq_unlink01_test_for_mq_unlink_syscall.patch
+> __011_Add_mq_timedsend01_test_for_mq_timedsend_syscall.patch
+> __012_Add_unshare01_test_for_unshare_syscall.patch
+> __013_Add_unshare02_test_for_unshare_syscall.patch
 
-Any plans to resend this ?
+Thanks a ton.
+
+> 
+> Still TODO:
+> -> The remaining testcases will be ported soon.
+
+Great to know that as well.
 
 Regards--
 Subrata
 
-On Mon, 2009-05-18 at 17:29 +0530, Subrata Modak wrote: 
-> On Fri, 2009-05-15 at 12:47 +0530, Subrata Modak wrote: 
-> > On Wed, 2009-05-13 at 01:07 +0200, Jiri Palecek wrote: 
-> > > Also, use it in getdelays.c to prevent compilation failures
-> > > 
-> > > Hello,
-> > > 
-> > > I've found that ltp didn't compile on Debian because of old kernel headers, 
-> > > which contain taskstats struct without some of the needed fields. This autoconf 
-> > > test detects it and disables the code that would otherwise break.
-> > > 
-> > > Regards
-> > >      Jiri Palecek
-> > > 
-> > > Signed-off-by: Jiri Palecek <jpalecek@web.de>
-> > 
-> > Same here:
-> > 
-> > ERROR: patch seems to be corrupt (line wrapped?)
-> > #132: FILE: configure.ac:24:
-> > diff --git a/include/config.h.default b/include/config.h.default
-> > total: 1 errors, 0 warnings, 83 lines checked
-> > 
-> > and
-> > 
-> > patching file configure.ac
-> > patch: **** malformed patch at line 132: diff --git
-> > a/include/config.h.default b/include/config.h.default
-> > 
-> 
-> How about resending this Patch as well ?
 > 
 > Regards--
-> Subrata
+> Manas
 > 
+> > 
 > > Regards--
-> > Subrata
+> > Manas
 > > 
-> > > ---
-> > >   configure.ac                                    |    1 +
-> > >   include/config.h.default                        |    2 +
-> > >   m4/ltp-taskstats.m4                             |   38 +++++++++++++++++++++++
-> > >   testcases/kernel/controllers/cgroup/getdelays.c |   15 ++++++---
-> > >   4 files changed, 51 insertions(+), 5 deletions(-)
-> > >   create mode 100644 m4/ltp-taskstats.m4
-> > > 
-> > > diff --git a/configure.ac b/configure.ac
-> > > index c534c97..9fc1696 100644
-> > > --- a/configure.ac
-> > > +++ b/configure.ac
-> > > @@ -20,5 +20,6 @@ LTP_CHECK_SYSCALL_MODIFY_LDT
-> > >   LTP_CHECK_SYSCALL_SIGNALFD
-> > >   LTP_CHECK_SELINUX
-> > >   LTP_CHECK_CRYPTO
-> > > +LTP_CHECK_TASKSTATS
-> > >    AC_OUTPUT
-> > > diff --git a/include/config.h.default b/include/config.h.default
-> > > index 9125d85..b9a6731 100644
-> > > --- a/include/config.h.default
-> > > +++ b/include/config.h.default
-> > > @@ -14,3 +14,5 @@
-> > >    /* ifaddrs.h is in glibc-2.3+ */
-> > >   #define HAVE_IFADDRS_H 1
-> > > +
-> > > +#define HAVE_TASKSTATS_FREEPAGES_COUNT 1
-> > > diff --git a/m4/ltp-taskstats.m4 b/m4/ltp-taskstats.m4
-> > > new file mode 100644
-> > > index 0000000..54da783
-> > > --- /dev/null
-> > > +++ b/m4/ltp-taskstats.m4
-> > > @@ -0,0 +1,38 @@
-> > > +dnl
-> > > +dnl Copyright (c) Jiri Palecek 2009
-> > > +dnl
-> > > +dnl This program is free software;  you can redistribute it and/or modify
-> > > +dnl it under the terms of the GNU General Public License as published by
-> > > +dnl the Free Software Foundation; either version 2 of the License, or
-> > > +dnl (at your option) any later version.
-> > > +dnl
-> > > +dnl This program is distributed in the hope that it will be useful,
-> > > +dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> > > +dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> > > +dnl the GNU General Public License for more details.
-> > > +dnl
-> > > +dnl You should have received a copy of the GNU General Public License
-> > > +dnl along with this program;  if not, write to the Free Software
-> > > +dnl Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-> > > +dnl
-> > > +
-> > > +
-> > > +AC_DEFUN([LTP_CHECK_TASKSTATS],
-> > > +_LTP_CHECK_TASKSTATS_FREEPAGES
-> > > +)dnl
-> > > +
-> > > +dnl _LTP_CHECK_TASKSTATS_FREEPAGES
-> > > +dnl ----------------------------------------
-> > > +dnl
-> > > +dnl Check for taskstat.freepages_* members, introduced to the kernel
-> > > +dnl in commit 016ae219 in July 2008
-> > > +dnl
-> > > +
-> > > +AC_DEFUN([_LTP_CHECK_TASKSTATS_FREEPAGES],
-> > > +[dnl
-> > > +AC_CHECK_MEMBERS([struct taskstats.freepages_count],[],[],[dnl
-> > > +#include <linux/types.h>
-> > > +#include <linux/taskstats.h>
-> > > +])
-> > > +]dnl
-> > > +)dnl
-> > > diff --git a/testcases/kernel/controllers/cgroup/getdelays.c 
-> > > b/testcases/kernel/controllers/cgroup/getdelays.c
-> > > index 13f7b3a..9fe2831 100644
-> > > --- a/testcases/kernel/controllers/cgroup/getdelays.c
-> > > +++ b/testcases/kernel/controllers/cgroup/getdelays.c
-> > > @@ -199,8 +199,10 @@ void print_delayacct(struct taskstats *t)
-> > >   	       "SWAP  %15s%15s\n"
-> > >   	       "      %15llu%15llu\n"
-> > >   	       "RECLAIM  %12s%15s\n"
-> > > -	       "      %15llu%15llu\n",
-> > > -	       "count", "real total", "virtual total", "delay total",
-> > > +#ifdef HAVE_TASKSTATS_FREEPAGES_COUNT
-> > > +	       "      %15llu%15llu\n"
-> > > +#endif
-> > > +	       , "count", "real total", "virtual total", "delay total",
-> > >   	       (unsigned long long)t->cpu_count,
-> > >   	       (unsigned long long)t->cpu_run_real_total,
-> > >   	       (unsigned long long)t->cpu_run_virtual_total,
-> > > @@ -211,9 +213,12 @@ void print_delayacct(struct taskstats *t)
-> > >   	       "count", "delay total",
-> > >   	       (unsigned long long)t->swapin_count,
-> > >   	       (unsigned long long)t->swapin_delay_total,
-> > > -	       "count", "delay total",
-> > > -	       (unsigned long long)t->freepages_count,
-> > > -	       (unsigned long long)t->freepages_delay_total);
-> > > +	       "count", "delay total"
-> > > +#ifdef HAVE_TASKSTATS_FREEPAGES_COUNT
-> > > +	       , (unsigned long long)t->freepages_count,
-> > > +	       (unsigned long long)t->freepages_delay_total
-> > > +#endif
-> > > +	       );
-> > >   }
-> > >    void task_context_switch_counts(struct taskstats *t)
-> > > -- 
-> > > 1.6.2
-> > > 
-> > > 
-> > > ------------------------------------------------------------------------------
-> > > The NEW KODAK i700 Series Scanners deliver under ANY circumstances! Your
-> > > production scanning environment may not be a perfect world - but thanks to
-> > > Kodak, there's a perfect scanner to get the job done! With the NEW KODAK i700
-> > > Series Scanner you'll get full speed at 300 dpi even with all image 
-> > > processing features enabled. http://p.sf.net/sfu/kodak-com
-> > > _______________________________________________
-> > > Ltp-list mailing list
-> > > Ltp-list@lists.sourceforge.net
-> > > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> > 
-> > 
-> > ------------------------------------------------------------------------------
-> > Crystal Reports - New Free Runtime and 30 Day Trial
-> > Check out the new simplified licensing option that enables 
-> > unlimited royalty-free distribution of the report engine 
-> > for externally facing server and web deployment. 
-> > http://p.sf.net/sfu/businessobjects
-> > _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-> 
-> ------------------------------------------------------------------------------
-> Crystal Reports - New Free Runtime and 30 Day Trial
-> Check out the new simplified licensing option that enables 
-> unlimited royalty-free distribution of the report engine 
-> for externally facing server and web deployment. 
-> http://p.sf.net/sfu/businessobjects
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
 is a gathering of tech-side developers & brand creativity professionals. Meet
 the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
-Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
+iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
+Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
