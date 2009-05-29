@@ -1,22 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1M8aok-00021z-6i
-	for ltp-list@lists.sourceforge.net; Mon, 25 May 2009 14:06:18 +0000
-Received: from relay1.suse.de (relay-ext.suse.de [195.135.221.8])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx2.suse.de (Postfix) with ESMTP id 4086379727
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 25 May 2009 15:52:24 +0200 (CEST)
-Date: Mon, 25 May 2009 15:52:23 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20090525135223.GA2546@schrodinger.suse.cz>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="azLHFNyN32YCQGCU"
-Content-Disposition: inline
-Subject: [LTP] [PATCH] postponing close() after aio_write() has finished
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MA1bq-00036m-AV
+	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:54:54 +0000
+Received: from e38.co.us.ibm.com ([32.97.110.159])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MA1bp-0001uT-6O
+	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:54:54 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <522C1DF17AF50042AD8AE87F7887BD3D0158B35ACE@exch.hq.tensilica.com>
+References: <20090526142706.20166.3813.sendpatchset@subratamodak.linux.ibm.com>
+	<522C1DF17AF50042AD8AE87F7887BD3D0158B359A4@exch.hq.tensilica.com>
+	<d51f89b0905262344h46722756vb255541a47904dbe@mail.gmail.com>
+	<522C1DF17AF50042AD8AE87F7887BD3D0158B35AB4@exch.hq.tensilica.com>
+	<1243434255.10447.19.camel@subratamodak.linux.ibm.com>
+	<522C1DF17AF50042AD8AE87F7887BD3D0158B35ACE@exch.hq.tensilica.com>
+Date: Fri, 29 May 2009 18:24:46 +0530
+Message-Id: <1243601687.5188.34.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Detect test results more
+	accurately	when	generating HTML
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,88 +31,41 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-
---azLHFNyN32YCQGCU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi,
-in aio_return/1-1.c close() is called after asynchronous I/O write was
-queued. This according to POSIX may end up in one of two ends and it's
-implementation specified. One end is writing the file correctly while the other
-one is behave like aio_cancel() was called.
-(http://www.opengroup.org/onlinepubs/9699919799/functions/close.html)
-Test mentoined above rely on finishing asynchronous I/O correctly in this case.
-To fix that you must postpone close() after asynchronous I/O has finished.
-
-Signed-of-by: chrubis@suse.cz
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
---azLHFNyN32YCQGCU
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="aio_write_race.patch"
-
-Index: ltp-full-20090430/testcases/open_posix_testsuite/conformance/interfaces/aio_return/1-1.c
-===================================================================
---- ltp-full-20090430.orig/testcases/open_posix_testsuite/conformance/interfaces/aio_return/1-1.c
-+++ ltp-full-20090430/testcases/open_posix_testsuite/conformance/interfaces/aio_return/1-1.c
-@@ -75,12 +75,11 @@ int main()
- 		exit(PTS_FAIL);
- 	}
- 
--	close(fd);
--
- 	do {
- 		retval = aio_error( &aiocb);
- 		if (retval == -1)
- 		{
-+			close(fd);
- 			printf(TNAME " Error at aio_error(): %s\n",
- 				strerror(errno));
- 			exit(PTS_FAIL);
-@@ -90,11 +89,13 @@ int main()
- 	retval = aio_return(&aiocb);
- 	if (retval != BUF_SIZE)
- 	{
-+		close(fd);
- 		printf(TNAME " Error at aio_return(): %s\n",
- 		       strerror(errno));
- 		exit(PTS_FAIL);
- 	}
- 	
-+	close(fd);
- 	printf ("Test PASSED\n");
- 	return PTS_PASS;
- }
-
---azLHFNyN32YCQGCU
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Marc Gauthier <marc@tensilica.com>
+Cc: rohit verma <rohit.170309@gmail.com>, Ltp-List <ltp-list@lists.sf.net>
+
+On Wed, 2009-05-27 at 07:58 -0700, Marc Gauthier wrote: 
+> Subrata Modak wrote:
+> > On Wed, 2009-05-27 at 05:05 -0700, Marc Gauthier wrote:
+> > > Just so you know, the updated genhtml.pl script recently submitted
+> > > should work just fine without changes, when moving status after
+> > > <<<execution_status>>> (it only looks at tag names, not positions).
+> >
+> > Be careful, it looks for <<<execution_status>>> only in between
+> > <<test_start>> & <<test_output>>.
+> 
+> You mean, between <<<test_start>>> and <<<test_end>>> ?
+> (the script I submitted recently that is, was careful about this)
+
+You made changes in genhtml.pl. I want the change(s) in ltp-pan.c.
+
+Regards--
+Subrata
+
+> 
+> -Marc
+
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
 is a gathering of tech-side developers & brand creativity professionals. Meet
 the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
-Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
---azLHFNyN32YCQGCU
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
+Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---azLHFNyN32YCQGCU--
-
