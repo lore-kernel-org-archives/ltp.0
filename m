@@ -1,22 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <marc@tensilica.com>) id 1M95tm-0006rf-0y
-	for ltp-list@lists.sourceforge.net; Tue, 26 May 2009 23:17:34 +0000
-Received: from mailgw.tensilica.com ([65.205.227.134])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1M95tk-0006xM-SH
-	for ltp-list@lists.sourceforge.net; Tue, 26 May 2009 23:17:33 +0000
-From: Marc Gauthier <marc@tensilica.com>
-Date: Tue, 26 May 2009 13:14:59 -0700
-Message-ID: <522C1DF17AF50042AD8AE87F7887BD3D0158B359A4@exch.hq.tensilica.com>
-References: <20090526142706.20166.3813.sendpatchset@subratamodak.linux.ibm.com>
-In-Reply-To: <20090526142706.20166.3813.sendpatchset@subratamodak.linux.ibm.com>
-Content-Language: en-US
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] Detect test results more accurately
-	when	generating HTML
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MA1dY-0003aS-OT
+	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:56:40 +0000
+Received: from e32.co.us.ibm.com ([32.97.110.150])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MA1dU-0002xq-VY
+	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:56:40 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e32.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4TCr2P2007670
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 06:53:02 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n4TCuZZr165056
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 06:56:35 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4TCuY0a005838
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 06:56:35 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <20090527101003.18638.69390.sendpatchset@subratamodak.linux.ibm.com>
+References: <20090527100645.18638.75163.sendpatchset@subratamodak.linux.ibm.com>
+	<20090527101003.18638.69390.sendpatchset@subratamodak.linux.ibm.com>
+Date: Fri, 29 May 2009 18:26:31 +0530
+Message-Id: <1243601791.5188.49.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH 07/13] Add/Port mq_open01 test for mq_open()
+	syscall
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,89 +39,605 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>, Rohit Verma <rohit.170309@gmail.com>
-Cc: Ltp-List <ltp-list@lists.sf.net>
+To: Manas Kumar Nayak <maknayak@in.ibm.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Okay, so I looked at it a bit...
+On Wed, 2009-05-27 at 15:40 +0530, Manas Kumar Nayak wrote: 
+> Signed-off-by: Manas Kumar Nayak <maknayak@in.ibm.com>
 
-Isn't the fundamental race condition because pan outputs
-<<<test_start>>> *after* doing the fork(), rather than before?
+Thanks.
 
-If some status info can't be output that early, maybe it just
-needs to be output after <<<execution_status>>> as part of
-write_test_end() ?
+Regards--
+Subrata
 
--Marc
-
-P.S.  I find it useful to run genhtml against older LTP releases
-(including those without genhtml), so might be useful to keep the
-out-of-order workarounds even if ordering is fixed in this release.
-
-
-Subrata Modak wrote:
-> How much would you want to delay ? May be to some microsecs !!
-> However delaying is not a good option, but, i am ready to consider.
-> See, what is the reasanable time so that this problem vanishes.
->
-> Meanwhile, i have generated this small patch. It tries to
-> flush all data
-> to be written to STDOUT before the Parent (PAN) tries to write his
-> next tag. Moreover, i have included the fflush() to be executed inside
-> the if()=C2=B4s domain whenever the parent is writing from <<test_start>>
-> till <<test_output>>. See, if this can help in solving the problem.
->
-> Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>
+> To: LTP List <ltp-list@lists.sourceforge.net>
+> Cc: Subrata Modak <subrata@linux.vnet.ibm.com>
+> Cc: Masatake YAMATO <yamato@redhat.com>
 > ---
->
-> --- ltp-intermediate-20090521/pan/ltp-pan.c.orig
-> 2009-05-26 16:30:39.000000000 +0530
-> +++ ltp-intermediate-20090521/pan/ltp-pan.c   2009-05-26
-> 19:44:37.000000000 +0530
-> @@ -1015,6 +1015,7 @@ static pid_t run_child(struct coll_entry
->               errbuf[errlen] =3D '\0';
->               /* fprintf(stderr, "%s", errbuf); */
->               waitpid(cpid, &status, 0);
-> +             fflush(stdout); /* Flush any data before
-> writing <<test_end>>*/
->               if (WIFSIGNALED(status)) {
->                       termid =3D WTERMSIG(status);
->                       termtype =3D "signaled";
-> @@ -1300,14 +1301,14 @@ static void copy_buffered_output(struct
->
->  static void write_test_start(struct tag_pgrp *running, const
-> char *init_status)
->  {
-> -     if (!strcmp(reporttype, "rts"))
-> +     if (!strcmp(reporttype, "rts")) {
->               printf("%s\ntag=3D%s
-> stime=3D%ld\ncmdline=3D\"%s\"\ncontacts=3D\"%s\"\nanalysis=3D%s\niniti
-ation_status=3D\"%s\"\n%s\n",
->                      "<<<test_start>>>",
->                      running->cmd->name, running->mystime,
-> running->cmd->cmdline, "",
->                      "exit", init_status,
->                      "<<<test_output>>>");
-> -
->       fflush(stdout);
-> +     }
->  }
->
+> 
+> --- ltp-intermediate-20090521.orig/testcases/kernel/syscalls/mq_open/Makefile	1970-01-01 05:30:00.000000000 +0530
+> +++ ltp-intermediate-20090521/testcases/kernel/syscalls/mq_open/Makefile	2009-05-23 12:03:30.000000000 +0530
+> @@ -0,0 +1,31 @@
+> +#
+> +#  Copyright (c) International Business Machines  Corp., 2009
+> +#
+> +#  This program is free software;  you can redistribute it and/or modify
+> +#  it under the terms of the GNU General Public License as published by
+> +#  the Free Software Foundation; either version 2 of the License, or
+> +#  (at your option) any later version.
+> +#
+> +#  This program is distributed in the hope that it will be useful,
+> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> +#  the GNU General Public License for more details.
+> +#
+> +#  You should have received a copy of the GNU General Public License
+> +#  along with this program;  if not, write to the Free Software
+> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> +#
+> +
+> +CFLAGS += -I../../../../include -Wall -O2
+> +LDLIBS += -L../../../../lib -lltp -lrt
+> +
+> +SRCS    = $(wildcard *.c)
+> +TARGETS = $(patsubst %.c,%,$(SRCS))
+> +
+> +all: $(TARGETS)
+> +
+> +install:
+> +	@set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i ; done
+> +
+> +clean:
+> +	rm -f $(TARGETS)
+> --- ltp-intermediate-20090521.orig/testcases/kernel/syscalls/mq_open/mq_open01.c	1970-01-01 05:30:00.000000000 +0530
+> +++ ltp-intermediate-20090521/testcases/kernel/syscalls/mq_open/mq_open01.c	2009-05-27 13:11:05.000000000 +0530
+> @@ -0,0 +1,520 @@
+> +/******************************************************************************/
+> +/* Copyright (c) Crackerjack Project., 2007-2008 ,Hitachi, Ltd                */
+> +/*          Author(s): Takahiro Yasui <takahiro.yasui.mp@hitachi.com>,	      */
+> +/*		       Yumiko Sugita <yumiko.sugita.yf@hitachi.com>, 	      */
+> +/*		       Satoshi Fujiwara <sa-fuji@sdl.hitachi.co.jp>	      */
+> +/*                                                                  	      */
+> +/* This program is free software;  you can redistribute it and/or modify      */
+> +/* it under the terms of the GNU General Public License as published by       */
+> +/* the Free Software Foundation; either version 2 of the License, or          */
+> +/* (at your option) any later version.                                        */
+> +/*                                                                            */
+> +/* This program is distributed in the hope that it will be useful,            */
+> +/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
+> +/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
+> +/* the GNU General Public License for more details.                           */
+> +/*                                                                            */
+> +/* You should have received a copy of the GNU General Public License          */
+> +/* along with this program;  if not, write to the Free Software               */
+> +/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
+> +/*                                                                            */
+> +/******************************************************************************/
+> +/******************************************************************************/
+> +/*                                                                            */
+> +/* File:        mq_open01.c                                                   */
+> +/*                                                                            */
+> +/* Description: This tests the mq_open() syscall                              */
+> +/*									      */
+> +/* 									      */
+> +/*									      */
+> +/*									      */
+> +/*									      */
+> +/*                                                                            */
+> +/* Usage:  <for command-line>                                                 */
+> +/* mq_open01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                             */
+> +/*      where,  -c n : Run n copies concurrently.                             */
+> +/*              -e   : Turn on errno logging.                                 */
+> +/*              -i n : Execute test n times.                                  */
+> +/*              -I x : Execute test for x seconds.                            */
+> +/*              -P x : Pause for x seconds between iterations.                */
+> +/*              -t   : Turn on syscall timing.                                */
+> +/*                                                                            */
+> +/* Total Tests: 1                                                             */
+> +/*                                                                            */
+> +/* Test Name:   mq_open01                                                     */
+> +/* History:     Porting from Crackerjack to LTP is done by                    */
+> +/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
+> +/******************************************************************************/
+> +#include <sys/syscall.h>
+> +#include <sys/types.h>
+> +#include <sys/stat.h>
+> +#include <sys/uio.h>
+> +#include <getopt.h>
+> +#include <stdlib.h>
+> +#include <errno.h>
+> +#include <stdio.h>
+> +#include <unistd.h>
+> +#include <string.h>
+> +#include <mqueue.h>
+> +#include <limits.h>
+> +
+> +
+> +#include "../utils/include_j_h.h"
+> +#include "../utils/common_j_h.c"
+> +
+> +/* Harness Specific Include Files. */
+> +#include "test.h"
+> +#include "usctest.h"
+> +#include "linux_syscall_numbers.h"
+> +
+> +/* Extern Global Variables */
+> +extern int Tst_count;           /* counter for tst_xxx routines.         */
+> +extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
+> +
+> +/* Global Variables */
+> +char *TCID = "mq_open01";  /* Test program identifier.*/
+> +int  testno;
+> +int  TST_TOTAL = 1;                   /* total number of tests in this file.   */
+> +
+> +/* Extern Global Functions */
+> +/******************************************************************************/
+> +/*                                                                            */
+> +/* Function:    cleanup                                                       */
+> +/*                                                                            */
+> +/* Description: Performs all one time clean up for this test on successful    */
+> +/*              completion,  premature exit or  failure. Closes all temporary */
+> +/*              files, removes all temporary directories exits the test with  */
+> +/*              appropriate return code by calling tst_exit() function.       */
+> +/*                                                                            */
+> +/* Input:       None.                                                         */
+> +/*                                                                            */
+> +/* Output:      None.                                                         */
+> +/*                                                                            */
+> +/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
+> +/*              On success - Exits calling tst_exit(). With '0' return code.  */
+> +/*                                                                            */
+> +/******************************************************************************/
+> +extern void cleanup() {
+> +        /* Remove tmp dir and all files in it */
+> +        TEST_CLEANUP;
+> +        tst_rmdir();
+> +
+> +        /* Exit with appropriate return code. */
+> +        tst_exit();
+> +}
+> +
+> +/* Local  Functions */
+> +/******************************************************************************/
+> +/*                                                                            */
+> +/* Function:    setup                                                         */
+> +/*                                                                            */
+> +/* Description: Performs all one time setup for this test. This function is   */
+> +/*              typically used to capture signals, create temporary dirs      */
+> +/*              and temporary files that may be used in the course of this    */
+> +/*              test.                                                         */
+> +/*                                                                            */
+> +/* Input:       None.                                                         */
+> +/*                                                                            */
+> +/* Output:      None.                                                         */
+> +/*                                                                            */
+> +/* Return:      On failure - Exits by calling cleanup().                      */
+> +/*              On success - returns 0.                                       */
+> +/*                                                                            */
+> +/******************************************************************************/
+> +void setup() {
+> +        /* Capture signals if any */
+> +        /* Create temporary directories */
+> +        TEST_PAUSE;
+> +        tst_tmpdir();
+> +}
+> +
+> +
+> +/*
+> + * Macros
+> + */
+> +#define SYSCALL_NAME    "mq_open"
+> +
+> +#ifndef __NR_mq_getsetattr
+> +#  define __NR_mq_getsetattr            282
+> +#endif
+> +
+> +
+> +/*
+> + * Global variables
+> + */
+> +static int opt_debug;
+> +static char *progname;
+> +
+> +enum test_type {
+> +		NORMAL,
+> +		NO_FILE,
+> +	        NO_SPACE,
+> +};
+> +
+> +
+> +/*
+> + * Data Structure
+> + */
+> +struct test_case {
+> +	int ttype;
+> +        char *user;
+> +        char *qname;
+> +        int oflag;
+> +        long mq_maxmsg;         // Maximum numebr of messages.
+> +        long mq_msgsize;        // Maximum message size.
+> +        int ret;
+> +        int err;
+> +};
+> +
+> +#define ULIMIT_FNUM     0
+> +#define PROC_MAX_QUEUES "/proc/sys/fs/mqueue/queues_max"
+> +
+> +/* Test cases
+> + *
+> + *   test status of errors on man page
+> + *
+> + *   EACCES             v (permission is denied)
+> + *   EEXIST             v (named message queue already exists)
+> + *   EINTR              --- (interrupted by a signal)
+> + *   EINVAL             v (not supported for the given name, or invalid
+> + *                         arguments)
+> + *   EMFILE             v (process file table overflow)
+> + *   ENAMETOOLONG       v (too long name length)
+> + *   ENFILE             can't check because it's difficult to create no-fd
+> + *   ENOENT             v (O_CREAT is not set and the named message queue
+> + *                         does not exist)
+> + *   ENOSPC             v (no space for the new message queue)
+> + */
+> +
+> +
+> +static struct test_case tcase[] = {
+> +#if 1
+> +        { // case00
+> +                .ttype          = NORMAL,
+> +                .qname          = QUEUE_NAME,
+> +                .oflag          = O_CREAT,
+> +                .mq_maxmsg      = 20,
+> +                .mq_msgsize     = 16384,
+> +                .ret            = 0,
+> +                .err            = 0,
+> +        },
+> +#else
+> +        { // case00
+> +                .ttype          = NORMAL,
+> +                .qname          = QUEUE_NAME,
+> +                .oflag          = O_CREAT,
+> +                .ret            = 0,
+> +                .err            = 0,
+> +        },
+> +        { // case01
+> +                .ttype          = NORMAL,
+> +                                //  0         1         2         3
+> +                                //  0123456789012345678901234567890123456789
+> +                .qname          = "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+> +                                   "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+> +                                   "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+> +                                   "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+> +                                   "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+> +                                   "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+> +                                   "aaaaaaaaaaaaaaa",
+> +                .oflag          = O_CREAT,
+> +                .ret            = 0,
+> +                .err            = 0,
+> +        },
+> +        { // case02
+> +                .ttype          = NORMAL,
+> +                                //  0         1         2         3
+> +                                //  0123456789012345678901234567890123456789
+> +                .qname          = "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+> +                                   "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+> +                                   "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+> +                                   "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+> +                                   "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+> +                                   "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+> +                                   "aaaaaaaaaaaaaaaa",
+> +                .oflag          = O_CREAT,
+> +                .ret            = -1,
+> +                .err            = ENAMETOOLONG,
+> +        },
+> +
+> +	{ // case03
+> +                .ttype          = NORMAL,
+> +                .qname          = "",
+> +                .oflag          = O_CREAT,
+> +                .ret            = -1,
+> +                .err            = EINVAL,
+> +        },
+> +        { // case04
+> +                .ttype          = NORMAL,
+> +                .user           = "nobody",
+> +                .qname          = QUEUE_NAME,
+> +                .ret            = -1,
+> +                .err            = EACCES,
+> +        },
+> +        { // case05
+> +                .ttype          = NORMAL,
+> +                .qname          = QUEUE_NAME,
+> +                .oflag          = O_CREAT|O_EXCL,
+> +                .ret            = -1,
+> +                .err            = EEXIST,
+> +        },
+> +        { // case06
+> +                .ttype          = NO_FILE,
+> +                .qname          = QUEUE_NAME,
+> +                .oflag          = O_CREAT,
+> +                .ret            = -1,
+> +                .err            = EMFILE,
+> +        },
+> +        { // case07
+> +                .ttype          = NORMAL,
+> +                .qname          = "/notexist",
+> +                .oflag          = 0,
+> +                .ret            = -1,
+> +                .err            = ENOENT,
+> +        },
+> +
+> +	{ // case08
+> +                .ttype          = NO_SPACE,
+> +                .user           = "nobody",
+> +                .qname          = QUEUE_NAME,
+> +                .oflag          = O_CREAT,
+> +                .ret            = -1,
+> +                .err            = ENOSPC,
+> +        },
+> +#endif
+> +};
+> +
+> +
+> +/*
+> + * do_test()
+> + *
+> + *   Input  : TestCase Data
+> + *   Return : RESULT_OK(0), RESULT_NG(1)
+> + *
+> + */
+> +
+> +static int do_test(struct test_case *tc)
+> +{
+> +        int sys_ret;
+> +        int sys_errno;
+> +        int result = RESULT_OK;
+> +	int rc, fd1 = -1, fd2 = -1, cmp_ok = 1;
+> +        uid_t old_uid = -1;
+> +        rlim_t oldlim = -1;
+> +        int oldval = -1;
+> +        struct mq_attr new, old, *p_attr;
+> +	
+> +	 /*
+> +         * When test ended with SIGTERM etc, mq discriptor is left remains.
+> +         * So we delete it first.
+> +         */
+> +        TEST(mq_unlink(QUEUE_NAME));
+> +
+> +	
+> +	/*
+> +         * Execute system call
+> +         */
+> +
+> +	if (tc->ttype != NO_SPACE) {
+> +                errno = 0;
+> +                TEST(sys_ret = mq_open(QUEUE_NAME, O_CREAT|O_EXCL|O_RDWR, S_IRWXU, NULL));
+> +                sys_errno = errno;
+> +                if (sys_ret < 0)
+> +                        goto TEST_END;
+> +                fd1 = sys_ret;
+> +        }
+> +	if (tc->ttype == NO_FILE) {
+> +                TEST(rc = setup_ulimit_fnum(ULIMIT_FNUM, &oldlim));
+> +                if (rc < 0) {
+> +                        result = 1;
+> +                        goto EXIT;
+> +                }
+> +        }
+> +
+> +	/*
+> +         * Change /proc/sys/fs/mqueue/queues_max
+> +         */
+> +        if (tc->ttype == NO_SPACE) {
+> +                TEST(rc = setup_proc_fs(PROC_MAX_QUEUES, 0, &oldval));
+> +                if (rc < 0) {
+> +                        result = 1;
+> +                        goto EXIT;
+> +                }
+> +        }
+> +
+> +	/*
+> +         * Change effective user id
+> +         */
+> +        if (tc->user != NULL) {
+> +                TEST(rc = setup_euid(tc->user, &old_uid));
+> +                if (rc < 0) {
+> +                        result = 1;
+> +                        goto EXIT;
+> +                }
+> +        }
+> +
+> +	 /*
+> +         * Execute system call
+> +         */
+> +        //tst_resm(TINFO,"PATH_MAX: %d\n", PATH_MAX);
+> +        //tst_resm(TINFO,"NAME_MAX: %d", NAME_MAX);
+> +        p_attr = NULL;
+> +        if (tc->mq_maxmsg || tc->mq_msgsize) {
+> +                new.mq_maxmsg = tc->mq_maxmsg;
+> +                new.mq_msgsize = tc->mq_msgsize;
+> +                p_attr = &new;
+> +        }
+> +        errno = 0;
+> +	if (tc->oflag & O_CREAT)
+> +                TEST(sys_ret = mq_open(tc->qname, tc->oflag, S_IRWXU, p_attr));
+> +        else
+> +                TEST(sys_ret = mq_open(tc->qname, tc->oflag));
+> +        sys_errno = errno;
+> +        if (sys_ret < 0)
+> +                goto TEST_END;
+> +        fd2 = sys_ret;
+> +
+> +        if (p_attr) {
+> +                TEST(rc = syscall(__NR_mq_getsetattr, fd2, NULL, &old));
+> +                if (TEST_RETURN < 0) {
+> +                 	tst_resm(TFAIL, "mq_getsetattr failed - errno = %d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> +                        result = 1;
+> +                        goto EXIT;
+> +                }
+> +		if (opt_debug) {
+> +                        tst_resm(TINFO,"mq_maxmsg E:%ld,\tR:%ld",new.mq_maxmsg, old.mq_maxmsg);
+> +                        tst_resm(TINFO,"mq_msgsize E:%ld,\tR:%ld",new.mq_msgsize, old.mq_msgsize);
+> +                }
+> +                cmp_ok = old.mq_maxmsg == new.mq_maxmsg &&
+> +                         old.mq_msgsize == new.mq_msgsize;
+> +        }
+> +
+> +TEST_END:
+> +        /*
+> +         * Check results
+> +         */
+> +        result |= (sys_errno != tc->err) || !cmp_ok;
+> +        PRINT_RESULT_CMP(sys_ret >= 0, tc->ret, tc->err, sys_ret, sys_errno,cmp_ok);
+> +
+> +EXIT:
+> +        if (tc->user != NULL && old_uid != -1)
+> +                TEST(cleanup_euid(old_uid));
+> +
+> +        if (tc->ttype == NO_SPACE && oldval != -1)
+> +                TEST(cleanup_proc_fs(PROC_MAX_QUEUES, oldval));
+> +
+> +        if (tc->ttype == NO_FILE && oldlim != -1)
+> +                TEST(cleanup_ulimit_fnum(oldlim));
+> +	 if (fd1 >= 0)
+> +                TEST(close(fd1));
+> +        if (fd2 >= 0)
+> +                TEST(close(fd2));
+> +        if (fd1 >= 0)
+> +                TEST(mq_unlink(QUEUE_NAME));
+> +        if (fd2 >= 0 && strcmp(tc->qname, QUEUE_NAME) != 0)
+> +                TEST(mq_unlink(tc->qname));
+> +
+> +        return result;
+> +}
+> +
+> +
+> +/*
+> + * usage()
+> + */
+> +
+> +static void usage(const char *progname)
+> +{
+> +        tst_resm(TINFO,"usage: %s [options]", progname);
+> +        tst_resm(TINFO,"This is a regression test program of %s system call.",SYSCALL_NAME);
+> +        tst_resm(TINFO,"options:");
+> +        tst_resm(TINFO,"    -d --debug           Show debug messages");
+> +        tst_resm(TINFO,"    -h --help            Show this message");
+> +        tst_resm(TINFO,"NG");
+> +        exit(1);
+> +}
+> +
+> +
+> +/*
+> + * main()
+> + */
+> +
+> +int main(int ac, char **av) {
+> +	int result = RESULT_OK;
+> +        int c;
+> +        int i;
+> +        int lc;                 /* loop counter */
+> +        char *msg;              /* message returned from parse_opts */
+> +
+> +	struct option long_options[] = {
+> +                { "debug", no_argument, 0, 'd' },
+> +                { "help",  no_argument, 0, 'h' },
+> +                { NULL, 0, NULL, 0 }
+> +        };
+> +
+> +	progname = strchr(av[0], '/');
+> +        progname = progname ? progname + 1 : av[0];	
+> +	
+> +        /* parse standard options */
+> +        if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
+> +             tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
+> +             tst_exit();
+> +           }
+> +
+> +        setup();
+> +
+> +        /* Check looping state if -i option given */
+> +        for (lc = 0; TEST_LOOPING(lc); ++lc) {
+> +                Tst_count = 0;
+> +                for (testno = 0; testno < TST_TOTAL; ++testno) {
+> +			 TEST(c = getopt_long(ac, av, "dh", long_options, NULL));
+> +			 while(TEST_RETURN != -1) {
+> +		                switch (c) {
+> +                		case 'd':
+> +		                        opt_debug = 1;
+> +                		        break;
+> +		                default:
+> +                		        usage(progname);
+> +                        		// NOTREACHED
+> +                		}
+> +		        }
+> +
+> +
+> +		if (ac != optind) {
+> +        	        tst_resm(TINFO,"Options are not match.");
+> +                	usage(progname);
+> +                	// NOTREACHED
+> +	        }
+> +
+> +		/*
+> +		* Execute test
+> +         	*/
+> +	        for (i = 0; i < (int)(sizeof(tcase) / sizeof(tcase[0])); i++) {
+> +        	        int ret;
+> +	                tst_resm(TINFO,"(case%02d) START", i);
+> +	                ret = do_test(&tcase[i]);
+> +	                tst_resm(TINFO,"(case%02d) END => %s", i, (ret == 0) ? "OK" : "NG");
+> +	                result |= ret;
+> +        	}
+> +		
+> +		/*
+> +        	 * Check results
+> +         	*/
+> +        	switch(result) {
+> +	        case RESULT_OK:
+> +        			tst_resm(TPASS, "mq_open call succeeded ");
+> +		                break;
+> +
+> +	        default:
+> +                 	   	tst_resm(TFAIL, "%s failed - errno = %d : %s", TCID, TEST_ERRNO, strerror(TEST_ERRNO));
+> +        		        tst_resm(TINFO,"NG");
+> +				cleanup();
+> +				tst_exit();
+> +		                break;
+> +        	}
+> +
+> +                }
+> +        }	
+> +        cleanup();
+> +	tst_exit();
+> +}
+> +
+> --- ltp-intermediate-20090521.orig/runtest/syscalls	2009-05-27 13:08:52.000000000 +0530
+> +++ ltp-intermediate-20090521/runtest/syscalls	2009-05-27 13:20:31.000000000 +0530
+> @@ -586,6 +586,7 @@ mprotect02 mprotect02
+>  mprotect03 mprotect03
+> 
+>  mq_notify01 mq_notify01
+> +mq_open01 mq_open01
+> 
+>  mremap01 mremap01
+>  mremap02 mremap02
+> 
+> ---
+> Regards--
+> Manas
+> 
 
----------------------------------------------------------------------------=
----
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT =
 
-is a gathering of tech-side developers & brand creativity professionals. Me=
-et
-the minds behind Google Creative Lab, Visual Complexity, Processing, & =
-
-iPhoneDevCamp as they present alongside digital heavyweights like Barbarian =
-
-Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com =
-
+------------------------------------------------------------------------------
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
+is a gathering of tech-side developers & brand creativity professionals. Meet
+the minds behind Google Creative Lab, Visual Complexity, Processing, & 
+iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
+Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
