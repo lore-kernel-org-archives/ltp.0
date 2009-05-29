@@ -1,30 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <maknayak@in.ibm.com>) id 1M9G7z-0002KY-Ug
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 10:12:55 +0000
-Received: from e7.ny.us.ibm.com ([32.97.182.137])
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MA1dD-0003X1-8u
+	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:56:19 +0000
+Received: from e6.ny.us.ibm.com ([32.97.182.146])
 	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M9G7w-0007Gu-1Y
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2009 10:12:55 +0000
+	(Exim 4.69) id 1MA1d9-0001g9-IH
+	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:56:19 +0000
 Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e7.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4RA1HEs009297
-	for <ltp-list@lists.sourceforge.net>; Wed, 27 May 2009 06:01:17 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by e6.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4TCwlh6001847
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 08:58:47 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
 	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4RACpHk159822
-	for <ltp-list@lists.sourceforge.net>; Wed, 27 May 2009 06:12:51 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4RAAjt3012633
-	for <ltp-list@lists.sourceforge.net>; Wed, 27 May 2009 06:10:45 -0400
-From: Manas Kumar Nayak <maknayak@in.ibm.com>
-Date: Wed, 27 May 2009 15:42:32 +0530
-Message-Id: <20090527101228.18638.22844.sendpatchset@subratamodak.linux.ibm.com>
-In-Reply-To: <20090527100645.18638.75163.sendpatchset@subratamodak.linux.ibm.com>
+	n4TCuEnW214086
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 08:56:14 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4TCuEdG012289
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 08:56:14 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <20090527100839.18638.57511.sendpatchset@subratamodak.linux.ibm.com>
 References: <20090527100645.18638.75163.sendpatchset@subratamodak.linux.ibm.com>
-Subject: [LTP] [PATCH 12/13] Add/Port unshare01 test for unshare() syscall
+	<20090527100839.18638.57511.sendpatchset@subratamodak.linux.ibm.com>
+Date: Fri, 29 May 2009 18:26:10 +0530
+Message-Id: <1243601770.5188.46.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH 04/13] Add/Port clock_nanosleep01 test
+	for	clock_nanosleep() syscall
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,302 +38,547 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-Cc: Manas Kumar Nayak <maknayak@in.ibm.com>
+To: Manas Kumar Nayak <maknayak@in.ibm.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Signed-off-by: Manas Kumar Nayak <maknayak@in.ibm.com>
-To: LTP List <ltp-list@lists.sourceforge.net>
-Cc: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: Masatake YAMATO <yamato@redhat.com>
----
+On Wed, 2009-05-27 at 15:38 +0530, Manas Kumar Nayak wrote: 
+> Signed-off-by: Manas Kumar Nayak <maknayak@in.ibm.com>
 
---- ltp-intermediate-20090521.orig/testcases/kernel/syscalls/unshare/Makefile	1970-01-01 05:30:00.000000000 +0530
-+++ ltp-intermediate-20090521/testcases/kernel/syscalls/unshare/Makefile	2009-05-25 15:12:47.000000000 +0530
-@@ -0,0 +1,31 @@
-+#
-+#  Copyright (c) International Business Machines  Corp., 2009
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+
-+CFLAGS += -I../../../../include -Wall
-+LDLIBS += -L../../../../lib -lltp
-+
-+SRCS    = $(wildcard *.c)
-+TARGETS = $(patsubst %.c,%,$(SRCS))
-+
-+all: $(TARGETS)
-+
-+install:
-+	@set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i ; done
-+
-+clean:
-+	rm -f $(TARGETS)
---- ltp-intermediate-20090521.orig/testcases/kernel/syscalls/unshare/unshare01.c	1970-01-01 05:30:00.000000000 +0530
-+++ ltp-intermediate-20090521/testcases/kernel/syscalls/unshare/unshare01.c	2009-05-27 14:43:04.000000000 +0530
-@@ -0,0 +1,231 @@
-+/********************************************************************************/
-+/* Copyright (c) Crackerjack Project., 2007                                   	*/
-+/*                                                                            	*/
-+/* This program is free software;  you can redistribute it and/or modify      	*/
-+/* it under the terms of the GNU General Public License as published by       	*/
-+/* the Free Software Foundation; either version 2 of the License, or          	*/
-+/* (at your option) any later version.                                        	*/
-+/*                                                                            	*/
-+/* This program is distributed in the hope that it will be useful,            	*/
-+/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            	*/
-+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  	*/
-+/* the GNU General Public License for more details.                           	*/
-+/*                                                                            	*/
-+/* You should have received a copy of the GNU General Public License          	*/
-+/* along with this program;  if not, write to the Free Software               	*/
-+/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    	*/
-+/*                                                                            	*/
-+/******************************************************************************	*/
-+/******************************************************************************	*/
-+/*                                                                            	*/
-+/* File:        unshare01.c                                           	      	*/
-+/*                                                                            	*/
-+/* Description: This tests the unshare() syscall.                      	      	*/
-+/*             unshare() allows a process to disassociate parts of its 		*/
-+/*		execution context that are currently being shared with other 	*/
-+/*		processes. Part of the execution context, such as the namespace	*/
-+/*		,is shared implicitly when a new process is created using 	*/
-+/*		fork(2) or vfork(2), while other parts, such as virtual memory	*/
-+/*		, may be shared by explicit request when creating a process 	*/
-+/*		using clone(2).							*/
-+/*										*/
-+/*		The main use of unshare() is to allow a process to control its	*/ 
-+/*		shared execution context without creating a new process.	*/
-+/*	         								*/
-+/*										*/
-+/*		The flags argument is a bit mask that specifies which parts of	*/
-+/*		the execution context should be unshared. This argument is 	*/
-+/*		specified by ORing together zero or more of the following cons-	*/
-+/*		tants:								*/
-+/*										*/
-+/*		CLONE_FILES:							*/
-+/*		    	Reverse the effect of the clone(2) CLONE_FILES flag. 	*/
-+/*			Unshare	the file descriptor table, so that the calling 	*/
-+/*			process no longer shares its file descriptors with any 	*/
-+/*			other process.						*/
-+/*		CLONE_FS:							*/
-+/*			Reverse the effect of the clone(2) CLONE_FS flag.Unshare*/
-+/*			file system attributes, so that the calling process no 	*/
-+/*			longer shares its root directory, current directory, or	*/
-+/*			umask attributes with any other process.		*/
-+/*		CLONE_NEWNS:							*/
-+/*		       This flag has the same effect as the clone(2) CLONE_NEWNS*/ 
-+/*			flag. Unshare the namespace, so that the calling process*/ 
-+/*			has a private copy of its namespacei which is not shared*/
-+/*			with any other process. Specifying this flag automat-	*/
-+/*			ically implies CLONE_FS as well. 			*/
-+/*										*/
-+/*		If flags is specified as zero, then unshare() is a no-op; no 	*/
-+/*		changes are made to the calling process's execution context. 	*/
-+/*		                                                               	*/
-+/* Usage:  <for command-line>                                                 	*/
-+/* unshare01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                     		*/
-+/*      where,  -c n : Run n copies concurrently.                             	*/
-+/*              -e   : Turn on errno logging.                                 	*/
-+/*              -i n : Execute test n times.                                  	*/
-+/*              -I x : Execute test for x seconds.                            	*/
-+/*              -P x : Pause for x seconds between iterations.                	*/
-+/*              -t   : Turn on syscall timing.                                	*/
-+/*                                                                            	*/
-+/* Total Tests: 1                                                             	*/
-+/*                                                                            	*/
-+/* Test Name:   unshare01                                             		*/
-+/* History:     Porting from Crackerjack to LTP is done by                    	*/
-+/*              Manas Kumar Nayak maknayak@in.ibm.com>                        	*/
-+/********************************************************************************/
-+
-+#include <stdio.h>
-+#include <sys/wait.h>
-+#include <sys/types.h>
-+#include <sched.h>
-+#include <limits.h>
-+#include <unistd.h>
-+#include <sys/types.h>
-+#include <sys/syscall.h>
-+#include <errno.h>
-+#include <pwd.h>
-+#include <grp.h>
-+#include <string.h>
-+#include <sys/param.h>
-+#include <stdio.h>
-+
-+/* Harness Specific Include Files. */
-+#include "test.h"
-+#include "usctest.h"
-+#include "linux_syscall_numbers.h"
-+
-+/* Extern Global Variables */
-+extern int Tst_count;           /* counter for tst_xxx routines.         */
-+extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
-+
-+/* Global Variables */
-+char *TCID = "unshare01";  /* Test program identifier.*/
-+int  testno;
-+int  TST_TOTAL =1;                   /* total number of tests in this file.   */
-+
-+/* Extern Global Functions */
-+/******************************************************************************/
-+/*                                                                            */
-+/* Function:    cleanup                                                       */
-+/*                                                                            */
-+/* Description: Performs all one time clean up for this test on successful    */
-+/*              completion,  premature exit or  failure. Closes all temporary */
-+/*              files, removes all temporary directories exits the test with  */
-+/*              appropriate TEST_RETURNurn code by calling tst_exit() function.       */
-+/*                                                                            */
-+/* Input:       None.                                                         */
-+/*                                                                            */
-+/* Output:      None.                                                         */
-+/*                                                                            */
-+/* Return:      On failure - Exits calling tst_exit(). Non '0' TEST_RETURNurn code.   */
-+/*              On success - Exits calling tst_exit(). With '0' TEST_RETURNurn code.  */
-+/*                                                                            */
-+/******************************************************************************/
-+extern void cleanup() {
-+        /* Remove tmp dir and all files in it */
-+        TEST_CLEANUP;
-+        tst_rmdir();
-+
-+        /* Exit with appropriate TEST_RETURNurn code. */
-+        tst_exit();
-+}
-+
-+/* Local  Functions */
-+/******************************************************************************/
-+/*                                                                            */
-+/* Function:    setup                                                         */
-+/*                                                                            */
-+/* Description: Performs all one time setup for this test. This function is   */
-+/*              typically used to capture signals, create temporary dirs      */
-+/*              and temporary files that may be used in the course of this    */
-+/*              test.                                                         */
-+/*                                                                            */
-+/* Input:       None.                                                         */
-+/*                                                                            */
-+/* Output:      None.                                                         */
-+/*                                                                            */
-+/* Return:      On failure - Exits by calling cleanup().                      */
-+/*              On success - TEST_RETURNurns 0.                                       */
-+/*                                                                            */
-+/******************************************************************************/
-+void setup() {
-+        /* Capture signals if any */
-+        /* Create temporary directories */
-+        TEST_PAUSE;
-+        tst_tmpdir();
-+}
-+
-+int main(int ac, char **av) {
-+        pid_t pid1;
-+	int lc;                 /* loop counter */
-+        char *msg;              /* message TEST_RETURNurned from parse_opts */
-+	
-+        /* parse standard options */
-+        if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
-+             tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
-+             tst_exit();
-+           }
-+
-+        setup();
-+
-+        /* Check looping state if -i option given */
-+        for (lc = 0; TEST_LOOPING(lc); ++lc) {
-+                Tst_count = 0;
-+                for (testno = 0; testno < TST_TOTAL; ++testno) {
-+
-+ /*
-+ *fork a child process;testing which one is a child or a parent;
-+ * */
-+		        TEST(pid1=fork());    //call to fork()
-+			if (TEST_RETURN == -1){
-+				tst_resm(TFAIL, "fork() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
-+				cleanup();
-+				tst_exit();
-+			}else if (TEST_RETURN == 0){
-+				if((TEST_RETURN = unshare(CLONE_FILES)) == 0) {
-+	        		tst_resm(TPASS, "unshare with CLONE_FILES call succeeded");
-+				tst_exit();
-+				}else if (TEST_RETURN == -1 )
-+					tst_resm(TFAIL,"unshare Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
-+					tst_exit();
-+			}else{
-+			}
-+
-+			TEST(pid1=fork());    //call to fork()
-+                        if (TEST_RETURN == -1){
-+                	        tst_resm(TFAIL, "fork() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
-+	                        cleanup();
-+                        	tst_exit();
-+                        }else if (TEST_RETURN == 0){
-+                                if((TEST_RETURN = unshare(CLONE_FS)) == 0) {
-+                                	tst_resm(TPASS, "unshare with CLONE_FS call succeeded");
-+					tst_exit();
-+                                }else if (TEST_RETURN == -1 )
-+                                        tst_resm(TFAIL,"unshare Failed 2, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
-+					tst_exit();
-+                        }else{
-+			}
-+
-+			TEST(pid1=fork());    //call to fork()
-+                        if (TEST_RETURN == -1){
-+                	        tst_resm(TFAIL, "fork() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
-+	                        cleanup();
-+                        	tst_exit();
-+                        }else if (TEST_RETURN == 0){
-+                                if((TEST_RETURN = unshare(CLONE_NEWNS)) == 0) {
-+                                	tst_resm(TPASS, "unshare call with CLONE_NEWNS succeeded");
-+					tst_exit();
-+                                }else if (TEST_RETURN == -1 )
-+                                        tst_resm(TFAIL,"unshare Failed 2, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
-+					tst_exit();
-+                        }else{
-+			}
-+
-+
-+                }
-+
-+                }
-+	cleanup();
-+	tst_exit();
-+}
-+
---- ltp-intermediate-20090521.orig/runtest/syscalls	2009-05-27 14:45:49.000000000 +0530
-+++ ltp-intermediate-20090521/runtest/syscalls	2009-05-27 14:45:21.000000000 +0530
-@@ -1207,6 +1207,8 @@ unlink08 unlink08
- #unlinkat test cases
- unlinkat01 unlinkat01
- 
-+unshare01 unshare01
-+
- #
- # These tests require an unmounted block device
- # to run correctly. Please see individual test
+Thanks.
 
----
 Regards--
-Manas
+Subrata
+
+> To: LTP List <ltp-list@lists.sourceforge.net>
+> Cc: Subrata Modak <subrata@linux.vnet.ibm.com>
+> Cc: Masatake YAMATO <yamato@redhat.com>
+> ---
+> 
+> --- ltp-intermediate-20090521.orig/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c	1970-01-01 05:30:00.000000000 +0530
+> +++ ltp-intermediate-20090521/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c	2009-05-27 12:29:23.000000000 +0530
+> @@ -0,0 +1,470 @@
+> +/******************************************************************************/
+> +/* Copyright (c) Crackerjack Project., 2007-2008 ,Hitachi, Ltd                */
+> +/*          Author(s): Takahiro Yasui <takahiro.yasui.mp@hitachi.com>,	      */
+> +/*		       Yumiko Sugita <yumiko.sugita.yf@hitachi.com>, 	      */
+> +/*		       Satoshi Fujiwara <sa-fuji@sdl.hitachi.co.jp>	      */
+> +/*                                                                  	      */
+> +/* This program is free software;  you can redistribute it and/or modify      */
+> +/* it under the terms of the GNU General Public License as published by       */
+> +/* the Free Software Foundation; either version 2 of the License, or          */
+> +/* (at your option) any later version.                                        */
+> +/*                                                                            */
+> +/* This program is distributed in the hope that it will be useful,            */
+> +/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
+> +/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
+> +/* the GNU General Public License for more details.                           */
+> +/*                                                                            */
+> +/* You should have received a copy of the GNU General Public License          */
+> +/* along with this program;  if not, write to the Free Software               */
+> +/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
+> +/*                                                                            */
+> +/******************************************************************************/
+> +/******************************************************************************/
+> +/*                                                                            */
+> +/* File:        clock_nanosleep01.c                                           */
+> +/*                                                                            */
+> +/* Description: This tests the clock_nanosleep() syscall                      */
+> +/*									      */
+> +/* 									      */
+> +/*									      */
+> +/*									      */
+> +/*									      */
+> +/*                                                                            */
+> +/* Usage:  <for command-line>                                                 */
+> +/* clock_nanosleep01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                     */
+> +/*      where,  -c n : Run n copies concurrently.                             */
+> +/*              -e   : Turn on errno logging.                                 */
+> +/*              -i n : Execute test n times.                                  */
+> +/*              -I x : Execute test for x seconds.                            */
+> +/*              -P x : Pause for x seconds between iterations.                */
+> +/*              -t   : Turn on syscall timing.                                */
+> +/*                                                                            */
+> +/* Total Tests: 1                                                             */
+> +/*                                                                            */
+> +/* Test Name:   clock_nanosleep01                                             */
+> +/* History:     Porting from Crackerjack to LTP is done by                    */
+> +/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
+> +/******************************************************************************/
+> +#include <sys/syscall.h>
+> +#include <sys/types.h>
+> +#include <getopt.h>
+> +#include <string.h>
+> +#include <stdlib.h>
+> +#include <errno.h>
+> +#include <stdio.h>
+> +#include <time.h>
+> +#include <signal.h>
+> +#include "../utils/common_j_h.c"
+> +#include "../utils/include_j_h.h"
+> +
+> +/* Harness Specific Include Files. */
+> +#include "test.h"
+> +#include "usctest.h"
+> +#include "linux_syscall_numbers.h"
+> +
+> +/* Extern Global Variables */
+> +extern int Tst_count;           /* counter for tst_xxx routines.         */
+> +extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
+> +
+> +/* Global Variables */
+> +char *TCID = "clock_nanosleep01";  /* Test program identifier.*/
+> +int  testno;
+> +int  TST_TOTAL = 1;                   /* total number of tests in this file.   */
+> +
+> +/* Extern Global Functions */
+> +/******************************************************************************/
+> +/*                                                                            */
+> +/* Function:    cleanup                                                       */
+> +/*                                                                            */
+> +/* Description: Performs all one time clean up for this test on successful    */
+> +/*              completion,  premature exit or  failure. Closes all temporary */
+> +/*              files, removes all temporary directories exits the test with  */
+> +/*              appropriate return code by calling tst_exit() function.       */
+> +/*                                                                            */
+> +/* Input:       None.                                                         */
+> +/*                                                                            */
+> +/* Output:      None.                                                         */
+> +/*                                                                            */
+> +/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
+> +/*              On success - Exits calling tst_exit(). With '0' return code.  */
+> +/*                                                                            */
+> +/******************************************************************************/
+> +extern void cleanup() {
+> +        /* Remove tmp dir and all files in it */
+> +        TEST_CLEANUP;
+> +        tst_rmdir();
+> +
+> +        /* Exit with appropriate return code. */
+> +        tst_exit();
+> +}
+> +
+> +/* Local  Functions */
+> +/******************************************************************************/
+> +/*                                                                            */
+> +/* Function:    setup                                                         */
+> +/*                                                                            */
+> +/* Description: Performs all one time setup for this test. This function is   */
+> +/*              typically used to capture signals, create temporary dirs      */
+> +/*              and temporary files that may be used in the course of this    */
+> +/*              test.                                                         */
+> +/*                                                                            */
+> +/* Input:       None.                                                         */
+> +/*                                                                            */
+> +/* Output:      None.                                                         */
+> +/*                                                                            */
+> +/* Return:      On failure - Exits by calling cleanup().                      */
+> +/*              On success - returns 0.                                       */
+> +/*                                                                            */
+> +/******************************************************************************/
+> +void setup() {
+> +        /* Capture signals if any */
+> +        /* Create temporary directories */
+> +        TEST_PAUSE;
+> +        tst_tmpdir();
+> +}
+> +
+> +
+> +/*
+> + * Macros
+> + */
+> +#define SYSCALL_NAME    "clock_nanosleep"
+> +
+> +
+> +/*
+> + * Global variables
+> + */
+> +static int opt_debug;
+> +static char *progname;
+> +
+> +enum test_type {
+> +		NORMAL,
+> +		NULL_POINTER,
+> +		SEND_SIGINT,
+> +};
+> +
+> +
+> +/*
+> + * Data Structure
+> + */
+> +struct test_case {
+> +	clockid_t clk_id;
+> +	int ttype;
+> +        int flags;
+> +        time_t sec;
+> +        long nsec;
+> +	int ret;
+> +        int err;
+> +};
+> +
+> +
+> +/* Test cases
+> + *
+> + *   test status of errors on man page
+> + *
+> + *   EINTR              v (function was interrupted by a signal)
+> + *   EINVAL             v (invalid tv_nsec, etc.)
+> + *   ENOTSUP            can't check because not supported clk_id generates
+> + *                      EINVAL
+> + */
+> +
+> +
+> +static struct test_case tcase[] = {
+> +        { // case00
+> +                .clk_id         = CLOCK_REALTIME,
+> +                .ttype          = NORMAL,
+> +		.flags          = 0,
+> +                .sec            = 0,
+> +                .nsec           = 500000000, // 500msec
+> +                .ret            = 0,
+> +                .err            = 0,
+> +        },
+> +        { // case01
+> +                .clk_id         = CLOCK_MONOTONIC,
+> +                .ttype          = NORMAL,
+> +		.flags          = 0,
+> +                .sec            = 0,
+> +                .nsec           = 500000000, // 500msec
+> +                .ret            = 0,
+> +                .err            = 0,
+> +        },
+> +	{ // case02
+> +                .ttype          = NORMAL,
+> +                .clk_id         = CLOCK_REALTIME,
+> +                .flags          = 0,
+> +                .sec            = 0,
+> +                .nsec           = -1,   // invalid
+> +                .ret            = EINVAL,
+> +                .err            = 0,
+> +        },
+> +        { // case03
+> +                .ttype          = NORMAL,
+> +                .clk_id         = CLOCK_REALTIME,
+> +                .flags          = 0,
+> +                .sec            = 0,
+> +                .nsec           = 1000000000,   // invalid
+> +                .ret            = EINVAL,
+> +                .err            = 0,
+> +        },
+> +        { // case04
+> +                .ttype          = NORMAL,
+> +                .clk_id         = CLOCK_THREAD_CPUTIME_ID, // not supported
+> +                .flags          = 0,
+> +                .sec            = 0,
+> +                .nsec           = 500000000, // 500msec
+> +                .ret            = ENOTSUP, // RHEL4U1 + 2.6.18 returns EINVAL
+> +                .err            = 0,
+> +        },
+> +        { // case05
+> +                .ttype          = SEND_SIGINT,
+> +                .clk_id         = CLOCK_REALTIME,
+> +                .flags          = 0,
+> +                .sec            = 10,
+> +                .nsec           = 0,
+> +                .ret            = EINTR,
+> +                .err            = 0,
+> +        },
+> +#if 0   // glibc generates SEGV error (RHEL4U1 + 2.6.18)
+> +        { // caseXX
+> +                .ttype          = NULL_POINTER,
+> +                .clk_id         = CLOCK_REALTIME,
+> +                .flags          = 0,
+> +                .sec            = 0,
+> +                .nsec           = 500000000, // 500msec
+> +                .ret            = EFAULT,
+> +                .err            = 0,
+> +        },
+> +#endif
+> +};
+> +
+> +
+> +/*
+> + * chk_difftime()
+> + *   Return : OK(0), NG(-1)
+> + */
+> +#define MAX_MSEC_DIFF   20
+> +
+> +static int chk_difftime(struct timespec *bef, struct timespec *aft,
+> +                        time_t sec, long nsec)
+> +{
+> +        struct timespec t;
+> +        time_t expect;
+> +        time_t result;
+> +
+> +        t.tv_sec = aft->tv_sec - bef->tv_sec;
+> +        t.tv_nsec = aft->tv_nsec - bef->tv_nsec;
+> +        if (t.tv_nsec < 0) {
+> +                t.tv_sec -= 1;
+> +                t.tv_nsec += 1000000000;
+> +        }
+> +        TEST(expect = (sec * 1000) + (nsec / 1000000));
+> +        TEST(result = (t.tv_sec * 1000) + (t.tv_nsec / 1000000));
+> +        tst_resm(TINFO,"check sleep time: (min:%ld) < %ld < (max:%ld) (msec)",expect - MAX_MSEC_DIFF, result, expect + MAX_MSEC_DIFF);
+> +        if (result < expect - MAX_MSEC_DIFF || result > expect + MAX_MSEC_DIFF)
+> +                return -1;
+> +	return 0;
+> +}
+> +
+> +
+> +/*
+> + * do_test()
+> + *
+> + *   Input  : TestCase Data
+> + *   Return : RESULT_OK(0), RESULT_NG(1)
+> + *
+> + */
+> +static int do_test(struct test_case *tc)
+> +{
+> +        int sys_ret;
+> +        int sys_errno;
+> +        int result = RESULT_OK;
+> +        struct timespec beftp, afttp, rq, rm;
+> +        int rc, range_ok = 1, remain_ok = 1;
+> +        pid_t pid = 0;
+> +
+> +	 /*
+> +         * Check before sleep time
+> +         */
+> +        if (tc->ttype == SEND_SIGINT) {
+> +                TEST(pid = create_sig_proc(500000, SIGINT));
+> +                if (TEST_RETURN < 0)
+> +                        return 1;
+> +        }
+> +
+> +        /*
+> +         * Check before sleep time
+> +         */
+> +        TEST(rc = clock_gettime(tc->clk_id, &beftp));
+> +        if (rc < 0) {
+> +                tst_resm(TFAIL, "iclock_gettime failed - errno = %d : %s", TEST_ERRNO, strerror(TEST_ERRNO));
+> +                result = 1;
+> +                goto EXIT;
+> +        }
+> +	 /*
+> +         * Execute system call
+> +         */
+> +        rq.tv_sec = tc->sec;
+> +        rq.tv_nsec = tc->nsec;
+> +        // !!!CAUTION: 'clock_gettime' returns errno itself
+> +        errno = 0;
+> +        if (tc->ttype == NULL_POINTER)
+> +                TEST(sys_ret = clock_nanosleep(tc->clk_id, tc->flags, NULL, &rm));
+> +        else
+> +                TEST(sys_ret = clock_nanosleep(tc->clk_id, tc->flags, &rq, &rm));
+> +        sys_errno = errno;
+> +        if (sys_ret != 0)
+> +                goto TEST_END;
+> +	
+> +	 /*
+> +         * Check after sleep time
+> +         */
+> +        TEST(rc = clock_gettime(tc->clk_id, &afttp));
+> +        if (TEST_RETURN < 0) {
+> +                EPRINTF("clock_gettime failed.\n");
+> +                result = 1;
+> +                goto EXIT;
+> +        }
+> +	range_ok = chk_difftime(&beftp, &afttp, tc->sec, tc->nsec) == 0;
+> +	/*
+> +         * Check remaining time
+> +         */
+> +TEST_END:
+> +        if (tc->ttype == NORMAL || tc->ttype == SEND_SIGINT) {
+> +                tst_resm(TINFO,"remain time: %ld %ld", rm.tv_sec, rm.tv_nsec);
+> +                if (tc->ttype == NORMAL)
+> +                        remain_ok = rm.tv_sec == 0 && rm.tv_nsec == 0;
+> +                else
+> +                        remain_ok = rm.tv_sec != 0 || rm.tv_nsec != 0;
+> +        }
+> +
+> +	/*
+> +         * Check results
+> +         */
+> +        result |= (sys_ret != tc->ret) || !range_ok || !remain_ok;
+> +        if (!range_ok)
+> +                PRINT_RESULT_EXTRA(0, tc->ret, tc->err, sys_ret, sys_errno,"time range check", range_ok);
+> +        else
+> +                PRINT_RESULT_EXTRA(0, tc->ret, tc->err, sys_ret, sys_errno,"remain time check", remain_ok);
+> +EXIT:
+> +        if (pid > 0) {
+> +                int st;
+> +                TEST(kill(pid, SIGTERM));
+> +                TEST(wait(&st));
+> +        }
+> +        return result;
+> +}
+> +
+> +/*
+> + * sighandler()
+> + */
+> +void sighandler(int sig)
+> +{
+> +        if (sig == SIGINT)
+> +                return;
+> +        // NOTREACHED
+> +        return;
+> +}
+> +
+> +
+> +/*
+> + * usage()
+> + */
+> +
+> +static void usage(const char *progname)
+> +{
+> +        tst_resm(TINFO,"usage: %s [options]", progname);
+> +        tst_resm(TINFO,"This is a regression test program of %s system call.",SYSCALL_NAME);
+> +        tst_resm(TINFO,"options:");
+> +        tst_resm(TINFO,"    -d --debug           Show debug messages");
+> +        tst_resm(TINFO,"    -h --help            Show this message");
+> +        tst_resm(TINFO,"NG");
+> +        exit(1);
+> +}
+> +
+> +
+> +/*
+> + * main()
+> + */
+> +
+> +
+> +
+> +int main(int ac, char **av) {
+> +	int result = RESULT_OK;
+> +        int c;
+> +        int i;
+> +        int lc;                 /* loop counter */
+> +        char *msg;              /* message returned from parse_opts */
+> +
+> +	struct option long_options[] = {
+> +                { "debug", no_argument, 0, 'd' },
+> +                { "help",  no_argument, 0, 'h' },
+> +                { NULL, 0, NULL, 0 }
+> +        };
+> +
+> +	progname = strchr(av[0], '/');
+> +        progname = progname ? progname + 1 : av[0];	
+> +	
+> +        /* parse standard options */
+> +        if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
+> +             tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
+> +             tst_exit();
+> +           }
+> +
+> +        setup();
+> +
+> +        /* Check looping state if -i option given */
+> +        for (lc = 0; TEST_LOOPING(lc); ++lc) {
+> +                Tst_count = 0;
+> +                for (testno = 0; testno < TST_TOTAL; ++testno) {
+> +			 TEST(c = getopt_long(ac, av, "dh", long_options, NULL));
+> +			 while(TEST_RETURN != -1) {
+> +		                switch (c) {
+> +                		case 'd':
+> +		                        opt_debug = 1;
+> +                		        break;
+> +		                default:
+> +                		        usage(progname);
+> +                        		// NOTREACHED
+> +                		}
+> +		        }
+> +
+> +
+> +		if (ac != optind) {
+> +        	        tst_resm(TINFO,"Options are not match.");
+> +                	usage(progname);
+> +                	// NOTREACHED
+> +	        }
+> +
+> +		/*
+> +		* Execute test
+> +         	*/
+> +		TEST(signal(SIGINT, sighandler));
+> +	        for (i = 0; i < (int)(sizeof(tcase) / sizeof(tcase[0])); i++) {
+> +        	        int ret;
+> +	                tst_resm(TINFO,"(case%02d) START", i);
+> +	                ret = do_test(&tcase[i]);
+> +	                tst_resm(TINFO,"(case%02d) END => %s", i, (ret == 0) ? "OK" : "NG");
+> +	                result |= ret;
+> +        	}
+> +		
+> +		/*
+> +        	 * Check results
+> +         	*/
+> +        	switch(result) {
+> +	        case RESULT_OK:
+> +        			tst_resm(TPASS, "clock_nanosleep call succeeded");
+> +		                break;
+> +
+> +	        default:
+> +                 	   	tst_resm(TFAIL, "%s failed - errno = %d : %s", TCID, TEST_ERRNO, strerror(TEST_ERRNO));
+> +        		        tst_resm(TINFO,"NG");
+> +				cleanup();
+> +				tst_exit();
+> +		                break;
+> +        	}
+> +
+> +                }
+> +        }	
+> +        cleanup();
+> +	tst_exit();
+> +}
+> +
+> --- ltp-intermediate-20090521.orig/testcases/kernel/syscalls/clock_nanosleep/Makefile	1970-01-01 05:30:00.000000000 +0530
+> +++ ltp-intermediate-20090521/testcases/kernel/syscalls/clock_nanosleep/Makefile	2009-05-23 09:41:29.000000000 +0530
+> @@ -0,0 +1,31 @@
+> +#
+> +#  Copyright (c) International Business Machines  Corp., 2009
+> +#
+> +#  This program is free software;  you can redistribute it and/or modify
+> +#  it under the terms of the GNU General Public License as published by
+> +#  the Free Software Foundation; either version 2 of the License, or
+> +#  (at your option) any later version.
+> +#
+> +#  This program is distributed in the hope that it will be useful,
+> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> +#  the GNU General Public License for more details.
+> +#
+> +#  You should have received a copy of the GNU General Public License
+> +#  along with this program;  if not, write to the Free Software
+> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> +#
+> +
+> +CFLAGS += -I../../../../include -Wall -O2
+> +LDLIBS += -L../../../../lib -lltp -lrt
+> +
+> +SRCS    = $(wildcard *.c)
+> +TARGETS = $(patsubst %.c,%,$(SRCS))
+> +
+> +all: $(TARGETS)
+> +
+> +install:
+> +	@set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i ; done
+> +
+> +clean:
+> +	rm -f $(TARGETS)
+> --- ltp-intermediate-20090521.orig/runtest/syscalls	2009-05-27 12:22:30.000000000 +0530
+> +++ ltp-intermediate-20090521/runtest/syscalls	2009-05-27 12:37:07.000000000 +0530
+> @@ -75,6 +75,7 @@ chroot03 chroot03
+>  chroot04 chroot04
+> 
+>  clock_getres01 clock_getres01
+> +clock_nanosleep01 clock_nanosleep01
+>  clock_nanosleep2_01 clock_nanosleep2_01
+> 
+>  clone01 clone01
+> 
+> ---
+> Regards--
+> Manas
+> 
 
 
 ------------------------------------------------------------------------------
