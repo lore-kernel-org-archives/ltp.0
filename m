@@ -1,23 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MA1eR-0003IO-4G
-	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:57:35 +0000
-Received: from e34.co.us.ibm.com ([32.97.110.152])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MA1eN-0002FB-Fs
-	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:57:35 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1243268052.6752.22.camel@subratamodak.linux.ibm.com>
-References: <20090522150514.24856.31171.sendpatchset@subratamodak.linux.ibm.com>
-	<20090523.005535.226783230.caiqian@cclom.cn>
-	<1243268052.6752.22.camel@subratamodak.linux.ibm.com>
-Date: Fri, 29 May 2009 18:27:26 +0530
-Message-Id: <1243601846.5188.56.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] LTP Build fail on System z 64 bit machine
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <suzuki@in.ibm.com>) id 1MA3Nv-0002ug-7D
+	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 14:48:39 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MA3Nm-0003g8-BH
+	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 14:48:34 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e37.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4TDYNp5014852
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 07:34:23 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n4TDYw7L146120
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 07:34:58 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4TDYu3U023852
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 07:34:58 -0600
+Message-ID: <4A1FE470.6090400@in.ibm.com>
+Date: Fri, 29 May 2009 19:04:40 +0530
+From: Suzuki Poulose <suzuki@in.ibm.com>
+MIME-Version: 1.0
+References: <4A1EC3AC.2080901@in.ibm.com>
+	<1243601711.5188.40.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1243601711.5188.40.camel@subratamodak.linux.ibm.com>
+Content-Type: multipart/mixed; boundary="------------060305010606040302030401"
+Subject: Re: [LTP] [RFC] Patch getcpu01 testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,154 +38,154 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@cclom.cn>
-Cc: ltp-list@lists.sf.net, srinivass@in.ibm.com
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net, sharyath@in.ibm.com
 
-On Mon, 2009-05-25 at 21:44 +0530, Subrata Modak wrote: 
-> On Sat, 2009-05-23 at 00:55 +0800, CAI Qian wrote: 
-> > From: Subrata Modak <subrata@linux.vnet.ibm.com>
-> > Subject: Re: [LTP] [PATCH] LTP Build fail on System z 64 bit machine
-> > Date: Fri, 22 May 2009 20:35:14 +0530
-> > 
-> > > Hi,
-> > > 
-> > >>On Fri, 2009-05-22 at 09:02 -0400, Srinivasan Subramanian3 wrote:
-> > >>Hi all,
-> > >> 
-> > >> When i tried to build ltp on a RHEL4.8 machine, the build failed with undefined reference on splice02.
-> > >> 
-> > >> Machine info
-> > >> 
-> > >> RHEL4.8 GA (64 bit)
-> > >> 
-> > >> Kernel version- 2.6.9-89.EL
-> > >> 
-> > >> Error Info
-> > >> 
-> > >> /root/ltp-intermediate-20090521/testcases/kernel/syscalls/splice/splice02.c:126: undefined reference to `splice'
-> > >> collect2: ld returned 1 exit status
-> > >> make[4]: *** [splice02] Error 1
-> > >> make[4]: Leaving directory `/root/ltp-intermediate-20090521/testcases/kernel/syscalls/splice'
-> > >> make[3]: *** [all] Error 2
-> > >> make[3]: Leaving directory `/root/ltp-intermediate-20090521/testcases/kernel/syscalls'
-> > >> make[2]: *** [all] Error 2
-> > >> make[2]: Leaving directory `/root/ltp-intermediate-20090521/testcases/kernel'
-> > >> make[1]: *** [all] Error 2
-> > >> make[1]: Leaving directory `/root/ltp-intermediate-20090521/testcases'
-> > >> make: *** [all] Error 2
-> > >> 
-> > >> Kindly help me on this issue.
-> > > 
-> > > Hope the following patch solves your problem:
-> > > 
-> > > 1) Avoids build problem on your very old kernel,
-> > > 2) Will not run on on your old kernel but on kernel > 2.6.17,
-> > > 
-> > > Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>
-> > > ---
-> > > 
-> > > --- ltp-intermediate-20090521/testcases/kernel/syscalls/splice/splice02.c.orig	2009-05-22 18:33:41.000000000 +0530
-> > > +++ ltp-intermediate-20090521/testcases/kernel/syscalls/splice/splice02.c	2009-05-22 19:10:49.000000000 +0530
-> > > @@ -52,6 +52,15 @@ char *TCID = "splice02";  /* Test progra
-> > >  int  testno;
-> > >  int  TST_TOTAL = 1;                   /* total number of tests in this file.   */
-> > >  
-> > > +static inline long ltp_splice(int fd_in, loff_t *off_in,
-> > > +				int fd_out, loff_t *off_out,
-> > > +				size_t len, unsigned int flags)
-> > > +{
-> > > +			return syscall(__NR_splice, fd_in, off_in, fd_out,
-> > > +					off_out, len, flags);
-> > > +}
-> > > +
-> > 
-> > Well, we have so many those inconsistent situations when performing a syscall.
-> > 
-> > * use glibc version only.
-> > * use glibc version if possible. Otherwise syscall().
-> > * use syscall() directly.
-> > 
-> > Seiichi Ikarashi has posted a similar patch before, 
-> > 
-> > http://article.gmane.org/gmane.linux.ltp/8359
-> > 
-> > but have been pushed back to use an autoconf version,
-> > 
-> > http://article.gmane.org/gmane.linux.ltp/8360
-> > 
-> > With an autoconf, we can probably easier to manage policy -- like
-> > glibc() version first, and then syscall() if we don't really have
-> > another choice. In addition, it will work out well with kernels contain
-> > backport patches.
-> > 
+This is a multi-part message in MIME format.
+--------------060305010606040302030401
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Subrata,
+
+Good ! Then thats more suitable here :)
+
+Refreshed the patch with TCONF and a better error message.
+
+Thanks
+
+Suzuki
+Subrata Modak wrote:
+> On Thu, 2009-05-28 at 22:32 +0530, Suzuki Poulose wrote:
+>> Hi,
+>>
+>> The getcpu01 always exits with a non-zero exit code (indicating a 
+>> Failure as per UNIX semantics) on non-NUMA machines.
+>>
+>> This is due to the following code :
+>>
+>>             tst_resm(TWARN,
+>>                     "/sys not mounted or not a numa system. Assuming
+>> one 
+>> node: %s",
+>>                          strerror(errno));
+>>
+>>
+>> Being a non-NUMA machine is not a failure, but an info. So it should
+>> not 
+>> cause the test to have a non zero exit status.
 > 
-> True. I would wait if somebody is submitting some autoconf related
-> patch(s).
+> Correct,
 > 
-
-However i needed to push this for an immediate fix. Need to work on the
-autoconf part later.
-
-Regards--
-Subrata
-
+>> I have attached a patch which could do the same and provide a more 
+>> friendly o/p.
+>>
+>>
+>> Please apply.
+>>
+>> Thanks
+>> Suzuki
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>>
+>> plain text
+>> document
+>> attachment
+>> (fix-warning-getcpu01.diff)
+>>
+>>
+>> Index: ltp-20081031/testcases/kernel/syscalls/getcpu/getcpu01.c
+>> ===================================================================
+>> ---
+>> ltp-20081031.orig/testcases/kernel/syscalls/getcpu/getcpu01.c       2008-10-23 02:23:19.000000000 -0500
+>> +++
+>> ltp-20081031/testcases/kernel/syscalls/getcpu/getcpu01.c    2009-05-28
+>> 11:52:54.000000000 -0500
+>> @@ -47,6 +47,8 @@
+>>   * HISTORY
+>>   *     06/2008 written by Sharyathi Nagesh <sharyathi@in.ibm.com>
+>>   *
+>> + *     05/2009         Suzuki K P <suzuki@in.ibm.com>
+>> + *                     Friendly messages for non-NUMA machines.
+>>   * RESTRICTIONS
+>>   *     none
+>>   */
+>> @@ -234,8 +236,10 @@
+>>
+>>          directory_parent = opendir("/sys/devices/system/node");
+>>          if (!directory_parent)  {
+>> -                tst_resm(TWARN,
+>> -                   "/sys not mounted or not a numa system. Assuming
+>> one node: %s",
+>> +                tst_resm(TINFO,
+>> +                        "/sys not mounted or not a numa system.
+>> Assuming one node");
+>> +               tst_resm(TINFO,
+> 
+> Use TCONF instead of TINFO. That reflects that some system configuration
+> was missing, and, it will not return error value at all.
+> 
 > Regards--
 > Subrata
 > 
-> > > +
-> > >  /* Extern Global Functions */
-> > >  /******************************************************************************/
-> > >  /*                                                                            */
-> > > @@ -108,7 +117,15 @@ void setup() {
-> > >  
-> > >  int main(int ac, char **av) {
-> > >  	int fd = 0;
-> > > -	
-> > > +	int results = 0;
-> > > +
-> > > +	/* Disable test if the version of the kernel is less than 2.6.17 */
-> > > +	if (((results = tst_kvercmp(2, 6, 17)) < 0)) {
-> > > +		tst_resm(TINFO, "This test can only run on kernels that are ");
-> > > +		tst_resm(TINFO, "2.6.17 and higher");
-> > 
-> > TCONF?
-> > 
-> > CAI Qian
-> > 
-> > > +		exit(0);
-> > > +	}
-> > > +
-> > >          setup();
-> > >  
-> > >          if (ac < 2 ) {
-> > > @@ -123,7 +140,7 @@ int main(int ac, char **av) {
-> > >  	}
-> > >  			
-> > >          do {
-> > > -					TEST(splice(STDIN_FILENO, NULL, fd, NULL, SPLICE_SIZE, 0));
-> > > +		TEST(ltp_splice(STDIN_FILENO, NULL, fd, NULL, SPLICE_SIZE, 0));
-> > >  	    if (TEST_RETURN < 0) {
-> > >              	tst_resm(TFAIL, "splice failed - errno = %d : %s", TEST_ERRNO, strerror(TEST_ERRNO));
-> > >  	        cleanup();
-> > > 
-> > 
-> > 
+>> +                       "Reason /sys/devices/system/node :%s",
+>>                          strerror(errno));
+>>                         return 0; //By Default assume it to belong to
+>> node Zero 
+>>          } else {
+>>
 > 
-> 
-> ------------------------------------------------------------------------------
-> Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
-> is a gathering of tech-side developers & brand creativity professionals. Meet
-> the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-> iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
-> Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
+
+--------------060305010606040302030401
+Content-Type: text/plain;
+ name="fix-warning-getcpu01.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="fix-warning-getcpu01.diff"
+
+Index: ltp-20081031/testcases/kernel/syscalls/getcpu/getcpu01.c
+===================================================================
+--- ltp-20081031.orig/testcases/kernel/syscalls/getcpu/getcpu01.c	2008-10-23 02:23:19.000000000 -0500
++++ ltp-20081031/testcases/kernel/syscalls/getcpu/getcpu01.c	2009-05-29 08:33:01.000000000 -0500
+@@ -47,6 +47,9 @@
+  * HISTORY
+  *	06/2008 written by Sharyathi Nagesh <sharyathi@in.ibm.com>
+  *
++ *	05/2009 	Suzuki K P <suzuki@in.ibm.com>
++ *			Use TCONF instead of TWARN for non-NUMA machines
++ *	
+  * RESTRICTIONS
+  *	none
+  */
+@@ -234,8 +237,10 @@
+ 
+         directory_parent = opendir("/sys/devices/system/node");
+         if (!directory_parent)  {
+-                tst_resm(TWARN,
+-                   "/sys not mounted or not a numa system. Assuming one node: %s",
++                tst_resm(TCONF,
++                   "/sys not mounted or not a numa system. Assuming one node");
++		tst_resm(TCONF,
++			"Error opening: /sys/devices/system/node :%s",
+                         strerror(errno));
+                	return 0; //By Default assume it to belong to node Zero 
+         } else {
+
+--------------060305010606040302030401
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
@@ -182,7 +193,16 @@ is a gathering of tech-side developers & brand creativity professionals. Meet
 the minds behind Google Creative Lab, Visual Complexity, Processing, & 
 iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
 Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
+--------------060305010606040302030401
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------060305010606040302030401--
+
