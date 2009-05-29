@@ -1,37 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1M8iTI-0000NN-PR
-	for ltp-list@lists.sourceforge.net; Mon, 25 May 2009 22:16:40 +0000
-Received: from e38.co.us.ibm.com ([32.97.110.159])
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MA1cF-00038N-FU
+	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:55:19 +0000
+Received: from e34.co.us.ibm.com ([32.97.110.152])
 	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M8iSt-0004VQ-89
-	for ltp-list@lists.sourceforge.net; Mon, 25 May 2009 22:16:40 +0000
+	(Exim 4.69) id 1MA1cE-0007n8-Hc
+	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:55:19 +0000
 Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
 	[9.17.195.106])
-	by e38.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4PMDLrl031220
-	for <ltp-list@lists.sourceforge.net>; Mon, 25 May 2009 16:13:21 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by e34.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4TCqQRX017386
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 06:52:26 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
 	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4PMG9qS174416
-	for <ltp-list@lists.sourceforge.net>; Mon, 25 May 2009 16:16:09 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4PMG8Rm023829
-	for <ltp-list@lists.sourceforge.net>; Mon, 25 May 2009 16:16:09 -0600
-Date: Mon, 25 May 2009 17:16:09 -0500
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20090525221609.GA30283@us.ibm.com>
-References: <4A0D13F2.8030804@cn.fujitsu.com>
-	<20090515134519.GA21654@us.ibm.com>
-	<1242647979.5161.12.camel@subratamodak.linux.ibm.com>
-	<20090518150725.GA9790@us.ibm.com>
-	<4A163E59.7030002@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4A163E59.7030002@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] Synchronization between two processes
+	n4TCtHHV226630
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 06:55:17 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4TCtGIe018391
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 06:55:16 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4A1EC3AC.2080901@in.ibm.com>
+References: <4A1EC3AC.2080901@in.ibm.com>
+Date: Fri, 29 May 2009 18:25:10 +0530
+Message-Id: <1243601711.5188.40.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [RFC] Patch getcpu01 testcase
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -44,70 +40,104 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wei Yongjun <yjwei@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Suzuki Poulose <suzuki@in.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, sharyath@in.ibm.com
 
-Quoting Wei Yongjun (yjwei@cn.fujitsu.com):
-> Serge E. Hallyn wrote:
->> Quoting Subrata Modak (subrata@linux.vnet.ibm.com):
->>   
->>> On Fri, 2009-05-15 at 08:45 -0500, Serge E. Hallyn wrote:     
->>>> Quoting Gui Xiaohua (guixh@cn.fujitsu.com):
->>>>       
->>>>> The child-process wait SIGUSR1 which would be sended by parent-process,
->>>>> if the child-process execute sigtimedwait() after parent-process 
->>>>> send the signal, it would never receive the SIGUSR1 from 
->>>>> parent-process.
->>>>> I cann't make sure the SIGUSR1 be sended after child-process 
->>>>> execute sigtimedwait() with 100 percent, and i try my best.
->>>>>         
->>>> Well, in theory I suppose this could happen, but you'd have to have
->>>> a pretty bad scheduler if the parent can do a strcmp(buf, "c:go")
->>>> between the pipe read and signal send, while the child goes straight
->>>> from pipe write to sigtimedwait.
->>>>
->>>> Have you seen this signal be missed?  If not, then I'd rather assume
->>>> things are reasonable.  If you have seen this happen, then why not
->>>> instead set up a SIGUSR1 handler in the child before doing the pipe
->>>> write, then just sleep for 3 seconds instead of doing sigtimedwait?
->>>>       
->>> Thanks Serge.
->>>     
->>
->> Or, if I'm being unreasonable, then at least have the parent only wait
->> for at most 1 second, and leave the child alone.  Every every ltp test
->> is going to hang for 5 seconds...
->>
->> But I prefer setting the signal handler ahead of time.
->>
->>   
-> Sorry to relpy late.
->
-> As your last advice, i change the test case, and it work will.
->
-> [PATCH] fix sync problem between two processes of pidns12 test
->
-> The child-process wait SIGUSR1 which would be sended by parent-process,
-> if the child-process execute sigtimedwait() after parent-process send
-> the signal, it would never receive the SIGUSR1 from parent-process.
->
-> This patch rewrite child_signal_handler() to handle to SIGUSR1 and
-> instead sigtimedwait() with sleep for 3 seconds.
+On Thu, 2009-05-28 at 22:32 +0530, Suzuki Poulose wrote:
+> Hi,
+> 
+> The getcpu01 always exits with a non-zero exit code (indicating a 
+> Failure as per UNIX semantics) on non-NUMA machines.
+> 
+> This is due to the following code :
+> 
+>             tst_resm(TWARN,
+>                     "/sys not mounted or not a numa system. Assuming
+> one 
+> node: %s",
+>                          strerror(errno));
+> 
+> 
+> Being a non-NUMA machine is not a failure, but an info. So it should
+> not 
+> cause the test to have a non zero exit status.
 
-Thank you, this looks right.
+Correct,
 
-I assume the reason it wasn't originally done this way, was out of
-a concern that the TPASS/TFAIL out of signal handler wouldn't
-count...
+> 
+> I have attached a patch which could do the same and provide a more 
+> friendly o/p.
+> 
+> 
+> Please apply.
+> 
+> Thanks
+> Suzuki
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> plain text
+> document
+> attachment
+> (fix-warning-getcpu01.diff)
+> 
+> 
+> Index: ltp-20081031/testcases/kernel/syscalls/getcpu/getcpu01.c
+> ===================================================================
+> ---
+> ltp-20081031.orig/testcases/kernel/syscalls/getcpu/getcpu01.c       2008-10-23 02:23:19.000000000 -0500
+> +++
+> ltp-20081031/testcases/kernel/syscalls/getcpu/getcpu01.c    2009-05-28
+> 11:52:54.000000000 -0500
+> @@ -47,6 +47,8 @@
+>   * HISTORY
+>   *     06/2008 written by Sharyathi Nagesh <sharyathi@in.ibm.com>
+>   *
+> + *     05/2009         Suzuki K P <suzuki@in.ibm.com>
+> + *                     Friendly messages for non-NUMA machines.
+>   * RESTRICTIONS
+>   *     none
+>   */
+> @@ -234,8 +236,10 @@
+> 
+>          directory_parent = opendir("/sys/devices/system/node");
+>          if (!directory_parent)  {
+> -                tst_resm(TWARN,
+> -                   "/sys not mounted or not a numa system. Assuming
+> one node: %s",
+> +                tst_resm(TINFO,
+> +                        "/sys not mounted or not a numa system.
+> Assuming one node");
+> +               tst_resm(TINFO,
 
--serge
+Use TCONF instead of TINFO. That reflects that some system configuration
+was missing, and, it will not return error value at all.
+
+Regards--
+Subrata
+
+> +                       "Reason /sys/devices/system/node :%s",
+>                          strerror(errno));
+>                         return 0; //By Default assume it to belong to
+> node Zero 
+>          } else {
+> 
+
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
 is a gathering of tech-side developers & brand creativity professionals. Meet
 the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
-Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
+iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
+Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
