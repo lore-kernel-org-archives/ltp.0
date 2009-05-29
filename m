@@ -1,31 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <maknayak@in.ibm.com>) id 1M68r7-0001P2-IG
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 19:50:37 +0000
-Received: from e37.co.us.ibm.com ([32.97.110.158])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M68r3-0003hT-MS
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 19:50:37 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e37.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4IJBt76021057
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 13:11:55 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4IJCVTq206424
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 13:12:31 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4IJCUvj020736
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 13:12:30 -0600
-From: Manas Kumar Nayak <maknayak@in.ibm.com>
-Date: Tue, 19 May 2009 00:42:26 +0530
-Message-Id: <20090518191226.9777.98325.sendpatchset@subratamodak.linux.ibm.com>
-In-Reply-To: <20090518190905.9777.91288.sendpatchset@subratamodak.linux.ibm.com>
-References: <20090518190905.9777.91288.sendpatchset@subratamodak.linux.ibm.com>
-Subject: [LTP] [PATCH 20/21] Add tkill01 test for tkill syscall
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naresh.kernel@gmail.com>) id 1MA3rY-0001ok-Ub
+	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 15:19:16 +0000
+Received: from yx-out-1718.google.com ([74.125.44.153])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MA3rU-0003Kt-Sd
+	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 15:19:16 +0000
+Received: by yx-out-1718.google.com with SMTP id 6so2953946yxn.82
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 29 May 2009 08:19:11 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1243601702.5188.38.camel@subratamodak.linux.ibm.com>
+References: <f5a7b3810905280814gad8b6a4h9c161af8d58a739d@mail.gmail.com>
+	<1243601702.5188.38.camel@subratamodak.linux.ibm.com>
+Date: Fri, 29 May 2009 20:49:11 +0530
+Message-ID: <f5a7b3810905290819j2eff2629kfda4e11cd4766427@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Content-Type: multipart/mixed; boundary=001e680f0c803d6e8b046b0e991e
+Subject: Re: [LTP] open posix sigaction/10-1.c test fix
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,244 +29,337 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-Cc: Deepakraj B Himavantharaj <deepakraj@in.ibm.com>, Manas Kumar Nayak <maknayak@in.ibm.com>
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net, maxin john <maxinbjohn@gmail.com>
 
-Signed-off-by: Manas Kumar Nayak <maknayak@in.ibm.com>,
-To: LTP List <ltp-list@lists.sourceforge.net>,
-Cc: Deepakraj B Himavantharaj <deepakraj@in.ibm.com>,
-Cc: Subrata Modak <subrata@linux.vnet.ibm.com>,
-Cc: Masatake YAMATO <yamato@redhat.com>,
----
+--001e680f0c803d6e8b046b0e991e
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
---- ltp-intermediate-20090518-manas-work-original/testcases/kernel/syscalls/tkill/Makefile	1970-01-01 05:30:00.000000000 +0530
-+++ ltp-intermediate-20090518-manas-work/testcases/kernel/syscalls/tkill/Makefile	2009-05-18 23:45:45.000000000 +0530
-@@ -0,0 +1,31 @@
-+#
-+#  Copyright (c) International Business Machines  Corp., 2009
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+
-+CFLAGS += -I../../../../include -Wall
-+LDLIBS += -L../../../../lib -lltp
-+
-+SRCS    = $(wildcard *.c)
-+TARGETS = $(patsubst %.c,%,$(SRCS))
-+
-+all: $(TARGETS)
-+
-+install:
-+	@set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i ; done
-+
-+clean:
-+	rm -f $(TARGETS)
---- ltp-intermediate-20090518-manas-work-original/testcases/kernel/syscalls/tkill/tkill01.c	1970-01-01 05:30:00.000000000 +0530
-+++ ltp-intermediate-20090518-manas-work/testcases/kernel/syscalls/tkill/tkill01.c	2009-05-18 23:47:48.000000000 +0530
-@@ -0,0 +1,163 @@
-+/******************************************************************************/
-+/* Copyright (c) Crackerjack Project., 2007                                   */
-+/*                                                                            */
-+/* This program is free software;  you can redistribute it and/or modify      */
-+/* it under the terms of the GNU General Public License as published by       */
-+/* the Free Software Foundation; either version 2 of the License, or          */
-+/* (at your option) any later version.                                        */
-+/*                                                                            */
-+/* This program is distributed in the hope that it will be useful,            */
-+/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
-+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
-+/* the GNU General Public License for more details.                           */
-+/*                                                                            */
-+/* You should have received a copy of the GNU General Public License          */
-+/* along with this program;  if not, write to the Free Software               */
-+/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
-+/*                                                                            */
-+/******************************************************************************/
-+/******************************************************************************/
-+/*                                                                            */
-+/* File:        tkill01.c                                           */
-+/*                                                                            */
-+/* Description: This tests the tkill() syscall                      */
-+/*                                                                            */
-+/* Usage:  <for command-line>                                                 */
-+/* tkill01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                     */
-+/*      where,  -c n : Run n copies concurrently.                             */
-+/*              -e   : Turn on errno logging.                                 */
-+/*              -i n : Execute test n times.                                  */
-+/*              -I x : Execute test for x seconds.                            */
-+/*              -P x : Pause for x seconds between iterations.                */
-+/*              -t   : Turn on syscall timing.                                */
-+/*                                                                            */
-+/* Total Tests: 1                                                             */
-+/*                                                                            */
-+/* Test Name:   tkill01                                             */
-+/* History:     Porting from Crackerjack to LTP is done by                    */
-+/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
-+/******************************************************************************/
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <errno.h>
-+#include <unistd.h>
-+
-+#include <signal.h>
-+#include <sys/syscall.h>
-+#include <linux/unistd.h>
-+#include <sys/types.h>
-+
-+
-+/* Harness Specific Include Files. */
-+#include "test.h"
-+#include "usctest.h"
-+#include "linux_syscall_numbers.h"
-+
-+/* Extern Global Variables */
-+extern int Tst_count;           /* counter for tst_xxx routines.         */
-+extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
-+
-+/* Global Variables */
-+char *TCID = "tkill01";  /* Test program identifier.*/
-+int  testno;
-+int  TST_TOTAL = 2;                   /* total number of tests in this file.   */
-+
-+/* Extern Global Functions */
-+/******************************************************************************/
-+/*                                                                            */
-+/* Function:    cleanup                                                       */
-+/*                                                                            */
-+/* Description: Performs all one time clean up for this test on successful    */
-+/*              completion,  premature exit or  failure. Closes all temporary */
-+/*              files, removes all temporary directories exits the test with  */
-+/*              appropriate return code by calling tst_exit() function.       */
-+/*                                                                            */
-+/* Input:       None.                                                         */
-+/*                                                                            */
-+/* Output:      None.                                                         */
-+/*                                                                            */
-+/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
-+/*              On success - Exits calling tst_exit(). With '0' return code.  */
-+/*                                                                            */
-+/******************************************************************************/
-+extern void cleanup() {
-+        /* Remove tmp dir and all files in it */
-+        TEST_CLEANUP;
-+        tst_rmdir();
-+
-+        /* Exit with appropriate return code. */
-+        tst_exit();
-+}
-+
-+/* Local  Functions */
-+/******************************************************************************/
-+/*                                                                            */
-+/* Function:    setup                                                         */
-+/*                                                                            */
-+/* Description: Performs all one time setup for this test. This function is   */
-+/*              typically used to capture signals, create temporary dirs      */
-+/*              and temporary files that may be used in the course of this    */
-+/*              test.                                                         */
-+/*                                                                            */
-+/* Input:       None.                                                         */
-+/*                                                                            */
-+/* Output:      None.                                                         */
-+/*                                                                            */
-+/* Return:      On failure - Exits by calling cleanup().                      */
-+/*              On success - returns 0.                                       */
-+/*                                                                            */
-+/******************************************************************************/
-+void setup() {
-+        /* Capture signals if any */
-+        /* Create temporary directories */
-+        TEST_PAUSE;
-+        tst_tmpdir();
-+}
-+
-+int sig_count = 0;
-+
-+void sig_action(int sig)
-+{
-+        sig_count = 1;
-+}
-+
-+int main(int ac, char **av) {
-+        int tid;
-+        int lc;                 /* loop counter */
-+        char *msg;              /* message returned from parse_opts */
-+	
-+        /* parse standard options */
-+        if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
-+             tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
-+             tst_exit();
-+           }
-+
-+        setup();
-+
-+        /* Check looping state if -i option given */
-+        for (lc = 0; TEST_LOOPING(lc); ++lc) {
-+                Tst_count = 0;
-+                for (testno = 0; testno < TST_TOTAL; ++testno) {
-+                     TEST(signal(SIGUSR1, &sig_action));     
-+                     TEST(tid = syscall(224));     
-+		     if(TEST_RETURN == -1) {
-+                 	   tst_resm(TFAIL, "%s failed - errno = %d : %s", TCID, TEST_ERRNO, strerror(TEST_ERRNO));
-+			   cleanup();
-+			   tst_exit();
-+                     }
-+                     TEST(syscall(238,tid, SIGUSR1));     
-+		     if(TEST_RETURN == 0) {
-+				if(!sig_count);
-+        			tst_resm(TPASS, "tkill call succeeded");
-+		     }else{
-+                 	   tst_resm(TFAIL, "%s failed - errno = %d : %s", TCID, TEST_ERRNO, strerror(TEST_ERRNO));
-+                           cleanup();
-+			   tst_exit();
-+                     }
-+                }
-+        }	
-+	cleanup();
-+        tst_exit();
-+}
-+
---- ltp-intermediate-20090518-manas-work-original/runtest/syscalls	2009-05-18 23:42:14.000000000 +0530
-+++ ltp-intermediate-20090518-manas-work/runtest/syscalls	2009-05-18 23:49:54.000000000 +0530
-@@ -1161,6 +1161,8 @@ timerfd03 timerfd03
- timer_getoverrun01 timer_getoverrun01
- timer_gettime01 timer_gettime01
- 
-+tkill01 tkill01
-+
- truncate01 truncate01
- truncate01_64 truncate01_64
- truncate02 truncate02
+Hi Subrata,
 
----
-Regards--
-Manas
+Here i have attached patch file sigaction_10-1.patch.
+i am able to patch this by using the command
+as
+#pwd
+/home/naresh/ltp
+ltp#patch -p1<  /patch/sigaction_10-1.patch
+ltp#
 
+I come across with this kernel issue in 2.6.27
+http://lkml.org/lkml/2008/9/23/218
+http://lkml.org/lkml/2008/9/23/228
+http://lkml.org/lkml/2008/9/24/180
+http://lkml.org/lkml/2008/9/24/186
+http://lkml.org/lkml/2008/9/24/193
+http://lkml.org/lkml/2008/9/24/243
+http://lkml.org/lkml/2008/9/24/247
+
+
+Test cases modification noticed for
+ltp/testcases/open_posix_testsuite/conformance/interfaces/sigaction/10-1.c
+I have modified patch and submitting fix patch.
+This test case is passed now.
+
+Previous log:
+
+-bash-3.2# pwd
+/tmp/open_posix_testsuite/conformance/interfaces/sigaction
+-bash-3.2# ./10-1.test
+--> Sending SIGSTOP
+Child has been stopped
+--> Sending SIGCONT
+--> Sending SIGSTOP
+--> Sending SIGCONT
+--> Sending SIGSTOP
+--> Sending SIGCONT
+--> Sending SIGSTOP
+--> Sending SIGCONT
+--> Sending SIGSTOP
+--> Sending SIGCONT
+--> Sending SIGSTOP
+--> Sending SIGCONT
+--> Sending SIGSTOP
+--> Sending SIGCONT
+--> Sending SIGSTOP
+--> Sending SIGCONT
+--> Sending SIGSTOP
+--> Sending SIGCONT
+--> Sending SIGSTOP
+--> Sending SIGCONT
+Test FAILED
+-bash-3.2#
+
+
+Current log:
+-bash-3.2# pwd
+/tmp/open_posix_testsuite/conformance/interfaces/sigaction
+--> Sending SIGSTOP
+Child has been stopped
+--> Sending SIGCONT
+Child has been continued
+--> Sending SIGSTOP
+Child has been stopped
+--> Sending SIGCONT
+Child has been continued
+--> Sending SIGSTOP
+Child has been stopped
+--> Sending SIGCONT
+Child has been continued
+--> Sending SIGSTOP
+Child has been stopped
+--> Sending SIGCONT
+Child has been continued
+--> Sending SIGSTOP
+Child has been stopped
+--> Sending SIGCONT
+Child has been continued
+--> Sending SIGSTOP
+Child has been stopped
+--> Sending SIGCONT
+Child has been continued
+--> Sending SIGSTOP
+Child has been stopped
+--> Sending SIGCONT
+Child has been continued
+--> Sending SIGSTOP
+Child has been stopped
+--> Sending SIGCONT
+Child has been continued
+--> Sending SIGSTOP
+Child has been stopped
+--> Sending SIGCONT
+Child has been continued
+--> Sending SIGSTOP
+Child has been stopped
+--> Sending SIGCONT
+Child has been continued
+Test PASSED
+-bash-3.2#
+
+
+Original changes done by Oleg Nesterov and Joe Korty
+Modified by: Naresh Kamboju
+ < naresh.kernel@gmail.com >
+
+Signed-off-by: Naresh Kamboju
+< naresh.kernel@gmail.com >
+
+Regards
+Naresh
+
+On Fri, May 29, 2009 at 6:25 PM, Subrata Modak
+<subrata@linux.vnet.ibm.com> wrote:
+> On Thu, 2009-05-28 at 20:44 +0530, naresh kamboju wrote:
+>> Hi,
+>>
+>> Original changes done by Oleg Nesterov and Joe Korty
+>> Modified by: Naresh Kamboju < naresh.kernel@gmail.com >
+>>
+>> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+>
+> Sorry, this fails to apply on the latest CVS.
+>
+> patching file
+> testcases/open_posix_testsuite/conformance/interfaces/sigaction/10-1.c
+> Hunk #1 FAILED at 19.
+>
+> Please resend containing the same description.
+>
+> Regards--
+> Subrata
+>
+>>
+>> diff -Naurb ltp-full-20090430/testcases/open_posix_testsuite/conformance=
+/interfaces/sigaction/10-1.c
+>> ltp-full-20090430_mod/testcases/open_posix_testsuite/conformance/interfa=
+ces/sigaction/10-1.c
+>> --- ltp-full-20090430/testcases/open_posix_testsuite/conformance/interfa=
+ces/sigaction/10-1.c =A02005-06-03
+>> 22:04:51.000000000 +0530
+>> +++ ltp-full-20090430_mod/testcases/open_posix_testsuite/conformance/int=
+erfaces/sigaction/10-1.c =A0 =A0 =A02009-05-28
+>> 19:25:03.000000000 +0530
+>> @@ -19,19 +19,42 @@
+>> =A0#define NUMSTOPS 10
+>>
+>> =A0int child_stopped =3D 0;
+>> -int waiting =3D 1;
+>> +int child_continued =3D 0;
+>> +int notification;
+>>
+>> =A0void handler(int signo, siginfo_t *info, void *context)
+>> =A0{
+>> - =A0 =A0 if (info && info->si_code =3D=3D CLD_STOPPED) {
+>> + =A0 =A0 =A0 =A0 =A0 =A0 if (!info)
+>> + =A0 =A0 =A0 =A0 =A0 =A0 return;
+>> +
+>> +
+>> + =A0 =A0 =A0 =A0 =A0 =A0 notification =3D info->si_code;
+>> +
+>> + =A0 =A0 =A0 =A0 =A0 =A0 switch (notification) {
+>> + =A0 =A0 =A0 =A0 =A0 =A0 case CLD_STOPPED:
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 printf("Child has been stopped\n");
+>> - =A0 =A0 =A0 =A0 =A0 =A0 waiting =3D 0;
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 child_stopped++;
+>> + =A0 =A0 =A0 =A0 =A0 =A0 break;
+>> + =A0 =A0 =A0 =A0 =A0 =A0 case CLD_CONTINUED:
+>> + =A0 =A0 =A0 =A0 =A0 =A0 printf("Child has been continued\n");
+>> + =A0 =A0 =A0 =A0 =A0 =A0 child_continued++;
+>> + =A0 =A0 =A0 =A0 =A0 =A0 break;
+>> =A0 =A0 =A0 }
+>> =A0}
+>>
+>> +void wait_for_notification(int val)
+>> +{
+>> + struct timeval tv;
+>>
+>> -int main()
+>> + while (notification !=3D val) {
+>> + tv.tv_sec =3D 1;
+>> + tv.tv_usec =3D 0;
+>> + if (!select(0, NULL, NULL, NULL, &tv))
+>> + break;
+>> + }
+>> +}
+>> +
+>> +int main(void)
+>> =A0{
+>> =A0 =A0 =A0 pid_t pid;
+>> =A0 =A0 =A0 struct sigaction act;
+>> @@ -58,25 +81,25 @@
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 int i;
+>>
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 for (i =3D 0; i < NUMSTOPS; i++) {
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 waiting =3D 1;
+>> -
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 printf("--> Sending SIGSTOP\=
+n");
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 notification =3D 0;
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 kill(pid, SIGSTOP);
+>>
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /*
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Don't let the kernel opt=
+imize away queued
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SIGSTOP/SIGCONT signals.
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 */
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 while (waiting) {
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tv.tv_sec =3D =
+1;
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tv.tv_usec =3D=
+ 0;
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (!select(0,=
+ NULL, NULL, NULL, &tv))
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+>>
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 wait_for_notification(CLD_STOP=
+PED);
+>>
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 printf("--> Sending SIGCONT\=
+n");
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 notification =3D 0;
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 kill(pid, SIGCONT);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /*
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0SIGCHLD doesn't queue, make=
+ sure CLD_CONTINUED
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0doesn't mask the next CLD_S=
+TOPPED
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0*/
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0wait_for_notification(CLD_C=
+ONTINUED);
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+>>
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* POSIX specifies default action to be abno=
+rmal termination */
+>> @@ -84,7 +107,7 @@
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 waitpid(pid, &s, 0);
+>> =A0 =A0 =A0 }
+>>
+>> - =A0 =A0 if (child_stopped =3D=3D NUMSTOPS) {
+>> + =A0 =A0 if (child_stopped =3D=3D NUMSTOPS && child_continued =3D=3D NU=
+MSTOPS) {
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 printf("Test PASSED\n");
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 0;
+>> =A0 =A0 =A0 }
+>> @@ -92,4 +115,3 @@
+>> =A0 =A0 =A0 printf("Test FAILED\n");
+>> =A0 =A0 =A0 return -1;
+>> =A0}
+>> -
+>> Best regards,
+>> Naresh Kamboju
+>
+>
+
+--001e680f0c803d6e8b046b0e991e
+Content-Type: application/octet-stream; name="sigaction_10-1.patch"
+Content-Disposition: attachment; filename="sigaction_10-1.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fvb1fnbd0
+
+ZGlmZiAtTmF1cmIgbHRwLWEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1h
+bmNlL2ludGVyZmFjZXMvc2lnYWN0aW9uLzEwLTEuYyBsdHAtYi90ZXN0Y2FzZXMvb3Blbl9wb3Np
+eF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9zaWdhY3Rpb24vMTAtMS5jCi0tLSBs
+dHAtYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNl
+cy9zaWdhY3Rpb24vMTAtMS5jCTIwMDUtMDYtMDMgMjI6MDQ6NTEuMDAwMDAwMDAwICswNTMwCisr
+KyBsdHAtYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJm
+YWNlcy9zaWdhY3Rpb24vMTAtMS5jCTIwMDktMDUtMjkgMjA6MTE6MDguMDAwMDAwMDAwICswNTMw
+CkBAIC0xOSwxOSArMTksNDIgQEAKICNkZWZpbmUgTlVNU1RPUFMgMTAKIAogaW50IGNoaWxkX3N0
+b3BwZWQgPSAwOwotaW50IHdhaXRpbmcgPSAxOworaW50IGNoaWxkX2NvbnRpbnVlZCA9IDA7Citp
+bnQgbm90aWZpY2F0aW9uOwogCiB2b2lkIGhhbmRsZXIoaW50IHNpZ25vLCBzaWdpbmZvX3QgKmlu
+Zm8sIHZvaWQgKmNvbnRleHQpIAogewotCWlmIChpbmZvICYmIGluZm8tPnNpX2NvZGUgPT0gQ0xE
+X1NUT1BQRUQpIHsKKwkJaWYgKCFpbmZvKQorCQlyZXR1cm47CisKKwkJCisJCW5vdGlmaWNhdGlv
+biA9IGluZm8tPnNpX2NvZGU7CisKKwkJc3dpdGNoIChub3RpZmljYXRpb24pIHsKKwkJY2FzZSBD
+TERfU1RPUFBFRDoKIAkJcHJpbnRmKCJDaGlsZCBoYXMgYmVlbiBzdG9wcGVkXG4iKTsKLQkJd2Fp
+dGluZyA9IDA7CiAJCWNoaWxkX3N0b3BwZWQrKzsKKwkJYnJlYWs7CisJCWNhc2UgQ0xEX0NPTlRJ
+TlVFRDoKKwkJcHJpbnRmKCJDaGlsZCBoYXMgYmVlbiBjb250aW51ZWRcbiIpOworCQljaGlsZF9j
+b250aW51ZWQrKzsKKwkJYnJlYWs7CiAJfQogfQogCit2b2lkIHdhaXRfZm9yX25vdGlmaWNhdGlv
+bihpbnQgdmFsKQoreworIHN0cnVjdCB0aW1ldmFsIHR2OwogCi1pbnQgbWFpbigpCisgd2hpbGUg
+KG5vdGlmaWNhdGlvbiAhPSB2YWwpIHsKKyB0di50dl9zZWMgPSAxOworIHR2LnR2X3VzZWMgPSAw
+OworIGlmICghc2VsZWN0KDAsIE5VTEwsIE5VTEwsIE5VTEwsICZ0dikpCisgYnJlYWs7CisgfQor
+fQorCitpbnQgbWFpbih2b2lkKQogewogCXBpZF90IHBpZDsKIAlzdHJ1Y3Qgc2lnYWN0aW9uIGFj
+dDsKQEAgLTU4LDI1ICs4MSwyNSBAQAogCQlpbnQgaTsKIAogCQlmb3IgKGkgPSAwOyBpIDwgTlVN
+U1RPUFM7IGkrKykgewotCQkJd2FpdGluZyA9IDE7Ci0KIAkJCXByaW50ZigiLS0+IFNlbmRpbmcg
+U0lHU1RPUFxuIik7CisJCQlub3RpZmljYXRpb24gPSAwOwogCQkJa2lsbChwaWQsIFNJR1NUT1Ap
+OwogCiAJCQkvKgogCQkJICBEb24ndCBsZXQgdGhlIGtlcm5lbCBvcHRpbWl6ZSBhd2F5IHF1ZXVl
+ZAogCQkJICBTSUdTVE9QL1NJR0NPTlQgc2lnbmFscy4KIAkJCSovCi0JCQl3aGlsZSAod2FpdGlu
+ZykgewotCQkJCXR2LnR2X3NlYyA9IDE7Ci0JCQkJdHYudHZfdXNlYyA9IDA7Ci0JCQkJaWYgKCFz
+ZWxlY3QoMCwgTlVMTCwgTlVMTCwgTlVMTCwgJnR2KSkKLQkJCQkgIGJyZWFrOwotCQkJfQogCisJ
+CQl3YWl0X2Zvcl9ub3RpZmljYXRpb24oQ0xEX1NUT1BQRUQpOwogCiAJCQlwcmludGYoIi0tPiBT
+ZW5kaW5nIFNJR0NPTlRcbiIpOworCQkJbm90aWZpY2F0aW9uID0gMDsKIAkJCWtpbGwocGlkLCBT
+SUdDT05UKTsKKwkJCS8qCisJCQkgU0lHQ0hMRCBkb2Vzbid0IHF1ZXVlLCBtYWtlIHN1cmUgQ0xE
+X0NPTlRJTlVFRAorCQkJIGRvZXNuJ3QgbWFzayB0aGUgbmV4dCBDTERfU1RPUFBFRAorCQkJICov
+CisJCQkgd2FpdF9mb3Jfbm90aWZpY2F0aW9uKENMRF9DT05USU5VRUQpOwogCQl9CiAJCQogCQkv
+KiBQT1NJWCBzcGVjaWZpZXMgZGVmYXVsdCBhY3Rpb24gdG8gYmUgYWJub3JtYWwgdGVybWluYXRp
+b24gKi8KQEAgLTg0LDcgKzEwNyw3IEBACiAJCXdhaXRwaWQocGlkLCAmcywgMCk7CiAJfQogCi0J
+aWYgKGNoaWxkX3N0b3BwZWQgPT0gTlVNU1RPUFMpIHsKKwlpZiAoY2hpbGRfc3RvcHBlZCA9PSBO
+VU1TVE9QUyAmJiBjaGlsZF9jb250aW51ZWQgPT0gTlVNU1RPUFMpIHsKIAkJcHJpbnRmKCJUZXN0
+IFBBU1NFRFxuIik7CiAJCXJldHVybiAwOwogCX0KQEAgLTkyLDQgKzExNSwzIEBACiAJcHJpbnRm
+KCJUZXN0IEZBSUxFRFxuIik7CiAJcmV0dXJuIC0xOwogfQotCg==
+--001e680f0c803d6e8b046b0e991e
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables 
-unlimited royalty-free distribution of the report engine 
-for externally facing server and web deployment. 
-http://p.sf.net/sfu/businessobjects
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
+is a gathering of tech-side developers & brand creativity professionals. Meet
+the minds behind Google Creative Lab, Visual Complexity, Processing, & 
+iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
+Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
+--001e680f0c803d6e8b046b0e991e
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--001e680f0c803d6e8b046b0e991e--
+
