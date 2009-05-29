@@ -1,34 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MA1dq-0000jM-QU
-	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:56:58 +0000
-Received: from e37.co.us.ibm.com ([32.97.110.158])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MA1do-0001vr-Dw
-	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:56:58 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e37.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4TCuHxj007026
-	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 06:56:17 -0600
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4TCusf0240396
-	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 06:56:54 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4TCusfu023883
-	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 06:56:54 -0600
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MA1d5-0003DF-P3
+	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:56:11 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MA1d4-0007tM-PT
+	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:56:11 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e3.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4TCpYZ3022154
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 08:51:34 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n4TCuAUe255028
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 08:56:10 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4TCu9FS007749
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 08:56:10 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090527101031.18638.86395.sendpatchset@subratamodak.linux.ibm.com>
+In-Reply-To: <20090527100811.18638.52529.sendpatchset@subratamodak.linux.ibm.com>
 References: <20090527100645.18638.75163.sendpatchset@subratamodak.linux.ibm.com>
-	<20090527101031.18638.86395.sendpatchset@subratamodak.linux.ibm.com>
-Date: Fri, 29 May 2009 18:26:50 +0530
-Message-Id: <1243601811.5188.50.camel@subratamodak.linux.ibm.com>
+	<20090527100811.18638.52529.sendpatchset@subratamodak.linux.ibm.com>
+Date: Fri, 29 May 2009 18:26:05 +0530
+Message-Id: <1243601765.5188.45.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH 08/13] Add/Port mq_timedreceive01 test
-	for	mq_timedreceive() syscall
+Subject: Re: [LTP] [PATCH 03/13] Add/Port clock_getres01 test for
+	clock_getres()	syscall
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -45,56 +44,22 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Manas Kumar Nayak <maknayak@in.ibm.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-On Wed, 2009-05-27 at 15:40 +0530, Manas Kumar Nayak wrote: 
+On Wed, 2009-05-27 at 15:38 +0530, Manas Kumar Nayak wrote: 
 > Signed-off-by: Manas Kumar Nayak <maknayak@in.ibm.com>
-> To: LTP List <ltp-list@lists.sourceforge.net>
 
 Thanks.
 
 Regards--
 Subrata
 
+> To: LTP List <ltp-list@lists.sourceforge.net>
 > Cc: Subrata Modak <subrata@linux.vnet.ibm.com>
 > Cc: Masatake YAMATO <yamato@redhat.com>
 > ---
 > 
-> --- ltp-intermediate-20090521.orig/testcases/kernel/syscalls/mq_timedreceive/Makefile	1970-01-01 05:30:00.000000000 +0530
-> +++ ltp-intermediate-20090521/testcases/kernel/syscalls/mq_timedreceive/Makefile	2009-05-23 14:30:57.000000000 +0530
-> @@ -0,0 +1,31 @@
-> +#
-> +#  Copyright (c) International Business Machines  Corp., 2009
-> +#
-> +#  This program is free software;  you can redistribute it and/or modify
-> +#  it under the terms of the GNU General Public License as published by
-> +#  the Free Software Foundation; either version 2 of the License, or
-> +#  (at your option) any later version.
-> +#
-> +#  This program is distributed in the hope that it will be useful,
-> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> +#  the GNU General Public License for more details.
-> +#
-> +#  You should have received a copy of the GNU General Public License
-> +#  along with this program;  if not, write to the Free Software
-> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> +#
-> +
-> +CFLAGS += -I../../../../include -Wall -O2 -D_POSIX_C_SOURCE=$(shell getconf _POSIX_MESSAGE_PASSING)L
-> +LDLIBS += -L../../../../lib -lltp -lrt
-> +
-> +SRCS    = $(wildcard *.c)
-> +TARGETS = $(patsubst %.c,%,$(SRCS))
-> +
-> +all: $(TARGETS)
-> +
-> +install:
-> +	@set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i ; done
-> +
-> +clean:
-> +	rm -f $(TARGETS)
-> --- ltp-intermediate-20090521.orig/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c	1970-01-01 05:30:00.000000000 +0530
-> +++ ltp-intermediate-20090521/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c	2009-05-27 13:23:51.000000000 +0530
-> @@ -0,0 +1,548 @@
+> --- ltp-intermediate-20090521.orig/testcases/kernel/syscalls/clock_getres/clock_getres01.c	1970-01-01 05:30:00.000000000 +0530
+> +++ ltp-intermediate-20090521/testcases/kernel/syscalls/clock_getres/clock_getres01.c	2009-05-27 12:15:45.000000000 +0530
+> @@ -0,0 +1,344 @@
 > +/******************************************************************************/
 > +/* Copyright (c) Crackerjack Project., 2007-2008 ,Hitachi, Ltd                */
 > +/*          Author(s): Takahiro Yasui <takahiro.yasui.mp@hitachi.com>,	      */
@@ -118,9 +83,9 @@ Subrata
 > +/******************************************************************************/
 > +/******************************************************************************/
 > +/*                                                                            */
-> +/* File:        mq_timedreceive01.c                                           */
+> +/* File:        clock_getres01.c                                              */
 > +/*                                                                            */
-> +/* Description: This tests the mq_timedreceive() syscall                      */
+> +/* Description: This tests the clock_getres() syscall                         */
 > +/*									      */
 > +/* 									      */
 > +/*									      */
@@ -128,7 +93,7 @@ Subrata
 > +/*									      */
 > +/*                                                                            */
 > +/* Usage:  <for command-line>                                                 */
-> +/* mq_timedreceive01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                     */
+> +/* clock_getres01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                        */
 > +/*      where,  -c n : Run n copies concurrently.                             */
 > +/*              -e   : Turn on errno logging.                                 */
 > +/*              -i n : Execute test n times.                                  */
@@ -138,28 +103,21 @@ Subrata
 > +/*                                                                            */
 > +/* Total Tests: 1                                                             */
 > +/*                                                                            */
-> +/* Test Name:   mq_timedreceive01                                             */
+> +/* Test Name:   clock_getres01                                                */
 > +/* History:     Porting from Crackerjack to LTP is done by                    */
 > +/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
 > +/******************************************************************************/
 > +#include <sys/syscall.h>
 > +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <sys/wait.h>
 > +#include <getopt.h>
+> +#include <string.h>
 > +#include <stdlib.h>
 > +#include <errno.h>
 > +#include <stdio.h>
-> +#include <unistd.h>
-> +#include <string.h>
-> +#include <mqueue.h>
 > +#include <time.h>
-> +#include <signal.h>
-> +#include <limits.h>
 > +
 > +
 > +#include "../utils/include_j_h.h"
-> +#include "../utils/common_j_h.c"
 > +
 > +/* Harness Specific Include Files. */
 > +#include "test.h"
@@ -171,7 +129,7 @@ Subrata
 > +extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
 > +
 > +/* Global Variables */
-> +char *TCID = "mq_timedreceive01";  /* Test program identifier.*/
+> +char *TCID = "clock_getres01";  /* Test program identifier.*/
 > +int  testno;
 > +int  TST_TOTAL = 1;                   /* total number of tests in this file.   */
 > +
@@ -231,7 +189,7 @@ Subrata
 > +/*
 > + * Macros
 > + */
-> +#define SYSCALL_NAME    "mq_timedreceive"
+> +#define SYSCALL_NAME    "clock_getres"
 > +
 > +
 > +/*
@@ -241,13 +199,8 @@ Subrata
 > +static char *progname;
 > +
 > +enum test_type {
-> +	NORMAL,
-> +        FD_NONE,
-> +        FD_NOT_EXIST,
-> +        FD_FILE,
-> +        INVALID_MSG_LEN,
-> +        EMPTY_QUEUE,
-> +        SEND_SIGINT,
+> +		NORMAL,
+> +		NULL_POINTER,
 > +};
 > +
 > +
@@ -255,125 +208,57 @@ Subrata
 > + * Data Structure
 > + */
 > +struct test_case {
-> +	int ttype;
-> +        int non_block;
-> +        int len;
-> +        unsigned prio;
-> +        time_t sec;
-> +        long nsec;
+> +	clockid_t clk_id;
+> +        int ttype;
 > +        int ret;
 > +        int err;
 > +};
 > +
-> +#define MAX_MSG         10
-> +#define MAX_MSGSIZE     8192
 > +
 > +/* Test cases
-> + *
-> + *   test status of errors on man page
-> + *
-> + *   EAGAIN             v (would block)
-> + *   EBADF              v (not a valid descriptor)
-> + *   EINTR              v (interrupted by a signal)
-> + *   EINVAL             v (invalid timeout value)
-> + *   ETIMEDOUT          v (not block and timeout occured)
-> + *   EMSGSIZE           v ('msg_len' is less than the message size of the queue)
-> + *   EBADMSG            can't check because this error never occur
-> + */
+> +*
+> +*   test status of errors on man page
+> +*
+> +*   EPERM   can't check because clock_getres not requires permission
+> +*   EINVAL  v (not supported clk_id)
+> +*/
+> +
 > +static struct test_case tcase[] = {
 > +        { // case00
+> +                .clk_id         = CLOCK_REALTIME,
 > +                .ttype          = NORMAL,
-> +                .len            = 0,    // also success when size equals zero
 > +                .ret            = 0,
 > +                .err            = 0,
 > +        },
-> +	{ // case01
+> +        { // case01
+> +                .clk_id         = CLOCK_MONOTONIC,
 > +                .ttype          = NORMAL,
-> +                .len            = 1,
 > +                .ret            = 0,
 > +                .err            = 0,
 > +        },
 > +        { // case02
+> +                .clk_id         = CLOCK_PROCESS_CPUTIME_ID,
 > +                .ttype          = NORMAL,
-> +                .len            = MAX_MSGSIZE,
 > +                .ret            = 0,
 > +                .err            = 0,
 > +        },
 > +        { // case03
+> +                .clk_id         = CLOCK_THREAD_CPUTIME_ID,
 > +                .ttype          = NORMAL,
-> +                .len            = 1,
-> +                .prio           = 32767, // max priority
 > +                .ret            = 0,
 > +                .err            = 0,
 > +        },
-> +	{ // case04
-> +                .ttype          = INVALID_MSG_LEN,
-> +                .len            = 0,
+> +        { // case04
+> +                .clk_id         = -1,
+> +                .ttype          = NORMAL,
 > +                .ret            = -1,
-> +                .err            = EMSGSIZE,
+> +                .err            = EINVAL,
 > +        },
 > +        { // case05
-> +                .ttype          = FD_NONE,
-> +                .len            = 0,
-> +                .ret            = -1,
-> +                .err            = EBADF,
-> +        },
-> +        { // case06
-> +                .ttype          = FD_NOT_EXIST,
-> +                .len            = 0,
-> +                .ret            = -1,
-> +                .err            = EBADF,
-> +        },
-> +        { // case07
-> +                .ttype          = FD_FILE,
-> +                .len            = 0,
-> +                .ret            = -1,
-> +                .err            = EBADF,
-> +        },
-> +        { // case08
-> +                .ttype          = EMPTY_QUEUE,
-> +                .non_block      = 1,
-> +                .len            = 16,
-> +                .ret            = -1,
-> +                .err            = EAGAIN,
-> +        },
-> +        { // case09
-> +                .ttype          = EMPTY_QUEUE,
-> +                .len            = 16,
-> +                .sec            = -1,
-> +                .nsec           = 0,
-> +                .ret            = -1,
-> +                .err            = EINVAL,
-> +        },
-> +	{ // case10
-> +                .ttype          = EMPTY_QUEUE,
-> +                .len            = 16,
-> +                .sec            = 0,
-> +                .nsec           = -1,
-> +                .ret            = -1,
-> +                .err            = EINVAL,
-> +        },
-> +        { // case11
-> +                .ttype          = EMPTY_QUEUE,
-> +                .len            = 16,
-> +                .sec            = 0,
-> +                .nsec           = 1000000000,
-> +                .ret            = -1,
-> +                .err            = EINVAL,
-> +        },
-> +        { // case12
-> +                .ttype          = EMPTY_QUEUE,
-> +                .len            = 16,
-> +                .sec            = 0,
-> +                .nsec           = 999999999,
-> +                .ret            = -1,
-> +                .err            = ETIMEDOUT,
-> +        },
-> +        { // case13
-> +                .ttype          = SEND_SIGINT,
-> +                .len            = 16,
-> +                .ret            = -1,
-> +                .err            = EINTR,
+> +                .clk_id         = CLOCK_REALTIME,
+> +                .ttype          = NULL_POINTER,
+> +                .ret            = 0,
+> +                .err            = 0,
 > +        },
 > +};
 > +
@@ -394,151 +279,26 @@ Subrata
 > +        int sys_ret;
 > +        int sys_errno;
 > +        int result = RESULT_OK;
-> +	int oflag;
-> +        int i, rc, cmp_ok = 1, fd = -1;
-> +        char smsg[MAX_MSGSIZE], rmsg[MAX_MSGSIZE];
-> +        struct timespec ts, *p_ts;
-> +        pid_t pid = 0;
-> +        unsigned prio;
-> +        size_t msg_len;
-> +
-> +	/*
-> +         * When test ended with SIGTERM etc, mq discriptor is left remains.
-> +         * So we delete it first.
-> +         */
-> +        TEST(mq_unlink(QUEUE_NAME));
-> +
-> +switch (tc->ttype) {
-> +        case FD_NOT_EXIST:
-> +                fd = INT_MAX - 1;
-> +                /* fallthrough */
-> +        case FD_NONE:
-> +                break;
-> +        case FD_FILE:
-> +                TEST(fd = open("/", O_RDONLY));
-> +                if (TEST_RETURN < 0) {
-> +                 	tst_resm(TFAIL, "can't open \"/\". - errno = %d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
-> +                        result = 1;
-> +                        goto EXIT;
-> +                }
-> +                break;
-> +        default:
-> +                /*
-> +                 * Open message queue
-> +                 */
-> +                oflag = O_CREAT|O_EXCL|O_RDWR;
-> +                if (tc->non_block)
-> +                        oflag |= O_NONBLOCK;
-> +
-> +                TEST(fd = mq_open(QUEUE_NAME, oflag, S_IRWXU, NULL));
-> +                if (TEST_RETURN < 0) {
-> +                 	tst_resm(TFAIL, "mq_open failed - errno = %d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
-> +                        result = 1;
-> +                        goto EXIT;
-> +                }
-> +
-> +		 if (tc->ttype == SEND_SIGINT) {
-> +                        TEST(pid = create_sig_proc(200000, SIGINT));
-> +                        if (TEST_RETURN < 0) {
-> +                                result = 1;
-> +                                goto EXIT;
-> +                        }
-> +                }
-> +                break;
-> +           }
-> +
-> +	/*
-> +         * Prepare send message
-> +         */
-> +        for (i = 0; i < tc->len; i++)
-> +                smsg[i] = i;
-> +
-> +        /*
-> +         * Send message
-> +         */
-> +        switch (tc->ttype) {
-> +        case EMPTY_QUEUE:
-> +        case SEND_SIGINT:
-> +        case FD_NONE:
-> +        case FD_NOT_EXIST:
-> +        case FD_FILE:
-> +                break;
-> +        default:
-> +		TEST(rc = mq_timedsend(fd, smsg, tc->len, tc->prio, NULL));
-> +                if (TEST_RETURN < 0) {
-> +                 	tst_resm(TFAIL, "mq_timedsend failed - errno = %d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
-> +                        result = 1;
-> +                        goto EXIT;
-> +                }
-> +                break;
-> +        }
-> +
-> +        /*
-> +         * Set the message length and timeout value
-> +         */
-> +        msg_len = MAX_MSGSIZE;
-> +        if (tc->ttype == INVALID_MSG_LEN)
-> +                msg_len -= 1;
-> +        ts.tv_sec = tc->sec;
-> +        ts.tv_nsec = tc->nsec;
-> +        p_ts = &ts;
-> +        if (tc->sec == 0 && tc->nsec == 0)
-> +                p_ts = NULL;
+> +	struct timespec res;
 > +
 > +	/*
 > +         * Execute system call
 > +         */
 > +        errno = 0;
-> +        TEST(sys_ret = mq_timedreceive(fd, rmsg, msg_len, &prio, p_ts));
+> +        if (tc->ttype == NULL_POINTER)
+> +                TEST(sys_ret = clock_getres(tc->clk_id, NULL));
+> +        else
+> +                TEST(sys_ret = clock_getres(tc->clk_id, &res));
 > +        sys_errno = errno;
-> +        if (sys_ret < 0)
-> +                goto TEST_END;
-> + 
-> +	 /*
-> +         * Compare received message
-> +         */
-> +        if (sys_ret != tc->len || tc->prio != prio)
-> +                cmp_ok = 0;
-> +        else {
-> +                for (i = 0; i < tc->len; i++)
-> +                        if (rmsg[i] != smsg[i]) {
-> +                                cmp_ok = 0;
-> +                                break;
-> +                        }
-> +        }
 > +
-> +
-> +	TEST_END:
 > +        /*
 > +         * Check results
 > +         */
-> +        result |= (sys_errno != tc->err) || !cmp_ok;
-> +        PRINT_RESULT_CMP(0, tc->ret == 0 ? tc->len : tc->ret, tc->err,sys_ret, sys_errno, cmp_ok);
+> +        result |= (sys_errno != tc->err);
+> +        PRINT_RESULT(sys_ret >= 0, tc->ret, tc->err, sys_ret, sys_errno);
 > +
-> +EXIT:
-> +        if (fd >= 0) {
-> +                TEST(close(fd));
-> +                TEST(mq_unlink(QUEUE_NAME));
-> +        }
-> +        if (pid > 0) {
-> +                int st;
-> +                TEST(kill(pid, SIGTERM));
-> +                TEST(wait(&st));
-> +        }
 > +        return result;
 > +}
-> +
-> +/*
-> + * sighandler()
-> + */
-> +void sighandler(int sig)
-> +{
-> +        if (sig == SIGINT)
-> +                return;
-> +        // NOTREACHED
-> +        return;
-> +}
-> +
 > +
 > +
 > +/*
@@ -552,6 +312,7 @@ Subrata
 > +        tst_resm(TINFO,"options:");
 > +        tst_resm(TINFO,"    -d --debug           Show debug messages");
 > +        tst_resm(TINFO,"    -h --help            Show this message");
+> +
 > +        tst_resm(TINFO,"NG");
 > +        exit(1);
 > +}
@@ -626,12 +387,12 @@ Subrata
 > +         	*/
 > +        	switch(result) {
 > +	        case RESULT_OK:
-> +        			tst_resm(TPASS, "mq_timedreceive call succeeded");
+> +        			tst_resm(TPASS, "clock_getres call succeeded");
 > +		                break;
 > +
 > +	        default:
 > +                 	   	tst_resm(TFAIL, "%s failed - errno = %d : %s", TCID, TEST_ERRNO, strerror(TEST_ERRNO));
-> +        		        tst_resm(TINFO,"NG");
+> +        		        RPRINTF("NG\n");
 > +				cleanup();
 > +				tst_exit();
 > +		                break;
@@ -643,16 +404,50 @@ Subrata
 > +	tst_exit();
 > +}
 > +
-> --- ltp-intermediate-20090521.orig/runtest/syscalls	2009-05-27 13:28:26.000000000 +0530
-> +++ ltp-intermediate-20090521/runtest/syscalls	2009-05-27 13:27:56.000000000 +0530
-> @@ -587,6 +587,7 @@ mprotect03 mprotect03
+> --- ltp-intermediate-20090521.orig/testcases/kernel/syscalls/clock_getres/Makefile	1970-01-01 05:30:00.000000000 +0530
+> +++ ltp-intermediate-20090521/testcases/kernel/syscalls/clock_getres/Makefile	2009-05-22 23:43:27.000000000 +0530
+> @@ -0,0 +1,31 @@
+> +#
+> +#  Copyright (c) International Business Machines  Corp., 2009
+> +#
+> +#  This program is free software;  you can redistribute it and/or modify
+> +#  it under the terms of the GNU General Public License as published by
+> +#  the Free Software Foundation; either version 2 of the License, or
+> +#  (at your option) any later version.
+> +#
+> +#  This program is distributed in the hope that it will be useful,
+> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> +#  the GNU General Public License for more details.
+> +#
+> +#  You should have received a copy of the GNU General Public License
+> +#  along with this program;  if not, write to the Free Software
+> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> +#
+> +
+> +CFLAGS += -I../../../../include -Wall -O2
+> +LDLIBS += -L../../../../lib -lltp -lrt
+> +
+> +SRCS    = $(wildcard *.c)
+> +TARGETS = $(patsubst %.c,%,$(SRCS))
+> +
+> +all: $(TARGETS)
+> +
+> +install:
+> +	@set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i ; done
+> +
+> +clean:
+> +	rm -f $(TARGETS)
+> --- ltp-intermediate-20090521.orig/runtest/syscalls	2009-05-27 12:11:54.000000000 +0530
+> +++ ltp-intermediate-20090521/runtest/syscalls	2009-05-27 12:18:36.000000000 +0530
+> @@ -74,6 +74,7 @@ chroot02 chroot02
+>  chroot03 chroot03
+>  chroot04 chroot04
 > 
->  mq_notify01 mq_notify01
->  mq_open01 mq_open01
-> +mq_timedreceive01 mq_timedreceive01
+> +clock_getres01 clock_getres01
+>  clock_nanosleep2_01 clock_nanosleep2_01
 > 
->  mremap01 mremap01
->  mremap02 mremap02
+>  clone01 clone01
 > 
 > ---
 > Regards--
