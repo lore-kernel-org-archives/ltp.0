@@ -1,29 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <maknayak@in.ibm.com>) id 1M68cb-0004Yb-9L
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 19:35:37 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M68cS-0000lm-Bq
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2009 19:35:37 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e2.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4IJ58Wg009517
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 15:05:08 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4IJ9Axu197212
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 15:09:10 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4IJ79XI028530
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2009 15:07:09 -0400
-From: Manas Kumar Nayak <maknayak@in.ibm.com>
-Date: Tue, 19 May 2009 00:39:05 +0530
-Message-Id: <20090518190905.9777.91288.sendpatchset@subratamodak.linux.ibm.com>
-Subject: [LTP] [PATCH 00/21][1st Bunch] Port Crackerjack Syscall
-	tests(missing) to LTP
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MA1c7-0003Nh-P5
+	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:55:11 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MA1c6-0007mJ-20
+	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:55:11 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e1.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4TCp28q023026
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 08:51:02 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n4TCt9sF254622
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 08:55:09 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4TCt80s009727
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 08:55:08 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <f5a7b3810905280814gad8b6a4h9c161af8d58a739d@mail.gmail.com>
+References: <f5a7b3810905280814gad8b6a4h9c161af8d58a739d@mail.gmail.com>
+Date: Fri, 29 May 2009 18:25:02 +0530
+Message-Id: <1243601702.5188.38.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] open posix sigaction/10-1.c test fix
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,53 +36,235 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-Cc: Deepakraj B Himavantharaj <deepakraj@in.ibm.com>, Manas Kumar Nayak <maknayak@in.ibm.com>
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, maxin john <maxinbjohn@gmail.com>
 
-Hi,
+On Thu, 2009-05-28 at 20:44 +0530, naresh kamboju wrote: 
+> Hi,
+> 
+> I come across with this kernel issue in 2.6.27
+> http://lkml.org/lkml/2008/9/23/218
+> http://lkml.org/lkml/2008/9/23/228
+> http://lkml.org/lkml/2008/9/24/180
+> http://lkml.org/lkml/2008/9/24/186
+> http://lkml.org/lkml/2008/9/24/193
+> http://lkml.org/lkml/2008/9/24/243
+> http://lkml.org/lkml/2008/9/24/247
+> 
+> 
+> Test cases modification noticed for
+> ltp/testcases/open_posix_testsuite/conformance/interfaces/sigaction/10-1.c
+> I have modified patch and submitting fix patch.
+> This test case is passed now.
+> 
+> Previous results log:
+> 
+> -bash-3.2# pwd
+> /tmp/open_posix_testsuite/conformance/interfaces/sigaction
+> -bash-3.2# ./10-1.test
+> --> Sending SIGSTOP
+> Child has been stopped
+> --> Sending SIGCONT
+> --> Sending SIGSTOP
+> --> Sending SIGCONT
+> --> Sending SIGSTOP
+> --> Sending SIGCONT
+> --> Sending SIGSTOP
+> --> Sending SIGCONT
+> --> Sending SIGSTOP
+> --> Sending SIGCONT
+> --> Sending SIGSTOP
+> --> Sending SIGCONT
+> --> Sending SIGSTOP
+> --> Sending SIGCONT
+> --> Sending SIGSTOP
+> --> Sending SIGCONT
+> --> Sending SIGSTOP
+> --> Sending SIGCONT
+> --> Sending SIGSTOP
+> --> Sending SIGCONT
+> Test FAILED
+> -bash-3.2#
+> 
+> 
+> Current results log:
+> -bash-3.2# pwd
+> /tmp/open_posix_testsuite/conformance/interfaces/sigaction
+> --> Sending SIGSTOP
+> Child has been stopped
+> --> Sending SIGCONT
+> Child has been continued
+> --> Sending SIGSTOP
+> Child has been stopped
+> --> Sending SIGCONT
+> Child has been continued
+> --> Sending SIGSTOP
+> Child has been stopped
+> --> Sending SIGCONT
+> Child has been continued
+> --> Sending SIGSTOP
+> Child has been stopped
+> --> Sending SIGCONT
+> Child has been continued
+> --> Sending SIGSTOP
+> Child has been stopped
+> --> Sending SIGCONT
+> Child has been continued
+> --> Sending SIGSTOP
+> Child has been stopped
+> --> Sending SIGCONT
+> Child has been continued
+> --> Sending SIGSTOP
+> Child has been stopped
+> --> Sending SIGCONT
+> Child has been continued
+> --> Sending SIGSTOP
+> Child has been stopped
+> --> Sending SIGCONT
+> Child has been continued
+> --> Sending SIGSTOP
+> Child has been stopped
+> --> Sending SIGCONT
+> Child has been continued
+> --> Sending SIGSTOP
+> Child has been stopped
+> --> Sending SIGCONT
+> Child has been continued
+> Test PASSED
+> -bash-3.2#
+> 
+> 
+> Original changes done by Oleg Nesterov and Joe Korty
+> Modified by: Naresh Kamboju < naresh.kernel@gmail.com >
+> 
+> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
 
-I have ported the following tests from Crackerjack to LTP.
-Kindly include them to LTP:
+Sorry, this fails to apply on the latest CVS.
 
-[PATCH 01/21] Add add_key01 test for add_key syscall
-[PATCH 02/21] Add add_key02 test for add_key syscall
-[PATCH 03/21] Add bdflush01 test for bdflush syscall
-[PATCH 04/21] Add exit_group01 test for exit_group syscall
-[PATCH 05/21] Add keyctl01 test for keyctl syscall
-[PATCH 06/21] Add newuname01 test for newuname syscall
-[PATCH 07/21] Add rt_sigaction01 test for rt_sigaction syscall
-[PATCH 08/21] Add rt_sigprocmask01 test for rt_sigprocmask syscall
-[PATCH 09/21] Add rt_sigprocmask02 test for rt_sigprocmask syscall
-[PATCH 10/21] Add rt_sigqueueinfo01 test for rt_sigqueueinfo syscall
-[PATCH 11/21] Add rt_sigsuspend01 test for rt_sigsuspend syscall
-[PATCH 12/21] Add set_thread_area01 test for set_thread_area syscall
-[PATCH 13/21] Add set_thread_area02 test for set_thread_area syscall
-[PATCH 14/21] Add set_tid_address01 test for set_tid_address syscall
-[PATCH 15/21] Add sgetmask01 test for sgetmask syscall
-[PATCH 16/21] Add sigreturn01 test for sigreturn syscall
-[PATCH 17/21] Add ssetmask01 test for ssetmask syscall
-[PATCH 18/21] Add timer_getoverrun01 test for timer_getoverrun01 syscall
-[PATCH 19/21] Add timer_gettime01 test for timer_gettime syscall
-[PATCH 20/21] Add tkill01 test for tkill syscall
-[PATCH 21/21] Add tkill02 test for tkill syscall
+patching file
+testcases/open_posix_testsuite/conformance/interfaces/sigaction/10-1.c
+Hunk #1 FAILED at 19.
 
-Todo:
-	1) Port the Remaining ones (next week),
+Please resend containing the same description.
 
 Regards--
-Manas
+Subrata
+
+> 
+> diff -Naurb ltp-full-20090430/testcases/open_posix_testsuite/conformance/interfaces/sigaction/10-1.c
+> ltp-full-20090430_mod/testcases/open_posix_testsuite/conformance/interfaces/sigaction/10-1.c
+> --- ltp-full-20090430/testcases/open_posix_testsuite/conformance/interfaces/sigaction/10-1.c	2005-06-03
+> 22:04:51.000000000 +0530
+> +++ ltp-full-20090430_mod/testcases/open_posix_testsuite/conformance/interfaces/sigaction/10-1.c	2009-05-28
+> 19:25:03.000000000 +0530
+> @@ -19,19 +19,42 @@
+>  #define NUMSTOPS 10
+> 
+>  int child_stopped = 0;
+> -int waiting = 1;
+> +int child_continued = 0;
+> +int notification;
+> 
+>  void handler(int signo, siginfo_t *info, void *context)
+>  {
+> -	if (info && info->si_code == CLD_STOPPED) {
+> +		if (!info)
+> +		return;
+> +
+> +		
+> +		notification = info->si_code;
+> +
+> +		switch (notification) {
+> +		case CLD_STOPPED:
+>  		printf("Child has been stopped\n");
+> -		waiting = 0;
+>  		child_stopped++;
+> +		break;
+> +		case CLD_CONTINUED:
+> +		printf("Child has been continued\n");
+> +		child_continued++;
+> +		break;
+>  	}
+>  }
+> 
+> +void wait_for_notification(int val)
+> +{
+> + struct timeval tv;
+> 
+> -int main()
+> + while (notification != val) {
+> + tv.tv_sec = 1;
+> + tv.tv_usec = 0;
+> + if (!select(0, NULL, NULL, NULL, &tv))
+> + break;
+> + }
+> +}
+> +
+> +int main(void)
+>  {
+>  	pid_t pid;
+>  	struct sigaction act;
+> @@ -58,25 +81,25 @@
+>  		int i;
+> 
+>  		for (i = 0; i < NUMSTOPS; i++) {
+> -			waiting = 1;
+> -
+>  			printf("--> Sending SIGSTOP\n");
+> +			notification = 0;
+>  			kill(pid, SIGSTOP);
+> 
+>  			/*
+>  			  Don't let the kernel optimize away queued
+>  			  SIGSTOP/SIGCONT signals.
+>  			*/
+> -			while (waiting) {
+> -				tv.tv_sec = 1;
+> -				tv.tv_usec = 0;
+> -				if (!select(0, NULL, NULL, NULL, &tv))
+> -				  break;
+> -			}
+> 
+> +			wait_for_notification(CLD_STOPPED);
+> 
+>  			printf("--> Sending SIGCONT\n");
+> +			notification = 0;
+>  			kill(pid, SIGCONT);
+> +			/*
+> +			 SIGCHLD doesn't queue, make sure CLD_CONTINUED
+> +			 doesn't mask the next CLD_STOPPED
+> +			 */
+> +			 wait_for_notification(CLD_CONTINUED);
+>  		}
+>  		
+>  		/* POSIX specifies default action to be abnormal termination */
+> @@ -84,7 +107,7 @@
+>  		waitpid(pid, &s, 0);
+>  	}
+> 
+> -	if (child_stopped == NUMSTOPS) {
+> +	if (child_stopped == NUMSTOPS && child_continued == NUMSTOPS) {
+>  		printf("Test PASSED\n");
+>  		return 0;
+>  	}
+> @@ -92,4 +115,3 @@
+>  	printf("Test FAILED\n");
+>  	return -1;
+>  }
+> -
+> Best regards,
+> Naresh Kamboju
 
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables 
-unlimited royalty-free distribution of the report engine 
-for externally facing server and web deployment. 
-http://p.sf.net/sfu/businessobjects
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
+is a gathering of tech-side developers & brand creativity professionals. Meet
+the minds behind Google Creative Lab, Visual Complexity, Processing, & 
+iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
+Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
