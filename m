@@ -1,32 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M6Mdg-0005RE-Jd
-	for ltp-list@lists.sourceforge.net; Tue, 19 May 2009 10:33:40 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M6Mdb-0002xY-EO
-	for ltp-list@lists.sourceforge.net; Tue, 19 May 2009 10:33:40 +0000
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MA1eU-0007hK-R5
+	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:57:38 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MA1eH-0002Es-EJ
+	for ltp-list@lists.sourceforge.net; Fri, 29 May 2009 12:57:33 +0000
 Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
 	[9.17.195.106])
-	by e39.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4JATqOU008492
-	for <ltp-list@lists.sourceforge.net>; Tue, 19 May 2009 04:29:52 -0600
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by e37.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4TCulVW008097
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 06:56:47 -0600
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
 	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4JAWIc1211022
-	for <ltp-list@lists.sourceforge.net>; Tue, 19 May 2009 04:32:18 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4JAWHAO011030
-	for <ltp-list@lists.sourceforge.net>; Tue, 19 May 2009 04:32:18 -0600
+	n4TCvOrO214374
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 06:57:24 -0600
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4TCvOPW022905
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 May 2009 06:57:24 -0600
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090518.191243.15248034.caiqian@cclom.cn>
-References: <20090518.191243.15248034.caiqian@cclom.cn>
-Date: Tue, 19 May 2009 16:02:14 +0530
-Message-Id: <1242729134.5961.47.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <20090527101256.18638.91923.sendpatchset@subratamodak.linux.ibm.com>
+References: <20090527100645.18638.75163.sendpatchset@subratamodak.linux.ibm.com>
+	<20090527101256.18638.91923.sendpatchset@subratamodak.linux.ibm.com>
+Date: Fri, 29 May 2009 18:27:20 +0530
+Message-Id: <1243601841.5188.55.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] Fw:  Regarding ht_enable test case failure
+Subject: Re: [LTP] [PATCH 13/13] Add/Port unshare02 test for unshare()
+	syscall
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -40,335 +42,231 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rohit verma <rohit.170309@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Manas Kumar Nayak <maknayak@in.ibm.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Well,
+On Wed, 2009-05-27 at 15:43 +0530, Manas Kumar Nayak wrote: 
+> Signed-off-by: Manas Kumar Nayak <maknayak@in.ibm.com>
 
-Here are the results pot patching:
-
-ht_enable    0  INFO  :  Begin: HyperThreading Enabled
-ht_enable    0  INFO  :  The kernel boot paramter 'noht' is not set.
-ht_enable    1  FAIL  :  HT feature is not included in this Linux
-Kernel.
-ht_enable    0  INFO  :  End: HyperThreading Enabled
-
-ht_affinity    0  INFO  :  Begin: HyperThreading Affinity
-ht_affinity    1  CONF  :  HT is not enabled or not supported.
-ht_affinity    2  CONF  :  Remaining cases not appropriate for
-configuration
-ht_affinity    3  CONF  :  Remaining cases not appropriate for
-configuration
-ht_affinity    0  INFO  :  End: HyperThreading Affinity
-
-ht_interrupt    0  INFO  :  Begin: HyperThreading Interrupt
-ht_interrupt    1  CONF  :  HT is not enabled or not supported.
-ht_interrupt    0  INFO  :  End: HyperThreading Interrupt
-
-# cat /sys/devices/system/cpu/cpu0/topology/thread_siblings
-00000003
-# cat /sys/devices/system/cpu/cpu1/topology/thread_siblings
-00000003
-
-# uname -a
-Linux 2.6.27.19-5-default #1 SMP 2009-02-28 04:40:21 +0100 i686 i686
-i386 GNU/Linux
-# cat /etc/issue
-Welcome to SUSE Linux Enterprise Server 11 (i586) - Kernel \r (\l).
+Thanks.
 
 Regards--
 Subrata
 
-On Mon, 2009-05-18 at 19:12 +0800, CAI Qian wrote: 
-> Forwarding the patch from Rohit, so someone has an i386 system with HT
-> capable processors may try it out.
+> To: LTP List <ltp-list@lists.sourceforge.net>
+> Cc: Subrata Modak <subrata@linux.vnet.ibm.com>
+> Cc: Masatake YAMATO <yamato@redhat.com>
+> ---
 > 
-> CAI Qian
-> email message attachment
-> > -------- Forwarded Message --------
-> > From: rohit verma <rohit.170309@gmail.com>
-> > To: CAI Qian <caiqian@cclom.cn>
-> > Subject: Re: [LTP] Regarding ht_enable test case failure
-> > Date: Fri, 15 May 2009 18:25:35 +0530
-> > 
-> >  Hi, 
-> >   
-> > As written in the previous mail , I have modify some code. 
-> >   
-> > PFA the patch for HT_affinity.Test is Passed in my system. 
-> >   
-> > Kindly confirm that whether it is working fine on your system also. 
-> >   
-> >   
-> > Regards, 
-> > Rohit
-> > 
-> > 
-> > On Fri, May 15, 2009 at 5:20 PM, rohit verma
-> > <rohit.170309@gmail.com> wrote: 
-> >         Dear CAI Qian, 
-> >           
-> >         I am also trying to update HT_affinity also. 
-> >           
-> >         Issues: 
-> >           
-> >         function: HT_GetAffinity() 
-> >           
-> >         Line: mask1=get_porc_affinity(pid); 
-> >           
-> >         function, get_porc_affinity() returns error ; No such file
-> >         or directory. 
-> >           
-> >         This is due the that this file eg. /proc/<pid>/affinity is
-> >         not present in my system FC10. 
-> >           
-> >         Is it removed/changed?. 
-> >           
-> >         Can you pls confirm that. 
-> >           
-> >         If it is removed/changed then we can simply compare the
-> >         values of mask and mask2 or modify the the path. 
-> >           
-> >         Test is passed on my system after removing the same 
-> >           
-> >         One more thing, system call sched_getaffinity returns 4. 
-> >           
-> >         It should return 0 or -1. 
-> >           
-> >         Is it bug in the kernel?. 
-> >           
-> >         Thanks and Regards, 
-> >         Rohit 
-> >         
-> >         
-> >           
-> >         On Wed, May 13, 2009 at 9:17 PM, CAI Qian <caiqian@cclom.cn>
-> >         wrote: 
-> >                 From: rohit verma <rohit.170309@gmail.com>
-> >                 
-> >                 Subject: Re: [LTP] Regarding ht_enable test case
-> >                 failure 
-> >                 Date: Wed, 13 May 2009 15:03:39 +0530
-> >                 
-> >                 
-> >                 > Hi,
-> >                 >
-> >                 > I want to update HT_enable test case in LTP.
-> >                 >
-> >                 > *HT_enabled:*Test for whether HT enabling is the
-> >                 default setting and the
-> >                 > kernel option works as expected.
-> >                 >
-> >                 > *Issue:* Reported as failed in my System.
-> >                 However /proc/cpuinfo shows two
-> >                 > cpu and ht flag.
-> >                 >
-> >                 
-> >                 
-> >                 If HT has been disabled in BIOS, you can still see
-> >                 the ht flag in
-> >                 /proc/cpuinfo, so it is not enough to just look at
-> >                 it there. We have
-> >                 looked at this before, and looks like the proper
-> >                 place to see if HT or
-> >                 more generic term -- symmetrical multithreading
-> >                 (SMT) is sysfs (at least
-> >                 for RHEL 5 kernels). There is a CPU topology
-> >                 information,
-> >                 
-> >                 /sys/devices/system/cpu/cpuX/topology/thread_siblings
-> >                 
-> >                 It looks like this,
-> >                 
-> >                 00000001
-> >                 
-> >                 00000002
-> >                 
-> >                 00000008
-> >                 
-> >                 In all those case, It means there is no HT or SMT.
-> >                 
-> >                 If you see something like this,
-> >                 
-> >                 00000003
-> >                 
-> >                 This one mean CPU0 and CPU1 are two threads in the
-> >                 same CPU core. This
-> >                 is because the nth CPU id is,
-> >                 
-> >                 2 raised to n.
-> >                 
-> >                 3 = CPU0 (1) + CPU1 (2)
-> >                 
-> >                 There is also a tool to find out this information.
-> >                 
-> >                 lscpu from the latest utils-linux-ng package,
-> >                 http://koji.fedoraproject.org/koji/packageinfo?packageID=4906 
-> >                 
-> >                 > Can you pls tell me how to enable/disable
-> >                 hyperthreading in linux kernel. I
-> >                 > could not found proper document for the same.
-> >                 >
-> >                 
-> >                 
-> >                 I am not sure if "noht" is still working. At least
-> >                 it has no effect in
-> >                 RHEL5 kernel. Instead, it was suggested to use the
-> >                 following commands to
-> >                 enable/disable it,
-> >                 
-> >                 From a public bug in Red Hat Bugzilla,
-> >                 https://bugzilla.redhat.com/show_bug.cgi?id=440321
-> >                 
-> >                 "RHEL5 ships with CPU_HOTPLUG enabled.  This option
-> >                 allows a user to
-> >                 disable and enable HW or HT cores.
-> >                 
-> >                 For example,
-> >                 
-> >                 I have a 4 cpu system with two HT processors.
-> >                 
-> >                 To disable the HT processors one can do:
-> >                 
-> >                 echo 0 > /sys/devices/system/node/node0/cpu1/online
-> >                 echo 0 > /sys/devices/system/node/node0/cpu3/online
-> >                 
-> >                 You could write a system service script that does
-> >                 something similar to
-> >                 (please note that this code is untested and is just
-> >                 a suggestion):
-> >                 
-> >                 grep noht /proc/cmdline
-> >                 
-> >                 if [ $? -eq 0 ]; then
-> >                     # noht specified on the command line, disabling
-> >                 HT cpus
-> >                     echo 0
-> >                 > /sys/devices/system/node/node0/cpu1/online
-> >                     echo 0
-> >                 > /sys/devices/system/node/node0/cpu3/online
-> >                 fi 
-> >                 "
-> >                 
-> >                 > I also found that the check for kernel option
-> >                 "noht" is useless by looking
-> >                 > into code(HT_enabled.c).
-> >                 >
-> >                 > I think, we can remove that.
-> >                 
-> >                 
-> >                 I guess we can remove it if it is proved to be a
-> >                 dead option.
-> >                 
-> >                 CAI Qian 
-> >                 
-> >                 
-> >                 >
-> >                 > Regards,
-> >                 >
-> >                 > Rohit
-> >                 >
-> >                 > On Sat, Apr 11, 2009 at 2:25 PM, CAI Qian
-> >                 <caiqian@cclom.cn> wrote:
-> >                 >>
-> >                 >> Hi,
-> >                 >>
-> >                 >> --- On Mon, 3/30/09, rohit verma
-> >                 <rohit.170309@gmail.com> wrote:
-> >                 >>
-> >                 >>> From: rohit verma <rohit.170309@gmail.com>
-> >                 >>> Subject: [LTP] Regarding ht_enable test case
-> >                 failure
-> >                 >>> To: ltp-list@lists.sourceforge.net
-> >                 >>> Date: Monday, March 30, 2009, 9:10 PM
-> >                 >>> O/P:
-> >                 >>>
-> >                 >>>
-> >                 >>> ht_enable    0  INFO  :
-> >                 >>> Begin: HyperThreading Enabled
-> >                 >>> ht_enable    0  INFO  :  The kernel boot
-> >                 paramter
-> >                 >>> 'noht' is not set.
-> >                 >>>
-> >                 >>> ht_enable    1  FAIL  :  HT feature is not
-> >                 included
-> >                 >>> in this Linux Kernel.
-> >                 >>> ht_enable    0  INFO  :  End: HyperThreading
-> >                 Enabled
-> >                 >>>
-> >                 >>>
-> >                 >>>
-> >                 >>>
-> >                 >>> but noht is for
-> >                 >>> disabling
-> >                 >>> hyperthreading.
-> >                 >>>
-> >                 >>>
-> >                 >>>
-> >                 >>> Function
-> >                 >>> is_ht_kernel (file:
-> >                 >
-> >                 testcases/kernel/sched/hyperthreading/ht_affinity/HTutils.c) checks for
-> >                 >>> string cpu_package in /proc/cpuinfo
-> >                 >>> .
-> >                 >>>
-> >                 >>>
-> >                 >>>  but
-> >                 >>> cpu_package string
-> >                 >>>  information  does not exist in  /proc/cpuinfo
-> >                 for
-> >                 >>> 2.6.29 kernel
-> >                 >>>
-> >                 >>
-> >                 >> From the page,
-> >                 >>
-> >                 >>
-> >                 >
-> >                 https://lists.linux-foundation.org/pipermail/cgl_discussion/2002-October/002632.html
-> >                 >>
-> >                 >> looks like cpu_package has been added in 2.4.x
-> >                 kernel by HT patches.
-> >                 >> Has this field been removed later? I can't see it
-> >                 with 2.6.18 kernel.
-> >                 >>
-> >                 >> I have copied the author of those tests - Sonic
-> >                 Zhang to see if he has any
-> >                 >> insight of it.
-> >                 >>
-> >                 >> Anyway, this piece of code seems check if the
-> >                 kernel has HT support or
-> >                 > not.
-> >                 >> I am not sure if we'll still need it, because HT
-> >                 support has been added
-> >                 >> to kernel many years ago.
-> >                 >>
-> >                 >> CAI Qian
-> >                 >>
-> >                 >>>
-> >                 >>>
-> >                 >>>
-> >                 >>> Regards,
-> >                 >>> Rohit
-> >                 >>>
-> >                 
-> >         
-> >         
-> > 
-> ------------------------------------------------------------------------------
-> Crystal Reports - New Free Runtime and 30 Day Trial
-> Check out the new simplified licensing option that enables 
-> unlimited royalty-free distribution of the report engine 
-> for externally facing server and web deployment. 
-> http://p.sf.net/sfu/businessobjects
-> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
+> --- ltp-intermediate-20090521.orig/testcases/kernel/syscalls/unshare/unshare02.c	1970-01-01 05:30:00.000000000 +0530
+> +++ ltp-intermediate-20090521/testcases/kernel/syscalls/unshare/unshare02.c	2009-05-27 14:51:53.000000000 +0530
+> @@ -0,0 +1,183 @@
+> +/******************************************************************************/
+> +/* Copyright (c) Crackerjack Project., 2007                                   */
+> +/*                                                                            */
+> +/* This program is free software;  you can redistribute it and/or modify      */
+> +/* it under the terms of the GNU General Public License as published by       */
+> +/* the Free Software Foundation; either version 2 of the License, or          */
+> +/* (at your option) any later version.                                        */
+> +/*                                                                            */
+> +/* This program is distributed in the hope that it will be useful,            */
+> +/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
+> +/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
+> +/* the GNU General Public License for more details.                           */
+> +/*                                                                            */
+> +/* You should have received a copy of the GNU General Public License          */
+> +/* along with this program;  if not, write to the Free Software               */
+> +/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
+> +/*                                                                            */
+> +/******************************************************************************/
+> +/******************************************************************************/
+> +/*                                                                            */
+> +/* File:        unshare02.c                                                   */
+> +/*                                                                            */
+> +/* Description: This tests the unshare error() syscall                        */
+> +/*                                                                            */
+> +/* Usage:  <for command-line>                                                 */
+> +/* unshare02 [-c n] [-e][-i n] [-I x] [-p x] [-t]                             */
+> +/*      where,  -c n : Run n copies concurrently.                             */
+> +/*              -e   : Turn on errno logging.                                 */
+> +/*              -i n : Execute test n times.                                  */
+> +/*              -I x : Execute test for x seconds.                            */
+> +/*              -P x : Pause for x seconds between iterations.                */
+> +/*              -t   : Turn on syscall timing.                                */
+> +/*                                                                            */
+> +/* Total Tests: 2                                                             */
+> +/*                                                                            */
+> +/* Test Name:   unshare02                                                     */
+> +/* History:     Porting from Crackerjack to LTP is done by                    */
+> +/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
+> +/******************************************************************************/
+> +
+> +#include <stdio.h>
+> +#include <sys/wait.h>
+> +#include <sys/types.h>
+> +#include <sched.h>
+> +#include <limits.h>
+> +#include <unistd.h>
+> +#include <sys/types.h>
+> +#include <sys/syscall.h>
+> +#include <errno.h>
+> +#include <pwd.h>
+> +#include <grp.h>
+> +#include <string.h>
+> +#include <sys/param.h>
+> +#include <stdio.h>
+> +
+> +/* Harness Specific Include Files. */
+> +#include "test.h"
+> +#include "usctest.h"
+> +#include "linux_syscall_numbers.h"
+> +
+> +/* Extern Global Variables */
+> +extern int Tst_count;           /* counter for tst_xxx routines.         */
+> +extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
+> +
+> +/* Global Variables */
+> +char *TCID = "unshare02";  /* Test program identifier.*/
+> +int  testno;
+> +int  TST_TOTAL = 2;                   /* total number of tests in this file.   */
+> +
+> +/* Extern Global Functions */
+> +/******************************************************************************/
+> +/*                                                                            */
+> +/* Function:    cleanup                                                       */
+> +/*                                                                            */
+> +/* Description: Performs all one time clean up for this test on successful    */
+> +/*              completion,  premature exit or  failure. Closes all temporary */
+> +/*              files, removes all temporary directories exits the test with  */
+> +/*              appropriate TEST_RETURNurn code by calling tst_exit() function.       */
+> +/*                                                                            */
+> +/* Input:       None.                                                         */
+> +/*                                                                            */
+> +/* Output:      None.                                                         */
+> +/*                                                                            */
+> +/* Return:      On failure - Exits calling tst_exit(). Non '0' TEST_RETURNurn code.   */
+> +/*              On success - Exits calling tst_exit(). With '0' TEST_RETURNurn code.  */
+> +/*                                                                            */
+> +/******************************************************************************/
+> +extern void cleanup() {
+> +        /* Remove tmp dir and all files in it */
+> +        TEST_CLEANUP;
+> +        tst_rmdir();
+> +
+> +        /* Exit with appropriate TEST_RETURNurn code. */
+> +        tst_exit();
+> +}
+> +
+> +/* Local  Functions */
+> +/******************************************************************************/
+> +/*                                                                            */
+> +/* Function:    setup                                                         */
+> +/*                                                                            */
+> +/* Description: Performs all one time setup for this test. This function is   */
+> +/*              typically used to capture signals, create temporary dirs      */
+> +/*              and temporary files that may be used in the course of this    */
+> +/*              test.                                                         */
+> +/*                                                                            */
+> +/* Input:       None.                                                         */
+> +/*                                                                            */
+> +/* Output:      None.                                                         */
+> +/*                                                                            */
+> +/* Return:      On failure - Exits by calling cleanup().                      */
+> +/*              On success - TEST_RETURNurns 0.                                       */
+> +/*                                                                            */
+> +/******************************************************************************/
+> +void setup() {
+> +        /* Capture signals if any */
+> +        /* Create temporary directories */
+> +        TEST_PAUSE;
+> +        tst_tmpdir();
+> +}
+> +
+> +int main(int ac, char **av) {
+> +        pid_t pid1;
+> +	int lc;                 /* loop counter */
+> +        char *msg;              /* message TEST_RETURNurned from parse_opts */
+> +	
+> +        /* parse standard options */
+> +        if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
+> +             tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
+> +             tst_exit();
+> +           }
+> +
+> +        setup();
+> +
+> +        /* Check looping state if -i option given */
+> +        for (lc = 0; TEST_LOOPING(lc); ++lc) {
+> +                Tst_count = 0;
+> +                for (testno = 0; testno < TST_TOTAL; ++testno) {
+> +
+> + /*
+> + *fork a child process;testing which one is a child or a parent;
+> + * */
+> +		        TEST(pid1=fork());    //call to fork()
+> +			if (TEST_RETURN == -1){
+> +			tst_resm(TFAIL, "fork() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> +			cleanup();
+> +			tst_exit();
+> +			}
+> +			else if (TEST_RETURN == 0){
+> +				if((TEST_RETURN = unshare(-1)) == 0) {
+> +	        		tst_resm(TPASS, "Call succeeded");
+> +				tst_exit();
+> +				}
+> +				else if (TEST_RETURN == -1 ){
+> +					tst_resm(TFAIL,"Test Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> +					tst_exit();
+> +                     			}
+> +			}
+> +
+> +			TEST(pid1=fork());    //call to fork()
+> +                        if (pid1 == -1){
+> +                        tst_resm(TFAIL, "fork() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> +                        cleanup();
+> +                        tst_exit();
+> +                        }
+> +                        else if (TEST_RETURN == 0){
+> +                                if((TEST_RETURN = unshare((int)NULL)) == 0) {
+> +                                tst_resm(TPASS, "Call succeeded");
+> +				tst_exit();
+> +                                }
+> +                                else if (TEST_RETURN == -1 ){
+> +                                        tst_resm(TFAIL,"Test Failed 2, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> +					tst_exit();
+> +                                        }
+> +                        }
+> +
+> +
+> +                }
+> +	}
+> +	cleanup();
+> +        tst_exit();
+> +}
+> +
+> --- ltp-intermediate-20090521.orig/runtest/syscalls	2009-05-27 14:49:30.000000000 +0530
+> +++ ltp-intermediate-20090521/runtest/syscalls	2009-05-27 14:57:51.000000000 +0530
+> @@ -1208,6 +1208,7 @@ unlink08 unlink08
+>  unlinkat01 unlinkat01
+> 
+>  unshare01 unshare01
+> +unshare02 unshare02
+> 
+>  #
+>  # These tests require an unmounted block device
+> 
+> ---
+> Regards--
+> Manas
+> 
 
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables 
-unlimited royalty-free distribution of the report engine 
-for externally facing server and web deployment. 
-http://p.sf.net/sfu/businessobjects
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
+is a gathering of tech-side developers & brand creativity professionals. Meet
+the minds behind Google Creative Lab, Visual Complexity, Processing, & 
+iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
+Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
