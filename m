@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <caiqian@cclom.cn>) id 1M70Lo-00033r-DV
-	for ltp-list@lists.sourceforge.net; Thu, 21 May 2009 04:57:52 +0000
-Received: from smtp106.biz.mail.mud.yahoo.com ([68.142.200.254])
-	by 29vjzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1M70Li-0006pS-Rg
-	for ltp-list@lists.sourceforge.net; Thu, 21 May 2009 04:57:52 +0000
-Date: Thu, 21 May 2009 12:58:17 +0800 (CST)
-Message-Id: <20090521.125817.183039017.caiqian@cclom.cn>
-From: CAI Qian <caiqian@cclom.cn>
-In-Reply-To: <d51f89b0905190257t4505860ej1461b32ad789e96@mail.gmail.com>
-References: <d51f89b0905072329u1d7d2e34j1fb95b09f347bf1a@mail.gmail.com>
-	<20090511.200555.226785908.caiqian@cclom.cn>
-	<d51f89b0905190257t4505860ej1461b32ad789e96@mail.gmail.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Patch for "File" test case issue of 30-April-2009 release
+	(envelope-from <vapier@gentoo.org>) id 1MATS2-00014R-EC
+	for ltp-list@lists.sourceforge.net; Sat, 30 May 2009 18:38:38 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MATRi-0004d8-Px
+	for ltp-list@lists.sourceforge.net; Sat, 30 May 2009 18:38:38 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sat, 30 May 2009 14:36:43 -0400
+References: <f90dadbb0905291500p10eb6d04v54132a522e060d0d@mail.gmail.com>
+In-Reply-To: <f90dadbb0905291500p10eb6d04v54132a522e060d0d@mail.gmail.com>
+MIME-Version: 1.0
+Message-Id: <200905301436.43743.vapier@gentoo.org>
+Subject: Re: [LTP] Want to join LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,170 +24,84 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2702375620812892070=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rohit.170309@gmail.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: hahahahhahahaahah <dpate2006@gmail.com>
 
-From: rohit verma <rohit.170309@gmail.com>
-Subject: Re: Patch for [LTP] "File" test case issue of 30-April-2009 release
-Date: Tue, 19 May 2009 02:57:56 -0700
+--===============2702375620812892070==
+Content-Type: multipart/signed; boundary="nextPart15174321.ht6bADRKO4";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-> Dear Qian,
-> 
-> As rpmbuild path is differenet for FC10 and RHEL, I have fixed the build
-> path using following option
-> 
->  rpmbuild --define "_topdir  <builddirectory>"
-> 
->  builddirectory mentioned as /usr/src/redhat in test program
-> 
-> I have attached patch with this mail. I request you to check the patch
-> description  for more details and let me know if any issues.
-> 
-> Note:  I have run checkpatch.pl script on this patch and there no errors and
-> warnings.
->
+--nextPart15174321.ht6bADRKO4
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Acked-by: CAI Qian <caiqian@cclom.cn>
- 
-> Regards,
-> Rohit
-> 
-> On Mon, May 11, 2009 at 5:05 AM, CAI Qian <caiqian@cclom.cn> wrote:
-> 
->> From: rohit verma <rohit.170309@gmail.com>
->> Subject: Patch for [LTP] "File" test case issue of 30-April-2009 release
->> Date: Fri, 8 May 2009 11:59:35 +0530
->>
->> > Dear Qian,
->> >
->> > Patch for "file" test case is attached with this mail.
->> >
->> > I have changed build directory from "/usr/src/redhat" to "$HOME/rpmbuild"
->> at
->> > line no.
->> >
->> > 394 in "ltp-full-20090430/testcases/commands/ade/file/file_test.sh"
->> >
->> > With these modification test case pass for any user.
->> >
->> > Please confirm if this solution is OK.
->> >
->>
->>  $LTPBIN/tst_resm TINFO "TEST #9: file command recognizes RPM files"
->>  if [ -f /etc/redhat-release ]; then
->> -       bDIR=/usr/src/redhat
->> +       bDIR=$HOME/rpmbuild
->>        bCMD=rpmbuild
->>  else
->>        bDIR=/usr/src/packages
->>
->> This will not work for systems like RHEL, which are using the default
->> buildroot in /usr/src/redhat. You can also tell rpmbuild command to use
->> an user specified buildroot like this,
->>
->> rpmbuild --buildroot=$HOME/rpmbuild
->>
->> CAI Qian
->>
->> >
->> > Regards,
->> > rohit
->> >
->> >
->> >
->> > On Thu, May 7, 2009 at 1:03 PM, CAI Qian <caiqian@cclom.cn> wrote:
->> >
->> >> From: rohit verma <rohit.170309@gmail.com>
->> >> Subject: [LTP] "File" test case issue with Fedoracore10 in 31-March-2009
->> >> release
->> >> Date: Mon, 4 May 2009 10:59:54 +0530
->> >>
->> >> > Hi,
->> >> >
->> >> > O/P of 'File' test case  with fedora core-10 as follows
->> >> >
->> >> > *file01      0  INFO  :  TEST #1: file commad recogizes ASCII text
->> files
->> >> > file01      7  PASS  :  file: Recognised ASCII file correctly
->> >> > file02      0  INFO  :  TEST #2: file command recognizes bash shell
->> >> scripts
->> >> > file02      2  PASS  :  file: Recognised bash shell script correctly
->> >> > file03      0  INFO  :  TEST #3: file command recognizes korn shell
->> >> scripts
->> >> > file03      3  PASS  :  file: recognised korn shell script
->> >> > file04      0  INFO  :  TEST #4: file command recognizes C shell
->> scripts
->> >> > file04      4  PASS  :  file: Recognised C shell script correctly
->> >> > file05      0  INFO  :  TEST #5: file command recognizes C programs
->> text
->> >> > file05      5  PASS  :  file: Recognised C program text correctly
->> >> > file06      0  INFO  :  TEST #6: file command recognizes ELF
->> executables
->> >> > file06      6  PASS  :  file: Recognized ELF binary executable
->> >> > file07      0  INFO  :  TEST #7: file command recognizes tar files.
->> >> > file07      7  PASS  :  file: Recognised tar files
->> >> > file08      0  INFO  :  TEST #8: file command recognizes tar zip files
->> >> > file08      8  PASS  :  file: Recognised tar zip file
->> >> > file09      0  INFO  :  TEST #9: file command recognizes RPM files
->> >> > file09      9  BROK  :  rpm command brok. Reason:
->> >> > error: File /root/rpmbuild/SOURCES/cprog.c: No such file or directory
->> >> > file09     10  BROK  :  Remaining cases broken
->> >> > file09      9  FAIL  :  file: Failed to Recognize RPM file. Reason:
->> >> > /usr/src/redhat/SRPMS/cprog-0.0.7-3.src.rpm: cannot open
->> >> > `/usr/src/redhat/SRPMS/cprog-0.0.7-3.src.rpm' (No such file or
->> directory)
->> >> > file10      0  INFO  :  TEST #10: file command recognizes vmlinuz file
->> >> > file10     10  PASS  :  file: Recognised vmlinuz file correctly *
->> >> > **
->> >> >
->> >> > Default path for 'rpmbuild' command in fc10  is /root/rpmbuild/SOURCES
->> >> > folder instead of  "/usr/src/redhat" which was present in fc8
->> rpmbuild.
->> >> >
->> >> > In FC10 rpmbuild looks for the cprog.c file  in user's home directory.
->> >> (i.e
->> >> > /root/rpmbuild  for root user)
->> >> >
->> >> > Please visit the below URL for more information
->> >> >
->> >> > http://www.mail-archive.com/fedora-list@redhat.com/msg27958.html
->> >> >
->> >> > As per the 'file' test program, it creates the 'cprog.c' file in
->> >> > /usr/src/redhat and recognize RPM file in same path
->> >> > which should be changed accordingly to user's home directory.
->> >> >
->> >> > Please check the  line number 394 : bDIR=/usr/src/redhat. in
->> >> file_tests.sh
->> >> >
->> >> > So I request you to incorporate the changes according to rpmbuild of
->> fc10
->> >> in
->> >> > file_tests.sh.
->> >> >
->> >> > Regards,
->> >> > rohit
->> >> >
->> >>
->> >> Yes, you are correct. Perhaps we can use,
->> >>
->> >> rpmbuild --buildroot=/usr/src/redhat
->> >>
->> >> to override the default setting?
->> >>
->> >> CAI Qian
->> >>
->>
+On Friday 29 May 2009 18:00:14 hahahahhahahaahah wrote:
+> I have more than two years of experience as QA Engineer and extremely
+> interested in joining this open source LTP. Pl let me know the procedure =
+to
+> join this LTP as I believe I can make a lot of contributions to this
+> project.
+
+you might want to start by using a real name.  otherwise, there is generall=
+y=20
+no "joining" procedure.  you look at the source, find something interesting=
+,=20
+write a patch, and send it to the mail list.
+=2Dmike
+
+
+--nextPart15174321.ht6bADRKO4
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJKIXy7AAoJEEFjO5/oN/WB3QkQAMp5/XHk5DBWXBPz2gSdF0ow
+k6VBQ0CLJUpjKUc9UHH5ZzY9a60mSlYvP3zafRi6UODDCaTOx5kVh0EivUmioY+1
+HN//wv9UB6r0TwfD6MKaDnqebr8PtrLJx349ytYCiRNXYfjQYdpvv3spseXempCh
+L9TiB5QUwRsvAnw1S7pl2b6AEf1r4o1ueu0KtJT/vDdqlSef6yBUnr2DMjOI54WS
+am8pSZXBXjY/As++sqtMPogXQ2wkHQe2Xa/jIsA0pq3Yp+59EJxiEfkhRHsJstHh
+sAAGaAaf3h9L8EbcYJ27nI9RAE8uboWNrWkJif+Jy2MLrB0BfNe964YTuJUZP1ye
+qXAoLqnzRdMsnmXJ6Z4kXafXyczMDncatWFUfaL6BTEyVaYNJ5jx7Y8wu/WgyNnm
+88JGb8Aefr251uS08tC7gbZPwWs6tddcDLVX0ZK8uaZC7gqK4gzOoTLdJ9YLPU4s
+rmhr/UrESQoq0I+WFItoJV4iJVoKnXvcmk0UWFc1XESYUBmEZNfdksH16WVE/Qnx
+yDzqif17JnxbYaFZ4ZkZfgEHtAxs25YfSPTkc9ur1Ed5I3q0ujgIu5bvVoqUEpD+
+R8xPhCIfGsl8UmiLiDrf+7S+OUMQAuzz3mYg7sCnY/UWHGX4FF2w2Pq+1o0JguA2
+ctonuqSCI4r0eu1wnkLb
+=7Qd4
+-----END PGP SIGNATURE-----
+
+--nextPart15174321.ht6bADRKO4--
+
+
+--===============2702375620812892070==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
 is a gathering of tech-side developers & brand creativity professionals. Meet
 the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
-Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
+iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
+Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
+--===============2702375620812892070==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2702375620812892070==--
+
