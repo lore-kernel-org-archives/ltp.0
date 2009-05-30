@@ -1,38 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1M8coH-0006IG-NK
-	for ltp-list@lists.sourceforge.net; Mon, 25 May 2009 16:13:57 +0000
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MATUL-0000uN-Oa
+	for ltp-list@lists.sourceforge.net; Sat, 30 May 2009 18:41:01 +0000
 Received: from e34.co.us.ibm.com ([32.97.110.152])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M8coC-0002Kf-RO
-	for ltp-list@lists.sourceforge.net; Mon, 25 May 2009 16:13:57 +0000
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MATUK-0000oA-CU
+	for ltp-list@lists.sourceforge.net; Sat, 30 May 2009 18:41:01 +0000
 Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
 	[9.17.195.227])
-	by e34.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4PGB3ae025440
-	for <ltp-list@lists.sourceforge.net>; Mon, 25 May 2009 10:11:04 -0600
+	by e34.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4UIc6g3004752
+	for <ltp-list@lists.sourceforge.net>; Sat, 30 May 2009 12:38:06 -0600
 Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
 	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n4PGDqtJ231074
-	for <ltp-list@lists.sourceforge.net>; Mon, 25 May 2009 10:13:52 -0600
+	n4UIew1n252504
+	for <ltp-list@lists.sourceforge.net>; Sat, 30 May 2009 12:40:58 -0600
 Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
 	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n4PGDp9o000747
-	for <ltp-list@lists.sourceforge.net>; Mon, 25 May 2009 10:13:51 -0600
+	n4UIewVL018460
+	for <ltp-list@lists.sourceforge.net>; Sat, 30 May 2009 12:40:58 -0600
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <c384c5ea0905230551q26216366pc9fd1cefecf00ac4@mail.gmail.com>
-References: <1238499818.6818.25.camel@subratamodak.linux.ibm.com>
-	<c384c5ea0905151027x5a74ee85l294616e0ddae41ce@mail.gmail.com>
-	<200905160936.31857.vapier@gentoo.org>
-	<1242648066.5161.18.camel@subratamodak.linux.ibm.com>
-	<1242975141.8760.12.camel@subratamodak.linux.ibm.com>
-	<c384c5ea0905230551q26216366pc9fd1cefecf00ac4@mail.gmail.com>
-Date: Mon, 25 May 2009 21:43:43 +0530
-Message-Id: <1243268025.6752.20.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <4A1FE470.6090400@in.ibm.com>
+References: <4A1EC3AC.2080901@in.ibm.com>
+	<1243601711.5188.40.camel@subratamodak.linux.ibm.com>
+	<4A1FE470.6090400@in.ibm.com>
+Date: Sun, 31 May 2009 00:10:54 +0530
+Message-Id: <1243708854.5556.7.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been Released
-	for	MARCH 2009
+Subject: Re: [LTP] [RFC] Patch getcpu01 testcase
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -46,60 +42,150 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Leon Woestenberg <leon.woestenberg@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
+To: Suzuki Poulose <suzuki@in.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, sharyath@in.ibm.com
 
-On Sat, 2009-05-23 at 14:51 +0200, Leon Woestenberg wrote: 
-> Hello Subrata,
+On Fri, 2009-05-29 at 19:04 +0530, Suzuki Poulose wrote: 
+> Subrata,
 > 
-> On Fri, May 22, 2009 at 8:52 AM, Subrata Modak
-> <subrata@linux.vnet.ibm.com> wrote:
-> > On Mon, 2009-05-18 at 17:31 +0530, Subrata Modak wrote:
-> >> On Sat, 2009-05-16 at 09:36 -0400, Mike Frysinger wrote:
-> >> > On Friday 15 May 2009 13:27:50 Leon Woestenberg wrote:
-> >> > > 2009/3/31 Subrata Modak <subrata@linux.vnet.ibm.com>:
-> >> > > > Dear All,
-> >> > > >
-> >> > > > The Linux Test Project test suite has been released for the month of
-> >> > > > MARCH 2009. Please see ltp/INSTALL file carefully, as, there has been
-> >> > >
-> >> > > OpenEmbedded builds LTP for a large number of machines / architectures.
-> >> > >
-> >> > > JFYI, The LTP January release required some patches, especially in the
-> >> > > area of cross-compilation:
-> >> >
-> >> > then someone should be submitting them so we can give feedback and they'll
-> >> > update/re-submit
-> >>
-> >> True,
-> >>
-> >> Please submit them to the LTP mailing list.
-> >
-> > Any consideration to submit these to the list soon ?
-> >
-> No, I think our current workarounds are indeed ugly ("works-for-us")
-> hacks to make the LTP project cross-compile.
+> Good ! Then thats more suitable here :)
 > 
-> Mike mentioned a few improvements that need to be addressed.
-> It's hard to find people willing to address cross-compile support
-> issue once a working hack is in place.
+> Refreshed the patch with TCONF and a better error message.
 
-OK. Submit to us whenever you feel the correct hack is in place.
+Thanks.
 
 Regards--
 Subrata
 
 > 
+> Thanks
 > 
-> Regards,
+> Suzuki
+> Subrata Modak wrote:
+> > On Thu, 2009-05-28 at 22:32 +0530, Suzuki Poulose wrote:
+> >> Hi,
+> >>
+> >> The getcpu01 always exits with a non-zero exit code (indicating a 
+> >> Failure as per UNIX semantics) on non-NUMA machines.
+> >>
+> >> This is due to the following code :
+> >>
+> >>             tst_resm(TWARN,
+> >>                     "/sys not mounted or not a numa system. Assuming
+> >> one 
+> >> node: %s",
+> >>                          strerror(errno));
+> >>
+> >>
+> >> Being a non-NUMA machine is not a failure, but an info. So it should
+> >> not 
+> >> cause the test to have a non zero exit status.
+> > 
+> > Correct,
+> > 
+> >> I have attached a patch which could do the same and provide a more 
+> >> friendly o/p.
+> >>
+> >>
+> >> Please apply.
+> >>
+> >> Thanks
+> >> Suzuki
+> >>
+> >>
+> >>
+> >>
+> >>
+> >>
+> >>
+> >>
+> >>
+> >>
+> >>
+> >> plain text
+> >> document
+> >> attachment
+> >> (fix-warning-getcpu01.diff)
+> >>
+> >>
+> >> Index: ltp-20081031/testcases/kernel/syscalls/getcpu/getcpu01.c
+> >> ===================================================================
+> >> ---
+> >> ltp-20081031.orig/testcases/kernel/syscalls/getcpu/getcpu01.c       2008-10-23 02:23:19.000000000 -0500
+> >> +++
+> >> ltp-20081031/testcases/kernel/syscalls/getcpu/getcpu01.c    2009-05-28
+> >> 11:52:54.000000000 -0500
+> >> @@ -47,6 +47,8 @@
+> >>   * HISTORY
+> >>   *     06/2008 written by Sharyathi Nagesh <sharyathi@in.ibm.com>
+> >>   *
+> >> + *     05/2009         Suzuki K P <suzuki@in.ibm.com>
+> >> + *                     Friendly messages for non-NUMA machines.
+> >>   * RESTRICTIONS
+> >>   *     none
+> >>   */
+> >> @@ -234,8 +236,10 @@
+> >>
+> >>          directory_parent = opendir("/sys/devices/system/node");
+> >>          if (!directory_parent)  {
+> >> -                tst_resm(TWARN,
+> >> -                   "/sys not mounted or not a numa system. Assuming
+> >> one node: %s",
+> >> +                tst_resm(TINFO,
+> >> +                        "/sys not mounted or not a numa system.
+> >> Assuming one node");
+> >> +               tst_resm(TINFO,
+> > 
+> > Use TCONF instead of TINFO. That reflects that some system configuration
+> > was missing, and, it will not return error value at all.
+> > 
+> > Regards--
+> > Subrata
+> > 
+> >> +                       "Reason /sys/devices/system/node :%s",
+> >>                          strerror(errno));
+> >>                         return 0; //By Default assume it to belong to
+> >> node Zero 
+> >>          } else {
+> >>
+> > 
+> 
+> plain text document attachment (fix-warning-getcpu01.diff)
+> Index: ltp-20081031/testcases/kernel/syscalls/getcpu/getcpu01.c
+> ===================================================================
+> --- ltp-20081031.orig/testcases/kernel/syscalls/getcpu/getcpu01.c	2008-10-23 02:23:19.000000000 -0500
+> +++ ltp-20081031/testcases/kernel/syscalls/getcpu/getcpu01.c	2009-05-29 08:33:01.000000000 -0500
+> @@ -47,6 +47,9 @@
+>   * HISTORY
+>   *	06/2008 written by Sharyathi Nagesh <sharyathi@in.ibm.com>
+>   *
+> + *	05/2009 	Suzuki K P <suzuki@in.ibm.com>
+> + *			Use TCONF instead of TWARN for non-NUMA machines
+> + *	
+>   * RESTRICTIONS
+>   *	none
+>   */
+> @@ -234,8 +237,10 @@
+> 
+>          directory_parent = opendir("/sys/devices/system/node");
+>          if (!directory_parent)  {
+> -                tst_resm(TWARN,
+> -                   "/sys not mounted or not a numa system. Assuming one node: %s",
+> +                tst_resm(TCONF,
+> +                   "/sys not mounted or not a numa system. Assuming one node");
+> +		tst_resm(TCONF,
+> +			"Error opening: /sys/devices/system/node :%s",
+>                          strerror(errno));
+>                 	return 0; //By Default assume it to belong to node Zero 
+>          } else {
 
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
 is a gathering of tech-side developers & brand creativity professionals. Meet
 the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
-Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
+iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
+Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
