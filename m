@@ -1,28 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <leon.woestenberg@gmail.com>) id 1M7qhV-0000MA-HZ
-	for ltp-list@lists.sourceforge.net; Sat, 23 May 2009 12:51:45 +0000
-Received: from yx-out-1718.google.com ([74.125.44.153])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1M7qhQ-0000Wl-Vm
-	for ltp-list@lists.sourceforge.net; Sat, 23 May 2009 12:51:45 +0000
-Received: by yx-out-1718.google.com with SMTP id 6so1208772yxn.82
-	for <ltp-list@lists.sourceforge.net>;
-	Sat, 23 May 2009 05:51:39 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1242975141.8760.12.camel@subratamodak.linux.ibm.com>
-References: <1238499818.6818.25.camel@subratamodak.linux.ibm.com>
-	<c384c5ea0905151027x5a74ee85l294616e0ddae41ce@mail.gmail.com>
-	<200905160936.31857.vapier@gentoo.org>
-	<1242648066.5161.18.camel@subratamodak.linux.ibm.com>
-	<1242975141.8760.12.camel@subratamodak.linux.ibm.com>
-Date: Sat, 23 May 2009 14:51:39 +0200
-Message-ID: <c384c5ea0905230551q26216366pc9fd1cefecf00ac4@mail.gmail.com>
-From: Leon Woestenberg <leon.woestenberg@gmail.com>
-Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been Released for
-	MARCH 2009
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MATUt-0002rg-Vs
+	for ltp-list@lists.sourceforge.net; Sat, 30 May 2009 18:41:35 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MATUU-0004FN-Gs
+	for ltp-list@lists.sourceforge.net; Sat, 30 May 2009 18:41:33 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e39.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n4UIbHwT009920
+	for <ltp-list@lists.sourceforge.net>; Sat, 30 May 2009 12:37:17 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n4UIf9j0241316
+	for <ltp-list@lists.sourceforge.net>; Sat, 30 May 2009 12:41:09 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n4UIf9fE024891
+	for <ltp-list@lists.sourceforge.net>; Sat, 30 May 2009 12:41:09 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <f5a7b3810905290819j2eff2629kfda4e11cd4766427@mail.gmail.com>
+References: <f5a7b3810905280814gad8b6a4h9c161af8d58a739d@mail.gmail.com>
+	<1243601702.5188.38.camel@subratamodak.linux.ibm.com>
+	<f5a7b3810905290819j2eff2629kfda4e11cd4766427@mail.gmail.com>
+Date: Sun, 31 May 2009 00:11:04 +0530
+Message-Id: <1243708864.5556.8.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] open posix sigaction/10-1.c test fix
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,54 +42,262 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, maxin john <maxinbjohn@gmail.com>
 
-Hello Subrata,
+Thanks.
 
-On Fri, May 22, 2009 at 8:52 AM, Subrata Modak
-<subrata@linux.vnet.ibm.com> wrote:
-> On Mon, 2009-05-18 at 17:31 +0530, Subrata Modak wrote:
->> On Sat, 2009-05-16 at 09:36 -0400, Mike Frysinger wrote:
->> > On Friday 15 May 2009 13:27:50 Leon Woestenberg wrote:
->> > > 2009/3/31 Subrata Modak <subrata@linux.vnet.ibm.com>:
->> > > > Dear All,
->> > > >
->> > > > The Linux Test Project test suite has been released for the month of
->> > > > MARCH 2009. Please see ltp/INSTALL file carefully, as, there has been
->> > >
->> > > OpenEmbedded builds LTP for a large number of machines / architectures.
->> > >
->> > > JFYI, The LTP January release required some patches, especially in the
->> > > area of cross-compilation:
->> >
->> > then someone should be submitting them so we can give feedback and they'll
->> > update/re-submit
->>
->> True,
->>
->> Please submit them to the LTP mailing list.
->
-> Any consideration to submit these to the list soon ?
->
-No, I think our current workarounds are indeed ugly ("works-for-us")
-hacks to make the LTP project cross-compile.
+Regards--
+Subrata
 
-Mike mentioned a few improvements that need to be addressed.
-It's hard to find people willing to address cross-compile support
-issue once a working hack is in place.
+On Fri, 2009-05-29 at 20:49 +0530, naresh kamboju wrote: 
+> Hi Subrata,
+> 
+> Here i have attached patch file sigaction_10-1.patch.
+> i am able to patch this by using the command
+> as
+> #pwd
+> /home/naresh/ltp
+> ltp#patch -p1<  /patch/sigaction_10-1.patch
+> ltp#
+> 
+> I come across with this kernel issue in 2.6.27
+> http://lkml.org/lkml/2008/9/23/218
+> http://lkml.org/lkml/2008/9/23/228
+> http://lkml.org/lkml/2008/9/24/180
+> http://lkml.org/lkml/2008/9/24/186
+> http://lkml.org/lkml/2008/9/24/193
+> http://lkml.org/lkml/2008/9/24/243
+> http://lkml.org/lkml/2008/9/24/247
+> 
+> 
+> Test cases modification noticed for
+> ltp/testcases/open_posix_testsuite/conformance/interfaces/sigaction/10-1.c
+> I have modified patch and submitting fix patch.
+> This test case is passed now.
+> 
+> Previous log:
+> 
+> -bash-3.2# pwd
+> /tmp/open_posix_testsuite/conformance/interfaces/sigaction
+> -bash-3.2# ./10-1.test
+> --> Sending SIGSTOP
+> Child has been stopped
+> --> Sending SIGCONT
+> --> Sending SIGSTOP
+> --> Sending SIGCONT
+> --> Sending SIGSTOP
+> --> Sending SIGCONT
+> --> Sending SIGSTOP
+> --> Sending SIGCONT
+> --> Sending SIGSTOP
+> --> Sending SIGCONT
+> --> Sending SIGSTOP
+> --> Sending SIGCONT
+> --> Sending SIGSTOP
+> --> Sending SIGCONT
+> --> Sending SIGSTOP
+> --> Sending SIGCONT
+> --> Sending SIGSTOP
+> --> Sending SIGCONT
+> --> Sending SIGSTOP
+> --> Sending SIGCONT
+> Test FAILED
+> -bash-3.2#
+> 
+> 
+> Current log:
+> -bash-3.2# pwd
+> /tmp/open_posix_testsuite/conformance/interfaces/sigaction
+> --> Sending SIGSTOP
+> Child has been stopped
+> --> Sending SIGCONT
+> Child has been continued
+> --> Sending SIGSTOP
+> Child has been stopped
+> --> Sending SIGCONT
+> Child has been continued
+> --> Sending SIGSTOP
+> Child has been stopped
+> --> Sending SIGCONT
+> Child has been continued
+> --> Sending SIGSTOP
+> Child has been stopped
+> --> Sending SIGCONT
+> Child has been continued
+> --> Sending SIGSTOP
+> Child has been stopped
+> --> Sending SIGCONT
+> Child has been continued
+> --> Sending SIGSTOP
+> Child has been stopped
+> --> Sending SIGCONT
+> Child has been continued
+> --> Sending SIGSTOP
+> Child has been stopped
+> --> Sending SIGCONT
+> Child has been continued
+> --> Sending SIGSTOP
+> Child has been stopped
+> --> Sending SIGCONT
+> Child has been continued
+> --> Sending SIGSTOP
+> Child has been stopped
+> --> Sending SIGCONT
+> Child has been continued
+> --> Sending SIGSTOP
+> Child has been stopped
+> --> Sending SIGCONT
+> Child has been continued
+> Test PASSED
+> -bash-3.2#
+> 
+> 
+> Original changes done by Oleg Nesterov and Joe Korty
+> Modified by: Naresh Kamboju
+>  < naresh.kernel@gmail.com >
+> 
+> Signed-off-by: Naresh Kamboju
+> < naresh.kernel@gmail.com >
+> 
+> Regards
+> Naresh
+> 
+> On Fri, May 29, 2009 at 6:25 PM, Subrata Modak
+> <subrata@linux.vnet.ibm.com> wrote:
+> > On Thu, 2009-05-28 at 20:44 +0530, naresh kamboju wrote:
+> >> Hi,
+> >>
+> >> Original changes done by Oleg Nesterov and Joe Korty
+> >> Modified by: Naresh Kamboju < naresh.kernel@gmail.com >
+> >>
+> >> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+> >
+> > Sorry, this fails to apply on the latest CVS.
+> >
+> > patching file
+> > testcases/open_posix_testsuite/conformance/interfaces/sigaction/10-1.c
+> > Hunk #1 FAILED at 19.
+> >
+> > Please resend containing the same description.
+> >
+> > Regards--
+> > Subrata
+> >
+> >>
+> >> diff -Naurb ltp-full-20090430/testcases/open_posix_testsuite/conformance/interfaces/sigaction/10-1.c
+> >> ltp-full-20090430_mod/testcases/open_posix_testsuite/conformance/interfaces/sigaction/10-1.c
+> >> --- ltp-full-20090430/testcases/open_posix_testsuite/conformance/interfaces/sigaction/10-1.c  2005-06-03
+> >> 22:04:51.000000000 +0530
+> >> +++ ltp-full-20090430_mod/testcases/open_posix_testsuite/conformance/interfaces/sigaction/10-1.c      2009-05-28
+> >> 19:25:03.000000000 +0530
+> >> @@ -19,19 +19,42 @@
+> >>  #define NUMSTOPS 10
+> >>
+> >>  int child_stopped = 0;
+> >> -int waiting = 1;
+> >> +int child_continued = 0;
+> >> +int notification;
+> >>
+> >>  void handler(int signo, siginfo_t *info, void *context)
+> >>  {
+> >> -     if (info && info->si_code == CLD_STOPPED) {
+> >> +             if (!info)
+> >> +             return;
+> >> +
+> >> +
+> >> +             notification = info->si_code;
+> >> +
+> >> +             switch (notification) {
+> >> +             case CLD_STOPPED:
+> >>               printf("Child has been stopped\n");
+> >> -             waiting = 0;
+> >>               child_stopped++;
+> >> +             break;
+> >> +             case CLD_CONTINUED:
+> >> +             printf("Child has been continued\n");
+> >> +             child_continued++;
+> >> +             break;
+> >>       }
+> >>  }
+> >>
+> >> +void wait_for_notification(int val)
+> >> +{
+> >> + struct timeval tv;
+> >>
+> >> -int main()
+> >> + while (notification != val) {
+> >> + tv.tv_sec = 1;
+> >> + tv.tv_usec = 0;
+> >> + if (!select(0, NULL, NULL, NULL, &tv))
+> >> + break;
+> >> + }
+> >> +}
+> >> +
+> >> +int main(void)
+> >>  {
+> >>       pid_t pid;
+> >>       struct sigaction act;
+> >> @@ -58,25 +81,25 @@
+> >>               int i;
+> >>
+> >>               for (i = 0; i < NUMSTOPS; i++) {
+> >> -                     waiting = 1;
+> >> -
+> >>                       printf("--> Sending SIGSTOP\n");
+> >> +                     notification = 0;
+> >>                       kill(pid, SIGSTOP);
+> >>
+> >>                       /*
+> >>                         Don't let the kernel optimize away queued
+> >>                         SIGSTOP/SIGCONT signals.
+> >>                       */
+> >> -                     while (waiting) {
+> >> -                             tv.tv_sec = 1;
+> >> -                             tv.tv_usec = 0;
+> >> -                             if (!select(0, NULL, NULL, NULL, &tv))
+> >> -                               break;
+> >> -                     }
+> >>
+> >> +                     wait_for_notification(CLD_STOPPED);
+> >>
+> >>                       printf("--> Sending SIGCONT\n");
+> >> +                     notification = 0;
+> >>                       kill(pid, SIGCONT);
+> >> +                     /*
+> >> +                      SIGCHLD doesn't queue, make sure CLD_CONTINUED
+> >> +                      doesn't mask the next CLD_STOPPED
+> >> +                      */
+> >> +                      wait_for_notification(CLD_CONTINUED);
+> >>               }
+> >>
+> >>               /* POSIX specifies default action to be abnormal termination */
+> >> @@ -84,7 +107,7 @@
+> >>               waitpid(pid, &s, 0);
+> >>       }
+> >>
+> >> -     if (child_stopped == NUMSTOPS) {
+> >> +     if (child_stopped == NUMSTOPS && child_continued == NUMSTOPS) {
+> >>               printf("Test PASSED\n");
+> >>               return 0;
+> >>       }
+> >> @@ -92,4 +115,3 @@
+> >>       printf("Test FAILED\n");
+> >>       return -1;
+> >>  }
+> >> -
+> >> Best regards,
+> >> Naresh Kamboju
+> >
+> >
 
-
-Regards,
--- 
-Leon
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
 is a gathering of tech-side developers & brand creativity professionals. Meet
 the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp asthey present alongside digital heavyweights like Barbarian
-Group, R/GA, & Big Spaceship. http://www.creativitycat.com 
+iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
+Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
