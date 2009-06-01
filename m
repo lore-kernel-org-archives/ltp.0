@@ -1,32 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MHLTc-0000aO-Ki
-	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:32:40 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MHLTa-0000HJ-RM
-	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:32:40 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e2.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5IHRwMT014986
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 13:27:58 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5IHWcSt188472
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 13:32:38 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5IHWb1K007081
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 13:32:38 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <f5a7b3810906171318v503b0c77l27a5df2f057fb85c@mail.gmail.com>
-References: <f5a7b3810906171318v503b0c77l27a5df2f057fb85c@mail.gmail.com>
-Date: Thu, 18 Jun 2009 23:01:55 +0530
-Message-Id: <1245346315.5041.42.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [FIX PATCH] ltp-add_key
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <rohit.170309@gmail.com>) id 1MB6xz-0002jQ-EO
+	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2009 12:50:15 +0000
+Received: from fg-out-1718.google.com ([72.14.220.155])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MB6xu-0007i9-K9
+	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2009 12:50:15 +0000
+MIME-Version: 1.0
+In-Reply-To: <1243601687.5188.34.camel@subratamodak.linux.ibm.com>
+References: <20090526142706.20166.3813.sendpatchset@subratamodak.linux.ibm.com>
+	<522C1DF17AF50042AD8AE87F7887BD3D0158B359A4@exch.hq.tensilica.com>
+	<d51f89b0905262344h46722756vb255541a47904dbe@mail.gmail.com>
+	<522C1DF17AF50042AD8AE87F7887BD3D0158B35AB4@exch.hq.tensilica.com>
+	<1243434255.10447.19.camel@subratamodak.linux.ibm.com>
+	<522C1DF17AF50042AD8AE87F7887BD3D0158B35ACE@exch.hq.tensilica.com>
+	<1243601687.5188.34.camel@subratamodak.linux.ibm.com>
+Date: Mon, 1 Jun 2009 18:17:00 +0530
+Message-ID: <d51f89b0906010547r675533b2v2a2d36a7c07beba9@mail.gmail.com>
+From: rohit verma <rohit.170309@gmail.com>
+Subject: Re: [LTP] [PATCH] Detect test results more accurately when
+	generating HTML
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,96 +34,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: naresh kamboju <naresh.kernel@gmail.com>, Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>, Munipradeep Beerakam <mpradeep@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, Manas Kumar Nayak <maknayak@in.ibm.com>, Oleg Nesterov <oleg@redhat.com>, rohit.170309@gmail.com
+To: subrata@linux.vnet.ibm.com
+Cc: Ltp-List <ltp-list@lists.sf.net>
 
-Great to see you fix these issues and send across the fixes. However, i
-remember Kamalesh working on similar type of fixes.
+Hi Subrata,
 
-Lets hear from Kamalesh, whether he has something additional from this
-series of patches, or, some other fixes in each patch apart from what
-you have already provided.
+PFA the patch for the changes to pan driver for a possible fix to the
+report generation issue.
 
-Kamalesh,
+I have modified genhtml.pl script to reflect changes in pan driver.
 
-Would you like to say something here ?
+Note: The 'Initiation-status' column is now present after Test-output column.
 
-Another suggestion. Naresh, next time when you send patches pertaining
-to one particular issue observed in several tests, then no. the patches,
-like [PATCH 00/N] to [PATCH N/N].
+Please check the same and provide your feedback.
 
-Regards--
-Subrata
+Regards,
+Rohit.
 
-On Thu, 2009-06-18 at 01:48 +0530, naresh kamboju wrote: 
-> Hi,
-> 
-> I have noticed following failures and fixed.
-> 1. add_key01.c
-> 2. add_key02.c
-> 
-> 
-> Please find the patch below and as attachment.
-> 
-> Best regards
-> Naresh Kamboju
-> 
-> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
-> diff -Naurb a/testcases/kernel/syscalls/add_key/add_key01.c
-> b/testcases/kernel/syscalls/add_key/add_key01.c
-> --- a/testcases/kernel/syscalls/add_key/add_key01.c	2009-05-21
-> 23:39:37.000000000 +0530
-> +++ b/testcases/kernel/syscalls/add_key/add_key01.c	2009-06-17
-> 23:00:15.000000000 +0530
-> @@ -125,7 +125,7 @@
->          for (lc = 0; TEST_LOOPING(lc); ++lc) {
->                  Tst_count = 0;
->                  for (testno = 0; testno < TST_TOTAL; ++testno) {
-> -                     TEST(result = syscall(286, "keyring", "wjkey",
-> NULL, 0, KEY_SPEC_THREAD_KEYRING));     //call add_key()
-> +                     TEST(result = syscall(__NR_add_key, "keyring",
-> "wjkey", NULL, 0, KEY_SPEC_THREAD_KEYRING));     //call add_key()
->                       if(TEST_RETURN != -1) {
->          		tst_resm(TPASS, "add_key call succeeded");
->                          cleanup();
-> @@ -139,4 +139,3 @@
->          }	
->          tst_exit();
->  }
-> -
-> diff -Naurb a/testcases/kernel/syscalls/add_key/add_key02.c
-> b/testcases/kernel/syscalls/add_key/add_key02.c
-> --- a/testcases/kernel/syscalls/add_key/add_key02.c	2009-05-21
-> 23:40:50.000000000 +0530
-> +++ b/testcases/kernel/syscalls/add_key/add_key02.c	2009-06-17
-> 23:47:48.000000000 +0530
-> @@ -140,7 +140,7 @@
->                  for (testno = 0; testno < TST_TOTAL; ++testno) {
-> 
->  		for(i=0; i<test_count; i++) {
-> -                	TEST(syscall(286, test_cases[i].type,
-> test_cases[i].desc, test_cases[i].payload, test_cases[i].plen,
-> KEY_SPEC_USER_KEYRING));    //call add_key()
-> +                	TEST(syscall(__NR_add_key, test_cases[i].type,
-> test_cases[i].desc, test_cases[i].payload, test_cases[i].plen,
-> KEY_SPEC_USER_KEYRING));    //call add_key()
->                  	if(TEST_RETURN != -1){
->                          	tst_resm(TINFO,"call add_key() with wrong
-> args succeed, but should fail");
->                          	fail++;
-> @@ -170,4 +170,3 @@
->        }	
->          tst_exit();
->  }
-> -
-
+On Fri, May 29, 2009 at 6:24 PM, Subrata Modak
+<subrata@linux.vnet.ibm.com> wrote:
+> On Wed, 2009-05-27 at 07:58 -0700, Marc Gauthier wrote:
+>> Subrata Modak wrote:
+>> > On Wed, 2009-05-27 at 05:05 -0700, Marc Gauthier wrote:
+>> > > Just so you know, the updated genhtml.pl script recently submitted
+>> > > should work just fine without changes, when moving status after
+>> > > <<<execution_status>>> (it only looks at tag names, not positions).
+>> >
+>> > Be careful, it looks for <<<execution_status>>> only in between
+>> > <<test_start>> & <<test_output>>.
+>>
+>> You mean, between <<<test_start>>> and <<<test_end>>> ?
+>> (the script I submitted recently that is, was careful about this)
+>
+> You made changes in genhtml.pl. I want the change(s) in ltp-pan.c.
+>
+> Regards--
+> Subrata
+>
+>>
+>> -Marc
+>
+>
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing 
-server and web deployment.
-http://p.sf.net/sfu/businessobjects
+Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
+is a gathering of tech-side developers & brand creativity professionals. Meet
+the minds behind Google Creative Lab, Visual Complexity, Processing, & 
+iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
+Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
