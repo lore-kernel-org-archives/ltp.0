@@ -1,21 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1MGVBV-0001ME-DZ
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 09:42:29 +0000
-Received: from fmmailgate02.web.de ([217.72.192.227])
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <rohit.170309@gmail.com>) id 1MBTdn-0006Od-Cm
+	for ltp-list@lists.sourceforge.net; Tue, 02 Jun 2009 13:02:55 +0000
+Received: from mail-fx0-f163.google.com ([209.85.220.163])
 	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MGVBJ-0003gj-AE
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 09:42:29 +0000
-From: Jiri Palecek <jpalecek@web.de>
-Date: Tue, 16 Jun 2009 11:46:37 +0200
-References: <ab64ec20906160106g664052edo690bdaf97c2ed847@mail.gmail.com>
-In-Reply-To: <ab64ec20906160106g664052edo690bdaf97c2ed847@mail.gmail.com>
+	id 1MBTdk-0008Li-Mn
+	for ltp-list@lists.sourceforge.net; Tue, 02 Jun 2009 13:02:55 +0000
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200906161146.38317.jpalecek@web.de>
-Subject: Re: [LTP] unable to install ltp-full-20090531
+In-Reply-To: <d51f89b0906010547r675533b2v2a2d36a7c07beba9@mail.gmail.com>
+References: <20090526142706.20166.3813.sendpatchset@subratamodak.linux.ibm.com>
+	<522C1DF17AF50042AD8AE87F7887BD3D0158B359A4@exch.hq.tensilica.com>
+	<d51f89b0905262344h46722756vb255541a47904dbe@mail.gmail.com>
+	<522C1DF17AF50042AD8AE87F7887BD3D0158B35AB4@exch.hq.tensilica.com>
+	<1243434255.10447.19.camel@subratamodak.linux.ibm.com>
+	<522C1DF17AF50042AD8AE87F7887BD3D0158B35ACE@exch.hq.tensilica.com>
+	<1243601687.5188.34.camel@subratamodak.linux.ibm.com>
+	<d51f89b0906010547r675533b2v2a2d36a7c07beba9@mail.gmail.com>
+Date: Tue, 2 Jun 2009 18:03:11 +0530
+Message-ID: <d51f89b0906020533j7881c042k1a7e43270f0aeec@mail.gmail.com>
+From: rohit verma <rohit.170309@gmail.com>
+Content-Type: multipart/mixed; boundary=000e0cd25016ebdc55046b5cbeec
+Subject: Re: [LTP] [PATCH] Detect test results more accurately when
+	generating HTML
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,53 +33,201 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: naveen penumala <naveenspen@gmail.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: subrata@linux.vnet.ibm.com
+Cc: Ltp-List <ltp-list@lists.sf.net>
 
-On Tuesday 16 June 2009 10:06:49 naveen penumala wrote:
-> Hi,
+--000e0cd25016ebdc55046b5cbeec
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Hi,
+Patch file attached.
 
-> Please look at the below compilation error at the time of "make all" after
-> configuration.
-> Here i'm using Suse linux, and kernel version is 2.6.16.21.
-> =
+On Mon, Jun 1, 2009 at 6:17 PM, rohit verma <rohit.170309@gmail.com> wrote:
+> Hi Subrata,
+>
+> PFA the patch for the changes to pan driver for a possible fix to the
+> report generation issue.
+>
+> I have modified genhtml.pl script to reflect changes in pan driver.
+>
+> Note: The 'Initiation-status' column is now present after Test-output column.
+>
+> Please check the same and provide your feedback.
+>
+> Regards,
+> Rohit.
+>
+> On Fri, May 29, 2009 at 6:24 PM, Subrata Modak
+> <subrata@linux.vnet.ibm.com> wrote:
+>> On Wed, 2009-05-27 at 07:58 -0700, Marc Gauthier wrote:
+>>> Subrata Modak wrote:
+>>> > On Wed, 2009-05-27 at 05:05 -0700, Marc Gauthier wrote:
+>>> > > Just so you know, the updated genhtml.pl script recently submitted
+>>> > > should work just fine without changes, when moving status after
+>>> > > <<<execution_status>>> (it only looks at tag names, not positions).
+>>> >
+>>> > Be careful, it looks for <<<execution_status>>> only in between
+>>> > <<test_start>> & <<test_output>>.
+>>>
+>>> You mean, between <<<test_start>>> and <<<test_end>>> ?
+>>> (the script I submitted recently that is, was careful about this)
+>>
+>> You made changes in genhtml.pl. I want the change(s) in ltp-pan.c.
+>>
+>> Regards--
+>> Subrata
+>>
+>>>
+>>> -Marc
+>>
+>>
+>
 
-> Please help me regarding this.
-> =
+--000e0cd25016ebdc55046b5cbeec
+Content-Type: text/plain; charset=US-ASCII; name="pan_patch.txt"
+Content-Disposition: attachment; filename="pan_patch.txt"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fvglb8pm0
 
-> =
+ZGlmZiAtcnVOIGx0cC1mdWxsLTIwMDkwNDMwX29yaWcvcGFuL3Bhbi5jIGx0cC1mdWxsLTIwMDkw
+NDMwL3Bhbi9wYW4uYwotLS0gbHRwLWZ1bGwtMjAwOTA0MzBfb3JpZy9wYW4vcGFuLmMJMjAwOS0w
+Mi0yMyAxNjoxMzozNS4wMDAwMDAwMDAgKzA1MzAKKysrIGx0cC1mdWxsLTIwMDkwNDMwL3Bhbi9w
+YW4uYwkyMDA5LTA2LTAxIDE0OjI5OjU0LjAwMDAwMDAwMCArMDUzMApAQCAtMTE1LDggKzExNSw4
+IEBACiBzdGF0aWMgdm9pZCBjaGVja19vcnBoYW5zKHN0cnVjdCBvcnBoYW5fcGdycCAqb3JwaGFu
+cywgaW50IHNpZyk7CiAKIHN0YXRpYyB2b2lkIGNvcHlfYnVmZmVyZWRfb3V0cHV0KHN0cnVjdCB0
+YWdfcGdycCAqcnVubmluZyk7Ci1zdGF0aWMgdm9pZCB3cml0ZV90ZXN0X3N0YXJ0KHN0cnVjdCB0
+YWdfcGdycCAqcnVubmluZywgY29uc3QgY2hhciAqaW5pdF9zdGF0dXMpOwotc3RhdGljIHZvaWQg
+d3JpdGVfdGVzdF9lbmQoc3RydWN0IHRhZ19wZ3JwICpydW5uaW5nLAorc3RhdGljIHZvaWQgd3Jp
+dGVfdGVzdF9zdGFydChzdHJ1Y3QgdGFnX3BncnAgKnJ1bm5pbmcpOworc3RhdGljIHZvaWQgd3Jp
+dGVfdGVzdF9lbmQoc3RydWN0IHRhZ19wZ3JwICpydW5uaW5nLCBjb25zdCBjaGFyICppbml0X3N0
+YXR1cywKIAkJCSAgIHRpbWVfdCBleGl0X3RpbWUsIGNoYXIgKnRlcm1fdHlwZSwgaW50IHN0YXRf
+bG9jLAogCQkJICAgaW50IHRlcm1faWQsIHN0cnVjdCB0bXMgKnRtczEsIHN0cnVjdCB0bXMgKnRt
+czIpOwogCkBAIC03NTUsMTIgKzc1NSwxMiBAQAogCiAJCWlmICh0ZXN0X291dF9kaXIpIHsKIAkJ
+CWlmICghcXVpZXRfbW9kZSkKLQkJCQl3cml0ZV90ZXN0X3N0YXJ0KHJ1bm5pbmcraSwgIm9rIik7
+CisJCQkJd3JpdGVfdGVzdF9zdGFydChydW5uaW5nK2kpOwogCQkJY29weV9idWZmZXJlZF9vdXRw
+dXQocnVubmluZyArIGkpOwogCQkJdW5saW5rKHJ1bm5pbmdbaV0ub3V0cHV0KTsKIAkJfQogCQlp
+ZiAoIXF1aWV0X21vZGUpCi0JCQl3cml0ZV90ZXN0X2VuZChydW5uaW5nK2ksIHQsIHN0YXR1cywK
+KwkJCXdyaXRlX3Rlc3RfZW5kKHJ1bm5pbmcraSwgIm9rIiwgdCwgc3RhdHVzLAogCQkJICAgc3Rh
+dF9sb2MsIHcsICZ0bXMxLCAmdG1zMik7CiAKIAkJLyogSWYgc2lnbmFsZWQgYW5kIHdlIHdlcmVu
+J3QgZXhwZWN0aW5nCkBAIC04NDQsNiArODQ0LDEzIEBACiAJcmV0dXJuIC0xOwogICAgIH0KIAor
+ICAgIHRpbWUoJmFjdGl2ZS0+bXlzdGltZSk7CisgICAgYWN0aXZlLT5jbWQgPSBjb2xsZTsKKwor
+ICAgIGlmICghdGVzdF9vdXRfZGlyKSAKKwlpZiAoIXF1aWV0X21vZGUpCisJCXdyaXRlX3Rlc3Rf
+c3RhcnQoYWN0aXZlKTsKKwogICAgIGlmICgoY3BpZCA9IGZvcmsoKSkgPCAwKSB7CiAJZnByaW50
+ZihzdGRlcnIsICJwYW4oJXMpOiBmb3JrIGZhaWxlZCAodGFnICVzKS4gIGVycm5vOiVkICAlc1xu
+IiwKIAkJcGFubmFtZSwgY29sbGUtPm5hbWUsIGVycm5vLCBzdHJlcnJvcihlcnJubykpOwpAQCAt
+OTI2LDggKzkzMyw2IEBACiAgICAgaWYgKGNvbGxlLT5wY250X2YpIGZyZWUoY19jbWRsaW5lKTsg
+CiAKICAgICBjbG9zZShlcnJwaXBlWzFdKTsKLSAgICB0aW1lKCZhY3RpdmUtPm15c3RpbWUpOwot
+ICAgIGFjdGl2ZS0+Y21kID0gY29sbGU7CiAKICAgICAvKiBpZiB0aGUgY2hpbGQgY291bGRuJ3Qg
+Z28gdGhyb3VnaCB3aXRoIHRoZSBleGVjLCAKICAgICAgKiBjbGVhbiB1cCB0aGUgbWVzcywgbm90
+ZSBpdCwgYW5kIG1vdmUgb24KQEAgLTk2MCw4ICs5NjUsOCBAQAogCXRpbWUoJmVuZF90aW1lKTsK
+IAlpZiAoIXF1aWV0X21vZGUpIAogCXsKLQkJd3JpdGVfdGVzdF9zdGFydChhY3RpdmUsIGVycmJ1
+Zik7Ci0JCXdyaXRlX3Rlc3RfZW5kKGFjdGl2ZSwgZW5kX3RpbWUsIHRlcm10eXBlLCBzdGF0dXMs
+IAorCQkvL3dyaXRlX3Rlc3Rfc3RhcnQoYWN0aXZlLCBlcnJidWYpOworCQl3cml0ZV90ZXN0X2Vu
+ZChhY3RpdmUsIGVycmJ1ZiwgZW5kX3RpbWUsIHRlcm10eXBlLCBzdGF0dXMsIAogCQkJdGVybWlk
+LCAmbm90aW1lLCAmbm90aW1lKTsKIAl9CiAgICAgICAgIGlmIChjYXB0dXJpbmcpIHsKQEAgLTk3
+MywxMCArOTc4LDYgQEAKIAogICAgIGNsb3NlKGVycnBpcGVbMF0pOwogICAgIGlmIChjYXB0dXJp
+bmcpIGNsb3NlKGNfc3Rkb3V0KTsKLQkKLSAgICBpZiAoIXRlc3Rfb3V0X2RpcikgCi0JaWYgKCFx
+dWlldF9tb2RlKQotCQl3cml0ZV90ZXN0X3N0YXJ0KGFjdGl2ZSwgIm9rIik7CiAKICAgICBhY3Rp
+dmUtPnBncnAgPSBjcGlkOwogICAgIGFjdGl2ZS0+c3RvcHBpbmcgPSAwOwpAQCAtMTIxMiwxNCAr
+MTIxMywxNCBAQAogCiAKIHN0YXRpYyB2b2lkCi13cml0ZV90ZXN0X3N0YXJ0KHN0cnVjdCB0YWdf
+cGdycCAqcnVubmluZywgY29uc3QgY2hhciAqaW5pdF9zdGF0dXMpCit3cml0ZV90ZXN0X3N0YXJ0
+KHN0cnVjdCB0YWdfcGdycCAqcnVubmluZykKIHsKICAgICBpZiAoIXN0cmNtcChyZXBvcnR0eXBl
+LCAicnRzIikpIHsKIAotCXByaW50ZigiJXNcbnRhZz0lcyBzdGltZT0lbGRcbmNtZGxpbmU9XCIl
+c1wiXG5jb250YWN0cz1cIiVzXCJcbmFuYWx5c2lzPSVzXG5pbml0aWF0aW9uX3N0YXR1cz1cIiVz
+XCJcbiVzXG4iLAorCXByaW50ZigiJXNcbnRhZz0lcyBzdGltZT0lbGRcbmNtZGxpbmU9XCIlc1wi
+XG5jb250YWN0cz1cIiVzXCJcbmFuYWx5c2lzPSVzXG4lc1xuIiwKIAkJCSI8PDx0ZXN0X3N0YXJ0
+Pj4+IiwKIAkJCXJ1bm5pbmctPmNtZC0+bmFtZSwgcnVubmluZy0+bXlzdGltZSwgcnVubmluZy0+
+Y21kLT5jbWRsaW5lLCAiIiwKLQkJCSJleGl0IiwgaW5pdF9zdGF0dXMsCisJCQkiZXhpdCIsCiAJ
+CQkiPDw8dGVzdF9vdXRwdXQ+Pj4iKTsKICAgICB9CiAgICAgZmZsdXNoKHN0ZG91dCk7CkBAIC0x
+MjI3LDEzICsxMjI4LDE0IEBACiAKIAogc3RhdGljIHZvaWQKLXdyaXRlX3Rlc3RfZW5kKHN0cnVj
+dCB0YWdfcGdycCAqcnVubmluZywgdGltZV90IGV4aXRfdGltZSwKLQkgICAgICAgY2hhciAqdGVy
+bV90eXBlLCBpbnQgc3RhdF9sb2MsIGludCB0ZXJtX2lkLAotCSAgICAgICBzdHJ1Y3QgdG1zICp0
+bXMxLCBzdHJ1Y3QgdG1zICp0bXMyKQord3JpdGVfdGVzdF9lbmQoc3RydWN0IHRhZ19wZ3JwICpy
+dW5uaW5nLCBjb25zdCBjaGFyICppbml0X3N0YXR1cywKKwkJdGltZV90IGV4aXRfdGltZSwgY2hh
+ciAqdGVybV90eXBlLCBpbnQgc3RhdF9sb2MsCisJCWludCB0ZXJtX2lkLCBzdHJ1Y3QgdG1zICp0
+bXMxLCBzdHJ1Y3QgdG1zICp0bXMyKQogewogICAgIGlmICghc3RyY21wKHJlcG9ydHR5cGUsICJy
+dHMiKSkgewotCXByaW50ZigiJXNcbmR1cmF0aW9uPSVsZCB0ZXJtaW5hdGlvbl90eXBlPSVzIHRl
+cm1pbmF0aW9uX2lkPSVkIGNvcmVmaWxlPSVzXG5jdXRpbWU9JWQgY3N0aW1lPSVkXG4lc1xuIiwK
+LQkJICAJIjw8PGV4ZWN1dGlvbl9zdGF0dXM+Pj4iLCAKKwlwcmludGYoIiVzXG5pbml0aWF0aW9u
+X3N0YXR1cz1cIiVzXCJcbmR1cmF0aW9uPSVsZCB0ZXJtaW5hdGlvbl90eXBlPSVzICIKKwkJInRl
+cm1pbmF0aW9uX2lkPSVkIGNvcmVmaWxlPSVzXG5jdXRpbWU9JWQgY3N0aW1lPSVkXG4lc1xuIiwK
+KwkJICAJIjw8PGV4ZWN1dGlvbl9zdGF0dXM+Pj4iLCBpbml0X3N0YXR1cywKIAkJCShsb25nKSAo
+ZXhpdF90aW1lIC0gcnVubmluZy0+bXlzdGltZSksCiAJCQl0ZXJtX3R5cGUsIHRlcm1faWQsIChz
+dGF0X2xvYyAmIDAyMDApID8gInllcyIgOiAibm8iLAogCQkJKGludCkgKHRtczItPnRtc19jdXRp
+bWUgLSB0bXMxLT50bXNfY3V0aW1lKSwKZGlmZiAtcnVOIGx0cC1mdWxsLTIwMDkwNDMwX29yaWcv
+dG9vbHMvZ2VuaHRtbC5wbCBsdHAtZnVsbC0yMDA5MDQzMC90b29scy9nZW5odG1sLnBsCi0tLSBs
+dHAtZnVsbC0yMDA5MDQzMF9vcmlnL3Rvb2xzL2dlbmh0bWwucGwJMjAwOS0wNC0wMiAxMjowNzoy
+OC4wMDAwMDAwMDAgKzA1MzAKKysrIGx0cC1mdWxsLTIwMDkwNDMwL3Rvb2xzL2dlbmh0bWwucGwJ
+MjAwOS0wNi0wMSAxNDozNzozMy4wMDAwMDAwMDAgKzA1MzAKQEAgLTE0NCwxMiArMTQ0LDEyIEBA
+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEB2YXJpYWJsZV92YWx1ZV9wYWlyID0gc3Bs
+aXQoLz0vLCAkbGluZSk7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICRyb3dfbGluZSA9
+ICRyb3dfbGluZSAuICI8dGQ+PHA+PHN0cm9uZz4kdmFyaWFibGVfdmFsdWVfcGFpclsxXTwvc3Ry
+b25nPjwvcD48L3RkPlxuIjsKICAgICAgICAgICAgICAgICAgICAgICAgIH0KLSAgICAgICAgICAg
+ICAgICAgICAgICAgIGlmICggJGZsYWcgPT0gNikgeyAjQXNzdW1pbmcgd2Ugd2lsbCBmaW5kICJp
+bml0aWF0aW9uX3N0YXR1cyIgdmFsdWUgaGVyZQotICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBAdmFyaWFibGVfdmFsdWVfcGFpciA9IHNwbGl0KC89LywgJGxpbmUpOwotICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAkcm93X2xpbmUgPSAkcm93X2xpbmUgLiAiPHRkPjxwPjxzdHJvbmc+
+JHZhcmlhYmxlX3ZhbHVlX3BhaXJbMV08L3N0cm9uZz48L3A+PC90ZD5cbiI7Ci0gICAgICAgICAg
+ICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgICAgICBpZiAoICRmbGFnMyA9PSAx
+ICkgewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAoICRmbGFnNCA9PSAxICkgewor
+CQkJCSAgQHZhcmlhYmxlX3ZhbHVlX3BhaXIgPSBzcGxpdCgvPS8sICRsaW5lKTsKKwkJCQkgICRy
+b3dfbGluZSA9ICRyb3dfbGluZSAuICI8dGQ+PHA+PHN0cm9uZz4kdmFyaWFibGVfdmFsdWVfcGFp
+clsxXTwvc3Ryb25nPjwvcD48L3RkPlxuIjsKKwkJCSAgICAgfQorICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBpZiAoICRmbGFnNCA9PSAyICkgewogICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIEB2YXJpYWJsZV92YWx1ZV9wYWlyICAgID0gc3BsaXQoL1wgLywgJGxpbmUpOwog
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEBkdXJhdGlvbl92YWx1ZSAgICAgICAg
+ID0gc3BsaXQoLz0vLCAkdmFyaWFibGVfdmFsdWVfcGFpclswXSk7CiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgQHRlcm1pbmF0aW9uX3R5cGVfdmFsdWUgPSBzcGxpdCgvPS8sICR2
+YXJpYWJsZV92YWx1ZV9wYWlyWzFdKTsKQEAgLTE2Miw3ICsxNjIsNyBAQAogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICI8dGQ+PHA+PHN0cm9uZz4kY29yZWZp
+bGVfdmFsdWVbMV08L3N0cm9uZz48L3A+PC90ZD5cbiI7CiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgJHJvd19saW5lID1+IHMvPHRyPi88dHJcIGJnY29sb3I9JGJhY2tncm91bmRf
+Y29sb3VyPi87CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0KLSAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgaWYgKCAkZmxhZzQgPT0gMiApIHsKKyAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgaWYgKCAkZmxhZzQgPT0gMyApIHsKICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBAdmFyaWFibGVfdmFsdWVfcGFpciAgICA9IHNwbGl0KC9cIC8sICRsaW5lKTsKICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBAY3V0aW1lX3ZhbHVlICAgICAgICAgICA9
+IHNwbGl0KC89LywgJHZhcmlhYmxlX3ZhbHVlX3BhaXJbMF0pOwogICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIEBjc3RpbWVfdmFsdWUgICAgICAgICAgID0gc3BsaXQoLz0vLCAkdmFy
+aWFibGVfdmFsdWVfcGFpclsxXSk7CmRpZmYgLXJ1TiBsdHAtZnVsbC0yMDA5MDQzMF9vcmlnL3Rv
+b2xzL2h0bWxfcmVwb3J0X2hlYWRlci50eHQgbHRwLWZ1bGwtMjAwOTA0MzAvdG9vbHMvaHRtbF9y
+ZXBvcnRfaGVhZGVyLnR4dAotLS0gbHRwLWZ1bGwtMjAwOTA0MzBfb3JpZy90b29scy9odG1sX3Jl
+cG9ydF9oZWFkZXIudHh0CTIwMDgtMTEtMDQgMTE6NDc6MjEuMDAwMDAwMDAwICswNTMwCisrKyBs
+dHAtZnVsbC0yMDA5MDQzMC90b29scy9odG1sX3JlcG9ydF9oZWFkZXIudHh0CTIwMDktMDYtMDEg
+MTQ6Mzk6MDYuMDAwMDAwMDAwICswNTMwCkBAIC00Niw4ICs0Niw4IEBACiAgICAgICA8dGQgYmdj
+b2xvcj0iU2lsdmVyIj48c3Ryb25nPkNvbW1hbmQtTGluZTwvc3Ryb25nPjwvdGQ+CiAgICAgICA8
+dGQgYmdjb2xvcj0iU2lsdmVyIj48c3Ryb25nPkNvbnRhY3RzPC9zdHJvbmc+PC90ZD4KICAgICAg
+IDx0ZCBiZ2NvbG9yPSJTaWx2ZXIiPjxzdHJvbmc+QW5hbHlzaXM8L3N0cm9uZz48L3RkPgotICAg
+ICAgPHRkIGJnY29sb3I9IlNpbHZlciI+PHN0cm9uZz5Jbml0aWF0aW9uLVN0YXR1czwvc3Ryb25n
+PjwvdGQ+CiAgICAgICA8dGQgYmdjb2xvcj0iU2lsdmVyIj48c3Ryb25nPlRlc3QtT3V0cHV0PC9z
+dHJvbmc+PC90ZD4KKyAgICAgIDx0ZCBiZ2NvbG9yPSJTaWx2ZXIiPjxzdHJvbmc+SW5pdGlhdGlv
+bi1TdGF0dXM8L3N0cm9uZz48L3RkPgogICAgICAgPHRkIGJnY29sb3I9IlNpbHZlciI+PHN0cm9u
+Zz5EdXJhdGlvbjwvc3Ryb25nPjwvdGQ+CiAgICAgICA8dGQgYmdjb2xvcj0iU2lsdmVyIj48c3Ry
+b25nPlRlcm1pbmF0aW9uLXR5cGU8L3N0cm9uZz48L3RkPgogICAgICAgPHRkIGJnY29sb3I9IlNp
+bHZlciI+PHN0cm9uZz5UZXJtaW5hdGlvbi1pZDwvc3Ryb25nPjwvdGQ+Cg==
+--000e0cd25016ebdc55046b5cbeec
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-> make[4]: Entering directory
-> `/home/kevin/tests/LTP/ltp-full-20090531/testcases/kernel/mem/mem'
-> gcc -g -O2 -Wall -I../../../../include    mem02.c -L../../../../lib -lltp
-> -o mem02
-> mem02.c: In function =E2main=E2:
-> mem02.c:71: internal compiler error: in merge_alias_info, at
-> tree-ssa-copy.c:235
-> Please submit a full bug report,
-> with preprocessed source if appropriate.
+------------------------------------------------------------------------------
+OpenSolaris 2009.06 is a cutting edge operating system for enterprises 
+looking to deploy the next generation of Solaris that includes the latest 
+innovations from Sun and the OpenSource community. Download a copy and 
+enjoy capabilities such as Networking, Storage and Virtualization. 
+Go to: http://p.sf.net/sfu/opensolaris-get
+--000e0cd25016ebdc55046b5cbeec
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Well, this means you have a buggy compiler. If you have an older version, j=
-ust try updating it; otherwise, do what it says: file a full bugreport to y=
-our compiler's (or maybe to Suse) bugzilla with preprocessed source.
-
-Regards
-    Jiri Palecek
-
----------------------------------------------------------------------------=
----
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing =
-
-server and web deployment.
-http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--000e0cd25016ebdc55046b5cbeec--
+
