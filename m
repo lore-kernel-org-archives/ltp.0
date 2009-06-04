@@ -1,36 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1MGdcG-0005u7-4T
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 18:42:40 +0000
-Received: from e36.co.us.ibm.com ([32.97.110.154])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MGdba-0001L0-GZ
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 18:42:40 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e36.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5GIeNSB029139
-	for <ltp-list@lists.sourceforge.net>; Tue, 16 Jun 2009 12:40:23 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5GIflBh208948
-	for <ltp-list@lists.sourceforge.net>; Tue, 16 Jun 2009 12:41:48 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5GIfliT002564
-	for <ltp-list@lists.sourceforge.net>; Tue, 16 Jun 2009 12:41:47 -0600
-Date: Tue, 16 Jun 2009 13:41:48 -0500
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20090616184148.GA3043@us.ibm.com>
-References: <49b7c2350906151813r31a9fe24icee5b1244f560f7a@mail.gmail.com>
-	<49b7c2350906152243p4c970b1di74cc62badc85a2e7@mail.gmail.com>
-	<20090616161949.GA32566@us.ibm.com>
-	<200906161245.35932.sgrubb@redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <200906161245.35932.sgrubb@redhat.com>
-Subject: Re: [LTP] Report - make error of ltp-full-20090531.tgz
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MC9El-0006Cr-DM
+	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2009 09:27:51 +0000
+Received: from e31.co.us.ibm.com ([32.97.110.149])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MC9Ef-000588-So
+	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2009 09:27:51 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e31.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n549NYsT027519
+	for <ltp-list@lists.sourceforge.net>; Thu, 4 Jun 2009 03:23:34 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n549RjcT261772
+	for <ltp-list@lists.sourceforge.net>; Thu, 4 Jun 2009 03:27:45 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n549RjOx029679
+	for <ltp-list@lists.sourceforge.net>; Thu, 4 Jun 2009 03:27:45 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4A267148.8000700@st.com>
+References: <4A267148.8000700@st.com>
+Date: Thu, 04 Jun 2009 14:57:39 +0530
+Message-Id: <1244107659.4879.13.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] kernel/controllers/ testcase and CGROUPS support
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -43,68 +40,155 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Steve Grubb <sgrubb@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, GeunSik Lim <leemgs1@gmail.com>, Andrew Morgan <morgan@kernel.org>
+To: Francesco RUNDO <francesco.rundo@st.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Quoting Steve Grubb (sgrubb@redhat.com):
-> On Tuesday 16 June 2009 12:19:49 pm Serge E. Hallyn wrote:
-> > Quoting GeunSik Lim (leemgs1@gmail.com):
-> > > On Tue, Jun 16, 2009 at 1:24 PM, Serge E. Hallyn<serue@us.ibm.com> wrote:
-> > > > Quoting GeunSik Lim (leemgs1@gmail.com):
-> > > >> I made patch file to solve below problem.
-> > > >
-> > > > well, NAK to the patch, but this is a real problem that needs to
-> > > > be fixed.  I'll take a look in the morning, but Andrew do you know
-> > > > offhand what the problem is with capability.h (in F11 I gather) that
-> > > > would cause:
-> > >
-> > > Serge E. Hallyn,
-> > >
-> > > Thanks for your opinion about  this report that I posted.
-> > > Yes.  My below patch is private patch to solve  make error on Fedora 11
-> > > distribution ( fedora11 2.6.29.4-167.fc11.i686).
-> > > This means that my patch is not official patch file as you think.
-> > >
-> > > For reference,
-> > >  I used libcap 2.16 version
-> > > at the 
-> > > http://ftp.kernel.org/pub/linux/libs/security/linux-privs/kernel-2.6/  .
-> >
-> > Are you sure?
-> >
-> > With the libcap-2.16 from kernel.org, /usr/include/sys/capability.h
-> > #includes <sys/types.h>.  The version that comes with Fedora 11's
-> > libcap-devel-2.16-2.fc11.i586 #includes <linux/types.h> instead.
-> > When I just fix that, my F11 system compiles cap_bound.c just fine.
-> >
-> > Steve, do you know why that change is made?
-> 
-> Offhand I do not. I see in Fedora 11 cvs:  libcap-2.16-4. It looks fixed to me.
-> 
-> Here it was built:
-> http://koji.fedoraproject.org/koji/buildinfo?buildID=106251
-> 
-> Here it was pushed to testing repo:
-> https://admin.fedoraproject.org/updates/libcap-2.16-4.fc11
-> 
-> So, I'd enable the testing repo for F-11 to download the update. See if that 
-> doesn't work better.
+I will look into this.
 
-enabling testing still gave me only libcap-2.16-2, but
-I downloaded and installed libcap-devel-2.16-4.fc11.i586.rpm
-after which all compiled fine.
+Regards--
+Subrata
 
-GeunSik, please give that a shot.
+On Wed, 2009-06-03 at 14:49 +0200, Francesco RUNDO wrote: 
+> Hi All,
+> 
+> I'd like to submit a request to change the method to check if CGROUPS 
+> support is enabled and available or not.
+> 
+> I'm referring to the kernel/controllers/xxx testcase. I'm using the 
+> LTP-full-20090430 cross-compiled for SH based arch with a kernel 2.6.23
+> 
+> The used/released  method placed inside kernel/controllers/Makefile,  
+> tries to understand if the cgroups (and others related...) support has 
+> been enabled in the current kernel, performing a check in the root 
+> filesystem under "/proc". It makes something like that:
+> 
+> CHECK_CGROUP := $(shell test -f /proc/cgroups && echo 'cgroup')
+> 
+> Now, in the context of LTP built for i386, the above check works fine.
+> 
+> But what happen if LTP is cross-built ?
+> 
+> Unfortunately, the "/proc" entry checked by the above Makefile rule, is 
+> the ones placed in the host and not the "/proc" of the  target root 
+> filesysetm (in my case SH based target). This is wrong!
+> 
+> Moreover,  "/proc" is an entry which makes sense at runtime while it is 
+> useless at built time so the above check is "always" not applicable in 
+> case of LTP is built for other arch different from i386.
+> 
+> In order to cover the scenario in which LTP is cross-built, I've patched 
+> the Makefile , replacing the above rule with the following ones:
+> 
+> ifdef $(CROSS_COMPILE)
+> CHECK_CGROUP := $(shell test -f 
+> $(TARGET_DIR)/usr/include/linux/cgroupstats.h && echo 'cgroup')
+> else
+>  CHECK_CGROUP := $(shell test -f /proc/cgroups && echo 'cgroup')
+>  CHECK_CPUCTL := $(shell grep -w cpu /proc/cgroups 2>/dev/null|cut -f1)
+>  CHECK_MEMCTL := $(shell grep -w memory /proc/cgroups 2>/dev/null|cut -f1)
+>  CHECK_BLOCKIOCTL := $(shell grep -w blockio /proc/cgroups 
+> 2>/dev/null|cut -f1)
+>  CHECK_FREEZER := $(shell grep -w freezer /proc/cgroups 2>/dev/null| cut 
+> -f1)
+>  CHECK_CPUSETCTL = $(shell grep -w cpuset /proc/cgroups 2>/dev/null|cut -f1)
+> endif
+> 
+> ifdef $(CROSS_COMPILE)
+>    ifeq ($(CHECK_CGROUP),cgroup)
+>       SUBDIRS += cgroup
+>       SUBDIRS += cpuctl
+>       SUBDIRS += memctl
+>       SUBDIRS += io-throttle
+>       SUBDIRS += freezer
+>       SUBDIRS += cpuset
+>   else
+>       $(info "Kernel is not compiled with control cgroup support")
+>   endif
+> else
+>    ifeq ($(CHECK_CGROUP),cgroup)
+>         SUBDIRS += cgroup
+>    else
+>    ..............................................(the same rules placed 
+> in the original released Makefile).
+> 
+> The above checked header file "cgroupstats.h" is placed in the target 
+> rootfs.  If the cgroups support is available (and enabled...likely ;-) 
+> the above header is placed in the target rootfs. 
+> 
+> In that way, in case of cross-compilation (the env CROSS_COMPILE was 
+> defined) the check will be done in the header file instead of  /proc.
+> 
+> The env TARGET_DIR works like a "--prefix" fixing the path of the 
+> cross-target rootfs.
+> 
+> Of course, If you have another checks/methods which can be done to 
+> understand -at build time- if cgroups support is available and/or 
+> enabled -for target platform-, please feel free to post a comment to LTP.
+> 
+> Anyway, I'll attach the patch I've applied in our system.
+> 
+> Advices and feedbacks are welcome!
+> 
+> Regards
+> Francesco Rundo
+> 
+> 
+> plain text document attachment
+> (ltp-full-20090430-fix-cgroups-testcase.patch)
+> This patch allows the cross-build of kernel/controllers (cgroups tests) testcase changing the policy to check the cgroups capability at build-time.
+> Signed-off-by: Francesco Rundo <francesco.rundo@st.com>
+> --- ltp-full-20090430-cross/testcases/kernel/controllers/Makefile.orig	2009-05-26 15:37:35.140000000 +0200
+> +++ ltp-full-20090430-cross/testcases/kernel/controllers/Makefile	2009-05-28 13:36:36.669998000 +0200
+> @@ -1,10 +1,26 @@
+> +ifdef $(CROSS_COMPILE)
+> +CHECK_CGROUP := $(shell test -f $(TARGET_DIR)/usr/include/linux/cgroupstats.h && echo 'cgroup')
+> +else
+>  CHECK_CGROUP := $(shell test -f /proc/cgroups && echo 'cgroup')
+>  CHECK_CPUCTL := $(shell grep -w cpu /proc/cgroups 2>/dev/null|cut -f1)
+>  CHECK_MEMCTL := $(shell grep -w memory /proc/cgroups 2>/dev/null|cut -f1)
+>  CHECK_BLOCKIOCTL := $(shell grep -w blockio /proc/cgroups 2>/dev/null|cut -f1)
+>  CHECK_FREEZER := $(shell grep -w freezer /proc/cgroups 2>/dev/null| cut -f1)
+>  CHECK_CPUSETCTL = $(shell grep -w cpuset /proc/cgroups 2>/dev/null|cut -f1)
+> +endif
+> 
+> +ifdef $(CROSS_COMPILE)
+> +ifeq ($(CHECK_CGROUP),cgroup)
+> +SUBDIRS += cgroup
+> +SUBDIRS += cpuctl
+> +SUBDIRS += memctl
+> +SUBDIRS += io-throttle
+> +SUBDIRS += freezer
+> +SUBDIRS += cpuset
+> +else
+> +$(info "Kernel is not compiled with control cgroup support")
+> +endif
+> +else
+>  ifeq ($(CHECK_CGROUP),cgroup)
+>  SUBDIRS += cgroup
+>  else
+> @@ -36,6 +52,7 @@
+>  else
+>  $(info "Kernel is not compiled with cpuset resource controller support")
+>  endif
+> +endif
+> 
+>  # If at least one of the controllers is available then build libcontrollers.
+>  ifneq ($(SUBDIRS),)
+> ------------------------------------------------------------------------------
+> OpenSolaris 2009.06 is a cutting edge operating system for enterprises 
+> looking to deploy the next generation of Solaris that includes the latest 
+> innovations from Sun and the OpenSource community. Download a copy and 
+> enjoy capabilities such as Networking, Storage and Virtualization. 
+> Go to: http://p.sf.net/sfu/opensolaris-get
+> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-thanks,
--serge
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing 
-server and web deployment.
-http://p.sf.net/sfu/businessobjects
+OpenSolaris 2009.06 is a cutting edge operating system for enterprises 
+looking to deploy the next generation of Solaris that includes the latest 
+innovations from Sun and the OpenSource community. Download a copy and 
+enjoy capabilities such as Networking, Storage and Virtualization. 
+Go to: http://p.sf.net/sfu/opensolaris-get
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
