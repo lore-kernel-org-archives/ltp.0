@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1MJmDt-0005gS-4K
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 10:30:29 +0000
-Received: from mail-gx0-f218.google.com ([209.85.217.218])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MJmDs-0004Zx-9t
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 10:30:29 +0000
-MIME-Version: 1.0
-In-Reply-To: <1245921066.5542.52.camel@subratamodak.linux.ibm.com>
-References: <f5a7b3810906231038l233636ecy2af34d42a63b9031@mail.gmail.com>
-	<1245921066.5542.52.camel@subratamodak.linux.ibm.com>
-Date: Thu, 25 Jun 2009 16:00:27 +0530
-Message-ID: <f5a7b3810906250330u2ba9b08dq847d531093714055@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Subject: Re: [LTP] [FIX PATCHES] All patches
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <iwamatsu.nobuhiro@renesas.com>) id 1MC7IM-0005fw-1q
+	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2009 07:23:26 +0000
+Received: from mail.renesas.com ([202.234.163.13] helo=mail01.idc.renesas.com)
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MC7IK-0005i6-8D
+	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2009 07:23:26 +0000
+Date: Thu, 04 Jun 2009 16:23:17 +0900
+From: Nobuhiro Iwamatsu <iwamatsu.nobuhiro@renesas.com>
+Message-id: <4A277665.1080402@renesas.com>
+MIME-version: 1.0
+Subject: [LTP] [RFC][PATCH] Add cpu architecrute check
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,61 +25,116 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sf.net>, Mike Frysinger <vapier@gentoo.org>, Jiri Palecek <jpalecek@web.de>
+To: ltp-list@lists.sourceforge.net
 
-Hi Subrata,
+Some system call test program depends cpu architecture.
+We cannot compile these, and there is a case to fail in a test even if
+We compile it.
+This check cpu architecture and build check in Makefile.
+This didn't check all syscall and test cases.
 
-You may get patch conflict for ltp-fix-set_thread_area.patch
+Signed-off-by: Nobuhiro Iwamatsu <iwamatsu.nobuhiro@renesas.com>
+---
+ Makefile                                           |   10 +++++++++-
+ testcases/kernel/syscalls/fallocate/Makefile       |    6 ++++++
+ testcases/kernel/syscalls/set_thread_area/Makefile |    6 ++++++
+ testcases/kernel/syscalls/sgetmask/Makefile        |    6 ++++++
+ 4 files changed, 27 insertions(+), 1 deletions(-)
 
-Because there is one more patch from Jiri Palecek
-[PATCH] Use present autoconf test for asm/ldt.h in set_thread_area*
-tests to prevent build failures (Jiri Palecek >)
+diff --git a/Makefile b/Makefile
+index 4cf124b..5243290 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,5 +1,13 @@
+ # See toplevel INSTALL for build info
 
-Please review the same.
-If you have any issue please let me know.
++ifndef ARCH
++# copy from Makefile in linux kernel
++ARCH := $(shell uname -m | sed -e s/i.86/i386/ -e s/sun4u/sparc64/ \
++	-e s/arm.*/arm/ -e s/sa110/arm/ \
++	-e s/s390x/s390/ -e s/parisc64/parisc/ \
++	-e s/ppc.*/powerpc/ -e s/mips.*/mips/ \
++	-e s/sh[234].*/sh/ )
++endif
+ ifdef CROSS_COMPILE
+ CROSS_COMPILER = $(CROSS_COMPILE)
+ endif
+@@ -12,7 +20,7 @@ endif
+ HAS_NUMA=$(shell sh tools/scripts/numa_test.sh)
 
+ export CFLAGS += -Wall $(CROSS_CFLAGS)
+-export CC AR RANLIB CPPFLAGS LDFLAGS HAS_NUMA
++export CC AR RANLIB CPPFLAGS LDFLAGS HAS_NUMA ARCH
 
-Best regards
-Naresh Kamboju
+ -include config.mk
 
+diff --git a/testcases/kernel/syscalls/fallocate/Makefile b/testcases/kernel/syscalls/fallocate/Makefile
+index d6016be..e16c722 100644
+--- a/testcases/kernel/syscalls/fallocate/Makefile
++++ b/testcases/kernel/syscalls/fallocate/Makefile
+@@ -20,8 +20,14 @@
+ CFLAGS += -I../../../../include -Wall
+ LDLIBS += -L../../../../lib -lltp
 
-On Thu, Jun 25, 2009 at 2:41 PM, Subrata
-Modak<subrata@linux.vnet.ibm.com> wrote:
-> On Tue, 2009-06-23 at 23:08 +0530, naresh kamboju wrote:
->> Hi Subrata,
->>
->> To make your job easy,
->> I have attached following patched to fix system call number to
->> __NR_syscall representation.
->> You can commit all these patches.
->>
->
-> Ok, thanks.
->
-> Regards--
-> Subrata
->
->> LIST:
->>
->> ltp-fix-add_key.patch
->> ltp-fix-bdflush.patch
->> ltp-fix-keyctl.patch
->> ltp-fix-newuname.patch
->> ltp-fix-rt_sigprocmask.patch
->> ltp-fix-rt_sigsuspend.patch
->> ltp-fix-set_thread_area.patch
->> ltp-fix-set_tid_address.patch
->> ltp-fix-ssetmask.patch
->> ltp-fix-tkill.patch
->>
->>
->> Best regards
->> Naresh Kamboju
->
->
++# This system call is suported in i386, x86_64 and ppc only.
++ifneq (,$(findstring $(ARCH), i386 x86_64 ppc))
+ SRCS    = $(wildcard *.c)
+ TARGETS = $(patsubst %.c,%,$(SRCS))
++else
++SRCS    =
++TARGETS =
++endif
+
+ all: $(TARGETS)
+
+diff --git a/testcases/kernel/syscalls/set_thread_area/Makefile b/testcases/kernel/syscalls/set_thread_area/Makefile
+index b5289a9..6342839 100644
+--- a/testcases/kernel/syscalls/set_thread_area/Makefile
++++ b/testcases/kernel/syscalls/set_thread_area/Makefile
+@@ -19,8 +19,14 @@
+ CFLAGS += -I../../../../include -Wall
+ LDLIBS += -L../../../../lib -lltp
+
++# This system call is supported in i386 and x86_64 only.
++ifneq (,$(findstring $(ARCH), i386 x86_64))
+ SRCS    = $(wildcard *.c)
+ TARGETS = $(patsubst %.c,%,$(SRCS))
++else
++SRCS    =
++TARGETS =
++endif
+
+ all: $(TARGETS)
+
+diff --git a/testcases/kernel/syscalls/sgetmask/Makefile b/testcases/kernel/syscalls/sgetmask/Makefile
+index b5289a9..f684be8 100644
+--- a/testcases/kernel/syscalls/sgetmask/Makefile
++++ b/testcases/kernel/syscalls/sgetmask/Makefile
+@@ -19,8 +19,14 @@
+ CFLAGS += -I../../../../include -Wall
+ LDLIBS += -L../../../../lib -lltp
+
++# This system call does not support x86_64.
++ifeq (,$(findstring $(ARCH),x86_64))
+ SRCS    = $(wildcard *.c)
+ TARGETS = $(patsubst %.c,%,$(SRCS))
++else
++SRCS    =
++TARGETS =
++endif
+
+ all: $(TARGETS)
+
+-- 
+1.6.3.1
+
 
 ------------------------------------------------------------------------------
+OpenSolaris 2009.06 is a cutting edge operating system for enterprises 
+looking to deploy the next generation of Solaris that includes the latest 
+innovations from Sun and the OpenSource community. Download a copy and 
+enjoy capabilities such as Networking, Storage and Virtualization. 
+Go to: http://p.sf.net/sfu/opensolaris-get
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
