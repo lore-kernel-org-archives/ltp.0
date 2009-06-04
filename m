@@ -1,26 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1MIZjZ-00009C-Vr
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 02:58:13 +0000
-Received: from fmmailgate02.web.de ([217.72.192.227])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MIZjY-0003Ew-3s
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 02:58:13 +0000
-Received: from smtp06.web.de (fmsmtp06.dlan.cinetic.de [172.20.5.172])
-	by fmmailgate02.web.de (Postfix) with ESMTP id D0FB61043907E
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 22 Jun 2009 02:32:48 +0200 (CEST)
-Received: from [83.208.36.163] (helo=debian)
-	by smtp06.web.de with asmtp (WEB.DE 4.110 #277) id 1MIXSq-0006E0-00
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 02:32:48 +0200
-Date: Wed, 17 Jun 2009 20:40:43 +0200
-From: "Jiri Palecek >" <"<jirka"@suse.de>(none)
-MIME-Version: 1.0
-Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-Resent-Message-ID: <op.uvwg9bqqlwynca@debian>
-Subject: [LTP] [PATCH] Fix makefiles ignoring build failures
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MC9EV-0001bz-53
+	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2009 09:27:35 +0000
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MC9ER-00051j-Fh
+	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2009 09:27:35 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <1243434187.10447.15.camel@subratamodak.linux.ibm.com>
+References: <d51f89b0905130216h36e32efbwf48f241f2d961a0a@mail.gmail.com>
+	<20090513.225510.104053150.caiqian@cclom.cn>
+	<d51f89b0905180455w514b014boedb4670610987533@mail.gmail.com>
+	<20090518.192133.233689723.caiqian@cclom.cn>
+	<1242729086.5961.43.camel@subratamodak.linux.ibm.com>
+	<d51f89b0905252140y39ed0666k7c8ec1ce95807e55@mail.gmail.com>
+	<1243340568.6293.22.camel@subratamodak.linux.ibm.com>
+	<d51f89b0905270018u1b447334qf38528f8dc0ed7aa@mail.gmail.com>
+	<1243434187.10447.15.camel@subratamodak.linux.ibm.com>
+Date: Thu, 04 Jun 2009 14:57:23 +0530
+Message-Id: <1244107643.4879.9.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Reg: Script to extract description of test
+	case	from	LTPROOT/doc/testcases/*.txt files
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,285 +34,127 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: ltp-list-bounces@lists.sourceforge.net
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-Cc: ltp-list@lists.sourceforge.net
-Message-ID: <20090617184043.DQpRfPJDQtSGItYYGegT7NEP72SyLgAfwghzCmkj6XI@z>
+To: rohit verma <rohit.170309@gmail.com>
+Cc: ltp-list <ltp-list@lists.sf.net>, Mike Frysinger <vapier@gentoo.org>
 
-Hello,
-
-some makefiles ignore errors from commads ran in shell loops. This patch fixes that.
-
-Regards
-    Jiri Palecek
-
-Signed-off-by: Jiri Palecek <jpalecek@web.de>
----
- doc/man1/Makefile                                  |    2 +-
- doc/man3/Makefile                                  |    2 +-
- include/Makefile                                   |    2 +-
- testcases/ballista/ballista/MakefileTarget.dist    |    2 +-
- testcases/commands/unzip/Makefile                  |    2 +-
- testcases/kernel/containers/netns/Makefile         |    2 +-
- testcases/kernel/controllers/cpuset/Makefile       |    4 ++--
- .../cpuset/cpuset_base_ops_test/Makefile           |    2 +-
- .../cpuset/cpuset_exclusive_test/Makefile          |    2 +-
- .../cpuset/cpuset_hierarchy_test/Makefile          |    2 +-
- .../cpuset/cpuset_hotplug_test/Makefile            |    2 +-
- .../cpuset/cpuset_inherit_test/Makefile            |    2 +-
- .../kernel/controllers/cpuset/cpuset_lib/Makefile  |    2 +-
- .../cpuset/cpuset_load_balance_test/Makefile       |    2 +-
- .../cpuset/cpuset_syscall_test/Makefile            |    2 +-
- testcases/kernel/fs/scsi/ltpscsi/Makefile          |   10 +++++-----
- 16 files changed, 21 insertions(+), 21 deletions(-)
-
-diff --git a/doc/man1/Makefile b/doc/man1/Makefile
-index d11ac50..87f4e59 100644
---- a/doc/man1/Makefile
-+++ b/doc/man1/Makefile
-@@ -6,7 +6,7 @@ MANPAGES=ltp-bump.1 doio.1 iogen.1 ltp-pan.1
- all:
- 
- install: $(MANPAGES)
--	for i in $(MANPAGES); do \
-+	@set -e; for i in $(MANPAGES); do \
- 		install -D -m 644 $$i $(DESTDIR)/$(PREFIX)/share/man/man1/$$i; \
- 	done
- 
-diff --git a/doc/man3/Makefile b/doc/man3/Makefile
-index 987ddc5..bcd2a26 100644
---- a/doc/man3/Makefile
-+++ b/doc/man3/Makefile
-@@ -9,7 +9,7 @@ MANPAGES=forker.3 get_attrib.3 parse_open_flags.3 parse_opts.3 \
- all:
- 
- install: $(MANPAGES)
--	for i in $(MANPAGES); do \
-+	@set -e; for i in $(MANPAGES); do \
- 		install -D -m 644 $$i $(DESTDIR)/$(PREFIX)/share/man/man3/$$i; \
- 	done
- 
-diff --git a/include/Makefile b/include/Makefile
-index 461eb93..b5944aa 100644
---- a/include/Makefile
-+++ b/include/Makefile
-@@ -10,7 +10,7 @@ HEADERS=compiler.h dataascii.h databin.h file_lock.h forker.h open_flags.h \
- all:
- 
- install: $(HEADERS)
--	for i in $(HEADERS); do \
-+	@set -e; for i in $(HEADERS); do \
- 		install -D -m 644 $$i $(DESTDIR)/$(PREFIX)/include/ltp/$$i; \
- 	done
- 
-diff --git a/testcases/ballista/ballista/MakefileTarget.dist b/testcases/ballista/ballista/MakefileTarget.dist
-index a5a70e3..e76cc55 100644
---- a/testcases/ballista/ballista/MakefileTarget.dist
-+++ b/testcases/ballista/ballista/MakefileTarget.dist
-@@ -104,7 +104,7 @@ executeTestCase.h : dataTypes
- 	/bin/echo "// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA." >> executeTestCase.h
- 	/bin/echo " " >> executeTestCase.h
- 	/bin/echo '#'include \"userIncludes.h\" >> executeTestCase.h
--	for A in `echo ${OBLIST:.o=.h}`; do \
-+	@set -e; for A in `echo ${OBLIST:.o=.h}`; do \
- 		/bin/echo '#'include \"$$A\" >> executeTestCase.h; \
- 	done
- 
-diff --git a/testcases/commands/unzip/Makefile b/testcases/commands/unzip/Makefile
-index a001ffa..7c7aa60 100644
---- a/testcases/commands/unzip/Makefile
-+++ b/testcases/commands/unzip/Makefile
-@@ -20,7 +20,7 @@ tst_unzip.dir: unzip_genfile.sh
- 	./unzip_genfile.sh tst_unzip.dir
- 
- install: all
--	for i in $(BINS) ; do \
-+	@set -e; for i in $(BINS); do \
- 		ln -f $$i ../../bin/$$i ; \
- 	done
- 
-diff --git a/testcases/kernel/containers/netns/Makefile b/testcases/kernel/containers/netns/Makefile
-index 4d00bf2..f12fa2d 100644
---- a/testcases/kernel/containers/netns/Makefile
-+++ b/testcases/kernel/containers/netns/Makefile
-@@ -44,7 +44,7 @@ all: $(TARGETS)
- 
- install:
- ifeq ($(HAS_UNSHARE),y)
--	for i in $(TARGETS) $(SCRIPTS) runnetnstest.sh check_netns_enabled; do ln -f $$i ../../../bin/$$i ; chmod +x runnetnstest.sh ; done
-+	@set -e; for i in $(TARGETS) $(SCRIPTS) runnetnstest.sh check_netns_enabled; do ln -f $$i ../../../bin/$$i ; chmod +x runnetnstest.sh ; done
- endif
- 
- clean:
-diff --git a/testcases/kernel/controllers/cpuset/Makefile b/testcases/kernel/controllers/cpuset/Makefile
-index 036af7f..6621667 100644
---- a/testcases/kernel/controllers/cpuset/Makefile
-+++ b/testcases/kernel/controllers/cpuset/Makefile
-@@ -4,11 +4,11 @@ SUBDIRS += cpuset_hotplug_test cpuset_load_balance_test
- SUBDIRS += cpuset_memory_pressure_test cpuset_memory_spread_test
- SUBDIRS += cpuset_memory_test
- all:
--	@set -e;
-+	@set -e; \
- 	for i in $(SUBDIRS); do $(MAKE) -C $$i $@ ;done;
- 
- install:
--	@set -e;
-+	@set -e; \
- 	for i in $(SUBDIRS); do $(MAKE) -C $$i install ; done;
- 	ln -f run_cpuset_test.sh ../../../bin/run_cpuset_test.sh;
- 	chmod +x run_cpuset_test.sh;
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/Makefile b/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/Makefile
-index 592d716..70d1bc2 100644
---- a/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/Makefile
-+++ b/testcases/kernel/controllers/cpuset/cpuset_base_ops_test/Makefile
-@@ -7,6 +7,6 @@ clean:
- 	@true
- 
- install:
--	@set -e;
-+	@set -e; \
- 	for i in $(SRCS); do ln -f $$i ../../../../bin/$$i; chmod +x $$i; done
- 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_exclusive_test/Makefile b/testcases/kernel/controllers/cpuset/cpuset_exclusive_test/Makefile
-index 592d716..70d1bc2 100644
---- a/testcases/kernel/controllers/cpuset/cpuset_exclusive_test/Makefile
-+++ b/testcases/kernel/controllers/cpuset/cpuset_exclusive_test/Makefile
-@@ -7,6 +7,6 @@ clean:
- 	@true
- 
- install:
--	@set -e;
-+	@set -e; \
- 	for i in $(SRCS); do ln -f $$i ../../../../bin/$$i; chmod +x $$i; done
- 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_hierarchy_test/Makefile b/testcases/kernel/controllers/cpuset/cpuset_hierarchy_test/Makefile
-index 592d716..70d1bc2 100644
---- a/testcases/kernel/controllers/cpuset/cpuset_hierarchy_test/Makefile
-+++ b/testcases/kernel/controllers/cpuset/cpuset_hierarchy_test/Makefile
-@@ -7,6 +7,6 @@ clean:
- 	@true
- 
- install:
--	@set -e;
-+	@set -e; \
- 	for i in $(SRCS); do ln -f $$i ../../../../bin/$$i; chmod +x $$i; done
- 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/Makefile b/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/Makefile
-index 24058b4..c4b6bba 100644
---- a/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/Makefile
-+++ b/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/Makefile
-@@ -16,7 +16,7 @@ clean:
- 	rm -f $(TARGETS) $(OBJECTS) $(LIBOBJECTS)
- 
- install:
--	@set -e;
-+	@set -e; \
- 	for i in $(TARGETS); do ln -f $$i ../../../../bin/$$i; chmod +x $$i; done
- 	ln -f cpuset_hotplug_test.sh ../../../../bin/cpuset_hotplug_test.sh;
- 	chmod +x cpuset_hotplug_test.sh;
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_inherit_test/Makefile b/testcases/kernel/controllers/cpuset/cpuset_inherit_test/Makefile
-index 592d716..70d1bc2 100644
---- a/testcases/kernel/controllers/cpuset/cpuset_inherit_test/Makefile
-+++ b/testcases/kernel/controllers/cpuset/cpuset_inherit_test/Makefile
-@@ -7,6 +7,6 @@ clean:
- 	@true
- 
- install:
--	@set -e;
-+	@set -e; \
- 	for i in $(SRCS); do ln -f $$i ../../../../bin/$$i; chmod +x $$i; done
- 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_lib/Makefile b/testcases/kernel/controllers/cpuset/cpuset_lib/Makefile
-index 1b3f7a7..43df1bc 100644
---- a/testcases/kernel/controllers/cpuset/cpuset_lib/Makefile
-+++ b/testcases/kernel/controllers/cpuset/cpuset_lib/Makefile
-@@ -11,6 +11,6 @@ clean:
- 	rm -f $(TARGETS)
- 
- install:
--	@set -e;
-+	@set -e; \
- 	ln -f cpuset_funcs.sh ../../../../bin/cpuset_funcs.sh;
- 	chmod +x cpuset_funcs.sh;
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/Makefile b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/Makefile
-index 4aaeeb9..923d065 100644
---- a/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/Makefile
-+++ b/testcases/kernel/controllers/cpuset/cpuset_load_balance_test/Makefile
-@@ -16,7 +16,7 @@ clean:
- 	rm -f $(TARGETS) $(OBJECTS) $(LIBOBJECTS)
- 
- install:
--	@set -e;
-+	@set -e; \
- 	for i in $(TARGETS); do ln -f $$i ../../../../bin/$$i; chmod +x $$i; done
- 	ln -f cpuset_load_balance_test.sh ../../../../bin/cpuset_load_balance_test.sh;
- 	ln -f cpuset_sched_domains_test.sh ../../../../bin/cpuset_sched_domains_test.sh;
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
-index 9f0a3f3..fc5f2e7 100644
---- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
-+++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
-@@ -11,6 +11,6 @@ clean:
- 	rm -rf cpuset_syscall_test
- 
- install:
--	@set -e;
-+	@set -e; \
- 	for i in $(SRCS); do ln -f $$i ../../../../bin/$$i; chmod +x $$i; done
- 	ln -f cpuset_syscall_test ../../../../bin/cpuset_syscall_test;
-diff --git a/testcases/kernel/fs/scsi/ltpscsi/Makefile b/testcases/kernel/fs/scsi/ltpscsi/Makefile
-index 40dfc9e..c635c67 100644
---- a/testcases/kernel/fs/scsi/ltpscsi/Makefile
-+++ b/testcases/kernel/fs/scsi/ltpscsi/Makefile
-@@ -18,7 +18,7 @@ LDFLAGS =
- all: $(EXECS)
- 
- depend dep:
--	for i in *.c; do $(CC) $(INCLUDES) $(CFLAGS) -M $$i; \
-+	@set -e; for i in *.c; do $(CC) $(INCLUDES) $(CFLAGS) -M $$i; \
- 	done > .depend
- 
- clean:
-@@ -29,21 +29,21 @@ scsimain: scsimain.o sg_err.o llseek.o
- 
- install: $(EXECS)
- 	install -d $(INSTDIR)
--	for name in $^; \
-+	@set -e; for name in $^; \
- 	 do install -s -o root -g root -m 755 $$name $(INSTDIR); \
- 	done
- 	install -d $(MANDIR)/$(MAN_PREF)
--	for mp in $(MAN_PGS); \
-+	@set -e; for mp in $(MAN_PGS); \
- 	 do install -o root -g root -m 644 $$mp $(MANDIR)/$(MAN_PREF); \
- 	 gzip -9f $(MANDIR)/$(MAN_PREF)/$$mp; \
- 	done
- 
- uninstall:
- 	dists="$(EXECS)"; \
--	for name in $$dists; do \
-+	@set -e; for name in $$dists; do \
- 	 rm -f $(INSTDIR)/$$name; \
- 	done
--	for mp in $(MAN_PGS); do \
-+	@set -e; for mp in $(MAN_PGS); do \
- 	 rm -f $(MANDIR)/$(MAN_PREF)/$$mp.gz; \
- 	done
- 
--- 
-1.6.3.1
-
-
-
-
-------------------------------------------------------------------------------
-Are you an open source citizen? Join us for the Open Source Bridge conference!
-Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
-Need another reason to go? 24-hour hacker lounge. Register today!
-http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gV2VkLCAyMDA5LTA1LTI3IGF0IDE5OjUzICswNTMwLCBTdWJyYXRhIE1vZGFrIHdyb3RlOiAK
+PiBPbiBXZWQsIDIwMDktMDUtMjcgYXQgMDA6MTggLTA3MDAsIHJvaGl0IHZlcm1hIHdyb3RlOiAK
+PiA+IEhpIFN1YnJhdGEsCj4gPiAKPiA+IEFzIHRoZSBwdXJwb3NlIG9mIHRoaXMgZG9jdW1lbnQg
+aXMgdG8gYnJpZWYgdGhlIGRlc2NyaXB0aW9uIG9mIGVhY2gKPiA+IHRlc3QgY2FzZSB0byB1c2Vy
+LiBJIGZlZWwgdGhhdCB5b3VyIGZvcm1hdCB3b3VsZCBkZWNyZWFzZSB0aGUKPiA+IHJlYWRhYmls
+aXR5IGluIGRvY3VtZW50IC4KPiA+IAo+ID4gU28gc2hvdWxkIHdlIGluY2x1ZGUgZm9sbG93aW5n
+IHRhZ3MgICAidGVzdF9sb2NhdGlvbiIsCj4gPiAidGVzdF9jbWRmaWxlX25hbWUiLCAidGVzdF9j
+bWRmaWxlX2VudHJ5IiwKPiA+ICJFeGVjdXRlX3Rocm91Z2hfY29tbWFuZGxpbmUiLCAiRXhlY3V0
+ZV90aHJvdWdoX3J1bmx0cCIuIG9yIG9ubHkKPiA+IGRlc2NyaXB0aW9uIHRhZyB3b3VsZCBiZSBz
+dWZmaWNpZW50Lgo+IAo+IEZpbmUgdGhlbiwgYnV0IGkgd291bGQgaW5zaXN0IHlvdSB0byBpbmNs
+dWRlICJ0ZXN0bmFtZSIgJgo+ICJ0ZXN0X2xvY2F0aW9uIiBhcGFydCBmcm9tICJ0ZXN0X2Rlc2Ny
+aXB0aW9uIi4KClJvaGl0LAoKQXJlIHlvdSB3b3JraW5nIG9uIHRoaXMgPwoKUmVnYXJkcy0tClN1
+YnJhdGEKCj4gCj4gUmVnYXJkcy0tCj4gU3VicmF0YQo+IAo+ID4gCj4gPiBSZWdhcmRzLAo+ID4g
+cm9oaXQKPiA+IAo+ID4gCj4gPiBPbiBUdWUsIE1heSAyNiwgMjAwOSBhdCA1OjIyIEFNLCBTdWJy
+YXRhIE1vZGFrCj4gPiA8c3VicmF0YUBsaW51eC52bmV0LmlibS5jb20+IHdyb3RlOgo+ID4gPiBP
+biBNb24sIDIwMDktMDUtMjUgYXQgMjE6NDAgLTA3MDAsIHJvaGl0IHZlcm1hIHdyb3RlOgo+ID4g
+Pj4gSGkgU3VicmF0YSwKPiA+ID4+Cj4gPiA+PiBJIHJlcXVlc3QgeW91IHRvIGZpbmFsaXplIHRo
+ZSBmb3JtYXQgb2YgdGhlIGRvY3VtZW50YXRpb24gQVNBUC4KPiA+ID4KPiA+ID4gSSB3b3VsZCBs
+aWtlIHRvIHNlZSBzb21ldGhpbmcgbGlrZToKPiA+ID4KPiA+ID4gPHRlc3RuYW1lPWFib3J0KDMp
+Pgo+ID4gPiAgPHRlc3RfZGVzY3JpcHRpb249IkJhc2ljIHRlc3QgZm9yIGFib3J0KDMpIj4KPiA+
+ID4gIDxcdGVzdF9kZXNjcmlwdGlvbj4KPiA+ID4gIDx0ZXN0X2xvY2F0aW9uPSJsdHAvdGVzdGNh
+c2VzL2tlcm5lbC9zeXNjYWxscy9hYm9ydC9hYm9ydDAxLmMiPgo+ID4gPiAgPFx0ZXN0X2xvY2F0
+aW9uPgo+ID4gPiAgPHRlc3RfY21kZmlsZV9uYW1lPSJsdHAvcnVudGVzdC9zeXNjYWxscyI+Cj4g
+PiA+ICA8XHRlc3RfY21kZmlsZV9uYW1lPgo+ID4gPiAgPHRlc3RfY21kZmlsZV9lbnRyeT0iYWJv
+cnQwMSB1bGltaXQgLWMgMTAyNDthYm9ydDAxIj4KPiA+ID4gIDxcdGVzdF9jbWRmaWxlX2VudHJ5
+Pgo+ID4gPiAgPEV4ZWN1dGVfdGhyb3VnaF9jb21tYW5kbGluZT0idWxpbWl0IC1jCj4gPiA+IDEw
+MjQ7IC4vbHRwL3Rlc3RjYXNlcy9iaW4vYWJvcnQwMSI+Cj4gPiA+ICA8XEV4ZWN1dGVfdGhyb3Vn
+aF9jb21tYW5kbGluZT4KPiA+ID4gIDxFeGVjdXRlX3Rocm91Z2hfcnVubHRwPSIuL3J1bmx0cCAt
+cyBhYm9ydDAxIj4KPiA+ID4gIDxcRXhlY3V0ZV90aHJvdWdoX3J1bmx0cD4KPiA+ID4gPFx0ZXN0
+bmFtZT4KPiA+ID4KPiA+ID4gVGhlIGJhc2ljIGlkZWEgaXMgdG8gaW5jbHVkZSBhbGwgaW1wb3J0
+YW50IGluZm9ybWF0aW9uIGFzIHdlIGNhbiB3aGVuIHdlCj4gPiA+IGFyZSBkb2luZyBzb21lIHBh
+dGNoaW5nIG9uIHRoaXMuIExldCBtZSBrbm93IGhvdyBvdGhlcnMgZmVlbCwgYW5kIGhvdyB3ZQo+
+ID4gPiBjYW4gYWNoaWV2ZSB0aGlzLgo+ID4gPgo+ID4gPiBSZWdhcmRzLS0KPiA+ID4gU3VicmF0
+YQo+ID4gPgo+ID4gPj4KPiA+ID4+IEx0cC1saXN0IDogUGxlYXNlIHByb3ZpZGUgdGhlIGlucHV0
+cyByZWdhcmRpbmcgdGhlIHRleHQgZG9jdW1lbnRhdGlvbiBmb3JtYXQuCj4gPiA+Pgo+ID4gPj4g
+UmVnYXJkcywKPiA+ID4+IHJvaGl0Cj4gPiA+Pgo+ID4gPj4gT24gVHVlLCBNYXkgMTksIDIwMDkg
+YXQgMzozMSBBTSwgU3VicmF0YSBNb2Rhawo+ID4gPj4gPHN1YnJhdGFAbGludXgudm5ldC5pYm0u
+Y29tPiB3cm90ZToKPiA+ID4+ID4gSGkgUm9oaXQsCj4gPiA+PiA+Cj4gPiA+PiA+IE9uIE1vbiwg
+MjAwOS0wNS0xOCBhdCAxOToyMSArMDgwMCwgQ0FJIFFpYW4gd3JvdGU6Cj4gPiA+PiA+PiBGcm9t
+OiByb2hpdCB2ZXJtYSA8cm9oaXQuMTcwMzA5QGdtYWlsLmNvbT4KPiA+ID4+ID4+IFN1YmplY3Q6
+IFJlOiBSZWc6IFNjcmlwdCB0byBleHRyYWN0IGRlc2NyaXB0aW9uIG9mIHRlc3QgY2FzZSBmcm9t
+IExUUFJPT1QvZG9jL3Rlc3RjYXNlcy8qLnR4dCBmaWxlcwo+ID4gPj4gPj4gRGF0ZTogTW9uLCAx
+OCBNYXkgMjAwOSAwNDo1NTo1NCAtMDcwMAo+ID4gPj4gPj4KPiA+ID4+ID4+ID4gRGVhciBTdWJy
+YXRhL1FpYW4sCj4gPiA+PiA+PiA+Cj4gPiA+PiA+PiA+IEkgYW0gdHJ5aW5nIHRvIGRldmVsb3Ag
+c2NyaXB0IHdoaWNoIHdvdWxkIGV4dHJhY3RzIGRlc2NyaXB0aW9uIGluZm9ybWF0aW9uCj4gPiA+
+PiA+PiA+IGFib3V0IHVzZXIgcmVxdWlyZWQgdGVzdCBjYXNlIGZyb20gTFRQUk9PVC9kb2MvdGVz
+dGNhc2VzLyBmb2xkZXIuCj4gPiA+PiA+PiA+Cj4gPiA+PiA+PiA+IFNvIHRvIG1ha2UgdGhlIGRl
+c2NyaXB0aW9uIHRleHQgZmlsZSAgYXMgc3RhbmRhcmQgZmlsZSwgY2FuIHdlIHJlcHJlc2VudCB0
+aGUKPiA+ID4+ID4+ID4gZGVzY3JpcHRpb24gYXMgbWVudGlvbmVkIGJlbG93Lgo+ID4gPj4gPj4g
+Pgo+ID4gPj4gPj4gPiBGb3IgZXhhbXBsZSBpbiBzeXNjYWxscyBjYXRlZ29yeToKPiA+ID4+ID4+
+ID4KPiA+ID4+ID4+ID4gQ3VycmVudGx5IGF2YWlsYWJsZSBmb3JtYXQgb2YgZGVzY3JpcHRpb24g
+aW4gTFRQIGFzIGZvbGxvd3MuCj4gPiA+PiA+PiA+Cj4gPiA+PiA+PiA+ICAgYWJvcnQwMQo+ID4g
+Pj4gPj4gPiAgICBCYXNpYyB0ZXN0IGZvciBhYm9ydCgzKS4KPiA+ID4+ID4+ID4KPiA+ID4+ID4+
+ID4gICBhY2NlcHQwMQo+ID4gPj4gPj4gPiAgICBWZXJpZnkgdGhhdCBhY2NlcHQoKSByZXR1cm5z
+IHRoZSBwcm9wZXIgZXJybm8gZm9yIHZhcmlvdXMgZmFpbHVyZSBjYXNlcwo+ID4gPj4gPj4gPgo+
+ID4gPj4gPj4gPgo+ID4gPj4gPj4gPiBUbyBtYWtlIGl0IGluIGNvbnNpc3RlbnQgd2F5LCBkZXNj
+cmlwdGlvbiBzaG91bGQgYmUgZW5jbG9zZWQgYnkgZXhlY3V0YWJsZXMKPiA+ID4+ID4+ID4gYXMg
+Zm9sbG93cy4KPiA+ID4+ID4+ID4KPiA+ID4+ID4+ID4gIDxhYm9ydDAxPgo+ID4gPj4gPj4gPiAg
+ICBCYXNpYyB0ZXN0IGZvciBhYm9ydCgzKS4KPiA+ID4+ID4+ID4gIDxcYWJvcnQwMT4KPiA+ID4+
+ID4+ID4KPiA+ID4+ID4+ID4gIDxhY2NlcHQwMT4KPiA+ID4+ID4+ID4gICAgVmVyaWZ5IHRoYXQg
+YWNjZXB0KCkgcmV0dXJucyB0aGUgcHJvcGVyIGVycm5vIGZvciB2YXJpb3VzIGZhaWx1cmUgY2Fz
+ZXMKPiA+ID4+ID4+ID4gIDxcYWNjZXB0MDE+Cj4gPiA+PiA+PiA+Cj4gPiA+PiA+PiA+IFBsZWFz
+ZSBjb25maXJtIGlmIHRoaXMgZm9ybWF0IGlzIE8uSyBvciBzdWdnZXN0IGFueSBvdGhlciBmb3Jt
+YXQgYnkgd2hpY2ggd2UKPiA+ID4+ID4+ID4gY2FuIGVhc2lseSBwYXJzZSB0aGUgdGVzdCBjYXNl
+cyBhbmQgZXh0cmFjdHMgdGhlIGRlc2NyaXB0aW9uLgo+ID4gPj4gPgo+ID4gPj4gPiBJdMWbIGFs
+d2F5cyBncmVhdCB0byBzZWUgc29tZWJvZHkgd29ya2luZyBvbiBMVFAgZG9jdW1lbnRhdGlvbi4g
+U28sIGxldHMKPiA+ID4+ID4gYXNrIHRoZSBjb21tdW5pdHkgYWxzbyBmb3IgdGhlaXIgb3Bpbmlv
+biBhcyB3ZWxsLiBDYW4gd2UgYWxzbyBpbmNsdWRlCj4gPiA+PiA+IHNvbWUgbW9yZSB0YWdzIGZv
+ciBtb3JlIGRlc2NyaXB0aXZlIGluZm8gPwo+ID4gPj4gPgo+ID4gPj4gPiBSZWdhcmRzLS0KPiA+
+ID4+ID4gU3VicmF0YQo+ID4gPj4gPgo+ID4gPj4gPj4gPgo+ID4gPj4gPj4KPiA+ID4+ID4+IExv
+b2tzIGdvb2QgZm9yIG1lLgo+ID4gPj4gPj4KPiA+ID4+ID4+IENBSSBRaWFuCj4gPiA+PiA+Pgo+
+ID4gPj4gPj4gPiBJZiB0aGlzIGZvcm1hdCBpcyBPLksgLCBJIHdvdWxkIHNlbmQgdGhlIHBhdGNo
+IGZvciB0aG9zZSB0ZXh0IGZpbGVzCj4gPiA+PiA+PiA+Cj4gPiA+PiA+PiA+IFJlZ2FyZHMsCj4g
+PiA+PiA+PiA+IFJvaGl0Cj4gPiA+PiA+PiA+Cj4gPiA+PiA+PiA+Cj4gPiA+PiA+PiA+Cj4gPiA+
+PiA+PiA+IE9uIFdlZCwgTWF5IDEzLCAyMDA5IGF0IDc6NTUgQU0sIENBSSBRaWFuIDxjYWlxaWFu
+QGNjbG9tLmNuPiB3cm90ZToKPiA+ID4+ID4+ID4KPiA+ID4+ID4+ID4+IEZyb206IHJvaGl0IHZl
+cm1hIDxyb2hpdC4xNzAzMDlAZ21haWwuY29tPgo+ID4gPj4gPj4gPj4gU3ViamVjdDogUmVnOiBT
+Y3JpcHQgdG8gZXh0cmFjdCBkZXNjcmlwdGlvbiBvZiB0ZXN0IGNhc2UgZnJvbQo+ID4gPj4gPj4g
+Pj4gTFRQUk9PVC9kb2MvdGVzdGNhc2VzLyoudHh0IGZpbGVzCj4gPiA+PiA+PiA+PiBEYXRlOiBX
+ZWQsIDEzIE1heSAyMDA5IDAyOjE2OjU3IC0wNzAwCj4gPiA+PiA+PiA+Pgo+ID4gPj4gPj4gPj4g
+PiBEZWFyIFN1YnJhdGEvcWlhbiwKPiA+ID4+ID4+ID4+ID4KPiA+ID4+ID4+ID4+ID4gQXMgaWYg
+d2UgcnVuIExUUCB0ZXN0Y2FzZXMsIG5vd2hlcmUgTFRQIHRlc3Qgc3VpdGUgcG9wdWxhdGVzIHRo
+ZQo+ID4gPj4gPj4gPj4gPiBkZXNjcmlwdGlvbiBvZiB0ZXN0Y2FzZXMgKGVpdGhlciBpbiAubG9n
+LCAub3V0cHV0LCAuSFRNTCBvciAuZmFpbGVkCj4gPiA+PiA+PiA+PiA+IHRlc3QgY2FzZXMgZmls
+ZXMpLgo+ID4gPj4gPj4gPj4gPgo+ID4gPj4gPj4gPj4gPiBEZXNjcmlwdGlvbiBvZiBlYWNoIHRl
+c3QgY2FzZSBpbiBjYXRlZ29yeSB3aXNlIGlzIGF2YWlsYWJsZSBpbgo+ID4gPj4gPj4gPj4gPiBM
+VFBST09UL2RvYy90ZXN0Y2FzZXMgZm9sZGVyLgo+ID4gPj4gPj4gPj4gPgo+ID4gPj4gPj4gPj4g
+PiBNeSBRdWVzdGlvbiA6IElzIHRoZXJlIGFueSByZWFkeS1tYWRlIHNjcmlwdCBhdmFpbGFibGUg
+dG8gZXh0cmFjdCB0aGUKPiA+ID4+ID4+ID4+ID4gZGVzY3JpcHRpb24gb2YgdXNlciByZXF1aXJl
+ZCB0ZXN0IGNhc2UgZnJvbSBhYm92ZSBzcGVjaWZpZWQgZm9sZGVyPwo+ID4gPj4gPj4gPj4gPgo+
+ID4gPj4gPj4gPj4gPiBJZiBzY3JpcHQgaXMgbm90IGF2YWlsYWJsZSwgY291bGQgeW91IHN1Z2dl
+c3QgdGhlIGRpcmVjdGlvbiB0byBleHRyYWN0Cj4gPiA+PiA+PiA+PiA+IGRlc2NyaXB0aW9uIG9m
+IHRlc3QgY2FzZXMuCj4gPiA+PiA+PiA+PiA+Cj4gPiA+PiA+PiA+PiA+Cj4gPiA+PiA+PiA+PiA+
+IFJlZ2FyZHMsCj4gPiA+PiA+PiA+PiA+IFJvaGl0Lgo+ID4gPj4gPj4gPj4KPiA+ID4+ID4+ID4+
+IE5vdCBJIGFtIGF3YXJlIG9mLiBTdWJyYXRhIG9yIHNvbWVvbmUgaW4gdGhlIGxpc3QgbWlnaHQg
+aGF2ZSBzb21lIGlkZWFzCj4gPiA+PiA+PiA+PiBmb3IgeW91Lgo+ID4gPj4gPj4gPj4KPiA+ID4+
+ID4+ID4+IENBSSBRaWFuCj4gPiA+PiA+PiA+Pgo+ID4gPj4gPgo+ID4gPj4gPgo+ID4gPgo+ID4g
+Pgo+IAo+IAo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+IFJlZ2lzdGVyIE5vdyBmb3IgQ3JlYXRp
+dml0eSBhbmQgVGVjaG5vbG9neSAoQ2FUKSwgSnVuZSAzcmQsIE5ZQy4gQ2FUIAo+IGlzIGEgZ2F0
+aGVyaW5nIG9mIHRlY2gtc2lkZSBkZXZlbG9wZXJzICYgYnJhbmQgY3JlYXRpdml0eSBwcm9mZXNz
+aW9uYWxzLiBNZWV0Cj4gdGhlIG1pbmRzIGJlaGluZCBHb29nbGUgQ3JlYXRpdmUgTGFiLCBWaXN1
+YWwgQ29tcGxleGl0eSwgUHJvY2Vzc2luZywgJiAKPiBpUGhvbmVEZXZDYW1wIGFzIHRoZXkgcHJl
+c2VudCBhbG9uZ3NpZGUgZGlnaXRhbCBoZWF2eXdlaWdodHMgbGlrZSBCYXJiYXJpYW4gCj4gR3Jv
+dXAsIFIvR0EsICYgQmlnIFNwYWNlc2hpcC4gaHR0cDovL3Auc2YubmV0L3NmdS9jcmVhdGl2aXR5
+Y2F0LWNvbSAKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+Xwo+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5l
+dAo+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0
+CgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk9wZW5Tb2xhcmlzIDIwMDkuMDYgaXMgYSBjdXR0aW5n
+IGVkZ2Ugb3BlcmF0aW5nIHN5c3RlbSBmb3IgZW50ZXJwcmlzZXMgCmxvb2tpbmcgdG8gZGVwbG95
+IHRoZSBuZXh0IGdlbmVyYXRpb24gb2YgU29sYXJpcyB0aGF0IGluY2x1ZGVzIHRoZSBsYXRlc3Qg
+Cmlubm92YXRpb25zIGZyb20gU3VuIGFuZCB0aGUgT3BlblNvdXJjZSBjb21tdW5pdHkuIERvd25s
+b2FkIGEgY29weSBhbmQgCmVuam95IGNhcGFiaWxpdGllcyBzdWNoIGFzIE5ldHdvcmtpbmcsIFN0
+b3JhZ2UgYW5kIFZpcnR1YWxpemF0aW9uLiAKR28gdG86IGh0dHA6Ly9wLnNmLm5ldC9zZnUvb3Bl
+bnNvbGFyaXMtZ2V0Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
+aHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
