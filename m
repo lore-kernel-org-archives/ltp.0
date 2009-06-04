@@ -1,23 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MGIIb-0007hZ-SJ
-	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:56:57 +0000
-Received: from [32.97.110.153] (helo=e35.co.us.ibm.com)
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MGHg5-0002G8-H8
-	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:17:10 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090612132102.32046.21700.sendpatchset@subratamodak.linux.ibm.com>
-References: <20090612132102.32046.21700.sendpatchset@subratamodak.linux.ibm.com>
-Date: Tue, 16 Jun 2009 00:45:37 +0530
-Message-Id: <1245093337.4871.37.camel@subratamodak.linux.ibm.com>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mpradeep@linux.vnet.ibm.com>) id 1MCA9Q-00027K-W5
+	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2009 10:26:24 +0000
+Received: from e28smtp05.in.ibm.com ([59.145.155.5])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MCA9M-0004Hf-Ar
+	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2009 10:26:24 +0000
+Received: from d28relay02.in.ibm.com (d28relay02.in.ibm.com [9.184.220.59])
+	by e28smtp05.in.ibm.com (8.13.1/8.13.1) with ESMTP id n54AQFVV015002
+	for <ltp-list@lists.sourceforge.net>; Thu, 4 Jun 2009 15:56:15 +0530
+Received: from d28av03.in.ibm.com (d28av03.in.ibm.com [9.184.220.65])
+	by d28relay02.in.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n54AQFCC2285628
+	for <ltp-list@lists.sourceforge.net>; Thu, 4 Jun 2009 15:56:15 +0530
+Received: from d28av03.in.ibm.com (loopback [127.0.0.1])
+	by d28av03.in.ibm.com (8.13.1/8.13.3) with ESMTP id n54AQEi6029637
+	for <ltp-list@lists.sourceforge.net>; Thu, 4 Jun 2009 20:26:14 +1000
+From: Munipradeep Beerakam <mpradeep@linux.vnet.ibm.com>
+In-Reply-To: <4A276FFC.9020807@renesas.com>
+References: <1244027049.16185.6.camel@munipradeep-laptop>
+	<4A276FFC.9020807@renesas.com>
+Date: Thu, 04 Jun 2009 15:56:32 +0530
+Message-Id: <1244111192.17248.0.camel@munipradeep-laptop>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Add eventfd2_03 test for eventfd2() syscall
-	[Earlier	Subject: (testing)improve support for semaphore-like
-	behavior]
-Reply-To: subrata@linux.vnet.ibm.com
+Subject: Re: [LTP] LTP May 2009 build failing on RHEL5.4 pre-Alpha
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,212 +35,54 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Davide Libenzi <davidel@xmailserver.org>
-Cc: ltp-list <ltp-list@lists.sf.net>, Michael Kerrisk <mtk.manpages@gmail.com>, Ulrich Drepper <drepper@redhat.com>
+To: Nobuhiro Iwamatsu <iwamatsu.nobuhiro@renesas.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Fri, 2009-06-12 at 18:51 +0530, Subrata Modak wrote: 
-> >On Thu, 2009-06-11 at 19:50 -0700, Davide Libenzi wrote:
-> >On Fri, 12 Jun 2009, Subrata Modak wrote:
-> > 
-> > > Hi Davide,
-> > > 
-> > > Your had introduced an improvement to support for semaphore-like
-> > > behavior in eventfd for linux-2.6.30. And also have a small test program
-> > > envisaged through:
-> > > http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=bcd0b235bf3808dec5115c381cd55568f63b85f0,
-> > > http://www.xmailserver.org/eventfd-sem.c,
-> > > 
-> > > Would you be willing to share this test program for inclusion in Linux
-> > > Test Project (http://ltp.sourceforge.net/) under GPLv2 ? If affirmative,
-> > > can you confirm by replying to this mail with your consent/Sign-off.
-> > 
-> > Sure, it's all yours ;)
-
-Thanks David.
-
-Regards--
-Subrata
-
-> 
-> So, here it goes. The following patch integrates this to LTP.
-> 
-> Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com> 
-> Original-author-and-copyright-holder: Davide Libenzi <davidel@xmailserver.org>
-> To: Davide Libenzi <davidel@xmailserver.org>
-> Cc: Michael Kerrisk <mtk.manpages@gmail.com>
-> Cc: Ulrich Drepper <drepper@redhat.com>
-> Cc: ltp-list <ltp-list@lists.sf.net>
-> ---
-> 
-> --- ltp-full-20090531.orig/runtest/syscalls	2009-06-12 17:03:15.000000000 +0530
-> +++ ltp-full-20090531/runtest/syscalls	2009-06-12 18:13:49.000000000 +0530
-> @@ -126,6 +126,7 @@ eventfd01 eventfd01
-> 
->  eventfd2_01 eventfd2_01
->  eventfd2_02 eventfd2_02
-> +eventfd2_03 eventfd2_03
-> 
->  execl01 execl01
->  execle01 execle01
-> --- ltp-full-20090531.orig/testcases/kernel/syscalls/eventfd2/eventfd2_03.c	1970-01-01 05:30:00.000000000 +0530
-> +++ ltp-full-20090531/testcases/kernel/syscalls/eventfd2/eventfd2_03.c	2009-06-12 18:17:49.000000000 +0530
-> @@ -0,0 +1,135 @@
-> +/*
-> + *  eventfd-sem by Davide Libenzi (Simple test for eventfd sempahore)
-> + *  Copyright (C) 2009  Davide Libenzi
-> + *
-> + *  This program is free software; you can redistribute it and/or modify
-> + *  it under the terms of the GNU General Public License as published by
-> + *  the Free Software Foundation; either version 2 of the License, or
-> + *  (at your option) any later version.
-> + *
-> + *  This program is distributed in the hope that it will be useful,
-> + *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + *  GNU General Public License for more details.
-> + *
-> + *  You should have received a copy of the GNU General Public License
-> + *  along with this program; if not, write to the Free Software
-> + *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-> + *
-> + *  Davide Libenzi <davidel@xmailserver.org>
-> + *  Reference: http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=bcd0b235bf3808dec5115c381cd55568f63b85f0
-> + *  Reference: http://www.xmailserver.org/eventfd-sem.c
-> + *  eventfd: testing improved support for semaphore-like behavior in linux-2.6.30
-> + *
-> + */
-> +
-> +#include <sys/types.h>
-> +#include <sys/syscall.h>
-> +#include <sys/stat.h>
-> +#include <fcntl.h>
-> +#include <stdlib.h>
-> +#include <stdio.h>
-> +#include <string.h>
-> +#include <unistd.h>
-> +#include <errno.h>
-> +
-> +char *TCID = "eventfd2_02";     /* test program identifier*/
-> +
-> +#ifndef EFD_SEMLIKE
-> +#define EFD_SEMLIKE (1 << 0)
-> +#endif
-> +
-> +#ifndef __NR_eventfd2
-> +#if defined(__x86_64__)
-> +#define __NR_eventfd2 290
-> +#elif defined(__i386__)
-> +#define __NR_eventfd2 328
-> +#else
-> +#error Cannot detect your architecture!
-> +#endif
-> +#endif
-> +
-> +
-> +static int eventfd2(int count, int flags) {
-> +	return syscall(__NR_eventfd2, count, flags);
-> +}
-> +
-> +static void xsem_wait(int fd) {
-> +	u_int64_t cntr;
-> +
-> +	if (read(fd, &cntr, sizeof(cntr)) != sizeof(cntr)) {
-> +		perror("reading eventfd");
-> +		exit(1);
-> +	}
-> +	fprintf(stdout, "[%u] wait completed on %d: count=%llu\n",
-> +		getpid(), fd, cntr);
-> +}
-> +
-> +static void xsem_post(int fd, int count) {
-> +	u_int64_t cntr = count;
-> +
-> +	if (write(fd, &cntr, sizeof(cntr)) != sizeof(cntr)) {
-> +		perror("writing eventfd");
-> +		exit(1);
-> +	}
-> +}
-> +
-> +static void sem_player(int fd1, int fd2) {
-> +	fprintf(stdout, "[%u] posting 1 on %d\n", getpid(), fd1);
-> +	xsem_post(fd1, 1);
-> +
-> +	fprintf(stdout, "[%u] waiting on %d\n", getpid(), fd2);
-> +	xsem_wait(fd2);
-> +
-> +	fprintf(stdout, "[%u] posting 1 on %d\n", getpid(), fd1);
-> +	xsem_post(fd1, 1);
-> +
-> +	fprintf(stdout, "[%u] waiting on %d\n", getpid(), fd2);
-> +	xsem_wait(fd2);
-> +
-> +	fprintf(stdout, "[%u] posting 5 on %d\n", getpid(), fd1);
-> +	xsem_post(fd1, 5);
-> +
-> +	fprintf(stdout, "[%u] waiting 5 times on %d\n", getpid(), fd2);
-> +	xsem_wait(fd2);
-> +	xsem_wait(fd2);
-> +	xsem_wait(fd2);
-> +	xsem_wait(fd2);
-> +	xsem_wait(fd2);
-> +}
-> +
-> +static void usage(char const *prg) {
-> +	fprintf(stderr, "use: %s [-h]\n", prg);
-> +}
-> +
-> +int main (int argc, char **argv) {
-> +	int c, fd1, fd2, status;
-> +	pid_t cpid_poster, cpid_waiter;
-> +
-> +	while ((c = getopt(argc, argv, "h")) != -1) {
-> +		switch (c) {
-> +		default:
-> +			usage(argv[0]);
-> +			return 1;
-> +		}
-> +	}
-> +	if ((fd1 = eventfd2(0, EFD_SEMLIKE)) == -1 ||
-> +	    (fd2 = eventfd2(0, EFD_SEMLIKE)) == -1) {
-> +		perror("eventfd2");
-> +		return 1;
-> +	}
-> +	if ((cpid_poster = fork()) == 0) {
-> +		sem_player(fd1, fd2);
-> +		exit(0);
-> +	}
-> +	if ((cpid_waiter = fork()) == 0) {
-> +		sem_player(fd2, fd1);
-> +		exit(0);
-> +	}
-> +	waitpid(cpid_poster, &status, 0);
-> +	waitpid(cpid_waiter, &status, 0);
-> +
-> +	return 0;
-> +}
-> +
-> +
-> 
-> ---
-> Regards--
-> Subrata
-> 
-> > 
-> > - Davide
-> > 
-> > 
-
-
-------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing 
-server and web deployment.
-http://p.sf.net/sfu/businessobjects
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+SGksCgpJdCBmYWlsZWQgb24gYm90aCB4ODYgYW5kIHg4Nl82NCBhcmNoaXRlY3R1cmVzCgpSZWdh
+cmRzCk11bmkKCk9uIFRodSwgMjAwOS0wNi0wNCBhdCAxNTo1NSArMDkwMCwgTm9idWhpcm8gSXdh
+bWF0c3Ugd3JvdGU6Cj4gSGksCj4gCj4gTXVuaXByYWRlZXAgQmVlcmFrYW0gd3JvdGU6Cj4gID4g
+SGksCj4gID4KPiAgPiBJIHRyaWVkIHRvIGJ1aWxkIHRoZSBMVFAgdGFyYmFsbCBsdHAtZnVsbC0y
+MDA5MDUzMS50Z3ogb24gUkhFTDUuNAo+ICA+IHByZS1BbHBoYSBEaXN0cmlidXRpb24uIEJ1dCBi
+dWlsZCBmYWlsZWQgd2l0aCB0aGUgZm9sbG93aW5nIGVycm9yOgo+ICA+Cj4gID4gLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+Cj4gID4KPiAgPiBtYWtlWzRdOiBFbnRlcmluZyBkaXJlY3RvcnkKPiAgPiBgL3Jvb3QvbHRwLWZ1
+bGwtMjAwOTA1MzEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZ2V0bWFzaycKPiAgPiBnY2Mg
+LWcgLU8yIC1JLi4vLi4vaW5jbHVkZSAtZyAtV2FsbCAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgLVdh
+bGwKPiAgPiBzZ2V0bWFzazAxLmMgIC1MLi4vLi4vLi4vLi4vbGliIC1sbHRwIC1vIHNnZXRtYXNr
+MDEKPiAgPiBzZ2V0bWFzazAxLmM6IEluIGZ1bmN0aW9uIOKAmG1haW7igJk6Cj4gID4gc2dldG1h
+c2swMS5jOjE0MjogZXJyb3I6IOKAmF9fTlJfc3NldG1hc2vigJkgdW5kZWNsYXJlZCAoZmlyc3Qg
+dXNlIGluIHRoaXMKPiAgPiBmdW5jdGlvbikKPiAgPiBzZ2V0bWFzazAxLmM6MTQyOiBlcnJvcjog
+KEVhY2ggdW5kZWNsYXJlZCBpZGVudGlmaWVyIGlzIHJlcG9ydGVkIG9ubHkKPiAgPiBvbmNlCj4g
+ID4gc2dldG1hc2swMS5jOjE0MjogZXJyb3I6IGZvciBlYWNoIGZ1bmN0aW9uIGl0IGFwcGVhcnMg
+aW4uKQo+ICA+IG1ha2VbNF06ICoqKiBbc2dldG1hc2swMV0gRXJyb3IgMQo+ICA+IG1ha2VbNF06
+IExlYXZpbmcgZGlyZWN0b3J5Cj4gID4gYC9yb290L2x0cC1mdWxsLTIwMDkwNTMxL3Rlc3RjYXNl
+cy9rZXJuZWwvc3lzY2FsbHMvc2dldG1hc2snCj4gID4gbWFrZVszXTogKioqIFthbGxdIEVycm9y
+IDIKPiAgPiBtYWtlWzNdOiBMZWF2aW5nIGRpcmVjdG9yeQo+ICA+IGAvcm9vdC9sdHAtZnVsbC0y
+MDA5MDUzMS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzJwo+ICA+IG1ha2VbMl06ICoqKiBbYWxs
+XSBFcnJvciAyCj4gID4gbWFrZVsyXTogTGVhdmluZyBkaXJlY3RvcnkgYC9yb290L2x0cC1mdWxs
+LTIwMDkwNTMxL3Rlc3RjYXNlcy9rZXJuZWwnCj4gID4gbWFrZVsxXTogKioqIFthbGxdIEVycm9y
+IDIKPiAgPiBtYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL3Jvb3QvbHRwLWZ1bGwtMjAwOTA1
+MzEvdGVzdGNhc2VzJwo+ICA+IG1ha2U6ICoqKiBbYWxsXSBFcnJvciAyCj4gID4KPiAgPiAtLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0KPiAgPgo+ICA+IFRoZSB2YXJpYWJsZSAnX19OUl9zc2V0bWFzaycgZGVjbGFyYXRpb24g
+aXMgYXZhaWxhYmxlIGluIC91c3IvaW5jbHVkZQo+ICA+Cj4gID4gfiMgZ3JlcCAtciAiX19OUl9z
+c2V0bWFzayIgL3Vzci9pbmNsdWRlLwo+ICA+IC91c3IvaW5jbHVkZS9iaXRzL3N5c2NhbGwuaDoj
+ZGVmaW5lIFNZU19zc2V0bWFzayBfX05SX3NzZXRtYXNrCj4gID4gL3Vzci9pbmNsdWRlL2FzbS1p
+Mzg2L3VuaXN0ZC5oOiNkZWZpbmUgX19OUl9zc2V0bWFzayAgICAgICAgICAgICA2OQo+ICA+Cj4g
+ID4gV2hhdCBjb3VsZCBiZSB0aGUgcmVhc29uIGZvciBmYWlsdXJlPwo+ICA+Cj4gV2hhdCBraW5k
+IG9mIGFyY2ggZG8geW91IHVzZT8KPiB4ODZfNjQ/IEkgYmVjYW1lIHRoZSBzYW1lIHByb2JsZW0g
+dG9vLgo+IHg4Nl82NCBkb2VzIG5vdCBzZWVtIHRvIGhhdmUgdGhpcyBzeXN0ZW1jYWxsLgo+IAo+
+IEJlc3QgcmVnYXJkcywKPiAgIE5vYnVoaXJvCj4gCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk9w
+ZW5Tb2xhcmlzIDIwMDkuMDYgaXMgYSBjdXR0aW5nIGVkZ2Ugb3BlcmF0aW5nIHN5c3RlbSBmb3Ig
+ZW50ZXJwcmlzZXMgCmxvb2tpbmcgdG8gZGVwbG95IHRoZSBuZXh0IGdlbmVyYXRpb24gb2YgU29s
+YXJpcyB0aGF0IGluY2x1ZGVzIHRoZSBsYXRlc3QgCmlubm92YXRpb25zIGZyb20gU3VuIGFuZCB0
+aGUgT3BlblNvdXJjZSBjb21tdW5pdHkuIERvd25sb2FkIGEgY29weSBhbmQgCmVuam95IGNhcGFi
+aWxpdGllcyBzdWNoIGFzIE5ldHdvcmtpbmcsIFN0b3JhZ2UgYW5kIFZpcnR1YWxpemF0aW9uLiAK
+R28gdG86IGh0dHA6Ly9wLnNmLm5ldC9zZnUvb3BlbnNvbGFyaXMtZ2V0Cl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApM
+dHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5u
+ZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
