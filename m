@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sgrubb@redhat.com>) id 1MGvyr-00084v-4H
-	for ltp-list@lists.sourceforge.net; Wed, 17 Jun 2009 14:19:13 +0000
-Received: from mx2.redhat.com ([66.187.237.31])
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <ningyl@inspur.com>) id 1MCOwa-0004dg-7G
+	for ltp-list@lists.sourceforge.net; Fri, 05 Jun 2009 02:14:08 +0000
+Received: from [218.57.135.52] (helo=mail.langchao.com)
 	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MGvym-0003j7-Aa
-	for ltp-list@lists.sourceforge.net; Wed, 17 Jun 2009 14:19:09 +0000
-From: Steve Grubb <sgrubb@redhat.com>
-Date: Wed, 17 Jun 2009 09:31:25 -0400
-References: <49b7c2350906151813r31a9fe24icee5b1244f560f7a@mail.gmail.com>
-	<200906170822.27961.sgrubb@redhat.com>
-	<49b7c2350906170610q775cf031va3dd2e3ae8c868fc@mail.gmail.com>
-In-Reply-To: <49b7c2350906170610q775cf031va3dd2e3ae8c868fc@mail.gmail.com>
+	id 1MCOwU-0008RF-Ci
+	for ltp-list@lists.sourceforge.net; Fri, 05 Jun 2009 02:14:08 +0000
+From: =?gb2312?B?xP7RxcD7?= <ningyl@inspur.com>
+Date: Fri, 5 Jun 2009 09:42:50 +0800
+Message-ID: <31B17337989C4578A86EF9D2E270034D@BJningyl>
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200906170931.30480.sgrubb@redhat.com>
-Subject: Re: [LTP] Report - make error of ltp-full-20090531.tgz
+Subject: [LTP] ltp for kernel 2.6.28
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,40 +22,177 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1332692917004426566=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: GeunSik Lim <leemgs1@gmail.com>
-Cc: Andrew Morgan <morgan@kernel.org>, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Wednesday 17 June 2009 09:10:20 am GeunSik Lim wrote:
-> On Wed, Jun 17, 2009 at 9:22 PM, Steve Grubb<sgrubb@redhat.com> wrote:
-> > I am not the maintainer, so I don't have that ability. I did record a
-> > successful test message in bodhi on LTP's behalf to encourage the
-> > maintainer to ask for it to be marked stable asap.
->
-> Steve and Serge, Thanks.
->
-> Unfortunately,
-> If ltp version will not upgrade  current ltp-full-20090531 version for
-> Fedora11 support,
-> or If libcap version of fedora11 will not upgrade,
-> I have to modify some ltp files like belows.
+This is a multi-part message in MIME format.
 
-The intention of Fedora is to upgrade the library. That's why its in the 
-testing repo. It just takes a few days to work through the system. There was a 
-release of a bunch of updates yesterday, so it will be a few days before the 
-next push.
+--===============1332692917004426566==
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0009_01C9E5C1.FE5434B0"
 
--Steve
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0009_01C9E5C1.FE5434B0
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: quoted-printable
+
+Hi=A3=AC
+
+I have been testing the linux system with the kernel 2.6.28 by
+ltp-full-20090131. But the problem is that part of the testcases is not
+suite for the kernel 2.6.28. As the result, it causes that some cases =
+FAILED
+as unexpected. Is there any distribution that is fit for kernel 2.6.28, =
+the
+platform is ia64
+
+=20
+
+Looking for forward to you!
+
+Thanks!
+
+=20
+
+
+------=_NextPart_000_0009_01C9E5C1.FE5434B0
+Content-Type: text/html;
+	charset="gb2312"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=3DContent-Type content=3D"text/html; charset=3Dgb2312">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:=CB=CE=CC=E5;
+	panose-1:2 1 6 0 3 1 1 1 1 1;}
+@font-face
+	{font-family:"\@=CB=CE=CC=E5";
+	panose-1:2 1 6 0 3 1 1 1 1 1;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	font-size:10.5pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:Arial;
+	color:windowtext;}
+ /* Page Definitions */
+ @page Section1
+	{size:595.3pt 841.9pt;
+	margin:72.0pt 90.0pt 72.0pt 90.0pt;
+	layout-grid:15.6pt;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DZH-CN link=3Dblue vlink=3Dpurple =
+style=3D'text-justify-trim:punctuation'>
+
+<div class=3DSection1 style=3D'layout-grid:15.6pt'>
+
+<p class=3DMsoNormal style=3D'layout-grid-mode:char'><font size=3D1 =
+face=3DArial><span
+lang=3DEN-US =
+style=3D'font-size:9.0pt;font-family:Arial'>Hi</span></font><font
+size=3D1 face=3D=CB=CE=CC=E5><span =
+style=3D'font-size:9.0pt;font-family:=CB=CE=CC=E5'>=A3=AC</span></font><f=
+ont
+size=3D1 face=3DArial><span lang=3DEN-US =
+style=3D'font-size:9.0pt;font-family:Arial'><o:p></o:p></span></font></p>=
+
+
+<p class=3DMsoNormal style=3D'layout-grid-mode:char'><font size=3D1 =
+face=3DArial><span
+lang=3DEN-US style=3D'font-size:9.0pt;font-family:Arial'>I have been =
+testing the
+linux system with the kernel 2.6.28 by ltp-full-20090131. But the =
+problem is
+that part of the testcases is not suite for the kernel 2.6.28. As the =
+result,
+it causes that some cases FAILED as unexpected. Is there any =
+distribution that
+is fit for kernel 2.6.28, the platform is =
+ia64<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'layout-grid-mode:char'><font size=3D1 =
+face=3DArial><span
+lang=3DEN-US =
+style=3D'font-size:9.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></fon=
+t></p>
+
+<p class=3DMsoNormal style=3D'layout-grid-mode:char'><font size=3D1 =
+face=3DArial><span
+lang=3DEN-US style=3D'font-size:9.0pt;font-family:Arial'>Looking for =
+forward to
+you!<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal style=3D'layout-grid-mode:char'><font size=3D1 =
+face=3DArial><span
+lang=3DEN-US =
+style=3D'font-size:9.0pt;font-family:Arial'>Thanks!<o:p></o:p></span></fo=
+nt></p>
+
+<p class=3DMsoNormal><font size=3D1 face=3DArial><span lang=3DEN-US =
+style=3D'font-size:
+9.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_0009_01C9E5C1.FE5434B0--
+
+
+
+--===============1332692917004426566==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing 
-server and web deployment.
-http://p.sf.net/sfu/businessobjects
+OpenSolaris 2009.06 is a cutting edge operating system for enterprises 
+looking to deploy the next generation of Solaris that includes the latest 
+innovations from Sun and the OpenSource community. Download a copy and 
+enjoy capabilities such as Networking, Storage and Virtualization. 
+Go to: http://p.sf.net/sfu/opensolaris-get
+--===============1332692917004426566==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1332692917004426566==--
+
+
