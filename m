@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1MLXQ3-0000z4-BT
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 07:06:19 +0000
-Received: from [209.85.221.200] (helo=mail-qy0-f200.google.com)
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MLXPt-00070p-O7
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 07:06:10 +0000
-Received: by qyk38 with SMTP id 38so4741990qyk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 30 Jun 2009 00:05:39 -0700 (PDT)
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1MCrh8-0007tC-Jt
+	for ltp-list@lists.sourceforge.net; Sat, 06 Jun 2009 08:56:06 +0000
+Date: Sat, 6 Jun 2009 10:55:52 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20090606085552.GA2560@schrodinger.suse.cz>
+References: <20090601104334.GA31444@schrodinger.suse.cz>
+	<20090601153752.GB12316@schrodinger.suse.cz>
+	<1244114993.4879.24.camel@subratamodak.linux.ibm.com>
 MIME-Version: 1.0
-Date: Tue, 30 Jun 2009 12:35:38 +0530
-Message-ID: <f5a7b3810906300005q2cafdd3dtfe4d659ae6834bb@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Subject: Re: [LTP] [PATCH v2] mq_send/5-1.c: Fix race conditions in the test
+Content-Disposition: inline
+In-Reply-To: <1244114993.4879.24.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [Ltp-cvs] Reverting ltp-pan.c to pan.c revision1.32
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,23 +26,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Brandon Philips <bphilips@suse.de>
-Cc: ltp-list@lists.sourceforge.net, maxin john <maxinbjohn@gmail.com>
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi Brandon Philips,
+Hi,
+> Nope. This does not solve the problem either. There seems to some other
+> issue here.
 
-I have noticed some issue with your patch dated on 12-Dec-2008.
-I want conform the problem and root cause.
-Could you send me your open posix full Results logs of before and
-after your patch with ARCH and Kernel versions?
+I try to look on the code again, but it's low priority now.
 
-It would be great help.
-Thanks.
-
-Best regards
-Naresh Kamboju
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+OpenSolaris 2009.06 is a cutting edge operating system for enterprises 
+looking to deploy the next generation of Solaris that includes the latest 
+innovations from Sun and the OpenSource community. Download a copy and 
+enjoy capabilities such as Networking, Storage and Virtualization. 
+Go to: http://p.sf.net/sfu/opensolaris-get
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
