@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1MH1cD-0005bE-Id
-	for ltp-list@lists.sourceforge.net; Wed, 17 Jun 2009 20:20:13 +0000
-Received: from mail-gx0-f207.google.com ([209.85.217.207])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MH1cC-00008u-OG
-	for ltp-list@lists.sourceforge.net; Wed, 17 Jun 2009 20:20:13 +0000
-Received: by gxk3 with SMTP id 3so2189097gxk.10
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 17 Jun 2009 13:20:12 -0700 (PDT)
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <caiqian@cclom.cn>) id 1MCwc0-0006BY-Ca
+	for ltp-list@lists.sourceforge.net; Sat, 06 Jun 2009 14:11:08 +0000
+Received: from web1104.biz.mail.sk1.yahoo.com ([74.6.114.36])
+	by 1b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1MCwbz-0002fv-16
+	for ltp-list@lists.sourceforge.net; Sat, 06 Jun 2009 14:11:08 +0000
+Message-ID: <396868.38061.qm@web1104.biz.mail.sk1.yahoo.com>
+Date: Sat, 6 Jun 2009 06:44:25 -0700 (PDT)
+From: CAI Qian <caiqian@cclom.cn>
 MIME-Version: 1.0
-Date: Thu, 18 Jun 2009 01:50:12 +0530
-Message-ID: <f5a7b3810906171320p432db48l92fc6a42cddfa6df@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Content-Type: multipart/mixed; boundary=000e0cd348b8b7aa22046c91047a
-Subject: [LTP] [FIX PATCH] ltp-rt_sigprocmask
+Subject: Re: [LTP] Reg: Script to extract description of test case from
+	LTPROOT/doc/testcases/*.txt files
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,167 +23,133 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, Manas Kumar Nayak <maknayak@in.ibm.com>, Oleg Nesterov <oleg@redhat.com>, rohit.170309@gmail.com
-
---000e0cd348b8b7aa22046c91047a
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-Hi,
-
-I have noticed following failures and fixed.
-1. rt_sigprocmask01.c
-2. rt_sigprocmask02.c
+To: ltp-list@lists.sf.net
 
 
-Please find the patch below and as attachment.
-
-Best regards
-Naresh Kamboju
-
-Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
 
 
-diff -Naurb a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
-b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
---- a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c	2009-05-21
-23:53:00.000000000 +0530
-+++ b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c	2009-06-17
-23:06:24.000000000 +0530
-@@ -163,14 +163,14 @@
- 			
- 			/* call rt_sigaction() */
- 			act.sa_handler = sig_handler;
--                        TEST(syscall(174, 33, &act, &oact, 8));
-+                        TEST(syscall(__NR_tkill, 33, &act, &oact, 8));
- 			if(TEST_RETURN != 0){
- 				tst_resm(TFAIL,"Call to rt_sigaction() Failed, errno=%d :
-%s",TEST_ERRNO, strerror(TEST_ERRNO));
-                         	cleanup();
- 				tst_exit();
- 			}
- 			/* call rt_sigprocmask() to block signal#33 */
--                        TEST(syscall(175, SIG_BLOCK, &set, &oset, 8));
-+                        TEST(syscall(__NR_rt_sigprocmask, SIG_BLOCK,
-&set, &oset, 8));
- 			if(TEST_RETURN == -1){
- 				tst_resm(TFAIL,"Call to rt_sigprocmask()**** Failed, errno=%d :
-%s",TEST_ERRNO, strerror(TEST_ERRNO));
-                         	cleanup();
-@@ -192,7 +192,7 @@
- 				}
- 				else {
- 					/* call rt_sigpending() */
--					TEST(syscall(176, &oset, 8));
-+					TEST(syscall(__NR_rt_sigpending, &oset, 8));
- 					if(TEST_RETURN == -1){
- 						tst_resm(TFAIL,"call rt_sigpending() failed, errno=%d :
-%s",TEST_ERRNO, strerror(TEST_ERRNO));
-                         			cleanup();
-@@ -205,7 +205,7 @@
- 						tst_exit();
- 					}
- 					/* call rt_sigprocmask() to unblock signal#33 */
--					TEST(syscall(175, SIG_UNBLOCK, &set, &oset, 8));
-+					TEST(syscall(__NR_rt_sigprocmask, SIG_UNBLOCK, &set, &oset, 8));
- 					if(TEST_RETURN == -1){
- 						tst_resm(TFAIL,"Call to rt_sigprocmask() Failed, errno=%d :
-%s",TEST_ERRNO, strerror(TEST_ERRNO));
-                         			cleanup();
-diff -Naurb a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask02.c
-b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask02.c
---- a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask02.c	2009-05-21
-23:54:15.000000000 +0530
-+++ b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask02.c	2009-06-17
-23:30:42.000000000 +0530
-@@ -176,7 +176,7 @@
+--- On Mon, 5/18/09, rohit verma <rohit.170309@gmail.com> wrote:
 
- 			for(i=0; i<test_count; i++)
- 		        {
--				TEST(syscall(175, SIG_BLOCK, &s, test_cases[i].ss, test_cases[i].sssize));
-+				TEST(syscall(__NR_rt_sigprocmask, SIG_BLOCK, &s,
-test_cases[i].ss, test_cases[i].sssize));
- 				if(TEST_RETURN == 0){
- 					tst_resm(TFAIL,"Call to rt_sigprocmask()succeeded,but should
-failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
- 					fail++;
+> From: rohit verma <rohit.170309@gmail.com>
+> Subject: Re: Reg: Script to extract description of test case from  LTPROO=
+T/doc/testcases/*.txt files
+> To: subrata@linux.vnet.ibm.com
+> Cc: "CAI Qian" <caiqian@cclom.cn>
+> Date: Monday, May 18, 2009, 7:55 PM
+> Dear Subrata/Qian,
+> =
 
---000e0cd348b8b7aa22046c91047a
-Content-Type: application/octet-stream; name="ltp-fix-rt_sigprocmask.patch"
-Content-Disposition: attachment; filename="ltp-fix-rt_sigprocmask.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fw2grq5x0
+> I am trying to develop script which would extracts
+> description information about user required test case from
+> LTPROOT/doc/testcases/ folder. =
 
-ZGlmZiAtTmF1cmIgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3J0X3NpZ3Byb2NtYXNrL3J0
-X3NpZ3Byb2NtYXNrMDEuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcnRfc2lncHJvY21h
-c2svcnRfc2lncHJvY21hc2swMS5jCi0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcnRf
-c2lncHJvY21hc2svcnRfc2lncHJvY21hc2swMS5jCTIwMDktMDUtMjEgMjM6NTM6MDAuMDAwMDAw
-MDAwICswNTMwCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcnRfc2lncHJvY21hc2sv
-cnRfc2lncHJvY21hc2swMS5jCTIwMDktMDYtMTcgMjM6MDY6MjQuMDAwMDAwMDAwICswNTMwCkBA
-IC0xNjMsMTQgKzE2MywxNCBAQAogCQkJCiAJCQkvKiBjYWxsIHJ0X3NpZ2FjdGlvbigpICovCiAJ
-CQlhY3Quc2FfaGFuZGxlciA9IHNpZ19oYW5kbGVyOwotICAgICAgICAgICAgICAgICAgICAgICAg
-VEVTVChzeXNjYWxsKDE3NCwgMzMsICZhY3QsICZvYWN0LCA4KSk7CisgICAgICAgICAgICAgICAg
-ICAgICAgICBURVNUKHN5c2NhbGwoX19OUl90a2lsbCwgMzMsICZhY3QsICZvYWN0LCA4KSk7CiAJ
-CQlpZihURVNUX1JFVFVSTiAhPSAwKXsKIAkJCQl0c3RfcmVzbShURkFJTCwiQ2FsbCB0byBydF9z
-aWdhY3Rpb24oKSBGYWlsZWQsIGVycm5vPSVkIDogJXMiLFRFU1RfRVJSTk8sIHN0cmVycm9yKFRF
-U1RfRVJSTk8pKTsKICAgICAgICAgICAgICAgICAgICAgICAgIAljbGVhbnVwKCk7CiAJCQkJdHN0
-X2V4aXQoKTsKIAkJCX0KIAkJCS8qIGNhbGwgcnRfc2lncHJvY21hc2soKSB0byBibG9jayBzaWdu
-YWwjMzMgKi8KLSAgICAgICAgICAgICAgICAgICAgICAgIFRFU1Qoc3lzY2FsbCgxNzUsIFNJR19C
-TE9DSywgJnNldCwgJm9zZXQsIDgpKTsKKyAgICAgICAgICAgICAgICAgICAgICAgIFRFU1Qoc3lz
-Y2FsbChfX05SX3J0X3NpZ3Byb2NtYXNrLCBTSUdfQkxPQ0ssICZzZXQsICZvc2V0LCA4KSk7CiAJ
-CQlpZihURVNUX1JFVFVSTiA9PSAtMSl7CiAJCQkJdHN0X3Jlc20oVEZBSUwsIkNhbGwgdG8gcnRf
-c2lncHJvY21hc2soKSoqKiogRmFpbGVkLCBlcnJubz0lZCA6ICVzIixURVNUX0VSUk5PLCBzdHJl
-cnJvcihURVNUX0VSUk5PKSk7CiAgICAgICAgICAgICAgICAgICAgICAgICAJY2xlYW51cCgpOwpA
-QCAtMTkyLDcgKzE5Miw3IEBACiAJCQkJfQogCQkJCWVsc2UgewogCQkJCQkvKiBjYWxsIHJ0X3Np
-Z3BlbmRpbmcoKSAqLwotCQkJCQlURVNUKHN5c2NhbGwoMTc2LCAmb3NldCwgOCkpOworCQkJCQlU
-RVNUKHN5c2NhbGwoX19OUl9ydF9zaWdwZW5kaW5nLCAmb3NldCwgOCkpOwogCQkJCQlpZihURVNU
-X1JFVFVSTiA9PSAtMSl7CiAJCQkJCQl0c3RfcmVzbShURkFJTCwiY2FsbCBydF9zaWdwZW5kaW5n
-KCkgZmFpbGVkLCBlcnJubz0lZCA6ICVzIixURVNUX0VSUk5PLCBzdHJlcnJvcihURVNUX0VSUk5P
-KSk7CiAgICAgICAgICAgICAgICAgICAgICAgICAJCQljbGVhbnVwKCk7CkBAIC0yMDUsNyArMjA1
-LDcgQEAKIAkJCQkJCXRzdF9leGl0KCk7CiAJCQkJCX0KIAkJCQkJLyogY2FsbCBydF9zaWdwcm9j
-bWFzaygpIHRvIHVuYmxvY2sgc2lnbmFsIzMzICovCi0JCQkJCVRFU1Qoc3lzY2FsbCgxNzUsIFNJ
-R19VTkJMT0NLLCAmc2V0LCAmb3NldCwgOCkpOworCQkJCQlURVNUKHN5c2NhbGwoX19OUl9ydF9z
-aWdwcm9jbWFzaywgU0lHX1VOQkxPQ0ssICZzZXQsICZvc2V0LCA4KSk7CiAJCQkJCWlmKFRFU1Rf
-UkVUVVJOID09IC0xKXsKIAkJCQkJCXRzdF9yZXNtKFRGQUlMLCJDYWxsIHRvIHJ0X3NpZ3Byb2Nt
-YXNrKCkgRmFpbGVkLCBlcnJubz0lZCA6ICVzIixURVNUX0VSUk5PLCBzdHJlcnJvcihURVNUX0VS
-Uk5PKSk7CiAgICAgICAgICAgICAgICAgICAgICAgICAJCQljbGVhbnVwKCk7CmRpZmYgLU5hdXJi
-IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9ydF9zaWdwcm9jbWFzay9ydF9zaWdwcm9jbWFz
-azAyLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3J0X3NpZ3Byb2NtYXNrL3J0X3NpZ3By
-b2NtYXNrMDIuYwotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3J0X3NpZ3Byb2NtYXNr
-L3J0X3NpZ3Byb2NtYXNrMDIuYwkyMDA5LTA1LTIxIDIzOjU0OjE1LjAwMDAwMDAwMCArMDUzMAor
-KysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3J0X3NpZ3Byb2NtYXNrL3J0X3NpZ3Byb2Nt
-YXNrMDIuYwkyMDA5LTA2LTE3IDIzOjMwOjQyLjAwMDAwMDAwMCArMDUzMApAQCAtMTc2LDcgKzE3
-Niw3IEBACiAKIAkJCWZvcihpPTA7IGk8dGVzdF9jb3VudDsgaSsrKQogCQkgICAgICAgIHsKLQkJ
-CQlURVNUKHN5c2NhbGwoMTc1LCBTSUdfQkxPQ0ssICZzLCB0ZXN0X2Nhc2VzW2ldLnNzLCB0ZXN0
-X2Nhc2VzW2ldLnNzc2l6ZSkpOworCQkJCVRFU1Qoc3lzY2FsbChfX05SX3J0X3NpZ3Byb2NtYXNr
-LCBTSUdfQkxPQ0ssICZzLCB0ZXN0X2Nhc2VzW2ldLnNzLCB0ZXN0X2Nhc2VzW2ldLnNzc2l6ZSkp
-OwogCQkJCWlmKFRFU1RfUkVUVVJOID09IDApewogCQkJCQl0c3RfcmVzbShURkFJTCwiQ2FsbCB0
-byBydF9zaWdwcm9jbWFzaygpc3VjY2VlZGVkLGJ1dCBzaG91bGQgZmFpbGVkLCBlcnJubz0lZCA6
-ICVzIixURVNUX0VSUk5PLCBzdHJlcnJvcihURVNUX0VSUk5PKSk7CiAJCQkJCWZhaWwrKzsK
---000e0cd348b8b7aa22046c91047a
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> =
 
-------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing 
-server and web deployment.
-http://p.sf.net/sfu/businessobjects
---000e0cd348b8b7aa22046c91047a
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> So to make the description text file=A0 as standard file,
+> can we represent the description as mentioned below.
+> =A0
+> For example=A0in syscalls category:
+> =A0
+> Currently available format of description in LTP as
+> follows.
+> =A0
+> =A0 abort01
+> =A0=A0 Basic test for abort(3).
+> =
 
+> =A0 accept01=A0=A0
+> =A0=A0 Verify that accept() returns the proper errno for
+> various failure cases
+> =A0
+> =
+
+> To make it in consistent way, description should be
+> enclosed by executables as follows.
+> =
+
+> =A0<abort01>
+> =A0=A0 Basic test for abort(3).
+> =A0<\abort01>
+> =A0
+> =A0<accept01>=A0=A0
+> =A0=A0 Verify that accept() returns the proper errno for
+> various failure cases
+> =A0<\accept01>
+> =A0
+> Please confirm if this format is O.K or suggest any
+> other format by which we can easily parse the test cases and
+> extracts the description.
+> =
+
+> If this format is O.K=A0, I would send the patch for those
+> text files
+> =A0
+
+Another thing it that, your approach is not really document the =
+
+description of test cases but test code (the build blocks). For example, =
+
+in runtest/fs has the following test cases,
+
+gf01 growfiles -W gf01 -b -e 1 -u -i 0 -L 20 -w -C 1 -l -I r -T 10 glseek20=
+ glseek20.2
+gf02 growfiles -W gf02 -b -e 1 -L 10 -i 100 -I p -S 2 -u -f gf03_
+gf03 growfiles -W gf03 -b -e 1 -g 1 -i 1 -S 150 -u -f gf05_
+gf04 growfiles -W gf04 -b -e 1 -g 4090 -i 500 -t 39000 -u -f gf06_
+gf05 growfiles -W gf05 -b -e 1 -g 5000 -i 500 -t 49900 -T10 -c9 -I p -u -f =
+gf07_
+gf06 growfiles -W gf06 -b -e 1 -u -r 1-5000 -R 0--1 -i 0 -L 30 -C 1 g_rand1=
+0 g_rand10.2
+gf07 growfiles -W gf07 -b -e 1 -u -r 1-5000 -R 0--2 -i 0 -L 30 -C 1 -I p g_=
+rand13 g_rand13.2
+gf08 growfiles -W gf08 -b -e 1 -u -r 1-5000 -R 0--2 -i 0 -L 30 -C 1 g_rand1=
+1 g_rand11.2
+gf09 growfiles -W gf09 -b -e 1 -u -r 1-5000 -R 0--1 -i 0 -L 30 -C 1 -I p g_=
+rand12 g_rand12.2
+gf10 growfiles -W gf10 -b -e 1 -u -r 1-5000 -i 0 -L 30 -C 1 -I l g_lio14 g_=
+lio14.2
+gf11 growfiles -W gf11 -b -e 1 -u -r 1-5000 -i 0 -L 30 -C 1 -I L g_lio15 g_=
+lio15.2
+gf12 mkfifo gffifo17; growfiles -b -W gf12 -e 1 -u -i 0 -L 30 gffifo17
+
+They all utilizes growfiles.c to perform different test scenarios. How can
+we make sure we do document what those tests are actually trying to test?
+If you really want to document what the test cases claiming to test, the =
+
+more proper places to look at would be based on LTPROOT/runtest/* files.
+For example, we will have something in LTPROOT/doc/testcases/fs like,
+
+<gf11>...</gf11>
+
+The description of a test case might not reside in test code itself,
+because the test code has no view of how users are going to test different
+scenarios. For example, mount.c might be used to test ext3, ext4 or
+loopback filesystems. Therefore, The existing test cases descriptions might
+be found from the mailing list when they were introduced.
+
+If we have such documents about real test cases in place, it would be much
+easier to maintain the tests, since we have the requirements. In addition,
+We can fight back the complains about LTP that users have no visible view
+what each test cases is claiming to test, and its coverage.
+
+CAI Qian
+
+
+---------------------------------------------------------------------------=
+---
+OpenSolaris 2009.06 is a cutting edge operating system for enterprises =
+
+looking to deploy the next generation of Solaris that includes the latest =
+
+innovations from Sun and the OpenSource community. Download a copy and =
+
+enjoy capabilities such as Networking, Storage and Virtualization. =
+
+Go to: http://p.sf.net/sfu/opensolaris-get
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---000e0cd348b8b7aa22046c91047a--
-
