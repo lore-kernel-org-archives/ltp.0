@@ -1,34 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJ7rs-0006DO-W1
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:25:04 +0000
-Received: from e34.co.us.ibm.com ([32.97.110.152])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MJ7rr-0002nQ-IP
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:25:04 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e34.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5NFLpIj024413
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 09:21:51 -0600
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5NFGOe4199302
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 09:24:46 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5NF7MEa001018
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 09:07:22 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200906220256.n5M2uvax024525@e33.co.us.ibm.com>
-References: <200906220256.n5M2uvax024525@e33.co.us.ibm.com>
-Date: Tue, 23 Jun 2009 20:20:08 +0530
-Message-Id: <1245768608.4860.83.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Adapt the cgroup/test_6_2 test to the
-	various	ways clone is called on different architectures
-Reply-To: subrata@linux.vnet.ibm.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1MDcxu-0000YF-7e
+	for ltp-list@lists.sourceforge.net; Mon, 08 Jun 2009 11:24:34 +0000
+Received: from fmmailgate02.web.de ([217.72.192.227])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MDcxe-0003lK-BH
+	for ltp-list@lists.sourceforge.net; Mon, 08 Jun 2009 11:24:34 +0000
+Received: from smtp05.web.de (fmsmtp05.dlan.cinetic.de [172.20.4.166])
+	by fmmailgate02.web.de (Postfix) with ESMTP id 4A42D10228D08
+	for <ltp-list@lists.sourceforge.net>;
+	Mon,  8 Jun 2009 13:24:17 +0200 (CEST)
+Received: from [83.208.36.163] (helo=debian.localnet)
+	by smtp05.web.de with asmtp (TLSv1:AES256-SHA:256)
+	(WEB.DE 4.110 #277) id 1MDcxc-0005de-00
+	for ltp-list@lists.sourceforge.net; Mon, 08 Jun 2009 13:24:17 +0200
+From: Jiri Palecek <jpalecek@web.de>
+Date: Mon, 8 Jun 2009 13:27:53 +0200
+MIME-Version: 1.0
+Content-Disposition: inline
+Message-Id: <200906081327.53491.jpalecek@web.de>
+Subject: [LTP] [PATCH] Change some absolute paths in the linkat test to
+	point to its own files instead of /etc/passwd
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,102 +35,93 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Fri, 2009-06-19 at 16:14 +0200, Jiri Palecek > wrote: 
-> Code shamelessly taken from clone01 test
-> 
-> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+ This avoids unwanted error when /etc and /tmp are on different
+ devices
 
-Thanks.
+Signed-off-by: Jiri Palecek <jpalecek@web.de>
+---
+ testcases/kernel/syscalls/linkat/linkat01.c |   14 +++++++++-----
+ 1 files changed, 9 insertions(+), 5 deletions(-)
 
-Regards--
-Subrata
-
-> ---
->  .../kernel/controllers/cgroup/clone_platform.h     |   34 ++++++++++++++++++++
->  testcases/kernel/controllers/cgroup/test_6_2.c     |   12 ++++++-
->  2 files changed, 45 insertions(+), 1 deletions(-)
->  create mode 100644 testcases/kernel/controllers/cgroup/clone_platform.h
-> 
-> diff --git a/testcases/kernel/controllers/cgroup/clone_platform.h b/testcases/kernel/controllers/cgroup/clone_platform.h
-> new file mode 100644
-> index 0000000..1785dd1
-> --- /dev/null
-> +++ b/testcases/kernel/controllers/cgroup/clone_platform.h
-> @@ -0,0 +1,34 @@
-> +/*
-> + * Copyright (c) 2003 Silicon Graphics, Inc.  All Rights Reserved.
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of version 2 of the GNU General Public License as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * You should have received a copy of the GNU General Public License along
-> + * with this program; if not, write the Free Software Foundation, Inc., 59
-> + * Temple Place - Suite 330, Boston MA 02111-1307, USA.
-> + *
-> + */
-> +/* Common platform specific defines for the clone system call tests */
-> +
-> +//#define CHILD_STACK_SIZE 8192
-> +#define CHILD_STACK_SIZE 16384
-> +
-> +#if defined (__s390__) || (__s390x__)
-> +#define clone __clone
-> +extern int __clone(int(void*),void*,int,void*);
-> +#elif defined(__ia64__)
-> +#define clone2 __clone2
-> +/* Prototype provided by David Mosberger				*/
-> +/* int  __clone2(int (*fn) (void *arg), void *child_stack_base,		*/
-> +/* 		size_t child_stack_size, int flags, void *arg,		*/
-> +/*		pid_t *parent_tid, void *tls, pid_t *child_tid)		*/
-> +extern int  __clone2(int (*fn) (void *arg), void *child_stack_base, 
-> +		size_t child_stack_size, int flags, void *arg, 
-> +		pid_t *parent_tid, void *tls, pid_t *child_tid); 
-> +#endif
-> diff --git a/testcases/kernel/controllers/cgroup/test_6_2.c b/testcases/kernel/controllers/cgroup/test_6_2.c
-> index e5bddb2..79f5c20 100644
-> --- a/testcases/kernel/controllers/cgroup/test_6_2.c
-> +++ b/testcases/kernel/controllers/cgroup/test_6_2.c
-> @@ -24,6 +24,8 @@
->  #include <unistd.h>
->  #include <sched.h>
-> 
-> +#include "clone_platform.h"
-> +
->  #define DEFAULT_USEC	30000
-> 
->  int foo(void __attribute__((unused)) *arg)
-> @@ -42,7 +44,15 @@ int main(int argc, char **argv)
-> 
->  	while (1) {
->  		usleep(usec);
-> -		clone(foo, stack+4096, CLONE_NEWNS, NULL);
-> +#if defined(__hppa__)
-> +		clone(foo, stack, CLONE_NEWNS, NULL);
-> +#elif defined(__ia64__)
-> +		clone2(foo, stack,
-> +			    4096, CLONE_NEWNS, NULL, NULL, NULL, NULL);
-> +#else
-> +		clone
-> +		     (foo, stack + 4096, CLONE_NEWNS, NULL);
-> +#endif
->  	}
-> 
->  	return 0;
+diff --git a/testcases/kernel/syscalls/linkat/linkat01.c b/testcases/kernel/syscalls/linkat/linkat01.c
+index d62416b..72845f2 100644
+--- a/testcases/kernel/syscalls/linkat/linkat01.c
++++ b/testcases/kernel/syscalls/linkat/linkat01.c
+@@ -79,6 +79,7 @@ static void mylinkat_test(struct test_struct* desc);
+ #define TEST_FIFO "fifo"
+ 
+ static char dpathname[256] = "%s/"TEST_DIR2"/"TEST_FILE1;
++static char spathname[256] = "%s/"TEST_DIR1"/"TEST_FILE1;
+ static int olddirfd, newdirfd = -1, cwd_fd = AT_FDCWD, stdinfd = 0, crapfd = -1, deldirfd;
+ 
+ struct test_struct {
+@@ -94,7 +95,7 @@ struct test_struct {
+ 	/* relative paths */
+ 	{ &olddirfd, TEST_FILE1, &newdirfd, TEST_FILE1, 0, TEST_DIR1"/"TEST_FILE1, TEST_DIR2"/"TEST_FILE1, 0 },
+ 	/* abs path at source */
+-	{ &olddirfd, "/etc/passwd", &newdirfd, TEST_FILE1, 0, 0, 0, 0 },
++	{ &olddirfd, spathname, &newdirfd, TEST_FILE1, 0, 0, 0, 0 },
+ 	/* abs path at dst */
+ 	{ &olddirfd, TEST_FILE1, &newdirfd, dpathname, 0, TEST_DIR1"/"TEST_FILE1, TEST_DIR2"/"TEST_FILE1, 0},
+ 
+@@ -103,7 +104,7 @@ struct test_struct {
+ 	/* relative paths to cwd */
+ 	{ &olddirfd, TEST_FILE1, &cwd_fd, TEST_DIR2"/"TEST_FILE1, 0, TEST_DIR1"/"TEST_FILE1, TEST_DIR2"/"TEST_FILE1, 0 },
+ 	/* abs path at source */
+-	{ &cwd_fd, "/etc/passwd", &newdirfd, TEST_FILE1, 0, 0, 0, 0 },
++	{ &cwd_fd, spathname, &newdirfd, TEST_FILE1, 0, 0, 0, 0 },
+ 	/* abs path at dst */
+ 	{ &olddirfd, TEST_FILE1, &cwd_fd, dpathname, 0, TEST_DIR1"/"TEST_FILE1, TEST_DIR2"/"TEST_FILE1, 0},
+ 
+@@ -112,7 +113,7 @@ struct test_struct {
+ 	/* relative paths to invalid */
+ 	{ &olddirfd, TEST_FILE1, &stdinfd, TEST_DIR2"/"TEST_FILE1, 0, 0, 0, ENOTDIR },
+ 	/* abs path at source */
+-	{ &stdinfd, "/etc/passwd", &newdirfd, TEST_FILE1, 0, 0, 0, 0 },
++	{ &stdinfd, spathname, &newdirfd, TEST_FILE1, 0, 0, 0, 0 },
+ 	/* abs path at dst */
+ 	{ &olddirfd, TEST_FILE1, &stdinfd, dpathname, 0, TEST_DIR1"/"TEST_FILE1, TEST_DIR2"/"TEST_FILE1, 0},
+ 
+@@ -121,7 +122,7 @@ struct test_struct {
+ 	/* relative paths to crap */
+ 	{ &olddirfd, TEST_FILE1, &crapfd, TEST_DIR2"/"TEST_FILE1, 0, 0, 0, EBADF },
+ 	/* abs path at source */
+-	{ &crapfd, "/etc/passwd", &newdirfd, TEST_FILE1, 0, 0, 0, 0 },
++	{ &crapfd, spathname, &newdirfd, TEST_FILE1, 0, 0, 0, 0 },
+ 	/* abs path at dst */
+ 	{ &olddirfd, TEST_FILE1, &crapfd, dpathname, 0, TEST_DIR1"/"TEST_FILE1, TEST_DIR2"/"TEST_FILE1, 0},
+ 
+@@ -130,7 +131,7 @@ struct test_struct {
+ 	/* relative paths to deleted */
+ 	{ &olddirfd, TEST_FILE1, &deldirfd, TEST_DIR2"/"TEST_FILE1, 0, 0, 0, ENOENT },
+ 	/* abs path at source */
+-	{ &deldirfd, "/etc/passwd", &newdirfd, TEST_FILE1, 0, 0, 0, 0 },
++	{ &deldirfd, spathname, &newdirfd, TEST_FILE1, 0, 0, 0, 0 },
+ 	/* abs path at dst */
+ 	{ &olddirfd, TEST_FILE1, &deldirfd, dpathname, 0, TEST_DIR1"/"TEST_FILE1, TEST_DIR2"/"TEST_FILE1, 0},
+ 
+@@ -298,6 +299,9 @@ static void setup()
+ 	tmp = strdup(dpathname);
+ 	snprintf(dpathname, sizeof(dpathname), tmp, get_current_dir_name());
+ 
++	tmp = strdup(spathname);
++	snprintf(spathname, sizeof(spathname), tmp, get_current_dir_name());
++
+ 	/* Pause if that option was specified */
+ 	TEST_PAUSE;
+ }				/* End setup() */
+-- 
+1.6.2.4
 
 
 ------------------------------------------------------------------------------
-Are you an open source citizen? Join us for the Open Source Bridge conference!
-Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
-Need another reason to go? 24-hour hacker lounge. Register today!
-http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
+OpenSolaris 2009.06 is a cutting edge operating system for enterprises 
+looking to deploy the next generation of Solaris that includes the latest 
+innovations from Sun and the OpenSource community. Download a copy and 
+enjoy capabilities such as Networking, Storage and Virtualization. 
+Go to: http://p.sf.net/sfu/opensolaris-get
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
