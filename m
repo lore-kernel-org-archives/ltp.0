@@ -1,25 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJ7Px-0004M8-Iw
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 14:56:13 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MJ7Pw-00034U-H2
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 14:56:13 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1237385013.5381.58.camel@subratamodak.linux.ibm.com>
-References: <1233076092-8660-1-git-send-email-orenl@cs.columbia.edu>
-	<bb33bcf20903160526v56f16a82m9192770e228016b1@mail.gmail.com>
-	<1237365510.5381.34.camel@subratamodak.linux.ibm.com>
-	<20090318133943.GA22636@us.ibm.com>
-	<1237385013.5381.58.camel@subratamodak.linux.ibm.com>
-Date: Tue, 23 Jun 2009 20:18:44 +0530
-Message-Id: <1245768524.4860.60.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [RFC v13][PATCH 00/14] Kernel based checkpoint/restart
-Reply-To: subrata@linux.vnet.ibm.com
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yjwei@cn.fujitsu.com>) id 1MDYAj-0005x9-8o
+	for ltp-list@lists.sourceforge.net; Mon, 08 Jun 2009 06:17:29 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MDYAg-0007Ki-CO
+	for ltp-list@lists.sourceforge.net; Mon, 08 Jun 2009 06:17:29 +0000
+Message-ID: <4A2CABFB.3010207@cn.fujitsu.com>
+Date: Mon, 08 Jun 2009 14:13:15 +0800
+From: Wei Yongjun <yjwei@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH 1/2] chmod05: fix to modify the group ownership before
+ do dir chmod
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,73 +26,72 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serue@us.ibm.com>
-Cc: ltp-list <ltp-list@lists.sf.net>, Oren Laadan <orenl@cs.columbia.edu>, Alexander Viro <viro@zeniv.linux.org.uk>, matthltc <matthltc@linux.vnet.ibm.com>, "H. Peter Anvin" <hpa@zytor.com>, Serge Hallyn <serue@linux.vnet.ibm.com>, sukadev <sukadev@linux.vnet.ibm.com>
+To: Subrata Modak <subrata@linux.vnet.ibm.com>, ltp-list@lists.sourceforge.net
 
-On Wed, 2009-03-18 at 19:33 +0530, Subrata Modak wrote: 
-> Thanks Serge.
-> 
-> On Wed, 2009-03-18 at 08:39 -0500, Serge E. Hallyn wrote:
-> > Quoting Subrata Modak (subrata@linux.vnet.ibm.com):
-> > > Serge,
-> > > 
-> > > Did i talk to you regarding these tests in our OLS 2008 meeting ? I do
-> > > not remember exactly, but, when i saw this posting, i thought may be
-> > > there was some conversation.
-> > 
-> > I'm not sure.  However no patches are in -mm or linux-next yet.
-> > 
-> > I'm not yet certain what the test methodology will be.  Some for
-> > instance feel that the best way to test c/r is to just run ltp
-> > inside a container and continuously c/r it.  Of course, that
-> > isn't very useful when c/r support is not yet sufficient to
-> > accomplish that.  So at the moment we do have sets of programs
-> > specifically written to be checkpointable.
-> > 
-> > For instance I have a program and script which continuously
-> > runs, updates state, writes to a file, checkpoints, kills,
-> > and restarts.  That sort of thing should make a nice testcase.
-> > Oren maintains a git tree with checkpointable programs at
-> > git://git.ncl.cs.columbia.edu/pub/git/user-cr.git .
-> > 
-> > So definately let's talk again after patches hit mainline.  I'll
-> > whip up some testcases based on existing code.
+Refer to the manpage:
 
-Serge,
+  # man 2 chmod
+  If the calling process is not privileged (Linux: does not have the
+  CAP_FSETID capability), and the group of the file does not match
+  the effective group ID of the process or one of its supplementary
+  group IDs, the S_ISGID bit will be turned off, but this will not
+  cause an error to be returned.
 
-Do we have this in 2.6.30 ?
+So, if we want S_ISGID bit be turned off after chmod(), we can not have
+the CAP_FSETID capability and not match the effective group ID. The 'bin'
+group always has the CAP_FSETID capability, so we can not change the own
+of the TESTDIR to 'bin' group, instead, 'nobody' can be used.
 
-Regards--
-Subrata
+This patch fixed the problem by change gid of chown to 'nobody' group and
+change the gid of setegid() to 'bin' group.
 
-> 
-> We would wait till it hits at least the -mm, from where you can start
-> pushing some 2/3 tests.
-> 
-> Regards--
-> Subrata
-> 
-> > 
-> > -serge
-> 
-> 
-> ------------------------------------------------------------------------------
-> Apps built with the Adobe(R) Flex(R) framework and Flex Builder(TM) are
-> powering Web 2.0 with engaging, cross-platform capabilities. Quickly and
-> easily build your RIAs with Flex Builder, the Eclipse(TM)based development
-> software that enables intelligent coding and step-through debugging.
-> Download the free 60 day trial. http://p.sf.net/sfu/www-adobe-com
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/chmod/chmod05.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/chmod/chmod05.c b/testcases/kernel/syscalls/chmod/chmod05.c
+index 4504aaa..c6f1225 100644
+--- a/testcases/kernel/syscalls/chmod/chmod05.c
++++ b/testcases/kernel/syscalls/chmod/chmod05.c
+@@ -177,7 +177,7 @@ int main(int ac, char **av)
+ 			if ((PERMS & ~S_ISGID) != dir_mode) {
+ 				tst_resm(TFAIL, "%s: Incorrect modes 0%03o, "
+ 					 "Expected 0%03o", TESTDIR, dir_mode,
+-					 PERMS);
++					 PERMS & ~S_ISGID);
+ 			} else {
+ 				tst_resm(TPASS,
+ 					 "Functionality of chmod(%s, %#o) successful",
+@@ -241,12 +241,12 @@ void setup()
+ 				strerror(errno));
+ 	}
+ 
+-	if (chown(TESTDIR, nobody_u->pw_uid, bin_group->gr_gid) == -1)
++	if (chown(TESTDIR, nobody_u->pw_uid, nobody_u->pw_gid) == -1)
+ 		tst_brkm(TBROK, cleanup, "Couldn't change owner of testdir: %s",
+ 				strerror(errno));
+ 
+-	/* change to nobody:nobody */
+-	if (setegid(nobody_u->pw_gid) == -1 ||
++	/* change to nobody:bin */
++	if (setegid(bin_group->gr_gid) == -1 ||
+ 		 seteuid(nobody_u->pw_uid) == -1)
+ 		tst_brkm(TBROK, cleanup, "Couldn't switch to nobody:nobody: %s",
+ 				strerror(errno));
+-- 
+1.6.0.2.530.g67faa
+
+
+
 
 
 ------------------------------------------------------------------------------
-Are you an open source citizen? Join us for the Open Source Bridge conference!
-Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
-Need another reason to go? 24-hour hacker lounge. Register today!
-http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
+OpenSolaris 2009.06 is a cutting edge operating system for enterprises 
+looking to deploy the next generation of Solaris that includes the latest 
+innovations from Sun and the OpenSource community. Download a copy and 
+enjoy capabilities such as Networking, Storage and Virtualization. 
+Go to: http://p.sf.net/sfu/opensolaris-get
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
