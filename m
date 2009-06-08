@@ -1,33 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <dvhltc@us.ibm.com>) id 1MJveL-0007TK-TB
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 20:34:25 +0000
-Received: from e36.co.us.ibm.com ([32.97.110.154])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MJveF-0002vs-RY
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 20:34:25 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e36.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5PKWooH032469
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 14:32:50 -0600
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5PKYIwe236204
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 14:34:18 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5PKYHXw001470
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 14:34:17 -0600
-Message-ID: <4A43DF48.3070808@us.ibm.com>
-Date: Thu, 25 Jun 2009 13:34:16 -0700
-From: Darren Hart <dvhltc@us.ibm.com>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1MDcxx-0007Dp-KJ
+	for ltp-list@lists.sourceforge.net; Mon, 08 Jun 2009 11:24:37 +0000
+Received: from fmmailgate03.web.de ([217.72.192.234])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MDcvG-0000bm-24
+	for ltp-list@lists.sourceforge.net; Mon, 08 Jun 2009 11:24:37 +0000
+Received: from smtp05.web.de (fmsmtp05.dlan.cinetic.de [172.20.4.166])
+	by fmmailgate03.web.de (Postfix) with ESMTP id 8365EFF0FF0E
+	for <ltp-list@lists.sourceforge.net>;
+	Mon,  8 Jun 2009 13:21:48 +0200 (CEST)
+Received: from [83.208.36.163] (helo=debian.localnet)
+	by smtp05.web.de with asmtp (TLSv1:AES256-SHA:256)
+	(WEB.DE 4.110 #277) id 1MDcvE-00056h-00
+	for ltp-list@lists.sourceforge.net; Mon, 08 Jun 2009 13:21:48 +0200
+From: Jiri Palecek <jpalecek@web.de>
+Date: Mon, 8 Jun 2009 13:25:23 +0200
 MIME-Version: 1.0
-References: <4A427613.80206@us.ibm.com>	 <4A42FA2D.7050302@linux.vnet.ibm.com>
-	<1245921054.5542.49.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1245921054.5542.49.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] [PATCH][real-time] sched_footbal atomic start
+Content-Disposition: inline
+Message-Id: <200906081325.24357.jpalecek@web.de>
+Subject: [LTP] [PATCH] Change syscall numbers to symbolic constants in
+	rt_sigprocmask01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,188 +35,70 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
+To: ltp-list@lists.sourceforge.net
 
-Subrata Modak wrote:
-> On Thu, 2009-06-25 at 09:46 +0530, gowrishankar wrote: 
->> Darren Hart wrote:
->>> The current barrier implementation results in the lowest priority thread
->>> actually starting the game (they are the last to be scheduled to call
->>> pthread_barrier_wait).  This thread likely gets a priority boost as it 
->>> holds
->>> the hb->lock for the futex associated with the barrier.  This might lead 
->>> to it
->>> running ahead of the defense threads.
->>> In fact, any sort of barrier or cond var implementation (short of a pi 
->>> aware
->>> cond broadcast, which is not yet readily available) will result in a 
->>> thundering
->>> herd situation when the FUTEX_WAKE_ALL syscall is issued, which can 
->>> result in
->>> a short run of one or more offense threads while all the threads get to the
->>> RUNNABLE state.
->>>
->>> This patch removes the complex starting mechansims and replaces them with a
->>> simple atomic counter.  All player threads are started and once the
->>> players_ready count reaches the total player count, the referee starts 
->>> the game
->>> by setting the ball position to zero.
->>>
->>> Tested on two platforms (both x86_64, 4 and 8-way) for a combined total of
->>> 13,000 iterations with 0 failures.
->>>
->>> Signed-off-by: Darren Hart <dvhltc@us.ibm.com>
->>>
-> 
-> Thanks Darren. Long time LTP say updates to RT tests. What happened to
-> the RT-Graphics tests that probably were in the pipeline ?
+Hello,
 
-Hrm.... well.... I can't recall what those might have been.  The only 
-graphics testing we do is really just functional testing using existing 
-tests like x11perf and specviewperf.  We haven't written anything 
-specifically for -rt.  Do you have any more detail on what this might 
-have been?
+this patch changes the syscall numbers in rt_sigprocmask01 test to symbolic constants, to make it functional on other architectures than i386.
 
---
-Darren
+Regards
+    Jiri Palecek
 
-> 
-> Regards--
-> Subrata
-> 
->> Acked-by: Gowrishankar <gowrishankar.m@in.ibm.com>
->>
->> Thanks.
->> Gowri
->>> Index: ltp/testcases/realtime/func/sched_football/sched_football.c
->>> ===================================================================
->>> --- ltp.orig/testcases/realtime/func/sched_football/sched_football.c    
->>> 2009-06-24 11:49:16.000000000 -0700
->>> +++ ltp/testcases/realtime/func/sched_football/sched_football.c    
->>> 2009-06-24 11:48:44.000000000 -0700
->>> @@ -47,9 +47,11 @@
->>>  *
->>>  * HISTORY
->>>  *     2006-03-16 Reduced verbosity, non binary failure reporting, 
->>> removal of
->>> - *     crazy_fans thread, added game_length argument by Darren Hart.
->>> - *      2007-08-01 Remove all thread cleanup in favor of simply 
->>> exiting.Various
->>> - *      bugfixes and cleanups. -- Josh Triplett
->>> + *                crazy_fans thread, added game_length argument by 
->>> Darren Hart.
->>> + *     2007-08-01 Remove all thread cleanup in favor of simply 
->>> exiting.Various
->>> + *                bugfixes and cleanups. -- Josh Triplett
->>> + *     2009-06-23 Simplified atomic startup mechanism, avoiding 
->>> thundering herd
->>> + *                scheduling at the beginning of the game. -- Darren Hart
->>>  *
->>>  *****************************************************************************/ 
->>>
->>>
->>> @@ -71,11 +73,9 @@
->>> /* Here's the position of the ball */
->>> volatile int the_ball;
->>>
->>> -/* pthread_barrier for synchronization */
->>> -pthread_barrier_t barrier;
->>> -
->>> static int players_per_team = 0;
->>> static int game_length = DEF_GAME_LENGTH;
->>> +static atomic_t players_ready;
->>>
->>> void usage(void)
->>> {
->>> @@ -110,8 +110,7 @@
->>> /* This is the defensive team. They're trying to block the offense */
->>> void *thread_defense(void* arg)
->>> {
->>> -    pthread_barrier_wait(&barrier);
->>> -
->>> +    atomic_inc(&players_ready);
->>>     /*keep the ball from being moved */
->>>     while (1) {
->>>         sched_yield(); /* let other defenders run */
->>> @@ -123,8 +122,7 @@
->>> /* This is the offensive team. They're trying to move the ball */
->>> void *thread_offense(void* arg)
->>> {
->>> -    pthread_barrier_wait(&barrier);
->>> -
->>> +    atomic_inc(&players_ready);
->>>     while (1) {
->>>         the_ball++; /* move the ball ahead one yard */
->>>         sched_yield(); /* let other offensive players run */
->>> @@ -141,9 +139,9 @@
->>>
->>>     gettimeofday(&start, NULL);
->>>     now = start;
->>> -    the_ball = 0;
->>>
->>> -    pthread_barrier_wait(&barrier);
->>> +    /* Start the game! */
->>> +    the_ball = 0;
->>>
->>>     /* Watch the game */
->>>     while ((now.tv_sec - start.tv_sec) < game_length) {
->>> @@ -169,10 +167,7 @@
->>>     if (players_per_team == 0)
->>>         players_per_team = sysconf(_SC_NPROCESSORS_ONLN);
->>>
->>> -    if ((i = pthread_barrier_init(&barrier, NULL, players_per_team*2 + 
->>> 1))) {
->>> -        printf("pthread_barrier_init failed: %s\n", strerror(i));
->>> -        exit(i);
->>> -    }
->>> +    atomic_set(0, &players_ready);
->>>
->>>     printf("Running with: players_per_team=%d game_length=%d\n",
->>>            players_per_team, game_length);
->>> @@ -181,13 +176,20 @@
->>>     param.sched_priority = sched_get_priority_min(SCHED_FIFO) + 80;
->>>     sched_setscheduler(0, SCHED_FIFO, &param);
->>>
->>> -    /* Start the offense */
->>> +    /*
->>> +     * Start the offense
->>> +     * They are lower priority than defense, so they must be started 
->>> first.
->>> +     */
->>>     priority = 15;
->>>     printf("Starting %d offense threads at priority %d\n",
->>>             players_per_team, priority);
->>>     for (i = 0; i < players_per_team; i++)
->>>         create_fifo_thread(thread_offense, NULL, priority);
->>>
->>> +    /* Wait for the offense threads to start */
->>> +    while (atomic_get(&players_ready) < players_per_team)
->>> +        usleep(100);
->>> +
->>>     /* Start the defense */
->>>     priority = 30;
->>>     printf("Starting %d defense threads at priority %d\n",
->>> @@ -195,6 +197,10 @@
->>>     for (i = 0; i < players_per_team; i++)
->>>         create_fifo_thread(thread_defense, NULL, priority);
->>>
->>> +    /* Wait for the defense threads to start */
->>> +    while (atomic_get(&players_ready) < players_per_team * 2)
->>> +        usleep(100);
->>> +
->>>     /* Ok, everyone is on the field, bring out the ref */
->>>     printf("Starting referee thread\n");
->>>     return referee(game_length);
-> 
+Signed-off-by: Jiri Palecek <jpalecek@web.de>
 
+---
+ .../syscalls/rt_sigprocmask/rt_sigprocmask01.c     |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
+index c3251ab..6398a28 100644
+--- a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
++++ b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
+@@ -163,14 +163,14 @@ int main(int ac, char **av) {
+ 			
+ 			/* call rt_sigaction() */
+ 			act.sa_handler = sig_handler;
+-                        TEST(syscall(174, 33, &act, &oact, 8));
++                        TEST(syscall(__NR_rt_sigaction, 33, &act, &oact, 8));
+ 			if(TEST_RETURN != 0){
+ 				tst_resm(TFAIL,"Call to rt_sigaction() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+                         	cleanup();
+ 				tst_exit();
+ 			}
+ 			/* call rt_sigprocmask() to block signal#33 */
+-                        TEST(syscall(175, SIG_BLOCK, &set, &oset, 8));
++                        TEST(syscall(__NR_rt_sigprocmask, SIG_BLOCK, &set, &oset, 8));
+ 			if(TEST_RETURN == -1){
+ 				tst_resm(TFAIL,"Call to rt_sigprocmask()**** Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+                         	cleanup();
+@@ -192,7 +192,7 @@ int main(int ac, char **av) {
+ 				}
+ 				else {
+ 					/* call rt_sigpending() */
+-					TEST(syscall(176, &oset, 8));
++					TEST(syscall(__NR_rt_sigpending, &oset, 8));
+ 					if(TEST_RETURN == -1){
+ 						tst_resm(TFAIL,"call rt_sigpending() failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+                         			cleanup();
+@@ -205,7 +205,7 @@ int main(int ac, char **av) {
+ 						tst_exit();
+ 					}
+ 					/* call rt_sigprocmask() to unblock signal#33 */
+-					TEST(syscall(175, SIG_UNBLOCK, &set, &oset, 8));
++					TEST(syscall(__NR_rt_sigprocmask, SIG_UNBLOCK, &set, &oset, 8));
+ 					if(TEST_RETURN == -1){
+ 						tst_resm(TFAIL,"Call to rt_sigprocmask() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+                         			cleanup();
 -- 
-Darren Hart
-IBM Linux Technology Center
-Real-Time Linux Team
+1.6.2.4
+
 
 ------------------------------------------------------------------------------
+OpenSolaris 2009.06 is a cutting edge operating system for enterprises 
+looking to deploy the next generation of Solaris that includes the latest 
+innovations from Sun and the OpenSource community. Download a copy and 
+enjoy capabilities such as Networking, Storage and Virtualization. 
+Go to: http://p.sf.net/sfu/opensolaris-get
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
