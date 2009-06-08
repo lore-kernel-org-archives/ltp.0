@@ -1,20 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <iwamatsu.nobuhiro@renesas.com>) id 1MC6rv-0005Ic-6p
-	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2009 06:56:07 +0000
-Received: from mail.renesas.com ([202.234.163.13] helo=mail01.idc.renesas.com)
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MC6rq-0004xe-AU
-	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2009 06:56:07 +0000
-Date: Thu, 04 Jun 2009 15:55:56 +0900
-From: Nobuhiro Iwamatsu <iwamatsu.nobuhiro@renesas.com>
-In-reply-to: <1244027049.16185.6.camel@munipradeep-laptop>
-Message-id: <4A276FFC.9020807@renesas.com>
-MIME-version: 1.0
-References: <1244027049.16185.6.camel@munipradeep-laptop>
-Subject: Re: [LTP] LTP May 2009 build failing on RHEL5.4 pre-Alpha
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1MIYAx-0005nr-I4
+	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 01:18:23 +0000
+Received: from fmmailgate03.web.de ([217.72.192.234])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MIYAw-00079o-Hp
+	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 01:18:23 +0000
+Received: from smtp05.web.de (fmsmtp05.dlan.cinetic.de [172.20.4.166])
+	by fmmailgate03.web.de (Postfix) with ESMTP id 6E0BD100C5E70
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 22 Jun 2009 02:55:34 +0200 (CEST)
+Received: from [83.208.36.163] (helo=debian)
+	by smtp05.web.de with asmtp (WEB.DE 4.110 #277) id 1MIXos-0002gd-00
+	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 02:55:34 +0200
+Date: Tue, 09 Jun 2009 00:14:10 +0200
+From: "Jiri Palecek >" <"<jirka"@suse.de>(none)
+MIME-Version: 1.0
+Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Resent-Message-ID: <op.uvwibctclwynca@debian>
+Subject: [LTP] [PATCH] Add test environment variables (TCID et al.) to
+ tpm_version_tests.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,50 +31,52 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: ltp-list-bounces@lists.sourceforge.net
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Munipradeep Beerakam <mpradeep@linux.vnet.ibm.com>
 Cc: ltp-list@lists.sourceforge.net
+Message-ID: <20090608221410.JK0vYVpobx3ikDcAG3aMeCEUqGVzdXStgrF_fNHI4Jg@z>
 
-SGksCgpNdW5pcHJhZGVlcCBCZWVyYWthbSB3cm90ZToKID4gSGksCiA+CiA+IEkgdHJpZWQgdG8g
-YnVpbGQgdGhlIExUUCB0YXJiYWxsIGx0cC1mdWxsLTIwMDkwNTMxLnRneiBvbiBSSEVMNS40CiA+
-IHByZS1BbHBoYSBEaXN0cmlidXRpb24uIEJ1dCBidWlsZCBmYWlsZWQgd2l0aCB0aGUgZm9sbG93
-aW5nIGVycm9yOgogPgogPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KID4KID4gbWFrZVs0XTogRW50ZXJpbmcgZGlyZWN0
-b3J5CiA+IGAvcm9vdC9sdHAtZnVsbC0yMDA5MDUzMS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
-L3NnZXRtYXNrJwogPiBnY2MgLWcgLU8yIC1JLi4vLi4vaW5jbHVkZSAtZyAtV2FsbCAtSS4uLy4u
-Ly4uLy4uL2luY2x1ZGUgLVdhbGwKID4gc2dldG1hc2swMS5jICAtTC4uLy4uLy4uLy4uL2xpYiAt
-bGx0cCAtbyBzZ2V0bWFzazAxCiA+IHNnZXRtYXNrMDEuYzogSW4gZnVuY3Rpb24g4oCYbWFpbuKA
-mToKID4gc2dldG1hc2swMS5jOjE0MjogZXJyb3I6IOKAmF9fTlJfc3NldG1hc2vigJkgdW5kZWNs
-YXJlZCAoZmlyc3QgdXNlIGluIHRoaXMKID4gZnVuY3Rpb24pCiA+IHNnZXRtYXNrMDEuYzoxNDI6
-IGVycm9yOiAoRWFjaCB1bmRlY2xhcmVkIGlkZW50aWZpZXIgaXMgcmVwb3J0ZWQgb25seQogPiBv
-bmNlCiA+IHNnZXRtYXNrMDEuYzoxNDI6IGVycm9yOiBmb3IgZWFjaCBmdW5jdGlvbiBpdCBhcHBl
-YXJzIGluLikKID4gbWFrZVs0XTogKioqIFtzZ2V0bWFzazAxXSBFcnJvciAxCiA+IG1ha2VbNF06
-IExlYXZpbmcgZGlyZWN0b3J5CiA+IGAvcm9vdC9sdHAtZnVsbC0yMDA5MDUzMS90ZXN0Y2FzZXMv
-a2VybmVsL3N5c2NhbGxzL3NnZXRtYXNrJwogPiBtYWtlWzNdOiAqKiogW2FsbF0gRXJyb3IgMgog
-PiBtYWtlWzNdOiBMZWF2aW5nIGRpcmVjdG9yeQogPiBgL3Jvb3QvbHRwLWZ1bGwtMjAwOTA1MzEv
-dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscycKID4gbWFrZVsyXTogKioqIFthbGxdIEVycm9yIDIK
-ID4gbWFrZVsyXTogTGVhdmluZyBkaXJlY3RvcnkgYC9yb290L2x0cC1mdWxsLTIwMDkwNTMxL3Rl
-c3RjYXNlcy9rZXJuZWwnCiA+IG1ha2VbMV06ICoqKiBbYWxsXSBFcnJvciAyCiA+IG1ha2VbMV06
-IExlYXZpbmcgZGlyZWN0b3J5IGAvcm9vdC9sdHAtZnVsbC0yMDA5MDUzMS90ZXN0Y2FzZXMnCiA+
-IG1ha2U6ICoqKiBbYWxsXSBFcnJvciAyCiA+CiA+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogPgogPiBUaGUgdmFyaWFi
-bGUgJ19fTlJfc3NldG1hc2snIGRlY2xhcmF0aW9uIGlzIGF2YWlsYWJsZSBpbiAvdXNyL2luY2x1
-ZGUKID4KID4gfiMgZ3JlcCAtciAiX19OUl9zc2V0bWFzayIgL3Vzci9pbmNsdWRlLwogPiAvdXNy
-L2luY2x1ZGUvYml0cy9zeXNjYWxsLmg6I2RlZmluZSBTWVNfc3NldG1hc2sgX19OUl9zc2V0bWFz
-awogPiAvdXNyL2luY2x1ZGUvYXNtLWkzODYvdW5pc3RkLmg6I2RlZmluZSBfX05SX3NzZXRtYXNr
-ICAgICAgICAgICAgIDY5CiA+CiA+IFdoYXQgY291bGQgYmUgdGhlIHJlYXNvbiBmb3IgZmFpbHVy
-ZT8KID4KV2hhdCBraW5kIG9mIGFyY2ggZG8geW91IHVzZT8KeDg2XzY0PyBJIGJlY2FtZSB0aGUg
-c2FtZSBwcm9ibGVtIHRvby4KeDg2XzY0IGRvZXMgbm90IHNlZW0gdG8gaGF2ZSB0aGlzIHN5c3Rl
-bWNhbGwuCgpCZXN0IHJlZ2FyZHMsCiAgTm9idWhpcm8KCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
-T3BlblNvbGFyaXMgMjAwOS4wNiBpcyBhIGN1dHRpbmcgZWRnZSBvcGVyYXRpbmcgc3lzdGVtIGZv
-ciBlbnRlcnByaXNlcyAKbG9va2luZyB0byBkZXBsb3kgdGhlIG5leHQgZ2VuZXJhdGlvbiBvZiBT
-b2xhcmlzIHRoYXQgaW5jbHVkZXMgdGhlIGxhdGVzdCAKaW5ub3ZhdGlvbnMgZnJvbSBTdW4gYW5k
-IHRoZSBPcGVuU291cmNlIGNvbW11bml0eS4gRG93bmxvYWQgYSBjb3B5IGFuZCAKZW5qb3kgY2Fw
-YWJpbGl0aWVzIHN1Y2ggYXMgTmV0d29ya2luZywgU3RvcmFnZSBhbmQgVmlydHVhbGl6YXRpb24u
-IApHbyB0bzogaHR0cDovL3Auc2YubmV0L3NmdS9vcGVuc29sYXJpcy1nZXQKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0
-Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdl
-Lm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+Hello,
+
+this patch adds variables needed for tst_* routines into the tpm_version_tests.sh
+
+Regards
+    Jiri Palecek
+
+Signed-off-by: Jiri Palecek <jpalecek@web.de>
+---
+ .../tpm-tools/tpm/tpm_version/tpm_version_tests.sh |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/testcases/commands/tpm-tools/tpm/tpm_version/tpm_version_tests.sh b/testcases/commands/tpm-tools/tpm/tpm_version/tpm_version_tests.sh
+index 0fb54cd..dd2e5b9 100755
+--- a/testcases/commands/tpm-tools/tpm/tpm_version/tpm_version_tests.sh
++++ b/testcases/commands/tpm-tools/tpm/tpm_version/tpm_version_tests.sh
+@@ -17,6 +17,10 @@
+ # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ #
+ 
++export TCID=tpm_version
++export TST_TOTAL=1
++export TST_COUNT=1
++
+ setup()
+ {
+ 	RC=0				# Return code from commands.
+-- 
+1.6.3.1
+
+
+
+
+------------------------------------------------------------------------------
+Are you an open source citizen? Join us for the Open Source Bridge conference!
+Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
+Need another reason to go? 24-hour hacker lounge. Register today!
+http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
