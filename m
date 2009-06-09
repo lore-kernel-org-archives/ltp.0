@@ -1,31 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MHLSp-0003jE-48
-	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:31:51 +0000
-Received: from e7.ny.us.ibm.com ([32.97.182.137])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MHLSm-0006Ss-Lv
-	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:31:51 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e7.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5IHJRaC007141
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 13:19:27 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5IHVlo1252268
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 13:31:47 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5IHVkoU004594
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 13:31:47 -0400
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1ME60y-0003ye-75
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2009 18:25:40 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1ME60x-0001bP-BV
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2009 18:25:40 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e37.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n59IOxpW027543
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2009 12:24:59 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n59IPc3c259988
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2009 12:25:38 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n59IPcet032582
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2009 12:25:38 -0600
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <49b7c2350906120147p1a68cde1ua00b2875052ea99c@mail.gmail.com>
-References: <49b7c2350906120147p1a68cde1ua00b2875052ea99c@mail.gmail.com>
-Date: Thu, 18 Jun 2009 23:01:35 +0530
-Message-Id: <1245346296.5041.34.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <200906081322.58916.jpalecek@web.de>
+References: <200906081322.58916.jpalecek@web.de>
+Date: Tue, 09 Jun 2009 23:55:00 +0530
+Message-Id: <1244571902.5497.22.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] I met "You can specify it with option -b" error message
+Subject: Re: [LTP] [PATCH] Don't create the message queue in mq_open01
+	when	the test specifies O_CREAT flag
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -36,139 +38,49 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: GeunSik Lim <leemgs1@gmail.com>, Andrew Vagin <avagin@parallels.com>, Andrew Vagin <avagin@gmail.com>
+To: Jiri Palecek <jpalecek@web.de>
 Cc: ltp-list@lists.sourceforge.net
 
-T24gRnJpLCAyMDA5LTA2LTEyIGF0IDE3OjQ3ICswOTAwLCBHZXVuU2lrIExpbSB3cm90ZTogCj4g
-VW0uLgo+IAo+IEkgbWV0ICJZb3UgY2FuIHNwZWNpZnkgaXQgd2l0aCBvcHRpb24gLWIiIGVycm9y
-IG1lc3NhZ2Ugd2hlbiBpIHRlc3RlZAo+IG15IGZlZG9yYSBzeXN0ZW0gd2l0aAo+IExUUC0yMDA5
-MDUzMSB2ZXJzaW9uLgo+IAo+IAo+IEJlbG93cyBpcyBzY3JlbnNob3QuLgo+IEFueW9uZSBIZWxw
-IG1lIGFib3V0IHRoaXMgcHJvYmxlbXM/Cj4gCj4gCj4gCj4gTGludXggZmVkb3JhOSAyLjYuMjkt
-My5mYzEwLmk2ODYgIzEgU01QIFR1ZSBNYXIgMjQgMDE6NTY6MjQgRURUIDIwMDkKPiBpNjg2IGk2
-ODYgaTM4NiBHTlUvTGludXgKPiAKPiBHbnUgQyAgICAgICAgICAgICAgICAgIGdjYyAoR0NDKSA0
-LjMuMCAyMDA4MDQyOCAoUmVkIEhhdCA0LjMuMC04KQo+IEdudSBtYWtlICAgICAgICAgICAgICAg
-My44MQo+IHV0aWwtbGludXggICAgICAgICAgICAgbmcgMi4xMy4xKQo+IG1vdW50ICAgICAgICAg
-ICAgICAgICAgbmcgMi4xMy4xKQo+IG1vZHV0aWxzICAgICAgICAgICAgICAgMy40Cj4gZTJmc3By
-b2dzICAgICAgICAgICAgICAxLjQxLjMKPiBQUFAgICAgICAgICAgICAgICAgICAgIDIuNC40Cj4g
-aXNkbjRrLXV0aWxzICAgICAgICAgICAzLjkKPiBMaW51eCBDIExpYnJhcnkgICAgICAgID4gbGli
-Yy4yLjgKPiBEeW5hbWljIGxpbmtlciAobGRkKSAgIDIuOAo+IFByb2NwcyAgICAgICAgICAgICAg
-ICAgMy4yLjcKPiBOZXQtdG9vbHMgICAgICAgICAgICAgIDEuNjAKPiBLYmQgICAgICAgICAgICAg
-ICAgICAgIDEuMTIKPiBTaC11dGlscyAgICAgICAgICAgICAgIDYuMTAKPiBNb2R1bGVzIExvYWRl
-ZCAgICAgICAgIHZib3huZXRmbHQgdmJveGRydiB0dW4gaXB0X01BU1FVRVJBREUKPiBpcHRhYmxl
-X25hdCBuZl9uYXQgYnJpZGdlIHN0cCBuZnNkIGxvY2tkIG5mc19hY2wgYXV0aF9ycGNnc3MgZXhw
-b3J0ZnMKPiBpYl9pc2VyIHJkbWFfY20gaWJfY20gaXdfY20gaWJfc2EgaWJfbWFkIGliX2NvcmUg
-aWJfYWRkciBpc2NzaV90Y3AKPiBsaWJpc2NzaV90Y3AgbGliaXNjc2kgc2NzaV90cmFuc3BvcnRf
-aXNjc2kgZnVzZSBzdW5ycGMgaXB2Ngo+IGRtX211bHRpcGF0aCBzbmRfaGRhX2NvZGVjX3JlYWx0
-ZWsgc25kX2hkYV9pbnRlbCBzbmRfaGRhX2NvZGVjCj4gc25kX2h3ZGVwIHNuZF9zZXFfZHVtbXkg
-c25kX3NlcV9vc3Mgc25kX3NlcV9taWRpX2V2ZW50IHNuZF9zZXEgbnZpZGlhCj4gc25kX3NlcV9k
-ZXZpY2Ugc25kX3BjbV9vc3Mgc25kX21peGVyX29zcyBzbmRfcGNtIHRwbV9pbmZpbmVvbiB0cG0g
-ZTEwMAo+IHBwZGV2IHNuZF90aW1lciBtaWkgZTEwMDBlIHBjc3BrciBzbmQgaTJjX2k4MDEgdHBt
-X2Jpb3MgaVRDT193ZHQKPiBwYXJwb3J0X3BjIHNvdW5kY29yZSBpVENPX3ZlbmRvcl9zdXBwb3J0
-IHBhcnBvcnQgaTJjX2NvcmUKPiBzbmRfcGFnZV9hbGxvYyBwYXRhX2FjcGkgYXRhX2dlbmVyaWMK
-PiAKPiBmcmVlIHJlcG9ydHM6Cj4gICAgICAgICAgICAgdG90YWwgICAgICAgdXNlZCAgICAgICBm
-cmVlICAgICBzaGFyZWQgICAgYnVmZmVycyAgICAgY2FjaGVkCj4gTWVtOiAgICAgICAzMDgwNzMy
-ICAgIDI1Njc2OTIgICAgIDUxMzA0MCAgICAgICAgICAwICAgICA2MTA0NTYgICAgIDc3NzI2NAo+
-IC0vKyBidWZmZXJzL2NhY2hlOiAgICAxMTc5OTcyICAgIDE5MDA3NjAKPiBTd2FwOiAgICAgICAg
-ICAgIDAgICAgICAgICAgMCAgICAgICAgICAwCj4gCj4gL3Byb2MvY3B1aW5mbwo+IHByb2Nlc3Nv
-ciAgICAgICA6IDAKPiB2ZW5kb3JfaWQgICAgICAgOiBHZW51aW5lSW50ZWwKPiBjcHUgZmFtaWx5
-ICAgICAgOiA2Cj4gbW9kZWwgICAgICAgICAgIDogMjMKPiBtb2RlbCBuYW1lICAgICAgOiBJbnRl
-bChSKSBDb3JlKFRNKTIgUXVhZCAgQ1BVICAgUTkzMDAgIEAgMi41MEdIego+IHN0ZXBwaW5nICAg
-ICAgICA6IDcKPiBjcHUgTUh6ICAgICAgICAgOiAyNDkzLjU5MQo+IGNhY2hlIHNpemUgICAgICA6
-IDMwNzIgS0IKPiBwaHlzaWNhbCBpZCAgICAgOiAwCj4gc2libGluZ3MgICAgICAgIDogNAo+IGNv
-cmUgaWQgICAgICAgICA6IDAKPiBjcHUgY29yZXMgICAgICAgOiA0Cj4gYXBpY2lkICAgICAgICAg
-IDogMAo+IGluaXRpYWwgYXBpY2lkICA6IDAKPiBmZGl2X2J1ZyAgICAgICAgOiBubwo+IGhsdF9i
-dWcgICAgICAgICA6IG5vCj4gZjAwZl9idWcgICAgICAgIDogbm8KPiBjb21hX2J1ZyAgICAgICAg
-OiBubwo+IGZwdSAgICAgICAgICAgICA6IHllcwo+IGZwdV9leGNlcHRpb24gICA6IHllcwo+IGNw
-dWlkIGxldmVsICAgICA6IDEwCj4gd3AgICAgICAgICAgICAgIDogeWVzCj4gZmxhZ3MgICAgICAg
-ICAgIDogZnB1IHZtZSBkZSBwc2UgdHNjIG1zciBwYWUgbWNlIGN4OCBhcGljIG10cnIgcGdlIG1j
-YSBjbW92IHBhdAo+IHBzZTM2IGNsZmx1c2ggZHRzIGFjcGkgbW14IGZ4c3Igc3NlIHNzZTIgc3Mg
-aHQgdG0gcGJlIGxtIGNvbnN0YW50X3RzYwo+IGFyY2hfcGVyZm1vbiBwZWJzIGJ0cyBwbmkgZHRl
-czY0IG1vbml0b3IgZHNfY3BsIHZteCBzbXggZXN0IHRtMiBzc3NlMwo+IGN4MTYgeHRwciBwZGNt
-IHNzZTRfMSBsYWhmX2xtIHRwcl9zaGFkb3cgdm5taSBmbGV4cHJpb3JpdHkKPiBib2dvbWlwcyAg
-ICAgICAgOiA0OTg3LjE4Cj4gY2xmbHVzaCBzaXplICAgIDogNjQKPiBwb3dlciBtYW5hZ2VtZW50
-Ogo+IAo+IHByb2Nlc3NvciAgICAgICA6IDEKPiB2ZW5kb3JfaWQgICAgICAgOiBHZW51aW5lSW50
-ZWwKPiBjcHUgZmFtaWx5ICAgICAgOiA2Cj4gbW9kZWwgICAgICAgICAgIDogMjMKPiBtb2RlbCBu
-YW1lICAgICAgOiBJbnRlbChSKSBDb3JlKFRNKTIgUXVhZCAgQ1BVICAgUTkzMDAgIEAgMi41MEdI
-ego+IHN0ZXBwaW5nICAgICAgICA6IDcKPiBjcHUgTUh6ICAgICAgICAgOiAyNDkzLjU5MQo+IGNh
-Y2hlIHNpemUgICAgICA6IDMwNzIgS0IKPiBwaHlzaWNhbCBpZCAgICAgOiAwCj4gc2libGluZ3Mg
-ICAgICAgIDogNAo+IGNvcmUgaWQgICAgICAgICA6IDEKPiBjcHUgY29yZXMgICAgICAgOiA0Cj4g
-YXBpY2lkICAgICAgICAgIDogMQo+IGluaXRpYWwgYXBpY2lkICA6IDEKPiBmZGl2X2J1ZyAgICAg
-ICAgOiBubwo+IGhsdF9idWcgICAgICAgICA6IG5vCj4gZjAwZl9idWcgICAgICAgIDogbm8KPiBj
-b21hX2J1ZyAgICAgICAgOiBubwo+IGZwdSAgICAgICAgICAgICA6IHllcwo+IGZwdV9leGNlcHRp
-b24gICA6IHllcwo+IGNwdWlkIGxldmVsICAgICA6IDEwCj4gd3AgICAgICAgICAgICAgIDogeWVz
-Cj4gZmxhZ3MgICAgICAgICAgIDogZnB1IHZtZSBkZSBwc2UgdHNjIG1zciBwYWUgbWNlIGN4OCBh
-cGljIG10cnIgcGdlIG1jYSBjbW92IHBhdAo+IHBzZTM2IGNsZmx1c2ggZHRzIGFjcGkgbW14IGZ4
-c3Igc3NlIHNzZTIgc3MgaHQgdG0gcGJlIGxtIGNvbnN0YW50X3RzYwo+IGFyY2hfcGVyZm1vbiBw
-ZWJzIGJ0cyBwbmkgZHRlczY0IG1vbml0b3IgZHNfY3BsIHZteCBzbXggZXN0IHRtMiBzc3NlMwo+
-IGN4MTYgeHRwciBwZGNtIHNzZTRfMSBsYWhmX2xtIHRwcl9zaGFkb3cgdm5taSBmbGV4cHJpb3Jp
-dHkKPiBib2dvbWlwcyAgICAgICAgOiA0OTg3LjQ4Cj4gY2xmbHVzaCBzaXplICAgIDogNjQKPiBw
-b3dlciBtYW5hZ2VtZW50Ogo+IAo+IHByb2Nlc3NvciAgICAgICA6IDIKPiB2ZW5kb3JfaWQgICAg
-ICAgOiBHZW51aW5lSW50ZWwKPiBjcHUgZmFtaWx5ICAgICAgOiA2Cj4gbW9kZWwgICAgICAgICAg
-IDogMjMKPiBtb2RlbCBuYW1lICAgICAgOiBJbnRlbChSKSBDb3JlKFRNKTIgUXVhZCAgQ1BVICAg
-UTkzMDAgIEAgMi41MEdIego+IHN0ZXBwaW5nICAgICAgICA6IDcKPiBjcHUgTUh6ICAgICAgICAg
-OiAyNDkzLjU5MQo+IGNhY2hlIHNpemUgICAgICA6IDMwNzIgS0IKPiBwaHlzaWNhbCBpZCAgICAg
-OiAwCj4gc2libGluZ3MgICAgICAgIDogNAo+IGNvcmUgaWQgICAgICAgICA6IDIKPiBjcHUgY29y
-ZXMgICAgICAgOiA0Cj4gYXBpY2lkICAgICAgICAgIDogMgo+IGluaXRpYWwgYXBpY2lkICA6IDIK
-PiBmZGl2X2J1ZyAgICAgICAgOiBubwo+IGhsdF9idWcgICAgICAgICA6IG5vCj4gZjAwZl9idWcg
-ICAgICAgIDogbm8KPiBjb21hX2J1ZyAgICAgICAgOiBubwo+IGZwdSAgICAgICAgICAgICA6IHll
-cwo+IGZwdV9leGNlcHRpb24gICA6IHllcwo+IGNwdWlkIGxldmVsICAgICA6IDEwCj4gd3AgICAg
-ICAgICAgICAgIDogeWVzCj4gZmxhZ3MgICAgICAgICAgIDogZnB1IHZtZSBkZSBwc2UgdHNjIG1z
-ciBwYWUgbWNlIGN4OCBhcGljIG10cnIgcGdlIG1jYSBjbW92IHBhdAo+IHBzZTM2IGNsZmx1c2gg
-ZHRzIGFjcGkgbW14IGZ4c3Igc3NlIHNzZTIgc3MgaHQgdG0gcGJlIGxtIGNvbnN0YW50X3RzYwo+
-IGFyY2hfcGVyZm1vbiBwZWJzIGJ0cyBwbmkgZHRlczY0IG1vbml0b3IgZHNfY3BsIHZteCBzbXgg
-ZXN0IHRtMiBzc3NlMwo+IGN4MTYgeHRwciBwZGNtIHNzZTRfMSBsYWhmX2xtIHRwcl9zaGFkb3cg
-dm5taSBmbGV4cHJpb3JpdHkKPiBib2dvbWlwcyAgICAgICAgOiA0OTg3LjQ5Cj4gY2xmbHVzaCBz
-aXplICAgIDogNjQKPiBwb3dlciBtYW5hZ2VtZW50Ogo+IAo+IHByb2Nlc3NvciAgICAgICA6IDMK
-PiB2ZW5kb3JfaWQgICAgICAgOiBHZW51aW5lSW50ZWwKPiBjcHUgZmFtaWx5ICAgICAgOiA2Cj4g
-bW9kZWwgICAgICAgICAgIDogMjMKPiBtb2RlbCBuYW1lICAgICAgOiBJbnRlbChSKSBDb3JlKFRN
-KTIgUXVhZCAgQ1BVICAgUTkzMDAgIEAgMi41MEdIego+IHN0ZXBwaW5nICAgICAgICA6IDcKPiBj
-cHUgTUh6ICAgICAgICAgOiAyNDkzLjU5MQo+IGNhY2hlIHNpemUgICAgICA6IDMwNzIgS0IKPiBw
-aHlzaWNhbCBpZCAgICAgOiAwCj4gc2libGluZ3MgICAgICAgIDogNAo+IGNvcmUgaWQgICAgICAg
-ICA6IDMKPiBjcHUgY29yZXMgICAgICAgOiA0Cj4gYXBpY2lkICAgICAgICAgIDogMwo+IGluaXRp
-YWwgYXBpY2lkICA6IDMKPiBmZGl2X2J1ZyAgICAgICAgOiBubwo+IGhsdF9idWcgICAgICAgICA6
-IG5vCj4gZjAwZl9idWcgICAgICAgIDogbm8KPiBjb21hX2J1ZyAgICAgICAgOiBubwo+IGZwdSAg
-ICAgICAgICAgICA6IHllcwo+IGZwdV9leGNlcHRpb24gICA6IHllcwo+IGNwdWlkIGxldmVsICAg
-ICA6IDEwCj4gd3AgICAgICAgICAgICAgIDogeWVzCj4gZmxhZ3MgICAgICAgICAgIDogZnB1IHZt
-ZSBkZSBwc2UgdHNjIG1zciBwYWUgbWNlIGN4OCBhcGljIG10cnIgcGdlIG1jYSBjbW92IHBhdAo+
-IHBzZTM2IGNsZmx1c2ggZHRzIGFjcGkgbW14IGZ4c3Igc3NlIHNzZTIgc3MgaHQgdG0gcGJlIGxt
-IGNvbnN0YW50X3RzYwo+IGFyY2hfcGVyZm1vbiBwZWJzIGJ0cyBwbmkgZHRlczY0IG1vbml0b3Ig
-ZHNfY3BsIHZteCBzbXggZXN0IHRtMiBzc3NlMwo+IGN4MTYgeHRwciBwZGNtIHNzZTRfMSBsYWhm
-X2xtIHRwcl9zaGFkb3cgdm5taSBmbGV4cHJpb3JpdHkKPiBib2dvbWlwcyAgICAgICAgOiA0OTg3
-LjQ5Cj4gY2xmbHVzaCBzaXplICAgIDogNjQKPiBwb3dlciBtYW5hZ2VtZW50Ogo+IAo+IHJlbW92
-ZSB0ZXN0IGNhc2VzIHdoaWNoIHJlcXVpcmUgdGhlIGJsb2NrIGRldmljZS4KPiBZb3UgY2FuIHNw
-ZWNpZnkgaXQgd2l0aCBvcHRpb24gLWIKClRoaXMgaXMgbm90IGFuIGVycm9yIG1lc3NhZ2UgYXQg
-YWxsLiBTZWUgdGhpczoKaHR0cDovL2x0cC5jdnMuc291cmNlZm9yZ2UubmV0L3ZpZXd2Yy9sdHAv
-bHRwL3J1bmx0cD9yMT0xLjQwJnIyPTEuNDEKCkFuZHJldyB3b3VsZCBhbHNvIGV4cGxhaW4geW91
-IGEgYml0LgoKUmVnYXJkcy0tClN1YnJhdGEKCj4gTE9HIEZpbGU6IC9vcHQvbHRwLWZ1bGwtMjAw
-OTA1MzEvcmVzdWx0cy9MVFBfUlVOX09OLTIwMDlfIDbsm5RfMTItMTZoXzE3bV8zNHMubG9nCj4g
-RkFJTEVEIENPTU1BTkQgRmlsZTogL29wdC9sdHAtZnVsbC0yMDA5MDUzMS9vdXRwdXQvTFRQX1JV
-Tl9PTi0yMDA5Xy5mYWlsZWQKPiBSdW5uaW5nIHRlc3RzLi4uLi4uLgo+IAo+IAo+IAo+IAo+IC0t
-Cj4gUmVnYXJkcywKPiBHZXVuU2lrIExpbSAoIFNhbXN1bmcgRWxlY3Ryb25pY3MgKQo+IEJsb2cg
-OiBodHRwOi8vYmxvZy5uYXZlci5jb20vaW52YWluLwo+IGUtTWFpbDogZ2V1bnNpay5saW1Ac2Ft
-c3VuZy5jb20KPiAgICAgICAgICAgbGVlbWdzQGdtYWlsLmNvbSAsIGxlZW1nczFAZ21haWwuY29t
-Cj4gLS0KPiBUbyB1bnN1YnNjcmliZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5z
-dWJzY3JpYmUgbGludXgta2VybmVsIiBpbgo+IHRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpv
-cmRvbW9Admdlci5rZXJuZWwub3JnCj4gTW9yZSBtYWpvcmRvbW8gaW5mbyBhdCAgaHR0cDovL3Zn
-ZXIua2VybmVsLm9yZy9tYWpvcmRvbW8taW5mby5odG1sCj4gUGxlYXNlIHJlYWQgdGhlIEZBUSBh
-dCAgaHR0cDovL3d3dy50dXgub3JnL2xrbWwvCj4gCj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4g
-Q3J5c3RhbCBSZXBvcnRzIC0gTmV3IEZyZWUgUnVudGltZSBhbmQgMzAgRGF5IFRyaWFsCj4gQ2hl
-Y2sgb3V0IHRoZSBuZXcgc2ltcGxpZmllZCBsaWNlbnNpbmcgb3B0aW9uIHRoYXQgZW5hYmxlcyB1
-bmxpbWl0ZWQKPiByb3lhbHR5LWZyZWUgZGlzdHJpYnV0aW9uIG9mIHRoZSByZXBvcnQgZW5naW5l
-IGZvciBleHRlcm5hbGx5IGZhY2luZyAKPiBzZXJ2ZXIgYW5kIHdlYiBkZXBsb3ltZW50Lgo+IGh0
-dHA6Ly9wLnNmLm5ldC9zZnUvYnVzaW5lc3NvYmplY3RzCj4gX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KPiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QKPiBMdHAt
-bGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5l
-dC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpDcnlzdGFs
-IFJlcG9ydHMgLSBOZXcgRnJlZSBSdW50aW1lIGFuZCAzMCBEYXkgVHJpYWwKQ2hlY2sgb3V0IHRo
-ZSBuZXcgc2ltcGxpZmllZCBsaWNlbnNpbmcgb3B0aW9uIHRoYXQgZW5hYmxlcyB1bmxpbWl0ZWQK
-cm95YWx0eS1mcmVlIGRpc3RyaWJ1dGlvbiBvZiB0aGUgcmVwb3J0IGVuZ2luZSBmb3IgZXh0ZXJu
-YWxseSBmYWNpbmcgCnNlcnZlciBhbmQgd2ViIGRlcGxveW1lbnQuCmh0dHA6Ly9wLnNmLm5ldC9z
-ZnUvYnVzaW5lc3NvYmplY3RzCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3Jn
-ZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxp
-c3QK
+On Mon, 2009-06-08 at 13:22 +0200, Jiri Palecek wrote: 
+> The tests need to create the message queue themselves to specify the
+>  creation attributes
+> 
+> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+
+Thanks.
+
+Regards--
+Subrata
+
+> ---
+>  testcases/kernel/syscalls/mq_open/mq_open01.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/mq_open/mq_open01.c b/testcases/kernel/syscalls/mq_open/mq_open01.c
+> index 205de66..f9c2f08 100644
+> --- a/testcases/kernel/syscalls/mq_open/mq_open01.c
+> +++ b/testcases/kernel/syscalls/mq_open/mq_open01.c
+> @@ -315,7 +315,7 @@ static int do_test(struct test_case *tc)
+>           * Execute system call
+>           */
+> 
+> -	if (tc->ttype != NO_SPACE) {
+> +	if (tc->ttype != NO_SPACE && !(tc->oflag & O_CREAT)) {
+>                  errno = 0;
+>                  TEST(sys_ret = mq_open(QUEUE_NAME, O_CREAT|O_EXCL|O_RDWR, S_IRWXU, NULL));
+>                  sys_errno = errno;
+
+
+------------------------------------------------------------------------------
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
