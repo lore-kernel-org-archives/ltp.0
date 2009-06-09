@@ -1,18 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <ningyl@inspur.com>) id 1MCOwa-0004dg-7G
-	for ltp-list@lists.sourceforge.net; Fri, 05 Jun 2009 02:14:08 +0000
-Received: from [218.57.135.52] (helo=mail.langchao.com)
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MCOwU-0008RF-Ci
-	for ltp-list@lists.sourceforge.net; Fri, 05 Jun 2009 02:14:08 +0000
-From: =?gb2312?B?xP7RxcD7?= <ningyl@inspur.com>
-Date: Fri, 5 Jun 2009 09:42:50 +0800
-Message-ID: <31B17337989C4578A86EF9D2E270034D@BJningyl>
-MIME-Version: 1.0
-Subject: [LTP] ltp for kernel 2.6.28
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1ME60a-0006WI-1j
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2009 18:25:16 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1ME60Y-0002E3-72
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2009 18:25:16 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e1.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n59IKsR8019369
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2009 14:20:54 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n59IPDl4251092
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2009 14:25:13 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n59IPD9i008402
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2009 14:25:13 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4A2CABFB.3010207@cn.fujitsu.com>
+References: <4A2CABFB.3010207@cn.fujitsu.com>
+Date: Tue, 09 Jun 2009 23:54:47 +0530
+Message-Id: <1244571889.5497.19.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH 1/2] chmod05: fix to modify the group ownership
+	before	do dir chmod
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,177 +37,79 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1332692917004426566=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-This is a multi-part message in MIME format.
-
---===============1332692917004426566==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0009_01C9E5C1.FE5434B0"
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0009_01C9E5C1.FE5434B0
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: quoted-printable
-
-Hi=A3=AC
-
-I have been testing the linux system with the kernel 2.6.28 by
-ltp-full-20090131. But the problem is that part of the testcases is not
-suite for the kernel 2.6.28. As the result, it causes that some cases =
-FAILED
-as unexpected. Is there any distribution that is fit for kernel 2.6.28, =
-the
-platform is ia64
-
-=20
-
-Looking for forward to you!
-
-Thanks!
-
-=20
-
-
-------=_NextPart_000_0009_01C9E5C1.FE5434B0
-Content-Type: text/html;
-	charset="gb2312"
-Content-Transfer-Encoding: quoted-printable
-
-<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
-
-<head>
-<meta http-equiv=3DContent-Type content=3D"text/html; charset=3Dgb2312">
-<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
-<style>
-<!--
- /* Font Definitions */
- @font-face
-	{font-family:=CB=CE=CC=E5;
-	panose-1:2 1 6 0 3 1 1 1 1 1;}
-@font-face
-	{font-family:"\@=CB=CE=CC=E5";
-	panose-1:2 1 6 0 3 1 1 1 1 1;}
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0cm;
-	margin-bottom:.0001pt;
-	text-align:justify;
-	text-justify:inter-ideograph;
-	font-size:10.5pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{mso-style-type:personal-compose;
-	font-family:Arial;
-	color:windowtext;}
- /* Page Definitions */
- @page Section1
-	{size:595.3pt 841.9pt;
-	margin:72.0pt 90.0pt 72.0pt 90.0pt;
-	layout-grid:15.6pt;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-
-</head>
-
-<body lang=3DZH-CN link=3Dblue vlink=3Dpurple =
-style=3D'text-justify-trim:punctuation'>
-
-<div class=3DSection1 style=3D'layout-grid:15.6pt'>
-
-<p class=3DMsoNormal style=3D'layout-grid-mode:char'><font size=3D1 =
-face=3DArial><span
-lang=3DEN-US =
-style=3D'font-size:9.0pt;font-family:Arial'>Hi</span></font><font
-size=3D1 face=3D=CB=CE=CC=E5><span =
-style=3D'font-size:9.0pt;font-family:=CB=CE=CC=E5'>=A3=AC</span></font><f=
-ont
-size=3D1 face=3DArial><span lang=3DEN-US =
-style=3D'font-size:9.0pt;font-family:Arial'><o:p></o:p></span></font></p>=
-
-
-<p class=3DMsoNormal style=3D'layout-grid-mode:char'><font size=3D1 =
-face=3DArial><span
-lang=3DEN-US style=3D'font-size:9.0pt;font-family:Arial'>I have been =
-testing the
-linux system with the kernel 2.6.28 by ltp-full-20090131. But the =
-problem is
-that part of the testcases is not suite for the kernel 2.6.28. As the =
-result,
-it causes that some cases FAILED as unexpected. Is there any =
-distribution that
-is fit for kernel 2.6.28, the platform is =
-ia64<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'layout-grid-mode:char'><font size=3D1 =
-face=3DArial><span
-lang=3DEN-US =
-style=3D'font-size:9.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></fon=
-t></p>
-
-<p class=3DMsoNormal style=3D'layout-grid-mode:char'><font size=3D1 =
-face=3DArial><span
-lang=3DEN-US style=3D'font-size:9.0pt;font-family:Arial'>Looking for =
-forward to
-you!<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal style=3D'layout-grid-mode:char'><font size=3D1 =
-face=3DArial><span
-lang=3DEN-US =
-style=3D'font-size:9.0pt;font-family:Arial'>Thanks!<o:p></o:p></span></fo=
-nt></p>
-
-<p class=3DMsoNormal><font size=3D1 face=3DArial><span lang=3DEN-US =
-style=3D'font-size:
-9.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------=_NextPart_000_0009_01C9E5C1.FE5434B0--
-
-
-
---===============1332692917004426566==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Wei Yongjun <yjwei@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
+
+On Mon, 2009-06-08 at 14:13 +0800, Wei Yongjun wrote: 
+> Refer to the manpage:
+> 
+>   # man 2 chmod
+>   If the calling process is not privileged (Linux: does not have the
+>   CAP_FSETID capability), and the group of the file does not match
+>   the effective group ID of the process or one of its supplementary
+>   group IDs, the S_ISGID bit will be turned off, but this will not
+>   cause an error to be returned.
+> 
+> So, if we want S_ISGID bit be turned off after chmod(), we can not have
+> the CAP_FSETID capability and not match the effective group ID. The 'bin'
+> group always has the CAP_FSETID capability, so we can not change the own
+> of the TESTDIR to 'bin' group, instead, 'nobody' can be used.
+> 
+> This patch fixed the problem by change gid of chown to 'nobody' group and
+> change the gid of setegid() to 'bin' group.
+> 
+> Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
+
+Thanks.
+
+Regards--
+Subrata
+
+> ---
+>  testcases/kernel/syscalls/chmod/chmod05.c |    8 ++++----
+>  1 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/chmod/chmod05.c b/testcases/kernel/syscalls/chmod/chmod05.c
+> index 4504aaa..c6f1225 100644
+> --- a/testcases/kernel/syscalls/chmod/chmod05.c
+> +++ b/testcases/kernel/syscalls/chmod/chmod05.c
+> @@ -177,7 +177,7 @@ int main(int ac, char **av)
+>  			if ((PERMS & ~S_ISGID) != dir_mode) {
+>  				tst_resm(TFAIL, "%s: Incorrect modes 0%03o, "
+>  					 "Expected 0%03o", TESTDIR, dir_mode,
+> -					 PERMS);
+> +					 PERMS & ~S_ISGID);
+>  			} else {
+>  				tst_resm(TPASS,
+>  					 "Functionality of chmod(%s, %#o) successful",
+> @@ -241,12 +241,12 @@ void setup()
+>  				strerror(errno));
+>  	}
+> 
+> -	if (chown(TESTDIR, nobody_u->pw_uid, bin_group->gr_gid) == -1)
+> +	if (chown(TESTDIR, nobody_u->pw_uid, nobody_u->pw_gid) == -1)
+>  		tst_brkm(TBROK, cleanup, "Couldn't change owner of testdir: %s",
+>  				strerror(errno));
+> 
+> -	/* change to nobody:nobody */
+> -	if (setegid(nobody_u->pw_gid) == -1 ||
+> +	/* change to nobody:bin */
+> +	if (setegid(bin_group->gr_gid) == -1 ||
+>  		 seteuid(nobody_u->pw_uid) == -1)
+>  		tst_brkm(TBROK, cleanup, "Couldn't switch to nobody:nobody: %s",
+>  				strerror(errno));
+
 
 ------------------------------------------------------------------------------
-OpenSolaris 2009.06 is a cutting edge operating system for enterprises 
-looking to deploy the next generation of Solaris that includes the latest 
-innovations from Sun and the OpenSource community. Download a copy and 
-enjoy capabilities such as Networking, Storage and Virtualization. 
-Go to: http://p.sf.net/sfu/opensolaris-get
---===============1332692917004426566==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============1332692917004426566==--
-
-
