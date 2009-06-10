@@ -1,19 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <nobuhiro@andestech.com>) id 1MHHBN-0001yx-0K
-	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 12:57:33 +0000
-Received: from 59-124-160-117.hinet-ip.hinet.net ([59.124.160.117]
-	helo=ATCPCS06.andestech.com)
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MHHBE-00052K-Ne
-	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 12:57:27 +0000
-From: nobuhiro <nobuhiro@andestech.com>
-Date: Thu, 18 Jun 2009 20:21:23 +0800
-Message-Id: <1245327683-8493-1-git-send-email-nobuhiro@andestech.com>
-Subject: [LTP] [PATCH] growfiles: fix static build which needs to link the
-	pthread library
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mpradeep@linux.vnet.ibm.com>) id 1MEMZH-00059t-0w
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2009 12:06:11 +0000
+Received: from e23smtp06.au.ibm.com ([202.81.31.148])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MEMZE-0002Ii-Ch
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2009 12:06:10 +0000
+Received: from d23relay01.au.ibm.com (d23relay01.au.ibm.com [202.81.31.243])
+	by e23smtp06.au.ibm.com (8.13.1/8.13.1) with ESMTP id n5AC5xrS011935
+	for <ltp-list@lists.sourceforge.net>; Wed, 10 Jun 2009 22:05:59 +1000
+Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
+	by d23relay01.au.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5AC63wI393704
+	for <ltp-list@lists.sourceforge.net>; Wed, 10 Jun 2009 22:06:04 +1000
+Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
+	by d23av03.au.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5AC63u3023370
+	for <ltp-list@lists.sourceforge.net>; Wed, 10 Jun 2009 22:06:03 +1000
+From: Munipradeep Beerakam <mpradeep@linux.vnet.ibm.com>
+Date: Wed, 10 Jun 2009 17:36:25 +0530
+Message-Id: <1244635585.9465.14.camel@munipradeep-laptop>
+Mime-Version: 1.0
+Subject: [LTP] Some of the testcases which are resulting in FAIL even though
+	they	might not be
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,32 +34,50 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: iranna.ankad@in.ibm.com
 
+Hi,
 
-Signed-off-by: nobuhiro <nobuhiro@andestech.com>
----
- testcases/kernel/fs/doio/Makefile |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Here is the list of testcases in May 2009 LTP, which *may* result in
+FAIL even though it is a configuration error, not the error due to the
+functionality we are testing. Those tests should give "CONF" message,
+not "FAIL". I ran LTP on 2.6.18 kernel, x86 architecture.
 
-diff --git a/testcases/kernel/fs/doio/Makefile b/testcases/kernel/fs/doio/Makefile
-index 4e0cd24..6e8f2de 100644
---- a/testcases/kernel/fs/doio/Makefile
-+++ b/testcases/kernel/fs/doio/Makefile
-@@ -1,6 +1,6 @@
- 
- CFLAGS+= -Wall -I../../../../include -D_LARGEFILE64_SOURCE
--LDLIBS+= -L../../../../lib -lltp -lrt
-+LDLIBS+= -L../../../../lib -lltp -lrt -lpthread
- 
- TARGETS=doio growfiles rwtest iogen
- SRCS=$(wildcard *.c)
--- 
-1.6.3.1
+   1. InitNuma
+Error output:
+Initnuma 0 WARN : non-NUMA aware kernel is running or your machine does
+not support numa policy or
+your machine is not a NUMA machine
+Initnuma 1 FAIL : INIT NUMA FAILED !!
+
+   2. ht_enable
+Error output:
+ht_enable 0 INFO : Begin: HyperThreading Enabled
+ht_enable 0 INFO : The kernel boot paramter 'noht' is not set.
+ht_enable 1 FAIL : HT feature is not included in this Linux Kernel.
+ht_enable 0 INFO : End: HyperThreading Enabled
+
+   3. get_mempolicy01
+Part of code, which is not correct
+tst_resm(TFAIL, "set_mempolicy() failed - errno = %d : %s",TEST_ERRNO,
+strerror(TEST_ERRNO));
+...
+...
+tst_resm(TFAIL, "malloc failed - errno = %d : %s",TEST_ERRNO,
+strerror(TEST_ERRNO));
+
+   4. mq_open01
+Part of code, which is not correct
+if (TEST_RETURN < 0) {
+                        tst_resm(TFAIL, "mq_getsetattr failed - errno =
+%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+
+Regards
+Muni
 
 
 ------------------------------------------------------------------------------
