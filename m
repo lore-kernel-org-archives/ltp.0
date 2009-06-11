@@ -1,26 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1MIY1S-0003ba-5V
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 01:08:34 +0000
-Received: from fmmailgate03.web.de ([217.72.192.234])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MIY1M-0000j6-Jx
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 01:08:34 +0000
-Received: from smtp05.web.de (fmsmtp05.dlan.cinetic.de [172.20.4.166])
-	by fmmailgate03.web.de (Postfix) with ESMTP id 635FC100C624A
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yjwei@cn.fujitsu.com>) id 1MEbqi-0000v0-BO
+	for ltp-list@lists.sourceforge.net; Thu, 11 Jun 2009 04:25:12 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MEboq-0006HR-Ve
+	for ltp-list@lists.sourceforge.net; Thu, 11 Jun 2009 04:25:12 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id A593E1700BD
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 22 Jun 2009 03:07:48 +0200 (CEST)
-Received: from [83.208.36.163] (helo=debian)
-	by smtp05.web.de with asmtp (WEB.DE 4.110 #277) id 1MIY0i-00040S-00
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 03:07:48 +0200
-Date: Tue, 17 Feb 2009 23:58:46 +0100
-From: "Jiri Palecek" <jpalecek@web.de>
+	Thu, 11 Jun 2009 12:46:40 +0800 (CST)
+Received: from fnst.cn.fujitsu.com (localhost.localdomain [127.0.0.1])
+	by tang.cn.fujitsu.com (8.13.1/8.13.1) with ESMTP id n5B4b3FO008558
+	for <ltp-list@lists.sourceforge.net>; Thu, 11 Jun 2009 12:37:04 +0800
+Received: from [127.0.0.1] (unknown [10.167.141.76])
+	by fnst.cn.fujitsu.com (Postfix) with ESMTP id C23CCD4016
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 11 Jun 2009 12:23:19 +0800 (CST)
+Message-ID: <4A3085B9.40707@cn.fujitsu.com>
+Date: Thu, 11 Jun 2009 12:19:05 +0800
+From: Wei Yongjun <yjwei@cn.fujitsu.com>
 MIME-Version: 1.0
-Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-Resent-Message-ID: <op.uvwivro7cfnueu@debian>
-Subject: [LTP] [PATCH] Fixes of the tcore test
+Subject: [LTP] [PATCH] fchmod05: fix to the group ownership and the
+	effective user
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,146 +36,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: ltp-list-bounces@lists.sourceforge.net
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-Cc: ltp-list@lists.sourceforge.net
-Message-ID: <20090217225846.DhRVhOG9_4rWhEGsyOmpo6793_FRXCaFMIrmyKkSF0w@z>
+To: ltp-list@lists.sourceforge.net
 
-Hello,
+This patch fixed the modify of the group ownership before
+do dir chmod and fixed the effective user when do cleanup.
+Those problems cause the test failed with the following
+error message:
 
-these are little fixes of the tcore.sh script
+  fchmod05    1  FAIL  :  testdir: Incorrect modes 043777, Expected 0777
+  fchmod05    0  WARN  :  tst_rmdir(): rmobj(/tmp/fchUout8n) failed: \
+    remove(/tmp/fchUout8n) failed; errno=1: Operation not permitted
 
- - use $BIN_DIR for auxiliary files, and $TEST_DIR as temporary
-   directory
- - don't run "cd -" if previous "cd something" failed
- - fixup the value of core_pattern, to replace possibly customized
-   patterns using absolute paths or not using the name "core" for
-   corefiles
- - don't hide error messages from expect
-
-Regards
-    Jiri Palecek
-
-Signed-off-by: Jiri Palecek <jpalecek@web.de>
+Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
 ---
- testcases/misc/tcore_patch_test_suites/tcore.sh |   39 ++++++++++++++++-------
- 1 files changed, 27 insertions(+), 12 deletions(-)
+ testcases/kernel/syscalls/fchmod/fchmod05.c |   13 ++++++++-----
+ 1 files changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/testcases/misc/tcore_patch_test_suites/tcore.sh b/testcases/misc/tcore_patch_test_suites/tcore.sh
-index d210fa5..f087fa7 100755
---- a/testcases/misc/tcore_patch_test_suites/tcore.sh
-+++ b/testcases/misc/tcore_patch_test_suites/tcore.sh
-@@ -19,7 +19,8 @@
- # Test suite for the t-core kernel patch 
- export TCID=tcore01
- PTHREAD_DIR="/lib/i686"
--TEST_DIR="."
-+BIN_DIR=$LTPROOT/testcases/bin/
-+TEST_DIR=$(mktemp -dt)
- OSTYPE="redhat"
- # Do some preparation to generate the correct core dump
- # files
-@@ -42,6 +43,14 @@ os_check()
- 	fi
- }
+diff --git a/testcases/kernel/syscalls/fchmod/fchmod05.c b/testcases/kernel/syscalls/fchmod/fchmod05.c
+index 3573f65..5226858 100644
+--- a/testcases/kernel/syscalls/fchmod/fchmod05.c
++++ b/testcases/kernel/syscalls/fchmod/fchmod05.c
+@@ -154,10 +154,10 @@ int main(int ac, char **av)
+ 			if ((PERMS & ~S_ISGID) != dir_mode) {
+ 				tst_resm(TFAIL, "%s: Incorrect modes 0%03o, "
+ 					 "Expected 0%03o",
+-					 TESTDIR, PERMS, MODE_RWX);
++					 TESTDIR, dir_mode, PERMS & ~S_ISGID);
+ 			} else {
+ 				tst_resm(TPASS, "Functionality of fchmod(%d, "
+-					 "%#o) successful", fd, PERMS);
++					 "%#o) successful", fd, PERMS & ~S_ISGID);
+ 			}
+ 		} else {
+ 			tst_resm(TPASS, "call succeeded");
+@@ -218,12 +218,12 @@ void setup()
+ 		tst_brkm(TBROK, cleanup, "mkdir(2) of %s failed", TESTDIR);
+ 	}
  
-+cleanup()
-+{
-+		rm -rf $TEST_DIR
-+		[ -f /proc/sys/kernel/core_dumps_threads ] && ! [ -z "$OLD_PATTERN" ] && 
-+		echo "$OLD_PATTERN" > /proc/sys/kernel/core_dumps_threads
-+		exit $1
-+}
+-	if (chown(TESTDIR, nobody_u->pw_uid, bin_group->gr_gid) == -1)
++	if (chown(TESTDIR, nobody_u->pw_uid, nobody_u->pw_gid) == -1)
+ 		tst_brkm(TBROK, cleanup, "Couldn't change owner of testdir: %s",
+ 				strerror(errno));
+ 
+-	/* change to nobody:nobody */
+-	if (setegid(nobody_u->pw_gid) == -1 || seteuid(nobody_u->pw_uid) == -1)
++	/* change to nobody:bin */
++	if (setegid(bin_group->gr_gid) == -1 || seteuid(nobody_u->pw_uid) == -1)
+ 		tst_brkm(TBROK, cleanup, "Couldn't switch to nobody:nobody: %s",
+ 				strerror(errno));
+ 
+@@ -258,6 +258,9 @@ void cleanup()
+ 			 TESTDIR, errno, strerror(errno));
+ 	}
+ 
++	setegid(0);
++	seteuid(0);
 +
- prepare_dump()
- {
- 	ulimit -c 20000000 >/dev/null 2>&1
-@@ -52,18 +61,23 @@ prepare_dump()
- 			echo "1">/proc/sys/kernel/core_dumps_threads
- 		fi
- 	fi
-+	if [ -f /proc/sys/kernel/core_pattern ]; then
-+			OLD_PATTERN=$(cat /proc/sys/kernel/core_pattern)
-+			echo 'core.%p' > /proc/sys/kernel/core_pattern
-+	fi
- 	#Recover the lipthread.so.0 lib to generate the correct
- 	#core dump file
- 	os_check
- 	if [ $OSTYPE = "redhat" ];then
--		cd $PTHREAD_DIR
--		if [ -f libpthread.so.0.orig ];then
--			test=`ls -l libpthread.so.0.orig|awk '{print $11}'`
--			if [ $test = "libpthread-0.9.so"  ];then
--				mv libpthread.so.0.orig libpthread.so.0
-+		cd $PTHREAD_DIR && {
-+			if [ -f libpthread.so.0.orig ];then
-+				test=`ls -l libpthread.so.0.orig|awk '{print $11}'`
-+					if [ $test = "libpthread-0.9.so"  ];then
-+						mv libpthread.so.0.orig libpthread.so.0
-+					fi
- 			fi
--		fi
--		cd -
-+			cd -
-+		}
- 	fi
- }
- #Prepare for the gdb dump 
-@@ -71,7 +85,7 @@ prepare_gdb()
- {
- 	os_check
- 	if [ $OSTYPE = "redhat" ];then
--		cd $PTHREAD_DIR
-+		cd $PTHREAD_DIR && {
- 		if [ -f libpthread.so.0 ];then
- 			test=`ls -l libpthread.so.0|awk '{print $11}'`
- 			if [ $test = "libpthread-0.9.so"  ];then
-@@ -80,6 +94,7 @@ prepare_gdb()
- 		fi
- 		ln -s /lib/libpthread.so.0 libpthread.so.0 >/dev/null 2>&1
- 		cd -
-+    }
- 	fi
- }
- #Test whether the system can generate the needed core files
-@@ -91,7 +106,7 @@ Test_gen_core()
- 	if [ -f core.* ];then
- 		rm -f core.*
- 	fi
--	pid=`$TEST_DIR/tcore |grep "consumer pid"|awk '{print $2}'|cut -d = -f 2`
-+	pid=`$BIN_DIR/tcore |grep "consumer pid"|awk '{print $2}'|cut -d = -f 2`
- 	echo -e "Test whether we can generate the needed core file"
- 	if [ -f core.* ];then
- 		echo -e "PASS"
-@@ -110,7 +125,7 @@ Test_core_file()
- 	prepare_gdb
- 	mv -f $TEST_DIR/core.* $TEST_DIR/corefile >/dev/null 2>&1
- 	echo -e "Test whether the core support bt,fpu and threads commands "
--	expect ./tcore.exp >/dev/null 2>&1
-+	expect $BIN_DIR/tcore.exp
- 	return=$?
- 	pass=`expr $pass + $return`
- 	fail=`expr 3 - $return + $fail`
-@@ -123,7 +138,7 @@ Test_core_file
- echo "Linux Tcore test results" > results
- echo "Total pass fail" >>  results
- echo "  5	$pass	$fail" >> results
--exit $fail 
-+cleanup $fail 
+ 	/* Remove tmp dir and all files in it */
+ 	tst_rmdir();
  
- 	
- 	
 -- 
-1.6.3.1
+1.6.0.2.530.g67faa
+
 
 
 
 
 ------------------------------------------------------------------------------
-Are you an open source citizen? Join us for the Open Source Bridge conference!
-Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
-Need another reason to go? 24-hour hacker lounge. Register today!
-http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
