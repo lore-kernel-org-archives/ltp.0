@@ -2,32 +2,28 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJlmt-0000Xe-Tx
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 10:02:35 +0000
-Received: from e36.co.us.ibm.com ([32.97.110.154])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MJlmq-0004jf-1C
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 10:02:35 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e36.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5PA13mV014722
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 04:01:03 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5PA2RMq062350
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 04:02:29 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5PA2QqE031792
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 04:02:27 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <A850D9FA-3282-440E-8B85-4A5BC5B4B067@gmail.com>
-References: <A850D9FA-3282-440E-8B85-4A5BC5B4B067@gmail.com>
-Date: Thu, 25 Jun 2009 14:40:38 +0530
-Message-Id: <1245921038.5542.46.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Goals and milestones
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <yjwei@cn.fujitsu.com>) id 1MEbrw-0001n9-Gz
+	for ltp-list@lists.sourceforge.net; Thu, 11 Jun 2009 04:26:28 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MEbqI-0000So-2E
+	for ltp-list@lists.sourceforge.net; Thu, 11 Jun 2009 04:26:28 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id 2A803170137
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 11 Jun 2009 12:48:11 +0800 (CST)
+Received: from fnst.cn.fujitsu.com (localhost.localdomain [127.0.0.1])
+	by tang.cn.fujitsu.com (8.13.1/8.13.1) with ESMTP id n5B4cYjU008614
+	for <ltp-list@lists.sourceforge.net>; Thu, 11 Jun 2009 12:38:34 +0800
+Received: from [127.0.0.1] (unknown [10.167.141.76])
+	by fnst.cn.fujitsu.com (Postfix) with ESMTP id 390C5D4016
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 11 Jun 2009 12:24:50 +0800 (CST)
+Message-ID: <4A308613.3020707@cn.fujitsu.com>
+Date: Thu, 11 Jun 2009 12:20:35 +0800
+From: Wei Yongjun <yjwei@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] chown03: fix the effective user when do cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,54 +36,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>, Nathan Straz <nstraz@redhat.com>, Mike Frysinger <vapier@gentoo.org>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Great to hear back from you. Your plan looks good to me. However, i
-would like to complete the Makefiles stuff this year itself. I know its
-quite tedious. May be i would also pitch in to help you post my Linux
-Symposium 2009 in July 2009.
+The TESTDIR is created by root user, but when we do cleanup, the effective
+user had been changed to nobody, so the cleanup will be failed when the
+TESTDIR is removed.
 
-On Wed, 2009-06-24 at 02:38 -0700, Garrett Cooper wrote: 
-> Hi Subrata,
->      After being away from FOSS for a while I'm going to jump back in  
-> a bit to get some work done in my personal time that aligns itself  
-> with deliverables at Cisco. Here's the breakdown in terms of priorities:
-> 1. Ltp crosscompile makefile push completion - need this to resolve  
-> several issues with the current hacked make system and expedite  
-> upgrades on our end. Hard goal: before July snapshot is released  
-> (several items are dependent on a functioning upgrade). I will commit  
-> in small, discrete patches to get the work done quicker, but I'll need  
-> a makefile reviewer.
+  chown03     1  PASS  :  chown() on testfile succeeds, clears setuid/gid bits
+  chown03     0  WARN  :  tst_rmdir(): rmobj(/tmp/choYm1VHD) failed: \
+    remove(/tmp/choYm1VHD) failed; errno=1: Operation not permitted
 
-Nathan has already been helping us. So, we would get help from him and
-Mike as well. I need to bring back Mike as well for more LTP
-involvement. Mike, what do you say ;-)
+This patch fixed the problem by reset the effective user to root.
 
-Regards--
-Subrata
+Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/chown/chown03.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
-> 2. Catepault work. This aligns itself with 1., but isn't directly tied  
-> into 1.'s deliverable. Maybe October.
-> 3. tst_res -> testreport replacement. Needs to take place somewhere  
-> around 2.'s deliverable because we need a more license neutral and  
-> equivalent, if not cleaner, means of doing test reporting to improve  
-> whitebox testing inhouse. I'd say before Thanksgiving.
-> 4. Upstart whitebox tests - I originally suggested this thinking that  
-> there would be one Upstart release train, but Scott's maintaining  
-> several, so I think it may be a better idea to omit these tests and  
-> focus instead on exporting the graybox tests I'm working on inhouse at  
-> Cisco as they are more portable and have more overall value. I'm  
-> thinking maybe January or february of next year.
-> 
-> Hope that better describes where I'm at and what goals i'm trying to  
-> accomplish.
-> 
-> Thanks,
-> -Garrett 
+diff --git a/testcases/kernel/syscalls/chown/chown03.c b/testcases/kernel/syscalls/chown/chown03.c
+index f27cb6f..d2eecd1 100644
+--- a/testcases/kernel/syscalls/chown/chown03.c
++++ b/testcases/kernel/syscalls/chown/chown03.c
+@@ -267,6 +267,9 @@ void cleanup()
+ 	 */
+ 	TEST_CLEANUP;
+ 
++	setegid(0);
++	seteuid(0);
++
+ 	/* Remove tmp dir and all files in it */
+ 	tst_rmdir();
+ 
+-- 
+1.6.0.2.530.g67faa
+
+
+
 
 
 ------------------------------------------------------------------------------
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
