@@ -1,22 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1MLK6W-0002Xg-Oa
-	for ltp-list@lists.sourceforge.net; Mon, 29 Jun 2009 16:53:16 +0000
-Received: from mail-yx0-f196.google.com ([209.85.210.196])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MLK6V-0002WZ-Pw
-	for ltp-list@lists.sourceforge.net; Mon, 29 Jun 2009 16:53:16 +0000
-Received: by yxe34 with SMTP id 34so4553149yxe.28
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 29 Jun 2009 09:53:11 -0700 (PDT)
-MIME-Version: 1.0
-Date: Mon, 29 Jun 2009 22:23:11 +0530
-Message-ID: <f5a7b3810906290953k7326b82ds617ee7bfdac92e48@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Content-Type: multipart/mixed; boundary=001e680f101c7fd3fa046d7f86d8
-Subject: [LTP] [FIX-PATCH]Build-issue-cacheflush01.c on MIPS
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <maknayak@in.ibm.com>) id 1MFAva-0005r4-BV
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 17:52:34 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MFAvZ-0004nN-3k
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 17:52:34 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e1.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5CHm90r023664
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Jun 2009 13:48:09 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5CHqWii185570
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Jun 2009 13:52:32 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5CHqVhY015370
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Jun 2009 13:52:32 -0400
+From: Manas Kumar Nayak <maknayak@in.ibm.com>
+Date: Fri, 12 Jun 2009 23:22:22 +0530
+Message-Id: <20090612175221.26047.27208.sendpatchset@subratamodak.linux.ibm.com>
+In-Reply-To: <20090612175132.26047.54266.sendpatchset@subratamodak.linux.ibm.com>
+References: <20090612175132.26047.54266.sendpatchset@subratamodak.linux.ibm.com>
+Subject: [LTP] [PATCH 03/05] Add/Port waitid01 test for waitid() syscall
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,87 +34,283 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Mike Frysinger <vapier@gentoo.org>, Jiri Palecek <jpalecek@web.de>, maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, Manas Kumar Nayak <maknayak@in.ibm.com>
-
---001e680f101c7fd3fa046d7f86d8
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-Hi,
-
-I have noticed build error for cacheflush01.c on MIPS.
-There is edit issue from Windows to Linux text file.
-Now build issue is resolved.
-Please find attached patch and below.
-
-Best Regards
-Naresh Kamboju
-
-Build-Error:
-
-cacheflush01.c  -L../../../../lib -lltp -o cacheflush01
-cacheflush01.c: In function 'cacheflush':
-cacheflush01.c:52: error: 'B' undeclared (first use in this function)
-cacheflush01.c:52: error: (Each undeclared identifier is reported only once
-cacheflush01.c:52: error: for each function it appears in.)
-cacheflush01.c:52: error: expected ';' before 'B'
-cacheflush01.c:53: warning: control reaches end of non-void function
-make: *** [cacheflush01] Error 1
-
-	
-Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
-
-diff -Naurb a/testcases/kernel/syscalls/cacheflush/cacheflush01.c
-b/testcases/kernel/syscalls/cacheflush/cacheflush01.c
---- a/testcases/kernel/syscalls/cacheflush/cacheflush01.c	2009-04-15
-12:02:35.000000000 +0530
-+++ b/testcases/kernel/syscalls/cacheflush/cacheflush01.c	2009-06-29
-21:38:42.000000000 +0530
-@@ -49,7 +49,7 @@
- #include <asm/cachectl.h>
- int cacheflush(char *addr, int nbytes, int cache)
- {
--B  B  B  B return syscall(__NR_cacheflush, addr, nbytes, cache);
-+           return syscall(__NR_cacheflush, addr, nbytes, cache);
- }
- #endif /* __mips__ */
-
---001e680f101c7fd3fa046d7f86d8
-Content-Type: application/octet-stream; name="ltp-fix-cacheflush01.patch"
-Content-Disposition: attachment; filename="ltp-fix-cacheflush01.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fwjf85vt0
-
-ZGlmZiAtTmF1cmIgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2NhY2hlZmx1c2gvY2FjaGVm
-bHVzaDAxLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2NhY2hlZmx1c2gvY2FjaGVmbHVz
-aDAxLmMKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9jYWNoZWZsdXNoL2NhY2hlZmx1
-c2gwMS5jCTIwMDktMDQtMTUgMTI6MDI6MzUuMDAwMDAwMDAwICswNTMwCisrKyBiL3Rlc3RjYXNl
-cy9rZXJuZWwvc3lzY2FsbHMvY2FjaGVmbHVzaC9jYWNoZWZsdXNoMDEuYwkyMDA5LTA2LTI5IDIx
-OjM4OjQyLjAwMDAwMDAwMCArMDUzMApAQCAtNDksNyArNDksNyBAQAogI2luY2x1ZGUgPGFzbS9j
-YWNoZWN0bC5oPgogaW50IGNhY2hlZmx1c2goY2hhciAqYWRkciwgaW50IG5ieXRlcywgaW50IGNh
-Y2hlKQogewotQiAgQiAgQiAgQiByZXR1cm4gc3lzY2FsbChfX05SX2NhY2hlZmx1c2gsIGFkZHIs
-IG5ieXRlcywgY2FjaGUpOworICAgICAgICAgICByZXR1cm4gc3lzY2FsbChfX05SX2NhY2hlZmx1
-c2gsIGFkZHIsIG5ieXRlcywgY2FjaGUpOwogfQogI2VuZGlmIC8qIF9fbWlwc19fICovCiAK
---001e680f101c7fd3fa046d7f86d8
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
+Cc: Manas Kumar Nayak <maknayak@in.ibm.com>
+
+Signed-off-by: Manas Kumar Nayak <maknayak@in.ibm.com>
+To: LTP List <ltp-list@lists.sourceforge.net>
+Cc: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: Masatake YAMATO <yamato@redhat.com>
+---
+
+--- ltp-full-20090531.orig/testcases/kernel/syscalls/waitid/Makefile	1970-01-01 05:30:00.000000000 +0530
++++ ltp-full-20090531/testcases/kernel/syscalls/waitid/Makefile	2009-06-12 15:49:28.000000000 +0530
+@@ -0,0 +1,31 @@
++#
++#  Copyright (c) International Business Machines  Corp., 2009
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++CFLAGS += -I../../../../include -Wall 
++LDLIBS += -L../../../../lib -lltp
++
++SRCS    = $(wildcard *.c)
++TARGETS = $(patsubst %.c,%,$(SRCS))
++
++all: $(TARGETS)
++
++install:
++	@set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i ; done
++
++clean:
++	rm -f $(TARGETS)
+--- ltp-full-20090531.orig/testcases/kernel/syscalls/waitid/waitid01.c	1970-01-01 05:30:00.000000000 +0530
++++ ltp-full-20090531/testcases/kernel/syscalls/waitid/waitid01.c	2009-06-12 21:21:13.000000000 +0530
+@@ -0,0 +1,204 @@
++/******************************************************************************/
++/* Copyright (c) Crackerjack Project., 2007                                   */
++/*                                                                            */
++/* This program is free software;  you can redistribute it and/or modify      */
++/* it under the terms of the GNU General Public License as published by       */
++/* the Free Software Foundation; either version 2 of the License, or          */
++/* (at your option) any later version.                                        */
++/*                                                                            */
++/* This program is distributed in the hope that it will be useful,            */
++/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
++/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
++/* the GNU General Public License for more details.                           */
++/*                                                                            */
++/* You should have received a copy of the GNU General Public License          */
++/* along with this program;  if not, write to the Free Software               */
++/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
++/*                                                                            */
++/******************************************************************************/
++/******************************************************************************/
++/*                                                                            */
++/* File:        waitid01.c                                                    */
++/*                                                                            */
++/* Description: This tests the waitid() syscall                               */
++/*                                                                            */
++/* Usage:  <for command-line>                                                 */
++/* waitid01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                              */
++/*      where,  -c n : Run n copies concurrently.                             */
++/*              -e   : Turn on errno logging.                                 */
++/*              -i n : Execute test n times.                                  */
++/*              -I x : Execute test for x seconds.                            */
++/*              -P x : Pause for x seconds between iterations.                */
++/*              -t   : Turn on syscall timing.                                */
++/*                                                                            */
++/* Total Tests: 1                                                             */
++/*                                                                            */
++/* Test Name:   waitid01                                                      */
++/* History:     Porting from Crackerjack to LTP is done by                    */
++/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
++/******************************************************************************/
++
++#include <stdio.h>
++#include <errno.h>
++#include <stdlib.h>
++#include <sys/wait.h>
++#include <sys/types.h>
++#include <unistd.h>
++#include <sys/stat.h>
++
++/* Harness Specific Include Files. */
++#include "test.h"
++#include "usctest.h"
++#include "linux_syscall_numbers.h"
++
++/* Extern Global Variables */
++extern int Tst_count;           /* counter for tst_xxx routines.         */
++extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
++
++/* Global Variables */
++char *TCID = "waitid01";  /* Test program identifier.*/
++int  testno;
++int  TST_TOTAL = 3;                   /* total number of tests in this file.   */
++
++/* Extern Global Functions */
++/******************************************************************************/
++/*                                                                            */
++/* Function:    cleanup                                                       */
++/*                                                                            */
++/* Description: Performs all one time clean up for this test on successful    */
++/*              completion,  premature exit or  failure. Closes all temporary */
++/*              files, removes all temporary directories exits the test with  */
++/*              appropriate return code by calling tst_exit() function.       */
++/*                                                                            */
++/* Input:       None.                                                         */
++/*                                                                            */
++/* Output:      None.                                                         */
++/*                                                                            */
++/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
++/*              On success - Exits calling tst_exit(). With '0' return code.  */
++/*                                                                            */
++/******************************************************************************/
++extern void cleanup() {
++        /* Remove tmp dir and all files in it */
++        TEST_CLEANUP;
++        tst_rmdir();
++
++        /* Exit with appropriate return code. */
++        tst_exit();
++}
++
++/* Local  Functions */
++/******************************************************************************/
++/*                                                                            */
++/* Function:    setup                                                         */
++/*                                                                            */
++/* Description: Performs all one time setup for this test. This function is   */
++/*              typically used to capture signals, create temporary dirs      */
++/*              and temporary files that may be used in the course of this    */
++/*              test.                                                         */
++/*                                                                            */
++/* Input:       None.                                                         */
++/*                                                                            */
++/* Output:      None.                                                         */
++/*                                                                            */
++/* Return:      On failure - Exits by calling cleanup().                      */
++/*              On success - returns 0.                                       */
++/*                                                                            */
++/******************************************************************************/
++void setup() {
++        /* Capture signals if any */
++        /* Create temporary directories */
++        TEST_PAUSE;
++        tst_tmpdir();
++}
++
++
++int errnochoose(void){   //choose the relative errno
++
++    switch (TEST_ERRNO){
++        case    0:      tst_exit();
++        case    ECHILD: strerror((int)"ECHILD");
++        	        break;
++        case    EINTR:  strerror((int)"EINTR");
++                	break;
++        case    EINVAL: strerror((int)"EINVAL");
++                	break;
++        default:     strerror((int)"Other Error");
++                     break;
++   }
++        TEST_RETURN = 0;
++        tst_exit() ;
++}
++
++void display_status(siginfo_t *infop)
++{
++        tst_resm(TINFO,"Process %d terminated:", infop->si_pid);
++        tst_resm(TINFO,"code = %d",infop->si_code);
++        if(infop->si_code == CLD_EXITED)
++                tst_resm(TINFO,"exit value = %d",infop->si_status);
++        else
++		tst_resm(TINFO,"signal = %d",infop->si_status);
++}
++
++int main(int ac, char **av) {
++	id_t pid;
++        siginfo_t infop;
++        int lc;                 /* loop counter */
++        char *msg;              /* message returned from parse_opts */
++	
++        /* parse standard options */
++        if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
++             tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
++             tst_exit();
++           }
++
++        setup();
++
++        /* Check looping state if -i option given */
++        for (lc = 0; TEST_LOOPING(lc); ++lc) {
++                Tst_count = 0;
++                for (testno = 0; testno < TST_TOTAL; ++testno) {
++                     
++	TEST(fork());
++	if(TEST_RETURN == 0){
++                exit(123);
++        }
++        else{
++                TEST(waitid(P_ALL,getpid(),&infop,WEXITED));
++		if(TEST_RETURN == -1){
++                        TEST(errnochoose());
++		}else 
++		    display_status(&infop); //CLD_EXITED = 1
++        }
++
++        TEST(fork());
++        if(TEST_RETURN == 0){
++		int a, b = 0;
++                a = 1/b;
++                tst_exit();
++        } else{
++                TEST(waitid(P_ALL,0,&infop,WEXITED));
++		if(TEST_RETURN == -1)
++                        TEST(errnochoose());
++                else
++			display_status(&infop); //CLD_DUMPED = 3 ; SIGFPE = 8
++        }
++
++        TEST(pid = fork());
++	if(TEST_RETURN == 0){
++                TEST(sleep(10));
++                tst_exit();
++        }
++        TEST(kill(pid,SIGHUP));
++        TEST(waitid(P_ALL,0,&infop,WEXITED));
++	if(TEST_RETURN == -1)
++                TEST(errnochoose());
++        else 
++		display_status(&infop); //CLD_KILLED = 2 ; SIGHUP = 1
++                }
++        }	
++        tst_resm(TPASS, "waitid(): system call passed");
++	cleanup();
++        tst_exit();
++}
++
+--- ltp-full-20090531.orig/runtest/syscalls	2009-06-12 21:08:46.000000000 +0530
++++ ltp-full-20090531/runtest/syscalls	2009-06-12 21:22:40.000000000 +0530
+@@ -1271,6 +1271,8 @@ waitpid11 waitpid11
+ waitpid12 waitpid12
+ waitpid13 waitpid13
+ 
++waitid01 waitid01
++
+ write01 write01
+ write02 write02
+ write03 write03
+
+---
+Regards--
+Manas
 
 ------------------------------------------------------------------------------
-
---001e680f101c7fd3fa046d7f86d8
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---001e680f101c7fd3fa046d7f86d8--
-
