@@ -1,22 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MF1Jq-0004c3-N1
-	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 07:36:58 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MF1IJ-0000ta-C2
-	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 07:36:58 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <49b7c2350906120029j6f6290b3h7dfb58bd7251fa93@mail.gmail.com>
-References: <49b7c2350906120029j6f6290b3h7dfb58bd7251fa93@mail.gmail.com>
-Date: Fri, 12 Jun 2009 13:05:19 +0530
-Message-Id: <1244792119.5234.3.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [Ltp-cvs] I met "You can specify it with option -b"
-	error	message
-Reply-To: subrata@linux.vnet.ibm.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <maknayak@in.ibm.com>) id 1MFAw8-000877-Cz
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 17:53:08 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MFAw4-0004xu-38
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 17:53:08 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e39.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5CHn0gX003432
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Jun 2009 11:49:00 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5CHr3T4264050
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Jun 2009 11:53:03 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5CHr2FR027003
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Jun 2009 11:53:03 -0600
+From: Manas Kumar Nayak <maknayak@in.ibm.com>
+Date: Fri, 12 Jun 2009 23:22:54 +0530
+Message-Id: <20090612175252.26047.88904.sendpatchset@subratamodak.linux.ibm.com>
+In-Reply-To: <20090612175132.26047.54266.sendpatchset@subratamodak.linux.ibm.com>
+References: <20090612175132.26047.54266.sendpatchset@subratamodak.linux.ibm.com>
+Subject: [LTP] [PATCH 05/05] Add/Port quotactl01 test for quotactl() syscall
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,109 +35,247 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: GeunSik Lim <leemgs1@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: LTP List <ltp-list@lists.sourceforge.net>
+Cc: Manas Kumar Nayak <maknayak@in.ibm.com>
 
-VGhpcyBpcyBub3QgdGhlIGNvcnJlY3QgbWFpbGluZyBsaXN0LiBNYWlsIHRvIGx0cC1saXN0IGFu
-ZCBub3QgdG8KbHRwLWN2cy4KClJlZ2FyZHMtLQpTdWJyYXRhCgpPbiBGcmksIDIwMDktMDYtMTIg
-YXQgMTY6MjkgKzA5MDAsIEdldW5TaWsgTGltIHdyb3RlOgo+IFVtLi4KPiAKPiBJIG1ldCAiWW91
-IGNhbiBzcGVjaWZ5IGl0IHdpdGggb3B0aW9uIC1iIiBlcnJvciBtZXNzYWdlIHdoZW4gaSB0ZXN0
-ZWQKPiBteSBmZWRvcmEgc3lzdGVtIHdpdGgKPiBMVFAtMjAwOTA1MzEgdmVyc2lvbi4KPiAKPiAK
-PiBCZWxvd3MgaXMgc2NyZW5zaG90Li4KPiBBbnlvbmUgSGVscCBtZSBhYm91dCB0aGlzIHByb2Js
-ZW1zPwo+IAo+IAo+IAo+IExpbnV4IGZlZG9yYTkgMi42LjI5LTMuZmMxMC5pNjg2ICMxIFNNUCBU
-dWUgTWFyIDI0IDAxOjU2OjI0IEVEVCAyMDA5Cj4gaTY4NiBpNjg2IGkzODYgR05VL0xpbnV4Cj4g
-Cj4gR251IEMgICAgICAgICAgICAgICAgICBnY2MgKEdDQykgNC4zLjAgMjAwODA0MjggKFJlZCBI
-YXQgNC4zLjAtOCkKPiBHbnUgbWFrZSAgICAgICAgICAgICAgIDMuODEKPiB1dGlsLWxpbnV4ICAg
-ICAgICAgICAgIG5nIDIuMTMuMSkKPiBtb3VudCAgICAgICAgICAgICAgICAgIG5nIDIuMTMuMSkK
-PiBtb2R1dGlscyAgICAgICAgICAgICAgIDMuNAo+IGUyZnNwcm9ncyAgICAgICAgICAgICAgMS40
-MS4zCj4gUFBQICAgICAgICAgICAgICAgICAgICAyLjQuNAo+IGlzZG40ay11dGlscyAgICAgICAg
-ICAgMy45Cj4gTGludXggQyBMaWJyYXJ5ICAgICAgICA+IGxpYmMuMi44Cj4gRHluYW1pYyBsaW5r
-ZXIgKGxkZCkgICAyLjgKPiBQcm9jcHMgICAgICAgICAgICAgICAgIDMuMi43Cj4gTmV0LXRvb2xz
-ICAgICAgICAgICAgICAxLjYwCj4gS2JkICAgICAgICAgICAgICAgICAgICAxLjEyCj4gU2gtdXRp
-bHMgICAgICAgICAgICAgICA2LjEwCj4gTW9kdWxlcyBMb2FkZWQgICAgICAgICB2Ym94bmV0Zmx0
-IHZib3hkcnYgdHVuIGlwdF9NQVNRVUVSQURFCj4gaXB0YWJsZV9uYXQgbmZfbmF0IGJyaWRnZSBz
-dHAgbmZzZCBsb2NrZCBuZnNfYWNsIGF1dGhfcnBjZ3NzIGV4cG9ydGZzCj4gaWJfaXNlciByZG1h
-X2NtIGliX2NtIGl3X2NtIGliX3NhIGliX21hZCBpYl9jb3JlIGliX2FkZHIgaXNjc2lfdGNwCj4g
-bGliaXNjc2lfdGNwIGxpYmlzY3NpIHNjc2lfdHJhbnNwb3J0X2lzY3NpIGZ1c2Ugc3VucnBjIGlw
-djYKPiBkbV9tdWx0aXBhdGggc25kX2hkYV9jb2RlY19yZWFsdGVrIHNuZF9oZGFfaW50ZWwgc25k
-X2hkYV9jb2RlYwo+IHNuZF9od2RlcCBzbmRfc2VxX2R1bW15IHNuZF9zZXFfb3NzIHNuZF9zZXFf
-bWlkaV9ldmVudCBzbmRfc2VxIG52aWRpYQo+IHNuZF9zZXFfZGV2aWNlIHNuZF9wY21fb3NzIHNu
-ZF9taXhlcl9vc3Mgc25kX3BjbSB0cG1faW5maW5lb24gdHBtIGUxMDAKPiBwcGRldiBzbmRfdGlt
-ZXIgbWlpIGUxMDAwZSBwY3Nwa3Igc25kIGkyY19pODAxIHRwbV9iaW9zIGlUQ09fd2R0Cj4gcGFy
-cG9ydF9wYyBzb3VuZGNvcmUgaVRDT192ZW5kb3Jfc3VwcG9ydCBwYXJwb3J0IGkyY19jb3JlCj4g
-c25kX3BhZ2VfYWxsb2MgcGF0YV9hY3BpIGF0YV9nZW5lcmljCj4gCj4gZnJlZSByZXBvcnRzOgo+
-ICAgICAgICAgICAgICB0b3RhbCAgICAgICB1c2VkICAgICAgIGZyZWUgICAgIHNoYXJlZCAgICBi
-dWZmZXJzICAgICBjYWNoZWQKPiBNZW06ICAgICAgIDMwODA3MzIgICAgMjU2NzY5MiAgICAgNTEz
-MDQwICAgICAgICAgIDAgICAgIDYxMDQ1NiAgICAgNzc3MjY0Cj4gLS8rIGJ1ZmZlcnMvY2FjaGU6
-ICAgIDExNzk5NzIgICAgMTkwMDc2MAo+IFN3YXA6ICAgICAgICAgICAgMCAgICAgICAgICAwICAg
-ICAgICAgIDAKPiAKPiAvcHJvYy9jcHVpbmZvCj4gcHJvY2Vzc29yCTogMAo+IHZlbmRvcl9pZAk6
-IEdlbnVpbmVJbnRlbAo+IGNwdSBmYW1pbHkJOiA2Cj4gbW9kZWwJCTogMjMKPiBtb2RlbCBuYW1l
-CTogSW50ZWwoUikgQ29yZShUTSkyIFF1YWQgIENQVSAgIFE5MzAwICBAIDIuNTBHSHoKPiBzdGVw
-cGluZwk6IDcKPiBjcHUgTUh6CQk6IDI0OTMuNTkxCj4gY2FjaGUgc2l6ZQk6IDMwNzIgS0IKPiBw
-aHlzaWNhbCBpZAk6IDAKPiBzaWJsaW5ncwk6IDQKPiBjb3JlIGlkCQk6IDAKPiBjcHUgY29yZXMJ
-OiA0Cj4gYXBpY2lkCQk6IDAKPiBpbml0aWFsIGFwaWNpZAk6IDAKPiBmZGl2X2J1Zwk6IG5vCj4g
-aGx0X2J1ZwkJOiBubwo+IGYwMGZfYnVnCTogbm8KPiBjb21hX2J1Zwk6IG5vCj4gZnB1CQk6IHll
-cwo+IGZwdV9leGNlcHRpb24JOiB5ZXMKPiBjcHVpZCBsZXZlbAk6IDEwCj4gd3AJCTogeWVzCj4g
-ZmxhZ3MJCTogZnB1IHZtZSBkZSBwc2UgdHNjIG1zciBwYWUgbWNlIGN4OCBhcGljIG10cnIgcGdl
-IG1jYSBjbW92IHBhdAo+IHBzZTM2IGNsZmx1c2ggZHRzIGFjcGkgbW14IGZ4c3Igc3NlIHNzZTIg
-c3MgaHQgdG0gcGJlIGxtIGNvbnN0YW50X3RzYwo+IGFyY2hfcGVyZm1vbiBwZWJzIGJ0cyBwbmkg
-ZHRlczY0IG1vbml0b3IgZHNfY3BsIHZteCBzbXggZXN0IHRtMiBzc3NlMwo+IGN4MTYgeHRwciBw
-ZGNtIHNzZTRfMSBsYWhmX2xtIHRwcl9zaGFkb3cgdm5taSBmbGV4cHJpb3JpdHkKPiBib2dvbWlw
-cwk6IDQ5ODcuMTgKPiBjbGZsdXNoIHNpemUJOiA2NAo+IHBvd2VyIG1hbmFnZW1lbnQ6Cj4gCj4g
-cHJvY2Vzc29yCTogMQo+IHZlbmRvcl9pZAk6IEdlbnVpbmVJbnRlbAo+IGNwdSBmYW1pbHkJOiA2
-Cj4gbW9kZWwJCTogMjMKPiBtb2RlbCBuYW1lCTogSW50ZWwoUikgQ29yZShUTSkyIFF1YWQgIENQ
-VSAgIFE5MzAwICBAIDIuNTBHSHoKPiBzdGVwcGluZwk6IDcKPiBjcHUgTUh6CQk6IDI0OTMuNTkx
-Cj4gY2FjaGUgc2l6ZQk6IDMwNzIgS0IKPiBwaHlzaWNhbCBpZAk6IDAKPiBzaWJsaW5ncwk6IDQK
-PiBjb3JlIGlkCQk6IDEKPiBjcHUgY29yZXMJOiA0Cj4gYXBpY2lkCQk6IDEKPiBpbml0aWFsIGFw
-aWNpZAk6IDEKPiBmZGl2X2J1Zwk6IG5vCj4gaGx0X2J1ZwkJOiBubwo+IGYwMGZfYnVnCTogbm8K
-PiBjb21hX2J1Zwk6IG5vCj4gZnB1CQk6IHllcwo+IGZwdV9leGNlcHRpb24JOiB5ZXMKPiBjcHVp
-ZCBsZXZlbAk6IDEwCj4gd3AJCTogeWVzCj4gZmxhZ3MJCTogZnB1IHZtZSBkZSBwc2UgdHNjIG1z
-ciBwYWUgbWNlIGN4OCBhcGljIG10cnIgcGdlIG1jYSBjbW92IHBhdAo+IHBzZTM2IGNsZmx1c2gg
-ZHRzIGFjcGkgbW14IGZ4c3Igc3NlIHNzZTIgc3MgaHQgdG0gcGJlIGxtIGNvbnN0YW50X3RzYwo+
-IGFyY2hfcGVyZm1vbiBwZWJzIGJ0cyBwbmkgZHRlczY0IG1vbml0b3IgZHNfY3BsIHZteCBzbXgg
-ZXN0IHRtMiBzc3NlMwo+IGN4MTYgeHRwciBwZGNtIHNzZTRfMSBsYWhmX2xtIHRwcl9zaGFkb3cg
-dm5taSBmbGV4cHJpb3JpdHkKPiBib2dvbWlwcwk6IDQ5ODcuNDgKPiBjbGZsdXNoIHNpemUJOiA2
-NAo+IHBvd2VyIG1hbmFnZW1lbnQ6Cj4gCj4gcHJvY2Vzc29yCTogMgo+IHZlbmRvcl9pZAk6IEdl
-bnVpbmVJbnRlbAo+IGNwdSBmYW1pbHkJOiA2Cj4gbW9kZWwJCTogMjMKPiBtb2RlbCBuYW1lCTog
-SW50ZWwoUikgQ29yZShUTSkyIFF1YWQgIENQVSAgIFE5MzAwICBAIDIuNTBHSHoKPiBzdGVwcGlu
-Zwk6IDcKPiBjcHUgTUh6CQk6IDI0OTMuNTkxCj4gY2FjaGUgc2l6ZQk6IDMwNzIgS0IKPiBwaHlz
-aWNhbCBpZAk6IDAKPiBzaWJsaW5ncwk6IDQKPiBjb3JlIGlkCQk6IDIKPiBjcHUgY29yZXMJOiA0
-Cj4gYXBpY2lkCQk6IDIKPiBpbml0aWFsIGFwaWNpZAk6IDIKPiBmZGl2X2J1Zwk6IG5vCj4gaGx0
-X2J1ZwkJOiBubwo+IGYwMGZfYnVnCTogbm8KPiBjb21hX2J1Zwk6IG5vCj4gZnB1CQk6IHllcwo+
-IGZwdV9leGNlcHRpb24JOiB5ZXMKPiBjcHVpZCBsZXZlbAk6IDEwCj4gd3AJCTogeWVzCj4gZmxh
-Z3MJCTogZnB1IHZtZSBkZSBwc2UgdHNjIG1zciBwYWUgbWNlIGN4OCBhcGljIG10cnIgcGdlIG1j
-YSBjbW92IHBhdAo+IHBzZTM2IGNsZmx1c2ggZHRzIGFjcGkgbW14IGZ4c3Igc3NlIHNzZTIgc3Mg
-aHQgdG0gcGJlIGxtIGNvbnN0YW50X3RzYwo+IGFyY2hfcGVyZm1vbiBwZWJzIGJ0cyBwbmkgZHRl
-czY0IG1vbml0b3IgZHNfY3BsIHZteCBzbXggZXN0IHRtMiBzc3NlMwo+IGN4MTYgeHRwciBwZGNt
-IHNzZTRfMSBsYWhmX2xtIHRwcl9zaGFkb3cgdm5taSBmbGV4cHJpb3JpdHkKPiBib2dvbWlwcwk6
-IDQ5ODcuNDkKPiBjbGZsdXNoIHNpemUJOiA2NAo+IHBvd2VyIG1hbmFnZW1lbnQ6Cj4gCj4gcHJv
-Y2Vzc29yCTogMwo+IHZlbmRvcl9pZAk6IEdlbnVpbmVJbnRlbAo+IGNwdSBmYW1pbHkJOiA2Cj4g
-bW9kZWwJCTogMjMKPiBtb2RlbCBuYW1lCTogSW50ZWwoUikgQ29yZShUTSkyIFF1YWQgIENQVSAg
-IFE5MzAwICBAIDIuNTBHSHoKPiBzdGVwcGluZwk6IDcKPiBjcHUgTUh6CQk6IDI0OTMuNTkxCj4g
-Y2FjaGUgc2l6ZQk6IDMwNzIgS0IKPiBwaHlzaWNhbCBpZAk6IDAKPiBzaWJsaW5ncwk6IDQKPiBj
-b3JlIGlkCQk6IDMKPiBjcHUgY29yZXMJOiA0Cj4gYXBpY2lkCQk6IDMKPiBpbml0aWFsIGFwaWNp
-ZAk6IDMKPiBmZGl2X2J1Zwk6IG5vCj4gaGx0X2J1ZwkJOiBubwo+IGYwMGZfYnVnCTogbm8KPiBj
-b21hX2J1Zwk6IG5vCj4gZnB1CQk6IHllcwo+IGZwdV9leGNlcHRpb24JOiB5ZXMKPiBjcHVpZCBs
-ZXZlbAk6IDEwCj4gd3AJCTogeWVzCj4gZmxhZ3MJCTogZnB1IHZtZSBkZSBwc2UgdHNjIG1zciBw
-YWUgbWNlIGN4OCBhcGljIG10cnIgcGdlIG1jYSBjbW92IHBhdAo+IHBzZTM2IGNsZmx1c2ggZHRz
-IGFjcGkgbW14IGZ4c3Igc3NlIHNzZTIgc3MgaHQgdG0gcGJlIGxtIGNvbnN0YW50X3RzYwo+IGFy
-Y2hfcGVyZm1vbiBwZWJzIGJ0cyBwbmkgZHRlczY0IG1vbml0b3IgZHNfY3BsIHZteCBzbXggZXN0
-IHRtMiBzc3NlMwo+IGN4MTYgeHRwciBwZGNtIHNzZTRfMSBsYWhmX2xtIHRwcl9zaGFkb3cgdm5t
-aSBmbGV4cHJpb3JpdHkKPiBib2dvbWlwcwk6IDQ5ODcuNDkKPiBjbGZsdXNoIHNpemUJOiA2NAo+
-IHBvd2VyIG1hbmFnZW1lbnQ6Cj4gCj4gcmVtb3ZlIHRlc3QgY2FzZXMgd2hpY2ggcmVxdWlyZSB0
-aGUgYmxvY2sgZGV2aWNlLgo+IFlvdSBjYW4gc3BlY2lmeSBpdCB3aXRoIG9wdGlvbiAtYgo+IExP
-RyBGaWxlOiAvb3B0L2x0cC1mdWxsLTIwMDkwNTMxL3Jlc3VsdHMvTFRQX1JVTl9PTi0yMDA5XyA2
-7JuUXzEyLTE2aF8xN21fMzRzLmxvZwo+IEZBSUxFRCBDT01NQU5EIEZpbGU6IC9vcHQvbHRwLWZ1
-bGwtMjAwOTA1MzEvb3V0cHV0L0xUUF9SVU5fT04tMjAwOV8uZmFpbGVkCj4gUnVubmluZyB0ZXN0
-cy4uLi4uLi4KPiAKPiAKPiAKPiAKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ3J5c3RhbCBSZXBv
-cnRzIC0gTmV3IEZyZWUgUnVudGltZSBhbmQgMzAgRGF5IFRyaWFsCkNoZWNrIG91dCB0aGUgbmV3
-IHNpbXBsaWZpZWQgbGljZW5zaW5nIG9wdGlvbiB0aGF0IGVuYWJsZXMgdW5saW1pdGVkCnJveWFs
-dHktZnJlZSBkaXN0cmlidXRpb24gb2YgdGhlIHJlcG9ydCBlbmdpbmUgZm9yIGV4dGVybmFsbHkg
-ZmFjaW5nIApzZXJ2ZXIgYW5kIHdlYiBkZXBsb3ltZW50LgpodHRwOi8vcC5zZi5uZXQvc2Z1L2J1
-c2luZXNzb2JqZWN0cwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0
-Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+Signed-off-by: Manas Kumar Nayak <maknayak@in.ibm.com>
+To: LTP List <ltp-list@lists.sourceforge.net>
+Cc: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: Masatake YAMATO <yamato@redhat.com>
+---
+
+--- ltp-full-20090531.orig/testcases/kernel/syscalls/quotactl/Makefile	1970-01-01 05:30:00.000000000 +0530
++++ ltp-full-20090531/testcases/kernel/syscalls/quotactl/Makefile	2009-06-12 21:44:37.000000000 +0530
+@@ -0,0 +1,31 @@
++#
++#  Copyright (c) International Business Machines  Corp., 2009
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++CFLAGS += -I../../../../include -Wall
++LDLIBS += -L../../../../lib -lltp
++
++SRCS    = $(wildcard *.c)
++TARGETS = $(patsubst %.c,%,$(SRCS))
++
++all: $(TARGETS)
++
++install:
++	@set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i ; done
++
++clean:
++	rm -f $(TARGETS)
+--- ltp-full-20090531.orig/testcases/kernel/syscalls/quotactl/quotactl01.c	1970-01-01 05:30:00.000000000 +0530
++++ ltp-full-20090531/testcases/kernel/syscalls/quotactl/quotactl01.c	2009-06-12 22:51:19.000000000 +0530
+@@ -0,0 +1,168 @@
++/******************************************************************************/
++/* Copyright (c) Crackerjack Project., 2007                                   */
++/*                                                                            */
++/* This program is free software;  you can redistribute it and/or modify      */
++/* it under the terms of the GNU General Public License as published by       */
++/* the Free Software Foundation; either version 2 of the License, or          */
++/* (at your option) any later version.                                        */
++/*                                                                            */
++/* This program is distributed in the hope that it will be useful,            */
++/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
++/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
++/* the GNU General Public License for more details.                           */
++/*                                                                            */
++/* You should have received a copy of the GNU General Public License          */
++/* along with this program;  if not, write to the Free Software               */
++/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
++/*                                                                            */
++/******************************************************************************/
++/******************************************************************************/
++/*                                                                            */
++/* File:        quotactl01.c                                                  */
++/*                                                                            */
++/* Description: This tests the quotactl() syscall                             */
++/*                                                                            */
++/* Usage:  <for command-line>                                                 */
++/* quotactl01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                            */
++/*      where,  -c n : Run n copies concurrently.                             */
++/*              -e   : Turn on errno logging.                                 */
++/*              -i n : Execute test n times.                                  */
++/*              -I x : Execute test for x seconds.                            */
++/*              -P x : Pause for x seconds between iterations.                */
++/*              -t   : Turn on syscall timing.                                */
++/*                                                                            */
++/* Total Tests: 1                                                             */
++/*                                                                            */
++/* Test Name:   quotactl01                                                    */
++/* History:     Porting from Crackerjack to LTP is done by                    */
++/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
++/******************************************************************************/
++#include <fcntl.h>
++#include <unistd.h>
++#include <sys/syscall.h>
++#include <stdio.h>
++#include <errno.h>
++#include <linux/fs.h>
++#include <sys/quota.h>
++#include <sys/types.h>
++
++
++/* Harness Specific Include Files. */
++#include "test.h"
++#include "usctest.h"
++#include "linux_syscall_numbers.h"
++
++/* Extern Global Variables */
++extern int Tst_count;           /* counter for tst_xxx routines.         */
++extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
++
++/* Global Variables */
++char *TCID = "quotactl01";  /* Test program identifier.*/
++int  testno;
++int  TST_TOTAL = 1;                   /* total number of tests in this file.   */
++
++/* Extern Global Functions */
++/******************************************************************************/
++/*                                                                            */
++/* Function:    cleanup                                                       */
++/*                                                                            */
++/* Description: Performs all one time clean up for this test on successful    */
++/*              completion,  premature exit or  failure. Closes all temporary */
++/*              files, removes all temporary directories exits the test with  */
++/*              appropriate return code by calling tst_exit() function.       */
++/*                                                                            */
++/* Input:       None.                                                         */
++/*                                                                            */
++/* Output:      None.                                                         */
++/*                                                                            */
++/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
++/*              On success - Exits calling tst_exit(). With '0' return code.  */
++/*                                                                            */
++/******************************************************************************/
++extern void cleanup() {
++        /* Remove tmp dir and all files in it */
++        TEST_CLEANUP;
++        tst_rmdir();
++
++        /* Exit with appropriate return code. */
++        tst_exit();
++}
++
++/* Local  Functions */
++/******************************************************************************/
++/*                                                                            */
++/* Function:    setup                                                         */
++/*                                                                            */
++/* Description: Performs all one time setup for this test. This function is   */
++/*              typically used to capture signals, create temporary dirs      */
++/*              and temporary files that may be used in the course of this    */
++/*              test.                                                         */
++/*                                                                            */
++/* Input:       None.                                                         */
++/*                                                                            */
++/* Output:      None.                                                         */
++/*                                                                            */
++/* Return:      On failure - Exits by calling cleanup().                      */
++/*              On success - returns 0.                                       */
++/*                                                                            */
++/******************************************************************************/
++void setup() {
++        /* Capture signals if any */
++        /* Create temporary directories */
++        TEST_PAUSE;
++        tst_tmpdir();
++}
++
++/*
++*  WARNING!! This test may cause the potential harm to the system, we DO NOT
++*  provide any warranty for the safety!!
++*/
++/*
++* To use this testcase , the quota function must be turned on and the user must be * the super user
++*/
++
++int cmd[] = {Q_QUOTAON, Q_QUOTAOFF, Q_GETQUOTA, Q_SETQUOTA, Q_GETINFO, Q_SETINFO, Q_GETFMT, Q_SYNC};
++int retval = 0, id = 0, i = 0;
++
++int main(int ac, char **av) {
++        int newtid = -1;
++        int result;
++        int lc;                 /* loop counter */
++        char *msg;              /* message returned from parse_opts */
++	
++        /* parse standard options */
++        if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
++             tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
++             tst_exit();
++           }
++
++        setup();
++
++        /* Check looping state if -i option given */
++        for (lc = 0; TEST_LOOPING(lc); ++lc) {
++                Tst_count = 0;
++                for (testno = 0; testno < TST_TOTAL; ++testno) {
++        
++		id = getuid();
++                for (i = 0; i <= 7; i++){
++                        TEST(retval = syscall(__NR_quotactl, cmd[i], (const char *)NULL, id, (caddr_t)NULL));
++			if(TEST_RETURN != 0){
++                 	   	tst_resm(TFAIL, "%s failed - errno = %d : %s ...cmderror=%s", TCID, TEST_ERRNO, strerror(TEST_ERRNO),cmd[i]);
++                        }else{
++        			tst_resm(TPASS, "quotactl call succeeded");
++                        }
++                }
++	             TEST(result = syscall(258, &newtid));     //call quotactl()
++                     if(TEST_RETURN == getpid()) {
++                        cleanup();
++                     }
++                     else {
++                           cleanup();
++	  	           tst_exit();
++                     }
++                }
++        }	
++        cleanup();
++	tst_exit();
++}
++
+--- ltp-full-20090531.orig/runtest/syscalls	2009-06-12 21:42:54.000000000 +0530
++++ ltp-full-20090531/runtest/syscalls	2009-06-12 22:54:14.000000000 +0530
+@@ -742,6 +742,7 @@ pwrite02 pwrite02
+ pwrite03 pwrite03
+ pwrite04 pwrite04
+ 
++quotactl01 quotactl01
+ 
+ read01 read01
+ read02 read02
+
+---
+Regards--
+Manas
+
+
+------------------------------------------------------------------------------
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
