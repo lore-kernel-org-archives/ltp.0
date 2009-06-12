@@ -1,35 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MHLSy-0003k5-8F
-	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:32:00 +0000
-Received: from e31.co.us.ibm.com ([32.97.110.149])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MHLSv-0006ZU-SQ
-	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:32:00 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e31.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5IHRUPU021148
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 11:27:30 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5IHVtP3157598
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 11:31:56 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5IHVpSV019676
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 11:31:54 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200906121408.15925.jpalecek@web.de>
-References: <1244635585.9465.14.camel@munipradeep-laptop>
-	<200906121408.15925.jpalecek@web.de>
-Date: Thu, 18 Jun 2009 23:01:38 +0530
-Message-Id: <1245346298.5041.35.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Some of the testcases which are resulting in FAIL
-	even	though they	might not be
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <naresh.kernel@gmail.com>) id 1MF6oX-0008MP-4q
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 13:29:01 +0000
+Received: from mail-gx0-f207.google.com ([209.85.217.207])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MF6oV-0002Je-4Z
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 13:29:01 +0000
+Received: by gxk3 with SMTP id 3so9255988gxk.10
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 12 Jun 2009 06:28:58 -0700 (PDT)
+MIME-Version: 1.0
+Date: Fri, 12 Jun 2009 18:58:57 +0530
+Message-ID: <f5a7b3810906120628g793d0bd6xea608e96690a70c7@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Content-Type: multipart/mixed; boundary=001e680f173cd2f2c3046c26b088
+Subject: [LTP] [FIX PATCH] POSIX aio_error/3-1.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,64 +26,144 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Munipradeep Beerakam <mpradeep@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, Jiri Palecek <jpalecek@web.de>, iranna.ankad@in.ibm.com
+To: ltp-list@lists.sourceforge.net
+Cc: maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, rohit.170309@gmail.com, naresh.kernel@gmail.com
 
-On Fri, 2009-06-12 at 14:08 +0200, Jiri Palecek wrote: 
-> On Wednesday 10 June 2009 14:06:25 Munipradeep Beerakam wrote:
-> > Hi,
-> 
-> Hi,
-> 
-> > Here is the list of testcases in May 2009 LTP, which *may* result in
-> > FAIL even though it is a configuration error, not the error due to the
-> > functionality we are testing. Those tests should give "CONF" message,
-> > not "FAIL". I ran LTP on 2.6.18 kernel, x86 architecture.
-> > 
-> > 
-> >    3. get_mempolicy01
-> > Part of code, which is not correct
-> > tst_resm(TFAIL, "set_mempolicy() failed - errno = %d : %s",TEST_ERRNO,
-> > strerror(TEST_ERRNO));
-> > ...
-> > ...
-> > tst_resm(TFAIL, "malloc failed - errno = %d : %s",TEST_ERRNO,
-> > strerror(TEST_ERRNO));
-> > 
-> >    4. mq_open01
-> > Part of code, which is not correct
-> > if (TEST_RETURN < 0) {
-> >                         tst_resm(TFAIL, "mq_getsetattr failed - errno =
-> > %d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
-> 
-> Not that I'd say this code is stellar, it may even be incorrect, but changing these to TCONF wouldn't be correct either. These error messages should be TCONF only if errno is ENOSYS, otherwise, they should be reported as TBROK, because it would be an error that prevents the test to run. The best option, however, would probably be to add a tst_kvercmp check for kernel versions that contain the respective functions.
-> 
+--001e680f173cd2f2c3046c26b088
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Muni,
+Hi,
 
-Can you work out a patch on this lines. I would help you to do so if
-required.
+I have noticed failures under
+testcases/open_posix_testsuite/conformance/interfaces/aio_error/3-1.c
+and fixed.
+Please find the patch below and as attachment.
 
-Regards--
-Subrata
+Best regards
+Naresh Kamboju
 
-> Regards
->     Jiri Palecek
-> 
-> ------------------------------------------------------------------------------
-> Crystal Reports - New Free Runtime and 30 Day Trial
-> Check out the new simplified licensing option that enables unlimited
-> royalty-free distribution of the report engine for externally facing 
-> server and web deployment.
-> http://p.sf.net/sfu/businessobjects
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
 
+diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/aio_error/3-1.c
+b/testcases/open_posix_testsuite/conformance/interfaces/aio_error/3-1.c
+--- a/testcases/open_posix_testsuite/conformance/interfaces/aio_error/3-1.c	2009-06-12
+18:03:14.000000000 +0530
++++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_error/3-1.c	2009-06-12
+18:00:21.000000000 +0530
+@@ -36,29 +36,55 @@
+
+ int main()
+ {
+-	struct aiocb bad;
+-	int ret;
++
++        char tmpfname[256];
++#define BUF_SIZE 512
++        char buf[BUF_SIZE];
++        int fd;
++        struct aiocb aiocb;
++	int ret=0;
+
+ #if _POSIX_ASYNCHRONOUS_IO != 200112L
+-	return PTS_UNSUPPORTED;
++        exit(PTS_UNSUPPORTED);
+ #endif
+
+-	memset (&bad, 0, sizeof (struct aiocb));
++        snprintf(tmpfname, sizeof(tmpfname), "/tmp/pts_aio_error_3_1_%d",
++                  getpid());
++        unlink(tmpfname);
++        fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL,
++                  S_IRUSR | S_IWUSR);
++        if (fd == -1)
++        {
++                printf(TNAME " Error at open(): %s\n",
++                       strerror(errno));
++                exit(PTS_UNRESOLVED);
++        }
++
++        unlink(tmpfname);
++
++	memset (&aiocb, 0, sizeof (struct aiocb));
+
+-	ret = aio_error(&bad);
+-	if (ret != -1)
++        aiocb.aio_fildes = fd;
++        aiocb.aio_buf = buf;
++        aiocb.aio_reqprio = -1;
++        aiocb.aio_nbytes = BUF_SIZE;
++
++        if (aio_write(&aiocb) != 0)
+ 	{
+-		printf(TNAME " bad aio_error return value; %d\n", ret);
+-		return PTS_FAIL;
++                printf(TNAME " bad aio_read return value()\n");
++                exit(PTS_FAIL);
+ 	}
+
+-	if (errno != EINVAL)
++	while (aio_error (&aiocb) == EINPROGRESS);
++	ret = aio_error(&aiocb);
++
++	if (ret != EINVAL)
+ 	{
+ 		printf(TNAME " errno is not EINVAL %s\n", strerror(errno));
+ 		return PTS_FAIL;
+ 	}
+
+-
++	close(fd);
+ 	printf ("Test PASSED\n");
+ 	return PTS_PASS;
+ }
+
+--001e680f173cd2f2c3046c26b088
+Content-Type: application/octet-stream; name="ltp-posix-aio_error_3-1.patch"
+Content-Disposition: attachment; filename="ltp-posix-aio_error_3-1.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fvuxmo570
+
+ZGlmZiAtTmF1cmIgYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2Uv
+aW50ZXJmYWNlcy9haW9fZXJyb3IvMy0xLmMgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3Vp
+dGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9haW9fZXJyb3IvMy0xLmMKLS0tIGEvdGVzdGNhc2Vz
+L29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvYWlvX2Vycm9yLzMt
+MS5jCTIwMDktMDYtMTIgMTg6MDM6MTQuMDAwMDAwMDAwICswNTMwCisrKyBiL3Rlc3RjYXNlcy9v
+cGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL2Fpb19lcnJvci8zLTEu
+YwkyMDA5LTA2LTEyIDE4OjAwOjIxLjAwMDAwMDAwMCArMDUzMApAQCAtMzYsMjkgKzM2LDU1IEBA
+CiAKIGludCBtYWluKCkKIHsKLQlzdHJ1Y3QgYWlvY2IgYmFkOwotCWludCByZXQ7CisKKyAgICAg
+ICAgY2hhciB0bXBmbmFtZVsyNTZdOworI2RlZmluZSBCVUZfU0laRSA1MTIKKyAgICAgICAgY2hh
+ciBidWZbQlVGX1NJWkVdOworICAgICAgICBpbnQgZmQ7CisgICAgICAgIHN0cnVjdCBhaW9jYiBh
+aW9jYjsKKwlpbnQgcmV0PTA7CiAKICNpZiBfUE9TSVhfQVNZTkNIUk9OT1VTX0lPICE9IDIwMDEx
+MkwKLQlyZXR1cm4gUFRTX1VOU1VQUE9SVEVEOworICAgICAgICBleGl0KFBUU19VTlNVUFBPUlRF
+RCk7CiAjZW5kaWYKIAotCW1lbXNldCAoJmJhZCwgMCwgc2l6ZW9mIChzdHJ1Y3QgYWlvY2IpKTsK
+KyAgICAgICAgc25wcmludGYodG1wZm5hbWUsIHNpemVvZih0bXBmbmFtZSksICIvdG1wL3B0c19h
+aW9fZXJyb3JfM18xXyVkIiwKKyAgICAgICAgICAgICAgICAgIGdldHBpZCgpKTsKKyAgICAgICAg
+dW5saW5rKHRtcGZuYW1lKTsKKyAgICAgICAgZmQgPSBvcGVuKHRtcGZuYW1lLCBPX0NSRUFUIHwg
+T19SRFdSIHwgT19FWENMLAorICAgICAgICAgICAgICAgICAgU19JUlVTUiB8IFNfSVdVU1IpOwor
+ICAgICAgICBpZiAoZmQgPT0gLTEpCisgICAgICAgIHsKKyAgICAgICAgICAgICAgICBwcmludGYo
+VE5BTUUgIiBFcnJvciBhdCBvcGVuKCk6ICVzXG4iLAorICAgICAgICAgICAgICAgICAgICAgICBz
+dHJlcnJvcihlcnJubykpOworICAgICAgICAgICAgICAgIGV4aXQoUFRTX1VOUkVTT0xWRUQpOwor
+ICAgICAgICB9CisKKyAgICAgICAgdW5saW5rKHRtcGZuYW1lKTsKKworCW1lbXNldCAoJmFpb2Ni
+LCAwLCBzaXplb2YgKHN0cnVjdCBhaW9jYikpOwogCi0JcmV0ID0gYWlvX2Vycm9yKCZiYWQpOwot
+CWlmIChyZXQgIT0gLTEpCisgICAgICAgIGFpb2NiLmFpb19maWxkZXMgPSBmZDsKKyAgICAgICAg
+YWlvY2IuYWlvX2J1ZiA9IGJ1ZjsKKyAgICAgICAgYWlvY2IuYWlvX3JlcXByaW8gPSAtMTsKKyAg
+ICAgICAgYWlvY2IuYWlvX25ieXRlcyA9IEJVRl9TSVpFOworCisgICAgICAgIGlmIChhaW9fd3Jp
+dGUoJmFpb2NiKSAhPSAwKQogCXsKLQkJcHJpbnRmKFROQU1FICIgYmFkIGFpb19lcnJvciByZXR1
+cm4gdmFsdWU7ICVkXG4iLCByZXQpOwotCQlyZXR1cm4gUFRTX0ZBSUw7CisgICAgICAgICAgICAg
+ICAgcHJpbnRmKFROQU1FICIgYmFkIGFpb19yZWFkIHJldHVybiB2YWx1ZSgpXG4iKTsKKyAgICAg
+ICAgICAgICAgICBleGl0KFBUU19GQUlMKTsKIAl9CiAKLQlpZiAoZXJybm8gIT0gRUlOVkFMKQor
+CXdoaWxlIChhaW9fZXJyb3IgKCZhaW9jYikgPT0gRUlOUFJPR1JFU1MpOworCXJldCA9IGFpb19l
+cnJvcigmYWlvY2IpOworCisJaWYgKHJldCAhPSBFSU5WQUwpCiAJewogCQlwcmludGYoVE5BTUUg
+IiBlcnJubyBpcyBub3QgRUlOVkFMICVzXG4iLCBzdHJlcnJvcihlcnJubykpOwogCQlyZXR1cm4g
+UFRTX0ZBSUw7CiAJfQogCi0KKwljbG9zZShmZCk7CiAJcHJpbnRmICgiVGVzdCBQQVNTRURcbiIp
+OwogCXJldHVybiBQVFNfUEFTUzsKIH0K
+--001e680f173cd2f2c3046c26b088
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Crystal Reports - New Free Runtime and 30 Day Trial
@@ -104,7 +171,16 @@ Check out the new simplified licensing option that enables unlimited
 royalty-free distribution of the report engine for externally facing 
 server and web deployment.
 http://p.sf.net/sfu/businessobjects
+--001e680f173cd2f2c3046c26b088
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--001e680f173cd2f2c3046c26b088--
+
