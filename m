@@ -1,23 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MLTJa-0004V2-5P
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 02:43:22 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MLTJY-0000Pf-AD
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 02:43:22 +0000
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MF6hG-0007eO-Qk
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 13:21:30 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MF6hD-00062f-VR
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 13:21:29 +0000
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <78e7c3a10906290359w2040ce26hdaab89004f654b20@mail.gmail.com>
-References: <78e7c3a10906240143i7215fd70g834080d10806bab@mail.gmail.com>
-	<1245833132.5160.4.camel@subratamodak.linux.ibm.com>
-	<78e7c3a10906290359w2040ce26hdaab89004f654b20@mail.gmail.com>
-Date: Tue, 30 Jun 2009 07:30:23 +0530
-Message-Id: <1246327224.7512.43.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Query - LTP
-Reply-To: subrata@linux.vnet.ibm.com
+Date: Fri, 12 Jun 2009 18:51:12 +0530
+Message-Id: <20090612132112.32049.92495.sendpatchset@subratamodak.linux.ibm.com>
+Subject: [LTP] [PATCH] Add preadv01 test for preadv() and pwritev() syscall
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,79 +21,217 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Divya Kothari <divya.s.kothari@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Gerd Hoffmann <kraxel@redhat.com>
+Cc: ltp-list <ltp-list@lists.sf.net>, Arnd Bergmann <arnd@arndb.de>, Ralf Baechle <ralf@linux-mips.org>, Al Viro <viro@zeniv.linux.org.uk>
 
-T24gTW9uLCAyMDA5LTA2LTI5IGF0IDE2OjI5ICswNTMwLCBEaXZ5YSBLb3RoYXJpIHdyb3RlOgo+
-IEhpIFN1YnJhdGEsCj4gIAo+IE5vdyBpIGFtIHVzaW5nIExUUCBmb3IgbXkgcHJvamVjdC4KPiAg
-Cj4gT25lIHN1Z2dlc3Rpb24gLSBUaGVyZSBzaG91bGQgYmUgdGVzdCBjYXNlIGRldGFpbCBpbmZv
-cm1hdGlvbiBpbgo+IHJlcG9ydCBmaWxlLgo+IExpa2UgLSBpZiBteSB0ZXN0IGNhc2UgImNsb2Nr
-X25hbm9zbGVlcDAxIiBpcyBnZXR0aW5nIGZhaWwgLSBidXQgSSBhbQo+IG5vdCBhYmxlIHRvIGNo
-ZWNrIC0gdGVzdCBjYXNlIG9iamVjdGl2ZS4KCkNvcnJlY3QuIEFuZCB0aGF0xZsgaG93IE9wZW4g
-U291cmNlIFByb2plY3Qgd29ya3MuIEFsbCB1c2VycyBoYXMgdGhlCnJlc3BvbnNpYmlsaXR5IHRv
-IGVucmljaCB0aGUgcHJvamVjdCwgYW5kLCBvbmUgcGVyc29uIGNhbm5vdCBkbwpldmVyeXRoaW5n
-LiBZb3UgY2FuIGFsc28gc3R1ZHkgdGhlIGNvZGUgYW5kIGVucmljaCBpbiBpdMWbIGRvY3VtZW50
-YXRpb24uCkFuZCwgYWxzbyBwbGVhc2UgZGlyZWN0IHlvdXIgcXVlcmllcyB0byB0aGlzIG1haWxp
-bmcgbGlzdC4gVGhlcmUgYXJlCm1hbnkgcGVvcGxlIHdobyBjYW4gcmVzb2x2ZSB5b3VyIHF1ZXJp
-ZXMgYmV0dGVyIHRoYW4gbWUgOy0pCgpSZWdhcmRzLS0KU3VicmF0YQoKPiAgCj4gVGVzdC1vdXRw
-dXQgaXMgLQo+ICAKPiBFWFBFQ1Q6IHJldHVybiB2YWx1ZShyZXQpPTAgZXJybm89MCAoU3VjY2Vz
-cyksIHJlbWFpbiB0aW1lIGNoZWNrPU9LIAo+IFJFU1VMVDogcmV0dXJuIHZhbHVlKHJldCk9MCBl
-cnJubz0wIChTdWNjZXNzKSwgcmVtYWluIHRpbWUgY2hlY2s9TkcgCj4gRVhQRUNUOiByZXR1cm4g
-dmFsdWUocmV0KT0wIGVycm5vPTAgKFN1Y2Nlc3MpLCByZW1haW4gdGltZSBjaGVjaz1PSyAKPiBS
-RVNVTFQ6IHJldHVybiB2YWx1ZShyZXQpPTAgZXJybm89MCAoU3VjY2VzcyksIHJlbWFpbiB0aW1l
-IGNoZWNrPU5HIAo+IEVYUEVDVDogcmV0dXJuIHZhbHVlKHJldCk9MjIgZXJybm89MCAoU3VjY2Vz
-cyksIHJlbWFpbiB0aW1lIGNoZWNrPU9LIAo+IFJFU1VMVDogcmV0dXJuIHZhbHVlKHJldCk9MjIg
-ZXJybm89MCAoU3VjY2VzcyksIHJlbWFpbiB0aW1lIGNoZWNrPU5HIAo+IEVYUEVDVDogcmV0dXJu
-IHZhbHVlKHJldCk9MjIgZXJybm89MCAoU3VjY2VzcyksIHJlbWFpbiB0aW1lIGNoZWNrPU9LIAo+
-IFJFU1VMVDogcmV0dXJuIHZhbHVlKHJldCk9MjIgZXJybm89MCAoU3VjY2VzcyksIHJlbWFpbiB0
-aW1lIGNoZWNrPU5HIAo+IEVYUEVDVDogcmV0dXJuIHZhbHVlKHJldCk9OTUgZXJybm89MCAoU3Vj
-Y2VzcyksIHJlbWFpbiB0aW1lIGNoZWNrPU9LIAo+IFJFU1VMVDogcmV0dXJuIHZhbHVlKHJldCk9
-MjIgZXJybm89MCAoU3VjY2VzcyksIHJlbWFpbiB0aW1lIGNoZWNrPU5HIAo+IEVYUEVDVDogcmV0
-dXJuIHZhbHVlKHJldCk9NCBlcnJubz0wIChTdWNjZXNzKSAKPiBSRVNVTFQ6IHJldHVybiB2YWx1
-ZShyZXQpPTQgZXJybm89MCAoU3VjY2VzcykgCj4gY2xvY2tfbmFub3NsZWVwMDEgICAgMCAgSU5G
-TyAgOiAgKGNhc2UwMCkgU1RBUlQgCj4gY2xvY2tfbmFub3NsZWVwMDEgICAgMCAgSU5GTyAgOiAg
-Y2hlY2sgc2xlZXAgdGltZTogKG1pbjo0ODApIDwgNTAwIDwKPiAobWF4OjUyMCkgKG1zZWMpIAo+
-IGNsb2NrX25hbm9zbGVlcDAxICAgIDAgIElORk8gIDogIHJlbWFpbiB0aW1lOiAxMzQ1NDE1NDQg
-LTEwNzcwNDM3MzYgCj4gY2xvY2tfbmFub3NsZWVwMDEgICAgMCAgSU5GTyAgOiAgKGNhc2UwMCkg
-RU5EID0+IE5HIAo+IGNsb2NrX25hbm9zbGVlcDAxICAgIDAgIElORk8gIDogIChjYXNlMDEpIFNU
-QVJUIAo+IGNsb2NrX25hbm9zbGVlcDAxICAgIDAgIElORk8gIDogIGNoZWNrIHNsZWVwIHRpbWU6
-IChtaW46NDgwKSA8IDUwMCA8Cj4gKG1heDo1MjApIChtc2VjKSAKPiBjbG9ja19uYW5vc2xlZXAw
-MSAgICAwICBJTkZPICA6ICByZW1haW4gdGltZTogMTM0NTQxNTQ0IC0xMDc3MDQzNzM2IAo+IGNs
-b2NrX25hbm9zbGVlcDAxICAgIDAgIElORk8gIDogIChjYXNlMDEpIEVORCA9PiBORyAKPiBjbG9j
-a19uYW5vc2xlZXAwMSAgICAwICBJTkZPICA6ICAoY2FzZTAyKSBTVEFSVCAKPiBjbG9ja19uYW5v
-c2xlZXAwMSAgICAwICBJTkZPICA6ICByZW1haW4gdGltZTogMTM0NTQxNTQ0IC0xMDc3MDQzNzM2
-IAo+IGNsb2NrX25hbm9zbGVlcDAxICAgIDAgIElORk8gIDogIChjYXNlMDIpIEVORCA9PiBORyAK
-PiBjbG9ja19uYW5vc2xlZXAwMSAgICAwICBJTkZPICA6ICAoY2FzZTAzKSBTVEFSVCAKPiBjbG9j
-a19uYW5vc2xlZXAwMSAgICAwICBJTkZPICA6ICByZW1haW4gdGltZTogMTM0NTQxNTQ0IC0xMDc3
-MDQzNzM2IAo+IGNsb2NrX25hbm9zbGVlcDAxICAgIDAgIElORk8gIDogIChjYXNlMDMpIEVORCA9
-PiBORyAKPiBjbG9ja19uYW5vc2xlZXAwMSAgICAwICBJTkZPICA6ICAoY2FzZTA0KSBTVEFSVCAK
-PiBjbG9ja19uYW5vc2xlZXAwMSAgICAwICBJTkZPICA6ICByZW1haW4gdGltZTogMTM0NTQxNTQ0
-IC0xMDc3MDQzNzM2IAo+IGNsb2NrX25hbm9zbGVlcDAxICAgIDAgIElORk8gIDogIChjYXNlMDQp
-IEVORCA9PiBORyAKPiBjbG9ja19uYW5vc2xlZXAwMSAgICAwICBJTkZPICA6ICAoY2FzZTA1KSBT
-VEFSVCAKPiBjbG9ja19uYW5vc2xlZXAwMSAgICAwICBJTkZPICA6ICByZW1haW4gdGltZTogOSA0
-OTkwMDExMTcgCj4gY2xvY2tfbmFub3NsZWVwMDEgICAgMCAgSU5GTyAgOiAgKGNhc2UwNSkgRU5E
-ID0+IE9LIAo+IGNsb2NrX25hbm9zbGVlcDAxICAgIDEgIEZBSUwgIDogIGNsb2NrX25hbm9zbGVl
-cDAxIGZhaWxlZCAtIGVycm5vID0KPiAwIDogU3VjY2VzcyAKPiBjbG9ja19uYW5vc2xlZXAwMSAg
-ICAwICBJTkZPICA6ICBORyAKPiAKPiAKPiAKPiBUaGFua3MsCj4gRGl2eWEKPiAgCj4gIAo+IE9u
-IFdlZCwgSnVuIDI0LCAyMDA5IGF0IDI6MTUgUE0sIFN1YnJhdGEgTW9kYWsKPiA8c3VicmF0YUBs
-aW51eC52bmV0LmlibS5jb20+IHdyb3RlOgo+ICAgICAgICAgCj4gICAgICAgICBPbiBXZWQsIDIw
-MDktMDYtMjQgYXQgMTQ6MTMgKzA1MzAsIERpdnlhIEtvdGhhcmkgd3JvdGU6Cj4gICAgICAgICA+
-IEhpLAo+ICAgICAgICAgPgo+ICAgICAgICAgPiBJIGFtIG5ldyBmb3IgTFRQLgo+ICAgICAgICAg
-PiB3aGVuIGkgYW0gdHJ5aW5nIHRvIHJ1biAibWFrZSIgYW5kICJtYWtlIGluc3RhbGwiLCBpdHMK
-PiAgICAgICAgIGdpdmluZyBtZSAyCj4gICAgICAgICA+IGVycm9yLgo+ICAgICAgICAgPgo+ICAg
-ICAgICAgPiBFbnYgLSBmZWRvcmEgbGludXggKHRyeWluZyBmb3IgaXQpCj4gICAgICAgICA+IG15
-IGx0cCBmb2xkZXIgaXMgYXQgL3Vzci9sdHAvbHRwLXl5eXltbWRkCj4gICAgICAgICA+Cj4gICAg
-ICAgICA+IFBsZWFzZSB0ZWxsIG1lLCBhbSBJIHN0YXJ0aW5nIGF0IHdyb25nIHdheT8KPiAgICAg
-ICAgIAo+ICAgICAgICAgCj4gICAgICAgICBQbGVhc2Ugc2VlIHRoZSBsdHAtZnVsbCovSU5TVEFM
-TCBhbmQgbHRwLWZ1bGwqL1JFQURNRSBmaWxlcwo+ICAgICAgICAgZm9yIGV4YWN0Cj4gICAgICAg
-ICBzdGVwcyB0byBidWlsZCwgaW5zdGFsbCBhbmQgcnVuIGx0cC4gSG9wZSB0aGF0IGhlbHBzLgo+
-ICAgICAgICAgCj4gICAgICAgICBSZWdhcmRzLS0KPiAgICAgICAgIFN1YnJhdGEKPiAgICAgICAg
-IAo+ICAgICAgICAgPgo+ICAgICAgICAgPgo+ICAgICAgICAgPiBSZWdhcmRzLAo+ICAgICAgICAg
-PiBEaXZ5YQo+ICAgICAgICAgCj4gCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlz
-dApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
-ZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+>On Fri, 2009-06-12 at 08:37 +0200, Gerd Hoffmann wrote:
+>On 06/12/09 04:53, Subrata Modak wrote:
+> > Hi Gerd,
+> >
+> > Thanks for writing preadv/pwritev syscalls for linux-2.6.30. We would
+> > like to include your test code (hosted at:
+> > http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=dac1213842f5caf081804a11d87d2a39a21d6f55) to be included in our Linux Test Project (http://ltp.sf.net) under GPLv2.
+> 
+> Fine with me.
+> 
+> Note that there was an ABI change 
+> (http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=601cc11d054ae4b5e9b5babec3d8e4667a2cb9b5), 
+> so the test program needs adaptions to the final ABI present in 2.6.30.
+
+Ok. Great. Here is the patch which will integrate your test to LTP.
+
+Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>
+Original-author-and-copyright-holder: Gerd Hoffmann <kraxel@redhat.com>
+
+To: Gerd Hoffmann <kraxel@redhat.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: ltp-list <ltp-list@lists.sf.net>
+---
+
+--- ltp-full-20090531.orig/testcases/kernel/syscalls/preadv/Makefile	1970-01-01 05:30:00.000000000 +0530
++++ ltp-full-20090531/testcases/kernel/syscalls/preadv/Makefile	2009-06-12 18:31:37.000000000 +0530
+@@ -0,0 +1,31 @@
++#
++#  Copyright (c) International Business Machines  Corp., 2009
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++CFLAGS += -I../../../../include -Wall -O2
++LDLIBS += -L../../../../lib -lltp
++
++SRCS    = $(wildcard *.c)
++TARGETS += $(patsubst %.c,%,$(SRCS))
++
++all: $(TARGETS)
++
++install:
++	@set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i ; done
++
++clean:
++	rm -f $(TARGETS)
+--- ltp-full-20090531.orig/testcases/kernel/syscalls/preadv/preadv01.c	1970-01-01 05:30:00.000000000 +0530
++++ ltp-full-20090531/testcases/kernel/syscalls/preadv/preadv01.c	2009-06-12 18:40:26.000000000 +0530
+@@ -0,0 +1,113 @@
++/*
++ * Simple test for preadv() and pwritev() syscall introduced in linux-2.6.30
++ *
++ * (c) 2008 Gerd Hoffmann <kraxel@redhat.com>
++ *
++ * Reference: http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=dac1213842f5caf081804a11d87d2a39a21d6f55
++ * Reference: http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=601cc11d054ae4b5e9b5babec3d8e4667a2cb9b5
++ * Reference: http://kernelnewbies.org/LinuxChanges#head-0bf8c8dcb325b9a214be39679c3e2bcca995d05b
++ * Reference: http://marc.info/?t=124477542000004&r=1&w=2&n=2
++ */
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <errno.h>
++#include <inttypes.h>
++#include <sys/uio.h>
++
++/* ----------------------------------------------------------------- */
++/* syscall windup                                                    */
++
++#include <sys/syscall.h>
++
++#ifndef __NR_preadv
++	#ifdef __i386__
++		#define __NR_preadv  333
++		#define __NR_pwritev 334
++	#endif
++	#ifdef __x86_64__
++		#define __NR_preadv  295
++		#define __NR_pwritev 296
++	#endif
++#endif
++
++char *TCID = "preadv01";     /* test program identifier*/
++
++static ssize_t preadv(int fd, const struct iovec *iov, int iovcnt, off_t offset)
++{
++    uint32_t pos_high = (offset >> 32) & 0xffffffff;
++    uint32_t pos_low  =  offset        & 0xffffffff;
++
++    return syscall(__NR_preadv, fd, iov, iovcnt, pos_high, pos_low);
++}
++
++static ssize_t pwritev(int fd, const struct iovec *iov, int iovcnt, off_t offset)
++{
++    uint32_t pos_high = (offset >> 32) & 0xffffffff;
++    uint32_t pos_low  =  offset        & 0xffffffff;
++
++    return syscall(__NR_pwritev, fd, iov, iovcnt, pos_high, pos_low);
++}
++
++/* ----------------------------------------------------------------- */
++/* demo/test app                                                     */
++
++static char filename[] = "/tmp/preadv-XXXXXX";
++static char outbuf[11] = "0123456789";
++static char inbuf[11]  = "----------";
++
++static struct iovec ovec[2] = {{
++        .iov_base = outbuf + 5,
++        .iov_len  = 5,
++    },{
++        .iov_base = outbuf + 0,
++        .iov_len  = 5,
++    }};
++
++static struct iovec ivec[3] = {{
++        .iov_base = inbuf + 6,
++        .iov_len  = 2,
++    },{
++        .iov_base = inbuf + 4,
++        .iov_len  = 2,
++    },{
++        .iov_base = inbuf + 2,
++        .iov_len  = 2,
++    }};
++
++void cleanup(void)
++{
++    unlink(filename);
++}
++
++int main(int argc, char **argv)
++{
++    int fd, rc;
++
++    fd = mkstemp(filename);
++    if (-1 == fd) {
++        perror("mkstemp");
++        exit(1);
++    }
++    atexit(cleanup);
++
++    /* write to file: "56789-01234" */
++    rc = pwritev(fd, ovec, 2, 0);
++    if (rc < 0) {
++        perror("pwritev");
++        exit(1);
++    }
++
++    /* read from file: "78-90-12" */
++    rc = preadv(fd, ivec, 3, 2);
++    if (rc < 0) {
++        perror("preadv");
++        exit(1);
++    }
++
++    printf("result  : %s\n", inbuf);
++    printf("expected: %s\n", "--129078--");
++    exit(0);
++}
++
+--- ltp-full-20090531.orig/runtest/syscalls	2009-06-12 18:30:08.000000000 +0530
++++ ltp-full-20090531/runtest/syscalls	2009-06-12 18:41:36.000000000 +0530
+@@ -724,6 +724,8 @@ pread02_64 pread02_64
+ pread03 pread03
+ pread03_64 pread03_64
+ 
++preadv01 preadv01
++
+ profil01 profil01
+ 
+ pselect01 pselect01
+
+---
+Regards--
+Subrata
+
+> 
+> cheers,
+>    Gerd
+> 
+
+------------------------------------------------------------------------------
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
