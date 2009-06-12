@@ -1,18 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <ningyl@inspur.com>) id 1MCOwm-00028m-12
-	for ltp-list@lists.sourceforge.net; Fri, 05 Jun 2009 02:14:20 +0000
-Received: from [218.57.135.52] (helo=mail.langchao.com)
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MCOwb-0008RF-9I
-	for ltp-list@lists.sourceforge.net; Fri, 05 Jun 2009 02:14:14 +0000
-From: =?gb2312?B?xP7RxcD7?= <ningyl@inspur.com>
-Date: Fri, 5 Jun 2009 09:41:45 +0800
-Message-ID: <282BC5610E534861978C9AA8A382DE52@BJningyl>
-MIME-Version: 1.0
-Subject: [LTP] for kernel 2.6.28
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <maknayak@in.ibm.com>) id 1MFAus-0007FJ-Qb
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 17:51:50 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MFAuo-0004W2-VE
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 17:51:50 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e3.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5CHkma6017499
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Jun 2009 13:46:48 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5CHphio243206
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Jun 2009 13:51:43 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5CHphp4024476
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Jun 2009 13:51:43 -0400
+From: Manas Kumar Nayak <maknayak@in.ibm.com>
+Date: Fri, 12 Jun 2009 23:21:33 +0530
+Message-Id: <20090612175132.26047.54266.sendpatchset@subratamodak.linux.ibm.com>
+Subject: [LTP] [PATCH 00/05] [3rd Bunch] Port Crackerjack Syscall
+	tests(missing) to LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,163 +33,98 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5407282577092952666=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-This is a multi-part message in MIME format.
-
---===============5407282577092952666==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0005_01C9E5C1.D73B5B10"
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0005_01C9E5C1.D73B5B10
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: quoted-printable
-
-Hi=A3=AC
-
-I have been testing the linux system with the kernel 2.6.28 by
-ltp-full-20090131. But the problem is that part of the testcases is not
-suite for the kernel 2.6.28. As the result, it causes that some cases =
-FAILED
-as unexpected. Is there any distribution that is fit for kernel 2.6.28, =
-the
-platform is ia64
-
-=20
-
-Looking for forward to you!
-
-Thanks!
-
-
-------=_NextPart_000_0005_01C9E5C1.D73B5B10
-Content-Type: text/html;
-	charset="gb2312"
-Content-Transfer-Encoding: quoted-printable
-
-<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
-
-<head>
-<meta http-equiv=3DContent-Type content=3D"text/html; charset=3Dgb2312">
-<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
-<style>
-<!--
- /* Font Definitions */
- @font-face
-	{font-family:=CB=CE=CC=E5;
-	panose-1:2 1 6 0 3 1 1 1 1 1;}
-@font-face
-	{font-family:"\@=CB=CE=CC=E5";
-	panose-1:2 1 6 0 3 1 1 1 1 1;}
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0cm;
-	margin-bottom:.0001pt;
-	text-align:justify;
-	text-justify:inter-ideograph;
-	font-size:10.5pt;
-	font-family:"Times New Roman";}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{mso-style-type:personal-compose;
-	font-family:Arial;
-	color:windowtext;}
- /* Page Definitions */
- @page Section1
-	{size:595.3pt 841.9pt;
-	margin:72.0pt 90.0pt 72.0pt 90.0pt;
-	layout-grid:15.6pt;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-
-</head>
-
-<body lang=3DZH-CN link=3Dblue vlink=3Dpurple =
-style=3D'text-justify-trim:punctuation'>
-
-<div class=3DSection1 style=3D'layout-grid:15.6pt'>
-
-<p class=3DMsoNormal><font size=3D1 face=3DArial><span lang=3DEN-US =
-style=3D'font-size:
-9.0pt;font-family:Arial'>Hi</span></font><font size=3D1 =
-face=3D=CB=CE=CC=E5><span
-style=3D'font-size:9.0pt;font-family:=CB=CE=CC=E5'>=A3=AC</span></font><f=
-ont size=3D1 face=3DArial><span
-lang=3DEN-US =
-style=3D'font-size:9.0pt;font-family:Arial'><o:p></o:p></span></font></p>=
-
-
-<p class=3DMsoNormal><font size=3D1 face=3DArial><span lang=3DEN-US =
-style=3D'font-size:
-9.0pt;font-family:Arial'>I have been testing the linux system with the =
-kernel
-2.6.28 by ltp-full-20090131. But the problem is that part of the =
-testcases is not
-suite for the kernel 2.6.28. As the result, it causes that some cases =
-FAILED as
-unexpected. Is there any distribution that is fit for kernel 2.6.28, the
-platform is ia64<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D1 face=3DArial><span lang=3DEN-US =
-style=3D'font-size:
-9.0pt;font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D1 face=3DArial><span lang=3DEN-US =
-style=3D'font-size:
-9.0pt;font-family:Arial'>Looking for forward to =
-you!<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D1 face=3DArial><span lang=3DEN-US =
-style=3D'font-size:
-9.0pt;font-family:Arial'>Thanks!<o:p></o:p></span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------=_NextPart_000_0005_01C9E5C1.D73B5B10--
-
-
-
---===============5407282577092952666==
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
+Cc: Manas Kumar Nayak <maknayak@in.ibm.com>
+
+Hi,
+
+As promised earlier, here lies the final bunch of test cases from
+Crackerjack. I would however keep contributing new tests to LTP.
+
+>On Wed, 2009-05-27 at 15:36 +0530, Manas Kumar Nayak wrote:
+>Hi,
+> 
+> >On Tue, 2009-05-19 at 00:39 +0530, Manas Kumar Nayak wrote:
+> >Hi,
+> > 
+> > I have ported the following tests from Crackerjack to LTP.
+> > Kindly include them to LTP:
+> > 
+> > [PATCH 01/21] Add add_key01 test for add_key syscall
+> > [PATCH 02/21] Add add_key02 test for add_key syscall
+> > [PATCH 03/21] Add bdflush01 test for bdflush syscall
+> > [PATCH 04/21] Add exit_group01 test for exit_group syscall
+> > [PATCH 05/21] Add keyctl01 test for keyctl syscall
+> > [PATCH 06/21] Add newuname01 test for newuname syscall
+> > [PATCH 07/21] Add rt_sigaction01 test for rt_sigaction syscall
+> > [PATCH 08/21] Add rt_sigprocmask01 test for rt_sigprocmask syscall
+> > [PATCH 09/21] Add rt_sigprocmask02 test for rt_sigprocmask syscall
+> > [PATCH 10/21] Add rt_sigqueueinfo01 test for rt_sigqueueinfo syscall
+> > [PATCH 11/21] Add rt_sigsuspend01 test for rt_sigsuspend syscall
+> > [PATCH 12/21] Add set_thread_area01 test for set_thread_area syscall
+> > [PATCH 13/21] Add set_thread_area02 test for set_thread_area syscall
+> > [PATCH 14/21] Add set_tid_address01 test for set_tid_address syscall
+> > [PATCH 15/21] Add sgetmask01 test for sgetmask syscall
+> > [PATCH 16/21] Add sigreturn01 test for sigreturn syscall
+> > [PATCH 17/21] Add ssetmask01 test for ssetmask syscall
+> > [PATCH 18/21] Add timer_getoverrun01 test for timer_getoverrun01 syscall
+> > [PATCH 19/21] Add timer_gettime01 test for timer_gettime syscall
+> > [PATCH 20/21] Add tkill01 test for tkill syscall
+> > [PATCH 21/21] Add tkill02 test for tkill syscall
+> > 
+> > Todo:
+> > 	1) Port the Remaining ones (next week),
+> 
+> As promised earlier, here remains the 2nd Bunch of tests ported
+> from Crackerjack to LTP:
+> 
+> __001_Add_Utility_Headers_for_these_set_of_tests.patch
+> __002_Add_get_mempolicy01_test_for_get_mempolicy_syscall.patch
+> __003_Add_clock_getres01_test_for_clock_getres_syscall.patch
+> __004_Add_clock_nanosleep01_test_for_clock_nanosleep_syscall.patch
+> __005_Add_mq_notify01_test_for_mq_notify_syscall.patch
+> __006_Add_ppoll01_test_for_ppoll_syscall.patch
+> __007_Add_mq_open01_test_for_mq_open_syscall.patch
+> __008_Add_mq_timedreceive01_test_for_mq_timedreceive_syscall.patch
+> __009_Add_utimes01_test_for_utimes_syscall.patch
+> __010_Add_mq_unlink01_test_for_mq_unlink_syscall.patch
+> __011_Add_mq_timedsend01_test_for_mq_timedsend_syscall.patch
+> __012_Add_unshare01_test_for_unshare_syscall.patch
+> __013_Add_unshare02_test_for_unshare_syscall.patch
+> 
+> Still TODO:
+> -> The remaining testcases will be ported soon.
+
+[PATCH 00/05] [3rd Bunch] Port Crackerjack Syscall tests(missing) to LTP
+[PATCH 01/05] Add/Port mbind01 test for mbind() syscall
+[PATCH 02/05] Add/Port sched_getaffinity01 test for sched_getaffinity() syscall
+[PATCH 03/05] Add/Port waitid01 test for waitid() syscall
+[PATCH 04/05] Add/Port waitid02 test for waitid() syscall
+[PATCH 05/05] Add/Port quotactl01 test for quotactl() syscall
+
+Regards--
+Manas
+
+> 
+> Regards--
+> Manas
+> 
+> > 
+> > Regards--
+> > Manas
+> > 
 
 ------------------------------------------------------------------------------
-OpenSolaris 2009.06 is a cutting edge operating system for enterprises 
-looking to deploy the next generation of Solaris that includes the latest 
-innovations from Sun and the OpenSource community. Download a copy and 
-enjoy capabilities such as Networking, Storage and Virtualization. 
-Go to: http://p.sf.net/sfu/opensolaris-get
---===============5407282577092952666==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5407282577092952666==--
-
-
