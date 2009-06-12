@@ -2,17 +2,30 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MEwtq-0007vP-KN
-	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 02:53:50 +0000
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MF1Do-0002bn-Kw
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 07:30:44 +0000
 Received: from e4.ny.us.ibm.com ([32.97.182.144])
 	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MEwtp-0004Nd-3i
-	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 02:53:50 +0000
+	(Exim 4.69) id 1MF1Cs-0006kY-UX
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 07:30:44 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e4.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5C7OtXo006277
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Jun 2009 03:24:55 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5C7TjP0258148
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Jun 2009 03:29:45 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5C7RUme000730
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Jun 2009 03:27:30 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Fri, 12 Jun 2009 08:23:36 +0530
-Message-Id: <1244775216.4982.2.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <49b7c2350906120020w1e321f71ubb1400358e68e5e8@mail.gmail.com>
+References: <49b7c2350906120020w1e321f71ubb1400358e68e5e8@mail.gmail.com>
+Date: Fri, 12 Jun 2009 12:59:41 +0530
+Message-Id: <1244791782.5234.0.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: [LTP] [002][RFC] [TESTING linux-2.6.30] preadv/pwritev syscalls
+Subject: Re: [LTP] Subscribes to LTP Mailling list
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -26,21 +39,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Gerd Hoffmann <kraxel@redhat.com>
-Cc: ltp-list <ltp-list@lists.sf.net>, Ralf Baechle <ralf@linux-mips.org>, Al Viro <viro@zeniv.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>
+To: GeunSik Lim <leemgs1@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi Gerd,
+On Fri, 2009-06-12 at 16:20 +0900, GeunSik Lim wrote:
+> I want to subscribes to LTP Mailling list
 
-Thanks for writing preadv/pwritev syscalls for linux-2.6.30. We would
-like to include your test code (hosted at:
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=dac1213842f5caf081804a11d87d2a39a21d6f55) to be included in our Linux Test Project (http://ltp.sf.net) under GPLv2.
+Here is the link to do so:
 
-If you do not have any objection in including the test code, would you
-mind replying to this mail with your consent/Sign-off ?
+http://sourceforge.net/mail/?group_id=3382
 
 Regards--
 Subrata
 
+> 
 
 
 ------------------------------------------------------------------------------
