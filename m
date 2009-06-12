@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MJpmf-0002nG-Ka
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 14:18:37 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MJpmd-0008Ft-9c
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 14:18:37 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Thu, 25 Jun 2009 10:18:29 -0400
-References: <A850D9FA-3282-440E-8B85-4A5BC5B4B067@gmail.com>
-	<1245921038.5542.46.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1245921038.5542.46.camel@subratamodak.linux.ibm.com>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <leemgs1@gmail.com>) id 1MF1Fc-0007fq-CX
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 07:32:36 +0000
+Received: from mail-gx0-f207.google.com ([209.85.217.207])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MF1Ee-0007VH-9n
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 07:32:36 +0000
+Received: by gxk3 with SMTP id 3so8485479gxk.10
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 12 Jun 2009 00:31:35 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <200906251018.30773.vapier@gentoo.org>
-Subject: Re: [LTP] Goals and milestones
+In-Reply-To: <1244791782.5234.0.camel@subratamodak.linux.ibm.com>
+References: <49b7c2350906120020w1e321f71ubb1400358e68e5e8@mail.gmail.com>
+	<1244791782.5234.0.camel@subratamodak.linux.ibm.com>
+Date: Fri, 12 Jun 2009 16:31:35 +0900
+Message-ID: <49b7c2350906120031y73294776g6d2b535383ec91f7@mail.gmail.com>
+From: GeunSik Lim <leemgs1@gmail.com>
+Subject: Re: [LTP] Subscribes to LTP Mailling list
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,90 +28,43 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4065817938450636772=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: subrata@linux.vnet.ibm.com
-Cc: LTP list <ltp-list@lists.sourceforge.net>, Nathan Straz <nstraz@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
---===============4065817938450636772==
-Content-Type: multipart/signed; boundary="nextPart3759010.zUBaQH1gDW";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart3759010.zUBaQH1gDW
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-On Thursday 25 June 2009 05:10:38 Subrata Modak wrote:
-> Great to hear back from you. Your plan looks good to me. However, i
-> would like to complete the Makefiles stuff this year itself. I know its
-> quite tedious. May be i would also pitch in to help you post my Linux
-> Symposium 2009 in July 2009.
+On Fri, Jun 12, 2009 at 4:29 PM, Subrata
+Modak<subrata@linux.vnet.ibm.com> wrote:
+> On Fri, 2009-06-12 at 16:20 +0900, GeunSik Lim wrote:
+>> I want to subscribes to LTP Mailling list
 >
-> On Wed, 2009-06-24 at 02:38 -0700, Garrett Cooper wrote:
-> > Hi Subrata,
-> >      After being away from FOSS for a while I'm going to jump back in
-> > a bit to get some work done in my personal time that aligns itself
-> > with deliverables at Cisco. Here's the breakdown in terms of priorities:
-> > 1. Ltp crosscompile makefile push completion - need this to resolve
-> > several issues with the current hacked make system and expedite
-> > upgrades on our end. Hard goal: before July snapshot is released
-> > (several items are dependent on a functioning upgrade). I will commit
-> > in small, discrete patches to get the work done quicker, but I'll need
-> > a makefile reviewer.
+> Here is the link to do so:
 >
-> Nathan has already been helping us. So, we would get help from him and
-> Mike as well. I need to bring back Mike as well for more LTP
-> involvement. Mike, what do you say ;-)
+> http://sourceforge.net/mail/?group_id=3382
 
-sure, if the patches get posted to the list and i dont miss them ...
--mike
-
---nextPart3759010.zUBaQH1gDW
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJKQ4c2AAoJEEFjO5/oN/WBQK4QAJNvR/H0Mk3qjyQXLsKIl0hB
-jLl2cIOVnvzinvBGpi9Wzdo+Xrs6/z2EKD5aNKh7anXRkVzWmGWRKGmWf6CS6FvC
-xIPsCLD9ike5eFNx8F30M7HdN+3xk8IIqp0thPSM7z8a7O0wGvBR6m2acAbtOhj/
-HMjYJUFiN9XGlsDiqj4lqvZvd484m2OA/brnW8MASydfc9sMiAUQ0e6I16NiKSuT
-2S2uVFQtrnHdyh9cful/zwdJY4xJceVjiPYJylyXHQldBDEl51Rv9GnehGeAl0ze
-UTBY3xEXNEDMFF/PacGwTEJqXkLtjUJnMnf076RyXDEc4fRbd7S2OLlpsTIWjD9M
-sdfS+VN0mny7nMCR7eqcRItqCW/3lt5UDHW38YrO3FMLFk0S5kC6kBootYuKXXJW
-5/weANdgmpRushCtn8oEgbLyo+sv/eCyCJbYvYN16t4qcppauTuUYgca6qqT66b4
-ual+cDHmZLX6jyR6PHrukKr4iPmJ0UrsA9eHPvu41e2CQmoGolRL51vF21X7yHUV
-OL0mLQN+Ph89JdVgeGen9m7+eKWPkR9KUDubnDOzu3/Afd0RaFjkmNWpJJ1ePorh
-wDq7YDe/MCBq9z3kKrjhAygP4zSdpl3IYffocuTxBKUWsyqhmomja6FoiE7EUT0D
-Of+bmsRTrJ63gcyAdXED
-=rs7s
------END PGP SIGNATURE-----
-
---nextPart3759010.zUBaQH1gDW--
+Thank you for your explanation.
 
 
---===============4065817938450636772==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Regards,
+GeunSik Lim ( Samsung Electronics )
+Blog : http://blog.naver.com/invain/
+e-Mail: geunsik.lim@samsung.com
+           leemgs@gmail.com , leemgs1@gmail.com
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
 
 ------------------------------------------------------------------------------
-
---===============4065817938450636772==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4065817938450636772==--
-
