@@ -1,36 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1MGbOP-0000PW-BC
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 16:20:13 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MF1Jq-0004c3-N1
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 07:36:58 +0000
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
 	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MGbOH-0005SQ-9g
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 16:20:06 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e39.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5GGFvfq001575
-	for <ltp-list@lists.sourceforge.net>; Tue, 16 Jun 2009 10:15:57 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5GGJn4O183084
-	for <ltp-list@lists.sourceforge.net>; Tue, 16 Jun 2009 10:19:52 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5GGJmgw021626
-	for <ltp-list@lists.sourceforge.net>; Tue, 16 Jun 2009 10:19:48 -0600
-Date: Tue, 16 Jun 2009 11:19:49 -0500
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20090616161949.GA32566@us.ibm.com>
-References: <49b7c2350906151813r31a9fe24icee5b1244f560f7a@mail.gmail.com>
-	<49b7c2350906151857yf972a90m78448ca70a89c468@mail.gmail.com>
-	<20090616042450.GA26037@us.ibm.com>
-	<49b7c2350906152243p4c970b1di74cc62badc85a2e7@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <49b7c2350906152243p4c970b1di74cc62badc85a2e7@mail.gmail.com>
-Subject: Re: [LTP] Report - make error of ltp-full-20090531.tgz
+	(Exim 4.69) id 1MF1IJ-0000ta-C2
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 07:36:58 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <49b7c2350906120029j6f6290b3h7dfb58bd7251fa93@mail.gmail.com>
+References: <49b7c2350906120029j6f6290b3h7dfb58bd7251fa93@mail.gmail.com>
+Date: Fri, 12 Jun 2009 13:05:19 +0530
+Message-Id: <1244792119.5234.3.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [Ltp-cvs] I met "You can specify it with option -b"
+	error	message
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,70 +26,109 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: GeunSik Lim <leemgs1@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Steve Grubb <sgrubb@redhat.com>, Andrew Morgan <morgan@kernel.org>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-Quoting GeunSik Lim (leemgs1@gmail.com):
-> On Tue, Jun 16, 2009 at 1:24 PM, Serge E. Hallyn<serue@us.ibm.com> wrote:
-> > Quoting GeunSik Lim (leemgs1@gmail.com):
-> >> I made patch file to solve below problem.
-> >
-> > well, NAK to the patch, but this is a real problem that needs to
-> > be fixed. =A0I'll take a look in the morning, but Andrew do you know
-> > offhand what the problem is with capability.h (in F11 I gather) that
-> > would cause:
-> Serge E. Hallyn,
-> =
-
-> Thanks for your opinion about  this report that I posted.
-> Yes.  My below patch is private patch to solve  make error on Fedora 11
-> distribution ( fedora11 2.6.29.4-167.fc11.i686).
-> This means that my patch is not official patch file as you think.
-> =
-
-> For reference,
->  I used libcap 2.16 version
-> at the  http://ftp.kernel.org/pub/linux/libs/security/linux-privs/kernel-=
-2.6/  .
-
-Are you sure?
-
-With the libcap-2.16 from kernel.org, /usr/include/sys/capability.h
-#includes <sys/types.h>.  The version that comes with Fedora 11's
-libcap-devel-2.16-2.fc11.i586 #includes <linux/types.h> instead.
-When I just fix that, my F11 system compiles cap_bound.c just fine.
-
-Steve, do you know why that change is made?
-
-It then moves on to the next F11-specific compile failure, namely
-LTP's <test.h> ends up #including /usr/include/asm/sigcontext.h
-causing the compile errors bc of undefined __u64 and __u32,
-which I can fix by adding:
-
-#define __u64 u_int64_t
-#define __u32 u_int32_t
-
-to <sys/types.h>.  So perhaps it would be prudent to add them
-to the top of LTP's test.h?
-
-It woudl be better to figure out why that's happening in the
-first place...
-
-thanks,
--serge
-
----------------------------------------------------------------------------=
----
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing =
-
-server and web deployment.
-http://p.sf.net/sfu/businessobjects
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+VGhpcyBpcyBub3QgdGhlIGNvcnJlY3QgbWFpbGluZyBsaXN0LiBNYWlsIHRvIGx0cC1saXN0IGFu
+ZCBub3QgdG8KbHRwLWN2cy4KClJlZ2FyZHMtLQpTdWJyYXRhCgpPbiBGcmksIDIwMDktMDYtMTIg
+YXQgMTY6MjkgKzA5MDAsIEdldW5TaWsgTGltIHdyb3RlOgo+IFVtLi4KPiAKPiBJIG1ldCAiWW91
+IGNhbiBzcGVjaWZ5IGl0IHdpdGggb3B0aW9uIC1iIiBlcnJvciBtZXNzYWdlIHdoZW4gaSB0ZXN0
+ZWQKPiBteSBmZWRvcmEgc3lzdGVtIHdpdGgKPiBMVFAtMjAwOTA1MzEgdmVyc2lvbi4KPiAKPiAK
+PiBCZWxvd3MgaXMgc2NyZW5zaG90Li4KPiBBbnlvbmUgSGVscCBtZSBhYm91dCB0aGlzIHByb2Js
+ZW1zPwo+IAo+IAo+IAo+IExpbnV4IGZlZG9yYTkgMi42LjI5LTMuZmMxMC5pNjg2ICMxIFNNUCBU
+dWUgTWFyIDI0IDAxOjU2OjI0IEVEVCAyMDA5Cj4gaTY4NiBpNjg2IGkzODYgR05VL0xpbnV4Cj4g
+Cj4gR251IEMgICAgICAgICAgICAgICAgICBnY2MgKEdDQykgNC4zLjAgMjAwODA0MjggKFJlZCBI
+YXQgNC4zLjAtOCkKPiBHbnUgbWFrZSAgICAgICAgICAgICAgIDMuODEKPiB1dGlsLWxpbnV4ICAg
+ICAgICAgICAgIG5nIDIuMTMuMSkKPiBtb3VudCAgICAgICAgICAgICAgICAgIG5nIDIuMTMuMSkK
+PiBtb2R1dGlscyAgICAgICAgICAgICAgIDMuNAo+IGUyZnNwcm9ncyAgICAgICAgICAgICAgMS40
+MS4zCj4gUFBQICAgICAgICAgICAgICAgICAgICAyLjQuNAo+IGlzZG40ay11dGlscyAgICAgICAg
+ICAgMy45Cj4gTGludXggQyBMaWJyYXJ5ICAgICAgICA+IGxpYmMuMi44Cj4gRHluYW1pYyBsaW5r
+ZXIgKGxkZCkgICAyLjgKPiBQcm9jcHMgICAgICAgICAgICAgICAgIDMuMi43Cj4gTmV0LXRvb2xz
+ICAgICAgICAgICAgICAxLjYwCj4gS2JkICAgICAgICAgICAgICAgICAgICAxLjEyCj4gU2gtdXRp
+bHMgICAgICAgICAgICAgICA2LjEwCj4gTW9kdWxlcyBMb2FkZWQgICAgICAgICB2Ym94bmV0Zmx0
+IHZib3hkcnYgdHVuIGlwdF9NQVNRVUVSQURFCj4gaXB0YWJsZV9uYXQgbmZfbmF0IGJyaWRnZSBz
+dHAgbmZzZCBsb2NrZCBuZnNfYWNsIGF1dGhfcnBjZ3NzIGV4cG9ydGZzCj4gaWJfaXNlciByZG1h
+X2NtIGliX2NtIGl3X2NtIGliX3NhIGliX21hZCBpYl9jb3JlIGliX2FkZHIgaXNjc2lfdGNwCj4g
+bGliaXNjc2lfdGNwIGxpYmlzY3NpIHNjc2lfdHJhbnNwb3J0X2lzY3NpIGZ1c2Ugc3VucnBjIGlw
+djYKPiBkbV9tdWx0aXBhdGggc25kX2hkYV9jb2RlY19yZWFsdGVrIHNuZF9oZGFfaW50ZWwgc25k
+X2hkYV9jb2RlYwo+IHNuZF9od2RlcCBzbmRfc2VxX2R1bW15IHNuZF9zZXFfb3NzIHNuZF9zZXFf
+bWlkaV9ldmVudCBzbmRfc2VxIG52aWRpYQo+IHNuZF9zZXFfZGV2aWNlIHNuZF9wY21fb3NzIHNu
+ZF9taXhlcl9vc3Mgc25kX3BjbSB0cG1faW5maW5lb24gdHBtIGUxMDAKPiBwcGRldiBzbmRfdGlt
+ZXIgbWlpIGUxMDAwZSBwY3Nwa3Igc25kIGkyY19pODAxIHRwbV9iaW9zIGlUQ09fd2R0Cj4gcGFy
+cG9ydF9wYyBzb3VuZGNvcmUgaVRDT192ZW5kb3Jfc3VwcG9ydCBwYXJwb3J0IGkyY19jb3JlCj4g
+c25kX3BhZ2VfYWxsb2MgcGF0YV9hY3BpIGF0YV9nZW5lcmljCj4gCj4gZnJlZSByZXBvcnRzOgo+
+ICAgICAgICAgICAgICB0b3RhbCAgICAgICB1c2VkICAgICAgIGZyZWUgICAgIHNoYXJlZCAgICBi
+dWZmZXJzICAgICBjYWNoZWQKPiBNZW06ICAgICAgIDMwODA3MzIgICAgMjU2NzY5MiAgICAgNTEz
+MDQwICAgICAgICAgIDAgICAgIDYxMDQ1NiAgICAgNzc3MjY0Cj4gLS8rIGJ1ZmZlcnMvY2FjaGU6
+ICAgIDExNzk5NzIgICAgMTkwMDc2MAo+IFN3YXA6ICAgICAgICAgICAgMCAgICAgICAgICAwICAg
+ICAgICAgIDAKPiAKPiAvcHJvYy9jcHVpbmZvCj4gcHJvY2Vzc29yCTogMAo+IHZlbmRvcl9pZAk6
+IEdlbnVpbmVJbnRlbAo+IGNwdSBmYW1pbHkJOiA2Cj4gbW9kZWwJCTogMjMKPiBtb2RlbCBuYW1l
+CTogSW50ZWwoUikgQ29yZShUTSkyIFF1YWQgIENQVSAgIFE5MzAwICBAIDIuNTBHSHoKPiBzdGVw
+cGluZwk6IDcKPiBjcHUgTUh6CQk6IDI0OTMuNTkxCj4gY2FjaGUgc2l6ZQk6IDMwNzIgS0IKPiBw
+aHlzaWNhbCBpZAk6IDAKPiBzaWJsaW5ncwk6IDQKPiBjb3JlIGlkCQk6IDAKPiBjcHUgY29yZXMJ
+OiA0Cj4gYXBpY2lkCQk6IDAKPiBpbml0aWFsIGFwaWNpZAk6IDAKPiBmZGl2X2J1Zwk6IG5vCj4g
+aGx0X2J1ZwkJOiBubwo+IGYwMGZfYnVnCTogbm8KPiBjb21hX2J1Zwk6IG5vCj4gZnB1CQk6IHll
+cwo+IGZwdV9leGNlcHRpb24JOiB5ZXMKPiBjcHVpZCBsZXZlbAk6IDEwCj4gd3AJCTogeWVzCj4g
+ZmxhZ3MJCTogZnB1IHZtZSBkZSBwc2UgdHNjIG1zciBwYWUgbWNlIGN4OCBhcGljIG10cnIgcGdl
+IG1jYSBjbW92IHBhdAo+IHBzZTM2IGNsZmx1c2ggZHRzIGFjcGkgbW14IGZ4c3Igc3NlIHNzZTIg
+c3MgaHQgdG0gcGJlIGxtIGNvbnN0YW50X3RzYwo+IGFyY2hfcGVyZm1vbiBwZWJzIGJ0cyBwbmkg
+ZHRlczY0IG1vbml0b3IgZHNfY3BsIHZteCBzbXggZXN0IHRtMiBzc3NlMwo+IGN4MTYgeHRwciBw
+ZGNtIHNzZTRfMSBsYWhmX2xtIHRwcl9zaGFkb3cgdm5taSBmbGV4cHJpb3JpdHkKPiBib2dvbWlw
+cwk6IDQ5ODcuMTgKPiBjbGZsdXNoIHNpemUJOiA2NAo+IHBvd2VyIG1hbmFnZW1lbnQ6Cj4gCj4g
+cHJvY2Vzc29yCTogMQo+IHZlbmRvcl9pZAk6IEdlbnVpbmVJbnRlbAo+IGNwdSBmYW1pbHkJOiA2
+Cj4gbW9kZWwJCTogMjMKPiBtb2RlbCBuYW1lCTogSW50ZWwoUikgQ29yZShUTSkyIFF1YWQgIENQ
+VSAgIFE5MzAwICBAIDIuNTBHSHoKPiBzdGVwcGluZwk6IDcKPiBjcHUgTUh6CQk6IDI0OTMuNTkx
+Cj4gY2FjaGUgc2l6ZQk6IDMwNzIgS0IKPiBwaHlzaWNhbCBpZAk6IDAKPiBzaWJsaW5ncwk6IDQK
+PiBjb3JlIGlkCQk6IDEKPiBjcHUgY29yZXMJOiA0Cj4gYXBpY2lkCQk6IDEKPiBpbml0aWFsIGFw
+aWNpZAk6IDEKPiBmZGl2X2J1Zwk6IG5vCj4gaGx0X2J1ZwkJOiBubwo+IGYwMGZfYnVnCTogbm8K
+PiBjb21hX2J1Zwk6IG5vCj4gZnB1CQk6IHllcwo+IGZwdV9leGNlcHRpb24JOiB5ZXMKPiBjcHVp
+ZCBsZXZlbAk6IDEwCj4gd3AJCTogeWVzCj4gZmxhZ3MJCTogZnB1IHZtZSBkZSBwc2UgdHNjIG1z
+ciBwYWUgbWNlIGN4OCBhcGljIG10cnIgcGdlIG1jYSBjbW92IHBhdAo+IHBzZTM2IGNsZmx1c2gg
+ZHRzIGFjcGkgbW14IGZ4c3Igc3NlIHNzZTIgc3MgaHQgdG0gcGJlIGxtIGNvbnN0YW50X3RzYwo+
+IGFyY2hfcGVyZm1vbiBwZWJzIGJ0cyBwbmkgZHRlczY0IG1vbml0b3IgZHNfY3BsIHZteCBzbXgg
+ZXN0IHRtMiBzc3NlMwo+IGN4MTYgeHRwciBwZGNtIHNzZTRfMSBsYWhmX2xtIHRwcl9zaGFkb3cg
+dm5taSBmbGV4cHJpb3JpdHkKPiBib2dvbWlwcwk6IDQ5ODcuNDgKPiBjbGZsdXNoIHNpemUJOiA2
+NAo+IHBvd2VyIG1hbmFnZW1lbnQ6Cj4gCj4gcHJvY2Vzc29yCTogMgo+IHZlbmRvcl9pZAk6IEdl
+bnVpbmVJbnRlbAo+IGNwdSBmYW1pbHkJOiA2Cj4gbW9kZWwJCTogMjMKPiBtb2RlbCBuYW1lCTog
+SW50ZWwoUikgQ29yZShUTSkyIFF1YWQgIENQVSAgIFE5MzAwICBAIDIuNTBHSHoKPiBzdGVwcGlu
+Zwk6IDcKPiBjcHUgTUh6CQk6IDI0OTMuNTkxCj4gY2FjaGUgc2l6ZQk6IDMwNzIgS0IKPiBwaHlz
+aWNhbCBpZAk6IDAKPiBzaWJsaW5ncwk6IDQKPiBjb3JlIGlkCQk6IDIKPiBjcHUgY29yZXMJOiA0
+Cj4gYXBpY2lkCQk6IDIKPiBpbml0aWFsIGFwaWNpZAk6IDIKPiBmZGl2X2J1Zwk6IG5vCj4gaGx0
+X2J1ZwkJOiBubwo+IGYwMGZfYnVnCTogbm8KPiBjb21hX2J1Zwk6IG5vCj4gZnB1CQk6IHllcwo+
+IGZwdV9leGNlcHRpb24JOiB5ZXMKPiBjcHVpZCBsZXZlbAk6IDEwCj4gd3AJCTogeWVzCj4gZmxh
+Z3MJCTogZnB1IHZtZSBkZSBwc2UgdHNjIG1zciBwYWUgbWNlIGN4OCBhcGljIG10cnIgcGdlIG1j
+YSBjbW92IHBhdAo+IHBzZTM2IGNsZmx1c2ggZHRzIGFjcGkgbW14IGZ4c3Igc3NlIHNzZTIgc3Mg
+aHQgdG0gcGJlIGxtIGNvbnN0YW50X3RzYwo+IGFyY2hfcGVyZm1vbiBwZWJzIGJ0cyBwbmkgZHRl
+czY0IG1vbml0b3IgZHNfY3BsIHZteCBzbXggZXN0IHRtMiBzc3NlMwo+IGN4MTYgeHRwciBwZGNt
+IHNzZTRfMSBsYWhmX2xtIHRwcl9zaGFkb3cgdm5taSBmbGV4cHJpb3JpdHkKPiBib2dvbWlwcwk6
+IDQ5ODcuNDkKPiBjbGZsdXNoIHNpemUJOiA2NAo+IHBvd2VyIG1hbmFnZW1lbnQ6Cj4gCj4gcHJv
+Y2Vzc29yCTogMwo+IHZlbmRvcl9pZAk6IEdlbnVpbmVJbnRlbAo+IGNwdSBmYW1pbHkJOiA2Cj4g
+bW9kZWwJCTogMjMKPiBtb2RlbCBuYW1lCTogSW50ZWwoUikgQ29yZShUTSkyIFF1YWQgIENQVSAg
+IFE5MzAwICBAIDIuNTBHSHoKPiBzdGVwcGluZwk6IDcKPiBjcHUgTUh6CQk6IDI0OTMuNTkxCj4g
+Y2FjaGUgc2l6ZQk6IDMwNzIgS0IKPiBwaHlzaWNhbCBpZAk6IDAKPiBzaWJsaW5ncwk6IDQKPiBj
+b3JlIGlkCQk6IDMKPiBjcHUgY29yZXMJOiA0Cj4gYXBpY2lkCQk6IDMKPiBpbml0aWFsIGFwaWNp
+ZAk6IDMKPiBmZGl2X2J1Zwk6IG5vCj4gaGx0X2J1ZwkJOiBubwo+IGYwMGZfYnVnCTogbm8KPiBj
+b21hX2J1Zwk6IG5vCj4gZnB1CQk6IHllcwo+IGZwdV9leGNlcHRpb24JOiB5ZXMKPiBjcHVpZCBs
+ZXZlbAk6IDEwCj4gd3AJCTogeWVzCj4gZmxhZ3MJCTogZnB1IHZtZSBkZSBwc2UgdHNjIG1zciBw
+YWUgbWNlIGN4OCBhcGljIG10cnIgcGdlIG1jYSBjbW92IHBhdAo+IHBzZTM2IGNsZmx1c2ggZHRz
+IGFjcGkgbW14IGZ4c3Igc3NlIHNzZTIgc3MgaHQgdG0gcGJlIGxtIGNvbnN0YW50X3RzYwo+IGFy
+Y2hfcGVyZm1vbiBwZWJzIGJ0cyBwbmkgZHRlczY0IG1vbml0b3IgZHNfY3BsIHZteCBzbXggZXN0
+IHRtMiBzc3NlMwo+IGN4MTYgeHRwciBwZGNtIHNzZTRfMSBsYWhmX2xtIHRwcl9zaGFkb3cgdm5t
+aSBmbGV4cHJpb3JpdHkKPiBib2dvbWlwcwk6IDQ5ODcuNDkKPiBjbGZsdXNoIHNpemUJOiA2NAo+
+IHBvd2VyIG1hbmFnZW1lbnQ6Cj4gCj4gcmVtb3ZlIHRlc3QgY2FzZXMgd2hpY2ggcmVxdWlyZSB0
+aGUgYmxvY2sgZGV2aWNlLgo+IFlvdSBjYW4gc3BlY2lmeSBpdCB3aXRoIG9wdGlvbiAtYgo+IExP
+RyBGaWxlOiAvb3B0L2x0cC1mdWxsLTIwMDkwNTMxL3Jlc3VsdHMvTFRQX1JVTl9PTi0yMDA5XyA2
+7JuUXzEyLTE2aF8xN21fMzRzLmxvZwo+IEZBSUxFRCBDT01NQU5EIEZpbGU6IC9vcHQvbHRwLWZ1
+bGwtMjAwOTA1MzEvb3V0cHV0L0xUUF9SVU5fT04tMjAwOV8uZmFpbGVkCj4gUnVubmluZyB0ZXN0
+cy4uLi4uLi4KPiAKPiAKPiAKPiAKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ3J5c3RhbCBSZXBv
+cnRzIC0gTmV3IEZyZWUgUnVudGltZSBhbmQgMzAgRGF5IFRyaWFsCkNoZWNrIG91dCB0aGUgbmV3
+IHNpbXBsaWZpZWQgbGljZW5zaW5nIG9wdGlvbiB0aGF0IGVuYWJsZXMgdW5saW1pdGVkCnJveWFs
+dHktZnJlZSBkaXN0cmlidXRpb24gb2YgdGhlIHJlcG9ydCBlbmdpbmUgZm9yIGV4dGVybmFsbHkg
+ZmFjaW5nIApzZXJ2ZXIgYW5kIHdlYiBkZXBsb3ltZW50LgpodHRwOi8vcC5zZi5uZXQvc2Z1L2J1
+c2luZXNzb2JqZWN0cwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0
+Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
