@@ -1,32 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJ087-0001Rb-BD
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 07:09:19 +0000
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MJ085-0007qN-QJ
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 07:09:19 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e1.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5N74Yhw022592
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 03:04:34 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5N7992U258226
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 03:09:09 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5N799iW029111
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 03:09:09 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <8368651DACC1964480F951191B94A078BC0BBA@svexch01.mvista.com>
-References: <8368651DACC1964480F951191B94A078BC0BBA@svexch01.mvista.com>
-Date: Tue, 23 Jun 2009 12:38:20 +0530
-Message-Id: <1245740900.6925.1.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Reasoning behind Ltp-pan etc installed under /opt/ltp
-Reply-To: subrata@linux.vnet.ibm.com
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <kraxel@redhat.com>) id 1MF0P2-0005BT-Lh
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 06:38:16 +0000
+Received: from mx2.redhat.com ([66.187.237.31])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MF0OP-0002pn-3c
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 06:38:16 +0000
+Message-ID: <4A31F790.7020607@redhat.com>
+Date: Fri, 12 Jun 2009 08:37:04 +0200
+From: Gerd Hoffmann <kraxel@redhat.com>
+MIME-Version: 1.0
+References: <1244775216.4982.2.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1244775216.4982.2.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [002][RFC] [TESTING linux-2.6.30] preadv/pwritev syscalls
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,45 +27,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Henry Yei <hyei@mvista.com>
-Cc: ltp-list@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list <ltp-list@lists.sf.net>, Ralf Baechle <ralf@linux-mips.org>, Al Viro <viro@zeniv.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>
 
-On Mon, 2009-06-22 at 20:34 -0700, Henry Yei wrote:
-> Can someone explain to me the reasoning for the several LTP binaries/includes/tools/libs etc are now installed onto /opt/ltp via PREFIX additions to these makefiles?
-> 
-> I don't see runltp using these at all, instead they use ${LTPROOT} version which are set to the directory they are built by default.
-> 
+On 06/12/09 04:53, Subrata Modak wrote:
+> Hi Gerd,
+>
+> Thanks for writing preadv/pwritev syscalls for linux-2.6.30. We would
+> like to include your test code (hosted at:
+> http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=dac1213842f5caf081804a11d87d2a39a21d6f55) to be included in our Linux Test Project (http://ltp.sf.net) under GPLv2.
 
-Because ltp/ltp-devel.spec uses them to create ltp-devel rpms:
-http://sourceforge.net/project/showfiles.php?group_id=3382&package_id=38846,
+Fine with me.
 
-Regards--
-Subrata
+Note that there was an ABI change 
+(http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=601cc11d054ae4b5e9b5babec3d8e4667a2cb9b5), 
+so the test program needs adaptions to the final ABI present in 2.6.30.
 
-> Thanks,
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Are you an open source citizen? Join us for the Open Source Bridge conference!
-> Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
-> Need another reason to go? 24-hour hacker lounge. Register today!
-> http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+cheers,
+   Gerd
 
 
 ------------------------------------------------------------------------------
-Are you an open source citizen? Join us for the Open Source Bridge conference!
-Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
-Need another reason to go? 24-hour hacker lounge. Register today!
-http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
