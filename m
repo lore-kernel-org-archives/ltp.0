@@ -1,23 +1,14 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1MIwrc-0005ZV-5T
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 03:40:04 +0000
-Received: from gateway-1237.mvista.com ([63.81.120.158])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MIwrb-0007g7-0g
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 03:40:04 +0000
-Received: from svexch01.mvista.com (svexch01.mvista.com [10.0.0.82])
-	by hermes.mvista.com (Postfix) with ESMTP id 7A6791AB22
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 22 Jun 2009 20:40:00 -0700 (PDT)
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Date: Mon, 22 Jun 2009 20:34:46 -0700
-Message-ID: <8368651DACC1964480F951191B94A078BC0BBA@svexch01.mvista.com>
-From: "Henry Yei" <hyei@mvista.com>
-Subject: [LTP] Reasoning behind Ltp-pan etc installed under /opt/ltp
+	(envelope-from <noreply@sourceforge.net>) id 1MGAre-0007xr-0a
+	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 12:00:38 +0000
+From: "SourceForge.net" <noreply@sourceforge.net>
+Mime-Version: 1.0
+Message-Id: <E1MGAq5-0003LX-In@b55xhf1.ch3.sourceforge.com>
+Date: Mon, 15 Jun 2009 11:59:01 +0000
+Subject: [LTP] [ ltp-Patches-2806554 ] build failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,25 +21,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: noreply@sourceforge.net
 
-Can someone explain to me the reasoning for the several LTP binaries/includes/tools/libs etc are now installed onto /opt/ltp via PREFIX additions to these makefiles?
+Patches item #2806554, was opened at 2009-06-15 11:59
+Message generated for change (Tracker Item Submitted) made by nobody
+You can respond by visiting: 
+https://sourceforge.net/tracker/?func=detail&atid=303382&aid=2806554&group_id=3382
 
-I don't see runltp using these at all, instead they use ${LTPROOT} version which are set to the directory they are built by default.
+Please note that this message will contain a full copy of the comment thread,
+including the initial issue submission, for this request,
+not just the latest update.
+Category: Tools
+Group: System Calls
+Status: Open
+Resolution: None
+Priority: 5
+Private: No
+Submitted By: Nobody/Anonymous (nobody)
+Assigned to: Nobody/Anonymous (nobody)
+Summary: build failure
 
-Thanks,
+Initial Comment:
+I am new to LTP. 
+I am unable to make ltp-full-20090531. I had applied the patch ltp-full-20090531.patch as well.
+While building sgnalfd01.c , the error is thrown:
+error: sys/signalfd.h: No such file or directory
 
+Pls help. 
+Did I download the correct sofwtare? Are there any more patches to apply?
+Without the patch, I got error while building another syscall file.
 
+----------------------------------------------------------------------
 
-
-
- 
+You can respond by visiting: 
+https://sourceforge.net/tracker/?func=detail&atid=303382&aid=2806554&group_id=3382
 
 ------------------------------------------------------------------------------
-Are you an open source citizen? Join us for the Open Source Bridge conference!
-Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
-Need another reason to go? 24-hour hacker lounge. Register today!
-http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
