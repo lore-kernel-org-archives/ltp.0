@@ -1,27 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1MIY9Y-0002H1-AK
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 01:16:56 +0000
-Received: from fmmailgate02.web.de ([217.72.192.227])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MIY9X-0006gN-6Y
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 01:16:56 +0000
-Received: from smtp07.web.de (fmsmtp07.dlan.cinetic.de [172.20.5.215])
-	by fmmailgate02.web.de (Postfix) with ESMTP id EAAAD104222C7
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 22 Jun 2009 02:49:05 +0200 (CEST)
-Received: from [83.208.36.163] (helo=debian)
-	by smtp07.web.de with asmtp (WEB.DE 4.110 #277) id 1MIXib-0000NT-00
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 02:49:05 +0200
-Date: Wed, 17 Jun 2009 15:18:04 +0200
-From: "Jiri Palecek >" <"<jirka"@suse.de>(none)
-MIME-Version: 1.0
-Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-Resent-Message-ID: <op.uvwh0ithlwynca@debian>
-Subject: [LTP] [PATCH] Include "config.h" in the aio02 test to get
-	HAVE_LIBAIO_H
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MGHfY-0001go-Go
+	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:16:36 +0000
+Received: from [32.97.110.158] (helo=e37.co.us.ibm.com)
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MGHfX-000245-AC
+	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:16:36 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e37.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5FJF3Rd020835
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Jun 2009 13:15:03 -0600
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5FJFiAu147390
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Jun 2009 13:15:44 -0600
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5FJFhvi016757
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Jun 2009 13:15:44 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <f5a7b3810906120637o57b17fb2t189886a4929198fc@mail.gmail.com>
+References: <f5a7b3810906120637o57b17fb2t189886a4929198fc@mail.gmail.com>
+Date: Tue, 16 Jun 2009 00:45:26 +0530
+Message-Id: <1245093327.4871.34.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [FIX PATCH] POSIX aio_write/8-1.c
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,39 +39,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: ltp-list-bounces@lists.sourceforge.net
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-Cc: ltp-list@lists.sourceforge.net
-Message-ID: <20090617131804.QPg0FFBvzSR61royPWKX0t8Fz-O95OZF0Te1hBs5c8Y@z>
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, rohit.170309@gmail.com
 
-Signed-off-by: Jiri Palecek <jpalecek@web.de>
----
- testcases/kernel/io/aio/aio02/main.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+On Fri, 2009-06-12 at 19:07 +0530, naresh kamboju wrote: 
+> Hi,
+> 
+> I have noticed failures under
+> testcases/open_posix_testsuite/conformance/interfaces/aio_write/8-1.c
+> and fixed.
+> Please find the patch below and as attachment.
+> 
+> Best regards
+> Naresh Kamboju
+> 
+> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
 
-diff --git a/testcases/kernel/io/aio/aio02/main.c b/testcases/kernel/io/aio/aio02/main.c
-index 791b5e0..5dae3e8 100644
---- a/testcases/kernel/io/aio/aio02/main.c
-+++ b/testcases/kernel/io/aio/aio02/main.c
-@@ -8,6 +8,7 @@
- #include <sys/stat.h>
- #include <unistd.h>
- #include "test.h"
-+#include "config.h"
- 
- #ifdef HAVE_LIBAIO_H
- 
--- 
-1.6.3.1
+Thanks.
 
+Regards--
+Subrata
 
+> 
+> 
+> diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/aio_write/8-1.c
+> b/testcases/open_posix_testsuite/conformance/interfaces/aio_write/8-1.c
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_write/8-1.c	2009-06-12
+> 18:08:40.000000000 +0530
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_write/8-1.c	2009-06-12
+> 18:00:21.000000000 +0530
+> @@ -40,6 +40,7 @@
+>  #define BUF_SIZE 512
+>  	char buf[BUF_SIZE];
+>  	struct aiocb aiocb;
+> +	int ret=0;
+> 
+>  #if _POSIX_ASYNCHRONOUS_IO != 200112L
+>  	exit(PTS_UNSUPPORTED);
+> @@ -51,13 +52,21 @@
+>  	aiocb.aio_buf = buf;
+>  	aiocb.aio_nbytes = BUF_SIZE;
+> 
+> -	if (aio_write(&aiocb) != -1)
+> +	/*
+> +	 * EBADF is encountered at a later stage
+> +	 * and should be collected by aio_error()
+> +	 */
+> +	
+> +	if (aio_write(&aiocb) != 0)
+>  	{
+>  		printf(TNAME " bad aio_write return value()\n");
+>  		exit(PTS_FAIL);
+>  	}
+> 
+> -	if (errno != EBADF)
+> +	while (aio_error(&aiocb) == EINPROGRESS);
+> +	ret = aio_error(&aiocb);
+> +
+> +	if (ret != EBADF)
+>  	{
+>  		printf(TNAME " errno is not EBADF %s\n", strerror(errno));
+>  		exit(PTS_FAIL);
 
 
 ------------------------------------------------------------------------------
-Are you an open source citizen? Join us for the Open Source Bridge conference!
-Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
-Need another reason to go? 24-hour hacker lounge. Register today!
-http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
