@@ -1,22 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1MF7Yb-00089n-SX
-	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 14:16:37 +0000
-Received: from mail-yx0-f193.google.com ([209.85.210.193])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MF7YY-0007Bp-BX
-	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 14:16:37 +0000
-Received: by yxe31 with SMTP id 31so9965yxe.28
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 12 Jun 2009 07:16:34 -0700 (PDT)
-MIME-Version: 1.0
-Date: Fri, 12 Jun 2009 19:16:14 +0530
-Message-ID: <f5a7b3810906120646w6aff4e33wce787b684e91bee8@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Content-Type: multipart/mixed; boundary=001e680f14409e3239046c26ee7c
-Subject: [LTP] [FIX PATCH] POSIX mlock/12-1.c and mlock/speculative/12-1.c
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MGHgC-000059-Je
+	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:17:16 +0000
+Received: from [32.97.182.141] (helo=e1.ny.us.ibm.com)
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MGHgB-0007lS-Mi
+	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:17:16 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e1.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5FJBwfx021486
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Jun 2009 15:11:58 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5FJGPRq187142
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Jun 2009 15:16:25 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5FJGOmk017887
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Jun 2009 15:16:25 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <20090612175132.26047.54266.sendpatchset@subratamodak.linux.ibm.com>
+References: <20090612175132.26047.54266.sendpatchset@subratamodak.linux.ibm.com>
+Date: Tue, 16 Jun 2009 00:45:49 +0530
+Message-Id: <1245093350.4871.40.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH 00/05] [3rd Bunch] Port Crackerjack
+	Syscall	tests(missing) to LTP
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,213 +37,97 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, rohit.170309@gmail.com, naresh.kernel@gmail.com
-
---001e680f14409e3239046c26ee7c
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-Hi,
-
-I have noticed failures under
-testcases/open_posix_testsuite/conformance/interfaces/mlock/12-1.c
-and
-testcases/open_posix_testsuite/conformance/interfaces/mlock/speculative/12-1.c
-and fixed as per man page
-mlock()
-
-EPERM:
-
-(Linux 2.6.9 and later) the caller was not privileged (CAP_IPC_LOCK)
-and its RLIMIT_MEMLOCK soft resource limit was 0.
-
-Please find the patch below and as attachment.
-
-Best regards
-Naresh Kamboju
-
-Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
-
-diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/mlock/12-1.c
-b/testcases/open_posix_testsuite/conformance/interfaces/mlock/12-1.c
---- a/testcases/open_posix_testsuite/conformance/interfaces/mlock/12-1.c	2005-06-03
-22:00:32.000000000 +0530
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mlock/12-1.c	2009-06-12
-17:18:00.000000000 +0530
-@@ -8,7 +8,8 @@
-  *  GNU General Public License for more details.
-  *
-  * Test that the mlock() function sets errno = EPERM if the calling process
-- * does not have the appropriate privilege to perform the requested operation.
-+ * does not have the appropriate privilege to perform the requested operation
-+ * (Linux 2.6.9 and later) and its RLIMIT_MEMLOCK soft resource limit set to 0.
-  */
-
- #define _XOPEN_SOURCE 600
-@@ -21,6 +22,7 @@
- #include <sys/types.h>
- #include <pwd.h>
- #include <string.h>
-+#include <sys/resource.h>
- #include "posixtest.h"
-
- #define BUFSIZE 8
-@@ -29,6 +31,9 @@
- int set_nonroot()
- {
- 	struct passwd *pw;
-+        struct rlimit rlim;
-+        int ret=0;
-+
- 	setpwent();
- 	/* search for the first user which is non root */
- 	while((pw = getpwent()) != NULL)
-@@ -40,6 +45,18 @@
- 		return 1;
- 	}
-
-+	/*
-+	 * mlock()
-+	 * EPERM:
-+	 * (Linux 2.6.9 and later) the caller was not privileged (CAP_IPC_LOCK)
-+	 * and its RLIMIT_MEMLOCK soft resource limit was 0.
-+	 */
-+
-+        rlim.rlim_cur = 0;
-+        rlim.rlim_max = 0;
-+        if ((ret = setrlimit(RLIMIT_MEMLOCK,&rlim)) != 0)
-+                printf("Failed at setrlimit() return %d \n", ret);
-+
- 	if(seteuid(pw->pw_uid) != 0) {
- 		if(errno == EPERM) {
- 			printf("You don't have permission to change your UID.\n");
-diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/mlock/speculative/12-1.c
-b/testcases/open_posix_testsuite/conformance/interfaces/mlock/speculative/12-1.c
---- a/testcases/open_posix_testsuite/conformance/interfaces/mlock/speculative/12-1.c	2007-07-26
-17:32:13.000000000 +0530
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/mlock/speculative/12-1.c	2009-06-12
-17:18:24.000000000 +0530
-@@ -8,7 +8,8 @@
-  *  GNU General Public License for more details.
-  *
-  * Test that the mlock() function sets errno = EPERM if the calling process
-- * does not have the appropriate privilege to perform the requested operation.
-+ * does not have the appropriate privilege to perform the requested operation
-+ * (Linux 2.6.9 and later) and its RLIMIT_MEMLOCK soft resource limit set to 0.
-  */
-
- #define _XOPEN_SOURCE 600
-@@ -21,6 +22,7 @@
- #include <sys/types.h>
- #include <pwd.h>
- #include <string.h>
-+#include <sys/resource.h>
- #include "posixtest.h"
-
- #define BUFSIZE 8
-@@ -29,6 +31,9 @@
- int set_nonroot()
- {
- 	struct passwd *pw;
-+        struct rlimit rlim;
-+        int ret=0;
-+
- 	setpwent();
- 	/* search for the first user which is non root */
- 	while((pw = getpwent()) != NULL)
-@@ -40,6 +45,18 @@
- 		return 1;
- 	}
-
-+	/*
-+	 * mlock()
-+	 * EPERM:
-+	 * (Linux 2.6.9 and later) the caller was not privileged (CAP_IPC_LOCK)
-+	 * and its RLIMIT_MEMLOCK soft resource limit was 0.
-+	 */
-+
-+        rlim.rlim_cur = 0;
-+        rlim.rlim_max = 0;
-+        if ((ret = setrlimit(RLIMIT_MEMLOCK,&rlim)) != 0)
-+                printf("Failed at setrlimit() return %d \n", ret);
-+
- 	if(seteuid(pw->pw_uid) != 0) {
- 		if(errno == EPERM) {
- 			printf("You don't have permission to change your UID.\n");
-
---001e680f14409e3239046c26ee7c
-Content-Type: application/octet-stream; name="ltp-posix-mlock_12-1.patch"
-Content-Disposition: attachment; filename="ltp-posix-mlock_12-1.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fvuy778z0
-
-ZGlmZiAtTmF1cmIgYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2Uv
-aW50ZXJmYWNlcy9tbG9jay8xMi0xLmMgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUv
-Y29uZm9ybWFuY2UvaW50ZXJmYWNlcy9tbG9jay8xMi0xLmMKLS0tIGEvdGVzdGNhc2VzL29wZW5f
-cG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvbWxvY2svMTItMS5jCTIwMDUt
-MDYtMDMgMjI6MDA6MzIuMDAwMDAwMDAwICswNTMwCisrKyBiL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4
-X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL21sb2NrLzEyLTEuYwkyMDA5LTA2LTEy
-IDE3OjE4OjAwLjAwMDAwMDAwMCArMDUzMApAQCAtOCw3ICs4LDggQEAKICAqICBHTlUgR2VuZXJh
-bCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgogICoKICAqIFRlc3QgdGhhdCB0aGUg
-bWxvY2soKSBmdW5jdGlvbiBzZXRzIGVycm5vID0gRVBFUk0gaWYgdGhlIGNhbGxpbmcgcHJvY2Vz
-cwotICogZG9lcyBub3QgaGF2ZSB0aGUgYXBwcm9wcmlhdGUgcHJpdmlsZWdlIHRvIHBlcmZvcm0g
-dGhlIHJlcXVlc3RlZCBvcGVyYXRpb24uCisgKiBkb2VzIG5vdCBoYXZlIHRoZSBhcHByb3ByaWF0
-ZSBwcml2aWxlZ2UgdG8gcGVyZm9ybSB0aGUgcmVxdWVzdGVkIG9wZXJhdGlvbgorICogKExpbnV4
-IDIuNi45IGFuZCBsYXRlcikgYW5kIGl0cyBSTElNSVRfTUVNTE9DSyBzb2Z0IHJlc291cmNlIGxp
-bWl0IHNldCB0byAwLgogICovCiAKICNkZWZpbmUgX1hPUEVOX1NPVVJDRSA2MDAKQEAgLTIxLDYg
-KzIyLDcgQEAKICNpbmNsdWRlIDxzeXMvdHlwZXMuaD4KICNpbmNsdWRlIDxwd2QuaD4KICNpbmNs
-dWRlIDxzdHJpbmcuaD4KKyNpbmNsdWRlIDxzeXMvcmVzb3VyY2UuaD4KICNpbmNsdWRlICJwb3Np
-eHRlc3QuaCIKIAogI2RlZmluZSBCVUZTSVpFIDgKQEAgLTI5LDYgKzMxLDkgQEAKIGludCBzZXRf
-bm9ucm9vdCgpCiB7CiAJc3RydWN0IHBhc3N3ZCAqcHc7CisgICAgICAgIHN0cnVjdCBybGltaXQg
-cmxpbTsKKyAgICAgICAgaW50IHJldD0wOworCiAJc2V0cHdlbnQoKTsKIAkvKiBzZWFyY2ggZm9y
-IHRoZSBmaXJzdCB1c2VyIHdoaWNoIGlzIG5vbiByb290ICovIAogCXdoaWxlKChwdyA9IGdldHB3
-ZW50KCkpICE9IE5VTEwpCkBAIC00MCw2ICs0NSwxOCBAQAogCQlyZXR1cm4gMTsKIAl9CiAKKwkv
-KgorCSAqIG1sb2NrKCkKKwkgKiBFUEVSTToKKwkgKiAoTGludXggMi42LjkgYW5kIGxhdGVyKSB0
-aGUgY2FsbGVyIHdhcyBub3QgcHJpdmlsZWdlZCAoQ0FQX0lQQ19MT0NLKQorCSAqIGFuZCBpdHMg
-UkxJTUlUX01FTUxPQ0sgc29mdCByZXNvdXJjZSBsaW1pdCB3YXMgMC4KKwkgKi8KKworICAgICAg
-ICBybGltLnJsaW1fY3VyID0gMDsKKyAgICAgICAgcmxpbS5ybGltX21heCA9IDA7CisgICAgICAg
-IGlmICgocmV0ID0gc2V0cmxpbWl0KFJMSU1JVF9NRU1MT0NLLCZybGltKSkgIT0gMCkKKyAgICAg
-ICAgICAgICAgICBwcmludGYoIkZhaWxlZCBhdCBzZXRybGltaXQoKSByZXR1cm4gJWQgXG4iLCBy
-ZXQpOworCiAJaWYoc2V0ZXVpZChwdy0+cHdfdWlkKSAhPSAwKSB7CiAJCWlmKGVycm5vID09IEVQ
-RVJNKSB7CiAJCQlwcmludGYoIllvdSBkb24ndCBoYXZlIHBlcm1pc3Npb24gdG8gY2hhbmdlIHlv
-dXIgVUlELlxuIik7CmRpZmYgLU5hdXJiIGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRl
-L2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvbWxvY2svc3BlY3VsYXRpdmUvMTItMS5jIGIvdGVzdGNh
-c2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvbWxvY2svc3Bl
-Y3VsYXRpdmUvMTItMS5jCi0tLSBhL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25m
-b3JtYW5jZS9pbnRlcmZhY2VzL21sb2NrL3NwZWN1bGF0aXZlLzEyLTEuYwkyMDA3LTA3LTI2IDE3
-OjMyOjEzLjAwMDAwMDAwMCArMDUzMAorKysgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3Vp
-dGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9tbG9jay9zcGVjdWxhdGl2ZS8xMi0xLmMJMjAwOS0w
-Ni0xMiAxNzoxODoyNC4wMDAwMDAwMDAgKzA1MzAKQEAgLTgsNyArOCw4IEBACiAgKiAgR05VIEdl
-bmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KICAqCiAgKiBUZXN0IHRoYXQg
-dGhlIG1sb2NrKCkgZnVuY3Rpb24gc2V0cyBlcnJubyA9IEVQRVJNIGlmIHRoZSBjYWxsaW5nIHBy
-b2Nlc3MKLSAqIGRvZXMgbm90IGhhdmUgdGhlIGFwcHJvcHJpYXRlIHByaXZpbGVnZSB0byBwZXJm
-b3JtIHRoZSByZXF1ZXN0ZWQgb3BlcmF0aW9uLgorICogZG9lcyBub3QgaGF2ZSB0aGUgYXBwcm9w
-cmlhdGUgcHJpdmlsZWdlIHRvIHBlcmZvcm0gdGhlIHJlcXVlc3RlZCBvcGVyYXRpb24KKyAqIChM
-aW51eCAyLjYuOSBhbmQgbGF0ZXIpIGFuZCBpdHMgUkxJTUlUX01FTUxPQ0sgc29mdCByZXNvdXJj
-ZSBsaW1pdCBzZXQgdG8gMC4KICAqLwogCiAjZGVmaW5lIF9YT1BFTl9TT1VSQ0UgNjAwCkBAIC0y
-MSw2ICsyMiw3IEBACiAjaW5jbHVkZSA8c3lzL3R5cGVzLmg+CiAjaW5jbHVkZSA8cHdkLmg+CiAj
-aW5jbHVkZSA8c3RyaW5nLmg+CisjaW5jbHVkZSA8c3lzL3Jlc291cmNlLmg+CiAjaW5jbHVkZSAi
-cG9zaXh0ZXN0LmgiCiAKICNkZWZpbmUgQlVGU0laRSA4CkBAIC0yOSw2ICszMSw5IEBACiBpbnQg
-c2V0X25vbnJvb3QoKQogewogCXN0cnVjdCBwYXNzd2QgKnB3OworICAgICAgICBzdHJ1Y3Qgcmxp
-bWl0IHJsaW07CisgICAgICAgIGludCByZXQ9MDsKKwogCXNldHB3ZW50KCk7CiAJLyogc2VhcmNo
-IGZvciB0aGUgZmlyc3QgdXNlciB3aGljaCBpcyBub24gcm9vdCAqLyAKIAl3aGlsZSgocHcgPSBn
-ZXRwd2VudCgpKSAhPSBOVUxMKQpAQCAtNDAsNiArNDUsMTggQEAKIAkJcmV0dXJuIDE7CiAJfQog
-CisJLyoKKwkgKiBtbG9jaygpCisJICogRVBFUk06CisJICogKExpbnV4IDIuNi45IGFuZCBsYXRl
-cikgdGhlIGNhbGxlciB3YXMgbm90IHByaXZpbGVnZWQgKENBUF9JUENfTE9DSykKKwkgKiBhbmQg
-aXRzIFJMSU1JVF9NRU1MT0NLIHNvZnQgcmVzb3VyY2UgbGltaXQgd2FzIDAuCisJICovCisKKyAg
-ICAgICAgcmxpbS5ybGltX2N1ciA9IDA7CisgICAgICAgIHJsaW0ucmxpbV9tYXggPSAwOworICAg
-ICAgICBpZiAoKHJldCA9IHNldHJsaW1pdChSTElNSVRfTUVNTE9DSywmcmxpbSkpICE9IDApCisg
-ICAgICAgICAgICAgICAgcHJpbnRmKCJGYWlsZWQgYXQgc2V0cmxpbWl0KCkgcmV0dXJuICVkIFxu
-IiwgcmV0KTsKKwogCWlmKHNldGV1aWQocHctPnB3X3VpZCkgIT0gMCkgewogCQlpZihlcnJubyA9
-PSBFUEVSTSkgewogCQkJcHJpbnRmKCJZb3UgZG9uJ3QgaGF2ZSBwZXJtaXNzaW9uIHRvIGNoYW5n
-ZSB5b3VyIFVJRC5cbiIpOwo=
---001e680f14409e3239046c26ee7c
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Manas Kumar Nayak <maknayak@in.ibm.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
+
+On Fri, 2009-06-12 at 23:21 +0530, Manas Kumar Nayak wrote: 
+> Hi,
+> 
+> As promised earlier, here lies the final bunch of test cases from
+> Crackerjack. I would however keep contributing new tests to LTP.
+
+Great.
+
+Regards--
+Subrata
+
+> 
+> >On Wed, 2009-05-27 at 15:36 +0530, Manas Kumar Nayak wrote:
+> >Hi,
+> > 
+> > >On Tue, 2009-05-19 at 00:39 +0530, Manas Kumar Nayak wrote:
+> > >Hi,
+> > > 
+> > > I have ported the following tests from Crackerjack to LTP.
+> > > Kindly include them to LTP:
+> > > 
+> > > [PATCH 01/21] Add add_key01 test for add_key syscall
+> > > [PATCH 02/21] Add add_key02 test for add_key syscall
+> > > [PATCH 03/21] Add bdflush01 test for bdflush syscall
+> > > [PATCH 04/21] Add exit_group01 test for exit_group syscall
+> > > [PATCH 05/21] Add keyctl01 test for keyctl syscall
+> > > [PATCH 06/21] Add newuname01 test for newuname syscall
+> > > [PATCH 07/21] Add rt_sigaction01 test for rt_sigaction syscall
+> > > [PATCH 08/21] Add rt_sigprocmask01 test for rt_sigprocmask syscall
+> > > [PATCH 09/21] Add rt_sigprocmask02 test for rt_sigprocmask syscall
+> > > [PATCH 10/21] Add rt_sigqueueinfo01 test for rt_sigqueueinfo syscall
+> > > [PATCH 11/21] Add rt_sigsuspend01 test for rt_sigsuspend syscall
+> > > [PATCH 12/21] Add set_thread_area01 test for set_thread_area syscall
+> > > [PATCH 13/21] Add set_thread_area02 test for set_thread_area syscall
+> > > [PATCH 14/21] Add set_tid_address01 test for set_tid_address syscall
+> > > [PATCH 15/21] Add sgetmask01 test for sgetmask syscall
+> > > [PATCH 16/21] Add sigreturn01 test for sigreturn syscall
+> > > [PATCH 17/21] Add ssetmask01 test for ssetmask syscall
+> > > [PATCH 18/21] Add timer_getoverrun01 test for timer_getoverrun01 syscall
+> > > [PATCH 19/21] Add timer_gettime01 test for timer_gettime syscall
+> > > [PATCH 20/21] Add tkill01 test for tkill syscall
+> > > [PATCH 21/21] Add tkill02 test for tkill syscall
+> > > 
+> > > Todo:
+> > > 	1) Port the Remaining ones (next week),
+> > 
+> > As promised earlier, here remains the 2nd Bunch of tests ported
+> > from Crackerjack to LTP:
+> > 
+> > __001_Add_Utility_Headers_for_these_set_of_tests.patch
+> > __002_Add_get_mempolicy01_test_for_get_mempolicy_syscall.patch
+> > __003_Add_clock_getres01_test_for_clock_getres_syscall.patch
+> > __004_Add_clock_nanosleep01_test_for_clock_nanosleep_syscall.patch
+> > __005_Add_mq_notify01_test_for_mq_notify_syscall.patch
+> > __006_Add_ppoll01_test_for_ppoll_syscall.patch
+> > __007_Add_mq_open01_test_for_mq_open_syscall.patch
+> > __008_Add_mq_timedreceive01_test_for_mq_timedreceive_syscall.patch
+> > __009_Add_utimes01_test_for_utimes_syscall.patch
+> > __010_Add_mq_unlink01_test_for_mq_unlink_syscall.patch
+> > __011_Add_mq_timedsend01_test_for_mq_timedsend_syscall.patch
+> > __012_Add_unshare01_test_for_unshare_syscall.patch
+> > __013_Add_unshare02_test_for_unshare_syscall.patch
+> > 
+> > Still TODO:
+> > -> The remaining testcases will be ported soon.
+> 
+> [PATCH 00/05] [3rd Bunch] Port Crackerjack Syscall tests(missing) to LTP
+> [PATCH 01/05] Add/Port mbind01 test for mbind() syscall
+> [PATCH 02/05] Add/Port sched_getaffinity01 test for sched_getaffinity() syscall
+> [PATCH 03/05] Add/Port waitid01 test for waitid() syscall
+> [PATCH 04/05] Add/Port waitid02 test for waitid() syscall
+> [PATCH 05/05] Add/Port quotactl01 test for quotactl() syscall
+> 
+> Regards--
+> Manas
+> 
+> > 
+> > Regards--
+> > Manas
+> > 
+> > > 
+> > > Regards--
+> > > Manas
+> > > 
+
 
 ------------------------------------------------------------------------------
 Crystal Reports - New Free Runtime and 30 Day Trial
@@ -240,16 +135,7 @@ Check out the new simplified licensing option that enables unlimited
 royalty-free distribution of the report engine for externally facing 
 server and web deployment.
 http://p.sf.net/sfu/businessobjects
---001e680f14409e3239046c26ee7c
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---001e680f14409e3239046c26ee7c--
-
