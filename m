@@ -1,30 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1MLbn2-0005J6-Ue
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 11:46:20 +0000
-Received: from [32.97.182.138] (helo=e8.ny.us.ibm.com)
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MLbn1-0002xD-8n
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 11:46:20 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e8.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5UBYfct019402
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 07:34:41 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5UBjSDA176642
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 07:45:28 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5UBh3pA007933
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 07:43:03 -0400
-From: poornima nayak <mpnayak@linux.vnet.ibm.com>
-Date: Tue, 30 Jun 2009 17:14:43 +0530
-Message-Id: <1246362283.15408.8.camel@localhost.localdomain>
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MGHhT-0001mb-M2
+	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:18:35 +0000
+Received: from [32.97.182.144] (helo=e4.ny.us.ibm.com)
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MGHhP-0006mv-E3
+	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:18:35 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <200906142044.ACJ21831.VHOJSFLtFOQOFM@I-love.SAKURA.ne.jp>
+References: <1244775226.4982.3.camel@subratamodak.linux.ibm.com>
+	<200906142044.ACJ21831.VHOJSFLtFOQOFM@I-love.SAKURA.ne.jp>
+Date: Tue, 16 Jun 2009 00:46:26 +0530
+Message-Id: <1245093386.4871.49.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: [LTP] [Patch 0/4]Addtional test scenarios & fixes for power
- management testcases
+Subject: Re: [LTP] [003][RFC] [TESTING linux-2.6.30] TOMOYO Linux
+	and	pathname-basedsecurity
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,25 +30,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vaidy <svaidy@linux.vnet.ibm.com>
+To: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Cc: ltp-list@lists.sf.net, haradats@nttdata.co.jp, sds@tycho.nsa.gov, casey@schaufler-ca.com, serue@linux.vnet.ibm.com, zohar@linux.vnet.ibm.com, takedakn@nttdata.co.jp
 
-Hi,
+On Sun, 2009-06-14 at 20:44 +0900, Tetsuo Handa wrote: 
+> Hello.
+> 
+> Sorry for late response. I had no internet access for three days.
+> 
+> Subrata Modak wrote:
+> > We would like to inform you that we have some robust sets of testcases
+> > for both SELinux, SMACK, IMA, etc at
+> > http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/security/.
+> > And i would express to have TOMYO being tested through LTP. If you agree
+> > to contribute some test cases in this regard to LTP under GPLv2, we can
+> > make a modest but great beginning. What do you say ?
+> 
+> Yes, we are willing to contribute TOMOYO's test cases to LTP.
 
-On doing demo of LTP testcases to developers we realized some more test
-scenarios has to be added to LTP testcases for better test coverage.
-Also some bug fixes has to be done for existing test cases to run on
-future versions on Linux Kernel.
-We also want to integrate kernbench in LTP for sched_mc_power_savings=2.
-Hence this list of patches include patches to integrate kernbench into
-LTP. The test also covers consolidation at core level for hyper threaded
-system.
+Great to hear that.
 
-Regards
-Poornima
+> Currently, we are using testing programs available at
+> http://sourceforge.jp/projects/tomoyo/svn/view/trunk/1.6.x/ccs-tools/ccstools/kernel_test/?root=tomoyo
+> But they are not some shell scripting programs.
+> Thus, I need to remake these programs to follow LTP conventions.
+> Can I have some documentation regarding how to write LTP testing programs?
+
+Sure. Why not. Please see:
+
+http://ltp.sourceforge.net/
+http://ltp.sourceforge.net/documentation/how-to/ltp.php
+http://ltp.sourceforge.net/documentation/technical_papers/
+
+Regards--
+Subrata
+
+> 
+> Regards.
 
 
 ------------------------------------------------------------------------------
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
