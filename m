@@ -1,20 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MHLU5-0000cY-9C
-	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:33:09 +0000
-Received: from e38.co.us.ibm.com ([32.97.110.159])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MHLU3-0000OF-Na
-	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:33:09 +0000
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MGHg8-000849-0d
+	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:17:12 +0000
+Received: from [32.97.182.145] (helo=e5.ny.us.ibm.com)
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MGHg7-0007kI-45
+	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:17:11 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e5.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5FJADe8032718
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Jun 2009 15:10:13 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5FJGKK0247396
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Jun 2009 15:16:20 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5FJE3vP007610
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Jun 2009 15:14:03 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090617232603.GA27168@us.ibm.com>
-References: <20090617232603.GA27168@us.ibm.com>
-Date: Thu, 18 Jun 2009 23:01:56 +0530
-Message-Id: <1245346317.5041.43.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <f5a7b3810906120646w6aff4e33wce787b684e91bee8@mail.gmail.com>
+References: <f5a7b3810906120646w6aff4e33wce787b684e91bee8@mail.gmail.com>
+Date: Tue, 16 Jun 2009 00:45:45 +0530
+Message-Id: <1245093345.4871.39.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] pidns17 testcase bugfix/cleanup
+Subject: Re: [LTP] [FIX PATCH] POSIX mlock/12-1.c and
+	mlock/speculative/12-1.c
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -28,72 +40,143 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
-Cc: mohankumar@in.ibm.com, ssant@in.ibm.com, ltp-list@lists.sf.net
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, rohit.170309@gmail.com
 
-On Wed, 2009-06-17 at 16:26 -0700, Sukadev Bhattiprolu wrote: 
-> Fix minor bugs in the test case that cause the test to fail intermittently.
-> Also, print more debug info when test fails.
+On Fri, 2009-06-12 at 19:16 +0530, naresh kamboju wrote: 
+> Hi,
 > 
-> This fixes a bug reported by Sachin P. Sant.
+> I have noticed failures under
+> testcases/open_posix_testsuite/conformance/interfaces/mlock/12-1.c
+> and
+> testcases/open_posix_testsuite/conformance/interfaces/mlock/speculative/12-1.c
+> and fixed as per man page
+> mlock()
 > 
-> Signed-off-by: Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
+> EPERM:
+> 
+> (Linux 2.6.9 and later) the caller was not privileged (CAP_IPC_LOCK)
+> and its RLIMIT_MEMLOCK soft resource limit was 0.
+> 
+> Please find the patch below and as attachment.
+> 
+> Best regards
+> Naresh Kamboju
+> 
+> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
 
-Thanks. Merged.
+Thanks.
 
 Regards--
 Subrata
 
-> ---
->  testcases/kernel/containers/pidns/pidns17.c |   17 +++++++++++------
->  1 file changed, 11 insertions(+), 6 deletions(-)
 > 
-> Index: ltp-full-20090331/testcases/kernel/containers/pidns/pidns17.c
-> ===================================================================
-> --- ltp-full-20090331.orig/testcases/kernel/containers/pidns/pidns17.c	2009-06-10 23:52:44.022094621 -0700
-> +++ ltp-full-20090331/testcases/kernel/containers/pidns/pidns17.c	2009-06-11 00:09:37.454753439 -0700
-> @@ -74,8 +74,10 @@ int child_fn(void *arg)
+> diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/mlock/12-1.c
+> b/testcases/open_posix_testsuite/conformance/interfaces/mlock/12-1.c
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/mlock/12-1.c	2005-06-03
+> 22:00:32.000000000 +0530
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mlock/12-1.c	2009-06-12
+> 17:18:00.000000000 +0530
+> @@ -8,7 +8,8 @@
+>   *  GNU General Public License for more details.
+>   *
+>   * Test that the mlock() function sets errno = EPERM if the calling process
+> - * does not have the appropriate privilege to perform the requested operation.
+> + * does not have the appropriate privilege to perform the requested operation
+> + * (Linux 2.6.9 and later) and its RLIMIT_MEMLOCK soft resource limit set to 0.
+>   */
 > 
->  	/* Spawn many children */
->  	for (i = 0; i < 10; i++)
-> -		if ((children[i] = fork()) == 0)
-> -			sleep(10);
-> +		if ((children[i] = fork()) == 0) {
-> +			pause();
-> +			exit(2);
-> +		}
+>  #define _XOPEN_SOURCE 600
+> @@ -21,6 +22,7 @@
+>  #include <sys/types.h>
+>  #include <pwd.h>
+>  #include <string.h>
+> +#include <sys/resource.h>
+>  #include "posixtest.h"
 > 
->  	/* wait for last child to get scheduled */
->  	sleep(1);
-> @@ -86,13 +88,16 @@ int child_fn(void *arg)
+>  #define BUFSIZE 8
+> @@ -29,6 +31,9 @@
+>  int set_nonroot()
+>  {
+>  	struct passwd *pw;
+> +        struct rlimit rlim;
+> +        int ret=0;
+> +
+>  	setpwent();
+>  	/* search for the first user which is non root */
+>  	while((pw = getpwent()) != NULL)
+> @@ -40,6 +45,18 @@
+>  		return 1;
 >  	}
 > 
->  	for (i = 0; i < 10; i++) {
-> -		if (waitpid(children[i], &status, WNOHANG) == -1) {
-> +		if (waitpid(children[i], &status, 0) == -1) {
->  			tst_resm(TBROK, "cinit: waitpid() failed(%s)",\
->  					strerror(errno));
->  			cleanup();
->  		}
-> -		if (!(WIFSIGNALED(&status) && WTERMSIG(status) == SIGUSR1)) {
-> -			tst_resm(TFAIL, "cinit: found a child alive still.");
-> +		if (!(WIFSIGNALED(status) && WTERMSIG(status) == SIGUSR1)) {
-> +			tst_resm(TFAIL, "cinit: found a child alive still "
-> +					"%d exit: %d, %d, signal %d, %d", i,
-> +					WIFEXITED(status), WEXITSTATUS(status),
-> +					WIFSIGNALED(status), WTERMSIG(status));
->  			cleanup();
->  		}
->  	}
-> @@ -125,7 +130,7 @@ int main(int argc, char *argv[])
+> +	/*
+> +	 * mlock()
+> +	 * EPERM:
+> +	 * (Linux 2.6.9 and later) the caller was not privileged (CAP_IPC_LOCK)
+> +	 * and its RLIMIT_MEMLOCK soft resource limit was 0.
+> +	 */
+> +
+> +        rlim.rlim_cur = 0;
+> +        rlim.rlim_max = 0;
+> +        if ((ret = setrlimit(RLIMIT_MEMLOCK,&rlim)) != 0)
+> +                printf("Failed at setrlimit() return %d \n", ret);
+> +
+>  	if(seteuid(pw->pw_uid) != 0) {
+>  		if(errno == EPERM) {
+>  			printf("You don't have permission to change your UID.\n");
+> diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/mlock/speculative/12-1.c
+> b/testcases/open_posix_testsuite/conformance/interfaces/mlock/speculative/12-1.c
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/mlock/speculative/12-1.c	2007-07-26
+> 17:32:13.000000000 +0530
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mlock/speculative/12-1.c	2009-06-12
+> 17:18:24.000000000 +0530
+> @@ -8,7 +8,8 @@
+>   *  GNU General Public License for more details.
+>   *
+>   * Test that the mlock() function sets errno = EPERM if the calling process
+> - * does not have the appropriate privilege to perform the requested operation.
+> + * does not have the appropriate privilege to perform the requested operation
+> + * (Linux 2.6.9 and later) and its RLIMIT_MEMLOCK soft resource limit set to 0.
+>   */
+> 
+>  #define _XOPEN_SOURCE 600
+> @@ -21,6 +22,7 @@
+>  #include <sys/types.h>
+>  #include <pwd.h>
+>  #include <string.h>
+> +#include <sys/resource.h>
+>  #include "posixtest.h"
+> 
+>  #define BUFSIZE 8
+> @@ -29,6 +31,9 @@
+>  int set_nonroot()
+>  {
+>  	struct passwd *pw;
+> +        struct rlimit rlim;
+> +        int ret=0;
+> +
+>  	setpwent();
+>  	/* search for the first user which is non root */
+>  	while((pw = getpwent()) != NULL)
+> @@ -40,6 +45,18 @@
+>  		return 1;
 >  	}
 > 
->  	sleep(1);
-> -	if (wait(&status) < 0)
-> +	if (waitpid(-1, &status, __WALL) < 0)
->  		tst_resm(TWARN, "parent: waitpid() failed.");
-> 
->  	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+> +	/*
+> +	 * mlock()
+> +	 * EPERM:
+> +	 * (Linux 2.6.9 and later) the caller was not privileged (CAP_IPC_LOCK)
+> +	 * and its RLIMIT_MEMLOCK soft resource limit was 0.
+> +	 */
+> +
+> +        rlim.rlim_cur = 0;
+> +        rlim.rlim_max = 0;
+> +        if ((ret = setrlimit(RLIMIT_MEMLOCK,&rlim)) != 0)
+> +                printf("Failed at setrlimit() return %d \n", ret);
+> +
+>  	if(seteuid(pw->pw_uid) != 0) {
+>  		if(errno == EPERM) {
+>  			printf("You don't have permission to change your UID.\n");
 
 
 ------------------------------------------------------------------------------
