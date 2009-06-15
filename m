@@ -1,33 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MHWfL-0002PE-9m
-	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2009 05:29:31 +0000
-Received: from e4.ny.us.ibm.com ([32.97.182.144])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MHWfH-0008Ux-H1
-	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2009 05:29:31 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e4.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5J5OQEt003116
-	for <ltp-list@lists.sourceforge.net>; Fri, 19 Jun 2009 01:24:26 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5J5TQAb255064
-	for <ltp-list@lists.sourceforge.net>; Fri, 19 Jun 2009 01:29:26 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5J5TQ36024966
-	for <ltp-list@lists.sourceforge.net>; Fri, 19 Jun 2009 01:29:26 -0400
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MGIAf-000758-II
+	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:48:45 +0000
+Received: from [32.97.182.138] (helo=e8.ny.us.ibm.com)
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MGIAe-0007yR-6V
+	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:48:45 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e8.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5FJ4ouL013636
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Jun 2009 15:04:50 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5FJFTpE245528
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Jun 2009 15:15:29 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5FJFR3Y013878
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Jun 2009 15:15:28 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <49b7c2350906182211s34c84011qce55fab5845274f1@mail.gmail.com>
-References: <49b7c2350906120147p1a68cde1ua00b2875052ea99c@mail.gmail.com>
-	<1245346296.5041.34.camel@subratamodak.linux.ibm.com>
-	<49b7c2350906182211s34c84011qce55fab5845274f1@mail.gmail.com>
-Date: Fri, 19 Jun 2009 10:59:20 +0530
-Message-Id: <1245389361.5041.53.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <f5a7b3810906120628g793d0bd6xea608e96690a70c7@mail.gmail.com>
+References: <f5a7b3810906120628g793d0bd6xea608e96690a70c7@mail.gmail.com>
+Date: Tue, 16 Jun 2009 00:45:19 +0530
+Message-Id: <1245093319.4871.32.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] I met "You can specify it with option -b" error message
+Subject: Re: [LTP] [FIX PATCH] POSIX aio_error/3-1.c
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -41,62 +39,100 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: GeunSik Lim <leemgs1@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Andrew Vagin <avagin@parallels.com>
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, rohit.170309@gmail.com
 
-On Fri, 2009-06-19 at 14:11 +0900, GeunSik Lim wrote:
-> On Fri, Jun 19, 2009 at 2:31 AM, Subrata
-> Modak<subrata@linux.vnet.ibm.com> wrote:
-> >> remove test cases which require the block device.
-> >> You can specify it with option -b
-> >
-> > This is not an error message at all. See this:
-> > http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/runltp?r1=1.40&r2=1.41
+On Fri, 2009-06-12 at 18:58 +0530, naresh kamboju wrote: 
+> Hi,
 > 
-> I checked above site that you said. Thank you for sharing.
-> I summarized result of benchmark  using ltp-full-20090531.
-> ----------------------------------------------------------------------------------------------------
->  Linux RootFS        Linux Kernel             LTP        Result(Log)
->          Result(HTML)
-> ----------------------------------------------------------------------------------------------------
-> CentOS 5.3                2.6.24              20090531      Success
->               Success
-> Fedora   11                2.6.29              20090531
-> Success(with+ctrl C)   Failed
+> I have noticed failures under
+> testcases/open_posix_testsuite/conformance/interfaces/aio_error/3-1.c
+> and fixed.
+> Please find the patch below and as attachment.
 > 
-> #> cd ltp-full-20090531
-> #> ./configure
-> #> make
-> #> make install
-> #> time ./runalltests.sh  OR
->      time ./runltp -v -l alltest.log  -o alltest.out -g alltest.html
-> -x 4
+> Best regards
+> Naresh Kamboju
+> 
+> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
 
-Because, when you use the option -o, ltp-pan will redirect all your test
-output to ltp/output/alltest.out. Do tail -f ltp/output/alltest.out, you
-will see output scrolling out. Given the size of default ltp run, you
-can expect somewhere from 1.5 to 2.5 hours before your command prompt
-returns from:
-
-time ./runltp -v -l alltest.log  -o alltest.out -g alltest.html
+Thanks.
 
 Regards--
 Subrata
 
 > 
->         ....    No response  ......
+> diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/aio_error/3-1.c
+> b/testcases/open_posix_testsuite/conformance/interfaces/aio_error/3-1.c
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_error/3-1.c	2009-06-12
+> 18:03:14.000000000 +0530
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_error/3-1.c	2009-06-12
+> 18:00:21.000000000 +0530
+> @@ -36,29 +36,55 @@
 > 
-> I still can't view "#>" prompt in my Fedora 11 distribution after 24hours.
-> I don't know what is reason of this problem  in Fedora 11.
+>  int main()
+>  {
+> -	struct aiocb bad;
+> -	int ret;
+> +
+> +        char tmpfname[256];
+> +#define BUF_SIZE 512
+> +        char buf[BUF_SIZE];
+> +        int fd;
+> +        struct aiocb aiocb;
+> +	int ret=0;
 > 
+>  #if _POSIX_ASYNCHRONOUS_IO != 200112L
+> -	return PTS_UNSUPPORTED;
+> +        exit(PTS_UNSUPPORTED);
+>  #endif
 > 
-> >
-> > Andrew would also explain you a bit.
-> >
-> > Regards--
-> > Subrata
-> >
+> -	memset (&bad, 0, sizeof (struct aiocb));
+> +        snprintf(tmpfname, sizeof(tmpfname), "/tmp/pts_aio_error_3_1_%d",
+> +                  getpid());
+> +        unlink(tmpfname);
+> +        fd = open(tmpfname, O_CREAT | O_RDWR | O_EXCL,
+> +                  S_IRUSR | S_IWUSR);
+> +        if (fd == -1)
+> +        {
+> +                printf(TNAME " Error at open(): %s\n",
+> +                       strerror(errno));
+> +                exit(PTS_UNRESOLVED);
+> +        }
+> +
+> +        unlink(tmpfname);
+> +
+> +	memset (&aiocb, 0, sizeof (struct aiocb));
 > 
+> -	ret = aio_error(&bad);
+> -	if (ret != -1)
+> +        aiocb.aio_fildes = fd;
+> +        aiocb.aio_buf = buf;
+> +        aiocb.aio_reqprio = -1;
+> +        aiocb.aio_nbytes = BUF_SIZE;
+> +
+> +        if (aio_write(&aiocb) != 0)
+>  	{
+> -		printf(TNAME " bad aio_error return value; %d\n", ret);
+> -		return PTS_FAIL;
+> +                printf(TNAME " bad aio_read return value()\n");
+> +                exit(PTS_FAIL);
+>  	}
+> 
+> -	if (errno != EINVAL)
+> +	while (aio_error (&aiocb) == EINPROGRESS);
+> +	ret = aio_error(&aiocb);
+> +
+> +	if (ret != EINVAL)
+>  	{
+>  		printf(TNAME " errno is not EINVAL %s\n", strerror(errno));
+>  		return PTS_FAIL;
+>  	}
+> 
+> -
+> +	close(fd);
+>  	printf ("Test PASSED\n");
+>  	return PTS_PASS;
+>  }
 
 
 ------------------------------------------------------------------------------
