@@ -1,30 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1MLemk-0004Uo-US
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 14:58:14 +0000
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MLemk-0004AF-3k
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 14:58:14 +0000
-Received: from d01relay07.pok.ibm.com (d01relay07.pok.ibm.com [9.56.227.147])
-	by e1.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5UErS8L006914
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 10:53:28 -0400
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d01relay07.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5UEwADX557292
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 10:58:10 -0400
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5UEw9XM018014
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 08:58:10 -0600
-From: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Date: Tue, 30 Jun 2009 20:28:06 +0530
-Message-Id: <20090630145806.11163.61029.sendpatchset@localhost.localdomain>
-In-Reply-To: <20090630145706.11163.54040.sendpatchset@localhost.localdomain>
-References: <20090630145706.11163.54040.sendpatchset@localhost.localdomain>
-Subject: [LTP] [Patch 7/10]Fixes for sched_mc & sched_smt interface test
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MG6SN-0005DW-Sh
+	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 07:18:15 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MG6S7-000357-UP
+	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 07:18:15 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 15 Jun 2009 03:17:54 -0400
+References: <4A35264D.10800@bravegnu.org> <4A35B41B.3090504@gmail.com>
+In-Reply-To: <4A35B41B.3090504@gmail.com>
+MIME-Version: 1.0
+Message-Id: <200906150317.55879.vapier@gentoo.org>
+Subject: Re: [LTP] [RFC] Using checkpatch.pl
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,63 +24,80 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7497608301711945137=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yaneurabeya@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-[Patch 7/10]Fixes for sched_mc & sched_smt interface test
-Existing testcase in LTP would fail or not cover all possible sched_mc values. 
-This patch has been written to make testcase flexible to run on future releases.
+--===============7497608301711945137==
+Content-Type: multipart/signed; boundary="nextPart1509307.TMb9ACZ30G";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+--nextPart1509307.TMb9ACZ30G
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-diff -uprN ltp_orig/testcases/kernel/power_management/test_sched_mc.sh ltp_patched/testcases/kernel/power_management/test_sched_mc.sh
---- ltp_orig/testcases/kernel/power_management/test_sched_mc.sh	2009-06-30 15:04:19.000000000 +0530
-+++ ltp_patched/testcases/kernel/power_management/test_sched_mc.sh	2009-06-30 16:09:06.000000000 +0530
-@@ -2,8 +2,10 @@
- 
- . pm_include.sh
- 
--valid_input="0 1 2"
--invalid_input="a abcefg x1999 xffff -1 -00000
-+get_kernel_version
-+get_valid_input $kernel_version
-+
-+invalid_input="3 4 5 6 7 8 a abcefg x1999 xffff -1 -00000
- 200000000000000000000000000000000000000000000000000000000000000000000000000000
- ox324 -0xfffffffffffffffffffff"
- test_file="/sys/devices/system/cpu/sched_mc_power_savings"
-@@ -14,7 +16,7 @@ fi
- 
- RC=0
- echo "${0}: ---Valid test cases---"
--check_input "${valid_input}" valid $test_file
-+check_input "${valid_input}" valid $test_file 
- RC=$?
- echo "${0}: ---Invalid test cases---"
- check_input "${invalid_input}" invalid $test_file
-diff -uprN ltp_orig/testcases/kernel/power_management/test_sched_smt.sh ltp_patched/testcases/kernel/power_management/test_sched_smt.sh
---- ltp_orig/testcases/kernel/power_management/test_sched_smt.sh	2009-06-30 15:04:19.000000000 +0530
-+++ ltp_patched/testcases/kernel/power_management/test_sched_smt.sh	2009-06-30 16:09:13.000000000 +0530
-@@ -1,8 +1,11 @@
- #!/bin/bash
- 
- . pm_include.sh
--valid_input="0 1"
--invalid_input="a abcefg x1999 xffff -1 -00000
-+
-+get_kernel_version
-+get_valid_input $kernel_version
-+
-+invalid_input="3 4 5 6 7 8 a abcefg x1999 xffff -1 -00000
- 200000000000000000000000000000000000000000000000000000000000000000000000000000
- ox324 -0xfffffffffffffffffffff"
- test_file="/sys/devices/system/cpu/sched_smt_power_savings"
+On Sunday 14 June 2009 22:38:19 Garrett Cooper wrote:
+> -----BEGIN PGP MESSAGE-----
+> Charset: ISO-8859-1
+> Version: GnuPG v2.0.11 (GNU/Linux)
+> Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+>
+> hQIOA5OwxKigUnCpEAf+OF67wA6dR9skcNJZF15Z50C5w+e5lumGihLbP4lGx2W/
+
+looks like you hit the wrong key ...
+-mike
+
+--nextPart1509307.TMb9ACZ30G
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJKNfWjAAoJEEFjO5/oN/WBTBoP/0G7SMCqcT1ePpd7o9CWfOqD
+i3/BCz3QO5GPkUgO6qr2w8RUGs0D71OLJ0Wn1F9X/T5YM/tCztKgW8pOHIzIhx7y
+KktLfksbNCyD8c5YiNac88sY/2hMgK1Ni+f1UxEhBbalsjfOpvO+Fm2xGB9A1V8T
+WnqboCSBarK6BZZpigHSWLjJAyuiFrbOX+BaOpcYs7r9youKrqC1u21ECC04KIIP
+/9DblbJ3I9w2UrXRJDQqaVggWwAGZ8nXCZ7mf9DVI/TAShnVy2G19QjGwYOqmEo9
+j+WZG1RGP5LKJ+HO5UgpVdYORwsU4s63/UJGCVOHoLCk00+yLnMEM98ti0eDLdEz
+ptk6s6cQvBmGDG6W83hrTxXBEY9ASSrPVAJecctbXNoMZFhL7nw9iSDJuqZiJLIh
+qhEau9n60diz80qNN6lzpIt/vzYmqoOFDQFbz90gQOoQFgyqzzAH9NjWsjHSC/Lu
+VxoV11ljRYJWS/OqHRL+dpaePEXy6OHVYTI09nydCBHbppH+AWhMhHGBH3sKWUx6
+PcPQ0hFJASfX353AhV2s+B4T8E3WUAIBY9/X68ZGk4CZHdMKkEdUzRjY5tuawT+8
+VT0y9vVHFwjKPyTnwenAOfCa14sL+e9CG6uiFHZnkftWvVgkpZXD2FtoG3exXgLs
+KChzdIhKcDLQDSprFPVc
+=/HnN
+-----END PGP SIGNATURE-----
+
+--nextPart1509307.TMb9ACZ30G--
+
+
+--===============7497608301711945137==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
+--===============7497608301711945137==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============7497608301711945137==--
+
