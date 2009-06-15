@@ -1,32 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJkyV-0007GJ-Et
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 09:10:31 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MJkyQ-00062S-3Q
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 09:10:31 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e2.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5P95afZ010957
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 05:05:36 -0400
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5P9AOMk246634
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 05:10:24 -0400
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5P9AOZW025767
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 05:10:24 -0400
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MGHwo-0000dO-Do
+	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:34:26 +0000
+Received: from [32.97.110.154] (helo=e36.co.us.ibm.com)
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MGHwn-0004Zc-Df
+	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:34:26 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e36.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5FJEPxx021927
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Jun 2009 13:14:25 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5FJFnxN259816
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Jun 2009 13:15:49 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5FJFnK8004719
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Jun 2009 13:15:49 -0600
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200906232049.n5NKne0h007108@e5.ny.us.ibm.com>
-References: <200906232049.n5NKne0h007108@e5.ny.us.ibm.com>
-Date: Thu, 25 Jun 2009 14:39:33 +0530
-Message-Id: <1245920973.5542.33.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <f5a7b3810906120640u7a290abcrd8fa52c36d82f754@mail.gmail.com>
+References: <f5a7b3810906120640u7a290abcrd8fa52c36d82f754@mail.gmail.com>
+Date: Tue, 16 Jun 2009 00:45:30 +0530
+Message-Id: <1245093330.4871.35.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Run the eventfd test in a temporary directory,
-	because it creates some files
+Subject: Re: [LTP] [FIX PATCH] POSIX aio_write/8-2.c
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -40,57 +40,75 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>, "Vijay Kumar B." <vijaykumar@bravegnu.org>
-Cc: ltp-list@lists.sourceforge.net, Davide Libenzi <davidel@xmailserver.org>
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, rohit.170309@gmail.com
 
-On Mon, 2008-12-29 at 14:48 +0100, Jiri Palecek wrote: 
-> Hello,
+On Fri, 2009-06-12 at 19:10 +0530, naresh kamboju wrote: 
+> Hi,
 > 
-> the eventfd test creates some files in the current directory. I think it should be creating the files in a temporary directory instead, as is already the standard with other LTP tests, because the current might be nonwriteable and the user might not want the files left there.
+> I have noticed failures under
+> testcases/open_posix_testsuite/conformance/interfaces/aio_write/8-2.c
+> and fixed.
+> Please find the patch below and as attachment.
 > 
-> Regards
->     Jiri Palecek
+> Best regards
+> Naresh Kamboju
 > 
-> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
 
-Thanks. 
-
-Recently i have seen some patches on LKML from Davide on the change for
-eventfd() interface. Could you please verify how they will affect our
-tests, and, make changes if necessary ?
-http://lkml.org/lkml/2009/6/24/590,
+Done.
 
 Regards--
 Subrata
 
-> ---
->  testcases/kernel/syscalls/eventfd/eventfd01.c |    3 +++
->  1 files changed, 3 insertions(+), 0 deletions(-)
 > 
-> diff --git a/testcases/kernel/syscalls/eventfd/eventfd01.c b/testcases/kernel/syscalls/eventfd/eventfd01.c
-> index ee09752..0eed8d1 100644
-> --- a/testcases/kernel/syscalls/eventfd/eventfd01.c
-> +++ b/testcases/kernel/syscalls/eventfd/eventfd01.c
-> @@ -759,6 +759,8 @@ static void setup(void)
->  	if (tst_kvercmp(2, 6, 22) < 0)
->  		tst_brkm(TCONF, cleanup, "2.6.22 or greater kernel required");
 > 
-> +	/* Create a temporary directory & chdir there */
-> +	tst_tmpdir();
->  	/* Pause if that option was specified
->  	 * TEST_PAUSE contains the code to fork the test with the -c option.
->  	 */
-> @@ -776,6 +778,7 @@ static void cleanup(void)
->  	 */
->  	TEST_CLEANUP;
+> diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/aio_write/8-2.c
+> b/testcases/open_posix_testsuite/conformance/interfaces/aio_write/8-2.c
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_write/8-2.c	2009-06-12
+> 18:10:32.000000000 +0530
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_write/8-2.c	2009-06-12
+> 18:00:21.000000000 +0530
+> @@ -42,6 +42,7 @@
+>  	char buf[BUF_SIZE];
+>  	int fd;
+>  	struct aiocb aiocb;
+> +	int ret=0;
 > 
-> +	tst_rmdir();
->  	/* exit with return code appropriate for results */
->  	tst_exit();
->   /*NOTREACHED*/}
+>  #if _POSIX_ASYNCHRONOUS_IO != 200112L
+>  	exit(PTS_UNSUPPORTED);
+> @@ -67,13 +68,21 @@
+>  	aiocb.aio_buf = buf;
+>  	aiocb.aio_nbytes = BUF_SIZE;
+> 
+> -	if (aio_write(&aiocb) != -1)
+> +	/*
+> +	 * EBADF is encountered at a later stage
+> +	 * and should be collected by aio_error()
+> +	 */
+> +	
+> +	if (aio_write(&aiocb) != 0)
+>  	{
+>  		printf(TNAME " bad aio_write return value()\n");
+>  		exit(PTS_FAIL);
+>  	}
+> 
+> -	if (errno != EBADF)
+> +	while (aio_error(&aiocb) == EINPROGRESS);
+> +	ret = aio_error(&aiocb);
+> +	
+> +	if (ret != EBADF)
+>  	{
+>  		printf(TNAME " errno is not EBADF %s\n", strerror(errno));
+>  		exit(PTS_FAIL);
 
 
 ------------------------------------------------------------------------------
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
