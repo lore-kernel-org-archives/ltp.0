@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mpradeep@linux.vnet.ibm.com>) id 1MCoXw-0004Vs-Ux
-	for ltp-list@lists.sourceforge.net; Sat, 06 Jun 2009 05:34:24 +0000
-Received: from e28smtp02.in.ibm.com ([59.145.155.2])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MCoXp-000667-VK
-	for ltp-list@lists.sourceforge.net; Sat, 06 Jun 2009 05:34:19 +0000
-From: Munipradeep Beerakam <mpradeep@linux.vnet.ibm.com>
-In-Reply-To: <20090604112922.12364.5307.sendpatchset@subratamodak.linux.ibm.com>
-References: <20090604112922.12364.5307.sendpatchset@subratamodak.linux.ibm.com>
-Date: Sat, 06 Jun 2009 10:51:47 +0530
-Message-Id: <1244265707.9497.1.camel@munipradeep-laptop>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <njoly@pasteur.fr>) id 1MGVMN-00015t-32
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 09:53:43 +0000
+Received: from munster3.sis.pasteur.fr ([157.99.64.214])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MGVL8-0001Il-FJ
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 09:53:43 +0000
+Date: Tue, 16 Jun 2009 11:52:20 +0200
+From: Nicolas Joly <njoly@pasteur.fr>
+Message-ID: <20090616095220.GA218461@medusa.sis.pasteur.fr>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] LTP May 2009 build fail fix for ssgetmask()
-	syscall
+Content-Type: multipart/mixed; boundary="G4iJoqBmSsgzjUCe"
+Content-Disposition: inline
+Subject: [LTP] Small typo in sgetmask01.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,130 +24,71 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: Ltp-List <ltp-list@lists.sf.net>
+To: LTP list <ltp-list@lists.sf.net>
+
+
+--G4iJoqBmSsgzjUCe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
 
 Hi,
 
-I applied this patch. Now, LTP is compiling successfully on both x86 and
-x86_64 architectures.
+Here follow a small patch that fix a typo in sgetmask01.c testcase,
+where __NR_ssetmask is badly used instead of __NR_sgetmask.
 
-Thanks
-Muni
+Regards.
 
-On Thu, 2009-06-04 at 16:59 +0530, Subrata Modak wrote:
-> >On Thu, 2009-06-04 at 15:56 +0530, Munipradeep Beerakam wrote:
-> >Hi,
-> > 
-> > It failed on both x86 and x86_64 architectures
-> > 
-> > Regards
-> > Muni
-> > 
-> > On Thu, 2009-06-04 at 15:55 +0900, Nobuhiro Iwamatsu wrote:
-> > > Hi,
-> > > 
-> > > Munipradeep Beerakam wrote:
-> > >  > Hi,
-> > >  >
-> > >  > I tried to build the LTP tarball ltp-full-20090531.tgz on RHEL5.4
-> > >  > pre-Alpha Distribution. But build failed with the following error:
-> > >  >
-> > >  > ------------------------------------------------------------------
-> > >  >
-> > >  > make[4]: Entering directory
-> > >  > `/root/ltp-full-20090531/testcases/kernel/syscalls/sgetmask'
-> > >  > gcc -g -O2 -I../../include -g -Wall -I../../../../include -Wall
-> > >  > sgetmask01.c  -L../../../../lib -lltp -o sgetmask01
-> > >  > sgetmask01.c: In function bmainb:
-> > >  > sgetmask01.c:142: error: b__NR_ssetmaskb undeclared (first use in this
-> > >  > function)
-> > >  > sgetmask01.c:142: error: (Each undeclared identifier is reported only
-> > >  > once
-> > >  > sgetmask01.c:142: error: for each function it appears in.)
-> > >  > make[4]: *** [sgetmask01] Error 1
-> > >  > make[4]: Leaving directory
-> > >  > `/root/ltp-full-20090531/testcases/kernel/syscalls/sgetmask'
-> > >  > make[3]: *** [all] Error 2
-> > >  > make[3]: Leaving directory
-> > >  > `/root/ltp-full-20090531/testcases/kernel/syscalls'
-> > >  > make[2]: *** [all] Error 2
-> > >  > make[2]: Leaving directory `/root/ltp-full-20090531/testcases/kernel'
-> > >  > make[1]: *** [all] Error 2
-> > >  > make[1]: Leaving directory `/root/ltp-full-20090531/testcases'
-> > >  > make: *** [all] Error 2
-> > 
-> 
-> Can you please try out this patch and see whether you are still
-> able to reproduce it in any of your architecture ?
-> 
-> Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>
-> ---
-> 
-> --- ltp-full-20090531/testcases/kernel/syscalls/sgetmask/sgetmask01.c.orig	2009-06-04 16:41:22.000000000 +0530
-> +++ ltp-full-20090531/testcases/kernel/syscalls/sgetmask/sgetmask01.c	2009-06-04 16:51:36.000000000 +0530
-> @@ -49,7 +49,7 @@
-> 
->  #include <stdio.h>
->  #include <signal.h>
-> -#include <sys/syscall.h>
-> +#include <syscall.h>
->  #include <unistd.h>
->  #include <stdio.h>
->  #include <errno.h>
-> @@ -125,6 +125,7 @@ int main(int ac, char **av) {
->  	int lc;                 /* loop counter */
->          char *msg;              /* message returned from parse_opts */
->  	
-> +#ifdef __NR_ssetmask
->          /* parse standard options */
->          if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
->               tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
-> @@ -155,5 +156,9 @@ int main(int ac, char **av) {
->          }	
->  	cleanup();
->          tst_exit();
-> +#else
-> +	tst_resm(TCONF,"__NR_ssetmask not defined for this Distro/Arch");
-> +	tst_exit();
-> +#endif
->  }
-> 
-> ---
-> Regards--
-> Subrata
-> 
-> >  >
-> > >  > ------------------------------------------------------------------
-> > >  >
-> > >  > The variable '__NR_ssetmask' declaration is available in /usr/include
-> > >  >
-> > >  > ~# grep -r "__NR_ssetmask" /usr/include/
-> > >  > /usr/include/bits/syscall.h:#define SYS_ssetmask __NR_ssetmask
-> > >  > /usr/include/asm-i386/unistd.h:#define __NR_ssetmask             69
-> > >  >
-> > >  > What could be the reason for failure?
-> > >  >
-> > > What kind of arch do you use?
-> > > x86_64? I became the same problem too.
-> > > x86_64 does not seem to have this systemcall.
-> > > 
-> > > Best regards,
-> > >   Nobuhiro
-> > > 
-> > 
+-- 
+Nicolas Joly
 
+Biological Software and Databanks.
+Institut Pasteur, Paris.
+
+--G4iJoqBmSsgzjUCe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="ltp-sgetmask.diff"
+
+Index: testcases/kernel/syscalls/sgetmask/sgetmask01.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/sgetmask/sgetmask01.c,v
+retrieving revision 1.1
+diff -u -p -r1.1 sgetmask01.c
+--- testcases/kernel/syscalls/sgetmask/sgetmask01.c	21 May 2009 18:35:31 -0000	1.1
++++ testcases/kernel/syscalls/sgetmask/sgetmask01.c	16 Jun 2009 09:45:37 -0000
+@@ -141,7 +141,7 @@ int main(int ac, char **av) {
+ 			for (sig = -3; sig <= SIGRTMAX + 1; sig++){
+ 				TEST(syscall(__NR_ssetmask,sig));
+                 		tst_resm(TINFO,"Setting signal : %d -- return of setmask : %d",sig,TEST_RETURN);     //call sgetmask()
+-                     		TEST(syscall(__NR_ssetmask));     //call sgetmask()
++                     		TEST(syscall(__NR_sgetmask));     //call sgetmask()
+                      		if(TEST_RETURN != sig) {
+         				tst_resm(TINFO,"Oops,setting sig %d, got %d",sig,TEST_RETURN);
+                      		} else
+
+--G4iJoqBmSsgzjUCe
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-OpenSolaris 2009.06 is a cutting edge operating system for enterprises 
-looking to deploy the next generation of Solaris that includes the latest 
-innovations from Sun and the OpenSource community. Download a copy and 
-enjoy capabilities such as Networking, Storage and Virtualization. 
-Go to: http://p.sf.net/sfu/opensolaris-get
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
+--G4iJoqBmSsgzjUCe
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--G4iJoqBmSsgzjUCe--
+
