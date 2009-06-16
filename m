@@ -1,33 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MLfv5-00029O-GT
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 16:10:55 +0000
-Received: from e7.ny.us.ibm.com ([32.97.182.137])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MLfur-0002NY-5P
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 16:10:42 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e7.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5UFvuSw010571
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 11:57:56 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5UGAeLq240328
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 12:10:40 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5UGAddT015740
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 12:10:40 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090630145833.11163.78843.sendpatchset@localhost.localdomain>
-References: <20090630145706.11163.54040.sendpatchset@localhost.localdomain>
-	<20090630145833.11163.78843.sendpatchset@localhost.localdomain>
-Date: Tue, 30 Jun 2009 21:40:31 +0530
-Message-Id: <1246378232.6978.12.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [Patch 10/10]Patch to add another command file in runtest
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <naveenspen@gmail.com>) id 1MGTgx-0008FZ-M2
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 08:06:51 +0000
+Received: from mail-yx0-f177.google.com ([209.85.210.177])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MGTgw-0004Lx-GN
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 08:06:51 +0000
+Received: by yxe7 with SMTP id 7so399975yxe.28
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 16 Jun 2009 01:06:49 -0700 (PDT)
+MIME-Version: 1.0
+Date: Tue, 16 Jun 2009 13:36:49 +0530
+Message-ID: <ab64ec20906160106g664052edo690bdaf97c2ed847@mail.gmail.com>
+From: naveen penumala <naveenspen@gmail.com>
+Subject: [LTP] unable to install ltp-full-20090531
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,39 +25,101 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7970722793354930016=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
+
+--===============7970722793354930016==
+Content-Type: multipart/alternative; boundary=001e680f11a0247705046c72a803
+
+--001e680f11a0247705046c72a803
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+Please look at the below compilation error at the time of "make all" after
+configuration.
+Here i'm using Suse linux, and kernel version is 2.6.16.21.
+
+Please help me regarding this.
 
 
-On Tue, 2009-06-30 at 20:28 +0530, Poornima Nayak wrote:
-> [Patch 10/10]Patch to add another command file in runtest
-> 
-> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+make[4]: Entering directory
+`/home/kevin/tests/LTP/ltp-full-20090531/testcases/kernel/mem/mem'
+gcc -g -O2 -Wall -I../../../../include    mem02.c -L../../../../lib -lltp
+-o mem02
+mem02.c: In function =E2main=E2:
+mem02.c:71: internal compiler error: in merge_alias_info, at
+tree-ssa-copy.c:235
+Please submit a full bug report,
+with preprocessed source if appropriate.
+make[4]: *** [mem02] Error 1
+make[4]: Leaving directory
+`/home/kevin/tests/LTP/ltp-full-20090531/testcases/kernel/mem/mem'
+make[3]: *** [all] Error 2
+make[3]: Leaving directory
+`/home/kevin/tests/LTP/ltp-full-20090531/testcases/kernel/mem'
+make[2]: *** [all] Error 2
+make[2]: Leaving directory
+`/home/kevin/tests/LTP/ltp-full-20090531/testcases/kernel'
+make[1]: *** [all] Error 2
+make[1]: Leaving directory
+`/home/kevin/tests/LTP/ltp-full-20090531/testcases'
+make: *** [all] Error 2
 
-The last one also done.
 
-Regards--
-Subrata
+Thanks & Regards,
+-NVN
 
-> 
-> diff -uprN ltp_orig/runtest/power_management_tests_exclusive ltp_patched/runtest/power_management_tests_exclusive
-> --- ltp_orig/runtest/power_management_tests_exclusive	1970-01-01 05:30:00.000000000 +0530
-> +++ ltp_patched/runtest/power_management_tests_exclusive	2009-06-30 16:25:28.000000000 +0530
-> @@ -0,0 +1 @@
-> +POWER_MANAGEMENT runpwtests.sh -exclusive
-> 
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+--001e680f11a0247705046c72a803
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
+Hi, <br><br>Please look at the below compilation error at the time of &quot=
+;make all&quot; after configuration.<br>Here i&#39;m using Suse linux, and =
+kernel version is 2.6.16.21.<br><br>Please help me regarding this. <br><br>
+<br>make[4]: Entering directory `/home/kevin/tests/LTP/ltp-full-20090531/te=
+stcases/kernel/mem/mem&#39;<br>gcc -g -O2 -Wall -I../../../../include=A0=A0=
+=A0 mem02.c -L../../../../lib -lltp=A0 -o mem02<br>mem02.c: In function =E2=
+main=E2:<br>
+mem02.c:71: internal compiler error: in merge_alias_info, at tree-ssa-copy.=
+c:235<br>Please submit a full bug report,<br>with preprocessed source if ap=
+propriate.<br>make[4]: *** [mem02] Error 1<br>make[4]: Leaving directory `/=
+home/kevin/tests/LTP/ltp-full-20090531/testcases/kernel/mem/mem&#39;<br>
+make[3]: *** [all] Error 2<br>make[3]: Leaving directory `/home/kevin/tests=
+/LTP/ltp-full-20090531/testcases/kernel/mem&#39;<br>make[2]: *** [all] Erro=
+r 2<br>make[2]: Leaving directory `/home/kevin/tests/LTP/ltp-full-20090531/=
+testcases/kernel&#39;<br>
+make[1]: *** [all] Error 2<br>make[1]: Leaving directory `/home/kevin/tests=
+/LTP/ltp-full-20090531/testcases&#39;<br>make: *** [all] Error 2<br><br><br=
+>Thanks &amp; Regards,<br>-NVN<br>
+
+--001e680f11a0247705046c72a803--
+
+
+--===============7970722793354930016==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
+--===============7970722793354930016==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============7970722793354930016==--
+
