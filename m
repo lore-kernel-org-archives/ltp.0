@@ -1,33 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJ7YW-0000OL-JZ
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:05:04 +0000
-Received: from e31.co.us.ibm.com ([32.97.110.149])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MJ7YV-0003FO-HD
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:05:04 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e31.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5NF0ViZ021157
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 09:00:31 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5NF51Cc198326
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 09:05:01 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5NF50qw031642
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 09:05:00 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200906220112.n5M1CMhv031610@e2.ny.us.ibm.com>
-References: <200906220112.n5M1CMhv031610@e2.ny.us.ibm.com>
-Date: Tue, 23 Jun 2009 20:19:49 +0530
-Message-Id: <1245768589.4860.77.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix some compiler warnings
-Reply-To: subrata@linux.vnet.ibm.com
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naveenspen@gmail.com>) id 1MGY7P-0004Uj-P3
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 12:50:27 +0000
+Received: from yw-out-2324.google.com ([74.125.46.28])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MGY7L-0002HT-54
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 12:50:27 +0000
+MIME-Version: 1.0
+In-Reply-To: <20090616095220.GA218461@medusa.sis.pasteur.fr>
+References: <20090616095220.GA218461@medusa.sis.pasteur.fr>
+Date: Tue, 16 Jun 2009 18:08:27 +0530
+Message-ID: <ab64ec20906160538i392e4cb8oa3006186c202d1bd@mail.gmail.com>
+From: naveen penumala <naveenspen@gmail.com>
+Subject: Re: [LTP] Small typo in sgetmask01.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,77 +24,134 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9106290021316309767=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
-Cc: ltp-list@lists.sourceforge.net
+To: Nicolas Joly <njoly@pasteur.fr>, LTP list <ltp-list@lists.sf.net>
 
-On Wed, 2009-06-17 at 17:06 +0200, Jiri Palecek > wrote: 
-> Hello,
-> 
-> this patch fixes compiler warnings for implicit function declarations, particularly snprintf and usleep, in mq_notify and mq_timedreceive. Note that although the functions are used in common_j_c.h, the macros have to be defined in the c files that include it, before any other header
-> 
-> Regards
->     Jiri Palecek
-> 
-> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+--===============9106290021316309767==
+Content-Type: multipart/alternative; boundary=001e680f13f4883d90046c7673c1
 
-Thanks.
+--001e680f13f4883d90046c7673c1
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Regards--
-Subrata
+Hi,
+I have applied above patch and tested. In my testing i got below error
+statements.
+I have tested on suse linux and kernel version is 2.6.16.21
 
-> ---
->  testcases/kernel/syscalls/mq_notify/mq_notify01.c  |    1 +
->  .../syscalls/mq_timedreceive/mq_timedreceive01.c   |    1 +
->  testcases/kernel/syscalls/utils/common_j_h.c       |    1 -
->  3 files changed, 2 insertions(+), 1 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/mq_notify/mq_notify01.c b/testcases/kernel/syscalls/mq_notify/mq_notify01.c
-> index 1cc1a6c..6004373 100644
-> --- a/testcases/kernel/syscalls/mq_notify/mq_notify01.c
-> +++ b/testcases/kernel/syscalls/mq_notify/mq_notify01.c
-> @@ -45,6 +45,7 @@
->  /* History:     Porting from Crackerjack to LTP is done by                    */
->  /*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
->  /******************************************************************************/
-> +#define _XOPEN_SOURCE 500
->  #include <sys/syscall.h>
->  #include <sys/types.h>
->  #include <sys/stat.h>
-> diff --git a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
-> index 43f0d8b..dadc38d 100644
-> --- a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
-> +++ b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
-> @@ -45,6 +45,7 @@
->  /* History:     Porting from Crackerjack to LTP is done by                    */
->  /*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
->  /******************************************************************************/
-> +#define _XOPEN_SOURCE 500
->  #include <sys/syscall.h>
->  #include <sys/types.h>
->  #include <sys/stat.h>
-> diff --git a/testcases/kernel/syscalls/utils/common_j_h.c b/testcases/kernel/syscalls/utils/common_j_h.c
-> index e19d433..c56f6e2 100644
-> --- a/testcases/kernel/syscalls/utils/common_j_h.c
-> +++ b/testcases/kernel/syscalls/utils/common_j_h.c
-> @@ -22,7 +22,6 @@
->   * $Id: common_j_h.c,v 1.2 2009/06/09 17:58:42 subrata_modak Exp $
->   *
->   */
-> -//#define _GNU_SOURCE 1
->  #include <stdio.h>
->  #include <sys/types.h>
->  #include <sys/wait.h>
+cc -I../../../../include -Wall    sgetmask01.c  -L../../../../lib -lltp -o
+sgetmask01
+In file included from sgetmask01.c:60:
+../../../../include/linux_syscall_numbers.h:184:1: error: unterminated
+#ifdef
+../../../../include/linux_syscall_numbers.h:13:1: error: unterminated
+#ifndef
 
+
+Thanks & Regards,
+-NVN
+On Tue, Jun 16, 2009 at 3:22 PM, Nicolas Joly <njoly@pasteur.fr> wrote:
+
+>
+> Hi,
+>
+> Here follow a small patch that fix a typo in sgetmask01.c testcase,
+> where __NR_ssetmask is badly used instead of __NR_sgetmask.
+>
+> Regards.
+>
+> --
+> Nicolas Joly
+>
+> Biological Software and Databanks.
+> Institut Pasteur, Paris.
+>
+>
+> ------------------------------------------------------------------------------
+> Crystal Reports - New Free Runtime and 30 Day Trial
+> Check out the new simplified licensing option that enables unlimited
+> royalty-free distribution of the report engine for externally facing
+> server and web deployment.
+> http://p.sf.net/sfu/businessobjects
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>
+>
+
+--001e680f13f4883d90046c7673c1
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Hi, <br>I have applied above patch and tested. In my testing i got below er=
+ror statements.<br>I have tested on suse linux and kernel version is 2.6.16=
+.21<br><br>cc -I../../../../include -Wall=A0=A0=A0 sgetmask01.c=A0 -L../../=
+../../lib -lltp -o sgetmask01<br>
+In file included from sgetmask01.c:60:<br>../../../../include/linux_syscall=
+_numbers.h:184:1: error: unterminated #ifdef<br>../../../../include/linux_s=
+yscall_numbers.h:13:1: error: unterminated #ifndef<br><br><br>Thanks &amp; =
+Regards,<br>
+-NVN<br><div class=3D"gmail_quote">On Tue, Jun 16, 2009 at 3:22 PM, Nicolas=
+ Joly <span dir=3D"ltr">&lt;<a href=3D"mailto:njoly@pasteur.fr">njoly@paste=
+ur.fr</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" style=3D"b=
+order-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; paddin=
+g-left: 1ex;">
+<br>
+Hi,<br>
+<br>
+Here follow a small patch that fix a typo in sgetmask01.c testcase,<br>
+where __NR_ssetmask is badly used instead of __NR_sgetmask.<br>
+<br>
+Regards.<br>
+<font color=3D"#888888"><br>
+--<br>
+Nicolas Joly<br>
+<br>
+Biological Software and Databanks.<br>
+Institut Pasteur, Paris.<br>
+</font><br>----------------------------------------------------------------=
+--------------<br>
+Crystal Reports - New Free Runtime and 30 Day Trial<br>
+Check out the new simplified licensing option that enables unlimited<br>
+royalty-free distribution of the report engine for externally facing<br>
+server and web deployment.<br>
+<a href=3D"http://p.sf.net/sfu/businessobjects" target=3D"_blank">http://p.=
+sf.net/sfu/businessobjects</a><br>_________________________________________=
+______<br>
+Ltp-list mailing list<br>
+<a href=3D"mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforg=
+e.net</a><br>
+<a href=3D"https://lists.sourceforge.net/lists/listinfo/ltp-list" target=3D=
+"_blank">https://lists.sourceforge.net/lists/listinfo/ltp-list</a><br>
+<br></blockquote></div><br>
+
+--001e680f13f4883d90046c7673c1--
+
+
+--===============9106290021316309767==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Are you an open source citizen? Join us for the Open Source Bridge conference!
-Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
-Need another reason to go? 24-hour hacker lounge. Register today!
-http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
+--===============9106290021316309767==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============9106290021316309767==--
+
