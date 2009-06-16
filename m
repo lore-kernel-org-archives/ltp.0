@@ -1,22 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <francesco.rundo@st.com>) id 1MEfD7-0006vo-Kb
-	for ltp-list@lists.sourceforge.net; Thu, 11 Jun 2009 08:00:33 +0000
-Received: from eu1sys200aog104.obsmtp.com ([207.126.144.117])
-	by 1b2kzd1.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MEfD5-0001Cr-GH
-	for ltp-list@lists.sourceforge.net; Thu, 11 Jun 2009 08:00:33 +0000
-Message-ID: <4A30B95F.4090903@st.com>
-Date: Thu, 11 Jun 2009 09:59:27 +0200
-From: Francesco RUNDO <francesco.rundo@st.com>
+	(envelope-from <serge@us.ibm.com>) id 1MGc3p-0005FN-U2
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 17:03:01 +0000
+Received: from e7.ny.us.ibm.com ([32.97.182.137])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MGc3j-0003gZ-CE
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 17:02:56 +0000
+Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
+	by e7.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5GGocEF010663
+	for <ltp-list@lists.sourceforge.net>; Tue, 16 Jun 2009 12:50:38 -0400
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5GH2mRP634946
+	for <ltp-list@lists.sourceforge.net>; Tue, 16 Jun 2009 13:02:49 -0400
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5GH2lII032036
+	for <ltp-list@lists.sourceforge.net>; Tue, 16 Jun 2009 11:02:48 -0600
+Date: Tue, 16 Jun 2009 12:02:48 -0500
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20090616170248.GA1186@us.ibm.com>
+References: <49b7c2350906151813r31a9fe24icee5b1244f560f7a@mail.gmail.com>
+	<49b7c2350906152243p4c970b1di74cc62badc85a2e7@mail.gmail.com>
+	<20090616161949.GA32566@us.ibm.com>
+	<200906161245.35932.sgrubb@redhat.com>
 MIME-Version: 1.0
-References: <4A267148.8000700@st.com>
-	<1244114998.4879.25.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1244114998.4879.25.camel@subratamodak.linux.ibm.com>
-Content-Type: multipart/mixed; boundary="------------080606030404040104070803"
-Subject: Re: [LTP] kernel/controllers/ testcase and CGROUPS support
+Content-Disposition: inline
+In-Reply-To: <200906161245.35932.sgrubb@redhat.com>
+Subject: Re: [LTP] Report - make error of ltp-full-20090531.tgz
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,255 +39,67 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net
-
-This is a multi-part message in MIME format.
---------------080606030404040104070803
-Content-Type: multipart/alternative;
-	boundary="------------040702090007020305040804"
-
-
---------------040702090007020305040804
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Hi Subrata,
-
-please, replace on the LTP main the previous patch with ones attached.
-The attached patch add the right labels of ifdef.
-
-Sorry for that.
-
-Thanks in advance.
---
-Francesco Rundo
-
-Subrata Modak wrote:
-
->On Wed, 2009-06-03 at 14:49 +0200, Francesco RUNDO wrote:
->  
->
->>This patch allows the cross-build of kernel/controllers (cgroups
->>tests) testcase changing the policy to check the cgroups capability at
->>build-time.
->>Signed-off-by: Francesco Rundo <francesco.rundo@st.com>
->>    
->>
->
->Great if that helps your CROSS_COMPILE environment. Merged.
->
->Regards--
->Subrata
->
->  
->
->>---
->>ltp-full-20090430-cross/testcases/kernel/controllers/Makefile.orig  2009-05-26 15:37:35.140000000 +0200
->>+++
->>ltp-full-20090430-cross/testcases/kernel/controllers/Makefile       2009-05-28 13:36:36.669998000 +0200
->>@@ -1,10 +1,26 @@
->>+ifdef $(CROSS_COMPILE)
->>+CHECK_CGROUP := $(shell test -f
->>$(TARGET_DIR)/usr/include/linux/cgroupstats.h && echo 'cgroup')
->>+else
->> CHECK_CGROUP := $(shell test -f /proc/cgroups && echo 'cgroup')
->> CHECK_CPUCTL := $(shell grep -w cpu /proc/cgroups 2>/dev/null|cut
->>-f1)
->> CHECK_MEMCTL := $(shell grep -w memory /proc/cgroups 2>/dev/null|cut
->>-f1)
->> CHECK_BLOCKIOCTL := $(shell grep -w blockio /proc/cgroups
->>2>/dev/null|cut -f1)
->> CHECK_FREEZER := $(shell grep -w freezer /proc/cgroups 2>/dev/null|
->>cut -f1)
->> CHECK_CPUSETCTL = $(shell grep -w cpuset /proc/cgroups 2>/dev/null|
->>cut -f1)
->>+endif
->>
->>+ifdef $(CROSS_COMPILE)
->>+ifeq ($(CHECK_CGROUP),cgroup)
->>+SUBDIRS += cgroup
->>+SUBDIRS += cpuctl
->>+SUBDIRS += memctl
->>+SUBDIRS += io-throttle
->>+SUBDIRS += freezer
->>+SUBDIRS += cpuset
->>+else
->>+$(info "Kernel is not compiled with control cgroup support")
->>+endif
->>+else
->> ifeq ($(CHECK_CGROUP),cgroup)
->> SUBDIRS += cgroup
->> else
->>@@ -36,6 +52,7 @@
->> else
->> $(info "Kernel is not compiled with cpuset resource controller
->>support")
->> endif
->>+endif
->>
->> # If at least one of the controllers is available then build
->>libcontrollers.
->> ifneq ($(SUBDIRS),)
->>    
->>
->
->
->  
->
-
---------------040702090007020305040804
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
-  <title></title>
-</head>
-<body text="#000000" bgcolor="#ffffff">
-Hi Subrata,<br>
-<br>
-please, replace on the LTP main the previous patch with ones attached.<br>
-The attached patch add the right labels of ifdef.<br>
-<br>
-Sorry for that.<br>
-<br>
-Thanks in advance.<br>
---<br>
-Francesco Rundo<br>
-<br>
-Subrata Modak wrote:<br>
-<blockquote type="cite"
- cite="mid1244114998.4879.25.camel@subratamodak.linux.ibm.com">
-  <pre wrap="">On Wed, 2009-06-03 at 14:49 +0200, Francesco RUNDO wrote:
-  </pre>
-  <blockquote type="cite">
-    <pre wrap="">This patch allows the cross-build of kernel/controllers (cgroups
-tests) testcase changing the policy to check the cgroups capability at
-build-time.
-Signed-off-by: Francesco Rundo <a class="moz-txt-link-rfc2396E" href="mailto:francesco.rundo@st.com">&lt;francesco.rundo@st.com&gt;</a>
-    </pre>
-  </blockquote>
-  <pre wrap=""><!---->
-Great if that helps your CROSS_COMPILE environment. Merged.
-
-Regards--
-Subrata
-
-  </pre>
-  <blockquote type="cite">
-    <pre wrap="">---
-ltp-full-20090430-cross/testcases/kernel/controllers/Makefile.orig  2009-05-26 15:37:35.140000000 +0200
-+++
-ltp-full-20090430-cross/testcases/kernel/controllers/Makefile       2009-05-28 13:36:36.669998000 +0200
-@@ -1,10 +1,26 @@
-+ifdef $(CROSS_COMPILE)
-+CHECK_CGROUP := $(shell test -f
-$(TARGET_DIR)/usr/include/linux/cgroupstats.h &amp;&amp; echo 'cgroup')
-+else
- CHECK_CGROUP := $(shell test -f /proc/cgroups &amp;&amp; echo 'cgroup')
- CHECK_CPUCTL := $(shell grep -w cpu /proc/cgroups 2&gt;/dev/null|cut
--f1)
- CHECK_MEMCTL := $(shell grep -w memory /proc/cgroups 2&gt;/dev/null|cut
--f1)
- CHECK_BLOCKIOCTL := $(shell grep -w blockio /proc/cgroups
-2&gt;/dev/null|cut -f1)
- CHECK_FREEZER := $(shell grep -w freezer /proc/cgroups 2&gt;/dev/null|
-cut -f1)
- CHECK_CPUSETCTL = $(shell grep -w cpuset /proc/cgroups 2&gt;/dev/null|
-cut -f1)
-+endif
-
-+ifdef $(CROSS_COMPILE)
-+ifeq ($(CHECK_CGROUP),cgroup)
-+SUBDIRS += cgroup
-+SUBDIRS += cpuctl
-+SUBDIRS += memctl
-+SUBDIRS += io-throttle
-+SUBDIRS += freezer
-+SUBDIRS += cpuset
-+else
-+$(info "Kernel is not compiled with control cgroup support")
-+endif
-+else
- ifeq ($(CHECK_CGROUP),cgroup)
- SUBDIRS += cgroup
- else
-@@ -36,6 +52,7 @@
- else
- $(info "Kernel is not compiled with cpuset resource controller
-support")
- endif
-+endif
-
- # If at least one of the controllers is available then build
-libcontrollers.
- ifneq ($(SUBDIRS),)
-    </pre>
-  </blockquote>
-  <pre wrap=""><!---->
-
-  </pre>
-</blockquote>
-</body>
-</html>
-
---------------040702090007020305040804--
-
---------------080606030404040104070803
-Content-Type: text/plain; name="ltp-full-20090430-fix-cgroups-testcase.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
-	filename="ltp-full-20090430-fix-cgroups-testcase.patch"
-
-This patch allows the cross-build of kernel/controllers (cgroups tests) testcase changing the policy to check the cgroups capability at build-time.
-Signed-off-by: Francesco Rundo <francesco.rundo@st.com>
---- ltp-full-20090430-cross/testcases/kernel/controllers/Makefile.orig	2009-05-26 15:37:35.140000000 +0200
-+++ ltp-full-20090430-cross/testcases/kernel/controllers/Makefile	2009-05-28 13:36:36.669998000 +0200
-@@ -1,10 +1,26 @@
-+ifdef CROSS_COMPILE
-+CHECK_CGROUP := $(shell test -f $(TARGET_DIR)/usr/include/linux/cgroupstats.h && echo 'cgroup')
-+else
- CHECK_CGROUP := $(shell test -f /proc/cgroups && echo 'cgroup')
- CHECK_CPUCTL := $(shell grep -w cpu /proc/cgroups 2>/dev/null|cut -f1)
- CHECK_MEMCTL := $(shell grep -w memory /proc/cgroups 2>/dev/null|cut -f1)
- CHECK_BLOCKIOCTL := $(shell grep -w blockio /proc/cgroups 2>/dev/null|cut -f1)
- CHECK_FREEZER := $(shell grep -w freezer /proc/cgroups 2>/dev/null| cut -f1)
- CHECK_CPUSETCTL = $(shell grep -w cpuset /proc/cgroups 2>/dev/null|cut -f1)
-+endif
- 
-+ifdef CROSS_COMPILE
-+ifeq ($(CHECK_CGROUP),cgroup)
-+SUBDIRS += cgroup
-+SUBDIRS += cpuctl
-+SUBDIRS += memctl
-+SUBDIRS += io-throttle
-+SUBDIRS += freezer
-+SUBDIRS += cpuset
-+else
-+$(info "Kernel is not compiled with control cgroup support")
-+endif
-+else
- ifeq ($(CHECK_CGROUP),cgroup)
- SUBDIRS += cgroup
- else
-@@ -36,6 +52,7 @@
- else
- $(info "Kernel is not compiled with cpuset resource controller support")
- endif
-+endif
- 
- # If at least one of the controllers is available then build libcontrollers.
- ifneq ($(SUBDIRS),)
-
---------------080606030404040104070803
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Steve Grubb <sgrubb@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, GeunSik Lim <leemgs1@gmail.com>, Andrew Morgan <morgan@kernel.org>
+
+Quoting Steve Grubb (sgrubb@redhat.com):
+> On Tuesday 16 June 2009 12:19:49 pm Serge E. Hallyn wrote:
+> > Quoting GeunSik Lim (leemgs1@gmail.com):
+> > > On Tue, Jun 16, 2009 at 1:24 PM, Serge E. Hallyn<serue@us.ibm.com> wrote:
+> > > > Quoting GeunSik Lim (leemgs1@gmail.com):
+> > > >> I made patch file to solve below problem.
+> > > >
+> > > > well, NAK to the patch, but this is a real problem that needs to
+> > > > be fixed.  I'll take a look in the morning, but Andrew do you know
+> > > > offhand what the problem is with capability.h (in F11 I gather) that
+> > > > would cause:
+> > >
+> > > Serge E. Hallyn,
+> > >
+> > > Thanks for your opinion about  this report that I posted.
+> > > Yes.  My below patch is private patch to solve  make error on Fedora 11
+> > > distribution ( fedora11 2.6.29.4-167.fc11.i686).
+> > > This means that my patch is not official patch file as you think.
+> > >
+> > > For reference,
+> > >  I used libcap 2.16 version
+> > > at the 
+> > > http://ftp.kernel.org/pub/linux/libs/security/linux-privs/kernel-2.6/  .
+> >
+> > Are you sure?
+> >
+> > With the libcap-2.16 from kernel.org, /usr/include/sys/capability.h
+> > #includes <sys/types.h>.  The version that comes with Fedora 11's
+> > libcap-devel-2.16-2.fc11.i586 #includes <linux/types.h> instead.
+> > When I just fix that, my F11 system compiles cap_bound.c just fine.
+> >
+> > Steve, do you know why that change is made?
+> 
+> Offhand I do not. I see in Fedora 11 cvs:  libcap-2.16-4. It looks fixed to me.
+> 
+> Here it was built:
+> http://koji.fedoraproject.org/koji/buildinfo?buildID=106251
+> 
+> Here it was pushed to testing repo:
+> https://admin.fedoraproject.org/updates/libcap-2.16-4.fc11
+> 
+> So, I'd enable the testing repo for F-11 to download the update. See if that 
+> doesn't work better.
+
+Thanks, trying that out now.
+
+FWIW it looks like the change was made almost a decade ago in the
+following bug:
+
+https://bugzilla.redhat.com/show_bug.cgi?id=55727
+
+whatever the problem was back then, the same testcase now breaks
+with the patched libcap, and works without.
+
+-serge
 
 ------------------------------------------------------------------------------
 Crystal Reports - New Free Runtime and 30 Day Trial
@@ -282,17 +107,7 @@ Check out the new simplified licensing option that enables unlimited
 royalty-free distribution of the report engine for externally facing 
 server and web deployment.
 http://p.sf.net/sfu/businessobjects
---------------080606030404040104070803
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------080606030404040104070803--
-
-
