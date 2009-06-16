@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <afridi.waqar@gmail.com>) id 1MJiwj-00048C-EM
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 07:00:33 +0000
-Received: from mail-px0-f197.google.com ([209.85.216.197])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MJiwi-0002r9-Gd
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 07:00:33 +0000
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <leemgs1@gmail.com>) id 1MGNF8-0004yG-8t
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 01:13:42 +0000
+Received: from [74.125.46.156] (helo=yw-out-1718.google.com)
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MGNF7-00034p-2E
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 01:13:42 +0000
+Received: by yw-out-1718.google.com with SMTP id 5so2462445ywr.82
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 15 Jun 2009 18:13:10 -0700 (PDT)
 MIME-Version: 1.0
-Date: Thu, 25 Jun 2009 13:00:30 +0600
-Message-ID: <78aaeffc0906250000i150418e8k3637acb41976c1a0@mail.gmail.com>
-From: waqar afridi <afridi.waqar@gmail.com>
-Subject: [LTP] Can not run Test
+Date: Tue, 16 Jun 2009 10:13:10 +0900
+Message-ID: <49b7c2350906151813r31a9fe24icee5b1244f560f7a@mail.gmail.com>
+From: GeunSik Lim <leemgs1@gmail.com>
+Subject: [LTP] Report - make error of ltp-full-20090531.tgz
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,71 +25,79 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8238280016898088887=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-results@lists.sourceforge.net
-Cc: ltp-list@lists.sf.net
+To: emachado@linux.vnet.ibm.com, ltp-list@lists.sourceforge.net
 
---===============8238280016898088887==
-Content-Type: multipart/alternative; boundary=000e0cd28d4a8d34b8046d26c729
-
---000e0cd28d4a8d34b8046d26c729
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-Hi All
-
-I have downloaded *ltp-full-20090531.tgz *and installed it using the
-commands *make autotools, ./configure, make all, make install.* but when I
-try to run a test like
-
-# ./ima_tpm.sh
-./ima_tpm.sh: 163: source: not found
-./ima_tpm.sh: 164: setup: not found
-
-I get the error above. What could be the problem, Desperately need help.
-
--- 
-Waqar Afridi
-Research Associate
-Member: Security Engineering Research Group (SERG)
-IM | Sciences Peshawar
-
---000e0cd28d4a8d34b8046d26c729
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-Hi All<br><br>I have downloaded <b>ltp-full-20090531.tgz </b>and installed =
-it using the commands <b>make autotools, ./configure, make all, make instal=
-l.</b> but when I try to run a test like<br><br># ./ima_tpm.sh <br>./ima_tp=
-m.sh: 163: source: not found<br>
-./ima_tpm.sh: 164: setup: not found<br><br>I get the error above. What coul=
-d be the problem, Desperately need help.<br clear=3D"all"><br>-- <br>Waqar =
-Afridi<br>Research Associate<br>Member: Security Engineering Research Group=
- (SERG)<br>
-IM | Sciences Peshawar<br>
-
---000e0cd28d4a8d34b8046d26c729--
-
-
---===============8238280016898088887==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-
---===============8238280016898088887==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============8238280016898088887==--
-
+RGVhciBFZGp1bmlvciBCLiBNYWNoYWRvCgpUaGlzIGlzIGp1c3QgcmVwb3J0IG1haWwgYWJvdXQg
+bHRwLWZ1bGwtMjAwOTA1MzEgdmVyc2lvbi4KIEkgdXNlZCBodHRwOi8vZG93bmxvYWRzLnNvdXJj
+ZWZvcmdlLm5ldC9sdHAvbHRwLWZ1bGwtMjAwOTA1MzEudGd6CnNvdXJjZSBvbiBDb3JlMiBRdWFk
+IFE2NjAwIHN5c3RlbS4KIEJ1dCwgSSBjYW4gbm90IGZpbmlzaGVkIG1ha2UgY29tbWFuZCBsaWtl
+IGJlbG93cy4KCiAqIE15IHN5c3RlbSBpbmZvcm1hdGlvbjoKICAgLiBGZWRvcmEgMTEKICAgLiAy
+LjYuMjkuNC0xNjcuZmMxMSBsaW51eCBrZXJuZWwKICAgLiBHQ0MgNC40LjAKCiAgKiBUaGlzIGlz
+IHNjcmVlbnNob3QuCltpbnZhaW5AZjExIGx0cC1mdWxsLTIwMDkwNTMxXSQKW2ludmFpbkBmMTEg
+bHRwLWZ1bGwtMjAwOTA1MzFdJCBwd2QKL29wdC9sdHAtZnVsbC0yMDA5MDUzMQpbaW52YWluQGYx
+MSBsdHAtZnVsbC0yMDA5MDUzMV0kCltpbnZhaW5AZjExIGx0cC1mdWxsLTIwMDkwNTMxXSQKW2lu
+dmFpbkBmMTEgbHRwLWZ1bGwtMjAwOTA1MzFdJCB1bmFtZSAtYQpMaW51eCBsb2NhbGhvc3QubG9j
+YWxkb21haW4gMi42LjI5LjQtMTY3LmZjMTEuaTY4Ni5QQUUgIzEgU01QIFdlZCBNYXkKMjcgMTc6
+Mjg6MjIgRURUIDIwMDkgaTY4NiBpNjg2IGkzODYgR05VL0xpbnV4CltpbnZhaW5AZjExIGx0cC1m
+dWxsLTIwMDkwNTMxXSQgZ2NjIC0tdmVyc2lvbgpnY2MgKEdDQykgNC40LjAgMjAwOTA1MDYgKFJl
+ZCBIYXQgNC40LjAtNCkKQ29weXJpZ2h0IChDKSAyMDA5IEZyZWUgU29mdHdhcmUgRm91bmRhdGlv
+biwgSW5jLgpUaGlzIGlzIGZyZWUgc29mdHdhcmU7IHNlZSB0aGUgc291cmNlIGZvciBjb3B5aW5n
+IGNvbmRpdGlvbnMuICBUaGVyZSBpcyBOTwp3YXJyYW50eTsgbm90IGV2ZW4gZm9yIE1FUkNIQU5U
+QUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4KCltpbnZhaW5AZjEx
+IGx0cC1mdWxsLTIwMDkwNTMxXSQgdGltZSBtYWtlCiAgICAgICAgICAgLi4uLi4uLi4uLi4uLi4u
+LiAgIOycl+u2gOu2hCDsg53rnrUgLi4uLi4uLi4uLi4uLi4uLi4uLi4uCm1ha2VbNl06IExlYXZp
+bmcgZGlyZWN0b3J5CmAvb3B0L2x0cC1mdWxsLTIwMDkwNTMxL3Rlc3RjYXNlcy9rZXJuZWwvc2Vj
+dXJpdHkvaW50ZWdyaXR5L2ltYS9wb2xpY3knCm1ha2VbNV06IExlYXZpbmcgZGlyZWN0b3J5CmAv
+b3B0L2x0cC1mdWxsLTIwMDkwNTMxL3Rlc3RjYXNlcy9rZXJuZWwvc2VjdXJpdHkvaW50ZWdyaXR5
+L2ltYScKbWFrZVs0XTogTGVhdmluZyBkaXJlY3RvcnkKYC9vcHQvbHRwLWZ1bGwtMjAwOTA1MzEv
+dGVzdGNhc2VzL2tlcm5lbC9zZWN1cml0eS9pbnRlZ3JpdHknCm1ha2VbNF06IEVudGVyaW5nIGRp
+cmVjdG9yeQpgL29wdC9sdHAtZnVsbC0yMDA5MDUzMS90ZXN0Y2FzZXMva2VybmVsL3NlY3VyaXR5
+L2NhcF9ib3VuZCcKY2MgLVdhbGwgIC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAtV2FsbCAgICBjYXBf
+Ym91bmRzX3IuYwotTC4uLy4uLy4uLy4uL2xpYiAtbGx0cCAtbGNhcCAtbyBjYXBfYm91bmRzX3IK
+SW4gZmlsZSBpbmNsdWRlZCBmcm9tIGNhcF9ib3VuZHNfci5jOjI4OgovdXNyL2luY2x1ZGUvc3lz
+L2NhcGFiaWxpdHkuaDoxMDI6IGVycm9yOiBleHBlY3RlZCAnPScsICcsJywgJzsnLAonYXNtJyBv
+ciAnX19hdHRyaWJ1dGVfXycgYmVmb3JlICdjYXBfc2l6ZScKL3Vzci9pbmNsdWRlL3N5cy9jYXBh
+YmlsaXR5Lmg6MTAzOiBlcnJvcjogZXhwZWN0ZWQgJz0nLCAnLCcsICc7JywKJ2FzbScgb3IgJ19f
+YXR0cmlidXRlX18nIGJlZm9yZSAnY2FwX2NvcHlfZXh0JwovdXNyL2luY2x1ZGUvc3lzL2NhcGFi
+aWxpdHkuaDoxMDg6IGVycm9yOiBleHBlY3RlZCBkZWNsYXJhdGlvbgpzcGVjaWZpZXJzIG9yICcu
+Li4nIGJlZm9yZSAnc3NpemVfdCcKL3Vzci9pbmNsdWRlL3N5cy9jYXBhYmlsaXR5Lmg6MTIwOiBl
+cnJvcjogZXhwZWN0ZWQgJyknIGJlZm9yZSAncGlkJwovdXNyL2luY2x1ZGUvc3lzL2NhcGFiaWxp
+dHkuaDoxMjM6IGVycm9yOiBleHBlY3RlZCAnKScgYmVmb3JlICdwaWQnCmNhcF9ib3VuZHNfci5j
+OjM4OjI6IHdhcm5pbmc6ICN3YXJuaW5nIENBUF9CU0VUX1JFQUQgbm90IGRlZmluZWQKY2FwX2Jv
+dW5kc19yLmM6NDM6Mjogd2FybmluZzogI3dhcm5pbmcgQ0FQX0JTRVRfRFJPUCBub3QgZGVmaW5l
+ZAptYWtlWzRdOiAqKiogW2NhcF9ib3VuZHNfcl0gRXJyb3IgMQptYWtlWzRdOiBMZWF2aW5nIGRp
+cmVjdG9yeQpgL29wdC9sdHAtZnVsbC0yMDA5MDUzMS90ZXN0Y2FzZXMva2VybmVsL3NlY3VyaXR5
+L2NhcF9ib3VuZCcKbWFrZVszXTogKioqIFthbGxdIEVycm9yIDIKbWFrZVszXTogTGVhdmluZyBk
+aXJlY3RvcnkgYC9vcHQvbHRwLWZ1bGwtMjAwOTA1MzEvdGVzdGNhc2VzL2tlcm5lbC9zZWN1cml0
+eScKbWFrZVsyXTogKioqIFthbGxdIEVycm9yIDIKbWFrZVsyXTogTGVhdmluZyBkaXJlY3Rvcnkg
+YC9vcHQvbHRwLWZ1bGwtMjAwOTA1MzEvdGVzdGNhc2VzL2tlcm5lbCcKbWFrZVsxXTogKioqIFth
+bGxdIEVycm9yIDIKbWFrZVsxXTogTGVhdmluZyBkaXJlY3RvcnkgYC9vcHQvbHRwLWZ1bGwtMjAw
+OTA1MzEvdGVzdGNhc2VzJwptYWtlOiAqKiogW2FsbF0gRXJyb3IgMgoKcmVhbAkwbTAuOTE3cwp1
+c2VyCTBtMC4zODdzCnN5cwkwbTAuMzcycwpbaW52YWluQGYxMSBsdHAtZnVsbC0yMDA5MDUzMV0k
+CltpbnZhaW5AZjExIGx0cC1mdWxsLTIwMDkwNTMxXSQKW2ludmFpbkBmMTEgbHRwLWZ1bGwtMjAw
+OTA1MzFdJCBycG0gLXFhIHwgZ3JlcCBsaWJjYXAKbGliY2FwdHVyeS1kZXZlbC0wLjMuMC0wLjMu
+MjAwODAzMjNnaXRjY2E0ZTNjLmZjMTEuaTU4NgpsaWJjYXAtMi4xNi0yLmZjMTEuaTU4NgpsaWJj
+YXBzZW8tZGV2ZWwtMC4zLjAtMC4yLjIwMDgxMDMxZ2l0NDMxYTI5My5mYzExLmk1ODYKbGliY2Fw
+dHVyeS0wLjMuMC0wLjMuMjAwODAzMjNnaXRjY2E0ZTNjLmZjMTEuaTU4NgpsaWJjYXBzZW8tdG9v
+bHMtMC4zLjAtMC4yLjIwMDgxMDMxZ2l0NDMxYTI5My5mYzExLmk1ODYKbGliY2Fwc2VvLTAuMy4w
+LTAuMi4yMDA4MTAzMWdpdDQzMWEyOTMuZmMxMS5pNTg2CmxpYmNhcC1kZXZlbC0yLjE2LTIuZmMx
+MS5pNTg2CltpbnZhaW5AZjExIGx0cC1mdWxsLTIwMDkwNTMxXSQKCgoKLS0gClJlZ2FyZHMsCkdl
+dW5TaWsgTGltICggU2Ftc3VuZyBFbGVjdHJvbmljcyApCkJsb2cgOiBodHRwOi8vYmxvZy5uYXZl
+ci5jb20vaW52YWluLwplLU1haWw6IGdldW5zaWsubGltQHNhbXN1bmcuY29tCiAgICAgICAgICAg
+bGVlbWdzQGdtYWlsLmNvbSAsIGxlZW1nczFAZ21haWwuY29tCi0tClRvIHVuc3Vic2NyaWJlIGZy
+b20gdGhpcyBsaXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmliZSBsaW51eC1rZXJuZWwiIGlu
+CnRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRvbW9Admdlci5rZXJuZWwub3JnCk1vcmUg
+bWFqb3Jkb21vIGluZm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWluZm8u
+aHRtbApQbGVhc2UgcmVhZCB0aGUgRkFRIGF0ICBodHRwOi8vd3d3LnR1eC5vcmcvbGttbC8KCi0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLQpDcnlzdGFsIFJlcG9ydHMgLSBOZXcgRnJlZSBSdW50aW1lIGFu
+ZCAzMCBEYXkgVHJpYWwKQ2hlY2sgb3V0IHRoZSBuZXcgc2ltcGxpZmllZCBsaWNlbnNpbmcgb3B0
+aW9uIHRoYXQgZW5hYmxlcyB1bmxpbWl0ZWQKcm95YWx0eS1mcmVlIGRpc3RyaWJ1dGlvbiBvZiB0
+aGUgcmVwb3J0IGVuZ2luZSBmb3IgZXh0ZXJuYWxseSBmYWNpbmcgCnNlcnZlciBhbmQgd2ViIGRl
+cGxveW1lbnQuCmh0dHA6Ly9wLnNmLm5ldC9zZnUvYnVzaW5lc3NvYmplY3RzCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlz
+dApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
+ZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
