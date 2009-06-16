@@ -1,33 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJ7Xk-0000Fg-On
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:04:16 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MJ7Xh-000317-MS
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:04:16 +0000
-Received: from d01relay07.pok.ibm.com (d01relay07.pok.ibm.com [9.56.227.147])
-	by e8.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5NErSlZ020250
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 10:53:28 -0400
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d01relay07.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5NF47CV1683684
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 11:04:09 -0400
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5NF46mj007452
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 09:04:07 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200906220116.n5M1GnXX024497@e36.co.us.ibm.com>
-References: <200906220116.n5M1GnXX024497@e36.co.us.ibm.com>
-Date: Tue, 23 Jun 2009 20:19:43 +0530
-Message-Id: <1245768583.4860.75.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Include "config.h" in the aio02 test to
-	get	HAVE_LIBAIO_H
-Reply-To: subrata@linux.vnet.ibm.com
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <leemgs1@gmail.com>) id 1MGiIV-0006xx-QV
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 23:42:35 +0000
+Received: from yw-out-1718.google.com ([74.125.46.156])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MGiIU-0007Zh-Js
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 23:42:35 +0000
+Received: by yw-out-1718.google.com with SMTP id 5so2823513ywr.82
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 16 Jun 2009 16:42:33 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20090616184148.GA3043@us.ibm.com>
+References: <49b7c2350906151813r31a9fe24icee5b1244f560f7a@mail.gmail.com>
+	<49b7c2350906152243p4c970b1di74cc62badc85a2e7@mail.gmail.com>
+	<20090616161949.GA32566@us.ibm.com>
+	<200906161245.35932.sgrubb@redhat.com>
+	<20090616184148.GA3043@us.ibm.com>
+Date: Wed, 17 Jun 2009 08:42:33 +0900
+Message-ID: <49b7c2350906161642y1222c3e5h45f5912a01c77f06@mail.gmail.com>
+From: GeunSik Lim <leemgs1@gmail.com>
+Subject: Re: [LTP] Report - make error of ltp-full-20090531.tgz
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,44 +31,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
-Cc: ltp-list@lists.sourceforge.net
+To: "Serge E. Hallyn" <serue@us.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, Steve Grubb <sgrubb@redhat.com>, Andrew Morgan <morgan@kernel.org>
 
-On Wed, 2009-06-17 at 15:18 +0200, Jiri Palecek > wrote: 
-> Signed-off-by: Jiri Palecek <jpalecek@web.de>
-
-Thanks.
-
-Regards--
-Subrata
-
-> ---
->  testcases/kernel/io/aio/aio02/main.c |    1 +
->  1 files changed, 1 insertions(+), 0 deletions(-)
-> 
-> diff --git a/testcases/kernel/io/aio/aio02/main.c b/testcases/kernel/io/aio/aio02/main.c
-> index 791b5e0..5dae3e8 100644
-> --- a/testcases/kernel/io/aio/aio02/main.c
-> +++ b/testcases/kernel/io/aio/aio02/main.c
-> @@ -8,6 +8,7 @@
->  #include <sys/stat.h>
->  #include <unistd.h>
->  #include "test.h"
-> +#include "config.h"
-> 
->  #ifdef HAVE_LIBAIO_H
-> 
-
-
-------------------------------------------------------------------------------
-Are you an open source citizen? Join us for the Open Source Bridge conference!
-Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
-Need another reason to go? 24-hour hacker lounge. Register today!
-http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gV2VkLCBKdW4gMTcsIDIwMDkgYXQgMzo0MSBBTSwgU2VyZ2UgRS4gSGFsbHluPHNlcnVlQHVz
+LmlibS5jb20+IHdyb3RlOgo+IGVuYWJsaW5nIHRlc3Rpbmcgc3RpbGwgZ2F2ZSBtZSBvbmx5IGxp
+YmNhcC0yLjE2LTIsIGJ1dAo+IEkgZG93bmxvYWRlZCBhbmQgaW5zdGFsbGVkIGxpYmNhcC1kZXZl
+bC0yLjE2LTQuZmMxMS5pNTg2LnJwbQo+IGFmdGVyIHdoaWNoIGFsbCBjb21waWxlZCBmaW5lLgo+
+Cj4gR2V1blNpaywgcGxlYXNlIGdpdmUgdGhhdCBhIHNob3QuCgpUaGFua3MgZm9yIGZhc3QgcmVw
+bHkgYWJvdXQgdGhpcyBwcm9ibGVtLgpJIHRlc3RlZCAibWFrZSIgY29tbWFuZCB3aXRoIGx0cC1m
+dWxsLTIwMDkwNTMxIGFuZCBsaWJjYXAtMi4xNi00IGFnYWluLgoibWFrZSIgY29tbWFuZCBmaW5p
+c2hlZCBzdWNjZXNzZnVsbHkgd2l0aG91dCBjb21wYXRpYmlsaXR5IHJlbGF0ZWQgZXJyb3JzLgpC
+ZWxvd3MgaXMgc2NyZWVuc2hvdC4KClN0ZXZlLApQbGVhc2UsIENhbiB5b3UgbW92ZSAgdGhpcyBy
+cG0gZmlsZXMgZnJvbSB0ZXN0IHJlcG9zaXRvcnkgIHRvIG9mZmljaWFsCnJlcG9zaXRvcnk/CgpG
+MTEtZ2V1bnNpayM+IHVuYW1lIC1hCkxpbnV4IGZlZG9yYTExIDIuNi4yOS40LTE2Ny5mYzExLmk2
+ODYuUEFFICMxIFNNUCBXZWQgTWF5IDI3IDE3OjI4OjIyCkVEVCAyMDA5IGk2ODYgaTY4NiBpMzg2
+IEdOVS9MaW51eApGMTEtZ2V1bnNpayM+IHJwbSAtcWEgfCBncmVwIGxpYmNhcApsaWJjYXAtMi4x
+Ni00LmZjMTEuaTU4NgpsaWJjYXAtZGV2ZWwtMi4xNi00LmZjMTEuaTU4NgpGMTEtZ2V1bnNpayM+
+CkYxMS1nZXVuc2lrIz4gcnBtIC1VdmgKaHR0cDovL2tvamlwa2dzLmZlZG9yYXByb2plY3Qub3Jn
+L3BhY2thZ2VzL2xpYmNhcC8yLjE2LzQuZmMxMS9pNTg2L2xpYmNhcC0yLjE2LTQuZmMxMS5pNTg2
+LnJwbQpGMTEtZ2V1bnNpayM+IHJwbSAtVXZoCmh0dHA6Ly9rb2ppcGtncy5mZWRvcmFwcm9qZWN0
+Lm9yZy9wYWNrYWdlcy9saWJjYXAvMi4xNi80LmZjMTEvaTU4Ni9saWJjYXAtZGV2ZWwtMi4xNi00
+LmZjMTEuaTU4Ni5ycG0KRjExLWdldW5zaWsjPiBjZCAvb3B0L2x0cC1mdWxsLTIwMDkwNTMxCkYx
+MS1nZXVuc2lrIz4gdGltZSBtYWtlCiAgICAgICAgICAgICAgICAoIEl0J3Mgbm9ybWFsIGFmdGVy
+IHVwZGF0ZSB3aXRoIGxpYmNhcC0yLjE2LTQuZmMxMSBieSBrYXJzdGVuICkKICAgICAgICAgICAg
+ICAgICAgLi4uLi4uLiBBYm92ZSBPbWlzc2lvbiAuLi4uLi4uLi4KZWJpenp5LmM6IEluIGZ1bmN0
+aW9uIOKAmHNlYXJjaF9tZW3igJk6CmViaXp6eS5jOjM5Mzogd2FybmluZzog4oCYc3RhdGXigJkg
+bWF5IGJlIHVzZWQgdW5pbml0aWFsaXplZCBpbiB0aGlzIGZ1bmN0aW9uCm1ha2VbM106IExlYXZp
+bmcgZGlyZWN0b3J5IGAvb3B0L2x0cC1mdWxsLTIwMDkwNTMxL3V0aWxzL2JlbmNobWFyay9lYml6
+enktMC4zJwptYWtlWzJdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL29wdC9sdHAtZnVsbC0yMDA5MDUz
+MS91dGlscy9iZW5jaG1hcmsnCm1ha2VbMV06IExlYXZpbmcgZGlyZWN0b3J5IGAvb3B0L2x0cC1m
+dWxsLTIwMDkwNTMxL3V0aWxzJwoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKgoqKiBZb3Ugbm93IG5lZWQgdG8gZG8gYSBtYWtlIGluc3RhbGwgYXMgcm9vdCAq
+KgoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgpyZWFsCTFt
+MjUuNDgycwp1c2VyCTFtMC41OTBzCnN5cwkwbTIwLjUzNXMKCgo+Cj4gdGhhbmtzLAo+IC1zZXJn
+ZQo+CgoKCi0tIApSZWdhcmRzLApHZXVuU2lrIExpbSAoIFNhbXN1bmcgRWxlY3Ryb25pY3MgKQpC
+bG9nIDogaHR0cDovL2Jsb2cubmF2ZXIuY29tL2ludmFpbi8KZS1NYWlsOiBnZXVuc2lrLmxpbUBz
+YW1zdW5nLmNvbQogICAgICAgICAgIGxlZW1nc0BnbWFpbC5jb20gLCBsZWVtZ3MxQGdtYWlsLmNv
+bQotLQpUbyB1bnN1YnNjcmliZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJz
+Y3JpYmUgbGludXgta2VybmVsIiBpbgp0aGUgYm9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21v
+QHZnZXIua2VybmVsLm9yZwpNb3JlIG1ham9yZG9tbyBpbmZvIGF0ICBodHRwOi8vdmdlci5rZXJu
+ZWwub3JnL21ham9yZG9tby1pbmZvLmh0bWwKUGxlYXNlIHJlYWQgdGhlIEZBUSBhdCAgaHR0cDov
+L3d3dy50dXgub3JnL2xrbWwvCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ3J5c3RhbCBSZXBvcnRz
+IC0gTmV3IEZyZWUgUnVudGltZSBhbmQgMzAgRGF5IFRyaWFsCkNoZWNrIG91dCB0aGUgbmV3IHNp
+bXBsaWZpZWQgbGljZW5zaW5nIG9wdGlvbiB0aGF0IGVuYWJsZXMgdW5saW1pdGVkCnJveWFsdHkt
+ZnJlZSBkaXN0cmlidXRpb24gb2YgdGhlIHJlcG9ydCBlbmdpbmUgZm9yIGV4dGVybmFsbHkgZmFj
+aW5nIApzZXJ2ZXIgYW5kIHdlYiBkZXBsb3ltZW50LgpodHRwOi8vcC5zZi5uZXQvc2Z1L2J1c2lu
+ZXNzb2JqZWN0cwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0
+dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
