@@ -1,27 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1MLd4C-0000iR-BC
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 13:08:08 +0000
-Received: from qw-out-1920.google.com ([74.125.92.148])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MLd4B-0005bb-Bj
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 13:08:08 +0000
-Received: by qw-out-1920.google.com with SMTP id 5so45323qwc.4
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 30 Jun 2009 06:07:19 -0700 (PDT)
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1MGbOP-0000PW-BC
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 16:20:13 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MGbOH-0005SQ-9g
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 16:20:06 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e39.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5GGFvfq001575
+	for <ltp-list@lists.sourceforge.net>; Tue, 16 Jun 2009 10:15:57 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5GGJn4O183084
+	for <ltp-list@lists.sourceforge.net>; Tue, 16 Jun 2009 10:19:52 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5GGJmgw021626
+	for <ltp-list@lists.sourceforge.net>; Tue, 16 Jun 2009 10:19:48 -0600
+Date: Tue, 16 Jun 2009 11:19:49 -0500
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20090616161949.GA32566@us.ibm.com>
+References: <49b7c2350906151813r31a9fe24icee5b1244f560f7a@mail.gmail.com>
+	<49b7c2350906151857yf972a90m78448ca70a89c468@mail.gmail.com>
+	<20090616042450.GA26037@us.ibm.com>
+	<49b7c2350906152243p4c970b1di74cc62badc85a2e7@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1246356254.4819.39.camel@subratamodak.linux.ibm.com>
-References: <f5a7b3810906250517k3b8c3bf3gde1957e93c95314@mail.gmail.com>
-	<1246015980.6196.20.camel@subratamodak.linux.ibm.com>
-	<1246347680.4819.31.camel@subratamodak.linux.ibm.com>
-	<f5a7b3810906300250o6ee16e3bv672ad77018d34a81@mail.gmail.com>
-	<1246356254.4819.39.camel@subratamodak.linux.ibm.com>
-Date: Tue, 30 Jun 2009 18:29:04 +0530
-Message-ID: <f5a7b3810906300559s5be55da1h477fba50da33e3e4@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Subject: Re: [LTP] [PATCH] Re::personality test case build fails
+Content-Disposition: inline
+In-Reply-To: <49b7c2350906152243p4c970b1di74cc62badc85a2e7@mail.gmail.com>
+Subject: Re: [LTP] Report - make error of ltp-full-20090531.tgz
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,80 +40,69 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: Jiri Palecek <jpalecek@web.de>, Pradeep K Surisetty <pradeepkumars@in.ibm.com>, ltp-list@lists.sourceforge.net
+To: GeunSik Lim <leemgs1@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Steve Grubb <sgrubb@redhat.com>, Andrew Morgan <morgan@kernel.org>
 
->> >
->> > Naresh ??
->>
->> Hi Subrata,
->>
->> I have noticed some issue with personality01.c and personality02.c
->> test cases in design.
->
-> Great. And what design reviews for the newly ported tests in LTP ?
+Quoting GeunSik Lim (leemgs1@gmail.com):
+> On Tue, Jun 16, 2009 at 1:24 PM, Serge E. Hallyn<serue@us.ibm.com> wrote:
+> > Quoting GeunSik Lim (leemgs1@gmail.com):
+> >> I made patch file to solve below problem.
+> >
+> > well, NAK to the patch, but this is a real problem that needs to
+> > be fixed. =A0I'll take a look in the morning, but Andrew do you know
+> > offhand what the problem is with capability.h (in F11 I gather) that
+> > would cause:
+> Serge E. Hallyn,
+> =
 
+> Thanks for your opinion about  this report that I posted.
+> Yes.  My below patch is private patch to solve  make error on Fedora 11
+> distribution ( fedora11 2.6.29.4-167.fc11.i686).
+> This means that my patch is not official patch file as you think.
+> =
 
-The personality is different for diff ARCH and there are 23
-personalities are available. present test case is design to support
-X86 ARCH .Currently checking applicability and making the test cases
-as generic to support most of the ARCH.
+> For reference,
+>  I used libcap 2.16 version
+> at the  http://ftp.kernel.org/pub/linux/libs/security/linux-privs/kernel-=
+2.6/  .
 
-This is commented test cases under syscalls on ver 1.154
+Are you sure?
 
-http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/runtest/syscalls?view=log
+With the libcap-2.16 from kernel.org, /usr/include/sys/capability.h
+#includes <sys/types.h>.  The version that comes with Fedora 11's
+libcap-devel-2.16-2.fc11.i586 #includes <linux/types.h> instead.
+When I just fix that, my F11 system compiles cap_bound.c just fine.
 
+Steve, do you know why that change is made?
 
-#  The personality() system call is poorly documented
-#  and difficult to figure out how to use by looking
-#  at the different architecture specific kernel files.
-#personality01 personality01
-#personality02 personality02
+It then moves on to the next F11-specific compile failure, namely
+LTP's <test.h> ends up #including /usr/include/asm/sigcontext.h
+causing the compile errors bc of undefined __u64 and __u32,
+which I can fix by adding:
 
-Subrata,
+#define __u64 u_int64_t
+#define __u32 u_int32_t
 
-Do you want to include these test cases in this release?
+to <sys/types.h>.  So perhaps it would be prudent to add them
+to the top of LTP's test.h?
 
-If you have issues please let me know.
+It woudl be better to figure out why that's happening in the
+first place...
 
-Best regards,
-Naresh Kamboju
+thanks,
+-serge
 
->
-> Regards--
-> Subrata
->
->> Currently I am investigating and get back to in short.
->>
->> Best Regards
->> Naresh Kamboju
->>
->> >
->> >> Regards--
->> >> Subrata
->> >>
->> >> > Jiri,
->> >> > I think you are doing Multi ARCH support right?
->> >> >
->> >> > Your suggestions are welcome :)
->> >> >
->> >> > Best regards
->> >> > Naresh Kamboju
->>
->> >> ------------------------------------------------------------------------------
->> >> _______________________________________________
->> >> Ltp-list mailing list
->> >> Ltp-list@lists.sourceforge.net
->> >> https://lists.sourceforge.net/lists/listinfo/ltp-list
->> >
->> >
->
->
+---------------------------------------------------------------------------=
+---
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing =
 
-------------------------------------------------------------------------------
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
