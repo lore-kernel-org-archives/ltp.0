@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sgrubb@redhat.com>) id 1MGbuK-0004UT-AM
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 16:53:12 +0000
-Received: from mx2.redhat.com ([66.187.237.31])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MGbuG-0001PB-G5
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 16:53:12 +0000
-From: Steve Grubb <sgrubb@redhat.com>
-Date: Tue, 16 Jun 2009 12:45:29 -0400
-References: <49b7c2350906151813r31a9fe24icee5b1244f560f7a@mail.gmail.com>
-	<49b7c2350906152243p4c970b1di74cc62badc85a2e7@mail.gmail.com>
-	<20090616161949.GA32566@us.ibm.com>
-In-Reply-To: <20090616161949.GA32566@us.ibm.com>
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naresh.kernel@gmail.com>) id 1MH1bF-00006T-Ij
+	for ltp-list@lists.sourceforge.net; Wed, 17 Jun 2009 20:19:13 +0000
+Received: from yw-out-1718.google.com ([74.125.46.156])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MH1bB-000283-0K
+	for ltp-list@lists.sourceforge.net; Wed, 17 Jun 2009 20:19:13 +0000
+Received: by yw-out-1718.google.com with SMTP id 5so283796ywr.82
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 17 Jun 2009 13:19:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200906161245.35932.sgrubb@redhat.com>
-Subject: Re: [LTP] Report - make error of ltp-full-20090531.tgz
+Date: Thu, 18 Jun 2009 01:49:08 +0530
+Message-ID: <f5a7b3810906171319peea6c9dvfc0c79368efefcff@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Content-Type: multipart/mixed; boundary=00151757081ef31d00046c910029
+Subject: [LTP] [FIX PATCH] ltp-keyctl
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,56 +26,92 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serue@us.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, GeunSik Lim <leemgs1@gmail.com>, Andrew Morgan <morgan@kernel.org>
+To: ltp-list@lists.sourceforge.net
+Cc: maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, Manas Kumar Nayak <maknayak@in.ibm.com>, Oleg Nesterov <oleg@redhat.com>, rohit.170309@gmail.com
 
-On Tuesday 16 June 2009 12:19:49 pm Serge E. Hallyn wrote:
-> Quoting GeunSik Lim (leemgs1@gmail.com):
-> > On Tue, Jun 16, 2009 at 1:24 PM, Serge E. Hallyn<serue@us.ibm.com> wrote:
-> > > Quoting GeunSik Lim (leemgs1@gmail.com):
-> > >> I made patch file to solve below problem.
-> > >
-> > > well, NAK to the patch, but this is a real problem that needs to
-> > > be fixed.  I'll take a look in the morning, but Andrew do you know
-> > > offhand what the problem is with capability.h (in F11 I gather) that
-> > > would cause:
-> >
-> > Serge E. Hallyn,
-> >
-> > Thanks for your opinion about  this report that I posted.
-> > Yes.  My below patch is private patch to solve  make error on Fedora 11
-> > distribution ( fedora11 2.6.29.4-167.fc11.i686).
-> > This means that my patch is not official patch file as you think.
-> >
-> > For reference,
-> >  I used libcap 2.16 version
-> > at the 
-> > http://ftp.kernel.org/pub/linux/libs/security/linux-privs/kernel-2.6/  .
->
-> Are you sure?
->
-> With the libcap-2.16 from kernel.org, /usr/include/sys/capability.h
-> #includes <sys/types.h>.  The version that comes with Fedora 11's
-> libcap-devel-2.16-2.fc11.i586 #includes <linux/types.h> instead.
-> When I just fix that, my F11 system compiles cap_bound.c just fine.
->
-> Steve, do you know why that change is made?
+--00151757081ef31d00046c910029
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Offhand I do not. I see in Fedora 11 cvs:  libcap-2.16-4. It looks fixed to me.
+Hi,
 
-Here it was built:
-http://koji.fedoraproject.org/koji/buildinfo?buildID=106251
+I have noticed fail and fixed.
+1. keyctl01.c
 
-Here it was pushed to testing repo:
-https://admin.fedoraproject.org/updates/libcap-2.16-4.fc11
 
-So, I'd enable the testing repo for F-11 to download the update. See if that 
-doesn't work better.
+Please find the patch below and as attachment.
 
--Steve
+Best regards
+Naresh Kamboju
+
+Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+
+
+
+diff -Naurb a/testcases/kernel/syscalls/keyctl/keyctl01.c
+b/testcases/kernel/syscalls/keyctl/keyctl01.c
+--- a/testcases/kernel/syscalls/keyctl/keyctl01.c	2009-05-21
+23:47:32.000000000 +0530
++++ b/testcases/kernel/syscalls/keyctl/keyctl01.c	2009-06-17
+23:51:46.000000000 +0530
+@@ -123,7 +123,7 @@
+         for (lc = 0; TEST_LOOPING(lc); ++lc) {
+                 Tst_count = 0;
+                 for (testno = 0; testno < TST_TOTAL; ++testno) {
+-                     TEST(syscall(258, KEYCTL_GET_KEYRING_ID,
+KEY_SPEC_USER_SESSION_KEYRING));    //call keyctl() and Ask for a
+keyring's ID
++                     TEST(syscall(__NR_keyctl, KEYCTL_GET_KEYRING_ID,
+KEY_SPEC_USER_SESSION_KEYRING));    //call keyctl() and Ask for a
+keyring's ID
+                      if(TEST_RETURN != -1) {
+         		tst_resm(TPASS,"KEYCTL_GET_KEYRING_ID succeed");
+                      /*   cleanup(); */
+@@ -135,7 +135,7 @@
+                      }
+
+
+-		     TEST(syscall(288, KEYCTL_REVOKE, "MyKey"));    //call keyctl()
++		     TEST(syscall(__NR_keyctl, KEYCTL_REVOKE, "MyKey"));    //call keyctl()
+                      if(TEST_RETURN != -1) {
+                         tst_resm(TFAIL,"KEYTL_REVOKE succeededs, but
+should fail");
+                         cleanup();
+
+--00151757081ef31d00046c910029
+Content-Type: application/octet-stream; name="ltp-fix-keyctl.patch"
+Content-Disposition: attachment; filename="ltp-fix-keyctl.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fw2gifn30
+
+ZGlmZiAtTmF1cmIgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2tleWN0bC9rZXljdGwwMS5j
+IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9rZXljdGwva2V5Y3RsMDEuYwotLS0gYS90ZXN0
+Y2FzZXMva2VybmVsL3N5c2NhbGxzL2tleWN0bC9rZXljdGwwMS5jCTIwMDktMDUtMjEgMjM6NDc6
+MzIuMDAwMDAwMDAwICswNTMwCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMva2V5Y3Rs
+L2tleWN0bDAxLmMJMjAwOS0wNi0xNyAyMzo1MTo0Ni4wMDAwMDAwMDAgKzA1MzAKQEAgLTEyMyw3
+ICsxMjMsNyBAQAogICAgICAgICBmb3IgKGxjID0gMDsgVEVTVF9MT09QSU5HKGxjKTsgKytsYykg
+ewogICAgICAgICAgICAgICAgIFRzdF9jb3VudCA9IDA7CiAgICAgICAgICAgICAgICAgZm9yICh0
+ZXN0bm8gPSAwOyB0ZXN0bm8gPCBUU1RfVE9UQUw7ICsrdGVzdG5vKSB7Ci0gICAgICAgICAgICAg
+ICAgICAgICBURVNUKHN5c2NhbGwoMjU4LCBLRVlDVExfR0VUX0tFWVJJTkdfSUQsIEtFWV9TUEVD
+X1VTRVJfU0VTU0lPTl9LRVlSSU5HKSk7ICAgIC8vY2FsbCBrZXljdGwoKSBhbmQgQXNrIGZvciBh
+IGtleXJpbmcncyBJRAorICAgICAgICAgICAgICAgICAgICAgVEVTVChzeXNjYWxsKF9fTlJfa2V5
+Y3RsLCBLRVlDVExfR0VUX0tFWVJJTkdfSUQsIEtFWV9TUEVDX1VTRVJfU0VTU0lPTl9LRVlSSU5H
+KSk7ICAgIC8vY2FsbCBrZXljdGwoKSBhbmQgQXNrIGZvciBhIGtleXJpbmcncyBJRAogICAgICAg
+ICAgICAgICAgICAgICAgaWYoVEVTVF9SRVRVUk4gIT0gLTEpIHsKICAgICAgICAgCQl0c3RfcmVz
+bShUUEFTUywiS0VZQ1RMX0dFVF9LRVlSSU5HX0lEIHN1Y2NlZWQiKTsKICAgICAgICAgICAgICAg
+ICAgICAgIC8qICAgY2xlYW51cCgpOyAqLwpAQCAtMTM1LDcgKzEzNSw3IEBACiAgICAgICAgICAg
+ICAgICAgICAgICB9CiAKIAotCQkgICAgIFRFU1Qoc3lzY2FsbCgyODgsIEtFWUNUTF9SRVZPS0Us
+ICJNeUtleSIpKTsgICAgLy9jYWxsIGtleWN0bCgpCisJCSAgICAgVEVTVChzeXNjYWxsKF9fTlJf
+a2V5Y3RsLCBLRVlDVExfUkVWT0tFLCAiTXlLZXkiKSk7ICAgIC8vY2FsbCBrZXljdGwoKQogICAg
+ICAgICAgICAgICAgICAgICAgaWYoVEVTVF9SRVRVUk4gIT0gLTEpIHsKICAgICAgICAgICAgICAg
+ICAgICAgICAgIHRzdF9yZXNtKFRGQUlMLCJLRVlUTF9SRVZPS0Ugc3VjY2VlZGVkcywgYnV0IHNo
+b3VsZCBmYWlsIik7CiAgICAgICAgICAgICAgICAgICAgICAgICBjbGVhbnVwKCk7Cg==
+--00151757081ef31d00046c910029
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Crystal Reports - New Free Runtime and 30 Day Trial
@@ -84,7 +119,16 @@ Check out the new simplified licensing option that enables unlimited
 royalty-free distribution of the report engine for externally facing 
 server and web deployment.
 http://p.sf.net/sfu/businessobjects
+--00151757081ef31d00046c910029
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--00151757081ef31d00046c910029--
+
