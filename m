@@ -1,33 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MLXzQ-0002RP-Dx
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 07:42:52 +0000
-Received: from [32.97.182.138] (helo=e8.ny.us.ibm.com)
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MLXzM-00022W-TO
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 07:42:52 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e8.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5U7V9aM027675
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 03:31:09 -0400
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5U7fuHi256906
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 03:41:56 -0400
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5U7fuDg015771
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 03:41:56 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1245346301.5041.36.camel@subratamodak.linux.ibm.com>
-References: <4A35264D.10800@bravegnu.org>
-	<1245346301.5041.36.camel@subratamodak.linux.ibm.com>
-Date: Tue, 30 Jun 2009 13:11:03 +0530
-Message-Id: <1246347663.4819.26.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [RFC] Using checkpatch.pl
-Reply-To: subrata@linux.vnet.ibm.com
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1MIY8E-0005eI-Gi
+	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 01:15:34 +0000
+Received: from fmmailgate02.web.de ([217.72.192.227])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MIY8D-0002kC-24
+	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 01:15:34 +0000
+Received: from smtp08.web.de (fmsmtp08.dlan.cinetic.de [172.20.5.216])
+	by fmmailgate02.web.de (Postfix) with ESMTP id 4102E10433376
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 22 Jun 2009 02:42:12 +0200 (CEST)
+Received: from [83.208.36.163] (helo=debian)
+	by smtp08.web.de with asmtp (WEB.DE 4.110 #277) id 1MIXbv-0005SB-00
+	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 02:42:12 +0200
+Date: Wed, 17 Jun 2009 17:06:34 +0200
+From: "Jiri Palecek >" <"<jirka"@suse.de>(none)
+MIME-Version: 1.0
+Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Resent-Message-ID: <op.uvwho0n7lwynca@debian>
+Subject: [LTP] [PATCH] Fix some compiler warnings
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,83 +32,72 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Sender: ltp-list-bounces@lists.sourceforge.net
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Vijay Kumar <vijaykumar@bravegnu.org>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+Cc: ltp-list@lists.sourceforge.net
+Message-ID: <20090617150634.t0shZEqJbePdu931If_D28GOFKOms5RzLOj-nP62NIQ@z>
 
-Vijay,
+Hello,
 
-Are you working on such a patch ?
+this patch fixes compiler warnings for implicit function declarations, particularly snprintf and usleep, in mq_notify and mq_timedreceive. Note that although the functions are used in common_j_c.h, the macros have to be defined in the c files that include it, before any other header
 
-Regards--
-Subrata
+Regards
+    Jiri Palecek
 
-On Thu, 2009-06-18 at 23:01 +0530, Subrata Modak wrote: 
-> Send across a patch:
-> 1) adding checkpatch.pl to LTP,
-> 2) those instructions/future suggestions you have mentioned, update the
-> same in README.
-> 
-> Also remember to send patches against it in future when checkpatch.pl is
-> updated in the kernel tree itself.
-> 
-> Regards--
-> Subrata
-> 
-> On Sun, 2009-06-14 at 22:03 +0530, Vijay Kumar wrote: 
-> > Hi everyone,
-> > Michal Simek patched most of the LTP code base to use the Linux kernel
-> > coding style. But unfortunately new patches, that are flowing in, seem
-> > to add coding style violations. It is better to prevent new style
-> > violations than to fix them later on.
-> > 
-> > The kernel developers use a perl script called checkpatch.pl to
-> > identify style violations in patches. We could use the same script to
-> > check our patches, as well. The script uses files from the kernel to
-> > do kernel specific checks. This can be disabled by using the --no-tree
-> > option. So to check an LTP patch
-> > 
-> > $ checkpatch.pl --no-tree ltp-patch
-> > 
-> > If everybody is OK with it we can add the script to the LTP source
-> > tree, so that everyone checks their patches against the same
-> > script. And Subrata can easily check for style violations before
-> > merging the patch.
-> > 
-> > In the future, we could also customize the script to do userspace/LTP
-> > specific checks, like missing mode argument when open() is invoked
-> > with O_CREAT flag.
-> > 
-> > Please do send in your suggestions.
-> > 
-> > Regards,
-> > Vijay
-> > 
-> > ------------------------------------------------------------------------------
-> > Crystal Reports - New Free Runtime and 30 Day Trial
-> > Check out the new simplified licensing option that enables unlimited
-> > royalty-free distribution of the report engine for externally facing 
-> > server and web deployment.
-> > http://p.sf.net/sfu/businessobjects
-> > _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-> 
-> ------------------------------------------------------------------------------
-> Crystal Reports - New Free Runtime and 30 Day Trial
-> Check out the new simplified licensing option that enables unlimited
-> royalty-free distribution of the report engine for externally facing 
-> server and web deployment.
-> http://p.sf.net/sfu/businessobjects
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+Signed-off-by: Jiri Palecek <jpalecek@web.de>
+---
+ testcases/kernel/syscalls/mq_notify/mq_notify01.c  |    1 +
+ .../syscalls/mq_timedreceive/mq_timedreceive01.c   |    1 +
+ testcases/kernel/syscalls/utils/common_j_h.c       |    1 -
+ 3 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/mq_notify/mq_notify01.c b/testcases/kernel/syscalls/mq_notify/mq_notify01.c
+index 1cc1a6c..6004373 100644
+--- a/testcases/kernel/syscalls/mq_notify/mq_notify01.c
++++ b/testcases/kernel/syscalls/mq_notify/mq_notify01.c
+@@ -45,6 +45,7 @@
+ /* History:     Porting from Crackerjack to LTP is done by                    */
+ /*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
+ /******************************************************************************/
++#define _XOPEN_SOURCE 500
+ #include <sys/syscall.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+diff --git a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+index 43f0d8b..dadc38d 100644
+--- a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
++++ b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+@@ -45,6 +45,7 @@
+ /* History:     Porting from Crackerjack to LTP is done by                    */
+ /*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
+ /******************************************************************************/
++#define _XOPEN_SOURCE 500
+ #include <sys/syscall.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+diff --git a/testcases/kernel/syscalls/utils/common_j_h.c b/testcases/kernel/syscalls/utils/common_j_h.c
+index e19d433..c56f6e2 100644
+--- a/testcases/kernel/syscalls/utils/common_j_h.c
++++ b/testcases/kernel/syscalls/utils/common_j_h.c
+@@ -22,7 +22,6 @@
+  * $Id: common_j_h.c,v 1.2 2009/06/09 17:58:42 subrata_modak Exp $
+  *
+  */
+-//#define _GNU_SOURCE 1
+ #include <stdio.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
+-- 
+1.6.3.1
+
+
 
 
 ------------------------------------------------------------------------------
+Are you an open source citizen? Join us for the Open Source Bridge conference!
+Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
+Need another reason to go? 24-hour hacker lounge. Register today!
+http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
