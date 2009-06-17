@@ -1,25 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJ7Qo-00032i-K5
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 14:57:06 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MJ7Qi-0006IF-KI
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 14:57:01 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1237446038.5260.9.camel@subratamodak.linux.ibm.com>
-References: <9a14a0630903130632s36a7f059hd093d30e97f894eb@mail.gmail.com>
-	<1236962876.7439.3.camel@subratamodak.linux.ibm.com>
-	<1237272937.5622.11.camel@subratamodak.linux.ibm.com>
-	<43e72e890903181242i1be5818et8afd1157cff8af83@mail.gmail.com>
-	<1237446038.5260.9.camel@subratamodak.linux.ibm.com>
-Date: Tue, 23 Jun 2009 20:18:49 +0530
-Message-Id: <1245768529.4860.61.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Support of WIFI and W-LAN test cases in LTP
-Reply-To: subrata@linux.vnet.ibm.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naresh.kernel@gmail.com>) id 1MH1bU-0008S8-KK
+	for ltp-list@lists.sourceforge.net; Wed, 17 Jun 2009 20:19:28 +0000
+Received: from yw-out-1718.google.com ([74.125.46.156])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MH1bT-000283-HO
+	for ltp-list@lists.sourceforge.net; Wed, 17 Jun 2009 20:19:28 +0000
+Received: by yw-out-1718.google.com with SMTP id 5so283796ywr.82
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 17 Jun 2009 13:19:27 -0700 (PDT)
+MIME-Version: 1.0
+Date: Thu, 18 Jun 2009 01:49:26 +0530
+Message-ID: <f5a7b3810906171319m249a170dn74f42b831adec33f@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Content-Type: multipart/mixed; boundary=00151750eed008165f046c9102c4
+Subject: [LTP] [FIX PATCH] ltp-newuname01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,80 +26,87 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Luis R. Rodriguez" <lrodriguez@atheros.com>
-Cc: ltp-list@lists.sf.net, Luis Carlos Cobo <luisca@cozybit.com>, Jouni Malinen <j@w1.fi>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "John W. Linville" <linville@tuxdriver.com>, rahul Baliyan <rahul.lpt@gmail.com>, Johannes Berg <johannes@sipsolutions.net>, "Jouni.Malinen" <Jouni.Malinen@atheros.com>
+To: ltp-list@lists.sourceforge.net
+Cc: maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, Manas Kumar Nayak <maknayak@in.ibm.com>, Oleg Nesterov <oleg@redhat.com>, rohit.170309@gmail.com
 
-On Thu, 2009-03-19 at 12:30 +0530, Subrata Modak wrote: 
-> On Wed, 2009-03-18 at 12:42 -0700, Luis R. Rodriguez wrote:
-> > On Mon, Mar 16, 2009 at 11:55 PM, Subrata Modak
-> > <subrata@linux.vnet.ibm.com> wrote:
-> > > Hi Rahul,
-> > >
-> > > On Fri, 2009-03-13 at 22:17 +0530, Subrata Modak wrote:
-> > >> Hi,
-> > >>
-> > >> On Fri, 2009-03-13 at 19:02 +0530, rahul Baliyan wrote:
-> > >> > Hi,
-> > >> >
-> > >> > Pl.  confirm if LTP contains the test cases of W-LAN and WI-FI.
-> > >>
-> > >> Nope. We do not have till now. However, we initiated some discussion
-> > >> some 6 months back in the same mailing list regarding Wireless Mesh
-> > >> Netwoking tests. Please follow the following thread:
-> > >>
-> > >> http://marc.info/?t=121969812900007&r=1&w=2&n=4,
-> > >>
-> > >> There are some tests already avilable. We need somebody to volunteer to
-> > >> bring them to some shape so that they can be automated and then
-> > >> integrated inside LTP. Would you be ready to do that ?
-> > >
-> > > Would you like to take up my proposal ?
-> > 
-> > BTW I've stashed a Linux wireless testing entry in the Linux
-> > Foundation GSoC, hopefully that can be merged back into LTP.
-> > 
-> > https://www.linuxfoundation.org/en/Google_Summer_of_Code_2009#Automation_of_testing_using_mac80211_hwsim_and_Orbit
-> 
+--00151750eed008165f046c9102c4
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
 Hi,
 
-Is somebody working on this, and still interested to contribute the same
-to LTP ?
+I have noticed fail and fixed.
+1. newuname01.c
 
-Regards--
-Subrata
 
-> Thanks. That would be really great. Send me the automation test patch
-> when it is ready with some results, etc.
-> 
-> Regards--
-> Subrata
-> 
-> > 
-> >   Luis
-> 
-> 
-> ------------------------------------------------------------------------------
-> Apps built with the Adobe(R) Flex(R) framework and Flex Builder(TM) are
-> powering Web 2.0 with engaging, cross-platform capabilities. Quickly and
-> easily build your RIAs with Flex Builder, the Eclipse(TM)based development
-> software that enables intelligent coding and step-through debugging.
-> Download the free 60 day trial. http://p.sf.net/sfu/www-adobe-com
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+Please find the patch below and as attachment.
 
+Best regards
+Naresh Kamboju
+
+Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+
+diff -Naurb a/testcases/kernel/syscalls/newuname/newuname01.c
+b/testcases/kernel/syscalls/newuname/newuname01.c
+--- a/testcases/kernel/syscalls/newuname/newuname01.c	2009-05-21
+23:49:16.000000000 +0530
++++ b/testcases/kernel/syscalls/newuname/newuname01.c	2009-06-17
+23:01:05.000000000 +0530
+@@ -127,7 +127,7 @@
+         for (lc = 0; TEST_LOOPING(lc); ++lc) {
+                 Tst_count = 0;
+                 for (testno = 0; testno < TST_TOTAL; ++testno) {
+-                     TEST(syscall(122,&name));     //call newuname()
++                     TEST(syscall(__NR_uname,&name));     //call newuname()
+                      if(TEST_RETURN == -1) {
+                  	   tst_resm(TFAIL, "%s failed - errno = %d : %s",
+TCID, TEST_ERRNO, strerror(TEST_ERRNO));
+                            cleanup();
+
+--00151750eed008165f046c9102c4
+Content-Type: application/octet-stream; name="ltp-fix-newuname.patch"
+Content-Disposition: attachment; filename="ltp-fix-newuname.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fw2gr9rh0
+
+ZGlmZiAtTmF1cmIgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL25ld3VuYW1lL25ld3VuYW1l
+MDEuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbmV3dW5hbWUvbmV3dW5hbWUwMS5jCi0t
+LSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbmV3dW5hbWUvbmV3dW5hbWUwMS5jCTIwMDkt
+MDUtMjEgMjM6NDk6MTYuMDAwMDAwMDAwICswNTMwCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lz
+Y2FsbHMvbmV3dW5hbWUvbmV3dW5hbWUwMS5jCTIwMDktMDYtMTcgMjM6MDE6MDUuMDAwMDAwMDAw
+ICswNTMwCkBAIC0xMjcsNyArMTI3LDcgQEAKICAgICAgICAgZm9yIChsYyA9IDA7IFRFU1RfTE9P
+UElORyhsYyk7ICsrbGMpIHsKICAgICAgICAgICAgICAgICBUc3RfY291bnQgPSAwOwogICAgICAg
+ICAgICAgICAgIGZvciAodGVzdG5vID0gMDsgdGVzdG5vIDwgVFNUX1RPVEFMOyArK3Rlc3Rubykg
+ewotICAgICAgICAgICAgICAgICAgICAgVEVTVChzeXNjYWxsKDEyMiwmbmFtZSkpOyAgICAgLy9j
+YWxsIG5ld3VuYW1lKCkKKyAgICAgICAgICAgICAgICAgICAgIFRFU1Qoc3lzY2FsbChfX05SX3Vu
+YW1lLCZuYW1lKSk7ICAgICAvL2NhbGwgbmV3dW5hbWUoKQogICAgICAgICAgICAgICAgICAgICAg
+aWYoVEVTVF9SRVRVUk4gPT0gLTEpIHsKICAgICAgICAgICAgICAgICAgCSAgIHRzdF9yZXNtKFRG
+QUlMLCAiJXMgZmFpbGVkIC0gZXJybm8gPSAlZCA6ICVzIiwgVENJRCwgVEVTVF9FUlJOTywgc3Ry
+ZXJyb3IoVEVTVF9FUlJOTykpOwogICAgICAgICAgICAgICAgICAgICAgICAgICAgY2xlYW51cCgp
+Owo=
+--00151750eed008165f046c9102c4
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Are you an open source citizen? Join us for the Open Source Bridge conference!
-Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
-Need another reason to go? 24-hour hacker lounge. Register today!
-http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
+--00151750eed008165f046c9102c4
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--00151750eed008165f046c9102c4--
+
