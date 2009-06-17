@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MJDHn-0007Lx-Me
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 21:12:11 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MJDHm-0002Xz-V8
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 21:12:11 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Tue, 23 Jun 2009 17:12:07 -0400
-References: <4a413aa8.8d13f30a.1754.ffffd0c3SMTPIN_ADDED@mx.google.com>
-In-Reply-To: <4a413aa8.8d13f30a.1754.ffffd0c3SMTPIN_ADDED@mx.google.com>
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naresh.kernel@gmail.com>) id 1MH1cY-00036L-Cx
+	for ltp-list@lists.sourceforge.net; Wed, 17 Jun 2009 20:20:34 +0000
+Received: from mail-gx0-f207.google.com ([209.85.217.207])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MH1cX-00008u-Hf
+	for ltp-list@lists.sourceforge.net; Wed, 17 Jun 2009 20:20:34 +0000
+Received: by mail-gx0-f207.google.com with SMTP id 3so2189097gxk.10
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 17 Jun 2009 13:20:33 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <200906231712.08545.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] Fix a surprising error in cacheflush01 test
+Date: Thu, 18 Jun 2009 01:50:33 +0530
+Message-ID: <f5a7b3810906171320q19721247w3bd9f5c2c47fb9a9@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Content-Type: multipart/mixed; boundary=001517570904fc363a046c91057b
+Subject: [LTP] [FIX PATCH] ltp-rt_sigsuspend
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,74 +26,112 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0611646865328339181=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: "Jiri Palecek > (none)" <"<jirka"@debian.gentoo.org>
+Cc: maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, Manas Kumar Nayak <maknayak@in.ibm.com>, Oleg Nesterov <oleg@redhat.com>, rohit.170309@gmail.com
 
---===============0611646865328339181==
-Content-Type: multipart/signed; boundary="nextPart1697135.EtNsQULgJa";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
+--001517570904fc363a046c91057b
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 
---nextPart1697135.EtNsQULgJa
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Hi,
 
-On Friday 19 June 2009 10:13:25 Jiri Palecek > wrote:
-> this patch fixes a strange build failure in the cacheflush test. Also, it
-> makes the condition where it is build a little broader.
-
-a little too broad -- you probably broke arm systems with this as they defi=
-ne=20
-__NR_cacheflush but not asm/cachectl.h
-
-> -#if defined __mips__
-> +
-> +#if defined __NR_cacheflush
->  #include <asm/cachectl.h>
-
-for using the systemcall you should use __NR_cacheflush.  for the header, y=
-ou=20
-should use autoconf.
-=2Dmike
-
---nextPart1697135.EtNsQULgJa
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJKQUUoAAoJEEFjO5/oN/WByBEQAIUscK/LeD/amaGD8cyFwlLF
-kdjo4HpRnvFtRH01IDvgXBi2EyYbCunATRlSpYtq8l3pMGyFoEy6OUH5tTQkLomQ
-wMI5VwsCiFmKS5USxsgj6TprjwobEKUuS75srWBSyxma5ko8psBdErX3GLvBgSO7
-pVIYQ6v8q49Jv/bQAOd4sgPdEjom9FhVnvfotMw7u0i6BfD/eL2A/z2ch3Z6dz+H
-zJFgkKtDe+tHp6H2rIxNwqckkWZHUZwvXlMToGwfbkvisgDUTRjUOUe0z2V6cbTt
-uyPXR8kGXuNni4Xhd9160nwX64V6q8EaOlKVDFDxFZ93yPoNiQBAe37yi6rZ4UE4
-2TfMm2Y08F4qooMF/5jYPHyE7Vv97hYkwtF4sCOUiEQtlnkq1sApiwaFs8HHfwcp
-pGOJ37PdOlqglCR7rDObTBAiyndE4+/Rv7HHyuE8ZzqU3J6GntQMpegCH1bu3uBR
-otIERuXb6cybX7f73ZV34XCDBPUh4krdgmaaynrFXJkWFCIrJWW9W7fxzn9VvVDx
-84XKJepvXwtMpz29inTwm59iCATReVzid9RO7WIidbFkfXj4zxv8nfDTiB7LTGmc
-nMAKBddQJSiAA69nEM0A92IlvwUHHggJD3IizHVJOD1gfn6SiFTcQnk/lqTMGLTi
-YMLE3/zX6q1michzoZdH
-=x0QM
------END PGP SIGNATURE-----
-
---nextPart1697135.EtNsQULgJa--
+I have noticed fail and fixed.
+1. rt_sigsuspend01.c
 
 
---===============0611646865328339181==
+Please find the patch below and as attachment.
+
+Best regards
+Naresh Kamboju
+
+Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+
+diff -Naurb a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
+b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
+--- a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c	2009-05-21
+23:58:46.000000000 +0530
++++ b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c	2009-06-17
+23:09:40.000000000 +0530
+@@ -142,13 +142,13 @@
+ 			struct sigaction act, oact;
+ 		        act.sa_handler = sig_handler;
+ 			
+-			TEST(syscall(174, SIGALRM, &act, &oact, 8));
++			TEST(syscall(__NR_rt_sigaction, SIGALRM, &act, &oact, 8));
+ 			if(TEST_RETURN == -1){
+ 		        	tst_resm(TFAIL,"rt_sigaction() Failed, errno=%d :
+%s",TEST_ERRNO, strerror(TEST_ERRNO));
+ 				cleanup();
+ 				tst_exit();
+ 			}
+-			TEST(syscall(175, SIG_UNBLOCK, 0, &set1, 8));
++			TEST(syscall(__NR_rt_sigprocmask, SIG_UNBLOCK, 0, &set1, 8));
+ 			if(TEST_RETURN == -1){
+ 		        	tst_resm(TFAIL,"rt_sigprocmask() Failed, errno=%d :
+%s",TEST_ERRNO, strerror(TEST_ERRNO));
+ 				cleanup();
+@@ -157,10 +157,10 @@
+ 			
+ 			TEST(alarm(5));
+ 		        int result;
+-			TEST(result = syscall(179, &set, 8));
++			TEST(result = syscall(__NR_rt_sigsuspend, &set, 8));
+ 		        TEST(alarm(0));
+ 			if((result == -1) && (TEST_ERRNO != EINTR)){
+-				TEST(syscall(175, SIG_UNBLOCK, 0, &set2, 8));
++				TEST(syscall(__NR_rt_sigprocmask, SIG_UNBLOCK, 0, &set2, 8));
+ 				if(TEST_RETURN == -1){
+ 		        		tst_resm(TFAIL,"rt_sigprocmask() Failed, errno=%d :
+%s",TEST_ERRNO, strerror(TEST_ERRNO));
+ 					cleanup();
+
+--001517570904fc363a046c91057b
+Content-Type: application/octet-stream; name="ltp-fix-rt_sigsuspend.patch"
+Content-Disposition: attachment; filename="ltp-fix-rt_sigsuspend.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fw2gtzgf0
+
+ZGlmZiAtTmF1cmIgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3J0X3NpZ3N1c3BlbmQvcnRf
+c2lnc3VzcGVuZDAxLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3J0X3NpZ3N1c3BlbmQv
+cnRfc2lnc3VzcGVuZDAxLmMKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9ydF9zaWdz
+dXNwZW5kL3J0X3NpZ3N1c3BlbmQwMS5jCTIwMDktMDUtMjEgMjM6NTg6NDYuMDAwMDAwMDAwICsw
+NTMwCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcnRfc2lnc3VzcGVuZC9ydF9zaWdz
+dXNwZW5kMDEuYwkyMDA5LTA2LTE3IDIzOjA5OjQwLjAwMDAwMDAwMCArMDUzMApAQCAtMTQyLDEz
+ICsxNDIsMTMgQEAKIAkJCXN0cnVjdCBzaWdhY3Rpb24gYWN0LCBvYWN0OwogCQkgICAgICAgIGFj
+dC5zYV9oYW5kbGVyID0gc2lnX2hhbmRsZXI7CiAJCQkKLQkJCVRFU1Qoc3lzY2FsbCgxNzQsIFNJ
+R0FMUk0sICZhY3QsICZvYWN0LCA4KSk7CisJCQlURVNUKHN5c2NhbGwoX19OUl9ydF9zaWdhY3Rp
+b24sIFNJR0FMUk0sICZhY3QsICZvYWN0LCA4KSk7CiAJCQlpZihURVNUX1JFVFVSTiA9PSAtMSl7
+CiAJCSAgICAgICAgCXRzdF9yZXNtKFRGQUlMLCJydF9zaWdhY3Rpb24oKSBGYWlsZWQsIGVycm5v
+PSVkIDogJXMiLFRFU1RfRVJSTk8sIHN0cmVycm9yKFRFU1RfRVJSTk8pKTsKIAkJCQljbGVhbnVw
+KCk7CiAJCQkJdHN0X2V4aXQoKTsKIAkJCX0KLQkJCVRFU1Qoc3lzY2FsbCgxNzUsIFNJR19VTkJM
+T0NLLCAwLCAmc2V0MSwgOCkpOworCQkJVEVTVChzeXNjYWxsKF9fTlJfcnRfc2lncHJvY21hc2ss
+IFNJR19VTkJMT0NLLCAwLCAmc2V0MSwgOCkpOwogCQkJaWYoVEVTVF9SRVRVUk4gPT0gLTEpewog
+CQkgICAgICAgIAl0c3RfcmVzbShURkFJTCwicnRfc2lncHJvY21hc2soKSBGYWlsZWQsIGVycm5v
+PSVkIDogJXMiLFRFU1RfRVJSTk8sIHN0cmVycm9yKFRFU1RfRVJSTk8pKTsKIAkJCQljbGVhbnVw
+KCk7CkBAIC0xNTcsMTAgKzE1NywxMCBAQAogCQkJCiAJCQlURVNUKGFsYXJtKDUpKTsKIAkJICAg
+ICAgICBpbnQgcmVzdWx0OwotCQkJVEVTVChyZXN1bHQgPSBzeXNjYWxsKDE3OSwgJnNldCwgOCkp
+OworCQkJVEVTVChyZXN1bHQgPSBzeXNjYWxsKF9fTlJfcnRfc2lnc3VzcGVuZCwgJnNldCwgOCkp
+OwogCQkgICAgICAgIFRFU1QoYWxhcm0oMCkpOwogCQkJaWYoKHJlc3VsdCA9PSAtMSkgJiYgKFRF
+U1RfRVJSTk8gIT0gRUlOVFIpKXsKLQkJCQlURVNUKHN5c2NhbGwoMTc1LCBTSUdfVU5CTE9DSywg
+MCwgJnNldDIsIDgpKTsKKwkJCQlURVNUKHN5c2NhbGwoX19OUl9ydF9zaWdwcm9jbWFzaywgU0lH
+X1VOQkxPQ0ssIDAsICZzZXQyLCA4KSk7CiAJCQkJaWYoVEVTVF9SRVRVUk4gPT0gLTEpewogCQkg
+ICAgICAgIAkJdHN0X3Jlc20oVEZBSUwsInJ0X3NpZ3Byb2NtYXNrKCkgRmFpbGVkLCBlcnJubz0l
+ZCA6ICVzIixURVNUX0VSUk5PLCBzdHJlcnJvcihURVNUX0VSUk5PKSk7CiAJCQkJCWNsZWFudXAo
+KTsK
+--001517570904fc363a046c91057b
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-
---===============0611646865328339181==
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
+--001517570904fc363a046c91057b
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -102,5 +142,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============0611646865328339181==--
+--001517570904fc363a046c91057b--
 
