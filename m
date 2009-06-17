@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naveenspen@gmail.com>) id 1MHEYK-0008IJ-W4
-	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 10:09:04 +0000
-Received: from mail-yx0-f185.google.com ([209.85.210.185])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MHEYJ-0001rq-6u
-	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 10:09:04 +0000
-Received: by yxe15 with SMTP id 15so33188yxe.28
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naresh.kernel@gmail.com>) id 1MH1Zz-0002qk-AT
+	for ltp-list@lists.sourceforge.net; Wed, 17 Jun 2009 20:17:55 +0000
+Received: from mail-yx0-f192.google.com ([209.85.210.192])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MH1Zy-0001vp-GP
+	for ltp-list@lists.sourceforge.net; Wed, 17 Jun 2009 20:17:55 +0000
+Received: by yxe30 with SMTP id 30so752220yxe.4
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 18 Jun 2009 03:09:02 -0700 (PDT)
+	Wed, 17 Jun 2009 13:17:53 -0700 (PDT)
 MIME-Version: 1.0
-Date: Thu, 18 Jun 2009 15:39:02 +0530
-Message-ID: <ab64ec20906180309x1388d972k6f7d6cf730af9578@mail.gmail.com>
-From: naveen penumala <naveenspen@gmail.com>
-Subject: [LTP] installation error ltp-full-20090531
+Date: Thu, 18 Jun 2009 01:47:52 +0530
+Message-ID: <f5a7b3810906171317j40473a95y5dfc1b89d9e25950@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Content-Type: multipart/mixed; boundary=00151750d96868e9b3046c90fc47
+Subject: [LTP] [FIX HTML PATCH] ltp-genhtml
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,61 +26,82 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5427989409456789078=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, Manas Kumar Nayak <maknayak@in.ibm.com>, Oleg Nesterov <oleg@redhat.com>, rohit.170309@gmail.com
 
---===============5427989409456789078==
-Content-Type: multipart/alternative; boundary=001e680f0dd4df2508046c9c9828
-
---001e680f0dd4df2508046c9c9828
+--00151750d96868e9b3046c90fc47
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 
-Hi
+Hi,
 
-Please look at the below error. Looks like the LTP is not creating /bin
-directory in testcases directory.
+I have noticed following issue and fixed.
+1.   Kernel Version
+2.   Machine Architecture.
 
-Here i'm using suse and kernel version is  2.6.16.21
+Please find the patch below and as attachment.
 
-i'm getting similar kind of errors for all the test cases. Help me regarding
-this.
+Best regards
+Naresh Kamboju
 
-ln: creating hard link `../../../bin/mem01' to `mem01': No such file or
-directory
-make: *** [install] Error 1
+Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
 
-ln: creating hard link `../../../bin/mtest01' to `mtest01': No such file or
-directory
-make: *** [install] Error 1
+diff -Naurb a/tools/genhtml.pl b/tools/genhtml.pl
+--- a/tools/genhtml.pl	2009-04-02 12:07:28.000000000 +0530
++++ b/tools/genhtml.pl	2009-06-18 00:33:46.000000000 +0530
+@@ -246,8 +246,12 @@
+ print "<tr><td><strong>Total Test TWARN</strong></td><td><strong>
+$warn_test_counter </strong></td></tr>\n";
+ print "<tr><td><strong>Total Test TRETR</strong></td><td><strong>
+$retr_test_counter </strong></td></tr>\n";
+ print "<tr><td><strong>Total Test TCONF</strong></td><td><strong>
+$conf_test_counter </strong></td></tr>\n";
+-print "<tr><td><strong>Kernel Version</strong></td><td><strong>
+$ENV{KERNEL_VERSION}  </strong></td></tr>\n";
+-print "<tr><td><strong>Machine Architecture</strong></td><td><strong>
+$ENV{MACHINE_ARCH} </strong></td></tr>\n";
++print "<tr><td><strong>Kernel_Version</strong>  </td> <td><strong>";
++$kernel_version=system("uname -r");             chop($kernel_version);
++print " $kernel_version </strong></td></tr>\n";
++print "<tr><td><strong>Machine_Arch</strong>  </td> <td><strong>";
++$machine_arch=system("uname -m");             chop($machine_arch);
++print " $machine_arch </strong></td></tr>\n";
+ print "<tr><td><strong>Hostname</strong>  </td> <td><strong>";
+ $hostname=system("uname -n");             chop($hostname);
+ print " $hostname </strong></td></tr></tbody></table></div></body></html>\n";
 
+--00151750d96868e9b3046c90fc47
+Content-Type: application/octet-stream; name="ltp-fix-genhtml.patch"
+Content-Disposition: attachment; filename="ltp-fix-genhtml.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fw2hcogo0
 
-Thanks,
-Naveen P
-
---001e680f0dd4df2508046c9c9828
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-Hi <br><br>Please look at the below error. Looks like the LTP is not creati=
-ng /bin directory in testcases directory.<br><br>Here i&#39;m using suse an=
-d kernel version is=A0 2.6.16.21<br><br>i&#39;m getting similar kind of err=
-ors for all the test cases. Help me regarding this.<br>
-<br><span style=3D"color: rgb(255, 0, 0);">ln: creating hard link `../../..=
-/bin/mem01&#39; to `mem01&#39;: No such file or directory</span><br style=
-=3D"color: rgb(255, 0, 0);"><span style=3D"color: rgb(255, 0, 0);">make: **=
-* [install] Error 1</span><br style=3D"color: rgb(255, 0, 0);">
-<br><span style=3D"color: rgb(255, 0, 0);">ln: creating hard link `../../..=
-/bin/mtest01&#39; to `mtest01&#39;: No such file or directory</span><br sty=
-le=3D"color: rgb(255, 0, 0);"><span style=3D"color: rgb(255, 0, 0);">make: =
-*** [install] Error 1</span><br>
-<br><br>Thanks,<br>Naveen P<br>
-
---001e680f0dd4df2508046c9c9828--
-
-
---===============5427989409456789078==
+ZGlmZiAtTmF1cmIgYS90b29scy9nZW5odG1sLnBsIGIvdG9vbHMvZ2VuaHRtbC5wbAotLS0gYS90
+b29scy9nZW5odG1sLnBsCTIwMDktMDQtMDIgMTI6MDc6MjguMDAwMDAwMDAwICswNTMwCisrKyBi
+L3Rvb2xzL2dlbmh0bWwucGwJMjAwOS0wNi0xOCAwMDozMzo0Ni4wMDAwMDAwMDAgKzA1MzAKQEAg
+LTI0Niw4ICsyNDYsMTIgQEAKIHByaW50ICI8dHI+PHRkPjxzdHJvbmc+VG90YWwgVGVzdCBUV0FS
+Tjwvc3Ryb25nPjwvdGQ+PHRkPjxzdHJvbmc+ICR3YXJuX3Rlc3RfY291bnRlciA8L3N0cm9uZz48
+L3RkPjwvdHI+XG4iOwogcHJpbnQgIjx0cj48dGQ+PHN0cm9uZz5Ub3RhbCBUZXN0IFRSRVRSPC9z
+dHJvbmc+PC90ZD48dGQ+PHN0cm9uZz4gJHJldHJfdGVzdF9jb3VudGVyIDwvc3Ryb25nPjwvdGQ+
+PC90cj5cbiI7CiBwcmludCAiPHRyPjx0ZD48c3Ryb25nPlRvdGFsIFRlc3QgVENPTkY8L3N0cm9u
+Zz48L3RkPjx0ZD48c3Ryb25nPiAkY29uZl90ZXN0X2NvdW50ZXIgPC9zdHJvbmc+PC90ZD48L3Ry
+PlxuIjsKLXByaW50ICI8dHI+PHRkPjxzdHJvbmc+S2VybmVsIFZlcnNpb248L3N0cm9uZz48L3Rk
+Pjx0ZD48c3Ryb25nPiAkRU5We0tFUk5FTF9WRVJTSU9OfSAgPC9zdHJvbmc+PC90ZD48L3RyPlxu
+IjsKLXByaW50ICI8dHI+PHRkPjxzdHJvbmc+TWFjaGluZSBBcmNoaXRlY3R1cmU8L3N0cm9uZz48
+L3RkPjx0ZD48c3Ryb25nPiAkRU5We01BQ0hJTkVfQVJDSH0gPC9zdHJvbmc+PC90ZD48L3RyPlxu
+IjsKK3ByaW50ICI8dHI+PHRkPjxzdHJvbmc+S2VybmVsX1ZlcnNpb248L3N0cm9uZz4gIDwvdGQ+
+IDx0ZD48c3Ryb25nPiI7Ciska2VybmVsX3ZlcnNpb249c3lzdGVtKCJ1bmFtZSAtciIpOyAgICAg
+ICAgICAgICBjaG9wKCRrZXJuZWxfdmVyc2lvbik7IAorcHJpbnQgIiAka2VybmVsX3ZlcnNpb24g
+PC9zdHJvbmc+PC90ZD48L3RyPlxuIjsKK3ByaW50ICI8dHI+PHRkPjxzdHJvbmc+TWFjaGluZV9B
+cmNoPC9zdHJvbmc+ICA8L3RkPiA8dGQ+PHN0cm9uZz4iOworJG1hY2hpbmVfYXJjaD1zeXN0ZW0o
+InVuYW1lIC1tIik7ICAgICAgICAgICAgIGNob3AoJG1hY2hpbmVfYXJjaCk7IAorcHJpbnQgIiAk
+bWFjaGluZV9hcmNoIDwvc3Ryb25nPjwvdGQ+PC90cj5cbiI7CiBwcmludCAiPHRyPjx0ZD48c3Ry
+b25nPkhvc3RuYW1lPC9zdHJvbmc+ICA8L3RkPiA8dGQ+PHN0cm9uZz4iOwogJGhvc3RuYW1lPXN5
+c3RlbSgidW5hbWUgLW4iKTsgICAgICAgICAgICAgY2hvcCgkaG9zdG5hbWUpOyAKIHByaW50ICIg
+JGhvc3RuYW1lIDwvc3Ryb25nPjwvdGQ+PC90cj48L3Rib2R5PjwvdGFibGU+PC9kaXY+PC9ib2R5
+PjwvaHRtbD5cbiI7Cg==
+--00151750d96868e9b3046c90fc47
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -91,7 +113,7 @@ Check out the new simplified licensing option that enables unlimited
 royalty-free distribution of the report engine for externally facing 
 server and web deployment.
 http://p.sf.net/sfu/businessobjects
---===============5427989409456789078==
+--00151750d96868e9b3046c90fc47
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -102,5 +124,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============5427989409456789078==--
+--00151750d96868e9b3046c90fc47--
 
