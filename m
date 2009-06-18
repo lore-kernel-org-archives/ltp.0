@@ -2,18 +2,18 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sukadev@linux.vnet.ibm.com>) id 1MH4Zw-0001aP-N9
-	for ltp-list@lists.sourceforge.net; Wed, 17 Jun 2009 23:30:04 +0000
-Received: from e36.co.us.ibm.com ([32.97.110.154])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MH4Yy-00058c-IW
-	for ltp-list@lists.sourceforge.net; Wed, 17 Jun 2009 23:30:04 +0000
-Date: Wed, 17 Jun 2009 16:26:03 -0700
-From: Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
-Message-ID: <20090617232603.GA27168@us.ibm.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] [PATCH] pidns17 testcase bugfix/cleanup
+	(envelope-from <nobuhiro@andestech.com>) id 1MHHBN-0001yx-0K
+	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 12:57:33 +0000
+Received: from 59-124-160-117.hinet-ip.hinet.net ([59.124.160.117]
+	helo=ATCPCS06.andestech.com)
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MHHBE-00052K-Ne
+	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 12:57:27 +0000
+From: nobuhiro <nobuhiro@andestech.com>
+Date: Thu, 18 Jun 2009 20:21:23 +0800
+Message-Id: <1245327683-8493-1-git-send-email-nobuhiro@andestech.com>
+Subject: [LTP] [PATCH] growfiles: fix static build which needs to link the
+	pthread library
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,69 +23,33 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: mohankumar@in.ibm.com, ssant@in.ibm.com, sukadev@linux.vnet.ibm.com, ltp-list@lists.sf.net
+To: ltp-list@lists.sourceforge.net
 
 
-Fix minor bugs in the test case that cause the test to fail intermittently.
-Also, print more debug info when test fails.
-
-This fixes a bug reported by Sachin P. Sant.
-
-Signed-off-by: Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
+Signed-off-by: nobuhiro <nobuhiro@andestech.com>
 ---
- testcases/kernel/containers/pidns/pidns17.c |   17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ testcases/kernel/fs/doio/Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Index: ltp-full-20090331/testcases/kernel/containers/pidns/pidns17.c
-===================================================================
---- ltp-full-20090331.orig/testcases/kernel/containers/pidns/pidns17.c	2009-06-10 23:52:44.022094621 -0700
-+++ ltp-full-20090331/testcases/kernel/containers/pidns/pidns17.c	2009-06-11 00:09:37.454753439 -0700
-@@ -74,8 +74,10 @@ int child_fn(void *arg)
+diff --git a/testcases/kernel/fs/doio/Makefile b/testcases/kernel/fs/doio/Makefile
+index 4e0cd24..6e8f2de 100644
+--- a/testcases/kernel/fs/doio/Makefile
++++ b/testcases/kernel/fs/doio/Makefile
+@@ -1,6 +1,6 @@
  
- 	/* Spawn many children */
- 	for (i = 0; i < 10; i++)
--		if ((children[i] = fork()) == 0)
--			sleep(10);
-+		if ((children[i] = fork()) == 0) {
-+			pause();
-+			exit(2);
-+		}
+ CFLAGS+= -Wall -I../../../../include -D_LARGEFILE64_SOURCE
+-LDLIBS+= -L../../../../lib -lltp -lrt
++LDLIBS+= -L../../../../lib -lltp -lrt -lpthread
  
- 	/* wait for last child to get scheduled */
- 	sleep(1);
-@@ -86,13 +88,16 @@ int child_fn(void *arg)
- 	}
- 
- 	for (i = 0; i < 10; i++) {
--		if (waitpid(children[i], &status, WNOHANG) == -1) {
-+		if (waitpid(children[i], &status, 0) == -1) {
- 			tst_resm(TBROK, "cinit: waitpid() failed(%s)",\
- 					strerror(errno));
- 			cleanup();
- 		}
--		if (!(WIFSIGNALED(&status) && WTERMSIG(status) == SIGUSR1)) {
--			tst_resm(TFAIL, "cinit: found a child alive still.");
-+		if (!(WIFSIGNALED(status) && WTERMSIG(status) == SIGUSR1)) {
-+			tst_resm(TFAIL, "cinit: found a child alive still "
-+					"%d exit: %d, %d, signal %d, %d", i,
-+					WIFEXITED(status), WEXITSTATUS(status),
-+					WIFSIGNALED(status), WTERMSIG(status));
- 			cleanup();
- 		}
- 	}
-@@ -125,7 +130,7 @@ int main(int argc, char *argv[])
- 	}
- 
- 	sleep(1);
--	if (wait(&status) < 0)
-+	if (waitpid(-1, &status, __WALL) < 0)
- 		tst_resm(TWARN, "parent: waitpid() failed.");
- 
- 	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+ TARGETS=doio growfiles rwtest iogen
+ SRCS=$(wildcard *.c)
+-- 
+1.6.3.1
+
 
 ------------------------------------------------------------------------------
 Crystal Reports - New Free Runtime and 30 Day Trial
