@@ -1,21 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MHLTK-0007eR-2S
-	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:32:22 +0000
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MHLTI-0006eU-PC
-	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:32:22 +0000
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MHLTm-0007it-Hy
+	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:32:50 +0000
+Received: from e33.co.us.ibm.com ([32.97.110.151])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MHLTl-0000Jm-Ab
+	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:32:50 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e33.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5IHUjK1017763
+	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 11:30:45 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5IHWm3n221138
+	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 11:32:48 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5IHWlGJ029991
+	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 11:32:48 -0600
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <ab64ec20906160538i392e4cb8oa3006186c202d1bd@mail.gmail.com>
-References: <20090616095220.GA218461@medusa.sis.pasteur.fr>
-	<ab64ec20906160538i392e4cb8oa3006186c202d1bd@mail.gmail.com>
-Date: Thu, 18 Jun 2009 23:01:49 +0530
-Message-Id: <1245346310.5041.39.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1245327683-8493-1-git-send-email-nobuhiro@andestech.com>
+References: <1245327683-8493-1-git-send-email-nobuhiro@andestech.com>
+Date: Thu, 18 Jun 2009 23:01:59 +0530
+Message-Id: <1245346319.5041.44.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] Small typo in sgetmask01.c
+Subject: Re: [LTP] [PATCH] growfiles: fix static build which needs to
+	link	the pthread library
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -29,72 +41,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: naveen penumala <naveenspen@gmail.com>, Nicolas Joly <njoly@pasteur.fr>
-Cc: LTP list <ltp-list@lists.sf.net>
+To: nobuhiro <nobuhiro@andestech.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Tue, 2009-06-16 at 18:08 +0530, naveen penumala wrote:
-> Hi, 
-> I have applied above patch and tested. In my testing i got below error
-> statements.
-> I have tested on suse linux and kernel version is 2.6.16.21
-> 
-> cc -I../../../../include -Wall    sgetmask01.c  -L../../../../lib
-> -lltp -o sgetmask01
-> In file included from sgetmask01.c:60:
-> ../../../../include/linux_syscall_numbers.h:184:1: error: unterminated
-> #ifdef
-> ../../../../include/linux_syscall_numbers.h:13:1: error: unterminated
-> #ifndef
-> 
-> 
+On Thu, 2009-06-18 at 20:21 +0800, nobuhiro wrote: 
+> Signed-off-by: nobuhiro <nobuhiro@andestech.com>
 
-Well, that is not introduced by this patch. The only issue is it not
-having a Signed-off-by: Nicolas Joly <njoly@pasteur.fr>, which i have
-now added in the Log message. Please do so in future.
+Thanks.
 
 Regards--
 Subrata
 
-> Thanks & Regards,
-> -NVN
-> On Tue, Jun 16, 2009 at 3:22 PM, Nicolas Joly <njoly@pasteur.fr>
-> wrote:
->         
->         Hi,
->         
->         Here follow a small patch that fix a typo in sgetmask01.c
->         testcase,
->         where __NR_ssetmask is badly used instead of __NR_sgetmask.
->         
->         Regards.
->         
->         --
->         Nicolas Joly
->         
->         Biological Software and Databanks.
->         Institut Pasteur, Paris.
->         
->         ------------------------------------------------------------------------------
->         Crystal Reports - New Free Runtime and 30 Day Trial
->         Check out the new simplified licensing option that enables
->         unlimited
->         royalty-free distribution of the report engine for externally
->         facing
->         server and web deployment.
->         http://p.sf.net/sfu/businessobjects
->         _______________________________________________
->         Ltp-list mailing list
->         Ltp-list@lists.sourceforge.net
->         https://lists.sourceforge.net/lists/listinfo/ltp-list
->         
+> ---
+>  testcases/kernel/fs/doio/Makefile |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
 > 
-> ------------------------------------------------------------------------------
-> Crystal Reports - New Free Runtime and 30 Day Trial
-> Check out the new simplified licensing option that enables unlimited
-> royalty-free distribution of the report engine for externally facing 
-> server and web deployment.
-> http://p.sf.net/sfu/businessobjects
-> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
+> diff --git a/testcases/kernel/fs/doio/Makefile b/testcases/kernel/fs/doio/Makefile
+> index 4e0cd24..6e8f2de 100644
+> --- a/testcases/kernel/fs/doio/Makefile
+> +++ b/testcases/kernel/fs/doio/Makefile
+> @@ -1,6 +1,6 @@
+> 
+>  CFLAGS+= -Wall -I../../../../include -D_LARGEFILE64_SOURCE
+> -LDLIBS+= -L../../../../lib -lltp -lrt
+> +LDLIBS+= -L../../../../lib -lltp -lrt -lpthread
+> 
+>  TARGETS=doio growfiles rwtest iogen
+>  SRCS=$(wildcard *.c)
 
 
 ------------------------------------------------------------------------------
