@@ -1,27 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <michal.simek@petalogix.com>) id 1MB1iY-0007qH-Q0
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2009 07:13:58 +0000
-Received: from mail-fx0-f177.google.com ([209.85.220.177])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MB1hj-0006uH-Nh
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2009 07:13:58 +0000
-Received: by fxm25 with SMTP id 25so7148093fxm.10
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 01 Jun 2009 00:13:06 -0700 (PDT)
-Message-ID: <4A237F80.6040709@petalogix.com>
-Date: Mon, 01 Jun 2009 09:13:04 +0200
-From: Michal Simek <michal.simek@petalogix.com>
-MIME-Version: 1.0
-References: <4A1E5847.6030807@petalogix.com>
-	<200905301816.32273.vapier@gentoo.org>
-	<4A22DA33.5050601@petalogix.com>
-	<200906010044.48635.vapier@gentoo.org>
-In-Reply-To: <200906010044.48635.vapier@gentoo.org>
-Subject: Re: [LTP] Installing outside LTP source
-Reply-To: michal.simek@petalogix.com
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MHLSm-0007Zv-4l
+	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:31:48 +0000
+Received: from e5.ny.us.ibm.com ([32.97.182.145])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MHLSh-0006VW-Ma
+	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:31:48 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e5.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5IHPUHv011796
+	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 13:25:30 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5IHVfAY229206
+	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 13:31:42 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5IHVek5030113
+	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 13:31:41 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <1244635585.9465.14.camel@munipradeep-laptop>
+References: <1244635585.9465.14.camel@munipradeep-laptop>
+Date: Thu, 18 Jun 2009 23:01:32 +0530
+Message-Id: <1245346293.5041.33.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Some of the testcases which are resulting in FAIL even
+	though	they might not be
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,153 +40,69 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: LTP <ltp-list@lists.sourceforge.net>, Jiri Palecek <jpalecek@web.de>
+To: Munipradeep Beerakam <mpradeep@linux.vnet.ibm.com>, pradeepkumars <pradeepkumars@in.ibm.com>, Cai Qian <caiqian@cclom.cn>, rohit verma <rohit.170309@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, iranna.ankad@in.ibm.com
 
-Mike Frysinger wrote:
-> On Sunday 31 May 2009 15:27:47 Michal Simek wrote:
->   
->> Mike Frysinger wrote:
->>     
->>> On Saturday 30 May 2009 10:28:48 Michal Simek wrote:
->>>       
->>>> Mike Frysinger wrote:
->>>>         
->>>>> On Thursday 28 May 2009 05:24:23 Michal Simek wrote:
->>>>>           
->>>>>> I would to ask you if someone works or worked on moving LTP to Kbuild.
->>>>>>             
->>>>> the Subject line doesnt really seem to line up with this question. 
->>>>> what exactly do you want to do and why do you think Kbuild is the
->>>>> solution ? saying "let's switch to Kbuild!" without any rhyme or reason
->>>>> sounds like a lot of work for no gain.
->>>>>           
->>>> I wanted to wrote two emails instead of one - that's why was there 2
->>>> different things.
->>>> 1. disable compilation "verbose" mode and turn on it with V=1.
->>>>         
->>> meh.  `make -s` seems to work fine enough for me.  most people arent
->>> reviewing the output for warnings and similar issues, so i dont really
->>> see much point of having quiet output in LTP.
->>>       
->> People don't do it because that warnings are hidden in huge log. It will
->> be good to run sparse too.
->>     
->
-> i dont think sparse is applicable.  it is largely geared towards the policies 
-> employed in the kernel.
->
->   
->>>> 2. Move all binaries outside of LTP source code O=/path
->>>>         
->>> you mean out-of-tree compilation.  you can use lndir to get the same
->>> functionality, but it isnt really an optimal method.
->>>
->>>       
->>>> 3. I use only some parts of LTP for my testing and it will be good to
->>>> enable/disable just tests which you want to use.
->>>>         
->>> you can run `make` in only the dirs you care about.  how deep do you
->>> actually want to get ?  having Kconfig entries for every single test
->>> (i.e. kernel/syscalls/{getsid,pipe}0{1,2} .....) is crazy.
->>>       
->> Yes, I agree that make no sense to add all syscalls test for example to
->> Kconfig but I can imagine tests for noMMU as are currently wrote in
->> Makefile.
->>     
->
-> sounds a bit arbitrary.  you and i may be interested in nommu, but what about 
-> other classifications of things people are interested in ?  that'd lead to 
-> messy kbuild files where tests are arbitrary grouped and the resulting build 
-> system would be just as bad.
->   
+On Wed, 2009-06-10 at 17:36 +0530, Munipradeep Beerakam wrote: 
+> Hi,
+> 
+> Here is the list of testcases in May 2009 LTP, which *may* result in
+> FAIL even though it is a configuration error, not the error due to the
+> functionality we are testing. Those tests should give "CONF" message,
+> not "FAIL". I ran LTP on 2.6.18 kernel, x86 architecture.
+> 
+>    1. InitNuma
+> Error output:
+> Initnuma 0 WARN : non-NUMA aware kernel is running or your machine does
+> not support numa policy or
+> your machine is not a NUMA machine
+> Initnuma 1 FAIL : INIT NUMA FAILED !!
 
-No. I am interested in MMU version and much more that noMMU one.
-Paul J.Y. Lahaie added noMMU support to LTP and he excludes there some
-tests.
-Some of them make sense some not. Please imagine new guy come to use LTP
-to test
-his noMMU system and find that chmod, chown are exclude for example but
-don't know why.
-Is it mean that uclinux can't use chmod or I just can't run that test on
-noMMU?
-He will look to source and of course there isn't any description. Maybe
-you are right
-that we should create any doc file about uClinux usage or any sensible
-solution.
-Anyway there are a lot of tests which we could enable for uClinux
-because only kernel syscalls folder in not enough,
+Contact Pradeep for this.
 
-The second things is relate with hush which you are solving at busybox
-mailing list - which is out of topic here.
-Thanks for that.
+> 
+>    2. ht_enable
+> Error output:
+> ht_enable 0 INFO : Begin: HyperThreading Enabled
+> ht_enable 0 INFO : The kernel boot paramter 'noht' is not set.
+> ht_enable 1 FAIL : HT feature is not included in this Linux Kernel.
+> ht_enable 0 INFO : End: HyperThreading Enabled
+> 
 
->   
->> For example will be good for all to know why are some tests exclude for
->> noMMU.
->>     
->
-> i dont see how that's relevant to kbuild.  that info should be documented 
-> regardless in the test case itself.
->   
-Or in Kconfig description.
->> If you look to runtest for testing description, make sense to me have
->> all that filenames as Kconfig option and enable/disable that tests.
->>     
->
-> ive never used/looked at runtest, sorry
->   
-Do you run every tests by hand on any simple script?
-You haven't run command like this?
-./runltp -q -f syscalls
+Cai/Rohit has been discussing this for long.
 
->   
->>>> 4. If is possible clean all Makefiles
->>>>         
->>> dont really know what that means
->>>       
->> this point depended on descriptions below. I think we talked about once
->> in past.
->>
->> There are a lot of additions like CFLAGS, LDLIBS.
->> CFLAGS += -I../../../../include -Wall
->> LDLIBS += -L../../../../lib -lltp
->>
->> I think that install and clean parts could be possible to clean too and
->> have Makefiles with
->> one or two lines  like  test-y +=test_name
->>
->> Is it possible to do with Kbuild? That the same question as I had in
->> previous email.
->>     
->
-> that can be done right now without any other issue.  create a top level .mk 
-> file, define topdir in the specific Makefile, and then include it.
-> topdir = ../../../..
-> include $(topdir)/common.mk
->
-> then the common.mk can setup common flags or create automatic clean targets
->   
+> 3. get_mempolicy01
+> Part of code, which is not correct
+> tst_resm(TFAIL, "set_mempolicy() failed - errno = %d : %s",TEST_ERRNO,
+> strerror(TEST_ERRNO));
+> ...
+> ...
+> tst_resm(TFAIL, "malloc failed - errno = %d : %s",TEST_ERRNO,
+> strerror(TEST_ERRNO));
+> 
+>    4. mq_open01
+> Part of code, which is not correct
+> if (TEST_RETURN < 0) {
+>                         tst_resm(TFAIL, "mq_getsetattr failed - errno =
+> %d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> 
 
-0k.
-Michal
+And they are as per my earlier mail.
 
-> -mike
->   
+Regards--
+Subrata
 
-
--- 
-Michal Simek, Ing. (M.Eng)
-PetaLogix - Linux Solutions for a Reconfigurable World
-w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+> Regards
+> Muni
+> 
 
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
-is a gathering of tech-side developers & brand creativity professionals. Meet
-the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
-Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
