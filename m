@@ -1,33 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MLY7E-0002qS-E7
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 07:50:56 +0000
-Received: from [32.97.110.159] (helo=e38.co.us.ibm.com)
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MLY7D-0004fx-BO
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 07:50:56 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e38.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5U7ktQL032001
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 01:46:55 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5U7o4lK094732
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 01:50:04 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5U7o3hZ023429
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 01:50:04 -0600
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MHLSd-0007Z7-EJ
+	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:31:39 +0000
+Received: from e36.co.us.ibm.com ([32.97.110.154])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MHLSZ-0002ZV-Qr
+	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:31:39 +0000
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <364299f40906291412o1c24953n587406adcc465139@mail.gmail.com>
-References: <f5a7b3810906290953k7326b82ds617ee7bfdac92e48@mail.gmail.com>
-	<364299f40906291412o1c24953n587406adcc465139@mail.gmail.com>
-Date: Tue, 30 Jun 2009 13:11:31 +0530
-Message-Id: <1246347691.4819.36.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1242125977.5911.40.camel@subratamodak.linux.ibm.com>
+References: <20090512094631.26592.81609.sendpatchset@subratamodak.linux.ibm.com>
+	<4A094833 .7030006@grandegger.com>  <4A095373.9010205@volkswagen.de>
+	<1242125977.5911.40.camel@subratamodak.linux.ibm.com>
+Date: Thu, 18 Jun 2009 23:01:19 +0530
+Message-Id: <1245346280.5041.30.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [FIX-PATCH]Build-issue-cacheflush01.c on MIPS
+Subject: Re: [LTP] [PATCH v2 0/7] can: CAN network device
+	driver	interfaceand drivers
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -38,74 +28,67 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: naresh kamboju <naresh.kernel@gmail.com>, Henry Yei <hyei@mvista.com>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>, Jiri Palecek <jpalecek@web.de>, maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, Manas Kumar Nayak <maknayak@in.ibm.com>
+To: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
+Cc: ltp-list <ltp-list@lists.sf.net>, Wolfgang Grandegger <wg@grandegger.com>, netdev <netdev@vger.kernel.org>
 
-On Mon, 2009-06-29 at 14:12 -0700, Garrett Cooper wrote: 
-> On Mon, Jun 29, 2009 at 9:53 AM, naresh kamboju<naresh.kernel@gmail.com> wrote:
-> > Hi,
-> >
-> > I have noticed build error for cacheflush01.c on MIPS.
-> > There is edit issue from Windows to Linux text file.
-> > Now build issue is resolved.
-> > Please find attached patch and below.
-> >
-> > Best Regards
-> > Naresh Kamboju
-
-Henry already submitted a patch to fix this:
-http://marc.info/?l=ltp-list&m=124615187102775&w=2
-
-I am yet to check-in that. It is the same as your patch ;-)
-
-Regards--
-Subrata
-
-> >
-> > Build-Error:
-> >
-> > cacheflush01.c  -L../../../../lib -lltp -o cacheflush01
-> > cacheflush01.c: In function 'cacheflush':
-> > cacheflush01.c:52: error: 'B' undeclared (first use in this function)
-> > cacheflush01.c:52: error: (Each undeclared identifier is reported only once
-> > cacheflush01.c:52: error: for each function it appears in.)
-> > cacheflush01.c:52: error: expected ';' before 'B'
-> > cacheflush01.c:53: warning: control reaches end of non-void function
-> > make: *** [cacheflush01] Error 1
-> >
-> >
-> > Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
-> >
-> > diff -Naurb a/testcases/kernel/syscalls/cacheflush/cacheflush01.c
-> > b/testcases/kernel/syscalls/cacheflush/cacheflush01.c
-> > --- a/testcases/kernel/syscalls/cacheflush/cacheflush01.c       2009-04-15
-> > 12:02:35.000000000 +0530
-> > +++ b/testcases/kernel/syscalls/cacheflush/cacheflush01.c       2009-06-29
-> > 21:38:42.000000000 +0530
-> > @@ -49,7 +49,7 @@
-> >  #include <asm/cachectl.h>
-> >  int cacheflush(char *addr, int nbytes, int cache)
-> >  {
-> > -B  B  B  B return syscall(__NR_cacheflush, addr, nbytes, cache);
-> > +           return syscall(__NR_cacheflush, addr, nbytes, cache);
-> >  }
-> >  #endif /* __mips__ */
-> 
-> Nice catch... Heh.
-> -Garrett
-> 
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
-------------------------------------------------------------------------------
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T2xpdmVyLAoKWW91IGhhdmUgYW55dGhpbmcgZm9yIHVzIG5vdyA/CgpSZWdhcmRzLS0KU3VicmF0
+YQoKT24gVHVlLCAyMDA5LTA1LTEyIGF0IDE2OjI5ICswNTMwLCBTdWJyYXRhIE1vZGFrIHdyb3Rl
+OiAKPiBIaSBPbGl2ZXIsCj4gCj4gT24gVHVlLCAyMDA5LTA1LTEyIGF0IDEyOjQ2ICswMjAwLCBP
+bGl2ZXIgSGFydGtvcHAgd3JvdGU6Cj4gPiBXb2xmZ2FuZyBHcmFuZGVnZ2VyIHdyb3RlOgo+ID4g
+PiBTdWJyYXRhIE1vZGFrIHdyb3RlOgo+ID4gPj4gSGkgT2xpdmVyL1dvbGZnYW5nLAo+ID4gPj4K
+PiA+ID4+PiBIZWxsbywKPiA+ID4+Pgo+ID4gPj4+IGhlcmUgY29tZXMgdjIgb2YgdGhlIHBhdGNo
+IHNlcmllcyBwb3N0ZWQgc29tZSB0aW1lIGFnby4gU2VlCj4gPiA+Pj4KPiA+ID4+PiAgaHR0cDov
+L21hcmMuaW5mby8/bD1saW51eC1uZXRkZXYmbT0xMjM1MDcwMjU4MTA2MTImdz00Lgo+ID4gPj4+
+Cj4gPiA+Pj4gQ2hhbmdlcyBzaW5jZSB2MToKPiA+ID4gWy4uLl0KPiA+ID4+IFdvdWxkIHlvdSBh
+bHNvIGxpa2UgdG8gc2VuZCBhIHBhdGNoIHRvIHVwZGF0ZSB0aGUgdGVzdGNhc2VzIGZvciBDQU4g
+aW4gTFRQCj4gPiA+PiAoaHR0cDovL2x0cC5jdnMuc291cmNlZm9yZ2UubmV0L3ZpZXd2Yy9sdHAv
+bHRwL3Rlc3RjYXNlcy9uZXR3b3JrL2Nhbi9maWx0ZXItdGVzdHMvKSA/Cj4gPiA+PiBUaGVzZSB0
+ZXN0cyB3ZXJlIG9yaWdpbmFsbHkgcGlja2VkIHVwIGZyb206Cj4gPiA+PiBodHRwOi8vc3ZuLmJl
+cmxpb3MuZGUvd3N2bi9zb2NrZXRjYW4vdHJ1bmsvdGVzdC8/cmV2PTg3NyZzYz0xCj4gPiA+Cj4g
+PiA+IFRoZSBleGlzdGluZyB0ZXN0cyB1c2VzIHRoZSB2Y2FuICh2aXJ0dWFsIENBTikgZHJpdmVy
+LCB3aGljaCBpcyBub3QKPiA+ID4gYWZmZWN0ZWQgYnkgdGhlc2UgcGF0Y2hlcy4gQXJlIHlvdSB0
+aGlua2luZyBhYm91dCB0ZXN0cyB1c2luZyAqcmVhbCogQ0FOCj4gPiA+IGRldmljZXM/Cj4gPiA+
+Cj4gPiAKPiA+IEhpIFN1YnJhdGEsCj4gPiAKPiA+IGluZGVlZCBleHRlbmRpbmcgdGhlIHRlc3Qt
+Y2FzZXMgdG8gdGhlIHJlYWwgQ0FOIGRyaXZlcnMgd291bGQgdXJnZSB5b3UgCj4gPiB0byBhZGQg
+YSBsZWFzdAo+ID4gdHdvIGhhcmR3YXJlIENBTi1pbnRlcmZhY2VzIHRvIHlvdXIgdGVzdCBzeXN0
+ZW0gYW5kIHdpcmUgdGhlbSBjb3JyZWN0bHkgCj4gPiB3aXRoIHRoZQo+ID4gYXBwcm9wcmlhdGUg
+dGVybWluYXRpb24uCj4gPiBJdCdzIGxpa2UgaGF2aW5nICphbGwqIGV0aGVybmV0IGNhcmRzIGF2
+YWlsYWJsZSBpbiB5b3VyIGxpbnV4IGJveCB0byAKPiA+IHRlc3QgdGhlbSA7LSkKPiA+IFNvbWUg
+b2YgdGhlc2UgQ0FOIGNvbnRyb2xsZXJzIGFyZSBvbmx5IGF2YWlsYWJsZSBhcyBhbiBvbi1jaGlw
+IGRldmljZQo+ID4gKGUuZy4gZm9yIHNvbWUgUG93ZXJQQyBDUFVzKS4KPiAKPiBUaGF0IG1ha2Vz
+IGdyZWF0IHNlbnNlLCBhcyBvdXIgdGVhbSB1c2VzIFBvd2VyUEMgaGVhdmlseSBhcyB0aGVpciB0
+ZXN0Cj4gaGFyZHdhcmUuCj4gCj4gSSB3b3VsZCBhbHNvIGxpa2UgdG8gaGF2ZSB0ZXN0cyBhZGRl
+ZCB0byBMVFAgZXZlbiBpZiBpIG15c2VsZiBkbyBub3QKPiBoYXZlIHRoZSBoYXJkd2FyZSB0byB0
+ZXN0IGl0LiBJZiB0aGVyZcK0cyBzb21ldGhpbmcgb2Ygc2lnbmlmaWNhbnQKPiBpbXBvcnRhbmNl
+IHRvIGEgZ3JvdXAgb2YgcGVvcGxlL2NvbW11bml0eSwgZm9yIHdoaWNoIHRlc3RzIG5lZWQgdG8K
+PiBleGlzdCwgdGhlbiB0aGV5IGNhbiBtYWtlIGludG8gTFRQLCBwcm92aWRlZCB5b3UgaGF2ZSB0
+ZXN0ZWQgdGhlbSBhbmQKPiBBY2tlZCB0aGVtLCBhbmQgc29tZWJvZHkgZWxzZSBoYXMgbm90IGNv
+bXBsYWluZWQgb2YgYW55IGJ1aWxkL3J1bgo+IGJyZWFrcy4KPiAKPiA+IAo+ID4gSWYgdGhlcmUg
+aXMgc29tZSByb29tIGZvciBMVFAgaW1wcm92ZW1lbnRzLCBpIHdvdWxkIHRlbmQgdG8gY3JlYXRl
+IHNvbWUgCj4gPiBtb3JlIHRlc3QtY2FzZXMKPiA+IGZvciB0aGUgbmV0d29ya2xheWVyIHN0dWZm
+IGluIGxpbnV4L25ldC9jYW4gdXNpbmcgdGhlIGV4aXN0ZW50IHZpcnR1YWwgCj4gPiBDQU4gZHJp
+dmVyLgo+IAo+IFBsZWFzZSBnbyBhaGVhZC4KPiAKPiBSZWdhcmRzLS0KPiBTdWJyYXRhCj4gCj4g
+PiAKPiA+IEJlc3QgcmVnYXJkcywKPiA+IE9saXZlcgo+ID4gCj4gCj4gCj4gLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tCj4gVGhlIE5FVyBLT0RBSyBpNzAwIFNlcmllcyBTY2FubmVycyBkZWxpdmVyIHVu
+ZGVyIEFOWSBjaXJjdW1zdGFuY2VzISBZb3VyCj4gcHJvZHVjdGlvbiBzY2FubmluZyBlbnZpcm9u
+bWVudCBtYXkgbm90IGJlIGEgcGVyZmVjdCB3b3JsZCAtIGJ1dCB0aGFua3MgdG8KPiBLb2Rhaywg
+dGhlcmUncyBhIHBlcmZlY3Qgc2Nhbm5lciB0byBnZXQgdGhlIGpvYiBkb25lISBXaXRoIHRoZSBO
+RVcgS09EQUsgaTcwMAo+IFNlcmllcyBTY2FubmVyIHlvdSdsbCBnZXQgZnVsbCBzcGVlZCBhdCAz
+MDAgZHBpIGV2ZW4gd2l0aCBhbGwgaW1hZ2UgCj4gcHJvY2Vzc2luZyBmZWF0dXJlcyBlbmFibGVk
+LiBodHRwOi8vcC5zZi5uZXQvc2Z1L2tvZGFrLWNvbQo+IF9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCj4gTHRwLWxpc3QgbWFpbGluZyBsaXN0Cj4gTHRwLWxp
+c3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQv
+bGlzdHMvbGlzdGluZm8vbHRwLWxpc3QKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ3J5c3RhbCBS
+ZXBvcnRzIC0gTmV3IEZyZWUgUnVudGltZSBhbmQgMzAgRGF5IFRyaWFsCkNoZWNrIG91dCB0aGUg
+bmV3IHNpbXBsaWZpZWQgbGljZW5zaW5nIG9wdGlvbiB0aGF0IGVuYWJsZXMgdW5saW1pdGVkCnJv
+eWFsdHktZnJlZSBkaXN0cmlidXRpb24gb2YgdGhlIHJlcG9ydCBlbmdpbmUgZm9yIGV4dGVybmFs
+bHkgZmFjaW5nIApzZXJ2ZXIgYW5kIHdlYiBkZXBsb3ltZW50LgpodHRwOi8vcC5zZi5uZXQvc2Z1
+L2J1c2luZXNzb2JqZWN0cwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0
+Cg==
