@@ -1,32 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MK9kY-0000zo-8Y
-	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2009 11:37:46 +0000
-Received: from e37.co.us.ibm.com ([32.97.110.158])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MK9kV-00081M-DT
-	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2009 11:37:46 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e37.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5QBaxQo022242
-	for <ltp-list@lists.sourceforge.net>; Fri, 26 Jun 2009 05:36:59 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5QBbgFs251564
-	for <ltp-list@lists.sourceforge.net>; Fri, 26 Jun 2009 05:37:42 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5QBbfhA021285
-	for <ltp-list@lists.sourceforge.net>; Fri, 26 Jun 2009 05:37:41 -0600
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MHLTU-0007gM-Je
+	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:32:32 +0000
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MHLTS-0007eE-K1
+	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:32:32 +0000
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <d51f89b0906252310r45a7644fu46e1831841aa8b24@mail.gmail.com>
-References: <d51f89b0906252310r45a7644fu46e1831841aa8b24@mail.gmail.com>
-Date: Fri, 26 Jun 2009 17:03:15 +0530
-Message-Id: <1246015995.6196.24.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <bb33bcf20906160423r408b3c6awc0b47ec5a2edee1d@mail.gmail.com>
+References: <200906161646.50305.knikanth@suse.de>
+	<bb33bcf20906160423r408b3c6awc0b47ec5a2edee1d@mail.gmail.com>
+Date: Thu, 18 Jun 2009 23:01:51 +0530
+Message-Id: <1245346312.5041.40.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] Issues of TIRPC test suite of network test cases
+Subject: Re: [LTP] cpusets: document adding/removing cpus to
+	cpuset	elaborately
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -40,85 +30,105 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rohit verma <rohit.170309@gmail.com>, Le Rouzic <aime.le-rouzic@bull.net>, =?ISO-8859-1?Q?Aur=E9lien?= Charbon <aurelien.charbon@ext.bull.net>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Nikanth Karthikesan <knikanth@suse.de>
+Cc: ltp-list <ltp-list@lists.sf.net>, miaox@cn.fujitsu.com
 
-Hi Rohit,
+Hi Nikanth,
 
-On Thu, 2009-06-25 at 23:10 -0700, rohit verma wrote: 
-> Hi All,
+On Tue, 2009-06-16 at 16:53 +0530, Subrata Modak wrote: 
+> On Tue, Jun 16, 2009 at 4:46 PM, Nikanth Karthikesan
+> <knikanth@suse.de> wrote:
+>         Writing a pid to the file, tasks adds that task to that
+>         cgroup/cpuset. But to
+>         add a cpu/mem to a cpuset, the new list of cpus should be
+>         written to the
+>         cpuset.mems file which would replace the old list of cpus.
+>         Make this clearer
+>         in the documentation.
+>         
+>         Signed-off-by: Nikanth Karthikesan <knikanth@suse.de> 
 > 
-> I am getting the following errors with run_rpc_tests.sh test suite in
-> LTP May-09 release.
+> Hey,
+> 
+> Great to see that you are working on the documentation part. Have you
+> given a try to test the CPUSET features in the kernel with the
+> recently added tests from
+> LTP(http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/controllers/cpuset/) ? It would be great if you help us in improving them further.
+> 
 
-The problem with this part of the testsuite was always there from the
-beginning. However, lets ask something from the developer directly.
-
-Le,
-
-Can you please look into this ?
+Would you like to share something with us ?
 
 Regards--
 Subrata
 
-> 
-> /home/moblin/LTP_NS_MAY/ltp-full-20090531/testcases/network/rpc/rpc-tirpc-full-test-suite/tests_pack/cleaner.c.src:29:29:
-> error: tirpc/netconfig.h: No such file or directory
-> /home/moblin/LTP_NS_MAY/ltp-full-20090531/testcases/network/rpc/rpc-tirpc-full-test-suite/tests_pack/cleaner.c.src:31:27:
-> error: tirpc/rpc/rpc.h: No such file or directory
-> /home/moblin/LTP_NS_MAY/ltp-full-20090531/testcases/network/rpc/rpc-tirpc-full-test-suite/tests_pack/cleaner.c.src:32:29:
-> error: tirpc/rpc/types.h: No such file or directory
-> /home/moblin/LTP_NS_MAY/ltp-full-20090531/testcases/network/rpc/rpc-tirpc-full-test-suite/tests_pack/cleaner.c.src:33:27:
-> error: tirpc/rpc/xdr.h: No such file or directory
-> /home/moblin/LTP_NS_MAY/ltp-full-20090531/testcases/network/rpc/rpc-tirpc-full-test-suite/tests_pack/cleaner.c.src:34:27:
-> error: tirpc/rpc/svc.h: No such file or directory
-> mkdir: cannot create directory
-> `/home/moblin/LTP_NS_MAY/ltp-full-20090531/testcases/network/rpc/rpc-tirpc-full-test-suite/tests_pack':
-> File exists
-> 
-> tests_pack/tirpc_svc_2/tirpc_svc_2.c:29:29: error: tirpc/netconfig.h:
-> No such file or directory
-> tests_pack/tirpc_svc_2/tirpc_svc_2.c:31:27: error: tirpc/rpc/rpc.h: No
-> such file or directory
-> tests_pack/tirpc_svc_2/tirpc_svc_2.c:32:29: error: tirpc/rpc/types.h:
-> No such file or directory
-> tests_pack/tirpc_svc_2/tirpc_svc_2.c:33:27: error: tirpc/rpc/xdr.h: No
-> such file or directory
-> tests_pack/tirpc_svc_2/tirpc_svc_2.c:34:27: error: tirpc/rpc/svc.h: No
-> such file or directory
-> tests_pack/tirpc_svc_2/tirpc_svc_2.c: In function main
-> tests_pack/tirpc_svc_2/tirpc_svc_2.c:55: error: bool_t undeclared
-> (first use in this function)
-> tests_pack/tirpc_svc_2/tirpc_svc_2.c:55: error: (Each undeclared
-> identifier is reported only once
-> tests_pack/tirpc_svc_2/tirpc_svc_2.c:55: error: for each function it
-> appears in.)
-> tests_pack/tirpc_svc_2/tirpc_svc_2.c:55: error: expected ; before rslt
-> tests_pack/tirpc_svc_2/tirpc_svc_2.c:65: error: rslt undeclared (first
-> use in this function)
-> tests_pack/tirpc_svc_2/tirpc_svc_2.c:66: error: xdrproc_t undeclared
-> (first use in this function)
-> tests_pack/tirpc_svc_2/tirpc_svc_2.c:66: error: expected ) before xdr_int
-> make: *** [all] Error 1
-> cc: .c.src: No such file or directory.
+> Regards--
+> Subrata
 > 
 > 
-> Similar bug has been already reported to LTP. Please confirm if the
-> patch for this bug is merged into next LTP release.
-
-I remember merging all patches to this effect. Please point me to the
-patch which i ought have missed ;-)
-
-Regards--
-Subrata
-
+>         
+>         
+>         ---
+>         
+>         diff --git a/Documentation/cgroups/cpusets.txt
+>         b/Documentation/cgroups/cpusets.txt
+>         index f9ca389..1d7e978 100644
+>         --- a/Documentation/cgroups/cpusets.txt
+>         +++ b/Documentation/cgroups/cpusets.txt
+>         @@ -777,6 +777,18 @@ in cpuset directories:
+>          # /bin/echo 1-4 > cpus         -> set cpus list to cpus
+>         1,2,3,4
+>          # /bin/echo 1,2,3,4 > cpus     -> set cpus list to cpus
+>         1,2,3,4
+>         
+>         +To add a CPU to a cpuset, write the new list of CPUs
+>         including the
+>         +CPU to be added. To add 6 to the above cpuset:
+>         +
+>         +# /bin/echo 1-4,6 > cpus       -> set cpus list to cpus
+>         1,2,3,4,6
+>         +
+>         +Similarly to remove a CPU from a cpuset, write the new list
+>         of CPUs
+>         +without the CPU to be removed.
+>         +
+>         +To remove all the CPUs:
+>         +
+>         +# /bin/echo "" > cpus          -> clear cpus list
+>         +
+>          2.3 Setting flags
+>          -----------------
+>         
+>         
+>         
+>         
+>         --
+>         To unsubscribe from this list: send the line "unsubscribe
+>         linux-kernel" in
+>         the body of a message to majordomo@vger.kernel.org
+>         More majordomo info at
+>          http://vger.kernel.org/majordomo-info.html
+>         Please read the FAQ at  http://www.tux.org/lkml/ 
 > 
 > 
-> Regards,
-> Gnaneswar
+> 
+> -- 
+> Regards & Thanks--
+> Subrata 
+> ------------------------------------------------------------------------------
+> Crystal Reports - New Free Runtime and 30 Day Trial
+> Check out the new simplified licensing option that enables unlimited
+> royalty-free distribution of the report engine for externally facing 
+> server and web deployment.
+> http://p.sf.net/sfu/businessobjects
+> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
