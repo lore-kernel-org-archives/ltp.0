@@ -1,22 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <leemgs1@gmail.com>) id 1MF2P8-0006yC-3y
-	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 08:46:30 +0000
-Received: from yw-out-2324.google.com ([74.125.46.30])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MF2OR-0007Bk-RO
-	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 08:46:30 +0000
-MIME-Version: 1.0
-In-Reply-To: <1244792119.5234.3.camel@subratamodak.linux.ibm.com>
-References: <49b7c2350906120029j6f6290b3h7dfb58bd7251fa93@mail.gmail.com>
-	<1244792119.5234.3.camel@subratamodak.linux.ibm.com>
-Date: Fri, 12 Jun 2009 17:45:46 +0900
-Message-ID: <49b7c2350906120145s26f793dfl80aa46650e071561@mail.gmail.com>
-From: GeunSik Lim <leemgs1@gmail.com>
-Subject: Re: [LTP] [Ltp-cvs] I met "You can specify it with option -b" error
-	message
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MHLSh-0000UZ-LL
+	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:31:43 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MHLSa-0002Zv-AJ
+	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:31:43 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e1.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5IHR5WN030795
+	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 13:27:05 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5IHVZk5105910
+	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 13:31:35 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5IHTGO1020423
+	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 13:29:16 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <1244618075.10778.4.camel@munipradeep-laptop>
+References: <1244618075.10778.4.camel@munipradeep-laptop>
+Date: Thu, 18 Jun 2009 23:01:27 +0530
+Message-Id: <1245346287.5041.32.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH]get_mempolicy01: fix for changing failure due
+	to	configuration error
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,32 +40,80 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Munipradeep Beerakam <mpradeep@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Fri, Jun 12, 2009 at 4:35 PM, Subrata
-Modak<subrata@linux.vnet.ibm.com> wrote:
-> This is not the correct mailing list. Mail to ltp-list and not to
-> ltp-cvs.
->
-> Regards--
-> Subrata
-Thanks.
-I will post this problem at ltp-list as you explained.
+Hi Muni,
+
+On Wed, 2009-06-10 at 12:44 +0530, Munipradeep Beerakam wrote:
+> Hi,
+> 
+> Here is the attachment to fix the configuration error in
+> get_mempolicy01.c
+> Actually it should not fail due to configuration error. So changed the
+> necessary.
+> 
+> Thanks
+> Muni
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> differences
+> between files
+> attachment
+> (get_mempolicy01.patch)
+> 
+> 
+> ---
+> a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c 2009-06-10
+> 07:08:08.000000000 -0400
+> +++
+> b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c 2009-06-10
+> 07:12:16.000000000 -0400
+> @@ -296,7 +296,7 @@
+>                          TEST(rc = syscall(__NR_set_mempolicy,
+> tc->policy,&nodemask, maxnode));
+> 
+>                 if (TEST_RETURN < 0) {
+> -                       tst_resm(TFAIL, "set_mempolicy() failed -
+> errno = %d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> +                       tst_resm(TCONF, "set_mempolicy() failed -
+> errno = %d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+>                          result = 1;
+>                         cleanup();
+>                          tst_exit();
+> @@ -307,7 +307,7 @@
+>                  // mmap memory
+>                  p = mmap(NULL, len, PROT_READ|PROT_WRITE,MAP_PRIVATE|
+> MAP_ANONYMOUS, 0, 0);
+>                  if (p == (void*)-1) {
+> -                       tst_resm(TFAIL, "malloc failed - errno = %d :
+> %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> +                       tst_resm(TCONF, "malloc failed - errno = %d :
+> %s",TEST_ERRNO, strerror(TEST_ERRNO));
+>                          result = 1;
+>                         cleanup();
+>                          tst_exit();
+
+The problem reported on your machine is function not implemented.
+However, if you change the FAIL to blindly CONF, that will cause issues
+like actual failures reported wrongly.
+
+See, whether you can find out ways to isolate only function not
+implemented part.
+
+Regards--
+Subrata
 
 
-
--- 
-Regards,
-GeunSik Lim ( Samsung Electronics )
-Blog : http://blog.naver.com/invain/
-e-Mail: geunsik.lim@samsung.com
-           leemgs@gmail.com , leemgs1@gmail.com
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
 
 ------------------------------------------------------------------------------
 Crystal Reports - New Free Runtime and 30 Day Trial
