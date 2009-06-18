@@ -2,26 +2,31 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <francesco.rundo@st.com>) id 1MBpuF-0008Ls-1H
-	for ltp-list@lists.sourceforge.net; Wed, 03 Jun 2009 12:49:23 +0000
-Received: from eu1sys200aog118.obsmtp.com ([207.126.144.145])
-	by 1b2kzd1.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MBpuB-0000pN-09
-	for ltp-list@lists.sourceforge.net; Wed, 03 Jun 2009 12:49:22 +0000
-Received: from zeta.dmz-eu.st.com (ns2.st.com [164.129.230.9])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 12360DB04
-	for <ltp-list@lists.sourceforge.net>;
-	Wed,  3 Jun 2009 12:49:15 +0000 (GMT)
-Received: from mail2.ctn.st.com (mail2.ctn.st.com [164.130.116.137])
-	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AA2AE4C2B9
-	for <ltp-list@lists.sourceforge.net>;
-	Wed,  3 Jun 2009 12:49:14 +0000 (GMT)
-Message-ID: <4A267148.8000700@st.com>
-Date: Wed, 03 Jun 2009 14:49:12 +0200
-From: Francesco RUNDO <francesco.rundo@st.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------000106000008000503020603"
-Subject: [LTP] kernel/controllers/ testcase and CGROUPS support
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MHLTc-0000aO-Ki
+	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:32:40 +0000
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MHLTa-0000HJ-RM
+	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:32:40 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e2.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5IHRwMT014986
+	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 13:27:58 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5IHWcSt188472
+	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 13:32:38 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5IHWb1K007081
+	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 13:32:38 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <f5a7b3810906171318v503b0c77l27a5df2f057fb85c@mail.gmail.com>
+References: <f5a7b3810906171318v503b0c77l27a5df2f057fb85c@mail.gmail.com>
+Date: Thu, 18 Jun 2009 23:01:55 +0530
+Message-Id: <1245346315.5041.42.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [FIX PATCH] ltp-add_key
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,168 +36,100 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-This is a multi-part message in MIME format.
---------------000106000008000503020603
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Hi All,
-
-I'd like to submit a request to change the method to check if CGROUPS 
-support is enabled and available or not.
-
-I'm referring to the kernel/controllers/xxx testcase. I'm using the 
-LTP-full-20090430 cross-compiled for SH based arch with a kernel 2.6.23
-
-The used/released  method placed inside kernel/controllers/Makefile,  
-tries to understand if the cgroups (and others related...) support has 
-been enabled in the current kernel, performing a check in the root 
-filesystem under "/proc". It makes something like that:
-
-CHECK_CGROUP := $(shell test -f /proc/cgroups && echo 'cgroup')
-
-Now, in the context of LTP built for i386, the above check works fine.
-
-But what happen if LTP is cross-built ?
-
-Unfortunately, the "/proc" entry checked by the above Makefile rule, is 
-the ones placed in the host and not the "/proc" of the  target root 
-filesysetm (in my case SH based target). This is wrong!
-
-Moreover,  "/proc" is an entry which makes sense at runtime while it is 
-useless at built time so the above check is "always" not applicable in 
-case of LTP is built for other arch different from i386.
-
-In order to cover the scenario in which LTP is cross-built, I've patched 
-the Makefile , replacing the above rule with the following ones:
-
-ifdef $(CROSS_COMPILE)
-CHECK_CGROUP := $(shell test -f 
-$(TARGET_DIR)/usr/include/linux/cgroupstats.h && echo 'cgroup')
-else
- CHECK_CGROUP := $(shell test -f /proc/cgroups && echo 'cgroup')
- CHECK_CPUCTL := $(shell grep -w cpu /proc/cgroups 2>/dev/null|cut -f1)
- CHECK_MEMCTL := $(shell grep -w memory /proc/cgroups 2>/dev/null|cut -f1)
- CHECK_BLOCKIOCTL := $(shell grep -w blockio /proc/cgroups 
-2>/dev/null|cut -f1)
- CHECK_FREEZER := $(shell grep -w freezer /proc/cgroups 2>/dev/null| cut 
--f1)
- CHECK_CPUSETCTL = $(shell grep -w cpuset /proc/cgroups 2>/dev/null|cut -f1)
-endif
- 
-ifdef $(CROSS_COMPILE)
-   ifeq ($(CHECK_CGROUP),cgroup)
-      SUBDIRS += cgroup
-      SUBDIRS += cpuctl
-      SUBDIRS += memctl
-      SUBDIRS += io-throttle
-      SUBDIRS += freezer
-      SUBDIRS += cpuset
-  else
-      $(info "Kernel is not compiled with control cgroup support")
-  endif
-else
-   ifeq ($(CHECK_CGROUP),cgroup)
-        SUBDIRS += cgroup
-   else
-   ..............................................(the same rules placed 
-in the original released Makefile).
-
-The above checked header file "cgroupstats.h" is placed in the target 
-rootfs.  If the cgroups support is available (and enabled...likely ;-) 
-the above header is placed in the target rootfs. 
-
-In that way, in case of cross-compilation (the env CROSS_COMPILE was 
-defined) the check will be done in the header file instead of  /proc.
-
-The env TARGET_DIR works like a "--prefix" fixing the path of the 
-cross-target rootfs.
-
-Of course, If you have another checks/methods which can be done to 
-understand -at build time- if cgroups support is available and/or 
-enabled -for target platform-, please feel free to post a comment to LTP.
-
-Anyway, I'll attach the patch I've applied in our system.
-
-Advices and feedbacks are welcome!
-
-Regards
-Francesco Rundo
-
-
-
---------------000106000008000503020603
-Content-Type: text/plain; name="ltp-full-20090430-fix-cgroups-testcase.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
-	filename="ltp-full-20090430-fix-cgroups-testcase.patch"
-
-This patch allows the cross-build of kernel/controllers (cgroups tests) testcase changing the policy to check the cgroups capability at build-time.
-Signed-off-by: Francesco Rundo <francesco.rundo@st.com>
---- ltp-full-20090430-cross/testcases/kernel/controllers/Makefile.orig	2009-05-26 15:37:35.140000000 +0200
-+++ ltp-full-20090430-cross/testcases/kernel/controllers/Makefile	2009-05-28 13:36:36.669998000 +0200
-@@ -1,10 +1,26 @@
-+ifdef $(CROSS_COMPILE)
-+CHECK_CGROUP := $(shell test -f $(TARGET_DIR)/usr/include/linux/cgroupstats.h && echo 'cgroup')
-+else
- CHECK_CGROUP := $(shell test -f /proc/cgroups && echo 'cgroup')
- CHECK_CPUCTL := $(shell grep -w cpu /proc/cgroups 2>/dev/null|cut -f1)
- CHECK_MEMCTL := $(shell grep -w memory /proc/cgroups 2>/dev/null|cut -f1)
- CHECK_BLOCKIOCTL := $(shell grep -w blockio /proc/cgroups 2>/dev/null|cut -f1)
- CHECK_FREEZER := $(shell grep -w freezer /proc/cgroups 2>/dev/null| cut -f1)
- CHECK_CPUSETCTL = $(shell grep -w cpuset /proc/cgroups 2>/dev/null|cut -f1)
-+endif
- 
-+ifdef $(CROSS_COMPILE)
-+ifeq ($(CHECK_CGROUP),cgroup)
-+SUBDIRS += cgroup
-+SUBDIRS += cpuctl
-+SUBDIRS += memctl
-+SUBDIRS += io-throttle
-+SUBDIRS += freezer
-+SUBDIRS += cpuset
-+else
-+$(info "Kernel is not compiled with control cgroup support")
-+endif
-+else
- ifeq ($(CHECK_CGROUP),cgroup)
- SUBDIRS += cgroup
- else
-@@ -36,6 +52,7 @@
- else
- $(info "Kernel is not compiled with cpuset resource controller support")
- endif
-+endif
- 
- # If at least one of the controllers is available then build libcontrollers.
- ifneq ($(SUBDIRS),)
-
---------------000106000008000503020603
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: naresh kamboju <naresh.kernel@gmail.com>, Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>, Munipradeep Beerakam <mpradeep@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, Manas Kumar Nayak <maknayak@in.ibm.com>, Oleg Nesterov <oleg@redhat.com>, rohit.170309@gmail.com
+
+Great to see you fix these issues and send across the fixes. However, i
+remember Kamalesh working on similar type of fixes.
+
+Lets hear from Kamalesh, whether he has something additional from this
+series of patches, or, some other fixes in each patch apart from what
+you have already provided.
+
+Kamalesh,
+
+Would you like to say something here ?
+
+Another suggestion. Naresh, next time when you send patches pertaining
+to one particular issue observed in several tests, then no. the patches,
+like [PATCH 00/N] to [PATCH N/N].
+
+Regards--
+Subrata
+
+On Thu, 2009-06-18 at 01:48 +0530, naresh kamboju wrote: 
+> Hi,
+> 
+> I have noticed following failures and fixed.
+> 1. add_key01.c
+> 2. add_key02.c
+> 
+> 
+> Please find the patch below and as attachment.
+> 
+> Best regards
+> Naresh Kamboju
+> 
+> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+> diff -Naurb a/testcases/kernel/syscalls/add_key/add_key01.c
+> b/testcases/kernel/syscalls/add_key/add_key01.c
+> --- a/testcases/kernel/syscalls/add_key/add_key01.c	2009-05-21
+> 23:39:37.000000000 +0530
+> +++ b/testcases/kernel/syscalls/add_key/add_key01.c	2009-06-17
+> 23:00:15.000000000 +0530
+> @@ -125,7 +125,7 @@
+>          for (lc = 0; TEST_LOOPING(lc); ++lc) {
+>                  Tst_count = 0;
+>                  for (testno = 0; testno < TST_TOTAL; ++testno) {
+> -                     TEST(result = syscall(286, "keyring", "wjkey",
+> NULL, 0, KEY_SPEC_THREAD_KEYRING));     //call add_key()
+> +                     TEST(result = syscall(__NR_add_key, "keyring",
+> "wjkey", NULL, 0, KEY_SPEC_THREAD_KEYRING));     //call add_key()
+>                       if(TEST_RETURN != -1) {
+>          		tst_resm(TPASS, "add_key call succeeded");
+>                          cleanup();
+> @@ -139,4 +139,3 @@
+>          }	
+>          tst_exit();
+>  }
+> -
+> diff -Naurb a/testcases/kernel/syscalls/add_key/add_key02.c
+> b/testcases/kernel/syscalls/add_key/add_key02.c
+> --- a/testcases/kernel/syscalls/add_key/add_key02.c	2009-05-21
+> 23:40:50.000000000 +0530
+> +++ b/testcases/kernel/syscalls/add_key/add_key02.c	2009-06-17
+> 23:47:48.000000000 +0530
+> @@ -140,7 +140,7 @@
+>                  for (testno = 0; testno < TST_TOTAL; ++testno) {
+> 
+>  		for(i=0; i<test_count; i++) {
+> -                	TEST(syscall(286, test_cases[i].type,
+> test_cases[i].desc, test_cases[i].payload, test_cases[i].plen,
+> KEY_SPEC_USER_KEYRING));    //call add_key()
+> +                	TEST(syscall(__NR_add_key, test_cases[i].type,
+> test_cases[i].desc, test_cases[i].payload, test_cases[i].plen,
+> KEY_SPEC_USER_KEYRING));    //call add_key()
+>                  	if(TEST_RETURN != -1){
+>                          	tst_resm(TINFO,"call add_key() with wrong
+> args succeed, but should fail");
+>                          	fail++;
+> @@ -170,4 +170,3 @@
+>        }	
+>          tst_exit();
+>  }
+> -
+
 
 ------------------------------------------------------------------------------
-OpenSolaris 2009.06 is a cutting edge operating system for enterprises 
-looking to deploy the next generation of Solaris that includes the latest 
-innovations from Sun and the OpenSource community. Download a copy and 
-enjoy capabilities such as Networking, Storage and Virtualization. 
-Go to: http://p.sf.net/sfu/opensolaris-get
---------------000106000008000503020603
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------000106000008000503020603--
-
-
