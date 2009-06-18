@@ -1,33 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MHLSm-0007Zv-4l
-	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:31:48 +0000
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MHLSh-0006VW-Ma
-	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 17:31:48 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e5.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5IHPUHv011796
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 13:25:30 -0400
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5IHVfAY229206
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 13:31:42 -0400
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5IHVek5030113
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2009 13:31:41 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1244635585.9465.14.camel@munipradeep-laptop>
-References: <1244635585.9465.14.camel@munipradeep-laptop>
-Date: Thu, 18 Jun 2009 23:01:32 +0530
-Message-Id: <1245346293.5041.33.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Some of the testcases which are resulting in FAIL even
-	though	they might not be
-Reply-To: subrata@linux.vnet.ibm.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <francesco.rundo@st.com>) id 1MHDep-0005yL-VH
+	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 09:11:43 +0000
+Received: from eu1sys200aog106.obsmtp.com ([207.126.144.121])
+	by 3b2kzd1.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MHDeo-0006k3-16
+	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2009 09:11:43 +0000
+Message-ID: <4A3A049B.2000002@st.com>
+Date: Thu, 18 Jun 2009 11:10:51 +0200
+From: Francesco RUNDO <francesco.rundo@st.com>
+MIME-Version: 1.0
+References: <f5a7b3810906171317j40473a95y5dfc1b89d9e25950@mail.gmail.com>
+In-Reply-To: <f5a7b3810906171317j40473a95y5dfc1b89d9e25950@mail.gmail.com>
+Subject: Re: [LTP] [FIX HTML PATCH] ltp-genhtml
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,61 +27,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Munipradeep Beerakam <mpradeep@linux.vnet.ibm.com>, pradeepkumars <pradeepkumars@in.ibm.com>, Cai Qian <caiqian@cclom.cn>, rohit verma <rohit.170309@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, iranna.ankad@in.ibm.com
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, Manas Kumar Nayak <maknayak@in.ibm.com>, Oleg Nesterov <oleg@redhat.com>, rohit.170309@gmail.com
 
-On Wed, 2009-06-10 at 17:36 +0530, Munipradeep Beerakam wrote: 
-> Hi,
-> 
-> Here is the list of testcases in May 2009 LTP, which *may* result in
-> FAIL even though it is a configuration error, not the error due to the
-> functionality we are testing. Those tests should give "CONF" message,
-> not "FAIL". I ran LTP on 2.6.18 kernel, x86 architecture.
-> 
->    1. InitNuma
-> Error output:
-> Initnuma 0 WARN : non-NUMA aware kernel is running or your machine does
-> not support numa policy or
-> your machine is not a NUMA machine
-> Initnuma 1 FAIL : INIT NUMA FAILED !!
+Hi,
 
-Contact Pradeep for this.
+I'm not sure about your patch.
 
-> 
->    2. ht_enable
-> Error output:
-> ht_enable 0 INFO : Begin: HyperThreading Enabled
-> ht_enable 0 INFO : The kernel boot paramter 'noht' is not set.
-> ht_enable 1 FAIL : HT feature is not included in this Linux Kernel.
-> ht_enable 0 INFO : End: HyperThreading Enabled
-> 
+I've introduced the usage of such env variables to support cross-build 
+of LTP.
 
-Cai/Rohit has been discussing this for long.
+In fact, in case the results of LTP session was related to 
+cross-execution, the infiormation about KERNEL_VERSION and 
+MACHINE_ARCHITECTURE have to be referred to the target and not to the 
+host. Do you agree ?
 
-> 3. get_mempolicy01
-> Part of code, which is not correct
-> tst_resm(TFAIL, "set_mempolicy() failed - errno = %d : %s",TEST_ERRNO,
-> strerror(TEST_ERRNO));
-> ...
-> ...
-> tst_resm(TFAIL, "malloc failed - errno = %d : %s",TEST_ERRNO,
-> strerror(TEST_ERRNO));
-> 
->    4. mq_open01
-> Part of code, which is not correct
-> if (TEST_RETURN < 0) {
->                         tst_resm(TFAIL, "mq_getsetattr failed - errno =
-> %d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
-> 
+With your fix, by using "uname -r" and "uname -m", to avoid to report 
+wrong information, you have to run the "genhtml.pl" script over the 
+target system because if you run the genhtml.pl on the host, you will 
+get wrong information about the kernel version and machine architecture.
 
-And they are as per my earlier mail.
+Moreover, the assumption to run genhtml.pl over the target is not safe 
+as often the target systems are embedded systems which do not support PERL.
 
-Regards--
-Subrata
+With the fix I've proposed and accepted, the LTP-user by means of the 
+simple env variables, can define the right information to be reported on 
+the LTP results table about kernel version and machine architecture.
 
-> Regards
-> Muni
-> 
+Now, by taking into account what above mentioned, I've to suggest  to do 
+not apply your proposal patch.
+
+Best Regards,
+Francesco
+
+naresh kamboju wrote:
+
+>Hi,
+>
+>I have noticed following issue and fixed.
+>1.   Kernel Version
+>2.   Machine Architecture.
+>
+>Please find the patch below and as attachment.
+>
+>Best regards
+>Naresh Kamboju
+>
+>Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+>
+>diff -Naurb a/tools/genhtml.pl b/tools/genhtml.pl
+>--- a/tools/genhtml.pl	2009-04-02 12:07:28.000000000 +0530
+>+++ b/tools/genhtml.pl	2009-06-18 00:33:46.000000000 +0530
+>@@ -246,8 +246,12 @@
+> print "<tr><td><strong>Total Test TWARN</strong></td><td><strong>
+>$warn_test_counter </strong></td></tr>\n";
+> print "<tr><td><strong>Total Test TRETR</strong></td><td><strong>
+>$retr_test_counter </strong></td></tr>\n";
+> print "<tr><td><strong>Total Test TCONF</strong></td><td><strong>
+>$conf_test_counter </strong></td></tr>\n";
+>-print "<tr><td><strong>Kernel Version</strong></td><td><strong>
+>$ENV{KERNEL_VERSION}  </strong></td></tr>\n";
+>-print "<tr><td><strong>Machine Architecture</strong></td><td><strong>
+>$ENV{MACHINE_ARCH} </strong></td></tr>\n";
+>+print "<tr><td><strong>Kernel_Version</strong>  </td> <td><strong>";
+>+$kernel_version=system("uname -r");             chop($kernel_version);
+>+print " $kernel_version </strong></td></tr>\n";
+>+print "<tr><td><strong>Machine_Arch</strong>  </td> <td><strong>";
+>+$machine_arch=system("uname -m");             chop($machine_arch);
+>+print " $machine_arch </strong></td></tr>\n";
+> print "<tr><td><strong>Hostname</strong>  </td> <td><strong>";
+> $hostname=system("uname -n");             chop($hostname);
+> print " $hostname </strong></td></tr></tbody></table></div></body></html>\n";
+>  
+>
 
 
 ------------------------------------------------------------------------------
