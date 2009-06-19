@@ -1,20 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <njoly@pasteur.fr>) id 1MGVMN-00015t-32
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 09:53:43 +0000
-Received: from munster3.sis.pasteur.fr ([157.99.64.214])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MGVL8-0001Il-FJ
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 09:53:43 +0000
-Date: Tue, 16 Jun 2009 11:52:20 +0200
-From: Nicolas Joly <njoly@pasteur.fr>
-Message-ID: <20090616095220.GA218461@medusa.sis.pasteur.fr>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="G4iJoqBmSsgzjUCe"
-Content-Disposition: inline
-Subject: [LTP] Small typo in sgetmask01.c
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <penguin-kernel@i-love.sakura.ne.jp>)
+	id 1MHYIa-0003zQ-F9
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2009 07:14:08 +0000
+Received: from www262.sakura.ne.jp ([202.181.97.72])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MHYIV-0006Ev-Rm
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2009 07:14:08 +0000
+Message-Id: <200906190637.n5J6bHYE034421@www262.sakura.ne.jp>
+From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+MIME-Version: 1.0
+Date: Fri, 19 Jun 2009 15:37:17 +0900
+References: <1244775226.4982.3.camel@subratamodak.linux.ibm.com>
+	<200906142044.ACJ21831.VHOJSFLtFOQOFM@I-love.SAKURA.ne.jp>
+	<1245093386.4871.49.camel@subratamodak.linux.ibm.com>
+	<1245346304.5041.37.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1245346304.5041.37.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [003][RFC] [TESTING linux-2.6.30] TOMOYO Linux	and
+	pathname-basedsecurity
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,54 +29,75 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sf.net>
-
-
---G4iJoqBmSsgzjUCe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-
-Hi,
-
-Here follow a small patch that fix a typo in sgetmask01.c testcase,
-where __NR_ssetmask is badly used instead of __NR_sgetmask.
-
-Regards.
-
--- 
-Nicolas Joly
-
-Biological Software and Databanks.
-Institut Pasteur, Paris.
-
---G4iJoqBmSsgzjUCe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="ltp-sgetmask.diff"
-
-Index: testcases/kernel/syscalls/sgetmask/sgetmask01.c
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/sgetmask/sgetmask01.c,v
-retrieving revision 1.1
-diff -u -p -r1.1 sgetmask01.c
---- testcases/kernel/syscalls/sgetmask/sgetmask01.c	21 May 2009 18:35:31 -0000	1.1
-+++ testcases/kernel/syscalls/sgetmask/sgetmask01.c	16 Jun 2009 09:45:37 -0000
-@@ -141,7 +141,7 @@ int main(int ac, char **av) {
- 			for (sig = -3; sig <= SIGRTMAX + 1; sig++){
- 				TEST(syscall(__NR_ssetmask,sig));
-                 		tst_resm(TINFO,"Setting signal : %d -- return of setmask : %d",sig,TEST_RETURN);     //call sgetmask()
--                     		TEST(syscall(__NR_ssetmask));     //call sgetmask()
-+                     		TEST(syscall(__NR_sgetmask));     //call sgetmask()
-                      		if(TEST_RETURN != sig) {
-         				tst_resm(TINFO,"Oops,setting sig %d, got %d",sig,TEST_RETURN);
-                      		} else
-
---G4iJoqBmSsgzjUCe
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sf.net, haradats@nttdata.co.jp, sds@tycho.nsa.gov, casey@schaufler-ca.com, serue@linux.vnet.ibm.com, zohar@linux.vnet.ibm.com, takedakn@nttdata.co.jp
+
+Hello.
+
+Subrata Modak wrote:
+> Do you feel the above information is sufficient for your to write tests
+> for LTP ? Please feel free to ask us questions regarding anything to LTP
+> tests.
+Yes. I'm reading it now. Some random topics I noticed...
+
+
+
+In http://ltp.sourceforge.net/ltpman.php ...
+The "LTP test driver PAN" points to
+http://ltp.sourceforge.net/ltpmantemp.php?file=man1/pan.html
+but the content seems empty.
+Same result for other topics.
+Is ltpmantemp.php working?
+
+
+
+In "Developing tests in ANSI-C using LTP test harness API's" at
+http://ltp.sourceforge.net/documentation/how-to/ltp.php ...
+
+> TFAIL
+>    Print the test case result. The tst_resm/tst_res function prints related messages to the screen indicating a test failure. The test will exit with a non-zero exit value when tst_exit function is called.
+>
+>    test01    0  PASS  :  uname command exited with error code = 255
+>
+I think this is "FAIL  :  uname command exited with error code = 255".
+
+>TWARN
+>    Print warning messages. For example, when system resources are low.
+>
+>    test01    0  PASS  :  System low on memory, test case might fail.
+I think this is "WARN  :  System low on memory, test case might fail."
+
+
+
+There are several "amp;" which I think it meant '&'.
+
+
+
+In "Recommendation on coding style"...
+
+> Check for return values from system calls. Report reason appropriately using the tst_brkm() API. The recommended style is as follows:
+> Use spaces instead of tab characters. Typically four spaces may be used instead of a tab character.
+
+Ouch! I'm writing testcases in accordance with script/checkpatch.pl in Linux
+kernel source tree. I expect that those who update/maintain testcases for
+kernel source code likely have some experience in writing kernel patches.
+Is it preferable to change codyng style in accordance with LTP?
+
+
+
+http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/selinux-testsuite/
+seems to be moved to
+http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/security/selinux-testsuite/
+
+
+
+Many programs under
+http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/security/ seems
+not using harness APIs...
+Are these programs intended for executed by general LTP users?
 
 ------------------------------------------------------------------------------
 Crystal Reports - New Free Runtime and 30 Day Trial
@@ -79,16 +105,7 @@ Check out the new simplified licensing option that enables unlimited
 royalty-free distribution of the report engine for externally facing 
 server and web deployment.
 http://p.sf.net/sfu/businessobjects
---G4iJoqBmSsgzjUCe
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---G4iJoqBmSsgzjUCe--
-
