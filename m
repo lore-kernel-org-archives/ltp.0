@@ -1,34 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJlhO-0000Cb-Tn
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 09:56:54 +0000
-Received: from e33.co.us.ibm.com ([32.97.110.151])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MJlhO-0000s3-2m
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 09:56:54 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e33.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5P9slSl032740
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 03:54:47 -0600
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5P9urg2181588
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 03:56:53 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5P9uqw7032563
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 03:56:53 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200906231712.08545.vapier@gentoo.org>
-References: <4a413aa8.8d13f30a.1754.ffffd0c3SMTPIN_ADDED@mx.google.com>
-	<200906231712.08545.vapier@gentoo.org>
-Date: Thu, 25 Jun 2009 14:40:03 +0530
-Message-Id: <1245921004.5542.38.camel@subratamodak.linux.ibm.com>
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <knikanth@novell.com>) id 1MHVD3-0000eZ-6I
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2009 03:56:13 +0000
+Received: from victor.provo.novell.com ([137.65.250.26])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MHVD2-0003yb-3d
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2009 03:56:13 +0000
+Message-Id: <4A3B59AD020000C5000399AB@victor.provo.novell.com>
+Date: Thu, 18 Jun 2009 21:56:05 -0600
+From: "Nikanth Karthikesan" <knikanth@novell.com>
+References: <200906161646.50305.knikanth@suse.de>
+	<bb33bcf20906160423r408b3c6awc0b47ec5a2edee1d@mail.gmail.com>
+	<1245346312.5041.40.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1245346312.5041.40.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix a surprising error in cacheflush01 test
-Reply-To: subrata@linux.vnet.ibm.com
+Content-Disposition: inline
+Subject: Re: [LTP] cpusets: document adding/removing cpus to	
+	cpusetelaborately
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,39 +31,123 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
+To: subrata@linux.vnet.ibm.com, Nikanth Karthikesan <knikanth@suse.de>
+Cc: ltp-list <ltp-list@lists.sf.net>, miaox@cn.fujitsu.com
 
-Satus-quo unchanged. I think this was meant to be only for mips, so, why
-even try to see if it can build on others ?
 
-Regards--
-Subrata
 
-On Tue, 2009-06-23 at 17:12 -0400, Mike Frysinger wrote: 
-> On Friday 19 June 2009 10:13:25 Jiri Palecek > wrote:
-> > this patch fixes a strange build failure in the cacheflush test. Also, it
-> > makes the condition where it is build a little broader.
-> 
-> a little too broad -- you probably broke arm systems with this as they define 
-> __NR_cacheflush but not asm/cachectl.h
-> 
-> > -#if defined __mips__
-> > +
-> > +#if defined __NR_cacheflush
-> >  #include <asm/cachectl.h>
-> 
-> for using the systemcall you should use __NR_cacheflush.  for the header, you 
-> should use autoconf.
-> -mike
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>> On 6/18/2009 at 11:01 PM, Subrata Modak <subrata@linux.vnet.ibm.com> wrote: 
+> Hi Nikanth, 
+>  
+> On Tue, 2009-06-16 at 16:53 +0530, Subrata Modak wrote:  
+> > On Tue, Jun 16, 2009 at 4:46 PM, Nikanth Karthikesan 
+> > <knikanth@suse.de> wrote: 
+> >         Writing a pid to the file, tasks adds that task to that 
+> >         cgroup/cpuset. But to 
+> >         add a cpu/mem to a cpuset, the new list of cpus should be 
+> >         written to the 
+> >         cpuset.mems file which would replace the old list of cpus. 
+> >         Make this clearer 
+> >         in the documentation. 
+> >          
+> >         Signed-off-by: Nikanth Karthikesan <knikanth@suse.de>  
+> >  
+> > Hey, 
+> >  
+> > Great to see that you are working on the documentation part. Have you 
+> > given a try to test the CPUSET features in the kernel with the 
+> > recently added tests from 
+> >  
+> LTP(http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/controller 
+> s/cpuset/) ? It would be great if you help us in improving them further. 
+> >  
+>  
+> Would you like to share something with us ? 
+>  
+
+Hey Subrata
+
+Great to hear from you. I was working  on a patch that touches cpuset, and
+mis-understood the doc, hence the patch. But I haven't worked on it after that,
+as I was occupied with something else.
+
+Thanks a lot for pointing me to the LTP test cases. It should help me. Surely,
+would use it when I get back to it, after I am back from vacation and and report
+my experience. :)
+
+Thanks
+Nikanth
+
+> >  
+> >  
+> >          
+> >          
+> >         --- 
+> >          
+> >         diff --git a/Documentation/cgroups/cpusets.txt 
+> >         b/Documentation/cgroups/cpusets.txt 
+> >         index f9ca389..1d7e978 100644 
+> >         --- a/Documentation/cgroups/cpusets.txt 
+> >         +++ b/Documentation/cgroups/cpusets.txt 
+> >         @@ -777,6 +777,18 @@ in cpuset directories: 
+> >          # /bin/echo 1-4 > cpus         -> set cpus list to cpus 
+> >         1,2,3,4 
+> >          # /bin/echo 1,2,3,4 > cpus     -> set cpus list to cpus 
+> >         1,2,3,4 
+> >          
+> >         +To add a CPU to a cpuset, write the new list of CPUs 
+> >         including the 
+> >         +CPU to be added. To add 6 to the above cpuset: 
+> >         + 
+> >         +# /bin/echo 1-4,6 > cpus       -> set cpus list to cpus 
+> >         1,2,3,4,6 
+> >         + 
+> >         +Similarly to remove a CPU from a cpuset, write the new list 
+> >         of CPUs 
+> >         +without the CPU to be removed. 
+> >         + 
+> >         +To remove all the CPUs: 
+> >         + 
+> >         +# /bin/echo "" > cpus          -> clear cpus list 
+> >         + 
+> >          2.3 Setting flags 
+> >          ----------------- 
+> >          
+> >          
+> >          
+> >          
+> >         -- 
+> >         To unsubscribe from this list: send the line "unsubscribe 
+> >         linux-kernel" in 
+> >         the body of a message to majordomo@vger.kernel.org 
+> >         More majordomo info at 
+> >          http://vger.kernel.org/majordomo-info.html 
+> >         Please read the FAQ at  http://www.tux.org/lkml/  
+> >  
+> >  
+> >  
+> > --  
+> > Regards & Thanks-- 
+> > Subrata  
+> > ------------------------------------------------------------------------------ 
+> > Crystal Reports - New Free Runtime and 30 Day Trial 
+> > Check out the new simplified licensing option that enables unlimited 
+> > royalty-free distribution of the report engine for externally facing  
+> > server and web deployment. 
+> > http://p.sf.net/sfu/businessobjects 
+> > _______________________________________________ Ltp-list mailing list  
+> Ltp-list@lists.sourceforge.net  
+> https://lists.sourceforge.net/lists/listinfo/ltp-list 
+>  
+>  
 
 
 ------------------------------------------------------------------------------
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
