@@ -1,33 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1ME60m-0003xV-IT
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2009 18:25:28 +0000
-Received: from e4.ny.us.ibm.com ([32.97.182.144])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1ME60h-0007Xf-Vr
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2009 18:25:28 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e4.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n59IKa8V016611
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2009 14:20:36 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n59IPNJ0253906
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2009 14:25:23 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n59IPMAe005743
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2009 14:25:23 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4A2CACC5.6080601@cn.fujitsu.com>
-References: <4A2CABFB.3010207@cn.fujitsu.com> <4A2CACC5.6080601@cn.fujitsu.com>
-Date: Tue, 09 Jun 2009 23:54:51 +0530
-Message-Id: <1244571893.5497.20.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH 2/2] chmod05: fix the effective user when do
-	cleanup
-Reply-To: subrata@linux.vnet.ibm.com
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1MIZjM-0008Hh-RI
+	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 02:58:00 +0000
+Received: from fmmailgate03.web.de ([217.72.192.234])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MIZjL-0003QK-Ai
+	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 02:58:00 +0000
+Received: from smtp06.web.de (fmsmtp06.dlan.cinetic.de [172.20.5.172])
+	by fmmailgate03.web.de (Postfix) with ESMTP id 78F23100C5B74
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 22 Jun 2009 02:38:02 +0200 (CEST)
+Received: from [83.208.36.163] (helo=debian)
+	by smtp06.web.de with asmtp (WEB.DE 4.110 #277) id 1MIXXu-0006m4-00
+	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 02:38:02 +0200
+Date: Fri, 19 Jun 2009 16:14:26 +0200
+From: "Jiri Palecek >" <"<jirka"@suse.de>(none)
+MIME-Version: 1.0
+Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Resent-Message-ID: <op.uvwhh1wwlwynca@debian>
+Subject: [LTP] [PATCH] Adapt the cgroup/test_6_2 test to the various ways
+ clone is called on different architectures
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,53 +33,101 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Sender: ltp-list-bounces@lists.sourceforge.net
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wei Yongjun <yjwei@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
+Message-ID: <20090619141426.9Lba_oLJxmmRd252itNSTS1s6Dww5Alc7j1e2Pf4UBk@z>
 
-On Mon, 2009-06-08 at 14:16 +0800, Wei Yongjun wrote: 
-> The TESTDIR is created by root user, but when we do cleanup, the effective
-> user had been changed to nobody, so the cleanup will be failed when the
-> TESTDIR is removed.
-> 
->   chmod05     0  WARN  :  tst_rmdir(): rmobj(/tmp/chmOpEdLA) failed: \
->   remove(/tmp/chmOpEdLA) failed; errno=1: Operation not permitted
-> 
-> This patch fixed the problem by reset the effective user to root.
-> 
-> Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
+ Code shamelessly taken from clone01 test
 
-Thanks for fixing this as well.
+Signed-off-by: Jiri Palecek <jpalecek@web.de>
+---
+ .../kernel/controllers/cgroup/clone_platform.h     |   34 ++++++++++++++++++++
+ testcases/kernel/controllers/cgroup/test_6_2.c     |   12 ++++++-
+ 2 files changed, 45 insertions(+), 1 deletions(-)
+ create mode 100644 testcases/kernel/controllers/cgroup/clone_platform.h
 
-Regards--
-Subrata
+diff --git a/testcases/kernel/controllers/cgroup/clone_platform.h b/testcases/kernel/controllers/cgroup/clone_platform.h
+new file mode 100644
+index 0000000..1785dd1
+--- /dev/null
++++ b/testcases/kernel/controllers/cgroup/clone_platform.h
+@@ -0,0 +1,34 @@
++/*
++ * Copyright (c) 2003 Silicon Graphics, Inc.  All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write the Free Software Foundation, Inc., 59
++ * Temple Place - Suite 330, Boston MA 02111-1307, USA.
++ *
++ */
++/* Common platform specific defines for the clone system call tests */
++
++//#define CHILD_STACK_SIZE 8192
++#define CHILD_STACK_SIZE 16384
++
++#if defined (__s390__) || (__s390x__)
++#define clone __clone
++extern int __clone(int(void*),void*,int,void*);
++#elif defined(__ia64__)
++#define clone2 __clone2
++/* Prototype provided by David Mosberger				*/
++/* int  __clone2(int (*fn) (void *arg), void *child_stack_base,		*/
++/* 		size_t child_stack_size, int flags, void *arg,		*/
++/*		pid_t *parent_tid, void *tls, pid_t *child_tid)		*/
++extern int  __clone2(int (*fn) (void *arg), void *child_stack_base, 
++		size_t child_stack_size, int flags, void *arg, 
++		pid_t *parent_tid, void *tls, pid_t *child_tid); 
++#endif
+diff --git a/testcases/kernel/controllers/cgroup/test_6_2.c b/testcases/kernel/controllers/cgroup/test_6_2.c
+index e5bddb2..79f5c20 100644
+--- a/testcases/kernel/controllers/cgroup/test_6_2.c
++++ b/testcases/kernel/controllers/cgroup/test_6_2.c
+@@ -24,6 +24,8 @@
+ #include <unistd.h>
+ #include <sched.h>
+ 
++#include "clone_platform.h"
++
+ #define DEFAULT_USEC	30000
+ 
+ int foo(void __attribute__((unused)) *arg)
+@@ -42,7 +44,15 @@ int main(int argc, char **argv)
+ 
+ 	while (1) {
+ 		usleep(usec);
+-		clone(foo, stack+4096, CLONE_NEWNS, NULL);
++#if defined(__hppa__)
++		clone(foo, stack, CLONE_NEWNS, NULL);
++#elif defined(__ia64__)
++		clone2(foo, stack,
++			    4096, CLONE_NEWNS, NULL, NULL, NULL, NULL);
++#else
++		clone
++		     (foo, stack + 4096, CLONE_NEWNS, NULL);
++#endif
+ 	}
+ 
+ 	return 0;
+-- 
+1.6.3.1
 
-> ---
->  testcases/kernel/syscalls/chmod/chmod05.c |    3 +++
->  1 files changed, 3 insertions(+), 0 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/chmod/chmod05.c b/testcases/kernel/syscalls/chmod/chmod05.c
-> index c6f1225..252f14e 100644
-> --- a/testcases/kernel/syscalls/chmod/chmod05.c
-> +++ b/testcases/kernel/syscalls/chmod/chmod05.c
-> @@ -266,6 +266,9 @@ void cleanup()
->  	 */
->  	TEST_CLEANUP;
-> 
-> +	setegid(0);
-> +	seteuid(0);
-> +
->  	/* Remove tmp dir and all files in it */
->  	tst_rmdir();
-> 
+
 
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing 
-server and web deployment.
-http://p.sf.net/sfu/businessobjects
+Are you an open source citizen? Join us for the Open Source Bridge conference!
+Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
+Need another reason to go? 24-hour hacker lounge. Register today!
+http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
