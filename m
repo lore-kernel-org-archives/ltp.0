@@ -1,29 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MC9EV-0001bz-53
-	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2009 09:27:35 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MHWfL-0002PE-9m
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2009 05:29:31 +0000
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
 	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MC9ER-00051j-Fh
-	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2009 09:27:35 +0000
+	(Exim 4.69) id 1MHWfH-0008Ux-H1
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2009 05:29:31 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e4.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5J5OQEt003116
+	for <ltp-list@lists.sourceforge.net>; Fri, 19 Jun 2009 01:24:26 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5J5TQAb255064
+	for <ltp-list@lists.sourceforge.net>; Fri, 19 Jun 2009 01:29:26 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5J5TQ36024966
+	for <ltp-list@lists.sourceforge.net>; Fri, 19 Jun 2009 01:29:26 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1243434187.10447.15.camel@subratamodak.linux.ibm.com>
-References: <d51f89b0905130216h36e32efbwf48f241f2d961a0a@mail.gmail.com>
-	<20090513.225510.104053150.caiqian@cclom.cn>
-	<d51f89b0905180455w514b014boedb4670610987533@mail.gmail.com>
-	<20090518.192133.233689723.caiqian@cclom.cn>
-	<1242729086.5961.43.camel@subratamodak.linux.ibm.com>
-	<d51f89b0905252140y39ed0666k7c8ec1ce95807e55@mail.gmail.com>
-	<1243340568.6293.22.camel@subratamodak.linux.ibm.com>
-	<d51f89b0905270018u1b447334qf38528f8dc0ed7aa@mail.gmail.com>
-	<1243434187.10447.15.camel@subratamodak.linux.ibm.com>
-Date: Thu, 04 Jun 2009 14:57:23 +0530
-Message-Id: <1244107643.4879.9.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <49b7c2350906182211s34c84011qce55fab5845274f1@mail.gmail.com>
+References: <49b7c2350906120147p1a68cde1ua00b2875052ea99c@mail.gmail.com>
+	<1245346296.5041.34.camel@subratamodak.linux.ibm.com>
+	<49b7c2350906182211s34c84011qce55fab5845274f1@mail.gmail.com>
+Date: Fri, 19 Jun 2009 10:59:20 +0530
+Message-Id: <1245389361.5041.53.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] Reg: Script to extract description of test
-	case	from	LTPROOT/doc/testcases/*.txt files
+Subject: Re: [LTP] I met "You can specify it with option -b" error message
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -34,127 +38,74 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rohit verma <rohit.170309@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>, Mike Frysinger <vapier@gentoo.org>
+To: GeunSik Lim <leemgs1@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Andrew Vagin <avagin@parallels.com>
 
-T24gV2VkLCAyMDA5LTA1LTI3IGF0IDE5OjUzICswNTMwLCBTdWJyYXRhIE1vZGFrIHdyb3RlOiAK
-PiBPbiBXZWQsIDIwMDktMDUtMjcgYXQgMDA6MTggLTA3MDAsIHJvaGl0IHZlcm1hIHdyb3RlOiAK
-PiA+IEhpIFN1YnJhdGEsCj4gPiAKPiA+IEFzIHRoZSBwdXJwb3NlIG9mIHRoaXMgZG9jdW1lbnQg
-aXMgdG8gYnJpZWYgdGhlIGRlc2NyaXB0aW9uIG9mIGVhY2gKPiA+IHRlc3QgY2FzZSB0byB1c2Vy
-LiBJIGZlZWwgdGhhdCB5b3VyIGZvcm1hdCB3b3VsZCBkZWNyZWFzZSB0aGUKPiA+IHJlYWRhYmls
-aXR5IGluIGRvY3VtZW50IC4KPiA+IAo+ID4gU28gc2hvdWxkIHdlIGluY2x1ZGUgZm9sbG93aW5n
-IHRhZ3MgICAidGVzdF9sb2NhdGlvbiIsCj4gPiAidGVzdF9jbWRmaWxlX25hbWUiLCAidGVzdF9j
-bWRmaWxlX2VudHJ5IiwKPiA+ICJFeGVjdXRlX3Rocm91Z2hfY29tbWFuZGxpbmUiLCAiRXhlY3V0
-ZV90aHJvdWdoX3J1bmx0cCIuIG9yIG9ubHkKPiA+IGRlc2NyaXB0aW9uIHRhZyB3b3VsZCBiZSBz
-dWZmaWNpZW50Lgo+IAo+IEZpbmUgdGhlbiwgYnV0IGkgd291bGQgaW5zaXN0IHlvdSB0byBpbmNs
-dWRlICJ0ZXN0bmFtZSIgJgo+ICJ0ZXN0X2xvY2F0aW9uIiBhcGFydCBmcm9tICJ0ZXN0X2Rlc2Ny
-aXB0aW9uIi4KClJvaGl0LAoKQXJlIHlvdSB3b3JraW5nIG9uIHRoaXMgPwoKUmVnYXJkcy0tClN1
-YnJhdGEKCj4gCj4gUmVnYXJkcy0tCj4gU3VicmF0YQo+IAo+ID4gCj4gPiBSZWdhcmRzLAo+ID4g
-cm9oaXQKPiA+IAo+ID4gCj4gPiBPbiBUdWUsIE1heSAyNiwgMjAwOSBhdCA1OjIyIEFNLCBTdWJy
-YXRhIE1vZGFrCj4gPiA8c3VicmF0YUBsaW51eC52bmV0LmlibS5jb20+IHdyb3RlOgo+ID4gPiBP
-biBNb24sIDIwMDktMDUtMjUgYXQgMjE6NDAgLTA3MDAsIHJvaGl0IHZlcm1hIHdyb3RlOgo+ID4g
-Pj4gSGkgU3VicmF0YSwKPiA+ID4+Cj4gPiA+PiBJIHJlcXVlc3QgeW91IHRvIGZpbmFsaXplIHRo
-ZSBmb3JtYXQgb2YgdGhlIGRvY3VtZW50YXRpb24gQVNBUC4KPiA+ID4KPiA+ID4gSSB3b3VsZCBs
-aWtlIHRvIHNlZSBzb21ldGhpbmcgbGlrZToKPiA+ID4KPiA+ID4gPHRlc3RuYW1lPWFib3J0KDMp
-Pgo+ID4gPiAgPHRlc3RfZGVzY3JpcHRpb249IkJhc2ljIHRlc3QgZm9yIGFib3J0KDMpIj4KPiA+
-ID4gIDxcdGVzdF9kZXNjcmlwdGlvbj4KPiA+ID4gIDx0ZXN0X2xvY2F0aW9uPSJsdHAvdGVzdGNh
-c2VzL2tlcm5lbC9zeXNjYWxscy9hYm9ydC9hYm9ydDAxLmMiPgo+ID4gPiAgPFx0ZXN0X2xvY2F0
-aW9uPgo+ID4gPiAgPHRlc3RfY21kZmlsZV9uYW1lPSJsdHAvcnVudGVzdC9zeXNjYWxscyI+Cj4g
-PiA+ICA8XHRlc3RfY21kZmlsZV9uYW1lPgo+ID4gPiAgPHRlc3RfY21kZmlsZV9lbnRyeT0iYWJv
-cnQwMSB1bGltaXQgLWMgMTAyNDthYm9ydDAxIj4KPiA+ID4gIDxcdGVzdF9jbWRmaWxlX2VudHJ5
-Pgo+ID4gPiAgPEV4ZWN1dGVfdGhyb3VnaF9jb21tYW5kbGluZT0idWxpbWl0IC1jCj4gPiA+IDEw
-MjQ7IC4vbHRwL3Rlc3RjYXNlcy9iaW4vYWJvcnQwMSI+Cj4gPiA+ICA8XEV4ZWN1dGVfdGhyb3Vn
-aF9jb21tYW5kbGluZT4KPiA+ID4gIDxFeGVjdXRlX3Rocm91Z2hfcnVubHRwPSIuL3J1bmx0cCAt
-cyBhYm9ydDAxIj4KPiA+ID4gIDxcRXhlY3V0ZV90aHJvdWdoX3J1bmx0cD4KPiA+ID4gPFx0ZXN0
-bmFtZT4KPiA+ID4KPiA+ID4gVGhlIGJhc2ljIGlkZWEgaXMgdG8gaW5jbHVkZSBhbGwgaW1wb3J0
-YW50IGluZm9ybWF0aW9uIGFzIHdlIGNhbiB3aGVuIHdlCj4gPiA+IGFyZSBkb2luZyBzb21lIHBh
-dGNoaW5nIG9uIHRoaXMuIExldCBtZSBrbm93IGhvdyBvdGhlcnMgZmVlbCwgYW5kIGhvdyB3ZQo+
-ID4gPiBjYW4gYWNoaWV2ZSB0aGlzLgo+ID4gPgo+ID4gPiBSZWdhcmRzLS0KPiA+ID4gU3VicmF0
-YQo+ID4gPgo+ID4gPj4KPiA+ID4+IEx0cC1saXN0IDogUGxlYXNlIHByb3ZpZGUgdGhlIGlucHV0
-cyByZWdhcmRpbmcgdGhlIHRleHQgZG9jdW1lbnRhdGlvbiBmb3JtYXQuCj4gPiA+Pgo+ID4gPj4g
-UmVnYXJkcywKPiA+ID4+IHJvaGl0Cj4gPiA+Pgo+ID4gPj4gT24gVHVlLCBNYXkgMTksIDIwMDkg
-YXQgMzozMSBBTSwgU3VicmF0YSBNb2Rhawo+ID4gPj4gPHN1YnJhdGFAbGludXgudm5ldC5pYm0u
-Y29tPiB3cm90ZToKPiA+ID4+ID4gSGkgUm9oaXQsCj4gPiA+PiA+Cj4gPiA+PiA+IE9uIE1vbiwg
-MjAwOS0wNS0xOCBhdCAxOToyMSArMDgwMCwgQ0FJIFFpYW4gd3JvdGU6Cj4gPiA+PiA+PiBGcm9t
-OiByb2hpdCB2ZXJtYSA8cm9oaXQuMTcwMzA5QGdtYWlsLmNvbT4KPiA+ID4+ID4+IFN1YmplY3Q6
-IFJlOiBSZWc6IFNjcmlwdCB0byBleHRyYWN0IGRlc2NyaXB0aW9uIG9mIHRlc3QgY2FzZSBmcm9t
-IExUUFJPT1QvZG9jL3Rlc3RjYXNlcy8qLnR4dCBmaWxlcwo+ID4gPj4gPj4gRGF0ZTogTW9uLCAx
-OCBNYXkgMjAwOSAwNDo1NTo1NCAtMDcwMAo+ID4gPj4gPj4KPiA+ID4+ID4+ID4gRGVhciBTdWJy
-YXRhL1FpYW4sCj4gPiA+PiA+PiA+Cj4gPiA+PiA+PiA+IEkgYW0gdHJ5aW5nIHRvIGRldmVsb3Ag
-c2NyaXB0IHdoaWNoIHdvdWxkIGV4dHJhY3RzIGRlc2NyaXB0aW9uIGluZm9ybWF0aW9uCj4gPiA+
-PiA+PiA+IGFib3V0IHVzZXIgcmVxdWlyZWQgdGVzdCBjYXNlIGZyb20gTFRQUk9PVC9kb2MvdGVz
-dGNhc2VzLyBmb2xkZXIuCj4gPiA+PiA+PiA+Cj4gPiA+PiA+PiA+IFNvIHRvIG1ha2UgdGhlIGRl
-c2NyaXB0aW9uIHRleHQgZmlsZSAgYXMgc3RhbmRhcmQgZmlsZSwgY2FuIHdlIHJlcHJlc2VudCB0
-aGUKPiA+ID4+ID4+ID4gZGVzY3JpcHRpb24gYXMgbWVudGlvbmVkIGJlbG93Lgo+ID4gPj4gPj4g
-Pgo+ID4gPj4gPj4gPiBGb3IgZXhhbXBsZSBpbiBzeXNjYWxscyBjYXRlZ29yeToKPiA+ID4+ID4+
-ID4KPiA+ID4+ID4+ID4gQ3VycmVudGx5IGF2YWlsYWJsZSBmb3JtYXQgb2YgZGVzY3JpcHRpb24g
-aW4gTFRQIGFzIGZvbGxvd3MuCj4gPiA+PiA+PiA+Cj4gPiA+PiA+PiA+ICAgYWJvcnQwMQo+ID4g
-Pj4gPj4gPiAgICBCYXNpYyB0ZXN0IGZvciBhYm9ydCgzKS4KPiA+ID4+ID4+ID4KPiA+ID4+ID4+
-ID4gICBhY2NlcHQwMQo+ID4gPj4gPj4gPiAgICBWZXJpZnkgdGhhdCBhY2NlcHQoKSByZXR1cm5z
-IHRoZSBwcm9wZXIgZXJybm8gZm9yIHZhcmlvdXMgZmFpbHVyZSBjYXNlcwo+ID4gPj4gPj4gPgo+
-ID4gPj4gPj4gPgo+ID4gPj4gPj4gPiBUbyBtYWtlIGl0IGluIGNvbnNpc3RlbnQgd2F5LCBkZXNj
-cmlwdGlvbiBzaG91bGQgYmUgZW5jbG9zZWQgYnkgZXhlY3V0YWJsZXMKPiA+ID4+ID4+ID4gYXMg
-Zm9sbG93cy4KPiA+ID4+ID4+ID4KPiA+ID4+ID4+ID4gIDxhYm9ydDAxPgo+ID4gPj4gPj4gPiAg
-ICBCYXNpYyB0ZXN0IGZvciBhYm9ydCgzKS4KPiA+ID4+ID4+ID4gIDxcYWJvcnQwMT4KPiA+ID4+
-ID4+ID4KPiA+ID4+ID4+ID4gIDxhY2NlcHQwMT4KPiA+ID4+ID4+ID4gICAgVmVyaWZ5IHRoYXQg
-YWNjZXB0KCkgcmV0dXJucyB0aGUgcHJvcGVyIGVycm5vIGZvciB2YXJpb3VzIGZhaWx1cmUgY2Fz
-ZXMKPiA+ID4+ID4+ID4gIDxcYWNjZXB0MDE+Cj4gPiA+PiA+PiA+Cj4gPiA+PiA+PiA+IFBsZWFz
-ZSBjb25maXJtIGlmIHRoaXMgZm9ybWF0IGlzIE8uSyBvciBzdWdnZXN0IGFueSBvdGhlciBmb3Jt
-YXQgYnkgd2hpY2ggd2UKPiA+ID4+ID4+ID4gY2FuIGVhc2lseSBwYXJzZSB0aGUgdGVzdCBjYXNl
-cyBhbmQgZXh0cmFjdHMgdGhlIGRlc2NyaXB0aW9uLgo+ID4gPj4gPgo+ID4gPj4gPiBJdMWbIGFs
-d2F5cyBncmVhdCB0byBzZWUgc29tZWJvZHkgd29ya2luZyBvbiBMVFAgZG9jdW1lbnRhdGlvbi4g
-U28sIGxldHMKPiA+ID4+ID4gYXNrIHRoZSBjb21tdW5pdHkgYWxzbyBmb3IgdGhlaXIgb3Bpbmlv
-biBhcyB3ZWxsLiBDYW4gd2UgYWxzbyBpbmNsdWRlCj4gPiA+PiA+IHNvbWUgbW9yZSB0YWdzIGZv
-ciBtb3JlIGRlc2NyaXB0aXZlIGluZm8gPwo+ID4gPj4gPgo+ID4gPj4gPiBSZWdhcmRzLS0KPiA+
-ID4+ID4gU3VicmF0YQo+ID4gPj4gPgo+ID4gPj4gPj4gPgo+ID4gPj4gPj4KPiA+ID4+ID4+IExv
-b2tzIGdvb2QgZm9yIG1lLgo+ID4gPj4gPj4KPiA+ID4+ID4+IENBSSBRaWFuCj4gPiA+PiA+Pgo+
-ID4gPj4gPj4gPiBJZiB0aGlzIGZvcm1hdCBpcyBPLksgLCBJIHdvdWxkIHNlbmQgdGhlIHBhdGNo
-IGZvciB0aG9zZSB0ZXh0IGZpbGVzCj4gPiA+PiA+PiA+Cj4gPiA+PiA+PiA+IFJlZ2FyZHMsCj4g
-PiA+PiA+PiA+IFJvaGl0Cj4gPiA+PiA+PiA+Cj4gPiA+PiA+PiA+Cj4gPiA+PiA+PiA+Cj4gPiA+
-PiA+PiA+IE9uIFdlZCwgTWF5IDEzLCAyMDA5IGF0IDc6NTUgQU0sIENBSSBRaWFuIDxjYWlxaWFu
-QGNjbG9tLmNuPiB3cm90ZToKPiA+ID4+ID4+ID4KPiA+ID4+ID4+ID4+IEZyb206IHJvaGl0IHZl
-cm1hIDxyb2hpdC4xNzAzMDlAZ21haWwuY29tPgo+ID4gPj4gPj4gPj4gU3ViamVjdDogUmVnOiBT
-Y3JpcHQgdG8gZXh0cmFjdCBkZXNjcmlwdGlvbiBvZiB0ZXN0IGNhc2UgZnJvbQo+ID4gPj4gPj4g
-Pj4gTFRQUk9PVC9kb2MvdGVzdGNhc2VzLyoudHh0IGZpbGVzCj4gPiA+PiA+PiA+PiBEYXRlOiBX
-ZWQsIDEzIE1heSAyMDA5IDAyOjE2OjU3IC0wNzAwCj4gPiA+PiA+PiA+Pgo+ID4gPj4gPj4gPj4g
-PiBEZWFyIFN1YnJhdGEvcWlhbiwKPiA+ID4+ID4+ID4+ID4KPiA+ID4+ID4+ID4+ID4gQXMgaWYg
-d2UgcnVuIExUUCB0ZXN0Y2FzZXMsIG5vd2hlcmUgTFRQIHRlc3Qgc3VpdGUgcG9wdWxhdGVzIHRo
-ZQo+ID4gPj4gPj4gPj4gPiBkZXNjcmlwdGlvbiBvZiB0ZXN0Y2FzZXMgKGVpdGhlciBpbiAubG9n
-LCAub3V0cHV0LCAuSFRNTCBvciAuZmFpbGVkCj4gPiA+PiA+PiA+PiA+IHRlc3QgY2FzZXMgZmls
-ZXMpLgo+ID4gPj4gPj4gPj4gPgo+ID4gPj4gPj4gPj4gPiBEZXNjcmlwdGlvbiBvZiBlYWNoIHRl
-c3QgY2FzZSBpbiBjYXRlZ29yeSB3aXNlIGlzIGF2YWlsYWJsZSBpbgo+ID4gPj4gPj4gPj4gPiBM
-VFBST09UL2RvYy90ZXN0Y2FzZXMgZm9sZGVyLgo+ID4gPj4gPj4gPj4gPgo+ID4gPj4gPj4gPj4g
-PiBNeSBRdWVzdGlvbiA6IElzIHRoZXJlIGFueSByZWFkeS1tYWRlIHNjcmlwdCBhdmFpbGFibGUg
-dG8gZXh0cmFjdCB0aGUKPiA+ID4+ID4+ID4+ID4gZGVzY3JpcHRpb24gb2YgdXNlciByZXF1aXJl
-ZCB0ZXN0IGNhc2UgZnJvbSBhYm92ZSBzcGVjaWZpZWQgZm9sZGVyPwo+ID4gPj4gPj4gPj4gPgo+
-ID4gPj4gPj4gPj4gPiBJZiBzY3JpcHQgaXMgbm90IGF2YWlsYWJsZSwgY291bGQgeW91IHN1Z2dl
-c3QgdGhlIGRpcmVjdGlvbiB0byBleHRyYWN0Cj4gPiA+PiA+PiA+PiA+IGRlc2NyaXB0aW9uIG9m
-IHRlc3QgY2FzZXMuCj4gPiA+PiA+PiA+PiA+Cj4gPiA+PiA+PiA+PiA+Cj4gPiA+PiA+PiA+PiA+
-IFJlZ2FyZHMsCj4gPiA+PiA+PiA+PiA+IFJvaGl0Lgo+ID4gPj4gPj4gPj4KPiA+ID4+ID4+ID4+
-IE5vdCBJIGFtIGF3YXJlIG9mLiBTdWJyYXRhIG9yIHNvbWVvbmUgaW4gdGhlIGxpc3QgbWlnaHQg
-aGF2ZSBzb21lIGlkZWFzCj4gPiA+PiA+PiA+PiBmb3IgeW91Lgo+ID4gPj4gPj4gPj4KPiA+ID4+
-ID4+ID4+IENBSSBRaWFuCj4gPiA+PiA+PiA+Pgo+ID4gPj4gPgo+ID4gPj4gPgo+ID4gPgo+ID4g
-Pgo+IAo+IAo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+IFJlZ2lzdGVyIE5vdyBmb3IgQ3JlYXRp
-dml0eSBhbmQgVGVjaG5vbG9neSAoQ2FUKSwgSnVuZSAzcmQsIE5ZQy4gQ2FUIAo+IGlzIGEgZ2F0
-aGVyaW5nIG9mIHRlY2gtc2lkZSBkZXZlbG9wZXJzICYgYnJhbmQgY3JlYXRpdml0eSBwcm9mZXNz
-aW9uYWxzLiBNZWV0Cj4gdGhlIG1pbmRzIGJlaGluZCBHb29nbGUgQ3JlYXRpdmUgTGFiLCBWaXN1
-YWwgQ29tcGxleGl0eSwgUHJvY2Vzc2luZywgJiAKPiBpUGhvbmVEZXZDYW1wIGFzIHRoZXkgcHJl
-c2VudCBhbG9uZ3NpZGUgZGlnaXRhbCBoZWF2eXdlaWdodHMgbGlrZSBCYXJiYXJpYW4gCj4gR3Jv
-dXAsIFIvR0EsICYgQmlnIFNwYWNlc2hpcC4gaHR0cDovL3Auc2YubmV0L3NmdS9jcmVhdGl2aXR5
-Y2F0LWNvbSAKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-Xwo+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5l
-dAo+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0
-CgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk9wZW5Tb2xhcmlzIDIwMDkuMDYgaXMgYSBjdXR0aW5n
-IGVkZ2Ugb3BlcmF0aW5nIHN5c3RlbSBmb3IgZW50ZXJwcmlzZXMgCmxvb2tpbmcgdG8gZGVwbG95
-IHRoZSBuZXh0IGdlbmVyYXRpb24gb2YgU29sYXJpcyB0aGF0IGluY2x1ZGVzIHRoZSBsYXRlc3Qg
-Cmlubm92YXRpb25zIGZyb20gU3VuIGFuZCB0aGUgT3BlblNvdXJjZSBjb21tdW5pdHkuIERvd25s
-b2FkIGEgY29weSBhbmQgCmVuam95IGNhcGFiaWxpdGllcyBzdWNoIGFzIE5ldHdvcmtpbmcsIFN0
-b3JhZ2UgYW5kIFZpcnR1YWxpemF0aW9uLiAKR28gdG86IGh0dHA6Ly9wLnNmLm5ldC9zZnUvb3Bl
-bnNvbGFyaXMtZ2V0Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
-aHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+On Fri, 2009-06-19 at 14:11 +0900, GeunSik Lim wrote:
+> On Fri, Jun 19, 2009 at 2:31 AM, Subrata
+> Modak<subrata@linux.vnet.ibm.com> wrote:
+> >> remove test cases which require the block device.
+> >> You can specify it with option -b
+> >
+> > This is not an error message at all. See this:
+> > http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/runltp?r1=1.40&r2=1.41
+> 
+> I checked above site that you said. Thank you for sharing.
+> I summarized result of benchmark  using ltp-full-20090531.
+> ----------------------------------------------------------------------------------------------------
+>  Linux RootFS        Linux Kernel             LTP        Result(Log)
+>          Result(HTML)
+> ----------------------------------------------------------------------------------------------------
+> CentOS 5.3                2.6.24              20090531      Success
+>               Success
+> Fedora   11                2.6.29              20090531
+> Success(with+ctrl C)   Failed
+> 
+> #> cd ltp-full-20090531
+> #> ./configure
+> #> make
+> #> make install
+> #> time ./runalltests.sh  OR
+>      time ./runltp -v -l alltest.log  -o alltest.out -g alltest.html
+> -x 4
+
+Because, when you use the option -o, ltp-pan will redirect all your test
+output to ltp/output/alltest.out. Do tail -f ltp/output/alltest.out, you
+will see output scrolling out. Given the size of default ltp run, you
+can expect somewhere from 1.5 to 2.5 hours before your command prompt
+returns from:
+
+time ./runltp -v -l alltest.log  -o alltest.out -g alltest.html
+
+Regards--
+Subrata
+
+> 
+>         ....    No response  ......
+> 
+> I still can't view "#>" prompt in my Fedora 11 distribution after 24hours.
+> I don't know what is reason of this problem  in Fedora 11.
+> 
+> 
+> >
+> > Andrew would also explain you a bit.
+> >
+> > Regards--
+> > Subrata
+> >
+> 
+
+
+------------------------------------------------------------------------------
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
