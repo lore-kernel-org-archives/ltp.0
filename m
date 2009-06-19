@@ -1,34 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MLY2o-0000fR-7w
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 07:46:22 +0000
-Received: from [32.97.110.149] (helo=e31.co.us.ibm.com)
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MLY2n-0003wT-Ez
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 07:46:22 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e31.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5U7fMdt030652
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 01:41:22 -0600
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5U7k0cW221504
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 01:46:00 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5U7k0u5026217
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 01:46:00 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1246015980.6196.20.camel@subratamodak.linux.ibm.com>
-References: <f5a7b3810906250517k3b8c3bf3gde1957e93c95314@mail.gmail.com>
-	<1246015980.6196.20.camel@subratamodak.linux.ibm.com>
-Date: Tue, 30 Jun 2009 13:11:20 +0530
-Message-Id: <1246347680.4819.31.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Re::personality test case build fails
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <jpalecek@web.de>) id 1MJCdJ-000178-Fd
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 20:30:21 +0000
+Received: from fmmailgate01.web.de ([217.72.192.221])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MJCdD-00046w-G8
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 20:30:16 +0000
+Received: from smtp06.web.de (fmsmtp06.dlan.cinetic.de [172.20.5.172])
+	by fmmailgate01.web.de (Postfix) with ESMTP id A3EC2106AEECE
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 23 Jun 2009 22:30:14 +0200 (CEST)
+Received: from [83.208.36.163] (helo=debian)
+	by smtp06.web.de with asmtp (WEB.DE 4.110 #277) id 1MJCdB-0001TJ-00
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 22:30:14 +0200
+Date: Fri, 19 Jun 2009 16:12:15 +0200
+From: "Jiri Palecek >" <"<jirka"@suse.de>(none)
+MIME-Version: 1.0
+Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Resent-Message-ID: <op.uvzveadhlwynca@debian>
+Subject: [LTP] [PATCH] Use present autoconf test for asm/ldt.h in
+ set_thread_area* tests to prevent build failures
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,56 +33,126 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Sender: ltp-list-bounces@lists.sourceforge.net
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: naresh kamboju <naresh.kernel@gmail.com>
-Cc: Jiri Palecek <jpalecek@web.de>, Pradeep K Surisetty <pradeepkumars@in.ibm.com>, ltp-list@lists.sourceforge.net
+Cc: ltp-list@lists.sourceforge.net
+Message-ID: <20090619141215.EFnzuotVeUQVDdO6ddPMWPTFlmtXysau45N5FHv37aY@z>
 
-On Fri, 2009-06-26 at 17:03 +0530, Subrata Modak wrote: 
-> On Thu, 2009-06-25 at 17:47 +0530, naresh kamboju wrote: 
-> > Hi,
-> > 
-> > >+#ifdef __NR_personality
-> >  >int main(int ac, char **av)
-> >  >{
-> > 
-> > >+#else
-> > >+int main(int ac, char **av)
-> > >+{
-> > >+       tst_resm(TCONF, "personality() not defined in your system");
-> > >+       tst_exit();
-> > >+}
-> > >+#endif
-> > 
-> > 
-> > Instead of using
-> > #ifdef __NR_personality
-> >  in test code, Better we will add these this syscall numbers in the
-> > ltp/testcases/kernel/include/ARCHXXX.in files.
-> > This can be Multi ARCH support.
-> 
-> Great. Send me a patch to update them all ;-)
-> 
+Signed-off-by: Jiri Palecek <jpalecek@web.de>
+---
+ .../syscalls/set_thread_area/set_thread_area01.c   |   27 +++++++++++++------
+ .../syscalls/set_thread_area/set_thread_area02.c   |   27 +++++++++++++------
+ 2 files changed, 36 insertions(+), 18 deletions(-)
 
-Naresh ??
+diff --git a/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c b/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c
+index f924548..314045c 100644
+--- a/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c
++++ b/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c
+@@ -49,25 +49,27 @@
+ /*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
+ /******************************************************************************/
+ 
+-#include <stdio.h>
+-#include <errno.h>
+-#include <linux/unistd.h>
+-#include <asm/ldt.h>
+-
+ /* Harness Specific Include Files. */
+ #include "test.h"
+ #include "usctest.h"
+ #include "linux_syscall_numbers.h"
+-
+-/* Extern Global Variables */
+-extern int Tst_count;           /* counter for tst_xxx routines.         */
+-extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
++#include "config.h"
+ 
+ /* Global Variables */
+ char *TCID = "set_thread_area01";  /* Test program identifier.*/
+ int  testno;
+ int  TST_TOTAL = 2;                   /* total number of tests in this file.   */
+ 
++#if defined HAVE_ASM_LDT_H
++#include <stdio.h>
++#include <errno.h>
++#include <linux/unistd.h>
++#include <asm/ldt.h>
++
++/* Extern Global Variables */
++extern int Tst_count;           /* counter for tst_xxx routines.         */
++extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
++
+ /* Extern Global Functions */
+ /******************************************************************************/
+ /*                                                                            */
+@@ -175,3 +177,10 @@ int main(int ac, char **av) {
+         tst_exit();
+ }
+ 
++#else
++int main(int ac, char **av) {
++    
++    tst_resm(TCONF, "is not available for this architecture");
++    tst_exit();
++}
++#endif
+diff --git a/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c b/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c
+index 4fff9d6..52c7d06 100644
+--- a/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c
++++ b/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c
+@@ -50,25 +50,27 @@
+ /*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
+ /******************************************************************************/
+ 
+-#include <stdio.h>
+-#include <errno.h>
+-#include <linux/unistd.h>
+-#include <asm/ldt.h>
+-
+ /* Harness Specific Include Files. */
+ #include "test.h"
+ #include "usctest.h"
+ #include "linux_syscall_numbers.h"
+-
+-/* Extern Global Variables */
+-extern int Tst_count;           /* counter for tst_xxx routines.         */
+-extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
++#include "config.h"
+ 
+ /* Global Variables */
+ char *TCID = "set_thread_area_02";  /* Test program identifier.*/
+ int  testno;
+ int  TST_TOTAL = 3;                   /* total number of tests in this file.   */
+ 
++#if defined HAVE_ASM_LDT_H
++#include <stdio.h>
++#include <errno.h>
++#include <linux/unistd.h>
++#include <asm/ldt.h>
++
++/* Extern Global Variables */
++extern int Tst_count;           /* counter for tst_xxx routines.         */
++extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
++
+ /* Extern Global Functions */
+ /******************************************************************************/
+ /*                                                                            */
+@@ -195,4 +197,11 @@ int main(int ac, char **av) {
+ 	cleanup();
+         tst_exit();
+ }
++#else
++int main(int ac, char **av) {
++    
++    tst_resm(TCONF, "is not available for this architecture");
++    tst_exit();
++}
++#endif
+ 
+-- 
+1.6.3.1
 
-> Regards--
-> Subrata
-> 
-> > 
-> > Jiri,
-> > I think you are doing Multi ARCH support right?
-> > 
-> > Your suggestions are welcome :)
-> > 
-> > Best regards
-> > Naresh Kamboju
-> 
-> 
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 
 
 ------------------------------------------------------------------------------
