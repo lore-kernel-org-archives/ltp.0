@@ -1,34 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MK9ix-0004bb-69
-	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2009 11:36:07 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MK9ip-0005K6-1V
-	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2009 11:36:02 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e2.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5QBV8IR024888
-	for <ltp-list@lists.sourceforge.net>; Fri, 26 Jun 2009 07:31:08 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5QBZvHr249238
-	for <ltp-list@lists.sourceforge.net>; Fri, 26 Jun 2009 07:35:57 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5QBZvvS006759
-	for <ltp-list@lists.sourceforge.net>; Fri, 26 Jun 2009 07:35:57 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4A43DF48.3070808@us.ibm.com>
-References: <4A427613.80206@us.ibm.com> <4A42FA2D.7050302@linux.vnet.ibm.com>
-	<1245921054.5542.49.camel@subratamodak.linux.ibm.com>
-	<4A43DF48.3070808@us.ibm.com>
-Date: Fri, 26 Jun 2009 17:03:07 +0530
-Message-Id: <1246015987.6196.22.camel@subratamodak.linux.ibm.com>
+	(envelope-from <mpradeep@linux.vnet.ibm.com>) id 1MHZsY-00023d-Lt
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2009 08:55:22 +0000
+Received: from e23smtp04.au.ibm.com ([202.81.31.146])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MHZsV-0001Di-OR
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2009 08:55:22 +0000
+Received: from d23relay02.au.ibm.com (d23relay02.au.ibm.com [202.81.31.244])
+	by e23smtp04.au.ibm.com (8.13.1/8.13.1) with ESMTP id n5J8qoeB023599
+	for <ltp-list@lists.sourceforge.net>; Fri, 19 Jun 2009 18:52:50 +1000
+Received: from d23av01.au.ibm.com (d23av01.au.ibm.com [9.190.234.96])
+	by d23relay02.au.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5J8tCWQ1015960
+	for <ltp-list@lists.sourceforge.net>; Fri, 19 Jun 2009 18:55:14 +1000
+Received: from d23av01.au.ibm.com (loopback [127.0.0.1])
+	by d23av01.au.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5J8tCxx017962
+	for <ltp-list@lists.sourceforge.net>; Fri, 19 Jun 2009 18:55:12 +1000
+From: Munipradeep Beerakam <mpradeep@linux.vnet.ibm.com>
+In-Reply-To: <1245346287.5041.32.camel@subratamodak.linux.ibm.com>
+References: <1244618075.10778.4.camel@munipradeep-laptop>
+	<1245346287.5041.32.camel@subratamodak.linux.ibm.com>
+Date: Fri, 19 Jun 2009 14:25:36 +0530
+Message-Id: <1245401736.13600.5.camel@munipradeep-laptop>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH][real-time] sched_footbal atomic start
-Reply-To: subrata@linux.vnet.ibm.com
+Subject: Re: [LTP] [PATCH]get_mempolicy01: fix for changing failure due
+	to	configuration error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,193 +40,99 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Darren Hart <dvhltc@us.ibm.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net
 
-On Thu, 2009-06-25 at 13:34 -0700, Darren Hart wrote: 
-> Subrata Modak wrote:
-> > On Thu, 2009-06-25 at 09:46 +0530, gowrishankar wrote: 
-> >> Darren Hart wrote:
-> >>> The current barrier implementation results in the lowest priority thread
-> >>> actually starting the game (they are the last to be scheduled to call
-> >>> pthread_barrier_wait).  This thread likely gets a priority boost as it 
-> >>> holds
-> >>> the hb->lock for the futex associated with the barrier.  This might lead 
-> >>> to it
-> >>> running ahead of the defense threads.
-> >>> In fact, any sort of barrier or cond var implementation (short of a pi 
-> >>> aware
-> >>> cond broadcast, which is not yet readily available) will result in a 
-> >>> thundering
-> >>> herd situation when the FUTEX_WAKE_ALL syscall is issued, which can 
-> >>> result in
-> >>> a short run of one or more offense threads while all the threads get to the
-> >>> RUNNABLE state.
-> >>>
-> >>> This patch removes the complex starting mechansims and replaces them with a
-> >>> simple atomic counter.  All player threads are started and once the
-> >>> players_ready count reaches the total player count, the referee starts 
-> >>> the game
-> >>> by setting the ball position to zero.
-> >>>
-> >>> Tested on two platforms (both x86_64, 4 and 8-way) for a combined total of
-> >>> 13,000 iterations with 0 failures.
-> >>>
-> >>> Signed-off-by: Darren Hart <dvhltc@us.ibm.com>
-> >>>
-> > 
-> > Thanks Darren. Long time LTP say updates to RT tests. What happened to
-> > the RT-Graphics tests that probably were in the pipeline ?
-> 
-> Hrm.... well.... I can't recall what those might have been.  The only 
-> graphics testing we do is really just functional testing using existing 
-> tests like x11perf and specviewperf.  We haven't written anything 
-> specifically for -rt.  Do you have any more detail on what this might 
-> have been?
+On Thu, 2009-06-18 at 23:01 +0530, Subrata Modak wrote:
 
-Not sure, cannot remember. But, i might have seen it in one of our
-internal mails/status/plan. Never mind. 
+Hi Subrata,
 
-Regards--
-Subrata
+> Hi Muni,
+> 
+> On Wed, 2009-06-10 at 12:44 +0530, Munipradeep Beerakam wrote:
+> > Hi,
+> > 
+> > Here is the attachment to fix the configuration error in
+> > get_mempolicy01.c
+> > Actually it should not fail due to configuration error. So changed the
+> > necessary.
+> > 
+> > Thanks
+> > Muni
+> > 
+> > 
+> > 
+> > 
+> > 
+> > 
+> > 
+> > 
+> > 
+> > 
+> > 
+> > differences
+> > between files
+> > attachment
+> > (get_mempolicy01.patch)
+> > 
+> > 
+> > ---
+> > a/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c 2009-06-10
+> > 07:08:08.000000000 -0400
+> > +++
+> > b/testcases/kernel/syscalls/get_mempolicy/get_mempolicy01.c 2009-06-10
+> > 07:12:16.000000000 -0400
+> > @@ -296,7 +296,7 @@
+> >                          TEST(rc = syscall(__NR_set_mempolicy,
+> > tc->policy,&nodemask, maxnode));
+> > 
+> >                 if (TEST_RETURN < 0) {
+> > -                       tst_resm(TFAIL, "set_mempolicy() failed -
+> > errno = %d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> > +                       tst_resm(TCONF, "set_mempolicy() failed -
+> > errno = %d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> >                          result = 1;
+> >                         cleanup();
+> >                          tst_exit();
+> > @@ -307,7 +307,7 @@
+> >                  // mmap memory
+> >                  p = mmap(NULL, len, PROT_READ|PROT_WRITE,MAP_PRIVATE|
+> > MAP_ANONYMOUS, 0, 0);
+> >                  if (p == (void*)-1) {
+> > -                       tst_resm(TFAIL, "malloc failed - errno = %d :
+> > %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> > +                       tst_resm(TCONF, "malloc failed - errno = %d :
+> > %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> >                          result = 1;
+> >                         cleanup();
+> >                          tst_exit();
+> 
+> The problem reported on your machine is function not implemented.
+> However, if you change the FAIL to blindly CONF, that will cause issues
+> like actual failures reported wrongly.
+> 
+> See, whether you can find out ways to isolate only function not
+> implemented part.
+> 
+> Regards--
+> Subrata
+> 
+> 
+As I don't know what are all the error reporting options LTP have, I
+changed it to CONF. We can change it accordingly to need. Can we report
+it as BROKEN, as set_mempolicy is preventing the get_mempolicy test to
+run?
 
-> 
-> --
-> Darren
-> 
-> > 
-> > Regards--
-> > Subrata
-> > 
-> >> Acked-by: Gowrishankar <gowrishankar.m@in.ibm.com>
-> >>
-> >> Thanks.
-> >> Gowri
-> >>> Index: ltp/testcases/realtime/func/sched_football/sched_football.c
-> >>> ===================================================================
-> >>> --- ltp.orig/testcases/realtime/func/sched_football/sched_football.c    
-> >>> 2009-06-24 11:49:16.000000000 -0700
-> >>> +++ ltp/testcases/realtime/func/sched_football/sched_football.c    
-> >>> 2009-06-24 11:48:44.000000000 -0700
-> >>> @@ -47,9 +47,11 @@
-> >>>  *
-> >>>  * HISTORY
-> >>>  *     2006-03-16 Reduced verbosity, non binary failure reporting, 
-> >>> removal of
-> >>> - *     crazy_fans thread, added game_length argument by Darren Hart.
-> >>> - *      2007-08-01 Remove all thread cleanup in favor of simply 
-> >>> exiting.Various
-> >>> - *      bugfixes and cleanups. -- Josh Triplett
-> >>> + *                crazy_fans thread, added game_length argument by 
-> >>> Darren Hart.
-> >>> + *     2007-08-01 Remove all thread cleanup in favor of simply 
-> >>> exiting.Various
-> >>> + *                bugfixes and cleanups. -- Josh Triplett
-> >>> + *     2009-06-23 Simplified atomic startup mechanism, avoiding 
-> >>> thundering herd
-> >>> + *                scheduling at the beginning of the game. -- Darren Hart
-> >>>  *
-> >>>  *****************************************************************************/ 
-> >>>
-> >>>
-> >>> @@ -71,11 +73,9 @@
-> >>> /* Here's the position of the ball */
-> >>> volatile int the_ball;
-> >>>
-> >>> -/* pthread_barrier for synchronization */
-> >>> -pthread_barrier_t barrier;
-> >>> -
-> >>> static int players_per_team = 0;
-> >>> static int game_length = DEF_GAME_LENGTH;
-> >>> +static atomic_t players_ready;
-> >>>
-> >>> void usage(void)
-> >>> {
-> >>> @@ -110,8 +110,7 @@
-> >>> /* This is the defensive team. They're trying to block the offense */
-> >>> void *thread_defense(void* arg)
-> >>> {
-> >>> -    pthread_barrier_wait(&barrier);
-> >>> -
-> >>> +    atomic_inc(&players_ready);
-> >>>     /*keep the ball from being moved */
-> >>>     while (1) {
-> >>>         sched_yield(); /* let other defenders run */
-> >>> @@ -123,8 +122,7 @@
-> >>> /* This is the offensive team. They're trying to move the ball */
-> >>> void *thread_offense(void* arg)
-> >>> {
-> >>> -    pthread_barrier_wait(&barrier);
-> >>> -
-> >>> +    atomic_inc(&players_ready);
-> >>>     while (1) {
-> >>>         the_ball++; /* move the ball ahead one yard */
-> >>>         sched_yield(); /* let other offensive players run */
-> >>> @@ -141,9 +139,9 @@
-> >>>
-> >>>     gettimeofday(&start, NULL);
-> >>>     now = start;
-> >>> -    the_ball = 0;
-> >>>
-> >>> -    pthread_barrier_wait(&barrier);
-> >>> +    /* Start the game! */
-> >>> +    the_ball = 0;
-> >>>
-> >>>     /* Watch the game */
-> >>>     while ((now.tv_sec - start.tv_sec) < game_length) {
-> >>> @@ -169,10 +167,7 @@
-> >>>     if (players_per_team == 0)
-> >>>         players_per_team = sysconf(_SC_NPROCESSORS_ONLN);
-> >>>
-> >>> -    if ((i = pthread_barrier_init(&barrier, NULL, players_per_team*2 + 
-> >>> 1))) {
-> >>> -        printf("pthread_barrier_init failed: %s\n", strerror(i));
-> >>> -        exit(i);
-> >>> -    }
-> >>> +    atomic_set(0, &players_ready);
-> >>>
-> >>>     printf("Running with: players_per_team=%d game_length=%d\n",
-> >>>            players_per_team, game_length);
-> >>> @@ -181,13 +176,20 @@
-> >>>     param.sched_priority = sched_get_priority_min(SCHED_FIFO) + 80;
-> >>>     sched_setscheduler(0, SCHED_FIFO, &param);
-> >>>
-> >>> -    /* Start the offense */
-> >>> +    /*
-> >>> +     * Start the offense
-> >>> +     * They are lower priority than defense, so they must be started 
-> >>> first.
-> >>> +     */
-> >>>     priority = 15;
-> >>>     printf("Starting %d offense threads at priority %d\n",
-> >>>             players_per_team, priority);
-> >>>     for (i = 0; i < players_per_team; i++)
-> >>>         create_fifo_thread(thread_offense, NULL, priority);
-> >>>
-> >>> +    /* Wait for the offense threads to start */
-> >>> +    while (atomic_get(&players_ready) < players_per_team)
-> >>> +        usleep(100);
-> >>> +
-> >>>     /* Start the defense */
-> >>>     priority = 30;
-> >>>     printf("Starting %d defense threads at priority %d\n",
-> >>> @@ -195,6 +197,10 @@
-> >>>     for (i = 0; i < players_per_team; i++)
-> >>>         create_fifo_thread(thread_defense, NULL, priority);
-> >>>
-> >>> +    /* Wait for the defense threads to start */
-> >>> +    while (atomic_get(&players_ready) < players_per_team * 2)
-> >>> +        usleep(100);
-> >>> +
-> >>>     /* Ok, everyone is on the field, bring out the ref */
-> >>>     printf("Starting referee thread\n");
-> >>>     return referee(game_length);
-> > 
-> 
-> 
+Regards
+Muni
 
 
 ------------------------------------------------------------------------------
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
