@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1MF5R8-0000LX-EV
-	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 12:00:46 +0000
-Received: from fmmailgate03.web.de ([217.72.192.234])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MF5R4-00024b-2j
-	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 12:00:46 +0000
-From: Jiri Palecek <jpalecek@web.de>
-Date: Fri, 12 Jun 2009 14:08:11 +0200
-References: <1244635585.9465.14.camel@munipradeep-laptop>
-In-Reply-To: <1244635585.9465.14.camel@munipradeep-laptop>
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <francesco.rundo@st.com>) id 1MHdse-0004Yg-QN
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2009 13:11:44 +0000
+Received: from eu1sys200aog109.obsmtp.com ([207.126.144.127])
+	by 29vjzd1.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MHdsY-0005Ew-Aw
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2009 13:11:39 +0000
+Message-ID: <4A3B823C.8020009@st.com>
+Date: Fri, 19 Jun 2009 14:19:08 +0200
+From: Francesco RUNDO <francesco.rundo@st.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200906121408.15925.jpalecek@web.de>
-Subject: Re: [LTP]
- =?iso-8859-15?q?Some_of_the_testcases_which_are_resulting_i?=
- =?iso-8859-15?q?n_FAIL_even_though_they=09might_not_be?=
+References: <f5a7b3810906171317j40473a95y5dfc1b89d9e25950@mail.gmail.com>	
+	<4A3A049B.2000002@st.com>	
+	<f5a7b3810906180808l19d1889bn5575cf00de28d801@mail.gmail.com>	
+	<4A3B542E.708@st.com>
+	<f5a7b3810906190312l75735199k43df06045d6264be@mail.gmail.com>
+In-Reply-To: <f5a7b3810906190312l75735199k43df06045d6264be@mail.gmail.com>
+Subject: Re: [LTP] [FIX HTML PATCH] ltp-genhtml
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,47 +28,102 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Munipradeep Beerakam <mpradeep@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, iranna.ankad@in.ibm.com
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, Manas Kumar Nayak <maknayak@in.ibm.com>, Oleg Nesterov <oleg@redhat.com>, rohit.170309@gmail.com
 
-On Wednesday 10 June 2009 14:06:25 Munipradeep Beerakam wrote:
-> Hi,
+Hi Naresh,
 
-Hi,
+naresh kamboju wrote:
 
-> Here is the list of testcases in May 2009 LTP, which *may* result in
-> FAIL even though it is a configuration error, not the error due to the
-> functionality we are testing. Those tests should give "CONF" message,
-> not "FAIL". I ran LTP on 2.6.18 kernel, x86 architecture.
-> 
-> 
->    3. get_mempolicy01
-> Part of code, which is not correct
-> tst_resm(TFAIL, "set_mempolicy() failed - errno = %d : %s",TEST_ERRNO,
-> strerror(TEST_ERRNO));
-> ...
-> ...
-> tst_resm(TFAIL, "malloc failed - errno = %d : %s",TEST_ERRNO,
-> strerror(TEST_ERRNO));
-> 
->    4. mq_open01
-> Part of code, which is not correct
-> if (TEST_RETURN < 0) {
->                         tst_resm(TFAIL, "mq_getsetattr failed - errno =
-> %d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+>Hi Francesco,
+>
+>Thanks for your comments.
+>
+>I have few questions
+>1. Are you compiling LTP on Host Machine and running on target boards?
+>
+Yes, precisely, I cross-build LTP on the HOST and run it on a different =
 
-Not that I'd say this code is stellar, it may even be incorrect, but changing these to TCONF wouldn't be correct either. These error messages should be TCONF only if errno is ENOSYS, otherwise, they should be reported as TBROK, because it would be an error that prevents the test to run. The best option, however, would probably be to add a tst_kvercmp check for kernel versions that contain the respective functions.
+TARGET machine.
 
-Regards
-    Jiri Palecek
+>
+>2. Is it cross complication with different tool chains?
+>
+Yes. I cross-compile for SH based platforms. See =
 
-------------------------------------------------------------------------------
+http://www.stlinux.com/drupal for more details.
+
+>3. Do you export KERNEL_VERSION and MACHINE_ARCHITECTURE on Host or target?
+>
+On the HOST when I process the LTP-log to generate the corresponding =
+
+HTML file.
+
+>
+>At my end I am compile with cross tool chains and copy the LTP
+>complied source on target and executing the =93runltp=94.
+>In my case I don=92t get any variables from Host.
+>I am not exporting Any Macros on target.
+>
+>I guess. Most of our LTP users do same.
+>
+
+I'm not sure about LTP users use the above approach, but what I think =
+
+should be taken into account is """what is better for all the LTP users""".
+Do you agree ?
+Now, can I do an advantages/disadavantages analysis of the methods (mine =
+
+and yours) ?
+
+Yours (with usage of "uname -x"):
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+ADVANTAGES:
+*) Automatic generation of information (of course, more safe!).
+DISADVANTAGES:
+*) Need PERL on the TARGET machine;
+*) No flexible (I can't modify the info by adding more info....I have to =
+
+keep what "uname -x" provides);
+*) Can be executed only on the TARGET (on the HOST it provides wrong =
+
+information);
+
+Mine(with usage of "env variables"):
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+ADVANTAGES:
+*) No PERL is needed on the TARGET;
+*) Flexible (I could use the output provided by "uname -x" executed on =
+
+the TARGET or I can add more info if needed);
+*) Can be run both on the HOST and on the TARGET;
+DISADVANTAGES:
+*) Is not automatic as the user can properly define/export the relaetd =
+
+env variables.
+
+Now, from above analysis I think should be taken a final decision.
+
+>
+>Thanks for your info.
+>
+No problem.
+
+Best Regards
+Francesco Rundo
+
+
+---------------------------------------------------------------------------=
+---
 Crystal Reports - New Free Runtime and 30 Day Trial
 Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing 
+royalty-free distribution of the report engine for externally facing =
+
 server and web deployment.
 http://p.sf.net/sfu/businessobjects
 _______________________________________________
