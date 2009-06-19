@@ -1,20 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MC89Q-0007AA-JV
-	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2009 08:18:16 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MC89P-00032T-6m
-	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2009 08:18:16 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Thu, 4 Jun 2009 04:18:11 -0400
-References: <4A277665.1080402@renesas.com>
-In-Reply-To: <4A277665.1080402@renesas.com>
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naresh.kernel@gmail.com>) id 1MHdld-0001b7-Hw
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2009 13:04:29 +0000
+Received: from mail-gx0-f207.google.com ([209.85.217.207])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MHdlc-00053s-IX
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2009 13:04:29 +0000
+Received: by gxk3 with SMTP id 3so6691596gxk.10
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 19 Jun 2009 06:04:28 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <200906040418.12742.vapier@gentoo.org>
-Subject: Re: [LTP] [RFC][PATCH] Add cpu architecrute check
+In-Reply-To: <20090619091317.GA11782@linux.vnet.ibm.com>
+References: <f5a7b3810906171318v503b0c77l27a5df2f057fb85c@mail.gmail.com>
+	<1245346315.5041.42.camel@subratamodak.linux.ibm.com>
+	<20090619091317.GA11782@linux.vnet.ibm.com>
+Date: Fri, 19 Jun 2009 18:27:50 +0530
+Message-ID: <f5a7b3810906190557u64aa865ew902f75bdf6c45085@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Content-Type: multipart/mixed; boundary=001e680f12846788af046cb31266
+Subject: Re: [LTP] [FIX PATCH] ltp-add_key
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,88 +30,245 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4015932491441438759=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, Manas Kumar Nayak <maknayak@in.ibm.com>, Oleg Nesterov <oleg@redhat.com>, rohit.170309@gmail.com
 
---===============4015932491441438759==
-Content-Type: multipart/signed; boundary="nextPart14328573.JmhaL4FEL9";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart14328573.JmhaL4FEL9
-Content-Type: text/plain;
-  charset="iso-8859-1"
+--001e680f12846788af046cb31266
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-On Thursday 04 June 2009 03:23:17 Nobuhiro Iwamatsu wrote:
-> --- a/Makefile
-> +++ b/Makefile
-> +ifndef ARCH
-> +# copy from Makefile in linux kernel
-> +ARCH :=3D $(shell uname -m
+Hi,
 
-executing uname to detect build/target systems is never acceptable.
+Thanks for your review comments.
+I have attached and placed below the latest patch.
 
-> --- a/testcases/kernel/syscalls/fallocate/Makefile
-> +++ b/testcases/kernel/syscalls/fallocate/Makefile
-> @@ -20,8 +20,14 @@
->  CFLAGS +=3D -I../../../../include -Wall
->  LDLIBS +=3D -L../../../../lib -lltp
+Best regards
+Naresh Kamboju
+
+Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+
+diff -Naurb a/testcases/kernel/syscalls/add_key/add_key01.c
+b/testcases/kernel/syscalls/add_key/add_key01.c
+--- a/testcases/kernel/syscalls/add_key/add_key01.c	2009-05-21
+23:39:37.000000000 +0530
++++ b/testcases/kernel/syscalls/add_key/add_key01.c	2009-06-19
+17:36:22.000000000 +0530
+@@ -109,7 +109,6 @@
+ }
+
+ int main(int ac, char **av) {
+-        int result;
+         int lc;                 /* loop counter */
+         char *msg;              /* message returned from parse_opts */
+ =09
+@@ -125,7 +124,7 @@
+         for (lc =3D 0; TEST_LOOPING(lc); ++lc) {
+                 Tst_count =3D 0;
+                 for (testno =3D 0; testno < TST_TOTAL; ++testno) {
+-                     TEST(result =3D syscall(286, "keyring", "wjkey",
+NULL, 0, KEY_SPEC_THREAD_KEYRING));     //call add_key()
++                     TEST(syscall(__NR_add_key, "keyring", "wjkey",
+NULL, 0, KEY_SPEC_THREAD_KEYRING));     //call add_key()
+                      if(TEST_RETURN !=3D -1) {
+         		tst_resm(TPASS, "add_key call succeeded");
+                         cleanup();
+@@ -139,4 +138,3 @@
+         }=09
+         tst_exit();
+ }
+-
+diff -Naurb a/testcases/kernel/syscalls/add_key/add_key02.c
+b/testcases/kernel/syscalls/add_key/add_key02.c
+--- a/testcases/kernel/syscalls/add_key/add_key02.c	2009-05-21
+23:40:50.000000000 +0530
++++ b/testcases/kernel/syscalls/add_key/add_key02.c	2009-06-19
+17:35:55.000000000 +0530
+@@ -140,7 +140,7 @@
+                 for (testno =3D 0; testno < TST_TOTAL; ++testno) {
+
+ 		for(i=3D0; i<test_count; i++) {
+-                	TEST(syscall(286, test_cases[i].type,
+test_cases[i].desc, test_cases[i].payload, test_cases[i].plen,
+KEY_SPEC_USER_KEYRING));    //call add_key()
++                	TEST(syscall(__NR_add_key, test_cases[i].type,
+test_cases[i].desc, test_cases[i].payload, test_cases[i].plen,
+KEY_SPEC_USER_KEYRING));    //call add_key()
+                 	if(TEST_RETURN !=3D -1){
+                         	tst_resm(TINFO,"call add_key() with wrong
+args succeed, but should fail");
+                         	fail++;
+@@ -170,4 +170,3 @@
+       }=09
+         tst_exit();
+ }
+-
+
+
+On Fri, Jun 19, 2009 at 2:43 PM, Kamalesh
+Babulal<kamalesh@linux.vnet.ibm.com> wrote:
+> * Subrata Modak <subrata@linux.vnet.ibm.com> [2009-06-18 23:01:55]:
 >
-> +# This system call is suported in i386, x86_64 and ppc only.
-> +ifneq (,$(findstring $(ARCH), i386 x86_64 ppc))
->  SRCS    =3D $(wildcard *.c)
->  TARGETS =3D $(patsubst %.c,%,$(SRCS))
-> +else
-> +SRCS    =3D
-> +TARGETS =3D
-> +endif
+>> Great to see you fix these issues and send across the fixes. However, i
+>> remember Kamalesh working on similar type of fixes.
+>>
+>> Lets hear from Kamalesh, whether he has something additional from this
+>> series of patches, or, some other fixes in each patch apart from what
+>> you have already provided.
+>>
+>> Kamalesh,
+>>
+>> Would you like to say something here ?
+>>
+>> Another suggestion. Naresh, next time when you send patches pertaining
+>> to one particular issue observed in several tests, then no. the patches,
+>> like [PATCH 00/N] to [PATCH N/N].
+>
+> It could be nice to add a section in ltp-howto on sending patch sets.
+>
+>>
+>> Regards--
+>> Subrata
+>>
+>> On Thu, 2009-06-18 at 01:48 +0530, naresh kamboju wrote:
+>> > Hi,
+>> >
+>> > I have noticed following failures and fixed.
+>> > 1. add_key01.c
+>> > 2. add_key02.c
+>> >
+>> >
+>> > Please find the patch below and as attachment.
+>> >
+>> > Best regards
+>> > Naresh Kamboju
+>> >
+>> > Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+>> > diff -Naurb a/testcases/kernel/syscalls/add_key/add_key01.c
+>> > b/testcases/kernel/syscalls/add_key/add_key01.c
+>> > --- a/testcases/kernel/syscalls/add_key/add_key01.c 2009-05-21
+>> > 23:39:37.000000000 +0530
+>> > +++ b/testcases/kernel/syscalls/add_key/add_key01.c 2009-06-17
+>> > 23:00:15.000000000 +0530
+>> > @@ -125,7 +125,7 @@
+>> > =A0 =A0 =A0 =A0 =A0for (lc =3D 0; TEST_LOOPING(lc); ++lc) {
+>> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0Tst_count =3D 0;
+>> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0for (testno =3D 0; testno < TST_TOT=
+AL; ++testno) {
+>> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TEST(result =3D syscall(286,=
+ "keyring", "wjkey",
+>> > NULL, 0, KEY_SPEC_THREAD_KEYRING)); =A0 =A0 //call add_key()
+>> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TEST(result =3D syscall(__NR=
+_add_key, "keyring",
+>> > "wjkey", NULL, 0, KEY_SPEC_THREAD_KEYRING)); =A0 =A0 //call add_key()
+>> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if(TEST_RETURN !=3D -1) {
+>> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TPASS, "add_key call =
+succeeded");
+>> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0cleanup();
+>> > @@ -139,4 +139,3 @@
+>> > =A0 =A0 =A0 =A0 =A0}
+>> > =A0 =A0 =A0 =A0 =A0tst_exit();
+>> > =A0}
+>> > -
+>
+> Can you remove the result variable from the TEST() and make similar
+> changes to add_keys, set_tid_address, set_thread_area syscalls and
+> resubmit the patches.
+>
+> =A0testcases/kernel/syscalls/add_key/add_key01.c | =A0 =A03 +--
+> =A01 files changed, 1 insertions(+), 2 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/add_key/add_key01.c b/testcases/ke=
+rnel/syscalls/add_key/add_key01.c
+> index 67a4c2f..56fbe1a 100644
+> --- a/testcases/kernel/syscalls/add_key/add_key01.c
+> +++ b/testcases/kernel/syscalls/add_key/add_key01.c
+> @@ -109,7 +109,6 @@ void setup() {
+> =A0}
+>
+> =A0int main(int ac, char **av) {
+> - =A0 =A0 =A0 =A0int result;
+> =A0 =A0 =A0 =A0 int lc; =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* loop counter *=
+/
+> =A0 =A0 =A0 =A0 char *msg; =A0 =A0 =A0 =A0 =A0 =A0 =A0/* message returned=
+ from parse_opts */
+>
+> @@ -125,7 +124,7 @@ int main(int ac, char **av) {
+> =A0 =A0 =A0 =A0 for (lc =3D 0; TEST_LOOPING(lc); ++lc) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Tst_count =3D 0;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 for (testno =3D 0; testno < TST_TOTAL; ++=
+testno) {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TEST(result =3D syscall(286, "k=
+eyring", "wjkey", NULL, 0, KEY_SPEC_THREAD_KEYRING)); =A0 =A0 //call add_ke=
+y()
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TEST(syscall(__NR_add_key, "key=
+ring", "wjkey", NULL, 0, KEY_SPEC_THREAD_KEYRING)); =A0 =A0 //call add_key(=
+)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if(TEST_RETURN !=3D -1) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(TPASS, "add_key c=
+all succeeded");
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 cleanup();
+>
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0Kamalesh
+>
 
-atm, better to put the ifdef logic into the test itself.  look at some of t=
-he=20
-other tests that get stubbed out in the syscalls dir.
-=2Dmike
+--001e680f12846788af046cb31266
+Content-Type: application/octet-stream; name="ltp-fix-add_key.patch"
+Content-Disposition: attachment; filename="ltp-fix-add_key.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fw4wmgaj0
 
---nextPart14328573.JmhaL4FEL9
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJKJ4NEAAoJEEFjO5/oN/WBwNkP/AnWKtsIikM++mzY0vDpUief
-LnvP7YbDKtVLKfG9AaQXS5TqLFZzr0oKQnBawYLEB7nN4kb2ROhCDFgO0JCMITgL
-4r/HCKWPbrRakE2QiBt8kMCyPwTB0ZNWRg2fvgsI8AI+pqWt5d+aVARg5ef8LN76
-etPCFgGjnUgwpG51Hk2GGF4o01L1ev0Qn0TbcxgXPx67JE3V7PYDoLWJnmSEPgB4
-EzWCoKAl/Zj8p6SldY2SnfzUVXnwst8Wn6VgsUcdaFFVdOox+29TSmX0iI1thy5l
-QrZJw4tPqEeL2zLOoOM+qwjRrUW7yjdVkHILsRzquP2EJjl4ZcSGowkPUHIBATX7
-04WKwv8qGB52+8+Es7mgO1Z8OoTQeZ5DpIzbsi4q4UF4t5eUYyY9F2yPGNe8v0Jb
-S+RAHTvXrpU7knbLir2AMA2Kpnet4zo8ClU7xCQi4ROu6r2Q/MIFBVDHnljP+dJG
-9DA2l8c3potiBGy1DJROh97g6HMxqRhsO11dCWg1oVthpOSuYAqfIUvRJ76dr3IW
-eHGQ3kGhwpVuiWhisfOSKcl4u2gAEtlN7XCbjLPSje9fHfledkW7hMBM2mNhfhvA
-VXCpgyNabID3O3NQG9k9qdelzduF1lQETku2V5wUyOIZMEXxA+AVynjMKz9T/8lD
-HgF3LiPBDUQNsHGmfO+z
-=jL9Z
------END PGP SIGNATURE-----
-
---nextPart14328573.JmhaL4FEL9--
-
-
---===============4015932491441438759==
+ZGlmZiAtTmF1cmIgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2FkZF9rZXkvYWRkX2tleTAx
+LmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2FkZF9rZXkvYWRkX2tleTAxLmMKLS0tIGEv
+dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9hZGRfa2V5L2FkZF9rZXkwMS5jCTIwMDktMDUtMjEg
+MjM6Mzk6MzcuMDAwMDAwMDAwICswNTMwCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
+YWRkX2tleS9hZGRfa2V5MDEuYwkyMDA5LTA2LTE5IDE3OjM2OjIyLjAwMDAwMDAwMCArMDUzMApA
+QCAtMTA5LDcgKzEwOSw2IEBACiB9CiAKIGludCBtYWluKGludCBhYywgY2hhciAqKmF2KSB7Ci0g
+ICAgICAgIGludCByZXN1bHQ7CiAgICAgICAgIGludCBsYzsgICAgICAgICAgICAgICAgIC8qIGxv
+b3AgY291bnRlciAqLwogICAgICAgICBjaGFyICptc2c7ICAgICAgICAgICAgICAvKiBtZXNzYWdl
+IHJldHVybmVkIGZyb20gcGFyc2Vfb3B0cyAqLwogCQpAQCAtMTI1LDcgKzEyNCw3IEBACiAgICAg
+ICAgIGZvciAobGMgPSAwOyBURVNUX0xPT1BJTkcobGMpOyArK2xjKSB7CiAgICAgICAgICAgICAg
+ICAgVHN0X2NvdW50ID0gMDsKICAgICAgICAgICAgICAgICBmb3IgKHRlc3RubyA9IDA7IHRlc3Ru
+byA8IFRTVF9UT1RBTDsgKyt0ZXN0bm8pIHsKLSAgICAgICAgICAgICAgICAgICAgIFRFU1QocmVz
+dWx0ID0gc3lzY2FsbCgyODYsICJrZXlyaW5nIiwgIndqa2V5IiwgTlVMTCwgMCwgS0VZX1NQRUNf
+VEhSRUFEX0tFWVJJTkcpKTsgICAgIC8vY2FsbCBhZGRfa2V5KCkKKyAgICAgICAgICAgICAgICAg
+ICAgIFRFU1Qoc3lzY2FsbChfX05SX2FkZF9rZXksICJrZXlyaW5nIiwgIndqa2V5IiwgTlVMTCwg
+MCwgS0VZX1NQRUNfVEhSRUFEX0tFWVJJTkcpKTsgICAgIC8vY2FsbCBhZGRfa2V5KCkKICAgICAg
+ICAgICAgICAgICAgICAgIGlmKFRFU1RfUkVUVVJOICE9IC0xKSB7CiAgICAgICAgIAkJdHN0X3Jl
+c20oVFBBU1MsICJhZGRfa2V5IGNhbGwgc3VjY2VlZGVkIik7CiAgICAgICAgICAgICAgICAgICAg
+ICAgICBjbGVhbnVwKCk7CkBAIC0xMzksNCArMTM4LDMgQEAKICAgICAgICAgfQkKICAgICAgICAg
+dHN0X2V4aXQoKTsKIH0KLQpkaWZmIC1OYXVyYiBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
+YWRkX2tleS9hZGRfa2V5MDIuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvYWRkX2tleS9h
+ZGRfa2V5MDIuYwotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2FkZF9rZXkvYWRkX2tl
+eTAyLmMJMjAwOS0wNS0yMSAyMzo0MDo1MC4wMDAwMDAwMDAgKzA1MzAKKysrIGIvdGVzdGNhc2Vz
+L2tlcm5lbC9zeXNjYWxscy9hZGRfa2V5L2FkZF9rZXkwMi5jCTIwMDktMDYtMTkgMTc6MzU6NTUu
+MDAwMDAwMDAwICswNTMwCkBAIC0xNDAsNyArMTQwLDcgQEAKICAgICAgICAgICAgICAgICBmb3Ig
+KHRlc3RubyA9IDA7IHRlc3RubyA8IFRTVF9UT1RBTDsgKyt0ZXN0bm8pIHsKIAogCQlmb3IoaT0w
+OyBpPHRlc3RfY291bnQ7IGkrKykgewotICAgICAgICAgICAgICAgIAlURVNUKHN5c2NhbGwoMjg2
+LCB0ZXN0X2Nhc2VzW2ldLnR5cGUsIHRlc3RfY2FzZXNbaV0uZGVzYywgdGVzdF9jYXNlc1tpXS5w
+YXlsb2FkLCB0ZXN0X2Nhc2VzW2ldLnBsZW4sIEtFWV9TUEVDX1VTRVJfS0VZUklORykpOyAgICAv
+L2NhbGwgYWRkX2tleSgpCisgICAgICAgICAgICAgICAgCVRFU1Qoc3lzY2FsbChfX05SX2FkZF9r
+ZXksIHRlc3RfY2FzZXNbaV0udHlwZSwgdGVzdF9jYXNlc1tpXS5kZXNjLCB0ZXN0X2Nhc2VzW2ld
+LnBheWxvYWQsIHRlc3RfY2FzZXNbaV0ucGxlbiwgS0VZX1NQRUNfVVNFUl9LRVlSSU5HKSk7ICAg
+IC8vY2FsbCBhZGRfa2V5KCkKICAgICAgICAgICAgICAgICAJaWYoVEVTVF9SRVRVUk4gIT0gLTEp
+ewogICAgICAgICAgICAgICAgICAgICAgICAgCXRzdF9yZXNtKFRJTkZPLCJjYWxsIGFkZF9rZXko
+KSB3aXRoIHdyb25nIGFyZ3Mgc3VjY2VlZCwgYnV0IHNob3VsZCBmYWlsIik7CiAgICAgICAgICAg
+ICAgICAgICAgICAgICAJZmFpbCsrOwpAQCAtMTcwLDQgKzE3MCwzIEBACiAgICAgICB9CQogICAg
+ICAgICB0c3RfZXhpdCgpOwogfQotCg==
+--001e680f12846788af046cb31266
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-OpenSolaris 2009.06 is a cutting edge operating system for enterprises 
-looking to deploy the next generation of Solaris that includes the latest 
-innovations from Sun and the OpenSource community. Download a copy and 
-enjoy capabilities such as Networking, Storage and Virtualization. 
-Go to: http://p.sf.net/sfu/opensolaris-get
---===============4015932491441438759==
+Crystal Reports - New Free Runtime and 30 Day Trial
+Check out the new simplified licensing option that enables unlimited
+royalty-free distribution of the report engine for externally facing 
+server and web deployment.
+http://p.sf.net/sfu/businessobjects
+--001e680f12846788af046cb31266
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -116,5 +279,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============4015932491441438759==--
+--001e680f12846788af046cb31266--
 
