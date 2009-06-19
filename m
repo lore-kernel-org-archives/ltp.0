@@ -1,31 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <maknayak@in.ibm.com>) id 1MFAvN-0003ue-Mq
-	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 17:52:21 +0000
-Received: from e7.ny.us.ibm.com ([32.97.182.137])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MFAvJ-0004hN-L8
-	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 17:52:21 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e7.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5CHe7HH003451
-	for <ltp-list@lists.sourceforge.net>; Fri, 12 Jun 2009 13:40:07 -0400
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5CHqGqW251514
-	for <ltp-list@lists.sourceforge.net>; Fri, 12 Jun 2009 13:52:16 -0400
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5CHqF8k001280
-	for <ltp-list@lists.sourceforge.net>; Fri, 12 Jun 2009 13:52:16 -0400
-From: Manas Kumar Nayak <maknayak@in.ibm.com>
-Date: Fri, 12 Jun 2009 23:22:06 +0530
-Message-Id: <20090612175204.26047.43781.sendpatchset@subratamodak.linux.ibm.com>
-In-Reply-To: <20090612175132.26047.54266.sendpatchset@subratamodak.linux.ibm.com>
-References: <20090612175132.26047.54266.sendpatchset@subratamodak.linux.ibm.com>
-Subject: [LTP] [PATCH 02/05] Add/Port sched_getaffinity01 test for
-	sched_getaffinity() syscall
+	(envelope-from <naresh.kernel@gmail.com>) id 1MHdio-0001MB-D9
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2009 13:01:34 +0000
+Received: from mail-gx0-f207.google.com ([209.85.217.207])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MHdik-0001C7-IT
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2009 13:01:34 +0000
+Received: by gxk3 with SMTP id 3so6685066gxk.10
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 19 Jun 2009 06:01:30 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <f5a7b3810906171321n33d0ce4dp3252112a9475449d@mail.gmail.com>
+References: <f5a7b3810906171321n33d0ce4dp3252112a9475449d@mail.gmail.com>
+Date: Fri, 19 Jun 2009 18:31:30 +0530
+Message-ID: <f5a7b3810906190601s1e6574bagf8e354628f5b3808@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Content-Type: multipart/mixed; boundary=001e680f12987d37e5046cb31f87
+Subject: Re: [LTP] [FIX PATCH] ltp-set_thread_area
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,269 +28,353 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-Cc: Manas Kumar Nayak <maknayak@in.ibm.com>
+To: ltp-list@lists.sourceforge.net
+Cc: maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, Manas Kumar Nayak <maknayak@in.ibm.com>, Oleg Nesterov <oleg@redhat.com>, rohit.170309@gmail.com
 
-Signed-off-by: Manas Kumar Nayak <maknayak@in.ibm.com>
-To: LTP List <ltp-list@lists.sourceforge.net>
-Cc: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: Masatake YAMATO <yamato@redhat.com>
----
+--001e680f12987d37e5046cb31f87
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
---- ltp-full-20090531.orig/testcases/kernel/syscalls/sched_getaffinity/Makefile	1970-01-01 05:30:00.000000000 +0530
-+++ ltp-full-20090531/testcases/kernel/syscalls/sched_getaffinity/Makefile	2009-03-29 16:54:46.000000000 +0530
-@@ -0,0 +1,31 @@
-+#
-+#  Copyright (c) International Business Machines  Corp., 2009
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+
-+CFLAGS += -I../../../../include -Wall
-+LDLIBS += -L../../../../lib -lltp
-+
-+SRCS    = $(wildcard *.c)
-+TARGETS = $(patsubst %.c,%,$(SRCS))
-+
-+all: $(TARGETS)
-+
-+install:
-+	@set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i ; done
-+
-+clean:
-+	rm -f $(TARGETS)
---- ltp-full-20090531.orig/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c	1970-01-01 05:30:00.000000000 +0530
-+++ ltp-full-20090531/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c	2009-06-12 20:57:03.000000000 +0530
-@@ -0,0 +1,197 @@
-+/******************************************************************************/
-+/* Copyright (c) Crackerjack Project., 2007                                   */
-+/*                                                                            */
-+/* This program is free software;  you can redistribute it and/or modify      */
-+/* it under the terms of the GNU General Public License as published by       */
-+/* the Free Software Foundation; either version 2 of the License, or          */
-+/* (at your option) any later version.                                        */
-+/*                                                                            */
-+/* This program is distributed in the hope that it will be useful,            */
-+/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
-+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
-+/* the GNU General Public License for more details.                           */
-+/*                                                                            */
-+/* You should have received a copy of the GNU General Public License          */
-+/* along with this program;  if not, write to the Free Software               */
-+/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
-+/*                                                                            */
-+/******************************************************************************/
-+/******************************************************************************/
-+/*                                                                            */
-+/* File:        sched_getaffinity01.c                                         */
-+/*                                                                            */
-+/* Description: This tests the sched_getaffinity() syscall                    */
-+/*                                                                            */
-+/* Usage:  <for command-line>                                                 */
-+/* sched_getaffinity01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                   */
-+/*      where,  -c n : Run n copies concurrently.                             */
-+/*              -e   : Turn on errno logging.                                 */
-+/*              -i n : Execute test n times.                                  */
-+/*              -I x : Execute test for x seconds.                            */
-+/*              -P x : Pause for x seconds between iterations.                */
-+/*              -t   : Turn on syscall timing.                                */
-+/*                                                                            */
-+/* Total Tests: 1                                                             */
-+/*                                                                            */
-+/* Test Name:   sched_getaffinity01                                           */
-+/* History:     Porting from Crackerjack to LTP is done by                    */
-+/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
-+/******************************************************************************/
-+#include<stdlib.h>
-+#include<stdio.h>
-+#include<sys/types.h>
-+#include<unistd.h>
-+#define _GNU_SOURCE 
-+#define __USE_GNU
-+#include<sched.h>
-+#include<string.h>
-+#include <errno.h>
-+
-+/* Harness Specific Include Files. */
-+#include "test.h"
-+#include "usctest.h"
-+#include "linux_syscall_numbers.h"
-+
-+/* Extern Global Variables */
-+extern int Tst_count;           /* counter for tst_xxx routines.         */
-+extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
-+
-+/* Global Variables */
-+char *TCID = "sched_getaffinity01";  /* Test program identifier.*/
-+int  testno;
-+int  TST_TOTAL = 1;                   /* total number of tests in this file.   */
-+
-+/* Extern Global Functions */
-+/******************************************************************************/
-+/*                                                                            */
-+/* Function:    cleanup                                                       */
-+/*                                                                            */
-+/* Description: Performs all one time clean up for this test on successful    */
-+/*              completion,  premature exit or  failure. Closes all temporary */
-+/*              files, removes all temporary directories exits the test with  */
-+/*              appropriate return code by calling tst_exit() function.       */
-+/*                                                                            */
-+/* Input:       None.                                                         */
-+/*                                                                            */
-+/* Output:      None.                                                         */
-+/*                                                                            */
-+/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
-+/*              On success - Exits calling tst_exit(). With '0' return code.  */
-+/*                                                                            */
-+/******************************************************************************/
-+extern void cleanup() {
-+        /* Remove tmp dir and all files in it */
-+        TEST_CLEANUP;
-+        tst_rmdir();
-+
-+        /* Exit with appropriate return code. */
-+        tst_exit();
-+}
-+
-+/* Local  Functions */
-+/******************************************************************************/
-+/*                                                                            */
-+/* Function:    setup                                                         */
-+/*                                                                            */
-+/* Description: Performs all one time setup for this test. This function is   */
-+/*              typically used to capture signals, create temporary dirs      */
-+/*              and temporary files that may be used in the course of this    */
-+/*              test.                                                         */
-+/*                                                                            */
-+/* Input:       None.                                                         */
-+/*                                                                            */
-+/* Output:      None.                                                         */
-+/*                                                                            */
-+/* Return:      On failure - Exits by calling cleanup().                      */
-+/*              On success - returns 0.                                       */
-+/*                                                                            */
-+/******************************************************************************/
-+void setup() {
-+        /* Capture signals if any */
-+        /* Create temporary directories */
-+        TEST_PAUSE;
-+        tst_tmpdir();
-+}
-+
-+int errnochoose(void)  // choose the relative errno
-+{
-+        switch errno
-+        {
-+                case EFAULT: 
-+			perror("EFAULT");
-+                        break;
-+                case EINVAL: perror("EINVAL");
-+                        break;
-+                case EPERM: perror("EPERM");
-+                        break;
-+                case ESRCH: perror("ESRCH");
-+                        break;
-+                default: perror("other errno");
-+                        break;
-+        }
-+        return 0 ;
-+}
-+
-+
-+int main(int ac, char **av) {
-+        int lc,num,i;                 /* loop counter */
-+        char *msg;              /* message returned from parse_opts */
-+	cpu_set_t mask;
-+	unsigned int len = sizeof(cpu_set_t);
-+
-+	
-+        /* parse standard options */
-+        if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
-+             tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
-+             tst_exit();
-+           }
-+
-+        setup();
-+
-+	TEST(num=sysconf(_SC_NPROCESSORS_CONF));  //the number of processor(s)
-+        tst_resm(TINFO,"system has %d processor(s).", num);
-+
-+        /* Check looping state if -i option given */
-+        for (lc = 0; TEST_LOOPING(lc); ++lc) {
-+                Tst_count = 0;
-+                for (testno = 0; testno < TST_TOTAL; ++testno) {
-+                     TEST(sched_getaffinity(0,len,(cpu_set_t *)-1));     //call sched_getaffinity()
-+                     if(TEST_RETURN == -1) {
-+			errnochoose();
-+                     }
-+		
-+                     TEST(sched_getaffinity(0,0,&mask));     //call sched_getaffinity()
-+                     if(TEST_RETURN == -1) {
-+			errnochoose();
-+                     }
-+
-+                     TEST(sched_getaffinity(getpid()+1,len,&mask));     //call sched_getaffinity()
-+                     if(TEST_RETURN == -1) {
-+			errnochoose();
-+                     }
-+			
-+		     CPU_ZERO(&mask); //clear
-+                     TEST(sched_getaffinity(0,len,&mask));     //call sched_getaffinity()
-+		     if(TEST_RETURN == -1) {
-+                 	   tst_resm(TFAIL, "%s failed -could not get cpu affinity errno = %d : %s", TCID, TEST_ERRNO, strerror(TEST_ERRNO));
-+			errnochoose();
-+			cleanup();
-+			tst_exit();
-+                     } else {
-+				tst_resm(TINFO,"cpusetsize is %d cpu_set_t mask is %d",len,mask);
-+				tst_resm(TINFO,"mask.__bits[0] = %lu ",mask.__bits[0]);
-+				for(i=0;i<num;i++){    // check the processor
-+	                        	TEST(CPU_ISSET(i,&mask));
-+					if (TEST_RETURN != -1 ){
-+                                	tst_resm(TPASS,"sched_getaffinity() succeed ,this process %d is running processor: %d",getpid(), i);
-+					}
-+			        }
-+	                    }
-+
-+
-+                     }
-+		}
-+        cleanup();
-+	tst_exit();
-+}
-+
---- ltp-full-20090531.orig/runtest/syscalls	2009-06-12 21:02:30.000000000 +0530
-+++ ltp-full-20090531/runtest/syscalls	2009-06-12 20:58:25.000000000 +0530
-@@ -837,6 +837,8 @@ sched_setscheduler02 sched_setscheduler0
- 
- sched_yield01 sched_yield01
- 
-+sched_getaffinity01 sched_getaffinity01
-+
- select01 select01
- select02 select02
- select03 select03
+Hi,
 
----
-Regards--
-Manas
+Thanks for your review comments.
+I have attached and placed below the latest patch.
 
+Best regards
+Naresh Kamboju
+
+Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+
+diff -Naurb a/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c
+b/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c
+--- a/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c	2009-05=
+-22
+00:00:29.000000000 +0530
++++ b/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c	2009-06=
+-19
+17:49:41.000000000 +0530
+@@ -123,7 +123,6 @@
+ int main(int ac, char **av) {
+
+ 	struct user_desc u_info;
+-        int result;
+         int lc;                 /* loop counter */
+         char *msg;              /* message returned from parse_opts */
+ =09
+@@ -145,7 +144,7 @@
+          * This call to get_thread_area function should be sucessful.
+          */
+
+-                     TEST(result =3D syscall(244, &u_info));     //call
+get_thread_area()
++                     TEST(syscall(__NR_get_thread_area, &u_info));
+ //call get_thread_area()
+                      if(TEST_RETURN =3D=3D 0) {
+         		tst_resm(TPASS, "get_thread_area call succeeded");
+                      }
+@@ -160,7 +159,7 @@
+          * This call to set_thread_area function should be sucessful.
+          */
+
+-                     TEST(result =3D syscall(243, &u_info));     //call
+set_thread_area()
++                     TEST(result =3D syscall(__NR_set_thread_area,
+&u_info));     //call set_thread_area()
+                      if(TEST_RETURN =3D=3D 0) {
+         		tst_resm(TPASS, "set_thread_area call succeeded");
+                      }
+diff -Naurb a/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c
+b/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c
+--- a/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c	2009-05=
+-22
+00:01:38.000000000 +0530
++++ b/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c	2009-06=
+-19
+17:45:36.000000000 +0530
+@@ -124,7 +124,6 @@
+ int main(int ac, char **av) {
+
+ 	struct user_desc u_info;
+-        int result;
+         int lc;                 /* loop counter */
+         char *msg;              /* message returned from parse_opts */
+ =09
+@@ -146,7 +145,7 @@
+          * This call to get_thread_area function should be sucessful.
+          */
+
+-                     TEST(result =3D syscall(244, &u_info));     //call
+get_thread_area()
++                     TEST(syscall(__NR_get_thread_area, &u_info));
+ //call get_thread_area()
+                      if(TEST_RETURN =3D=3D -1) {
+                  	   tst_resm(TFAIL, "call get_thraed_area() failed
+with errno =3D %d ", TEST_ERRNO, strerror(TEST_ERRNO));
+                            cleanup();
+@@ -158,13 +157,13 @@
+          * This call to set_thread_area function with invalid
+entry_number should be FAILED.
+          */
+
+-                     TEST(result =3D syscall(243, &u_info));     //call
+set_thread_area()
++                     TEST(syscall(__NR_set_thread_area, &u_info));
+ //call set_thread_area()
+                      if(TEST_RETURN =3D=3D -1) {
+ 			if(TEST_ERRNO =3D=3D EINVAL){
+-				tst_resm(TPASS, "Call to set_thread_area call failed with invalid
+entry_number result =3D %d (expected EINVAL)",TEST_ERRNO);
++				tst_resm(TPASS, "Call to set_thread_area call failed with invalid
+entry_number  errno =3D %d (expected EINVAL)",TEST_ERRNO);
+ 			 }
+ 			 else {
+-                 	  	  tst_resm(TPASS,"Call to set_thread_area with
+invalid entry_number got unexpected result =3D %d (expected
+EINVAL)",TEST_ERRNO);
++                 	  	  tst_resm(TFAIL,"Call to set_thread_area with
+invalid entry_number got unexpected errno =3D %d (expected
+EINVAL)",TEST_ERRNO);
+ 		               }
+ 		     }
+ 		     else {
+@@ -177,13 +176,13 @@
+          * This call to set_thread_area function with an invalid
+pointer should be FAILED with EFAULT.
+          */
+
+-                     TEST(result =3D syscall(243,(struct user_desc
+*)-9));     //call set_thread_area()
++                     TEST(syscall(__NR_set_thread_area,(struct
+user_desc *)-9));     //call set_thread_area()
+                      if(TEST_RETURN =3D=3D -1) {
+ 			if(TEST_ERRNO =3D=3D EFAULT){
+-				tst_resm(TPASS, "Call to set_thread_area call with invalid
+entry_number result =3D %d (got expected error EFAULT)",TEST_ERRNO);
++				tst_resm(TPASS, "Call to set_thread_area call with invalid
+entry_number errno =3D %d (got expected error EFAULT)",TEST_ERRNO);
+ 			 }
+ 			 else {
+-                 	  	  tst_resm(TPASS,"Call to set_thread_area with
+invalid entry_number got unexpected result =3D %d (expected
+EFAULT)",TEST_ERRNO);
++                 	  	  tst_resm(TFAIL,"Call to set_thread_area with
+invalid entry_number got unexpected errno =3D %d (expected
+EFAULT)",TEST_ERRNO);
+ 		               }
+ 		     }
+ 		     else {
+
+
+
+On Thu, Jun 18, 2009 at 1:51 AM, naresh kamboju<naresh.kernel@gmail.com> wr=
+ote:
+> Hi,
+>
+> I have noticed following failures and fixed.
+> 1. set_tid_address01.c
+> 2. set_tid_address02.c
+>
+>
+> Please find the patch below and as attachment.
+>
+> Best regards
+> Naresh Kamboju
+>
+> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+> diff -Naurb a/testcases/kernel/syscalls/set_thread_area/set_thread_area01=
+.c
+> b/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c
+> --- a/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c =A0 =
+=A0 2009-05-22
+> 00:00:29.000000000 +0530
+> +++ b/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c =A0 =
+=A0 2009-06-17
+> 23:13:22.000000000 +0530
+> @@ -145,7 +145,7 @@
+> =A0 =A0 =A0 =A0 =A0* This call to get_thread_area function should be suce=
+ssful.
+> =A0 =A0 =A0 =A0 =A0*/
+>
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TEST(result =3D syscall(244, &u=
+_info)); =A0 =A0 //call
+> get_thread_area()
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TEST(result =3D syscall(__NR_ge=
+t_thread_area,
+> &u_info)); =A0 =A0 //call get_thread_area()
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if(TEST_RETURN =3D=3D 0) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(TPASS, "get_threa=
+d_area call succeeded");
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+> @@ -160,7 +160,7 @@
+> =A0 =A0 =A0 =A0 =A0* This call to set_thread_area function should be suce=
+ssful.
+> =A0 =A0 =A0 =A0 =A0*/
+>
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TEST(result =3D syscall(243, &u=
+_info)); =A0 =A0 //call
+> set_thread_area()
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TEST(result =3D syscall(__NR_se=
+t_thread_area,
+> &u_info)); =A0 =A0 //call set_thread_area()
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if(TEST_RETURN =3D=3D 0) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(TPASS, "set_threa=
+d_area call succeeded");
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+> diff -Naurb a/testcases/kernel/syscalls/set_thread_area/set_thread_area02=
+.c
+> b/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c
+> --- a/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c =A0 =
+=A0 2009-05-22
+> 00:01:38.000000000 +0530
+> +++ b/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c =A0 =
+=A0 2009-06-17
+> 23:34:04.000000000 +0530
+> @@ -146,7 +146,7 @@
+> =A0 =A0 =A0 =A0 =A0* This call to get_thread_area function should be suce=
+ssful.
+> =A0 =A0 =A0 =A0 =A0*/
+>
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TEST(result =3D syscall(244, &u=
+_info)); =A0 =A0 //call
+> get_thread_area()
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TEST(result =3D syscall(__NR_ge=
+t_thread_area,
+> &u_info)); =A0 =A0 //call get_thread_area()
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if(TEST_RETURN =3D=3D -1) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TFAIL, "call=
+ get_thraed_area() failed
+> with errno =3D %d ", TEST_ERRNO, strerror(TEST_ERRNO));
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0cleanup();
+> @@ -158,7 +158,7 @@
+> =A0 =A0 =A0 =A0 =A0* This call to set_thread_area function with invalid
+> entry_number should be FAILED.
+> =A0 =A0 =A0 =A0 =A0*/
+>
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TEST(result =3D syscall(243, &u=
+_info)); =A0 =A0 //call
+> set_thread_area()
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TEST(result =3D syscall(__NR_se=
+t_thread_area,
+> &u_info)); =A0 =A0 //call set_thread_area()
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if(TEST_RETURN =3D=3D -1) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if(TEST_ERRNO =3D=3D EINVA=
+L){
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(T=
+PASS, "Call to set_thread_area call failed with invalid
+> entry_number result =3D %d (expected EINVAL)",TEST_ERRNO);
+> @@ -177,7 +177,7 @@
+> =A0 =A0 =A0 =A0 =A0* This call to set_thread_area function with an invali=
+d
+> pointer should be FAILED with EFAULT.
+> =A0 =A0 =A0 =A0 =A0*/
+>
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TEST(result =3D syscall(243,(st=
+ruct user_desc
+> *)-9)); =A0 =A0 //call set_thread_area()
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TEST(result =3D
+> syscall(__NR_set_thread_area,(struct user_desc *)-9)); =A0 =A0 //call
+> set_thread_area()
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if(TEST_RETURN =3D=3D -1) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if(TEST_ERRNO =3D=3D EFAUL=
+T){
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(T=
+PASS, "Call to set_thread_area call with invalid
+> entry_number result =3D %d (got expected error EFAULT)",TEST_ERRNO);
+>
+
+--001e680f12987d37e5046cb31f87
+Content-Type: application/octet-stream; name="ltp-fix-set_thread_area.patch"
+Content-Disposition: attachment; filename="ltp-fix-set_thread_area.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fw4wt9nz1
+
+ZGlmZiAtTmF1cmIgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NldF90aHJlYWRfYXJlYS9z
+ZXRfdGhyZWFkX2FyZWEwMS5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZXRfdGhyZWFk
+X2FyZWEvc2V0X3RocmVhZF9hcmVhMDEuYwotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L3NldF90aHJlYWRfYXJlYS9zZXRfdGhyZWFkX2FyZWEwMS5jCTIwMDktMDUtMjIgMDA6MDA6Mjku
+MDAwMDAwMDAwICswNTMwCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2V0X3RocmVh
+ZF9hcmVhL3NldF90aHJlYWRfYXJlYTAxLmMJMjAwOS0wNi0xOSAxNzo0OTo0MS4wMDAwMDAwMDAg
+KzA1MzAKQEAgLTEyMyw3ICsxMjMsNiBAQAogaW50IG1haW4oaW50IGFjLCBjaGFyICoqYXYpIHsK
+ICAgICAgICAgCiAJc3RydWN0IHVzZXJfZGVzYyB1X2luZm87Ci0gICAgICAgIGludCByZXN1bHQ7
+CiAgICAgICAgIGludCBsYzsgICAgICAgICAgICAgICAgIC8qIGxvb3AgY291bnRlciAqLwogICAg
+ICAgICBjaGFyICptc2c7ICAgICAgICAgICAgICAvKiBtZXNzYWdlIHJldHVybmVkIGZyb20gcGFy
+c2Vfb3B0cyAqLwogCQpAQCAtMTQ1LDcgKzE0NCw3IEBACiAgICAgICAgICAqIFRoaXMgY2FsbCB0
+byBnZXRfdGhyZWFkX2FyZWEgZnVuY3Rpb24gc2hvdWxkIGJlIHN1Y2Vzc2Z1bC4KICAgICAgICAg
+ICovCiAKLSAgICAgICAgICAgICAgICAgICAgIFRFU1QocmVzdWx0ID0gc3lzY2FsbCgyNDQsICZ1
+X2luZm8pKTsgICAgIC8vY2FsbCBnZXRfdGhyZWFkX2FyZWEoKQorICAgICAgICAgICAgICAgICAg
+ICAgVEVTVChzeXNjYWxsKF9fTlJfZ2V0X3RocmVhZF9hcmVhLCAmdV9pbmZvKSk7ICAgICAvL2Nh
+bGwgZ2V0X3RocmVhZF9hcmVhKCkKICAgICAgICAgICAgICAgICAgICAgIGlmKFRFU1RfUkVUVVJO
+ID09IDApIHsKICAgICAgICAgCQl0c3RfcmVzbShUUEFTUywgImdldF90aHJlYWRfYXJlYSBjYWxs
+IHN1Y2NlZWRlZCIpOwogICAgICAgICAgICAgICAgICAgICAgfQpAQCAtMTYwLDcgKzE1OSw3IEBA
+CiAgICAgICAgICAqIFRoaXMgY2FsbCB0byBzZXRfdGhyZWFkX2FyZWEgZnVuY3Rpb24gc2hvdWxk
+IGJlIHN1Y2Vzc2Z1bC4KICAgICAgICAgICovCiAKLSAgICAgICAgICAgICAgICAgICAgIFRFU1Qo
+cmVzdWx0ID0gc3lzY2FsbCgyNDMsICZ1X2luZm8pKTsgICAgIC8vY2FsbCBzZXRfdGhyZWFkX2Fy
+ZWEoKQorICAgICAgICAgICAgICAgICAgICAgVEVTVChyZXN1bHQgPSBzeXNjYWxsKF9fTlJfc2V0
+X3RocmVhZF9hcmVhLCAmdV9pbmZvKSk7ICAgICAvL2NhbGwgc2V0X3RocmVhZF9hcmVhKCkKICAg
+ICAgICAgICAgICAgICAgICAgIGlmKFRFU1RfUkVUVVJOID09IDApIHsKICAgICAgICAgCQl0c3Rf
+cmVzbShUUEFTUywgInNldF90aHJlYWRfYXJlYSBjYWxsIHN1Y2NlZWRlZCIpOwogICAgICAgICAg
+ICAgICAgICAgICAgfQpkaWZmIC1OYXVyYiBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2V0
+X3RocmVhZF9hcmVhL3NldF90aHJlYWRfYXJlYTAyLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
+bGxzL3NldF90aHJlYWRfYXJlYS9zZXRfdGhyZWFkX2FyZWEwMi5jCi0tLSBhL3Rlc3RjYXNlcy9r
+ZXJuZWwvc3lzY2FsbHMvc2V0X3RocmVhZF9hcmVhL3NldF90aHJlYWRfYXJlYTAyLmMJMjAwOS0w
+NS0yMiAwMDowMTozOC4wMDAwMDAwMDAgKzA1MzAKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy9zZXRfdGhyZWFkX2FyZWEvc2V0X3RocmVhZF9hcmVhMDIuYwkyMDA5LTA2LTE5IDE3OjQ1
+OjM2LjAwMDAwMDAwMCArMDUzMApAQCAtMTI0LDcgKzEyNCw2IEBACiBpbnQgbWFpbihpbnQgYWMs
+IGNoYXIgKiphdikgewogICAgICAgICAKIAlzdHJ1Y3QgdXNlcl9kZXNjIHVfaW5mbzsKLSAgICAg
+ICAgaW50IHJlc3VsdDsKICAgICAgICAgaW50IGxjOyAgICAgICAgICAgICAgICAgLyogbG9vcCBj
+b3VudGVyICovCiAgICAgICAgIGNoYXIgKm1zZzsgICAgICAgICAgICAgIC8qIG1lc3NhZ2UgcmV0
+dXJuZWQgZnJvbSBwYXJzZV9vcHRzICovCiAJCkBAIC0xNDYsNyArMTQ1LDcgQEAKICAgICAgICAg
+ICogVGhpcyBjYWxsIHRvIGdldF90aHJlYWRfYXJlYSBmdW5jdGlvbiBzaG91bGQgYmUgc3VjZXNz
+ZnVsLgogICAgICAgICAgKi8KIAotICAgICAgICAgICAgICAgICAgICAgVEVTVChyZXN1bHQgPSBz
+eXNjYWxsKDI0NCwgJnVfaW5mbykpOyAgICAgLy9jYWxsIGdldF90aHJlYWRfYXJlYSgpCisgICAg
+ICAgICAgICAgICAgICAgICBURVNUKHN5c2NhbGwoX19OUl9nZXRfdGhyZWFkX2FyZWEsICZ1X2lu
+Zm8pKTsgICAgIC8vY2FsbCBnZXRfdGhyZWFkX2FyZWEoKQogICAgICAgICAgICAgICAgICAgICAg
+aWYoVEVTVF9SRVRVUk4gPT0gLTEpIHsKICAgICAgICAgICAgICAgICAgCSAgIHRzdF9yZXNtKFRG
+QUlMLCAiY2FsbCBnZXRfdGhyYWVkX2FyZWEoKSBmYWlsZWQgd2l0aCBlcnJubyA9ICVkICIsIFRF
+U1RfRVJSTk8sIHN0cmVycm9yKFRFU1RfRVJSTk8pKTsKICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIGNsZWFudXAoKTsKQEAgLTE1OCwxMyArMTU3LDEzIEBACiAgICAgICAgICAqIFRoaXMgY2Fs
+bCB0byBzZXRfdGhyZWFkX2FyZWEgZnVuY3Rpb24gd2l0aCBpbnZhbGlkIGVudHJ5X251bWJlciBz
+aG91bGQgYmUgRkFJTEVELgogICAgICAgICAgKi8KIAotICAgICAgICAgICAgICAgICAgICAgVEVT
+VChyZXN1bHQgPSBzeXNjYWxsKDI0MywgJnVfaW5mbykpOyAgICAgLy9jYWxsIHNldF90aHJlYWRf
+YXJlYSgpCisgICAgICAgICAgICAgICAgICAgICBURVNUKHN5c2NhbGwoX19OUl9zZXRfdGhyZWFk
+X2FyZWEsICZ1X2luZm8pKTsgICAgIC8vY2FsbCBzZXRfdGhyZWFkX2FyZWEoKQogICAgICAgICAg
+ICAgICAgICAgICAgaWYoVEVTVF9SRVRVUk4gPT0gLTEpIHsKIAkJCWlmKFRFU1RfRVJSTk8gPT0g
+RUlOVkFMKXsKLQkJCQl0c3RfcmVzbShUUEFTUywgIkNhbGwgdG8gc2V0X3RocmVhZF9hcmVhIGNh
+bGwgZmFpbGVkIHdpdGggaW52YWxpZCBlbnRyeV9udW1iZXIgcmVzdWx0ID0gJWQgKGV4cGVjdGVk
+IEVJTlZBTCkiLFRFU1RfRVJSTk8pOworCQkJCXRzdF9yZXNtKFRQQVNTLCAiQ2FsbCB0byBzZXRf
+dGhyZWFkX2FyZWEgY2FsbCBmYWlsZWQgd2l0aCBpbnZhbGlkIGVudHJ5X251bWJlciAgZXJybm8g
+PSAlZCAoZXhwZWN0ZWQgRUlOVkFMKSIsVEVTVF9FUlJOTyk7CiAJCQkgfQogCQkJIGVsc2Ugewot
+ICAgICAgICAgICAgICAgICAJICAJICB0c3RfcmVzbShUUEFTUywiQ2FsbCB0byBzZXRfdGhyZWFk
+X2FyZWEgd2l0aCBpbnZhbGlkIGVudHJ5X251bWJlciBnb3QgdW5leHBlY3RlZCByZXN1bHQgPSAl
+ZCAoZXhwZWN0ZWQgRUlOVkFMKSIsVEVTVF9FUlJOTyk7CisgICAgICAgICAgICAgICAgIAkgIAkg
+IHRzdF9yZXNtKFRGQUlMLCJDYWxsIHRvIHNldF90aHJlYWRfYXJlYSB3aXRoIGludmFsaWQgZW50
+cnlfbnVtYmVyIGdvdCB1bmV4cGVjdGVkIGVycm5vID0gJWQgKGV4cGVjdGVkIEVJTlZBTCkiLFRF
+U1RfRVJSTk8pOwogCQkgICAgICAgICAgICAgICB9CiAJCSAgICAgfQogCQkgICAgIGVsc2UgewpA
+QCAtMTc3LDEzICsxNzYsMTMgQEAKICAgICAgICAgICogVGhpcyBjYWxsIHRvIHNldF90aHJlYWRf
+YXJlYSBmdW5jdGlvbiB3aXRoIGFuIGludmFsaWQgcG9pbnRlciBzaG91bGQgYmUgRkFJTEVEIHdp
+dGggRUZBVUxULgogICAgICAgICAgKi8KIAotICAgICAgICAgICAgICAgICAgICAgVEVTVChyZXN1
+bHQgPSBzeXNjYWxsKDI0Mywoc3RydWN0IHVzZXJfZGVzYyAqKS05KSk7ICAgICAvL2NhbGwgc2V0
+X3RocmVhZF9hcmVhKCkKKyAgICAgICAgICAgICAgICAgICAgIFRFU1Qoc3lzY2FsbChfX05SX3Nl
+dF90aHJlYWRfYXJlYSwoc3RydWN0IHVzZXJfZGVzYyAqKS05KSk7ICAgICAvL2NhbGwgc2V0X3Ro
+cmVhZF9hcmVhKCkKICAgICAgICAgICAgICAgICAgICAgIGlmKFRFU1RfUkVUVVJOID09IC0xKSB7
+CiAJCQlpZihURVNUX0VSUk5PID09IEVGQVVMVCl7Ci0JCQkJdHN0X3Jlc20oVFBBU1MsICJDYWxs
+IHRvIHNldF90aHJlYWRfYXJlYSBjYWxsIHdpdGggaW52YWxpZCBlbnRyeV9udW1iZXIgcmVzdWx0
+ID0gJWQgKGdvdCBleHBlY3RlZCBlcnJvciBFRkFVTFQpIixURVNUX0VSUk5PKTsKKwkJCQl0c3Rf
+cmVzbShUUEFTUywgIkNhbGwgdG8gc2V0X3RocmVhZF9hcmVhIGNhbGwgd2l0aCBpbnZhbGlkIGVu
+dHJ5X251bWJlciBlcnJubyA9ICVkIChnb3QgZXhwZWN0ZWQgZXJyb3IgRUZBVUxUKSIsVEVTVF9F
+UlJOTyk7CiAJCQkgfQogCQkJIGVsc2UgewotICAgICAgICAgICAgICAgICAJICAJICB0c3RfcmVz
+bShUUEFTUywiQ2FsbCB0byBzZXRfdGhyZWFkX2FyZWEgd2l0aCBpbnZhbGlkIGVudHJ5X251bWJl
+ciBnb3QgdW5leHBlY3RlZCByZXN1bHQgPSAlZCAoZXhwZWN0ZWQgRUZBVUxUKSIsVEVTVF9FUlJO
+Tyk7CisgICAgICAgICAgICAgICAgIAkgIAkgIHRzdF9yZXNtKFRGQUlMLCJDYWxsIHRvIHNldF90
+aHJlYWRfYXJlYSB3aXRoIGludmFsaWQgZW50cnlfbnVtYmVyIGdvdCB1bmV4cGVjdGVkIGVycm5v
+ID0gJWQgKGV4cGVjdGVkIEVGQVVMVCkiLFRFU1RfRVJSTk8pOwogCQkgICAgICAgICAgICAgICB9
+CiAJCSAgICAgfQogCQkgICAgIGVsc2Ugewo=
+--001e680f12987d37e5046cb31f87
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Crystal Reports - New Free Runtime and 30 Day Trial
@@ -305,7 +382,16 @@ Check out the new simplified licensing option that enables unlimited
 royalty-free distribution of the report engine for externally facing 
 server and web deployment.
 http://p.sf.net/sfu/businessobjects
+--001e680f12987d37e5046cb31f87
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--001e680f12987d37e5046cb31f87--
+
