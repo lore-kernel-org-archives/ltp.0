@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MGHhT-0001mb-M2
-	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:18:35 +0000
-Received: from [32.97.182.144] (helo=e4.ny.us.ibm.com)
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MGHhP-0006mv-E3
-	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:18:35 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200906142044.ACJ21831.VHOJSFLtFOQOFM@I-love.SAKURA.ne.jp>
-References: <1244775226.4982.3.camel@subratamodak.linux.ibm.com>
-	<200906142044.ACJ21831.VHOJSFLtFOQOFM@I-love.SAKURA.ne.jp>
-Date: Tue, 16 Jun 2009 00:46:26 +0530
-Message-Id: <1245093386.4871.49.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [003][RFC] [TESTING linux-2.6.30] TOMOYO Linux
-	and	pathname-basedsecurity
-Reply-To: subrata@linux.vnet.ibm.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <hyei@mvista.com>) id 1MIsL3-0002f6-VN
+	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 22:50:09 +0000
+Received: from [63.81.120.158] (helo=gateway-1237.mvista.com)
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MIsL1-0001QU-LC
+	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 22:50:09 +0000
+Received: from svexch01.mvista.com (svexch01.mvista.com [10.0.0.82])
+	by hermes.mvista.com (Postfix) with ESMTP id F21881AE5B
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 22 Jun 2009 15:49:45 -0700 (PDT)
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C9F38B.3A3AD624"
+Date: Mon, 22 Jun 2009 15:46:04 -0700
+Message-ID: <8368651DACC1964480F951191B94A078BC0B6B@svexch01.mvista.com>
+From: "Henry Yei" <hyei@mvista.com>
+Subject: [LTP]  [FIX PATCH] runltp, set user-defined tmp directory correctly
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,55 +28,71 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Cc: ltp-list@lists.sf.net, haradats@nttdata.co.jp, sds@tycho.nsa.gov, casey@schaufler-ca.com, serue@linux.vnet.ibm.com, zohar@linux.vnet.ibm.com, takedakn@nttdata.co.jp
+To: ltp-list@lists.sourceforge.net
 
-On Sun, 2009-06-14 at 20:44 +0900, Tetsuo Handa wrote: 
-> Hello.
-> 
-> Sorry for late response. I had no internet access for three days.
-> 
-> Subrata Modak wrote:
-> > We would like to inform you that we have some robust sets of testcases
-> > for both SELinux, SMACK, IMA, etc at
-> > http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/security/.
-> > And i would express to have TOMYO being tested through LTP. If you agree
-> > to contribute some test cases in this regard to LTP under GPLv2, we can
-> > make a modest but great beginning. What do you say ?
-> 
-> Yes, we are willing to contribute TOMOYO's test cases to LTP.
+This is a multi-part message in MIME format.
 
-Great to hear that.
+------_=_NextPart_001_01C9F38B.3A3AD624
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-> Currently, we are using testing programs available at
-> http://sourceforge.jp/projects/tomoyo/svn/view/trunk/1.6.x/ccs-tools/ccstools/kernel_test/?root=tomoyo
-> But they are not some shell scripting programs.
-> Thus, I need to remake these programs to follow LTP conventions.
-> Can I have some documentation regarding how to write LTP testing programs?
+I'd like to submit this patch to fix the functionality to set =
+user-defined tmp directories for LTP runs. This undos the hardcoded =
+TMPDIR from version 1.33 which added some special case handling of the =
+passed in directory string, but broke the general case with what looks =
+like debug code.
 
-Sure. Why not. Please see:
+Patch is against 1.45 version iof runltp (head)
 
-http://ltp.sourceforge.net/
-http://ltp.sourceforge.net/documentation/how-to/ltp.php
-http://ltp.sourceforge.net/documentation/technical_papers/
 
-Regards--
-Subrata
 
-> 
-> Regards.
+Henry Yei (QA)
+MontaVista Software, Inc.
+hyei@mvista.com
 
+
+=20
+
+------_=_NextPart_001_01C9F38B.3A3AD624
+Content-Type: application/octet-stream;
+	name="runltp.patch"
+Content-Transfer-Encoding: base64
+Content-Description: runltp.patch
+Content-Disposition: attachment;
+	filename="runltp.patch"
+
+LS0tIGx0cC1mdWxsLTIwMDkwNTMxL3J1bmx0cAkyMDA5LTA1LTE5IDAyOjM5OjExLjAwMDAwMDAw
+MCAtMDcwMAorKysgbHRwL3J1bmx0cAkyMDA5LTA2LTIyIDE1OjQzOjEyLjQwMjUzMjAwMCAtMDcw
+MApAQCAtNDYzLDkgKzQ2Myw5IEBACiAgICAgICAgIGV4aXQgMQogICAgIH0KICAgICBleHBvcnQg
+VE1QCi0gICAgIyBUbyBiZSBldm9rZWQgYnkgdHN0X3RtcGRpcigpCi0gICAgIyAgd3JpdGUgdG8g
+aXQgYXMgdXNlciBub2JvZHkKLSAgICBleHBvcnQgVE1QRElSPSIvdG1wIiAKKyAgICAjIFRvIGJl
+IGludm9rZWQgYnkgdHN0X3RtcGRpcigpCisgICAgIyB3cml0ZSB0byBpdCBhcyB1c2VyIG5vYm9k
+eQorICAgIGV4cG9ydCBUTVBESVI9JFRNUAogCiAgICAgY2htb2QgNzc3ICRUTVAgfHwgXAogICAg
+IHsK
+
+------_=_NextPart_001_01C9F38B.3A3AD624
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing 
-server and web deployment.
-http://p.sf.net/sfu/businessobjects
+Are you an open source citizen? Join us for the Open Source Bridge conference!
+Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
+Need another reason to go? 24-hour hacker lounge. Register today!
+http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
+------_=_NextPart_001_01C9F38B.3A3AD624
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------_=_NextPart_001_01C9F38B.3A3AD624--
+
