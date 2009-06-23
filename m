@@ -1,31 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mpradeep@linux.vnet.ibm.com>) id 1MBoGG-0001Yw-Mz
-	for ltp-list@lists.sourceforge.net; Wed, 03 Jun 2009 11:04:00 +0000
-Received: from e28smtp01.in.ibm.com ([59.145.155.1])
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MJDG6-0007G4-53
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 21:10:26 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
 	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MBoGC-0005aC-Vr
-	for ltp-list@lists.sourceforge.net; Wed, 03 Jun 2009 11:04:00 +0000
-Received: from d28relay04.in.ibm.com (d28relay04.in.ibm.com [9.184.220.61])
-	by e28smtp01.in.ibm.com (8.13.1/8.13.1) with ESMTP id n53B3rP5015736
-	for <ltp-list@lists.sourceforge.net>; Wed, 3 Jun 2009 16:33:53 +0530
-Received: from d28av01.in.ibm.com (d28av01.in.ibm.com [9.184.220.63])
-	by d28relay04.in.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n53B3r582150498
-	for <ltp-list@lists.sourceforge.net>; Wed, 3 Jun 2009 16:33:53 +0530
-Received: from d28av01.in.ibm.com (loopback [127.0.0.1])
-	by d28av01.in.ibm.com (8.13.1/8.13.3) with ESMTP id n53B3q85015089
-	for <ltp-list@lists.sourceforge.net>; Wed, 3 Jun 2009 16:33:52 +0530
-Received: from [9.124.158.24] (E67wks351459wss.in.ibm.com [9.124.158.24])
-	by d28av01.in.ibm.com (8.13.1/8.12.11) with ESMTP id n53B3qgs015086
-	for <ltp-list@lists.sourceforge.net>; Wed, 3 Jun 2009 16:33:52 +0530
-From: Munipradeep Beerakam <mpradeep@linux.vnet.ibm.com>
-Date: Wed, 03 Jun 2009 16:34:09 +0530
-Message-Id: <1244027049.16185.6.camel@munipradeep-laptop>
-Mime-Version: 1.0
-Subject: [LTP] LTP May 2009 build failing on RHEL5.4 pre-Alpha
+	(Exim 4.69) id 1MJDG5-0005V1-31
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 21:10:26 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Tue, 23 Jun 2009 17:10:21 -0400
+References: <4a413b73.9c13f30a.3059.ffffe109SMTPIN_ADDED@mx.google.com>
+In-Reply-To: <4a413b73.9c13f30a.3059.ffffe109SMTPIN_ADDED@mx.google.com>
+MIME-Version: 1.0
+Message-Id: <200906231710.22047.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] Use present autoconf test for asm/ldt.h in
+	set_thread_area* tests to prevent build failures
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,44 +25,103 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============6226627192143731810=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: "Jiri Palecek > (none)" <"<jirka"@debian.gentoo.org>
 
-SGksCgpJIHRyaWVkIHRvIGJ1aWxkIHRoZSBMVFAgdGFyYmFsbCBsdHAtZnVsbC0yMDA5MDUzMS50
-Z3ogb24gUkhFTDUuNApwcmUtQWxwaGEgRGlzdHJpYnV0aW9uLiBCdXQgYnVpbGQgZmFpbGVkIHdp
-dGggdGhlIGZvbGxvd2luZyBlcnJvcjoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKbWFrZVs0XTogRW50ZXJpbmcgZGly
-ZWN0b3J5CmAvcm9vdC9sdHAtZnVsbC0yMDA5MDUzMS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
-L3NnZXRtYXNrJwpnY2MgLWcgLU8yIC1JLi4vLi4vaW5jbHVkZSAtZyAtV2FsbCAtSS4uLy4uLy4u
-Ly4uL2luY2x1ZGUgLVdhbGwKc2dldG1hc2swMS5jICAtTC4uLy4uLy4uLy4uL2xpYiAtbGx0cCAt
-byBzZ2V0bWFzazAxCnNnZXRtYXNrMDEuYzogSW4gZnVuY3Rpb24g4oCYbWFpbuKAmToKc2dldG1h
-c2swMS5jOjE0MjogZXJyb3I6IOKAmF9fTlJfc3NldG1hc2vigJkgdW5kZWNsYXJlZCAoZmlyc3Qg
-dXNlIGluIHRoaXMKZnVuY3Rpb24pCnNnZXRtYXNrMDEuYzoxNDI6IGVycm9yOiAoRWFjaCB1bmRl
-Y2xhcmVkIGlkZW50aWZpZXIgaXMgcmVwb3J0ZWQgb25seQpvbmNlCnNnZXRtYXNrMDEuYzoxNDI6
-IGVycm9yOiBmb3IgZWFjaCBmdW5jdGlvbiBpdCBhcHBlYXJzIGluLikKbWFrZVs0XTogKioqIFtz
-Z2V0bWFzazAxXSBFcnJvciAxCm1ha2VbNF06IExlYXZpbmcgZGlyZWN0b3J5CmAvcm9vdC9sdHAt
-ZnVsbC0yMDA5MDUzMS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NnZXRtYXNrJwptYWtlWzNd
-OiAqKiogW2FsbF0gRXJyb3IgMgptYWtlWzNdOiBMZWF2aW5nIGRpcmVjdG9yeQpgL3Jvb3QvbHRw
-LWZ1bGwtMjAwOTA1MzEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscycKbWFrZVsyXTogKioqIFth
-bGxdIEVycm9yIDIKbWFrZVsyXTogTGVhdmluZyBkaXJlY3RvcnkgYC9yb290L2x0cC1mdWxsLTIw
-MDkwNTMxL3Rlc3RjYXNlcy9rZXJuZWwnCm1ha2VbMV06ICoqKiBbYWxsXSBFcnJvciAyCm1ha2Vb
-MV06IExlYXZpbmcgZGlyZWN0b3J5IGAvcm9vdC9sdHAtZnVsbC0yMDA5MDUzMS90ZXN0Y2FzZXMn
-Cm1ha2U6ICoqKiBbYWxsXSBFcnJvciAyCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KClRoZSB2YXJpYWJsZSAnX19OUl9z
-c2V0bWFzaycgZGVjbGFyYXRpb24gaXMgYXZhaWxhYmxlIGluIC91c3IvaW5jbHVkZQoKfiMgZ3Jl
-cCAtciAiX19OUl9zc2V0bWFzayIgL3Vzci9pbmNsdWRlLwovdXNyL2luY2x1ZGUvYml0cy9zeXNj
-YWxsLmg6I2RlZmluZSBTWVNfc3NldG1hc2sgX19OUl9zc2V0bWFzawovdXNyL2luY2x1ZGUvYXNt
-LWkzODYvdW5pc3RkLmg6I2RlZmluZSBfX05SX3NzZXRtYXNrICAgICAgICAgICAgIDY5CgpXaGF0
-IGNvdWxkIGJlIHRoZSByZWFzb24gZm9yIGZhaWx1cmU/CgpUaGFua3MKTXVuaQoKCi0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLQpPcGVuU29sYXJpcyAyMDA5LjA2IGlzIGEgY3V0dGluZyBlZGdlIG9wZXJh
-dGluZyBzeXN0ZW0gZm9yIGVudGVycHJpc2VzIApsb29raW5nIHRvIGRlcGxveSB0aGUgbmV4dCBn
-ZW5lcmF0aW9uIG9mIFNvbGFyaXMgdGhhdCBpbmNsdWRlcyB0aGUgbGF0ZXN0IAppbm5vdmF0aW9u
-cyBmcm9tIFN1biBhbmQgdGhlIE9wZW5Tb3VyY2UgY29tbXVuaXR5LiBEb3dubG9hZCBhIGNvcHkg
-YW5kIAplbmpveSBjYXBhYmlsaXRpZXMgc3VjaCBhcyBOZXR3b3JraW5nLCBTdG9yYWdlIGFuZCBW
-aXJ0dWFsaXphdGlvbi4gCkdvIHRvOiBodHRwOi8vcC5zZi5uZXQvc2Z1L29wZW5zb2xhcmlzLWdl
-dApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlz
-dCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlz
-dHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+--===============6226627192143731810==
+Content-Type: multipart/signed; boundary="nextPart13420538.yxaRUJCCII";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+
+--nextPart13420538.yxaRUJCCII
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+On Friday 19 June 2009 10:12:15 Jiri Palecek > wrote:
+> -#include <stdio.h>
+> -#include <errno.h>
+> -#include <linux/unistd.h>
+> -#include <asm/ldt.h>
+> -
+>  /* Harness Specific Include Files. */
+>  #include "test.h"
+>  #include "usctest.h"
+>  #include "linux_syscall_numbers.h"
+> -
+> -/* Extern Global Variables */
+> -extern int Tst_count;           /* counter for tst_xxx routines.       =
+=20
+> */ -extern char *TESTDIR;           /* temporary dir created by
+> tst_tmpdir() */ +#include "config.h"
+>
+>  /* Global Variables */
+>  char *TCID =3D "set_thread_area01";  /* Test program identifier.*/
+>  int  testno;
+>  int  TST_TOTAL =3D 2;                   /* total number of tests in this
+> file.   */
+>
+> +#if defined HAVE_ASM_LDT_H
+> +#include <stdio.h>
+> +#include <errno.h>
+> +#include <linux/unistd.h>
+> +#include <asm/ldt.h>
+
+moving asm/ldt.h behind the ifdef makes sense, but none of the others do. =
+=20
+there is no point in delaying the other includes and in general, all includ=
+es=20
+should come first ... there shouldnt be definitions before them.  less like=
+ly=20
+to get bitten in the ass with clashes.
+=2Dmike
+
+--nextPart13420538.yxaRUJCCII
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJKQUS9AAoJEEFjO5/oN/WBxXcQAJJRfcC0K7cvlb7l7AOk2WgU
+aGqgOnJ6AOrNmRBa3mYMsjBjhpyrPIeIYBjof6FUqDrpyAAAwuclOF+OxOi/V+0z
+0kwSYivksiPDAz/R9VaGrLw/5Doy6SivdtR0tXcfMlJuUK0dBx9PkWFWMAIeqH9P
+j+rt/uqtGo+20uSCZTb2q4C1T8fxyyFeDf2RsygANSIk4BKBUg3hBj7q5dKH968K
+qw9UyYb5UXzGaBbs4u58Um59xck/okZZfi8aVgMAB4qGG5Sx2NA3s5QCzk+EtW1O
+NANjqAgpXx6tPYQXF5ddT1wl7U3BAg5M2UDIQ6IzMSIxct8ylBF5OhlvkdxOjLMI
+yMhUvHuYT3MysieokHj7SQGNKh83kmOj/jMz1Aj4h7qW37IatwofujHQLad+g/gw
+AX0l5yQJK90m4/Is3lHVagEqwl9NTJO98Vr9855VLnXht8JErd5/QerEh7xUpE9B
+e/O5kRC0dwx6rcktCsWfXMoAj2q91won15UH7YC67DOcmk2ss7iz9vZQeaekHB6Y
+/ioaTVJuRZJx59i7Q3D6tVGhMwZcr0bGebWOwlMTH7Ni0pXhcgF2XbdgzmLuTcAg
+GHtyUCvnR+SZxwtkyqMkFaZ8QZ75+rtgssCiyMPU5HUhZs6TCjVZUTC9O7oWN+Db
+BuruB2l/RUKmqNAFbksK
+=idzd
+-----END PGP SIGNATURE-----
+
+--nextPart13420538.yxaRUJCCII--
+
+
+--===============6226627192143731810==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+
+--===============6226627192143731810==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6226627192143731810==--
+
