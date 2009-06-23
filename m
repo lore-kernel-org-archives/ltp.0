@@ -1,39 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJ7MF-0003j7-2t
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 14:52:23 +0000
-Received: from e31.co.us.ibm.com ([32.97.110.149])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MJ7M7-00048V-Q3
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 14:52:18 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e31.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5NElbJg013690
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 08:47:37 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5NEq5Ao024458
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 08:52:05 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5NEq4xU028785
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 08:52:04 -0600
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJ087-0001Rb-BD
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 07:09:19 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MJ085-0007qN-QJ
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 07:09:19 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e1.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5N74Yhw022592
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 03:04:34 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5N7992U258226
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 03:09:09 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5N799iW029111
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 03:09:09 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <364299f40901231144jdabb822ye9ebd38a296eee3b@mail.gmail.com>
-References: <364299f40806260526u2f60a4d3y31cb2beb7de5481b@mail.gmail.com>
-	<1214573767.5031.39.camel@subratamodak.linux.ibm.com>
-	<1224679477.9160.53.camel@subratamodak.linux.ibm.com>
-	<364299f40810231426p69bd7804jbdbf3d2f142903f1@mail.gmail.com>
-	<1224837332.5270.33.camel@subratamodak.linux.ibm.com>
-	<1229093528.5171.62.camel@subratamodak.linux.ibm.com>
-	<364299f40812132033h4889a6abp5e718ca3d1d970ac@mail.gmail.com>
-	<364299f40901231144jdabb822ye9ebd38a296eee3b@mail.gmail.com>
-Date: Tue, 23 Jun 2009 20:18:14 +0530
-Message-Id: <1245768494.4860.55.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <8368651DACC1964480F951191B94A078BC0BBA@svexch01.mvista.com>
+References: <8368651DACC1964480F951191B94A078BC0BBA@svexch01.mvista.com>
+Date: Tue, 23 Jun 2009 12:38:20 +0530
+Message-Id: <1245740900.6925.1.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] LTP - Include upstart whitebox / blackbox testing API's?
+Subject: Re: [LTP] Reasoning behind Ltp-pan etc installed under /opt/ltp
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -44,132 +36,49 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>, Scott James Remnant <scott@netsplit.com>, upstart-devel@lists.ubuntu.com, Robert Williamson <robbiew@us.ibm.com>, Jeff Burke <jburke@redhat.com>
+To: Henry Yei <hyei@mvista.com>
+Cc: ltp-list@lists.sourceforge.net
 
-T24gRnJpLCAyMDA5LTAxLTIzIGF0IDExOjQ0IC0wODAwLCBHYXJyZXR0IENvb3BlciB3cm90ZTog
-Cj4gMjAwOC8xMi8xMyBHYXJyZXR0IENvb3BlciA8eWFuZWdvbWlAZ21haWwuY29tPjoKPiA+IE9u
-IEZyaSwgRGVjIDEyLCAyMDA4IGF0IDY6NTIgQU0sIFN1YnJhdGEgTW9kYWsKPiA+IDxzdWJyYXRh
-QGxpbnV4LnZuZXQuaWJtLmNvbT4gd3JvdGU6Cj4gPj4KPiA+PiBPbiBGcmksIDIwMDgtMTAtMjQg
-YXQgMTQ6MDUgKzA1MzAsIFN1YnJhdGEgTW9kYWsgd3JvdGU6Cj4gPj4+IE9uIFRodSwgMjAwOC0x
-MC0yMyBhdCAxNDoyNiAtMDcwMCwgR2FycmV0dCBDb29wZXIgd3JvdGU6Cj4gPj4+ID4gT24gV2Vk
-LCBPY3QgMjIsIDIwMDggYXQgNTo0NCBBTSwgU3VicmF0YSBNb2Rhawo+ID4+PiA+IDxzdWJyYXRh
-QGxpbnV4LnZuZXQuaWJtLmNvbT4gd3JvdGU6Cj4gPj4+ID4gPiBHYXJyZXR0LAo+ID4+PiA+ID4K
-PiA+Pj4gPiA+IElzIHRoZXJlIGFueSBoZWFkd2F5IHdpdGggdXBzdGFydCBkZXZlbG9wZXJzIHJl
-Z2FyZGluZyB0aGlzIGluaXRpYXRpdmUuCj4gPj4+ID4gPiBJIGR1ZyBvdXQgdGhpcyBtYWlsIGZy
-b20gbXkgbWFpbGJveCB0byBmaW5kIHRoaXMuIExldCBtZSBrbm93IGlmIHdlIGNhbgo+ID4+PiA+
-ID4gcmVzdW1lIHRoaXMgZGlzY3Vzc2lvbiBvbmNlIGFnYWluLgo+ID4+PiA+ID4KPiA+Pj4gPiA+
-IFJlZ2FyZHMtLQo+ID4+PiA+ID4gU3VicmF0YQo+ID4+PiA+ID4KPiA+Pj4gPiA+IE9uIEZyaSwg
-MjAwOC0wNi0yNyBhdCAxOTowNiArMDUzMCwgU3VicmF0YSBNb2RhayB3cm90ZToKPiA+Pj4gPiA+
-PiBPbiBUaHUsIDIwMDgtMDYtMjYgYXQgMDU6MjYgLTA3MDAsIEdhcnJldHQgQ29vcGVyIHdyb3Rl
-Ogo+ID4+PiA+ID4+ID4gSGVsbG8gTFRQIGd1cnVzIChhbmQgdXBzdGFydCBndXJ1cyksCj4gPj4+
-ID4gPj4gPiAgICAgICBBcyBJIG1lbnRpb25lZCBiZWZvcmUgb24gdGhlIHVwc3RhcnQtZGV2ZWwg
-bGlzdCwgb25lIG9mIHRoZQo+ID4+PiA+ID4+ID4gZ29hbHMgb2YgdGhlIGdyb3VwcyB0aGF0IEkn
-bSB3b3JraW5nIHdpdGggaXMgdG8gYnJpbmcgdXBzdGFydCAtLSB0aGUKPiA+Pj4gPiA+PiA+IGlu
-aXQgcmVwbGFjZW1lbnQgLS0gdG8gQ2lzY28ncyBMaW51eCBiYXNlZCBwbGF0Zm9ybSBmb3IgcHJv
-Y2Vzcwo+ID4+PiA+ID4+ID4gbW9uaXRvcmluZyBhbmQgbWFuYWdlbWVudC4gQXMgcGFydCBvZiB0
-aGF0IHdlIChteSB0ZWFtbWF0ZXMgYW5kIEkpCj4gPj4+ID4gPj4gPiB3ZXJlIHRoaW5raW5nIG9m
-IGluY2x1ZGluZyB3aGl0ZWJveCBhbmQgYmxhY2tib3ggdGVzdHMgd2l0aCBMVFAgKExpbnV4Cj4g
-Pj4+ID4gPj4gPiB0ZXN0IHByb2plY3QpIHRvIHRyeSBhbmQgdW5pZnkgdGVzdGluZyBvZiBjcml0
-aWNhbCBMaW51eCBjb21wb25lbnRzLAo+ID4+PiA+ID4+ID4gYW5kIGFsc28gcHJvdmlkZSBkZXRl
-cm1pbmlzdGljIG91dHB1dCBhbHNvIHdpdGggZ3JlYXRlciB2aXNpYmlsaXR5IGluCj4gPj4+ID4g
-Pj4gPiB0aGUgdGVzdGluZyBjb21tdW5pdHkuCj4gPj4+ID4gPj4gPiAgICAgICBMVFAgaGFzIGEg
-bnVtYmVyIG9mIHdoaXRlYm94IGFuZCBibGFja2JveCB0ZXN0cyBpbiBwbGFjZSBbM10sCj4gPj4+
-ID4gPj4gPiBtb3N0IG9mIHRoZSB3aGl0ZWJveCB0ZXN0cyBiZWluZyBDIEFQSSdzIGFuZCB0aGUg
-YmxhY2tib3ggdGVzdHMgYmVpbmcKPiA+Pj4gPiA+PiA+IHNoZWxsIGludm9jYXRpb25zIG9mIFVu
-aXggY29tbWFuZHMsIGFzIHdlbGwgYXMgYSB3ZWxsLWRlZmluZWQgc2V0IG9mCj4gPj4+ID4gPj4g
-PiB0ZXN0IHJlcG9ydGluZyBBUEkncyBhbmQgZnVuY3Rpb25zIGFscmVhZHkgaW4gcGxhY2UuCj4g
-Pj4+ID4gPj4KPiA+Pj4gPiA+PiBBaCEuIFRoYXQgcmVtaW5kcyBtZSBvZiB0aGUgdGVzdGNhc2Vz
-IGZvciBjb21tYW5kcyBpbiBMVFA6Cj4gPj4+ID4gPj4KPiA+Pj4gPiA+PiBodHRwOi8vbHRwLmN2
-cy5zb3VyY2Vmb3JnZS5uZXQvbHRwL2x0cC90ZXN0Y2FzZXMvY29tbWFuZHMvCj4gPj4+ID4gPj4K
-PiA+Pj4gPiA+PiBJIGhhdmUgYmVlbiBtZXJnaW5nIGxvdHMgb2YgcGF0Y2hlcyBhbmQgd2Ugd2Vy
-ZSB0b3RhbGx5IGVuZ2FnZWQgd2l0aCBvdXIKPiA+Pj4gPiA+PiB3aGl0ZSBib3ggdGVzdCBjYXNl
-cywgdGhhdCB3ZSBjb21wbGV0ZWx5IGZvcmdvdCBhYm91dCB0aG9zZSBibGFjayBib3gKPiA+Pj4g
-PiA+PiB0ZXN0IGNhc2VzLCB3aGljaCBhcmUgb2YgaW1tZW5zZSBoZWxwIGZvcjoKPiA+Pj4gPiA+
-Pgo+ID4+PiA+ID4+IDEpIEluY3JlYXNpbmcgY29kZSBjb3ZlcmFnZSBmb3IgdGhlIGtlcm5lbCwK
-PiA+Pj4gPiA+PiAyKSBUZXN0aW5nIHRoZSBhY3R1YWwvbW9zdGx5LXVzZWQgaW50ZXJmYWNlcyB0
-byB0aGUgTGludXggT1MuCj4gPj4+ID4gPj4KPiA+Pj4gPiA+PiBUaGFua3MgR2FycmV0dCBmb3Ig
-cmVtaW5kaW5nIHRoaXMgdmFsdWFibGUgdGVzdGNhc2VzIHBpZWNlLiBBbmQgdGhlCj4gPj4+ID4g
-Pj4gaW1wb3J0YW50IHBvaW50IGhlcmUgdG8gbWFrZSBpczoKPiA+Pj4gPiA+Pgo+ID4+PiA+ID4+
-IFdyaXRpbmcgd2hpdGUgYm94IHRlc3QgY2FzZXMgcmVxdWlyZXMgZmFpciBrbm93bGVkZ2Ugb2Yg
-S2VybmVsCj4gPj4+ID4gPj4gSW50ZXJuYWxzLCB3aGVyZWFzIHRoZSBCbGFja2JveCB0ZXN0IGNh
-c2VzIGp1c3QgcmVxdWlyZXMgdXNlciBrbm93bGVkZ2UKPiA+Pj4gPiA+PiBvZiB0aGUgT1MuIFdp
-dGggZ3VpZGFuY2UgZnJvbSB0aGUgTWFuIFBhZ2VzIGluZm9ybWF0aW9uLCBhIGh1Z2UKPiA+Pj4g
-PiA+PiBjb21tdW5pdHkgb2YgYWRtaW5pc3RyYXRvcnMgYW5kIG5vcm1hbCB1c2VycyBjYW4gd3Jp
-dGUgdGhlc2UgYmxhY2sgYm94Cj4gPj4+ID4gPj4gdGVzdHMuIEFuZCB0aGV5IGFyZSBhIGh1Z2Ug
-Z3JvdXAgb2YgcGVvcGxlIHRvIGNvdW50LiBJIG5lZWQgdG8gbG9vayBpbnRvCj4gPj4+ID4gPj4g
-dGhpcyBzZXJpb3VzbHkgZnJvbSBub3cuCj4gPj4+ID4gPj4KPiA+Pj4gPiA+PiA+ICAgICAgIFNv
-LCBteSBxdWVzdGlvbiBpcyB0d28tZm9sZDoKPiA+Pj4gPiA+PiA+ICAgICAgIDEuIFdvdWxkIHRo
-ZSB1cHN0YXJ0IHByb2plY3QgYmUgd2lsbGluZyB0byB3b3JrIHdpdGggTFRQICh2aWEgbXkKPiA+
-Pj4gPiA+PiA+IHRlYW0gYXMgYSBwcm94eSBpbiB0aGUgYmVnaW5uaW5nKSB0byBlbnRlciBzb21l
-IHVuaXQgdGVzdCBjb2RlIGFuZAo+ID4+PiA+ID4+ID4gb3RoZXIgdGVzdCBjYXNlcyBpbnRvIExU
-UCdzIHRlc3QgZnJhbWV3b3JrIC8gb3ZlcmFsbCB0ZXN0c3VpdGUsIGFuZAo+ID4+PiA+ID4+ID4g
-aW1wcm92ZSBhY2NlcHRhbmNlIGluIHRoZSBMaW51eCB0ZXN0aW5nIGNvbW11bml0eT8KPiA+Pj4g
-PiA+Pgo+ID4+PiA+ID4+IEkgd291bGQgYmUgcHJvdmlkaW5nIHlvdSB0aGUgc3VwcG9ydCB3aXRo
-IHRlc3Rpbmcgb24gdGhlIGFyY2hpdGVjdHVyZXMgaQo+ID4+PiA+ID4+IGhhdmUgYXQgbXkgZGlz
-cG9zYWwgYW5kIHNwZWVkeSBwYXRjaCBtZXJnZSB0byBMVFAuIFdlIGRlZmluaXRlbHkgbmVlZCB0
-bwo+ID4+PiA+ID4+IGRvIHNvbWV0aGluZyB0byBpbmNyZWFzZSB0aGUgY29kZSBjb3ZlcmFnZS4K
-PiA+Pj4gPiA+Pgo+ID4+PiA+ID4+ID4gICAgICAgMi4gV291bGQgZWl0aGVyIGdyb3VwIGJlIHdp
-bGxpbmcgdG8gd29yayB3aXRoIG15IHRlYW0gdG8gaGVscAo+ID4+PiA+ID4+ID4gbWFpbnRhaW4g
-dGhlc2UgdGVzdGNhc2VzIGFuZCBkZXZlbG9wIG5ldyBvbmVzPwo+ID4+PiA+ID4+Cj4gPj4+ID4g
-Pj4gT2YgY291cnNlLCBpIHdpbGwuCj4gPj4+ID4gPj4KPiA+Pj4gPiA+PiA+IFRoYW5rcywKPiA+
-Pj4gPiA+PiA+IC1HYXJyZXR0Cj4gPj4+ID4gPj4gPgo+ID4+PiA+ID4+ID4gUFMuIFNvcnJ5IGZv
-ciB0aGUgY3Jvc3MtcG9zdGluZyA7IEkgdHJ5IG5vdCB0byBkbyB0aGlzLCBidXQKPiA+Pj4gPiA+
-PiA+IGNvbnNpZGVyaW5nIHRoYXQgYm90aCBncm91cHMgY2FuIGJlbmVmaXQgZnJvbSB0aGUgZGlz
-Y3Vzc2lvbiBJIHdhbnRlZAo+ID4+PiA+ID4+ID4gdG8gaW52b2x2ZSBib3RoLgo+ID4+PiA+ID4+
-Cj4gPj4+ID4gPj4gTm90aGluZyB0byB3b3JyeSBhYm91dC4gV2hlbiBpdCBjb21lcyB0byBtYWtp
-bmcgTGludXggYmV0dGVyLCB3ZSBuZWVkCj4gPj4+ID4gPj4gY29sbGFib3JhdGlvbiBvbiB2YXJp
-b3VzIGZyb250cy4gVGhlIGxpdmVzdCBleGFtcGxlIGJlaW5nIHRoZSB3b3JrIGRvbmUKPiA+Pj4g
-PiA+PiBieSBNYXNhdGFrZSBZYW1hdG8gZnJvbSBSZWQgSGF0IGluIHBvcnRpbmcgQ3JhY2tlcmph
-Y2vCtHMKPiA+Pj4gPiA+PiAoaHR0cHM6Ly9zb3VyY2Vmb3JnZS5uZXQvcHJvamVjdHMvY3JhY2tl
-cmphY2spIHJlZ3Jlc3Npb24gdGVzdHMgdG8gTFRQCj4gPj4+ID4gPj4gZm9ybWF0LiBUaGFua3Mg
-R2FycmV0dCBmb3IgdGFraW5nIHRoaXMgaW5pdGlhdGl2ZS4gV2UgbmVlZCB0bwo+ID4+PiA+ID4+
-IGNvbGxhYm9yYXRlIG11Y2ggbW9yZSB3aXRoIG90aGVycyBhcyB3ZWxsLgo+ID4+PiA+ID4+Cj4g
-Pj4+ID4gPj4gUmVnYXJkcy0tCj4gPj4+ID4gPj4gU3VicmF0YQo+ID4+PiA+ID4+Cj4gPj4+ID4g
-Pj4gPgo+ID4+PiA+ID4+ID4gMS4gTFRQIC0tIExpbnV4IHRlc3QgcHJvamVjdDogaHR0cDovL2x0
-cC5zb3VyY2Vmb3JnZS5uZXQvCj4gPj4+ID4gPj4gPiAyLiBVcHN0YXJ0IC0tIGluaXQoMSkgcmVw
-bGFjZW1lbnQ6IGh0dHA6Ly91cHN0YXJ0LnVidW50dS5jb20vCj4gPj4+ID4gPj4gPiAzLiBMVFAg
-Y3Zzd2ViIC0tIGh0dHA6Ly9sdHAuY3ZzLnNvdXJjZWZvcmdlLm5ldC9sdHAvbHRwLyAoc2VlIGRv
-Y3MgZm9yCj4gPj4+ID4gPj4gPiByZWxldmFudCBkb2N1bWVudGF0aW9uIGl0ZW1zLCBsaWIvbHRw
-IGZvciB0ZXN0IGxpYiBBUEkncywgYW5kCj4gPj4+ID4gPj4gPiB0ZXN0Y2FzZXMvY29tbWFuZHMg
-Zm9yIGV4aXN0aW5nIExpbnV4IGNvbW1hbmQgYmxhY2tib3ggdGVzdHMpLgo+ID4+PiA+Cj4gPj4+
-ID4gSSBoYXZlbid0IGZvbGxvd2VkIHRoaXMgdXAsIGJ1dCB0byBiZSBob25lc3Qgb3VyIGdyb3Vw
-IHVzaW5nIHVwc3RhcnQKPiA+Pj4gPiBoYXMgc3RhcnRlZCB1c2luZyBQeXRob24gbm9zZSB0byB3
-cml0ZSB0ZXN0Y2FzZXMgZm9yIGJsYWNrYm94IGxldmVsCj4gPj4+ID4gdGVzdGluZywgYW5kIGl0
-J3MgcHJvdmVuIHRvIGJlIGxhcmdlbHkgc3VjY2Vzc2Z1bCBpbiBmaW5kaW5nIGJhc2ljCj4gPj4+
-ID4gaXNzdWVzIHdpdGhpbiB0aGUgcHJvdmlkZWQgc3BlYyBieSB0aGUgdXBzdGFydCBmb2xrcy4K
-PiA+Pj4gPgo+ID4+PiA+IEkgZG9uJ3Qga25vdyBpZiB0aGUgdGVzdCBjb2RlIGNhbiBiZSBlYXNp
-bHkgY29tbWl0dGVkIGJhY2sgYmVjYXVzZSBpdAo+ID4+PiA+IGhhcyBDaXNjbyBJUCAtLSBJJ2xs
-IHRhbGsgdG8gU2FydmkgKHRlY2ggbGVhZCkgYW5kIENvcmV5ICh0aGUgbWFuYWdlcikKPiA+Pj4g
-PiBhYm91dCB0aGF0Lgo+ID4+Cj4gPj4gR2FycmV0LAo+ID4+Cj4gPj4gQ2FuIHdlIHJldml2ZSB0
-aGlzID8KPiA+Pgo+ID4+IFJlZ2FyZHMtLQo+ID4+IFN1YnJhdGEKPiA+Pgo+ID4+Pgo+ID4+PiBJ
-dCB3b3VsZCBiZSBncmVhdCBpbiBzdWNoIGEgY2FzZS4KPiA+Pj4KPiA+Pj4gPgo+ID4+PiA+IEFz
-IGZvciB3aGl0ZWJveCB0ZXN0aW5nLCB3ZSBzaG91bGQgZGVmaW5pdGVseSBmb2xsb3cgdXAgdGhl
-IGludGlhdGl2ZQo+ID4+PiA+IGZvciB1c2luZyB0c3RfcmVzLgo+ID4+PiA+Cj4gPj4+Cj4gPj4+
-IFllcy4gQW5kIGFzIHlvdSBzYWlkLCBrZWVwIHRoZSBtb21lbnR1bSBnb2luZyBmb3IgaGF2aW5n
-IHRoZSB0c3RfKgo+ID4+PiBmdW5jdGlvbnMgdW5kZXIgdmFyaWVkIHByb2dyYW1taW5nIGxhbmd1
-YWdlLiBMZXQgaXQgdGFrZSBpdMWbIG93biBjb3Vyc2UKPiA+Pj4gYW5kIHRpbWUsIGJ1dCwgd2Ug
-c2hvdWxkIGtlZXAgdXAgdGhlIGdlYXIuCj4gPj4+Cj4gPj4+IFJlZ2FyZHMtLQo+ID4+PiBTdWJy
-YXRhCj4gPj4+Cj4gPj4+ID4gLUdhcnJldHQKPiA+Cj4gPiAgICBObyB0aW1lLgo+ID4gLUdhcnJl
-dHQKPiAKPiBPaywgSSBoYXZlIGEgYml0IG1vcmUgdGltZSBub3cgYW5kIGl0J3MgYmVjb21lIGFu
-IGlzc3VlIENpc2NvIHNpZGUsIHNvCj4gaXQncyBpbXBvcnRhbnQgdGhhdCB0aGlzIGdldHMgZG9u
-ZSBBU0FQLgo+IAo+IFdlIChteSBncm91cCBpbiBDaXNjbykgbmVlZHMgYSBsaWJyYXJ5IHRoYXQn
-cyBMR1BMMi4xL0JTRCBsaWNlbnNlZCBzbwo+IHdlIGRvbid0IHZpb2xhdGUgdGhlIEdQTCwgYW5k
-IEkgZGlkbid0IGdldCBhIHJlc3BvbnNlIGZyb20gU0dJIGFib3V0Cj4gcmVsaWNlbnNpbmcgdGhl
-IGNvbXBvbmVudHMsIHNvIEknbGwgbmVlZCB0byByZWNyZWF0ZSB0aGUgQyBsaWJyYXJ5Cj4gcHJv
-dmlkZWQgdGhlIEFQSSdzIHByb3ZpZGVkIG9uIHRoZSBMVFAgcGFnZS4KPiAKPiBJJ2xsIHNlZSBh
-Ym91dCBnZXR0aW5nIHRoaXMgYWxsIGlyb25lZCBvdXQgaW4gdGhlIG5leHQgdHdvIHdlZWtzLgoK
-QW5kIHRoaXMgPwoKUmVnYXJkcy0tClN1YnJhdGEKCj4gCj4gVGhhbmtzLAo+IC1HYXJyZXR0CgoK
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tCkFyZSB5b3UgYW4gb3BlbiBzb3VyY2UgY2l0aXplbj8gSm9p
-biB1cyBmb3IgdGhlIE9wZW4gU291cmNlIEJyaWRnZSBjb25mZXJlbmNlIQpQb3J0bGFuZCwgT1Is
-IEp1bmUgMTctMTkuIFR3byBkYXlzIG9mIHNlc3Npb25zLCBvbmUgZGF5IG9mIHVuY29uZmVyZW5j
-ZTogJDI1MC4KTmVlZCBhbm90aGVyIHJlYXNvbiB0byBnbz8gMjQtaG91ciBoYWNrZXIgbG91bmdl
-LiBSZWdpc3RlciB0b2RheSEKaHR0cDovL2FkLmRvdWJsZWNsaWNrLm5ldC9jbGs7MjE1ODQ0MzI0
-OzEzNTAzMDM4O3Y/aHR0cDovL29wZW5zb3VyY2VicmlkZ2Uub3JnCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAt
-bGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQv
-bGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+On Mon, 2009-06-22 at 20:34 -0700, Henry Yei wrote:
+> Can someone explain to me the reasoning for the several LTP binaries/includes/tools/libs etc are now installed onto /opt/ltp via PREFIX additions to these makefiles?
+> 
+> I don't see runltp using these at all, instead they use ${LTPROOT} version which are set to the directory they are built by default.
+> 
+
+Because ltp/ltp-devel.spec uses them to create ltp-devel rpms:
+http://sourceforge.net/project/showfiles.php?group_id=3382&package_id=38846,
+
+Regards--
+Subrata
+
+> Thanks,
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Are you an open source citizen? Join us for the Open Source Bridge conference!
+> Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
+> Need another reason to go? 24-hour hacker lounge. Register today!
+> http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
+------------------------------------------------------------------------------
+Are you an open source citizen? Join us for the Open Source Bridge conference!
+Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
+Need another reason to go? 24-hour hacker lounge. Register today!
+http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
