@@ -2,20 +2,32 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1MJ84R-0003yW-5A
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:38:03 +0000
-Received: from fmmailgate01.web.de ([217.72.192.221])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MJ84P-0003XG-Et
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:38:03 +0000
-Date: Tue, 23 Jun 2009 17:41:15 +0200
-From: =?iso-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
-MIME-Version: 1.0
-References: <200906220117.n5M1HTVJ004183@e2.ny.us.ibm.com>
-	<1245768543.4860.65.camel@subratamodak.linux.ibm.com>
-Message-ID: <op.uvzhu1pnu2flwt@debian>
-In-Reply-To: <1245768543.4860.65.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] [PATCH] Fix cleanup procedure in the setuid04 test
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJ7UB-0008KS-SJ
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:00:35 +0000
+Received: from e35.co.us.ibm.com ([32.97.110.153])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MJ7U4-0001wC-QU
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:00:30 +0000
+Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
+	[9.17.195.228])
+	by e35.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5NEr6I0025467
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 08:53:06 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5NF0JlI138960
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 09:00:21 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5NF0F5x020171
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 09:00:15 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <200905200534.n4K5YZnD028353@e32.co.us.ibm.com>
+References: <200905200534.n4K5YZnD028353@e32.co.us.ibm.com>
+Date: Tue, 23 Jun 2009 20:19:07 +0530
+Message-Id: <1245768547.4860.66.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Contribution to LTP
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,76 +40,139 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net
+To: Praveen <praveen@primesoftsolutionsinc.com>
+Cc: ltp-list@lists.sourceforge.net, 'Nathan Straz' <nstraz@redhat.com>, 'Nate Straz' <nate@refried.org>
 
-On Tue, 23 Jun 2009 16:49:03 +0200, Subrata Modak  
-<subrata@linux.vnet.ibm.com> wrote:
+On Wed, 2009-05-20 at 11:06 +0530, Praveen wrote: 
+> Hi Subrata,
+> 
+> Thanks for the information.
+> 
+> I am sure LTP will satisfy my enthusiasm to participate in Opensource.
 
-> On Tue, 2009-05-12 at 19:06 +0200, Jiri Palecek wrote:
->> Cleanup has to be made only once in the parent process; when the
->>  child makes the cleanup itself, the parent has nothing to cleanup,
->>  which makes him sad.
->>
->> Signed-off-by: Jiri Palecek <jpalecek@web.de>
->
-> Thanks.
+Hi Praveen,
 
-Oh no, at the second sight I see I've posted a wrong (old) version of the  
-patch. I'll send a correction shortly.
+Have you found anything interesting to start contributing to ?
 
-Sorry for the buzz
+Regards--
+Subrata
 
-   Jiri Palecek
+> First, I will start with registering to mailing list. 
+> 
+> Thanks again for the information.
+> 
+> Thanks, 
+> Praveen Kumar k
+> PrimeSoft IP Solutions Inc
+> 
+> Phone : 040-27762986/27762987 
+> Skype ID: kpraveen72
+> www.primesoftsolutionsinc.com 
+> 
+> -----Original Message-----
+> From: Subrata Modak [mailto:subrata@linux.vnet.ibm.com] 
+> Sent: Tuesday, May 19, 2009 4:02 PM
+> To: Praveen
+> Cc: ltp-list@lists.sourceforge.net; Nate Straz; Nathan Straz
+> Subject: Re: [LTP] Contribution to LTP
+> 
+> Hi Praveen,
+> 
+> On Tue, 2009-05-19 at 13:43 +0530, Praveen wrote: 
+> > Hi,
+> > 
+> >  
+> > 
+> > I am a C/Shell scripting Developer. I would like to
+> > contribute/participate in LTP.
+> > 
+> >  
+> > 
+> > Please let me know, if I have any opportunity to work with LTP.
+> 
+> You have all the opportunity at your disposal to contribute to LTP. In
+> fact, we need lots of volunteers to contribute to LTP. As, beginner, the
+> first thing to do is just watch over the mailing list to find out how
+> people work. And then there are lots of things in store for you:
+> (And, off course, first subscribe to this list and this is available on
+> subscription basis, which is free:
+> http://sourceforge.net/mail/?group_id=3382),
+> 
+> 1) Pick up some area in kernel for which tests do not exist in LTP (Of
+> course this area should be of your interest). Try to write small tests
+> for them and submit to LTP. It would be better if you track
+> http://kernelnewbies.org/LinuxChanges for the changes and start with a
+> latest stable kernel release,
+> 
+> 2) Execute the existing LTP tests on all the machines available to you,
+> and see if you can hit a LTP/Kernel bug. If it is an LTP issue(s), send
+> the corresponding patch to the mailing list for review,
+> 
+> 3) Make the LTP provision system more better, so that we can be more
+> efficient/effective in running these tests. You can also work towards
+> making it more automated.
+> 
+> The present LTP provisioning engine PAN has lots of drawbacks and it is
+> old. This needs to be updated, or, replaced with something better.
+> Sometime back Nathan Straz posted some comments on it:
+> 
+> http://fedorahosted.org/collie/
+> http://marc.info/?t=122540445800003&r=1&w=2,
+> 
+> I need somebody, who can do a feasibility analysis of the advantages of
+> PAN over collie, and show the fruits of migration from PAN to COLLIE. A
+> workable version of the patch would also be welcome. The work would be
+> little tough as PAN has stabilized and we would be resisting any changes
+> which introduces bug(s) in our existing provisioning environment,
+> 
+> 4) Another important aspect would be to improve documentation for LTP.
+> You can start with by reading individual test cases, understand the code
+> (you will be assisted with the minimal existent description, so, do not
+> worry), refer to man pages, google, and improve upon the test case(s)
+> description. You are free to start from where ever you like.
+> 
+> You are welcome to LTP and i would hope your enthusiasm does not die
+> down soon ;-)
+> 
+> Regards--
+> Subrata
+> 
+> > 
+> >  
+> > 
+> >  
+> > 
+> > Thanks,
+> > 
+> > Praveen Kumar k
+> > 
+> > PrimeSoft IP Solutions Inc 
+> > 
+> > Phone: 040-27762986/27762987 
+> > 
+> > Skype ID: kpraveen72
+> > 
+> > www.primesoftsolutionsinc.com 
+> > 
+> >  
+> > 
+> > 
+> >
+> ----------------------------------------------------------------------------
+> --
+> > Crystal Reports - New Free Runtime and 30 Day Trial
+> > Check out the new simplified licensing option that enables 
+> > unlimited royalty-free distribution of the report engine 
+> > for externally facing server and web deployment. 
+> > http://p.sf.net/sfu/businessobjects
+> > _______________________________________________ Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+> 
+> 
+> 
 
->> ---
->>  testcases/kernel/syscalls/setuid/setuid04.c |    7 +++----
->>  1 files changed, 3 insertions(+), 4 deletions(-)
->>
->> diff --git a/testcases/kernel/syscalls/setuid/setuid04.c  
->> b/testcases/kernel/syscalls/setuid/setuid04.c
->> index 18f1d90..26a3868 100644
->> --- a/testcases/kernel/syscalls/setuid/setuid04.c
->> +++ b/testcases/kernel/syscalls/setuid/setuid04.c
->> @@ -114,7 +114,7 @@ void do_master_child()
->>  	int status;
->>
->>  	if (setuid(ltpuser->pw_uid) == -1) {
->> -		tst_brkm(TBROK, cleanup,
->> +		tst_brkm(TBROK, tst_exit,
->>  			 "setuid failed to set the effective uid to %d",
->>  			 ltpuser->pw_uid);
->>  	}
->> @@ -143,7 +143,7 @@ void do_master_child()
->>
->>  		pid = FORK_OR_VFORK();
->>  		if (pid < 0)
->> -			tst_brkm(TBROK, cleanup, "Fork failed");
->> +			tst_brkm(TBROK, tst_exit, "Fork failed");
->>
->>  		if (pid == 0) {
->>  			int tst_fd2;
->> @@ -160,13 +160,12 @@ void do_master_child()
->>
->>  			if (TEST_ERRNO == EACCES) {
->>  				tst_resm(TPASS, "open returned errno EACCES");
->> -				exit(0);
->>  			} else {
->>  				tst_resm(TFAIL,
->>  					 "open returned unexpected errno - %d",
->>  					 TEST_ERRNO);
->> -				exit(-1);
->>  			}
->> +			tst_exit();
->>  		} else {
->>  			/* Wait for son completion */
->>  			waitpid(pid, &status, 0);
->
-
-
-
--- 
-Using Opera's revolutionary e-mail client: http://www.opera.com/mail/
 
 ------------------------------------------------------------------------------
 Are you an open source citizen? Join us for the Open Source Bridge conference!
