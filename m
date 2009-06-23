@@ -1,25 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1MJdk7-000769-3V
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 01:27:11 +0000
-Received: from gateway-1237.mvista.com ([63.81.120.158])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MJdk4-0003Ep-Oq
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 01:27:10 +0000
-Received: from svexch01.mvista.com (svexch01.mvista.com [10.0.0.82])
-	by hermes.mvista.com (Postfix) with ESMTP id 83DC91AD3D
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 24 Jun 2009 17:32:52 -0700 (PDT)
-Content-class: urn:content-classes:message
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1MJ84R-0003yW-5A
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:38:03 +0000
+Received: from fmmailgate01.web.de ([217.72.192.221])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MJ84P-0003XG-Et
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:38:03 +0000
+Date: Tue, 23 Jun 2009 17:41:15 +0200
+From: =?iso-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C9F52C.798B0E74"
-Date: Wed, 24 Jun 2009 17:32:52 -0700
-Message-ID: <8368651DACC1964480F951191B94A078BC0F2A@svexch01.mvista.com>
-From: "Henry Yei" <hyei@mvista.com>
-Subject: [LTP] [PATCH] splice01: check prerequisite of filesystem in actual
-	test/tmp directory rather than current directory
+References: <200906220117.n5M1HTVJ004183@e2.ny.us.ibm.com>
+	<1245768543.4860.65.camel@subratamodak.linux.ibm.com>
+Message-ID: <op.uvzhu1pnu2flwt@debian>
+In-Reply-To: <1245768543.4860.65.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [PATCH] Fix cleanup procedure in the setuid04 test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,69 +25,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-This is a multi-part message in MIME format.
-
-------_=_NextPart_001_01C9F52C.798B0E74
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-Hello,
-
-I accidentally submitted this patch previously without a subject, not =
-sure if it gwoudl get on the radar, hence the resubmission.
-
-This is a patch for the splice01 test. Previously the test was checking =
-if the current working directory was NFS based as which the test. The =
-patch changes this test to check whether the test directory is on NFS, =
-as that is actually where the test gets run.=20
-
-Henry Yei (QA)
-MontaVista Software, Inc.
-hyei@mvista.com
-
-=20
-
-------_=_NextPart_001_01C9F52C.798B0E74
-Content-Type: application/octet-stream;
-	name="splice01.patch"
-Content-Transfer-Encoding: base64
-Content-Description: splice01.patch
-Content-Disposition: attachment;
-	filename="splice01.patch"
-
-LS0tIGx0cC1mdWxsLTIwMDkwNTMxL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc3BsaWNlL3Nw
-bGljZTAxLmMJMjAwOS0wMy0yMyAwNjozNjowNi4wMDAwMDAwMDAgLTA3MDAKKysrIGx0cC90ZXN0
-Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NwbGljZS9zcGxpY2UwMS5jCTIwMDktMDYtMjMgMTM6Mzc6
-MzEuMDE3MzMzNjAwIC0wNzAwCkBAIC05NiwxMiArOTYsMTQgQEAKIAlzZXR1cCgpOwogCiAJLyoK
-LQkgKiBjaGVjayBpZiB0aGUgY3VycmVudCBmaWxlc3lzdGVtIGlzIG5mcworCSAqIGNoZWNrIGlm
-IHRoZSBjdXJyZW50IGZpbGVzeXN0ZW0gb2YgdGhlIHRlc3QgZGlyZWN0b3J5IGlzIG5mcwogCSAq
-LworCXRzdF90bXBkaXIoKTsKIAlpZiAodHN0X2lzX2N3ZF9uZnMoKSkgewogCQl0c3RfYnJrbShU
-Q09ORiwgY2xlYW51cCwKIAkJCSAiQ2Fubm90IGRvIHNwbGljZSBvbiBhIGZpbGUgbG9jYXRlZCBv
-biBhbiBORlMgZmlsZXN5c3RlbSIpOwogCX0KKwl0c3Rfcm1kaXIoKTsKIAogCS8qCiAJICogY2hl
-Y2sgbG9vcGluZyBzdGF0ZSBpZiAtYyBvcHRpb24gZ2l2ZW4K
-
-------_=_NextPart_001_01C9F52C.798B0E74
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net
+
+On Tue, 23 Jun 2009 16:49:03 +0200, Subrata Modak  
+<subrata@linux.vnet.ibm.com> wrote:
+
+> On Tue, 2009-05-12 at 19:06 +0200, Jiri Palecek wrote:
+>> Cleanup has to be made only once in the parent process; when the
+>>  child makes the cleanup itself, the parent has nothing to cleanup,
+>>  which makes him sad.
+>>
+>> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+>
+> Thanks.
+
+Oh no, at the second sight I see I've posted a wrong (old) version of the  
+patch. I'll send a correction shortly.
+
+Sorry for the buzz
+
+   Jiri Palecek
+
+>> ---
+>>  testcases/kernel/syscalls/setuid/setuid04.c |    7 +++----
+>>  1 files changed, 3 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/testcases/kernel/syscalls/setuid/setuid04.c  
+>> b/testcases/kernel/syscalls/setuid/setuid04.c
+>> index 18f1d90..26a3868 100644
+>> --- a/testcases/kernel/syscalls/setuid/setuid04.c
+>> +++ b/testcases/kernel/syscalls/setuid/setuid04.c
+>> @@ -114,7 +114,7 @@ void do_master_child()
+>>  	int status;
+>>
+>>  	if (setuid(ltpuser->pw_uid) == -1) {
+>> -		tst_brkm(TBROK, cleanup,
+>> +		tst_brkm(TBROK, tst_exit,
+>>  			 "setuid failed to set the effective uid to %d",
+>>  			 ltpuser->pw_uid);
+>>  	}
+>> @@ -143,7 +143,7 @@ void do_master_child()
+>>
+>>  		pid = FORK_OR_VFORK();
+>>  		if (pid < 0)
+>> -			tst_brkm(TBROK, cleanup, "Fork failed");
+>> +			tst_brkm(TBROK, tst_exit, "Fork failed");
+>>
+>>  		if (pid == 0) {
+>>  			int tst_fd2;
+>> @@ -160,13 +160,12 @@ void do_master_child()
+>>
+>>  			if (TEST_ERRNO == EACCES) {
+>>  				tst_resm(TPASS, "open returned errno EACCES");
+>> -				exit(0);
+>>  			} else {
+>>  				tst_resm(TFAIL,
+>>  					 "open returned unexpected errno - %d",
+>>  					 TEST_ERRNO);
+>> -				exit(-1);
+>>  			}
+>> +			tst_exit();
+>>  		} else {
+>>  			/* Wait for son completion */
+>>  			waitpid(pid, &status, 0);
+>
+
+
+
+-- 
+Using Opera's revolutionary e-mail client: http://www.opera.com/mail/
 
 ------------------------------------------------------------------------------
-
-------_=_NextPart_001_01C9F52C.798B0E74
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Are you an open source citizen? Join us for the Open Source Bridge conference!
+Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
+Need another reason to go? 24-hour hacker lounge. Register today!
+http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------_=_NextPart_001_01C9F52C.798B0E74--
-
