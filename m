@@ -1,32 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1ME61g-0001XT-4L
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2009 18:26:24 +0000
-Received: from e9.ny.us.ibm.com ([32.97.182.139])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1ME61b-0007gc-12
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2009 18:26:23 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e9.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n59IDuIV013010
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2009 14:13:56 -0400
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n59IQIwL251618
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2009 14:26:18 -0400
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n59IQITV011915
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2009 14:26:18 -0400
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJ7rs-0006DO-W1
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:25:04 +0000
+Received: from e34.co.us.ibm.com ([32.97.110.152])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MJ7rr-0002nQ-IP
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:25:04 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e34.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5NFLpIj024413
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 09:21:51 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5NFGOe4199302
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 09:24:46 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5NF7MEa001018
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 09:07:22 -0600
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200906081339.54153.jpalecek@web.de>
-References: <200906081339.54153.jpalecek@web.de>
-Date: Tue, 09 Jun 2009 23:55:24 +0530
-Message-Id: <1244571925.5497.27.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <200906220256.n5M2uvax024525@e33.co.us.ibm.com>
+References: <200906220256.n5M2uvax024525@e33.co.us.ibm.com>
+Date: Tue, 23 Jun 2009 20:20:08 +0530
+Message-Id: <1245768608.4860.83.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix the error handling logic in
-	power_management	tests
+Subject: Re: [LTP] [PATCH] Adapt the cgroup/test_6_2 test to the
+	various	ways clone is called on different architectures
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -43,20 +44,8 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Jiri Palecek <jpalecek@web.de>
 Cc: ltp-list@lists.sourceforge.net
 
-On Mon, 2009-06-08 at 13:39 +0200, Jiri Palecek wrote: 
-> Hello,
-> 
-> there is a problem with error reporting in power_management tests. Particularly, it wouldn't report failure to pan when one of the tests failed. This patch does the following:
-> 
->   - make it actually fail when one of the tests fails
-> 
->   - assume return values other than 1 (except 0, of course) are
->     errors, too
-> 
->   - write PASS messages for successful tests
-> 
-> Regards
->     Jiri Palecek
+On Fri, 2009-06-19 at 16:14 +0200, Jiri Palecek > wrote: 
+> Code shamelessly taken from clone01 test
 > 
 > Signed-off-by: Jiri Palecek <jpalecek@web.de>
 
@@ -66,198 +55,88 @@ Regards--
 Subrata
 
 > ---
->  testcases/kernel/power_management/pm_include.sh |    1 +
->  testcases/kernel/power_management/runpwtests.sh |   84 ++++++++++++++---------
->  2 files changed, 52 insertions(+), 33 deletions(-)
+>  .../kernel/controllers/cgroup/clone_platform.h     |   34 ++++++++++++++++++++
+>  testcases/kernel/controllers/cgroup/test_6_2.c     |   12 ++++++-
+>  2 files changed, 45 insertions(+), 1 deletions(-)
+>  create mode 100644 testcases/kernel/controllers/cgroup/clone_platform.h
 > 
-> diff --git a/testcases/kernel/power_management/pm_include.sh b/testcases/kernel/power_management/pm_include.sh
-> index 389387c..acbd476 100755
-> --- a/testcases/kernel/power_management/pm_include.sh
-> +++ b/testcases/kernel/power_management/pm_include.sh
-> @@ -81,6 +81,7 @@ function check_input() {
->  		PASS="Testcase PASS"
->  		FAIL="Testcase FAIL"
->  	fi
-> +	RC=0
->  	for input in ${1}
->  	do
->  		echo ${input} > ${test_file} 2>/dev/null
-> diff --git a/testcases/kernel/power_management/runpwtests.sh b/testcases/kernel/power_management/runpwtests.sh
-> index 32fb59c..e9be303 100755
-> --- a/testcases/kernel/power_management/runpwtests.sh
-> +++ b/testcases/kernel/power_management/runpwtests.sh
-> @@ -60,8 +60,10 @@ fi
->  # Checking sched_mc sysfs interface
->  #check_config.sh config_sched_mc || RC=$?
->  if [ -f /sys/devices/system/cpu/sched_mc_power_savings ] ; then
-> -	test_sched_mc.sh; RC=$?
-> -	if [ $RC -eq 1 ] ; then
-> +	if test_sched_mc.sh ; then
-> +		tst_resm TPASS "SCHED_MC sysfs tests passed"
-> +	else
-> +		RC=$?
->  		tst_resm TFAIL "SCHED_MC sysfs tests failed"
->  	fi
->  	# Test CPU consolidation for corresponding sched_mc
-> @@ -78,26 +80,26 @@ if [ -f /sys/devices/system/cpu/sched_mc_power_savings ] ; then
->  					if [ $sched_smt -eq 0 -a $sched_mc -eq 0 ]; then 
->  						continue
->  					fi
-> -					cpu_consolidation.py -c $sched_mc -t $sched_smt; RC=$?
-> -					if [ $RC -eq 1 ] ; then
-> -						tst_resm TFAIL "cpu consolidation \
-> - sched_mc=$sched_mc, sched_smt=$sched_smt"
-> -					else
-> +					if cpu_consolidation.py -c $sched_mc -t $sched_smt ; then
->  						tst_resm TPASS "cpu consolidation sched_mc=$sched_mc,\
->   sched_smt=$sched_smt"
-> +					else
-> +						RC=$?
-> +						tst_resm TFAIL "cpu consolidation \
-> + sched_mc=$sched_mc, sched_smt=$sched_smt"
->  					fi
->  				done
->  			done
->  		else
->  			# Test CPU consolidation for sched_mc=1 & 2
->  			for sched_mc in `seq 1 2`; do
-> -				cpu_consolidation.py -c $sched_mc; RC=$?
-> -				if [ $RC -eq 1 ] ; then
-> -					tst_resm TFAIL "cpu consolidation test\
-> - sched_mc_power set to $sched_mc"
-> -				else
-> +				if cpu_consolidation.py -c $sched_mc ; then
->  					tst_resm TPASS "cpu consolidation test for \
->  sched_mc_power set to $sched_mc"
-> +				else
-> +					RC=$?
-> +					tst_resm TFAIL "cpu consolidation test\
-> + sched_mc_power set to $sched_mc"
->  				fi
->  			done
->  		fi
-> @@ -110,24 +112,24 @@ sched_mc_power set to $sched_mc"
->                          continue
->                      fi
-> 
-> -					sched_domain.py -c $sched_mc -t $sched_smt; RC=$?
-> -					if [ $RC -eq 1 ] ; then
-> -						tst_resm TFAIL "sched domain test sched_mc=$sched_mc,\
-> -sched_smt=$sched_smt "
-> -					else    
-> +					if sched_domain.py -c $sched_mc -t $sched_smt; then
->  						tst_resm TPASS "sched domain test sched_mc=$sched_mc,\
->  sched_smt=$sched_smt "
-> +					else
-> +						RC=$?
-> +						tst_resm TFAIL "sched domain test sched_mc=$sched_mc,\
-> +sched_smt=$sched_smt "
->  					fi
->  				done
->  			done
->  		else
->  			# Validate CPU level sched domain topology validation
->  			for sched_mc in `seq 1 2`; do
-> -				sched_domain.py -c $sched_mc; RC=$?
-> -				if [ $RC -eq 1 ] ; then
-> -					tst_resm TFAIL "sched domain test for sched_mc=$sched_mc "
-> -				else
-> +				if sched_domain.py -c $sched_mc ; then
->  					tst_resm TPASS "sched domain test for sched_mc=$sched_mc "
-> +				else
-> +					RC=$?
-> +					tst_resm TFAIL "sched domain test for sched_mc=$sched_mc "
->  				fi
->  			done
->  			
-> @@ -139,26 +141,35 @@ fi
->  # Checking cpufreq sysfs interface files
->  #check_config.sh config_cpu_freq || RC=$?
->  if [ -d /sys/devices/system/cpu/cpu0/cpufreq ] ; then
-> -	check_cpufreq_sysfs_files.sh; RC=$?
-> -	if [ $RC -eq 1 ] ; then
-> +	if check_cpufreq_sysfs_files.sh ; then
-> +		tst_resm TPASS "CPUFREQ sysfs tests "
-> +	else
-> +		RC=$?
->  		tst_resm TFAIL "CPUFREQ sysfs tests "
->  	fi
-> 
->  	# Changing governors
-> -	change_govr.sh; RC=$?
-> -	if [ $RC -eq 1 ] ; then
-> +	if change_govr.sh ; then
-> +		tst_resm TPASS "Changing governors "
-> +	else
-> +		RC=$?
->  		tst_resm TFAIL "Changing governors "
->  	fi
-> 
->  	# Changing frequencies
-> -	change_freq.sh; RC=$?
-> -	if [ $RC -eq 1 ] ; then
-> +	if change_freq.sh ; then
-> +		tst_resm TPASS "Changing frequncies "
-> +	else
-> +		RC=$?
->  		tst_resm TFAIL "Changing frequncies "
->  	fi
-> 
->  	# Loading and Unloading governor related kernel modules
-> -	pwkm_load_unload.sh; RC=$?
-> -	if [ $RC -eq 1 ] ; then
-> +	if pwkm_load_unload.sh ; then
-> +		tst_resm TPASS "Loading and Unloading of governor kernel \
-> +		modules got failed"
-> +	else
-> +		RC=$?
->  		tst_resm TFAIL "Loading and Unloading of governor kernel \
->  		modules got failed"
->  	fi
-> @@ -167,23 +178,30 @@ else
->  fi
-> 
->  # Checking cpuidle sysfs interface files
-> -check_cpuidle_sysfs_files.sh; RC=$?
-> -if [ $RC -eq 1 ] ; then
-> +if check_cpuidle_sysfs_files.sh ; then
-> +	tst_resm TPASS "CPUIDLE sysfs tests failed"
-> +else
-> +	RC=$?
->  	tst_resm TFAIL "CPUIDLE sysfs tests failed"
->  fi
-> 
->  # Test sched_smt_power_savings interface on HT machines
->  if [ -f /sys/devices/system/cpu/sched_smt_power_savings ] ; then
-> -	test_sched_smt.sh; RC=$?
-> -	if [ $RC -eq 1 ] ; then
-> +	if test_sched_smt.sh ; then
-> +		tst_resm TPASS "SCHED_MC sysfs tests failed"
-> +	else
-> +		RC=$?
->  		tst_resm TFAIL "SCHED_MC sysfs tests failed"
->  	fi
->  else
->  	hyper_threaded=$(is_hyper_threaded)
->  	if [ $hyper_threaded -eq 1 ]; then
->  		tst_resm TFAIL "Required kernel configuration for SCHED_SMT NOT set"
-> +		RC=1
->  	else
->  		tst_resm TCONF "Required Hyper Threading support in the\
->  system under test"
->  	fi
->  fi
+> diff --git a/testcases/kernel/controllers/cgroup/clone_platform.h b/testcases/kernel/controllers/cgroup/clone_platform.h
+> new file mode 100644
+> index 0000000..1785dd1
+> --- /dev/null
+> +++ b/testcases/kernel/controllers/cgroup/clone_platform.h
+> @@ -0,0 +1,34 @@
+> +/*
+> + * Copyright (c) 2003 Silicon Graphics, Inc.  All Rights Reserved.
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of version 2 of the GNU General Public License as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * You should have received a copy of the GNU General Public License along
+> + * with this program; if not, write the Free Software Foundation, Inc., 59
+> + * Temple Place - Suite 330, Boston MA 02111-1307, USA.
+> + *
+> + */
+> +/* Common platform specific defines for the clone system call tests */
 > +
-> +exit $RC
-> \ No newline at end of file
+> +//#define CHILD_STACK_SIZE 8192
+> +#define CHILD_STACK_SIZE 16384
+> +
+> +#if defined (__s390__) || (__s390x__)
+> +#define clone __clone
+> +extern int __clone(int(void*),void*,int,void*);
+> +#elif defined(__ia64__)
+> +#define clone2 __clone2
+> +/* Prototype provided by David Mosberger				*/
+> +/* int  __clone2(int (*fn) (void *arg), void *child_stack_base,		*/
+> +/* 		size_t child_stack_size, int flags, void *arg,		*/
+> +/*		pid_t *parent_tid, void *tls, pid_t *child_tid)		*/
+> +extern int  __clone2(int (*fn) (void *arg), void *child_stack_base, 
+> +		size_t child_stack_size, int flags, void *arg, 
+> +		pid_t *parent_tid, void *tls, pid_t *child_tid); 
+> +#endif
+> diff --git a/testcases/kernel/controllers/cgroup/test_6_2.c b/testcases/kernel/controllers/cgroup/test_6_2.c
+> index e5bddb2..79f5c20 100644
+> --- a/testcases/kernel/controllers/cgroup/test_6_2.c
+> +++ b/testcases/kernel/controllers/cgroup/test_6_2.c
+> @@ -24,6 +24,8 @@
+>  #include <unistd.h>
+>  #include <sched.h>
+> 
+> +#include "clone_platform.h"
+> +
+>  #define DEFAULT_USEC	30000
+> 
+>  int foo(void __attribute__((unused)) *arg)
+> @@ -42,7 +44,15 @@ int main(int argc, char **argv)
+> 
+>  	while (1) {
+>  		usleep(usec);
+> -		clone(foo, stack+4096, CLONE_NEWNS, NULL);
+> +#if defined(__hppa__)
+> +		clone(foo, stack, CLONE_NEWNS, NULL);
+> +#elif defined(__ia64__)
+> +		clone2(foo, stack,
+> +			    4096, CLONE_NEWNS, NULL, NULL, NULL, NULL);
+> +#else
+> +		clone
+> +		     (foo, stack + 4096, CLONE_NEWNS, NULL);
+> +#endif
+>  	}
+> 
+>  	return 0;
 
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing 
-server and web deployment.
-http://p.sf.net/sfu/businessobjects
+Are you an open source citizen? Join us for the Open Source Bridge conference!
+Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
+Need another reason to go? 24-hour hacker lounge. Register today!
+http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
