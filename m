@@ -1,27 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <rohit.170309@gmail.com>) id 1MB6xz-0002jQ-EO
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2009 12:50:15 +0000
-Received: from fg-out-1718.google.com ([72.14.220.155])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MB6xu-0007i9-K9
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2009 12:50:15 +0000
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <pradeepkumars@in.ibm.com>) id 1MJ5nO-0007DR-2X
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 13:12:18 +0000
+Received: from e28smtp03.in.ibm.com ([59.145.155.3])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MJ5nL-0004Wl-R2
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 13:12:18 +0000
+Received: from d28relay04.in.ibm.com (d28relay04.in.ibm.com [9.184.220.61])
+	by e28smtp03.in.ibm.com (8.13.1/8.13.1) with ESMTP id n5NDC52F029882
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 18:42:05 +0530
+Received: from d28av05.in.ibm.com (d28av05.in.ibm.com [9.184.220.67])
+	by d28relay04.in.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5NDC5942048166
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 18:42:05 +0530
+Received: from d28av05.in.ibm.com (loopback [127.0.0.1])
+	by d28av05.in.ibm.com (8.13.1/8.13.3) with ESMTP id n5NDC5Sk016035
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 23:12:05 +1000
+Received: from d23ml066.in.ibm.com (d23ml066.in.ibm.com [9.124.105.43])
+	by d28av05.in.ibm.com (8.13.1/8.12.11) with ESMTP id n5NDC5WP016024
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 23:12:05 +1000
+Message-ID: <OF7F605455.F06BC5F9-ON652575DE.0046FE13-652575DE.00488F83@in.ibm.com>
+From: Pradeep K Surisetty <pradeepkumars@in.ibm.com>
+Date: Tue, 23 Jun 2009 18:39:29 +0530
 MIME-Version: 1.0
-In-Reply-To: <1243601687.5188.34.camel@subratamodak.linux.ibm.com>
-References: <20090526142706.20166.3813.sendpatchset@subratamodak.linux.ibm.com>
-	<522C1DF17AF50042AD8AE87F7887BD3D0158B359A4@exch.hq.tensilica.com>
-	<d51f89b0905262344h46722756vb255541a47904dbe@mail.gmail.com>
-	<522C1DF17AF50042AD8AE87F7887BD3D0158B35AB4@exch.hq.tensilica.com>
-	<1243434255.10447.19.camel@subratamodak.linux.ibm.com>
-	<522C1DF17AF50042AD8AE87F7887BD3D0158B35ACE@exch.hq.tensilica.com>
-	<1243601687.5188.34.camel@subratamodak.linux.ibm.com>
-Date: Mon, 1 Jun 2009 18:17:00 +0530
-Message-ID: <d51f89b0906010547r675533b2v2a2d36a7c07beba9@mail.gmail.com>
-From: rohit verma <rohit.170309@gmail.com>
-Subject: Re: [LTP] [PATCH] Detect test results more accurately when
-	generating HTML
+Subject: [LTP] : personality test case build fails
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,54 +38,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: Ltp-List <ltp-list@lists.sf.net>
+To: ltp-list@lists.sourceforge.net
+Cc: Subrata Modak1 <subrata.modak@in.ibm.com>, James Takahashi <jmtt@us.ibm.com>
 
-Hi Subrata,
 
-PFA the patch for the changes to pan driver for a possible fix to the
-report generation issue.
+Here is the list of platforms on which "personality test case" fails.
 
-I have modified genhtml.pl script to reflect changes in pan driver.
+Platforms:
+e326,x366
 
-Note: The 'Initiation-status' column is now present after Test-output column.
+kernel:
+2.6.16.60-0.46.6-smp
 
-Please check the same and provide your feedback.
+Build Failure:
 
-Regards,
-Rohit.
+cc -I../../../../include -Wall    personality01.c  -L../../../../lib -lltp
+-o personality01
+/tmp/cc2aVCsG.o: In function `main':
+personality01.c:(.text+0x58): undefined reference to `personality'
+personality01.c:(.text+0xb6): undefined reference to `personality'
+personality01.c:(.text+0x1a5): undefined reference to `personality'
+collect2: ld returned 1 exit status
+make: *** [personality01] Error 1
 
-On Fri, May 29, 2009 at 6:24 PM, Subrata Modak
-<subrata@linux.vnet.ibm.com> wrote:
-> On Wed, 2009-05-27 at 07:58 -0700, Marc Gauthier wrote:
->> Subrata Modak wrote:
->> > On Wed, 2009-05-27 at 05:05 -0700, Marc Gauthier wrote:
->> > > Just so you know, the updated genhtml.pl script recently submitted
->> > > should work just fine without changes, when moving status after
->> > > <<<execution_status>>> (it only looks at tag names, not positions).
->> >
->> > Be careful, it looks for <<<execution_status>>> only in between
->> > <<test_start>> & <<test_output>>.
->>
->> You mean, between <<<test_start>>> and <<<test_end>>> ?
->> (the script I submitted recently that is, was careful about this)
->
-> You made changes in genhtml.pl. I want the change(s) in ltp-pan.c.
->
-> Regards--
-> Subrata
->
->>
->> -Marc
->
->
+Subrata,
+Can you point me, if any work around exists for this.
+
+-Pradeep
+
 
 ------------------------------------------------------------------------------
-Register Now for Creativity and Technology (CaT), June 3rd, NYC. CaT 
-is a gathering of tech-side developers & brand creativity professionals. Meet
-the minds behind Google Creative Lab, Visual Complexity, Processing, & 
-iPhoneDevCamp as they present alongside digital heavyweights like Barbarian 
-Group, R/GA, & Big Spaceship. http://p.sf.net/sfu/creativitycat-com 
+Are you an open source citizen? Join us for the Open Source Bridge conference!
+Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
+Need another reason to go? 24-hour hacker lounge. Register today!
+http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
