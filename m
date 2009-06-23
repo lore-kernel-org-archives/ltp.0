@@ -1,30 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1MLenC-0001kC-LP
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 14:58:42 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MLen8-00033T-Md
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 14:58:42 +0000
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJ7JO-0006cz-PT
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 14:49:26 +0000
+Received: from e7.ny.us.ibm.com ([32.97.182.137])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MJ7JN-0000kD-Vb
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 14:49:26 +0000
 Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e8.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5UElo87017939
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 10:47:50 -0400
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by e7.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5NEarEA003617
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 10:36:53 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
 	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5UEwbYn256766
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 10:58:37 -0400
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5UEwbL0007504
-	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 10:58:37 -0400
-From: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Date: Tue, 30 Jun 2009 20:28:33 +0530
-Message-Id: <20090630145833.11163.78843.sendpatchset@localhost.localdomain>
-In-Reply-To: <20090630145706.11163.54040.sendpatchset@localhost.localdomain>
-References: <20090630145706.11163.54040.sendpatchset@localhost.localdomain>
-Subject: [LTP] [Patch 10/10]Patch to add another command file in runtest
+	n5NEnMTv247228
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 10:49:22 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5NEkpXO028603
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 10:47:01 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <EC59EC96-055B-4AC8-BDEA-02C44A897AA5@gmail.com>
+References: <EC59EC96-055B-4AC8-BDEA-02C44A897AA5@gmail.com>
+Date: Tue, 23 Jun 2009 20:17:57 +0530
+Message-Id: <1245768477.4860.51.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Makefile improvement patches -- synced against git / HEAD
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,23 +36,41 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>, Nate Straz <nate@refried.org>
 
-[Patch 10/10]Patch to add another command file in runtest
+Garret,
 
-Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+Any progress recently in this work ?
 
-diff -uprN ltp_orig/runtest/power_management_tests_exclusive ltp_patched/runtest/power_management_tests_exclusive
---- ltp_orig/runtest/power_management_tests_exclusive	1970-01-01 05:30:00.000000000 +0530
-+++ ltp_patched/runtest/power_management_tests_exclusive	2009-06-30 16:25:28.000000000 +0530
-@@ -0,0 +1 @@
-+POWER_MANAGEMENT runpwtests.sh -exclusive
+Regards--
+Subrata
+
+On Mon, 2008-07-28 at 09:17 -0700, Garrett Cooper wrote: 
+> ***********************
+> Warning: Your file, ltp-bleed.diff.bz2/ltp-bleed.diff.bz2, is larger than 20480 KB after decompression and cannot be scanned.
+> ***********************
+> 
+> 
+> Hi all,
+> 	Here's the patchset again, synced against git / HEAD as of a few days  
+> ago.
+> 	I'm new to git so I'm not sure what the best means of doing a merge  
+> is and it appears to have found a lot of unnecessary changes in  
+> testcases/open_hpi_testsuite, which has bloated the diff a lot (again).
+> 	Questions and comments are welcome as always.
+> -Garrett
+> 
+
 
 ------------------------------------------------------------------------------
+Are you an open source citizen? Join us for the Open Source Bridge conference!
+Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
+Need another reason to go? 24-hour hacker lounge. Register today!
+http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
