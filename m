@@ -2,32 +2,31 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1ME60y-0003ye-75
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2009 18:25:40 +0000
-Received: from e37.co.us.ibm.com ([32.97.110.158])
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJ7WJ-0003Zd-Rv
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:02:47 +0000
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
 	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1ME60x-0001bP-BV
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2009 18:25:40 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e37.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n59IOxpW027543
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2009 12:24:59 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n59IPc3c259988
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2009 12:25:38 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n59IPcet032582
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2009 12:25:38 -0600
+	(Exim 4.69) id 1MJ7WA-00008b-Rs
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:02:42 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e8.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5NEpl6k017337
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 10:51:48 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5NF2VfV229926
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 11:02:31 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5NF2V1Q016710
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 11:02:31 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200906081322.58916.jpalecek@web.de>
-References: <200906081322.58916.jpalecek@web.de>
-Date: Tue, 09 Jun 2009 23:55:00 +0530
-Message-Id: <1244571902.5497.22.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <200906220118.n5M1I1Hp029590@e33.co.us.ibm.com>
+References: <200906220118.n5M1I1Hp029590@e33.co.us.ibm.com>
+Date: Tue, 23 Jun 2009 20:19:31 +0530
+Message-Id: <1245768571.4860.71.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Don't create the message queue in mq_open01
-	when	the test specifies O_CREAT flag
+Subject: Re: [LTP] [PATCH] Add test environment variables (TCID et al.)
+	to	tpm_version_tests.sh
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -44,9 +43,13 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Jiri Palecek <jpalecek@web.de>
 Cc: ltp-list@lists.sourceforge.net
 
-On Mon, 2009-06-08 at 13:22 +0200, Jiri Palecek wrote: 
-> The tests need to create the message queue themselves to specify the
->  creation attributes
+On Tue, 2009-06-09 at 00:14 +0200, Jiri Palecek > wrote: 
+> Hello,
+> 
+> this patch adds variables needed for tst_* routines into the tpm_version_tests.sh
+> 
+> Regards
+>     Jiri Palecek
 > 
 > Signed-off-by: Jiri Palecek <jpalecek@web.de>
 
@@ -56,30 +59,31 @@ Regards--
 Subrata
 
 > ---
->  testcases/kernel/syscalls/mq_open/mq_open01.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
+>  .../tpm-tools/tpm/tpm_version/tpm_version_tests.sh |    4 ++++
+>  1 files changed, 4 insertions(+), 0 deletions(-)
 > 
-> diff --git a/testcases/kernel/syscalls/mq_open/mq_open01.c b/testcases/kernel/syscalls/mq_open/mq_open01.c
-> index 205de66..f9c2f08 100644
-> --- a/testcases/kernel/syscalls/mq_open/mq_open01.c
-> +++ b/testcases/kernel/syscalls/mq_open/mq_open01.c
-> @@ -315,7 +315,7 @@ static int do_test(struct test_case *tc)
->           * Execute system call
->           */
+> diff --git a/testcases/commands/tpm-tools/tpm/tpm_version/tpm_version_tests.sh b/testcases/commands/tpm-tools/tpm/tpm_version/tpm_version_tests.sh
+> index 0fb54cd..dd2e5b9 100755
+> --- a/testcases/commands/tpm-tools/tpm/tpm_version/tpm_version_tests.sh
+> +++ b/testcases/commands/tpm-tools/tpm/tpm_version/tpm_version_tests.sh
+> @@ -17,6 +17,10 @@
+>  # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+>  #
 > 
-> -	if (tc->ttype != NO_SPACE) {
-> +	if (tc->ttype != NO_SPACE && !(tc->oflag & O_CREAT)) {
->                  errno = 0;
->                  TEST(sys_ret = mq_open(QUEUE_NAME, O_CREAT|O_EXCL|O_RDWR, S_IRWXU, NULL));
->                  sys_errno = errno;
+> +export TCID=tpm_version
+> +export TST_TOTAL=1
+> +export TST_COUNT=1
+> +
+>  setup()
+>  {
+>  	RC=0				# Return code from commands.
 
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing 
-server and web deployment.
-http://p.sf.net/sfu/businessobjects
+Are you an open source citizen? Join us for the Open Source Bridge conference!
+Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
+Need another reason to go? 24-hour hacker lounge. Register today!
+http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
