@@ -2,21 +2,35 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1MJ8fo-0007Vl-4A
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 16:16:40 +0000
-Received: from fmmailgate01.web.de ([217.72.192.221])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MJ8fm-0007mV-WF
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 16:16:40 +0000
-From: Jiri Palecek <jpalecek@web.de>
-Date: Tue, 23 Jun 2009 18:19:54 +0200
-References: <f5a7b3810906211328r7763fc7fx51e6eaf8cb3e560c@mail.gmail.com>
-	<1245768620.4860.87.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1245768620.4860.87.camel@subratamodak.linux.ibm.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200906231819.55008.jpalecek@web.de>
-Subject: Re: [LTP] Request for Hold [FIX PATCH]
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJ7hj-0007Qg-K0
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:14:35 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MJ7hi-00089S-Lg
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:14:35 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e1.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5NF9wA6025764
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 11:09:58 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5NFEYXu251862
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 11:14:34 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5NFEXWp020879
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 11:14:34 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <d51f89b0906220045y60889b4ap2f8402f2d28622af@mail.gmail.com>
+References: <20090526.194251.189710754.caiqian@cclom.cn>
+	<d51f89b0905261006x59d2147agb5c5d29d16309b4a@mail.gmail.com>
+	<20090531.165827.260097760.caiqian@cclom.cn>
+	<20090601.230148.104050591.caiqian@cclom.cn>
+	<d51f89b0906220045y60889b4ap2f8402f2d28622af@mail.gmail.com>
+Date: Tue, 23 Jun 2009 20:20:49 +0530
+Message-Id: <1245768649.4860.94.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Regarding ht_enable test case failure
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,45 +40,145 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sf.net>, naresh kamboju <naresh.kernel@gmail.com>
+To: rohit verma <rohit.170309@gmail.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-T24gVHVlc2RheSAyMyBKdW5lIDIwMDkgMTY6NTA6MjAgU3VicmF0YSBNb2RhayB3cm90ZToKPiBE
-byB5b3Ugc2VlIEppcmnFmyBwYXRjaDoKPiAKPiAKPiBmaXhpbmcgdGhvc2UgaXNzdWVzIHlvdSBh
-cmUgc2VlaW5nLiBJZiB5ZXMsIHRoZW4gaXQgY291bGQgYmUgc2FmZSB0bwo+IGNoZWNrLWluIHlv
-dXIgcGF0Y2hlcy4gUGxlYXNlIGNvbmZpcm0uCj4gCj4gUmVnYXJkcy0tCj4gU3VicmF0YQo+IAo+
-IE9uIE1vbiwgMjAwOS0wNi0yMiBhdCAwMTo1OCArMDUzMCwgbmFyZXNoIGthbWJvanUgd3JvdGU6
-IAo+ID4gSGkgU3VicmF0YSwKPiA+IAo+ID4gcGxlYXNlIGhvbGQgdGhlc2UgcGF0Y2hlcy4oRG9u
-J3QgY29tbWl0KQo+ID4gTGlzdCBvZiBwYXRjaGVzIHN1Ym1pdHRlZCBpbiBsYXN0IHdlZWsuCj4g
-PiAKPiA+IGx0cC1maXgtYWRkX2tleS5wYXRjaAo+ID4gbHRwLWZpeC1iZGZsdXNoLnBhdGNoCj4g
-PiBsdHAtZml4LWtleWN0bC5wYXRjaAo+ID4gbHRwLWZpeC1uZXd1bmFtZS5wYXRjaAo+ID4gbHRw
-LWZpeC1ydF9zaWdwcm9jbWFzay5wYXRjaAo+ID4gbHRwLWZpeC1ydF9zaWdzdXNwZW5kLnBhdGNo
-Cj4gPiBsdHAtZml4LXNldF90aHJlYWRfYXJlYS5wYXRjaAo+ID4gbHRwLWZpeC1zZXRfdGlkX2Fk
-ZHJlc3MucGF0Y2gKPiA+IGx0cC1maXgtc3NldG1hc2sucGF0Y2gKPiA+IGx0cC1maXgtdGtpbGwu
-cGF0Y2gKPiA+IAo+ID4gSSBoYXZlIG5vdGljZWQgYnVpbGQgZXJyb3JzIG9uIGRpZmZlcmVudCBB
-UkNIIG90aGVyIHRoYW4geDg2IEFSQ0guCj4gPiBpJ2xsIHRlc3Qgd2l0aCBtb3N0IG9mIHRoZSBB
-UkNIIGFuZCByZXN1Ym1pdCB0aGVzZSBwYXRjaGVzIHdpdGggTXVsdGkKPiA+IEFyY2hpdGVjdHVy
-ZSBzdXBwb3J0IGFuZCBzaGFyZSB3aXRoIExUUCBvbiAyMy1KdW5lLTIwMDkgYWxvbmcgd2l0aAo+
-ID4gcmVzdWx0cyBIVE1MLgoKSnVzdCBhIHNpZGUgbm90ZSB0byB0aGlzIHdob2xlIGlzc3VlOiBJ
-IHRoaW5rIHRoZXNlIHBhdGNoZXMgc2hvdWxkIGhhdmUgYmVlbiBhcHBsaWVkIGxvbmcgYWdvLiBU
-aGUgZmFjdCB0aGF0IGl0IG1ha2VzIHRoZSB0ZXN0cyB3cm9uZyBpcyBub3QgYW4gb2JzdGFjbGUg
-Zm9yIGFwcGx5aW5nLCBJTUhPIC0gdGhlIHRlc3RzIGFyZSBqdXN0IGFzIHdyb25nIHdpdGhvdXQg
-dGhlbS4gRXZlbiBtb3JlLCB0aGV5IGFyZSB3cm9uZyBpbiBtYW55IG90aGVyIGFyZWFzIChsaWtl
-IGltbW9kZXJhdGUgdXNlIG9mIHRoZSBURVNUIG1hY3JvIHdpdGhvdXQgcmVhc29uIGV2ZW4gaW4g
-cGxhY2VzIHdoZXJlIGl0J3MgaW5jb3JyZWN0LCBkb3VidGZ1bCB0ZXN0IGxvZ2ljLCBzdHJhbmdl
-IHVzYWdlIG9mIHRlc3Qgc3RhdHVzIG1lc3NhZ2VzIGFuZCBsYXN0LCBidXQgbm90IGxlYXN0LCBy
-ZWFsbHkgZ2hhc3RseSBjb2RlIHN0eWxlKS4gQW5kIHRoZXNlIHNob3VsZCBiZSBmaXhlZCBvbmUg
-Ynkgb25lLCBhbmQgd2FpdGluZyBvbmx5IG1ha2VzIGl0IHRha2UgbG9uZ2VyLgoKUmVnYXJkcwog
-ICAgSmlyaSBQYWxlY2VrCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQXJlIHlvdSBhbiBvcGVuIHNv
-dXJjZSBjaXRpemVuPyBKb2luIHVzIGZvciB0aGUgT3BlbiBTb3VyY2UgQnJpZGdlIGNvbmZlcmVu
-Y2UhClBvcnRsYW5kLCBPUiwgSnVuZSAxNy0xOS4gVHdvIGRheXMgb2Ygc2Vzc2lvbnMsIG9uZSBk
-YXkgb2YgdW5jb25mZXJlbmNlOiAkMjUwLgpOZWVkIGFub3RoZXIgcmVhc29uIHRvIGdvPyAyNC1o
-b3VyIGhhY2tlciBsb3VuZ2UuIFJlZ2lzdGVyIHRvZGF5IQpodHRwOi8vYWQuZG91YmxlY2xpY2su
-bmV0L2NsazsyMTU4NDQzMjQ7MTM1MDMwMzg7dj9odHRwOi8vb3BlbnNvdXJjZWJyaWRnZS5vcmcK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3Qg
-bWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3Rz
-LnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+On Mon, 2009-06-22 at 13:15 +0530, rohit verma wrote: 
+> Hi Subrata/CAI,
+> 
+> Pls find attached patch for ht_enabled and ht_affinity.
+> I am not having a 16-CPU machine at my end to test ht_interrupt test code.
+> 
+> 
+> Regards,
+> Rohit
+> 
+
+Thanks.
+
+Regards--
+Subrata
+
+> On Mon, Jun 1, 2009 at 8:31 PM, CAI Qian<caiqian@cclom.cn> wrote:
+> > From: CAI Qian <caiqian@cclom.cn>
+> > Subject: Re: [LTP] Fw: Regarding ht_enable test case failure
+> > Date: Sun, 31 May 2009 16:58:27 +0800 (CST)
+> >
+> >> OK. The compilation error was probably due to my incomplete build last
+> >> time. Sorry about that.
+> >>
+> >> smt_smp_interrupt.sh is no working for 2 CPU system.
+> >>
+> >> # cat /proc/interrupts
+> >>            CPU0       CPU1
+> >>   0:    1821938    1845925    IO-APIC-edge  timer
+> >>   1:          2          1    IO-APIC-edge  i8042
+> >>   4:        176        259    IO-APIC-edge  serial
+> >>   6:          2          3    IO-APIC-edge  floppy
+> >>   8:          2          1    IO-APIC-edge  rtc
+> >>   9:          0          0   IO-APIC-level  acpi
+> >>  12:          4          1    IO-APIC-edge  i8042
+> >>  82:      52431       2322   IO-APIC-level  uhci_hcd:usb3, ahci
+> >>  90:          0          0   IO-APIC-level  uhci_hcd:usb4
+> >>  98:          0          0   IO-APIC-level  uhci_hcd:usb5
+> >> 106:         53         52   IO-APIC-level  HDA Intel
+> >> 114:        242      25683         PCI-MSI  eth0
+> >> 201:          0          0   IO-APIC-level  ehci_hcd:usb1, uhci_hcd:usb2
+> >> NMI:          0          0
+> >> LOC:    3667704    3667763
+> >> ERR:          0
+> >> MIS:          0
+> >>
+> >> # ./smt_smp_interrupt.sh
+> >> smt_smp_interrupt    0  INFO  :  Begin: SMT/SMP Interrupt
+> >> smt_smp_interrupt    0  INFO  :  smp_affinity is 00000002
+> >> smt_smp_interrupt    1  CONF  :  /proc/irq/114/smp_affinity:Not set
+> >> smt_smp_interrupt    0  INFO  :  End: SMT/SMP Interrupt
+> >>
+> >> I am not having a 16-CPU machine at the moment, so I'll test on it later
+> >> when had a chance.
+> >>
+> >
+> > I have finally had a chance to test it on the 16-CPU machine, but
+> > smt_smp_interrupt.sh test failed,
+> >
+> > # ./smt_smp_interrupt.sh
+> > smt_smp_interrupt    0  INFO  :  Begin: SMT/SMP Interrupt
+> > cat: /proc/irq/154: Is a directory
+> > cat: 162: No such file or directory
+> > cat: 170: No such file or directory
+> > cat: 178: No such file or directory
+> > cat: 186: No such file or directory
+> > cat: 194: No such file or directory
+> > cat: 202/smp_affinity: No such file or directory
+> > smt_smp_interrupt    0  INFO  :  smp_affinity is
+> > ./smt_smp_interrupt.sh: line 86: [: 31: unary operator expected
+> > smt_smp_interrupt    0  INFO  :  Begin: HyperThreading Interrupt
+> > smt_smp_interrupt    1  CONF  :  HT is not enabled or not supported.
+> > smt_smp_interrupt    0  INFO  :  End: HyperThreading Interrupt
+> > smt_smp_interrupt    0  INFO  :  End: SMT/SMP Interrupt
+> >
+> >
+> > This probably due to multiple eth0 entries in /proc/interrupts.
+> >
+> > # cat /proc/interrupts
+> >           CPU0       CPU1       CPU2       CPU3       CPU4       CPU5       CPU6       CPU7       CPU8       CPU9       CPU10      CPU11      CPU12      CPU13      CPU14
+> >  CPU15
+> >  0:   29973184          0      82092          0          0          0          0          0          0          0          0          0          0          0          0
+> >    0    IO-APIC-edge  timer
+> >  4:          0          0          0         10        388          0        219          0          0          0          0          0          0          0          0
+> >    0    IO-APIC-edge  serial
+> >  8:          0          0          3          0          0          0          0          0          0          0          0          0          0          0          0
+> >    0    IO-APIC-edge  rtc
+> >  9:          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0
+> >    0   IO-APIC-level  acpi
+> >  82:          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0
+> >    0   IO-APIC-level  ehci_hcd:usb1
+> >  90:          0          0          0          0          0          0          0          0          0          0          0          0         49          0          0
+> >    0   IO-APIC-level  ehci_hcd:usb2, uhci_hcd:usb5, uhci_hcd:usb7
+> >  98:          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0
+> >    0   IO-APIC-level  uhci_hcd:usb3
+> > 106:          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0
+> >    0   IO-APIC-level  uhci_hcd:usb4
+> > 114:          0          0         43          0          0          0          0          0          0          0          0          0          0          0          0
+> >    0   IO-APIC-level  uhci_hcd:usb6
+> > 154:         91          0          0          0          0          0          0          0          0          0          0          0      45761          0     117042
+> >  1105       PCI-MSI-X  eth0
+> > 162:         28          0          0          0        230          0        451          0          0          0        562          0        298          0        159
+> >    0       PCI-MSI-X  eth0
+> > 170:         24          0          0          0        458          0        460          0          0          1       1497          0        193          0        467
+> >    0       PCI-MSI-X  eth0
+> > 177:          0         22          0         27      38596       1422       4017          0       4063          0          0          0       2367          0          0
+> >    0   IO-APIC-level  ioc0
+> > 178:         22          0          0          0       8039          0       1054          0          0          0          0         16       1850         20       9302
+> >    0       PCI-MSI-X  eth0
+> > 186:         38          0          0          0        530          0       1100          0          0          0         40          0        163          0        176
+> >    0       PCI-MSI-X  eth0
+> > 194:         23          0          0          0       3163          0       3521          0          0         16          0         20       6674          0        448
+> >    0       PCI-MSI-X  eth0
+> > 202:         49          0          0          0        637          0       1305          0          0          6        120          0        733          4       1087
+> >    0       PCI-MSI-X  eth0
+> > NMI:          0          0          0          0          0          0          0          0          0          0          0          0          0          0          0
+> >    0
+> > LOC:   30053985   30053999   30054001   30053998   30053997   30053995   30053993   30053991   30053716   30053990   30053974   30053914   30053953   30053870   30053986   30053818
+> > ERR:          0
+> > MIS:          0
+> >
+> > Other tests look good though.
+> >
+> > CAI Qian
+> >
+
+
+------------------------------------------------------------------------------
+Are you an open source citizen? Join us for the Open Source Bridge conference!
+Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
+Need another reason to go? 24-hour hacker lounge. Register today!
+http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
