@@ -1,28 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1MDcxu-0000YF-7e
-	for ltp-list@lists.sourceforge.net; Mon, 08 Jun 2009 11:24:34 +0000
-Received: from fmmailgate02.web.de ([217.72.192.227])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MDcxe-0003lK-BH
-	for ltp-list@lists.sourceforge.net; Mon, 08 Jun 2009 11:24:34 +0000
-Received: from smtp05.web.de (fmsmtp05.dlan.cinetic.de [172.20.4.166])
-	by fmmailgate02.web.de (Postfix) with ESMTP id 4A42D10228D08
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  8 Jun 2009 13:24:17 +0200 (CEST)
-Received: from [83.208.36.163] (helo=debian.localnet)
-	by smtp05.web.de with asmtp (TLSv1:AES256-SHA:256)
-	(WEB.DE 4.110 #277) id 1MDcxc-0005de-00
-	for ltp-list@lists.sourceforge.net; Mon, 08 Jun 2009 13:24:17 +0200
-From: Jiri Palecek <jpalecek@web.de>
-Date: Mon, 8 Jun 2009 13:27:53 +0200
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MJDRD-00080Q-Sd
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 21:21:55 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MJDRB-0002eg-UQ
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 21:21:55 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Tue, 23 Jun 2009 17:21:50 -0400
+References: <4a413e95.8d13f30a.1199.ffffdccbSMTPIN_ADDED@mx.google.com>
+In-Reply-To: <4a413e95.8d13f30a.1199.ffffdccbSMTPIN_ADDED@mx.google.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200906081327.53491.jpalecek@web.de>
-Subject: [LTP] [PATCH] Change some absolute paths in the linkat test to
-	point to its own files instead of /etc/passwd
+Message-Id: <200906231721.51688.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] Fix some bashisms
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,97 +24,141 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6676215414405064763=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: "Jiri Palecek > (none)" <"<jirka"@debian.gentoo.org>
 
- This avoids unwanted error when /etc and /tmp are on different
- devices
+--===============6676215414405064763==
+Content-Type: multipart/signed; boundary="nextPart1288412.26nTEhm4er";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Jiri Palecek <jpalecek@web.de>
----
- testcases/kernel/syscalls/linkat/linkat01.c |   14 +++++++++-----
- 1 files changed, 9 insertions(+), 5 deletions(-)
+--nextPart1288412.26nTEhm4er
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-diff --git a/testcases/kernel/syscalls/linkat/linkat01.c b/testcases/kernel/syscalls/linkat/linkat01.c
-index d62416b..72845f2 100644
---- a/testcases/kernel/syscalls/linkat/linkat01.c
-+++ b/testcases/kernel/syscalls/linkat/linkat01.c
-@@ -79,6 +79,7 @@ static void mylinkat_test(struct test_struct* desc);
- #define TEST_FIFO "fifo"
- 
- static char dpathname[256] = "%s/"TEST_DIR2"/"TEST_FILE1;
-+static char spathname[256] = "%s/"TEST_DIR1"/"TEST_FILE1;
- static int olddirfd, newdirfd = -1, cwd_fd = AT_FDCWD, stdinfd = 0, crapfd = -1, deldirfd;
- 
- struct test_struct {
-@@ -94,7 +95,7 @@ struct test_struct {
- 	/* relative paths */
- 	{ &olddirfd, TEST_FILE1, &newdirfd, TEST_FILE1, 0, TEST_DIR1"/"TEST_FILE1, TEST_DIR2"/"TEST_FILE1, 0 },
- 	/* abs path at source */
--	{ &olddirfd, "/etc/passwd", &newdirfd, TEST_FILE1, 0, 0, 0, 0 },
-+	{ &olddirfd, spathname, &newdirfd, TEST_FILE1, 0, 0, 0, 0 },
- 	/* abs path at dst */
- 	{ &olddirfd, TEST_FILE1, &newdirfd, dpathname, 0, TEST_DIR1"/"TEST_FILE1, TEST_DIR2"/"TEST_FILE1, 0},
- 
-@@ -103,7 +104,7 @@ struct test_struct {
- 	/* relative paths to cwd */
- 	{ &olddirfd, TEST_FILE1, &cwd_fd, TEST_DIR2"/"TEST_FILE1, 0, TEST_DIR1"/"TEST_FILE1, TEST_DIR2"/"TEST_FILE1, 0 },
- 	/* abs path at source */
--	{ &cwd_fd, "/etc/passwd", &newdirfd, TEST_FILE1, 0, 0, 0, 0 },
-+	{ &cwd_fd, spathname, &newdirfd, TEST_FILE1, 0, 0, 0, 0 },
- 	/* abs path at dst */
- 	{ &olddirfd, TEST_FILE1, &cwd_fd, dpathname, 0, TEST_DIR1"/"TEST_FILE1, TEST_DIR2"/"TEST_FILE1, 0},
- 
-@@ -112,7 +113,7 @@ struct test_struct {
- 	/* relative paths to invalid */
- 	{ &olddirfd, TEST_FILE1, &stdinfd, TEST_DIR2"/"TEST_FILE1, 0, 0, 0, ENOTDIR },
- 	/* abs path at source */
--	{ &stdinfd, "/etc/passwd", &newdirfd, TEST_FILE1, 0, 0, 0, 0 },
-+	{ &stdinfd, spathname, &newdirfd, TEST_FILE1, 0, 0, 0, 0 },
- 	/* abs path at dst */
- 	{ &olddirfd, TEST_FILE1, &stdinfd, dpathname, 0, TEST_DIR1"/"TEST_FILE1, TEST_DIR2"/"TEST_FILE1, 0},
- 
-@@ -121,7 +122,7 @@ struct test_struct {
- 	/* relative paths to crap */
- 	{ &olddirfd, TEST_FILE1, &crapfd, TEST_DIR2"/"TEST_FILE1, 0, 0, 0, EBADF },
- 	/* abs path at source */
--	{ &crapfd, "/etc/passwd", &newdirfd, TEST_FILE1, 0, 0, 0, 0 },
-+	{ &crapfd, spathname, &newdirfd, TEST_FILE1, 0, 0, 0, 0 },
- 	/* abs path at dst */
- 	{ &olddirfd, TEST_FILE1, &crapfd, dpathname, 0, TEST_DIR1"/"TEST_FILE1, TEST_DIR2"/"TEST_FILE1, 0},
- 
-@@ -130,7 +131,7 @@ struct test_struct {
- 	/* relative paths to deleted */
- 	{ &olddirfd, TEST_FILE1, &deldirfd, TEST_DIR2"/"TEST_FILE1, 0, 0, 0, ENOENT },
- 	/* abs path at source */
--	{ &deldirfd, "/etc/passwd", &newdirfd, TEST_FILE1, 0, 0, 0, 0 },
-+	{ &deldirfd, spathname, &newdirfd, TEST_FILE1, 0, 0, 0, 0 },
- 	/* abs path at dst */
- 	{ &olddirfd, TEST_FILE1, &deldirfd, dpathname, 0, TEST_DIR1"/"TEST_FILE1, TEST_DIR2"/"TEST_FILE1, 0},
- 
-@@ -298,6 +299,9 @@ static void setup()
- 	tmp = strdup(dpathname);
- 	snprintf(dpathname, sizeof(dpathname), tmp, get_current_dir_name());
- 
-+	tmp = strdup(spathname);
-+	snprintf(spathname, sizeof(spathname), tmp, get_current_dir_name());
-+
- 	/* Pause if that option was specified */
- 	TEST_PAUSE;
- }				/* End setup() */
--- 
-1.6.2.4
+On Sunday 31 May 2009 17:27:51 Jiri Palecek > wrote:
+> -echo -e "Completed running Default LTP\n\n"
+> +echo "Completed running Default LTP"
+> +echo
+> +echo
 
+use printf, not bloat the file with echos
+
+> -echo "Distro type is: $tvar \n"
+> +echo "Distro type is: $tvar"
+>
+
+these are not equivalent
+
+> --- a/testcases/commands/unzip/unzip_tests.sh
+> +++ b/testcases/commands/unzip/unzip_tests.sh
+> @@ -62,7 +62,6 @@ chk_ifexists()
+>  # 				- non-zero on failure.
+>  cleanup()
+>  {
+> -	popd
+>  	# remove all the temporary files created by this test.
+>  	tst_resm TINFO "CLEAN: removing \"$LTPTMP\""
+>  	rm -fr "$LTPTMP"
+> @@ -90,7 +89,6 @@ init()
+>  	# create the temporary directory used by this testcase
+>  	LTPTMP=3D`mktemp -d -t $$.XXXXXX` || tst_resm TBROK "Unable to create
+> temporary directory with: mktemp -d $$.XXXXXX" trap "cleanup" 0
+> -	pushd "$LTPTMP"
+>
+>  	# check if commands tst_*, unzip, awk, etc exists.
+>  	chk_ifexists INIT tst_resm  || return $RC
+
+umm, you remove the push/popd, but dont replace it with proper cd statement=
+s ? =20
+i'm guessing you didnt test this change.
+
+> --- a/testcases/kernel/containers/netns/delchild.sh
+> +++ b/testcases/kernel/containers/netns/delchild.sh
+> -    kill -9 $sshpid $pid > /dev/null 2>&1
+> +    kill -s KILL $sshpid $pid > /dev/null 2>&1
+
+this isnt a bashism, this is a crappy kill implementation
+
+>  for tttype in `ls /dev/tty*`
+>  do
+> -device_no=3D${tttype:8}
+> +device_no=3D${tttype##/dev/tty}
+> ...
+>  for tttype in `ls /dev/tty*`
+>  do
+> -device_no=3D${tttype:8}
+> +device_no=3D${tttype##/dev/tty}
+
+using the greedy expansion (##) doesnt make much sense.  really should be #.
+
+> -    let step_errors=3D"$step_errors + 1"
+> +    step_errors=3D$(($step_errors + 1))
+> -        let i=3D"$i + 1"
+> +        i=3D$(($i + 1))
+> -            let k=3D"$k + 1"
+> +            k=3D$(($k + 1))
+> -        let j=3D"$j + 1"
+> +        j=3D$(($j + 1))
+> .....
+
+this syntax sucks.  please use something like:
+: $(( step_errors +=3D 1))
+
+> -    echo $"fs_inod on $TCtmp finished."
+> +    echo "fs_inod on $TCtmp finished."
+
+these are not equivalent, but i doubt this shell script is using the bash=20
+gettext function in the first place, so it's fine
+=2Dmike
+
+--nextPart1288412.26nTEhm4er
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJKQUdvAAoJEEFjO5/oN/WB54kP/RTcPxfy3uRZmjPfPTIB0+aB
+zFj9g+aeoRhErUJ8z0maIS2YC1AdHbssXKDfxfmlQWGDgSfzOO6aXFW6UME/5QDK
+fpzOTRi3lD2MGCJ8KSFyPblYZY76kAYCeT4GKz2s/8dXU+I0j1yEZIxBcQTbq9OM
+lpmuwV5+WOI74NRrcv1OYSV4qS7+RzuFmhpgM5Y83frTNlI6lx3BAi7gt0wAg8VC
+No/MC9H/3VicMo1T/rzfqvQSr/2H+Xd6cdSo2CTGwa5TenVwnB8dOq0RpxrK/mUk
+QdFp3HBXF5XJGbwrYNkiI7DKfsmS1gjG4obi6X7ZJh1Trjc25PDKTy7Vsrr0cYvv
+GLO3iKola9JHlhQ+SsiG0mI+l5n8iz1GSqBd1QU5Q5chchicx5LiEp2uoMiTQqyk
+PoyW6Opn5VwYSlhobCb2U0bWzXZd3I9gDyQVuW8NUcs7yD172jOnNW0AkrUOPCdk
+6N58i5mVxaMOhoZ4M4R1sPod01sIidj4cjDJGQIF0J4lVFrCvIB3SBLiNbwTIWVu
+MdkX1R49Nnk6m0sfaDU+L66NJvsUw1NyyHBi1BWR69CPlbDgAsxZOcLJX/Mmmxyy
+TgCpO+BvEqihgDFrKS+eYjg9Cu4blMystlwy30oqz27Nw10V4W0Is98uKn/hzEmn
+GUXZysMuu7oAVjm27eNJ
+=Dftf
+-----END PGP SIGNATURE-----
+
+--nextPart1288412.26nTEhm4er--
+
+
+--===============6676215414405064763==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-OpenSolaris 2009.06 is a cutting edge operating system for enterprises 
-looking to deploy the next generation of Solaris that includes the latest 
-innovations from Sun and the OpenSource community. Download a copy and 
-enjoy capabilities such as Networking, Storage and Virtualization. 
-Go to: http://p.sf.net/sfu/opensolaris-get
+
+--===============6676215414405064763==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6676215414405064763==--
+
