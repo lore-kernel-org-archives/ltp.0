@@ -1,26 +1,37 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1MIYCA-0004Sn-8t
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 01:19:38 +0000
-Received: from fmmailgate03.web.de ([217.72.192.234])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MIYC9-0007bl-58
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 01:19:38 +0000
-Received: from smtp05.web.de (fmsmtp05.dlan.cinetic.de [172.20.4.166])
-	by fmmailgate03.web.de (Postfix) with ESMTP id E40A9100C56E4
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 22 Jun 2009 02:20:02 +0200 (CEST)
-Received: from [83.208.36.163] (helo=debian)
-	by smtp05.web.de with asmtp (WEB.DE 4.110 #277) id 1MIXGU-00081i-00
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 02:20:02 +0200
-Date: Tue, 12 May 2009 19:06:15 +0200
-From: "Jiri Palecek" <jpalecek@web.de>
-MIME-Version: 1.0
-Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-Resent-Message-ID: <op.uvwgn0focfnueu@debian>
-Subject: [LTP] [PATCH] Fix cleanup procedure in the setuid04 test
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJ7Mo-0002U0-Ax
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 14:52:58 +0000
+Received: from e34.co.us.ibm.com ([32.97.110.152])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MJ7Mn-0001uL-0H
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 14:52:58 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e34.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5NEnjHs022376
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 08:49:45 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5NEqtgJ229566
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 08:52:55 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5NEqsVn022202
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 08:52:54 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <1234762145.7791.13.camel@subratamodak.linux.ibm.com>
+References: <4948C6E4.8080801@linux.vnet.ibm.com>
+	<49491512.9000905@linux.vnet.ibm.com>
+	<1229578051.5149.11.camel@subratamodak.linux.ibm.com>
+	<20090214203139.GA10969@us.ibm.com>
+	<1234762145.7791.13.camel@subratamodak.linux.ibm.com>
+Date: Tue, 23 Jun 2009 20:18:21 +0530
+Message-Id: <1245768501.4860.56.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] testcase pidns20, pidns21 on pid namespace
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,61 +43,75 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: ltp-list-bounces@lists.sourceforge.net
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-Cc: ltp-list@lists.sourceforge.net
-Message-ID: <20090512170615.lXAlXfnakcorheEVFXt4uXZiIeFW1tj9M08HFkonwLQ@z>
+To: Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>, Gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, Nadia Derbey <Nadia.Derbey@bull.net>, gowrishankar.muthukrishna@gmail.com
 
- Cleanup has to be made only once in the parent process; when the
- child makes the cleanup itself, the parent has nothing to cleanup,
- which makes him sad.
+On Mon, 2009-02-16 at 10:59 +0530, Subrata Modak wrote: 
+> Thanks Suka,
+> 
+> On Sat, 2009-02-14 at 12:31 -0800, Sukadev Bhattiprolu wrote:
+> > Subrata Modak [subrata@linux.vnet.ibm.com] wrote:
+> > | 
+> > | > > pidns21:
+> > | > >    The pidns21.c testcase verifies that container-init is terminated
+> > | > >    by SIGUSR1 when:
+> > | > >       - a handler is specified for SIGUSR1,
+> > | > >       - container-init blocks SIGUSR1,
+> > | > >       - parent queues SIGUSR1 and
+> > | > >       - handler for SIGUSR1 is set to system default before SIGUSR1 is 
+> > | > > unblocked.
+> > 
+> > I know I had acked this test before, but back then the actual implementation
+> > of the signal semantics in the kernel were not complete.
+> > 
+> > To simplify the implementation of the semantics, it was decided that
+> > SIGKILL/SIGSTOP would be the only reliable signals from a parent
+> > container. IOW, container-init would ignore SIGUSR1 or SIGINT, SIGQUIT
+> > etc even if sent from a parent container.
+> > 
+> > See patchset/discussion:
+> > 
+> > 	http://lkml.org/lkml/2009/1/17/131
+> > 
+> > (which is not yet merged, but appears to be close to consensus)
+> > 
+> > The  rationale for this simplification is that any serious
+> > 'container-init' would explicitly SIG_IGN all signals that it is
+> > not interested in. So the only signals that would be in SIG_DFL
+> > state would be SIGKILL/SIGSTOP.
+> > 
+> > Effectively, testcase pidns21 will fail if/when the above patchset
+> > (specifically, patch 5/6) is merged.
+> 
+> Gowri,
+> 
+> Kindly update this test when the patch makes into next stable kernel
+> release.
 
-Signed-off-by: Jiri Palecek <jpalecek@web.de>
----
- testcases/kernel/syscalls/setuid/setuid04.c |    7 +++----
- 1 files changed, 3 insertions(+), 4 deletions(-)
+Suka/Gowri,
 
-diff --git a/testcases/kernel/syscalls/setuid/setuid04.c b/testcases/kernel/syscalls/setuid/setuid04.c
-index 18f1d90..26a3868 100644
---- a/testcases/kernel/syscalls/setuid/setuid04.c
-+++ b/testcases/kernel/syscalls/setuid/setuid04.c
-@@ -114,7 +114,7 @@ void do_master_child()
- 	int status;
- 
- 	if (setuid(ltpuser->pw_uid) == -1) {
--		tst_brkm(TBROK, cleanup,
-+		tst_brkm(TBROK, tst_exit,
- 			 "setuid failed to set the effective uid to %d",
- 			 ltpuser->pw_uid);
- 	}
-@@ -143,7 +143,7 @@ void do_master_child()
- 
- 		pid = FORK_OR_VFORK();
- 		if (pid < 0)
--			tst_brkm(TBROK, cleanup, "Fork failed");
-+			tst_brkm(TBROK, tst_exit, "Fork failed");
- 
- 		if (pid == 0) {
- 			int tst_fd2;
-@@ -160,13 +160,12 @@ void do_master_child()
- 
- 			if (TEST_ERRNO == EACCES) {
- 				tst_resm(TPASS, "open returned errno EACCES");
--				exit(0);
- 			} else {
- 				tst_resm(TFAIL,
- 					 "open returned unexpected errno - %d",
- 					 TEST_ERRNO);
--				exit(-1);
- 			}
-+			tst_exit();
- 		} else {
- 			/* Wait for son completion */
- 			waitpid(pid, &status, 0);
--- 
-1.6.3.1
+Are we still looking into these tests ?
 
+Regards--
+Subrata
 
+> 
+> Regards--
+> Subrata
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Open Source Business Conference (OSBC), March 24-25, 2009, San Francisco, CA
+> -OSBC tackles the biggest issue in open source: Open Sourcing the Enterprise
+> -Strategies to boost innovation and cut costs with open source participation
+> -Receive a $600 discount off the registration fee with the source code: SFAD
+> http://p.sf.net/sfu/XcvMzF8H
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
