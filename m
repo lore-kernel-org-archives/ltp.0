@@ -1,27 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1MIYAx-0005nr-I4
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 01:18:23 +0000
-Received: from fmmailgate03.web.de ([217.72.192.234])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MIYAw-00079o-Hp
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 01:18:23 +0000
-Received: from smtp05.web.de (fmsmtp05.dlan.cinetic.de [172.20.4.166])
-	by fmmailgate03.web.de (Postfix) with ESMTP id 6E0BD100C5E70
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 22 Jun 2009 02:55:34 +0200 (CEST)
-Received: from [83.208.36.163] (helo=debian)
-	by smtp05.web.de with asmtp (WEB.DE 4.110 #277) id 1MIXos-0002gd-00
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2009 02:55:34 +0200
-Date: Tue, 09 Jun 2009 00:14:10 +0200
-From: "Jiri Palecek >" <"<jirka"@suse.de>(none)
-MIME-Version: 1.0
-Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-Resent-Message-ID: <op.uvwibctclwynca@debian>
-Subject: [LTP] [PATCH] Add test environment variables (TCID et al.) to
- tpm_version_tests.sh
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJ7ZT-0003yv-B7
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:06:03 +0000
+Received: from e7.ny.us.ibm.com ([32.97.182.137])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MJ7ZS-0005pC-KA
+	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:06:03 +0000
+Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
+	by e7.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5NErWUH000981
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 10:53:32 -0400
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5NF5oIQ1736948
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 11:05:51 -0400
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5NF5kIq004348
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 09:05:47 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <200906220126.n5M1QuQ2022362@e31.co.us.ibm.com>
+References: <200906220126.n5M1QuQ2022362@e31.co.us.ibm.com>
+Date: Tue, 23 Jun 2009 20:19:56 +0530
+Message-Id: <1245768596.4860.79.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Use __i386__ instead of _i386__ in HTutils.c
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,42 +38,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: ltp-list-bounces@lists.sourceforge.net
 Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Jiri Palecek <jpalecek@web.de>
 Cc: ltp-list@lists.sourceforge.net
-Message-ID: <20090608221410.JK0vYVpobx3ikDcAG3aMeCEUqGVzdXStgrF_fNHI4Jg@z>
 
-Hello,
+On Wed, 2009-06-17 at 17:27 +0200, Jiri Palecek > wrote: 
+> This is probably a typo, the macro defined on 386 systems is named __i386__, not _i386__
+> 
+> Signed-off-by: Jiri Palecek <jpalecek@web.de>
 
-this patch adds variables needed for tst_* routines into the tpm_version_tests.sh
+Thanks.
 
-Regards
-    Jiri Palecek
+Regards--
+Subrata
 
-Signed-off-by: Jiri Palecek <jpalecek@web.de>
----
- .../tpm-tools/tpm/tpm_version/tpm_version_tests.sh |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
-
-diff --git a/testcases/commands/tpm-tools/tpm/tpm_version/tpm_version_tests.sh b/testcases/commands/tpm-tools/tpm/tpm_version/tpm_version_tests.sh
-index 0fb54cd..dd2e5b9 100755
---- a/testcases/commands/tpm-tools/tpm/tpm_version/tpm_version_tests.sh
-+++ b/testcases/commands/tpm-tools/tpm/tpm_version/tpm_version_tests.sh
-@@ -17,6 +17,10 @@
- # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- #
- 
-+export TCID=tpm_version
-+export TST_TOTAL=1
-+export TST_COUNT=1
-+
- setup()
- {
- 	RC=0				# Return code from commands.
--- 
-1.6.3.1
-
-
+> ---
+>  .../sched/hyperthreading/ht_affinity/HTutils.c     |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/testcases/kernel/sched/hyperthreading/ht_affinity/HTutils.c b/testcases/kernel/sched/hyperthreading/ht_affinity/HTutils.c
+> index 5f37d1f..9d6e1c0 100644
+> --- a/testcases/kernel/sched/hyperthreading/ht_affinity/HTutils.c
+> +++ b/testcases/kernel/sched/hyperthreading/ht_affinity/HTutils.c
+> @@ -60,7 +60,7 @@ int is_ht_kernel()
+> 
+>  inline void cpuid(int op, int *eax, int *ebx, int *ecx, int *edx)
+>  {
+> -#ifndef _i386__
+> +#ifndef __i386__
+>  	return;
+>  #else
+>  	__asm__("cpuid"
 
 
 ------------------------------------------------------------------------------
