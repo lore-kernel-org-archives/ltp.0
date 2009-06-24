@@ -1,30 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1ME60C-0006RR-MR
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2009 18:24:52 +0000
-Received: from e37.co.us.ibm.com ([32.97.110.158])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1ME60B-0001TJ-Pw
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2009 18:24:52 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <d51f89b0906020533j7881c042k1a7e43270f0aeec@mail.gmail.com>
-References: <20090526142706.20166.3813.sendpatchset@subratamodak.linux.ibm.com>
-	<522C1DF17AF50042AD8AE87F7887BD3D0158B359A4@exch.hq.tensilica.com>
-	<d51f89b0905262344h46722756vb255541a47904dbe@mail.gmail.com>
-	<522C1DF17AF50042AD8AE87F7887BD3D0158B35AB4@exch.hq.tensilica.com>
-	<1243434255.10447.19.camel@subratamodak.linux.ibm.com>
-	<522C1DF17AF50042AD8AE87F7887BD3D0158B35ACE@exch.hq.tensilica.com>
-	<1243601687.5188.34.camel@subratamodak.linux.ibm.com>
-	<d51f89b0906010547r675533b2v2a2d36a7c07beba9@mail.gmail.com>
-	<d51f89b0906020533j7881c042k1a7e43270f0aeec@mail.gmail.com>
-Date: Tue, 09 Jun 2009 23:54:34 +0530
-Message-Id: <1244571876.5497.16.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Detect test results more accurately
-	when	generating HTML
-Reply-To: subrata@linux.vnet.ibm.com
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1MJTDY-00033G-QR
+	for ltp-list@lists.sourceforge.net; Wed, 24 Jun 2009 14:12:52 +0000
+Received: from relay2.suse.de (mail2.suse.de [195.135.221.8])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mx2.suse.de (Postfix) with ESMTP id 943F88640B
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 24 Jun 2009 16:12:48 +0200 (CEST)
+Date: Wed, 24 Jun 2009 16:12:48 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20090624141248.GA9577@schrodinger.suse.cz>
+MIME-Version: 1.0
+Content-Disposition: inline
+Subject: Re: [LTP] [PATCH] Adapt the cgroup/test_6_2 test to the
+	various	ways clone is called on different architectures
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,66 +29,99 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rohit verma <rohit.170309@gmail.com>
-Cc: Ltp-List <ltp-list@lists.sf.net>
+To: "Jiri Palecek >" <"<jirka"@suse.de>
+Cc: ltp-list@lists.sourceforge.net
 
-On Tue, 2009-06-02 at 18:03 +0530, rohit verma wrote: 
-> Patch file attached.
+Hi,
+that's the clone() check I was speaking about here. IMHO much cleaner solution
+is to create some directory in ltp root (someting like libftest) and put all
+such headers and code there, so they are not copied and spread all around ltp.
 
-Thanks.
-
-Regards--
-Subrata
-
+>  Code shamelessly taken from clone01 test
 > 
-> On Mon, Jun 1, 2009 at 6:17 PM, rohit verma <rohit.170309@gmail.com> wrote:
-> > Hi Subrata,
-> >
-> > PFA the patch for the changes to pan driver for a possible fix to the
-> > report generation issue.
-> >
-> > I have modified genhtml.pl script to reflect changes in pan driver.
-> >
-> > Note: The 'Initiation-status' column is now present after Test-output column.
-> >
-> > Please check the same and provide your feedback.
-> >
-> > Regards,
-> > Rohit.
-> >
-> > On Fri, May 29, 2009 at 6:24 PM, Subrata Modak
-> > <subrata@linux.vnet.ibm.com> wrote:
-> >> On Wed, 2009-05-27 at 07:58 -0700, Marc Gauthier wrote:
-> >>> Subrata Modak wrote:
-> >>> > On Wed, 2009-05-27 at 05:05 -0700, Marc Gauthier wrote:
-> >>> > > Just so you know, the updated genhtml.pl script recently submitted
-> >>> > > should work just fine without changes, when moving status after
-> >>> > > <<<execution_status>>> (it only looks at tag names, not positions).
-> >>> >
-> >>> > Be careful, it looks for <<<execution_status>>> only in between
-> >>> > <<test_start>> & <<test_output>>.
-> >>>
-> >>> You mean, between <<<test_start>>> and <<<test_end>>> ?
-> >>> (the script I submitted recently that is, was careful about this)
-> >>
-> >> You made changes in genhtml.pl. I want the change(s) in ltp-pan.c.
-> >>
-> >> Regards--
-> >> Subrata
-> >>
-> >>>
-> >>> -Marc
-> >>
-> >>
-> >
+> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+> ---
+>  .../kernel/controllers/cgroup/clone_platform.h     |   34 ++++++++++++++++++++
+>  testcases/kernel/controllers/cgroup/test_6_2.c     |   12 ++++++-
+>  2 files changed, 45 insertions(+), 1 deletions(-)
+>  create mode 100644 testcases/kernel/controllers/cgroup/clone_platform.h
+> 
+> diff --git a/testcases/kernel/controllers/cgroup/clone_platform.h b/testcases/kernel/controllers/cgroup/clone_platform.h
+> new file mode 100644
+> index 0000000..1785dd1
+> --- /dev/null
+> +++ b/testcases/kernel/controllers/cgroup/clone_platform.h
+> @@ -0,0 +1,34 @@
+> +/*
+> + * Copyright (c) 2003 Silicon Graphics, Inc.  All Rights Reserved.
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of version 2 of the GNU General Public License as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * You should have received a copy of the GNU General Public License along
+> + * with this program; if not, write the Free Software Foundation, Inc., 59
+> + * Temple Place - Suite 330, Boston MA 02111-1307, USA.
+> + *
+> + */
+> +/* Common platform specific defines for the clone system call tests */
+> +
+> +//#define CHILD_STACK_SIZE 8192
+> +#define CHILD_STACK_SIZE 16384
+> +
+> +#if defined (__s390__) || (__s390x__)
+> +#define clone __clone
+> +extern int __clone(int(void*),void*,int,void*);
+> +#elif defined(__ia64__)
+> +#define clone2 __clone2
+> +/* Prototype provided by David Mosberger				*/
+> +/* int  __clone2(int (*fn) (void *arg), void *child_stack_base,		*/
+> +/* 		size_t child_stack_size, int flags, void *arg,		*/
+> +/*		pid_t *parent_tid, void *tls, pid_t *child_tid)		*/
+> +extern int  __clone2(int (*fn) (void *arg), void *child_stack_base, 
+> +		size_t child_stack_size, int flags, void *arg, 
+> +		pid_t *parent_tid, void *tls, pid_t *child_tid); 
+> +#endif
+> diff --git a/testcases/kernel/controllers/cgroup/test_6_2.c b/testcases/kernel/controllers/cgroup/test_6_2.c
+> index e5bddb2..79f5c20 100644
+> --- a/testcases/kernel/controllers/cgroup/test_6_2.c
+> +++ b/testcases/kernel/controllers/cgroup/test_6_2.c
+> @@ -24,6 +24,8 @@
+>  #include <unistd.h>
+>  #include <sched.h>
+>  
+> +#include "clone_platform.h"
+> +
+>  #define DEFAULT_USEC	30000
+>  
+>  int foo(void __attribute__((unused)) *arg)
+> @@ -42,7 +44,15 @@ int main(int argc, char **argv)
+>  
+>  	while (1) {
+>  		usleep(usec);
+> -		clone(foo, stack+4096, CLONE_NEWNS, NULL);
+> +#if defined(__hppa__)
+> +		clone(foo, stack, CLONE_NEWNS, NULL);
+> +#elif defined(__ia64__)
+> +		clone2(foo, stack,
+> +			    4096, CLONE_NEWNS, NULL, NULL, NULL, NULL);
+> +#else
+> +		clone
+> +		     (foo, stack + 4096, CLONE_NEWNS, NULL);
+> +#endif
+>  	}
+>  
+>  	return 0;
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing 
-server and web deployment.
-http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
