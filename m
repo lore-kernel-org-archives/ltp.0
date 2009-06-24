@@ -1,34 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MGHh3-00089t-MA
-	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:18:09 +0000
-Received: from [32.97.110.160] (helo=e39.co.us.ibm.com)
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MGHgz-0002f5-RC
-	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:18:09 +0000
-Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
-	[9.17.195.228])
-	by e39.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5FJDJrx016653
-	for <ltp-list@lists.sourceforge.net>; Mon, 15 Jun 2009 13:13:19 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5FJHLSo101032
-	for <ltp-list@lists.sourceforge.net>; Mon, 15 Jun 2009 13:17:21 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5FJHKqg009686
-	for <ltp-list@lists.sourceforge.net>; Mon, 15 Jun 2009 13:17:20 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4A3085B9.40707@cn.fujitsu.com>
-References: <4A3085B9.40707@cn.fujitsu.com>
-Date: Tue, 16 Jun 2009 00:46:34 +0530
-Message-Id: <1245093394.4871.51.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] fchmod05: fix to the group ownership
-	and	the	effective user
-Reply-To: subrata@linux.vnet.ibm.com
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <dvhltc@us.ibm.com>) id 1MJXau-0006f1-Kv
+	for ltp-list@lists.sourceforge.net; Wed, 24 Jun 2009 18:53:16 +0000
+Received: from e6.ny.us.ibm.com ([32.97.182.146])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MJXap-0005V8-Ne
+	for ltp-list@lists.sourceforge.net; Wed, 24 Jun 2009 18:53:16 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e6.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5OIuASS002154
+	for <ltp-list@lists.sourceforge.net>; Wed, 24 Jun 2009 14:56:10 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5OIr9QB254178
+	for <ltp-list@lists.sourceforge.net>; Wed, 24 Jun 2009 14:53:09 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5OIoll4001740
+	for <ltp-list@lists.sourceforge.net>; Wed, 24 Jun 2009 14:50:47 -0400
+Message-ID: <4A427613.80206@us.ibm.com>
+Date: Wed, 24 Jun 2009 11:53:07 -0700
+From: Darren Hart <dvhltc@us.ibm.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH][real-time] sched_footbal atomic start
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,81 +36,147 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wei Yongjun <yjwei@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
+Cc: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
 
-On Thu, 2009-06-11 at 12:19 +0800, Wei Yongjun wrote: 
-> This patch fixed the modify of the group ownership before
-> do dir chmod and fixed the effective user when do cleanup.
-> Those problems cause the test failed with the following
-> error message:
-> 
->   fchmod05    1  FAIL  :  testdir: Incorrect modes 043777, Expected 0777
->   fchmod05    0  WARN  :  tst_rmdir(): rmobj(/tmp/fchUout8n) failed: \
->     remove(/tmp/fchUout8n) failed; errno=1: Operation not permitted
-> 
-> Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
+The current barrier implementation results in the lowest priority thread
+actually starting the game (they are the last to be scheduled to call
+pthread_barrier_wait).  This thread likely gets a priority boost as it holds
+the hb->lock for the futex associated with the barrier.  This might lead to it
+running ahead of the defense threads. 
 
-Thanks.
+In fact, any sort of barrier or cond var implementation (short of a pi aware
+cond broadcast, which is not yet readily available) will result in a thundering
+herd situation when the FUTEX_WAKE_ALL syscall is issued, which can result in
+a short run of one or more offense threads while all the threads get to the
+RUNNABLE state.
 
-Regards--
-Subrata
+This patch removes the complex starting mechansims and replaces them with a
+simple atomic counter.  All player threads are started and once the
+players_ready count reaches the total player count, the referee starts the game
+by setting the ball position to zero.
 
-> ---
->  testcases/kernel/syscalls/fchmod/fchmod05.c |   13 ++++++++-----
->  1 files changed, 8 insertions(+), 5 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/fchmod/fchmod05.c b/testcases/kernel/syscalls/fchmod/fchmod05.c
-> index 3573f65..5226858 100644
-> --- a/testcases/kernel/syscalls/fchmod/fchmod05.c
-> +++ b/testcases/kernel/syscalls/fchmod/fchmod05.c
-> @@ -154,10 +154,10 @@ int main(int ac, char **av)
->  			if ((PERMS & ~S_ISGID) != dir_mode) {
->  				tst_resm(TFAIL, "%s: Incorrect modes 0%03o, "
->  					 "Expected 0%03o",
-> -					 TESTDIR, PERMS, MODE_RWX);
-> +					 TESTDIR, dir_mode, PERMS & ~S_ISGID);
->  			} else {
->  				tst_resm(TPASS, "Functionality of fchmod(%d, "
-> -					 "%#o) successful", fd, PERMS);
-> +					 "%#o) successful", fd, PERMS & ~S_ISGID);
->  			}
->  		} else {
->  			tst_resm(TPASS, "call succeeded");
-> @@ -218,12 +218,12 @@ void setup()
->  		tst_brkm(TBROK, cleanup, "mkdir(2) of %s failed", TESTDIR);
->  	}
-> 
-> -	if (chown(TESTDIR, nobody_u->pw_uid, bin_group->gr_gid) == -1)
-> +	if (chown(TESTDIR, nobody_u->pw_uid, nobody_u->pw_gid) == -1)
->  		tst_brkm(TBROK, cleanup, "Couldn't change owner of testdir: %s",
->  				strerror(errno));
-> 
-> -	/* change to nobody:nobody */
-> -	if (setegid(nobody_u->pw_gid) == -1 || seteuid(nobody_u->pw_uid) == -1)
-> +	/* change to nobody:bin */
-> +	if (setegid(bin_group->gr_gid) == -1 || seteuid(nobody_u->pw_uid) == -1)
->  		tst_brkm(TBROK, cleanup, "Couldn't switch to nobody:nobody: %s",
->  				strerror(errno));
-> 
-> @@ -258,6 +258,9 @@ void cleanup()
->  			 TESTDIR, errno, strerror(errno));
->  	}
-> 
-> +	setegid(0);
-> +	seteuid(0);
-> +
->  	/* Remove tmp dir and all files in it */
->  	tst_rmdir();
-> 
+Tested on two platforms (both x86_64, 4 and 8-way) for a combined total of
+13,000 iterations with 0 failures.
 
+Signed-off-by: Darren Hart <dvhltc@us.ibm.com>
+
+
+Index: ltp/testcases/realtime/func/sched_football/sched_football.c
+===================================================================
+--- ltp.orig/testcases/realtime/func/sched_football/sched_football.c	2009-06-24 11:49:16.000000000 -0700
++++ ltp/testcases/realtime/func/sched_football/sched_football.c	2009-06-24 11:48:44.000000000 -0700
+@@ -47,9 +47,11 @@
+  *
+  * HISTORY
+  *     2006-03-16 Reduced verbosity, non binary failure reporting, removal of
+- *     crazy_fans thread, added game_length argument by Darren Hart.
+- *      2007-08-01 Remove all thread cleanup in favor of simply exiting.Various
+- *      bugfixes and cleanups. -- Josh Triplett
++ *                crazy_fans thread, added game_length argument by Darren Hart.
++ *     2007-08-01 Remove all thread cleanup in favor of simply exiting.Various
++ *                bugfixes and cleanups. -- Josh Triplett
++ *     2009-06-23 Simplified atomic startup mechanism, avoiding thundering herd
++ *                scheduling at the beginning of the game. -- Darren Hart
+  *
+  *****************************************************************************/
+ 
+@@ -71,11 +73,9 @@
+ /* Here's the position of the ball */
+ volatile int the_ball;
+ 
+-/* pthread_barrier for synchronization */
+-pthread_barrier_t barrier;
+-
+ static int players_per_team = 0;
+ static int game_length = DEF_GAME_LENGTH;
++static atomic_t players_ready;
+ 
+ void usage(void)
+ {
+@@ -110,8 +110,7 @@
+ /* This is the defensive team. They're trying to block the offense */
+ void *thread_defense(void* arg)
+ {
+-	pthread_barrier_wait(&barrier);
+-
++	atomic_inc(&players_ready);
+ 	/*keep the ball from being moved */
+ 	while (1) {
+ 		sched_yield(); /* let other defenders run */
+@@ -123,8 +122,7 @@
+ /* This is the offensive team. They're trying to move the ball */
+ void *thread_offense(void* arg)
+ {
+-	pthread_barrier_wait(&barrier);
+-
++	atomic_inc(&players_ready);
+ 	while (1) {
+ 		the_ball++; /* move the ball ahead one yard */
+ 		sched_yield(); /* let other offensive players run */
+@@ -141,9 +139,9 @@
+ 
+ 	gettimeofday(&start, NULL);
+ 	now = start;
+-	the_ball = 0;
+ 
+-	pthread_barrier_wait(&barrier);
++	/* Start the game! */
++	the_ball = 0;
+ 
+ 	/* Watch the game */
+ 	while ((now.tv_sec - start.tv_sec) < game_length) {
+@@ -169,10 +167,7 @@
+ 	if (players_per_team == 0)
+ 		players_per_team = sysconf(_SC_NPROCESSORS_ONLN);
+ 
+-	if ((i = pthread_barrier_init(&barrier, NULL, players_per_team*2 + 1))) {
+-		printf("pthread_barrier_init failed: %s\n", strerror(i));
+-		exit(i);
+-	}
++	atomic_set(0, &players_ready);
+ 
+ 	printf("Running with: players_per_team=%d game_length=%d\n",
+ 	       players_per_team, game_length);
+@@ -181,13 +176,20 @@
+ 	param.sched_priority = sched_get_priority_min(SCHED_FIFO) + 80;
+ 	sched_setscheduler(0, SCHED_FIFO, &param);
+ 
+-	/* Start the offense */
++	/*
++	 * Start the offense
++	 * They are lower priority than defense, so they must be started first.
++	 */
+ 	priority = 15;
+ 	printf("Starting %d offense threads at priority %d\n",
+ 			players_per_team, priority);
+ 	for (i = 0; i < players_per_team; i++)
+ 		create_fifo_thread(thread_offense, NULL, priority);
+ 
++	/* Wait for the offense threads to start */
++	while (atomic_get(&players_ready) < players_per_team)
++		usleep(100);
++
+ 	/* Start the defense */
+ 	priority = 30;
+ 	printf("Starting %d defense threads at priority %d\n",
+@@ -195,6 +197,10 @@
+ 	for (i = 0; i < players_per_team; i++)
+ 		create_fifo_thread(thread_defense, NULL, priority);
+ 
++	/* Wait for the defense threads to start */
++	while (atomic_get(&players_ready) < players_per_team * 2)
++		usleep(100);
++
+ 	/* Ok, everyone is on the field, bring out the ref */
+ 	printf("Starting referee thread\n");
+ 	return referee(game_length);
+-- 
+Darren Hart
+IBM Linux Technology Center
+Real-Time Linux Team
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing 
-server and web deployment.
-http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
