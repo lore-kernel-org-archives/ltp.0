@@ -1,28 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sharyath@in.ibm.com>) id 1MLAqf-0002X2-VQ
-	for ltp-list@lists.sourceforge.net; Mon, 29 Jun 2009 07:00:17 +0000
-Received: from e28smtp02.in.ibm.com ([59.145.155.2])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MLAqe-0004gR-17
-	for ltp-list@lists.sourceforge.net; Mon, 29 Jun 2009 07:00:17 +0000
-Received: from d28relay02.in.ibm.com (d28relay02.in.ibm.com [9.184.220.59])
-	by e28smtp02.in.ibm.com (8.13.1/8.13.1) with ESMTP id n5T70Ai0017485
-	for <ltp-list@lists.sourceforge.net>; Mon, 29 Jun 2009 12:30:10 +0530
-Received: from d28av05.in.ibm.com (d28av05.in.ibm.com [9.184.220.67])
-	by d28relay02.in.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5T70AWI2265182
-	for <ltp-list@lists.sourceforge.net>; Mon, 29 Jun 2009 12:30:10 +0530
-Received: from d28av05.in.ibm.com (loopback [127.0.0.1])
-	by d28av05.in.ibm.com (8.13.1/8.13.3) with ESMTP id n5T709kV015257
-	for <ltp-list@lists.sourceforge.net>; Mon, 29 Jun 2009 17:00:09 +1000
-Message-ID: <4A48667F.9050101@in.ibm.com>
-Date: Mon, 29 Jun 2009 12:30:15 +0530
-From: Sharyathi Nagesh <sharyath@in.ibm.com>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <praveen@primesoftsolutionsinc.com>)
+	id 1MJKci-0007ac-TQ
+	for ltp-list@lists.sourceforge.net; Wed, 24 Jun 2009 05:02:16 +0000
+Received: from smtp105.biz.mail.in2.yahoo.com ([203.104.19.14])
+	by 1b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1MJKbk-0002jm-3K
+	for ltp-list@lists.sourceforge.net; Wed, 24 Jun 2009 05:02:16 +0000
+Received: from unknown (HELO SudamaRao)
+	(praveen@primesoftsolutionsinc.com@[192.168.0.9])
+	(envelope-sender <praveen@primesoftsolutionsinc.com>)
+	by 0 (qmail-ldap-1.03) with SMTP
+	for <ltp-list@lists.sourceforge.net>; 24 Jun 2009 04:52:26 -0000
+From: "Praveen" <praveen@primesoftsolutionsinc.com>
+Date: Wed, 24 Jun 2009 10:30:22 +0530
 MIME-Version: 1.0
-Subject: [LTP] Issue observed with chmod05, fchmod05 test cases
+In-Reply-To: <1245768547.4860.66.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] Contribution to LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,45 +31,180 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, Subrata Modak <subrata@linux.vnet.ibm.com>, yjwei@cn.fujitsu.com
-Cc: mbeeraka@in.ibm.com
-
-Hi
-   I am observing this anomaly with these 2 test cases chmod05.c and fchmod05.c.
-These 2 test cases are written to test the POSIX standard which says:
-
-  	"If the calling process is not privileged  (Linux:  does  not  have  the
-        CAP_FSETID  capability),  and  the group of the file does not match the
-        effective group ID of the process or one  of  its  supplementary  group
-        IDs,  the  S_ISGID  bit  will be turned off, but this will not cause an
-        error to be returned."
+Message-Id: <E1MJKck-0007ai-3i@235xhf1.ch3.sourceforge.com>
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net, 'Nathan Straz' <nstraz@redhat.com>, 'Nate Straz' <nate@refried.org>
 
 
-So the test case will try to setup a file in which the GID of the test/tmp file will be 
-different from the effective group ID of the running process. But this criterion is found to 
-be not sufficient condition for the clearing the S_ISGID bit of the file
+Hi Subrata,
 
-------------------------------------------------------------
-Ex:
-There are 2 users nobody (uid=99, gid=99) and bin (uid=1, gid=1)
-let as assume temporary file as /tmp/zxcv
+Thanks for the e-mail.
 
-Test will Pass if
-     Set UID/GID of /tmp/zxcv to            nobody->uid & nobody->GID
-     Set eUID/eGID of process to           nobody->uid & bin->GID
+I have tried to build and execute the test suite for Intel. And also I am 
+Trying to review and explore the different testcases in LTP testsuite. I
+tried to look into various shell script test cases like ld,nm, mv, cp, etc
+And some C test cases like kill, mtest, filesystem tests, etc.
 
-Test will Fail if
-     Set UID/GID of /tmp/zxcv to            nobody->uid & bin->GID
-     Set eUID/eGID of process to           nobody->uid & nobody->GID
+I tried to look into LTP framework like PAN, runltp, manifest files(and its
+structure), etc.
 
-I verified supplementary group IDs for both 'nobody' and 'bin' and they are mutually 
-exclusive and none of the other is supplementary group ID of the ID being tested
-------------------------------------------------------------
+I just in a sort of confusion actually where to start with, I have
+subscribed to ltp mailing lists and daily I receive lots of emails
+describing about the changes that were made to LTP. I feel like lot of
+the test cases are already existing...:) and ... Just feeling like where to 
+start with ...:(
 
-Should we treat this as Test case issue or kernel bug?
+Thanks again for the email and for your genuine interest in my contribution.
 
-Thanks
-Yeehaw
+
+Thanks, 
+Praveen Kumar k
+PrimeSoft IP Solutions Inc
+ 
+Phone : 040-27762986/27762987 
+Skype ID: kpraveen72
+www.primesoftsolutionsinc.com 
+-----Original Message-----
+From: Subrata Modak [mailto:subrata@linux.vnet.ibm.com] 
+Sent: Tuesday, June 23, 2009 8:19 PM
+To: Praveen
+Cc: ltp-list@lists.sourceforge.net; 'Nate Straz'; 'Nathan Straz'
+Subject: RE: [LTP] Contribution to LTP
+
+On Wed, 2009-05-20 at 11:06 +0530, Praveen wrote: 
+> Hi Subrata,
+> 
+> Thanks for the information.
+> 
+> I am sure LTP will satisfy my enthusiasm to participate in Opensource.
+
+Hi Praveen,
+
+Have you found anything interesting to start contributing to ?
+
+Regards--
+Subrata
+
+> First, I will start with registering to mailing list. 
+> 
+> Thanks again for the information.
+> 
+> Thanks, 
+> Praveen Kumar k
+> PrimeSoft IP Solutions Inc
+> 
+> Phone : 040-27762986/27762987 
+> Skype ID: kpraveen72
+> www.primesoftsolutionsinc.com 
+> 
+> -----Original Message-----
+> From: Subrata Modak [mailto:subrata@linux.vnet.ibm.com] 
+> Sent: Tuesday, May 19, 2009 4:02 PM
+> To: Praveen
+> Cc: ltp-list@lists.sourceforge.net; Nate Straz; Nathan Straz
+> Subject: Re: [LTP] Contribution to LTP
+> 
+> Hi Praveen,
+> 
+> On Tue, 2009-05-19 at 13:43 +0530, Praveen wrote: 
+> > Hi,
+> > 
+> >  
+> > 
+> > I am a C/Shell scripting Developer. I would like to
+> > contribute/participate in LTP.
+> > 
+> >  
+> > 
+> > Please let me know, if I have any opportunity to work with LTP.
+> 
+> You have all the opportunity at your disposal to contribute to LTP. In
+> fact, we need lots of volunteers to contribute to LTP. As, beginner, the
+> first thing to do is just watch over the mailing list to find out how
+> people work. And then there are lots of things in store for you:
+> (And, off course, first subscribe to this list and this is available on
+> subscription basis, which is free:
+> http://sourceforge.net/mail/?group_id=3382),
+> 
+> 1) Pick up some area in kernel for which tests do not exist in LTP (Of
+> course this area should be of your interest). Try to write small tests
+> for them and submit to LTP. It would be better if you track
+> http://kernelnewbies.org/LinuxChanges for the changes and start with a
+> latest stable kernel release,
+> 
+> 2) Execute the existing LTP tests on all the machines available to you,
+> and see if you can hit a LTP/Kernel bug. If it is an LTP issue(s), send
+> the corresponding patch to the mailing list for review,
+> 
+> 3) Make the LTP provision system more better, so that we can be more
+> efficient/effective in running these tests. You can also work towards
+> making it more automated.
+> 
+> The present LTP provisioning engine PAN has lots of drawbacks and it is
+> old. This needs to be updated, or, replaced with something better.
+> Sometime back Nathan Straz posted some comments on it:
+> 
+> http://fedorahosted.org/collie/
+> http://marc.info/?t=122540445800003&r=1&w=2,
+> 
+> I need somebody, who can do a feasibility analysis of the advantages of
+> PAN over collie, and show the fruits of migration from PAN to COLLIE. A
+> workable version of the patch would also be welcome. The work would be
+> little tough as PAN has stabilized and we would be resisting any changes
+> which introduces bug(s) in our existing provisioning environment,
+> 
+> 4) Another important aspect would be to improve documentation for LTP.
+> You can start with by reading individual test cases, understand the code
+> (you will be assisted with the minimal existent description, so, do not
+> worry), refer to man pages, google, and improve upon the test case(s)
+> description. You are free to start from where ever you like.
+> 
+> You are welcome to LTP and i would hope your enthusiasm does not die
+> down soon ;-)
+> 
+> Regards--
+> Subrata
+> 
+> > 
+> >  
+> > 
+> >  
+> > 
+> > Thanks,
+> > 
+> > Praveen Kumar k
+> > 
+> > PrimeSoft IP Solutions Inc 
+> > 
+> > Phone: 040-27762986/27762987 
+> > 
+> > Skype ID: kpraveen72
+> > 
+> > www.primesoftsolutionsinc.com 
+> > 
+> >  
+> > 
+> > 
+> >
+>
+----------------------------------------------------------------------------
+> --
+> > Crystal Reports - New Free Runtime and 30 Day Trial
+> > Check out the new simplified licensing option that enables 
+> > unlimited royalty-free distribution of the report engine 
+> > for externally facing server and web deployment. 
+> > http://p.sf.net/sfu/businessobjects
+> > _______________________________________________ Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+> 
+> 
+> 
+
+
+
+
 
 ------------------------------------------------------------------------------
 _______________________________________________
