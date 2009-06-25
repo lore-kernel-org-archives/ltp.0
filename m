@@ -1,30 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <maknayak@in.ibm.com>) id 1MFAvA-0003si-IA
-	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 17:52:08 +0000
-Received: from e9.ny.us.ibm.com ([32.97.182.139])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MFAv6-0003jO-RG
-	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 17:52:08 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e9.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5CHdY3o001971
-	for <ltp-list@lists.sourceforge.net>; Fri, 12 Jun 2009 13:39:35 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5CHq0Mg214478
-	for <ltp-list@lists.sourceforge.net>; Fri, 12 Jun 2009 13:52:00 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5CHnieH016354
-	for <ltp-list@lists.sourceforge.net>; Fri, 12 Jun 2009 13:49:44 -0400
-From: Manas Kumar Nayak <maknayak@in.ibm.com>
-Date: Fri, 12 Jun 2009 23:21:49 +0530
-Message-Id: <20090612175147.26047.96933.sendpatchset@subratamodak.linux.ibm.com>
-In-Reply-To: <20090612175132.26047.54266.sendpatchset@subratamodak.linux.ibm.com>
-References: <20090612175132.26047.54266.sendpatchset@subratamodak.linux.ibm.com>
-Subject: [LTP] [PATCH 01/05] Add/Port mbind01 test for mbind() syscall
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJm0d-0004oH-6d
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 10:16:47 +0000
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MJm0c-0000gv-5v
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 10:16:47 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e4.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5PABbud024560
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 06:11:37 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5PAGjoj257150
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 06:16:45 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5PAGiBV028183
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 06:16:44 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <8368651DACC1964480F951191B94A078BC0F2A@svexch01.mvista.com>
+References: <8368651DACC1964480F951191B94A078BC0F2A@svexch01.mvista.com>
+Date: Thu, 25 Jun 2009 14:40:58 +0530
+Message-Id: <1245921058.5542.50.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] splice01: check prerequisite of filesystem
+	in	actual test/tmp directory rather than current directory
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,494 +37,38 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
-Cc: Manas Kumar Nayak <maknayak@in.ibm.com>
+To: Henry Yei <hyei@mvista.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Manas Kumar Nayak <maknayak@in.ibm.com>
-To: LTP List <ltp-list@lists.sourceforge.net>
-Cc: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: Masatake YAMATO <yamato@redhat.com>
----
+On Wed, 2009-06-24 at 17:32 -0700, Henry Yei wrote: 
+> Hello,
+> 
+> I accidentally submitted this patch previously without a subject, not sure if it gwoudl get on the radar, hence the resubmission.
+> 
+> This is a patch for the splice01 test. Previously the test was checking if the current working directory was NFS based as which the test. The patch changes this test to check whether the test directory is on NFS, as that is actually where the test gets run. 
 
---- ltp-full-20090531.orig/testcases/kernel/syscalls/mbind/Makefile	1970-01-01 05:30:00.000000000 +0530
-+++ ltp-full-20090531/testcases/kernel/syscalls/mbind/Makefile	2009-06-12 16:30:33.000000000 +0530
-@@ -0,0 +1,31 @@
-+#
-+#  Copyright (c) International Business Machines  Corp., 2009
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+
-+CFLAGS += -I../../../../include -I../utils/ -Wall -O2
-+LDLIBS += -L../../../../lib -lltp
-+
-+SRCS    = $(wildcard *.c)
-+TARGETS = $(patsubst %.c,%,$(SRCS))
-+
-+all: $(TARGETS)
-+
-+install:
-+	@set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i ; done
-+
-+clean:
-+	rm -f $(TARGETS)
---- ltp-full-20090531.orig/testcases/kernel/syscalls/mbind/mbind01.c	1970-01-01 05:30:00.000000000 +0530
-+++ ltp-full-20090531/testcases/kernel/syscalls/mbind/mbind01.c	2009-06-12 16:58:30.000000000 +0530
-@@ -0,0 +1,415 @@
-+/******************************************************************************/
-+/* Copyright (c) Crackerjack Project., 2007-2008                              */
-+/* Author(s): Takahiro Yasui <takahiro.yasui.mp@hitachi.com>,		      */
-+/*            Yumiko Sugita <yumiko.sugita.yf@hitachi.com>,		      */
-+/*            Satoshi Fujiwara <sa-fuji@sdl.hitachi.co.jp>  		      */
-+/*                                                                            */
-+/* This program is free software;  you can redistribute it and/or modify      */
-+/* it under the terms of the GNU General Public License as published by       */
-+/* the Free Software Foundation; either version 2 of the License, or          */
-+/* (at your option) any later version.                                        */
-+/*                                                                            */
-+/* This program is distributed in the hope that it will be useful,            */
-+/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
-+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
-+/* the GNU General Public License for more details.                           */
-+/*                                                                            */
-+/* You should have received a copy of the GNU General Public License          */
-+/* along with this program;  if not, write to the Free Software               */
-+/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
-+/*                                                                            */
-+/******************************************************************************/
-+/******************************************************************************/
-+/*                                                                            */
-+/* File:        mbind01.c                                           */
-+/*                                                                            */
-+/* Description: This tests the mbind() syscall                      */
-+/*                                                                            */
-+/* Usage:  <for command-line>                                                 */
-+/* mbind01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                     */
-+/*      where,  -c n : Run n copies concurrently.                             */
-+/*              -e   : Turn on errno logging.                                 */
-+/*              -i n : Execute test n times.                                  */
-+/*              -I x : Execute test for x seconds.                            */
-+/*              -P x : Pause for x seconds between iterations.                */
-+/*              -t   : Turn on syscall timing.                                */
-+/*                                                                            */
-+/* Total Tests: 1                                                             */
-+/*                                                                            */
-+/* Test Name:   mbind01                                             */
-+/* History:     Porting from Crackerjack to LTP is done by                    */
-+/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
-+/******************************************************************************/
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <errno.h>
-+#include <unistd.h>
-+
-+#include <sys/syscall.h>
-+#include <sys/types.h>
-+#include <sys/mman.h>
-+#include <getopt.h>
-+#include <string.h>
-+#include <stdlib.h>
-+#include <errno.h>
-+#include <stdio.h>
-+#include <unistd.h>
-+#include "numaif.h"
-+#include "include_j_h.h"
-+
-+/* Harness Specific Include Files. */
-+#include "test.h"
-+#include "usctest.h"
-+#include "linux_syscall_numbers.h"
-+
-+/* Extern Global Variables */
-+extern int Tst_count;           /* counter for tst_xxx routines.         */
-+extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
-+
-+/* Global Variables */
-+char *TCID = "mbind01";  /* Test program identifier.*/
-+int  testno;
-+int  TST_TOTAL = 2;                   /* total number of tests in this file.   */
-+
-+/* Extern Global Functions */
-+/******************************************************************************/
-+/*                                                                            */
-+/* Function:    cleanup                                                       */
-+/*                                                                            */
-+/* Description: Performs all one time clean up for this test on successful    */
-+/*              completion,  premature exit or  failure. Closes all temporary */
-+/*              files, removes all temporary directories exits the test with  */
-+/*              appropriate return code by calling tst_exit() function.       */
-+/*                                                                            */
-+/* Input:       None.                                                         */
-+/*                                                                            */
-+/* Output:      None.                                                         */
-+/*                                                                            */
-+/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
-+/*              On success - Exits calling tst_exit(). With '0' return code.  */
-+/*                                                                            */
-+/******************************************************************************/
-+extern void cleanup() {
-+        /* Remove tmp dir and all files in it */
-+        TEST_CLEANUP;
-+        tst_rmdir();
-+
-+        /* Exit with appropriate return code. */
-+        tst_exit();
-+}
-+
-+/* Local  Functions */
-+/******************************************************************************/
-+/*                                                                            */
-+/* Function:    setup                                                         */
-+/*                                                                            */
-+/* Description: Performs all one time setup for this test. This function is   */
-+/*              typically used to capture signals, create temporary dirs      */
-+/*              and temporary files that may be used in the course of this    */
-+/*              test.                                                         */
-+/*                                                                            */
-+/* Input:       None.                                                         */
-+/*                                                                            */
-+/* Output:      None.                                                         */
-+/*                                                                            */
-+/* Return:      On failure - Exits by calling cleanup().                      */
-+/*              On success - returns 0.                                       */
-+/*                                                                            */
-+/******************************************************************************/
-+void setup() {
-+        /* Capture signals if any */
-+        /* Create temporary directories */
-+        TEST_PAUSE;
-+        tst_tmpdir();
-+}
-+
-+int sig_count = 0;
-+
-+void sig_action(int sig) {
-+        sig_count = 1;
-+}
-+
-+/*
-+ * Macros
-+ */
-+#define SYSCALL_NAME    "mbind"
-+
-+/*
-+ * Global variables
-+ */
-+static int opt_debug;
-+static char *progname;
-+
-+enum test_type {
-+        NORMAL,
-+        INVALID_POINTER,
-+};
-+
-+enum from_node {
-+        NONE,
-+        SELF,
-+};
-+
-+/*
-+ * Data Structure
-+ */
-+struct test_case {
-+        int ttype;
-+        int policy;
-+        int from_node;
-+        unsigned flags;
-+        int ret;
-+        int err;
-+};
-+
-+/* Test cases
-+ *
-+ *   test status of errors on man page
-+ *
-+ *   EFAULT             v (detect unmapped hole or invalid pointer)
-+ *   EINVAL             v (invalid arguments)
-+ *   ENOMEM             can't check because it's difficult to create no-memory
-+ *   EIO                can't check because we don't have N-node NUMA system
-+ *                      (only we can do is simulate 1-node NUMA)
-+ */
-+
-+static struct test_case tcase[] = {
-+        { // case00
-+                .policy         = MPOL_DEFAULT,
-+                .from_node      = NONE,
-+                .ret            = 0,
-+                .err            = 0,
-+        },
-+        { // case01
-+                .policy         = MPOL_DEFAULT,
-+                .from_node      = SELF, // target exists
-+                .ret            = -1,
-+                .err            = EINVAL,
-+        },
-+        { // case02
-+                .policy         = MPOL_BIND,
-+                .from_node      = NONE, // no target
-+                .ret            = -1,
-+                .err            = EINVAL,
-+        },
-+	{ // case03
-+                .policy         = MPOL_BIND,
-+                .from_node      = SELF,
-+                .ret            = 0,
-+                .err            = 0,
-+        },
-+        { // case04
-+                .policy         = MPOL_INTERLEAVE,
-+                .from_node      = NONE, // no target
-+                .ret            = -1,
-+                .err            = EINVAL,
-+        },
-+        { // case05
-+                .policy         = MPOL_INTERLEAVE,
-+                .from_node      = SELF,
-+                .ret            = 0,
-+                .err            = 0,
-+        },
-+        { // case06
-+                .policy         = MPOL_PREFERRED,
-+                .from_node      = NONE,
-+                .ret            = 0,
-+                .err            = 0,
-+        },
-+        { // case07
-+                .policy         = MPOL_PREFERRED,
-+                .from_node      = SELF,
-+                .ret            = 0,
-+                .err            = 0,
-+	},
-+        { // case08
-+                .policy         = -1, // unknown policy
-+                .from_node      = NONE,
-+                .ret            = -1,
-+                .err            = EINVAL,
-+        },
-+        { // case09
-+                .policy         = MPOL_DEFAULT,
-+                .from_node      = NONE,
-+                .flags          = -1, // invalid flags
-+                .ret            = -1,
-+                .err            = EINVAL,
-+        },
-+        { // case10
-+                .ttype          = INVALID_POINTER,
-+                .policy         = MPOL_DEFAULT,
-+                .from_node      = NONE,
-+                .ret            = -1,
-+                .err            = EFAULT,
-+        },
-+};
-+
-+#define MEM_LENGTH              (4 * 1024 * 1024)
-+/*
-+ * do_test()
-+ *
-+ *   Input  : TestCase Data
-+ *   Return : RESULT_OK(0), RESULT_NG(1)
-+ *
-+ */
-+
-+static int do_test(struct test_case *tc) {
-+        int sys_ret;
-+        int sys_errno;
-+        int result = RESULT_OK;
-+        int rc, policy, cmp_ok = 1;
-+        char *p = NULL;
-+        nodemask_t nodemask, getnodemask;
-+        unsigned long maxnode = NUMA_NUM_NODES;
-+        unsigned long len = MEM_LENGTH;
-+
-+        /* We assume that there is only one node(node0). */
-+        nodemask_zero(&nodemask);
-+        nodemask_set(&nodemask, 0);
-+        nodemask_zero(&getnodemask);
-+
-+        /*
-+         * mmap memory
-+         */
-+        p = mmap(NULL, len, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS,0, 0);
-+        if (p == (void*)-1) {
-+		tst_resm(TFAIL, "malloc failed - errno = %d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
-+		cleanup();
-+                tst_exit();
-+        }
-+        if(tc->ttype == INVALID_POINTER)
-+                p = (char*)0xc0000000;
-+/*
-+         * Execute system call
-+         */
-+        errno = 0;
-+        if (tc->from_node == NONE)
-+                TEST(sys_ret = syscall(__NR_mbind, p, len, tc->policy,NULL, 0, tc->flags));
-+        else
-+                TEST(sys_ret = syscall(__NR_mbind, p, len, tc->policy,&nodemask, maxnode, tc->flags));
-+        sys_errno = errno;
-+        if (sys_ret < 0)
-+                goto TEST_END;
-+
-+        /*
-+         * Check policy of the allocated memory
-+         */
-+        TEST(rc = syscall(__NR_get_mempolicy, &policy, &getnodemask, maxnode,p, MPOL_F_ADDR));
-+        if (rc < 0) {
-+		tst_resm(TFAIL, "get_mempolicy failed - errno = %d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
-+                result = 1;
-+                tst_exit();
-+        }
-+
-+// When policy equals MPOL_DEFAULT, then get_mempolicy not return node
-+        if (tc->policy == MPOL_DEFAULT)
-+		nodemask_zero(&nodemask);
-+	cmp_ok = ((tc->policy == policy) && nodemask_equal(&nodemask,&getnodemask));
-+        if (opt_debug) {
-+		nodemask_dump("nodemask Expect:", &nodemask);
-+		nodemask_dump("nodemask Result:", &getnodemask);
-+		tst_resm(TINFO,"policy E:%d R:%d", tc->policy, policy);
-+        }
-+
-+
-+TEST_END:
-+        /*
-+         * Check results
-+         */
-+        result |= ((sys_errno != tc->err) || (!cmp_ok));
-+        PRINT_RESULT_CMP(0, tc->ret, tc->err, sys_ret, sys_errno, cmp_ok);
-+        return result;
-+}
-+
-+/*
-+ * usage()
-+ */
-+static void usage(char *progname) {
-+	tst_resm(TINFO,"usage: %s [options]", progname);
-+	tst_resm(TINFO,"This is a regression test program of %s system call.",SYSCALL_NAME);
-+	tst_resm(TINFO,"options:");
-+	tst_resm(TINFO,"    -d --debug           Show debug messages");
-+        tst_resm(TINFO,"    -h --help            Show this message");
-+	tst_resm(TINFO,"NG");
-+        exit(1);
-+}
-+
-+
-+
-+
-+
-+int main(int ac, char **av) {
-+	int result = 0;
-+	int lc, i;                 /* loop counter */
-+	char *msg;              /* message returned from parse_opts */
-+
-+	struct option long_options[] = {
-+                { "debug", no_argument, 0, 'd' },
-+                { "help",  no_argument, 0, 'h' },
-+                { NULL, 0, NULL, 0 }
-+	};
-+	
-+        /* parse standard options */
-+	if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
-+		tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
-+		tst_exit();
-+	}
-+
-+        setup();
-+
-+	progname = strchr(av[0],'/');
-+	progname = (progname ? progname + 1 : av[0]);
-+
-+        /* Check looping state if -i option given */
-+        for (lc = 0; TEST_LOOPING(lc); ++lc) {
-+                Tst_count = 0;
-+                for (testno = 0; testno < TST_TOTAL; ++testno) {
-+			TEST(getopt_long(ac, av, "dh", long_options, NULL));
-+			while (TEST_RETURN != -1){
-+				switch(TEST_RETURN) {
-+				case 'd':
-+					opt_debug = 1;
-+					break;
-+				default:
-+					usage(progname);
-+				}
-+			} /* end of while */
-+			if(ac != optind) {
-+				tst_resm(TFAIL, "Options are not match - errno = %d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
-+				usage(progname);
-+				cleanup();
-+				tst_exit();
-+        		}
-+			
-+			/*
-+		         * Execute test
-+		         */
-+        		for (i = 0; i < (int)(sizeof(tcase) / sizeof(tcase[0])); i++) {
-+        		        int ret;
-+	        	        tst_resm(TINFO,"(case%02d) START", i);
-+        	        	ret = do_test(&tcase[i]);
-+	        	        tst_resm(TINFO,"(case%02d) END => %s", i, ( TEST_RETURN== 0) ? "OK" : "NG");
-+	                	result |= ret;
-+        		}
-+
-+			 /*
-+		         * Check results
-+		         */
-+		        switch(result) {
-+        		case RESULT_OK:
-+					tst_resm(TPASS, "mbind call succeeded --OK-- ");
-+
-+		        default:
-+                		tst_resm(TFAIL, "%s failed - errno = %d : %s --NG--", TCID, TEST_ERRNO, strerror(TEST_ERRNO));
-+				cleanup();
-+				tst_exit();
-+		        }
-+
-+
-+                }
-+        }	
-+        cleanup();
-+	tst_exit();
-+}
-+
---- ltp-full-20090531.orig/runtest/syscalls	2009-06-12 16:11:03.000000000 +0530
-+++ ltp-full-20090531/runtest/syscalls	2009-06-12 16:59:58.000000000 +0530
-@@ -506,6 +506,8 @@ lstat03_64 lstat03_64
- 
- mallopt01 mallopt01
- 
-+mbind01 mbind01
-+
- memset01 memset01
- memcmp01 memcmp01
- memcpy01 memcpy01
+Great. Thanks.
 
----
 Regards--
-Manas
+Subrata
+
+> 
+> Henry Yei (QA)
+> MontaVista Software, Inc.
+> hyei@mvista.com
+> 
+>  
+> ------------------------------------------------------------------------------
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing 
-server and web deployment.
-http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
