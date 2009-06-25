@@ -1,26 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1MJ7W9-0003Yd-RS
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:02:37 +0000
-Received: from e34.co.us.ibm.com ([32.97.110.152])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MJ7W8-00052T-QE
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:02:37 +0000
-Date: Tue, 23 Jun 2009 10:02:30 -0500
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20090623150230.GA20383@us.ibm.com>
-References: <1233076092-8660-1-git-send-email-orenl@cs.columbia.edu>
-	<bb33bcf20903160526v56f16a82m9192770e228016b1@mail.gmail.com>
-	<1237365510.5381.34.camel@subratamodak.linux.ibm.com>
-	<20090318133943.GA22636@us.ibm.com>
-	<1237385013.5381.58.camel@subratamodak.linux.ibm.com>
-	<1245768524.4860.60.camel@subratamodak.linux.ibm.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1245768524.4860.60.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] [RFC v13][PATCH 00/14] Kernel based checkpoint/restart
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJlkX-0003jM-VO
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 10:00:09 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MJlkT-00048V-UG
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 10:00:09 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e1.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5P9tRWX028679
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 05:55:27 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5PA05jS245566
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 06:00:05 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5PA05iI023710
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 06:00:05 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <op.uvzv3omsu2flwt@debian>
+References: <200906220117.n5M1HTVJ004183@e2.ny.us.ibm.com>
+	<1245768543.4860.65.camel@subratamodak.linux.ibm.com>
+	<op.uvzhu1pnu2flwt@debian>  <op.uvzv3omsu2flwt@debian>
+Date: Thu, 25 Jun 2009 14:40:24 +0530
+Message-Id: <1245921024.5542.42.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Fix cleanup procedure in the setuid04 test
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,58 +38,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: ltp-list <ltp-list@lists.sf.net>, Oren Laadan <orenl@cs.columbia.edu>, Alexander Viro <viro@zeniv.linux.org.uk>, matthltc <matthltc@linux.vnet.ibm.com>, "H. Peter Anvin" <hpa@zytor.com>, Serge Hallyn <serue@linux.vnet.ibm.com>, sukadev <sukadev@linux.vnet.ibm.com>
+To: Jiri Palecek <jpalecek@web.de>
+Cc: ltp-list@lists.sourceforge.net
 
-Quoting Subrata Modak (subrata@linux.vnet.ibm.com):
-> On Wed, 2009-03-18 at 19:33 +0530, Subrata Modak wrote: 
-> > Thanks Serge.
-> > 
-> > On Wed, 2009-03-18 at 08:39 -0500, Serge E. Hallyn wrote:
-> > > Quoting Subrata Modak (subrata@linux.vnet.ibm.com):
-> > > > Serge,
-> > > > 
-> > > > Did i talk to you regarding these tests in our OLS 2008 meeting ? I do
-> > > > not remember exactly, but, when i saw this posting, i thought may be
-> > > > there was some conversation.
-> > > 
-> > > I'm not sure.  However no patches are in -mm or linux-next yet.
-> > > 
-> > > I'm not yet certain what the test methodology will be.  Some for
-> > > instance feel that the best way to test c/r is to just run ltp
-> > > inside a container and continuously c/r it.  Of course, that
-> > > isn't very useful when c/r support is not yet sufficient to
-> > > accomplish that.  So at the moment we do have sets of programs
-> > > specifically written to be checkpointable.
-> > > 
-> > > For instance I have a program and script which continuously
-> > > runs, updates state, writes to a file, checkpoints, kills,
-> > > and restarts.  That sort of thing should make a nice testcase.
-> > > Oren maintains a git tree with checkpointable programs at
-> > > git://git.ncl.cs.columbia.edu/pub/git/user-cr.git .
-> > > 
-> > > So definately let's talk again after patches hit mainline.  I'll
-> > > whip up some testcases based on existing code.
-> 
-> Serge,
-> 
-> Do we have this in 2.6.30 ?
-
-Let me check!
-
-Heh, just kidding.  Nope.
-
--serge
-
-------------------------------------------------------------------------------
-Are you an open source citizen? Join us for the Open Source Bridge conference!
-Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
-Need another reason to go? 24-hour hacker lounge. Register today!
-http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gVHVlLCAyMDA5LTA2LTIzIGF0IDIyOjQ4ICswMjAwLCBKacWZw60gUGFsZcSNZWsgd3JvdGU6
+IAo+IE9uIFR1ZSwgMjMgSnVuIDIwMDkgMTc6NDE6MTUgKzAyMDAsIEppxZnDrSBQYWxlxI1layA8
+anBhbGVjZWtAd2ViLmRlPiB3cm90ZToKPiAKPiA+IE9uIFR1ZSwgMjMgSnVuIDIwMDkgMTY6NDk6
+MDMgKzAyMDAsIFN1YnJhdGEgTW9kYWsgIAo+ID4gPHN1YnJhdGFAbGludXgudm5ldC5pYm0uY29t
+PiB3cm90ZToKPiA+Cj4gPj4gT24gVHVlLCAyMDA5LTA1LTEyIGF0IDE5OjA2ICswMjAwLCBKaXJp
+IFBhbGVjZWsgd3JvdGU6Cj4gPj4+IENsZWFudXAgaGFzIHRvIGJlIG1hZGUgb25seSBvbmNlIGlu
+IHRoZSBwYXJlbnQgcHJvY2Vzczsgd2hlbiB0aGUKPiA+Pj4gIGNoaWxkIG1ha2VzIHRoZSBjbGVh
+bnVwIGl0c2VsZiwgdGhlIHBhcmVudCBoYXMgbm90aGluZyB0byBjbGVhbnVwLAo+ID4+PiAgd2hp
+Y2ggbWFrZXMgaGltIHNhZC4KPiA+Pj4KPiA+Pj4gU2lnbmVkLW9mZi1ieTogSmlyaSBQYWxlY2Vr
+IDxqcGFsZWNla0B3ZWIuZGU+Cj4gPj4KPiA+PiBUaGFua3MuCj4gPgo+ID4gT2ggbm8sIGF0IHRo
+ZSBzZWNvbmQgc2lnaHQgSSBzZWUgSSd2ZSBwb3N0ZWQgYSB3cm9uZyAob2xkKSB2ZXJzaW9uIG9m
+ICAKPiA+IHRoZSBwYXRjaC4gSSdsbCBzZW5kIGEgY29ycmVjdGlvbiBzaG9ydGx5Lgo+IAo+IFRo
+ZSBjb3JyZWN0aW9uIGlzIGluIHRoZSBhdHRhY2htZW50LiBQbGVhc2UsIGFwcGx5LgoKRXZlcnl0
+aGluZ3MgZmluZSBleGNlcHQ6CgooU3RyaXBwaW5nIHRyYWlsaW5nIENScyBmcm9tIHBhdGNoLikK
+cGF0Y2hpbmcgZmlsZSB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NldHVpZC9zZXR1aWQwNC5j
+CgpSZWdhcmRzLS0KU3VicmF0YQoKPiAKPiBSZWdhcmRzCj4gICAgICBKaXJpIFBhbGVjZWsKPiAK
+PiA+Pj4gLS0tCj4gPj4+ICB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NldHVpZC9zZXR1aWQw
+NC5jIHwgICAgNyArKystLS0tCj4gPj4+ICAxIGZpbGVzIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygr
+KSwgNCBkZWxldGlvbnMoLSkKPiA+Pj4KPiA+Pj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvc2V0dWlkL3NldHVpZDA0LmMgIAo+ID4+PiBiL3Rlc3RjYXNlcy9rZXJuZWwv
+c3lzY2FsbHMvc2V0dWlkL3NldHVpZDA0LmMKPiA+Pj4gaW5kZXggMThmMWQ5MC4uMjZhMzg2OCAx
+MDA2NDQKPiA+Pj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZXR1aWQvc2V0dWlk
+MDQuYwo+ID4+PiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NldHVpZC9zZXR1aWQw
+NC5jCj4gPj4+IEBAIC0xMTQsNyArMTE0LDcgQEAgdm9pZCBkb19tYXN0ZXJfY2hpbGQoKQo+ID4+
+PiAgCWludCBzdGF0dXM7Cj4gPj4+Cj4gPj4+ICAJaWYgKHNldHVpZChsdHB1c2VyLT5wd191aWQp
+ID09IC0xKSB7Cj4gPj4+IC0JCXRzdF9icmttKFRCUk9LLCBjbGVhbnVwLAo+ID4+PiArCQl0c3Rf
+YnJrbShUQlJPSywgdHN0X2V4aXQsCj4gPj4+ICAJCQkgInNldHVpZCBmYWlsZWQgdG8gc2V0IHRo
+ZSBlZmZlY3RpdmUgdWlkIHRvICVkIiwKPiA+Pj4gIAkJCSBsdHB1c2VyLT5wd191aWQpOwo+ID4+
+PiAgCX0KPiA+Pj4gQEAgLTE0Myw3ICsxNDMsNyBAQCB2b2lkIGRvX21hc3Rlcl9jaGlsZCgpCj4g
+Pj4+Cj4gPj4+ICAJCXBpZCA9IEZPUktfT1JfVkZPUksoKTsKPiA+Pj4gIAkJaWYgKHBpZCA8IDAp
+Cj4gPj4+IC0JCQl0c3RfYnJrbShUQlJPSywgY2xlYW51cCwgIkZvcmsgZmFpbGVkIik7Cj4gPj4+
+ICsJCQl0c3RfYnJrbShUQlJPSywgdHN0X2V4aXQsICJGb3JrIGZhaWxlZCIpOwo+ID4+Pgo+ID4+
+PiAgCQlpZiAocGlkID09IDApIHsKPiA+Pj4gIAkJCWludCB0c3RfZmQyOwo+ID4+PiBAQCAtMTYw
+LDEzICsxNjAsMTIgQEAgdm9pZCBkb19tYXN0ZXJfY2hpbGQoKQo+ID4+Pgo+ID4+PiAgCQkJaWYg
+KFRFU1RfRVJSTk8gPT0gRUFDQ0VTKSB7Cj4gPj4+ICAJCQkJdHN0X3Jlc20oVFBBU1MsICJvcGVu
+IHJldHVybmVkIGVycm5vIEVBQ0NFUyIpOwo+ID4+PiAtCQkJCWV4aXQoMCk7Cj4gPj4+ICAJCQl9
+IGVsc2Ugewo+ID4+PiAgCQkJCXRzdF9yZXNtKFRGQUlMLAo+ID4+PiAgCQkJCQkgIm9wZW4gcmV0
+dXJuZWQgdW5leHBlY3RlZCBlcnJubyAtICVkIiwKPiA+Pj4gIAkJCQkJIFRFU1RfRVJSTk8pOwo+
+ID4+PiAtCQkJCWV4aXQoLTEpOwo+ID4+PiAgCQkJfQo+ID4+PiArCQkJdHN0X2V4aXQoKTsKPiA+
+Pj4gIAkJfSBlbHNlIHsKPiA+Pj4gIAkJCS8qIFdhaXQgZm9yIHNvbiBjb21wbGV0aW9uICovCj4g
+Pj4+ICAJCQl3YWl0cGlkKHBpZCwgJnN0YXR1cywgMCk7Cj4gPj4KPiA+Cj4gPgo+ID4KPiAKPiAK
+PiAKPiAtLSAKPiBVc2luZyBPcGVyYSdzIHJldm9sdXRpb25hcnkgZS1tYWlsIGNsaWVudDogaHR0
+cDovL3d3dy5vcGVyYS5jb20vbWFpbC8KCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBs
+aXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZv
+cmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
