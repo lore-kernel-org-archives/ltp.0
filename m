@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MGHhM-0004GA-Bv
-	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:18:28 +0000
-Received: from [32.97.182.145] (helo=e5.ny.us.ibm.com)
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MGHhK-0006jq-SO
-	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:18:28 +0000
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJlqo-00048v-5H
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 10:06:38 +0000
+Received: from e5.ny.us.ibm.com ([32.97.182.145])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MJlqn-0003bO-6s
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 10:06:38 +0000
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1244775211.4982.1.camel@subratamodak.linux.ibm.com>
-References: <1244775211.4982.1.camel@subratamodak.linux.ibm.com>
-Date: Tue, 16 Jun 2009 00:46:22 +0530
-Message-Id: <1245093383.4871.48.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <78aaeffc0906250000i150418e8k3637acb41976c1a0@mail.gmail.com>
+References: <78aaeffc0906250000i150418e8k3637acb41976c1a0@mail.gmail.com>
+Date: Thu, 25 Jun 2009 14:41:02 +0530
+Message-Id: <1245921062.5542.51.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [001][RFC] [TESTING linux-2.6.30] Reliable
-	Datagram	Sockets (RDS)	protocol support
+Subject: Re: [LTP] Can not run Test
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -29,36 +28,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: richard.frank@oracle.com
+To: waqar afridi <afridi.waqar@gmail.com>
 Cc: ltp-list <ltp-list@lists.sf.net>
 
-On Fri, 2009-06-12 at 08:23 +0530, Subrata Modak wrote: 
-> Hi Richard,
+On Thu, 2009-06-25 at 13:00 +0600, waqar afridi wrote:
+> Hi All
 > 
+> I have downloaded ltp-full-20090531.tgz and installed it using the
+> commands make autotools, ./configure, make all, make install. but when
+> I try to run a test like
+> 
+> # ./ima_tpm.sh 
+> ./ima_tpm.sh: 163: source: not found
+> ./ima_tpm.sh: 164: setup: not found
+> 
+> I get the error above. What could be the problem, Desperately need
+> help.
 
-Hi Richard,
-
-Would you like to share something with us ?
+Look through:
+http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/security/integrity/ima/README,
+on instructions to setup before executing those tests.
 
 Regards--
 Subrata
 
-> Would you share with us the testing scenarios/testcases through which
-> you would have tested Reliable Datagram Sockets (RDS) protocol, which is
-> now part of linux-2.6.30. We would like to include support for those
-> test cases in Linux Test Project(http://ltp.sf.net).
 > 
-> Regards--
-> Subrata
-> 
-> 
-> 
+> -- 
+> Waqar Afridi
+> Research Associate
+> Member: Security Engineering Research Group (SERG)
+> IM | Sciences Peshawar 
 > ------------------------------------------------------------------------------
-> Crystal Reports - New Free Runtime and 30 Day Trial
-> Check out the new simplified licensing option that enables unlimited
-> royalty-free distribution of the report engine for externally facing 
-> server and web deployment.
-> http://p.sf.net/sfu/businessobjects
 > _______________________________________________
 > Ltp-list mailing list
 > Ltp-list@lists.sourceforge.net
@@ -66,11 +66,6 @@ Subrata
 
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing 
-server and web deployment.
-http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
