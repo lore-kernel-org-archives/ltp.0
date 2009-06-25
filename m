@@ -1,20 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MJDRD-00080Q-Sd
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 21:21:55 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MJDRB-0002eg-UQ
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 21:21:55 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Tue, 23 Jun 2009 17:21:50 -0400
-References: <4a413e95.8d13f30a.1199.ffffdccbSMTPIN_ADDED@mx.google.com>
-In-Reply-To: <4a413e95.8d13f30a.1199.ffffdccbSMTPIN_ADDED@mx.google.com>
-MIME-Version: 1.0
-Message-Id: <200906231721.51688.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] Fix some bashisms
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJl0G-0000yb-W2
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 09:12:20 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MJl07-0002VM-HN
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 09:12:15 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e37.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5P9BRvu008171
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 03:11:27 -0600
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5P9CAuF225238
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 03:12:10 -0600
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5P9CAAg028346
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 03:12:10 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <200906240117.n5O1H5O0007047@e2.ny.us.ibm.com>
+References: <200906240117.n5O1H5O0007047@e2.ny.us.ibm.com>
+Date: Thu, 25 Jun 2009 14:39:53 +0530
+Message-Id: <1245920993.5542.35.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Use custom prompt in the telnet test,
+	to avoid	timeouts in case the user's prompt doesn't contain hostname
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,141 +38,73 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6676215414405064763=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: "Jiri Palecek > (none)" <"<jirka"@debian.gentoo.org>
-
---===============6676215414405064763==
-Content-Type: multipart/signed; boundary="nextPart1288412.26nTEhm4er";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1288412.26nTEhm4er
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-On Sunday 31 May 2009 17:27:51 Jiri Palecek > wrote:
-> -echo -e "Completed running Default LTP\n\n"
-> +echo "Completed running Default LTP"
-> +echo
-> +echo
-
-use printf, not bloat the file with echos
-
-> -echo "Distro type is: $tvar \n"
-> +echo "Distro type is: $tvar"
->
-
-these are not equivalent
-
-> --- a/testcases/commands/unzip/unzip_tests.sh
-> +++ b/testcases/commands/unzip/unzip_tests.sh
-> @@ -62,7 +62,6 @@ chk_ifexists()
->  # 				- non-zero on failure.
->  cleanup()
->  {
-> -	popd
->  	# remove all the temporary files created by this test.
->  	tst_resm TINFO "CLEAN: removing \"$LTPTMP\""
->  	rm -fr "$LTPTMP"
-> @@ -90,7 +89,6 @@ init()
->  	# create the temporary directory used by this testcase
->  	LTPTMP=3D`mktemp -d -t $$.XXXXXX` || tst_resm TBROK "Unable to create
-> temporary directory with: mktemp -d $$.XXXXXX" trap "cleanup" 0
-> -	pushd "$LTPTMP"
->
->  	# check if commands tst_*, unzip, awk, etc exists.
->  	chk_ifexists INIT tst_resm  || return $RC
-
-umm, you remove the push/popd, but dont replace it with proper cd statement=
-s ? =20
-i'm guessing you didnt test this change.
-
-> --- a/testcases/kernel/containers/netns/delchild.sh
-> +++ b/testcases/kernel/containers/netns/delchild.sh
-> -    kill -9 $sshpid $pid > /dev/null 2>&1
-> +    kill -s KILL $sshpid $pid > /dev/null 2>&1
-
-this isnt a bashism, this is a crappy kill implementation
-
->  for tttype in `ls /dev/tty*`
->  do
-> -device_no=3D${tttype:8}
-> +device_no=3D${tttype##/dev/tty}
-> ...
->  for tttype in `ls /dev/tty*`
->  do
-> -device_no=3D${tttype:8}
-> +device_no=3D${tttype##/dev/tty}
-
-using the greedy expansion (##) doesnt make much sense.  really should be #.
-
-> -    let step_errors=3D"$step_errors + 1"
-> +    step_errors=3D$(($step_errors + 1))
-> -        let i=3D"$i + 1"
-> +        i=3D$(($i + 1))
-> -            let k=3D"$k + 1"
-> +            k=3D$(($k + 1))
-> -        let j=3D"$j + 1"
-> +        j=3D$(($j + 1))
-> .....
-
-this syntax sucks.  please use something like:
-: $(( step_errors +=3D 1))
-
-> -    echo $"fs_inod on $TCtmp finished."
-> +    echo "fs_inod on $TCtmp finished."
-
-these are not equivalent, but i doubt this shell script is using the bash=20
-gettext function in the first place, so it's fine
-=2Dmike
-
---nextPart1288412.26nTEhm4er
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJKQUdvAAoJEEFjO5/oN/WB54kP/RTcPxfy3uRZmjPfPTIB0+aB
-zFj9g+aeoRhErUJ8z0maIS2YC1AdHbssXKDfxfmlQWGDgSfzOO6aXFW6UME/5QDK
-fpzOTRi3lD2MGCJ8KSFyPblYZY76kAYCeT4GKz2s/8dXU+I0j1yEZIxBcQTbq9OM
-lpmuwV5+WOI74NRrcv1OYSV4qS7+RzuFmhpgM5Y83frTNlI6lx3BAi7gt0wAg8VC
-No/MC9H/3VicMo1T/rzfqvQSr/2H+Xd6cdSo2CTGwa5TenVwnB8dOq0RpxrK/mUk
-QdFp3HBXF5XJGbwrYNkiI7DKfsmS1gjG4obi6X7ZJh1Trjc25PDKTy7Vsrr0cYvv
-GLO3iKola9JHlhQ+SsiG0mI+l5n8iz1GSqBd1QU5Q5chchicx5LiEp2uoMiTQqyk
-PoyW6Opn5VwYSlhobCb2U0bWzXZd3I9gDyQVuW8NUcs7yD172jOnNW0AkrUOPCdk
-6N58i5mVxaMOhoZ4M4R1sPod01sIidj4cjDJGQIF0J4lVFrCvIB3SBLiNbwTIWVu
-MdkX1R49Nnk6m0sfaDU+L66NJvsUw1NyyHBi1BWR69CPlbDgAsxZOcLJX/Mmmxyy
-TgCpO+BvEqihgDFrKS+eYjg9Cu4blMystlwy30oqz27Nw10V4W0Is98uKn/hzEmn
-GUXZysMuu7oAVjm27eNJ
-=Dftf
------END PGP SIGNATURE-----
-
---nextPart1288412.26nTEhm4er--
-
-
---===============6676215414405064763==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Jiri Palecek <jpalecek@web.de>
+Cc: ltp-list@lists.sourceforge.net
+
+On Wed, 2009-06-10 at 13:05 +0200, Jiri Palecek > wrote: 
+> Hello,
+> 
+> this patch makes the telnet test avoid timeouts when the remote users prompt doesn't contain hostname, or is somehow irregular. It works by explicitly setting the prompt in the remote shell (see the PROMPT variable). Note that setting literal value as a prompt works even when the remote shell is not bash (the classic bash placeholders do not).
+> 
+> Regards
+>     Jiri Palecek
+> 
+> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+
+Thanks.
+
+Regards--
+Subrata
+
+> ---
+>  testcases/network/tcp_cmds/telnet/telnet01 |   10 ++++++----
+>  1 files changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/testcases/network/tcp_cmds/telnet/telnet01 b/testcases/network/tcp_cmds/telnet/telnet01
+> index a4b37d3..24cfd11 100755
+> --- a/testcases/network/tcp_cmds/telnet/telnet01
+> +++ b/testcases/network/tcp_cmds/telnet/telnet01
+> @@ -41,6 +41,7 @@ set TC telnet
+>  set TCtmp "/tmp"
+>  set SLEEPTIME 3
+>  set TESTLOG "$TCtmp"
+> +set PROMPT "Alpha Bravo"
+> 
+>  if [info exists env(RUSER)] {
+>     set RUSER $env(RUSER)
+> @@ -83,20 +84,21 @@ while {$count < $LOOPCOUNT} {
+>        # telnet to the host
+>        spawn telnet $HOST
+>        expect -re "login:"
+> -      sleep 1
+> +
+>        send "$RUSER\r"
+>        expect -re "Password:"
+> -      sleep 1
+> +
+>        send "$PASSWD\r"
+> 
+> +      send "PS1=\"$PROMPT\"\r"
+>        # Wait for shell prompt
+> -      expect -re "$RUSER@" 
+> +      expect "$PROMPT" 
+> 
+>        # Run passwd command - and respond to its prompts
+>        send "LC_ALL=C ls -l /etc/hosts | wc -w > $TESTLOG/$RUSER.$HOST \r" 
+>        # When shell prompt comes back, logout
+> 
+> -      expect -re "$RUSER@"
+> +      expect "$PROMPT"
+>        exp_send "logout\r"
+> 
+>        send_user "CHECKING TELNET STATUS\n"
+
 
 ------------------------------------------------------------------------------
-
---===============6676215414405064763==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============6676215414405064763==--
-
