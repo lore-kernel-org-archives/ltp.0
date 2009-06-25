@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1MF7My-0001df-Gu
-	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 14:04:36 +0000
-Received: from yw-out-1718.google.com ([74.125.46.152])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MF7Mx-0000QV-KO
-	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 14:04:36 +0000
-Received: by yw-out-1718.google.com with SMTP id 5so1334122ywr.82
+	(envelope-from <hyei@mvista.com>) id 1MJdk7-000769-3V
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 01:27:11 +0000
+Received: from gateway-1237.mvista.com ([63.81.120.158])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MJdk4-0003Ep-Oq
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 01:27:10 +0000
+Received: from svexch01.mvista.com (svexch01.mvista.com [10.0.0.82])
+	by hermes.mvista.com (Postfix) with ESMTP id 83DC91AD3D
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 12 Jun 2009 07:04:35 -0700 (PDT)
+	Wed, 24 Jun 2009 17:32:52 -0700 (PDT)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Date: Fri, 12 Jun 2009 19:07:56 +0530
-Message-ID: <f5a7b3810906120637o57b17fb2t189886a4929198fc@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Content-Type: multipart/mixed; boundary=001e680f17b0f18c13046c26d038
-Subject: [LTP] [FIX PATCH] POSIX aio_write/8-1.c
+Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C9F52C.798B0E74"
+Date: Wed, 24 Jun 2009 17:32:52 -0700
+Message-ID: <8368651DACC1964480F951191B94A078BC0F2A@svexch01.mvista.com>
+From: "Henry Yei" <hyei@mvista.com>
+Subject: [LTP] [PATCH] splice01: check prerequisite of filesystem in actual
+	test/tmp directory rather than current directory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,102 +31,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, rohit.170309@gmail.com, naresh.kernel@gmail.com
 
---001e680f17b0f18c13046c26d038
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+This is a multi-part message in MIME format.
 
-Hi,
+------_=_NextPart_001_01C9F52C.798B0E74
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I have noticed failures under
-testcases/open_posix_testsuite/conformance/interfaces/aio_write/8-1.c
-and fixed.
-Please find the patch below and as attachment.
+Hello,
 
-Best regards
-Naresh Kamboju
+I accidentally submitted this patch previously without a subject, not =
+sure if it gwoudl get on the radar, hence the resubmission.
 
-Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+This is a patch for the splice01 test. Previously the test was checking =
+if the current working directory was NFS based as which the test. The =
+patch changes this test to check whether the test directory is on NFS, =
+as that is actually where the test gets run.=20
 
+Henry Yei (QA)
+MontaVista Software, Inc.
+hyei@mvista.com
 
-diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/aio_write/8-1.c
-b/testcases/open_posix_testsuite/conformance/interfaces/aio_write/8-1.c
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_write/8-1.c	2009-06-12
-18:08:40.000000000 +0530
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_write/8-1.c	2009-06-12
-18:00:21.000000000 +0530
-@@ -40,6 +40,7 @@
- #define BUF_SIZE 512
- 	char buf[BUF_SIZE];
- 	struct aiocb aiocb;
-+	int ret=0;
+=20
 
- #if _POSIX_ASYNCHRONOUS_IO != 200112L
- 	exit(PTS_UNSUPPORTED);
-@@ -51,13 +52,21 @@
- 	aiocb.aio_buf = buf;
- 	aiocb.aio_nbytes = BUF_SIZE;
-
--	if (aio_write(&aiocb) != -1)
-+	/*
-+	 * EBADF is encountered at a later stage
-+	 * and should be collected by aio_error()
-+	 */
-+	
-+	if (aio_write(&aiocb) != 0)
- 	{
- 		printf(TNAME " bad aio_write return value()\n");
- 		exit(PTS_FAIL);
- 	}
-
--	if (errno != EBADF)
-+	while (aio_error(&aiocb) == EINPROGRESS);
-+	ret = aio_error(&aiocb);
-+
-+	if (ret != EBADF)
- 	{
- 		printf(TNAME " errno is not EBADF %s\n", strerror(errno));
- 		exit(PTS_FAIL);
-
---001e680f17b0f18c13046c26d038
-Content-Type: application/octet-stream; name="ltp-posix-aio_write_8-1.patch"
-Content-Disposition: attachment; filename="ltp-posix-aio_write_8-1.patch"
+------_=_NextPart_001_01C9F52C.798B0E74
+Content-Type: application/octet-stream;
+	name="splice01.patch"
 Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fvuxyeqy0
+Content-Description: splice01.patch
+Content-Disposition: attachment;
+	filename="splice01.patch"
 
-ZGlmZiAtTmF1cmIgYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2Uv
-aW50ZXJmYWNlcy9haW9fd3JpdGUvOC0xLmMgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3Vp
-dGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9haW9fd3JpdGUvOC0xLmMKLS0tIGEvdGVzdGNhc2Vz
-L29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvYWlvX3dyaXRlLzgt
-MS5jCTIwMDktMDYtMTIgMTg6MDg6NDAuMDAwMDAwMDAwICswNTMwCisrKyBiL3Rlc3RjYXNlcy9v
-cGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL2Fpb193cml0ZS84LTEu
-YwkyMDA5LTA2LTEyIDE4OjAwOjIxLjAwMDAwMDAwMCArMDUzMApAQCAtNDAsNiArNDAsNyBAQAog
-I2RlZmluZSBCVUZfU0laRSA1MTIKIAljaGFyIGJ1ZltCVUZfU0laRV07CiAJc3RydWN0IGFpb2Ni
-IGFpb2NiOworCWludCByZXQ9MDsKIAogI2lmIF9QT1NJWF9BU1lOQ0hST05PVVNfSU8gIT0gMjAw
-MTEyTAogCWV4aXQoUFRTX1VOU1VQUE9SVEVEKTsKQEAgLTUxLDEzICs1MiwyMSBAQAogCWFpb2Ni
-LmFpb19idWYgPSBidWY7CiAJYWlvY2IuYWlvX25ieXRlcyA9IEJVRl9TSVpFOwogCi0JaWYgKGFp
-b193cml0ZSgmYWlvY2IpICE9IC0xKQorCS8qCisJICogRUJBREYgaXMgZW5jb3VudGVyZWQgYXQg
-YSBsYXRlciBzdGFnZQorCSAqIGFuZCBzaG91bGQgYmUgY29sbGVjdGVkIGJ5IGFpb19lcnJvcigp
-CisJICovIAorCQorCWlmIChhaW9fd3JpdGUoJmFpb2NiKSAhPSAwKQogCXsKIAkJcHJpbnRmKFRO
-QU1FICIgYmFkIGFpb193cml0ZSByZXR1cm4gdmFsdWUoKVxuIik7CiAJCWV4aXQoUFRTX0ZBSUwp
-OwogCX0KIAotCWlmIChlcnJubyAhPSBFQkFERikKKwl3aGlsZSAoYWlvX2Vycm9yKCZhaW9jYikg
-PT0gRUlOUFJPR1JFU1MpOworCXJldCA9IGFpb19lcnJvcigmYWlvY2IpOworCisJaWYgKHJldCAh
-PSBFQkFERikKIAl7CiAJCXByaW50ZihUTkFNRSAiIGVycm5vIGlzIG5vdCBFQkFERiAlc1xuIiwg
-c3RyZXJyb3IoZXJybm8pKTsKIAkJZXhpdChQVFNfRkFJTCk7Cg==
---001e680f17b0f18c13046c26d038
+LS0tIGx0cC1mdWxsLTIwMDkwNTMxL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc3BsaWNlL3Nw
+bGljZTAxLmMJMjAwOS0wMy0yMyAwNjozNjowNi4wMDAwMDAwMDAgLTA3MDAKKysrIGx0cC90ZXN0
+Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NwbGljZS9zcGxpY2UwMS5jCTIwMDktMDYtMjMgMTM6Mzc6
+MzEuMDE3MzMzNjAwIC0wNzAwCkBAIC05NiwxMiArOTYsMTQgQEAKIAlzZXR1cCgpOwogCiAJLyoK
+LQkgKiBjaGVjayBpZiB0aGUgY3VycmVudCBmaWxlc3lzdGVtIGlzIG5mcworCSAqIGNoZWNrIGlm
+IHRoZSBjdXJyZW50IGZpbGVzeXN0ZW0gb2YgdGhlIHRlc3QgZGlyZWN0b3J5IGlzIG5mcwogCSAq
+LworCXRzdF90bXBkaXIoKTsKIAlpZiAodHN0X2lzX2N3ZF9uZnMoKSkgewogCQl0c3RfYnJrbShU
+Q09ORiwgY2xlYW51cCwKIAkJCSAiQ2Fubm90IGRvIHNwbGljZSBvbiBhIGZpbGUgbG9jYXRlZCBv
+biBhbiBORlMgZmlsZXN5c3RlbSIpOwogCX0KKwl0c3Rfcm1kaXIoKTsKIAogCS8qCiAJICogY2hl
+Y2sgbG9vcGluZyBzdGF0ZSBpZiAtYyBvcHRpb24gZ2l2ZW4K
+
+------_=_NextPart_001_01C9F52C.798B0E74
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing 
-server and web deployment.
-http://p.sf.net/sfu/businessobjects
---001e680f17b0f18c13046c26d038
+
+------_=_NextPart_001_01C9F52C.798B0E74
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -134,5 +93,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---001e680f17b0f18c13046c26d038--
+------_=_NextPart_001_01C9F52C.798B0E74--
 
