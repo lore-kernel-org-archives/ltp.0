@@ -1,32 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MGHfY-0001go-Go
-	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:16:36 +0000
-Received: from [32.97.110.158] (helo=e37.co.us.ibm.com)
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJmV2-0002o5-P3
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 10:48:12 +0000
+Received: from e31.co.us.ibm.com ([32.97.110.149])
 	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MGHfX-000245-AC
-	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:16:36 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e37.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5FJF3Rd020835
-	for <ltp-list@lists.sourceforge.net>; Mon, 15 Jun 2009 13:15:03 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5FJFiAu147390
-	for <ltp-list@lists.sourceforge.net>; Mon, 15 Jun 2009 13:15:44 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n5FJFhvi016757
-	for <ltp-list@lists.sourceforge.net>; Mon, 15 Jun 2009 13:15:44 -0600
+	(Exim 4.69) id 1MJmUw-0007H3-6H
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 10:48:07 +0000
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <f5a7b3810906120637o57b17fb2t189886a4929198fc@mail.gmail.com>
-References: <f5a7b3810906120637o57b17fb2t189886a4929198fc@mail.gmail.com>
-Date: Tue, 16 Jun 2009 00:45:26 +0530
-Message-Id: <1245093327.4871.34.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <78aaeffc0906250339q1051eceak19a244c968b4ba0c@mail.gmail.com>
+References: <78aaeffc0906250000i150418e8k3637acb41976c1a0@mail.gmail.com>
+	<1245921062.5542.51.camel@subratamodak.linux.ibm.com>
+	<78aaeffc0906250339q1051eceak19a244c968b4ba0c@mail.gmail.com>
+Date: Thu, 25 Jun 2009 16:17:13 +0530
+Message-Id: <1245926833.8178.2.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [FIX PATCH] POSIX aio_write/8-1.c
+Subject: Re: [LTP] Can not run Test
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -40,75 +30,80 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: naresh kamboju <naresh.kernel@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, rohit.170309@gmail.com
+To: Mimi Zohar <zohar@us.ibm.com>
+Cc: waqar afridi <afridi.waqar@gmail.com>, ltp-list <ltp-list@lists.sf.net>, Mimi Zohar <zohar@linux.vnet.ibm.com>
 
-On Fri, 2009-06-12 at 19:07 +0530, naresh kamboju wrote: 
-> Hi,
+On Thu, 2009-06-25 at 16:39 +0600, waqar afridi wrote:
 > 
-> I have noticed failures under
-> testcases/open_posix_testsuite/conformance/interfaces/aio_write/8-1.c
-> and fixed.
-> Please find the patch below and as attachment.
 > 
-> Best regards
-> Naresh Kamboju
+> On Thu, Jun 25, 2009 at 3:11 PM, Subrata Modak
+> <subrata@linux.vnet.ibm.com> wrote:
+>         On Thu, 2009-06-25 at 13:00 +0600, waqar afridi wrote:
+>         > Hi All
+>         >
+>         > I have downloaded ltp-full-20090531.tgz and installed it
+>         using the
+>         > commands make autotools, ./configure, make all, make
+>         install. but when
+>         > I try to run a test like
+>         >
+>         > # ./ima_tpm.sh
+>         > ./ima_tpm.sh: 163: source: not found
+>         > ./ima_tpm.sh: 164: setup: not found
+>         >
+>         > I get the error above. What could be the problem,
+>         Desperately need
+>         > help.
+>         
+>         
+>         Look through:
+>         http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/security/integrity/ima/README,
+>         on instructions to setup before executing those tests.
 > 
-> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+> I already have done these steps. but I think  the problem will be with
+> mounting partition with iversion support(I have done this too, added
+> iversion to fstab). I am not clear about whats iversion, so thats why
+> I am going to clear my Idea about iversion. but if some body can help
+> with both the problem and iversion, I will be very thankful.
 
-Thanks.
+Mimi,
+
+Can you please help Afridi ?
 
 Regards--
 Subrata
 
 > 
+>         
+>         
+>         Regards--
+>         Subrata
+>         
+>         >
+>         > --
+>         > Waqar Afridi
+>         > Research Associate
+>         > Member: Security Engineering Research Group (SERG)
+>         > IM | Sciences Peshawar
+>         
+>         >
+>         ------------------------------------------------------------------------------
+>         > _______________________________________________
+>         > Ltp-list mailing list
+>         > Ltp-list@lists.sourceforge.net
+>         > https://lists.sourceforge.net/lists/listinfo/ltp-list
+>         
 > 
-> diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/aio_write/8-1.c
-> b/testcases/open_posix_testsuite/conformance/interfaces/aio_write/8-1.c
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/aio_write/8-1.c	2009-06-12
-> 18:08:40.000000000 +0530
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_write/8-1.c	2009-06-12
-> 18:00:21.000000000 +0530
-> @@ -40,6 +40,7 @@
->  #define BUF_SIZE 512
->  	char buf[BUF_SIZE];
->  	struct aiocb aiocb;
-> +	int ret=0;
 > 
->  #if _POSIX_ASYNCHRONOUS_IO != 200112L
->  	exit(PTS_UNSUPPORTED);
-> @@ -51,13 +52,21 @@
->  	aiocb.aio_buf = buf;
->  	aiocb.aio_nbytes = BUF_SIZE;
 > 
-> -	if (aio_write(&aiocb) != -1)
-> +	/*
-> +	 * EBADF is encountered at a later stage
-> +	 * and should be collected by aio_error()
-> +	 */
-> +	
-> +	if (aio_write(&aiocb) != 0)
->  	{
->  		printf(TNAME " bad aio_write return value()\n");
->  		exit(PTS_FAIL);
->  	}
-> 
-> -	if (errno != EBADF)
-> +	while (aio_error(&aiocb) == EINPROGRESS);
-> +	ret = aio_error(&aiocb);
-> +
-> +	if (ret != EBADF)
->  	{
->  		printf(TNAME " errno is not EBADF %s\n", strerror(errno));
->  		exit(PTS_FAIL);
+> -- 
+> Waqar Afridi
+> Research Associate
+> Member: Security Engineering Research Group (SERG)
+> IM | Sciences Peshawar
 
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing 
-server and web deployment.
-http://p.sf.net/sfu/businessobjects
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
