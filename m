@@ -1,24 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <praveen@primesoftsolutionsinc.com>)
-	id 1MJKci-0007ac-TQ
-	for ltp-list@lists.sourceforge.net; Wed, 24 Jun 2009 05:02:16 +0000
-Received: from smtp105.biz.mail.in2.yahoo.com ([203.104.19.14])
-	by 1b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1MJKbk-0002jm-3K
-	for ltp-list@lists.sourceforge.net; Wed, 24 Jun 2009 05:02:16 +0000
-Received: from unknown (HELO SudamaRao)
-	(praveen@primesoftsolutionsinc.com@[192.168.0.9])
-	(envelope-sender <praveen@primesoftsolutionsinc.com>)
-	by 0 (qmail-ldap-1.03) with SMTP
-	for <ltp-list@lists.sourceforge.net>; 24 Jun 2009 04:52:26 -0000
-From: "Praveen" <praveen@primesoftsolutionsinc.com>
-Date: Wed, 24 Jun 2009 10:30:22 +0530
-MIME-Version: 1.0
-In-Reply-To: <1245768547.4860.66.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] Contribution to LTP
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJlmt-0000Xe-Tx
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 10:02:35 +0000
+Received: from e36.co.us.ibm.com ([32.97.110.154])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MJlmq-0004jf-1C
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 10:02:35 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e36.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5PA13mV014722
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 04:01:03 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5PA2RMq062350
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 04:02:29 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5PA2QqE031792
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 04:02:27 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <A850D9FA-3282-440E-8B85-4A5BC5B4B067@gmail.com>
+References: <A850D9FA-3282-440E-8B85-4A5BC5B4B067@gmail.com>
+Date: Thu, 25 Jun 2009 14:40:38 +0530
+Message-Id: <1245921038.5542.46.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Goals and milestones
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,179 +40,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-Message-Id: <E1MJKck-0007ai-3i@235xhf1.ch3.sourceforge.com>
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net, 'Nathan Straz' <nstraz@redhat.com>, 'Nate Straz' <nate@refried.org>
+To: Garrett Cooper <yanegomi@gmail.com>, Nathan Straz <nstraz@redhat.com>, Mike Frysinger <vapier@gentoo.org>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
+Great to hear back from you. Your plan looks good to me. However, i
+would like to complete the Makefiles stuff this year itself. I know its
+quite tedious. May be i would also pitch in to help you post my Linux
+Symposium 2009 in July 2009.
 
-Hi Subrata,
-
-Thanks for the e-mail.
-
-I have tried to build and execute the test suite for Intel. And also I am 
-Trying to review and explore the different testcases in LTP testsuite. I
-tried to look into various shell script test cases like ld,nm, mv, cp, etc
-And some C test cases like kill, mtest, filesystem tests, etc.
-
-I tried to look into LTP framework like PAN, runltp, manifest files(and its
-structure), etc.
-
-I just in a sort of confusion actually where to start with, I have
-subscribed to ltp mailing lists and daily I receive lots of emails
-describing about the changes that were made to LTP. I feel like lot of
-the test cases are already existing...:) and ... Just feeling like where to 
-start with ...:(
-
-Thanks again for the email and for your genuine interest in my contribution.
-
-
-Thanks, 
-Praveen Kumar k
-PrimeSoft IP Solutions Inc
- 
-Phone : 040-27762986/27762987 
-Skype ID: kpraveen72
-www.primesoftsolutionsinc.com 
------Original Message-----
-From: Subrata Modak [mailto:subrata@linux.vnet.ibm.com] 
-Sent: Tuesday, June 23, 2009 8:19 PM
-To: Praveen
-Cc: ltp-list@lists.sourceforge.net; 'Nate Straz'; 'Nathan Straz'
-Subject: RE: [LTP] Contribution to LTP
-
-On Wed, 2009-05-20 at 11:06 +0530, Praveen wrote: 
+On Wed, 2009-06-24 at 02:38 -0700, Garrett Cooper wrote: 
 > Hi Subrata,
-> 
-> Thanks for the information.
-> 
-> I am sure LTP will satisfy my enthusiasm to participate in Opensource.
+>      After being away from FOSS for a while I'm going to jump back in  
+> a bit to get some work done in my personal time that aligns itself  
+> with deliverables at Cisco. Here's the breakdown in terms of priorities:
+> 1. Ltp crosscompile makefile push completion - need this to resolve  
+> several issues with the current hacked make system and expedite  
+> upgrades on our end. Hard goal: before July snapshot is released  
+> (several items are dependent on a functioning upgrade). I will commit  
+> in small, discrete patches to get the work done quicker, but I'll need  
+> a makefile reviewer.
 
-Hi Praveen,
-
-Have you found anything interesting to start contributing to ?
+Nathan has already been helping us. So, we would get help from him and
+Mike as well. I need to bring back Mike as well for more LTP
+involvement. Mike, what do you say ;-)
 
 Regards--
 Subrata
 
-> First, I will start with registering to mailing list. 
+> 2. Catepault work. This aligns itself with 1., but isn't directly tied  
+> into 1.'s deliverable. Maybe October.
+> 3. tst_res -> testreport replacement. Needs to take place somewhere  
+> around 2.'s deliverable because we need a more license neutral and  
+> equivalent, if not cleaner, means of doing test reporting to improve  
+> whitebox testing inhouse. I'd say before Thanksgiving.
+> 4. Upstart whitebox tests - I originally suggested this thinking that  
+> there would be one Upstart release train, but Scott's maintaining  
+> several, so I think it may be a better idea to omit these tests and  
+> focus instead on exporting the graybox tests I'm working on inhouse at  
+> Cisco as they are more portable and have more overall value. I'm  
+> thinking maybe January or february of next year.
 > 
-> Thanks again for the information.
+> Hope that better describes where I'm at and what goals i'm trying to  
+> accomplish.
 > 
-> Thanks, 
-> Praveen Kumar k
-> PrimeSoft IP Solutions Inc
-> 
-> Phone : 040-27762986/27762987 
-> Skype ID: kpraveen72
-> www.primesoftsolutionsinc.com 
-> 
-> -----Original Message-----
-> From: Subrata Modak [mailto:subrata@linux.vnet.ibm.com] 
-> Sent: Tuesday, May 19, 2009 4:02 PM
-> To: Praveen
-> Cc: ltp-list@lists.sourceforge.net; Nate Straz; Nathan Straz
-> Subject: Re: [LTP] Contribution to LTP
-> 
-> Hi Praveen,
-> 
-> On Tue, 2009-05-19 at 13:43 +0530, Praveen wrote: 
-> > Hi,
-> > 
-> >  
-> > 
-> > I am a C/Shell scripting Developer. I would like to
-> > contribute/participate in LTP.
-> > 
-> >  
-> > 
-> > Please let me know, if I have any opportunity to work with LTP.
-> 
-> You have all the opportunity at your disposal to contribute to LTP. In
-> fact, we need lots of volunteers to contribute to LTP. As, beginner, the
-> first thing to do is just watch over the mailing list to find out how
-> people work. And then there are lots of things in store for you:
-> (And, off course, first subscribe to this list and this is available on
-> subscription basis, which is free:
-> http://sourceforge.net/mail/?group_id=3382),
-> 
-> 1) Pick up some area in kernel for which tests do not exist in LTP (Of
-> course this area should be of your interest). Try to write small tests
-> for them and submit to LTP. It would be better if you track
-> http://kernelnewbies.org/LinuxChanges for the changes and start with a
-> latest stable kernel release,
-> 
-> 2) Execute the existing LTP tests on all the machines available to you,
-> and see if you can hit a LTP/Kernel bug. If it is an LTP issue(s), send
-> the corresponding patch to the mailing list for review,
-> 
-> 3) Make the LTP provision system more better, so that we can be more
-> efficient/effective in running these tests. You can also work towards
-> making it more automated.
-> 
-> The present LTP provisioning engine PAN has lots of drawbacks and it is
-> old. This needs to be updated, or, replaced with something better.
-> Sometime back Nathan Straz posted some comments on it:
-> 
-> http://fedorahosted.org/collie/
-> http://marc.info/?t=122540445800003&r=1&w=2,
-> 
-> I need somebody, who can do a feasibility analysis of the advantages of
-> PAN over collie, and show the fruits of migration from PAN to COLLIE. A
-> workable version of the patch would also be welcome. The work would be
-> little tough as PAN has stabilized and we would be resisting any changes
-> which introduces bug(s) in our existing provisioning environment,
-> 
-> 4) Another important aspect would be to improve documentation for LTP.
-> You can start with by reading individual test cases, understand the code
-> (you will be assisted with the minimal existent description, so, do not
-> worry), refer to man pages, google, and improve upon the test case(s)
-> description. You are free to start from where ever you like.
-> 
-> You are welcome to LTP and i would hope your enthusiasm does not die
-> down soon ;-)
-> 
-> Regards--
-> Subrata
-> 
-> > 
-> >  
-> > 
-> >  
-> > 
-> > Thanks,
-> > 
-> > Praveen Kumar k
-> > 
-> > PrimeSoft IP Solutions Inc 
-> > 
-> > Phone: 040-27762986/27762987 
-> > 
-> > Skype ID: kpraveen72
-> > 
-> > www.primesoftsolutionsinc.com 
-> > 
-> >  
-> > 
-> > 
-> >
->
-----------------------------------------------------------------------------
-> --
-> > Crystal Reports - New Free Runtime and 30 Day Trial
-> > Check out the new simplified licensing option that enables 
-> > unlimited royalty-free distribution of the report engine 
-> > for externally facing server and web deployment. 
-> > http://p.sf.net/sfu/businessobjects
-> > _______________________________________________ Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-> 
-> 
-> 
-
-
-
+> Thanks,
+> -Garrett 
 
 
 ------------------------------------------------------------------------------
