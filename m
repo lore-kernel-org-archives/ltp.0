@@ -1,25 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1MLZzX-0007jR-RY
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 09:51:07 +0000
-Received: from [209.85.221.200] (helo=mail-qy0-f200.google.com)
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MLZzW-0001Hm-Vb
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 09:51:07 +0000
-Received: by qyk38 with SMTP id 38so8213qyk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 30 Jun 2009 02:50:46 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1246347680.4819.31.camel@subratamodak.linux.ibm.com>
-References: <f5a7b3810906250517k3b8c3bf3gde1957e93c95314@mail.gmail.com>
-	<1246015980.6196.20.camel@subratamodak.linux.ibm.com>
-	<1246347680.4819.31.camel@subratamodak.linux.ibm.com>
-Date: Tue, 30 Jun 2009 15:20:46 +0530
-Message-ID: <f5a7b3810906300250o6ee16e3bv672ad77018d34a81@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Subject: Re: [LTP] [PATCH] Re::personality test case build fails
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJlrf-00034G-My
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 10:07:31 +0000
+Received: from e38.co.us.ibm.com ([32.97.110.159])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MJlrb-0007HY-6O
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 10:07:31 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <f5a7b3810906231038l233636ecy2af34d42a63b9031@mail.gmail.com>
+References: <f5a7b3810906231038l233636ecy2af34d42a63b9031@mail.gmail.com>
+Date: Thu, 25 Jun 2009 14:41:06 +0530
+Message-Id: <1245921066.5542.52.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [FIX PATCHES] All patches
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,59 +25,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: Jiri Palecek <jpalecek@web.de>, Pradeep K Surisetty <pradeepkumars@in.ibm.com>, ltp-list@lists.sourceforge.net
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-On Tue, Jun 30, 2009 at 1:11 PM, Subrata
-Modak<subrata@linux.vnet.ibm.com> wrote:
-> On Fri, 2009-06-26 at 17:03 +0530, Subrata Modak wrote:
->> > >+#ifdef __NR_personality
->> >
->> > Instead of using
->> > #ifdef __NR_personality
->> > =A0in test code, Better we will add these this syscall numbers in the
->> > ltp/testcases/kernel/include/ARCHXXX.in files.
->> > This can be Multi ARCH support.
->> Great. Send me a patch to update them all ;-)
->>
->
-> Naresh ??
+On Tue, 2009-06-23 at 23:08 +0530, naresh kamboju wrote: 
+> Hi Subrata,
+> 
+> To make your job easy,
+> I have attached following patched to fix system call number to
+> __NR_syscall representation.
+> You can commit all these patches.
+> 
 
-Hi Subrata,
+Ok, thanks.
 
-I have noticed some issue with personality01.c and personality02.c
-test cases in design.
-Currently I am investigating and get back to in short.
+Regards--
+Subrata
 
-Best Regards
-Naresh Kamboju
+> LIST:
+> 
+> ltp-fix-add_key.patch
+> ltp-fix-bdflush.patch
+> ltp-fix-keyctl.patch
+> ltp-fix-newuname.patch
+> ltp-fix-rt_sigprocmask.patch
+> ltp-fix-rt_sigsuspend.patch
+> ltp-fix-set_thread_area.patch
+> ltp-fix-set_tid_address.patch
+> ltp-fix-ssetmask.patch
+> ltp-fix-tkill.patch
+> 
+> 
+> Best regards
+> Naresh Kamboju
 
->
->> Regards--
->> Subrata
->>
->> > Jiri,
->> > I think you are doing Multi ARCH support right?
->> >
->> > Your suggestions are welcome :)
->> >
->> > Best regards
->> > Naresh Kamboju
 
->> ------------------------------------------------------------------------=
-------
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
->
->
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
