@@ -1,23 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <praveen@primesoftsolutionsinc.com>)
-	id 1MKSUL-0003Tf-GK
-	for ltp-list@lists.sourceforge.net; Sat, 27 Jun 2009 07:38:17 +0000
-Received: from smtp103.biz.mail.in2.yahoo.com ([203.104.19.12])
-	by 3b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1MKSUJ-0002pp-Lh
-	for ltp-list@lists.sourceforge.net; Sat, 27 Jun 2009 07:38:17 +0000
-Received: from unknown (HELO SudamaRao)
-	(praveen@primesoftsolutionsinc.com@[192.168.0.9])
-	(envelope-sender <praveen@primesoftsolutionsinc.com>)
-	by 0 (qmail-ldap-1.03) with SMTP
-	for <ltp-list@lists.sourceforge.net>; 27 Jun 2009 07:29:19 -0000
-From: "Praveen" <praveen@primesoftsolutionsinc.com>
-Date: Sat, 27 Jun 2009 13:07:20 +0530
-MIME-Version: 1.0
-Subject: [LTP] LTP Documentation
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJkzM-00058w-LU
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 09:11:24 +0000
+Received: from e7.ny.us.ibm.com ([32.97.182.137])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MJkzG-0002Fe-D7
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 09:11:19 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e7.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5P8wiCE025891
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 04:58:44 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5P9BHN4245272
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 05:11:17 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5P9BHeM028930
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 05:11:17 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <200906231721.51688.vapier@gentoo.org>
+References: <4a413e95.8d13f30a.1199.ffffdccbSMTPIN_ADDED@mx.google.com>
+	<200906231721.51688.vapier@gentoo.org>
+Date: Thu, 25 Jun 2009 14:39:38 +0530
+Message-Id: <1245920978.5542.34.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Fix some bashisms
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,446 +37,61 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3801569956996931912=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-Message-Id: <E1MKSUM-0003Tn-Qd@3yr0jf1.ch3.sourceforge.com>
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net, 'Nathan Straz' <nstraz@redhat.com>, 'Nate Straz' <nate@refried.org>
-
-This is a multi-part message in MIME format.
-
---===============3801569956996931912==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_005F_01C9F728.34D2C2F0"
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_005F_01C9F728.34D2C2F0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-
- 
-
-Hi Subrata,
-
- 
-
-Thanks for the information.
-
- 
-
-I have few doubts regarding the LTP documentation:
-
-*         Description field already describes of 'what exactly this test
-case is doing' (Should I have 
-
-to detail it more?)
-
-*         If I need to add information (description of test), where should I
-add it - I mean 
-
-should I create another filed for that or update the same 'description'
-field?
-
- 
-
- 
-
-Snippet from LTP Test case:
-
- 
-
-#
-
-# File :        cp_test.sh
-
-#
-
-# Description:  Test basic functionality of cp command
-
-#               - Test #1:  cp -R can do a recursive copy
-
-#
-
-# Author:       Manoj Iyer, manjo@mail.utexas.edu
-
-#
-
-# History:      Jan 30 2003 - Created - Manoj Iyer.
-
-#               Feb 03 2003 - Fixed expected outpu
-
- 
-
- 
-
-Thanks,
-
-Praveen Kumar k
-
- 
-
-
-------=_NextPart_000_005F_01C9F728.34D2C2F0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
-xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns:x=3D"urn:schemas-microsoft-com:office:excel" =
-xmlns:st1=3D"urn:schemas-microsoft-com:office:smarttags" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
-
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
-<o:SmartTagType =
-namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
- name=3D"PersonName"/>
-<!--[if !mso]>
-<style>
-st1\:*{behavior:url(#default#ieooui) }
-</style>
-<![endif]-->
-<style>
-<!--
- /* Font Definitions */
- @font-face
-	{font-family:Wingdings;
-	panose-1:5 0 0 0 0 0 0 0 0 0;}
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman";}
-h3
-	{margin-top:12.0pt;
-	margin-right:0in;
-	margin-bottom:3.0pt;
-	margin-left:171.0pt;
-	text-indent:-.5in;
-	page-break-after:avoid;
-	mso-list:l1 level3 lfo1;
-	font-size:12.0pt;
-	font-family:Arial;
-	color:black;
-	layout-grid-mode:line;}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{mso-style-type:personal-compose;
-	font-family:Arial;
-	color:windowtext;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.25in 1.0in 1.25in;}
-div.Section1
-	{page:Section1;}
- /* List Definitions */
- @list l0
-	{mso-list-id:602418350;
-	mso-list-type:hybrid;
-	mso-list-template-ids:2056529424 67698689 67698691 67698693 67698689 =
-67698691 67698693 67698689 67698691 67698693;}
-@list l0:level1
-	{mso-level-number-format:bullet;
-	mso-level-text:\F0B7;
-	mso-level-tab-stop:.75in;
-	mso-level-number-position:left;
-	margin-left:.75in;
-	text-indent:-.25in;
-	font-family:Symbol;}
-@list l1
-	{mso-list-id:1188256032;
-	mso-list-template-ids:867725992;}
-@list l1:level1
-	{mso-level-text:%1;
-	mso-level-tab-stop:.3in;
-	mso-level-number-position:left;
-	margin-left:.3in;
-	text-indent:-.3in;}
-@list l1:level2
-	{mso-level-text:"%1\.%2";
-	mso-level-tab-stop:.4in;
-	mso-level-number-position:left;
-	margin-left:.4in;
-	text-indent:-.4in;}
-@list l1:level3
-	{mso-level-style-link:"Heading 3";
-	mso-level-text:"%1\.%2\.%3";
-	mso-level-tab-stop:171.0pt;
-	mso-level-number-position:left;
-	margin-left:171.0pt;
-	text-indent:-.5in;}
-@list l1:level4
-	{mso-level-text:"%1\.%2\.%3\.%4";
-	mso-level-tab-stop:.6in;
-	mso-level-number-position:left;
-	margin-left:.6in;
-	text-indent:-.6in;}
-@list l1:level5
-	{mso-level-text:"%1\.%2\.%3\.%4\.%5";
-	mso-level-tab-stop:.7in;
-	mso-level-number-position:left;
-	margin-left:.7in;
-	text-indent:-.7in;}
-@list l1:level6
-	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6";
-	mso-level-tab-stop:.8in;
-	mso-level-number-position:left;
-	margin-left:.8in;
-	text-indent:-.8in;}
-@list l1:level7
-	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7";
-	mso-level-tab-stop:.9in;
-	mso-level-number-position:left;
-	margin-left:.9in;
-	text-indent:-.9in;}
-@list l1:level8
-	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8";
-	mso-level-tab-stop:1.0in;
-	mso-level-number-position:left;
-	margin-left:1.0in;
-	text-indent:-1.0in;}
-@list l1:level9
-	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.%9";
-	mso-level-tab-stop:1.1in;
-	mso-level-number-position:left;
-	margin-left:1.1in;
-	text-indent:-1.1in;}
-ol
-	{margin-bottom:0in;}
-ul
-	{margin-bottom:0in;}
--->
-</style>
-
-</head>
-
-<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
-
-<div class=3DSection1>
-
-<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;
-font-family:"Courier New"'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;
-font-family:"Courier New"'>Hi Subrata,<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;
-font-family:"Courier New"'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;
-font-family:"Courier New"'>Thanks for the =
-information.<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;
-font-family:"Courier New"'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;
-font-family:"Courier New"'>I have few doubts regarding the LTP =
-documentation:<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal =
-style=3D'margin-left:.75in;text-indent:-.25in;mso-list:l0 level1 =
-lfo2'><![if !supportLists]><font
-size=3D2 face=3DSymbol><span =
-style=3D'font-size:10.0pt;font-family:Symbol'><span
-style=3D'mso-list:Ignore'>&middot;<font size=3D1 face=3D"Times New =
-Roman"><span
-style=3D'font:7.0pt "Times New =
-Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></font></span></span></font><![endif]><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>Description field =
-already describes
-of &#8216;what exactly this test case is doing&#8217; (Should I have =
-</span></font><font
-size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'><o:p></o:p></span></font></p=
->
-
-<p class=3DMsoNormal style=3D'margin-left:.75in'><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>to detail it =
-more?)</span></font><font
-size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'><o:p></o:p></span></font></p=
->
-
-<p class=3DMsoNormal =
-style=3D'margin-left:.75in;text-indent:-.25in;mso-list:l0 level1 =
-lfo2'><![if !supportLists]><font
-size=3D2 face=3DSymbol><span =
-style=3D'font-size:10.0pt;font-family:Symbol'><span
-style=3D'mso-list:Ignore'>&middot;<font size=3D1 face=3D"Times New =
-Roman"><span
-style=3D'font:7.0pt "Times New =
-Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></font></span></span></font><![endif]><font size=3D2 =
-face=3D"Courier New"><span
-style=3D'font-size:10.0pt;font-family:"Courier New"'>If I need to add =
-information
-(description of test), where should I add it &#8211; I mean =
-</span></font><font
-size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;font-family:Arial'><o:p></o:p></span></font></p=
->
-
-<p class=3DMsoNormal style=3D'margin-left:.5in;text-indent:.25in'><font =
-size=3D2
-face=3D"Courier New"><span =
-style=3D'font-size:10.0pt;font-family:"Courier New"'>should
-I create another filed for that or update the same =
-&#8216;description&#8217;
-field?</span></font><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
-
-<p class=3DMsoNormal><u><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Snippet from LTP Test =
-case:<o:p></o:p></span></font></u></p>
-
-<p class=3DMsoNormal><u><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'><o:p><span =
-style=3D'text-decoration:none'>&nbsp;</span></o:p></span></font></u></p>
-
-<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial;font-style:italic'>#<o:p></o:p></span></font></i></p>
-
-<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial;font-style:italic'># File =
-:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-cp_test.sh<o:p></o:p></span></font></i></p>
-
-<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial;font-style:italic'>#<o:p></o:p></span></font></i></p>
-
-<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial;font-style:italic'># Description:&nbsp; Test basic =
-functionality
-of cp command<o:p></o:p></span></font></i></p>
-
-<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial;font-style:italic'>#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Test #1:&nbsp; cp -R =
-can do a
-recursive copy<o:p></o:p></span></font></i></p>
-
-<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial;font-style:italic'>#<o:p></o:p></span></font></i></p>
-
-<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial;font-style:italic'># =
-Author:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Manoj Iyer,
-manjo@mail.utexas.edu<o:p></o:p></span></font></i></p>
-
-<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial;font-style:italic'>#<o:p></o:p></span></font></i></p>
-
-<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial;font-style:italic'># =
-History:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Jan 30 2003 - Created -
-Manoj Iyer.<o:p></o:p></span></font></i></p>
-
-<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial;font-style:italic'>#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Feb 03 2003 - Fixed
-expected outpu<o:p></o:p></span></font></i></p>
-
-<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial;font-style:italic'><o:p>&nbsp;</o:p></span></font></i><=
-/p>
-
-<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial;font-style:italic'><o:p>&nbsp;</o:p></span></font></i><=
-/p>
-
-<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
-font-family:Arial'>Thanks,</span></font><o:p></o:p></p>
-
-<p class=3DMsoNormal><st1:PersonName
-style=3D"BACKGROUND-POSITION: left bottom; BACKGROUND-IMAGE: =
-url(res://ietag.dll/#34/#1001); BACKGROUND-REPEAT: repeat-x"
-tabIndex=3D"0" w:st=3D"on"><font size=3D2 face=3DArial><span =
-style=3D'font-size:10.0pt;
- font-family:Arial'>Praveen</span></font></st1:PersonName><font size=3D2
-face=3DArial><span style=3D'font-size:10.0pt;font-family:Arial'> Kumar =
-k<o:p></o:p></span></font></p>
-
-<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
-style=3D'font-size:
-12.0pt'><o:p>&nbsp;</o:p></span></font></p>
-
-</div>
-
-</body>
-
-</html>
-
-------=_NextPart_000_005F_01C9F728.34D2C2F0--
-
-
-
-
---===============3801569956996931912==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-
---===============3801569956996931912==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============3801569956996931912==--
-
-
-
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net, Jiri Palecek <jpalecek@web.de>
+
+TmV3IENoYW5nZXMgdG8gTWlrZcWbIGNvbW1lbnRzID8KClJlZ2FyZHMtLQpTdWJyYXRhCgpPbiBU
+dWUsIDIwMDktMDYtMjMgYXQgMTc6MjEgLTA0MDAsIE1pa2UgRnJ5c2luZ2VyIHdyb3RlOiAKPiBP
+biBTdW5kYXkgMzEgTWF5IDIwMDkgMTc6Mjc6NTEgSmlyaSBQYWxlY2VrID4gd3JvdGU6Cj4gPiAt
+ZWNobyAtZSAiQ29tcGxldGVkIHJ1bm5pbmcgRGVmYXVsdCBMVFBcblxuIgo+ID4gK2VjaG8gIkNv
+bXBsZXRlZCBydW5uaW5nIERlZmF1bHQgTFRQIgo+ID4gK2VjaG8KPiA+ICtlY2hvCj4gCj4gdXNl
+IHByaW50Ziwgbm90IGJsb2F0IHRoZSBmaWxlIHdpdGggZWNob3MKPiAKPiA+IC1lY2hvICJEaXN0
+cm8gdHlwZSBpczogJHR2YXIgXG4iCj4gPiArZWNobyAiRGlzdHJvIHR5cGUgaXM6ICR0dmFyIgo+
+ID4KPiAKPiB0aGVzZSBhcmUgbm90IGVxdWl2YWxlbnQKPiAKPiA+IC0tLSBhL3Rlc3RjYXNlcy9j
+b21tYW5kcy91bnppcC91bnppcF90ZXN0cy5zaAo+ID4gKysrIGIvdGVzdGNhc2VzL2NvbW1hbmRz
+L3VuemlwL3VuemlwX3Rlc3RzLnNoCj4gPiBAQCAtNjIsNyArNjIsNiBAQCBjaGtfaWZleGlzdHMo
+KQo+ID4gICMgCQkJCS0gbm9uLXplcm8gb24gZmFpbHVyZS4KPiA+ICBjbGVhbnVwKCkKPiA+ICB7
+Cj4gPiAtCXBvcGQKPiA+ICAJIyByZW1vdmUgYWxsIHRoZSB0ZW1wb3JhcnkgZmlsZXMgY3JlYXRl
+ZCBieSB0aGlzIHRlc3QuCj4gPiAgCXRzdF9yZXNtIFRJTkZPICJDTEVBTjogcmVtb3ZpbmcgXCIk
+TFRQVE1QXCIiCj4gPiAgCXJtIC1mciAiJExUUFRNUCIKPiA+IEBAIC05MCw3ICs4OSw2IEBAIGlu
+aXQoKQo+ID4gIAkjIGNyZWF0ZSB0aGUgdGVtcG9yYXJ5IGRpcmVjdG9yeSB1c2VkIGJ5IHRoaXMg
+dGVzdGNhc2UKPiA+ICAJTFRQVE1QPWBta3RlbXAgLWQgLXQgJCQuWFhYWFhYYCB8fCB0c3RfcmVz
+bSBUQlJPSyAiVW5hYmxlIHRvIGNyZWF0ZQo+ID4gdGVtcG9yYXJ5IGRpcmVjdG9yeSB3aXRoOiBt
+a3RlbXAgLWQgJCQuWFhYWFhYIiB0cmFwICJjbGVhbnVwIiAwCj4gPiAtCXB1c2hkICIkTFRQVE1Q
+Igo+ID4KPiA+ICAJIyBjaGVjayBpZiBjb21tYW5kcyB0c3RfKiwgdW56aXAsIGF3aywgZXRjIGV4
+aXN0cy4KPiA+ICAJY2hrX2lmZXhpc3RzIElOSVQgdHN0X3Jlc20gIHx8IHJldHVybiAkUkMKPiAK
+PiB1bW0sIHlvdSByZW1vdmUgdGhlIHB1c2gvcG9wZCwgYnV0IGRvbnQgcmVwbGFjZSBpdCB3aXRo
+IHByb3BlciBjZCBzdGF0ZW1lbnRzID8gIAo+IGknbSBndWVzc2luZyB5b3UgZGlkbnQgdGVzdCB0
+aGlzIGNoYW5nZS4KPiAKPiA+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9uZXRu
+cy9kZWxjaGlsZC5zaAo+ID4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL25ldG5z
+L2RlbGNoaWxkLnNoCj4gPiAtICAgIGtpbGwgLTkgJHNzaHBpZCAkcGlkID4gL2Rldi9udWxsIDI+
+JjEKPiA+ICsgICAga2lsbCAtcyBLSUxMICRzc2hwaWQgJHBpZCA+IC9kZXYvbnVsbCAyPiYxCj4g
+Cj4gdGhpcyBpc250IGEgYmFzaGlzbSwgdGhpcyBpcyBhIGNyYXBweSBraWxsIGltcGxlbWVudGF0
+aW9uCj4gCj4gPiAgZm9yIHR0dHlwZSBpbiBgbHMgL2Rldi90dHkqYAo+ID4gIGRvCj4gPiAtZGV2
+aWNlX25vPSR7dHR0eXBlOjh9Cj4gPiArZGV2aWNlX25vPSR7dHR0eXBlIyMvZGV2L3R0eX0KPiA+
+IC4uLgo+ID4gIGZvciB0dHR5cGUgaW4gYGxzIC9kZXYvdHR5KmAKPiA+ICBkbwo+ID4gLWRldmlj
+ZV9ubz0ke3R0dHlwZTo4fQo+ID4gK2RldmljZV9ubz0ke3R0dHlwZSMjL2Rldi90dHl9Cj4gCj4g
+dXNpbmcgdGhlIGdyZWVkeSBleHBhbnNpb24gKCMjKSBkb2VzbnQgbWFrZSBtdWNoIHNlbnNlLiAg
+cmVhbGx5IHNob3VsZCBiZSAjLgo+IAo+ID4gLSAgICBsZXQgc3RlcF9lcnJvcnM9IiRzdGVwX2Vy
+cm9ycyArIDEiCj4gPiArICAgIHN0ZXBfZXJyb3JzPSQoKCRzdGVwX2Vycm9ycyArIDEpKQo+ID4g
+LSAgICAgICAgbGV0IGk9IiRpICsgMSIKPiA+ICsgICAgICAgIGk9JCgoJGkgKyAxKSkKPiA+IC0g
+ICAgICAgICAgICBsZXQgaz0iJGsgKyAxIgo+ID4gKyAgICAgICAgICAgIGs9JCgoJGsgKyAxKSkK
+PiA+IC0gICAgICAgIGxldCBqPSIkaiArIDEiCj4gPiArICAgICAgICBqPSQoKCRqICsgMSkpCj4g
+PiAuLi4uLgo+IAo+IHRoaXMgc3ludGF4IHN1Y2tzLiAgcGxlYXNlIHVzZSBzb21ldGhpbmcgbGlr
+ZToKPiA6ICQoKCBzdGVwX2Vycm9ycyArPSAxKSkKPiAKPiA+IC0gICAgZWNobyAkImZzX2lub2Qg
+b24gJFRDdG1wIGZpbmlzaGVkLiIKPiA+ICsgICAgZWNobyAiZnNfaW5vZCBvbiAkVEN0bXAgZmlu
+aXNoZWQuIgo+IAo+IHRoZXNlIGFyZSBub3QgZXF1aXZhbGVudCwgYnV0IGkgZG91YnQgdGhpcyBz
+aGVsbCBzY3JpcHQgaXMgdXNpbmcgdGhlIGJhc2ggCj4gZ2V0dGV4dCBmdW5jdGlvbiBpbiB0aGUg
+Zmlyc3QgcGxhY2UsIHNvIGl0J3MgZmluZQo+IC1taWtlCj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBMdHAt
+bGlzdCBtYWlsaW5nIGxpc3QKPiBMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBodHRw
+czovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAoKCi0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0
+Cg==
