@@ -1,22 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1MF6gc-0007YY-8o
-	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 13:20:50 +0000
-Received: from mail-yx0-f186.google.com ([209.85.210.186])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MF6gb-0005uY-FW
-	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 13:20:50 +0000
-Received: by yxe16 with SMTP id 16so47334yxe.28
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 12 Jun 2009 06:20:48 -0700 (PDT)
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <dvhltc@us.ibm.com>) id 1MJveL-0007TK-TB
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 20:34:25 +0000
+Received: from e36.co.us.ibm.com ([32.97.110.154])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MJveF-0002vs-RY
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 20:34:25 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e36.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5PKWooH032469
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 14:32:50 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5PKYIwe236204
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 14:34:18 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5PKYHXw001470
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Jun 2009 14:34:17 -0600
+Message-ID: <4A43DF48.3070808@us.ibm.com>
+Date: Thu, 25 Jun 2009 13:34:16 -0700
+From: Darren Hart <dvhltc@us.ibm.com>
 MIME-Version: 1.0
-Date: Fri, 12 Jun 2009 18:50:48 +0530
-Message-ID: <f5a7b3810906120620r2e8a8e63t60b1d5cbf961d557@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Content-Type: multipart/mixed; boundary=001e680f17b0a91a02046c269370
-Subject: [LTP] [FIX PATCH] POSIX aio_cancel/3-1.c
+References: <4A427613.80206@us.ibm.com>	 <4A42FA2D.7050302@linux.vnet.ibm.com>
+	<1245921054.5542.49.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1245921054.5542.49.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [PATCH][real-time] sched_footbal atomic start
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,80 +37,192 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, rohit.170309@gmail.com, naresh.kernel@gmail.com
-
---001e680f17b0a91a02046c269370
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-Hi,
-
-I have noticed failures under
-ltp/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/3-1.c
-and fixed.
-Please find the patch below and as attachment.
-
-Best regards
-Naresh Kamboju
-
-Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
-
-diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/3-1.c
-b/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/3-1.c
---- a/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/3-1.c	2005-06-03
-22:00:17.000000000 +0530
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/aio_cancel/3-1.c	2009-06-12
-18:00:21.000000000 +0530
-@@ -128,6 +128,7 @@
- 		aiocb->aio_sigevent.sigev_notify = SIGEV_SIGNAL;
- 		aiocb->aio_sigevent.sigev_signo = SIGRTMIN+1;
- 		aiocb->aio_sigevent.sigev_value.sival_ptr = aiocb;
-+		aiocb->aio_reqprio = 0;
-
- 		if (aio_write(aiocb) == -1)
- 		{
-
---001e680f17b0a91a02046c269370
-Content-Type: application/octet-stream; name="ltp-posix-aio_cancel_3-1.patch"
-Content-Disposition: attachment; filename="ltp-posix-aio_cancel_3-1.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fvuxcnu60
-
-ZGlmZiAtTmF1cmIgYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2Uv
-aW50ZXJmYWNlcy9haW9fY2FuY2VsLzMtMS5jIGIvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1
-aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvYWlvX2NhbmNlbC8zLTEuYwotLS0gYS90ZXN0Y2Fz
-ZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9haW9fY2FuY2Vs
-LzMtMS5jCTIwMDUtMDYtMDMgMjI6MDA6MTcuMDAwMDAwMDAwICswNTMwCisrKyBiL3Rlc3RjYXNl
-cy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL2Fpb19jYW5jZWwv
-My0xLmMJMjAwOS0wNi0xMiAxODowMDoyMS4wMDAwMDAwMDAgKzA1MzAKQEAgLTEyOCw2ICsxMjgs
-NyBAQAogCQlhaW9jYi0+YWlvX3NpZ2V2ZW50LnNpZ2V2X25vdGlmeSA9IFNJR0VWX1NJR05BTDsK
-IAkJYWlvY2ItPmFpb19zaWdldmVudC5zaWdldl9zaWdubyA9IFNJR1JUTUlOKzE7CiAJCWFpb2Ni
-LT5haW9fc2lnZXZlbnQuc2lnZXZfdmFsdWUuc2l2YWxfcHRyID0gYWlvY2I7CisJCWFpb2NiLT5h
-aW9fcmVxcHJpbyA9IDA7CiAKIAkJaWYgKGFpb193cml0ZShhaW9jYikgPT0gLTEpCiAJCXsK
---001e680f17b0a91a02046c269370
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
+
+Subrata Modak wrote:
+> On Thu, 2009-06-25 at 09:46 +0530, gowrishankar wrote: 
+>> Darren Hart wrote:
+>>> The current barrier implementation results in the lowest priority thread
+>>> actually starting the game (they are the last to be scheduled to call
+>>> pthread_barrier_wait).  This thread likely gets a priority boost as it 
+>>> holds
+>>> the hb->lock for the futex associated with the barrier.  This might lead 
+>>> to it
+>>> running ahead of the defense threads.
+>>> In fact, any sort of barrier or cond var implementation (short of a pi 
+>>> aware
+>>> cond broadcast, which is not yet readily available) will result in a 
+>>> thundering
+>>> herd situation when the FUTEX_WAKE_ALL syscall is issued, which can 
+>>> result in
+>>> a short run of one or more offense threads while all the threads get to the
+>>> RUNNABLE state.
+>>>
+>>> This patch removes the complex starting mechansims and replaces them with a
+>>> simple atomic counter.  All player threads are started and once the
+>>> players_ready count reaches the total player count, the referee starts 
+>>> the game
+>>> by setting the ball position to zero.
+>>>
+>>> Tested on two platforms (both x86_64, 4 and 8-way) for a combined total of
+>>> 13,000 iterations with 0 failures.
+>>>
+>>> Signed-off-by: Darren Hart <dvhltc@us.ibm.com>
+>>>
+> 
+> Thanks Darren. Long time LTP say updates to RT tests. What happened to
+> the RT-Graphics tests that probably were in the pipeline ?
+
+Hrm.... well.... I can't recall what those might have been.  The only 
+graphics testing we do is really just functional testing using existing 
+tests like x11perf and specviewperf.  We haven't written anything 
+specifically for -rt.  Do you have any more detail on what this might 
+have been?
+
+--
+Darren
+
+> 
+> Regards--
+> Subrata
+> 
+>> Acked-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+>>
+>> Thanks.
+>> Gowri
+>>> Index: ltp/testcases/realtime/func/sched_football/sched_football.c
+>>> ===================================================================
+>>> --- ltp.orig/testcases/realtime/func/sched_football/sched_football.c    
+>>> 2009-06-24 11:49:16.000000000 -0700
+>>> +++ ltp/testcases/realtime/func/sched_football/sched_football.c    
+>>> 2009-06-24 11:48:44.000000000 -0700
+>>> @@ -47,9 +47,11 @@
+>>>  *
+>>>  * HISTORY
+>>>  *     2006-03-16 Reduced verbosity, non binary failure reporting, 
+>>> removal of
+>>> - *     crazy_fans thread, added game_length argument by Darren Hart.
+>>> - *      2007-08-01 Remove all thread cleanup in favor of simply 
+>>> exiting.Various
+>>> - *      bugfixes and cleanups. -- Josh Triplett
+>>> + *                crazy_fans thread, added game_length argument by 
+>>> Darren Hart.
+>>> + *     2007-08-01 Remove all thread cleanup in favor of simply 
+>>> exiting.Various
+>>> + *                bugfixes and cleanups. -- Josh Triplett
+>>> + *     2009-06-23 Simplified atomic startup mechanism, avoiding 
+>>> thundering herd
+>>> + *                scheduling at the beginning of the game. -- Darren Hart
+>>>  *
+>>>  *****************************************************************************/ 
+>>>
+>>>
+>>> @@ -71,11 +73,9 @@
+>>> /* Here's the position of the ball */
+>>> volatile int the_ball;
+>>>
+>>> -/* pthread_barrier for synchronization */
+>>> -pthread_barrier_t barrier;
+>>> -
+>>> static int players_per_team = 0;
+>>> static int game_length = DEF_GAME_LENGTH;
+>>> +static atomic_t players_ready;
+>>>
+>>> void usage(void)
+>>> {
+>>> @@ -110,8 +110,7 @@
+>>> /* This is the defensive team. They're trying to block the offense */
+>>> void *thread_defense(void* arg)
+>>> {
+>>> -    pthread_barrier_wait(&barrier);
+>>> -
+>>> +    atomic_inc(&players_ready);
+>>>     /*keep the ball from being moved */
+>>>     while (1) {
+>>>         sched_yield(); /* let other defenders run */
+>>> @@ -123,8 +122,7 @@
+>>> /* This is the offensive team. They're trying to move the ball */
+>>> void *thread_offense(void* arg)
+>>> {
+>>> -    pthread_barrier_wait(&barrier);
+>>> -
+>>> +    atomic_inc(&players_ready);
+>>>     while (1) {
+>>>         the_ball++; /* move the ball ahead one yard */
+>>>         sched_yield(); /* let other offensive players run */
+>>> @@ -141,9 +139,9 @@
+>>>
+>>>     gettimeofday(&start, NULL);
+>>>     now = start;
+>>> -    the_ball = 0;
+>>>
+>>> -    pthread_barrier_wait(&barrier);
+>>> +    /* Start the game! */
+>>> +    the_ball = 0;
+>>>
+>>>     /* Watch the game */
+>>>     while ((now.tv_sec - start.tv_sec) < game_length) {
+>>> @@ -169,10 +167,7 @@
+>>>     if (players_per_team == 0)
+>>>         players_per_team = sysconf(_SC_NPROCESSORS_ONLN);
+>>>
+>>> -    if ((i = pthread_barrier_init(&barrier, NULL, players_per_team*2 + 
+>>> 1))) {
+>>> -        printf("pthread_barrier_init failed: %s\n", strerror(i));
+>>> -        exit(i);
+>>> -    }
+>>> +    atomic_set(0, &players_ready);
+>>>
+>>>     printf("Running with: players_per_team=%d game_length=%d\n",
+>>>            players_per_team, game_length);
+>>> @@ -181,13 +176,20 @@
+>>>     param.sched_priority = sched_get_priority_min(SCHED_FIFO) + 80;
+>>>     sched_setscheduler(0, SCHED_FIFO, &param);
+>>>
+>>> -    /* Start the offense */
+>>> +    /*
+>>> +     * Start the offense
+>>> +     * They are lower priority than defense, so they must be started 
+>>> first.
+>>> +     */
+>>>     priority = 15;
+>>>     printf("Starting %d offense threads at priority %d\n",
+>>>             players_per_team, priority);
+>>>     for (i = 0; i < players_per_team; i++)
+>>>         create_fifo_thread(thread_offense, NULL, priority);
+>>>
+>>> +    /* Wait for the offense threads to start */
+>>> +    while (atomic_get(&players_ready) < players_per_team)
+>>> +        usleep(100);
+>>> +
+>>>     /* Start the defense */
+>>>     priority = 30;
+>>>     printf("Starting %d defense threads at priority %d\n",
+>>> @@ -195,6 +197,10 @@
+>>>     for (i = 0; i < players_per_team; i++)
+>>>         create_fifo_thread(thread_defense, NULL, priority);
+>>>
+>>> +    /* Wait for the defense threads to start */
+>>> +    while (atomic_get(&players_ready) < players_per_team * 2)
+>>> +        usleep(100);
+>>> +
+>>>     /* Ok, everyone is on the field, bring out the ref */
+>>>     printf("Starting referee thread\n");
+>>>     return referee(game_length);
+> 
+
+
+-- 
+Darren Hart
+IBM Linux Technology Center
+Real-Time Linux Team
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing 
-server and web deployment.
-http://p.sf.net/sfu/businessobjects
---001e680f17b0a91a02046c269370
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---001e680f17b0a91a02046c269370--
-
