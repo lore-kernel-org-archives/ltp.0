@@ -1,25 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <leemgs1@gmail.com>) id 1MGRRr-0001ys-Ng
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 05:43:07 +0000
-Received: from mail-gx0-f207.google.com ([209.85.217.207])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MGRRq-0006eg-IX
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2009 05:43:07 +0000
-Received: by gxk3 with SMTP id 3so19833997gxk.10
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 15 Jun 2009 22:43:06 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20090616042450.GA26037@us.ibm.com>
-References: <49b7c2350906151813r31a9fe24icee5b1244f560f7a@mail.gmail.com>
-	<49b7c2350906151857yf972a90m78448ca70a89c468@mail.gmail.com>
-	<20090616042450.GA26037@us.ibm.com>
-Date: Tue, 16 Jun 2009 14:43:06 +0900
-Message-ID: <49b7c2350906152243p4c970b1di74cc62badc85a2e7@mail.gmail.com>
-From: GeunSik Lim <leemgs1@gmail.com>
-Subject: Re: [LTP] Report - make error of ltp-full-20090531.tgz
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJllJ-00079b-5f
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 10:00:57 +0000
+Received: from e34.co.us.ibm.com ([32.97.110.152])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MJllH-00025m-Uc
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2009 10:00:57 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <ee8eb53d0906231508ta738039m562dee936319624c@mail.gmail.com>
+References: <9a14a0630903130632s36a7f059hd093d30e97f894eb@mail.gmail.com>
+	<1236962876.7439.3.camel@subratamodak.linux.ibm.com>
+	<1237272937.5622.11.camel@subratamodak.linux.ibm.com>
+	<43e72e890903181242i1be5818et8afd1157cff8af83@mail.gmail.com>
+	<1237446038.5260.9.camel@subratamodak.linux.ibm.com>
+	<1245768529.4860.61.camel@subratamodak.linux.ibm.com>
+	<43e72e890906230831q6e6c9e2v49454ab66ca99156@mail.gmail.com>
+	<ee8eb53d0906231508ta738039m562dee936319624c@mail.gmail.com>
+Date: Thu, 25 Jun 2009 14:40:29 +0530
+Message-Id: <1245921029.5542.44.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Support of WIFI and W-LAN test cases in LTP
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,45 +32,85 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serue@us.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, Andrew Morgan <morgan@kernel.org>
+To: Georgy Berdyshev <codingmaster@gmail.com>
+Cc: ltp-list@lists.sf.net, "Luis R. Rodriguez" <lrodriguez@atheros.com>, Jouni Malinen <j@w1.fi>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "John W. Linville" <linville@tuxdriver.com>, rahul Baliyan <rahul.lpt@gmail.com>, Luis Carlos Cobo <luisca@cozybit.com>, Johannes Berg <johannes@sipsolutions.net>, "Jouni.Malinen" <Jouni.Malinen@atheros.com>
 
-T24gVHVlLCBKdW4gMTYsIDIwMDkgYXQgMToyNCBQTSwgU2VyZ2UgRS4gSGFsbHluPHNlcnVlQHVz
-LmlibS5jb20+IHdyb3RlOgo+IFF1b3RpbmcgR2V1blNpayBMaW0gKGxlZW1nczFAZ21haWwuY29t
-KToKPj4gSSBtYWRlIHBhdGNoIGZpbGUgdG8gc29sdmUgYmVsb3cgcHJvYmxlbS4KPgo+IHdlbGws
-IE5BSyB0byB0aGUgcGF0Y2gsIGJ1dCB0aGlzIGlzIGEgcmVhbCBwcm9ibGVtIHRoYXQgbmVlZHMg
-dG8KPiBiZSBmaXhlZC4gwqBJJ2xsIHRha2UgYSBsb29rIGluIHRoZSBtb3JuaW5nLCBidXQgQW5k
-cmV3IGRvIHlvdSBrbm93Cj4gb2ZmaGFuZCB3aGF0IHRoZSBwcm9ibGVtIGlzIHdpdGggY2FwYWJp
-bGl0eS5oIChpbiBGMTEgSSBnYXRoZXIpIHRoYXQKPiB3b3VsZCBjYXVzZToKU2VyZ2UgRS4gSGFs
-bHluLAoKVGhhbmtzIGZvciB5b3VyIG9waW5pb24gYWJvdXQgIHRoaXMgcmVwb3J0IHRoYXQgSSBw
-b3N0ZWQuClllcy4gIE15IGJlbG93IHBhdGNoIGlzIHByaXZhdGUgcGF0Y2ggdG8gc29sdmUgIG1h
-a2UgZXJyb3Igb24gRmVkb3JhIDExCmRpc3RyaWJ1dGlvbiAoIGZlZG9yYTExIDIuNi4yOS40LTE2
-Ny5mYzExLmk2ODYpLgpUaGlzIG1lYW5zIHRoYXQgbXkgcGF0Y2ggaXMgbm90IG9mZmljaWFsIHBh
-dGNoIGZpbGUgYXMgeW91IHRoaW5rLgoKRm9yIHJlZmVyZW5jZSwKIEkgdXNlZCBsaWJjYXAgMi4x
-NiB2ZXJzaW9uCmF0IHRoZSAgaHR0cDovL2Z0cC5rZXJuZWwub3JnL3B1Yi9saW51eC9saWJzL3Nl
-Y3VyaXR5L2xpbnV4LXByaXZzL2tlcm5lbC0yLjYvICAuCgo+Cj4+ID4gSW4gZmlsZSBpbmNsdWRl
-ZCBmcm9tIGNhcF9ib3VuZHNfci5jOjI4Ogo+PiA+IC91c3IvaW5jbHVkZS9zeXMvY2FwYWJpbGl0
-eS5oOjEwMjogZXJyb3I6IGV4cGVjdGVkICc9JywgJywnLCAnOycsCj4+ID4gJ2FzbScgb3IgJ19f
-YXR0cmlidXRlX18nIGJlZm9yZSAnY2FwX3NpemUnCj4KPiBJIGd1ZXNzIGl0IGxvb2tzIGxpa2Ug
-c3NpemVfdCBpc24ndCBrbm93biB0byB0aGUgY29tcGlsZXI/Ckxpa2UgYWJvdmUgZXJyb3IgbWVz
-c2FnZSBiZWNhdXNlIGNvbXBhdGliaWxpdHkgb2YgL3Vzci9pbmNsdWRlL3N5cy9jYXBhYmlsaXR5
-Lgo6LSkKSG9wZSBpdCBoZWxwcy4KCj4gdGhhbmtzLAo+IC1zZXJnZQo+CgoKCi0tIApSZWdhcmRz
-LApHZXVuU2lrIExpbSAoIFNhbXN1bmcgRWxlY3Ryb25pY3MgKQpCbG9nIDogaHR0cDovL2Jsb2cu
-bmF2ZXIuY29tL2ludmFpbi8KZS1NYWlsOiBnZXVuc2lrLmxpbUBzYW1zdW5nLmNvbQogICAgICAg
-ICAgIGxlZW1nc0BnbWFpbC5jb20gLCBsZWVtZ3MxQGdtYWlsLmNvbQotLQpUbyB1bnN1YnNjcmli
-ZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbGludXgta2VybmVs
-IiBpbgp0aGUgYm9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2VybmVsLm9yZwpN
-b3JlIG1ham9yZG9tbyBpbmZvIGF0ICBodHRwOi8vdmdlci5rZXJuZWwub3JnL21ham9yZG9tby1p
-bmZvLmh0bWwKUGxlYXNlIHJlYWQgdGhlIEZBUSBhdCAgaHR0cDovL3d3dy50dXgub3JnL2xrbWwv
-CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ3J5c3RhbCBSZXBvcnRzIC0gTmV3IEZyZWUgUnVudGlt
-ZSBhbmQgMzAgRGF5IFRyaWFsCkNoZWNrIG91dCB0aGUgbmV3IHNpbXBsaWZpZWQgbGljZW5zaW5n
-IG9wdGlvbiB0aGF0IGVuYWJsZXMgdW5saW1pdGVkCnJveWFsdHktZnJlZSBkaXN0cmlidXRpb24g
-b2YgdGhlIHJlcG9ydCBlbmdpbmUgZm9yIGV4dGVybmFsbHkgZmFjaW5nIApzZXJ2ZXIgYW5kIHdl
-YiBkZXBsb3ltZW50LgpodHRwOi8vcC5zZi5uZXQvc2Z1L2J1c2luZXNzb2JqZWN0cwpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5n
-IGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNl
-Zm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+On Tue, 2009-06-23 at 19:08 -0300, Georgy Berdyshev wrote: 
+> Hi,
+> 
+> Luis did already mention that the idea is to contribute things back to
+> LTP or have LTP use it.
+
+Great to hear that again. I was trying to figure out the status of that
+work ? When is it expected to complete, any idea ?
+
+Regards--
+Subrata
+
+> In case that there is some work going on, I would like to merge those
+> tests also into my project
+> and later on extend the work with LTP.
+> 
+> In any case, feel free to contact me.
+> 
+> Regards, Georgy
+> 
+> On Tue, Jun 23, 2009 at 12:31 PM, Luis R.
+> Rodriguez<lrodriguez@atheros.com> wrote:
+> > On Tue, Jun 23, 2009 at 7:48 AM, Subrata
+> > Modak<subrata@linux.vnet.ibm.com> wrote:
+> >> On Thu, 2009-03-19 at 12:30 +0530, Subrata Modak wrote:
+> >>> On Wed, 2009-03-18 at 12:42 -0700, Luis R. Rodriguez wrote:
+> >>> > On Mon, Mar 16, 2009 at 11:55 PM, Subrata Modak
+> >>> > <subrata@linux.vnet.ibm.com> wrote:
+> >>> > > Hi Rahul,
+> >>> > >
+> >>> > > On Fri, 2009-03-13 at 22:17 +0530, Subrata Modak wrote:
+> >>> > >> Hi,
+> >>> > >>
+> >>> > >> On Fri, 2009-03-13 at 19:02 +0530, rahul Baliyan wrote:
+> >>> > >> > Hi,
+> >>> > >> >
+> >>> > >> > Pl.  confirm if LTP contains the test cases of W-LAN and WI-FI.
+> >>> > >>
+> >>> > >> Nope. We do not have till now. However, we initiated some discussion
+> >>> > >> some 6 months back in the same mailing list regarding Wireless Mesh
+> >>> > >> Netwoking tests. Please follow the following thread:
+> >>> > >>
+> >>> > >> http://marc.info/?t=121969812900007&r=1&w=2&n=4,
+> >>> > >>
+> >>> > >> There are some tests already avilable. We need somebody to volunteer to
+> >>> > >> bring them to some shape so that they can be automated and then
+> >>> > >> integrated inside LTP. Would you be ready to do that ?
+> >>> > >
+> >>> > > Would you like to take up my proposal ?
+> >>> >
+> >>> > BTW I've stashed a Linux wireless testing entry in the Linux
+> >>> > Foundation GSoC, hopefully that can be merged back into LTP.
+> >>> >
+> >>> > https://www.linuxfoundation.org/en/Google_Summer_of_Code_2009#Automation_of_testing_using_mac80211_hwsim_and_Orbit
+> >>>
+> >>
+> >> Hi,
+> >>
+> >> Is somebody working on this, and still interested to contribute the same
+> >> to LTP ?
+> >
+> > Yes, the idea is to hopefully contribute it back to LTP. Or have LTP
+> > use it. I've added Georgy, the student working on this project.
+> >
+> >  Luis
+> >
+> 
+> 
+> 
+
+
+------------------------------------------------------------------------------
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
