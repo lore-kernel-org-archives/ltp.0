@@ -1,25 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MJ7d9-0006dP-EP
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:09:51 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MJ7d8-0004b2-5i
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 15:09:51 +0000
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MK9hS-00031h-GR
+	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2009 11:34:34 +0000
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MK9hO-00050e-P2
+	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2009 11:34:34 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e4.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5QBTJRs008083
+	for <ltp-list@lists.sourceforge.net>; Fri, 26 Jun 2009 07:29:19 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5QBYSBd227114
+	for <ltp-list@lists.sourceforge.net>; Fri, 26 Jun 2009 07:34:28 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5QBW5lh005126
+	for <ltp-list@lists.sourceforge.net>; Fri, 26 Jun 2009 07:32:05 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200906190637.n5J6bHYE034421@www262.sakura.ne.jp>
-References: <1244775226.4982.3.camel@subratamodak.linux.ibm.com>
-	<200906142044.ACJ21831.VHOJSFLtFOQOFM@I-love.SAKURA.ne.jp>
-	<1245093386.4871.49.camel@subratamodak.linux.ibm.com>
-	<1245346304.5041.37.camel@subratamodak.linux.ibm.com>
-	<200906190637.n5J6bHYE034421@www262.sakura.ne.jp>
-Date: Tue, 23 Jun 2009 20:20:25 +0530
-Message-Id: <1245768625.4860.88.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <f5a7b3810906250517k3b8c3bf3gde1957e93c95314@mail.gmail.com>
+References: <f5a7b3810906250517k3b8c3bf3gde1957e93c95314@mail.gmail.com>
+Date: Fri, 26 Jun 2009 17:03:00 +0530
+Message-Id: <1246015980.6196.20.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [003][RFC] [TESTING linux-2.6.30] TOMOYO
-	Linux	and	pathname-basedsecurity
+Subject: Re: [LTP] [PATCH] Re::personality test case build fails
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -33,106 +39,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: ltp-list@lists.sf.net, haradats@nttdata.co.jp, sds@tycho.nsa.gov, casey@schaufler-ca.com, serue@linux.vnet.ibm.com, zohar@linux.vnet.ibm.com, takedakn@nttdata.co.jp
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: Jiri Palecek <jpalecek@web.de>, Pradeep K Surisetty <pradeepkumars@in.ibm.com>, ltp-list@lists.sourceforge.net
 
-On Fri, 2009-06-19 at 15:37 +0900, Tetsuo Handa wrote: 
-> Hello.
+On Thu, 2009-06-25 at 17:47 +0530, naresh kamboju wrote: 
+> Hi,
 > 
-> Subrata Modak wrote:
-> > Do you feel the above information is sufficient for your to write tests
-> > for LTP ? Please feel free to ask us questions regarding anything to LTP
-> > tests.
-> Yes. I'm reading it now. Some random topics I noticed...
+> >+#ifdef __NR_personality
+>  >int main(int ac, char **av)
+>  >{
+> 
+> >+#else
+> >+int main(int ac, char **av)
+> >+{
+> >+       tst_resm(TCONF, "personality() not defined in your system");
+> >+       tst_exit();
+> >+}
+> >+#endif
 > 
 > 
-> 
-> In http://ltp.sourceforge.net/ltpman.php ...
-> The "LTP test driver PAN" points to
-> http://ltp.sourceforge.net/ltpmantemp.php?file=man1/pan.html
-> but the content seems empty.
-> Same result for other topics.
-> Is ltpmantemp.php working?
+> Instead of using
+> #ifdef __NR_personality
+>  in test code, Better we will add these this syscall numbers in the
+> ltp/testcases/kernel/include/ARCHXXX.in files.
+> This can be Multi ARCH support.
 
-I need to check out, as, i rarely give a look to the documentation stuff
-on the website due to lack of time ;-)
-
-> 
-> 
-> 
-> In "Developing tests in ANSI-C using LTP test harness API's" at
-> http://ltp.sourceforge.net/documentation/how-to/ltp.php ...
-> 
-> > TFAIL
-> >    Print the test case result. The tst_resm/tst_res function prints related messages to the screen indicating a test failure. The test will exit with a non-zero exit value when tst_exit function is called.
-> >
-> >    test01    0  PASS  :  uname command exited with error code = 255
-> >
-> I think this is "FAIL  :  uname command exited with error code = 255".
-> 
-> >TWARN
-> >    Print warning messages. For example, when system resources are low.
-> >
-> >    test01    0  PASS  :  System low on memory, test case might fail.
-> I think this is "WARN  :  System low on memory, test case might fail."
-> 
-> 
-> 
-> There are several "amp;" which I think it meant '&'.
-> 
-> 
-> 
-> In "Recommendation on coding style"...
-> 
-> > Check for return values from system calls. Report reason appropriately using the tst_brkm() API. The recommended style is as follows:
-> > Use spaces instead of tab characters. Typically four spaces may be used instead of a tab character.
-> 
-> Ouch! I'm writing testcases in accordance with script/checkpatch.pl in Linux
-
-Actually, you should do according to script/checkpatch.pl. Recently we
-agreed to that. Alas, we have too many code to fix for this :-(
-
-> kernel source tree. I expect that those who update/maintain testcases for
-> kernel source code likely have some experience in writing kernel patches.
-> Is it preferable to change codyng style in accordance with LTP?
-> 
-> 
-> 
-> http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/selinux-testsuite/
-> seems to be moved to
-> http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/security/selinux-testsuite/
-> 
-> 
-> 
-> Many programs under
-> http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/security/ seems
-> not using harness APIs...
-> Are these programs intended for executed by general LTP users?
-
-Correct, there are many programs within LTP which do not use the
-harness. The main reason being:
-
-Porting would have been a huge exercise, involving huge man hours. And
-simply people did not have time. So, looking into the usefulness of
-those tests, they were added to LTP. But, we are careful about the
-incremental addition of tests in LTP, in which case, it is easy to
-adhere to the harness specific standards. And hence we insist on using
-those harness when new tests keep coming in.
-
-And hence, any test without harness can be added to LTP if it returns
-proper exit code, thus enabling the LTP provisioning engine to actually
-report back PASS/FAIL.
+Great. Send me a patch to update them all ;-)
 
 Regards--
 Subrata
 
+> 
+> Jiri,
+> I think you are doing Multi ARCH support right?
+> 
+> Your suggestions are welcome :)
+> 
+> Best regards
+> Naresh Kamboju
 
 
 ------------------------------------------------------------------------------
-Are you an open source citizen? Join us for the Open Source Bridge conference!
-Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
-Need another reason to go? 24-hour hacker lounge. Register today!
-http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
