@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <francesco.rundo@st.com>) id 1MGHtx-0005Yd-O2
-	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:31:29 +0000
-Received: from [207.126.144.137] (helo=eu1sys200aog114.obsmtp.com)
-	by 1b2kzd1.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MGHtv-0008Ee-Uc
-	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2009 19:31:29 +0000
-Message-ID: <4A36A149.3020800@st.com>
-Date: Mon, 15 Jun 2009 21:30:17 +0200
-From: Francesco RUNDO <francesco.rundo@st.com>
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <praveen@primesoftsolutionsinc.com>)
+	id 1MKSUL-0003Tf-GK
+	for ltp-list@lists.sourceforge.net; Sat, 27 Jun 2009 07:38:17 +0000
+Received: from smtp103.biz.mail.in2.yahoo.com ([203.104.19.12])
+	by 3b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1MKSUJ-0002pp-Lh
+	for ltp-list@lists.sourceforge.net; Sat, 27 Jun 2009 07:38:17 +0000
+Received: from unknown (HELO SudamaRao)
+	(praveen@primesoftsolutionsinc.com@[192.168.0.9])
+	(envelope-sender <praveen@primesoftsolutionsinc.com>)
+	by 0 (qmail-ldap-1.03) with SMTP
+	for <ltp-list@lists.sourceforge.net>; 27 Jun 2009 07:29:19 -0000
+From: "Praveen" <praveen@primesoftsolutionsinc.com>
+Date: Sat, 27 Jun 2009 13:07:20 +0530
 MIME-Version: 1.0
-References: <4A267148.8000700@st.com>	
-	<1244114998.4879.25.camel@subratamodak.linux.ibm.com>	
-	<4A30B95F.4090903@st.com>
-	<1245093390.4871.50.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1245093390.4871.50.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] kernel/controllers/ testcase and CGROUPS support
+Subject: [LTP] LTP Documentation
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,365 +27,435 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4280760489122151613=="
+Content-Type: multipart/mixed; boundary="===============3801569956996931912=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
+Message-Id: <E1MKSUM-0003Tn-Qd@3yr0jf1.ch3.sourceforge.com>
 To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net
+Cc: ltp-list@lists.sourceforge.net, 'Nathan Straz' <nstraz@redhat.com>, 'Nate Straz' <nate@refried.org>
 
 This is a multi-part message in MIME format.
---===============4280760489122151613==
+
+--===============3801569956996931912==
 Content-Type: multipart/alternative;
-	boundary="------------080106030104020306000105"
+	boundary="----=_NextPart_000_005F_01C9F728.34D2C2F0"
 
 This is a multi-part message in MIME format.
---------------080106030104020306000105
-Content-Type: text/plain; charset=us-ascii; format=flowed
+
+------=_NextPart_000_005F_01C9F728.34D2C2F0
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
-Subrata,
-Ok.
-Thanks so much for your support.
+ 
 
-Best Regards
-Francesco Rundo
+Hi Subrata,
 
-Subrata Modak wrote:
+ 
 
->On Thu, 2009-06-11 at 09:59 +0200, Francesco RUNDO wrote:
->  
->
->>Hi Subrata,
->>
->>please, replace on the LTP main the previous patch with ones attached.
->>The attached patch add the right labels of ifdef.
->>    
->>
->
->Ok. I reverted the earlier one and applied this one. Please check the
->CVS and let me know if everything is fine.
->
->Regards--
->Subrata
->
->  
->
->>Sorry for that.
->>
->>Thanks in advance.
->>--
->>Francesco Rundo
->>
->>Subrata Modak wrote: 
->>    
->>
->>>On Wed, 2009-06-03 at 14:49 +0200, Francesco RUNDO wrote:
->>>  
->>>      
->>>
->>>>This patch allows the cross-build of kernel/controllers (cgroups
->>>>tests) testcase changing the policy to check the cgroups capability at
->>>>build-time.
->>>>Signed-off-by: Francesco Rundo <francesco.rundo@st.com>
->>>>    
->>>>        
->>>>
->>>Great if that helps your CROSS_COMPILE environment. Merged.
->>>
->>>Regards--
->>>Subrata
->>>
->>>  
->>>      
->>>
->>>>---
->>>>ltp-full-20090430-cross/testcases/kernel/controllers/Makefile.orig  2009-05-26 15:37:35.140000000 +0200
->>>>+++
->>>>ltp-full-20090430-cross/testcases/kernel/controllers/Makefile       2009-05-28 13:36:36.669998000 +0200
->>>>@@ -1,10 +1,26 @@
->>>>+ifdef $(CROSS_COMPILE)
->>>>+CHECK_CGROUP := $(shell test -f
->>>>$(TARGET_DIR)/usr/include/linux/cgroupstats.h && echo 'cgroup')
->>>>+else
->>>> CHECK_CGROUP := $(shell test -f /proc/cgroups && echo 'cgroup')
->>>> CHECK_CPUCTL := $(shell grep -w cpu /proc/cgroups 2>/dev/null|cut
->>>>-f1)
->>>> CHECK_MEMCTL := $(shell grep -w memory /proc/cgroups 2>/dev/null|cut
->>>>-f1)
->>>> CHECK_BLOCKIOCTL := $(shell grep -w blockio /proc/cgroups
->>>>2>/dev/null|cut -f1)
->>>> CHECK_FREEZER := $(shell grep -w freezer /proc/cgroups 2>/dev/null|
->>>>cut -f1)
->>>> CHECK_CPUSETCTL = $(shell grep -w cpuset /proc/cgroups 2>/dev/null|
->>>>cut -f1)
->>>>+endif
->>>>
->>>>+ifdef $(CROSS_COMPILE)
->>>>+ifeq ($(CHECK_CGROUP),cgroup)
->>>>+SUBDIRS += cgroup
->>>>+SUBDIRS += cpuctl
->>>>+SUBDIRS += memctl
->>>>+SUBDIRS += io-throttle
->>>>+SUBDIRS += freezer
->>>>+SUBDIRS += cpuset
->>>>+else
->>>>+$(info "Kernel is not compiled with control cgroup support")
->>>>+endif
->>>>+else
->>>> ifeq ($(CHECK_CGROUP),cgroup)
->>>> SUBDIRS += cgroup
->>>> else
->>>>@@ -36,6 +52,7 @@
->>>> else
->>>> $(info "Kernel is not compiled with cpuset resource controller
->>>>support")
->>>> endif
->>>>+endif
->>>>
->>>> # If at least one of the controllers is available then build
->>>>libcontrollers.
->>>> ifneq ($(SUBDIRS),)
->>>>    
->>>>        
->>>>
->>>  
->>>      
->>>
->>plain text document attachment
->>(ltp-full-20090430-fix-cgroups-testcase.patch)
->>This patch allows the cross-build of kernel/controllers (cgroups tests) testcase changing the policy to check the cgroups capability at build-time.
->>Signed-off-by: Francesco Rundo <francesco.rundo@st.com>
->>--- ltp-full-20090430-cross/testcases/kernel/controllers/Makefile.orig	2009-05-26 15:37:35.140000000 +0200
->>+++ ltp-full-20090430-cross/testcases/kernel/controllers/Makefile	2009-05-28 13:36:36.669998000 +0200
->>@@ -1,10 +1,26 @@
->>+ifdef CROSS_COMPILE
->>+CHECK_CGROUP := $(shell test -f $(TARGET_DIR)/usr/include/linux/cgroupstats.h && echo 'cgroup')
->>+else
->> CHECK_CGROUP := $(shell test -f /proc/cgroups && echo 'cgroup')
->> CHECK_CPUCTL := $(shell grep -w cpu /proc/cgroups 2>/dev/null|cut -f1)
->> CHECK_MEMCTL := $(shell grep -w memory /proc/cgroups 2>/dev/null|cut -f1)
->> CHECK_BLOCKIOCTL := $(shell grep -w blockio /proc/cgroups 2>/dev/null|cut -f1)
->> CHECK_FREEZER := $(shell grep -w freezer /proc/cgroups 2>/dev/null| cut -f1)
->> CHECK_CPUSETCTL = $(shell grep -w cpuset /proc/cgroups 2>/dev/null|cut -f1)
->>+endif
->>
->>+ifdef CROSS_COMPILE
->>+ifeq ($(CHECK_CGROUP),cgroup)
->>+SUBDIRS += cgroup
->>+SUBDIRS += cpuctl
->>+SUBDIRS += memctl
->>+SUBDIRS += io-throttle
->>+SUBDIRS += freezer
->>+SUBDIRS += cpuset
->>+else
->>+$(info "Kernel is not compiled with control cgroup support")
->>+endif
->>+else
->> ifeq ($(CHECK_CGROUP),cgroup)
->> SUBDIRS += cgroup
->> else
->>@@ -36,6 +52,7 @@
->> else
->> $(info "Kernel is not compiled with cpuset resource controller support")
->> endif
->>+endif
->>
->> # If at least one of the controllers is available then build libcontrollers.
->> ifneq ($(SUBDIRS),)
->>    
->>
->
->
->  
->
+Thanks for the information.
 
---------------080106030104020306000105
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+ 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+I have few doubts regarding the LTP documentation:
+
+*         Description field already describes of 'what exactly this test
+case is doing' (Should I have 
+
+to detail it more?)
+
+*         If I need to add information (description of test), where should I
+add it - I mean 
+
+should I create another filed for that or update the same 'description'
+field?
+
+ 
+
+ 
+
+Snippet from LTP Test case:
+
+ 
+
+#
+
+# File :        cp_test.sh
+
+#
+
+# Description:  Test basic functionality of cp command
+
+#               - Test #1:  cp -R can do a recursive copy
+
+#
+
+# Author:       Manoj Iyer, manjo@mail.utexas.edu
+
+#
+
+# History:      Jan 30 2003 - Created - Manoj Iyer.
+
+#               Feb 03 2003 - Fixed expected outpu
+
+ 
+
+ 
+
+Thanks,
+
+Praveen Kumar k
+
+ 
+
+
+------=_NextPart_000_005F_01C9F728.34D2C2F0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
+xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:x=3D"urn:schemas-microsoft-com:office:excel" =
+xmlns:st1=3D"urn:schemas-microsoft-com:office:smarttags" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
 <head>
-  <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
-  <title></title>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<o:SmartTagType =
+namespaceuri=3D"urn:schemas-microsoft-com:office:smarttags"
+ name=3D"PersonName"/>
+<!--[if !mso]>
+<style>
+st1\:*{behavior:url(#default#ieooui) }
+</style>
+<![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+h3
+	{margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:171.0pt;
+	text-indent:-.5in;
+	page-break-after:avoid;
+	mso-list:l1 level3 lfo1;
+	font-size:12.0pt;
+	font-family:Arial;
+	color:black;
+	layout-grid-mode:line;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ @list l0
+	{mso-list-id:602418350;
+	mso-list-type:hybrid;
+	mso-list-template-ids:2056529424 67698689 67698691 67698693 67698689 =
+67698691 67698693 67698689 67698691 67698693;}
+@list l0:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.75in;
+	mso-level-number-position:left;
+	margin-left:.75in;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l1
+	{mso-list-id:1188256032;
+	mso-list-template-ids:867725992;}
+@list l1:level1
+	{mso-level-text:%1;
+	mso-level-tab-stop:.3in;
+	mso-level-number-position:left;
+	margin-left:.3in;
+	text-indent:-.3in;}
+@list l1:level2
+	{mso-level-text:"%1\.%2";
+	mso-level-tab-stop:.4in;
+	mso-level-number-position:left;
+	margin-left:.4in;
+	text-indent:-.4in;}
+@list l1:level3
+	{mso-level-style-link:"Heading 3";
+	mso-level-text:"%1\.%2\.%3";
+	mso-level-tab-stop:171.0pt;
+	mso-level-number-position:left;
+	margin-left:171.0pt;
+	text-indent:-.5in;}
+@list l1:level4
+	{mso-level-text:"%1\.%2\.%3\.%4";
+	mso-level-tab-stop:.6in;
+	mso-level-number-position:left;
+	margin-left:.6in;
+	text-indent:-.6in;}
+@list l1:level5
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5";
+	mso-level-tab-stop:.7in;
+	mso-level-number-position:left;
+	margin-left:.7in;
+	text-indent:-.7in;}
+@list l1:level6
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6";
+	mso-level-tab-stop:.8in;
+	mso-level-number-position:left;
+	margin-left:.8in;
+	text-indent:-.8in;}
+@list l1:level7
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7";
+	mso-level-tab-stop:.9in;
+	mso-level-number-position:left;
+	margin-left:.9in;
+	text-indent:-.9in;}
+@list l1:level8
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8";
+	mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	margin-left:1.0in;
+	text-indent:-1.0in;}
+@list l1:level9
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.%9";
+	mso-level-tab-stop:1.1in;
+	mso-level-number-position:left;
+	margin-left:1.1in;
+	text-indent:-1.1in;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+
 </head>
-<body text="#000000" bgcolor="#ffffff">
-Subrata,<br>
-Ok.<br>
-Thanks so much for your support.<br>
-<br>
-Best Regards<br>
-Francesco Rundo<br>
-<br>
-Subrata Modak wrote:<br>
-<blockquote type="cite"
- cite="mid1245093390.4871.50.camel@subratamodak.linux.ibm.com">
-  <pre wrap="">On Thu, 2009-06-11 at 09:59 +0200, Francesco RUNDO wrote:
-  </pre>
-  <blockquote type="cite">
-    <pre wrap="">Hi Subrata,
 
-please, replace on the LTP main the previous patch with ones attached.
-The attached patch add the right labels of ifdef.
-    </pre>
-  </blockquote>
-  <pre wrap=""><!---->
-Ok. I reverted the earlier one and applied this one. Please check the
-CVS and let me know if everything is fine.
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
 
-Regards--
-Subrata
+<div class=3DSection1>
 
-  </pre>
-  <blockquote type="cite">
-    <pre wrap="">Sorry for that.
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'><o:p>&nbsp;</o:p></span></font></p>
 
-Thanks in advance.
---
-Francesco Rundo
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Hi Subrata,<o:p></o:p></span></font></p>
 
-Subrata Modak wrote: 
-    </pre>
-    <blockquote type="cite">
-      <pre wrap="">On Wed, 2009-06-03 at 14:49 +0200, Francesco RUNDO wrote:
-  
-      </pre>
-      <blockquote type="cite">
-        <pre wrap="">This patch allows the cross-build of kernel/controllers (cgroups
-tests) testcase changing the policy to check the cgroups capability at
-build-time.
-Signed-off-by: Francesco Rundo <a class="moz-txt-link-rfc2396E" href="mailto:francesco.rundo@st.com">&lt;francesco.rundo@st.com&gt;</a>
-    
-        </pre>
-      </blockquote>
-      <pre wrap="">Great if that helps your CROSS_COMPILE environment. Merged.
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'><o:p>&nbsp;</o:p></span></font></p>
 
-Regards--
-Subrata
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>Thanks for the =
+information.<o:p></o:p></span></font></p>
 
-  
-      </pre>
-      <blockquote type="cite">
-        <pre wrap="">---
-ltp-full-20090430-cross/testcases/kernel/controllers/Makefile.orig  2009-05-26 15:37:35.140000000 +0200
-+++
-ltp-full-20090430-cross/testcases/kernel/controllers/Makefile       2009-05-28 13:36:36.669998000 +0200
-@@ -1,10 +1,26 @@
-+ifdef $(CROSS_COMPILE)
-+CHECK_CGROUP := $(shell test -f
-$(TARGET_DIR)/usr/include/linux/cgroupstats.h &amp;&amp; echo 'cgroup')
-+else
- CHECK_CGROUP := $(shell test -f /proc/cgroups &amp;&amp; echo 'cgroup')
- CHECK_CPUCTL := $(shell grep -w cpu /proc/cgroups 2&gt;/dev/null|cut
--f1)
- CHECK_MEMCTL := $(shell grep -w memory /proc/cgroups 2&gt;/dev/null|cut
--f1)
- CHECK_BLOCKIOCTL := $(shell grep -w blockio /proc/cgroups
-2&gt;/dev/null|cut -f1)
- CHECK_FREEZER := $(shell grep -w freezer /proc/cgroups 2&gt;/dev/null|
-cut -f1)
- CHECK_CPUSETCTL = $(shell grep -w cpuset /proc/cgroups 2&gt;/dev/null|
-cut -f1)
-+endif
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'><o:p>&nbsp;</o:p></span></font></p>
 
-+ifdef $(CROSS_COMPILE)
-+ifeq ($(CHECK_CGROUP),cgroup)
-+SUBDIRS += cgroup
-+SUBDIRS += cpuctl
-+SUBDIRS += memctl
-+SUBDIRS += io-throttle
-+SUBDIRS += freezer
-+SUBDIRS += cpuset
-+else
-+$(info "Kernel is not compiled with control cgroup support")
-+endif
-+else
- ifeq ($(CHECK_CGROUP),cgroup)
- SUBDIRS += cgroup
- else
-@@ -36,6 +52,7 @@
- else
- $(info "Kernel is not compiled with cpuset resource controller
-support")
- endif
-+endif
+<p class=3DMsoNormal><font size=3D2 face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;
+font-family:"Courier New"'>I have few doubts regarding the LTP =
+documentation:<o:p></o:p></span></font></p>
 
- # If at least one of the controllers is available then build
-libcontrollers.
- ifneq ($(SUBDIRS),)
-    
-        </pre>
-      </blockquote>
-      <pre wrap="">
-  
-      </pre>
-    </blockquote>
-    <pre wrap="">plain text document attachment
-(ltp-full-20090430-fix-cgroups-testcase.patch)
-This patch allows the cross-build of kernel/controllers (cgroups tests) testcase changing the policy to check the cgroups capability at build-time.
-Signed-off-by: Francesco Rundo <a class="moz-txt-link-rfc2396E" href="mailto:francesco.rundo@st.com">&lt;francesco.rundo@st.com&gt;</a>
---- ltp-full-20090430-cross/testcases/kernel/controllers/Makefile.orig	2009-05-26 15:37:35.140000000 +0200
-+++ ltp-full-20090430-cross/testcases/kernel/controllers/Makefile	2009-05-28 13:36:36.669998000 +0200
-@@ -1,10 +1,26 @@
-+ifdef CROSS_COMPILE
-+CHECK_CGROUP := $(shell test -f $(TARGET_DIR)/usr/include/linux/cgroupstats.h &amp;&amp; echo 'cgroup')
-+else
- CHECK_CGROUP := $(shell test -f /proc/cgroups &amp;&amp; echo 'cgroup')
- CHECK_CPUCTL := $(shell grep -w cpu /proc/cgroups 2&gt;/dev/null|cut -f1)
- CHECK_MEMCTL := $(shell grep -w memory /proc/cgroups 2&gt;/dev/null|cut -f1)
- CHECK_BLOCKIOCTL := $(shell grep -w blockio /proc/cgroups 2&gt;/dev/null|cut -f1)
- CHECK_FREEZER := $(shell grep -w freezer /proc/cgroups 2&gt;/dev/null| cut -f1)
- CHECK_CPUSETCTL = $(shell grep -w cpuset /proc/cgroups 2&gt;/dev/null|cut -f1)
-+endif
+<p class=3DMsoNormal =
+style=3D'margin-left:.75in;text-indent:-.25in;mso-list:l0 level1 =
+lfo2'><![if !supportLists]><font
+size=3D2 face=3DSymbol><span =
+style=3D'font-size:10.0pt;font-family:Symbol'><span
+style=3D'mso-list:Ignore'>&middot;<font size=3D1 face=3D"Times New =
+Roman"><span
+style=3D'font:7.0pt "Times New =
+Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></font></span></span></font><![endif]><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New"'>Description field =
+already describes
+of &#8216;what exactly this test case is doing&#8217; (Should I have =
+</span></font><font
+size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;font-family:Arial'><o:p></o:p></span></font></p=
+>
 
-+ifdef CROSS_COMPILE
-+ifeq ($(CHECK_CGROUP),cgroup)
-+SUBDIRS += cgroup
-+SUBDIRS += cpuctl
-+SUBDIRS += memctl
-+SUBDIRS += io-throttle
-+SUBDIRS += freezer
-+SUBDIRS += cpuset
-+else
-+$(info "Kernel is not compiled with control cgroup support")
-+endif
-+else
- ifeq ($(CHECK_CGROUP),cgroup)
- SUBDIRS += cgroup
- else
-@@ -36,6 +52,7 @@
- else
- $(info "Kernel is not compiled with cpuset resource controller support")
- endif
-+endif
+<p class=3DMsoNormal style=3D'margin-left:.75in'><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New"'>to detail it =
+more?)</span></font><font
+size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;font-family:Arial'><o:p></o:p></span></font></p=
+>
 
- # If at least one of the controllers is available then build libcontrollers.
- ifneq ($(SUBDIRS),)
-    </pre>
-  </blockquote>
-  <pre wrap=""><!---->
+<p class=3DMsoNormal =
+style=3D'margin-left:.75in;text-indent:-.25in;mso-list:l0 level1 =
+lfo2'><![if !supportLists]><font
+size=3D2 face=3DSymbol><span =
+style=3D'font-size:10.0pt;font-family:Symbol'><span
+style=3D'mso-list:Ignore'>&middot;<font size=3D1 face=3D"Times New =
+Roman"><span
+style=3D'font:7.0pt "Times New =
+Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></font></span></span></font><![endif]><font size=3D2 =
+face=3D"Courier New"><span
+style=3D'font-size:10.0pt;font-family:"Courier New"'>If I need to add =
+information
+(description of test), where should I add it &#8211; I mean =
+</span></font><font
+size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;font-family:Arial'><o:p></o:p></span></font></p=
+>
 
-  </pre>
-</blockquote>
+<p class=3DMsoNormal style=3D'margin-left:.5in;text-indent:.25in'><font =
+size=3D2
+face=3D"Courier New"><span =
+style=3D'font-size:10.0pt;font-family:"Courier New"'>should
+I create another filed for that or update the same =
+&#8216;description&#8217;
+field?</span></font><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=3DMsoNormal><u><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Snippet from LTP Test =
+case:<o:p></o:p></span></font></u></p>
+
+<p class=3DMsoNormal><u><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p><span =
+style=3D'text-decoration:none'>&nbsp;</span></o:p></span></font></u></p>
+
+<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial;font-style:italic'>#<o:p></o:p></span></font></i></p>
+
+<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial;font-style:italic'># File =
+:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+cp_test.sh<o:p></o:p></span></font></i></p>
+
+<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial;font-style:italic'>#<o:p></o:p></span></font></i></p>
+
+<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial;font-style:italic'># Description:&nbsp; Test basic =
+functionality
+of cp command<o:p></o:p></span></font></i></p>
+
+<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial;font-style:italic'>#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Test #1:&nbsp; cp -R =
+can do a
+recursive copy<o:p></o:p></span></font></i></p>
+
+<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial;font-style:italic'>#<o:p></o:p></span></font></i></p>
+
+<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial;font-style:italic'># =
+Author:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Manoj Iyer,
+manjo@mail.utexas.edu<o:p></o:p></span></font></i></p>
+
+<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial;font-style:italic'>#<o:p></o:p></span></font></i></p>
+
+<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial;font-style:italic'># =
+History:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Jan 30 2003 - Created -
+Manoj Iyer.<o:p></o:p></span></font></i></p>
+
+<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial;font-style:italic'>#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Feb 03 2003 - Fixed
+expected outpu<o:p></o:p></span></font></i></p>
+
+<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial;font-style:italic'><o:p>&nbsp;</o:p></span></font></i><=
+/p>
+
+<p class=3DMsoNormal><i><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial;font-style:italic'><o:p>&nbsp;</o:p></span></font></i><=
+/p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Thanks,</span></font><o:p></o:p></p>
+
+<p class=3DMsoNormal><st1:PersonName
+style=3D"BACKGROUND-POSITION: left bottom; BACKGROUND-IMAGE: =
+url(res://ietag.dll/#34/#1001); BACKGROUND-REPEAT: repeat-x"
+tabIndex=3D"0" w:st=3D"on"><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+ font-family:Arial'>Praveen</span></font></st1:PersonName><font size=3D2
+face=3DArial><span style=3D'font-size:10.0pt;font-family:Arial'> Kumar =
+k<o:p></o:p></span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span =
+style=3D'font-size:
+12.0pt'><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
 </body>
+
 </html>
 
---------------080106030104020306000105--
+------=_NextPart_000_005F_01C9F728.34D2C2F0--
 
 
 
---===============4280760489122151613==
+
+--===============3801569956996931912==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing 
-server and web deployment.
-http://p.sf.net/sfu/businessobjects
---===============4280760489122151613==
+
+--===============3801569956996931912==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -396,6 +466,7 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============4280760489122151613==--
+--===============3801569956996931912==--
+
 
 
