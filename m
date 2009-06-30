@@ -1,22 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1MH1dl-0000KB-Jx
-	for ltp-list@lists.sourceforge.net; Wed, 17 Jun 2009 20:21:49 +0000
-Received: from mail-gx0-f207.google.com ([209.85.217.207])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MH1dj-0000Pd-Qt
-	for ltp-list@lists.sourceforge.net; Wed, 17 Jun 2009 20:21:49 +0000
-Received: by gxk3 with SMTP id 3so2192445gxk.10
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 17 Jun 2009 13:21:47 -0700 (PDT)
-MIME-Version: 1.0
-Date: Thu, 18 Jun 2009 01:51:47 +0530
-Message-ID: <f5a7b3810906171321m79953178gd0505c6deb5dc3d3@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Content-Type: multipart/mixed; boundary=000e0cd594946844aa046c910aa4
-Subject: [LTP] [FIX PATCH] ltp-set_tid_address
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MLaE1-0000zn-1N
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 10:06:05 +0000
+Received: from [32.97.110.152] (helo=e34.co.us.ibm.com)
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MLaDz-0007Kh-Lt
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 10:06:04 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e34.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5UA1vKq024600
+	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 04:01:57 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5UA5CdN220212
+	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 04:05:12 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5UA5CGp009271
+	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 04:05:12 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <f5a7b3810906300250o6ee16e3bv672ad77018d34a81@mail.gmail.com>
+References: <f5a7b3810906250517k3b8c3bf3gde1957e93c95314@mail.gmail.com>
+	<1246015980.6196.20.camel@subratamodak.linux.ibm.com>
+	<1246347680.4819.31.camel@subratamodak.linux.ibm.com>
+	<f5a7b3810906300250o6ee16e3bv672ad77018d34a81@mail.gmail.com>
+Date: Tue, 30 Jun 2009 15:34:14 +0530
+Message-Id: <1246356254.4819.39.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Re::personality test case build fails
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,91 +40,66 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, Manas Kumar Nayak <maknayak@in.ibm.com>, Oleg Nesterov <oleg@redhat.com>, rohit.170309@gmail.com
-
---000e0cd594946844aa046c910aa4
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-Hi,
-
-I have noticed fail and fixed.
-1. set_tid_address01.c
-
-
-Please find the patch below and as attachment.
-
-Best regards
-Naresh Kamboju
-
-Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
-
-
-diff -Naurb a/testcases/kernel/syscalls/set_tid_address/set_tid_address01.c
-b/testcases/kernel/syscalls/set_tid_address/set_tid_address01.c
---- a/testcases/kernel/syscalls/set_tid_address/set_tid_address01.c	2009-05-22
-00:03:24.000000000 +0530
-+++ b/testcases/kernel/syscalls/set_tid_address/set_tid_address01.c	2009-06-17
-23:18:57.000000000 +0530
-@@ -125,7 +125,7 @@
-         for (lc = 0; TEST_LOOPING(lc); ++lc) {
-                 Tst_count = 0;
-                 for (testno = 0; testno < TST_TOTAL; ++testno) {
--                     TEST(result = syscall(258, &newtid));     //call
-set_tid_address()
-+                     TEST(result = syscall(__NR_set_tid_address,
-&newtid));     //call set_tid_address()
-                      if(TEST_RETURN == getpid()) {
-         		tst_resm(TPASS, "set_tid_address call succeeded: result =
-%d (expected %d)",TEST_RETURN, result);
-                      }
-
---000e0cd594946844aa046c910aa4
-Content-Type: application/octet-stream; name="ltp-fix-set_tid_address.patch"
-Content-Disposition: attachment; filename="ltp-fix-set_tid_address.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fw2gzo880
-
-ZGlmZiAtTmF1cmIgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NldF90aWRfYWRkcmVzcy9z
-ZXRfdGlkX2FkZHJlc3MwMS5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZXRfdGlkX2Fk
-ZHJlc3Mvc2V0X3RpZF9hZGRyZXNzMDEuYwotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
-L3NldF90aWRfYWRkcmVzcy9zZXRfdGlkX2FkZHJlc3MwMS5jCTIwMDktMDUtMjIgMDA6MDM6MjQu
-MDAwMDAwMDAwICswNTMwCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2V0X3RpZF9h
-ZGRyZXNzL3NldF90aWRfYWRkcmVzczAxLmMJMjAwOS0wNi0xNyAyMzoxODo1Ny4wMDAwMDAwMDAg
-KzA1MzAKQEAgLTEyNSw3ICsxMjUsNyBAQAogICAgICAgICBmb3IgKGxjID0gMDsgVEVTVF9MT09Q
-SU5HKGxjKTsgKytsYykgewogICAgICAgICAgICAgICAgIFRzdF9jb3VudCA9IDA7CiAgICAgICAg
-ICAgICAgICAgZm9yICh0ZXN0bm8gPSAwOyB0ZXN0bm8gPCBUU1RfVE9UQUw7ICsrdGVzdG5vKSB7
-Ci0gICAgICAgICAgICAgICAgICAgICBURVNUKHJlc3VsdCA9IHN5c2NhbGwoMjU4LCAmbmV3dGlk
-KSk7ICAgICAvL2NhbGwgc2V0X3RpZF9hZGRyZXNzKCkKKyAgICAgICAgICAgICAgICAgICAgIFRF
-U1QocmVzdWx0ID0gc3lzY2FsbChfX05SX3NldF90aWRfYWRkcmVzcywgJm5ld3RpZCkpOyAgICAg
-Ly9jYWxsIHNldF90aWRfYWRkcmVzcygpCiAgICAgICAgICAgICAgICAgICAgICBpZihURVNUX1JF
-VFVSTiA9PSBnZXRwaWQoKSkgewogICAgICAgICAJCXRzdF9yZXNtKFRQQVNTLCAic2V0X3RpZF9h
-ZGRyZXNzIGNhbGwgc3VjY2VlZGVkOiByZXN1bHQgPSAlZCAoZXhwZWN0ZWQgJWQpIixURVNUX1JF
-VFVSTiwgcmVzdWx0KTsKICAgICAgICAgICAgICAgICAgICAgIH0K
---000e0cd594946844aa046c910aa4
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: Jiri Palecek <jpalecek@web.de>, Pradeep K Surisetty <pradeepkumars@in.ibm.com>, ltp-list@lists.sourceforge.net
+
+On Tue, 2009-06-30 at 15:20 +0530, naresh kamboju wrote:
+> On Tue, Jun 30, 2009 at 1:11 PM, Subrata
+> Modak<subrata@linux.vnet.ibm.com> wrote:
+> > On Fri, 2009-06-26 at 17:03 +0530, Subrata Modak wrote:
+> >> > >+#ifdef __NR_personality
+> >> >
+> >> > Instead of using
+> >> > #ifdef __NR_personality
+> >> >  in test code, Better we will add these this syscall numbers in the
+> >> > ltp/testcases/kernel/include/ARCHXXX.in files.
+> >> > This can be Multi ARCH support.
+> >> Great. Send me a patch to update them all ;-)
+> >>
+> >
+> > Naresh ??
+> 
+> Hi Subrata,
+> 
+> I have noticed some issue with personality01.c and personality02.c
+> test cases in design.
+
+Great. And what design reviews for the newly ported tests in LTP ?
+
+Regards--
+Subrata
+
+> Currently I am investigating and get back to in short.
+> 
+> Best Regards
+> Naresh Kamboju
+> 
+> >
+> >> Regards--
+> >> Subrata
+> >>
+> >> > Jiri,
+> >> > I think you are doing Multi ARCH support right?
+> >> >
+> >> > Your suggestions are welcome :)
+> >> >
+> >> > Best regards
+> >> > Naresh Kamboju
+> 
+> >> ------------------------------------------------------------------------------
+> >> _______________________________________________
+> >> Ltp-list mailing list
+> >> Ltp-list@lists.sourceforge.net
+> >> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> >
+> >
+
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing 
-server and web deployment.
-http://p.sf.net/sfu/businessobjects
---000e0cd594946844aa046c910aa4
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---000e0cd594946844aa046c910aa4--
-
