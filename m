@@ -1,25 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MK9gj-0002uX-BI
-	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2009 11:33:49 +0000
-Received: from e4.ny.us.ibm.com ([32.97.182.144])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MK9gh-00059j-MC
-	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2009 11:33:49 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1245931475.11847.6.camel@dyn9002018117.watson.ibm.com>
-References: <78aaeffc0906250000i150418e8k3637acb41976c1a0@mail.gmail.com>
-	<1245921062.5542.51.camel@subratamodak.linux.ibm.com>
-	<78aaeffc0906250339q1051eceak19a244c968b4ba0c@mail.gmail.com>
-	<1245926833.8178.2.camel@subratamodak.linux.ibm.com>
-	<1245931475.11847.6.camel@dyn9002018117.watson.ibm.com>
-Date: Fri, 26 Jun 2009 17:02:56 +0530
-Message-Id: <1246015976.6196.19.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Can not run Test
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <kamalesh@linux.vnet.ibm.com>) id 1MLatN-0003EB-4h
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 10:48:49 +0000
+Received: from [202.81.31.142] (helo=e23smtp09.au.ibm.com)
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MLatE-0008Sp-LF
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 10:48:43 +0000
+Received: from d23relay02.au.ibm.com (d23relay02.au.ibm.com [202.81.31.244])
+	by e23smtp09.au.ibm.com (8.13.1/8.13.1) with ESMTP id n5UKbpnb029537
+	for <ltp-list@lists.sourceforge.net>; Wed, 1 Jul 2009 06:37:51 +1000
+Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
+	by d23relay02.au.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5UAkomg901190
+	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 20:46:50 +1000
+Received: from d23av02.au.ibm.com (loopback [127.0.0.1])
+	by d23av02.au.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5UAknYv007272
+	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 20:46:50 +1000
+Date: Tue, 30 Jun 2009 16:16:39 +0530
+From: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
+Message-ID: <20090630104639.GB4682@linux.vnet.ibm.com>
+References: <f5a7b3810906300042w14bc6a4fp8046160d07d8254e@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <f5a7b3810906300042w14bc6a4fp8046160d07d8254e@mail.gmail.com>
+Subject: Re: [LTP] [FIX PATCHES] ltp-mq_unlink_speculative_7-2
+Reply-To: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,96 +40,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mimi Zohar <zohar@linux.vnet.ibm.com>
-Cc: waqar afridi <afridi.waqar@gmail.com>, ltp-list <ltp-list@lists.sf.net>, Mimi Zohar <zohar@us.ibm.com>
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Brandon Philips <bphilips@suse.de>, maxin john <maxinbjohn@gmail.com>, Manas Kumar Nayak <maknayak@in.ibm.com>
 
-On Thu, 2009-06-25 at 08:04 -0400, Mimi Zohar wrote: 
-> On Thu, 2009-06-25 at 16:17 +0530, Subrata Modak wrote:
-> > On Thu, 2009-06-25 at 16:39 +0600, waqar afridi wrote:
-> > > 
-> > > 
-> > > On Thu, Jun 25, 2009 at 3:11 PM, Subrata Modak
-> > > <subrata@linux.vnet.ibm.com> wrote:
-> > >         On Thu, 2009-06-25 at 13:00 +0600, waqar afridi wrote:
-> > >         > Hi All
-> > >         >
-> > >         > I have downloaded ltp-full-20090531.tgz and installed it
-> > >         using the
-> > >         > commands make autotools, ./configure, make all, make
-> > >         install. but when
-> > >         > I try to run a test like
-> > >         >
-> > >         > # ./ima_tpm.sh
-> > >         > ./ima_tpm.sh: 163: source: not found
-> > >         > ./ima_tpm.sh: 164: setup: not found
-> > >         >
-> > >         > I get the error above. What could be the problem,
-> > >         Desperately need
-> > >         > help.
-> > >         
-> > >         
-> > >         Look through:
-> > >         http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/security/integrity/ima/README,
-> > >         on instructions to setup before executing those tests.
-> > > 
-> > > I already have done these steps. but I think  the problem will be with
-> > > mounting partition with iversion support(I have done this too, added
-> > > iversion to fstab). I am not clear about whats iversion, so thats why
-> > > I am going to clear my Idea about iversion. but if some body can help
-> > > with both the problem and iversion, I will be very thankful.
-> > 
-> > Mimi,
-> > 
-> > Can you please help Afridi ?
-> > 
-> > Regards--
-> > Subrata
+* naresh kamboju <naresh.kernel@gmail.com> [2009-06-30 13:12:57]:
+
+> Hi,
 > 
-> Sure.  I'm in the process of updating the web site
-> http://linux-ima.sourceforge.net/, but it is a good place to start.
-> There's also IMA mailing lists
-> http://sourceforge.net/projects/linux-ima.
-
-Thanks. I am going to put this info as well on:
-http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/security/integrity/ima/README
-
-Regards--
-Subrata
-
+> I have noticed failure under open_posix_testsuite for
+> mq_unlink/speculative/7-2.c and fixed.
+> After changing the uninitialized to initialized char array of mqname[]
+> test case got PASSED.
 > 
-> Mimi
+> I have attached patch and below.
+> Please review the same.
 > 
-> > > 
-> > >         
-> > >         
-> > >         Regards--
-> > >         Subrata
-> > >         
-> > >         >
-> > >         > --
-> > >         > Waqar Afridi
-> > >         > Research Associate
-> > >         > Member: Security Engineering Research Group (SERG)
-> > >         > IM | Sciences Peshawar
-> > >         
-> > >         >
-> > >         ------------------------------------------------------------------------------
-> > >         > _______________________________________________
-> > >         > Ltp-list mailing list
-> > >         > Ltp-list@lists.sourceforge.net
-> > >         > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> > >         
-> > > 
-> > > 
-> > > 
-> > > -- 
-> > > Waqar Afridi
-> > > Research Associate
-> > > Member: Security Engineering Research Group (SERG)
-> > > IM | Sciences Peshawar
-> > 
 > 
+> Best Regards
+> Naresh Kamboju
 
+looks good to me.
+> 
+> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+> 
+> 
+> diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/mq_unlink/speculative/7-2.c
+> b/testcases/open_posix_testsuite/conformance/interfaces/mq_unlink/speculative/7-2.c
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/mq_unlink/speculative/7-2.c
+> 2005-06-03 22:00:59.000000000 +0530
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mq_unlink/speculative/7-2.c
+> 2009-06-30 12:37:35.000000000 +0530
+> @@ -28,7 +28,7 @@
+> 
+>  int main()
+>  {
+> -       char mqname[50];
+> +       char mqname[50]="/123";
+> 
+>  //     sprintf(mqname, FUNCTION "_" TEST "_%d", getpid());
+
+
+			
+					Kamalesh
 
 ------------------------------------------------------------------------------
 _______________________________________________
