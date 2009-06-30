@@ -1,31 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <pradeepkumars@in.ibm.com>) id 1MJ5nO-0007DR-2X
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 13:12:18 +0000
-Received: from e28smtp03.in.ibm.com ([59.145.155.3])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MJ5nL-0004Wl-R2
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 13:12:18 +0000
-Received: from d28relay04.in.ibm.com (d28relay04.in.ibm.com [9.184.220.61])
-	by e28smtp03.in.ibm.com (8.13.1/8.13.1) with ESMTP id n5NDC52F029882
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 18:42:05 +0530
-Received: from d28av05.in.ibm.com (d28av05.in.ibm.com [9.184.220.67])
-	by d28relay04.in.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n5NDC5942048166
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 18:42:05 +0530
-Received: from d28av05.in.ibm.com (loopback [127.0.0.1])
-	by d28av05.in.ibm.com (8.13.1/8.13.3) with ESMTP id n5NDC5Sk016035
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 23:12:05 +1000
-Received: from d23ml066.in.ibm.com (d23ml066.in.ibm.com [9.124.105.43])
-	by d28av05.in.ibm.com (8.13.1/8.12.11) with ESMTP id n5NDC5WP016024
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2009 23:12:05 +1000
-Message-ID: <OF7F605455.F06BC5F9-ON652575DE.0046FE13-652575DE.00488F83@in.ibm.com>
-From: Pradeep K Surisetty <pradeepkumars@in.ibm.com>
-Date: Tue, 23 Jun 2009 18:39:29 +0530
-MIME-Version: 1.0
-Subject: [LTP] : personality test case build fails
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MLfud-0007rE-2U
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 16:10:27 +0000
+Received: from e34.co.us.ibm.com ([32.97.110.152])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MLfuZ-0004bH-6O
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 16:10:27 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e34.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5UG73q6019758
+	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 10:07:03 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5UGAIGv137920
+	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 10:10:18 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5UGAHEZ028307
+	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 10:10:17 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <20090630145725.11163.50654.sendpatchset@localhost.localdomain>
+References: <20090630145706.11163.54040.sendpatchset@localhost.localdomain>
+	<20090630145725.11163.50654.sendpatchset@localhost.localdomain>
+Date: Tue, 30 Jun 2009 21:40:14 +0530
+Message-Id: <1246378214.6978.10.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [Patch 3/10]Readme modified with pre-requisite
+	for	sched_mc=2 test
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,40 +42,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Subrata Modak1 <subrata.modak@in.ibm.com>, James Takahashi <jmtt@us.ibm.com>
+To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
 
-Here is the list of platforms on which "personality test case" fails.
+On Tue, 2009-06-30 at 20:27 +0530, Poornima Nayak wrote:
+> [Patch 3/10]Readme modified with pre-requisite for sched_mc=2 test
+> 
+> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
 
-Platforms:
-e326,x366
+Thanks.
 
-kernel:
-2.6.16.60-0.46.6-smp
-
-Build Failure:
-
-cc -I../../../../include -Wall    personality01.c  -L../../../../lib -lltp
--o personality01
-/tmp/cc2aVCsG.o: In function `main':
-personality01.c:(.text+0x58): undefined reference to `personality'
-personality01.c:(.text+0xb6): undefined reference to `personality'
-personality01.c:(.text+0x1a5): undefined reference to `personality'
-collect2: ld returned 1 exit status
-make: *** [personality01] Error 1
-
-Subrata,
-Can you point me, if any work around exists for this.
-
--Pradeep
+> 
+> diff -uprN ltp_orig/testcases/kernel/power_management/README ltp_patched/testcases/kernel/power_management/README
+> --- ltp_orig/testcases/kernel/power_management/README	2009-06-30 15:04:19.000000000 +0530
+> +++ ltp_patched/testcases/kernel/power_management/README	2009-06-30 16:31:17.000000000 +0530
+> @@ -80,3 +80,5 @@ Then either configuration is not set or 
+>  For CPU consolidation verification ebizzy is included in utils directory of LTP.
+>  To run cpu consolidation test user has to provide -w <workload> -l <sched_mc_level>.
+>  Refer to README in LTPROOT/utils/benchmark/ebizzy-0.2 directory for details of ebizzy.
+> +
+> +To test CPU consolidation for sched_mc 2 kernbench has to run. Kernbench needs linux kernel source as input in /root directory . For example download from http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.29.4.tar.bz2. If Linux kernel source not found kernbench wiil  not execute.
+> 
+> ------------------------------------------------------------------------------
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
-Are you an open source citizen? Join us for the Open Source Bridge conference!
-Portland, OR, June 17-19. Two days of sessions, one day of unconference: $250.
-Need another reason to go? 24-hour hacker lounge. Register today!
-http://ad.doubleclick.net/clk;215844324;13503038;v?http://opensourcebridge.org
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
