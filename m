@@ -1,20 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MLY2U-0002Y1-D5
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 07:46:02 +0000
-Received: from [32.97.110.149] (helo=e31.co.us.ibm.com)
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MLY2S-00036o-Mx
-	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 07:46:02 +0000
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MLfud-0001GL-Qb
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 16:10:27 +0000
+Received: from e34.co.us.ibm.com ([32.97.110.152])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MLfuY-0001QJ-9r
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 16:10:26 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e34.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n5UG736i019757
+	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 10:07:03 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n5UGA6U3105330
+	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 10:10:08 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n5UGA5xH010380
+	for <ltp-list@lists.sourceforge.net>; Tue, 30 Jun 2009 10:10:05 -0600
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090625113420.606.55089.sendpatchset@subratamodak.linux.ibm.com>
-References: <20090625113420.606.55089.sendpatchset@subratamodak.linux.ibm.com>
-Date: Tue, 30 Jun 2009 13:11:18 +0530
-Message-Id: <1246347678.4819.30.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <20090630145716.11163.65234.sendpatchset@localhost.localdomain>
+References: <20090630145706.11163.54040.sendpatchset@localhost.localdomain>
+	<20090630145716.11163.65234.sendpatchset@localhost.localdomain>
+Date: Tue, 30 Jun 2009 21:40:02 +0530
+Message-Id: <1246378202.6978.8.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Re::personality test case build fails
+Subject: Re: [LTP] [Patch 2/10]Makefile patch to integrate to LTP
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -28,114 +41,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Pradeep K Surisetty <pradeepkumars@in.ibm.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Thu, 2009-06-25 at 17:04 +0530, Subrata Modak wrote: 
-> Hi Pradeep,
-> 
-> >On Tue, 2009-06-23 at 18:39 +0530, Pradeep K Surisetty wrote:
-> >Here is the list of platforms on which "personality test case" fails.
-> > 
-> > Platforms:
-> > e326,x366
-> > 
-> > kernel:
-> > 2.6.16.60-0.46.6-smp
-> > 
-> > Build Failure:
-> > 
-> > cc -I../../../../include -Wall    personality01.c  -L../../../../lib -lltp
-> > -o personality01
-> > /tmp/cc2aVCsG.o: In function `main':
-> > personality01.c:(.text+0x58): undefined reference to `personality'
-> > personality01.c:(.text+0xb6): undefined reference to `personality'
-> > personality01.c:(.text+0x1a5): undefined reference to `personality'
-> > collect2: ld returned 1 exit status
-> > make: *** [personality01] Error 1
-> > 
-> > Subrata,
-> > Can you point me, if any work around exists for this.
-> 
-> The following patch will probably fix the issue on your system. Please
-> test this patch and let me know.
-> 
-> Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>,
 
-I checked in this.
+On Tue, 2009-06-30 at 20:27 +0530, Poornima Nayak wrote:
+> [Patch 2/10]Makefile patch to integrate to LTP
+> 
+> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
 
-Regards--
-Subrata
+Checked in.
 
-> ---
 > 
-> --- ltp-intermediate-20090622/testcases/kernel/syscalls/personality/personality01.c.orig	2009-06-25 16:45:55.000000000 +0530
-> +++ ltp-intermediate-20090622/testcases/kernel/syscalls/personality/personality01.c	2009-06-25 16:59:15.000000000 +0530
-> @@ -58,7 +58,7 @@
->  #include "usctest.h"
+> diff -uprN ltp_orig/utils/benchmark/Makefile ltp_patched/utils/benchmark/Makefile
+> --- ltp_orig/utils/benchmark/Makefile	2009-06-30 15:04:20.000000000 +0530
+> +++ ltp_patched/utils/benchmark/Makefile	2009-06-30 15:12:52.000000000 +0530
+> @@ -18,7 +18,7 @@
+>  ####
+>  ################################################################################
 > 
->  #include <errno.h>
-> -#include <linux/personality.h>
-> +#include <sys/personality.h>
->  #undef personality
+> -SUBDIRS := ebizzy-0.3
+> +SUBDIRS := ebizzy-0.3 kernbench-0.42
 > 
->  extern int personality(unsigned long);
-> @@ -75,6 +75,7 @@ int pers[] = { PER_LINUX, PER_LINUX_32BI
->  	PER_IRIX32, PER_IRIXN32, PER_IRIX64
->  };
+>  configure:
+>  	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i $@; done;
+> @@ -27,6 +27,6 @@ all: configure
+>  	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i $@; done;
 > 
-> +#ifdef __NR_personality
->  int main(int ac, char **av)
->  {
->  	int lc;			/* loop counter */
-> @@ -146,6 +147,13 @@ int main(int ac, char **av)
+>  install:
+> -
+> +	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i $@; done;
+>  clean:
+>  	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i $@; done;
 > 
->  	 /*NOTREACHED*/ return 0;
->  }
-> +#else
-> +int main(int ac, char **av)
-> +{
-> +	tst_resm(TCONF, "personality() not defined in your system");
-> +	tst_exit();
-> +}
-> +#endif
-> 
->  /*
->   * setup() - performs all the ONE TIME setup for this test.
-> --- ltp-intermediate-20090622/testcases/kernel/syscalls/personality/personality02.c.orig	2009-06-25 16:46:02.000000000 +0530
-> +++ ltp-intermediate-20090622/testcases/kernel/syscalls/personality/personality02.c	2009-06-25 16:59:25.000000000 +0530
-> @@ -79,6 +79,7 @@ extern int Tst_count;
-> 
->  #define	PER_BAD	0x00dd		/* A non-existent personality type */
-> 
-> +#ifdef __NR_personality
->  int main(int ac, char **av)
->  {
->  	int lc;			/* loop counter */
-> @@ -128,6 +129,14 @@ int main(int ac, char **av)
-> 
->  	 /*NOTREACHED*/ return 0;
->  }
-> +#else
-> +int main(int ac, char **av)
-> +{
-> +	tst_resm(TCONF, "personality() not defined in your system");
-> +	tst_exit();
-> +}
-> +#endif
-> +
-> 
->  /*
->   * setup() - performs all the ONE TIME setup for this test.
-> 
-> ---
-> Regards--
-> Subrata
-> 
-> > 
-> > -Pradeep
-> > 
-> > 
+> ------------------------------------------------------------------------------
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
