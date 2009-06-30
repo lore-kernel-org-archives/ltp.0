@@ -1,22 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1M5KLN-0003EK-Pm
-	for ltp-list@lists.sourceforge.net; Sat, 16 May 2009 13:54:29 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1M5KLA-0007nH-GY
-	for ltp-list@lists.sourceforge.net; Sat, 16 May 2009 13:54:24 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sat, 16 May 2009 09:36:30 -0400
-References: <1238499818.6818.25.camel@subratamodak.linux.ibm.com>
-	<c384c5ea0905151027x5a74ee85l294616e0ddae41ce@mail.gmail.com>
-In-Reply-To: <c384c5ea0905151027x5a74ee85l294616e0ddae41ce@mail.gmail.com>
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <davidel@xmailserver.org>) id 1MLeo1-0001sc-3q
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 14:59:33 +0000
+Received: from x35.xmailserver.org ([64.71.152.41])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MLenz-0003Pe-J2
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 14:59:33 +0000
+Received: from makko.or.mcafeemobile.com
+	by x35.xmailserver.org with [XMail 1.26 ESMTP Server]
+	id <S2F4B5B> for <ltp-list@lists.sourceforge.net> from
+	<davidel@xmailserver.org>; Tue, 30 Jun 2009 10:42:20 -0400
+Date: Tue, 30 Jun 2009 07:41:34 -0700 (PDT)
+From: Davide Libenzi <davidel@xmailserver.org>
+In-Reply-To: <1246347667.4819.27.camel@subratamodak.linux.ibm.com>
+Message-ID: <alpine.DEB.1.10.0906300738480.3314@makko.or.mcafeemobile.com>
+References: <200906232049.n5NKne0h007108@e5.ny.us.ibm.com>
+	<1245920973.5542.33.camel@subratamodak.linux.ibm.com>
+	<1246347667.4819.27.camel@subratamodak.linux.ibm.com>
 MIME-Version: 1.0
-Message-Id: <200905160936.31857.vapier@gentoo.org>
-Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been Released for
-	MARCH 2009
+Subject: Re: [LTP] [PATCH] Run the eventfd test in a temporary directory,
+ because it creates some files
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,95 +31,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============9050160236155487821=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Leon Woestenberg <leon.woestenberg@gmail.com>
-
---===============9050160236155487821==
-Content-Type: multipart/signed; boundary="nextPart1501483.c3OREhqyBz";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1501483.c3OREhqyBz
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-On Friday 15 May 2009 13:27:50 Leon Woestenberg wrote:
-> 2009/3/31 Subrata Modak <subrata@linux.vnet.ibm.com>:
-> > Dear All,
-> >
-> > The Linux Test Project test suite has been released for the month of
-> > MARCH 2009. Please see ltp/INSTALL file carefully, as, there has been
->
-> OpenEmbedded builds LTP for a large number of machines / architectures.
->
-> JFYI, The LTP January release required some patches, especially in the
-> area of cross-compilation:
-
-then someone should be submitting them so we can give feedback and they'll=
-=20
-update/re-submit
-
-> http://cgit.openembedded.org/cgit.cgi?url=3Dopenembedded/tree/recipes/ltp=
-/ltp
->-20090131
-
-the first patch (the cross compile one) is wrong -- CPP is not the C++=20
-compiler, it's the C preprocessor.  those all need to be CXX.
-
-the epoll one should be a configure test.
-=2Dmike
-
---nextPart1501483.c3OREhqyBz
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJKDsFfAAoJEEFjO5/oN/WBBZIP/j0SesaGAdlwKaflB0o4VPQO
-S2hZ0nwOKW42nfHLHRAnNWS69B4fAZlvha+3Od2JWq/WWb4SRUc9UVwLwKGw3o2S
-bLPL76lfeATLrZbm9K/AQJerVdIgolFvgCXRulBEgD+ynE04lwQFCCWGFO+EmKfM
-MRxBAM+kukNqVQZlsOHxyROvtWWw+AgRk/QdnnEcd2o3NXAP3kwIHBhL0Joo/ZJb
-nYn5SEtlRuoK97RQKw+KYQu1vEdIuvcmS4cUd3UJ2veXfLZeVVpPQZ/PlwFwYto5
-VdYme0n4PXkzdNax+YmTo5JaZ1FKXepl6B4J3lA55Npm6ljyEJ5PukyfMVEQAn4a
-ILN3jtYzD0RJ/eNatMUgCBBzAQMsJj4EDm9RB62D6MjOUqielf8lKFFLqdcRgmht
-esRQYaHTw05JkI7H0Jr7tC4/8hAhwzsPcLH8vlEcpMQZsFZEccqWDKyRkaQ3FsKb
-uYuh2Tw2889EUpCIfe734/ArIOinMFzTsAlLFredOJU3088YJyCmxz74EOJskKYA
-tL3v6yT/ZahYecFegu0PfoYXj8ij52A9P5fiyPLYhysr+RcudXBB4MA9sYa7J/9D
-ChUZ2hPxWtfEP5Ty70xrPeYe+nmu065H5bCZKDPvs8IwRgdENDB0amjIhdmbosgu
-MLmmRBqIBKKE6JPGKqtu
-=KLS7
------END PGP SIGNATURE-----
-
---nextPart1501483.c3OREhqyBz--
-
-
---===============9050160236155487821==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: Jiri Palecek <jpalecek@web.de>, ltp-list@lists.sourceforge.net
+
+On Tue, 30 Jun 2009, Subrata Modak wrote:
+
+> Jiri,
+> 
+> On Thu, 2009-06-25 at 14:39 +0530, Subrata Modak wrote: 
+> > On Mon, 2008-12-29 at 14:48 +0100, Jiri Palecek wrote: 
+> > > Hello,
+> > > 
+> > > the eventfd test creates some files in the current directory. I think it should be creating the files in a temporary directory instead, as is already the standard with other LTP tests, because the current might be nonwriteable and the user might not want the files left there.
+> > > 
+> > > Regards
+> > >     Jiri Palecek
+> > > 
+> > > Signed-off-by: Jiri Palecek <jpalecek@web.de>
+> > 
+> > Thanks. 
+> > 
+> > Recently i have seen some patches on LKML from Davide on the change for
+> > eventfd() interface. Could you please verify how they will affect our
+> > tests, and, make changes if necessary ?
+> > http://lkml.org/lkml/2009/6/24/590,
+> 
+> Any thoughts for this ?
+
+No worry. It is the internal (kernel) interface that will eventually 
+change. Userspace will not be affected by it.
+
+
+- Davide
+
+
 
 ------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables 
-unlimited royalty-free distribution of the report engine 
-for externally facing server and web deployment. 
-http://p.sf.net/sfu/businessobjects
---===============9050160236155487821==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============9050160236155487821==--
-
