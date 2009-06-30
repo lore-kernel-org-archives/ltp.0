@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1MJCs2-0007wO-Ka
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 20:45:34 +0000
-Received: from fmmailgate03.web.de ([217.72.192.234])
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MLTJa-0004V2-5P
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 02:43:22 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
 	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MJCry-0003zb-L7
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2009 20:45:34 +0000
-Date: Tue, 23 Jun 2009 22:48:50 +0200
-From: =?iso-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
-Content-Type: multipart/mixed; boundary=----------W377DpSgEPbyoIuOhTUiTv
-MIME-Version: 1.0
-References: <200906220117.n5M1HTVJ004183@e2.ny.us.ibm.com>
-	<1245768543.4860.65.camel@subratamodak.linux.ibm.com>
-	<op.uvzhu1pnu2flwt@debian>
-Message-ID: <op.uvzv3omsu2flwt@debian>
-In-Reply-To: <op.uvzhu1pnu2flwt@debian>
-Subject: Re: [LTP] [PATCH] Fix cleanup procedure in the setuid04 test
+	id 1MLTJY-0000Pf-AD
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 02:43:22 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <78e7c3a10906290359w2040ce26hdaab89004f654b20@mail.gmail.com>
+References: <78e7c3a10906240143i7215fd70g834080d10806bab@mail.gmail.com>
+	<1245833132.5160.4.camel@subratamodak.linux.ibm.com>
+	<78e7c3a10906290359w2040ce26hdaab89004f654b20@mail.gmail.com>
+Date: Tue, 30 Jun 2009 07:30:23 +0530
+Message-Id: <1246327224.7512.43.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Query - LTP
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,138 +27,79 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: =?iso-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>, subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net
+To: Divya Kothari <divya.s.kothari@gmail.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-------------W377DpSgEPbyoIuOhTUiTv
-Content-Type: text/plain; format=flowed; delsp=yes; charset=iso-8859-2
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, 23 Jun 2009 17:41:15 +0200, Ji=F8=ED Pale=E8ek <jpalecek@web.de> =
-wrote:
-
-> On Tue, 23 Jun 2009 16:49:03 +0200, Subrata Modak =20
-> <subrata@linux.vnet.ibm.com> wrote:
->
->> On Tue, 2009-05-12 at 19:06 +0200, Jiri Palecek wrote:
->>> Cleanup has to be made only once in the parent process; when the
->>>  child makes the cleanup itself, the parent has nothing to cleanup,
->>>  which makes him sad.
->>>
->>> Signed-off-by: Jiri Palecek <jpalecek@web.de>
->>
->> Thanks.
->
-> Oh no, at the second sight I see I've posted a wrong (old) version of =20
-> the patch. I'll send a correction shortly.
-
-The correction is in the attachment. Please, apply.
-
-Regards
-     Jiri Palecek
-
->>> ---
->>>  testcases/kernel/syscalls/setuid/setuid04.c |    7 +++----
->>>  1 files changed, 3 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/testcases/kernel/syscalls/setuid/setuid04.c =20
->>> b/testcases/kernel/syscalls/setuid/setuid04.c
->>> index 18f1d90..26a3868 100644
->>> --- a/testcases/kernel/syscalls/setuid/setuid04.c
->>> +++ b/testcases/kernel/syscalls/setuid/setuid04.c
->>> @@ -114,7 +114,7 @@ void do_master_child()
->>>  	int status;
->>>
->>>  	if (setuid(ltpuser->pw_uid) =3D=3D -1) {
->>> -		tst_brkm(TBROK, cleanup,
->>> +		tst_brkm(TBROK, tst_exit,
->>>  			 "setuid failed to set the effective uid to %d",
->>>  			 ltpuser->pw_uid);
->>>  	}
->>> @@ -143,7 +143,7 @@ void do_master_child()
->>>
->>>  		pid =3D FORK_OR_VFORK();
->>>  		if (pid < 0)
->>> -			tst_brkm(TBROK, cleanup, "Fork failed");
->>> +			tst_brkm(TBROK, tst_exit, "Fork failed");
->>>
->>>  		if (pid =3D=3D 0) {
->>>  			int tst_fd2;
->>> @@ -160,13 +160,12 @@ void do_master_child()
->>>
->>>  			if (TEST_ERRNO =3D=3D EACCES) {
->>>  				tst_resm(TPASS, "open returned errno EACCES");
->>> -				exit(0);
->>>  			} else {
->>>  				tst_resm(TFAIL,
->>>  					 "open returned unexpected errno - %d",
->>>  					 TEST_ERRNO);
->>> -				exit(-1);
->>>  			}
->>> +			tst_exit();
->>>  		} else {
->>>  			/* Wait for son completion */
->>>  			waitpid(pid, &status, 0);
->>
->
->
->
-
-
-
---=20
-Using Opera's revolutionary e-mail client: http://www.opera.com/mail/
-------------W377DpSgEPbyoIuOhTUiTv
-Content-Disposition: attachment;
-	filename="[PATCH] Fix cleanup procedure in the setuid04
-	test.mbs"
-Content-Type: application/octet-stream;
-	name="[PATCH] Fix cleanup procedure in the setuid04 test.mbs"
-Content-Transfer-Encoding: Base64
-
-RnJvbSA8amlya2FAZGViaWFuLiBUdWUgTWF5IDEyIDE3OjA2OjE1IDIwMDkKRnJv
-bTogIkppcmkgUGFsZWNlayA+IiA8IjxqaXJrYSJAZGViaWFuLj4gKG5vbmUpDQpE
-YXRlOiBUdWUsIDEyIE1heSAyMDA5IDE5OjA2OjE1ICswMjAwDQpTdWJqZWN0OiBb
-UEFUQ0hdIEZpeCBjbGVhbnVwIHByb2NlZHVyZSBpbiB0aGUgc2V0dWlkMDQgdGVz
-dA0KQ2M6IGx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldA0KDQogQ2xlYW51
-cCBoYXMgdG8gYmUgbWFkZSBvbmx5IG9uY2UgaW4gdGhlIHBhcmVudCBwcm9jZXNz
-OyB3aGVuIHRoZQ0KIGNoaWxkIG1ha2VzIHRoZSBjbGVhbnVwIGl0c2VsZiwgdGhl
-IHBhcmVudCBoYXMgbm90aGluZyB0byBjbGVhbnVwLA0KIHdoaWNoIG1ha2VzIGhp
-bSBzYWQuDQoNCkFkZCBhIHRzdF9leGl0IHRvIHRoZSBlbmQgb2YgdGhlIGNoaWxk
-IHByb2NlZHVyZSwgdG8gbWFrZSBpdCBub3QgcmV0dXJuIGFuZCBjYWxsIGNsZWFu
-dXAgKHdoaWNoIHdvdWxkIGJlIG90aGVyd2lzZSBjYWxsZWQgdHdpY2UpDQoNClNp
-Z25lZC1vZmYtYnk6IEppcmkgUGFsZWNlayA8anBhbGVjZWtAd2ViLmRlPg0KLS0t
-DQogdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZXR1aWQvc2V0dWlkMDQuYyB8
-ICAgIDEgKw0KIDEgZmlsZXMgY2hhbmdlZCwgMSBpbnNlcnRpb25zKCspLCAwIGRl
-bGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
-YWxscy9zZXR1aWQvc2V0dWlkMDQuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
-bHMvc2V0dWlkL3NldHVpZDA0LmMNCmluZGV4IDI2YTM4NjguLjk3ZWZiY2IgMTAw
-NjQ0DQotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NldHVpZC9zZXR1
-aWQwNC5jDQorKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NldHVpZC9z
-ZXR1aWQwNC5jDQpAQCAtMTczLDYgKzE3Myw3IEBAIHZvaWQgZG9fbWFzdGVyX2No
-aWxkKCkNCiAJCQkJZXhpdChXRVhJVFNUQVRVUyhzdGF0dXMpKTsNCiAJCX0NCiAJ
-fQ0KKwl0c3RfZXhpdCgpOw0KIH0NCiANCiAvKg0KLS0gDQoxLjYuMy4xDQoNCg==
-
-------------W377DpSgEPbyoIuOhTUiTv
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-
-------------W377DpSgEPbyoIuOhTUiTv
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------------W377DpSgEPbyoIuOhTUiTv--
-
-
+T24gTW9uLCAyMDA5LTA2LTI5IGF0IDE2OjI5ICswNTMwLCBEaXZ5YSBLb3RoYXJpIHdyb3RlOgo+
+IEhpIFN1YnJhdGEsCj4gIAo+IE5vdyBpIGFtIHVzaW5nIExUUCBmb3IgbXkgcHJvamVjdC4KPiAg
+Cj4gT25lIHN1Z2dlc3Rpb24gLSBUaGVyZSBzaG91bGQgYmUgdGVzdCBjYXNlIGRldGFpbCBpbmZv
+cm1hdGlvbiBpbgo+IHJlcG9ydCBmaWxlLgo+IExpa2UgLSBpZiBteSB0ZXN0IGNhc2UgImNsb2Nr
+X25hbm9zbGVlcDAxIiBpcyBnZXR0aW5nIGZhaWwgLSBidXQgSSBhbQo+IG5vdCBhYmxlIHRvIGNo
+ZWNrIC0gdGVzdCBjYXNlIG9iamVjdGl2ZS4KCkNvcnJlY3QuIEFuZCB0aGF0xZsgaG93IE9wZW4g
+U291cmNlIFByb2plY3Qgd29ya3MuIEFsbCB1c2VycyBoYXMgdGhlCnJlc3BvbnNpYmlsaXR5IHRv
+IGVucmljaCB0aGUgcHJvamVjdCwgYW5kLCBvbmUgcGVyc29uIGNhbm5vdCBkbwpldmVyeXRoaW5n
+LiBZb3UgY2FuIGFsc28gc3R1ZHkgdGhlIGNvZGUgYW5kIGVucmljaCBpbiBpdMWbIGRvY3VtZW50
+YXRpb24uCkFuZCwgYWxzbyBwbGVhc2UgZGlyZWN0IHlvdXIgcXVlcmllcyB0byB0aGlzIG1haWxp
+bmcgbGlzdC4gVGhlcmUgYXJlCm1hbnkgcGVvcGxlIHdobyBjYW4gcmVzb2x2ZSB5b3VyIHF1ZXJp
+ZXMgYmV0dGVyIHRoYW4gbWUgOy0pCgpSZWdhcmRzLS0KU3VicmF0YQoKPiAgCj4gVGVzdC1vdXRw
+dXQgaXMgLQo+ICAKPiBFWFBFQ1Q6IHJldHVybiB2YWx1ZShyZXQpPTAgZXJybm89MCAoU3VjY2Vz
+cyksIHJlbWFpbiB0aW1lIGNoZWNrPU9LIAo+IFJFU1VMVDogcmV0dXJuIHZhbHVlKHJldCk9MCBl
+cnJubz0wIChTdWNjZXNzKSwgcmVtYWluIHRpbWUgY2hlY2s9TkcgCj4gRVhQRUNUOiByZXR1cm4g
+dmFsdWUocmV0KT0wIGVycm5vPTAgKFN1Y2Nlc3MpLCByZW1haW4gdGltZSBjaGVjaz1PSyAKPiBS
+RVNVTFQ6IHJldHVybiB2YWx1ZShyZXQpPTAgZXJybm89MCAoU3VjY2VzcyksIHJlbWFpbiB0aW1l
+IGNoZWNrPU5HIAo+IEVYUEVDVDogcmV0dXJuIHZhbHVlKHJldCk9MjIgZXJybm89MCAoU3VjY2Vz
+cyksIHJlbWFpbiB0aW1lIGNoZWNrPU9LIAo+IFJFU1VMVDogcmV0dXJuIHZhbHVlKHJldCk9MjIg
+ZXJybm89MCAoU3VjY2VzcyksIHJlbWFpbiB0aW1lIGNoZWNrPU5HIAo+IEVYUEVDVDogcmV0dXJu
+IHZhbHVlKHJldCk9MjIgZXJybm89MCAoU3VjY2VzcyksIHJlbWFpbiB0aW1lIGNoZWNrPU9LIAo+
+IFJFU1VMVDogcmV0dXJuIHZhbHVlKHJldCk9MjIgZXJybm89MCAoU3VjY2VzcyksIHJlbWFpbiB0
+aW1lIGNoZWNrPU5HIAo+IEVYUEVDVDogcmV0dXJuIHZhbHVlKHJldCk9OTUgZXJybm89MCAoU3Vj
+Y2VzcyksIHJlbWFpbiB0aW1lIGNoZWNrPU9LIAo+IFJFU1VMVDogcmV0dXJuIHZhbHVlKHJldCk9
+MjIgZXJybm89MCAoU3VjY2VzcyksIHJlbWFpbiB0aW1lIGNoZWNrPU5HIAo+IEVYUEVDVDogcmV0
+dXJuIHZhbHVlKHJldCk9NCBlcnJubz0wIChTdWNjZXNzKSAKPiBSRVNVTFQ6IHJldHVybiB2YWx1
+ZShyZXQpPTQgZXJybm89MCAoU3VjY2VzcykgCj4gY2xvY2tfbmFub3NsZWVwMDEgICAgMCAgSU5G
+TyAgOiAgKGNhc2UwMCkgU1RBUlQgCj4gY2xvY2tfbmFub3NsZWVwMDEgICAgMCAgSU5GTyAgOiAg
+Y2hlY2sgc2xlZXAgdGltZTogKG1pbjo0ODApIDwgNTAwIDwKPiAobWF4OjUyMCkgKG1zZWMpIAo+
+IGNsb2NrX25hbm9zbGVlcDAxICAgIDAgIElORk8gIDogIHJlbWFpbiB0aW1lOiAxMzQ1NDE1NDQg
+LTEwNzcwNDM3MzYgCj4gY2xvY2tfbmFub3NsZWVwMDEgICAgMCAgSU5GTyAgOiAgKGNhc2UwMCkg
+RU5EID0+IE5HIAo+IGNsb2NrX25hbm9zbGVlcDAxICAgIDAgIElORk8gIDogIChjYXNlMDEpIFNU
+QVJUIAo+IGNsb2NrX25hbm9zbGVlcDAxICAgIDAgIElORk8gIDogIGNoZWNrIHNsZWVwIHRpbWU6
+IChtaW46NDgwKSA8IDUwMCA8Cj4gKG1heDo1MjApIChtc2VjKSAKPiBjbG9ja19uYW5vc2xlZXAw
+MSAgICAwICBJTkZPICA6ICByZW1haW4gdGltZTogMTM0NTQxNTQ0IC0xMDc3MDQzNzM2IAo+IGNs
+b2NrX25hbm9zbGVlcDAxICAgIDAgIElORk8gIDogIChjYXNlMDEpIEVORCA9PiBORyAKPiBjbG9j
+a19uYW5vc2xlZXAwMSAgICAwICBJTkZPICA6ICAoY2FzZTAyKSBTVEFSVCAKPiBjbG9ja19uYW5v
+c2xlZXAwMSAgICAwICBJTkZPICA6ICByZW1haW4gdGltZTogMTM0NTQxNTQ0IC0xMDc3MDQzNzM2
+IAo+IGNsb2NrX25hbm9zbGVlcDAxICAgIDAgIElORk8gIDogIChjYXNlMDIpIEVORCA9PiBORyAK
+PiBjbG9ja19uYW5vc2xlZXAwMSAgICAwICBJTkZPICA6ICAoY2FzZTAzKSBTVEFSVCAKPiBjbG9j
+a19uYW5vc2xlZXAwMSAgICAwICBJTkZPICA6ICByZW1haW4gdGltZTogMTM0NTQxNTQ0IC0xMDc3
+MDQzNzM2IAo+IGNsb2NrX25hbm9zbGVlcDAxICAgIDAgIElORk8gIDogIChjYXNlMDMpIEVORCA9
+PiBORyAKPiBjbG9ja19uYW5vc2xlZXAwMSAgICAwICBJTkZPICA6ICAoY2FzZTA0KSBTVEFSVCAK
+PiBjbG9ja19uYW5vc2xlZXAwMSAgICAwICBJTkZPICA6ICByZW1haW4gdGltZTogMTM0NTQxNTQ0
+IC0xMDc3MDQzNzM2IAo+IGNsb2NrX25hbm9zbGVlcDAxICAgIDAgIElORk8gIDogIChjYXNlMDQp
+IEVORCA9PiBORyAKPiBjbG9ja19uYW5vc2xlZXAwMSAgICAwICBJTkZPICA6ICAoY2FzZTA1KSBT
+VEFSVCAKPiBjbG9ja19uYW5vc2xlZXAwMSAgICAwICBJTkZPICA6ICByZW1haW4gdGltZTogOSA0
+OTkwMDExMTcgCj4gY2xvY2tfbmFub3NsZWVwMDEgICAgMCAgSU5GTyAgOiAgKGNhc2UwNSkgRU5E
+ID0+IE9LIAo+IGNsb2NrX25hbm9zbGVlcDAxICAgIDEgIEZBSUwgIDogIGNsb2NrX25hbm9zbGVl
+cDAxIGZhaWxlZCAtIGVycm5vID0KPiAwIDogU3VjY2VzcyAKPiBjbG9ja19uYW5vc2xlZXAwMSAg
+ICAwICBJTkZPICA6ICBORyAKPiAKPiAKPiAKPiBUaGFua3MsCj4gRGl2eWEKPiAgCj4gIAo+IE9u
+IFdlZCwgSnVuIDI0LCAyMDA5IGF0IDI6MTUgUE0sIFN1YnJhdGEgTW9kYWsKPiA8c3VicmF0YUBs
+aW51eC52bmV0LmlibS5jb20+IHdyb3RlOgo+ICAgICAgICAgCj4gICAgICAgICBPbiBXZWQsIDIw
+MDktMDYtMjQgYXQgMTQ6MTMgKzA1MzAsIERpdnlhIEtvdGhhcmkgd3JvdGU6Cj4gICAgICAgICA+
+IEhpLAo+ICAgICAgICAgPgo+ICAgICAgICAgPiBJIGFtIG5ldyBmb3IgTFRQLgo+ICAgICAgICAg
+PiB3aGVuIGkgYW0gdHJ5aW5nIHRvIHJ1biAibWFrZSIgYW5kICJtYWtlIGluc3RhbGwiLCBpdHMK
+PiAgICAgICAgIGdpdmluZyBtZSAyCj4gICAgICAgICA+IGVycm9yLgo+ICAgICAgICAgPgo+ICAg
+ICAgICAgPiBFbnYgLSBmZWRvcmEgbGludXggKHRyeWluZyBmb3IgaXQpCj4gICAgICAgICA+IG15
+IGx0cCBmb2xkZXIgaXMgYXQgL3Vzci9sdHAvbHRwLXl5eXltbWRkCj4gICAgICAgICA+Cj4gICAg
+ICAgICA+IFBsZWFzZSB0ZWxsIG1lLCBhbSBJIHN0YXJ0aW5nIGF0IHdyb25nIHdheT8KPiAgICAg
+ICAgIAo+ICAgICAgICAgCj4gICAgICAgICBQbGVhc2Ugc2VlIHRoZSBsdHAtZnVsbCovSU5TVEFM
+TCBhbmQgbHRwLWZ1bGwqL1JFQURNRSBmaWxlcwo+ICAgICAgICAgZm9yIGV4YWN0Cj4gICAgICAg
+ICBzdGVwcyB0byBidWlsZCwgaW5zdGFsbCBhbmQgcnVuIGx0cC4gSG9wZSB0aGF0IGhlbHBzLgo+
+ICAgICAgICAgCj4gICAgICAgICBSZWdhcmRzLS0KPiAgICAgICAgIFN1YnJhdGEKPiAgICAgICAg
+IAo+ICAgICAgICAgPgo+ICAgICAgICAgPgo+ICAgICAgICAgPiBSZWdhcmRzLAo+ICAgICAgICAg
+PiBEaXZ5YQo+ICAgICAgICAgCj4gCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlz
+dApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
+ZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
