@@ -1,19 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MEwuH-000455-2U
-	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 02:54:17 +0000
-Received: from e36.co.us.ibm.com ([32.97.110.154])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MEwuF-0005as-8R
-	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2009 02:54:17 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Fri, 12 Jun 2009 08:24:08 +0530
-Message-Id: <1244775248.4982.6.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: [LTP] [006][RFC] [TESTING linux-2.6.30] SELinux & SMACK
-Reply-To: subrata@linux.vnet.ibm.com
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naresh.kernel@gmail.com>) id 1MLZzX-0007jR-RY
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 09:51:07 +0000
+Received: from [209.85.221.200] (helo=mail-qy0-f200.google.com)
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MLZzW-0001Hm-Vb
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 09:51:07 +0000
+Received: by qyk38 with SMTP id 38so8213qyk.28
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 30 Jun 2009 02:50:46 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1246347680.4819.31.camel@subratamodak.linux.ibm.com>
+References: <f5a7b3810906250517k3b8c3bf3gde1957e93c95314@mail.gmail.com>
+	<1246015980.6196.20.camel@subratamodak.linux.ibm.com>
+	<1246347680.4819.31.camel@subratamodak.linux.ibm.com>
+Date: Tue, 30 Jun 2009 15:20:46 +0530
+Message-ID: <f5a7b3810906300250o6ee16e3bv672ad77018d34a81@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Subject: Re: [LTP] [PATCH] Re::personality test case build fails
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,33 +29,59 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stephen Smalley <sds@tycho.nsa.gov>, Casey Schaufler <casey@schaufler-ca.com>
-Cc: ltp-list <ltp-list@lists.sf.net>, Paul Moore <paul.moore@hp.com>, Etienne Basset <etienne.basset@numericable.fr>, "David P. Quigley" <dpquigl@tycho.nsa.gov>, Eric Paris <eparis@redhat.com>, James Morris <jmorris@macbook.localdomain>
+To: subrata@linux.vnet.ibm.com
+Cc: Jiri Palecek <jpalecek@web.de>, Pradeep K Surisetty <pradeepkumars@in.ibm.com>, ltp-list@lists.sourceforge.net
 
-Hi Stephen & Casey,
+On Tue, Jun 30, 2009 at 1:11 PM, Subrata
+Modak<subrata@linux.vnet.ibm.com> wrote:
+> On Fri, 2009-06-26 at 17:03 +0530, Subrata Modak wrote:
+>> > >+#ifdef __NR_personality
+>> >
+>> > Instead of using
+>> > #ifdef __NR_personality
+>> > =A0in test code, Better we will add these this syscall numbers in the
+>> > ltp/testcases/kernel/include/ARCHXXX.in files.
+>> > This can be Multi ARCH support.
+>> Great. Send me a patch to update them all ;-)
+>>
+>
+> Naresh ??
 
-Do you think there needs to be some changes that should go in to your
-respective SELinux and SMACK tests in LTP, in response to the
-improvements in SELinux & SMACK in linux-2.6.30 ?
+Hi Subrata,
 
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=11689d47f0957121920c9ec646eb5d838755853a,
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=dd34b5d75a0405814a3de83f02a44ac297e81629,
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=4303154e86597885bc3cbc178a48ccbc8213875f,
+I have noticed some issue with personality01.c and personality02.c
+test cases in design.
+Currently I am investigating and get back to in short.
 
-Regards--
-Subrata
+Best Regards
+Naresh Kamboju
 
+>
+>> Regards--
+>> Subrata
+>>
+>> > Jiri,
+>> > I think you are doing Multi ARCH support right?
+>> >
+>> > Your suggestions are welcome :)
+>> >
+>> > Best regards
+>> > Naresh Kamboju
 
+>> ------------------------------------------------------------------------=
+------
+>> _______________________________________________
+>> Ltp-list mailing list
+>> Ltp-list@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>
+>
 
-------------------------------------------------------------------------------
-Crystal Reports - New Free Runtime and 30 Day Trial
-Check out the new simplified licensing option that enables unlimited
-royalty-free distribution of the report engine for externally facing 
-server and web deployment.
-http://p.sf.net/sfu/businessobjects
+---------------------------------------------------------------------------=
+---
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
