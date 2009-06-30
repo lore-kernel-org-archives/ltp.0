@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1ME60M-0006T1-Vx
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2009 18:25:02 +0000
-Received: from e7.ny.us.ibm.com ([32.97.182.137])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1ME60H-0007RN-Gp
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2009 18:25:02 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090604115705.GA92783@medusa.sis.pasteur.fr>
-References: <20090604112922.12364.5307.sendpatchset@subratamodak.linux.ibm.com>
-	<20090604115705.GA92783@medusa.sis.pasteur.fr>
-Date: Tue, 09 Jun 2009 23:54:39 +0530
-Message-Id: <1244571880.5497.17.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] LTP May 2009 build fail fix for
-	ssgetmask()	syscall
-Reply-To: subrata@linux.vnet.ibm.com
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vijaykumar@bravegnu.org>) id 1MLZnx-00076Y-HD
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 09:39:09 +0000
+Received: from [69.56.173.213] (helo=mail.zilogic.com)
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MLYaf-0000p8-8C
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2009 08:21:22 +0000
+Message-ID: <4A49CEE7.1080703@bravegnu.org>
+Date: Tue, 30 Jun 2009 14:07:59 +0530
+From: Vijay Kumar <vijaykumar@bravegnu.org>
+MIME-Version: 1.0
+References: <4A35264D.10800@bravegnu.org>	
+	<1245346301.5041.36.camel@subratamodak.linux.ibm.com>
+	<1246347663.4819.26.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1246347663.4819.26.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [RFC] Using checkpatch.pl
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,64 +26,24 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Nicolas Joly <njoly@pasteur.fr>
-Cc: Ltp-List <ltp-list@lists.sf.net>
+To: subrata@linux.vnet.ibm.com
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-Ck9uIFRodSwgMjAwOS0wNi0wNCBhdCAxMzo1NyArMDIwMCwgTmljb2xhcyBKb2x5IHdyb3RlOiAK
-PiBPbiBUaHUsIEp1biAwNCwgMjAwOSBhdCAwNDo1OToyMlBNICswNTMwLCBTdWJyYXRhIE1vZGFr
-IHdyb3RlOgo+ID4gPk9uIFRodSwgMjAwOS0wNi0wNCBhdCAxNTo1NiArMDUzMCwgTXVuaXByYWRl
-ZXAgQmVlcmFrYW0gd3JvdGU6Cj4gPiA+SGksCj4gPiA+IAo+ID4gPiBJdCBmYWlsZWQgb24gYm90
-aCB4ODYgYW5kIHg4Nl82NCBhcmNoaXRlY3R1cmVzCj4gPiA+IAo+ID4gPiBSZWdhcmRzCj4gPiA+
-IE11bmkKPiA+ID4gCj4gPiA+IE9uIFRodSwgMjAwOS0wNi0wNCBhdCAxNTo1NSArMDkwMCwgTm9i
-dWhpcm8gSXdhbWF0c3Ugd3JvdGU6Cj4gPiA+ID4gSGksCj4gPiA+ID4gCj4gPiA+ID4gTXVuaXBy
-YWRlZXAgQmVlcmFrYW0gd3JvdGU6Cj4gPiA+ID4gID4gSGksCj4gPiA+ID4gID4KPiA+ID4gPiAg
-PiBJIHRyaWVkIHRvIGJ1aWxkIHRoZSBMVFAgdGFyYmFsbCBsdHAtZnVsbC0yMDA5MDUzMS50Z3og
-b24gUkhFTDUuNAo+ID4gPiA+ICA+IHByZS1BbHBoYSBEaXN0cmlidXRpb24uIEJ1dCBidWlsZCBm
-YWlsZWQgd2l0aCB0aGUgZm9sbG93aW5nIGVycm9yOgo+ID4gPiA+ICA+Cj4gPiA+ID4gID4gLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tCj4gPiA+ID4gID4KPiA+ID4gPiAgPiBtYWtlWzRdOiBFbnRlcmluZyBkaXJlY3RvcnkK
-PiA+ID4gPiAgPiBgL3Jvb3QvbHRwLWZ1bGwtMjAwOTA1MzEvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
-YWxscy9zZ2V0bWFzaycKPiA+ID4gPiAgPiBnY2MgLWcgLU8yIC1JLi4vLi4vaW5jbHVkZSAtZyAt
-V2FsbCAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgLVdhbGwKPiA+ID4gPiAgPiBzZ2V0bWFzazAxLmMg
-IC1MLi4vLi4vLi4vLi4vbGliIC1sbHRwIC1vIHNnZXRtYXNrMDEKPiA+ID4gPiAgPiBzZ2V0bWFz
-azAxLmM6IEluIGZ1bmN0aW9uIMOi4oKsy5xtYWluw6LigqzihKI6Cj4gPiA+ID4gID4gc2dldG1h
-c2swMS5jOjE0MjogZXJyb3I6IMOi4oKsy5xfX05SX3NzZXRtYXNrw6LigqzihKIgdW5kZWNsYXJl
-ZCAoZmlyc3QgdXNlIGluIHRoaXMKPiA+ID4gPiAgPiBmdW5jdGlvbikKPiA+ID4gPiAgPiBzZ2V0
-bWFzazAxLmM6MTQyOiBlcnJvcjogKEVhY2ggdW5kZWNsYXJlZCBpZGVudGlmaWVyIGlzIHJlcG9y
-dGVkIG9ubHkKPiA+ID4gPiAgPiBvbmNlCj4gPiA+ID4gID4gc2dldG1hc2swMS5jOjE0MjogZXJy
-b3I6IGZvciBlYWNoIGZ1bmN0aW9uIGl0IGFwcGVhcnMgaW4uKQo+ID4gPiA+ICA+IG1ha2VbNF06
-ICoqKiBbc2dldG1hc2swMV0gRXJyb3IgMQo+ID4gPiA+ICA+IG1ha2VbNF06IExlYXZpbmcgZGly
-ZWN0b3J5Cj4gPiA+ID4gID4gYC9yb290L2x0cC1mdWxsLTIwMDkwNTMxL3Rlc3RjYXNlcy9rZXJu
-ZWwvc3lzY2FsbHMvc2dldG1hc2snCj4gPiA+ID4gID4gbWFrZVszXTogKioqIFthbGxdIEVycm9y
-IDIKPiA+ID4gPiAgPiBtYWtlWzNdOiBMZWF2aW5nIGRpcmVjdG9yeQo+ID4gPiA+ICA+IGAvcm9v
-dC9sdHAtZnVsbC0yMDA5MDUzMS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzJwo+ID4gPiA+ICA+
-IG1ha2VbMl06ICoqKiBbYWxsXSBFcnJvciAyCj4gPiA+ID4gID4gbWFrZVsyXTogTGVhdmluZyBk
-aXJlY3RvcnkgYC9yb290L2x0cC1mdWxsLTIwMDkwNTMxL3Rlc3RjYXNlcy9rZXJuZWwnCj4gPiA+
-ID4gID4gbWFrZVsxXTogKioqIFthbGxdIEVycm9yIDIKPiA+ID4gPiAgPiBtYWtlWzFdOiBMZWF2
-aW5nIGRpcmVjdG9yeSBgL3Jvb3QvbHRwLWZ1bGwtMjAwOTA1MzEvdGVzdGNhc2VzJwo+ID4gPiA+
-ICA+IG1ha2U6ICoqKiBbYWxsXSBFcnJvciAyCj4gPiA+IAo+ID4gCj4gPiBDYW4geW91IHBsZWFz
-ZSB0cnkgb3V0IHRoaXMgcGF0Y2ggYW5kIHNlZSB3aGV0aGVyIHlvdSBhcmUgc3RpbGwKPiA+IGFi
-bGUgdG8gcmVwcm9kdWNlIGl0IGluIGFueSBvZiB5b3VyIGFyY2hpdGVjdHVyZSA/Cj4gCj4gRG9u
-J3QgYHN5c2NhbGwoKScgbWFjcm8gYWxyZWFkeSB0YWtlIGNhcmUgb3QgdGhpcyA/IFdoYXQgYWJv
-dXQgYWRkaW5nCj4gdGhlIF9fTlJfc2dldG1hc2svX19OUl9zc2V0bWFzayB0byA8YXJjaD4uaW4g
-ZmlsZXMgaW5zdGVhZCA/Cj4gCj4gSnVzdCB0byB0ZXN0LCBpIGFkZGVkIHRoZSBmb2xsb3dpbmcg
-bGluZXMgdG8KPiB0ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvaTM4Ni5pbiA6Cj4gCj4gX19OUl9z
-Z2V0bWFzayAgICAgICAgICAgIDY4Cj4gX19OUl9zc2V0bWFzayAgICAgICAgICAgIDY5Cj4gCj4g
-YW5kIHRoZSBwcm9ibGVtIG9uIHg4Nl82NCBpcyBnb25lLCB3aXRob3V0IGFueSBmdXJ0aGVyIG1v
-ZGlmaWNhdGlvbi4KCkdyZWF0LiBNdWNoIGJldHRlciBzb2x1dGlvbi4gVGhhbmtzLCBhbmQsIG1h
-ZGUgdGhlIGNoYW5nZXMuCgpSZWdhcmRzLS0KU3VicmF0YQoKPiAKPiBuam9seUBsYW5mZXVzdCBb
-c3lzY2FsbHMvc2dldG1hc2tdPiAuL3NnZXRtYXNrMDEgCj4gc2dldG1hc2swMSAgICAxICBDT05G
-ICA6ICBzeXNjYWxsIF9fTlJfc3NldG1hc2sgbm90IHN1cHBvcnRlZCBvbiB5b3VyIGFyY2gKPiBz
-Z2V0bWFzazAxICAgIDIgIENPTkYgIDogIFJlbWFpbmluZyBjYXNlcyBub3QgYXBwcm9wcmlhdGUg
-Zm9yIGNvbmZpZ3VyYXRpb24KPiAKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ3J5c3RhbCBSZXBv
-cnRzIC0gTmV3IEZyZWUgUnVudGltZSBhbmQgMzAgRGF5IFRyaWFsCkNoZWNrIG91dCB0aGUgbmV3
-IHNpbXBsaWZpZWQgbGljZW5zaW5nIG9wdGlvbiB0aGF0IGVuYWJsZXMgdW5saW1pdGVkCnJveWFs
-dHktZnJlZSBkaXN0cmlidXRpb24gb2YgdGhlIHJlcG9ydCBlbmdpbmUgZm9yIGV4dGVybmFsbHkg
-ZmFjaW5nIApzZXJ2ZXIgYW5kIHdlYiBkZXBsb3ltZW50LgpodHRwOi8vcC5zZi5uZXQvc2Z1L2J1
-c2luZXNzb2JqZWN0cwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0
-Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+Subrata Modak wrote:
+> Vijay,
+> 
+> Are you working on such a patch ?
+
+It is probably straight forward. But I am occupied with other things, I will send a patch this weekend.
+
+Regards,
+Vijay
+
+------------------------------------------------------------------------------
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
