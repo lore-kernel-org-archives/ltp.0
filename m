@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1MW67K-0006aV-T6
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2009 10:10:38 +0000
-Received: from mail-gx0-f220.google.com ([209.85.217.220])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MW67E-0003wx-Rn
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2009 10:10:38 +0000
-Received: by gxk20 with SMTP id 20so2650425gxk.10
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 29 Jul 2009 03:10:27 -0700 (PDT)
-MIME-Version: 1.0
-Date: Wed, 29 Jul 2009 15:40:27 +0530
-Message-ID: <f5a7b3810907290310h159a8fcby374e7d6b789a6d16@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Content-Type: multipart/mixed; boundary=000e0cd4830a72d38d046fd56564
-Subject: [LTP] [FIX PATCH] open_posix_pthread_equal_2-1.c
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MMQDL-0006aZ-Jg
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2009 17:36:51 +0000
+Received: from [32.97.110.158] (helo=e37.co.us.ibm.com)
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MLzkI-0005nm-8D
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2009 13:21:08 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <20090303.154642.226782365.caiqian@cclom.cn>
+References: <1235726169.10797.59.camel@subratamodak.linux.ibm.com>
+	<20090303.154642.226782365.caiqian@cclom.cn>
+Date: Wed, 01 Jul 2009 18:49:19 +0530
+Message-Id: <1246454359.6978.57.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: [LTP] [RFC] [PROPOSAL:: LTP MINI SUMMIT] [OLS 2009]
+	Should	developers/stakeholders Meet ??
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,97 +27,90 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
-Cc: Mike Frysinger <vapier@gentoo.org>, maxin john <maxinbjohn@gmail.com>
-
---000e0cd4830a72d38d046fd56564
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-Hi,
-
-I have notice HUNG status for pthread_equal/2-1.c under posix test suite.
-conformance/interfaces/pthread_equal/2-1.test:execution:HUNG
-
-This because of while(do_it)loop is behaving as while(1).
-do_it updated value from one thread is not reflecting in the other
-thread because the type is not proper.
-I have changed the type from char -> volatile int
-
-I have shared results before and after this patch.
-
-Before PATCH:
-conformance/interfaces/pthread_equal/2-1.test:execution:HUNG
-
-After PATCH:
-conformance/interfaces/pthread_equal/2-1.test:execution:PASS
-
-I have attached patch and below.
-Please review the same.
-
-Best regards,
-Naresh Kamboju
-
-Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
-
-diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/pthread_equal/2-1.c
-b/testcases/open_posix_testsuite/conformance/interfaces/pthread_equal/2-1.c
---- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_equal/2-1.c	2005-06-03
-22:01:47.000000000 +0530
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_equal/2-1.c	2009-07-29
-14:27:05.000000000 +0530
-@@ -80,7 +80,7 @@
- /***********************************    Test cases
-*****************************************/
- /********************************************************************************************/
-
--char do_it=1;
-+volatile int do_it=1;
- unsigned long count_ope=0;
- #ifdef WITH_SYNCHRO
- sem_t semsig1;
-
---000e0cd4830a72d38d046fd56564
-Content-Type: application/octet-stream; name="ltp-fix-pthread_equal_2-1.patch"
-Content-Disposition: attachment; filename="ltp-fix-pthread_equal_2-1.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fxpvxq6x0
-
-ZGlmZiAtTmF1cmIgYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2Uv
-aW50ZXJmYWNlcy9wdGhyZWFkX2VxdWFsLzItMS5jIGIvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVz
-dHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvcHRocmVhZF9lcXVhbC8yLTEuYwotLS0gYS90
-ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9wdGhy
-ZWFkX2VxdWFsLzItMS5jCTIwMDUtMDYtMDMgMjI6MDE6NDcuMDAwMDAwMDAwICswNTMwCisrKyBi
-L3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3B0
-aHJlYWRfZXF1YWwvMi0xLmMJMjAwOS0wNy0yOSAxNDoyNzowNS4wMDAwMDAwMDAgKzA1MzAKQEAg
-LTgwLDcgKzgwLDcgQEAKIC8qKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiAgICBU
-ZXN0IGNhc2VzICAqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKi8KIC8q
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKi8KIAotY2hhciBkb19pdD0xOwordm9s
-YXRpbGUgaW50IGRvX2l0PTE7CiB1bnNpZ25lZCBsb25nIGNvdW50X29wZT0wOwogI2lmZGVmIFdJ
-VEhfU1lOQ0hSTwogc2VtX3Qgc2Vtc2lnMTsK
---000e0cd4830a72d38d046fd56564
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sf.net>
+Cc: crackerjack-devel <crackerjack-devel@lists.sourceforge.net>
+
+Well, stirring up an old mail/discussion. My visit for OLS 2009 has been
+finalized, and, i am travelling. If some of you are travelling, lets
+meet up and have some good time there.
+
+Regards--
+Subrata
+
+On Tue, 2009-03-03 at 15:46 +0800, CAI Qian wrote:
+> From: Subrata Modak <subrata@linux.vnet.ibm.com>
+> Subject: [LTP] [RFC] [PROPOSAL:: LTP MINI SUMMIT] [OLS 2009] Should developers/stakeholders Meet ??
+> Date: Fri, 27 Feb 2009 14:46:09 +0530
+> 
+> > Hello All,
+> > 
+> > The Linux Test project has been in existence for many years, and, the
+> > benefits of this Project has been well established. However, due to
+> > several reasons the developers/stakeholders of this project has never
+> > meet face to face. Hence, i would like to propose a Mini Summit for LTP
+> > on the sidelines of the OLS 2009, scheduled to be held at Montreal,
+> > Canada, July 13th-17th, 2009 (http://www.linuxsymposium.org/2009/).
+> > 
+> > The proposal for mini summit has been accepted in principle by the OLS
+> > committee. Since, there are no specific summit/meet/conference for LTP
+> > developers, this is a very good opportunity for LTP developers to meet
+> > side-by-side the OLS, as many of them will be coming to attend/present
+> > in the OLS. We can meet and discuss various issues relating to LTP in
+> > the same meet, some of them being:
+> > 
+> > i) Presentation/discussion by developers/testers/users on various issues
+> > on test infrastructure/environment/test cases. Here we plan to abreast
+> > ourselves with several of such issues, and, somebody can take the
+> > responsibility for those line item(s),
+> > ii) Presentation/discussion by developers/testers/users on what they
+> > contributed to LTP, and, what they plan to do in near/far future,
+> > iii) Presentation/discussion by Maintainer of the present situation of
+> > LTP, and, what he might expect from the community to take this forward,
+> > iv) Presentation/discussion by Maintainer on how to increase LTP
+> > penetration in other areas (archs, etc) of Linux testing, like the
+> > Z-linux, embedded hardware, etc,
+> > v) How best to leverage on Project Collaboration like Crackerjack to LTP
+> > porting of tests,
+> > vi) Other proposals(if any) from the community is also to be discussed.
+> > 
+> > I have discussed this with Andrew J Hutton of OLS committee. He has
+> > agreed in principle to lend us a room/accessories to conduct the Mini
+> > Summit, provided there are enough attendance of a minimum of 10 people.
+> > 
+> > If all/some of you agree and feel that it would be great for all of us
+> > to meet, and we have the enough nos. i can talk to Andrew to confirm a
+> > berth for us.
+> > 
+> > Please feel free to propose new agenda and comment on the proposed
+> > agenda.
+> > 
+> 
+> It would be lovely to talk to LTP people, so count me in. In the
+> meanwhile, I'll need to talk to my boss to see if it is possible to
+> sponsor the trip.
+> 
+> > Regards--
+> > Subrata
+> > 
+> > 
+> > 
+> > ------------------------------------------------------------------------------
+> > Open Source Business Conference (OSBC), March 24-25, 2009, San Francisco, CA
+> > -OSBC tackles the biggest issue in open source: Open Sourcing the Enterprise
+> > -Strategies to boost innovation and cut costs with open source participation
+> > -Receive a $600 discount off the registration fee with the source code: SFAD
+> > http://p.sf.net/sfu/XcvMzF8H
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---000e0cd4830a72d38d046fd56564
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---000e0cd4830a72d38d046fd56564--
-
