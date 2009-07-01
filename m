@@ -1,18 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <gomuthuk@linux.vnet.ibm.com>) id 1MO7iK-000560-1F
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 10:15:52 +0000
-Received: from e28smtp03.in.ibm.com ([59.145.155.3])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MO7iB-0007HJ-Kh
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 10:15:51 +0000
-Message-ID: <4A53190C.2070809@linux.vnet.ibm.com>
-Date: Tue, 07 Jul 2009 15:14:44 +0530
-From: gowrishankar <gomuthuk@linux.vnet.ibm.com>
-MIME-Version: 1.0
-Subject: [LTP] request to enable realtime tests in default run list
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <ljhc@br.ibm.com>) id 1MM8AA-0000ek-LL
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2009 22:20:22 +0000
+Received: from e9.ny.us.ibm.com ([32.97.182.139])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MM89g-0001Ai-Bp
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2009 22:20:22 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e9.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n61Lqjls002208
+	for <ltp-list@lists.sourceforge.net>; Wed, 1 Jul 2009 17:52:45 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n61M56b4185924
+	for <ltp-list@lists.sourceforge.net>; Wed, 1 Jul 2009 18:05:06 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n61M2eXt006546
+	for <ltp-list@lists.sourceforge.net>; Wed, 1 Jul 2009 18:02:40 -0400
+Received: from [9.8.11.191] ([9.8.11.191])
+	by d01av02.pok.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
+	n61M2c4G006449
+	for <ltp-list@lists.sourceforge.net>; Wed, 1 Jul 2009 18:02:39 -0400
+From: Lucio <ljhc@br.ibm.com>
+Date: Wed, 01 Jul 2009 19:08:33 -0300
+Message-Id: <1246486113.31426.12.camel@lucio-laptop>
+Mime-Version: 1.0
+Subject: [LTP] [PATCH] Fix eventfd2_03 build failure on powerpc architecture
+Reply-To: ljhc@br.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,41 +38,77 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sf.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi Subrata,
-
-We are looking for your concerns as well as from community on enabling realtime
-tests by default. By the way we can broad our realtime tests as well as scan
-the existing tests functionality with the help of community.
-
-One bottleneck we had in past is that it fails to compile on platforms that
-does not support few arch-specific tests (like TSC related tests) and also
-I am not too sure about remaining platforms than System X and P.
-
-We can think of either dropping platform specific tests so that RT tests depend
-only on distros (for glibc ??) or conditionally enable them by looking for
-platform ids.
-
-Also, we can think of enabling/disabling whole RT tests in default LTP build
-for the same reason I said at the top.
-
-Your thoughts are very welcome.
-
-Thanks for paying attention,
-Gowri
-
-------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have 
-the opportunity to enter the BlackBerry Developer Challenge. See full prize 
-details at: http://p.sf.net/sfu/blackberry
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+SGksIAoKSSd2ZSBmb3VuZCBhIGZhaWx1cmUgd2hlbiBidWlsZGluZyBsdHAtZnVsbC0yMDA5MDYz
+MCBvbiBwb3dlcnBjOgoKZXZlbnRmZDJfMDMuYzo0ODoyOiBlcnJvcjogI2Vycm9yIENhbm5vdCBk
+ZXRlY3QgeW91ciBhcmNoaXRlY3R1cmUhCmV2ZW50ZmQyXzAzLmM6IEluIGZ1bmN0aW9uIOKAmGV2
+ZW50ZmQy4oCZOgpldmVudGZkMl8wMy5jOjU0OiBlcnJvcjog4oCYX19OUl9ldmVudGZkMuKAmSB1
+bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbikKZXZlbnRmZDJfMDMuYzo1NDog
+ZXJyb3I6IChFYWNoIHVuZGVjbGFyZWQgaWRlbnRpZmllciBpcyByZXBvcnRlZCBvbmx5IG9uY2UK
+ZXZlbnRmZDJfMDMuYzo1NDogZXJyb3I6IGZvciBlYWNoIGZ1bmN0aW9uIGl0IGFwcGVhcnMgaW4u
+KQpldmVudGZkMl8wMy5jOiBJbiBmdW5jdGlvbiDigJhtYWlu4oCZOgpldmVudGZkMl8wMy5jOjEy
+OTogd2FybmluZzogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g4oCYd2FpdHBpZOKA
+mQptYWtlWzRdOiAqKiogW2V2ZW50ZmQyXzAzXSBFcnJvciAxCm1ha2VbNF06IExlYXZpbmcgZGly
+ZWN0b3J5IGAvcm9vdC9sdHAtZnVsbC0yMDA5MDYzMC90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L2V2ZW50ZmQyJwptYWtlWzNdOiAqKiogW2FsbF0gRXJyb3IgMgptYWtlWzNdOiBMZWF2aW5nIGRp
+cmVjdG9yeSBgL3Jvb3QvbHRwLWZ1bGwtMjAwOTA2MzAvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
+cycKbWFrZVsyXTogKioqIFthbGxdIEVycm9yIDIKbWFrZVsyXTogTGVhdmluZyBkaXJlY3Rvcnkg
+YC9yb290L2x0cC1mdWxsLTIwMDkwNjMwL3Rlc3RjYXNlcy9rZXJuZWwnCm1ha2VbMV06ICoqKiBb
+YWxsXSBFcnJvciAyCm1ha2VbMV06IExlYXZpbmcgZGlyZWN0b3J5IGAvcm9vdC9sdHAtZnVsbC0y
+MDA5MDYzMC90ZXN0Y2FzZXMnCm1ha2U6ICoqKiBbYWxsXSBFcnJvciAyCgoKVGhpcyBwYXRjaCBm
+aXhlcyB0aGUgZmFpbHVyZSwgdGhlIHRlc3QgcHJvZ3JhbSBpZGVudGlmaWVyIGFuZCAKYWRkcyBh
+IGtlcm5lbCB2ZXJzaW9uIGNoZWNrLgoKClNpZ25lZC1vZmYtYnkgTHVjaW8gQ29ycmVpYSA8bGpo
+Y0Bici5pYm0uY29tPgoKZGlmZiAtTnVycCBsdHAtZnVsbC0yMDA5MDYzMC90ZXN0Y2FzZXMva2Vy
+bmVsL2luY2x1ZGUvcG93ZXJwYzY0LmluIGx0cC1mdWxsLTIwMDkwNjMwLm5ldy90ZXN0Y2FzZXMv
+a2VybmVsL2luY2x1ZGUvcG93ZXJwYzY0LmluCi0tLSBsdHAtZnVsbC0yMDA5MDYzMC90ZXN0Y2Fz
+ZXMva2VybmVsL2luY2x1ZGUvcG93ZXJwYzY0LmluCTIwMDgtMTItMTIgMTM6MTM6MTguMDAwMDAw
+MDAwIC0wMjAwCisrKyBsdHAtZnVsbC0yMDA5MDYzMC5uZXcvdGVzdGNhc2VzL2tlcm5lbC9pbmNs
+dWRlL3Bvd2VycGM2NC5pbgkyMDA5LTA3LTAxIDE4OjM1OjUyLjAwMDAwMDAwMCAtMDMwMApAQCAt
+MjAsNiArMjAsNyBAQCBfX05SX3N5bWxpbmthdCAoX19OUl9vcGVuYXQgKyA5KQogX19OUl9yZWFk
+bGlua2F0IChfX05SX29wZW5hdCArIDEwKQogX19OUl9mY2htb2RhdCAgKF9fTlJfb3BlbmF0ICsg
+MTEpCiBfX05SX2ZhY2Nlc3NhdCAoX19OUl9vcGVuYXQgKyAxMikKK19fTlJfdXRpbWVuc2F0IDMw
+NAogX19OUl9ldmVudGZkIDMwNwogX19OUl9mYWxsb2NhdGUgMzA5Ci1fX05SX3V0aW1lbnNhdCAz
+MDQKK19fTlJfZXZlbnRmZDIgMzE0CmRpZmYgLU51cnAgbHRwLWZ1bGwtMjAwOTA2MzAvdGVzdGNh
+c2VzL2tlcm5lbC9pbmNsdWRlL3Bvd2VycGMuaW4gbHRwLWZ1bGwtMjAwOTA2MzAubmV3L3Rlc3Rj
+YXNlcy9rZXJuZWwvaW5jbHVkZS9wb3dlcnBjLmluCi0tLSBsdHAtZnVsbC0yMDA5MDYzMC90ZXN0
+Y2FzZXMva2VybmVsL2luY2x1ZGUvcG93ZXJwYy5pbgkyMDA5LTA3LTAxIDE4OjA4OjMzLjAwMDAw
+MDAwMCAtMDMwMAorKysgbHRwLWZ1bGwtMjAwOTA2MzAubmV3L3Rlc3RjYXNlcy9rZXJuZWwvaW5j
+bHVkZS9wb3dlcnBjLmluCTIwMDktMDctMDEgMTg6MjQ6MjQuMDAwMDAwMDAwIC0wMzAwCkBAIC0y
+MCw3ICsyMCw4IEBAIF9fTlJfc3ltbGlua2F0IChfX05SX29wZW5hdCArIDkpCiBfX05SX3JlYWRs
+aW5rYXQgKF9fTlJfb3BlbmF0ICsgMTApCiBfX05SX2ZjaG1vZGF0ICAoX19OUl9vcGVuYXQgKyAx
+MSkKIF9fTlJfZmFjY2Vzc2F0IChfX05SX29wZW5hdCArIDEyKQorX19OUl91dGltZW5zYXQgMzA0
+CiBfX05SX2V2ZW50ZmQgMzA3CiBfX05SX2ZhbGxvY2F0ZSAzMDkKLV9fTlJfdXRpbWVuc2F0IDMw
+NAorX19OUl9ldmVudGZkMiAzMTQKIF9fTlJfcGVyZl9jb3VudGVyX29wZW4gMzE5CmRpZmYgLU51
+cnAgbHRwLWZ1bGwtMjAwOTA2MzAvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9ldmVudGZkMi9l
+dmVudGZkMl8wMy5jIGx0cC1mdWxsLTIwMDkwNjMwLm5ldy90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
+bGxzL2V2ZW50ZmQyL2V2ZW50ZmQyXzAzLmMKLS0tIGx0cC1mdWxsLTIwMDkwNjMwL3Rlc3RjYXNl
+cy9rZXJuZWwvc3lzY2FsbHMvZXZlbnRmZDIvZXZlbnRmZDJfMDMuYwkyMDA5LTA2LTE1IDE1OjI2
+OjM0LjAwMDAwMDAwMCAtMDMwMAorKysgbHRwLWZ1bGwtMjAwOTA2MzAubmV3L3Rlc3RjYXNlcy9r
+ZXJuZWwvc3lzY2FsbHMvZXZlbnRmZDIvZXZlbnRmZDJfMDMuYwkyMDA5LTA3LTAxIDE4OjUwOjI2
+LjAwMDAwMDAwMCAtMDMwMApAQCAtMzMsMjIgKzMzLDE3IEBACiAjaW5jbHVkZSA8dW5pc3RkLmg+
+CiAjaW5jbHVkZSA8ZXJybm8uaD4KIAotY2hhciAqVENJRCA9ICJldmVudGZkMl8wMiI7ICAgICAv
+KiB0ZXN0IHByb2dyYW0gaWRlbnRpZmllciovCisvKiBIYXJuZXNzIFNwZWNpZmljIEluY2x1ZGUg
+RmlsZXMuICovCisjaW5jbHVkZSAidGVzdC5oIgorI2luY2x1ZGUgImxpbnV4X3N5c2NhbGxfbnVt
+YmVycy5oIgorCitjaGFyICpUQ0lEID0gImV2ZW50ZmQyXzAzIjsgICAgIC8qIHRlc3QgcHJvZ3Jh
+bSBpZGVudGlmaWVyKi8KK2ludCBUU1RfVE9UQUwgPSAxOwkgICAgICAgIAkvKiB0b3RhbCBudW1i
+ZXIgb2YgdGVzdHMgaW4gdGhpcyBmaWxlICovCiAKICNpZm5kZWYgRUZEX1NFTUxJS0UKICNkZWZp
+bmUgRUZEX1NFTUxJS0UgKDEgPDwgMCkKICNlbmRpZgogCi0jaWZuZGVmIF9fTlJfZXZlbnRmZDIK
+LSNpZiBkZWZpbmVkKF9feDg2XzY0X18pCi0jZGVmaW5lIF9fTlJfZXZlbnRmZDIgMjkwCi0jZWxp
+ZiBkZWZpbmVkKF9faTM4Nl9fKQotI2RlZmluZSBfX05SX2V2ZW50ZmQyIDMyOAotI2Vsc2UKLSNl
+cnJvciBDYW5ub3QgZGV0ZWN0IHlvdXIgYXJjaGl0ZWN0dXJlIQotI2VuZGlmCi0jZW5kaWYKLQog
+CiBzdGF0aWMgaW50IGV2ZW50ZmQyKGludCBjb3VudCwgaW50IGZsYWdzKSB7CiAJcmV0dXJuIHN5
+c2NhbGwoX19OUl9ldmVudGZkMiwgY291bnQsIGZsYWdzKTsKQEAgLTExMyw2ICsxMDgsMTEgQEAg
+aW50IG1haW4gKGludCBhcmdjLCBjaGFyICoqYXJndikgewogCQkJcmV0dXJuIDE7CiAJCX0KIAl9
+CisJaWYgKCh0c3Rfa3ZlcmNtcCgyLCA2LCAyNykpIDwgMCkgeworCQl0c3RfcmVzbShUQ09ORiwK
+KwkJCSAiVGhpcyB0ZXN0IGNhbiBvbmx5IHJ1biBvbiBrZXJuZWxzIHRoYXQgYXJlIDIuNi4yNyBh
+bmQgaGlnaGVyIik7CisJCXRzdF9leGl0KCk7CisJfQogCWlmICgoZmQxID0gZXZlbnRmZDIoMCwg
+RUZEX1NFTUxJS0UpKSA9PSAtMSB8fAogCSAgICAoZmQyID0gZXZlbnRmZDIoMCwgRUZEX1NFTUxJ
+S0UpKSA9PSAtMSkgewogCQlwZXJyb3IoImV2ZW50ZmQyIik7CgoKLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1s
+aXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9s
+aXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
