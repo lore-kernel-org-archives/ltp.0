@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MTMtX-0002Za-1s
-	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 21:29:07 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MTMtP-0002Te-9N
-	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 21:29:07 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Tue, 21 Jul 2009 17:28:54 -0400
-References: <20090721.182542.1000278277145531816.caiqian@cclom.cn>
-	<364299f40907210721q365aa8fdu21a1b2ff254bc60a@mail.gmail.com>
-In-Reply-To: <364299f40907210721q365aa8fdu21a1b2ff254bc60a@mail.gmail.com>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <hyei@mvista.com>) id 1MM9Kq-0006CS-LD
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2009 23:35:28 +0000
+Received: from gateway-1237.mvista.com ([63.81.120.158])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MM9Js-0005f6-GE
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2009 23:35:28 +0000
+Received: from svexch01.mvista.com (svexch01.mvista.com [10.0.0.82])
+	by hermes.mvista.com (Postfix) with ESMTP id 95FA51AF35
+	for <ltp-list@lists.sourceforge.net>;
+	Wed,  1 Jul 2009 16:34:26 -0700 (PDT)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Message-Id: <200907211728.56027.vapier@gentoo.org>
-Subject: Re: [LTP] LTP Intermediate Release for JULY 2009 Build Failures
+Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C9FAA4.78BCE450"
+Date: Wed, 1 Jul 2009 16:34:25 -0700
+Message-ID: <8368651DACC1964480F951191B94A078BC18DD@svexch01.mvista.com>
+From: "Henry Yei" <hyei@mvista.com>
+Subject: [LTP] [PATCH][syscalls] change io_* testcases to run directly
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,66 +28,61 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6357474337999474906=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: ltp-list@lists.sf.net
 
---===============6357474337999474906==
-Content-Type: multipart/signed; boundary="nextPart1425289.1mbEs6WpKq";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+This is a multi-part message in MIME format.
 
---nextPart1425289.1mbEs6WpKq
+------_=_NextPart_001_01C9FAA4.78BCE450
 Content-Type: text/plain;
-  charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-On Tuesday 21 July 2009 10:21:44 Garrett Cooper wrote:
-> I was tempted to fix the format string error, but I don't know what
-> the potential implications are of switching the data type from
-> u_int64_t to unsigned long long...
+Again, I forgot the subject..
 
-dont do that.  just use the proper format string from inttypes.h.
-uint64_t f;
-printf("f = %"PRIu64"\n", f);
+It looks like the io_*.sh files are now not needed since the test source =
+has been modified to check for an autoconf definition.
+This patch modifies the syscalls runtest file to call those test =
+directly. (io_cancel, io_destroy01, io_getevents01, io_setup01, =
+io_submit01)
 
-> +/* Dummy function reference to avoid compiler warning from
-> linux_syscall_numbers.h. */
-> +extern void cleanup() { }
+As the scripts are not needed any more, can we remove the following?
 
-this is incorrect for a few reasons.  it should read:
-+/* Dummy function as syscall() from linux_syscall_numbers.h uses cleanup() */
-void cleanup() { }
--mike
+ltp/testcases/kernel/syscalls/io_cancel01.sh
+ltp/testcases/kernel/syscalls/io_destroy01.sh
+ltp/testcases/kernel/syscalls/io_getevents0101.sh
+ltp/testcases/kernel/syscalls/io_setup01.sh
+ltp/testcases/kernel/syscalls/io_submit01.sh
 
---nextPart1425289.1mbEs6WpKq
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+These scripts were not being copied into testcases/bin anyway and so =
+AFAIK, were not being run correctly by pan anyway.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJKZjMXAAoJEEFjO5/oN/WBKzAQAKIm85/X379goI5jpLq9pBJP
-D6U47Zt18mvZ+v5X6wAx3TIAuOOD7iSx2nyhxp48dnnjgtJLzcM3d2vj8YDHXWt9
-HBXtt3TNHj35VTLtVJAJMnM4MzdL+bg+EIyIvPK9KsFcBbH/hxjkD948PWfNACZi
-YwIXa1AWpYCKz+cTa1qpjGFqXpRnJEzIxgBDAS4gvtCt5fN0iNsorZwrBOZSbfHm
-KXGtojHJsEoJETI6selOVlW3V3UehomwqI2EHz5mnyMP6BaFNKzLaac/qNkkhLAY
-mjPRI5riwqjwgYioRg+AI2zqyrwvi0C3Tfw0HhbTnTva56B86dvi+56/rLIWbToW
-TT8oZYYhnYvZL42fM9HRe+AGbcOsMW6Laa/Q6Fp7AMYpzrwoZuudzHUsNuEo/lrs
-syUoo8SGypWn/Ks3waaRKfQsLFimGUX19cWo9xNs+jbL6mF+qqxQ0dYwHLBQoQ6V
-+LunwJrYXHmr2k4+c9Fb9olL0HvMX2iOgrH3Qw6HFCo7+hvFv0h884Yia9of2EvR
-Hu45gYqZEWuIIgz9t74/jgVII9+24oD1kMkP/dvddI978PaFerrwuiUyNlAjPeIJ
-L5y2+s8EpGots3MKK1EPCnPKyUuoe1EFxz99cxG7UpLlLOMOC0E1c14UR6a9x++A
-4/YbMEkwez/BsBpjtNiG
-=+2Xc
------END PGP SIGNATURE-----
-
---nextPart1425289.1mbEs6WpKq--
+Henry Yei
+MontaVista Software, Inc.
+hyei@mvista.com
 
 
---===============6357474337999474906==
+=20
+
+------_=_NextPart_001_01C9FAA4.78BCE450
+Content-Type: application/octet-stream;
+	name="syscalls-io.patch"
+Content-Transfer-Encoding: base64
+Content-Description: syscalls-io.patch
+Content-Disposition: attachment;
+	filename="syscalls-io.patch"
+
+LS0tIGNvbW11bml0eS9sdHAvcnVudGVzdC9zeXNjYWxscwkyMDA5LTA3LTAxIDEyOjUyOjA4LjEz
+NzUwNDgwMCAtMDcwMAorKysgbHRwL3J1bnRlc3Qvc3lzY2FsbHMJMjAwOS0wNy0wMSAxMjo1Mjow
+OC4zNDA2MjcyMDAgLTA3MDAKQEAgLTQ0MSwxMSArNDQxLDExIEBACiBpb3BsMDEgaW9wbDAxCiBp
+b3BsMDIgaW9wbDAyCiAKLWlvX2NhbmNlbDAxIHJ1bi1pb19jYW5jZWwuc2gKLWlvX2Rlc3Ryb3kw
+MSBydW4taW9fZGVzdHJveS5zaAotaW9fZ2V0ZXZlbnRzMDEgcnVuLWlvX2dldGV2ZW50cy5zaAot
+aW9fc2V0dXAwMSBydW4taW9fc2V0dXAuc2gKLWlvX3N1Ym1pdDAxIHJ1bi1pb19zdWJtaXQuc2gK
+K2lvX2NhbmNlbDAxIGlvX2NhbmNlbDAxCitpb19kZXN0cm95MDEgaW9fZGVzdHJveTAxCitpb19n
+ZXRldmVudHMwMSBpb19nZXRldmVudHMwMQoraW9fc2V0dXAwMSBpb19zZXR1cDAxCitpb19zdWJt
+aXQwMSBpb19zdWJtaXQwMQogCiBrZXljdGwwMSBrZXljdGwwMQogCg==
+
+------_=_NextPart_001_01C9FAA4.78BCE450
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -92,7 +90,7 @@ Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 
---===============6357474337999474906==
+------_=_NextPart_001_01C9FAA4.78BCE450
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -103,5 +101,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============6357474337999474906==--
+------_=_NextPart_001_01C9FAA4.78BCE450--
 
