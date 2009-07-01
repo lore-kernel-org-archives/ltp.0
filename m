@@ -1,25 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <fhe@novell.com>) id 1MSp8j-00084a-Cd
-	for ltp-list@lists.sourceforge.net; Mon, 20 Jul 2009 09:26:33 +0000
-Received: from [61.14.130.200] (helo=hefan.site)
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MSp8c-0007ST-RZ
-	for ltp-list@lists.sourceforge.net; Mon, 20 Jul 2009 09:26:33 +0000
-From: hefan <fhe@novell.com>
-In-Reply-To: <364299f40907200046u2b25ec5agc7967dc81b6294f8@mail.gmail.com>
-References: <1247803650.4917.12.camel@hefan.site>
-	<364299f40907162234g1df374d4xda8a74bf61f34057@mail.gmail.com>
-	<1247812675.4917.14.camel@hefan.site>
-	<364299f40907181228v44a60031qecf9463a3d3cb43a@mail.gmail.com>
-	<1248066882.4917.37.camel@hefan.site> <4A64067A.5080707@petalogix.com>
-	<364299f40907200046u2b25ec5agc7967dc81b6294f8@mail.gmail.com>
-Date: Mon, 20 Jul 2009 17:26:01 +0800
-Message-Id: <1248081961.4917.60.camel@hefan.site>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH 1/1] openposix_mmap_11_4
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1MMeig-0007X7-6M
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 09:06:10 +0000
+Received: from [32.97.110.153] (helo=e35.co.us.ibm.com)
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MM4QZ-0000x0-KE
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2009 18:21:05 +0000
+Date: Wed, 1 Jul 2009 13:20:05 -0500
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20090701182005.GC17998@us.ibm.com>
+References: <20090701165923.GC3237@in.ibm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20090701165923.GC3237@in.ibm.com>
+Subject: Re: [LTP] [PATCH] Fix pidns14 test case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,132 +25,79 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sf.net
+To: "M. Mohan Kumar" <mohan@in.ibm.com>
+Cc: ltp-list@lists.sf.net, sukadev@linux.vnet.ibm.com, sachinp@in.ibm.com
 
-T24gTW9uLCAyMDA5LTA3LTIwIGF0IDAwOjQ2IC0wNzAwLCBHYXJyZXR0IENvb3BlciB3cm90ZToK
-PiBPbiBTdW4sIEp1bCAxOSwgMjAwOSBhdCAxMDo1NCBQTSwgTWljaGFsCj4gU2ltZWs8bWljaGFs
-LnNpbWVrQHBldGFsb2dpeC5jb20+IHdyb3RlOgo+ID4gSGksCj4gPj4gT24gU2F0LCAyMDA5LTA3
-LTE4IGF0IDEyOjI4IC0wNzAwLCBHYXJyZXR0IENvb3BlciB3cm90ZToKPiA+Pgo+ID4+PiBPbiBU
-aHUsIEp1bCAxNiwgMjAwOSBhdCAxMTozNyBQTSwgaGVmYW48ZmhlQG5vdmVsbC5jb20+IHdyb3Rl
-Ogo+ID4+Pgo+ID4+Pj4gaGksCj4gPj4+Pgo+ID4+Pj4gKltQYXRjaCAxLzFdIFBhdGNoIGZvciBm
-aXhpbmcgdGhlIO+7v2ZhaWxlZCDvu790ZXN0Y2FzZSBvcGVucG9zaXhfbW1hcF8xMV80Cj4gPj4+
-Pgo+ID4+Pj4gLW1vZGlmaWVkIHRoZSBmaWxlCj4gPj4+PiAqdGVzdGNhc2VzL29wZW5fcG9zaXhf
-dGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMv77u/bW1hcC8xMS00LmMKPiA+Cj4gPiBG
-aXJzdCBvZiBhbGwgLSB0aGlzIGlzIHJlYWxseSBzbWFsbCBleHBsYW5hdGlvbiB3aHkgeW91IGFy
-ZSBmaXhpbmcgdGhpcwo+ID4gaXNzdWUuIEFmdGVyIHNvbWUgbW9udGgKPiA+IG5vbmUgd2lsbCBr
-bm93IHdoeSB5b3UgZGlkIHRoaXMgY2hhbmdlLgo+ID4KPiA+Cj4gPj4+Pgo+ID4+Pj4g77u/U2ln
-bmVkLW9mZi1ieTogIGZyZWRyaWNrIGhlIDxmaGVAbm92ZWxsLmNvbT4KPiA+Pj4+Cj4gPj4+PiAt
-LS0KPiA+Pj4+IGx0cC5vcmlnL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3Jt
-YW5jZS9pbnRlcmZhY2VzL21tYXAvMTEtNC5jICAgICAgMjAwOS0wNy0xNyAxMTo1MzozNi4wMDAw
-MDAwMDAgKzA4MDAKPiA+Pj4+ICsrKwo+ID4+Pj4gbHRwL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rl
-c3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL21tYXAvMTEtNC5jCj4gPj4+PiAyMDA5LTA3
-LTE3IDExOjU3OjA5LjAwMDAwMDAwMCArMDgwMAo+ID4+Pj4gQEAgLTEzMCw3ICsxMzAsOSBAQCBp
-bnQgbWFpbigpCj4gPj4+PiAgIGZsYWcgPSBNQVBfU0hBUkVEOwo+ID4+Pj4gICBvZmYgPSAwOwo+
-ID4+Pj4gICBwYSA9IG1tYXAoYWRkciwgbGVuLCBwcm90LCBmbGFnLCBmZF8yLCBvZmYpOwo+ID4+
-Pj4gLSAgcGFfMiA9IG1tYXAoYWRkciwgbGVuLCBwcm90LCBmbGFnLCBmZF8yLCBvZmYpOwo+ID4+
-Pj4gKyAgYWRkciA9IHBhOwo+ID4+Pj4gKyAgbWVtc2V0KGFkZHIsMCxsZW4qMik7Cj4gPj4+PiAr
-ICBwYV8yID0gbW1hcChhZGRyLCBsZW4sIHByb3QsIGZsYWd8TUFQX0ZJWEVELCBmZF8yLCBvZmYp
-Owo+ID4+Pj4gICBpZiAocGFfMiA9PSBNQVBfRkFJTEVEKQo+ID4+Pj4gICB7Cj4gPj4+PiAgICAg
-cHJpbnRmKCJUZXN0IEZBSUw6ICIgVE5BTUUgIiBFcnJvciBhdCAybmQgbW1hcCgpOiAlc1xuIiwK
-PiA+Pj4+Cj4gPj4+IEhpIEZhbiwKPiA+Pj4gICAgIFNvbWUgcXVlc3Rpb25zIC8gb2JzZXJ2YXRp
-b25zOgo+ID4+Pgo+ID4+PiAxLiBZZXMsIHRoZSB0ZXN0Y2FzZXMgZG9lcyBmYWlsIG9uIG15IG1h
-Y2hpbmUgdG9kYXkuCj4gPj4+IDIuIFllcywgZG9pbmcgd2hhdCB5b3Ugc2F5IGFib3ZlIGRvZXMg
-d29yayAoYXQgbGVhc3QgdGhlIHRlc3RjYXNlIHBhc3NlcykuCj4gPj4+IDMuIEFyZSB5b3UgcG9z
-aXRpdmUgdGhhdCB5b3VyIHNldCBvZiBzdGVwcyBhYm92ZSBpbiBmYWN0IGRvbid0Cj4gPj4+IGlu
-dmFsaWRhdGUgdGhlIHB1cnBvc2Ugb2YgdGhlIHRlc3RjYXNlLCBieSBhY2NpZGVudCwgaW4gcGFy
-dGljdWxhciB0aGUKPiA+Pj4gbWVtc2V0IGNhbGw/IEkgYXNrIGJlY2F1c2Ugb2YgdGhlIGZvbGxv
-d2luZyBzdGF0ZW1lbnQgaW4gdGhlIG1tYXAKPiA+Pj4gbWFucGFnZToKPiA+Pj4KPiA+Pj4gICAg
-ICAgIElmIGFkZHIgaXMgTlVMTCwgdGhlbiB0aGUga2VybmVsIGNob29zZXMgdGhlIGFkZHJlc3Mg
-YXQgd2hpY2ggdG8gY3JlYXRlCj4gPj4+ICAgICAgICB0aGUgbWFwcGluZzsgdGhpcyBpcyB0aGUg
-bW9zdCBwb3J0YWJsZSBtZXRob2Qgb2YgY3JlYXRpbmcgIGEgIG5ldyAgbWFwLQo+ID4+PiAgICAg
-ICAgcGluZy4gICBJZiAgYWRkciAgaXMgbm90IE5VTEwsIHRoZW4gdGhlIGtlcm5lbCB0YWtlcyBp
-dCBhcyBhIGhpbnQgYWJvdXQKPiA+Pj4gICAgICAgIHdoZXJlIHRvIHBsYWNlIHRoZSBtYXBwaW5n
-OyBvbiBMaW51eCwgdGhlIG1hcHBpbmcgd2lsbCBiZSBjcmVhdGVkIGF0ICBhCj4gPj4+ICAgICAg
-ICBuZWFyYnkgIHBhZ2UgIGJvdW5kYXJ5LiAgIFRoZSBhZGRyZXNzIG9mIHRoZSBuZXcgbWFwcGlu
-ZyBpcyByZXR1cm5lZCBhcwo+ID4+PiAgICAgICAgdGhlIHJlc3VsdCBvZiB0aGUgY2FsbC4KPiA+
-Pj4KPiA+Pj4gV2hhdCB5b3UncmUgaW4gZWZmZWN0IGRvaW5nIGlzIGNoYW5naW5nIHRoZSAybmQg
-bW1hcCBjYWxsIGZyb20gYW4KPiA+Pj4gYXJiaXRyYXJ5IGFkZHJlc3MgdG8gYSBzZXQgdmlydHVh
-bCBhZGRyZXNzIGF0IDB4MC4gSXMgdGhhdCBpbmRlZWQKPiA+Pj4gY29ycmVjdD8KPiA+Pj4KPiA+
-PiBpbiB0aGlzIGNhc2UsIHRoZSBzaXR1YXRpb24gaXMgbGlrZSB0aGlzLCB3ZSBjcmVhdGUgYSBu
-ZXcgZmlsZSBhYm91dCA1MTIKPiA+PiBieXRlcyBhbmQgbW1hcCBpdCBpbnRvIHRoZSBtZW0sIHRo
-ZW4gd2UgbW9kaWZ5IG9uZSBieXRlIGJlc2lkZXMgdGhlIDUxMgo+ID4+IGJ5dGVzIGFkZHJlc3Ms
-IGFuZCBtdW5tYXAgaXQuIGFuZCBpbiB0aGUgZmF0aGVyIHByb2Nlc3MgcmVtbWFwIGl0IGJhY2sK
-PiA+PiB0byBjaGVjayB3aGV0aGVyIHRoZSBvbmUgbW9yZSBieXRlIGlzIHdyaXRlIGJhY2sgdG8g
-dGhlIGZpbGVzLgo+IAo+IE9rLgo+IAo+ID4+IGkgaGF2ZSBjaGVja2VkIHRoYXQgd2hlbiBmaW5p
-c2hlZCBtdW5tYXAgYW5kIGNsb3NlIHRoZSBmaWxlIGluIHRoZSBjaGlsZAo+ID4+IHByb2Nlc3Ms
-IHRoZSBmaWxlIGRpZG4ndCBjb250YWluIHRoZSA1MTN0aCBieXRlLCB0aGUgc2l6ZSBvZiB0aGlz
-IGZpbGUKPiA+PiBpcyByaWdodCA1MTIgYnl0ZXMuYnV0IGluIHRoaXMgY2FzZSBhZnRlciB0aGUg
-c2Vjb25kIG1tYXAgZmluaXNoZWQsIHRoZQo+ID4+IDUxM3RoIGJ5dGUgZG9lcyBhcHBlYXIgYWdh
-aW4uIGl0J3MgYSBjb25mbGljdC4KPiA+Pgo+ID4+IGluIG15IG9waW5pb24gdGhpcyBpcyBiZWNh
-dXNlIG9mIHRoZSBjb21waWxlciBvciBzb21lIG9wdGltaXphdGlvbnMuIHNvCj4gPj4gaSB0aGlu
-ayB0aGUgbWVtb3J5IHNob3VsZCB0byBiZSBtZW1zZXQgYmVmb3JlIG1tYXAgYW5kIGl0IGRvZXMg
-d29yay4KPiAKPiBObywgYWNjb3JkaW5nIHRvIHRoZSBtYW5wYWdlIGl0J2xsIG1hcCB0byB0aGUg
-Ym91bmRhcnkgb2YgdGhlIGNsb3Nlc3QKPiBwYWdlIHNpemUsIGluIG15IG9waW5pb24gd2hhdCBt
-aWdodCBiZSBvY2N1cnJpbmcgaXMgdGhlIHN5c3RlbSBpcwo+IGVpdGhlciBvdmVyYWxsb2NhdGlu
-ZyBvciB1bmRlcmFsbG9jYXRpbmcsIGRlcGVuZGluZyBvbiB0aGUgc3lzdGVtIHBhZ2UKPiBzaXpl
-IGFuZCB3aGF0J3MgYmVpbmcgcGFzc2VkIGluIGZvciBhIGxlbmd0aC4gV2hhdCB0aGUgcGFnZSBz
-aXplIGlzLAo+IEknZCBzdXJlbHkgbGlrZSB0byBrbm93Li4uCmhlcmUgaW4gbXkgZW52aXJvbm1l
-bnQgdGhlIHBhZ2Ugc2l6ZSBpcyAxMDI0IGdvdCBieSB1c2luZwpzeXNjb25mKF9TQ19QQUdFX1NJ
-WkUpIGluIHRoaXMgdGVzdGNhc2UKPiAKPiA+IElmIGlzIHRoZSBwcm9ibGVtIHdpdGggY29tcGls
-ZXIvb3B0aW1pemF0aW9uIG1lYW5zIHRoYXQgdGVzdHMgaXMgb2sgLQo+ID4gdGhlIHByb2JsZW0g
-aXMgd2l0aCB5b3VyCj4gPiBjb21waWxlciBub3Qgd2l0aCBjb2RlLgo+ID4gVGhpcyBuZWVkIG1v
-cmUgaW52ZXN0aWdhdGlvbnMgdG8gZmluZCBvdXQgd2hlcmUgdGhlIHByb2JsZW0gaXMuCj4gCj4g
-SSB3b3VsZG4ndCBuZWNlc3NhcmlseSBzYXkgdGhhdC4gQmFzZWQgb24gRnJlZGVyaWNrJ3MgZXhw
-bGFuYXRpb24sIGl0Cj4gc291bmRzIGxpa2Ugc29tZW9uZSBmZWQgaW4gYW4gaW5hcHByb3ByaWF0
-ZSBib3VuZCwgb3IgZGlkbid0IE5VTAo+IHRlcm1pbmF0ZSB0aGUgYm91bmRhcnkgYW5kIGp1c3Qg
-d2VudCBvZmYgaW50byB1bmNoYXJ0ZWQgdGVycml0b3J5Cj4gd2l0aG91dCBmaXJzdCBjaGVja2lu
-ZyB3aGVyZSB0aGV5IHdlcmUgYG9uIHRoZSBtYXAnLgo+IAo+IEJhc2VkIG9uIG15IGV4cGVyaWVu
-Y2UgYW5kIHJlY29sbGVjdGlvbiwgdGhpcyBpcyBsZWdpdGltYXRlIGluIEMKPiBiZWhhdmlvciBh
-cyBsb25nIGFzIHlvdSdyZSB3aXRoaW4gdGhlIGFwcGxpY2F0aW9ucyBtZW1vcnkgbGltaXRzIC0t
-Cj4geW91J3ZlIGp1c3QgZW50ZXJlZCB0aGUgdHdpbGlnaHQgem9uZSBiZXR3ZWVuIHJlYWxpdGll
-cywgd2hlcmUgeW91J3JlCj4gYmV5b25kIHlvdXIgYWRkcmVzcyBzcGFjZSwgYnV0IG5vdCBiZXlv
-bmQgdGhlIHBvaW50IG9mIG5vIHJldHVybgo+IChFQUNDRVMpLCB3aGVyZSB0aGUga2VybmVsICpz
-aG91bGQqIHRlcm1pbmF0ZSB5b3VyIHVzZXJsYW5kIGFwcC4KeWVhaCwgdGhhdCdzIHRoZSBrZXlw
-b2ludC4gYnV0IGl0IGRvZXNuJ3QgdGVybWluYXRlIG91ciB1c2VybGFuZCBhcHAuCgppIG1lYW4g
-dGhhdCBoZXJlIGlzIGEgbWlzdGFrZSBvbiB0aGUgd2F5IHRoaXMgdGVzdGNhc2UgY2hlY2sgdGhl
-IHJlc3VsdC4KaWRlYWxseSwgdGhlIG1tYXAgc2hvdWxkIG9ubHkgdXNlIGhhbGYgYSBwYWdlIGFu
-ZCBpdCBoYXMgbm8KcmVzcG9zaWJpbGl0eSBvbiB0aGUgcmVzdCBvZiB0aGUgcGFnZSwgc28gd2Ug
-c2hvdWxkbid0IGp1ZGdlIHRoZSBtbWFwIGJ5CnRoZSByZXN0IG9mIHRoZSBwYWdlIHdoaWNoIGlz
-IG5vbmUgb2YgYnVzaW5lc3Mgd2l0aCBtbWFwLgoKc28gaWYgd2Ugc3VwcG9zZSB0aGF0IHRoZSBt
-bWFwIGRvZXMgYWZmZWN0IHRoZSByZXN0IG9mIHRoZSBwYWdlKCDvu78gaXMgaXQKdGhlIHB1cnBv
-c2UgdG8gZGVzaWduIHRoaXMgdGVzdGNhc2UgPyApLCB3ZSBzaG91bGQgbWFrZSBzdXJlIHRoYXQg
-dGhpcwphcmVhIGhhcyBiZWVuIGNsZWFyIGJlZm9yZSB3ZSBtbWFwIHRoZSBmaWxlIGludG8gdGhp
-cyBhcmVhLiB0aGF0J3Mgd2h5IGkKdXNlIG1lbXNldCBhbmQg77u/ZmxhZyBNQVBfRklYRUQuCgo+
-IAo+IFdoZXRoZXIgb3Igbm90IHRoYXQgd2FzIHRoZSBpbnRlbnRpb24gb2YgdGhlIFBPU0lYIGZv
-bGtzLCBpcyBhbm90aGVyCj4gcXVlc3Rpb24gaW5kZWVkLCBhcyB0aGUgZG9jdW1lbnRhdGlvbiBz
-dGF0ZXMgKGluIHRoZSBoZWFkZXIgb2YgdGhlIC5jCj4gZmlsZSk6Cj4gCj4gICogSW1wbGVtZW50
-YXRpb24gcGVyZm9ybXMgbWFwcGluZyBvcGVyYXRpb25zIG92ZXIgd2hvbGUgcGFnZXMuCj4gICog
-VGh1cywgd2hpbGUgdGhlIGFyZ3VtZW50IGxlbgo+ICAqIG5lZWQgbm90IG1lZXQgYSBzaXplIG9y
-IGFsaWdubWVudCBjb25zdHJhaW50LAo+ICAqIHRoZSBpbXBsZW1lbnRhdGlvbiBzaGFsbCBpbmNs
-dWRlLCBpbiBhbnkgbWFwcGluZwo+ICAqIG9wZXJhdGlvbiwgYW55IHBhcnRpYWwgcGFnZSBzcGVj
-aWZpZWQgYnkgdGhlIHJhbmdlIFtwYSxwYStsZW4pLgo+ICAqIFRoZSBzeXN0ZW0gc2hhbGwgYWx3
-YXlzIHplcm8tZmlsbCBhbnkgcGFydGlhbCBwYWdlIGF0IHRoZSBlbmQgb2YgYW4gb2JqZWN0Lgo+
-ICAqIEZ1cnRoZXIsIHRoZSBzeXN0ZW0gc2hhbGwgbmV2ZXIgd3JpdGUgb3V0IGFueSBtb2RpZmll
-ZCBwb3J0aW9ucyBvZgo+ICAqIHRoZSBsYXN0IHBhZ2Ugb2YgYW4gb2JqZWN0IHdoaWNoIGFyZSBi
-ZXlvbmQgaXRzIGVuZC4KPiAKPiBTbyB1bmxlc3MgdGhleSdyZSBjb21wbGV0ZWx5IG1pc2ludGVy
-cHJldGluZyB0aGUgbWVhbmluZyBvZiBtbWFwLCBpdAo+IHNvdW5kcyBsaWtlIHRoZXJlJ3MgYSBi
-dWcgaW4gYSBudW1iZXIgb2YgYFBPU0lYLWNvbXBsaWFudCcgb3BlcmF0aW5nCj4gc3lzdGVtcyB0
-aGF0IG5lZWRzIHRvIGJlIHJlc29sdmVkIChGcmVlQlNEIGFuZCBMaW51eCBpbmNsdWRlZCkuCj4g
-Cj4gSG93ZXZlciwgYmVmb3JlIGp1bXBpbmcgdG8gY29uY2x1c2lvbnMsIEkgdGhpbmsgdGhhdCBp
-dCdzIHBydWRlbnQgdG8KPiBuYXJyb3cgZG93biB3aGVyZSBhbmQgd2h5IHRoaXMgaXMgb2NjdXJy
-aW5nLi4uCj4gCj4gPj4+IDQuIEhhdmUgeW91IHRhbGtlZCB0byB0aGUgb3BlbnBvc2l4IHRlc3Qg
-c3VpdGUgZm9sa3MgYWJvdXQgdGhpcyB5ZXQ/Cj4gPj4+Cj4gPj4gbm8saSBoYXZlIG5vIGlkZWEg
-b24gaG93IHRvIHRhbGsgdG8gdGhlIG9wZW5wb3NpeCBhbmQgaSBkbyB3YW50IHRvIHRhbGsKPiA+
-PiB0byB0aGVtIDopIGNhbiB5b3UgZ2l2ZSBtZSBzb21lIHN1Z2dlc3Rpb25zIGFib3V0IHRoaXM/
-IHRoeH4KPiAKPiBUaGUgcHJvamVjdCBhZG1pbmlzdHJhdG9ycyBhcmUgYXZhaWxhYmxlLCBhcyBu
-b3RlZCwgaGVyZToKPiAKPiBodHRwczovL3NvdXJjZWZvcmdlLm5ldC9wcm9qZWN0L21lbWJlcmxp
-c3QucGhwP2dyb3VwX2lkPTY0NTkyCj4gCj4gVGhhbmtzLAo+IC1HYXJyZXR0CgotLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0KRW50ZXIgdGhlIEJsYWNrQmVycnkgRGV2ZWxvcGVyIENoYWxsZW5nZSAgClRo
-aXMgaXMgeW91ciBjaGFuY2UgdG8gd2luIHVwIHRvICQxMDAsMDAwIGluIHByaXplcyEgRm9yIGEg
-bGltaXRlZCB0aW1lLCAKdmVuZG9ycyBzdWJtaXR0aW5nIG5ldyBhcHBsaWNhdGlvbnMgdG8gQmxh
-Y2tCZXJyeSBBcHAgV29ybGQoVE0pIHdpbGwgaGF2ZQp0aGUgb3Bwb3J0dW5pdHkgdG8gZW50ZXIg
-dGhlIEJsYWNrQmVycnkgRGV2ZWxvcGVyIENoYWxsZW5nZS4gU2VlIGZ1bGwgcHJpemUgIApkZXRh
-aWxzIGF0OiBodHRwOi8vcC5zZi5uZXQvc2Z1L0NoYWxsZW5nZQpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxp
-c3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xp
-c3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+Quoting M. Mohan Kumar (mohan@in.ibm.com):
+> [PATCH] pidns14
+> 
+> Container-init may be immune to unhandled fatal signals (like SIGUSR1)
+> even if they are from ancestor namespace. SIGKILL/SIGSTOP are the only
+> reliable signals to a container-init from ancestor namespace. Make sure
+> that container-init will not respond to signals other than
+> SIGKILL/SIGSTOP
+
+Hmm?  This may or may not be right...  but you start out by saying 'may be
+immune to', then provide a patch making the testcase TFAIL if is not immune
+to.  So at the very least anyone on a slightly older kernel will get TFAILs.
+
+I don't think that immunity to SIGUSR1 from ancestor pidns is something we
+want to guarantee, it's just what is happening.  The proper thing is to
+not depend on either getting or not getting SIGUSR1, in my opinion.  Suka?
+
+-serge
+
+> Signed-off-by: M. Mohan Kumar <mohan@in.ibm.com>
+> ---
+>  testcases/kernel/containers/pidns/pidns14.c |   13 +++++++------
+>  1 files changed, 7 insertions(+), 6 deletions(-)
+> 
+> diff --git a/testcases/kernel/containers/pidns/pidns14.c b/testcases/kernel/containers/pidns/pidns14.c
+> index e95bf95..41602cd 100644
+> --- a/testcases/kernel/containers/pidns/pidns14.c
+> +++ b/testcases/kernel/containers/pidns/pidns14.c
+> @@ -67,9 +67,8 @@ int child_fn(void *ttype)
+>  		tst_resm(TBROK, "pidns is not created.");
+>  		cleanup();
+>  	}
+> -	pause();
+> -	tst_resm(TFAIL, "Oops! Container init resumed after receiving SIGUSR1");
+> -	return -1;
+> +	sleep(10);
+> +	return 0;
+>  }
+> 
+>  /*
+> @@ -111,9 +110,11 @@ int main(int argc, char *argv[])
+>  	if (waitpid(cpid, &status, 0) < 0)
+>  		tst_resm(TWARN, "waitpid() failed.");
+> 
+> -	if ((WIFSIGNALED(status)) && (WTERMSIG(status) == SIGUSR1))
+> -		tst_resm(TPASS, "Container init is killed as expected, "
+> -				" when the SIGUSR1 is passed from parent\n");
+> +	if (WIFEXITED(status))
+> +		tst_resm(TPASS, "Container init returned as expected\n");
+> +	else if ((WIFSIGNALED(status)) && (WTERMSIG(status) == SIGUSR1))
+> +		tst_resm(TFAIL, "Container init is killed when the SIGUSR1 "
+> +		       		"is passed from parent\n");
+>  	 else
+>  		tst_resm(TFAIL, "After sending signal kill -USR1, "
+>  				"returned unexpected error\n");
+> -- 
+> 1.6.0.2
+> 
+> 
+> ------------------------------------------------------------------------------
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------------------------------------------------------------------------------
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
