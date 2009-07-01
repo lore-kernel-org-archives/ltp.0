@@ -1,33 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MNqTG-0000h1-Rh
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:51:10 +0000
-Received: from e9.ny.us.ibm.com ([32.97.182.139])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MNqTG-0006ii-9W
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:51:10 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e9.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n66FcXCA009884
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 11:38:33 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n66Fp3w9218546
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 11:51:03 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n66Fp2jP031945
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 11:51:02 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200907031235.06805.sripathik@in.ibm.com>
-References: <200907031235.06805.sripathik@in.ibm.com>
-Date: Mon, 06 Jul 2009 21:20:49 +0530
-Message-Id: <1246895449.4887.51.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] realtime: Fix the pass criterion of pi_perf test
-	case.
-Reply-To: subrata@linux.vnet.ibm.com
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <hyei@mvista.com>) id 1MM66v-0002Sp-Jh
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2009 20:08:53 +0000
+Received: from gateway-1237.mvista.com ([63.81.120.158])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MM66u-0001Ne-2L
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2009 20:08:53 +0000
+Received: from svexch01.mvista.com (svexch01.mvista.com [10.0.0.82])
+	by hermes.mvista.com (Postfix) with ESMTP id 7BE251AF33
+	for <ltp-list@lists.sourceforge.net>;
+	Wed,  1 Jul 2009 13:08:49 -0700 (PDT)
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C9FA87.B7517662"
+Date: Wed, 1 Jul 2009 13:08:35 -0700
+Message-ID: <8368651DACC1964480F951191B94A078BC1871@svexch01.mvista.com>
+From: "Henry Yei" <hyei@mvista.com>
+Subject: [LTP] (no subject)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,116 +28,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sripathi Kodi <sripathik@in.ibm.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
+To: ltp-list@lists.sourceforge.net
 
-T24gRnJpLCAyMDA5LTA3LTAzIGF0IDEyOjM1ICswNTMwLCBTcmlwYXRoaSBLb2RpIHdyb3RlOiAK
-PiBIaSwKPiAKPiBUaGUgcGFzcyBjcml0ZXJpb24gaW4gcGlfcGVyZiB0ZXN0IGNhc2UgaXMgd3Jv
-bmcuIEl0IGNvbXBhcmVzIHRoZSBtaW5pbXVtIAo+IGFtb3VudCBvZiB0aW1lIHRha2VuIGJ5IHRo
-ZSBsb3cgcHJpb3JpdHkgdGhyZWFkIHdpdGggdGhlIG1heGltdW0gYW1vdW50IG9mIAo+IHRpbWUg
-dGFrZW4gYnkgdGhlIGhpZ2ggcHJpb3JpdHkgdGhyZWFkIHRvIGNhbGN1bGF0ZSB0aGUgUEkgZGVs
-YXkuIE9idmlvdXNseSwgCj4gdGhlc2UgbWluIGFuZCBtYXggZG9uJ3QgbmVjZXNzYXJpbHkgaGFw
-cGVuIGluIHRoZSBzYW1lIGl0ZXJhdGlvbiwgcmVzdWx0aW5nIGluIAo+IGEgbnVtYmVyIG9mIGZh
-bHNlIGZhaWx1cmVzLiBUaGUgY29ycmVjdCB3YXkgaXMgdG8gY29tcGFyZSB0aGUgdGltZSB0YWtl
-biBieSAKPiBsb3cgYW5kIGhpZ2ggcHJpb3JpdHkgdGhyZWFkcyBpbiBlYWNoIGl0ZXJhdGlvbiBh
-bmQgdGhlbiBmaW5kIHRoZSBtYXhpbXVtIGRlbGF5IAo+IGV4cGVyaWVuY2VkIGJ5IGhpZ2ggcHJp
-b3JpdHkgdGhyZWFkIGFjcm9zcyB0aGUgaXRlcmF0aW9ucy4gVGhpcyBwYXRjaCAKPiBpbXBsZW1l
-bnRzIHRoZSBjaGFuZ2UuIEFkZGl0aW9uYWxseSwgdGhpcyBwYXRjaCByZW1vdmVzIGxvY2tfd2Fp
-dF9kYXQgYXJyYXksIAo+IHdoaWNoIGlzIG5vdCBuZWVkZWQgYW55bW9yZSBhcyB3ZWxsIGFzIG1h
-a2VzIGEgY291cGxlIG9mIG1lc3NhZ2VzIGVhc2llciB0byAKPiB1bmRlcnN0YW5kLgo+IAo+IFRo
-aXMgcGF0Y2ggY2hhbmdlcyB0aGUgbWVzc2FnZXMgZGlzcGxheWVkIGJ5IHRoaXMgdGVzdCBjYXNl
-IHNsaWdodGx5LiBUaGV5IAo+IGxvb2sgbGlrZSB0aGUgZm9sbG93aW5nIG5vdzoKPiAKPiBMb3cg
-cHJpbyB0aHJlYWQgc3RhcnRlZAo+IEhpZ2ggcHJpbyB0aHJlYWQgc3RhcnRlZAo+IEJ1c3kgMCBz
-dGFydGVkCj4gQnVzeSAxIHN0YXJ0ZWQKPiBCdXN5IDIgc3RhcnRlZAo+IEJ1c3kgMyBzdGFydGVk
-Cj4gVGltZSB0YWtlbiBmb3IgaGlnaCBwcmlvIHRocmVhZCB0byBnZXQgdGhlIGxvY2sgb25jZSBy
-ZWxlYXNlZCBieSBsb3cgcHJpbyAKPiB0aHJlYWQKPiBNaW4gZGVsYXkgPSAxMCB1cwo+IE1heCBk
-ZWxheSA9IDM2IHVzCj4gQXZlcmFnZSBkZWxheSA9IDE3LjA2IHVzCj4gU3RhbmRhcmQgRGV2aWF0
-aW9uID0gOC4xMSB1cwo+IFF1YW50aWxlczoKPiA5OS4wJSA8IDM2Cj4gQ3JpdGVyaWE6IEhpZ2gg
-cHJpbyBsb2NrIHdhaXQgdGltZSA8IChMb3cgcHJpbyBsb2NrIGhlbGQgdGltZSArIDIwMCB1cykK
-PiBSZXN1bHQ6IFBBU1MKPiAKPiBJIGhhdmUgdGVzdGVkIHRoaXMgYnkgcnVubmluZyAxMDAwIGl0
-ZXJhdGlvbnMgb2YgcGlfcGVyZiB0ZXN0IG9uIGEgY291cGxlIG9mIAo+IG1hY2hpbmVzLgo+IAo+
-IFRoYW5rcywKPiBTcmlwYXRoaS4KPiAKPiAtLS0KPiAKPiByZWFsdGltZTogRml4IHRoZSBwYXNz
-IGNyaXRlcmlvbiBvZiBwaV9wZXJmIHRlc3QgY2FzZS4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBTcmlw
-YXRoaSBLb2RpIDxzcmlwYXRoaWtAaW4uaWJtLmNvbT4KCkhpIFNyaSwKCklzIHRoaXMgYmFzZWQg
-b24gdGhlIGxhdGVzdCBzbmFwc2hvdC4gSSBnZXQgdGhlIGZvbGxvd2luZyBmYWlsdXJlczoKCnBh
-dGNoaW5nIGZpbGUgdGVzdGNhc2VzL3JlYWx0aW1lL2Z1bmMvcGlfcGVyZi9waV9wZXJmLmMKSHVu
-ayAjMSBGQUlMRUQgYXQgMS4KCgpDYW4geW91IHBsZWFzZSByZXNlbmQgPwoKUmVnYXJkcy0tClN1
-YnJhdGEKCj4gQWNrZWQtYnk6IFdpbGwgU2NobWlkdCA8d2lsbF9zY2htaWR0QHZuZXQuaWJtLmNv
-bT4KPiBBY2tlZC1ieTogR293cmlzaGFua2FyIDxnb3dyaXNoYW5rYXIubUBsaW51eC52bmV0Lmli
-bS5jb20+Cj4gCj4gCj4gZGlmZiAtdXByTiBsdHBfY3ZzXzNqdWxfb3JnL3Rlc3RjYXNlcy9yZWFs
-dGltZS9mdW5jL3BpX3BlcmYvcGlfcGVyZi5jIGx0cF9jdnNfM2p1bC90ZXN0Y2FzZXMvcmVhbHRp
-bWUvZnVuYy9waV9wZXJmL3BpX3BlcmYuYwo+IC0tLSBsdHBfY3ZzXzNqdWxfb3JnL3Rlc3RjYXNl
-cy9yZWFsdGltZS9mdW5jL3BpX3BlcmYvcGlfcGVyZi5jCTIwMDktMDctMDMgMTI6MjE6NDEuMDAw
-MDAwMDAwICswNTMwCj4gKysrIGx0cF9jdnNfM2p1bC90ZXN0Y2FzZXMvcmVhbHRpbWUvZnVuYy9w
-aV9wZXJmL3BpX3BlcmYuYwkyMDA5LTA3LTAzIDEyOjI0OjQ0LjAwMDAwMDAwMCArMDUzMAo+IEBA
-IC0xLDYgKzEsNiBAQAo+ICAvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCj4gICAqCj4gLSAqICAgQ29w
-eXJpZ2h0IMKpIEludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGluZXMgIENvcnAuLCAyMDA3LCAy
-MDA4Cj4gKyAqICAgQ29weXJpZ2h0IMKpIEludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGluZXMg
-IENvcnAuLCAyMDA3LCAyMDA4LCAyMDA5Cj4gICAqCj4gICAqICAgVGhpcyBwcm9ncmFtIGlzIGZy
-ZWUgc29mdHdhcmU7ICB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5Cj4gICAq
-ICAgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBh
-cyBwdWJsaXNoZWQgYnkKPiBAQCAtMzYsNiArMzYsOCBAQAo+ICAgKgo+ICAgKiBISVNUT1JZCj4g
-ICAqICAgICAyMDA3LU5vdi0yMDogICAgSW5pdGlhbCB2ZXJzaW9uIGJ5IFNyaXBhdGhpIEtvZGkg
-PHNyaXBhdGhpa0Bpbi5pYm0uY29tPgo+ICsgKiAgICAgMjAwOS1KdWwtMDM6ICAgIFBhc3MgY3Jp
-dGVyaWEgY29ycmVjdGVkIGJ5IFNyaXBhdGhpIEtvZGkKPiArICogICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8c3JpcGF0aGlrQGluLmlibS5jb20+
-Cj4gICAqCj4gICAqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKi8KPiAgCj4gQEAgLTcxLDkgKzczLDkgQEAg
-c3RhdGljIHVuc2lnbmVkIGludCBoaWdoX3dvcmtfdGltZSA9IERFRgo+ICBzdGF0aWMgdW5zaWdu
-ZWQgaW50IGJ1c3lfd29ya190aW1lOwo+ICBzdGF0aWMgaW50IG51bV9idXN5ID0gLTE7Cj4gIAo+
-IC1uc2VjX3QgbG93X3VubG9jaywgaGlnaF9nZXRfbG9jazsKPiArbnNlY190IGxvd191bmxvY2ss
-IG1heF9waV9kZWxheTsKPiAgCj4gLXN0YXRzX2NvbnRhaW5lcl90IGxvY2tfd2FpdF9kYXQsIGxv
-d19kYXQsIGNwdV9kZWxheV9kYXQ7Cj4gK3N0YXRzX2NvbnRhaW5lcl90IGxvd19kYXQsIGNwdV9k
-ZWxheV9kYXQ7Cj4gIHN0YXRzX2NvbnRhaW5lcl90IGNwdV9kZWxheV9oaXN0Owo+ICBzdGF0c19x
-dWFudGlsZXNfdCBjcHVfZGVsYXlfcXVhbnRpbGVzOwo+ICAKPiBAQCAtMTY1LDEwICsxNjcsOSBA
-QCB2b2lkICogbG93X3ByaW9fdGhyZWFkKHZvaWQgKmFyZykKPiAgCj4gIHZvaWQgKiBoaWdoX3By
-aW9fdGhyZWFkKHZvaWQgKmFyZykKPiAgewo+IC0JbnNlY190IGhpZ2hfc3RhcnQsIGhpZ2hfc3Bl
-bnQsIGhpZ2hfZW5kOwo+ICsJbnNlY190IGhpZ2hfc3RhcnQsIGhpZ2hfZW5kLCBoaWdoX2dldF9s
-b2NrOwo+ICAJdW5zaWduZWQgaW50IGk7Cj4gIAo+IC0Jc3RhdHNfY29udGFpbmVyX2luaXQoJmxv
-Y2tfd2FpdF9kYXQsIGl0ZXJhdGlvbnMpOwo+ICAJc3RhdHNfY29udGFpbmVyX2luaXQoJmNwdV9k
-ZWxheV9kYXQsIGl0ZXJhdGlvbnMpOwo+ICAJc3RhdHNfY29udGFpbmVyX2luaXQoJmNwdV9kZWxh
-eV9oaXN0LCBISVNUX0JVQ0tFVFMpOwo+ICAJc3RhdHNfcXVhbnRpbGVzX2luaXQoJmNwdV9kZWxh
-eV9xdWFudGlsZXMsIChpbnQpbG9nMTAoaXRlcmF0aW9ucykpOwo+IEBAIC0xODQsMTQgKzE4NSwx
-MSBAQCB2b2lkICogaGlnaF9wcmlvX3RocmVhZCh2b2lkICphcmcpCj4gIAkJaGlnaF9zdGFydCA9
-IHJ0X2dldHRpbWUoKTsKPiAgCQlwdGhyZWFkX211dGV4X2xvY2soJmxvY2spOwo+ICAJCWhpZ2hf
-ZW5kID0gcnRfZ2V0dGltZSgpOwo+IC0JCWhpZ2hfc3BlbnQgPSBoaWdoX2VuZCAtIGhpZ2hfc3Rh
-cnQ7Cj4gIAkJaGlnaF9nZXRfbG9jayA9IGhpZ2hfZW5kIC0gbG93X3VubG9jazsKPiAgCj4gIAkJ
-YnVzeV93b3JrX21zKGhpZ2hfd29ya190aW1lKTsKPiAgCQlwdGhyZWFkX211dGV4X3VubG9jaygm
-bG9jayk7Cj4gIAo+IC0JCWxvY2tfd2FpdF9kYXQucmVjb3Jkc1tpXS54ID0gaTsKPiAtCQlsb2Nr
-X3dhaXRfZGF0LnJlY29yZHNbaV0ueSA9IGhpZ2hfc3BlbnQgLyBOU19QRVJfVVM7Cj4gIAkJY3B1
-X2RlbGF5X2RhdC5yZWNvcmRzW2ldLnggPSBpOwo+ICAJCWNwdV9kZWxheV9kYXQucmVjb3Jkc1tp
-XS55ID0gaGlnaF9nZXRfbG9jayAvIE5TX1BFUl9VUzsKPiAgCj4gQEAgLTIwNiwxNCArMjA0LDE2
-IEBAIHZvaWQgKiBoaWdoX3ByaW9fdGhyZWFkKHZvaWQgKmFyZykKPiAgCQkJCSJMYXRlbmN5ICh1
-cykiLCAiU2FtcGxlcyIsICZjcHVfZGVsYXlfaGlzdCwgInN0ZXBzIik7Cj4gIAo+ICAJcHJpbnRm
-KCJUaW1lIHRha2VuIGZvciBoaWdoIHByaW8gdGhyZWFkIHRvIGdldCB0aGUgbG9jayBvbmNlIHJl
-bGVhc2VkIGJ5IGxvdyBwcmlvIHRocmVhZFxuIik7Cj4gLQlwcmludGYoIk1pbiB3YWl0IHRpbWUg
-PSAlbGQgdXNcbiIsIHN0YXRzX21pbigmY3B1X2RlbGF5X2RhdCkpOwo+IC0JcHJpbnRmKCJNYXgg
-d2FpdCB0aW1lID0gJWxkIHVzXG4iLCBzdGF0c19tYXgoJmNwdV9kZWxheV9kYXQpKTsKPiAtCXBy
-aW50ZigiQXZlcmFnZSB3YWl0IHRpbWUgPSAlNC4yZiB1c1xuIiwgc3RhdHNfYXZnKCZjcHVfZGVs
-YXlfZGF0KSk7Cj4gKwlwcmludGYoIk1pbiBkZWxheSA9ICVsZCB1c1xuIiwgc3RhdHNfbWluKCZj
-cHVfZGVsYXlfZGF0KSk7Cj4gKwlwcmludGYoIk1heCBkZWxheSA9ICVsZCB1c1xuIiwgc3RhdHNf
-bWF4KCZjcHVfZGVsYXlfZGF0KSk7Cj4gKwlwcmludGYoIkF2ZXJhZ2UgZGVsYXkgPSAlNC4yZiB1
-c1xuIiwgc3RhdHNfYXZnKCZjcHVfZGVsYXlfZGF0KSk7Cj4gIAlwcmludGYoIlN0YW5kYXJkIERl
-dmlhdGlvbiA9ICU0LjJmIHVzXG4iLCBzdGF0c19zdGRkZXYoJmNwdV9kZWxheV9kYXQpKTsKPiAg
-CXByaW50ZigiUXVhbnRpbGVzOlxuIik7Cj4gIAlzdGF0c19xdWFudGlsZXNfY2FsYygmY3B1X2Rl
-bGF5X2RhdCwgJmNwdV9kZWxheV9xdWFudGlsZXMpOwo+ICAJc3RhdHNfcXVhbnRpbGVzX3ByaW50
-KCZjcHVfZGVsYXlfcXVhbnRpbGVzKTsKPiAgCj4gKwltYXhfcGlfZGVsYXkgPSBzdGF0c19tYXgo
-JmNwdV9kZWxheV9kYXQpOwo+ICsKPiAgCXJldHVybiBOVUxMOwo+ICB9Cj4gIAo+IEBAIC0yNjEs
-MTMgKzI2MSwxMSBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQo+ICAJfQo+ICAK
-PiAgCWpvaW5fdGhyZWFkcygpOwo+IC0JcHJpbnRmKCJMb3cgcHJpbyBsb2NrIGhlbGQgdGltZSAo
-bWluKSA9ICVsZCB1c1xuIiwgc3RhdHNfbWluKCZsb3dfZGF0KSk7Cj4gLQlwcmludGYoIkhpZ2gg
-cHJpbyBsb2NrIHdhaXQgdGltZSAobWF4KSA9ICVsZCB1c1xuIiwgc3RhdHNfbWF4KCZsb2NrX3dh
-aXRfZGF0KSk7Cj4gIAlwcmludGYoIkNyaXRlcmlhOiBIaWdoIHByaW8gbG9jayB3YWl0IHRpbWUg
-PCAiCj4gIAkJCSIoTG93IHByaW8gbG9jayBoZWxkIHRpbWUgKyAlZCB1cylcbiIsIChpbnQpcGFz
-c19jcml0ZXJpYSk7Cj4gIAo+ICAJcmV0ID0gMDsKPiAtCWlmIChzdGF0c19tYXgoJmxvY2tfd2Fp
-dF9kYXQpID4gc3RhdHNfbWluKCZsb3dfZGF0KSArIChpbnQpcGFzc19jcml0ZXJpYSkKPiArCWlm
-IChtYXhfcGlfZGVsYXkgPiBwYXNzX2NyaXRlcmlhKQo+ICAJCXJldCA9IDE7Cj4gIAo+ICAJcHJp
-bnRmKCJSZXN1bHQ6ICVzXG4iLCByZXQgPyAiRkFJTCIgOiAiUEFTUyIpOwo+IAoKCi0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0
-Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+This is a multi-part message in MIME format.
+
+------_=_NextPart_001_01C9FA87.B7517662
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+It looks like the io_*.sh files are now not needed since the test source =
+has been modified to check for an autoconf definition.
+This patch modifies the syscalls runtest file to call those test =
+directly. (io_cancel, io_destroy01, io_getevents01,=20
+io_setup01, io_submit01)
+
+As the scripts are not needed any more, can we remove the following?
+
+ltp/testcases/kernel/syscalls/io_cancel01.sh
+ltp/testcases/kernel/syscalls/io_destroy01.sh
+ltp/testcases/kernel/syscalls/io_getevents0101.sh
+ltp/testcases/kernel/syscalls/io_setup01.sh
+ltp/testcases/kernel/syscalls/io_submit01.sh
+
+These scripts were not being copied into testcases/bin anyway and so =
+AFAIK, did not run correctly by pan anyway.
+
+Henry Yei
+MontaVista Software, Inc.
+hyei@mvista.com
+
+
+=20
+
+------_=_NextPart_001_01C9FA87.B7517662
+Content-Type: application/octet-stream;
+	name="syscalls-io.patch"
+Content-Transfer-Encoding: base64
+Content-Description: syscalls-io.patch
+Content-Disposition: attachment;
+	filename="syscalls-io.patch"
+
+LS0tIGNvbW11bml0eS9sdHAvcnVudGVzdC9zeXNjYWxscwkyMDA5LTA3LTAxIDEyOjUyOjA4LjEz
+NzUwNDgwMCAtMDcwMAorKysgbHRwL3J1bnRlc3Qvc3lzY2FsbHMJMjAwOS0wNy0wMSAxMjo1Mjow
+OC4zNDA2MjcyMDAgLTA3MDAKQEAgLTQ0MSwxMSArNDQxLDExIEBACiBpb3BsMDEgaW9wbDAxCiBp
+b3BsMDIgaW9wbDAyCiAKLWlvX2NhbmNlbDAxIHJ1bi1pb19jYW5jZWwuc2gKLWlvX2Rlc3Ryb3kw
+MSBydW4taW9fZGVzdHJveS5zaAotaW9fZ2V0ZXZlbnRzMDEgcnVuLWlvX2dldGV2ZW50cy5zaAot
+aW9fc2V0dXAwMSBydW4taW9fc2V0dXAuc2gKLWlvX3N1Ym1pdDAxIHJ1bi1pb19zdWJtaXQuc2gK
+K2lvX2NhbmNlbDAxIGlvX2NhbmNlbDAxCitpb19kZXN0cm95MDEgaW9fZGVzdHJveTAxCitpb19n
+ZXRldmVudHMwMSBpb19nZXRldmVudHMwMQoraW9fc2V0dXAwMSBpb19zZXR1cDAxCitpb19zdWJt
+aXQwMSBpb19zdWJtaXQwMQogCiBrZXljdGwwMSBrZXljdGwwMQogCg==
+
+------_=_NextPart_001_01C9FA87.B7517662
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+
+------_=_NextPart_001_01C9FA87.B7517662
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------_=_NextPart_001_01C9FA87.B7517662--
+
