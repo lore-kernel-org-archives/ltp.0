@@ -1,22 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yamato@redhat.com>) id 1MP865-0004Vc-Gt
-	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 04:52:33 +0000
-Received: from mx2.redhat.com ([66.187.237.31])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MP85s-0001uK-Mv
-	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 04:52:28 +0000
-Date: Fri, 10 Jul 2009 13:52:15 +0900 (JST)
-Message-Id: <20090710.135215.615775074055320747.yamato@redhat.com>
-From: Masatake YAMATO <yamato@redhat.com>
-In-Reply-To: <364299f40907091040v73e1dc3dm8c8eada4221abc7b@mail.gmail.com>
-References: <364299f40907070906v174de45ci6765d3111f64a279@mail.gmail.com>
-	<f5a7b3810907090750lde8e9carc9fe8a6317e67153@mail.gmail.com>
-	<364299f40907091040v73e1dc3dm8c8eada4221abc7b@mail.gmail.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Compile failure with rt_sigaction on amd64
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naresh.kernel@gmail.com>) id 1MMM9Y-0000qf-0h
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2009 13:16:40 +0000
+Received: from mail-qy0-f200.google.com ([209.85.221.200])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MMM9X-0004Jm-3z
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2009 13:16:39 +0000
+Received: by qyk38 with SMTP id 38so1851462qyk.28
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 02 Jul 2009 06:16:37 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1246539672.9700.7.camel@subratamodak.linux.ibm.com>
+References: <f5a7b3810907020556y371595fenf19bdbf7b5ea1d3e@mail.gmail.com>
+	<1246539672.9700.7.camel@subratamodak.linux.ibm.com>
+Date: Thu, 2 Jul 2009 18:41:00 +0530
+Message-ID: <f5a7b3810907020611x2a4bd2ecy72947428a3484547@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Subject: Re: [LTP] rt_sigaction FAIL -> PASS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,50 +28,43 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: yanegomi@gmail.com
-Cc: ltp-list@lists.sourceforge.net, naresh.kernel@gmail.com
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net
 
-I've found an interesting code in glibc about "rt_sigaction".
+On Thu, Jul 2, 2009 at 6:31 PM, Subrata Modak<subrata@linux.vnet.ibm.com> w=
+rote:
+> On Thu, 2009-07-02 at 18:26 +0530, naresh kamboju wrote:
+>> Hi,
+>>
+>> I have noticed design issues in rt_sigaction test case.
+>> After few changes test case reported as PASS.
+>>
+>> Shall I change the design and generate new patches.
+>
+> Yes, you can. But, provide the reasons for all - why you want to change
+> the old, what does the old do/doesn=B4t and what does the new do/doesn
+> =B4t :-)
 
-sysdeps/unix/sysv/linux/x86_64/sigaction.c:
-int
-__libc_sigaction (int sig, const struct sigaction *act, struct sigaction *oact)
-{
-  int result;
-  struct kernel_sigaction kact, koact;
+Thanks for the info.
+I'll send a patch in short.
 
-  if (act)
-    {
-      kact.k_sa_handler = act->sa_handler;
-      memcpy (&kact.sa_mask, &act->sa_mask, sizeof (sigset_t));
-      kact.sa_flags = act->sa_flags | SA_RESTORER;
+Best regards
+Naresh Kamboju
+>
+> Regards--
+> Subrata
+>
+>>
+>> Best regards,
+>> Naresh Kamboju
+>
+>
 
-      kact.sa_restorer = &restore_rt;
-    }
-
-  /* XXX The size argument hopefully will have to be changed to the
-     real size of the user-level sigset_t.  */
-  result = INLINE_SYSCALL (rt_sigaction, 4,
-			   sig, act ? __ptrvalue (&kact) : NULL,
-			   oact ? __ptrvalue (&koact) : NULL, _NSIG / 8);
---------------------------------------------------------------^^^^^^^^^
-
-
-
-How do you think follow the way to glibc?
-In addition man page is needed to update.
-
-Masatake YAMATO
-
-------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
+---------------------------------------------------------------------------=
+---
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
