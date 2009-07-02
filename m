@@ -1,24 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1MLvT4-0006oO-2b
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2009 08:47:02 +0000
-Received: from qw-out-1920.google.com ([74.125.92.148])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MLvT2-0007w2-Qj
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2009 08:47:02 +0000
-Received: by qw-out-1920.google.com with SMTP id 5so327968qwc.4
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 01 Jul 2009 01:47:00 -0700 (PDT)
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <matthltc@us.ibm.com>) id 1MMR2l-0007p2-EY
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2009 18:29:59 +0000
+Received: from e6.ny.us.ibm.com ([32.97.182.146])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MMILB-0002Am-4k
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2009 09:12:28 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e6.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n6298iuJ001326
+	for <ltp-list@lists.sourceforge.net>; Thu, 2 Jul 2009 05:08:44 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n6295Z0u214958
+	for <ltp-list@lists.sourceforge.net>; Thu, 2 Jul 2009 05:05:35 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n62938U4031361
+	for <ltp-list@lists.sourceforge.net>; Thu, 2 Jul 2009 05:03:08 -0400
+Date: Thu, 2 Jul 2009 02:05:32 -0700
+From: Matt Helsley <matthltc@us.ibm.com>
+Message-ID: <20090702090532.GF19135@count0.beaverton.ibm.com>
+References: <20090702084828.GC19135@count0.beaverton.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <1246360333.4819.53.camel@subratamodak.linux.ibm.com>
-References: <f5a7b3810906300042w14bc6a4fp8046160d07d8254e@mail.gmail.com>
-	<1246360333.4819.53.camel@subratamodak.linux.ibm.com>
-Date: Wed, 1 Jul 2009 14:16:59 +0530
-Message-ID: <f5a7b3810907010146s247bfbc0w3e6ca9213a927d7@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Subject: Re: [LTP] [FIX PATCHES] ltp-mq_unlink_speculative_7-2
+Content-Disposition: inline
+In-Reply-To: <20090702084828.GC19135@count0.beaverton.ibm.com>
+Subject: [LTP] [PATCH 4/4] netns: Change interpretters from sh to bash
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,81 +36,260 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net, Brandon Philips <bphilips@suse.de>, maxin john <maxinbjohn@gmail.com>, Manas Kumar Nayak <maknayak@in.ibm.com>
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: Poornima Nayak <poornima.nayak@in.ibm.com>, LTP <ltp-list@lists.sourceforge.net>, Daniel Lezcano <daniel.lezcano@free.fr>, Veerendra C <vechandr@in.ibm.com>, Munipradeep <mbeeraka@in.ibm.com>
 
-On Tue, Jun 30, 2009 at 4:42 PM, Subrata
-Modak<subrata@linux.vnet.ibm.com> wrote:
-> Hi Naresh,
->
-> On Tue, 2009-06-30 at 13:12 +0530, naresh kamboju wrote:
->> Hi,
->>
->> I have noticed failure under open_posix_testsuite for
->> mq_unlink/speculative/7-2.c and fixed.
->> After changing the uninitialized to initialized char array of mqname[]
->> test case got PASSED.
->
-> Great. Could you also please share with us the test results before and
-> after this patch ?
+As best I can tell these tests do not use true sh syntax -- they use bash
+syntax. Rather than bother hunting down all the bash-isms just convert
+them to use bash as their interpretter.
 
-Before patch Results:
+Also found with my fedora 10 KVM image.
 
-conformance/interfaces/mq_unlink/speculative/7-2: execution: FAILED
-# ./7-2.test
-Test FAILED, error is Invalid argument
-
-After patch Results:
-
-conformance/interfaces/mq_unlink/speculative/7-2: execution: PASS
-# ./7-2.test
-Test PASSED
-
-
-Best regards,
-Naresh Kamboju
-
->
-> Regards--
-> Subrata
->
->>
->> I have attached patch and below.
->> Please review the same.
->>
->>
->> Best Regards
->> Naresh Kamboju
->>
->> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
->>
->>
->> diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/mq_u=
-nlink/speculative/7-2.c
->> b/testcases/open_posix_testsuite/conformance/interfaces/mq_unlink/specul=
-ative/7-2.c
->> --- a/testcases/open_posix_testsuite/conformance/interfaces/mq_unlink/sp=
-eculative/7-2.c
->> 2005-06-03 22:00:59.000000000 +0530
->> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mq_unlink/sp=
-eculative/7-2.c
->> 2009-06-30 12:37:35.000000000 +0530
->> @@ -28,7 +28,7 @@
->>
->> =A0int main()
->> =A0{
->> - =A0 =A0 =A0 char mqname[50];
->> + =A0 =A0 =A0 char mqname[50]=3D"/123";
->>
->> =A0// =A0 =A0 sprintf(mqname, FUNCTION "_" TEST "_%d", getpid());
->
->
-
----------------------------------------------------------------------------=
+Signed-off-by: Matt Helsley <matthltc@us.ibm.com>
+Cc: Daniel Lezcano <daniel.lezcano@free.fr>
+Cc: Poornima Nayak <poornima.nayak@in.ibm.com>
+Cc: Sudhir Kumar <skumar@linux.vnet.ibm.com>
+Cc: Veerendra C <vechandr@in.ibm.com>
+Cc: Munipradeep <mbeeraka@in.ibm.com>
+Cc: ltp@list.sourceforge.net
 ---
+ testcases/kernel/containers/netns/ch_ftp.sh          |    2 +-
+ testcases/kernel/containers/netns/child.sh           |    2 +-
+ testcases/kernel/containers/netns/child_1.sh         |    2 +-
+ testcases/kernel/containers/netns/child_2.sh         |    2 +-
+ testcases/kernel/containers/netns/child_propagate.sh |    2 +-
+ testcases/kernel/containers/netns/childipv6.sh       |    2 +-
+ testcases/kernel/containers/netns/childns.sh         |    2 +-
+ testcases/kernel/containers/netns/delchild.sh        |    2 +-
+ testcases/kernel/containers/netns/initialize.sh      |    2 +-
+ testcases/kernel/containers/netns/par_ftp.sh         |    2 +-
+ testcases/kernel/containers/netns/parent.sh          |    2 +-
+ testcases/kernel/containers/netns/parent_1.sh        |    2 +-
+ testcases/kernel/containers/netns/parent_2.sh        |    2 +-
+ testcases/kernel/containers/netns/parent_share.sh    |    2 +-
+ testcases/kernel/containers/netns/parent_view.sh     |    2 +-
+ testcases/kernel/containers/netns/parentns.sh        |    2 +-
+ testcases/kernel/containers/netns/paripv6.sh         |    2 +-
+ testcases/kernel/containers/netns/rename_net.sh      |    8 ++++----
+ testcases/kernel/containers/netns/runnetnstest.sh    |    2 +-
+ 19 files changed, 22 insertions(+), 22 deletions(-)
+
+Index: ltp/testcases/kernel/containers/netns/rename_net.sh
+===================================================================
+--- ltp.orig/testcases/kernel/containers/netns/rename_net.sh
++++ ltp/testcases/kernel/containers/netns/rename_net.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ ################################################################################ 
+ ##                                                                            ##
+@@ -46,9 +46,9 @@ export TST_TOTAL
+     ip link set $vnet1 name $newdev
+     ifconfig $newdev $IP2/24 up > /dev/null 2>&1
+ 
+-    if [ $? == 0 ] ; then
++    if [ $? -eq 0 ] ; then
+         tst_resm TINFO "Successfully Renamed device to $newdev"
+-        if [ DEBUG == 1 ]; then
++        if [ DEBUG -eq 1 ]; then
+                 ifconfig
+         fi
+     else
+@@ -56,7 +56,7 @@ export TST_TOTAL
+         status=-1
+     fi
+ 
+-    if [ $status == 0 ] ; then
++    if [ $status -eq 0 ] ; then
+         echo $sshpid > /tmp/FIFO3
+         echo $newdev > /tmp/FIFO4
+     else
+Index: ltp/testcases/kernel/containers/netns/runnetnstest.sh
+===================================================================
+--- ltp.orig/testcases/kernel/containers/netns/runnetnstest.sh
++++ ltp/testcases/kernel/containers/netns/runnetnstest.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ ################################################################################ 
+ ##                                                                            ##
+Index: ltp/testcases/kernel/containers/netns/ch_ftp.sh
+===================================================================
+--- ltp.orig/testcases/kernel/containers/netns/ch_ftp.sh
++++ ltp/testcases/kernel/containers/netns/ch_ftp.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ ################################################################################
+ ##                                                                            ##
+ ## Copyright (c) International Business Machines  Corp., 2008                 ##
+Index: ltp/testcases/kernel/containers/netns/child.sh
+===================================================================
+--- ltp.orig/testcases/kernel/containers/netns/child.sh
++++ ltp/testcases/kernel/containers/netns/child.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ ################################################################################ 
+ ##                                                                            ##
+Index: ltp/testcases/kernel/containers/netns/child_1.sh
+===================================================================
+--- ltp.orig/testcases/kernel/containers/netns/child_1.sh
++++ ltp/testcases/kernel/containers/netns/child_1.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ ################################################################################ 
+ ##                                                                            ##
+ ## Copyright (c) International Business Machines  Corp., 2008                 ##
+Index: ltp/testcases/kernel/containers/netns/child_2.sh
+===================================================================
+--- ltp.orig/testcases/kernel/containers/netns/child_2.sh
++++ ltp/testcases/kernel/containers/netns/child_2.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ ################################################################################ 
+ ##                                                                            ##
+Index: ltp/testcases/kernel/containers/netns/child_propagate.sh
+===================================================================
+--- ltp.orig/testcases/kernel/containers/netns/child_propagate.sh
++++ ltp/testcases/kernel/containers/netns/child_propagate.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ ################################################################################ 
+ ##                                                                            ##
+Index: ltp/testcases/kernel/containers/netns/childipv6.sh
+===================================================================
+--- ltp.orig/testcases/kernel/containers/netns/childipv6.sh
++++ ltp/testcases/kernel/containers/netns/childipv6.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ ################################################################################ 
+ ##                                                                            ##
+Index: ltp/testcases/kernel/containers/netns/childns.sh
+===================================================================
+--- ltp.orig/testcases/kernel/containers/netns/childns.sh
++++ ltp/testcases/kernel/containers/netns/childns.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ ################################################################################ 
+ ##                                                                            ##
+Index: ltp/testcases/kernel/containers/netns/delchild.sh
+===================================================================
+--- ltp.orig/testcases/kernel/containers/netns/delchild.sh
++++ ltp/testcases/kernel/containers/netns/delchild.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ ################################################################################ 
+ ##                                                                            ##
+Index: ltp/testcases/kernel/containers/netns/initialize.sh
+===================================================================
+--- ltp.orig/testcases/kernel/containers/netns/initialize.sh
++++ ltp/testcases/kernel/containers/netns/initialize.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ ################################################################################ 
+ ##                                                                            ##
+Index: ltp/testcases/kernel/containers/netns/par_ftp.sh
+===================================================================
+--- ltp.orig/testcases/kernel/containers/netns/par_ftp.sh
++++ ltp/testcases/kernel/containers/netns/par_ftp.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ ################################################################################ 
+ ##                                                                            ##
+Index: ltp/testcases/kernel/containers/netns/parent.sh
+===================================================================
+--- ltp.orig/testcases/kernel/containers/netns/parent.sh
++++ ltp/testcases/kernel/containers/netns/parent.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ ################################################################################ 
+ ##                                                                            ##
+Index: ltp/testcases/kernel/containers/netns/parent_1.sh
+===================================================================
+--- ltp.orig/testcases/kernel/containers/netns/parent_1.sh
++++ ltp/testcases/kernel/containers/netns/parent_1.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ ################################################################################ 
+ ##                                                                            ##
+Index: ltp/testcases/kernel/containers/netns/parent_2.sh
+===================================================================
+--- ltp.orig/testcases/kernel/containers/netns/parent_2.sh
++++ ltp/testcases/kernel/containers/netns/parent_2.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ ################################################################################ 
+ ##                                                                            ##
+Index: ltp/testcases/kernel/containers/netns/parent_share.sh
+===================================================================
+--- ltp.orig/testcases/kernel/containers/netns/parent_share.sh
++++ ltp/testcases/kernel/containers/netns/parent_share.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ ################################################################################ 
+ ##                                                                            ##
+Index: ltp/testcases/kernel/containers/netns/parent_view.sh
+===================================================================
+--- ltp.orig/testcases/kernel/containers/netns/parent_view.sh
++++ ltp/testcases/kernel/containers/netns/parent_view.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ ################################################################################ 
+ ##                                                                            ##
+Index: ltp/testcases/kernel/containers/netns/parentns.sh
+===================================================================
+--- ltp.orig/testcases/kernel/containers/netns/parentns.sh
++++ ltp/testcases/kernel/containers/netns/parentns.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ ################################################################################ 
+ ##                                                                            ##
+Index: ltp/testcases/kernel/containers/netns/paripv6.sh
+===================================================================
+--- ltp.orig/testcases/kernel/containers/netns/paripv6.sh
++++ ltp/testcases/kernel/containers/netns/paripv6.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ ################################################################################ 
+ ##                                                                            ##
+
+------------------------------------------------------------------------------
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
