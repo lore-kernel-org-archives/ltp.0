@@ -1,23 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MTTxX-0003xY-JP
-	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 05:01:43 +0000
-Received: from mail-px0-f174.google.com ([209.85.216.174])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MTTxP-0001eC-OL
-	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 05:01:43 +0000
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <matthltc@us.ibm.com>) id 1MMHyc-0004IB-9J
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2009 08:49:06 +0000
+Received: from [32.97.110.152] (helo=e34.co.us.ibm.com)
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MMHyX-0000c1-P1
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2009 08:49:06 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e34.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n628jDjf030282
+	for <ltp-list@lists.sourceforge.net>; Thu, 2 Jul 2009 02:45:13 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n628mU7c183068
+	for <ltp-list@lists.sourceforge.net>; Thu, 2 Jul 2009 02:48:30 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n628mTxi026303
+	for <ltp-list@lists.sourceforge.net>; Thu, 2 Jul 2009 02:48:30 -0600
+Date: Thu, 2 Jul 2009 01:48:28 -0700
+From: Matt Helsley <matthltc@us.ibm.com>
+Message-ID: <20090702084828.GC19135@count0.beaverton.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <364299f40907212138rb1f671eke3aabd6587c0f925@mail.gmail.com>
-References: <20090721.182542.1000278277145531816.caiqian@cclom.cn>
-	<364299f40907210721q365aa8fdu21a1b2ff254bc60a@mail.gmail.com>
-	<200907211728.56027.vapier@gentoo.org>
-	<364299f40907212138rb1f671eke3aabd6587c0f925@mail.gmail.com>
-Date: Tue, 21 Jul 2009 22:01:34 -0700
-Message-ID: <364299f40907212201u64779636v91ff74c45c32c3f3@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] LTP Intermediate Release for JULY 2009 Build Failures
+Content-Disposition: inline
+Subject: [LTP] [PATCH 1/4] netns: Report version of iproute2 tools in
+	ver_linux
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,94 +36,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net, ltp-list@lists.sf.net
+To: subrata@linux.vnet.ibm.com
+Cc: Poornima Nayak <poornima.nayak@in.ibm.com>, LTP <ltp-list@lists.sourceforge.net>, Daniel Lezcano <daniel.lezcano@free.fr>, Veerendra C <vechandr@in.ibm.com>, Munipradeep <mbeeraka@in.ibm.com>
 
-On Tue, Jul 21, 2009 at 9:38 PM, Garrett Cooper<yanegomi@gmail.com> wrote:
-> On Tue, Jul 21, 2009 at 2:28 PM, Mike Frysinger<vapier@gentoo.org> wrote:
->> On Tuesday 21 July 2009 10:21:44 Garrett Cooper wrote:
->>> I was tempted to fix the format string error, but I don't know what
->>> the potential implications are of switching the data type from
->>> u_int64_t to unsigned long long...
->>
->> dont do that. =A0just use the proper format string from inttypes.h.
->> uint64_t f;
->> printf("f =3D %"PRIu64"\n", f);
->>
->>> +/* Dummy function reference to avoid compiler warning from
->>> linux_syscall_numbers.h. */
->>> +extern void cleanup() { }
->>
->> this is incorrect for a few reasons. =A0it should read:
->> +/* Dummy function as syscall() from linux_syscall_numbers.h uses cleanu=
-p() */
->> void cleanup() { }
->> -mike
->
-> =A0 =A0Ok. I'll fix it again, recompile, and test.
-> =A0 =A0Thanks for the review Mike :) (even though it's a bit post-mortem
-> now). I do lack a bit when it comes to C coding style and that's one
-> area that I want to improve upon.
+Report the version of the ip route tools in ver_linux with ip -V. The
+version is important to the netns testcases for example. Since it would
+be useful for other testcases add it to the ver_linux script.
 
-Ok, new patch given Mike's review suggestion...
+Signed-off-by: Matt Helsley <matthltc@us.ibm.com>
+Cc: Daniel Lezcano <daniel.lezcano@free.fr>
+Cc: Poornima Nayak <poornima.nayak@in.ibm.com>
+Cc: Sudhir Kumar <skumar@linux.vnet.ibm.com>
+Cc: Veerendra C <vechandr@in.ibm.com>
+Cc: Munipradeep <mbeeraka@in.ibm.com>
+Cc: ltp@list.sourceforge.net
 
-Fix compiler error for
-testcases/kernel/syscalls/eventfd2/eventfd2_03.c noted by CAI Qian
-w.r.t. the intermediate July release, as...
-1. The necessary headers weren't being pulled in for waitpid.
-2. gcc was complaining about -Wunused with cleanup.
-3. The wrong format argument was being passed to printf.
-
-Fix for 3 and suggestions on coding style made by Mike Frysinger.
-
-Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
-
-gcooper@orangebox /scratch/ltp-dev2/ltp $ cdiff
-testcases/kernel/syscalls/eventfd2/eventfd2_03.c
-Index: testcases/kernel/syscalls/eventfd2/eventfd2_03.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/eventfd2/eventfd2_03.c=
-,v
-retrieving revision 1.2
-diff -u -r1.2 eventfd2_03.c
---- testcases/kernel/syscalls/eventfd2/eventfd2_03.c    6 Jul 2009
-14:49:18 -0000       1.2
-+++ testcases/kernel/syscalls/eventfd2/eventfd2_03.c    22 Jul 2009
-05:00:37 -0000
-@@ -26,6 +26,7 @@
- #include <sys/types.h>
- #include <sys/syscall.h>
- #include <sys/stat.h>
-+#include <sys/wait.h>
- #include <fcntl.h>
- #include <stdlib.h>
- #include <stdio.h>
-@@ -44,6 +45,8 @@
- #define EFD_SEMLIKE (1 << 0)
- #endif
-
-+/* Dummy function as syscall from linux_syscall_numbers.h uses cleanup(). =
-*/
-+void cleanup() { }
-
- static int eventfd2(int count, int flags) {
-        return syscall(__NR_eventfd2, count, flags);
-@@ -56,7 +59,7 @@
-                perror("reading eventfd");
-                exit(1);
-        }
--       fprintf(stdout, "[%u] wait completed on %d: count=3D%llu\n",
-+       fprintf(stdout, "[%u] wait completed on %d: count=3D%lu64\n",
-                getpid(), fd, cntr);
- }
-
----------------------------------------------------------------------------=
 ---
+ ver_linux |    3 +++
+ 1 file changed, 3 insertions(+)
+
+Index: ltp/ver_linux
+===================================================================
+--- ltp.orig/ver_linux
++++ ltp/ver_linux
+@@ -62,6 +62,9 @@ ps --version 2>&1 | awk 'NR==1{print "Pr
+ ifconfig --version 2>&1 | grep tools | awk \
+ 'NR==1{print "Net-tools             ", $NF}'
+ 
++ip -V 2>&1 | awk \
++'NR==1{print "iproute2             ", $NF}'
++
+ # Kbd needs 'loadkeys -h',
+ loadkeys -h 2>&1 | awk \
+ '(NR==1 && ($3 !~ /option/)) {print "Kbd                   ", $3}'
+
+------------------------------------------------------------------------------
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
