@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MO7lD-0001Iu-Di
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 10:18:51 +0000
-Received: from an-out-0708.google.com ([209.85.132.249])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MO7l5-0002nz-1Y
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 10:18:51 +0000
-Received: by an-out-0708.google.com with SMTP id c38so1889046ana.37
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 07 Jul 2009 03:18:42 -0700 (PDT)
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MMRA8-00024g-QS
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2009 18:37:36 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MMR9K-0006Tf-1B
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2009 18:37:36 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 2 Jul 2009 14:35:46 -0400
+References: <20090702084828.GC19135@count0.beaverton.ibm.com>
+	<20090702090532.GF19135@count0.beaverton.ibm.com>
+In-Reply-To: <20090702090532.GF19135@count0.beaverton.ibm.com>
 MIME-Version: 1.0
-Date: Tue, 7 Jul 2009 03:12:08 -0700
-Message-ID: <364299f40907070312w7250ccf6rf87ff97761521f49@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] Compile failure with rt_sigaction on amd64
+Message-Id: <200907021435.48510.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 4/4] netns: Change interpretters from sh to bash
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,67 +25,84 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0162681854386897820=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: Poornima Nayak <poornima.nayak@in.ibm.com>, Daniel Lezcano <daniel.lezcano@free.fr>, Veerendra C <vechandr@in.ibm.com>, Munipradeep <mbeeraka@in.ibm.com>
 
-    Oops... looks like someone forgot __amd64__ / __ia64__:
+--===============0162681854386897820==
+Content-Type: multipart/signed; boundary="nextPart1957566.MmS7zWs4L4";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-gcc -g -O2 -I../../include -g -Wall -I../../../../include -Wall -O2 -W
-   rt_sigaction01.c  -L../../../../lib -lltp -o rt_sigaction01
-rt_sigaction01.c: In function 'set_handler':
-rt_sigaction01.c:147: error: 'SIGSETSIZE' undeclared (first use in
-this function)
-rt_sigaction01.c:147: error: (Each undeclared identifier is reported only once
-rt_sigaction01.c:147: error: for each function it appears in.)
-make[4]: *** [rt_sigaction01] Error 1
-make[4]: Leaving directory
-`/scratch/ltp-vanilla/ltp/testcases/kernel/syscalls/rt_sigaction'
-make[3]: *** [all] Error 2
-make[3]: Leaving directory `/scratch/ltp-vanilla/ltp/testcases/kernel/syscalls'
-make[2]: *** [all] Error 2
-make[2]: Leaving directory `/scratch/ltp-vanilla/ltp/testcases/kernel'
-make[1]: *** [all] Error 2
-make[1]: Leaving directory `/scratch/ltp-vanilla/ltp/testcases'
-make: *** [all] Error 2
-gcooper@orangebox /scratch/ltp-vanilla/ltp $ uname -a
-Linux orangebox 2.6.29-gentoo-r5 #2 SMP PREEMPT Sun Jun 14 01:11:32
-PDT 2009 x86_64 Intel(R) Core(TM)2 Quad CPU Q9400 @ 2.66GHz
-GenuineIntel GNU/Linux
-gcooper@orangebox /scratch/ltp-vanilla/ltp $ grep -B 1 -A 1 SIGSETSIZE
-/scratch/ltp-vanilla/ltp/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
-#if defined __mips__
-#define SIGSETSIZE 16
-#endif
---
-#if defined __arm__ || __i386__ || __powerpc__
-#define SIGSETSIZE 8
-#endif
---
-                sigaddset(&sa.sa_mask, sig_to_mask);
-                TEST(syscall(__NR_rt_sigaction,sig, &sa,
-&oldaction,SIGSETSIZE));
-        if (TEST_RETURN == 0) {
+--nextPart1957566.MmS7zWs4L4
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-#endif
+On Thursday 02 July 2009 05:05:32 Matt Helsley wrote:
+> As best I can tell these tests do not use true sh syntax -- they use bash
+> syntax. Rather than bother hunting down all the bash-isms just convert
+> them to use bash as their interpretter.
 
-I tried using sizeof(sigaction_t), but unfortunately the results for
-the testcase(s) on my system were always EINVAL. This issue wasn't
-present a few days ago...
+the changelog doesnt seem to jive with the commit.  if you were merely=20
+changing the shebang, why did you also fix the bashisms like s/=3D=3D/-eq/ ?
 
-Any ideas?
+at any rate, someone (i dont recall who) posted fixes to these files recent=
+ly=20
+to de-bashify them.  there was some feedback though, so perhaps you should=
+=20
+address those minor issues and submit an updated patch.
 
-Thanks,
--Garrett
+in general, converting sh to bash is a bad idea as it can cause issues for =
+us=20
+embedded peeps.
+=2Dmike
+
+--nextPart1957566.MmS7zWs4L4
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJKTP4EAAoJEEFjO5/oN/WB3pwQAOWNivSZYoGcY1DJnzfU6i/E
+7waAkpDVRzibEGxYRVqH7TP5RjjR/GGV3poPOMgzrix4mJWmF/JMfVn32aIXbXHr
+6LrWSaFBmjfatG3P8njk1+L81ZG01BrVolzsw0CjsVKMGyEUi0zORiAjLdb8RHx9
+yWpmwuPT0tbLLKN6G2Urc4Ar0LyxkT7PEKi+Eh8I07/w0vNWQgg0DfyFJK03xSgw
+9LJGv7tYVqvrPP450nBZExBCg6M9uedFYyD0BISkvt8bPcxo0cXhfTjwGTZvZ6YB
+q+i3HNsqzKTBQHFY4svLQ1W7WYO37PfiXZoXy1T7aOyUkwEzRVRNwXCjgRl3/ab2
+piyyjMK3ujZnOkFJ2999nPt36ZTiW0bAc0cuimqlZmW9O2MWR9wjOnNwQdNTNEC/
+fTGFih7ka+YWs1Uni6a1udsz+Y6hGd8LBfbEDtFdtLbvKM+C6HfEWkUfCw3rVfSJ
+oSRAfoTfsJtbxUctDi6xedhWxKUfiEK3Yjt1DDTStnWGRBWYhcYwlbTdJd2MJHRX
+UisbTW8Lv5VtBLcibUSHc47tHxY6bieSAOo3n1LutfBN1Sy0Thzp9EbmGPF17lHC
+JF3Tf+2flk8QolZUg6FxOH/Ec50kTXUo9SKBgXzluY2O0sPkE76OHNBYL6Fr7cON
+293Lyy/M0mUOQ5YuKZMt
+=ss60
+-----END PGP SIGNATURE-----
+
+--nextPart1957566.MmS7zWs4L4--
+
+
+--===============0162681854386897820==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have 
-the opportunity to enter the BlackBerry Developer Challenge. See full prize 
-details at: http://p.sf.net/sfu/blackberry
+
+--===============0162681854386897820==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0162681854386897820==--
+
