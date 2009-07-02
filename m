@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MMXIg-0000sg-6y
-	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 01:10:50 +0000
-Received: from an-out-0708.google.com ([209.85.132.244])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MMXIb-0001UD-Q7
-	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 01:10:50 +0000
-Received: by an-out-0708.google.com with SMTP id c38so873288ana.37
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 02 Jul 2009 18:10:45 -0700 (PDT)
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MMUTl-0007An-Fe
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2009 22:10:05 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MMUTj-0000Dj-3v
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2009 22:10:05 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 2 Jul 2009 18:09:16 -0400
+References: <20090702084828.GC19135@count0.beaverton.ibm.com>
+	<200907021435.48510.vapier@gentoo.org>
+	<20090702203253.GI19135@count0.beaverton.ibm.com>
+In-Reply-To: <20090702203253.GI19135@count0.beaverton.ibm.com>
 MIME-Version: 1.0
-Date: Thu, 2 Jul 2009 17:41:28 -0700
-Message-ID: <364299f40907021741l44726656y344a1adb42207179@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Content-Type: multipart/mixed; boundary=0016368e1ee8bd5f70046dc26a0c
-Subject: [LTP] [PATCH 2/10] config.mk not required for clean
+Message-Id: <200907021809.18522.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 4/4] netns: Change interpretters from sh to bash
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,63 +26,61 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============4456583325297676127=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Matt Helsley <matthltc@us.ibm.com>
+Cc: Poornima Nayak <poornima.nayak@in.ibm.com>, ltp-list@lists.sourceforge.net, Daniel Lezcano <daniel.lezcano@free.fr>, Veerendra C <vechandr@in.ibm.com>, Munipradeep <mbeeraka@in.ibm.com>
 
---0016368e1ee8bd5f70046dc26a0c
-Content-Type: text/plain; charset=ISO-8859-1
+--===============4456583325297676127==
+Content-Type: multipart/signed; boundary="nextPart1728554.AOp1zbvtIS";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
-In order to loosen the requirement of having config.mk for a clean /
-distclean operation, we need to check for %clean in MAKECMDGOALS.
+--nextPart1728554.AOp1zbvtIS
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Other associated changes are:
-1. Standardizing variables.
-2. Adding missing GPLv2 copyright notices to tops of Makefiles.
+On Thursday 02 July 2009 16:32:53 Matt Helsley wrote:
+> On Thu, Jul 02, 2009 at 02:35:46PM -0400, Mike Frysinger wrote:
+> > in general, converting sh to bash is a bad idea as it can cause issues
+> > for us embedded peeps.
+>
+> I suppose that's because of the memory bash consumes. Is there anything
+> else it does which is bad for embedded?
 
-        Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+there is memory and disk usage concerns, but there are also systems that ca=
+nt=20
+run bash at all (e.g. systems without fork() -- all no-mmu Linux ports)
+=2Dmike
 
---0016368e1ee8bd5f70046dc26a0c
-Content-Type: application/octet-stream; 
-	name="config.mk-not-reqd-for-clean.2.diff"
-Content-Disposition: attachment; 
-	filename="config.mk-not-reqd-for-clean.2.diff"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fwo6jkb10
+--nextPart1728554.AOp1zbvtIS
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-SW5kZXg6IHRlc3RjYXNlcy9rZXJuZWwvc2VjdXJpdHkvaW50ZWdyaXR5L2ltYS9zcmMvTWFrZWZp
-bGUKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PQpSQ1MgZmlsZTogL2N2c3Jvb3QvbHRwL2x0cC90ZXN0Y2FzZXMva2VybmVs
-L3NlY3VyaXR5L2ludGVncml0eS9pbWEvc3JjL01ha2VmaWxlLHYKcmV0cmlldmluZyByZXZpc2lv
-biAxLjEKZGlmZiAtdSAtcjEuMSBNYWtlZmlsZQotLS0gdGVzdGNhc2VzL2tlcm5lbC9zZWN1cml0
-eS9pbnRlZ3JpdHkvaW1hL3NyYy9NYWtlZmlsZQkzMSBNYXIgMjAwOSAxMzo1ODoxNCAtMDAwMAkx
-LjEKKysrIHRlc3RjYXNlcy9rZXJuZWwvc2VjdXJpdHkvaW50ZWdyaXR5L2ltYS9zcmMvTWFrZWZp
-bGUJMyBKdWwgMjAwOSAwMDozOTo1NCAtMDAwMApAQCAtMSwxMiArMSw0MSBAQAotaW5jbHVkZSAu
-Li8uLi8uLi8uLi8uLi8uLi9jb25maWcubWsKKyMKKyMgICAgTWFrZWZpbGUgZm9yOiBrZXJuZWwv
-c2VjdXJpdHkvaW50ZWdyaXR5L2ltYSB0ZXN0Y2FzZS4KKyMKKyMgICAgQ29weXJpZ2h0IChDKSAy
-MDA5LCBDaXNjbyBTeXN0ZW1zIEluYy4KKyMKKyMgICAgVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29m
-dHdhcmU7IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKKyMgICAgaXQgdW5k
-ZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNo
-ZWQgYnkKKyMgICAgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24g
-MiBvZiB0aGUgTGljZW5zZSwgb3IKKyMgICAgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVy
-c2lvbi4KKyMKKyMgICAgVGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIHRo
-YXQgaXQgd2lsbCBiZSB1c2VmdWwsCisjICAgIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgd2l0
-aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCisjICAgIE1FUkNIQU5UQUJJTElUWSBv
-ciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZSB0aGUKKyMgICAgR05VIEdl
-bmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KKyMKKyMgICAgWW91IHNob3Vs
-ZCBoYXZlIHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2Ug
-YWxvbmcKKyMgICAgd2l0aCB0aGlzIHByb2dyYW07IGlmIG5vdCwgd3JpdGUgdG8gdGhlIEZyZWUg
-U29mdHdhcmUgRm91bmRhdGlvbiwgSW5jLiwKKyMgICAgNTEgRnJhbmtsaW4gU3RyZWV0LCBGaWZ0
-aCBGbG9vciwgQm9zdG9uLCBNQSAwMjExMC0xMzAxIFVTQS4KKyMKKyMgR2FycmV0dCBDb29wZXIs
-IEp1bHkgMjAwOQorIworIyBDb3B5cmlnaHQgKGMpIDIwMDkgYnkgQ2lzY28gU3lzdGVtcywgSW5j
-LgorIyBBbGwgcmlnaHRzIHJlc2VydmVkCisjCisKK3NyY2RpcgkJCT89IC4uLy4uLy4uLy4uCisK
-K2lmbmVxICgkKE1BS0VDTURHT0FMUyksY2xlYW4pCitpbmNsdWRlICQoc3JjZGlyKS9jb25maWcu
-bWsKK2VuZGlmCiAKIGlmZXEgKCQoQ1JZUFRPX0xJQiksLWxjcnlwdG8pCi0JVEFSR0VUUz1pbWFf
-bW1hcCBpbWFfbWVhc3VyZSBpbWFfYm9vdF9hZ2dyZWdhdGUKLQlMRExJQlMgKz0gJChDUllQVE9f
-TElCKQotZWxzZQotCVRBUkdFVFM9aW1hX21tYXAKK1RBUkdFVFMJCQk6PSBpbWFfbWVhc3VyZSBp
-bWFfYm9vdF9hZ2dyZWdhdGUKK0xETElCUwkJCSs9ICQoQ1JZUFRPX0xJQikKIGVuZGlmCiAKK1RB
-UkdFVFMJCQkrPSBpbWFfbW1hcAorCiBhbGw6ICQoVEFSR0VUUykKIAogaW5zdGFsbDoK
---0016368e1ee8bd5f70046dc26a0c
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJKTTAOAAoJEEFjO5/oN/WBWrMQAMQrrV/YH0y0o0pNLmnJ4eXZ
++WGBvX519cb0SrMr/cB7uWrlGEEV8tcKx+HPgF9RfvUNyk4cf3cvgSr4FmzeF0HE
+MlkDL00H2U3ixiBr3vmq8/yEYWqKOSU3xG6ZxIzF8hXQy4UdwQKlEWu3HHYu4nY4
+LCpuArgUDnJva457TozJEJ15Vd1TgMDspZcHjnYOq+VFCiBtXokpBIuWoll7bdlw
+xVDYhMvb+PH3eAH0g0ODqMJtqKd5HbZMyp7fKclqpNptoe6RdsV4HRoYJVI3zYO5
+vYytno5fAMh3qb90vzzE6yJoU4g8XUd7wVtRFwxl1v9v/YVg5GNuR9Ef1gIbpVam
+3ehVe7nb9TAt8pdZ5lkYAdpNYn64cjkcN8GqKu5opU4++lm5a1fb7H4xw1ColfxX
+nRwr6D9gS6d6b+yUhF48u/3qikFmDtS3gXbDAfLc7hKVC5O9rM3Cgdw2BIDwQbh7
+GkIVZ6HPJNSExHFtmOz8/i1l2C0ImtHqq/pwvCLKYSliKTAvtJ9PJY2nJB/LmF70
+Ox+GoSz/K+rhQErbc9gpeUqrT7WsbcbjswqsF+SgNjN4Y8WxyudWjbKY2GCAE0GX
+CJ8egAJCKpM1jTI0yXjHofLKQVQ8U3KZFAD2bkafP0DoPUzXoYob13gV2aIsX7KW
+tFdNSi7R8QGp5UZrSTsw
+=9yJy
+-----END PGP SIGNATURE-----
+
+--nextPart1728554.AOp1zbvtIS--
+
+
+--===============4456583325297676127==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -90,7 +88,7 @@ Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 
---0016368e1ee8bd5f70046dc26a0c
+--===============4456583325297676127==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -101,5 +99,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---0016368e1ee8bd5f70046dc26a0c--
+--===============4456583325297676127==--
 
