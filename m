@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MMZVn-0004hz-MI
-	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 03:32:31 +0000
-Received: from mail-yx0-f202.google.com ([209.85.210.202])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MMZVi-0000UR-U8
-	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 03:32:31 +0000
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MMXIJ-00072l-GR
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 01:10:27 +0000
+Received: from mail-yx0-f195.google.com ([209.85.210.195])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MMXIE-0008Qj-72
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 01:10:27 +0000
+Received: by yxe33 with SMTP id 33so1894640yxe.28
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 02 Jul 2009 18:10:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20090703031736.GK19135@count0.beaverton.ibm.com>
-References: <20090702091341.GG19135@count0.beaverton.ibm.com>
-	<364299f40907021918wb3f95e7w6fd24ec8208e7c0@mail.gmail.com>
-	<20090703031736.GK19135@count0.beaverton.ibm.com>
-Date: Thu, 2 Jul 2009 20:32:25 -0700
-Message-ID: <364299f40907022032h1a940b6btf833954ed322bf90@mail.gmail.com>
+Date: Thu, 2 Jul 2009 17:44:55 -0700
+Message-ID: <364299f40907021744i498536afwb71c8d6820cdecc5@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [RFC][PATCH] Use prefix and other autoconf variables
-	uniformly
+Content-Type: multipart/mixed; boundary=0016e64f918e0d61e9046dc27703
+Subject: [LTP] [PATCH 5/10] config.mk not required for clean
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,35 +26,64 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Matt Helsley <matthltc@us.ibm.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-On Thu, Jul 2, 2009 at 8:17 PM, Matt Helsley<matthltc@us.ibm.com> wrote:
-> On Thu, Jul 02, 2009 at 07:18:58PM -0700, Garrett Cooper wrote:
->> =A0 =A0 I understand what you're trying to accomplish, but part of the
->> point behind the current design with the Makefile system was in fact
->> for it to be run without intervention from autotools. Hence, the
->> directions noted in INSTALL / the help target up at the top.
->> Thanks,
->> -Garrett
->
-> Suitable default files should fix the non-autotools path and allow the
-> autotools path to use prefix and the other variables. Does that seem
-> fine to you?
+--0016e64f918e0d61e9046dc27703
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-    Well, it's not just my call, but the rule of thumb in my book is
-as long as default behavior can be maintained while maintaining as
-much logical backwards compatibility as possible, it's definitely a
-win-win.
-With best regards,
--Garrett
+In order to loosen the requirement of having config.mk for a clean /
+distclean operation, we need to check for %clean in MAKECMDGOALS.
 
----------------------------------------------------------------------------=
----
+Other associated changes are:
+1. Standardizing variables.
+2. Adding missing GPLv2 copyright notices to tops of Makefiles.
+
+        Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+
+--0016e64f918e0d61e9046dc27703
+Content-Type: application/octet-stream; 
+	name="config.mk-not-reqd-for-clean.5.diff"
+Content-Disposition: attachment; 
+	filename="config.mk-not-reqd-for-clean.5.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fwo6o8d90
+
+SW5kZXg6IHRlc3RjYXNlcy9rZXJuZWwvZnMvcHJvYy9NYWtlZmlsZQo9PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ClJDUyBm
+aWxlOiAvY3Zzcm9vdC9sdHAvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvcHJvYy9NYWtlZmlsZSx2
+CnJldHJpZXZpbmcgcmV2aXNpb24gMS41CmRpZmYgLXUgLXIxLjUgTWFrZWZpbGUKLS0tIHRlc3Rj
+YXNlcy9rZXJuZWwvZnMvcHJvYy9NYWtlZmlsZQk1IEZlYiAyMDA5IDExOjE4OjU4IC0wMDAwCTEu
+NQorKysgdGVzdGNhc2VzL2tlcm5lbC9mcy9wcm9jL01ha2VmaWxlCTMgSnVsIDIwMDkgMDA6Mzk6
+NTkgLTAwMDAKQEAgLTE2LDEzICsxNiwxNyBAQAogIyAgRm91bmRhdGlvbiwgSW5jLiwgNTkgVGVt
+cGxlIFBsYWNlLCBTdWl0ZSAzMzAsIEJvc3RvbiwgTUEgMDIxMTEtMTMwNyBVU0EKICMKIAotaW5j
+bHVkZSAuLi8uLi8uLi8uLi9jb25maWcubWsKK3NyY2RpcgkJCT89IC4uLy4uLy4uLy4uCiAKLUNG
+TEFHUys9CS1JLi4vLi4vLi4vLi4vaW5jbHVkZQotTERMSUJTKz0JLUwuLi8uLi8uLi8uLi9saWIg
+LWxsdHAgJChTRUxJTlVYX0xJQlMpCitpZm5lcSAoJChNQUtFQ01ER09BTFMpLGNsZWFuKQoraW5j
+bHVkZSAkKHNyY2RpcikvY29uZmlnLm1rCitlbmRpZgogCi1TUkNTPSQod2lsZGNhcmQgKi5jKQot
+VEFSR0VUUz0kKHBhdHN1YnN0ICUuYywlLCQoU1JDUykpCitDRkxBR1MJCQkrPSAtSSQoc3JjZGly
+KS9pbmNsdWRlCitMREZMQUdTCQkJKz0gLUwkKHNyY2RpcikvbGliIAorTERMSUJTCQkJKz0gLWxs
+dHAgJChTRUxJTlVYX0xJQlMpCisKK1RBUkdFVFMJCQk6PSAkKHBhdHN1YnN0ICUuYywlLCQod2ls
+ZGNhcmQgKi5jKSkKIAogYWxsOiAkKFRBUkdFVFMpCiAK
+--0016e64f918e0d61e9046dc27703
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+
+--0016e64f918e0d61e9046dc27703
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--0016e64f918e0d61e9046dc27703--
+
