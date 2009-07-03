@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <galak@kernel.crashing.org>) id 1MWDyt-0003C0-FG
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2009 18:34:27 +0000
-Received: from gate.crashing.org ([63.228.1.57])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MWDyf-0001Um-7M
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2009 18:34:17 +0000
-Received: from [IPv6:::1] (localhost.localdomain [127.0.0.1])
-	by gate.crashing.org (8.14.1/8.13.8) with ESMTP id n6TIY1WI005030
-	for <ltp-list@lists.sourceforge.net>; Wed, 29 Jul 2009 13:34:02 -0500
-Message-Id: <E69DB27D-E186-4934-AB69-C5EDB67A48AF@kernel.crashing.org>
-From: Kumar Gala <galak@kernel.crashing.org>
-Mime-Version: 1.0 (Apple Message framework v935.3)
-Date: Wed, 29 Jul 2009 13:33:59 -0500
-Subject: [LTP] top of tree fails to build on PPC fc11 box
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MMZWo-0004ms-Ho
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 03:33:34 +0000
+Received: from mail-yx0-f195.google.com ([209.85.210.195])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MMZWi-0000o1-FV
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 03:33:34 +0000
+Received: by yxe33 with SMTP id 33so1986567yxe.28
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 02 Jul 2009 20:33:27 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20090702090228.GE19135@count0.beaverton.ibm.com>
+References: <20090702084828.GC19135@count0.beaverton.ibm.com>
+	<20090702090228.GE19135@count0.beaverton.ibm.com>
+Date: Thu, 2 Jul 2009 20:33:27 -0700
+Message-ID: <364299f40907022033n5334ed2bv41dad2628603d8f2@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH 3/4] netns: Fixup non-sh syntax
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,39 +28,49 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP <ltp-list@lists.sourceforge.net>
+To: Matt Helsley <matthltc@us.ibm.com>
+Cc: Poornima Nayak <poornima.nayak@in.ibm.com>, LTP <ltp-list@lists.sourceforge.net>, Daniel Lezcano <daniel.lezcano@free.fr>, Veerendra C <vechandr@in.ibm.com>, Munipradeep <mbeeraka@in.ibm.com>
 
-I get the following compile error:
+On Thu, Jul 2, 2009 at 2:02 AM, Matt Helsley<matthltc@us.ibm.com> wrote:
+> Fixup some non-sh syntax which seems to trigger problems on my fedora 10
+> KVM image.
+>
+> Signed-off-by: Matt Helsley <matthltc@us.ibm.com>
+> Cc: Daniel Lezcano <daniel.lezcano@free.fr>
+> Cc: Poornima Nayak <poornima.nayak@in.ibm.com>
+> Cc: Sudhir Kumar <skumar@linux.vnet.ibm.com>
+> Cc: Veerendra C <vechandr@in.ibm.com>
+> Cc: Munipradeep <mbeeraka@in.ibm.com>
+> Cc: ltp@list.sourceforge.net
+> ---
+> =A0testcases/kernel/containers/netns/parentns.sh | =A0 =A02 +-
+> =A01 file changed, 1 insertion(+), 1 deletion(-)
+>
+> Index: ltp/testcases/kernel/containers/netns/parentns.sh
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- ltp.orig/testcases/kernel/containers/netns/parentns.sh
+> +++ ltp/testcases/kernel/containers/netns/parentns.sh
+> @@ -56,7 +56,7 @@ status=3D0
+> =A0 =A0 create_veth
+> =A0 =A0 vnet0=3D$dev0
+> =A0 =A0 vnet1=3D$dev1
+> - =A0 =A0if [[ -z $vnet0 || -z $vnet1 ]] ; then
+> + =A0 =A0if [ -z $vnet0 -o -z $vnet1 ] ; then
+> =A0 =A0 =A0 =A0 tst_resm TFAIL =A0"Error: unable to create veth pair"
+> =A0 =A0 =A0 =A0 exit -1
+> =A0 =A0 else
 
-make[4]: Leaving directory `/root/ltp/testcases/kernel/syscalls/fstat'
-make[4]: Entering directory `/root/ltp/testcases/kernel/syscalls/ 
-fstatat'
-cc -Wall  -I../../include -g -Wall -I../../../../include -Wall - 
-DTST_USE_NEWER64_SYSCALL=1 -D_FILE_OFFSET_BITS=64   -c -o  
-fstatat01_64.o fstatat01.c
-fstatat01.c:95:37: error: missing binary operator before token "5"
-fstatat01.c: In function 'main':
-fstatat01.c:126: error: expected ')' before numeric constant
-make[4]: *** [fstatat01_64.o] Error 1
-make[4]: Leaving directory `/root/ltp/testcases/kernel/syscalls/fstatat'
-make[3]: *** [all] Error 2
-make[3]: Leaving directory `/root/ltp/testcases/kernel/syscalls'
-make[2]: *** [all] Error 2
-make[2]: Leaving directory `/root/ltp/testcases/kernel'
-make[1]: *** [all] Error 2
-make[1]: Leaving directory `/root/ltp/testcases'
-make: *** [all] Error 2
+While you're there, could you please quote "$vnet0"?
+Thanks,
+-Garrett
 
-- k
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+---------------------------------------------------------------------------=
+---
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
