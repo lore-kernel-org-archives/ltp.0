@@ -1,18 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <markver@us.ibm.com>) id 1MUUcJ-0004Yt-I2
-	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2009 23:55:59 +0000
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MUUc6-0005s2-Md
-	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2009 23:55:54 +0000
-Message-ID: <OFE8FAC2C8.7B8ECD5A-ON852575FD.0081EDEC-852575FD.00837054@us.ibm.com>
-From: Mark Ver <markver@us.ibm.com>
-Date: Fri, 24 Jul 2009 19:55:39 -0400
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MMZVn-0004hz-MI
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 03:32:31 +0000
+Received: from mail-yx0-f202.google.com ([209.85.210.202])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MMZVi-0000UR-U8
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 03:32:31 +0000
 MIME-Version: 1.0
-Subject: [LTP] hardware requirements
+In-Reply-To: <20090703031736.GK19135@count0.beaverton.ibm.com>
+References: <20090702091341.GG19135@count0.beaverton.ibm.com>
+	<364299f40907021918wb3f95e7w6fd24ec8208e7c0@mail.gmail.com>
+	<20090703031736.GK19135@count0.beaverton.ibm.com>
+Date: Thu, 2 Jul 2009 20:32:25 -0700
+Message-ID: <364299f40907022032h1a940b6btf833954ed322bf90@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [RFC][PATCH] Use prefix and other autoconf variables
+	uniformly
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,90 +27,35 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6288355776132309669=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sf.net
+To: Matt Helsley <matthltc@us.ibm.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
---===============6288355776132309669==
-Content-type: multipart/alternative; 
-	Boundary="0__=0ABBFF6EDF126B7C8f9e8a93df938690918c0ABBFF6EDF126B7C"
-Content-Disposition: inline
+On Thu, Jul 2, 2009 at 8:17 PM, Matt Helsley<matthltc@us.ibm.com> wrote:
+> On Thu, Jul 02, 2009 at 07:18:58PM -0700, Garrett Cooper wrote:
+>> =A0 =A0 I understand what you're trying to accomplish, but part of the
+>> point behind the current design with the Makefile system was in fact
+>> for it to be run without intervention from autotools. Hence, the
+>> directions noted in INSTALL / the help target up at the top.
+>> Thanks,
+>> -Garrett
+>
+> Suitable default files should fix the non-autotools path and allow the
+> autotools path to use prefix and the other variables. Does that seem
+> fine to you?
 
---0__=0ABBFF6EDF126B7C8f9e8a93df938690918c0ABBFF6EDF126B7C
-Content-type: text/plain; charset=US-ASCII
-Content-transfer-encoding: quoted-printable
+    Well, it's not just my call, but the rule of thumb in my book is
+as long as default behavior can be maintained while maintaining as
+much logical backwards compatibility as possible, it's definitely a
+win-win.
+With best regards,
+-Garrett
 
-
-
-Hi,
-
-Is there an agreed upon set of hardware requirements (memory, disk spac=
-e,
-etc.) for running, if not all tests, at least the default testcases
-executed by runltp?
-
-Also, if not very knowledgeable of hardware, is there an easy way to te=
-ll
-if a particular test will run on a target platform or not?  For example=
-, I
-suspect the DMA_THREAD_DIOTEST7 tests are not expected to run on all
-architectures.  Is there a way to find out what platforms it does suppo=
-rt?
-
-Thanks,
-- Mark Ver
-
-office:  Building 710 / Room 2-RF-10
-phone: (845) 435-7794  [tie 8 295-7794]=
-
---0__=0ABBFF6EDF126B7C8f9e8a93df938690918c0ABBFF6EDF126B7C
-Content-type: text/html; charset=US-ASCII
-Content-Disposition: inline
-Content-transfer-encoding: quoted-printable
-
-<html><body>
-<p>Hi,<br>
-<br>
-Is there an agreed upon set of hardware requirements (memory, disk spac=
-e, etc.) for running, if not all tests, at least the default testcases =
-executed by runltp?<br>
-<br>
-Also, if not very knowledgeable of hardware, is there an easy way to te=
-ll if a particular test will run on a target platform or not?  For exam=
-ple, I suspect the DMA_THREAD_DIOTEST7 tests are not expected to run on=
- all architectures.  Is there a way to find out what platforms it does =
-support?<br>
-<br>
-Thanks,<br>
-- Mark Ver<br>
-<br>
-office:  Building 710 / Room 2-RF-10<br>
-phone: (845) 435-7794  [tie 8 295-7794]<br>
-</body></html>=
-
---0__=0ABBFF6EDF126B7C8f9e8a93df938690918c0ABBFF6EDF126B7C--
-
-
-
---===============6288355776132309669==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-
---===============6288355776132309669==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+---------------------------------------------------------------------------=
+---
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============6288355776132309669==--
-
-
