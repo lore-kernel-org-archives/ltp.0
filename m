@@ -2,21 +2,28 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <galak@kernel.crashing.org>) id 1MTdzK-0000RC-Ng
-	for Ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 15:44:14 +0000
-Received: from gate.crashing.org ([63.228.1.57])
+	(envelope-from <sripathik@in.ibm.com>) id 1MMcpl-0002Uf-7W
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 07:05:21 +0000
+Received: from e28smtp03.in.ibm.com ([59.145.155.3])
 	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MTdzF-0003S0-Q7
-	for Ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 15:44:14 +0000
-Message-Id: <578FBC09-589D-4691-82FF-985FCFE8ADC9@kernel.crashing.org>
-From: Kumar Gala <galak@kernel.crashing.org>
-In-Reply-To: <6213bc560907220838h49e5c273qa543e538bb37923a@mail.gmail.com>
-Mime-Version: 1.0 (Apple Message framework v935.3)
-Date: Wed, 22 Jul 2009 10:44:03 -0500
-References: <6213bc560907210233l17aa3e75pcb7c20e3faa24195@mail.gmail.com>
-	<2A0DDADE-5C3C-43F2-9487-98A8A735DC8D@kernel.crashing.org>
-	<6213bc560907220838h49e5c273qa543e538bb37923a@mail.gmail.com>
-Subject: Re: [LTP] msgctl10 fails on Powerpc Linux-2.6.29.6
+	(Exim 4.69) id 1MMcpe-00089f-D1
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 07:05:20 +0000
+Received: from d28relay02.in.ibm.com (d28relay02.in.ibm.com [9.184.220.59])
+	by e28smtp03.in.ibm.com (8.13.1/8.13.1) with ESMTP id n63758Bx002366
+	for <ltp-list@lists.sourceforge.net>; Fri, 3 Jul 2009 12:35:08 +0530
+Received: from d28av01.in.ibm.com (d28av01.in.ibm.com [9.184.220.63])
+	by d28relay02.in.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n63758wY4108330
+	for <ltp-list@lists.sourceforge.net>; Fri, 3 Jul 2009 12:35:08 +0530
+Received: from d28av01.in.ibm.com (loopback [127.0.0.1])
+	by d28av01.in.ibm.com (8.13.1/8.13.3) with ESMTP id n63757Wt001946
+	for <ltp-list@lists.sourceforge.net>; Fri, 3 Jul 2009 12:35:07 +0530
+From: Sripathi Kodi <sripathik@in.ibm.com>
+Date: Fri, 3 Jul 2009 12:35:06 +0530
+MIME-Version: 1.0
+Content-Disposition: inline
+Message-Id: <200907031235.06805.sripathik@in.ibm.com>
+Subject: [LTP] [PATCH] realtime: Fix the pass criterion of pi_perf test case.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,46 +33,199 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: srikanth krishnakar <skrishnakar@gmail.com>
-Cc: Linuxppc-dev@ozlabs.org, Ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>, Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
+
+Hi,
+
+The pass criterion in pi_perf test case is wrong. It compares the minimum =
+
+amount of time taken by the low priority thread with the maximum amount of =
+
+time taken by the high priority thread to calculate the PI delay. Obviously=
+, =
+
+these min and max don't necessarily happen in the same iteration, resulting=
+ in =
+
+a number of false failures. The correct way is to compare the time taken by =
+
+low and high priority threads in each iteration and then find the maximum d=
+elay =
+
+experienced by high priority thread across the iterations. This patch =
+
+implements the change. Additionally, this patch removes lock_wait_dat array=
+, =
+
+which is not needed anymore as well as makes a couple of messages easier to =
+
+understand.
+
+This patch changes the messages displayed by this test case slightly. They =
+
+look like the following now:
+
+Low prio thread started
+High prio thread started
+Busy 0 started
+Busy 1 started
+Busy 2 started
+Busy 3 started
+Time taken for high prio thread to get the lock once released by low prio =
+
+thread
+Min delay =3D 10 us
+Max delay =3D 36 us
+Average delay =3D 17.06 us
+Standard Deviation =3D 8.11 us
+Quantiles:
+99.0% < 36
+Criteria: High prio lock wait time < (Low prio lock held time + 200 us)
+Result: PASS
+
+I have tested this by running 1000 iterations of pi_perf test on a couple o=
+f =
+
+machines.
+
+Thanks,
+Sripathi.
+
+---
+
+realtime: Fix the pass criterion of pi_perf test case.
+
+Signed-off-by: Sripathi Kodi <sripathik@in.ibm.com>
+Acked-by: Will Schmidt <will_schmidt@vnet.ibm.com>
+Acked-by: Gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
 
 
-On Jul 22, 2009, at 10:38 AM, srikanth krishnakar wrote:
+diff -uprN ltp_cvs_3jul_org/testcases/realtime/func/pi_perf/pi_perf.c ltp_c=
+vs_3jul/testcases/realtime/func/pi_perf/pi_perf.c
+--- ltp_cvs_3jul_org/testcases/realtime/func/pi_perf/pi_perf.c	2009-07-03 1=
+2:21:41.000000000 +0530
++++ ltp_cvs_3jul/testcases/realtime/func/pi_perf/pi_perf.c	2009-07-03 12:24=
+:44.000000000 +0530
+@@ -1,6 +1,6 @@
+ /*************************************************************************=
+*****
+  *
+- *   Copyright =A9 International Business Machines  Corp., 2007, 2008
++ *   Copyright =A9 International Business Machines  Corp., 2007, 2008, 2009
+  *
+  *   This program is free software;  you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+@@ -36,6 +36,8 @@
+  *
+  * HISTORY
+  *     2007-Nov-20:    Initial version by Sripathi Kodi <sripathik@in.ibm.=
+com>
++ *     2009-Jul-03:    Pass criteria corrected by Sripathi Kodi
++ *                                                      <sripathik@in.ibm.=
+com>
+  *
+  *************************************************************************=
+****/
+ =
 
->
->
-> On Wed, Jul 22, 2009 at 8:52 PM, Kumar Gala  
-> <galak@kernel.crashing.org> wrote:
-> I'm not seeing any BUG* in traps.c @ line 904.
->
->
-> On Jul 21, 2009, at 4:33 AM, srikanth krishnakar wrote:
->
-> The LTP test case msgctl10.c fails on linux-2.6.29.6 for PowerPC  
-> architecture (ppc440)
->
->
-> msgctl10    1  B------------[ cut here ]------------
-> kernel BUG at arch/powerpc/kernel/traps.c:904!
-> Oops: Exception in kernel mode, sig: 5 [#9]
->
-> I'm not seeing any BUG* in traps.c @ line 904.  Do you have some  
-> other patches on top of 2.6.29.6?
->
-> - k
->
->
-> I have LTTng patches on top of linux-2.6.29.6.
+@@ -71,9 +73,9 @@ static unsigned int high_work_time =3D DEF
+ static unsigned int busy_work_time;
+ static int num_busy =3D -1;
+ =
 
-Does it modify traps.c?  Can you see what the code around line 904  
-looks like and post that.
+-nsec_t low_unlock, high_get_lock;
++nsec_t low_unlock, max_pi_delay;
+ =
 
-- k
+-stats_container_t lock_wait_dat, low_dat, cpu_delay_dat;
++stats_container_t low_dat, cpu_delay_dat;
+ stats_container_t cpu_delay_hist;
+ stats_quantiles_t cpu_delay_quantiles;
+ =
 
-------------------------------------------------------------------------------
+@@ -165,10 +167,9 @@ void * low_prio_thread(void *arg)
+ =
+
+ void * high_prio_thread(void *arg)
+ {
+-	nsec_t high_start, high_spent, high_end;
++	nsec_t high_start, high_end, high_get_lock;
+ 	unsigned int i;
+ =
+
+-	stats_container_init(&lock_wait_dat, iterations);
+ 	stats_container_init(&cpu_delay_dat, iterations);
+ 	stats_container_init(&cpu_delay_hist, HIST_BUCKETS);
+ 	stats_quantiles_init(&cpu_delay_quantiles, (int)log10(iterations));
+@@ -184,14 +185,11 @@ void * high_prio_thread(void *arg)
+ 		high_start =3D rt_gettime();
+ 		pthread_mutex_lock(&lock);
+ 		high_end =3D rt_gettime();
+-		high_spent =3D high_end - high_start;
+ 		high_get_lock =3D high_end - low_unlock;
+ =
+
+ 		busy_work_ms(high_work_time);
+ 		pthread_mutex_unlock(&lock);
+ =
+
+-		lock_wait_dat.records[i].x =3D i;
+-		lock_wait_dat.records[i].y =3D high_spent / NS_PER_US;
+ 		cpu_delay_dat.records[i].x =3D i;
+ 		cpu_delay_dat.records[i].y =3D high_get_lock / NS_PER_US;
+ =
+
+@@ -206,14 +204,16 @@ void * high_prio_thread(void *arg)
+ 				"Latency (us)", "Samples", &cpu_delay_hist, "steps");
+ =
+
+ 	printf("Time taken for high prio thread to get the lock once released by =
+low prio thread\n");
+-	printf("Min wait time =3D %ld us\n", stats_min(&cpu_delay_dat));
+-	printf("Max wait time =3D %ld us\n", stats_max(&cpu_delay_dat));
+-	printf("Average wait time =3D %4.2f us\n", stats_avg(&cpu_delay_dat));
++	printf("Min delay =3D %ld us\n", stats_min(&cpu_delay_dat));
++	printf("Max delay =3D %ld us\n", stats_max(&cpu_delay_dat));
++	printf("Average delay =3D %4.2f us\n", stats_avg(&cpu_delay_dat));
+ 	printf("Standard Deviation =3D %4.2f us\n", stats_stddev(&cpu_delay_dat));
+ 	printf("Quantiles:\n");
+ 	stats_quantiles_calc(&cpu_delay_dat, &cpu_delay_quantiles);
+ 	stats_quantiles_print(&cpu_delay_quantiles);
+ =
+
++	max_pi_delay =3D stats_max(&cpu_delay_dat);
++
+ 	return NULL;
+ }
+ =
+
+@@ -261,13 +261,11 @@ int main(int argc, char *argv[])
+ 	}
+ =
+
+ 	join_threads();
+-	printf("Low prio lock held time (min) =3D %ld us\n", stats_min(&low_dat));
+-	printf("High prio lock wait time (max) =3D %ld us\n", stats_max(&lock_wai=
+t_dat));
+ 	printf("Criteria: High prio lock wait time < "
+ 			"(Low prio lock held time + %d us)\n", (int)pass_criteria);
+ =
+
+ 	ret =3D 0;
+-	if (stats_max(&lock_wait_dat) > stats_min(&low_dat) + (int)pass_criteria)
++	if (max_pi_delay > pass_criteria)
+ 		ret =3D 1;
+ =
+
+ 	printf("Result: %s\n", ret ? "FAIL" : "PASS");
+
+
+---------------------------------------------------------------------------=
+---
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
