@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <francesco.rundo@st.com>) id 1MO4ZK-000191-Vl
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 06:54:22 +0000
-Received: from eu1sys200aog111.obsmtp.com ([207.126.144.131])
-	by 29vjzd1.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MO4Z9-00011n-OR
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 06:54:17 +0000
-Message-ID: <4A52F0D8.7060509@st.com>
-Date: Tue, 07 Jul 2009 08:53:12 +0200
-From: Francesco RUNDO <francesco.rundo@st.com>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MMZgY-0004y8-K6
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 03:43:38 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MMZgT-0001sX-1T
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 03:43:38 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 2 Jul 2009 23:42:58 -0400
+References: <364299f40907021746p3ce4bacdwbfc834ef7e4cfcfd@mail.gmail.com>
+	<200907022245.43330.vapier@gentoo.org>
+	<364299f40907022027n5f9ee24as262417392ed5bbf2@mail.gmail.com>
+In-Reply-To: <364299f40907022027n5f9ee24as262417392ed5bbf2@mail.gmail.com>
 MIME-Version: 1.0
-References: <4A51CEDC.6080605@linux.vnet.ibm.com> <4A51E253.200@st.com>
-	<364299f40907061028o4c9c2922ma7d430f5e03f4b38@mail.gmail.com>
-In-Reply-To: <364299f40907061028o4c9c2922ma7d430f5e03f4b38@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] cgroups: conditionally enable building cgroup
-	tests
+Message-Id: <200907022342.59078.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 8/10] config.mk not required for clean
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,151 +26,83 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3033897268108633985=="
+Content-Type: multipart/mixed; boundary="===============2934508830348258468=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sf.net
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-This is a multi-part message in MIME format.
---===============3033897268108633985==
-Content-Type: multipart/alternative;
-	boundary="------------030104010703000101090906"
-
-This is a multi-part message in MIME format.
---------------030104010703000101090906
-Content-Type: text/plain; charset=us-ascii; format=flowed
+--===============2934508830348258468==
+Content-Type: multipart/signed; boundary="nextPart3833064.RltaEH9axG";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
-Hi Garrett,
-
-thanks for your comment. Below, my consideration:
-
-Garrett Cooper wrote:
-
->On Mon, Jul 6, 2009 at 4:38 AM, Francesco RUNDO<francesco.rundo@st.com> wrote:
->  
->
->>Hi Gowri,
->>
->>I've already fixed the same issue you reported. I've tested it successfully.
->>
->>Subrata has already merged my patch (please, find it in attachment).
->>
->>Please, check it before to submit another patch.
->>    
->>
->
->At the end of the day, the real problem is that we're not using the
->--with- functionality in autoconf, e.g. --with-cgroups, and instead
->we're hacking a lot of noise into Makefile's.
->
-
-Yes, you're right but your advice can't be applicable in the system in 
-which autoconf is not supported/used to build LTP (a possible scenario 
-in the embedded system).
-
->
->Also, you could have called SUBDIRS += once, like so:
->
->+SUBDIRS += cgroup cpuctl memctl io-throttle freezer cpuset
->
->I can tell at first glance that that Makefile is a mess anyhow,
->because it's referencing _hardcoded_ /proc references and as such will
->fail to cross-compile properly if the target or the host are setup
->differently from one another, in the following two scenarios:
->
-
-Yes, check at "/proc" isn't safe as can't be applicable in case of 
-cross-compilation made off-line on the host.
-I have provided a "work-around" patch to allow off-line 
-cross-compilation trying to reduce the number of changes to be applied 
-to the Makefile.
-
-Regards
-Francesco Rundo
-
---------------030104010703000101090906
-Content-Type: text/html; charset=us-ascii
+--nextPart3833064.RltaEH9axG
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
-  <title></title>
-</head>
-<body text="#000000" bgcolor="#ffffff">
-Hi Garrett,<br>
-<br>
-thanks for your comment. Below, my consideration:<br>
-<br>
-Garrett Cooper wrote:<br>
-<blockquote type="cite"
- cite="mid364299f40907061028o4c9c2922ma7d430f5e03f4b38@mail.gmail.com">
-  <pre wrap="">On Mon, Jul 6, 2009 at 4:38 AM, Francesco RUNDO<a class="moz-txt-link-rfc2396E" href="mailto:francesco.rundo@st.com">&lt;francesco.rundo@st.com&gt;</a> wrote:
-  </pre>
-  <blockquote type="cite">
-    <pre wrap="">Hi Gowri,
+On Thursday 02 July 2009 23:27:52 Garrett Cooper wrote:
+> On Thu, Jul 2, 2009 at 7:45 PM, Mike Frysinger wrote:
+> > how about we aim for avoiding the include completely regardless of
+> > target. really config.mk is setting up the environment and recursive
+> > makes should be inheriting those.  so if our toplevel .mk exported
+> > something like: LTP_CONFIG_INCLUDED = yes
+> >
+> > then all the fragments in the sub-makefiles should look like:
+> > ifneq ($(LTP_CONFIG_INCLUDED),yes)
+> > include $(topdir)/config.mk
+> > endif
+> >
+> > then you could have the clean target lie by doing:
+> > $(MAKE) -C testcases LTP_CONFIG_INCLUDED=yes clean
+> >
+> > which would address all of your concerns ?
+>
+> Yes. That's sort of the concern that I was going for with my previous
+> spin, but then it turned into a gob of Makefile.inc files that were
+> being added unnecessarily to the SCM. Considering that the include
+> file is only needed for files that include config.mk (which are a
+> small handful -- 10 to be exact), I figured that adding the necessary
+> logic to the top would be wise.
 
-I've already fixed the same issue you reported. I've tested it successfully.
+today it is 10, but ideally this is the format we'll be moving to
+-mike
 
-Subrata has already merged my patch (please, find it in attachment).
+--nextPart3833064.RltaEH9axG
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-Please, check it before to submit another patch.
-    </pre>
-  </blockquote>
-  <pre wrap=""><!---->
-At the end of the day, the real problem is that we're not using the
---with- functionality in autoconf, e.g. --with-cgroups, and instead
-we're hacking a lot of noise into Makefile's.</pre>
-</blockquote>
-<br>
-Yes, you're right but your advice can't be applicable in the system in
-which autoconf is not supported/used to build LTP (a possible scenario
-in the embedded system).<br>
-<br>
-<blockquote type="cite"
- cite="mid364299f40907061028o4c9c2922ma7d430f5e03f4b38@mail.gmail.com">
-  <pre wrap="">
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.12 (GNU/Linux)
 
-Also, you could have called SUBDIRS += once, like so:
+iQIcBAABAgAGBQJKTX5DAAoJEEFjO5/oN/WBfDUQAJmNpaCxf4eXqM+tr5y0LULN
+YQqW6tbtVhMd86Qo3RzGIQ8wRi1k3W6Nvir6pLUJqX0/3oSwXwHL5VIdiHScbegD
+Mjsfzi9IafJk5lgK/rFvJbTgavgXYqipsEJ5qbrnnUNKb/sA984YeQr6igMoCMTZ
+DDQI7iiiMZgZqrLPox5mZ27H0aANloYss28dRy1fdSUfymkdkspcC8Cg99lKYJuE
+EjdgWGI1ikCL7hVtWwacHPjvbzh1EUYb3x7TfLHGcGKK9SqvrTdQbU8UeIgEJH0Q
+3Id0vIfC9Ct88b9PpRqDEntLU39HRIXhyg+SJTJ9ZqzABsV2z01N2fgFmsH5m6Gr
+O+Wb7Y4zjMNwIpo8LkkwgNxBe/DVhECHH7yh87tccATBasvbSrhGscpdMr0RJ6Aj
++sYIr2QpVzqOkPjQhoEb6dazT74oSIau+89hdt2ovp/U4yYsvlZ5Gb++fR99zzHd
+fLsg5abF7e3/SIYesNYNToNjhK25IQ13Qe2GQHJegRO7eOWFWTbfnGDQHPa6Zoyd
+jrFeaGqlAdqlZ40nSrnZsVARE3zTfAyKXu0HcNWia074lGhjACudVKxlm4sMsEBr
+0mEiVpe7TX92bVosp1F3t5Str6fJ4cSLiTaAeOlGtnvhMm5TJnoErnavieSeaGWe
+r7shf8WWXK+NIm9QREL9
+=RIzS
+-----END PGP SIGNATURE-----
 
-+SUBDIRS += cgroup cpuctl memctl io-throttle freezer cpuset
-
-I can tell at first glance that that Makefile is a mess anyhow,
-because it's referencing _hardcoded_ /proc references and as such will
-fail to cross-compile properly if the target or the host are setup
-differently from one another, in the following two scenarios:</pre>
-</blockquote>
-<br>
-Yes, check at "/proc" isn't safe as can't be applicable in case of
-cross-compilation made off-line on the host. <br>
-I have provided a "work-around" patch to allow off-line
-cross-compilation trying to reduce the number of changes to be applied
-to the Makefile.<br>
-<br>
-Regards<br>
-Francesco Rundo<br>
-</body>
-</html>
-
---------------030104010703000101090906--
+--nextPart3833064.RltaEH9axG--
 
 
-
---===============3033897268108633985==
+--===============2934508830348258468==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have 
-the opportunity to enter the BlackBerry Developer Challenge. See full prize 
-details at: http://p.sf.net/sfu/blackberry
---===============3033897268108633985==
+
+--===============2934508830348258468==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -181,6 +113,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============3033897268108633985==--
-
+--===============2934508830348258468==--
 
