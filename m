@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <caiqian@cclom.cn>) id 1MTCwX-0004V7-3R
-	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 10:51:33 +0000
-Received: from smtp100.biz.mail.re2.yahoo.com ([206.190.52.46])
-	by 29vjzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1MTCwQ-000170-UJ
-	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 10:51:33 +0000
-Date: Tue, 21 Jul 2009 18:25:42 +0800 (CST)
-Message-Id: <20090721.182542.1000278277145531816.caiqian@cclom.cn>
-From: CAI Qian <caiqian@cclom.cn>
-Mime-Version: 1.0
-Subject: [LTP] LTP Intermediate Release for JULY 2009 Build Failures
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MMXIR-0004ij-LZ
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 01:10:35 +0000
+Received: from mail-yx0-f195.google.com ([209.85.210.195])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MMXIM-0008Qj-CN
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 01:10:35 +0000
+Received: by mail-yx0-f195.google.com with SMTP id 33so1894640yxe.28
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 02 Jul 2009 18:10:30 -0700 (PDT)
+MIME-Version: 1.0
+Date: Thu, 2 Jul 2009 17:40:49 -0700
+Message-ID: <364299f40907021740g4ab0692bp5c9d0b6197fc0b7a@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Content-Type: multipart/mixed; boundary=0016e644d5e063e69b046dc2680c
+Subject: [LTP] [1/10] config.mk not required for clean
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,71 +26,65 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sf.net
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-SGksDQoNCkkgaGF2ZSBzZWVuIHRob3NlIGZhaWx1cmVzLA0KDQojIHVuYW1lIC1hDQpMaW51eCBm
-b28uYmFyLnJlZGhhdC5jb20gMi42LjE4LTE1OC5lbDUgIzEgU01QIE1vbiBKdWwgMTMgMTY6MjM6
-MjAgRURUDQoyMDA5IHMzOTB4IHMzOTB4IHMzOTB4IEdOVS9MaW51eA0KDQptYWtlWzVdOiBFbnRl
-cmluZyBkaXJlY3RvcnkgYC9yb290LzIwMDkwNzIxL2x0cC1pbnRlcm1lZGlhdGUtMjAwOTA3MjEv
-dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9ldmVudGZkMicNCmdjYyAtZyAtTzIgLUkuLi8uLi9p
-bmNsdWRlIC1nIC1XYWxsIC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAtV2FsbCAgICBldmVudGZkMl8w
-MS5jICAtTC4uLy4uLy4uLy4uL2xpYiAtbGx0cCAtbyBldmVudGZkMl8wMQ0KZ2NjIC1nIC1PMiAt
-SS4uLy4uL2luY2x1ZGUgLWcgLVdhbGwgLUkuLi8uLi8uLi8uLi9pbmNsdWRlIC1XYWxsICAgIGV2
-ZW50ZmQyXzAyLmMgIC1MLi4vLi4vLi4vLi4vbGliIC1sbHRwIC1vIGV2ZW50ZmQyXzAyDQpnY2Mg
-LWcgLU8yIC1JLi4vLi4vaW5jbHVkZSAtZyAtV2FsbCAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgLVdh
-bGwgICAgZXZlbnRmZDJfMDMuYyAgLUwuLi8uLi8uLi8uLi9saWIgLWxsdHAgLW8gZXZlbnRmZDJf
-MDMNCmV2ZW50ZmQyXzAzLmM6IEluIGZ1bmN0aW9uIOKAmHhzZW1fd2FpdOKAmToNCmV2ZW50ZmQy
-XzAzLmM6NjA6IHdhcm5pbmc6IGZvcm1hdCDigJglbGx14oCZIGV4cGVjdHMgdHlwZSDigJhsb25n
-IGxvbmcgdW5zaWduZWQgaW504oCZLCBidXQgYXJndW1lbnQgNSBoYXMgdHlwZSDigJh1X2ludDY0
-X3TigJkNCmV2ZW50ZmQyXzAzLmM6IEluIGZ1bmN0aW9uIOKAmG1haW7igJk6DQpldmVudGZkMl8w
-My5jOjEyOTogd2FybmluZzogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g4oCYd2Fp
-dHBpZOKAmQ0KZXZlbnRmZDJfMDMuYzogQXQgdG9wIGxldmVsOg0KLi4vLi4vaW5jbHVkZS9saW51
-eF9zeXNjYWxsX251bWJlcnMuaDoxOTogd2FybmluZzog4oCYY2xlYW51cOKAmSB1c2VkIGJ1dCBu
-ZXZlciBkZWZpbmVkDQovdG1wL2NjT0RSOVdkLm86IEluIGZ1bmN0aW9uIGBldmVudGZkMic6DQov
-cm9vdC8yMDA5MDcyMS9sdHAtaW50ZXJtZWRpYXRlLTIwMDkwNzIxL3Rlc3RjYXNlcy9rZXJuZWwv
-c3lzY2FsbHMvZXZlbnRmZDIvZXZlbnRmZDJfMDMuYzo0OTogdW5kZWZpbmVkIHJlZmVyZW5jZSB0
-byBgY2xlYW51cCcNCmNvbGxlY3QyOiBsZCByZXR1cm5lZCAxIGV4aXQgc3RhdHVzDQptYWtlWzVd
-OiAqKiogW2V2ZW50ZmQyXzAzXSBFcnJvciAxDQptYWtlWzVdOiBMZWF2aW5nIGRpcmVjdG9yeSBg
-L3Jvb3QvMjAwOTA3MjEvbHRwLWludGVybWVkaWF0ZS0yMDA5MDcyMS90ZXN0Y2FzZXMva2VybmVs
-L3N5c2NhbGxzL2V2ZW50ZmQyJw0KbWFrZVs0XTogKioqIFthbGxdIEVycm9yIDINCm1ha2VbNF06
-IExlYXZpbmcgZGlyZWN0b3J5IGAvcm9vdC8yMDA5MDcyMS9sdHAtaW50ZXJtZWRpYXRlLTIwMDkw
-NzIxL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMnDQptYWtlWzNdOiAqKiogW2FsbF0gRXJyb3Ig
-Mg0KbWFrZVszXTogTGVhdmluZyBkaXJlY3RvcnkgYC9yb290LzIwMDkwNzIxL2x0cC1pbnRlcm1l
-ZGlhdGUtMjAwOTA3MjEvdGVzdGNhc2VzL2tlcm5lbCcNCm1ha2VbMl06ICoqKiBbYWxsXSBFcnJv
-ciAyDQptYWtlWzJdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL3Jvb3QvMjAwOTA3MjEvbHRwLWludGVy
-bWVkaWF0ZS0yMDA5MDcyMS90ZXN0Y2FzZXMnDQptYWtlWzFdOiAqKiogW2FsbF0gRXJyb3IgMg0K
-bWFrZVsxXTogTGVhdmluZyBkaXJlY3RvcnkgYC9yb290LzIwMDkwNzIxL2x0cC1pbnRlcm1lZGlh
-dGUtMjAwOTA3MjEnDQptYWtlOiAqKiogW2J1aWxkXSBFcnJvciAyDQoNCi0tLS0tLS0tLS0NCiMg
-dW5hbWUgLWENCkxpbnV4IGZvby5iYXIucmVkaGF0LmNvbSAyLjYuMTgtMTU4LmVsNSAjMSBTTVAg
-TW9uIEp1bCAxMw0KMTY6Mjc6MjUgRURUIDIwMDkgcHBjNjQgcHBjNjQgcHBjNjQgR05VL0xpbnV4
-DQoNCm1ha2VbNV06IEVudGVyaW5nIGRpcmVjdG9yeSBgL3Jvb3QvMjAwOTA3MjEvbHRwLWludGVy
-bWVkaWF0ZS0yMDA5MDcyMS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2ZzdGF0YXQnDQpnY2Mg
-LWcgLU8yIC1JLi4vLi4vaW5jbHVkZSAtZyAtV2FsbCAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgLVdh
-bGwgLURUU1RfVVNFX05FV0VSNjRfU1lTQ0FMTD0xIC1EX0ZJTEVfT0ZGU0VUX0JJVFM9NjQgICAt
-YyAtbyBmc3RhdGF0MDFfNjQubyBmc3RhdGF0MDEuYw0KZnN0YXRhdDAxLmM6IEluIGZ1bmN0aW9u
-IOKAmG1haW7igJk6DQpmc3RhdGF0MDEuYzoxMjY6IGVycm9yOiBleHBlY3RlZCDigJgp4oCZIGJl
-Zm9yZSBudW1lcmljIGNvbnN0YW50DQptYWtlWzVdOiAqKiogW2ZzdGF0YXQwMV82NC5vXSBFcnJv
-ciAxDQptYWtlWzVdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL3Jvb3QvMjAwOTA3MjEvbHRwLWludGVy
-bWVkaWF0ZS0yMDA5MDcyMS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2ZzdGF0YXQnDQptYWtl
-WzRdOiAqKiogW2FsbF0gRXJyb3IgMg0KbWFrZVs0XTogTGVhdmluZyBkaXJlY3RvcnkgYC9yb290
-LzIwMDkwNzIxL2x0cC1pbnRlcm1lZGlhdGUtMjAwOTA3MjEvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
-YWxscycNCm1ha2VbM106ICoqKiBbYWxsXSBFcnJvciAyDQptYWtlWzNdOiBMZWF2aW5nIGRpcmVj
-dG9yeSBgL3Jvb3QvMjAwOTA3MjEvbHRwLWludGVybWVkaWF0ZS0yMDA5MDcyMS90ZXN0Y2FzZXMv
-a2VybmVsJw0KbWFrZVsyXTogKioqIFthbGxdIEVycm9yIDINCm1ha2VbMl06IExlYXZpbmcgZGly
-ZWN0b3J5IGAvcm9vdC8yMDA5MDcyMS9sdHAtaW50ZXJtZWRpYXRlLTIwMDkwNzIxL3Rlc3RjYXNl
-cycNCm1ha2VbMV06ICoqKiBbYWxsXSBFcnJvciAyDQptYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9y
-eSBgL3Jvb3QvMjAwOTA3MjEvbHRwLWludGVybWVkaWF0ZS0yMDA5MDcyMScNCm1ha2U6ICoqKiBb
-YnVpbGRdIEVycm9yIDINCg0KQ0FJIFFpYW4NCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpFbnRlciB0
-aGUgQmxhY2tCZXJyeSBEZXZlbG9wZXIgQ2hhbGxlbmdlICAKVGhpcyBpcyB5b3VyIGNoYW5jZSB0
-byB3aW4gdXAgdG8gJDEwMCwwMDAgaW4gcHJpemVzISBGb3IgYSBsaW1pdGVkIHRpbWUsIAp2ZW5k
-b3JzIHN1Ym1pdHRpbmcgbmV3IGFwcGxpY2F0aW9ucyB0byBCbGFja0JlcnJ5IEFwcCBXb3JsZChU
-TSkgd2lsbCBoYXZlCnRoZSBvcHBvcnR1bml0eSB0byBlbnRlciB0aGUgQmxhY2tCZXJyeSBEZXZl
-bG9wZXIgQ2hhbGxlbmdlLiBTZWUgZnVsbCBwcml6ZSAgCmRldGFpbHMgYXQ6IGh0dHA6Ly9wLnNm
-Lm5ldC9zZnUvQ2hhbGxlbmdlCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3Jn
-ZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxp
-c3QK
+--0016e644d5e063e69b046dc2680c
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+In order to loosen the requirement of having config.mk for a clean /
+distclean operation, we need to check for %clean in MAKECMDGOALS.
+
+Other associated changes are:
+1. Standardizing variables.
+2. Adding missing GPLv2 copyright notices to tops of Makefiles.
+
+        Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+
+--0016e644d5e063e69b046dc2680c
+Content-Type: application/octet-stream; 
+	name="config.mk-not-reqd-for-clean.1.diff"
+Content-Disposition: attachment; 
+	filename="config.mk-not-reqd-for-clean.1.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fwo6ip7z1
+
+SW5kZXg6IHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZXZlbnRmZC9NYWtlZmlsZQo9PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09ClJDUyBmaWxlOiAvY3Zzcm9vdC9sdHAvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
+ZXZlbnRmZC9NYWtlZmlsZSx2CnJldHJpZXZpbmcgcmV2aXNpb24gMS42CmRpZmYgLXUgLXIxLjYg
+TWFrZWZpbGUKLS0tIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZXZlbnRmZC9NYWtlZmlsZQkx
+NiBKYW4gMjAwOSAwOTowMzoxNCAtMDAwMAkxLjYKKysrIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
+bHMvZXZlbnRmZC9NYWtlZmlsZQkzIEp1bCAyMDA5IDAwOjM5OjUyIC0wMDAwCkBAIC0xNiwxNSAr
+MTYsMTcgQEAKICMgIEZvdW5kYXRpb24sIEluYy4sIDUxIEZyYW5rbGluIFN0LCBGaWZ0aCBGbG9v
+ciwgQm9zdG9uLCBNQSAgMDIxMTAtMTMwMSAgVVNBCiAjCiAKK3NyY2RpcgkJCT89IC4uLy4uLy4u
+Ly4uLy4uCiAKLWluY2x1ZGUgLi4vLi4vLi4vLi4vY29uZmlnLm1rCitpZm5lcSAoJChNQUtFQ01E
+R09BTFMpLGNsZWFuKQoraW5jbHVkZSAkKHNyY2RpcikvY29uZmlnLm1rCitlbmRpZgogCitDRkxB
+R1MJCQkrPSAtSSQoc3JjZGlyKS9pbmNsdWRlIC1XYWxsCitMREZMQUdTCQkJKz0gLUwkKHNyY2Rp
+cikvbGliCitMRExJQlMJCQk6PSAkKEFJT19MSUJTKSAtbGx0cAogCi1DRkxBR1MgKz0gLUkuLi8u
+Li8uLi8uLi9pbmNsdWRlIC1XYWxsCi1MRExJQlMgKz0gLUwuLi8uLi8uLi8uLi9saWIgJChBSU9f
+TElCUykgLWxsdHAKLQotU1JDUyAgICA9ICQod2lsZGNhcmQgKi5jKQotVEFSR0VUUyA9ICQocGF0
+c3Vic3QgJS5jLCAlLCAkKHdpbGRjYXJkICouYykpCitUQVJHRVRTCQkJOj0gJChwYXRzdWJzdCAl
+LmMsICUsICQod2lsZGNhcmQgKi5jKSkKIAogYWxsOiAkKFRBUkdFVFMpCiAK
+--0016e644d5e063e69b046dc2680c
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+
+--0016e644d5e063e69b046dc2680c
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--0016e644d5e063e69b046dc2680c--
+
