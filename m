@@ -1,26 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <monstr@monstr.eu>) id 1MR2Nq-0007M8-Js
-	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2009 11:10:46 +0000
-Received: from ey-out-1920.google.com ([74.125.78.148])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MR2Np-0006jZ-9D
-	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2009 11:10:46 +0000
-Received: by ey-out-1920.google.com with SMTP id 5so711545eyb.4
+	(envelope-from <yanegomi@gmail.com>) id 1MMXI6-0007jj-Ra
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 01:10:14 +0000
+Received: from an-out-0708.google.com ([209.85.132.243])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MMXHh-0002yu-6S
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 01:10:14 +0000
+Received: by an-out-0708.google.com with SMTP id c38so873113ana.37
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 15 Jul 2009 04:10:44 -0700 (PDT)
-Message-ID: <4A5DA96F.8000900@monstr.eu>
-Date: Wed, 15 Jul 2009 12:03:27 +0200
-From: Michal Simek <monstr@monstr.eu>
+	Thu, 02 Jul 2009 18:09:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <4A5C8068.6020203@monstr.eu> <200907141843.05629.arnd@arndb.de>
-	<4A5CB8B4.7050108@monstr.eu> <200907141913.21240.arnd@arndb.de>
-	<20090715092113.GA1863@linux-sh.org>
-In-Reply-To: <20090715092113.GA1863@linux-sh.org>
-Subject: Re: [LTP] access_ok macor
-Reply-To: monstr@monstr.eu
+Date: Thu, 2 Jul 2009 17:46:24 -0700
+Message-ID: <364299f40907021746k7c5f40a1u40c7859fa3a39718@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Content-Type: multipart/mixed; boundary=0016368e208b60904f046dc27c10
+Subject: [LTP] [PATCH 9/10] config.mk not required for clean
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,57 +26,65 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Paul Mundt <lethal@linux-sh.org>, Arnd Bergmann <arnd@arndb.de>, monstr@monstr.eu, Linux Kernel list <linux-kernel@vger.kernel.org>, LTP <ltp-list@lists.sourceforge.net>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-Paul Mundt wrote:
-> On Tue, Jul 14, 2009 at 07:13:20PM +0200, Arnd Bergmann wrote:
->> On Tuesday 14 July 2009, Michal Simek wrote:
->>> when the code tried to read/write from unaligned address (and in cpu
->>> is turn on unaligned exception) then is caused unaligned exception
->>> and asm code assemble/return value which is on that unaligned
->>> address. (Assemble it that read/write every byte separately). That
->>> will be harder to prevent all this cases because unaligned exception
->>> is in generic code.  What do you mean add __range_ok? Range checking
->>> is ok. The problem is when in case get_user kernel try to load
->>> unaligned addr - unaligned exception is perform and try to load that
->>> value separately.  If that page is not there, page fault handler is
->>> called and not find it, it is performed search from exception table
->>> and that address is not there of course - because address in pc is
->>> generic unaligned code. I think that handling this needs more code.
->>> Maybe if the address with from unaligned exception handler (there are
->>> some address which can caused it) and find out which aligned address
->>> is there and find out proper fixup for it.  I think that this could
->>> work.
->>>
->>> What do you think?
->> I think the key point is that the kernel should never try an unaligned
->> access. Other architectures already rely on this, so you can too.
-> 
-> No, other architectures used to rely on this, until it was no longer
-> possible to do so. See for example, nfs. Unaligned accesses by the kernel
-> must be handled by the architecture, unaligned accesses by userspace can
-> be optionally fixed up.
+--0016368e208b60904f046dc27c10
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Can you please look at John's email in this thread. How does SH handle this case?
-I mean when for get/put user address is added unaligned address. How does your kernel handle it?
+In order to loosen the requirement of having config.mk for a clean /
+distclean operation, we need to check for %clean in MAKECMDGOALS.
 
-Michal
+Other associated changes are:
+1. Standardizing variables.
+2. Adding missing GPLv2 copyright notices to tops of Makefiles.
 
+        Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
 
--- 
-Michal Simek, Ing. (M.Eng)
-w: www.monstr.eu p: +42-0-721842854
+--0016368e208b60904f046dc27c10
+Content-Type: application/octet-stream; 
+	name="config.mk-not-reqd-for-clean.9.diff"
+Content-Disposition: attachment; 
+	filename="config.mk-not-reqd-for-clean.9.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fwo6q4ev0
+
+SW5kZXg6IHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaW9fc2V0dXAvTWFrZWZpbGUKPT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PQpSQ1MgZmlsZTogL2N2c3Jvb3QvbHRwL2x0cC90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L2lvX3NldHVwL01ha2VmaWxlLHYKcmV0cmlldmluZyByZXZpc2lvbiAxLjMKZGlmZiAtdSAtcjEu
+MyBNYWtlZmlsZQotLS0gdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9pb19zZXR1cC9NYWtlZmls
+ZQkyMCBKYW4gMjAwOSAxMDo0ODo0MiAtMDAwMAkxLjMKKysrIHRlc3RjYXNlcy9rZXJuZWwvc3lz
+Y2FsbHMvaW9fc2V0dXAvTWFrZWZpbGUJMyBKdWwgMjAwOSAwMDo0MDowNiAtMDAwMApAQCAtMjAs
+MTUgKzIwLDE3IEBACiAjICBGb3VuZGF0aW9uLCBJbmMuLCA1MSBGcmFua2xpbiBTdCwgRmlmdGgg
+Rmxvb3IsIEJvc3RvbiwgTUEgIDAyMTEwLTEzMDEgIFVTQQogIwogCitzcmNkaXIJCQk/PSAuLi8u
+Li8uLi8uLi8uLgogCi1pbmNsdWRlIC4uLy4uLy4uLy4uL2NvbmZpZy5taworaWZuZXEgKCQoTUFL
+RUNNREdPQUxTKSxjbGVhbikKK2luY2x1ZGUgJChzcmNkaXIpL2NvbmZpZy5taworZW5kaWYKIAor
+Q0ZMQUdTIAkJCSs9IC1JJChzcmNkaXIpL2luY2x1ZGUgLVdhbGwKK0xERkxBR1MJCQkrPSAkKEFJ
+T19MSUJTKSAtTCQoc3JjZGlyKS9saWIKK0xETElCUwkJCSs9IC1sbHRwCiAKLVNSQ1MgICAgPSAk
+KHdpbGRjYXJkICouYykKLVRBUkdFVFMgPSAkKHBhdHN1YnN0ICUuYywlLCQoU1JDUykpCi0KLUNG
+TEFHUyArPSAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgLVdhbGwKLUxETElCUyArPSAkKEFJT19MSUJT
+KSAtTC4uLy4uLy4uLy4uL2xpYiAtbGx0cAorVEFSR0VUUyAJCTo9ICQocGF0c3Vic3QgJS5jLCUs
+JCh3aWxkY2FyZCAqLmMpKQogCiBhbGw6ICQoVEFSR0VUUykKIAo=
+--0016368e208b60904f046dc27c10
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
+
+--0016368e208b60904f046dc27c10
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--0016368e208b60904f046dc27c10--
+
