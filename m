@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MT6tn-0001if-Qs
-	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 04:24:19 +0000
-Received: from mail-pz0-f201.google.com ([209.85.222.201])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MT6ta-0003vF-W1
-	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 04:24:14 +0000
-Received: by pzk39 with SMTP id 39so460863pzk.28
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MMXAx-0007P5-Sq
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 01:02:51 +0000
+Received: from mail-gx0-f220.google.com ([209.85.217.220])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MMXAs-0001yY-89
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 01:02:51 +0000
+Received: by gxk20 with SMTP id 20so1853686gxk.10
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 20 Jul 2009 21:24:06 -0700 (PDT)
+	Thu, 02 Jul 2009 18:02:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4A652E3C.20402@cn.fujitsu.com>
-References: <4A652E3C.20402@cn.fujitsu.com>
-Date: Mon, 20 Jul 2009 21:24:06 -0700
-Message-ID: <364299f40907202124u8cd7a14n6e331fc53648ca66@mail.gmail.com>
+Date: Thu, 2 Jul 2009 17:41:59 -0700
+Message-ID: <364299f40907021741x5d6c34bducb532eb87647b273@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Fix failure of the utimes01 test
+Content-Type: multipart/mixed; boundary=0016368e1c318f5f04046dc26cf7
+Subject: [LTP] [PATCH 3/10] config.mk not required for clean
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,147 +26,68 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wang Yong <wangyong2009@cn.fujitsu.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-On Mon, Jul 20, 2009 at 7:55 PM, Wang Yong<wangyong2009@cn.fujitsu.com> wro=
-te:
-> This patch also fixed the path which we pass to setup_file(). If
-> progdir is not a absolute pathname of the working directory, the file
-> open will fail.
->
-> This patch fixed the problem.
->
-> Signed-off-by: WangYong <wangyong2009@cn.fujitsu.com>
->
-> diff -Nurp a/testcases/kernel/syscalls/utimes/utimes01.c b/testcases/kern=
-el/syscalls/utimes/utimes01.c
-> --- a/testcases/kernel/syscalls/utimes/utimes01.c =A0 =A0 =A0 2009-07-21 =
-08:51:05.000000000 +0800
-> +++ b/testcases/kernel/syscalls/utimes/utimes01.c =A0 =A0 =A0 2009-07-21 =
-08:55:01.000000000 +0800
-> @@ -138,7 +138,6 @@ void setup() {
-> =A0*/
-> =A0static int opt_debug;
-> =A0static char *progname;
-> -static char *progdir;
->
-> =A0enum test_type {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0NORMAL,
-> @@ -232,7 +231,7 @@ static int do_test(struct test_case *tc)
-> =A0 =A0 =A0 =A0 struct stat st;
-> =A0 =A0 =A0 =A0 uid_t old_uid;
->
-> - =A0 =A0 =A0 =A0TEST(rc =3D setup_file(progdir, "test.file", fpath));
-> + =A0 =A0 =A0 =A0TEST(rc =3D setup_file(TESTDIR, "test.file", fpath));
-> =A0 =A0 =A0 =A0 if (rc < 0)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 1;
->
-> @@ -339,8 +338,6 @@ int main(int ac, char **av) {
-> =A0 =A0 =A0 =A0progname =3D strchr(av[0], '/');
-> =A0 =A0 =A0 =A0 progname =3D progname ? progname + 1 : av[0];
->
-> - =A0 =A0 =A0 progdir =3D strdup(av[0]);
-> - =A0 =A0 =A0 =A0progdir =3D dirname(progdir);
->
-> =A0 =A0 =A0 =A0 /* parse standard options */
-> =A0 =A0 =A0 =A0 if ((msg =3D parse_opts(ac, av, (option_t *)NULL, NULL)) =
-!=3D (char *)NULL){
+--0016368e1c318f5f04046dc26cf7
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Wang,
-    Would you please verify this diff in your environment too? It does
-what your diff did, in addition to fixes a harmless warning with
--Wnonnull:
+In order to loosen the requirement of having config.mk for a clean /
+distclean operation, we need to check for %clean in MAKECMDGOALS.
 
-1. Fix the utimes testcase so that it passes with the appropriate
-non-hardcoded directory, as provided by Wang Yong
-<wangyong2009@cn.fujitsu.com>
-2. Fix a compiler warning by using an intermediary const char*
-variable, as casting alone was still causing compiler warnings in gcc
-4.3.2.
+Other associated changes are:
+1. Standardizing variables.
+2. Adding missing GPLv2 copyright notices to tops of Makefiles.
 
-Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+        Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
 
-Index: testcases/kernel/syscalls/utimes/utimes01.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/utimes/utimes01.c,v
-retrieving revision 1.2
-diff -u -r1.2 utimes01.c
---- testcases/kernel/syscalls/utimes/utimes01.c 10 Jul 2009 10:14:59 -0000 =
-    1
-.2
-+++ testcases/kernel/syscalls/utimes/utimes01.c 21 Jul 2009 04:20:44 -0000
-@@ -138,7 +138,6 @@
-  */
- static int opt_debug;
- static char *progname;
--static char *progdir;
+--0016368e1c318f5f04046dc26cf7
+Content-Type: application/octet-stream; 
+	name="config.mk-not-reqd-for-clean.3.diff"
+Content-Disposition: attachment; 
+	filename="config.mk-not-reqd-for-clean.3.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fwo6kcqc0
 
- enum test_type {
-                NORMAL,
-@@ -232,7 +231,7 @@
-         struct stat st;
-         uid_t old_uid;
+SW5kZXg6IHRlc3RjYXNlcy9rZXJuZWwvaW8vYWlvL2FpbzAxL01ha2VmaWxlCj09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0K
+UkNTIGZpbGU6IC9jdnNyb290L2x0cC9sdHAvdGVzdGNhc2VzL2tlcm5lbC9pby9haW8vYWlvMDEv
+TWFrZWZpbGUsdgpyZXRyaWV2aW5nIHJldmlzaW9uIDEuMgpkaWZmIC11IC1yMS4yIE1ha2VmaWxl
+Ci0tLSB0ZXN0Y2FzZXMva2VybmVsL2lvL2Fpby9haW8wMS9NYWtlZmlsZQkyOCBKYW4gMjAwOSAw
+Njo0MzowOSAtMDAwMAkxLjIKKysrIHRlc3RjYXNlcy9rZXJuZWwvaW8vYWlvL2FpbzAxL01ha2Vm
+aWxlCTMgSnVsIDIwMDkgMDA6Mzk6NTUgLTAwMDAKQEAgLTIwLDEzICsyMCwxOCBAQAogIyBuYW1l
+IG9mIGZpbGUJOiBNYWtlZmlsZQkJCQkJCSAgIwogIyBkZXNjcmlwdGlvbgk6IG1ha2UoMSkgZGVz
+Y3JpcHRpb24gZmlsZSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIwogIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjCi1pbmNsdWRlIC4uLy4uLy4uLy4uLy4uL2NvbmZpZy5tawogCi1DRkxBR1MrPQkt
+SS4uLy4uLy4uLy4uLy4uL2luY2x1ZGUgLVdhbGwKLUxPQURMSUJFUys9CSQoQUlPX0xJQlMpIC1M
+Li4vLi4vLi4vLi4vLi4vbGliIC1sbHRwCitzcmNkaXIJCQk/PSAuLi8uLi8uLi8uLi8uLgogCi1T
+UkNTPSQod2lsZGNhcmQgKi5jKQotVEFSR0VUUz0kKHBhdHN1YnN0ICUuYywlLCQoU1JDUykpCitp
+Zm5lcSAoJChNQUtFQ01ER09BTFMpLGNsZWFuKQoraW5jbHVkZSAkKHNyY2RpcikvY29uZmlnLm1r
+CitlbmRpZgorCitDRkxBR1MJCQkrPSAtSSQoc3JjZGlyKS9pbmNsdWRlIC1XYWxsCitMREZMQUdT
+CQkJKz0gLUwkKHNyY2RpcikvbGliCitMRExJQlMJCQkrPSAkKEFJT19MSUJTKSAtbGx0cAorCitU
+QVJHRVRTCQkJOj0gJChwYXRzdWJzdCAlLmMsJSwkKHdpbGRjYXJkICouYykpCiAKIGFsbDogJChU
+QVJHRVRTKQogCkBAIC0zNSw1ICs0MCwzIEBACiAKIGNsZWFuOgogCXJtIC1mICQoVEFSR0VUUykK
+LQotCg==
+--0016368e1c318f5f04046dc26cf7
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
--        TEST(rc =3D setup_file(progdir, "test.file", fpath));
-+        TEST(rc =3D setup_file(TESTDIR, "test.file", fpath));
-         if (rc < 0)
-                 return 1;
+------------------------------------------------------------------------------
 
-@@ -257,9 +256,19 @@
-                 fpath[len - 1] =3D '\0';
-         }
-         errno =3D 0;
--        if (tc->ttype =3D=3D NO_FNAME)
--                TEST(sys_ret =3D utimes(NULL, tv));
--        else
-+        if (tc->ttype =3D=3D NO_FNAME) {
-+                /**
-+                 * Note (garrcoop):
-+                 *
-+                 * If you do NULL directly, then gcc [4.3] will complain w=
-hen
-+                 * one specifies -Wnonnull in CPPFLAGS. This is a negative
-+                 * test, but let's not allow the compiler to complain about
-+                 * something trivial like this.
-+                 **/
-+                const char *dummy =3D NULL;
-+                TEST(sys_ret =3D utimes(dummy, tv));
-+        }
-+       else
-                 TEST(sys_ret =3D utimes(fpath, tv));
-         sys_errno =3D errno;
-         if (tc->ttype =3D=3D FILE_NOT_EXIST)
-@@ -339,9 +348,6 @@
-        progname =3D strchr(av[0], '/');
-         progname =3D progname ? progname + 1 : av[0];
+--0016368e1c318f5f04046dc26cf7
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
--       progdir =3D strdup(av[0]);
--        progdir =3D dirname(progdir);
--
-         /* parse standard options */
-         if ((msg =3D parse_opts(ac, av, (option_t *)NULL, NULL)) !=3D (cha=
-r *)NULL)
-{
-              tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
-
----------------------------------------------------------------------------=
----
-Enter the BlackBerry Developer Challenge  =
-
-This is your chance to win up to $100,000 in prizes! For a limited time, =
-
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize=
-  =
-
-details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--0016368e1c318f5f04046dc26cf7--
+
