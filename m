@@ -1,33 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <matthltc@us.ibm.com>) id 1MMIMQ-00051i-M5
-	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2009 09:13:42 +0000
-Received: from [32.97.110.152] (helo=e34.co.us.ibm.com)
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MMIMO-0002PS-TV
-	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2009 09:13:42 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e34.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n628xDoc016913
-	for <ltp-list@lists.sourceforge.net>; Thu, 2 Jul 2009 02:59:13 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n6292UlY250516
-	for <ltp-list@lists.sourceforge.net>; Thu, 2 Jul 2009 03:02:30 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n6292U4K008249
-	for <ltp-list@lists.sourceforge.net>; Thu, 2 Jul 2009 03:02:30 -0600
-Date: Thu, 2 Jul 2009 02:02:28 -0700
-From: Matt Helsley <matthltc@us.ibm.com>
-Message-ID: <20090702090228.GE19135@count0.beaverton.ibm.com>
-References: <20090702084828.GC19135@count0.beaverton.ibm.com>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MMXEt-0004ST-Pz
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 01:06:55 +0000
+Received: from mail-yx0-f195.google.com ([209.85.210.195])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MMXEt-0002Xg-Bw
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 01:06:55 +0000
+Received: by mail-yx0-f195.google.com with SMTP id 33so1892050yxe.28
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 02 Jul 2009 18:06:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20090702084828.GC19135@count0.beaverton.ibm.com>
-Subject: [LTP] [PATCH 3/4] netns: Fixup non-sh syntax
+Date: Thu, 2 Jul 2009 17:45:42 -0700
+Message-ID: <364299f40907021745k4d5b704ficb338c1edf40934@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Content-Type: multipart/mixed; boundary=0016369fa2cadba0b1046dc279a4
+Subject: [LTP] [PATCH 7/10] config.mk not required for clean
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,42 +26,65 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: Poornima Nayak <poornima.nayak@in.ibm.com>, LTP <ltp-list@lists.sourceforge.net>, Daniel Lezcano <daniel.lezcano@free.fr>, Veerendra C <vechandr@in.ibm.com>, Munipradeep <mbeeraka@in.ibm.com>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-Fixup some non-sh syntax which seems to trigger problems on my fedora 10
-KVM image.
+--0016369fa2cadba0b1046dc279a4
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Matt Helsley <matthltc@us.ibm.com>
-Cc: Daniel Lezcano <daniel.lezcano@free.fr>
-Cc: Poornima Nayak <poornima.nayak@in.ibm.com>
-Cc: Sudhir Kumar <skumar@linux.vnet.ibm.com>
-Cc: Veerendra C <vechandr@in.ibm.com>
-Cc: Munipradeep <mbeeraka@in.ibm.com>
-Cc: ltp@list.sourceforge.net
----
- testcases/kernel/containers/netns/parentns.sh |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+In order to loosen the requirement of having config.mk for a clean /
+distclean operation, we need to check for %clean in MAKECMDGOALS.
 
-Index: ltp/testcases/kernel/containers/netns/parentns.sh
-===================================================================
---- ltp.orig/testcases/kernel/containers/netns/parentns.sh
-+++ ltp/testcases/kernel/containers/netns/parentns.sh
-@@ -56,7 +56,7 @@ status=0
-     create_veth
-     vnet0=$dev0
-     vnet1=$dev1
--    if [[ -z $vnet0 || -z $vnet1 ]] ; then
-+    if [ -z $vnet0 -o -z $vnet1 ] ; then
-         tst_resm TFAIL  "Error: unable to create veth pair"
-         exit -1
-     else
+Other associated changes are:
+1. Standardizing variables.
+2. Adding missing GPLv2 copyright notices to tops of Makefiles.
+
+        Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+
+--0016369fa2cadba0b1046dc279a4
+Content-Type: application/octet-stream; 
+	name="config.mk-not-reqd-for-clean.7.diff"
+Content-Disposition: attachment; 
+	filename="config.mk-not-reqd-for-clean.7.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fwo6p8dg0
+
+SW5kZXg6IHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaW9fZGVzdHJveS9NYWtlZmlsZQo9PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09ClJDUyBmaWxlOiAvY3Zzcm9vdC9sdHAvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
+bHMvaW9fZGVzdHJveS9NYWtlZmlsZSx2CnJldHJpZXZpbmcgcmV2aXNpb24gMS4zCmRpZmYgLXUg
+LXIxLjMgTWFrZWZpbGUKLS0tIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaW9fZGVzdHJveS9N
+YWtlZmlsZQkyMCBKYW4gMjAwOSAxMDo0ODo0MSAtMDAwMAkxLjMKKysrIHRlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvaW9fZGVzdHJveS9NYWtlZmlsZQkzIEp1bCAyMDA5IDAwOjQwOjAzIC0wMDAw
+CkBAIC0yMCwxNSArMjAsMTcgQEAKICMgIEZvdW5kYXRpb24sIEluYy4sIDUxIEZyYW5rbGluIFN0
+LCBGaWZ0aCBGbG9vciwgQm9zdG9uLCBNQSAgMDIxMTAtMTMwMSAgVVNBCiAjCiAKK3NyY2RpcgkJ
+CT89IC4uLy4uLy4uLy4uLy4uCiAKLWluY2x1ZGUgLi4vLi4vLi4vLi4vY29uZmlnLm1rCitpZm5l
+cSAoJChNQUtFQ01ER09BTFMpLGNsZWFuKQoraW5jbHVkZSAkKHNyY2RpcikvY29uZmlnLm1rCitl
+bmRpZgogCitDRkxBR1MgCQkJKz0gLUkkKHNyY2RpcikvaW5jbHVkZSAtV2FsbAorTERGTEFHUwkJ
+CSs9ICQoQUlPX0xJQlMpIC1MJChzcmNkaXIpL2xpYgorTERMSUJTCQkJKz0gLWxsdHAKIAotU1JD
+UyAgICA9ICQod2lsZGNhcmQgKi5jKQotVEFSR0VUUyA9ICQocGF0c3Vic3QgJS5jLCUsJChTUkNT
+KSkKLQotQ0ZMQUdTICs9IC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAtV2FsbAotTERMSUJTICs9ICQo
+QUlPX0xJQlMpIC1MLi4vLi4vLi4vLi4vbGliIC1sbHRwCitUQVJHRVRTIAkJOj0gJChwYXRzdWJz
+dCAlLmMsJSwkKHdpbGRjYXJkICouYykpCiAKIGFsbDogJChUQVJHRVRTKQogCg==
+--0016369fa2cadba0b1046dc279a4
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
+
+--0016369fa2cadba0b1046dc279a4
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--0016369fa2cadba0b1046dc279a4--
+
