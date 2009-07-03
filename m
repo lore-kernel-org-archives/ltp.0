@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MODBV-0002qL-2P
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 16:06:21 +0000
-Received: from mail-yx0-f195.google.com ([209.85.210.195])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MODBO-0005yM-Dc
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 16:06:21 +0000
-Received: by yxe33 with SMTP id 33so5910537yxe.28
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 07 Jul 2009 09:06:13 -0700 (PDT)
+	(envelope-from <vapier@gentoo.org>) id 1MMYn9-0004jL-OW
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 02:46:23 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MMYn5-0004yl-BS
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 02:46:23 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 2 Jul 2009 22:45:42 -0400
+References: <364299f40907021746p3ce4bacdwbfc834ef7e4cfcfd@mail.gmail.com>
+	<200907022157.30535.vapier@gentoo.org>
+	<364299f40907021900q5a9529favc07f84cd4ffd0d6a@mail.gmail.com>
+In-Reply-To: <364299f40907021900q5a9529favc07f84cd4ffd0d6a@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <f5a7b3810907070546v727fafc0o71fde4613e590254@mail.gmail.com>
-References: <f5a7b3810907070546v727fafc0o71fde4613e590254@mail.gmail.com>
-Date: Tue, 7 Jul 2009 09:06:13 -0700
-Message-ID: <364299f40907070906v174de45ci6765d3111f64a279@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Compile failure with rt_sigaction on amd64
+Message-Id: <200907022245.43330.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 8/10] config.mk not required for clean
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,204 +26,119 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============6726937371759180216=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: naresh kamboju <naresh.kernel@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On Tue, Jul 7, 2009 at 5:46 AM, naresh kamboju<naresh.kernel@gmail.com> wro=
-te:
-> Hi Garrett Cooper,
->
-> Thanks for your info.
->
->>Oops... looks like someone forgot __amd64__ / >__ia64__:
->
-> yes.
-> i forgot to add these ARCH.
-> Because I am not having this Architecture at my end :-(
->
->>gcc -g -O2 -I../../include -g -Wall -I../../../../include >-Wall -O2 -W
->>rt_sigaction01.c -L../../../../lib -lltp -o rt_sigaction01
->>rt_sigaction01.c: In function 'set_handler':
->>rt_sigaction01.c:147: error: 'SIGSETSIZE' >undeclared .(first use in
->>this function)
->>rt_sigaction01.c:147: error: (Each undeclared >identifier is reported onl=
-y once
->>rt_sigaction01.c:147: error: for each function it >appears in.)
->>make[4]: *** [rt_sigaction01] Error 1
->
->>I tried using sizeof(sigaction_t), but unfortunately the >results for
->>the testcase(s) on my system were always EINVAL. >This issue wasn't
->>present a few days ago...
->
->>Any ideas?
->
->
-> I have made a patch to fix this issue please review the this temporary fi=
-x.
->
-> In my previous mail I have stated that sigset size (size_t sigsetsize)
-> will be different for Different ARCH. It is depending on
-> _COMPAT_NSIG_WORDS Macro.
->
-> We have to conform how its different with respect to ARCH and need to
-> have a generic solution to fix this issue.
->
-> I think its going to be an issue othere than __arm__ || __i386__ ||
-> __powerpc__ || __amd64__ || __ia64__ and __mips__
->
-> There are different ARCH are being used by our LTP developers.
->
-> I=92ll investigate this issue and come back with generic Solution to
-> support most of the ARCH.
->
->
-> please refer this linux-2.6.30/include/linux/compat.h
->
-> http://lxr.linux.no/linux+v2.6.30/include/linux/compat.h#L75
->
-> #define _COMPAT_NSIG_WORDS (_COMPAT_NSIG / _COMPAT_NSIG_BPW)
->
-> typedef struct {
-> compat_sigset_word sig[_COMPAT_NSIG_WORDS];
-> } compat_sigset_t;
->
-> Your suggestions are welcome ... :)
->
->
-> Best regards
-> Naresh Kamboju
->
-> Signed-off-by: Naresh Kamboju < naresh.kernel@gm... >
->
-> diff -Naurb a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
-> b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
-> --- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c 2009-07-07
-> 16:58:11.000000000 +0530
-> +++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c 2009-07-07
-> 16:59:38.000000000 +0530
-> @@ -59,7 +59,7 @@
-> #define SIGSETSIZE 16
-> #endif
->
-> -#if defined __arm__ || __i386__ || __powerpc__
-> +#if defined __arm__ || __i386__ || __powerpc__ || __amd64__ || __ia64__
-> #define SIGSETSIZE 8
-> #endif
->
-> diff -Naurb a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
-> b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
-> --- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c 2009-07-07
-> 16:58:11.000000000 +0530
-> +++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c 2009-07-07
-> 16:59:48.000000000 +0530
-> @@ -55,7 +55,7 @@
-> #define SIGSETSIZE 16
-> #endif
->
-> -#if defined __arm__ || __i386__ || __powerpc__
-> +#if defined __arm__ || __i386__ || __powerpc__ || __amd64__ || __ia64__
-> #define SIGSETSIZE 8
-> #endif
+--===============6726937371759180216==
+Content-Type: multipart/signed; boundary="nextPart2343597.F2LAMSyTBZ";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Interesting. I checked the kernel sources and it appears that __mips__
-is the only odd man out.
+--nextPart2343597.F2LAMSyTBZ
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Here's what I did (similar to what you did above, but I hardcoded
-values because you can't determine the actual values from compat.h
-without kernel sources AFAIK).
+On Thursday 02 July 2009 22:00:41 Garrett Cooper wrote:
+> On Thu, Jul 2, 2009 at 6:57 PM, Mike Frysinger<vapier@gentoo.org> wrote:
+> > On Thursday 02 July 2009 21:21:06 Garrett Cooper wrote:
+> >> Both sinclude and include are possible I suppose, but as far as I
+> >> understand that actually does an fstat, tries to open the file, etc,
+> >> but this completely ignores the include statement and reduces I/O a bi=
+t.
+> >
+> > yes, it'll remove a syscall or two, but i dont think that is significant
+> > in the larger scheme of things
+> >
+> > the problem is that i dont want these kind of ifdef things propagating =
+as
+> > they'll get tweaked and go inconsistent all over the place
+> >
+> > how about include a top level .mk file that always exists and in there,
+> > you have the conditional config.mk include
+>
+> I couldn't agree more :)...
+>
+> FWIW using include all over the place has footprint implications
+> (somewhere on the order of 2~3 times longer when taxing the fs a bit
+> more), so it could be a boon to multijob compiles to go with sinclude
+> / -include.
 
-It might be wiser to move to a general purpose header, btw...
+well, if you can see tangible differences, then it's worth discussing.  i d=
+ont=20
+think the include style would make a difference in this regard at all, it'd=
+=20
+only change the behavior when the file doesnt exist (warn/error/etc...).
 
-Thanks,
--Garrett
+how about we aim for avoiding the include completely regardless of target. =
+=20
+really config.mk is setting up the environment and recursive makes should b=
+e=20
+inheriting those.  so if our toplevel .mk exported something like:
+LTP_CONFIG_INCLUDED =3D yes
 
-Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+then all the fragments in the sub-makefiles should look like:
+ifneq ($(LTP_CONFIG_INCLUDED),yes)
+include $(topdir)/config.mk
+endif
 
-Index: testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/rt_sigaction/rt_sigact=
-ion01.c,v
-retrieving revision 1.2
-diff -u -r1.2 rt_sigaction01.c
---- testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c     6 Jul
-2009 15:24:06 -0000       1.2
-+++ testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c     7 Jul
-2009 16:02:21 -0000
-@@ -55,15 +55,19 @@
- #include "usctest.h"
- #include "linux_syscall_numbers.h"
+then you could have the clean target lie by doing:
+$(MAKE) -C testcases LTP_CONFIG_INCLUDED=3Dyes clean
 
--#if defined __mips__
-+/*
-+ * _COMPAT_NSIG / _COMPAT_NSIG_BPW =3D=3D 2.
-+ *
-+ * See asm/compat.h under the kernel source for more details.
-+ *
-+ * Multiply that by a fudge factor of 4 and you have your SIGSETSIZE.
-+ */
-+#if defined (__mips__)
- #define SIGSETSIZE 16
--#endif
--
--#if defined __arm__ || __i386__ || __powerpc__
-+#else
- #define SIGSETSIZE 8
- #endif
+which would address all of your concerns ?
 
--
- /* Extern Global Variables */
- extern int Tst_count;           /* counter for tst_xxx routines.         */
- extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
-Index: testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/rt_sigaction/rt_sigact=
-ion02.c,v
-retrieving revision 1.1
-diff -u -r1.1 rt_sigaction02.c
---- testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c     6 Jul
-2009 15:24:06 -0000       1.1
-+++ testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c     7 Jul
-2009 16:02:21 -0000
-@@ -51,11 +51,16 @@
- #include "usctest.h"
- #include "linux_syscall_numbers.h"
+> People already complain about compiling LTP in my group -- I'm just
+> trying to give them less of a reason to complain :)..
 
--#if defined __mips__
-+/*
-+ * _COMPAT_NSIG / _COMPAT_NSIG_BPW =3D=3D 2.
-+ *
-+ * See asm/compat.h under the kernel source for more details.
-+ *
-+ * Multiply that by a fudge factor of 4 and you have your SIGSETSIZE.
-+ */
-+#if defined (__mips__)
- #define SIGSETSIZE 16
--#endif
--
--#if defined __arm__ || __i386__ || __powerpc__
-+#else
- #define SIGSETSIZE 8
- #endif
+bah, tell them to build it in a tmpfs partition then ;)
+=2Dmike
 
----------------------------------------------------------------------------=
----
-Enter the BlackBerry Developer Challenge  =
+--nextPart2343597.F2LAMSyTBZ
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-This is your chance to win up to $100,000 in prizes! For a limited time, =
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.12 (GNU/Linux)
 
-vendors submitting new applications to BlackBerry App World(TM) will have =
+iQIcBAABAgAGBQJKTXDXAAoJEEFjO5/oN/WBbCEQAIHm8ORhXeWkxHkAve6oOzlM
+wUPhoQfUiC+8q5rV7Q3X55vpsOqHxtZa/UlCpp+LWFQWe0z3ZVh7BETyDJQ/Ulto
+p3wFzzRjf43P4rwAAtU+D7b7k8ZfGhdNQi4LyRWqm+j3RIPHBgoUmERtGJa2SSe+
+SFtYV6WCC3Z/N2TQ4AZStV/aHx+sE6AEp6Hzq1zvwjIfpsRisun/g9mSAzmtlDue
+2U4jMxk/vJeeKh1IJ4R4Kc3CtVwyU6rytOAa9Zvdt7mzHoA1Zb/Hax/ie7k6xxpF
+6yvv66vyC3YBFyZNDVygzXc2k3ua/3IOle4VNhx94fSS5Q9Qbqr/db027rD/IzxW
+zF0hISOfOnbXz0l/F/Ycll2mLEUcNjo55rgsvfa+usDPixPIGyfUHjmVytJDBjx7
+uITzxEn1lq+/6FMZiTHsW+0Kt//B6NLK4w+IlYBq197M1xjydRZtLHmk8V0Jcr01
+Vy0gueLe9YkBfXn1EZ1LG6MxNlu9xPSyetrSLF4Vej6vuF0W4Vc9SncuQf74qmwf
+w3XjtIimfOwQTmDOUHGbpdaUEHOG3QrrNRhS5OFvbcW7CqyQzAf1J7lVWogBwRvP
+TA5WCA3pHGShQOjol8GJpUaErEQXAUiZXSvvKGEiKRdh7kb4DmQRyDM/A2160lZv
+Y/MG2SPcMrIibK4xYQ+/
+=DqdC
+-----END PGP SIGNATURE-----
 
-the opportunity to enter the BlackBerry Developer Challenge. See full prize =
+--nextPart2343597.F2LAMSyTBZ--
 
-details at: http://p.sf.net/sfu/blackberry
+
+--===============6726937371759180216==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+
+--===============6726937371759180216==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6726937371759180216==--
+
