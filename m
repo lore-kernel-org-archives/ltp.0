@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <michal.simek@petalogix.com>) id 1MOYjH-0005p6-Th
-	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 15:06:39 +0000
-Received: from mail-fx0-f208.google.com ([209.85.220.208])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MOYjB-0006bd-Px
-	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 15:06:39 +0000
-Received: by fxm4 with SMTP id 4so4284753fxm.10
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1MNqsK-0007OU-UO
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 16:17:04 +0000
+Received: from mail-bw0-f227.google.com ([209.85.218.227])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MNqsJ-0000BP-T5
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 16:17:04 +0000
+Received: by bwz27 with SMTP id 27so1168700bwz.10
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 08 Jul 2009 08:06:29 -0700 (PDT)
-Message-ID: <4A54AEFA.3030100@petalogix.com>
-Date: Wed, 08 Jul 2009 16:36:42 +0200
+	Mon, 06 Jul 2009 09:17:02 -0700 (PDT)
+Message-ID: <4A52237C.8080409@petalogix.com>
+Date: Mon, 06 Jul 2009 18:17:00 +0200
 From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-References: <4A5436D4.6070201@petalogix.com>
-	<364299f40907080719q4ab01842v7e47a352b8214b8a@mail.gmail.com>
-In-Reply-To: <364299f40907080719q4ab01842v7e47a352b8214b8a@mail.gmail.com>
-Subject: Re: [LTP] IDcheck.sh - awk problem
+References: <4A4C6328.6060405@petalogix.com>
+	<1246895434.4887.46.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1246895434.4887.46.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] getpeername01, getsockname01, socketpair01
 Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -32,115 +32,127 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier.adi@gmail.com>
+To: subrata@linux.vnet.ibm.com
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-Garrett Cooper wrote:
-> On Tue, Jul 7, 2009 at 11:04 PM, Michal Simek<michal.simek@petalogix.com> wrote:
+Subrata Modak wrote:
+> On Thu, 2009-07-02 at 09:35 +0200, Michal Simek wrote: 
 >   
->> Hi All,
+>> Hi,
 >>
->> There will be good to prevent missing /etc/passwd for installing to
->> different folder.
+>> Can someone explain me why is in that subject tests for invalid pointer
+>> choose
+>> address 1 (or 7 in socketpair01)? I did some tests on Microblaze and for
+>> this address I am getting segfault.
+>> That's the reason why I think that problem is in glibc or ltp test. All
+>> tests test reaction for invalid pointer address.
 >>
->> export DESTDIR=`pwd`/nfs
->> mkdir -p nfs
->> make install
+>> The interesting is that any address from 1 to 999 9999 caused segfault.
+>> Address above not.
+>> Below is memory map but first segment starts at 0x1000 0000 not 1000
+>> 0000 which is in patches below and works.
+>>
+>> # cat /proc/66/maps
+>> 10000000-10001000 r-xp 00000000 00:01 394        /opcoded
+>> 10001000-10002000 rw-p 00000000 00:01 394        /opcoded
+>> 48000000-4801c000 r-xp 00000000 00:01 389        /lib/ld-2.3.3.so
+>> 4801c000-4801e000 rw-p 0001b000 00:01 389        /lib/ld-2.3.3.so
+>> 4801e000-4817c000 r-xp 00000000 00:01 379        /lib/libc-2.3.3.so
+>> 4817c000-4817f000 r--p 0015d000 00:01 379        /lib/libc-2.3.3.so
+>> 4817f000-48181000 rw-p 00160000 00:01 379        /lib/libc-2.3.3.so
+>> 48181000-48186000 rw-p 00000000 00:00 0
+>> bfc15000-bfc2a000 rwxp 00000000 00:00 0          [stack]
+>>
+>>
+>> Below are my changes which jump over segfault but they are still invalid
+>> pointer.
+>> Has someone ever met with this problem before?
+>>
+>> Patches below are on this link too.
+>> http://developer.petalogix.com/git/gitweb.cgi?p=ltp-microblaze.git;a=commitdiff;h=45f4cd783ce8b94f1267bb87c0c46e8536f62eca
 >>
 >> Thanks,
 >> Michal
->>
->>
->> Checking for required user/group ids
->>
->> awk: cmd. line:1: fatal: cannot open file
->> `/home/projects/xils/ltp-microblaze.git/nfs/etc/passwd' for reading (No
->> such file or directory)
->> bin => 2
->> awk: cmd. line:1: fatal: cannot open file
->> `/home/projects/xils/ltp-microblaze.git/nfs/etc/passwd' for reading (No
->> such file or directory)
->> daemon => 2
->> awk: cmd. line:1: fatal: cannot open file
->> `/home/projects/xils/ltp-microblaze.git/nfs/etc/passwd' for reading (No
->> such file or directory)
->> nobody => 2
->> awk: cmd. line:1: fatal: cannot open file
->> `/home/projects/xils/ltp-microblaze.git/nfs/etc/group' for reading (No
->> such file or directory)
->> bin => 2
->> awk: cmd. line:1: fatal: cannot open file
->> `/home/projects/xils/ltp-microblaze.git/nfs/etc/group' for reading (No
->> such file or directory)
->> daemon => 2
->> awk: cmd. line:1: fatal: cannot open file
->> `/home/projects/xils/ltp-microblaze.git/nfs/etc/group' for reading (No
->> such file or directory)
->> nobody => 2
->> awk: cmd. line:1: fatal: cannot open file
->> `/home/projects/xils/ltp-microblaze.git/nfs/etc/group' for reading (No
->> such file or directory)
->> sys => 2
->> awk: cmd. line:1: fatal: cannot open file
->> `/home/projects/xils/ltp-microblaze.git/nfs/etc/group' for reading (No
->> such file or directory)
->> users => 2
->> 'nobody' user id and group found.
->> 'bin' user id and group found.
->> 'daemon' user id and group found.
->> Users group found.
->> Sys group found.
->> awk: cmd. line:1: fatal: cannot open file
->> `/home/projects/xils/ltp-microblaze.git/nfs/etc/group' for reading (No
->> such file or directory)
->> nobody => 2
->> awk: cmd. line:1: fatal: cannot open file
->> `/home/projects/xils/ltp-microblaze.git/nfs/etc/passwd' for reading (No
->> such file or directory)
->> nobody => 2
->> awk: cmd. line:1: fatal: cannot open file
->> `/home/projects/xils/ltp-microblaze.git/nfs/etc/group' for reading (No
->> such file or directory)
->> bin => 2
->> awk: cmd. line:1: fatal: cannot open file
->> `/home/projects/xils/ltp-microblaze.git/nfs/etc/passwd' for reading (No
->> such file or directory)
->> bin => 2
->> awk: cmd. line:1: fatal: cannot open file
->> `/home/projects/xils/ltp-microblaze.git/nfs/etc/group' for reading (No
->> such file or directory)
->> daemon => 2
->> awk: cmd. line:1: fatal: cannot open file
->> `/home/projects/xils/ltp-microblaze.git/nfs/etc/passwd' for reading (No
->> such file or directory)
->> daemon => 2
->> awk: cmd. line:1: fatal: cannot open file
->> `/home/projects/xils/ltp-microblaze.git/nfs/etc/passwd' for reading (No
->> such file or directory)
->> users => 2
->> awk: cmd. line:1: fatal: cannot open file
->> `/home/projects/xils/ltp-microblaze.git/nfs/etc/passwd' for reading (No
->> such file or directory)
->> sys => 2
->> Required users/groups exist.
 >>     
 >
-> That's part of the reason why I wanted it to be reviewed before it was
-> committed, and I halfway expected Mike to provide that assistance but
-> he didn't... *sigh*.
+> Michal,
 >
-> Does the /etc/passwd // /etc/group file exist?
+> I think you would need to recreate this :-)
 >   
-Of course not because I cross compile ltp for Microblaze - correct
-/etc/passwd - group is on
-target system. Maybe worth to remove calling IDcheck.sh from make
-install and call it only before
-running the test.
+:-) I don't wanted to add it to mainline LTP I just wanted to know why
+are there that hardcoded value.
+Who write them there and especially why? Maybe there are correct but
+none know why?
+On x86 that test passed but not on Microblaze. :-( I think that has any
+connection with memory map.
 
+Thanks for any info,
 Michal
 
-> Thanks,
-> -Garrett
+> patching file testcases/kernel/syscalls/getpeername/getpeername01.c
+> Hunk #1 FAILED at 93.
+> 1 out of 1 hunk FAILED -- saving rejects to file
+> testcases/kernel/syscalls/getpeername/getpeername01.c.rej
+> patching file testcases/kernel/syscalls/getsockname/getsockname01.c
+> Hunk #1 FAILED at 90.
+> 1 out of 1 hunk FAILED -- saving rejects to file
+> testcases/kernel/syscalls/getsockname/getsockname01.c.rej
+> patching file testcases/kernel/syscalls/socketpair/socketpair01.c
+> patch: **** malformed patch at line 151: pointer"},
+>
+> Regards--
+> Subrata
+>
+>   
+>> diff --git a/testcases/kernel/syscalls/getpeername/getpeername01.c
+>> b/testcases/kernel/syscalls/getpeername/getpeername01.c
+>> index 55d349a..3ae015d 100644 (file)
+>> --- a/testcases/kernel/syscalls/getpeername/getpeername01.c
+>> +++ b/testcases/kernel/syscalls/getpeername/getpeername01.c
+>> @@ -93,7 +93,7 @@ struct test_case_t {          /* test case structure */
+>>                     &sinlen, -1, EFAULT, setup2, cleanup1,
+>>                     "invalid socket buffer"}, {
+>>         PF_UNIX, SOCK_STREAM, 0, (struct sockaddr *)&fsin1,
+>> -                   (socklen_t *) 1, -1, EFAULT, setup2, cleanup1,
+>> +                   (socklen_t *) 10000000, -1, EFAULT, setup2, cleanup1,
+>>                     "invalid salen"},
+>>  #endif
+>>  };
+>>
+>> diff --git a/testcases/kernel/syscalls/getsockname/getsockname01.c
+>> b/testcases/kernel/syscalls/getsockname/getsockname01.c
+>> index 6159847..2020230 100644 (file)
+>> --- a/testcases/kernel/syscalls/getsockname/getsockname01.c
+>> +++ b/testcases/kernel/syscalls/getsockname/getsockname01.c
+>> @@ -90,7 +90,7 @@ struct test_case_t {          /* test case structure */
+>>                     &sinlen, -1, EFAULT, setup1, cleanup1,
+>>                     "invalid socket buffer"}, {
+>>         PF_INET, SOCK_STREAM, 0, (struct sockaddr *)&fsin1,
+>> -                   (socklen_t *) 1, -1, EFAULT, setup1, cleanup1,
+>> +                   (socklen_t *) 1000000, -1, EFAULT, setup1, cleanup1,
+>>                     "invalid salen"},
+>>  #endif
+>>  };
+>>
+>> diff --git a/testcases/kernel/syscalls/socketpair/socketpair01.c
+>> b/testcases/kernel/syscalls/socketpair/socketpair01.c
+>> index fc90529..f8c29c0 100644 (file)
+>> --- a/testcases/kernel/syscalls/socketpair/socketpair01.c
+>> +++ b/testcases/kernel/syscalls/socketpair/socketpair01.c
+>> @@ -81,7 +81,7 @@ struct test_case_t {          /* test case structure */
+>>             /* Skip since uClinux does not implement memory protection */
+>>         {
+>>         PF_UNIX, SOCK_STREAM, 0, 0, -1, EFAULT, "bad pointer"}, {
+>> -       PF_UNIX, SOCK_STREAM, 0, (int *)7, -1, EFAULT, "bad pointer"},
+>> +       PF_UNIX, SOCK_STREAM, 0, (int *)10000000, -1, EFAULT, "bad
+>> pointer"},
+>>  #endif
+>>         {
+>>         PF_INET, SOCK_DGRAM, 17, sv, -1, EOPNOTSUPP, "UDP socket"}, {
+>>
+>>
+>>     
+>
 >   
 
 
@@ -151,11 +163,6 @@ w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
 
 
 ------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
