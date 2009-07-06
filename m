@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yjwei@cn.fujitsu.com>) id 1MTUhg-000779-3V
-	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 05:49:24 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MTUhX-0001o5-Sg
-	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 05:49:24 +0000
-Message-ID: <4A66A7F2.7020802@cn.fujitsu.com>
-Date: Wed, 22 Jul 2009 13:47:30 +0800
-From: Wei Yongjun <yjwei@cn.fujitsu.com>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <francesco.rundo@st.com>) id 1MNo2N-0004WY-EF
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 13:15:15 +0000
+Received: from [207.126.144.125] (helo=eu1sys200aog108.obsmtp.com)
+	by 29vjzd1.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MNo2D-0007gl-Ku
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 13:15:10 +0000
+Message-ID: <4A51F13C.3050701@st.com>
+Date: Mon, 06 Jul 2009 14:42:36 +0200
+From: Francesco RUNDO <francesco.rundo@st.com>
 MIME-Version: 1.0
-References: <4A6527B6.7070602@cn.fujitsu.com> <4A65BD95.7070001@petalogix.com>
-In-Reply-To: <4A65BD95.7070001@petalogix.com>
-Subject: Re: [LTP] [PATCH] Fix to set the signal handler of SIGINT in
-	mq_timedreceive01
+References: <4A51CEDC.6080605@linux.vnet.ibm.com> <4A51E253.200@st.com>
+	<4A51E745.3060105@linux.vnet.ibm.com>
+In-Reply-To: <4A51E745.3060105@linux.vnet.ibm.com>
+Subject: Re: [LTP] [PATCH] cgroups: conditionally enable building cgroup
+	tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,211 +26,163 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: michal.simek@petalogix.com
-Cc: ltp-list@lists.sourceforge.net
+To: gowrishankar <gomuthuk@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sf.net
 
-Hi,
-> Hi,
+Hi Gowri,
+
+thanks so much for your quick reply.
+My question is: "Is there a 'real' scenario in which cgroup is enabled 
+in the Kernel without cgroupstat.h header" ?
+
+Because I think the above scenario (cgroup enabled but no cgroupstat.h 
+header) is wrong so that your patch provide a "cover" for an error 
+placed in the system. Is it true ?
+
+If my understanding is wrong, for me there are no concerns about your patch.
+
+Regards
+Francesco Rundo
+
+gowrishankar wrote:
+
+> Hi Francesco,
 >
-> Please fix coding style violation.
-> Use tab instead of spaces.
-> Subrata should reject this patch with bad coding style.
-> Can you please fix it?
+> Francesco RUNDO wrote:
 >
+>> Hi Gowri,
+>>
+>> I've already fixed the same issue you reported. I've tested it 
+>> successfully.
+>>
+>> Subrata has already merged my patch (please, find it in attachment).
+>>
+>> Please, check it before to submit another patch.
+>>
 >
->   =
-
-Fixed it(the original source is all space, no tab),And also fixed the
-compile warning.
-
-[PATCHv2] Fix to set the signal handler of SIGINT in mq_timedreceive01
-
-The test case mq_timedreceive01 does not register the signal
-handler of SIGINT, so the problam will be terminated by SIGINT
-from child process.
-
-This patch fixed the problem. And also fixed the following
-compile warning.
-
-mq_timedreceive01.c: In function =91do_test=92:
-mq_timedreceive01.c:379: warning: null argument where non-null required (ar=
-gument 5)
-
-Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
-
-diff --git a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c =
-b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
-index dadc38d..d6604d7 100644
---- a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
-+++ b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
-@@ -106,6 +106,13 @@ extern void cleanup() {
-         tst_exit();
- }
- =
-
-+/*
-+ * sighandler()
-+ */
-+void sighandler(int sig)
-+{
-+}
-+
- /* Local  Functions */
- /*************************************************************************=
-*****/
- /*                                                                        =
-    */
-@@ -126,6 +133,7 @@ extern void cleanup() {
- /*************************************************************************=
-*****/
- void setup() {
-         /* Capture signals if any */
-+	signal(SIGINT, sighandler);
-         /* Create temporary directories */
-         TEST_PAUSE;
-         tst_tmpdir();
-@@ -301,7 +309,7 @@ static int do_test(struct test_case *tc)
- 	int oflag;
-         int i, rc, cmp_ok =3D 1, fd =3D -1;
-         char smsg[MAX_MSGSIZE], rmsg[MAX_MSGSIZE];
--        struct timespec ts, *p_ts;
-+        struct timespec ts, *p_ts =3D NULL;
-         pid_t pid =3D 0;
-         unsigned prio;
-         size_t msg_len;
-@@ -368,7 +376,7 @@ switch (tc->ttype) {
-         case FD_FILE:
-                 break;
-         default:
--		TEST(rc =3D mq_timedsend(fd, smsg, tc->len, tc->prio, NULL));
-+		TEST(rc =3D mq_timedsend(fd, smsg, tc->len, tc->prio, p_ts));
-                 if (TEST_RETURN < 0) {
-                  	tst_resm(TFAIL, "mq_timedsend failed - errno =3D %d : %s=
-",TEST_ERRNO, strerror(TEST_ERRNO));
-                         result =3D 1;
-@@ -432,17 +440,6 @@ EXIT:
-         return result;
- }
- =
-
--/*
-- * sighandler()
-- */
--void sighandler(int sig)
--{
--        if (sig =3D=3D SIGINT)
--                return;
--        // NOTREACHED
--        return;
--}
--
- =
-
- =
-
- /*
-
-
-
-
-
->> The test case mq_timedreceive01 does not register the signal
->> handler of SIGINT, so the problam will be terminated by SIGINT
->> from child process.
+> I had already seen your patch and generated mine on top of Jun release 
+> (which
+> has your fix for CROSS_COMPILE).Your patch could not help in a 
+> scenario where kernel has cgroup support but cgroupstat.h file is 
+> missing in base OS, and
+> build failed. And hence, I am proposing this patch.
+>
+> Thanks,
+> Gowri
+>
+>> Thanks
+>> Regards
+>> Francesco Rundo
 >>
->> This patch fixed the problem.
+>> gowrishankar wrote:
 >>
->> Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
+>>> Hi Subrata,
+>>> Please accept the patch below.
+>>>
+>>> Thanks,
+>>> Gowri
+>>> ---
+>>> cgroups: conditionally enable building cgroup tests
+>>>
+>>> controllers tests gets included into default ltp build if 
+>>> "/proc/cgroup"
+>>> exists. It stops the ltp build in realtime kernel environment where 
+>>> kernel
+>>> is new and supports cgroups, but necessary file 
+>>> "linux/cgroupstats.h" may not
+>>> exist in the base OS (like RHEL5.3). So configure command enables 
+>>> the build,
+>>> but actual build fails, due to missing header file.
+>>>
+>>> Below patch proposes new symbol LTP_CHECK_CGROUPSTATS to check for 
+>>> header file
+>>> "linux/cgroupstats.h" and include controllers in the list of tests 
+>>> to build.
+>>>
+>>> Tested the patch in non-RT as well as RT environment for the changes.
+>>>
+>>> Signed-off-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+>>> Tested-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+>>> ---
+>>>
+>>> ------------------------------------------------------------------------ 
+>>>
+>>>
+>>> Index: ltp-full-20090630/m4/ltp-cgroupstats.m4
+>>> ===================================================================
+>>> --- /dev/null    1970-01-01 00:00:00.000000000 +0000
+>>> +++ ltp-full-20090630/m4/ltp-cgroupstats.m4    2009-07-03 
+>>> 13:41:55.000000000 +0530
+>>> @@ -0,0 +1,9 @@
+>>> +dnl
+>>> +dnl LTP_CHECK_CGROUPSTATS
+>>> +dnl ----------------------------
+>>> +dnl
+>>> +AC_DEFUN([LTP_CHECK_CGROUPSTATS],
+>>> +[dnl
+>>> +AC_CHECK_HEADERS(linux/cgroupstats.h,[LTP_CHECK_CGROUPSTATS_HEADER=yes]) 
+>>>
+>>> +AC_SUBST(LTP_CHECK_CGROUPSTATS_HEADER)
+>>> +])
+>>> Index: ltp-full-20090630/configure.ac
+>>> ===================================================================
+>>> --- ltp-full-20090630.orig/configure.ac    2009-07-03 
+>>> 13:59:48.000000000 +0530
+>>> +++ ltp-full-20090630/configure.ac    2009-07-03 14:00:14.000000000 
+>>> +0530
+>>> @@ -21,5 +21,6 @@
+>>>  LTP_CHECK_SELINUX
+>>>  LTP_CHECK_CRYPTO
+>>>  LTP_CHECK_TASKSTATS
+>>> +LTP_CHECK_CGROUPSTATS
+>>>
+>>>  AC_OUTPUT
+>>> Index: ltp-full-20090630/testcases/kernel/Makefile
+>>> ===================================================================
+>>> --- ltp-full-20090630.orig/testcases/kernel/Makefile    2009-07-03 
+>>> 14:01:25.000000000 +0530
+>>> +++ ltp-full-20090630/testcases/kernel/Makefile    2009-07-03 
+>>> 14:02:42.000000000 +0530
+>>> @@ -1,6 +1,12 @@
+>>> -SUBDIRS = power_management numa containers controllers connectors 
+>>> include fs io ipc mem pty sched security syscalls timers
+>>> +include ../../config.mk
+>>> +
+>>> +SUBDIRS = power_management numa containers connectors include fs io 
+>>> ipc mem pty sched security syscalls timers
+>>>  UCLINUX_SUBDIRS = include syscalls
+>>>
+>>> +ifeq ($(LTP_CHECK_CGROUPSTATS_HEADER),yes)
+>>> +    SUBDIRS+= controllers
+>>> +endif
+>>> +
+>>>  all:
+>>>      @set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i ; done
+>>>
+>>>   
+>>> ------------------------------------------------------------------------ 
+>>>
+>>>
+>>> ------------------------------------------------------------------------------ 
+>>>
+>>>   
+>>> ------------------------------------------------------------------------ 
+>>>
+>>>
+>>> _______________________________________________
+>>> Ltp-list mailing list
+>>> Ltp-list@lists.sourceforge.net
+>>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>>   
 >>
->> diff --git a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01=
-.c b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
->> index dadc38d..beeb298 100644
->> --- a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
->> +++ b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
->> @@ -106,6 +106,14 @@ extern void cleanup() {
->>          tst_exit();
->>  }
->>  =
-
->> +/*
->> + * sighandler()
->> + */
->> +void sighandler(int sig)
->> +{
->> +        return;
->> +}
->> +
->>  /* Local  Functions */
->>  /**********************************************************************=
-********/
->>  /*                                                                     =
-       */
->> @@ -126,6 +134,7 @@ extern void cleanup() {
->>  /**********************************************************************=
-********/
->>  void setup() {
->>          /* Capture signals if any */
->> +        signal(SIGINT, sighandler);
->>          /* Create temporary directories */
->>          TEST_PAUSE;
->>          tst_tmpdir();
->> @@ -432,17 +441,6 @@ EXIT:
->>          return result;
->>  }
->>  =
-
->> -/*
->> - * sighandler()
->> - */
->> -void sighandler(int sig)
->> -{
->> -        if (sig =3D=3D SIGINT)
->> -                return;
->> -        // NOTREACHED
->> -        return;
->> -}
->> -
->>  =
-
->>  =
-
->>  /*
->>
->>
->>
->>
->>
->> ------------------------------------------------------------------------=
-------
->> Enter the BlackBerry Developer Challenge  =
-
->> This is your chance to win up to $100,000 in prizes! For a limited time, =
-
->> vendors submitting new applications to BlackBerry App World(TM) will have
->> the opportunity to enter the BlackBerry Developer Challenge. See full pr=
-ize  =
-
->> details at: http://p.sf.net/sfu/Challenge
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>   =
-
->>     =
-
 >
 >
->   =
 
 
-
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
