@@ -1,33 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MWaOC-0006O6-DF
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 18:30:04 +0000
-Received: from e31.co.us.ibm.com ([32.97.110.149])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MWaO6-0001yE-Fi
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 18:30:04 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e31.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n6UIOg6Y014748
-	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 12:24:42 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n6UIToGV165596
-	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 12:29:51 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n6UITnvm006115
-	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 12:29:50 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <OFAF51CC3A.0B2793FB-ON852575FE.00403BE8-862575FE.004135EB@us.ibm.com>
-References: <OFAF51CC3A.0B2793FB-ON852575FE.00403BE8-862575FE.004135EB@us.ibm.com>
-Date: Thu, 30 Jul 2009 23:59:34 +0530
-Message-Id: <1248978575.5788.65.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] sync_file_range01 testcase BUG and PATCH
-Reply-To: subrata@linux.vnet.ibm.com
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MNxEH-0005iD-RL
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 23:04:09 +0000
+Received: from an-out-0708.google.com ([209.85.132.246])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MNxEA-0005vv-LH
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 23:04:09 +0000
+Received: by an-out-0708.google.com with SMTP id c38so1778752ana.37
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 06 Jul 2009 16:04:02 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <8368651DACC1964480F951191B94A078D01051@svexch01.mvista.com>
+References: <8368651DACC1964480F951191B94A078D0102F@svexch01.mvista.com>
+	<364299f40907061452k598a0890kbac3ec9742b45ad8@mail.gmail.com>
+	<8368651DACC1964480F951191B94A078D01051@svexch01.mvista.com>
+Date: Mon, 6 Jul 2009 16:04:02 -0700
+Message-ID: <364299f40907061604l44379a21s1470367f74fed979@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] controllers/cpuset tests: use CC variable isntead
+	of hardcoded cc to fix cross compiling
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,45 +30,80 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Robert Paulsen <rpaulsen@us.ibm.com>
+To: Henry Yei <hyei@mvista.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Sat, 2009-07-25 at 07:50 -0400, Robert Paulsen wrote: 
-> The testcase sync_file_range01 uses a file descriptor (variable sfd) in its
-> second test, expcting to see an ESPIPE error.
-> 
-> Unfortunately, the code's open of that file descriptor somehow ended up
-> within a set of curly braces encompasing an error path, not the mainline
-> code where it should be. Thus, sfd is never set, In practice this leaves
-> sfd set to zero. That is actually stdin and stdin can work for the testcase
-> but it is not guaranteed. In fact it mostly works, but it hapens to fail
-> sometimes. The attached patch causes the open for sfd (to /dev/null) to
-> actually get invoked.
-> 
-> (See attached file: sync_file_range01.diff)
-> 
-> Robert Paulsen
+On Mon, Jul 6, 2009 at 3:52 PM, Henry Yei<hyei@mvista.com> wrote:
+> Garrett,
+>
+> This is definitely true from cpuset_memory_pressure_test and cpuset_memor=
+y_spread_test make files, but cpuset_memory_test needs the -lpthread.
+>
+>
+> Using implicit rules, I get the following error:
+>
+> [15:48:27][hyei@hyei2:/tmp/ltp-full-20090531/testcases/kernel/controllers=
+/cpuset/cpuset_memory_test]$ make
+> gcc =A0 cpuset_memory_test.o ../cpuset_lib/cpuinfo.o ../cpuset_lib/libbit=
+mask.o ../cpuset_lib/libcpuset.o ../cpuset_lib/meminfo.o =A0 -o cpuset_memo=
+ry_test
+> cpuset_memory_test.o: In function `thread2_routine': /tmp/ltp-full-200905=
+31/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_tes=
+t.c:333: undefined reference to `pthread_sigmask'
+> cpuset_memory_test.o: In function `main': /tmp/ltp-full-20090531/testcase=
+s/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_test.c:370: un=
+defined reference to `pthread_create' /tmp/ltp-full-20090531/testcases/kern=
+el/controllers/cpuset/cpuset_memory_test/cpuset_memory_test.c:372: undefine=
+d reference to `pthread_sigmask' /tmp/ltp-full-20090531/testcases/kernel/co=
+ntrollers/cpuset/cpuset_memory_test/cpuset_memory_test.c:380: undefined ref=
+erence to `pthread_cancel' /tmp/ltp-full-20090531/testcases/kernel/controll=
+ers/cpuset/cpuset_memory_test/cpuset_memory_test.c:381: undefined reference=
+ to `pthread_join'
+> collect2: ld returned 1 exit status
+> make: *** [cpuset_memory_test] Error 1
+>
+> If there is something I'm missing, let me know and I'll re-submit the pri=
+or patches.
+>
+> -----Original Message-----
+> From: Garrett Cooper [mailto:yanegomi@gmail.com]
+> Sent: Monday, July 06, 2009 2:53 PM
+> To: Henry Yei
+> Cc: ltp-list@lists.sourceforge.net
+> Subject: Re: [LTP] [PATCH] controllers/cpuset tests: use CC variable isnt=
+ead of hardcoded cc to fix cross compiling
+>
+> On Mon, Jul 6, 2009 at 2:34 PM, Henry Yei<hyei@mvista.com> wrote:
+>> I am submitting patches for the Makefiles of the following tests: cpuset=
+_memory_pressure_test, cpuset_memory_spread_test , and cpuset_memory_test. =
+Instead of using cc (host compiler), use $(CC) for provide for cross compil=
+ing.
+>
+> Just delete:
+>
+> + =A0 =A0 =A0 $(CC) cpuset_memory_test.o $(LIBOBJECTS) -o cpuset_memory_t=
+est
+> +-lpthread
+>
+> implicit rules will take care of the rest.
+>
+> -Garrett
 
-Thanks for this, although a missing Signed-off-by: is necessary.
+Well, you kind of have to do:
 
-Regards--
-Subrata
+LDLIBS    +=3D -lpthread
 
-> IBM Linux Technology Center, Austin
-> rpaulsen@us.ibm.com
-> 512-468-0565
-> ------------------------------------------------------------------------------
-> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
+somewhere in the Makefile. Sorry for not explicitly mentioning that point ;=
+\...
 
+Thanks,
+-Garrett
 
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+---------------------------------------------------------------------------=
+---
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
