@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <arnd@arndb.de>) id 1MQjGf-0002xr-PU
-	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2009 14:46:05 +0000
-Received: from moutng.kundenserver.de ([212.227.17.10])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MQjGZ-0004m2-JY
-	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2009 14:46:05 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Tue, 14 Jul 2009 16:45:48 +0200
-References: <4A5C8068.6020203@monstr.eu> <200907141521.47719.arnd@arndb.de>
-	<4A5C8BF2.8020505@monstr.eu>
-In-Reply-To: <4A5C8BF2.8020505@monstr.eu>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MNwwZ-0002Hq-27
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 22:45:51 +0000
+Received: from an-out-0708.google.com ([209.85.132.246])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MNwwU-0000ip-9B
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 22:45:51 +0000
+Received: by an-out-0708.google.com with SMTP id c38so1775159ana.37
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 06 Jul 2009 15:45:45 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <200907141645.48833.arnd@arndb.de>
-Subject: Re: [LTP] access_ok macor
+Date: Mon, 6 Jul 2009 15:45:42 -0700
+Message-ID: <364299f40907061545o4da1c12dj1c33dc6115f101@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Content-Type: multipart/mixed; boundary=0016e64615b0166352046e114425
+Subject: [LTP] [PATCH] ballista should clean out all generated binaries
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,62 +26,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: monstr@monstr.eu
-Cc: LTP <ltp-list@lists.sourceforge.net>, Linux Kernel list <linux-kernel@vger.kernel.org>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-On Tuesday 14 July 2009, Michal Simek wrote:
-> Arnd Bergmann wrote:
-> Look at
-> http://developer.petalogix.com/git/gitweb.cgi?p=ltp-microblaze.git;a=commitdiff;h=45f4cd783ce8b94f1267bb87c0c46e8536f62eca
-> 
-> There are three affected tests and my quick fixes which I am trying to solve now.
-> 
+--0016e64615b0166352046e114425
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-ok, I see.
- 
-> int move_addr_to_user(struct sockaddr *kaddr, int klen, void __user *uaddr,
-> 		      int __user *ulen)
-> {
-> 	int err;
-> 	int len;
-> 
-> 	err = get_user(len, ulen);
-> 	if (err)
-> 		return err;
-> 
+A few generated files weren't being pruned with clean (blexer,
+bparser). This patch fixes that.
 
-So the code looks something like
+Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
 
-                        "1:     lw      %1, %2, r0;                     \
-                                addk    %0, r0, r0;                     \
-                        2:                                              \
-                        .section .fixup,\"ax\";                         \
-                        3:      brid    2b;                             \
-                                addik   %0, r0, %3;                     \
-                        .previous;                                      \
-                        .section ,\"a\";                      		\
-                        .word   1b,3b;                                  \
-                        .previous;"                                     \
+--0016e64615b0166352046e114425
+Content-Type: application/octet-stream; 
+	name="ballista-should-clean-all-binaries.diff"
+Content-Disposition: attachment; 
+	filename="ballista-should-clean-all-binaries.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fwts59cg0
 
-Not much that can go wrong there. First of all, I'd check that the
-code actually looks the same in the binary. I assume that the 'addik'
-gets executed when the brid branches, right?
-
-I would guess that some of the logic in do_page_fault might be
-broken and does not actually call the fixup.
-
-	Arnd <><
+SW5kZXg6IHRlc3RjYXNlcy9iYWxsaXN0YS9iYWxsaXN0YS9NYWtlZmlsZQo9PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ClJD
+UyBmaWxlOiAvY3Zzcm9vdC9sdHAvbHRwL3Rlc3RjYXNlcy9iYWxsaXN0YS9iYWxsaXN0YS9NYWtl
+ZmlsZSx2CnJldHJpZXZpbmcgcmV2aXNpb24gMS41CmRpZmYgLXUgLXIxLjUgTWFrZWZpbGUKLS0t
+IHRlc3RjYXNlcy9iYWxsaXN0YS9iYWxsaXN0YS9NYWtlZmlsZQkyNiBGZWIgMjAwOSAwNjoyOTo0
+MiAtMDAwMAkxLjUKKysrIHRlc3RjYXNlcy9iYWxsaXN0YS9iYWxsaXN0YS9NYWtlZmlsZQk2IEp1
+bCAyMDA5IDIyOjQzOjQ2IC0wMDAwCkBAIC0xMTUsOSArMTE1LDggQEAKIHBhdXNlX2hhcm5lc3Mg
+OiBwYXVzZV9oYXJuZXNzLmNwcCAke09CSlN9CiAJJHtDQ30gLUl0ZW1wbGF0ZXMgJHtDRkxBR1N9
+IHBhdXNlX2hhcm5lc3MuY3BwICR7T0JKU30gLW8gcGF1c2VfaGFybmVzcyAKIAotCiAjIGNsZWFu
+IHVwIGV2ZXJ5dGhpbmcgdGhhdCB3ZSBidWlsZAogY2xlYW4gOgogCSQoTUFLRSkgLUMgdGVtcGxh
+dGVzIGNsZWFuCi0Jcm0gLWYgKi5vIGJhbGxpc3RhIGNhbGxHZW4gY2FsbEdlbl9zdGFuZEFsb25l
+IGdlbkNvZGVDcmVhdG9yIHJlcGxhY2VyIHRlc3RtYXJzaGFsCi0KKwkkKFJNKSAtZiAqLm8gKi5v
+dXQgYmFsbGlzdGEgYmxleGVyIGJwYXJzZXIgY2FsbEdlbiBjYWxsR2VuX3N0YW5kQWxvbmUgXAor
+CSAgICAgICAgICAgIGdlbkNvZGVDcmVhdG9yIHJlcGxhY2VyIHRlc3RtYXJzaGFsCg==
+--0016e64615b0166352046e114425
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
+
+--0016e64615b0166352046e114425
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--0016e64615b0166352046e114425--
+
