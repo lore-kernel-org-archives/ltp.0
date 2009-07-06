@@ -1,23 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <zohar@linux.vnet.ibm.com>) id 1MTw9d-00028p-N4
-	for ltp-list@lists.sourceforge.net; Thu, 23 Jul 2009 11:08:05 +0000
-Received: from e9.ny.us.ibm.com ([32.97.182.139])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MTw9Z-00041Q-Ln
-	for ltp-list@lists.sourceforge.net; Thu, 23 Jul 2009 11:08:05 +0000
-From: Mimi Zohar <zohar@linux.vnet.ibm.com>
-In-Reply-To: <200907222028.55612.vapier@gentoo.org>
-References: <1247741996.3886.5.camel@dyn9002018117.watson.ibm.com>
-	<364299f40907182215q56ff7c3au5971afb877d4aa15@mail.gmail.com>
-	<1248297619.3714.10.camel@dyn9002018117.watson.ibm.com>
-	<200907222028.55612.vapier@gentoo.org>
-Date: Thu, 23 Jul 2009 07:07:54 -0400
-Message-Id: <1248347274.3884.13.camel@dyn9002018117.watson.ibm.com>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MNtL0-0004eU-Rf
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 18:54:50 +0000
+Received: from e33.co.us.ibm.com ([32.97.110.151])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MNqTL-0008ET-B2
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:51:16 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e33.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n66Fmqcg010263
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 09:48:52 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n66FovBw160104
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 09:50:58 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n66Fots9001841
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 09:50:56 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <20090702085829.GD19135@count0.beaverton.ibm.com>
+References: <20090702084828.GC19135@count0.beaverton.ibm.com>
+	<20090702085829.GD19135@count0.beaverton.ibm.com>
+Date: Mon, 06 Jul 2009 21:20:42 +0530
+Message-Id: <1246895443.4887.49.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] ltp: IMA cross platform fixes
+Subject: Re: [LTP] [PATCH 2/4] netns: Add ip tools check to netns tests.
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,69 +41,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list <ltp-list@lists.sf.net>, Shaz <shazalive@gmail.com>, waqar afridi <afridi.waqar@gmail.com>
+To: Matt Helsley <matthltc@us.ibm.com>
+Cc: Poornima Nayak <poornima.nayak@in.ibm.com>, LTP <ltp-list@lists.sourceforge.net>, Daniel Lezcano <daniel.lezcano@free.fr>, Veerendra C <vechandr@in.ibm.com>, Munipradeep <mbeeraka@in.ibm.com>
 
-On Wed, 2009-07-22 at 20:28 -0400, Mike Frysinger wrote: 
-> On Wednesday 22 July 2009 17:20:19 Mimi Zohar wrote:
-> > testcases/kernel/security/integrity/ima/tests/ima_policy.sh
-> >
-> > -		if [ "${line:0:1}" != "#" ] ; then
-> > +		firstch=`expr substr "${line}" 1 1`
-> > +		if [ "${firstch}" != "#" ] ; then
+On Thu, 2009-07-02 at 01:58 -0700, Matt Helsley wrote: 
+> Use ip -V to exclude the network namespace testcases since they require
+> version  ("snapshot") ss080725 or higher to set the network namespace of
+> interfaces used for testing.
 > 
-> the `expr` util, while pretty flexible, tends to not get used.  so it'll 
-> probably be easier for people to grok:
-> 	if [ "${line#\#}" = "${line}" ] ; then
+> Signed-off-by: Matt Helsley <matthltc@us.ibm.com>
 
-Other than the comparison needing to be '!=', this works. Thanks!
+Thanks for this as well.
 
-> > -	RC=$((`expr $RC1 + $RC2`))
-> > -	if [ $RC -eq 1 ]; then
-> > +	if [ $RC1 -eq 0 ] && [ $RC2 -eq 0 ]; then
+Regards--
+Subrata
+
+> Signed-off-by: Sachin P. Sant <sachinp@in.ibm.com>
+> Cc: Daniel Lezcano <daniel.lezcano@free.fr>
+> Cc: Poornima Nayak <poornima.nayak@in.ibm.com>
+> Cc: Sudhir Kumar <skumar@linux.vnet.ibm.com>
+> Cc: Veerendra C <vechandr@in.ibm.com>
+> Cc: Munipradeep <mbeeraka@in.ibm.com>
+> Cc: ltp@list.sourceforge.net
 > 
-> i dont see what was wrong with the original here, but if you really want to 
-> rewrite this, then just change the one line to:
-> 	RC=$((RC1 + RC2))
-
-The test opens the policy file and attempts to open it again, while it
-is still open.  The test now explicitly checks the return code from both
-opens.  The return code from both opens shouldn't be 0.
-
-> > testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
-> >
-> > +	zero="0000000000000000000000000000000000000000"
-> >
-> > +	ima_aggr=`expr substr "${line}" 49 40`
-> >
-> > -		[ "${line:49:40}" -eq 0 ] || RC=$?
-> > +		[ "${ima_aggr}" = "${zero}" ] || RC=$?
+> ---
+>  testcases/kernel/containers/netns/runnetnstest.sh |   21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
 > 
-> these changes arent exactly equivalent.  if the subst of line only returned 
-> say 5 zeros, then your check wouldnt work.  do you even need this ?  simply 
-> changing the line to ima_aggr via substr looks good enough to me.  this should 
-> work fine in POSIX shells:
-> 	[ "00000" -eq 0 ]
-
-Although the statements aren't equivalent, the current check is more
-correct.  If the TPM is not enabled, the first entry
-in /sys/kernel/security/ascii_runtime, the boot aggregate, will be a
-string of zeroes.
-
-> > testcases/kernel/security/integrity/ima/tests/ima_violations.sh
-> >
-> > +			tst_res TINFO $LTPTMP/imalog.$$\
-> > +			 "$TCID: (message ratelimiting?)"
+> Index: ltp/testcases/kernel/containers/netns/runnetnstest.sh
+> ===================================================================
+> --- ltp.orig/testcases/kernel/containers/netns/runnetnstest.sh
+> +++ ltp/testcases/kernel/containers/netns/runnetnstest.sh
+> @@ -24,6 +24,27 @@
 > 
-> this shows up a few times in the patch ... if you're going to line wrap 
-> things, there needs to be a space before the continuation marker for style.
-> -mike
-
-Ok.
-
-Thanks!
-
-Mimi
+>  rc=0
+>  exit_code=0
+> +
+> +# Check the iproute2 version (aka "SnapShot")
+> +IPROUTEV=`ip -V | cut -d ',' -f 2 | cut -d '-' -f 2 | sed -e 's/^ss//'`
+> +
+> +# We need to strip leading 0s else bash thinks we're giving it octal numbers.
+> +IPROUTEY=$(echo ${IPROUTEV:0:2} | sed -e 's/^0\+//') # Year
+> +IPROUTEM=$(echo ${IPROUTEV:2:2} | sed -e 's/^0\+//') # Month
+> +IPROUTED=$(echo ${IPROUTEV:4:2} | sed -e 's/^0\+//') # Day
+> +
+> +V=$((${IPROUTEY}*12*32 + ${IPROUTEM}*32 + ${IPROUTED}))
+> +
+> +#
+> +# iproute-ss080725 and later support setting the network namespace of an
+> +# interface.
+> +#
+> +NETNSV=$((8*12*32 + 7*32 + 25))
+> +if [ ${V} -lt ${NETNSV} ]; then
+> +	echo "INFO: iproute tools do not support setting network namespaces. Skipping network namespace tests."
+> +	exit $exit_code
+> +fi
+> +
+>  crtchild
+>  rc=$?
+>  if [ $rc -ne 0 ]; then
 
 
 ------------------------------------------------------------------------------
