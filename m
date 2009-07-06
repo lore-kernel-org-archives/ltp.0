@@ -2,21 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <monstr@monstr.eu>) id 1MQiaj-0000Sx-OY
-	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2009 14:02:45 +0000
-Received: from mail-fx0-f208.google.com ([209.85.220.208])
+	(envelope-from <yanegomi@gmail.com>) id 1MNwvi-0002EX-O9
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 22:44:58 +0000
+Received: from mail-yx0-f195.google.com ([209.85.210.195])
 	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MQiaf-0007uc-CI
-	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2009 14:02:45 +0000
-Received: by fxm4 with SMTP id 4so253771fxm.10
+	id 1MNwvc-0000MZ-Ax
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 22:44:58 +0000
+Received: by mail-yx0-f195.google.com with SMTP id 33so5204907yxe.28
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 14 Jul 2009 07:02:39 -0700 (PDT)
-Message-ID: <4A5C8068.6020203@monstr.eu>
-Date: Tue, 14 Jul 2009 14:56:08 +0200
-From: Michal Simek <monstr@monstr.eu>
+	Mon, 06 Jul 2009 15:44:52 -0700 (PDT)
 MIME-Version: 1.0
-Subject: [LTP] access_ok macor
-Reply-To: monstr@monstr.eu
+Date: Mon, 6 Jul 2009 15:39:17 -0700
+Message-ID: <364299f40907061539nbff633dlb1b2b5409ad9426@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Content-Type: multipart/mixed; boundary=0016e644d02c1c1200046e112d1b
+Subject: [LTP] [PATCH] doc/* Makefile refactor enhancements
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,66 +26,155 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Linux Kernel list <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, LTP <ltp-list@lists.sourceforge.net>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-Hi,
+--0016e644d02c1c1200046e112d1b
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-I am trying to solve one thing around access_ok macro.
-Microblaze memory map is below
-Text address for user app is 0x1000 0000
-for library 0x4800 0000
-and stack below 0xc000 0000
+The purpose of this patch was to clean up the doc/* Makefiles as a
+precursor to the top-level Makefile refactoring. This depends on my
+Makefile enhancements patch (PATCH 2/3).
 
+Do not commit until the Makefile enhancements patch is properly
+reviewed and committed!
 
-# cat /proc/1/maps
-10000000-10106000 r-xp 00000000 00:01 379        /bin/busybox
-10106000-10107000 rw-p 00106000 00:01 379        /bin/busybox
-10107000-1012a000 rwxp 00000000 00:00 0          [heap]
-48000000-4801c000 r-xp 00000000 00:01 400        /lib/ld-2.3.3.so
-4801c000-4801e000 rw-p 0001b000 00:01 400        /lib/ld-2.3.3.so
-4801e000-480ec000 r-xp 00000000 00:01 396        /lib/libm-2.3.3.so
-480ec000-480ee000 rw-p 000ce000 00:01 396        /lib/libm-2.3.3.so
-480ee000-4824c000 r-xp 00000000 00:01 390        /lib/libc-2.3.3.so
-4824c000-4824f000 r--p 0015d000 00:01 390        /lib/libc-2.3.3.so
-4824f000-48251000 rw-p 00160000 00:01 390        /lib/libc-2.3.3.so
-48251000-48255000 rw-p 00000000 00:00 0
-bfa38000-bfa4d000 rwxp 00000000 00:00 0          [stack]
-#
+Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
 
-I found that I can setup text base in binutils/ld/emulparam/elf32mb_linux.sh
+--0016e644d02c1c1200046e112d1b
+Content-Type: application/octet-stream; name="doc-Makefile-enhancements.diff"
+Content-Disposition: attachment; filename="doc-Makefile-enhancements.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fwtrxo1d0
 
-The problem which I have is that if I run socketpair, getsockname, getpeername LTP
-tests with invalid salen pointer there are addresses close to 0x0. Microblaze
-has no text there and the sigsegv fault is generated.
-
-This fault could be fixed by changed access_ok macro where I check bottom limit
-at 0x1000 0000 too. After this change the LTP program not failed but I am not sure
-if is the right solution because none arch do it. All archs just check upper limit
-not lower.
-
-What is the correct solution for it? Moving .text base to 0x0 or is there any other
-elegant solution?
-
-Thanks,
-Michal
-
-
-
-
--- 
-Michal Simek, Ing. (M.Eng)
-w: www.monstr.eu p: +42-0-721842854
+SW5kZXg6IGRvYy9NYWtlZmlsZQo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ClJDUyBmaWxlOiBkb2MvTWFrZWZpbGUKZGlm
+ZiAtTiBkb2MvTWFrZWZpbGUKLS0tIC9kZXYvbnVsbAkxIEphbiAxOTcwIDAwOjAwOjAwIC0wMDAw
+CisrKyBkb2MvTWFrZWZpbGUJNiBKdWwgMjAwOSAyMjozMTo0MSAtMDAwMApAQCAtMCwwICsxLDMy
+IEBACisjCisjICAgIERvYyBNYWtlZmlsZS4KKyMKKyMgICAgQ29weXJpZ2h0IChDKSAyMDA5LCBD
+aXNjbyBTeXN0ZW1zIEluYy4KKyMKKyMgICAgVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7
+IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKKyMgICAgaXQgdW5kZXIgdGhl
+IHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkK
+KyMgICAgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24gMiBvZiB0
+aGUgTGljZW5zZSwgb3IKKyMgICAgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi4K
+KyMKKyMgICAgVGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIHRoYXQgaXQg
+d2lsbCBiZSB1c2VmdWwsCisjICAgIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgd2l0aG91dCBl
+dmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCisjICAgIE1FUkNIQU5UQUJJTElUWSBvciBGSVRO
+RVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZSB0aGUKKyMgICAgR05VIEdlbmVyYWwg
+UHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KKyMKKyMgICAgWW91IHNob3VsZCBoYXZl
+IHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYWxvbmcK
+KyMgICAgd2l0aCB0aGlzIHByb2dyYW07IGlmIG5vdCwgd3JpdGUgdG8gdGhlIEZyZWUgU29mdHdh
+cmUgRm91bmRhdGlvbiwgSW5jLiwKKyMgICAgNTEgRnJhbmtsaW4gU3RyZWV0LCBGaWZ0aCBGbG9v
+ciwgQm9zdG9uLCBNQSAwMjExMC0xMzAxIFVTQS4KKyMKKyMgR2FycmV0dCBDb29wZXIsIEp1bHkg
+MjAwOQorIworIyBDb3B5cmlnaHQgKGMpIDIwMDkgYnkgQ2lzY28gU3lzdGVtcywgSW5jLgorIyBB
+bGwgcmlnaHRzIHJlc2VydmVkCisjCisKK3NyY2RpcgkJCT89IC4uCisKK2luY2x1ZGUgJChzcmNk
+aXIpL2luY2x1ZGUvbWsvbWFzdGVyX2luY2x1ZGUubWsKKworUkVDVVJTSVZFX1RBUkdFVFMJOj0g
+Y2xlYW4gaW5zdGFsbAorCiskKGV2YWwgJChnZW5lcmljX3RydW5rX3RhcmdldCkpCkluZGV4OiBk
+b2MvbWFuMS9NYWtlZmlsZQo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09ClJDUyBmaWxlOiAvY3Zzcm9vdC9sdHAvbHRwL2Rv
+Yy9tYW4xL01ha2VmaWxlLHYKcmV0cmlldmluZyByZXZpc2lvbiAxLjUKZGlmZiAtdSAtcjEuNSBN
+YWtlZmlsZQotLS0gZG9jL21hbjEvTWFrZWZpbGUJMjMgSnVuIDIwMDkgMTQ6MTg6MTYgLTAwMDAJ
+MS41CisrKyBkb2MvbWFuMS9NYWtlZmlsZQk2IEp1bCAyMDA5IDIyOjMxOjQxIC0wMDAwCkBAIC0x
+LDEyICsxLDMwIEBACisjCisjICAgIG1hbjEgTWFrZWZpbGUuCisjIAorIyAgICBDb3B5cmlnaHQg
+KEMpIDIwMDksIENpc2NvIFN5c3RlbXMgSW5jLgorIyAKKyMgICAgVGhpcyBwcm9ncmFtIGlzIGZy
+ZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKKyMgICAg
+aXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBw
+dWJsaXNoZWQgYnkKKyMgICAgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZl
+cnNpb24gMiBvZiB0aGUgTGljZW5zZSwgb3IKKyMgICAgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0
+ZXIgdmVyc2lvbi4KKyMgCisjICAgIFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUg
+aG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLAorIyAgICBidXQgV0lUSE9VVCBBTlkgV0FSUkFO
+VFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZgorIyAgICBNRVJDSEFOVEFC
+SUxJVFkgb3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UuICBTZWUgdGhlCisjICAg
+IEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGZvciBtb3JlIGRldGFpbHMuCisjIAorIyAgICBZ
+b3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMg
+TGljZW5zZSBhbG9uZworIyAgICB3aXRoIHRoaXMgcHJvZ3JhbTsgaWYgbm90LCB3cml0ZSB0byB0
+aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uLCBJbmMuLAorIyAgICA1MSBGcmFua2xpbiBTdHJl
+ZXQsIEZpZnRoIEZsb29yLCBCb3N0b24sIE1BIDAyMTEwLTEzMDEgVVNBLgorIyAKKyMgR2FycmV0
+dCBDb29wZXIsIEp1bHkgMjAwOQorIworIyBDb3B5cmlnaHQgKGMpIDIwMDkgYnkgQ2lzY28gU3lz
+dGVtcywgSW5jLgorIyBBbGwgcmlnaHRzIHJlc2VydmVkCisjCiAKK01BTlBSRUZJWAkJOj0gMQog
+Ci1QUkVGSVg9L3VzcgotTUFOUEFHRVM9bHRwLWJ1bXAuMSBkb2lvLjEgaW9nZW4uMSBsdHAtcGFu
+LjEKLQotYWxsOgotCi1pbnN0YWxsOiAkKE1BTlBBR0VTKQotCUBzZXQgLWU7IGZvciBpIGluICQo
+TUFOUEFHRVMpOyBkbyBcCi0JCWluc3RhbGwgLUQgLW0gNjQ0ICQkaSAkKERFU1RESVIpLyQoUFJF
+RklYKS9zaGFyZS9tYW4vbWFuMS8kJGk7IFwKLQlkb25lCitzcmNkaXIJCQk/PSAuLi8uLgogCitp
+bmNsdWRlICQoc3JjZGlyKS9pbmNsdWRlL21rL21hbi5tawpJbmRleDogZG9jL21hbjMvTWFrZWZp
+bGUKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PQpSQ1MgZmlsZTogL2N2c3Jvb3QvbHRwL2x0cC9kb2MvbWFuMy9NYWtlZmls
+ZSx2CnJldHJpZXZpbmcgcmV2aXNpb24gMS40CmRpZmYgLXUgLXIxLjQgTWFrZWZpbGUKLS0tIGRv
+Yy9tYW4zL01ha2VmaWxlCTIzIEp1biAyMDA5IDE0OjE4OjE2IC0wMDAwCTEuNAorKysgZG9jL21h
+bjMvTWFrZWZpbGUJNiBKdWwgMjAwOSAyMjozMTo0MSAtMDAwMApAQCAtMSwxNSArMSwzMCBAQAor
+IworIyAgICBtYW4zIE1ha2VmaWxlLgorIyAKKyMgICAgQ29weXJpZ2h0IChDKSAyMDA5LCBDaXNj
+byBTeXN0ZW1zIEluYy4KKyMgCisjICAgIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5
+b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5CisjICAgIGl0IHVuZGVyIHRoZSB0
+ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXMgcHVibGlzaGVkIGJ5Cisj
+ICAgIHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJzaW9uIDIgb2YgdGhl
+IExpY2Vuc2UsIG9yCisjICAgIChhdCB5b3VyIG9wdGlvbikgYW55IGxhdGVyIHZlcnNpb24uCisj
+IAorIyAgICBUaGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBpdCB3
+aWxsIGJlIHVzZWZ1bCwKKyMgICAgYnV0IFdJVEhPVVQgQU5ZIFdBUlJBTlRZOyB3aXRob3V0IGV2
+ZW4gdGhlIGltcGxpZWQgd2FycmFudHkgb2YKKyMgICAgTUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5F
+U1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2VlIHRoZQorIyAgICBHTlUgR2VuZXJhbCBQ
+dWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgorIyAKKyMgICAgWW91IHNob3VsZCBoYXZl
+IHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYWxvbmcK
+KyMgICAgd2l0aCB0aGlzIHByb2dyYW07IGlmIG5vdCwgd3JpdGUgdG8gdGhlIEZyZWUgU29mdHdh
+cmUgRm91bmRhdGlvbiwgSW5jLiwKKyMgICAgNTEgRnJhbmtsaW4gU3RyZWV0LCBGaWZ0aCBGbG9v
+ciwgQm9zdG9uLCBNQSAwMjExMC0xMzAxIFVTQS4KKyMgCisjIEdhcnJldHQgQ29vcGVyLCBKdWx5
+IDIwMDkKKyMKKyMgQ29weXJpZ2h0IChjKSAyMDA5IGJ5IENpc2NvIFN5c3RlbXMsIEluYy4KKyMg
+QWxsIHJpZ2h0cyByZXNlcnZlZAorIwogCitNQU5QUkVGSVgJCTo9IDMKIAotUFJFRklYPS91c3IK
+LU1BTlBBR0VTPWZvcmtlci4zIGdldF9hdHRyaWIuMyBwYXJzZV9vcGVuX2ZsYWdzLjMgcGFyc2Vf
+b3B0cy4zIFwKLQlwYXJzZV9yYW5nZXMuMyBwYXR0ZXJuLjMgcmFuZG9tX3JhbmdlLjMgcmFuZG9t
+X3JhbmdlX3NlZWQuMyBcCi0Jcm1vYmouMyBzdHJpbmdfdG9fdG9rZW5zLjMgc3RyX3RvX2J5dGVz
+LjMgdHN0X3Jlcy4zIFwKLQl0c3Rfc2V0X2Vycm9yLjMgdHN0X3NpZy4zIHRzdF90bXBkaXIuMyB1
+c2N0ZXN0LjMgd3JpdGVfbG9nLjMKLQotYWxsOgotCi1pbnN0YWxsOiAkKE1BTlBBR0VTKQotCUBz
+ZXQgLWU7IGZvciBpIGluICQoTUFOUEFHRVMpOyBkbyBcCi0JCWluc3RhbGwgLUQgLW0gNjQ0ICQk
+aSAkKERFU1RESVIpLyQoUFJFRklYKS9zaGFyZS9tYW4vbWFuMy8kJGk7IFwKLQlkb25lCitzcmNk
+aXIJCQk/PSAuLi8uLgogCitpbmNsdWRlICQoc3JjZGlyKS9pbmNsdWRlL21rL21hbi5tawpJbmRl
+eDogaW5jbHVkZS9tay9tYW4ubWsKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQpSQ1MgZmlsZTogaW5jbHVkZS9tay9tYW4u
+bWsKZGlmZiAtTiBpbmNsdWRlL21rL21hbi5tawotLS0gL2Rldi9udWxsCTEgSmFuIDE5NzAgMDA6
+MDA6MDAgLTAwMDAKKysrIGluY2x1ZGUvbWsvbWFuLm1rCTYgSnVsIDIwMDkgMjI6MzE6NDEgLTAw
+MDAKQEAgLTAsMCArMSw0MiBAQAorIworIyAgICBNYW5wYWdlIGluY2x1ZGUgTWFrZWZpbGUuCisj
+CisjICAgIENvcHlyaWdodCAoQykgMjAwOSwgQ2lzY28gU3lzdGVtcyBJbmMuCisjCisjICAgIFRo
+aXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQv
+b3IgbW9kaWZ5CisjICAgIGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwgUHVi
+bGljIExpY2Vuc2UgYXMgcHVibGlzaGVkIGJ5CisjICAgIHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5k
+YXRpb247IGVpdGhlciB2ZXJzaW9uIDIgb2YgdGhlIExpY2Vuc2UsIG9yCisjICAgIChhdCB5b3Vy
+IG9wdGlvbikgYW55IGxhdGVyIHZlcnNpb24uCisjCisjICAgIFRoaXMgcHJvZ3JhbSBpcyBkaXN0
+cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLAorIyAgICBidXQgV0lU
+SE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZgor
+IyAgICBNRVJDSEFOVEFCSUxJVFkgb3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0Uu
+ICBTZWUgdGhlCisjICAgIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGZvciBtb3JlIGRldGFp
+bHMuCisjCisjICAgIFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBH
+ZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFsb25nCisjICAgIHdpdGggdGhpcyBwcm9ncmFtOyBpZiBu
+b3QsIHdyaXRlIHRvIHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24sIEluYy4sCisjICAgIDUx
+IEZyYW5rbGluIFN0cmVldCwgRmlmdGggRmxvb3IsIEJvc3RvbiwgTUEgMDIxMTAtMTMwMSBVU0Eu
+CisjCisjIEdhcnJldHQgQ29vcGVyLCBKdWx5IDIwMDkKKyMKKyMgQ29weXJpZ2h0IChjKSAyMDA5
+IGJ5IENpc2NvIFN5c3RlbXMsIEluYy4KKyMgQWxsIHJpZ2h0cyByZXNlcnZlZAorIworCitpZmVx
+ICgkKHN0cmlwICQoTUFOUFJFRklYKSksKQorJChlcnJvciAkJChNQU5QUkVGSVgpIG5vdCBkZWZp
+bmVkKQorZW5kaWYKKworaW5jbHVkZSAkKHNyY2RpcikvaW5jbHVkZS9tay9jb25maWcubWsKKwor
+TUFOUEFHRVMJCT89ICQod2lsZGNhcmQgKi4kKE1BTlBSRUZJWCkpCisKK2NsZWFuOgorCUBzZXQg
+LWU7IGZvciBpIGluICQoTUFOUEFHRVMpOyBkbyBcCisJICAgICQoUk0pIC1SZiAkKERFU1RESVIp
+LyQobWFuZGlyKS9tYW4kKE1BTlBSRUZJWCkvJCRpOyBcCisJZG9uZQorCitpbnN0YWxsOiAkKE1B
+TlBBR0VTKQorCUBzZXQgLWU7IGZvciBpIGluICReOyBkbyBcCisJICAgIGluc3RhbGwgLUQgLW0g
+NjQ0ICQkaSAkKERFU1RESVIpLyQobWFuZGlyKS9tYW4kKE1BTlBSRUZJWCkvJCRpOyBcCisJZG9u
+ZQo=
+--0016e644d02c1c1200046e112d1b
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
+
+--0016e644d02c1c1200046e112d1b
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--0016e644d02c1c1200046e112d1b--
+
