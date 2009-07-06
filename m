@@ -1,28 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <skrishnakar@gmail.com>) id 1MU4xK-0001YR-Ce
-	for Ltp-list@lists.sourceforge.net; Thu, 23 Jul 2009 20:31:58 +0000
-Received: from mail-pz0-f201.google.com ([209.85.222.201])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MU4x9-0008JX-27
-	for Ltp-list@lists.sourceforge.net; Thu, 23 Jul 2009 20:31:53 +0000
-Received: by pzk39 with SMTP id 39so870550pzk.28
-	for <Ltp-list@lists.sourceforge.net>;
-	Thu, 23 Jul 2009 13:31:40 -0700 (PDT)
+	(envelope-from <gomuthuk@linux.vnet.ibm.com>) id 1MNmru-00087J-0T
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 12:00:22 +0000
+Received: from e28smtp03.in.ibm.com ([59.145.155.3])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MNmrk-0006HD-89
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 12:00:16 +0000
+Message-ID: <4A51E745.3060105@linux.vnet.ibm.com>
+Date: Mon, 06 Jul 2009 17:30:05 +0530
+From: gowrishankar <gomuthuk@linux.vnet.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <13B0CDE8-B974-4CFA-A4B9-8AC4374B4694@kernel.crashing.org>
-References: <6213bc560907210233l17aa3e75pcb7c20e3faa24195@mail.gmail.com>
-	<2A0DDADE-5C3C-43F2-9487-98A8A735DC8D@kernel.crashing.org>
-	<6213bc560907220838h49e5c273qa543e538bb37923a@mail.gmail.com>
-	<578FBC09-589D-4691-82FF-985FCFE8ADC9@kernel.crashing.org>
-	<6213bc560907220932u3b771af2q743ae55dda5a2198@mail.gmail.com>
-	<13B0CDE8-B974-4CFA-A4B9-8AC4374B4694@kernel.crashing.org>
-Date: Fri, 24 Jul 2009 02:01:40 +0530
-Message-ID: <6213bc560907231331p188a7b32q7287e9fe777eaf18@mail.gmail.com>
-From: srikanth krishnakar <skrishnakar@gmail.com>
-Subject: Re: [LTP] msgctl10 fails on Powerpc Linux-2.6.29.6
+References: <4A51CEDC.6080605@linux.vnet.ibm.com> <4A51E253.200@st.com>
+In-Reply-To: <4A51E253.200@st.com>
+Subject: Re: [LTP] [PATCH] cgroups: conditionally enable building cgroup
+	tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,239 +25,126 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0629989734567027578=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kumar Gala <galak@kernel.crashing.org>
-Cc: Linuxppc-dev@ozlabs.org, Ltp-list@lists.sourceforge.net
-
---===============0629989734567027578==
-Content-Type: multipart/alternative; boundary=000e0cd304700f327b046f65601a
-
---000e0cd304700f327b046f65601a
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-On Thu, Jul 23, 2009 at 6:33 AM, Kumar Gala <galak@kernel.crashing.org>wrote:
-
->
-> On Jul 22, 2009, at 11:32 AM, srikanth krishnakar wrote:
->
->
->>
->> On Wed, Jul 22, 2009 at 9:14 PM, Kumar Gala <galak@kernel.crashing.org>
->> wrote:
->>
->> On Jul 22, 2009, at 10:38 AM, srikanth krishnakar wrote:
->>
->>
->>
->> On Wed, Jul 22, 2009 at 8:52 PM, Kumar Gala <galak@kernel.crashing.org>
->> wrote:
->> I'm not seeing any BUG* in traps.c @ line 904.
->>
->>
->> On Jul 21, 2009, at 4:33 AM, srikanth krishnakar wrote:
->>
->> The LTP test case msgctl10.c fails on linux-2.6.29.6 for PowerPC
->> architecture (ppc440)
->>
->>
->> msgctl10    1  B------------[ cut here ]------------
->> kernel BUG at arch/powerpc/kernel/traps.c:904!
->> Oops: Exception in kernel mode, sig: 5 [#9]
->>
->> I'm not seeing any BUG* in traps.c @ line 904.  Do you have some other
->> patches on top of 2.6.29.6?
->>
->> - k
->>
->>
->> I have LTTng patches on top of linux-2.6.29.6.
->>
->> Does it modify traps.c?  Can you see what the code around line 904 looks
->> like and post that.
->>
->> - k
->>  896
->>  897 #if defined(CONFIG_XILINX_VIRTEX_5_FXT) && defined(CONFIG_PPC_FPU)
->>  898         if (reason & REASON_ILLEGAL) {
->>  899                 if (excep_state < 1) {
->>  900                         excep_state++;
->>  901                         return;
->>  902                 }
->>  903                 /* should never get here */
->>  904                 BUG();
->>  905         }
->>  906 #endif
->>  907
->>  908         /* Try to emulate it if we should. */
->>
->>
-> Are you sure this is coming from the LTTng patches?  Which actual patch
-> makes this change?
->
-> - k
->
-Thanks kumar,
-
-I've got the patch out which fixes the issues. But now.. seems there is some
-generic issue in PPC440 targets, I am observing that
-*remap_file_pages01* and *remap_file_pages02  *test cases from LTP are
-failing since *Linux-2.6.24* kernel to *Linux-2.6.30*. If you can give some
-pointers that would be greatly appreciated ! Or if you have results for this
-on any PPC44x would be helpful.
-
-Arch : PowerPC
-Target : Xilinx PowerPC440 virtex5
-
-I've tried to test the cause for this but found that kernel throws error
-message of "segmentation fault".
-
-Thanks in Advance.
-
--Srikant
-
-
-
--- 
-"The Good You Do, The Best You GET"
-
-Regards
-Srikanth Krishnakar
-**********************
-
---000e0cd304700f327b046f65601a
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<br><br><div class=3D"gmail_quote">On Thu, Jul 23, 2009 at 6:33 AM, Kumar G=
-ala <span dir=3D"ltr">&lt;<a href=3D"mailto:galak@kernel.crashing.org">gala=
-k@kernel.crashing.org</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_q=
-uote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1e=
-x;">
-<div><div class=3D"h5"><br>
-On Jul 22, 2009, at 11:32 AM, srikanth krishnakar wrote:<br>
-<br>
-<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
-x #ccc solid;padding-left:1ex">
-<br>
-<br>
-On Wed, Jul 22, 2009 at 9:14 PM, Kumar Gala &lt;<a href=3D"mailto:galak@ker=
-nel.crashing.org" target=3D"_blank">galak@kernel.crashing.org</a>&gt; wrote=
-:<br>
-<br>
-On Jul 22, 2009, at 10:38 AM, srikanth krishnakar wrote:<br>
-<br>
-<br>
-<br>
-On Wed, Jul 22, 2009 at 8:52 PM, Kumar Gala &lt;<a href=3D"mailto:galak@ker=
-nel.crashing.org" target=3D"_blank">galak@kernel.crashing.org</a>&gt; wrote=
-:<br>
-I&#39;m not seeing any BUG* in traps.c @ line 904.<br>
-<br>
-<br>
-On Jul 21, 2009, at 4:33 AM, srikanth krishnakar wrote:<br>
-<br>
-The LTP test case msgctl10.c fails on linux-2.6.29.6 for PowerPC architectu=
-re (ppc440)<br>
-<br>
-<br>
-msgctl10 =A0 =A01 =A0B------------[ cut here ]------------<br>
-kernel BUG at arch/powerpc/kernel/traps.c:904!<br>
-Oops: Exception in kernel mode, sig: 5 [#9]<br>
-<br>
-I&#39;m not seeing any BUG* in traps.c @ line 904. =A0Do you have some othe=
-r patches on top of 2.6.29.6?<br>
-<br>
-- k<br>
-<br>
-<br>
-I have LTTng patches on top of linux-2.6.29.6.<br>
-<br>
-Does it modify traps.c? =A0Can you see what the code around line 904 looks =
-like and post that.<br>
-<br>
-- k<br>
-=A0896<br>
-=A0897 #if defined(CONFIG_XILINX_VIRTEX_5_FXT) &amp;&amp; defined(CONFIG_PP=
-C_FPU)<br>
-=A0898 =A0 =A0 =A0 =A0 if (reason &amp; REASON_ILLEGAL) {<br>
-=A0899 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (excep_state &lt; 1) {<br>
-=A0900 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 excep_state++;<br>
-=A0901 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 return;<br>
-=A0902 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 }<br>
-=A0903 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* should never get here */<br>
-=A0904 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 BUG();<br>
-=A0905 =A0 =A0 =A0 =A0 }<br>
-=A0906 #endif<br>
-=A0907<br>
-=A0908 =A0 =A0 =A0 =A0 /* Try to emulate it if we should. */<br>
-<br>
-</blockquote>
-<br></div></div>
-Are you sure this is coming from the LTTng patches? =A0Which actual patch m=
-akes this change?<br><font color=3D"#888888">
-<br>
-- k<br>
-</font></blockquote></div><div>Thanks kumar,<br></div><div><br></div><div>I=
-&#39;ve got the patch out which fixes the issues. But now.. seems there is =
-some generic issue in PPC440 targets, I am observing that=A0</div><div><str=
-ong><font color=3D"#000000"><span style=3D"background-color: #ffff33;">rema=
-p_file_pages01</span></font></strong> and <strong><span style=3D"background=
--color: #ffff00;">remap_file_pages02=A0<span style=3D"background-color: #ff=
-ffff;">=A0</span></span></strong><span style=3D"background-color: #ffff00;"=
-><span style=3D"background-color: #ffffff;">test cases from LTP are failing=
- since <strong>Linux-2.6.24</strong> kernel to <strong>Linux-2.6.30</strong=
->. If you can give some pointers that would be greatly appreciated ! Or if =
-you have results for this on any PPC44x would be helpful.</span></span></di=
-v>
-<div><span style=3D"background-color: #ffff00;"><span style=3D"background-c=
-olor: #ffffff;"><br></span></span></div><div><span style=3D"background-colo=
-r: #ffff00;"><span style=3D"background-color: #ffffff;">Arch : PowerPC<br><=
-/span></span></div>
-<div><span style=3D"background-color: #ffff00;"><span style=3D"background-c=
-olor: #ffffff;">Target : Xilinx PowerPC440 virtex5<br></span></span></div><=
-div><span style=3D"background-color: #ffff00;"><span style=3D"background-co=
-lor: #ffffff;"><br>
-</span></span></div><div><span style=3D"background-color: #ffff00;"><span s=
-tyle=3D"background-color: #ffffff;">I&#39;ve tried to test the cause for th=
-is but found that kernel throws error message of &quot;segmentation fault&q=
-uot;.<br>
-</span></span></div><div><span style=3D"background-color: #ffff00;"><span s=
-tyle=3D"background-color: #ffffff;"><br></span></span></div><div><span styl=
-e=3D"background-color: #ffff00;"><span style=3D"background-color: #ffffff;"=
->Thanks in Advance.<br>
-</span></span></div><div><span style=3D"background-color: #ffff00;"><span s=
-tyle=3D"background-color: #ffffff;"><br></span></span></div><div><span styl=
-e=3D"background-color: #ffff00;"><span style=3D"background-color: #ffffff;"=
->-Srikant<br>
-</span></span></div><div><span style=3D"background-color: #ffff00;"><span s=
-tyle=3D"background-color: #ffffff;"><br></span></span></div><br clear=3D"al=
-l"><br>-- <br>&quot;The Good You Do, The Best You GET&quot;<br><br>Regards<=
-br>
-Srikanth Krishnakar<br>**********************<br>
-
---000e0cd304700f327b046f65601a--
-
-
---===============0629989734567027578==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Francesco RUNDO <francesco.rundo@st.com>
+Cc: ltp-list@lists.sf.net
+
+Hi Francesco,
+
+Francesco RUNDO wrote:
+> Hi Gowri,
+> 
+> I've already fixed the same issue you reported. I've tested it successfully.
+> 
+> Subrata has already merged my patch (please, find it in attachment).
+> 
+> Please, check it before to submit another patch.
+> 
+
+I had already seen your patch and generated mine on top of Jun release (which
+has your fix for CROSS_COMPILE).Your patch could not help in a scenario where 
+kernel has cgroup support but cgroupstat.h file is missing in base OS, and
+build failed. And hence, I am proposing this patch.
+
+Thanks,
+Gowri
+
+> Thanks
+> Regards
+> Francesco Rundo
+> 
+> gowrishankar wrote:
+>> Hi Subrata,
+>> Please accept the patch below.
+>>
+>> Thanks,
+>> Gowri
+>> ---
+>> cgroups: conditionally enable building cgroup tests
+>>
+>> controllers tests gets included into default ltp build if "/proc/cgroup"
+>> exists. It stops the ltp build in realtime kernel environment where 
+>> kernel
+>> is new and supports cgroups, but necessary file "linux/cgroupstats.h" 
+>> may not
+>> exist in the base OS (like RHEL5.3). So configure command enables the 
+>> build,
+>> but actual build fails, due to missing header file.
+>>
+>> Below patch proposes new symbol LTP_CHECK_CGROUPSTATS to check for 
+>> header file
+>> "linux/cgroupstats.h" and include controllers in the list of tests to 
+>> build.
+>>
+>> Tested the patch in non-RT as well as RT environment for the changes.
+>>
+>> Signed-off-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+>> Tested-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+>> ---
+>>
+>> ------------------------------------------------------------------------
+>>
+>> Index: ltp-full-20090630/m4/ltp-cgroupstats.m4
+>> ===================================================================
+>> --- /dev/null	1970-01-01 00:00:00.000000000 +0000
+>> +++ ltp-full-20090630/m4/ltp-cgroupstats.m4	2009-07-03 13:41:55.000000000 +0530
+>> @@ -0,0 +1,9 @@
+>> +dnl
+>> +dnl LTP_CHECK_CGROUPSTATS
+>> +dnl ----------------------------
+>> +dnl
+>> +AC_DEFUN([LTP_CHECK_CGROUPSTATS],
+>> +[dnl
+>> +AC_CHECK_HEADERS(linux/cgroupstats.h,[LTP_CHECK_CGROUPSTATS_HEADER=yes])
+>> +AC_SUBST(LTP_CHECK_CGROUPSTATS_HEADER)
+>> +])
+>> Index: ltp-full-20090630/configure.ac
+>> ===================================================================
+>> --- ltp-full-20090630.orig/configure.ac	2009-07-03 13:59:48.000000000 +0530
+>> +++ ltp-full-20090630/configure.ac	2009-07-03 14:00:14.000000000 +0530
+>> @@ -21,5 +21,6 @@
+>>  LTP_CHECK_SELINUX
+>>  LTP_CHECK_CRYPTO
+>>  LTP_CHECK_TASKSTATS
+>> +LTP_CHECK_CGROUPSTATS
+>>
+>>  AC_OUTPUT
+>> Index: ltp-full-20090630/testcases/kernel/Makefile
+>> ===================================================================
+>> --- ltp-full-20090630.orig/testcases/kernel/Makefile	2009-07-03 14:01:25.000000000 +0530
+>> +++ ltp-full-20090630/testcases/kernel/Makefile	2009-07-03 14:02:42.000000000 +0530
+>> @@ -1,6 +1,12 @@
+>> -SUBDIRS = power_management numa containers controllers connectors include fs io ipc mem pty sched security syscalls timers
+>> +include ../../config.mk
+>> +
+>> +SUBDIRS = power_management numa containers connectors include fs io ipc mem pty sched security syscalls timers
+>>  UCLINUX_SUBDIRS = include syscalls
+>>
+>> +ifeq ($(LTP_CHECK_CGROUPSTATS_HEADER),yes)
+>> +	SUBDIRS+= controllers
+>> +endif
+>> +
+>>  all:
+>>  	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i ; done
+>>
+>>   
+>> ------------------------------------------------------------------------
+>>
+>> ------------------------------------------------------------------------------
+>>   
+>> ------------------------------------------------------------------------
+>>
+>> _______________________________________________
+>> Ltp-list mailing list
+>> Ltp-list@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>   
+
 
 ------------------------------------------------------------------------------
-
---===============0629989734567027578==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============0629989734567027578==--
-
