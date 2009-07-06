@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yjwei@cn.fujitsu.com>) id 1MT3q2-0006cc-Ct
-	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 01:08:14 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MT3pw-0008M4-RB
-	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 01:08:14 +0000
-Message-ID: <4A651499.4030605@cn.fujitsu.com>
-Date: Tue, 21 Jul 2009 09:06:33 +0800
-From: Wei Yongjun <yjwei@cn.fujitsu.com>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MNwL6-0001oC-DO
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 22:07:08 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MNwKo-0005IS-V9
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 22:06:55 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 6 Jul 2009 18:06:46 -0400
+References: <4A51CEDC.6080605@linux.vnet.ibm.com> <4A51E253.200@st.com>
+	<364299f40907061028o4c9c2922ma7d430f5e03f4b38@mail.gmail.com>
+In-Reply-To: <364299f40907061028o4c9c2922ma7d430f5e03f4b38@mail.gmail.com>
 MIME-Version: 1.0
-References: <8368651DACC1964480F951191B94A078EBA887@svexch01.mvista.com>
-In-Reply-To: <8368651DACC1964480F951191B94A078EBA887@svexch01.mvista.com>
-Subject: Re: [LTP] [PATCH] exit_group01, fix syscall number for exit_group
+Message-Id: <200907061806.47824.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] cgroups: conditionally enable building cgroup
+	tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,76 +26,97 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1376718806131013943=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Henry Yei <hyei@mvista.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: ltp-list@lists.sf.net
 
-Hi, Henry Yei
+--===============1376718806131013943==
+Content-Type: multipart/signed; boundary="nextPart1430728.mdWjM9j2a0";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Henry Yei  wrote:
-> This issue was found when running on an arm machine.
+--nextPart1430728.mdWjM9j2a0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+On Monday 06 July 2009 13:28:00 Garrett Cooper wrote:
+> On Mon, Jul 6, 2009 at 4:38 AM, Francesco RUNDO wrote:
+> > I've already fixed the same issue you reported. I've tested it
+> > successfully.
+> >
+> > Subrata has already merged my patch (please, find it in attachment).
+> >
+> > Please, check it before to submit another patch.
 >
->
-> Fix syscall number for exit_group
->   
+> At the end of the day, the real problem is that we're not using the
+> --with- functionality in autoconf, e.g. --with-cgroups, and instead
+> we're hacking a lot of noise into Makefile's.
 
-I have posted the same some days ago, see
-http://marc.info/?l=ltp-list&m=124798179211554&w=2.
+selectively compiling groups of code needs to be thought out before we star=
+t=20
+throwing --with-foo options at the problem.  otherwise we'll still end up w=
+ith=20
+crap, just in a different form.
 
-But Garrett Cooper said we also add the relevant syscall number to the
-architecture
-specific .in file in testcases/kernel/include. If you have time, you can
-do this. If you
-would like to do this, please tell me. So we will not do dup wroks. Thanks.
+> I can tell at first glance that that Makefile is a mess anyhow,
+> because it's referencing _hardcoded_ /proc references and as such will
+> fail to cross-compile properly if the target or the host are setup
+> differently from one another, in the following two scenarios:
 
-Wei Yongjun
+yes, the merged patch and that makefile suck.  there should never be any=20
+filesystem check in a Makefile anymore.  while peeking in /proc is somewhat=
+=20
+forgivable, looking for headers never is ok.  we have autoconf tests now an=
+d=20
+Gowri's approach looks like the correct one.
+=2Dmike
 
-> <Signed-off-by: Henry Yei <hyei@mvista.com>
->
-> ---
-> ltp-full-20090531/testcases/kernel/syscalls/exit_group/exit_group01.c
-> 2009-05-21 11:14:40.000000000 -0700
-> +++
-> ltp-full-20090531/testcases/kernel/syscalls/exit_group/exit_group01.c
-> 2009-07-17 12:03:47.000000000 -0700
-> @@ -136,7 +136,7 @@
->                       } else if (TEST_RETURN == 0){
->  	                 	tst_resm(TINFO, "In the child process");
->                             	sleep(5);
-> -				TEST(syscall(252,4));
-> +				TEST(syscall(__NR_exit_group,4));
->                       }else {
->  				tst_resm(TINFO,"in the parent process");
->  				TEST(w = wait(&status));
->
->   
-> ------------------------------------------------------------------------
->
-> ------------------------------------------------------------------------------
-> Enter the BlackBerry Developer Challenge  
-> This is your chance to win up to $100,000 in prizes! For a limited time, 
-> vendors submitting new applications to BlackBerry App World(TM) will have
-> the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-> details at: http://p.sf.net/sfu/Challenge
-> ------------------------------------------------------------------------
->
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
->   
+--nextPart1430728.mdWjM9j2a0
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJKUnV3AAoJEEFjO5/oN/WBGNcP/3ZjJR47nPKaOHmrGGeUy8TT
+TDSQ/ow3uV1FkwLSr+SG/67GseirXyDnUw4dQFTGvC3/i+wE/HpiB0drYEHqdjsl
+8TvuFd32Cy0pZqete2S3W8Ao6dRSQhd3lXozSudIu4DWrJxgEQV2krzlheQhJOek
+woR0KW7pG0GEs71hdpXyPv1Oqtw7t4Dxki9fDMSQWSt33U1kvraWpTqd9lTdDItm
+YDl8UUs3bEmcHNSwTSs5OrbuPDpdbjoLqdtrgyArOgSQUR18qJLAvGb614ZQn1K2
+XmSCWhyszhnc/BGf93bFIJlKiy3b7fS5uJuyaR1z8RFwxB3ABRlFXiJPLrPdwYSD
+3aVZoiSSX/qqBBiXKYXAChmzd/rDO7bM8U86YpgkMTOJB76UWJdoBJ/SGl0ZuEx4
+Sre3T7FE18KmQ+QkaK+qw9Me+csiXea0wo2o4E+1h9Xmm5VUrat0WowEOfcLb7op
+RlqlAIIppxe8+woMtTo53FPUrDP2kW51mmVqF3gRkno0FhemxHCh1D04zVqn/H4o
+VU8IZ5AjBMcZOVM2OP4QzGyuH2dzZmzuq1UVHFw/6oHwhGadD3Ly86TsbMaYOkzt
+a37Sc8ls1WpqqPQAmFj1tNszrnhdb6mjR1LiY/mkd3xbtQW+z89XdiiCo8mmmy4P
+ZCkQK688PckAKN4o40wY
+=cSCX
+-----END PGP SIGNATURE-----
+
+--nextPart1430728.mdWjM9j2a0--
 
 
+--===============1376718806131013943==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
+
+--===============1376718806131013943==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1376718806131013943==--
+
