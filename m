@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MNpHE-00041A-Mz
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 14:34:40 +0000
-Received: from e9.ny.us.ibm.com ([32.97.182.139])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MNpHD-0000kM-Hk
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 14:34:40 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4A51F13C.3050701@st.com>
-References: <4A51CEDC.6080605@linux.vnet.ibm.com> <4A51E253.200@st.com>
-	<4A51E745.3060105@linux.vnet.ibm.com>  <4A51F13C.3050701@st.com>
-Date: Mon, 06 Jul 2009 18:25:20 +0530
-Message-Id: <1246884921.4887.15.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] cgroups: conditionally enable building
-	cgroup	tests
-Reply-To: subrata@linux.vnet.ibm.com
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MNxgr-0007DU-An
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 23:33:41 +0000
+Received: from mail-yx0-f195.google.com ([209.85.210.195])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MNxgm-0004Jo-Nk
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 23:33:41 +0000
+Received: by yxe33 with SMTP id 33so5240261yxe.28
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 06 Jul 2009 16:33:35 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <200907070047.40979.jpalecek@web.de>
+References: <4a413e9b.160bca0a.2226.fffff184SMTPIN_ADDED@mx.google.com>
+	<364299f40907061045s567f00dbq7a198ef37fa438dc@mail.gmail.com>
+	<200907070047.40979.jpalecek@web.de>
+Date: Mon, 6 Jul 2009 16:33:29 -0700
+Message-ID: <364299f40907061633w6583f3d3l8fd3ca90d217b38a@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Fix some bashisms
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,179 +29,130 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Francesco RUNDO <francesco.rundo@st.com>
-Cc: ltp-list@lists.sf.net
+To: Jiri Palecek <jpalecek@web.de>
+Cc: ltp-list@lists.sourceforge.net
 
-On Mon, 2009-07-06 at 14:42 +0200, Francesco RUNDO wrote:
-> Hi Gowri,
-> 
-> thanks so much for your quick reply.
-> My question is: "Is there a 'real' scenario in which cgroup is enabled 
-> in the Kernel without cgroupstat.h header" ?
-> 
+On Mon, Jul 6, 2009 at 3:47 PM, Jiri Palecek<jpalecek@web.de> wrote:
+> On Monday 06 July 2009 19:45:08 Garrett Cooper wrote:
+>> Jiri,
+>> =A0 =A0 This patch looks ok for the most part, but here are some comment=
+s:
+>>
+>> 1. if [[ -z "$vnet0" -z "$vnet1" ]] =3D> if [ -z "$vnet0" ] || [ -z "$vn=
+et1" ]
+>>
+>> It's better read as the following, IMO:
+>>
+>> [ -z "$vnet0" -o -z "$vnet1" ]
+>
+> I think this is another "I like this more than that, because this is cool=
+ and that sucks" debate. If other think test's "-o" should be used in this =
+case, I would make the change. After all, this can be done by hand directly=
+ on the patch...
 
-Yes, there can be many situations.
+Why call [(1) twice?
 
-> Because I think the above scenario (cgroup enabled but no cgroupstat.h 
-> header) is wrong so that your patch provide a "cover" for an error 
-> placed in the system. Is it true ?
-> 
+>> 2. All numeric test(1) comparisons could and should be switched from:
+>>
+>> command
+>> if [ $? =3D 0 ]; then
+>>
+>> to:
+>>
+>> if command; then
+>>
+>> for brevity.
+>
+> Why should them be changed? This is only a cosmetic change, which would m=
+ake the patch unnecessarily larger (when it's already a little too large IM=
+HO). If it could be in the former form till now, I think it can stay there =
+a few months/years.
+>
+> IMHO this usage is still much better than
+>
+> =A0command; RC=3D$?
+> =A0if [ $RC =3D 0 ] ...
+> =A0... RC is not read later ...
+>
+> or (incorrect)
+>
+> =A0command || RC=3D$?
+> =A0if [ $RC =3D 0 ] ...
 
-Say you have a older distro with kernel 2.6.18, where those stuff are
-not there. Now, you have built kernel 2.6.30 on it with CGROUP enabled,
-and booted in that kernel. So, your kernel is enabled with CGROUP, but
-you may not have the user utilities like the libcgroup, etc. And until
-you upgrade your system with latest glibc-headers or kernel-headers, any
-build for userspace tools using CGROUP*.h fiel fail.
+Yes, I agree with what you said about the above usage, but if you're
+not using $? for other than just the [ $? -ne 0 ], then I wouldn't
+even bother doing that, because if command; then saves a fork-exec,
+and an additional line in the source. As long as it's readable and
+doesn't expand multiple lines with a trailing \, you're fine.
 
-Regards--
-Subrata
+>> 3. About &>
+>>
+>> =A0 =A0Redirecting Standard Output and Standard Error
+>> =A0 =A0 =A0 =A0Bash allows both the standard output (file descriptor 1) =
+and
+>> the standard error output (file descriptor 2) to be redirected to the
+>> file whose name is the expansion of word with this construct.
+>>
+>> =A0 =A0 =A0 =A0There are two formats for redirecting standard output and=
+ standard error:
+>>
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 &>word
+>> =A0 =A0 =A0 =A0and
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 >&word
+>>
+>> The output redirection above captures all output (and most of the time
+>> you're capturing stdout, but losing stderr to the operating console,
+>> which can be undesirable). >& is more portable IIRC (it works with
+>> many ash variants, like FreeBSD's sh -- for sure -- and Solaris's sh
+>> -- IIRC), which makes it more ideal than &>.
+>
+> Still, it isn't POSIX, it doesn't work with dash and actually causes pain=
+. See:
+>
+> =A0cmd &> fn
+>
+> POSIX: run cmd in background, write empty file fn
+> BASH: run cmd (foreground), send its (normal & error) output to file fn
+>
+> =A0cmd >& fn
+>
+> POSIX: syntax error
+> BASH: same as above
+>
+> But I don't see the point you are making here - do you have a system, whe=
+re the POSIX way
+>
+> =A0cmd > fn 2>&1
+>
+> doesn't work? Or did you see something else in the patch?
 
-> If my understanding is wrong, for me there are no concerns about your patch.
-> 
+This changes the behavior of the patch though. That's the point ;)...
+
 > Regards
-> Francesco Rundo
-> 
-> gowrishankar wrote:
-> 
-> > Hi Francesco,
-> >
-> > Francesco RUNDO wrote:
-> >
-> >> Hi Gowri,
-> >>
-> >> I've already fixed the same issue you reported. I've tested it 
-> >> successfully.
-> >>
-> >> Subrata has already merged my patch (please, find it in attachment).
-> >>
-> >> Please, check it before to submit another patch.
-> >>
-> >
-> > I had already seen your patch and generated mine on top of Jun release 
-> > (which
-> > has your fix for CROSS_COMPILE).Your patch could not help in a 
-> > scenario where kernel has cgroup support but cgroupstat.h file is 
-> > missing in base OS, and
-> > build failed. And hence, I am proposing this patch.
-> >
-> > Thanks,
-> > Gowri
-> >
-> >> Thanks
-> >> Regards
-> >> Francesco Rundo
-> >>
-> >> gowrishankar wrote:
-> >>
-> >>> Hi Subrata,
-> >>> Please accept the patch below.
-> >>>
-> >>> Thanks,
-> >>> Gowri
-> >>> ---
-> >>> cgroups: conditionally enable building cgroup tests
-> >>>
-> >>> controllers tests gets included into default ltp build if 
-> >>> "/proc/cgroup"
-> >>> exists. It stops the ltp build in realtime kernel environment where 
-> >>> kernel
-> >>> is new and supports cgroups, but necessary file 
-> >>> "linux/cgroupstats.h" may not
-> >>> exist in the base OS (like RHEL5.3). So configure command enables 
-> >>> the build,
-> >>> but actual build fails, due to missing header file.
-> >>>
-> >>> Below patch proposes new symbol LTP_CHECK_CGROUPSTATS to check for 
-> >>> header file
-> >>> "linux/cgroupstats.h" and include controllers in the list of tests 
-> >>> to build.
-> >>>
-> >>> Tested the patch in non-RT as well as RT environment for the changes.
-> >>>
-> >>> Signed-off-by: Gowrishankar <gowrishankar.m@in.ibm.com>
-> >>> Tested-by: Gowrishankar <gowrishankar.m@in.ibm.com>
-> >>> ---
-> >>>
-> >>> ------------------------------------------------------------------------ 
-> >>>
-> >>>
-> >>> Index: ltp-full-20090630/m4/ltp-cgroupstats.m4
-> >>> ===================================================================
-> >>> --- /dev/null    1970-01-01 00:00:00.000000000 +0000
-> >>> +++ ltp-full-20090630/m4/ltp-cgroupstats.m4    2009-07-03 
-> >>> 13:41:55.000000000 +0530
-> >>> @@ -0,0 +1,9 @@
-> >>> +dnl
-> >>> +dnl LTP_CHECK_CGROUPSTATS
-> >>> +dnl ----------------------------
-> >>> +dnl
-> >>> +AC_DEFUN([LTP_CHECK_CGROUPSTATS],
-> >>> +[dnl
-> >>> +AC_CHECK_HEADERS(linux/cgroupstats.h,[LTP_CHECK_CGROUPSTATS_HEADER=yes]) 
-> >>>
-> >>> +AC_SUBST(LTP_CHECK_CGROUPSTATS_HEADER)
-> >>> +])
-> >>> Index: ltp-full-20090630/configure.ac
-> >>> ===================================================================
-> >>> --- ltp-full-20090630.orig/configure.ac    2009-07-03 
-> >>> 13:59:48.000000000 +0530
-> >>> +++ ltp-full-20090630/configure.ac    2009-07-03 14:00:14.000000000 
-> >>> +0530
-> >>> @@ -21,5 +21,6 @@
-> >>>  LTP_CHECK_SELINUX
-> >>>  LTP_CHECK_CRYPTO
-> >>>  LTP_CHECK_TASKSTATS
-> >>> +LTP_CHECK_CGROUPSTATS
-> >>>
-> >>>  AC_OUTPUT
-> >>> Index: ltp-full-20090630/testcases/kernel/Makefile
-> >>> ===================================================================
-> >>> --- ltp-full-20090630.orig/testcases/kernel/Makefile    2009-07-03 
-> >>> 14:01:25.000000000 +0530
-> >>> +++ ltp-full-20090630/testcases/kernel/Makefile    2009-07-03 
-> >>> 14:02:42.000000000 +0530
-> >>> @@ -1,6 +1,12 @@
-> >>> -SUBDIRS = power_management numa containers controllers connectors 
-> >>> include fs io ipc mem pty sched security syscalls timers
-> >>> +include ../../config.mk
-> >>> +
-> >>> +SUBDIRS = power_management numa containers connectors include fs io 
-> >>> ipc mem pty sched security syscalls timers
-> >>>  UCLINUX_SUBDIRS = include syscalls
-> >>>
-> >>> +ifeq ($(LTP_CHECK_CGROUPSTATS_HEADER),yes)
-> >>> +    SUBDIRS+= controllers
-> >>> +endif
-> >>> +
-> >>>  all:
-> >>>      @set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i ; done
-> >>>
-> >>>   
-> >>> ------------------------------------------------------------------------ 
-> >>>
-> >>>
-> >>> ------------------------------------------------------------------------------ 
-> >>>
-> >>>   
-> >>> ------------------------------------------------------------------------ 
-> >>>
-> >>>
-> >>> _______________________________________________
-> >>> Ltp-list mailing list
-> >>> Ltp-list@lists.sourceforge.net
-> >>> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> >>>   
-> >>
-> >
-> >
-> 
+> =A0 =A0Jiri Palecek
+>
+> BTW: Jiri Palecek <jirka@debian.org> is not my address.
 
+Ok. Your original REPLY-TO email is wonky in your emails though, so I
+was playing it by ear...
 
-------------------------------------------------------------------------------
+Thanks,
+-Garrett
+
+---------------------------------------------------------------------------=
+---
+Enter the BlackBerry Developer Challenge  =
+
+This is your chance to win up to $100,000 in prizes! For a limited time, =
+
+vendors submitting new applications to BlackBerry App World(TM) will have =
+
+the opportunity to enter the BlackBerry Developer Challenge. See full prize =
+
+details at: http://p.sf.net/sfu/blackberry
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
