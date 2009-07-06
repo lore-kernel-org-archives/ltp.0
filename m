@@ -1,38 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <matthltc@us.ibm.com>) id 1MO0CW-0002Na-2H
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 02:14:32 +0000
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MO0CM-00058c-8P
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 02:14:26 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e6.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n671Y0YJ001124
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 21:34:00 -0400
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n671Ukml224192
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 21:30:46 -0400
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n671UjK7019114
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 21:30:46 -0400
-Date: Mon, 6 Jul 2009 18:30:41 -0700
-From: Matt Helsley <matthltc@us.ibm.com>
-Message-ID: <20090707013041.GB32310@count0.beaverton.ibm.com>
-References: <20090702084828.GC19135@count0.beaverton.ibm.com>
-	<200907021435.48510.vapier@gentoo.org>
-	<20090702203253.GI19135@count0.beaverton.ibm.com>
-	<200907021809.18522.vapier@gentoo.org>
-	<20090706215111.GA32310@count0.beaverton.ibm.com>
-	<op.uwn5bux1u2flwt@debian>
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <arnd@arndb.de>) id 1MNplr-0007Lg-Hi
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:06:19 +0000
+Received: from moutng.kundenserver.de ([212.227.126.171])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MNplq-0004sC-8m
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:06:19 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Mon, 6 Jul 2009 17:05:50 +0200
+References: <4A4DFB77.1080700@petalogix.com> <200907061616.12220.arnd@arndb.de>
+	<4A520DA6.2040107@petalogix.com>
+In-Reply-To: <4A520DA6.2040107@petalogix.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <op.uwn5bux1u2flwt@debian>
-Subject: Re: [LTP] [PATCH] Remove bashisms (WAS Re: [PATCH 4/4]
-	netns:	Change interpretters from sh to bash)
+Message-Id: <200907061705.50308.arnd@arndb.de>
+Subject: Re: [LTP] mmap syscall problem
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,74 +25,51 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: =?utf-8?B?SmnFmcOtIFBhbGXEjWVr?= <jpalecek@web.de>
-Cc: Poornima Nayak <poornima.nayak@in.ibm.com>, ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>, Daniel Lezcano <daniel.lezcano@free.fr>, Veerendra C <vechandr@in.ibm.com>, Munipradeep <mbeeraka@in.ibm.com>
+To: michal.simek@petalogix.com
+Cc: LTP <ltp-list@lists.sourceforge.net>, Linux Kernel list <linux-kernel@vger.kernel.org>, Grant Likely <grant.likely@secretlab.ca>, Paul Mundt <lethal@linux-sh.org>, Andrew Morton <akpm@linux-foundation.org>, Ingo Molnar <mingo@elte.hu>, John Williams <john.williams@petalogix.com>
 
-T24gVHVlLCBKdWwgMDcsIDIwMDkgYXQgMDE6MTA6MzZBTSArMDIwMCwgSmnFmcOtIFBhbGXEjWVr
-IHdyb3RlOgo+IEhpCj4KPiBPbiBNb24sIDA2IEp1bCAyMDA5IDIzOjUxOjEyICswMjAwLCBNYXR0
-IEhlbHNsZXkgPG1hdHRobHRjQHVzLmlibS5jb20+Cj4gd3JvdGU6Cj4KPj4gT24gVGh1LCBKdWwg
-MDIsIDIwMDkgYXQgMDY6MDk6MTZQTSAtMDQwMCwgTWlrZSBGcnlzaW5nZXIgd3JvdGU6Cj4+PiBP
-biBUaHVyc2RheSAwMiBKdWx5IDIwMDkgMTY6MzI6NTMgTWF0dCBIZWxzbGV5IHdyb3RlOgo+Pj4g
-PiBPbiBUaHUsIEp1bCAwMiwgMjAwOSBhdCAwMjozNTo0NlBNIC0wNDAwLCBNaWtlIEZyeXNpbmdl
-ciB3cm90ZToKPj4+ID4gPiBpbiBnZW5lcmFsLCBjb252ZXJ0aW5nIHNoIHRvIGJhc2ggaXMgYSBi
-YWQgaWRlYSBhcyBpdCBjYW4gY2F1c2UgIAo+Pj4gaXNzdWVzCj4+PiA+ID4gZm9yIHVzIGVtYmVk
-ZGVkIHBlZXBzLgo+Pj4gPgo+Pj4gPiBJIHN1cHBvc2UgdGhhdCdzIGJlY2F1c2Ugb2YgdGhlIG1l
-bW9yeSBiYXNoIGNvbnN1bWVzLiBJcyB0aGVyZSAgCj4+PiBhbnl0aGluZwo+Pj4gPiBlbHNlIGl0
-IGRvZXMgd2hpY2ggaXMgYmFkIGZvciBlbWJlZGRlZD8KPj4+Cj4+PiB0aGVyZSBpcyBtZW1vcnkg
-YW5kIGRpc2sgdXNhZ2UgY29uY2VybnMsIGJ1dCB0aGVyZSBhcmUgYWxzbyBzeXN0ZW1zICAKPj4+
-IHRoYXQgY2FudAo+Pj4gcnVuIGJhc2ggYXQgYWxsIChlLmcuIHN5c3RlbXMgd2l0aG91dCBmb3Jr
-KCkgLS0gYWxsIG5vLW1tdSBMaW51eCBwb3J0cykKPj4+IC1taWtlCj4+Cj4+IEhlcmUncyB0aGF0
-IHVwZGF0ZWQgcGF0Y2ggd2hpY2ggaG9wZWZ1bGx5IHNob3VsZCBiZSBhYmxlIHRvIHJlcGxhY2Ug
-Mwo+PiBhbmQgNCBvZiBteSByZWNlbnQgc2VyaWVzLiBVbmZvcnR1bmF0ZWx5IEkgaGF2ZW4ndCBo
-YWQgYSBjaGFuY2UgdG8gdGVzdCAKPj4gaXQgc28KPj4gSSdtIHBvc3RpbmcgaXQgaW4gY2FzZSBz
-b21lb25lIGVsc2UgZG9lcy4gQXMgdGhlIG9yaWdpbmFsIGF1dGhvciBvZiB0aGUKPj4gcGF0Y2gg
-SmlyaSBpcyB3ZWxjb21lIHRvIGFkZCBoaXMgc2lnbm9mZiBhcyB3ZWxsLgo+Cj4gVGhhbmtzIGZv
-ciBkb2luZyB0aGlzLiBJIGhhdmUgc29tZSBjb21tZW50cyB0byB0aGUgcGF0Y2gsIHNlZSBiZWxv
-dy4KPgo+IEkgaGF2ZSBtYWRlIG15ICJ2ZXJzaW9uIDIiIG9mIHRoZSBwYXRjaCB0b28sIGNvbnRh
-aW5pbmcgYWxzbyBjaGFuZ2VzIHRvICAKPiBvdGhlciBmaWxlcyAobGlrZSBydW5wd3Rlc3Quc2gp
-LiBJZiB5b3UncmUgaW50ZXJyZXNldGVkLCBJJ2xsIHNlbmQgaXQuCgpTdXJlLiBJJ2QgaGF2ZSBo
-YXBwaWx5IHVzZWQgdGhhdC4gTXkgbWFpbiBjb25jZXJuIGlzIGdldHRpbmcgdGhlc2UgZml4ZWQg
-c28KSSBjYW4gY2xlYW5seSBydW4gdGhlIGNvbnRhaW5lcnMgdGVzdGNhc2VzLiBJIHRoaW5rIGl0
-J3MgYWN0dWFsbHkgd29yc2UgdGhhbgpqdXN0IHJlbW92aW5nICJiYXNoaXNtcyIgYmVjYXVzZSB0
-aGUgaW50ZXJwcmV0dGVybiBpcyBpbmNvbnNpc3RlbnQgd2l0aCB0aGUKc2NyaXB0cyBhbmQgdGh1
-cyBub2JvZHkgY2FuIHJ1biB0aGVtLgoKPgo+PiBGcm9tOiBKaXJpIFBhbGVjZWsgPGppcmthQHdl
-Yi5kZT4KPj4KPj4gVGhpcyBwYXRjaCByZW1vdmVzIGEgYnVuY2ggb2YgYmFzaGlzbXMuCj4+Cj4+
-IEl0IHdhcyBvcmlnaW5hbGx5IHdyaXR0ZW4gYnkgSmlyaSBQYWxlY2VrIGJ1dCBsYWNrZWQgY2hh
-bmdlcwo+PiByZXF1ZXN0ZWQgYnkgTWlrZSBGcnlzaW5nZXIuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6
-IE1hdHQgSGVsc2xleSA8bWF0dGhsdGNAdXMuaWJtLmNvbT4KPj4gLS0tCj4+Cj4+IHYyOgo+PiAJ
-Rml4IHB1c2hkL3BvcGQgcmVtb3ZhbCB0byBzYXZlIFBXRCBhbmQgcmVzdG9yZSBpdCB1c2luZyBh
-IHJlZ3VsYXIKPj4gCQl2YXJpYWJsZS4KPgo+IEkgd29uZGVyIGlmIHRoaXMgY291bGRuJ3QgYmUg
-ZG9uZSBieSBhIHNpbXBsZSAiY2QgLSIsIG9yIGV2ZW4gbGVmdCBvdXQgIAo+IGNvbXBsZXRlbHku
-CgpIbW0uIEkgZGlkbid0IHRoaW5rIGl0IGNvdWxkIGJlIGxlZnQgb3V0IGNvbXBsZXRlbHkgYmVj
-YXVzZSBvZiB0aGUgd2F5CiRQV0Qgd2FzIGluY29uc2lzdGVudGx5IHVzZWQuIEhlbmNlIHNvbWUg
-dHJhc2ggY291bGQgYmUgbGVmdCBpZiB3ZQpkaWRuJ3QgY2QgdG8gTFRQVE1QIGJlZm9yZSBhbmQg
-cmVtb3ZlIGl0IGFmdGVyIHRoZSB0ZXN0IGJvZHkuCgo+Cj4+IAlSZW1vdmUgZW1wdHkgZWNob2Vz
-IGluIGZhdm9yIG9mIHByaW50Zi4KPgo+IFRoaXMgaGFzbid0IGJlZW4gZG9uZSB0aG9yb3VnaGx5
-IChzb21lIGVtcHR5IGVjaG9lcyByZW1haW4gaW4gdGhlIHBhdGNoKS4gCj4gQWxzbywgdGhlIHBh
-dGNoIG1pc3NlcyBvbmUgdGhpbmcsIHRoYXQgaWYgeW91IHVzZSBwcmludGYsIHlvdSBoYXZlIHRv
-IGFkZCAKPiBhbiBleHRyYSBsaW5lZmVlZCBhdCB0aGUgZW5kLCBpZToKPgo+ICBlY2hvIC1lICJm
-b29cbiIKPgo+IGhhcyB0byBiZSByZXBsYWNlZCBieQo+Cj4gIHByaW50ZiAiZm9vXG5cbiIKPgo+
-IGZvciBpdCB0byB3b3JrIGVxdWl2YWxlbnRseS4KCkFjaywgeW91J3JlIHJpZ2h0LgoKPgo+PiAJ
-UmVtb3ZlIG5vbi1iYXNoaXNtICJraWxsIC1zIEtJTEwgLi4uIiBhbmQga2VlcCAia2lsbCAtOSAu
-Li4iCj4+IAkJSWYgdGhpcyBpcyBzdGlsbCBhIHByb2JsZW0gdGhlbiBpdCBjb3VsZCBiZSBwbGFj
-ZWQgaW4KPj4gCQlhIHNlcGFyYXRlIHBhdGNoLgo+PiAJS2VlcCB0aGUgZXhhY3QgZm9ybWF0dGlu
-ZyBpbiBjcm9uMFggdGVzdHMgLS0gdXNlIHByaW50ZiBpbnN0ZWFkIG9mIGVjaG8uCj4+IAlVc2Ug
-bm9uLWdyZWVkeSBleHBhbnNpb24gb2YgdHR5IGRldmljZSBpbiBpb2N0bCB0ZXN0Lgo+PiAJQ2hh
-bmdlIHRoZSBpbmNyZW1lbnQgc3ludGF4IHRvIHVzZSA6ICQoKCBYICs9IDEgKSkgaW5zdGVhZCBv
-ZjoKPj4gCQlYPSQoKFggKyAxKSkKPgo+IEkgY2hhbmdlZCB0aGlzIHRvIChJTUhPIGNvb2xlciBz
-eW50YXgsIGl0J3MgZm9yIHRoZSBzYWtlIG9mIGFlc3RoZXRpY3MgIAo+IGFmdGVyIGFsbCkgIjog
-JCgoWCsrKSkiIGluIG15IHBhdGNoLgoKQXMgTWlrZSBoYXMgbm90ZWQsIGRhc2ggZGlkbid0IHdv
-cmsgd2l0aCB0aGF0LgoKQ2hlZXJzLAoJLU1hdHQKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpFbnRl
-ciB0aGUgQmxhY2tCZXJyeSBEZXZlbG9wZXIgQ2hhbGxlbmdlICAKVGhpcyBpcyB5b3VyIGNoYW5j
-ZSB0byB3aW4gdXAgdG8gJDEwMCwwMDAgaW4gcHJpemVzISBGb3IgYSBsaW1pdGVkIHRpbWUsIAp2
-ZW5kb3JzIHN1Ym1pdHRpbmcgbmV3IGFwcGxpY2F0aW9ucyB0byBCbGFja0JlcnJ5IEFwcCBXb3Js
-ZChUTSkgd2lsbCBoYXZlIAp0aGUgb3Bwb3J0dW5pdHkgdG8gZW50ZXIgdGhlIEJsYWNrQmVycnkg
-RGV2ZWxvcGVyIENoYWxsZW5nZS4gU2VlIGZ1bGwgcHJpemUgCmRldGFpbHMgYXQ6IGh0dHA6Ly9w
-LnNmLm5ldC9zZnUvYmxhY2tiZXJyeQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNl
-Zm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0
-cC1saXN0Cg==
+On Monday 06 July 2009, Michal Simek wrote:
+> >       *p1 = 0xaa; *p2 = 0x55;
+> >   
+> I closed fd too.
+>     close(fd);
+> >       return *p1; /* returns 0xaa if broken, 0x55 if correct */
+> > }
+
+If you close the fd between the assignment and reading
+from the pointer again, the test case becomes invalid because of
+timing. Closing the fd before the '*p1 = 0xaa' should be fine,
+but unnecessary.
+
+I also realized that you might need to mark the pointers
+as 'volatile' so that the compiler has to do the operations
+in order.
+
+> >   
+> # ls -la existing-4k-file
+> -rw-rw-r--    1 monstr   monstr       4096 Jul  6  2009 existing-4k-file
+> 
+> # ./test-arnd
+> # echo $?
+> 85
+
+Ok, so inside a single task, this does not happen.
+
+> # dd if=existing-4k-file of=/dev/console count=1 2>/dev/null
+> U#
+> 
+> in file is first char U (0x55) which is IMO correct.
+
+Right, though that was not part of the test, I'd expect this in
+the file even if the return value was broken.
+
+	Arnd <><
+
+------------------------------------------------------------------------------
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
