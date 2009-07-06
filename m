@@ -1,26 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <ghaskins@novell.com>) id 1MSuEW-0004tc-J6
-	for ltp-list@lists.sourceforge.net; Mon, 20 Jul 2009 14:52:52 +0000
-Received: from victor.provo.novell.com ([137.65.250.26])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MSuEP-0002sz-Ui
-	for ltp-list@lists.sourceforge.net; Mon, 20 Jul 2009 14:52:52 +0000
-Message-ID: <4A6484B0.3050009@novell.com>
-Date: Mon, 20 Jul 2009 10:52:32 -0400
-From: Gregory Haskins <ghaskins@novell.com>
-MIME-Version: 1.0
-References: <1224509719.5152.116.camel@subratamodak.linux.ibm.com>
-	<1246890698.4887.24.camel@subratamodak.linux.ibm.com>
-	<1247076833.5405.48.camel@subratamodak.linux.ibm.com>
-	<200907102200.12804.sripathik@in.ibm.com>
-	<1247244446.5040.0.camel@subratamodak.linux.ibm.com>
-	<4A57884C.10401@us.ibm.com>
-	<alpine.DEB.2.00.0907201039140.3858@gandalf.stny.rr.com>
-In-Reply-To: <alpine.DEB.2.00.0907201039140.3858@gandalf.stny.rr.com>
-Subject: Re: [LTP] LTP RT Tests (Cyclic, rt-migrate, etc)
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MNqT7-0002lP-Lo
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:51:01 +0000
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MNqT6-0002Yu-T6
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:51:01 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4A4C685F.9040909@bull.net>
+References: <d51f89b0906252310r45a7644fu46e1831841aa8b24@mail.gmail.com>
+	<1246015995.6196.24.camel@subratamodak.linux.ibm.com>
+	<1246347687.4819.34.camel@subratamodak.linux.ibm.com>
+	<4A4C685F.9040909@bull.net>
+Date: Mon, 06 Jul 2009 21:20:37 +0530
+Message-Id: <1246895437.4887.47.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Issues of TIRPC test suite of network test cases
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,166 +28,85 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4493953288198766844=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: ltp-list <ltp-list@lists.sf.net>, Clark Williams <clark.williams@gmail.com>, linux-rt-users <linux-rt-users@vger.kernel.org>
+To: "Kamboju, Naresh" <naresh.kamboju@ap.sony.com>
+Cc: ltp-list <ltp-list@lists.sf.net>, Le-Rouzic <aime.le-rouzic@bull.net>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---===============4493953288198766844==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enig67FB8764C4CDB6A6E1270BBB"
-
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig67FB8764C4CDB6A6E1270BBB
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-Steven Rostedt wrote:
-> On Fri, 10 Jul 2009, Darren Hart wrote:
->
->  =20
->> Subrata Modak wrote:
->>    =20
->>> On Fri, 2009-07-10 at 22:00 +0530, Sripathi Kodi wrote:
->>>      =20
->>>> On Wednesday 08 July 2009 23:43:53 Subrata Modak wrote:
->>>>        =20
->>>>> Darren/Sri/Gowri,
->>>>>
->>>>> Where do you want me to put this exactly inside the RT tree ?
->>>>>          =20
->>>> Hi Subrata,
->>>>
->>>> Going by how the tests are organized currently, I think this should =
-go
->>>> into it's own directory under testcases/realtime/func. We will need =
-to
->>>> add a makefile to it. Are you looking at us to help you with this?
->>>>        =20
->>> Correct. Please send me a patch which integrates it into RT tests bui=
-ld,
->>> install & run.
->>>      =20
->> Just got back from a week vacation and am burning through mail as fast=
- as I
->> can :-) Haven't had a look yet, but does this test use librttest.h?  I=
- suspect
->> not.  We'll need to adapt it to run within the existing ltp real-time =
-testing
->> framework, which includes things like buffered output as well as mlock=
-ing
->> support.
->>
->> Lastly, I'm not sure this test does anything effectively different tha=
-n
->> prio-wake, already in the tree.
-
-Just to add to Steven's comments below:  At the time that rt-migrate was
-written, LTP and others lacked sufficient resolution in their testing to
-reliably find the type of problem that rt-migratate can pinpoint
-quickly.  IIRC, "football" was potentially capable of finding these
-types of scheduler bugs, but it often failed to find it at all, or it
-took 24h+ of runtime to find it.  Steven's test could find it in under a
-second or two.  And, as Steven mentions below, rt-migrate is
-additionally designed to look at the top N prio tasks (where N =3D cpu-co=
-unt)
-
-That said, I am not familiar with "prio-wake" so I am not sure if its
-new or if it has direct overlap with Steven's test or not.
-
->>   My other concerns with the test are its
->> explicit 1ms preemption criteria (as Steven described it anyway).  We =
-are
->> trying to move away from criteria being inherent in measurement tests,=
- and 1
->> ms seems like an awfully long priority inversion to be an acceptable c=
-riteria
->> to many users.
->>
->> Steven, am I missing something conceptually here?
->>    =20
->
-> Hmm, I missed this email, sorry for the late reply.
->
-> What does prio-wake do?
->
-> This test is what I used to develop the rt scheduler in mainline (as we=
-ll=20
-> as in -rt).  It wakes up N+1 tasks with lowering real time priorities. =
-
-> Where N is the number of CPUs in the system. Then it makes sure that th=
-e=20
-> these tasks spread out across the CPUs. Most tests just test the highes=
-t=20
-> priority task in the system. But those tests usually miss the second=20
-> highest prio task in the system. If you have a second highest prio task=
- in=20
-> the system and a CPU is available to run, then it should run on that CP=
-U.=20
-> But what happens is that it can wait to be migrated and can take millis=
-ecs=20
-> to wake up.
->
-> This test makes sure that all the high prio tasks that are in the runni=
-ng=20
-> state are actually running on a CPU if it can.
->
-> Make sense?
->
-> (BTW, current -rt and mainline now fail this test :-? )
->
-> -- Steve
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-rt-user=
-s" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->  =20
-
-
-
---------------enig67FB8764C4CDB6A6E1270BBB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG/MacGPG2 v2.0.11 (Darwin)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAkpkhLAACgkQlOSOBdgZUxkhqwCeNiFiUo24BVg7d5UGLepcrqVE
-NykAni5XgpvTkRpq9SBUHNXnCwEwRt+V
-=dQlA
------END PGP SIGNATURE-----
-
---------------enig67FB8764C4CDB6A6E1270BBB--
-
-
---===============4493953288198766844==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
---===============4493953288198766844==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4493953288198766844==--
-
+TmFyZXNoLAoKT24gVGh1LCAyMDA5LTA3LTAyIGF0IDA5OjU3ICswMjAwLCBMZS1Sb3V6aWMgd3Jv
+dGU6IAo+IEhpLAo+IAo+IFNvcnJ5LCBJIGhhdmUganVzdCBzZWVuIHlvdXIgbWFpbC4KPiBOZXZl
+cnRoZWxlc3MgSSBjaGFuZ2VkIGpvYiA2IG1vbnRocyBhZ28gYW5kIEkgYW0gYWZyYWlkIG9mIG5v
+dCBiZWluZyAKPiBhYmxlIHRvIGxvb2sgYXQgdGhpcyBpc3N1ZS4KCkkgdGhpbmsgd2Ugd291bGQg
+bmVlZCB0byBpZGVudGlmeSBhbmQgZml4IHRoaXMgaXNzdWUgb3Vyc2VsdmVzIDstKQoKUmVnYXJk
+cy0tClN1YnJhdGEKCj4gCj4gQmVzdCBSZWdhcmRzCj4gCj4gCj4gU3VicmF0YSBNb2RhayBhIMOp
+Y3JpdCA6Cj4gPiBPbiBGcmksIDIwMDktMDYtMjYgYXQgMTc6MDMgKzA1MzAsIFN1YnJhdGEgTW9k
+YWsgd3JvdGU6IAo+ID4gICAKPiA+PiBIaSBSb2hpdCwKPiA+Pgo+ID4+IE9uIFRodSwgMjAwOS0w
+Ni0yNSBhdCAyMzoxMCAtMDcwMCwgcm9oaXQgdmVybWEgd3JvdGU6IAo+ID4+ICAgICAKPiA+Pj4g
+SGkgQWxsLAo+ID4+Pgo+ID4+PiBJIGFtIGdldHRpbmcgdGhlIGZvbGxvd2luZyBlcnJvcnMgd2l0
+aCBydW5fcnBjX3Rlc3RzLnNoIHRlc3Qgc3VpdGUgaW4KPiA+Pj4gTFRQIE1heS0wOSByZWxlYXNl
+Lgo+ID4+PiAgICAgICAKPiA+PiBUaGUgcHJvYmxlbSB3aXRoIHRoaXMgcGFydCBvZiB0aGUgdGVz
+dHN1aXRlIHdhcyBhbHdheXMgdGhlcmUgZnJvbSB0aGUKPiA+PiBiZWdpbm5pbmcuIEhvd2V2ZXIs
+IGxldHMgYXNrIHNvbWV0aGluZyBmcm9tIHRoZSBkZXZlbG9wZXIgZGlyZWN0bHkuCj4gPj4KPiA+
+PiBMZSwKPiA+Pgo+ID4+IENhbiB5b3UgcGxlYXNlIGxvb2sgaW50byB0aGlzID8KPiA+PiAgICAg
+Cj4gPgo+ID4gTGUsCj4gPgo+ID4gQW55IGNvbW1lbnRzIGZyb20geW91ciBzaWRlID8/Cj4gPgo+
+ID4gUmVnYXJkcy0tCj4gPiBTdWJyYXRhCj4gPgo+ID4gICAKPiA+PiBSZWdhcmRzLS0KPiA+PiBT
+dWJyYXRhCj4gPj4KPiA+PiAgICAgCj4gPj4+IC9ob21lL21vYmxpbi9MVFBfTlNfTUFZL2x0cC1m
+dWxsLTIwMDkwNTMxL3Rlc3RjYXNlcy9uZXR3b3JrL3JwYy9ycGMtdGlycGMtZnVsbC10ZXN0LXN1
+aXRlL3Rlc3RzX3BhY2svY2xlYW5lci5jLnNyYzoyOToyOToKPiA+Pj4gZXJyb3I6IHRpcnBjL25l
+dGNvbmZpZy5oOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5Cj4gPj4+IC9ob21lL21vYmxpbi9M
+VFBfTlNfTUFZL2x0cC1mdWxsLTIwMDkwNTMxL3Rlc3RjYXNlcy9uZXR3b3JrL3JwYy9ycGMtdGly
+cGMtZnVsbC10ZXN0LXN1aXRlL3Rlc3RzX3BhY2svY2xlYW5lci5jLnNyYzozMToyNzoKPiA+Pj4g
+ZXJyb3I6IHRpcnBjL3JwYy9ycGMuaDogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQo+ID4+PiAv
+aG9tZS9tb2JsaW4vTFRQX05TX01BWS9sdHAtZnVsbC0yMDA5MDUzMS90ZXN0Y2FzZXMvbmV0d29y
+ay9ycGMvcnBjLXRpcnBjLWZ1bGwtdGVzdC1zdWl0ZS90ZXN0c19wYWNrL2NsZWFuZXIuYy5zcmM6
+MzI6Mjk6Cj4gPj4+IGVycm9yOiB0aXJwYy9ycGMvdHlwZXMuaDogTm8gc3VjaCBmaWxlIG9yIGRp
+cmVjdG9yeQo+ID4+PiAvaG9tZS9tb2JsaW4vTFRQX05TX01BWS9sdHAtZnVsbC0yMDA5MDUzMS90
+ZXN0Y2FzZXMvbmV0d29yay9ycGMvcnBjLXRpcnBjLWZ1bGwtdGVzdC1zdWl0ZS90ZXN0c19wYWNr
+L2NsZWFuZXIuYy5zcmM6MzM6Mjc6Cj4gPj4+IGVycm9yOiB0aXJwYy9ycGMveGRyLmg6IE5vIHN1
+Y2ggZmlsZSBvciBkaXJlY3RvcnkKPiA+Pj4gL2hvbWUvbW9ibGluL0xUUF9OU19NQVkvbHRwLWZ1
+bGwtMjAwOTA1MzEvdGVzdGNhc2VzL25ldHdvcmsvcnBjL3JwYy10aXJwYy1mdWxsLXRlc3Qtc3Vp
+dGUvdGVzdHNfcGFjay9jbGVhbmVyLmMuc3JjOjM0OjI3Ogo+ID4+PiBlcnJvcjogdGlycGMvcnBj
+L3N2Yy5oOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5Cj4gPj4+IG1rZGlyOiBjYW5ub3QgY3Jl
+YXRlIGRpcmVjdG9yeQo+ID4+PiBgL2hvbWUvbW9ibGluL0xUUF9OU19NQVkvbHRwLWZ1bGwtMjAw
+OTA1MzEvdGVzdGNhc2VzL25ldHdvcmsvcnBjL3JwYy10aXJwYy1mdWxsLXRlc3Qtc3VpdGUvdGVz
+dHNfcGFjayc6Cj4gPj4+IEZpbGUgZXhpc3RzCj4gPj4+Cj4gPj4+IHRlc3RzX3BhY2svdGlycGNf
+c3ZjXzIvdGlycGNfc3ZjXzIuYzoyOToyOTogZXJyb3I6IHRpcnBjL25ldGNvbmZpZy5oOgo+ID4+
+PiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5Cj4gPj4+IHRlc3RzX3BhY2svdGlycGNfc3ZjXzIv
+dGlycGNfc3ZjXzIuYzozMToyNzogZXJyb3I6IHRpcnBjL3JwYy9ycGMuaDogTm8KPiA+Pj4gc3Vj
+aCBmaWxlIG9yIGRpcmVjdG9yeQo+ID4+PiB0ZXN0c19wYWNrL3RpcnBjX3N2Y18yL3RpcnBjX3N2
+Y18yLmM6MzI6Mjk6IGVycm9yOiB0aXJwYy9ycGMvdHlwZXMuaDoKPiA+Pj4gTm8gc3VjaCBmaWxl
+IG9yIGRpcmVjdG9yeQo+ID4+PiB0ZXN0c19wYWNrL3RpcnBjX3N2Y18yL3RpcnBjX3N2Y18yLmM6
+MzM6Mjc6IGVycm9yOiB0aXJwYy9ycGMveGRyLmg6IE5vCj4gPj4+IHN1Y2ggZmlsZSBvciBkaXJl
+Y3RvcnkKPiA+Pj4gdGVzdHNfcGFjay90aXJwY19zdmNfMi90aXJwY19zdmNfMi5jOjM0OjI3OiBl
+cnJvcjogdGlycGMvcnBjL3N2Yy5oOiBObwo+ID4+PiBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5Cj4g
+Pj4+IHRlc3RzX3BhY2svdGlycGNfc3ZjXzIvdGlycGNfc3ZjXzIuYzogSW4gZnVuY3Rpb24gbWFp
+bgo+ID4+PiB0ZXN0c19wYWNrL3RpcnBjX3N2Y18yL3RpcnBjX3N2Y18yLmM6NTU6IGVycm9yOiBi
+b29sX3QgdW5kZWNsYXJlZAo+ID4+PiAoZmlyc3QgdXNlIGluIHRoaXMgZnVuY3Rpb24pCj4gPj4+
+IHRlc3RzX3BhY2svdGlycGNfc3ZjXzIvdGlycGNfc3ZjXzIuYzo1NTogZXJyb3I6IChFYWNoIHVu
+ZGVjbGFyZWQKPiA+Pj4gaWRlbnRpZmllciBpcyByZXBvcnRlZCBvbmx5IG9uY2UKPiA+Pj4gdGVz
+dHNfcGFjay90aXJwY19zdmNfMi90aXJwY19zdmNfMi5jOjU1OiBlcnJvcjogZm9yIGVhY2ggZnVu
+Y3Rpb24gaXQKPiA+Pj4gYXBwZWFycyBpbi4pCj4gPj4+IHRlc3RzX3BhY2svdGlycGNfc3ZjXzIv
+dGlycGNfc3ZjXzIuYzo1NTogZXJyb3I6IGV4cGVjdGVkIDsgYmVmb3JlIHJzbHQKPiA+Pj4gdGVz
+dHNfcGFjay90aXJwY19zdmNfMi90aXJwY19zdmNfMi5jOjY1OiBlcnJvcjogcnNsdCB1bmRlY2xh
+cmVkIChmaXJzdAo+ID4+PiB1c2UgaW4gdGhpcyBmdW5jdGlvbikKPiA+Pj4gdGVzdHNfcGFjay90
+aXJwY19zdmNfMi90aXJwY19zdmNfMi5jOjY2OiBlcnJvcjogeGRycHJvY190IHVuZGVjbGFyZWQK
+PiA+Pj4gKGZpcnN0IHVzZSBpbiB0aGlzIGZ1bmN0aW9uKQo+ID4+PiB0ZXN0c19wYWNrL3RpcnBj
+X3N2Y18yL3RpcnBjX3N2Y18yLmM6NjY6IGVycm9yOiBleHBlY3RlZCApIGJlZm9yZSB4ZHJfaW50
+Cj4gPj4+IG1ha2U6ICoqKiBbYWxsXSBFcnJvciAxCj4gPj4+IGNjOiAuYy5zcmM6IE5vIHN1Y2gg
+ZmlsZSBvciBkaXJlY3RvcnkuCj4gPj4+Cj4gPj4+Cj4gPj4+IFNpbWlsYXIgYnVnIGhhcyBiZWVu
+IGFscmVhZHkgcmVwb3J0ZWQgdG8gTFRQLiBQbGVhc2UgY29uZmlybSBpZiB0aGUKPiA+Pj4gcGF0
+Y2ggZm9yIHRoaXMgYnVnIGlzIG1lcmdlZCBpbnRvIG5leHQgTFRQIHJlbGVhc2UuCj4gPj4+ICAg
+ICAgIAo+ID4+IEkgcmVtZW1iZXIgbWVyZ2luZyBhbGwgcGF0Y2hlcyB0byB0aGlzIGVmZmVjdC4g
+UGxlYXNlIHBvaW50IG1lIHRvIHRoZQo+ID4+IHBhdGNoIHdoaWNoIGkgb3VnaHQgaGF2ZSBtaXNz
+ZWQgOy0pCj4gPj4KPiA+PiBSZWdhcmRzLS0KPiA+PiBTdWJyYXRhCj4gPj4KPiA+PiAgICAgCj4g
+Pj4+IFJlZ2FyZHMsCj4gPj4+IEduYW5lc3dhcgo+ID4+PiAgICAgICAKPiA+PiAtLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0KPiA+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwo+ID4+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+ID4+IEx0cC1saXN0QGxpc3RzLnNv
+dXJjZWZvcmdlLm5ldAo+ID4+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xp
+c3RpbmZvL2x0cC1saXN0Cj4gPj4gICAgIAo+ID4KPiA+Cj4gPgo+ID4gICAKPiAKCgotLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5l
+dApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
