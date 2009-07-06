@@ -2,21 +2,22 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1MUZ88-0000Il-B7
-	for ltp-list@lists.sourceforge.net; Sat, 25 Jul 2009 04:45:08 +0000
-Received: from gateway-1237.mvista.com ([63.81.120.158])
+	(envelope-from <yanegomi@gmail.com>) id 1MNvoA-0001Qd-Qx
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 21:33:06 +0000
+Received: from an-out-0708.google.com ([209.85.132.251])
 	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MUZ80-00031g-CP
-	for ltp-list@lists.sourceforge.net; Sat, 25 Jul 2009 04:45:08 +0000
-Content-class: urn:content-classes:message
+	id 1MNsFa-0005Ya-5D
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 17:45:15 +0000
+Received: by an-out-0708.google.com with SMTP id c38so1695669ana.37
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 06 Jul 2009 10:45:09 -0700 (PDT)
 MIME-Version: 1.0
-Date: Fri, 24 Jul 2009 21:38:02 -0700
-Message-ID: <8368651DACC1964480F951191B94A078E49F0A@svexch01.mvista.com>
-In-Reply-To: <200907242113.36309.vapier@gentoo.org>
-References: <OFE8FAC2C8.7B8ECD5A-ON852575FD.0081EDEC-852575FD.00837054@us.ibm.com>
-	<200907242113.36309.vapier@gentoo.org>
-From: "Henry Yei" <hyei@mvista.com>
-Subject: Re: [LTP] hardware requirements
+In-Reply-To: <4a413e9b.160bca0a.2226.fffff184SMTPIN_ADDED@mx.google.com>
+References: <4a413e9b.160bca0a.2226.fffff184SMTPIN_ADDED@mx.google.com>
+Date: Mon, 6 Jul 2009 10:45:08 -0700
+Message-ID: <364299f40907061045s567f00dbq7a198ef37fa438dc@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Fix some bashisms
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,35 +30,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>, ltp-list@lists.sourceforge.net
-Cc: Mark Ver <markver@us.ibm.com>
+To: Jiri Palecek <jirka@debian.org>
+Cc: ltp-list@lists.sourceforge.net
 
-Several tests are also sensitive to the size of the filesystem. While most systems shouldn't have a problem, we have hit these limitations when testing flash filesytems, etc. 
+Jiri,
+    This patch looks ok for the most part, but here are some comments:
 
------Original Message-----
-From: Mike Frysinger [mailto:vapier@gentoo.org] 
-Sent: Friday, July 24, 2009 6:14 PM
-To: ltp-list@lists.sourceforge.net
-Cc: Mark Ver
-Subject: Re: [LTP] hardware requirements
+1. if [[ -z "$vnet0" -z "$vnet1" ]] => if [ -z "$vnet0" ] || [ -z "$vnet1" ]
 
-On Friday 24 July 2009 19:55:39 Mark Ver wrote:
-> Is there an agreed upon set of hardware requirements (memory, disk 
-> space,
-> etc.) for running, if not all tests, at least the default testcases 
-> executed by runltp?
+It's better read as the following, IMO:
 
-not really
+[ -z "$vnet0" -o -z "$vnet1" ]
 
-> Also, if not very knowledgeable of hardware, is there an easy way to 
-> tell if a particular test will run on a target platform or not?  For 
-> example, I suspect the DMA_THREAD_DIOTEST7 tests are not expected to 
-> run on all architectures.  Is there a way to find out what platforms it does support?
+2. All numeric test(1) comparisons could and should be switched from:
 
-many of test cases dont care at all about resources.  might be useful to have an embedded doc format so tests that do care about resources can declare them and then a script can run periodically to collect all of them in a summary format.
+command
+if [ $? = 0 ]; then
 
-i'm pretty sure that in the vast majority of cases, the memory size is the only thing that a test may play with.
--mike
+to:
+
+if command; then
+
+for brevity.
+
+3. About &>
+
+   Redirecting Standard Output and Standard Error
+       Bash allows both the standard output (file descriptor 1) and
+the standard error output (file descriptor 2) to be redirected to the
+file whose name is the expansion of word with this construct.
+
+       There are two formats for redirecting standard output and standard error:
+
+              &>word
+       and
+              >&word
+
+The output redirection above captures all output (and most of the time
+you're capturing stdout, but losing stderr to the operating console,
+which can be undesirable). >& is more portable IIRC (it works with
+many ash variants, like FreeBSD's sh -- for sure -- and Solaris's sh
+-- IIRC), which makes it more ideal than &>.
+
+Thanks,
+-Garrett
+
 ------------------------------------------------------------------------------
 _______________________________________________
 Ltp-list mailing list
