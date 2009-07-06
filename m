@@ -1,26 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MTFqT-0000up-15
-	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 13:57:29 +0000
-Received: from mail-px0-f190.google.com ([209.85.216.190])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MTFqO-0004Le-6d
-	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 13:57:29 +0000
-Received: by pxi28 with SMTP id 28so2435805pxi.28
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 21 Jul 2009 06:57:23 -0700 (PDT)
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1MNxKW-00070q-5M
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 23:10:36 +0000
+Received: from fmmailgate02.web.de ([217.72.192.227])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MNxKS-0007Dz-66
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 23:10:36 +0000
+From: Jiri Palecek <jpalecek@web.de>
+Date: Tue, 7 Jul 2009 01:12:47 +0200
+References: <4a413e95.8d13f30a.1199.ffffdccbSMTPIN_ADDED@mx.google.com>
+	<1245920978.5542.34.camel@subratamodak.linux.ibm.com>
+	<1246347670.4819.28.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1246347670.4819.28.camel@subratamodak.linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <4A65BC10.8000908@petalogix.com>
-References: <364299f40907181419y73621db2w1242b7a1fa7650c@mail.gmail.com>
-	<4A63FFC3.80304@petalogix.com>
-	<364299f40907200032x28cc62cdn73ebb42f31d80361@mail.gmail.com>
-	<4A65BC10.8000908@petalogix.com>
-Date: Tue, 21 Jul 2009 06:57:23 -0700
-Message-ID: <364299f40907210657t2f03bec4qd5deaf697b12f1e9@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 3/4] Make system enhancements, Draft 3
+Content-Disposition: inline
+Message-Id: <200907070112.53833.jpalecek@web.de>
+Subject: Re: [LTP] [PATCH] Fix some bashisms
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,76 +27,75 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: michal.simek@petalogix.com
+To: subrata@linux.vnet.ibm.com
 Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
 
-On Tue, Jul 21, 2009 at 6:01 AM, Michal Simek<michal.simek@petalogix.com> w=
-rote:
-> Garrett Cooper wrote:
->> On Sun, Jul 19, 2009 at 10:25 PM, Michal
->> Simek<michal.simek@petalogix.com> wrote:
->>>>
->>>> +LIBOBJS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=
-=3D $$(addprefix $$(builddir)/,$$(patsubst %.c,%.o,$$(LIBSRCS)))
->>>>
->>>>
->>> long line.
->>>
->>
->> I try my best to do two things with makefile code:
->> 1. align Makefile code with single tab, then spaces.
->> 2. compress as many statements as possible to reduce the number of
->> required evaluation steps, because that can result in interesting
->> behavior from make with define blocks...
->>
->> I will try and compress the space further (that line was tab
->> separated) in a style cleanup commit after this is all said and
->> committed, if I don't get to it sooner. It's just easier to add and
->> delete tabs for now :).
->>
-> make no sense to send a patch with coding style violation and then send
-> next patch
-> which fixed that bad coding style. It is better to do it properly in
-> first time.
-> We have to clean whole LTP source code not pollute it.
-
-I am cleaning up a lot more `style-guide violations' than I am causing in L=
-TP.
-
-All Cisco level project support for LTP has been yanked recently due
-to limited restructuring (the other gentleman that was going to help
-me is no longer part of my project as well), so I'm doing this solely
-on my spare time.
-
-If you _want_ to fix the items, you can too -- this is an opensource
-project you know ;)... I am aware of the eyesores and I'll get to them
-as soon as I can.
-
-1. If it breaks functionality, it needs to be fixed before commit.
-2. If it's an eyesore, I'll prioritize it and fix it ASAP.
-
-BTW, AFAIK there isn't a style guide for LTP -- so before correcting
-me on style I'd produce a writeup stating that _this_ is how I need to
-code my code in order to meet LTP's standards, please.
-
-Thanks,
--Garrett
-
----------------------------------------------------------------------------=
----
-Enter the BlackBerry Developer Challenge  =
-
-This is your chance to win up to $100,000 in prizes! For a limited time, =
-
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize=
-  =
-
-details at: http://p.sf.net/sfu/Challenge
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gVHVlc2RheSAzMCBKdW5lIDIwMDkgMDk6NDE6MTAgU3VicmF0YSBNb2RhayB3cm90ZToKPiBP
+biBUaHUsIDIwMDktMDYtMjUgYXQgMTQ6MzkgKzA1MzAsIFN1YnJhdGEgTW9kYWsgd3JvdGU6IAo+
+ID4gTmV3IENoYW5nZXMgdG8gTWlrZcWbIGNvbW1lbnRzID8KPiAKPiBQaW5nLgoKT2ssIEkgZmlu
+YWxseSBnb3QgdGltZSB0byBsb29rIGludG8gdGhpcy4gSSdsbCBzZW5kIGEgc2VwYXJhdGUgcGF0
+Y2ggd2hpY2ggcmVmbGVjdHMgdGhlIGNvbW1lbnRzLgoKPiA+IAo+ID4gUmVnYXJkcy0tCj4gPiBT
+dWJyYXRhCj4gPiAKPiA+IE9uIFR1ZSwgMjAwOS0wNi0yMyBhdCAxNzoyMSAtMDQwMCwgTWlrZSBG
+cnlzaW5nZXIgd3JvdGU6IAo+ID4gPiBPbiBTdW5kYXkgMzEgTWF5IDIwMDkgMTc6Mjc6NTEgSmly
+aSBQYWxlY2VrID4gd3JvdGU6Cj4gPiA+ID4gLS0tIGEvdGVzdGNhc2VzL2NvbW1hbmRzL3Vuemlw
+L3VuemlwX3Rlc3RzLnNoCj4gPiA+ID4gKysrIGIvdGVzdGNhc2VzL2NvbW1hbmRzL3VuemlwL3Vu
+emlwX3Rlc3RzLnNoCj4gPiA+ID4gQEAgLTYyLDcgKzYyLDYgQEAgY2hrX2lmZXhpc3RzKCkKPiA+
+ID4gPiAgIyAJCQkJLSBub24temVybyBvbiBmYWlsdXJlLgo+ID4gPiA+ICBjbGVhbnVwKCkKPiA+
+ID4gPiAgewo+ID4gPiA+IC0JcG9wZAo+ID4gPiA+ICAJIyByZW1vdmUgYWxsIHRoZSB0ZW1wb3Jh
+cnkgZmlsZXMgY3JlYXRlZCBieSB0aGlzIHRlc3QuCj4gPiA+ID4gIAl0c3RfcmVzbSBUSU5GTyAi
+Q0xFQU46IHJlbW92aW5nIFwiJExUUFRNUFwiIgo+ID4gPiA+ICAJcm0gLWZyICIkTFRQVE1QIgo+
+ID4gPiA+IEBAIC05MCw3ICs4OSw2IEBAIGluaXQoKQo+ID4gPiA+ICAJIyBjcmVhdGUgdGhlIHRl
+bXBvcmFyeSBkaXJlY3RvcnkgdXNlZCBieSB0aGlzIHRlc3RjYXNlCj4gPiA+ID4gIAlMVFBUTVA9
+YG1rdGVtcCAtZCAtdCAkJC5YWFhYWFhgIHx8IHRzdF9yZXNtIFRCUk9LICJVbmFibGUgdG8gY3Jl
+YXRlCj4gPiA+ID4gdGVtcG9yYXJ5IGRpcmVjdG9yeSB3aXRoOiBta3RlbXAgLWQgJCQuWFhYWFhY
+IiB0cmFwICJjbGVhbnVwIiAwCj4gPiA+ID4gLQlwdXNoZCAiJExUUFRNUCIKPiA+ID4gPgo+ID4g
+PiA+ICAJIyBjaGVjayBpZiBjb21tYW5kcyB0c3RfKiwgdW56aXAsIGF3aywgZXRjIGV4aXN0cy4K
+PiA+ID4gPiAgCWNoa19pZmV4aXN0cyBJTklUIHRzdF9yZXNtICB8fCByZXR1cm4gJFJDCj4gPiA+
+IAo+ID4gPiB1bW0sIHlvdSByZW1vdmUgdGhlIHB1c2gvcG9wZCwgYnV0IGRvbnQgcmVwbGFjZSBp
+dCB3aXRoIHByb3BlciBjZCBzdGF0ZW1lbnRzID8gIAo+ID4gPiBpJ20gZ3Vlc3NpbmcgeW91IGRp
+ZG50IHRlc3QgdGhpcyBjaGFuZ2UuCgpPaCB5ZXMsIEkgZGlkLCBidXQgSSB0ZXN0ZWQgaXQgd2l0
+aCBvdGhlciBjaGFuZ2VzIHdoaWNoIHJlbmRlcmVkIHRoZSBwdXNoZC9wb3BkIHVubmVjZXNzYXJ5
+LiBZb3UncmUgcmlnaHQgdGhpcyB3b3VsZG4ndCB3b3JrLgoKPiA+ID4gPiAtLS0gYS90ZXN0Y2Fz
+ZXMva2VybmVsL2NvbnRhaW5lcnMvbmV0bnMvZGVsY2hpbGQuc2gKPiA+ID4gPiArKysgYi90ZXN0
+Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvbmV0bnMvZGVsY2hpbGQuc2gKPiA+ID4gPiAtICAgIGtp
+bGwgLTkgJHNzaHBpZCAkcGlkID4gL2Rldi9udWxsIDI+JjEKPiA+ID4gPiArICAgIGtpbGwgLXMg
+S0lMTCAkc3NocGlkICRwaWQgPiAvZGV2L251bGwgMj4mMQo+ID4gPiAKPiA+ID4gdGhpcyBpc250
+IGEgYmFzaGlzbSwgdGhpcyBpcyBhIGNyYXBweSBraWxsIGltcGxlbWVudGF0aW9uCgpGb3JtYWxs
+eSBzcGVha2luZywgdGhpcyBpcyBhbiBYU0kgZXh0ZW5zaW9uIHRvIFBPU0lYLiBJIGRvbid0IHRo
+aW5rIHRoaXMgIi05IiBpcyBhbnkgYmV0dGVyIHRoYW4gIi1zIEtJTEwiLCBzbyBJIHdvbid0IGNo
+YW5nZSB0aGlzLgoKPiA+ID4gPiAgZm9yIHR0dHlwZSBpbiBgbHMgL2Rldi90dHkqYAo+ID4gPiA+
+ICBkbwo+ID4gPiA+IC1kZXZpY2Vfbm89JHt0dHR5cGU6OH0KPiA+ID4gPiArZGV2aWNlX25vPSR7
+dHR0eXBlIyMvZGV2L3R0eX0KPiA+ID4gPiAuLi4KPiA+ID4gPiAgZm9yIHR0dHlwZSBpbiBgbHMg
+L2Rldi90dHkqYAo+ID4gPiA+ICBkbwo+ID4gPiA+IC1kZXZpY2Vfbm89JHt0dHR5cGU6OH0KPiA+
+ID4gPiArZGV2aWNlX25vPSR7dHR0eXBlIyMvZGV2L3R0eX0KPiA+ID4gCj4gPiA+IHVzaW5nIHRo
+ZSBncmVlZHkgZXhwYW5zaW9uICgjIykgZG9lc250IG1ha2UgbXVjaCBzZW5zZS4gIHJlYWxseSBz
+aG91bGQgYmUgIy4KPiA+ID4gCj4gPiA+ID4gLSAgICBsZXQgc3RlcF9lcnJvcnM9IiRzdGVwX2Vy
+cm9ycyArIDEiCj4gPiA+ID4gKyAgICBzdGVwX2Vycm9ycz0kKCgkc3RlcF9lcnJvcnMgKyAxKSkK
+PiA+ID4gPiAtICAgICAgICBsZXQgaT0iJGkgKyAxIgo+ID4gPiA+ICsgICAgICAgIGk9JCgoJGkg
+KyAxKSkKPiA+ID4gPiAtICAgICAgICAgICAgbGV0IGs9IiRrICsgMSIKPiA+ID4gPiArICAgICAg
+ICAgICAgaz0kKCgkayArIDEpKQo+ID4gPiA+IC0gICAgICAgIGxldCBqPSIkaiArIDEiCj4gPiA+
+ID4gKyAgICAgICAgaj0kKCgkaiArIDEpKQo+ID4gPiA+IC4uLi4uCj4gPiA+IAo+ID4gPiB0aGlz
+IHN5bnRheCBzdWNrcy4gIHBsZWFzZSB1c2Ugc29tZXRoaW5nIGxpa2U6Cj4gPiA+IDogJCgoIHN0
+ZXBfZXJyb3JzICs9IDEpKQoKSWYgaXQgaHVydHMgeW91ciBhZXN0aGV0aWMgc2Vuc2UgLi4uIG9r
+LgoKPiA+ID4gCj4gPiA+ID4gLSAgICBlY2hvICQiZnNfaW5vZCBvbiAkVEN0bXAgZmluaXNoZWQu
+Igo+ID4gPiA+ICsgICAgZWNobyAiZnNfaW5vZCBvbiAkVEN0bXAgZmluaXNoZWQuIgo+ID4gPiAK
+PiA+ID4gdGhlc2UgYXJlIG5vdCBlcXVpdmFsZW50LCBidXQgaSBkb3VidCB0aGlzIHNoZWxsIHNj
+cmlwdCBpcyB1c2luZyB0aGUgYmFzaCAKPiA+ID4gZ2V0dGV4dCBmdW5jdGlvbiBpbiB0aGUgZmly
+c3QgcGxhY2UsIHNvIGl0J3MgZmluZQo+ID4gPiAtbWlrZQo+ID4gPiAtLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0KPiA+ID4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KPiA+ID4gTHRwLWxpc3QgbWFpbGluZyBsaXN0Cj4gPiA+IEx0cC1saXN0QGxpc3RzLnNvdXJj
+ZWZvcmdlLm5ldAo+ID4gPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0
+aW5mby9sdHAtbGlzdAo+ID4gCj4gPiAKPiA+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+ID4gX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiA+IEx0cC1saXN0
+IG1haWxpbmcgbGlzdAo+ID4gTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4gPiBodHRw
+czovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo+IAo+IAoK
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vm
+b3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRw
+LWxpc3QK
