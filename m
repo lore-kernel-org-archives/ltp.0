@@ -1,20 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MUZoL-0007XB-Rx
-	for ltp-list@lists.sourceforge.net; Sat, 25 Jul 2009 05:28:45 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MUZoF-0002FX-Pb
-	for ltp-list@lists.sourceforge.net; Sat, 25 Jul 2009 05:28:45 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sat, 25 Jul 2009 01:28:32 -0400
-References: <8368651DACC1964480F951191B94A078E49F0B@svexch01.mvista.com>
-In-Reply-To: <8368651DACC1964480F951191B94A078E49F0B@svexch01.mvista.com>
-MIME-Version: 1.0
-Message-Id: <200907250128.33178.vapier@gentoo.org>
-Subject: Re: [LTP] modifying tests to use the configured tmp directory
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MNqTo-0005DB-F9
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:51:44 +0000
+Received: from e36.co.us.ibm.com ([32.97.110.154])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MNqTn-0002oI-Uk
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:51:44 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e36.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n66Fo5bT018733
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 09:50:05 -0600
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n66FpUrF233918
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 09:51:32 -0600
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n66FpKJV024557
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 09:51:20 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <200907060426.57132.vapier@gentoo.org>
+References: <1246864076.2865.35.camel@localhost.localdomain>
+	<200907060426.57132.vapier@gentoo.org>
+Date: Mon, 06 Jul 2009 21:21:04 +0530
+Message-Id: <1246895464.4887.55.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] LTP Build - Would it be possible to handle testcase	build
+	failures without failing all the build process?
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,73 +39,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2857324397372175242=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============2857324397372175242==
-Content-Type: multipart/signed; boundary="nextPart27747830.XtiDbb8TXQ";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart27747830.XtiDbb8TXQ
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-On Saturday 25 July 2009 00:45:09 Henry Yei wrote:
-> Does anyone have a preference on whether the tests should be modified to
-> use the tst functions when possible, or use an optional argument?
-
-if a test needs a temp dir, it should always default to the common LTP one.=
- =20
-feel free to send patches to do just this.
-=2Dmike
-
---nextPart27747830.XtiDbb8TXQ
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJKapgBAAoJEEFjO5/oN/WBGrkP/1UcyiFNbn0FdYDWlyz+imsK
-h+2QYVTFRxOPG2yuvcLUi9OwTbrOOkOGjrHJrj88KQ8+k/wW8SBHEPFByhd4zOx7
-AGMBlBizM5C3fdoK8gNWwzRfNt+Y8ik0SYk5oZztckbfu5DDGaRtfrmWJDozRz68
-ZDyrJBCQG44VNjww4ndL8xwNuSwetZ3wyTy3V625J7Smvn4tRjHk5McYYAoEOoOf
-vSk63ZLSAT1P8wuVY3UmE2KaONOAkNme2Q57ZuUPfDtHPuJPM/yj1MQ2vGdKn5BF
-nGrlRWI2+bWeRxVRY72kLcLyoFOEy3R3SeDOrX+mMGOw6ZhZOLGkzZRpMFmszeuN
-Fs3YUfnlGHWkK8W+VTCDs6pDNW0ehT3zEFhLDxQMKWKA/obls/Zb2tkBNHB7mbKC
-5CzjjPODMo6eDMDOkNrG+QRt8kiJ4x91dGQAtx5QJ72H4REpNe16hvilG43vOJep
-ROQ8MxTWI4/dZmiDWOb+CrSxP0JJNTmQ8m2v1aXPqsBuqwBe0Wg/nhSHH9mPNq+i
-WXbT1sjXzTX3Gx3/kk/WNnNdZlZfKShOhLzpxEboM/ykdDGgiHKyGmVFQiS2Fhlz
-YNXprIZtVLyz1TM9Lve3jphLtYK3IhhZ/xSS0XE59CGM6m1/Mi5yJ1GzgaioNlYj
-IO+wx1T0Sue+aAD2fMJE
-=WHMo
------END PGP SIGNATURE-----
-
---nextPart27747830.XtiDbb8TXQ--
-
-
---===============2857324397372175242==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Lucas Meneghel Rodrigues <lmr@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
+
+On Mon, 2009-07-06 at 04:26 -0400, Mike Frysinger wrote: 
+> On Monday 06 July 2009 03:07:56 Lucas Meneghel Rodrigues wrote:
+> > LTP does have a large amount of testcases, and most of the testcases are
+> > independent from each other, thus IMHO, a single compilation failure
+> > should not fail the whole build process, instead, the tests that could
+> > not be compiled should be marked as BROKEN, and should not be executed
+> > during LTP execution.
+
+Yes, that would be great. And for that an m4 rule file has to be written
+for each and every LTP test, checking:
+1) Header dependency,
+2) Library dependency, etc
+before compiling.
+
+Regards--
+Subrata
+
+> >
+> > Do we have any plans to handle individual build failures in a way that
+> > doesn't fail the whole build process?
+> 
+> use the -k option with make
+> -mike
+> ------------------------------------------------------------------------------
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 
 ------------------------------------------------------------------------------
-
---===============2857324397372175242==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============2857324397372175242==--
-
