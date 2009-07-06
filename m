@@ -1,27 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MOKZ4-0008As-Ed
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 23:59:10 +0000
-Received: from an-out-0708.google.com ([209.85.132.249])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MOKYx-0007fq-Lg
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 23:59:10 +0000
-Received: by an-out-0708.google.com with SMTP id c38so2109628ana.37
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1MNniH-0002Cl-4f
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 12:54:29 +0000
+Received: from mail-fx0-f208.google.com ([209.85.220.208])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MNni7-0007Ed-PZ
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 12:54:24 +0000
+Received: by fxm4 with SMTP id 4so2838749fxm.10
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 07 Jul 2009 16:59:02 -0700 (PDT)
+	Mon, 06 Jul 2009 05:54:13 -0700 (PDT)
+Message-ID: <4A51F3F3.6040501@petalogix.com>
+Date: Mon, 06 Jul 2009 14:54:11 +0200
+From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-In-Reply-To: <f5a7b3810907071026t1fe29ce9pb9e61be8374a345@mail.gmail.com>
-References: <f5a7b3810907030846x35249218u1fe574ba70f796fd@mail.gmail.com>
-	<1246895458.4887.53.camel@subratamodak.linux.ibm.com>
-	<f5a7b3810907070452u62c1c4c6l3f3ed8f1f169f209@mail.gmail.com>
-	<364299f40907070944k7b7b0ce5xb6ace62849c94552@mail.gmail.com>
-	<f5a7b3810907071026t1fe29ce9pb9e61be8374a345@mail.gmail.com>
-Date: Tue, 7 Jul 2009 16:59:02 -0700
-Message-ID: <364299f40907071659w60004533iec779d402068695@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [FIX PATCHE] rt_sigaction
+References: <4A4DFB77.1080700@petalogix.com> <200907031702.52612.arnd@arndb.de>
+	<4A519A70.50801@petalogix.com> <200907061005.36094.arnd@arndb.de>
+	<4A51E8EA.1050009@petalogix.com>
+	<20090706121455.GA16908@linux-sh.org>
+In-Reply-To: <20090706121455.GA16908@linux-sh.org>
+Subject: Re: [LTP] mmap syscall problem
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,95 +31,69 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: naresh kamboju <naresh.kernel@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Jiri Palecek <jpalecek@web.de>, maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, Manas Kumar Nayak <maknayak@in.ibm.com>
+To: Paul Mundt <lethal@linux-sh.org>, Michal Simek <michal.simek@petalogix.com>, Arnd Bergmann <arnd@arndb.de>, Linux Kernel list <linux-kernel@vger.kernel.org>, LTP <ltp-list@lists.sourceforge.net>, John Williams <john.williams@petalogix.com>, Ingo Molnar <mingo@elte.hu>, Andrew Morton <akpm@linux-foundation.org>, Grant Likely <grant.likely@secretlab.ca>, subrata@linux.vnet.ibm.com
 
-On Tue, Jul 7, 2009 at 10:26 AM, naresh kamboju<naresh.kernel@gmail.com> wr=
-ote:
-> Garrett,
->
-> On Tue, Jul 7, 2009 at 10:14 PM, Garrett Cooper<yanegomi@gmail.com> wrote:
->> On Tue, Jul 7, 2009 at 4:52 AM, naresh kamboju<naresh.kernel@gmail.com> =
-wrote:
->>> Hi Garrett Cooper,
->>>
->>> Thanks for your info.
->
->> expected errno =A0=3D EFAULT : Bad address
->> rt_sigaction02 =A0 =A00 =A0INFO =A0: =A0sa.sa_flags =3D SA_NOMASK
->> rt_sigaction02 =A0 15 =A0PASS =A0: =A0rt_sigaction02 failure with sig: 3=
-6 as
->> expected errno =A0=3D EFAULT : Bad address
+Paul Mundt wrote:
+> On Mon, Jul 06, 2009 at 02:07:06PM +0200, Michal Simek wrote:
+>   
+>> Arnd Bergmann wrote:
+>>     
+>>> On Monday 06 July 2009, Michal Simek wrote:
+>>>   
+>>>       
+>>>>> Does this happen on microblaze-mmu or microblaze-nommu, or both?
+>>>>> The mmap code for the two is very different.
+>>>>>   
+>>>>>       
+>>>>>           
+>>>> For MMU code.
+>>>>     
+>>>>         
+>>> Could this be a cache-aliasing problem? If your cache is 'virtually-indexed'
+>>> (most architectures are 'physically-indexed'), the kernel may have written
+>>> into different parts of the D-cache than what the user space is reading
+>>> from. If you have a write-through cache, that can explain why you only
+>>> see the stale data at the beginning of the page -- the cache controller
+>>> is still busy writing back the data when you start reading it from
+>>> DRAM through the cache alias.
+>>>   
+>>>       
+>> I don't think so because we run that test on Microblaze without caches
+>> and test failed too.
+>> I think that this is sufficient test to tell that the problem is not
+>> relate with caches.
 >>
->> rt_sigaction02 =A0 =A00 =A0INFO =A0: =A0sa.sa_flags =3D SA_RESETHAND|SA_=
-SIGINFO
->> rt_sigaction02 =A0 16 =A0PASS =A0: =A0rt_sigaction02 failure with sig: 3=
-7 as
->> expected errno =A0=3D EFAULT : Bad address
->> rt_sigaction02 =A0 =A00 =A0INFO =A0: =A0sa.sa_flags =3D SA_RESETHAND
->> rt_sigaction02 =A0 17 =A0PASS =A0: =A0rt_sigaction02 failure with sig: 3=
-7 3 as
->> expected errno =A0=3D EFAULT : Bad address
->> gcooper@orangebox /scratch/ltp-vanilla/ltp $ gdb
->> testcases/kernel/syscalls/rt_sigaction/rt_sigaction01
->> GNU gdb 6.8
->> Copyright (C) 2008 Free Software Foundation, Inc.
->> License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.=
-html>
->> This is free software: you are free to change and redistribute it.
->> There is NO WARRANTY, to the extent permitted by law. =A0Type "show copy=
-ing"
->> and "show warranty" for details.
->> This GDB was configured as "x86_64-pc-linux-gnu"...
->> (gdb) r
->> Starting program:
->> /scratch/ltp-vanilla/ltp/testcases/kernel/syscalls/rt_sigaction/rt_sigac=
-tion01
->> rt_sigaction01 =A0 =A00 =A0INFO =A0: =A0signal: 34
->> rt_sigaction01 =A0 =A01 =A0PASS =A0: =A0rt_sigaction call succeeded: res=
-ult =3D 0
->> rt_sigaction01 =A0 =A00 =A0INFO =A0: =A0sa.sa_flags =3D SA_RESETHAND|SA_=
-SIGINFO
->>
->> Program received signal SIG34, Real-time event 34.
->> 0x00007f770ba0b4f7 in kill () from /lib/libc.so.6
->> (gdb) where
->> #0 =A00x00007f770ba0b4f7 in kill () from /lib/libc.so.6
->> #1 =A00x0000000000401c3e in main ()
->> (gdb)
->>
->
-> =A0/lib/libc.so.6 :
->
-> This could be issue with glibc.
-> Are you using 2.9 glibc?
->
-> please Investigate.
+>>     
+> Not necessarily, even on platforms that manage aliases in hardware
+> mappings that violate the aliasing constraints can still result in
+> undefined behaviour, this really depends more on your cache controller
+> and MMU than anything else. I notice that microblaze sets SHMLBA to
+> PAGE_SIZE, you may want to see if this test still breaks after bumping it
+> up to something like PAGE_SIZE * 4.
+>   
+Yes, test still break - behavior is the same. I don't have accurate
+information about MMU unit
+but I will ask a question about. We are able to turn off cache
+controller directly in HW.
+> This is unfortunately one of the areas where what POSIX says is possible
+> and what hardware can support are at odds (you can look through
+> arch/sh/mm/mmap.c for a better idea).
+>   
 
-    Yes, I am:
+Thanks,
+Michal
 
-gcooper@orangebox /scratch/ltp-vanilla/ltp $ emerge -qpv glibc
-[ebuild   R   ] sys-libs/glibc-2.9_p20081201-r2  USE=3D"(multilib) nls
--debug -gd -glibc-omitfp (-hardened) -profile (-selinux) -vanilla"
-gcooper@orangebox /scratch/ltp-vanilla/ltp $
 
-    Are you suggesting this might be a glibc bug?
--Garrett
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
 
----------------------------------------------------------------------------=
----
-Enter the BlackBerry Developer Challenge  =
 
-This is your chance to win up to $100,000 in prizes! For a limited time, =
-
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize=
-  =
-
-details at: http://p.sf.net/sfu/Challenge
+------------------------------------------------------------------------------
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
