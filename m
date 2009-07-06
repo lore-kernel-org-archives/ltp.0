@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MNqTT-0000i3-OR
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:51:23 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MNqTL-0006jg-B2
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:51:15 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4A4DDEFD.1050506@in.ibm.com>
-References: <4A4DDEFD.1050506@in.ibm.com>
-Date: Mon, 06 Jul 2009 21:20:53 +0530
-Message-Id: <1246895453.4887.52.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix Security/Filecaps Build failure.
-Reply-To: subrata@linux.vnet.ibm.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <arnd@arndb.de>) id 1MNjDF-0005au-CU
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 08:06:09 +0000
+Received: from moutng.kundenserver.de ([212.227.126.188])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MNjDA-0006JM-Dw
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 08:06:08 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Mon, 6 Jul 2009 10:05:35 +0200
+References: <4A4DFB77.1080700@petalogix.com> <200907031702.52612.arnd@arndb.de>
+	<4A519A70.50801@petalogix.com>
+In-Reply-To: <4A519A70.50801@petalogix.com>
+MIME-Version: 1.0
+Message-Id: <200907061005.36094.arnd@arndb.de>
+Subject: Re: [LTP] mmap syscall problem
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,19 +25,34 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sachin Sant <sachinp@in.ibm.com>
-Cc: ltp-list@lists.sf.net, serue@linux.vnet.ibm.com
+To: michal.simek@petalogix.com
+Cc: LTP <ltp-list@lists.sourceforge.net>, Linux Kernel list <linux-kernel@vger.kernel.org>, Grant Likely <grant.likely@secretlab.ca>, Andrew Morton <akpm@linux-foundation.org>, Ingo Molnar <mingo@elte.hu>, John Williams <john.williams@petalogix.com>
 
-T24gRnJpLCAyMDA5LTA3LTAzIGF0IDE2OjA1ICswNTMwLCBTYWNoaW4gU2FudCB3cm90ZTogCj4g
-Rml4IEZpbGVjYXBzIGJ1aWxkIGJyZWFrLgo+IAo+IGluaF9jYXBwZWQuYzo3MDogZXJyb3I6IHRv
-byBtYW55IGFyZ3VtZW50cyB0byBmdW5jdGlvbiDigJh0c3RfZXhpdOKAmQo+IAo+IFNpZ25lZC1v
-ZmYtYnkgOiBTYWNoaW4gU2FudCA8c2FjaGlucEBpbi5pYm0uY29tPgoKVGhhbmtzIFNhY2hpbi4K
-ClJlZ2FyZHMtLQpTdWJyYXRhCgo+IC0tLQo+IAo+IHRoYW5rcwo+IC1TYWNoaW4KPiAKCgotLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdl
-Lm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlz
-dAo=
+On Monday 06 July 2009, Michal Simek wrote:
+> > Does this happen on microblaze-mmu or microblaze-nommu, or both?
+> > The mmap code for the two is very different.
+> >   
+> For MMU code.
+
+Could this be a cache-aliasing problem? If your cache is 'virtually-indexed'
+(most architectures are 'physically-indexed'), the kernel may have written
+into different parts of the D-cache than what the user space is reading
+from. If you have a write-through cache, that can explain why you only
+see the stale data at the beginning of the page -- the cache controller
+is still busy writing back the data when you start reading it from
+DRAM through the cache alias.
+
+If this is your problem, then you need to implement flush_dcache_page()
+and other functions that maintain cache consistency. See
+Documentation/cachetlb.txt and http://www.linuxjournal.com/article/7105
+
+	Arnd <><
+
+------------------------------------------------------------------------------
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
