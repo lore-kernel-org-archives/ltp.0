@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MNwL6-0001oC-DO
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 22:07:08 +0000
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MNxYB-0000Ok-BK
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 23:24:43 +0000
 Received: from smtp.gentoo.org ([140.211.166.183])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MNwKo-0005IS-V9
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 22:06:55 +0000
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MNxY6-0003Vg-Hz
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 23:24:43 +0000
 From: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 6 Jul 2009 18:06:46 -0400
-References: <4A51CEDC.6080605@linux.vnet.ibm.com> <4A51E253.200@st.com>
-	<364299f40907061028o4c9c2922ma7d430f5e03f4b38@mail.gmail.com>
-In-Reply-To: <364299f40907061028o4c9c2922ma7d430f5e03f4b38@mail.gmail.com>
+Date: Mon, 6 Jul 2009 19:24:33 -0400
+References: <20090702084828.GC19135@count0.beaverton.ibm.com>
+	<20090706215111.GA32310@count0.beaverton.ibm.com>
+	<op.uwn5bux1u2flwt@debian>
+In-Reply-To: <op.uwn5bux1u2flwt@debian>
 MIME-Version: 1.0
-Message-Id: <200907061806.47824.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] cgroups: conditionally enable building cgroup
-	tests
+Message-Id: <200907061924.36146.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] Remove bashisms (WAS Re: [PATCH 4/4] netns:
+	Change interpretters from sh to bash)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,88 +27,75 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1376718806131013943=="
+Content-Type: multipart/mixed; boundary="===============6106363940108380877=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: ltp-list@lists.sf.net
+To: =?utf-8?q?Ji=C5=99=C3=AD_Pale=C4=8Dek?= <jpalecek@web.de>
+Cc: Poornima Nayak <poornima.nayak@in.ibm.com>, ltp-list@lists.sourceforge.net, Daniel Lezcano <daniel.lezcano@free.fr>, Veerendra C <vechandr@in.ibm.com>, Munipradeep <mbeeraka@in.ibm.com>
 
---===============1376718806131013943==
-Content-Type: multipart/signed; boundary="nextPart1430728.mdWjM9j2a0";
+--===============6106363940108380877==
+Content-Type: multipart/signed; boundary="nextPart4280832.nTQ16LZhs5";
 	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
---nextPart1430728.mdWjM9j2a0
+--nextPart4280832.nTQ16LZhs5
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 
-On Monday 06 July 2009 13:28:00 Garrett Cooper wrote:
-> On Mon, Jul 6, 2009 at 4:38 AM, Francesco RUNDO wrote:
-> > I've already fixed the same issue you reported. I've tested it
-> > successfully.
-> >
-> > Subrata has already merged my patch (please, find it in attachment).
-> >
-> > Please, check it before to submit another patch.
+On Monday 06 July 2009 19:10:36 Ji=F8=ED Pale=E8ek wrote:
+> On Mon, 06 Jul 2009 23:51:12 +0200, Matt Helsley wrote:
+> > 	Change the increment syntax to use : $(( X +=3D 1 )) instead of:
+> > 		X=3D$((X + 1))
 >
-> At the end of the day, the real problem is that we're not using the
-> --with- functionality in autoconf, e.g. --with-cgroups, and instead
-> we're hacking a lot of noise into Makefile's.
+> I changed this to (IMHO cooler syntax, it's for the sake of aesthetics
+> after all) ": $((X++))" in my patch.
 
-selectively compiling groups of code needs to be thought out before we star=
-t=20
-throwing --with-foo options at the problem.  otherwise we'll still end up w=
-ith=20
-crap, just in a different form.
-
-> I can tell at first glance that that Makefile is a mess anyhow,
-> because it's referencing _hardcoded_ /proc references and as such will
-> fail to cross-compile properly if the target or the host are setup
-> differently from one another, in the following two scenarios:
-
-yes, the merged patch and that makefile suck.  there should never be any=20
-filesystem check in a Makefile anymore.  while peeking in /proc is somewhat=
+yes, x++ is better, but it is marked as "optional" in POSIX and some crappy=
 =20
-forgivable, looking for headers never is ok.  we have autoconf tests now an=
-d=20
-Gowri's approach looks like the correct one.
+shell implementations do not implement it (like dash).  rather than fix das=
+h,=20
+people change the code to not use these operators.
 =2Dmike
 
---nextPart1430728.mdWjM9j2a0
+--nextPart4280832.nTQ16LZhs5
 Content-Type: application/pgp-signature; name=signature.asc 
 Content-Description: This is a digitally signed message part.
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJKUnV3AAoJEEFjO5/oN/WBGNcP/3ZjJR47nPKaOHmrGGeUy8TT
-TDSQ/ow3uV1FkwLSr+SG/67GseirXyDnUw4dQFTGvC3/i+wE/HpiB0drYEHqdjsl
-8TvuFd32Cy0pZqete2S3W8Ao6dRSQhd3lXozSudIu4DWrJxgEQV2krzlheQhJOek
-woR0KW7pG0GEs71hdpXyPv1Oqtw7t4Dxki9fDMSQWSt33U1kvraWpTqd9lTdDItm
-YDl8UUs3bEmcHNSwTSs5OrbuPDpdbjoLqdtrgyArOgSQUR18qJLAvGb614ZQn1K2
-XmSCWhyszhnc/BGf93bFIJlKiy3b7fS5uJuyaR1z8RFwxB3ABRlFXiJPLrPdwYSD
-3aVZoiSSX/qqBBiXKYXAChmzd/rDO7bM8U86YpgkMTOJB76UWJdoBJ/SGl0ZuEx4
-Sre3T7FE18KmQ+QkaK+qw9Me+csiXea0wo2o4E+1h9Xmm5VUrat0WowEOfcLb7op
-RlqlAIIppxe8+woMtTo53FPUrDP2kW51mmVqF3gRkno0FhemxHCh1D04zVqn/H4o
-VU8IZ5AjBMcZOVM2OP4QzGyuH2dzZmzuq1UVHFw/6oHwhGadD3Ly86TsbMaYOkzt
-a37Sc8ls1WpqqPQAmFj1tNszrnhdb6mjR1LiY/mkd3xbtQW+z89XdiiCo8mmmy4P
-ZCkQK688PckAKN4o40wY
-=cSCX
+iQIcBAABAgAGBQJKUoe0AAoJEEFjO5/oN/WB0jAP/2uCoHkfICfrrwvVVThOVQjb
+8lzPY22gtOQZvDViHUIWpKW4dF73dxgRm7TB8mMEkHF3yVwVTpRRsfhs+2cYX22t
+gYQDtbmfscZmeN2MJWU7DpwM/7lrKZlr+Eiv9sUavOw8pFhkSd61NRu5Tk80UhJK
+n2nN/fjfKFE27FsLr3znYMo+HqiUsXC2ZbvhtSGXjClxLHBu9dE3bN80Qp2J9YkL
+K85ZatYj/4a4sZNu6+pSxT1/NRLHW6cKgLL0KgvY+rw3RzHRPuxhtjoZPZOVn5/C
+RqXL0a6W/sdl2fbhrBFeEaxjAXp7ZP1OPtb1UPhZLBKYTUr4+jISl36kCoKUp7Sz
+seZ1NqZGaor5Nm+JGCIMJr4QXxGHJJXEvJqTLmHG9JQJ6zSUSu2HlRmE/AUPplHI
+rzY+KqVa6szPnrBI7zb8q9p2I8Z2Pur4rLNjO7SNzH4PfcQBkgGoW8tWosAaMeZy
+XVx3a/bA9Hvzxf5zBuWT7key4vvcI3PBezH37fhttgGkl9dzRlW1FFaWmb33EKW6
+z1WiW6exstJ8jezq8mEFATPt0bCCfZyA2IxEwmpZEgDr2/8WKs7c8Qm5qkvPnHkk
+mo57kI4tSf1V6rg6ubmVqwGW4j0fh7Y5p4LqFC7+btYjQCZjZzxZccqvah/tKxoT
+gCoPcxYxtyuWButGfbRs
+=G6jR
 -----END PGP SIGNATURE-----
 
---nextPart1430728.mdWjM9j2a0--
+--nextPart4280832.nTQ16LZhs5--
 
 
---===============1376718806131013943==
+--===============6106363940108380877==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-
---===============1376718806131013943==
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have 
+the opportunity to enter the BlackBerry Developer Challenge. See full prize 
+details at: http://p.sf.net/sfu/blackberry
+--===============6106363940108380877==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -118,5 +106,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============1376718806131013943==--
+--===============6106363940108380877==--
 
