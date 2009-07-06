@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1MUP8X-0003PI-3R
-	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2009 18:04:53 +0000
-Received: from mail-yx0-f195.google.com ([209.85.210.195])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MUP8S-0003oN-8h
-	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2009 18:04:53 +0000
-Received: by yxe33 with SMTP id 33so3342127yxe.28
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 24 Jul 2009 11:04:42 -0700 (PDT)
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MNjXb-0002Z6-Mg
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 08:27:11 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MNjXP-00037l-0e
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 08:27:03 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 6 Jul 2009 04:26:56 -0400
+References: <1246864076.2865.35.camel@localhost.localdomain>
+In-Reply-To: <1246864076.2865.35.camel@localhost.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <200907241349.58754.vapier@gentoo.org>
-References: <f5a7b3810907240831t75a058a2m96abdc28a28c4365@mail.gmail.com>
-	<200907241349.58754.vapier@gentoo.org>
-Date: Fri, 24 Jul 2009 23:34:40 +0530
-Message-ID: <f5a7b3810907241104g498b00a6i60c8858b8805091a@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Subject: Re: [LTP] Char Limit issue on 2.6.29 kernels
+Message-Id: <200907060426.57132.vapier@gentoo.org>
+Subject: Re: [LTP] LTP Build - Would it be possible to handle testcase build
+	failures without failing all the build process?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,58 +25,77 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============5171077929139729721=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net, maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, linux-kernel@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>, tim.bird@am.sony.com, rohit.170309@gmail.com
+To: ltp-list@lists.sourceforge.net
 
-Hi Mike,
+--===============5171077929139729721==
+Content-Type: multipart/signed; boundary="nextPart1748061.HOYI5yfJTd";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jul 24, 2009 at 11:19 PM, Mike Frysinger<vapier@gentoo.org> wrote:
-> On Friday 24 July 2009 11:31:59 naresh kamboju wrote:
->> I have come across with char Limit issue on 2.6.29 kernels.
->>
->>
->> SIGFAULT:
->>
->> #define SIZE =A0 =A0 =A0 =A0 =A0 =A08053759
->> char buf1[SIZE] ;
->>
->> NO SIGFAULT:
->>
->> #define SIZE =A0 =A0 =A0 =A0 =A0 =A08053758
->> char buf1[SIZE] ;
->>
->> This SIGFAULT not observed on 2.6.23 kernels.
+--nextPart1748061.HOYI5yfJTd
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+On Monday 06 July 2009 03:07:56 Lucas Meneghel Rodrigues wrote:
+> LTP does have a large amount of testcases, and most of the testcases are
+> independent from each other, thus IMHO, a single compilation failure
+> should not fail the whole build process, instead, the tests that could
+> not be compiled should be marked as BROKEN, and should not be executed
+> during LTP execution.
 >
-> -ENOINFO
->
-> post some actual code rather than saying "i declared a large buffer and t=
-hings
-> crashed".
+> Do we have any plans to handle individual build failures in a way that
+> doesn't fail the whole build process?
 
-currently i am debugging this issue.
-i'll come up with more details.
+use the -k option with make
+-mike
 
->is there a reason you cc-ed LTP ? =A0is this a crash i >a LTP test ?
-No.
-it is not a test cases of LTP.
-i am a member of LTP. want to share this information to LTP community.
+--nextPart1748061.HOYI5yfJTd
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
--naresh
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.12 (GNU/Linux)
 
->
->> What could be the changes that effecting from 2.6.23 to 2.6.29 kernels.
->> Please share me the information.
->
-> git log v2.6.23..v2.6.29
-> -mike
->
+iQIcBAABAgAGBQJKUbVRAAoJEEFjO5/oN/WBVHYP/1Yiij1f/csJrNVUptgdsQ9Y
+8N0weUpjUVM+JiwTq8F5wmwo3O0j1gupaQCqYyk7g9InHzbrUhHAlEG0XFNujUSM
+20nC34HBJHO+0hmrYNYtKdiy+Rlef51tUuZp+oiz7jXF7YHdwn2TR0z2rsyOzq6u
+I6X1s9pilrwWe4aqxR7EeWu/bb+QOz7gquaMMUCkIvSKQlaqxCbXnac++fLI/wsv
+zq5aCZtl+ijtVLWoOVVp313enNOugw3TV1ZxB5yhd/ELl8C/TExtTXZ1dynARUVy
+LBNAw0aRbDcYxuN731ZYDS+daGRVoCae3w8fkavIVkSZNwrv35KoCjzUDC6lmB//
+mPD+FFZAhMkl0nw+NgJGtW/0kobrzye6cj6qzkpTKThSe188Vs6ebwcWMUbjbB5g
+GDw5X1682lhoHE6KFjvCt+O2jVqWKSpWC4SLEcfArnoet+HspTp2jiiZPM+s+j3E
+fZY5whmRYfMW5AFtDXnJDye80xJabri6c0v/1DTCIVwp9vw+neccUBEelh3BHWzH
+6qFyrzWx5l3fNb5cgPQtQoL+8cwH9sKOd5pfBy0hc4GqnE0nja9xPQcf1Ysf6FYH
+kpVzU1kccxdu6lw0w9x7EBhEb0IYtzQiVjRK8h5thXx8c1Rf6dOO5Nmt223yNKJS
+aq5+2SSG16Qfiwm8iJeU
+=EWYU
+-----END PGP SIGNATURE-----
 
----------------------------------------------------------------------------=
----
+--nextPart1748061.HOYI5yfJTd--
+
+
+--===============5171077929139729721==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+
+--===============5171077929139729721==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============5171077929139729721==--
+
