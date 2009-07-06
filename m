@@ -1,36 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <markver@us.ibm.com>) id 1MUXjS-0005vD-SF
-	for ltp-list@lists.sourceforge.net; Sat, 25 Jul 2009 03:15:34 +0000
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MUXjL-0003WS-0M
-	for ltp-list@lists.sourceforge.net; Sat, 25 Jul 2009 03:15:34 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e1.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n6P3A7GP022987
-	for <ltp-list@lists.sourceforge.net>; Fri, 24 Jul 2009 23:10:07 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n6P3FLLJ223524
-	for <ltp-list@lists.sourceforge.net>; Fri, 24 Jul 2009 23:15:21 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n6P3CgdV020654
-	for <ltp-list@lists.sourceforge.net>; Fri, 24 Jul 2009 23:12:42 -0400
-Received: from d01ml096.pok.ibm.com (d01ml096.pok.ibm.com [9.63.10.19])
-	by d01av02.pok.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
-	n6P3CgAH020651
-	for <ltp-list@lists.sourceforge.net>; Fri, 24 Jul 2009 23:12:42 -0400
-In-Reply-To: <200907242113.36309.vapier@gentoo.org>
-References: <OFE8FAC2C8.7B8ECD5A-ON852575FD.0081EDEC-852575FD.00837054@us.ibm.com>
-	<200907242113.36309.vapier@gentoo.org>
-Message-ID: <OF4ACEB620.6D41DA11-ON852575FE.001180EF-852575FE.0011E218@us.ibm.com>
-From: Mark Ver <markver@us.ibm.com>
-Date: Fri, 24 Jul 2009 23:15:19 -0400
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1MNwwI-00054P-ND
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 22:45:34 +0000
+Received: from fmmailgate03.web.de ([217.72.192.234])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MNwwA-0000aM-Ie
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 22:45:34 +0000
+From: Jiri Palecek <jpalecek@web.de>
+Date: Tue, 7 Jul 2009 00:47:36 +0200
+References: <4a413e9b.160bca0a.2226.fffff184SMTPIN_ADDED@mx.google.com>
+	<364299f40907061045s567f00dbq7a198ef37fa438dc@mail.gmail.com>
+In-Reply-To: <364299f40907061045s567f00dbq7a198ef37fa438dc@mail.gmail.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] hardware requirements
+Content-Disposition: inline
+Message-Id: <200907070047.40979.jpalecek@web.de>
+Subject: Re: [LTP] [PATCH] Fix some bashisms
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,99 +26,92 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8215672051018807533=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============8215672051018807533==
-Content-type: multipart/alternative; 
-	Boundary="0__=0ABBFF6DDF82067F8f9e8a93df938690918c0ABBFF6DDF82067F"
-Content-Disposition: inline
-
---0__=0ABBFF6DDF82067F8f9e8a93df938690918c0ABBFF6DDF82067F
-Content-type: text/plain; charset=US-ASCII
-
-> > Is there an agreed upon set of hardware requirements (memory, disk
-space,
-> > etc.) for running, if not all tests, at least the default testcases
-> > executed by runltp?
->
-> not really
->
-> > Also, if not very knowledgeable of hardware, is there an easy way to
-tell
-> > if a particular test will run on a target platform or not?  For
-example, I
-> > suspect the DMA_THREAD_DIOTEST7 tests are not expected to run on all
-> > architectures.  Is there a way to find out what platforms it does
-support?
->
-> many of test cases dont care at all about resources.  might be useful to
-have
-> an embedded doc format so tests that do care about resources can declare
-them
-> and then a script can run periodically to collect all of them in a
-summary
-> format.
->
-> i'm pretty sure that in the vast majority of cases, the memory size is
-the
-> only thing that a test may play with.
-> -mike
-
-Yeah, I guess I was thinking of tests like hackbench which don't seem to
-run well on systems with little memory.  And some of the growfiles tests
-seem to be a little sensitive about the amount of free /tmp space.
---0__=0ABBFF6DDF82067F8f9e8a93df938690918c0ABBFF6DDF82067F
-Content-type: text/html; charset=US-ASCII
-Content-Disposition: inline
-
-<html><body>
-<p><tt>&gt; &gt; Is there an agreed upon set of hardware requirements (memory, disk space,<br>
-&gt; &gt; etc.) for running, if not all tests, at least the default testcases<br>
-&gt; &gt; executed by runltp?<br>
-&gt; <br>
-&gt; not really<br>
-&gt; <br>
-&gt; &gt; Also, if not very knowledgeable of hardware, is there an easy way to tell<br>
-&gt; &gt; if a particular test will run on a target platform or not? &nbsp;For example, I<br>
-&gt; &gt; suspect the DMA_THREAD_DIOTEST7 tests are not expected to run on all<br>
-&gt; &gt; architectures. &nbsp;Is there a way to find out what platforms it does support?<br>
-&gt; <br>
-&gt; many of test cases dont care at all about resources. &nbsp;might be useful to have <br>
-&gt; an embedded doc format so tests that do care about resources can declare them <br>
-&gt; and then a script can run periodically to collect all of them in a summary <br>
-&gt; format.<br>
-&gt; <br>
-&gt; i'm pretty sure that in the vast majority of cases, the memory size is the <br>
-&gt; only thing that a test may play with.<br>
-&gt; -mike<br>
-</tt><br>
-<tt>Yeah, I guess I was thinking of tests like hackbench which don't seem to run well on systems with little memory. &nbsp;And some of the growfiles tests seem to be a little sensitive about the amount of free /tmp space.</tt><br>
-</body></html>
---0__=0ABBFF6DDF82067F8f9e8a93df938690918c0ABBFF6DDF82067F--
-
-
-
---===============8215672051018807533==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
+
+On Monday 06 July 2009 19:45:08 Garrett Cooper wrote:
+> Jiri,
+>     This patch looks ok for the most part, but here are some comments:
+> 
+> 1. if [[ -z "$vnet0" -z "$vnet1" ]] => if [ -z "$vnet0" ] || [ -z "$vnet1" ]
+> 
+> It's better read as the following, IMO:
+> 
+> [ -z "$vnet0" -o -z "$vnet1" ]
+
+I think this is another "I like this more than that, because this is cool and that sucks" debate. If other think test's "-o" should be used in this case, I would make the change. After all, this can be done by hand directly on the patch...
+
+> 2. All numeric test(1) comparisons could and should be switched from:
+> 
+> command
+> if [ $? = 0 ]; then
+> 
+> to:
+> 
+> if command; then
+> 
+> for brevity.
+
+Why should them be changed? This is only a cosmetic change, which would make the patch unnecessarily larger (when it's already a little too large IMHO). If it could be in the former form till now, I think it can stay there a few months/years.
+
+IMHO this usage is still much better than
+
+ command; RC=$?
+ if [ $RC = 0 ] ...
+ ... RC is not read later ...
+
+or (incorrect)
+
+ command || RC=$?
+ if [ $RC = 0 ] ...
+
+> 3. About &>
+> 
+>    Redirecting Standard Output and Standard Error
+>        Bash allows both the standard output (file descriptor 1) and
+> the standard error output (file descriptor 2) to be redirected to the
+> file whose name is the expansion of word with this construct.
+> 
+>        There are two formats for redirecting standard output and standard error:
+> 
+>               &>word
+>        and
+>               >&word
+> 
+> The output redirection above captures all output (and most of the time
+> you're capturing stdout, but losing stderr to the operating console,
+> which can be undesirable). >& is more portable IIRC (it works with
+> many ash variants, like FreeBSD's sh -- for sure -- and Solaris's sh
+> -- IIRC), which makes it more ideal than &>.
+
+Still, it isn't POSIX, it doesn't work with dash and actually causes pain. See:
+
+ cmd &> fn
+
+POSIX: run cmd in background, write empty file fn
+BASH: run cmd (foreground), send its (normal & error) output to file fn
+
+ cmd >& fn
+
+POSIX: syntax error
+BASH: same as above
+
+But I don't see the point you are making here - do you have a system, where the POSIX way
+
+ cmd > fn 2>&1
+
+doesn't work? Or did you see something else in the patch?
+
+Regards
+    Jiri Palecek
+
+BTW: Jiri Palecek <jirka@debian.org> is not my address.
 
 ------------------------------------------------------------------------------
-
---===============8215672051018807533==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============8215672051018807533==--
-
-
