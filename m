@@ -1,24 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MWaNn-0005eE-Vk
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 18:29:39 +0000
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MWaNf-00058k-Ax
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 18:29:39 +0000
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MNqTa-0005B3-7M
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:51:30 +0000
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MNqTU-0002Yd-SS
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:51:25 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e8.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n66FePZB003404
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 11:40:25 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n66FpGpc245760
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 11:51:16 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n66FpGmt000459
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 11:51:16 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1248347274.3884.13.camel@dyn9002018117.watson.ibm.com>
-References: <1247741996.3886.5.camel@dyn9002018117.watson.ibm.com>
-	<364299f40907182215q56ff7c3au5971afb877d4aa15@mail.gmail.com>
-	<1248297619.3714.10.camel@dyn9002018117.watson.ibm.com>
-	<200907222028.55612.vapier@gentoo.org>
-	<1248347274.3884.13.camel@dyn9002018117.watson.ibm.com>
-Date: Thu, 30 Jul 2009 23:59:12 +0530
-Message-Id: <1248978552.5788.60.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <200907031601.52650.vapier@gentoo.org>
+References: <200907031601.52650.vapier@gentoo.org>
+Date: Mon, 06 Jul 2009 21:21:01 +0530
+Message-Id: <1246895461.4887.54.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] ltp: IMA cross platform fixes
+Subject: Re: [LTP] futex syscall tests
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -32,80 +39,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mimi Zohar <zohar@linux.vnet.ibm.com>
-Cc: waqar afridi <afridi.waqar@gmail.com>, ltp-list <ltp-list@lists.sf.net>, Shaz <shazalive@gmail.com>, Mike Frysinger <vapier@gentoo.org>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-On Thu, 2009-07-23 at 07:07 -0400, Mimi Zohar wrote: 
-> On Wed, 2009-07-22 at 20:28 -0400, Mike Frysinger wrote: 
-> > On Wednesday 22 July 2009 17:20:19 Mimi Zohar wrote:
-> > > testcases/kernel/security/integrity/ima/tests/ima_policy.sh
-> > >
-> > > -		if [ "${line:0:1}" != "#" ] ; then
-> > > +		firstch=`expr substr "${line}" 1 1`
-> > > +		if [ "${firstch}" != "#" ] ; then
-> > 
-> > the `expr` util, while pretty flexible, tends to not get used.  so it'll 
-> > probably be easier for people to grok:
-> > 	if [ "${line#\#}" = "${line}" ] ; then
-> 
-> Other than the comparison needing to be '!=', this works. Thanks!
-> 
-> > > -	RC=$((`expr $RC1 + $RC2`))
-> > > -	if [ $RC -eq 1 ]; then
-> > > +	if [ $RC1 -eq 0 ] && [ $RC2 -eq 0 ]; then
-> > 
-> > i dont see what was wrong with the original here, but if you really want to 
-> > rewrite this, then just change the one line to:
-> > 	RC=$((RC1 + RC2))
-> 
-> The test opens the policy file and attempts to open it again, while it
-> is still open.  The test now explicitly checks the return code from both
-> opens.  The return code from both opens shouldn't be 0.
-> 
-> > > testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
-> > >
-> > > +	zero="0000000000000000000000000000000000000000"
-> > >
-> > > +	ima_aggr=`expr substr "${line}" 49 40`
-> > >
-> > > -		[ "${line:49:40}" -eq 0 ] || RC=$?
-> > > +		[ "${ima_aggr}" = "${zero}" ] || RC=$?
-> > 
-> > these changes arent exactly equivalent.  if the subst of line only returned 
-> > say 5 zeros, then your check wouldnt work.  do you even need this ?  simply 
-> > changing the line to ima_aggr via substr looks good enough to me.  this should 
-> > work fine in POSIX shells:
-> > 	[ "00000" -eq 0 ]
-> 
-> Although the statements aren't equivalent, the current check is more
-> correct.  If the TPM is not enabled, the first entry
-> in /sys/kernel/security/ascii_runtime, the boot aggregate, will be a
-> string of zeroes.
-> 
-> > > testcases/kernel/security/integrity/ima/tests/ima_violations.sh
-> > >
-> > > +			tst_res TINFO $LTPTMP/imalog.$$\
-> > > +			 "$TCID: (message ratelimiting?)"
-> > 
-> > this shows up a few times in the patch ... if you're going to line wrap 
-> > things, there needs to be a space before the continuation marker for style.
-> > -mike
-> 
-> Ok.
-> 
-> Thanks!
+On Fri, 2009-07-03 at 16:01 -0400, Mike Frysinger wrote: 
+> are there any futex syscall tests already in ltp that i cant seem to locate ?  
+> if not, i can adapt the few that already exist in the libfutex code ...
 
-Mimi,
-
-Did you send any update on this anymore ?
+Mike, that should be really great to get to LTP.
 
 Regards--
 Subrata
 
-> 
-> Mimi
-> 
-> 
+> -mike
 > ------------------------------------------------------------------------------
 > _______________________________________________
 > Ltp-list mailing list
@@ -114,10 +60,6 @@ Subrata
 
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
