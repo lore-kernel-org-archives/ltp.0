@@ -1,26 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <skrishnakar@gmail.com>) id 1MTekA-00013W-UM
-	for Ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 16:32:38 +0000
-Received: from mail-px0-f190.google.com ([209.85.216.190])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MTek6-0005Bs-7B
-	for Ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 16:32:38 +0000
-Received: by pxi28 with SMTP id 28so242680pxi.28
-	for <Ltp-list@lists.sourceforge.net>;
-	Wed, 22 Jul 2009 09:32:27 -0700 (PDT)
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MNwGU-0001HP-4Z
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 22:02:22 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MNwGO-00071q-4r
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 22:02:20 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 6 Jul 2009 18:02:12 -0400
+References: <4a413e9b.160bca0a.2226.fffff184SMTPIN_ADDED@mx.google.com>
+	<364299f40907061045s567f00dbq7a198ef37fa438dc@mail.gmail.com>
+In-Reply-To: <364299f40907061045s567f00dbq7a198ef37fa438dc@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <578FBC09-589D-4691-82FF-985FCFE8ADC9@kernel.crashing.org>
-References: <6213bc560907210233l17aa3e75pcb7c20e3faa24195@mail.gmail.com>
-	<2A0DDADE-5C3C-43F2-9487-98A8A735DC8D@kernel.crashing.org>
-	<6213bc560907220838h49e5c273qa543e538bb37923a@mail.gmail.com>
-	<578FBC09-589D-4691-82FF-985FCFE8ADC9@kernel.crashing.org>
-Date: Wed, 22 Jul 2009 22:02:27 +0530
-Message-ID: <6213bc560907220932u3b771af2q743ae55dda5a2198@mail.gmail.com>
-From: srikanth krishnakar <skrishnakar@gmail.com>
-Subject: Re: [LTP] msgctl10 fails on Powerpc Linux-2.6.29.6
+Message-Id: <200907061802.13418.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] Fix some bashisms
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,139 +25,97 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0859793390661946617=="
+Content-Type: multipart/mixed; boundary="===============1617049985222032834=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kumar Gala <galak@kernel.crashing.org>
-Cc: Linuxppc-dev@ozlabs.org, Ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: Jiri Palecek <jirka@debian.org>
 
---===============0859793390661946617==
-Content-Type: multipart/alternative; boundary=000e0cd2a0a8b771d6046f4dea8e
-
---000e0cd2a0a8b771d6046f4dea8e
-Content-Type: text/plain; charset=ISO-8859-1
+--===============1617049985222032834==
+Content-Type: multipart/signed; boundary="nextPart1670892.FbyFsbF4mG";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
-On Wed, Jul 22, 2009 at 9:14 PM, Kumar Gala <galak@kernel.crashing.org>wrote:
-
->
-> On Jul 22, 2009, at 10:38 AM, srikanth krishnakar wrote:
->
->
->>
->> On Wed, Jul 22, 2009 at 8:52 PM, Kumar Gala <galak@kernel.crashing.org>
->> wrote:
->> I'm not seeing any BUG* in traps.c @ line 904.
->>
->>
->> On Jul 21, 2009, at 4:33 AM, srikanth krishnakar wrote:
->>
->> The LTP test case msgctl10.c fails on linux-2.6.29.6 for PowerPC
->> architecture (ppc440)
->>
->>
->> msgctl10    1  B------------[ cut here ]------------
->> kernel BUG at arch/powerpc/kernel/traps.c:904!
->> Oops: Exception in kernel mode, sig: 5 [#9]
->>
->> I'm not seeing any BUG* in traps.c @ line 904.  Do you have some other
->> patches on top of 2.6.29.6?
->>
->> - k
->>
->>
->> I have LTTng patches on top of linux-2.6.29.6.
->>
->
-> Does it modify traps.c?  Can you see what the code around line 904 looks
-> like and post that.
->
-> - k
->
- 896
- 897 #if defined(CONFIG_XILINX_VIRTEX_5_FXT) && defined(CONFIG_PPC_FPU)
- 898         if (reason & REASON_ILLEGAL) {
- 899                 if (excep_state < 1) {
- 900                         excep_state++;
- 901                         return;
- 902                 }
- 903                 /* should never get here */
- 904                 BUG();
- 905         }
- 906 #endif
- 907
- 908         /* Try to emulate it if we should. */
-
-
--- 
-"The Good You Do, The Best You GET"
-
-Regards
-Srikanth Krishnakar
-**********************
-
---000e0cd2a0a8b771d6046f4dea8e
-Content-Type: text/html; charset=ISO-8859-1
+--nextPart1670892.FbyFsbF4mG
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-<br><br><div class=3D"gmail_quote">On Wed, Jul 22, 2009 at 9:14 PM, Kumar G=
-ala <span dir=3D"ltr">&lt;<a href=3D"mailto:galak@kernel.crashing.org">gala=
-k@kernel.crashing.org</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_q=
-uote" style=3D"border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0=
-pt 0.8ex; padding-left: 1ex;">
-<div class=3D"im"><br>
-On Jul 22, 2009, at 10:38 AM, srikanth krishnakar wrote:<br>
-<br>
-<blockquote class=3D"gmail_quote" style=3D"border-left: 1px solid rgb(204, =
-204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
-<br>
-<br>
-On Wed, Jul 22, 2009 at 8:52 PM, Kumar Gala &lt;<a href=3D"mailto:galak@ker=
-nel.crashing.org" target=3D"_blank">galak@kernel.crashing.org</a>&gt; wrote=
-:<br>
-I&#39;m not seeing any BUG* in traps.c @ line 904.<br>
-<br>
-<br>
-On Jul 21, 2009, at 4:33 AM, srikanth krishnakar wrote:<br>
-<br>
-The LTP test case msgctl10.c fails on linux-2.6.29.6 for PowerPC architectu=
-re (ppc440)<br>
-<br>
-<br>
-msgctl10 =A0 =A01 =A0B------------[ cut here ]------------<br>
-kernel BUG at arch/powerpc/kernel/traps.c:904!<br>
-Oops: Exception in kernel mode, sig: 5 [#9]<br>
-<br>
-I&#39;m not seeing any BUG* in traps.c @ line 904. =A0Do you have some othe=
-r patches on top of 2.6.29.6?<br>
-<br>
-- k<br>
-<br>
-<br>
-I have LTTng patches on top of linux-2.6.29.6.<br>
-</blockquote>
-<br></div>
-Does it modify traps.c? =A0Can you see what the code around line 904 looks =
-like and post that.<br><font color=3D"#888888">
-<br>
-- k<br>
-</font></blockquote></div>=A0896<br>=A0897 #if defined(CONFIG_XILINX_VIRTEX=
-_5_FXT) &amp;&amp; defined(CONFIG_PPC_FPU)<br>=A0898=A0=A0=A0=A0=A0=A0=A0=
-=A0 if (reason &amp; REASON_ILLEGAL) {<br>=A0899=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0 if (excep_state &lt; 1) {<br>=A0900=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 excep_state++;<br>
-=A0901=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0 return;<br>=A0902=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 }<br>=
-=A0903=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 /* should never get =
-here */<br>=A0904=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 BUG();<br=
->=A0905=A0=A0=A0=A0=A0=A0=A0=A0 }<br>=A0906 #endif<br>=A0907<br>=A0908=A0=
-=A0=A0=A0=A0=A0=A0=A0 /* Try to emulate it if we should. */<br>
-<br><br>-- <br>&quot;The Good You Do, The Best You GET&quot;<br><br>Regards=
-<br>Srikanth Krishnakar<br>**********************<br>
+On Monday 06 July 2009 13:45:08 Garrett Cooper wrote:
+> 2. All numeric test(1) comparisons could and should be switched from:
+>
+> command
+> if [ $? =3D 0 ]; then
+>
+> to:
+>
+> if command; then
+>
+> for brevity.
 
---000e0cd2a0a8b771d6046f4dea8e--
+that works the command is sufficiently short.  if it's a long command and/o=
+r=20
+has line wrappings itself, i find nesting it in the if statement makes the=
+=20
+situation much worse.
+
+> 3. About &>
+>
+>    Redirecting Standard Output and Standard Error
+>        Bash allows both the standard output (file descriptor 1) and
+> the standard error output (file descriptor 2) to be redirected to the
+> file whose name is the expansion of word with this construct.
+>
+>        There are two formats for redirecting standard output and standard
+> error:
+>
+>               &>word
+>        and
+>
+>               >&word
+>
+> The output redirection above captures all output (and most of the time
+> you're capturing stdout, but losing stderr to the operating console,
+> which can be undesirable). >& is more portable IIRC (it works with
+> many ash variants, like FreeBSD's sh -- for sure -- and Solaris's sh
+> -- IIRC), which makes it more ideal than &>.
+
+what bash does doesnt matter.  the redirection used needs to be in POSIX:
+http://www.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag=
+_18_07
+
+the "&>" form is not in POSIX, so should never be used.  the ">&" format=20
+cannot be used in POSIX without a word argument (you didnt say it could, ju=
+st=20
+making sure things are kept explicit).
+=2Dmike
+
+--nextPart1670892.FbyFsbF4mG
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJKUnRlAAoJEEFjO5/oN/WBUO4P/2UQCnDBGp6+mDGXE6XS1Fbs
+clMSSG7xO3A/RL70qYZZQBaS7Af78OJJJ00bPtTBq51tBwdMmw55kTEVXS1t8ALC
+9FbGL235phf4iQ2FkxRzNd84rfaIrUdVAxotG/x1FhI+oY3yOv4S1UgOBYjZX7Qx
+NiEsGgaJk7AT82cF6iwdRUyP08/ywFtZR7KPAQUHQge5RcOQ8s9ZdQel3pmBVzum
+kgM2zSR4/5xEsiiUwu1zXpCCr9yN9ldnRpeye/P2nq91quXtwVBBb4P06LCMOA04
+ls4OSW8WO5rZ7cGn6e0x5glGSqnm7Di7C04cO/OsvsuQAgRnchdsBFBb+l5GW+x1
+PvaxKC1EplDDY6N9TNdzV4heAsx9Tsi6z3FXpcGK20J+fMxS8jGb2iQmt0lpfQG5
+jECQ4a1Hnmxi0f/zVuwPZ9BatmKnLQ1Ry2ll+vCQB+GvebzMZOwa4e59RCcv+uu8
+pWsUG049ZimwM4jejG8CgQDxCYKW2m5qHUjKJanyAv+jocd3fzOyXObTnE1QqPnJ
+cislRlG3WqW1NCXyKxZhWJ6944+khjEnvpML/Ce+9NTuTph9Agpzh/K9e6bY7Rdd
+ipZlfeG9ZbU30iTIqCi+YCcHtOGA/Ne+OnElQhXv9hkUAB/J49aE2h3vKY3s/ZuV
+o6u9s+MngLXSweYmHfuD
+=OaXN
+-----END PGP SIGNATURE-----
+
+--nextPart1670892.FbyFsbF4mG--
 
 
---===============0859793390661946617==
+--===============1617049985222032834==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -170,7 +123,7 @@ Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 
---===============0859793390661946617==
+--===============1617049985222032834==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -181,5 +134,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============0859793390661946617==--
+--===============1617049985222032834==--
 
