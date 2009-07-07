@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MMQDL-0006aZ-Jg
-	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2009 17:36:51 +0000
-Received: from [32.97.110.158] (helo=e37.co.us.ibm.com)
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MLzkI-0005nm-8D
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2009 13:21:08 +0000
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MOCfC-0001rk-6w
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 15:32:58 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MOCf6-0002yz-Tl
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 15:32:58 +0000
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090303.154642.226782365.caiqian@cclom.cn>
-References: <1235726169.10797.59.camel@subratamodak.linux.ibm.com>
-	<20090303.154642.226782365.caiqian@cclom.cn>
-Date: Wed, 01 Jul 2009 18:49:19 +0530
-Message-Id: <1246454359.6978.57.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <4A53190C.2070809@linux.vnet.ibm.com>
+References: <4A53190C.2070809@linux.vnet.ibm.com>
+Date: Tue, 07 Jul 2009 21:02:39 +0530
+Message-Id: <1246980759.5539.51.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: [LTP] [RFC] [PROPOSAL:: LTP MINI SUMMIT] [OLS 2009]
-	Should	developers/stakeholders Meet ??
+Subject: Re: [LTP] request to enable realtime tests in default run list
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -30,86 +28,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sf.net>
-Cc: crackerjack-devel <crackerjack-devel@lists.sourceforge.net>
+To: gowrishankar <gomuthuk@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sf.net
 
-Well, stirring up an old mail/discussion. My visit for OLS 2009 has been
-finalized, and, i am travelling. If some of you are travelling, lets
-meet up and have some good time there.
+On Tue, 2009-07-07 at 15:14 +0530, gowrishankar wrote: 
+> Hi Subrata,
+> 
+> We are looking for your concerns as well as from community on enabling realtime
+> tests by default. By the way we can broad our realtime tests as well as scan
+> the existing tests functionality with the help of community.
+> 
+> One bottleneck we had in past is that it fails to compile on platforms that
+> does not support few arch-specific tests (like TSC related tests) and also
+> I am not too sure about remaining platforms than System X and P.
+> 
+> We can think of either dropping platform specific tests so that RT tests depend
+> only on distros (for glibc ??) or conditionally enable them by looking for
+> platform ids.
+> 
+> Also, we can think of enabling/disabling whole RT tests in default LTP build
+> for the same reason I said at the top.
+> 
+> Your thoughts are very welcome.
+
+Write few more m4 rule files, which will take care of stuff below:
+
+     1. header files, 
+     2. libraries, 
+     3. any other user utilities, 
+     4. any other system utilities, 
+     5. arch dependencies, 
+     6. distro dependencies(if any),
+
+And the test across your patched for all the arch available with you.
+
+Due to recent increase in usage of LTP by other archs like the blackfin,
+arm, microblaze, etc. Please get some confirmation from them that your
+patch also works fine with their archs. Most interestingly, they would
+probably not require the RT tests to build in the first place itself ;-)
 
 Regards--
 Subrata
 
-On Tue, 2009-03-03 at 15:46 +0800, CAI Qian wrote:
-> From: Subrata Modak <subrata@linux.vnet.ibm.com>
-> Subject: [LTP] [RFC] [PROPOSAL:: LTP MINI SUMMIT] [OLS 2009] Should developers/stakeholders Meet ??
-> Date: Fri, 27 Feb 2009 14:46:09 +0530
 > 
-> > Hello All,
-> > 
-> > The Linux Test project has been in existence for many years, and, the
-> > benefits of this Project has been well established. However, due to
-> > several reasons the developers/stakeholders of this project has never
-> > meet face to face. Hence, i would like to propose a Mini Summit for LTP
-> > on the sidelines of the OLS 2009, scheduled to be held at Montreal,
-> > Canada, July 13th-17th, 2009 (http://www.linuxsymposium.org/2009/).
-> > 
-> > The proposal for mini summit has been accepted in principle by the OLS
-> > committee. Since, there are no specific summit/meet/conference for LTP
-> > developers, this is a very good opportunity for LTP developers to meet
-> > side-by-side the OLS, as many of them will be coming to attend/present
-> > in the OLS. We can meet and discuss various issues relating to LTP in
-> > the same meet, some of them being:
-> > 
-> > i) Presentation/discussion by developers/testers/users on various issues
-> > on test infrastructure/environment/test cases. Here we plan to abreast
-> > ourselves with several of such issues, and, somebody can take the
-> > responsibility for those line item(s),
-> > ii) Presentation/discussion by developers/testers/users on what they
-> > contributed to LTP, and, what they plan to do in near/far future,
-> > iii) Presentation/discussion by Maintainer of the present situation of
-> > LTP, and, what he might expect from the community to take this forward,
-> > iv) Presentation/discussion by Maintainer on how to increase LTP
-> > penetration in other areas (archs, etc) of Linux testing, like the
-> > Z-linux, embedded hardware, etc,
-> > v) How best to leverage on Project Collaboration like Crackerjack to LTP
-> > porting of tests,
-> > vi) Other proposals(if any) from the community is also to be discussed.
-> > 
-> > I have discussed this with Andrew J Hutton of OLS committee. He has
-> > agreed in principle to lend us a room/accessories to conduct the Mini
-> > Summit, provided there are enough attendance of a minimum of 10 people.
-> > 
-> > If all/some of you agree and feel that it would be great for all of us
-> > to meet, and we have the enough nos. i can talk to Andrew to confirm a
-> > berth for us.
-> > 
-> > Please feel free to propose new agenda and comment on the proposed
-> > agenda.
-> > 
-> 
-> It would be lovely to talk to LTP people, so count me in. In the
-> meanwhile, I'll need to talk to my boss to see if it is possible to
-> sponsor the trip.
-> 
-> > Regards--
-> > Subrata
-> > 
-> > 
-> > 
-> > ------------------------------------------------------------------------------
-> > Open Source Business Conference (OSBC), March 24-25, 2009, San Francisco, CA
-> > -OSBC tackles the biggest issue in open source: Open Sourcing the Enterprise
-> > -Strategies to boost innovation and cut costs with open source participation
-> > -Receive a $600 discount off the registration fee with the source code: SFAD
-> > http://p.sf.net/sfu/XcvMzF8H
-> > _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> Thanks for paying attention,
+> Gowri
 
 
 ------------------------------------------------------------------------------
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have 
+the opportunity to enter the BlackBerry Developer Challenge. See full prize 
+details at: http://p.sf.net/sfu/blackberry
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
