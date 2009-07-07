@@ -1,18 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <rohit.170309@gmail.com>) id 1MTthV-0007iG-Ch
-	for ltp-list@lists.sourceforge.net; Thu, 23 Jul 2009 08:30:53 +0000
-Received: from mail-pz0-f175.google.com ([209.85.222.175])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MTthL-0006cu-Fx
-	for ltp-list@lists.sourceforge.net; Thu, 23 Jul 2009 08:30:52 +0000
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MODah-0007VM-H9
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 16:32:23 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MODaf-0007Iy-90
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 16:32:23 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Tue, 7 Jul 2009 10:26:44 -0400
+References: <E1MO8eL-0006Ot-8q@235xhf1.ch3.sourceforge.com>
+In-Reply-To: <E1MO8eL-0006Ot-8q@235xhf1.ch3.sourceforge.com>
 MIME-Version: 1.0
-Date: Thu, 23 Jul 2009 14:00:42 +0530
-Message-ID: <d51f89b0907230130k158cbfbeo31f290cf207432b6@mail.gmail.com>
-From: rohit verma <rohit.170309@gmail.com>
-Subject: [LTP] waitid02 testcase fails on 2.6.29 kernel
+Message-Id: <200907071026.45698.vapier@gentoo.org>
+Subject: Re: [LTP] FW: My first Patch
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,38 +24,75 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8589537378111343210=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sf.net>
+To: ltp-list@lists.sourceforge.net
+Cc: Praveen <praveen@primesoftsolutionsinc.com>, 'Naresh' <naresh@primesoftsolutionsinc.com>, 'Nathan Straz' <nstraz@redhat.com>
 
-Hi,
+--===============8589537378111343210==
+Content-Type: multipart/signed; boundary="nextPart1880079.8YjhFDNItB";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-I am running waitid02.c
-(ltp-full-20090630/testcases/kernel/syscalls/waitid/ ) test case on
-2.6.29 kernel.
-Test case gives following error:
-"Error. is your system >2.6.9 ?";
+--nextPart1880079.8YjhFDNItB
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
- Anybody facing the same issue?
+On Tuesday 07 July 2009 07:15:16 Praveen wrote:
+> Please find my first 'file' command test patch attached with this email.
 
-Code:
+in the future, please use the unified diff format
+-mike
 
-TEST(waitid(P_ALL,0,&infop,WNOHANG));
-        if(TEST_RETURN == 0)
-                tst_resm(TPASS,"Success !");
-        else{
-                printf("value of return is %d\n",TEST_RETURN);
-                tst_resm(TFAIL,"Error. is your system >2.6.9 ?");
-               errnochoose();
-        }
+--nextPart1880079.8YjhFDNItB
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJKU1slAAoJEEFjO5/oN/WBunEP/2/waD0xajQJ9cTIBLpW7jwO
+Y2SB8LSa3Co1t7tEfka3UDTDh+VgEg+qWESqPKY4XrP8RN/N+LVrJn/iNLAHWILf
+zgDl3ALWgyTmQn7HtJNhl1N3bEdOvckOdFE02eTQ3OEzMcJJv46PKKTKrnuoLSOK
+hXuAB71Cdqx85Ccvwx0PwA7CRJAPZltuEnAhLU9ZF9kUujHGe1GGsmT0JVKbJ1AN
+vGn3onxY64fwKmMg/DhHNSuDhqizYsLaYfWgrPTdqIEXacb8n37CnIt5NR2Og6+b
+pWAuJi64RYZzvfBuUpNHQqqCglcV61DhW+Fwi4OzCakP3wVKFeP+Zxkd25vPVcQz
+y2/JDGGgNBoRCaBnJSBwDBOwibRtxRqpqIFIxU26dnWOGwdJEsTvPevKYNHpoZn9
+oCbLqypDO76GxxYss4RbRNj+UUdp3lz+poMoD1XHJFhoxUoRJgETz0evHRaCRi01
+WQWotSNgjYzeMEsOsrHcuW1G9Li7n+bWkb65CuNIZRNDaXiXqqrWVoCPuWgORpcg
+uVkTD5NyXHlppKeK6smCbNWa+xUtui5EFwvzBD3ywBu7fWxvg15Ppa0bIBc0SR7D
+9hxau00KFYN82GanUyBQJvhxMmUPttIj0ouch52NRQhNRE1xcw6lU4dVCuxUeUP9
+vX3lfSrO8wsncADM5DZZ
+=sdYf
+-----END PGP SIGNATURE-----
+
+--nextPart1880079.8YjhFDNItB--
 
 
-Regards,
-Rohit
+--===============8589537378111343210==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have 
+the opportunity to enter the BlackBerry Developer Challenge. See full prize 
+details at: http://p.sf.net/sfu/blackberry
+--===============8589537378111343210==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============8589537378111343210==--
+
