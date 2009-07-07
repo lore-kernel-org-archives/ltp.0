@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MNuhm-0005dA-0L
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 20:22:26 +0000
-Received: from an-out-0708.google.com ([209.85.132.242])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MNuhf-0007pC-Ql
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 20:22:25 +0000
-Received: by an-out-0708.google.com with SMTP id c38so1740687ana.37
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 06 Jul 2009 13:22:19 -0700 (PDT)
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MODUs-0003Ew-1a
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 16:26:22 +0000
+Received: from mail-yx0-f202.google.com ([209.85.210.202])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MODUn-0004BP-8s
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 16:26:22 +0000
 MIME-Version: 1.0
-Date: Mon, 6 Jul 2009 13:22:17 -0700
-Message-ID: <364299f40907061322x726c3dcbh7ec674fc3851593f@mail.gmail.com>
+In-Reply-To: <1246980755.5539.50.camel@subratamodak.linux.ibm.com>
+References: <200907071035.46915.jpalecek@web.de>
+	<1246980755.5539.50.camel@subratamodak.linux.ibm.com>
+Date: Tue, 7 Jul 2009 09:26:10 -0700
+Message-ID: <364299f40907070926k4a3557c8of6d4b8feb3fb4e54@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Content-Type: multipart/mixed; boundary=0016e64615b02fd0ae046e0f43e4
-Subject: [LTP] [PATCH 1/3] Make IDcheck.sh DESTDIR aware and less strict
+Subject: Re: [LTP] [PATCH] Fix some bashisms
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,126 +25,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
-
---0016e64615b02fd0ae046e0f43e4
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-The end goal of this patch is to make IDcheck.sh more rootfs- / cross-
-compilation friendly, such that it can be run from the primary compile
-instance, and instead of attempting to manipulate the target system
-data, manipulate the sys-root / rootfs data through the use of DESTDIR
-and by relaxing certain checks. Most of the checks were unnecessary
-anyhow (am i root?), etc and can be easily remedied by just relying on
-the other checks made by touch(1)'ing files and the post-process
-operation, as ENOPERM will be returned if one cannot access the
-configuration file of interest.
-
-Also, use awk for all operations instead of grep because it will
-reduces the potential for random failures when dealing with /etc/group
-and /etc/passwd files, and we can switch over to one subroutine
-instead of multiple subroutines for checks.
-
-Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
-
---0016e64615b02fd0ae046e0f43e4
-Content-Type: application/octet-stream; 
-	name="IDcheck.sh-prefix-capable-and-less-strict.diff"
-Content-Disposition: attachment; 
-	filename="IDcheck.sh-prefix-capable-and-less-strict.diff"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fwtn11sl1
-
-SW5kZXg6IElEY2hlY2suc2gKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PQpSQ1MgZmlsZTogL2N2c3Jvb3QvbHRwL2x0cC9J
-RGNoZWNrLnNoLHYKcmV0cmlldmluZyByZXZpc2lvbiAxLjE4CmRpZmYgLXIxLjE4IElEY2hlY2su
-c2gKMzhkMzcKPCBJX0FNX1JPT1Q9MAo0MCw0NWMzOSw0MAo8ICMKPCAjIGlkKDEpIGZvciBlbnRy
-eS4KPCAjCjwgaWZlKCkgewo8IAlpZCAiJEAiID4gL2Rldi9udWxsCjwgfQotLS0KPiBncm91cD0i
-JERFU1RESVIvZXRjL2dyb3VwIgo+IHBhc3N3ZD0iJERFU1RESVIvZXRjL3Bhc3N3ZCIKNDcsNTFj
-NDIsNDkKPCAjCjwgIyBncmVwKDEpIGZvciBlbnRyeS4KPCAjCjwgZ2ZlKCkgewo8IAlncmVwIC1x
-ICIkQCIKLS0tCj4gIyBmaW5kIGVudHJ5Lgo+IGZlKCkgewo+IAlJRD0kMTsgc2hpZnQKPiAJRklM
-RT0kMTsgc2hpZnQKPiAJYXdrICIvXiRJRDovIHsgRk9VTkQ9MSB9IEVORCB7IGlmIChcJEZPVU5E
-ID09IDEpIHsgZXhpdCAwOyB9IGV4aXQgMTsgfSIgXAo+IAkiJEZJTEUiCj4gCWVjPSQ/Cj4gCWVj
-aG8gIiRJRCA9PiAkZWMiCjU1LDY0YzUzCjwgCWlmIFsgLW4gIiRDUkVBVEVfRU5UUklFUyIgXSA7
-IHRoZW4KPCAKPCAJCWlmIFsgJElfQU1fUk9PVCAtZXEgMCBdIDsgdGhlbgo8IAkJCWVjaG8gIk5v
-dCByb290OyBjYW4ndCBjcmVhdGUgdXNlciAvIGdyb3VwIGVudHJpZXMgb24gbG9jYWwgbWFjaGlu
-ZSIuCjwgCQkJQ1JFQVRFX0VOVFJJRVM9MAo8IAkJZmkKPCAJCWVjaG8gIkNSRUFURV9FTlRSSUVT
-IHZhcmlhYmxlIHNldCB0byAkQ1JFQVRFX0VOVFJJRVMgLi4uIgo8IAkJZWNobwo8IAo8IAllbHNl
-Ci0tLQo+IAlpZiBbIC16ICIkQ1JFQVRFX0VOVFJJRVMiIF0gOyB0aGVuCjY2YzU1CjwgCQlpZiBb
-ICROT19OT0JPRFlfSUQgLW5lIDAgLW8gJE5PX0JJTl9JRCAtbmUgMCAtbyAkTk9fREFFTU9OX0lE
-IC1uZSAwIC1vICROT19OT0JPRFlfR1JQIC1uZSAwIC1vICROT19CSU5fR1JQIC1uZSAwIC1vICRO
-T19EQUVNT05fR1JQIC1uZSAwIC1vICROT19VU0VSU19HUlAgLW5lIDAgLW8gJE5PX1NZU19HUlAg
-LW5lIDAgLWEgJElfQU1fUk9PVCAtbmUgMCBdIDsgdGhlbgotLS0KPiAJCWlmIFsgJE5PX05PQk9E
-WV9JRCAtbmUgMCAtbyAkTk9fQklOX0lEIC1uZSAwIC1vICROT19EQUVNT05fSUQgLW5lIDAgLW8g
-JE5PX05PQk9EWV9HUlAgLW5lIDAgLW8gJE5PX0JJTl9HUlAgLW5lIDAgLW8gJE5PX0RBRU1PTl9H
-UlAgLW5lIDAgLW8gJE5PX1VTRVJTX0dSUCAtbmUgMCAtbyAkTk9fU1lTX0dSUCAtbmUgMCBdIDsg
-dGhlbgo4NGM3Mwo8IGlmIFsgLWUgL2V0Yy9wYXNzd2QgLWEgISAtciAvZXRjL3Bhc3N3ZCBdIDsg
-dGhlbgotLS0KPiBpZiBbIC1lICIkcGFzc3dkIiAtYSAhIC1yICIkcGFzc3dkIiBdIDsgdGhlbgo4
-Nyw4OGM3Niw3Nwo8IGVsaWYgWyAtZSAvZXRjL2dyb3VwIC1hICEgLXIgL2V0Yy9ncm91cCBdIDsg
-dGhlbgo8IAllY2hvICIvZXRjL2dyb3VwIG5vdCByZWFkYWJsZSBieSB1aWQgJEVVSUQiCi0tLQo+
-IGVsaWYgWyAtZSAiJGdyb3VwIiAtYSAhIC1yICIkZ3JvdXAiIF0gOyB0aGVuCj4gCWVjaG8gIiRn
-cm91cCBub3QgcmVhZGFibGUgYnkgdWlkICRFVUlEIgo5MiwxMDRjODEsODkKPCBpZmUgYmluOyBO
-T19CSU5fSUQ9JD8KPCBpZmUgZGFlbW9uOyBOT19EQUVNT05fSUQ9JD8KPCBpZmUgbm9ib2R5OyBO
-T19OT0JPRFlfSUQ9JD8KPCAKPCBnZmUgJ15iaW46JyAvZXRjL2dyb3VwOyBOT19CSU5fR1JQPSQ/
-CjwgZ2ZlICdeZGFlbW9uOicgL2V0Yy9ncm91cDsgTk9fREFFTU9OX0dSUD0kPwo8IGdmZSAnXm5v
-Ym9keTonIC9ldGMvZ3JvdXA7IE5PX05PQk9EWV9HUlA9JD8KPCBnZmUgJ15zeXM6JyAvZXRjL2dy
-b3VwOyBOT19TWVNfR1JQPSQ/CjwgZ2ZlICdedXNlcnM6JyAvZXRjL2dyb3VwOyBOT19VU0VSU19H
-UlA9JD8KPCAKPCBpZiBbICRFVUlEIC1lcSAwIF0gOyB0aGVuCjwgCUlfQU1fUk9PVD0xCjwgZmkK
-LS0tCj4gZmUgYmluICIkcGFzc3dkIjsgTk9fQklOX0lEPSQ/Cj4gZmUgZGFlbW9uICIkcGFzc3dk
-IjsgTk9fREFFTU9OX0lEPSQ/Cj4gZmUgbm9ib2R5ICIkcGFzc3dkIjsgTk9fTk9CT0RZX0lEPSQ/
-Cj4gCj4gZmUgYmluICIkZ3JvdXAiOyBOT19CSU5fR1JQPSQ/Cj4gZmUgZGFlbW9uICIkZ3JvdXAi
-OyBOT19EQUVNT05fR1JQPSQ/Cj4gZmUgbm9ib2R5ICIkZ3JvdXAiOyBOT19OT0JPRFlfR1JQPSQ/
-Cj4gZmUgc3lzICIkZ3JvdXAiOyBOT19TWVNfR1JQPSQ/Cj4gZmUgdXNlcnMgIiRncm91cCI7IE5P
-X1VTRVJTX0dSUD0kPwoxMTBhOTYsOTcKPiBlY2hvICJHcm91cCBmaWxlOiAgICAkZ3JvdXAiCj4g
-ZWNobyAiUGFzc3dvcmQgZmlsZTogJHBhc3N3ZCIKMTIwLDEyMWQxMDYKPCBlY2hvICJpIGFtIHJv
-b3Q6ICAgICAkSV9BTV9ST09UIgo8IGVjaG8gIiIKMTI4LDEyOWMxMTMsMTE0CjwgCWlmICEgdG91
-Y2ggL2V0Yy9ncm91cCA7IHRoZW4KPCAJCWVjaG8gIkNvdWxkbid0IHRvdWNoIC9ldGMvZ3JvdXAi
-Ci0tLQo+IAlpZiAhIHRvdWNoICIkZ3JvdXAiIDsgdGhlbgo+IAkJZWNobyAiQ291bGRuJ3QgdG91
-Y2ggJGdyb3VwIgoxNDQsMTQ1YzEyOSwxMzAKPCAJCWlmICEgZ2ZlICJeJHtuYW1lfToiIC9ldGMv
-cGFzc3dkICYmIFsgJG5vX2lkIC1uZSAwIF0gOyB0aGVuCjwgCQkJZWNobyAiJHtuYW1lfTp4OiR7
-aWR9OiR7aWR9OiR7bmFtZX06OiIgPj4gL2V0Yy9wYXNzd2QKLS0tCj4gCQlpZiAhIGZlICIkbmFt
-ZSIgIiRwYXNzd2QiICYmIFsgJG5vX2lkIC1uZSAwIF0gOyB0aGVuCj4gCQkJZWNobyAiJHtuYW1l
-fTp4OiR7aWR9OiR7aWR9OiR7bmFtZX06OiIgPj4gIiRwYXNzd2QiCjE0OGMxMzMKPCAJCQllY2hv
-ICIke25hbWV9Ong6JChpZCAtdSAke25hbWV9KToiID4+IC9ldGMvZ3JvdXAKLS0tCj4gCQkJZWNo
-byAiJHtuYW1lfTp4OiQoaWQgLXUgJHtuYW1lfSk6IiA+PiAiJGdyb3VwIgoxNTljMTQ0CjwgCWVj
-aG8gJ3VzZXJzOng6MTAwOicgPj4gL2V0Yy9ncm91cAotLS0KPiAJZWNobyAndXNlcnM6eDoxMDA6
-JyA+PiAiJGdyb3VwIgoxNjVjMTUwCjwgCWVjaG8gJ3N5czp4OjM6JyA+PiAvZXRjL2dyb3VwCi0t
-LQo+IAllY2hvICdzeXM6eDozOicgPj4gIiRncm91cCIKMTY4LDE3NWMxNTMsMTc3CjwgaWYgaWZl
-IG5vYm9keSAgICAmJiBpZmUgYmluICAgICYmIGlmZSBkYWVtb24gJiYKPCAgICBpZmUgLWcgbm9i
-b2R5ICYmIGlmZSAtZyBiaW4gJiYgaWZlIC1nIGRhZW1vbiAmJgo8ICAgIGdmZSAnXnVzZXJzOicg
-L2V0Yy9ncm91cCAmJiBnZmUgJ15zeXM6JyAvZXRjL2dyb3VwICYmIAo8ICAgIGdmZSAnXm5vYm9k
-eTonIC9ldGMvZ3JvdXAKPCB0aGVuCjwgCWVjaG8gIiIKPCAJZWNobyAiUmVxdWlyZWQgdXNlcnMv
-Z3JvdXBzIGV4aXN0LiIKPCAJZXhpdCAwCi0tLQo+IE1JU1NJTkdfRU5UUlk9MAo+IAo+ICMgRm9y
-IGVudHJpZXMgdGhhdCBleGlzdCBpbiBib3RoICRncm91cCBhbmQgJHBhc3N3ZC4KPiBmb3IgaSBp
-biBub2JvZHkgYmluIGRhZW1vbjsgZG8KPiAgICAgZm9yIGZpbGUgaW4gIiRncm91cCIgIiRwYXNz
-d2QiOyBkbwo+ICAgICAgICAgaWYgISBmZSAiJGkiICIkZmlsZSI7IHRoZW4KPiAgICAgICAgICAg
-ICBNSVNTSU5HX0VOVFJZPTEKPiAgICAgICAgICAgICBicmVhawo+ICAgICAgICAgZmkKPiAgICAg
-ZG9uZQo+ICAgICBpZiBbICRNSVNTSU5HX0VOVFJZIC1uZSAwIF07IHRoZW4KPiAgICAgICAgIGJy
-ZWFrCj4gICAgIGZpCj4gZG9uZQo+IAo+ICMgRm9yIGVudHJpZXMgdGhhdCBvbmx5IGV4aXN0IGlu
-ICRncm91cC4KPiBmb3IgaSBpbiB1c2VycyBzeXM7IGRvCj4gICAgIGlmICEgZmUgIiRpIiAiJGZp
-bGUiOyB0aGVuCj4gICAgICAgICBNSVNTSU5HX0VOVFJZPTEKPiAgICAgZmkKPiBkb25lCj4gCj4g
-aWYgWyAkTUlTU0lOR19FTlRSWSAtZXEgMCBdIDsgdGhlbgo+ICAgICBlY2hvICJSZXF1aXJlZCB1
-c2Vycy9ncm91cHMgZXhpc3QuIgo+ICAgICBleGl0IDAK
---0016e64615b02fd0ae046e0f43e4
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: Jiri Palecek <jpalecek@web.de>, ltp-list <ltp-list@lists.sf.net>
+
+On Tue, Jul 7, 2009 at 8:32 AM, Subrata Modak<subrata@linux.vnet.ibm.com> wrote:
+> I can find that they addressed all issues of Mike and Matt. However, i
+> would just wait for some more confirmation from them. Thanks.
+>
+> Regards--
+> Subrata
+
+Hi Jiri!
+    Your patch looks better than before, but like you mentioned in
+your last reply, the:
+
+command || RC=$?
+if [ $RC -ne 0 ]; then
+
+    stuff is a bit inconsistent, and like you originally suggested it
+should probably be more like:
+
+command
+if [ $? -ne 0 ]; then
+
+    It looks like it was inconsistent before anyhow to be honest, so
+it shouldn't be a big problem, but if we can fix it, we probably
+should. That's the only outstanding concern from my end.
+Thanks!
+-Garrett
 
 ------------------------------------------------------------------------------
-
---0016e64615b02fd0ae046e0f43e4
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have 
+the opportunity to enter the BlackBerry Developer Challenge. See full prize 
+details at: http://p.sf.net/sfu/blackberry
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---0016e64615b02fd0ae046e0f43e4--
-
