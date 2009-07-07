@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <michal.simek@petalogix.com>) id 1MSmyj-0001Q5-34
-	for ltp-list@lists.sourceforge.net; Mon, 20 Jul 2009 07:08:05 +0000
-Received: from mail-fx0-f214.google.com ([209.85.220.214])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MSmyf-0003hl-4Q
-	for ltp-list@lists.sourceforge.net; Mon, 20 Jul 2009 07:08:05 +0000
-Message-ID: <4A64067A.5080707@petalogix.com>
-Date: Mon, 20 Jul 2009 07:54:02 +0200
-From: Michal Simek <michal.simek@petalogix.com>
-MIME-Version: 1.0
-References: <1247803650.4917.12.camel@hefan.site>	<364299f40907162234g1df374d4xda8a74bf61f34057@mail.gmail.com>	<1247812675.4917.14.camel@hefan.site>	<364299f40907181228v44a60031qecf9463a3d3cb43a@mail.gmail.com>
-	<1248066882.4917.37.camel@hefan.site>
-In-Reply-To: <1248066882.4917.37.camel@hefan.site>
-Subject: Re: [LTP] [PATCH 1/1] openposix_mmap_11_4
-Reply-To: michal.simek@petalogix.com
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Valdis.Kletnieks@vt.edu>) id 1MODTZ-0004aZ-2D
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 16:25:01 +0000
+Received: from turing-police.cc.vt.edu ([128.173.14.107])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MODTT-0003Rv-Mv
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 16:25:00 +0000
+In-Reply-To: Your message of "Mon, 06 Jul 2009 16:16:11 +0200."
+	<200907061616.12220.arnd@arndb.de>
+From: Valdis.Kletnieks@vt.edu
+References: <4A4DFB77.1080700@petalogix.com>
+	<20090706121455.GA16908@linux-sh.org>
+	<4A51F3F3.6040501@petalogix.com> <200907061616.12220.arnd@arndb.de>
+Mime-Version: 1.0
+Date: Mon, 06 Jul 2009 20:44:57 -0400
+Message-ID: <105602.1246927497@turing-police.cc.vt.edu>
+Subject: Re: [LTP] mmap syscall problem
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,103 +27,84 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============6891913548917157468=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: hefan <fhe@novell.com>
-Cc: ltp-list@lists.sf.net
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: LTP <ltp-list@lists.sourceforge.net>, Linux Kernel list <linux-kernel@vger.kernel.org>, Grant Likely <grant.likely@secretlab.ca>, Paul Mundt <lethal@linux-sh.org>, Ingo Molnar <mingo@elte.hu>, Andrew Morton <akpm@linux-foundation.org>, John Williams <john.williams@petalogix.com>
 
-SGksCj4gT24gU2F0LCAyMDA5LTA3LTE4IGF0IDEyOjI4IC0wNzAwLCBHYXJyZXR0IENvb3BlciB3
-cm90ZToKPiAgIAo+PiBPbiBUaHUsIEp1bCAxNiwgMjAwOSBhdCAxMTozNyBQTSwgaGVmYW48Zmhl
-QG5vdmVsbC5jb20+IHdyb3RlOgo+PiAgICAgCj4+PiBoaSwKPj4+Cj4+PiAqW1BhdGNoIDEvMV0g
-UGF0Y2ggZm9yIGZpeGluZyB0aGUg77u/ZmFpbGVkIO+7v3Rlc3RjYXNlIG9wZW5wb3NpeF9tbWFw
-XzExXzQKPj4+Cj4+PiAtbW9kaWZpZWQgdGhlIGZpbGUKPj4+ICp0ZXN0Y2FzZXMvb3Blbl9wb3Np
-eF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy/vu79tbWFwLzExLTQuYwo+Pj4gICAg
-ICAgCkZpcnN0IG9mIGFsbCAtIHRoaXMgaXMgcmVhbGx5IHNtYWxsIGV4cGxhbmF0aW9uIHdoeSB5
-b3UgYXJlIGZpeGluZyB0aGlzCmlzc3VlLiBBZnRlciBzb21lIG1vbnRoCm5vbmUgd2lsbCBrbm93
-IHdoeSB5b3UgZGlkIHRoaXMgY2hhbmdlLgoKCj4+Pgo+Pj4g77u/U2lnbmVkLW9mZi1ieTogIGZy
-ZWRyaWNrIGhlIDxmaGVAbm92ZWxsLmNvbT4KPj4+Cj4+PiAtLS0KPj4+IGx0cC5vcmlnL3Rlc3Rj
-YXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL21tYXAvMTEt
-NC5jICAgICAgMjAwOS0wNy0xNyAxMTo1MzozNi4wMDAwMDAwMDAgKzA4MDAKPj4+ICsrKwo+Pj4g
-bHRwL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2Vz
-L21tYXAvMTEtNC5jCj4+PiAyMDA5LTA3LTE3IDExOjU3OjA5LjAwMDAwMDAwMCArMDgwMAo+Pj4g
-QEAgLTEzMCw3ICsxMzAsOSBAQCBpbnQgbWFpbigpCj4+PiAgIGZsYWcgPSBNQVBfU0hBUkVEOwo+
-Pj4gICBvZmYgPSAwOwo+Pj4gICBwYSA9IG1tYXAoYWRkciwgbGVuLCBwcm90LCBmbGFnLCBmZF8y
-LCBvZmYpOwo+Pj4gLSAgcGFfMiA9IG1tYXAoYWRkciwgbGVuLCBwcm90LCBmbGFnLCBmZF8yLCBv
-ZmYpOwo+Pj4gKyAgYWRkciA9IHBhOwo+Pj4gKyAgbWVtc2V0KGFkZHIsMCxsZW4qMik7Cj4+PiAr
-ICBwYV8yID0gbW1hcChhZGRyLCBsZW4sIHByb3QsIGZsYWd8TUFQX0ZJWEVELCBmZF8yLCBvZmYp
-Owo+Pj4gICBpZiAocGFfMiA9PSBNQVBfRkFJTEVEKQo+Pj4gICB7Cj4+PiAgICAgcHJpbnRmKCJU
-ZXN0IEZBSUw6ICIgVE5BTUUgIiBFcnJvciBhdCAybmQgbW1hcCgpOiAlc1xuIiwKPj4+ICAgICAg
-IAo+PiBIaSBGYW4sCj4+ICAgICBTb21lIHF1ZXN0aW9ucyAvIG9ic2VydmF0aW9uczoKPj4KPj4g
-MS4gWWVzLCB0aGUgdGVzdGNhc2VzIGRvZXMgZmFpbCBvbiBteSBtYWNoaW5lIHRvZGF5Lgo+PiAy
-LiBZZXMsIGRvaW5nIHdoYXQgeW91IHNheSBhYm92ZSBkb2VzIHdvcmsgKGF0IGxlYXN0IHRoZSB0
-ZXN0Y2FzZSBwYXNzZXMpLgo+PiAzLiBBcmUgeW91IHBvc2l0aXZlIHRoYXQgeW91ciBzZXQgb2Yg
-c3RlcHMgYWJvdmUgaW4gZmFjdCBkb24ndAo+PiBpbnZhbGlkYXRlIHRoZSBwdXJwb3NlIG9mIHRo
-ZSB0ZXN0Y2FzZSwgYnkgYWNjaWRlbnQsIGluIHBhcnRpY3VsYXIgdGhlCj4+IG1lbXNldCBjYWxs
-PyBJIGFzayBiZWNhdXNlIG9mIHRoZSBmb2xsb3dpbmcgc3RhdGVtZW50IGluIHRoZSBtbWFwCj4+
-IG1hbnBhZ2U6Cj4+Cj4+ICAgICAgICBJZiBhZGRyIGlzIE5VTEwsIHRoZW4gdGhlIGtlcm5lbCBj
-aG9vc2VzIHRoZSBhZGRyZXNzIGF0IHdoaWNoIHRvIGNyZWF0ZQo+PiAgICAgICAgdGhlIG1hcHBp
-bmc7IHRoaXMgaXMgdGhlIG1vc3QgcG9ydGFibGUgbWV0aG9kIG9mIGNyZWF0aW5nICBhICBuZXcg
-IG1hcC0KPj4gICAgICAgIHBpbmcuICAgSWYgIGFkZHIgIGlzIG5vdCBOVUxMLCB0aGVuIHRoZSBr
-ZXJuZWwgdGFrZXMgaXQgYXMgYSBoaW50IGFib3V0Cj4+ICAgICAgICB3aGVyZSB0byBwbGFjZSB0
-aGUgbWFwcGluZzsgb24gTGludXgsIHRoZSBtYXBwaW5nIHdpbGwgYmUgY3JlYXRlZCBhdCAgYQo+
-PiAgICAgICAgbmVhcmJ5ICBwYWdlICBib3VuZGFyeS4gICBUaGUgYWRkcmVzcyBvZiB0aGUgbmV3
-IG1hcHBpbmcgaXMgcmV0dXJuZWQgYXMKPj4gICAgICAgIHRoZSByZXN1bHQgb2YgdGhlIGNhbGwu
-Cj4+Cj4+IFdoYXQgeW91J3JlIGluIGVmZmVjdCBkb2luZyBpcyBjaGFuZ2luZyB0aGUgMm5kIG1t
-YXAgY2FsbCBmcm9tIGFuCj4+IGFyYml0cmFyeSBhZGRyZXNzIHRvIGEgc2V0IHZpcnR1YWwgYWRk
-cmVzcyBhdCAweDAuIElzIHRoYXQgaW5kZWVkCj4+IGNvcnJlY3Q/Cj4+ICAgICAKPiBpbiB0aGlz
-IGNhc2UsIHRoZSBzaXR1YXRpb24gaXMgbGlrZSB0aGlzLCB3ZSBjcmVhdGUgYSBuZXcgZmlsZSBh
-Ym91dCA1MTIKPiBieXRlcyBhbmQgbW1hcCBpdCBpbnRvIHRoZSBtZW0sIHRoZW4gd2UgbW9kaWZ5
-IG9uZSBieXRlIGJlc2lkZXMgdGhlIDUxMgo+IGJ5dGVzIGFkZHJlc3MsIGFuZCBtdW5tYXAgaXQu
-IGFuZCBpbiB0aGUgZmF0aGVyIHByb2Nlc3MgcmVtbWFwIGl0IGJhY2sKPiB0byBjaGVjayB3aGV0
-aGVyIHRoZSBvbmUgbW9yZSBieXRlIGlzIHdyaXRlIGJhY2sgdG8gdGhlIGZpbGVzLgo+Cj4gaSBo
-YXZlIGNoZWNrZWQgdGhhdCB3aGVuIGZpbmlzaGVkIG11bm1hcCBhbmQgY2xvc2UgdGhlIGZpbGUg
-aW4gdGhlIGNoaWxkCj4gcHJvY2VzcywgdGhlIGZpbGUgZGlkbid0IGNvbnRhaW4gdGhlIDUxM3Ro
-IGJ5dGUsIHRoZSBzaXplIG9mIHRoaXMgZmlsZQo+IGlzIHJpZ2h0IDUxMiBieXRlcy5idXQgaW4g
-dGhpcyBjYXNlIGFmdGVyIHRoZSBzZWNvbmQgbW1hcCBmaW5pc2hlZCwgdGhlCj4gNTEzdGggYnl0
-ZSBkb2VzIGFwcGVhciBhZ2Fpbi4gaXQncyBhIGNvbmZsaWN0LiAKPgo+IGluIG15IG9waW5pb24g
-dGhpcyBpcyBiZWNhdXNlIG9mIHRoZSBjb21waWxlciBvciBzb21lIG9wdGltaXphdGlvbnMuIHNv
-Cj4gaSB0aGluayB0aGUgbWVtb3J5IHNob3VsZCB0byBiZSBtZW1zZXQgYmVmb3JlIG1tYXAgYW5k
-IGl0IGRvZXMgd29yay4KPiAgIApJZiBpcyB0aGUgcHJvYmxlbSB3aXRoIGNvbXBpbGVyL29wdGlt
-aXphdGlvbiBtZWFucyB0aGF0IHRlc3RzIGlzIG9rIC0KdGhlIHByb2JsZW0gaXMgd2l0aCB5b3Vy
-CmNvbXBpbGVyIG5vdCB3aXRoIGNvZGUuClRoaXMgbmVlZCBtb3JlIGludmVzdGlnYXRpb25zIHRv
-IGZpbmQgb3V0IHdoZXJlIHRoZSBwcm9ibGVtIGlzLgoKTWljaGFsCgo+ICAgCj4+IDQuIEhhdmUg
-eW91IHRhbGtlZCB0byB0aGUgb3BlbnBvc2l4IHRlc3Qgc3VpdGUgZm9sa3MgYWJvdXQgdGhpcyB5
-ZXQ/Cj4+ICAgICAKPiBubyxpIGhhdmUgbm8gaWRlYSBvbiBob3cgdG8gdGFsayB0byB0aGUgb3Bl
-bnBvc2l4IGFuZCBpIGRvIHdhbnQgdG8gdGFsawo+IHRvIHRoZW0gOikgY2FuIHlvdSBnaXZlIG1l
-IHNvbWUgc3VnZ2VzdGlvbnMgYWJvdXQgdGhpcz8gdGh4fgo+Cj4gICAKPj4gNS4gRldJVyB0aGUg
-c2FtZSByZXN1bHRzIGFyZSBzZWVuIG9uIEZyZWVCU0QsIHNvIEkgZG9uJ3QgZG91YnQgdGhhdAo+
-PiB0aGUgdGVzdGNhc2UgaXMgYnJva2VuIC0tIEkganVzdCB3YW50IHRvIGVuc3VyZSB0aGF0IGl0
-J3MgZml4ZWQgaW4gdGhlCj4+IHByb3BlciB3YXkgOikuLi4KPj4gICAgIAo+IGFzIG1lbnRpb25l
-ZCBhYm92ZSAKPgo+ICAgCj4+IFtnY29vcGVyQG9wdGltdXMgL3NjcmF0Y2gvb3Blbl9wb3NpeF90
-ZXN0c3VpdGVdJAo+PiBjb25mb3JtYW5jZS9pbnRlcmZhY2VzL21tYXAvMTEtNC50ZXN0Cj4+IHBh
-OiAweDgwMDUzNzAwMAo+PiBwYV8yOiAweDgwMDUzNzAwMAo+PiBUZXN0IEZhaWw6IG1tYXAvMTEt
-NC5jIE1vZGlmaWNhdGlvbiBvZiB0aGUgcGFydGlhbCBwYWdlIGF0IHRoZSBlbmQgb2YKPj4gYW4g
-b2JqZWN0IGlzIHdyaXR0ZW4gb3V0Cj4+IFtnY29vcGVyQG9wdGltdXMgL3NjcmF0Y2gvb3Blbl9w
-b3NpeF90ZXN0c3VpdGVdJCB1bmFtZSAtYQo+PiBGcmVlQlNEIG9wdGltdXMuemVubWV0c3VoaXRv
-dHV5YW5lc2hpdGEubmV0IDguMC1DVVJSRU5UIEZyZWVCU0QKPj4gOC4wLUNVUlJFTlQgIzA6IFN1
-biBKdWwgIDUgMTQ6NDM6MDcgUERUIDIwMDkKPj4gcm9vdEBvcHRpbXVzLnplbm1ldHN1aGl0b3R1
-eWFuZXNoaXRhLm5ldDovdXNyL29iai91c3Ivc3JjL3N5cy9PUFRJTVVTCj4+IGFtZDY0Cj4+Cj4+
-IFRoYW5rcywKPj4gLUdhcnJldHQKPj4gICAgIAo+Cj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4g
-RW50ZXIgdGhlIEJsYWNrQmVycnkgRGV2ZWxvcGVyIENoYWxsZW5nZSAgCj4gVGhpcyBpcyB5b3Vy
-IGNoYW5jZSB0byB3aW4gdXAgdG8gJDEwMCwwMDAgaW4gcHJpemVzISBGb3IgYSBsaW1pdGVkIHRp
-bWUsIAo+IHZlbmRvcnMgc3VibWl0dGluZyBuZXcgYXBwbGljYXRpb25zIHRvIEJsYWNrQmVycnkg
-QXBwIFdvcmxkKFRNKSB3aWxsIGhhdmUKPiB0aGUgb3Bwb3J0dW5pdHkgdG8gZW50ZXIgdGhlIEJs
-YWNrQmVycnkgRGV2ZWxvcGVyIENoYWxsZW5nZS4gU2VlIGZ1bGwgcHJpemUgIAo+IGRldGFpbHMg
-YXQ6IGh0dHA6Ly9wLnNmLm5ldC9zZnUvQ2hhbGxlbmdlCj4gX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KPiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QKPiBMdHAt
-bGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5l
-dC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo+ICAgCgoKLS0gCk1pY2hhbCBTaW1laywgSW5nLiAo
-TS5FbmcpClBldGFMb2dpeCAtIExpbnV4IFNvbHV0aW9ucyBmb3IgYSBSZWNvbmZpZ3VyYWJsZSBX
-b3JsZAp3OiB3d3cucGV0YWxvZ2l4LmNvbSBwOiArNjEtNy0zMDA5MDY2MywrNDItMC03MjE4NDI4
-NTQgZjogKzYxLTctMzAwOTA2NjMKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KRW50ZXIgdGhlIEJs
-YWNrQmVycnkgRGV2ZWxvcGVyIENoYWxsZW5nZSAgClRoaXMgaXMgeW91ciBjaGFuY2UgdG8gd2lu
-IHVwIHRvICQxMDAsMDAwIGluIHByaXplcyEgRm9yIGEgbGltaXRlZCB0aW1lLCAKdmVuZG9ycyBz
-dWJtaXR0aW5nIG5ldyBhcHBsaWNhdGlvbnMgdG8gQmxhY2tCZXJyeSBBcHAgV29ybGQoVE0pIHdp
-bGwgaGF2ZQp0aGUgb3Bwb3J0dW5pdHkgdG8gZW50ZXIgdGhlIEJsYWNrQmVycnkgRGV2ZWxvcGVy
-IENoYWxsZW5nZS4gU2VlIGZ1bGwgcHJpemUgIApkZXRhaWxzIGF0OiBodHRwOi8vcC5zZi5uZXQv
-c2Z1L0NoYWxsZW5nZQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0
-Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+--===============6891913548917157468==
+Content-Type: multipart/signed; boundary="==_Exmh_1246927497_3046P";
+	micalg=pgp-sha1; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7bit
+
+--==_Exmh_1246927497_3046P
+Content-Type: text/plain; charset=us-ascii
+
+On Mon, 06 Jul 2009 16:16:11 +0200, Arnd Bergmann said:
+
+> What happens in a simple user space program that mmaps the same
+> page to two addresses? Something like
+> 
+> #include <sys/mman.h>
+> #include <fcntl.h>
+> int main(void)
+> {
+> 	int fd = open("existing-4k-file", O_RDWR);
+> 	char *p1 = mmap(0, 4096, PROT_READ | PROT_WRITE,
+> 				MAP_SHARED, fd, 0);
+> 	char *p2 = mmap(p1 + 4096, 4096, PROT_READ | PROT_WRITE,
+> 				MAP_SHARED | MAP_FIXED, fd, 0);
+> 
+> 	*p1 = 0xaa; *p2 = 0x55;
+> 
+> 	return *p1; /* returns 0xaa if broken, 0x55 if correct */
+> }
+
+Strictly speaking, doesn't that need a barrier of some sort between the two
+assignments?  I mean, how is gcc supposed to intuit that p1 and p2 alias
+each other and it needs to reload *p1 before returning that value?
+
+(And in more complicated code, I could even see the compiler re-ordering those
+two assignments, so the in-file value is different as well as the return; value)
+
+
+--==_Exmh_1246927497_3046P
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+Comment: Exmh version 2.5 07/13/2001
+
+iD8DBQFKUpqJcC3lWbTT17ARAvPDAJ4g0SupREDNuIl1wjEqFIcy5X6NaQCfQr7f
+0kk4F9TjsIAuVNY2rd6J1rk=
+=O+9H
+-----END PGP SIGNATURE-----
+
+--==_Exmh_1246927497_3046P--
+
+
+--===============6891913548917157468==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have 
+the opportunity to enter the BlackBerry Developer Challenge. See full prize 
+details at: http://p.sf.net/sfu/blackberry
+--===============6891913548917157468==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6891913548917157468==--
+
