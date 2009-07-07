@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MSPGD-0002cB-9T
-	for ltp-list@lists.sourceforge.net; Sun, 19 Jul 2009 05:48:33 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MSPG6-0005uL-HG
-	for ltp-list@lists.sourceforge.net; Sun, 19 Jul 2009 05:48:33 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sun, 19 Jul 2009 01:48:22 -0400
-References: <1247741996.3886.5.camel@dyn9002018117.watson.ibm.com>
-	<200907190126.47767.vapier@gentoo.org>
-	<364299f40907182235m7bbcc16bka760ffc2d0ae3384@mail.gmail.com>
-In-Reply-To: <364299f40907182235m7bbcc16bka760ffc2d0ae3384@mail.gmail.com>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naresh.kernel@gmail.com>) id 1MOCXE-0000sU-Fd
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 15:24:44 +0000
+Received: from qw-out-1920.google.com ([74.125.92.145])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MOCX9-0006KW-4O
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 15:24:44 +0000
+Received: by qw-out-1920.google.com with SMTP id 5so1718783qwc.4
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 07 Jul 2009 08:24:38 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <200907190148.24664.vapier@gentoo.org>
-Subject: Re: [LTP] ltp: IMA cross platform fixes
+Date: Tue, 7 Jul 2009 18:16:38 +0530
+Message-ID: <f5a7b3810907070546v727fafc0o71fde4613e590254@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Content-Type: multipart/mixed; boundary=0016364edc327d4f7e046e1d03e8
+Subject: Re: [LTP] Compile failure with rt_sigaction on amd64
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,79 +26,132 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0492844894460914523=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: waqar afridi <afridi.waqar@gmail.com>, ltp-list@lists.sourceforge.net, Shaz <shazalive@gmail.com>, Mimi Zohar <zohar@linux.vnet.ibm.com>, ltp-list <ltp-list@lists.sf.net>
+To: ltp-list@lists.sourceforge.net
 
---===============0492844894460914523==
-Content-Type: multipart/signed; boundary="nextPart1418685.mnSmanPvR8";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1418685.mnSmanPvR8
-Content-Type: text/plain;
-  charset="iso-8859-1"
+--0016364edc327d4f7e046e1d03e8
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-On Sunday 19 July 2009 01:35:22 Garrett Cooper wrote:
-> On Sat, Jul 18, 2009 at 10:26 PM, Mike Frysinger<vapier@gentoo.org> wrote:
-> > On Sunday 19 July 2009 01:15:04 Garrett Cooper wrote:
-> >>     /bin/sh should remain the standard, but a number of changes need
-> >> to happen to the .sh scripts to make them POSIX compatible, e.g.
-> >> backticks execution should become $(), etc. Let's not make things
-> >> bash-only...
-> >
-> > umm, `cmd` is in POSIX
->
->     Not anymore; a fellow bourne shell-ist at work noted that it
-> wasn't POSIX compliant anymore, after consulting the POSIX 2001
-> reference:
->
-> http://publib.boulder.ibm.com/infocenter/systems/index.jsp?topic=3D/com.i=
-bm.a
->ix.baseadmn/doc/baseadmndita/korn_shell_comm_sub.htm
+Hi Garrett Cooper,
 
-what ibm has to say on the topic is irrelevant, as does *ksh* documentation=
-,=20
-as does outdated POSIX specs (2001 here).  what is relevant is POSIX itself:
-http://www.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag=
-_18_06_03
+Thanks for your info.
 
-$(...) is preferred style wise due to nesting capabilities, but that doesnt=
-=20
-mean it isnt in the standard.  i still prefer `...` in make scripts because=
- it=20
-avoids having to do $$(...) to escape it for make.
-=2Dmike
+>Oops... looks like someone forgot __amd64__ / >__ia64__:
 
---nextPart1418685.mnSmanPvR8
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+yes.
+i forgot to add these ARCH.
+Because I am not having this Architecture at my end :-(
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.12 (GNU/Linux)
+>gcc -g -O2 -I../../include -g -Wall -I../../../../include >-Wall -O2 -W
+>rt_sigaction01.c -L../../../../lib -lltp -o rt_sigaction01
+>rt_sigaction01.c: In function 'set_handler':
+>rt_sigaction01.c:147: error: 'SIGSETSIZE' >undeclared .(first use in
+>this function)
+>rt_sigaction01.c:147: error: (Each undeclared >identifier is reported only=
+ once
+>rt_sigaction01.c:147: error: for each function it >appears in.)
+>make[4]: *** [rt_sigaction01] Error 1
 
-iQIcBAABAgAGBQJKYrOoAAoJEEFjO5/oN/WBehgP/2/JACKbw96wkCsfyMKbSZ5Y
-OQYpiSb8zy1Ldww/73OXlWkVF1KRNNlmp5KlgfBmjbYNJATgBhHfs1dOit2Q7yke
-G08mLgd6x+sT70jFeAjRhxh7g7SvXnhLeNCZHvGs8B0y3BJGK7WIYlgJovz9p4uf
-nxdExXtR7sDz/iBRwUpxepjDaY3hwKX9at4UkbprZFjJVmmhozmFbKjdeH9x0lP/
-7HvCozG4UU6ErqOpjSZfBtVguX0Fb1yPHpnG+SE6HO9LO/ahTCXaN7q3Zyp/lJd6
-sVANt+6OSwT0BpjmP7dWFJUX2cd1caksUYiBc9GDcd0vy8yICmwLkcpLnZwiNRwL
-Tuw48KmfXjWq8SEZogA7NcrjmRIvRK4pcGdRywOJrvBp4bsurn2Fdiemr5rQL4tb
-D5fxRHGpGaZcDxt3kVKpr/ZGvzKFs1uZ+/4ON7konHNrxif5JJgvOLYA5MaMcGSY
-mOuSDTYEf4vCzbK21+e1CX7IP0cgS/CU3diPxUdAEVVjin57RNOto2fK6ss/T5c4
-JuFI6+jW37C2Hd4YyvmqEOkpmDMdfUe2/sPDIz503vKdj2VMQkCCpiEVMmG5LeYu
-MF9J0Je2xS9YQdcFLB54BRQKkpdf5yjknDT0acCD4Zlz2lP3hFjwBKz96rLHvN/m
-1+ibZojHHANjyqvPzfcc
-=6pgD
------END PGP SIGNATURE-----
+>I tried using sizeof(sigaction_t), but unfortunately the >results for
+>the testcase(s) on my system were always EINVAL. >This issue wasn't
+>present a few days ago...
 
---nextPart1418685.mnSmanPvR8--
+>Any ideas?
 
 
---===============0492844894460914523==
+I have made a patch to fix this issue please review the this temporary fix.
+
+In my previous mail I have stated that sigset size (size_t sigsetsize)
+will be different for Different ARCH. It is depending on
+_COMPAT_NSIG_WORDS Macro.
+
+We have to conform how its different with respect to ARCH and need to
+have a generic solution to fix this issue.
+
+I think its going to be an issue othere than __arm__ || __i386__ ||
+__powerpc__ || __amd64__ || __ia64__ and __mips__
+
+There are different ARCH are being used by our LTP developers.
+
+I=92ll investigate this issue and come back with generic Solution to
+support most of the ARCH.
+
+
+please refer this linux-2.6.30/include/linux/compat.h
+
+http://lxr.linux.no/linux+v2.6.30/include/linux/compat.h#L75
+
+#define _COMPAT_NSIG_WORDS (_COMPAT_NSIG / _COMPAT_NSIG_BPW)
+
+typedef struct {
+compat_sigset_word sig[_COMPAT_NSIG_WORDS];
+} compat_sigset_t;
+
+Your suggestions are welcome ... :)
+
+
+Best regards
+Naresh Kamboju
+
+Signed-off-by: Naresh Kamboju < naresh.kernel@gm... >
+
+diff -Naurb a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
+b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
+--- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c 2009-07-07
+16:58:11.000000000 +0530
++++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c 2009-07-07
+16:59:38.000000000 +0530
+@@ -59,7 +59,7 @@
+#define SIGSETSIZE 16
+#endif
+
+-#if defined __arm__ || __i386__ || __powerpc__
++#if defined __arm__ || __i386__ || __powerpc__ || __amd64__ || __ia64__
+#define SIGSETSIZE 8
+#endif
+
+diff -Naurb a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
+b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
+--- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c 2009-07-07
+16:58:11.000000000 +0530
++++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c 2009-07-07
+16:59:48.000000000 +0530
+@@ -55,7 +55,7 @@
+#define SIGSETSIZE 16
+#endif
+
+-#if defined __arm__ || __i386__ || __powerpc__
++#if defined __arm__ || __i386__ || __powerpc__ || __amd64__ || __ia64__
+#define SIGSETSIZE 8
+#endif
+
+--0016364edc327d4f7e046e1d03e8
+Content-Type: application/octet-stream; name="ltp-fix-rt_sigaction.patch"
+Content-Disposition: attachment; filename="ltp-fix-rt_sigaction.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fwum5sub0
+
+ZGlmZiAtTmF1cmIgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3J0X3NpZ2FjdGlvbi9ydF9z
+aWdhY3Rpb24wMS5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9ydF9zaWdhY3Rpb24vcnRf
+c2lnYWN0aW9uMDEuYwotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3J0X3NpZ2FjdGlv
+bi9ydF9zaWdhY3Rpb24wMS5jCTIwMDktMDctMDcgMTY6NTg6MTEuMDAwMDAwMDAwICswNTMwCisr
+KyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcnRfc2lnYWN0aW9uL3J0X3NpZ2FjdGlvbjAx
+LmMJMjAwOS0wNy0wNyAxNjo1OTozOC4wMDAwMDAwMDAgKzA1MzAKQEAgLTU5LDcgKzU5LDcgQEAK
+ICNkZWZpbmUgU0lHU0VUU0laRSAxNgogI2VuZGlmCiAKLSNpZiBkZWZpbmVkIF9fYXJtX18gfHwg
+X19pMzg2X18gfHwgX19wb3dlcnBjX18KKyNpZiBkZWZpbmVkIF9fYXJtX18gfHwgX19pMzg2X18g
+fHwgX19wb3dlcnBjX18gfHwgX19hbWQ2NF9fIHx8IF9faWE2NF9fCiAjZGVmaW5lIFNJR1NFVFNJ
+WkUgOAogI2VuZGlmCiAKZGlmZiAtTmF1cmIgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3J0
+X3NpZ2FjdGlvbi9ydF9zaWdhY3Rpb24wMi5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9y
+dF9zaWdhY3Rpb24vcnRfc2lnYWN0aW9uMDIuYwotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
+bGxzL3J0X3NpZ2FjdGlvbi9ydF9zaWdhY3Rpb24wMi5jCTIwMDktMDctMDcgMTY6NTg6MTEuMDAw
+MDAwMDAwICswNTMwCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcnRfc2lnYWN0aW9u
+L3J0X3NpZ2FjdGlvbjAyLmMJMjAwOS0wNy0wNyAxNjo1OTo0OC4wMDAwMDAwMDAgKzA1MzAKQEAg
+LTU1LDcgKzU1LDcgQEAKICNkZWZpbmUgU0lHU0VUU0laRSAxNgogI2VuZGlmCiAKLSNpZiBkZWZp
+bmVkIF9fYXJtX18gfHwgX19pMzg2X18gfHwgX19wb3dlcnBjX18KKyNpZiBkZWZpbmVkIF9fYXJt
+X18gfHwgX19pMzg2X18gfHwgX19wb3dlcnBjX18gfHwgX19hbWQ2NF9fIHx8IF9faWE2NF9fCiAj
+ZGVmaW5lIFNJR1NFVFNJWkUgOAogI2VuZGlmCiAK
+--0016364edc327d4f7e046e1d03e8
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -107,10 +160,10 @@ Content-Disposition: inline
 ------------------------------------------------------------------------------
 Enter the BlackBerry Developer Challenge  
 This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
---===============0492844894460914523==
+vendors submitting new applications to BlackBerry App World(TM) will have 
+the opportunity to enter the BlackBerry Developer Challenge. See full prize 
+details at: http://p.sf.net/sfu/blackberry
+--0016364edc327d4f7e046e1d03e8
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -121,5 +174,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============0492844894460914523==--
+--0016364edc327d4f7e046e1d03e8--
 
