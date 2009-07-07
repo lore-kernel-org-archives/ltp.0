@@ -1,23 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1MSyv5-0007kU-M3
-	for ltp-list@lists.sourceforge.net; Mon, 20 Jul 2009 19:53:07 +0000
-Received: from gateway-1237.mvista.com ([63.81.120.158])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MSyuw-0004ib-JK
-	for ltp-list@lists.sourceforge.net; Mon, 20 Jul 2009 19:53:07 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Date: Mon, 20 Jul 2009 12:48:34 -0700
-Message-ID: <8368651DACC1964480F951191B94A078E497D9@svexch01.mvista.com>
-In-Reply-To: <364299f40907181327n23ff9364x9acb2c03ad3723e9@mail.gmail.com>
-References: <8368651DACC1964480F951191B94A078E49483@svexch01.mvista.com>
-	<364299f40907181327n23ff9364x9acb2c03ad3723e9@mail.gmail.com>
-From: "Henry Yei" <hyei@mvista.com>
-Subject: Re: [LTP] [PATCH] network/lb6/Makefile, mips,
-	mips-el toolchain needs explicit RANLIB call to build
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MOCvS-0007V7-IT
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 15:49:46 +0000
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MOCvM-0000QZ-19
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 15:49:46 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e2.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n67FRqp7008732
+	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jul 2009 11:27:52 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n67FWubG189696
+	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jul 2009 11:32:56 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n67FWtn2007150
+	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jul 2009 11:32:56 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <200907071405.n67E5NwX022783@e6.ny.us.ibm.com>
+References: <200907071405.n67E5NwX022783@e6.ny.us.ibm.com>
+Date: Tue, 07 Jul 2009 21:02:42 +0530
+Message-Id: <1246980762.5539.52.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] FW: My first Patch
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,97 +36,30 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Praveen <praveen@primesoftsolutionsinc.com>
+Cc: ltp-list@lists.sourceforge.net, 'Nathan Straz' <nstraz@redhat.com>, 'Naresh' <naresh@primesoftsolutionsinc.com>
 
-Garrett,
-
-After looking at the final committed patch for the lib6 Makefile, I saw you=
- catch the hard coded ar call that I overlooked while I was concentrating o=
-n the error message I was given. Changing ar to $(AR) as you did obviates t=
-he need for the explicit "$(RANLIB) runcc.a" that I added. It doesn't hurt,=
- but it looks like it is uneeded. While I was following you advice and chec=
-king our toolchain, I also saw that configure was not finding our cross com=
-piler version of ranlib and strip, so I need to look into that.
-
-Thanks for the comments,
-
-
-
------Original Message-----
-From: Garrett Cooper [mailto:yanegomi@gmail.com] =
-
-Sent: Saturday, July 18, 2009 1:27 PM
-To: Henry Yei
-Cc: ltp-list@lists.sourceforge.net
-Subject: Re: [LTP] [PATCH] network/lb6/Makefile, mips, mips-el toolchain ne=
-eds explicit RANLIB call to build
-
-On Thu, Jul 16, 2009 at 3:11 PM, Henry Yei<hyei@mvista.com> wrote:
-> This patch fixes the following build error on mips, mips-el toolchain: "r=
-uncc.a: could not read symbols: Archive has no index; run ranlib to add one=
-."
->
-> Signed-off-by: Henry Yei <hyei@mvista.com>
->
-> --- ltp-full-20090531/testcases/network/lib6/Makefile =A0 2009-01-22 =
-
-> 01:26:10.000000000 -0800
-> +++ ltp/testcases/network/lib6/Makefile 2009-07-16 14:53:58.215774700 =
-
-> +++ -0700
-> @@ -39,3 +39,4 @@
->
-> =A0runcc.a: runcc.o
-> =A0 =A0 =A0 =A0ar cr runcc.a runcc.o
-> + =A0 =A0 =A0 $(RANLIB) runcc.a
->
->
->
->
-> Other architectures don't need this patch, if anyone who more familiar wi=
-th mips and knows why, please enlighten me.
->
->
-> Actual error output this patch fixes:
-> make[3]: Entering directory `/ltp-full-20090531/testcases/network/lib6'
-> gcc -mel -g -O2 -I../../../include -g -D_GNU_SOURCE =A0 -c -o runcc.o =
-
-> runcc.c ar cr runcc.a runcc.o gcc -mel -g -O2 -I../../../include -g =
-
-> -D_GNU_SOURCE =A0 =A0asapi_01.c runcc.a -L../../../lib runcc.a -lltp =
-
-> -lpthread =A0-o asapi_01
-> runcc.a: could not read symbols: Archive has no index; run ranlib to =
-
-> add one
-> collect2: ld returned 1 exit status
-
-Hi Henry,
-    It may be because of the compiler flags that are being passed into the =
-compile -- either hardcoded when the compiler was generated, or after the f=
-act with your folks' build system. I know that mips does some strange thing=
-s compared to other architectures (at least it does with our in-house Caviu=
-m Networks provided compiler at Cisco). Either way, your changes look sane =
-so I will check it into CVS now.
-Thanks,
--Garrett
-
----------------------------------------------------------------------------=
----
-Enter the BlackBerry Developer Challenge  =
-
-This is your chance to win up to $100,000 in prizes! For a limited time, =
-
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize=
-  =
-
-details at: http://p.sf.net/sfu/Challenge
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+UHJhdmVlbi4gUGxlYXNlIHVzZSB0aGlzOgoKZGlmZiAtdXByTgoKdG8gZ2VuZXJhdGUgeW91ciBw
+YXRjaGVzLgoKUmVnYXJkcy0tClN1YnJhdGEKCk9uIFR1ZSwgMjAwOS0wNy0wNyBhdCAxNjo0NSAr
+MDUzMCwgUHJhdmVlbiB3cm90ZTogCj4gSGkgU3VicmF0YSwKPiAKPiAgCj4gCj4gUGxlYXNlIGZp
+bmQgbXkgZmlyc3Qg4oCYZmlsZeKAmSBjb21tYW5kIHRlc3QgcGF0Y2ggYXR0YWNoZWQgd2l0aCB0
+aGlzCj4gZW1haWwuCj4gCj4gIAo+IAo+IEkgaGF2ZSBhZGRlZCBkZXRhaWxlZCBkZXNjcmlwdGlv
+biBvZiB3aGF0IGluZGl2aWR1YWwgdGVzdCBjYXNlIGRvZXMgYXQKPiB0aGUgdG9wIAo+IAo+IG9m
+IHRoZSB0ZXN0LiBQbGVhc2UgZmVlbCBmcmVlIHRvIHJldmlldyBhbmQgcHJvdmlkZSBtZSB3aXRo
+IHlvdXIKPiBjb21tZW50cy4KPiAKPiAgCj4gCj4gVGhlIOKAmGZpbGXigJkgY29tbWFuZCB0ZXN0
+IGNhc2UgaW4gTFRQIHRlc3Qgc3VpdGUgZXhpc3RzIGluIHBhdGg6Cj4gCj4gIOKAnGx0cC14eHgv
+dGVzdGNhc2VzL2NvbW1hbmRzL2FkZS9maWxlL+KAnQo+IAo+ICAKPiAKPiBUaGFua3MsCj4gCj4g
+UHJhdmVlbiBLdW1hciBrCj4gCj4gIAo+IAo+IAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpFbnRl
+ciB0aGUgQmxhY2tCZXJyeSBEZXZlbG9wZXIgQ2hhbGxlbmdlICAKVGhpcyBpcyB5b3VyIGNoYW5j
+ZSB0byB3aW4gdXAgdG8gJDEwMCwwMDAgaW4gcHJpemVzISBGb3IgYSBsaW1pdGVkIHRpbWUsIAp2
+ZW5kb3JzIHN1Ym1pdHRpbmcgbmV3IGFwcGxpY2F0aW9ucyB0byBCbGFja0JlcnJ5IEFwcCBXb3Js
+ZChUTSkgd2lsbCBoYXZlIAp0aGUgb3Bwb3J0dW5pdHkgdG8gZW50ZXIgdGhlIEJsYWNrQmVycnkg
+RGV2ZWxvcGVyIENoYWxsZW5nZS4gU2VlIGZ1bGwgcHJpemUgCmRldGFpbHMgYXQ6IGh0dHA6Ly9w
+LnNmLm5ldC9zZnUvYmxhY2tiZXJyeQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNl
+Zm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0
+cC1saXN0Cg==
