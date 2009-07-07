@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MWnfI-0001pe-H7
-	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 08:40:36 +0000
-Received: from rv-out-0708.google.com ([209.85.198.241])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MWnf7-0007oy-7G
-	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 08:40:31 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so513858rvf.22
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 31 Jul 2009 01:40:19 -0700 (PDT)
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1MNzEl-0002yD-Nx
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 01:12:47 +0000
+Received: from fmmailgate01.web.de ([217.72.192.221])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MNzEh-0008PJ-CT
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 01:12:47 +0000
+Date: Tue, 07 Jul 2009 02:16:00 +0200
+From: =?iso-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
 MIME-Version: 1.0
-In-Reply-To: <364299f40907310138v2708c6dfmb378df4004669c4f@mail.gmail.com>
-References: <364299f40907310138v2708c6dfmb378df4004669c4f@mail.gmail.com>
-Date: Fri, 31 Jul 2009 01:40:19 -0700
-Message-ID: <364299f40907310140k2031e88ve39a175d9ca45e8f@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Fix C coding issues and integrate ima into LTP
+References: <4a413e9b.160bca0a.2226.fffff184SMTPIN_ADDED@mx.google.com>
+	<364299f40907061045s567f00dbq7a198ef37fa438dc@mail.gmail.com>
+	<200907070047.40979.jpalecek@web.de>
+	<364299f40907061633w6583f3d3l8fd3ca90d217b38a@mail.gmail.com>
+Message-ID: <op.uwn8cy0au2flwt@debian>
+In-Reply-To: <364299f40907061633w6583f3d3l8fd3ca90d217b38a@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] Fix some bashisms
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,251 +27,188 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Fri, Jul 31, 2009 at 1:38 AM, Garrett Cooper<yanegomi@gmail.com> wrote:
-> 1. None of the ima C files which required openssl/sha.h were using the
-> HAVE_OPENSSL_SHA_H macro define.
-> 2. Add tst_resm support.
-> 3. Fix some missing includes in ima_mmap.c.
-> 4. Remove an unused var.
-> 5. Shuffle around some fields in ima_boot_aggregate.c so that it
-> compiles with -Wunused and consumes less memory when 1. applies.
->
-> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
->
-> Index: testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/integrity/ima/src/im=
-a_boot_aggregate.c,v
-> retrieving revision 1.1
-> diff -u -r1.1 ima_boot_aggregate.c
-> --- testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c =A0 =
-=A031
-> Mar 2009 13:58:14 -0000 1.1
-> +++ testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c =A0 =
-=A031
-> Jul 2009 08:37:08 -0000
-> @@ -23,14 +23,21 @@
-> =A0#include <fcntl.h>
-> =A0#include <string.h>
-> =A0#include <unistd.h>
-> +#include "config.h"
-> +#include "test.h"
-> +#if HAVE_OPENSSL_SHA_H
-> =A0#include <openssl/sha.h>
-> +#endif
->
-> =A0#define MAX_EVENT_SIZE 500
-> =A0#define EVENT_HEADER_SIZE 32
-> =A0#define MAX_EVENT_DATA_SIZE (MAX_EVENT_SIZE - EVENT_HEADER_SIZE)
-> =A0#define NUM_PCRS 8 =A0 =A0 /* =A0PCR registers 0-7 in boot aggregate */
->
-> -static void *display_sha1_digest(char *pcr)
-> +char *TCID =3D "ima_boot_aggregate";
-> +int TST_TOTAL =3D 1;
-> +
-> +static void display_sha1_digest(unsigned char *pcr)
-> =A0{
-> =A0 =A0 =A0 =A0int i;
->
-> @@ -39,8 +46,10 @@
-> =A0 =A0 =A0 =A0printf("\n");
-> =A0}
->
-> -int main(int argc, char *argv[])
-> +int
-> +main(int argc, char *argv[])
-> =A0{
-> +#if HAVE_OPENSSL_SHA_H
-> =A0 =A0 =A0 =A0unsigned char boot_aggregate[SHA_DIGEST_LENGTH];
-> =A0 =A0 =A0 =A0struct {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0struct {
-> @@ -74,7 +83,7 @@
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0memset(&pcr[i].digest, 0, SHA_DIGEST_LENGT=
-H);
->
-> =A0 =A0 =A0 =A0/* Extend the pseudo PCRs with the event digest */
-> - =A0 =A0 =A0 while (fread(&event, sizeof event.header, 1, fp)) {
-> + =A0 =A0 =A0 while (fread(&event, sizeof(event.header), 1, fp)) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (debug) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf("%03u ", event.head=
-er.pcr);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0display_sha1_digest(event.=
-header.digest);
-> @@ -105,6 +114,8 @@
->
-> =A0 =A0 =A0 =A0printf("boot_aggregate:");
-> =A0 =A0 =A0 =A0display_sha1_digest(boot_aggregate);
-> -
-> - =A0 =A0 =A0 return 0;
-> +#else
-> + =A0 =A0 =A0 tst_resm(TCONF, "System doesn't have openssl/sha.h");
-> +#endif
-> + =A0 =A0 =A0 tst_exit();
-> =A0}
-> Index: testcases/kernel/security/integrity/ima/src/ima_measure.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/integrity/ima/src/im=
-a_measure.c,v
-> retrieving revision 1.1
-> diff -u -r1.1 ima_measure.c
-> --- testcases/kernel/security/integrity/ima/src/ima_measure.c =A0 31 Mar
-> 2009 13:58:14 -0000 =A0 =A0 1.1
-> +++ testcases/kernel/security/integrity/ima/src/ima_measure.c =A0 31 Jul
-> 2009 08:37:08 -0000
-> @@ -22,18 +22,23 @@
-> =A0#include <fcntl.h>
-> =A0#include <string.h>
-> =A0#include <unistd.h>
-> +//#include "config.h"
-> +#include "test.h"
-> +#if HAVE_OPENSSL_SHA_H
-> =A0#include <openssl/sha.h>
-> +#endif
->
-> =A0#define TCG_EVENT_NAME_LEN_MAX 255
->
-> -static int verbose =3D 0;
-> -static int validate =3D 0;
-> -static int verify =3D 0;
-> +char *TCID =3D "ima_measure";
-> +int TST_TOTAL =3D 1;
->
-> =A0#define print_info(format, arg...) \
-> =A0 =A0 =A0 =A0if (verbose) \
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf(format, ##arg)
->
-> +#if HAVE_OPENSSL_SHA_H
-> +
-> =A0static u_int8_t zero[SHA_DIGEST_LENGTH];
-> =A0static u_int8_t fox[SHA_DIGEST_LENGTH];
->
-> @@ -90,6 +95,8 @@
-> =A0 =A0 =A0 =A0return 0;
-> =A0}
->
-> +#endif
-> +
-> =A0/*
-> =A0* ima_measurements.c - calculate the SHA1 aggregate-pcr value based
-> =A0* on the IMA runtime binary measurements.
-> @@ -120,13 +127,19 @@
-> =A0* Return code: if verification enabled, returns number of verification
-> =A0* =A0 =A0 =A0 =A0 =A0 =A0 errors.
-> =A0*/
-> -int main(int argc, char *argv[])
-> +int
-> +main(int argc, char *argv[])
-> =A0{
-> +
-> +#if HAVE_OPENSSL_SHA_H
-> =A0 =A0 =A0 =A0FILE *fp;
-> =A0 =A0 =A0 =A0struct event template;
-> =A0 =A0 =A0 =A0u_int8_t pcr[SHA_DIGEST_LENGTH];
-> =A0 =A0 =A0 =A0int i, count =3D 0, len;
-> - =A0 =A0 =A0 int failed_count =3D 0; =A0 /* number of template verificat=
-ions failed */
-> +
-> + =A0 =A0 =A0 int verbose =3D 0;
-> + =A0 =A0 =A0 int validate =3D 0;
-> + =A0 =A0 =A0 int verify =3D 0;
->
-> =A0 =A0 =A0 =A0if (argc < 2) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf("format: %s binary_runtime_measurem=
-ents" \
-> @@ -191,12 +204,17 @@
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0print_info(" %s\n", template.ima_data.file=
-name);
->
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (verify)
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 failed_count +=3D verify_te=
-mplate_hash(&template);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (verify_template_hash(&t=
-emplate) !=3D 0) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TF=
-AIL, "Hash failed");
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
-> =A0 =A0 =A0 =A0}
-> =A0 =A0 =A0 =A0fclose(fp);
->
-> =A0 =A0 =A0 =A0verbose=3D1;
-> =A0 =A0 =A0 =A0print_info("PCRAggr (re-calculated):");
-> =A0 =A0 =A0 =A0display_sha1_digest(pcr);
-> - =A0 =A0 =A0 return failed_count;
-> +#else
-> + =A0 =A0 =A0 tst_resm(TCONF, "System doesn't have openssl/sha.h");
-> +#endif
-> + =A0 =A0 =A0 tst_exit();
-> =A0}
-> Index: testcases/kernel/security/integrity/ima/src/ima_mmap.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/integrity/ima/src/im=
-a_mmap.c,v
-> retrieving revision 1.2
-> diff -u -r1.2 ima_mmap.c
-> --- testcases/kernel/security/integrity/ima/src/ima_mmap.c =A0 =A0 =A019 =
-May 2009
-> 09:57:42 -0000 =A01.2
-> +++ testcases/kernel/security/integrity/ima/src/ima_mmap.c =A0 =A0 =A031 =
-Jul 2009
-> 08:37:08 -0000
-> @@ -16,16 +16,20 @@
-> =A0*/
-> =A0#include <stdio.h>
-> =A0#include <string.h>
-> +#include <unistd.h>
-> =A0#include <sys/stat.h>
-> =A0#include <sys/mman.h>
-> =A0#include <fcntl.h>
-> +#include "test.h"
-> +
-> +char *TCID =3D "ima_mmap";
-> +int TST_TOTAL =3D 1;
->
-> =A0int main(int argc, char *argv[])
-> =A0{
-> =A0 =A0 =A0 =A0int fd;
-> =A0 =A0 =A0 =A0void *file;
-> =A0 =A0 =A0 =A0char *filename;
-> - =A0 =A0 =A0 int rc;
->
-> =A0 =A0 =A0 =A0if (argc !=3D 2)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf("%s: filename\n", argv[1]);
-> @@ -48,6 +52,5 @@
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0perror("unmap");
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return(-1);
-> =A0 =A0 =A0 =A0}
-> -
-> - =A0 =A0 =A0 return 0;
-> + =A0 =A0 =A0 tst_exit();
-> =A0}
+On Tue, 07 Jul 2009 01:33:29 +0200, Garrett Cooper <yanegomi@gmail.com>  =
 
-This also requires that -lltp be added to the src/Makefile Makefile,
-so I'm not sure whether or not this has any value beyond just being a
-review tool.
-Thanks,
--Garrett
+wrote:
+
+> On Mon, Jul 6, 2009 at 3:47 PM, Jiri Palecek<jpalecek@web.de> wrote:
+>> On Monday 06 July 2009 19:45:08 Garrett Cooper wrote:
+>>> Jiri,
+>>> =A0 =A0 This patch looks ok for the most part, but here are some commen=
+ts:
+>>>
+>>> 1. if [[ -z "$vnet0" -z "$vnet1" ]] =3D> if [ -z "$vnet0" ] || [ -z  =
+
+>>> "$vnet1" ]
+>>>
+>>> It's better read as the following, IMO:
+>>>
+>>> [ -z "$vnet0" -o -z "$vnet1" ]
+>>
+>> I think this is another "I like this more than that, because this is  =
+
+>> cool and that sucks" debate. If other think test's "-o" should be used  =
+
+>> in this case, I would make the change. After all, this can be done by  =
+
+>> hand directly on the patch...
+>
+> Why call [(1) twice?
+
+Does it (measurably) matter? Do the shell scripts contribute a big part to  =
+
+the time the tests take?
+
+>>> 2. All numeric test(1) comparisons could and should be switched from:
+>>>
+>>> command
+>>> if [ $? =3D 0 ]; then
+>>>
+>>> to:
+>>>
+>>> if command; then
+>>>
+>>> for brevity.
+>>
+>> Why should them be changed? This is only a cosmetic change, which would  =
+
+>> make the patch unnecessarily larger (when it's already a little too  =
+
+>> large IMHO). If it could be in the former form till now, I think it can  =
+
+>> stay there a few months/years.
+>>
+>> IMHO this usage is still much better than
+>>
+>> =A0command; RC=3D$?
+>> =A0if [ $RC =3D 0 ] ...
+>> =A0... RC is not read later ...
+>>
+>> or (incorrect)
+>>
+>> =A0command || RC=3D$?
+>> =A0if [ $RC =3D 0 ] ...
+>
+> Yes, I agree with what you said about the above usage, but if you're
+> not using $? for other than just the [ $? -ne 0 ], then I wouldn't
+> even bother doing that, because if command; then saves a fork-exec,
+> and an additional line in the source. As long as it's readable and
+> doesn't expand multiple lines with a trailing \, you're fine.
+
+Are you talking only about efficiency and bash scripts? :-)
+
+Anyway, if you want to save the fork-exec, you can just use a shell with a  =
+
+test builtin (ksh, bash, dash ... and I believe many others do).
+
+If you are concerned about readability, I suggest considering another  =
+
+alternative:
+
+  command || {
+    do_something_on_error
+  }
+
+  command && {
+    do_something_when_ok
+  }
+
+Of coures, usable only when there's no "else" branch.
+
+Still, I think the original form is correct and quite straightforward. I  =
+
+would probably not use the extra test myself, but I don't feel like it  =
+
+needs changing. Just looking at the patch, I see places where the check is  =
+
+done really suspiciously:
+
+
+  	tst_resm TINFO "Test #1: changing mtu size of eth0:1 device."
+
+-	ip link set eth0:1 mtu 300 &>$LTPTMP/tst_ip.err
++	ip link set eth0:1 mtu 300 >$LTPTMP/tst_ip.err 2>&1
+  	if [ $RC -ne 0 ]
+  	then
+  		tst_res TFAIL $LTPTMP/tst_ip.err \
+
+I think this needs much more attention than "calling [ twice" or "extra  =
+
+line in the script".
+
+>>> 3. About &>
+>>>
+>>> =A0 =A0Redirecting Standard Output and Standard Error
+>>> =A0 =A0 =A0 =A0Bash allows both the standard output (file descriptor 1)=
+ and
+>>> the standard error output (file descriptor 2) to be redirected to the
+>>> file whose name is the expansion of word with this construct.
+>>>
+>>> =A0 =A0 =A0 =A0There are two formats for redirecting standard output an=
+d  =
+
+>>> standard error:
+>>>
+>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 &>word
+>>> =A0 =A0 =A0 =A0and
+>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 >&word
+>>>
+>>> The output redirection above captures all output (and most of the time
+>>> you're capturing stdout, but losing stderr to the operating console,
+>>> which can be undesirable). >& is more portable IIRC (it works with
+>>> many ash variants, like FreeBSD's sh -- for sure -- and Solaris's sh
+>>> -- IIRC), which makes it more ideal than &>.
+>>
+>> Still, it isn't POSIX, it doesn't work with dash and actually causes  =
+
+>> pain. See:
+>>
+>> =A0cmd &> fn
+>>
+>> POSIX: run cmd in background, write empty file fn
+>> BASH: run cmd (foreground), send its (normal & error) output to file fn
+>>
+>> =A0cmd >& fn
+>>
+>> POSIX: syntax error
+>> BASH: same as above
+>>
+>> But I don't see the point you are making here - do you have a system,  =
+
+>> where the POSIX way
+>>
+>> =A0cmd > fn 2>&1
+>>
+>> doesn't work? Or did you see something else in the patch?
+>
+> This changes the behavior of the patch though. That's the point ;)...
+
+How does it change the semantics? It redirects standard output to fn, and  =
+
+standard error to standard output (which is redirected to fn). Is there  =
+
+anything else it should do?
+
+Regards
+     Jiri Palecek
 
 ---------------------------------------------------------------------------=
 ---
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+Enter the BlackBerry Developer Challenge  =
 
-trial. Simplify your report design, integration and deployment - and focus =
-on =
+This is your chance to win up to $100,000 in prizes! For a limited time, =
 
-what you do best, core application coding. Discover what's new with =
+vendors submitting new applications to BlackBerry App World(TM) will have =
 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+the opportunity to enter the BlackBerry Developer Challenge. See full prize =
+
+details at: http://p.sf.net/sfu/blackberry
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
