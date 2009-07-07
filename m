@@ -1,26 +1,38 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MNxEH-0005iD-RL
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 23:04:09 +0000
-Received: from an-out-0708.google.com ([209.85.132.246])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MNxEA-0005vv-LH
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 23:04:09 +0000
-Received: by an-out-0708.google.com with SMTP id c38so1778752ana.37
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 06 Jul 2009 16:04:02 -0700 (PDT)
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <matthltc@us.ibm.com>) id 1MO0CW-0002Na-2H
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 02:14:32 +0000
+Received: from e6.ny.us.ibm.com ([32.97.182.146])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MO0CM-00058c-8P
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 02:14:26 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e6.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n671Y0YJ001124
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 21:34:00 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n671Ukml224192
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 21:30:46 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n671UjK7019114
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 21:30:46 -0400
+Date: Mon, 6 Jul 2009 18:30:41 -0700
+From: Matt Helsley <matthltc@us.ibm.com>
+Message-ID: <20090707013041.GB32310@count0.beaverton.ibm.com>
+References: <20090702084828.GC19135@count0.beaverton.ibm.com>
+	<200907021435.48510.vapier@gentoo.org>
+	<20090702203253.GI19135@count0.beaverton.ibm.com>
+	<200907021809.18522.vapier@gentoo.org>
+	<20090706215111.GA32310@count0.beaverton.ibm.com>
+	<op.uwn5bux1u2flwt@debian>
 MIME-Version: 1.0
-In-Reply-To: <8368651DACC1964480F951191B94A078D01051@svexch01.mvista.com>
-References: <8368651DACC1964480F951191B94A078D0102F@svexch01.mvista.com>
-	<364299f40907061452k598a0890kbac3ec9742b45ad8@mail.gmail.com>
-	<8368651DACC1964480F951191B94A078D01051@svexch01.mvista.com>
-Date: Mon, 6 Jul 2009 16:04:02 -0700
-Message-ID: <364299f40907061604l44379a21s1470367f74fed979@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] controllers/cpuset tests: use CC variable isntead
-	of hardcoded cc to fix cross compiling
+Content-Disposition: inline
+In-Reply-To: <op.uwn5bux1u2flwt@debian>
+Subject: Re: [LTP] [PATCH] Remove bashisms (WAS Re: [PATCH 4/4]
+	netns:	Change interpretters from sh to bash)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,81 +42,74 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Henry Yei <hyei@mvista.com>
-Cc: ltp-list@lists.sourceforge.net
+To: =?utf-8?B?SmnFmcOtIFBhbGXEjWVr?= <jpalecek@web.de>
+Cc: Poornima Nayak <poornima.nayak@in.ibm.com>, ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>, Daniel Lezcano <daniel.lezcano@free.fr>, Veerendra C <vechandr@in.ibm.com>, Munipradeep <mbeeraka@in.ibm.com>
 
-On Mon, Jul 6, 2009 at 3:52 PM, Henry Yei<hyei@mvista.com> wrote:
-> Garrett,
->
-> This is definitely true from cpuset_memory_pressure_test and cpuset_memor=
-y_spread_test make files, but cpuset_memory_test needs the -lpthread.
->
->
-> Using implicit rules, I get the following error:
->
-> [15:48:27][hyei@hyei2:/tmp/ltp-full-20090531/testcases/kernel/controllers=
-/cpuset/cpuset_memory_test]$ make
-> gcc =A0 cpuset_memory_test.o ../cpuset_lib/cpuinfo.o ../cpuset_lib/libbit=
-mask.o ../cpuset_lib/libcpuset.o ../cpuset_lib/meminfo.o =A0 -o cpuset_memo=
-ry_test
-> cpuset_memory_test.o: In function `thread2_routine': /tmp/ltp-full-200905=
-31/testcases/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_tes=
-t.c:333: undefined reference to `pthread_sigmask'
-> cpuset_memory_test.o: In function `main': /tmp/ltp-full-20090531/testcase=
-s/kernel/controllers/cpuset/cpuset_memory_test/cpuset_memory_test.c:370: un=
-defined reference to `pthread_create' /tmp/ltp-full-20090531/testcases/kern=
-el/controllers/cpuset/cpuset_memory_test/cpuset_memory_test.c:372: undefine=
-d reference to `pthread_sigmask' /tmp/ltp-full-20090531/testcases/kernel/co=
-ntrollers/cpuset/cpuset_memory_test/cpuset_memory_test.c:380: undefined ref=
-erence to `pthread_cancel' /tmp/ltp-full-20090531/testcases/kernel/controll=
-ers/cpuset/cpuset_memory_test/cpuset_memory_test.c:381: undefined reference=
- to `pthread_join'
-> collect2: ld returned 1 exit status
-> make: *** [cpuset_memory_test] Error 1
->
-> If there is something I'm missing, let me know and I'll re-submit the pri=
-or patches.
->
-> -----Original Message-----
-> From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> Sent: Monday, July 06, 2009 2:53 PM
-> To: Henry Yei
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] [PATCH] controllers/cpuset tests: use CC variable isnt=
-ead of hardcoded cc to fix cross compiling
->
-> On Mon, Jul 6, 2009 at 2:34 PM, Henry Yei<hyei@mvista.com> wrote:
->> I am submitting patches for the Makefiles of the following tests: cpuset=
-_memory_pressure_test, cpuset_memory_spread_test , and cpuset_memory_test. =
-Instead of using cc (host compiler), use $(CC) for provide for cross compil=
-ing.
->
-> Just delete:
->
-> + =A0 =A0 =A0 $(CC) cpuset_memory_test.o $(LIBOBJECTS) -o cpuset_memory_t=
-est
-> +-lpthread
->
-> implicit rules will take care of the rest.
->
-> -Garrett
-
-Well, you kind of have to do:
-
-LDLIBS    +=3D -lpthread
-
-somewhere in the Makefile. Sorry for not explicitly mentioning that point ;=
-\...
-
-Thanks,
--Garrett
-
----------------------------------------------------------------------------=
----
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gVHVlLCBKdWwgMDcsIDIwMDkgYXQgMDE6MTA6MzZBTSArMDIwMCwgSmnFmcOtIFBhbGXEjWVr
+IHdyb3RlOgo+IEhpCj4KPiBPbiBNb24sIDA2IEp1bCAyMDA5IDIzOjUxOjEyICswMjAwLCBNYXR0
+IEhlbHNsZXkgPG1hdHRobHRjQHVzLmlibS5jb20+Cj4gd3JvdGU6Cj4KPj4gT24gVGh1LCBKdWwg
+MDIsIDIwMDkgYXQgMDY6MDk6MTZQTSAtMDQwMCwgTWlrZSBGcnlzaW5nZXIgd3JvdGU6Cj4+PiBP
+biBUaHVyc2RheSAwMiBKdWx5IDIwMDkgMTY6MzI6NTMgTWF0dCBIZWxzbGV5IHdyb3RlOgo+Pj4g
+PiBPbiBUaHUsIEp1bCAwMiwgMjAwOSBhdCAwMjozNTo0NlBNIC0wNDAwLCBNaWtlIEZyeXNpbmdl
+ciB3cm90ZToKPj4+ID4gPiBpbiBnZW5lcmFsLCBjb252ZXJ0aW5nIHNoIHRvIGJhc2ggaXMgYSBi
+YWQgaWRlYSBhcyBpdCBjYW4gY2F1c2UgIAo+Pj4gaXNzdWVzCj4+PiA+ID4gZm9yIHVzIGVtYmVk
+ZGVkIHBlZXBzLgo+Pj4gPgo+Pj4gPiBJIHN1cHBvc2UgdGhhdCdzIGJlY2F1c2Ugb2YgdGhlIG1l
+bW9yeSBiYXNoIGNvbnN1bWVzLiBJcyB0aGVyZSAgCj4+PiBhbnl0aGluZwo+Pj4gPiBlbHNlIGl0
+IGRvZXMgd2hpY2ggaXMgYmFkIGZvciBlbWJlZGRlZD8KPj4+Cj4+PiB0aGVyZSBpcyBtZW1vcnkg
+YW5kIGRpc2sgdXNhZ2UgY29uY2VybnMsIGJ1dCB0aGVyZSBhcmUgYWxzbyBzeXN0ZW1zICAKPj4+
+IHRoYXQgY2FudAo+Pj4gcnVuIGJhc2ggYXQgYWxsIChlLmcuIHN5c3RlbXMgd2l0aG91dCBmb3Jr
+KCkgLS0gYWxsIG5vLW1tdSBMaW51eCBwb3J0cykKPj4+IC1taWtlCj4+Cj4+IEhlcmUncyB0aGF0
+IHVwZGF0ZWQgcGF0Y2ggd2hpY2ggaG9wZWZ1bGx5IHNob3VsZCBiZSBhYmxlIHRvIHJlcGxhY2Ug
+Mwo+PiBhbmQgNCBvZiBteSByZWNlbnQgc2VyaWVzLiBVbmZvcnR1bmF0ZWx5IEkgaGF2ZW4ndCBo
+YWQgYSBjaGFuY2UgdG8gdGVzdCAKPj4gaXQgc28KPj4gSSdtIHBvc3RpbmcgaXQgaW4gY2FzZSBz
+b21lb25lIGVsc2UgZG9lcy4gQXMgdGhlIG9yaWdpbmFsIGF1dGhvciBvZiB0aGUKPj4gcGF0Y2gg
+SmlyaSBpcyB3ZWxjb21lIHRvIGFkZCBoaXMgc2lnbm9mZiBhcyB3ZWxsLgo+Cj4gVGhhbmtzIGZv
+ciBkb2luZyB0aGlzLiBJIGhhdmUgc29tZSBjb21tZW50cyB0byB0aGUgcGF0Y2gsIHNlZSBiZWxv
+dy4KPgo+IEkgaGF2ZSBtYWRlIG15ICJ2ZXJzaW9uIDIiIG9mIHRoZSBwYXRjaCB0b28sIGNvbnRh
+aW5pbmcgYWxzbyBjaGFuZ2VzIHRvICAKPiBvdGhlciBmaWxlcyAobGlrZSBydW5wd3Rlc3Quc2gp
+LiBJZiB5b3UncmUgaW50ZXJyZXNldGVkLCBJJ2xsIHNlbmQgaXQuCgpTdXJlLiBJJ2QgaGF2ZSBo
+YXBwaWx5IHVzZWQgdGhhdC4gTXkgbWFpbiBjb25jZXJuIGlzIGdldHRpbmcgdGhlc2UgZml4ZWQg
+c28KSSBjYW4gY2xlYW5seSBydW4gdGhlIGNvbnRhaW5lcnMgdGVzdGNhc2VzLiBJIHRoaW5rIGl0
+J3MgYWN0dWFsbHkgd29yc2UgdGhhbgpqdXN0IHJlbW92aW5nICJiYXNoaXNtcyIgYmVjYXVzZSB0
+aGUgaW50ZXJwcmV0dGVybiBpcyBpbmNvbnNpc3RlbnQgd2l0aCB0aGUKc2NyaXB0cyBhbmQgdGh1
+cyBub2JvZHkgY2FuIHJ1biB0aGVtLgoKPgo+PiBGcm9tOiBKaXJpIFBhbGVjZWsgPGppcmthQHdl
+Yi5kZT4KPj4KPj4gVGhpcyBwYXRjaCByZW1vdmVzIGEgYnVuY2ggb2YgYmFzaGlzbXMuCj4+Cj4+
+IEl0IHdhcyBvcmlnaW5hbGx5IHdyaXR0ZW4gYnkgSmlyaSBQYWxlY2VrIGJ1dCBsYWNrZWQgY2hh
+bmdlcwo+PiByZXF1ZXN0ZWQgYnkgTWlrZSBGcnlzaW5nZXIuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6
+IE1hdHQgSGVsc2xleSA8bWF0dGhsdGNAdXMuaWJtLmNvbT4KPj4gLS0tCj4+Cj4+IHYyOgo+PiAJ
+Rml4IHB1c2hkL3BvcGQgcmVtb3ZhbCB0byBzYXZlIFBXRCBhbmQgcmVzdG9yZSBpdCB1c2luZyBh
+IHJlZ3VsYXIKPj4gCQl2YXJpYWJsZS4KPgo+IEkgd29uZGVyIGlmIHRoaXMgY291bGRuJ3QgYmUg
+ZG9uZSBieSBhIHNpbXBsZSAiY2QgLSIsIG9yIGV2ZW4gbGVmdCBvdXQgIAo+IGNvbXBsZXRlbHku
+CgpIbW0uIEkgZGlkbid0IHRoaW5rIGl0IGNvdWxkIGJlIGxlZnQgb3V0IGNvbXBsZXRlbHkgYmVj
+YXVzZSBvZiB0aGUgd2F5CiRQV0Qgd2FzIGluY29uc2lzdGVudGx5IHVzZWQuIEhlbmNlIHNvbWUg
+dHJhc2ggY291bGQgYmUgbGVmdCBpZiB3ZQpkaWRuJ3QgY2QgdG8gTFRQVE1QIGJlZm9yZSBhbmQg
+cmVtb3ZlIGl0IGFmdGVyIHRoZSB0ZXN0IGJvZHkuCgo+Cj4+IAlSZW1vdmUgZW1wdHkgZWNob2Vz
+IGluIGZhdm9yIG9mIHByaW50Zi4KPgo+IFRoaXMgaGFzbid0IGJlZW4gZG9uZSB0aG9yb3VnaGx5
+IChzb21lIGVtcHR5IGVjaG9lcyByZW1haW4gaW4gdGhlIHBhdGNoKS4gCj4gQWxzbywgdGhlIHBh
+dGNoIG1pc3NlcyBvbmUgdGhpbmcsIHRoYXQgaWYgeW91IHVzZSBwcmludGYsIHlvdSBoYXZlIHRv
+IGFkZCAKPiBhbiBleHRyYSBsaW5lZmVlZCBhdCB0aGUgZW5kLCBpZToKPgo+ICBlY2hvIC1lICJm
+b29cbiIKPgo+IGhhcyB0byBiZSByZXBsYWNlZCBieQo+Cj4gIHByaW50ZiAiZm9vXG5cbiIKPgo+
+IGZvciBpdCB0byB3b3JrIGVxdWl2YWxlbnRseS4KCkFjaywgeW91J3JlIHJpZ2h0LgoKPgo+PiAJ
+UmVtb3ZlIG5vbi1iYXNoaXNtICJraWxsIC1zIEtJTEwgLi4uIiBhbmQga2VlcCAia2lsbCAtOSAu
+Li4iCj4+IAkJSWYgdGhpcyBpcyBzdGlsbCBhIHByb2JsZW0gdGhlbiBpdCBjb3VsZCBiZSBwbGFj
+ZWQgaW4KPj4gCQlhIHNlcGFyYXRlIHBhdGNoLgo+PiAJS2VlcCB0aGUgZXhhY3QgZm9ybWF0dGlu
+ZyBpbiBjcm9uMFggdGVzdHMgLS0gdXNlIHByaW50ZiBpbnN0ZWFkIG9mIGVjaG8uCj4+IAlVc2Ug
+bm9uLWdyZWVkeSBleHBhbnNpb24gb2YgdHR5IGRldmljZSBpbiBpb2N0bCB0ZXN0Lgo+PiAJQ2hh
+bmdlIHRoZSBpbmNyZW1lbnQgc3ludGF4IHRvIHVzZSA6ICQoKCBYICs9IDEgKSkgaW5zdGVhZCBv
+ZjoKPj4gCQlYPSQoKFggKyAxKSkKPgo+IEkgY2hhbmdlZCB0aGlzIHRvIChJTUhPIGNvb2xlciBz
+eW50YXgsIGl0J3MgZm9yIHRoZSBzYWtlIG9mIGFlc3RoZXRpY3MgIAo+IGFmdGVyIGFsbCkgIjog
+JCgoWCsrKSkiIGluIG15IHBhdGNoLgoKQXMgTWlrZSBoYXMgbm90ZWQsIGRhc2ggZGlkbid0IHdv
+cmsgd2l0aCB0aGF0LgoKQ2hlZXJzLAoJLU1hdHQKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpFbnRl
+ciB0aGUgQmxhY2tCZXJyeSBEZXZlbG9wZXIgQ2hhbGxlbmdlICAKVGhpcyBpcyB5b3VyIGNoYW5j
+ZSB0byB3aW4gdXAgdG8gJDEwMCwwMDAgaW4gcHJpemVzISBGb3IgYSBsaW1pdGVkIHRpbWUsIAp2
+ZW5kb3JzIHN1Ym1pdHRpbmcgbmV3IGFwcGxpY2F0aW9ucyB0byBCbGFja0JlcnJ5IEFwcCBXb3Js
+ZChUTSkgd2lsbCBoYXZlIAp0aGUgb3Bwb3J0dW5pdHkgdG8gZW50ZXIgdGhlIEJsYWNrQmVycnkg
+RGV2ZWxvcGVyIENoYWxsZW5nZS4gU2VlIGZ1bGwgcHJpemUgCmRldGFpbHMgYXQ6IGh0dHA6Ly9w
+LnNmLm5ldC9zZnUvYmxhY2tiZXJyeQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNl
+Zm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0
+cC1saXN0Cg==
