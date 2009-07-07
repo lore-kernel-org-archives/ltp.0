@@ -2,25 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MWaoq-0007jO-Pl
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 18:57:36 +0000
-Received: from mail-px0-f190.google.com ([209.85.216.190])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MWaol-0004AQ-Rc
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 18:57:36 +0000
-Received: by pxi28 with SMTP id 28so521110pxi.28
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 30 Jul 2009 11:57:24 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1248978608.5788.71.camel@subratamodak.linux.ibm.com>
-References: <f5a7b3810907290310h159a8fcby374e7d6b789a6d16@mail.gmail.com>
-	<364299f40907292020g4c35caa4u12081032154f6301@mail.gmail.com>
-	<f5a7b3810907292318y75e43a83x4678c3acecf72a81@mail.gmail.com>
-	<1248978608.5788.71.camel@subratamodak.linux.ibm.com>
-Date: Thu, 30 Jul 2009 11:57:23 -0700
-Message-ID: <364299f40907301157v4881f1d6pf831ff0f94101329@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [FIX PATCH] open_posix_pthread_equal_2-1.c
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MOCeo-0001oT-T4
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 15:32:34 +0000
+Received: from e36.co.us.ibm.com ([32.97.110.154])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MOCej-0000py-1T
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 15:32:34 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4A52E085.5070706@linux.vnet.ibm.com>
+References: <4A52E085.5070706@linux.vnet.ibm.com>
+Date: Tue, 07 Jul 2009 21:02:18 +0530
+Message-Id: <1246980738.5539.46.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] realtime: fix parameter name clash in pi-test7
+	due to	memlock option added
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,69 +26,52 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>, Brandon Philips <bphilips@suse.de>, maxin john <maxinbjohn@gmail.com>, naresh kamboju <naresh.kernel@gmail.com>
+To: gowrishankar <gomuthuk@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sf.net
 
-T24gVGh1LCBKdWwgMzAsIDIwMDkgYXQgMTE6MzAgQU0sIFN1YnJhdGEKTW9kYWs8c3VicmF0YUBs
-aW51eC52bmV0LmlibS5jb20+IHdyb3RlOgo+IE9uIFRodSwgMjAwOS0wNy0zMCBhdCAxMTo0OCAr
-MDUzMCwgbmFyZXNoIGthbWJvanUgd3JvdGU6Cj4+IEhpIEdhcnJldHQsCj4+Cj4+IFRoZXJlIHdl
-cmUgbm8gZGlzY3Vzc2lvbnMgZnJvbSAyMDA1IGluIHBvc2l4IGNvbW11bml0eS4KPgo+IFRydWUu
-IEFuZCB3ZSBkbyBub3Qgd2FudCB0byBsb29zZSB0aGlzIHN1YiB0ZXN0IHN1aXRlIG9ubHkgYmVj
-YXVzZSBpdCBpcwo+IG5vdCBtYWludGFpbmVkIGluIGl0xZsgb3JpZ2luYWwgcGxhY2UuIEl0xZsg
-bm93IHZlcnkgd2VsbCBwYXJ0IG9mIExUUC4KCkluZGVlZC4gSSBqdXN0IHdhbnQgdG8gbWFrZSBz
-dXJlIHRoYXQgb3VyIGxvY2FsIHBhdGNoZXMgYXJlIHdlbGwKZG9jdW1lbnRlZCwgc28gaWYgdGhl
-IHByb2plY3QgZG9lcyBjb21lIGJhY2sgdG8gbGlmZSBhZ2Fpbiwgd2UgY2FuCm5vdGUgd2hhdCBk
-aXNjcmV0ZSBjaGFuZ2VzIHdlcmUgbWFkZSBhbmQgZ2V0IHRoZW0gYmFjayB1cHN0cmVhbS4KCj4+
-IFJlZjoKPj4KPj4gaHR0cDovL3Bvc2l4dGVzdC5zb3VyY2Vmb3JnZS5uZXQvCj4+IGh0dHA6Ly9u
-cHRsLmJ1bGxvcGVuc291cmNlLm9yZy8KPj4KPj4KPj4gU2luY2Ugb3Blbl9wb3NpeF90ZXN0c3Vp
-dGUgaXMgc3ViIG1vZHVsZSBvZiBMVFAsCj4+IEkgaGF2ZSBiZWVuIHJlcG9ydGluZyB0ZXN0IGNh
-c2VzIGJ1Z3MgZnJvbSAyMDA4IGFuZCBwb3J0aW5nIGRpcmVjdGx5Cj4+IHRvIG9wZW4gUG9zaXgg
-dGVzdHN1aXRlIG9mIExUUCBhZnRlciBMVFAgbWVtYmVycyByZXZpZXcuCj4+Cj4+IFRoZXJlIGFy
-ZSBwcmV0dHkgZ29vZCBMVFAgbWVtYmVycyB3aG8gcmV2aWV3IGFuZCB3b3JrcyBvbiBwb3NpeC4K
-Pj4KPj4gQmVzdCByZWdhcmRzLAo+PiBOYXJlc2ggS2FtYm9qdQo+Pgo+PiBPbiBUaHUsIEp1bCAz
-MCwgMjAwOSBhdCA4OjUwIEFNLCBHYXJyZXR0IENvb3Blcjx5YW5lZ29taUBnbWFpbC5jb20+IHdy
-b3RlOgo+PiA+IE9uIFdlZCwgSnVsIDI5LCAyMDA5IGF0IDM6MTAgQU0sIG5hcmVzaCBrYW1ib2p1
-PG5hcmVzaC5rZXJuZWxAZ21haWwuY29tPiB3cm90ZToKPj4gPj4gSGksCj4+ID4+Cj4+ID4+IEkg
-aGF2ZSBub3RpY2UgSFVORyBzdGF0dXMgZm9yIHB0aHJlYWRfZXF1YWwvMi0xLmMgdW5kZXIgcG9z
-aXggdGVzdCBzdWl0ZS4KPj4gPj4gY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9wdGhyZWFkX2VxdWFs
-LzItMS50ZXN0OmV4ZWN1dGlvbjpIVU5HCj4+ID4+Cj4+ID4+IFRoaXMgYmVjYXVzZSBvZiB3aGls
-ZShkb19pdClsb29wIGlzIGJlaGF2aW5nIGFzIHdoaWxlKDEpLgo+PiA+PiBkb19pdCB1cGRhdGVk
-IHZhbHVlIGZyb20gb25lIHRocmVhZCBpcyBub3QgcmVmbGVjdGluZyBpbiB0aGUgb3RoZXIKPj4g
-Pj4gdGhyZWFkIGJlY2F1c2UgdGhlIHR5cGUgaXMgbm90IHByb3Blci4KPj4gPj4gSSBoYXZlIGNo
-YW5nZWQgdGhlIHR5cGUgZnJvbSBjaGFyIC0+IHZvbGF0aWxlIGludAo+PiA+Pgo+PiA+PiBJIGhh
-dmUgc2hhcmVkIHJlc3VsdHMgYmVmb3JlIGFuZCBhZnRlciB0aGlzIHBhdGNoLgo+PiA+Pgo+PiA+
-PiBCZWZvcmUgUEFUQ0g6Cj4+ID4+IGNvbmZvcm1hbmNlL2ludGVyZmFjZXMvcHRocmVhZF9lcXVh
-bC8yLTEudGVzdDpleGVjdXRpb246SFVORwo+PiA+Pgo+PiA+PiBBZnRlciBQQVRDSDoKPj4gPj4g
-Y29uZm9ybWFuY2UvaW50ZXJmYWNlcy9wdGhyZWFkX2VxdWFsLzItMS50ZXN0OmV4ZWN1dGlvbjpQ
-QVNTCj4+ID4+Cj4+ID4+IEkgaGF2ZSBhdHRhY2hlZCBwYXRjaCBhbmQgYmVsb3cuCj4+ID4+IFBs
-ZWFzZSByZXZpZXcgdGhlIHNhbWUuCj4+ID4+Cj4+ID4+IFNpZ25lZC1vZmYtYnk6IE5hcmVzaCBL
-YW1ib2p1IDwgbmFyZXNoLmtlcm5lbEBnbWFpbC5jb20gPgoKVGhhbmtzIQotR2FycmV0dAoKPj4g
-Pj4gZGlmZiAtTmF1cmIgYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFu
-Y2UvaW50ZXJmYWNlcy9wdGhyZWFkX2VxdWFsLzItMS5jCj4+ID4+IGIvdGVzdGNhc2VzL29wZW5f
-cG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvcHRocmVhZF9lcXVhbC8yLTEu
-Ywo+PiA+PiAtLS0gYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2Uv
-aW50ZXJmYWNlcy9wdGhyZWFkX2VxdWFsLzItMS5jIDIwMDUtMDYtMDMKPj4gPj4gMjI6MDE6NDcu
-MDAwMDAwMDAwICswNTMwCj4+ID4+ICsrKyBiL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0
-ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL3B0aHJlYWRfZXF1YWwvMi0xLmMgMjAwOS0wNy0yOQo+
-PiA+PiAxNDoyNzowNS4wMDAwMDAwMDAgKzA1MzAKPj4gPj4gQEAgLTgwLDcgKzgwLDcgQEAKPj4g
-Pj4gwqAvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiogwqAgwqBUZXN0IGNhc2Vz
-Cj4+ID4+ICoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLwo+PiA+PiDC
-oC8qKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKi8KPj4gPj4KPj4gPj4gLWNoYXIg
-ZG9faXQ9MTsKPj4gPj4gK3ZvbGF0aWxlIGludCBkb19pdD0xOwo+PiA+PiDCoHVuc2lnbmVkIGxv
-bmcgY291bnRfb3BlPTA7Cj4+ID4+IMKgI2lmZGVmIFdJVEhfU1lOQ0hSTwo+PiA+PiDCoHNlbV90
-IHNlbXNpZzE7Cj4+ID4KPj4gPiBOYXJlc2gsCj4+ID4gwqAgwqBIYXZlIHlvdSBjb250cmlidXRl
-ZCB0aGlzIGJhY2sgdG8gb3BlbnBvc2l4LCBvciBhdCB0aGUgdmVyeSBsZWFzdAo+PiA+IGZpbGVk
-IGEgYnVnIGFib3V0IHRoaXMgdGhhdCBjYW4gYmUgcmVmZXJlbmNlZD8KCi0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLQpMZXQgQ3J5c3RhbCBSZXBvcnRzIGhhbmRsZSB0aGUgcmVwb3J0aW5nIC0gRnJlZSBD
-cnlzdGFsIFJlcG9ydHMgMjAwOCAzMC1EYXkgCnRyaWFsLiBTaW1wbGlmeSB5b3VyIHJlcG9ydCBk
-ZXNpZ24sIGludGVncmF0aW9uIGFuZCBkZXBsb3ltZW50IC0gYW5kIGZvY3VzIG9uIAp3aGF0IHlv
-dSBkbyBiZXN0LCBjb3JlIGFwcGxpY2F0aW9uIGNvZGluZy4gRGlzY292ZXIgd2hhdCdzIG5ldyB3
-aXRoIApDcnlzdGFsIFJlcG9ydHMgbm93LiAgaHR0cDovL3Auc2YubmV0L3NmdS9ib2JqLWp1bHkK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3Qg
-bWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3Rz
-LnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+On Tue, 2009-07-07 at 11:13 +0530, gowrishankar wrote: 
+> Hi Subrata,
+> Please accept the patch below.
+> 
+> Apologies to resend it as I forgot to tag subject with [PATCH] previously :)
+> 
+> Thanks,
+> Gowri
+> ---
+> realtime: fix parameter name clash in pi-test7 due to memlock option added
+> 
+> Below patch just renames the parameter name for number of mid priority threads
+> in pi-test7 from -m to -x. Original one clashes with our common memlock option
+> used across all RT tests.
+> 
+> Also, pi-test7 is already disabled in our default run profile, so this patch
+> can silently update the test without any impact on any other test.
+> 
+> Testing Informations:
+> Tested pi-test7 binary with the patch for the changes.
+> 
+> Signed-off-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+
+Thanks.
+
+Regards--
+Subrata
+
+> Tested-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+> Acked-by: Sripathi Kodi <sripathik@in.ibm.com>
+> ---
+
+
+------------------------------------------------------------------------------
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have 
+the opportunity to enter the BlackBerry Developer Challenge. See full prize 
+details at: http://p.sf.net/sfu/blackberry
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
