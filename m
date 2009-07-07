@@ -2,23 +2,19 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1MM66v-0002Sp-Jh
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2009 20:08:53 +0000
-Received: from gateway-1237.mvista.com ([63.81.120.158])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MM66u-0001Ne-2L
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2009 20:08:53 +0000
-Received: from svexch01.mvista.com (svexch01.mvista.com [10.0.0.82])
-	by hermes.mvista.com (Postfix) with ESMTP id 7BE251AF33
-	for <ltp-list@lists.sourceforge.net>;
-	Wed,  1 Jul 2009 13:08:49 -0700 (PDT)
-Content-class: urn:content-classes:message
+	(envelope-from <gomuthuk@linux.vnet.ibm.com>) id 1MO3T2-0005Hz-3X
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 05:43:48 +0000
+Received: from e28smtp03.in.ibm.com ([59.145.155.3])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MO3Su-0006DQ-Hs
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 05:43:48 +0000
+Message-ID: <4A52E085.5070706@linux.vnet.ibm.com>
+Date: Tue, 07 Jul 2009 11:13:33 +0530
+From: gowrishankar <gomuthuk@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C9FA87.B7517662"
-Date: Wed, 1 Jul 2009 13:08:35 -0700
-Message-ID: <8368651DACC1964480F951191B94A078BC1871@svexch01.mvista.com>
-From: "Henry Yei" <hyei@mvista.com>
-Subject: [LTP] (no subject)
+Content-Type: multipart/mixed; boundary="------------090109000207000708020102"
+Subject: [LTP] [PATCH] realtime: fix parameter name clash in pi-test7 due to
+ memlock option added
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,66 +25,96 @@ List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sf.net
 
 This is a multi-part message in MIME format.
+--------------090109000207000708020102
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-------_=_NextPart_001_01C9FA87.B7517662
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Hi Subrata,
+Please accept the patch below.
 
-It looks like the io_*.sh files are now not needed since the test source =
-has been modified to check for an autoconf definition.
-This patch modifies the syscalls runtest file to call those test =
-directly. (io_cancel, io_destroy01, io_getevents01,=20
-io_setup01, io_submit01)
+Apologies to resend it as I forgot to tag subject with [PATCH] previously :)
 
-As the scripts are not needed any more, can we remove the following?
+Thanks,
+Gowri
+---
+realtime: fix parameter name clash in pi-test7 due to memlock option added
 
-ltp/testcases/kernel/syscalls/io_cancel01.sh
-ltp/testcases/kernel/syscalls/io_destroy01.sh
-ltp/testcases/kernel/syscalls/io_getevents0101.sh
-ltp/testcases/kernel/syscalls/io_setup01.sh
-ltp/testcases/kernel/syscalls/io_submit01.sh
+Below patch just renames the parameter name for number of mid priority threads
+in pi-test7 from -m to -x. Original one clashes with our common memlock option
+used across all RT tests.
 
-These scripts were not being copied into testcases/bin anyway and so =
-AFAIK, did not run correctly by pan anyway.
+Also, pi-test7 is already disabled in our default run profile, so this patch
+can silently update the test without any impact on any other test.
 
-Henry Yei
-MontaVista Software, Inc.
-hyei@mvista.com
+Testing Informations:
+Tested pi-test7 binary with the patch for the changes.
 
+Signed-off-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+Tested-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+Acked-by: Sripathi Kodi <sripathik@in.ibm.com>
+---
 
-=20
+--------------090109000207000708020102
+Content-Type: text/x-patch;
+ name="pi-test-7.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="pi-test-7.patch"
 
-------_=_NextPart_001_01C9FA87.B7517662
-Content-Type: application/octet-stream;
-	name="syscalls-io.patch"
-Content-Transfer-Encoding: base64
-Content-Description: syscalls-io.patch
-Content-Disposition: attachment;
-	filename="syscalls-io.patch"
+Index: ltp-full-20090630/testcases/realtime/func/pi-tests/testpi-7.c
+===================================================================
+--- ltp-full-20090630.orig/testcases/realtime/func/pi-tests/testpi-7.c	2009-07-03 14:34:13.000000000 +0530
++++ ltp-full-20090630/testcases/realtime/func/pi-tests/testpi-7.c	2009-07-03 14:38:14.000000000 +0530
+@@ -80,7 +80,7 @@
+ 	printf("testpi-7 specific options:\n");
+ 	printf("  -i#     #: number of iterations\n");
+ 	printf("  -f      #: Use flag mutex\n");
+-	printf("  -m#     #:number of mid priority threads\n");
++	printf("  -x#     #:number of mid priority threads\n");
+ }
+ 
+ int parse_args(int c, char *v)
+@@ -96,7 +96,7 @@
+                 case 'i':
+                         iterations = atoi(v);
+                         break;
+-                case 'm':
++                case 'x':
+                         med_threads = atoi(v);
+                         break;
+                 default:
+@@ -246,11 +246,11 @@
+ 	int i,numcpus;
+ 	setup();
+ 
+-	rt_init("hfi:m:", parse_args, argc, argv);
++	rt_init("hfi:x:", parse_args, argc, argv);
+ 
+ 	if (!med_threads) {
+ 		printf("This test requires that at least NRCPUS medium priority threads run\n");
+-		printf("If it is run bound to a single CPU, you can specify -m 1\n");
++		printf("If it is run bound to a single CPU, you can specify -x 1\n");
+ 		printf("No User input , using default value for NRCPUS");
+ 		numcpus = sysconf(_SC_NPROCESSORS_ONLN);
+ 		med_threads = numcpus;
 
-LS0tIGNvbW11bml0eS9sdHAvcnVudGVzdC9zeXNjYWxscwkyMDA5LTA3LTAxIDEyOjUyOjA4LjEz
-NzUwNDgwMCAtMDcwMAorKysgbHRwL3J1bnRlc3Qvc3lzY2FsbHMJMjAwOS0wNy0wMSAxMjo1Mjow
-OC4zNDA2MjcyMDAgLTA3MDAKQEAgLTQ0MSwxMSArNDQxLDExIEBACiBpb3BsMDEgaW9wbDAxCiBp
-b3BsMDIgaW9wbDAyCiAKLWlvX2NhbmNlbDAxIHJ1bi1pb19jYW5jZWwuc2gKLWlvX2Rlc3Ryb3kw
-MSBydW4taW9fZGVzdHJveS5zaAotaW9fZ2V0ZXZlbnRzMDEgcnVuLWlvX2dldGV2ZW50cy5zaAot
-aW9fc2V0dXAwMSBydW4taW9fc2V0dXAuc2gKLWlvX3N1Ym1pdDAxIHJ1bi1pb19zdWJtaXQuc2gK
-K2lvX2NhbmNlbDAxIGlvX2NhbmNlbDAxCitpb19kZXN0cm95MDEgaW9fZGVzdHJveTAxCitpb19n
-ZXRldmVudHMwMSBpb19nZXRldmVudHMwMQoraW9fc2V0dXAwMSBpb19zZXR1cDAxCitpb19zdWJt
-aXQwMSBpb19zdWJtaXQwMQogCiBrZXljdGwwMSBrZXljdGwwMQogCg==
-
-------_=_NextPart_001_01C9FA87.B7517662
+--------------090109000207000708020102
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-
-------_=_NextPart_001_01C9FA87.B7517662
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have 
+the opportunity to enter the BlackBerry Developer Challenge. See full prize 
+details at: http://p.sf.net/sfu/blackberry
+--------------090109000207000708020102
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -99,5 +125,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-------_=_NextPart_001_01C9FA87.B7517662--
+--------------090109000207000708020102--
 
