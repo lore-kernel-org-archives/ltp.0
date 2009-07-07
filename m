@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <dvhltc@us.ibm.com>) id 1MPL4F-0004Qs-3i
-	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 18:43:31 +0000
-Received: from e37.co.us.ibm.com ([32.97.110.158])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MPL42-00055P-70
-	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 18:43:26 +0000
-Message-ID: <4A57884C.10401@us.ibm.com>
-Date: Fri, 10 Jul 2009 11:28:28 -0700
-From: Darren Hart <dvhltc@us.ibm.com>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MO1Qn-0005mF-D4
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 03:33:21 +0000
+Received: from mail-pz0-f178.google.com ([209.85.222.178])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MO1Qi-0006zw-Ay
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 03:33:21 +0000
+Received: by pzk8 with SMTP id 8so4255025pzk.28
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 06 Jul 2009 20:33:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <1224509719.5152.116.camel@subratamodak.linux.ibm.com>
-	<1246890698.4887.24.camel@subratamodak.linux.ibm.com>
-	<1247076833.5405.48.camel@subratamodak.linux.ibm.com>
-	<200907102200.12804.sripathik@in.ibm.com>
-	<1247244446.5040.0.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1247244446.5040.0.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] LTP RT Tests (Cyclic, rt-migrate, etc)
+In-Reply-To: <20090707021215.GC32310@count0.beaverton.ibm.com>
+References: <364299f40907061818q7cda3465vffb00323af18c5f8@mail.gmail.com>
+	<20090707021215.GC32310@count0.beaverton.ibm.com>
+Date: Mon, 6 Jul 2009 20:33:14 -0700
+Message-ID: <364299f40907062033j1660f689t65b8b8bdfb402f11@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH 4/4] Make makefiles more autoconf friendly
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,126 +28,167 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sf.net>, Steven Rostedt <rostedt@goodmis.org>, Gregory Haskins <ghaskins@novell.com>, Clark Williams <clark.williams@gmail.com>, linux-rt-users <linux-rt-users@vger.kernel.org>
+To: Matt Helsley <matthltc@us.ibm.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-Subrata Modak wrote:
-> On Fri, 2009-07-10 at 22:00 +0530, Sripathi Kodi wrote:
->> On Wednesday 08 July 2009 23:43:53 Subrata Modak wrote:
->>> Darren/Sri/Gowri,
->>>
->>> Where do you want me to put this exactly inside the RT tree ?
->> Hi Subrata,
+On Mon, Jul 6, 2009 at 7:12 PM, Matt Helsley<matthltc@us.ibm.com> wrote:
+> (Reviewing inline patches is much easier..)
+
+Ok. I didn't know what the procedure was for submitting patches to the
+group, because it doesn't mention it in the DCO, but I'll do that next
+round.
+
+> Most of this looks good to me.
+>
+> Introducing include/mk seems like a very good idea -- incredible numbers =
+of
+> Makefiles could be factored into common includes there. It would
+> probably make maintenance of the LTP Makefiles alot easier in the long
+> run.
+
+Bingo sir ;)! That's why I was asking whether or not I could do away
+with subdir makes -- it would make life for me as a developer a lot
+easier, because we have to backtrack with subdir ?=3D [...] in the
+Makefiles and could just use -I/path/to/srcdir . If we were using a
+wrapper script, like bash, perl, or python, etc then we could _easily_
+get away with having to deal with the srcdir stuff because we could
+walk up the tree, but I'd rather not go that route :\...
+
+> On Mon, Jul 06, 2009 at 06:18:10PM -0700, Garrett Cooper wrote:
+>> 1. Many Makefiles have hardcoded /opt/ltp paths in them. Let's make
+>> things more modular by making sure the files either get parsed by
+>> autoconf with configure, or instead of having the hardcoded path,
+>> include include/mk/config.mk (which is in and of itself a configure'd
+>> file), thus ensuring feature parity in all of our Makefiles.
+>> 2. These files also contain various cleanup items with other vars and
+>> rules conforming to the Draft 1 spec of master_rules.mk.
 >>
->> Going by how the tests are organized currently, I think this should go
->> into it's own directory under testcases/realtime/func. We will need to
->> add a makefile to it. Are you looking at us to help you with this?
-> 
-> Correct. Please send me a patch which integrates it into RT tests build,
-> install & run.
-
-Just got back from a week vacation and am burning through mail as fast 
-as I can :-) Haven't had a look yet, but does this test use librttest.h? 
-  I suspect not.  We'll need to adapt it to run within the existing ltp 
-real-time testing framework, which includes things like buffered output 
-as well as mlocking support.
-
-Lastly, I'm not sure this test does anything effectively different than 
-prio-wake, already in the tree.  My other concerns with the test are its 
-explicit 1ms preemption criteria (as Steven described it anyway).  We 
-are trying to move away from criteria being inherent in measurement 
-tests, and 1 ms seems like an awfully long priority inversion to be an 
-acceptable criteria to many users.
-
-Steven, am I missing something conceptually here?
-
---
-Darren
-
-> 
-> Regards--
-> Subrata
-> 
->> Thanks,
->> Sripathi.
+>> This requires PATCH 2/4 and PATCH 3/4.
 >>
->>> Regards--
->>> Subrata
->>>
->>> On Mon, 2009-07-06 at 20:01 +0530, Subrata Modak wrote: 
->>>> On Mon, 2009-07-06 at 10:26 -0400, Steven Rostedt wrote:
->>>>> On Tue, 23 Jun 2009, Subrata Modak wrote:
->>>>>
->>>>>> Steven,
->>>>>>
->>>>>> Do you remember this ?
->>>>> Yes, and I finally got time to fix it up a little ;-)
->>>> Great. Forwarding to the ltp mailing list as well. Thanks steven.
->>>>
->>>> Regards--
->>>> Subrata
->>>>
->>>>> OK, here it is. To run it, just do:
->>>>>
->>>>>  ./rt-migrate-test -c 
->>>>>
->>>>> You need to be root since it changes the priorities. It will check the 
->>>>> number of processors and create N+1 threads (where N is the number of 
->>>>> processors). Each thread will wake up at the same time and try to do a 
->>>>> busy loop for 20 millisecs. If a lower prio thread runs for 1ms before a 
->>>>> higher prio thread, it will fail. This should test the migration of the 
->>>>> threads to make sure that the higher prio threads run first.
->>>>>
->>>>> Sorry for taking so long.
->>>>>
->>>>> -- Steve
->>>>>
->>>>>
->>>>>
->>>>>> Regards--
->>>>>> Subrata
->>>>>>
->>>>>> On Mon, 2008-12-15 at 08:52 -0500, Steven Rostedt wrote: 
->>>>>>> On Mon, 15 Dec 2008, Subrata Modak wrote:
->>>>>>>>> Lets see, you wanted my rt migration test. I'll clean that up now. Is 
->>>>>>>> Oh yes.
->>>>>>> OK, I'm cleaning it up to be more for production use.
->>>>>>>
->>>>>>>>> there something else I needed to send you? If you remember.
->>>>>>>> I am not quite sure now. Will let you know in future.
->>>>>>> OK, thanks,
->>>>>>>
->>>>>>> -- Steve
->>>>>>>
->>>>>>
->>>> ------------------------------------------------------------------------------
->>>> _______________________________________________
->>>> Ltp-list mailing list
->>>> Ltp-list@lists.sourceforge.net
->>>> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>> --
->>> To unsubscribe from this list: send the line "unsubscribe linux-rt-users" in
->>> the body of a message to majordomo@vger.kernel.org
->>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>>
->>>
-> 
+>> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
 
+[...]
 
--- 
-Darren Hart
-IBM Linux Technology Center
-Real-Time Linux Team
+> Shouldn't the old files be left as defaults so we don't need to run
+> autotools to get a working make/install?
+>
+> <snip>
 
-------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
+Sure. I could do that with a large chunk of the generated files, but I
+was just trying to avoid it as much as possible.
+
+>> Index: include/mk/config.mk.in
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> RCS file: include/mk/config.mk.in
+>> diff -N include/mk/config.mk.in
+>> --- /dev/null 1 Jan 1970 00:00:00 -0000
+>> +++ include/mk/config.mk.in =A0 7 Jul 2009 01:15:48 -0000
+>> @@ -0,0 +1,61 @@
+>> +#
+>> +# =A0 =A0config.mk.in.
+>> +#
+>> +# =A0 =A0Copyright (C) 2009, Cisco Systems Inc.
+>> +#
+>> +# =A0 =A0This program is free software; you can redistribute it and/or =
+modify
+>> +# =A0 =A0it under the terms of the GNU General Public License as publis=
+hed by
+>> +# =A0 =A0the Free Software Foundation; either version 2 of the License,=
+ or
+>> +# =A0 =A0(at your option) any later version.
+>> +#
+>> +# =A0 =A0This program is distributed in the hope that it will be useful,
+>> +# =A0 =A0but WITHOUT ANY WARRANTY; without even the implied warranty of
+>> +# =A0 =A0MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. =A0See the
+>> +# =A0 =A0GNU General Public License for more details.
+>> +#
+>> +# =A0 =A0You should have received a copy of the GNU General Public Lice=
+nse along
+>> +# =A0 =A0with this program; if not, write to the Free Software Foundati=
+on, Inc.,
+>> +# =A0 =A051 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+>> +#
+>> +# Garrett Cooper, July 2009
+>> +#
+>> +# Copyright (c) 2009 by Cisco Systems, Inc.
+>> +# All rights reserved
+>> +#
+>> +
+>> +AR =A0 =A0 =A0 =A0 =A0 =3D @AR@
+>> +CC =A0 =A0 =A0 =A0 =A0 =3D @CC@
+>> +RANLIB =A0 =A0 =A0 =A0 =A0 =A0 =A0 =3D @RANLIB@
+>> +
+>> +# Avoid overwriting definitions in leaf callers.
+>> +CPPFLAGS =A0 =A0 ?=3D @CPPFLAGS@
+>> +CFLAGS =A0 =A0 =A0 =A0 =A0 =A0 =A0 ?=3D @CFLAGS@
+>> +LDLIBS =A0 =A0 =A0 =A0 =A0 =A0 =A0 ?=3D @LIBS@
+>> +LDFLAGS =A0 =A0 =A0 =A0 =A0 =A0 =A0?=3D @LDFLAGS@
+>> +
+>> +AIO_LIBS =A0 =A0 =3D @AIO_LIBS@
+>> +CRYPTO_LIB =A0 =3D @CRYPTO_LIB@
+>> +SELINUX_LIBS =3D @SELINUX_LIBS@
+>> +
+>> +RPMBUILD =A0 =A0 ?=3D rpmbuild
+>> +
+>> +prefix =A0 =A0 =A0 =A0 =A0 =A0 =A0 ?=3D @prefix@
+>
+> I think you should set PREFIX too. Most Makefiles that honored prefix at
+> all expected that variable name. Perhaps it would be best to start with
+> that and then, if it's best, gradually change all the Makefiles?
+
+Sure -- will add that then too :).
+
+>> +
+>> +#
+>> +# Default to /opt/ltp if the directory specified was a zero-length stri=
+ng, to
+>> +# avoid spurious Make system errors.
+>> +#
+>> +# XXX (garrcoop): I'm almost positive there's a better way to do this in
+>> +# autoconf. Haven't figured it out yet...
+>> +#
+>> +ifeq ($(strip $(prefix)),)
+>> +prefix =A0 =A0 =A0 =A0 =A0 =A0 =A0 =3D /opt/ltp
+>> +endif
+>
+> I thought the point was not having to run autoconf to get the default
+> build and install via Makefiles.
+
+Yeah, I thought about it and wondered to myself -- how many folks are
+there out there that actually handcraft config.h and config.mk files.
+Probably not that many folks to be honest...
+
+>> +
+>> +datarootdir =A0=3D @datarootdir@
+>> +includedir =A0 =3D @includedir@
+>> +mandir =A0 =A0 =A0 =A0 =A0 =A0 =A0 =3D @mandir@
+>> +
+>> +#export AR CC CFLAGS CPPFLAGS LDLIBS LDFLAGS RANLIB
+>> +export AR CC CPPFLAGS LDLIBS LDFLAGS RANLIB
+>
+> Perhaps now is a good time to delete the commented-out export line?
+
+Yeah, silly me -- forgot about that =3D].
+
+Thanks!
+-Garrett
+
+---------------------------------------------------------------------------=
+---
+Enter the BlackBerry Developer Challenge  =
+
+This is your chance to win up to $100,000 in prizes! For a limited time, =
+
+vendors submitting new applications to BlackBerry App World(TM) will have =
+
+the opportunity to enter the BlackBerry Developer Challenge. See full prize =
+
+details at: http://p.sf.net/sfu/blackberry
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
