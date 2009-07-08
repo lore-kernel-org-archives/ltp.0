@@ -1,21 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MNrzE-0006Nh-GM
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 17:28:16 +0000
-Received: from mail-yx0-f202.google.com ([209.85.210.202])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MNryz-00034g-SX
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 17:28:16 +0000
+	(envelope-from <michal.simek@petalogix.com>) id 1MObUW-0004gu-CA
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 18:03:36 +0000
+Received: from mail-fx0-f208.google.com ([209.85.220.208])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MObUR-0004YM-1U
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 18:03:36 +0000
+Received: by fxm4 with SMTP id 4so4392049fxm.10
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 08 Jul 2009 11:03:30 -0700 (PDT)
+Message-ID: <4A54DF6F.1010405@petalogix.com>
+Date: Wed, 08 Jul 2009 20:03:27 +0200
+From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-In-Reply-To: <4A51E253.200@st.com>
-References: <4A51CEDC.6080605@linux.vnet.ibm.com> <4A51E253.200@st.com>
-Date: Mon, 6 Jul 2009 10:28:00 -0700
-Message-ID: <364299f40907061028o4c9c2922ma7d430f5e03f4b38@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] cgroups: conditionally enable building cgroup
-	tests
+References: <4A54D14F.9090101@petalogix.com>
+	<20090708.103520.193697491.davem@davemloft.net>
+In-Reply-To: <20090708.103520.193697491.davem@davemloft.net>
+Subject: Re: [LTP] mmap hw behavior
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,41 +32,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Francesco RUNDO <francesco.rundo@st.com>
-Cc: ltp-list@lists.sf.net
+To: David Miller <davem@davemloft.net>
+Cc: linux-arch@vger.kernel.org, ltp-list@lists.sourceforge.net, arnd@arndb.de, linux-kernel@vger.kernel.org, lethal@linux-sh.org, mingo@elte.hu
 
-On Mon, Jul 6, 2009 at 4:38 AM, Francesco RUNDO<francesco.rundo@st.com> wrote:
-> Hi Gowri,
+David Miller wrote:
+> From: Michal Simek <michal.simek@petalogix.com>
+> Date: Wed, 08 Jul 2009 19:03:11 +0200
 >
-> I've already fixed the same issue you reported. I've tested it successfully.
+>   
+>> When I call mmap for that open file with pointer to calloc place
+>> (first parameter, + length zero) it should be one tlb invalidation
+>> for calloc and new tlb which connect open file.  We check it and we
+>> don't have any tlb invalidation that's why I think that kernel do
+>> different thigs.  Or is it there any copying? Or anything different?
+>>     
 >
-> Subrata has already merged my patch (please, find it in attachment).
->
-> Please, check it before to submit another patch.
+> There is no need to tlb flush the calloc area unless that memory area
+> is actually touched by the user application and thus the page is
+> faulted in.
+>   
+That calloc area is filled by any value (in that test). Is it mean that
+for this case when calloc area is touched
+there must be tlb invalidation + remapping?
 
-At the end of the day, the real problem is that we're not using the
---with- functionality in autoconf, e.g. --with-cgroups, and instead
-we're hacking a lot of noise into Makefile's.
+Michal
 
-Also, you could have called SUBDIRS += once, like so:
 
-+SUBDIRS += cgroup cpuctl memctl io-throttle freezer cpuset
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
 
-I can tell at first glance that that Makefile is a mess anyhow,
-because it's referencing _hardcoded_ /proc references and as such will
-fail to cross-compile properly if the target or the host are setup
-differently from one another, in the following two scenarios:
-
-1. host has cgroups support and target doesn't. host will force the
-cgroups testcases to compile, and we'll either run into make failures,
-or CONF (if the source is setup properly).
-2. target has cgroups support and host doesn't. target will miss out
-on cgroups testcases.
-
-Thanks,
--Garrett
 
 ------------------------------------------------------------------------------
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
