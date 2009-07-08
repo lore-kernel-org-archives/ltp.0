@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MPs0e-0002xx-EI
-	for ltp-list@lists.sourceforge.net; Sun, 12 Jul 2009 05:54:00 +0000
-Received: from mail-pz0-f178.google.com ([209.85.222.178])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MPs0a-0000MM-7M
-	for ltp-list@lists.sourceforge.net; Sun, 12 Jul 2009 05:54:00 +0000
-Received: by pzk8 with SMTP id 8so1406362pzk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Sat, 11 Jul 2009 22:53:55 -0700 (PDT)
-MIME-Version: 1.0
-Date: Sat, 11 Jul 2009 22:53:55 -0700
-Message-ID: <364299f40907112253s6edf39b2m5c6aa5aeb8ed2f5d@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] Patches respin done;
-	waiting for approval ACK before continuing...
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <davem@davemloft.net>) id 1MObIU-0001YP-Js
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 17:51:10 +0000
+Received: from 74-93-104-97-washington.hfc.comcastbusiness.net ([74.93.104.97]
+	helo=sunset.davemloft.net) by 29vjzd1.ch3.sourceforge.com with esmtp 
+	(Exim 4.69) id 1MObIM-0004h2-Qj
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 17:51:10 +0000
+Date: Wed, 08 Jul 2009 10:35:20 -0700 (PDT)
+Message-Id: <20090708.103520.193697491.davem@davemloft.net>
+From: David Miller <davem@davemloft.net>
+In-Reply-To: <4A54D14F.9090101@petalogix.com>
+References: <4A54D14F.9090101@petalogix.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] mmap hw behavior
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,14 +27,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: michal.simek@petalogix.com
+Cc: linux-arch@vger.kernel.org, ltp-list@lists.sourceforge.net, arnd@arndb.de, linux-kernel@vger.kernel.org, lethal@linux-sh.org, mingo@elte.hu
 
-    I have a lot of other modified Makefiles, but I'm waiting for an
-ACK from developers (most notably Matt and Mike) before continuing,
-and I'll need to do a final test run before commit. The patches will
-be large, but similar from here on out...
-Thanks,
--Garrett
+From: Michal Simek <michal.simek@petalogix.com>
+Date: Wed, 08 Jul 2009 19:03:11 +0200
+
+> When I call mmap for that open file with pointer to calloc place
+> (first parameter, + length zero) it should be one tlb invalidation
+> for calloc and new tlb which connect open file.  We check it and we
+> don't have any tlb invalidation that's why I think that kernel do
+> different thigs.  Or is it there any copying? Or anything different?
+
+There is no need to tlb flush the calloc area unless that memory area
+is actually touched by the user application and thus the page is
+faulted in.
 
 ------------------------------------------------------------------------------
 Enter the BlackBerry Developer Challenge  
