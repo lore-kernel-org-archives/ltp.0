@@ -1,25 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MOUFg-0005Ev-91
-	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 10:19:48 +0000
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MOUFY-0005Sq-EX
-	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 10:19:48 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <33307c790907071045v72e19614i571c36ad8af8062c@mail.gmail.com>
-References: <a50cf5ab0907052240xf22b2b2rf7b90cc819d0ee87@mail.gmail.com>
-	<1246863519.2865.18.camel@localhost.localdomain>
-	<33307c790907061137h3da12536q47517b1662498793@mail.gmail.com>
-	<a50cf5ab0907070024g2b1519acudd0d1a6a21c630ea@mail.gmail.com>
-	<33307c790907071045v72e19614i571c36ad8af8062c@mail.gmail.com>
-Date: Wed, 08 Jul 2009 15:49:27 +0530
-Message-Id: <1247048369.5405.35.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH 1/2] Add latest LTP test in autotest
-Reply-To: subrata@linux.vnet.ibm.com
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <praveen@primesoftsolutionsinc.com>)
+	id 1MOYLz-0004OB-Cr
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 14:42:35 +0000
+Received: from smtp103.biz.mail.in2.yahoo.com ([203.104.19.12])
+	by 3b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1MOYLn-0003AD-NX
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 14:42:35 +0000
+Received: from unknown (HELO Praveen)
+	(praveen@primesoftsolutionsinc.com@[192.168.0.9])
+	(envelope-sender <praveen@primesoftsolutionsinc.com>)
+	by 0 (qmail-ldap-1.03) with SMTP
+	for <ltp-list@lists.sourceforge.net>; 8 Jul 2009 13:36:15 -0000
+From: "Praveen" <praveen@primesoftsolutionsinc.com>
+Date: Wed, 8 Jul 2009 19:12:26 +0530
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_00A4_01CA0000.07B56990"
+In-Reply-To: <1246980762.5539.52.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] FW: My first Patch
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,101 +30,223 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Martin Bligh <mbligh@google.com>, Mike Frysinger <vapier@gentoo.org>, ltp-list <ltp-list@lists.sf.net>
-Cc: Autotest mailing list <autotest@test.kernel.org>, Uri Lublin <uril@redhat.com>, Lucas Meneghel Rodrigues <mrodrigu@redhat.com>, sudhir kumar <smalikphy@gmail.com>, kvm-devel <kvm@vger.kernel.org>
+Message-Id: <E1MOYM0-0004OZ-RR@h25xhf1.ch3.sourceforge.com>
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net, 'Nathan Straz' <nstraz@redhat.com>, 'Naresh' <naresh@primesoftsolutionsinc.com>
 
-T24gVHVlLCAyMDA5LTA3LTA3IGF0IDEwOjQ1IC0wNzAwLCBNYXJ0aW4gQmxpZ2ggd3JvdGU6Cj4g
-T24gVHVlLCBKdWwgNywgMjAwOSBhdCAxMjoyNCBBTSwgc3VkaGlyIGt1bWFyPHNtYWxpa3BoeUBn
-bWFpbC5jb20+IHdyb3RlOgo+ID4gT24gVHVlLCBKdWwgNywgMjAwOSBhdCAxMjowNyBBTSwgTWFy
-dGluIEJsaWdoPG1ibGlnaEBnb29nbGUuY29tPiB3cm90ZToKPiA+Pj4+IElzc3VlczogTFRQIGhh
-cyBhIGhpc3Rvcnkgb2Ygc29tZSBvZiB0aGUgdGVzdGNhc2VzIGdldHRpbmcgYnJva2VuLgo+ID4+
-Cj4gPj4gUmlnaHQsIHRoYXQncyBhbHdheXMgdGhlIGNvbmNlcm4gd2l0aCBkb2luZyB0aGlzLgo+
-ID4+Cj4gPj4+PiBBbnl3YXlzCj4gPj4+PiB0aGF0IGhhcyBub3RoaW5nIHRvIHdvcnJ5IGFib3V0
-IHdpdGggcmVzcGVjdCB0byBhdXRvdGVzdC4gT25lIG9mIHRoZSBrbm93biBpc3N1ZQo+ID4+Pj4g
-aXMgYnJva2VuIG1lbW9yeSBjb250cm9sbGVyIGlzc3VlIHdpdGggbGF0ZXN0IGtlcm5lbHMoY2dy
-b3VwcyBhbmQgbWVtb3J5Cj4gPj4+PiByZXNvdXJjZSBjb250cm9sbGVyIGVuYWJsZWQga2VybmVs
-cykuIFRoZSB3b3JrYXJvdW5kIGZvciB0aGVtIEkgdXNlIGlzIHRvCj4gPj4+PiBkaXNhYmxlIG9y
-IGRlbGV0ZSB0aG9zZSB0ZXN0cyBmcm9tIGx0cCBzb3VyY2UgYW5kIHRhciBpdCBhZ2FpbiB3aXRo
-IHRoZSBzYW1lCj4gPj4+PiBuYW1lLiBUaG91Z2ggcGVvcGxlIG1pZ2h0IHVzZSBkaWZmZXJlbnQg
-d29ya2Fyb3VuZHMgZm9yIGl0Lgo+ID4+Cj4gPj4gT0ssIENhbiB3ZSBlbmNhcHN1bGF0ZSB0aGlz
-IGludG8gdGhlIHdyYXBwZXIgdGhvdWdoLCByYXRoZXIgdGhhbiBtYWtpbmcKPiA+PiBwZW9wbGUg
-ZG8gaXQgbWFudWFsbHk/IGluIHRoZSBleGlzdGluZyBsdHAucGF0Y2ggb3Igc29tZXRoaW5nPwo+
-ID4+Cj4gPiBkZWZpbml0ZWx5IHdlIGNhbiBkbyB0aGF0LCBidXQgdGhhdCBuZWVkcyB0byBrbm93
-IGFib3V0IGFsbCB0aGUgY29ybmVyCj4gPiBjYXNlcyBvZiBmYWlsdXJlLiBTbyBtYXkgYmUgd2Ug
-Y2FuIGNvbnRpbnVlIGVuaGFuY2luZyB0aGUgcGF0Y2ggYXMgcGVyCj4gPiB0aGUgZmFpbHVyZSBy
-ZXBvcnRzIG9uIGRpZmZlcmVudCBPU2VzLgo+ID4KPiA+IDEgbW9yZSB0aGluZyBJIHdhbnRlZCB0
-byBzdGFydCBhIGRpc2N1c3Npb24gb24gTFRQIG1haWxpbmcgbGlzdCBpcyB0bwo+ID4gbWFrZSBh
-d2FyZSB0aGUgdGVzdGNhc2UgaWYgaXQgaXMgcnVubmluZyBvbiBhIHBoeXNpY2FsIGhvc3Qgb3Ig
-b24gYQo+ID4gZ3Vlc3Qoc2F5IEtWTSBndWVzdCkuIFRlc3RjYXNlcyBsaWtlIHBvd2VyIG1hbmFn
-ZW1lbnQsIGdyb3VwCj4gPiBzY2hlZHVsaW5nIGZhaXJuZXNzIGV0YyBkbyBub3QgbWFrZSBtdWNo
-IHNlbnNlIHRvIHJ1biBvbiBhIGd1ZXN0KGFzCj4gPiB0aGV5IHdpbGwgZmFpbCBvciBicmVhayku
-IFNvIEl0IGlzIGJldHRlciBmb3IgdGhlIHRlc3QgdG8gcmVjb2duaXNlCj4gPiB0aGUgZW52aXJv
-bm1lbnQgYW5kIG5vdCBleGVjdXRlIGlmIGl0IGlzIHVuZGVyIHZpcnR1YWxpemF0aW9uIGFuZCBp
-dAo+ID4gaXMgc3VwcG9zZWQgdG8gZmFpbCBvciBicmVhayB1bmRlciB0aGF0IGVudmlyb25tZW50
-LiBEb2VzIHRoYXQgbWFrZQo+ID4gc2Vuc2UgdG8geW91IGFsc28gPwo+IAo+IFl1cCwgd2UgY2Fu
-IHBhc3MgYW4gZXhjbHVkZWQgdGVzdCBsaXN0LiBJIHJlYWxseSB3aXNoIHRoZXknZCBmaXggdGhl
-aXIKPiB0ZXN0cywgYnV0IEkndmUgYmVlbiBzYXlpbmcgdGhhdCBmb3IgNiB5ZWFycyBub3csIGFu
-ZCBpdCBoYXNuJ3QgaGFwcGVuZWQKPiB5ZXQgOy0oCgpJIHdvdWxkIHNsaWdodGx5IGRpc2FncmVl
-IHRvIHRoYXQuIDYgeWVhcnMgaXMgaGlzdG9yeS4gQnV0LCBoYXZlIHlvdQpyZWNlbnRseSBjaGVj
-a2VkIHdpdGggTFRQID8KClllcywgdGhlcmUgd2VyZSB0ZXN0cyBpbiBMVFAgd2hpY2ggd2VyZSBi
-cm9rZW4gYnkgZGVzaWduLiBBbmQgbWFueSBvZgp0aGVtIHdlcmUgZml4ZWQgaW4gbGFzdCBjb3Vy
-c2Ugb2YgeWVhcnMuIEFuZCBwcm9iYWJseSB0aGlzIGlzIHRoZSBmaXJzdAp0aW1lIGluIExUUMWb
-IGhpc3Rvcnkgd2hlbiBwZW9wbGUgZml4ZWQgYWxsIGJ1aWxkL2Jyb2tlbiBpc3N1ZXMgaW4gYQpt
-b250aC4gUmVjZW50bHkgcGVvcGxlIHN0b3BwZWQgY29tcGxhaW5pbmcgYWJvdXQgdGhlIHNvLWNh
-bGxlZCBicm9rZW4KaXNzdWVzLiBCdXQgaSBhbSBoZWFyaW5nIGl0IGFnYWluLiBDb3VsZCB5b3Ug
-cGxlYXNlIHBvaW50IHRvIHRoaXMKbWFpbGluZyBsaXN0IHRoZSBpc3N1ZXMgdGhhdCB5b3Ugc3Rp
-bGwgZmFjZS4gSSBhbSBzdXJlIHRoZXJlIGFyZSBub3cKdmVyeSBhY3RpdmUgbWVtYmVycyB3aG8g
-d291bGQgaGVscCB5b3UgZml4IHRoZW0uCgpGZXcgbW9yZSBvYnNlcnZhdGlvbnMuIElmIHRoZSB0
-ZXN0IGNhc2VzIGRlc2lnbiBpcyBicm9rZW4sIHRoZSByZWFzb24KZm9yIGl0IHJlcG9ydGluZyBC
-Uk9LRU4sIHRoZW4gdGhpcyBpcyBhIGdlbnVpbmUgaXNzdWVzLiBXZSB3b3VsZCBuZWVkIHRvCmZp
-eCB0aGVtLiBCdXQsIHdoZW4gYSB0ZXN0IGNhc2UgcmVwb3J0cyBCUk9LRU4sIGlzIGl0IGp1c3Rp
-ZmllZCB0byBwdXQKdGhlIHdob2xlIGJsYW1lIG9uIHRoZSB0ZXN0IGNhc2UuIERpZCB3ZSB2ZXJp
-Znkgd2hldGhlciB0aGUgaXNzdWUgY2FuCmFsc28gYmUgd2l0aDoKCiAgICAgMS4gTGlicmFyaWVz
-LAogICAgIDIuIEtlcm5lbCAodGhlIHZlcnkgcHVycG9zZSBmb3Igd2hpY2ggdGVzdCBjYXNlIGlz
-IGRlc2lnbmVkKSwKCldoYXQgd2lsbCBiZSB0aGUgcG9pbnQgaWYgd2UganVzdCB3YW50IHRoZSB0
-ZXN0IGNhc2UgdG8gUEFTUyA/PyBTbywgZG8Kd2Ugd2FudCB0byBwb2ludCB0aGF0IHRoZSBrZXJu
-ZWwgaXMgYWx3YXlzIE9LLCBhbmQgd2UganVzdCB3YW50IHRoZSB0ZXN0CmNhc2VzIHRvIHJlcG9y
-dCBQQVNTIGZvciBpdCwgZWxzZSB0aGUgdGVzdCBjYXNlIGlzIGJyb2tlbiA/CgpGaXhpbmcgYnVp
-bGQgaXNzdWVzOgpMVFAgY2Fubm90IHN0b3AgaW5oZXJpdGluZyBuZXcgdGVzdCBjYXNlcyB3aXRo
-IGVhY2ggcGFzc2luZyBkYXkuIEJ1dCwKaG93IGRvIHdlIGd1YXJhbnRlZSB0aGF0IHRoZSB0ZXN0
-IHN1aXRlIGJ1aWxkIHdpbGwgc3VjY2VlZCBvbjoKICAgICAxLiBldmVyeSBEaXN0cm8sCiAgICAg
-Mi4gZXZlcnkgYXJjaCwKICAgICAzLiBldmVyeSBrZXJuZWwKClVubGlrZSB0aGUgTGludXggS2Vy
-bmVsLCB3aGljaCBjYXJyaWVzIGFsbCB0aGUgc3R1ZmYgbmVlZGVkIHRvIGJ1aWxkCml0c2VsZiBv
-biBhbnkgYXJjaCwgYW4gdXNlciBsYW5kIHByb2plY3QgbGlrZSBMVFAgaXMgY29tcGxldGVseQpk
-ZXBlbmRhbnQgb24gdGhlIHN5c3RlbSBoZWFkZXJzL2xpYnJhcmllcyB0byBjb21wbGV0ZSBpdMWb
-IGJ1aWxkLiBTbywKd2hlbiB0aGVzZSBzdHVmZiBhcmUgbm90IGNvbnNpc3RlbnQgYWNyb3NzIHRo
-ZSBhcmNoaXRlY3R1cmUgYW5kIERpc3RybwpnZW9ncmFwaHksIHNvLCBob3cgZG8gd2Ugc29sdmUg
-dGhlIHByb2JsZW0uIEFuZCBpbiBtb3N0IG9mIHRoZSBpbnN0YW5jZQp3ZSBmaW5kIHRoYXQgNTAl
-IG9mIG91ciBlZmZvcnQvY29kZSBnb2VzIGluIGZpeGluZyB0aGlzIGRlcGVuZGVuY2llcywKcmF0
-aGVyIHRoYW4gaW50byB0aGUgYWN0dWFsIGtlcm5lbCB0ZXN0IGNvZGUuIEFuZCwgeWVzLCB0byBj
-YXRlciB0byB0aGUKbmVlZCwgTFRQIGhhcyBlbWJyYWNlZCB0aGUgQVVUT0NPTkYgZnJhbWV3b3Jr
-LgoKRml4aW5nIFJlYWwgdGVzdCBjYXNlIEJST0tFTiBpc3N1ZXM6CkhlcmUgcGxheXMgb25lIG9m
-IHRoZSB1bmZvcnR1bmF0ZSBkcmF3YmFja3Mgb2YgdGhlIE9wZW4gU291cmNlIFByb2plY3RzLgpF
-dmVyeXRoaW5nIGRvZXMgbm90IGdldCBmdW5kZWQgZm9yIGV0ZXJuaXR5LiBXaGVuIHRlc3QgY2Fz
-ZXMgd2VyZQpjaGVja2VkIGluIGZvciBzb21lIGZlYXR1cmUgaW4gdGhlIGtlcm5lbCwgdGhlIHBy
-b2plY3Qgc2hvdWxkIGhhdmUgYmVlbgpmdW5kZWQuIE5vdywgd2hlbiB0aGUgQUJJcy9mdW5jdGlv
-bmFsaXR5IGluIHRoZSBrZXJuZWwgY2hhbmdlcywgdGhlCm9yaWdpbmFsIGF1dGhvciBvZiB0aG9z
-ZSB0ZXN0IGNhc2VzIGlzIG5vIG1vcmUgZnVuZGVkIHRvIG1ha2UgdGhlCmNvcnJlc3BvbmRpbmcg
-Y2hhbmdlcyBpbiB0aGUgY29uY2VybmVkIHRlc3RzLiBTbywgdGhpcyBjYW4gYmUgc29sdmVkCm9u
-bHkgd2hlbiBzb21lYm9keSByZXBvcnRzIHN1Y2ggaXNzdWVzIHdpdGggYSBwYXRjaCByYXRoZXIg
-dGhhbiBzZW5kaW5nCnJlcGVhdGVkIHJlbWluZGVycyB0aGF0IHN1Y2gtYW5kLXN1Y2ggdGVzdCBj
-YXNlcyBhcmUgYnJva2VuLiBJIGRvIG5vdApoYXZlIGFueSBvdGhlciBpZGVhIG9mIGhvdyB0aGlz
-IGNhbiBiZSBzb2x2ZWQuCgpJIGFtIG5vdCBzdXJlLCBpZiBpIGFtIGFibGUgdG8gcmVzb2x2ZSBh
-bGwgeW91ciBkb3VidHMvY29uY2VybnMKY29tcGxldGVseS4gTWlrZS9vdGhlcnMgZnJvbSBMVFAg
-bWFpbGluZyBsaXN0IHdpbGwgbWF5IGFsc28gYmUgb2Ygc29tZQpoZWxwLgoKTWlrZSwKCldoYXQg
-ZG8geW91IHNheSA/CgpSZWdhcmRzLS0KU3VicmF0YQoKPiBfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwo+IEF1dG90ZXN0IG1haWxpbmcgbGlzdAo+IEF1dG90
-ZXN0QHRlc3Qua2VybmVsLm9yZwo+IGh0dHA6Ly90ZXN0Lmtlcm5lbC5vcmcvY2dpLWJpbi9tYWls
-bWFuL2xpc3RpbmZvL2F1dG90ZXN0CgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkVudGVyIHRoZSBC
-bGFja0JlcnJ5IERldmVsb3BlciBDaGFsbGVuZ2UgIApUaGlzIGlzIHlvdXIgY2hhbmNlIHRvIHdp
-biB1cCB0byAkMTAwLDAwMCBpbiBwcml6ZXMhIEZvciBhIGxpbWl0ZWQgdGltZSwgCnZlbmRvcnMg
-c3VibWl0dGluZyBuZXcgYXBwbGljYXRpb25zIHRvIEJsYWNrQmVycnkgQXBwIFdvcmxkKFRNKSB3
-aWxsIGhhdmUKdGhlIG9wcG9ydHVuaXR5IHRvIGVudGVyIHRoZSBCbGFja0JlcnJ5IERldmVsb3Bl
-ciBDaGFsbGVuZ2UuIFNlZSBmdWxsIHByaXplICAKZGV0YWlscyBhdDogaHR0cDovL3Auc2YubmV0
-L3NmdS9DaGFsbGVuZ2UKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5l
-dApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_00A4_01CA0000.07B56990
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+Hi,
+
+Apologies for the inconvenience
+
+Please find the patch attached with this email (Now "diff -uprN" is used to
+generate the patch)
+
+
+Thanks, 
+Praveen Kumar k
+
+
+-----Original Message-----
+From: Subrata Modak [mailto:subrata@linux.vnet.ibm.com] 
+Sent: Tuesday, July 07, 2009 9:03 PM
+To: Praveen
+Cc: ltp-list@lists.sourceforge.net; 'Naresh'; 'Nathan Straz'
+Subject: Re: FW: My first Patch
+
+Praveen. Please use this:
+
+diff -uprN
+
+to generate your patches.
+
+Regards--
+Subrata
+
+On Tue, 2009-07-07 at 16:45 +0530, Praveen wrote: 
+> Hi Subrata,
+> 
+>  
+> 
+> Please find my first 'file' command test patch attached with this
+> email.
+> 
+>  
+> 
+> I have added detailed description of what individual test case does at
+> the top 
+> 
+> of the test. Please feel free to review and provide me with your
+> comments.
+> 
+>  
+> 
+> The 'file' command test case in LTP test suite exists in path:
+> 
+>  "ltp-xxx/testcases/commands/ade/file/"
+> 
+>  
+> 
+> Thanks,
+> 
+> Praveen Kumar k
+> 
+>  
+> 
+> 
+
+
+
+------=_NextPart_000_00A4_01CA0000.07B56990
+Content-Type: application/octet-stream;
+	name="file_test.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="file_test.patch"
+
+--- file_test_old.sh	2009-07-07 14:15:51.000000000 +0530=0A=
++++ file_test.sh	2009-07-07 14:05:58.000000000 +0530=0A=
+@@ -39,15 +39,97 @@=0A=
+ #                            accordingly.=0A=
+ =0A=
+ =0A=
+-export TST_TOTAL=3D10                # Number of tests in this testcase=0A=
++#=0A=
++# Description of individual test cases=0A=
++# ------------------------------------=0A=
++#=0A=
++# Test01: Test if file command recognizes ASCII text files=0A=
++# -------=0A=
++# 1) Write text to a known file =0A=
++# 2) Use 'file' command to get the type of the known file=0A=
++#    Ex: file xyz.txt=0A=
++# 3) Grep for the keyword "ASCII text" in the output of the =0A=
++#    'file' command=0A=
++# 4) Declare test as PASS if above step is successful else =0A=
++#    declare test as FAIL=0A=
++#=0A=
++# Test02: Test if file command can recognize bash shell script=0A=
++# -------=0A=
++# 1) Write a small bash shell script to a known file=0A=
++# 2) Use 'file' command to get the type of the known file=0A=
++#    Ex: file xyz.sh=0A=
++# 3) Grep for the keyword "Bourne-Again shell script" in =0A=
++#    the output of the 'file' command=0A=
++# 4) Declare test as PASS if above step is successful else =0A=
++#    declare test as FAIL=0A=
++#=0A=
++# Test03: Test if file command can recognize bash shell script=0A=
++# -------=0A=
++#   Similar test(as Test02) is performed with Korn shell script=0A=
++#=0A=
++# Test04: Test if file command can recognize C shell script=0A=
++# -------=0A=
++#   Similar test(as Test02) is performed with C shell script=0A=
++#=0A=
++# Test05: Test if file command can recognize C program text=0A=
++# -------=0A=
++#   Similar test(as Test02) is performed with C program text=0A=
++#=0A=
++# Test06: Test if file command can recognize ELF binay executables=0A=
++# -------  =0A=
++# 1) Grep for 'm68k' or 'sparc' or 'mips' or 'mipseb' or 'sh.eb' =0A=
++#    or 'powerpc' or 'ppc' or 's390' from the output of the command =0A=
++#    'uname -m'=0A=
++# 2) If the above step is successful, assign string 'MSB' to variable =0A=
++#    TARGET_ARCH else assign string 'LSB'=0A=
++# 3) Write small C program to a known '.c' file=0A=
++# 4) Compile it using "cc"=0A=
++#    Ex: cc xyz xyz.c=0A=
++# 5) Use file command to get the type of the object file=0A=
++# 6) Grep for the string "ELF .*-bit $TEST_ARCH executable, .*" =0A=
++#    in the output of the 'file' command=0A=
++# 7) If the above command is successful, declare test as PASS=0A=
++#    else declare test as FAIL=0A=
++#=0A=
++# Test07: Test if file command can recognize tar files=0A=
++# -------=0A=
++# 1) Write text to three different files=0A=
++# 2) Archive the files using "tar" command=0A=
++#    Ex: tar -cf ...=0A=
++# 3) Use 'file' command to get the type of the archive file=0A=
++#    Ex: file xyz.tar=0A=
++# 4) Grep for the string "tar archive" from the output of=0A=
++#    the above 'file' command=0A=
++# 5) Declare test as PASS, if the above step is successfull else=0A=
++#    declare test as FAIL=0A=
++#=0A=
++# Test08: Test if file command can tar zip files=0A=
++# -------=0A=
++# 1) Write text to three different files=0A=
++# 2) Archive the files using "tar" command=0A=
++#    Ex: tar -cf ...=0A=
++# 3) Use 'gzip' command to zip tar files=0A=
++#    Ex: gzip -f xyz.tar=0A=
++# 4) Use 'file' command to get the type of the archive file=0A=
++#    Ex: file xyz.tar.gz=0A=
++# 5) Grep for the string "gzip compressed data, .*" from the above =0A=
++#    file commnand=0A=
++# 6) Declare test as PASS, if the above step is successfull else=0A=
++#    declare test as FAIL=0A=
++#=0A=
+ =0A=
++=0A=
++export TST_TOTAL=3D10                # Number of tests in this testcase=0A=
++ =0A=
+ if [ -z "$LTPTMP" -a -z "$TMPBASE" ]=0A=
+ then =0A=
+     LTPTMP=3D/tmp/=0A=
+ else=0A=
+-	LTPTMP=3D$TMPBASE=0A=
++    LTPTMP=3D$TMPBASE=0A=
+ fi=0A=
+ =0A=
++# 'LTPBIN' where actual test cases (test binaries) reside=0A=
++# 'LTPROOT' where the actual LTP test suite resides=0A=
+ if [ -z "$LTPBIN" -a -z "$LTPROOT" ]=0A=
+ then=0A=
+     LTPBIN=3D./=0A=
+@@ -65,7 +147,7 @@ RC=3D0=0A=
+ # Test if file command recognizes ASCII text files.=0A=
+ =0A=
+ export TCID=3Dfile01=0A=
+-export TST_COUNT=3D7=0A=
++export TST_COUNT=3D1=0A=
+ =0A=
+ $LTPBIN/tst_resm TINFO "TEST #1: file commad recogizes ASCII text files"=0A=
+ =0A=
+
+------=_NextPart_000_00A4_01CA0000.07B56990
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
+------=_NextPart_000_00A4_01CA0000.07B56990
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------=_NextPart_000_00A4_01CA0000.07B56990--
+
+
+
