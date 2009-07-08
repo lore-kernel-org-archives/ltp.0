@@ -1,32 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <dvhltc@us.ibm.com>) id 1MWzg4-0003t4-6B
-	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 21:30:12 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MWzfv-0001P2-9t
-	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 21:30:12 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n6VLPDMp029737
-	for <ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2009 15:25:13 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n6VLTv6D263560
-	for <ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2009 15:29:57 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n6VLTvYT017152
-	for <ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2009 15:29:57 -0600
-Message-ID: <4A736253.90209@us.ibm.com>
-Date: Fri, 31 Jul 2009 14:29:55 -0700
-From: Darren Hart <dvhltc@us.ibm.com>
-MIME-Version: 1.0
-References: <200907031601.52650.vapier@gentoo.org>
-In-Reply-To: <200907031601.52650.vapier@gentoo.org>
-Subject: Re: [LTP] futex syscall tests
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <davem@davemloft.net>) id 1MObXH-0002jM-It
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 18:06:27 +0000
+Received: from 74-93-104-97-washington.hfc.comcastbusiness.net ([74.93.104.97]
+	helo=sunset.davemloft.net) by 3b2kzd1.ch3.sourceforge.com with esmtp 
+	(Exim 4.69) id 1MObXC-0005hz-VZ
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 18:06:27 +0000
+Date: Wed, 08 Jul 2009 11:06:24 -0700 (PDT)
+Message-Id: <20090708.110624.104984745.davem@davemloft.net>
+From: David Miller <davem@davemloft.net>
+In-Reply-To: <4A54DF6F.1010405@petalogix.com>
+References: <4A54D14F.9090101@petalogix.com>
+	<20090708.103520.193697491.davem@davemloft.net>
+	<4A54DF6F.1010405@petalogix.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] mmap hw behavior
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,196 +29,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: michal.simek@petalogix.com
+Cc: linux-arch@vger.kernel.org, ltp-list@lists.sourceforge.net, arnd@arndb.de, linux-kernel@vger.kernel.org, lethal@linux-sh.org, mingo@elte.hu
 
-Mike Frysinger wrote:
-> are there any futex syscall tests already in ltp that i cant seem to locate ?  
-> if not, i can adapt the few that already exist in the libfutex code ...
-> -mike
+From: Michal Simek <michal.simek@petalogix.com>
+Date: Wed, 08 Jul 2009 20:03:27 +0200
 
-Mike,
+> David Miller wrote:
+>> From: Michal Simek <michal.simek@petalogix.com>
+>> Date: Wed, 08 Jul 2009 19:03:11 +0200
+>>
+>>   
+>>> When I call mmap for that open file with pointer to calloc place
+>>> (first parameter, + length zero) it should be one tlb invalidation
+>>> for calloc and new tlb which connect open file.  We check it and we
+>>> don't have any tlb invalidation that's why I think that kernel do
+>>> different thigs.  Or is it there any copying? Or anything different?
+>>>     
+>>
+>> There is no need to tlb flush the calloc area unless that memory area
+>> is actually touched by the user application and thus the page is
+>> faulted in.
+>>   
+> That calloc area is filled by any value (in that test). Is it mean that
+> for this case when calloc area is touched
+> there must be tlb invalidation + remapping?
 
-I recently done a lot of cleanup and a couple feature additions to the
-kernel futex code.  In doing so I was noticing the lack of a good futex
-system call test suite.  I had started a writeup of what such a test
-suite should accomplish.  I hadn't decided if I wanted to push it to LTP
-eventually or not.  As it sounds like you may have similar interests in
-this test, please find my very early, very incomplete, initial thoughts
-on such a testsuite.
-
-I'd welcome your thoughts on approach, direction, etc.
-
--------------------------------------------------------------------------------
-
-The following is a start at what I hope to be a design document for a new
-exhaustive futex functional/performance/stress benchmark. Before I flesh it
-out any further, I'd really appreciate some feedback on what I have so far.
-
-Given the number of permutations each test seems to require, I think some kind
-of "test generator" is needed. We will have to describe the permutations and
-pass them to the test generator so it can create the various versions of the
-tests.
-
-HAVOC FUTEX
-===========
-
-Havoc Futex is intended to thoroughly test the Linux kernel futex system call
-API. To the extent possible, each test is implemented using raw system calls
-as well as the glibc pthread library.
-
-Futex Op Codes
---------------
-FUTEX_WAIT
-FUTEX_WAKE
-FUTEX_FD
-FUTEX_REQUEUE
-FUTEX_CMP_REQUEUE
-FUTEX_WAKE_OP
-FUTEX_LOCK_PI
-FUTEX_UNLOCK_PI
-FUTEX_TRYLOCK_PI
-FUTEX_WAIT_BITSET
-FUTEX_WAKE_BITSET
-FUTEX_WAIT_REQUEUE_PI
-FUTEX_CMP_REQUEUE_PI
-
-Syscalls to Test
-----------------
-futex_wake
-futex_wake_op
-futex_requeue
-futex_wait
-futex_lock_pi
-futex_unlock_pi
-futex_wait_requeue_pi
-
-Functional Tests
-----------------
-requeue_pi/*
-	Exercise the FUTEX_WAIT_REQUEUE_PI and FUTEX_CMP_REQUEUE_PI op codes,
-	under every possible combination of the following scenarios:
-
-	o shared and private futexes
-	o CLOCK_MONOTONIC and CLOCK_REALTIME timeouts (and none)
-	o Signal handling prior to and post requeue
-	o correct and incorrect settings for val
-	o target futex owned by waker, owned by third party, unowned
-	o OWNERDIED reclaim of mutex
-	o ensure priority ordered wakeup of waiters
-
-	Error and Misuse Cases
-	----------------------
-	o mixed shared and private futexes (should fail)
-	o pi source futex
-	o non-pi target futex
-	o unmapped shared futex fault handling
-	o bogus uaddrs
-	o invalid nr_wake and nr_requeue values
-	o mismatched wait_requeue and futex_requeue target futexes
-	o incorrect pairing of futex_wait_requeue_pi with futex_wake
-
-	Syscalls Exercised
-	------------------
-	futex_wait_requeue_pi
-	futex_requeue
-	futex_lock_pi
-	futex_unlock_pi
-
-pi_lock/*
-	Exercise the FUTEX_LOCK_PI and FUTEX_UNLOCK_PI op codes, under every
-	possible combination of the following scenarious:
-
-	o shared and private futexes
-	o CLOCK_MONOTONIC and CLOCK_REALTIME timeouts (and none)
-	o Signal handling
-	o correct and incorrect settings for val
-	o bogus uaddrs
-	o contended and uncontended cases
-	o OWNERDIED reclaim of mutex
-
-	Error and Misuse Cases
-	----------------------
-	o pi_unlock of a non-pi-locked futex
-	o pi_lock of an owned non-pi futex
-	o unmapped shared futex fault handling
-	o mismatched futex_lock_pi and futex_wake(_op)? calls
-	o mismatched futex_wait and futex_unlock_pi calls
-
-	Syscalls Exercised
-	------------------
-	futex_lock_pi
-	futex_unlock_pi
-	futex_wait
-	futex_wake
-	futex_wake_op
-
-requeue/*
-	Exercise the FUTEX_WAIT and the FUTEX_CMP_REQUEUE op codes.  Perform
-	basic testing for FUTEX_REQUEUE, purposefully avoiding its known
-	flaws.
-
-	Error and Misuse Cases
-	----------------------
-
-	Syscalls Exercised
-	------------------
-	futex_wait
-	futex_requeue
-
-wait/*
-	Exercise the FUTEX_WAIT and FUTEX_WAKE op codes.
-
-	Error and Misuse Cases
-	----------------------
-
-	Syscalls Exercised
-	------------------
-	futex_wait
-	futex_wake
-	futex_wake_op
-
-
-
-Performance Tests
------------------
-	o attempt to expose lock contention issues, such as those exposed by
-	  calling futex_wait on an unowned futex
-	o rapid lock and unlock of an uncontended futex
-	o rapid lock and unlock of a heavily conteded futex
-	o attempt to expose bottlenecks imposed by the shared hash-bucket
-	  implementation
-	o attempt to expose real-time scheduling overhead
-
-Stress Tests
-------------
-	o thousands of threads/processes contending on a single futex
-	o thousands of threads/processes on thousands of futexes
-
-Other Thoughts
---------------
-kernel-side futex fault injection
-	There are a lot of places in futex.c that have to handle faults.  I
-	think some kind of a fault injection system is needed.  This could be
-	enabled via a sysctl or perhaps just configured in to a debug kernel.
-	Running this test suite in a loop would allow us to achieve some
-	statistical confidence in these numerous fault paths.
-
-FUTEX_REQUEUE
-	This op code is deprecated in favor of FUTEX_CMP_REQUEUE.  Do to the
-	unreliable nature of the op code, only very limited testing can be
-	performed.
-
--- 
-Darren Hart
-IBM Linux Technology Center
-Real-Time Linux Team
+Yes, if the calloc area is written to by the application, there
+should be a tlb flush when the mmap() overrides that virtual region
+with a different mapping.
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
