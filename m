@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MWaNr-0005eP-5D
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 18:29:43 +0000
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MWaNj-0001qa-Te
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 18:29:43 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <d51f89b0907230130k158cbfbeo31f290cf207432b6@mail.gmail.com>
-References: <d51f89b0907230130k158cbfbeo31f290cf207432b6@mail.gmail.com>
-Date: Thu, 30 Jul 2009 23:59:17 +0530
-Message-Id: <1248978557.5788.61.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] waitid02 testcase fails on 2.6.29 kernel
-Reply-To: subrata@linux.vnet.ibm.com
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1MOQNE-0002bW-QM
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 06:11:20 +0000
+Received: from mail-fx0-f208.google.com ([209.85.220.208])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MOQNB-0004dH-0p
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 06:11:20 +0000
+Received: by fxm4 with SMTP id 4so4002706fxm.10
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 07 Jul 2009 23:11:03 -0700 (PDT)
+Message-ID: <4A5436D4.6070201@petalogix.com>
+Date: Wed, 08 Jul 2009 08:04:04 +0200
+From: Michal Simek <michal.simek@petalogix.com>
+MIME-Version: 1.0
+Subject: [LTP] IDcheck.sh - awk problem
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,52 +29,107 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rohit verma <rohit.170309@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: LTP <ltp-list@lists.sourceforge.net>, yanegomi@gmail.com
 
-Fixed this now.
+Hi All,
 
-Regards--
-Subrata
+There will be good to prevent missing /etc/passwd for installing to
+different folder.
 
-On Thu, 2009-07-23 at 14:00 +0530, rohit verma wrote: 
-> Hi,
-> 
-> I am running waitid02.c
-> (ltp-full-20090630/testcases/kernel/syscalls/waitid/ ) test case on
-> 2.6.29 kernel.
-> Test case gives following error:
-> "Error. is your system >2.6.9 ?";
-> 
->  Anybody facing the same issue?
-> 
-> Code:
-> 
-> TEST(waitid(P_ALL,0,&infop,WNOHANG));
->         if(TEST_RETURN == 0)
->                 tst_resm(TPASS,"Success !");
->         else{
->                 printf("value of return is %d\n",TEST_RETURN);
->                 tst_resm(TFAIL,"Error. is your system >2.6.9 ?");
->                errnochoose();
->         }
-> 
-> 
-> Regards,
-> Rohit
-> 
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+export DESTDIR=`pwd`/nfs
+mkdir -p nfs
+make install
+
+Thanks,
+Michal
+
+
+Checking for required user/group ids
+
+awk: cmd. line:1: fatal: cannot open file
+`/home/projects/xils/ltp-microblaze.git/nfs/etc/passwd' for reading (No
+such file or directory)
+bin => 2
+awk: cmd. line:1: fatal: cannot open file
+`/home/projects/xils/ltp-microblaze.git/nfs/etc/passwd' for reading (No
+such file or directory)
+daemon => 2
+awk: cmd. line:1: fatal: cannot open file
+`/home/projects/xils/ltp-microblaze.git/nfs/etc/passwd' for reading (No
+such file or directory)
+nobody => 2
+awk: cmd. line:1: fatal: cannot open file
+`/home/projects/xils/ltp-microblaze.git/nfs/etc/group' for reading (No
+such file or directory)
+bin => 2
+awk: cmd. line:1: fatal: cannot open file
+`/home/projects/xils/ltp-microblaze.git/nfs/etc/group' for reading (No
+such file or directory)
+daemon => 2
+awk: cmd. line:1: fatal: cannot open file
+`/home/projects/xils/ltp-microblaze.git/nfs/etc/group' for reading (No
+such file or directory)
+nobody => 2
+awk: cmd. line:1: fatal: cannot open file
+`/home/projects/xils/ltp-microblaze.git/nfs/etc/group' for reading (No
+such file or directory)
+sys => 2
+awk: cmd. line:1: fatal: cannot open file
+`/home/projects/xils/ltp-microblaze.git/nfs/etc/group' for reading (No
+such file or directory)
+users => 2
+'nobody' user id and group found.
+'bin' user id and group found.
+'daemon' user id and group found.
+Users group found.
+Sys group found.
+awk: cmd. line:1: fatal: cannot open file
+`/home/projects/xils/ltp-microblaze.git/nfs/etc/group' for reading (No
+such file or directory)
+nobody => 2
+awk: cmd. line:1: fatal: cannot open file
+`/home/projects/xils/ltp-microblaze.git/nfs/etc/passwd' for reading (No
+such file or directory)
+nobody => 2
+awk: cmd. line:1: fatal: cannot open file
+`/home/projects/xils/ltp-microblaze.git/nfs/etc/group' for reading (No
+such file or directory)
+bin => 2
+awk: cmd. line:1: fatal: cannot open file
+`/home/projects/xils/ltp-microblaze.git/nfs/etc/passwd' for reading (No
+such file or directory)
+bin => 2
+awk: cmd. line:1: fatal: cannot open file
+`/home/projects/xils/ltp-microblaze.git/nfs/etc/group' for reading (No
+such file or directory)
+daemon => 2
+awk: cmd. line:1: fatal: cannot open file
+`/home/projects/xils/ltp-microblaze.git/nfs/etc/passwd' for reading (No
+such file or directory)
+daemon => 2
+awk: cmd. line:1: fatal: cannot open file
+`/home/projects/xils/ltp-microblaze.git/nfs/etc/passwd' for reading (No
+such file or directory)
+users => 2
+awk: cmd. line:1: fatal: cannot open file
+`/home/projects/xils/ltp-microblaze.git/nfs/etc/passwd' for reading (No
+such file or directory)
+sys => 2
+Required users/groups exist.
+
+
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
 
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
