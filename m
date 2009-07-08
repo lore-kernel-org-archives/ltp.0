@@ -1,26 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1MOEQz-0002oE-MR
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 17:26:25 +0000
-Received: from mail-vw0-f202.google.com ([209.85.212.202])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MOEQx-0003wQ-0S
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 17:26:25 +0000
-Received: by vwj40 with SMTP id 40so3744706vwj.28
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 07 Jul 2009 10:26:19 -0700 (PDT)
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MOgUl-0002ZW-0y
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 23:24:11 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MOgUf-00041g-NF
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 23:24:11 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Wed, 8 Jul 2009 19:24:07 -0400
+References: <364299f40907061602v3d05964cq31150d97eab75daa@mail.gmail.com>
+In-Reply-To: <364299f40907061602v3d05964cq31150d97eab75daa@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <364299f40907070944k7b7b0ce5xb6ace62849c94552@mail.gmail.com>
-References: <f5a7b3810907030846x35249218u1fe574ba70f796fd@mail.gmail.com>
-	<1246895458.4887.53.camel@subratamodak.linux.ibm.com>
-	<f5a7b3810907070452u62c1c4c6l3f3ed8f1f169f209@mail.gmail.com>
-	<364299f40907070944k7b7b0ce5xb6ace62849c94552@mail.gmail.com>
-Date: Tue, 7 Jul 2009 22:56:19 +0530
-Message-ID: <f5a7b3810907071026t1fe29ce9pb9e61be8374a345@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Subject: Re: [LTP] [FIX PATCHE] rt_sigaction
+Message-Id: <200907081924.08439.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 2/3] Make system enhancements, Draft 1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,87 +24,110 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============0697314608136187966=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Jiri Palecek <jpalecek@web.de>, maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, Manas Kumar Nayak <maknayak@in.ibm.com>
+To: ltp-list@lists.sourceforge.net
 
-Garrett,
+--===============0697314608136187966==
+Content-Type: multipart/signed; boundary="nextPart2106507.LsgAeUC2Ri";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jul 7, 2009 at 10:14 PM, Garrett Cooper<yanegomi@gmail.com> wrote:
-> On Tue, Jul 7, 2009 at 4:52 AM, naresh kamboju<naresh.kernel@gmail.com> w=
-rote:
->> Hi Garrett Cooper,
->>
->> Thanks for your info.
+--nextPart2106507.LsgAeUC2Ri
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-> expected errno =A0=3D EFAULT : Bad address
-> rt_sigaction02 =A0 =A00 =A0INFO =A0: =A0sa.sa_flags =3D SA_NOMASK
-> rt_sigaction02 =A0 15 =A0PASS =A0: =A0rt_sigaction02 failure with sig: 36=
- as
-> expected errno =A0=3D EFAULT : Bad address
+On Monday 06 July 2009 19:02:50 Garrett Cooper wrote:
+> 1. Write up a document on how to use the new Make system
+> (README.mk-devel), so others may assist in the work that we're
+> spearheading at Cisco and contributing back to LTP, and we can begin
+> dropping the adhoc Makefiles.
+> 2. Add master_rules.mk which contains canned rules for environment
+> setup, leaf directories, and trunk directories to reduce Make logic
+> noise in the existing LTP Makefile's. This is a more condensed and
+> straightforward version of the original master_rules.mk file
+> contributed and never integrated into LTP in the past.
+> 3. Add master_include.mk, a file which stands as the defacto include
+> Makefile for all . This was created out of the comment provided by
+> Mike Frysinger w.r.t. a master include file.
 >
-> rt_sigaction02 =A0 =A00 =A0INFO =A0: =A0sa.sa_flags =3D SA_RESETHAND|SA_S=
-IGINFO
-> rt_sigaction02 =A0 16 =A0PASS =A0: =A0rt_sigaction02 failure with sig: 37=
- as
-> expected errno =A0=3D EFAULT : Bad address
-> rt_sigaction02 =A0 =A00 =A0INFO =A0: =A0sa.sa_flags =3D SA_RESETHAND
-> rt_sigaction02 =A0 17 =A0PASS =A0: =A0rt_sigaction02 failure with sig: 37=
- 3 as
-> expected errno =A0=3D EFAULT : Bad address
-> gcooper@orangebox /scratch/ltp-vanilla/ltp $ gdb
-> testcases/kernel/syscalls/rt_sigaction/rt_sigaction01
-> GNU gdb 6.8
-> Copyright (C) 2008 Free Software Foundation, Inc.
-> License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.h=
-tml>
-> This is free software: you are free to change and redistribute it.
-> There is NO WARRANTY, to the extent permitted by law. =A0Type "show copyi=
-ng"
-> and "show warranty" for details.
-> This GDB was configured as "x86_64-pc-linux-gnu"...
-> (gdb) r
-> Starting program:
-> /scratch/ltp-vanilla/ltp/testcases/kernel/syscalls/rt_sigaction/rt_sigact=
-ion01
-> rt_sigaction01 =A0 =A00 =A0INFO =A0: =A0signal: 34
-> rt_sigaction01 =A0 =A01 =A0PASS =A0: =A0rt_sigaction call succeeded: resu=
-lt =3D 0
-> rt_sigaction01 =A0 =A00 =A0INFO =A0: =A0sa.sa_flags =3D SA_RESETHAND|SA_S=
-IGINFO
->
-> Program received signal SIG34, Real-time event 34.
-> 0x00007f770ba0b4f7 in kill () from /lib/libc.so.6
-> (gdb) where
-> #0 =A00x00007f770ba0b4f7 in kill () from /lib/libc.so.6
-> #1 =A00x0000000000401c3e in main ()
-> (gdb)
->
+> Note: This patch has been largely tested, but some of the additional
+> functionality and rework in generic_trunk_target needs to be tested
+> more prior to commit; hence it's a Draft 1 patch.
 
- /lib/libc.so.6 :
+"srcdir" should refer to the current directory's source tree.  "top_srcdir"=
+=20
+should refer to the top level source tree.  building in-tree means srcdir w=
+ill=20
+be ".".  this is how autotools works and allows for easy out-of-tree=20
+compilation.  same goes for "builddir" and "top_builddir", not this "objxxx=
+"=20
+convention.
 
-This could be issue with glibc.
-Are you using 2.9 glibc?
+for the toolchain, do you purposefully only document CC and CFLAGS ?
 
-please Investigate.
+i'm not familiar with this "MAKEOPTS=3D';'" thing you refer to.  what's tha=
+t all=20
+about ?
 
-Best regards,
-Naresh Kamboju
+you list the copyright info twice
 
----------------------------------------------------------------------------=
----
-Enter the BlackBerry Developer Challenge  =
+master_rules.mk shouldnt be a '-include' ... we want an error if that doesn=
+t=20
+exist
 
-This is your chance to win up to $100,000 in prizes! For a limited time, =
+your %.a rule is missing a call to ranlib on the archive
+=2Dmike
 
-vendors submitting new applications to BlackBerry App World(TM) will have =
+--nextPart2106507.LsgAeUC2Ri
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-the opportunity to enter the BlackBerry Developer Challenge. See full prize =
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.12 (GNU/Linux)
 
-details at: http://p.sf.net/sfu/blackberry
+iQIcBAABAgAGBQJKVSqYAAoJEEFjO5/oN/WBQ2wP/ia4SYkyaNc4g7dHivt38PNy
+MFNQlLcSfD4uNjblMTyPWVmV1gO/ehQjrj2oPEVM0R4uRYi0NiQiOtnoDE9cqWun
+uRzaNFeItAQxOtp5tLZrRGdJYMCkhYGioZXnOiIr9y44x74NONT8f0EHcnXblsHe
+qcGw+iaHBQutJT4vukNkzCvS0knZiTsSXYsWvCxsGXPcr5jKTv03JhysgC9DiFKS
+zSyOw1iCdXVkthgrTITEW+YZqSgvspTAqqcgo0tfJG4EmCNkX/1b4kuycOyScPXT
+gT77Rk8tqQjZqdzLe6eyZO//pXQ6klFoo0VhB/4HWhaCrAN3UkfK9mFBBfibHr/h
+PeSiLOLhsqrHAvaydbhL2WhJpT5qQY1adCU6jhsrRN4lOab5YnhcN2YyFG28Tupq
+Qv+Ll3DuE3+wYAW+gB6JLawL3iZn9iCxf0uU5IPBuxIrVSoG8nndS77BnOaKa+X2
+GJjTUqyyiEp51hEdw1447CJZIxK+OdOUq3Als3ugTNyjIblesWARlkexYidiQLHM
+MD7raPdRKq/tWtJ9/KFNV3mii4ghLDVwLzBXb/rLSGQtGjx2Y5F2FbuPuOj9TiKv
+3K5I/xa2tHfpA2rj8iLFrTNy8wpAHxZX9n7byTDdOCRIMTCgmlse+QfVYfSdv5J/
+EwjdEY8+J5N6XX1OozQY
+=f19H
+-----END PGP SIGNATURE-----
+
+--nextPart2106507.LsgAeUC2Ri--
+
+
+--===============0697314608136187966==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
+--===============0697314608136187966==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0697314608136187966==--
+
