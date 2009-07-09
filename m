@@ -1,26 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MTVgy-0001JL-0E
-	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 06:52:44 +0000
-Received: from rv-out-0708.google.com ([209.85.198.243])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MTVgp-0004Ie-Ii
-	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 06:52:43 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so852646rvf.22
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <wangyong2009@cn.fujitsu.com>) id 1MOpMh-0006QK-0d
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 08:52:27 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MOpMZ-0007SC-2l
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 08:52:26 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id B9A20170130
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 21 Jul 2009 23:52:35 -0700 (PDT)
-References: <20090721.182542.1000278277145531816.caiqian@cclom.cn>
-	<364299f40907212138rb1f671eke3aabd6587c0f925@mail.gmail.com>
-	<364299f40907212201u64779636v91ff74c45c32c3f3@mail.gmail.com>
-	<200907220122.33944.vapier@gentoo.org>
-Message-Id: <124D1FD0-1C6A-40D0-9754-DD87A3CF27DC@gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <200907220122.33944.vapier@gentoo.org>
-Mime-Version: 1.0 (iPhone Mail 7A341)
-Date: Tue, 21 Jul 2009 23:52:25 -0700
-Subject: Re: [LTP] LTP Intermediate Release for JULY 2009 Build Failures
+	Thu,  9 Jul 2009 15:46:45 +0800 (CST)
+Received: from fnst.cn.fujitsu.com (localhost.localdomain [127.0.0.1])
+	by tang.cn.fujitsu.com (8.13.1/8.13.1) with ESMTP id n6983A8r003478
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2009 16:03:10 +0800
+Received: from [127.0.0.1] (unknown [10.167.141.107])
+	by fnst.cn.fujitsu.com (Postfix) with ESMTP id D97C5D4036
+	for <ltp-list@lists.sourceforge.net>;
+	Thu,  9 Jul 2009 15:34:11 +0800 (CST)
+Message-ID: <4A559DB3.6030000@cn.fujitsu.com>
+Date: Thu, 09 Jul 2009 15:35:15 +0800
+From: Wang Yong <wangyong2009@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP]  [PATCH] Fix failure of the utimes01 test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,44 +33,32 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, "ltp-list@lists.sf.net" <ltp-list@lists.sf.net>
+To: ltp-list@lists.sourceforge.net
 
-On Jul 21, 2009, at 10:22 PM, Mike Frysinger <vapier@gentoo.org> wrote:
-
-> On Wednesday 22 July 2009 01:01:34 Garrett Cooper wrote:
->> On Tue, Jul 21, 2009 at 9:38 PM, Garrett Cooper wrote:
->>> On Tue, Jul 21, 2009 at 2:28 PM, Mike Frysinger wrote:
->>>> On Tuesday 21 July 2009 10:21:44 Garrett Cooper wrote:
->>>>> I was tempted to fix the format string error, but I don't know  
->>>>> what
->>>>> the potential implications are of switching the data type from
->>>>> u_int64_t to unsigned long long...
->>>>
->>>> dont do that.  just use the proper format string from inttypes.h.
->>>> uint64_t f;
->>>> printf("f = %"PRIu64"\n", f);
->>>
->>
->> -       fprintf(stdout, "[%u] wait completed on %d: count=%llu\n",
->> +       fprintf(stdout, "[%u] wait completed on %d: count=%lu64\n",
->>                getpid(), fd, cntr);
->
-> umm, you sure that's right ?  seems to me it'll output the number  
-> followed by
-> the string "64".  i think you need to look at my example again (and  
-> take
-> notice of the quote marks).
-
-Your suggestion didn't compile and unfortunately the testcase appears  
-to be broken. I'll retest when I get home.
-Thanks!
-
-------------------------------------------------------------------------------
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+V2hlbmV2ZXIgc3lzdGVtIGNhbGxlZCB1dGltZXMsIHRoZSBlcnJvciBtZXNzYWdlIHJldHVybmVk
+IHdhcyBFSU5WQUwsCmJlY2F1c2UgdGhlIG1lbWJlciB2YXJpYWJsZSBvZiBzdHJ1Y3QgdGltZXZh
+bCB3YXMgbm90IGluaXRpYWxpemVkLApzbyBpbml0aWFsaXplIGl0LgoKU2lnbmVkLW9mZi1ieTrj
+gIBXYW5nWW9uZ+OAgDx3YW5neW9uZzIwMDlAY24uZnVqaXRzdS5jb20+CgpkaWZmIC1OdXJwIGx0
+cC1mdWxsLTIwMDkwNjMwL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdXRpbWVzL3V0aW1lczAx
+LmMKbHRwLWZ1bGwtMjAwOTA2MzAubmV3L3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdXRpbWVz
+L3V0aW1lczAxLmMKLS0tIGx0cC5vcmlnL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdXRpbWVz
+L3V0aW1lczAxLmMgMjAwOS0wNy0wMQoxNzoyMDoxMi4wMDAwMDAwMDAgKzA4MDAKKysrIGx0cC90
+ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3V0aW1lcy91dGltZXMwMS5jICAyMDA5LTA3LTA4CjE3
+OjIwOjM4LjAwMDAwMDAwMCArMDgwMApAQCAtMjQ4LDYgKzI0OCw3IEBAIHN0YXRpYyBpbnQgZG9f
+dGVzdChzdHJ1Y3QgdGVzdF9jYXNlICp0YykKICAgICAgICAgIC8qCiAgICAgICAgICAgKiBFeGVj
+dXRlIHN5c3RlbSBjYWxsCiAgICAgICAgICAgKi8KKyAgICAgICAgbWVtc2V0KHR2LCAwLCAyICog
+c2l6ZW9mKHN0cnVjdCB0aW1ldmFsKSk7CiAgICAgICAgICB0dlswXS50dl9zZWMgPSB0Yy0+YV9z
+ZWM7CiAgICAgICAgICB0dlsxXS50dl9zZWMgPSB0Yy0+bV9zZWM7CiAgICAgICAgICBURVNUKGxl
+biA9IHN0cmxlbihmcGF0aCkpOwoKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KRW50ZXIgdGhlIEJs
+YWNrQmVycnkgRGV2ZWxvcGVyIENoYWxsZW5nZSAgClRoaXMgaXMgeW91ciBjaGFuY2UgdG8gd2lu
+IHVwIHRvICQxMDAsMDAwIGluIHByaXplcyEgRm9yIGEgbGltaXRlZCB0aW1lLCAKdmVuZG9ycyBz
+dWJtaXR0aW5nIG5ldyBhcHBsaWNhdGlvbnMgdG8gQmxhY2tCZXJyeSBBcHAgV29ybGQoVE0pIHdp
+bGwgaGF2ZQp0aGUgb3Bwb3J0dW5pdHkgdG8gZW50ZXIgdGhlIEJsYWNrQmVycnkgRGV2ZWxvcGVy
+IENoYWxsZW5nZS4gU2VlIGZ1bGwgcHJpemUgIApkZXRhaWxzIGF0OiBodHRwOi8vcC5zZi5uZXQv
+c2Z1L0NoYWxsZW5nZQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0
+Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
