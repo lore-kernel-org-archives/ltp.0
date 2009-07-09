@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1MUZ94-0008DT-QM
-	for ltp-list@lists.sourceforge.net; Sat, 25 Jul 2009 04:46:06 +0000
-Received: from gateway-1237.mvista.com ([63.81.120.158])
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1MOmNM-0002V0-Pi
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 05:40:56 +0000
+Received: from mail-bw0-f215.google.com ([209.85.218.215])
 	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MUZ8x-0000nS-He
-	for ltp-list@lists.sourceforge.net; Sat, 25 Jul 2009 04:46:06 +0000
-Received: from svexch01.mvista.com (svexch01.mvista.com [10.0.0.82])
-	by hermes.mvista.com (Postfix) with ESMTP id 4BC4F1B0B6
+	id 1MOmNH-00013o-Eh
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 05:40:56 +0000
+Received: by bwz11 with SMTP id 11so338518bwz.10
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 24 Jul 2009 21:45:53 -0700 (PDT)
-Content-class: urn:content-classes:message
+	Wed, 08 Jul 2009 22:40:50 -0700 (PDT)
+Message-ID: <4A5582DE.9010501@petalogix.com>
+Date: Thu, 09 Jul 2009 07:40:46 +0200
+From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-Date: Fri, 24 Jul 2009 21:45:09 -0700
-Message-ID: <8368651DACC1964480F951191B94A078E49F0B@svexch01.mvista.com>
-From: "Henry Yei" <hyei@mvista.com>
-Subject: [LTP]  modifying tests to use the configured tmp directory
+References: <4A54DF6F.1010405@petalogix.com>	<20090708.110624.104984745.davem@davemloft.net>	<4A54FFFE.10306@petalogix.com>
+	<20090708.181551.189345850.davem@davemloft.net>
+In-Reply-To: <20090708.181551.189345850.davem@davemloft.net>
+Subject: Re: [LTP] mmap hw behavior
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,26 +32,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: David Miller <davem@davemloft.net>
+Cc: linux-arch@vger.kernel.org, ltp-list@lists.sourceforge.net, arnd@arndb.de, linux-kernel@vger.kernel.org, lethal@linux-sh.org, mingo@elte.hu
 
-One of our testing requirements forces us to use a user specified temporary directory. 
+David Miller wrote:
+> From: Michal Simek <michal.simek@petalogix.com>
+> Date: Wed, 08 Jul 2009 22:22:22 +0200
+>
+>   
+>> Can you please point me to any code which exactly do this? (for example
+>> file mm/mmap.c line from ... to ... )
+>>     
+>
+> Sorry I don't have time to read the source code for you.
+> I'd have to look it up too, just like you.
+>   
+It is ok - I didn't want to read the code from - just if you know any
+functions which
+could help me.
 
-LTP provides the functions needed to do this (tst_tmpdir) and through the global variable $TMPDIR.
+Thank you very much,
+Michal
 
-I've found a large amount of filesystem tests that do not honor this. Some of the tests have an argument you can pass in (such as a -d option for growfiles), and is set inside the runtest/scenario file (fs_inod01)
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
 
-Does anyone have a preference on whether the tests should be modified to use the tst functions when possible, or use an optional argument?
-
-Any comments appreciated,
-
-Henry Yei
-MontaVista Software, Inc.
-hyei@mvista.com
-
-
- 
 
 ------------------------------------------------------------------------------
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
