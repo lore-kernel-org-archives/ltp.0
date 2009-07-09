@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <gomuthuk@linux.vnet.ibm.com>) id 1MNlEz-0000OK-VT
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 10:16:05 +0000
-Received: from e28smtp07.in.ibm.com ([59.145.155.7])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MNlEx-0008OK-6X
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 10:16:05 +0000
-Message-ID: <4A51CEDC.6080605@linux.vnet.ibm.com>
-Date: Mon, 06 Jul 2009 15:45:56 +0530
-From: gowrishankar <gomuthuk@linux.vnet.ibm.com>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <hyei@mvista.com>) id 1MOkJO-0003pU-8r
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 03:28:42 +0000
+Received: from gateway-1237.mvista.com ([63.81.120.158])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MOkJF-0004Jb-6D
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 03:28:37 +0000
+Received: from svexch01.mvista.com (svexch01.mvista.com [10.0.0.82])
+	by hermes.mvista.com (Postfix) with ESMTP id A8D081AFDC
+	for <ltp-list@lists.sourceforge.net>;
+	Wed,  8 Jul 2009 20:28:29 -0700 (PDT)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------090302030907020900070709"
-Subject: [LTP] [PATCH] cgroups: conditionally enable building cgroup tests
+Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01CA0044.AF993AAD"
+Date: Wed, 8 Jul 2009 20:23:47 -0700
+Message-ID: <8368651DACC1964480F951191B94A078D013C0@svexch01.mvista.com>
+From: "Henry Yei" <hyei@mvista.com>
+Subject: [LTP] [PATCH] utimensat_test.sh, fix hardcoded tmp directory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,98 +29,57 @@ List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sf.net
+To: ltp-list@lists.sourceforge.net
 
 This is a multi-part message in MIME format.
---------------090302030907020900070709
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hi Subrata,
-Please accept the patch below.
+------_=_NextPart_001_01CA0044.AF993AAD
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Gowri
----
-cgroups: conditionally enable building cgroup tests
-
-controllers tests gets included into default ltp build if "/proc/cgroup"
-exists. It stops the ltp build in realtime kernel environment where kernel
-is new and supports cgroups, but necessary file "linux/cgroupstats.h" may not
-exist in the base OS (like RHEL5.3). So configure command enables the build,
-but actual build fails, due to missing header file.
-
-Below patch proposes new symbol LTP_CHECK_CGROUPSTATS to check for header file
-"linux/cgroupstats.h" and include controllers in the list of tests to build.
-
-Tested the patch in non-RT as well as RT environment for the changes.
-
-Signed-off-by: Gowrishankar <gowrishankar.m@in.ibm.com>
-Tested-by: Gowrishankar <gowrishankar.m@in.ibm.com>
----
+Here is a patch for utimensat_test.sh to change the hardcoded tmp =
+directory to use the LTP variable TMPDIR which may bet set by the user =
+to point to other than /tmp
 
 
---------------090302030907020900070709
-Content-Type: text/x-patch;
- name="controllers-build.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="controllers-build.patch"
+Henry Yei
+MontaVista Software, Inc.
+hyei@mvista.com
 
-Index: ltp-full-20090630/m4/ltp-cgroupstats.m4
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ ltp-full-20090630/m4/ltp-cgroupstats.m4	2009-07-03 13:41:55.000000000 +0530
-@@ -0,0 +1,9 @@
-+dnl
-+dnl LTP_CHECK_CGROUPSTATS
-+dnl ----------------------------
-+dnl
-+AC_DEFUN([LTP_CHECK_CGROUPSTATS],
-+[dnl
-+AC_CHECK_HEADERS(linux/cgroupstats.h,[LTP_CHECK_CGROUPSTATS_HEADER=yes])
-+AC_SUBST(LTP_CHECK_CGROUPSTATS_HEADER)
-+])
-Index: ltp-full-20090630/configure.ac
-===================================================================
---- ltp-full-20090630.orig/configure.ac	2009-07-03 13:59:48.000000000 +0530
-+++ ltp-full-20090630/configure.ac	2009-07-03 14:00:14.000000000 +0530
-@@ -21,5 +21,6 @@
- LTP_CHECK_SELINUX
- LTP_CHECK_CRYPTO
- LTP_CHECK_TASKSTATS
-+LTP_CHECK_CGROUPSTATS
- 
- AC_OUTPUT
-Index: ltp-full-20090630/testcases/kernel/Makefile
-===================================================================
---- ltp-full-20090630.orig/testcases/kernel/Makefile	2009-07-03 14:01:25.000000000 +0530
-+++ ltp-full-20090630/testcases/kernel/Makefile	2009-07-03 14:02:42.000000000 +0530
-@@ -1,6 +1,12 @@
--SUBDIRS = power_management numa containers controllers connectors include fs io ipc mem pty sched security syscalls timers
-+include ../../config.mk
-+
-+SUBDIRS = power_management numa containers connectors include fs io ipc mem pty sched security syscalls timers
- UCLINUX_SUBDIRS = include syscalls
- 
-+ifeq ($(LTP_CHECK_CGROUPSTATS_HEADER),yes)
-+	SUBDIRS+= controllers
-+endif
-+
- all:
- 	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i ; done
- 
 
---------------090302030907020900070709
+=20
+
+------_=_NextPart_001_01CA0044.AF993AAD
+Content-Type: application/octet-stream;
+	name="utimensat_tests.patch"
+Content-Transfer-Encoding: base64
+Content-Description: utimensat_tests.patch
+Content-Disposition: attachment;
+	filename="utimensat_tests.patch"
+
+LS0tIGx0cC1mdWxsLTIwMDkwNTMxL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdXRpbWVuc2F0
+L3V0aW1lbnNhdF90ZXN0cy5zaAkyMDA5LTA0LTA1IDIyOjIzOjAxLjAwMDAwMDAwMCAtMDcwMAor
+KysgbHRwL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdXRpbWVuc2F0L3V0aW1lbnNhdF90ZXN0
+cy5zaAkyMDA5LTA3LTA4IDE5OjU3OjA2LjY2ODYxODQwMCAtMDcwMApAQCAtMzEsOSArMzEsOSBA
+QAogICAgICAgIGV4aXQgMAogZmkKIAotUkVTVUxUX0ZJTEU9L3RtcC91dGltZW5zYXQucmVzdWx0
+CitSRVNVTFRfRklMRT0kVE1QRElSL3V0aW1lbnNhdC5yZXN1bHQKIAotVEVTVF9ESVI9L3RtcC91
+dGltZW5zYXRfdGVzdHMKK1RFU1RfRElSPSRUTVBESVIvdXRpbWVuc2F0X3Rlc3RzCiBGSUxFPSRU
+RVNUX0RJUi91dGltZW5zYXQudGVzdF9maWxlCiAKIFRFU1RfUFJPRz11dGltZW5zYXQwMQo=
+
+------_=_NextPart_001_01CA0044.AF993AAD
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-
---------------090302030907020900070709
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
+------_=_NextPart_001_01CA0044.AF993AAD
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -126,5 +90,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---------------090302030907020900070709--
+------_=_NextPart_001_01CA0044.AF993AAD--
 
