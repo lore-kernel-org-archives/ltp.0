@@ -1,21 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MWaOS-0006M7-4H
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 18:30:20 +0000
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MWaOL-0005It-Tz
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 18:30:20 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090722062905.GA3113@in.ibm.com>
-References: <20090722062905.GA3113@in.ibm.com>
-Date: Thu, 30 Jul 2009 23:59:47 +0530
-Message-Id: <1248978587.5788.68.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Remove pidns14 test case
-Reply-To: subrata@linux.vnet.ibm.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1MOpw3-0004Op-W7
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 09:28:59 +0000
+Received: from an-out-0708.google.com ([209.85.132.242])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MOpvy-0006XT-Nb
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 09:28:59 +0000
+Received: by an-out-0708.google.com with SMTP id c38so8241ana.37
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 09 Jul 2009 02:28:54 -0700 (PDT)
+Message-ID: <4A55B10B.7010200@petalogix.com>
+Date: Thu, 09 Jul 2009 10:57:47 +0200
+From: Michal Simek <michal.simek@petalogix.com>
+MIME-Version: 1.0
+References: <4A54DF6F.1010405@petalogix.com>	<20090708.110624.104984745.davem@davemloft.net>	<4A54FFFE.10306@petalogix.com>
+	<20090708.181551.189345850.davem@davemloft.net>
+In-Reply-To: <20090708.181551.189345850.davem@davemloft.net>
+Subject: Re: [LTP] mmap hw behavior
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,192 +32,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: mohan@in.ibm.com
-Cc: ltp-list@lists.sf.net, sukadev@linux.vnet.ibm.com, sachinp@in.ibm.com
+To: David Miller <davem@davemloft.net>
+Cc: linux-arch@vger.kernel.org, ltp-list@lists.sourceforge.net, arnd@arndb.de, linux-kernel@vger.kernel.org, lethal@linux-sh.org, mingo@elte.hu
 
-On Wed, 2009-07-22 at 11:59 +0530, M. Mohan Kumar wrote: 
-> [PATCH] Remove pidns14 test case
-> Container-init may be immune to unhandled fatal signals (like SIGUSR1)
-> even if they are from ancestor namespace. SIGKILL/SIGSTOP are the only
-> reliable signals to a container-init from ancestor namespace. So remove
-> test case pidns14 from container test suite. Please check git commit id
-> b3bfa0cba867f23365b81658b47efd906830879b for the kernel changes.
-> 
-> Signed-off-by: M. Mohan Kumar <mohan@in.ibm.com>
+David Miller wrote:
+> From: Michal Simek <michal.simek@petalogix.com>
+> Date: Wed, 08 Jul 2009 22:22:22 +0200
+>
+>   
+>> Can you please point me to any code which exactly do this? (for example
+>> file mm/mmap.c line from ... to ... )
+>>     
+>
+> Sorry I don't have time to read the source code for you.
+> I'd have to look it up too, just like you.
+>   
+I found it - Microblaze hasn't defined tlb_flush macro.
 
-I had removed this long back:
+Thanks for your help,
+Michal
 
-Revision 1.5 
-Wed Jul 8 17:44:09 2009 UTC (3 weeks ago) by subrata_modak 
-Branch: MAIN 
-CVS Tags: HEAD 
-Changes since 1.4: +0 -0 lines 
-FILE REMOVED 
-Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>, "Serge E. Hallyn" <serue@us.ibm.com> & "M. Mohan Kumar" <mohan@in.ibm.com> wanted to get this removed.
-http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/containers/pidns/pidns14.c?hideattic=0&view=log,
-
-
-Regards--
-Subrata
-
-> ---
->  testcases/kernel/containers/pidns/pidns14.c       |  122 ---------------------
->  testcases/kernel/containers/pidns/runpidnstest.sh |    6 -
->  2 files changed, 0 insertions(+), 128 deletions(-)
->  delete mode 100644 testcases/kernel/containers/pidns/pidns14.c
-> 
-> diff --git a/testcases/kernel/containers/pidns/pidns14.c b/testcases/kernel/containers/pidns/pidns14.c
-> deleted file mode 100644
-> index e95bf95..0000000
-> --- a/testcases/kernel/containers/pidns/pidns14.c
-> +++ /dev/null
-> @@ -1,122 +0,0 @@
-> -/*
-> -* Copyright (c) International Business Machines Corp., 2008
-> -* This program is free software; you can redistribute it and/or modify
-> -* it under the terms of the GNU General Public License as published by
-> -* the Free Software Foundation; either version 2 of the License, or
-> -* (at your option) any later version.
-> -* This program is distributed in the hope that it will be useful,
-> -* but WITHOUT ANY WARRANTY; without even the implied warranty of
-> -* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-> -* the GNU General Public License for more details.
-> -* You should have received a copy of the GNU General Public License
-> -* along with this program; if not, write to the Free Software
-> -* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-> -*
-> -***************************************************************************
-> -* * Assertion:
-> -* * kill -USR1 container_init from outside a container
-> -* * 	$ Where init has not defined a custom handler for USR1
-> -* * 	$ Should kill the container
-> -* * 	$ else the test fails.
-> -* *
-> -* * Description:
-> -* *  This testcase creates container and waits till it is awakened by parent.
-> -* *  The parent process sends the SIGUSR1 to container init.
-> -* *  This would invoke default handler & terminate the container init.
-> -* *  In parent process verify, if the SIGUSR1 signal is passed to c-init.
-> -* *  If yes then Test is Passed else Test is Failed.
-> -* *
-> -* * History:
-> -* *  DATE	  NAME				   DESCRIPTION
-> -* *  14/11/08  Veerendra C  <vechandr@in.ibm.com> Verifying kill -USR1 in pidns
-> -*
-> -******************************************************************************/
-> -#include "config.h"
-> -
-> -#define _GNU_SOURCE 1
-> -#include <sys/wait.h>
-> -#include <sys/types.h>
-> -#include <signal.h>
-> -#include <stdlib.h>
-> -#include <unistd.h>
-> -#include <usctest.h>
-> -#include <test.h>
-> -#include <libclone.h>
-> -
-> -char *TCID = "pidns14";
-> -int TST_TOTAL = 1;
-> -
-> -int child_fn(void *);
-> -void cleanup(void);
-> -
-> -#define CHILD_PID	1
-> -#define PARENT_PID	0
-> -
-> -/*
-> - * child_fn() - Inside container
-> - */
-> -int child_fn(void *ttype)
-> -{
-> -	pid_t pid, ppid;
-> -
-> -	/* Set process id and parent pid */
-> -	pid = getpid();
-> -	ppid = getppid();
-> -
-> -	if ((pid != CHILD_PID) || (ppid != PARENT_PID)) {
-> -		tst_resm(TBROK, "pidns is not created.");
-> -		cleanup();
-> -	}
-> -	pause();
-> -	tst_resm(TFAIL, "Oops! Container init resumed after receiving SIGUSR1");
-> -	return -1;
-> -}
-> -
-> -/*
-> - * cleanup() - performs all ONE TIME cleanup for this test at
-> - *			 completion or premature exit.
-> - */
-> -void cleanup()
-> -{
-> -	/* Clean the test testcase as LTP wants*/
-> -	TEST_CLEANUP;
-> -	tst_exit();
-> -
-> -}
-> -
-> -/***********************************************************************
-> -*   M A I N
-> -***********************************************************************/
-> -
-> -int main(int argc, char *argv[])
-> -{
-> -	int status;
-> -	pid_t cpid;
-> -
-> -	cpid = do_clone(CLONE_NEWPID | SIGCHLD, child_fn, NULL);
-> -
-> -	if (cpid < 0) {
-> -		tst_resm(TBROK, "clone() failed.");
-> -		cleanup();
-> -	}
-> -
-> -	sleep(1);
-> -	/* Passing the SIGUSR1 to the container init */
-> -	if (kill(cpid, SIGUSR1) != 0) {
-> -		tst_resm(TBROK, "kill(SIGUSR1) fails.");
-> -		cleanup();
-> -	}
-> -
-> -	sleep(1);
-> -	if (waitpid(cpid, &status, 0) < 0)
-> -		tst_resm(TWARN, "waitpid() failed.");
-> -
-> -	if ((WIFSIGNALED(status)) && (WTERMSIG(status) == SIGUSR1))
-> -		tst_resm(TPASS, "Container init is killed as expected, "
-> -				" when the SIGUSR1 is passed from parent\n");
-> -	 else
-> -		tst_resm(TFAIL, "After sending signal kill -USR1, "
-> -				"returned unexpected error\n");
-> -
-> -	return 0;
-> -}	/* End main */
-> diff --git a/testcases/kernel/containers/pidns/runpidnstest.sh b/testcases/kernel/containers/pidns/runpidnstest.sh
-> index 12d3b34..03fed38 100644
-> --- a/testcases/kernel/containers/pidns/runpidnstest.sh
-> +++ b/testcases/kernel/containers/pidns/runpidnstest.sh
-> @@ -85,12 +85,6 @@ if [ $rc -ne 0 ] && [ -z $err_code ]; then
->  	err_code=$rc
->  fi
-> 
-> -pidns14
-> -rc=$?
-> -if [ $rc -ne 0 ] && [ -z $err_code ]; then
-> -	err_code=$rc
-> -fi
-> -
->  pidns16
->  rc=$?
->  if [ $rc -ne 0 ] && [ -z $err_code ]; then
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
 
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
