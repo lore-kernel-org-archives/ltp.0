@@ -1,24 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <skrishnakar@gmail.com>) id 1MTdu0-0001y7-Ll
-	for Ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 15:38:44 +0000
-Received: from wf-out-1314.google.com ([209.85.200.169])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MTdts-0000Q4-T8
-	for Ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 15:38:44 +0000
-Received: by wf-out-1314.google.com with SMTP id 26so77497wfd.4
-	for <Ltp-list@lists.sourceforge.net>;
-	Wed, 22 Jul 2009 08:38:35 -0700 (PDT)
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naresh.kernel@gmail.com>) id 1MOulK-0004GI-W6
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 14:38:14 +0000
+Received: from mail-vw0-f202.google.com ([209.85.212.202])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MOulD-00069N-8G
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 14:38:14 +0000
+Received: by vwj40 with SMTP id 40so152181vwj.28
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 09 Jul 2009 07:38:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2A0DDADE-5C3C-43F2-9487-98A8A735DC8D@kernel.crashing.org>
-References: <6213bc560907210233l17aa3e75pcb7c20e3faa24195@mail.gmail.com>
-	<2A0DDADE-5C3C-43F2-9487-98A8A735DC8D@kernel.crashing.org>
-Date: Wed, 22 Jul 2009 21:08:35 +0530
-Message-ID: <6213bc560907220838h49e5c273qa543e538bb37923a@mail.gmail.com>
-From: srikanth krishnakar <skrishnakar@gmail.com>
-Subject: Re: [LTP] msgctl10 fails on Powerpc Linux-2.6.29.6
+In-Reply-To: <364299f40907071659w60004533iec779d402068695@mail.gmail.com>
+References: <f5a7b3810907030846x35249218u1fe574ba70f796fd@mail.gmail.com>
+	<1246895458.4887.53.camel@subratamodak.linux.ibm.com>
+	<f5a7b3810907070452u62c1c4c6l3f3ed8f1f169f209@mail.gmail.com>
+	<364299f40907070944k7b7b0ce5xb6ace62849c94552@mail.gmail.com>
+	<f5a7b3810907071026t1fe29ce9pb9e61be8374a345@mail.gmail.com>
+	<364299f40907071659w60004533iec779d402068695@mail.gmail.com>
+Date: Thu, 9 Jul 2009 20:08:06 +0530
+Message-ID: <f5a7b3810907090738w748254e4p8683a76110862b4b@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Subject: Re: [LTP] [FIX PATCHE] rt_sigaction
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,102 +32,84 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0216742495150597131=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kumar Gala <galak@kernel.crashing.org>
-Cc: Linuxppc-dev@ozlabs.org, Ltp-list@lists.sourceforge.net
-
---===============0216742495150597131==
-Content-Type: multipart/alternative; boundary=000e0cd30470111c18046f4d2ae3
-
---000e0cd30470111c18046f4d2ae3
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-On Wed, Jul 22, 2009 at 8:52 PM, Kumar Gala <galak@kernel.crashing.org>wrote:
-
-> I'm not seeing any BUG* in traps.c @ line 904.
->
-> On Jul 21, 2009, at 4:33 AM, srikanth krishnakar wrote:
->
->  The LTP test case msgctl10.c fails on linux-2.6.29.6 for PowerPC
->> architecture (ppc440)
->>
->>
->> msgctl10    1  B------------[ cut here ]------------
->> kernel BUG at arch/powerpc/kernel/traps.c:904!
->> Oops: Exception in kernel mode, sig: 5 [#9]
->>
->
-> I'm not seeing any BUG* in traps.c @ line 904.  Do you have some other
-> patches on top of 2.6.29.6?
->
-> - k
->
->
-I have LTTng patches on top of linux-2.6.29.6.
-
--- 
-"The Good You Do, The Best You GET"
-
-Regards
-Srikanth Krishnakar
-**********************
-
---000e0cd30470111c18046f4d2ae3
-Content-Type: text/html; charset=ISO-8859-1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Jiri Palecek <jpalecek@web.de>, maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, Manas Kumar Nayak <maknayak@in.ibm.com>
 
-<br><br><div class=3D"gmail_quote">On Wed, Jul 22, 2009 at 8:52 PM, Kumar G=
-ala <span dir=3D"ltr">&lt;<a href=3D"mailto:galak@kernel.crashing.org">gala=
-k@kernel.crashing.org</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_q=
-uote" style=3D"border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0=
-pt 0.8ex; padding-left: 1ex;">
-I&#39;m not seeing any BUG* in traps.c @ line 904.<div class=3D"im"><br>
-<br>
-On Jul 21, 2009, at 4:33 AM, srikanth krishnakar wrote:<br>
-<br>
-<blockquote class=3D"gmail_quote" style=3D"border-left: 1px solid rgb(204, =
-204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
-The LTP test case msgctl10.c fails on linux-2.6.29.6 for PowerPC architectu=
-re (ppc440)<br>
-<br>
-<br>
-msgctl10 =A0 =A01 =A0B------------[ cut here ]------------<br>
-kernel BUG at arch/powerpc/kernel/traps.c:904!<br>
-Oops: Exception in kernel mode, sig: 5 [#9]<br>
-</blockquote>
-<br></div>
-I&#39;m not seeing any BUG* in traps.c @ line 904. =A0Do you have some othe=
-r patches on top of 2.6.29.6?<br><font color=3D"#888888">
-<br>
-- k<br>
-<br>
-</font></blockquote></div><br>I have LTTng patches on top of linux-2.6.29.6=
-.<br clear=3D"all"><br>-- <br>&quot;The Good You Do, The Best You GET&quot;=
-<br><br>Regards<br>Srikanth Krishnakar<br>**********************<br>
+On Wed, Jul 8, 2009 at 5:29 AM, Garrett Cooper<yanegomi@gmail.com> wrote:
+> On Tue, Jul 7, 2009 at 10:26 AM, naresh kamboju<naresh.kernel@gmail.com> =
+wrote:
+>> Garrett,
+result =3D 0
+>>> rt_sigaction01 =A0 =A00 =A0INFO =A0: =A0sa.sa_flags =3D SA_RESETHAND|SA=
+_SIGINFO
+>>>
+>>> Program received signal SIG34, Real-time event 34.
+>>> 0x00007f770ba0b4f7 in kill () from /lib/libc.so.6
+>>> (gdb) where
+>>> #0 =A00x00007f770ba0b4f7 in kill () from /lib/libc.so.6
+>>> #1 =A00x0000000000401c3e in main ()
+>>> (gdb)
+>>>
+>>
+>> =A0/lib/libc.so.6 :
+>>
+>> This could be issue with glibc.
+>> Are you using 2.9 glibc?
+>>
+>> please Investigate.
+>
+> =A0 =A0Yes, I am:
+>
+> gcooper@orangebox /scratch/ltp-vanilla/ltp $ emerge -qpv glibc
+> [ebuild =A0 R =A0 ] sys-libs/glibc-2.9_p20081201-r2 =A0USE=3D"(multilib) =
+nls
+> -debug -gd -glibc-omitfp (-hardened) -profile (-selinux) -vanilla"
+> gcooper@orangebox /scratch/ltp-vanilla/ltp $
+>
+> =A0 =A0Are you suggesting this might be a glibc bug?
 
---000e0cd30470111c18046f4d2ae3--
+I hope... its not a bug with glibc.
 
+please run following command
+#/lib/libc.so.6
 
---===============0216742495150597131==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Is it generating information about glibc and gcc ??
 
-------------------------------------------------------------------------------
+I have tried it on 2.6.29 kernels and glibc 2.9 on X86-32 bit
+These test got passed.
 
---===============0216742495150597131==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Because of that I could not conclude its glibc bug !!!
 
+These test cases are PASSED on ARM/MIPS/X86
+I did not check with x86- 64 bit ARCH, becz HardWare is not available.
+
+Subrata,
+
+Have you tested these test cases at your end.
+if not please conform the results.
+after applying Garrett date on
+
+Best regards
+Naresh Kamboju
+
+> -Garrett
+>
+
+---------------------------------------------------------------------------=
+---
+Enter the BlackBerry Developer Challenge  =
+
+This is your chance to win up to $100,000 in prizes! For a limited time, =
+
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize=
+  =
+
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============0216742495150597131==--
-
