@@ -1,26 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MMZRN-0004h5-6g
-	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 03:27:57 +0000
-Received: from mail-yx0-f195.google.com ([209.85.210.195])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MMZRI-0006By-S4
-	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 03:27:57 +0000
-Received: by yxe33 with SMTP id 33so1983492yxe.28
+	(envelope-from <yanegomi@gmail.com>) id 1MOhO4-0000pI-Ri
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 00:21:20 +0000
+Received: from an-out-0708.google.com ([209.85.132.240])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MOhNw-000464-TR
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 00:21:20 +0000
+Received: by an-out-0708.google.com with SMTP id c38so2510791ana.37
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 02 Jul 2009 20:27:52 -0700 (PDT)
+	Wed, 08 Jul 2009 17:21:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <200907022245.43330.vapier@gentoo.org>
-References: <364299f40907021746p3ce4bacdwbfc834ef7e4cfcfd@mail.gmail.com>
-	<200907022157.30535.vapier@gentoo.org>
-	<364299f40907021900q5a9529favc07f84cd4ffd0d6a@mail.gmail.com>
-	<200907022245.43330.vapier@gentoo.org>
-Date: Thu, 2 Jul 2009 20:27:52 -0700
-Message-ID: <364299f40907022027n5f9ee24as262417392ed5bbf2@mail.gmail.com>
+In-Reply-To: <200907081953.18802.vapier@gentoo.org>
+References: <364299f40907061722v45417bddhac499efa1415d6af@mail.gmail.com>
+	<200907081953.18802.vapier@gentoo.org>
+Date: Wed, 8 Jul 2009 17:21:11 -0700
+Message-ID: <364299f40907081721r5c821cc3s9bf1253b1a9149e9@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 8/10] config.mk not required for clean
+Subject: Re: [LTP] [PATCH 3/4] Refactor top-level Makefiles,
+	modularize 	autoconf logic
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,87 +33,150 @@ Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Mike Frysinger <vapier@gentoo.org>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Jul 2, 2009 at 7:45 PM, Mike Frysinger<vapier@gentoo.org> wrote:
-> On Thursday 02 July 2009 22:00:41 Garrett Cooper wrote:
->> On Thu, Jul 2, 2009 at 6:57 PM, Mike Frysinger<vapier@gentoo.org> wrote:
->> > On Thursday 02 July 2009 21:21:06 Garrett Cooper wrote:
->> >> Both sinclude and include are possible I suppose, but as far as I
->> >> understand that actually does an fstat, tries to open the file, etc,
->> >> but this completely ignores the include statement and reduces I/O a b=
-it.
->> >
->> > yes, it'll remove a syscall or two, but i dont think that is significa=
-nt
->> > in the larger scheme of things
->> >
->> > the problem is that i dont want these kind of ifdef things propagating=
- as
->> > they'll get tweaked and go inconsistent all over the place
->> >
->> > how about include a top level .mk file that always exists and in there,
->> > you have the conditional config.mk include
+On Wed, Jul 8, 2009 at 4:53 PM, Mike Frysinger<vapier@gentoo.org> wrote:
+> On Monday 06 July 2009 20:22:19 Garrett Cooper wrote:
+>> 1. Better modularize and separate out the top-level Makefile such that
+>> automake logic and top-level targets are better partitioned out, and
+>> thus the overall logic and flow is more intuitive.
+>> 2. Move help output to README.mk-user.
+>> 3. Make $(.DEFAULT_GOAL) vary depending on whether or not the system
+>> has been configured, such that typing in make will no longer run all
+>> and result in Make errors, but instead will punt back help, thus
+>> making LTP more newbie friendly and reducing support requests because
+>> people don't RTFM ;)...
+>> 4. Begin deprecation of the uclinux* rules, which can be communicated
+>> using the UCLINUX=3D[0|1] make env var (like they should have been in
+>> the beginning).
+>> 5. Add appropriate GPLv2 copyright headers wherever needed.
 >>
->> I couldn't agree more :)...
->>
->> FWIW using include all over the place has footprint implications
->> (somewhere on the order of 2~3 times longer when taxing the fs a bit
->> more), so it could be a boon to multijob compiles to go with sinclude
->> / -include.
+>> Notes:
+>> 1. Requires [PATCH 2/4].
+>> 2. Is an evolution of the commentary w.r.t. the config.mk not required
+>> for clean patch submitted on Saturday.
 >
-> well, if you can see tangible differences, then it's worth discussing. =
-=A0i dont
-> think the include style would make a difference in this regard at all, it=
-'d
-> only change the behavior when the file doesnt exist (warn/error/etc...).
+> you have duplicated copyright notices here too
 
-Yeah, but I'm trying to make maximize compiles while maximizing
-repeatability. Hence, that's why there are comments in some of the
-files about srcdir :)...
+The Cisco junk is just to pass by our in-house copyright checker, but
+I suppose it really doesn't matter anyhow...
 
-> how about we aim for avoiding the include completely regardless of target.
-> really config.mk is setting up the environment and recursive makes should=
- be
-> inheriting those. =A0so if our toplevel .mk exported something like:
-> LTP_CONFIG_INCLUDED =3D yes
->
-> then all the fragments in the sub-makefiles should look like:
-> ifneq ($(LTP_CONFIG_INCLUDED),yes)
-> include $(topdir)/config.mk
-> endif
->
-> then you could have the clean target lie by doing:
-> $(MAKE) -C testcases LTP_CONFIG_INCLUDED=3Dyes clean
->
-> which would address all of your concerns ?
+> please drop the sleep in the uclinux warning
 
-Yes. That's sort of the concern that I was going for with my previous
-spin, but then it turned into a gob of Makefile.inc files that were
-being added unnecessarily to the SCM. Considering that the include
-file is only needed for files that include config.mk (which are a
-small handful -- 10 to be exact), I figured that adding the necessary
-logic to the top would be wise.
+Ok.
 
->> People already complain about compiling LTP in my group -- I'm just
->> trying to give them less of a reason to complain :)..
->
-> bah, tell them to build it in a tmpfs partition then ;)
+> you seem to export the variables twice
 
-Best reasoning I've heard all week :D.
+Yeah, I'll look into that.
 
-There's an accidentally bug with pathing in my diff (that wasn't
-exposed because it was just using in the CFLAGS section) that I'm
-going to fix and resubmit patches for tomorrow after doing more
-extensive development and testing on my Gentoo box at home.
+> there is a $(basename ...) make function so you dont need to use `basenam=
+e`
 
-More changes coming down the pike soon (tomorrow) as well...
+Whoops... forgot about that. Thanks.
 
-Thanks,
+> you check SKIP_IDCHECK in some targets ... this is a make var, so using
+> ifeq(...) instead is better -- avoids @ and nesting and set -e and other =
+crap
+
+Yes, will do.
+
+> the if checking in the clean target seems unnecessary
+
+Uh, no. If someone's root and they specify $(INSTALL_DIR) :=3D / (or
+worse, empty), it'll nuke the host machine's entire rootfs. I ran the
+build as a non-root user when I ran into that issue -- and quickly
+quashed it :)...
+
+> please use "$" to indicate prompts in documentation, not "$$"
+
+Ok.
+
+> for pre/post install hooks, why not declare a common name and everyone use
+> that rather than forcing people to declare it. =A0i.e. declare the target=
+ "post-
+> install-hook" as a .PHONY and always call/depend/etc... on it.
+
+I'm a bit confused by this comment. Can you review to spots in the
+patch (when I upload it tonight), so this can be resolved?
+
+> some of your for loops arent using set -e or checking the install exit st=
+atus
+
+Ok. I'll review that again. Thanks.
+
+> why cant testcases/kernel/Makefile leverage these .mk files ? =A0the whol=
+e point
+> was to get away from these custom written jobbies ...
+
+Some of these Makefiles get a bit ugly with the pre- and post- junk...
+There are a small number of Makefiles that are haunted by this work,
+but then again I did some more rework with the generic_trunk_target
+define.
+
+> you're mixing CFLAGS and CPPFLAGS. =A0-I/-D is for CPPFLAGS.
+
+Ok. I thought it was the other way around. Whoops!
+
+> what's this business of every Makefile having to declare MAKE_TARGETS ? =
+=A0this
+> should be a common default.
+
+It defaults to a wildcard of the .c files in the directory -- hence
+the `?=3D'. If that's a bad default, please let me know.
+
+> rather than force everyone to hardcode the default ltp -I inc and -L lib
+> paths, these should be added to the global defaults
+
+Agreed. This was just the first stage.
+
+> doing a for loop on a `rm` command is silly. =A0call `rm` once.
+
+Yeah. I should be applying xargs instead of a loop. Calling rm once
+may overflow the command line though (like with testcases/bin if it
+grows large enough).
+
+> debugging/optimization/warning/stripping flags shouldnt be added in any
+> Makefile that is being converted to these common .mk files. =A0same for a=
+ny
+> DEBUG_XXX flags.
+
+Agreed. I was just duplicating what already existed, hoping that we
+could sweep up this stuff after everything was in and the base
+infrastructure was stable.
+
+> i dont see the point in declaring empty rules like "install: ;". =A0if th=
+ey're
+> declared .PHONY, there is no need to add explicit rules to sub Makefiles.
+
+They're there to avoid errors with targets not being found if I'm
+running recursive Make rules over the entire directory tree. So, I
+agree it's silly, but if you have a better idea, I'm all ears and I'll
+get on it ASAP. I'm trying to avoid cramming more variables into the
+Make system because it will only generate more confusion...
+
+> clean targets should always delete common things like "*.o". =A0forcing p=
+eople
+> to have to manually declare these is a waste.
+
+Ok. Once upon a time (~1 year ago) I found a testcase that generated a
+.o file which was just as input for a testcase (it was under
+testcases/kernel/io somewhere -- maybe the floppy test). Maybe that's
+a bug then that should be solved...
+
+Thanks!
 -Garrett
 
 ---------------------------------------------------------------------------=
 ---
+Enter the BlackBerry Developer Challenge  =
+
+This is your chance to win up to $100,000 in prizes! For a limited time, =
+
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize=
+  =
+
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
