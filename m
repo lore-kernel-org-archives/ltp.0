@@ -1,22 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MMZgY-0004y8-K6
-	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 03:43:38 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MMZgT-0001sX-1T
-	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 03:43:38 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Thu, 2 Jul 2009 23:42:58 -0400
-References: <364299f40907021746p3ce4bacdwbfc834ef7e4cfcfd@mail.gmail.com>
-	<200907022245.43330.vapier@gentoo.org>
-	<364299f40907022027n5f9ee24as262417392ed5bbf2@mail.gmail.com>
-In-Reply-To: <364299f40907022027n5f9ee24as262417392ed5bbf2@mail.gmail.com>
-MIME-Version: 1.0
-Message-Id: <200907022342.59078.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 8/10] config.mk not required for clean
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MOo8a-0008Nd-OX
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 07:33:48 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MOo8V-0004tt-Cs
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 07:33:48 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e3.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n697Fatd012727
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2009 03:15:36 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n697L9Bb239792
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2009 03:21:09 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n697IcPY002700
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2009 03:18:38 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <587a08410907071230x3c4f6edaj71e5ace0a19c96ba@mail.gmail.com>
+References: <587a08410907071230x3c4f6edaj71e5ace0a19c96ba@mail.gmail.com>
+Date: Thu, 09 Jul 2009 12:51:04 +0530
+Message-Id: <1247124065.6174.1.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Simple test for eventfd
+	semaphore	(eventfd-sem:	eventfd2_03.c) for ARM architecture
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,92 +37,65 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2934508830348258468=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-
---===============2934508830348258468==
-Content-Type: multipart/signed; boundary="nextPart3833064.RltaEH9axG";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart3833064.RltaEH9axG
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-On Thursday 02 July 2009 23:27:52 Garrett Cooper wrote:
-> On Thu, Jul 2, 2009 at 7:45 PM, Mike Frysinger wrote:
-> > how about we aim for avoiding the include completely regardless of
-> > target. really config.mk is setting up the environment and recursive
-> > makes should be inheriting those.  so if our toplevel .mk exported
-> > something like: LTP_CONFIG_INCLUDED = yes
-> >
-> > then all the fragments in the sub-makefiles should look like:
-> > ifneq ($(LTP_CONFIG_INCLUDED),yes)
-> > include $(topdir)/config.mk
-> > endif
-> >
-> > then you could have the clean target lie by doing:
-> > $(MAKE) -C testcases LTP_CONFIG_INCLUDED=yes clean
-> >
-> > which would address all of your concerns ?
->
-> Yes. That's sort of the concern that I was going for with my previous
-> spin, but then it turned into a gob of Makefile.inc files that were
-> being added unnecessarily to the SCM. Considering that the include
-> file is only needed for files that include config.mk (which are a
-> small handful -- 10 to be exact), I figured that adding the necessary
-> logic to the top would be wise.
-
-today it is 10, but ideally this is the format we'll be moving to
--mike
-
---nextPart3833064.RltaEH9axG
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJKTX5DAAoJEEFjO5/oN/WBfDUQAJmNpaCxf4eXqM+tr5y0LULN
-YQqW6tbtVhMd86Qo3RzGIQ8wRi1k3W6Nvir6pLUJqX0/3oSwXwHL5VIdiHScbegD
-Mjsfzi9IafJk5lgK/rFvJbTgavgXYqipsEJ5qbrnnUNKb/sA984YeQr6igMoCMTZ
-DDQI7iiiMZgZqrLPox5mZ27H0aANloYss28dRy1fdSUfymkdkspcC8Cg99lKYJuE
-EjdgWGI1ikCL7hVtWwacHPjvbzh1EUYb3x7TfLHGcGKK9SqvrTdQbU8UeIgEJH0Q
-3Id0vIfC9Ct88b9PpRqDEntLU39HRIXhyg+SJTJ9ZqzABsV2z01N2fgFmsH5m6Gr
-O+Wb7Y4zjMNwIpo8LkkwgNxBe/DVhECHH7yh87tccATBasvbSrhGscpdMr0RJ6Aj
-+sYIr2QpVzqOkPjQhoEb6dazT74oSIau+89hdt2ovp/U4yYsvlZ5Gb++fR99zzHd
-fLsg5abF7e3/SIYesNYNToNjhK25IQ13Qe2GQHJegRO7eOWFWTbfnGDQHPa6Zoyd
-jrFeaGqlAdqlZ40nSrnZsVARE3zTfAyKXu0HcNWia074lGhjACudVKxlm4sMsEBr
-0mEiVpe7TX92bVosp1F3t5Str6fJ4cSLiTaAeOlGtnvhMm5TJnoErnavieSeaGWe
-r7shf8WWXK+NIm9QREL9
-=RIzS
------END PGP SIGNATURE-----
-
---nextPart3833064.RltaEH9axG--
-
-
---===============2934508830348258468==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Jatin Sharma <sharmaj@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi Jatin,
+
+A recent failure on Powerpc has been patched. Please see:
+
+http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/include/powerpc.in?r1=1.6&r2=1.7,
+
+You need to make similar entries by finding out the corresponding
+syscall no. on arm and update the following file in ltp. If that solves
+your problem, send the patch to LTP:
+
+http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/include/arm.in
+
+Regards--
+Subrata
+
+On Tue, 2009-07-07 at 12:30 -0700, Jatin Sharma wrote:
+> Cross-compilation of the ltp-full-20090630 for ARM architecture fails
+> in the following code. Is there a patch for this code for ARM
+> architecture?
+> 
+> #ifndef __NR_eventfd2
+> #if defined(__x86_64__)
+> #define __NR_eventfd2 290
+> #elif defined(__i386__)
+> #define __NR_eventfd2 328
+> #else
+> #error Cannot detect your architecture!
+> #endif
+> #endif
+> 
+> 
+> Thanks,
+> Jatin
+> 
+> ------------------------------------------------------------------------------
+> Enter the BlackBerry Developer Challenge  
+> This is your chance to win up to $100,000 in prizes! For a limited time, 
+> vendors submitting new applications to BlackBerry App World(TM) will have 
+> the opportunity to enter the BlackBerry Developer Challenge. See full prize 
+> details at: http://p.sf.net/sfu/blackberry
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 
 ------------------------------------------------------------------------------
-
---===============2934508830348258468==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============2934508830348258468==--
-
