@@ -1,33 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MWUzg-0001zy-H9
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 12:44:24 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MWUza-00063i-DA
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 12:44:24 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e2.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n6UCcdBM003146
-	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 08:38:39 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n6UCiCfU216316
-	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 08:44:12 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n6UCfUW0024537
-	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 08:41:30 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1246895461.4887.54.camel@subratamodak.linux.ibm.com>
-References: <200907031601.52650.vapier@gentoo.org>
-	<1246895461.4887.54.camel@subratamodak.linux.ibm.com>
-Date: Thu, 30 Jul 2009 18:14:08 +0530
-Message-Id: <1248957848.5788.15.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] futex syscall tests
-Reply-To: subrata@linux.vnet.ibm.com
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MOxbl-0007gJ-F5
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 17:40:33 +0000
+Received: from an-out-0708.google.com ([209.85.132.243])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MOxbh-00028m-5l
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 17:40:33 +0000
+Received: by an-out-0708.google.com with SMTP id c38so149374ana.37
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 09 Jul 2009 10:40:28 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <f5a7b3810907090750lde8e9carc9fe8a6317e67153@mail.gmail.com>
+References: <f5a7b3810907070546v727fafc0o71fde4613e590254@mail.gmail.com>
+	<364299f40907070906v174de45ci6765d3111f64a279@mail.gmail.com>
+	<f5a7b3810907090750lde8e9carc9fe8a6317e67153@mail.gmail.com>
+Date: Thu, 9 Jul 2009 10:40:28 -0700
+Message-ID: <364299f40907091040v73e1dc3dm8c8eada4221abc7b@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Compile failure with rt_sigaction on amd64
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,51 +29,232 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Mon, 2009-07-06 at 21:21 +0530, Subrata Modak wrote: 
-> On Fri, 2009-07-03 at 16:01 -0400, Mike Frysinger wrote: 
-> > are there any futex syscall tests already in ltp that i cant seem to locate ?  
-> > if not, i can adapt the few that already exist in the libfutex code ...
+On Thu, Jul 9, 2009 at 7:50 AM, naresh kamboju<naresh.kernel@gmail.com> wro=
+te:
+> On Tue, Jul 7, 2009 at 9:36 PM, Garrett Cooper<yanegomi@gmail.com> wrote:
+>> On Tue, Jul 7, 2009 at 5:46 AM, naresh kamboju<naresh.kernel@gmail.com> =
+wrote:
+>>> Hi Garrett Cooper,
+>>>
+>>> Thanks for your info.
+>>>
+>>>>Oops... looks like someone forgot __amd64__ / >__ia64__:
+>>>
+>>> yes.
+>>> i forgot to add these ARCH.
+>>> Because I am not having this Architecture at my end :-(
+>>>
+>>>>gcc -g -O2 -I../../include -g -Wall -I../../../../include >-Wall -O2 -W
+>>>>rt_sigaction01.c -L../../../../lib -lltp -o rt_sigaction01
+>>>>rt_sigaction01.c: In function 'set_handler':
+>>>>rt_sigaction01.c:147: error: 'SIGSETSIZE' >undeclared .(first use in
+>>>>this function)
+>>>>rt_sigaction01.c:147: error: (Each undeclared >identifier is reported o=
+nly once
+>>>>rt_sigaction01.c:147: error: for each function it >appears in.)
+>>>>make[4]: *** [rt_sigaction01] Error 1
+>>>
+>>>>I tried using sizeof(sigaction_t), but unfortunately the >results for
+>>>>the testcase(s) on my system were always EINVAL. >This issue wasn't
+>>>>present a few days ago...
+>>>
+>>>>Any ideas?
+>>>
+>>>
+>>> I have made a patch to fix this issue please review the this temporary =
+fix.
+>>>
+>>> In my previous mail I have stated that sigset size (size_t sigsetsize)
+>>> will be different for Different ARCH. It is depending on
+>>> _COMPAT_NSIG_WORDS Macro.
+>>>
+>>> We have to conform how its different with respect to ARCH and need to
+>>> have a generic solution to fix this issue.
+>>>
+>>> I think its going to be an issue othere than __arm__ || __i386__ ||
+>>> __powerpc__ || __amd64__ || __ia64__ and __mips__
+>>>
+>>> There are different ARCH are being used by our LTP developers.
+>>>
+>>> I=92ll investigate this issue and come back with generic Solution to
+>>> support most of the ARCH.
+>>>
+>>>
+>>> please refer this linux-2.6.30/include/linux/compat.h
+>>>
+>>> http://lxr.linux.no/linux+v2.6.30/include/linux/compat.h#L75
+>>>
+>>> #define _COMPAT_NSIG_WORDS (_COMPAT_NSIG / _COMPAT_NSIG_BPW)
+>>>
+>>> typedef struct {
+>>> compat_sigset_word sig[_COMPAT_NSIG_WORDS];
+>>> } compat_sigset_t;
+>>>
+>>> Your suggestions are welcome ... :)
+>>>
+>>>
+>>> Best regards
+>>> Naresh Kamboju
+>>>
+>>> Signed-off-by: Naresh Kamboju < naresh.kernel@gm... >
+>>>
+>>> diff -Naurb a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
+>>> b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
+>>> --- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c 2009-07-07
+>>> 16:58:11.000000000 +0530
+>>> +++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c 2009-07-07
+>>> 16:59:38.000000000 +0530
+>>> @@ -59,7 +59,7 @@
+>>> #define SIGSETSIZE 16
+>>> #endif
+>>>
+>>> -#if defined __arm__ || __i386__ || __powerpc__
+>>> +#if defined __arm__ || __i386__ || __powerpc__ || __amd64__ || __ia64__
+>>> #define SIGSETSIZE 8
+>>> #endif
+>>>
+>>> diff -Naurb a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
+>>> b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
+>>> --- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c 2009-07-07
+>>> 16:58:11.000000000 +0530
+>>> +++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c 2009-07-07
+>>> 16:59:48.000000000 +0530
+>>> @@ -55,7 +55,7 @@
+>>> #define SIGSETSIZE 16
+>>> #endif
+>>>
+>>> -#if defined __arm__ || __i386__ || __powerpc__
+>>> +#if defined __arm__ || __i386__ || __powerpc__ || __amd64__ || __ia64__
+>>> #define SIGSETSIZE 8
+>>> #endif
+>>
+>> Interesting. I checked the kernel sources and it appears that __mips__
+>> is the only odd man out.
+>
+> If you are sure about only MIPS is odd man out.
+> Then it would be perfect patch to fix this issue.
+>
+> Subrata,
+> Please review this patch and test at your end and conform with PASSED
+> architectures and FAILED.
+>
+> If you found any issue please let me know.
 
-Mike,
+Naresh,
+    In retrospect the comment I wrote up about the calculation I made
+could be a bit misleading... this one's better.
 
-Did you post something on this, which i might have missed due to
-inactivity for last couple of weeks ?
+1. Fix compile issue across all platforms (like before)
+2. Better comments on calculations =3D> less confusion =3D> happier
+developers and users :).
 
-Regards--
-Subrata
+Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
 
-> 
-> Mike, that should be really great to get to LTP.
-> 
-> Regards--
-> Subrata
-> 
-> > -mike
-> > ------------------------------------------------------------------------------
-> > _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-> 
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+Index: testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/rt_sigaction/rt_sigact=
+ion0
+.c,v
+retrieving revision 1.2
+diff -u -r1.2 rt_sigaction01.c
+--- testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c     6 Jul 2009 =
+15:2
+:06 -0000       1.2
++++ testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c     9 Jul 2009 =
+17:3
+:49 -0000
+@@ -55,15 +55,25 @@
+ #include "usctest.h"
+ #include "linux_syscall_numbers.h"
 
+-#if defined __mips__
++/*
++ * For all but __mips__:
++ *
++ * _COMPAT_NSIG / _COMPAT_NSIG_BPW =3D=3D 2.
++ *
++ * For __mips__:
++ *
++ * _COMPAT_NSIG / _COMPAT_NSIG_BPW =3D=3D 4.
++ *
++ * See asm/compat.h under the kernel source for more details.
++ *
++ * Multiply that by a fudge factor of 4 and you have your SIGSETSIZE.
++ */
++#if defined (__mips__)
+ #define SIGSETSIZE 16
+-#endif
+-
+-#if defined __arm__ || __i386__ || __powerpc__
++#else
+ #define SIGSETSIZE 8
+ #endif
 
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+-
+ /* Extern Global Variables */
+ extern int Tst_count;           /* counter for tst_xxx routines.         */
+ extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
+Index: testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/rt_sigaction/rt_sigact=
+ion0
+.c,v
+retrieving revision 1.1
+diff -u -r1.1 rt_sigaction02.c
+--- testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c     6 Jul 2009 =
+15:2
+:06 -0000       1.1
++++ testcases/kernel/syscalls/rt_sigaction/rt_sigaction02.c     9 Jul 2009 =
+17:3
+:49 -0000
+@@ -51,11 +51,22 @@
+ #include "usctest.h"
+ #include "linux_syscall_numbers.h"
+
+-#if defined __mips__
++/*
++ * For all but __mips__:
++ *
++ * _COMPAT_NSIG / _COMPAT_NSIG_BPW =3D=3D 2.
++ *
++ * For __mips__:
++ *
++ * _COMPAT_NSIG / _COMPAT_NSIG_BPW =3D=3D 4.
++ *
++ * See asm/compat.h under the kernel source for more details.
++ *
++ * Multiply that by a fudge factor of 4 and you have your SIGSETSIZE.
++ */
++#if defined (__mips__)
+ #define SIGSETSIZE 16
+-#endif
+-
+-#if defined __arm__ || __i386__ || __powerpc__
++#else
+ #define SIGSETSIZE 8
+ #endif
+
+---------------------------------------------------------------------------=
+---
+Enter the BlackBerry Developer Challenge  =
+
+This is your chance to win up to $100,000 in prizes! For a limited time, =
+
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize=
+  =
+
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
