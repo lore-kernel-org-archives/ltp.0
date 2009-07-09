@@ -1,21 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MTUAu-0004e4-Hl
-	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 05:15:32 +0000
-Received: from wf-out-1314.google.com ([209.85.200.173])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MTUAm-0003gS-4x
-	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 05:15:32 +0000
-Received: by wf-out-1314.google.com with SMTP id 26so1063305wfd.4
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naresh.kernel@gmail.com>) id 1MOuoC-0004V6-IG
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 14:41:12 +0000
+Received: from mail-gx0-f220.google.com ([209.85.217.220])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MOuo7-00081z-PY
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 14:41:12 +0000
+Received: by gxk20 with SMTP id 20so900897gxk.10
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 21 Jul 2009 22:15:23 -0700 (PDT)
+	Thu, 09 Jul 2009 07:41:07 -0700 (PDT)
 MIME-Version: 1.0
-Date: Tue, 21 Jul 2009 22:15:23 -0700
-Message-ID: <364299f40907212215y52221428ob6c3be2a610d84dc@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] eventfd_03 broken on 2.6.29?
+In-Reply-To: <f5a7b3810907090738w748254e4p8683a76110862b4b@mail.gmail.com>
+References: <f5a7b3810907030846x35249218u1fe574ba70f796fd@mail.gmail.com>
+	<1246895458.4887.53.camel@subratamodak.linux.ibm.com>
+	<f5a7b3810907070452u62c1c4c6l3f3ed8f1f169f209@mail.gmail.com>
+	<364299f40907070944k7b7b0ce5xb6ace62849c94552@mail.gmail.com>
+	<f5a7b3810907071026t1fe29ce9pb9e61be8374a345@mail.gmail.com>
+	<364299f40907071659w60004533iec779d402068695@mail.gmail.com>
+	<f5a7b3810907090738w748254e4p8683a76110862b4b@mail.gmail.com>
+Date: Thu, 9 Jul 2009 20:11:07 +0530
+Message-ID: <f5a7b3810907090741q31949745xd7d627788a95477a@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Subject: Re: [LTP] [FIX PATCHE] rt_sigaction
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,110 +33,90 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Jiri Palecek <jpalecek@web.de>, maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, Manas Kumar Nayak <maknayak@in.ibm.com>
 
-After applying the fix noted for the issue noted by CAI (and even
-beforehand), I find that the testcase simply doesn't work (see below).
+On Thu, Jul 9, 2009 at 8:08 PM, naresh kamboju<naresh.kernel@gmail.com> wro=
+te:
+> On Wed, Jul 8, 2009 at 5:29 AM, Garrett Cooper<yanegomi@gmail.com> wrote:
+>> On Tue, Jul 7, 2009 at 10:26 AM, naresh kamboju<naresh.kernel@gmail.com>=
+ wrote:
+>>> Garrett,
+> result =3D 0
+>>>> rt_sigaction01 =A0 =A00 =A0INFO =A0: =A0sa.sa_flags =3D SA_RESETHAND|S=
+A_SIGINFO
+>>>>
+>>>> Program received signal SIG34, Real-time event 34.
+>>>> 0x00007f770ba0b4f7 in kill () from /lib/libc.so.6
+>>>> (gdb) where
+>>>> #0 =A00x00007f770ba0b4f7 in kill () from /lib/libc.so.6
+>>>> #1 =A00x0000000000401c3e in main ()
+>>>> (gdb)
+>>>>
+>>>
+>>> =A0/lib/libc.so.6 :
+>>>
+>>> This could be issue with glibc.
+>>> Are you using 2.9 glibc?
+>>>
+>>> please Investigate.
+>>
+>> =A0 =A0Yes, I am:
+>>
+>> gcooper@orangebox /scratch/ltp-vanilla/ltp $ emerge -qpv glibc
+>> [ebuild =A0 R =A0 ] sys-libs/glibc-2.9_p20081201-r2 =A0USE=3D"(multilib)=
+ nls
+>> -debug -gd -glibc-omitfp (-hardened) -profile (-selinux) -vanilla"
+>> gcooper@orangebox /scratch/ltp-vanilla/ltp $
+>>
+>> =A0 =A0Are you suggesting this might be a glibc bug?
+>
+> I hope... its not a bug with glibc.
+>
+> please run following command
+> #/lib/libc.so.6
+>
+> Is it generating information about glibc and gcc ??
+>
+> I have tried it on 2.6.29 kernels and glibc 2.9 on X86-32 bit
+> These test got passed.
+>
+> Because of that I could not conclude its glibc bug !!!
+>
+> These test cases are PASSED on ARM/MIPS/X86
+> I did not check with x86- 64 bit ARCH, becz HardWare is not available.
+>
+> Subrata,
+>
+> Have you tested these test cases at your end.
+> if not please conform the results.
+> after applying Garrett date on
 
-gcooper@orangebox /scratch/ltp-dev2/ltp $ strace
-testcases/kernel/syscalls/eventfd2/eventfd2_03
-execve("testcases/kernel/syscalls/eventfd2/eventfd2_03",
-["testcases/kernel/syscalls/eventf"...], [/* 46 vars */]) = 0
-brk(0)                                  = 0x1a8b000
-mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
-0) = 0x7fcb728f1000
-mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
-0) = 0x7fcb728f0000
-access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
-open("/etc/ld.so.cache", O_RDONLY)      = 3
-fstat(3, {st_mode=S_IFREG|0644, st_size=80124, ...}) = 0
-mmap(NULL, 80124, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7fcb728dc000
-close(3)                                = 0
-open("/lib/libc.so.6", O_RDONLY)        = 3
-read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\340\346\1\0\0\0\0\0@"...,
-832) = 832
-fstat(3, {st_mode=S_IFREG|0755, st_size=1383600, ...}) = 0
-mmap(NULL, 3490456, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3,
-0) = 0x7fcb72381000
-mprotect(0x7fcb724cc000, 2097152, PROT_NONE) = 0
-mmap(0x7fcb726cc000, 20480, PROT_READ|PROT_WRITE,
-MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x14b000) = 0x7fcb726cc000
-mmap(0x7fcb726d1000, 17048, PROT_READ|PROT_WRITE,
-MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7fcb726d1000
-close(3)                                = 0
-mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
-0) = 0x7fcb728db000
-mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
-0) = 0x7fcb728da000
-arch_prctl(ARCH_SET_FS, 0x7fcb728da6f0) = 0
-mprotect(0x7fcb726cc000, 16384, PROT_READ) = 0
-mprotect(0x603000, 4096, PROT_READ)     = 0
-mprotect(0x7fcb728f2000, 4096, PROT_READ) = 0
-munmap(0x7fcb728dc000, 80124)           = 0
-uname({sys="Linux", node="orangebox", ...}) = 0
-syscall_290(0, 0x1, 0xfffffffd, 0x1d, 0xa, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) = -1 (errno 22)
-dup(2)                                  = 3
-fcntl(3, F_GETFL)                       = 0x8002 (flags O_RDWR|O_LARGEFILE)
-brk(0)                                  = 0x1a8b000
-brk(0x1aac000)                          = 0x1aac000
-fstat(3, {st_mode=S_IFCHR|0620, st_rdev=makedev(136, 0), ...}) = 0
-mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
-0) = 0x7fcb728ef000
-lseek(3, 0, SEEK_CUR)                   = -1 ESPIPE (Illegal seek)
-write(3, "eventfd2: Invalid argument\n"..., 27eventfd2: Invalid argument
-) = 27
-close(3)                                = 0
-munmap(0x7fcb728ef000, 4096)            = 0
-exit_group(1)                           = ?
+After applying Garrett patch dated on Jul 7th 2009
+SUB: RE: [LTP] Compile failure with rt_sigaction on amd64
 
-Here's the code block where it errors out:
+>
+> Best regards
+> Naresh Kamboju
+>
+>> -Garrett
+>>
+>
 
-        if ((fd1 = eventfd2(0, EFD_SEMLIKE)) == -1 ||
-            (fd2 = eventfd2(0, EFD_SEMLIKE)) == -1) {
-                perror("eventfd2");
-                return 1;
-        }
+---------------------------------------------------------------------------=
+---
+Enter the BlackBerry Developer Challenge  =
 
-The manpage says it should return EINVAL for bad flags (because my
-kernel's version is 2.6.29, which is newer than 2.6.27, the minimum
-version). Doing a bit of research it looks like the values being fed
-into eventfd2 are wrong, according to the documentation:
+This is your chance to win up to $100,000 in prizes! For a limited time, =
 
-       EFD_NONBLOCK  Set  the O_NONBLOCK file status flag on the new open file
-                     description.   Using  this  flag  saves  extra  calls  to
-                     fcntl(2) to achieve the same result.
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize=
+  =
 
-       EFD_CLOEXEC   Set  the  close-on-exec (FD_CLOEXEC) flag on the new file
-                     descriptor.  See the description of the O_CLOEXEC flag in
-                     open(2) for reasons why this may be useful.
-
-       In  Linux  up to version 2.6.26, the flags argument is unused, and must
-       be specified as zero.
-
-gcooper@orangebox /scratch/ltp-dev2/ltp $ egrep -r
-'EFD_NONBLOCK|EFD_CLOEXEC' /usr/include/sys/eventfd.h
-    EFD_CLOEXEC = 02000000,
-#define EFD_CLOEXEC EFD_CLOEXEC
-    EFD_NONBLOCK = 04000
-#define EFD_NONBLOCK EFD_NONBLOCK
-gcooper@orangebox /scratch/ltp-dev2/ltp $ egrep -r 'EFD_SEMLIKE'
-/usr/include/sys/eventfd.h
-gcooper@orangebox /scratch/ltp-dev2/ltp $ grep -r 1 /usr/include/sys/eventfd.h
-   version 2.1 of the License, or (at your option) any later version.
-   02111-1307 USA.  */
-#define _SYS_EVENTFD_H  1
-
-So, what should we define the flag to to fix this test, or should it
-just be marked broken on 2.6.29?
-
-Thanks,
--Garrett
-
-------------------------------------------------------------------------------
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
