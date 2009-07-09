@@ -1,22 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MO2vf-00011k-LS
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 05:09:19 +0000
-Received: from mail-pz0-f178.google.com ([209.85.222.178])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MO2vf-0005NZ-43
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 05:09:19 +0000
-Received: by pzk8 with SMTP id 8so4299374pzk.28
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MOxWT-0004Oj-2r
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 17:35:05 +0000
+Received: from an-out-0708.google.com ([209.85.132.250])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MOxWK-0004Qh-Af
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 17:35:02 +0000
+Received: by an-out-0708.google.com with SMTP id c38so147646ana.37
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 06 Jul 2009 22:09:18 -0700 (PDT)
+	Thu, 09 Jul 2009 10:34:56 -0700 (PDT)
 MIME-Version: 1.0
-Date: Mon, 6 Jul 2009 22:09:17 -0700
-Message-ID: <364299f40907062209u75b0ed0emb660a34dd6c744aa@mail.gmail.com>
+In-Reply-To: <f5a7b3810907090738w748254e4p8683a76110862b4b@mail.gmail.com>
+References: <f5a7b3810907030846x35249218u1fe574ba70f796fd@mail.gmail.com>
+	<1246895458.4887.53.camel@subratamodak.linux.ibm.com>
+	<f5a7b3810907070452u62c1c4c6l3f3ed8f1f169f209@mail.gmail.com>
+	<364299f40907070944k7b7b0ce5xb6ace62849c94552@mail.gmail.com>
+	<f5a7b3810907071026t1fe29ce9pb9e61be8374a345@mail.gmail.com>
+	<364299f40907071659w60004533iec779d402068695@mail.gmail.com>
+	<f5a7b3810907090738w748254e4p8683a76110862b4b@mail.gmail.com>
+Date: Thu, 9 Jul 2009 10:34:56 -0700
+Message-ID: <364299f40907091034h7b657239v2023270f327f9480@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] [PATCH] Enable PATCH 2 / PATCH 3 support with libcontrollers
-	for deterministic placement
+Subject: Re: [LTP] [FIX PATCHE] rt_sigaction
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,89 +33,102 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Jiri Palecek <jpalecek@web.de>, maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, Manas Kumar Nayak <maknayak@in.ibm.com>
 
-In order to put libcontrollers.a in an appropriate location, s.t. the
-cpuset, etc tests can properly find it, we need to adjust the Makefile
-to establish feature parity with the current backend supported in the
-cpuset Makefiles.
+On Thu, Jul 9, 2009 at 7:38 AM, naresh kamboju<naresh.kernel@gmail.com> wro=
+te:
+> On Wed, Jul 8, 2009 at 5:29 AM, Garrett Cooper<yanegomi@gmail.com> wrote:
+>> On Tue, Jul 7, 2009 at 10:26 AM, naresh kamboju<naresh.kernel@gmail.com>=
+ wrote:
+>>> Garrett,
+> result =3D 0
+>>>> rt_sigaction01 =A0 =A00 =A0INFO =A0: =A0sa.sa_flags =3D SA_RESETHAND|S=
+A_SIGINFO
+>>>>
+>>>> Program received signal SIG34, Real-time event 34.
+>>>> 0x00007f770ba0b4f7 in kill () from /lib/libc.so.6
+>>>> (gdb) where
+>>>> #0 =A00x00007f770ba0b4f7 in kill () from /lib/libc.so.6
+>>>> #1 =A00x0000000000401c3e in main ()
+>>>> (gdb)
+>>>>
+>>>
+>>> =A0/lib/libc.so.6 :
+>>>
+>>> This could be issue with glibc.
+>>> Are you using 2.9 glibc?
+>>>
+>>> please Investigate.
+>>
+>> =A0 =A0Yes, I am:
+>>
+>> gcooper@orangebox /scratch/ltp-vanilla/ltp $ emerge -qpv glibc
+>> [ebuild =A0 R =A0 ] sys-libs/glibc-2.9_p20081201-r2 =A0USE=3D"(multilib)=
+ nls
+>> -debug -gd -glibc-omitfp (-hardened) -profile (-selinux) -vanilla"
+>> gcooper@orangebox /scratch/ltp-vanilla/ltp $
+>>
+>> =A0 =A0Are you suggesting this might be a glibc bug?
+>
+> I hope... its not a bug with glibc.
+>
+> please run following command
+> #/lib/libc.so.6
+>
+> Is it generating information about glibc and gcc ??
+>
+> I have tried it on 2.6.29 kernels and glibc 2.9 on X86-32 bit
+> These test got passed.
+>
+> Because of that I could not conclude its glibc bug !!!
+>
+> These test cases are PASSED on ARM/MIPS/X86
+> I did not check with x86- 64 bit ARCH, becz HardWare is not available.
 
-This patch is needed to properly address the cross-compilation issues
-just posted on the list.
+gcooper@orangebox /scratch/ltp-vanilla/ltp $ /lib/libc.so.6
+GNU C Library stable release version 2.9, by Roland McGrath et al.
+Copyright (C) 2008 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.
+There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.
+Compiled by GNU CC version 4.3.2.
+Compiled on a Linux >>2.6.29-gentoo-r5<< system on 2009-07-05.
+Available extensions:
+        C stubs add-on version 2.1.2
+        crypt add-on version 2.1 by Michael Glad and others
+        Gentoo snapshot 20081201
+        Gentoo patchset 5
+        GNU Libidn by Simon Josefsson
+        Native POSIX Threads Library by Ulrich Drepper et al
+        Support for some architectures added on, not maintained in glibc co=
+re.
+        BIND-8.2.3-T5B
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/libc/bugs.html>.
 
-This requires PATCH 2/4 and PATCH 3/4 in order to function.
+I'm confused -- how will that help us?
 
-Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+Also, Gentoo applies some patches to glibc -- maybe one or more of
+those patches are invalid from a functional point of view.
 
-Index: testcases/kernel/controllers/libcontrollers/Makefile
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/controllers/libcontrollers/Makefile,v
-retrieving revision 1.1
-diff -u -r1.1 Makefile
---- testcases/kernel/controllers/libcontrollers/Makefile	28 Feb 2008
-14:50:59 -0000	1.1
-+++ testcases/kernel/controllers/libcontrollers/Makefile	7 Jul 2009
-05:04:11 -0000
-@@ -1,15 +1,38 @@
--TARGET=libcontrollers.a
--SRCS=$(wildcard *.c)
--OBJS=$(patsubst %.c,%.o,$(SRCS))
-+#
-+#    testcases/kernel/controllers library Makefile.
-+#
-+#    Copyright (C) 2009, Cisco Systems Inc.
-+#
-+#    This program is free software; you can redistribute it and/or modify
-+#    it under the terms of the GNU General Public License as published by
-+#    the Free Software Foundation; either version 2 of the License, or
-+#    (at your option) any later version.
-+#
-+#    This program is distributed in the hope that it will be useful,
-+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+#    GNU General Public License for more details.
-+#
-+#    You should have received a copy of the GNU General Public License along
-+#    with this program; if not, write to the Free Software Foundation, Inc.,
-+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+#
-+# Garrett Cooper, July 2009
-+#
-+# Copyright (c) 2009 by Cisco Systems, Inc.
-+# All rights reserved
-+#
-+
-+srcdir			?= ../../../..
-+
-+include $(srcdir)/include/master_include.mk
-+
-+INSTALL_DIR		:= $(libdir)
+Thanks,
+-Garrett
 
--all : $(TARGET)
-+LIB			:= lib$(LIBSUFFIX).a
+---------------------------------------------------------------------------=
+---
+Enter the BlackBerry Developer Challenge  =
 
--$(TARGET): $(OBJS)
--	$(AR) -cr $@ $^
--
--clean:
--	rm -f $(TARGET) $(OBJS)
--
--install:
-+MAKE_TARGETS		:= $(LIB)
+This is your chance to win up to $100,000 in prizes! For a limited time, =
 
-+$(LIB): $(OBJS)
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize=
+  =
 
-+$(eval $(generic_leaf_target))
-
-------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have 
-the opportunity to enter the BlackBerry Developer Challenge. See full prize 
-details at: http://p.sf.net/sfu/blackberry
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
