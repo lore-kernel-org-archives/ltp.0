@@ -1,32 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MNqTa-0005B3-7M
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:51:30 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MNqTU-0002Yd-SS
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:51:25 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e8.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n66FePZB003404
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 11:40:25 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n66FpGpc245760
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 11:51:16 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n66FpGmt000459
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 11:51:16 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200907031601.52650.vapier@gentoo.org>
-References: <200907031601.52650.vapier@gentoo.org>
-Date: Mon, 06 Jul 2009 21:21:01 +0530
-Message-Id: <1246895461.4887.54.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] futex syscall tests
-Reply-To: subrata@linux.vnet.ibm.com
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MPP8O-0003ub-FW
+	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 23:04:04 +0000
+Received: from an-out-0708.google.com ([209.85.132.244])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MPP8N-0003gF-AY
+	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 23:04:04 +0000
+Received: by an-out-0708.google.com with SMTP id c38so614922ana.37
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 10 Jul 2009 16:04:02 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1247254145.5040.3.camel@subratamodak.linux.ibm.com>
+References: <4A5436D4.6070201@petalogix.com>
+	<364299f40907080719q4ab01842v7e47a352b8214b8a@mail.gmail.com>
+	<4A54AEFA.3030100@petalogix.com>
+	<364299f40907082230m27683f17yd042bd569d0a5165@mail.gmail.com>
+	<4A55C646.5060805@petalogix.com>
+	<364299f40907091011y2f988746n562e183b5d4276be@mail.gmail.com>
+	<4A5782A5.2050301@petalogix.com>
+	<364299f40907101221i1da178c5xc0211627c0872e85@mail.gmail.com>
+	<1247254145.5040.3.camel@subratamodak.linux.ibm.com>
+Date: Fri, 10 Jul 2009 16:04:02 -0700
+Message-ID: <364299f40907101604l1239e7d6g1d2be3ca1def2869@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] IDcheck.sh - awk problem
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,30 +35,62 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: subrata@linux.vnet.ibm.com
+Cc: Mike Frysinger <vapier.adi@gmail.com>, LTP <ltp-list@lists.sourceforge.net>
 
-On Fri, 2009-07-03 at 16:01 -0400, Mike Frysinger wrote: 
-> are there any futex syscall tests already in ltp that i cant seem to locate ?  
-> if not, i can adapt the few that already exist in the libfutex code ...
+On Fri, Jul 10, 2009 at 12:29 PM, Subrata
+Modak<subrata@linux.vnet.ibm.com> wrote:
+> On Fri, 2009-07-10 at 12:21 -0700, Garrett Cooper wrote:
+>> On Fri, Jul 10, 2009 at 11:04 AM, Michal
+>> Simek<michal.simek@petalogix.com> wrote:
+>> > Garrett Cooper wrote:
+>> >>
+>> >> Wow. I must have been tired at the time; no idea why I used filter
+>> >> instead of strip. Please try this instead.
+>> >>
+>> >> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+>> >>
+>> > Sorry for delay.
+>> >
+>> > Tested-by: Michal Simek <monstr@monstr.eu>
+>>
+>> Subrata,
+>> =A0 =A0 The fix for IDcheck.sh / the top-level Makefile is ready to be
+>> committed to HEAD. Are we ok for commit?
+>
+> Garrett,
+>
+> Please go ahead. I am making for some final preparations for OLS
+> 2009 ;-). Would you all be interested to see my paper:
+>
+> http://www.linuxsymposium.org/2009/view_abstract.php?content_key=3D24,
+> http://www.linuxsymposium.org/2009/view_abstract.php?content_key=3D25,
 
-Mike, that should be really great to get to LTP.
+Committed.
 
-Regards--
-Subrata
+Sure! Looks like an interesting read -- feel free to copy the glibc
+stuff that we found a few days ago as a reference if you like :}.
 
-> -mike
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+If you want me to check in my nose-based python unittests for
+IDcheck.sh, I can do that as well.
 
+Thanks!
+-Garrett
 
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
+Enter the BlackBerry Developer Challenge  =
+
+This is your chance to win up to $100,000 in prizes! For a limited time, =
+
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize=
+  =
+
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
