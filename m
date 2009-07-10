@@ -1,32 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MNqT0-0000dn-W2
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:50:54 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MNqSp-000883-7Q
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:50:44 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e8.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n66FdgSX002242
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 11:39:42 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n66FoXvq252756
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 11:50:33 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n66Fm4DV019178
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 11:48:04 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <8368651DACC1964480F951191B94A078BC18DD@svexch01.mvista.com>
-References: <8368651DACC1964480F951191B94A078BC18DD@svexch01.mvista.com>
-Date: Mon, 06 Jul 2009 21:20:27 +0530
-Message-Id: <1246895427.4887.44.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH][syscalls] change io_* testcases to run directly
-Reply-To: subrata@linux.vnet.ibm.com
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MPJI6-0007yE-T0
+	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 16:49:42 +0000
+Received: from an-out-0708.google.com ([209.85.132.243])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MPJHv-0001bf-3C
+	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 16:49:37 +0000
+Received: by an-out-0708.google.com with SMTP id c38so507316ana.37
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 10 Jul 2009 09:49:30 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <f5a7b3810907100201p514cb9a2p44faaaa42bc59a32@mail.gmail.com>
+References: <364299f40907070906v174de45ci6765d3111f64a279@mail.gmail.com>
+	<f5a7b3810907090750lde8e9carc9fe8a6317e67153@mail.gmail.com>
+	<364299f40907091040v73e1dc3dm8c8eada4221abc7b@mail.gmail.com>
+	<20090710.135215.615775074055320747.yamato@redhat.com>
+	<f5a7b3810907100201p514cb9a2p44faaaa42bc59a32@mail.gmail.com>
+Date: Fri, 10 Jul 2009 09:49:29 -0700
+Message-ID: <364299f40907100949t53d57f5eyb2ec00f0e8074a9a@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Compile failure with rt_sigaction on amd64
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,46 +34,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Henry Yei <hyei@mvista.com>
+To: naresh kamboju <naresh.kernel@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Wed, 2009-07-01 at 16:34 -0700, Henry Yei wrote: 
-> Again, I forgot the subject..
-> 
-> It looks like the io_*.sh files are now not needed since the test source has been modified to check for an autoconf definition.
-> This patch modifies the syscalls runtest file to call those test directly. (io_cancel, io_destroy01, io_getevents01, io_setup01, io_submit01)
-> 
-> As the scripts are not needed any more, can we remove the following?
-> 
-> ltp/testcases/kernel/syscalls/io_cancel01.sh
-> ltp/testcases/kernel/syscalls/io_destroy01.sh
-> ltp/testcases/kernel/syscalls/io_getevents0101.sh
-> ltp/testcases/kernel/syscalls/io_setup01.sh
-> ltp/testcases/kernel/syscalls/io_submit01.sh
+On Fri, Jul 10, 2009 at 2:01 AM, naresh kamboju<naresh.kernel@gmail.com> wrote:
+> Garrett,
+>
+> However, before concluding problem/issue need some more Investigation
+> Please remove
+> -kill(getpid(),signal);
+> from rt_sigaction01.c
+> And complie and execute and share the results.
 
-Removing reference from runtest/syscalls is ok. But, how about removing
-the actual scritps ? Send me a patch for that :-)
-
-Regards--
-Subrata
-
-> 
-> These scripts were not being copied into testcases/bin anyway and so AFAIK, were not being run correctly by pan anyway.
-> 
-> Henry Yei
-> MontaVista Software, Inc.
-> hyei@mvista.com
-> 
-> 
->  
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
+    That worked without segfaulting, but doesn't that negate the whole
+purpose of the test?
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
