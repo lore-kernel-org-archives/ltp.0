@@ -2,20 +2,36 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MWnd2-0005gK-T0
-	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 08:38:16 +0000
-Received: from rv-out-0708.google.com ([209.85.198.240])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MWncy-0003Pm-KJ
-	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 08:38:16 +0000
-Received: by rv-out-0708.google.com with SMTP id c5so73075rvf.2
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 31 Jul 2009 01:38:07 -0700 (PDT)
-MIME-Version: 1.0
-Date: Fri, 31 Jul 2009 01:38:07 -0700
-Message-ID: <364299f40907310138v2708c6dfmb378df4004669c4f@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] [PATCH] Fix C coding issues and integrate ima into LTP
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MPDca-0007iO-Q5
+	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 10:46:28 +0000
+Received: from e36.co.us.ibm.com ([32.97.110.154])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MPDcW-0005wb-Im
+	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 10:46:28 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e36.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n6AAipCA013175
+	for <ltp-list@lists.sourceforge.net>; Fri, 10 Jul 2009 04:44:51 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
+	n6AAkN3d250200
+	for <ltp-list@lists.sourceforge.net>; Fri, 10 Jul 2009 04:46:23 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n6AAkNkx004533
+	for <ltp-list@lists.sourceforge.net>; Fri, 10 Jul 2009 04:46:23 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <f5a7b3810907100201p514cb9a2p44faaaa42bc59a32@mail.gmail.com>
+References: <364299f40907070906v174de45ci6765d3111f64a279@mail.gmail.com>
+	<f5a7b3810907090750lde8e9carc9fe8a6317e67153@mail.gmail.com>
+	<364299f40907091040v73e1dc3dm8c8eada4221abc7b@mail.gmail.com>
+	<20090710.135215.615775074055320747.yamato@redhat.com>
+	<f5a7b3810907100201p514cb9a2p44faaaa42bc59a32@mail.gmail.com>
+Date: Fri, 10 Jul 2009 16:16:20 +0530
+Message-Id: <1247222780.6630.24.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Compile failure with rt_sigaction on amd64
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,214 +44,93 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-1. None of the ima C files which required openssl/sha.h were using the
-HAVE_OPENSSL_SHA_H macro define.
-2. Add tst_resm support.
-3. Fix some missing includes in ima_mmap.c.
-4. Remove an unused var.
-5. Shuffle around some fields in ima_boot_aggregate.c so that it
-compiles with -Wunused and consumes less memory when 1. applies.
+On Fri, 2009-07-10 at 14:31 +0530, naresh kamboju wrote: 
+> Garrett,
+> 
+> On Fri, Jul 10, 2009 at 10:22 AM, Masatake YAMATO<yamato@redhat.com> wrote:
+> > I've found an interesting code in glibc about "rt_sigaction".
+> >
+> > sysdeps/unix/sysv/linux/x86_64/sigaction.c:
+> > int
+> > __libc_sigaction (int sig, const struct sigaction *act, struct sigaction *oact)
+> >
+> >
+> >
+> > How do you think follow the way to glibc?
+> > In addition man page is needed to update.
+> >
+> > Masatake YAMATO
+> >
+> 
+> Garrett Cooper <yanegomi@gmail.com> wrote:
+> >>gcooper@orangebox /scratch/ltp-vanilla/ltp $ /lib/libc.so.6
+> >>GNU C Library stable release version 2.9, by Roland McGrath >>et al.
+> 
+> >>I'm confused -- how will that help us?
+> 
+> To conform glibc version you are using is 2.9
+> 
+> >>gcooper@orangebox /scratch/ltp-vanilla/ltp $ gdb
+> >>This GDB was configured as "x86_64-pc-linux-gnu"...
+> >>(gdb) r
+> >>Starting program:
+> >>/scratch/ltp-vanilla/ltp/testcases/kernel/syscalls/rt_sigaction>>/rt_sigaction01
+> >>rt_sigaction01    0  INFO  :  signal: 34
+> >>rt_sigaction01    1  PASS  :  rt_sigaction call succeeded: >>result = 0
+> >>rt_sigaction01    0  INFO  :  sa.sa_flags = >>SA_RESETHAND|SA_SIGINFO
+> 
+> >>Program received signal SIG34, Real-time event 34.
+> >>0x00007f770ba0b4f7 in kill () from /lib/libc.so.6
+> >>(gdb) where
+> >>#0  0x00007f770ba0b4f7 in kill () from /lib/libc.so.6
+> >>#1  0x0000000000401c3e in main ()
+> >>(gdb)
+> 
+> 
+> As you said in the pervious mail when you try to debug using gdb you
+> got a segmentation falut from /lib/libc.so.6.
+> 
+> So that segmentation fault is generated by glibc.
+> 
+> 
+> As per Masatake YAMATO comments,
+> glibc code implementation for libc/sysdeps/unix/sysv/linux/x86_64/sigaction.c
+> 
+> X86_64:
+> 
+> http://sources.redhat.com/cgi-bin/cvsweb.cgi/libc/sysdeps/unix/sysv/linux/x86_64/sigaction.c?annotate=1.8.2.4&cvsroot=glibc
+> 
+> X86:
+> 
+> http://sources.redhat.com/cgi-bin/cvsweb.cgi/libc/sysdeps/unix/sysv/linux/sigaction.c?annotate=1.24.2.2&cvsroot=glibc
+> 
+> Thanks Masatake YAMATO for your information.
+> 
+> However, before concluding problem/issue need some more Investigation
+> Please remove
+> -kill(getpid(),signal);
+> from rt_sigaction01.c
+> And complie and execute and share the results.
 
-Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+I will wait for any of your patches till you investigate all issues.
 
-Index: testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c,v
-retrieving revision 1.1
-diff -u -r1.1 ima_boot_aggregate.c
---- testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c	31
-Mar 2009 13:58:14 -0000	1.1
-+++ testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c	31
-Jul 2009 08:37:08 -0000
-@@ -23,14 +23,21 @@
- #include <fcntl.h>
- #include <string.h>
- #include <unistd.h>
-+#include "config.h"
-+#include "test.h"
-+#if HAVE_OPENSSL_SHA_H
- #include <openssl/sha.h>
-+#endif
+Regards--
+Subrata
 
- #define MAX_EVENT_SIZE 500
- #define EVENT_HEADER_SIZE 32
- #define MAX_EVENT_DATA_SIZE (MAX_EVENT_SIZE - EVENT_HEADER_SIZE)
- #define NUM_PCRS 8	/*  PCR registers 0-7 in boot aggregate */
+> 
+> Best regards,
+> Naresh Kamboju
 
--static void *display_sha1_digest(char *pcr)
-+char *TCID = "ima_boot_aggregate";
-+int TST_TOTAL = 1;
-+
-+static void display_sha1_digest(unsigned char *pcr)
- {
- 	int i;
-
-@@ -39,8 +46,10 @@
- 	printf("\n");
- }
-
--int main(int argc, char *argv[])
-+int
-+main(int argc, char *argv[])
- {
-+#if HAVE_OPENSSL_SHA_H
- 	unsigned char boot_aggregate[SHA_DIGEST_LENGTH];
- 	struct {
- 		struct {
-@@ -74,7 +83,7 @@
- 		memset(&pcr[i].digest, 0, SHA_DIGEST_LENGTH);
-
- 	/* Extend the pseudo PCRs with the event digest */
--	while (fread(&event, sizeof event.header, 1, fp)) {
-+	while (fread(&event, sizeof(event.header), 1, fp)) {
- 		if (debug) {
- 			printf("%03u ", event.header.pcr);
- 			display_sha1_digest(event.header.digest);
-@@ -105,6 +114,8 @@
-
- 	printf("boot_aggregate:");
- 	display_sha1_digest(boot_aggregate);
--
--	return 0;
-+#else
-+	tst_resm(TCONF, "System doesn't have openssl/sha.h");
-+#endif
-+	tst_exit();
- }
-Index: testcases/kernel/security/integrity/ima/src/ima_measure.c
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/integrity/ima/src/ima_measure.c,v
-retrieving revision 1.1
-diff -u -r1.1 ima_measure.c
---- testcases/kernel/security/integrity/ima/src/ima_measure.c	31 Mar
-2009 13:58:14 -0000	1.1
-+++ testcases/kernel/security/integrity/ima/src/ima_measure.c	31 Jul
-2009 08:37:08 -0000
-@@ -22,18 +22,23 @@
- #include <fcntl.h>
- #include <string.h>
- #include <unistd.h>
-+//#include "config.h"
-+#include "test.h"
-+#if HAVE_OPENSSL_SHA_H
- #include <openssl/sha.h>
-+#endif
-
- #define TCG_EVENT_NAME_LEN_MAX	255
-
--static int verbose = 0;
--static int validate = 0;
--static int verify = 0;
-+char *TCID = "ima_measure";
-+int TST_TOTAL = 1;
-
- #define print_info(format, arg...) \
- 	if (verbose) \
- 		printf(format, ##arg)
-
-+#if HAVE_OPENSSL_SHA_H
-+
- static u_int8_t zero[SHA_DIGEST_LENGTH];
- static u_int8_t fox[SHA_DIGEST_LENGTH];
-
-@@ -90,6 +95,8 @@
- 	return 0;
- }
-
-+#endif
-+
- /*
-  * ima_measurements.c - calculate the SHA1 aggregate-pcr value based
-  * on the IMA runtime binary measurements.
-@@ -120,13 +127,19 @@
-  * Return code: if verification enabled, returns number of verification
-  * 		errors.
-  */
--int main(int argc, char *argv[])
-+int
-+main(int argc, char *argv[])
- {
-+
-+#if HAVE_OPENSSL_SHA_H
- 	FILE *fp;
- 	struct event template;
- 	u_int8_t pcr[SHA_DIGEST_LENGTH];
- 	int i, count = 0, len;
--	int failed_count = 0;	/* number of template verifications failed */
-+
-+	int verbose = 0;
-+	int validate = 0;
-+	int verify = 0;
-
- 	if (argc < 2) {
- 		printf("format: %s binary_runtime_measurements" \
-@@ -191,12 +204,17 @@
- 		print_info(" %s\n", template.ima_data.filename);
-
- 		if (verify)
--			failed_count += verify_template_hash(&template);
-+			if (verify_template_hash(&template) != 0) {
-+				tst_resm(TFAIL, "Hash failed");
-+			}
- 	}
- 	fclose(fp);
-
- 	verbose=1;
- 	print_info("PCRAggr (re-calculated):");
- 	display_sha1_digest(pcr);
--	return failed_count;
-+#else
-+	tst_resm(TCONF, "System doesn't have openssl/sha.h");
-+#endif
-+	tst_exit();
- }
-Index: testcases/kernel/security/integrity/ima/src/ima_mmap.c
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/integrity/ima/src/ima_mmap.c,v
-retrieving revision 1.2
-diff -u -r1.2 ima_mmap.c
---- testcases/kernel/security/integrity/ima/src/ima_mmap.c	19 May 2009
-09:57:42 -0000	1.2
-+++ testcases/kernel/security/integrity/ima/src/ima_mmap.c	31 Jul 2009
-08:37:08 -0000
-@@ -16,16 +16,20 @@
-  */
- #include <stdio.h>
- #include <string.h>
-+#include <unistd.h>
- #include <sys/stat.h>
- #include <sys/mman.h>
- #include <fcntl.h>
-+#include "test.h"
-+
-+char *TCID = "ima_mmap";
-+int TST_TOTAL = 1;
-
- int main(int argc, char *argv[])
- {
- 	int fd;
- 	void *file;
- 	char *filename;
--	int rc;
-
- 	if (argc != 2)
- 		printf("%s: filename\n", argv[1]);
-@@ -48,6 +52,5 @@
- 		perror("unmap");
- 		return(-1);
- 	}
--
--	return 0;
-+	tst_exit();
- }
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
