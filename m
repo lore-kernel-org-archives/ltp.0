@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MMUTl-0007An-Fe
-	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2009 22:10:05 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MMUTj-0000Dj-3v
-	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2009 22:10:05 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Thu, 2 Jul 2009 18:09:16 -0400
-References: <20090702084828.GC19135@count0.beaverton.ibm.com>
-	<200907021435.48510.vapier@gentoo.org>
-	<20090702203253.GI19135@count0.beaverton.ibm.com>
-In-Reply-To: <20090702203253.GI19135@count0.beaverton.ibm.com>
-MIME-Version: 1.0
-Message-Id: <200907021809.18522.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 4/4] netns: Change interpretters from sh to bash
+	(envelope-from <yamato@redhat.com>) id 1MP865-0004Vc-Gt
+	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 04:52:33 +0000
+Received: from mx2.redhat.com ([66.187.237.31])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MP85s-0001uK-Mv
+	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 04:52:28 +0000
+Date: Fri, 10 Jul 2009 13:52:15 +0900 (JST)
+Message-Id: <20090710.135215.615775074055320747.yamato@redhat.com>
+From: Masatake YAMATO <yamato@redhat.com>
+In-Reply-To: <364299f40907091040v73e1dc3dm8c8eada4221abc7b@mail.gmail.com>
+References: <364299f40907070906v174de45ci6765d3111f64a279@mail.gmail.com>
+	<f5a7b3810907090750lde8e9carc9fe8a6317e67153@mail.gmail.com>
+	<364299f40907091040v73e1dc3dm8c8eada4221abc7b@mail.gmail.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Compile failure with rt_sigaction on amd64
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,78 +26,51 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4456583325297676127=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Matt Helsley <matthltc@us.ibm.com>
-Cc: Poornima Nayak <poornima.nayak@in.ibm.com>, ltp-list@lists.sourceforge.net, Daniel Lezcano <daniel.lezcano@free.fr>, Veerendra C <vechandr@in.ibm.com>, Munipradeep <mbeeraka@in.ibm.com>
-
---===============4456583325297676127==
-Content-Type: multipart/signed; boundary="nextPart1728554.AOp1zbvtIS";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1728554.AOp1zbvtIS
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-On Thursday 02 July 2009 16:32:53 Matt Helsley wrote:
-> On Thu, Jul 02, 2009 at 02:35:46PM -0400, Mike Frysinger wrote:
-> > in general, converting sh to bash is a bad idea as it can cause issues
-> > for us embedded peeps.
->
-> I suppose that's because of the memory bash consumes. Is there anything
-> else it does which is bad for embedded?
-
-there is memory and disk usage concerns, but there are also systems that ca=
-nt=20
-run bash at all (e.g. systems without fork() -- all no-mmu Linux ports)
-=2Dmike
-
---nextPart1728554.AOp1zbvtIS
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJKTTAOAAoJEEFjO5/oN/WBWrMQAMQrrV/YH0y0o0pNLmnJ4eXZ
-+WGBvX519cb0SrMr/cB7uWrlGEEV8tcKx+HPgF9RfvUNyk4cf3cvgSr4FmzeF0HE
-MlkDL00H2U3ixiBr3vmq8/yEYWqKOSU3xG6ZxIzF8hXQy4UdwQKlEWu3HHYu4nY4
-LCpuArgUDnJva457TozJEJ15Vd1TgMDspZcHjnYOq+VFCiBtXokpBIuWoll7bdlw
-xVDYhMvb+PH3eAH0g0ODqMJtqKd5HbZMyp7fKclqpNptoe6RdsV4HRoYJVI3zYO5
-vYytno5fAMh3qb90vzzE6yJoU4g8XUd7wVtRFwxl1v9v/YVg5GNuR9Ef1gIbpVam
-3ehVe7nb9TAt8pdZ5lkYAdpNYn64cjkcN8GqKu5opU4++lm5a1fb7H4xw1ColfxX
-nRwr6D9gS6d6b+yUhF48u/3qikFmDtS3gXbDAfLc7hKVC5O9rM3Cgdw2BIDwQbh7
-GkIVZ6HPJNSExHFtmOz8/i1l2C0ImtHqq/pwvCLKYSliKTAvtJ9PJY2nJB/LmF70
-Ox+GoSz/K+rhQErbc9gpeUqrT7WsbcbjswqsF+SgNjN4Y8WxyudWjbKY2GCAE0GX
-CJ8egAJCKpM1jTI0yXjHofLKQVQ8U3KZFAD2bkafP0DoPUzXoYob13gV2aIsX7KW
-tFdNSi7R8QGp5UZrSTsw
-=9yJy
------END PGP SIGNATURE-----
-
---nextPart1728554.AOp1zbvtIS--
-
-
---===============4456583325297676127==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: yanegomi@gmail.com
+Cc: ltp-list@lists.sourceforge.net, naresh.kernel@gmail.com
+
+I've found an interesting code in glibc about "rt_sigaction".
+
+sysdeps/unix/sysv/linux/x86_64/sigaction.c:
+int
+__libc_sigaction (int sig, const struct sigaction *act, struct sigaction *oact)
+{
+  int result;
+  struct kernel_sigaction kact, koact;
+
+  if (act)
+    {
+      kact.k_sa_handler = act->sa_handler;
+      memcpy (&kact.sa_mask, &act->sa_mask, sizeof (sigset_t));
+      kact.sa_flags = act->sa_flags | SA_RESTORER;
+
+      kact.sa_restorer = &restore_rt;
+    }
+
+  /* XXX The size argument hopefully will have to be changed to the
+     real size of the user-level sigset_t.  */
+  result = INLINE_SYSCALL (rt_sigaction, 4,
+			   sig, act ? __ptrvalue (&kact) : NULL,
+			   oact ? __ptrvalue (&koact) : NULL, _NSIG / 8);
+--------------------------------------------------------------^^^^^^^^^
+
+
+
+How do you think follow the way to glibc?
+In addition man page is needed to update.
+
+Masatake YAMATO
 
 ------------------------------------------------------------------------------
-
---===============4456583325297676127==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4456583325297676127==--
-
