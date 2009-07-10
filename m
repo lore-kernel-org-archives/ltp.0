@@ -1,26 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MNwmI-0001cT-9F
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 22:35:14 +0000
-Received: from mail-yx0-f195.google.com ([209.85.210.195])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MNwm7-0006ft-Ao
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 22:35:09 +0000
-Received: by yxe33 with SMTP id 33so5198067yxe.28
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1MPKqr-0004EP-6Q
+	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 18:29:41 +0000
+Received: from fg-out-1718.google.com ([72.14.220.153])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MPKqk-0003ga-UU
+	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 18:29:41 +0000
+Received: by fg-out-1718.google.com with SMTP id e12so63407fga.9
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 06 Jul 2009 15:35:02 -0700 (PDT)
+	Fri, 10 Jul 2009 11:29:32 -0700 (PDT)
+Message-ID: <4A5782A5.2050301@petalogix.com>
+Date: Fri, 10 Jul 2009 20:04:21 +0200
+From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-In-Reply-To: <200907061810.04510.vapier@gentoo.org>
-References: <364299f40907061455n2f95c877sb40d6a97e856fd03@mail.gmail.com>
-	<200907061810.04510.vapier@gentoo.org>
-Date: Mon, 6 Jul 2009 15:35:02 -0700
-Message-ID: <364299f40907061535s19bbe0b8o3c716b5320f2f9f8@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Content-Type: multipart/mixed; boundary=0016e644cc6ef1f178046e111d5e
-Subject: Re: [LTP] [PATCH] Missing limits.h include and test.h style in
-	system_specific_process_info.c
+References: <4A5436D4.6070201@petalogix.com>	
+	<364299f40907080719q4ab01842v7e47a352b8214b8a@mail.gmail.com>	
+	<4A54AEFA.3030100@petalogix.com>	
+	<364299f40907082230m27683f17yd042bd569d0a5165@mail.gmail.com>	
+	<4A55C646.5060805@petalogix.com>
+	<364299f40907091011y2f988746n562e183b5d4276be@mail.gmail.com>
+In-Reply-To: <364299f40907091011y2f988746n562e183b5d4276be@mail.gmail.com>
+Subject: Re: [LTP] IDcheck.sh - awk problem
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,64 +33,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
-
---0016e644cc6ef1f178046e111d5e
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Jul 6, 2009 at 3:10 PM, Mike Frysinger<vapier@gentoo.org> wrote:
-> On Monday 06 July 2009 17:55:43 Garrett Cooper wrote:
->> 1. test.h is in .../include/. Thus #include should be #include
->> "test.h", not #include <test.h>.
->> 2. limits.h should be explicitly stated because certain constants are
->> used in system_specific_process_info.c (SHRT_MAX for instance).
->>
->> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
->
-> unified diffs only please. =A0context diffs are awful.
-
-And again.
--Garrett
-
---0016e644cc6ef1f178046e111d5e
-Content-Type: application/octet-stream; 
-	name="system-specific-process-info-fix-includes.diff"
-Content-Disposition: attachment; 
-	filename="system-specific-process-info-fix-includes.diff"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fwtrsa2f1
-
-SW5kZXg6IGxpYi9zeXN0ZW1fc3BlY2lmaWNfcHJvY2Vzc19pbmZvLmMKPT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQpSQ1Mg
-ZmlsZTogL2N2c3Jvb3QvbHRwL2x0cC9saWIvc3lzdGVtX3NwZWNpZmljX3Byb2Nlc3NfaW5mby5j
-LHYKcmV0cmlldmluZyByZXZpc2lvbiAxLjIKZGlmZiAtdSAtcjEuMiBzeXN0ZW1fc3BlY2lmaWNf
-cHJvY2Vzc19pbmZvLmMKLS0tIGxpYi9zeXN0ZW1fc3BlY2lmaWNfcHJvY2Vzc19pbmZvLmMJMjcg
-SmFuIDIwMDkgMTQ6NDg6MzggLTAwMDAJMS4yCisrKyBsaWIvc3lzdGVtX3NwZWNpZmljX3Byb2Nl
-c3NfaW5mby5jCTYgSnVsIDIwMDkgMjI6MzI6NDQgLTAwMDAKQEAgLTI3LDEwICsyNywxMCBAQAog
-ICovCiAKIAotCiAjaW5jbHVkZSA8ZmNudGwuaD4KKyNpbmNsdWRlIDxsaW1pdHMuaD4KICNpbmNs
-dWRlIDxzeXMvdHlwZXMuaD4KLSNpbmNsdWRlIDx0ZXN0Lmg+CisjaW5jbHVkZSAidGVzdC5oIgog
-CiAjZGVmaW5lIEJVRlNJWkUgNTEyCiAK
---0016e644cc6ef1f178046e111d5e
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier.adi@gmail.com>
+
+Garrett Cooper wrote:
+> On Thu, Jul 9, 2009 at 3:28 AM, Michal Simek<michal.simek@petalogix.com> wrote:
+>   
+>> Garrett Cooper wrote:
+>>     
+>>> On Wed, Jul 8, 2009 at 7:36 AM, Michal Simek<michal.simek@petalogix.com> wrote:
+>>>
+>>>       
+>>>> Of course not because I cross compile ltp for Microblaze - correct
+>>>> /etc/passwd - group is on
+>>>> target system. Maybe worth to remove calling IDcheck.sh from make
+>>>> install and call it only before
+>>>> running the test.
+>>>>
+>>>>
+>>>>         
+>>> Michal,
+>>>     Please give this patch a try, and instead when you run make
+>>> install, do SKIP_IDCHECK=1.
+>>> HTH,
+>>> -Garrett
+>>>       
+>
+> Wow. I must have been tired at the time; no idea why I used filter
+> instead of strip. Please try this instead.
+>
+> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+>   
+Sorry for delay.
+
+Tested-by: Michal Simek <monstr@monstr.eu>
+
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+
 
 ------------------------------------------------------------------------------
-
---0016e644cc6ef1f178046e111d5e
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---0016e644cc6ef1f178046e111d5e--
-
