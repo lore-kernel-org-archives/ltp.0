@@ -1,21 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1MViei-0000uN-4f
-	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2009 09:07:32 +0000
-Received: from mail-yx0-f195.google.com ([209.85.210.195])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MVied-00037j-VQ
-	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2009 09:07:32 +0000
-Received: by yxe33 with SMTP id 33so6906834yxe.28
+	(envelope-from <yanegomi@gmail.com>) id 1MPLfT-0007nn-CI
+	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 19:21:59 +0000
+Received: from an-out-0708.google.com ([209.85.132.250])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MPLfJ-0007Qd-2T
+	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 19:21:54 +0000
+Received: by an-out-0708.google.com with SMTP id c38so553844ana.37
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 28 Jul 2009 02:07:22 -0700 (PDT)
+	Fri, 10 Jul 2009 12:21:48 -0700 (PDT)
 MIME-Version: 1.0
-Date: Tue, 28 Jul 2009 14:37:22 +0530
-Message-ID: <f5a7b3810907280207v6e88cadaodbc90831d562d4cf@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Subject: Re: [LTP] Integration of MCE test suite into LTP
+In-Reply-To: <4A5782A5.2050301@petalogix.com>
+References: <4A5436D4.6070201@petalogix.com>
+	<364299f40907080719q4ab01842v7e47a352b8214b8a@mail.gmail.com>
+	<4A54AEFA.3030100@petalogix.com>
+	<364299f40907082230m27683f17yd042bd569d0a5165@mail.gmail.com>
+	<4A55C646.5060805@petalogix.com>
+	<364299f40907091011y2f988746n562e183b5d4276be@mail.gmail.com>
+	<4A5782A5.2050301@petalogix.com>
+Date: Fri, 10 Jul 2009 12:21:48 -0700
+Message-ID: <364299f40907101221i1da178c5xc0211627c0872e85@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] IDcheck.sh - awk problem
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,47 +33,65 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Huang Ying <ying.huang@intel.com>
-Cc: "Kleen, Andi" <andi.kleen@intel.com>, ltp-list <ltp-list@lists.sourceforge.net>
+To: michal.simek@petalogix.com
+Cc: LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier.adi@gmail.com>
 
-Hi Huang Ying,
+On Fri, Jul 10, 2009 at 11:04 AM, Michal
+Simek<michal.simek@petalogix.com> wrote:
+> Garrett Cooper wrote:
+>> On Thu, Jul 9, 2009 at 3:28 AM, Michal Simek<michal.simek@petalogix.com>=
+ wrote:
+>>
+>>> Garrett Cooper wrote:
+>>>
+>>>> On Wed, Jul 8, 2009 at 7:36 AM, Michal Simek<michal.simek@petalogix.co=
+m> wrote:
+>>>>
+>>>>
+>>>>> Of course not because I cross compile ltp for Microblaze - correct
+>>>>> /etc/passwd - group is on
+>>>>> target system. Maybe worth to remove calling IDcheck.sh from make
+>>>>> install and call it only before
+>>>>> running the test.
+>>>>>
+>>>>>
+>>>>>
+>>>> Michal,
+>>>> =A0 =A0 Please give this patch a try, and instead when you run make
+>>>> install, do SKIP_IDCHECK=3D1.
+>>>> HTH,
+>>>> -Garrett
+>>>>
+>>
+>> Wow. I must have been tired at the time; no idea why I used filter
+>> instead of strip. Please try this instead.
+>>
+>> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+>>
+> Sorry for delay.
+>
+> Tested-by: Michal Simek <monstr@monstr.eu>
 
-With reference to Linux MCE
-
-http://kernel.org/pub/scm/utils/cpu/mce/
-
-Are you discussing about this?
-
-If yes.
-
-I have gone through following links and got some information it=92s
-pretty interesting   :-)
-
-http://wiki.linuxmce.org/index.php/Main_Page
-http://wiki.linuxmce.org/index.php/Video
-http://video.google.com/videoplay?docid=3D2176025602905109829&hl=3Den
-
-Could you list out the hardware and software requirements to run this
-application as well test suite.
-This information could be useful for LTP community.
-
-
-Best regards,
-Naresh Kamboju
+Subrata,
+    The fix for IDcheck.sh / the top-level Makefile is ready to be
+committed to HEAD. Are we ok for commit?
+Thanks,
+-Garrett
 
 ---------------------------------------------------------------------------=
 ---
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+Enter the BlackBerry Developer Challenge  =
 
-trial. Simplify your report design, integration and deployment - and focus =
-on =
+This is your chance to win up to $100,000 in prizes! For a limited time, =
 
-what you do best, core application coding. Discover what's new with =
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize=
+  =
 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
