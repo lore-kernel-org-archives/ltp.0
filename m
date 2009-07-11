@@ -1,24 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <monstr@monstr.eu>) id 1MQiJz-0005MT-5C
-	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2009 13:45:27 +0000
-Received: from mail-fx0-f208.google.com ([209.85.220.208])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MQiJx-0005Px-TI
-	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2009 13:45:27 +0000
-Received: by fxm4 with SMTP id 4so242241fxm.10
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MPkcN-00055y-PX
+	for ltp-list@lists.sourceforge.net; Sat, 11 Jul 2009 22:00:27 +0000
+Received: from wf-out-1314.google.com ([209.85.200.170])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MPkcH-0003vh-9O
+	for ltp-list@lists.sourceforge.net; Sat, 11 Jul 2009 22:00:27 +0000
+Received: by wf-out-1314.google.com with SMTP id 26so495732wfd.4
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 14 Jul 2009 06:45:24 -0700 (PDT)
-Message-ID: <4A5C8BF2.8020505@monstr.eu>
-Date: Tue, 14 Jul 2009 15:45:22 +0200
-From: Michal Simek <monstr@monstr.eu>
+	Sat, 11 Jul 2009 15:00:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <4A5C8068.6020203@monstr.eu> <200907141521.47719.arnd@arndb.de>
-In-Reply-To: <200907141521.47719.arnd@arndb.de>
-Subject: Re: [LTP] access_ok macor
-Reply-To: monstr@monstr.eu
+In-Reply-To: <200907092007.58019.vapier@gentoo.org>
+References: <364299f40907061722v45417bddhac499efa1415d6af@mail.gmail.com>
+	<200907082042.33487.vapier@gentoo.org>
+	<364299f40907090208o1c0d5b10kb151e6c910cfa79f@mail.gmail.com>
+	<200907092007.58019.vapier@gentoo.org>
+Date: Sat, 11 Jul 2009 14:55:11 -0700
+Message-ID: <364299f40907111455x3cd6187cs39a43add00cca20f@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH 3/4] Refactor top-level Makefiles,
+	modularize 	autoconf logic
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,93 +31,151 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: LTP <ltp-list@lists.sourceforge.net>, Linux Kernel list <linux-kernel@vger.kernel.org>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-Arnd Bergmann wrote:
-> On Tuesday 14 July 2009, Michal Simek wrote:
->> I found that I can setup text base in binutils/ld/emulparam/elf32mb_linux.sh
+On Thu, Jul 9, 2009 at 5:07 PM, Mike Frysinger<vapier@gentoo.org> wrote:
+> On Thursday 09 July 2009 05:08:22 Garrett Cooper wrote:
+>> On Wed, Jul 8, 2009 at 5:42 PM, Mike Frysinger wrote:
+>> > On Wednesday 08 July 2009 20:21:11 Garrett Cooper wrote:
+>> >> On Wed, Jul 8, 2009 at 4:53 PM, Mike Frysinger wrote:
+>> > testcases/Makefile:
+>> > i dont get all these xxx_DEPS variables and the install-testcases-bin
+>> > target
 >>
->> The problem which I have is that if I run socketpair, getsockname, getpeername LTP
->> tests with invalid salen pointer there are addresses close to 0x0. Microblaze
->> has no text there and the sigsegv fault is generated.
-> 
-> This sounds like a classic NULL pointer dereference that is handled correctly
-> by the kernel. The question is where the address came from.
-
-It is not anly NULL pointer - is LTP tests are some fake addresses. From my tests I see
-that I am not able to access place till 1000 0000 in dec.
-Bad address come from tests to test it.
-
-Look at
-http://developer.petalogix.com/git/gitweb.cgi?p=ltp-microblaze.git;a=commitdiff;h=45f4cd783ce8b94f1267bb87c0c46e8536f62eca
-
-There are three affected tests and my quick fixes which I am trying to solve now.
-
-
-> 
->> This fault could be fixed by changed access_ok macro where I check bottom limit
->> at 0x1000 0000 too. After this change the LTP program not failed but I am not sure
->> if is the right solution because none arch do it. All archs just check upper limit
->> not lower.
+>> xxx_DEPS aren't used in typical situations. They are used in different
+>> situations where one _must_ preserve dependency ordering. People
+>> should NOT have to use these except with code generation, upper-level
+>> target dependencies (my next stop after this all gets said and done,
+>> e.g. if I do a submake from somewhere within testcases/kernel, I
+>> better well have libltp.a built beforehand :)...), etc.
+>
+> yes, but in the patch you posted, i didnt see why any of those needed to =
+be in
+> the Makefile's in question. =A0i dont have a problem adding knobs, but i =
+do when
+> they're used incorrectly or not at all.
+>
+> i guess i'll wait until your follow up patch to check this stuff again
+>
+>> >> > why cant testcases/kernel/Makefile leverage these .mk files ? =A0the
+>> >> > whole point was to get away from these custom written jobbies ...
+>> >>
+>> >> Some of these Makefiles get a bit ugly with the pre- and post- junk...
+>> >> There are a small number of Makefiles that are haunted by this work,
+>> >> but then again I did some more rework with the generic_trunk_target
+>> >> define.
+>> >
+>> > so that means you'll fix the Makefile to use the .mk files
 >>
->> What is the correct solution for it? Moving .text base to 0x0 or is there any other
->> elegant solution?
-> 
-> Moving .text is not the right solution, because it only papers over real bugs.
+>> Yes. Again, these are bad hacks to work around the fact that these are
+>> initial commits, and the fact that the rest of the source tree isn't
+>> up to date with the new system (that will take ~3 days with straight
+>> work and verification, but I'd quote a week and a half because of
+>> random junk that can get in the way of getting things done). Only in a
+>> few key Makefiles are these hacks required. testcases/Makefile is just
+>> one of these examples. Here's the comment:
+>
+> ok, transitional hacks which are commented should be fine. =A0i dont reca=
+ll
+> seeing this comment in the patch posted for review though ;).
+>
+>> >> > debugging/optimization/warning/stripping flags shouldnt be added in
+>> >> > any Makefile that is being converted to these common .mk files. =A0=
+same
+>> >> > for any DEBUG_XXX flags.
+>> >>
+>> >> Agreed. I was just duplicating what already existed, hoping that we
+>> >> could sweep up this stuff after everything was in and the base
+>> >> infrastructure was stable.
+>> >
+>> > i'd prefer we scrub the crap now
+>>
+>> Yes, but how and when should this stuff be done, and in what way? is
+>> the ultimate question. If I were to toss in every dumb warning
+>> compiler flag imaginable (which believe it or not _is_ the default for
+>> the proprietary code we compile), my group in Cisco would never be
+>> able to compile LTP because of coding issues. How much is enough, and
+>> how much is too little?
+>
+> create a mirrored set of W*FLAG variables in the top level and stick the
+> defaults in there. =A0then all sub level should be punted. =A0for now, us=
+e -Wall
+> only. =A0we can save the -Wextra/-Werror/etc... bs for a later date.
+>
+> i.e. the top level .mk should have:
+> WFLAGS ?=3D -Wall
+> WCFLAGS ?=3D $(WFLAGS)
+> WCXXFLAGS ?=3D $(WFLAGS)
+> ...
+> CFLAGS +=3D $(WCFLAGS)
+> CXXFLAGS +=3D $(WCXXFLAGS)
+> ...
+>
+> keep language-dedicated flags available because there are language-specif=
+ic
+> warnings that if added to the wrong language, you get even more warnings =
+(gcc
+> warning you that this warning flag is not appropriate ;x)
+>
+>> >> > i dont see the point in declaring empty rules like "install: ;". =
+=A0if
+>> >> > they're declared .PHONY, there is no need to add explicit rules to =
+sub
+>> >> > Makefiles.
+>> >>
+>> >> They're there to avoid errors with targets not being found if I'm
+>> >> running recursive Make rules over the entire directory tree. So, I
+>> >> agree it's silly, but if you have a better idea, I'm all ears and I'll
+>> >> get on it ASAP. I'm trying to avoid cramming more variables into the
+>> >> Make system because it will only generate more confusion...
+>> >
+>> > let's look at testcases/kernel/include/Makefile. =A0how would a missing
+>> > install target here generate an error ?
+>>
+>> testcases/kernel calls install recursively. I don't want to create
+>> annoying subvariables for all, install, clean, and whatever other
+>> recursive target I can think of, because even though I know how to, it
+>> only serves to confuse and complicate the purpose of the system
+>> (that's part of the reason why I'm the only individual, apart from two
+>> others in a team of about 100, who can stumble around our complicated
+>> build system at work).
+>
+> sorry, i'm still not following. =A0why would the default install target n=
+ot work
+> in testcases/kernel/include/Makefile ? =A0if there are no subdirs to recu=
+rse
+> into and there are no default targets to compile, what would the default
+> install do exactly ?
 
-I can confirm it - I moved it and rebuild toolchain.
+The way it was originally designed (by whoever.. dunno who), regen did
+the equivalent to all, and all did the equivalent to install. Pretty
+whacky, but that's the way it was.
 
-> access_ok() is also not the right place to check this, the only purpose it has
-> is to make sure that the argument is not a valid kernel address but either a
-> valid user address or possibly invalid address. Also, access_ok() is only used
-> together with the copy_from/to_user and get/put_user function families. These
-> need to catch invalid addresses with a fixup table entry in the kernel.
+I fixed the caller so it doesn't do jack for all, but instead directly
+calls install, like it basically should.
 
-ok - that mean that problem could be in bad fixup table?
-
-
-> 
-> I briefly looked at your implementation but could not find any problems in
-> this area. Could you use gdb to find out whether the sigsegv happens in the
-> kernel at all, or in user space?
-
-We don't have gdb in place.
-
-The problem should come from get_user macro. net/socket.c:212
-I was looking for it in the morning. I am checking it again.
+I've had to do a lot of invasive surgery on the build over the past 4
+hours... once I can get it to compile through clean -> all -> install,
+without issues, I'll run a diff check on the generated files and
+resubmit the patch.
 
 Thanks,
-Michal
+-Garrett
 
+---------------------------------------------------------------------------=
+---
+Enter the BlackBerry Developer Challenge  =
 
-int move_addr_to_user(struct sockaddr *kaddr, int klen, void __user *uaddr,
-		      int __user *ulen)
-{
-	int err;
-	int len;
+This is your chance to win up to $100,000 in prizes! For a limited time, =
 
-	err = get_user(len, ulen);
-	if (err)
-		return err;
-
-
-> 
-> 	Arnd <><
-
-
--- 
-Michal Simek, Ing. (M.Eng)
-w: www.monstr.eu p: +42-0-721842854
-
-------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
 vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+the opportunity to enter the BlackBerry Developer Challenge. See full prize=
+  =
+
 details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
