@@ -1,20 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1MwF1d-00064j-N4
-	for ltp-list@lists.sourceforge.net; Fri, 09 Oct 2009 12:56:49 +0000
-Received: from relay1.suse.de (relay-ext.suse.de [195.135.221.8])
-	by mx2.suse.de (Postfix) with ESMTP id 7B57786A2E
+	(envelope-from <jpalecek@web.de>) id 1MujSO-00044i-94
+	for ltp-list@lists.sourceforge.net; Mon, 05 Oct 2009 09:02:12 +0000
+Received: from fmmailgate02.web.de ([217.72.192.227])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MujSG-0000Al-H2
+	for ltp-list@lists.sourceforge.net; Mon, 05 Oct 2009 09:02:12 +0000
+Received: from smtp05.web.de (fmsmtp05.dlan.cinetic.de [172.20.4.166])
+	by fmmailgate02.web.de (Postfix) with ESMTP id 482B212965E44
 	for <ltp-list@lists.sourceforge.net>;
-	Fri,  9 Oct 2009 14:56:38 +0200 (CEST)
-Date: Fri, 9 Oct 2009 14:56:38 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20091009125638.GC3725@schrodinger.suse.cz>
+	Mon,  5 Oct 2009 11:01:58 +0200 (CEST)
+Received: from [83.208.36.163] (helo=debian)
+	by smtp05.web.de with asmtp (WEB.DE 4.110 #314) id 1MujS8-0000YP-00
+	for ltp-list@lists.sourceforge.net; Mon, 05 Oct 2009 11:01:56 +0200
+Date: Sat, 11 Jul 2009 22:17:35 +0200
+From: "Jiri Palecek" <jpalecek@web.de>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="jousvV0MzM2p6OtC"
-Content-Disposition: inline
-Subject: [LTP] [PATCH] fix possible tst_xxx buffer overrun
+Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Resent-Message-ID: <op.u1bkq8f8cfnueu@debian>
+Subject: [LTP] [PATCH] Add tests for utimes() with NULL tv
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,150 +30,123 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-
---jousvV0MzM2p6OtC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi!
-Following patch fixes tst_** functions that would segfault for printing
-messages longer than 2048 chars. Now such message is truncated.
-
-Signed-off-by: chrubis@suse.cz
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
---jousvV0MzM2p6OtC
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="tst_res_buffer_overrun.patch"
-
-Index: ltp/lib/tst_res.c
-===================================================================
---- ltp.orig/lib/tst_res.c
-+++ ltp/lib/tst_res.c
-@@ -1,6 +1,6 @@
- /*
-  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- * Copyring  (c) 2009 Cyril Hrubis chrubis@suse.cz
-+ * Copyright (c) 2009 Cyril Hrubis chrubis@suse.cz
-  *
-  * This program is free software; you can redistribute it and/or modify it
-  * under the terms of version 2 of the GNU General Public License as
-@@ -131,20 +131,18 @@
-  * EXPAND_VAR_ARGS - Expand the variable portion (arg_fmt) of a result
-  *                   message into the specified string.
-  */
--#define EXPAND_VAR_ARGS(arg_fmt, str) {   \
--   va_list ap; /* varargs mechanism */    \
--                                          \
--   if (arg_fmt != NULL) {                 \
--      if ( Expand_varargs == TRUE ) {     \
--         va_start(ap, arg_fmt);           \
--         vsprintf(str, arg_fmt, ap);      \
--         va_end(ap);                      \
--      } else {                            \
--         strcpy(str, arg_fmt);            \
--      }                                   \
--   } else {                               \
--      str[0] = '\0';                      \
--   }                                      \
-+#define EXPAND_VAR_ARGS(buf, arg_fmt, buf_len) {              \
-+	va_list ap;                                           \
-+	                                                      \
-+	if (arg_fmt != NULL) {                                \
-+		if (Expand_varargs) {                         \
-+			va_start(ap, arg_fmt);                \
-+			vsnprintf(buf, buf_len, arg_fmt, ap); \
-+			va_end(ap);                           \
-+		} else                                        \
-+			strncpy(buf, arg_fmt, buf_len);       \
-+	} else                                                \
-+		buf[0] = '\0';                                \
- }
- 
- /*
-@@ -300,7 +298,7 @@ void tst_res(int ttype, char *fname, cha
- 	       Tst_count, Tst_range); fflush(stdout);
- #endif
- 
--	EXPAND_VAR_ARGS(arg_fmt, tmesg);
-+	EXPAND_VAR_ARGS(tmesg, arg_fmt, USERMESG);
- 
- 	/*
- 	 * Save the test result type by ORing ttype into the current exit
-@@ -625,7 +623,7 @@ void tst_brk(int ttype, char *fname, voi
- 	fflush(stdout);
- #endif
- 
--	EXPAND_VAR_ARGS(arg_fmt, tmesg);
-+	EXPAND_VAR_ARGS(tmesg, arg_fmt, USERMESG);
- 
- 	/*
- 	 * Only FAIL, BROK, CONF, and RETR are supported by tst_brk().
-@@ -686,7 +684,7 @@ void tst_brkloop(int ttype, char *fname,
- 	fflush(stdout);
- #endif
- 
--	EXPAND_VAR_ARGS(arg_fmt, tmesg);
-+	EXPAND_VAR_ARGS(tmesg, arg_fmt, USERMESG);
- 
- 	if (Tst_lpstart < 0 || Tst_lptotal < 0) {
- 		tst_print(TCID, 0, 1, TWARN,
-@@ -748,7 +746,7 @@ void tst_resm(int ttype, char *arg_fmt, 
- 	fflush(stdout);
- #endif
- 
--	EXPAND_VAR_ARGS(arg_fmt, tmesg);
-+	EXPAND_VAR_ARGS(tmesg, arg_fmt, USERMESG);
- 
- 	tst_res(ttype, NULL, "%s", tmesg);
- }
-@@ -766,7 +764,7 @@ void tst_brkm(int ttype, void (*func)(vo
- 	fflush(stdout);
- #endif
- 
--	EXPAND_VAR_ARGS(arg_fmt, tmesg);
-+	EXPAND_VAR_ARGS(tmesg, arg_fmt, USERMESG);
- 
- 	tst_brk(ttype, NULL, func, "%s", tmesg);
- }
-@@ -784,7 +782,7 @@ void tst_brkloopm(int ttype, void (*func
- 	fflush(stdout);
- #endif
- 
--	EXPAND_VAR_ARGS(arg_fmt, tmesg);
-+	EXPAND_VAR_ARGS(tmesg, arg_fmt, USERMESG);
- 
- 	tst_brkloop(ttype, NULL, func, "%s", tmesg);
- }
-
---jousvV0MzM2p6OtC
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Sender: ltp-list-bounces@lists.sourceforge.net
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+Cc: ltp-list@lists.sourceforge.net
+Message-ID: <20090711201735.018_l6VKtghIWuhOM7g91ftsvbZCcC75BIsF-K6v-As@z>
+
+Hello,
+
+this adds some test cases for utimes(), among those one that actually should return EACCESS.
+
+Regards
+    Jiri Palecek
+
+Signed-off-by: Jiri Palecek <jpalecek@web.de>
+---
+ testcases/kernel/syscalls/utimes/utimes01.c |   41 ++++++++++++++++++++------
+ 1 files changed, 31 insertions(+), 10 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/utimes/utimes01.c b/testcases/kernel/syscalls/utimes/utimes01.c
+index 2fddb99..370db5c 100644
+--- a/testcases/kernel/syscalls/utimes/utimes01.c
++++ b/testcases/kernel/syscalls/utimes/utimes01.c
+@@ -159,6 +159,7 @@ enum test_type {
+ 		NORMAL,
+ 		FILE_NOT_EXIST,
+ 	        NO_FNAME,
++         NULL_TIMES
+ };
+ 
+ 
+@@ -226,6 +227,19 @@ static struct test_case tcase[] = {
+                 .ret            = -1,
+                 .err            = EFAULT,
+         },
++        { // case05
++                .ttype          = NULL_TIMES,
++                .a_sec          = 1000,
++                .m_sec          = 2000,
++                .user           = "nobody",
++                .ret            = -1,
++                .err            = EACCES
++        },
++	{ // case06
++                .ttype          = NULL_TIMES,
++                .ret            = 0,
++                .err            = 0,
++        },
+ };
+ 
+ /*
+@@ -265,7 +279,8 @@ static int do_test(struct test_case *tc)
+                 fpath=FNAME_NX;
+         }
+         errno = 0;
+-        if (tc->ttype == NO_FNAME) {
++        switch(tc->ttype) {
++        case NO_FNAME:
+                 /**
+                  * Note (garrcoop):
+                  *
+@@ -276,12 +291,17 @@ static int do_test(struct test_case *tc)
+                  **/
+                 const char *dummy = NULL;
+                 TEST(sys_ret = utimes(dummy, tv));
++                break;
++        case NULL_TIMES:
++                TEST(utimes(fpath, NULL));
++                gettimeofday(tv, NULL);
++                tv[1]=tv[0];
++                break;
++        default:
++                TEST(utimes(fpath, tv));
++                break;
+         }
+-	else
+-                TEST(sys_ret = utimes(fpath, tv));
+-        sys_errno = errno;
+-        if (sys_ret < 0)
+-                goto TEST_END;
++        if(TEST_RETURN == 0) {
+ 
+ 	/*
+          * Check test file's time stamp
+@@ -293,14 +313,15 @@ static int do_test(struct test_case *tc)
+                 goto EXIT1;
+         }
+         tst_resm(TINFO,"E:%ld,%ld <=> R:%ld,%ld",tv[0].tv_sec, tv[1].tv_sec, st.st_atime, st.st_mtime);
+-        cmp_ok = st.st_atime == tv[0].tv_sec && st.st_mtime == tv[1].tv_sec;
++        cmp_ok = abs( st.st_atime - tv[0].tv_sec ) <= 1 &&
++                 abs( st.st_mtime - tv[1].tv_sec ) <= 1;
+ 
++        }
+         /*
+          * Check results
+          */
+-TEST_END:
+-        result |= (sys_errno != tc->err) || !cmp_ok;
+-        PRINT_RESULT_CMP(sys_ret >= 0, tc->ret, tc->err, sys_ret, sys_errno,cmp_ok);
++        result |= (TEST_ERRNO != tc->err) || !cmp_ok;
++        PRINT_RESULT_CMP(sys_ret >= 0, tc->ret, tc->err, (int)TEST_RETURN, (int)TEST_ERRNO, cmp_ok);
+ 
+         /*
+          * Restore effective user id
+-- 
+1.6.4.3
+
+
+
 
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-http://p.sf.net/sfu/devconference
---jousvV0MzM2p6OtC
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
+http://p.sf.net/sfu/devconf
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---jousvV0MzM2p6OtC--
-
