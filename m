@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MMX3M-0006OM-6k
-	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 00:55:00 +0000
-Received: from an-out-0708.google.com ([209.85.132.247])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MMX3H-0006Ya-OE
-	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 00:55:00 +0000
-Received: by an-out-0708.google.com with SMTP id c38so870144ana.37
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MPqI9-0007Nz-VL
+	for ltp-list@lists.sourceforge.net; Sun, 12 Jul 2009 04:03:57 +0000
+Received: from wf-out-1314.google.com ([209.85.200.168])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MPqI1-0002wB-OG
+	for ltp-list@lists.sourceforge.net; Sun, 12 Jul 2009 04:03:57 +0000
+Received: by wf-out-1314.google.com with SMTP id 26so526156wfd.4
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 02 Jul 2009 17:53:34 -0700 (PDT)
+	Sat, 11 Jul 2009 21:03:49 -0700 (PDT)
 MIME-Version: 1.0
-Date: Thu, 2 Jul 2009 17:46:52 -0700
-Message-ID: <364299f40907021746s11b0d21cree70f4794c2151e9@mail.gmail.com>
+Date: Sat, 11 Jul 2009 21:03:49 -0700
+Message-ID: <364299f40907112103h3b0864a0l1e1c203a77c5476e@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Content-Type: multipart/mixed; boundary=0016369201d011849b046dc27e31
-Subject: [LTP] [PATCH 10/10] config.mk not required for clean
+Content-Type: multipart/mixed; boundary=000e0cd18264f0c78f046e7a4ab7
+Subject: [LTP] [PATCH] Fix shadowed declaration of basename(3) in
+	testcases/kernel/fs/fsx-linux/fsx-linux.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,54 +30,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: LTP list <ltp-list@lists.sourceforge.net>
 
---0016369201d011849b046dc27e31
+--000e0cd18264f0c78f046e7a4ab7
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 
-In order to loosen the requirement of having config.mk for a clean /
-distclean operation, we need to check for %clean in MAKECMDGOALS.
+This is the 21st century, and yes we have a basename(3) libcall in
+string.h. This attached patch fixes that so -Wshadow passes:
 
-Other associated changes are:
-1. Standardizing variables.
-2. Adding missing GPLv2 copyright notices to tops of Makefiles.
+Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
 
-        Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+Index: testcases/kernel/fs/fsx-linux/fsx-linux.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/fs/fsx-linux/fsx-linux.c,v
+retrieving revision 1.12
+diff -r1.12 fsx-linux.c
+449,455d448
+< static const char *basename(const char *path)
+< {
+<       char *c = strrchr(path, '/');
+<
+<       return c ? c++ : path;
+< }
+<
 
---0016369201d011849b046dc27e31
-Content-Type: application/octet-stream; 
-	name="config.mk-not-reqd-for-clean.10.diff"
-Content-Disposition: attachment; 
-	filename="config.mk-not-reqd-for-clean.10.diff"
+--000e0cd18264f0c78f046e7a4ab7
+Content-Type: application/octet-stream; name="fix_basename_decl.diff"
+Content-Disposition: attachment; filename="fix_basename_decl.diff"
 Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fwo6qr550
+X-Attachment-Id: f_fx18oyqj0
 
-SW5kZXg6IHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvaW9fc3VibWl0L01ha2VmaWxlCj09PT09
+SW5kZXg6IHRlc3RjYXNlcy9rZXJuZWwvZnMvZnN4LWxpbnV4L2ZzeC1saW51eC5jCj09PT09PT09
 PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT0KUkNTIGZpbGU6IC9jdnNyb290L2x0cC9sdHAvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
-cy9pb19zdWJtaXQvTWFrZWZpbGUsdgpyZXRyaWV2aW5nIHJldmlzaW9uIDEuMwpkaWZmIC11IC1y
-MS4zIE1ha2VmaWxlCi0tLSB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2lvX3N1Ym1pdC9NYWtl
-ZmlsZQkyMCBKYW4gMjAwOSAxMDo0ODo0MiAtMDAwMAkxLjMKKysrIHRlc3RjYXNlcy9rZXJuZWwv
-c3lzY2FsbHMvaW9fc3VibWl0L01ha2VmaWxlCTMgSnVsIDIwMDkgMDA6NDA6MDggLTAwMDAKQEAg
-LTIwLDE2ICsyMCwxNyBAQAogIyAgRm91bmRhdGlvbiwgSW5jLiwgNTEgRnJhbmtsaW4gU3QsIEZp
-ZnRoIEZsb29yLCBCb3N0b24sIE1BICAwMjExMC0xMzAxICBVU0EKICMKIAorc3JjZGlyCQkJPz0g
-Li4vLi4vLi4vLi4vLi4KIAotaW5jbHVkZSAuLi8uLi8uLi8uLi9jb25maWcubWsKK2lmbmVxICgk
-KE1BS0VDTURHT0FMUyksY2xlYW4pCitpbmNsdWRlICQoc3JjZGlyKS9jb25maWcubWsKK2VuZGlm
-CiAKK0NGTEFHUyAJCQkrPSAtSSQoc3JjZGlyKS9pbmNsdWRlIC1XYWxsCitMREZMQUdTCQkJKz0g
-JChBSU9fTElCUykgLUwkKHNyY2RpcikvbGliCitMRExJQlMJCQkrPSAtbGx0cAogCi1TUkNTICAg
-ID0gJCh3aWxkY2FyZCAqLmMpCi1UQVJHRVRTID0gJChwYXRzdWJzdCAlLmMsJSwkKFNSQ1MpKQot
-U1lTQ0FMTCA9IGlvX3N1Ym1pdAotCi1DRkxBR1MgKz0gLUkuLi8uLi8uLi8uLi9pbmNsdWRlIC1X
-YWxsCi1MRExJQlMgKz0gJChBSU9fTElCUykgLUwuLi8uLi8uLi8uLi9saWIgLWxsdHAKK1RBUkdF
-VFMgCQk6PSAkKHBhdHN1YnN0ICUuYywlLCQod2lsZGNhcmQgKi5jKSkKIAogYWxsOiAkKFRBUkdF
-VFMpCiAK
---0016369201d011849b046dc27e31
+PT0KUkNTIGZpbGU6IC9jdnNyb290L2x0cC9sdHAvdGVzdGNhc2VzL2tlcm5lbC9mcy9mc3gtbGlu
+dXgvZnN4LWxpbnV4LmMsdgpyZXRyaWV2aW5nIHJldmlzaW9uIDEuMTIKZGlmZiAtcjEuMTIgZnN4
+LWxpbnV4LmMKNDQ5LDQ1NWQ0NDgKPCBzdGF0aWMgY29uc3QgY2hhciAqYmFzZW5hbWUoY29uc3Qg
+Y2hhciAqcGF0aCkKPCB7CjwgCWNoYXIgKmMgPSBzdHJyY2hyKHBhdGgsICcvJyk7CjwgCjwgCXJl
+dHVybiBjID8gYysrIDogcGF0aDsKPCB9CjwgCg==
+--000e0cd18264f0c78f046e7a4ab7
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-
---0016369201d011849b046dc27e31
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
+--000e0cd18264f0c78f046e7a4ab7
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -87,5 +89,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---0016369201d011849b046dc27e31--
+--000e0cd18264f0c78f046e7a4ab7--
 
