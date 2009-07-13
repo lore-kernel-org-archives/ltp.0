@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MSOrG-0001ck-Ad
-	for ltp-list@lists.sourceforge.net; Sun, 19 Jul 2009 05:22:46 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MSOr8-00012v-Dt
-	for ltp-list@lists.sourceforge.net; Sun, 19 Jul 2009 05:22:46 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sun, 19 Jul 2009 01:22:35 -0400
-References: <4A5E7649.9040705@cn.fujitsu.com>
-	<364299f40907182147l4239c229m25eb180ea7c8ebf9@mail.gmail.com>
-In-Reply-To: <364299f40907182147l4239c229m25eb180ea7c8ebf9@mail.gmail.com>
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MQOq4-0002ZN-LT
+	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2009 16:57:16 +0000
+Received: from wf-out-1314.google.com ([209.85.200.170])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MQOpw-0005JD-O0
+	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2009 16:57:16 +0000
+Received: by wf-out-1314.google.com with SMTP id 26so801237wfd.4
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 13 Jul 2009 09:57:07 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <200907190122.36427.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] fix the system call number of exit_group01
+In-Reply-To: <1247473352.26478.14.camel@subratamodak.linux.ibm.com>
+References: <4A5AED18.2090201@cn.fujitsu.com>
+	<1247473352.26478.14.camel@subratamodak.linux.ibm.com>
+Date: Mon, 13 Jul 2009 09:57:07 -0700
+Message-ID: <364299f40907130957i5bffc7acofe0be466ae22ce43@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Fix "make clean"'s failure in case cpuset
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,85 +28,67 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============9022681567404370010=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============9022681567404370010==
-Content-Type: multipart/signed; boundary="nextPart2572219.k4TJxxnSIR";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart2572219.k4TJxxnSIR
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-On Sunday 19 July 2009 00:47:29 Garrett Cooper wrote:
-> On Wed, Jul 15, 2009 at 5:37 PM, Wei Yongjun<yjwei@cn.fujitsu.com> wrote:
-> > The system call number is depend on the system architecture, not always
-> > 252. This patch fixed the problem.
-> >
-> > --- a/testcases/kernel/syscalls/exit_group/exit_group01.c     =20
-> > -                               TEST(syscall(252,4));
-> > +                               TEST(syscall(__NR_exit_group,4));
+On Mon, Jul 13, 2009 at 1:22 AM, Subrata
+Modak<subrata@linux.vnet.ibm.com> wrote:
+> On Mon, 2009-07-13 at 16:15 +0800, Shi Weihua wrote:
+>> In case cpuset, the file cpuset_syscall_test.o was not deleted after "ma=
+ke clean".
+>> The following patch fixed this problem.
+>>
+>> Signed-off-by: Shi Weihua <shiwh@cn.fujitsu.com>
 >
->     The best way to do this (IMHO) may be to add the relevant syscall
-> number to the architecture specific .in file in
-> testcases/kernel/include. Do you have the syscall number for your
-> architecture?
+> Garret,
+>
+> If this is safe and does not interfere with your patches, please check
+> this in.
+>
+> Regards--
+> Subrata
+>
+>> ---
+>> diff -urpN ltp-full-20090630.orig/testcases/kernel/controllers/cpuset/cp=
+uset_syscall_test/Makefile ltp-full-20090630/testcases/kernel/controllers/c=
+puset/cpuset_syscall_test/Makefile
+>> --- ltp-full-20090630.orig/testcases/kernel/controllers/cpuset/cpuset_sy=
+scall_test/Makefile =A0 2009-06-23 10:18:17.000000000 -0400
+>> +++ ltp-full-20090630/testcases/kernel/controllers/cpuset/cpuset_syscall=
+_test/Makefile =A0 =A0 =A0 =A02009-07-13 12:24:01.000000000 -0400
+>> @@ -8,7 +8,8 @@ all:cpuset_syscall_test
+>> =A0cpuset_syscall_test: %: %.o $(LIBOBJECTS)
+>>
+>> =A0clean:
+>> - =A0 =A0 rm -rf cpuset_syscall_test
+>> + =A0 =A0 rm -rf cpuset_syscall_test cpuset_syscall_test.o
+>> + =A0 =A0 rm -f $(LIBOBJECTS)
+>>
+>> =A0install:
+>> =A0 =A0 =A0 @set -e; \
 
-both should be done.  syscall() should never be used with a hardcoded #.
-=2Dmike
+    I wish I could say that's the only area that needs clean fixed,
+but there are other spots in the tree that suffer from that issue too.
+    I'll submit a quick diff with all of the problem children in an hour or=
+ so.
+Thanks,
+-Garrett
 
---nextPart2572219.k4TJxxnSIR
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+---------------------------------------------------------------------------=
+---
+Enter the BlackBerry Developer Challenge  =
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.12 (GNU/Linux)
+This is your chance to win up to $100,000 in prizes! For a limited time, =
 
-iQIcBAABAgAGBQJKYq2cAAoJEEFjO5/oN/WBNKMQALAWVO/oG7qq7IgNwo/DsTUR
-w3wrJsNeKSz6h7AechIfVT58/Si+s53VHTzw/pkzsUbgrfz0r3wmVyjNZxWd55DL
-Gj6Vjg+sKSeQwvCIPO7h0VzvvRHFqlX8ruOggYk7jEsmYA75xHqaRL3rEw5DlAAW
-pg4nV+6n+Jsz/VBVAgJ/agCxw38AOIzzNNCIvbtQDLHfxAQMQY4lZzH4U2KQaQzd
-6w0kfBXgDb5HFJnmfHnckBPdjTcQ6543nTOoz3m2zE0DqRbA06Cd4NpKMjS1KrTA
-yYFQMA1KUZzVh4QMKs1IChDt6YcBD6KGYItIPqNwU/8gB3/8/ikJX/GROsVMYlBQ
-XbrtApnqE+dNfFi0i2mVtQba0Z1OZUpGcFfq88hOjEO/LsjIHD/ByMhRB/XYMMf7
-Iu2EU5+mBGS5EmaLs4atTWxdispg6suy4xfblcS6ONjYb8ZkVOMkQ94EpObLlEap
-dmWwrjt/MEBnKcdMEb3V/8sLNDuVWH3hTajnhcVkjUIj3WG1+JHtZasecSZ5qmz2
-mPUIuI4zqlLkNoC3NccYsqh+sZoq6tDBTI/PvmqZQnM7guAjjHrZOhiQ69ddejph
-v7Kwq/hx+VecilssKqx0U0CZI3zCKOmiIYuWucXc6M8gyu3fL8p+YPz9nZIyn4Om
-q2MJLSnM/N+X8uytdTDS
-=socU
------END PGP SIGNATURE-----
-
---nextPart2572219.k4TJxxnSIR--
-
-
---===============9022681567404370010==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
 vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
---===============9022681567404370010==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+the opportunity to enter the BlackBerry Developer Challenge. See full prize=
+  =
 
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============9022681567404370010==--
-
