@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MSFae-0005lW-0a
-	for ltp-list@lists.sourceforge.net; Sat, 18 Jul 2009 19:29:00 +0000
-Received: from mail-pz0-f172.google.com ([209.85.222.172])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MSFaU-0007og-W2
-	for ltp-list@lists.sourceforge.net; Sat, 18 Jul 2009 19:28:59 +0000
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1MQIhH-0004QJ-MU
+	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2009 10:23:47 +0000
+Date: Mon, 13 Jul 2009 12:23:40 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20090713102340.GA21156@schrodinger.suse.cz>
+References: <20090703200708.GB1651@schrodinger.suse.cz>
+	<364299f40907040018t74f51dceu525ddea664f1bbf6@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1247812675.4917.14.camel@hefan.site>
-References: <1247803650.4917.12.camel@hefan.site>
-	<364299f40907162234g1df374d4xda8a74bf61f34057@mail.gmail.com>
-	<1247812675.4917.14.camel@hefan.site>
-Date: Sat, 18 Jul 2009 12:28:49 -0700
-Message-ID: <364299f40907181228v44a60031qecf9463a3d3cb43a@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 1/1] openposix_mmap_11_4
+Content-Disposition: inline
+In-Reply-To: <364299f40907040018t74f51dceu525ddea664f1bbf6@mail.gmail.com>
+Subject: Re: [LTP] [RFC] [PATCH] build system cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,64 +22,28 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: hefan <fhe@novell.com>
-Cc: ltp-list@lists.sf.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-T24gVGh1LCBKdWwgMTYsIDIwMDkgYXQgMTE6MzcgUE0sIGhlZmFuPGZoZUBub3ZlbGwuY29tPiB3
-cm90ZToKPiBoaSwKPgo+ICpbUGF0Y2ggMS8xXSBQYXRjaCBmb3IgZml4aW5nIHRoZSDvu79mYWls
-ZWQg77u/dGVzdGNhc2Ugb3BlbnBvc2l4X21tYXBfMTFfNAo+Cj4gLW1vZGlmaWVkIHRoZSBmaWxl
-Cj4gKnRlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2Vz
-L++7v21tYXAvMTEtNC5jCj4KPgo+IO+7v1NpZ25lZC1vZmYtYnk6IMKgZnJlZHJpY2sgaGUgPGZo
-ZUBub3ZlbGwuY29tPgo+Cj4gLS0tCj4gbHRwLm9yaWcvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVz
-dHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvbW1hcC8xMS00LmMgwqAgwqAgwqAyMDA5LTA3
-LTE3IDExOjUzOjM2LjAwMDAwMDAwMCArMDgwMAo+ICsrKwo+IGx0cC90ZXN0Y2FzZXMvb3Blbl9w
-b3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9tbWFwLzExLTQuYwo+IDIwMDkt
-MDctMTcgMTE6NTc6MDkuMDAwMDAwMDAwICswODAwCj4gQEAgLTEzMCw3ICsxMzAsOSBAQCBpbnQg
-bWFpbigpCj4gwqAgZmxhZyA9IE1BUF9TSEFSRUQ7Cj4gwqAgb2ZmID0gMDsKPiDCoCBwYSA9IG1t
-YXAoYWRkciwgbGVuLCBwcm90LCBmbGFnLCBmZF8yLCBvZmYpOwo+IC0gwqBwYV8yID0gbW1hcChh
-ZGRyLCBsZW4sIHByb3QsIGZsYWcsIGZkXzIsIG9mZik7Cj4gKyDCoGFkZHIgPSBwYTsKPiArIMKg
-bWVtc2V0KGFkZHIsMCxsZW4qMik7Cj4gKyDCoHBhXzIgPSBtbWFwKGFkZHIsIGxlbiwgcHJvdCwg
-ZmxhZ3xNQVBfRklYRUQsIGZkXzIsIG9mZik7Cj4gwqAgaWYgKHBhXzIgPT0gTUFQX0ZBSUxFRCkK
-PiDCoCB7Cj4gwqAgwqAgcHJpbnRmKCJUZXN0IEZBSUw6ICIgVE5BTUUgIiBFcnJvciBhdCAybmQg
-bW1hcCgpOiAlc1xuIiwKCkhpIEZhbiwKICAgIFNvbWUgcXVlc3Rpb25zIC8gb2JzZXJ2YXRpb25z
-OgoKMS4gWWVzLCB0aGUgdGVzdGNhc2VzIGRvZXMgZmFpbCBvbiBteSBtYWNoaW5lIHRvZGF5Lgoy
-LiBZZXMsIGRvaW5nIHdoYXQgeW91IHNheSBhYm92ZSBkb2VzIHdvcmsgKGF0IGxlYXN0IHRoZSB0
-ZXN0Y2FzZSBwYXNzZXMpLgozLiBBcmUgeW91IHBvc2l0aXZlIHRoYXQgeW91ciBzZXQgb2Ygc3Rl
-cHMgYWJvdmUgaW4gZmFjdCBkb24ndAppbnZhbGlkYXRlIHRoZSBwdXJwb3NlIG9mIHRoZSB0ZXN0
-Y2FzZSwgYnkgYWNjaWRlbnQsIGluIHBhcnRpY3VsYXIgdGhlCm1lbXNldCBjYWxsPyBJIGFzayBi
-ZWNhdXNlIG9mIHRoZSBmb2xsb3dpbmcgc3RhdGVtZW50IGluIHRoZSBtbWFwCm1hbnBhZ2U6Cgog
-ICAgICAgSWYgYWRkciBpcyBOVUxMLCB0aGVuIHRoZSBrZXJuZWwgY2hvb3NlcyB0aGUgYWRkcmVz
-cyBhdCB3aGljaCB0byBjcmVhdGUKICAgICAgIHRoZSBtYXBwaW5nOyB0aGlzIGlzIHRoZSBtb3N0
-IHBvcnRhYmxlIG1ldGhvZCBvZiBjcmVhdGluZyAgYSAgbmV3ICBtYXAtCiAgICAgICBwaW5nLiAg
-IElmICBhZGRyICBpcyBub3QgTlVMTCwgdGhlbiB0aGUga2VybmVsIHRha2VzIGl0IGFzIGEgaGlu
-dCBhYm91dAogICAgICAgd2hlcmUgdG8gcGxhY2UgdGhlIG1hcHBpbmc7IG9uIExpbnV4LCB0aGUg
-bWFwcGluZyB3aWxsIGJlIGNyZWF0ZWQgYXQgIGEKICAgICAgIG5lYXJieSAgcGFnZSAgYm91bmRh
-cnkuICAgVGhlIGFkZHJlc3Mgb2YgdGhlIG5ldyBtYXBwaW5nIGlzIHJldHVybmVkIGFzCiAgICAg
-ICB0aGUgcmVzdWx0IG9mIHRoZSBjYWxsLgoKV2hhdCB5b3UncmUgaW4gZWZmZWN0IGRvaW5nIGlz
-IGNoYW5naW5nIHRoZSAybmQgbW1hcCBjYWxsIGZyb20gYW4KYXJiaXRyYXJ5IGFkZHJlc3MgdG8g
-YSBzZXQgdmlydHVhbCBhZGRyZXNzIGF0IDB4MC4gSXMgdGhhdCBpbmRlZWQKY29ycmVjdD8KNC4g
-SGF2ZSB5b3UgdGFsa2VkIHRvIHRoZSBvcGVucG9zaXggdGVzdCBzdWl0ZSBmb2xrcyBhYm91dCB0
-aGlzIHlldD8KNS4gRldJVyB0aGUgc2FtZSByZXN1bHRzIGFyZSBzZWVuIG9uIEZyZWVCU0QsIHNv
-IEkgZG9uJ3QgZG91YnQgdGhhdAp0aGUgdGVzdGNhc2UgaXMgYnJva2VuIC0tIEkganVzdCB3YW50
-IHRvIGVuc3VyZSB0aGF0IGl0J3MgZml4ZWQgaW4gdGhlCnByb3BlciB3YXkgOikuLi4KCltnY29v
-cGVyQG9wdGltdXMgL3NjcmF0Y2gvb3Blbl9wb3NpeF90ZXN0c3VpdGVdJApjb25mb3JtYW5jZS9p
-bnRlcmZhY2VzL21tYXAvMTEtNC50ZXN0CnBhOiAweDgwMDUzNzAwMApwYV8yOiAweDgwMDUzNzAw
-MApUZXN0IEZhaWw6IG1tYXAvMTEtNC5jIE1vZGlmaWNhdGlvbiBvZiB0aGUgcGFydGlhbCBwYWdl
-IGF0IHRoZSBlbmQgb2YKYW4gb2JqZWN0IGlzIHdyaXR0ZW4gb3V0CltnY29vcGVyQG9wdGltdXMg
-L3NjcmF0Y2gvb3Blbl9wb3NpeF90ZXN0c3VpdGVdJCB1bmFtZSAtYQpGcmVlQlNEIG9wdGltdXMu
-emVubWV0c3VoaXRvdHV5YW5lc2hpdGEubmV0IDguMC1DVVJSRU5UIEZyZWVCU0QKOC4wLUNVUlJF
-TlQgIzA6IFN1biBKdWwgIDUgMTQ6NDM6MDcgUERUIDIwMDkKcm9vdEBvcHRpbXVzLnplbm1ldHN1
-aGl0b3R1eWFuZXNoaXRhLm5ldDovdXNyL29iai91c3Ivc3JjL3N5cy9PUFRJTVVTCmFtZDY0CgpU
-aGFua3MsCi1HYXJyZXR0CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KRW50ZXIgdGhlIEJsYWNrQmVy
-cnkgRGV2ZWxvcGVyIENoYWxsZW5nZSAgClRoaXMgaXMgeW91ciBjaGFuY2UgdG8gd2luIHVwIHRv
-ICQxMDAsMDAwIGluIHByaXplcyEgRm9yIGEgbGltaXRlZCB0aW1lLCAKdmVuZG9ycyBzdWJtaXR0
-aW5nIG5ldyBhcHBsaWNhdGlvbnMgdG8gQmxhY2tCZXJyeSBBcHAgV29ybGQoVE0pIHdpbGwgaGF2
-ZQp0aGUgb3Bwb3J0dW5pdHkgdG8gZW50ZXIgdGhlIEJsYWNrQmVycnkgRGV2ZWxvcGVyIENoYWxs
-ZW5nZS4gU2VlIGZ1bGwgcHJpemUgIApkZXRhaWxzIGF0OiBodHRwOi8vcC5zZi5uZXQvc2Z1L0No
-YWxsZW5nZQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
-dHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBz
-Oi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+Hi!
+I've seen quite a progress on ltp mailing list. What's the current state?  I'm
+back here and would like to help.  (There is quite a lot of patches and I'm too
+lazy to apply them all).
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
