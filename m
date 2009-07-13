@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sukadev@linux.vnet.ibm.com>) id 1MMQ5b-0005wX-9m
-	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2009 17:28:51 +0000
-Received: from [32.97.110.151] (helo=e33.co.us.ibm.com)
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MM5zI-0003tF-EN
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2009 20:01:02 +0000
-Date: Wed, 1 Jul 2009 12:56:05 -0700
-From: Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
-Message-ID: <20090701195605.GA23307@us.ibm.com>
-References: <20090701165923.GC3237@in.ibm.com>
-	<20090701182005.GC17998@us.ibm.com>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MQPyN-000881-FF
+	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2009 18:09:55 +0000
+Received: from mail-px0-f189.google.com ([209.85.216.189])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MQPyI-0001Ht-H8
+	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2009 18:09:55 +0000
+Received: by pxi27 with SMTP id 27so1246026pxi.28
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 13 Jul 2009 11:09:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20090701182005.GC17998@us.ibm.com>
-Subject: Re: [LTP] [PATCH] Fix pidns14 test case
+In-Reply-To: <364299f40907130957i5bffc7acofe0be466ae22ce43@mail.gmail.com>
+References: <4A5AED18.2090201@cn.fujitsu.com>
+	<1247473352.26478.14.camel@subratamodak.linux.ibm.com>
+	<364299f40907130957i5bffc7acofe0be466ae22ce43@mail.gmail.com>
+Date: Mon, 13 Jul 2009 11:09:49 -0700
+Message-ID: <364299f40907131109lcc15653m2d2610d8f7c2bc6@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Fix "make clean"'s failure in case cpuset
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,40 +29,107 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serue@us.ibm.com>
-Cc: ltp-list@lists.sf.net, "M. Mohan Kumar" <mohan@in.ibm.com>, sachinp@in.ibm.com
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Serge E. Hallyn [serue@us.ibm.com] wrote:
-| Quoting M. Mohan Kumar (mohan@in.ibm.com):
-| > [PATCH] pidns14
-| > 
-| > Container-init may be immune to unhandled fatal signals (like SIGUSR1)
-| > even if they are from ancestor namespace. SIGKILL/SIGSTOP are the only
-| > reliable signals to a container-init from ancestor namespace. Make sure
-| > that container-init will not respond to signals other than
-| > SIGKILL/SIGSTOP
-| 
-| Hmm?  This may or may not be right...  but you start out by saying 'may be
-| immune to', then provide a patch making the testcase TFAIL if is not immune
-| to.  So at the very least anyone on a slightly older kernel will get TFAILs.
-| 
-| I don't think that immunity to SIGUSR1 from ancestor pidns is something we
-| want to guarantee, it's just what is happening.  The proper thing is to
-| not depend on either getting or not getting SIGUSR1, in my opinion.  Suka?
+On Mon, Jul 13, 2009 at 9:57 AM, Garrett Cooper<yanegomi@gmail.com> wrote:
+> On Mon, Jul 13, 2009 at 1:22 AM, Subrata
+> Modak<subrata@linux.vnet.ibm.com> wrote:
+>> On Mon, 2009-07-13 at 16:15 +0800, Shi Weihua wrote:
+>>> In case cpuset, the file cpuset_syscall_test.o was not deleted after "m=
+ake clean".
+>>> The following patch fixed this problem.
+>>>
+>>> Signed-off-by: Shi Weihua <shiwh@cn.fujitsu.com>
+>>
+>> Garret,
+>>
+>> If this is safe and does not interfere with your patches, please check
+>> this in.
+>>
+>> Regards--
+>> Subrata
+>>
+>>> ---
+>>> diff -urpN ltp-full-20090630.orig/testcases/kernel/controllers/cpuset/c=
+puset_syscall_test/Makefile ltp-full-20090630/testcases/kernel/controllers/=
+cpuset/cpuset_syscall_test/Makefile
+>>> --- ltp-full-20090630.orig/testcases/kernel/controllers/cpuset/cpuset_s=
+yscall_test/Makefile =A0 2009-06-23 10:18:17.000000000 -0400
+>>> +++ ltp-full-20090630/testcases/kernel/controllers/cpuset/cpuset_syscal=
+l_test/Makefile =A0 =A0 =A0 =A02009-07-13 12:24:01.000000000 -0400
+>>> @@ -8,7 +8,8 @@ all:cpuset_syscall_test
+>>> =A0cpuset_syscall_test: %: %.o $(LIBOBJECTS)
+>>>
+>>> =A0clean:
+>>> - =A0 =A0 rm -rf cpuset_syscall_test
+>>> + =A0 =A0 rm -rf cpuset_syscall_test cpuset_syscall_test.o
+>>> + =A0 =A0 rm -f $(LIBOBJECTS)
+>>>
+>>> =A0install:
+>>> =A0 =A0 =A0 @set -e; \
+>
+> =A0 =A0I wish I could say that's the only area that needs clean fixed,
+> but there are other spots in the tree that suffer from that issue too.
+> =A0 =A0I'll submit a quick diff with all of the problem children in an ho=
+ur or so.
 
-Yes we did confirm that there is a test for SIGKILL from parent ns.
-We discussed in the bug report on whether to drop or modify the test,
-but leaned towards modifying the test bc if SIGUSR1 does kill a container
-init, then something has changed in the sig_ignored() checks in the kernel.
+Actually, the damage is a lot less than expected ;).
 
-Hmm, not a very strong reason to keep the test.  Lets just drop the test :-)
+gcooper@orangebox /scratch/ltp-dev2/ltp $ find | grep -v CVS | xargs
+file | egrep 'archive|ELF' | grep -v 'shell archive'
+gcooper@orangebox /scratch/ltp-dev2/ltp $
 
-Sukadev
+A patch to fix a minor leak, which will get redone with the Makefile
+changes I'm bringing in soon.
 
-------------------------------------------------------------------------------
+Thanks Shi for the heads up!
+
+Here's the patch I'm committing, which cleans out all objects in
+testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile --
+not just $(LIBOBJECTS).
+
+NOTE: This patch is for viewing only, as the tabs were turned into
+spaces when copied from xterm.
+
+Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+
+Index: testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/controllers/cpuset/cpuset_sysca=
+ll_test/Makefile,v
+retrieving revision 1.3
+diff -u -r1.3 Makefile
+--- testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
+ 23 Jun 2009 14:18:17 -0000      1.3
++++ testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
+ 13 Jul 2009 18:08:26 -0000
+@@ -8,7 +8,7 @@
+ cpuset_syscall_test: %: %.o $(LIBOBJECTS)
+
+ clean:
+-       rm -rf cpuset_syscall_test
++       rm -rf cpuset_syscall_test $(OBJECTS) $(LIBOBJECTS)
+
+ install:
+        @set -e; \
+
+---------------------------------------------------------------------------=
+---
+Enter the BlackBerry Developer Challenge  =
+
+This is your chance to win up to $100,000 in prizes! For a limited time, =
+
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize=
+  =
+
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
