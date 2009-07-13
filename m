@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MWlS0-0001YA-Pg
-	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 06:18:44 +0000
-Received: from rv-out-0708.google.com ([209.85.198.243])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MWlRn-0002Ip-3k
-	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 06:18:34 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so495859rvf.22
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1MQJ0B-0001Kn-C5
+	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2009 10:43:19 +0000
+Received: from mail-px0-f189.google.com ([209.85.216.189])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MQJ06-0008GF-3W
+	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2009 10:43:19 +0000
+Received: by pxi27 with SMTP id 27so1056522pxi.28
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 30 Jul 2009 23:18:24 -0700 (PDT)
+	Mon, 13 Jul 2009 03:43:12 -0700 (PDT)
+Message-ID: <4A5B0971.6060005@petalogix.com>
+Date: Mon, 13 Jul 2009 12:16:17 +0200
+From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-Date: Thu, 30 Jul 2009 23:18:24 -0700
-Message-ID: <364299f40907302318o440851ewfde0b34ca561b8a2@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] Quiet down smack test and check for /smack before continuing
+Subject: [LTP] LTP
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,752 +29,139 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: "subrata@linux.vnet.ibm.com" <subrata@linux.vnet.ibm.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>, John Williams <john.williams@petalogix.com>, "Edgar E. Iglesias" <edgar.iglesias@gmail.com>
 
-I started work on this because there's a fair amount of noise that
-currently gets generated with the smack test unnecessarily and doesn't
-check for /smack. There were some other items that I found that could
-be improved along the way...
+Hi All,
 
-This change in its entirety does the following:
+I would like to send to mailing list more information about LTP - how is
+helping us to remove bugs
+from Microblaze kernel/toolchain code and of course for future kernel
+bug hunting for new archs.
 
-1. Adds a prerequisite check for /smack.
-2. Checks /smack/onlycap once per test in the smack_common.sh file
-(new file) in an effort to reduce unnecessary shell code.
-3. Properly quote variables and echo calls so vim doesn't print things
-out as syntax errors.
-4. Convert all double echo calls to cat <<EOM .. EOM.
-5. Toss unnecessary exit 0 at the bottom of a number of test scripts.
-6. Make /smack into $smackfsdir, so folks can parameterize the
-mountpoint better (or maybe I could add code to grep through
-/proc/mounts to find a /smack mount point ;)...).
-7. Get rid of bash's `==' in favor of the POSIX compliant `='.
+I am trying to resolve problems in MMU Microblaze kernel code. Anyway I
+think you know that
+Microblaze in is mainline. :-)
 
-Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+Ok. We run runtest/syscalls to check if our kernel/ABI works as expected.
+I have found tree big bugs which I would like to talk about.
 
-Index: smack_common.sh
-===================================================================
-RCS file: smack_common.sh
-diff -N smack_common.sh
---- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ smack_common.sh	31 Jul 2009 06:17:05 -0000
-@@ -0,0 +1,48 @@
-+#!/bin/sh
-+#
-+#    testcases/security/smack/smack_common.sh
-+#
-+#    Copyright (C) 2009, Cisco Systems Inc.
-+#
-+#    This program is free software; you can redistribute it and/or modify
-+#    it under the terms of the GNU General Public License as published by
-+#    the Free Software Foundation; either version 2 of the License, or
-+#    (at your option) any later version.
-+#
-+#    This program is distributed in the hope that it will be useful,
-+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+#    GNU General Public License for more details.
-+#
-+#    You should have received a copy of the GNU General Public License along
-+#    with this program; if not, write to the Free Software Foundation, Inc.,
-+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+#
-+# Garrett Cooper, July 2009
-+#
-+# This file serves the sole purpose of executing every common piece of
-+# prerequisite code for all of the smack tests, s.t. a lot of duplicate shell
-+# code isn't laying around all over the place.
-+#
-+
-+smackfsdir=${smackfsdir:=/smack}
-+
-+check_mounted() {
-+	if [ ! -d "$smackfsdir" ]; then
-+		echo "smackfs not mounted at $smackfsdir"
-+		exit 1
-+	fi
-+}
-+
-+check_onlycap() {
-+	onlycap=`cat "$smackfsdir/onlycap" 2>/dev/null`
-+	if [ -z "$onlycap" ]; then
-+		cat <<EOM
-+The smack label reported for $smackfsdir/onlycap is "$onlycap", not
-the expected "".
-+EOM
-+		exit 1
-+	fi
-+}
-+
-+check_mounted
-+check_onlycap
-Index: smack_file_access.sh
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/smack/smack_file_access.sh,v
-retrieving revision 1.1
-diff -u -r1.1 smack_file_access.sh
---- smack_file_access.sh	19 Mar 2009 07:27:05 -0000	1.1
-+++ smack_file_access.sh	31 Jul 2009 06:17:05 -0000
-@@ -13,43 +13,38 @@
- #
- #               1         2         3         4         5         6
- #      123456789012345678901234567890123456789012345678901234567890123456789
-+
-+source smack_common.sh
-+
- RuleA="TheOne                  TheOther                r---"
- RuleB="TheOne                  TheOther                rw--"
+The first is problem with missing flush tlb from MMU after calling
+mmap01 tests.
+I think you saw thread on list too.
+This problem was very hard to debug because any printk debug messages
+caused correct test behavior.
+We have in LTP nine standard mmap test and only mmap01 failed. I found
+that calling sync() syscall
+caused (as printk) correct test behavior. When I run mmap01 -c 100 the
+first some tests failed and the rest passed.
+This was the first moment when I wanted to use Microblaze Qemu emulator
+to find out where the problem is. (Thanks to Edgar - author of Qemu
+Microblaze port and for his huge help).
+Emulator help me to see what Microblaze do. I turned on program counter
+tracing to see what Linux kernel really does.
+I was able to see program counter and full execution flow, MMU behavior
+- tlb hit/miss and interrupts.
+Unfortunately I was not able to see tlb invalidation (we will upgrade
+emulator to support this too :-) )
+I saw when I run mmap01 -c 100 that firsts some tests failed which were
+on the top and tests which passed were on the bottom.
+I asked Microblaze hw guys for help and they point me to that Microblaze
+code not flush tlbs after mmap.
 
- Where="./testdir"
- What="testfile"
--TestFile="$Where"/"$What"
-+TestFile="$Where/$What"
- CAT=/bin/cat
+What Microblaze did? Microblaze have 64 tlb and we use 2 fixed tlb for
+kernel code - to speedup kernel.
+This changed caused that we have not too much tlb misses and for
+flushing current old mapping and wasn't replaced by
+updated one (mmap syscall do that update) - that's why kernel need to
+flush tlb for old mapping. When I called printk debug messages or sync
+syscall,
+kernel flush more tlb and test passed. The same behavior was when I run
+100 tests. The firsts some tests failed
+because weren't interrupted by any other code. Tests which passed and
+were on the bottom of my log were interrupted
+by any code which caused that old tlb mapping was flushed and on next
+access were used new one.
 
--onlycap=`cat /smack/onlycap`
--if [ "$onlycap" != "" ]; then
--	echo The smack label reported for /smack/onlycap is \"$label\",
--	echo not the expected \"\".
--	exit 1
--fi
--
- if [ ! -d "$Where" ]; then
- 	if [ -e "$Where" ]; then
--		echo Test directory \"$Where\" exists but is not a directory.
-+		echo "Test directory \"$Where\" exists but is not a directory."
- 		exit 1
- 	fi
--	mkdir "$Where"
-+	mkdir -m 777 "$Where"
- 	if [ ! -d "$Where" ]; then
--		echo Test directory \"$Where\" can not be created.
-+		echo "Test directory \"$Where\" can not be created."
- 		exit 1
- 	fi
--	chmod 777 "$Where"
- fi
+The result is that LTP has more than 70 tests which use mmap syscall but
+only two tests uncover big problem with tlb flush.
+The first test was mmap01 and the second, which was bonus for me, was
+shmdt01.
 
- if [ ! -f "$TestFile" ]; then
- 	if [ -e "$TestFile" ]; then
--		echo Test file \"$TestFile\" exists but is not a file.
-+		echo "Test file \"$TestFile\" exists but is not a file."
- 		rm -rf "$Where"
- 		exit 1
- 	fi
--	./notroot /bin/sh -c "echo InitialData > $TestFile"
-+	./notroot /bin/sh -c "echo InitialData 2>/dev/null > $TestFile"
- 	if [ ! -d "$TestFile" ]; then
--		echo Test file \"$TestFile\" can not be created.
-+		echo "Test file \"$TestFile\" can not be created."
- 		rm -rf "$Where"
- 		exit 1
- 	fi
-@@ -60,65 +55,65 @@
- SetTo=`echo $SetTo`
 
- if [ "TheOther" != "$SetTo" ]; then
--	echo Test file \"$TestFile\" labeled \"$SetTo\" incorrectly.
-+	echo "Test file \"$TestFile\" labeled \"$SetTo\" incorrectly."
- 	rm -rf "$Where"
- 	exit 1
- fi
 
--OldRule=`grep "^TheOne" /smack/load | grep ' TheOther '`
-+OldRule=`grep "^TheOne" "$smackfsdir/load" 2>/dev/null | grep ' TheOther '`
+The second problem which I have met with it was on fallocate01 syscall.
+It wasn't too hard to fixed it because after some
+printk debugging I found that we have problem with u64 parameters
+(Microblaze is 32bit cpu). Problem was
+that glibc wasn't able to pass to kernel sixth parameter when we used
+syscall macro because syscall macro
+use 7 parameters because first is number of syscall. That six parameters
+are assembled from u32 and u64 values where
+Microblaze use convention that higher u32 are in one register and lower
+u32 in next.
+Microblaze use r5-r10 for passing parameters to function/syscall.
 
--echo -n "$RuleA" > /smack/load
--NewRule=`grep "^TheOne" /smack/load | grep ' TheOther '`
--if [ "$NewRule" == "" ]; then
--	echo Rule did not get set.
-+echo -n "$RuleA" > "$smackfsdir/load"
-+NewRule=`grep "^TheOne" "$smackfsdir/load" 2>/dev/null | grep ' TheOther '`
-+if [ "$NewRule" = "" ]; then
-+	echo "Rule did not get set."
- 	rm -rf "$Where"
- 	exit 1
- fi
- Mode=`echo $NewRule | sed -e 's/.* //'`
- if [ "$Mode" != "r" ]; then
--	echo Rule \"$NewRule\" is not set correctly.
-+	echo "Rule \"$NewRule\" is not set correctly."
- 	rm -rf "$Where"
- 	exit 1
- fi
+Mapping for syscall function is
+r5= syscall number
+r6= 1. parameter
+r7= 2. parameter
+r8= 3. parameter
+r9= 4. parameter
+r10= 5. parameter
+and 6. parameter was on the stack.
 
--OldProc=`cat /proc/self/attr/current`
-+OldProc=`cat /proc/self/attr/current 2>/dev/null`
+Syscall glibc fuction just do cross for parameters where:
+r5 moves to r12 (syscall number reg)
+r6 -> r5
+r7 -> r6
+r8 -> r7
+r9 -> r8
+r10 -> r9
+and r10 keeps the same value as was in r10.
+Microblaze toolchain not to load sixth parameter from stack which we fixed.
 
--echo TheOne > /proc/self/attr/current
-+echo TheOne 2>/dev/null > /proc/self/attr/current
- GotRead=`./notroot $CAT "$TestFile"`
+Thanks to LTP we found a bug in toolchain. Affected tests: fallocate01,
+fallocate02, fallocate03, sync_file_range01
 
- if [ "$GotRead" != "InitialData" ]; then
--	echo Read failed for \"$TestFile\" labeled \"TheOther\".
-+	echo "Read failed for \"$TestFile\" labeled \"TheOther\"."
- 	rm -rf "$Where"
- 	exit 1
- fi
 
--echo NotTheOne > /proc/self/attr/current
-+echo NotTheOne 2>/dev/null > /proc/self/attr/current
- GotRead=`./notroot $CAT "$TestFile"`
+The last but not least test which help me find out problem in kernel was
+eventfd01.
+Eventfd syscall test setup eventfd in kernel and tests tried to read
+value from kernel counter. This value is 64-bit. For passing
+this value back to user application is used put_user macro for 64 bit
+return value. We used special asm code for passing
+64 bit parameters but this in wrong. A lot of applications used this
+code but only two LTP tests find out the problem in it.
+We fixed it with calling two put_user macros for u32 values(as Blackfin
+does) which fixed two LTP tests - eventfd01 and sendfile02_64.
+I still work on this case because I miss some pieces of puzzle but only
+two tests points to kernel put user problem.
 
--if [ "$GotRead" == "InitialData" ]; then
--	echo Read should have failed for \"$TestFile\" labeled \"TheOther\".
-+if [ "$GotRead" = "InitialData" ]; then
-+	echo "Read should have failed for \"$TestFile\" labeled \"TheOther\"."
- 	rm -rf "$Where"
- 	exit 1
- fi
 
--echo -n "$RuleB" > /smack/load
--NewRule=`grep "^TheOne" /smack/load | grep ' TheOther '`
--if [ "$NewRule" == "" ]; then
--	echo Rule did not get set.
-+echo -n "$RuleB" 2>/dev/null > "$smackfsdir/load"
-+NewRule=`grep "^TheOne" $smackfsdir/load 2>/dev/null | grep ' TheOther '`
-+if [ "$NewRule" = "" ]; then
-+	echo "Rule did not get set."
- 	rm -rf "$Where"
- 	exit 1
- fi
- Mode=`echo $NewRule | sed -e 's/.* //'`
- if [ "$Mode" != "rw" ]; then
--	echo Rule \"$NewRule\" is not set correctly.
-+	echo "Rule \"$NewRule\" is not set correctly."
- 	rm -rf "$Where"
- 	exit 1
- fi
+We have some other problem which we will have to solve.
+I am surprised that LTP help us to find out kernel and toolchain
+problems. It will be very hard to find out
+these problems without LTP. I used simple LTP compilation for quick
+toolchain tests because of good coverage.
 
- if [ "$OldRule" != "$NewRule" ]; then
--	echo Notice: Test access rule changed from
--	echo \"$OldRule\" to \"$NewRule\".
-+	cat <<EOM
-+Notice: Test access rule changed from "$OldRule" to "$NewRule".
-+EOM
- fi
 
- rm -rf "$Where"
--exit 0
-Index: smack_set_ambient.sh
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/smack/smack_set_ambient.sh,v
-retrieving revision 1.1
-diff -u -r1.1 smack_set_ambient.sh
---- smack_set_ambient.sh	19 Mar 2009 07:27:05 -0000	1.1
-+++ smack_set_ambient.sh	31 Jul 2009 06:17:05 -0000
-@@ -9,32 +9,29 @@
- # Environment:
- #	CAP_MAC_ADMIN
- #
--NotTheFloorLabel="XYZZY"
--StartLabel=`cat /smack/ambient`
+Thanks,
+Michal
 
--onlycap=`cat /smack/onlycap`
--if [ "$onlycap" != "" ]; then
--	echo The smack label reported for /smack/onlycap is \"$label\",
--	echo not the expected \"\".
--	exit 1
--fi
-+source smack_common.sh
 
--echo $NotTheFloorLabel > /smack/ambient
-+NotTheFloorLabel="XYZZY"
-+StartLabel=`cat "$smackfsdir/ambient" 2>/dev/null`
-+
-+echo "$NotTheFloorLabel" 2>/dev/null > "$smackfsdir/ambient"
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
 
--label=`cat /smack/ambient`
-+label=`cat "$smackfsdir/ambient" 2>/dev/null`
- if [ "$label" != "$NotTheFloorLabel" ]; then
--	echo The smack label reported for the current process is \"$label\",
--	echo not the expected \"$NotTheFloorLabel\".
-+	cat <<EOM
-+The smack label reported for the current process is "$label", not the expected
-+"$NotTheFloorLabel".
-+EOM
- 	exit 1
- fi
-
--echo "$StartLabel" > /smack/ambient
-+echo "$StartLabel" 2>/dev/null > "$smackfsdir/ambient"
-
--label=`cat /smack/ambient`
-+label=`cat "$smackfsdir/ambient" 2>/dev/null`
- if [ "$label" != "$StartLabel" ]; then
--	echo The smack label reported for the current process is \"$label\",
--	echo not the expected \"$StartLabel\".
-+	cat <<EOM
-+The smack label reported for the current process is "$label",  not
-the expected "$StartLabel".
-+EOM
- 	exit 1
- fi
--
--exit 0
-Index: smack_set_cipso.sh
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/smack/smack_set_cipso.sh,v
-retrieving revision 1.1
-diff -u -r1.1 smack_set_cipso.sh
---- smack_set_cipso.sh	19 Mar 2009 07:27:06 -0000	1.1
-+++ smack_set_cipso.sh	31 Jul 2009 06:17:05 -0000
-@@ -13,58 +13,53 @@
- #
- #               1         2    llllCCCCccccCCCCcccc     5         6
- #      123456789012345678901234567890123456789012345678901234567890123456789
-+
-+source smack_common.sh
-+
- RuleA="TheOne                  2   0   "
- RuleB="TheOne                  3   1   55  "
- RuleC="TheOne                  4   2   17  33  "
-
--onlycap=`cat /smack/onlycap`
--if [ "$onlycap" != "" ]; then
--	echo The smack label reported for /smack/onlycap is \"$label\",
--	echo not the expected \"\".
--	exit 1
--fi
-+OldRule=`grep "^TheOne" "$smackfsdir/cipso" 2>/dev/null`
-
--OldRule=`grep "^TheOne" /smack/cipso`
--
--echo -n "$RuleA" > /smack/cipso
--NewRule=`grep "^TheOne" /smack/cipso`
--if [ "$NewRule" == "" ]; then
--	echo Rule did not get set.
-+echo -n "$RuleA" 2>/dev/null > "$smackfsdir/cipso"
-+NewRule=`grep "^TheOne" "$smackfsdir/cipso" 2>/dev/null`
-+if [ "$NewRule" = "" ]; then
-+	echo "Rule did not get set."
- 	exit 1
- fi
--Right=`echo $NewRule | grep ' 2'`
--if [ "$Right" == "" ]; then
--	echo Rule \"$NewRule\" is not set correctly.
-+Right=`echo "$NewRule" | grep ' 2'`
-+if [ "$Right" = "" ]; then
-+	echo "Rule \"$NewRule\" is not set correctly."
- 	exit 1
- fi
-
--echo -n "$RuleB" > /smack/cipso
--NewRule=`grep "^TheOne" /smack/cipso`
--if [ "$NewRule" == "" ]; then
--	echo Rule did not get set.
-+echo -n "$RuleB" 2>/dev/null > "$smackfsdir/cipso"
-+NewRule=`grep "^TheOne" "$smackfsdir/cipso" 2>/dev/null`
-+if [ "$NewRule" = "" ]; then
-+	echo "Rule did not get set."
- 	exit 1
- fi
- Right=`echo $NewRule | grep '/55'`
--if [ "$Right" == "" ]; then
--	echo Rule \"$NewRule\" is not set correctly.
-+if [ "$Right" = "" ]; then
-+	echo "Rule \"$NewRule\" is not set correctly."
- 	exit 1
- fi
-
--echo -n "$RuleC" > /smack/cipso
--NewRule=`grep "^TheOne" /smack/cipso`
--if [ "$NewRule" == "" ]; then
--	echo Rule did not get set.
-+echo -n "$RuleC" 2>/dev/null > "$smackfsdir/cipso"
-+NewRule=`grep "^TheOne" "$smackfsdir/cipso" 2>/dev/null`
-+if [ "$NewRule" = "" ]; then
-+	echo "Rule did not get set."
- 	exit 1
- fi
--Right=`echo $NewRule | grep '/17,33'`
--if [ "$Right" == "" ]; then
--	echo Rule \"$NewRule\" is not set correctly.
-+Right=`echo "$NewRule" | grep '/17,33'`
-+if [ "$Right" = "" ]; then
-+	echo "Rule \"$NewRule\" is not set correctly."
- 	exit 1
- fi
-
--
- if [ "$OldRule" != "$NewRule" ]; then
--	echo Notice: Test access rule changed from \"$OldRule\" to \"$NewRule\".
-+	cat <<EOM
-+Notice: Test access rule changed from "$OldRule" to "$NewRule".
-+EOM
- fi
--
--exit 0
-Index: smack_set_current.sh
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/smack/smack_set_current.sh,v
-retrieving revision 1.1
-diff -u -r1.1 smack_set_current.sh
---- smack_set_current.sh	19 Mar 2009 07:27:06 -0000	1.1
-+++ smack_set_current.sh	31 Jul 2009 06:17:05 -0000
-@@ -10,32 +10,30 @@
- #	CAP_MAC_ADMIN
- #	/smack/onlycap unset
- #
--NotTheFloorLabel="XYZZY"
--StartLabel=`cat /proc/self/attr/current`
-
--onlycap=`cat /smack/onlycap`
--if [ "$onlycap" != "" ]; then
--	echo The smack label reported for /smack/onlycap is \"$label\",
--	echo not the expected \"\".
--	exit 1
--fi
-+source smack_common.sh
-
--echo $NotTheFloorLabel > /proc/self/attr/current
-+NotTheFloorLabel="XYZZY"
-+StartLabel=`cat /proc/self/attr/current 2>/dev/null`
-+
-+echo "$NotTheFloorLabel" 2>/dev/null > /proc/self/attr/current
-
--label=`cat /proc/self/attr/current`
-+label=`cat /proc/self/attr/current 2>/dev/null`
- if [ "$label" != "$NotTheFloorLabel" ]; then
--	echo The smack label reported for the current process is \"$label\",
--	echo not the expected \"$NotTheFloorLabel\".
-+	cat <<EOM
-+The smack label reported for the current process is "$label",
-+not the expected "$NotTheFloorLabel".
-+EOM
- 	exit 1
- fi
-
--echo "$StartLabel" > /proc/self/attr/current
-+echo "$StartLabel" 2>/dev/null > /proc/self/attr/current
-
--label=`cat /proc/self/attr/current`
-+label=`cat /proc/self/attr/current > /dev/null`
- if [ "$label" != "$StartLabel" ]; then
--	echo The smack label reported for the current process is \"$label\",
--	echo not the expected \"$StartLabel\".
-+	cat <<EOM
-+The smack label reported for the current process is "$label",
-+not the expected "$StartLabel".
-+EOM
- 	exit 1
- fi
--
--exit 0
-Index: smack_set_direct.sh
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/smack/smack_set_direct.sh,v
-retrieving revision 1.1
-diff -u -r1.1 smack_set_direct.sh
---- smack_set_direct.sh	19 Mar 2009 07:27:06 -0000	1.1
-+++ smack_set_direct.sh	31 Jul 2009 06:17:05 -0000
-@@ -9,32 +9,30 @@
- # Environment:
- #	CAP_MAC_ADMIN
- #
--NotTheStartValue="17"
--StartValue=`cat /smack/direct`
-
--onlycap=`cat /smack/onlycap`
--if [ "$onlycap" != "" ]; then
--	echo The smack label reported for /smack/onlycap is \"$onlycap\",
--	echo not the expected \"\".
--	exit 1
--fi
-+source smack_common.sh
-
--echo $NotTheStartValue > /smack/direct
-+NotTheStartValue="17"
-+StartValue=`cat "$smackfsdir/direct" 2>/dev/null`
-+
-+echo "$NotTheStartValue" 2>/dev/null > "$smackfsdir/direct"
-
--DirectValue=`cat /smack/direct`
-+DirectValue=`cat "$smackfsdir/direct" 2>/dev/null`
- if [ "$DirectValue" != "$NotTheStartValue" ]; then
--	echo The CIPSO direct level reported is \"$DirectValue\",
--	echo not the expected \"$NotTheStartValue\".
-+	cat <<EOM
-+The CIPSO direct level reported is "$DirectValue",
-+not the expected "$NotTheStartValue".
-+EOM
- 	exit 1
- fi
-
--echo "$StartValue" > /smack/direct
-+echo "$StartValue" 2>/dev/null> "$smackfsdir/direct"
-
--DirectValue=`cat /smack/direct`
-+DirectValue=`cat "$smackfsdir/direct" 2>/dev/null`
- if [ "$DirectValue" != "$StartValue" ]; then
--	echo The CIPSO direct level reported is \"$DirectValue\",
--	echo not the expected \"$StartValue\".
-+	cat <<EOM
-+The CIPSO direct level reported is "$DirectValue",
-+not the expected "$StartValue".
-+EOM
- 	exit 1
- fi
--
--exit 0
-Index: smack_set_doi.sh
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/smack/smack_set_doi.sh,v
-retrieving revision 1.1
-diff -u -r1.1 smack_set_doi.sh
---- smack_set_doi.sh	19 Mar 2009 07:27:06 -0000	1.1
-+++ smack_set_doi.sh	31 Jul 2009 06:17:05 -0000
-@@ -9,31 +9,31 @@
- # Environment:
- #	CAP_MAC_ADMIN
- #
--NotTheStartValue="17"
--StartValue=`cat /smack/doi`
-
--onlycap=`cat /smack/onlycap`
--if [ "$onlycap" != "" ]; then
--	echo The smack label reported for /smack/onlycap is \"$onlycap\",
--	echo not the expected \"\".
--	exit 1
--fi
-+source smack_common.sh
-+
-+NotTheStartValue="17"
-+StartValue=`cat "$smackfsdir/doi" 2>/dev/null`
-
--echo $NotTheStartValue > /smack/doi
-+echo "$NotTheStartValue" 2>/dev/null > "$smackfsdir/doi"
-
--DirectValue=`cat /smack/doi`
-+DirectValue=`cat "$smackfsdir/doi" 2>/dev/null`
- if [ "$DirectValue" != "$NotTheStartValue" ]; then
--	echo The CIPSO doi reported is \"$DirectValue\",
--	echo not the expected \"$NotTheStartValue\".
-+	cat <<EOM
-+The CIPSO doi reported is "$DirectValue",
-+not the expected "$NotTheStartValue".
-+EOM
- 	exit 1
- fi
-
--echo "$StartValue" > /smack/doi
-+echo "$StartValue" 2>/dev/null > "$smackfsdir/doi"
-
--DirectValue=`cat /smack/doi`
-+DirectValue=`cat "$smackfsdir/doi" 2>/dev/null`
- if [ "$DirectValue" != "$StartValue" ]; then
--	echo The CIPSO doi reported is \"$DirectValue\",
--	echo not the expected \"$StartValue\".
-+	cat <<EOM
-+The CIPSO doi reported is "$DirectValue",
-+not the expected "$StartValue".
-+EOM
- 	exit 1
- fi
-
-Index: smack_set_load.sh
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/smack/smack_set_load.sh,v
-retrieving revision 1.1
-diff -u -r1.1 smack_set_load.sh
---- smack_set_load.sh	19 Mar 2009 07:27:06 -0000	1.1
-+++ smack_set_load.sh	31 Jul 2009 06:17:05 -0000
-@@ -13,45 +13,41 @@
- #
- #               1         2         3         4         5         6
- #      123456789012345678901234567890123456789012345678901234567890123456789
-+
-+source smack_common.sh
-+
- RuleA="TheOne                  TheOther                rwxa"
- RuleB="TheOne                  TheOther                r---"
-
--onlycap=`cat /smack/onlycap`
--if [ "$onlycap" != "" ]; then
--	echo The smack label reported for /smack/onlycap is \"$label\",
--	echo not the expected \"\".
--	exit 1
--fi
--
--OldRule=`grep "^TheOne" /smack/load | grep ' TheOther '`
-+OldRule=`grep "^TheOne" "$smackfsdir/load" 2>/dev/null | grep ' TheOther '`
-
--echo -n "$RuleA" > /smack/load
--NewRule=`grep "^TheOne" /smack/load | grep ' TheOther '`
--if [ "$NewRule" == "" ]; then
--	echo Rule did not get set.
-+echo -n "$RuleA" 2>/dev/null > "$smackfsdir/load"
-+NewRule=`grep "^TheOne" "$smackfsdir/load" 2>/dev/null | grep ' TheOther '`
-+if [ "$NewRule" = "" ]; then
-+	echo "Rule did not get set."
- 	exit 1
- fi
--Mode=`echo $NewRule | sed -e 's/.* //'`
-+Mode=`echo "$NewRule" | sed -e 's/.* //'`
- if [ "$Mode" != "rwxa" ]; then
--	echo Rule \"$NewRule\" is not set correctly.
-+	echo "Rule \"$NewRule\" is not set correctly."
- 	exit 1
- fi
-
--echo -n "$RuleB" > /smack/load
--NewRule=`grep "^TheOne" /smack/load | grep ' TheOther '`
--if [ "$NewRule" == "" ]; then
--	echo Rule did not get set.
-+echo -n "$RuleB" 2>/dev/null > "$smackfsdir/load"
-+NewRule=`grep "^TheOne" "$smackfsdir/load" 2>/dev/null | grep ' TheOther '`
-+if [ "$NewRule" = "" ]; then
-+	echo "Rule did not get set."
- 	exit 1
- fi
--Mode=`echo $NewRule | sed -e 's/.* //'`
-+Mode=`echo "$NewRule" | sed -e 's/.* //'`
- if [ "$Mode" != "r" ]; then
--	echo Rule \"$NewRule\" is not set correctly.
-+	echo "Rule \"$NewRule\" is not set correctly."
- 	exit 1
- fi
-
- if [ "$OldRule" != "$NewRule" ]; then
--	echo Notice: Test access rule changed from
--	echo \"$OldRule\" to \"$NewRule\".
-+	cat <<EOM
-+Notice: Test access rule changed from
-+"$OldRule" to "$NewRule".
-+EOM
- fi
--
--exit 0
-Index: smack_set_netlabel.sh
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/smack/smack_set_netlabel.sh,v
-retrieving revision 1.1
-diff -u -r1.1 smack_set_netlabel.sh
---- smack_set_netlabel.sh	19 Mar 2009 07:27:06 -0000	1.1
-+++ smack_set_netlabel.sh	31 Jul 2009 06:17:05 -0000
-@@ -9,41 +9,40 @@
- # Environment:
- #	CAP_MAC_ADMIN
- #
-+
-+source smack_common.sh
-+
- RuleA="191.191.191.191 TheOne"
- RuleA1="191.191.191.191/32 TheOne"
- RuleB="191.190.190.0/24 TheOne"
-
--onlycap=`cat /smack/onlycap`
--if [ "$onlycap" != "" ]; then
--	echo The smack label reported for /smack/onlycap is \"$label\",
--	echo not the expected \"\".
--	exit 1
--fi
-+Old32=`grep "^191.191.191.191/32" "$smackfsdir/netlabel" 2>/dev/null`
-+Old24=`grep "^191.190.190.0/24" "$smackfsdir/netlabel" 2>/dev/null`
-
--Old32=`grep "^191.191.191.191/32" /smack/netlabel`
--Old24=`grep "^191.190.190.0/24" /smack/netlabel`
--
--echo -n "$RuleA" > /smack/netlabel
--New32=`grep "$RuleA1" /smack/netlabel`
-+echo -n "$RuleA" 2>/dev/null > "$smackfsdir/netlabel"
-+New32=`grep "$RuleA1" $smackfsdir/netlabel 2>/dev/null`
- if [ "$New32" != "$RuleA1" ]; then
--	echo Rule \"$RuleA\" did not get set.
-+	echo "Rule \"$RuleA\" did not get set."
- 	exit 1
- fi
-
--echo -n "$RuleB" > /smack/netlabel
--New24=`grep "$RuleB" /smack/netlabel`
-+echo -n "$RuleB" 2>/dev/null > "$smackfsdir/netlabel"
-+New24=`grep "$RuleB" "$smackfsdir/netlabel" 2>/dev/null`
- if [ "$New24" != "$RuleB" ]; then
--	echo Rule \"$RuleB\" did not get set.
-+	echo "Rule \"$RuleB\" did not get set."
- 	exit 1
- fi
-
- if [ "$Old24" != "$New24" ]; then
--	echo Notice: Test access rule changed from
--	echo \"$Old24\" to \"$New24\".
-+	cat <<EOM
-+Notice: Test access rule changed from
-+"$Old24" to "$New24".
-+EOM
- fi
-+
- if [ "$Old32" != "$New32" ]; then
--	echo Notice: Test access rule changed from
--	echo \"$Old32\" to \"$New32\".
-+	cat <<EOM
-+Notice: Test access rule changed from
-+"$Old32" to "$New32".
-+EOM
- fi
--
--exit 0
-Index: smack_set_onlycap.sh
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/smack/smack_set_onlycap.sh,v
-retrieving revision 1.1
-diff -u -r1.1 smack_set_onlycap.sh
---- smack_set_onlycap.sh	19 Mar 2009 07:27:06 -0000	1.1
-+++ smack_set_onlycap.sh	31 Jul 2009 06:17:05 -0000
-@@ -9,31 +9,30 @@
- # Environment:
- #	CAP_MAC_ADMIN
- #
--MyLabel=`cat /proc/self/attr/current`
--StartLabel=`cat /smack/onlycap`
-
--if [ "$StartLabel" != "" ]; then
--	echo The smack label reported for /smack/onlycap is \"$StartLabel\",
--	echo not the expected \"\".
--	exit 1
--fi
-+source smack_common.sh
-
--echo $MyLabel > /smack/onlycap
-+MyLabel=`cat /proc/self/attr/current 2>/dev/null`
-+StartLabel=`cat "$smackfsdir/onlycap" 2>/dev/null`
-
--label=`cat /smack/onlycap`
-+echo "$MyLabel" 2>/dev/null > "$smackfsdir/onlycap"
-+
-+label=`cat "$smackfsdir/onlycap" 2>/dev/null`
- if [ "$label" != "$MyLabel" ]; then
--	echo The smack label reported for /smack/onlycap is \"$label\",
--	echo not the expected \"$MyLabel\".
-+	cat <<EOM
-+The smack label reported for $smackfsdir/onlycap is "$label",
-+not the expected "$MyLabel".
-+EOM
- 	exit 1
- fi
-
--echo "$StartLabel" > /smack/onlycap
-+echo "$StartLabel" 2>/dev/null > "$smackfsdir/onlycap"
-
--label=`cat /smack/onlycap`
-+label=`cat "$smackfsdir/onlycap" 2>/dev/null`
- if [ "$label" != "$StartLabel" ]; then
--	echo The smack label reported for the current process is \"$label\",
--	echo not the expected \"$StartLabel\".
-+	cat <<EOM
-+The smack label reported for the current process is "$label",
-+not the expected "$StartLabel".
-+EOM
- 	exit 1
- fi
--
--exit 0
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
