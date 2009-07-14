@@ -2,21 +2,24 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MMXIJ-00072l-GR
-	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 01:10:27 +0000
-Received: from mail-yx0-f195.google.com ([209.85.210.195])
+	(envelope-from <monstr@monstr.eu>) id 1MQlIr-0005jI-9S
+	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2009 16:56:29 +0000
+Received: from mail-fx0-f208.google.com ([209.85.220.208])
 	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MMXIE-0008Qj-72
-	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 01:10:27 +0000
-Received: by yxe33 with SMTP id 33so1894640yxe.28
+	id 1MQlIp-0007M3-1J
+	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2009 16:56:29 +0000
+Received: by fxm4 with SMTP id 4so370441fxm.10
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 02 Jul 2009 18:10:21 -0700 (PDT)
+	Tue, 14 Jul 2009 09:56:26 -0700 (PDT)
+Message-ID: <4A5CB8B4.7050108@monstr.eu>
+Date: Tue, 14 Jul 2009 18:56:20 +0200
+From: Michal Simek <monstr@monstr.eu>
 MIME-Version: 1.0
-Date: Thu, 2 Jul 2009 17:44:55 -0700
-Message-ID: <364299f40907021744i498536afwb71c8d6820cdecc5@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Content-Type: multipart/mixed; boundary=0016e64f918e0d61e9046dc27703
-Subject: [LTP] [PATCH 5/10] config.mk not required for clean
+References: <4A5C8068.6020203@monstr.eu> <200907141652.59049.arnd@arndb.de>
+	<4A5CAEFF.9080206@monstr.eu> <200907141843.05629.arnd@arndb.de>
+In-Reply-To: <200907141843.05629.arnd@arndb.de>
+Subject: Re: [LTP] access_ok macor
+Reply-To: monstr@monstr.eu
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,64 +29,77 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
-
---0016e64f918e0d61e9046dc27703
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-In order to loosen the requirement of having config.mk for a clean /
-distclean operation, we need to check for %clean in MAKECMDGOALS.
-
-Other associated changes are:
-1. Standardizing variables.
-2. Adding missing GPLv2 copyright notices to tops of Makefiles.
-
-        Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
-
---0016e64f918e0d61e9046dc27703
-Content-Type: application/octet-stream; 
-	name="config.mk-not-reqd-for-clean.5.diff"
-Content-Disposition: attachment; 
-	filename="config.mk-not-reqd-for-clean.5.diff"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fwo6o8d90
-
-SW5kZXg6IHRlc3RjYXNlcy9rZXJuZWwvZnMvcHJvYy9NYWtlZmlsZQo9PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ClJDUyBm
-aWxlOiAvY3Zzcm9vdC9sdHAvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvZnMvcHJvYy9NYWtlZmlsZSx2
-CnJldHJpZXZpbmcgcmV2aXNpb24gMS41CmRpZmYgLXUgLXIxLjUgTWFrZWZpbGUKLS0tIHRlc3Rj
-YXNlcy9rZXJuZWwvZnMvcHJvYy9NYWtlZmlsZQk1IEZlYiAyMDA5IDExOjE4OjU4IC0wMDAwCTEu
-NQorKysgdGVzdGNhc2VzL2tlcm5lbC9mcy9wcm9jL01ha2VmaWxlCTMgSnVsIDIwMDkgMDA6Mzk6
-NTkgLTAwMDAKQEAgLTE2LDEzICsxNiwxNyBAQAogIyAgRm91bmRhdGlvbiwgSW5jLiwgNTkgVGVt
-cGxlIFBsYWNlLCBTdWl0ZSAzMzAsIEJvc3RvbiwgTUEgMDIxMTEtMTMwNyBVU0EKICMKIAotaW5j
-bHVkZSAuLi8uLi8uLi8uLi9jb25maWcubWsKK3NyY2RpcgkJCT89IC4uLy4uLy4uLy4uCiAKLUNG
-TEFHUys9CS1JLi4vLi4vLi4vLi4vaW5jbHVkZQotTERMSUJTKz0JLUwuLi8uLi8uLi8uLi9saWIg
-LWxsdHAgJChTRUxJTlVYX0xJQlMpCitpZm5lcSAoJChNQUtFQ01ER09BTFMpLGNsZWFuKQoraW5j
-bHVkZSAkKHNyY2RpcikvY29uZmlnLm1rCitlbmRpZgogCi1TUkNTPSQod2lsZGNhcmQgKi5jKQot
-VEFSR0VUUz0kKHBhdHN1YnN0ICUuYywlLCQoU1JDUykpCitDRkxBR1MJCQkrPSAtSSQoc3JjZGly
-KS9pbmNsdWRlCitMREZMQUdTCQkJKz0gLUwkKHNyY2RpcikvbGliIAorTERMSUJTCQkJKz0gLWxs
-dHAgJChTRUxJTlVYX0xJQlMpCisKK1RBUkdFVFMJCQk6PSAkKHBhdHN1YnN0ICUuYywlLCQod2ls
-ZGNhcmQgKi5jKSkKIAogYWxsOiAkKFRBUkdFVFMpCiAK
---0016e64f918e0d61e9046dc27703
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: LTP <ltp-list@lists.sourceforge.net>, Linux Kernel list <linux-kernel@vger.kernel.org>
+
+Arnd Bergmann wrote:
+> On Tuesday 14 July 2009, Michal Simek wrote:
+>> Arnd Bergmann wrote:
+> 
+>>>>  r29=00000000, r30=00000000, r31=CE9759A4, rPC=C000123C
+>>>>  msr=800045AE, ear=00000001, esr=000000B2, fsr=000080D0
+>>>> Segmentation fault
+>>>>
+>>> I guess then you should check if 0xc000123c is in your
+>>> exception table, or why it is not.
+>> on that address is load instruction for unaligned exception because addr is odd number
+>> that's why is called unaligned exception handler and from this function
+>> is called load instruction which failed. :-(
+>>
+>> Currently this make more sense why that tests failed. If that pointers are
+>> even number exception is not taken and exception sure don't have fixup for it because
+>> this is generic code. :-(
+>>
+>> That's the problem because we are looking for regs->pc but this point to unaligned exception
+>> handler.
+> 
+> Ok, that makes a lot of sense.
+> 
+> The solution then is to handle fixups from the unaligned exception handler
+> if you come from the kernel. That should fix the three text cases.
+> 
+> I don't fully understand your exception handling there, but I think you
+> also need to add code checking for __range_ok() to your unaligned handler,
+> to prevent malicious user space code from accessing the kernel through
+> unaligned pointers.
+
+when the code tried to read/write from unaligned address (and in cpu is turn on unaligned exception)
+then is caused unaligned exception and asm code assemble/return value which is on that unaligned
+address. (Assemble it that read/write every byte separately). That will be harder to prevent all
+this cases because unaligned exception is in generic code.
+What do you mean add __range_ok? Range checking is ok. The problem is when in case get_user kernel
+try to load unaligned addr - unaligned exception is perform and try to load that value separately.
+If that page is not there, page fault handler is called and not find it, it is performed search
+from exception table and that address is not there of course - because address in pc is generic
+unaligned code. I think that handling this needs more code.
+Maybe if the address with from unaligned exception handler (there are some address which can caused
+it) and find out which aligned address is there and find out proper fixup for it.
+I think that this could work.
+
+What do you think?
+
+Michal
+
+
+
+> 
+> 	Arnd <><
+
+
+-- 
+Michal Simek, Ing. (M.Eng)
+w: www.monstr.eu p: +42-0-721842854
 
 ------------------------------------------------------------------------------
-
---0016e64f918e0d61e9046dc27703
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---0016e64f918e0d61e9046dc27703--
-
