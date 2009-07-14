@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <galak@kernel.crashing.org>) id 1MWEyQ-0007nF-JK
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2009 19:38:02 +0000
-Received: from gate.crashing.org ([63.228.1.57])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MWEyP-00013Q-HS
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2009 19:38:02 +0000
-Message-Id: <255CA943-00F5-4590-BA07-BBF1A6F93D7C@kernel.crashing.org>
-From: Kumar Gala <galak@kernel.crashing.org>
-In-Reply-To: <364299f40907291213m2e8a9c95w5da003ad9f063128@mail.gmail.com>
-Mime-Version: 1.0 (Apple Message framework v935.3)
-Date: Wed, 29 Jul 2009 14:37:47 -0500
-References: <E69DB27D-E186-4934-AB69-C5EDB67A48AF@kernel.crashing.org>
-	<364299f40907291155p52d2aa90jd73ecc9818aa6c6a@mail.gmail.com>
-	<80F3D7EC-7B0F-455C-98E0-914D10E88288@kernel.crashing.org>
-	<364299f40907291213m2e8a9c95w5da003ad9f063128@mail.gmail.com>
-Subject: Re: [LTP] top of tree fails to build on PPC fc11 box
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <arnd@arndb.de>) id 1MQlZR-0006h8-Ti
+	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2009 17:13:37 +0000
+Received: from moutng.kundenserver.de ([212.227.17.8])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MQlZN-0005qQ-Gn
+	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2009 17:13:37 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 14 Jul 2009 19:13:20 +0200
+References: <4A5C8068.6020203@monstr.eu> <200907141843.05629.arnd@arndb.de>
+	<4A5CB8B4.7050108@monstr.eu>
+In-Reply-To: <4A5CB8B4.7050108@monstr.eu>
+MIME-Version: 1.0
+Message-Id: <200907141913.21240.arnd@arndb.de>
+Subject: Re: [LTP] access_ok macor
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,159 +28,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: monstr@monstr.eu
+Cc: LTP <ltp-list@lists.sourceforge.net>, Linux Kernel list <linux-kernel@vger.kernel.org>
 
+On Tuesday 14 July 2009, Michal Simek wrote:
+> when the code tried to read/write from unaligned address (and in cpu is turn on unaligned exception)
+> then is caused unaligned exception and asm code assemble/return value which is on that unaligned
+> address. (Assemble it that read/write every byte separately). That will be harder to prevent all
+> this cases because unaligned exception is in generic code.
+> What do you mean add __range_ok? Range checking is ok. The problem is when in case get_user kernel
+> try to load unaligned addr - unaligned exception is perform and try to load that value separately.
+> If that page is not there, page fault handler is called and not find it, it is performed search
+> from exception table and that address is not there of course - because address in pc is generic
+> unaligned code. I think that handling this needs more code.
+> Maybe if the address with from unaligned exception handler (there are some address which can caused
+> it) and find out which aligned address is there and find out proper fixup for it.
+> I think that this could work.
+> 
+> What do you think?
 
-On Jul 29, 2009, at 2:13 PM, Garrett Cooper wrote:
+I think the key point is that the kernel should never try an unaligned
+access. Other architectures already rely on this, so you can too.
+Instead of doing an aligned access from the unaligned exception handler,
+you should not access the data at all when you come from kernel mode
+but only search the fixup table to see if you should continue anyway.
 
-> On Wed, Jul 29, 2009 at 11:59 AM, Kumar  
-> Gala<galak@kernel.crashing.org> wrote:
->>
->> On Jul 29, 2009, at 1:55 PM, Garrett Cooper wrote:
->>
->>> On Wed, Jul 29, 2009 at 11:33 AM, Kumar Gala<galak@kernel.crashing.org 
->>> >
->>> wrote:
->>>>
->>>> I get the following compile error:
->>>>
->>>> make[4]: Leaving directory `/root/ltp/testcases/kernel/syscalls/ 
->>>> fstat'
->>>> make[4]: Entering directory `/root/ltp/testcases/kernel/syscalls/
->>>> fstatat'
->>>> cc -Wall  -I../../include -g -Wall -I../../../../include -Wall -
->>>> DTST_USE_NEWER64_SYSCALL=1 -D_FILE_OFFSET_BITS=64   -c -o
->>>> fstatat01_64.o fstatat01.c
->>>> fstatat01.c:95:37: error: missing binary operator before token "5"
->>>> fstatat01.c: In function 'main':
->>>> fstatat01.c:126: error: expected ')' before numeric constant
->>>> make[4]: *** [fstatat01_64.o] Error 1
->>>> make[4]: Leaving directory `/root/ltp/testcases/kernel/syscalls/ 
->>>> fstatat'
->>>> make[3]: *** [all] Error 2
->>>> make[3]: Leaving directory `/root/ltp/testcases/kernel/syscalls'
->>>> make[2]: *** [all] Error 2
->>>> make[2]: Leaving directory `/root/ltp/testcases/kernel'
->>>> make[1]: *** [all] Error 2
->>>> make[1]: Leaving directory `/root/ltp/testcases'
->>>> make: *** [all] Error 2
->>>
->>> Got config.log?
->>
->> Nope, I tried doing the non-autoconf build:
->>
->>        $ touch include/config.h.default
->>        $ make config.h
->>        $ make all
->>
->> when I try the autoconf build I get:
->>
->> [root@monty ltp]# make autotools
->> aclocal -I m4
->> autoconf
->> configure.ac:9: error: possibly undefined macro: AC_PROG_AR
->>      If this token and others are legitimate, please use  
->> m4_pattern_allow.
->>      See the Autoconf documentation.
->> make: *** [configure] Error 1
->
-> That's odd why it wouldn't work. `yum search autoconf automake m4'  
-> says?
-> -Garrett
+Sorry for adding confusion by mentioning the __range_ok, which is addressing
+a separate problem. I should have made that clearer.
 
-I think you wanted 'yum info'
+In pseudo-code, I think you should do:
 
-[root@monty ~]# yum info autoconf automake m4
-Loaded plugins: refresh-packagekit
-Installed Packages
-Name       : autoconf
-Arch       : noarch
-Version    : 2.63
-Release    : 2.fc11
-Size       : 2.5 M
-Repo       : installed
- From repo  : fedora
-Summary    : A GNU tool for automatically configuring source code
-URL        : http://www.gnu.org/software/autoconf/
-License    : GPLv2+ and GFDL
-Description: GNU's Autoconf is a tool for configuring source code and  
-Makefiles.
-            : Using Autoconf, programmers can create portable and  
-configurable
-            : packages, since the person building the package is  
-allowed to
-            : specify various configuration options.
-            :
-            : You should install Autoconf if you are developing  
-software and
-            : would like to create shell scripts that configure your  
-source code
-            : packages. If you are installing Autoconf, you will also  
-need to
-            : install the GNU m4 package.
-            :
-            : Note that the Autoconf package is not required for the  
-end-user who
-            : may be configuring software with an Autoconf-generated  
-script;
-            : Autoconf is only required for the generation of the  
-scripts, not
-            : their use.
+void unaligned_exception(struct pt_regs *regs, unsigned long address)
+{
+	if (kernel_mode(regs)) {
+		/*
+		 * unaligned access not allowed in kernel,
+		 * but search exception table.
+		 */
+		bad_page_fault(regs, address, 0);
+	} else {
+		if (!access_ok(address, 4))
+			force_sig(SIGBUS, current);
+		else
+			fixup_unaligned_access(regs);
+	}
+}
 
-Name       : automake
-Arch       : noarch
-Version    : 1.11
-Release    : 2.fc11
-Size       : 1.7 M
-Repo       : installed
- From repo  : updates
-Summary    : A GNU tool for automatically creating Makefiles
-URL        : http://sources.redhat.com/automake
-License    : GPLv2+ and GFDL and MIT
-Description: Automake is a tool for automatically generating  
-`Makefile.in'
-            : files compliant with the GNU Coding Standards.
-            :
-            : You should install Automake if you are developing  
-software and would
-            : like to use its ability to automatically generate GNU  
-standard
-            : Makefiles. If you install Automake, you will also need  
-to install
-            : GNU's Autoconf package.
-
-Name       : m4
-Arch       : ppc
-Version    : 1.4.12
-Release    : 2.fc11
-Size       : 462 k
-Repo       : installed
- From repo  : fedora
-Summary    : The GNU macro processor
-URL        : http://www.gnu.org/software/m4/
-License    : GPLv3+
-Description: A GNU implementation of the traditional UNIX macro  
-processor.  M4 is
-            : useful for writing text files which can be logically  
-parsed, and is used
-            : by many programs as part of their build process.  M4 has  
-built-in
-            : functions for including files, running shell commands,  
-doing arithmetic,
-            : etc.  The autoconf program needs m4 for generating  
-configure scripts, but
-            : not for running configure scripts.
-            :
-            : Install m4 if you need a macro processor.
-
-
+	Arnd <><
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
