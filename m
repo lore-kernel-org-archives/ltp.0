@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <macli@brc.ubc.ca>) id 1MRaFm-0006f8-SA
-	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2009 23:20:42 +0000
-Received: from sparc.brc.ubc.ca ([137.82.2.12])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MRaFd-0001Kh-2U
-	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2009 23:20:37 +0000
-Received: from mail (unknown [137.82.2.7])
-	by sparc.brc.ubc.ca (Postfix) with ESMTP id D1974523B36B
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <monstr@monstr.eu>) id 1MQm4V-0005KS-7Z
+	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2009 17:45:43 +0000
+Received: from mail-bw0-f215.google.com ([209.85.218.215])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MQm4O-0008I8-Mh
+	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2009 17:45:43 +0000
+Received: by bwz11 with SMTP id 11so2877285bwz.10
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 16 Jul 2009 16:25:51 -0700 (PDT)
-Date: Thu, 16 Jul 2009 16:38:48 -0700 (PDT)
-From: "Li, Ming Chun" <macli@brc.ubc.ca>
-Message-ID: <alpine.DEB.1.00.0907161630140.16435@mail.selltech.ca>
+	Tue, 14 Jul 2009 10:45:35 -0700 (PDT)
+Message-ID: <4A5CC43B.1020402@monstr.eu>
+Date: Tue, 14 Jul 2009 19:45:31 +0200
+From: Michal Simek <monstr@monstr.eu>
 MIME-Version: 1.0
-Subject: [LTP] LTP stress test bring the system completely down
+References: <4A5C8068.6020203@monstr.eu> <200907141843.05629.arnd@arndb.de>
+	<4A5CB8B4.7050108@monstr.eu> <200907141913.21240.arnd@arndb.de>
+In-Reply-To: <200907141913.21240.arnd@arndb.de>
+Subject: Re: [LTP] access_ok macor
+Reply-To: monstr@monstr.eu
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,24 +32,109 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: LTP <ltp-list@lists.sourceforge.net>, Linux Kernel list <linux-kernel@vger.kernel.org>
+
+Arnd Bergmann wrote:
+> On Tuesday 14 July 2009, Michal Simek wrote:
+>> when the code tried to read/write from unaligned address (and in cpu is turn on unaligned exception)
+>> then is caused unaligned exception and asm code assemble/return value which is on that unaligned
+>> address. (Assemble it that read/write every byte separately). That will be harder to prevent all
+>> this cases because unaligned exception is in generic code.
+>> What do you mean add __range_ok? Range checking is ok. The problem is when in case get_user kernel
+>> try to load unaligned addr - unaligned exception is perform and try to load that value separately.
+>> If that page is not there, page fault handler is called and not find it, it is performed search
+>> from exception table and that address is not there of course - because address in pc is generic
+>> unaligned code. I think that handling this needs more code.
+>> Maybe if the address with from unaligned exception handler (there are some address which can caused
+>> it) and find out which aligned address is there and find out proper fixup for it.
+>> I think that this could work.
+>>
+>> What do you think?
+> 
+> I think the key point is that the kernel should never try an unaligned
+> access. Other architectures already rely on this, so you can too.
+
+I think that especially for this case get/put_user (+ user_copy macros)
+kernel can do it because just copy/paste data from user space and data
+can be unaligned.
 
 
-Hi,
+> Instead of doing an aligned access from the unaligned exception handler,
+> you should not access the data at all when you come from kernel mode
+> but only search the fixup table to see if you should continue anyway.
 
-I run ./runltplite.sh -i 1 -m 1 -p -q  -l /home/vincent/ltp.log -d 
-/home/vincent/ltp_tmp command would completely freeze Ubuntu 9.04 with 
-2.6.31-rc3 kernel built, Has anyone of you experience the same thing?
+> 
+> Sorry for adding confusion by mentioning the __range_ok, which is addressing
+> a separate problem. I should have made that clearer.
 
-I had to Alt + SysRq + b to reboot the system and I can see that many test 
-passed in the ltp.log  file. This machine is HP Proliant ML 110 with 1G 
-memory. 
+it is ok.
 
-Regards,
+> 
+> In pseudo-code, I think you should do:
+> 
+> void unaligned_exception(struct pt_regs *regs, unsigned long address)
+> {
+> 	if (kernel_mode(regs)) {
+> 		/*
+> 		 * unaligned access not allowed in kernel,
+> 		 * but search exception table.
+> 		 */
+> 		bad_page_fault(regs, address, 0);
+> 	} else {
+> 		if (!access_ok(address, 4))
+> 			force_sig(SIGBUS, current);
+> 		else
+> 			fixup_unaligned_access(regs);
+> 	}
+> }
 
-Vincent Li
-Biomedical Research Center
-University of British Columbia
+Not sure about this idea because I think we have to use unaligned access for kernel too.
+Your idea to skip unaligned access for kernel code should work but I think we have to find out
+a solution for case when we need to use it in kernel code.
+
+My idea was
+
+
+void bad_page_fault()
+{
+	fixup = search_exception_tables(regs->pc);
+	if (fixup) {
+		regs->pc = fixup->fixup;
+		return;
+	}
+
+	fixup = search_exception_tables(unaligned exception addr & 0xffff fffc) //mask last 2bits to get
+aligned address
+	if (fixup) {
+		regs->pc = fixup->fixup;
+		return;
+	}
+
+	die();
+
+}
+
+
+but not sure if will work because this setup bad fixup. In case that tlb load correct data
+and kernel is able to access that place then unaligned exception needn't caused next page fault
+and exception handler can load that value.
+
+Maybe this could be work.
+
+Michal
+
+
+
+
+
+> 
+> 	Arnd <><
+
+
+-- 
+Michal Simek, Ing. (M.Eng)
+w: www.monstr.eu p: +42-0-721842854
 
 ------------------------------------------------------------------------------
 Enter the BlackBerry Developer Challenge  
