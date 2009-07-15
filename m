@@ -1,25 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mbligh@google.com>) id 1MOZ34-0003x0-5j
-	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 15:27:06 +0000
-Received: from smtp-out.google.com ([216.239.45.13])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MOZ2y-0000vk-57
-	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 15:27:06 +0000
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <monstr@monstr.eu>) id 1MR2pT-0000UL-PL
+	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2009 11:39:19 +0000
+Received: from mail-bw0-f215.google.com ([209.85.218.215])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MR2pO-0002Ct-Me
+	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2009 11:39:19 +0000
+Received: by bwz11 with SMTP id 11so3298979bwz.10
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 15 Jul 2009 04:39:12 -0700 (PDT)
+Message-ID: <4A5DBFD9.7070707@monstr.eu>
+Date: Wed, 15 Jul 2009 13:39:05 +0200
+From: Michal Simek <monstr@monstr.eu>
 MIME-Version: 1.0
-In-Reply-To: <1247048369.5405.35.camel@subratamodak.linux.ibm.com>
-References: <a50cf5ab0907052240xf22b2b2rf7b90cc819d0ee87@mail.gmail.com>
-	<1246863519.2865.18.camel@localhost.localdomain>
-	<33307c790907061137h3da12536q47517b1662498793@mail.gmail.com>
-	<a50cf5ab0907070024g2b1519acudd0d1a6a21c630ea@mail.gmail.com>
-	<33307c790907071045v72e19614i571c36ad8af8062c@mail.gmail.com>
-	<1247048369.5405.35.camel@subratamodak.linux.ibm.com>
-Date: Wed, 8 Jul 2009 08:05:33 -0700
-Message-ID: <33307c790907080805r78016b3cl21b065e2a0d50c3b@mail.gmail.com>
-From: Martin Bligh <mbligh@google.com>
-Subject: Re: [LTP] [PATCH 1/2] Add latest LTP test in autotest
+References: <4A5C8068.6020203@monstr.eu> <200907141843.05629.arnd@arndb.de>
+	<9e6f3dfd0907141811p512b4edp3f9dd0fdeae1123e@mail.gmail.com>
+	<200907151214.52369.arnd@arndb.de>
+In-Reply-To: <200907151214.52369.arnd@arndb.de>
+Subject: Re: [LTP] access_ok macor
+Reply-To: monstr@monstr.eu
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,41 +33,118 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sf.net>, Mike Frysinger <vapier@gentoo.org>, kvm-devel <kvm@vger.kernel.org>, Lucas Meneghel Rodrigues <mrodrigu@redhat.com>, Autotest mailing list <autotest@test.kernel.org>, Uri Lublin <uril@redhat.com>, sudhir kumar <smalikphy@gmail.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: LTP <ltp-list@lists.sourceforge.net>, Linux Kernel list <linux-kernel@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>, John Williams <jwilliams@itee.uq.edu.au>
 
->> Yup, we can pass an excluded test list. I really wish they'd fix their
->> tests, but I've been saying that for 6 years now, and it hasn't happened
->> yet ;-(
->
-> I would slightly disagree to that. 6 years is history. But, have you
-> recently checked with LTP ?
+Arnd Bergmann wrote:
+> On Wednesday 15 July 2009, John Williams wrote:
+>> On Wed, Jul 15, 2009 at 2:43 AM, Arnd Bergmann <arnd@arndb.de> wrote:
+>>> The solution then is to handle fixups from the unaligned exception handler
+>>> if you come from the kernel. That should fix the three text cases.
+>>>
+>>> I don't fully understand your exception handling there, but I think you
+>>> also need to add code checking for __range_ok() to your unaligned handler,
+>>> to prevent malicious user space code from accessing the kernel through
+>>> unaligned pointers.
+>>
+>> Just to try to clarify - are there any alignment rules in the ABI on
+>> user-space pointers (which end up going to get/put_user)?
+> 
+> The kernel normally expects aligned input from user space, but I guess
+> it can't hurt to handle it anyway. arch/mips/kernel/alignment.c seems
+> to handle that case. Maybe Ralf can give some more insight.
 
-I hate to be completely cynical about this, but that's exactly the same
-message I get every year.
+you meant unaligned.c.
 
-Yes, absolute, the best thing would be for someone to run all the tests,
-work through all the problems, categorize them as kernel / library / distro,
-and get each of them fixed. However, it's a fair chunk of work that I don't
-have time to do.
+> 
+>> It seems the failure path is like this:
+>>
+>> 1. userspace passes unaligned pointer
+>> 2. get_user attempts to access
+>> 3. CPU raises unaligned exception (if only it would raise the segfault as
+>> higher priority, before the unaligned!)
+>> 4. unaligned exception handler attempts to simulate the unaligned access
+>> with multiple partial read/write ops
+>> 5. CPU raises MMU exception on the read/write by the unaligned handler
+>> 6. kernel segfault handler looks up faulting address, it is in the unaligned
+>> exception handler, which has no fixup.
+>> 7. no fixup -> failure
+> 
+> Right.
+> 
+>> So, I suppose the question is - where in the sequence is the true failure?
+> 
+> I think in step 4. AFIACT, the kernel must do a number of checks on accesses
+> to random pointers.
+> 
+>> Clearly LTP thinks it's ok to pass unaligned pointers to the kernel,
+>> suggesting (1) is fine - thus my question about alignment rules in the ABI.
+> 
+> No, LTP thinks it should get a -EFAULT error code for that access. It does
+> specify whether it expects this because of an unaligned address or because
+> of an invalid page.
 
-So all I'm saying is that I know which of the current tests we have issues
-with, and I don't want to upgrade LTP without a new set of data, and that
-work being done. From previous experience, I would be extremely
-surprised if there's not at least one new problem, and I'm not just going
-to dump that on users.
+IMHO author of this test not expect that caused too much troubles. From that tests
+EFAULT should be return from copy_to_user macro not caused kernel fault. LTP should contain
+special testcases for testing unaligned address.
+I think we should add one more test with invalid aligned argument for that 3 tests + some doc.
+I'll send it.
 
-Does the LTP project do this itself on a regular basis ... ie are you running
-LTP against the latest kernel (or even some known stable kernel) and
-seeing which tests are broken? If you can point me to that, I'd have much
-more faith about picking this up ...
+M
 
-Up until this point we've not even managed to agree that PASS means
-"ran as expected" and FAIL meant "something is wrong". LTP always
-had "expected failures" which seems like a completely broken model
-to me.
+> 
+>> Do we need fixups on the unaligned handler itself? This will be ugly ugly
+>> ugly. 
+> 
+> That's what ARM does. You don't have to do it from assembly though,
+> implementing it in C is probably easier.
+> 
+>> Or, some way of tracing the segfault back through the unaligned
+>> exception and to the root cause (the get/put-user), and call that fixup as
+>> required?
+> 
+> Yes, I guess that would have to look roughly like this:
 
-M.
+
+> 
+> int emulate_insn(struct pt_regs *regs, unsigned long addr, unsigned long len)
+> {
+> 	/* use inline assembly with fixups here, return -EFAULT on bad addr */		
+> }
+> 
+> void alignment_exception(struct pt_regs *regs, unsigned long addr, unsigned long len)
+> {
+> 	const struct exception_table_entry *fixup;
+> 	int err;
+> 
+> 	if (user_mode(regs)) {
+> 		if (!access_ok(addr, len))
+> 			goto segv;
+> 		if (emulate_insn(regs) == -EFAULT))
+> 			goto segv;
+> 	} else {
+> 		if (!access_ok(addr, len))
+> 			goto fixup;
+> 		if (emulate_insn(regs, addr, len) == -EFAULT))
+> 			goto fixup;
+> 	return;
+> 
+> fixup:
+> 	fixup = search_exception_tables(regs->ip);
+> 	if (!fixup)
+> 		goto segv;
+> 
+> 	regs->ip = fixup->fixup;
+> 	return;
+> 
+> segv:
+> 	force_sig(SIGSEGV, current));
+> }
+
+
+-- 
+Michal Simek, Ing. (M.Eng)
+w: www.monstr.eu p: +42-0-721842854
 
 ------------------------------------------------------------------------------
 Enter the BlackBerry Developer Challenge  
