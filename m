@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <gomuthuk@linux.vnet.ibm.com>) id 1MNmru-00087J-0T
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 12:00:22 +0000
-Received: from e28smtp03.in.ibm.com ([59.145.155.3])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MNmrk-0006HD-89
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 12:00:16 +0000
-Message-ID: <4A51E745.3060105@linux.vnet.ibm.com>
-Date: Mon, 06 Jul 2009 17:30:05 +0530
-From: gowrishankar <gomuthuk@linux.vnet.ibm.com>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <macli@brc.ubc.ca>) id 1MRCea-0005V6-HF
+	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2009 22:08:44 +0000
+Received: from sparc.brc.ubc.ca ([137.82.2.12])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MRCeZ-0007SD-GQ
+	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2009 22:08:44 +0000
+Date: Wed, 15 Jul 2009 15:26:52 -0700 (PDT)
+From: "Li, Ming Chun" <macli@brc.ubc.ca>
+In-Reply-To: <8368651DACC1964480F951191B94A078D01C80@svexch01.mvista.com>
+Message-ID: <alpine.DEB.1.00.0907151516430.3715@mail.selltech.ca>
+References: <alpine.DEB.1.00.0907151048120.3370@mail.selltech.ca>
+	<8368651DACC1964480F951191B94A078D01C80@svexch01.mvista.com>
 MIME-Version: 1.0
-References: <4A51CEDC.6080605@linux.vnet.ibm.com> <4A51E253.200@st.com>
-In-Reply-To: <4A51E253.200@st.com>
-Subject: Re: [LTP] [PATCH] cgroups: conditionally enable building cgroup
-	tests
+Subject: Re: [LTP] LTP hung on 2.6.31-rc3 kernel and buffer overflow detected
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,122 +28,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Francesco RUNDO <francesco.rundo@st.com>
-Cc: ltp-list@lists.sf.net
+To: Henry Yei <hyei@mvista.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi Francesco,
+On Wed, 15 Jul 2009, Henry Yei wrote:
 
-Francesco RUNDO wrote:
-> Hi Gowri,
+> Ming,
 > 
-> I've already fixed the same issue you reported. I've tested it successfully.
+> The first thing to do is figure out what testcase is causing it and run that test by itself, then debug from there.
+> This is easy to find out by looking at your output and result files and see which was the last reported test. 
 > 
-> Subrata has already merged my patch (please, find it in attachment).
-> 
-> Please, check it before to submit another patch.
-> 
+> Note: I had no such problem on Ubuntu 9.04, but with the 2.6.28-13 kernel.
 
-I had already seen your patch and generated mine on top of Jun release (which
-has your fix for CROSS_COMPILE).Your patch could not help in a scenario where 
-kernel has cgroup support but cgroupstat.h file is missing in base OS, and
-build failed. And hence, I am proposing this patch.
+I looked at the fail report by 
 
-Thanks,
-Gowri
+#tail -5 output/LTP_RUN_ON-2009_Jul_14-14h_15m_46s.failed
 
-> Thanks
-> Regards
-> Francesco Rundo
-> 
-> gowrishankar wrote:
->> Hi Subrata,
->> Please accept the patch below.
->>
->> Thanks,
->> Gowri
->> ---
->> cgroups: conditionally enable building cgroup tests
->>
->> controllers tests gets included into default ltp build if "/proc/cgroup"
->> exists. It stops the ltp build in realtime kernel environment where 
->> kernel
->> is new and supports cgroups, but necessary file "linux/cgroupstats.h" 
->> may not
->> exist in the base OS (like RHEL5.3). So configure command enables the 
->> build,
->> but actual build fails, due to missing header file.
->>
->> Below patch proposes new symbol LTP_CHECK_CGROUPSTATS to check for 
->> header file
->> "linux/cgroupstats.h" and include controllers in the list of tests to 
->> build.
->>
->> Tested the patch in non-RT as well as RT environment for the changes.
->>
->> Signed-off-by: Gowrishankar <gowrishankar.m@in.ibm.com>
->> Tested-by: Gowrishankar <gowrishankar.m@in.ibm.com>
->> ---
->>
->> ------------------------------------------------------------------------
->>
->> Index: ltp-full-20090630/m4/ltp-cgroupstats.m4
->> ===================================================================
->> --- /dev/null	1970-01-01 00:00:00.000000000 +0000
->> +++ ltp-full-20090630/m4/ltp-cgroupstats.m4	2009-07-03 13:41:55.000000000 +0530
->> @@ -0,0 +1,9 @@
->> +dnl
->> +dnl LTP_CHECK_CGROUPSTATS
->> +dnl ----------------------------
->> +dnl
->> +AC_DEFUN([LTP_CHECK_CGROUPSTATS],
->> +[dnl
->> +AC_CHECK_HEADERS(linux/cgroupstats.h,[LTP_CHECK_CGROUPSTATS_HEADER=yes])
->> +AC_SUBST(LTP_CHECK_CGROUPSTATS_HEADER)
->> +])
->> Index: ltp-full-20090630/configure.ac
->> ===================================================================
->> --- ltp-full-20090630.orig/configure.ac	2009-07-03 13:59:48.000000000 +0530
->> +++ ltp-full-20090630/configure.ac	2009-07-03 14:00:14.000000000 +0530
->> @@ -21,5 +21,6 @@
->>  LTP_CHECK_SELINUX
->>  LTP_CHECK_CRYPTO
->>  LTP_CHECK_TASKSTATS
->> +LTP_CHECK_CGROUPSTATS
->>
->>  AC_OUTPUT
->> Index: ltp-full-20090630/testcases/kernel/Makefile
->> ===================================================================
->> --- ltp-full-20090630.orig/testcases/kernel/Makefile	2009-07-03 14:01:25.000000000 +0530
->> +++ ltp-full-20090630/testcases/kernel/Makefile	2009-07-03 14:02:42.000000000 +0530
->> @@ -1,6 +1,12 @@
->> -SUBDIRS = power_management numa containers controllers connectors include fs io ipc mem pty sched security syscalls timers
->> +include ../../config.mk
->> +
->> +SUBDIRS = power_management numa containers connectors include fs io ipc mem pty sched security syscalls timers
->>  UCLINUX_SUBDIRS = include syscalls
->>
->> +ifeq ($(LTP_CHECK_CGROUPSTATS_HEADER),yes)
->> +	SUBDIRS+= controllers
->> +endif
->> +
->>  all:
->>  	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i ; done
->>
->>   
->> ------------------------------------------------------------------------
->>
->> ------------------------------------------------------------------------------
->>   
->> ------------------------------------------------------------------------
->>
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>   
+ftest03 ftest03
+ftest07 ftest07
+fs_di fs_di -d /tmp/
+quota_remount_test01 quota_remount_test01.sh
+Containers container_test.sh
 
+Is container_test.sh test the fault one? How to run that single test 
+properly? I ran ./testcases/bin/container_test.sh at command line simply 
+gave me error like:
+
+./testcases/bin/container_test.sh: 13: check_for_unshare: not found
+./testcases/bin/container_test.sh: 18: check_utsns_enabled: not found
+Uts namespaces not enabled in kernel.  Not running utsns tests.
+./testcases/bin/container_test.sh: 41: check_ipcns_enabled: not found
+ipc namespaces not enabled in kernel.  Not running ipcns tests.
+./testcases/bin/container_test.sh: 49: check_pidns_enabled: not found
+Process id namespaces not enabled in kernel.  Not running pidns tests.
+./testcases/bin/container_test.sh: 57: check_mqns_enabled: not found
+Posix message queues or ipc namespaces not enabled in kernel.
+Not running mqns tests.
+./testcases/bin/container_test.sh: 66: check_netns_enabled: not found
+Network namespaces not enabled in kernel.  Not running netns tests.
+
+
+Regards,
+
+Vincent
 
 ------------------------------------------------------------------------------
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
