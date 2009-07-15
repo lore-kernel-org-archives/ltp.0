@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <davem@davemloft.net>) id 1MObXH-0002jM-It
-	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 18:06:27 +0000
-Received: from 74-93-104-97-washington.hfc.comcastbusiness.net ([74.93.104.97]
-	helo=sunset.davemloft.net) by 3b2kzd1.ch3.sourceforge.com with esmtp 
-	(Exim 4.69) id 1MObXC-0005hz-VZ
-	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 18:06:27 +0000
-Date: Wed, 08 Jul 2009 11:06:24 -0700 (PDT)
-Message-Id: <20090708.110624.104984745.davem@davemloft.net>
-From: David Miller <davem@davemloft.net>
-In-Reply-To: <4A54DF6F.1010405@petalogix.com>
-References: <4A54D14F.9090101@petalogix.com>
-	<20090708.103520.193697491.davem@davemloft.net>
-	<4A54DF6F.1010405@petalogix.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] mmap hw behavior
+	(envelope-from <arnd@arndb.de>) id 1MR4W7-0003pE-Bq
+	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2009 13:27:27 +0000
+Received: from moutng.kundenserver.de ([212.227.126.187])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MR4Vy-0006jf-Vh
+	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2009 13:27:27 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Wed, 15 Jul 2009 15:27:07 +0200
+References: <4A5C8068.6020203@monstr.eu> <200907151214.52369.arnd@arndb.de>
+	<20090715120512.GA2752@linux-mips.org>
+In-Reply-To: <20090715120512.GA2752@linux-mips.org>
+MIME-Version: 1.0
+Message-Id: <200907151527.08341.arnd@arndb.de>
+Subject: Re: [LTP] access_ok macor
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,35 +28,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: michal.simek@petalogix.com
-Cc: linux-arch@vger.kernel.org, ltp-list@lists.sourceforge.net, arnd@arndb.de, linux-kernel@vger.kernel.org, lethal@linux-sh.org, mingo@elte.hu
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: LTP <ltp-list@lists.sourceforge.net>, monstr@monstr.eu, Linux Kernel list <linux-kernel@vger.kernel.org>, John Williams <jwilliams@itee.uq.edu.au>
 
-From: Michal Simek <michal.simek@petalogix.com>
-Date: Wed, 08 Jul 2009 20:03:27 +0200
+On Wednesday 15 July 2009, Ralf Baechle wrote:
+ 
+> > I think in step 4. AFIACT, the kernel must do a number of checks on accesses
+> > to random pointers.
+>
+> Yes; but the checks that unaligned.c does on MIPS are no different from
+> any other get_user(), that is it ensures that the entire 8/16/32/64-bit
+> access is in userspace.  That's done using access_ok().
 
-> David Miller wrote:
->> From: Michal Simek <michal.simek@petalogix.com>
->> Date: Wed, 08 Jul 2009 19:03:11 +0200
->>
->>   
->>> When I call mmap for that open file with pointer to calloc place
->>> (first parameter, + length zero) it should be one tlb invalidation
->>> for calloc and new tlb which connect open file.  We check it and we
->>> don't have any tlb invalidation that's why I think that kernel do
->>> different thigs.  Or is it there any copying? Or anything different?
->>>     
->>
->> There is no need to tlb flush the calloc area unless that memory area
->> is actually touched by the user application and thus the page is
->> faulted in.
->>   
-> That calloc area is filled by any value (in that test). Is it mean that
-> for this case when calloc area is touched
-> there must be tlb invalidation + remapping?
+Well, access_ok() plus the fixup code for unmapped or write-protected user
+pages, I guess. But I agree, there are no checks beyond what get/put_user
+does. In particular, the access_ok() check should only be needed for
+faults from user space, while any fault coming from kernel space is
+either some kernel code accessing its own data (as you mention below) or
+a __get_user/__put_user that has already checked access permissions.
 
-Yes, if the calloc area is written to by the application, there
-should be a tlb flush when the mmap() overrides that virtual region
-with a different mapping.
+In my example, I got the case from kernel space wrong, it should not
+check access_ok() if !user_space(regs), or it needs to do set_fs(KERNEL_DS)
+first, like the mips code does.
+
+> We've moved on.  Handling miss-alignment is no longer a very relavent part
+> of the syscall interface.  So I think for the definition of the Linux
+> ABI this should just be left as implementation defined behaviour but
+> whatever an architecture does, it should be done consistently for all
+> system interfaces.
+
+Ok, thanks, for explanation.
+
+I guess for the microblaze unaligned handler, both cases mean that
+it needs to do a fixup table lookup for the original fault and
+it needs to handle fixups on its own emulation code. The only difference
+between disallowing unaligned accesses in the ABI and allowing them
+is which of the two ways (check fixup table, emulate instruction) it
+tries first.
+
+	Arnd <><
 
 ------------------------------------------------------------------------------
 Enter the BlackBerry Developer Challenge  
