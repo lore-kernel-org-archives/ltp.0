@@ -1,24 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MNqT7-0002lP-Lo
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:51:01 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MNqT6-0002Yu-T6
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:51:01 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4A4C685F.9040909@bull.net>
-References: <d51f89b0906252310r45a7644fu46e1831841aa8b24@mail.gmail.com>
-	<1246015995.6196.24.camel@subratamodak.linux.ibm.com>
-	<1246347687.4819.34.camel@subratamodak.linux.ibm.com>
-	<4A4C685F.9040909@bull.net>
-Date: Mon, 06 Jul 2009 21:20:37 +0530
-Message-Id: <1246895437.4887.47.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Issues of TIRPC test suite of network test cases
-Reply-To: subrata@linux.vnet.ibm.com
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <ralf@h5.dl5rb.org.uk>) id 1MR48t-0006Uk-Bz
+	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2009 13:03:27 +0000
+Received: from h5.dl5rb.org.uk ([81.2.74.5])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MR48k-0006re-Vw
+	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2009 13:03:27 +0000
+Date: Wed, 15 Jul 2009 13:05:12 +0100
+From: Ralf Baechle <ralf@linux-mips.org>
+Message-ID: <20090715120512.GA2752@linux-mips.org>
+References: <4A5C8068.6020203@monstr.eu> <200907141843.05629.arnd@arndb.de>
+	<9e6f3dfd0907141811p512b4edp3f9dd0fdeae1123e@mail.gmail.com>
+	<200907151214.52369.arnd@arndb.de>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <200907151214.52369.arnd@arndb.de>
+Subject: Re: [LTP] access_ok macor
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,85 +27,111 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Kamboju, Naresh" <naresh.kamboju@ap.sony.com>
-Cc: ltp-list <ltp-list@lists.sf.net>, Le-Rouzic <aime.le-rouzic@bull.net>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: LTP <ltp-list@lists.sourceforge.net>, monstr@monstr.eu, Linux Kernel list <linux-kernel@vger.kernel.org>, John Williams <jwilliams@itee.uq.edu.au>
 
-TmFyZXNoLAoKT24gVGh1LCAyMDA5LTA3LTAyIGF0IDA5OjU3ICswMjAwLCBMZS1Sb3V6aWMgd3Jv
-dGU6IAo+IEhpLAo+IAo+IFNvcnJ5LCBJIGhhdmUganVzdCBzZWVuIHlvdXIgbWFpbC4KPiBOZXZl
-cnRoZWxlc3MgSSBjaGFuZ2VkIGpvYiA2IG1vbnRocyBhZ28gYW5kIEkgYW0gYWZyYWlkIG9mIG5v
-dCBiZWluZyAKPiBhYmxlIHRvIGxvb2sgYXQgdGhpcyBpc3N1ZS4KCkkgdGhpbmsgd2Ugd291bGQg
-bmVlZCB0byBpZGVudGlmeSBhbmQgZml4IHRoaXMgaXNzdWUgb3Vyc2VsdmVzIDstKQoKUmVnYXJk
-cy0tClN1YnJhdGEKCj4gCj4gQmVzdCBSZWdhcmRzCj4gCj4gCj4gU3VicmF0YSBNb2RhayBhIMOp
-Y3JpdCA6Cj4gPiBPbiBGcmksIDIwMDktMDYtMjYgYXQgMTc6MDMgKzA1MzAsIFN1YnJhdGEgTW9k
-YWsgd3JvdGU6IAo+ID4gICAKPiA+PiBIaSBSb2hpdCwKPiA+Pgo+ID4+IE9uIFRodSwgMjAwOS0w
-Ni0yNSBhdCAyMzoxMCAtMDcwMCwgcm9oaXQgdmVybWEgd3JvdGU6IAo+ID4+ICAgICAKPiA+Pj4g
-SGkgQWxsLAo+ID4+Pgo+ID4+PiBJIGFtIGdldHRpbmcgdGhlIGZvbGxvd2luZyBlcnJvcnMgd2l0
-aCBydW5fcnBjX3Rlc3RzLnNoIHRlc3Qgc3VpdGUgaW4KPiA+Pj4gTFRQIE1heS0wOSByZWxlYXNl
-Lgo+ID4+PiAgICAgICAKPiA+PiBUaGUgcHJvYmxlbSB3aXRoIHRoaXMgcGFydCBvZiB0aGUgdGVz
-dHN1aXRlIHdhcyBhbHdheXMgdGhlcmUgZnJvbSB0aGUKPiA+PiBiZWdpbm5pbmcuIEhvd2V2ZXIs
-IGxldHMgYXNrIHNvbWV0aGluZyBmcm9tIHRoZSBkZXZlbG9wZXIgZGlyZWN0bHkuCj4gPj4KPiA+
-PiBMZSwKPiA+Pgo+ID4+IENhbiB5b3UgcGxlYXNlIGxvb2sgaW50byB0aGlzID8KPiA+PiAgICAg
-Cj4gPgo+ID4gTGUsCj4gPgo+ID4gQW55IGNvbW1lbnRzIGZyb20geW91ciBzaWRlID8/Cj4gPgo+
-ID4gUmVnYXJkcy0tCj4gPiBTdWJyYXRhCj4gPgo+ID4gICAKPiA+PiBSZWdhcmRzLS0KPiA+PiBT
-dWJyYXRhCj4gPj4KPiA+PiAgICAgCj4gPj4+IC9ob21lL21vYmxpbi9MVFBfTlNfTUFZL2x0cC1m
-dWxsLTIwMDkwNTMxL3Rlc3RjYXNlcy9uZXR3b3JrL3JwYy9ycGMtdGlycGMtZnVsbC10ZXN0LXN1
-aXRlL3Rlc3RzX3BhY2svY2xlYW5lci5jLnNyYzoyOToyOToKPiA+Pj4gZXJyb3I6IHRpcnBjL25l
-dGNvbmZpZy5oOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5Cj4gPj4+IC9ob21lL21vYmxpbi9M
-VFBfTlNfTUFZL2x0cC1mdWxsLTIwMDkwNTMxL3Rlc3RjYXNlcy9uZXR3b3JrL3JwYy9ycGMtdGly
-cGMtZnVsbC10ZXN0LXN1aXRlL3Rlc3RzX3BhY2svY2xlYW5lci5jLnNyYzozMToyNzoKPiA+Pj4g
-ZXJyb3I6IHRpcnBjL3JwYy9ycGMuaDogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQo+ID4+PiAv
-aG9tZS9tb2JsaW4vTFRQX05TX01BWS9sdHAtZnVsbC0yMDA5MDUzMS90ZXN0Y2FzZXMvbmV0d29y
-ay9ycGMvcnBjLXRpcnBjLWZ1bGwtdGVzdC1zdWl0ZS90ZXN0c19wYWNrL2NsZWFuZXIuYy5zcmM6
-MzI6Mjk6Cj4gPj4+IGVycm9yOiB0aXJwYy9ycGMvdHlwZXMuaDogTm8gc3VjaCBmaWxlIG9yIGRp
-cmVjdG9yeQo+ID4+PiAvaG9tZS9tb2JsaW4vTFRQX05TX01BWS9sdHAtZnVsbC0yMDA5MDUzMS90
-ZXN0Y2FzZXMvbmV0d29yay9ycGMvcnBjLXRpcnBjLWZ1bGwtdGVzdC1zdWl0ZS90ZXN0c19wYWNr
-L2NsZWFuZXIuYy5zcmM6MzM6Mjc6Cj4gPj4+IGVycm9yOiB0aXJwYy9ycGMveGRyLmg6IE5vIHN1
-Y2ggZmlsZSBvciBkaXJlY3RvcnkKPiA+Pj4gL2hvbWUvbW9ibGluL0xUUF9OU19NQVkvbHRwLWZ1
-bGwtMjAwOTA1MzEvdGVzdGNhc2VzL25ldHdvcmsvcnBjL3JwYy10aXJwYy1mdWxsLXRlc3Qtc3Vp
-dGUvdGVzdHNfcGFjay9jbGVhbmVyLmMuc3JjOjM0OjI3Ogo+ID4+PiBlcnJvcjogdGlycGMvcnBj
-L3N2Yy5oOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5Cj4gPj4+IG1rZGlyOiBjYW5ub3QgY3Jl
-YXRlIGRpcmVjdG9yeQo+ID4+PiBgL2hvbWUvbW9ibGluL0xUUF9OU19NQVkvbHRwLWZ1bGwtMjAw
-OTA1MzEvdGVzdGNhc2VzL25ldHdvcmsvcnBjL3JwYy10aXJwYy1mdWxsLXRlc3Qtc3VpdGUvdGVz
-dHNfcGFjayc6Cj4gPj4+IEZpbGUgZXhpc3RzCj4gPj4+Cj4gPj4+IHRlc3RzX3BhY2svdGlycGNf
-c3ZjXzIvdGlycGNfc3ZjXzIuYzoyOToyOTogZXJyb3I6IHRpcnBjL25ldGNvbmZpZy5oOgo+ID4+
-PiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5Cj4gPj4+IHRlc3RzX3BhY2svdGlycGNfc3ZjXzIv
-dGlycGNfc3ZjXzIuYzozMToyNzogZXJyb3I6IHRpcnBjL3JwYy9ycGMuaDogTm8KPiA+Pj4gc3Vj
-aCBmaWxlIG9yIGRpcmVjdG9yeQo+ID4+PiB0ZXN0c19wYWNrL3RpcnBjX3N2Y18yL3RpcnBjX3N2
-Y18yLmM6MzI6Mjk6IGVycm9yOiB0aXJwYy9ycGMvdHlwZXMuaDoKPiA+Pj4gTm8gc3VjaCBmaWxl
-IG9yIGRpcmVjdG9yeQo+ID4+PiB0ZXN0c19wYWNrL3RpcnBjX3N2Y18yL3RpcnBjX3N2Y18yLmM6
-MzM6Mjc6IGVycm9yOiB0aXJwYy9ycGMveGRyLmg6IE5vCj4gPj4+IHN1Y2ggZmlsZSBvciBkaXJl
-Y3RvcnkKPiA+Pj4gdGVzdHNfcGFjay90aXJwY19zdmNfMi90aXJwY19zdmNfMi5jOjM0OjI3OiBl
-cnJvcjogdGlycGMvcnBjL3N2Yy5oOiBObwo+ID4+PiBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5Cj4g
-Pj4+IHRlc3RzX3BhY2svdGlycGNfc3ZjXzIvdGlycGNfc3ZjXzIuYzogSW4gZnVuY3Rpb24gbWFp
-bgo+ID4+PiB0ZXN0c19wYWNrL3RpcnBjX3N2Y18yL3RpcnBjX3N2Y18yLmM6NTU6IGVycm9yOiBi
-b29sX3QgdW5kZWNsYXJlZAo+ID4+PiAoZmlyc3QgdXNlIGluIHRoaXMgZnVuY3Rpb24pCj4gPj4+
-IHRlc3RzX3BhY2svdGlycGNfc3ZjXzIvdGlycGNfc3ZjXzIuYzo1NTogZXJyb3I6IChFYWNoIHVu
-ZGVjbGFyZWQKPiA+Pj4gaWRlbnRpZmllciBpcyByZXBvcnRlZCBvbmx5IG9uY2UKPiA+Pj4gdGVz
-dHNfcGFjay90aXJwY19zdmNfMi90aXJwY19zdmNfMi5jOjU1OiBlcnJvcjogZm9yIGVhY2ggZnVu
-Y3Rpb24gaXQKPiA+Pj4gYXBwZWFycyBpbi4pCj4gPj4+IHRlc3RzX3BhY2svdGlycGNfc3ZjXzIv
-dGlycGNfc3ZjXzIuYzo1NTogZXJyb3I6IGV4cGVjdGVkIDsgYmVmb3JlIHJzbHQKPiA+Pj4gdGVz
-dHNfcGFjay90aXJwY19zdmNfMi90aXJwY19zdmNfMi5jOjY1OiBlcnJvcjogcnNsdCB1bmRlY2xh
-cmVkIChmaXJzdAo+ID4+PiB1c2UgaW4gdGhpcyBmdW5jdGlvbikKPiA+Pj4gdGVzdHNfcGFjay90
-aXJwY19zdmNfMi90aXJwY19zdmNfMi5jOjY2OiBlcnJvcjogeGRycHJvY190IHVuZGVjbGFyZWQK
-PiA+Pj4gKGZpcnN0IHVzZSBpbiB0aGlzIGZ1bmN0aW9uKQo+ID4+PiB0ZXN0c19wYWNrL3RpcnBj
-X3N2Y18yL3RpcnBjX3N2Y18yLmM6NjY6IGVycm9yOiBleHBlY3RlZCApIGJlZm9yZSB4ZHJfaW50
-Cj4gPj4+IG1ha2U6ICoqKiBbYWxsXSBFcnJvciAxCj4gPj4+IGNjOiAuYy5zcmM6IE5vIHN1Y2gg
-ZmlsZSBvciBkaXJlY3RvcnkuCj4gPj4+Cj4gPj4+Cj4gPj4+IFNpbWlsYXIgYnVnIGhhcyBiZWVu
-IGFscmVhZHkgcmVwb3J0ZWQgdG8gTFRQLiBQbGVhc2UgY29uZmlybSBpZiB0aGUKPiA+Pj4gcGF0
-Y2ggZm9yIHRoaXMgYnVnIGlzIG1lcmdlZCBpbnRvIG5leHQgTFRQIHJlbGVhc2UuCj4gPj4+ICAg
-ICAgIAo+ID4+IEkgcmVtZW1iZXIgbWVyZ2luZyBhbGwgcGF0Y2hlcyB0byB0aGlzIGVmZmVjdC4g
-UGxlYXNlIHBvaW50IG1lIHRvIHRoZQo+ID4+IHBhdGNoIHdoaWNoIGkgb3VnaHQgaGF2ZSBtaXNz
-ZWQgOy0pCj4gPj4KPiA+PiBSZWdhcmRzLS0KPiA+PiBTdWJyYXRhCj4gPj4KPiA+PiAgICAgCj4g
-Pj4+IFJlZ2FyZHMsCj4gPj4+IEduYW5lc3dhcgo+ID4+PiAgICAgICAKPiA+PiAtLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0KPiA+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwo+ID4+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+ID4+IEx0cC1saXN0QGxpc3RzLnNv
-dXJjZWZvcmdlLm5ldAo+ID4+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xp
-c3RpbmZvL2x0cC1saXN0Cj4gPj4gICAgIAo+ID4KPiA+Cj4gPgo+ID4gICAKPiAKCgotLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5l
-dApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+On Wed, Jul 15, 2009 at 12:14:52PM +0200, Arnd Bergmann wrote:
+
+> On Wednesday 15 July 2009, John Williams wrote:
+> > On Wed, Jul 15, 2009 at 2:43 AM, Arnd Bergmann <arnd@arndb.de> wrote:
+> > > The solution then is to handle fixups from the unaligned exception handler
+> > > if you come from the kernel. That should fix the three text cases.
+> > >
+> > > I don't fully understand your exception handling there, but I think you
+> > > also need to add code checking for __range_ok() to your unaligned handler,
+> > > to prevent malicious user space code from accessing the kernel through
+> > > unaligned pointers.
+> > 
+> > 
+> > Just to try to clarify - are there any alignment rules in the ABI on
+> > user-space pointers (which end up going to get/put_user)?
+> 
+> The kernel normally expects aligned input from user space, but I guess
+> it can't hurt to handle it anyway. arch/mips/kernel/alignment.c seems
+> to handle that case. Maybe Ralf can give some more insight.
+
+It's arch/arm/mm/alignment.c rsp. arch/mips/kernel/unaliged.c.
+
+> > It seems the failure path is like this:
+> > 
+> > 1. userspace passes unaligned pointer
+> > 2. get_user attempts to access
+> > 3. CPU raises unaligned exception (if only it would raise the segfault as
+> > higher priority, before the unaligned!)
+> > 4. unaligned exception handler attempts to simulate the unaligned access
+> > with multiple partial read/write ops
+> > 5. CPU raises MMU exception on the read/write by the unaligned handler
+> > 6. kernel segfault handler looks up faulting address, it is in the unaligned
+> > exception handler, which has no fixup.
+> > 7. no fixup -> failure
+> 
+> Right.
+> 
+> > So, I suppose the question is - where in the sequence is the true failure?
+> 
+> I think in step 4. AFIACT, the kernel must do a number of checks on accesses
+> to random pointers.
+
+Yes; but the checks that unaligned.c does on MIPS are no different from
+any other get_user(), that is it ensures that the entire 8/16/32/64-bit
+access is in userspace.  That's done using access_ok().
+
+> > Clearly LTP thinks it's ok to pass unaligned pointers to the kernel,
+> > suggesting (1) is fine - thus my question about alignment rules in the ABI.
+> 
+> No, LTP thinks it should get a -EFAULT error code for that access. It does
+> specify whether it expects this because of an unaligned address or because
+> of an invalid page.
+> 
+> > Do we need fixups on the unaligned handler itself? This will be ugly ugly
+> > ugly. 
+> 
+> That's what ARM does. You don't have to do it from assembly though,
+> implementing it in C is probably easier.
+
+The MIPS psABI of which the Linux/MIPS ABI is sort of derived doesn't
+specify any alignment-specific behaviour for syscalls.  That is they're not
+treated any different than any random piece of library code.  I don't
+know of any other standards documents (POSIX, single UNIX etc.) that
+would have anything relevant either.
+
+There are several historic precedents for why Linux handles miss-alignment
+this way:
+
+  o The networking stack where some cards may align the header in memory
+    such that IP addresses are always on an address that is aligned to a
+    16-bit but not a 32-bit boundary.  The tulip cards do that for example.
+    It was considered a better solution to emulate the access or copy the
+    entire rx packet before further processing than hacking up the
+    networking stack to handle with ill-designed hardware.
+
+  o Another in-kernel case was the MS-DOS partition table parsing.
+
+  o The were also a bunch of historic Linux applications originally written
+    for x86 which were relativly hard to port, so generally handling
+    exceptions, was the by far easiest thing to do and probably for most
+    architectures where this is relevant it's the easiest to handle all
+    miss-alignment cases, not just selectively userland and maybe IP and
+    MS-DOS partition table parsing.
+
+We've moved on.  Handling miss-alignment is no longer a very relavent part
+of the syscall interface.  So I think for the definition of the Linux
+ABI this should just be left as implementation defined behaviour but
+whatever an architecture does, it should be done consistently for all
+system interfaces.
+
+  Ralf
+
+------------------------------------------------------------------------------
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
