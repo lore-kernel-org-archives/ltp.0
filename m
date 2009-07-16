@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MPJWr-0000OR-Ix
-	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 17:04:57 +0000
-Received: from e35.co.us.ibm.com ([32.97.110.153])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MPJWj-00082u-TP
-	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 17:04:57 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200907102200.12804.sripathik@in.ibm.com>
-References: <1224509719.5152.116.camel@subratamodak.linux.ibm.com>
-	<1246890698.4887.24.camel@subratamodak.linux.ibm.com>
-	<1247076833.5405.48.camel@subratamodak.linux.ibm.com>
-	<200907102200.12804.sripathik@in.ibm.com>
-Date: Fri, 10 Jul 2009 22:17:25 +0530
-Message-Id: <1247244446.5040.0.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] LTP RT Tests (Cyclic, rt-migrate, etc)
-Reply-To: subrata@linux.vnet.ibm.com
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yjwei@cn.fujitsu.com>) id 1MRF07-0008OI-6B
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2009 00:39:07 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MRF00-0005eW-KV
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2009 00:39:07 +0000
+Message-ID: <4A5E7649.9040705@cn.fujitsu.com>
+Date: Thu, 16 Jul 2009 08:37:29 +0800
+From: Wei Yongjun <yjwei@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] fix the system call number of exit_group01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,105 +25,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sripathi Kodi <sripathik@in.ibm.com>
-Cc: ltp-list <ltp-list@lists.sf.net>, linux-rt-users <linux-rt-users@vger.kernel.org>, dvhltc <dvhltc@linux.vnet.ibm.com>, Sripathi Kodi <sripathik@linux.vnet.ibm.com>, Steven Rostedt <rostedt@goodmis.org>, Gregory Haskins <ghaskins@novell.com>, Clark Williams <clark.williams@gmail.com>
+To: Subrata Modak <subrata@linux.vnet.ibm.com>, ltp-list@lists.sourceforge.net
 
-On Fri, 2009-07-10 at 22:00 +0530, Sripathi Kodi wrote:
-> On Wednesday 08 July 2009 23:43:53 Subrata Modak wrote:
-> > Darren/Sri/Gowri,
-> > 
-> > Where do you want me to put this exactly inside the RT tree ?
-> 
-> Hi Subrata,
-> 
-> Going by how the tests are organized currently, I think this should go
-> into it's own directory under testcases/realtime/func. We will need to
-> add a makefile to it. Are you looking at us to help you with this?
+The system call number is depend on the system architecture, not
+always 252. This patch fixed the problem.
 
-Correct. Please send me a patch which integrates it into RT tests build,
-install & run.
+Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
 
-Regards--
-Subrata
+--- a/testcases/kernel/syscalls/exit_group/exit_group01.c	2009-05-22 02:14:40.000000000 +0800
++++ b/testcases/kernel/syscalls/exit_group/exit_group01.c	2009-07-15 09:26:23.000000000 +0800
+@@ -136,7 +136,7 @@ int main(int ac, char **av) {
+                      } else if (TEST_RETURN == 0){
+ 	                 	tst_resm(TINFO, "In the child process");
+                            	sleep(5);
+-				TEST(syscall(252,4));
++				TEST(syscall(__NR_exit_group,4));
+                      }else {
+ 				tst_resm(TINFO,"in the parent process");
+ 				TEST(w = wait(&status));
 
-> 
-> Thanks,
-> Sripathi.
-> 
-> > 
-> > Regards--
-> > Subrata
-> > 
-> > On Mon, 2009-07-06 at 20:01 +0530, Subrata Modak wrote: 
-> > > On Mon, 2009-07-06 at 10:26 -0400, Steven Rostedt wrote:
-> > > > 
-> > > > On Tue, 23 Jun 2009, Subrata Modak wrote:
-> > > > 
-> > > > > Steven,
-> > > > > 
-> > > > > Do you remember this ?
-> > > > 
-> > > > Yes, and I finally got time to fix it up a little ;-)
-> > > 
-> > > Great. Forwarding to the ltp mailing list as well. Thanks steven.
-> > > 
-> > > Regards--
-> > > Subrata
-> > > 
-> > > > 
-> > > > OK, here it is. To run it, just do:
-> > > > 
-> > > >  ./rt-migrate-test -c 
-> > > > 
-> > > > You need to be root since it changes the priorities. It will check the 
-> > > > number of processors and create N+1 threads (where N is the number of 
-> > > > processors). Each thread will wake up at the same time and try to do a 
-> > > > busy loop for 20 millisecs. If a lower prio thread runs for 1ms before a 
-> > > > higher prio thread, it will fail. This should test the migration of the 
-> > > > threads to make sure that the higher prio threads run first.
-> > > > 
-> > > > Sorry for taking so long.
-> > > > 
-> > > > -- Steve
-> > > > 
-> > > > 
-> > > > 
-> > > > > 
-> > > > > Regards--
-> > > > > Subrata
-> > > > > 
-> > > > > On Mon, 2008-12-15 at 08:52 -0500, Steven Rostedt wrote: 
-> > > > > > On Mon, 15 Dec 2008, Subrata Modak wrote:
-> > > > > > > > 
-> > > > > > > > Lets see, you wanted my rt migration test. I'll clean that up now. Is 
-> > > > > > > 
-> > > > > > > Oh yes.
-> > > > > > 
-> > > > > > OK, I'm cleaning it up to be more for production use.
-> > > > > > 
-> > > > > > > 
-> > > > > > > > there something else I needed to send you? If you remember.
-> > > > > > > 
-> > > > > > > I am not quite sure now. Will let you know in future.
-> > > > > > 
-> > > > > > OK, thanks,
-> > > > > > 
-> > > > > > -- Steve
-> > > > > > 
-> > > > > 
-> > > > > 
-> > > ------------------------------------------------------------------------------
-> > > _______________________________________________
-> > > Ltp-list mailing list
-> > > Ltp-list@lists.sourceforge.net
-> > > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> > 
-> > --
-> > To unsubscribe from this list: send the line "unsubscribe linux-rt-users" in
-> > the body of a message to majordomo@vger.kernel.org
-> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> > 
-> > 
+
 
 
 ------------------------------------------------------------------------------
