@@ -2,33 +2,17 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <matthltc@us.ibm.com>) id 1MUPS9-0003C8-Lx
-	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2009 18:25:09 +0000
-Received: from e35.co.us.ibm.com ([32.97.110.153])
+	(envelope-from <zohar@linux.vnet.ibm.com>) id 1MROhE-0006zJ-Va
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2009 11:00:16 +0000
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
 	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MUPS5-0000LA-Fx
-	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2009 18:25:09 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e35.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n6OIGgCb023568
-	for <ltp-list@lists.sourceforge.net>; Fri, 24 Jul 2009 12:16:42 -0600
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n6OIOxoE198430
-	for <ltp-list@lists.sourceforge.net>; Fri, 24 Jul 2009 12:24:59 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n6OIOwon011075
-	for <ltp-list@lists.sourceforge.net>; Fri, 24 Jul 2009 12:24:59 -0600
-Date: Fri, 24 Jul 2009 11:24:57 -0700
-From: Matt Helsley <matthltc@us.ibm.com>
-Message-ID: <20090724182457.GJ5878@count0.beaverton.ibm.com>
-References: <1248272525-13205-1-git-send-email-nobuhiro@andestech.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1248272525-13205-1-git-send-email-nobuhiro@andestech.com>
-Subject: Re: [LTP] [PATCH] Fixed static build which needs to link
-	the	pthread library in pidns and pipeio.
+	(Exim 4.69) id 1MROh6-00085p-DS
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2009 11:00:11 +0000
+From: Mimi Zohar <zohar@linux.vnet.ibm.com>
+Date: Thu, 16 Jul 2009 06:59:56 -0400
+Message-Id: <1247741996.3886.5.camel@dyn9002018117.watson.ibm.com>
+Mime-Version: 1.0
+Subject: [LTP] ltp: IMA cross platform fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,53 +25,106 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: nobuhiro <nobuhiro@andestech.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sf.net>
+Cc: waqar afridi <afridi.waqar@gmail.com>, Shaz <shazalive@gmail.com>
 
-On Wed, Jul 22, 2009 at 10:22:05PM +0800, nobuhiro wrote:
-> 
-> Signed-off-by: nobuhiro <nobuhiro@andestech.com>
-> ---
->  testcases/kernel/containers/pidns/Makefile |    2 +-
->  testcases/kernel/ipc/pipeio/Makefile       |    2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kernel/containers/pidns/Makefile b/testcases/kernel/containers/pidns/Makefile
-> index 4886d58..14f49da 100644
-> --- a/testcases/kernel/containers/pidns/Makefile
-> +++ b/testcases/kernel/containers/pidns/Makefile
-> @@ -20,7 +20,7 @@
-> 
->  CFLAGS += -Wall
->  CPPFLAGS += -I../../../../include -I../libclone
-> -LDLIBS += -L../../../../lib -L../libclone ../libclone/libclone.a -lltp -lrt
-> +LDLIBS += -L../../../../lib -L../libclone ../libclone/libclone.a -lltp -lrt -lpthread
+- Instead of using the default platform shell, explicitly use bash.
+- To create a file using 'sudo -u', some platforms require 'user' to exist.
+- Document verifying PCR-10 fails on Ubuntu on reboot due to kexec.
 
-I'm not sure this is correct. I just did a CVS update and grepped for
-"pthread". I don't see a single use of pthreads in there. What output
-suggested all of these tests need to link to pthreads? Could you at
-least stick that in the changelog?
+Signed-off-by: Mimi Zohar <zohar@us.ibm.com>
 
-> 
->  SRCS    := $(wildcard *.c)
->  TARGETS := $(SRCS:%.c=%)
-> diff --git a/testcases/kernel/ipc/pipeio/Makefile b/testcases/kernel/ipc/pipeio/Makefile
-> index afd3e8d..d2a1d5f 100644
-> --- a/testcases/kernel/ipc/pipeio/Makefile
-> +++ b/testcases/kernel/ipc/pipeio/Makefile
-> @@ -22,7 +22,7 @@
->  ###########################################################################
->  CFLAGS   += -Wall
->  CPPFLAGS += -I../../../../include
-> -LDLIBS   += -L../../../../lib -lltp -lrt
-> +LDLIBS   += -L../../../../lib -lltp -lrt -lpthread
+Index: ltp-full-20090531/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
+===================================================================
+--- ltp-full-20090531.orig/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
++++ ltp-full-20090531/testcases/kernel/security/integrity/ima/tests/ima_measurements.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ ################################################################################
+ ##                                                                            ##
+@@ -137,12 +137,13 @@ test03()
+ 
+ 	# create file user-test.txt
+ 	mkdir -m 0700 $LTPIMA/user
+-	chown 99.99 $LTPIMA/user
++	chown nobody.nobody $LTPIMA/user
+ 	cd $LTPIMA/user
+ 	hash=0
+ 
+-	# As user 99, create and cat the new file
+-	sudo -u \#99 sh -c "echo `date` - create test.txt > ./test.txt;
++	# As user nobody, create and cat the new file
++	# (The LTP tests assumes existence of 'nobody'.)
++	sudo -u nobody sh -c "echo `date` - create test.txt > ./test.txt;
+ 				cat ./test.txt > /dev/null"
+ 
+ 	# Calculating the hash will add the measurement to the measurement
+Index: ltp-full-20090531/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
+===================================================================
+--- ltp-full-20090531.orig/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
++++ ltp-full-20090531/testcases/kernel/security/integrity/ima/tests/ima_policy.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ ################################################################################
+ ##                                                                            ##
+ ## Copyright (C) 2009 IBM Corporation                                         ##
+Index: ltp-full-20090531/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+===================================================================
+--- ltp-full-20090531.orig/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
++++ ltp-full-20090531/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ ################################################################################
+ ##                                                                            ##
+ ## Copyright (C) 2009 IBM Corporation                                         ##
+Index: ltp-full-20090531/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
+===================================================================
+--- ltp-full-20090531.orig/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
++++ ltp-full-20090531/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ ################################################################################
+ ##                                                                            ##
+Index: ltp-full-20090531/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
+===================================================================
+--- ltp-full-20090531.orig/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
++++ ltp-full-20090531/testcases/kernel/security/integrity/ima/tests/ima_violations.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ ################################################################################
+ ##                                                                            ##
+ ## Copyright (C) 2009 IBM Corporation                                         ##
+Index: ltp-full-20090531/testcases/kernel/security/integrity/ima/README
+===================================================================
+--- ltp-full-20090531.orig/testcases/kernel/security/integrity/ima/README
++++ ltp-full-20090531/testcases/kernel/security/integrity/ima/README
+@@ -52,6 +52,10 @@ open for read by root. If the default po
+ another measurement policy will fail, as the policy may only be replaced
+ once per boot. Some of the policy dependency tests might also fail as well.
+ 
++ima_tpm.sh: test02, verifying the PCR-10 value, requires a hard reboot.
++[On Ubuntu, before running the ltp tests, disable /etc/init.d/kexec-load
++and reboot.]
++
+ Run tests
+ ---------
+ After doing 'make' and 'make install' from the top-level,
 
-Same here.
 
-Cheers,
-	-Matt Helsley
 
 ------------------------------------------------------------------------------
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
