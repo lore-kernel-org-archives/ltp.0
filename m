@@ -1,21 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <arnd@arndb.de>) id 1MNplr-0007Lg-Hi
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:06:19 +0000
-Received: from moutng.kundenserver.de ([212.227.126.171])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MNplq-0004sC-8m
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:06:19 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 6 Jul 2009 17:05:50 +0200
-References: <4A4DFB77.1080700@petalogix.com> <200907061616.12220.arnd@arndb.de>
-	<4A520DA6.2040107@petalogix.com>
-In-Reply-To: <4A520DA6.2040107@petalogix.com>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <hyei@mvista.com>) id 1MRZDi-0002gX-IS
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2009 22:14:30 +0000
+Received: from gateway-1237.mvista.com ([63.81.120.158])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MRZDb-0000UE-C1
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2009 22:14:30 +0000
+Received: from svexch01.mvista.com (svexch01.mvista.com [10.0.0.82])
+	by hermes.mvista.com (Postfix) with ESMTP id 15A791B063
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 16 Jul 2009 15:14:20 -0700 (PDT)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Message-Id: <200907061705.50308.arnd@arndb.de>
-Subject: Re: [LTP] mmap syscall problem
+Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01CA0662.50B78948"
+Date: Thu, 16 Jul 2009 15:11:06 -0700
+Message-ID: <8368651DACC1964480F951191B94A078E49483@svexch01.mvista.com>
+From: "Henry Yei" <hyei@mvista.com>
+Subject: [LTP] [PATCH] network/lb6/Makefile, mips,
+	mips-el toolchain needs explicit RANLIB call to build
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,51 +29,94 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: michal.simek@petalogix.com
-Cc: LTP <ltp-list@lists.sourceforge.net>, Linux Kernel list <linux-kernel@vger.kernel.org>, Grant Likely <grant.likely@secretlab.ca>, Paul Mundt <lethal@linux-sh.org>, Andrew Morton <akpm@linux-foundation.org>, Ingo Molnar <mingo@elte.hu>, John Williams <john.williams@petalogix.com>
+To: ltp-list@lists.sourceforge.net
 
-On Monday 06 July 2009, Michal Simek wrote:
-> >       *p1 = 0xaa; *p2 = 0x55;
-> >   
-> I closed fd too.
->     close(fd);
-> >       return *p1; /* returns 0xaa if broken, 0x55 if correct */
-> > }
+This is a multi-part message in MIME format.
 
-If you close the fd between the assignment and reading
-from the pointer again, the test case becomes invalid because of
-timing. Closing the fd before the '*p1 = 0xaa' should be fine,
-but unnecessary.
+------_=_NextPart_001_01CA0662.50B78948
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-I also realized that you might need to mark the pointers
-as 'volatile' so that the compiler has to do the operations
-in order.
+This patch fixes the following build error on mips, mips-el toolchain: =
+"runcc.a: could not read symbols: Archive has no index; run ranlib to =
+add one."
 
-> >   
-> # ls -la existing-4k-file
-> -rw-rw-r--    1 monstr   monstr       4096 Jul  6  2009 existing-4k-file
-> 
-> # ./test-arnd
-> # echo $?
-> 85
+Signed-off-by: Henry Yei <hyei@mvista.com>
 
-Ok, so inside a single task, this does not happen.
+--- ltp-full-20090531/testcases/network/lib6/Makefile	2009-01-22 =
+01:26:10.000000000 -0800
++++ ltp/testcases/network/lib6/Makefile	2009-07-16 14:53:58.215774700 =
+-0700
+@@ -39,3 +39,4 @@
+=20
+ runcc.a: runcc.o
+ 	ar cr runcc.a runcc.o
++	$(RANLIB) runcc.a
 
-> # dd if=existing-4k-file of=/dev/console count=1 2>/dev/null
-> U#
-> 
-> in file is first char U (0x55) which is IMO correct.
 
-Right, though that was not part of the test, I'd expect this in
-the file even if the return value was broken.
 
-	Arnd <><
+
+Other architectures don't need this patch, if anyone who more familiar =
+with mips and knows why, please enlighten me.
+
+
+Actual error output this patch fixes:
+make[3]: Entering directory `/ltp-full-20090531/testcases/network/lib6'
+gcc -mel -g -O2 -I../../../include -g -D_GNU_SOURCE   -c -o runcc.o =
+runcc.c
+ar cr runcc.a runcc.o
+gcc -mel -g -O2 -I../../../include -g -D_GNU_SOURCE    asapi_01.c =
+runcc.a -L../../../lib runcc.a -lltp -lpthread  -o asapi_01
+runcc.a: could not read symbols: Archive has no index; run ranlib to add =
+one
+collect2: ld returned 1 exit status
+
+
+Henry Yei
+MontaVista Software, Inc.
+hyei@mvista.com
+
+
+=20
+
+------_=_NextPart_001_01CA0662.50B78948
+Content-Type: application/octet-stream;
+	name="lib6-Makefile.patch"
+Content-Transfer-Encoding: base64
+Content-Description: lib6-Makefile.patch
+Content-Disposition: attachment;
+	filename="lib6-Makefile.patch"
+
+LS0tIGx0cC1mdWxsLTIwMDkwNTMxL3Rlc3RjYXNlcy9uZXR3b3JrL2xpYjYvTWFrZWZpbGUJMjAw
+OS0wMS0yMiAwMToyNjoxMC4wMDAwMDAwMDAgLTA4MDAKKysrIGx0cC90ZXN0Y2FzZXMvbmV0d29y
+ay9saWI2L01ha2VmaWxlCTIwMDktMDctMTYgMTQ6NTM6NTguMjE1Nzc0NzAwIC0wNzAwCkBAIC0z
+OSwzICszOSw0IEBACiAKIHJ1bmNjLmE6IHJ1bmNjLm8KIAlhciBjciBydW5jYy5hIHJ1bmNjLm8K
+KwkkKFJBTkxJQikgcnVuY2MuYQo=
+
+------_=_NextPart_001_01CA0662.50B78948
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
+------_=_NextPart_001_01CA0662.50B78948
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------_=_NextPart_001_01CA0662.50B78948--
+
