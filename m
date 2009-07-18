@@ -1,35 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MOCg3-0006VG-Up
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 15:33:51 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MOCfy-0001Dk-Lc
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 15:33:51 +0000
-Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
-	by e3.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n67FSEZI010086
-	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jul 2009 11:28:14 -0400
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n67FWNRT1364056
-	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jul 2009 11:32:24 -0400
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n67FWN5U024279
-	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jul 2009 09:32:23 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <364299f40907061535s19bbe0b8o3c716b5320f2f9f8@mail.gmail.com>
-References: <364299f40907061455n2f95c877sb40d6a97e856fd03@mail.gmail.com>
-	<200907061810.04510.vapier@gentoo.org>
-	<364299f40907061535s19bbe0b8o3c716b5320f2f9f8@mail.gmail.com>
-Date: Tue, 07 Jul 2009 21:02:15 +0530
-Message-Id: <1246980735.5539.45.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Missing limits.h include and test.h style
-	in	system_specific_process_info.c
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <vapier@gentoo.org>) id 1MSIIJ-0004hU-VU
+	for ltp-list@lists.sourceforge.net; Sat, 18 Jul 2009 22:22:15 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MSIIA-0000Kn-Bb
+	for ltp-list@lists.sourceforge.net; Sat, 18 Jul 2009 22:22:15 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sat, 18 Jul 2009 18:22:02 -0400
+References: <364299f40907061818q7cda3465vffb00323af18c5f8@mail.gmail.com>
+	<200907151237.49839.vapier@gentoo.org>
+	<364299f40907181425h31ec769aw5f349b86891c94ad@mail.gmail.com>
+In-Reply-To: <364299f40907181425h31ec769aw5f349b86891c94ad@mail.gmail.com>
+MIME-Version: 1.0
+Message-Id: <200907181822.03140.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH 4/4] Make makefiles more autoconf friendly
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,46 +26,143 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1964778906241378067=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-On Mon, 2009-07-06 at 15:35 -0700, Garrett Cooper wrote: 
-> On Mon, Jul 6, 2009 at 3:10 PM, Mike Frysinger<vapier@gentoo.org> wrote:
-> > On Monday 06 July 2009 17:55:43 Garrett Cooper wrote:
-> >> 1. test.h is in .../include/. Thus #include should be #include
-> >> "test.h", not #include <test.h>.
-> >> 2. limits.h should be explicitly stated because certain constants are
-> >> used in system_specific_process_info.c (SHRT_MAX for instance).
-> >>
-> >> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+--===============1964778906241378067==
+Content-Type: multipart/signed; boundary="nextPart1279273.OVF4GGvcVV";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+
+--nextPart1279273.OVF4GGvcVV
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+On Saturday 18 July 2009 17:25:58 Garrett Cooper wrote:
+> On Wed, Jul 15, 2009 at 9:37 AM, Mike Frysinger<vapier@gentoo.org> wrote:
+> > On Sunday 12 July 2009 01:49:52 Garrett Cooper wrote:
+> >> +# Avoid overwriting definitions in leaf callers.
+> >> +CPPFLAGS     ?=3D @CPPFLAGS@ -I$(includedir)
+> >> +CFLAGS               ?=3D @CFLAGS@
+> >> +LDLIBS               ?=3D @LIBS@
+> >> +LDFLAGS              ?=3D @LDFLAGS@ -L$(libdir)
 > >
-> > unified diffs only please.  context diffs are awful.
-> 
-> And again.
-> -Garrett
+> > this looks like it'll cause problems if you set these in your environme=
+nt
+> > export CPPFLAGS=3D'' CFLAGS=3D'-pipe' LDFLAGS=3D''
+> > make
+> >
+> > i would use $(origin ...) to determine whether the variables are coming
+> > from the leaf Makefile
+>
+> Ah, yes. Excellent point.
+>
+> So what's the appropriate protocol then:
+>
+> If set in environment, ignore?
+> Or:
+> If set in Makefile, ignore?
 
-Thanks.
+if it's set in the env, the "?=3D" should already handle that.  i cant thin=
+k of=20
+a reason for the leaf makefiles to be settings default flags ... do you hav=
+e=20
+an example in mind ?
 
-Regards--
-Subrata
+> >> +DEBUG_CFLAGS ?=3D -g
+> >> +DEBUG_CXXFLAGS       ?=3D $(DEBUG_CFLAGS)
+> >> +
+> >> +CFLAGS               +=3D $(DEBUG_CFLAGS)
+> >> +CXXFLAGS     +=3D $(DEBUG_CXXFLAGS)
+> >> +
+> >> +# There have been several bugs in the past related to -O2+ when
+> >> +# -fno-strict-aliasing is not specified.
+> >> +OPT_CFLAGS   ?=3D -O2 -fno-strict-aliasing
+> >> +OPT_CXXFLAGS ?=3D $(OPT_CFLAGS)
+> >
+> > in general, i recall only like 1 bug that was a gcc issue.  all the
+> > others were broken source code.  i dont think we should live with code
+> > that violates aliasing rules.
+>
+> See my previous comment. There are ~10 different bugs spanning
+> compilers from v3.3.x to 4.4.x, which deal with broken
+> -fstrict-aliasing optimizations in the tree optimizer.
 
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+please centralize the comments then rather than sprinkling them about the=20
+different source files.  here the comment should say:
+# -fno-strict-aliasing: please see README.mk-devel
 
+> >> --- m4/GNUmakefile    18 Jan 2009 22:22:40 -0000      1.1
+> >> +++ m4/GNUmakefile    12 Jul 2009 05:46:28 -0000
+> >
+> > i think we only need a top level GNUmakefile.  all the other subdirs can
+> > stay Makefile.
+>
+> Well, ok. I was just leaving it as-is, because that's the way it is today
+> :).
+>
+> Like in rock-paper-scissors:
+>
+> GNUmakefile beats Makefile, which beats makefile.
+
+mmm that GNUmakefile is there for a different reason (to ignore the automak=
+e-
+generated Makefile), so we dont want to go renaming it.  so you dont need t=
+o=20
+go doing something different.
+=2Dmike
+
+--nextPart1279273.OVF4GGvcVV
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJKYksLAAoJEEFjO5/oN/WBgiEP/3K8RP8FRUutDAsKpnmsIPB2
+m0pzQYXea5pB9MqPXYlM+D2Y5I6AqYdYY7GeibU/PPFLsuOkjDjQI4/APhIEZuVc
+ENjrxWInqLCjZ93FBoKfFizScy32JkWT9Ln2q5YxhizWNUmotY0THF9uAiABmxXK
+O6VjaP8wCa/BCtj/w/T6Z4qhFfYkczN6HBt0N+6hU4JOJws4d6xtuDvMxru/Zz5M
+oszi+YQKI2THUyVhfSvAiLZV4O4+p+U+/26Oo1aWuyhYjasaZbRp7btVEmzSVDa+
+kwo+gQEaU4bw7qoROA12jRc/p9wySh3G5lyDPFtGg88GZfA1aBEcnaLGFTnlMSGf
+JauXsYaZEJGV81li5jfymGGqfNZc7NUd9NYSp/6Cy/40W1h2T5yhYm6JxVbDtFqR
+cLquM6mQVs1JcA/mX37ZLDuhLB3bIRTMRT6GFuqUeVmb/4ndd46Cl9RHa+MnBdXl
+xDojRnhI/8mT5U88pGAwG81zZ0Twp6ijaHVqEAhullcYL3RtjtAPZlqUJbV4l35F
+ldyuXSKzYO/tYdd7VCeSrKKSeo6LwyHKQn/WsmqvEtdWLv2IZfP6gCXp1GkkEhs6
+8FtwNjDyHGEf3h8hLiqU4bm5wm8YuuxwDL99MrY31IutQnOazwyKxWLJhyH8zGsZ
+ItQ4D1nOHsYNHOFTZgGa
+=uB23
+-----END PGP SIGNATURE-----
+
+--nextPart1279273.OVF4GGvcVV--
+
+
+--===============1964778906241378067==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Enter the BlackBerry Developer Challenge  
 This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have 
-the opportunity to enter the BlackBerry Developer Challenge. See full prize 
-details at: http://p.sf.net/sfu/blackberry
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
+--===============1964778906241378067==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1964778906241378067==--
+
