@@ -1,20 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MUOuM-0000Rn-9K
-	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2009 17:50:14 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MUOuE-0003eR-0b
-	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2009 17:50:14 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Fri, 24 Jul 2009 13:49:56 -0400
-References: <f5a7b3810907240831t75a058a2m96abdc28a28c4365@mail.gmail.com>
-In-Reply-To: <f5a7b3810907240831t75a058a2m96abdc28a28c4365@mail.gmail.com>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MSOKz-0001b0-7N
+	for ltp-list@lists.sourceforge.net; Sun, 19 Jul 2009 04:49:25 +0000
+Received: from mail-px0-f190.google.com ([209.85.216.190])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MSOKr-0000GD-Nu
+	for ltp-list@lists.sourceforge.net; Sun, 19 Jul 2009 04:49:25 +0000
+Received: by pxi28 with SMTP id 28so1364714pxi.28
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 18 Jul 2009 21:49:17 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <200907241349.58754.vapier@gentoo.org>
-Subject: Re: [LTP] Char Limit issue on 2.6.29 kernels
+In-Reply-To: <alpine.DEB.1.00.0907151516430.3715@mail.selltech.ca>
+References: <alpine.DEB.1.00.0907151048120.3370@mail.selltech.ca>
+	<8368651DACC1964480F951191B94A078D01C80@svexch01.mvista.com>
+	<alpine.DEB.1.00.0907151516430.3715@mail.selltech.ca>
+Date: Sat, 18 Jul 2009 21:49:17 -0700
+Message-ID: <364299f40907182149h1510d57are71332c258aa57e5@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] LTP hung on 2.6.31-rc3 kernel and buffer overflow detected
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,93 +29,70 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3501768381181665515=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, linux-kernel@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>, tim.bird@am.sony.com, rohit.170309@gmail.com, naresh kamboju <naresh.kernel@gmail.com>
-
---===============3501768381181665515==
-Content-Type: multipart/signed; boundary="nextPart1585721.GUq8EBI8DJ";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1585721.GUq8EBI8DJ
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: "Li, Ming Chun" <macli@brc.ubc.ca>
+Cc: ltp-list@lists.sourceforge.net
 
-On Friday 24 July 2009 11:31:59 naresh kamboju wrote:
-> I have come across with char Limit issue on 2.6.29 kernels.
+On Wed, Jul 15, 2009 at 3:26 PM, Li, Ming Chun<macli@brc.ubc.ca> wrote:
+> On Wed, 15 Jul 2009, Henry Yei wrote:
 >
+>> Ming,
+>>
+>> The first thing to do is figure out what testcase is causing it and run =
+that test by itself, then debug from there.
+>> This is easy to find out by looking at your output and result files and =
+see which was the last reported test.
+>>
+>> Note: I had no such problem on Ubuntu 9.04, but with the 2.6.28-13 kerne=
+l.
 >
-> SIGFAULT:
+> I looked at the fail report by
 >
-> #define SIZE            8053759
-> char buf1[SIZE] ;
+> #tail -5 output/LTP_RUN_ON-2009_Jul_14-14h_15m_46s.failed
 >
-> NO SIGFAULT:
+> ftest03 ftest03
+> ftest07 ftest07
+> fs_di fs_di -d /tmp/
+> quota_remount_test01 quota_remount_test01.sh
+> Containers container_test.sh
 >
-> #define SIZE            8053758
-> char buf1[SIZE] ;
+> Is container_test.sh test the fault one? How to run that single test
+> properly? I ran ./testcases/bin/container_test.sh at command line simply
+> gave me error like:
 >
-> This SIGFAULT not observed on 2.6.23 kernels.
+> ./testcases/bin/container_test.sh: 13: check_for_unshare: not found
+> ./testcases/bin/container_test.sh: 18: check_utsns_enabled: not found
+> Uts namespaces not enabled in kernel. =A0Not running utsns tests.
+> ./testcases/bin/container_test.sh: 41: check_ipcns_enabled: not found
+> ipc namespaces not enabled in kernel. =A0Not running ipcns tests.
+> ./testcases/bin/container_test.sh: 49: check_pidns_enabled: not found
+> Process id namespaces not enabled in kernel. =A0Not running pidns tests.
+> ./testcases/bin/container_test.sh: 57: check_mqns_enabled: not found
+> Posix message queues or ipc namespaces not enabled in kernel.
+> Not running mqns tests.
+> ./testcases/bin/container_test.sh: 66: check_netns_enabled: not found
+> Network namespaces not enabled in kernel. =A0Not running netns tests.
 
-=2DENOINFO
+Vincent,
+    Be sure to add /path/to/ltp/install/testcases/bin to your $PATH
+before running container_test.sh.
+HTH,
+-Garrett
 
-post some actual code rather than saying "i declared a large buffer and thi=
-ngs=20
-crashed".  is there a reason you cc-ed LTP ?  is this a crash i a LTP test ?
+---------------------------------------------------------------------------=
+---
+Enter the BlackBerry Developer Challenge  =
 
-> What could be the changes that effecting from 2.6.23 to 2.6.29 kernels.
-> Please share me the information.
+This is your chance to win up to $100,000 in prizes! For a limited time, =
 
-git log v2.6.23..v2.6.29
-=2Dmike
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize=
+  =
 
---nextPart1585721.GUq8EBI8DJ
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJKafRGAAoJEEFjO5/oN/WBSf4P/3Vxc4bpI8ZyX28k8KmIBthC
-18d1yJETty3qlAcrGpMf9iK2sKY2CHOMOGn0gu0TabTjZhN+e98v7n9rxYN9vard
-JHT3iUtrbHVgNUhnwkxdrG58jZM62csDCr3JyB8fTxqKb4uheX7vDRuO4LVjjT5y
-nw/kA0tyWklFRTQQyJvBnZgDUsvJNPkxCnJ6NOijHv/Fl1Z2+D1sO1HKRrkzNVn9
-T/n+IlYV2wmKROJnci5LGCxKjYBpvhWVUdDJHF1oqNaIp2oRi3r2EUrmNuaEleQY
-/icjvTqhghPZ6oCiqHPUpApD5qKO5qVYipRG8TklnCSNcL6l/hEOmNjzkYYtbRQU
-vJGTIMkhBf5XxX8GTpT26NuDOjqat1UDRzPvVd9lOJC5mUE3+OxuegefvcRN0qdZ
-uZFTLM40XrnmkjECulFz9Yj2eGSJcVif2H50UYpoDguuOmCC6zY1lkknkY+vI2/Y
-UKLNBo7Anid+uFIJ5vpxPNVwmnZ3f+Lud6/8C55oWOiyL1NjTC5G/3Tx0aj2+fMh
-ZzqOQiLcnnE0JzJfSRIaVLHwCY2P16REG8NuGz2EFdgU+rsMYVLtFHdR5b2Ih5EX
-CEHJr35omKfjMajy7tLyGfnZ477CGHyd8VfW4leavHf18XzgJyIGgThxMVPgRIuV
-GmZQz9hJB3Z9UKwmiNwh
-=Z5Lj
------END PGP SIGNATURE-----
-
---nextPart1585721.GUq8EBI8DJ--
-
-
---===============3501768381181665515==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-
---===============3501768381181665515==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============3501768381181665515==--
-
