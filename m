@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <arnd@arndb.de>) id 1MNozl-0003Nm-Ec
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 14:16:37 +0000
-Received: from moutng.kundenserver.de ([212.227.126.171])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MNozf-0003y8-Rn
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 14:16:32 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 6 Jul 2009 16:16:11 +0200
-References: <4A4DFB77.1080700@petalogix.com>
-	<20090706121455.GA16908@linux-sh.org>
-	<4A51F3F3.6040501@petalogix.com>
-In-Reply-To: <4A51F3F3.6040501@petalogix.com>
+	(envelope-from <yanegomi@gmail.com>) id 1MSP3a-00074C-KO
+	for ltp-list@lists.sourceforge.net; Sun, 19 Jul 2009 05:35:30 +0000
+Received: from wf-out-1314.google.com ([209.85.200.172])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MSP3T-0003j6-DE
+	for ltp-list@lists.sourceforge.net; Sun, 19 Jul 2009 05:35:30 +0000
 MIME-Version: 1.0
-Message-Id: <200907061616.12220.arnd@arndb.de>
-Subject: Re: [LTP] mmap syscall problem
+In-Reply-To: <200907190126.47767.vapier@gentoo.org>
+References: <1247741996.3886.5.camel@dyn9002018117.watson.ibm.com>
+	<364299f40907182215q56ff7c3au5971afb877d4aa15@mail.gmail.com>
+	<200907190126.47767.vapier@gentoo.org>
+Date: Sat, 18 Jul 2009 22:35:22 -0700
+Message-ID: <364299f40907182235m7bbcc16bka760ffc2d0ae3384@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] ltp: IMA cross platform fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,51 +26,42 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: michal.simek@petalogix.com
-Cc: LTP <ltp-list@lists.sourceforge.net>, Linux Kernel list <linux-kernel@vger.kernel.org>, Grant Likely <grant.likely@secretlab.ca>, Paul Mundt <lethal@linux-sh.org>, Andrew Morton <akpm@linux-foundation.org>, Ingo Molnar <mingo@elte.hu>, John Williams <john.williams@petalogix.com>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: waqar afridi <afridi.waqar@gmail.com>, ltp-list@lists.sourceforge.net, Shaz <shazalive@gmail.com>, Mimi Zohar <zohar@linux.vnet.ibm.com>, ltp-list <ltp-list@lists.sf.net>
 
-On Monday 06 July 2009, Michal Simek wrote:
-> 
-> > Not necessarily, even on platforms that manage aliases in hardware
-> > mappings that violate the aliasing constraints can still result in
-> > undefined behaviour, this really depends more on your cache controller
-> > and MMU than anything else. I notice that microblaze sets SHMLBA to
-> > PAGE_SIZE, you may want to see if this test still breaks after bumping it
-> > up to something like PAGE_SIZE * 4.
-> >   
-> Yes, test still break - behavior is the same. I don't have accurate
-> information about MMU unit
-> but I will ask a question about. We are able to turn off cache
-> controller directly in HW.
+On Sat, Jul 18, 2009 at 10:26 PM, Mike Frysinger<vapier@gentoo.org> wrote:
+> On Sunday 19 July 2009 01:15:04 Garrett Cooper wrote:
+>> =A0 =A0 /bin/sh should remain the standard, but a number of changes need
+>> to happen to the .sh scripts to make them POSIX compatible, e.g.
+>> backticks execution should become $(), etc. Let's not make things
+>> bash-only...
+>
+> umm, `cmd` is in POSIX
 
-There may still be a problem with data being queued in some write
-buffers that don't get flushed before reading back from another
-address.
+    Not anymore; a fellow bourne shell-ist at work noted that it
+wasn't POSIX compliant anymore, after consulting the POSIX 2001
+reference:
 
-What happens in a simple user space program that mmaps the same
-page to two addresses? Something like
+http://publib.boulder.ibm.com/infocenter/systems/index.jsp?topic=3D/com.ibm=
+.aix.baseadmn/doc/baseadmndita/korn_shell_comm_sub.htm
 
-#include <sys/mman.h>
-#include <fcntl.h>
-int main(void)
-{
-	int fd = open("existing-4k-file", O_RDWR);
-	char *p1 = mmap(0, 4096, PROT_READ | PROT_WRITE,
-				MAP_SHARED, fd, 0);
-	char *p2 = mmap(p1 + 4096, 4096, PROT_READ | PROT_WRITE,
-				MAP_SHARED | MAP_FIXED, fd, 0);
+Thanks,
+-Garrett
 
-	*p1 = 0xaa; *p2 = 0x55;
+---------------------------------------------------------------------------=
+---
+Enter the BlackBerry Developer Challenge  =
 
-	return *p1; /* returns 0xaa if broken, 0x55 if correct */
-}
+This is your chance to win up to $100,000 in prizes! For a limited time, =
 
-	Arnd <><
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize=
+  =
 
-------------------------------------------------------------------------------
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
