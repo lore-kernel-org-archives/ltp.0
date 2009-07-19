@@ -1,27 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <michal.simek@petalogix.com>) id 1MNniH-0002Cl-4f
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 12:54:29 +0000
-Received: from mail-fx0-f208.google.com ([209.85.220.208])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MNni7-0007Ed-PZ
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 12:54:24 +0000
-Received: by fxm4 with SMTP id 4so2838749fxm.10
+	(envelope-from <yanegomi@gmail.com>) id 1MSOmR-0006Vi-Hl
+	for ltp-list@lists.sourceforge.net; Sun, 19 Jul 2009 05:17:47 +0000
+Received: from mail-px0-f190.google.com ([209.85.216.190])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MSOmL-0006g7-70
+	for ltp-list@lists.sourceforge.net; Sun, 19 Jul 2009 05:17:47 +0000
+Received: by pxi28 with SMTP id 28so1371265pxi.28
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 06 Jul 2009 05:54:13 -0700 (PDT)
-Message-ID: <4A51F3F3.6040501@petalogix.com>
-Date: Mon, 06 Jul 2009 14:54:11 +0200
-From: Michal Simek <michal.simek@petalogix.com>
+	Sat, 18 Jul 2009 22:17:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <4A4DFB77.1080700@petalogix.com> <200907031702.52612.arnd@arndb.de>
-	<4A519A70.50801@petalogix.com> <200907061005.36094.arnd@arndb.de>
-	<4A51E8EA.1050009@petalogix.com>
-	<20090706121455.GA16908@linux-sh.org>
-In-Reply-To: <20090706121455.GA16908@linux-sh.org>
-Subject: Re: [LTP] mmap syscall problem
-Reply-To: michal.simek@petalogix.com
+In-Reply-To: <200907182014.11010.vapier@gentoo.org>
+References: <364299f40907061818q7cda3465vffb00323af18c5f8@mail.gmail.com>
+	<200907181822.03140.vapier@gentoo.org>
+	<364299f40907181607m42e27de9sacb61084452ea53a@mail.gmail.com>
+	<200907182014.11010.vapier@gentoo.org>
+Date: Sat, 18 Jul 2009 22:17:40 -0700
+Message-ID: <364299f40907182217s1c906bd0lb052091fb4f82af9@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH 4/4] Make makefiles more autoconf friendly
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,69 +30,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Paul Mundt <lethal@linux-sh.org>, Michal Simek <michal.simek@petalogix.com>, Arnd Bergmann <arnd@arndb.de>, Linux Kernel list <linux-kernel@vger.kernel.org>, LTP <ltp-list@lists.sourceforge.net>, John Williams <john.williams@petalogix.com>, Ingo Molnar <mingo@elte.hu>, Andrew Morton <akpm@linux-foundation.org>, Grant Likely <grant.likely@secretlab.ca>, subrata@linux.vnet.ibm.com
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-Paul Mundt wrote:
-> On Mon, Jul 06, 2009 at 02:07:06PM +0200, Michal Simek wrote:
->   
->> Arnd Bergmann wrote:
->>     
->>> On Monday 06 July 2009, Michal Simek wrote:
->>>   
->>>       
->>>>> Does this happen on microblaze-mmu or microblaze-nommu, or both?
->>>>> The mmap code for the two is very different.
->>>>>   
->>>>>       
->>>>>           
->>>> For MMU code.
->>>>     
->>>>         
->>> Could this be a cache-aliasing problem? If your cache is 'virtually-indexed'
->>> (most architectures are 'physically-indexed'), the kernel may have written
->>> into different parts of the D-cache than what the user space is reading
->>> from. If you have a write-through cache, that can explain why you only
->>> see the stale data at the beginning of the page -- the cache controller
->>> is still busy writing back the data when you start reading it from
->>> DRAM through the cache alias.
->>>   
->>>       
->> I don't think so because we run that test on Microblaze without caches
->> and test failed too.
->> I think that this is sufficient test to tell that the problem is not
->> relate with caches.
+On Sat, Jul 18, 2009 at 5:14 PM, Mike Frysinger<vapier@gentoo.org> wrote:
+> On Saturday 18 July 2009 19:07:13 Garrett Cooper wrote:
+>> On Sat, Jul 18, 2009 at 3:22 PM, Mike Frysinger wrote:
+>> > On Saturday 18 July 2009 17:25:58 Garrett Cooper wrote:
+>> >> On Wed, Jul 15, 2009 at 9:37 AM, Mike Frysinger wrote:
+>> >> > On Sunday 12 July 2009 01:49:52 Garrett Cooper wrote:
+>> >> >> +# Avoid overwriting definitions in leaf callers.
+>> >> >> +CPPFLAGS =A0 =A0 ?=3D @CPPFLAGS@ -I$(includedir)
+>> >> >> +CFLAGS =A0 =A0 =A0 =A0 =A0 =A0 =A0 ?=3D @CFLAGS@
+>> >> >> +LDLIBS =A0 =A0 =A0 =A0 =A0 =A0 =A0 ?=3D @LIBS@
+>> >> >> +LDFLAGS =A0 =A0 =A0 =A0 =A0 =A0 =A0?=3D @LDFLAGS@ -L$(libdir)
+>> >> >
+>> >> > this looks like it'll cause problems if you set these in your
+>> >> > environment export CPPFLAGS=3D'' CFLAGS=3D'-pipe' LDFLAGS=3D''
+>> >> > make
+>> >> >
+>> >> > i would use $(origin ...) to determine whether the variables are
+>> >> > coming from the leaf Makefile
+>> >>
+>> >> Ah, yes. Excellent point.
+>> >>
+>> >> So what's the appropriate protocol then:
+>> >>
+>> >> If set in environment, ignore?
+>> >> Or:
+>> >> If set in Makefile, ignore?
+>> >
+>> > if it's set in the env, the "?=3D" should already handle that. =A0i ca=
+nt
+>> > think of a reason for the leaf makefiles to be settings default flags =
+...
+>> > do you have an example in mind ?
 >>
->>     
-> Not necessarily, even on platforms that manage aliases in hardware
-> mappings that violate the aliasing constraints can still result in
-> undefined behaviour, this really depends more on your cache controller
-> and MMU than anything else. I notice that microblaze sets SHMLBA to
-> PAGE_SIZE, you may want to see if this test still breaks after bumping it
-> up to something like PAGE_SIZE * 4.
->   
-Yes, test still break - behavior is the same. I don't have accurate
-information about MMU unit
-but I will ask a question about. We are able to turn off cache
-controller directly in HW.
-> This is unfortunately one of the areas where what POSIX says is possible
-> and what hardware can support are at odds (you can look through
-> arch/sh/mm/mmap.c for a better idea).
->   
+>> Yes, actually. The problem with the current system is that we keep on
+>> using +=3D, which bloats the CFLAGS / LDFLAGS / LDLIBS, etc
+>> unnecessarily, so if we get 5 levels deep we end up with a line like:
+>>
+>> gcc -I../../../../../include -I../../../../include -I../../../include
+>> -I../../include -I../include
+>>
+>> etc.
+>>
+>> Now that's just plain silly and we'll run into ceilings very quickly
+>> with long argument lines, plus it'll slow down gcc / binutils with the
+>> search path.
+>
+> well that should be addressed independently. =A0have the .mk export some
+> variable like LTP_BUILD_INITIALIZED =3D yes, and then stick all of these
+> defaults and appends behind that.
 
-Thanks,
-Michal
+Done.
+-Garrett
 
+---------------------------------------------------------------------------=
+---
+Enter the BlackBerry Developer Challenge  =
 
--- 
-Michal Simek, Ing. (M.Eng)
-PetaLogix - Linux Solutions for a Reconfigurable World
-w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+This is your chance to win up to $100,000 in prizes! For a limited time, =
 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize=
+  =
 
-------------------------------------------------------------------------------
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
