@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1MOjG8-00086S-R0
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 02:21:16 +0000
-Received: from gateway-1237.mvista.com ([63.81.120.158])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MOjG2-00083P-EJ
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 02:21:16 +0000
-Received: from svexch01.mvista.com (svexch01.mvista.com [10.0.0.82])
-	by hermes.mvista.com (Postfix) with ESMTP id DBBE91AD3A
+	(envelope-from <yanegomi@gmail.com>) id 1MSOOa-00038P-DA
+	for ltp-list@lists.sourceforge.net; Sun, 19 Jul 2009 04:53:08 +0000
+Received: from wf-out-1314.google.com ([209.85.200.171])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MSOOT-0001Kd-2q
+	for ltp-list@lists.sourceforge.net; Sun, 19 Jul 2009 04:53:08 +0000
+Received: by wf-out-1314.google.com with SMTP id 26so524562wfd.4
 	for <ltp-list@lists.sourceforge.net>;
-	Wed,  8 Jul 2009 19:21:06 -0700 (PDT)
-Content-class: urn:content-classes:message
+	Sat, 18 Jul 2009 21:53:00 -0700 (PDT)
 MIME-Version: 1.0
-Date: Wed, 8 Jul 2009 19:14:48 -0700
-Message-ID: <8368651DACC1964480F951191B94A078D013BE@svexch01.mvista.com>
-From: "Henry Yei" <hyei@mvista.com>
-Subject: [LTP] Tests hanging on multi-core x86 machines
+In-Reply-To: <4A5E7C54.40507@cn.fujitsu.com>
+References: <4A559DB3.6030000@cn.fujitsu.com>
+	<1247222787.6630.26.camel@subratamodak.linux.ibm.com>
+	<4A5E7C54.40507@cn.fujitsu.com>
+Date: Sat, 18 Jul 2009 21:53:00 -0700
+Message-ID: <364299f40907182153i440a64ddjf8dca75d6a9adc3c@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Fix failure of the utimes01 test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,34 +29,107 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Wang Yong <wangyong2009@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Has anyone noticed the following tests hanging intermittently on their multicore machines? The kernel being used is 2.6.28 (i686)
-
-
-ppoll01
-ptrace06
-mq_timedrecieve01
-
-These are all tests from Crackerjack and are fairly new. Most of the time these tests pass(or fail), but there's about a 10% chance the processes hang. For all I know there may be many other tests that exhibit the same thing, but I haven't stumbled upon it yet.  
-
-Henry Yei
-MontaVista Software, Inc.
-hyei@mvista.com
-
-
- 
-
-------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gV2VkLCBKdWwgMTUsIDIwMDkgYXQgNjowMyBQTSwgV2FuZyBZb25nPHdhbmd5b25nMjAwOUBj
+bi5mdWppdHN1LmNvbT4gd3JvdGU6Cj4gSGksIFN1YnJhdGEgTW9kYWsKPgo+IFN1YnJhdGEgTW9k
+YWsgd3JvdGUgYXM6Cj4+IE9uIFRodSwgMjAwOS0wNy0wOSBhdCAxNTozNSArMDgwMCwgV2FuZyBZ
+b25nIHdyb3RlOgo+Pgo+Pj4gV2hlbmV2ZXIgc3lzdGVtIGNhbGxlZCB1dGltZXMsIHRoZSBlcnJv
+ciBtZXNzYWdlIHJldHVybmVkIHdhcyBFSU5WQUwsCj4+PiBiZWNhdXNlIHRoZSBtZW1iZXIgdmFy
+aWFibGUgb2Ygc3RydWN0IHRpbWV2YWwgd2FzIG5vdCBpbml0aWFsaXplZCwKPj4+IHNvIGluaXRp
+YWxpemUgaXQuCj4+Pgo+Pj4gU2lnbmVkLW9mZi1ieTrjgIBXYW5nWW9uZ+OAgDx3YW5neW9uZzIw
+MDlAY24uZnVqaXRzdS5jb20+Cj4+Pgo+Pj4gZGlmZiAtTnVycCBsdHAtZnVsbC0yMDA5MDYzMC90
+ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3V0aW1lcy91dGltZXMwMS5jCj4+PiBsdHAtZnVsbC0y
+MDA5MDYzMC5uZXcvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy91dGltZXMvdXRpbWVzMDEuYwo+
+Pj4gLS0tIGx0cC5vcmlnL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdXRpbWVzL3V0aW1lczAx
+LmMgMjAwOS0wNy0wMQo+Pj4gMTc6MjA6MTIuMDAwMDAwMDAwICswODAwCj4+PiArKysgbHRwL3Rl
+c3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdXRpbWVzL3V0aW1lczAxLmMgwqAyMDA5LTA3LTA4Cj4+
+PiAxNzoyMDozOC4wMDAwMDAwMDAgKzA4MDAKPj4+IEBAIC0yNDgsNiArMjQ4LDcgQEAgc3RhdGlj
+IGludCBkb190ZXN0KHN0cnVjdCB0ZXN0X2Nhc2UgKnRjKQo+Pj4gwqAgwqAgwqAgwqAgwqAgLyoK
+Pj4+IMKgIMKgIMKgIMKgIMKgIMKgKiBFeGVjdXRlIHN5c3RlbSBjYWxsCj4+PiDCoCDCoCDCoCDC
+oCDCoCDCoCovCj4+PiArIMKgIMKgIMKgIMKgbWVtc2V0KHR2LCAwLCAyICogc2l6ZW9mKHN0cnVj
+dCB0aW1ldmFsKSk7Cj4+Pgo+Pgo+PiBJbml0aWFsaXppbmcgdGhpcyBpcyBnb29kLiBCdXQgaSBk
+byBub3QgZmluZCBhbnkgdmlzaWJsZSBkaWZmZXJlbmNlIGluCj4+IHJ1bm5pbmcgdGhpcyB0ZXN0
+IHByZSBhbmQgcG9zdCBwYXRjaGluZyBlaXRoZXIgb24gMi42LjI5IG9yIDIuNi4xOAo+PiBrZXJu
+ZWxzLiBUaGUgZm9sbG93aW5nIG91dHB1dCBpcyBnZW5lcmF0ZWQgZWFjaCB0aW1lOgo+Pgo+PiAj
+IC4vdGVzdGNhc2VzL2Jpbi91dGltZXMwMQo+PiB1dGltZXMwMSDCoCDCoDAgwqBJTkZPIMKgOiDC
+oChjYXNlMDApIFNUQVJUCj4+IG9wZW4gZmFpbGVkLgo+PiB1dGltZXMwMSDCoCDCoDAgwqBJTkZP
+IMKgOiDCoChjYXNlMDApIEVORCA9PiBORwo+PiB1dGltZXMwMSDCoCDCoDAgwqBJTkZPIMKgOiDC
+oChjYXNlMDEpIFNUQVJUCj4+IG9wZW4gZmFpbGVkLgo+PiB1dGltZXMwMSDCoCDCoDAgwqBJTkZP
+IMKgOiDCoChjYXNlMDEpIEVORCA9PiBORwo+PiB1dGltZXMwMSDCoCDCoDAgwqBJTkZPIMKgOiDC
+oChjYXNlMDIpIFNUQVJUCj4+IG9wZW4gZmFpbGVkLgo+PiB1dGltZXMwMSDCoCDCoDAgwqBJTkZP
+IMKgOiDCoChjYXNlMDIpIEVORCA9PiBORwo+PiB1dGltZXMwMSDCoCDCoDAgwqBJTkZPIMKgOiDC
+oChjYXNlMDMpIFNUQVJUCj4+IG9wZW4gZmFpbGVkLgo+PiB1dGltZXMwMSDCoCDCoDAgwqBJTkZP
+IMKgOiDCoChjYXNlMDMpIEVORCA9PiBORwo+PiB1dGltZXMwMSDCoCDCoDAgwqBJTkZPIMKgOiDC
+oChjYXNlMDQpIFNUQVJUCj4+IG9wZW4gZmFpbGVkLgo+PiB1dGltZXMwMSDCoCDCoDAgwqBJTkZP
+IMKgOiDCoChjYXNlMDQpIEVORCA9PiBORwo+PiB1dGltZXMwMSDCoCDCoDEgwqBGQUlMIMKgOiDC
+oHV0aW1lczAxIGZhaWxlZCAtIGVycm5vID0gMiA6IE5vIHN1Y2ggZmlsZSBvcgo+PiBkaXJlY3Rv
+cnkKPj4gdXRpbWVzMDEgwqAgwqAwIMKgSU5GTyDCoDogwqBORwo+Pgo+PiAjIGVjaG8gJD8KPj4g
+MQo+Pgo+IEkgaGF2ZSBmaXhlZCB0aGlzIHByb2JsZW0uCj4KPgo+IFtQQVRDSF0gRml4IGZhaWx1
+cmUgb2YgdGhlIHV0aW1lczAxIHRlc3QKPgo+IFdoZW5ldmVyIHN5c3RlbSBjYWxsZWQgdXRpbWVz
+LCB0aGUgZXJyb3IgbWVzc2FnZSByZXR1cm5lZCB3YXMgRUlOVkFMLAo+IGJlY2F1c2UgdGhlIG1l
+bWJlciB2YXJpYWJsZSBvZiBzdHJ1Y3QgdGltZXZhbCB3YXMgbm90IGluaXRpYWxpemVkLAo+IHNv
+IGluaXRpYWxpemUgaXQuCj4gVGhpcyBwYXRjaCBhbHNvIGZpeGVkIHRoZSBwYXRoIHdoaWNoIHdl
+IHBhc3MgdG8gc2V0dXBfZmlsZSgpLiBJZgo+IHByb2dkaXIgaXMgbm90IGEgYWJzb2x1dGUgcGF0
+aG5hbWUgb2YgdGhlIHdvcmtpbmcgZGlyZWN0b3J5LCB0aGUgZmlsZQo+IG9wZW4gd2lsbCBmYWls
+Lgo+Cj4gU2lnbmVkLW9mZi1ieTogV2FuZ1lvbmcgPHdhbmd5b25nMjAwOUBjbi5mdWppdHN1LmNv
+bT4KPgo+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdXRpbWVzL3V0aW1lczAxLmMg
+wqAgwqAgwqAgMjAwOS0wNy0xNSAxMDoyMjo0MS4wMDAwMDAwMDAgKzA4MDAKPiArKysgYi90ZXN0
+Y2FzZXMva2VybmVsL3N5c2NhbGxzL3V0aW1lcy91dGltZXMwMS5jIMKgIMKgIMKgIDIwMDktMDct
+MTYgMDg6NTU6MTMuMDAwMDAwMDAwICswODAwCj4gQEAgLTEzOCw3ICsxMzgsNiBAQCB2b2lkIHNl
+dHVwKCkgewo+IMKgKi8KPiDCoHN0YXRpYyBpbnQgb3B0X2RlYnVnOwo+IMKgc3RhdGljIGNoYXIg
+KnByb2duYW1lOwo+IC1zdGF0aWMgY2hhciAqcHJvZ2RpcjsKPgo+IMKgZW51bSB0ZXN0X3R5cGUg
+ewo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgTk9STUFMLAo+IEBAIC0yMzIsNyArMjMxLDcgQEAg
+c3RhdGljIGludCBkb190ZXN0KHN0cnVjdCB0ZXN0X2Nhc2UgKnRjKQo+IMKgIMKgIMKgIMKgIHN0
+cnVjdCBzdGF0IHN0Owo+IMKgIMKgIMKgIMKgIHVpZF90IG9sZF91aWQ7Cj4KPiAtIMKgIMKgIMKg
+IMKgVEVTVChyYyA9IHNldHVwX2ZpbGUocHJvZ2RpciwgInRlc3QuZmlsZSIsIGZwYXRoKSk7Cj4g
+KyDCoCDCoCDCoCDCoFRFU1QocmMgPSBzZXR1cF9maWxlKFRFU1RESVIsICJ0ZXN0LmZpbGUiLCBm
+cGF0aCkpOwo+IMKgIMKgIMKgIMKgIGlmIChyYyA8IDApCj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgcmV0dXJuIDE7Cj4KPiBAQCAtMjQ4LDYgKzI0Nyw3IEBAIHN0YXRpYyBpbnQgZG9fdGVzdChz
+dHJ1Y3QgdGVzdF9jYXNlICp0YykKPiDCoCDCoCDCoCDCoCAvKgo+IMKgIMKgIMKgIMKgIMKgKiBF
+eGVjdXRlIHN5c3RlbSBjYWxsCj4gwqAgwqAgwqAgwqAgwqAqLwo+ICsgwqAgwqAgwqAgwqBtZW1z
+ZXQodHYsIDAsIHNpemVvZih0dikpOwo+IMKgIMKgIMKgIMKgIHR2WzBdLnR2X3NlYyA9IHRjLT5h
+X3NlYzsKPiDCoCDCoCDCoCDCoCB0dlsxXS50dl9zZWMgPSB0Yy0+bV9zZWM7Cj4gwqAgwqAgwqAg
+wqAgVEVTVChsZW4gPSBzdHJsZW4oZnBhdGgpKTsKPiBAQCAtMzM4LDkgKzMzOCw2IEBAIGludCBt
+YWluKGludCBhYywgY2hhciAqKmF2KSB7Cj4gwqAgwqAgwqAgwqBwcm9nbmFtZSA9IHN0cmNocihh
+dlswXSwgJy8nKTsKPiDCoCDCoCDCoCDCoCBwcm9nbmFtZSA9IHByb2duYW1lID8gcHJvZ25hbWUg
+KyAxIDogYXZbMF07Cj4KPiAtIMKgIMKgIMKgIHByb2dkaXIgPSBzdHJkdXAoYXZbMF0pOwo+IC0g
+wqAgwqAgwqAgwqBwcm9nZGlyID0gZGlybmFtZShwcm9nZGlyKTsKPiAtCj4gwqAgwqAgwqAgwqAg
+LyogcGFyc2Ugc3RhbmRhcmQgb3B0aW9ucyAqLwo+IMKgIMKgIMKgIMKgIGlmICgobXNnID0gcGFy
+c2Vfb3B0cyhhYywgYXYsIChvcHRpb25fdCAqKU5VTEwsIE5VTEwpKSAhPSAoY2hhciAqKU5VTEwp
+ewo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgdHN0X2Jya20oVEJST0ssIGNsZWFudXAsICJPUFRJT04g
+UEFSU0lORyBFUlJPUiAtICVzIiwgbXNnKTsKClRoYXQgcGF0Y2ggd29ya3Mgc28gSSdtIGdvaW5n
+IHRvIGNvbW1pdCBpdCB0byBDVlM6CgpnY29vcGVyQG9yYW5nZWJveCAvc2NyYXRjaC9sdHAtbm92
+YTIvbHRwLW5vdmEgJAp0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3V0aW1lcy91dGltZXMwMQp1
+dGltZXMwMSAgICAwICBJTkZPICA6ICAoY2FzZTAwKSBTVEFSVAp1dGltZXMwMSAgICAwICBJTkZP
+ICA6ICBFOjAsMTAwMCA8PT4gUjowLDEwMDAKRVhQRUNUOiByZXR1cm4gdmFsdWUocmV0KT0oTiA+
+PSAwKSBlcnJubz0wIChTdWNjZXNzKQpSRVNVTFQ6IHJldHVybiB2YWx1ZShyZXQpPSAgICAgICAw
+IGVycm5vPTAgKFN1Y2Nlc3MpCnV0aW1lczAxICAgIDAgIElORk8gIDogIChjYXNlMDApIEVORCA9
+PiBPSwp1dGltZXMwMSAgICAwICBJTkZPICA6ICAoY2FzZTAxKSBTVEFSVAp1dGltZXMwMSAgICAw
+ICBJTkZPICA6ICBFOjEwMDAsMCA8PT4gUjoxMDAwLDAKRVhQRUNUOiByZXR1cm4gdmFsdWUocmV0
+KT0oTiA+PSAwKSBlcnJubz0wIChTdWNjZXNzKQpSRVNVTFQ6IHJldHVybiB2YWx1ZShyZXQpPSAg
+ICAgICAwIGVycm5vPTAgKFN1Y2Nlc3MpCnV0aW1lczAxICAgIDAgIElORk8gIDogIChjYXNlMDEp
+IEVORCA9PiBPSwp1dGltZXMwMSAgICAwICBJTkZPICA6ICAoY2FzZTAyKSBTVEFSVApzZXRldWlk
+IGZhaWxlZC4KdXRpbWVzMDEgICAgMCAgSU5GTyAgOiAgKGNhc2UwMikgRU5EID0+IE9LCnV0aW1l
+czAxICAgIDAgIElORk8gIDogIChjYXNlMDMpIFNUQVJUCkVYUEVDVDogcmV0dXJuIHZhbHVlKHJl
+dCk9LTEgZXJybm89MiAoTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeSkKUkVTVUxUOiByZXR1cm4g
+dmFsdWUocmV0KT0tMSBlcnJubz0yIChObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5KQp1dGltZXMw
+MSAgICAwICBJTkZPICA6ICAoY2FzZTAzKSBFTkQgPT4gT0sKdXRpbWVzMDEgICAgMCAgSU5GTyAg
+OiAgKGNhc2UwNCkgU1RBUlQKRVhQRUNUOiByZXR1cm4gdmFsdWUocmV0KT0tMSBlcnJubz0xNCAo
+QmFkIGFkZHJlc3MpClJFU1VMVDogcmV0dXJuIHZhbHVlKHJldCk9LTEgZXJybm89MTQgKEJhZCBh
+ZGRyZXNzKQp1dGltZXMwMSAgICAwICBJTkZPICA6ICAoY2FzZTA0KSBFTkQgPT4gT0sKdXRpbWVz
+MDEgICAgMSAgUEFTUyAgOiAgdXRpbWVzIGNhbGwgc3VjY2VlZGVkCgpUaGFua3MhCi1HYXJyZXR0
+CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KRW50ZXIgdGhlIEJsYWNrQmVycnkgRGV2ZWxvcGVyIENo
+YWxsZW5nZSAgClRoaXMgaXMgeW91ciBjaGFuY2UgdG8gd2luIHVwIHRvICQxMDAsMDAwIGluIHBy
+aXplcyEgRm9yIGEgbGltaXRlZCB0aW1lLCAKdmVuZG9ycyBzdWJtaXR0aW5nIG5ldyBhcHBsaWNh
+dGlvbnMgdG8gQmxhY2tCZXJyeSBBcHAgV29ybGQoVE0pIHdpbGwgaGF2ZQp0aGUgb3Bwb3J0dW5p
+dHkgdG8gZW50ZXIgdGhlIEJsYWNrQmVycnkgRGV2ZWxvcGVyIENoYWxsZW5nZS4gU2VlIGZ1bGwg
+cHJpemUgIApkZXRhaWxzIGF0OiBodHRwOi8vcC5zZi5uZXQvc2Z1L0NoYWxsZW5nZQpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5n
+IGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNl
+Zm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
