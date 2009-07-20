@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MOhie-0006MZ-CF
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 00:42:36 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MOhiX-0000wt-2X
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 00:42:36 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Wed, 8 Jul 2009 20:42:32 -0400
-References: <364299f40907061722v45417bddhac499efa1415d6af@mail.gmail.com>
-	<200907081953.18802.vapier@gentoo.org>
-	<364299f40907081721r5c821cc3s9bf1253b1a9149e9@mail.gmail.com>
-In-Reply-To: <364299f40907081721r5c821cc3s9bf1253b1a9149e9@mail.gmail.com>
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naresh.kernel@gmail.com>) id 1MSnVE-0005Vk-NL
+	for ltp-list@lists.sourceforge.net; Mon, 20 Jul 2009 07:41:40 +0000
+Received: from mail-yx0-f195.google.com ([209.85.210.195])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MSnVD-0003DT-Qw
+	for ltp-list@lists.sourceforge.net; Mon, 20 Jul 2009 07:41:40 +0000
+Received: by yxe33 with SMTP id 33so3492841yxe.28
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 20 Jul 2009 00:41:39 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <200907082042.33487.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 3/4] Refactor top-level Makefiles,
-	modularize autoconf logic
+Date: Mon, 20 Jul 2009 13:11:36 +0530
+Message-ID: <f5a7b3810907200041r5cb4e288ub1ac23ac3f08d7bd@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Subject: Re: [LTP] [PATCH] Fix failure of the utimes01 test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,177 +25,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5074799619738866099=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
+To: WangYong <wangyong2009@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
---===============5074799619738866099==
-Content-Type: multipart/signed; boundary="nextPart3932247.XmPY1B2H6y";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart3932247.XmPY1B2H6y
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-On Wednesday 08 July 2009 20:21:11 Garrett Cooper wrote:
-> On Wed, Jul 8, 2009 at 4:53 PM, Mike Frysinger<vapier@gentoo.org> wrote:
-> > you have duplicated copyright notices here too
->
-> The Cisco junk is just to pass by our in-house copyright checker, but
-> I suppose it really doesn't matter anyhow...
-
-i also noticed the statements "all rights reserved" ... i dont think those=
-=20
-have any business being in open source code
-
-> > the if checking in the clean target seems unnecessary
->
-> Uh, no. If someone's root and they specify $(INSTALL_DIR) :=3D / (or
-> worse, empty), it'll nuke the host machine's entire rootfs. I ran the
-> build as a non-root user when I ran into that issue -- and quickly
-> quashed it :)...
-
-sorry, i meant the "-d" part.  besides, all recent distros will refuse to r=
-un=20
-something like `rm -rf /` -- the util itself rejects "/".
-
-> > for pre/post install hooks, why not declare a common name and everyone
-> > use that rather than forcing people to declare it.  i.e. declare the
-> > target "post- install-hook" as a .PHONY and always call/depend/etc... on
-> > it.
->
-> I'm a bit confused by this comment. Can you review to spots in the
-> patch (when I upload it tonight), so this can be resolved?
-
-testcases/kernel/controllers/cpuset/Makefile:
-why must "install" manually depend on pre-install ?  that dependency should=
-=20
-always be there leaving the subdir to only have to define the pre-install=20
-target.
-
-testcases/Makefile:
-i dont get all these xxx_DEPS variables and the install-testcases-bin target
-
-> > why cant testcases/kernel/Makefile leverage these .mk files ?  the whole
-> > point was to get away from these custom written jobbies ...
->
-> Some of these Makefiles get a bit ugly with the pre- and post- junk...
-> There are a small number of Makefiles that are haunted by this work,
-> but then again I did some more rework with the generic_trunk_target
-> define.
-
-so that means you'll fix the Makefile to use the .mk files
-
-> > what's this business of every Makefile having to declare MAKE_TARGETS ?
-> >  this should be a common default.
->
-> It defaults to a wildcard of the .c files in the directory -- hence
-> the `?=3D'. If that's a bad default, please let me know.
-
-i'm talking about the Makefiles that are setting this variable.  i.e.
-testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
-testcases/kernel/fs/proc/Makefile
-tools/Makefile
-
-> > doing a for loop on a `rm` command is silly.  call `rm` once.
->
-> Yeah. I should be applying xargs instead of a loop. Calling rm once
-> may overflow the command line though (like with testcases/bin if it
-> grows large enough).
-
-if you really want to go that far, but i was looking at=20
-testcases/kernel/include/Makefile.  there's no way that is going to overflo=
-w. =20
-besides, i guess there shouldnt be a clean target in there anyways -- it=20
-should be using the default one.
-
-> > debugging/optimization/warning/stripping flags shouldnt be added in any
-> > Makefile that is being converted to these common .mk files.  same for a=
-ny
-> > DEBUG_XXX flags.
->
-> Agreed. I was just duplicating what already existed, hoping that we
-> could sweep up this stuff after everything was in and the base
-> infrastructure was stable.
-
-i'd prefer we scrub the crap now
-
-> > i dont see the point in declaring empty rules like "install: ;".  if
-> > they're declared .PHONY, there is no need to add explicit rules to sub
-> > Makefiles.
->
-> They're there to avoid errors with targets not being found if I'm
-> running recursive Make rules over the entire directory tree. So, I
-> agree it's silly, but if you have a better idea, I'm all ears and I'll
-> get on it ASAP. I'm trying to avoid cramming more variables into the
-> Make system because it will only generate more confusion...
-
-let's look at testcases/kernel/include/Makefile.  how would a missing insta=
-ll=20
-target here generate an error ?
-
-> > clean targets should always delete common things like "*.o".  forcing
-> > people to have to manually declare these is a waste.
->
-> Ok. Once upon a time (~1 year ago) I found a testcase that generated a
-> .o file which was just as input for a testcase (it was under
-> testcases/kernel/io somewhere -- maybe the floppy test). Maybe that's
-> a bug then that should be solved...
-
-we should fix that then as that's just craziness
-=2Dmike
-
---nextPart3932247.XmPY1B2H6y
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJKVTz5AAoJEEFjO5/oN/WBxtUP/2+d7SK71b1PpICJ6Ak900Xn
-v3uj7rsoDTHPBgn9k0/3wJiEchY/io7ml9XPmTxVj5oWbRo+X37mzr+rBrnUqISm
-qLIQ8NpNkRlmEWQOdprX4htB81zMy4qxcyBYGjfzPtfLLCVxcpP0MW0AYfAcx6yg
-MdzNAxq6ypX6dNlh9wOZ4DBZa3Oq7xnW7IYW3fyiIJUhrxYtuI+3/JA2W/xgT8mZ
-qug7aFO1ootiY0xmIsB+m0BZB0r77jveUBqtyxYisWHZdLBZbtmA5hboNaa+2obX
-4IN4GYsBxjunf9WEVjzEi0glJ7DqxsVgbTUUmLU0YS0N94FR75G28o5xw3BNgnnW
-T/KZkOEsyCVm/3aD0FGZjOZFbffoqr/A+xNGw0shngwoOHBqVF3vtXl9WVyoiH9o
-ysS7yrBdVT9q1nfDXG9hfI2A8nmiCZKREcKJ1qx2Olx+bbxMep9EmoZ06d0slC57
-I9BkP9vWY54/342Ki+HEJvMjKo/ad3lU0JhB6Piv5mxIOYwwmvPvs1iLjH+Iz0cT
-V/zdUcX11ysgSN+1qHIWhhH4BO+bhVL/xlqlzt9izqlRz5ci3nnRmVTzLrYg5KPz
-3awG9CPGavEsiOsU5hzjfgZrqqlSY889COHOPirOU4rDcQ2BWHLMfvwrv3ij49gy
-qvkNLib1ekEy1liWrj3I
-=Uyiq
------END PGP SIGNATURE-----
-
---nextPart3932247.XmPY1B2H6y--
-
-
---===============5074799619738866099==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
---===============5074799619738866099==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5074799619738866099==--
-
+Pk9uIFNhdCwgSnVsIDE4LCAyMDA5IGF0IDk6NTMgUE0sIEdhcnJldHQgQ29vcGVyPHlhbmVnLi4u
+QGdtYWlsLmNvbT4gPndyb3RlOgo+PiBPbiBXZWQsIEp1bCAxNSwgMjAwOSBhdCA2OjAzIFBNLCBX
+YW5nIFlvbmc8d2FuZ3lvbmcyLi4uQGNuLmZ1aml0c3UuY29tPiB3cm90ZToKPj4+IEhpLCBTdWJy
+YXRhIE1vZGFrCj4+Pgo+Pj4gU3VicmF0YSBNb2RhayB3cm90ZSBhczoKPj4+Pj4gU2lnbmVkLW9m
+Zi1ieTrjgIBXYW5nWW9uZ+OAgDx3YW5neW9uZzIuLi5AY24uZnVqaXRzdS5jb20+Cj4+Pj4+Cj4+
+Pj4+IGRpZmYgLU51cnAgbHRwLWZ1bGwtMjAwOTA2MzAvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
+cy91dGltZXMvdXRpbWVzMDEuYwo+Pj4+PiBsdHAtZnVsbC0yMDA5MDYzMC5uZXcvdGVzdGNhc2Vz
+L2tlcm5lbC9zeXNjYWxscy91dGltZXMvdXRpbWVzMDEuYwo+Pj4+PiAtLS0gbHRwLm9yaWcvdGVz
+dGNhc2VzL2tlcm5lbC9zeXNjYWxscy91dGltZXMvdXRpbWVzMDEuYyAyMDA5LTA3LTAxCj4+Pj4+
+IDE3OjIwOjEyLjAwMDAwMDAwMCArMDgwMAo+Pj4+PiArKysgbHRwL3Rlc3RjYXNlcy9rZXJuZWwv
+c3lzY2FsbHMvdXRpbWVzL3V0aW1lczAxLmMgIDIwMDktMDctMDgKPj4+Pj4gMTc6MjA6MzguMDAw
+MDAwMDAwICswODAwCj4+Pj4+IEBAIC0yNDgsNiArMjQ4LDcgQEAgc3RhdGljIGludCBkb190ZXN0
+KHN0cnVjdCB0ZXN0X2Nhc2UgKnRjKQo+Pj4+PiAgICAgICAgICAgLyoKPj4+Pj4gICAgICAgICAg
+ICAqIEV4ZWN1dGUgc3lzdGVtIGNhbGwKPj4+Pj4gICAgICAgICAgICAqLwo+Pj4+PiArICAgICAg
+ICBtZW1zZXQodHYsIDAsIDIgKiBzaXplb2Yoc3RydWN0IHRpbWV2YWwpKTsKPj4+Pj4KPj4+Pgo+
+Pj4+IG9wZW4gZmFpbGVkLgo+Pj4+IHV0aW1lczAxICAgIDAgIElORk8gIDogIChjYXNlMDQpIEVO
+RCA9PiBORwo+Pj4+IHV0aW1lczAxICAgIDEgIEZBSUwgIDogIHV0aW1lczAxIGZhaWxlZCAtIGVy
+cm5vID0gMiA6IE5vIHN1Y2ggZmlsZSBvcgo+Pj4+IGRpcmVjdG9yeQo+Pj4+IHV0aW1lczAxICAg
+IDAgIElORk8gIDogIE5HCj4+Pj4KPj4+PiAjIGVjaG8gJD8KPj4+PiAxCj4+Pj4KPj4+IEkgaGF2
+ZSBmaXhlZCB0aGlzIHByb2JsZW0uCj4+Pgo+Pj4KPj4+IFtQQVRDSF0gRml4IGZhaWx1cmUgb2Yg
+dGhlIHV0aW1lczAxIHRlc3QKPj4+Cj4+PiBXaGVuZXZlciBzeXN0ZW0gY2FsbGVkIHV0aW1lcywg
+dGhlIGVycm9yIG1lc3NhZ2UgcmV0dXJuZWQgd2FzIEVJTlZBTCwKPj4+IGJlY2F1c2UgdGhlIG1l
+bWJlciB2YXJpYWJsZSBvZiBzdHJ1Y3QgdGltZXZhbCB3YXMgbm90IGluaXRpYWxpemVkLAo+Pj4g
+c28gaW5pdGlhbGl6ZSBpdC4KPj4+IFRoaXMgcGF0Y2ggYWxzbyBmaXhlZCB0aGUgcGF0aCB3aGlj
+aCB3ZSBwYXNzIHRvIHNldHVwX2ZpbGUoKS4gSWYKPj4+IHByb2dkaXIgaXMgbm90IGEgYWJzb2x1
+dGUgcGF0aG5hbWUgb2YgdGhlIHdvcmtpbmcgZGlyZWN0b3J5LCB0aGUgZmlsZQo+Pj4gb3BlbiB3
+aWxsIGZhaWwuCj4+Pgo+Pj4gU2lnbmVkLW9mZi1ieTogV2FuZ1lvbmcgPHdhbmd5b25nMi4uLkBj
+bi5mdWppdHN1LmNvbT4KPj4+Cj4+PiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3V0
+aW1lcy91dGltZXMwMS5jICAgICAgIDIwMDktMDctMTUKPj4+IDEwOjIyOjQxLjAwMDAwMDAwMCAr
+MDgwMAo+Pj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy91dGltZXMvdXRpbWVzMDEu
+YyAgICAgICAyMDA5LTA3LTE2Cj4+PiAwODo1NToxMy4wMDAwMDAwMDAgKzA4MDAKPj4+IEBAIC0x
+MzgsNyArMTM4LDYgQEAgdm9pZCBzZXR1cCgpIHsKPj4+ICAqLwo+Pj4gIHN0YXRpYyBpbnQgb3B0
+X2RlYnVnOwo+Pj4gIHN0YXRpYyBjaGFyICpwcm9nbmFtZTsKPj4+IC1zdGF0aWMgY2hhciAqcHJv
+Z2RpcjsKPj4+Cj4+PiAgZW51bSB0ZXN0X3R5cGUgewo+Pj4gICAgICAgICAgICAgICAgTk9STUFM
+LAo+Pj4gQEAgLTIzMiw3ICsyMzEsNyBAQCBzdGF0aWMgaW50IGRvX3Rlc3Qoc3RydWN0IHRlc3Rf
+Y2FzZSAqdGMpCj4+PiAgICAgICAgIHN0cnVjdCBzdGF0IHN0Owo+Pj4gICAgICAgICB1aWRfdCBv
+bGRfdWlkOwo+Pj4KPj4+IC0gICAgICAgIFRFU1QocmMgPSBzZXR1cF9maWxlKHByb2dkaXIsICJ0
+ZXN0LmZpbGUiLCBmcGF0aCkpOwo+Pj4gKyAgICAgICAgVEVTVChyYyA9IHNldHVwX2ZpbGUoVEVT
+VERJUiwgInRlc3QuZmlsZSIsIGZwYXRoKSk7Cj4+PiAgICAgICAgIGlmIChyYyA8IDApCj4+PiAg
+ICAgICAgICAgICAgICAgcmV0dXJuIDE7Cj4+Pgo+Pj4gQEAgLTI0OCw2ICsyNDcsNyBAQCBzdGF0
+aWMgaW50IGRvX3Rlc3Qoc3RydWN0IHRlc3RfY2FzZSAqdGMpCj4+PiAgICAgICAgIC8qCj4+PiAg
+ICAgICAgICAqIEV4ZWN1dGUgc3lzdGVtIGNhbGwKPj4+ICAgICAgICAgICovCj4+PiArICAgICAg
+ICBtZW1zZXQodHYsIDAsIHNpemVvZih0dikpOwo+Pj4gICAgICAgICB0dlswXS50dl9zZWMgPSB0
+Yy0+YV9zZWM7Cj4+PiAgICAgICAgIHR2WzFdLnR2X3NlYyA9IHRjLT5tX3NlYzsKPj4+ICAgICAg
+ICAgVEVTVChsZW4gPSBzdHJsZW4oZnBhdGgpKTsKPj4+IEBAIC0zMzgsOSArMzM4LDYgQEAgaW50
+IG1haW4oaW50IGFjLCBjaGFyICoqYXYpIHsKPj4+ICAgICAgICBwcm9nbmFtZSA9IHN0cmNocihh
+dlswXSwgJy8nKTsKPj4+ICAgICAgICAgcHJvZ25hbWUgPSBwcm9nbmFtZSA/IHByb2duYW1lICsg
+MSA6IGF2WzBdOwo+Pj4KPj4+IC0gICAgICAgcHJvZ2RpciA9IHN0cmR1cChhdlswXSk7Cj4+PiAt
+ICAgICAgICBwcm9nZGlyID0gZGlybmFtZShwcm9nZGlyKTsKPj4+IC0KPj4+ICAgICAgICAgLyog
+cGFyc2Ugc3RhbmRhcmQgb3B0aW9ucyAqLwo+Pj4gICAgICAgICBpZiAoKG1zZyA9IHBhcnNlX29w
+dHMoYWMsIGF2LCAob3B0aW9uX3QgKilOVUxMLCBOVUxMKSkgIT0gKGNoYXIKPj4+ICopTlVMTCl7
+Cj4+PiAgICAgICAgICAgICAgdHN0X2Jya20oVEJST0ssIGNsZWFudXAsICJPUFRJT04gUEFSU0lO
+RyBFUlJPUiAtICVzIiwgbXNnKTsKPj4KPj4gVGhhdCBwYXRjaCB3b3JrcyBzbyBJJ20gZ29pbmcg
+dG8gY29tbWl0IGl0IHRvIENWUzoKPj4KPj4gZ2Nvby4uLkBvcmFuZ2Vib3ggL3NjcmF0Y2gvbHRw
+LW5vdmEyL2x0cC1ub3ZhICQKPj4gdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy91dGltZXMvdXRp
+bWVzMDEKPj4gdXRpbWVzMDEgICAgMCAgSU5GTyAgOiAgKGNhc2UwNCkgRU5EID0+IE9LCj4+IHV0
+aW1lczAxICAgIDEgIFBBU1MgIDogIHV0aW1lcyBjYWxsIHN1Y2NlZWRlZAo+Pgo+PiBUaGFua3Mh
+Cj4+IC1HYXJyZXR0Cgo+Tm0gLS0gc29tZW9uZSBlbHNlIGRpZCB3aXRoIHRoZSBjb3JyZWN0IG1l
+bXNldCBzaXplIDspLi4uCgpIaSBXYW5nWW9uZywKWW91ciBmaXJzdCBwYXRjaCBzdWJtaXR0ZWQg
+b24gMDkgSnVsIDIwMDkgaXMgY29tbWl0ZWQuClNlY29uZCBwYXRjaCBpcyBub3QgQ29tbWl0ZWQg
+YmVjYXVzZSBvZiBjb25mbGljdCB3aXRoIHBhdGNoLgpQbGVhc2UgdGFrZSB0aGUgbGF0ZXN0IHNv
+dXJjZSBhbmQgcHJlcGFyZSBuZXcgcGF0Y2ggcmVnYXJkaW5nIHRoZQpURVNURElSIGFuZCByZXN1
+Ym1pdCBpdCBhcyBwZXIgeW91ciBtYWlsIG9uIDE1IEp1bCAyMDA5LgoKClJlZnJlbmNlOgpodHRw
+Oi8vbHRwLmN2cy5zb3VyY2Vmb3JnZS5uZXQvdmlld3ZjL2x0cC9sdHAvdGVzdGNhc2VzL2tlcm5l
+bC9zeXNjYWxscy91dGltZXMvdXRpbWVzMDEuYz9yMT0xLjImdmlldz1sb2cKCmh0dHA6Ly93d3cu
+bWFpbC1hcmNoaXZlLmNvbS9sdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQvbXNnMDc0Mjku
+aHRtbAoKQmVzdCByZWdhcmRzLApOYXJlc2ggS2FtYm9qdQoKPlRoYW5rcywKPi1HYXJyZXR0Cgot
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0KRW50ZXIgdGhlIEJsYWNrQmVycnkgRGV2ZWxvcGVyIENoYWxs
+ZW5nZSAgClRoaXMgaXMgeW91ciBjaGFuY2UgdG8gd2luIHVwIHRvICQxMDAsMDAwIGluIHByaXpl
+cyEgRm9yIGEgbGltaXRlZCB0aW1lLCAKdmVuZG9ycyBzdWJtaXR0aW5nIG5ldyBhcHBsaWNhdGlv
+bnMgdG8gQmxhY2tCZXJyeSBBcHAgV29ybGQoVE0pIHdpbGwgaGF2ZQp0aGUgb3Bwb3J0dW5pdHkg
+dG8gZW50ZXIgdGhlIEJsYWNrQmVycnkgRGV2ZWxvcGVyIENoYWxsZW5nZS4gU2VlIGZ1bGwgcHJp
+emUgIApkZXRhaWxzIGF0OiBodHRwOi8vcC5zZi5uZXQvc2Z1L0NoYWxsZW5nZQpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxp
+c3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9y
+Z2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
