@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MPncf-00032a-Ex
-	for ltp-list@lists.sourceforge.net; Sun, 12 Jul 2009 01:12:57 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MPnce-0007mc-Lo
-	for ltp-list@lists.sourceforge.net; Sun, 12 Jul 2009 01:12:57 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sat, 11 Jul 2009 21:12:53 -0400
-References: <364299f40907111758m79a4cb43w9f25dc229ee0842b@mail.gmail.com>
-In-Reply-To: <364299f40907111758m79a4cb43w9f25dc229ee0842b@mail.gmail.com>
-MIME-Version: 1.0
-Message-Id: <200907112112.54395.vapier@gentoo.org>
-Subject: Re: [LTP] Adding hooks for mm.h test in autoconf?
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <fhe@novell.com>) id 1MSlDS-0006cU-JO
+	for ltp-list@lists.sourceforge.net; Mon, 20 Jul 2009 05:15:10 +0000
+Received: from [61.14.130.200] (helo=hefan.site)
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MSlDN-0002VQ-Ja
+	for ltp-list@lists.sourceforge.net; Mon, 20 Jul 2009 05:15:10 +0000
+From: hefan <fhe@novell.com>
+In-Reply-To: <364299f40907181228v44a60031qecf9463a3d3cb43a@mail.gmail.com>
+References: <1247803650.4917.12.camel@hefan.site>
+	<364299f40907162234g1df374d4xda8a74bf61f34057@mail.gmail.com>
+	<1247812675.4917.14.camel@hefan.site>
+	<364299f40907181228v44a60031qecf9463a3d3cb43a@mail.gmail.com>
+Date: Mon, 20 Jul 2009 13:14:42 +0800
+Message-Id: <1248066882.4917.37.camel@hefan.site>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH 1/1] openposix_mmap_11_4
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,83 +27,82 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0644814505828641317=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+Cc: ltp-list@lists.sf.net
 
---===============0644814505828641317==
-Content-Type: multipart/signed; boundary="nextPart2463478.jKtiiPQWHs";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart2463478.jKtiiPQWHs
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-On Saturday 11 July 2009 20:58:30 Garrett Cooper wrote:
->     I realize this isn't an automake / autoconf support list, but I
-> ran into a snag when trying to compile libmm in hugetlb, where my
-> system doesn't have this header, even after I run configure. I added a
-> test for it in configure, but I'm not sure how to interface with
-> config.mk. Any hints?
-
-update configure.ac to check for the mm.h header and then have the file in=
-=20
-question include config.h for the define
-
-we arent using automake in ltp to generate any Makefiles atm on purpose
-=2Dmike
-
---nextPart2463478.jKtiiPQWHs
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJKWTiWAAoJEEFjO5/oN/WBV0MQAIgdZNVjhv6W+uH7sLtZ+oiS
-IOcJbJmzcKtB9PmSxs23RLYTur7rLESZaL0hIbnrZSjW+7D1S0IfGbuJZkjzky8t
-ABtXngMX5klDApeFc5K6FCnUlECo7hcumXaKoG7kQFyqyYZtugvsLeBg+TXLRjO+
-ZPWUrPLurMiCcAPn9N1d+APkH0IljqQl63TJgEH1mzwLd8qTpx+2bJibMD4guKB4
-cvuYvmTQ4ePwo5a0dDOjpX6rejBjRQgGquQiQY0Sy64pnIppk3nnTirlMIckyAja
-Sr7Xfid2gGXKGeBCZ+akIdHd+dQXNA8bLAPoLhZMGaK+7Qe2srUk33AbNqDelIPe
-/1Bx7jM0hYd8uo5DxkoW5zE55DkcsOAzrTTISTgnv3h0aI1rYUKOZ4MCvHg2oIf9
-VGaxUcuiyefll2KMJXUc9XXHvrrsbcmZfGcf2Ae5HEDYhacd0eGqHgp5iHBVg2hH
-8flk4/A2ZGqsBK6uDVOoIZ1Fk6eUla27b4OpSSUqbiqkwk+bkgFtKO/SQzOFjcG+
-40LYdce3QuWH54oTCN7FxIqy3EOQDMalf6b89zIMbQUjKc/v478PDWrbbA/u1vYR
-Q94QAZAqeXtd017c/XYfmMV3HLbS8Bv5n2zSfBh8jnb7qnO0HGgwS9/V5Zs5IQUN
-gp0rJceG5eg1+i/8n9yp
-=phim
------END PGP SIGNATURE-----
-
---nextPart2463478.jKtiiPQWHs--
-
-
---===============0644814505828641317==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
---===============0644814505828641317==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============0644814505828641317==--
-
+T24gU2F0LCAyMDA5LTA3LTE4IGF0IDEyOjI4IC0wNzAwLCBHYXJyZXR0IENvb3BlciB3cm90ZToK
+PiBPbiBUaHUsIEp1bCAxNiwgMjAwOSBhdCAxMTozNyBQTSwgaGVmYW48ZmhlQG5vdmVsbC5jb20+
+IHdyb3RlOgo+ID4gaGksCj4gPgo+ID4gKltQYXRjaCAxLzFdIFBhdGNoIGZvciBmaXhpbmcgdGhl
+IO+7v2ZhaWxlZCDvu790ZXN0Y2FzZSBvcGVucG9zaXhfbW1hcF8xMV80Cj4gPgo+ID4gLW1vZGlm
+aWVkIHRoZSBmaWxlCj4gPiAqdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1h
+bmNlL2ludGVyZmFjZXMv77u/bW1hcC8xMS00LmMKPiA+Cj4gPgo+ID4g77u/U2lnbmVkLW9mZi1i
+eTogIGZyZWRyaWNrIGhlIDxmaGVAbm92ZWxsLmNvbT4KPiA+Cj4gPiAtLS0KPiA+IGx0cC5vcmln
+L3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL21t
+YXAvMTEtNC5jICAgICAgMjAwOS0wNy0xNyAxMTo1MzozNi4wMDAwMDAwMDAgKzA4MDAKPiA+ICsr
+Kwo+ID4gbHRwL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRl
+cmZhY2VzL21tYXAvMTEtNC5jCj4gPiAyMDA5LTA3LTE3IDExOjU3OjA5LjAwMDAwMDAwMCArMDgw
+MAo+ID4gQEAgLTEzMCw3ICsxMzAsOSBAQCBpbnQgbWFpbigpCj4gPiAgIGZsYWcgPSBNQVBfU0hB
+UkVEOwo+ID4gICBvZmYgPSAwOwo+ID4gICBwYSA9IG1tYXAoYWRkciwgbGVuLCBwcm90LCBmbGFn
+LCBmZF8yLCBvZmYpOwo+ID4gLSAgcGFfMiA9IG1tYXAoYWRkciwgbGVuLCBwcm90LCBmbGFnLCBm
+ZF8yLCBvZmYpOwo+ID4gKyAgYWRkciA9IHBhOwo+ID4gKyAgbWVtc2V0KGFkZHIsMCxsZW4qMik7
+Cj4gPiArICBwYV8yID0gbW1hcChhZGRyLCBsZW4sIHByb3QsIGZsYWd8TUFQX0ZJWEVELCBmZF8y
+LCBvZmYpOwo+ID4gICBpZiAocGFfMiA9PSBNQVBfRkFJTEVEKQo+ID4gICB7Cj4gPiAgICAgcHJp
+bnRmKCJUZXN0IEZBSUw6ICIgVE5BTUUgIiBFcnJvciBhdCAybmQgbW1hcCgpOiAlc1xuIiwKPiAK
+PiBIaSBGYW4sCj4gICAgIFNvbWUgcXVlc3Rpb25zIC8gb2JzZXJ2YXRpb25zOgo+IAo+IDEuIFll
+cywgdGhlIHRlc3RjYXNlcyBkb2VzIGZhaWwgb24gbXkgbWFjaGluZSB0b2RheS4KPiAyLiBZZXMs
+IGRvaW5nIHdoYXQgeW91IHNheSBhYm92ZSBkb2VzIHdvcmsgKGF0IGxlYXN0IHRoZSB0ZXN0Y2Fz
+ZSBwYXNzZXMpLgo+IDMuIEFyZSB5b3UgcG9zaXRpdmUgdGhhdCB5b3VyIHNldCBvZiBzdGVwcyBh
+Ym92ZSBpbiBmYWN0IGRvbid0Cj4gaW52YWxpZGF0ZSB0aGUgcHVycG9zZSBvZiB0aGUgdGVzdGNh
+c2UsIGJ5IGFjY2lkZW50LCBpbiBwYXJ0aWN1bGFyIHRoZQo+IG1lbXNldCBjYWxsPyBJIGFzayBi
+ZWNhdXNlIG9mIHRoZSBmb2xsb3dpbmcgc3RhdGVtZW50IGluIHRoZSBtbWFwCj4gbWFucGFnZToK
+PiAKPiAgICAgICAgSWYgYWRkciBpcyBOVUxMLCB0aGVuIHRoZSBrZXJuZWwgY2hvb3NlcyB0aGUg
+YWRkcmVzcyBhdCB3aGljaCB0byBjcmVhdGUKPiAgICAgICAgdGhlIG1hcHBpbmc7IHRoaXMgaXMg
+dGhlIG1vc3QgcG9ydGFibGUgbWV0aG9kIG9mIGNyZWF0aW5nICBhICBuZXcgIG1hcC0KPiAgICAg
+ICAgcGluZy4gICBJZiAgYWRkciAgaXMgbm90IE5VTEwsIHRoZW4gdGhlIGtlcm5lbCB0YWtlcyBp
+dCBhcyBhIGhpbnQgYWJvdXQKPiAgICAgICAgd2hlcmUgdG8gcGxhY2UgdGhlIG1hcHBpbmc7IG9u
+IExpbnV4LCB0aGUgbWFwcGluZyB3aWxsIGJlIGNyZWF0ZWQgYXQgIGEKPiAgICAgICAgbmVhcmJ5
+ICBwYWdlICBib3VuZGFyeS4gICBUaGUgYWRkcmVzcyBvZiB0aGUgbmV3IG1hcHBpbmcgaXMgcmV0
+dXJuZWQgYXMKPiAgICAgICAgdGhlIHJlc3VsdCBvZiB0aGUgY2FsbC4KPiAKPiBXaGF0IHlvdSdy
+ZSBpbiBlZmZlY3QgZG9pbmcgaXMgY2hhbmdpbmcgdGhlIDJuZCBtbWFwIGNhbGwgZnJvbSBhbgo+
+IGFyYml0cmFyeSBhZGRyZXNzIHRvIGEgc2V0IHZpcnR1YWwgYWRkcmVzcyBhdCAweDAuIElzIHRo
+YXQgaW5kZWVkCj4gY29ycmVjdD8KaW4gdGhpcyBjYXNlLCB0aGUgc2l0dWF0aW9uIGlzIGxpa2Ug
+dGhpcywgd2UgY3JlYXRlIGEgbmV3IGZpbGUgYWJvdXQgNTEyCmJ5dGVzIGFuZCBtbWFwIGl0IGlu
+dG8gdGhlIG1lbSwgdGhlbiB3ZSBtb2RpZnkgb25lIGJ5dGUgYmVzaWRlcyB0aGUgNTEyCmJ5dGVz
+IGFkZHJlc3MsIGFuZCBtdW5tYXAgaXQuIGFuZCBpbiB0aGUgZmF0aGVyIHByb2Nlc3MgcmVtbWFw
+IGl0IGJhY2sKdG8gY2hlY2sgd2hldGhlciB0aGUgb25lIG1vcmUgYnl0ZSBpcyB3cml0ZSBiYWNr
+IHRvIHRoZSBmaWxlcy4KCmkgaGF2ZSBjaGVja2VkIHRoYXQgd2hlbiBmaW5pc2hlZCBtdW5tYXAg
+YW5kIGNsb3NlIHRoZSBmaWxlIGluIHRoZSBjaGlsZApwcm9jZXNzLCB0aGUgZmlsZSBkaWRuJ3Qg
+Y29udGFpbiB0aGUgNTEzdGggYnl0ZSwgdGhlIHNpemUgb2YgdGhpcyBmaWxlCmlzIHJpZ2h0IDUx
+MiBieXRlcy5idXQgaW4gdGhpcyBjYXNlIGFmdGVyIHRoZSBzZWNvbmQgbW1hcCBmaW5pc2hlZCwg
+dGhlCjUxM3RoIGJ5dGUgZG9lcyBhcHBlYXIgYWdhaW4uIGl0J3MgYSBjb25mbGljdC4gCgppbiBt
+eSBvcGluaW9uIHRoaXMgaXMgYmVjYXVzZSBvZiB0aGUgY29tcGlsZXIgb3Igc29tZSBvcHRpbWl6
+YXRpb25zLiBzbwppIHRoaW5rIHRoZSBtZW1vcnkgc2hvdWxkIHRvIGJlIG1lbXNldCBiZWZvcmUg
+bW1hcCBhbmQgaXQgZG9lcyB3b3JrLgoKPiA0LiBIYXZlIHlvdSB0YWxrZWQgdG8gdGhlIG9wZW5w
+b3NpeCB0ZXN0IHN1aXRlIGZvbGtzIGFib3V0IHRoaXMgeWV0PwpubyxpIGhhdmUgbm8gaWRlYSBv
+biBob3cgdG8gdGFsayB0byB0aGUgb3BlbnBvc2l4IGFuZCBpIGRvIHdhbnQgdG8gdGFsawp0byB0
+aGVtIDopIGNhbiB5b3UgZ2l2ZSBtZSBzb21lIHN1Z2dlc3Rpb25zIGFib3V0IHRoaXM/IHRoeH4K
+Cj4gNS4gRldJVyB0aGUgc2FtZSByZXN1bHRzIGFyZSBzZWVuIG9uIEZyZWVCU0QsIHNvIEkgZG9u
+J3QgZG91YnQgdGhhdAo+IHRoZSB0ZXN0Y2FzZSBpcyBicm9rZW4gLS0gSSBqdXN0IHdhbnQgdG8g
+ZW5zdXJlIHRoYXQgaXQncyBmaXhlZCBpbiB0aGUKPiBwcm9wZXIgd2F5IDopLi4uCmFzIG1lbnRp
+b25lZCBhYm92ZSAKCj4gCj4gW2djb29wZXJAb3B0aW11cyAvc2NyYXRjaC9vcGVuX3Bvc2l4X3Rl
+c3RzdWl0ZV0kCj4gY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9tbWFwLzExLTQudGVzdAo+IHBhOiAw
+eDgwMDUzNzAwMAo+IHBhXzI6IDB4ODAwNTM3MDAwCj4gVGVzdCBGYWlsOiBtbWFwLzExLTQuYyBN
+b2RpZmljYXRpb24gb2YgdGhlIHBhcnRpYWwgcGFnZSBhdCB0aGUgZW5kIG9mCj4gYW4gb2JqZWN0
+IGlzIHdyaXR0ZW4gb3V0Cj4gW2djb29wZXJAb3B0aW11cyAvc2NyYXRjaC9vcGVuX3Bvc2l4X3Rl
+c3RzdWl0ZV0kIHVuYW1lIC1hCj4gRnJlZUJTRCBvcHRpbXVzLnplbm1ldHN1aGl0b3R1eWFuZXNo
+aXRhLm5ldCA4LjAtQ1VSUkVOVCBGcmVlQlNECj4gOC4wLUNVUlJFTlQgIzA6IFN1biBKdWwgIDUg
+MTQ6NDM6MDcgUERUIDIwMDkKPiByb290QG9wdGltdXMuemVubWV0c3VoaXRvdHV5YW5lc2hpdGEu
+bmV0Oi91c3Ivb2JqL3Vzci9zcmMvc3lzL09QVElNVVMKPiBhbWQ2NAo+IAo+IFRoYW5rcywKPiAt
+R2FycmV0dAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkVudGVyIHRoZSBCbGFja0JlcnJ5IERldmVs
+b3BlciBDaGFsbGVuZ2UgIApUaGlzIGlzIHlvdXIgY2hhbmNlIHRvIHdpbiB1cCB0byAkMTAwLDAw
+MCBpbiBwcml6ZXMhIEZvciBhIGxpbWl0ZWQgdGltZSwgCnZlbmRvcnMgc3VibWl0dGluZyBuZXcg
+YXBwbGljYXRpb25zIHRvIEJsYWNrQmVycnkgQXBwIFdvcmxkKFRNKSB3aWxsIGhhdmUKdGhlIG9w
+cG9ydHVuaXR5IHRvIGVudGVyIHRoZSBCbGFja0JlcnJ5IERldmVsb3BlciBDaGFsbGVuZ2UuIFNl
+ZSBmdWxsIHByaXplICAKZGV0YWlscyBhdDogaHR0cDovL3Auc2YubmV0L3NmdS9DaGFsbGVuZ2UK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3Qg
+bWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3Rz
+LnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
