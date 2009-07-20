@@ -2,24 +2,23 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <michal.simek@petalogix.com>) id 1MOe2m-0007HJ-C3
-	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 20:47:08 +0000
-Received: from mail-bw0-f215.google.com ([209.85.218.215])
+	(envelope-from <yanegomi@gmail.com>) id 1MSnMv-0002wO-7Y
+	for ltp-list@lists.sourceforge.net; Mon, 20 Jul 2009 07:33:05 +0000
+Received: from mail-pz0-f201.google.com ([209.85.222.201])
 	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MOe2i-00059p-Ft
-	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 20:47:08 +0000
-Received: by bwz11 with SMTP id 11so176312bwz.10
+	id 1MSnMp-00010U-2e
+	for ltp-list@lists.sourceforge.net; Mon, 20 Jul 2009 07:33:05 +0000
+Received: by pzk39 with SMTP id 39so11212pzk.28
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 08 Jul 2009 13:47:03 -0700 (PDT)
-Message-ID: <4A54FFFE.10306@petalogix.com>
-Date: Wed, 08 Jul 2009 22:22:22 +0200
-From: Michal Simek <michal.simek@petalogix.com>
+	Mon, 20 Jul 2009 00:32:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <4A54D14F.9090101@petalogix.com>	<20090708.103520.193697491.davem@davemloft.net>	<4A54DF6F.1010405@petalogix.com>
-	<20090708.110624.104984745.davem@davemloft.net>
-In-Reply-To: <20090708.110624.104984745.davem@davemloft.net>
-Subject: Re: [LTP] mmap hw behavior
-Reply-To: michal.simek@petalogix.com
+In-Reply-To: <4A63FFC3.80304@petalogix.com>
+References: <364299f40907181419y73621db2w1242b7a1fa7650c@mail.gmail.com>
+	<4A63FFC3.80304@petalogix.com>
+Date: Mon, 20 Jul 2009 00:32:57 -0700
+Message-ID: <364299f40907200032x28cc62cdn73ebb42f31d80361@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH 3/4] Make system enhancements, Draft 3
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,62 +28,69 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: David Miller <davem@davemloft.net>
-Cc: linux-arch@vger.kernel.org, ltp-list@lists.sourceforge.net, arnd@arndb.de, linux-kernel@vger.kernel.org, lethal@linux-sh.org, mingo@elte.hu
+To: michal.simek@petalogix.com
+Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
 
-David Miller wrote:
-> From: Michal Simek <michal.simek@petalogix.com>
-> Date: Wed, 08 Jul 2009 20:03:27 +0200
->
->   
->> David Miller wrote:
->>     
->>> From: Michal Simek <michal.simek@petalogix.com>
->>> Date: Wed, 08 Jul 2009 19:03:11 +0200
->>>
->>>   
->>>       
->>>> When I call mmap for that open file with pointer to calloc place
->>>> (first parameter, + length zero) it should be one tlb invalidation
->>>> for calloc and new tlb which connect open file.  We check it and we
->>>> don't have any tlb invalidation that's why I think that kernel do
->>>> different thigs.  Or is it there any copying? Or anything different?
->>>>     
->>>>         
->>> There is no need to tlb flush the calloc area unless that memory area
->>> is actually touched by the user application and thus the page is
->>> faulted in.
->>>   
->>>       
->> That calloc area is filled by any value (in that test). Is it mean that
->> for this case when calloc area is touched
->> there must be tlb invalidation + remapping?
->>     
->
-> Yes, if the calloc area is written to by the application, there
-> should be a tlb flush when the mmap() overrides that virtual region
-> with a different mapping.
->   
-Can you please point me to any code which exactly do this? (for example
-file mm/mmap.c line from ... to ... )
+On Sun, Jul 19, 2009 at 10:25 PM, Michal
+Simek<michal.simek@petalogix.com> wrote:
+> Garrett Cooper wrote:
+>> Version 3 of the epic saga: [PATCH 3/4] Make system enhancements.
 
-Thanks,
-Michal
+[...]
 
--- 
-Michal Simek, Ing. (M.Eng)
-PetaLogix - Linux Solutions for a Reconfigurable World
-w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+> I cross compile LTP all the time and Mike do the same for BlackFin.
+> cross-compilation was possible.
+> CROSS_COMPILE=3Dmb-linux-
+> make
 
+Yes, as Mike corrected me, what I was looking for was `out-of-tree
+build support', where a group (say Montevista) could build more than
+one architecture, or build with more than one compiler / toolchain /
+sys-root using the same source directory.
 
-------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
+Well, that and a few Makefiles were broken as far as cross-compilation
+was concerned, in particular library generation on some architectures,
+and hardcoded paths to libraries, host based file scanning heuristics,
+you name it.
+
+This is the first leap forward in correcting all of these things, and
+it will not be the last step that must be made as this project is
+large and the changes / test stimuli are as well.
+
+[...]
+
+>> +LIBOBJS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D=
+ $$(addprefix $$(builddir)/,$$(patsubst %.c,%.o,$$(LIBSRCS)))
+>>
+> long line.
+
+I try my best to do two things with makefile code:
+1. align Makefile code with single tab, then spaces.
+2. compress as many statements as possible to reduce the number of
+required evaluation steps, because that can result in interesting
+behavior from make with define blocks...
+
+I will try and compress the space further (that line was tab
+separated) in a style cleanup commit after this is all said and
+committed, if I don't get to it sooner. It's just easier to add and
+delete tabs for now :).
+
+Thanks!
+-Garrett
+
+---------------------------------------------------------------------------=
+---
+Enter the BlackBerry Developer Challenge  =
+
+This is your chance to win up to $100,000 in prizes! For a limited time, =
+
 vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+the opportunity to enter the BlackBerry Developer Challenge. See full prize=
+  =
+
 details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
