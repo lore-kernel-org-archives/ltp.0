@@ -1,25 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MSOOa-00038P-DA
-	for ltp-list@lists.sourceforge.net; Sun, 19 Jul 2009 04:53:08 +0000
-Received: from wf-out-1314.google.com ([209.85.200.171])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MSOOT-0001Kd-2q
-	for ltp-list@lists.sourceforge.net; Sun, 19 Jul 2009 04:53:08 +0000
-Received: by wf-out-1314.google.com with SMTP id 26so524562wfd.4
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MSvEf-0005ku-I6
+	for ltp-list@lists.sourceforge.net; Mon, 20 Jul 2009 15:57:05 +0000
+Received: from mail-pz0-f201.google.com ([209.85.222.201])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MSvEa-000575-6I
+	for ltp-list@lists.sourceforge.net; Mon, 20 Jul 2009 15:57:05 +0000
+Received: by pzk39 with SMTP id 39so198649pzk.28
 	for <ltp-list@lists.sourceforge.net>;
-	Sat, 18 Jul 2009 21:53:00 -0700 (PDT)
+	Mon, 20 Jul 2009 08:56:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4A5E7C54.40507@cn.fujitsu.com>
-References: <4A559DB3.6030000@cn.fujitsu.com>
-	<1247222787.6630.26.camel@subratamodak.linux.ibm.com>
-	<4A5E7C54.40507@cn.fujitsu.com>
-Date: Sat, 18 Jul 2009 21:53:00 -0700
-Message-ID: <364299f40907182153i440a64ddjf8dca75d6a9adc3c@mail.gmail.com>
+In-Reply-To: <4A64541C.9090408@in.ibm.com>
+References: <4A48667F.9050101@in.ibm.com> <4A486E66.5050102@cn.fujitsu.com>
+	<4A64541C.9090408@in.ibm.com>
+Date: Mon, 20 Jul 2009 08:56:58 -0700
+Message-ID: <364299f40907200856p1fe1552ch573f00be6918211a@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Fix failure of the utimes01 test
+Subject: Re: [LTP] Issue observed with chmod05, fchmod05 test cases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,107 +28,102 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wang Yong <wangyong2009@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Sharyathi Nagesh <sharyath@in.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, mbeeraka@in.ibm.com
 
-T24gV2VkLCBKdWwgMTUsIDIwMDkgYXQgNjowMyBQTSwgV2FuZyBZb25nPHdhbmd5b25nMjAwOUBj
-bi5mdWppdHN1LmNvbT4gd3JvdGU6Cj4gSGksIFN1YnJhdGEgTW9kYWsKPgo+IFN1YnJhdGEgTW9k
-YWsgd3JvdGUgYXM6Cj4+IE9uIFRodSwgMjAwOS0wNy0wOSBhdCAxNTozNSArMDgwMCwgV2FuZyBZ
-b25nIHdyb3RlOgo+Pgo+Pj4gV2hlbmV2ZXIgc3lzdGVtIGNhbGxlZCB1dGltZXMsIHRoZSBlcnJv
-ciBtZXNzYWdlIHJldHVybmVkIHdhcyBFSU5WQUwsCj4+PiBiZWNhdXNlIHRoZSBtZW1iZXIgdmFy
-aWFibGUgb2Ygc3RydWN0IHRpbWV2YWwgd2FzIG5vdCBpbml0aWFsaXplZCwKPj4+IHNvIGluaXRp
-YWxpemUgaXQuCj4+Pgo+Pj4gU2lnbmVkLW9mZi1ieTrjgIBXYW5nWW9uZ+OAgDx3YW5neW9uZzIw
-MDlAY24uZnVqaXRzdS5jb20+Cj4+Pgo+Pj4gZGlmZiAtTnVycCBsdHAtZnVsbC0yMDA5MDYzMC90
-ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3V0aW1lcy91dGltZXMwMS5jCj4+PiBsdHAtZnVsbC0y
-MDA5MDYzMC5uZXcvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy91dGltZXMvdXRpbWVzMDEuYwo+
-Pj4gLS0tIGx0cC5vcmlnL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdXRpbWVzL3V0aW1lczAx
-LmMgMjAwOS0wNy0wMQo+Pj4gMTc6MjA6MTIuMDAwMDAwMDAwICswODAwCj4+PiArKysgbHRwL3Rl
-c3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdXRpbWVzL3V0aW1lczAxLmMgwqAyMDA5LTA3LTA4Cj4+
-PiAxNzoyMDozOC4wMDAwMDAwMDAgKzA4MDAKPj4+IEBAIC0yNDgsNiArMjQ4LDcgQEAgc3RhdGlj
-IGludCBkb190ZXN0KHN0cnVjdCB0ZXN0X2Nhc2UgKnRjKQo+Pj4gwqAgwqAgwqAgwqAgwqAgLyoK
-Pj4+IMKgIMKgIMKgIMKgIMKgIMKgKiBFeGVjdXRlIHN5c3RlbSBjYWxsCj4+PiDCoCDCoCDCoCDC
-oCDCoCDCoCovCj4+PiArIMKgIMKgIMKgIMKgbWVtc2V0KHR2LCAwLCAyICogc2l6ZW9mKHN0cnVj
-dCB0aW1ldmFsKSk7Cj4+Pgo+Pgo+PiBJbml0aWFsaXppbmcgdGhpcyBpcyBnb29kLiBCdXQgaSBk
-byBub3QgZmluZCBhbnkgdmlzaWJsZSBkaWZmZXJlbmNlIGluCj4+IHJ1bm5pbmcgdGhpcyB0ZXN0
-IHByZSBhbmQgcG9zdCBwYXRjaGluZyBlaXRoZXIgb24gMi42LjI5IG9yIDIuNi4xOAo+PiBrZXJu
-ZWxzLiBUaGUgZm9sbG93aW5nIG91dHB1dCBpcyBnZW5lcmF0ZWQgZWFjaCB0aW1lOgo+Pgo+PiAj
-IC4vdGVzdGNhc2VzL2Jpbi91dGltZXMwMQo+PiB1dGltZXMwMSDCoCDCoDAgwqBJTkZPIMKgOiDC
-oChjYXNlMDApIFNUQVJUCj4+IG9wZW4gZmFpbGVkLgo+PiB1dGltZXMwMSDCoCDCoDAgwqBJTkZP
-IMKgOiDCoChjYXNlMDApIEVORCA9PiBORwo+PiB1dGltZXMwMSDCoCDCoDAgwqBJTkZPIMKgOiDC
-oChjYXNlMDEpIFNUQVJUCj4+IG9wZW4gZmFpbGVkLgo+PiB1dGltZXMwMSDCoCDCoDAgwqBJTkZP
-IMKgOiDCoChjYXNlMDEpIEVORCA9PiBORwo+PiB1dGltZXMwMSDCoCDCoDAgwqBJTkZPIMKgOiDC
-oChjYXNlMDIpIFNUQVJUCj4+IG9wZW4gZmFpbGVkLgo+PiB1dGltZXMwMSDCoCDCoDAgwqBJTkZP
-IMKgOiDCoChjYXNlMDIpIEVORCA9PiBORwo+PiB1dGltZXMwMSDCoCDCoDAgwqBJTkZPIMKgOiDC
-oChjYXNlMDMpIFNUQVJUCj4+IG9wZW4gZmFpbGVkLgo+PiB1dGltZXMwMSDCoCDCoDAgwqBJTkZP
-IMKgOiDCoChjYXNlMDMpIEVORCA9PiBORwo+PiB1dGltZXMwMSDCoCDCoDAgwqBJTkZPIMKgOiDC
-oChjYXNlMDQpIFNUQVJUCj4+IG9wZW4gZmFpbGVkLgo+PiB1dGltZXMwMSDCoCDCoDAgwqBJTkZP
-IMKgOiDCoChjYXNlMDQpIEVORCA9PiBORwo+PiB1dGltZXMwMSDCoCDCoDEgwqBGQUlMIMKgOiDC
-oHV0aW1lczAxIGZhaWxlZCAtIGVycm5vID0gMiA6IE5vIHN1Y2ggZmlsZSBvcgo+PiBkaXJlY3Rv
-cnkKPj4gdXRpbWVzMDEgwqAgwqAwIMKgSU5GTyDCoDogwqBORwo+Pgo+PiAjIGVjaG8gJD8KPj4g
-MQo+Pgo+IEkgaGF2ZSBmaXhlZCB0aGlzIHByb2JsZW0uCj4KPgo+IFtQQVRDSF0gRml4IGZhaWx1
-cmUgb2YgdGhlIHV0aW1lczAxIHRlc3QKPgo+IFdoZW5ldmVyIHN5c3RlbSBjYWxsZWQgdXRpbWVz
-LCB0aGUgZXJyb3IgbWVzc2FnZSByZXR1cm5lZCB3YXMgRUlOVkFMLAo+IGJlY2F1c2UgdGhlIG1l
-bWJlciB2YXJpYWJsZSBvZiBzdHJ1Y3QgdGltZXZhbCB3YXMgbm90IGluaXRpYWxpemVkLAo+IHNv
-IGluaXRpYWxpemUgaXQuCj4gVGhpcyBwYXRjaCBhbHNvIGZpeGVkIHRoZSBwYXRoIHdoaWNoIHdl
-IHBhc3MgdG8gc2V0dXBfZmlsZSgpLiBJZgo+IHByb2dkaXIgaXMgbm90IGEgYWJzb2x1dGUgcGF0
-aG5hbWUgb2YgdGhlIHdvcmtpbmcgZGlyZWN0b3J5LCB0aGUgZmlsZQo+IG9wZW4gd2lsbCBmYWls
-Lgo+Cj4gU2lnbmVkLW9mZi1ieTogV2FuZ1lvbmcgPHdhbmd5b25nMjAwOUBjbi5mdWppdHN1LmNv
-bT4KPgo+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdXRpbWVzL3V0aW1lczAxLmMg
-wqAgwqAgwqAgMjAwOS0wNy0xNSAxMDoyMjo0MS4wMDAwMDAwMDAgKzA4MDAKPiArKysgYi90ZXN0
-Y2FzZXMva2VybmVsL3N5c2NhbGxzL3V0aW1lcy91dGltZXMwMS5jIMKgIMKgIMKgIDIwMDktMDct
-MTYgMDg6NTU6MTMuMDAwMDAwMDAwICswODAwCj4gQEAgLTEzOCw3ICsxMzgsNiBAQCB2b2lkIHNl
-dHVwKCkgewo+IMKgKi8KPiDCoHN0YXRpYyBpbnQgb3B0X2RlYnVnOwo+IMKgc3RhdGljIGNoYXIg
-KnByb2duYW1lOwo+IC1zdGF0aWMgY2hhciAqcHJvZ2RpcjsKPgo+IMKgZW51bSB0ZXN0X3R5cGUg
-ewo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgTk9STUFMLAo+IEBAIC0yMzIsNyArMjMxLDcgQEAg
-c3RhdGljIGludCBkb190ZXN0KHN0cnVjdCB0ZXN0X2Nhc2UgKnRjKQo+IMKgIMKgIMKgIMKgIHN0
-cnVjdCBzdGF0IHN0Owo+IMKgIMKgIMKgIMKgIHVpZF90IG9sZF91aWQ7Cj4KPiAtIMKgIMKgIMKg
-IMKgVEVTVChyYyA9IHNldHVwX2ZpbGUocHJvZ2RpciwgInRlc3QuZmlsZSIsIGZwYXRoKSk7Cj4g
-KyDCoCDCoCDCoCDCoFRFU1QocmMgPSBzZXR1cF9maWxlKFRFU1RESVIsICJ0ZXN0LmZpbGUiLCBm
-cGF0aCkpOwo+IMKgIMKgIMKgIMKgIGlmIChyYyA8IDApCj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgcmV0dXJuIDE7Cj4KPiBAQCAtMjQ4LDYgKzI0Nyw3IEBAIHN0YXRpYyBpbnQgZG9fdGVzdChz
-dHJ1Y3QgdGVzdF9jYXNlICp0YykKPiDCoCDCoCDCoCDCoCAvKgo+IMKgIMKgIMKgIMKgIMKgKiBF
-eGVjdXRlIHN5c3RlbSBjYWxsCj4gwqAgwqAgwqAgwqAgwqAqLwo+ICsgwqAgwqAgwqAgwqBtZW1z
-ZXQodHYsIDAsIHNpemVvZih0dikpOwo+IMKgIMKgIMKgIMKgIHR2WzBdLnR2X3NlYyA9IHRjLT5h
-X3NlYzsKPiDCoCDCoCDCoCDCoCB0dlsxXS50dl9zZWMgPSB0Yy0+bV9zZWM7Cj4gwqAgwqAgwqAg
-wqAgVEVTVChsZW4gPSBzdHJsZW4oZnBhdGgpKTsKPiBAQCAtMzM4LDkgKzMzOCw2IEBAIGludCBt
-YWluKGludCBhYywgY2hhciAqKmF2KSB7Cj4gwqAgwqAgwqAgwqBwcm9nbmFtZSA9IHN0cmNocihh
-dlswXSwgJy8nKTsKPiDCoCDCoCDCoCDCoCBwcm9nbmFtZSA9IHByb2duYW1lID8gcHJvZ25hbWUg
-KyAxIDogYXZbMF07Cj4KPiAtIMKgIMKgIMKgIHByb2dkaXIgPSBzdHJkdXAoYXZbMF0pOwo+IC0g
-wqAgwqAgwqAgwqBwcm9nZGlyID0gZGlybmFtZShwcm9nZGlyKTsKPiAtCj4gwqAgwqAgwqAgwqAg
-LyogcGFyc2Ugc3RhbmRhcmQgb3B0aW9ucyAqLwo+IMKgIMKgIMKgIMKgIGlmICgobXNnID0gcGFy
-c2Vfb3B0cyhhYywgYXYsIChvcHRpb25fdCAqKU5VTEwsIE5VTEwpKSAhPSAoY2hhciAqKU5VTEwp
-ewo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgdHN0X2Jya20oVEJST0ssIGNsZWFudXAsICJPUFRJT04g
-UEFSU0lORyBFUlJPUiAtICVzIiwgbXNnKTsKClRoYXQgcGF0Y2ggd29ya3Mgc28gSSdtIGdvaW5n
-IHRvIGNvbW1pdCBpdCB0byBDVlM6CgpnY29vcGVyQG9yYW5nZWJveCAvc2NyYXRjaC9sdHAtbm92
-YTIvbHRwLW5vdmEgJAp0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3V0aW1lcy91dGltZXMwMQp1
-dGltZXMwMSAgICAwICBJTkZPICA6ICAoY2FzZTAwKSBTVEFSVAp1dGltZXMwMSAgICAwICBJTkZP
-ICA6ICBFOjAsMTAwMCA8PT4gUjowLDEwMDAKRVhQRUNUOiByZXR1cm4gdmFsdWUocmV0KT0oTiA+
-PSAwKSBlcnJubz0wIChTdWNjZXNzKQpSRVNVTFQ6IHJldHVybiB2YWx1ZShyZXQpPSAgICAgICAw
-IGVycm5vPTAgKFN1Y2Nlc3MpCnV0aW1lczAxICAgIDAgIElORk8gIDogIChjYXNlMDApIEVORCA9
-PiBPSwp1dGltZXMwMSAgICAwICBJTkZPICA6ICAoY2FzZTAxKSBTVEFSVAp1dGltZXMwMSAgICAw
-ICBJTkZPICA6ICBFOjEwMDAsMCA8PT4gUjoxMDAwLDAKRVhQRUNUOiByZXR1cm4gdmFsdWUocmV0
-KT0oTiA+PSAwKSBlcnJubz0wIChTdWNjZXNzKQpSRVNVTFQ6IHJldHVybiB2YWx1ZShyZXQpPSAg
-ICAgICAwIGVycm5vPTAgKFN1Y2Nlc3MpCnV0aW1lczAxICAgIDAgIElORk8gIDogIChjYXNlMDEp
-IEVORCA9PiBPSwp1dGltZXMwMSAgICAwICBJTkZPICA6ICAoY2FzZTAyKSBTVEFSVApzZXRldWlk
-IGZhaWxlZC4KdXRpbWVzMDEgICAgMCAgSU5GTyAgOiAgKGNhc2UwMikgRU5EID0+IE9LCnV0aW1l
-czAxICAgIDAgIElORk8gIDogIChjYXNlMDMpIFNUQVJUCkVYUEVDVDogcmV0dXJuIHZhbHVlKHJl
-dCk9LTEgZXJybm89MiAoTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeSkKUkVTVUxUOiByZXR1cm4g
-dmFsdWUocmV0KT0tMSBlcnJubz0yIChObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5KQp1dGltZXMw
-MSAgICAwICBJTkZPICA6ICAoY2FzZTAzKSBFTkQgPT4gT0sKdXRpbWVzMDEgICAgMCAgSU5GTyAg
-OiAgKGNhc2UwNCkgU1RBUlQKRVhQRUNUOiByZXR1cm4gdmFsdWUocmV0KT0tMSBlcnJubz0xNCAo
-QmFkIGFkZHJlc3MpClJFU1VMVDogcmV0dXJuIHZhbHVlKHJldCk9LTEgZXJybm89MTQgKEJhZCBh
-ZGRyZXNzKQp1dGltZXMwMSAgICAwICBJTkZPICA6ICAoY2FzZTA0KSBFTkQgPT4gT0sKdXRpbWVz
-MDEgICAgMSAgUEFTUyAgOiAgdXRpbWVzIGNhbGwgc3VjY2VlZGVkCgpUaGFua3MhCi1HYXJyZXR0
-CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KRW50ZXIgdGhlIEJsYWNrQmVycnkgRGV2ZWxvcGVyIENo
-YWxsZW5nZSAgClRoaXMgaXMgeW91ciBjaGFuY2UgdG8gd2luIHVwIHRvICQxMDAsMDAwIGluIHBy
-aXplcyEgRm9yIGEgbGltaXRlZCB0aW1lLCAKdmVuZG9ycyBzdWJtaXR0aW5nIG5ldyBhcHBsaWNh
-dGlvbnMgdG8gQmxhY2tCZXJyeSBBcHAgV29ybGQoVE0pIHdpbGwgaGF2ZQp0aGUgb3Bwb3J0dW5p
-dHkgdG8gZW50ZXIgdGhlIEJsYWNrQmVycnkgRGV2ZWxvcGVyIENoYWxsZW5nZS4gU2VlIGZ1bGwg
-cHJpemUgIApkZXRhaWxzIGF0OiBodHRwOi8vcC5zZi5uZXQvc2Z1L0NoYWxsZW5nZQpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5n
-IGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNl
-Zm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+On Mon, Jul 20, 2009 at 4:25 AM, Sharyathi Nagesh<sharyath@in.ibm.com> wrot=
+e:
+> Hi
+> =A0I was able to understand the problem...
+> This is what I learnt
+>
+> Supplementary group IDs of a process is inherited from its parent process,
+> so
+> who ever spawns the process transfer its supplementary group ids also to =
+its
+> child process.
+>
+> in our test case scenario checking the supplementary group IDs of root wh=
+ich
+> is
+> spawning the test cases fchmod5 and chmod5 shows this
+>
+> ---------------------------------------------------------
+> cat test.c
+> ---------------------------------------------------------
+> int main()
+> {
+> =A0 =A0 =A0 =A0int size =3D 10;
+> =A0 =A0 =A0 =A0int i, index;
+> =A0 =A0 =A0 =A0gid_t list[10];
+> =A0 =A0 =A0 =A0index =3D getgroups(size, list);
+> =A0 =A0 =A0 =A0for ( i =3D0 ;i < index; i++)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf("\n list[%d]:%d", i, list[i]);
+> =A0 =A0 =A0 =A0printf("\n");
+> }
+> ---------------------------------------------------------
+>
+> [root@mx3350a sharyathi]# ./a.out
+>
+> =A0list[0]:0
+> =A0list[1]:1
+> =A0list[2]:2
+> =A0list[3]:3
+> =A0list[4]:4
+> =A0list[5]:6
+> =A0list[6]:10
+> ---------------------------------------------------------
+> This shows that bin->GID (1) is one of the supplementary group IDs of the
+> process
+> while nobody->GID (99) is not.
+> So in the kernel code
+> --------------------------------------------------------
+> =A0if (ia_valid & ATTR_MODE) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0umode_t mode =3D attr->ia_mode;
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (!in_group_p(inode->i_gid) && !capable(=
+CAP_FSETID))
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0mode &=3D ~S_ISGID;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0inode->i_mode =3D mode;
+> =A0 =A0 =A0 =A0}
+> --------------------------------------------------------
+> S_ISGID is cleared in case file attribute is nobody and not in case of GID
+> being bin
+>
+> I was thinking of what could be the best solution as earlier solution
+> proposed
+> are not fool proof
+> Attaching a fix I though is the best way to handle the issue
+
+Hi Yeehaw,
+    1. You didn't provide sign-off, as noted in the DCO:
+http://ltp.sourceforge.net/DCO.txt
+    2. This appears to be a legitimate documentation bug (at least as
+far as the manpages for 2.6.29-r5 are concerned), because I can't find
+a single reference to nobody in the manpage, as far as special
+importance is concerned. Furthermore, looking at the OpenGroup's
+documentation, I don't see anything there either:
+http://www.opengroup.org/onlinepubs/000095399/functions/getgroups.html
+. So, I'm a bit stumped as to whether or not we'd be doing the right
+thing by `fixing' this test.
+Thanks,
+-Garrett
+
+---------------------------------------------------------------------------=
+---
+Enter the BlackBerry Developer Challenge  =
+
+This is your chance to win up to $100,000 in prizes! For a limited time, =
+
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize=
+  =
+
+details at: http://p.sf.net/sfu/Challenge
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
