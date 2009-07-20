@@ -1,28 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MNwC0-0007nK-9H
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 21:57:44 +0000
-Received: from mail-yx0-f195.google.com ([209.85.210.195])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MNwBv-00047P-Er
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 21:57:44 +0000
-Received: by yxe33 with SMTP id 33so5168180yxe.28
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naresh.kernel@gmail.com>) id 1MSsYR-00014O-SG
+	for ltp-list@lists.sourceforge.net; Mon, 20 Jul 2009 13:05:19 +0000
+Received: from mail-gx0-f220.google.com ([209.85.217.220])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MSsYN-0005wl-Hi
+	for ltp-list@lists.sourceforge.net; Mon, 20 Jul 2009 13:05:19 +0000
+Received: by gxk20 with SMTP id 20so12042573gxk.10
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 06 Jul 2009 14:57:36 -0700 (PDT)
+	Mon, 20 Jul 2009 06:05:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20090706215111.GA32310@count0.beaverton.ibm.com>
-References: <20090702084828.GC19135@count0.beaverton.ibm.com>
-	<200907021435.48510.vapier@gentoo.org>
-	<20090702203253.GI19135@count0.beaverton.ibm.com>
-	<200907021809.18522.vapier@gentoo.org>
-	<20090706215111.GA32310@count0.beaverton.ibm.com>
-Date: Mon, 6 Jul 2009 14:57:30 -0700
-Message-ID: <364299f40907061457k1fab116o4633e63f90a2e3b1@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Remove bashisms (WAS Re: [PATCH 4/4] netns:
-	Change interpretters from sh to bash)
+Date: Mon, 20 Jul 2009 18:35:13 +0530
+Message-ID: <f5a7b3810907200605r5fc2f575ta761cd45c92b0837@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Content-Type: multipart/mixed; boundary=000e0cd6ad60e12f42046f22c945
+Subject: [LTP] [FIX PATCHES] open_posix_execute.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,49 +26,113 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Matt Helsley <matthltc@us.ibm.com>
-Cc: Poornima Nayak <poornima.nayak@in.ibm.com>, ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>, Daniel Lezcano <daniel.lezcano@free.fr>, Veerendra C <vechandr@in.ibm.com>, Jiri Palecek <jpalecek@web.de>, Jiri Palecek <jirka@debian.linux.ibm.com>, Munipradeep <mbeeraka@in.ibm.com>
+To: ltp-list@lists.sourceforge.net
+Cc: Brandon Philips <bphilips@suse.de>
 
-On Mon, Jul 6, 2009 at 2:51 PM, Matt Helsley<matthltc@us.ibm.com> wrote:
-> On Thu, Jul 02, 2009 at 06:09:16PM -0400, Mike Frysinger wrote:
->> On Thursday 02 July 2009 16:32:53 Matt Helsley wrote:
->> > On Thu, Jul 02, 2009 at 02:35:46PM -0400, Mike Frysinger wrote:
->> > > in general, converting sh to bash is a bad idea as it can cause issues
->> > > for us embedded peeps.
->> >
->> > I suppose that's because of the memory bash consumes. Is there anything
->> > else it does which is bad for embedded?
->>
->> there is memory and disk usage concerns, but there are also systems that cant
->> run bash at all (e.g. systems without fork() -- all no-mmu Linux ports)
->> -mike
->
-> Here's that updated patch which hopefully should be able to replace 3
-> and 4 of my recent series. Unfortunately I haven't had a chance to test it so
-> I'm posting it in case someone else does. As the original author of the
-> patch Jiri is welcome to add his signoff as well.
->
-> From: Jiri Palecek <jirka@web.de>
->
-> This patch removes a bunch of bashisms.
->
-> It was originally written by Jiri Palecek but lacked changes
-> requested by Mike Frysinger.
->
-> Signed-off-by: Matt Helsley <matthltc@us.ibm.com>
+--000e0cd6ad60e12f42046f22c945
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Hi Matt,
-    Please see the comments I just made to his first diff submitted
-back in May 25th. Many of the comments I made there apply to this
-change as well.
-Thanks,
--Garrett
+Hi,
+
+As per the execute.sh script file there is time limit of two minutes
+for each test case execution if it takes more time it will be reported
+as HUNG.
+
+shm_open/23-1.c test case under posix test suite which executes more
+than two minitutes so test case reported as HUNG.
+
+I have changed time limit from 120 to 300 sec. that is nothing but two
+minutes to five minutes. In low end machines this test case taking 4
+min to complete execution.
+
+Now test cases reported as PASS
+
+I have attached patch and below.
+Please review the same.
+
+
+Best regards,
+Naresh Kamboju
+
+
+/*****************************************************/
+Before Patch:
+
+conformance/interfaces/shm_open/23-1.test:execution:HUNG
+
+
+After Patch:
+
+conformance/interfaces/shm_open/23-1.test:execution:PASS
+/*****************************************************/
+
+
+Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+
+diff -Naurb a/testcases/open_posix_testsuite/execute.sh
+b/testcases/open_posix_testsuite/execute.sh
+--- a/testcases/open_posix_testsuite/execute.sh	2007-07-26
+17:32:11.000000000 +0530
++++ b/testcases/open_posix_testsuite/execute.sh	2009-07-20
+17:53:15.000000000 +0530
+@@ -163,8 +163,8 @@
+ declare -i SEGV=0
+ declare -i OTH=0
+
+-# Maximum Two minutes waiting time period to execute a test. If it
+exceeds, the test case will go into the 'HUNG' category.
+-TIMEOUT_VAL=120
++# Maximum five minutes waiting time period to execute a test. If it
+exceeds, the test case will go into the 'HUNG' category.
++TIMEOUT_VAL=300
+
+ # if gcc available then remove the below line comment else put the t0
+in posixtestsuite directory.
+ #gcc -o t0 t0.c
+
+--000e0cd6ad60e12f42046f22c945
+Content-Type: application/octet-stream; name="ltp-posix-execute.patch"
+Content-Disposition: attachment; filename="ltp-posix-execute.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fxd7f45q0
+
+ZGlmZiAtTmF1cmIgYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvZXhlY3V0ZS5zaCBi
+L3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9leGVjdXRlLnNoCi0tLSBhL3Rlc3RjYXNl
+cy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9leGVjdXRlLnNoCTIwMDctMDctMjYgMTc6MzI6MTEuMDAw
+MDAwMDAwICswNTMwCisrKyBiL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9leGVjdXRl
+LnNoCTIwMDktMDctMjAgMTc6NTM6MTUuMDAwMDAwMDAwICswNTMwCkBAIC0xNjMsOCArMTYzLDgg
+QEAKIGRlY2xhcmUgLWkgU0VHVj0wCiBkZWNsYXJlIC1pIE9USD0wCiAKLSMgTWF4aW11bSBUd28g
+bWludXRlcyB3YWl0aW5nIHRpbWUgcGVyaW9kIHRvIGV4ZWN1dGUgYSB0ZXN0LiBJZiBpdCBleGNl
+ZWRzLCB0aGUgdGVzdCBjYXNlIHdpbGwgZ28gaW50byB0aGUgJ0hVTkcnIGNhdGVnb3J5LgotVElN
+RU9VVF9WQUw9MTIwCisjIE1heGltdW0gZml2ZSBtaW51dGVzIHdhaXRpbmcgdGltZSBwZXJpb2Qg
+dG8gZXhlY3V0ZSBhIHRlc3QuIElmIGl0IGV4Y2VlZHMsIHRoZSB0ZXN0IGNhc2Ugd2lsbCBnbyBp
+bnRvIHRoZSAnSFVORycgY2F0ZWdvcnkuCitUSU1FT1VUX1ZBTD0zMDAKIAogIyBpZiBnY2MgYXZh
+aWxhYmxlIHRoZW4gcmVtb3ZlIHRoZSBiZWxvdyBsaW5lIGNvbW1lbnQgZWxzZSBwdXQgdGhlIHQw
+IGluIHBvc2l4dGVzdHN1aXRlIGRpcmVjdG9yeS4KICNnY2MgLW8gdDAgdDAuYwo=
+--000e0cd6ad60e12f42046f22c945
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
+--000e0cd6ad60e12f42046f22c945
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--000e0cd6ad60e12f42046f22c945--
+
