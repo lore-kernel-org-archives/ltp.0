@@ -1,22 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1MTolx-0006PY-CD
-	for ltp-list@lists.sourceforge.net; Thu, 23 Jul 2009 03:15:09 +0000
-Received: from gateway-1237.mvista.com ([63.81.120.158])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MTole-0005Ym-10
-	for ltp-list@lists.sourceforge.net; Thu, 23 Jul 2009 03:14:56 +0000
-Content-class: urn:content-classes:message
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1MTEy0-0002T4-IF
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 13:01:12 +0000
+Received: from fg-out-1718.google.com ([72.14.220.157])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MTExv-0001DI-De
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 13:01:12 +0000
+Received: by fg-out-1718.google.com with SMTP id 13so832538fge.9
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 21 Jul 2009 06:01:05 -0700 (PDT)
+Message-ID: <4A65BC10.8000908@petalogix.com>
+Date: Tue, 21 Jul 2009 15:01:04 +0200
+From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-Date: Wed, 22 Jul 2009 20:14:30 -0700
-Message-ID: <8368651DACC1964480F951191B94A078E49BDE@svexch01.mvista.com>
-In-Reply-To: <4A651499.4030605@cn.fujitsu.com>
-References: <8368651DACC1964480F951191B94A078EBA887@svexch01.mvista.com>
-	<4A651499.4030605@cn.fujitsu.com>
-From: "Henry Yei" <hyei@mvista.com>
-Subject: Re: [LTP] [PATCH] exit_group01, fix syscall number for exit_group
+References: <364299f40907181419y73621db2w1242b7a1fa7650c@mail.gmail.com>	
+	<4A63FFC3.80304@petalogix.com>
+	<364299f40907200032x28cc62cdn73ebb42f31d80361@mail.gmail.com>
+In-Reply-To: <364299f40907200032x28cc62cdn73ebb42f31d80361@mail.gmail.com>
+Subject: Re: [LTP] [PATCH 3/4] Make system enhancements, Draft 3
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,78 +33,88 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wei Yongjun <yjwei@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
 
-Wei,
-
-If you have time, please make the syscall additions for exit_group.
-I am contributing to LTP out-of-band, so may not get to in a timely manner.
-
-Thank you! 
-
------Original Message-----
-From: Wei Yongjun [mailto:yjwei@cn.fujitsu.com] 
-Sent: Monday, July 20, 2009 6:07 PM
-To: Henry Yei
-Cc: ltp-list@lists.sourceforge.net
-Subject: Re: [LTP] [PATCH] exit_group01, fix syscall number for exit_group
-
-Hi, Henry Yei
-
-Henry Yei  wrote:
-> This issue was found when running on an arm machine.
->
->
-> Fix syscall number for exit_group
+Garrett Cooper wrote:
+> On Sun, Jul 19, 2009 at 10:25 PM, Michal
+> Simek<michal.simek@petalogix.com> wrote:
 >   
-
-I have posted the same some days ago, see http://marc.info/?l=ltp-list&m=124798179211554&w=2.
-
-But Garrett Cooper said we also add the relevant syscall number to the architecture specific .in file in testcases/kernel/include. If you have time, you can do this. If you would like to do this, please tell me. So we will not do dup wroks. Thanks.
-
-Wei Yongjun
-
-> <Signed-off-by: Henry Yei <hyei@mvista.com>
+>> Garrett Cooper wrote:
+>>     
+>>> Version 3 of the epic saga: [PATCH 3/4] Make system enhancements.
+>>>       
 >
-> ---
-> ltp-full-20090531/testcases/kernel/syscalls/exit_group/exit_group01.c
-> 2009-05-21 11:14:40.000000000 -0700
-> +++
-> ltp-full-20090531/testcases/kernel/syscalls/exit_group/exit_group01.c
-> 2009-07-17 12:03:47.000000000 -0700
-> @@ -136,7 +136,7 @@
->                       } else if (TEST_RETURN == 0){
->  	                 	tst_resm(TINFO, "In the child process");
->                             	sleep(5);
-> -				TEST(syscall(252,4));
-> +				TEST(syscall(__NR_exit_group,4));
->                       }else {
->  				tst_resm(TINFO,"in the parent process");
->  				TEST(w = wait(&status));
+> [...]
 >
 >   
-> ----------------------------------------------------------------------
-> --
+>> I cross compile LTP all the time and Mike do the same for BlackFin.
+>> cross-compilation was possible.
+>> CROSS_COMPILE=mb-linux-
+>> make
+>>     
 >
-> ----------------------------------------------------------------------
-> -------- Enter the BlackBerry Developer Challenge This is your chance 
-> to win up to $100,000 in prizes! For a limited time, vendors 
-> submitting new applications to BlackBerry App World(TM) will have the 
-> opportunity to enter the BlackBerry Developer Challenge. See full 
-> prize details at: http://p.sf.net/sfu/Challenge
-> ----------------------------------------------------------------------
-> --
+> Yes, as Mike corrected me, what I was looking for was `out-of-tree
+> build support', where a group (say Montevista) could build more than
+> one architecture, or build with more than one compiler / toolchain /
+> sys-root using the same source directory.
+>   
+out-of-tree compilation is nice.
+
+> Well, that and a few Makefiles were broken as far as cross-compilation
+> was concerned, in particular library generation on some architectures,
+> and hardcoded paths to libraries, host based file scanning heuristics,
+> you name it.
 >
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> This is the first leap forward in correcting all of these things, and
+> it will not be the last step that must be made as this project is
+> large and the changes / test stimuli are as well.
+>
+> [...]
+>
+>   
+>>> +LIBOBJS                              := $$(addprefix $$(builddir)/,$$(patsubst %.c,%.o,$$(LIBSRCS)))
+>>>
+>>>       
+>> long line.
+>>     
+>
+> I try my best to do two things with makefile code:
+> 1. align Makefile code with single tab, then spaces.
+> 2. compress as many statements as possible to reduce the number of
+> required evaluation steps, because that can result in interesting
+> behavior from make with define blocks...
+>
+> I will try and compress the space further (that line was tab
+> separated) in a style cleanup commit after this is all said and
+> committed, if I don't get to it sooner. It's just easier to add and
+> delete tabs for now :).
+>   
+make no sense to send a patch with coding style violation and then send
+next patch
+which fixed that bad coding style. It is better to do it properly in
+first time.
+We have to clean whole LTP source code not pollute it.
+
+Michal
+
+> Thanks!
+> -Garrett
 >   
 
+
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
 
 
 ------------------------------------------------------------------------------
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
