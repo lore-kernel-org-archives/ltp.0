@@ -1,22 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MSIIJ-0004hU-VU
-	for ltp-list@lists.sourceforge.net; Sat, 18 Jul 2009 22:22:15 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MSIIA-0000Kn-Bb
-	for ltp-list@lists.sourceforge.net; Sat, 18 Jul 2009 22:22:15 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sat, 18 Jul 2009 18:22:02 -0400
-References: <364299f40907061818q7cda3465vffb00323af18c5f8@mail.gmail.com>
-	<200907151237.49839.vapier@gentoo.org>
-	<364299f40907181425h31ec769aw5f349b86891c94ad@mail.gmail.com>
-In-Reply-To: <364299f40907181425h31ec769aw5f349b86891c94ad@mail.gmail.com>
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1MTFuw-0006bu-EK
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 14:02:06 +0000
+Received: from fg-out-1718.google.com ([72.14.220.157])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MTFur-0005S0-Nz
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 14:02:06 +0000
+Received: by fg-out-1718.google.com with SMTP id 13so843959fge.9
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 21 Jul 2009 07:02:00 -0700 (PDT)
+Message-ID: <4A65CA56.20801@petalogix.com>
+Date: Tue, 21 Jul 2009 16:01:58 +0200
+From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-Message-Id: <200907181822.03140.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 4/4] Make makefiles more autoconf friendly
+References: <364299f40907181419y73621db2w1242b7a1fa7650c@mail.gmail.com>	
+	<4A63FFC3.80304@petalogix.com>	
+	<364299f40907200032x28cc62cdn73ebb42f31d80361@mail.gmail.com>	
+	<4A65BC10.8000908@petalogix.com>
+	<364299f40907210657t2f03bec4qd5deaf697b12f1e9@mail.gmail.com>
+In-Reply-To: <364299f40907210657t2f03bec4qd5deaf697b12f1e9@mail.gmail.com>
+Subject: Re: [LTP] [PATCH 3/4] Make system enhancements, Draft 3
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,126 +32,81 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1964778906241378067=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
 
---===============1964778906241378067==
-Content-Type: multipart/signed; boundary="nextPart1279273.OVF4GGvcVV";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1279273.OVF4GGvcVV
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-On Saturday 18 July 2009 17:25:58 Garrett Cooper wrote:
-> On Wed, Jul 15, 2009 at 9:37 AM, Mike Frysinger<vapier@gentoo.org> wrote:
-> > On Sunday 12 July 2009 01:49:52 Garrett Cooper wrote:
-> >> +# Avoid overwriting definitions in leaf callers.
-> >> +CPPFLAGS     ?=3D @CPPFLAGS@ -I$(includedir)
-> >> +CFLAGS               ?=3D @CFLAGS@
-> >> +LDLIBS               ?=3D @LIBS@
-> >> +LDFLAGS              ?=3D @LDFLAGS@ -L$(libdir)
-> >
-> > this looks like it'll cause problems if you set these in your environme=
-nt
-> > export CPPFLAGS=3D'' CFLAGS=3D'-pipe' LDFLAGS=3D''
-> > make
-> >
-> > i would use $(origin ...) to determine whether the variables are coming
-> > from the leaf Makefile
+Garrett Cooper wrote:
+> On Tue, Jul 21, 2009 at 6:01 AM, Michal Simek<michal.simek@petalogix.com> wrote:
+>   
+>> Garrett Cooper wrote:
+>>     
+>>> On Sun, Jul 19, 2009 at 10:25 PM, Michal
+>>> Simek<michal.simek@petalogix.com> wrote:
+>>>       
+>>>>> +LIBOBJS                              := $$(addprefix $$(builddir)/,$$(patsubst %.c,%.o,$$(LIBSRCS)))
+>>>>>
+>>>>>
+>>>>>           
+>>>> long line.
+>>>>
+>>>>         
+>>> I try my best to do two things with makefile code:
+>>> 1. align Makefile code with single tab, then spaces.
+>>> 2. compress as many statements as possible to reduce the number of
+>>> required evaluation steps, because that can result in interesting
+>>> behavior from make with define blocks...
+>>>
+>>> I will try and compress the space further (that line was tab
+>>> separated) in a style cleanup commit after this is all said and
+>>> committed, if I don't get to it sooner. It's just easier to add and
+>>> delete tabs for now :).
+>>>
+>>>       
+>> make no sense to send a patch with coding style violation and then send
+>> next patch
+>> which fixed that bad coding style. It is better to do it properly in
+>> first time.
+>> We have to clean whole LTP source code not pollute it.
+>>     
 >
-> Ah, yes. Excellent point.
+> I am cleaning up a lot more `style-guide violations' than I am causing in LTP.
 >
-> So what's the appropriate protocol then:
+> All Cisco level project support for LTP has been yanked recently due
+> to limited restructuring (the other gentleman that was going to help
+> me is no longer part of my project as well), so I'm doing this solely
+> on my spare time.
 >
-> If set in environment, ignore?
-> Or:
-> If set in Makefile, ignore?
-
-if it's set in the env, the "?=3D" should already handle that.  i cant thin=
-k of=20
-a reason for the leaf makefiles to be settings default flags ... do you hav=
-e=20
-an example in mind ?
-
-> >> +DEBUG_CFLAGS ?=3D -g
-> >> +DEBUG_CXXFLAGS       ?=3D $(DEBUG_CFLAGS)
-> >> +
-> >> +CFLAGS               +=3D $(DEBUG_CFLAGS)
-> >> +CXXFLAGS     +=3D $(DEBUG_CXXFLAGS)
-> >> +
-> >> +# There have been several bugs in the past related to -O2+ when
-> >> +# -fno-strict-aliasing is not specified.
-> >> +OPT_CFLAGS   ?=3D -O2 -fno-strict-aliasing
-> >> +OPT_CXXFLAGS ?=3D $(OPT_CFLAGS)
-> >
-> > in general, i recall only like 1 bug that was a gcc issue.  all the
-> > others were broken source code.  i dont think we should live with code
-> > that violates aliasing rules.
+> If you _want_ to fix the items, you can too -- this is an opensource
+> project you know ;)... I am aware of the eyesores and I'll get to them
+> as soon as I can.
 >
-> See my previous comment. There are ~10 different bugs spanning
-> compilers from v3.3.x to 4.4.x, which deal with broken
-> -fstrict-aliasing optimizations in the tree optimizer.
-
-please centralize the comments then rather than sprinkling them about the=20
-different source files.  here the comment should say:
-# -fno-strict-aliasing: please see README.mk-devel
-
-> >> --- m4/GNUmakefile    18 Jan 2009 22:22:40 -0000      1.1
-> >> +++ m4/GNUmakefile    12 Jul 2009 05:46:28 -0000
-> >
-> > i think we only need a top level GNUmakefile.  all the other subdirs can
-> > stay Makefile.
+> 1. If it breaks functionality, it needs to be fixed before commit.
+> 2. If it's an eyesore, I'll prioritize it and fix it ASAP.
 >
-> Well, ok. I was just leaving it as-is, because that's the way it is today
-> :).
->
-> Like in rock-paper-scissors:
->
-> GNUmakefile beats Makefile, which beats makefile.
+> BTW, AFAIK there isn't a style guide for LTP -- so before correcting
+> me on style I'd produce a writeup stating that _this_ is how I need to
+> code my code in order to meet LTP's standards, please.
+>   
+We talked about coding style for LTP some month ago. LTP should follow
+linux kernel coding style. I though that Subrata wrote it somewhere,
+didn't you?
+On the base on it I fixed a lot of syscalls tests in my spare time too.
 
-mmm that GNUmakefile is there for a different reason (to ignore the automak=
-e-
-generated Makefile), so we dont want to go renaming it.  so you dont need t=
-o=20
-go doing something different.
-=2Dmike
+Michal
 
---nextPart1279273.OVF4GGvcVV
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJKYksLAAoJEEFjO5/oN/WBgiEP/3K8RP8FRUutDAsKpnmsIPB2
-m0pzQYXea5pB9MqPXYlM+D2Y5I6AqYdYY7GeibU/PPFLsuOkjDjQI4/APhIEZuVc
-ENjrxWInqLCjZ93FBoKfFizScy32JkWT9Ln2q5YxhizWNUmotY0THF9uAiABmxXK
-O6VjaP8wCa/BCtj/w/T6Z4qhFfYkczN6HBt0N+6hU4JOJws4d6xtuDvMxru/Zz5M
-oszi+YQKI2THUyVhfSvAiLZV4O4+p+U+/26Oo1aWuyhYjasaZbRp7btVEmzSVDa+
-kwo+gQEaU4bw7qoROA12jRc/p9wySh3G5lyDPFtGg88GZfA1aBEcnaLGFTnlMSGf
-JauXsYaZEJGV81li5jfymGGqfNZc7NUd9NYSp/6Cy/40W1h2T5yhYm6JxVbDtFqR
-cLquM6mQVs1JcA/mX37ZLDuhLB3bIRTMRT6GFuqUeVmb/4ndd46Cl9RHa+MnBdXl
-xDojRnhI/8mT5U88pGAwG81zZ0Twp6ijaHVqEAhullcYL3RtjtAPZlqUJbV4l35F
-ldyuXSKzYO/tYdd7VCeSrKKSeo6LwyHKQn/WsmqvEtdWLv2IZfP6gCXp1GkkEhs6
-8FtwNjDyHGEf3h8hLiqU4bm5wm8YuuxwDL99MrY31IutQnOazwyKxWLJhyH8zGsZ
-ItQ4D1nOHsYNHOFTZgGa
-=uB23
------END PGP SIGNATURE-----
-
---nextPart1279273.OVF4GGvcVV--
+> Thanks,
+> -Garrett
+>   
 
 
---===============1964778906241378067==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+
 
 ------------------------------------------------------------------------------
 Enter the BlackBerry Developer Challenge  
@@ -153,16 +114,7 @@ This is your chance to win up to $100,000 in prizes! For a limited time,
 vendors submitting new applications to BlackBerry App World(TM) will have
 the opportunity to enter the BlackBerry Developer Challenge. See full prize  
 details at: http://p.sf.net/sfu/Challenge
---===============1964778906241378067==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============1964778906241378067==--
-
