@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MMzwJ-0005RS-DA
-	for ltp-list@lists.sourceforge.net; Sat, 04 Jul 2009 07:45:39 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MMzw6-0006tm-Ir
-	for ltp-list@lists.sourceforge.net; Sat, 04 Jul 2009 07:45:34 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sat, 4 Jul 2009 03:45:19 -0400
-References: <364299f40907040039y15f642b1ue8d92b1823a12821@mail.gmail.com>
-In-Reply-To: <364299f40907040039y15f642b1ue8d92b1823a12821@mail.gmail.com>
-MIME-Version: 1.0
-Message-Id: <200907040345.22922.vapier@gentoo.org>
-Subject: Re: [LTP] subdir make with LTP
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <caiqian@cclom.cn>) id 1MTCwX-0004V7-3R
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 10:51:33 +0000
+Received: from smtp100.biz.mail.re2.yahoo.com ([206.190.52.46])
+	by 29vjzd1.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1MTCwQ-000170-UJ
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 10:51:33 +0000
+Date: Tue, 21 Jul 2009 18:25:42 +0800 (CST)
+Message-Id: <20090721.182542.1000278277145531816.caiqian@cclom.cn>
+From: CAI Qian <caiqian@cclom.cn>
+Mime-Version: 1.0
+Subject: [LTP] LTP Intermediate Release for JULY 2009 Build Failures
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,84 +22,71 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6725777309731292675=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>, Nate Straz <nate-ltp@refried.org>
+To: ltp-list@lists.sf.net
 
---===============6725777309731292675==
-Content-Type: multipart/signed; boundary="nextPart3167989.iWBCpI47r8";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart3167989.iWBCpI47r8
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-On Saturday 04 July 2009 03:39:08 Garrett Cooper wrote:
-> Hi Mike, Nate, and Subrata,
->     Although some people may be unhappy with this change, I was
-> thinking of `breaking' subdirectory based make operations with LTP as
-> this would overcomplicate the make system logic a great deal with a
-> bunch of cookie cutter logic that will grow stale and become a pain to
-> maintain.
->     Is this something that would be a desired feature moving forward
-> or something we can official drop?
->     Subdir based Make would still function by specifying srcdir= on
-> the command line, but doing a bare command like the following:
->
->     cd testcases/kernel/syscalls && make all
->
->     would fail.
-
-that would annoy me greatly as this is my primary mode of ltp usage
--mike
-
---nextPart3167989.iWBCpI47r8
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJKTwiSAAoJEEFjO5/oN/WB6vAP/0IKccJmYs1ZpamVH/DM/Qpc
-9cCV3A8Ziz1fK6cpr7hpwGPENfTfdjVL5HaOiUtwQ4l3s+czISu3esZ0xMw008Vc
-v8U8IAG9SRmFGPqeuIHO4P6xeeI8WlPpvUDEpFDMpvi7mbrbAlRbbQIcfD+1YhHd
-C6LtDRp3IzOfL7J3AEvPNvB3MTkIwlkYCawlHiAjTYgMTyNNFCIW65t61Ym9d3TP
-k6SWMEiNj2fj3T6+++vTMnswxjpJrr5ymZjGJXe29ReDMtFn0+SxZPCb/QhxqVHe
-glj+2LS6qmxxoy8YzD/H5yC7Qbb4b7FuLUFlbGupD7/e7hYhfyF0d1e3o8CoruGa
-KccQus/oYgtZONqSpPtxA62VLUZdd+G4S34pTBqQ5Yur/kNZYs+cm5ZYMrv1ETUQ
-BwjVuAqJtpqfjAajX7aPjcZY0w7B5SPcwN9Bzy2/IolOONljt2HyXZYmAjDgjep5
-2FxqE5N+kUinHHIrqJQ5ReFwYGDyiRpUAONwvuBk0ceU4aUHEZa7dFsVoiIr2NWq
-a/ZCvOsSbf8J1fz4JDli68rB510xKDzy8aFYmaspLkwTj22roy/qSkPmZFRTJi56
-0vI9n5XIt9VQr0xGFklzEDqz5IbZpjfJM8Mky+eaW1HjjUvDy2NfShS3Sz4mznbY
-KgFL+qCZIU91+IFLrAAb
-=fvFC
------END PGP SIGNATURE-----
-
---nextPart3167989.iWBCpI47r8--
-
-
---===============6725777309731292675==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-
---===============6725777309731292675==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============6725777309731292675==--
-
+SGksDQoNCkkgaGF2ZSBzZWVuIHRob3NlIGZhaWx1cmVzLA0KDQojIHVuYW1lIC1hDQpMaW51eCBm
+b28uYmFyLnJlZGhhdC5jb20gMi42LjE4LTE1OC5lbDUgIzEgU01QIE1vbiBKdWwgMTMgMTY6MjM6
+MjAgRURUDQoyMDA5IHMzOTB4IHMzOTB4IHMzOTB4IEdOVS9MaW51eA0KDQptYWtlWzVdOiBFbnRl
+cmluZyBkaXJlY3RvcnkgYC9yb290LzIwMDkwNzIxL2x0cC1pbnRlcm1lZGlhdGUtMjAwOTA3MjEv
+dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9ldmVudGZkMicNCmdjYyAtZyAtTzIgLUkuLi8uLi9p
+bmNsdWRlIC1nIC1XYWxsIC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAtV2FsbCAgICBldmVudGZkMl8w
+MS5jICAtTC4uLy4uLy4uLy4uL2xpYiAtbGx0cCAtbyBldmVudGZkMl8wMQ0KZ2NjIC1nIC1PMiAt
+SS4uLy4uL2luY2x1ZGUgLWcgLVdhbGwgLUkuLi8uLi8uLi8uLi9pbmNsdWRlIC1XYWxsICAgIGV2
+ZW50ZmQyXzAyLmMgIC1MLi4vLi4vLi4vLi4vbGliIC1sbHRwIC1vIGV2ZW50ZmQyXzAyDQpnY2Mg
+LWcgLU8yIC1JLi4vLi4vaW5jbHVkZSAtZyAtV2FsbCAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgLVdh
+bGwgICAgZXZlbnRmZDJfMDMuYyAgLUwuLi8uLi8uLi8uLi9saWIgLWxsdHAgLW8gZXZlbnRmZDJf
+MDMNCmV2ZW50ZmQyXzAzLmM6IEluIGZ1bmN0aW9uIOKAmHhzZW1fd2FpdOKAmToNCmV2ZW50ZmQy
+XzAzLmM6NjA6IHdhcm5pbmc6IGZvcm1hdCDigJglbGx14oCZIGV4cGVjdHMgdHlwZSDigJhsb25n
+IGxvbmcgdW5zaWduZWQgaW504oCZLCBidXQgYXJndW1lbnQgNSBoYXMgdHlwZSDigJh1X2ludDY0
+X3TigJkNCmV2ZW50ZmQyXzAzLmM6IEluIGZ1bmN0aW9uIOKAmG1haW7igJk6DQpldmVudGZkMl8w
+My5jOjEyOTogd2FybmluZzogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g4oCYd2Fp
+dHBpZOKAmQ0KZXZlbnRmZDJfMDMuYzogQXQgdG9wIGxldmVsOg0KLi4vLi4vaW5jbHVkZS9saW51
+eF9zeXNjYWxsX251bWJlcnMuaDoxOTogd2FybmluZzog4oCYY2xlYW51cOKAmSB1c2VkIGJ1dCBu
+ZXZlciBkZWZpbmVkDQovdG1wL2NjT0RSOVdkLm86IEluIGZ1bmN0aW9uIGBldmVudGZkMic6DQov
+cm9vdC8yMDA5MDcyMS9sdHAtaW50ZXJtZWRpYXRlLTIwMDkwNzIxL3Rlc3RjYXNlcy9rZXJuZWwv
+c3lzY2FsbHMvZXZlbnRmZDIvZXZlbnRmZDJfMDMuYzo0OTogdW5kZWZpbmVkIHJlZmVyZW5jZSB0
+byBgY2xlYW51cCcNCmNvbGxlY3QyOiBsZCByZXR1cm5lZCAxIGV4aXQgc3RhdHVzDQptYWtlWzVd
+OiAqKiogW2V2ZW50ZmQyXzAzXSBFcnJvciAxDQptYWtlWzVdOiBMZWF2aW5nIGRpcmVjdG9yeSBg
+L3Jvb3QvMjAwOTA3MjEvbHRwLWludGVybWVkaWF0ZS0yMDA5MDcyMS90ZXN0Y2FzZXMva2VybmVs
+L3N5c2NhbGxzL2V2ZW50ZmQyJw0KbWFrZVs0XTogKioqIFthbGxdIEVycm9yIDINCm1ha2VbNF06
+IExlYXZpbmcgZGlyZWN0b3J5IGAvcm9vdC8yMDA5MDcyMS9sdHAtaW50ZXJtZWRpYXRlLTIwMDkw
+NzIxL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMnDQptYWtlWzNdOiAqKiogW2FsbF0gRXJyb3Ig
+Mg0KbWFrZVszXTogTGVhdmluZyBkaXJlY3RvcnkgYC9yb290LzIwMDkwNzIxL2x0cC1pbnRlcm1l
+ZGlhdGUtMjAwOTA3MjEvdGVzdGNhc2VzL2tlcm5lbCcNCm1ha2VbMl06ICoqKiBbYWxsXSBFcnJv
+ciAyDQptYWtlWzJdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL3Jvb3QvMjAwOTA3MjEvbHRwLWludGVy
+bWVkaWF0ZS0yMDA5MDcyMS90ZXN0Y2FzZXMnDQptYWtlWzFdOiAqKiogW2FsbF0gRXJyb3IgMg0K
+bWFrZVsxXTogTGVhdmluZyBkaXJlY3RvcnkgYC9yb290LzIwMDkwNzIxL2x0cC1pbnRlcm1lZGlh
+dGUtMjAwOTA3MjEnDQptYWtlOiAqKiogW2J1aWxkXSBFcnJvciAyDQoNCi0tLS0tLS0tLS0NCiMg
+dW5hbWUgLWENCkxpbnV4IGZvby5iYXIucmVkaGF0LmNvbSAyLjYuMTgtMTU4LmVsNSAjMSBTTVAg
+TW9uIEp1bCAxMw0KMTY6Mjc6MjUgRURUIDIwMDkgcHBjNjQgcHBjNjQgcHBjNjQgR05VL0xpbnV4
+DQoNCm1ha2VbNV06IEVudGVyaW5nIGRpcmVjdG9yeSBgL3Jvb3QvMjAwOTA3MjEvbHRwLWludGVy
+bWVkaWF0ZS0yMDA5MDcyMS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2ZzdGF0YXQnDQpnY2Mg
+LWcgLU8yIC1JLi4vLi4vaW5jbHVkZSAtZyAtV2FsbCAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgLVdh
+bGwgLURUU1RfVVNFX05FV0VSNjRfU1lTQ0FMTD0xIC1EX0ZJTEVfT0ZGU0VUX0JJVFM9NjQgICAt
+YyAtbyBmc3RhdGF0MDFfNjQubyBmc3RhdGF0MDEuYw0KZnN0YXRhdDAxLmM6IEluIGZ1bmN0aW9u
+IOKAmG1haW7igJk6DQpmc3RhdGF0MDEuYzoxMjY6IGVycm9yOiBleHBlY3RlZCDigJgp4oCZIGJl
+Zm9yZSBudW1lcmljIGNvbnN0YW50DQptYWtlWzVdOiAqKiogW2ZzdGF0YXQwMV82NC5vXSBFcnJv
+ciAxDQptYWtlWzVdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL3Jvb3QvMjAwOTA3MjEvbHRwLWludGVy
+bWVkaWF0ZS0yMDA5MDcyMS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2ZzdGF0YXQnDQptYWtl
+WzRdOiAqKiogW2FsbF0gRXJyb3IgMg0KbWFrZVs0XTogTGVhdmluZyBkaXJlY3RvcnkgYC9yb290
+LzIwMDkwNzIxL2x0cC1pbnRlcm1lZGlhdGUtMjAwOTA3MjEvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscycNCm1ha2VbM106ICoqKiBbYWxsXSBFcnJvciAyDQptYWtlWzNdOiBMZWF2aW5nIGRpcmVj
+dG9yeSBgL3Jvb3QvMjAwOTA3MjEvbHRwLWludGVybWVkaWF0ZS0yMDA5MDcyMS90ZXN0Y2FzZXMv
+a2VybmVsJw0KbWFrZVsyXTogKioqIFthbGxdIEVycm9yIDINCm1ha2VbMl06IExlYXZpbmcgZGly
+ZWN0b3J5IGAvcm9vdC8yMDA5MDcyMS9sdHAtaW50ZXJtZWRpYXRlLTIwMDkwNzIxL3Rlc3RjYXNl
+cycNCm1ha2VbMV06ICoqKiBbYWxsXSBFcnJvciAyDQptYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9y
+eSBgL3Jvb3QvMjAwOTA3MjEvbHRwLWludGVybWVkaWF0ZS0yMDA5MDcyMScNCm1ha2U6ICoqKiBb
+YnVpbGRdIEVycm9yIDINCg0KQ0FJIFFpYW4NCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpFbnRlciB0
+aGUgQmxhY2tCZXJyeSBEZXZlbG9wZXIgQ2hhbGxlbmdlICAKVGhpcyBpcyB5b3VyIGNoYW5jZSB0
+byB3aW4gdXAgdG8gJDEwMCwwMDAgaW4gcHJpemVzISBGb3IgYSBsaW1pdGVkIHRpbWUsIAp2ZW5k
+b3JzIHN1Ym1pdHRpbmcgbmV3IGFwcGxpY2F0aW9ucyB0byBCbGFja0JlcnJ5IEFwcCBXb3JsZChU
+TSkgd2lsbCBoYXZlCnRoZSBvcHBvcnR1bml0eSB0byBlbnRlciB0aGUgQmxhY2tCZXJyeSBEZXZl
+bG9wZXIgQ2hhbGxlbmdlLiBTZWUgZnVsbCBwcml6ZSAgCmRldGFpbHMgYXQ6IGh0dHA6Ly9wLnNm
+Lm5ldC9zZnUvQ2hhbGxlbmdlCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3Jn
+ZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxp
+c3QK
