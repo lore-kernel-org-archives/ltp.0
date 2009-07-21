@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <ralf@h5.dl5rb.org.uk>) id 1MR48t-0006Uk-Bz
-	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2009 13:03:27 +0000
-Received: from h5.dl5rb.org.uk ([81.2.74.5])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MR48k-0006re-Vw
-	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2009 13:03:27 +0000
-Date: Wed, 15 Jul 2009 13:05:12 +0100
-From: Ralf Baechle <ralf@linux-mips.org>
-Message-ID: <20090715120512.GA2752@linux-mips.org>
-References: <4A5C8068.6020203@monstr.eu> <200907141843.05629.arnd@arndb.de>
-	<9e6f3dfd0907141811p512b4edp3f9dd0fdeae1123e@mail.gmail.com>
-	<200907151214.52369.arnd@arndb.de>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <wangyong2009@cn.fujitsu.com>) id 1MT8dX-0002E4-38
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 06:15:39 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MT8dR-00056X-Qf
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 06:15:39 +0000
+Message-ID: <4A655D3C.2040601@cn.fujitsu.com>
+Date: Tue, 21 Jul 2009 14:16:28 +0800
+From: Wang Yong <wangyong2009@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <200907151214.52369.arnd@arndb.de>
-Subject: Re: [LTP] access_ok macor
+References: <4A652E3C.20402@cn.fujitsu.com>
+	<364299f40907202124u8cd7a14n6e331fc53648ca66@mail.gmail.com>
+In-Reply-To: <364299f40907202124u8cd7a14n6e331fc53648ca66@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] Fix failure of the utimes01 test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,100 +28,148 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: LTP <ltp-list@lists.sourceforge.net>, monstr@monstr.eu, Linux Kernel list <linux-kernel@vger.kernel.org>, John Williams <jwilliams@itee.uq.edu.au>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-On Wed, Jul 15, 2009 at 12:14:52PM +0200, Arnd Bergmann wrote:
 
-> On Wednesday 15 July 2009, John Williams wrote:
-> > On Wed, Jul 15, 2009 at 2:43 AM, Arnd Bergmann <arnd@arndb.de> wrote:
-> > > The solution then is to handle fixups from the unaligned exception handler
-> > > if you come from the kernel. That should fix the three text cases.
-> > >
-> > > I don't fully understand your exception handling there, but I think you
-> > > also need to add code checking for __range_ok() to your unaligned handler,
-> > > to prevent malicious user space code from accessing the kernel through
-> > > unaligned pointers.
-> > 
-> > 
-> > Just to try to clarify - are there any alignment rules in the ABI on
-> > user-space pointers (which end up going to get/put_user)?
-> 
-> The kernel normally expects aligned input from user space, but I guess
-> it can't hurt to handle it anyway. arch/mips/kernel/alignment.c seems
-> to handle that case. Maybe Ralf can give some more insight.
 
-It's arch/arm/mm/alignment.c rsp. arch/mips/kernel/unaliged.c.
+Garrett Cooper wrote as:
+> On Mon, Jul 20, 2009 at 7:55 PM, Wang Yong<wangyong2009@cn.fujitsu.com> wrote:
+>   
+>> This patch also fixed the path which we pass to setup_file(). If
+>> progdir is not a absolute pathname of the working directory, the file
+>> open will fail.
+>>
+>> This patch fixed the problem.
+>>
+>> Signed-off-by: WangYong <wangyong2009@cn.fujitsu.com>
+>>
+>> diff -Nurp a/testcases/kernel/syscalls/utimes/utimes01.c b/testcases/kernel/syscalls/utimes/utimes01.c
+>> --- a/testcases/kernel/syscalls/utimes/utimes01.c       2009-07-21 08:51:05.000000000 +0800
+>> +++ b/testcases/kernel/syscalls/utimes/utimes01.c       2009-07-21 08:55:01.000000000 +0800
+>> @@ -138,7 +138,6 @@ void setup() {
+>>  */
+>>  static int opt_debug;
+>>  static char *progname;
+>> -static char *progdir;
+>>
+>>  enum test_type {
+>>                NORMAL,
+>> @@ -232,7 +231,7 @@ static int do_test(struct test_case *tc)
+>>         struct stat st;
+>>         uid_t old_uid;
+>>
+>> -        TEST(rc = setup_file(progdir, "test.file", fpath));
+>> +        TEST(rc = setup_file(TESTDIR, "test.file", fpath));
+>>         if (rc < 0)
+>>                 return 1;
+>>
+>> @@ -339,8 +338,6 @@ int main(int ac, char **av) {
+>>        progname = strchr(av[0], '/');
+>>         progname = progname ? progname + 1 : av[0];
+>>
+>> -       progdir = strdup(av[0]);
+>> -        progdir = dirname(progdir);
+>>
+>>         /* parse standard options */
+>>         if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
+>>     
+>
+> Wang,
+>     Would you please verify this diff in your environment too? It does
+> what your diff did, in addition to fixes a harmless warning with
+> -Wnonnull:
+>
+> 1. Fix the utimes testcase so that it passes with the appropriate
+> non-hardcoded directory, as provided by Wang Yong
+> <wangyong2009@cn.fujitsu.com>
+> 2. Fix a compiler warning by using an intermediary const char*
+> variable, as casting alone was still causing compiler warnings in gcc
+> 4.3.2.
+>   
+Hi,
 
-> > It seems the failure path is like this:
-> > 
-> > 1. userspace passes unaligned pointer
-> > 2. get_user attempts to access
-> > 3. CPU raises unaligned exception (if only it would raise the segfault as
-> > higher priority, before the unaligned!)
-> > 4. unaligned exception handler attempts to simulate the unaligned access
-> > with multiple partial read/write ops
-> > 5. CPU raises MMU exception on the read/write by the unaligned handler
-> > 6. kernel segfault handler looks up faulting address, it is in the unaligned
-> > exception handler, which has no fixup.
-> > 7. no fixup -> failure
-> 
-> Right.
-> 
-> > So, I suppose the question is - where in the sequence is the true failure?
-> 
-> I think in step 4. AFIACT, the kernel must do a number of checks on accesses
-> to random pointers.
+I have verified this diff in my environment. Your patch is ok.  
+Thank you for having fixed the warning.
 
-Yes; but the checks that unaligned.c does on MIPS are no different from
-any other get_user(), that is it ensures that the entire 8/16/32/64-bit
-access is in userspace.  That's done using access_ok().
+> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+>
+> Index: testcases/kernel/syscalls/utimes/utimes01.c
+> ===================================================================
+> RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/utimes/utimes01.c,v
+> retrieving revision 1.2
+> diff -u -r1.2 utimes01.c
+> --- testcases/kernel/syscalls/utimes/utimes01.c 10 Jul 2009 10:14:59 -0000     1
+> .2
+> +++ testcases/kernel/syscalls/utimes/utimes01.c 21 Jul 2009 04:20:44 -0000
+> @@ -138,7 +138,6 @@
+>   */
+>  static int opt_debug;
+>  static char *progname;
+> -static char *progdir;
+>
+>  enum test_type {
+>                 NORMAL,
+> @@ -232,7 +231,7 @@
+>          struct stat st;
+>          uid_t old_uid;
+>
+> -        TEST(rc = setup_file(progdir, "test.file", fpath));
+> +        TEST(rc = setup_file(TESTDIR, "test.file", fpath));
+>          if (rc < 0)
+>                  return 1;
+>
+> @@ -257,9 +256,19 @@
+>                  fpath[len - 1] = '\0';
+>          }
+>          errno = 0;
+> -        if (tc->ttype == NO_FNAME)
+> -                TEST(sys_ret = utimes(NULL, tv));
+> -        else
+> +        if (tc->ttype == NO_FNAME) {
+> +                /**
+> +                 * Note (garrcoop):
+> +                 *
+> +                 * If you do NULL directly, then gcc [4.3] will complain when
+> +                 * one specifies -Wnonnull in CPPFLAGS. This is a negative
+> +                 * test, but let's not allow the compiler to complain about
+> +                 * something trivial like this.
+> +                 **/
+> +                const char *dummy = NULL;
+> +                TEST(sys_ret = utimes(dummy, tv));
+> +        }
+> +       else
+>                  TEST(sys_ret = utimes(fpath, tv));
+>          sys_errno = errno;
+>          if (tc->ttype == FILE_NOT_EXIST)
+> @@ -339,9 +348,6 @@
+>         progname = strchr(av[0], '/');
+>          progname = progname ? progname + 1 : av[0];
+>
+> -       progdir = strdup(av[0]);
+> -        progdir = dirname(progdir);
+> -
+>          /* parse standard options */
+>          if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL)
+> {
+>               tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
+>
+>
+>
+>   
 
-> > Clearly LTP thinks it's ok to pass unaligned pointers to the kernel,
-> > suggesting (1) is fine - thus my question about alignment rules in the ABI.
-> 
-> No, LTP thinks it should get a -EFAULT error code for that access. It does
-> specify whether it expects this because of an unaligned address or because
-> of an invalid page.
-> 
-> > Do we need fixups on the unaligned handler itself? This will be ugly ugly
-> > ugly. 
-> 
-> That's what ARM does. You don't have to do it from assembly though,
-> implementing it in C is probably easier.
+-- 
+Wang Yong
+Development Dept.I
+Nanjing Fujitsu Nanda Software Tech. Co., Ltd.(FNST)
+8/F.,Civil Defense Building, No. 189 Guangzhou Rd,
+Nanjing, 210029, China
+TEL: +86+25-86630566-837
+COINS: 79955-837
+FAX: +86+25-83317685
+MAIL: wangyong2009@cn.fujitsu.com
 
-The MIPS psABI of which the Linux/MIPS ABI is sort of derived doesn't
-specify any alignment-specific behaviour for syscalls.  That is they're not
-treated any different than any random piece of library code.  I don't
-know of any other standards documents (POSIX, single UNIX etc.) that
-would have anything relevant either.
 
-There are several historic precedents for why Linux handles miss-alignment
-this way:
-
-  o The networking stack where some cards may align the header in memory
-    such that IP addresses are always on an address that is aligned to a
-    16-bit but not a 32-bit boundary.  The tulip cards do that for example.
-    It was considered a better solution to emulate the access or copy the
-    entire rx packet before further processing than hacking up the
-    networking stack to handle with ill-designed hardware.
-
-  o Another in-kernel case was the MS-DOS partition table parsing.
-
-  o The were also a bunch of historic Linux applications originally written
-    for x86 which were relativly hard to port, so generally handling
-    exceptions, was the by far easiest thing to do and probably for most
-    architectures where this is relevant it's the easiest to handle all
-    miss-alignment cases, not just selectively userland and maybe IP and
-    MS-DOS partition table parsing.
-
-We've moved on.  Handling miss-alignment is no longer a very relavent part
-of the syscall interface.  So I think for the definition of the Linux
-ABI this should just be left as implementation defined behaviour but
-whatever an architecture does, it should be done consistently for all
-system interfaces.
-
-  Ralf
 
 ------------------------------------------------------------------------------
 Enter the BlackBerry Developer Challenge  
