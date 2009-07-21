@@ -1,21 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MNwOB-00009I-6C
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 22:10:19 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MNwNy-00085z-Sn
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 22:10:14 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 6 Jul 2009 18:10:03 -0400
-References: <364299f40907061455n2f95c877sb40d6a97e856fd03@mail.gmail.com>
-In-Reply-To: <364299f40907061455n2f95c877sb40d6a97e856fd03@mail.gmail.com>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yjwei@cn.fujitsu.com>) id 1MT56x-00042E-Lh
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 02:29:47 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MT56q-0000ek-8o
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 02:29:47 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id 2A976170160
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 21 Jul 2009 10:50:56 +0800 (CST)
+Received: from fnst.cn.fujitsu.com (localhost.localdomain [127.0.0.1])
+	by tang.cn.fujitsu.com (8.13.1/8.13.1) with ESMTP id n6L32qd6016805
+	for <ltp-list@lists.sourceforge.net>; Tue, 21 Jul 2009 11:02:52 +0800
+Received: from [127.0.0.1] (unknown [10.167.141.76])
+	by fnst.cn.fujitsu.com (Postfix) with ESMTP id E0D44D402F
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 21 Jul 2009 10:30:42 +0800 (CST)
+Message-ID: <4A6527B6.7070602@cn.fujitsu.com>
+Date: Tue, 21 Jul 2009 10:28:06 +0800
+From: Wei Yongjun <yjwei@cn.fujitsu.com>
 MIME-Version: 1.0
-Message-Id: <200907061810.04510.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] Missing limits.h include and test.h style in
-	system_specific_process_info.c
+Subject: [LTP] [PATCH] Fix to set the signal handler of SIGINT in
+	mq_timedreceive01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,75 +34,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8274151685579354954=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
---===============8274151685579354954==
-Content-Type: multipart/signed; boundary="nextPart6538916.qTnfSgOg3g";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+The test case mq_timedreceive01 does not register the signal
+handler of SIGINT, so the problam will be terminated by SIGINT
+from child process.
 
---nextPart6538916.qTnfSgOg3g
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+This patch fixed the problem.
 
-On Monday 06 July 2009 17:55:43 Garrett Cooper wrote:
-> 1. test.h is in .../include/. Thus #include should be #include
-> "test.h", not #include <test.h>.
-> 2. limits.h should be explicitly stated because certain constants are
-> used in system_specific_process_info.c (SHRT_MAX for instance).
->
-> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
 
-unified diffs only please.  context diffs are awful.
--mike
+diff --git a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+index dadc38d..beeb298 100644
+--- a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
++++ b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+@@ -106,6 +106,14 @@ extern void cleanup() {
+         tst_exit();
+ }
+ 
++/*
++ * sighandler()
++ */
++void sighandler(int sig)
++{
++        return;
++}
++
+ /* Local  Functions */
+ /******************************************************************************/
+ /*                                                                            */
+@@ -126,6 +134,7 @@ extern void cleanup() {
+ /******************************************************************************/
+ void setup() {
+         /* Capture signals if any */
++        signal(SIGINT, sighandler);
+         /* Create temporary directories */
+         TEST_PAUSE;
+         tst_tmpdir();
+@@ -432,17 +441,6 @@ EXIT:
+         return result;
+ }
+ 
+-/*
+- * sighandler()
+- */
+-void sighandler(int sig)
+-{
+-        if (sig == SIGINT)
+-                return;
+-        // NOTREACHED
+-        return;
+-}
+-
+ 
+ 
+ /*
 
---nextPart6538916.qTnfSgOg3g
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJKUnY8AAoJEEFjO5/oN/WBKTUQANLEVOB3C+4on234VVPWg4W6
-IQoow61VU0BXfIkeBNYBUtyMpYViswgAbr1YPbcmAZJR+yHhLelx+o78hhmuue7y
-Jn/mzlxlmCPWcuRWy5fE/Ce1EGHyO9jQIHW2FzmhAU0Q7zJdw5f9kiHYAgdkOMHC
-SeWY1ijdfh+hk6sBgpdYW8rtu+Q4+uwpWC49VHfiIonAN2pKAQI/8DGQZr7kZH+Q
-CR/0r+KG5K3bKfTZUQDTO0fR73dPLPnU/QmwI1Nqayg7vLhTgS/rkRmeTlG1C7cU
-/ULA19Vowqh/sVMO+i53YQhnB2hL7HRnd0Z6bb/ybfMaeYS60mWOVy4SYID5S4Bd
-D74BT27TgYgPWOL+ZmlJBU2voPPEy5VIo4afE8/WwZ9SUTbw2OrRWWxdwEreVXpr
-n3rnmMj2U/mXFTE+xelrV9N4zPewjV5hsTC99BCdfkf5L/wO5FtNOZcKphTC8CjW
-1aGUS0DNa7RRDTmm5PAeYEPwVC1Lspivomnf9aVa6b/v0d8OCIIlRvyd9rmKcy5Y
-8CGJZDRUp/OfBcVhMtp1jlIQr0Hns4yTPDEHXfnWCq1f5IPeQhVnuuYwMyoRfBSH
-V1Yusj9bzxI2drl6N7XLmuLYIC1TPYhjLIjcpHH2LvDz1WUEO6XdvqxPs5HaSx+n
-VyItt5yApvLENYrkVNnx
-=YxoR
------END PGP SIGNATURE-----
-
---nextPart6538916.qTnfSgOg3g--
 
 
---===============8274151685579354954==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+
 
 ------------------------------------------------------------------------------
-
---===============8274151685579354954==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Enter the BlackBerry Developer Challenge  
+This is your chance to win up to $100,000 in prizes! For a limited time, 
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============8274151685579354954==--
-
