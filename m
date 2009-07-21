@@ -1,25 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <linux-rt-users-owner@vger.kernel.org>)
-	id 1MPJK8-00086Z-HR
-	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 16:51:48 +0000
-Received: from eu3sys201aog003.obsmtp.com ([207.126.148.183])
-	by 29vjzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1MPJK4-0005kX-Hy
-	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 16:51:48 +0000
-From: Sripathi Kodi <sripathik@in.ibm.com>
-Date: Fri, 10 Jul 2009 22:00:12 +0530
-References: <1224509719.5152.116.camel@subratamodak.linux.ibm.com>
-	<1246890698.4887.24.camel@subratamodak.linux.ibm.com>
-	<1247076833.5405.48.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1247076833.5405.48.camel@subratamodak.linux.ibm.com>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MT6tn-0001if-Qs
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 04:24:19 +0000
+Received: from mail-pz0-f201.google.com ([209.85.222.201])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MT6ta-0003vF-W1
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 04:24:14 +0000
+Received: by pzk39 with SMTP id 39so460863pzk.28
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 20 Jul 2009 21:24:06 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <200907102200.12804.sripathik@in.ibm.com>
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_4481_7737160.1247243594058"
-Subject: Re: [LTP] LTP RT Tests (Cyclic, rt-migrate, etc)
+In-Reply-To: <4A652E3C.20402@cn.fujitsu.com>
+References: <4A652E3C.20402@cn.fujitsu.com>
+Date: Mon, 20 Jul 2009 21:24:06 -0700
+Message-ID: <364299f40907202124u8cd7a14n6e331fc53648ca66@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Fix failure of the utimes01 test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,143 +27,147 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sf.net>, linux-rt-users <linux-rt-users@vger.kernel.org>, dvhltc <dvhltc@linux.vnet.ibm.com>, Sripathi Kodi <sripathik@linux.vnet.ibm.com>, Steven Rostedt <rostedt@goodmis.org>, Gregory Haskins <ghaskins@novell.com>, Clark Williams <clark.williams@gmail.com>
+To: Wang Yong <wangyong2009@cn.fujitsu.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-------=_Part_4481_7737160.1247243594058
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On Mon, Jul 20, 2009 at 7:55 PM, Wang Yong<wangyong2009@cn.fujitsu.com> wro=
+te:
+> This patch also fixed the path which we pass to setup_file(). If
+> progdir is not a absolute pathname of the working directory, the file
+> open will fail.
+>
+> This patch fixed the problem.
+>
+> Signed-off-by: WangYong <wangyong2009@cn.fujitsu.com>
+>
+> diff -Nurp a/testcases/kernel/syscalls/utimes/utimes01.c b/testcases/kern=
+el/syscalls/utimes/utimes01.c
+> --- a/testcases/kernel/syscalls/utimes/utimes01.c =A0 =A0 =A0 2009-07-21 =
+08:51:05.000000000 +0800
+> +++ b/testcases/kernel/syscalls/utimes/utimes01.c =A0 =A0 =A0 2009-07-21 =
+08:55:01.000000000 +0800
+> @@ -138,7 +138,6 @@ void setup() {
+> =A0*/
+> =A0static int opt_debug;
+> =A0static char *progname;
+> -static char *progdir;
+>
+> =A0enum test_type {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0NORMAL,
+> @@ -232,7 +231,7 @@ static int do_test(struct test_case *tc)
+> =A0 =A0 =A0 =A0 struct stat st;
+> =A0 =A0 =A0 =A0 uid_t old_uid;
+>
+> - =A0 =A0 =A0 =A0TEST(rc =3D setup_file(progdir, "test.file", fpath));
+> + =A0 =A0 =A0 =A0TEST(rc =3D setup_file(TESTDIR, "test.file", fpath));
+> =A0 =A0 =A0 =A0 if (rc < 0)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 1;
+>
+> @@ -339,8 +338,6 @@ int main(int ac, char **av) {
+> =A0 =A0 =A0 =A0progname =3D strchr(av[0], '/');
+> =A0 =A0 =A0 =A0 progname =3D progname ? progname + 1 : av[0];
+>
+> - =A0 =A0 =A0 progdir =3D strdup(av[0]);
+> - =A0 =A0 =A0 =A0progdir =3D dirname(progdir);
+>
+> =A0 =A0 =A0 =A0 /* parse standard options */
+> =A0 =A0 =A0 =A0 if ((msg =3D parse_opts(ac, av, (option_t *)NULL, NULL)) =
+!=3D (char *)NULL){
 
-On Wednesday 08 July 2009 23:43:53 Subrata Modak wrote:
-> Darren/Sri/Gowri,
-> 
-> Where do you want me to put this exactly inside the RT tree ?
+Wang,
+    Would you please verify this diff in your environment too? It does
+what your diff did, in addition to fixes a harmless warning with
+-Wnonnull:
 
-Hi Subrata,
+1. Fix the utimes testcase so that it passes with the appropriate
+non-hardcoded directory, as provided by Wang Yong
+<wangyong2009@cn.fujitsu.com>
+2. Fix a compiler warning by using an intermediary const char*
+variable, as casting alone was still causing compiler warnings in gcc
+4.3.2.
 
-Going by how the tests are organized currently, I think this should go
-into it's own directory under testcases/realtime/func. We will need to
-add a makefile to it. Are you looking at us to help you with this?
+Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
 
-Thanks,
-Sripathi.
+Index: testcases/kernel/syscalls/utimes/utimes01.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/utimes/utimes01.c,v
+retrieving revision 1.2
+diff -u -r1.2 utimes01.c
+--- testcases/kernel/syscalls/utimes/utimes01.c 10 Jul 2009 10:14:59 -0000 =
+    1
+.2
++++ testcases/kernel/syscalls/utimes/utimes01.c 21 Jul 2009 04:20:44 -0000
+@@ -138,7 +138,6 @@
+  */
+ static int opt_debug;
+ static char *progname;
+-static char *progdir;
 
-> 
-> Regards--
-> Subrata
-> 
-> On Mon, 2009-07-06 at 20:01 +0530, Subrata Modak wrote: 
-> > On Mon, 2009-07-06 at 10:26 -0400, Steven Rostedt wrote:
-> > > 
-> > > On Tue, 23 Jun 2009, Subrata Modak wrote:
-> > > 
-> > > > Steven,
-> > > > 
-> > > > Do you remember this ?
-> > > 
-> > > Yes, and I finally got time to fix it up a little ;-)
-> > 
-> > Great. Forwarding to the ltp mailing list as well. Thanks steven.
-> > 
-> > Regards--
-> > Subrata
-> > 
-> > > 
-> > > OK, here it is. To run it, just do:
-> > > 
-> > >  ./rt-migrate-test -c 
-> > > 
-> > > You need to be root since it changes the priorities. It will check the 
-> > > number of processors and create N+1 threads (where N is the number of 
-> > > processors). Each thread will wake up at the same time and try to do a 
-> > > busy loop for 20 millisecs. If a lower prio thread runs for 1ms before a 
-> > > higher prio thread, it will fail. This should test the migration of the 
-> > > threads to make sure that the higher prio threads run first.
-> > > 
-> > > Sorry for taking so long.
-> > > 
-> > > -- Steve
-> > > 
-> > > 
-> > > 
-> > > > 
-> > > > Regards--
-> > > > Subrata
-> > > > 
-> > > > On Mon, 2008-12-15 at 08:52 -0500, Steven Rostedt wrote: 
-> > > > > On Mon, 15 Dec 2008, Subrata Modak wrote:
-> > > > > > > 
-> > > > > > > Lets see, you wanted my rt migration test. I'll clean that up now. Is 
-> > > > > > 
-> > > > > > Oh yes.
-> > > > > 
-> > > > > OK, I'm cleaning it up to be more for production use.
-> > > > > 
-> > > > > > 
-> > > > > > > there something else I needed to send you? If you remember.
-> > > > > > 
-> > > > > > I am not quite sure now. Will let you know in future.
-> > > > > 
-> > > > > OK, thanks,
-> > > > > 
-> > > > > -- Steve
-> > > > > 
-> > > > 
-> > > > 
-> > ------------------------------------------------------------------------------
-> > _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-rt-users" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
-> 
---
-To unsubscribe from this list: send the line "unsubscribe linux-rt-users" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+ enum test_type {
+                NORMAL,
+@@ -232,7 +231,7 @@
+         struct stat st;
+         uid_t old_uid;
 
-------=_Part_4481_7737160.1247243594058
-Content-Type: text/plain;charset=ISO-8859-1
+-        TEST(rc =3D setup_file(progdir, "test.file", fpath));
++        TEST(rc =3D setup_file(TESTDIR, "test.file", fpath));
+         if (rc < 0)
+                 return 1;
 
+@@ -257,9 +256,19 @@
+                 fpath[len - 1] =3D '\0';
+         }
+         errno =3D 0;
+-        if (tc->ttype =3D=3D NO_FNAME)
+-                TEST(sys_ret =3D utimes(NULL, tv));
+-        else
++        if (tc->ttype =3D=3D NO_FNAME) {
++                /**
++                 * Note (garrcoop):
++                 *
++                 * If you do NULL directly, then gcc [4.3] will complain w=
+hen
++                 * one specifies -Wnonnull in CPPFLAGS. This is a negative
++                 * test, but let's not allow the compiler to complain about
++                 * something trivial like this.
++                 **/
++                const char *dummy =3D NULL;
++                TEST(sys_ret =3D utimes(dummy, tv));
++        }
++       else
+                 TEST(sys_ret =3D utimes(fpath, tv));
+         sys_errno =3D errno;
+         if (tc->ttype =3D=3D FILE_NOT_EXIST)
+@@ -339,9 +348,6 @@
+        progname =3D strchr(av[0], '/');
+         progname =3D progname ? progname + 1 : av[0];
 
+-       progdir =3D strdup(av[0]);
+-        progdir =3D dirname(progdir);
+-
+         /* parse standard options */
+         if ((msg =3D parse_opts(ac, av, (option_t *)NULL, NULL)) !=3D (cha=
+r *)NULL)
+{
+              tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
 
-+----------------------------------------------------------------------+
-| ETAS Mail Security - http://intranet.etasgroup.com/encryption        |
-+----------------------------------------------------------------------+
-| - The message was not encrypted and not digitally signed             |
-+----------------------------------------------------------------------+
+---------------------------------------------------------------------------=
+---
+Enter the BlackBerry Developer Challenge  =
 
-------=_Part_4481_7737160.1247243594058
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+This is your chance to win up to $100,000 in prizes! For a limited time, =
 
-------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
 vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
-------=_Part_4481_7737160.1247243594058
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+the opportunity to enter the BlackBerry Developer Challenge. See full prize=
+  =
 
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------=_Part_4481_7737160.1247243594058--
-
-
