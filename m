@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mohan@in.ibm.com>) id 1MM3NX-0007Ln-Vx
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2009 17:13:51 +0000
-Received: from e28smtp03.in.ibm.com ([59.145.155.3])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MM3NT-0002B1-IN
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2009 17:13:51 +0000
-Date: Wed, 1 Jul 2009 22:29:23 +0530
-From: "M. Mohan Kumar" <mohan@in.ibm.com>
-Message-ID: <20090701165923.GC3237@in.ibm.com>
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MTMtX-0002Za-1s
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 21:29:07 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MTMtP-0002Te-9N
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 21:29:07 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Tue, 21 Jul 2009 17:28:54 -0400
+References: <20090721.182542.1000278277145531816.caiqian@cclom.cn>
+	<364299f40907210721q365aa8fdu21a1b2ff254bc60a@mail.gmail.com>
+In-Reply-To: <364299f40907210721q365aa8fdu21a1b2ff254bc60a@mail.gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] [PATCH] Fix pidns14 test case
-Reply-To: mohan@in.ibm.com
+Message-Id: <200907211728.56027.vapier@gentoo.org>
+Subject: Re: [LTP] LTP Intermediate Release for JULY 2009 Build Failures
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,62 +25,83 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6357474337999474906=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sf.net, sukadev@linux.vnet.ibm.com, sachinp@in.ibm.com
+To: ltp-list@lists.sourceforge.net
+Cc: ltp-list@lists.sf.net
 
-[PATCH] pidns14
+--===============6357474337999474906==
+Content-Type: multipart/signed; boundary="nextPart1425289.1mbEs6WpKq";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Container-init may be immune to unhandled fatal signals (like SIGUSR1)
-even if they are from ancestor namespace. SIGKILL/SIGSTOP are the only
-reliable signals to a container-init from ancestor namespace. Make sure
-that container-init will not respond to signals other than
-SIGKILL/SIGSTOP
+--nextPart1425289.1mbEs6WpKq
+Content-Type: text/plain;
+  charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Signed-off-by: M. Mohan Kumar <mohan@in.ibm.com>
----
- testcases/kernel/containers/pidns/pidns14.c |   13 +++++++------
- 1 files changed, 7 insertions(+), 6 deletions(-)
+On Tuesday 21 July 2009 10:21:44 Garrett Cooper wrote:
+> I was tempted to fix the format string error, but I don't know what
+> the potential implications are of switching the data type from
+> u_int64_t to unsigned long long...
 
-diff --git a/testcases/kernel/containers/pidns/pidns14.c b/testcases/kernel/containers/pidns/pidns14.c
-index e95bf95..41602cd 100644
---- a/testcases/kernel/containers/pidns/pidns14.c
-+++ b/testcases/kernel/containers/pidns/pidns14.c
-@@ -67,9 +67,8 @@ int child_fn(void *ttype)
- 		tst_resm(TBROK, "pidns is not created.");
- 		cleanup();
- 	}
--	pause();
--	tst_resm(TFAIL, "Oops! Container init resumed after receiving SIGUSR1");
--	return -1;
-+	sleep(10);
-+	return 0;
- }
- 
- /*
-@@ -111,9 +110,11 @@ int main(int argc, char *argv[])
- 	if (waitpid(cpid, &status, 0) < 0)
- 		tst_resm(TWARN, "waitpid() failed.");
- 
--	if ((WIFSIGNALED(status)) && (WTERMSIG(status) == SIGUSR1))
--		tst_resm(TPASS, "Container init is killed as expected, "
--				" when the SIGUSR1 is passed from parent\n");
-+	if (WIFEXITED(status))
-+		tst_resm(TPASS, "Container init returned as expected\n");
-+	else if ((WIFSIGNALED(status)) && (WTERMSIG(status) == SIGUSR1))
-+		tst_resm(TFAIL, "Container init is killed when the SIGUSR1 "
-+		       		"is passed from parent\n");
- 	 else
- 		tst_resm(TFAIL, "After sending signal kill -USR1, "
- 				"returned unexpected error\n");
--- 
-1.6.0.2
+dont do that.  just use the proper format string from inttypes.h.
+uint64_t f;
+printf("f = %"PRIu64"\n", f);
 
+> +/* Dummy function reference to avoid compiler warning from
+> linux_syscall_numbers.h. */
+> +extern void cleanup() { }
+
+this is incorrect for a few reasons.  it should read:
++/* Dummy function as syscall() from linux_syscall_numbers.h uses cleanup() */
+void cleanup() { }
+-mike
+
+--nextPart1425289.1mbEs6WpKq
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJKZjMXAAoJEEFjO5/oN/WBKzAQAKIm85/X379goI5jpLq9pBJP
+D6U47Zt18mvZ+v5X6wAx3TIAuOOD7iSx2nyhxp48dnnjgtJLzcM3d2vj8YDHXWt9
+HBXtt3TNHj35VTLtVJAJMnM4MzdL+bg+EIyIvPK9KsFcBbH/hxjkD948PWfNACZi
+YwIXa1AWpYCKz+cTa1qpjGFqXpRnJEzIxgBDAS4gvtCt5fN0iNsorZwrBOZSbfHm
+KXGtojHJsEoJETI6selOVlW3V3UehomwqI2EHz5mnyMP6BaFNKzLaac/qNkkhLAY
+mjPRI5riwqjwgYioRg+AI2zqyrwvi0C3Tfw0HhbTnTva56B86dvi+56/rLIWbToW
+TT8oZYYhnYvZL42fM9HRe+AGbcOsMW6Laa/Q6Fp7AMYpzrwoZuudzHUsNuEo/lrs
+syUoo8SGypWn/Ks3waaRKfQsLFimGUX19cWo9xNs+jbL6mF+qqxQ0dYwHLBQoQ6V
++LunwJrYXHmr2k4+c9Fb9olL0HvMX2iOgrH3Qw6HFCo7+hvFv0h884Yia9of2EvR
+Hu45gYqZEWuIIgz9t74/jgVII9+24oD1kMkP/dvddI978PaFerrwuiUyNlAjPeIJ
+L5y2+s8EpGots3MKK1EPCnPKyUuoe1EFxz99cxG7UpLlLOMOC0E1c14UR6a9x++A
+4/YbMEkwez/BsBpjtNiG
+=+2Xc
+-----END PGP SIGNATURE-----
+
+--nextPart1425289.1mbEs6WpKq--
+
+
+--===============6357474337999474906==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
+
+--===============6357474337999474906==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6357474337999474906==--
+
