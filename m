@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <arnd@arndb.de>) id 1MR4W7-0003pE-Bq
-	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2009 13:27:27 +0000
-Received: from moutng.kundenserver.de ([212.227.126.187])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MR4Vy-0006jf-Vh
-	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2009 13:27:27 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Wed, 15 Jul 2009 15:27:07 +0200
-References: <4A5C8068.6020203@monstr.eu> <200907151214.52369.arnd@arndb.de>
-	<20090715120512.GA2752@linux-mips.org>
-In-Reply-To: <20090715120512.GA2752@linux-mips.org>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <skrishnakar@gmail.com>) id 1MTBjO-0004Xb-ET
+	for Ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 09:33:54 +0000
+Received: from mail-pz0-f201.google.com ([209.85.222.201])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MTBjF-0006gf-Sk
+	for Ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 09:33:54 +0000
+Received: by pzk39 with SMTP id 39so588425pzk.28
+	for <Ltp-list@lists.sourceforge.net>;
+	Tue, 21 Jul 2009 02:33:44 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <200907151527.08341.arnd@arndb.de>
-Subject: Re: [LTP] access_ok macor
+Date: Tue, 21 Jul 2009 15:03:44 +0530
+Message-ID: <6213bc560907210233l17aa3e75pcb7c20e3faa24195@mail.gmail.com>
+From: srikanth krishnakar <skrishnakar@gmail.com>
+Subject: [LTP] msgctl10 fails on Powerpc Linux-2.6.29.6
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,56 +25,216 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0817269675209531274=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: LTP <ltp-list@lists.sourceforge.net>, monstr@monstr.eu, Linux Kernel list <linux-kernel@vger.kernel.org>, John Williams <jwilliams@itee.uq.edu.au>
+To: Linuxppc-dev@ozlabs.org
+Cc: Ltp-list@lists.sourceforge.net
 
-On Wednesday 15 July 2009, Ralf Baechle wrote:
- 
-> > I think in step 4. AFIACT, the kernel must do a number of checks on accesses
-> > to random pointers.
->
-> Yes; but the checks that unaligned.c does on MIPS are no different from
-> any other get_user(), that is it ensures that the entire 8/16/32/64-bit
-> access is in userspace.  That's done using access_ok().
+--===============0817269675209531274==
+Content-Type: multipart/alternative; boundary=001636e0a82666a8bb046f33f37a
 
-Well, access_ok() plus the fixup code for unmapped or write-protected user
-pages, I guess. But I agree, there are no checks beyond what get/put_user
-does. In particular, the access_ok() check should only be needed for
-faults from user space, while any fault coming from kernel space is
-either some kernel code accessing its own data (as you mention below) or
-a __get_user/__put_user that has already checked access permissions.
+--001636e0a82666a8bb046f33f37a
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-In my example, I got the case from kernel space wrong, it should not
-check access_ok() if !user_space(regs), or it needs to do set_fs(KERNEL_DS)
-first, like the mips code does.
+The LTP test case *msgctl10.c* fails on linux-2.6.29.6 for PowerPC
+architecture (ppc440)
 
-> We've moved on.  Handling miss-alignment is no longer a very relavent part
-> of the syscall interface.  So I think for the definition of the Linux
-> ABI this should just be left as implementation defined behaviour but
-> whatever an architecture does, it should be done consistently for all
-> system interfaces.
 
-Ok, thanks, for explanation.
+msgctl10    1  B------------[ cut here
+]------------
 
-I guess for the microblaze unaligned handler, both cases mean that
-it needs to do a fixup table lookup for the original fault and
-it needs to handle fixups on its own emulation code. The only difference
-between disallowing unaligned accesses in the ABI and allowing them
-is which of the two ways (check fixup table, emulate instruction) it
-tries first.
+kernel BUG at
+arch/powerpc/kernel/traps.c:904!
 
-	Arnd <><
+Oops: Exception in kernel mode, sig: 5
+[#9]
+
+PREEMPT LTT NESTING LEVEL :
+0
+
+Virtex440
+
+Modules linked
+in:
+
+NIP: c038178c LR: c0381640 CTR:
+c02650bc
+
+REGS: cafbbe70 TRAP: 0700   Tainted: G      D
+(2.6.29.6)
+
+MSR: 00029000 <EE,ME,CE>  CR: 48004224  XER:
+20000008
+
+TASK = cafa17f0[6435] 'msgctl10' THREAD:
+cafba000
+
+GPR00: 00000001 cafbbf20 cafa17f0 ffffffda 08000000 00000001 00000037
+ffffffff
+GPR08: cafa17f0 c04a0000 00021002 c0381594 28004222 1001f4bc bf93d950
+100b0000
+GPR16: 00000007 bf93d95c 100012a0 10005b84 00000067 100174e8 10017500
+100174f8
+GPR24: 00000000 00000001 103eaa50 00000000 00000000 00000000 08000000
+cafbbf50
+NIP [c038178c]
+program_check_exception+0x1f8/0x5f4
+
+LR [c0381640]
+program_check_exception+0xac/0x5f4
+
+Call
+Trace:
+
+[cafbbf20] [c0381640] program_check_exception+0xac/0x5f4
+(unreliable)
+[cafbbf40] [c000e78c]
+ret_from_except_full+0x0/0x4c
+
+Instruction
+dump:
+
+7d808120 4bc8ac20 2f830001 41beff38 2f83fff2 419e0024 77c00804
+4182004c
+3d20c04a 8809207c 2f800000 419e0080 <0fe00000> 48000000 80010024
+3ca00003
+---[ end trace fd0893c7d8cee1bd
+]---
+
+ROK  :  Unexpected signal 11
+received.
+
+msgctl10    1  FAIL  :  in read # = 21245,key =
+533a
+
+msgctl10    0  WARN  :  Verify error in child 13, *buf = f1, val = 6d, size
+= 3
+msgctl10    1  BROK  :  Unexpected signal 11
+received.
+
+msgctl10    1  BROK  :  Msgsnd error in child 14, key =   d344 errno  =
+43
+msgctl10    0  WARN  :  tst_rmdir(): rmobj(/tmp/msgNjyTEb) failed:
+lstat(/tmp/msgNjyTEb) failed; errno=2: No such file or directory
+msgctl10    0  WARN  :  tst_rmdir(): rmobj(/tmp/msgNjyTEb) failed:
+lstat(/tmp/msgNjyTEb) failed; errno=2: No such file or directory
+msgctl10    1  FAIL  :  in read # = 54260,key =
+d46d
+
+msgctl10    1  B------------[ cut here ]------------
+
+Any clue ?
+
+Thanks in Advance !
+-- 
+Srikanth Krishnakar
+**********************
+
+--001636e0a82666a8bb046f33f37a
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: base64
+
+VGhlIExUUCB0ZXN0IGNhc2UgPGI+bXNnY3RsMTAuYzwvYj4gZmFpbHMgb24gbGludXgtMi42LjI5
+LjYgZm9yIFBvd2VyUEMgYXJjaGl0ZWN0dXJlIChwcGM0NDApPGJyPjxicj48YnI+bXNnY3RsMTCg
+oKAgMaAgQi0tLS0tLS0tLS0tLVsgY3V0IGhlcmUgXS0tLS0tLS0tLS0tLaCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoCA8YnI+Cmtlcm5lbCBCVUcgYXQgYXJjaC9wb3dlcnBjL2tlcm5lbC90cmFwcy5jOjkw
+NCGgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKAgPGJyPk9vcHM6IEV4Y2VwdGlvbiBpbiBrZXJu
+ZWwgbW9kZSwgc2lnOiA1IFsjOV2goKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKAgPGJyPgpQ
+UkVFTVBUIExUVCBORVNUSU5HIExFVkVMIDogMKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgIDxicj5WaXJ0ZXg0NDCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKAgPGJyPgpNb2R1bGVzIGxpbmtlZCBpbjqgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgIDxicj5O
+SVA6IGMwMzgxNzhjIExSOiBjMDM4MTY0MCBDVFI6IGMwMjY1MGJjoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgIDxicj4KUkVHUzogY2FmYmJlNzAgVFJBUDogMDcwMKCgIFRhaW50ZWQ6
+IEegoKCgoCBEoKCgoCAoMi42LjI5LjYpoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoCA8YnI+TVNSOiAwMDAyOTAwMCAm
+bHQ7RUUsTUUsQ0UmZ3Q7oCBDUjogNDgwMDQyMjSgIFhFUjogMjAwMDAwMDigoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoCA8YnI+ClRBU0sgPSBjYWZhMTdmMFs2NDM1XSAmIzM5O21zZ2N0bDEwJiMzOTsgVEhS
+RUFEOiBjYWZiYTAwMKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoCA8YnI+R1BSMDA6IDAwMDAwMDAx
+IGNhZmJiZjIwIGNhZmExN2YwIGZmZmZmZmRhIDA4MDAwMDAwIDAwMDAwMDAxIDAwMDAwMDM3IGZm
+ZmZmZmZmoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oCA8YnI+CkdQUjA4OiBjYWZhMTdmMCBjMDRhMDAwMCAwMDAyMTAwMiBjMDM4MTU5NCAyODAwNDIy
+MiAxMDAxZjRiYyBiZjkzZDk1MCAxMDBiMDAwMKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKAgPGJyPkdQUjE2OiAwMDAwMDAwNyBiZjkzZDk1YyAxMDAw
+MTJhMCAxMDAwNWI4NCAwMDAwMDA2NyAxMDAxNzRlOCAxMDAxNzUwMCAxMDAxNzRmOKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKAgPGJyPgpHUFIyNDog
+MDAwMDAwMDAgMDAwMDAwMDEgMTAzZWFhNTAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDgw
+MDAwMDAgY2FmYmJmNTCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgIDxicj5OSVAgW2MwMzgxNzhjXSBwcm9ncmFtX2NoZWNrX2V4Y2VwdGlvbisweDFm
+OC8weDVmNKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgIDxicj4KTFIgW2MwMzgxNjQwXSBwcm9ncmFt
+X2NoZWNrX2V4Y2VwdGlvbisweGFjLzB4NWY0oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoCA8YnI+
+Q2FsbCBUcmFjZTqgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoCA8YnI+CltjYWZiYmYyMF0gW2MwMzgxNjQwXSBwcm9ncmFtX2NoZWNr
+X2V4Y2VwdGlvbisweGFjLzB4NWY0ICh1bnJlbGlhYmxlKaCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKAgPGJyPltjYWZiYmY0MF0gW2Mw
+MDBlNzhjXSByZXRfZnJvbV9leGNlcHRfZnVsbCsweDAvMHg0Y6CgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKAgPGJyPgpJbnN0cnVjdGlvbiBkdW1wOqCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgIDxicj43ZDgwODEyMCA0YmM4YWMyMCAyZjgzMDAwMSA0
+MWJlZmYzOCAyZjgzZmZmMiA0MTllMDAyNCA3N2MwMDgwNCA0MTgyMDA0Y6CgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgIDxicj4KM2QyMGMw
+NGEgODgwOTIwN2MgMmY4MDAwMDAgNDE5ZTAwODAgJmx0OzBmZTAwMDAwJmd0OyA0ODAwMDAwMCA4
+MDAxMDAyNCAzY2EwMDAwM6CgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoCA8YnI+LS0tWyBlbmQgdHJhY2UgZmQwODkzYzdkOGNlZTFiZCBdLS0t
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoCA8YnI+ClJPS6AgOqAgVW5leHBl
+Y3RlZCBzaWduYWwgMTEgcmVjZWl2ZWQuoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKAgPGJyPm1zZ2N0bDEwoKCgIDGgIEZBSUygIDqgIGluIHJlYWQgIyA9IDIxMjQ1LGtleSA9oCA1
+MzNhoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKAgPGJyPgptc2djdGwxMKCgoCAwoCBXQVJOoCA6oCBWZXJp
+ZnkgZXJyb3IgaW4gY2hpbGQgMTMsICpidWYgPSBmMSwgdmFsID0gNmQsIHNpemUgPSAzoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgIDxicj5tc2djdGwx
+MKCgoCAxoCBCUk9LoCA6oCBVbmV4cGVjdGVkIHNpZ25hbCAxMSByZWNlaXZlZC6goKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgIDxicj4KbXNnY3RsMTCgoKAgMaAgQlJPS6AgOqAgTXNnc25kIGVycm9yIGluIGNo
+aWxkIDE0LCBrZXkgPaCgIGQzNDQgZXJybm+gID0gNDOgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoCA8YnI+bXNnY3RsMTCgoKAgMKAgV0FSTqAg
+OqAgdHN0X3JtZGlyKCk6IHJtb2JqKC90bXAvbXNnTmp5VEViKSBmYWlsZWQ6IGxzdGF0KC90bXAv
+bXNnTmp5VEViKSBmYWlsZWQ7IGVycm5vPTI6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3Rvcnk8YnI+
+Cm1zZ2N0bDEwoKCgIDCgIFdBUk6gIDqgIHRzdF9ybWRpcigpOiBybW9iaigvdG1wL21zZ05qeVRF
+YikgZmFpbGVkOiBsc3RhdCgvdG1wL21zZ05qeVRFYikgZmFpbGVkOyBlcnJubz0yOiBObyBzdWNo
+IGZpbGUgb3IgZGlyZWN0b3J5PGJyPm1zZ2N0bDEwoKCgIDGgIEZBSUygIDqgIGluIHJlYWQgIyA9
+IDU0MjYwLGtleSA9oCBkNDZkoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKAgPGJyPgptc2djdGwxMKCgoCAx
+oCBCLS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0tLS0toCA8YnI+PGJyPkFueSBjbHVl
+ID88YnIgY2xlYXI9ImFsbCI+PGJyPlRoYW5rcyBpbiBBZHZhbmNlICE8YnI+LS0gPGJyPlNyaWth
+bnRoIEtyaXNobmFrYXI8YnI+KioqKioqKioqKioqKioqKioqKioqKjxicj4K
+--001636e0a82666a8bb046f33f37a--
+
+
+--===============0817269675209531274==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
+
+--===============0817269675209531274==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0817269675209531274==--
+
