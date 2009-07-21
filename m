@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MOBrB-0000rQ-Ik
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 14:41:17 +0000
-Received: from mail-vw0-f178.google.com ([209.85.212.178])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MOBr6-0002wM-RL
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 14:41:17 +0000
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naresh.kernel@gmail.com>) id 1MTFJ0-0002RC-9f
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 13:22:54 +0000
+Received: from mail-gx0-f220.google.com ([209.85.217.220])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MTFIu-0005Bp-Tp
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 13:22:54 +0000
+Received: by gxk20 with SMTP id 20so15054808gxk.10
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 21 Jul 2009 06:22:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4A52F0D8.7060509@st.com>
-References: <4A51CEDC.6080605@linux.vnet.ibm.com> <4A51E253.200@st.com>
-	<364299f40907061028o4c9c2922ma7d430f5e03f4b38@mail.gmail.com>
-	<4A52F0D8.7060509@st.com>
-Date: Tue, 7 Jul 2009 02:11:55 -0700
-Message-ID: <364299f40907070211o5a93d556u8f7fffe50b106afe@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] cgroups: conditionally enable building cgroup
-	tests
+In-Reply-To: <20090721044529.GB9807@jenkins.home.ifup.org>
+References: <f5a7b3810906300005q2cafdd3dtfe4d659ae6834bb@mail.gmail.com>
+	<20090721044529.GB9807@jenkins.home.ifup.org>
+Date: Tue, 21 Jul 2009 18:52:47 +0530
+Message-ID: <f5a7b3810907210622o1539087al1eca42cc900e9a02@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Subject: Re: [LTP] [PATCH v2] mq_send/5-1.c: Fix race conditions in the test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,64 +28,95 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Francesco RUNDO <francesco.rundo@st.com>
-Cc: ltp-list@lists.sf.net
+To: Brandon Philips <bphilips@suse.de>
+Cc: ltp-list@lists.sourceforge.net, maxin john <maxinbjohn@gmail.com>
 
-On Mon, Jul 6, 2009 at 11:53 PM, Francesco RUNDO<francesco.rundo@st.com> wrote:
-> Hi Garrett,
+On Tue, Jul 21, 2009 at 10:15 AM, Brandon Philips<bphilips@suse.de> wrote:
+> On 12:35 Tue 30 Jun 2009, naresh kamboju wrote:
+>> I have noticed some issue with your patch dated on 12-Dec-2008.
+>> I want conform the problem and root cause.
 >
-> thanks for your comment. Below, my consideration:
->
-> Garrett Cooper wrote:
->
-> On Mon, Jul 6, 2009 at 4:38 AM, Francesco RUNDO<francesco.rundo@st.com>
-> wrote:
->
->
-> Hi Gowri,
->
-> I've already fixed the same issue you reported. I've tested it successfully.
->
-> Subrata has already merged my patch (please, find it in attachment).
->
-> Please, check it before to submit another patch.
->
->
-> At the end of the day, the real problem is that we're not using the
-> --with- functionality in autoconf, e.g. --with-cgroups, and instead
-> we're hacking a lot of noise into Makefile's.
->
-> Yes, you're right but your advice can't be applicable in the system in which
-> autoconf is not supported/used to build LTP (a possible scenario in the
-> embedded system).
+> What is the problem?
 
-Francisco,
+After applying you=92re Patch to
+Include/posixtest.h
+http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg04867.html
 
-Very soon cross-compilation will become a reality for LTP. We've been
-using cross-compilation with LTP fairly thoroughly in-house, but the
-solution's not even close to perfect. The one I'm working on now with
-HEAD is a lot more holistic, and hence we should be able to do away
-with manual compiles [of the source tree]. Manual submake compiles
-will still be possible.
+Most of the mq_ and other test cases are failed at Build and linking.
+It was almost of the test cases total test case are 1888.
 
-So, embedded systems can go back to executing code instead of
-compiling it, like they should be... exercising *cc still is a good
-workout for an embedded system's process [and threading] scheduler and
-management system, but you can do it if you like and it'll no longer
-be a hard requirement =].
+After that I have removed your patch and executed test suite it is working =
+fine.
 
-Cheers,
--Garrett
+I think you have to revisit your patch and get the difference at your end.
 
-------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have 
-the opportunity to enter the BlackBerry Developer Challenge. See full prize 
-details at: http://p.sf.net/sfu/blackberry
+>
+>> Could you send me your open posix full Results logs of before and
+>> after your patch with ARCH and Kernel versions?
+>
+> I never ran the full test suite. To be honest I could never figure out
+> how to get it running. Are there instructions somewhere?
+>
+> My fix was triggered by a bug report I got that thought it found a
+> Kernel regression based on this test and it looked to me like it was
+> caused by that bug.
+
+Yes.
+There are Docs to do that.
+#Remove your patch dated Dec 12  2008
+http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg04867.html
+
+
+# vim LDFLAGS
+Uncomment following line.
+
+#Recommended flags:
+-D_XOPEN_SOURCE=3D600 -lpthread -lrt -lm
+
+FULL Execution:
+Simple command is =93make=94
+#pwd
+ltp-full-20090630/testcases/open_posix_testsuite
+#make
+
+Single DIR Execution:
+You can build only one directory of test cases
+# export POSIX_TARGET=3Dconformance/interfaces/mq_send/
+#make
+
+Please read the followind Documents
+1. BUILD
+- describes how to set up your developer machine to build and test
+2. LDFLAGS
+- File that Makefile uses to link to what you specify
+3. QUICK-START
+- Quick doc to help you around POSIX** Test Suite.
+
+Please share the full results log of your test.
+
+Best regards,
+Naresh Kamboju
+
+>
+> Cheers,
+>
+> =A0 =A0 =A0 =A0Brandon
+>
+
+---------------------------------------------------------------------------=
+---
+Enter the BlackBerry Developer Challenge  =
+
+This is your chance to win up to $100,000 in prizes! For a limited time, =
+
+vendors submitting new applications to BlackBerry App World(TM) will have
+the opportunity to enter the BlackBerry Developer Challenge. See full prize=
+  =
+
+details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
