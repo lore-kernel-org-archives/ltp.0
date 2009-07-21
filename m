@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <shiwh@cn.fujitsu.com>) id 1MQVIF-0004bh-7o
-	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2009 23:50:47 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MQVI6-00012b-VD
-	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2009 23:50:47 +0000
-Message-ID: <4A5BC7F3.1030307@cn.fujitsu.com>
-Date: Tue, 14 Jul 2009 07:49:07 +0800
-From: Shi Weihua <shiwh@cn.fujitsu.com>
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1MTF4H-0002x8-Ob
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 13:07:41 +0000
+Received: from mail-fx0-f208.google.com ([209.85.220.208])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MTF4C-0002by-BF
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2009 13:07:41 +0000
+Received: by fxm4 with SMTP id 4so2714165fxm.10
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 21 Jul 2009 06:07:35 -0700 (PDT)
+Message-ID: <4A65BD95.7070001@petalogix.com>
+Date: Tue, 21 Jul 2009 15:07:33 +0200
+From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-References: <4A5AED18.2090201@cn.fujitsu.com>	
-	<1247473352.26478.14.camel@subratamodak.linux.ibm.com>	
-	<364299f40907130957i5bffc7acofe0be466ae22ce43@mail.gmail.com>
-	<364299f40907131109lcc15653m2d2610d8f7c2bc6@mail.gmail.com>
-In-Reply-To: <364299f40907131109lcc15653m2d2610d8f7c2bc6@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] Fix "make clean"'s failure in case cpuset
+References: <4A6527B6.7070602@cn.fujitsu.com>
+In-Reply-To: <4A6527B6.7070602@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] Fix to set the signal handler of SIGINT in
+	mq_timedreceive01
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,113 +32,94 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Wei Yongjun <yjwei@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Garrett Cooper wrote:
-> On Mon, Jul 13, 2009 at 9:57 AM, Garrett Cooper<yanegomi@gmail.com> wrote:
->> On Mon, Jul 13, 2009 at 1:22 AM, Subrata
->> Modak<subrata@linux.vnet.ibm.com> wrote:
->>> On Mon, 2009-07-13 at 16:15 +0800, Shi Weihua wrote:
->>>> In case cpuset, the file cpuset_syscall_test.o was not deleted after "make clean".
->>>> The following patch fixed this problem.
->>>>
->>>> Signed-off-by: Shi Weihua <shiwh@cn.fujitsu.com>
->>> Garret,
->>>
->>> If this is safe and does not interfere with your patches, please check
->>> this in.
->>>
->>> Regards--
->>> Subrata
->>>
->>>> ---
->>>> diff -urpN ltp-full-20090630.orig/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile ltp-full-20090630/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
->>>> --- ltp-full-20090630.orig/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile   2009-06-23 10:18:17.000000000 -0400
->>>> +++ ltp-full-20090630/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile        2009-07-13 12:24:01.000000000 -0400
->>>> @@ -8,7 +8,8 @@ all:cpuset_syscall_test
->>>>  cpuset_syscall_test: %: %.o $(LIBOBJECTS)
->>>>
->>>>  clean:
->>>> -     rm -rf cpuset_syscall_test
->>>> +     rm -rf cpuset_syscall_test cpuset_syscall_test.o
->>>> +     rm -f $(LIBOBJECTS)
->>>>
->>>>  install:
->>>>       @set -e; \
->>    I wish I could say that's the only area that needs clean fixed,
->> but there are other spots in the tree that suffer from that issue too.
->>    I'll submit a quick diff with all of the problem children in an hour or so.
-> 
-> Actually, the damage is a lot less than expected ;).
-> 
-> gcooper@orangebox /scratch/ltp-dev2/ltp $ find | grep -v CVS | xargs
-> file | egrep 'archive|ELF' | grep -v 'shell archive'
-> gcooper@orangebox /scratch/ltp-dev2/ltp $
-> 
-> A patch to fix a minor leak, which will get redone with the Makefile
-> changes I'm bringing in soon.
-> 
-> Thanks Shi for the heads up!
-> 
-> Here's the patch I'm committing, which cleans out all objects in
-> testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile --
-> not just $(LIBOBJECTS).
-> 
-> NOTE: This patch is for viewing only, as the tabs were turned into
-> spaces when copied from xterm.
-> 
-> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+Hi,
 
-I tested your patch, but unfortunately it does not work successfully. ;-)
-The file cpuset_syscall_test.o has not been deleted after "make clean".
-I think "$(OBJECTS)" has not been defined definitely in this Makefile. 
-Maybe you should to try my following patch which based on yours.
+Please fix coding style violation.
+Use tab instead of spaces.
+Subrata should reject this patch with bad coding style.
+Can you please fix it?
 
-Signed-off-by: Shi Weihua <shiwh@cn.fujitsu.com>
----
-diff -urpN ltp-full-20090630.orig/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile ltp-full-20090630/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
---- ltp-full-20090630.orig/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile	2009-06-23 10:18:17.000000000 -0400
-+++ ltp-full-20090630/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile	2009-07-14 04:14:55.000000000 -0400
-@@ -1,4 +1,5 @@
--SRCS = $(wildcard *.sh)
-+SRCS = $(wildcard *.c)
-+OBJECTS=$(patsubst %.c,%.o,$(SRCS))
- 
- LIBSRCS=$(wildcard ../cpuset_lib/*.c)
- LIBOBJECTS=$(patsubst %.c,%.o,$(LIBSRCS))
-@@ -8,7 +9,7 @@ all:cpuset_syscall_test
- cpuset_syscall_test: %: %.o $(LIBOBJECTS)
- 
- clean:
--	rm -rf cpuset_syscall_test
-+	rm -rf cpuset_syscall_test $(OBJECTS) $(LIBOBJECTS)
- 
- install:
- 	@set -e; \
+Thanks,
+Michal
 
-> 
-> Index: testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
-> ===================================================================
-> RCS file: /cvsroot/ltp/ltp/testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile,v
-> retrieving revision 1.3
-> diff -u -r1.3 Makefile
-> --- testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
->  23 Jun 2009 14:18:17 -0000      1.3
-> +++ testcases/kernel/controllers/cpuset/cpuset_syscall_test/Makefile
->  13 Jul 2009 18:08:26 -0000
-> @@ -8,7 +8,7 @@
->  cpuset_syscall_test: %: %.o $(LIBOBJECTS)
-> 
->  clean:
-> -       rm -rf cpuset_syscall_test
-> +       rm -rf cpuset_syscall_test $(OBJECTS) $(LIBOBJECTS)
-> 
->  install:
->         @set -e; \
-> 
-> 
-> 
+> The test case mq_timedreceive01 does not register the signal
+> handler of SIGINT, so the problam will be terminated by SIGINT
+> from child process.
+>
+> This patch fixed the problem.
+>
+> Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
+>
+> diff --git a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+> index dadc38d..beeb298 100644
+> --- a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+> +++ b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+> @@ -106,6 +106,14 @@ extern void cleanup() {
+>          tst_exit();
+>  }
+>  
+> +/*
+> + * sighandler()
+> + */
+> +void sighandler(int sig)
+> +{
+> +        return;
+> +}
+> +
+>  /* Local  Functions */
+>  /******************************************************************************/
+>  /*                                                                            */
+> @@ -126,6 +134,7 @@ extern void cleanup() {
+>  /******************************************************************************/
+>  void setup() {
+>          /* Capture signals if any */
+> +        signal(SIGINT, sighandler);
+>          /* Create temporary directories */
+>          TEST_PAUSE;
+>          tst_tmpdir();
+> @@ -432,17 +441,6 @@ EXIT:
+>          return result;
+>  }
+>  
+> -/*
+> - * sighandler()
+> - */
+> -void sighandler(int sig)
+> -{
+> -        if (sig == SIGINT)
+> -                return;
+> -        // NOTREACHED
+> -        return;
+> -}
+> -
+>  
+>  
+>  /*
+>
+>
+>
+>
+>
+> ------------------------------------------------------------------------------
+> Enter the BlackBerry Developer Challenge  
+> This is your chance to win up to $100,000 in prizes! For a limited time, 
+> vendors submitting new applications to BlackBerry App World(TM) will have
+> the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+> details at: http://p.sf.net/sfu/Challenge
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>   
+
+
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
 
 
 ------------------------------------------------------------------------------
