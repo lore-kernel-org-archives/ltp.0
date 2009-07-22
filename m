@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MSOum-0002a5-GY
-	for ltp-list@lists.sourceforge.net; Sun, 19 Jul 2009 05:26:24 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MSOuh-0000JA-N6
-	for ltp-list@lists.sourceforge.net; Sun, 19 Jul 2009 05:26:24 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sun, 19 Jul 2009 01:26:13 -0400
-References: <1247741996.3886.5.camel@dyn9002018117.watson.ibm.com>
-In-Reply-To: <1247741996.3886.5.camel@dyn9002018117.watson.ibm.com>
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <markver@us.ibm.com>) id 1MTlNz-0005fY-T5
+	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 23:38:11 +0000
+Received: from e6.ny.us.ibm.com ([32.97.182.146])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MTlNv-0003sL-LR
+	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 23:38:11 +0000
+Message-ID: <OFC57A047B.CF64D210-ON852575FB.007EFB24-852575FB.0081AD79@us.ibm.com>
+From: Mark Ver <markver@us.ibm.com>
+Date: Wed, 22 Jul 2009 19:36:25 -0400
 MIME-Version: 1.0
-Message-Id: <200907190126.15491.vapier@gentoo.org>
-Subject: Re: [LTP] ltp: IMA cross platform fixes
+Subject: [LTP] eventfd2_03
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,66 +22,130 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8099710146223498556=="
+Content-Type: multipart/mixed; boundary="===============5623931059774352785=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: waqar afridi <afridi.waqar@gmail.com>, ltp-list <ltp-list@lists.sf.net>, Shaz <shazalive@gmail.com>, Mimi Zohar <zohar@linux.vnet.ibm.com>
+To: ltp-list@lists.sf.net
 
---===============8099710146223498556==
-Content-Type: multipart/signed; boundary="nextPart2148182.tEXWUVGEQP";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart2148182.tEXWUVGEQP
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+--===============5623931059774352785==
+Content-type: multipart/alternative; 
+	Boundary="0__=0ABBFF68DFED7DB48f9e8a93df938690918c0ABBFF68DFED7DB4"
 Content-Disposition: inline
 
-On Thursday 16 July 2009 06:59:56 Mimi Zohar wrote:
-> - Instead of using the default platform shell, explicitly use bash.
-
-no, please fix the script in question instead
--mike
-
---nextPart2148182.tEXWUVGEQP
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJKYq53AAoJEEFjO5/oN/WBi1sQALmDU1/cY0WbrFyLu1+zPH2+
-EIsrRkAnClKGDW7KtY6Xt8To6Gdt1uP6k9K0Rh3DJuB5UBdJ4Lif57q48HkTzAIX
-aK9nThgmrEDLyj0/dTqYpsWbnnPrS8tv4Y/M14UKXmCK9kYF0F65fYKbNne4Fz1d
-7urIQKVhxK2iuhVimi1v4WiItu1Ql3zs0NfiK+jIb0UNyNRC7Y5X5T/LklCIG5I1
-Rj1h9YKC3t4UoesxMExVhBh9IXH045Ua8qYzvDIUIGI4TSS8NKZeNUDA3+VR9+g2
-hV753xq1HPBTZru/LwXYUTnmYqnTRRPx0awhu/88RZgrp59zCqEdKihZfkntmgnH
-h5yN1Z4FYMYMU0513l2dtUCbsNWtvappNuhDNM96gGF6uBrUR7Pz5WD+jJUrHqWF
-Q6S9nXb4Xw3UTF9yz1UM+synb/JaSbW3m9VAO6MUfrdT1LoflBgP7r1vlNAsBRGL
-o18czexEJHm3M7gKzv1Nc6ZvPAiIzNH5dUAqUZ5pNAI1nIYw/VHBT3XJcsKzcwMd
-hTaV1GBSpb0CNYHfS9AVCctNT2RYWYu/Z2yVJcTvgLYjuDv+kHg6INCbtNPivKav
-5bg/d1y7PZdlBYjKGE1OYEOSABia79+Oa0tUb95wuYsSdWZFZNDxUSt0S8A/xs8U
-IM13/U49/R/HwZJlAWlD
-=vFtm
------END PGP SIGNATURE-----
-
---nextPart2148182.tEXWUVGEQP--
+--0__=0ABBFF68DFED7DB48f9e8a93df938690918c0ABBFF68DFED7DB4
+Content-type: text/plain; charset=UTF-8
+Content-transfer-encoding: base64
 
 
---===============8099710146223498556==
+DQpIaSwNCg0KSnVzdCByZWNlbnRseSBkb3dubG9hZGVkIHRoZSAyMDA5MDYzMCB2ZXJzaW9uIExU
+UC4gIEJ1dCBpdCBsb29rcyBsaWtlIHRoZXJlDQppcyBhIG5ldyB0ZXN0Y2FzZSAiZXZlbnRmZDJf
+MDMiIGluY2x1ZGVkIGFzIHBhcnQgb2YgZGVmYXVsdCB3aGljaCBpcw0KZ2V0dGluZyBhIGNvbXBp
+bGUgcHJvYmxlbSBhbmQgY2F1c2luZyB0aGUgTFRQIGJ1aWxkIHRvIGFib3J0IG9uIHMzOTB4DQph
+cmNoaXRlY3R1cmU6DQoNCi4uLg0KbWFrZVs0XTogRW50ZXJpbmcgZGlyZWN0b3J5DQpgL3Jvb3Qv
+bHRwLWZ1bGwtMjAwOTA2MzAvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9ldmVudGZkMicNCmdj
+YyAtZyAtTzIgLUkuLi8uLi9pbmNsdWRlIC1nIC1XYWxsIC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAt
+V2FsbA0KZXZlbnRmZDJfMDMuYyAgLUwuLi8uLi8uLi8uLi9saWIgLWxsdHAgLW8gZXZlbnRmZDJf
+MDMNCmV2ZW50ZmQyXzAzLmM6NDg6MjogZXJyb3I6ICNlcnJvciBDYW5ub3QgZGV0ZWN0IHlvdXIg
+YXJjaGl0ZWN0dXJlIQ0KZXZlbnRmZDJfMDMuYzogSW4gZnVuY3Rpb24g4oCYZXZlbnRmZDLigJk6
+DQpldmVudGZkMl8wMy5jOjU0OiBlcnJvcjog4oCYX19OUl9ldmVudGZkMuKAmSB1bmRlY2xhcmVk
+IChmaXJzdCB1c2UgaW4gdGhpcw0KZnVuY3Rpb24pDQpldmVudGZkMl8wMy5jOjU0OiBlcnJvcjog
+KEVhY2ggdW5kZWNsYXJlZCBpZGVudGlmaWVyIGlzIHJlcG9ydGVkIG9ubHkgb25jZQ0KZXZlbnRm
+ZDJfMDMuYzo1NDogZXJyb3I6IGZvciBlYWNoIGZ1bmN0aW9uIGl0IGFwcGVhcnMgaW4uKQ0KZXZl
+bnRmZDJfMDMuYzogSW4gZnVuY3Rpb24g4oCYeHNlbV93YWl04oCZOg0KZXZlbnRmZDJfMDMuYzo2
+NTogd2FybmluZzogZm9ybWF0IOKAmCVsbHXigJkgZXhwZWN0cyB0eXBlIOKAmGxvbmcgbG9uZyB1
+bnNpZ25lZA0KaW504oCZLCBidXQgYXJndW1lbnQgNSBoYXMgdHlwZSDigJh1X2ludDY0X3TigJkN
+CmV2ZW50ZmQyXzAzLmM6IEluIGZ1bmN0aW9uIOKAmG1haW7igJk6DQpldmVudGZkMl8wMy5jOjEy
+OTogd2FybmluZzogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g4oCYd2FpdHBpZOKA
+mQ0KbWFrZVs0XTogKioqIFtldmVudGZkMl8wM10gRXJyb3IgMQ0KbWFrZVs0XTogTGVhdmluZyBk
+aXJlY3RvcnkNCmAvcm9vdC9sdHAtZnVsbC0yMDA5MDYzMC90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
+bGxzL2V2ZW50ZmQyJw0KbWFrZVszXTogKioqIFthbGxdIEVycm9yIDINCm1ha2VbM106IExlYXZp
+bmcgZGlyZWN0b3J5DQpgL3Jvb3QvbHRwLWZ1bGwtMjAwOTA2MzAvdGVzdGNhc2VzL2tlcm5lbC9z
+eXNjYWxscycNCm1ha2VbMl06ICoqKiBbYWxsXSBFcnJvciAyDQptYWtlWzJdOiBMZWF2aW5nIGRp
+cmVjdG9yeSBgL3Jvb3QvbHRwLWZ1bGwtMjAwOTA2MzAvdGVzdGNhc2VzL2tlcm5lbCcNCm1ha2Vb
+MV06ICoqKiBbYWxsXSBFcnJvciAyDQptYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL3Jvb3Qv
+bHRwLWZ1bGwtMjAwOTA2MzAvdGVzdGNhc2VzJw0KbWFrZTogKioqIFthbGxdIEVycm9yIDINClty
+b290QG0zNmRpc3RybzIgbHRwLWZ1bGwtMjAwOTA2MzBdIw0KDQoNCkxvb2tpbmcgYXQgdGhlIGNv
+ZGUgaXQgZG9lczoNCg0KI2lmbmRlZiBfX05SX2V2ZW50ZmQyDQojaWYgZGVmaW5lZChfX3g4Nl82
+NF9fKQ0KI2RlZmluZSBfX05SX2V2ZW50ZmQyIDI5MA0KI2VsaWYgZGVmaW5lZChfX2kzODZfXykN
+CiNkZWZpbmUgX19OUl9ldmVudGZkMiAzMjgNCiNlbHNlDQojZXJyb3IgQ2Fubm90IGRldGVjdCB5
+b3VyIGFyY2hpdGVjdHVyZSENCiNlbmRpZg0KI2VuZGlmDQoNClNvIHJpZ2h0IGF3YXkgaXQgbG9v
+a3MgbGlrZSB0aGlzIHRlc3QgaXMgZXhwZWN0aW5nIHNvbWUgUEMgYmFzZWQgZmVhdHVyZXMNCmFu
+ZCBtYXkgbm90IHdvcmsgb24gYW55IGFyY2hpdGVjdHVyZSBleGNlcHQgeDg2XzY0IGFuZCBpMzg2
+IGNvbXBhdGlibGUNCnN5c3RlbXMuICBOb3QgcmVhbGx5IHN1cmUgd2h5IGl0IGdvdCBpbmNsdWRl
+ZCBhcyBwYXJ0IG9mIHRoZSBkZWZhdWx0IHNldCBvZg0KdGVzdGNhc2VzIG9yIHdoeSBjb25maWd1
+cmUgc2NyaXB0IGRpZCBub3Qgd2VlZCBpdCBvdXQgYXMgbm90IGZvcg0KczM5MC9zMzkweC4NCg0K
+VGhlIHRlc3RjYXNlIHNlZW1zIHRvIGJlIG5ldyBhbmQgaXMgbm90IHRoZXJlIG9uIHRoZSAyMDA5
+MDIyOCByZWxlYXNlLg0KSSd2ZSBoZWFyZCB0aGF0IGZvbGtzIHdlcmUgc3VjY2Vzc2Z1bCB1c2lu
+ZyB0aGUgMjAwOSBNYXkgcmVsZWFzZSBhcyB3ZWxsLA0Kc28gdGhpcyBsb29rcyB0byBiZSBqdXN0
+IGFuIGlzc3VlIGluIHRoZSAyMDA5MDYzMCByZWxlYXNlLg0KDQoNClRoYW5rcywNCi0gTWFyayBW
+ZXINCg0Kb2ZmaWNlOiAgQnVpbGRpbmcgNzEwIC8gUm9vbSAyLVJGLTEwDQpwaG9uZTogKDg0NSkg
+NDM1LTc3OTQgIFt0aWUgOCAyOTUtNzc5NF0=
+
+--0__=0ABBFF68DFED7DB48f9e8a93df938690918c0ABBFF68DFED7DB4
+Content-type: text/html; charset=UTF-8
+Content-Disposition: inline
+Content-transfer-encoding: base64
+
+PGh0bWw+PGJvZHk+DQo8cD5IaSw8YnI+DQo8YnI+DQpKdXN0IHJlY2VudGx5IGRvd25sb2FkZWQg
+dGhlIDIwMDkwNjMwIHZlcnNpb24gTFRQLiAgQnV0IGl0IGxvb2tzIGxpa2UgdGhlcmUgaXMgYSBu
+ZXcgdGVzdGNhc2UgJnF1b3Q7ZXZlbnRmZDJfMDMmcXVvdDsgaW5jbHVkZWQgYXMgcGFydCBvZiBk
+ZWZhdWx0IHdoaWNoIGlzIGdldHRpbmcgYSBjb21waWxlIHByb2JsZW0gYW5kIGNhdXNpbmcgdGhl
+IExUUCBidWlsZCB0byBhYm9ydCBvbiBzMzkweCBhcmNoaXRlY3R1cmU6PGJyPg0KPGJyPg0KLi4u
+PGJyPg0KbWFrZVs0XTogRW50ZXJpbmcgZGlyZWN0b3J5IGAvcm9vdC9sdHAtZnVsbC0yMDA5MDYz
+MC90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2V2ZW50ZmQyJzxicj4NCmdjYyAtZyAtTzIgLUku
+Li8uLi9pbmNsdWRlIC1nIC1XYWxsIC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAtV2FsbCAgICBldmVu
+dGZkMl8wMy5jICAtTC4uLy4uLy4uLy4uL2xpYiAtbGx0cCAtbyBldmVudGZkMl8wMzxicj4NCmV2
+ZW50ZmQyXzAzLmM6NDg6MjogZXJyb3I6ICNlcnJvciBDYW5ub3QgZGV0ZWN0IHlvdXIgYXJjaGl0
+ZWN0dXJlITxicj4NCmV2ZW50ZmQyXzAzLmM6IEluIGZ1bmN0aW9uIOKAmGV2ZW50ZmQy4oCZOjxi
+cj4NCmV2ZW50ZmQyXzAzLmM6NTQ6IGVycm9yOiDigJhfX05SX2V2ZW50ZmQy4oCZIHVuZGVjbGFy
+ZWQgKGZpcnN0IHVzZSBpbiB0aGlzIGZ1bmN0aW9uKTxicj4NCmV2ZW50ZmQyXzAzLmM6NTQ6IGVy
+cm9yOiAoRWFjaCB1bmRlY2xhcmVkIGlkZW50aWZpZXIgaXMgcmVwb3J0ZWQgb25seSBvbmNlPGJy
+Pg0KZXZlbnRmZDJfMDMuYzo1NDogZXJyb3I6IGZvciBlYWNoIGZ1bmN0aW9uIGl0IGFwcGVhcnMg
+aW4uKTxicj4NCmV2ZW50ZmQyXzAzLmM6IEluIGZ1bmN0aW9uIOKAmHhzZW1fd2FpdOKAmTo8YnI+
+DQpldmVudGZkMl8wMy5jOjY1OiB3YXJuaW5nOiBmb3JtYXQg4oCYJWxsdeKAmSBleHBlY3RzIHR5
+cGUg4oCYbG9uZyBsb25nIHVuc2lnbmVkIGludOKAmSwgYnV0IGFyZ3VtZW50IDUgaGFzIHR5cGUg
+4oCYdV9pbnQ2NF904oCZPGJyPg0KZXZlbnRmZDJfMDMuYzogSW4gZnVuY3Rpb24g4oCYbWFpbuKA
+mTo8YnI+DQpldmVudGZkMl8wMy5jOjEyOTogd2FybmluZzogaW1wbGljaXQgZGVjbGFyYXRpb24g
+b2YgZnVuY3Rpb24g4oCYd2FpdHBpZOKAmTxicj4NCm1ha2VbNF06ICoqKiBbZXZlbnRmZDJfMDNd
+IEVycm9yIDE8YnI+DQptYWtlWzRdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL3Jvb3QvbHRwLWZ1bGwt
+MjAwOTA2MzAvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9ldmVudGZkMic8YnI+DQptYWtlWzNd
+OiAqKiogW2FsbF0gRXJyb3IgMjxicj4NCm1ha2VbM106IExlYXZpbmcgZGlyZWN0b3J5IGAvcm9v
+dC9sdHAtZnVsbC0yMDA5MDYzMC90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzJzxicj4NCm1ha2Vb
+Ml06ICoqKiBbYWxsXSBFcnJvciAyPGJyPg0KbWFrZVsyXTogTGVhdmluZyBkaXJlY3RvcnkgYC9y
+b290L2x0cC1mdWxsLTIwMDkwNjMwL3Rlc3RjYXNlcy9rZXJuZWwnPGJyPg0KbWFrZVsxXTogKioq
+IFthbGxdIEVycm9yIDI8YnI+DQptYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL3Jvb3QvbHRw
+LWZ1bGwtMjAwOTA2MzAvdGVzdGNhc2VzJzxicj4NCm1ha2U6ICoqKiBbYWxsXSBFcnJvciAyPGJy
+Pg0KW3Jvb3RAbTM2ZGlzdHJvMiBsdHAtZnVsbC0yMDA5MDYzMF0jPGJyPg0KPGJyPg0KPGJyPg0K
+TG9va2luZyBhdCB0aGUgY29kZSBpdCBkb2VzOjxicj4NCjxicj4NCiNpZm5kZWYgX19OUl9ldmVu
+dGZkMjxicj4NCiNpZiBkZWZpbmVkKF9feDg2XzY0X18pPGJyPg0KI2RlZmluZSBfX05SX2V2ZW50
+ZmQyIDI5MDxicj4NCiNlbGlmIGRlZmluZWQoX19pMzg2X18pPGJyPg0KI2RlZmluZSBfX05SX2V2
+ZW50ZmQyIDMyODxicj4NCiNlbHNlPGJyPg0KI2Vycm9yIENhbm5vdCBkZXRlY3QgeW91ciBhcmNo
+aXRlY3R1cmUhPGJyPg0KI2VuZGlmPGJyPg0KI2VuZGlmPGJyPg0KPGJyPg0KU28gcmlnaHQgYXdh
+eSBpdCBsb29rcyBsaWtlIHRoaXMgdGVzdCBpcyBleHBlY3Rpbmcgc29tZSBQQyBiYXNlZCBmZWF0
+dXJlcyBhbmQgbWF5IG5vdCB3b3JrIG9uIGFueSBhcmNoaXRlY3R1cmUgZXhjZXB0IHg4Nl82NCBh
+bmQgaTM4NiBjb21wYXRpYmxlIHN5c3RlbXMuICBOb3QgcmVhbGx5IHN1cmUgd2h5IGl0IGdvdCBp
+bmNsdWRlZCBhcyBwYXJ0IG9mIHRoZSBkZWZhdWx0IHNldCBvZiB0ZXN0Y2FzZXMgb3Igd2h5IGNv
+bmZpZ3VyZSBzY3JpcHQgZGlkIG5vdCB3ZWVkIGl0IG91dCBhcyBub3QgZm9yIHMzOTAvczM5MHgu
+PGJyPg0KPGJyPg0KVGhlIHRlc3RjYXNlIHNlZW1zIHRvIGJlIG5ldyBhbmQgaXMgbm90IHRoZXJl
+IG9uIHRoZSAyMDA5MDIyOCByZWxlYXNlLiAgSSd2ZSBoZWFyZCB0aGF0IGZvbGtzIHdlcmUgc3Vj
+Y2Vzc2Z1bCB1c2luZyB0aGUgMjAwOSBNYXkgcmVsZWFzZSBhcyB3ZWxsLCBzbyB0aGlzIGxvb2tz
+IHRvIGJlIGp1c3QgYW4gaXNzdWUgaW4gdGhlIDIwMDkwNjMwIHJlbGVhc2UuPGJyPg0KPGJyPg0K
+PGJyPg0KVGhhbmtzLDxicj4NCi0gTWFyayBWZXI8YnI+DQo8YnI+DQpvZmZpY2U6ICBCdWlsZGlu
+ZyA3MTAgLyBSb29tIDItUkYtMTA8YnI+DQpwaG9uZTogKDg0NSkgNDM1LTc3OTQgIFt0aWUgOCAy
+OTUtNzc5NF08YnI+DQo8L2JvZHk+PC9odG1sPg==
+
+--0__=0ABBFF68DFED7DB48f9e8a93df938690918c0ABBFF68DFED7DB4--
+
+
+
+--===============5623931059774352785==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
---===============8099710146223498556==
+
+--===============5623931059774352785==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -94,5 +156,6 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============8099710146223498556==--
+--===============5623931059774352785==--
+
 
