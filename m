@@ -1,25 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1MNvpv-0000Ge-IT
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 21:34:55 +0000
-Received: from gateway-1237.mvista.com ([63.81.120.158])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MNvpn-0006wI-A6
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 21:34:55 +0000
-Received: from svexch01.mvista.com (svexch01.mvista.com [10.0.0.82])
-	by hermes.mvista.com (Postfix) with ESMTP id 2FEFC1AF40
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  6 Jul 2009 14:34:46 -0700 (PDT)
-Content-class: urn:content-classes:message
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MTVsi-0004yj-SR
+	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 07:04:52 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MTVsU-0003bG-A5
+	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 07:04:47 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Wed, 22 Jul 2009 03:04:32 -0400
+References: <20090721.182542.1000278277145531816.caiqian@cclom.cn>
+	<200907220122.33944.vapier@gentoo.org>
+	<124D1FD0-1C6A-40D0-9754-DD87A3CF27DC@gmail.com>
+In-Reply-To: <124D1FD0-1C6A-40D0-9754-DD87A3CF27DC@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C9FE81.7FD78E28"
-Date: Mon, 6 Jul 2009 14:34:08 -0700
-Message-ID: <8368651DACC1964480F951191B94A078D0102F@svexch01.mvista.com>
-From: "Henry Yei" <hyei@mvista.com>
-Subject: [LTP] [PATCH] controllers/cpuset tests: use CC variable isntead of
-	hardcoded cc to fix cross compiling
+Message-Id: <200907220304.33267.vapier@gentoo.org>
+Subject: Re: [LTP] LTP Intermediate Release for JULY 2009 Build Failures
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,83 +26,83 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============3069074160563942231=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-This is a multi-part message in MIME format.
+--===============3069074160563942231==
+Content-Type: multipart/signed; boundary="nextPart1644445.Gd9KouDsEq";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-------_=_NextPart_001_01C9FE81.7FD78E28
+--nextPart1644445.Gd9KouDsEq
 Content-Type: text/plain;
-	charset="iso-8859-1"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-I am submitting patches for the Makefiles of the following tests: =
-cpuset_memory_pressure_test, cpuset_memory_spread_test , and =
-cpuset_memory_test. Instead of using cc (host compiler), use $(CC) for =
-provide for cross compiling.
+On Wednesday 22 July 2009 02:52:25 Garrett Cooper wrote:
+> On Jul 21, 2009, at 10:22 PM, Mike Frysinger wrote:
+> > On Wednesday 22 July 2009 01:01:34 Garrett Cooper wrote:
+> >> On Tue, Jul 21, 2009 at 9:38 PM, Garrett Cooper wrote:
+> >>> On Tue, Jul 21, 2009 at 2:28 PM, Mike Frysinger wrote:
+> >>>> On Tuesday 21 July 2009 10:21:44 Garrett Cooper wrote:
+> >>>>> I was tempted to fix the format string error, but I don't know
+> >>>>> what
+> >>>>> the potential implications are of switching the data type from
+> >>>>> u_int64_t to unsigned long long...
+> >>>>
+> >>>> dont do that.  just use the proper format string from inttypes.h.
+> >>>> uint64_t f;
+> >>>> printf("f =3D %"PRIu64"\n", f);
+> >>
+> >> -       fprintf(stdout, "[%u] wait completed on %d: count=3D%llu\n",
+> >> +       fprintf(stdout, "[%u] wait completed on %d: count=3D%lu64\n",
+> >>                getpid(), fd, cntr);
+> >
+> > umm, you sure that's right ?  seems to me it'll output the number
+> > followed by
+> > the string "64".  i think you need to look at my example again (and
+> > take
+> > notice of the quote marks).
+>
+> Your suggestion didn't compile and unfortunately the testcase appears
+> to be broken. I'll retest when I get home.
 
-Henry Yei
-MontaVista Software, Inc.
-hyei@mvista.com
+did you include inttypes.h ?  i'm pretty sure your proposed change would (1=
+)=20
+fix warnings for one arch size, (2) add warnings for the other arch size, a=
+nd=20
+(3) add a spurious "64" string to the output.
+=2Dmike
+
+--nextPart1644445.Gd9KouDsEq
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJKZroBAAoJEEFjO5/oN/WBTuIQAKAgJL0gg7R4M0Xx5pZ9crgV
+XplDJiQZbMW7fJyzz+XDYCANBeIP1eijS1c7rDxhM3W7s+OV6r9h0KNAy4oUHNa9
+qRq5Ec/7WOpHW9beM2kGLVJNpY2rUgGa61Cy++GHC9H8VLFVo0CPC2I+RDzSM9kg
+jM4iX620riK6/YYAfci42Ge+ujawQHZm59V2p5c4vF9f9CEUcr5kzEmy8MvXJK99
+ikMTyJbT/fHVcPHnyAfbf5ymGN+xaGFR03MnS5wbLlzzxD5glQ61rXAOaDS4Ekzr
+l36qzW7r8jP2bP95lbZJq7qjq8j5wn68KTfrEh5QzUXCPDOkPgkf2e/CvWax2sZJ
+zLqjRSobRXO9bxvZ17SlEemzFp+JCAQjixvCr2BL7n/yoGqfWdn13xw/8INmuZ9S
+5PiheKPOQF0LfYmUAyJfhEgTDDh5FcEQ3opCNagyYzBewlPz2D66/PocinDlm+4H
+8NlN4gHKbLCPj2uwmE3hVQQbQt7C19Cm+WyvUsDYo/dXwfw3z4H4WGlDOdrlGOQb
+DRlsV1NfFftb8JFZf1TeBz4pp+h3SJdMJYDjoOtDKmS+Jv9hTZo5ZCayu8w3XeoC
+8zy9LE96QCtF7H+2+um19Rrrzt4rldlfaM2EC92RlTJep13xaEe015QphO2aIe+O
+oKrq/QdhzDf4jMJrlYMo
+=xgzY
+-----END PGP SIGNATURE-----
+
+--nextPart1644445.Gd9KouDsEq--
 
 
-=20
-
-------_=_NextPart_001_01C9FE81.7FD78E28
-Content-Type: application/octet-stream;
-	name="cpuset_memory_test-Makefile.patch"
-Content-Transfer-Encoding: base64
-Content-Description: cpuset_memory_test-Makefile.patch
-Content-Disposition: attachment; filename="cpuset_memory_test-Makefile.patch"
-
-LS0tIGx0cC1mdWxsLTIwMDkwNTMxL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvY3B1c2V0
-L2NwdXNldF9tZW1vcnlfdGVzdC9NYWtlZmlsZQkyMDA5LTA1LTExIDAzOjAyOjQ3LjAwMDAwMDAw
-MCAtMDcwMAorKysgbHRwL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvY3B1c2V0L2NwdXNl
-dF9tZW1vcnlfdGVzdC9NYWtlZmlsZQkyMDA5LTA3LTA2IDE0OjI3OjM1LjU1Mzg0ODgwMCAtMDcw
-MApAQCAtNiw3ICs2LDcgQEAKIGFsbDogY3B1c2V0X21lbW9yeV90ZXN0CiAKIGNwdXNldF9tZW1v
-cnlfdGVzdDogY3B1c2V0X21lbW9yeV90ZXN0Lm8gJChMSUJPQkpFQ1RTKQotCWNjIGNwdXNldF9t
-ZW1vcnlfdGVzdC5vICQoTElCT0JKRUNUUykgLW8gY3B1c2V0X21lbW9yeV90ZXN0IC1scHRocmVh
-ZAorCSQoQ0MpIGNwdXNldF9tZW1vcnlfdGVzdC5vICQoTElCT0JKRUNUUykgLW8gY3B1c2V0X21l
-bW9yeV90ZXN0IC1scHRocmVhZAogCiBjbGVhbjoKIAlybSAtZiBjcHVzZXRfbWVtb3J5X3Rlc3Qg
-Y3B1c2V0X21lbW9yeV90ZXN0Lm8K
-
-------_=_NextPart_001_01C9FE81.7FD78E28
-Content-Type: application/octet-stream;
-	name="cpuset_memory_spread_test-Makefile.patch"
-Content-Transfer-Encoding: base64
-Content-Description: cpuset_memory_spread_test-Makefile.patch
-Content-Disposition: attachment;
-	filename="cpuset_memory_spread_test-Makefile.patch"
-
-LS0tIGx0cC1mdWxsLTIwMDkwNTMxL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvY3B1c2V0
-L2NwdXNldF9tZW1vcnlfc3ByZWFkX3Rlc3QvTWFrZWZpbGUJMjAwOS0wNS0xMSAwMzowMjo0Ny4w
-MDAwMDAwMDAgLTA3MDAKKysrIGx0cC90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2NwdXNl
-dC9jcHVzZXRfbWVtb3J5X3NwcmVhZF90ZXN0L01ha2VmaWxlCTIwMDktMDctMDYgMTQ6Mjc6MTAu
-Njk0NzkyMDAwIC0wNzAwCkBAIC0zLDcgKzMsNyBAQAogYWxsOiBjcHVzZXRfbWVtX2hvZwogCiBj
-cHVzZXRfbWVtX2hvZzogY3B1c2V0X21lbV9ob2cubwotCWNjIGNwdXNldF9tZW1faG9nLm8gLW8g
-Y3B1c2V0X21lbV9ob2cKKwkkKENDKSBjcHVzZXRfbWVtX2hvZy5vIC1vIGNwdXNldF9tZW1faG9n
-CiAKIGNsZWFuOgogCXJtIC1mIGNwdXNldF9tZW1faG9nLm8gY3B1c2V0X21lbV9ob2cK
-
-------_=_NextPart_001_01C9FE81.7FD78E28
-Content-Type: application/octet-stream;
-	name="cpuset_memory_pressure_test-Makefile.patch"
-Content-Transfer-Encoding: base64
-Content-Description: cpuset_memory_pressure_test-Makefile.patch
-Content-Disposition: attachment;
-	filename="cpuset_memory_pressure_test-Makefile.patch"
-
-LS0tIGx0cC1mdWxsLTIwMDkwNTMxL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvY3B1c2V0
-L2NwdXNldF9tZW1vcnlfcHJlc3N1cmVfdGVzdC9NYWtlZmlsZQkyMDA5LTA1LTExIDAzOjAyOjQ3
-LjAwMDAwMDAwMCAtMDcwMAorKysgbHRwL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvY3B1
-c2V0L2NwdXNldF9tZW1vcnlfcHJlc3N1cmVfdGVzdC9NYWtlZmlsZQkyMDA5LTA3LTA2IDE0OjI2
-OjI3Ljc4OTA5MTIwMCAtMDcwMApAQCAtMyw3ICszLDcgQEAKIGFsbDogY3B1c2V0X21lbW9yeV9w
-cmVzc3VyZQogCiBjcHVzZXRfbWVtb3J5X3ByZXNzdXJlOiBjcHVzZXRfbWVtb3J5X3ByZXNzdXJl
-Lm8KLQljYyBjcHVzZXRfbWVtb3J5X3ByZXNzdXJlLm8gLW8gY3B1c2V0X21lbW9yeV9wcmVzc3Vy
-ZQorCSQoQ0MpIGNwdXNldF9tZW1vcnlfcHJlc3N1cmUubyAtbyBjcHVzZXRfbWVtb3J5X3ByZXNz
-dXJlCiAKIGNsZWFuOgogCXJtIC1mIGNwdXNldF9tZW1vcnlfcHJlc3N1cmUubyBjcHVzZXRfbWVt
-b3J5X3ByZXNzdXJlCg==
-
-------_=_NextPart_001_01C9FE81.7FD78E28
+--===============3069074160563942231==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -113,7 +110,7 @@ Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 
-------_=_NextPart_001_01C9FE81.7FD78E28
+--===============3069074160563942231==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -124,5 +121,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-------_=_NextPart_001_01C9FE81.7FD78E28--
+--===============3069074160563942231==--
 
