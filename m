@@ -1,24 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <matt@apochromatic.org>) id 1MWQmv-000838-N3
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 08:14:57 +0000
-Received: from cs20.apochromatic.org ([204.152.189.161])
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mohan@in.ibm.com>) id 1MTVZ8-00010F-8Q
+	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 06:44:38 +0000
+Received: from e28smtp06.in.ibm.com ([59.145.155.6])
 	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MWQmv-00068R-HB
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 08:14:57 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by cs20.apochromatic.org (Postfix) with ESMTP id BA196AD763
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 30 Jul 2009 00:58:28 -0700 (PDT)
-Date: Thu, 30 Jul 2009 08:58:02 +0100
-From: Matt Fleming <matt@console-pimps.org>
-Message-ID: <20090730075802.GE3058@console-pimps.org>
+	(Exim 4.69) id 1MTVYz-0003ob-U4
+	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 06:44:38 +0000
+Date: Wed, 22 Jul 2009 11:59:05 +0530
+From: "M. Mohan Kumar" <mohan@in.ibm.com>
+Message-ID: <20090722062905.GA3113@in.ibm.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="BXVAT5kNtrzKuDFl"
 Content-Disposition: inline
-Subject: [LTP] fcntl24,25,26 fail when run on tmpfs
+Subject: [LTP] Remove pidns14 test case
+Reply-To: mohan@in.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,113 +24,177 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-
---BXVAT5kNtrzKuDFl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Attached is a patch to skip testcases fcntl24, fcntl25 and fcntl26 if
-the host is running on tmpfs. The reason being that, as documented here
-http://bugzilla.kernel.org/show_bug.cgi?id=13626, F_SETLEASE and F_WRLCK
-cannot work on tmpfs.
-
-
---BXVAT5kNtrzKuDFl
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment;
-	filename="ltp-F_SETLEASE-doesnt-work-on-tmpfs.patch"
-
-Index: testcases/kernel/syscalls/fcntl/fcntl24.c
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/fcntl/fcntl24.c,v
-retrieving revision 1.11
-diff -u -r1.11 fcntl24.c
---- testcases/kernel/syscalls/fcntl/fcntl24.c	23 Mar 2009 13:35:41 -0000	1.11
-+++ testcases/kernel/syscalls/fcntl/fcntl24.c	29 Jul 2009 14:49:08 -0000
-@@ -131,6 +131,14 @@
- 			 "Cannot do fcntl on a file located on an NFS filesystem");
- 	}
- 
-+	/*
-+	 * check if the current filesystem is tmpfs
-+	 */
-+	if (tst_is_cwd_tmpfs()) {
-+		tst_brkm(TCONF, cleanup,
-+			 "Cannot do fcntl on a file located on an TMPFS filesystem");
-+	}
-+
- 	/* set the expected errnos... */
- 	TEST_EXP_ENOS(exp_enos);
- 
-Index: testcases/kernel/syscalls/fcntl/fcntl25.c
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/fcntl/fcntl25.c,v
-retrieving revision 1.9
-diff -u -r1.9 fcntl25.c
---- testcases/kernel/syscalls/fcntl/fcntl25.c	23 Mar 2009 13:35:41 -0000	1.9
-+++ testcases/kernel/syscalls/fcntl/fcntl25.c	29 Jul 2009 14:49:08 -0000
-@@ -132,6 +132,14 @@
- 			 "Cannot do fcntl on a file located on an NFS filesystem");
- 	}
- 
-+	/*
-+	 * check if the current filesystem is tmpfs
-+	 */
-+	if (tst_is_cwd_tmpfs()) {
-+		tst_brkm(TCONF, cleanup,
-+			 "Cannot do fcntl on a file located on an TMPFS filesystem");
-+	}
-+
- 	/* set the expected errnos... */
- 	TEST_EXP_ENOS(exp_enos);
- 
-Index: testcases/kernel/syscalls/fcntl/fcntl26.c
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/fcntl/fcntl26.c,v
-retrieving revision 1.9
-diff -u -r1.9 fcntl26.c
---- testcases/kernel/syscalls/fcntl/fcntl26.c	23 Mar 2009 13:35:41 -0000	1.9
-+++ testcases/kernel/syscalls/fcntl/fcntl26.c	29 Jul 2009 14:49:08 -0000
-@@ -132,6 +132,14 @@
- 			 "Cannot do fcntl on a file located on an NFS filesystem");
- 	}
- 
-+	/*
-+	 * check if the current filesystem is tmpfs
-+	 */
-+	if (tst_is_cwd_tmpfs()) {
-+		tst_brkm(TCONF, cleanup,
-+			 "Cannot do fcntl on a file located on an TMPFS filesystem");
-+	}
-+
- 	/* set the expected errnos... */
- 	TEST_EXP_ENOS(exp_enos);
- 
-
---BXVAT5kNtrzKuDFl
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sf.net, sukadev@linux.vnet.ibm.com, sachinp@in.ibm.com
+
+[PATCH] Remove pidns14 test case
+Container-init may be immune to unhandled fatal signals (like SIGUSR1)
+even if they are from ancestor namespace. SIGKILL/SIGSTOP are the only
+reliable signals to a container-init from ancestor namespace. So remove
+test case pidns14 from container test suite. Please check git commit id
+b3bfa0cba867f23365b81658b47efd906830879b for the kernel changes.
+
+Signed-off-by: M. Mohan Kumar <mohan@in.ibm.com>
+---
+ testcases/kernel/containers/pidns/pidns14.c       |  122 ---------------------
+ testcases/kernel/containers/pidns/runpidnstest.sh |    6 -
+ 2 files changed, 0 insertions(+), 128 deletions(-)
+ delete mode 100644 testcases/kernel/containers/pidns/pidns14.c
+
+diff --git a/testcases/kernel/containers/pidns/pidns14.c b/testcases/kernel/containers/pidns/pidns14.c
+deleted file mode 100644
+index e95bf95..0000000
+--- a/testcases/kernel/containers/pidns/pidns14.c
++++ /dev/null
+@@ -1,122 +0,0 @@
+-/*
+-* Copyright (c) International Business Machines Corp., 2008
+-* This program is free software; you can redistribute it and/or modify
+-* it under the terms of the GNU General Public License as published by
+-* the Free Software Foundation; either version 2 of the License, or
+-* (at your option) any later version.
+-* This program is distributed in the hope that it will be useful,
+-* but WITHOUT ANY WARRANTY; without even the implied warranty of
+-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+-* the GNU General Public License for more details.
+-* You should have received a copy of the GNU General Public License
+-* along with this program; if not, write to the Free Software
+-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+-*
+-***************************************************************************
+-* * Assertion:
+-* * kill -USR1 container_init from outside a container
+-* * 	$ Where init has not defined a custom handler for USR1
+-* * 	$ Should kill the container
+-* * 	$ else the test fails.
+-* *
+-* * Description:
+-* *  This testcase creates container and waits till it is awakened by parent.
+-* *  The parent process sends the SIGUSR1 to container init.
+-* *  This would invoke default handler & terminate the container init.
+-* *  In parent process verify, if the SIGUSR1 signal is passed to c-init.
+-* *  If yes then Test is Passed else Test is Failed.
+-* *
+-* * History:
+-* *  DATE	  NAME				   DESCRIPTION
+-* *  14/11/08  Veerendra C  <vechandr@in.ibm.com> Verifying kill -USR1 in pidns
+-*
+-******************************************************************************/
+-#include "config.h"
+-
+-#define _GNU_SOURCE 1
+-#include <sys/wait.h>
+-#include <sys/types.h>
+-#include <signal.h>
+-#include <stdlib.h>
+-#include <unistd.h>
+-#include <usctest.h>
+-#include <test.h>
+-#include <libclone.h>
+-
+-char *TCID = "pidns14";
+-int TST_TOTAL = 1;
+-
+-int child_fn(void *);
+-void cleanup(void);
+-
+-#define CHILD_PID	1
+-#define PARENT_PID	0
+-
+-/*
+- * child_fn() - Inside container
+- */
+-int child_fn(void *ttype)
+-{
+-	pid_t pid, ppid;
+-
+-	/* Set process id and parent pid */
+-	pid = getpid();
+-	ppid = getppid();
+-
+-	if ((pid != CHILD_PID) || (ppid != PARENT_PID)) {
+-		tst_resm(TBROK, "pidns is not created.");
+-		cleanup();
+-	}
+-	pause();
+-	tst_resm(TFAIL, "Oops! Container init resumed after receiving SIGUSR1");
+-	return -1;
+-}
+-
+-/*
+- * cleanup() - performs all ONE TIME cleanup for this test at
+- *			 completion or premature exit.
+- */
+-void cleanup()
+-{
+-	/* Clean the test testcase as LTP wants*/
+-	TEST_CLEANUP;
+-	tst_exit();
+-
+-}
+-
+-/***********************************************************************
+-*   M A I N
+-***********************************************************************/
+-
+-int main(int argc, char *argv[])
+-{
+-	int status;
+-	pid_t cpid;
+-
+-	cpid = do_clone(CLONE_NEWPID | SIGCHLD, child_fn, NULL);
+-
+-	if (cpid < 0) {
+-		tst_resm(TBROK, "clone() failed.");
+-		cleanup();
+-	}
+-
+-	sleep(1);
+-	/* Passing the SIGUSR1 to the container init */
+-	if (kill(cpid, SIGUSR1) != 0) {
+-		tst_resm(TBROK, "kill(SIGUSR1) fails.");
+-		cleanup();
+-	}
+-
+-	sleep(1);
+-	if (waitpid(cpid, &status, 0) < 0)
+-		tst_resm(TWARN, "waitpid() failed.");
+-
+-	if ((WIFSIGNALED(status)) && (WTERMSIG(status) == SIGUSR1))
+-		tst_resm(TPASS, "Container init is killed as expected, "
+-				" when the SIGUSR1 is passed from parent\n");
+-	 else
+-		tst_resm(TFAIL, "After sending signal kill -USR1, "
+-				"returned unexpected error\n");
+-
+-	return 0;
+-}	/* End main */
+diff --git a/testcases/kernel/containers/pidns/runpidnstest.sh b/testcases/kernel/containers/pidns/runpidnstest.sh
+index 12d3b34..03fed38 100644
+--- a/testcases/kernel/containers/pidns/runpidnstest.sh
++++ b/testcases/kernel/containers/pidns/runpidnstest.sh
+@@ -85,12 +85,6 @@ if [ $rc -ne 0 ] && [ -z $err_code ]; then
+ 	err_code=$rc
+ fi
+ 
+-pidns14
+-rc=$?
+-if [ $rc -ne 0 ] && [ -z $err_code ]; then
+-	err_code=$rc
+-fi
+-
+ pidns16
+ rc=$?
+ if [ $rc -ne 0 ] && [ -z $err_code ]; then
+-- 
+1.6.2.5
+
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---BXVAT5kNtrzKuDFl
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---BXVAT5kNtrzKuDFl--
-
