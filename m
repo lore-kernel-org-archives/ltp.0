@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MSOJF-0001WZ-GG
-	for ltp-list@lists.sourceforge.net; Sun, 19 Jul 2009 04:47:37 +0000
-Received: from mail-pz0-f178.google.com ([209.85.222.178])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MSOJ8-0002L2-8r
-	for ltp-list@lists.sourceforge.net; Sun, 19 Jul 2009 04:47:37 +0000
-Received: by pzk8 with SMTP id 8so1339689pzk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Sat, 18 Jul 2009 21:47:29 -0700 (PDT)
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MTTxX-0003xY-JP
+	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 05:01:43 +0000
+Received: from mail-px0-f174.google.com ([209.85.216.174])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MTTxP-0001eC-OL
+	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 05:01:43 +0000
 MIME-Version: 1.0
-In-Reply-To: <4A5E7649.9040705@cn.fujitsu.com>
-References: <4A5E7649.9040705@cn.fujitsu.com>
-Date: Sat, 18 Jul 2009 21:47:29 -0700
-Message-ID: <364299f40907182147l4239c229m25eb180ea7c8ebf9@mail.gmail.com>
+In-Reply-To: <364299f40907212138rb1f671eke3aabd6587c0f925@mail.gmail.com>
+References: <20090721.182542.1000278277145531816.caiqian@cclom.cn>
+	<364299f40907210721q365aa8fdu21a1b2ff254bc60a@mail.gmail.com>
+	<200907211728.56027.vapier@gentoo.org>
+	<364299f40907212138rb1f671eke3aabd6587c0f925@mail.gmail.com>
+Date: Tue, 21 Jul 2009 22:01:34 -0700
+Message-ID: <364299f40907212201u64779636v91ff74c45c32c3f3@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] fix the system call number of exit_group01
+Subject: Re: [LTP] LTP Intermediate Release for JULY 2009 Build Failures
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,54 +30,91 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wei Yongjun <yjwei@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net, ltp-list@lists.sf.net
 
-On Wed, Jul 15, 2009 at 5:37 PM, Wei Yongjun<yjwei@cn.fujitsu.com> wrote:
-> The system call number is depend on the system architecture, not always 2=
-52. This patch fixed the problem.
+On Tue, Jul 21, 2009 at 9:38 PM, Garrett Cooper<yanegomi@gmail.com> wrote:
+> On Tue, Jul 21, 2009 at 2:28 PM, Mike Frysinger<vapier@gentoo.org> wrote:
+>> On Tuesday 21 July 2009 10:21:44 Garrett Cooper wrote:
+>>> I was tempted to fix the format string error, but I don't know what
+>>> the potential implications are of switching the data type from
+>>> u_int64_t to unsigned long long...
+>>
+>> dont do that. =A0just use the proper format string from inttypes.h.
+>> uint64_t f;
+>> printf("f =3D %"PRIu64"\n", f);
+>>
+>>> +/* Dummy function reference to avoid compiler warning from
+>>> linux_syscall_numbers.h. */
+>>> +extern void cleanup() { }
+>>
+>> this is incorrect for a few reasons. =A0it should read:
+>> +/* Dummy function as syscall() from linux_syscall_numbers.h uses cleanu=
+p() */
+>> void cleanup() { }
+>> -mike
 >
-> Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
->
-> --- a/testcases/kernel/syscalls/exit_group/exit_group01.c =A0 =A0 =A0 200=
-9-05-22 02:14:40.000000000 +0800
-> +++ b/testcases/kernel/syscalls/exit_group/exit_group01.c =A0 =A0 =A0 200=
-9-07-15 09:26:23.000000000 +0800
-> @@ -136,7 +136,7 @@ int main(int ac, char **av) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else if (TEST_RETURN =3D=3D =
-0){
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(T=
-INFO, "In the child process");
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0sleep(5);
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TEST(syscal=
-l(252,4));
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TEST(syscal=
-l(__NR_exit_group,4));
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}else {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(T=
-INFO,"in the parent process");
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0TEST(w =3D=
- wait(&status));
+> =A0 =A0Ok. I'll fix it again, recompile, and test.
+> =A0 =A0Thanks for the review Mike :) (even though it's a bit post-mortem
+> now). I do lack a bit when it comes to C coding style and that's one
+> area that I want to improve upon.
 
-Hi Wei,
-    The best way to do this (IMHO) may be to add the relevant syscall
-number to the architecture specific .in file in
-testcases/kernel/include. Do you have the syscall number for your
-architecture?
-Thanks,
--Garrett
+Ok, new patch given Mike's review suggestion...
+
+Fix compiler error for
+testcases/kernel/syscalls/eventfd2/eventfd2_03.c noted by CAI Qian
+w.r.t. the intermediate July release, as...
+1. The necessary headers weren't being pulled in for waitpid.
+2. gcc was complaining about -Wunused with cleanup.
+3. The wrong format argument was being passed to printf.
+
+Fix for 3 and suggestions on coding style made by Mike Frysinger.
+
+Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+
+gcooper@orangebox /scratch/ltp-dev2/ltp $ cdiff
+testcases/kernel/syscalls/eventfd2/eventfd2_03.c
+Index: testcases/kernel/syscalls/eventfd2/eventfd2_03.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/eventfd2/eventfd2_03.c=
+,v
+retrieving revision 1.2
+diff -u -r1.2 eventfd2_03.c
+--- testcases/kernel/syscalls/eventfd2/eventfd2_03.c    6 Jul 2009
+14:49:18 -0000       1.2
++++ testcases/kernel/syscalls/eventfd2/eventfd2_03.c    22 Jul 2009
+05:00:37 -0000
+@@ -26,6 +26,7 @@
+ #include <sys/types.h>
+ #include <sys/syscall.h>
+ #include <sys/stat.h>
++#include <sys/wait.h>
+ #include <fcntl.h>
+ #include <stdlib.h>
+ #include <stdio.h>
+@@ -44,6 +45,8 @@
+ #define EFD_SEMLIKE (1 << 0)
+ #endif
+
++/* Dummy function as syscall from linux_syscall_numbers.h uses cleanup(). =
+*/
++void cleanup() { }
+
+ static int eventfd2(int count, int flags) {
+        return syscall(__NR_eventfd2, count, flags);
+@@ -56,7 +59,7 @@
+                perror("reading eventfd");
+                exit(1);
+        }
+-       fprintf(stdout, "[%u] wait completed on %d: count=3D%llu\n",
++       fprintf(stdout, "[%u] wait completed on %d: count=3D%lu64\n",
+                getpid(), fd, cntr);
+ }
 
 ---------------------------------------------------------------------------=
 ---
-Enter the BlackBerry Developer Challenge  =
-
-This is your chance to win up to $100,000 in prizes! For a limited time, =
-
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize=
-  =
-
-details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
