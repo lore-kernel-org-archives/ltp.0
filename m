@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MWMAw-0003E1-Oe
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 03:19:26 +0000
-Received: from mail-px0-f190.google.com ([209.85.216.190])
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MTTaj-0004FV-BR
+	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 04:38:09 +0000
+Received: from mail-px0-f174.google.com ([209.85.216.174])
 	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MWMAq-0008Qf-1Q
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 03:19:26 +0000
-Received: by pxi28 with SMTP id 28so100940pxi.28
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 29 Jul 2009 20:19:14 -0700 (PDT)
+	id 1MTTab-0006S0-Jg
+	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 04:38:09 +0000
 MIME-Version: 1.0
-In-Reply-To: <4A70F86E.50608@cn.fujitsu.com>
-References: <4A70F86E.50608@cn.fujitsu.com>
-Date: Wed, 29 Jul 2009 20:19:14 -0700
-Message-ID: <364299f40907292019r494348dt1e895f0c180f3f58@mail.gmail.com>
+In-Reply-To: <200907211728.56027.vapier@gentoo.org>
+References: <20090721.182542.1000278277145531816.caiqian@cclom.cn>
+	<364299f40907210721q365aa8fdu21a1b2ff254bc60a@mail.gmail.com>
+	<200907211728.56027.vapier@gentoo.org>
+Date: Tue, 21 Jul 2009 21:38:00 -0700
+Message-ID: <364299f40907212138rb1f671eke3aabd6587c0f925@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Fix failure of the utimensat01 test
+Subject: Re: [LTP] LTP Intermediate Release for JULY 2009 Build Failures
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,42 +29,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wang Yong <wangyong2009@cn.fujitsu.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net, ltp-list@lists.sf.net
 
-On Wed, Jul 29, 2009 at 6:33 PM, Wang Yong<wangyong2009@cn.fujitsu.com> wro=
-te:
-> The error handling for "RW" opt of run_test brought about error results.
-> This patch fixed that.
+On Tue, Jul 21, 2009 at 2:28 PM, Mike Frysinger<vapier@gentoo.org> wrote:
+> On Tuesday 21 July 2009 10:21:44 Garrett Cooper wrote:
+>> I was tempted to fix the format string error, but I don't know what
+>> the potential implications are of switching the data type from
+>> u_int64_t to unsigned long long...
 >
-> Signed-off-by: WangYong <wangyong2009@cn.fujitsu.com>
+> dont do that. =A0just use the proper format string from inttypes.h.
+> uint64_t f;
+> printf("f =3D %"PRIu64"\n", f);
 >
-> diff -Nurp a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
-> b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
-> --- a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh =A0 =A02009-=
-07-28 16:23:39.000000000 +0800
-> +++ b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh =A0 =A02009-=
-07-28 17:32:26.000000000 +0800
-> @@ -260,22 +260,22 @@ echo "Testing read-only file, owned by s
-> =A0echo
+>> +/* Dummy function reference to avoid compiler warning from
+>> linux_syscall_numbers.h. */
+>> +extern void cleanup() { }
+>
+> this is incorrect for a few reasons. =A0it should read:
+> +/* Dummy function as syscall() from linux_syscall_numbers.h uses cleanup=
+() */
+> void cleanup() { }
+> -mike
 
-[...]
-
-Don't these changes actually conflict with the testcase's purpose,
-given the messages echoed placed directly above the commands?
-Thanks,
+    Ok. I'll fix it again, recompile, and test.
+    Thanks for the review Mike :) (even though it's a bit post-mortem
+now). I do lack a bit when it comes to C coding style and that's one
+area that I want to improve upon.
 -Garrett
 
 ---------------------------------------------------------------------------=
 ---
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
-
-trial. Simplify your report design, integration and deployment - and focus =
-on =
-
-what you do best, core application coding. Discover what's new with =
-
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
