@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MR7US-00017a-6g
-	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2009 16:37:56 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MR7UN-0006AQ-NZ
-	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2009 16:37:56 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Wed, 15 Jul 2009 12:37:48 -0400
-References: <364299f40907061818q7cda3465vffb00323af18c5f8@mail.gmail.com>
-	<364299f40907062033j1660f689t65b8b8bdfb402f11@mail.gmail.com>
-	<364299f40907112249g1a04c53cn4d25ce385f88bcaf@mail.gmail.com>
-In-Reply-To: <364299f40907112249g1a04c53cn4d25ce385f88bcaf@mail.gmail.com>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yjwei@cn.fujitsu.com>) id 1MTUhg-000779-3V
+	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 05:49:24 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MTUhX-0001o5-Sg
+	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 05:49:24 +0000
+Message-ID: <4A66A7F2.7020802@cn.fujitsu.com>
+Date: Wed, 22 Jul 2009 13:47:30 +0800
+From: Wei Yongjun <yjwei@cn.fujitsu.com>
 MIME-Version: 1.0
-Message-Id: <200907151237.49839.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 4/4] Make makefiles more autoconf friendly
+References: <4A6527B6.7070602@cn.fujitsu.com> <4A65BD95.7070001@petalogix.com>
+In-Reply-To: <4A65BD95.7070001@petalogix.com>
+Subject: Re: [LTP] [PATCH] Fix to set the signal handler of SIGINT in
+	mq_timedreceive01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,150 +25,212 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4167141259586477839=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============4167141259586477839==
-Content-Type: multipart/signed; boundary="nextPart1455693.Csaogb2DV5";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1455693.Csaogb2DV5
-Content-Type: text/plain;
-  charset="utf-8"
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: michal.simek@petalogix.com
+Cc: ltp-list@lists.sourceforge.net
 
-On Sunday 12 July 2009 01:49:52 Garrett Cooper wrote:
-> -AC_CONFIG_FILES([config.mk m4/Makefile])
-> +AC_CONFIG_FILES([ include/mk/config.mk lib/ltp.pc ltp-devel.spec
-> m4/Makefile \ +README.ltp-devel ])
+Hi,
+> Hi,
+>
+> Please fix coding style violation.
+> Use tab instead of spaces.
+> Subrata should reject this patch with bad coding style.
+> Can you please fix it?
+>
+>
+>   =
 
-if you're going to start splitting lines, might as well do all of them and=
-=20
-keep them sorted
-AC_CONFIG_FILES([ \
-	file1 \
-	file2 \
-	file3 \
-])
+Fixed it(the original source is all space, no tab),And also fixed the
+compile warning.
 
-> --- /dev/null	1 Jan 1970 00:00:00 -0000
-> +++ ltp-devel.spec.in	12 Jul 2009 05:46:28 -0000
+[PATCHv2] Fix to set the signal handler of SIGINT in mq_timedreceive01
 
-each of the .in files should have a target in the related Makefile so that =
-it=20
-gets updated if the source is modified
+The test case mq_timedreceive01 does not register the signal
+handler of SIGINT, so the problam will be terminated by SIGINT
+from child process.
 
-ltp-devel.spec: $(srcdir)/ltp-devel.spec.in
-	./config.status $@
+This patch fixed the problem. And also fixed the following
+compile warning.
 
-> +++ include/mk/config.mk.in	12 Jul 2009 05:46:28 -0000
-> +AIO_LIBS	=3D @AIO_LIBS@
-> +CRYPTO_LIB	=3D @CRYPTO_LIB@
-> +SELINUX_LIBS	=3D @SELINUX_LIBS@
+mq_timedreceive01.c: In function =91do_test=92:
+mq_timedreceive01.c:379: warning: null argument where non-null required (ar=
+gument 5)
 
-there should be a note here about standardizing the naming.  it should be=20
-"FOO_LIBS", not "_LIB".
+Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
 
-> +# Avoid overwriting definitions in leaf callers.
-> +CPPFLAGS	?=3D @CPPFLAGS@ -I$(includedir)
-> +CFLAGS		?=3D @CFLAGS@
-> +LDLIBS		?=3D @LIBS@
-> +LDFLAGS		?=3D @LDFLAGS@ -L$(libdir)
+diff --git a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c =
+b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+index dadc38d..d6604d7 100644
+--- a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
++++ b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+@@ -106,6 +106,13 @@ extern void cleanup() {
+         tst_exit();
+ }
+ =
 
-this looks like it'll cause problems if you set these in your environment
-export CPPFLAGS=3D'' CFLAGS=3D'-pipe' LDFLAGS=3D''
-make
++/*
++ * sighandler()
++ */
++void sighandler(int sig)
++{
++}
++
+ /* Local  Functions */
+ /*************************************************************************=
+*****/
+ /*                                                                        =
+    */
+@@ -126,6 +133,7 @@ extern void cleanup() {
+ /*************************************************************************=
+*****/
+ void setup() {
+         /* Capture signals if any */
++	signal(SIGINT, sighandler);
+         /* Create temporary directories */
+         TEST_PAUSE;
+         tst_tmpdir();
+@@ -301,7 +309,7 @@ static int do_test(struct test_case *tc)
+ 	int oflag;
+         int i, rc, cmp_ok =3D 1, fd =3D -1;
+         char smsg[MAX_MSGSIZE], rmsg[MAX_MSGSIZE];
+-        struct timespec ts, *p_ts;
++        struct timespec ts, *p_ts =3D NULL;
+         pid_t pid =3D 0;
+         unsigned prio;
+         size_t msg_len;
+@@ -368,7 +376,7 @@ switch (tc->ttype) {
+         case FD_FILE:
+                 break;
+         default:
+-		TEST(rc =3D mq_timedsend(fd, smsg, tc->len, tc->prio, NULL));
++		TEST(rc =3D mq_timedsend(fd, smsg, tc->len, tc->prio, p_ts));
+                 if (TEST_RETURN < 0) {
+                  	tst_resm(TFAIL, "mq_timedsend failed - errno =3D %d : %s=
+",TEST_ERRNO, strerror(TEST_ERRNO));
+                         result =3D 1;
+@@ -432,17 +440,6 @@ EXIT:
+         return result;
+ }
+ =
 
-i would use $(origin ...) to determine whether the variables are coming fro=
-m=20
-the leaf Makefile
+-/*
+- * sighandler()
+- */
+-void sighandler(int sig)
+-{
+-        if (sig =3D=3D SIGINT)
+-                return;
+-        // NOTREACHED
+-        return;
+-}
+-
+ =
 
-also, please add '-pipe' to default CFLAGS
+ =
 
-> +DEBUG_CFLAGS	?=3D -g
-> +DEBUG_CXXFLAGS	?=3D $(DEBUG_CFLAGS)
-> +
-> +CFLAGS		+=3D $(DEBUG_CFLAGS)
-> +CXXFLAGS	+=3D $(DEBUG_CXXFLAGS)
-> +
-> +# There have been several bugs in the past related to -O2+ when
-> +# -fno-strict-aliasing is not specified.
-> +OPT_CFLAGS	?=3D -O2 -fno-strict-aliasing
-> +OPT_CXXFLAGS	?=3D $(OPT_CFLAGS)
-
-in general, i recall only like 1 bug that was a gcc issue.  all the others=
-=20
-were broken source code.  i dont think we should live with code that violat=
-es=20
-aliasing rules.
-
-> +#export AR CC CFLAGS CPPFLAGS LDLIBS LDFLAGS RANLIB
-
-forgot to delete ?
-
-> --- m4/GNUmakefile	18 Jan 2009 22:22:40 -0000	1.1
-> +++ m4/GNUmakefile	12 Jul 2009 05:46:28 -0000
-
-i think we only need a top level GNUmakefile.  all the other subdirs can st=
-ay=20
-Makefile.
-
-> +LFLAGS			+=3D -l -w
-> +CFLAGS			+=3D -w
-
-punt these
-=2Dmike
-
---nextPart1455693.Csaogb2DV5
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJKXgXdAAoJEEFjO5/oN/WBiYcP/jHVDRtS6+vsRuiW2YaRb1Qa
-yXxcrI7uv1RHotZKDab6vH4M80erxzZWG3tiNyqPIfOpLiG2qEAZS9BUErvUyIvm
-pGG629QTADwDqAhgYqYlpyffWS16ECLnftPREs4OFDZbI5NoOZp5cWLJNnP7muLx
-p7eIoNmEY1PRed+/Etsh9gl53BKy/Xm56cke8cZFi20VsvJmlfWhKXBx+nM8vdnq
-qPm3ILrYUpnA+gRrjQwCNWUIZW3imdkFgebKi8X9s51Q0dKk4c2qpu5oNGnmrveb
-6ny/3Ztwmk2uuB+sCzXYTYjH+QlibihY1JL16pnnYxOhbjWR1jCPY2Wq2RbxSeMU
-XzhHGdcQ21Ltw4RLV+TLIG+/hs7Kkn6i365yRIkaYSRFE/lvDHaZ46GXlhFxeMQC
-3+BYA/BHVZCf/dVFfVGMA2TRRh9ekS67gIyOwZz2y+3sNk8DnFhnCXkyS1fJNA0w
-VfEtLk+CUsMVzJjEt6yKgPrUt7uxz6rpRuS/bzU7MhA8DdZhhLHGHZDNtNt+vT1o
-I5U3bJ/JrfV7+Kns/3Z7gbz/79q1aY3mTTPHeGSKwR52PjP/13bjqvwCUFfyz+Fu
-B+aD10uH9Afh/jHVMV8yqlPlypsAmMhxYxT7DdcwOGS7LyPbUI5UloYTY99NBeB8
-/uuUe+Y2p2rZeHQL1bEm
-=j0KI
------END PGP SIGNATURE-----
-
---nextPart1455693.Csaogb2DV5--
+ /*
 
 
---===============4167141259586477839==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
-------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
---===============4167141259586477839==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
+
+>> The test case mq_timedreceive01 does not register the signal
+>> handler of SIGINT, so the problam will be terminated by SIGINT
+>> from child process.
+>>
+>> This patch fixed the problem.
+>>
+>> Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
+>>
+>> diff --git a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01=
+.c b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+>> index dadc38d..beeb298 100644
+>> --- a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+>> +++ b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+>> @@ -106,6 +106,14 @@ extern void cleanup() {
+>>          tst_exit();
+>>  }
+>>  =
+
+>> +/*
+>> + * sighandler()
+>> + */
+>> +void sighandler(int sig)
+>> +{
+>> +        return;
+>> +}
+>> +
+>>  /* Local  Functions */
+>>  /**********************************************************************=
+********/
+>>  /*                                                                     =
+       */
+>> @@ -126,6 +134,7 @@ extern void cleanup() {
+>>  /**********************************************************************=
+********/
+>>  void setup() {
+>>          /* Capture signals if any */
+>> +        signal(SIGINT, sighandler);
+>>          /* Create temporary directories */
+>>          TEST_PAUSE;
+>>          tst_tmpdir();
+>> @@ -432,17 +441,6 @@ EXIT:
+>>          return result;
+>>  }
+>>  =
+
+>> -/*
+>> - * sighandler()
+>> - */
+>> -void sighandler(int sig)
+>> -{
+>> -        if (sig =3D=3D SIGINT)
+>> -                return;
+>> -        // NOTREACHED
+>> -        return;
+>> -}
+>> -
+>>  =
+
+>>  =
+
+>>  /*
+>>
+>>
+>>
+>>
+>>
+>> ------------------------------------------------------------------------=
+------
+>> Enter the BlackBerry Developer Challenge  =
+
+>> This is your chance to win up to $100,000 in prizes! For a limited time, =
+
+>> vendors submitting new applications to BlackBerry App World(TM) will have
+>> the opportunity to enter the BlackBerry Developer Challenge. See full pr=
+ize  =
+
+>> details at: http://p.sf.net/sfu/Challenge
+>> _______________________________________________
+>> Ltp-list mailing list
+>> Ltp-list@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>   =
+
+>>     =
+
+>
+>
+>   =
+
+
+
+
+---------------------------------------------------------------------------=
+---
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4167141259586477839==--
-
