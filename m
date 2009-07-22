@@ -1,27 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <michal.simek@petalogix.com>) id 1MOqrb-0002bk-6c
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 10:28:27 +0000
-Received: from mail-bw0-f215.google.com ([209.85.218.215])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MOqra-0002br-6U
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 10:28:27 +0000
-Received: by bwz11 with SMTP id 11so55414bwz.10
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 09 Jul 2009 03:28:24 -0700 (PDT)
-Message-ID: <4A55C646.5060805@petalogix.com>
-Date: Thu, 09 Jul 2009 12:28:22 +0200
-From: Michal Simek <michal.simek@petalogix.com>
-MIME-Version: 1.0
-References: <4A5436D4.6070201@petalogix.com>	
-	<364299f40907080719q4ab01842v7e47a352b8214b8a@mail.gmail.com>	
-	<4A54AEFA.3030100@petalogix.com>
-	<364299f40907082230m27683f17yd042bd569d0a5165@mail.gmail.com>
-In-Reply-To: <364299f40907082230m27683f17yd042bd569d0a5165@mail.gmail.com>
-Subject: Re: [LTP] IDcheck.sh - awk problem
-Reply-To: michal.simek@petalogix.com
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <caiqian@cclom.cn>) id 1MTaxB-0002R8-HB
+	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 12:29:49 +0000
+Received: from smtp101.biz.mail.re2.yahoo.com ([68.142.229.215])
+	by 1b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1MTax9-0003jW-7s
+	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 12:29:49 +0000
+Date: Wed, 22 Jul 2009 20:03:37 +0800 (CST)
+Message-Id: <20090722.200337.625859878544524857.caiqian@cclom.cn>
+From: CAI Qian <caiqian@cclom.cn>
+Mime-Version: 1.0
+Subject: [LTP] More LTP Intermediate Release for JULY 2009 Build Failures
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,175 +22,102 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier.adi@gmail.com>
+To: ltp-list@lists.sf.net
 
-Garrett Cooper wrote:
-> On Wed, Jul 8, 2009 at 7:36 AM, Michal Simek<michal.simek@petalogix.com> wrote:
->   
->> Of course not because I cross compile ltp for Microblaze - correct
->> /etc/passwd - group is on
->> target system. Maybe worth to remove calling IDcheck.sh from make
->> install and call it only before
->> running the test.
->>
->>     
->
-> Michal,
->     Please give this patch a try, and instead when you run make
-> install, do SKIP_IDCHECK=1.
-> HTH,
-> -Garrett
->
-> This patch does the same as the previous released patch in this
-> thread, which is:
->
-> IDcheck.sh:
-> 1. Fixes the DESTDIR != "" | "/" behavior.
-> 2. Spew out less awk errors if files don't exist by instead
-> short-circuiting the logic to detect whether or not the file exists in
-> the fe function subroutine.
->
-> In addition to the above, this adds SKIP_IDCHECK behavior, by request
-> of Michal, so it's no longer required for make install, and can be
-> disabled by entering specifying the variable SKIP_IDCHECK=1 when
-> calling make install, e.g...
->
-> make \
-> [make-options-and-variables] \
-> SKIP_IDCHECK=1 \
-> install
->   
-you should add SKIP_IDCHECK to uclinux_install too.
-
-[monstr@monstr ltp-microblaze.git]$ make SKIP_IDCHECK=1 install
-Makefile:43: *** insufficient number of arguments (1) to function
-`filter'.  Stop.
-
-Michal
-
-> Warning! This patch has Makefile changes and as such the files patched
-> contents should be committed directly, NOT the inline text shown below
-> (for reviewing purposes only).
->
-> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
->
-> Index: IDcheck.sh
-> ===================================================================
-> RCS file: /cvsroot/ltp/ltp/IDcheck.sh,v
-> retrieving revision 1.19
-> diff -u -r1.19 IDcheck.sh
-> --- IDcheck.sh  7 Jul 2009 14:30:27 -0000       1.19
-> +++ IDcheck.sh  9 Jul 2009 05:21:34 -0000
-> @@ -22,7 +22,6 @@
->  #
->
->  # Prompt user if ids/groups should be created
-> -clear
->  echo "Checking for required user/group ids"
->  echo ""
->
-> @@ -41,12 +40,11 @@
->
->  # find entry.
->  fe() {
-> -       ID=$1; shift
-> -       FILE=$1; shift
-> -       awk "/^$ID:/ { FOUND=1 } END { if (\$FOUND == 1) { exit 0; }
-> exit 1; }" \
-> -       "$FILE"
-> -       ec=$?
-> -       echo "$ID => $ec"
-> +    ID=$1; shift
-> +    FILE=$1; shift
-> +    [ -e "$FILE" ] || return $?
-> +    awk "/^$ID:/ { FOUND=1 } END { if (\$FOUND == 1) { exit 1; } exit 0; }" \
-> +    "$FILE"
->  }
->
->  prompt_for_create() {
-> @@ -70,13 +68,12 @@
->         EUID=$(id -u)
->  fi
->
-> -if [ -e "$passwd" -a ! -r "$passwd" ] ; then
-> -       echo "/etc/passwd not readable by uid $EUID"
-> +for i in "$passwd" "$group"; do
-> +    if [ -e "$i" -a ! -r "$i" ] ; then
-> +       echo "$i not readable by uid $EUID"
->         exit 1
-> -elif [ -e "$group" -a ! -r "$group" ] ; then
-> -       echo "$group not readable by uid $EUID"
-> -       exit 1
-> -fi
-> +    fi
-> +done
->
->  fe bin "$passwd"; NO_BIN_ID=$?
->  fe daemon "$passwd"; NO_DAEMON_ID=$?
-> @@ -110,10 +107,10 @@
->  #debug_vals
->
->  if [ $CREATE_ENTRIES -ne 0 ] ; then
-> -       if ! touch "$group" ; then
-> -               echo "Couldn't touch $group"
-> -               exit 1
-> -       fi
-> +    if ! touch "$group" "$passwd" 2>/dev/null; then
-> +        echo "Failed to touch $group or $passwd"
-> +        exit 1
-> +    fi
->  fi
->
->  make_user_group() {
-> Index: Makefile
-> ===================================================================
-> RCS file: /cvsroot/ltp/ltp/Makefile,v
-> retrieving revision 1.39
-> diff -u -r1.39 Makefile
-> --- Makefile    25 Mar 2009 06:17:48 -0000      1.39
-> +++ Makefile    9 Jul 2009 05:27:34 -0000
-> @@ -14,6 +14,10 @@
->  export CFLAGS += -Wall $(CROSS_CFLAGS)
->  export CC AR RANLIB CPPFLAGS LDFLAGS HAS_NUMA
->
-> +# SKIP_IDCHECK != 1, defaults to previous behavior, which is to execute
-> +# IDcheck.sh at the end of `make install'.
-> +SKIP_IDCHECK           ?= 0
-> +
->  -include config.mk
->
->  VPATH += include m4
-> @@ -36,8 +40,9 @@
->         @$(MAKE) -C m4 install
->         @$(MAKE) -C doc/man1 install
->         @$(MAKE) -C doc/man3 install
-> -
-> +ifneq ($(filter $(SKIP_IDCHECK)),1)
->         @./IDcheck.sh
-> +endif
->
->  libltp.a: config.h
->         @$(MAKE) -C lib $@
->   
-
-
--- 
-Michal Simek, Ing. (M.Eng)
-PetaLogix - Linux Solutions for a Reconfigurable World
-w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
-
-
-------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+SGksDQoNClRoZXJlIGFyZSBzb21lIG1vcmUgYnVpbGQgZmFpbHVyZXMganVzdCBjb21lIGFjcm9z
+cywNCg0KDQpJQS0zMjoNCmtlcm5lbC1QQUUtMi42LjI5LjQtMS5lbDYNCmdsaWJjLTIuMTAuMS0y
+DQoNCm1ha2VbNV06IEVudGVyaW5nIGRpcmVjdG9yeSBgL21udC90ZXN0cy9rZXJuZWwvZGlzdHJp
+YnV0aW9uL2x0cC8yMDA5MDcyMS9sdHAtaW50ZXJtZWRpYXRlLTIwMDkwNzIxL3Rlc3RjYXNlcy9r
+ZXJuZWwvc2VjdXJpdHkvY2FwX2JvdW5kJw0KZWNobyAiIyEvYmluL3NoIiA+IGNoZWNrZm9ybGli
+Y2FwDQplY2hvIHRydWUgPj4gY2hlY2tmb3JsaWJjYXANCmNobW9kIGErcnggY2hlY2tmb3JsaWJj
+YXANCmdjYyAtZyAtTzIgLUkuLi8uLi8uLi8uLi9pbmNsdWRlIC1XYWxsICAgIGNhcF9ib3VuZHNf
+ci5jICAtTC4uLy4uLy4uLy4uL2xpYiAtbGx0cCAtbGNhcCAtbyBjYXBfYm91bmRzX3INCkluIGZp
+bGUgaW5jbHVkZWQgZnJvbSBjYXBfYm91bmRzX3IuYzoyODoNCi91c3IvaW5jbHVkZS9zeXMvY2Fw
+YWJpbGl0eS5oOjEwMjogZXJyb3I6IGV4cGVjdGVkIOKAmD3igJksIOKAmCzigJksIOKAmDvigJks
+IOKAmGFzbeKAmSBvciDigJhfX2F0dHJpYnV0ZV9f4oCZIGJlZm9yZSDigJhjYXBfc2l6ZeKAmQ0K
+L3Vzci9pbmNsdWRlL3N5cy9jYXBhYmlsaXR5Lmg6MTAzOiBlcnJvcjogZXhwZWN0ZWQg4oCYPeKA
+mSwg4oCYLOKAmSwg4oCYO+KAmSwg4oCYYXNt4oCZIG9yIOKAmF9fYXR0cmlidXRlX1/igJkgYmVm
+b3JlIOKAmGNhcF9jb3B5X2V4dOKAmQ0KL3Vzci9pbmNsdWRlL3N5cy9jYXBhYmlsaXR5Lmg6MTA4
+OiBlcnJvcjogZXhwZWN0ZWQgZGVjbGFyYXRpb24gc3BlY2lmaWVycyBvciDigJguLi7igJkgYmVm
+b3JlIOKAmHNzaXplX3TigJkNCi91c3IvaW5jbHVkZS9zeXMvY2FwYWJpbGl0eS5oOjEyMDogZXJy
+b3I6IGV4cGVjdGVkIOKAmCnigJkgYmVmb3JlIOKAmHBpZOKAmQ0KL3Vzci9pbmNsdWRlL3N5cy9j
+YXBhYmlsaXR5Lmg6MTIzOiBlcnJvcjogZXhwZWN0ZWQg4oCYKeKAmSBiZWZvcmUg4oCYcGlk4oCZ
+DQpjYXBfYm91bmRzX3IuYzozODoyOiB3YXJuaW5nOiAjd2FybmluZyBDQVBfQlNFVF9SRUFEIG5v
+dCBkZWZpbmVkDQpjYXBfYm91bmRzX3IuYzo0MzoyOiB3YXJuaW5nOiAjd2FybmluZyBDQVBfQlNF
+VF9EUk9QIG5vdCBkZWZpbmVkDQptYWtlWzVdOiAqKiogW2NhcF9ib3VuZHNfcl0gRXJyb3IgMQ0K
+bWFrZVs1XTogTGVhdmluZyBkaXJlY3RvcnkgYC9tbnQvdGVzdHMva2VybmVsL2Rpc3RyaWJ1dGlv
+bi9sdHAvMjAwOTA3MjEvbHRwLWludGVybWVkaWF0ZS0yMDA5MDcyMS90ZXN0Y2FzZXMva2VybmVs
+L3NlY3VyaXR5L2NhcF9ib3VuZCcNCm1ha2VbNF06ICoqKiBbYWxsXSBFcnJvciAyDQptYWtlWzRd
+OiBMZWF2aW5nIGRpcmVjdG9yeSBgL21udC90ZXN0cy9rZXJuZWwvZGlzdHJpYnV0aW9uL2x0cC8y
+MDA5MDcyMS9sdHAtaW50ZXJtZWRpYXRlLTIwMDkwNzIxL3Rlc3RjYXNlcy9rZXJuZWwvc2VjdXJp
+dHknDQptYWtlWzNdOiAqKiogW2FsbF0gRXJyb3IgMg0KbWFrZVszXTogTGVhdmluZyBkaXJlY3Rv
+cnkgYC9tbnQvdGVzdHMva2VybmVsL2Rpc3RyaWJ1dGlvbi9sdHAvMjAwOTA3MjEvbHRwLWludGVy
+bWVkaWF0ZS0yMDA5MDcyMS90ZXN0Y2FzZXMva2VybmVsJw0KbWFrZVsyXTogKioqIFthbGxdIEVy
+cm9yIDINCm1ha2VbMl06IExlYXZpbmcgZGlyZWN0b3J5IGAvbW50L3Rlc3RzL2tlcm5lbC9kaXN0
+cmlidXRpb24vbHRwLzIwMDkwNzIxL2x0cC1pbnRlcm1lZGlhdGUtMjAwOTA3MjEvdGVzdGNhc2Vz
+Jw0KbWFrZVsxXTogKioqIFthbGxdIEVycm9yIDINCm1ha2VbMV06IExlYXZpbmcgZGlyZWN0b3J5
+IGAvbW50L3Rlc3RzL2tlcm5lbC9kaXN0cmlidXRpb24vbHRwLzIwMDkwNzIxL2x0cC1pbnRlcm1l
+ZGlhdGUtMjAwOTA3MjEnDQptYWtlOiAqKiogW2J1aWxkXSBFcnJvciAyDQoNCi0tLS0tLS0NCng4
+Nl82NDoNCmtlcm5lbC0yLjYuMjkuNC0xLmVsNg0KZ2xpYmMtMi4xMC4xLTINCg0KbWFrZVs0XTog
+RW50ZXJpbmcgZGlyZWN0b3J5IGAvbW50L3Rlc3RzL2tlcm5lbC9kaXN0cmlidXRpb24vbHRwLzIw
+MDkwNzIxL2x0cC1pbnRlcm1lZGlhdGUtMjAwOTA3MjEvdGVzdGNhc2VzL2tlcm5lbC9udW1hJw0K
+Z2NjIC1nIC1PMiAtSS4uLy4uLy4uL2luY2x1ZGUgLVdhbGwgLUROVU1BX1ZFUlNJT04xX0NPTVBB
+VElCSUxJVFkgICAgbnVtYV9ub2RlX3NpemUuYyAgLUwuLi8uLi8uLi9saWIgLWxsdHAgIC1MLi4v
+Li4vLi4vbGliICAtbG51bWEgLW8gbnVtYV9ub2RlX3NpemUNCm51bWFfbm9kZV9zaXplLmM6IElu
+IGZ1bmN0aW9uIOKAmG1haW7igJk6DQpudW1hX25vZGVfc2l6ZS5jOjcyOiB3YXJuaW5nOiBwYXNz
+aW5nIGFyZ3VtZW50IDEgb2Yg4oCYbm9kZW1hc2tfemVyb+KAmSBmcm9tIGluY29tcGF0aWJsZSBw
+b2ludGVyIHR5cGUNCi91c3IvaW5jbHVkZS9udW1hLmg6NjQ6IG5vdGU6IGV4cGVjdGVkIOKAmHN0
+cnVjdCBiaXRtYXNrICrigJkgYnV0IGFyZ3VtZW50IGlzIG9mIHR5cGUg4oCYc3RydWN0IG5vZGVt
+YXNrX3QgKuKAmQ0KbnVtYV9ub2RlX3NpemUuYzo3Mzogd2FybmluZzogaW1wbGljaXQgZGVjbGFy
+YXRpb24gb2YgZnVuY3Rpb24g4oCYbm9kZW1hc2tfc2V04oCZDQovdG1wL2NjZ20wQlBBLm86IElu
+IGZ1bmN0aW9uIGBtYWluJzoNCi9tbnQvdGVzdHMva2VybmVsL2Rpc3RyaWJ1dGlvbi9sdHAvMjAw
+OTA3MjEvbHRwLWludGVybWVkaWF0ZS0yMDA5MDcyMS90ZXN0Y2FzZXMva2VybmVsL251bWEvbnVt
+YV9ub2RlX3NpemUuYzo3MzogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgbm9kZW1hc2tfc2V0Jw0K
+Y29sbGVjdDI6IGxkIHJldHVybmVkIDEgZXhpdCBzdGF0dXMNCm1ha2VbNF06ICoqKiBbbnVtYV9u
+b2RlX3NpemVdIEVycm9yIDENCm1ha2VbNF06IExlYXZpbmcgZGlyZWN0b3J5IGAvbW50L3Rlc3Rz
+L2tlcm5lbC9kaXN0cmlidXRpb24vbHRwLzIwMDkwNzIxL2x0cC1pbnRlcm1lZGlhdGUtMjAwOTA3
+MjEvdGVzdGNhc2VzL2tlcm5lbC9udW1hJw0KbWFrZVszXTogKioqIFthbGxdIEVycm9yIDINCm1h
+a2VbM106IExlYXZpbmcgZGlyZWN0b3J5IGAvbW50L3Rlc3RzL2tlcm5lbC9kaXN0cmlidXRpb24v
+bHRwLzIwMDkwNzIxL2x0cC1pbnRlcm1lZGlhdGUtMjAwOTA3MjEvdGVzdGNhc2VzL2tlcm5lbCcN
+Cm1ha2VbMl06ICoqKiBbYWxsXSBFcnJvciAyDQptYWtlWzJdOiBMZWF2aW5nIGRpcmVjdG9yeSBg
+L21udC90ZXN0cy9rZXJuZWwvZGlzdHJpYnV0aW9uL2x0cC8yMDA5MDcyMS9sdHAtaW50ZXJtZWRp
+YXRlLTIwMDkwNzIxL3Rlc3RjYXNlcycNCm1ha2VbMV06ICoqKiBbYWxsXSBFcnJvciAyDQptYWtl
+WzFdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL21udC90ZXN0cy9rZXJuZWwvZGlzdHJpYnV0aW9uL2x0
+cC8yMDA5MDcyMS9sdHAtaW50ZXJtZWRpYXRlLTIwMDkwNzIxJw0KbWFrZTogKioqIFtidWlsZF0g
+RXJyb3IgMg0KDQoNCi0tLS0tLQ0KSUEtMzI6DQprZXJuZWwtMi42LjktODkuRUwuaTY4Ng0KZ2xp
+YmMtMi4zLjQtMi40My5pNjg2DQoNCm1ha2VbNV06IEVudGVyaW5nIGRpcmVjdG9yeSBgL21udC90
+ZXN0cy9rZXJuZWwvZGlzdHJpYnV0aW9uL2x0cC8yMDA5MDcyMS9sdHAtaW50ZXJtZWRpYXRlLTIw
+MDkwNzIxL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcXVvdGFjdGwnDQpnY2MgLWcgLU8yIC1J
+Li4vLi4vaW5jbHVkZSAtZyAtV2FsbCAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgLVdhbGwgICAgcXVv
+dGFjdGwwMS5jICAtTC4uLy4uLy4uLy4uL2xpYiAtbGx0cCAtbyBxdW90YWN0bDAxDQpxdW90YWN0
+bDAxLmM6MTI0OiBlcnJvcjogYFFfR0VUSU5GTycgdW5kZWNsYXJlZCBoZXJlIChub3QgaW4gYSBm
+dW5jdGlvbikNCnF1b3RhY3RsMDEuYzoxMjQ6IGVycm9yOiBpbml0aWFsaXplciBlbGVtZW50IGlz
+IG5vdCBjb25zdGFudA0KcXVvdGFjdGwwMS5jOjEyNDogZXJyb3I6IChuZWFyIGluaXRpYWxpemF0
+aW9uIGZvciBgY21kWzRdJykNCnF1b3RhY3RsMDEuYzoxMjQ6IGVycm9yOiBgUV9TRVRJTkZPJyB1
+bmRlY2xhcmVkIGhlcmUgKG5vdCBpbiBhIGZ1bmN0aW9uKQ0KcXVvdGFjdGwwMS5jOjEyNDogZXJy
+b3I6IGluaXRpYWxpemVyIGVsZW1lbnQgaXMgbm90IGNvbnN0YW50DQpxdW90YWN0bDAxLmM6MTI0
+OiBlcnJvcjogKG5lYXIgaW5pdGlhbGl6YXRpb24gZm9yIGBjbWRbNV0nKQ0KcXVvdGFjdGwwMS5j
+OjEyNDogZXJyb3I6IGBRX0dFVEZNVCcgdW5kZWNsYXJlZCBoZXJlIChub3QgaW4gYSBmdW5jdGlv
+bikNCnF1b3RhY3RsMDEuYzoxMjQ6IGVycm9yOiBpbml0aWFsaXplciBlbGVtZW50IGlzIG5vdCBj
+b25zdGFudA0KcXVvdGFjdGwwMS5jOjEyNDogZXJyb3I6IChuZWFyIGluaXRpYWxpemF0aW9uIGZv
+ciBgY21kWzZdJykNCm1ha2VbNV06ICoqKiBbcXVvdGFjdGwwMV0gRXJyb3IgMQ0KbWFrZVs1XTog
+TGVhdmluZyBkaXJlY3RvcnkgYC9tbnQvdGVzdHMva2VybmVsL2Rpc3RyaWJ1dGlvbi9sdHAvMjAw
+OTA3MjEvbHRwLWludGVybWVkaWF0ZS0yMDA5MDcyMS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L3F1b3RhY3RsJw0KbWFrZVs0XTogKioqIFthbGxdIEVycm9yIDINCm1ha2VbNF06IExlYXZpbmcg
+ZGlyZWN0b3J5IGAvbW50L3Rlc3RzL2tlcm5lbC9kaXN0cmlidXRpb24vbHRwLzIwMDkwNzIxL2x0
+cC1pbnRlcm1lZGlhdGUtMjAwOTA3MjEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscycNCm1ha2Vb
+M106ICoqKiBbYWxsXSBFcnJvciAyDQptYWtlWzNdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL21udC90
+ZXN0cy9rZXJuZWwvZGlzdHJpYnV0aW9uL2x0cC8yMDA5MDcyMS9sdHAtaW50ZXJtZWRpYXRlLTIw
+MDkwNzIxL3Rlc3RjYXNlcy9rZXJuZWwnDQptYWtlWzJdOiAqKiogW2FsbF0gRXJyb3IgMg0KbWFr
+ZVsyXTogTGVhdmluZyBkaXJlY3RvcnkgYC9tbnQvdGVzdHMva2VybmVsL2Rpc3RyaWJ1dGlvbi9s
+dHAvMjAwOTA3MjEvbHRwLWludGVybWVkaWF0ZS0yMDA5MDcyMS90ZXN0Y2FzZXMnDQptYWtlWzFd
+OiAqKiogW2FsbF0gRXJyb3IgMg0KbWFrZVsxXTogTGVhdmluZyBkaXJlY3RvcnkgYC9tbnQvdGVz
+dHMva2VybmVsL2Rpc3RyaWJ1dGlvbi9sdHAvMjAwOTA3MjEvbHRwLWludGVybWVkaWF0ZS0yMDA5
+MDcyMScNCm1ha2U6ICoqKiBbYnVpbGRdIEVycm9yIDINCg0KQ0FJIFFpYW4NCi0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0
+dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
