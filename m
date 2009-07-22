@@ -1,23 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <madrabbit@gmail.com>) id 1MUQGD-0007ON-HN
-	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2009 19:16:53 +0000
-Received: from mail-gx0-f220.google.com ([209.85.217.220])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MUQG7-0003f6-5p
-	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2009 19:16:53 +0000
-Received: by gxk20 with SMTP id 20so7589721gxk.10
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MTVgy-0001JL-0E
+	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 06:52:44 +0000
+Received: from rv-out-0708.google.com ([209.85.198.243])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MTVgp-0004Ie-Ii
+	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 06:52:43 +0000
+Received: by rv-out-0708.google.com with SMTP id b17so852646rvf.22
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 24 Jul 2009 12:16:41 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <f5a7b3810907240831t75a058a2m96abdc28a28c4365@mail.gmail.com>
-References: <f5a7b3810907240831t75a058a2m96abdc28a28c4365@mail.gmail.com>
-From: Ray Lee <ray-lk@madrabbit.org>
-Date: Fri, 24 Jul 2009 12:16:21 -0700
-Message-ID: <2c0942db0907241216p416ac5edyce0b41e29926ec29@mail.gmail.com>
-Subject: Re: [LTP] Char Limit issue on 2.6.29 kernels
+	Tue, 21 Jul 2009 23:52:35 -0700 (PDT)
+References: <20090721.182542.1000278277145531816.caiqian@cclom.cn>
+	<364299f40907212138rb1f671eke3aabd6587c0f925@mail.gmail.com>
+	<364299f40907212201u64779636v91ff74c45c32c3f3@mail.gmail.com>
+	<200907220122.33944.vapier@gentoo.org>
+Message-Id: <124D1FD0-1C6A-40D0-9754-DD87A3CF27DC@gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <200907220122.33944.vapier@gentoo.org>
+Mime-Version: 1.0 (iPhone Mail 7A341)
+Date: Tue, 21 Jul 2009 23:52:25 -0700
+Subject: Re: [LTP] LTP Intermediate Release for JULY 2009 Build Failures
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,24 +30,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: naresh kamboju <naresh.kernel@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, linux-kernel@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>, tim.bird@am.sony.com, rohit.170309@gmail.com
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, "ltp-list@lists.sf.net" <ltp-list@lists.sf.net>
 
-T24gRnJpLCBKdWwgMjQsIDIwMDkgYXQgODozMSBBTSwgbmFyZXNoIGthbWJvanUgPG5hcmVzaC5r
-ZXJuZWxAZ21haWwuY29tPiB3cm90ZToKPgo+IEhpLAo+Cj4gSSBoYXZlIGNvbWUgYWNyb3NzIHdp
-dGggY2hhciBMaW1pdCBpc3N1ZSBvbiAyLjYuMjkga2VybmVscy4KPgo+Cj4gU0lHRkFVTFQ6Cj4K
-PiAjZGVmaW5lIFNJWkUgwqAgwqAgwqAgwqAgwqAgwqA4MDUzNzU5Cj4gY2hhciBidWYxW1NJWkVd
-IDsKPgo+IE5PIFNJR0ZBVUxUOgo+Cj4gI2RlZmluZSBTSVpFIMKgIMKgIMKgIMKgIMKgIMKgODA1
-Mzc1OAo+IGNoYXIgYnVmMVtTSVpFXSA7Cj4KPiBUaGlzIFNJR0ZBVUxUIG5vdCBvYnNlcnZlZCBv
-biAyLjYuMjMga2VybmVscy4KPgo+IFdoYXQgY291bGQgYmUgdGhlIGNoYW5nZXMgdGhhdCBlZmZl
-Y3RpbmcgZnJvbSAyLjYuMjMgdG8gMi42LjI5IGtlcm5lbHMuCj4gUGxlYXNlIHNoYXJlIG1lIHRo
-ZSBpbmZvcm1hdGlvbi4KCmlzICJ1bGltaXQgLWEiIHRoZSBzYW1lIG9uIGJvdGgga2VybmVscz8K
-CkNhbiB5b3UgcHJvdmlkZSBhIHNtYWxsIHByb2dyYW0gdGhhdCBzaG93cyB0aGUgaXNzdWU/Cgot
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZv
-cmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAt
-bGlzdAo=
+On Jul 21, 2009, at 10:22 PM, Mike Frysinger <vapier@gentoo.org> wrote:
+
+> On Wednesday 22 July 2009 01:01:34 Garrett Cooper wrote:
+>> On Tue, Jul 21, 2009 at 9:38 PM, Garrett Cooper wrote:
+>>> On Tue, Jul 21, 2009 at 2:28 PM, Mike Frysinger wrote:
+>>>> On Tuesday 21 July 2009 10:21:44 Garrett Cooper wrote:
+>>>>> I was tempted to fix the format string error, but I don't know  
+>>>>> what
+>>>>> the potential implications are of switching the data type from
+>>>>> u_int64_t to unsigned long long...
+>>>>
+>>>> dont do that.  just use the proper format string from inttypes.h.
+>>>> uint64_t f;
+>>>> printf("f = %"PRIu64"\n", f);
+>>>
+>>
+>> -       fprintf(stdout, "[%u] wait completed on %d: count=%llu\n",
+>> +       fprintf(stdout, "[%u] wait completed on %d: count=%lu64\n",
+>>                getpid(), fd, cntr);
+>
+> umm, you sure that's right ?  seems to me it'll output the number  
+> followed by
+> the string "64".  i think you need to look at my example again (and  
+> take
+> notice of the quote marks).
+
+Your suggestion didn't compile and unfortunately the testcase appears  
+to be broken. I'll retest when I get home.
+Thanks!
+
+------------------------------------------------------------------------------
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
