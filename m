@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MTVsi-0004yj-SR
-	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 07:04:52 +0000
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MTmBD-0007c7-DZ
+	for ltp-list@lists.sourceforge.net; Thu, 23 Jul 2009 00:29:03 +0000
 Received: from smtp.gentoo.org ([140.211.166.183])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MTVsU-0003bG-A5
-	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 07:04:47 +0000
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MTmB9-0001Tx-CL
+	for ltp-list@lists.sourceforge.net; Thu, 23 Jul 2009 00:29:03 +0000
 From: Mike Frysinger <vapier@gentoo.org>
-Date: Wed, 22 Jul 2009 03:04:32 -0400
-References: <20090721.182542.1000278277145531816.caiqian@cclom.cn>
-	<200907220122.33944.vapier@gentoo.org>
-	<124D1FD0-1C6A-40D0-9754-DD87A3CF27DC@gmail.com>
-In-Reply-To: <124D1FD0-1C6A-40D0-9754-DD87A3CF27DC@gmail.com>
+Date: Wed, 22 Jul 2009 20:28:53 -0400
+References: <1247741996.3886.5.camel@dyn9002018117.watson.ibm.com>
+	<364299f40907182215q56ff7c3au5971afb877d4aa15@mail.gmail.com>
+	<1248297619.3714.10.camel@dyn9002018117.watson.ibm.com>
+In-Reply-To: <1248297619.3714.10.camel@dyn9002018117.watson.ibm.com>
 MIME-Version: 1.0
-Message-Id: <200907220304.33267.vapier@gentoo.org>
-Subject: Re: [LTP] LTP Intermediate Release for JULY 2009 Build Failures
+Message-Id: <200907222028.55612.vapier@gentoo.org>
+Subject: Re: [LTP] ltp: IMA cross platform fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,83 +26,95 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3069074160563942231=="
+Content-Type: multipart/mixed; boundary="===============3669260782053298539=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Mimi Zohar <zohar@linux.vnet.ibm.com>
+Cc: ltp-list <ltp-list@lists.sf.net>, Shaz <shazalive@gmail.com>, waqar afridi <afridi.waqar@gmail.com>
 
---===============3069074160563942231==
-Content-Type: multipart/signed; boundary="nextPart1644445.Gd9KouDsEq";
+--===============3669260782053298539==
+Content-Type: multipart/signed; boundary="nextPart3341116.pZG4hqOCOo";
 	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
---nextPart1644445.Gd9KouDsEq
+--nextPart3341116.pZG4hqOCOo
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
 
-On Wednesday 22 July 2009 02:52:25 Garrett Cooper wrote:
-> On Jul 21, 2009, at 10:22 PM, Mike Frysinger wrote:
-> > On Wednesday 22 July 2009 01:01:34 Garrett Cooper wrote:
-> >> On Tue, Jul 21, 2009 at 9:38 PM, Garrett Cooper wrote:
-> >>> On Tue, Jul 21, 2009 at 2:28 PM, Mike Frysinger wrote:
-> >>>> On Tuesday 21 July 2009 10:21:44 Garrett Cooper wrote:
-> >>>>> I was tempted to fix the format string error, but I don't know
-> >>>>> what
-> >>>>> the potential implications are of switching the data type from
-> >>>>> u_int64_t to unsigned long long...
-> >>>>
-> >>>> dont do that.  just use the proper format string from inttypes.h.
-> >>>> uint64_t f;
-> >>>> printf("f =3D %"PRIu64"\n", f);
-> >>
-> >> -       fprintf(stdout, "[%u] wait completed on %d: count=3D%llu\n",
-> >> +       fprintf(stdout, "[%u] wait completed on %d: count=3D%lu64\n",
-> >>                getpid(), fd, cntr);
-> >
-> > umm, you sure that's right ?  seems to me it'll output the number
-> > followed by
-> > the string "64".  i think you need to look at my example again (and
-> > take
-> > notice of the quote marks).
+On Wednesday 22 July 2009 17:20:19 Mimi Zohar wrote:
+> testcases/kernel/security/integrity/ima/tests/ima_policy.sh
 >
-> Your suggestion didn't compile and unfortunately the testcase appears
-> to be broken. I'll retest when I get home.
+> -		if [ "${line:0:1}" !=3D "#" ] ; then
+> +		firstch=3D`expr substr "${line}" 1 1`
+> +		if [ "${firstch}" !=3D "#" ] ; then
 
-did you include inttypes.h ?  i'm pretty sure your proposed change would (1=
-)=20
-fix warnings for one arch size, (2) add warnings for the other arch size, a=
-nd=20
-(3) add a spurious "64" string to the output.
+the `expr` util, while pretty flexible, tends to not get used.  so it'll=20
+probably be easier for people to grok:
+	if [ "${line#\#}" =3D "${line}" ] ; then
+
+> -	RC=3D$((`expr $RC1 + $RC2`))
+> -	if [ $RC -eq 1 ]; then
+> +	if [ $RC1 -eq 0 ] && [ $RC2 -eq 0 ]; then
+
+i dont see what was wrong with the original here, but if you really want to=
+=20
+rewrite this, then just change the one line to:
+	RC=3D$((RC1 + RC2))
+
+> testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
+>
+> +	zero=3D"0000000000000000000000000000000000000000"
+>
+> +	ima_aggr=3D`expr substr "${line}" 49 40`
+>
+> -		[ "${line:49:40}" -eq 0 ] || RC=3D$?
+> +		[ "${ima_aggr}" =3D "${zero}" ] || RC=3D$?
+
+these changes arent exactly equivalent.  if the subst of line only returned=
+=20
+say 5 zeros, then your check wouldnt work.  do you even need this ?  simply=
+=20
+changing the line to ima_aggr via substr looks good enough to me.  this sho=
+uld=20
+work fine in POSIX shells:
+	[ "00000" -eq 0 ]
+
+> testcases/kernel/security/integrity/ima/tests/ima_violations.sh
+>
+> +			tst_res TINFO $LTPTMP/imalog.$$\
+> +			 "$TCID: (message ratelimiting?)"
+
+this shows up a few times in the patch ... if you're going to line wrap=20
+things, there needs to be a space before the continuation marker for style.
 =2Dmike
 
---nextPart1644445.Gd9KouDsEq
+--nextPart3341116.pZG4hqOCOo
 Content-Type: application/pgp-signature; name=signature.asc 
 Content-Description: This is a digitally signed message part.
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.12 (GNU/Linux)
 
-iQIcBAABAgAGBQJKZroBAAoJEEFjO5/oN/WBTuIQAKAgJL0gg7R4M0Xx5pZ9crgV
-XplDJiQZbMW7fJyzz+XDYCANBeIP1eijS1c7rDxhM3W7s+OV6r9h0KNAy4oUHNa9
-qRq5Ec/7WOpHW9beM2kGLVJNpY2rUgGa61Cy++GHC9H8VLFVo0CPC2I+RDzSM9kg
-jM4iX620riK6/YYAfci42Ge+ujawQHZm59V2p5c4vF9f9CEUcr5kzEmy8MvXJK99
-ikMTyJbT/fHVcPHnyAfbf5ymGN+xaGFR03MnS5wbLlzzxD5glQ61rXAOaDS4Ekzr
-l36qzW7r8jP2bP95lbZJq7qjq8j5wn68KTfrEh5QzUXCPDOkPgkf2e/CvWax2sZJ
-zLqjRSobRXO9bxvZ17SlEemzFp+JCAQjixvCr2BL7n/yoGqfWdn13xw/8INmuZ9S
-5PiheKPOQF0LfYmUAyJfhEgTDDh5FcEQ3opCNagyYzBewlPz2D66/PocinDlm+4H
-8NlN4gHKbLCPj2uwmE3hVQQbQt7C19Cm+WyvUsDYo/dXwfw3z4H4WGlDOdrlGOQb
-DRlsV1NfFftb8JFZf1TeBz4pp+h3SJdMJYDjoOtDKmS+Jv9hTZo5ZCayu8w3XeoC
-8zy9LE96QCtF7H+2+um19Rrrzt4rldlfaM2EC92RlTJep13xaEe015QphO2aIe+O
-oKrq/QdhzDf4jMJrlYMo
-=xgzY
+iQIcBAABAgAGBQJKZ67HAAoJEEFjO5/oN/WBzPEQALmuO1NsxBY+n73F3Pw5efKF
+pKFdhsavTbbC0vMqoZAtal1Y/cOWonGdkuG8eSsYZOgCxCy6PanNfuZO+KJBXIY6
+Y7MkcoJ9cSQkcwNI9JMlfo2TRlAnlAg/IbCcCR/890DS/pzx0ejy5L7TMASGodJ6
+O50dTFwUdNo2Qd2qbV0qePUtD3Z6XZQZZxmeRSJXa8qTLAvin4CkfHESOvl3cWXh
++0smljvxUKCCjZBbN6is3l/Ip+w02JZWRNp8yyed4ZP74GdUGsauV6TGc2WK1kZ2
+G23heu7A5FUjIqFwR133C/MNff8spaUeBl/00PyxyeEa0mwshB/+JPav36zqg7cz
+NHZtZ6/otJiRZDZO5oHFClEIxUeEvFNLIi8Wc6RpGVPL1IhsiZQCbhAUzzRitr6r
+pDCeAHcpwx/KGftrdD0tKaVNROJSQNV0njCetuMH9Gm6OY9Ee6M8zAF1Y9HDefPa
+tKE/1+oGDHMdr3caOgXWSY61Tb7PSt83ZQ0YJ/zVftgKKBUb8wvXA9zOnD3bHzDQ
+xkUkTzGxobF+RHwIGaTSz94p79N1B24dz0u83/76H/sIR+O8lK0dfKCSN9HlpWiu
+YCZfvRib15aQUE18QAwvKIYJtZmXSJeDKt/q00ZoCEgjuluyC2qfS9ytviQGrE3Y
+tehz9H1VsO6Qp3PlKRK4
+=KW/W
 -----END PGP SIGNATURE-----
 
---nextPart1644445.Gd9KouDsEq--
+--nextPart3341116.pZG4hqOCOo--
 
 
---===============3069074160563942231==
+--===============3669260782053298539==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -110,7 +122,7 @@ Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 
---===============3069074160563942231==
+--===============3669260782053298539==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -121,5 +133,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============3069074160563942231==--
+--===============3669260782053298539==--
 
