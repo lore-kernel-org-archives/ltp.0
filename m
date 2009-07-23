@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <matthltc@us.ibm.com>) id 1MMZHU-0003h5-JW
-	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 03:17:44 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MMZHP-0004kh-KF
-	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2009 03:17:43 +0000
-Date: Thu, 2 Jul 2009 20:17:36 -0700
-From: Matt Helsley <matthltc@us.ibm.com>
-Message-ID: <20090703031736.GK19135@count0.beaverton.ibm.com>
-References: <20090702091341.GG19135@count0.beaverton.ibm.com>
-	<364299f40907021918wb3f95e7w6fd24ec8208e7c0@mail.gmail.com>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <rohit.170309@gmail.com>) id 1MTthV-0007iG-Ch
+	for ltp-list@lists.sourceforge.net; Thu, 23 Jul 2009 08:30:53 +0000
+Received: from mail-pz0-f175.google.com ([209.85.222.175])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MTthL-0006cu-Fx
+	for ltp-list@lists.sourceforge.net; Thu, 23 Jul 2009 08:30:52 +0000
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <364299f40907021918wb3f95e7w6fd24ec8208e7c0@mail.gmail.com>
-Subject: Re: [LTP] [RFC][PATCH] Use prefix and other autoconf
-	variables	uniformly
+Date: Thu, 23 Jul 2009 14:00:42 +0530
+Message-ID: <d51f89b0907230130k158cbfbeo31f290cf207432b6@mail.gmail.com>
+From: rohit verma <rohit.170309@gmail.com>
+Subject: [LTP] waitid02 testcase fails on 2.6.29 kernel
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,23 +25,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: ltp-list <ltp-list@lists.sf.net>
 
-On Thu, Jul 02, 2009 at 07:18:58PM -0700, Garrett Cooper wrote:
->     I understand what you're trying to accomplish, but part of the
-> point behind the current design with the Makefile system was in fact
-> for it to be run without intervention from autotools. Hence, the
-> directions noted in INSTALL / the help target up at the top.
-> Thanks,
-> -Garrett
+Hi,
 
-Suitable default files should fix the non-autotools path and allow the
-autotools path to use prefix and the other variables. Does that seem
-fine to you?
+I am running waitid02.c
+(ltp-full-20090630/testcases/kernel/syscalls/waitid/ ) test case on
+2.6.29 kernel.
+Test case gives following error:
+"Error. is your system >2.6.9 ?";
 
-Cheers,
-	-Matt
+ Anybody facing the same issue?
+
+Code:
+
+TEST(waitid(P_ALL,0,&infop,WNOHANG));
+        if(TEST_RETURN == 0)
+                tst_resm(TPASS,"Success !");
+        else{
+                printf("value of return is %d\n",TEST_RETURN);
+                tst_resm(TFAIL,"Error. is your system >2.6.9 ?");
+               errnochoose();
+        }
+
+
+Regards,
+Rohit
 
 ------------------------------------------------------------------------------
 _______________________________________________
