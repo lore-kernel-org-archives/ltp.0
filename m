@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <arnd@arndb.de>) id 1MR1W0-0000b0-DD
-	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2009 10:15:08 +0000
-Received: from moutng.kundenserver.de ([212.227.17.9])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MR1Vu-0006Bq-0N
-	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2009 10:15:08 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Wed, 15 Jul 2009 12:14:52 +0200
-References: <4A5C8068.6020203@monstr.eu> <200907141843.05629.arnd@arndb.de>
-	<9e6f3dfd0907141811p512b4edp3f9dd0fdeae1123e@mail.gmail.com>
-In-Reply-To: <9e6f3dfd0907141811p512b4edp3f9dd0fdeae1123e@mail.gmail.com>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <hyei@mvista.com>) id 1MTolx-0006PY-CD
+	for ltp-list@lists.sourceforge.net; Thu, 23 Jul 2009 03:15:09 +0000
+Received: from gateway-1237.mvista.com ([63.81.120.158])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MTole-0005Ym-10
+	for ltp-list@lists.sourceforge.net; Thu, 23 Jul 2009 03:14:56 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Message-Id: <200907151214.52369.arnd@arndb.de>
-Subject: Re: [LTP] access_ok macor
+Date: Wed, 22 Jul 2009 20:14:30 -0700
+Message-ID: <8368651DACC1964480F951191B94A078E49BDE@svexch01.mvista.com>
+In-Reply-To: <4A651499.4030605@cn.fujitsu.com>
+References: <8368651DACC1964480F951191B94A078EBA887@svexch01.mvista.com>
+	<4A651499.4030605@cn.fujitsu.com>
+From: "Henry Yei" <hyei@mvista.com>
+Subject: Re: [LTP] [PATCH] exit_group01, fix syscall number for exit_group
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,106 +29,78 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: John Williams <jwilliams@itee.uq.edu.au>
-Cc: LTP <ltp-list@lists.sourceforge.net>, monstr@monstr.eu, Linux Kernel list <linux-kernel@vger.kernel.org>, Ralf Baechle <ralf@linux-mips.org>
+To: Wei Yongjun <yjwei@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Wednesday 15 July 2009, John Williams wrote:
-> On Wed, Jul 15, 2009 at 2:43 AM, Arnd Bergmann <arnd@arndb.de> wrote:
-> > The solution then is to handle fixups from the unaligned exception handler
-> > if you come from the kernel. That should fix the three text cases.
-> >
-> > I don't fully understand your exception handling there, but I think you
-> > also need to add code checking for __range_ok() to your unaligned handler,
-> > to prevent malicious user space code from accessing the kernel through
-> > unaligned pointers.
-> 
-> 
-> Just to try to clarify - are there any alignment rules in the ABI on
-> user-space pointers (which end up going to get/put_user)?
+Wei,
 
-The kernel normally expects aligned input from user space, but I guess
-it can't hurt to handle it anyway. arch/mips/kernel/alignment.c seems
-to handle that case. Maybe Ralf can give some more insight.
+If you have time, please make the syscall additions for exit_group.
+I am contributing to LTP out-of-band, so may not get to in a timely manner.
 
-> It seems the failure path is like this:
-> 
-> 1. userspace passes unaligned pointer
-> 2. get_user attempts to access
-> 3. CPU raises unaligned exception (if only it would raise the segfault as
-> higher priority, before the unaligned!)
-> 4. unaligned exception handler attempts to simulate the unaligned access
-> with multiple partial read/write ops
-> 5. CPU raises MMU exception on the read/write by the unaligned handler
-> 6. kernel segfault handler looks up faulting address, it is in the unaligned
-> exception handler, which has no fixup.
-> 7. no fixup -> failure
+Thank you! 
 
-Right.
+-----Original Message-----
+From: Wei Yongjun [mailto:yjwei@cn.fujitsu.com] 
+Sent: Monday, July 20, 2009 6:07 PM
+To: Henry Yei
+Cc: ltp-list@lists.sourceforge.net
+Subject: Re: [LTP] [PATCH] exit_group01, fix syscall number for exit_group
 
-> So, I suppose the question is - where in the sequence is the true failure?
+Hi, Henry Yei
 
-I think in step 4. AFIACT, the kernel must do a number of checks on accesses
-to random pointers.
+Henry Yei  wrote:
+> This issue was found when running on an arm machine.
+>
+>
+> Fix syscall number for exit_group
+>   
 
-> Clearly LTP thinks it's ok to pass unaligned pointers to the kernel,
-> suggesting (1) is fine - thus my question about alignment rules in the ABI.
+I have posted the same some days ago, see http://marc.info/?l=ltp-list&m=124798179211554&w=2.
 
-No, LTP thinks it should get a -EFAULT error code for that access. It does
-specify whether it expects this because of an unaligned address or because
-of an invalid page.
+But Garrett Cooper said we also add the relevant syscall number to the architecture specific .in file in testcases/kernel/include. If you have time, you can do this. If you would like to do this, please tell me. So we will not do dup wroks. Thanks.
 
-> Do we need fixups on the unaligned handler itself? This will be ugly ugly
-> ugly. 
+Wei Yongjun
 
-That's what ARM does. You don't have to do it from assembly though,
-implementing it in C is probably easier.
+> <Signed-off-by: Henry Yei <hyei@mvista.com>
+>
+> ---
+> ltp-full-20090531/testcases/kernel/syscalls/exit_group/exit_group01.c
+> 2009-05-21 11:14:40.000000000 -0700
+> +++
+> ltp-full-20090531/testcases/kernel/syscalls/exit_group/exit_group01.c
+> 2009-07-17 12:03:47.000000000 -0700
+> @@ -136,7 +136,7 @@
+>                       } else if (TEST_RETURN == 0){
+>  	                 	tst_resm(TINFO, "In the child process");
+>                             	sleep(5);
+> -				TEST(syscall(252,4));
+> +				TEST(syscall(__NR_exit_group,4));
+>                       }else {
+>  				tst_resm(TINFO,"in the parent process");
+>  				TEST(w = wait(&status));
+>
+>   
+> ----------------------------------------------------------------------
+> --
+>
+> ----------------------------------------------------------------------
+> -------- Enter the BlackBerry Developer Challenge This is your chance 
+> to win up to $100,000 in prizes! For a limited time, vendors 
+> submitting new applications to BlackBerry App World(TM) will have the 
+> opportunity to enter the BlackBerry Developer Challenge. See full 
+> prize details at: http://p.sf.net/sfu/Challenge
+> ----------------------------------------------------------------------
+> --
+>
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>   
 
-> Or, some way of tracing the segfault back through the unaligned
-> exception and to the root cause (the get/put-user), and call that fixup as
-> required?
 
-Yes, I guess that would have to look roughly like this:
-
-int emulate_insn(struct pt_regs *regs, unsigned long addr, unsigned long len)
-{
-	/* use inline assembly with fixups here, return -EFAULT on bad addr */		
-}
-
-void alignment_exception(struct pt_regs *regs, unsigned long addr, unsigned long len)
-{
-	const struct exception_table_entry *fixup;
-	int err;
-
-	if (user_mode(regs)) {
-		if (!access_ok(addr, len))
-			goto segv;
-		if (emulate_insn(regs) == -EFAULT))
-			goto segv;
-	} else {
-		if (!access_ok(addr, len))
-			goto fixup;
-		if (emulate_insn(regs, addr, len) == -EFAULT))
-			goto fixup;
-	return;
-
-fixup:
-	fixup = search_exception_tables(regs->ip);
-	if (!fixup)
-		goto segv;
-
-	regs->ip = fixup->fixup;
-	return;
-
-segv:
-	force_sig(SIGSEGV, current));
-}
 
 ------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
