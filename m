@@ -1,32 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MPDci-0007j6-Nl
-	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 10:46:36 +0000
-Received: from e9.ny.us.ibm.com ([32.97.182.139])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MPDce-0002x4-JZ
-	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 10:46:36 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e9.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n6AAYCkc029344
-	for <ltp-list@lists.sourceforge.net>; Fri, 10 Jul 2009 06:34:12 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n6AAkWW1255290
-	for <ltp-list@lists.sourceforge.net>; Fri, 10 Jul 2009 06:46:32 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n6AAkVLM008391
-	for <ltp-list@lists.sourceforge.net>; Fri, 10 Jul 2009 06:46:31 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4A559DB3.6030000@cn.fujitsu.com>
-References: <4A559DB3.6030000@cn.fujitsu.com>
-Date: Fri, 10 Jul 2009 16:16:27 +0530
-Message-Id: <1247222787.6630.26.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix failure of the utimes01 test
-Reply-To: subrata@linux.vnet.ibm.com
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <markver@us.ibm.com>) id 1MUUcJ-0004Yt-I2
+	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2009 23:55:59 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MUUc6-0005s2-Md
+	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2009 23:55:54 +0000
+Message-ID: <OFE8FAC2C8.7B8ECD5A-ON852575FD.0081EDEC-852575FD.00837054@us.ibm.com>
+From: Mark Ver <markver@us.ibm.com>
+Date: Fri, 24 Jul 2009 19:55:39 -0400
+MIME-Version: 1.0
+Subject: [LTP] hardware requirements
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,60 +22,90 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============6288355776132309669=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wang Yong <wangyong2009@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sf.net
 
-T24gVGh1LCAyMDA5LTA3LTA5IGF0IDE1OjM1ICswODAwLCBXYW5nIFlvbmcgd3JvdGU6IAo+IFdo
-ZW5ldmVyIHN5c3RlbSBjYWxsZWQgdXRpbWVzLCB0aGUgZXJyb3IgbWVzc2FnZSByZXR1cm5lZCB3
-YXMgRUlOVkFMLAo+IGJlY2F1c2UgdGhlIG1lbWJlciB2YXJpYWJsZSBvZiBzdHJ1Y3QgdGltZXZh
-bCB3YXMgbm90IGluaXRpYWxpemVkLAo+IHNvIGluaXRpYWxpemUgaXQuCj4gCj4gU2lnbmVkLW9m
-Zi1ieTrjgIBXYW5nWW9uZ+OAgDx3YW5neW9uZzIwMDlAY24uZnVqaXRzdS5jb20+Cj4gCj4gZGlm
-ZiAtTnVycCBsdHAtZnVsbC0yMDA5MDYzMC90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3V0aW1l
-cy91dGltZXMwMS5jCj4gbHRwLWZ1bGwtMjAwOTA2MzAubmV3L3Rlc3RjYXNlcy9rZXJuZWwvc3lz
-Y2FsbHMvdXRpbWVzL3V0aW1lczAxLmMKPiAtLS0gbHRwLm9yaWcvdGVzdGNhc2VzL2tlcm5lbC9z
-eXNjYWxscy91dGltZXMvdXRpbWVzMDEuYyAyMDA5LTA3LTAxCj4gMTc6MjA6MTIuMDAwMDAwMDAw
-ICswODAwCj4gKysrIGx0cC90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3V0aW1lcy91dGltZXMw
-MS5jICAyMDA5LTA3LTA4Cj4gMTc6MjA6MzguMDAwMDAwMDAwICswODAwCj4gQEAgLTI0OCw2ICsy
-NDgsNyBAQCBzdGF0aWMgaW50IGRvX3Rlc3Qoc3RydWN0IHRlc3RfY2FzZSAqdGMpCj4gICAgICAg
-ICAgIC8qCj4gICAgICAgICAgICAqIEV4ZWN1dGUgc3lzdGVtIGNhbGwKPiAgICAgICAgICAgICov
-Cj4gKyAgICAgICAgbWVtc2V0KHR2LCAwLCAyICogc2l6ZW9mKHN0cnVjdCB0aW1ldmFsKSk7CgpJ
-bml0aWFsaXppbmcgdGhpcyBpcyBnb29kLiBCdXQgaSBkbyBub3QgZmluZCBhbnkgdmlzaWJsZSBk
-aWZmZXJlbmNlIGluCnJ1bm5pbmcgdGhpcyB0ZXN0IHByZSBhbmQgcG9zdCBwYXRjaGluZyBlaXRo
-ZXIgb24gMi42LjI5IG9yIDIuNi4xOAprZXJuZWxzLiBUaGUgZm9sbG93aW5nIG91dHB1dCBpcyBn
-ZW5lcmF0ZWQgZWFjaCB0aW1lOgoKIyAuL3Rlc3RjYXNlcy9iaW4vdXRpbWVzMDEgCnV0aW1lczAx
-ICAgIDAgIElORk8gIDogIChjYXNlMDApIFNUQVJUCm9wZW4gZmFpbGVkLgp1dGltZXMwMSAgICAw
-ICBJTkZPICA6ICAoY2FzZTAwKSBFTkQgPT4gTkcKdXRpbWVzMDEgICAgMCAgSU5GTyAgOiAgKGNh
-c2UwMSkgU1RBUlQKb3BlbiBmYWlsZWQuCnV0aW1lczAxICAgIDAgIElORk8gIDogIChjYXNlMDEp
-IEVORCA9PiBORwp1dGltZXMwMSAgICAwICBJTkZPICA6ICAoY2FzZTAyKSBTVEFSVApvcGVuIGZh
-aWxlZC4KdXRpbWVzMDEgICAgMCAgSU5GTyAgOiAgKGNhc2UwMikgRU5EID0+IE5HCnV0aW1lczAx
-ICAgIDAgIElORk8gIDogIChjYXNlMDMpIFNUQVJUCm9wZW4gZmFpbGVkLgp1dGltZXMwMSAgICAw
-ICBJTkZPICA6ICAoY2FzZTAzKSBFTkQgPT4gTkcKdXRpbWVzMDEgICAgMCAgSU5GTyAgOiAgKGNh
-c2UwNCkgU1RBUlQKb3BlbiBmYWlsZWQuCnV0aW1lczAxICAgIDAgIElORk8gIDogIChjYXNlMDQp
-IEVORCA9PiBORwp1dGltZXMwMSAgICAxICBGQUlMICA6ICB1dGltZXMwMSBmYWlsZWQgLSBlcnJu
-byA9IDIgOiBObyBzdWNoIGZpbGUgb3IKZGlyZWN0b3J5CnV0aW1lczAxICAgIDAgIElORk8gIDog
-IE5HCgojIGVjaG8gJD8KMQoKUmVnYXJkcy0tClN1YnJhdGEKCj4gdHZbMF0udHZfc2VjID0gdGMt
-PmFfc2VjOwo+ICAgICAgICAgICB0dlsxXS50dl9zZWMgPSB0Yy0+bV9zZWM7Cj4gICAgICAgICAg
-IFRFU1QobGVuID0gc3RybGVuKGZwYXRoKSk7Cj4gCj4gCj4gCj4gLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tCj4gRW50ZXIgdGhlIEJsYWNrQmVycnkgRGV2ZWxvcGVyIENoYWxsZW5nZSAgCj4gVGhpcyBp
-cyB5b3VyIGNoYW5jZSB0byB3aW4gdXAgdG8gJDEwMCwwMDAgaW4gcHJpemVzISBGb3IgYSBsaW1p
-dGVkIHRpbWUsIAo+IHZlbmRvcnMgc3VibWl0dGluZyBuZXcgYXBwbGljYXRpb25zIHRvIEJsYWNr
-QmVycnkgQXBwIFdvcmxkKFRNKSB3aWxsIGhhdmUKPiB0aGUgb3Bwb3J0dW5pdHkgdG8gZW50ZXIg
-dGhlIEJsYWNrQmVycnkgRGV2ZWxvcGVyIENoYWxsZW5nZS4gU2VlIGZ1bGwgcHJpemUgIAo+IGRl
-dGFpbHMgYXQ6IGh0dHA6Ly9wLnNmLm5ldC9zZnUvQ2hhbGxlbmdlCj4gX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QK
-PiBMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBodHRwczovL2xpc3RzLnNvdXJjZWZv
-cmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpF
-bnRlciB0aGUgQmxhY2tCZXJyeSBEZXZlbG9wZXIgQ2hhbGxlbmdlICAKVGhpcyBpcyB5b3VyIGNo
-YW5jZSB0byB3aW4gdXAgdG8gJDEwMCwwMDAgaW4gcHJpemVzISBGb3IgYSBsaW1pdGVkIHRpbWUs
-IAp2ZW5kb3JzIHN1Ym1pdHRpbmcgbmV3IGFwcGxpY2F0aW9ucyB0byBCbGFja0JlcnJ5IEFwcCBX
-b3JsZChUTSkgd2lsbCBoYXZlCnRoZSBvcHBvcnR1bml0eSB0byBlbnRlciB0aGUgQmxhY2tCZXJy
-eSBEZXZlbG9wZXIgQ2hhbGxlbmdlLiBTZWUgZnVsbCBwcml6ZSAgCmRldGFpbHMgYXQ6IGh0dHA6
-Ly9wLnNmLm5ldC9zZnUvQ2hhbGxlbmdlCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3Vy
-Y2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8v
-bHRwLWxpc3QK
+--===============6288355776132309669==
+Content-type: multipart/alternative; 
+	Boundary="0__=0ABBFF6EDF126B7C8f9e8a93df938690918c0ABBFF6EDF126B7C"
+Content-Disposition: inline
+
+--0__=0ABBFF6EDF126B7C8f9e8a93df938690918c0ABBFF6EDF126B7C
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: quoted-printable
+
+
+
+Hi,
+
+Is there an agreed upon set of hardware requirements (memory, disk spac=
+e,
+etc.) for running, if not all tests, at least the default testcases
+executed by runltp?
+
+Also, if not very knowledgeable of hardware, is there an easy way to te=
+ll
+if a particular test will run on a target platform or not?  For example=
+, I
+suspect the DMA_THREAD_DIOTEST7 tests are not expected to run on all
+architectures.  Is there a way to find out what platforms it does suppo=
+rt?
+
+Thanks,
+- Mark Ver
+
+office:  Building 710 / Room 2-RF-10
+phone: (845) 435-7794  [tie 8 295-7794]=
+
+--0__=0ABBFF6EDF126B7C8f9e8a93df938690918c0ABBFF6EDF126B7C
+Content-type: text/html; charset=US-ASCII
+Content-Disposition: inline
+Content-transfer-encoding: quoted-printable
+
+<html><body>
+<p>Hi,<br>
+<br>
+Is there an agreed upon set of hardware requirements (memory, disk spac=
+e, etc.) for running, if not all tests, at least the default testcases =
+executed by runltp?<br>
+<br>
+Also, if not very knowledgeable of hardware, is there an easy way to te=
+ll if a particular test will run on a target platform or not?  For exam=
+ple, I suspect the DMA_THREAD_DIOTEST7 tests are not expected to run on=
+ all architectures.  Is there a way to find out what platforms it does =
+support?<br>
+<br>
+Thanks,<br>
+- Mark Ver<br>
+<br>
+office:  Building 710 / Room 2-RF-10<br>
+phone: (845) 435-7794  [tie 8 295-7794]<br>
+</body></html>=
+
+--0__=0ABBFF6EDF126B7C8f9e8a93df938690918c0ABBFF6EDF126B7C--
+
+
+
+--===============6288355776132309669==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+
+--===============6288355776132309669==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6288355776132309669==--
+
+
