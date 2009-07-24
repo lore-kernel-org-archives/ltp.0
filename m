@@ -1,34 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MWaNc-0006F0-Ra
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 18:29:28 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MWaNX-0005R3-4a
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 18:29:28 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n6UINFLk022475
-	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 14:23:15 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n6UITHV1198816
-	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 14:29:17 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n6UITHxq015126
-	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 14:29:17 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4A66A7F2.7020802@cn.fujitsu.com>
-References: <4A6527B6.7070602@cn.fujitsu.com>
-	<4A65BD95.7070001@petalogix.com>  <4A66A7F2.7020802@cn.fujitsu.com>
-Date: Thu, 30 Jul 2009 23:59:06 +0530
-Message-Id: <1248978546.5788.59.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix to set the signal handler of SIGINT
-	in	mq_timedreceive01
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <naresh.kernel@gmail.com>) id 1MUP8X-0003PI-3R
+	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2009 18:04:53 +0000
+Received: from mail-yx0-f195.google.com ([209.85.210.195])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MUP8S-0003oN-8h
+	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2009 18:04:53 +0000
+Received: by yxe33 with SMTP id 33so3342127yxe.28
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 24 Jul 2009 11:04:42 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <200907241349.58754.vapier@gentoo.org>
+References: <f5a7b3810907240831t75a058a2m96abdc28a28c4365@mail.gmail.com>
+	<200907241349.58754.vapier@gentoo.org>
+Date: Fri, 24 Jul 2009 23:34:40 +0530
+Message-ID: <f5a7b3810907241104g498b00a6i60c8858b8805091a@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Subject: Re: [LTP] Char Limit issue on 2.6.29 kernels
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,110 +28,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wei Yongjun <yjwei@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net, maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, linux-kernel@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>, tim.bird@am.sony.com, rohit.170309@gmail.com
 
-T24gV2VkLCAyMDA5LTA3LTIyIGF0IDEzOjQ3ICswODAwLCBXZWkgWW9uZ2p1biB3cm90ZTogCj4g
-SGksCj4gPiBIaSwKPiA+Cj4gPiBQbGVhc2UgZml4IGNvZGluZyBzdHlsZSB2aW9sYXRpb24uCj4g
-PiBVc2UgdGFiIGluc3RlYWQgb2Ygc3BhY2VzLgo+ID4gU3VicmF0YSBzaG91bGQgcmVqZWN0IHRo
-aXMgcGF0Y2ggd2l0aCBiYWQgY29kaW5nIHN0eWxlLgo+ID4gQ2FuIHlvdSBwbGVhc2UgZml4IGl0
-Pwo+ID4KPiA+Cj4gPiAgIAo+IEZpeGVkIGl0KHRoZSBvcmlnaW5hbCBzb3VyY2UgaXMgYWxsIHNw
-YWNlLCBubyB0YWIpLEFuZCBhbHNvIGZpeGVkIHRoZQo+IGNvbXBpbGUgd2FybmluZy4KPiAKPiBb
-UEFUQ0h2Ml0gRml4IHRvIHNldCB0aGUgc2lnbmFsIGhhbmRsZXIgb2YgU0lHSU5UIGluIG1xX3Rp
-bWVkcmVjZWl2ZTAxCj4gCj4gVGhlIHRlc3QgY2FzZSBtcV90aW1lZHJlY2VpdmUwMSBkb2VzIG5v
-dCByZWdpc3RlciB0aGUgc2lnbmFsCj4gaGFuZGxlciBvZiBTSUdJTlQsIHNvIHRoZSBwcm9ibGFt
-IHdpbGwgYmUgdGVybWluYXRlZCBieSBTSUdJTlQKPiBmcm9tIGNoaWxkIHByb2Nlc3MuCj4gCj4g
-VGhpcyBwYXRjaCBmaXhlZCB0aGUgcHJvYmxlbS4gQW5kIGFsc28gZml4ZWQgdGhlIGZvbGxvd2lu
-Zwo+IGNvbXBpbGUgd2FybmluZy4KPiAKPiBtcV90aW1lZHJlY2VpdmUwMS5jOiBJbiBmdW5jdGlv
-biDigJhkb190ZXN04oCZOgo+IG1xX3RpbWVkcmVjZWl2ZTAxLmM6Mzc5OiB3YXJuaW5nOiBudWxs
-IGFyZ3VtZW50IHdoZXJlIG5vbi1udWxsIHJlcXVpcmVkIChhcmd1bWVudCA1KQo+IAo+IFNpZ25l
-ZC1vZmYtYnk6IFdlaSBZb25nanVuIDx5andlaUBjbi5mdWppdHN1LmNvbT4KClRoYW5rcy4KClJl
-Z2FyZHMtLQpTdWJyYXRhCgo+IAo+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
-bGxzL21xX3RpbWVkcmVjZWl2ZS9tcV90aW1lZHJlY2VpdmUwMS5jIGIvdGVzdGNhc2VzL2tlcm5l
-bC9zeXNjYWxscy9tcV90aW1lZHJlY2VpdmUvbXFfdGltZWRyZWNlaXZlMDEuYwo+IGluZGV4IGRh
-ZGMzOGQuLmQ2NjA0ZDcgMTAwNjQ0Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9t
-cV90aW1lZHJlY2VpdmUvbXFfdGltZWRyZWNlaXZlMDEuYwo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJu
-ZWwvc3lzY2FsbHMvbXFfdGltZWRyZWNlaXZlL21xX3RpbWVkcmVjZWl2ZTAxLmMKPiBAQCAtMTA2
-LDYgKzEwNiwxMyBAQCBleHRlcm4gdm9pZCBjbGVhbnVwKCkgewo+ICAgICAgICAgIHRzdF9leGl0
-KCk7Cj4gIH0KPiAKPiArLyoKPiArICogc2lnaGFuZGxlcigpCj4gKyAqLwo+ICt2b2lkIHNpZ2hh
-bmRsZXIoaW50IHNpZykKPiArewo+ICt9Cj4gKwo+ICAvKiBMb2NhbCAgRnVuY3Rpb25zICovCj4g
-IC8qKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKiovCj4gIC8qICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICovCj4gQEAg
-LTEyNiw2ICsxMzMsNyBAQCBleHRlcm4gdm9pZCBjbGVhbnVwKCkgewo+ICAvKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqLwo+ICB2b2lkIHNldHVwKCkgewo+ICAgICAgICAgIC8qIENhcHR1cmUgc2lnbmFs
-cyBpZiBhbnkgKi8KPiArCXNpZ25hbChTSUdJTlQsIHNpZ2hhbmRsZXIpOwo+ICAgICAgICAgIC8q
-IENyZWF0ZSB0ZW1wb3JhcnkgZGlyZWN0b3JpZXMgKi8KPiAgICAgICAgICBURVNUX1BBVVNFOwo+
-ICAgICAgICAgIHRzdF90bXBkaXIoKTsKPiBAQCAtMzAxLDcgKzMwOSw3IEBAIHN0YXRpYyBpbnQg
-ZG9fdGVzdChzdHJ1Y3QgdGVzdF9jYXNlICp0YykKPiAgCWludCBvZmxhZzsKPiAgICAgICAgICBp
-bnQgaSwgcmMsIGNtcF9vayA9IDEsIGZkID0gLTE7Cj4gICAgICAgICAgY2hhciBzbXNnW01BWF9N
-U0dTSVpFXSwgcm1zZ1tNQVhfTVNHU0laRV07Cj4gLSAgICAgICAgc3RydWN0IHRpbWVzcGVjIHRz
-LCAqcF90czsKPiArICAgICAgICBzdHJ1Y3QgdGltZXNwZWMgdHMsICpwX3RzID0gTlVMTDsKPiAg
-ICAgICAgICBwaWRfdCBwaWQgPSAwOwo+ICAgICAgICAgIHVuc2lnbmVkIHByaW87Cj4gICAgICAg
-ICAgc2l6ZV90IG1zZ19sZW47Cj4gQEAgLTM2OCw3ICszNzYsNyBAQCBzd2l0Y2ggKHRjLT50dHlw
-ZSkgewo+ICAgICAgICAgIGNhc2UgRkRfRklMRToKPiAgICAgICAgICAgICAgICAgIGJyZWFrOwo+
-ICAgICAgICAgIGRlZmF1bHQ6Cj4gLQkJVEVTVChyYyA9IG1xX3RpbWVkc2VuZChmZCwgc21zZywg
-dGMtPmxlbiwgdGMtPnByaW8sIE5VTEwpKTsKPiArCQlURVNUKHJjID0gbXFfdGltZWRzZW5kKGZk
-LCBzbXNnLCB0Yy0+bGVuLCB0Yy0+cHJpbywgcF90cykpOwo+ICAgICAgICAgICAgICAgICAgaWYg
-KFRFU1RfUkVUVVJOIDwgMCkgewo+ICAgICAgICAgICAgICAgICAgIAl0c3RfcmVzbShURkFJTCwg
-Im1xX3RpbWVkc2VuZCBmYWlsZWQgLSBlcnJubyA9ICVkIDogJXMiLFRFU1RfRVJSTk8sIHN0cmVy
-cm9yKFRFU1RfRVJSTk8pKTsKPiAgICAgICAgICAgICAgICAgICAgICAgICAgcmVzdWx0ID0gMTsK
-PiBAQCAtNDMyLDE3ICs0NDAsNiBAQCBFWElUOgo+ICAgICAgICAgIHJldHVybiByZXN1bHQ7Cj4g
-IH0KPiAKPiAtLyoKPiAtICogc2lnaGFuZGxlcigpCj4gLSAqLwo+IC12b2lkIHNpZ2hhbmRsZXIo
-aW50IHNpZykKPiAtewo+IC0gICAgICAgIGlmIChzaWcgPT0gU0lHSU5UKQo+IC0gICAgICAgICAg
-ICAgICAgcmV0dXJuOwo+IC0gICAgICAgIC8vIE5PVFJFQUNIRUQKPiAtICAgICAgICByZXR1cm47
-Cj4gLX0KPiAtCj4gCj4gCj4gIC8qCj4gCj4gCj4gCj4gCj4gCj4gPj4gVGhlIHRlc3QgY2FzZSBt
-cV90aW1lZHJlY2VpdmUwMSBkb2VzIG5vdCByZWdpc3RlciB0aGUgc2lnbmFsCj4gPj4gaGFuZGxl
-ciBvZiBTSUdJTlQsIHNvIHRoZSBwcm9ibGFtIHdpbGwgYmUgdGVybWluYXRlZCBieSBTSUdJTlQK
-PiA+PiBmcm9tIGNoaWxkIHByb2Nlc3MuCj4gPj4KPiA+PiBUaGlzIHBhdGNoIGZpeGVkIHRoZSBw
-cm9ibGVtLgo+ID4+Cj4gPj4gU2lnbmVkLW9mZi1ieTogV2VpIFlvbmdqdW4gPHlqd2VpQGNuLmZ1
-aml0c3UuY29tPgo+ID4+Cj4gPj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
-bHMvbXFfdGltZWRyZWNlaXZlL21xX3RpbWVkcmVjZWl2ZTAxLmMgYi90ZXN0Y2FzZXMva2VybmVs
-L3N5c2NhbGxzL21xX3RpbWVkcmVjZWl2ZS9tcV90aW1lZHJlY2VpdmUwMS5jCj4gPj4gaW5kZXgg
-ZGFkYzM4ZC4uYmVlYjI5OCAxMDA2NDQKPiA+PiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
-bGxzL21xX3RpbWVkcmVjZWl2ZS9tcV90aW1lZHJlY2VpdmUwMS5jCj4gPj4gKysrIGIvdGVzdGNh
-c2VzL2tlcm5lbC9zeXNjYWxscy9tcV90aW1lZHJlY2VpdmUvbXFfdGltZWRyZWNlaXZlMDEuYwo+
-ID4+IEBAIC0xMDYsNiArMTA2LDE0IEBAIGV4dGVybiB2b2lkIGNsZWFudXAoKSB7Cj4gPj4gICAg
-ICAgICAgdHN0X2V4aXQoKTsKPiA+PiAgfQo+ID4+ICAKPiA+PiArLyoKPiA+PiArICogc2lnaGFu
-ZGxlcigpCj4gPj4gKyAqLwo+ID4+ICt2b2lkIHNpZ2hhbmRsZXIoaW50IHNpZykKPiA+PiArewo+
-ID4+ICsgICAgICAgIHJldHVybjsKPiA+PiArfQo+ID4+ICsKPiA+PiAgLyogTG9jYWwgIEZ1bmN0
-aW9ucyAqLwo+ID4+ICAvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLwo+ID4+ICAvKiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAqLwo+ID4+IEBAIC0xMjYsNiArMTM0LDcgQEAgZXh0ZXJuIHZvaWQgY2xlYW51cCgp
-IHsKPiA+PiAgLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKi8KPiA+PiAgdm9pZCBzZXR1cCgpIHsKPiA+
-PiAgICAgICAgICAvKiBDYXB0dXJlIHNpZ25hbHMgaWYgYW55ICovCj4gPj4gKyAgICAgICAgc2ln
-bmFsKFNJR0lOVCwgc2lnaGFuZGxlcik7Cj4gPj4gICAgICAgICAgLyogQ3JlYXRlIHRlbXBvcmFy
-eSBkaXJlY3RvcmllcyAqLwo+ID4+ICAgICAgICAgIFRFU1RfUEFVU0U7Cj4gPj4gICAgICAgICAg
-dHN0X3RtcGRpcigpOwo+ID4+IEBAIC00MzIsMTcgKzQ0MSw2IEBAIEVYSVQ6Cj4gPj4gICAgICAg
-ICAgcmV0dXJuIHJlc3VsdDsKPiA+PiAgfQo+ID4+ICAKPiA+PiAtLyoKPiA+PiAtICogc2lnaGFu
-ZGxlcigpCj4gPj4gLSAqLwo+ID4+IC12b2lkIHNpZ2hhbmRsZXIoaW50IHNpZykKPiA+PiAtewo+
-ID4+IC0gICAgICAgIGlmIChzaWcgPT0gU0lHSU5UKQo+ID4+IC0gICAgICAgICAgICAgICAgcmV0
-dXJuOwo+ID4+IC0gICAgICAgIC8vIE5PVFJFQUNIRUQKPiA+PiAtICAgICAgICByZXR1cm47Cj4g
-Pj4gLX0KPiA+PiAtCj4gPj4gIAo+ID4+ICAKPiA+PiAgLyoKPiA+Pgo+ID4+Cj4gPj4KPiA+Pgo+
-ID4+Cj4gPj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gPj4gRW50ZXIgdGhlIEJsYWNrQmVycnkg
-RGV2ZWxvcGVyIENoYWxsZW5nZSAgCj4gPj4gVGhpcyBpcyB5b3VyIGNoYW5jZSB0byB3aW4gdXAg
-dG8gJDEwMCwwMDAgaW4gcHJpemVzISBGb3IgYSBsaW1pdGVkIHRpbWUsIAo+ID4+IHZlbmRvcnMg
-c3VibWl0dGluZyBuZXcgYXBwbGljYXRpb25zIHRvIEJsYWNrQmVycnkgQXBwIFdvcmxkKFRNKSB3
-aWxsIGhhdmUKPiA+PiB0aGUgb3Bwb3J0dW5pdHkgdG8gZW50ZXIgdGhlIEJsYWNrQmVycnkgRGV2
-ZWxvcGVyIENoYWxsZW5nZS4gU2VlIGZ1bGwgcHJpemUgIAo+ID4+IGRldGFpbHMgYXQ6IGh0dHA6
-Ly9wLnNmLm5ldC9zZnUvQ2hhbGxlbmdlCj4gPj4gX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KPiA+PiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QKPiA+PiBMdHAt
-bGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiA+PiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdl
-Lm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo+ID4+ICAgCj4gPj4gICAgIAo+ID4KPiA+Cj4g
-PiAgIAo+IAo+IAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMZXQgQ3J5c3RhbCBSZXBvcnRzIGhh
-bmRsZSB0aGUgcmVwb3J0aW5nIC0gRnJlZSBDcnlzdGFsIFJlcG9ydHMgMjAwOCAzMC1EYXkgCnRy
-aWFsLiBTaW1wbGlmeSB5b3VyIHJlcG9ydCBkZXNpZ24sIGludGVncmF0aW9uIGFuZCBkZXBsb3lt
-ZW50IC0gYW5kIGZvY3VzIG9uIAp3aGF0IHlvdSBkbyBiZXN0LCBjb3JlIGFwcGxpY2F0aW9uIGNv
-ZGluZy4gRGlzY292ZXIgd2hhdCdzIG5ldyB3aXRoIApDcnlzdGFsIFJlcG9ydHMgbm93LiAgaHR0
-cDovL3Auc2YubmV0L3NmdS9ib2JqLWp1bHkKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNv
-dXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5m
-by9sdHAtbGlzdAo=
+Hi Mike,
+
+On Fri, Jul 24, 2009 at 11:19 PM, Mike Frysinger<vapier@gentoo.org> wrote:
+> On Friday 24 July 2009 11:31:59 naresh kamboju wrote:
+>> I have come across with char Limit issue on 2.6.29 kernels.
+>>
+>>
+>> SIGFAULT:
+>>
+>> #define SIZE =A0 =A0 =A0 =A0 =A0 =A08053759
+>> char buf1[SIZE] ;
+>>
+>> NO SIGFAULT:
+>>
+>> #define SIZE =A0 =A0 =A0 =A0 =A0 =A08053758
+>> char buf1[SIZE] ;
+>>
+>> This SIGFAULT not observed on 2.6.23 kernels.
+>
+> -ENOINFO
+>
+> post some actual code rather than saying "i declared a large buffer and t=
+hings
+> crashed".
+
+currently i am debugging this issue.
+i'll come up with more details.
+
+>is there a reason you cc-ed LTP ? =A0is this a crash i >a LTP test ?
+No.
+it is not a test cases of LTP.
+i am a member of LTP. want to share this information to LTP community.
+
+-naresh
+
+>
+>> What could be the changes that effecting from 2.6.23 to 2.6.29 kernels.
+>> Please share me the information.
+>
+> git log v2.6.23..v2.6.29
+> -mike
+>
+
+---------------------------------------------------------------------------=
+---
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
