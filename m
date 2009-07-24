@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <arnd@arndb.de>) id 1MQlZR-0006h8-Ti
-	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2009 17:13:37 +0000
-Received: from moutng.kundenserver.de ([212.227.17.8])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MQlZN-0005qQ-Gn
-	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2009 17:13:37 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Tue, 14 Jul 2009 19:13:20 +0200
-References: <4A5C8068.6020203@monstr.eu> <200907141843.05629.arnd@arndb.de>
-	<4A5CB8B4.7050108@monstr.eu>
-In-Reply-To: <4A5CB8B4.7050108@monstr.eu>
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Timothy.Bird@am.sony.com>) id 1MUPia-0005zh-HO
+	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2009 18:42:08 +0000
+Received: from outbound-dub.frontbridge.com ([213.199.154.16]
+	helo=IE1EHSOBE003.bigfish.com)
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:RC4-MD5:128)
+	(Exim 4.69) id 1MUPiW-0005Ma-Sb
+	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2009 18:42:08 +0000
+Message-ID: <4A69FCD3.9070707@am.sony.com>
+Date: Fri, 24 Jul 2009 11:26:27 -0700
+From: Tim Bird <tim.bird@am.sony.com>
 MIME-Version: 1.0
-Message-Id: <200907141913.21240.arnd@arndb.de>
-Subject: Re: [LTP] access_ok macor
+References: <f5a7b3810907240831t75a058a2m96abdc28a28c4365@mail.gmail.com>	
+	<200907241349.58754.vapier@gentoo.org>
+	<f5a7b3810907241104g498b00a6i60c8858b8805091a@mail.gmail.com>
+In-Reply-To: <f5a7b3810907241104g498b00a6i60c8858b8805091a@mail.gmail.com>
+Subject: Re: [LTP] Char Limit issue on 2.6.29 kernels
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,64 +27,37 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: monstr@monstr.eu
-Cc: LTP <ltp-list@lists.sourceforge.net>, Linux Kernel list <linux-kernel@vger.kernel.org>
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>, maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, linux-kernel@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>, rohit.170309@gmail.com
 
-On Tuesday 14 July 2009, Michal Simek wrote:
-> when the code tried to read/write from unaligned address (and in cpu is turn on unaligned exception)
-> then is caused unaligned exception and asm code assemble/return value which is on that unaligned
-> address. (Assemble it that read/write every byte separately). That will be harder to prevent all
-> this cases because unaligned exception is in generic code.
-> What do you mean add __range_ok? Range checking is ok. The problem is when in case get_user kernel
-> try to load unaligned addr - unaligned exception is perform and try to load that value separately.
-> If that page is not there, page fault handler is called and not find it, it is performed search
-> from exception table and that address is not there of course - because address in pc is generic
-> unaligned code. I think that handling this needs more code.
-> Maybe if the address with from unaligned exception handler (there are some address which can caused
-> it) and find out which aligned address is there and find out proper fixup for it.
-> I think that this could work.
-> 
-> What do you think?
-
-I think the key point is that the kernel should never try an unaligned
-access. Other architectures already rely on this, so you can too.
-Instead of doing an aligned access from the unaligned exception handler,
-you should not access the data at all when you come from kernel mode
-but only search the fixup table to see if you should continue anyway.
-
-Sorry for adding confusion by mentioning the __range_ok, which is addressing
-a separate problem. I should have made that clearer.
-
-In pseudo-code, I think you should do:
-
-void unaligned_exception(struct pt_regs *regs, unsigned long address)
-{
-	if (kernel_mode(regs)) {
-		/*
-		 * unaligned access not allowed in kernel,
-		 * but search exception table.
-		 */
-		bad_page_fault(regs, address, 0);
-	} else {
-		if (!access_ok(address, 4))
-			force_sig(SIGBUS, current);
-		else
-			fixup_unaligned_access(regs);
-	}
-}
-
-	Arnd <><
-
-------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+bmFyZXNoIGthbWJvanUgd3JvdGU6Cj4gSGkgTWlrZSwKPiAKPiBPbiBGcmksIEp1bCAyNCwgMjAw
+OSBhdCAxMToxOSBQTSwgTWlrZSBGcnlzaW5nZXI8dmFwaWVyQGdlbnRvby5vcmc+IHdyb3RlOgo+
+PiBPbiBGcmlkYXkgMjQgSnVseSAyMDA5IDExOjMxOjU5IG5hcmVzaCBrYW1ib2p1IHdyb3RlOgo+
+Pj4gSSBoYXZlIGNvbWUgYWNyb3NzIHdpdGggY2hhciBMaW1pdCBpc3N1ZSBvbiAyLjYuMjkga2Vy
+bmVscy4KPj4+Cj4+Pgo+Pj4gU0lHRkFVTFQ6Cj4+Pgo+Pj4gI2RlZmluZSBTSVpFIO+/vSDvv70g
+77+9IO+/vSDvv70g77+9ODA1Mzc1OQo+Pj4gY2hhciBidWYxW1NJWkVdIDsKPj4+Cj4+PiBOTyBT
+SUdGQVVMVDoKPj4+Cj4+PiAjZGVmaW5lIFNJWkUg77+9IO+/vSDvv70g77+9IO+/vSDvv704MDUz
+NzU4Cj4+PiBjaGFyIGJ1ZjFbU0laRV0gOwo+Pj4KPj4+IFRoaXMgU0lHRkFVTFQgbm90IG9ic2Vy
+dmVkIG9uIDIuNi4yMyBrZXJuZWxzLgo+PiAtRU5PSU5GTwo+Pgo+PiBwb3N0IHNvbWUgYWN0dWFs
+IGNvZGUgcmF0aGVyIHRoYW4gc2F5aW5nICJpIGRlY2xhcmVkIGEgbGFyZ2UgYnVmZmVyIGFuZCB0
+aGluZ3MKPj4gY3Jhc2hlZCIuCj4gCj4gY3VycmVudGx5IGkgYW0gZGVidWdnaW5nIHRoaXMgaXNz
+dWUuCj4gaSdsbCBjb21lIHVwIHdpdGggbW9yZSBkZXRhaWxzLgoKU29tZSBtb3JlIGZlZWRiYWNr
+Li4uCgpJdCdzIFNFR0ZBVUxUIC0gc2hvcnQgZm9yICJTZWdtZW50YXRpb24gRmF1bHQiLCBub3Qg
+U0lHRkFVTFQuCgpQbGVhc2UgaW5jbHVkZSBpbiB5b3VyIGRldGFpbHMgYXQgbGVhc3QgdGhlIGZv
+bGxvd2luZzoKICogd2hhdCBzb2Z0d2FyZSB0aGlzIGlzIGluIChpcyB0aGlzIGRlY2xhcmF0aW9u
+IGluIHRoZSBrZXJuZWw/LCBhIGxpYnJhcnksIGEKIHVzZXIgc3BhY2UgcHJvZ3JhbSwgZXRjLikK
+ICogd2hhdCBvcGVyYXRpb24gaXMgYmVpbmcgcGVyZm9ybWVkIHdoZW4gdGhlIFNFR0ZBVUxUIG9j
+Y3Vycy4KICogd2hhdCBjb21waWxlciB5b3UgYXJlIHVzaW5nLgogKiB0aGUgY29kZSBzdXJyb3Vu
+ZGluZyB0aGUgb3BlcmF0aW9uIHdoZW4gdGhlIGZhdWx0IG9jY3VycwoKSWYgeW91IGNhbiwgbWFr
+ZSB0aGUgc21hbGxlc3QgcG9zc2libGUgcHJvZ3JhbSB0aGF0IHJlcHJvZHVjZXMgdGhpcyBlcnJv
+ciwKYW5kIHNlbmQgdGhlIGNvbXBsZXRlIHNvdXJjZSBmb3IgdGhhdC4KIC0tIFRpbQoKPT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT0KVGltIEJpcmQKQXJjaGl0ZWN0dXJlIEdyb3VwIENoYWly
+LCBDRSBMaW51eCBGb3J1bQpTZW5pb3IgU3RhZmYgRW5naW5lZXIsIFNvbnkgQ29ycG9yYXRpb24g
+b2YgQW1lcmljYQo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKCi0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
+dHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBz
+Oi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
