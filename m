@@ -1,35 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MWV0H-0004ia-Da
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 12:45:01 +0000
-Received: from e31.co.us.ibm.com ([32.97.110.149])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MWV06-0000NG-2n
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 12:44:54 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e31.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n6UCdWBs005734
-	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 06:39:32 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n6UCig1b204586
-	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 06:44:42 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n6UCiftg019941
-	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 06:44:42 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <8368651DACC1964480F951191B94A078E49BDE@svexch01.mvista.com>
-References: <8368651DACC1964480F951191B94A078EBA887@svexch01.mvista.com>
-	<4A651499.4030605@cn.fujitsu.com>
-	<8368651DACC1964480F951191B94A078E49BDE@svexch01.mvista.com>
-Date: Thu, 30 Jul 2009 18:14:38 +0530
-Message-Id: <1248957878.5788.19.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] exit_group01, fix syscall number for exit_group
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <naresh.kernel@gmail.com>) id 1MUMko-0000SR-R1
+	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2009 15:32:14 +0000
+Received: from mail-yx0-f195.google.com ([209.85.210.195])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MUMkf-0003B4-OR
+	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2009 15:32:14 +0000
+Received: by yxe33 with SMTP id 33so3172480yxe.28
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 24 Jul 2009 08:31:59 -0700 (PDT)
+MIME-Version: 1.0
+Date: Fri, 24 Jul 2009 21:01:59 +0530
+Message-ID: <f5a7b3810907240831t75a058a2m96abdc28a28c4365@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Subject: [LTP] Char Limit issue on 2.6.29 kernels
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,68 +25,38 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Henry Yei <hyei@mvista.com>
-Cc: ltp-list@lists.sourceforge.net
+To: linux-kernel@vger.kernel.org
+Cc: ltp-list@lists.sourceforge.net, maxin john <maxinbjohn@gmail.com>, brinda_mn@yahoo.co.in, Oleg Nesterov <oleg@redhat.com>, tim.bird@am.sony.com, rohit.170309@gmail.com
 
-T24gV2VkLCAyMDA5LTA3LTIyIGF0IDIwOjE0IC0wNzAwLCBIZW5yeSBZZWkgd3JvdGU6IAo+IFdl
-aSwKPiAKPiBJZiB5b3UgaGF2ZSB0aW1lLCBwbGVhc2UgbWFrZSB0aGUgc3lzY2FsbCBhZGRpdGlv
-bnMgZm9yIGV4aXRfZ3JvdXAuCj4gSSBhbSBjb250cmlidXRpbmcgdG8gTFRQIG91dC1vZi1iYW5k
-LCBzbyBtYXkgbm90IGdldCB0byBpbiBhIHRpbWVseSBtYW5uZXIuCgpGaW5lLCBpIHdpbGwgY2hl
-Y2sgaW4gV2VpIFlvbmdqdW7FmyBwYXRjaC4gV2hlbmV2ZXIgeW91IGZlbGwgZnJlZSwgcGxlYXNl
-CnN1Ym1pdCB0aGUgcGF0Y2ggdG8gYWRkIGFuIGVudHJ5IGFzIHdlbGwuCgpSZWdhcmRzLS0KU3Vi
-cmF0YQoKPiAKPiBUaGFuayB5b3UhIAo+IAo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4g
-RnJvbTogV2VpIFlvbmdqdW4gW21haWx0bzp5andlaUBjbi5mdWppdHN1LmNvbV0gCj4gU2VudDog
-TW9uZGF5LCBKdWx5IDIwLCAyMDA5IDY6MDcgUE0KPiBUbzogSGVucnkgWWVpCj4gQ2M6IGx0cC1s
-aXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+IFN1YmplY3Q6IFJlOiBbTFRQXSBbUEFUQ0hdIGV4
-aXRfZ3JvdXAwMSwgZml4IHN5c2NhbGwgbnVtYmVyIGZvciBleGl0X2dyb3VwCj4gCj4gSGksIEhl
-bnJ5IFllaQo+IAo+IEhlbnJ5IFllaSAgd3JvdGU6Cj4gPiBUaGlzIGlzc3VlIHdhcyBmb3VuZCB3
-aGVuIHJ1bm5pbmcgb24gYW4gYXJtIG1hY2hpbmUuCj4gPgo+ID4KPiA+IEZpeCBzeXNjYWxsIG51
-bWJlciBmb3IgZXhpdF9ncm91cAo+ID4gICAKPiAKPiBJIGhhdmUgcG9zdGVkIHRoZSBzYW1lIHNv
-bWUgZGF5cyBhZ28sIHNlZSBodHRwOi8vbWFyYy5pbmZvLz9sPWx0cC1saXN0Jm09MTI0Nzk4MTc5
-MjExNTU0Jnc9Mi4KPiAKPiBCdXQgR2FycmV0dCBDb29wZXIgc2FpZCB3ZSBhbHNvIGFkZCB0aGUg
-cmVsZXZhbnQgc3lzY2FsbCBudW1iZXIgdG8gdGhlIGFyY2hpdGVjdHVyZSBzcGVjaWZpYyAuaW4g
-ZmlsZSBpbiB0ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUuIElmIHlvdSBoYXZlIHRpbWUsIHlvdSBj
-YW4gZG8gdGhpcy4gSWYgeW91IHdvdWxkIGxpa2UgdG8gZG8gdGhpcywgcGxlYXNlIHRlbGwgbWUu
-IFNvIHdlIHdpbGwgbm90IGRvIGR1cCB3cm9rcy4gVGhhbmtzLgo+IAo+IFdlaSBZb25nanVuCj4g
-Cj4gPiA8U2lnbmVkLW9mZi1ieTogSGVucnkgWWVpIDxoeWVpQG12aXN0YS5jb20+Cj4gPgo+ID4g
-LS0tCj4gPiBsdHAtZnVsbC0yMDA5MDUzMS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2V4aXRf
-Z3JvdXAvZXhpdF9ncm91cDAxLmMKPiA+IDIwMDktMDUtMjEgMTE6MTQ6NDAuMDAwMDAwMDAwIC0w
-NzAwCj4gPiArKysKPiA+IGx0cC1mdWxsLTIwMDkwNTMxL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
-bHMvZXhpdF9ncm91cC9leGl0X2dyb3VwMDEuYwo+ID4gMjAwOS0wNy0xNyAxMjowMzo0Ny4wMDAw
-MDAwMDAgLTA3MDAKPiA+IEBAIC0xMzYsNyArMTM2LDcgQEAKPiA+ICAgICAgICAgICAgICAgICAg
-ICAgICB9IGVsc2UgaWYgKFRFU1RfUkVUVVJOID09IDApewo+ID4gIAkgICAgICAgICAgICAgICAg
-IAl0c3RfcmVzbShUSU5GTywgIkluIHRoZSBjaGlsZCBwcm9jZXNzIik7Cj4gPiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgCXNsZWVwKDUpOwo+ID4gLQkJCQlURVNUKHN5c2NhbGwoMjUyLDQp
-KTsKPiA+ICsJCQkJVEVTVChzeXNjYWxsKF9fTlJfZXhpdF9ncm91cCw0KSk7Cj4gPiAgICAgICAg
-ICAgICAgICAgICAgICAgfWVsc2Ugewo+ID4gIAkJCQl0c3RfcmVzbShUSU5GTywiaW4gdGhlIHBh
-cmVudCBwcm9jZXNzIik7Cj4gPiAgCQkJCVRFU1QodyA9IHdhaXQoJnN0YXR1cykpOwo+ID4KPiA+
-ICAgCj4gPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gPiAtLQo+ID4KPiA+IC0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiA+IC0t
-LS0tLS0tIEVudGVyIHRoZSBCbGFja0JlcnJ5IERldmVsb3BlciBDaGFsbGVuZ2UgVGhpcyBpcyB5
-b3VyIGNoYW5jZSAKPiA+IHRvIHdpbiB1cCB0byAkMTAwLDAwMCBpbiBwcml6ZXMhIEZvciBhIGxp
-bWl0ZWQgdGltZSwgdmVuZG9ycyAKPiA+IHN1Ym1pdHRpbmcgbmV3IGFwcGxpY2F0aW9ucyB0byBC
-bGFja0JlcnJ5IEFwcCBXb3JsZChUTSkgd2lsbCBoYXZlIHRoZSAKPiA+IG9wcG9ydHVuaXR5IHRv
-IGVudGVyIHRoZSBCbGFja0JlcnJ5IERldmVsb3BlciBDaGFsbGVuZ2UuIFNlZSBmdWxsIAo+ID4g
-cHJpemUgZGV0YWlscyBhdDogaHR0cDovL3Auc2YubmV0L3NmdS9DaGFsbGVuZ2UKPiA+IC0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0KPiA+IC0tCj4gPgo+ID4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KPiA+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+ID4gTHRwLWxpc3RAbGlz
-dHMuc291cmNlZm9yZ2UubmV0Cj4gPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0
-cy9saXN0aW5mby9sdHAtbGlzdAo+ID4gICAKPiAKPiAKPiAKPiAtLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEx0
-cC1saXN0IG1haWxpbmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+IGh0
-dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0CgoKLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tCkxldCBDcnlzdGFsIFJlcG9ydHMgaGFuZGxlIHRoZSByZXBvcnRp
-bmcgLSBGcmVlIENyeXN0YWwgUmVwb3J0cyAyMDA4IDMwLURheSAKdHJpYWwuIFNpbXBsaWZ5IHlv
-dXIgcmVwb3J0IGRlc2lnbiwgaW50ZWdyYXRpb24gYW5kIGRlcGxveW1lbnQgLSBhbmQgZm9jdXMg
-b24gCndoYXQgeW91IGRvIGJlc3QsIGNvcmUgYXBwbGljYXRpb24gY29kaW5nLiBEaXNjb3ZlciB3
-aGF0J3MgbmV3IHdpdGggCkNyeXN0YWwgUmVwb3J0cyBub3cuICBodHRwOi8vcC5zZi5uZXQvc2Z1
-L2JvYmotanVseQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0
-dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+Hi,
+
+I have come across with char Limit issue on 2.6.29 kernels.
+
+
+SIGFAULT:
+
+#define SIZE            8053759
+char buf1[SIZE] ;
+
+NO SIGFAULT:
+
+#define SIZE            8053758
+char buf1[SIZE] ;
+
+This SIGFAULT not observed on 2.6.23 kernels.
+
+What could be the changes that effecting from 2.6.23 to 2.6.29 kernels.
+Please share me the information.
+
+
+Best regards,
+Naresh Kamboju
+
+------------------------------------------------------------------------------
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
