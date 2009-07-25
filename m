@@ -1,20 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MR7ky-0002TC-Va
-	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2009 16:55:00 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MR7kp-0005Li-RQ
-	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2009 16:55:00 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Wed, 15 Jul 2009 12:54:48 -0400
-References: <364299f40907112242j13b7349fued53c53f3f8defee@mail.gmail.com>
-In-Reply-To: <364299f40907112242j13b7349fued53c53f3f8defee@mail.gmail.com>
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MUkQV-0004Hk-6P
+	for ltp-list@lists.sourceforge.net; Sat, 25 Jul 2009 16:48:51 +0000
+Received: from wf-out-1314.google.com ([209.85.200.170])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MUkQO-0000iF-KM
+	for ltp-list@lists.sourceforge.net; Sat, 25 Jul 2009 16:48:51 +0000
+Received: by wf-out-1314.google.com with SMTP id 26so619522wfd.4
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 25 Jul 2009 09:48:38 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <200907151254.49595.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 3/4] Make system enhancements, Draft 2
+In-Reply-To: <4A6AA306.3060107@petalogix.com>
+References: <20090724110008.GA11878@linux.vnet.ibm.com>
+	<4A6AA306.3060107@petalogix.com>
+Date: Sat, 25 Jul 2009 09:48:38 -0700
+Message-ID: <364299f40907250948sb1a8cc5o7afba11ac2d83ef9@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Submitting patch
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,171 +28,80 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3963245248779447241=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============3963245248779447241==
-Content-Type: multipart/signed; boundary="nextPart1510457.LhaNC7pbBz";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1510457.LhaNC7pbBz
-Content-Type: text/plain;
-  charset="utf-8"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: michal.simek@petalogix.com
+Cc: ltp-list@lists.sourceforge.net, Jyoti <jyotiv@linux.vnet.ibm.com>
 
-On Sunday 12 July 2009 01:42:03 Garrett Cooper wrote:
-> +$(CC)			: The system C compiler.
-> +
-> +$(CXX)			: The system C++ compiler.
+On Fri, Jul 24, 2009 at 11:15 PM, Michal
+Simek<michal.simek@petalogix.com> wrote:
+> Please fix coding style. Use tab instead of space for indentation.
 
-should add $(CPP) - the system preprocessor
+There is nothing that states that 8-space tabs aren't appropriate in
+the kernel.org coding / style guide:
+http://www.kernel.org/doc/Documentation/CodingStyle
 
-> +$(CFLAGS)		: Compiler flags.
+Please stop saying that tabs are required. 8-space / tabs _are_
+required according to the guide.
 
-C compiler flags
+Please also thoroughly read through the document as it says 80-char
+lines are preferred, etc. It does not say they are required.
 
-should add $(CXXFLAGS) too
+At the same time though, these guidelines do not necessarily apply to
+userland apps, as far as the comment:
 
-> +$(LD)			: The library linker.
+"The answer to that is that if you need more than 3 levels of
+indentation, you're screwed anyway, and should fix your program."
 
-the system linker (typically $(CC))
+is concerned. Yes, that's true for kernel code. No it's not
+necessarily true for userland apps as more than 3 levels of branches
+may be required.
 
-> +$(LDFLAGS)		: What to pass in to the linker, including -L arguments
-> +			  and other ld arguments, apart from -l library
-> +			  includes (see $(LDLIBS)).
+So, in conclusion, yes -- we should try to stick to the kernel.org
+coding guidelines, but 1) we are not kernel.org and 2) we're not
+producing kernel code, so the coding guidelines may be more of a
+shoehorn fit than an appropriate one. It also doesn't apply to
+anything beyond C/C++ code.
 
-should note that flags should be in the form given to the compiler driver=20
-because we arent invoking `ld` -- i.e. -Wl,-foo not -foo
+Mike/Subrata,
+    Can we actually write up a style guide for folks to follow that
+applies for code, as the kernel.org guidelines don't apply that well
+to our circumstances?
+Thanks,
+-Garrett
 
-> +$(LDLIBS)		: Libraries to pass into the linker (e.g. -lltp, etc).
+>> PATCH IS CREATED FOR ltp-full-20090630.
+>>
+>> I am submitting a patch to kernel/fs/fs_di
+>>
+>> In this file data integity is performed by creating the file at
+>> different directory depth and then by comparing with original file.
+>>
+>> To this I have added one more approach to perform integrity test.
+>> 1. Creating two fragmented files each of size DiskSize/2.
+>> 2. Then comapring against the original file.
+>> 3. If not equal test case fails.
+>>
+>> My ultimate goal in creating fragmented files is that,
+>> 1. It creates many extents (fragments for each file)
+>> 2. FS code may behave wrong at corner cases which may come into picture
+>> =A0 =A0after many extents gets added to the file.
+>> 3. Data corruption chances are there
+>> =A0 =A0 =A0i. when file metadata updation is not proper (corner cases wh=
+en fragments are more)
+>> =A0 =A0 =A0ii.If write and read is not matching (write operation might h=
+ave updated the block
+>> =A0 =A0 =A0 =A0 number some where and read may skip that block in some c=
+orner cases)
+>> 4. In reality fragments can occur only after much usage of the disk(crea=
+te/delete file)
+>> 5. This is good test case for bigger size disk.(it can create more exten=
+ts)
 
-s/into/to/
-
-> +$(OPT_CFLAGS)		: Optimization flags to pass into the C compiler, -O2,
-> +			  etc. IF YOU SPECIFY -O2 OR HIGHER, ENSURE THAT YOU
-> +			  ALSO SPECIFY -fno-strict-aliasing, BECAUSE OF PAST
-> +			  OPTIMIZATION GCC BUGS!!!
-
-tr '[:upper:]' '[:lower:]'
-
-do you have any actual examples of this ?
-
-> +$(OPT_CXXFLAGS)		: Optimization flags to pass into the C++ compiler.
-
-s/into/to/
-
-> +$(RANLIB)		: What to run after archiving a library.
-
-the archive indexer
-
-> +# Replace [options] with any make specific options and variables, for ea=
-ch
-> +# step, example: -j 4, DESTDIR=3D/path/for/install, etc.
-> +make ac-clean ac-maintainer-clean distclean maintainer-clean [options]
-
-there should be no need to run these targets.  "maintainer-clean" should im=
-ply=20
-all of these other targets.
-
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> +Other Errata
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> +
-> +- This system (in its current form) supports cross-compilation out of a
-> single +directory. Object directory support will be completed soon to
-> properly enable +cross-compilation. This is required to avoid sporadic
-> Make-related errors.
-
-i have no idea what you're talking about here
-
-> +# Where's the root source directory?
-> +top_srcdir			:=3D $(abspath $(top_srcdir))
-> +# Where's the source located at?
-> +srcdir				?=3D .
-> +# Where's the root object directory?
-> +builddir			?=3D $(srcdir)
-
-need a top_builddir too
-
-> +# Where are we currently located in the object and source tree?
-> +relpath				:=3D $(subst $(abs_builddir),,$(CURDIR))
-
-is this actually necessary ?
-
-> +all: | $$(MAKE_DEPS) $$(MAKE_TARGETS)
-> +
-> +clean: $$(CLEAN_DEPS)
-> +	-$(RM) -f $$(CLEAN_TARGETS)
-> +
-> +pre-install: | $$(INSTALL_PATH) $$(PREINSTALL_DEPS)
-> +
-> +install: | $$(INSTALL_FILES) $$(POSTINSTALL_DEPS)
-
-so why do we need these _DEPS vars ?  do you need the $(MAKE_DEPS) to be=20
-processed before $(MAKE_TARGETS) ?
-
-at least for the clean target, it'd be easier to write it:
-clean::
-	$(RM) -f $$(CLEAN_TARGETS)
-
-and then people can just define their own "clean::" in their makefile to do=
-=20
-whatever they want.  be nice if we could use this method for all the target=
-s.
-=2Dmike
-
---nextPart1510457.LhaNC7pbBz
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJKXgnZAAoJEEFjO5/oN/WBWWcP/10E+RztcPginjhGe+Azs8py
-qH8ECVGokR+OnlId98pWd8s2FGH8w4iZzi7/MlMGIWLMN/OkXSawNCUHjnby8wm0
-QMsugslB36vVEk0zCcFxlGmvi0fJilREQ5USW+hfjH9/ZPUE5V5fGcPNeHKEyxeg
-G0Wocj94igJdgRVS1ZQVdswKX+QJ8vW3R25HtP6rCX/1hVyHImYvLI3LDSGJPpc6
-ZZnVJyPiOWSuM0fpufQXMmyAsgRjigPbeKyctxQzfKT4Y2Gc2WOAt2mZLShB59YM
-rG1uh+55ducOV6MljZ7SLmWOwqE4DgTD3Ku2TuRlUwxweVNsUWzU3ls/d94S/zIl
-GR9Rb6JVFb1VVqiYKobEbBKt8IbuDbrzwQpSHCo4azCaQ5MR8MU261FpMYFAWeRL
-iYV13kgUvibj+f0+qXJvBavm4RWPjnWYoo6DiZV7svq9X733NutTYQCHts3Wbgp+
-al12mNFG0lDlXaFgGwRIFGIUffCw9+JdGs4y8clmZV5S7B45sMONz/tYfcv29HCl
-EC2NFIMWwZneLf2Xwgg2BE/kAnch2+7aYDhf6f4eS94452IAy4ce69pA27rSjLeV
-1HueVb2vkQy2+PCJ36Lxei+jpGy2L7LnQdlV/CTuns37qo8ol+NiqAHa4C1fr+WG
-KyFlJXh9uFpOa9v2AmTf
-=G8R+
------END PGP SIGNATURE-----
-
---nextPart1510457.LhaNC7pbBz--
-
-
---===============3963245248779447241==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
---===============3963245248779447241==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+---------------------------------------------------------------------------=
+---
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============3963245248779447241==--
-
