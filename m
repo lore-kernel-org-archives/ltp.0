@@ -1,25 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <michal.simek@petalogix.com>) id 1MOpw3-0004Op-W7
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 09:28:59 +0000
-Received: from an-out-0708.google.com ([209.85.132.242])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MOpvy-0006XT-Nb
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 09:28:59 +0000
-Received: by an-out-0708.google.com with SMTP id c38so8241ana.37
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 09 Jul 2009 02:28:54 -0700 (PDT)
-Message-ID: <4A55B10B.7010200@petalogix.com>
-Date: Thu, 09 Jul 2009 10:57:47 +0200
-From: Michal Simek <michal.simek@petalogix.com>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MUZoL-0007XB-Rx
+	for ltp-list@lists.sourceforge.net; Sat, 25 Jul 2009 05:28:45 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MUZoF-0002FX-Pb
+	for ltp-list@lists.sourceforge.net; Sat, 25 Jul 2009 05:28:45 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sat, 25 Jul 2009 01:28:32 -0400
+References: <8368651DACC1964480F951191B94A078E49F0B@svexch01.mvista.com>
+In-Reply-To: <8368651DACC1964480F951191B94A078E49F0B@svexch01.mvista.com>
 MIME-Version: 1.0
-References: <4A54DF6F.1010405@petalogix.com>	<20090708.110624.104984745.davem@davemloft.net>	<4A54FFFE.10306@petalogix.com>
-	<20090708.181551.189345850.davem@davemloft.net>
-In-Reply-To: <20090708.181551.189345850.davem@davemloft.net>
-Subject: Re: [LTP] mmap hw behavior
-Reply-To: michal.simek@petalogix.com
+Message-Id: <200907250128.33178.vapier@gentoo.org>
+Subject: Re: [LTP] modifying tests to use the configured tmp directory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,42 +24,73 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2857324397372175242=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: David Miller <davem@davemloft.net>
-Cc: linux-arch@vger.kernel.org, ltp-list@lists.sourceforge.net, arnd@arndb.de, linux-kernel@vger.kernel.org, lethal@linux-sh.org, mingo@elte.hu
+To: ltp-list@lists.sourceforge.net
 
-David Miller wrote:
-> From: Michal Simek <michal.simek@petalogix.com>
-> Date: Wed, 08 Jul 2009 22:22:22 +0200
->
->   
->> Can you please point me to any code which exactly do this? (for example
->> file mm/mmap.c line from ... to ... )
->>     
->
-> Sorry I don't have time to read the source code for you.
-> I'd have to look it up too, just like you.
->   
-I found it - Microblaze hasn't defined tlb_flush macro.
+--===============2857324397372175242==
+Content-Type: multipart/signed; boundary="nextPart27747830.XtiDbb8TXQ";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Thanks for your help,
-Michal
+--nextPart27747830.XtiDbb8TXQ
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
--- 
-Michal Simek, Ing. (M.Eng)
-PetaLogix - Linux Solutions for a Reconfigurable World
-w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+On Saturday 25 July 2009 00:45:09 Henry Yei wrote:
+> Does anyone have a preference on whether the tests should be modified to
+> use the tst functions when possible, or use an optional argument?
 
+if a test needs a temp dir, it should always default to the common LTP one.=
+ =20
+feel free to send patches to do just this.
+=2Dmike
+
+--nextPart27747830.XtiDbb8TXQ
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJKapgBAAoJEEFjO5/oN/WBGrkP/1UcyiFNbn0FdYDWlyz+imsK
+h+2QYVTFRxOPG2yuvcLUi9OwTbrOOkOGjrHJrj88KQ8+k/wW8SBHEPFByhd4zOx7
+AGMBlBizM5C3fdoK8gNWwzRfNt+Y8ik0SYk5oZztckbfu5DDGaRtfrmWJDozRz68
+ZDyrJBCQG44VNjww4ndL8xwNuSwetZ3wyTy3V625J7Smvn4tRjHk5McYYAoEOoOf
+vSk63ZLSAT1P8wuVY3UmE2KaONOAkNme2Q57ZuUPfDtHPuJPM/yj1MQ2vGdKn5BF
+nGrlRWI2+bWeRxVRY72kLcLyoFOEy3R3SeDOrX+mMGOw6ZhZOLGkzZRpMFmszeuN
+Fs3YUfnlGHWkK8W+VTCDs6pDNW0ehT3zEFhLDxQMKWKA/obls/Zb2tkBNHB7mbKC
+5CzjjPODMo6eDMDOkNrG+QRt8kiJ4x91dGQAtx5QJ72H4REpNe16hvilG43vOJep
+ROQ8MxTWI4/dZmiDWOb+CrSxP0JJNTmQ8m2v1aXPqsBuqwBe0Wg/nhSHH9mPNq+i
+WXbT1sjXzTX3Gx3/kk/WNnNdZlZfKShOhLzpxEboM/ykdDGgiHKyGmVFQiS2Fhlz
+YNXprIZtVLyz1TM9Lve3jphLtYK3IhhZ/xSS0XE59CGM6m1/Mi5yJ1GzgaioNlYj
+IO+wx1T0Sue+aAD2fMJE
+=WHMo
+-----END PGP SIGNATURE-----
+
+--nextPart27747830.XtiDbb8TXQ--
+
+
+--===============2857324397372175242==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
+
+--===============2857324397372175242==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2857324397372175242==--
+
