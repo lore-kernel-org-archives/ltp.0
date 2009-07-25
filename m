@@ -1,25 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <michal.simek@petalogix.com>) id 1MOmNM-0002V0-Pi
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 05:40:56 +0000
-Received: from mail-bw0-f215.google.com ([209.85.218.215])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MOmNH-00013o-Eh
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2009 05:40:56 +0000
-Received: by bwz11 with SMTP id 11so338518bwz.10
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 08 Jul 2009 22:40:50 -0700 (PDT)
-Message-ID: <4A5582DE.9010501@petalogix.com>
-Date: Thu, 09 Jul 2009 07:40:46 +0200
-From: Michal Simek <michal.simek@petalogix.com>
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <hyei@mvista.com>) id 1MUZ88-0000Il-B7
+	for ltp-list@lists.sourceforge.net; Sat, 25 Jul 2009 04:45:08 +0000
+Received: from gateway-1237.mvista.com ([63.81.120.158])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MUZ80-00031g-CP
+	for ltp-list@lists.sourceforge.net; Sat, 25 Jul 2009 04:45:08 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-References: <4A54DF6F.1010405@petalogix.com>	<20090708.110624.104984745.davem@davemloft.net>	<4A54FFFE.10306@petalogix.com>
-	<20090708.181551.189345850.davem@davemloft.net>
-In-Reply-To: <20090708.181551.189345850.davem@davemloft.net>
-Subject: Re: [LTP] mmap hw behavior
-Reply-To: michal.simek@petalogix.com
+Date: Fri, 24 Jul 2009 21:38:02 -0700
+Message-ID: <8368651DACC1964480F951191B94A078E49F0A@svexch01.mvista.com>
+In-Reply-To: <200907242113.36309.vapier@gentoo.org>
+References: <OFE8FAC2C8.7B8ECD5A-ON852575FD.0081EDEC-852575FD.00837054@us.ibm.com>
+	<200907242113.36309.vapier@gentoo.org>
+From: "Henry Yei" <hyei@mvista.com>
+Subject: Re: [LTP] hardware requirements
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,40 +29,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: David Miller <davem@davemloft.net>
-Cc: linux-arch@vger.kernel.org, ltp-list@lists.sourceforge.net, arnd@arndb.de, linux-kernel@vger.kernel.org, lethal@linux-sh.org, mingo@elte.hu
+To: Mike Frysinger <vapier@gentoo.org>, ltp-list@lists.sourceforge.net
+Cc: Mark Ver <markver@us.ibm.com>
 
-David Miller wrote:
-> From: Michal Simek <michal.simek@petalogix.com>
-> Date: Wed, 08 Jul 2009 22:22:22 +0200
->
->   
->> Can you please point me to any code which exactly do this? (for example
->> file mm/mmap.c line from ... to ... )
->>     
->
-> Sorry I don't have time to read the source code for you.
-> I'd have to look it up too, just like you.
->   
-It is ok - I didn't want to read the code from - just if you know any
-functions which
-could help me.
+Several tests are also sensitive to the size of the filesystem. While most systems shouldn't have a problem, we have hit these limitations when testing flash filesytems, etc. 
 
-Thank you very much,
-Michal
+-----Original Message-----
+From: Mike Frysinger [mailto:vapier@gentoo.org] 
+Sent: Friday, July 24, 2009 6:14 PM
+To: ltp-list@lists.sourceforge.net
+Cc: Mark Ver
+Subject: Re: [LTP] hardware requirements
 
--- 
-Michal Simek, Ing. (M.Eng)
-PetaLogix - Linux Solutions for a Reconfigurable World
-w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+On Friday 24 July 2009 19:55:39 Mark Ver wrote:
+> Is there an agreed upon set of hardware requirements (memory, disk 
+> space,
+> etc.) for running, if not all tests, at least the default testcases 
+> executed by runltp?
 
+not really
 
+> Also, if not very knowledgeable of hardware, is there an easy way to 
+> tell if a particular test will run on a target platform or not?  For 
+> example, I suspect the DMA_THREAD_DIOTEST7 tests are not expected to 
+> run on all architectures.  Is there a way to find out what platforms it does support?
+
+many of test cases dont care at all about resources.  might be useful to have an embedded doc format so tests that do care about resources can declare them and then a script can run periodically to collect all of them in a summary format.
+
+i'm pretty sure that in the vast majority of cases, the memory size is the only thing that a test may play with.
+-mike
 ------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
