@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MQOq4-0002ZN-LT
-	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2009 16:57:16 +0000
-Received: from wf-out-1314.google.com ([209.85.200.170])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MQOpw-0005JD-O0
-	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2009 16:57:16 +0000
-Received: by wf-out-1314.google.com with SMTP id 26so801237wfd.4
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 13 Jul 2009 09:57:07 -0700 (PDT)
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <andi.kleen@intel.com>) id 1MVirc-0001j4-GR
+	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2009 09:20:52 +0000
+Received: from mga02.intel.com ([134.134.136.20])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MVirY-0000Qm-8m
+	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2009 09:20:52 +0000
+From: "Kleen, Andi" <andi.kleen@intel.com>
+Date: Tue, 28 Jul 2009 10:18:51 +0100
+Message-ID: <2E9E6F5F5978EF44A8590E339E888CF901420A78F4@irsmsx503.ger.corp.intel.com>
+References: <f5a7b3810907280207v6e88cadaodbc90831d562d4cf@mail.gmail.com>
+In-Reply-To: <f5a7b3810907280207v6e88cadaodbc90831d562d4cf@mail.gmail.com>
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <1247473352.26478.14.camel@subratamodak.linux.ibm.com>
-References: <4A5AED18.2090201@cn.fujitsu.com>
-	<1247473352.26478.14.camel@subratamodak.linux.ibm.com>
-Date: Mon, 13 Jul 2009 09:57:07 -0700
-Message-ID: <364299f40907130957i5bffc7acofe0be466ae22ce43@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Fix "make clean"'s failure in case cpuset
+Subject: Re: [LTP] Integration of MCE test suite into LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,66 +25,40 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
+To: naresh kamboju <naresh.kernel@gmail.com>, "Huang, Ying" <ying.huang@intel.com>
 Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-On Mon, Jul 13, 2009 at 1:22 AM, Subrata
-Modak<subrata@linux.vnet.ibm.com> wrote:
-> On Mon, 2009-07-13 at 16:15 +0800, Shi Weihua wrote:
->> In case cpuset, the file cpuset_syscall_test.o was not deleted after "ma=
-ke clean".
->> The following patch fixed this problem.
->>
->> Signed-off-by: Shi Weihua <shiwh@cn.fujitsu.com>
+ 
+
+>With reference to Linux MCE
 >
-> Garret,
+>http://kernel.org/pub/scm/utils/cpu/mce/
 >
-> If this is safe and does not interfere with your patches, please check
-> this in.
->
-> Regards--
-> Subrata
->
->> ---
->> diff -urpN ltp-full-20090630.orig/testcases/kernel/controllers/cpuset/cp=
-uset_syscall_test/Makefile ltp-full-20090630/testcases/kernel/controllers/c=
-puset/cpuset_syscall_test/Makefile
->> --- ltp-full-20090630.orig/testcases/kernel/controllers/cpuset/cpuset_sy=
-scall_test/Makefile =A0 2009-06-23 10:18:17.000000000 -0400
->> +++ ltp-full-20090630/testcases/kernel/controllers/cpuset/cpuset_syscall=
-_test/Makefile =A0 =A0 =A0 =A02009-07-13 12:24:01.000000000 -0400
->> @@ -8,7 +8,8 @@ all:cpuset_syscall_test
->> =A0cpuset_syscall_test: %: %.o $(LIBOBJECTS)
->>
->> =A0clean:
->> - =A0 =A0 rm -rf cpuset_syscall_test
->> + =A0 =A0 rm -rf cpuset_syscall_test cpuset_syscall_test.o
->> + =A0 =A0 rm -f $(LIBOBJECTS)
->>
->> =A0install:
->> =A0 =A0 =A0 @set -e; \
+>Are you discussing about this?
 
-    I wish I could say that's the only area that needs clean fixed,
-but there are other spots in the tree that suffer from that issue too.
-    I'll submit a quick diff with all of the problem children in an hour or=
- so.
-Thanks,
--Garrett
+This is about machine check exception/event, aka hardware errors,
 
----------------------------------------------------------------------------=
----
-Enter the BlackBerry Developer Challenge  =
+It has nothing to do with "LinuxMCE"
 
-This is your chance to win up to $100,000 in prizes! For a limited time, =
+>Could you list out the hardware and software requirements to run this
+>application as well test suite.
 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize=
-  =
+The test suite should run on any hardware that implements
+the standard Intel machine check architecture, which is near
+all x86 CPUs shipped in the last decade.
 
-details at: http://p.sf.net/sfu/Challenge
+It doesn't necessarily work in virtual machines.
+
+-Andi
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
