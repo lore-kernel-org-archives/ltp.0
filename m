@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MSnMv-0002wO-7Y
-	for ltp-list@lists.sourceforge.net; Mon, 20 Jul 2009 07:33:05 +0000
-Received: from mail-pz0-f201.google.com ([209.85.222.201])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MSnMp-00010U-2e
-	for ltp-list@lists.sourceforge.net; Mon, 20 Jul 2009 07:33:05 +0000
-Received: by pzk39 with SMTP id 39so11212pzk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 20 Jul 2009 00:32:57 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <4A63FFC3.80304@petalogix.com>
-References: <364299f40907181419y73621db2w1242b7a1fa7650c@mail.gmail.com>
-	<4A63FFC3.80304@petalogix.com>
-Date: Mon, 20 Jul 2009 00:32:57 -0700
-Message-ID: <364299f40907200032x28cc62cdn73ebb42f31d80361@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 3/4] Make system enhancements, Draft 3
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <ying.huang@intel.com>) id 1MVbpd-0007Cm-JH
+	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2009 01:50:21 +0000
+Received: from mga09.intel.com ([134.134.136.24])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MVbpV-0006TD-Dy
+	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2009 01:50:21 +0000
+From: Huang Ying <ying.huang@intel.com>
+In-Reply-To: <1246338149.4819.1.camel@subratamodak.linux.ibm.com>
+References: <1246330572.12836.40.camel@yhuang-dev.sh.intel.com>
+	<1246338149.4819.1.camel@subratamodak.linux.ibm.com>
+Date: Tue, 28 Jul 2009 09:50:05 +0800
+Message-Id: <1248745805.4823.2.camel@yhuang-dev.sh.intel.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Integration of MCE test suite into LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,70 +25,60 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: michal.simek@petalogix.com
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
+To: "subrata@linux.vnet.ibm.com" <subrata@linux.vnet.ibm.com>
+Cc: "Kleen, Andi" <andi.kleen@intel.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On Sun, Jul 19, 2009 at 10:25 PM, Michal
-Simek<michal.simek@petalogix.com> wrote:
-> Garrett Cooper wrote:
->> Version 3 of the epic saga: [PATCH 3/4] Make system enhancements.
+Hi, Subrata,
 
-[...]
+Any update?
 
-> I cross compile LTP all the time and Mike do the same for BlackFin.
-> cross-compilation was possible.
-> CROSS_COMPILE=3Dmb-linux-
-> make
+Best Regards,
+Huang Ying
 
-Yes, as Mike corrected me, what I was looking for was `out-of-tree
-build support', where a group (say Montevista) could build more than
-one architecture, or build with more than one compiler / toolchain /
-sys-root using the same source directory.
+On Tue, 2009-06-30 at 13:02 +0800, Subrata Modak wrote:
+> On Tue, 2009-06-30 at 10:56 +0800, Huang Ying wrote:
+> > Hi, All,
+> > 
+> > We are working on a test suite to test the Linux kernel MCE handling
+> > logic named mce-test, which can be find at:
+> > git://git.kernel.org/pub/scm/utils/cpu/mce/mce-test.git. There is a
+> > HOWTO for it, which is attached with the mail.
+> > 
+> > We think the testing target of mce-test is part of that of LTP, so it is
+> > better to integrate mce-test into LTP. Do you think so?
+> > 
+> > As for integration scheme, maybe we can first add mce-test into LTP as a
+> > separate test case, just as kdump test case. What's your opinions?
+> > 
+> > Any comment is welcome!
+> > 
+> > Best Regards,
+> > Huang Ying
+> 
+> Hi Huang,
+> 
+> I will reply to this mail in detail later. Thanks for posting this
+> information.
+> 
+> Regards--
+> Subrata
+> 
+> > ------------------------------------------------------------------------------
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
-Well, that and a few Makefiles were broken as far as cross-compilation
-was concerned, in particular library generation on some architectures,
-and hardcoded paths to libraries, host based file scanning heuristics,
-you name it.
 
-This is the first leap forward in correcting all of these things, and
-it will not be the last step that must be made as this project is
-large and the changes / test stimuli are as well.
-
-[...]
-
->> +LIBOBJS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D=
- $$(addprefix $$(builddir)/,$$(patsubst %.c,%.o,$$(LIBSRCS)))
->>
-> long line.
-
-I try my best to do two things with makefile code:
-1. align Makefile code with single tab, then spaces.
-2. compress as many statements as possible to reduce the number of
-required evaluation steps, because that can result in interesting
-behavior from make with define blocks...
-
-I will try and compress the space further (that line was tab
-separated) in a style cleanup commit after this is all said and
-committed, if I don't get to it sooner. It's just easier to add and
-delete tabs for now :).
-
-Thanks!
--Garrett
-
----------------------------------------------------------------------------=
----
-Enter the BlackBerry Developer Challenge  =
-
-This is your chance to win up to $100,000 in prizes! For a limited time, =
-
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize=
-  =
-
-details at: http://p.sf.net/sfu/Challenge
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
