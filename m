@@ -2,24 +2,22 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MNwl6-00046A-5e
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 22:34:00 +0000
-Received: from an-out-0708.google.com ([209.85.132.249])
+	(envelope-from <naresh.kernel@gmail.com>) id 1MVgWP-0001NP-TV
+	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2009 06:50:49 +0000
+Received: from mail-yx0-f195.google.com ([209.85.210.195])
 	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MNwl5-0005NG-DA
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 22:34:00 +0000
-Received: by an-out-0708.google.com with SMTP id c38so1772744ana.37
+	id 1MVgWO-0007qR-Jj
+	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2009 06:50:49 +0000
+Received: by yxe33 with SMTP id 33so6828793yxe.28
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 06 Jul 2009 15:33:58 -0700 (PDT)
+	Mon, 27 Jul 2009 23:50:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <200907061813.57806.vapier@gentoo.org>
-References: <364299f40907061322x726c3dcbh7ec674fc3851593f@mail.gmail.com>
-	<200907061813.57806.vapier@gentoo.org>
-Date: Mon, 6 Jul 2009 15:33:58 -0700
-Message-ID: <364299f40907061533j49edc5d4x4532b6a3d53f97f0@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Content-Type: multipart/mixed; boundary=0016e645b76823bd15046e111aed
-Subject: Re: [LTP] [PATCH 1/3] Make IDcheck.sh DESTDIR aware and less strict
+In-Reply-To: <f5a7b3810907200605r5fc2f575ta761cd45c92b0837@mail.gmail.com>
+References: <f5a7b3810907200605r5fc2f575ta761cd45c92b0837@mail.gmail.com>
+Date: Tue, 28 Jul 2009 12:20:43 +0530
+Message-ID: <f5a7b3810907272350n258c4018mcbf1c5806c3bd27f@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Subject: Re: [LTP] [FIX PATCHES] open_posix_execute.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,150 +27,97 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: Brandon Philips <bphilips@suse.de>
 
---0016e645b76823bd15046e111aed
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Hi,
 
-On Mon, Jul 6, 2009 at 3:13 PM, Mike Frysinger<vapier@gentoo.org> wrote:
-> On Monday 06 July 2009 16:22:17 Garrett Cooper wrote:
->> The end goal of this patch is to make IDcheck.sh more rootfs- / cross-
->> compilation friendly, such that it can be run from the primary compile
->> instance, and instead of attempting to manipulate the target system
->> data, manipulate the sys-root / rootfs data through the use of DESTDIR
->> and by relaxing certain checks. Most of the checks were unnecessary
->> anyhow (am i root?), etc and can be easily remedied by just relying on
->> the other checks made by touch(1)'ing files and the post-process
->> operation, as ENOPERM will be returned if one cannot access the
->> configuration file of interest.
->>
->> Also, use awk for all operations instead of grep because it will
->> reduces the potential for random failures when dealing with /etc/group
->> and /etc/passwd files, and we can switch over to one subroutine
->> instead of multiple subroutines for checks.
+Hope you have reviewed below patch.
+If you any issue please let me know.
+
+Subrata/ Garrett,
+Please review, if you feel okay.
+commit.
+
+Best regards,
+Naresh Kamboju
+
+
+On Mon, Jul 20, 2009 at 6:35 PM, naresh kamboju<naresh.kernel@gmail.com> wr=
+ote:
+> Hi,
 >
-> please use unified diffs only
+> As per the execute.sh script file there is time limit of two minutes
+> for each test case execution if it takes more time it will be reported
+> as HUNG.
+>
+> shm_open/23-1.c test case under posix test suite which executes more
+> than two minitutes so test case reported as HUNG.
+>
+> I have changed time limit from 120 to 300 sec. that is nothing but two
+> minutes to five minutes. In low end machines this test case taking 4
+> min to complete execution.
+>
+> Now test cases reported as PASS
+>
+> I have attached patch and below.
+> Please review the same.
+>
+>
+> Best regards,
+> Naresh Kamboju
+>
+>
+> /*****************************************************/
+> Before Patch:
+>
+> conformance/interfaces/shm_open/23-1.test:execution:HUNG
+>
+>
+> After Patch:
+>
+> conformance/interfaces/shm_open/23-1.test:execution:PASS
+> /*****************************************************/
+>
+>
+> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+>
+> diff -Naurb a/testcases/open_posix_testsuite/execute.sh
+> b/testcases/open_posix_testsuite/execute.sh
+> --- a/testcases/open_posix_testsuite/execute.sh 2007-07-26
+> 17:32:11.000000000 +0530
+> +++ b/testcases/open_posix_testsuite/execute.sh 2009-07-20
+> 17:53:15.000000000 +0530
+> @@ -163,8 +163,8 @@
+> =A0declare -i SEGV=3D0
+> =A0declare -i OTH=3D0
+>
+> -# Maximum Two minutes waiting time period to execute a test. If it
+> exceeds, the test case will go into the 'HUNG' category.
+> -TIMEOUT_VAL=3D120
+> +# Maximum five minutes waiting time period to execute a test. If it
+> exceeds, the test case will go into the 'HUNG' category.
+> +TIMEOUT_VAL=3D300
+>
+> =A0# if gcc available then remove the below line comment else put the t0
+> in posixtestsuite directory.
+> =A0#gcc -o t0 t0.c
+>
 
-    Ugh, sorry (cvs diff in context mode as default sucks... yay for
-aliases). Let's try that again...
-Thanks,
--Garrett
+---------------------------------------------------------------------------=
+---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
 
---0016e645b76823bd15046e111aed
-Content-Type: application/octet-stream; 
-	name="IDcheck.sh-prefix-capable-and-less-strict.diff"
-Content-Disposition: attachment; 
-	filename="IDcheck.sh-prefix-capable-and-less-strict.diff"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fwtrqgeu1
+trial. Simplify your report design, integration and deployment - and focus =
+on =
 
-SW5kZXg6IElEY2hlY2suc2gKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PQpSQ1MgZmlsZTogL2N2c3Jvb3QvbHRwL2x0cC9J
-RGNoZWNrLnNoLHYKcmV0cmlldmluZyByZXZpc2lvbiAxLjE4CmRpZmYgLXUgLXIxLjE4IElEY2hl
-Y2suc2gKLS0tIElEY2hlY2suc2gJMjkgU2VwIDIwMDggMTg6MTI6MTYgLTAwMDAJMS4xOAorKysg
-SURjaGVjay5zaAk2IEp1bCAyMDA5IDIyOjMzOjA5IC0wMDAwCkBAIC0zNSwzNSArMzUsMjQgQEAK
-IE5PX0RBRU1PTl9HUlA9MQogTk9fVVNFUlNfR1JQPTEKIE5PX1NZU19HUlA9MQotSV9BTV9ST09U
-PTAKIAotIwotIyBpZCgxKSBmb3IgZW50cnkuCi0jCi1pZmUoKSB7Ci0JaWQgIiRAIiA+IC9kZXYv
-bnVsbAotfQorZ3JvdXA9IiRERVNURElSL2V0Yy9ncm91cCIKK3Bhc3N3ZD0iJERFU1RESVIvZXRj
-L3Bhc3N3ZCIKIAotIwotIyBncmVwKDEpIGZvciBlbnRyeS4KLSMKLWdmZSgpIHsKLQlncmVwIC1x
-ICIkQCIKKyMgZmluZCBlbnRyeS4KK2ZlKCkgeworCUlEPSQxOyBzaGlmdAorCUZJTEU9JDE7IHNo
-aWZ0CisJYXdrICIvXiRJRDovIHsgRk9VTkQ9MSB9IEVORCB7IGlmIChcJEZPVU5EID09IDEpIHsg
-ZXhpdCAwOyB9IGV4aXQgMTsgfSIgXAorCSIkRklMRSIKKwllYz0kPworCWVjaG8gIiRJRCA9PiAk
-ZWMiCiB9CiAKIHByb21wdF9mb3JfY3JlYXRlKCkgewotCWlmIFsgLW4gIiRDUkVBVEVfRU5UUklF
-UyIgXSA7IHRoZW4KLQotCQlpZiBbICRJX0FNX1JPT1QgLWVxIDAgXSA7IHRoZW4KLQkJCWVjaG8g
-Ik5vdCByb290OyBjYW4ndCBjcmVhdGUgdXNlciAvIGdyb3VwIGVudHJpZXMgb24gbG9jYWwgbWFj
-aGluZSIuCi0JCQlDUkVBVEVfRU5UUklFUz0wCi0JCWZpCi0JCWVjaG8gIkNSRUFURV9FTlRSSUVT
-IHZhcmlhYmxlIHNldCB0byAkQ1JFQVRFX0VOVFJJRVMgLi4uIgotCQllY2hvCi0KLQllbHNlCisJ
-aWYgWyAteiAiJENSRUFURV9FTlRSSUVTIiBdIDsgdGhlbgogCi0JCWlmIFsgJE5PX05PQk9EWV9J
-RCAtbmUgMCAtbyAkTk9fQklOX0lEIC1uZSAwIC1vICROT19EQUVNT05fSUQgLW5lIDAgLW8gJE5P
-X05PQk9EWV9HUlAgLW5lIDAgLW8gJE5PX0JJTl9HUlAgLW5lIDAgLW8gJE5PX0RBRU1PTl9HUlAg
-LW5lIDAgLW8gJE5PX1VTRVJTX0dSUCAtbmUgMCAtbyAkTk9fU1lTX0dSUCAtbmUgMCAtYSAkSV9B
-TV9ST09UIC1uZSAwIF0gOyB0aGVuCisJCWlmIFsgJE5PX05PQk9EWV9JRCAtbmUgMCAtbyAkTk9f
-QklOX0lEIC1uZSAwIC1vICROT19EQUVNT05fSUQgLW5lIDAgLW8gJE5PX05PQk9EWV9HUlAgLW5l
-IDAgLW8gJE5PX0JJTl9HUlAgLW5lIDAgLW8gJE5PX0RBRU1PTl9HUlAgLW5lIDAgLW8gJE5PX1VT
-RVJTX0dSUCAtbmUgMCAtbyAkTk9fU1lTX0dSUCAtbmUgMCBdIDsgdGhlbgogCQkJZWNobyAtbiAi
-SWYgYW55IHJlcXVpcmVkIHVzZXIgaWRzIGFuZC9vciBncm91cHMgYXJlIG1pc3NpbmcsIHdvdWxk
-IHlvdSBsaWtlIHRoZXNlIGNyZWF0ZWQ/IFt5L05dIgogCQkJcmVhZCBhbnMKIAkJCWNhc2UgIiRh
-bnMiIGluCkBAIC04MSwzMyArNzAsMzEgQEAKIAlFVUlEPSQoaWQgLXUpCiBmaQogCi1pZiBbIC1l
-IC9ldGMvcGFzc3dkIC1hICEgLXIgL2V0Yy9wYXNzd2QgXSA7IHRoZW4KK2lmIFsgLWUgIiRwYXNz
-d2QiIC1hICEgLXIgIiRwYXNzd2QiIF0gOyB0aGVuCiAJZWNobyAiL2V0Yy9wYXNzd2Qgbm90IHJl
-YWRhYmxlIGJ5IHVpZCAkRVVJRCIKIAlleGl0IDEKLWVsaWYgWyAtZSAvZXRjL2dyb3VwIC1hICEg
-LXIgL2V0Yy9ncm91cCBdIDsgdGhlbgotCWVjaG8gIi9ldGMvZ3JvdXAgbm90IHJlYWRhYmxlIGJ5
-IHVpZCAkRVVJRCIKK2VsaWYgWyAtZSAiJGdyb3VwIiAtYSAhIC1yICIkZ3JvdXAiIF0gOyB0aGVu
-CisJZWNobyAiJGdyb3VwIG5vdCByZWFkYWJsZSBieSB1aWQgJEVVSUQiCiAJZXhpdCAxCiBmaQog
-Ci1pZmUgYmluOyBOT19CSU5fSUQ9JD8KLWlmZSBkYWVtb247IE5PX0RBRU1PTl9JRD0kPwotaWZl
-IG5vYm9keTsgTk9fTk9CT0RZX0lEPSQ/Ci0KLWdmZSAnXmJpbjonIC9ldGMvZ3JvdXA7IE5PX0JJ
-Tl9HUlA9JD8KLWdmZSAnXmRhZW1vbjonIC9ldGMvZ3JvdXA7IE5PX0RBRU1PTl9HUlA9JD8KLWdm
-ZSAnXm5vYm9keTonIC9ldGMvZ3JvdXA7IE5PX05PQk9EWV9HUlA9JD8KLWdmZSAnXnN5czonIC9l
-dGMvZ3JvdXA7IE5PX1NZU19HUlA9JD8KLWdmZSAnXnVzZXJzOicgL2V0Yy9ncm91cDsgTk9fVVNF
-UlNfR1JQPSQ/Ci0KLWlmIFsgJEVVSUQgLWVxIDAgXSA7IHRoZW4KLQlJX0FNX1JPT1Q9MQotZmkK
-K2ZlIGJpbiAiJHBhc3N3ZCI7IE5PX0JJTl9JRD0kPworZmUgZGFlbW9uICIkcGFzc3dkIjsgTk9f
-REFFTU9OX0lEPSQ/CitmZSBub2JvZHkgIiRwYXNzd2QiOyBOT19OT0JPRFlfSUQ9JD8KKworZmUg
-YmluICIkZ3JvdXAiOyBOT19CSU5fR1JQPSQ/CitmZSBkYWVtb24gIiRncm91cCI7IE5PX0RBRU1P
-Tl9HUlA9JD8KK2ZlIG5vYm9keSAiJGdyb3VwIjsgTk9fTk9CT0RZX0dSUD0kPworZmUgc3lzICIk
-Z3JvdXAiOyBOT19TWVNfR1JQPSQ/CitmZSB1c2VycyAiJGdyb3VwIjsgTk9fVVNFUlNfR1JQPSQ/
-CiAKIHByb21wdF9mb3JfY3JlYXRlCiAKIGRlYnVnX3ZhbHMoKSB7CiAKIGVjaG8gIk1pc3Npbmcg
-dGhlIGZvbGxvd2luZyBncm91cCAvIHVzZXIgZW50cmllczoiCitlY2hvICJHcm91cCBmaWxlOiAg
-ICAkZ3JvdXAiCitlY2hvICJQYXNzd29yZCBmaWxlOiAkcGFzc3dkIgogZWNobyAibm9ib2R5OiAg
-ICAgICAgJE5PX05PQk9EWV9JRCIKIGVjaG8gImJpbjogICAgICAgICAgICROT19CSU5fSUQiCiBl
-Y2hvICJkYWVtb246ICAgICAgICAkTk9fREFFTU9OX0lEIgpAQCAtMTE3LDE2ICsxMDQsMTQgQEAK
-IGVjaG8gInN5cyBncnA6ICAgICAgICROT19TWVNfR1JQIgogZWNobyAidXNlcnMgZ3JwOiAgICAg
-JE5PX1VTRVJTX0dSUCIKIGVjaG8gIiIKLWVjaG8gImkgYW0gcm9vdDogICAgICRJX0FNX1JPT1Qi
-Ci1lY2hvICIiCiAKIH0KIAogI2RlYnVnX3ZhbHMKIAogaWYgWyAkQ1JFQVRFX0VOVFJJRVMgLW5l
-IDAgXSA7IHRoZW4KLQlpZiAhIHRvdWNoIC9ldGMvZ3JvdXAgOyB0aGVuCi0JCWVjaG8gIkNvdWxk
-bid0IHRvdWNoIC9ldGMvZ3JvdXAiCisJaWYgISB0b3VjaCAiJGdyb3VwIiA7IHRoZW4KKwkJZWNo
-byAiQ291bGRuJ3QgdG91Y2ggJGdyb3VwIgogCQlleGl0IDEKIAlmaQogZmkKQEAgLTE0MSwxMSAr
-MTI2LDExIEBACiAKIAkJIyBBdm9pZCBjaGlja2VuIGFuZCBlZ2cgaXNzdWUgd2l0aCBpZCgxKSBj
-YWxsCiAJCSMgbWFkZSBhYm92ZSBhbmQgYmVsb3cuCi0JCWlmICEgZ2ZlICJeJHtuYW1lfToiIC9l
-dGMvcGFzc3dkICYmIFsgJG5vX2lkIC1uZSAwIF0gOyB0aGVuCi0JCQllY2hvICIke25hbWV9Ong6
-JHtpZH06JHtpZH06JHtuYW1lfTo6IiA+PiAvZXRjL3Bhc3N3ZAorCQlpZiAhIGZlICIkbmFtZSIg
-IiRwYXNzd2QiICYmIFsgJG5vX2lkIC1uZSAwIF0gOyB0aGVuCisJCQllY2hvICIke25hbWV9Ong6
-JHtpZH06JHtpZH06JHtuYW1lfTo6IiA+PiAiJHBhc3N3ZCIKIAkJZmkKIAkJaWYgWyAkbm9fZ3Jw
-IC1uZSAwIF0gOyB0aGVuCi0JCQllY2hvICIke25hbWV9Ong6JChpZCAtdSAke25hbWV9KToiID4+
-IC9ldGMvZ3JvdXAKKwkJCWVjaG8gIiR7bmFtZX06eDokKGlkIC11ICR7bmFtZX0pOiIgPj4gIiRn
-cm91cCIKIAkJZmkKIAlmaQogfQpAQCAtMTU2LDIzICsxNDEsNDAgQEAKIGlmIFsgJE5PX1VTRVJT
-X0dSUCAtZXEgMCBdIDsgdGhlbgogCWVjaG8gIlVzZXJzIGdyb3VwIGZvdW5kLiIKIGVsaWYgWyAk
-Q1JFQVRFX0VOVFJJRVMgLW5lIDAgXSA7IHRoZW4KLQllY2hvICd1c2Vyczp4OjEwMDonID4+IC9l
-dGMvZ3JvdXAKKwllY2hvICd1c2Vyczp4OjEwMDonID4+ICIkZ3JvdXAiCiBmaQogCiBpZiBbICRO
-T19TWVNfR1JQIC1lcSAwIF0gOyB0aGVuCiAJZWNobyAiU3lzIGdyb3VwIGZvdW5kLiIKIGVsaWYg
-WyAkQ1JFQVRFX0VOVFJJRVMgLW5lIDAgXSA7IHRoZW4KLQllY2hvICdzeXM6eDozOicgPj4gL2V0
-Yy9ncm91cAorCWVjaG8gJ3N5czp4OjM6JyA+PiAiJGdyb3VwIgogZmkKIAotaWYgaWZlIG5vYm9k
-eSAgICAmJiBpZmUgYmluICAgICYmIGlmZSBkYWVtb24gJiYKLSAgIGlmZSAtZyBub2JvZHkgJiYg
-aWZlIC1nIGJpbiAmJiBpZmUgLWcgZGFlbW9uICYmCi0gICBnZmUgJ151c2VyczonIC9ldGMvZ3Jv
-dXAgJiYgZ2ZlICdec3lzOicgL2V0Yy9ncm91cCAmJiAKLSAgIGdmZSAnXm5vYm9keTonIC9ldGMv
-Z3JvdXAKLXRoZW4KLQllY2hvICIiCi0JZWNobyAiUmVxdWlyZWQgdXNlcnMvZ3JvdXBzIGV4aXN0
-LiIKLQlleGl0IDAKK01JU1NJTkdfRU5UUlk9MAorCisjIEZvciBlbnRyaWVzIHRoYXQgZXhpc3Qg
-aW4gYm90aCAkZ3JvdXAgYW5kICRwYXNzd2QuCitmb3IgaSBpbiBub2JvZHkgYmluIGRhZW1vbjsg
-ZG8KKyAgICBmb3IgZmlsZSBpbiAiJGdyb3VwIiAiJHBhc3N3ZCI7IGRvCisgICAgICAgIGlmICEg
-ZmUgIiRpIiAiJGZpbGUiOyB0aGVuCisgICAgICAgICAgICBNSVNTSU5HX0VOVFJZPTEKKyAgICAg
-ICAgICAgIGJyZWFrCisgICAgICAgIGZpCisgICAgZG9uZQorICAgIGlmIFsgJE1JU1NJTkdfRU5U
-UlkgLW5lIDAgXTsgdGhlbgorICAgICAgICBicmVhaworICAgIGZpCitkb25lCisKKyMgRm9yIGVu
-dHJpZXMgdGhhdCBvbmx5IGV4aXN0IGluICRncm91cC4KK2ZvciBpIGluIHVzZXJzIHN5czsgZG8K
-KyAgICBpZiAhIGZlICIkaSIgIiRmaWxlIjsgdGhlbgorICAgICAgICBNSVNTSU5HX0VOVFJZPTEK
-KyAgICBmaQorZG9uZQorCitpZiBbICRNSVNTSU5HX0VOVFJZIC1lcSAwIF0gOyB0aGVuCisgICAg
-ZWNobyAiUmVxdWlyZWQgdXNlcnMvZ3JvdXBzIGV4aXN0LiIKKyAgICBleGl0IDAKIGZpCiAKIGVj
-aG8gIiIK
---0016e645b76823bd15046e111aed
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+what you do best, core application coding. Discover what's new with =
 
-------------------------------------------------------------------------------
-
---0016e645b76823bd15046e111aed
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---0016e645b76823bd15046e111aed--
-
