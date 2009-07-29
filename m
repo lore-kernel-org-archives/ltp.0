@@ -1,37 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MPDca-0007iO-Q5
-	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 10:46:28 +0000
-Received: from e36.co.us.ibm.com ([32.97.110.154])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MPDcW-0005wb-Im
-	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2009 10:46:28 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e36.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n6AAipCA013175
-	for <ltp-list@lists.sourceforge.net>; Fri, 10 Jul 2009 04:44:51 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n6AAkN3d250200
-	for <ltp-list@lists.sourceforge.net>; Fri, 10 Jul 2009 04:46:23 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n6AAkNkx004533
-	for <ltp-list@lists.sourceforge.net>; Fri, 10 Jul 2009 04:46:23 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <f5a7b3810907100201p514cb9a2p44faaaa42bc59a32@mail.gmail.com>
-References: <364299f40907070906v174de45ci6765d3111f64a279@mail.gmail.com>
-	<f5a7b3810907090750lde8e9carc9fe8a6317e67153@mail.gmail.com>
-	<364299f40907091040v73e1dc3dm8c8eada4221abc7b@mail.gmail.com>
-	<20090710.135215.615775074055320747.yamato@redhat.com>
-	<f5a7b3810907100201p514cb9a2p44faaaa42bc59a32@mail.gmail.com>
-Date: Fri, 10 Jul 2009 16:16:20 +0530
-Message-Id: <1247222780.6630.24.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Compile failure with rt_sigaction on amd64
-Reply-To: subrata@linux.vnet.ibm.com
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <galak@kernel.crashing.org>) id 1MWEyQ-0007nF-JK
+	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2009 19:38:02 +0000
+Received: from gate.crashing.org ([63.228.1.57])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MWEyP-00013Q-HS
+	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2009 19:38:02 +0000
+Message-Id: <255CA943-00F5-4590-BA07-BBF1A6F93D7C@kernel.crashing.org>
+From: Kumar Gala <galak@kernel.crashing.org>
+In-Reply-To: <364299f40907291213m2e8a9c95w5da003ad9f063128@mail.gmail.com>
+Mime-Version: 1.0 (Apple Message framework v935.3)
+Date: Wed, 29 Jul 2009 14:37:47 -0500
+References: <E69DB27D-E186-4934-AB69-C5EDB67A48AF@kernel.crashing.org>
+	<364299f40907291155p52d2aa90jd73ecc9818aa6c6a@mail.gmail.com>
+	<80F3D7EC-7B0F-455C-98E0-914D10E88288@kernel.crashing.org>
+	<364299f40907291213m2e8a9c95w5da003ad9f063128@mail.gmail.com>
+Subject: Re: [LTP] top of tree fails to build on PPC fc11 box
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -44,93 +30,159 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: naresh kamboju <naresh.kernel@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-On Fri, 2009-07-10 at 14:31 +0530, naresh kamboju wrote: 
-> Garrett,
-> 
-> On Fri, Jul 10, 2009 at 10:22 AM, Masatake YAMATO<yamato@redhat.com> wrote:
-> > I've found an interesting code in glibc about "rt_sigaction".
-> >
-> > sysdeps/unix/sysv/linux/x86_64/sigaction.c:
-> > int
-> > __libc_sigaction (int sig, const struct sigaction *act, struct sigaction *oact)
-> >
-> >
-> >
-> > How do you think follow the way to glibc?
-> > In addition man page is needed to update.
-> >
-> > Masatake YAMATO
-> >
-> 
-> Garrett Cooper <yanegomi@gmail.com> wrote:
-> >>gcooper@orangebox /scratch/ltp-vanilla/ltp $ /lib/libc.so.6
-> >>GNU C Library stable release version 2.9, by Roland McGrath >>et al.
-> 
-> >>I'm confused -- how will that help us?
-> 
-> To conform glibc version you are using is 2.9
-> 
-> >>gcooper@orangebox /scratch/ltp-vanilla/ltp $ gdb
-> >>This GDB was configured as "x86_64-pc-linux-gnu"...
-> >>(gdb) r
-> >>Starting program:
-> >>/scratch/ltp-vanilla/ltp/testcases/kernel/syscalls/rt_sigaction>>/rt_sigaction01
-> >>rt_sigaction01    0  INFO  :  signal: 34
-> >>rt_sigaction01    1  PASS  :  rt_sigaction call succeeded: >>result = 0
-> >>rt_sigaction01    0  INFO  :  sa.sa_flags = >>SA_RESETHAND|SA_SIGINFO
-> 
-> >>Program received signal SIG34, Real-time event 34.
-> >>0x00007f770ba0b4f7 in kill () from /lib/libc.so.6
-> >>(gdb) where
-> >>#0  0x00007f770ba0b4f7 in kill () from /lib/libc.so.6
-> >>#1  0x0000000000401c3e in main ()
-> >>(gdb)
-> 
-> 
-> As you said in the pervious mail when you try to debug using gdb you
-> got a segmentation falut from /lib/libc.so.6.
-> 
-> So that segmentation fault is generated by glibc.
-> 
-> 
-> As per Masatake YAMATO comments,
-> glibc code implementation for libc/sysdeps/unix/sysv/linux/x86_64/sigaction.c
-> 
-> X86_64:
-> 
-> http://sources.redhat.com/cgi-bin/cvsweb.cgi/libc/sysdeps/unix/sysv/linux/x86_64/sigaction.c?annotate=1.8.2.4&cvsroot=glibc
-> 
-> X86:
-> 
-> http://sources.redhat.com/cgi-bin/cvsweb.cgi/libc/sysdeps/unix/sysv/linux/sigaction.c?annotate=1.24.2.2&cvsroot=glibc
-> 
-> Thanks Masatake YAMATO for your information.
-> 
-> However, before concluding problem/issue need some more Investigation
-> Please remove
-> -kill(getpid(),signal);
-> from rt_sigaction01.c
-> And complie and execute and share the results.
 
-I will wait for any of your patches till you investigate all issues.
+On Jul 29, 2009, at 2:13 PM, Garrett Cooper wrote:
 
-Regards--
-Subrata
+> On Wed, Jul 29, 2009 at 11:59 AM, Kumar  
+> Gala<galak@kernel.crashing.org> wrote:
+>>
+>> On Jul 29, 2009, at 1:55 PM, Garrett Cooper wrote:
+>>
+>>> On Wed, Jul 29, 2009 at 11:33 AM, Kumar Gala<galak@kernel.crashing.org 
+>>> >
+>>> wrote:
+>>>>
+>>>> I get the following compile error:
+>>>>
+>>>> make[4]: Leaving directory `/root/ltp/testcases/kernel/syscalls/ 
+>>>> fstat'
+>>>> make[4]: Entering directory `/root/ltp/testcases/kernel/syscalls/
+>>>> fstatat'
+>>>> cc -Wall  -I../../include -g -Wall -I../../../../include -Wall -
+>>>> DTST_USE_NEWER64_SYSCALL=1 -D_FILE_OFFSET_BITS=64   -c -o
+>>>> fstatat01_64.o fstatat01.c
+>>>> fstatat01.c:95:37: error: missing binary operator before token "5"
+>>>> fstatat01.c: In function 'main':
+>>>> fstatat01.c:126: error: expected ')' before numeric constant
+>>>> make[4]: *** [fstatat01_64.o] Error 1
+>>>> make[4]: Leaving directory `/root/ltp/testcases/kernel/syscalls/ 
+>>>> fstatat'
+>>>> make[3]: *** [all] Error 2
+>>>> make[3]: Leaving directory `/root/ltp/testcases/kernel/syscalls'
+>>>> make[2]: *** [all] Error 2
+>>>> make[2]: Leaving directory `/root/ltp/testcases/kernel'
+>>>> make[1]: *** [all] Error 2
+>>>> make[1]: Leaving directory `/root/ltp/testcases'
+>>>> make: *** [all] Error 2
+>>>
+>>> Got config.log?
+>>
+>> Nope, I tried doing the non-autoconf build:
+>>
+>>        $ touch include/config.h.default
+>>        $ make config.h
+>>        $ make all
+>>
+>> when I try the autoconf build I get:
+>>
+>> [root@monty ltp]# make autotools
+>> aclocal -I m4
+>> autoconf
+>> configure.ac:9: error: possibly undefined macro: AC_PROG_AR
+>>      If this token and others are legitimate, please use  
+>> m4_pattern_allow.
+>>      See the Autoconf documentation.
+>> make: *** [configure] Error 1
+>
+> That's odd why it wouldn't work. `yum search autoconf automake m4'  
+> says?
+> -Garrett
 
-> 
-> Best regards,
-> Naresh Kamboju
+I think you wanted 'yum info'
+
+[root@monty ~]# yum info autoconf automake m4
+Loaded plugins: refresh-packagekit
+Installed Packages
+Name       : autoconf
+Arch       : noarch
+Version    : 2.63
+Release    : 2.fc11
+Size       : 2.5 M
+Repo       : installed
+ From repo  : fedora
+Summary    : A GNU tool for automatically configuring source code
+URL        : http://www.gnu.org/software/autoconf/
+License    : GPLv2+ and GFDL
+Description: GNU's Autoconf is a tool for configuring source code and  
+Makefiles.
+            : Using Autoconf, programmers can create portable and  
+configurable
+            : packages, since the person building the package is  
+allowed to
+            : specify various configuration options.
+            :
+            : You should install Autoconf if you are developing  
+software and
+            : would like to create shell scripts that configure your  
+source code
+            : packages. If you are installing Autoconf, you will also  
+need to
+            : install the GNU m4 package.
+            :
+            : Note that the Autoconf package is not required for the  
+end-user who
+            : may be configuring software with an Autoconf-generated  
+script;
+            : Autoconf is only required for the generation of the  
+scripts, not
+            : their use.
+
+Name       : automake
+Arch       : noarch
+Version    : 1.11
+Release    : 2.fc11
+Size       : 1.7 M
+Repo       : installed
+ From repo  : updates
+Summary    : A GNU tool for automatically creating Makefiles
+URL        : http://sources.redhat.com/automake
+License    : GPLv2+ and GFDL and MIT
+Description: Automake is a tool for automatically generating  
+`Makefile.in'
+            : files compliant with the GNU Coding Standards.
+            :
+            : You should install Automake if you are developing  
+software and would
+            : like to use its ability to automatically generate GNU  
+standard
+            : Makefiles. If you install Automake, you will also need  
+to install
+            : GNU's Autoconf package.
+
+Name       : m4
+Arch       : ppc
+Version    : 1.4.12
+Release    : 2.fc11
+Size       : 462 k
+Repo       : installed
+ From repo  : fedora
+Summary    : The GNU macro processor
+URL        : http://www.gnu.org/software/m4/
+License    : GPLv3+
+Description: A GNU implementation of the traditional UNIX macro  
+processor.  M4 is
+            : useful for writing text files which can be logically  
+parsed, and is used
+            : by many programs as part of their build process.  M4 has  
+built-in
+            : functions for including files, running shell commands,  
+doing arithmetic,
+            : etc.  The autoconf program needs m4 for generating  
+configure scripts, but
+            : not for running configure scripts.
+            :
+            : Install m4 if you need a macro processor.
+
 
 
 ------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
