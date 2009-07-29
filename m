@@ -1,24 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1MVkCM-0007OJ-BS
-	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2009 10:46:22 +0000
-Received: from mail-yx0-f195.google.com ([209.85.210.195])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MVkCB-0005VA-Rr
-	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2009 10:46:17 +0000
-Received: by yxe33 with SMTP id 33so6975251yxe.28
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1MW96D-0002OO-Af
+	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2009 13:21:41 +0000
+Received: from mail-bw0-f215.google.com ([209.85.218.215])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MW969-0007C7-2S
+	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2009 13:21:41 +0000
+Received: by bwz11 with SMTP id 11so714594bwz.10
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 28 Jul 2009 03:46:06 -0700 (PDT)
+	Wed, 29 Jul 2009 06:21:28 -0700 (PDT)
+Message-ID: <4A704CD3.60004@petalogix.com>
+Date: Wed, 29 Jul 2009 15:21:23 +0200
+From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-In-Reply-To: <2E9E6F5F5978EF44A8590E339E888CF901420A78F4@irsmsx503.ger.corp.intel.com>
-References: <f5a7b3810907280207v6e88cadaodbc90831d562d4cf@mail.gmail.com>
-	<2E9E6F5F5978EF44A8590E339E888CF901420A78F4@irsmsx503.ger.corp.intel.com>
-Date: Tue, 28 Jul 2009 16:16:05 +0530
-Message-ID: <f5a7b3810907280346x6ba3fccby80e7a66888d0d646@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Subject: Re: [LTP] Integration of MCE test suite into LTP
+Subject: [LTP] msgctl
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,61 +26,34 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Kleen, Andi" <andi.kleen@intel.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, "Huang,  Ying" <ying.huang@intel.com>
+To: LTP <ltp-list@lists.sourceforge.net>, "subrata@linux.vnet.ibm.com" <subrata@linux.vnet.ibm.com>
 
-On Tue, Jul 28, 2009 at 2:48 PM, Kleen, Andi<andi.kleen@intel.com> wrote:
->
->
->>With reference to Linux MCE
->>
->>http://kernel.org/pub/scm/utils/cpu/mce/
->>
->>Are you discussing about this?
->
-> This is about machine check exception/event, aka hardware errors,
->
-> It has nothing to do with "LinuxMCE"
+Hi,
 
-Oops =85 I was confused.
-Now it is clear.
+I am trying to understand why we have two msgctl tests in two files
+(tests 08/10, 09/11) -> it should be better/easy to add them together
+and generate two executable files instead of one.
 
-MCE: Machine Check Exception  Event .
-http://en.wikipedia.org/wiki/Machine_Check_Exception
+Here is description why are in LTP.
+http://www.mail-archive.com/linux-kernel@vger.kernel.org/msg269854.html
 
->
->>Could you list out the hardware and software requirements to run this
->>application as well test suite.
->
-> The test suite should run on any hardware that implements
-> the standard Intel machine check architecture, which is near
-> all x86 CPUs shipped in the last decade.
->
-> It doesn't necessarily work in virtual machines.
->
-> -Andi
+Thanks,
+Michal
 
-Do you mean it is not compatible with other than X86 Machines?
 
-Thanks for your info Andi :-)
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
 
-Best regards,
-Naresh Kamboju
 
->
-
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
-
-trial. Simplify your report design, integration and deployment - and focus =
-on =
-
-what you do best, core application coding. Discover what's new with =
-
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
