@@ -2,30 +2,29 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <dvhltc@us.ibm.com>) id 1MWbxo-0007Qu-3M
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 20:10:56 +0000
-Received: from e9.ny.us.ibm.com ([32.97.182.139])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MWbxe-0001Vr-G6
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 20:10:51 +0000
-Message-ID: <4A71FE38.20501@us.ibm.com>
-Date: Thu, 30 Jul 2009 13:10:32 -0700
-From: Darren Hart <dvhltc@us.ibm.com>
+	(envelope-from <skrishnakar@gmail.com>) id 1MW8tv-0007O1-Pw
+	for Ltp-list@lists.sourceforge.net; Wed, 29 Jul 2009 13:08:59 +0000
+Received: from mail-pz0-f201.google.com ([209.85.222.201])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MW8tr-0008Ql-8d
+	for Ltp-list@lists.sourceforge.net; Wed, 29 Jul 2009 13:08:59 +0000
+Received: by pzk39 with SMTP id 39so591391pzk.28
+	for <Ltp-list@lists.sourceforge.net>;
+	Wed, 29 Jul 2009 06:08:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <1224509719.5152.116.camel@subratamodak.linux.ibm.com>
-	<1246890698.4887.24.camel@subratamodak.linux.ibm.com>
-	<1247076833.5405.48.camel@subratamodak.linux.ibm.com>
-	<200907102200.12804.sripathik@in.ibm.com>
-	<1247244446.5040.0.camel@subratamodak.linux.ibm.com>
-	<4A57884C.10401@us.ibm.com>
-	<alpine.DEB.2.00.0907201039140.3858@gandalf.stny.rr.com>
-	<4A64A369.8040808@us.ibm.com>
-	<1248978525.5788.55.camel@subratamodak.linux.ibm.com>
-	<alpine.DEB.2.00.0907301440460.21267@gandalf.stny.rr.com>
-	<4A71F964.1060507@us.ibm.com>
-	<alpine.DEB.2.00.0907301600560.21267@gandalf.stny.rr.com>
-In-Reply-To: <alpine.DEB.2.00.0907301600560.21267@gandalf.stny.rr.com>
-Subject: Re: [LTP] LTP RT Tests (Cyclic, rt-migrate, etc)
+In-Reply-To: <6213bc560907231331p188a7b32q7287e9fe777eaf18@mail.gmail.com>
+References: <6213bc560907210233l17aa3e75pcb7c20e3faa24195@mail.gmail.com>
+	<2A0DDADE-5C3C-43F2-9487-98A8A735DC8D@kernel.crashing.org>
+	<6213bc560907220838h49e5c273qa543e538bb37923a@mail.gmail.com>
+	<578FBC09-589D-4691-82FF-985FCFE8ADC9@kernel.crashing.org>
+	<6213bc560907220932u3b771af2q743ae55dda5a2198@mail.gmail.com>
+	<13B0CDE8-B974-4CFA-A4B9-8AC4374B4694@kernel.crashing.org>
+	<6213bc560907231331p188a7b32q7287e9fe777eaf18@mail.gmail.com>
+Date: Wed, 29 Jul 2009 18:38:49 +0530
+Message-ID: <6213bc560907290608i1ad6aea1gf327f523957f8a5c@mail.gmail.com>
+From: srikanth krishnakar <skrishnakar@gmail.com>
+Content-Type: multipart/mixed; boundary=000e0cd5097a4fb932046fd7e36c
+Subject: Re: [LTP] msgctl10 fails on Powerpc Linux-2.6.29.6
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,44 +34,321 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: ltp-list <ltp-list@lists.sf.net>, Gregory Haskins <ghaskins@novell.com>, Clark Williams <clark.williams@gmail.com>, linux-rt-users <linux-rt-users@vger.kernel.org>
+To: Ltp-list@lists.sourceforge.net
 
-Steven Rostedt wrote:
-> On Thu, 30 Jul 2009, Darren Hart wrote:
->> Just to be clear, Steven you want us to modify this test case so that it uses
->> the librttest facilities, including those for standardized argument parsing,
->> buffered out, and thread creation, then commit this to the repository?  I
->> don't feel it should go in without those changes.  We've expended a lot of
->> effort making the tests in ltp/realtime be consistent in those areas (they all
->> use some common command line arguments and coding styles).  This ensures that
->> they can be easily maintained along with the other tests in the suite and that
->> users can know what to expect from the test in terms of output, etc.
-> 
-> The test is GPL, do what you want ;-)
-> 
-> I have my own version that I may play with, but I have no qualms about 
-> changing the interface. Especially if it is to be consistent with the rest 
-> of LTP. But please CC me on any changes. I can tell if the changes modify 
-> the the way the test works, or I may want to incorporate the changes into 
-> my local copy.
+--000e0cd5097a4fb932046fd7e36c
+Content-Type: multipart/alternative; boundary=000e0cd5097a4fb923046fd7e36a
 
-OK, will do.
+--000e0cd5097a4fb923046fd7e36a
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+Hi all,
+
+
+I always found the remap_file_pages failing in PowerPC target (ppc44x) , the
+patch to fix the test cases of remap_file_pages passes the test cases on
+PowerPC targets ( ppc44x virtex target does not use bootloader ), any better
+suggestions are welcome.
+
+-Srikanth
+
+On Fri, Jul 24, 2009 at 2:01 AM, srikanth krishnakar
+<skrishnakar@gmail.com>wrote:
+
+>
+>
+> On Thu, Jul 23, 2009 at 6:33 AM, Kumar Gala <galak@kernel.crashing.org>wrote:
+>
+>>
+>> On Jul 22, 2009, at 11:32 AM, srikanth krishnakar wrote:
+>>
+>>
+>>>
+>>> On Wed, Jul 22, 2009 at 9:14 PM, Kumar Gala <galak@kernel.crashing.org>
+>>> wrote:
+>>>
+>>> On Jul 22, 2009, at 10:38 AM, srikanth krishnakar wrote:
+>>>
+>>>
+>>>
+>>> On Wed, Jul 22, 2009 at 8:52 PM, Kumar Gala <galak@kernel.crashing.org>
+>>> wrote:
+>>> I'm not seeing any BUG* in traps.c @ line 904.
+>>>
+>>>
+>>> On Jul 21, 2009, at 4:33 AM, srikanth krishnakar wrote:
+>>>
+>>> The LTP test case msgctl10.c fails on linux-2.6.29.6 for PowerPC
+>>> architecture (ppc440)
+>>>
+>>>
+>>> msgctl10    1  B------------[ cut here ]------------
+>>> kernel BUG at arch/powerpc/kernel/traps.c:904!
+>>> Oops: Exception in kernel mode, sig: 5 [#9]
+>>>
+>>> I'm not seeing any BUG* in traps.c @ line 904.  Do you have some other
+>>> patches on top of 2.6.29.6?
+>>>
+>>> - k
+>>>
+>>>
+>>> I have LTTng patches on top of linux-2.6.29.6.
+>>>
+>>> Does it modify traps.c?  Can you see what the code around line 904 looks
+>>> like and post that.
+>>>
+>>> - k
+>>>  896
+>>>  897 #if defined(CONFIG_XILINX_VIRTEX_5_FXT) && defined(CONFIG_PPC_FPU)
+>>>  898         if (reason & REASON_ILLEGAL) {
+>>>  899                 if (excep_state < 1) {
+>>>  900                         excep_state++;
+>>>  901                         return;
+>>>  902                 }
+>>>  903                 /* should never get here */
+>>>  904                 BUG();
+>>>  905         }
+>>>  906 #endif
+>>>  907
+>>>  908         /* Try to emulate it if we should. */
+>>>
+>>>
+>> Are you sure this is coming from the LTTng patches?  Which actual patch
+>> makes this change?
+>>
+>> - k
+>>
+> Thanks kumar,
+>
+> I've got the patch out which fixes the issues. But now.. seems there is
+> some generic issue in PPC440 targets, I am observing that
+> *remap_file_pages01* and *remap_file_pages02  *test cases from LTP are
+> failing since *Linux-2.6.24* kernel to *Linux-2.6.30*. If you can give
+> some pointers that would be greatly appreciated ! Or if you have results for
+> this on any PPC44x would be helpful.
+>
+> Arch : PowerPC
+> Target : Xilinx PowerPC440 virtex5
+>
+> I've tried to test the cause for this but found that kernel throws error
+> message of "segmentation fault".
+>
+> Thanks in Advance.
+>
+> -Srikant
+>
+>
+
 
 -- 
-Darren Hart
-IBM Linux Technology Center
-Real-Time Linux Team
+"The Good You Do, The Best You GET"
+
+Regards
+Srikanth Krishnakar
+**********************
+
+--000e0cd5097a4fb923046fd7e36a
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,<br><br><br>I always found the remap_file_pages failing in PowerPC t=
+arget (ppc44x) , the patch to fix the test cases of remap_file_pages passes=
+ the test cases on PowerPC targets ( ppc44x virtex target does not use boot=
+loader ), any better suggestions are welcome.<br>
+<br>-Srikanth<br><br><div class=3D"gmail_quote">On Fri, Jul 24, 2009 at 2:0=
+1 AM, srikanth krishnakar <span dir=3D"ltr">&lt;<a href=3D"mailto:skrishnak=
+ar@gmail.com" target=3D"_blank">skrishnakar@gmail.com</a>&gt;</span> wrote:=
+<br>
+<blockquote class=3D"gmail_quote" style=3D"border-left: 1px solid rgb(204, =
+204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
+<div><div></div><div><br><br><div class=3D"gmail_quote">On Thu, Jul 23, 200=
+9 at 6:33 AM, Kumar Gala <span dir=3D"ltr">&lt;<a href=3D"mailto:galak@kern=
+el.crashing.org" target=3D"_blank">galak@kernel.crashing.org</a>&gt;</span>=
+ wrote:<br>
+
+<blockquote class=3D"gmail_quote" style=3D"border-left: 1px solid rgb(204, =
+204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
+<div><div><br>
+On Jul 22, 2009, at 11:32 AM, srikanth krishnakar wrote:<br>
+<br>
+<blockquote class=3D"gmail_quote" style=3D"border-left: 1px solid rgb(204, =
+204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
+<br>
+<br>
+On Wed, Jul 22, 2009 at 9:14 PM, Kumar Gala &lt;<a href=3D"mailto:galak@ker=
+nel.crashing.org" target=3D"_blank">galak@kernel.crashing.org</a>&gt; wrote=
+:<br>
+<br>
+On Jul 22, 2009, at 10:38 AM, srikanth krishnakar wrote:<br>
+<br>
+<br>
+<br>
+On Wed, Jul 22, 2009 at 8:52 PM, Kumar Gala &lt;<a href=3D"mailto:galak@ker=
+nel.crashing.org" target=3D"_blank">galak@kernel.crashing.org</a>&gt; wrote=
+:<br>
+I&#39;m not seeing any BUG* in traps.c @ line 904.<br>
+<br>
+<br>
+On Jul 21, 2009, at 4:33 AM, srikanth krishnakar wrote:<br>
+<br>
+The LTP test case msgctl10.c fails on linux-2.6.29.6 for PowerPC architectu=
+re (ppc440)<br>
+<br>
+<br>
+msgctl10 =A0 =A01 =A0B------------[ cut here ]------------<br>
+kernel BUG at arch/powerpc/kernel/traps.c:904!<br>
+Oops: Exception in kernel mode, sig: 5 [#9]<br>
+<br>
+I&#39;m not seeing any BUG* in traps.c @ line 904. =A0Do you have some othe=
+r patches on top of 2.6.29.6?<br>
+<br>
+- k<br>
+<br>
+<br>
+I have LTTng patches on top of linux-2.6.29.6.<br>
+<br>
+Does it modify traps.c? =A0Can you see what the code around line 904 looks =
+like and post that.<br>
+<br>
+- k<br>
+=A0896<br>
+=A0897 #if defined(CONFIG_XILINX_VIRTEX_5_FXT) &amp;&amp; defined(CONFIG_PP=
+C_FPU)<br>
+=A0898 =A0 =A0 =A0 =A0 if (reason &amp; REASON_ILLEGAL) {<br>
+=A0899 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (excep_state &lt; 1) {<br>
+=A0900 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 excep_state++;<br>
+=A0901 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 return;<br>
+=A0902 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 }<br>
+=A0903 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* should never get here */<br>
+=A0904 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 BUG();<br>
+=A0905 =A0 =A0 =A0 =A0 }<br>
+=A0906 #endif<br>
+=A0907<br>
+=A0908 =A0 =A0 =A0 =A0 /* Try to emulate it if we should. */<br>
+<br>
+</blockquote>
+<br></div></div>
+Are you sure this is coming from the LTTng patches? =A0Which actual patch m=
+akes this change?<br><font color=3D"#888888">
+<br>
+- k<br>
+</font></blockquote></div></div></div><div>Thanks kumar,<br></div><div><br>=
+</div><div>I&#39;ve got the patch out which fixes the issues. But now.. see=
+ms there is some generic issue in PPC440 targets, I am observing that=A0</d=
+iv>
+
+<div><b><font color=3D"#000000"><span style=3D"background-color: rgb(255, 2=
+55, 51);">remap_file_pages01</span></font></b> and <b><span style=3D"backgr=
+ound-color: rgb(255, 255, 0);">remap_file_pages02=A0<span style=3D"backgrou=
+nd-color: rgb(255, 255, 255);">=A0</span></span></b><span style=3D"backgrou=
+nd-color: rgb(255, 255, 0);"><span style=3D"background-color: rgb(255, 255,=
+ 255);">test cases from LTP are failing since <b>Linux-2.6.24</b> kernel to=
+ <b>Linux-2.6.30</b>. If you can give some pointers that would be greatly a=
+ppreciated ! Or if you have results for this on any PPC44x would be helpful=
+.</span></span></div>
+
+
+<div><span style=3D"background-color: rgb(255, 255, 0);"><span style=3D"bac=
+kground-color: rgb(255, 255, 255);"><br></span></span></div><div><span styl=
+e=3D"background-color: rgb(255, 255, 0);"><span style=3D"background-color: =
+rgb(255, 255, 255);">Arch : PowerPC<br>
+</span></span></div>
+
+<div><span style=3D"background-color: rgb(255, 255, 0);"><span style=3D"bac=
+kground-color: rgb(255, 255, 255);">Target : Xilinx PowerPC440 virtex5<br><=
+/span></span></div><div><span style=3D"background-color: rgb(255, 255, 0);"=
+><span style=3D"background-color: rgb(255, 255, 255);"><br>
+
+
+</span></span></div><div><span style=3D"background-color: rgb(255, 255, 0);=
+"><span style=3D"background-color: rgb(255, 255, 255);">I&#39;ve tried to t=
+est the cause for this but found that kernel throws error message of &quot;=
+segmentation fault&quot;.<br>
+
+
+</span></span></div><div><span style=3D"background-color: rgb(255, 255, 0);=
+"><span style=3D"background-color: rgb(255, 255, 255);"><br></span></span><=
+/div><div><span style=3D"background-color: rgb(255, 255, 0);"><span style=
+=3D"background-color: rgb(255, 255, 255);">Thanks in Advance.<br>
+
+
+</span></span></div><div><span style=3D"background-color: rgb(255, 255, 0);=
+"><span style=3D"background-color: rgb(255, 255, 255);"><br></span></span><=
+/div><div><span style=3D"background-color: rgb(255, 255, 0);"><span style=
+=3D"background-color: rgb(255, 255, 255);">-Srikant<br>
+
+
+</span></span></div><div><div></div><div><div><span style=3D"background-col=
+or: rgb(255, 255, 0);"><span style=3D"background-color: rgb(255, 255, 255);=
+"><br></span></span></div></div></div></blockquote></div><br><br clear=3D"a=
+ll">
+<br>-- <br>
+&quot;The Good You Do, The Best You GET&quot;<br><br>Regards<br>Srikanth Kr=
+ishnakar<br>**********************<br>
+
+--000e0cd5097a4fb923046fd7e36a--
+
+--000e0cd5097a4fb932046fd7e36c
+Content-Type: text/x-patch; charset=US-ASCII; name="remap_file_pages.patch"
+Content-Disposition: attachment; filename="remap_file_pages.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fxq2j75a1
+
+V2UgbmVlZCB0byB2ZXJpZnkgdGhlIHZhbGlkaXR5IG9mIHVzaW5nIE1BUF9GSVhFRCBpbiB0aGlz
+IG1hbm5lci4gIFRoZSB0ZXN0cwpkbyBubyBjaGVja2luZyB0byBzZWUgd2hldGhlciB0aGUgYWRk
+cmVzcyBzcGFjZSBpcyBzYWZlIHRvIHVzZSBvciBub3QuIEl0IHNob3VsZApiZSBzYWZlIGFmdGVy
+ICByZW1vdmluZyB0aGUgZmxhZyBNQVBfRklYRUQgZnJvbSBhbGwgY2FsbHMgdG8gbW1hcCBpbiB0
+aGUKcmVtYXBfZmlsZV9wYWdlcyB0ZXN0cy4gIElmIG1tYXAgaXMgY2FsbGVkIHdpdGhvdXQgdGhh
+dCBmbGFnLCB0aGUga2VybmVsIHdpbGwKZmluZCBhIHNhZmUgbWVtb3J5IHNwYWNlIHRvIG1hcCwg
+YW5kIHRoZSB0ZXN0IHdpbGwgcGFzcy4KClNpZ25lZC1vZmYtYnk6IFNyaWthbnRoIEtyaXNobmFr
+YXIgPHNrcmlzaG5ha2FyQGNlbGVzdGlhbHN5cy5jb20+CgpJbmRleDogbHRwLWZ1bGwtMjAwOTA2
+MzAvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9yZW1hcF9maWxlX3BhZ2VzL3JlbWFwX2ZpbGVf
+cGFnZXMwMS5jCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT0KLS0tIGx0cC1mdWxsLTIwMDkwNjMwLm9yaWcvdGVzdGNhc2Vz
+L2tlcm5lbC9zeXNjYWxscy9yZW1hcF9maWxlX3BhZ2VzL3JlbWFwX2ZpbGVfcGFnZXMwMS5jCTIw
+MDktMDctMjcgMTU6NTg6MjcuMDAwMDAwMDAwICswNTMwCisrKyBsdHAtZnVsbC0yMDA5MDYzMC90
+ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3JlbWFwX2ZpbGVfcGFnZXMvcmVtYXBfZmlsZV9wYWdl
+czAxLmMJMjAwOS0wNy0yNyAxNTo1ODozOS4wMDAwMDAwMDAgKzA1MzAKQEAgLTE3NCw3ICsxNzQs
+NyBAQAogCiAJZGF0YSA9IG1tYXAoKHZvaWQgKilXSU5ET1dfU1RBUlQsCiAJCSAgICB3aW5kb3df
+c3osCi0JCSAgICBQUk9UX1JFQUQgfCBQUk9UX1dSSVRFLCBNQVBfRklYRUQgfCBNQVBfU0hBUkVE
+LCBmZCwgMCk7CisJCSAgICBQUk9UX1JFQUQgfCBQUk9UX1dSSVRFLCBNQVBfU0hBUkVELCBmZCwg
+MCk7CiAKIAlpZiAoZGF0YSA9PSBNQVBfRkFJTEVEKSB7CiAJCXRzdF9yZXNtKFRGQUlMLCAibW1h
+cCBFcnJvciwgZXJybm89JWQgOiAlcyIsIGVycm5vLApJbmRleDogbHRwLWZ1bGwtMjAwOTA2MzAv
+dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9yZW1hcF9maWxlX3BhZ2VzL3JlbWFwX2ZpbGVfcGFn
+ZXMwMi5jCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT0KLS0tIGx0cC1mdWxsLTIwMDkwNjMwLm9yaWcvdGVzdGNhc2VzL2tl
+cm5lbC9zeXNjYWxscy9yZW1hcF9maWxlX3BhZ2VzL3JlbWFwX2ZpbGVfcGFnZXMwMi5jCTIwMDkt
+MDctMjcgMTU6NTg6NDUuMDAwMDAwMDAwICswNTMwCisrKyBsdHAtZnVsbC0yMDA5MDYzMC90ZXN0
+Y2FzZXMva2VybmVsL3N5c2NhbGxzL3JlbWFwX2ZpbGVfcGFnZXMvcmVtYXBfZmlsZV9wYWdlczAy
+LmMJMjAwOS0wNy0yNyAxNTo1ODo1NC4wMDAwMDAwMDAgKzA1MzAKQEAgLTMyNCw3ICszMjQsNyBA
+QAogCiAJZGF0YSA9IG1tYXAoKHZvaWQgKilXSU5ET1dfU1RBUlQsCiAJCSAgICBjYWNoZV9zeiwK
+LQkJICAgIFBST1RfUkVBRCB8IFBST1RfV1JJVEUsIE1BUF9GSVhFRCB8IE1BUF9TSEFSRUQsIGZk
+LCAwKTsKKwkJICAgIFBST1RfUkVBRCB8IFBST1RfV1JJVEUsIE1BUF9TSEFSRUQsIGZkLCAwKTsK
+IAogCWlmIChkYXRhID09IE1BUF9GQUlMRUQpIHsKIAkJdHN0X3Jlc20oVEZBSUwsICJtbWFwIEVy
+cm9yLCBlcnJubz0lZCA6ICVzIiwgZXJybm8sCg==
+--000e0cd5097a4fb932046fd7e36c
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--000e0cd5097a4fb932046fd7e36c
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--000e0cd5097a4fb932046fd7e36c--
+
