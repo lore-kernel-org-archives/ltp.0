@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MSOAh-0005PQ-Gv
-	for ltp-list@lists.sourceforge.net; Sun, 19 Jul 2009 04:38:47 +0000
-Received: from mail-pz0-f178.google.com ([209.85.222.178])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MSOAb-0001Ic-3x
-	for ltp-list@lists.sourceforge.net; Sun, 19 Jul 2009 04:38:47 +0000
-Received: by pzk8 with SMTP id 8so1337706pzk.28
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1MW4Ni-00086g-0u
+	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2009 08:19:26 +0000
+Received: from fg-out-1718.google.com ([72.14.220.153])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MW4Ng-0002RO-3g
+	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2009 08:19:25 +0000
+Received: by fg-out-1718.google.com with SMTP id e12so881580fga.9
 	for <ltp-list@lists.sourceforge.net>;
-	Sat, 18 Jul 2009 21:38:39 -0700 (PDT)
+	Wed, 29 Jul 2009 01:19:17 -0700 (PDT)
+Message-ID: <4A700600.3000004@petalogix.com>
+Date: Wed, 29 Jul 2009 10:19:12 +0200
+From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-Date: Sat, 18 Jul 2009 21:38:39 -0700
-Message-ID: <364299f40907182138w484cc898gac9fe00dbde75afd@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Content-Type: multipart/mixed; boundary=000e0cd30470706d8e046f0798fa
-Subject: [LTP] [PATCH] Fix bad strerror calls in
-	testcases/kernel/syscalls/waitid01.c
+Subject: [LTP] getcontext, add_key, fcntl24, fcntl25, fcntl26, open10
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,125 +26,227 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
-
---000e0cd30470706d8e046f0798fa
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-For whatever reason the original author was using int casts to the
-strerror strings. That's just plain wrong...
-
-This corrects the issue by feeding back the proper strerror output,
-which reduces noise at compile time and results in the same desired
-behavior (because we shouldn't be negative testing strerror(3) in
-waitid01.c:
-
-gcooper@orangebox /scratch/ltp-nova2/ltp-nova $
-/scratch/ltp-nova2/ltp-nova/testcases/kernel/syscalls/waitid/waitid01
-waitid01    0  INFO  :  Process 29085 terminated:
-waitid01    0  INFO  :  code = 1
-waitid01    0  INFO  :  exit value = 123
-waitid01    0  INFO  :  Process 29086 terminated:
-waitid01    0  INFO  :  code = 2
-waitid01    0  INFO  :  signal = 8
-waitid01    0  INFO  :  Process 29087 terminated:
-waitid01    0  INFO  :  code = 2
-waitid01    0  INFO  :  signal = 1
-waitid01    0  INFO  :  Process 29088 terminated:
-waitid01    0  INFO  :  code = 1
-waitid01    0  INFO  :  exit value = 123
-waitid01    0  INFO  :  Process 29089 terminated:
-waitid01    0  INFO  :  code = 2
-waitid01    0  INFO  :  signal = 8
-waitid01    0  INFO  :  Process 29090 terminated:
-waitid01    0  INFO  :  code = 2
-waitid01    0  INFO  :  signal = 1
-waitid01    0  INFO  :  Process 29091 terminated:
-waitid01    0  INFO  :  code = 1
-waitid01    0  INFO  :  exit value = 123
-waitid01    0  INFO  :  Process 29092 terminated:
-waitid01    0  INFO  :  code = 2
-waitid01    0  INFO  :  signal = 8
-waitid01    0  INFO  :  Process 29093 terminated:
-waitid01    0  INFO  :  code = 2
-waitid01    0  INFO  :  signal = 1
-waitid01    1  PASS  :  waitid(): system call passed
-
-Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
-
-Index: testcases/kernel/syscalls/waitid/waitid01.c
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/waitid/waitid01.c,v
-retrieving revision 1.1
-diff -u -r1.1 waitid01.c
---- testcases/kernel/syscalls/waitid/waitid01.c	15 Jun 2009 18:39:45 -0000	1.1
-+++ testcases/kernel/syscalls/waitid/waitid01.c	19 Jul 2009 04:34:39 -0000
-@@ -116,14 +116,9 @@
- int errnochoose(void){   //choose the relative errno
-
-     switch (TEST_ERRNO){
--        case    0:      tst_exit();
--        case    ECHILD: strerror((int)"ECHILD");
--        	        break;
--        case    EINTR:  strerror((int)"EINTR");
--                	break;
--        case    EINVAL: strerror((int)"EINVAL");
--                	break;
--        default:     strerror((int)"Other Error");
-+        case  0:     tst_exit();
-+		     break;
-+        default:     strerror(TEST_ERRNO);
-                      break;
-    }
-         TEST_RETURN = 0;
-
---000e0cd30470706d8e046f0798fa
-Content-Type: application/octet-stream; name="fix-waitid-strerror-call.diff"
-Content-Disposition: attachment; filename="fix-waitid-strerror-call.diff"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fxba0ug50
-
-SW5kZXg6IHRlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvd2FpdGlkL3dhaXRpZDAxLmMKPT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PQpSQ1MgZmlsZTogL2N2c3Jvb3QvbHRwL2x0cC90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
-L3dhaXRpZC93YWl0aWQwMS5jLHYKcmV0cmlldmluZyByZXZpc2lvbiAxLjEKZGlmZiAtdSAtcjEu
-MSB3YWl0aWQwMS5jCi0tLSB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3dhaXRpZC93YWl0aWQw
-MS5jCTE1IEp1biAyMDA5IDE4OjM5OjQ1IC0wMDAwCTEuMQorKysgdGVzdGNhc2VzL2tlcm5lbC9z
-eXNjYWxscy93YWl0aWQvd2FpdGlkMDEuYwkxOSBKdWwgMjAwOSAwNDozNDozOSAtMDAwMApAQCAt
-MTE2LDE0ICsxMTYsOSBAQAogaW50IGVycm5vY2hvb3NlKHZvaWQpeyAgIC8vY2hvb3NlIHRoZSBy
-ZWxhdGl2ZSBlcnJubwogCiAgICAgc3dpdGNoIChURVNUX0VSUk5PKXsKLSAgICAgICAgY2FzZSAg
-ICAwOiAgICAgIHRzdF9leGl0KCk7Ci0gICAgICAgIGNhc2UgICAgRUNISUxEOiBzdHJlcnJvcigo
-aW50KSJFQ0hJTEQiKTsKLSAgICAgICAgCSAgICAgICAgYnJlYWs7Ci0gICAgICAgIGNhc2UgICAg
-RUlOVFI6ICBzdHJlcnJvcigoaW50KSJFSU5UUiIpOwotICAgICAgICAgICAgICAgIAlicmVhazsK
-LSAgICAgICAgY2FzZSAgICBFSU5WQUw6IHN0cmVycm9yKChpbnQpIkVJTlZBTCIpOwotICAgICAg
-ICAgICAgICAgIAlicmVhazsKLSAgICAgICAgZGVmYXVsdDogICAgIHN0cmVycm9yKChpbnQpIk90
-aGVyIEVycm9yIik7CisgICAgICAgIGNhc2UgIDA6ICAgICB0c3RfZXhpdCgpOworCQkgICAgIGJy
-ZWFrOworICAgICAgICBkZWZhdWx0OiAgICAgc3RyZXJyb3IoVEVTVF9FUlJOTyk7CiAgICAgICAg
-ICAgICAgICAgICAgICBicmVhazsKICAgIH0KICAgICAgICAgVEVTVF9SRVRVUk4gPSAwOwo=
---000e0cd30470706d8e046f0798fa
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: "subrata@linux.vnet.ibm.com" <subrata@linux.vnet.ibm.com>, LTP <ltp-list@lists.sourceforge.net>
+
+Hi All,
+
+I am seeing with latest LTP code that some test failed but in result log
+are labeled as PASS.
+For example some tests below.
+The next thing is that some tests PASS when function is not implemented
+in kernel which seems to me wrong.
+
+Regards,
+Michal
+
+add_key01    1  TFAIL  :  add_key01 failed - errno = 38 : Function not
+implemented
+add_key02    0  TINFO  :  call add_key() with wrong args got UNEXPECTED
+errno:38
+add_key02    1  TFAIL  :  add_key02 failed - errno = 38 : Function not
+implemented
+
+clock_getres01    0  TINFO  :  (case00) START
+EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
+RESULT: return value(ret)=       0 errno=0 (Success)
+clock_getres01    0  TINFO  :  (case00) END => OK
+clock_getres01    0  TINFO  :  (case01) START
+EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
+RESULT: return value(ret)=       0 errno=0 (Success)
+clock_getres01    0  TINFO  :  (case01) END => OK
+clock_getres01    0  TINFO  :  (case02) START
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=-1 errno=22 (Invalid argument)
+clock_getres01    0  TINFO  :  (case02) END => NG
+clock_getres01    0  TINFO  :  (case03) START
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=-1 errno=22 (Invalid argument)
+clock_getres01    0  TINFO  :  (case03) END => NG
+clock_getres01    0  TINFO  :  (case04) START
+EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+RESULT: return value(ret)=-1 errno=22 (Invalid argument)
+clock_getres01    0  TINFO  :  (case04) END => OK
+clock_getres01    0  TINFO  :  (case05) START
+EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
+RESULT: return value(ret)=       0 errno=0 (Success)
+clock_getres01    0  TINFO  :  (case05) END => OK
+clock_getres01    1  TFAIL  :  clock_getres01 failed - errno = 0 : Success
+NG
+
+
+clock_nanosleep01    0  TINFO  :  (case00) START
+clock_nanosleep01    0  TINFO  :  check sleep time: (min:480) < 505 <
+(max:520) (msec)
+clock_nanosleep01    0  TINFO  :  remain time: 268439676 268439664
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=0 errno=0 (Success)
+clock_nanosleep01    0  TINFO  :  (case00) END => OK
+clock_nanosleep01    0  TINFO  :  (case01) START
+clock_nanosleep01    0  TINFO  :  check sleep time: (min:480) < 508 <
+(max:520) (msec)
+clock_nanosleep01    0  TINFO  :  remain time: 268439676 268439664
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=0 errno=0 (Success)
+clock_nanosleep01    0  TINFO  :  (case01) END => OK
+clock_nanosleep01    0  TINFO  :  (case02) START
+clock_nanosleep01    0  TINFO  :  remain time: 268439676 268439664
+EXPECT: return value(ret)=22 errno=0 (Success)
+RESULT: return value(ret)=22 errno=0 (Success)
+clock_nanosleep01    0  TINFO  :  (case02) END => OK
+clock_nanosleep01    0  TINFO  :  (case03) START
+clock_nanosleep01    0  TINFO  :  remain time: 268439676 268439664
+EXPECT: return value(ret)=22 errno=0 (Success)
+RESULT: return value(ret)=22 errno=0 (Success)
+clock_nanosleep01    0  TINFO  :  (case03) END => OK
+clock_nanosleep01    0  TINFO  :  (case04) START
+clock_nanosleep01    1  TFAIL  :  iclock_gettime failed - errno = 22 :
+Invalid argument
+clock_nanosleep01    0  TINFO  :  (case04) END => NG
+clock_nanosleep01    0  TINFO  :  (case05) START
+clock_nanosleep01    0  TINFO  :  remain time: 9 491900032
+EXPECT: return value(ret)=4 errno=0 (Success)
+RESULT: return value(ret)=4 errno=0 (Success)
+clock_nanosleep01    0  TINFO  :  (case05) END => OK
+clock_nanosleep01    2  TFAIL  :  clock_nanosleep01 failed - errno = 0 :
+Success
+clock_nanosleep01    0  TINFO  :  NG
+
+eventfd2_03 not show any information about test.
+
+[2851] posting 1 on 5
+[2851] waiting on 6
+[2852] posting 1 on 6
+[2851] wait completed on 6: count=1
+[2851] posting 1 on 5
+[2851] waiting on 6
+[2852] waiting on 5
+[2852] wait completed on 5: count=1
+[2852] posting 1 on 6
+[2851] wait completed on 6: count=1
+[2851] posting 5 on 5
+[2851] waiting 5 times on 6
+[2852] waiting on 5
+[2852] wait completed on 5: count=1
+[2852] posting 5 on 6
+[2851] wait completed on 6: count=1
+[2851] wait completed on 6: count=1
+[2851] wait completed on 6: count=1
+[2851] wait completed on 6: count=1
+[2851] wait completed on 6: count=1
+[2852] waiting 5 times on 5
+[2852] wait completed on 5: count=1
+[2852] wait completed on 5: count=1
+[2852] wait completed on 5: count=1
+[2852] wait completed on 5: count=1
+[2852] wait completed on 5: count=1
+
+
+fcntl24     1  TFAIL  :  fcntl(tfile_3302, F_SETLEASE, F_WRLCK) Failed,
+errno=11 : Resource temporarily unavailable
+fcntl24     1  TFAIL  :  fcntl(tfile_3303, F_SETLEASE, F_WRLCK) Failed,
+errno=11 : Resource temporarily unavailable
+fcntl25     1  TFAIL  :  fcntl(tfile_3304, F_SETLEASE, F_WRLCK) Failed,
+errno=11 : Resource temporarily unavailable
+fcntl25     1  TFAIL  :  fcntl(tfile_3305, F_SETLEASE, F_WRLCK) Failed,
+errno=11 : Resource temporarily unavailable
+fcntl26     1  TFAIL  :  fcntl(tfile_3306, F_SETLEASE, F_WRLCK) Failed,
+errno=11 : Resource temporarily unavailable
+fcntl26     1  TFAIL  :  fcntl(tfile_3307, F_SETLEASE, F_WRLCK) Failed,
+errno=11 : Resource temporarily unavailable
+
+
+getcontext01    1  TFAIL  :  getcontext - Sanity test :  Fail errno=38 :
+Function not implemented
+
+get_mempolicy01    0  TINFO  :  (case00) START
+get_mempolicy01    1  TFAIL  :  set_mempolicy() failed - errno = 38 :
+Function not implemented
+
+
+io_cancel01    1  TCONF  :  System doesn't support execution of the test
+io_destroy01    1  TCONF  :  System doesn't support execution of the test
+io_getevents01    1  TCONF  :  System doesn't support execution of the test
+io_setup01    1  TCONF  :  System doesn't support execution of the test
+io_submit01    1  TCONF  :  System doesn't support execution of the test
+
+
+mbind01     0  TINFO  :  (case00) START
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01     0  TINFO  :  (case00) END => NG
+mbind01     0  TINFO  :  (case01) START
+EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01     0  TINFO  :  (case01) END => NG
+mbind01     0  TINFO  :  (case02) START
+EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01     0  TINFO  :  (case02) END => NG
+mbind01     0  TINFO  :  (case03) START
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01     0  TINFO  :  (case03) END => NG
+mbind01     0  TINFO  :  (case04) START
+EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01     0  TINFO  :  (case04) END => NG
+mbind01     0  TINFO  :  (case05) START
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01     0  TINFO  :  (case05) END => NG
+mbind01     0  TINFO  :  (case06) START
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01     0  TINFO  :  (case06) END => NG
+mbind01     0  TINFO  :  (case07) START
+EXPECT: return value(ret)=0 errno=0 (Success)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01     0  TINFO  :  (case07) END => NG
+mbind01     0  TINFO  :  (case08) START
+EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01     0  TINFO  :  (case08) END => NG
+mbind01     0  TINFO  :  (case09) START
+EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01     0  TINFO  :  (case09) END => NG
+mbind01     0  TINFO  :  (case10) START
+EXPECT: return value(ret)=-1 errno=14 (Bad address)
+RESULT: return value(ret)=-1 errno=38 (Function not implemented)
+mbind01     0  TINFO  :  (case10) END => NG
+mbind01     1  TFAIL  :  mbind01 failed - errno = 38 : Function not
+implemented --NG--
+
+
+
+open10      1  TPASS  :  Test passed in block0.
+open10      2  TPASS  :  Test passed in block1.
+open10      3  TFAIL  :  open10.testdir.B.1300/setgid: Incorrect modes,
+setgid bit not set
+open10      4  TFAIL  :  Test failed in block2.
+open10      5  TPASS  :  Test passed in block3.
+open10      0  TINFO  :  Warning: open10.testdir.A.1300 not removed
+open10      0  TINFO  :  Warning: open10.testdir.B.1300 not removed
+errno is 39
+open10      6  TFAIL  :  Test failed because of above failures.
+
+
+
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+
 
 ------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
---000e0cd30470706d8e046f0798fa
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---000e0cd30470706d8e046f0798fa--
-
