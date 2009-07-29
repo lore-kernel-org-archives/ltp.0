@@ -1,33 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1MWtDP-00034Q-JZ
-	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 14:36:11 +0000
-Received: from e38.co.us.ibm.com ([32.97.110.159])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MWtDL-0007tQ-BU
-	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 14:36:11 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n6VEWWNH002804
-	for <ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2009 08:32:32 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n6VEZiBa226378
-	for <ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2009 08:35:46 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n6VEZi0i019611
-	for <ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2009 08:35:44 -0600
-Date: Fri, 31 Jul 2009 09:35:44 -0500
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20090731143544.GA9440@us.ibm.com>
-References: <364299f40907302333s61742580m5dba94b0a2e7afa5@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <364299f40907302333s61742580m5dba94b0a2e7afa5@mail.gmail.com>
-Subject: Re: [LTP] Fix digsig so it passes -Wshadow
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <galak@kernel.crashing.org>) id 1MWDyt-0003C0-FG
+	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2009 18:34:27 +0000
+Received: from gate.crashing.org ([63.228.1.57])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MWDyf-0001Um-7M
+	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2009 18:34:17 +0000
+Received: from [IPv6:::1] (localhost.localdomain [127.0.0.1])
+	by gate.crashing.org (8.14.1/8.13.8) with ESMTP id n6TIY1WI005030
+	for <ltp-list@lists.sourceforge.net>; Wed, 29 Jul 2009 13:34:02 -0500
+Message-Id: <E69DB27D-E186-4934-AB69-C5EDB67A48AF@kernel.crashing.org>
+From: Kumar Gala <galak@kernel.crashing.org>
+Mime-Version: 1.0 (Apple Message framework v935.3)
+Date: Wed, 29 Jul 2009 13:33:59 -0500
+Subject: [LTP] top of tree fails to build on PPC fc11 box
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,37 +28,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: LTP <ltp-list@lists.sourceforge.net>
 
-Quoting Garrett Cooper (yanegomi@gmail.com):
-> clone(2) is externally defined in sched.h, and as such
-> testcases/kernel/security/digsig/writeexec/libwritetest.c fails to
-> compile with -Wall due to a shadowed declaration.
-> 
-> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
-> 
-> Index: writeexec/libwritetest.c
-> ===================================================================
-> RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/digsig/writeexec/libwritetest.c,v
-> retrieving revision 1.1
-> diff -u -r1.1 libwritetest.c
-> --- writeexec/libwritetest.c	1 Nov 2005 16:09:43 -0000	1.1
-> +++ writeexec/libwritetest.c	31 Jul 2009 06:30:49 -0000
-> @@ -9,8 +9,6 @@
->  #include <dlfcn.h>
->  #include <wait.h>
-> 
-> -int clone(int (*fn)(void *), void *child_stack, int flags, void *arg);
-> -
->  int writer(void *data)
->  {
->  	int fd;
+I get the following compile error:
 
-Sure, as long as that's now the case on all distros.  Historically it
-hasn't been.  But if it's not we'll presumably hear about it.
+make[4]: Leaving directory `/root/ltp/testcases/kernel/syscalls/fstat'
+make[4]: Entering directory `/root/ltp/testcases/kernel/syscalls/ 
+fstatat'
+cc -Wall  -I../../include -g -Wall -I../../../../include -Wall - 
+DTST_USE_NEWER64_SYSCALL=1 -D_FILE_OFFSET_BITS=64   -c -o  
+fstatat01_64.o fstatat01.c
+fstatat01.c:95:37: error: missing binary operator before token "5"
+fstatat01.c: In function 'main':
+fstatat01.c:126: error: expected ')' before numeric constant
+make[4]: *** [fstatat01_64.o] Error 1
+make[4]: Leaving directory `/root/ltp/testcases/kernel/syscalls/fstatat'
+make[3]: *** [all] Error 2
+make[3]: Leaving directory `/root/ltp/testcases/kernel/syscalls'
+make[2]: *** [all] Error 2
+make[2]: Leaving directory `/root/ltp/testcases/kernel'
+make[1]: *** [all] Error 2
+make[1]: Leaving directory `/root/ltp/testcases'
+make: *** [all] Error 2
 
--serge
+- k
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
