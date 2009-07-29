@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <wangyong2009@cn.fujitsu.com>) id 1MWP9r-00041F-5N
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 06:30:31 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MWP9m-0002ic-M1
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 06:30:31 +0000
-Message-ID: <4A713E40.2010000@cn.fujitsu.com>
-Date: Thu, 30 Jul 2009 14:31:28 +0800
-From: Wang Yong <wangyong2009@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <4A70F86E.50608@cn.fujitsu.com>
-	<364299f40907292019r494348dt1e895f0c180f3f58@mail.gmail.com>
-In-Reply-To: <364299f40907292019r494348dt1e895f0c180f3f58@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] Fix failure of the utimensat01 test
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <galak@kernel.crashing.org>) id 1MWEN2-0006bc-BE
+	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2009 18:59:24 +0000
+Received: from gate.crashing.org ([63.228.1.57])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MWEMv-0001T3-PR
+	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2009 18:59:24 +0000
+Message-Id: <80F3D7EC-7B0F-455C-98E0-914D10E88288@kernel.crashing.org>
+From: Kumar Gala <galak@kernel.crashing.org>
+In-Reply-To: <364299f40907291155p52d2aa90jd73ecc9818aa6c6a@mail.gmail.com>
+Mime-Version: 1.0 (Apple Message framework v935.3)
+Date: Wed, 29 Jul 2009 13:59:02 -0500
+References: <E69DB27D-E186-4934-AB69-C5EDB67A48AF@kernel.crashing.org>
+	<364299f40907291155p52d2aa90jd73ecc9818aa6c6a@mail.gmail.com>
+Subject: Re: [LTP] top of tree fails to build on PPC fc11 box
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,43 +32,53 @@ To: Garrett Cooper <yanegomi@gmail.com>
 Cc: LTP <ltp-list@lists.sourceforge.net>
 
 
-Garrett Cooper wrote as:
-> On Wed, Jul 29, 2009 at 6:33 PM, Wang Yong<wangyong2009@cn.fujitsu.com> wrote:
->   
->> The error handling for "RW" opt of run_test brought about error results.
->> This patch fixed that.
+On Jul 29, 2009, at 1:55 PM, Garrett Cooper wrote:
+
+> On Wed, Jul 29, 2009 at 11:33 AM, Kumar  
+> Gala<galak@kernel.crashing.org> wrote:
+>> I get the following compile error:
 >>
->> Signed-off-by: WangYong <wangyong2009@cn.fujitsu.com>
->>
->> diff -Nurp a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
->> b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
->> --- a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh    2009-07-28 16:23:39.000000000 +0800
->> +++ b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh    2009-07-28 17:32:26.000000000 +0800
->> @@ -260,22 +260,22 @@ echo "Testing read-only file, owned by s
->>  echo
->>     
+>> make[4]: Leaving directory `/root/ltp/testcases/kernel/syscalls/ 
+>> fstat'
+>> make[4]: Entering directory `/root/ltp/testcases/kernel/syscalls/
+>> fstatat'
+>> cc -Wall  -I../../include -g -Wall -I../../../../include -Wall -
+>> DTST_USE_NEWER64_SYSCALL=1 -D_FILE_OFFSET_BITS=64   -c -o
+>> fstatat01_64.o fstatat01.c
+>> fstatat01.c:95:37: error: missing binary operator before token "5"
+>> fstatat01.c: In function 'main':
+>> fstatat01.c:126: error: expected ')' before numeric constant
+>> make[4]: *** [fstatat01_64.o] Error 1
+>> make[4]: Leaving directory `/root/ltp/testcases/kernel/syscalls/ 
+>> fstatat'
+>> make[3]: *** [all] Error 2
+>> make[3]: Leaving directory `/root/ltp/testcases/kernel/syscalls'
+>> make[2]: *** [all] Error 2
+>> make[2]: Leaving directory `/root/ltp/testcases/kernel'
+>> make[1]: *** [all] Error 2
+>> make[1]: Leaving directory `/root/ltp/testcases'
+>> make: *** [all] Error 2
 >
-> [...]
->
-> Don't these changes actually conflict with the testcase's purpose,
-> given the messages echoed placed directly above the commands?
-> Thanks,
-> -Garrett
->
->   
-Hi Garrett,
+> Got config.log?
 
-This patch doesn't change the testcase's purpose.
-And the test results prove it.
+Nope, I tried doing the non-autoconf build:
 
-Best regards,
-Wang Yong
+	$ touch include/config.h.default
+	$ make config.h
+	$ make all
 
->
->   
+when I try the autoconf build I get:
 
+[root@monty ltp]# make autotools
+aclocal -I m4
+autoconf
+configure.ac:9: error: possibly undefined macro: AC_PROG_AR
+       If this token and others are legitimate, please use  
+m4_pattern_allow.
+       See the Autoconf documentation.
+make: *** [configure] Error 1
 
-
+- k
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
