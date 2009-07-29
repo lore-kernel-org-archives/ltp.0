@@ -1,33 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MNqSr-0002it-3R
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:50:45 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MNqSq-0002Ow-FW
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:50:45 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e2.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n66FjYLn017473
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 11:45:34 -0400
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n66FobAV231278
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 11:50:37 -0400
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n66FobVv027627
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 11:50:37 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1246486113.31426.12.camel@lucio-laptop>
-References: <1246486113.31426.12.camel@lucio-laptop>
-Date: Mon, 06 Jul 2009 21:20:30 +0530
-Message-Id: <1246895430.4887.45.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix eventfd2_03 build failure on
-	powerpc	architecture
-Reply-To: subrata@linux.vnet.ibm.com
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MWEJQ-0006uR-LO
+	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2009 18:55:40 +0000
+Received: from mail-pz0-f180.google.com ([209.85.222.180])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MWEJP-0000js-Q7
+	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2009 18:55:40 +0000
+Received: by pzk10 with SMTP id 10so25975pzk.28
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 29 Jul 2009 11:55:33 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <E69DB27D-E186-4934-AB69-C5EDB67A48AF@kernel.crashing.org>
+References: <E69DB27D-E186-4934-AB69-C5EDB67A48AF@kernel.crashing.org>
+Date: Wed, 29 Jul 2009 11:55:33 -0700
+Message-ID: <364299f40907291155p52d2aa90jd73ecc9818aa6c6a@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] top of tree fails to build on PPC fc11 box
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,87 +27,49 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ljhc@br.ibm.com
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Kumar Gala <galak@kernel.crashing.org>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-T24gV2VkLCAyMDA5LTA3LTAxIGF0IDE5OjA4IC0wMzAwLCBMdWNpbyB3cm90ZTogCj4gSGksIAo+
-IAo+IEkndmUgZm91bmQgYSBmYWlsdXJlIHdoZW4gYnVpbGRpbmcgbHRwLWZ1bGwtMjAwOTA2MzAg
-b24gcG93ZXJwYzoKPiAKPiBldmVudGZkMl8wMy5jOjQ4OjI6IGVycm9yOiAjZXJyb3IgQ2Fubm90
-IGRldGVjdCB5b3VyIGFyY2hpdGVjdHVyZSEKPiBldmVudGZkMl8wMy5jOiBJbiBmdW5jdGlvbiDi
-gJhldmVudGZkMuKAmToKPiBldmVudGZkMl8wMy5jOjU0OiBlcnJvcjog4oCYX19OUl9ldmVudGZk
-MuKAmSB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbikKPiBldmVudGZkMl8w
-My5jOjU0OiBlcnJvcjogKEVhY2ggdW5kZWNsYXJlZCBpZGVudGlmaWVyIGlzIHJlcG9ydGVkIG9u
-bHkgb25jZQo+IGV2ZW50ZmQyXzAzLmM6NTQ6IGVycm9yOiBmb3IgZWFjaCBmdW5jdGlvbiBpdCBh
-cHBlYXJzIGluLikKPiBldmVudGZkMl8wMy5jOiBJbiBmdW5jdGlvbiDigJhtYWlu4oCZOgo+IGV2
-ZW50ZmQyXzAzLmM6MTI5OiB3YXJuaW5nOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlv
-biDigJh3YWl0cGlk4oCZCj4gbWFrZVs0XTogKioqIFtldmVudGZkMl8wM10gRXJyb3IgMQo+IG1h
-a2VbNF06IExlYXZpbmcgZGlyZWN0b3J5IGAvcm9vdC9sdHAtZnVsbC0yMDA5MDYzMC90ZXN0Y2Fz
-ZXMva2VybmVsL3N5c2NhbGxzL2V2ZW50ZmQyJwo+IG1ha2VbM106ICoqKiBbYWxsXSBFcnJvciAy
-Cj4gbWFrZVszXTogTGVhdmluZyBkaXJlY3RvcnkgYC9yb290L2x0cC1mdWxsLTIwMDkwNjMwL3Rl
-c3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMnCj4gbWFrZVsyXTogKioqIFthbGxdIEVycm9yIDIKPiBt
-YWtlWzJdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL3Jvb3QvbHRwLWZ1bGwtMjAwOTA2MzAvdGVzdGNh
-c2VzL2tlcm5lbCcKPiBtYWtlWzFdOiAqKiogW2FsbF0gRXJyb3IgMgo+IG1ha2VbMV06IExlYXZp
-bmcgZGlyZWN0b3J5IGAvcm9vdC9sdHAtZnVsbC0yMDA5MDYzMC90ZXN0Y2FzZXMnCj4gbWFrZTog
-KioqIFthbGxdIEVycm9yIDIKPiAKPiAKPiBUaGlzIHBhdGNoIGZpeGVzIHRoZSBmYWlsdXJlLCB0
-aGUgdGVzdCBwcm9ncmFtIGlkZW50aWZpZXIgYW5kIAo+IGFkZHMgYSBrZXJuZWwgdmVyc2lvbiBj
-aGVjay4KPiAKPiAKPiBTaWduZWQtb2ZmLWJ5IEx1Y2lvIENvcnJlaWEgPGxqaGNAYnIuaWJtLmNv
-bT4KClRoYW5rcy4KClJlZ2FyZHMtLQpTdWJyYXRhCgo+IAo+IGRpZmYgLU51cnAgbHRwLWZ1bGwt
-MjAwOTA2MzAvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlL3Bvd2VycGM2NC5pbiBsdHAtZnVsbC0y
-MDA5MDYzMC5uZXcvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlL3Bvd2VycGM2NC5pbgo+IC0tLSBs
-dHAtZnVsbC0yMDA5MDYzMC90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvcG93ZXJwYzY0LmluCTIw
-MDgtMTItMTIgMTM6MTM6MTguMDAwMDAwMDAwIC0wMjAwCj4gKysrIGx0cC1mdWxsLTIwMDkwNjMw
-Lm5ldy90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvcG93ZXJwYzY0LmluCTIwMDktMDctMDEgMTg6
-MzU6NTIuMDAwMDAwMDAwIC0wMzAwCj4gQEAgLTIwLDYgKzIwLDcgQEAgX19OUl9zeW1saW5rYXQg
-KF9fTlJfb3BlbmF0ICsgOSkKPiAgX19OUl9yZWFkbGlua2F0IChfX05SX29wZW5hdCArIDEwKQo+
-ICBfX05SX2ZjaG1vZGF0ICAoX19OUl9vcGVuYXQgKyAxMSkKPiAgX19OUl9mYWNjZXNzYXQgKF9f
-TlJfb3BlbmF0ICsgMTIpCj4gK19fTlJfdXRpbWVuc2F0IDMwNAo+ICBfX05SX2V2ZW50ZmQgMzA3
-Cj4gIF9fTlJfZmFsbG9jYXRlIDMwOQo+IC1fX05SX3V0aW1lbnNhdCAzMDQKPiArX19OUl9ldmVu
-dGZkMiAzMTQKPiBkaWZmIC1OdXJwIGx0cC1mdWxsLTIwMDkwNjMwL3Rlc3RjYXNlcy9rZXJuZWwv
-aW5jbHVkZS9wb3dlcnBjLmluIGx0cC1mdWxsLTIwMDkwNjMwLm5ldy90ZXN0Y2FzZXMva2VybmVs
-L2luY2x1ZGUvcG93ZXJwYy5pbgo+IC0tLSBsdHAtZnVsbC0yMDA5MDYzMC90ZXN0Y2FzZXMva2Vy
-bmVsL2luY2x1ZGUvcG93ZXJwYy5pbgkyMDA5LTA3LTAxIDE4OjA4OjMzLjAwMDAwMDAwMCAtMDMw
-MAo+ICsrKyBsdHAtZnVsbC0yMDA5MDYzMC5uZXcvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlL3Bv
-d2VycGMuaW4JMjAwOS0wNy0wMSAxODoyNDoyNC4wMDAwMDAwMDAgLTAzMDAKPiBAQCAtMjAsNyAr
-MjAsOCBAQCBfX05SX3N5bWxpbmthdCAoX19OUl9vcGVuYXQgKyA5KQo+ICBfX05SX3JlYWRsaW5r
-YXQgKF9fTlJfb3BlbmF0ICsgMTApCj4gIF9fTlJfZmNobW9kYXQgIChfX05SX29wZW5hdCArIDEx
-KQo+ICBfX05SX2ZhY2Nlc3NhdCAoX19OUl9vcGVuYXQgKyAxMikKPiArX19OUl91dGltZW5zYXQg
-MzA0Cj4gIF9fTlJfZXZlbnRmZCAzMDcKPiAgX19OUl9mYWxsb2NhdGUgMzA5Cj4gLV9fTlJfdXRp
-bWVuc2F0IDMwNAo+ICtfX05SX2V2ZW50ZmQyIDMxNAo+ICBfX05SX3BlcmZfY291bnRlcl9vcGVu
-IDMxOQo+IGRpZmYgLU51cnAgbHRwLWZ1bGwtMjAwOTA2MzAvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
-YWxscy9ldmVudGZkMi9ldmVudGZkMl8wMy5jIGx0cC1mdWxsLTIwMDkwNjMwLm5ldy90ZXN0Y2Fz
-ZXMva2VybmVsL3N5c2NhbGxzL2V2ZW50ZmQyL2V2ZW50ZmQyXzAzLmMKPiAtLS0gbHRwLWZ1bGwt
-MjAwOTA2MzAvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9ldmVudGZkMi9ldmVudGZkMl8wMy5j
-CTIwMDktMDYtMTUgMTU6MjY6MzQuMDAwMDAwMDAwIC0wMzAwCj4gKysrIGx0cC1mdWxsLTIwMDkw
-NjMwLm5ldy90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2V2ZW50ZmQyL2V2ZW50ZmQyXzAzLmMJ
-MjAwOS0wNy0wMSAxODo1MDoyNi4wMDAwMDAwMDAgLTAzMDAKPiBAQCAtMzMsMjIgKzMzLDE3IEBA
-Cj4gICNpbmNsdWRlIDx1bmlzdGQuaD4KPiAgI2luY2x1ZGUgPGVycm5vLmg+Cj4gIAo+IC1jaGFy
-ICpUQ0lEID0gImV2ZW50ZmQyXzAyIjsgICAgIC8qIHRlc3QgcHJvZ3JhbSBpZGVudGlmaWVyKi8K
-PiArLyogSGFybmVzcyBTcGVjaWZpYyBJbmNsdWRlIEZpbGVzLiAqLwo+ICsjaW5jbHVkZSAidGVz
-dC5oIgo+ICsjaW5jbHVkZSAibGludXhfc3lzY2FsbF9udW1iZXJzLmgiCj4gKwo+ICtjaGFyICpU
-Q0lEID0gImV2ZW50ZmQyXzAzIjsgICAgIC8qIHRlc3QgcHJvZ3JhbSBpZGVudGlmaWVyKi8KPiAr
-aW50IFRTVF9UT1RBTCA9IDE7CSAgICAgICAgCS8qIHRvdGFsIG51bWJlciBvZiB0ZXN0cyBpbiB0
-aGlzIGZpbGUgKi8KPiAgCj4gICNpZm5kZWYgRUZEX1NFTUxJS0UKPiAgI2RlZmluZSBFRkRfU0VN
-TElLRSAoMSA8PCAwKQo+ICAjZW5kaWYKPiAgCj4gLSNpZm5kZWYgX19OUl9ldmVudGZkMgo+IC0j
-aWYgZGVmaW5lZChfX3g4Nl82NF9fKQo+IC0jZGVmaW5lIF9fTlJfZXZlbnRmZDIgMjkwCj4gLSNl
-bGlmIGRlZmluZWQoX19pMzg2X18pCj4gLSNkZWZpbmUgX19OUl9ldmVudGZkMiAzMjgKPiAtI2Vs
-c2UKPiAtI2Vycm9yIENhbm5vdCBkZXRlY3QgeW91ciBhcmNoaXRlY3R1cmUhCj4gLSNlbmRpZgo+
-IC0jZW5kaWYKPiAtCj4gIAo+ICBzdGF0aWMgaW50IGV2ZW50ZmQyKGludCBjb3VudCwgaW50IGZs
-YWdzKSB7Cj4gIAlyZXR1cm4gc3lzY2FsbChfX05SX2V2ZW50ZmQyLCBjb3VudCwgZmxhZ3MpOwo+
-IEBAIC0xMTMsNiArMTA4LDExIEBAIGludCBtYWluIChpbnQgYXJnYywgY2hhciAqKmFyZ3YpIHsK
-PiAgCQkJcmV0dXJuIDE7Cj4gIAkJfQo+ICAJfQo+ICsJaWYgKCh0c3Rfa3ZlcmNtcCgyLCA2LCAy
-NykpIDwgMCkgewo+ICsJCXRzdF9yZXNtKFRDT05GLAo+ICsJCQkgIlRoaXMgdGVzdCBjYW4gb25s
-eSBydW4gb24ga2VybmVscyB0aGF0IGFyZSAyLjYuMjcgYW5kIGhpZ2hlciIpOwo+ICsJCXRzdF9l
-eGl0KCk7Cj4gKwl9Cj4gIAlpZiAoKGZkMSA9IGV2ZW50ZmQyKDAsIEVGRF9TRU1MSUtFKSkgPT0g
-LTEgfHwKPiAgCSAgICAoZmQyID0gZXZlbnRmZDIoMCwgRUZEX1NFTUxJS0UpKSA9PSAtMSkgewo+
-ICAJCXBlcnJvcigiZXZlbnRmZDIiKTsKPiAKPiAKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEx0cC1saXN0
-IG1haWxpbmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+IGh0dHBzOi8v
-bGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0CgoKLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
-aHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+On Wed, Jul 29, 2009 at 11:33 AM, Kumar Gala<galak@kernel.crashing.org> wro=
+te:
+> I get the following compile error:
+>
+> make[4]: Leaving directory `/root/ltp/testcases/kernel/syscalls/fstat'
+> make[4]: Entering directory `/root/ltp/testcases/kernel/syscalls/
+> fstatat'
+> cc -Wall =A0-I../../include -g -Wall -I../../../../include -Wall -
+> DTST_USE_NEWER64_SYSCALL=3D1 -D_FILE_OFFSET_BITS=3D64 =A0 -c -o
+> fstatat01_64.o fstatat01.c
+> fstatat01.c:95:37: error: missing binary operator before token "5"
+> fstatat01.c: In function 'main':
+> fstatat01.c:126: error: expected ')' before numeric constant
+> make[4]: *** [fstatat01_64.o] Error 1
+> make[4]: Leaving directory `/root/ltp/testcases/kernel/syscalls/fstatat'
+> make[3]: *** [all] Error 2
+> make[3]: Leaving directory `/root/ltp/testcases/kernel/syscalls'
+> make[2]: *** [all] Error 2
+> make[2]: Leaving directory `/root/ltp/testcases/kernel'
+> make[1]: *** [all] Error 2
+> make[1]: Leaving directory `/root/ltp/testcases'
+> make: *** [all] Error 2
+
+Got config.log?
+-Garrett
+
+---------------------------------------------------------------------------=
+---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+
+trial. Simplify your report design, integration and deployment - and focus =
+on =
+
+what you do best, core application coding. Discover what's new with =
+
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
