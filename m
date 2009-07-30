@@ -1,26 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MSOQK-0000tV-QU
-	for ltp-list@lists.sourceforge.net; Sun, 19 Jul 2009 04:54:56 +0000
-Received: from mail-pz0-f178.google.com ([209.85.222.178])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MSOQC-0001VU-3u
-	for ltp-list@lists.sourceforge.net; Sun, 19 Jul 2009 04:54:56 +0000
-Received: by pzk8 with SMTP id 8so1341345pzk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Sat, 18 Jul 2009 21:54:47 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <364299f40907182153i440a64ddjf8dca75d6a9adc3c@mail.gmail.com>
-References: <4A559DB3.6030000@cn.fujitsu.com>
-	<1247222787.6630.26.camel@subratamodak.linux.ibm.com>
-	<4A5E7C54.40507@cn.fujitsu.com>
-	<364299f40907182153i440a64ddjf8dca75d6a9adc3c@mail.gmail.com>
-Date: Sat, 18 Jul 2009 21:54:47 -0700
-Message-ID: <364299f40907182154p28b0e902id6106c1e17bc2e26@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Fix failure of the utimes01 test
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MWV03-0006v8-RL
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 12:44:47 +0000
+Received: from e9.ny.us.ibm.com ([32.97.182.139])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MWUzn-0003sl-Ef
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 12:44:42 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e9.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n6UCi9XA030350
+	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 08:44:10 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n6UCiPoj172418
+	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 08:44:25 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n6UCiPrT021463
+	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 08:44:25 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <364299f40907182138w484cc898gac9fe00dbde75afd@mail.gmail.com>
+References: <364299f40907182138w484cc898gac9fe00dbde75afd@mail.gmail.com>
+Date: Thu, 30 Jul 2009 18:14:22 +0530
+Message-Id: <1248957862.5788.17.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Fix bad strerror calls
+	in	testcases/kernel/syscalls/waitid01.c
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,114 +37,100 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wang Yong <wangyong2009@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-T24gU2F0LCBKdWwgMTgsIDIwMDkgYXQgOTo1MyBQTSwgR2FycmV0dCBDb29wZXI8eWFuZWdvbWlA
-Z21haWwuY29tPiB3cm90ZToKPiBPbiBXZWQsIEp1bCAxNSwgMjAwOSBhdCA2OjAzIFBNLCBXYW5n
-IFlvbmc8d2FuZ3lvbmcyMDA5QGNuLmZ1aml0c3UuY29tPiB3cm90ZToKPj4gSGksIFN1YnJhdGEg
-TW9kYWsKPj4KPj4gU3VicmF0YSBNb2RhayB3cm90ZSBhczoKPj4+IE9uIFRodSwgMjAwOS0wNy0w
-OSBhdCAxNTozNSArMDgwMCwgV2FuZyBZb25nIHdyb3RlOgo+Pj4KPj4+PiBXaGVuZXZlciBzeXN0
-ZW0gY2FsbGVkIHV0aW1lcywgdGhlIGVycm9yIG1lc3NhZ2UgcmV0dXJuZWQgd2FzIEVJTlZBTCwK
-Pj4+PiBiZWNhdXNlIHRoZSBtZW1iZXIgdmFyaWFibGUgb2Ygc3RydWN0IHRpbWV2YWwgd2FzIG5v
-dCBpbml0aWFsaXplZCwKPj4+PiBzbyBpbml0aWFsaXplIGl0Lgo+Pj4+Cj4+Pj4gU2lnbmVkLW9m
-Zi1ieTrjgIBXYW5nWW9uZ+OAgDx3YW5neW9uZzIwMDlAY24uZnVqaXRzdS5jb20+Cj4+Pj4KPj4+
-PiBkaWZmIC1OdXJwIGx0cC1mdWxsLTIwMDkwNjMwL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
-dXRpbWVzL3V0aW1lczAxLmMKPj4+PiBsdHAtZnVsbC0yMDA5MDYzMC5uZXcvdGVzdGNhc2VzL2tl
-cm5lbC9zeXNjYWxscy91dGltZXMvdXRpbWVzMDEuYwo+Pj4+IC0tLSBsdHAub3JpZy90ZXN0Y2Fz
-ZXMva2VybmVsL3N5c2NhbGxzL3V0aW1lcy91dGltZXMwMS5jIDIwMDktMDctMDEKPj4+PiAxNzoy
-MDoxMi4wMDAwMDAwMDAgKzA4MDAKPj4+PiArKysgbHRwL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
-bHMvdXRpbWVzL3V0aW1lczAxLmMgwqAyMDA5LTA3LTA4Cj4+Pj4gMTc6MjA6MzguMDAwMDAwMDAw
-ICswODAwCj4+Pj4gQEAgLTI0OCw2ICsyNDgsNyBAQCBzdGF0aWMgaW50IGRvX3Rlc3Qoc3RydWN0
-IHRlc3RfY2FzZSAqdGMpCj4+Pj4gwqAgwqAgwqAgwqAgwqAgLyoKPj4+PiDCoCDCoCDCoCDCoCDC
-oCDCoCogRXhlY3V0ZSBzeXN0ZW0gY2FsbAo+Pj4+IMKgIMKgIMKgIMKgIMKgIMKgKi8KPj4+PiAr
-IMKgIMKgIMKgIMKgbWVtc2V0KHR2LCAwLCAyICogc2l6ZW9mKHN0cnVjdCB0aW1ldmFsKSk7Cj4+
-Pj4KPj4+Cj4+PiBJbml0aWFsaXppbmcgdGhpcyBpcyBnb29kLiBCdXQgaSBkbyBub3QgZmluZCBh
-bnkgdmlzaWJsZSBkaWZmZXJlbmNlIGluCj4+PiBydW5uaW5nIHRoaXMgdGVzdCBwcmUgYW5kIHBv
-c3QgcGF0Y2hpbmcgZWl0aGVyIG9uIDIuNi4yOSBvciAyLjYuMTgKPj4+IGtlcm5lbHMuIFRoZSBm
-b2xsb3dpbmcgb3V0cHV0IGlzIGdlbmVyYXRlZCBlYWNoIHRpbWU6Cj4+Pgo+Pj4gIyAuL3Rlc3Rj
-YXNlcy9iaW4vdXRpbWVzMDEKPj4+IHV0aW1lczAxIMKgIMKgMCDCoElORk8gwqA6IMKgKGNhc2Uw
-MCkgU1RBUlQKPj4+IG9wZW4gZmFpbGVkLgo+Pj4gdXRpbWVzMDEgwqAgwqAwIMKgSU5GTyDCoDog
-wqAoY2FzZTAwKSBFTkQgPT4gTkcKPj4+IHV0aW1lczAxIMKgIMKgMCDCoElORk8gwqA6IMKgKGNh
-c2UwMSkgU1RBUlQKPj4+IG9wZW4gZmFpbGVkLgo+Pj4gdXRpbWVzMDEgwqAgwqAwIMKgSU5GTyDC
-oDogwqAoY2FzZTAxKSBFTkQgPT4gTkcKPj4+IHV0aW1lczAxIMKgIMKgMCDCoElORk8gwqA6IMKg
-KGNhc2UwMikgU1RBUlQKPj4+IG9wZW4gZmFpbGVkLgo+Pj4gdXRpbWVzMDEgwqAgwqAwIMKgSU5G
-TyDCoDogwqAoY2FzZTAyKSBFTkQgPT4gTkcKPj4+IHV0aW1lczAxIMKgIMKgMCDCoElORk8gwqA6
-IMKgKGNhc2UwMykgU1RBUlQKPj4+IG9wZW4gZmFpbGVkLgo+Pj4gdXRpbWVzMDEgwqAgwqAwIMKg
-SU5GTyDCoDogwqAoY2FzZTAzKSBFTkQgPT4gTkcKPj4+IHV0aW1lczAxIMKgIMKgMCDCoElORk8g
-wqA6IMKgKGNhc2UwNCkgU1RBUlQKPj4+IG9wZW4gZmFpbGVkLgo+Pj4gdXRpbWVzMDEgwqAgwqAw
-IMKgSU5GTyDCoDogwqAoY2FzZTA0KSBFTkQgPT4gTkcKPj4+IHV0aW1lczAxIMKgIMKgMSDCoEZB
-SUwgwqA6IMKgdXRpbWVzMDEgZmFpbGVkIC0gZXJybm8gPSAyIDogTm8gc3VjaCBmaWxlIG9yCj4+
-PiBkaXJlY3RvcnkKPj4+IHV0aW1lczAxIMKgIMKgMCDCoElORk8gwqA6IMKgTkcKPj4+Cj4+PiAj
-IGVjaG8gJD8KPj4+IDEKPj4+Cj4+IEkgaGF2ZSBmaXhlZCB0aGlzIHByb2JsZW0uCj4+Cj4+Cj4+
-IFtQQVRDSF0gRml4IGZhaWx1cmUgb2YgdGhlIHV0aW1lczAxIHRlc3QKPj4KPj4gV2hlbmV2ZXIg
-c3lzdGVtIGNhbGxlZCB1dGltZXMsIHRoZSBlcnJvciBtZXNzYWdlIHJldHVybmVkIHdhcyBFSU5W
-QUwsCj4+IGJlY2F1c2UgdGhlIG1lbWJlciB2YXJpYWJsZSBvZiBzdHJ1Y3QgdGltZXZhbCB3YXMg
-bm90IGluaXRpYWxpemVkLAo+PiBzbyBpbml0aWFsaXplIGl0Lgo+PiBUaGlzIHBhdGNoIGFsc28g
-Zml4ZWQgdGhlIHBhdGggd2hpY2ggd2UgcGFzcyB0byBzZXR1cF9maWxlKCkuIElmCj4+IHByb2dk
-aXIgaXMgbm90IGEgYWJzb2x1dGUgcGF0aG5hbWUgb2YgdGhlIHdvcmtpbmcgZGlyZWN0b3J5LCB0
-aGUgZmlsZQo+PiBvcGVuIHdpbGwgZmFpbC4KPj4KPj4gU2lnbmVkLW9mZi1ieTogV2FuZ1lvbmcg
-PHdhbmd5b25nMjAwOUBjbi5mdWppdHN1LmNvbT4KPj4KPj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5l
-bC9zeXNjYWxscy91dGltZXMvdXRpbWVzMDEuYyDCoCDCoCDCoCAyMDA5LTA3LTE1IDEwOjIyOjQx
-LjAwMDAwMDAwMCArMDgwMAo+PiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3V0aW1l
-cy91dGltZXMwMS5jIMKgIMKgIMKgIDIwMDktMDctMTYgMDg6NTU6MTMuMDAwMDAwMDAwICswODAw
-Cj4+IEBAIC0xMzgsNyArMTM4LDYgQEAgdm9pZCBzZXR1cCgpIHsKPj4gwqAqLwo+PiDCoHN0YXRp
-YyBpbnQgb3B0X2RlYnVnOwo+PiDCoHN0YXRpYyBjaGFyICpwcm9nbmFtZTsKPj4gLXN0YXRpYyBj
-aGFyICpwcm9nZGlyOwo+Pgo+PiDCoGVudW0gdGVzdF90eXBlIHsKPj4gwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqBOT1JNQUwsCj4+IEBAIC0yMzIsNyArMjMxLDcgQEAgc3RhdGljIGludCBkb190ZXN0
-KHN0cnVjdCB0ZXN0X2Nhc2UgKnRjKQo+PiDCoCDCoCDCoCDCoCBzdHJ1Y3Qgc3RhdCBzdDsKPj4g
-wqAgwqAgwqAgwqAgdWlkX3Qgb2xkX3VpZDsKPj4KPj4gLSDCoCDCoCDCoCDCoFRFU1QocmMgPSBz
-ZXR1cF9maWxlKHByb2dkaXIsICJ0ZXN0LmZpbGUiLCBmcGF0aCkpOwo+PiArIMKgIMKgIMKgIMKg
-VEVTVChyYyA9IHNldHVwX2ZpbGUoVEVTVERJUiwgInRlc3QuZmlsZSIsIGZwYXRoKSk7Cj4+IMKg
-IMKgIMKgIMKgIGlmIChyYyA8IDApCj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiAx
-Owo+Pgo+PiBAQCAtMjQ4LDYgKzI0Nyw3IEBAIHN0YXRpYyBpbnQgZG9fdGVzdChzdHJ1Y3QgdGVz
-dF9jYXNlICp0YykKPj4gwqAgwqAgwqAgwqAgLyoKPj4gwqAgwqAgwqAgwqAgwqAqIEV4ZWN1dGUg
-c3lzdGVtIGNhbGwKPj4gwqAgwqAgwqAgwqAgwqAqLwo+PiArIMKgIMKgIMKgIMKgbWVtc2V0KHR2
-LCAwLCBzaXplb2YodHYpKTsKPj4gwqAgwqAgwqAgwqAgdHZbMF0udHZfc2VjID0gdGMtPmFfc2Vj
-Owo+PiDCoCDCoCDCoCDCoCB0dlsxXS50dl9zZWMgPSB0Yy0+bV9zZWM7Cj4+IMKgIMKgIMKgIMKg
-IFRFU1QobGVuID0gc3RybGVuKGZwYXRoKSk7Cj4+IEBAIC0zMzgsOSArMzM4LDYgQEAgaW50IG1h
-aW4oaW50IGFjLCBjaGFyICoqYXYpIHsKPj4gwqAgwqAgwqAgwqBwcm9nbmFtZSA9IHN0cmNocihh
-dlswXSwgJy8nKTsKPj4gwqAgwqAgwqAgwqAgcHJvZ25hbWUgPSBwcm9nbmFtZSA/IHByb2duYW1l
-ICsgMSA6IGF2WzBdOwo+Pgo+PiAtIMKgIMKgIMKgIHByb2dkaXIgPSBzdHJkdXAoYXZbMF0pOwo+
-PiAtIMKgIMKgIMKgIMKgcHJvZ2RpciA9IGRpcm5hbWUocHJvZ2Rpcik7Cj4+IC0KPj4gwqAgwqAg
-wqAgwqAgLyogcGFyc2Ugc3RhbmRhcmQgb3B0aW9ucyAqLwo+PiDCoCDCoCDCoCDCoCBpZiAoKG1z
-ZyA9IHBhcnNlX29wdHMoYWMsIGF2LCAob3B0aW9uX3QgKilOVUxMLCBOVUxMKSkgIT0gKGNoYXIg
-KilOVUxMKXsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqB0c3RfYnJrbShUQlJPSywgY2xlYW51cCwg
-Ik9QVElPTiBQQVJTSU5HIEVSUk9SIC0gJXMiLCBtc2cpOwo+Cj4gVGhhdCBwYXRjaCB3b3JrcyBz
-byBJJ20gZ29pbmcgdG8gY29tbWl0IGl0IHRvIENWUzoKPgo+IGdjb29wZXJAb3JhbmdlYm94IC9z
-Y3JhdGNoL2x0cC1ub3ZhMi9sdHAtbm92YSAkCj4gdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy91
-dGltZXMvdXRpbWVzMDEKPiB1dGltZXMwMSDCoCDCoDAgwqBJTkZPIMKgOiDCoChjYXNlMDApIFNU
-QVJUCj4gdXRpbWVzMDEgwqAgwqAwIMKgSU5GTyDCoDogwqBFOjAsMTAwMCA8PT4gUjowLDEwMDAK
-PiBFWFBFQ1Q6IHJldHVybiB2YWx1ZShyZXQpPShOID49IDApIGVycm5vPTAgKFN1Y2Nlc3MpCj4g
-UkVTVUxUOiByZXR1cm4gdmFsdWUocmV0KT0gwqAgwqAgwqAgMCBlcnJubz0wIChTdWNjZXNzKQo+
-IHV0aW1lczAxIMKgIMKgMCDCoElORk8gwqA6IMKgKGNhc2UwMCkgRU5EID0+IE9LCj4gdXRpbWVz
-MDEgwqAgwqAwIMKgSU5GTyDCoDogwqAoY2FzZTAxKSBTVEFSVAo+IHV0aW1lczAxIMKgIMKgMCDC
-oElORk8gwqA6IMKgRToxMDAwLDAgPD0+IFI6MTAwMCwwCj4gRVhQRUNUOiByZXR1cm4gdmFsdWUo
-cmV0KT0oTiA+PSAwKSBlcnJubz0wIChTdWNjZXNzKQo+IFJFU1VMVDogcmV0dXJuIHZhbHVlKHJl
-dCk9IMKgIMKgIMKgIDAgZXJybm89MCAoU3VjY2VzcykKPiB1dGltZXMwMSDCoCDCoDAgwqBJTkZP
-IMKgOiDCoChjYXNlMDEpIEVORCA9PiBPSwo+IHV0aW1lczAxIMKgIMKgMCDCoElORk8gwqA6IMKg
-KGNhc2UwMikgU1RBUlQKPiBzZXRldWlkIGZhaWxlZC4KPiB1dGltZXMwMSDCoCDCoDAgwqBJTkZP
-IMKgOiDCoChjYXNlMDIpIEVORCA9PiBPSwo+IHV0aW1lczAxIMKgIMKgMCDCoElORk8gwqA6IMKg
-KGNhc2UwMykgU1RBUlQKPiBFWFBFQ1Q6IHJldHVybiB2YWx1ZShyZXQpPS0xIGVycm5vPTIgKE5v
-IHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkpCj4gUkVTVUxUOiByZXR1cm4gdmFsdWUocmV0KT0tMSBl
-cnJubz0yIChObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5KQo+IHV0aW1lczAxIMKgIMKgMCDCoElO
-Rk8gwqA6IMKgKGNhc2UwMykgRU5EID0+IE9LCj4gdXRpbWVzMDEgwqAgwqAwIMKgSU5GTyDCoDog
-wqAoY2FzZTA0KSBTVEFSVAo+IEVYUEVDVDogcmV0dXJuIHZhbHVlKHJldCk9LTEgZXJybm89MTQg
-KEJhZCBhZGRyZXNzKQo+IFJFU1VMVDogcmV0dXJuIHZhbHVlKHJldCk9LTEgZXJybm89MTQgKEJh
-ZCBhZGRyZXNzKQo+IHV0aW1lczAxIMKgIMKgMCDCoElORk8gwqA6IMKgKGNhc2UwNCkgRU5EID0+
-IE9LCj4gdXRpbWVzMDEgwqAgwqAxIMKgUEFTUyDCoDogwqB1dGltZXMgY2FsbCBzdWNjZWVkZWQK
-Pgo+IFRoYW5rcyEKPiAtR2FycmV0dAoKTm0gLS0gc29tZW9uZSBlbHNlIGRpZCB3aXRoIHRoZSBj
-b3JyZWN0IG1lbXNldCBzaXplIDspLi4uClRoYW5rcywKLUdhcnJldHQKCi0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLQpFbnRlciB0aGUgQmxhY2tCZXJyeSBEZXZlbG9wZXIgQ2hhbGxlbmdlICAKVGhpcyBp
-cyB5b3VyIGNoYW5jZSB0byB3aW4gdXAgdG8gJDEwMCwwMDAgaW4gcHJpemVzISBGb3IgYSBsaW1p
-dGVkIHRpbWUsIAp2ZW5kb3JzIHN1Ym1pdHRpbmcgbmV3IGFwcGxpY2F0aW9ucyB0byBCbGFja0Jl
-cnJ5IEFwcCBXb3JsZChUTSkgd2lsbCBoYXZlCnRoZSBvcHBvcnR1bml0eSB0byBlbnRlciB0aGUg
-QmxhY2tCZXJyeSBEZXZlbG9wZXIgQ2hhbGxlbmdlLiBTZWUgZnVsbCBwcml6ZSAgCmRldGFpbHMg
-YXQ6IGh0dHA6Ly9wLnNmLm5ldC9zZnUvQ2hhbGxlbmdlCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBs
-aXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMv
-bGlzdGluZm8vbHRwLWxpc3QK
+On Sat, 2009-07-18 at 21:38 -0700, Garrett Cooper wrote: 
+> For whatever reason the original author was using int casts to the
+> strerror strings. That's just plain wrong...
+> 
+> This corrects the issue by feeding back the proper strerror output,
+> which reduces noise at compile time and results in the same desired
+> behavior (because we shouldn't be negative testing strerror(3) in
+> waitid01.c:
+> 
+> gcooper@orangebox /scratch/ltp-nova2/ltp-nova $
+> /scratch/ltp-nova2/ltp-nova/testcases/kernel/syscalls/waitid/waitid01
+> waitid01    0  INFO  :  Process 29085 terminated:
+> waitid01    0  INFO  :  code = 1
+> waitid01    0  INFO  :  exit value = 123
+> waitid01    0  INFO  :  Process 29086 terminated:
+> waitid01    0  INFO  :  code = 2
+> waitid01    0  INFO  :  signal = 8
+> waitid01    0  INFO  :  Process 29087 terminated:
+> waitid01    0  INFO  :  code = 2
+> waitid01    0  INFO  :  signal = 1
+> waitid01    0  INFO  :  Process 29088 terminated:
+> waitid01    0  INFO  :  code = 1
+> waitid01    0  INFO  :  exit value = 123
+> waitid01    0  INFO  :  Process 29089 terminated:
+> waitid01    0  INFO  :  code = 2
+> waitid01    0  INFO  :  signal = 8
+> waitid01    0  INFO  :  Process 29090 terminated:
+> waitid01    0  INFO  :  code = 2
+> waitid01    0  INFO  :  signal = 1
+> waitid01    0  INFO  :  Process 29091 terminated:
+> waitid01    0  INFO  :  code = 1
+> waitid01    0  INFO  :  exit value = 123
+> waitid01    0  INFO  :  Process 29092 terminated:
+> waitid01    0  INFO  :  code = 2
+> waitid01    0  INFO  :  signal = 8
+> waitid01    0  INFO  :  Process 29093 terminated:
+> waitid01    0  INFO  :  code = 2
+> waitid01    0  INFO  :  signal = 1
+> waitid01    1  PASS  :  waitid(): system call passed
+> 
+> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+
+I checked in this too. Thanks.
+
+Regards--
+Subrata
+
+> 
+> Index: testcases/kernel/syscalls/waitid/waitid01.c
+> ===================================================================
+> RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/waitid/waitid01.c,v
+> retrieving revision 1.1
+> diff -u -r1.1 waitid01.c
+> --- testcases/kernel/syscalls/waitid/waitid01.c	15 Jun 2009 18:39:45 -0000	1.1
+> +++ testcases/kernel/syscalls/waitid/waitid01.c	19 Jul 2009 04:34:39 -0000
+> @@ -116,14 +116,9 @@
+>  int errnochoose(void){   //choose the relative errno
+> 
+>      switch (TEST_ERRNO){
+> -        case    0:      tst_exit();
+> -        case    ECHILD: strerror((int)"ECHILD");
+> -        	        break;
+> -        case    EINTR:  strerror((int)"EINTR");
+> -                	break;
+> -        case    EINVAL: strerror((int)"EINVAL");
+> -                	break;
+> -        default:     strerror((int)"Other Error");
+> +        case  0:     tst_exit();
+> +		     break;
+> +        default:     strerror(TEST_ERRNO);
+>                       break;
+>     }
+>          TEST_RETURN = 0;
+> ------------------------------------------------------------------------------
+> Enter the BlackBerry Developer Challenge  
+> This is your chance to win up to $100,000 in prizes! For a limited time, 
+> vendors submitting new applications to BlackBerry App World(TM) will have
+> the opportunity to enter the BlackBerry Developer Challenge. See full prize  
+> details at: http://p.sf.net/sfu/Challenge
+> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
