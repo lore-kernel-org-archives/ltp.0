@@ -1,27 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1MW4RC-0008Jp-9b
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2009 08:23:02 +0000
-Received: from mail-yx0-f195.google.com ([209.85.210.195])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MW4R8-0001OK-44
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2009 08:23:02 +0000
-Received: by yxe33 with SMTP id 33so1148784yxe.28
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <wangyong2009@cn.fujitsu.com>) id 1MWJzt-00059g-Vi
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 00:59:53 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MWJzn-0007rX-AJ
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 00:59:53 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id 2073C170141
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 29 Jul 2009 01:22:52 -0700 (PDT)
+	Thu, 30 Jul 2009 08:59:38 +0800 (CST)
+Received: from fnst.cn.fujitsu.com (localhost.localdomain [127.0.0.1])
+	by tang.cn.fujitsu.com (8.13.1/8.13.1) with ESMTP id n6U10FZr022435
+	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 09:00:15 +0800
+Received: from [127.0.0.1] (unknown [10.167.141.67])
+	by fnst.cn.fujitsu.com (Postfix) with ESMTP id 1702AD407E
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 30 Jul 2009 09:01:18 +0800 (CST)
+Message-ID: <4A70F0BF.50006@cn.fujitsu.com>
+Date: Thu, 30 Jul 2009 09:00:47 +0800
+From: Wang Yong <wangyong2009@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <f5a7b3810907170007i33bc5b01sf2dd2810e4615c41@mail.gmail.com>
-References: <f5a7b3810905220417m5bbef733s54524e1180a9d4f7@mail.gmail.com>
-	<cfd18e0f0906012207i61621045je6d98db91d986c5f@mail.gmail.com>
-	<f5a7b3810906040414me72f8b6h583ff3c05b99693@mail.gmail.com>
-	<f5a7b3810907170007i33bc5b01sf2dd2810e4615c41@mail.gmail.com>
-Date: Wed, 29 Jul 2009 13:52:51 +0530
-Message-ID: <f5a7b3810907290122q21745252n620c3a25ee35b1eb@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Content-Type: multipart/mixed; boundary=0015174c0e8caa2c84046fd3e441
-Subject: Re: [LTP] adjtimex system man page EINVAL
+Subject: [LTP]  [PATCH] Fix failure of the utimensat01 test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,222 +33,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: mtk.manpages@gmail.com
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>, zippel@linux-m68k.org, johnstul@us.ibm.com, linux-kernel@vger.kernel.org, saji.kumar@wipro.com, ziegler@uni-freiburg.de, akpm@linux-foundation.org
-
---0015174c0e8caa2c84046fd3e441
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
-
-Hi  Michael Kerrisk,
-
-With reference to the LTP (Linux Test Project) test cases
-ltp/testcases/kernel/syscalls/adjtimex/adjtimex02.c
-
-GIT commit:
-http://git.kernel.org/?p=3Dlinux/kernel/git/torvalds/linux-2.6.git;a=3Dcomm=
-itdiff;h=3Deea83d896e318bda54be2d2770d2c5d6668d11db
-
-There are changes noticed in latest kernel from 2.6.26 and above.
-adjtimex EINVAL error check for offset is removed from 2.6.26 and above ker=
-nels
-
-Kernels source lines are
-
-To make sure the offset value following lines are added in
-linux/kernel/time/ntp.c
-
-+       /*
-+        * Scale the phase adjustment and
-+        * clamp to the operating range.
-+        */
-+       offset =3D min(offset, MAXPHASE);
-+       offset =3D max(offset, -MAXPHASE);
-+
-
-Please review the patch.
-If you have any issues please let me know.
-
-Ref Links:
-
-GIT commit:
-http://git.kernel.org/?p=3Dlinux/kernel/git/torvalds/linux-2.6.git;a=3Dcomm=
-itdiff;h=3Deea83d896e318bda54be2d2770d2c5d6668d11db
-
-LTP:
-http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg02498.html
-
-http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/syscalls/adj=
-timex/adjtimex02.c?view=3Dlog
-
-Best regards,
-Naresh Kamboju
-
-Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
-
-diff -Naurb man-pages-3.21/man2/adjtimex.2 man-pages-3.21_mod/man2/adjtimex=
-.2
---- man-pages-3.21/man2/adjtimex.2	2009-04-15 21:35:32.000000000 +0530
-+++ man-pages-3.21_mod/man2/adjtimex.2	2009-06-04 14:19:34.000000000 +0530
-@@ -118,7 +118,8 @@
- .B EINVAL
- An attempt is made to set
- .I buf.offset
--to a value outside the range \-131071 to +131071,
-+to a value outside the range \-131071 to +131071 applicable upto 2.6.25
-+kernels, EINVAL error check with buf.offset been removed from 2.6.25 and a=
-bove,
- or to set
- .I buf.status
- to a value other than those listed above,
-
-
-
-On Fri, Jul 17, 2009 at 12:37 PM, naresh kamboju<naresh.kernel@gmail.com> w=
-rote:
-> Dear Michael Kerrisk,
->
-> As per our discussion =85 I have sent below mail explaining the issue
-> with adjtimex man page.
-> Is that information and patch =A0OK?
->
-> When would be the next man page release?
->
-> Please let me know if there are any issues.
->
-> Best regards
-> Naresh Kamboju
->
->
->
-> On Thu, Jun 4, 2009 at 4:44 PM, naresh kamboju<naresh.kernel@gmail.com> w=
-rote:
->> Dear Michael Kerrisk,
->>
->> After comparing the changes between 2.6.25 and 2.6.29 kernels
->> As per my understanding EINVAL error check is removed with
->> timex.offset after 2.6.25 kernels and above.
->>
->> To make sure the offset value following lines are added in
->> linux-2.6.29/kernel/time/ntp.c +80
->>
->>
->> + =A0 =A0 =A0 /*
->> + =A0 =A0 =A0 =A0* Scale the phase adjustment and
->> + =A0 =A0 =A0 =A0* clamp to the operating range.
->> + =A0 =A0 =A0 =A0*/
->> + =A0 =A0 =A0 offset =3D min(offset, MAXPHASE);
->> + =A0 =A0 =A0 offset =3D max(offset, -MAXPHASE);
->> +
->>
->>
->> I have attached patch as adjtimex_man.patch
->>
->>
->> Best wishes,
->> Naresh Kamboju
->>
->> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
->> diff -Naurb man-pages-3.21/man2/adjtimex.2 man-pages-3.21_mod/man2/adjti=
-mex.2
->> --- man-pages-3.21/man2/adjtimex.2 =A0 =A0 =A02009-04-15 21:35:32.000000=
-000 +0530
->> +++ man-pages-3.21_mod/man2/adjtimex.2 =A02009-06-04 14:19:34.000000000 =
-+0530
->> @@ -118,7 +118,8 @@
->> =A0.B EINVAL
->> =A0An attempt is made to set
->> =A0.I buf.offset
->> -to a value outside the range \-131071 to +131071,
->> +to a value outside the range \-131071 to +131071 applicable upto 2.6.25
->> +kernels, EINVAL error check with buf.offset been removed from 2.6.25 an=
-d above,
->> =A0or to set
->> =A0.I buf.status
->> =A0to a value other than those listed above,
->>
->>
->>
->>
->>
->> On Tue, Jun 2, 2009 at 10:37 AM, Michael Kerrisk
->> <mtk.manpages@googlemail.com> wrote:
->>> Naresh,
->>>
->>> On Fri, May 22, 2009 at 1:17 PM, naresh kamboju <naresh.kernel@gmail.co=
-m> wrote:
->>>> Hi,
->>>>
->>>> Regarding adjtimex system man page,
->>>>
->>>> Since there are modifications noticed in
->>>> /kerel/time/ntp.c
->>>> /include/linux/timex.h
->>>>
->>>> compared with /kerel/time/ntp.c 2.6.23 and 2.6.29 and above i have
->>>> attached adjtimex_2.6.23_vs_2.6.29.log : line number 330.
->>>>
->>>> In adjtimex (2) man page under the EINVAL Error check section changes
->>>> are required w.r.t buf.offset.
->>>> Could you conform and update the man page.
->>>
->>> Could you please summarize in a couple of sentence what the actual
->>> changes are that you think are required.
->>>
->>> Cheers,
->>>
->>> Michael
->>>
->>>
->>> --
->>> Michael Kerrisk
->>> Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
->>> git://git.kernel.org/pub/scm/docs/man-pages/man-pages.git
->>> man-pages online: http://www.kernel.org/doc/man-pages/online_pages.html
->>> Found a bug? http://www.kernel.org/doc/man-pages/reporting_bugs.html
->>>
->>
->
-
---0015174c0e8caa2c84046fd3e441
-Content-Type: application/octet-stream; name="adjtimex_man.patch"
-Content-Disposition: attachment; filename="adjtimex_man.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fxpqe8xt0
-
-ZGlmZiAtTmF1cmIgbWFuLXBhZ2VzLTMuMjEvbWFuMi9hZGp0aW1leC4yIG1hbi1wYWdlcy0zLjIx
-X21vZC9tYW4yL2FkanRpbWV4LjIKLS0tIG1hbi1wYWdlcy0zLjIxL21hbjIvYWRqdGltZXguMgky
-MDA5LTA0LTE1IDIxOjM1OjMyLjAwMDAwMDAwMCArMDUzMAorKysgbWFuLXBhZ2VzLTMuMjFfbW9k
-L21hbjIvYWRqdGltZXguMgkyMDA5LTA2LTA0IDE0OjE5OjM0LjAwMDAwMDAwMCArMDUzMApAQCAt
-MTE4LDcgKzExOCw4IEBACiAuQiBFSU5WQUwKIEFuIGF0dGVtcHQgaXMgbWFkZSB0byBzZXQKIC5J
-IGJ1Zi5vZmZzZXQKLXRvIGEgdmFsdWUgb3V0c2lkZSB0aGUgcmFuZ2UgXC0xMzEwNzEgdG8gKzEz
-MTA3MSwKK3RvIGEgdmFsdWUgb3V0c2lkZSB0aGUgcmFuZ2UgXC0xMzEwNzEgdG8gKzEzMTA3MSBh
-cHBsaWNhYmxlIHVwdG8gMi42LjI1IAora2VybmVscywgRUlOVkFMIGVycm9yIGNoZWNrIHdpdGgg
-YnVmLm9mZnNldCBiZWVuIHJlbW92ZWQgZnJvbSAyLjYuMjUgYW5kIGFib3ZlLAogb3IgdG8gc2V0
-CiAuSSBidWYuc3RhdHVzCiB0byBhIHZhbHVlIG90aGVyIHRoYW4gdGhvc2UgbGlzdGVkIGFib3Zl
-LAo=
---0015174c0e8caa2c84046fd3e441
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: LTP <ltp-list@lists.sourceforge.net>
+
+The error handling for "RW" opt of run_test brought about error results.
+This patch fixed that.
+
+Signed-off-by: WangYong <wangyong2009@cn.fujitsu.com>
+
+--- a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh	2009-07-28 16:23:39.000000000 +0800
++++ b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh	2009-07-28 15:44:13.000000000 +0800
+@@ -260,22 +260,22 @@ echo "Testing read-only file, owned by s
+ echo
+ 
+ echo "***** Testing times==NULL case *****"
+-run_test "" 400 "" "" SUCCESS y y
++run_test -W "" 400 "" "" SUCCESS y y
+ 
+ echo "***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****"
+-run_test "" 400 "" "0 n 0 n" SUCCESS y y
++run_test -W "" 400 "" "0 n 0 n" SUCCESS y y
+ 
+ echo "***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****"
+-run_test "" 400 "" "0 o 0 o" SUCCESS n n
++run_test -W "" 400 "" "0 o 0 o" SUCCESS n n
+ 
+ echo "***** Testing times=={ UTIME_NOW, UTIME_OMIT } case *****"
+-run_test "" 400 "" "0 n 0 o" SUCCESS y n
++run_test -W "" 400 "" "0 n 0 o" SUCCESS y n
+ 
+ echo "***** Testing times=={ UTIME_OMIT, UTIME_NOW } case *****"
+-run_test "" 400 "" "0 o 0 n" SUCCESS n y
++run_test -W "" 400 "" "0 o 0 n" SUCCESS n y
+ 
+ echo "***** Testing times=={ x, y } case *****"
+-run_test "" 400 "" "1 1 1 1" SUCCESS y y
++run_test -W "" 400 "" "1 1 1 1" SUCCESS y y
+ 
+ echo "============================================================"
+ 
+@@ -284,22 +284,22 @@ echo "Testing read-only file, not owned 
+ echo
+ 
+ echo "***** Testing times==NULL case *****"
+-run_test root 400 "" "" EACCES
++run_test -RW root 400 "" "" EACCES
+ 
+ echo "***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****"
+-run_test root 400 "" "0 n 0 n" EACCES
++run_test -RW root 400 "" "0 n 0 n" EACCES
+ 
+ echo "***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****"
+-run_test root 400 "" "0 o 0 o" SUCCESS n n
++run_test -RW root 400 "" "0 o 0 o" SUCCESS n n
+ 
+ echo "***** Testing times=={ UTIME_NOW, UTIME_OMIT } case *****"
+-run_test root 400 "" "0 n 0 o" EPERM
++run_test -RW root 400 "" "0 n 0 o" EPERM
+ 
+ echo "***** Testing times=={ UTIME_OMIT, UTIME_NOW } case *****"
+-run_test root 400 "" "0 o 0 n" EPERM
++run_test -RW root 400 "" "0 o 0 n" EPERM
+ 
+ echo "***** Testing times=={ x, y } case *****"
+-run_test root 400 "" "1 1 1 1" EPERM
++run_test -RW root 400 "" "1 1 1 1" EPERM
+ 
+ echo "============================================================"
+ 
+
+
+
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---0015174c0e8caa2c84046fd3e441
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---0015174c0e8caa2c84046fd3e441--
-
