@@ -1,33 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <matthltc@us.ibm.com>) id 1MMI8d-0004e0-8g
-	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2009 08:59:27 +0000
-Received: from [32.97.110.154] (helo=e36.co.us.ibm.com)
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MMI8Y-0006Wx-Ar
-	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2009 08:59:27 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e36.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n628v2JT012996
-	for <ltp-list@lists.sourceforge.net>; Thu, 2 Jul 2009 02:57:02 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n628wV1U209060
-	for <ltp-list@lists.sourceforge.net>; Thu, 2 Jul 2009 02:58:31 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n628wVrD005660
-	for <ltp-list@lists.sourceforge.net>; Thu, 2 Jul 2009 02:58:31 -0600
-Date: Thu, 2 Jul 2009 01:58:29 -0700
-From: Matt Helsley <matthltc@us.ibm.com>
-Message-ID: <20090702085829.GD19135@count0.beaverton.ibm.com>
-References: <20090702084828.GC19135@count0.beaverton.ibm.com>
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MWMCB-0003Jo-MF
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 03:20:43 +0000
+Received: from mail-pz0-f196.google.com ([209.85.222.196])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MWMC3-0001qP-Tn
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 03:20:43 +0000
+Received: by pzk34 with SMTP id 34so757797pzk.4
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 29 Jul 2009 20:20:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20090702084828.GC19135@count0.beaverton.ibm.com>
-Subject: [LTP] [PATCH 2/4] netns: Add ip tools check to netns tests.
+In-Reply-To: <f5a7b3810907290310h159a8fcby374e7d6b789a6d16@mail.gmail.com>
+References: <f5a7b3810907290310h159a8fcby374e7d6b789a6d16@mail.gmail.com>
+Date: Wed, 29 Jul 2009 20:20:29 -0700
+Message-ID: <364299f40907292020g4c35caa4u12081032154f6301@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [FIX PATCH] open_posix_pthread_equal_2-1.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,63 +27,78 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: Poornima Nayak <poornima.nayak@in.ibm.com>, LTP <ltp-list@lists.sourceforge.net>, Daniel Lezcano <daniel.lezcano@free.fr>, Veerendra C <vechandr@in.ibm.com>, Munipradeep <mbeeraka@in.ibm.com>
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: Mike Frysinger <vapier@gentoo.org>, ltp-list <ltp-list@lists.sourceforge.net>, maxin john <maxinbjohn@gmail.com>
 
-Use ip -V to exclude the network namespace testcases since they require
-version  ("snapshot") ss080725 or higher to set the network namespace of
-interfaces used for testing.
+On Wed, Jul 29, 2009 at 3:10 AM, naresh kamboju<naresh.kernel@gmail.com> wr=
+ote:
+> Hi,
+>
+> I have notice HUNG status for pthread_equal/2-1.c under posix test suite.
+> conformance/interfaces/pthread_equal/2-1.test:execution:HUNG
+>
+> This because of while(do_it)loop is behaving as while(1).
+> do_it updated value from one thread is not reflecting in the other
+> thread because the type is not proper.
+> I have changed the type from char -> volatile int
+>
+> I have shared results before and after this patch.
+>
+> Before PATCH:
+> conformance/interfaces/pthread_equal/2-1.test:execution:HUNG
+>
+> After PATCH:
+> conformance/interfaces/pthread_equal/2-1.test:execution:PASS
+>
+> I have attached patch and below.
+> Please review the same.
+>
+> Best regards,
+> Naresh Kamboju
+>
+> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+>
+> diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/pthre=
+ad_equal/2-1.c
+> b/testcases/open_posix_testsuite/conformance/interfaces/pthread_equal/2-1=
+.c
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/pthread_equal=
+/2-1.c 2005-06-03
+> 22:01:47.000000000 +0530
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/pthread_equal=
+/2-1.c 2009-07-29
+> 14:27:05.000000000 +0530
+> @@ -80,7 +80,7 @@
+> =A0/*********************************** =A0 =A0Test cases
+> *****************************************/
+> =A0/*********************************************************************=
+***********************/
+>
+> -char do_it=3D1;
+> +volatile int do_it=3D1;
+> =A0unsigned long count_ope=3D0;
+> =A0#ifdef WITH_SYNCHRO
+> =A0sem_t semsig1;
 
-Signed-off-by: Matt Helsley <matthltc@us.ibm.com>
-Signed-off-by: Sachin P. Sant <sachinp@in.ibm.com>
-Cc: Daniel Lezcano <daniel.lezcano@free.fr>
-Cc: Poornima Nayak <poornima.nayak@in.ibm.com>
-Cc: Sudhir Kumar <skumar@linux.vnet.ibm.com>
-Cc: Veerendra C <vechandr@in.ibm.com>
-Cc: Munipradeep <mbeeraka@in.ibm.com>
-Cc: ltp@list.sourceforge.net
+Naresh,
+    Have you contributed this back to openposix, or at the very least
+filed a bug about this that can be referenced?
+Thanks,
+-Garrett
 
+---------------------------------------------------------------------------=
 ---
- testcases/kernel/containers/netns/runnetnstest.sh |   21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
 
-Index: ltp/testcases/kernel/containers/netns/runnetnstest.sh
-===================================================================
---- ltp.orig/testcases/kernel/containers/netns/runnetnstest.sh
-+++ ltp/testcases/kernel/containers/netns/runnetnstest.sh
-@@ -24,6 +24,27 @@
- 
- rc=0
- exit_code=0
-+
-+# Check the iproute2 version (aka "SnapShot")
-+IPROUTEV=`ip -V | cut -d ',' -f 2 | cut -d '-' -f 2 | sed -e 's/^ss//'`
-+
-+# We need to strip leading 0s else bash thinks we're giving it octal numbers.
-+IPROUTEY=$(echo ${IPROUTEV:0:2} | sed -e 's/^0\+//') # Year
-+IPROUTEM=$(echo ${IPROUTEV:2:2} | sed -e 's/^0\+//') # Month
-+IPROUTED=$(echo ${IPROUTEV:4:2} | sed -e 's/^0\+//') # Day
-+
-+V=$((${IPROUTEY}*12*32 + ${IPROUTEM}*32 + ${IPROUTED}))
-+
-+#
-+# iproute-ss080725 and later support setting the network namespace of an
-+# interface.
-+#
-+NETNSV=$((8*12*32 + 7*32 + 25))
-+if [ ${V} -lt ${NETNSV} ]; then
-+	echo "INFO: iproute tools do not support setting network namespaces. Skipping network namespace tests."
-+	exit $exit_code
-+fi
-+
- crtchild
- rc=$?
- if [ $rc -ne 0 ]; then
+trial. Simplify your report design, integration and deployment - and focus =
+on =
 
-------------------------------------------------------------------------------
+what you do best, core application coding. Discover what's new with =
+
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
