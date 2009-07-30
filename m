@@ -1,22 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <nobuhiro@andestech.com>) id 1MmOc1-0003St-F3
-	for ltp-list@lists.sourceforge.net; Sat, 12 Sep 2009 09:09:41 +0000
-Received: from 59-124-160-117.hinet-ip.hinet.net ([59.124.160.117]
-	helo=ATCPCS06.andestech.com)
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MmObw-00086h-Bj
-	for ltp-list@lists.sourceforge.net; Sat, 12 Sep 2009 09:09:41 +0000
-Content-class: urn:content-classes:message
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1MqpJn-0007US-R0
+	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2009 14:29:11 +0000
+Received: from fmmailgate03.web.de ([217.72.192.234])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MqpJg-0001zj-5z
+	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2009 14:29:11 +0000
+Received: from smtp08.web.de (fmsmtp08.dlan.cinetic.de [172.20.5.216])
+	by fmmailgate03.web.de (Postfix) with ESMTP id A8813119F9A58
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 24 Sep 2009 15:30:32 +0200 (CEST)
+Received: from [83.208.36.163] (helo=debian)
+	by smtp08.web.de with asmtp (WEB.DE 4.110 #314) id 1MqoP2-00012Q-00
+	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2009 15:30:32 +0200
+Date: Thu, 30 Jul 2009 12:17:10 +0200
+From: "Jiri Palecek" <jpalecek@web.de>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01CA3388.BBA1A1C5"
-Date: Sat, 12 Sep 2009 17:09:28 +0800
-Message-ID: <50FD90C65C53FB45BADEEBCD84FF07F201B17791@ATCPCS06.andestech.com>
-From: <nobuhiro@andestech.com>
-Subject: Re: [LTP] [PATCH] pselect01: Fixed the checking logic to also
-	consider some variation.
+Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Resent-Message-ID: <op.u0rjtluacfnueu@debian>
+Subject: [LTP] [PATCH] Add a test for race-free operation of ppoll
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,99 +30,141 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vapier@gentoo.org
-
-This is a multi-part message in MIME format.
-
-------_=_NextPart_001_01CA3388.BBA1A1C5
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
-
-=20
-Hi Mike,
-
-Thanks for identifying that.
-Fixed patch attached.
-
--Nobuhiro Lin
-
------Original Message-----
-From: Mike Frysinger [mailto:vapier@gentoo.org]=20
-Sent: Saturday, September 12, 2009 10:28 AM
-To: ltp-list@lists.sourceforge.net
-Cc: Shawn Hsin-Hung Lin(=AAL=ABH=A7=BB)
-Subject: Re: [LTP] [PATCH] pselect01: Fixed the checking logic to also =
-consider some variation.
-
-On Friday 11 September 2009 09:20:33 Nobuhiro Lin wrote:
-> -		if (total_sec >=3D (end - start))
-> +		if(((end - start) >=3D total_sec) && ((end - start) <=3D total_sec =
-+=20
-> +1))
-
-please fix your style.  skimping on whitespace doesnt make for smaller =
-code.
-
-that said, your test boils down to "=3D=3D total_sec" or "=3D=3D =
-total_sec + 1". =20
-might as well use that rather than confusing greater/less than =
-comparisons.
--mike
-
-------_=_NextPart_001_01CA3388.BBA1A1C5
-Content-Type: application/octet-stream;
-	name="0001-pselect01-Fixed-the-checking-logic-to-also-consider-.patch"
-Content-Transfer-Encoding: base64
-Content-Description: 0001-pselect01-Fixed-the-checking-logic-to-also-consider-.patch
-Content-Disposition: attachment;
-	filename="0001-pselect01-Fixed-the-checking-logic-to-also-consider-.patch"
-
-RnJvbSAyMTg5Y2RiZjU1N2UxODAzMmJlMjU4MDdhOGY1MDBjNzUyMzk3OGNhIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBub2J1aGlybyA8bm9idWhpcm9AYW5kZXN0ZWNoLmNvbT4KRGF0
-ZTogRnJpLCAxMSBTZXAgMjAwOSAyMDo1OTowNCArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIHBzZWxl
-Y3QwMTogRml4ZWQgdGhlIGNoZWNraW5nIGxvZ2ljIHRvIGFsc28gY29uc2lkZXIgc29tZSB2YXJp
-YXRpb24uCgpTb21ldGltZXMgd2UgbWF5IGdldCBmYWlsZWQgcmVzdWx0cyB0aGF0IHRoZSBtZWFz
-dXJlZCB0aW1lIGlzIDEgc2Vjb25kIGxvbmdlciB0aGFuIGV4cGVjdGVkLgpBcyBmaXhlZCBieSBD
-cmFpZyBNZWllciBlYXJsaWVyLCB0aGUgc2xlZXBzIG1heSBsYXN0IHNsaWdodGx5IG1vcmUgdGhh
-biB0b3RhbF9zZWMuCkFsc28gY29uc2lkZXJpbmcgdGhlIHRpbWUoKSBvdmVyaGVhZCwgd2Ugc2hv
-dWxkIGV4cGVjdCB0aGUgc2xlZXBzIHRvIGxhc3QgYmV0d2Vlbgp0b3RhbF9zZWMgYW5kICh0b3Rh
-bF9zZWMrMSkgc2Vjb25kcy4KLS0tCiB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3BzZWxlY3Qv
-cHNlbGVjdDAxLmMgfCAgICAyICstCiAxIGZpbGVzIGNoYW5nZWQsIDEgaW5zZXJ0aW9ucygrKSwg
-MSBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3Bz
-ZWxlY3QvcHNlbGVjdDAxLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3BzZWxlY3QvcHNl
-bGVjdDAxLmMKaW5kZXggMDhkMTY4Zi4uMWQyYjNjMSAxMDA2NDQKLS0tIGEvdGVzdGNhc2VzL2tl
-cm5lbC9zeXNjYWxscy9wc2VsZWN0L3BzZWxlY3QwMS5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwv
-c3lzY2FsbHMvcHNlbGVjdC9wc2VsZWN0MDEuYwpAQCAtMTA4LDcgKzEwOCw3IEBAIGludCBtYWlu
-KCkKIAkJCSAgICBOVUxMKTsKIAkJZW5kID0gdGltZSgmdCk7CiAKLQkJaWYgKHRvdGFsX3NlYyA+
-PSAoZW5kIC0gc3RhcnQpKQorCQlpZiAoKChlbmQgLSBzdGFydCkgPT0gdG90YWxfc2VjKSB8fCAo
-KGVuZCAtIHN0YXJ0KSA9PSB0b3RhbF9zZWMgKyAxKSkKIAkJCXRzdF9yZXNtKFRQQVNTLCAiU2xl
-ZXAgdGltZSB3YXMgY29ycmVjdCIpOwogCQllbHNlCiAJCQl0c3RfcmVzbShURkFJTCwgIlNsZWVw
-IHRpbWUgd2FzIGluY29ycmVjdDolZCAhPSAlZCIsCi0tIAoxLjYuMy4xCgo=
-
-------_=_NextPart_001_01CA3388.BBA1A1C5
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Sender: ltp-list-bounces@lists.sourceforge.net
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+Cc: ltp-list@lists.sourceforge.net
+Message-ID: <20090730101710.jYfL0XwSX6RM9cgPCbgFIXvIUN52dQLzvt9_NSkcwf8@z>
+
+Hello,
+
+after the previous patch, this patch adds a test to test a use of ppoll() without races (ie. the intended use of ppoll). It blocks the signal, schedules a signal to be delivered and expects ppoll to return EINTR (and never lose the signal.
+
+Regards
+    Jiri Palecek
+
+Signed-off-by: Jiri Palecek <jpalecek@web.de>
+---
+ testcases/kernel/syscalls/ppoll/ppoll01.c |   53 ++++++++++++++++++++++++++--
+ 1 files changed, 49 insertions(+), 4 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/ppoll/ppoll01.c b/testcases/kernel/syscalls/ppoll/ppoll01.c
+index a04935c..507eddc 100644
+--- a/testcases/kernel/syscalls/ppoll/ppoll01.c
++++ b/testcases/kernel/syscalls/ppoll/ppoll01.c
+@@ -155,6 +155,7 @@ enum test_type {
+         TIMEOUT,
+         FD_ALREADY_CLOSED,
+         SEND_SIGINT,
++        SEND_SIGINT_RACE_TEST,
+         INVALID_NFDS,
+         INVALID_FDS,
+         MINUS_NSEC,
+@@ -219,22 +220,27 @@ static struct test_case tcase[] = {
+                 .err            = EINTR,
+         },
+         { // case05
++                .ttype          = SEND_SIGINT_RACE_TEST,
++                .ret            = -1,
++                .err            = EINTR,
++        },
++        { // case06
+                 .ttype          = INVALID_NFDS,
+                 .ret            = -1,
+                 .err            = EINVAL,
+         },
+-        { // case06
++        { // case07
+                 .ttype          = INVALID_FDS,
+                 .ret            = -1,
+                 .err            = EFAULT,
+         },
+ #if 0
+-        { // case07
++        { // case08
+                 .ttype          = MINUS_NSEC,
+                 .ret            = -1,
+                 .err            = EINVAL, // RHEL4U1 + 2.6.18 returns SUCCESS
+         },
+-        { // case08
++        { // case09
+                 .ttype          = TOO_LARGE_NSEC,
+                 .ret            = -1,
+                 .err            = EINVAL, // RHEL4U1 + 2.6.18 returns SUCCESS
+@@ -306,6 +312,29 @@ static int do_test(struct test_case *tc)
+                 if (pid < 0)
+                         return 1;
+                 break;
++  case SEND_SIGINT_RACE_TEST:
++    /* block the INT signal */
++                sigemptyset(&sigmask);
++                sigaddset(&sigmask, SIGINT);
++                sigprocmask(SIG_SETMASK, &sigmask, NULL);
++
++                /* and let it be unblocked when the syscall runs */
++                sigemptyset(&sigmask);
++                p_sigmask = &sigmask;
++                //sigsetsize = sizeof(sigmask);
++                sigsetsize = 8;
++                nfds = 0;
++                ts.tv_sec = 0;
++                ts.tv_nsec = 300000000; // 300msec => need to be enough for
++                                        //   waiting the signal
++                p_ts = &ts;
++                nfds = 0;
++                pid = create_sig_proc(0, SIGINT, 1);
++                if (pid < 0) {
++                  result=1;
++                  goto cleanup;
++                }
++                break;
+         case INVALID_NFDS:
+                 //nfds = RLIMIT_NOFILE + 1; ==> RHEL4U1 + 2.6.18 returns SUCCESS
+                 nfds = -1;
+@@ -344,12 +373,28 @@ TEST_END:
+         /*
+          * Check results
+          */
++        if(tc->ttype == SEND_SIGINT_RACE_TEST) {
++          int sig;
++          sigprocmask(SIG_SETMASK, NULL, &sigmask);
++          for(sig=1; sig < SIGRTMAX; sig++) {
++              TEST(sigismember(&sigmask, sig));
++              if(TEST_RETURN < 0 && TEST_ERRNO == EINVAL && sig != SIGINT)
++                continue; /* let's ignore errors if they are for other signal than SIGINT that we set */
++              if((sig==SIGINT) != (TEST_RETURN!=0)) {
++                tst_resm(TFAIL, "Bad value of signal mask, signal %d is %s", sig, TEST_RETURN ? "on" : "off");
++                cmp_ok |=1;
++              }
++            }
++        }
+         result |= (sys_errno != tc->err) || !cmp_ok;
+         PRINT_RESULT_CMP(sys_ret >= 0, tc->ret, tc->err, sys_ret, sys_errno,
+                          cmp_ok);
+-
++ cleanup:
+         if (fd >= 0)
+                 cleanup_file(fpath);
++
++        sigemptyset(&sigmask);
++        sigprocmask(SIG_SETMASK, &sigmask, NULL);
+         if (pid > 0) {
+                 int st;
+                 kill(pid, SIGTERM);
+-- 
+1.6.4.3
+
+
+
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-------_=_NextPart_001_01CA3388.BBA1A1C5
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
+http://p.sf.net/sfu/devconf
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------_=_NextPart_001_01CA3388.BBA1A1C5--
-
