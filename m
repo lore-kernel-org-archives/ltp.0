@@ -1,24 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <lethal@linux-sh.org>) id 1MNo2r-0004ZD-9T
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 13:15:45 +0000
-Received: from 124x34x33x190.ap124.ftth.ucom.ne.jp ([124.34.33.190]
-	helo=master.linux-sh.org)
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MNo2h-0007pK-Q2
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 13:15:40 +0000
-Date: Mon, 6 Jul 2009 21:14:55 +0900
-From: Paul Mundt <lethal@linux-sh.org>
-Message-ID: <20090706121455.GA16908@linux-sh.org>
-References: <4A4DFB77.1080700@petalogix.com> <200907031702.52612.arnd@arndb.de>
-	<4A519A70.50801@petalogix.com> <200907061005.36094.arnd@arndb.de>
-	<4A51E8EA.1050009@petalogix.com>
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <rostedt@goodmis.org>) id 1MWbqR-0007CD-Kj
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 20:03:19 +0000
+Received: from hrndva-omtalb.mail.rr.com ([71.74.56.125])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MWbqL-0003Hh-5j
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 20:03:19 +0000
+Date: Thu, 30 Jul 2009 16:03:06 -0400 (EDT)
+From: Steven Rostedt <rostedt@goodmis.org>
+In-Reply-To: <4A71F964.1060507@us.ibm.com>
+Message-ID: <alpine.DEB.2.00.0907301600560.21267@gandalf.stny.rr.com>
+References: <1224509719.5152.116.camel@subratamodak.linux.ibm.com>
+	<1246890698.4887.24.camel@subratamodak.linux.ibm.com>
+	<1247076833.5405.48.camel@subratamodak.linux.ibm.com>
+	<200907102200.12804.sripathik@in.ibm.com>
+	<1247244446.5040.0.camel@subratamodak.linux.ibm.com>
+	<4A57884C.10401@us.ibm.com>
+	<alpine.DEB.2.00.0907201039140.3858@gandalf.stny.rr.com>
+	<4A64A369.8040808@us.ibm.com>
+	<1248978525.5788.55.camel@subratamodak.linux.ibm.com>
+	<alpine.DEB.2.00.0907301440460.21267@gandalf.stny.rr.com>
+	<4A71F964.1060507@us.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4A51E8EA.1050009@petalogix.com>
-Subject: Re: [LTP] mmap syscall problem
+Subject: Re: [LTP] LTP RT Tests (Cyclic, rt-migrate, etc)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,45 +37,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Michal Simek <michal.simek@petalogix.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>, Arnd Bergmann <arnd@arndb.de>, Linux Kernel list <linux-kernel@vger.kernel.org>, Grant Likely <grant.likely@secretlab.ca>, Andrew Morton <akpm@linux-foundation.org>, Ingo Molnar <mingo@elte.hu>, John Williams <john.williams@petalogix.com>
+To: Darren Hart <dvhltc@us.ibm.com>
+Cc: ltp-list <ltp-list@lists.sf.net>, Gregory Haskins <ghaskins@novell.com>, Clark Williams <clark.williams@gmail.com>, linux-rt-users <linux-rt-users@vger.kernel.org>
 
-On Mon, Jul 06, 2009 at 02:07:06PM +0200, Michal Simek wrote:
-> Arnd Bergmann wrote:
-> > On Monday 06 July 2009, Michal Simek wrote:
-> >   
-> >>> Does this happen on microblaze-mmu or microblaze-nommu, or both?
-> >>> The mmap code for the two is very different.
-> >>>   
-> >>>       
-> >> For MMU code.
-> >>     
-> >
-> > Could this be a cache-aliasing problem? If your cache is 'virtually-indexed'
-> > (most architectures are 'physically-indexed'), the kernel may have written
-> > into different parts of the D-cache than what the user space is reading
-> > from. If you have a write-through cache, that can explain why you only
-> > see the stale data at the beginning of the page -- the cache controller
-> > is still busy writing back the data when you start reading it from
-> > DRAM through the cache alias.
-> >   
-> I don't think so because we run that test on Microblaze without caches
-> and test failed too.
-> I think that this is sufficient test to tell that the problem is not
-> relate with caches.
+
+On Thu, 30 Jul 2009, Darren Hart wrote:
 > 
-Not necessarily, even on platforms that manage aliases in hardware
-mappings that violate the aliasing constraints can still result in
-undefined behaviour, this really depends more on your cache controller
-and MMU than anything else. I notice that microblaze sets SHMLBA to
-PAGE_SIZE, you may want to see if this test still breaks after bumping it
-up to something like PAGE_SIZE * 4.
+> Just to be clear, Steven you want us to modify this test case so that it uses
+> the librttest facilities, including those for standardized argument parsing,
+> buffered out, and thread creation, then commit this to the repository?  I
+> don't feel it should go in without those changes.  We've expended a lot of
+> effort making the tests in ltp/realtime be consistent in those areas (they all
+> use some common command line arguments and coding styles).  This ensures that
+> they can be easily maintained along with the other tests in the suite and that
+> users can know what to expect from the test in terms of output, etc.
 
-This is unfortunately one of the areas where what POSIX says is possible
-and what hardware can support are at odds (you can look through
-arch/sh/mm/mmap.c for a better idea).
+The test is GPL, do what you want ;-)
+
+I have my own version that I may play with, but I have no qualms about 
+changing the interface. Especially if it is to be consistent with the rest 
+of LTP. But please CC me on any changes. I can tell if the changes modify 
+the the way the test works, or I may want to incorporate the changes into 
+my local copy.
+
+Thanks,
+
+-- Steve
+
 
 ------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
