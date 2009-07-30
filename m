@@ -2,30 +2,34 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MOCfw-00057L-Fq
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 15:33:44 +0000
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MWaPS-0006Xa-SU
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 18:31:22 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
 	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MOCfr-00014Q-T4
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2009 15:33:44 +0000
-Received: from d01relay07.pok.ibm.com (d01relay07.pok.ibm.com [9.56.227.147])
-	by e6.ny.us.ibm.com (8.13.1/8.13.1) with ESMTP id n67FaoJM006433
-	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jul 2009 11:36:50 -0400
+	(Exim 4.69) id 1MWaPN-0002Gj-Rd
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 18:31:22 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n6UIQSJ9021346
+	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 12:26:28 -0600
 Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d01relay07.pok.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n67FWBfM1171618
-	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jul 2009 11:32:12 -0400
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n6UITth1150286
+	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 12:29:55 -0600
 Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
 	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n67FW2oQ026630
-	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jul 2009 09:32:02 -0600
+	n6UITt3J008057
+	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 12:29:55 -0600
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200907071038.n67Aciix025927@e33.co.us.ibm.com>
-References: <200907071038.n67Aciix025927@e33.co.us.ibm.com>
-Date: Tue, 07 Jul 2009 21:01:58 +0530
-Message-Id: <1246980718.5539.40.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <4A6D7367.70306@petalogix.com>
+References: <20090724110008.GA11878@linux.vnet.ibm.com>
+	<4A6AA306.3060107@petalogix.com>
+	<364299f40907250948sb1a8cc5o7afba11ac2d83ef9@mail.gmail.com>
+	<4A6D7367.70306@petalogix.com>
+Date: Thu, 30 Jul 2009 23:59:38 +0530
+Message-Id: <1248978579.5788.66.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix failures of the clock_nanosleep01 test
+Subject: Re: [LTP] Submitting patch
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -39,72 +43,140 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
-Cc: ltp-list@lists.sourceforge.net
+To: michal.simek@petalogix.com
+Cc: ltp-list@lists.sourceforge.net, Jyoti <jyotiv@linux.vnet.ibm.com>
 
-On Tue, 2009-07-07 at 01:29 +0200, Jiri Palecek wrote: 
-> The failures were caused by strange interpretation of POSIX by the test:
+On Mon, 2009-07-27 at 11:29 +0200, Michal Simek wrote: 
+> Hi Garrett,
+> > On Fri, Jul 24, 2009 at 11:15 PM, Michal
+> > Simek<michal.simek@petalogix.com> wrote:
+> >   
+> >> Please fix coding style. Use tab instead of space for indentation.
+> >>     
+> >
+> >   
+> You wrote nice email and I have to react on it.
 > 
->   - POSIX says CLOCK_THREAD_CPUTIME_ID is an invalid value for the
->     clock_id parameter, and results in an EINVAL
+> > There is nothing that states that 8-space tabs aren't appropriate in
+> > the kernel.org coding / style guide:
+> > http://www.kernel.org/doc/Documentation/CodingStyle
+> >
+> > Please stop saying that tabs are required. 8-space / tabs _are_
+> > required according to the guide.
+> >   
+> I invest a lot of time to fix testcases/kernel/syscalls. I used there
+> tabs instead of spaces.
+> You can use what you want but please keep in your mind.
+> There should be one coding style for all source code. (for C, C++,
+> Makefile, etc)
 > 
->   - POSIX doesn't specify that the remaining time should be set in any
->     way (eg. zeroed) on successful completion
+> If you want to use spaces instead of tab and you hate tab you can of course.
+> I expect that if you replaced all tabs in every C code ltp code will
+> grow up.
+> I am not sure if only this change help anybody.
 > 
-> Also, the test deletes some of the superfluous uses of the TEST macro.
+> IMHO use one tab instead of 8 spaces make more sense.
 > 
-> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+> > Please also thoroughly read through the document as it says 80-char
+> > lines are preferred, etc. It does not say they are required.
+> >   
+> There is not possible to have 80-char lines for every file but if you
+> can use 80-chars line -
+> you should do it. For large function is not possible to do it. If your
+> function is large you should
+> start to think how others will read it.
+> > At the same time though, these guidelines do not necessarily apply to
+> > userland apps, as far as the comment:
+> >
+> > "The answer to that is that if you need more than 3 levels of
+> > indentation, you're screwed anyway, and should fix your program."
+> >
+> > is concerned. Yes, that's true for kernel code. No it's not
+> > necessarily true for userland apps as more than 3 levels of branches
+> > may be required.
+> >
+> > So, in conclusion, yes -- we should try to stick to the kernel.org
+> > coding guidelines, but 1) we are not kernel.org and 2) we're not
+> > producing kernel code, so the coding guidelines may be more of a
+> > shoehorn fit than an appropriate one. It also doesn't apply to
+> > anything beyond C/C++ code.
+> >   
+> Really? But you should look at patches how they looks like. Code don't have
+> any style. If is preferable style for Cisco - it is your problem not
+> mine. Your code
+> present you and your coding style too. LTP contains a lot of code and I
+> thought
+> that will be good to clear.
+> 
+> Anyway this bring me up only troubles nothing else.
+> It is up to Subrata what coding style/patches wants.
 
-Thanks. It solved the problem for me atleast.
+We indeed need coding styles for LTP. Let take this up once and all
+after the release.
 
 Regards--
 Subrata
 
-> ---
->  .../syscalls/clock_nanosleep/clock_nanosleep01.c   |    8 ++++----
->  1 files changed, 4 insertions(+), 4 deletions(-)
+> I won't spend my time on cleaning LTP or disturb people.
 > 
-> diff --git a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
-> index 603201c..3c17a5c 100644
-> --- a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
-> +++ b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
-> @@ -211,7 +211,7 @@ static struct test_case tcase[] = {
->                  .flags          = 0,
->                  .sec            = 0,
->                  .nsec           = 500000000, // 500msec
-> -                .ret            = ENOTSUP, // RHEL4U1 + 2.6.18 returns EINVAL
-> +                .ret            = EINVAL, // RHEL4U1 + 2.6.18 returns EINVAL
->                  .err            = 0,
->          },
->          { // case05
-> @@ -256,8 +256,8 @@ static int chk_difftime(struct timespec *bef, struct timespec *aft,
->                  t.tv_sec -= 1;
->                  t.tv_nsec += 1000000000;
->          }
-> -        TEST(expect = (sec * 1000) + (nsec / 1000000));
-> -        TEST(result = (t.tv_sec * 1000) + (t.tv_nsec / 1000000));
-> +        expect = (sec * 1000) + (nsec / 1000000);
-> +        result = (t.tv_sec * 1000) + (t.tv_nsec / 1000000);
->          tst_resm(TINFO,"check sleep time: (min:%ld) < %ld < (max:%ld) (msec)",expect - MAX_MSEC_DIFF, result, expect + MAX_MSEC_DIFF);
->          if (result < expect - MAX_MSEC_DIFF || result > expect + MAX_MSEC_DIFF)
->                  return -1;
-> @@ -331,7 +331,7 @@ TEST_END:
->          if (tc->ttype == NORMAL || tc->ttype == SEND_SIGINT) {
->                  tst_resm(TINFO,"remain time: %ld %ld", rm.tv_sec, rm.tv_nsec);
->                  if (tc->ttype == NORMAL)
-> -                        remain_ok = rm.tv_sec == 0 && rm.tv_nsec == 0;
-> +                        remain_ok = 1;
->                  else
->                          remain_ok = rm.tv_sec != 0 || rm.tv_nsec != 0;
->          }
+> > Mike/Subrata,
+> >     Can we actually write up a style guide for folks to follow that
+> > applies for code, as the kernel.org guidelines don't apply that well
+> > to our circumstances?
+> >   
+> > Thanks,
+> > -Garrett
+> >   
+> Thanks for your email -> it save me a lot of time for future.
+> 
+> Enjoy your day,
+> Michal
+> 
+> 
+> >   
+> >>> PATCH IS CREATED FOR ltp-full-20090630.
+> >>>
+> >>> I am submitting a patch to kernel/fs/fs_di
+> >>>
+> >>> In this file data integity is performed by creating the file at
+> >>> different directory depth and then by comparing with original file.
+> >>>
+> >>> To this I have added one more approach to perform integrity test.
+> >>> 1. Creating two fragmented files each of size DiskSize/2.
+> >>> 2. Then comapring against the original file.
+> >>> 3. If not equal test case fails.
+> >>>
+> >>> My ultimate goal in creating fragmented files is that,
+> >>> 1. It creates many extents (fragments for each file)
+> >>> 2. FS code may behave wrong at corner cases which may come into picture
+> >>>    after many extents gets added to the file.
+> >>> 3. Data corruption chances are there
+> >>>      i. when file metadata updation is not proper (corner cases when fragments are more)
+> >>>      ii.If write and read is not matching (write operation might have updated the block
+> >>>         number some where and read may skip that block in some corner cases)
+> >>> 4. In reality fragments can occur only after much usage of the disk(create/delete file)
+> >>> 5. This is good test case for bigger size disk.(it can create more extents)
+> >>>       
+> 
+> 
+> -- 
+> Michal Simek, Ing. (M.Eng)
+> PetaLogix - Linux Solutions for a Reconfigurable World
+> w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+> 
+> 
+> ------------------------------------------------------------------------------
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have 
-the opportunity to enter the BlackBerry Developer Challenge. See full prize 
-details at: http://p.sf.net/sfu/blackberry
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
