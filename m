@@ -1,24 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <michal.simek@petalogix.com>) id 1MUaXx-0003cj-6Q
-	for ltp-list@lists.sourceforge.net; Sat, 25 Jul 2009 06:15:53 +0000
-Received: from fg-out-1718.google.com ([72.14.220.158])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MUaXr-0000Xg-4U
-	for ltp-list@lists.sourceforge.net; Sat, 25 Jul 2009 06:15:53 +0000
-Received: by fg-out-1718.google.com with SMTP id e12so214245fga.9
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 24 Jul 2009 23:15:40 -0700 (PDT)
-Message-ID: <4A6AA306.3060107@petalogix.com>
-Date: Sat, 25 Jul 2009 08:15:34 +0200
-From: Michal Simek <michal.simek@petalogix.com>
-MIME-Version: 1.0
-References: <20090724110008.GA11878@linux.vnet.ibm.com>
-In-Reply-To: <20090724110008.GA11878@linux.vnet.ibm.com>
-Subject: Re: [LTP] Submitting patch
-Reply-To: michal.simek@petalogix.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MWaOC-0006O6-DF
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 18:30:04 +0000
+Received: from e31.co.us.ibm.com ([32.97.110.149])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MWaO6-0001yE-Fi
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 18:30:04 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e31.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n6UIOg6Y014748
+	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 12:24:42 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n6UIToGV165596
+	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 12:29:51 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n6UITnvm006115
+	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 12:29:50 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <OFAF51CC3A.0B2793FB-ON852575FE.00403BE8-862575FE.004135EB@us.ibm.com>
+References: <OFAF51CC3A.0B2793FB-ON852575FE.00403BE8-862575FE.004135EB@us.ibm.com>
+Date: Thu, 30 Jul 2009 23:59:34 +0530
+Message-Id: <1248978575.5788.65.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] sync_file_range01 testcase BUG and PATCH
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,62 +40,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jyoti <jyotiv@linux.vnet.ibm.com>
+To: Robert Paulsen <rpaulsen@us.ibm.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Please fix coding style. Use tab instead of space for indentation.
+On Sat, 2009-07-25 at 07:50 -0400, Robert Paulsen wrote: 
+> The testcase sync_file_range01 uses a file descriptor (variable sfd) in its
+> second test, expcting to see an ESPIPE error.
+> 
+> Unfortunately, the code's open of that file descriptor somehow ended up
+> within a set of curly braces encompasing an error path, not the mainline
+> code where it should be. Thus, sfd is never set, In practice this leaves
+> sfd set to zero. That is actually stdin and stdin can work for the testcase
+> but it is not guaranteed. In fact it mostly works, but it hapens to fail
+> sometimes. The attached patch causes the open for sfd (to /dev/null) to
+> actually get invoked.
+> 
+> (See attached file: sync_file_range01.diff)
+> 
+> Robert Paulsen
 
-Thanks,
-Michal
-> PATCH IS CREATED FOR ltp-full-20090630.
->
-> I am submitting a patch to kernel/fs/fs_di
->
-> In this file data integity is performed by creating the file at
-> different directory depth and then by comparing with original file.
->
-> To this I have added one more approach to perform integrity test.
-> 1. Creating two fragmented files each of size DiskSize/2.
-> 2. Then comapring against the original file.
-> 3. If not equal test case fails.
->
-> My ultimate goal in creating fragmented files is that,
-> 1. It creates many extents (fragments for each file)
-> 2. FS code may behave wrong at corner cases which may come into picture
->    after many extents gets added to the file.
-> 3. Data corruption chances are there 
->      i. when file metadata updation is not proper (corner cases when fragments are more)
->      ii.If write and read is not matching (write operation might have updated the block 
->         number some where and read may skip that block in some corner cases)
-> 4. In reality fragments can occur only after much usage of the disk(create/delete file)
-> 5. This is good test case for bigger size disk.(it can create more extents)
->
->
-> To: ltp-list@lists.sourceforge.net
-> Cc: subrata@linux.vnet.ibm.com
-> Bcc: Jyoti <jyotiv@linux.vnet.ibm.com>
-> Subject: Submitting patch 
-> Reply-To: Jyoti <jyotiv@linux.vnet.ibm.com>
->
->   
-> ------------------------------------------------------------------------
->
+Thanks for this, although a missing Signed-off-by: is necessary.
+
+Regards--
+Subrata
+
+> IBM Linux Technology Center, Austin
+> rpaulsen@us.ibm.com
+> 512-468-0565
 > ------------------------------------------------------------------------------
-> ------------------------------------------------------------------------
->
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
--- 
-Michal Simek, Ing. (M.Eng)
-PetaLogix - Linux Solutions for a Reconfigurable World
-w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
