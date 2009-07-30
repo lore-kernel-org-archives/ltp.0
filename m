@@ -1,18 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <kiran@linux.vnet.ibm.com>) id 1MWrS7-0003ux-SW
-	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 12:43:15 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MWrS1-0007Oc-OP
-	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 12:43:15 +0000
-From: Kiran <kiran@linux.vnet.ibm.com>
-Date: Fri, 31 Jul 2009 18:12:31 +0530
-Message-Id: <1249044151.5432.73.camel@kiran-laptop>
-Mime-Version: 1.0
-Subject: [LTP] [PATCH 2/3] libstats: replace data->size by data->index
+	(envelope-from <yanegomi@gmail.com>) id 1MWbFR-0002mL-RX
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 19:25:05 +0000
+Received: from mail-pz0-f180.google.com ([209.85.222.180])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MWbFQ-00043L-Lg
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 19:25:05 +0000
+Received: by pzk10 with SMTP id 10so65375pzk.28
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 30 Jul 2009 12:24:57 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <4A713E40.2010000@cn.fujitsu.com>
+References: <4A70F86E.50608@cn.fujitsu.com>
+	<364299f40907292019r494348dt1e895f0c180f3f58@mail.gmail.com>
+	<4A713E40.2010000@cn.fujitsu.com>
+Date: Thu, 30 Jul 2009 12:24:57 -0700
+Message-ID: <364299f40907301224o4007a6bbnadd176f67d87bf2@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Fix failure of the utimensat01 test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,142 +29,68 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sf.net>
-Cc: gowrishankar.m@in.ibm.com
+To: Wang Yong <wangyong2009@cn.fujitsu.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-This patch replaces the occurrences of data->size by data->index+1 as
-the index starts with 0 and ends at data->size-1.
-data->size holds the max size of the records list in data->container_t.
-data->index holds the index of the last record in the list. Since the
-records list may not be completely filled, data->index + 1 gives the
-total number of records currently in the list and it may not be equal to
-data->size. 
+On Wed, Jul 29, 2009 at 11:31 PM, Wang Yong<wangyong2009@cn.fujitsu.com> wr=
+ote:
+>
+> Garrett Cooper wrote as:
+>>
+>> On Wed, Jul 29, 2009 at 6:33 PM, Wang Yong<wangyong2009@cn.fujitsu.com>
+>> wrote:
+>>
+>>>
+>>> The error handling for "RW" opt of run_test brought about error results.
+>>> This patch fixed that.
+>>>
+>>> Signed-off-by: WangYong <wangyong2009@cn.fujitsu.com>
+>>>
+>>> diff -Nurp a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+>>> b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+>>> --- a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+>>> =A02009-07-28 16:23:39.000000000 +0800
+>>> +++ b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+>>> =A02009-07-28 17:32:26.000000000 +0800
+>>> @@ -260,22 +260,22 @@ echo "Testing read-only file, owned by s
+>>> =A0echo
+>>>
+>>
+>> [...]
+>>
+>> Don't these changes actually conflict with the testcase's purpose,
+>> given the messages echoed placed directly above the commands?
+>> Thanks,
+>> -Garrett
+>>
+>>
+>
+> Hi Garrett,
+>
+> This patch doesn't change the testcase's purpose.
+> And the test results prove it.
 
-Signed-off-by: Kiran Prakash <kiran@linux.vnet.ibm.com>
-Acked-by: Gowrishankar <gowrishankar.m@in.ibm.com>
-Acked-by: Darren Hart <dvhltc@us.ibm.com>
-Acked-by: Sripathi Kodi <sripathik@in.ibm.com> 
-
-diff -upr ltp-full-20090531_orig/testcases/realtime/lib/libstats.c ltp-full-20090531/testcases/realtime/lib/libstats.c
---- ltp-full-20090531_orig/testcases/realtime/lib/libstats.c	2009-07-22 21:12:47.000000000 +0530
-+++ ltp-full-20090531/testcases/realtime/lib/libstats.c	2009-07-22 21:16:59.000000000 +0530
-@@ -105,7 +105,7 @@ int stats_container_free(stats_container
- int stats_sort(stats_container_t *data, enum stats_sort_method method)
- {
- 	// method not implemented, always ascending on y atm
--	qsort(data->records, data->size, sizeof(stats_record_t),
-+	qsort(data->records, data->index + 1, sizeof(stats_record_t),
- 	      stats_record_compare);
- 	return 0;
- }
-@@ -117,7 +117,7 @@ float stats_stddev(stats_container_t *da
- 	long n;
- 
- 	sd = 0.0;
--	n = data->size;
-+	n = data->index + 1;
- 	sum = 0.0;
- 
- 	/* calculate the mean */
-@@ -145,7 +145,7 @@ float stats_avg(stats_container_t *data)
- 	float avg, sum;
- 	long n;
- 
--	n = data->size;
-+	n = data->index + 1;
- 	sum = 0.0;
- 
- 	/* calculate the mean */
-@@ -163,7 +163,7 @@ long stats_min(stats_container_t *data)
- 	long min;
- 	long n;
- 
--	n = data->size;
-+	n = data->index + 1;
- 
- 	/* calculate the mean */
- 	min = data->records[0].y;
-@@ -182,7 +182,7 @@ long stats_max(stats_container_t *data)
- 	long max;
- 	long n;
- 
--	n = data->size;
-+	n = data->index + 1;
- 
- 	/* calculate the mean */
- 	max = data->records[0].y;
-@@ -223,16 +223,17 @@ int stats_quantiles_calc(stats_container
- 	int index;
- 
- 	// check for sufficient data size of accurate calculation
--	if (data->size <= 0 || data->size < (long)exp10(quantiles->nines)) {
-+	if (data->index < 0 || (data->index + 1) \
-+	    < (long)exp10(quantiles->nines)) {
- 		//printf("ERROR: insufficient data size for %d nines\n", data->size);
- 		return -1;
- 	}
- 
--	size = data->size;
-+	size = data->index + 1;
- 	stats_sort(data, ASCENDING_ON_Y);
- 
- 	for (i = 2; i <= quantiles->nines; i++) {
--		index = data->size - data->size / exp10(i);
-+		index = size - size / exp10(i);
- 		quantiles->quantiles[i-2] = data->records[index].y;
- 	}
- 	return 0;
-@@ -259,13 +260,13 @@ int stats_hist(stats_container_t *hist, 
- 
- 	ret = 0;
- 
--	if (hist->size <= 0 || data->size <= 0) {
-+	if (hist->size <= 0 || data->index < 0) {
- 		return -1;
- 	}
- 
- 	/* calculate the range of dataset */
- 	min = max = data->records[0].y;
--	for (i = 0; i < data->size; i++) {
-+	for (i = 0; i <= data->index; i++) {
- 		y = data->records[i].y;
- 		if (y > max) max = y;
- 		if (y < min) min = y;
-@@ -284,7 +285,7 @@ int stats_hist(stats_container_t *hist, 
- 	}
- 
- 	/* fill in the counts */
--	for (i = 0; i < data->size; i++) {
-+	for (i = 0; i <= data->index; i++) {
- 		y = data->records[i].y;
- 		b = MIN((y-min)/width, hist->size-1);
- 		//printf("%d will go in bucket %d\n", y, b);
-@@ -336,8 +337,8 @@ int stats_container_save(char *filename,
-         return -1;
-     } else {
-         minx = maxx = data->records[0].x;
--        miny = maxy = data->records[0].y;
--        for (i = 0; i < data->size; i++) {
-+	miny = maxy = data->records[0].y;
-+	for (i = 0; i <= data->index; i++) {
-             rec = &data->records[i];
-             minx = MIN(minx, rec->x);
-             maxx = MAX(maxx, rec->x);
-
-
--- 
-
+Wang,
+    You're changing everything to RW -- how is that not contradicting
+the phrase `Testing read-only file'?
+    Just because things fail doesn't necessarily mean that the entire
+intent is incorrect. Let's make sure not to lose sight of that point
+:).
 Thanks,
-Kiran
+-Garrett
 
+---------------------------------------------------------------------------=
+---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
 
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
+trial. Simplify your report design, integration and deployment - and focus =
+on =
+
+what you do best, core application coding. Discover what's new with =
+
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
