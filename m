@@ -1,18 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <markver@us.ibm.com>) id 1MTlNz-0005fY-T5
-	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 23:38:11 +0000
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MWaNO-0006IJ-5y
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 18:29:14 +0000
+Received: from e38.co.us.ibm.com ([32.97.110.159])
 	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MTlNv-0003sL-LR
-	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2009 23:38:11 +0000
-Message-ID: <OFC57A047B.CF64D210-ON852575FB.007EFB24-852575FB.0081AD79@us.ibm.com>
-From: Mark Ver <markver@us.ibm.com>
-Date: Wed, 22 Jul 2009 19:36:25 -0400
-MIME-Version: 1.0
-Subject: [LTP] eventfd2_03
+	(Exim 4.69) id 1MWaNJ-0001hO-Eh
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 18:29:14 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4A64A369.8040808@us.ibm.com>
+References: <1224509719.5152.116.camel@subratamodak.linux.ibm.com>
+	<1246890698.4887.24.camel@subratamodak.linux.ibm.com>
+	<1247076833.5405.48.camel@subratamodak.linux.ibm.com>
+	<200907102200.12804.sripathik@in.ibm.com>
+	<1247244446.5040.0.camel@subratamodak.linux.ibm.com>
+	<4A57884C.10401@us.ibm.com>
+	<alpine.DEB.2.00.0907201039140.3858@gandalf.stny.rr.com>
+	<4A64A369.8040808@us.ibm.com>
+Date: Thu, 30 Jul 2009 23:58:45 +0530
+Message-Id: <1248978525.5788.55.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] LTP RT Tests (Cyclic, rt-migrate, etc)
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,140 +32,99 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5623931059774352785=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sf.net
-
---===============5623931059774352785==
-Content-type: multipart/alternative; 
-	Boundary="0__=0ABBFF68DFED7DB48f9e8a93df938690918c0ABBFF68DFED7DB4"
-Content-Disposition: inline
-
---0__=0ABBFF68DFED7DB48f9e8a93df938690918c0ABBFF68DFED7DB4
-Content-type: text/plain; charset=UTF-8
-Content-transfer-encoding: base64
-
-
-DQpIaSwNCg0KSnVzdCByZWNlbnRseSBkb3dubG9hZGVkIHRoZSAyMDA5MDYzMCB2ZXJzaW9uIExU
-UC4gIEJ1dCBpdCBsb29rcyBsaWtlIHRoZXJlDQppcyBhIG5ldyB0ZXN0Y2FzZSAiZXZlbnRmZDJf
-MDMiIGluY2x1ZGVkIGFzIHBhcnQgb2YgZGVmYXVsdCB3aGljaCBpcw0KZ2V0dGluZyBhIGNvbXBp
-bGUgcHJvYmxlbSBhbmQgY2F1c2luZyB0aGUgTFRQIGJ1aWxkIHRvIGFib3J0IG9uIHMzOTB4DQph
-cmNoaXRlY3R1cmU6DQoNCi4uLg0KbWFrZVs0XTogRW50ZXJpbmcgZGlyZWN0b3J5DQpgL3Jvb3Qv
-bHRwLWZ1bGwtMjAwOTA2MzAvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9ldmVudGZkMicNCmdj
-YyAtZyAtTzIgLUkuLi8uLi9pbmNsdWRlIC1nIC1XYWxsIC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAt
-V2FsbA0KZXZlbnRmZDJfMDMuYyAgLUwuLi8uLi8uLi8uLi9saWIgLWxsdHAgLW8gZXZlbnRmZDJf
-MDMNCmV2ZW50ZmQyXzAzLmM6NDg6MjogZXJyb3I6ICNlcnJvciBDYW5ub3QgZGV0ZWN0IHlvdXIg
-YXJjaGl0ZWN0dXJlIQ0KZXZlbnRmZDJfMDMuYzogSW4gZnVuY3Rpb24g4oCYZXZlbnRmZDLigJk6
-DQpldmVudGZkMl8wMy5jOjU0OiBlcnJvcjog4oCYX19OUl9ldmVudGZkMuKAmSB1bmRlY2xhcmVk
-IChmaXJzdCB1c2UgaW4gdGhpcw0KZnVuY3Rpb24pDQpldmVudGZkMl8wMy5jOjU0OiBlcnJvcjog
-KEVhY2ggdW5kZWNsYXJlZCBpZGVudGlmaWVyIGlzIHJlcG9ydGVkIG9ubHkgb25jZQ0KZXZlbnRm
-ZDJfMDMuYzo1NDogZXJyb3I6IGZvciBlYWNoIGZ1bmN0aW9uIGl0IGFwcGVhcnMgaW4uKQ0KZXZl
-bnRmZDJfMDMuYzogSW4gZnVuY3Rpb24g4oCYeHNlbV93YWl04oCZOg0KZXZlbnRmZDJfMDMuYzo2
-NTogd2FybmluZzogZm9ybWF0IOKAmCVsbHXigJkgZXhwZWN0cyB0eXBlIOKAmGxvbmcgbG9uZyB1
-bnNpZ25lZA0KaW504oCZLCBidXQgYXJndW1lbnQgNSBoYXMgdHlwZSDigJh1X2ludDY0X3TigJkN
-CmV2ZW50ZmQyXzAzLmM6IEluIGZ1bmN0aW9uIOKAmG1haW7igJk6DQpldmVudGZkMl8wMy5jOjEy
-OTogd2FybmluZzogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g4oCYd2FpdHBpZOKA
-mQ0KbWFrZVs0XTogKioqIFtldmVudGZkMl8wM10gRXJyb3IgMQ0KbWFrZVs0XTogTGVhdmluZyBk
-aXJlY3RvcnkNCmAvcm9vdC9sdHAtZnVsbC0yMDA5MDYzMC90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
-bGxzL2V2ZW50ZmQyJw0KbWFrZVszXTogKioqIFthbGxdIEVycm9yIDINCm1ha2VbM106IExlYXZp
-bmcgZGlyZWN0b3J5DQpgL3Jvb3QvbHRwLWZ1bGwtMjAwOTA2MzAvdGVzdGNhc2VzL2tlcm5lbC9z
-eXNjYWxscycNCm1ha2VbMl06ICoqKiBbYWxsXSBFcnJvciAyDQptYWtlWzJdOiBMZWF2aW5nIGRp
-cmVjdG9yeSBgL3Jvb3QvbHRwLWZ1bGwtMjAwOTA2MzAvdGVzdGNhc2VzL2tlcm5lbCcNCm1ha2Vb
-MV06ICoqKiBbYWxsXSBFcnJvciAyDQptYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL3Jvb3Qv
-bHRwLWZ1bGwtMjAwOTA2MzAvdGVzdGNhc2VzJw0KbWFrZTogKioqIFthbGxdIEVycm9yIDINClty
-b290QG0zNmRpc3RybzIgbHRwLWZ1bGwtMjAwOTA2MzBdIw0KDQoNCkxvb2tpbmcgYXQgdGhlIGNv
-ZGUgaXQgZG9lczoNCg0KI2lmbmRlZiBfX05SX2V2ZW50ZmQyDQojaWYgZGVmaW5lZChfX3g4Nl82
-NF9fKQ0KI2RlZmluZSBfX05SX2V2ZW50ZmQyIDI5MA0KI2VsaWYgZGVmaW5lZChfX2kzODZfXykN
-CiNkZWZpbmUgX19OUl9ldmVudGZkMiAzMjgNCiNlbHNlDQojZXJyb3IgQ2Fubm90IGRldGVjdCB5
-b3VyIGFyY2hpdGVjdHVyZSENCiNlbmRpZg0KI2VuZGlmDQoNClNvIHJpZ2h0IGF3YXkgaXQgbG9v
-a3MgbGlrZSB0aGlzIHRlc3QgaXMgZXhwZWN0aW5nIHNvbWUgUEMgYmFzZWQgZmVhdHVyZXMNCmFu
-ZCBtYXkgbm90IHdvcmsgb24gYW55IGFyY2hpdGVjdHVyZSBleGNlcHQgeDg2XzY0IGFuZCBpMzg2
-IGNvbXBhdGlibGUNCnN5c3RlbXMuICBOb3QgcmVhbGx5IHN1cmUgd2h5IGl0IGdvdCBpbmNsdWRl
-ZCBhcyBwYXJ0IG9mIHRoZSBkZWZhdWx0IHNldCBvZg0KdGVzdGNhc2VzIG9yIHdoeSBjb25maWd1
-cmUgc2NyaXB0IGRpZCBub3Qgd2VlZCBpdCBvdXQgYXMgbm90IGZvcg0KczM5MC9zMzkweC4NCg0K
-VGhlIHRlc3RjYXNlIHNlZW1zIHRvIGJlIG5ldyBhbmQgaXMgbm90IHRoZXJlIG9uIHRoZSAyMDA5
-MDIyOCByZWxlYXNlLg0KSSd2ZSBoZWFyZCB0aGF0IGZvbGtzIHdlcmUgc3VjY2Vzc2Z1bCB1c2lu
-ZyB0aGUgMjAwOSBNYXkgcmVsZWFzZSBhcyB3ZWxsLA0Kc28gdGhpcyBsb29rcyB0byBiZSBqdXN0
-IGFuIGlzc3VlIGluIHRoZSAyMDA5MDYzMCByZWxlYXNlLg0KDQoNClRoYW5rcywNCi0gTWFyayBW
-ZXINCg0Kb2ZmaWNlOiAgQnVpbGRpbmcgNzEwIC8gUm9vbSAyLVJGLTEwDQpwaG9uZTogKDg0NSkg
-NDM1LTc3OTQgIFt0aWUgOCAyOTUtNzc5NF0=
-
---0__=0ABBFF68DFED7DB48f9e8a93df938690918c0ABBFF68DFED7DB4
-Content-type: text/html; charset=UTF-8
-Content-Disposition: inline
-Content-transfer-encoding: base64
-
-PGh0bWw+PGJvZHk+DQo8cD5IaSw8YnI+DQo8YnI+DQpKdXN0IHJlY2VudGx5IGRvd25sb2FkZWQg
-dGhlIDIwMDkwNjMwIHZlcnNpb24gTFRQLiAgQnV0IGl0IGxvb2tzIGxpa2UgdGhlcmUgaXMgYSBu
-ZXcgdGVzdGNhc2UgJnF1b3Q7ZXZlbnRmZDJfMDMmcXVvdDsgaW5jbHVkZWQgYXMgcGFydCBvZiBk
-ZWZhdWx0IHdoaWNoIGlzIGdldHRpbmcgYSBjb21waWxlIHByb2JsZW0gYW5kIGNhdXNpbmcgdGhl
-IExUUCBidWlsZCB0byBhYm9ydCBvbiBzMzkweCBhcmNoaXRlY3R1cmU6PGJyPg0KPGJyPg0KLi4u
-PGJyPg0KbWFrZVs0XTogRW50ZXJpbmcgZGlyZWN0b3J5IGAvcm9vdC9sdHAtZnVsbC0yMDA5MDYz
-MC90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2V2ZW50ZmQyJzxicj4NCmdjYyAtZyAtTzIgLUku
-Li8uLi9pbmNsdWRlIC1nIC1XYWxsIC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAtV2FsbCAgICBldmVu
-dGZkMl8wMy5jICAtTC4uLy4uLy4uLy4uL2xpYiAtbGx0cCAtbyBldmVudGZkMl8wMzxicj4NCmV2
-ZW50ZmQyXzAzLmM6NDg6MjogZXJyb3I6ICNlcnJvciBDYW5ub3QgZGV0ZWN0IHlvdXIgYXJjaGl0
-ZWN0dXJlITxicj4NCmV2ZW50ZmQyXzAzLmM6IEluIGZ1bmN0aW9uIOKAmGV2ZW50ZmQy4oCZOjxi
-cj4NCmV2ZW50ZmQyXzAzLmM6NTQ6IGVycm9yOiDigJhfX05SX2V2ZW50ZmQy4oCZIHVuZGVjbGFy
-ZWQgKGZpcnN0IHVzZSBpbiB0aGlzIGZ1bmN0aW9uKTxicj4NCmV2ZW50ZmQyXzAzLmM6NTQ6IGVy
-cm9yOiAoRWFjaCB1bmRlY2xhcmVkIGlkZW50aWZpZXIgaXMgcmVwb3J0ZWQgb25seSBvbmNlPGJy
-Pg0KZXZlbnRmZDJfMDMuYzo1NDogZXJyb3I6IGZvciBlYWNoIGZ1bmN0aW9uIGl0IGFwcGVhcnMg
-aW4uKTxicj4NCmV2ZW50ZmQyXzAzLmM6IEluIGZ1bmN0aW9uIOKAmHhzZW1fd2FpdOKAmTo8YnI+
-DQpldmVudGZkMl8wMy5jOjY1OiB3YXJuaW5nOiBmb3JtYXQg4oCYJWxsdeKAmSBleHBlY3RzIHR5
-cGUg4oCYbG9uZyBsb25nIHVuc2lnbmVkIGludOKAmSwgYnV0IGFyZ3VtZW50IDUgaGFzIHR5cGUg
-4oCYdV9pbnQ2NF904oCZPGJyPg0KZXZlbnRmZDJfMDMuYzogSW4gZnVuY3Rpb24g4oCYbWFpbuKA
-mTo8YnI+DQpldmVudGZkMl8wMy5jOjEyOTogd2FybmluZzogaW1wbGljaXQgZGVjbGFyYXRpb24g
-b2YgZnVuY3Rpb24g4oCYd2FpdHBpZOKAmTxicj4NCm1ha2VbNF06ICoqKiBbZXZlbnRmZDJfMDNd
-IEVycm9yIDE8YnI+DQptYWtlWzRdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL3Jvb3QvbHRwLWZ1bGwt
-MjAwOTA2MzAvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9ldmVudGZkMic8YnI+DQptYWtlWzNd
-OiAqKiogW2FsbF0gRXJyb3IgMjxicj4NCm1ha2VbM106IExlYXZpbmcgZGlyZWN0b3J5IGAvcm9v
-dC9sdHAtZnVsbC0yMDA5MDYzMC90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzJzxicj4NCm1ha2Vb
-Ml06ICoqKiBbYWxsXSBFcnJvciAyPGJyPg0KbWFrZVsyXTogTGVhdmluZyBkaXJlY3RvcnkgYC9y
-b290L2x0cC1mdWxsLTIwMDkwNjMwL3Rlc3RjYXNlcy9rZXJuZWwnPGJyPg0KbWFrZVsxXTogKioq
-IFthbGxdIEVycm9yIDI8YnI+DQptYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9yeSBgL3Jvb3QvbHRw
-LWZ1bGwtMjAwOTA2MzAvdGVzdGNhc2VzJzxicj4NCm1ha2U6ICoqKiBbYWxsXSBFcnJvciAyPGJy
-Pg0KW3Jvb3RAbTM2ZGlzdHJvMiBsdHAtZnVsbC0yMDA5MDYzMF0jPGJyPg0KPGJyPg0KPGJyPg0K
-TG9va2luZyBhdCB0aGUgY29kZSBpdCBkb2VzOjxicj4NCjxicj4NCiNpZm5kZWYgX19OUl9ldmVu
-dGZkMjxicj4NCiNpZiBkZWZpbmVkKF9feDg2XzY0X18pPGJyPg0KI2RlZmluZSBfX05SX2V2ZW50
-ZmQyIDI5MDxicj4NCiNlbGlmIGRlZmluZWQoX19pMzg2X18pPGJyPg0KI2RlZmluZSBfX05SX2V2
-ZW50ZmQyIDMyODxicj4NCiNlbHNlPGJyPg0KI2Vycm9yIENhbm5vdCBkZXRlY3QgeW91ciBhcmNo
-aXRlY3R1cmUhPGJyPg0KI2VuZGlmPGJyPg0KI2VuZGlmPGJyPg0KPGJyPg0KU28gcmlnaHQgYXdh
-eSBpdCBsb29rcyBsaWtlIHRoaXMgdGVzdCBpcyBleHBlY3Rpbmcgc29tZSBQQyBiYXNlZCBmZWF0
-dXJlcyBhbmQgbWF5IG5vdCB3b3JrIG9uIGFueSBhcmNoaXRlY3R1cmUgZXhjZXB0IHg4Nl82NCBh
-bmQgaTM4NiBjb21wYXRpYmxlIHN5c3RlbXMuICBOb3QgcmVhbGx5IHN1cmUgd2h5IGl0IGdvdCBp
-bmNsdWRlZCBhcyBwYXJ0IG9mIHRoZSBkZWZhdWx0IHNldCBvZiB0ZXN0Y2FzZXMgb3Igd2h5IGNv
-bmZpZ3VyZSBzY3JpcHQgZGlkIG5vdCB3ZWVkIGl0IG91dCBhcyBub3QgZm9yIHMzOTAvczM5MHgu
-PGJyPg0KPGJyPg0KVGhlIHRlc3RjYXNlIHNlZW1zIHRvIGJlIG5ldyBhbmQgaXMgbm90IHRoZXJl
-IG9uIHRoZSAyMDA5MDIyOCByZWxlYXNlLiAgSSd2ZSBoZWFyZCB0aGF0IGZvbGtzIHdlcmUgc3Vj
-Y2Vzc2Z1bCB1c2luZyB0aGUgMjAwOSBNYXkgcmVsZWFzZSBhcyB3ZWxsLCBzbyB0aGlzIGxvb2tz
-IHRvIGJlIGp1c3QgYW4gaXNzdWUgaW4gdGhlIDIwMDkwNjMwIHJlbGVhc2UuPGJyPg0KPGJyPg0K
-PGJyPg0KVGhhbmtzLDxicj4NCi0gTWFyayBWZXI8YnI+DQo8YnI+DQpvZmZpY2U6ICBCdWlsZGlu
-ZyA3MTAgLyBSb29tIDItUkYtMTA8YnI+DQpwaG9uZTogKDg0NSkgNDM1LTc3OTQgIFt0aWUgOCAy
-OTUtNzc5NF08YnI+DQo8L2JvZHk+PC9odG1sPg==
-
---0__=0ABBFF68DFED7DB48f9e8a93df938690918c0ABBFF68DFED7DB4--
-
-
-
---===============5623931059774352785==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Darren Hart <dvhltc@us.ibm.com>
+Cc: ltp-list <ltp-list@lists.sf.net>, Steven Rostedt <rostedt@goodmis.org>, Gregory Haskins <ghaskins@novell.com>, Clark Williams <clark.williams@gmail.com>, linux-rt-users <linux-rt-users@vger.kernel.org>
+
+On Mon, 2009-07-20 at 10:03 -0700, Darren Hart wrote: 
+> Steven Rostedt wrote:
+> > On Fri, 10 Jul 2009, Darren Hart wrote:
+> > 
+> >> Subrata Modak wrote:
+> >>> On Fri, 2009-07-10 at 22:00 +0530, Sripathi Kodi wrote:
+> >>>> On Wednesday 08 July 2009 23:43:53 Subrata Modak wrote:
+> >>>>> Darren/Sri/Gowri,
+> >>>>>
+> >>>>> Where do you want me to put this exactly inside the RT tree ?
+> >>>> Hi Subrata,
+> >>>>
+> >>>> Going by how the tests are organized currently, I think this should go
+> >>>> into it's own directory under testcases/realtime/func. We will need to
+> >>>> add a makefile to it. Are you looking at us to help you with this?
+> >>> Correct. Please send me a patch which integrates it into RT tests build,
+> >>> install & run.
+> >> Just got back from a week vacation and am burning through mail as fast as I
+> >> can :-) Haven't had a look yet, but does this test use librttest.h?  I suspect
+> >> not.  We'll need to adapt it to run within the existing ltp real-time testing
+> >> framework, which includes things like buffered output as well as mlocking
+> >> support.
+> >>
+> >> Lastly, I'm not sure this test does anything effectively different than
+> >> prio-wake, already in the tree.  My other concerns with the test are its
+> >> explicit 1ms preemption criteria (as Steven described it anyway).  We are
+> >> trying to move away from criteria being inherent in measurement tests, and 1
+> >> ms seems like an awfully long priority inversion to be an acceptable criteria
+> >> to many users.
+> >>
+> >> Steven, am I missing something conceptually here?
+> > 
+> > Hmm, I missed this email, sorry for the late reply.
+> > 
+> > What does prio-wake do?
+> > 
+> > This test is what I used to develop the rt scheduler in mainline (as well 
+> > as in -rt).  It wakes up N+1 tasks with lowering real time priorities. 
+> > Where N is the number of CPUs in the system. Then it makes sure that the 
+> > these tasks spread out across the CPUs. Most tests just test the highest 
+> > priority task in the system. But those tests usually miss the second 
+> > highest prio task in the system. If you have a second highest prio task in 
+> > the system and a CPU is available to run, then it should run on that CPU. 
+> > But what happens is that it can wait to be migrated and can take millisecs 
+> > to wake up.
+> > 
+> > This test makes sure that all the high prio tasks that are in the running 
+> > state are actually running on a CPU if it can.
+> > 
+> > Make sense?
+> 
+> Yup.  This is different than prio-wake.  Prio-wake creates some number 
+> of threads of varying priorities and puts them to sleep on 
+> pthread_cond_wait and then wakes them with pthread_cond_broadcast, then 
+> tests that the threads were woken in priority order.  Fails on 
+> kernels/glibc without requeue pi support as a FUTEX_WAKE(all) was used 
+> for PI mutexes.
+> 
+> So to include this in the ltp/restcases/realtime suite, the test should 
+> make use of the librttest.c and libstats.c apis, standardized argument 
+> parsing, buffered logging mechanism, and standardized output formatting. 
+>   I can't get to that for a little while myself, but can assist if you 
+> have any questions.  Alternatively we can wait a little while, and 
+> perhaps someone on my team will be able to help merge it with the 
+> realtime test infrastructure in LTP.
+
+That should be fine.
+
+Regards--
+Subrata
+
+> 
+> > 
+> > (BTW, current -rt and mainline now fail this test :-? )
+> 
+> Hrm, uh oh.  Adding it to my lengthy list of things to try and look at :/
+> 
+> Thanks Steve,
+> 
+
 
 ------------------------------------------------------------------------------
-
---===============5623931059774352785==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5623931059774352785==--
-
-
