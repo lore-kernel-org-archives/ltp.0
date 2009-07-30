@@ -1,34 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MNqTo-0005DB-F9
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:51:44 +0000
-Received: from e36.co.us.ibm.com ([32.97.110.154])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MNqTn-0002oI-Uk
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 15:51:44 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e36.co.us.ibm.com (8.13.1/8.13.1) with ESMTP id n66Fo5bT018733
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 09:50:05 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.2) with ESMTP id
-	n66FpUrF233918
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 09:51:32 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n66FpKJV024557
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Jul 2009 09:51:20 -0600
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MWaOX-0005jQ-KO
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 18:30:25 +0000
+Received: from e6.ny.us.ibm.com ([32.97.182.146])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MWaOW-0005hR-Qf
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 18:30:25 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e6.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n6UIXx8j003689
+	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 14:33:59 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n6UIUJ6n255304
+	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 14:30:19 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n6UIUIBq011393
+	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 14:30:19 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200907060426.57132.vapier@gentoo.org>
-References: <1246864076.2865.35.camel@localhost.localdomain>
-	<200907060426.57132.vapier@gentoo.org>
-Date: Mon, 06 Jul 2009 21:21:04 +0530
-Message-Id: <1246895464.4887.55.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <4A713E40.2010000@cn.fujitsu.com>
+References: <4A70F86E.50608@cn.fujitsu.com>
+	<364299f40907292019r494348dt1e895f0c180f3f58@mail.gmail.com>
+	<4A713E40.2010000@cn.fujitsu.com>
+Date: Thu, 30 Jul 2009 23:59:59 +0530
+Message-Id: <1248978600.5788.70.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] LTP Build - Would it be possible to handle testcase	build
-	failures without failing all the build process?
+Subject: Re: [LTP] [PATCH] Fix failure of the utimensat01 test
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -39,44 +38,50 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Lucas Meneghel Rodrigues <lmr@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
+To: Wang Yong <wangyong2009@cn.fujitsu.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-On Mon, 2009-07-06 at 04:26 -0400, Mike Frysinger wrote: 
-> On Monday 06 July 2009 03:07:56 Lucas Meneghel Rodrigues wrote:
-> > LTP does have a large amount of testcases, and most of the testcases are
-> > independent from each other, thus IMHO, a single compilation failure
-> > should not fail the whole build process, instead, the tests that could
-> > not be compiled should be marked as BROKEN, and should not be executed
-> > during LTP execution.
-
-Yes, that would be great. And for that an m4 rule file has to be written
-for each and every LTP test, checking:
-1) Header dependency,
-2) Library dependency, etc
-before compiling.
-
-Regards--
-Subrata
-
-> >
-> > Do we have any plans to handle individual build failures in a way that
-> > doesn't fail the whole build process?
-> 
-> use the -k option with make
-> -mike
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
-------------------------------------------------------------------------------
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gVGh1LCAyMDA5LTA3LTMwIGF0IDE0OjMxICswODAwLCBXYW5nIFlvbmcgd3JvdGU6IAo+IEdh
+cnJldHQgQ29vcGVyIHdyb3RlIGFzOgo+ID4gT24gV2VkLCBKdWwgMjksIDIwMDkgYXQgNjozMyBQ
+TSwgV2FuZyBZb25nPHdhbmd5b25nMjAwOUBjbi5mdWppdHN1LmNvbT4gd3JvdGU6Cj4gPiAgIAo+
+ID4+IFRoZSBlcnJvciBoYW5kbGluZyBmb3IgIlJXIiBvcHQgb2YgcnVuX3Rlc3QgYnJvdWdodCBh
+Ym91dCBlcnJvciByZXN1bHRzLgo+ID4+IFRoaXMgcGF0Y2ggZml4ZWQgdGhhdC4KPiA+Pgo+ID4+
+IFNpZ25lZC1vZmYtYnk6IFdhbmdZb25nIDx3YW5neW9uZzIwMDlAY24uZnVqaXRzdS5jb20+Cj4g
+Pj4KPiA+PiBkaWZmIC1OdXJwIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy91dGltZW5zYXQv
+dXRpbWVuc2F0X3Rlc3RzLnNoCj4gPj4gYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3V0aW1l
+bnNhdC91dGltZW5zYXRfdGVzdHMuc2gKPiA+PiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
+bGxzL3V0aW1lbnNhdC91dGltZW5zYXRfdGVzdHMuc2ggICAgMjAwOS0wNy0yOCAxNjoyMzozOS4w
+MDAwMDAwMDAgKzA4MDAKPiA+PiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3V0aW1l
+bnNhdC91dGltZW5zYXRfdGVzdHMuc2ggICAgMjAwOS0wNy0yOCAxNzozMjoyNi4wMDAwMDAwMDAg
+KzA4MDAKPiA+PiBAQCAtMjYwLDIyICsyNjAsMjIgQEAgZWNobyAiVGVzdGluZyByZWFkLW9ubHkg
+ZmlsZSwgb3duZWQgYnkgcwo+ID4+ICBlY2hvCj4gPj4gICAgIAo+ID4KPiA+IFsuLi5dCj4gPgo+
+ID4gRG9uJ3QgdGhlc2UgY2hhbmdlcyBhY3R1YWxseSBjb25mbGljdCB3aXRoIHRoZSB0ZXN0Y2Fz
+ZSdzIHB1cnBvc2UsCj4gPiBnaXZlbiB0aGUgbWVzc2FnZXMgZWNob2VkIHBsYWNlZCBkaXJlY3Rs
+eSBhYm92ZSB0aGUgY29tbWFuZHM/Cj4gPiBUaGFua3MsCj4gPiAtR2FycmV0dAo+ID4KPiA+ICAg
+Cj4gSGkgR2FycmV0dCwKPiAKPiBUaGlzIHBhdGNoIGRvZXNuJ3QgY2hhbmdlIHRoZSB0ZXN0Y2Fz
+ZSdzIHB1cnBvc2UuCj4gQW5kIHRoZSB0ZXN0IHJlc3VsdHMgcHJvdmUgaXQuCgpIb3dldmVyLCBh
+IG11Y2ggYnJvYWRlciBleHBsYW5hdGlvbiBvZiB0aGUgUGF0Y2ggYW5kIGl0xZsgcHVycG9zZSB3
+b3VsZAppbmRlZWQgaGVscCBhIGdyZWF0IGRlYWwuCgpSZWdhcmRzLS0KU3VicmF0YQoKPiAKPiBC
+ZXN0IHJlZ2FyZHMsCj4gV2FuZyBZb25nCj4gCj4gPgo+ID4gICAKPiAKPiAKPiAKPiAKPiAtLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0KPiBMZXQgQ3J5c3RhbCBSZXBvcnRzIGhhbmRsZSB0aGUgcmVwb3J0
+aW5nIC0gRnJlZSBDcnlzdGFsIFJlcG9ydHMgMjAwOCAzMC1EYXkgCj4gdHJpYWwuIFNpbXBsaWZ5
+IHlvdXIgcmVwb3J0IGRlc2lnbiwgaW50ZWdyYXRpb24gYW5kIGRlcGxveW1lbnQgLSBhbmQgZm9j
+dXMgb24gCj4gd2hhdCB5b3UgZG8gYmVzdCwgY29yZSBhcHBsaWNhdGlvbiBjb2RpbmcuIERpc2Nv
+dmVyIHdoYXQncyBuZXcgd2l0aCAKPiBDcnlzdGFsIFJlcG9ydHMgbm93LiAgaHR0cDovL3Auc2Yu
+bmV0L3NmdS9ib2JqLWp1bHkKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwo+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJj
+ZWZvcmdlLm5ldAo+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZv
+L2x0cC1saXN0CgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxldCBDcnlzdGFsIFJlcG9ydHMgaGFu
+ZGxlIHRoZSByZXBvcnRpbmcgLSBGcmVlIENyeXN0YWwgUmVwb3J0cyAyMDA4IDMwLURheSAKdHJp
+YWwuIFNpbXBsaWZ5IHlvdXIgcmVwb3J0IGRlc2lnbiwgaW50ZWdyYXRpb24gYW5kIGRlcGxveW1l
+bnQgLSBhbmQgZm9jdXMgb24gCndoYXQgeW91IGRvIGJlc3QsIGNvcmUgYXBwbGljYXRpb24gY29k
+aW5nLiBEaXNjb3ZlciB3aGF0J3MgbmV3IHdpdGggCkNyeXN0YWwgUmVwb3J0cyBub3cuICBodHRw
+Oi8vcC5zZi5uZXQvc2Z1L2JvYmotanVseQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291
+cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZv
+L2x0cC1saXN0Cg==
