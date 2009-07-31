@@ -1,26 +1,37 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <praveen@primesoftsolutionsinc.com>)
-	id 1MOYLz-0004OB-Cr
-	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 14:42:35 +0000
-Received: from smtp103.biz.mail.in2.yahoo.com ([203.104.19.12])
-	by 3b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1MOYLn-0003AD-NX
-	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2009 14:42:35 +0000
-Received: from unknown (HELO Praveen)
-	(praveen@primesoftsolutionsinc.com@[192.168.0.9])
-	(envelope-sender <praveen@primesoftsolutionsinc.com>)
-	by 0 (qmail-ldap-1.03) with SMTP
-	for <ltp-list@lists.sourceforge.net>; 8 Jul 2009 13:36:15 -0000
-From: "Praveen" <praveen@primesoftsolutionsinc.com>
-Date: Wed, 8 Jul 2009 19:12:26 +0530
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_00A4_01CA0000.07B56990"
-In-Reply-To: <1246980762.5539.52.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] FW: My first Patch
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MWi9H-0002Rd-Ul
+	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 02:47:11 +0000
+Received: from e9.ny.us.ibm.com ([32.97.182.139])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MWi9B-0003WR-Nk
+	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 02:47:11 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e9.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n6V1sTsk012564
+	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 21:54:29 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n6V1skag176084
+	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 21:54:46 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n6V1q4eW007458
+	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 21:52:04 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4A724B32.7070604@in.ibm.com>
+References: <4A48667F.9050101@in.ibm.com> <4A486E66.5050102@cn.fujitsu.com>
+	<4A64541C.9090408@in.ibm.com>
+	<364299f40907200856p1fe1552ch573f00be6918211a@mail.gmail.com>
+	<4A658302.60307@in.ibm.com>
+	<1248978536.5788.57.camel@subratamodak.linux.ibm.com>
+	<4A724B32.7070604@in.ibm.com>
+Date: Fri, 31 Jul 2009 07:24:37 +0530
+Message-Id: <1249005278.5788.79.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Issue observed with chmod05, fchmod05 test cases
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,223 +41,26 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-Message-Id: <E1MOYM0-0004OZ-RR@h25xhf1.ch3.sourceforge.com>
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net, 'Nathan Straz' <nstraz@redhat.com>, 'Naresh' <naresh@primesoftsolutionsinc.com>
+To: Sharyathi Nagesh <sharyath@in.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, mbeeraka@in.ibm.com
 
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_00A4_01CA0000.07B56990
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-
-Hi,
-
-Apologies for the inconvenience
-
-Please find the patch attached with this email (Now "diff -uprN" is used to
-generate the patch)
-
-
-Thanks, 
-Praveen Kumar k
-
-
------Original Message-----
-From: Subrata Modak [mailto:subrata@linux.vnet.ibm.com] 
-Sent: Tuesday, July 07, 2009 9:03 PM
-To: Praveen
-Cc: ltp-list@lists.sourceforge.net; 'Naresh'; 'Nathan Straz'
-Subject: Re: FW: My first Patch
-
-Praveen. Please use this:
-
-diff -uprN
-
-to generate your patches.
-
-Regards--
-Subrata
-
-On Tue, 2009-07-07 at 16:45 +0530, Praveen wrote: 
-> Hi Subrata,
-> 
->  
-> 
-> Please find my first 'file' command test patch attached with this
-> email.
-> 
->  
-> 
-> I have added detailed description of what individual test case does at
-> the top 
-> 
-> of the test. Please feel free to review and provide me with your
-> comments.
-> 
->  
-> 
-> The 'file' command test case in LTP test suite exists in path:
-> 
->  "ltp-xxx/testcases/commands/ade/file/"
-> 
->  
-> 
-> Thanks,
-> 
-> Praveen Kumar k
-> 
->  
-> 
-> 
-
-
-
-------=_NextPart_000_00A4_01CA0000.07B56990
-Content-Type: application/octet-stream;
-	name="file_test.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="file_test.patch"
-
---- file_test_old.sh	2009-07-07 14:15:51.000000000 +0530=0A=
-+++ file_test.sh	2009-07-07 14:05:58.000000000 +0530=0A=
-@@ -39,15 +39,97 @@=0A=
- #                            accordingly.=0A=
- =0A=
- =0A=
--export TST_TOTAL=3D10                # Number of tests in this testcase=0A=
-+#=0A=
-+# Description of individual test cases=0A=
-+# ------------------------------------=0A=
-+#=0A=
-+# Test01: Test if file command recognizes ASCII text files=0A=
-+# -------=0A=
-+# 1) Write text to a known file =0A=
-+# 2) Use 'file' command to get the type of the known file=0A=
-+#    Ex: file xyz.txt=0A=
-+# 3) Grep for the keyword "ASCII text" in the output of the =0A=
-+#    'file' command=0A=
-+# 4) Declare test as PASS if above step is successful else =0A=
-+#    declare test as FAIL=0A=
-+#=0A=
-+# Test02: Test if file command can recognize bash shell script=0A=
-+# -------=0A=
-+# 1) Write a small bash shell script to a known file=0A=
-+# 2) Use 'file' command to get the type of the known file=0A=
-+#    Ex: file xyz.sh=0A=
-+# 3) Grep for the keyword "Bourne-Again shell script" in =0A=
-+#    the output of the 'file' command=0A=
-+# 4) Declare test as PASS if above step is successful else =0A=
-+#    declare test as FAIL=0A=
-+#=0A=
-+# Test03: Test if file command can recognize bash shell script=0A=
-+# -------=0A=
-+#   Similar test(as Test02) is performed with Korn shell script=0A=
-+#=0A=
-+# Test04: Test if file command can recognize C shell script=0A=
-+# -------=0A=
-+#   Similar test(as Test02) is performed with C shell script=0A=
-+#=0A=
-+# Test05: Test if file command can recognize C program text=0A=
-+# -------=0A=
-+#   Similar test(as Test02) is performed with C program text=0A=
-+#=0A=
-+# Test06: Test if file command can recognize ELF binay executables=0A=
-+# -------  =0A=
-+# 1) Grep for 'm68k' or 'sparc' or 'mips' or 'mipseb' or 'sh.eb' =0A=
-+#    or 'powerpc' or 'ppc' or 's390' from the output of the command =0A=
-+#    'uname -m'=0A=
-+# 2) If the above step is successful, assign string 'MSB' to variable =0A=
-+#    TARGET_ARCH else assign string 'LSB'=0A=
-+# 3) Write small C program to a known '.c' file=0A=
-+# 4) Compile it using "cc"=0A=
-+#    Ex: cc xyz xyz.c=0A=
-+# 5) Use file command to get the type of the object file=0A=
-+# 6) Grep for the string "ELF .*-bit $TEST_ARCH executable, .*" =0A=
-+#    in the output of the 'file' command=0A=
-+# 7) If the above command is successful, declare test as PASS=0A=
-+#    else declare test as FAIL=0A=
-+#=0A=
-+# Test07: Test if file command can recognize tar files=0A=
-+# -------=0A=
-+# 1) Write text to three different files=0A=
-+# 2) Archive the files using "tar" command=0A=
-+#    Ex: tar -cf ...=0A=
-+# 3) Use 'file' command to get the type of the archive file=0A=
-+#    Ex: file xyz.tar=0A=
-+# 4) Grep for the string "tar archive" from the output of=0A=
-+#    the above 'file' command=0A=
-+# 5) Declare test as PASS, if the above step is successfull else=0A=
-+#    declare test as FAIL=0A=
-+#=0A=
-+# Test08: Test if file command can tar zip files=0A=
-+# -------=0A=
-+# 1) Write text to three different files=0A=
-+# 2) Archive the files using "tar" command=0A=
-+#    Ex: tar -cf ...=0A=
-+# 3) Use 'gzip' command to zip tar files=0A=
-+#    Ex: gzip -f xyz.tar=0A=
-+# 4) Use 'file' command to get the type of the archive file=0A=
-+#    Ex: file xyz.tar.gz=0A=
-+# 5) Grep for the string "gzip compressed data, .*" from the above =0A=
-+#    file commnand=0A=
-+# 6) Declare test as PASS, if the above step is successfull else=0A=
-+#    declare test as FAIL=0A=
-+#=0A=
- =0A=
-+=0A=
-+export TST_TOTAL=3D10                # Number of tests in this testcase=0A=
-+ =0A=
- if [ -z "$LTPTMP" -a -z "$TMPBASE" ]=0A=
- then =0A=
-     LTPTMP=3D/tmp/=0A=
- else=0A=
--	LTPTMP=3D$TMPBASE=0A=
-+    LTPTMP=3D$TMPBASE=0A=
- fi=0A=
- =0A=
-+# 'LTPBIN' where actual test cases (test binaries) reside=0A=
-+# 'LTPROOT' where the actual LTP test suite resides=0A=
- if [ -z "$LTPBIN" -a -z "$LTPROOT" ]=0A=
- then=0A=
-     LTPBIN=3D./=0A=
-@@ -65,7 +147,7 @@ RC=3D0=0A=
- # Test if file command recognizes ASCII text files.=0A=
- =0A=
- export TCID=3Dfile01=0A=
--export TST_COUNT=3D7=0A=
-+export TST_COUNT=3D1=0A=
- =0A=
- $LTPBIN/tst_resm TINFO "TEST #1: file commad recogizes ASCII text files"=0A=
- =0A=
-
-------=_NextPart_000_00A4_01CA0000.07B56990
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Enter the BlackBerry Developer Challenge  
-This is your chance to win up to $100,000 in prizes! For a limited time, 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize  
-details at: http://p.sf.net/sfu/Challenge
-------=_NextPart_000_00A4_01CA0000.07B56990
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------=_NextPart_000_00A4_01CA0000.07B56990--
-
-
-
+U2hhcnlhdGhpLAoKT24gRnJpLCAyMDA5LTA3LTMxIGF0IDA3OjA4ICswNTMwLCBTaGFyeWF0aGkg
+TmFnZXNoIHdyb3RlOgo+IFN1YnJhdGEKPiA+IAo+ID4gU2hhcnlhdGhpLCBwbGVhc2UgcmVzZW5k
+IHRoaXMgY2xlYW4uCj4gPiAKPiBBdHRhY2hpbmcgaXQsIHdpdGggc2lnbmVkIG9mZiBhZGRlZAoK
+VGhpcyBpcyBnb29kLiBCdXQsIHdoYXQgaSB3YW50ZWQgaXM6CgoxKSBGaW5hbCBhbmQgY2xlYXIg
+ZGVzY3JpcHRpb24gb2YgdGhlIHB1cnBvc2Ugb2YgdGhlIHBhdGNoLAoyKSBTaWduZWQtb2ZmLWJ5
+OiBjbGF1c2UsCjMpIFBhdGNoIGl0c2VsZiwKCkl0xZsganVzdCBsaWtlIGhvdyB5b3Ugd291bGQg
+cmVzZW5kIGEgcGF0Y2ggdG8gTEtNTCwgc2F5aW5nOgoKW1BBVENIIHYyXVtSRVNFTkRdIC4uLgoK
+UmVnYXJkcy0tClN1YnJhdGEKCj4gVGhhbmtzCj4gU2hhcnlhdGhpIE5hZ2VzaAo+IAoKCi0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLQpMZXQgQ3J5c3RhbCBSZXBvcnRzIGhhbmRsZSB0aGUgcmVwb3J0aW5n
+IC0gRnJlZSBDcnlzdGFsIFJlcG9ydHMgMjAwOCAzMC1EYXkgCnRyaWFsLiBTaW1wbGlmeSB5b3Vy
+IHJlcG9ydCBkZXNpZ24sIGludGVncmF0aW9uIGFuZCBkZXBsb3ltZW50IC0gYW5kIGZvY3VzIG9u
+IAp3aGF0IHlvdSBkbyBiZXN0LCBjb3JlIGFwcGxpY2F0aW9uIGNvZGluZy4gRGlzY292ZXIgd2hh
+dCdzIG5ldyB3aXRoIApDcnlzdGFsIFJlcG9ydHMgbm93LiAgaHR0cDovL3Auc2YubmV0L3NmdS9i
+b2JqLWp1bHkKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+THRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRw
+czovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
