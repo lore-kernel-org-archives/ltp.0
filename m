@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1MVgWP-0001NP-TV
-	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2009 06:50:49 +0000
-Received: from mail-yx0-f195.google.com ([209.85.210.195])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MVgWO-0007qR-Jj
-	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2009 06:50:49 +0000
-Received: by yxe33 with SMTP id 33so6828793yxe.28
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MWnfI-0001pe-H7
+	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 08:40:36 +0000
+Received: from rv-out-0708.google.com ([209.85.198.241])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MWnf7-0007oy-7G
+	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 08:40:31 +0000
+Received: by rv-out-0708.google.com with SMTP id b17so513858rvf.22
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 27 Jul 2009 23:50:43 -0700 (PDT)
+	Fri, 31 Jul 2009 01:40:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f5a7b3810907200605r5fc2f575ta761cd45c92b0837@mail.gmail.com>
-References: <f5a7b3810907200605r5fc2f575ta761cd45c92b0837@mail.gmail.com>
-Date: Tue, 28 Jul 2009 12:20:43 +0530
-Message-ID: <f5a7b3810907272350n258c4018mcbf1c5806c3bd27f@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Subject: Re: [LTP] [FIX PATCHES] open_posix_execute.sh
+In-Reply-To: <364299f40907310138v2708c6dfmb378df4004669c4f@mail.gmail.com>
+References: <364299f40907310138v2708c6dfmb378df4004669c4f@mail.gmail.com>
+Date: Fri, 31 Jul 2009 01:40:19 -0700
+Message-ID: <364299f40907310140k2031e88ve39a175d9ca45e8f@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Fix C coding issues and integrate ima into LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,82 +30,237 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Brandon Philips <bphilips@suse.de>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-Hi,
+On Fri, Jul 31, 2009 at 1:38 AM, Garrett Cooper<yanegomi@gmail.com> wrote:
+> 1. None of the ima C files which required openssl/sha.h were using the
+> HAVE_OPENSSL_SHA_H macro define.
+> 2. Add tst_resm support.
+> 3. Fix some missing includes in ima_mmap.c.
+> 4. Remove an unused var.
+> 5. Shuffle around some fields in ima_boot_aggregate.c so that it
+> compiles with -Wunused and consumes less memory when 1. applies.
+>
+> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+>
+> Index: testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/integrity/ima/src/im=
+a_boot_aggregate.c,v
+> retrieving revision 1.1
+> diff -u -r1.1 ima_boot_aggregate.c
+> --- testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c =A0 =
+=A031
+> Mar 2009 13:58:14 -0000 1.1
+> +++ testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c =A0 =
+=A031
+> Jul 2009 08:37:08 -0000
+> @@ -23,14 +23,21 @@
+> =A0#include <fcntl.h>
+> =A0#include <string.h>
+> =A0#include <unistd.h>
+> +#include "config.h"
+> +#include "test.h"
+> +#if HAVE_OPENSSL_SHA_H
+> =A0#include <openssl/sha.h>
+> +#endif
+>
+> =A0#define MAX_EVENT_SIZE 500
+> =A0#define EVENT_HEADER_SIZE 32
+> =A0#define MAX_EVENT_DATA_SIZE (MAX_EVENT_SIZE - EVENT_HEADER_SIZE)
+> =A0#define NUM_PCRS 8 =A0 =A0 /* =A0PCR registers 0-7 in boot aggregate */
+>
+> -static void *display_sha1_digest(char *pcr)
+> +char *TCID =3D "ima_boot_aggregate";
+> +int TST_TOTAL =3D 1;
+> +
+> +static void display_sha1_digest(unsigned char *pcr)
+> =A0{
+> =A0 =A0 =A0 =A0int i;
+>
+> @@ -39,8 +46,10 @@
+> =A0 =A0 =A0 =A0printf("\n");
+> =A0}
+>
+> -int main(int argc, char *argv[])
+> +int
+> +main(int argc, char *argv[])
+> =A0{
+> +#if HAVE_OPENSSL_SHA_H
+> =A0 =A0 =A0 =A0unsigned char boot_aggregate[SHA_DIGEST_LENGTH];
+> =A0 =A0 =A0 =A0struct {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0struct {
+> @@ -74,7 +83,7 @@
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0memset(&pcr[i].digest, 0, SHA_DIGEST_LENGT=
+H);
+>
+> =A0 =A0 =A0 =A0/* Extend the pseudo PCRs with the event digest */
+> - =A0 =A0 =A0 while (fread(&event, sizeof event.header, 1, fp)) {
+> + =A0 =A0 =A0 while (fread(&event, sizeof(event.header), 1, fp)) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (debug) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf("%03u ", event.head=
+er.pcr);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0display_sha1_digest(event.=
+header.digest);
+> @@ -105,6 +114,8 @@
+>
+> =A0 =A0 =A0 =A0printf("boot_aggregate:");
+> =A0 =A0 =A0 =A0display_sha1_digest(boot_aggregate);
+> -
+> - =A0 =A0 =A0 return 0;
+> +#else
+> + =A0 =A0 =A0 tst_resm(TCONF, "System doesn't have openssl/sha.h");
+> +#endif
+> + =A0 =A0 =A0 tst_exit();
+> =A0}
+> Index: testcases/kernel/security/integrity/ima/src/ima_measure.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/integrity/ima/src/im=
+a_measure.c,v
+> retrieving revision 1.1
+> diff -u -r1.1 ima_measure.c
+> --- testcases/kernel/security/integrity/ima/src/ima_measure.c =A0 31 Mar
+> 2009 13:58:14 -0000 =A0 =A0 1.1
+> +++ testcases/kernel/security/integrity/ima/src/ima_measure.c =A0 31 Jul
+> 2009 08:37:08 -0000
+> @@ -22,18 +22,23 @@
+> =A0#include <fcntl.h>
+> =A0#include <string.h>
+> =A0#include <unistd.h>
+> +//#include "config.h"
+> +#include "test.h"
+> +#if HAVE_OPENSSL_SHA_H
+> =A0#include <openssl/sha.h>
+> +#endif
+>
+> =A0#define TCG_EVENT_NAME_LEN_MAX 255
+>
+> -static int verbose =3D 0;
+> -static int validate =3D 0;
+> -static int verify =3D 0;
+> +char *TCID =3D "ima_measure";
+> +int TST_TOTAL =3D 1;
+>
+> =A0#define print_info(format, arg...) \
+> =A0 =A0 =A0 =A0if (verbose) \
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf(format, ##arg)
+>
+> +#if HAVE_OPENSSL_SHA_H
+> +
+> =A0static u_int8_t zero[SHA_DIGEST_LENGTH];
+> =A0static u_int8_t fox[SHA_DIGEST_LENGTH];
+>
+> @@ -90,6 +95,8 @@
+> =A0 =A0 =A0 =A0return 0;
+> =A0}
+>
+> +#endif
+> +
+> =A0/*
+> =A0* ima_measurements.c - calculate the SHA1 aggregate-pcr value based
+> =A0* on the IMA runtime binary measurements.
+> @@ -120,13 +127,19 @@
+> =A0* Return code: if verification enabled, returns number of verification
+> =A0* =A0 =A0 =A0 =A0 =A0 =A0 errors.
+> =A0*/
+> -int main(int argc, char *argv[])
+> +int
+> +main(int argc, char *argv[])
+> =A0{
+> +
+> +#if HAVE_OPENSSL_SHA_H
+> =A0 =A0 =A0 =A0FILE *fp;
+> =A0 =A0 =A0 =A0struct event template;
+> =A0 =A0 =A0 =A0u_int8_t pcr[SHA_DIGEST_LENGTH];
+> =A0 =A0 =A0 =A0int i, count =3D 0, len;
+> - =A0 =A0 =A0 int failed_count =3D 0; =A0 /* number of template verificat=
+ions failed */
+> +
+> + =A0 =A0 =A0 int verbose =3D 0;
+> + =A0 =A0 =A0 int validate =3D 0;
+> + =A0 =A0 =A0 int verify =3D 0;
+>
+> =A0 =A0 =A0 =A0if (argc < 2) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf("format: %s binary_runtime_measurem=
+ents" \
+> @@ -191,12 +204,17 @@
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0print_info(" %s\n", template.ima_data.file=
+name);
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (verify)
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 failed_count +=3D verify_te=
+mplate_hash(&template);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (verify_template_hash(&t=
+emplate) !=3D 0) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TF=
+AIL, "Hash failed");
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+> =A0 =A0 =A0 =A0}
+> =A0 =A0 =A0 =A0fclose(fp);
+>
+> =A0 =A0 =A0 =A0verbose=3D1;
+> =A0 =A0 =A0 =A0print_info("PCRAggr (re-calculated):");
+> =A0 =A0 =A0 =A0display_sha1_digest(pcr);
+> - =A0 =A0 =A0 return failed_count;
+> +#else
+> + =A0 =A0 =A0 tst_resm(TCONF, "System doesn't have openssl/sha.h");
+> +#endif
+> + =A0 =A0 =A0 tst_exit();
+> =A0}
+> Index: testcases/kernel/security/integrity/ima/src/ima_mmap.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/integrity/ima/src/im=
+a_mmap.c,v
+> retrieving revision 1.2
+> diff -u -r1.2 ima_mmap.c
+> --- testcases/kernel/security/integrity/ima/src/ima_mmap.c =A0 =A0 =A019 =
+May 2009
+> 09:57:42 -0000 =A01.2
+> +++ testcases/kernel/security/integrity/ima/src/ima_mmap.c =A0 =A0 =A031 =
+Jul 2009
+> 08:37:08 -0000
+> @@ -16,16 +16,20 @@
+> =A0*/
+> =A0#include <stdio.h>
+> =A0#include <string.h>
+> +#include <unistd.h>
+> =A0#include <sys/stat.h>
+> =A0#include <sys/mman.h>
+> =A0#include <fcntl.h>
+> +#include "test.h"
+> +
+> +char *TCID =3D "ima_mmap";
+> +int TST_TOTAL =3D 1;
+>
+> =A0int main(int argc, char *argv[])
+> =A0{
+> =A0 =A0 =A0 =A0int fd;
+> =A0 =A0 =A0 =A0void *file;
+> =A0 =A0 =A0 =A0char *filename;
+> - =A0 =A0 =A0 int rc;
+>
+> =A0 =A0 =A0 =A0if (argc !=3D 2)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf("%s: filename\n", argv[1]);
+> @@ -48,6 +52,5 @@
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0perror("unmap");
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return(-1);
+> =A0 =A0 =A0 =A0}
+> -
+> - =A0 =A0 =A0 return 0;
+> + =A0 =A0 =A0 tst_exit();
+> =A0}
 
-Hope you have reviewed below patch.
-If you any issue please let me know.
-
-Subrata/ Garrett,
-Please review, if you feel okay.
-commit.
-
-Best regards,
-Naresh Kamboju
-
-
-On Mon, Jul 20, 2009 at 6:35 PM, naresh kamboju<naresh.kernel@gmail.com> wr=
-ote:
-> Hi,
->
-> As per the execute.sh script file there is time limit of two minutes
-> for each test case execution if it takes more time it will be reported
-> as HUNG.
->
-> shm_open/23-1.c test case under posix test suite which executes more
-> than two minitutes so test case reported as HUNG.
->
-> I have changed time limit from 120 to 300 sec. that is nothing but two
-> minutes to five minutes. In low end machines this test case taking 4
-> min to complete execution.
->
-> Now test cases reported as PASS
->
-> I have attached patch and below.
-> Please review the same.
->
->
-> Best regards,
-> Naresh Kamboju
->
->
-> /*****************************************************/
-> Before Patch:
->
-> conformance/interfaces/shm_open/23-1.test:execution:HUNG
->
->
-> After Patch:
->
-> conformance/interfaces/shm_open/23-1.test:execution:PASS
-> /*****************************************************/
->
->
-> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
->
-> diff -Naurb a/testcases/open_posix_testsuite/execute.sh
-> b/testcases/open_posix_testsuite/execute.sh
-> --- a/testcases/open_posix_testsuite/execute.sh 2007-07-26
-> 17:32:11.000000000 +0530
-> +++ b/testcases/open_posix_testsuite/execute.sh 2009-07-20
-> 17:53:15.000000000 +0530
-> @@ -163,8 +163,8 @@
-> =A0declare -i SEGV=3D0
-> =A0declare -i OTH=3D0
->
-> -# Maximum Two minutes waiting time period to execute a test. If it
-> exceeds, the test case will go into the 'HUNG' category.
-> -TIMEOUT_VAL=3D120
-> +# Maximum five minutes waiting time period to execute a test. If it
-> exceeds, the test case will go into the 'HUNG' category.
-> +TIMEOUT_VAL=3D300
->
-> =A0# if gcc available then remove the below line comment else put the t0
-> in posixtestsuite directory.
-> =A0#gcc -o t0 t0.c
->
+This also requires that -lltp be added to the src/Makefile Makefile,
+so I'm not sure whether or not this has any value beyond just being a
+review tool.
+Thanks,
+-Garrett
 
 ---------------------------------------------------------------------------=
 ---
