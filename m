@@ -1,24 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MSGVM-0002Ju-75
-	for ltp-list@lists.sourceforge.net; Sat, 18 Jul 2009 20:27:36 +0000
-Received: from mail-pz0-f178.google.com ([209.85.222.178])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MSGVG-0008Br-1N
-	for ltp-list@lists.sourceforge.net; Sat, 18 Jul 2009 20:27:36 +0000
-Received: by pzk8 with SMTP id 8so1227504pzk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Sat, 18 Jul 2009 13:27:28 -0700 (PDT)
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <rpaulsen@us.ibm.com>) id 1MWhkM-0007Rr-RZ
+	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 02:21:26 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MWhkE-0006Tj-4h
+	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 02:21:26 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e1.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n6V2FpoE011177
+	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 22:15:51 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n6V2LBjt245996
+	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 22:21:11 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n6V2LBl5003404
+	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 22:21:11 -0400
+Message-ID: <OF14E618F8.D2F48B92-ON85257604.000CCB2C-86257604.000CE18C@us.ibm.com>
+From: Robert Paulsen <rpaulsen@us.ibm.com>
+Date: Thu, 30 Jul 2009 22:21:08 -0400
 MIME-Version: 1.0
-In-Reply-To: <8368651DACC1964480F951191B94A078E49483@svexch01.mvista.com>
-References: <8368651DACC1964480F951191B94A078E49483@svexch01.mvista.com>
-Date: Sat, 18 Jul 2009 13:27:28 -0700
-Message-ID: <364299f40907181327n23ff9364x9acb2c03ad3723e9@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] network/lb6/Makefile, mips,
-	mips-el toolchain needs 	explicit RANLIB call to build
+Content-type: multipart/mixed; 
+	Boundary="0__=0ABBFC97DF9F4DBC8f9e8a93df938690918c0ABBFC97DF9F4DBC"
+Content-Disposition: inline
+Subject: [LTP] Fw: sync_file_range01 testcase BUG and PATCH
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,69 +36,71 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Henry Yei <hyei@mvista.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Thu, Jul 16, 2009 at 3:11 PM, Henry Yei<hyei@mvista.com> wrote:
-> This patch fixes the following build error on mips, mips-el toolchain: "r=
-uncc.a: could not read symbols: Archive has no index; run ranlib to add one=
-."
->
-> Signed-off-by: Henry Yei <hyei@mvista.com>
->
-> --- ltp-full-20090531/testcases/network/lib6/Makefile =A0 2009-01-22 01:2=
-6:10.000000000 -0800
-> +++ ltp/testcases/network/lib6/Makefile 2009-07-16 14:53:58.215774700 -07=
-00
-> @@ -39,3 +39,4 @@
->
-> =A0runcc.a: runcc.o
-> =A0 =A0 =A0 =A0ar cr runcc.a runcc.o
-> + =A0 =A0 =A0 $(RANLIB) runcc.a
->
->
->
->
-> Other architectures don't need this patch, if anyone who more familiar wi=
-th mips and knows why, please enlighten me.
->
->
-> Actual error output this patch fixes:
-> make[3]: Entering directory `/ltp-full-20090531/testcases/network/lib6'
-> gcc -mel -g -O2 -I../../../include -g -D_GNU_SOURCE =A0 -c -o runcc.o run=
-cc.c
-> ar cr runcc.a runcc.o
-> gcc -mel -g -O2 -I../../../include -g -D_GNU_SOURCE =A0 =A0asapi_01.c run=
-cc.a -L../../../lib runcc.a -lltp -lpthread =A0-o asapi_01
-> runcc.a: could not read symbols: Archive has no index; run ranlib to add =
-one
-> collect2: ld returned 1 exit status
+--0__=0ABBFC97DF9F4DBC8f9e8a93df938690918c0ABBFC97DF9F4DBC
+Content-type: text/plain; charset=US-ASCII
 
-Hi Henry,
-    It may be because of the compiler flags that are being passed into
-the compile -- either hardcoded when the compiler was generated, or
-after the fact with your folks' build system. I know that mips does
-some strange things compared to other architectures (at least it does
-with our in-house Cavium Networks provided compiler at Cisco). Either
-way, your changes look sane so I will check it into CVS now.
-Thanks,
--Garrett
 
----------------------------------------------------------------------------=
----
-Enter the BlackBerry Developer Challenge  =
 
-This is your chance to win up to $100,000 in prizes! For a limited time, =
+The testcase sync_file_range01 uses a file descriptor (variable sfd) in its
+second test, expcting to see an ESPIPE error.
 
-vendors submitting new applications to BlackBerry App World(TM) will have
-the opportunity to enter the BlackBerry Developer Challenge. See full prize=
-  =
+Unfortunately, the code's open of that file descriptor somehow ended up
+within a set of curly braces encompasing an error path, not the mainline
+code where it should be. Thus, sfd is never set, In practice this leaves
+sfd set to zero. That is actually stdin and stdin can work for the testcase
+but it is not guaranteed. In fact it mostly works, but it hapens to fail
+sometimes. The attached patch causes the open for sfd (to /dev/null) to
+actually get invoked.
 
-details at: http://p.sf.net/sfu/Challenge
+(See attached file: sync_file_range01.diff)
+
+Signed-off-by: Robert Paulsen <rpaulsen@us.ibm.com>
+
+Robert Paulsen
+IBM Linux Technology Center, Austin
+rpaulsen@us.ibm.com
+512-468-0565
+--0__=0ABBFC97DF9F4DBC8f9e8a93df938690918c0ABBFC97DF9F4DBC
+Content-type: application/octet-stream; 
+	name="sync_file_range01.diff"
+Content-Disposition: attachment; filename="sync_file_range01.diff"
+Content-transfer-encoding: base64
+
+LS0tIGx0cC1mdWxsLTIwMDkwNjMwLW9yaWcvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zeW5j
+X2ZpbGVfcmFuZ2Uvc3luY19maWxlX3JhbmdlMDEuYwkyMDA5LTAzLTIzIDA4OjM2OjA3LjAwMDAw
+MDAwMCAtMDUwMAorKysgbHRwLWZ1bGwtMjAwOTA2MzAvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
+cy9zeW5jX2ZpbGVfcmFuZ2Uvc3luY19maWxlX3JhbmdlMDEuYwkyMDA5LTA3LTI0IDA3OjI2OjIy
+LjAwMDAwMDAwMCAtMDUwMApAQCAtMjI0LDEwICsyMjQsMTAgQEAgdm9pZCBzZXR1cCgpCiAJCQkg
+Im9wZW4oJXMsIE9fUkRXUnxPX0NSRUFULDA3MDApIEZhaWxlZCwgZXJybm89JWQgOiAlcyIsCiAJ
+CQkgZmlsZW5hbWUsIGVycm5vLCBzdHJlcnJvcihlcnJubykpOwogCi0JCXNmZCA9IG9wZW4oc3Bs
+X2ZpbGUsIE9fUkRXUiB8IE9fQ1JFQVQsIDA3MDApOwotCiAJfQogCisJc2ZkID0gb3BlbihzcGxf
+ZmlsZSwgT19SRFdSIHwgT19DUkVBVCwgMDcwMCk7CisKIAlyZXR1cm47CiB9CiAK
+
+--0__=0ABBFC97DF9F4DBC8f9e8a93df938690918c0ABBFC97DF9F4DBC
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--0__=0ABBFC97DF9F4DBC8f9e8a93df938690918c0ABBFC97DF9F4DBC
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--0__=0ABBFC97DF9F4DBC8f9e8a93df938690918c0ABBFC97DF9F4DBC--
+
+
