@@ -1,22 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mgahagan@redhat.com>) id 1Mh33D-0004py-2w
-	for ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 15:07:39 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mh336-0006cm-Qx
-	for ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 15:07:39 +0000
-Message-ID: <4A97F2A6.1060803@redhat.com>
-Date: Fri, 28 Aug 2009 11:07:18 -0400
-From: Mike Gahagan <mgahagan@redhat.com>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <matthltc@us.ibm.com>) id 1MX11Y-0004bD-Md
+	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 22:56:28 +0000
+Received: from e33.co.us.ibm.com ([32.97.110.151])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MX11O-0008AR-Rz
+	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 22:56:28 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e33.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n6VMsM2e008266
+	for <ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2009 16:54:22 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n6VMuATE200172
+	for <ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2009 16:56:10 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n6VMuAt8023332
+	for <ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2009 16:56:10 -0600
+Date: Fri, 31 Jul 2009 15:56:09 -0700
+From: Matt Helsley <matthltc@us.ibm.com>
+Message-ID: <20090731225609.GB5479@count0.beaverton.ibm.com>
+References: <1248272525-13205-1-git-send-email-nobuhiro@andestech.com>
+	<20090724182457.GJ5878@count0.beaverton.ibm.com>
+	<1248978565.5788.63.camel@subratamodak.linux.ibm.com>
 MIME-Version: 1.0
-References: <4A92DCAE.5060102@redhat.com>	<1251194293.5534.24.camel@subratamodak.linux.ibm.com>	<4A955C57.7020502@redhat.com>
-	<1251368398.4993.18.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1251368398.4993.18.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] Bug in memory controller test - memctl test #4 -	PATCH
- repost
+Content-Disposition: inline
+In-Reply-To: <1248978565.5788.63.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [PATCH] Fixed static build which needs to link
+	the	pthread library in pidns and pipeio.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,89 +40,71 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 08/27/2009 06:19 AM, Subrata Modak wrote:
-> Hi,
->
-> On Wed, 2009-08-26 at 12:01 -0400, Mike Gahagan wrote:
->> On 08/25/2009 05:58 AM, Subrata Modak wrote:
->>> On Mon, 2009-08-24 at 14:32 -0400, Mike Gahagan wrote:
->>>> When running the Memory Controller test # 4, I'm seeing this behavior below.
->>>>
->>>> TEST 4: MEMORY CONTROLLER TESTING
->>>> RUNNING SETUP.....
->>>> TEST STARTED: Please avoid using system while this test executes
->>>> /mnt/tests/kernel/distribution/ltp/20090731/ltp-full-20090731/testcases/bin/run_memctl_test.sh:
->>>> line 327: [: 62955520: unary operator expected
->>>> TINFO   Memory Resource Controller: stat check test fails in first run
->>>> /mnt/tests/kernel/distribution/ltp/20090731/ltp-full-20090731/testcases/bin/run_memctl_test.sh:
->>>> line 364: [: 78704640: unary operator expected
->>>> TFAIL   Memory Resource Controller: stat check test FAILED
->>>> *** infinite loop here, script exists memctl_test01 remains running ***
->>>> ^Cincrementing stop
->>>>
->>>> The bash error is due to the 'grep -w "active"' not matching anything so
->>>> one of the variables isn't getting set like it is supposed to. I believe
->>>> the test was written with an old version of the memory controller what
->>>> put a field called memory.stat.active in the file memory.stat. The
->>>
->>> Correct. Somebody needs to revisit these tests, as the ABIs has changed.
->
-> Would be able to spend some time here ?
->
-
-Sure, I would be glad to. So far this was the only issue I have found 
-(or the only really obvious one at least). I plan on picking up and 
-running the recently checked in new tests as well, probably in the next 
-week or so.
-
-
-
->>> Thanks for pointing that out. However, your patch has the following
->>> problem:
->>>
->>> 1) Missing Signed-off-by:
->>> 2) missing header for unified diff at line 3 of patch
->>> patching file testcases/kernel/controllers/memctl/run_memctl_test.sh
->>>
->>> Please look into them when you send a patch next time ;-)
->>>
->>> Regards--
->>> Subrata
->>>
->>>> current memory controller I am testing appears to have replaced this
->>>> field with "rss". There are fields showing anonymous and file backed
->>>> pages in memory.stat, but I don't think they are ever going to match the
->>>> memory.usage.in.bytes the test is looking for. Rss always matches and I
->>>> believe that is what we should update the check in the test to look for.
->>>> The attached patch fixes test #4 to compare memory.usage.in.bytes with rss.
->>>> ------------------------------------------------------------------------------
->>
->> Hello,
->>
->> Here is a resubmission of my memctl test patch. It should clear up the
->> issues noted above. No functional change from the previous patch.
->>
->> Signed-off-by: Mike Gahagan<mgahagan@redhat.com>
->
-> Thanks. I already merged your patch.
->
-
-Thank you !
-
-
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gVGh1LCBKdWwgMzAsIDIwMDkgYXQgMTE6NTk6MjVQTSArMDUzMCwgU3VicmF0YSBNb2RhayB3
+cm90ZToKPiBPbiBGcmksIDIwMDktMDctMjQgYXQgMTE6MjQgLTA3MDAsIE1hdHQgSGVsc2xleSB3
+cm90ZTogCj4gPiBPbiBXZWQsIEp1bCAyMiwgMjAwOSBhdCAxMDoyMjowNVBNICswODAwLCBub2J1
+aGlybyB3cm90ZToKPiA+ID4gCj4gPiA+IFNpZ25lZC1vZmYtYnk6IG5vYnVoaXJvIDxub2J1aGly
+b0BhbmRlc3RlY2guY29tPgo+ID4gPiAtLS0KPiA+ID4gIHRlc3RjYXNlcy9rZXJuZWwvY29udGFp
+bmVycy9waWRucy9NYWtlZmlsZSB8ICAgIDIgKy0KPiA+ID4gIHRlc3RjYXNlcy9rZXJuZWwvaXBj
+L3BpcGVpby9NYWtlZmlsZSAgICAgICB8ICAgIDIgKy0KPiA+ID4gIDIgZmlsZXMgY2hhbmdlZCwg
+MiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQo+ID4gPiAKPiA+ID4gZGlmZiAtLWdpdCBh
+L3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9waWRucy9NYWtlZmlsZSBiL3Rlc3RjYXNlcy9r
+ZXJuZWwvY29udGFpbmVycy9waWRucy9NYWtlZmlsZQo+ID4gPiBpbmRleCA0ODg2ZDU4Li4xNGY0
+OWRhIDEwMDY0NAo+ID4gPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvcGlkbnMv
+TWFrZWZpbGUKPiA+ID4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL3BpZG5zL01h
+a2VmaWxlCj4gPiA+IEBAIC0yMCw3ICsyMCw3IEBACj4gPiA+IAo+ID4gPiAgQ0ZMQUdTICs9IC1X
+YWxsCj4gPiA+ICBDUFBGTEFHUyArPSAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgLUkuLi9saWJjbG9u
+ZQo+ID4gPiAtTERMSUJTICs9IC1MLi4vLi4vLi4vLi4vbGliIC1MLi4vbGliY2xvbmUgLi4vbGli
+Y2xvbmUvbGliY2xvbmUuYSAtbGx0cCAtbHJ0Cj4gPiA+ICtMRExJQlMgKz0gLUwuLi8uLi8uLi8u
+Li9saWIgLUwuLi9saWJjbG9uZSAuLi9saWJjbG9uZS9saWJjbG9uZS5hIC1sbHRwIC1scnQgLWxw
+dGhyZWFkCj4gPiAKPiA+IEknbSBub3Qgc3VyZSB0aGlzIGlzIGNvcnJlY3QuIEkganVzdCBkaWQg
+YSBDVlMgdXBkYXRlIGFuZCBncmVwcGVkIGZvcgo+ID4gInB0aHJlYWQiLiBJIGRvbid0IHNlZSBh
+IHNpbmdsZSB1c2Ugb2YgcHRocmVhZHMgaW4gdGhlcmUuIFdoYXQgb3V0cHV0Cj4gPiBzdWdnZXN0
+ZWQgYWxsIG9mIHRoZXNlIHRlc3RzIG5lZWQgdG8gbGluayB0byBwdGhyZWFkcz8gQ291bGQgeW91
+IGF0Cj4gPiBsZWFzdCBzdGljayB0aGF0IGluIHRoZSBjaGFuZ2Vsb2c/Cj4gPiAKPiAKPiBEaWQg
+eW91IHJlcGx5IHRvIE1hdHTFmyBtYWlsIG9uIHRoaXMgPwoKWWVzLCBJIGdvdCBhIHJlcGx5LiBN
+YXliZSBpdCB3YXNuJ3QgY2MnZCB0byB0aGUgTFRQIG1haWxpbmcgbGlzdD8KClJlZ2FyZGxlc3Ms
+IEknbSBzYXRpc2ZpZWQgd2l0aCB0aGUgcGF0Y2ggaXRzZWxmLiBBcyBJIHNhaWQgYmVmb3JlIHRo
+ZQpjaGFuZ2Vsb2cgd291bGQgYmUgbmljZXIgaWYgaXQgaW5jbHVkZWQgYSBzbmlwcGV0IG9mIHRo
+ZSBvdXRwdXQgdGhhdApqdXN0aWZpZXMgaXQgKGluY2x1ZGVkIGhlcmUgZm9yIGNvbnZlbmllbmNl
+KToKCglXaGVuIHN0YXRpYyBsaW5raW5nLCB0aGUgcHRocmVhZCBzdHVmZiBpcyBkdWUgdG8gdGhl
+IHVuZGVmaW5lZCBwdGhyZWFkIHN5bWJvbHMKCWluIGxpYnJ0LmEgYW5kIGxpYmdjY19laC5hLgoJ
+bWFrZVs0XTogRW50ZXJpbmcgZGlyZWN0b3J5CglgL2hvbWUvbm9idWhpcm8vZ2l0X3JlcG8vb3Mv
+bHRwL3Rlc3RjYXNlcy9rZXJuZWwvaXBjL3BpcGVpbycKCWNjIC1XYWxsICAtc3RhdGljIC1XYWxs
+ICAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgICBwaXBlaW8uYyAgLUwuLi8uLi8uLi8uLi9saWIKCS1s
+bHRwIC1scnQgLW8gcGlwZWlvCgkvdXNyL2xpYi9nY2MveDg2XzY0LXBjLWxpbnV4LWdudS80LjMu
+My8uLi8uLi8uLi8uLi9saWI2NC9saWJydC5hKGFpb19zdXNwZW5kLm8pOgoJSW4gZnVuY3Rpb24g
+YGNsZWFudXAnOgoJKC50ZXh0KzB4YSk6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYHB0aHJlYWRf
+bXV0ZXhfbG9jaycKCgpUaGFua3MgdG8gTm9idWhpcm8uCgpDaGVlcnMsCgktTWF0dCBIZWxzbGV5
+Cgo+IAo+IFJlZ2FyZHMtLQo+IFN1YnJhdGEKPiAKPiA+ID4gCj4gPiA+ICBTUkNTICAgIDo9ICQo
+d2lsZGNhcmQgKi5jKQo+ID4gPiAgVEFSR0VUUyA6PSAkKFNSQ1M6JS5jPSUpCj4gPiA+IGRpZmYg
+LS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL2lwYy9waXBlaW8vTWFrZWZpbGUgYi90ZXN0Y2FzZXMv
+a2VybmVsL2lwYy9waXBlaW8vTWFrZWZpbGUKPiA+ID4gaW5kZXggYWZkM2U4ZC4uZDJhMWQ1ZiAx
+MDA2NDQKPiA+ID4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9pcGMvcGlwZWlvL01ha2VmaWxlCj4g
+PiA+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvaXBjL3BpcGVpby9NYWtlZmlsZQo+ID4gPiBAQCAt
+MjIsNyArMjIsNyBAQAo+ID4gPiAgIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCj4gPiA+ICBDRkxBR1MgICAr
+PSAtV2FsbAo+ID4gPiAgQ1BQRkxBR1MgKz0gLUkuLi8uLi8uLi8uLi9pbmNsdWRlCj4gPiA+IC1M
+RExJQlMgICArPSAtTC4uLy4uLy4uLy4uL2xpYiAtbGx0cCAtbHJ0Cj4gPiA+ICtMRExJQlMgICAr
+PSAtTC4uLy4uLy4uLy4uL2xpYiAtbGx0cCAtbHJ0IC1scHRocmVhZAo+ID4gCj4gPiBTYW1lIGhl
+cmUuCj4gPiAKPiA+IENoZWVycywKPiA+IAktTWF0dCBIZWxzbGV5Cj4gPiAKPiA+IC0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLQo+ID4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KPiA+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+ID4gTHRwLWxpc3RAbGlzdHMuc291
+cmNlZm9yZ2UubmV0Cj4gPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0
+aW5mby9sdHAtbGlzdAo+IAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxldCBDcnlzdGFsIFJlcG9y
+dHMgaGFuZGxlIHRoZSByZXBvcnRpbmcgLSBGcmVlIENyeXN0YWwgUmVwb3J0cyAyMDA4IDMwLURh
+eSAKdHJpYWwuIFNpbXBsaWZ5IHlvdXIgcmVwb3J0IGRlc2lnbiwgaW50ZWdyYXRpb24gYW5kIGRl
+cGxveW1lbnQgLSBhbmQgZm9jdXMgb24gCndoYXQgeW91IGRvIGJlc3QsIGNvcmUgYXBwbGljYXRp
+b24gY29kaW5nLiBEaXNjb3ZlciB3aGF0J3MgbmV3IHdpdGggCkNyeXN0YWwgUmVwb3J0cyBub3cu
+ICBodHRwOi8vcC5zZi5uZXQvc2Z1L2JvYmotanVseQpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlz
+dHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xp
+c3RpbmZvL2x0cC1saXN0Cg==
