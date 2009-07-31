@@ -1,34 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MWaOX-0005jQ-KO
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 18:30:25 +0000
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MWaOW-0005hR-Qf
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2009 18:30:25 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e6.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n6UIXx8j003689
-	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 14:33:59 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n6UIUJ6n255304
-	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 14:30:19 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n6UIUIBq011393
-	for <ltp-list@lists.sourceforge.net>; Thu, 30 Jul 2009 14:30:19 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4A713E40.2010000@cn.fujitsu.com>
-References: <4A70F86E.50608@cn.fujitsu.com>
-	<364299f40907292019r494348dt1e895f0c180f3f58@mail.gmail.com>
-	<4A713E40.2010000@cn.fujitsu.com>
-Date: Thu, 30 Jul 2009 23:59:59 +0530
-Message-Id: <1248978600.5788.70.camel@subratamodak.linux.ibm.com>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <kiran@linux.vnet.ibm.com>) id 1MWrSh-0005pl-NE
+	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 12:43:51 +0000
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MWrSW-0001lP-MA
+	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 12:43:51 +0000
+From: Kiran <kiran@linux.vnet.ibm.com>
+Date: Fri, 31 Jul 2009 18:12:33 +0530
+Message-Id: <1249044153.5432.74.camel@kiran-laptop>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix failure of the utimensat01 test
-Reply-To: subrata@linux.vnet.ibm.com
+Subject: [LTP] [PATCH 3/3] libstats: Modify testcases to call the append
+	function
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,50 +23,304 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wang Yong <wangyong2009@cn.fujitsu.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: ltp-list <ltp-list@lists.sf.net>
+Cc: gowrishankar.m@in.ibm.com
 
-T24gVGh1LCAyMDA5LTA3LTMwIGF0IDE0OjMxICswODAwLCBXYW5nIFlvbmcgd3JvdGU6IAo+IEdh
-cnJldHQgQ29vcGVyIHdyb3RlIGFzOgo+ID4gT24gV2VkLCBKdWwgMjksIDIwMDkgYXQgNjozMyBQ
-TSwgV2FuZyBZb25nPHdhbmd5b25nMjAwOUBjbi5mdWppdHN1LmNvbT4gd3JvdGU6Cj4gPiAgIAo+
-ID4+IFRoZSBlcnJvciBoYW5kbGluZyBmb3IgIlJXIiBvcHQgb2YgcnVuX3Rlc3QgYnJvdWdodCBh
-Ym91dCBlcnJvciByZXN1bHRzLgo+ID4+IFRoaXMgcGF0Y2ggZml4ZWQgdGhhdC4KPiA+Pgo+ID4+
-IFNpZ25lZC1vZmYtYnk6IFdhbmdZb25nIDx3YW5neW9uZzIwMDlAY24uZnVqaXRzdS5jb20+Cj4g
-Pj4KPiA+PiBkaWZmIC1OdXJwIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy91dGltZW5zYXQv
-dXRpbWVuc2F0X3Rlc3RzLnNoCj4gPj4gYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3V0aW1l
-bnNhdC91dGltZW5zYXRfdGVzdHMuc2gKPiA+PiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
-bGxzL3V0aW1lbnNhdC91dGltZW5zYXRfdGVzdHMuc2ggICAgMjAwOS0wNy0yOCAxNjoyMzozOS4w
-MDAwMDAwMDAgKzA4MDAKPiA+PiArKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3V0aW1l
-bnNhdC91dGltZW5zYXRfdGVzdHMuc2ggICAgMjAwOS0wNy0yOCAxNzozMjoyNi4wMDAwMDAwMDAg
-KzA4MDAKPiA+PiBAQCAtMjYwLDIyICsyNjAsMjIgQEAgZWNobyAiVGVzdGluZyByZWFkLW9ubHkg
-ZmlsZSwgb3duZWQgYnkgcwo+ID4+ICBlY2hvCj4gPj4gICAgIAo+ID4KPiA+IFsuLi5dCj4gPgo+
-ID4gRG9uJ3QgdGhlc2UgY2hhbmdlcyBhY3R1YWxseSBjb25mbGljdCB3aXRoIHRoZSB0ZXN0Y2Fz
-ZSdzIHB1cnBvc2UsCj4gPiBnaXZlbiB0aGUgbWVzc2FnZXMgZWNob2VkIHBsYWNlZCBkaXJlY3Rs
-eSBhYm92ZSB0aGUgY29tbWFuZHM/Cj4gPiBUaGFua3MsCj4gPiAtR2FycmV0dAo+ID4KPiA+ICAg
-Cj4gSGkgR2FycmV0dCwKPiAKPiBUaGlzIHBhdGNoIGRvZXNuJ3QgY2hhbmdlIHRoZSB0ZXN0Y2Fz
-ZSdzIHB1cnBvc2UuCj4gQW5kIHRoZSB0ZXN0IHJlc3VsdHMgcHJvdmUgaXQuCgpIb3dldmVyLCBh
-IG11Y2ggYnJvYWRlciBleHBsYW5hdGlvbiBvZiB0aGUgUGF0Y2ggYW5kIGl0xZsgcHVycG9zZSB3
-b3VsZAppbmRlZWQgaGVscCBhIGdyZWF0IGRlYWwuCgpSZWdhcmRzLS0KU3VicmF0YQoKPiAKPiBC
-ZXN0IHJlZ2FyZHMsCj4gV2FuZyBZb25nCj4gCj4gPgo+ID4gICAKPiAKPiAKPiAKPiAKPiAtLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0KPiBMZXQgQ3J5c3RhbCBSZXBvcnRzIGhhbmRsZSB0aGUgcmVwb3J0
-aW5nIC0gRnJlZSBDcnlzdGFsIFJlcG9ydHMgMjAwOCAzMC1EYXkgCj4gdHJpYWwuIFNpbXBsaWZ5
-IHlvdXIgcmVwb3J0IGRlc2lnbiwgaW50ZWdyYXRpb24gYW5kIGRlcGxveW1lbnQgLSBhbmQgZm9j
-dXMgb24gCj4gd2hhdCB5b3UgZG8gYmVzdCwgY29yZSBhcHBsaWNhdGlvbiBjb2RpbmcuIERpc2Nv
-dmVyIHdoYXQncyBuZXcgd2l0aCAKPiBDcnlzdGFsIFJlcG9ydHMgbm93LiAgaHR0cDovL3Auc2Yu
-bmV0L3NmdS9ib2JqLWp1bHkKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwo+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJj
-ZWZvcmdlLm5ldAo+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZv
-L2x0cC1saXN0CgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxldCBDcnlzdGFsIFJlcG9ydHMgaGFu
-ZGxlIHRoZSByZXBvcnRpbmcgLSBGcmVlIENyeXN0YWwgUmVwb3J0cyAyMDA4IDMwLURheSAKdHJp
-YWwuIFNpbXBsaWZ5IHlvdXIgcmVwb3J0IGRlc2lnbiwgaW50ZWdyYXRpb24gYW5kIGRlcGxveW1l
-bnQgLSBhbmQgZm9jdXMgb24gCndoYXQgeW91IGRvIGJlc3QsIGNvcmUgYXBwbGljYXRpb24gY29k
-aW5nLiBEaXNjb3ZlciB3aGF0J3MgbmV3IHdpdGggCkNyeXN0YWwgUmVwb3J0cyBub3cuICBodHRw
-Oi8vcC5zZi5uZXQvc2Z1L2JvYmotanVseQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291
-cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZv
-L2x0cC1saXN0Cg==
+This patch modifies the testcases to call the stats_container_append
+function.
+
+Signed-off-by: Kiran Prakash <kiran@linux.vnet.ibm.com>
+Acked-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+Acked-by: Darren Hart <dvhltc@us.ibm.com>
+Acked-by: Sripathi Kodi <sripathik@in.ibm.com>
+
+diff -upr ltp-full-20090531_orig/testcases/realtime/func/async_handler/async_handler.c ltp-full-20090531/testcases/realtime/func/async_handler/async_handler.c
+--- ltp-full-20090531_orig/testcases/realtime/func/async_handler/async_handler.c	2008-11-28 16:00:13.000000000 +0530
++++ ltp-full-20090531/testcases/realtime/func/async_handler/async_handler.c	2009-07-14 14:30:08.000000000 +0530
+@@ -115,6 +115,7 @@ void *signal_thread(void *arg)
+ 	long delta, max, min;
+ 	stats_container_t dat;
+ 	stats_container_t hist;
++	stats_record_t rec;
+ 
+ 	stats_container_init(&dat, iterations);
+ 	stats_container_init(&hist, HIST_BUCKETS);
+@@ -139,8 +140,9 @@ void *signal_thread(void *arg)
+ 		delta = (long)((end - start)/NS_PER_US);
+ 		if (delta > pass_criteria)
+ 			ret = 1;
+-		dat.records[i].x = i;
+-		dat.records[i].y = delta;
++		rec.x = i;
++		rec.y = delta;
++		stats_container_append(&dat, rec);
+ 		if (i == 0)
+ 			min = max = delta;
+ 		else {
+diff -upr ltp-full-20090531_orig/testcases/realtime/func/async_handler/async_handler_tsc.c ltp-full-20090531/testcases/realtime/func/async_handler/async_handler_tsc.c
+--- ltp-full-20090531_orig/testcases/realtime/func/async_handler/async_handler_tsc.c	2008-11-28 16:00:13.000000000 +0530
++++ ltp-full-20090531/testcases/realtime/func/async_handler/async_handler_tsc.c	2009-07-14 14:31:52.000000000 +0530
+@@ -133,6 +133,7 @@ void *signal_thread(void *arg)
+ 	long delta, max, min;
+ 	stats_container_t dat;
+ 	stats_container_t hist;
++	stats_record_t rec;
+ 
+ 	stats_container_init(&dat, ITERATIONS);
+ 	stats_container_init(&hist, HIST_BUCKETS);
+@@ -162,8 +163,9 @@ void *signal_thread(void *arg)
+ 		} else if (delta > 20) {
+ 			over_20++;
+ 		}
+-		dat.records[i].x = i;
+-		dat.records[i].y = delta;
++		rec.x = i;
++		rec.y = delta;
++		stats_container_append(&dat, rec);
+ 		if (i == 0)
+ 			min = max = delta;
+ 		else {
+diff -upr ltp-full-20090531_orig/testcases/realtime/func/gtod_latency/gtod_latency.c ltp-full-20090531/testcases/realtime/func/gtod_latency/gtod_latency.c
+--- ltp-full-20090531_orig/testcases/realtime/func/gtod_latency/gtod_latency.c	2008-12-11 18:34:35.000000000 +0530
++++ ltp-full-20090531/testcases/realtime/func/gtod_latency/gtod_latency.c	2009-07-14 14:33:07.000000000 +0530
+@@ -222,6 +222,7 @@ int main(int argc, char *argv[])
+ 	stats_container_t dat;
+ 	stats_container_t hist;
+ 	stats_quantiles_t quantiles;
++	stats_record_t rec;
+ 
+ 	stats_container_init(&dat, ITERATIONS);
+ 	stats_container_init(&hist, HIST_BUCKETS);
+@@ -273,8 +274,9 @@ int main(int argc, char *argv[])
+ 	}
+ 	for (i = 0; i < ITERATIONS; i++) {
+ 		delta = timespec_subtract(&start_data[i], &stop_data[i]);
+-		dat.records[i].x = i;
+-		dat.records[i].y = delta;
++		rec.x = i;
++		rec.y = delta;
++		stats_container_append(&dat, rec);
+ 		if (i == 0 || delta < min) min = delta;
+ 		if (delta > max) max = delta;
+ 		if (latency_threshold && delta > latency_threshold)
+diff -upr ltp-full-20090531_orig/testcases/realtime/func/hrtimer-prio/hrtimer-prio.c ltp-full-20090531/testcases/realtime/func/hrtimer-prio/hrtimer-prio.c
+--- ltp-full-20090531_orig/testcases/realtime/func/hrtimer-prio/hrtimer-prio.c	2008-11-28 16:00:13.000000000 +0530
++++ ltp-full-20090531/testcases/realtime/func/hrtimer-prio/hrtimer-prio.c	2009-07-14 14:34:47.000000000 +0530
+@@ -58,6 +58,7 @@ static int iterations = DEF_ITERATIONS;
+ static int busy_threads;
+ 
+ static stats_container_t dat;
++static stats_record_t rec;
+ static atomic_t busy_threads_started;
+ static unsigned long min_delta;
+ static unsigned long max_delta;
+@@ -131,8 +132,9 @@ void *timer_thread(void *thread)
+ 		rt_nanosleep(DEF_SLEEP_TIME);
+ 		end = rt_gettime();
+ 		delta_us = ((unsigned long)(end - start) - DEF_SLEEP_TIME)/NS_PER_US;
+-		dat.records[i].x = i;
+-		dat.records[i].y = delta_us;
++		rec.x = i;
++		rec.y = delta_us;
++		stats_container_append(&dat, rec);
+ 		max_delta = MAX(max_delta, delta_us);
+ 		min_delta = (i == 0) ? delta_us : MIN(min_delta, delta_us);
+ 	}
+diff -upr ltp-full-20090531_orig/testcases/realtime/func/periodic_cpu_load/periodic_cpu_load.c ltp-full-20090531/testcases/realtime/func/periodic_cpu_load/periodic_cpu_load.c
+--- ltp-full-20090531_orig/testcases/realtime/func/periodic_cpu_load/periodic_cpu_load.c	2008-11-28 16:00:13.000000000 +0530
++++ ltp-full-20090531/testcases/realtime/func/periodic_cpu_load/periodic_cpu_load.c	2009-07-14 14:36:35.000000000 +0530
+@@ -63,6 +63,7 @@
+ 
+ int fail[THREADS_PER_GROUP * NUM_GROUPS];
+ stats_container_t dat[THREADS_PER_GROUP * NUM_GROUPS];
++stats_record_t rec;
+ stats_quantiles_t quantiles[THREADS_PER_GROUP * NUM_GROUPS];
+ static const char groupname[NUM_GROUPS] = "ABC";
+ 
+@@ -139,8 +140,9 @@ void *periodic_thread(void *thread)
+ 		func(parg->arg);
+ 		exe_end = rt_gettime();
+ 		exe_time = exe_end - exe_start;
+-		dat[t->id].records[i].x = i;
+-		dat[t->id].records[i].y = exe_time/NS_PER_US;
++		rec.x = i;
++		rec.y = exe_time/NS_PER_US;
++		stats_container_append(&dat[t->id], rec);
+ 
+ 		i++;
+ 
+diff -upr ltp-full-20090531_orig/testcases/realtime/func/periodic_cpu_load/periodic_cpu_load_single.c ltp-full-20090531/testcases/realtime/func/periodic_cpu_load/periodic_cpu_load_single.c
+--- ltp-full-20090531_orig/testcases/realtime/func/periodic_cpu_load/periodic_cpu_load_single.c	2008-11-28 16:00:13.000000000 +0530
++++ ltp-full-20090531/testcases/realtime/func/periodic_cpu_load/periodic_cpu_load_single.c	2009-07-14 14:37:47.000000000 +0530
+@@ -86,6 +86,7 @@ int periodic_thread(nsec_t period, int i
+ 	stats_container_t dat;
+ 	stats_container_t hist;
+ 	stats_quantiles_t quantiles;
++	stats_record_t rec;
+ 
+ 	int i = 0;
+ 	int fail = 0;
+@@ -119,8 +120,9 @@ int periodic_thread(nsec_t period, int i
+ 		calc(loops);
+ 		exe_end = rt_gettime();
+ 		exe_time = exe_end - exe_start;
+-		dat.records[i].x = i;
+-		dat.records[i].y = exe_time/NS_PER_US;
++		rec.x = i;
++		rec.y = exe_time/NS_PER_US;
++		stats_container_append(&dat, rec);
+ 
+ 		i++;
+ 
+diff -upr ltp-full-20090531_orig/testcases/realtime/func/pi_perf/pi_perf.c ltp-full-20090531/testcases/realtime/func/pi_perf/pi_perf.c
+--- ltp-full-20090531_orig/testcases/realtime/func/pi_perf/pi_perf.c	2008-05-06 18:05:43.000000000 +0530
++++ ltp-full-20090531/testcases/realtime/func/pi_perf/pi_perf.c	2009-07-14 14:40:52.000000000 +0530
+@@ -76,6 +76,7 @@ nsec_t low_unlock, high_get_lock;
+ stats_container_t lock_wait_dat, low_dat, cpu_delay_dat;
+ stats_container_t cpu_delay_hist;
+ stats_quantiles_t cpu_delay_quantiles;
++stats_record_t rec;
+ 
+ void usage(void)
+ {
+@@ -149,8 +150,9 @@ void * low_prio_thread(void *arg)
+ 
+ 		pthread_mutex_unlock(&lock);
+ 
+-		low_dat.records[i].x = i;
+-		low_dat.records[i].y = low_hold / NS_PER_US;
++		rec.x = i;
++		rec.y = low_hold / NS_PER_US;
++		stats_container_append(&low_dat, rec);
+ 
+ 		if (i == iterations-1)
+ 			end = 1;
+@@ -190,10 +192,12 @@ void * high_prio_thread(void *arg)
+ 		busy_work_ms(high_work_time);
+ 		pthread_mutex_unlock(&lock);
+ 
+-		lock_wait_dat.records[i].x = i;
+-		lock_wait_dat.records[i].y = high_spent / NS_PER_US;
+-		cpu_delay_dat.records[i].x = i;
+-		cpu_delay_dat.records[i].y = high_get_lock / NS_PER_US;
++		rec.x = i;
++		rec.y = high_spent / NS_PER_US;
++		stats_container_append(&lock_wait_dat, rec);
++		rec.x = i;
++		rec.y = high_get_lock / NS_PER_US;
++		stats_container_append(&cpu_delay_dat, rec);
+ 
+ 		/* Wait for all threads to finish this iteration */
+ 		pthread_barrier_wait(&bar2);
+diff -upr ltp-full-20090531_orig/testcases/realtime/func/pthread_kill_latency/pthread_kill_latency.c ltp-full-20090531/testcases/realtime/func/pthread_kill_latency/pthread_kill_latency.c
+--- ltp-full-20090531_orig/testcases/realtime/func/pthread_kill_latency/pthread_kill_latency.c	2008-11-28 16:00:13.000000000 +0530
++++ ltp-full-20090531/testcases/realtime/func/pthread_kill_latency/pthread_kill_latency.c	2009-07-14 14:42:05.000000000 +0530
+@@ -120,6 +120,7 @@ void *signal_receiving_thread(void *arg)
+ 	stats_container_t dat;
+ 	stats_container_t hist;
+ 	stats_quantiles_t quantiles;
++	stats_record_t rec;
+ 
+ 	stats_container_init(&dat, ITERATIONS);
+ 	stats_container_init(&hist, HIST_BUCKETS);
+@@ -160,8 +161,9 @@ void *signal_receiving_thread(void *arg)
+ 		sigwait(&set, &sig);
+ 		end = rt_gettime();
+ 		delta = (end - begin)/NS_PER_US;
+-		dat.records[i].x = i;
+-		dat.records[i].y = delta;
++		rec.x = i;
++		rec.y = delta;
++		stats_container_append(&dat, rec);
+ 
+ 		if (i == 0 || delta < min)
+ 			min = delta;
+diff -upr ltp-full-20090531_orig/testcases/realtime/func/sched_jitter/sched_jitter.c ltp-full-20090531/testcases/realtime/func/sched_jitter/sched_jitter.c
+--- ltp-full-20090531_orig/testcases/realtime/func/sched_jitter/sched_jitter.c	2008-11-28 16:00:13.000000000 +0530
++++ ltp-full-20090531/testcases/realtime/func/sched_jitter/sched_jitter.c	2009-07-14 14:42:57.000000000 +0530
+@@ -122,6 +122,7 @@ void *thread_worker(void* arg)
+ 	unsigned long long min=-1, max=0;
+ 
+ 	stats_container_t dat;
++	stats_record_t rec;
+ 
+ 	stats_container_init(&dat, NUMRUNS);
+ 
+@@ -141,8 +142,9 @@ void *thread_worker(void* arg)
+ 			min = delta;
+ 		if (delta> max)
+ 			max = delta;
+-		dat.records[i].x = i;
+-		dat.records[i].y = delta;
++		rec.x = i;
++		rec.y = delta;
++		stats_container_append(&dat, rec);
+ 
+ 		printf("delta: %llu ns\n", delta);
+ 		usleep(1); /* let other things happen */
+diff -upr ltp-full-20090531_orig/testcases/realtime/func/sched_latency/sched_latency.c ltp-full-20090531/testcases/realtime/func/sched_latency/sched_latency.c
+--- ltp-full-20090531_orig/testcases/realtime/func/sched_latency/sched_latency.c	2008-11-28 16:00:13.000000000 +0530
++++ ltp-full-20090531/testcases/realtime/func/sched_latency/sched_latency.c	2009-07-14 14:43:57.000000000 +0530
+@@ -73,6 +73,7 @@ static unsigned int load_ms = DEF_LOAD_M
+ stats_container_t dat;
+ stats_container_t hist;
+ stats_quantiles_t quantiles;
++stats_record_t rec;
+ 
+ void usage(void)
+ {
+@@ -166,8 +167,10 @@ void *periodic_thread(void *arg)
+ 
+ 		/* start of period */
+ 		delay = (now - iter_start - (nsec_t)(i+1)*period)/NS_PER_US;
+-		dat.records[i].x = i;
+-		dat.records[i].y = delay;
++		rec.x = i;
++		rec.y = delay;
++		stats_container_append(&dat, rec);
++
+ 		if (delay < min_delay)
+ 			min_delay = delay;
+ 		if (delay > max_delay)
+diff -upr ltp-full-20090531_orig/testcases/realtime/perf/latency/pthread_cond_many.c ltp-full-20090531/testcases/realtime/perf/latency/pthread_cond_many.c
+--- ltp-full-20090531_orig/testcases/realtime/perf/latency/pthread_cond_many.c	2008-04-20 22:50:18.000000000 +0530
++++ ltp-full-20090531/testcases/realtime/perf/latency/pthread_cond_many.c	2009-07-14 14:45:22.000000000 +0530
+@@ -192,6 +192,7 @@ test_signal(long iter, long nthreads)
+ 	unsigned long max = 0;
+ 	unsigned long min = 0;
+ 	stats_container_t dat;
++	stats_record_t rec;
+ 
+ 	stats_container_init(&dat,iter * nthreads);
+ 
+@@ -207,8 +208,9 @@ test_signal(long iter, long nthreads)
+ 	for (i = 0; i < (iter - 1) * nthreads; i+=nthreads) {
+ 		for (j = 0 , k = i; j < nthreads; j++ , k++) {
+ 			wake_child(j, broadcast_flag);
+-			dat.records[k].x = k;
+-			dat.records[k].y = latency;
++			rec.x = k;
++			rec.y = latency;
++			stats_container_append(&dat, rec);
+ 			pthread_mutex_lock(&child_mutex);
+ 			child_waiting[j] = 0;
+ 			pthread_mutex_unlock(&child_mutex);
+
+-- 
+
+Thanks,
+Kiran
+
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
