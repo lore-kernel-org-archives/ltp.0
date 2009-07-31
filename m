@@ -1,21 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1MNe6j-0002XE-D6
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 02:39:05 +0000
-Received: from fmmailgate03.web.de ([217.72.192.234])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MNe6Z-0005hc-Vf
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2009 02:39:00 +0000
-From: Jiri Palecek <jpalecek@web.de>
-Date: Mon, 6 Jul 2009 03:37:44 +0200
-References: <4A4490B2.4070803@bull.net>
-In-Reply-To: <4A4490B2.4070803@bull.net>
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <dvhltc@us.ibm.com>) id 1MWzg4-0003t4-6B
+	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 21:30:12 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MWzfv-0001P2-9t
+	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 21:30:12 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n6VLPDMp029737
+	for <ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2009 15:25:13 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n6VLTv6D263560
+	for <ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2009 15:29:57 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n6VLTvYT017152
+	for <ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2009 15:29:57 -0600
+Message-ID: <4A736253.90209@us.ibm.com>
+Date: Fri, 31 Jul 2009 14:29:55 -0700
+From: Darren Hart <dvhltc@us.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200907060337.46824.jpalecek@web.de>
-Subject: Re: [LTP] clock_nanosleep01 TestCase FAIL --> is it known?
+References: <200907031601.52650.vapier@gentoo.org>
+In-Reply-To: <200907031601.52650.vapier@gentoo.org>
+Subject: Re: [LTP] futex syscall tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,61 +39,196 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jacky Malcles <Jacky.Malcles@bull.net>
-Cc: ltp-list@lists.sourceforge.net, maknayak@in.ibm.com
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-On Friday 26 June 2009 11:11:14 Jacky Malcles wrote:
-> is it a testcase issue? (because case05 ends with OK).
+Mike Frysinger wrote:
+> are there any futex syscall tests already in ltp that i cant seem to locate ?  
+> if not, i can adapt the few that already exist in the libfutex code ...
+> -mike
 
-Yes.
+Mike,
 
-Regards
-    Jiri Palecek
+I recently done a lot of cleanup and a couple feature additions to the
+kernel futex code.  In doing so I was noticing the lack of a good futex
+system call test suite.  I had started a writeup of what such a test
+suite should accomplish.  I hadn't decided if I wanted to push it to LTP
+eventually or not.  As it sounds like you may have similar interests in
+this test, please find my very early, very incomplete, initial thoughts
+on such a testsuite.
 
-> report:
-> [root@xena3 clock_nanosleep]# ./clock_nanosleep01
-> clock_nanosleep01    0  INFO  :  (case00) START
-> clock_nanosleep01    0  INFO  :  check sleep time: (min:480) < 507 < 
-> (max:520) (msec)
-> clock_nanosleep01    0  INFO  :  remain time: 191 5658608
-> EXPECT: return value(ret)=0 errno=0 (Success), remain time check=OK
-> RESULT: return value(ret)=0 errno=0 (Success), remain time check=NG
-> clock_nanosleep01    0  INFO  :  (case00) END => NG
-> clock_nanosleep01    0  INFO  :  (case01) START
-> clock_nanosleep01    0  INFO  :  check sleep time: (min:480) < 509 < 
-> (max:520) (msec)
-> clock_nanosleep01    0  INFO  :  remain time: 191 5658608
-> EXPECT: return value(ret)=0 errno=0 (Success), remain time check=OK
-> RESULT: return value(ret)=0 errno=0 (Success), remain time check=NG
-> clock_nanosleep01    0  INFO  :  (case01) END => NG
-> clock_nanosleep01    0  INFO  :  (case02) START
-> clock_nanosleep01    0  INFO  :  remain time: 191 5658608
-> EXPECT: return value(ret)=22 errno=0 (Success), remain time check=OK
-> RESULT: return value(ret)=22 errno=0 (Success), remain time check=NG
-> clock_nanosleep01    0  INFO  :  (case02) END => NG
-> clock_nanosleep01    0  INFO  :  (case03) START
-> clock_nanosleep01    0  INFO  :  remain time: 191 5658608
-> EXPECT: return value(ret)=22 errno=0 (Success), remain time check=OK
-> RESULT: return value(ret)=22 errno=0 (Success), remain time check=NG
-> clock_nanosleep01    0  INFO  :  (case03) END => NG
-> clock_nanosleep01    0  INFO  :  (case04) START
-> clock_nanosleep01    0  INFO  :  remain time: 191 5658608
-> EXPECT: return value(ret)=95 errno=0 (Success), remain time check=OK
-> RESULT: return value(ret)=22 errno=0 (Success), remain time check=NG
-> clock_nanosleep01    0  INFO  :  (case04) END => NG
-> clock_nanosleep01    0  INFO  :  (case05) START
-> clock_nanosleep01    0  INFO  :  remain time: 9 490280000
-> EXPECT: return value(ret)=4 errno=0 (Success)
-> RESULT: return value(ret)=4 errno=0 (Success)
-> clock_nanosleep01    0  INFO  :  (case05) END => OK
-> clock_nanosleep01    1  FAIL  :  clock_nanosleep01 failed - errno = 0 : 
-> Success
-> clock_nanosleep01    0  INFO  :  NG
-> [root@xena3 clock_nanosleep]#
-> thanks,
-> 
+I'd welcome your thoughts on approach, direction, etc.
+
+-------------------------------------------------------------------------------
+
+The following is a start at what I hope to be a design document for a new
+exhaustive futex functional/performance/stress benchmark. Before I flesh it
+out any further, I'd really appreciate some feedback on what I have so far.
+
+Given the number of permutations each test seems to require, I think some kind
+of "test generator" is needed. We will have to describe the permutations and
+pass them to the test generator so it can create the various versions of the
+tests.
+
+HAVOC FUTEX
+===========
+
+Havoc Futex is intended to thoroughly test the Linux kernel futex system call
+API. To the extent possible, each test is implemented using raw system calls
+as well as the glibc pthread library.
+
+Futex Op Codes
+--------------
+FUTEX_WAIT
+FUTEX_WAKE
+FUTEX_FD
+FUTEX_REQUEUE
+FUTEX_CMP_REQUEUE
+FUTEX_WAKE_OP
+FUTEX_LOCK_PI
+FUTEX_UNLOCK_PI
+FUTEX_TRYLOCK_PI
+FUTEX_WAIT_BITSET
+FUTEX_WAKE_BITSET
+FUTEX_WAIT_REQUEUE_PI
+FUTEX_CMP_REQUEUE_PI
+
+Syscalls to Test
+----------------
+futex_wake
+futex_wake_op
+futex_requeue
+futex_wait
+futex_lock_pi
+futex_unlock_pi
+futex_wait_requeue_pi
+
+Functional Tests
+----------------
+requeue_pi/*
+	Exercise the FUTEX_WAIT_REQUEUE_PI and FUTEX_CMP_REQUEUE_PI op codes,
+	under every possible combination of the following scenarios:
+
+	o shared and private futexes
+	o CLOCK_MONOTONIC and CLOCK_REALTIME timeouts (and none)
+	o Signal handling prior to and post requeue
+	o correct and incorrect settings for val
+	o target futex owned by waker, owned by third party, unowned
+	o OWNERDIED reclaim of mutex
+	o ensure priority ordered wakeup of waiters
+
+	Error and Misuse Cases
+	----------------------
+	o mixed shared and private futexes (should fail)
+	o pi source futex
+	o non-pi target futex
+	o unmapped shared futex fault handling
+	o bogus uaddrs
+	o invalid nr_wake and nr_requeue values
+	o mismatched wait_requeue and futex_requeue target futexes
+	o incorrect pairing of futex_wait_requeue_pi with futex_wake
+
+	Syscalls Exercised
+	------------------
+	futex_wait_requeue_pi
+	futex_requeue
+	futex_lock_pi
+	futex_unlock_pi
+
+pi_lock/*
+	Exercise the FUTEX_LOCK_PI and FUTEX_UNLOCK_PI op codes, under every
+	possible combination of the following scenarious:
+
+	o shared and private futexes
+	o CLOCK_MONOTONIC and CLOCK_REALTIME timeouts (and none)
+	o Signal handling
+	o correct and incorrect settings for val
+	o bogus uaddrs
+	o contended and uncontended cases
+	o OWNERDIED reclaim of mutex
+
+	Error and Misuse Cases
+	----------------------
+	o pi_unlock of a non-pi-locked futex
+	o pi_lock of an owned non-pi futex
+	o unmapped shared futex fault handling
+	o mismatched futex_lock_pi and futex_wake(_op)? calls
+	o mismatched futex_wait and futex_unlock_pi calls
+
+	Syscalls Exercised
+	------------------
+	futex_lock_pi
+	futex_unlock_pi
+	futex_wait
+	futex_wake
+	futex_wake_op
+
+requeue/*
+	Exercise the FUTEX_WAIT and the FUTEX_CMP_REQUEUE op codes.  Perform
+	basic testing for FUTEX_REQUEUE, purposefully avoiding its known
+	flaws.
+
+	Error and Misuse Cases
+	----------------------
+
+	Syscalls Exercised
+	------------------
+	futex_wait
+	futex_requeue
+
+wait/*
+	Exercise the FUTEX_WAIT and FUTEX_WAKE op codes.
+
+	Error and Misuse Cases
+	----------------------
+
+	Syscalls Exercised
+	------------------
+	futex_wait
+	futex_wake
+	futex_wake_op
+
+
+
+Performance Tests
+-----------------
+	o attempt to expose lock contention issues, such as those exposed by
+	  calling futex_wait on an unowned futex
+	o rapid lock and unlock of an uncontended futex
+	o rapid lock and unlock of a heavily conteded futex
+	o attempt to expose bottlenecks imposed by the shared hash-bucket
+	  implementation
+	o attempt to expose real-time scheduling overhead
+
+Stress Tests
+------------
+	o thousands of threads/processes contending on a single futex
+	o thousands of threads/processes on thousands of futexes
+
+Other Thoughts
+--------------
+kernel-side futex fault injection
+	There are a lot of places in futex.c that have to handle faults.  I
+	think some kind of a fault injection system is needed.  This could be
+	enabled via a sysctl or perhaps just configured in to a debug kernel.
+	Running this test suite in a loop would allow us to achieve some
+	statistical confidence in these numerous fault paths.
+
+FUTEX_REQUEUE
+	This op code is deprecated in favor of FUTEX_CMP_REQUEUE.  Do to the
+	unreliable nature of the op code, only very limited testing can be
+	performed.
+
+-- 
+Darren Hart
+IBM Linux Technology Center
+Real-Time Linux Team
 
 ------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
