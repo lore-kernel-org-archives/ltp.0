@@ -2,21 +2,20 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <paul.larson@canonical.com>) id 1Mg3Ta-0004Km-8c
-	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 21:22:46 +0000
-Received: from adelie.canonical.com ([91.189.90.139])
+	(envelope-from <yanegomi@gmail.com>) id 1MX7Xt-0003bV-3x
+	for ltp-list@lists.sourceforge.net; Sat, 01 Aug 2009 05:54:17 +0000
+Received: from mail-px0-f190.google.com ([209.85.216.190])
 	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mg3TT-0007GY-L2
-	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 21:22:46 +0000
-Message-ID: <4A945616.7000805@canonical.com>
-Date: Tue, 25 Aug 2009 16:22:30 -0500
-From: Paul Larson <paul.larson@canonical.com>
+	id 1MX7Xo-0007Lb-Ju
+	for ltp-list@lists.sourceforge.net; Sat, 01 Aug 2009 05:54:17 +0000
+Received: by pxi28 with SMTP id 28so1325257pxi.28
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 31 Jul 2009 22:54:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20090824093204.31997.18175.sendpatchset@subratamodak.linux.ibm.com>	
-	<4A928BD0.4000508@canonical.com>
-	<1251195139.5534.32.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1251195139.5534.32.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] [PATCH 00/02] Integrate Valgrind Memory Check Tool to LTP
+Date: Fri, 31 Jul 2009 22:54:06 -0700
+Message-ID: <364299f40907312254v36646209j35c0dc79498b9568@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: [LTP] [PATCH] export needed variables in test_dma_thread_diotest7.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,27 +28,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-Subrata Modak wrote:
+Several required tst_res(3) variables weren't being exported prior to
+test execution, as noted in the following message:
 
->> really just to "test the tests", would it make sense to put it under
->> /scratch or /testscripts as a separate script, rather than just include
->> it as yet-another-option for runltp?
-> 
-> But, creating another script say under testscripts will be to duplicate
-> again runltp code, as the same script should be able to parse all the
-> options what we use with runltp. So, keeping it in runltp will just a
-> little overhead. And, may be we can introduce some longoptions or
-> manpage for ltp as suggested by people earlier !!
+gcooper@orangebox /scratch/ltp-makefile-infra-rework/ltp $ tail -n 15
+/scratch/ltp-install4/output/output.test_dma_thread_diotest7.log
+Reading file 99.
+Reading file 100.
 
-It doesn't need to have anywhere near the same options available as
-under runltp.  Other than being able to specify a set of tests to run, I
-can't really think of a need for many of the others.
+Set variables TCID, TST_TOTAL, and TST_COUNT before each test:
+export TCID=<test name>
+export TST_TOTAL=<Total Number of Tests >
+export TST_COUNT=<Test case number>
 
-Thanks,
-Paul Larson
+(null)      1  PASS  :  Test Passed
+incrementing stop
+<<<execution_status>>>
+initiation_status="ok"
+duration=153 termination_type=exited termination_id=0 corefile=no
+cutime=596 cstime=4341
+<<<test_end>>>
+
+This fixes that.
+
+Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+
+Index: ./testcases/kernel/io/direct_io/test_dma_thread_diotest7.sh
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/io/direct_io/test_dma_thread_diotest7.sh,v
+retrieving revision 1.3
+diff -u -r1.3 test_dma_thread_diotest7.sh
+--- ./testcases/kernel/io/direct_io/test_dma_thread_diotest7.sh 18 Apr
+2009 18:53:21 -0000      1.3
++++ ./testcases/kernel/io/direct_io/test_dma_thread_diotest7.sh 1 Aug
+2009 05:51:55 -0000
+@@ -20,6 +20,10 @@
+ ##
+        ##
+ ################################################################################
+
++export TCID=dma_thread_diotest7
++export TST_TOTAL=3
++export TST_COUNT=3
++
+ tst_resm TINFO "Generating Test Files"
+ ./dma_thread_diotest7
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
