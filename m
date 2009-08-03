@@ -1,30 +1,15 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
-	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MavAx-0007Dr-Gs
-	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2009 17:30:19 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MavAs-0007nb-QB
-	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2009 17:30:19 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7BHPBFI032043
-	for <ltp-list@lists.sourceforge.net>; Tue, 11 Aug 2009 11:25:11 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7BHU43Y235490
-	for <ltp-list@lists.sourceforge.net>; Tue, 11 Aug 2009 11:30:04 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7BHU4b4022504
-	for <ltp-list@lists.sourceforge.net>; Tue, 11 Aug 2009 11:30:04 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Tue, 11 Aug 2009 22:59:57 +0530
-Message-Id: <20090811172957.7074.62874.sendpatchset@subratamodak.linux.ibm.com>
-Subject: [LTP] [PATCH 00/05] Integration of "Fault Injection Framework" into
-	LTP
+Date: Mon, 3 Aug 2009 09:17:50 -0500
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20090803141750.GB29108@us.ibm.com>
+References: <364299f40907302333s61742580m5dba94b0a2e7afa5@mail.gmail.com>
+	<364299f40907310043q234fc7ebt4e6ce9a98c2da953@mail.gmail.com>
+	<20090731143642.GB9440@us.ibm.com>
+	<1249298418.7460.27.camel@subratamodak.linux.ibm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1249298418.7460.27.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] Fix digsig so it passes -Wshadow
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,33 +19,51 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP Mailing List <ltp-list@lists.sourceforge.net>
-Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>, Mike Frysinger <vapier@gentoo.org>, Michael Reed <mreed10@us.ibm.com>, Nate Straz <nate@refried.org>, Paul Larson <paul.larson@ubuntu.com>, Manoj Iyer <manoj.iyer@ubuntu.com>, Balbir Singh <balbir@linux.vnet.ibm.com>
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>, Disec-Devel <disec-devel@lists.sourceforge.net>
 
-Hi,
+Quoting Subrata Modak (subrata@linux.vnet.ibm.com):
+> On Fri, 2009-07-31 at 09:36 -0500, Serge E. Hallyn wrote: 
+> > Quoting Garrett Cooper (yanegomi@gmail.com):
+> > > On Thu, Jul 30, 2009 at 11:33 PM, Garrett Cooper<yanegomi@gmail.com> wrote:
+> > > > clone(2) is externally defined in sched.h, and as such
+> > > > testcases/kernel/security/digsig/writeexec/libwritetest.c fails to
+> > > > compile with -Wall due to a shadowed declaration.
+> > > >
+> > > > Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+> > > >
+> > > > Index: writeexec/libwritetest.c
+> > > > ===================================================================
+> > > > RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/digsig/writeexec/libwritetest.c,v
+> > > > retrieving revision 1.1
+> > > > diff -u -r1.1 libwritetest.c
+> > > > --- writeexec/libwritetest.c    1 Nov 2005 16:09:43 -0000       1.1
+> > > > +++ writeexec/libwritetest.c    31 Jul 2009 06:30:49 -0000
+> > > > @@ -9,8 +9,6 @@
+> > > >  #include <dlfcn.h>
+> > > >  #include <wait.h>
+> > > >
+> > > > -int clone(int (*fn)(void *), void *child_stack, int flags, void *arg);
+> > > > -
+> > > >  int writer(void *data)
+> > > >  {
+> > > >        int fd;
+> > > 
+> > > Instead of this, let me do a general purpose `fix' for digsig. There
+> > > are a few other issues that need to be resolved.
+> > > -Garrett
+> > 
+> > Alternatively, since digsig never went upstream and isn't being
+> > maintained, it might be best to drop this from LTP.  <sniff>
+> 
+> Oh. Is it ? So, should i finally drop this from LTP ?
 
-Introducing the "Kernel Fault Injection Framework" generation and testing
-capability in LTP. This is in line with the recent proposal made through
-LTP Paper at OLS 2009:
-"Putting LTP to test - Validating both the Linux kernel and Test-cases"
-(http://ltp.sourceforge.net/documentation/technical_papers/Putting_LTP_to_Test.pdf)
+I fear so.  Unless someone on disec-devel@ disagrees?
 
-This infrasturcture will help LTP directly in the following ways:
-1) Allow test developers to test their new test cases against a faulted kernel,
-and then compare it on stable kernel run, impacting in better test development,
-2) Allow test engineers to be able to generate more code coverage by traversing
-the rarely touched parts of the kernel code,
-
-As we move forward in using this, we would definitely find some other
-advantages of this framework.
-
-Regards--
-Subrata
-
+-serge
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
