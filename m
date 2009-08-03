@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MgxiR-0007C5-Mj
-	for Ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 09:25:51 +0000
-Received: from vervifontaine.sonytel.be ([80.88.33.193]
-	helo=pophost.sonytel.be) by 29vjzd1.ch3.sourceforge.com with esmtp 
-	(Exim 4.69) id 1MgxiO-0004qO-NT
-	for Ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 09:25:51 +0000
-Received: from vixen.sonytel.be (piraat.sonytel.be [43.221.60.197])
-	by pophost.sonytel.be (Postfix) with ESMTP id 1B9F344483
-	for <Ltp-list@lists.sourceforge.net>;
-	Fri, 28 Aug 2009 11:25:43 +0200 (CEST)
-Date: Fri, 28 Aug 2009 11:25:43 +0200 (CEST)
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Message-ID: <alpine.LRH.2.00.0908281125160.31615@vixen.sonytel.be>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1MXxLm-0003aT-FM
+	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 13:13:14 +0000
+Received: from mail-gx0-f209.google.com ([209.85.217.209])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MXxLh-0004cA-QQ
+	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 13:13:14 +0000
+Message-ID: <4A76C828.4060008@petalogix.com>
+Date: Mon, 03 Aug 2009 13:21:12 +0200
+From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] sched_cli_serv: Wait a bit before trying to connect
+References: <1248978649.5788.74.camel@subratamodak.linux.ibm.com>	
+	<4A72A052.7070607@petalogix.com>
+	<1249298412.7460.26.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1249298412.7460.26.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [REMINDER] Did i miss any patch ?
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,66 +27,74 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Linux Test Project <Ltp-list@lists.sourceforge.net>
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-The sched_cli_serv test launches the server in the background and expects
-the client to be able to connect to it immediately. Depending on (earlier)
-system load, that may fail.
-Wait a bit before starting the client.
+Subrata Modak wrote:
+> On Fri, 2009-07-31 at 09:42 +0200, Michal Simek wrote: 
+>   
+>> Hi Subrata,
+>>
+>> please add Matt's patch for fcntl24,25,26
+>>     
+>
+> Sorry,
+>
+> By the time i received this mail, i had already initiated the download.
+> But, i had included this now and will be available in the intermediate
+> release.
+>   
+No worries about.
 
-Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
----
- testcases/kernel/sched/clisrv/run_sched_cliserv.sh |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+Cheers,
+Michal
+> Regards--
+> Subrata
+>
+>   
+>> Thanks,
+>> Michal
+>>     
+>>> Hi,
+>>>
+>>> Most of the patches were taken care of Garrett. I applied the remaining
+>>> today. If you feel that we missed out some important stuffs, please
+>>> point us before i start the release process tomorrow.
+>>>
+>>> Regards--
+>>> Subrata
+>>>
+>>>
+>>>
+>>> ------------------------------------------------------------------------------
+>>> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+>>> trial. Simplify your report design, integration and deployment - and focus on 
+>>> what you do best, core application coding. Discover what's new with 
+>>> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+>>> _______________________________________________
+>>> Ltp-list mailing list
+>>> Ltp-list@lists.sourceforge.net
+>>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>>   
+>>>       
+>>     
+>
+>   
 
-diff --git a/testcases/kernel/sched/clisrv/run_sched_cliserv.sh b/testcases=
-/kernel/sched/clisrv/run_sched_cliserv.sh
-index 68176c4..f063ebd 100755
---- a/testcases/kernel/sched/clisrv/run_sched_cliserv.sh
-+++ b/testcases/kernel/sched/clisrv/run_sched_cliserv.sh
-@@ -1,6 +1,7 @@
- #!/bin/sh -x
- =
 
- pthserv &
-+sleep 5
- pthcli 127.0.0.1 $LTPROOT/testcases/bin/data
- clientCode=3D$?
- killall pthserv
--- =
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
 
-1.6.2.4
 
-With kind regards,
-
-Geert Uytterhoeven
-Software Architect
-Techsoft Centre
-
-Technology and Software Centre Europe
-The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Belgium
-
-Phone:    +32 (0)2 700 8453
-Fax:      +32 (0)2 700 8622
-E-mail:   Geert.Uytterhoeven@sonycom.com
-Internet: http://www.sony-europe.com/
-
-A division of Sony Europe (Belgium) N.V.
-VAT BE 0413.825.160 =B7 RPR Brussels
-Fortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
-
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
-
-trial. Simplify your report design, integration and deployment - and focus =
-on =
-
-what you do best, core application coding. Discover what's new with =
-
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
