@@ -1,36 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MYIpB-0002pj-B0
-	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 12:09:01 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MYIp4-0005te-O7
-	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 12:09:01 +0000
-Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
-	by e8.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n74C8Scq024208
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 08:08:28 -0400
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n74C8jJq2379944
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 08:08:46 -0400
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n74C8gDa007708
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 06:08:42 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <d80b0b476cd86f178e44984647a040bb7d458d75.1249304223.git.monstr@monstr.eu>
-References: <1249305859-23722-1-git-send-email-michal.simek@petalogix.com>
-	<0f2557dbada823cdbdf1080b36ca0cf41d29c58f.1249304223.git.monstr@monstr.eu>
-	<b27f5b6149545ef2a1f3483d14d51d29f83aa7c6.1249304223.git.monstr@monstr.eu>
-	<d80b0b476cd86f178e44984647a040bb7d458d75.1249304223.git.monstr@monstr.eu>
-Date: Tue, 04 Aug 2009 17:38:17 +0530
-Message-Id: <1249387702.15587.36.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH 3/4] fcntl24, 25,
-	26: F_SETLEASE and F_WRLCK cannot work	on ramfs
-Reply-To: subrata@linux.vnet.ibm.com
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <dvhltc@us.ibm.com>) id 1MY6yv-000146-DU
+	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 23:30:17 +0000
+Received: from e33.co.us.ibm.com ([32.97.110.151])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MY6ys-0000XE-VU
+	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 23:30:17 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e33.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n73NSJtK025405
+	for <ltp-list@lists.sourceforge.net>; Mon, 3 Aug 2009 17:28:19 -0600
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n73NU83X214198
+	for <ltp-list@lists.sourceforge.net>; Mon, 3 Aug 2009 17:30:08 -0600
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n73NU80Q003945
+	for <ltp-list@lists.sourceforge.net>; Mon, 3 Aug 2009 17:30:08 -0600
+Message-ID: <4A7772FE.20808@us.ibm.com>
+Date: Mon, 03 Aug 2009 16:30:06 -0700
+From: Darren Hart <dvhltc@us.ibm.com>
+MIME-Version: 1.0
+Subject: [LTP] realtime measurement tests: approach to criteria
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -43,85 +37,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: michal.simek@petalogix.com
-Cc: ltp-list@lists.sourceforge.net, monstr@monstr.eu
+To: LTP <ltp-list@lists.sourceforge.net>
+Cc: Clark Williams <williams@redhat.com>, amrith <amrith@linux.ibm.com>
 
-On Mon, 2009-08-03 at 15:24 +0200, michal.simek@petalogix.com wrote: 
-> From: Michal Simek <monstr@monstr.eu>
-> 
-> The same reason as was in previous patch for tmpfs
-> 
-> Signed-off-by: Michal Simek <monstr@monstr.eu>
+The current ltp/testcases/realtime tests belong to one of func, perf, or 
+stress.  While strict pass/fail criteria make sense for functional tests 
+(did the tasks wake up in priority order?), the others use "arbitrary" 
+values and compare those against the whatever is being measured (wakeup 
+latency, etc.) and then determine pass/fail.  Ideally the tests 
+themselves would not determine the pass/fail criteria, and would instead 
+simply report on their measurements since the criteria will vary in 
+every use-case based on requirements, workload, hardware, etc.
 
-Ok.
+I'd like to propose an approach where the tests only report their 
+measured values (with the exception of the func/* tests which will 
+maintain their pass/fail criteria).  Users should be able to populate a 
+criteria.conf file that specified the criteria of each test.  The 
+results could then be parsed, compared against the results, and a 
+pass/fail determined from there.  I suspect it would be best for the .c 
+tests to just report the numbers and the statistics in a common format 
+and rely on python parser scripts to read the config file and determine 
+pass/fail from there.
 
-Regards--
-Subrata
+I'd like users thoughts on this approach before we jump in and start 
+changing things (as this is a fairly invasive change).
 
-> ---
->  testcases/kernel/syscalls/fcntl/fcntl24.c |    8 ++++++++
->  testcases/kernel/syscalls/fcntl/fcntl25.c |    8 ++++++++
->  testcases/kernel/syscalls/fcntl/fcntl26.c |    8 ++++++++
->  3 files changed, 24 insertions(+), 0 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/fcntl/fcntl24.c b/testcases/kernel/syscalls/fcntl/fcntl24.c
-> index 1a524bb..af0e814 100644
-> --- a/testcases/kernel/syscalls/fcntl/fcntl24.c
-> +++ b/testcases/kernel/syscalls/fcntl/fcntl24.c
-> @@ -139,6 +139,14 @@ int main(int ac, char **av)
->  			 "Cannot do fcntl on a file located on an TMPFS filesystem");
->  	}
-> 
-> +	/*
-> +	 * check if the current filesystem is ramfs
-> +	 */
-> +	if (tst_is_cwd_ramfs()) {
-> +		tst_brkm(TCONF, cleanup,
-> +			 "Cannot do fcntl on a file located on an RAMFS filesystem");
-> +	}
-> +
->  	/* set the expected errnos... */
->  	TEST_EXP_ENOS(exp_enos);
-> 
-> diff --git a/testcases/kernel/syscalls/fcntl/fcntl25.c b/testcases/kernel/syscalls/fcntl/fcntl25.c
-> index 9957dc4..6e2adc6 100644
-> --- a/testcases/kernel/syscalls/fcntl/fcntl25.c
-> +++ b/testcases/kernel/syscalls/fcntl/fcntl25.c
-> @@ -140,6 +140,14 @@ int main(int ac, char **av)
->  			 "Cannot do fcntl on a file located on an TMPFS filesystem");
->  	}
-> 
-> +	/*
-> +	 * check if the current filesystem is ramfs
-> +	 */
-> +	if (tst_is_cwd_ramfs()) {
-> +		tst_brkm(TCONF, cleanup,
-> +			 "Cannot do fcntl on a file located on an RAMFS filesystem");
-> +	}
-> +
->  	/* set the expected errnos... */
->  	TEST_EXP_ENOS(exp_enos);
-> 
-> diff --git a/testcases/kernel/syscalls/fcntl/fcntl26.c b/testcases/kernel/syscalls/fcntl/fcntl26.c
-> index 5c4f4e4..df22063 100644
-> --- a/testcases/kernel/syscalls/fcntl/fcntl26.c
-> +++ b/testcases/kernel/syscalls/fcntl/fcntl26.c
-> @@ -140,6 +140,14 @@ int main(int ac, char **av)
->  			 "Cannot do fcntl on a file located on an TMPFS filesystem");
->  	}
-> 
-> +	/*
-> +	 * check if the current filesystem is ramfs
-> +	 */
-> +	if (tst_is_cwd_ramfs()) {
-> +		tst_brkm(TCONF, cleanup,
-> +			 "Cannot do fcntl on a file located on an RAMFS filesystem");
-> +	}
-> +
->  	/* set the expected errnos... */
->  	TEST_EXP_ENOS(exp_enos);
-> 
-
+-- 
+Darren Hart
+IBM Linux Technology Center
+Real-Time Linux Team
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
