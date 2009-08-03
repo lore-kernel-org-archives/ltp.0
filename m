@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <michal.simek@petalogix.com>) id 1MYzV3-0001Ie-N5
-	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 09:43:05 +0000
-Received: from mail-bw0-f206.google.com ([209.85.218.206])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MYzUz-00066L-Na
-	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 09:43:05 +0000
-Message-ID: <4A7A9DFB.7050305@petalogix.com>
-Date: Thu, 06 Aug 2009 11:10:19 +0200
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1MXy9C-0001RA-9x
+	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 14:04:18 +0000
+Received: from mail-fx0-f211.google.com ([209.85.220.211])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MXy96-0000WT-TV
+	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 14:04:18 +0000
+Received: by fxm7 with SMTP id 7so2646812fxm.10
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 03 Aug 2009 07:04:04 -0700 (PDT)
+Message-ID: <4A76EE2A.201@petalogix.com>
+Date: Mon, 03 Aug 2009 16:03:22 +0200
 From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-References: <d51f89b0908032310k20c3843am7ea069d03436a7a@mail.gmail.com>	<1249387637.15587.29.camel@subratamodak.linux.ibm.com>
-	<d51f89b0908040516i7c65740bi3e30e0972c8374fa@mail.gmail.com>
-In-Reply-To: <d51f89b0908040516i7c65740bi3e30e0972c8374fa@mail.gmail.com>
-Subject: Re: [LTP] Issue with rt_sigqueueinfo testcase in LTP.
+Subject: [LTP] Fake test result
 Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -29,89 +29,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rohit verma <rohit.170309@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Mike Frysinger <vapier@gentoo.org>, "subrata@linux.vnet.ibm.com" <subrata@linux.vnet.ibm.com>, LTP <ltp-list@lists.sourceforge.net>
 
-I can confirm that fault too - on Microblaze and x86 too.
-The funny thing is that this test failed but it is reported as passed in
-log.
+Hi Subrata and Mike,
 
+As I wrote in my previous email (no response on it - Subject getcontext,
+add_key, fcntl24, fcntl25, fcntl26, open10)
+there is wrong reporting PASS/FAIL for latest LTP code.
+
+There is one broken Mike's commit "extend the test result to a bit field
+so we can extend the output further"
+http://developer.petalogix.com/git/gitweb.cgi?p=ltp-microblaze.git;a=commit;h=8b4a8c10b4ec8576a470b9886c7e96a084fb68e0
+
+There is one more patch which relate with that one above -"convert errno
+handling to new tst errno helpers" - mmap09.c
+http://developer.petalogix.com/git/gitweb.cgi?p=ltp-microblaze.git;a=commit;h=92029c333858cefc3b2e03f84a1a74d946f81803
+
+I am running ./runltp -q -f syscalls. Please look at tests which failed
+on your arch (the new one are the best).
+
+If you see the same problem as I, please revert these two patches.
+
+Thanks,
 Michal
-> FYI...
->
->
-> ---------- Forwarded message ----------
-> From: Subrata Modak <subrata@linux.vnet.ibm.com>
-> Date: Tue, Aug 4, 2009 at 5:37 PM
-> Subject: Re: Issue with rt_sigqueueinfo testcase in LTP.
-> To: rohit verma <rohit.170309@gmail.com>
-> Cc: maknayak@in.ibm.com
->
->
-> Hi Rohit,
->
-> On Tue, 2009-08-04 at 11:40 +0530, rohit verma wrote:
->   
->> Dear Manas Kumar Nayak,
->>
->> I have found an issue with rt_sigqueueinfo test-case.
->>
->> Following is the test output:
->>
->> rt_sigqueueinfo01    1  PASS  :  Test Succeeded
->> rt_sigqueueinfo01    1  FAIL  :  Test Failed, errno=1 : Operation not permitted
->> rt_sigqueueinfo01    1  PASS  :  Test Succeeded
->> rt_sigqueueinfo01    1  FAIL  :  Test Failed, errno=1 : Operation not permitted
->> rt_sigqueueinfo01    0  WARN  :  tst_rmdir(): rmobj(/tmp/rt_3FaSpK)
->> failed: lstat(/tmp/rt_3FaSpK) failed; errno=2: No such file or
->> directory
->>
->> I think the following lines are causing the failures:
->>
->> (Line - 164)
->>
->> uinfo.si_errno = 0;
->> uinfo.si_code = 0;//SI_USER
->> TEST(retval = syscall(__NR_rt_sigqueueinfo, getpid(), 17, &uinfo));
->>
->> Reason -
->>
->> You can observe the following comment & source when you look at the
->> Linux source (v 2.6.29)
->> (linux-2.6.29/kernel/signal.c)
->>
->>           /* Not even root can pretend to send signals from the kernel.
->>            Nor can they impersonate a kill(), which adds source info.  */
->>         if (info.si_code >= 0)
->>                 return -EPERM;
->>
->> which implies that si_code cannot be set to ' 0 ' (SI_USER) when
->> invoking the rt_sigqueueinfo syscall.
->>
->>
->> I am not sure how to fix this issue. But, a possible fix would be to
->> remove the second set of fork &
->> rt_sigqueueinfo invocations and use the first set (with SI_QUEUE). If
->> needed, the loop count can be
->> increased.
->>     
->
-> Please propose this over to the mailing list. Manas has just ported the
-> test case from Crackerjack to LTP. He may not be exactly aware of the
-> issues, as it was a blind port, which in one way was good, as the
-> porting generated issues, people interested discussed and solved
-> them ;-)
->
-> Regards--
-> Subrata
->
->   
->>     
->
->
->
->
->   
+
 
 
 -- 
