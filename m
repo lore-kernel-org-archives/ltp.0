@@ -1,32 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Meufs-0004Xk-Cw
-	for ltp-list@lists.sourceforge.net; Sat, 22 Aug 2009 17:46:44 +0000
-Received: from e38.co.us.ibm.com ([32.97.110.159])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Meufo-0003jL-7Z
-	for ltp-list@lists.sourceforge.net; Sat, 22 Aug 2009 17:46:44 +0000
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MXxoo-0005tS-L2
+	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 13:43:14 +0000
+Received: from e34.co.us.ibm.com ([32.97.110.152])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MXxoh-0003B5-Ci
+	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 13:43:14 +0000
 Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
 	[9.17.195.106])
-	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7MHgr0j007829
-	for <ltp-list@lists.sourceforge.net>; Sat, 22 Aug 2009 11:42:53 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by e34.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n73BHUmN019292
+	for <ltp-list@lists.sourceforge.net>; Mon, 3 Aug 2009 05:17:30 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
 	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7MHkYcS217534
-	for <ltp-list@lists.sourceforge.net>; Sat, 22 Aug 2009 11:46:34 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7MHkYrY029157
-	for <ltp-list@lists.sourceforge.net>; Sat, 22 Aug 2009 11:46:34 -0600
+	n73BLCrE213320
+	for <ltp-list@lists.sourceforge.net>; Mon, 3 Aug 2009 05:21:12 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n73BLCEB006753
+	for <ltp-list@lists.sourceforge.net>; Mon, 3 Aug 2009 05:21:12 -0600
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <f5a7b3810908180930q41ceddc0w24a15c21f3c4d796@mail.gmail.com>
-References: <f5a7b3810908180930q41ceddc0w24a15c21f3c4d796@mail.gmail.com>
-Date: Sat, 22 Aug 2009 23:16:18 +0530
-Message-Id: <1250963179.10642.30.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <20090731225609.GB5479@count0.beaverton.ibm.com>
+References: <1248272525-13205-1-git-send-email-nobuhiro@andestech.com>
+	<20090724182457.GJ5878@count0.beaverton.ibm.com>
+	<1248978565.5788.63.camel@subratamodak.linux.ibm.com>
+	<20090731225609.GB5479@count0.beaverton.ibm.com>
+Date: Mon, 03 Aug 2009 16:51:08 +0530
+Message-Id: <1249298468.7460.35.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [FIX PATCH] ltp-fix-sched_setscheduler_17-6
+Subject: Re: [LTP] [PATCH] Fixed static build which needs to
+	link	the	pthread library in pidns and pipeio.
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -37,117 +41,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: naresh kamboju <naresh.kernel@gmail.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, Brandon Philips <bphilips@suse.de>
+To: Matt Helsley <matthltc@us.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Tue, 2009-08-18 at 22:00 +0530, naresh kamboju wrote: 
-> Hi,
-> 
-> I have noticed sched_setscheduler/17-6.c test case as UNTESTED.
-> 
-> Test needs to be executed as non-root user.
-> So I have changed user id from root to non-root user by adding
-> set_nonroot() function. Now test case got PASSED.
-> 
-> I have attached patch and results before and after the patch.
-> Please review the same.
-> 
-> Best regards
-> Naresh Kamboju
-> 
-> /************************************************************/
->  Results:
-> /************************************************************/
-> Before patch:
-> conformance/interfaces/sched_setscheduler/17-6.test:execution:UNTESTED
-> 
-> After patch:
-> conformance/interfaces/sched_setscheduler/17-6.test:execution:PASS
-> /*************************************************************/
-> 
-> 
-> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
-
-Thanks.
-
-Regards--
-Subrata
-
-> 
-> 
-> diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/sched_setscheduler/17-6.c
-> b/testcases/open_posix_testsuite/conformance/interfaces/sched_setscheduler/17-6.c
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/sched_setscheduler/17-6.c	2005-06-03
-> 22:03:12.000000000 +0530
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/sched_setscheduler/17-6.c	2009-08-18
-> 21:03:50.000000000 +0530
-> @@ -24,10 +24,42 @@
->  #include <stdio.h>
->  #include <errno.h>
->  #include <unistd.h>
-> +#include <pwd.h>
-> +#include <string.h>
->  #include "posixtest.h"
-> 
-> 
-> 
-> +/** Set the euid of this process to a non-root uid */
-> +int set_nonroot()
-> +{
-> +	struct passwd *pw;
-> +	setpwent();
-> +	/* search for the first user which is non root */
-> +	while((pw = getpwent()) != NULL)
-> +		if(strcmp(pw->pw_name, "root"))
-> +			break;
-> +	endpwent();
-> +	if(pw == NULL) {
-> +		printf("There is no other user than current and root.\n");
-> +		return 1;
-> +	}
-> +
-> +	if(seteuid(pw->pw_uid) != 0) {
-> +		if(errno == EPERM) {
-> +			printf("You don't have permission to change your UID.\n");
-> +			return 1;
-> +		}
-> +		perror("An error occurs when calling seteuid()");
-> +		return 1;
-> +	}
-> +	
-> +	printf("Testing with user '%s' (uid: %d)\n",
-> +	       pw->pw_name, (int)geteuid());
-> +	return 0;
-> +}
-> +
-> +
->  int main(){
->  	int max_priority, old_priority, old_policy, new_policy, policy;
->          struct sched_param param;
-> @@ -36,9 +68,11 @@
->          /* and can only be accessed by root */
->          /* This test should be run under standard user permissions */
->          if (getuid() == 0) {
-> -                puts("Run this test case as a Regular User, but not ROOT");
-> +	  	if (set_nonroot() != 0) {
-> +			printf("Cannot run this test as non-root user\n");	
->                  return PTS_UNTESTED;
->          }	
-> +        }	
-> 
->  	if(sched_getparam(getpid(), &param) == -1) {
->  		perror("An error occurs when calling sched_getparam()");
-
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gRnJpLCAyMDA5LTA3LTMxIGF0IDE1OjU2IC0wNzAwLCBNYXR0IEhlbHNsZXkgd3JvdGU6IAo+
+IE9uIFRodSwgSnVsIDMwLCAyMDA5IGF0IDExOjU5OjI1UE0gKzA1MzAsIFN1YnJhdGEgTW9kYWsg
+d3JvdGU6Cj4gPiBPbiBGcmksIDIwMDktMDctMjQgYXQgMTE6MjQgLTA3MDAsIE1hdHQgSGVsc2xl
+eSB3cm90ZTogCj4gPiA+IE9uIFdlZCwgSnVsIDIyLCAyMDA5IGF0IDEwOjIyOjA1UE0gKzA4MDAs
+IG5vYnVoaXJvIHdyb3RlOgo+ID4gPiA+IAo+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IG5vYnVoaXJv
+IDxub2J1aGlyb0BhbmRlc3RlY2guY29tPgo+ID4gPiA+IC0tLQo+ID4gPiA+ICB0ZXN0Y2FzZXMv
+a2VybmVsL2NvbnRhaW5lcnMvcGlkbnMvTWFrZWZpbGUgfCAgICAyICstCj4gPiA+ID4gIHRlc3Rj
+YXNlcy9rZXJuZWwvaXBjL3BpcGVpby9NYWtlZmlsZSAgICAgICB8ICAgIDIgKy0KPiA+ID4gPiAg
+MiBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4gPiA+ID4g
+Cj4gPiA+ID4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9waWRucy9N
+YWtlZmlsZSBiL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9waWRucy9NYWtlZmlsZQo+ID4g
+PiA+IGluZGV4IDQ4ODZkNTguLjE0ZjQ5ZGEgMTAwNjQ0Cj4gPiA+ID4gLS0tIGEvdGVzdGNhc2Vz
+L2tlcm5lbC9jb250YWluZXJzL3BpZG5zL01ha2VmaWxlCj4gPiA+ID4gKysrIGIvdGVzdGNhc2Vz
+L2tlcm5lbC9jb250YWluZXJzL3BpZG5zL01ha2VmaWxlCj4gPiA+ID4gQEAgLTIwLDcgKzIwLDcg
+QEAKPiA+ID4gPiAKPiA+ID4gPiAgQ0ZMQUdTICs9IC1XYWxsCj4gPiA+ID4gIENQUEZMQUdTICs9
+IC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAtSS4uL2xpYmNsb25lCj4gPiA+ID4gLUxETElCUyArPSAt
+TC4uLy4uLy4uLy4uL2xpYiAtTC4uL2xpYmNsb25lIC4uL2xpYmNsb25lL2xpYmNsb25lLmEgLWxs
+dHAgLWxydAo+ID4gPiA+ICtMRExJQlMgKz0gLUwuLi8uLi8uLi8uLi9saWIgLUwuLi9saWJjbG9u
+ZSAuLi9saWJjbG9uZS9saWJjbG9uZS5hIC1sbHRwIC1scnQgLWxwdGhyZWFkCj4gPiA+IAo+ID4g
+PiBJJ20gbm90IHN1cmUgdGhpcyBpcyBjb3JyZWN0LiBJIGp1c3QgZGlkIGEgQ1ZTIHVwZGF0ZSBh
+bmQgZ3JlcHBlZCBmb3IKPiA+ID4gInB0aHJlYWQiLiBJIGRvbid0IHNlZSBhIHNpbmdsZSB1c2Ug
+b2YgcHRocmVhZHMgaW4gdGhlcmUuIFdoYXQgb3V0cHV0Cj4gPiA+IHN1Z2dlc3RlZCBhbGwgb2Yg
+dGhlc2UgdGVzdHMgbmVlZCB0byBsaW5rIHRvIHB0aHJlYWRzPyBDb3VsZCB5b3UgYXQKPiA+ID4g
+bGVhc3Qgc3RpY2sgdGhhdCBpbiB0aGUgY2hhbmdlbG9nPwo+ID4gPiAKPiA+IAo+ID4gRGlkIHlv
+dSByZXBseSB0byBNYXR0xZsgbWFpbCBvbiB0aGlzID8KPiAKPiBZZXMsIEkgZ290IGEgcmVwbHku
+IE1heWJlIGl0IHdhc24ndCBjYydkIHRvIHRoZSBMVFAgbWFpbGluZyBsaXN0Pwo+IAo+IFJlZ2Fy
+ZGxlc3MsIEknbSBzYXRpc2ZpZWQgd2l0aCB0aGUgcGF0Y2ggaXRzZWxmLiBBcyBJIHNhaWQgYmVm
+b3JlIHRoZQo+IGNoYW5nZWxvZyB3b3VsZCBiZSBuaWNlciBpZiBpdCBpbmNsdWRlZCBhIHNuaXBw
+ZXQgb2YgdGhlIG91dHB1dCB0aGF0Cj4ganVzdGlmaWVzIGl0IChpbmNsdWRlZCBoZXJlIGZvciBj
+b252ZW5pZW5jZSk6Cj4gCj4gCVdoZW4gc3RhdGljIGxpbmtpbmcsIHRoZSBwdGhyZWFkIHN0dWZm
+IGlzIGR1ZSB0byB0aGUgdW5kZWZpbmVkIHB0aHJlYWQgc3ltYm9scwo+IAlpbiBsaWJydC5hIGFu
+ZCBsaWJnY2NfZWguYS4KPiAJbWFrZVs0XTogRW50ZXJpbmcgZGlyZWN0b3J5Cj4gCWAvaG9tZS9u
+b2J1aGlyby9naXRfcmVwby9vcy9sdHAvdGVzdGNhc2VzL2tlcm5lbC9pcGMvcGlwZWlvJwo+IAlj
+YyAtV2FsbCAgLXN0YXRpYyAtV2FsbCAgLUkuLi8uLi8uLi8uLi9pbmNsdWRlICAgcGlwZWlvLmMg
+IC1MLi4vLi4vLi4vLi4vbGliCj4gCS1sbHRwIC1scnQgLW8gcGlwZWlvCj4gCS91c3IvbGliL2dj
+Yy94ODZfNjQtcGMtbGludXgtZ251LzQuMy4zLy4uLy4uLy4uLy4uL2xpYjY0L2xpYnJ0LmEoYWlv
+X3N1c3BlbmQubyk6Cj4gCUluIGZ1bmN0aW9uIGBjbGVhbnVwJzoKPiAJKC50ZXh0KzB4YSk6IHVu
+ZGVmaW5lZCByZWZlcmVuY2UgdG8gYHB0aHJlYWRfbXV0ZXhfbG9jaycKPiAKPiAKPiBUaGFua3Mg
+dG8gTm9idWhpcm8uCgpUaGFua3MgdG8gYm90aCBvZiB5b3UuIEFuZCBpIGluY2x1ZGVkIHRoZSBh
+Ym92ZSBpbiB0aGUgbG9nIG1lc3NhZ2UuCgpSZWdhcmRzLS0KU3VicmF0YQoKPiAKPiBDaGVlcnMs
+Cj4gCS1NYXR0IEhlbHNsZXkKPiAKPiA+IAo+ID4gUmVnYXJkcy0tCj4gPiBTdWJyYXRhCj4gPiAK
+PiA+ID4gPiAKPiA+ID4gPiAgU1JDUyAgICA6PSAkKHdpbGRjYXJkICouYykKPiA+ID4gPiAgVEFS
+R0VUUyA6PSAkKFNSQ1M6JS5jPSUpCj4gPiA+ID4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJu
+ZWwvaXBjL3BpcGVpby9NYWtlZmlsZSBiL3Rlc3RjYXNlcy9rZXJuZWwvaXBjL3BpcGVpby9NYWtl
+ZmlsZQo+ID4gPiA+IGluZGV4IGFmZDNlOGQuLmQyYTFkNWYgMTAwNjQ0Cj4gPiA+ID4gLS0tIGEv
+dGVzdGNhc2VzL2tlcm5lbC9pcGMvcGlwZWlvL01ha2VmaWxlCj4gPiA+ID4gKysrIGIvdGVzdGNh
+c2VzL2tlcm5lbC9pcGMvcGlwZWlvL01ha2VmaWxlCj4gPiA+ID4gQEAgLTIyLDcgKzIyLDcgQEAK
+PiA+ID4gPiAgIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCj4gPiA+ID4gIENGTEFHUyAgICs9IC1XYWxsCj4g
+PiA+ID4gIENQUEZMQUdTICs9IC1JLi4vLi4vLi4vLi4vaW5jbHVkZQo+ID4gPiA+IC1MRExJQlMg
+ICArPSAtTC4uLy4uLy4uLy4uL2xpYiAtbGx0cCAtbHJ0Cj4gPiA+ID4gK0xETElCUyAgICs9IC1M
+Li4vLi4vLi4vLi4vbGliIC1sbHRwIC1scnQgLWxwdGhyZWFkCj4gPiA+IAo+ID4gPiBTYW1lIGhl
+cmUuCj4gPiA+IAo+ID4gPiBDaGVlcnMsCj4gPiA+IAktTWF0dCBIZWxzbGV5Cj4gPiA+IAo+ID4g
+PiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiA+ID4gX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KPiA+ID4gTHRwLWxpc3QgbWFpbGluZyBsaXN0Cj4gPiA+IEx0
+cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+ID4gPiBodHRwczovL2xpc3RzLnNvdXJjZWZv
+cmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo+ID4gCgoKLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tCkxldCBDcnlzdGFsIFJlcG9ydHMgaGFuZGxlIHRoZSByZXBvcnRpbmcgLSBGcmVlIENyeXN0
+YWwgUmVwb3J0cyAyMDA4IDMwLURheSAKdHJpYWwuIFNpbXBsaWZ5IHlvdXIgcmVwb3J0IGRlc2ln
+biwgaW50ZWdyYXRpb24gYW5kIGRlcGxveW1lbnQgLSBhbmQgZm9jdXMgb24gCndoYXQgeW91IGRv
+IGJlc3QsIGNvcmUgYXBwbGljYXRpb24gY29kaW5nLiBEaXNjb3ZlciB3aGF0J3MgbmV3IHdpdGgg
+CkNyeXN0YWwgUmVwb3J0cyBub3cuICBodHRwOi8vcC5zZi5uZXQvc2Z1L2JvYmotanVseQpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWls
+aW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291
+cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
