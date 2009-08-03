@@ -1,22 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1Md5HU-0007yd-Ln
-	for ltp-list@lists.sourceforge.net; Mon, 17 Aug 2009 16:42:00 +0000
-Received: from mail-yx0-f174.google.com ([209.85.210.174])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Md5HP-0001KA-Sl
-	for ltp-list@lists.sourceforge.net; Mon, 17 Aug 2009 16:42:00 +0000
-Received: by yxe4 with SMTP id 4so4075696yxe.28
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 17 Aug 2009 09:41:50 -0700 (PDT)
-MIME-Version: 1.0
-Date: Mon, 17 Aug 2009 22:11:50 +0530
-Message-ID: <f5a7b3810908170941n6885b036ub45f9d14ec5c3768@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Content-Type: multipart/mixed; boundary=000e0cdf13ca1bd552047159149b
-Subject: [LTP] [FIX PATCH] ltp-fix-posix-sched_setparam_26-1 warning fix
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MXvag-0007as-4L
+	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 11:20:30 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MXvad-00015j-Rr
+	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 11:20:30 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n73BFZX1004120
+	for <ltp-list@lists.sourceforge.net>; Mon, 3 Aug 2009 05:15:35 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n73BKMsb187436
+	for <ltp-list@lists.sourceforge.net>; Mon, 3 Aug 2009 05:20:22 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n73BKL8O004836
+	for <ltp-list@lists.sourceforge.net>; Mon, 3 Aug 2009 05:20:22 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <20090731143642.GB9440@us.ibm.com>
+References: <364299f40907302333s61742580m5dba94b0a2e7afa5@mail.gmail.com>
+	<364299f40907310043q234fc7ebt4e6ce9a98c2da953@mail.gmail.com>
+	<20090731143642.GB9440@us.ibm.com>
+Date: Mon, 03 Aug 2009 16:50:17 +0530
+Message-Id: <1249298418.7460.27.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Fix digsig so it passes -Wshadow
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,79 +39,70 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
-Cc: Brandon Philips <bphilips@suse.de>
-
---000e0cdf13ca1bd552047159149b
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-Hi,
-
-I have noticed build warnings for the following test case.
-This patch will fix warnings by adding <string.h> header file.
-
-I have attached patch and below
-Please review the same
-
-Best regards,
-Naresh Kamboju
-
-Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
-
-diff -Narub a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/26-1.c
-b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/26-1.c
---- a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/26-1.c	2009-08-17
-20:48:10.000000000 +0530
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/26-1.c	2009-08-17
-20:46:10.000000000 +0530
-@@ -17,6 +17,7 @@
- #include <errno.h>
- #include <unistd.h>
- #include <pwd.h>
-+#include <string.h>
- #include "posixtest.h"
-
---000e0cdf13ca1bd552047159149b
-Content-Type: message/rfc822; name="ltp-fix-posix-sched_setparam_26-1.patch"
-Content-Disposition: attachment; 
-	filename="ltp-fix-posix-sched_setparam_26-1.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fyhfj5js0
-
-
-ZGlmZiAtTmFydWIgYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2Uv
-aW50ZXJmYWNlcy9zY2hlZF9zZXRwYXJhbS8yNi0xLmMgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90
-ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9zY2hlZF9zZXRwYXJhbS8yNi0xLmMKLS0t
-IGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMv
-c2NoZWRfc2V0cGFyYW0vMjYtMS5jCTIwMDktMDgtMTcgMjA6NDg6MTAuMDAwMDAwMDAwICswNTMw
-CisrKyBiL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZh
-Y2VzL3NjaGVkX3NldHBhcmFtLzI2LTEuYwkyMDA5LTA4LTE3IDIwOjQ2OjEwLjAwMDAwMDAwMCAr
-MDUzMApAQCAtMTcsNiArMTcsNyBAQAogI2luY2x1ZGUgPGVycm5vLmg+CiAjaW5jbHVkZSA8dW5p
-c3RkLmg+CiAjaW5jbHVkZSA8cHdkLmg+CisjaW5jbHVkZSA8c3RyaW5nLmg+CiAjaW5jbHVkZSAi
-cG9zaXh0ZXN0LmgiCiAKIAo=
---000e0cdf13ca1bd552047159149b
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: "Serge E. Hallyn" <serue@us.ibm.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
+
+On Fri, 2009-07-31 at 09:36 -0500, Serge E. Hallyn wrote: 
+> Quoting Garrett Cooper (yanegomi@gmail.com):
+> > On Thu, Jul 30, 2009 at 11:33 PM, Garrett Cooper<yanegomi@gmail.com> wrote:
+> > > clone(2) is externally defined in sched.h, and as such
+> > > testcases/kernel/security/digsig/writeexec/libwritetest.c fails to
+> > > compile with -Wall due to a shadowed declaration.
+> > >
+> > > Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+> > >
+> > > Index: writeexec/libwritetest.c
+> > > ===================================================================
+> > > RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/digsig/writeexec/libwritetest.c,v
+> > > retrieving revision 1.1
+> > > diff -u -r1.1 libwritetest.c
+> > > --- writeexec/libwritetest.c    1 Nov 2005 16:09:43 -0000       1.1
+> > > +++ writeexec/libwritetest.c    31 Jul 2009 06:30:49 -0000
+> > > @@ -9,8 +9,6 @@
+> > >  #include <dlfcn.h>
+> > >  #include <wait.h>
+> > >
+> > > -int clone(int (*fn)(void *), void *child_stack, int flags, void *arg);
+> > > -
+> > >  int writer(void *data)
+> > >  {
+> > >        int fd;
+> > 
+> > Instead of this, let me do a general purpose `fix' for digsig. There
+> > are a few other issues that need to be resolved.
+> > -Garrett
+> 
+> Alternatively, since digsig never went upstream and isn't being
+> maintained, it might be best to drop this from LTP.  <sniff>
+
+Oh. Is it ? So, should i finally drop this from LTP ?
+
+Regards--
+Subrata
+
+> 
+> -serge
+> 
+> ------------------------------------------------------------------------------
+> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+> trial. Simplify your report design, integration and deployment - and focus on 
+> what you do best, core application coding. Discover what's new with 
+> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---000e0cdf13ca1bd552047159149b
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---000e0cdf13ca1bd552047159149b--
-
