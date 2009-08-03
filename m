@@ -1,28 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <paul.larson@canonical.com>) id 1MdpmO-0000pQ-91
-	for ltp-list@lists.sourceforge.net; Wed, 19 Aug 2009 18:21:00 +0000
-Received: from adelie.canonical.com ([91.189.90.139])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MdpmH-0002wa-Fk
-	for ltp-list@lists.sourceforge.net; Wed, 19 Aug 2009 18:21:00 +0000
-Received: from hutte.canonical.com ([91.189.90.181])
-	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
-	id 1MdpmB-0004HH-Cr
-	for <ltp-list@lists.sourceforge.net>; Wed, 19 Aug 2009 19:20:47 +0100
-Received: from 75-27-138-126.lightspeed.austtx.sbcglobal.net ([75.27.138.126]
-	helo=[192.168.1.70]) by hutte.canonical.com with esmtpsa
-	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
-	(envelope-from <paul.larson@canonical.com>) id 1MdpmB-0007vD-61
-	for ltp-list@lists.sourceforge.net; Wed, 19 Aug 2009 19:20:47 +0100
-Message-ID: <4A8C427D.5040203@canonical.com>
-Date: Wed, 19 Aug 2009 13:20:45 -0500
-From: Paul Larson <paul.larson@canonical.com>
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naresh.kernel@gmail.com>) id 1MXznY-0004bw-7t
+	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 15:50:04 +0000
+Received: from mail-yx0-f174.google.com ([209.85.210.174])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MXznT-000533-Th
+	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 15:50:04 +0000
+Received: by yxe4 with SMTP id 4so4750025yxe.28
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 03 Aug 2009 08:49:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------090104090700030402050304"
-Subject: [LTP] fix mail_tests for systems without mail installed
+In-Reply-To: <364299f40907301122g277a141v5b18713dff4273a@mail.gmail.com>
+References: <f5a7b3810907200605r5fc2f575ta761cd45c92b0837@mail.gmail.com>
+	<f5a7b3810907272350n258c4018mcbf1c5806c3bd27f@mail.gmail.com>
+	<364299f40907292035v683f05a2nbe22082f9e20c837@mail.gmail.com>
+	<f5a7b3810907300325l1a0952cfr6a982f8c88b6db71@mail.gmail.com>
+	<364299f40907301122g277a141v5b18713dff4273a@mail.gmail.com>
+Date: Mon, 3 Aug 2009 21:19:54 +0530
+Message-ID: <f5a7b3810908030849o412c687ev60bc7419d7ec8e17@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Subject: Re: [LTP] [FIX PATCHES] open_posix_execute.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,158 +31,315 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP Mailing List <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Brandon Philips <bphilips@suse.de>
 
-This is a multi-part message in MIME format.
---------------090104090700030402050304
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+On Thu, Jul 30, 2009 at 11:52 PM, Garrett Cooper<yanegomi@gmail.com> wrote:
+> On Thu, Jul 30, 2009 at 3:25 AM, naresh kamboju<naresh.kernel@gmail.com> =
+wrote:
+>> On Thu, Jul 30, 2009 at 9:05 AM, Garrett Cooper<yanegomi@gmail.com> wrot=
+e:
+>>> On Mon, Jul 27, 2009 at 11:50 PM, naresh kamboju<naresh.kernel@gmail.co=
+m> wrote:
+>>>> Hi,
+>>>>
+>>>> Hope you have reviewed below patch.
+>>>> If you any issue please let me know.
+>>>>
+>>>> Subrata/ Garrett,
+>>>> Please review, if you feel okay.
+>>>> commit.
+>>>>
+>>>> Best regards,
+>>>> Naresh Kamboju
+>>>>
+>>>>
+>>>> On Mon, Jul 20, 2009 at 6:35 PM, naresh kamboju<naresh.kernel@gmail.co=
+m> wrote:
+>>>>> Hi,
+>>>>>
+>>>>> As per the execute.sh script file there is time limit of two minutes
+>>>>> for each test case execution if it takes more time it will be reported
+>>>>> as HUNG.
+>>>>>
+>>>>> shm_open/23-1.c test case under posix test suite which executes more
+>>>>> than two minitutes so test case reported as HUNG.
+>>>>>
+>>>>> I have changed time limit from 120 to 300 sec. that is nothing but two
+>>>>> minutes to five minutes. In low end machines this test case taking 4
+>>>>> min to complete execution.
+>>>>>
+>>>>> Now test cases reported as PASS
+>>>>>
+>>>>> I have attached patch and below.
+>>>>> Please review the same.
+>>>
+>>> Naresh,
+>>> =A0 =A0I looked at the testcase, and I think I can see where your conce=
+rn
+>>> stems from, as this is a stress test, more than a functional test
+>>> (1000 child PIDs looping 1000 times each... that's a fair number of
+>>> cycles :)...). What I'd be really be interested in is the number of
+>>> cycles being generated (msec is `randomly' generated -- see line 75).
+>>> However, when I ran the testcase on my machine -- it took less than 10
+>>> seconds (!):
+>>>
+>>>
+>>> =A0 =A0I do have more RAM and all, and I have a fairly recent Intel
+>>> processor (posted below), but what do you have that's so sluggish by
+>>> chance?
+>> Hi Garrett,
+>>
+>>
+>>> =A0 =A0I wonder why it failed though *shrugs*.
+>> Oops. I forgot to say some points.
+>>
+>>> Thanks,
+>>> -Garrett
+>>>
+>>> gcooper@orangebox /scratch/ltp-makefile-infra-rework/ltp $ gcc
+>>> -Itestcases/open_posix_testsuite/include/
+>>> testcases/open_posix_testsuite/conformance/interfaces/shm_open/23-1.c
+>>> gcooper@orangebox /scratch/ltp-makefile-infra-rework/ltp $ time ./a.out
+>>> create_cnt: 890
+>>> Test FAILED
+>>>
+>>> real =A0 =A00m10.947s
+>>> user =A0 =A00m4.074s
+>>> sys =A0 =A0 0m9.189s
+>>
+>>
+>> Test cases will create shm files under /dev/shm/shm_XXX
+>> Before executing this test case mount /dev/shm as tmpfs
+>>
+>> 1. Create directory
+>>
+>> #mkdir /dev/shm
+>
+> Already done with fstab in Gentoo Linux.
+>
+>> 2. Add below line in /etc/fstab
+>>
+>> tmpfs =A0 =A0 =A0 =A0 =A0 =A0 /dev/shm =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tm=
+pfs =A0 defaults =A0 =A0 =A0 =A00 0
+>
+> (!) Uhhhhhhhhh.... this stuff should only be done if required.
+>
+>> 3. mount
+>> #mount =96a
+>> Or
+>> # mount =96t tmpfs /dev/shm
+>> #mount
+>> /dev/sda2 on / type ext3 (rw)
+>> /dev/sda3 on /home type ext3 (rw)
+>> /dev/sda1 on /boot type ext3 (rw)
+>> tmpfs on /dev/shm type tmpfs (rw)
+>>
+>>
+>> 4. go to test case location
+>>
+>> #cd ~/ltp/testcases/open_posix_testsuite/conformance/interfaces/shm_open
+>>
+>> # time ./23-1.test
+>> create_cnt: 1000
+>>
+>> real =A0 =A03m34.111s
+>> user =A0 =A00m51.520s
+>> sys =A0 =A0 1m54.370s
+>
+> 4. may or may not have been why it was failing *shrug*. I'll have to
+> run it as designed.
 
-mail_tests should return tconf instead of tfail if mail is not installed.
+Please execute this test and share the results.
+-Naresh
+>
+> -Garrett
+>
+>>> gcooper@orangebox /scratch/ltp-makefile-infra-rework/ltp $ uname -a
+>>> Linux orangebox 2.6.29-gentoo-r5 #2 SMP PREEMPT Sun Jun 14 01:11:32
+>>> PDT 2009 x86_64 Intel(R) Core(TM)2 Quad CPU Q9400 @ 2.66GHz
+>>> GenuineIntel GNU/Linux
+>>> gcooper@orangebox /scratch/ltp-makefile-infra-rework/ltp $ cat
+>>> /proc/meminfo /proc/cpuinfo
+>>> MemTotal: =A0 =A0 =A0 =A08197172 kB
+>>> MemFree: =A0 =A0 =A0 =A0 =A0180264 kB
+>>> Buffers: =A0 =A0 =A0 =A0 =A0227552 kB
+>>> Cached: =A0 =A0 =A0 =A0 =A06427308 kB
+>>> SwapCached: =A0 =A0 =A0 =A0 5744 kB
+>>> Active: =A0 =A0 =A0 =A0 =A0 914940 kB
+>>> Inactive: =A0 =A0 =A0 =A06820352 kB
+>>> Active(anon): =A0 =A0 310092 kB
+>>> Inactive(anon): =A0 776660 kB
+>>> Active(file): =A0 =A0 604848 kB
+>>> Inactive(file): =A06043692 kB
+>>> Unevictable: =A0 =A0 =A0 =A0 =A0 0 kB
+>>> Mlocked: =A0 =A0 =A0 =A0 =A0 =A0 =A0 0 kB
+>>> SwapTotal: =A0 =A0 =A0 6498284 kB
+>>> SwapFree: =A0 =A0 =A0 =A06472696 kB
+>>> Dirty: =A0 =A0 =A0 =A0 =A0 =A0 =A0 484 kB
+>>> Writeback: =A0 =A0 =A0 =A0 =A0 =A0 0 kB
+>>> AnonPages: =A0 =A0 =A0 1075824 kB
+>>> Mapped: =A0 =A0 =A0 =A0 =A0 =A056784 kB
+>>> Slab: =A0 =A0 =A0 =A0 =A0 =A0 192872 kB
+>>> SReclaimable: =A0 =A0 162736 kB
+>>> SUnreclaim: =A0 =A0 =A0 =A030136 kB
+>>> PageTables: =A0 =A0 =A0 =A010908 kB
+>>> NFS_Unstable: =A0 =A0 =A0 =A0 =A00 kB
+>>> Bounce: =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A00 kB
+>>> WritebackTmp: =A0 =A0 =A0 =A0 =A00 kB
+>>> CommitLimit: =A0 =A010596868 kB
+>>> Committed_AS: =A0 =A01617720 kB
+>>> VmallocTotal: =A0 34359738367 kB
+>>> VmallocUsed: =A0 =A0 =A0334552 kB
+>>> VmallocChunk: =A0 34359384571 kB
+>>> HugePages_Total: =A0 =A0 =A0 0
+>>> HugePages_Free: =A0 =A0 =A0 =A00
+>>> HugePages_Rsvd: =A0 =A0 =A0 =A00
+>>> HugePages_Surp: =A0 =A0 =A0 =A00
+>>> Hugepagesize: =A0 =A0 =A0 2048 kB
+>>> DirectMap4k: =A0 =A0 8119808 kB
+>>> DirectMap2M: =A0 =A0 =A0268288 kB
+>>> processor =A0 =A0 =A0 : 0
+>>> vendor_id =A0 =A0 =A0 : GenuineIntel
+>>> cpu family =A0 =A0 =A0: 6
+>>> model =A0 =A0 =A0 =A0 =A0 : 23
+>>> model name =A0 =A0 =A0: Intel(R) Core(TM)2 Quad CPU =A0 =A0Q9400 =A0@ 2=
+.66GHz
+>>> stepping =A0 =A0 =A0 =A0: 10
+>>> cpu MHz =A0 =A0 =A0 =A0 : 2664.000
+>>> cache size =A0 =A0 =A0: 3072 KB
+>>> physical id =A0 =A0 : 0
+>>> siblings =A0 =A0 =A0 =A0: 4
+>>> core id =A0 =A0 =A0 =A0 : 0
+>>> cpu cores =A0 =A0 =A0 : 4
+>>> apicid =A0 =A0 =A0 =A0 =A0: 0
+>>> initial apicid =A0: 0
+>>> fpu =A0 =A0 =A0 =A0 =A0 =A0 : yes
+>>> fpu_exception =A0 : yes
+>>> cpuid level =A0 =A0 : 13
+>>> wp =A0 =A0 =A0 =A0 =A0 =A0 =A0: yes
+>>> flags =A0 =A0 =A0 =A0 =A0 : fpu vme de pse tsc msr pae mce cx8 apic sep=
+ mtrr pge
+>>> mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe
+>>> syscall nx lm constant_tsc arch_perfmon pebs bts rep_good pni dtes64
+>>> monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm sse4_1 xsave
+>>> lahf_lm tpr_shadow vnmi flexpriority
+>>> bogomips =A0 =A0 =A0 =A0: 5343.38
+>>> clflush size =A0 =A0: 64
+>>> cache_alignment : 64
+>>> address sizes =A0 : 36 bits physical, 48 bits virtual
+>>> power management:
+>>>
+>>> processor =A0 =A0 =A0 : 1
+>>> vendor_id =A0 =A0 =A0 : GenuineIntel
+>>> cpu family =A0 =A0 =A0: 6
+>>> model =A0 =A0 =A0 =A0 =A0 : 23
+>>> model name =A0 =A0 =A0: Intel(R) Core(TM)2 Quad CPU =A0 =A0Q9400 =A0@ 2=
+.66GHz
+>>> stepping =A0 =A0 =A0 =A0: 10
+>>> cpu MHz =A0 =A0 =A0 =A0 : 2664.000
+>>> cache size =A0 =A0 =A0: 3072 KB
+>>> physical id =A0 =A0 : 0
+>>> siblings =A0 =A0 =A0 =A0: 4
+>>> core id =A0 =A0 =A0 =A0 : 1
+>>> cpu cores =A0 =A0 =A0 : 4
+>>> apicid =A0 =A0 =A0 =A0 =A0: 1
+>>> initial apicid =A0: 1
+>>> fpu =A0 =A0 =A0 =A0 =A0 =A0 : yes
+>>> fpu_exception =A0 : yes
+>>> cpuid level =A0 =A0 : 13
+>>> wp =A0 =A0 =A0 =A0 =A0 =A0 =A0: yes
+>>> flags =A0 =A0 =A0 =A0 =A0 : fpu vme de pse tsc msr pae mce cx8 apic sep=
+ mtrr pge
+>>> mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe
+>>> syscall nx lm constant_tsc arch_perfmon pebs bts rep_good pni dtes64
+>>> monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm sse4_1 xsave
+>>> lahf_lm tpr_shadow vnmi flexpriority
+>>> bogomips =A0 =A0 =A0 =A0: 5343.00
+>>> clflush size =A0 =A0: 64
+>>> cache_alignment : 64
+>>> address sizes =A0 : 36 bits physical, 48 bits virtual
+>>> power management:
+>>>
+>>> processor =A0 =A0 =A0 : 2
+>>> vendor_id =A0 =A0 =A0 : GenuineIntel
+>>> cpu family =A0 =A0 =A0: 6
+>>> model =A0 =A0 =A0 =A0 =A0 : 23
+>>> model name =A0 =A0 =A0: Intel(R) Core(TM)2 Quad CPU =A0 =A0Q9400 =A0@ 2=
+.66GHz
+>>> stepping =A0 =A0 =A0 =A0: 10
+>>> cpu MHz =A0 =A0 =A0 =A0 : 2664.000
+>>> cache size =A0 =A0 =A0: 3072 KB
+>>> physical id =A0 =A0 : 0
+>>> siblings =A0 =A0 =A0 =A0: 4
+>>> core id =A0 =A0 =A0 =A0 : 2
+>>> cpu cores =A0 =A0 =A0 : 4
+>>> apicid =A0 =A0 =A0 =A0 =A0: 2
+>>> initial apicid =A0: 2
+>>> fpu =A0 =A0 =A0 =A0 =A0 =A0 : yes
+>>> fpu_exception =A0 : yes
+>>> cpuid level =A0 =A0 : 13
+>>> wp =A0 =A0 =A0 =A0 =A0 =A0 =A0: yes
+>>> flags =A0 =A0 =A0 =A0 =A0 : fpu vme de pse tsc msr pae mce cx8 apic sep=
+ mtrr pge
+>>> mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe
+>>> syscall nx lm constant_tsc arch_perfmon pebs bts rep_good pni dtes64
+>>> monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm sse4_1 xsave
+>>> lahf_lm tpr_shadow vnmi flexpriority
+>>> bogomips =A0 =A0 =A0 =A0: 5343.03
+>>> clflush size =A0 =A0: 64
+>>> cache_alignment : 64
+>>> address sizes =A0 : 36 bits physical, 48 bits virtual
+>>> power management:
+>>>
+>>> processor =A0 =A0 =A0 : 3
+>>> vendor_id =A0 =A0 =A0 : GenuineIntel
+>>> cpu family =A0 =A0 =A0: 6
+>>> model =A0 =A0 =A0 =A0 =A0 : 23
+>>> model name =A0 =A0 =A0: Intel(R) Core(TM)2 Quad CPU =A0 =A0Q9400 =A0@ 2=
+.66GHz
+>>> stepping =A0 =A0 =A0 =A0: 10
+>>> cpu MHz =A0 =A0 =A0 =A0 : 2664.000
+>>> cache size =A0 =A0 =A0: 3072 KB
+>>> physical id =A0 =A0 : 0
+>>> siblings =A0 =A0 =A0 =A0: 4
+>>> core id =A0 =A0 =A0 =A0 : 3
+>>> cpu cores =A0 =A0 =A0 : 4
+>>> apicid =A0 =A0 =A0 =A0 =A0: 3
+>>> initial apicid =A0: 3
+>>> fpu =A0 =A0 =A0 =A0 =A0 =A0 : yes
+>>> fpu_exception =A0 : yes
+>>> cpuid level =A0 =A0 : 13
+>>> wp =A0 =A0 =A0 =A0 =A0 =A0 =A0: yes
+>>> flags =A0 =A0 =A0 =A0 =A0 : fpu vme de pse tsc msr pae mce cx8 apic sep=
+ mtrr pge
+>>> mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe
+>>> syscall nx lm constant_tsc arch_perfmon pebs bts rep_good pni dtes64
+>>> monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm sse4_1 xsave
+>>> lahf_lm tpr_shadow vnmi flexpriority
+>>> bogomips =A0 =A0 =A0 =A0: 5343.03
+>>> clflush size =A0 =A0: 64
+>>> cache_alignment : 64
+>>> address sizes =A0 : 36 bits physical, 48 bits virtual
+>>> power management:
+>>>
+>>
+>
 
-Signed-off-by: Paul Larson <paul.larson@canonical.com>
+---------------------------------------------------------------------------=
 ---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
 
---------------090104090700030402050304
-Content-Type: text/x-patch;
- name="mail_tests-2.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="mail_tests-2.patch"
+trial. Simplify your report design, integration and deployment - and focus =
+on =
 
-diff --git a/testcases/commands/mail/mail_tests.sh b/testcases/commands/mail/mail_tests.sh
-index 7458944..0959a0c 100755
---- a/testcases/commands/mail/mail_tests.sh
-+++ b/testcases/commands/mail/mail_tests.sh
-@@ -59,6 +59,12 @@ RC=0
- export TCID=SETUP
- export TST_COUNT=1
- 
-+MAIL_NOT_INSTALLED=0
-+`type mail &> /dev/null`
-+if [ $? != 0 ]; then
-+    MAIL_NOT_INSTALLED=1
-+fi
-+
- # check if the user mail_test exists on this system.
- # if not add that user mail_test, will removed before exiting test.
- RC=$(awk '/^mail_test/ {print 1}' /etc/passwd)
-@@ -97,6 +103,7 @@ $LTPBIN/tst_resm TINFO "Test #1: mail root@localhost will send mail to root"
- $LTPBIN/tst_resm TINFO "Test #1: user on local machine."
- 
- 
-+if [ -z "$MAIL_NOT_INSTALLED" ]; then
- cat > $LTPTMP/tst_mail.in <<EOF
- This is a test email.
- EOF
-@@ -125,6 +132,9 @@ else
-         TFAILCNT=$(( $TFAILCNT+1 ))
-     fi
- fi
-+else
-+    $LTPBIN/tst_resm TCONF "mail command not installed"
-+fi
- 
- 
- # Test #2
-@@ -142,6 +152,7 @@ $LTPBIN/tst_resm TINFO \
- $LTPBIN/tst_resm TINFO "Test #2: to deliver the mail. Mailer daemon should"
- $LTPBIN/tst_resm TINFO "Test #2: report this failure."
- 
-+if [ -z $MAIL_NOT_INSTALLED ]; then
- cat > $LTPTMP/tst_mail.in <<EOF
- This is a test email.
- EOF
-@@ -193,7 +204,9 @@ fi
-         fi
-     fi
- fi
--    
-+else
-+    $LTPBIN/tst_resm TCONF "mail command not installed"
-+fi    
- 
- # Test #3
- # Test that mail non_existant_user@localhost will result in delivery failure.
-@@ -210,6 +223,7 @@ $LTPBIN/tst_resm TINFO \
- $LTPBIN/tst_resm TINFO "Test #3: to deliver the mail. Mailer daemon should"
- $LTPBIN/tst_resm TINFO "Test #3: report this failure."
- 
-+if [ -z $MAIL_NOT_INSTALLED ]; then
- cat > $LTPTMP/tst_mail.in <<EOF
- This is a test email.
- EOF
-@@ -260,6 +274,9 @@ fi
-         fi
-     fi
- fi
-+else
-+    $LTPBIN/tst_resm TCONF "mail command not installed"
-+fi
- 
- # Test #4 
- # Test that mail -c user@domain option will carbon copy that user.
-@@ -270,6 +287,7 @@ RC=0
- 
- $LTPBIN/tst_resm TINFO "Test #4: Test that mail -c user@domain will"
- $LTPBIN/tst_resm TINFO "Test #4: carbon copy user@domain"
-+if [ -z $MAIL_NOT_INSTALLED ]; then
- 
- # send mail to root and carbon copy mail_test 
- mail -s "Test" root@localhost -c mail_test@localhost < \
-@@ -297,7 +315,9 @@ else
-         TFAILCNT=$(( $TFAILCNT+1 ))
-     fi
- fi
--
-+else
-+    $LTPBIN/tst_resm TCONF "mail command not installed"
-+fi
- 
- # Test #5 
- # Test that mail -b user@domain option will blind carbon copy that user.
-@@ -308,6 +328,7 @@ RC=0
- 
- $LTPBIN/tst_resm TINFO "Test #5: Test that mail -b user@domain will"
- $LTPBIN/tst_resm TINFO "Test #5: blind carbon copy user@domain"
-+if [ -z $MAIL_NOT_INSTALLED ]; then
- 
- # send mail to root and carbon copy mail_test 
- mail -s "Test" root@localhost -c mail_test@localhost < \
-@@ -335,7 +356,9 @@ else
-         TFAILCNT=$(( $TFAILCNT+1 ))
-     fi
- fi
--    
-+else
-+    $LTPBIN/tst_resm TCONF "mail command not installed"
-+fi
- 
- #CLEANUP & EXIT
- # remove all the temporary files created by this test.
+what you do best, core application coding. Discover what's new with =
 
---------------090104090700030402050304
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---------------090104090700030402050304
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------090104090700030402050304--
-
