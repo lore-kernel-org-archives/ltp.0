@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MbSzI-0006g4-Qi
-	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2009 05:36:32 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MbSzA-0007bF-VE
-	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2009 05:36:32 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Thu, 13 Aug 2009 01:36:16 -0400
-References: <364299f40907182138w484cc898gac9fe00dbde75afd@mail.gmail.com>
-In-Reply-To: <364299f40907182138w484cc898gac9fe00dbde75afd@mail.gmail.com>
+	(envelope-from <yanegomi@gmail.com>) id 1MXvpm-0008OB-IM
+	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 11:36:06 +0000
+Received: from mail-qy0-f181.google.com ([209.85.221.181])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MXvpl-0006BM-Cs
+	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 11:36:06 +0000
+Received: by qyk11 with SMTP id 11so3054631qyk.28
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 03 Aug 2009 04:36:00 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <200908130136.16712.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] Fix bad strerror calls in
-	testcases/kernel/syscalls/waitid01.c
+In-Reply-To: <364299f40908022332q29608627vb36b1c5c7c996b93@mail.gmail.com>
+References: <364299f40908022332q29608627vb36b1c5c7c996b93@mail.gmail.com>
+Date: Mon, 3 Aug 2009 04:35:59 -0700
+Message-ID: <364299f40908030435u13873dc8l775169dae551e1c@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [RFC] Bourne shell command library
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,90 +27,242 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6131543700672215755=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============6131543700672215755==
-Content-Type: multipart/signed; boundary="nextPart2191923.utev9z7QoY";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart2191923.utev9z7QoY
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-On Sunday 19 July 2009 00:38:39 Garrett Cooper wrote:
->  int errnochoose(void){   //choose the relative errno
->
->      switch (TEST_ERRNO){
-> -        case    0:      tst_exit();
-> -        case    ECHILD: strerror((int)"ECHILD");
-> -        	        break;
-> -        case    EINTR:  strerror((int)"EINTR");
-> -                	break;
-> -        case    EINVAL: strerror((int)"EINVAL");
-> -                	break;
-> -        default:     strerror((int)"Other Error");
-> +        case  0:     tst_exit();
-> +		     break;
-> +        default:     strerror(TEST_ERRNO);
->                       break;
->     }
-
-maybe i'm missing something, but strerror() doesnt write any output, it=20
-returns a string.  so ignoring the return value of strerror() makes it=20
-pointless.  which means this whole function is useless ?
-=2Dmike
-
---nextPart2191923.utev9z7QoY
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJKg6ZQAAoJEEFjO5/oN/WBRakQANUUPhT9dCFhFOJDz9OIrrQ0
-ZdckHNQaEyM7pAgj1pauDjh4+y98QTC4qGcv2n56cDph/sDO3ABFuqZM8cB6uV5m
-ouw3mSe0aM/NkMVvYk+QVH/5e80ZwnRsht66hYXunNG1luDg4KSApSxLdbE4MVVO
-t+mZ2fgf11ROykDzuozBIFlega3wWZaKrXgkv/11JmbE4NYVZSSL0uqNg+AiORiT
-d2x4Y/HUpWhDDO1hqXYdD9O4pb3e5Klkc8u0Klo4gEHUmWuWXVFd21RbCgyouULJ
-dOhIePDnvNMk0U8GUcwPNIyrbI8BYoQvAZ6KfmSLtmPT7Rx2IcwBKQ3iMf/I0W0s
-BgnIq7B4WCBkwdVyZ5QkbvoEecWvEN6N3L8pqNFTNJgmdG8pU1yzSxvxQQ3KHQ5h
-71oBzzCXQ08d0ZKplJkZG0t6kktex60cROIaLrpXkaadzLDEdSs9Uhdg+iPuLHoN
-q57hm3WflX45DIp7sjcV8685BxQYLS61JaJQFezXFg6Aht2GLidKjgWyo3XslOpJ
-hJMIniGZJBZMW6+52gCGUTO+4iXNwl/mWwtMoXfdvJWctBpO68QuBRAkZg8pZnke
-IZmrrrp22d3iiQ0pyguX2kxtxmK6TcbM1cegiIdmUL7Y87CT2MMqcDU6XGXOfuvJ
-aVrVLWXGr+75CP5HdcZq
-=L2w3
------END PGP SIGNATURE-----
-
---nextPart2191923.utev9z7QoY--
-
-
---===============6131543700672215755==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
+
+On Sun, Aug 2, 2009 at 11:32 PM, Garrett Cooper<yanegomi@gmail.com> wrote:
+> The following is a proposed start for a command library that can be
+> used by all bourne shell scripts for executing bourne shell based
+> scripts / testcases, as there is a large degree of duplication in
+> testcases/network/{ipv6,tcp_cmds}/*, and there's no doubt a large
+> degree elsewhere.
+>
+> The other driving motivator for this is that it would force folks to
+> adhere to a set standard for shell scripts, and would provide a common
+> set of simple routines for tracking whether or not prerequisites
+> exist, as well as whether or not to cleanup, report failure, find
+> commands, etc.
+>
+> I will employ this logic in the testcases/network/{ipv6,tcp_cmds}/*
+> scripts, but I would really like some feedback as to whether or not
+> what I have is a good idea, or if I could stand more, or less
+> information, or whether or not this could be done in a better way...
+>
+> Thanks.
+>
+> (No sign-off included here because it's not in final form, yet -- will
+> sign off in my CVS branch space though)
+
+[..]
+
+The following is a hint of what I have in store for the cmdlibs.sh
+library. Phew... took a few hours to complete everything :)...
+
+Again, I'm not signing off for anything here, because it's still
+half-baked, and hasn't been fully integration tested yet, but it's
+been unit tested for basic sanity and appears correct.
+
+Integration test starting now before I go to sleep :)...
+
+Index: testcases/lib/Makefile
+===================================================================
+RCS file: testcases/lib/Makefile
+diff -N testcases/lib/Makefile
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ testcases/lib/Makefile	3 Aug 2009 11:35:31 -0000
+@@ -0,0 +1,31 @@
++#
++#    testcases library Makefile (differs from lib/).
++#
++#    Copyright (C) 2009, Cisco Systems Inc.
++#
++#    This program is free software; you can redistribute it and/or modify
++#    it under the terms of the GNU General Public License as published by
++#    the Free Software Foundation; either version 2 of the License, or
++#    (at your option) any later version.
++#
++#    This program is distributed in the hope that it will be useful,
++#    but WITHOUT ANY WARRANTY; without even the implied warranty of
++#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#    GNU General Public License for more details.
++#
++#    You should have received a copy of the GNU General Public License along
++#    with this program; if not, write to the Free Software Foundation, Inc.,
++#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++#
++# Garrett Cooper, August 2009
++#
++
++top_srcdir		?= ../..
++
++include $(top_srcdir)/include/mk/master_include.mk
++
++INSTALL_TARGETS		:= cmdlib.sh
++
++MAKE_TARGETS		:=
++
++$(eval $(generic_leaf_target))
+Index: testcases/lib/cmdlib.sh
+===================================================================
+RCS file: testcases/lib/cmdlib.sh
+diff -N testcases/lib/cmdlib.sh
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ testcases/lib/cmdlib.sh	3 Aug 2009 11:35:31 -0000
+@@ -0,0 +1,145 @@
++#!/bin/sh
++#
++#    Command library that provides a boilerplate set of functions and variables
++#    required for all bourne shell based scripts.
++#
++#    Copyright (C) 2009, Cisco Systems Inc.
++#
++#    This program is free software; you can redistribute it and/or modify
++#    it under the terms of the GNU General Public License as published by
++#    the Free Software Foundation; either version 2 of the License, or
++#    (at your option) any later version.
++#
++#    This program is distributed in the hope that it will be useful,
++#    but WITHOUT ANY WARRANTY; without even the implied warranty of
++#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#    GNU General Public License for more details.
++#
++#    You should have received a copy of the GNU General Public License along
++#    with this program; if not, write to the Free Software Foundation, Inc.,
++#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++#
++# Garrett Cooper, August 2009
++#
++
++set -u
++
++export SHELL_DEBUG=${SHELL_DEBUG:=0}
++if [ "$SHELL_DEBUG" = 1 ] ; then
++    set -x
++fi
++
++#=============================================================================
++# FUNCTION:   tst_cleanup
++# PURPOSE:    Clean up after a testcase.
++#=============================================================================
++tst_cleanup()
++{
++    # To ensure set -u passes...
++    TCtmp=${TCtmp:=}
++    tst_resm TINFO "Cleaning up."
++    # Nuke the testcase temporary directory if it exists.
++    [ -d "$TCtmp" ] && rm -rf "$TCtmp"
++}
++
++#=============================================================================
++# FUNCTION:  setup
++# PURPOSE:   Setup the test environment.
++#=============================================================================
++tst_setup() {
++
++    TST_COUNT=1
++    TST_TOTAL=${TST_TOTAL:=1}
++    export TCID TST_COUNT TST_TOTAL
++
++    for varname in TST_TOTAL; do
++        if eval "test -z \"\$${varname}\""; then
++            end_testcase "You must set ${varname} before calling setup()."
++        fi
++    done
++
++    LTPROOT=${LTPROOT:="../../../../"}
++    TEMPDIR=${TEMPDIR:=/tmp}
++
++    TC=${TC:=}
++    TCtmp=${TCtmp:=$TEMPDIR/$TC$$}
++    # User wants a temporary sandbox to play with.
++    if [ -n "$TCtmp" -a "$TCtmp" != "$TEMPDIR/$$" ] ; then
++        test -d "$TCtmp" || mkdir -p "$TCtmp"
++        # Clean up on exit.
++        trap tst_cleanup EXIT
++    fi
++
++}
++
++
++#=============================================================================
++# FUNCTION NAME:        end_testcase
++#
++# FUNCTION DESCRIPTION: Print out whether or not a test failed. Do not use
++#			this when TBROK messages should be applied.
++#
++# PARAMETERS:           Failure message, or "" / unset if passed.
++#
++# RETURNS:              None.
++#=============================================================================
++end_testcase()
++{
++    tst_cleanup
++    if [ $# -eq 0 ]; then
++        tst_resm TPASS "Test successful"
++    else
++        tst_resm TFAIL "Test broken: $*"
++        exit 1
++    fi
++}
++
++#=============================================================================
++# FUNCTION:  exists
++# PURPOSE:   Check if command(s) used by this test script exist.
++#=============================================================================
++exists()
++{
++    for cmd in $@; do
++        if ! which $cmd 2>&1 1>/dev/null; then
++            end_testcase "$cmd: command not found"
++            exit 1
++        fi
++    done
++}
++
++incr_tst_count()
++{
++    export TST_TOTAL=$(( $TST_TOTAL + 1 ))
++}
++
++#
++# $0 is maintained by the caller script; tested on FreeBSD (ash) and Gentoo
++# GNU/Linux (bash) -- assuming you aren't calling this from another function
++# or command:
++#
++# foo.sh:
++# echo ${0##*/}
++# . ${$0%%*}/bar.sh
++# bar.sh:
++# echo ${0##*/}
++# echo $SHELL
++#
++# Gentoo:
++# gcooper@orangebox ~/Desktop $ ./foo.sh
++# foo.sh
++# foo.sh
++# /bin/bash
++# gcooper@orangebox ~/Desktop $ uname -sr
++# Linux 2.6.29-gentoo-r5
++#
++# FreeBSD:
++# $ ./foo.sh
++# foo.sh
++# foo.sh
++# /bin/sh
++# $ uname -sr
++# FreeBSD 8.0-BETA2
++#
++TCID=${TCID:=}
++[ -z "$TCID" ] && TCID=${0##*/}
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---===============6131543700672215755==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============6131543700672215755==--
-
