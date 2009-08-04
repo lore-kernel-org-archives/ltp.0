@@ -1,35 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mgc5g-0004rU-6i
-	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 10:20:24 +0000
-Received: from e33.co.us.ibm.com ([32.97.110.151])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mgc5b-0001eR-R7
-	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 10:20:24 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e33.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7RAIBIM000963
-	for <ltp-list@lists.sourceforge.net>; Thu, 27 Aug 2009 04:18:11 -0600
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7RAKCx4174920
-	for <ltp-list@lists.sourceforge.net>; Thu, 27 Aug 2009 04:20:12 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7RAKBXh007090
-	for <ltp-list@lists.sourceforge.net>; Thu, 27 Aug 2009 04:20:12 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4A95CDEE.2040103@cn.fujitsu.com>
-References: <4A947C25.5090809@cn.fujitsu.com>
-	<20090826152844.GL8078@count0.beaverton.ibm.com>
-	<4A95CDEE.2040103@cn.fujitsu.com>
-Date: Thu, 27 Aug 2009 15:50:06 +0530
-Message-Id: <1251368406.4993.20.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Add new testcases for cgroup
-Reply-To: subrata@linux.vnet.ibm.com
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <rohit.170309@gmail.com>) id 1MYIEu-0007Mk-NY
+	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 11:31:32 +0000
+Received: from mail-gx0-f209.google.com ([209.85.217.209])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MYIEi-0004Cr-0m
+	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 11:31:27 +0000
+MIME-Version: 1.0
+In-Reply-To: <1249385096.15587.17.camel@subratamodak.linux.ibm.com>
+References: <d51f89b0907230130k158cbfbeo31f290cf207432b6@mail.gmail.com>
+	<1248978557.5788.61.camel@subratamodak.linux.ibm.com>
+	<d51f89b0908040422o17ac20f6q36aaff23ea88e839@mail.gmail.com>
+	<1249385096.15587.17.camel@subratamodak.linux.ibm.com>
+Date: Tue, 4 Aug 2009 17:01:14 +0530
+Message-ID: <d51f89b0908040431w6208a47fgbe79b5df30c6268c@mail.gmail.com>
+From: rohit verma <rohit.170309@gmail.com>
+Subject: [LTP]  waitid02 testcase fails on 2.6.29 kernel
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,169 +27,102 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shi Weihua <shiwh@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list <ltp-list@lists.sf.net>
 
-On Thu, 2009-08-27 at 08:06 +0800, Shi Weihua wrote: 
-> Matt Helsley wrote:
-> > On Wed, Aug 26, 2009 at 08:04:53AM +0800, Shi Weihua wrote:
-> >> We has created some testcases for cgroup in the last year. 
-> >> There are total 194 testcases that have been added. These testcases contain 
-> >> the basis operation test, part functionality test and stress test of cgroup.
-> >>
-> >> How to run this test:
-> >> 	# runltp -f controllers
-> >>
-> >> Result:
-> >> Now, we start the test for cgroup...
-> >> cgroup_test_fj    1  TPASS  :  case1(function   1 1 1 1 1 2 3 2 1)    PASS
-> >> cgroup_test_fj    1  TPASS  :  case2(function   1 2 1 1 1 2 3 2 1)    PASS
-> > 
-> > <snip>
-> > 
-> >> cgroup_test_fj    1  TPASS  :  case93(function  12 1 1 8 1 2 3 2 1)    PASS
-> > 
-> > <snip>
-> > 
-> >> diff -urpN ltp-full-20090731.orig/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh ltp-full-20090731.cg/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh
-> >> --- ltp-full-20090731.orig/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh	1969-12-31 19:00:00.000000000 -0500
-> >> +++ ltp-full-20090731.cg/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh	2009-08-23 10:15:08.000000000 -0400
-> >> @@ -0,0 +1,269 @@
-> >> +#! /bin/sh
-> >> +
-> >> +################################################################################
-> >> +##                                                                            ##
-> >> +## Copyright (c) 2009 FUJITSU LIMITED                                         ##
-> >> +##                                                                            ##
-> >> +## This program is free software;  you can redistribute it and#or modify      ##
-> >> +## it under the terms of the GNU General Public License as published by       ##
-> >> +## the Free Software Foundation; either version 2 of the License, or          ##
-> >> +## (at your option) any later version.                                        ##
-> >> +##                                                                            ##
-> >> +## This program is distributed in the hope that it will be useful, but        ##
-> >> +## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
-> >> +## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
-> >> +## for more details.                                                          ##
-> >> +##                                                                            ##
-> >> +## You should have received a copy of the GNU General Public License          ##
-> >> +## along with this program;  if not, write to the Free Software               ##
-> >> +## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
-> >> +##                                                                            ##
-> >> +## Author: Shi Weihua <shiwh@cn.fujitsu.com>                                  ##
-> >> +##                                                                            ##
-> >> +################################################################################
-> >> +
-> >> +subsystem=$1
-> >> +remount_use=$2
-> >> +noprefix_use=$3	
-> >> +release_agent_para=$4
-> >> +subgroup_exist=$5
-> >> +attach_operation=$6
-> >> +remove_operation=$7
-> >> +notify_on_release=$8
-> >> +release_agent_echo=$9
-> >> +
-> >> +subsystem_str="";
-> >> +remount_use_str="";
-> >> +noprefix_use_str="";
-> >> +release_agent_para_str="";
-> >> +notify_on_release_str="";
-> >> +release_agent_str="";
-> >> +
-> >> +expectted=1;
-> >> +
-> >> +# Create some processes and move them to cgroups
-> >> +pid=0;
-> >> +pid2=0;
-> >> +
-> >> +# not output debug info
-> >> +no_debug=0
-> >> +
-> >> +usage()
-> >> +{
-> >> +	echo "usage of cgroup_fj_function.sh: "
-> >> +	echo "  ./cgroup_fj_function.sh -subsystem -remount_use -noprefix_use -release_agent_para"
-> >> +	echo "                          -subgroup_exist -attach_operation -remove_operation"
-> >> +	echo "                          -notify_on_release -release_agent_echo"
-> >> +	echo "    subsystem's usable number"
-> >> +	echo "      1: debug"
-> >> +	echo "      2: cpuset"
-> >> +	echo "      3: ns"
-> >> +	echo "      4: cpu"
-> >> +	echo "      5: cpuacct"
-> >> +	echo "      6: memory"
-> >> +	echo "      7: all"
-> >> +	echo "      8: (none)"
-> >> +	echo "      9: debug,debug"
-> >> +	echo "      10: (nonexistent subsystem), e.g. abc"
-> >> +	echo "      11: freezer"
-> >> +	echo "      11: devices"
-> > 
-> > Looks like this should be 12.
-> 
-> Yes, here should be 12. Sorry for it.
-> The following small patch fixed it.
-> 
-> Signed-off-by: Shi Weihua <shiwh@cn.fujitsu.com>
+FYI
 
-Thanks again for this fix.
+---------- Forwarded message ----------
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+Date: Tue, Aug 4, 2009 at 4:54 PM
+Subject: Re: [LTP] waitid02 testcase fails on 2.6.29 kernel
+To: rohit verma <rohit.170309@gmail.com>
+Cc: maknayak@in.ibm.com, CAI Qian <caiqian@cclom.cn>
+
+
+Rohit,
+
+Post this to ltp mailing list.
 
 Regards--
 Subrata
 
-> ---
-> diff -urpN ltp-full-20090731.orig/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh ltp-full-20090731/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh
-> --- ltp-full-20090731.orig/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh	2009-08-27 04:09:41.000000000 -0400
-> +++ ltp-full-20090731/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh	2009-08-27 04:11:07.000000000 -0400
-> @@ -66,7 +66,7 @@ usage()
->  	echo "      9: debug,debug"
->  	echo "      10: (nonexistent subsystem), e.g. abc"
->  	echo "      11: freezer"
-> -	echo "      11: devices"
-> +	echo "      12: devices"
->  	echo "    remount_use's usable number"
->  	echo "      1: do not use remount in "-o"'s parameter"
->  	echo "      2: use it"
-> 
-> 
-> > 
-> > Why not just use the subsystem names both to iterate over and to print
-> > out? Then it will be a little clearer what test has[n't] passed.
-> > e.g.:
-> > 
-> > SUBSYSTEMS=( debug cpuset ns cpu cpuacct memory debug,debug freezer \
-> > 		devices nonexistent none all )
-> > 
-> > Then when you're running the test cases or printing usage you could do:
-> > 
-> > for SUBSYS in "${SUBSYSTEMS[@]}" ; do
-> > 	...
-> > done
-> > 
-> > Sadly I didn't have a close enough look at all of the code to tell if
-> > this is do-able. Is it? If you could similarly map the other numbers
-> > it may be easier to read the output and the code.
-> 
-> Thanks for your advice. Basically, I agree.
-> But using strings to instead of number will need one or more weeks, I will 
-> do this improvement work base on August Release.
-> 
-> > 
-> > Cheers,
-> > 	-Matt Helsley
-> > 
-> > 
-> > 
-> 
+On Tue, 2009-08-04 at 16:52 +0530, rohit verma wrote:
+> Dear Manas Kumar Nayak,
+>
+> Pls find attached patch for waitid02 test case.I have modified the
+> test case.I have also added 2 test scenarios in the test case using
+> WSTOPPED and WNOWAIT.
+>
+> Note:
+> The testcase was failing in LTP July, 2009 release.
+> The warning- "implicit declaration of function 'getpgid", has been removed
+>
+> Pls verify the patch.
+>
+> Regards--
+> Rohit Verma
+>
+>
+>
+> On Thu, Jul 30, 2009 at 11:59 PM, Subrata
+> Modak<subrata@linux.vnet.ibm.com> wrote:
+> > Fixed this now.
+> >
+> > Regards--
+> > Subrata
+> >
+> > On Thu, 2009-07-23 at 14:00 +0530, rohit verma wrote:
+> >> Hi,
+> >>
+> >> I am running waitid02.c
+> >> (ltp-full-20090630/testcases/kernel/syscalls/waitid/ ) test case on
+> >> 2.6.29 kernel.
+> >> Test case gives following error:
+> >> "Error. is your system >2.6.9 ?";
+> >>
+> >> =A0Anybody facing the same issue?
+> >>
+> >> Code:
+> >>
+> >> TEST(waitid(P_ALL,0,&infop,WNOHANG));
+> >> =A0 =A0 =A0 =A0 if(TEST_RETURN =3D=3D 0)
+> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TPASS,"Success !");
+> >> =A0 =A0 =A0 =A0 else{
+> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 printf("value of return is %d\n",TEST_=
+RETURN);
+> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TFAIL,"Error. is your system =
+>2.6.9 ?");
+> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0errnochoose();
+> >> =A0 =A0 =A0 =A0 }
+> >>
+> >>
+> >> Regards,
+> >> Rohit
+> >>
+> >> ----------------------------------------------------------------------=
+--------
+> >> _______________________________________________
+> >> Ltp-list mailing list
+> >> Ltp-list@lists.sourceforge.net
+> >> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> >
+> >
+>
+>
+>
 
+---------------------------------------------------------------------------=
+---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
 
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
+trial. Simplify your report design, integration and deployment - and focus =
+on =
+
+what you do best, core application coding. Discover what's new with =
+
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
