@@ -1,25 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mgc5b-000384-E4
-	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 10:20:19 +0000
-Received: from e36.co.us.ibm.com ([32.97.110.154])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mgc5X-0001du-HC
-	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 10:20:19 +0000
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MYIpB-0002pj-B0
+	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 12:09:01 +0000
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MYIp4-0005te-O7
+	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 12:09:01 +0000
+Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
+	by e8.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n74C8Scq024208
+	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 08:08:28 -0400
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n74C8jJq2379944
+	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 08:08:46 -0400
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n74C8gDa007708
+	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 06:08:42 -0600
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <d51f89b0908270139j541bc03dtc0ece34af392f501@mail.gmail.com>
-References: <d51f89b0908130131u5742ff3epf58617e3f4ab38a3@mail.gmail.com>
-	<4A850550.7080109@cn.fujitsu.com>
-	<d51f89b0908140134g18b7b34cr9858edad1242373a@mail.gmail.com>
-	<4A861EA2.6070701@cn.fujitsu.com>
-	<d51f89b0908202214l795ceb5bp5530fa4666f7ba87@mail.gmail.com>
-	<d51f89b0908270139j541bc03dtc0ece34af392f501@mail.gmail.com>
-Date: Thu, 27 Aug 2009 15:50:02 +0530
-Message-Id: <1251368402.4993.19.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <d80b0b476cd86f178e44984647a040bb7d458d75.1249304223.git.monstr@monstr.eu>
+References: <1249305859-23722-1-git-send-email-michal.simek@petalogix.com>
+	<0f2557dbada823cdbdf1080b36ca0cf41d29c58f.1249304223.git.monstr@monstr.eu>
+	<b27f5b6149545ef2a1f3483d14d51d29f83aa7c6.1249304223.git.monstr@monstr.eu>
+	<d80b0b476cd86f178e44984647a040bb7d458d75.1249304223.git.monstr@monstr.eu>
+Date: Tue, 04 Aug 2009 17:38:17 +0530
+Message-Id: <1249387702.15587.36.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] utimes01 test case issue
+Subject: Re: [LTP] [PATCH 3/4] fcntl24, 25,
+	26: F_SETLEASE and F_WRLCK cannot work	on ramfs
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -30,68 +40,95 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rohit verma <rohit.170309@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: michal.simek@petalogix.com
+Cc: ltp-list@lists.sourceforge.net, monstr@monstr.eu
 
-T24gVGh1LCAyMDA5LTA4LTI3IGF0IDE0OjA5ICswNTMwLCByb2hpdCB2ZXJtYSB3cm90ZTogCj4g
-SGkgV2FuZyBZb25nL1N1YnJhdGEsCj4gCj4gS2luZGx5IGNvbmZpcm0gd2hldGhlciB0aGUgcGF0
-Y2ggd2hpY2ggaSBzZW5kIHlvdSBvbiAyMXN0IEF1ZyBpcyB3b3JraW5nIGZpbmUuCgpJIGFtIHdh
-aXRpbmcgZm9yIFdhbmfFmyBjb25maXJtYXRpb24vYWNrIGFzIHlvdSBib3RoIHdlcmUgbG9va2lu
-ZyBpbnRvCnRoYXQgYW5kIGhhZCBjb3VwbGUgb2YgY29udmVyc2F0aW9uIG9uIHRoYXQuCgpSZWdh
-cmRzLS0KU3VicmF0YQoKPiAKPiAKPiBUaGFuayB5b3UsCj4gCj4gCj4gT24gRnJpLCBBdWcgMjEs
-IDIwMDkgYXQgMTA6NDQgQU0sIHJvaGl0IHZlcm1hPHJvaGl0LjE3MDMwOUBnbWFpbC5jb20+IHdy
-b3RlOgo+ID4gSGkgV2FuZyBZb25nLAo+ID4KPiA+IEkgaGF2ZSBjaGFuZ2VkIHRoZSBleHBlY3Rl
-ZCBlcnJvciBmb3Igcm9vdCB1c2VyIGluIGNhc2UwMiBhcyBmb2xsb3dpbmcuCj4gPgo+ID4gRnJv
-bSB0Y2FzZVsyXS5lcnIgPSBFQUNDRVMgdG8gdGNhc2VbMl0uZXJyID0gRVBFUk0gKEZvciByb290
-IHVzZXIpIC4KPiA+Cj4gPiBQbHMgY2hlY2sgdGhlIGF0dGFjaGVkIHBhdGNoIGZvciB0aGUgc2Ft
-ZS4KPiA+Cj4gPgo+ID4gT24gU2F0LCBBdWcgMTUsIDIwMDkgYXQgODowNCBBTSwgV2VpIFlvbmdq
-dW48eWp3ZWlAY24uZnVqaXRzdS5jb20+IHdyb3RlOgo+ID4+IHJvaGl0IHZlcm1hIHdyb3RlOgo+
-ID4+PiBIaSBXYW5nIFlvbmcsCj4gPj4+Cj4gPj4+IEkgYW0gZ2V0dGluZyBmb2xsb3dpbmcgIE8v
-UCBmb3IgY2FzZTAyIDoKPiA+Pj4KPiA+Pj4gQXMgcm9vdCB1c2VyOgo+ID4+Pgo+ID4+PiB1dGlt
-ZXMwMSAgICAwICBUSU5GTyAgOiAgKGNhc2UwMikgU1RBUlQKPiA+Pj4gRVhQRUNUOiByZXR1cm4g
-dmFsdWUocmV0KT0tMSBlcnJubz0xMyAoUGVybWlzc2lvbiBkZW5pZWQpCj4gPj4+IFJFU1VMVDog
-cmV0dXJuIHZhbHVlKHJldCk9LTEgZXJybm89MSAoT3BlcmF0aW9uIG5vdCBwZXJtaXR0ZWQpCj4g
-Pj4+IHV0aW1lczAxICAgIDAgIFRJTkZPICA6ICAoY2FzZTAyKSBFTkQgPT4gTkcKPiA+Pj4KPiA+
-Pj4gQXMgbm9uLXJvb3QgdXNlcjoKPiA+Pj4gdXRpbWVzMDEgICAgMCAgVElORk8gIDogIChjYXNl
-MDIpIFNUQVJUCj4gPj4+IHNldGV1aWQgZmFpbGVkLgo+ID4+PiB1dGltZXMwMSAgICAwICBUSU5G
-TyAgOiAgKGNhc2UwMikgRU5EID0+IE9LCj4gPj4+Cj4gPj4+IEFyZSB5b3UgZ2V0dGluZyB0aGUg
-c2FtZT8KPiA+Pj4KPiA+Pj4KPiA+Pj4KPiA+Pgo+ID4+IHllcywgdGhlIHNhbWUgcmVzdWx0Lgo+
-ID4+Cj4gPj4+Cj4gPj4+IE9uIEZyaSwgQXVnIDE0LCAyMDA5IGF0IDEyOjAzIFBNLCBXZWkgWW9u
-Z2p1bjx5andlaUBjbi5mdWppdHN1LmNvbT4gd3JvdGU6Cj4gPj4+Cj4gPj4+PiByb2hpdCB2ZXJt
-YSB3cm90ZToKPiA+Pj4+Cj4gPj4+Pj4gSGkgV2FuZyBZb25nLAo+ID4+Pj4+Cj4gPj4+Pj4gSSBo
-YXZlIG9ic2VydmVkIHRoZSBmb2xsb3dpbmcgdGhpbmcgaW4gY2FzZTAyIG9mIHRoZSB0ZXN0IGNh
-c2UKPiA+Pj4+PiB1dGltZXMwMSBpbiBsYXRlc3QgbHRwIHJlbGVhc2UuCj4gPj4+Pj4KPiA+Pj4+
-PiBFeHBlY3RlZCBlcnJvciB2YWx1ZSBpcyAgRUFDQ0VTIChJbiB0aGUgY29kZSBiZWxvdykKPiA+
-Pj4+PiBCdXQgdGhlIGFjdHVhbCBlcnJvciB2YWx1ZSBpcyBFUEVSTS5JIGhhdmUgY2hlY2tlZCB0
-aGlzIG9uICAyLjYuMjcgYW5kCj4gPj4+Pj4gMi42LjI5IGtlcm5lbC4KPiA+Pj4+Pgo+ID4+Pj4+
-Cj4gPj4+PiBZb3UgY2FuIHRyeSByb290IHVzZXIgYW5kIG5vcm9vdCB1c2VyLCB0aGUgcmV0dXJu
-IGVycm9yIGlzIGRpZmZlcmVudC4KPiA+Pj4+Cj4gPj4+Pgo+ID4+Pj4+IHN0YXRpYyBzdHJ1Y3Qg
-dGVzdF9jYXNlIHRjYXNlW10gPSB7Cj4gPj4+Pj4KPiA+Pj4+PiAgICAgICAgIHsgLy8gY2FzZTAw
-Cj4gPj4+Pj4gICAgICAgICAgICAgICAgIC4uLgo+ID4+Pj4+ICAgICAgICAgfSwKPiA+Pj4+PiAg
-ICAgICAgIHsgLy8gY2FzZTAxCj4gPj4+Pj4gICAgICAgICAgICAgICAgIC4uLgo+ID4+Pj4+ICAg
-ICAgICAgfSwKPiA+Pj4+PiAgICAgICAgIHsgLy8gY2FzZTAyCj4gPj4+Pj4gICAgICAgICAgICAg
-ICAgIC50dHlwZSAgICAgICAgICA9IE5PUk1BTCwKPiA+Pj4+PiAgICAgICAgICAgICAgICAgLmFf
-c2VjICAgICAgICA9IDEwMDAsCj4gPj4+Pj4gICAgICAgICAgICAgICAgIC5tX3NlYyAgICAgICA9
-IDIwMDAsCj4gPj4+Pj4gICAgICAgICAgICAgICAgIC51c2VyICAgICAgICAgID0gIm5vYm9keSIs
-Cj4gPj4+Pj4gICAgICAgICAgICAgICAgIC5yZXQgICAgICAgICAgICAgPSAtMSwKPiA+Pj4+PiAg
-ICAgICAgICAgICAgICAgLmVyciAgICAgICAgICAgICA9IEVBQ0NFUywgLy8gUkhFTDRVMSArIDIu
-Ni4xOCByZXR1cm5zIEVQRVJNCj4gPj4+Pj4gICAgICAgICB9LAo+ID4+Pj4+ICAgICAgICAgeyAv
-LyBjYXNlMDMKPiA+Pj4+PiAgICAgICAgICAgICAgICAgLi4uCj4gPj4+Pj4gICAgICAgICB9LAo+
-ID4+Pj4+Cj4gPj4+Pj4gICAgICAgICB7IC8vIGNhc2UwNAo+ID4+Pj4+ICAgICAgICAgICAgICAg
-ICAuLi4KPiA+Pj4+PiAgICAgICAgIH0sCj4gPj4+Pj4gfTsKPiA+Pj4+Pgo+ID4+Pj4+IEtpbmRs
-eSBjb25maXJtIHdoZXRoZXIgeW91IGFyZSBmYWNpbmcgdGhlIHNhbWUgaXNzdWUgYXQgeW91ciBl
-bmQuCj4gPj4+Pj4KPiA+Pj4+Pgo+ID4+Pj4+Cj4gPj4+Pgo+ID4+Pj4KPiA+Pj4KPiA+Pj4KPiA+
-Pj4KPiA+Pj4KPiA+Pgo+ID4+Cj4gPj4KPiA+Cj4gPgo+ID4KPiA+IC0tCj4gPiBSZWdhcmRzLAo+
-ID4gUm9oaXQKPiA+Cj4gCj4gCj4gCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxldCBDcnlzdGFs
-IFJlcG9ydHMgaGFuZGxlIHRoZSByZXBvcnRpbmcgLSBGcmVlIENyeXN0YWwgUmVwb3J0cyAyMDA4
-IDMwLURheSAKdHJpYWwuIFNpbXBsaWZ5IHlvdXIgcmVwb3J0IGRlc2lnbiwgaW50ZWdyYXRpb24g
-YW5kIGRlcGxveW1lbnQgLSBhbmQgZm9jdXMgb24gCndoYXQgeW91IGRvIGJlc3QsIGNvcmUgYXBw
-bGljYXRpb24gY29kaW5nLiBEaXNjb3ZlciB3aGF0J3MgbmV3IHdpdGggCkNyeXN0YWwgUmVwb3J0
-cyBub3cuICBodHRwOi8vcC5zZi5uZXQvc2Z1L2JvYmotanVseQpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxp
-c3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xp
-c3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+On Mon, 2009-08-03 at 15:24 +0200, michal.simek@petalogix.com wrote: 
+> From: Michal Simek <monstr@monstr.eu>
+> 
+> The same reason as was in previous patch for tmpfs
+> 
+> Signed-off-by: Michal Simek <monstr@monstr.eu>
+
+Ok.
+
+Regards--
+Subrata
+
+> ---
+>  testcases/kernel/syscalls/fcntl/fcntl24.c |    8 ++++++++
+>  testcases/kernel/syscalls/fcntl/fcntl25.c |    8 ++++++++
+>  testcases/kernel/syscalls/fcntl/fcntl26.c |    8 ++++++++
+>  3 files changed, 24 insertions(+), 0 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/fcntl/fcntl24.c b/testcases/kernel/syscalls/fcntl/fcntl24.c
+> index 1a524bb..af0e814 100644
+> --- a/testcases/kernel/syscalls/fcntl/fcntl24.c
+> +++ b/testcases/kernel/syscalls/fcntl/fcntl24.c
+> @@ -139,6 +139,14 @@ int main(int ac, char **av)
+>  			 "Cannot do fcntl on a file located on an TMPFS filesystem");
+>  	}
+> 
+> +	/*
+> +	 * check if the current filesystem is ramfs
+> +	 */
+> +	if (tst_is_cwd_ramfs()) {
+> +		tst_brkm(TCONF, cleanup,
+> +			 "Cannot do fcntl on a file located on an RAMFS filesystem");
+> +	}
+> +
+>  	/* set the expected errnos... */
+>  	TEST_EXP_ENOS(exp_enos);
+> 
+> diff --git a/testcases/kernel/syscalls/fcntl/fcntl25.c b/testcases/kernel/syscalls/fcntl/fcntl25.c
+> index 9957dc4..6e2adc6 100644
+> --- a/testcases/kernel/syscalls/fcntl/fcntl25.c
+> +++ b/testcases/kernel/syscalls/fcntl/fcntl25.c
+> @@ -140,6 +140,14 @@ int main(int ac, char **av)
+>  			 "Cannot do fcntl on a file located on an TMPFS filesystem");
+>  	}
+> 
+> +	/*
+> +	 * check if the current filesystem is ramfs
+> +	 */
+> +	if (tst_is_cwd_ramfs()) {
+> +		tst_brkm(TCONF, cleanup,
+> +			 "Cannot do fcntl on a file located on an RAMFS filesystem");
+> +	}
+> +
+>  	/* set the expected errnos... */
+>  	TEST_EXP_ENOS(exp_enos);
+> 
+> diff --git a/testcases/kernel/syscalls/fcntl/fcntl26.c b/testcases/kernel/syscalls/fcntl/fcntl26.c
+> index 5c4f4e4..df22063 100644
+> --- a/testcases/kernel/syscalls/fcntl/fcntl26.c
+> +++ b/testcases/kernel/syscalls/fcntl/fcntl26.c
+> @@ -140,6 +140,14 @@ int main(int ac, char **av)
+>  			 "Cannot do fcntl on a file located on an TMPFS filesystem");
+>  	}
+> 
+> +	/*
+> +	 * check if the current filesystem is ramfs
+> +	 */
+> +	if (tst_is_cwd_ramfs()) {
+> +		tst_brkm(TCONF, cleanup,
+> +			 "Cannot do fcntl on a file located on an RAMFS filesystem");
+> +	}
+> +
+>  	/* set the expected errnos... */
+>  	TEST_EXP_ENOS(exp_enos);
+> 
+
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
