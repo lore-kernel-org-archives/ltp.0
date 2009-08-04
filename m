@@ -1,18 +1,16 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
-	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <caiqian@cclom.cn>) id 1MfQuN-0001kc-Gn
-	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 04:11:51 +0000
-Received: from smtp109.biz.mail.re2.yahoo.com ([206.190.53.8])
-	by 72vjzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1MfQuH-0004HM-AT
-	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 04:11:51 +0000
-Date: Mon, 24 Aug 2009 12:15:38 +0800 (CST)
-Message-Id: <20090824.121538.48518939.caiqian@cclom.cn>
-From: CAI Qian <caiqian@cclom.cn>
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <20090803141750.GB29108@us.ibm.com>
+References: <364299f40907302333s61742580m5dba94b0a2e7afa5@mail.gmail.com>
+	<364299f40907310043q234fc7ebt4e6ce9a98c2da953@mail.gmail.com>
+	<20090731143642.GB9440@us.ibm.com>
+	<1249298418.7460.27.camel@subratamodak.linux.ibm.com>
+	<20090803141750.GB29108@us.ibm.com>
+Date: Tue, 04 Aug 2009 17:38:38 +0530
+Message-Id: <1249387723.15587.39.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: [LTP] [PATCH 3/3] Fix unshare02
+Subject: Re: [LTP] Fix digsig so it passes -Wshadow
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,150 +23,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: "Serge E. Hallyn" <serue@us.ibm.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>, Disec-Devel <disec-devel@lists.sourceforge.net>
 
-When no unshare function found during the build-time checking or the
-kernel returns ENOSYS, it reports TCONF. It also simplify logic a little
-bit and fix some coding style issues. In addition, the original test
-expects the following call to return 0,
+On Mon, 2009-08-03 at 09:17 -0500, Serge E. Hallyn wrote: 
+> Quoting Subrata Modak (subrata@linux.vnet.ibm.com):
+> > On Fri, 2009-07-31 at 09:36 -0500, Serge E. Hallyn wrote: 
+> > > Quoting Garrett Cooper (yanegomi@gmail.com):
+> > > > On Thu, Jul 30, 2009 at 11:33 PM, Garrett Cooper<yanegomi@gmail.com> wrote:
+> > > > > clone(2) is externally defined in sched.h, and as such
+> > > > > testcases/kernel/security/digsig/writeexec/libwritetest.c fails to
+> > > > > compile with -Wall due to a shadowed declaration.
+> > > > >
+> > > > > Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+> > > > >
+> > > > > Index: writeexec/libwritetest.c
+> > > > > ===================================================================
+> > > > > RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/digsig/writeexec/libwritetest.c,v
+> > > > > retrieving revision 1.1
+> > > > > diff -u -r1.1 libwritetest.c
+> > > > > --- writeexec/libwritetest.c    1 Nov 2005 16:09:43 -0000       1.1
+> > > > > +++ writeexec/libwritetest.c    31 Jul 2009 06:30:49 -0000
+> > > > > @@ -9,8 +9,6 @@
+> > > > >  #include <dlfcn.h>
+> > > > >  #include <wait.h>
+> > > > >
+> > > > > -int clone(int (*fn)(void *), void *child_stack, int flags, void *arg);
+> > > > > -
+> > > > >  int writer(void *data)
+> > > > >  {
+> > > > >        int fd;
+> > > > 
+> > > > Instead of this, let me do a general purpose `fix' for digsig. There
+> > > > are a few other issues that need to be resolved.
+> > > > -Garrett
+> > > 
+> > > Alternatively, since digsig never went upstream and isn't being
+> > > maintained, it might be best to drop this from LTP.  <sniff>
+> > 
+> > Oh. Is it ? So, should i finally drop this from LTP ?
+> 
+> I fear so.  Unless someone on disec-devel@ disagrees?
 
-  TEST_RETURN = unshare(-1);
+Done.
 
-and checking TEST_ERRNO for errors. Those look like incorrect, since
-"-1" looks like an invalid flag, and TEST_ERRNO does not set to errno
-from the syscall. It has been modified to expect,
+Regards--
+Subrata
 
-  TEST_RETURN = -1;
-  errno = EINVAL;
+> 
+> -serge
 
-Signed-off-by: CAI Qian <caiqian@cclom.cn>
-
- testcases/kernel/syscalls/unshare/unshare02.c |   88 +++++++++++++++++--------
- 1 files changed, 61 insertions(+), 27 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/unshare/unshare02.c b/testcases/kernel/syscalls/unshare/unshare02.c
-index 1075936..01f5572 100644
---- a/testcases/kernel/syscalls/unshare/unshare02.c
-+++ b/testcases/kernel/syscalls/unshare/unshare02.c
-@@ -56,7 +56,7 @@
- /* Harness Specific Include Files. */
- #include "test.h"
- #include "usctest.h"
--#include "linux_syscall_numbers.h"
-+#include "config.h"
- 
- /* Extern Global Variables */
- extern int Tst_count;           /* counter for tst_xxx routines.         */
-@@ -67,6 +67,9 @@ char *TCID = "unshare02";  /* Test program identifier.*/
- int  testno;
- int  TST_TOTAL = 2;                   /* total number of tests in this file.   */
- 
-+#ifdef HAVE_UNSHARE
-+#include "linux_syscall_numbers.h"
-+
- /* Extern Global Functions */
- /******************************************************************************/
- /*                                                                            */
-@@ -141,37 +144,62 @@ int main(int ac, char **av) {
-  *fork a child process;testing which one is a child or a parent;
-  * */
- 		        TEST(pid1=fork());    //call to fork()
--			if (TEST_RETURN == -1){
--			tst_resm(TFAIL, "fork() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
--			cleanup();
--			tst_exit();
--			}
--			else if (TEST_RETURN == 0){
--				if((TEST_RETURN = unshare(-1)) == 0) {
--	        		tst_resm(TPASS, "Call succeeded");
-+			if (TEST_RETURN == -1) {
-+				tst_resm(TFAIL,
-+					"fork() Failed, errno=%d : %s",
-+					TEST_ERRNO,
-+					strerror(TEST_ERRNO));
-+				cleanup();
- 				tst_exit();
-+			} else if (TEST_RETURN == 0) {
-+				TEST_RETURN = unshare(-1);
-+				if (TEST_RETURN == 0)
-+					tst_resm(TFAIL,
-+						"Call unexpectedly succeeded.");
-+				else if (TEST_RETURN == -1) {
-+					if (errno == EINVAL)
-+						tst_resm(TPASS,
-+							"Expect EINVAL.");
-+					else if (errno == ENOSYS)
-+						tst_resm(TCONF,
-+							"unshare is not "
-+							"implemented in kernel."
-+							);
-+					else
-+						tst_resm(TFAIL,
-+							"Test Failed, "
-+							"errno=%d : %s",
-+							errno,
-+							strerror(errno));
- 				}
--				else if (TEST_RETURN == -1 ){
--					tst_resm(TFAIL,"Test Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
--					tst_exit();
--                     			}
-+				tst_exit();
- 			}
- 
- 			TEST(pid1=fork());    //call to fork()
--                        if (pid1 == -1){
--                        tst_resm(TFAIL, "fork() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
--                        cleanup();
--                        tst_exit();
--                        }
--                        else if (TEST_RETURN == 0){
--                                if((TEST_RETURN = unshare((int)NULL)) == 0) {
--                                tst_resm(TPASS, "Call succeeded");
-+			if (pid1 == -1) {
-+				tst_resm(TFAIL,
-+					"fork() Failed, errno=%d : %s",
-+					TEST_ERRNO, strerror(TEST_ERRNO));
-+				cleanup();
-+				tst_exit();
-+			} else if (TEST_RETURN == 0) {
-+				TEST_RETURN = unshare((int)NULL);
-+				if (TEST_RETURN == 0)
-+					tst_resm(TPASS, "Call succeeded");
-+				else if (TEST_RETURN == -1) {
-+					if (errno == ENOSYS)
-+						tst_resm(TCONF,
-+							"unshare is not "
-+							"implemented in kernel."
-+							);
-+					else
-+						tst_resm(TFAIL,
-+							"Test Failed 2, "
-+							"errno=%d : %s",
-+							errno,
-+							strerror(errno));
-+				}
- 				tst_exit();
--                                }
--                                else if (TEST_RETURN == -1 ){
--                                        tst_resm(TFAIL,"Test Failed 2, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
--					tst_exit();
--                                        }
-                         }
- 
- 
-@@ -180,4 +208,10 @@ int main(int ac, char **av) {
- 	cleanup();
-         tst_exit();
- }
--
-+#else
-+int main(void)
-+{
-+	tst_resm(TCONF, "unshare is undefined.");
-+	return 0;
-+}
-+#endif
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
