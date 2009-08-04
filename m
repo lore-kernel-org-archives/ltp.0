@@ -1,31 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MXvb0-0007dL-5K
-	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 11:20:50 +0000
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MXvas-00018r-TY
-	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 11:20:50 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e6.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n73BOJB0001039
-	for <ltp-list@lists.sourceforge.net>; Mon, 3 Aug 2009 07:24:19 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n73BKZ4g246652
-	for <ltp-list@lists.sourceforge.net>; Mon, 3 Aug 2009 07:20:35 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n73BHpAw021500
-	for <ltp-list@lists.sourceforge.net>; Mon, 3 Aug 2009 07:17:51 -0400
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MYInq-00019B-6b
+	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 12:07:38 +0000
+Received: from e31.co.us.ibm.com ([32.97.110.149])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MYInU-0005TS-OS
+	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 12:07:25 +0000
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <364299f40907310138v2708c6dfmb378df4004669c4f@mail.gmail.com>
-References: <364299f40907310138v2708c6dfmb378df4004669c4f@mail.gmail.com>
-Date: Mon, 03 Aug 2009 16:50:30 +0530
-Message-Id: <1249298430.7460.29.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <20090803120919.GB19594@in.ibm.com>
+References: <20090722062905.GA3113@in.ibm.com>
+	<20090803120919.GB19594@in.ibm.com>
+Date: Tue, 04 Aug 2009 17:36:46 +0530
+Message-Id: <1249387616.15587.27.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix C coding issues and integrate ima into LTP
+Subject: Re: [LTP] Remove pidns14 test case
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -39,225 +29,191 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mimi Zohar <zohar@us.ibm.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: mohan@in.ibm.com
+Cc: ltp-list@lists.sf.net, sukadev@linux.vnet.ibm.com, sachinp@in.ibm.com
 
-This as well for Mimi.
+Hi Mohan,
+
+On Mon, 2009-08-03 at 17:39 +0530, M. Mohan Kumar wrote: 
+> Hi Subrata,
+> 
+> July LTP release has partially removed pidns14 test case. Still the
+> runpidnstest.sh script has reference to pidns14 test case. My patch removed
+> all of the references. Could you please remove the reference to pidns14 in
+> runpidnstest.sh script also?
+
+Would you please mind resending a patch to do that ?
 
 Regards--
 Subrata
 
-On Fri, 2009-07-31 at 01:38 -0700, Garrett Cooper wrote: 
-> 1. None of the ima C files which required openssl/sha.h were using the
-> HAVE_OPENSSL_SHA_H macro define.
-> 2. Add tst_resm support.
-> 3. Fix some missing includes in ima_mmap.c.
-> 4. Remove an unused var.
-> 5. Shuffle around some fields in ima_boot_aggregate.c so that it
-> compiles with -Wunused and consumes less memory when 1. applies.
 > 
-> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+> Regards,
+> M. Mohan Kumar.
 > 
-> Index: testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c
-> ===================================================================
-> RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c,v
-> retrieving revision 1.1
-> diff -u -r1.1 ima_boot_aggregate.c
-> --- testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c	31
-> Mar 2009 13:58:14 -0000	1.1
-> +++ testcases/kernel/security/integrity/ima/src/ima_boot_aggregate.c	31
-> Jul 2009 08:37:08 -0000
-> @@ -23,14 +23,21 @@
->  #include <fcntl.h>
->  #include <string.h>
->  #include <unistd.h>
-> +#include "config.h"
-> +#include "test.h"
-> +#if HAVE_OPENSSL_SHA_H
->  #include <openssl/sha.h>
-> +#endif
-> 
->  #define MAX_EVENT_SIZE 500
->  #define EVENT_HEADER_SIZE 32
->  #define MAX_EVENT_DATA_SIZE (MAX_EVENT_SIZE - EVENT_HEADER_SIZE)
->  #define NUM_PCRS 8	/*  PCR registers 0-7 in boot aggregate */
-> 
-> -static void *display_sha1_digest(char *pcr)
-> +char *TCID = "ima_boot_aggregate";
-> +int TST_TOTAL = 1;
-> +
-> +static void display_sha1_digest(unsigned char *pcr)
->  {
->  	int i;
-> 
-> @@ -39,8 +46,10 @@
->  	printf("\n");
->  }
-> 
-> -int main(int argc, char *argv[])
-> +int
-> +main(int argc, char *argv[])
->  {
-> +#if HAVE_OPENSSL_SHA_H
->  	unsigned char boot_aggregate[SHA_DIGEST_LENGTH];
->  	struct {
->  		struct {
-> @@ -74,7 +83,7 @@
->  		memset(&pcr[i].digest, 0, SHA_DIGEST_LENGTH);
-> 
->  	/* Extend the pseudo PCRs with the event digest */
-> -	while (fread(&event, sizeof event.header, 1, fp)) {
-> +	while (fread(&event, sizeof(event.header), 1, fp)) {
->  		if (debug) {
->  			printf("%03u ", event.header.pcr);
->  			display_sha1_digest(event.header.digest);
-> @@ -105,6 +114,8 @@
-> 
->  	printf("boot_aggregate:");
->  	display_sha1_digest(boot_aggregate);
-> -
-> -	return 0;
-> +#else
-> +	tst_resm(TCONF, "System doesn't have openssl/sha.h");
-> +#endif
-> +	tst_exit();
->  }
-> Index: testcases/kernel/security/integrity/ima/src/ima_measure.c
-> ===================================================================
-> RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/integrity/ima/src/ima_measure.c,v
-> retrieving revision 1.1
-> diff -u -r1.1 ima_measure.c
-> --- testcases/kernel/security/integrity/ima/src/ima_measure.c	31 Mar
-> 2009 13:58:14 -0000	1.1
-> +++ testcases/kernel/security/integrity/ima/src/ima_measure.c	31 Jul
-> 2009 08:37:08 -0000
-> @@ -22,18 +22,23 @@
->  #include <fcntl.h>
->  #include <string.h>
->  #include <unistd.h>
-> +//#include "config.h"
-> +#include "test.h"
-> +#if HAVE_OPENSSL_SHA_H
->  #include <openssl/sha.h>
-> +#endif
-> 
->  #define TCG_EVENT_NAME_LEN_MAX	255
-> 
-> -static int verbose = 0;
-> -static int validate = 0;
-> -static int verify = 0;
-> +char *TCID = "ima_measure";
-> +int TST_TOTAL = 1;
-> 
->  #define print_info(format, arg...) \
->  	if (verbose) \
->  		printf(format, ##arg)
-> 
-> +#if HAVE_OPENSSL_SHA_H
-> +
->  static u_int8_t zero[SHA_DIGEST_LENGTH];
->  static u_int8_t fox[SHA_DIGEST_LENGTH];
-> 
-> @@ -90,6 +95,8 @@
->  	return 0;
->  }
-> 
-> +#endif
-> +
->  /*
->   * ima_measurements.c - calculate the SHA1 aggregate-pcr value based
->   * on the IMA runtime binary measurements.
-> @@ -120,13 +127,19 @@
->   * Return code: if verification enabled, returns number of verification
->   * 		errors.
->   */
-> -int main(int argc, char *argv[])
-> +int
-> +main(int argc, char *argv[])
->  {
-> +
-> +#if HAVE_OPENSSL_SHA_H
->  	FILE *fp;
->  	struct event template;
->  	u_int8_t pcr[SHA_DIGEST_LENGTH];
->  	int i, count = 0, len;
-> -	int failed_count = 0;	/* number of template verifications failed */
-> +
-> +	int verbose = 0;
-> +	int validate = 0;
-> +	int verify = 0;
-> 
->  	if (argc < 2) {
->  		printf("format: %s binary_runtime_measurements" \
-> @@ -191,12 +204,17 @@
->  		print_info(" %s\n", template.ima_data.filename);
-> 
->  		if (verify)
-> -			failed_count += verify_template_hash(&template);
-> +			if (verify_template_hash(&template) != 0) {
-> +				tst_resm(TFAIL, "Hash failed");
-> +			}
->  	}
->  	fclose(fp);
-> 
->  	verbose=1;
->  	print_info("PCRAggr (re-calculated):");
->  	display_sha1_digest(pcr);
-> -	return failed_count;
-> +#else
-> +	tst_resm(TCONF, "System doesn't have openssl/sha.h");
-> +#endif
-> +	tst_exit();
->  }
-> Index: testcases/kernel/security/integrity/ima/src/ima_mmap.c
-> ===================================================================
-> RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/integrity/ima/src/ima_mmap.c,v
-> retrieving revision 1.2
-> diff -u -r1.2 ima_mmap.c
-> --- testcases/kernel/security/integrity/ima/src/ima_mmap.c	19 May 2009
-> 09:57:42 -0000	1.2
-> +++ testcases/kernel/security/integrity/ima/src/ima_mmap.c	31 Jul 2009
-> 08:37:08 -0000
-> @@ -16,16 +16,20 @@
->   */
->  #include <stdio.h>
->  #include <string.h>
-> +#include <unistd.h>
->  #include <sys/stat.h>
->  #include <sys/mman.h>
->  #include <fcntl.h>
-> +#include "test.h"
-> +
-> +char *TCID = "ima_mmap";
-> +int TST_TOTAL = 1;
-> 
->  int main(int argc, char *argv[])
->  {
->  	int fd;
->  	void *file;
->  	char *filename;
-> -	int rc;
-> 
->  	if (argc != 2)
->  		printf("%s: filename\n", argv[1]);
-> @@ -48,6 +52,5 @@
->  		perror("unmap");
->  		return(-1);
->  	}
-> -
-> -	return 0;
-> +	tst_exit();
->  }
-> 
-> ------------------------------------------------------------------------------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> trial. Simplify your report design, integration and deployment - and focus on 
-> what you do best, core application coding. Discover what's new with 
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> On Wed, Jul 22, 2009 at 11:59:05AM +0530, M. Mohan Kumar wrote:
+> > [PATCH] Remove pidns14 test case
+> > Container-init may be immune to unhandled fatal signals (like SIGUSR1)
+> > even if they are from ancestor namespace. SIGKILL/SIGSTOP are the only
+> > reliable signals to a container-init from ancestor namespace. So remove
+> > test case pidns14 from container test suite. Please check git commit id
+> > b3bfa0cba867f23365b81658b47efd906830879b for the kernel changes.
+> > 
+> > Signed-off-by: M. Mohan Kumar <mohan@in.ibm.com>
+> > ---
+> >  testcases/kernel/containers/pidns/pidns14.c       |  122 ---------------------
+> >  testcases/kernel/containers/pidns/runpidnstest.sh |    6 -
+> >  2 files changed, 0 insertions(+), 128 deletions(-)
+> >  delete mode 100644 testcases/kernel/containers/pidns/pidns14.c
+> > 
+> > diff --git a/testcases/kernel/containers/pidns/pidns14.c b/testcases/kernel/containers/pidns/pidns14.c
+> > deleted file mode 100644
+> > index e95bf95..0000000
+> > --- a/testcases/kernel/containers/pidns/pidns14.c
+> > +++ /dev/null
+> > @@ -1,122 +0,0 @@
+> > -/*
+> > -* Copyright (c) International Business Machines Corp., 2008
+> > -* This program is free software; you can redistribute it and/or modify
+> > -* it under the terms of the GNU General Public License as published by
+> > -* the Free Software Foundation; either version 2 of the License, or
+> > -* (at your option) any later version.
+> > -* This program is distributed in the hope that it will be useful,
+> > -* but WITHOUT ANY WARRANTY; without even the implied warranty of
+> > -* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+> > -* the GNU General Public License for more details.
+> > -* You should have received a copy of the GNU General Public License
+> > -* along with this program; if not, write to the Free Software
+> > -* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+> > -*
+> > -***************************************************************************
+> > -* * Assertion:
+> > -* * kill -USR1 container_init from outside a container
+> > -* * 	$ Where init has not defined a custom handler for USR1
+> > -* * 	$ Should kill the container
+> > -* * 	$ else the test fails.
+> > -* *
+> > -* * Description:
+> > -* *  This testcase creates container and waits till it is awakened by parent.
+> > -* *  The parent process sends the SIGUSR1 to container init.
+> > -* *  This would invoke default handler & terminate the container init.
+> > -* *  In parent process verify, if the SIGUSR1 signal is passed to c-init.
+> > -* *  If yes then Test is Passed else Test is Failed.
+> > -* *
+> > -* * History:
+> > -* *  DATE	  NAME				   DESCRIPTION
+> > -* *  14/11/08  Veerendra C  <vechandr@in.ibm.com> Verifying kill -USR1 in pidns
+> > -*
+> > -******************************************************************************/
+> > -#include "config.h"
+> > -
+> > -#define _GNU_SOURCE 1
+> > -#include <sys/wait.h>
+> > -#include <sys/types.h>
+> > -#include <signal.h>
+> > -#include <stdlib.h>
+> > -#include <unistd.h>
+> > -#include <usctest.h>
+> > -#include <test.h>
+> > -#include <libclone.h>
+> > -
+> > -char *TCID = "pidns14";
+> > -int TST_TOTAL = 1;
+> > -
+> > -int child_fn(void *);
+> > -void cleanup(void);
+> > -
+> > -#define CHILD_PID	1
+> > -#define PARENT_PID	0
+> > -
+> > -/*
+> > - * child_fn() - Inside container
+> > - */
+> > -int child_fn(void *ttype)
+> > -{
+> > -	pid_t pid, ppid;
+> > -
+> > -	/* Set process id and parent pid */
+> > -	pid = getpid();
+> > -	ppid = getppid();
+> > -
+> > -	if ((pid != CHILD_PID) || (ppid != PARENT_PID)) {
+> > -		tst_resm(TBROK, "pidns is not created.");
+> > -		cleanup();
+> > -	}
+> > -	pause();
+> > -	tst_resm(TFAIL, "Oops! Container init resumed after receiving SIGUSR1");
+> > -	return -1;
+> > -}
+> > -
+> > -/*
+> > - * cleanup() - performs all ONE TIME cleanup for this test at
+> > - *			 completion or premature exit.
+> > - */
+> > -void cleanup()
+> > -{
+> > -	/* Clean the test testcase as LTP wants*/
+> > -	TEST_CLEANUP;
+> > -	tst_exit();
+> > -
+> > -}
+> > -
+> > -/***********************************************************************
+> > -*   M A I N
+> > -***********************************************************************/
+> > -
+> > -int main(int argc, char *argv[])
+> > -{
+> > -	int status;
+> > -	pid_t cpid;
+> > -
+> > -	cpid = do_clone(CLONE_NEWPID | SIGCHLD, child_fn, NULL);
+> > -
+> > -	if (cpid < 0) {
+> > -		tst_resm(TBROK, "clone() failed.");
+> > -		cleanup();
+> > -	}
+> > -
+> > -	sleep(1);
+> > -	/* Passing the SIGUSR1 to the container init */
+> > -	if (kill(cpid, SIGUSR1) != 0) {
+> > -		tst_resm(TBROK, "kill(SIGUSR1) fails.");
+> > -		cleanup();
+> > -	}
+> > -
+> > -	sleep(1);
+> > -	if (waitpid(cpid, &status, 0) < 0)
+> > -		tst_resm(TWARN, "waitpid() failed.");
+> > -
+> > -	if ((WIFSIGNALED(status)) && (WTERMSIG(status) == SIGUSR1))
+> > -		tst_resm(TPASS, "Container init is killed as expected, "
+> > -				" when the SIGUSR1 is passed from parent\n");
+> > -	 else
+> > -		tst_resm(TFAIL, "After sending signal kill -USR1, "
+> > -				"returned unexpected error\n");
+> > -
+> > -	return 0;
+> > -}	/* End main */
+> > diff --git a/testcases/kernel/containers/pidns/runpidnstest.sh b/testcases/kernel/containers/pidns/runpidnstest.sh
+> > index 12d3b34..03fed38 100644
+> > --- a/testcases/kernel/containers/pidns/runpidnstest.sh
+> > +++ b/testcases/kernel/containers/pidns/runpidnstest.sh
+> > @@ -85,12 +85,6 @@ if [ $rc -ne 0 ] && [ -z $err_code ]; then
+> >  	err_code=$rc
+> >  fi
+> >  
+> > -pidns14
+> > -rc=$?
+> > -if [ $rc -ne 0 ] && [ -z $err_code ]; then
+> > -	err_code=$rc
+> > -fi
+> > -
+> >  pidns16
+> >  rc=$?
+> >  if [ $rc -ne 0 ] && [ -z $err_code ]; then
+> > -- 
+> > 1.6.2.5
+> > 
 
 
 ------------------------------------------------------------------------------
