@@ -1,33 +1,42 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mc0WB-0003J3-SH
-	for ltp-list@lists.sourceforge.net; Fri, 14 Aug 2009 17:24:43 +0000
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mc0W8-00089J-2h
-	for ltp-list@lists.sourceforge.net; Fri, 14 Aug 2009 17:24:43 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e5.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7EHGcig002707
-	for <ltp-list@lists.sourceforge.net>; Fri, 14 Aug 2009 13:16:38 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7EHOV55240466
-	for <ltp-list@lists.sourceforge.net>; Fri, 14 Aug 2009 13:24:31 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7EHOVwT024042
-	for <ltp-list@lists.sourceforge.net>; Fri, 14 Aug 2009 13:24:31 -0400
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MYH04-0003fM-TT
+	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 10:12:08 +0000
+Received: from e31.co.us.ibm.com ([32.97.110.149])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MYH00-0005g7-JD
+	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 10:12:08 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e31.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n74A6hSf003333
+	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 04:06:43 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n74ABwEd218878
+	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 04:11:58 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n74ABw4F007081
+	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 04:11:58 -0600
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4A845364.6070308@canonical.com>
-References: <4A833919.9040603@canonical.com>
-	<1250183880.6656.21.camel@subratamodak.linux.ibm.com>
-	<4A845364.6070308@canonical.com>
-Date: Fri, 14 Aug 2009 22:54:22 +0530
-Message-Id: <1250270663.5958.6.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <4A77F359.40901@petalogix.com>
+References: <20090724110008.GA11878@linux.vnet.ibm.com>
+	<4A6AA306.3060107@petalogix.com>
+	<364299f40907250948sb1a8cc5o7afba11ac2d83ef9@mail.gmail.com>
+	<4A6D7367.70306@petalogix.com>
+	<1248978579.5788.66.camel@subratamodak.linux.ibm.com>
+	<20090803104746.GA31767@schrodinger.suse.cz>
+	<4A76EA47.7070209@petalogix.com>
+	<20090803135451.GA11225@schrodinger.suse.cz>
+	<4A76F856.6030307@petalogix.com>
+	<364299f40908030944n74d79509r716dcbcc8875677b@mail.gmail.com>
+	<4A77F359.40901@petalogix.com>
+Date: Tue, 04 Aug 2009 15:41:47 +0530
+Message-Id: <1249380712.15587.3.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] Add option to skip tests
+Subject: Re: [LTP] Submitting patch
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -38,64 +47,128 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Paul Larson <paul.larson@canonical.com>
-Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
+To: michal.simek@petalogix.com
+Cc: ltp-list@lists.sourceforge.net, naresh.kernel@gmail.com, Jyoti <jyotiv@linux.vnet.ibm.com>, Mike Frysinger <vapier.adi@gmail.com>
 
-V293ICEhIFRoYXTFmyBncmVhdCBhbmQgaXQgd29ya3MgZmluZSBub3cuCgpPbiBUaHUsIDIwMDkt
-MDgtMTMgYXQgMTI6NTQgLTA1MDAsIFBhdWwgTGFyc29uIHdyb3RlOgo+IFlvdSB3ZXJlIG5vdCBw
-cm92aWRpbmcgdGhlIGZ1bGwgcGF0aC4gIEhlcmUncyBhIG5ldyB2ZXJzaW9uIHRoYXQKPiBzaG91
-bGQKPiBsZXQgeW91IGVpdGhlciBwcm92aWRlIGFic29sdXRlIG9yIHJlbGF0aXZlIHBhdGggKGlu
-Y2x1ZGluZyBubyBwYXRjaAo+IGFzc3VtaW5nIHRoZSBmaWxlIGlzIGluIExUUFJPT1QpLiAgU2Vl
-IGlmIHRoaXMgd29ya3MgYmV0dGVyIGZvciB5b3UuCj4gCj4gCj4gQWRkIGEgLVMgb3B0aW9uIHRv
-IHJ1bmx0cCB0aGF0IGFsbG93cyB0aGUgdXNlciB0byBzcGVjaWZ5IGEgU0tJUEZJTEUKPiBvZgo+
-IHRlc3RzIHRvIHNraXAuCj4gCj4gU2lnbmVkLW9mZi1ieTogUGF1bCBMYXJzb24gPHBhdWwubGFy
-c29uQGNhbm9uaWNhbC5jb20+Cj4gLS0tCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4g
-Cj4gZGlmZmVyZW5jZXMKPiBiZXR3ZWVuIGZpbGVzCj4gYXR0YWNobWVudAo+IChydW5sdHAtc2tp
-cGZpbGUtMi5wYXRjaCkKPiAKPiAKPiBkaWZmIC0tZ2l0IGEvcnVubHRwIGIvcnVubHRwCj4gaW5k
-ZXggYzI2ZjRhYi4uMTVkYTVhYiAxMDA3NTUKPiAtLS0gYS9ydW5sdHAKPiArKysgYi9ydW5sdHAK
-PiBAQCAtMTQxLDYgKzE0MSw3IEBAIHVzYWdlKCkKPiAgICAgIC1xICAgICAgICAgICAgICBQcmlu
-dCBsZXNzIHZlcmJvc2Ugb3V0cHV0IHRvIHNjcmVlbi4KPiAgICAgIC1yIExUUFJPT1QgICAgICBG
-dWxseSBxdWFsaWZpZWQgcGF0aCB3aGVyZSB0ZXN0c3VpdGUgaXMKPiBpbnN0YWxsZWQuCj4gICAg
-ICAtcyBQQVRURVJOICAgICAgT25seSBydW4gdGVzdCBjYXNlcyB3aGljaCBtYXRjaCBQQVRURVJO
-Lgo+ICsgICAgLVMgU0tJUEZJTEUgICAgIFNraXAgdGVzdHMgc3BlY2lmaWVkIGluIFNLSVBGSUxF
-Cj4gICAgICAtdCBEVVJBVElPTiAgICAgRXhlY3V0ZSB0aGUgdGVzdHN1aXRlIGZvciBnaXZlbiBk
-dXJhdGlvbi4KPiBFeGFtcGxlczoKPiAgICAgICAgICAgICAgICAgICAgICAgIC10IDYwcyA9IDYw
-IHNlY29uZHMKPiAgICAgICAgICAgICAgICAgICAgICAgIC10IDQ1bSA9IDQ1IG1pbnV0ZXMKPiBA
-QCAtMTkzLDcgKzE5NCw3IEBAIG1haW4oKQo+ICAgICAgbG9jYWwgREVGQVVMVF9GSUxFX05BTUVf
-R0VORVJBVElPTl9USU1FPWBkYXRlICsiJVlfJWJfJWQtJUhoXyVNbV8KPiAlU3MiYAo+ICAgICAg
-dmVyc2lvbl9kYXRlPWBoZWFkIC1uIDEgJExUUFJPT1QvQ2hhbmdlTG9nYAo+IAo+IC0gICAgd2hp
-bGUgZ2V0b3B0cyBhOmM6QzpkOkQ6ZjplaGk6ZzpsOm06Tm5vOnBxcjpzOnQ6VDp2dzp4OmI6Qjog
-YXJnCj4gKyAgICB3aGlsZSBnZXRvcHRzIGE6YzpDOmQ6RDpmOmVoaTpnOmw6bTpObm86cHFyOnM6
-Uzp0OlQ6dnc6eDpiOkI6IGFyZwo+ICAgICAgZG8gIGNhc2UgJGFyZyBpbgo+ICAgICAgICAgIGEp
-ICBFTUFJTF9UTz0kT1BUQVJHCj4gICAgICAgICAgICAgIEFMVF9FTUFJTF9PVVQ9MTs7Cj4gQEAg
-LTM1Myw2ICszNTQsMTIgQEAgbWFpbigpCj4gICAgICAgICAgcikgIExUUFJPT1Q9JE9QVEFSRzs7
-Cj4gICAgICAKPiAgICAgICAgICBzKSAgVEFHX1JFU1RSSUNUX1NUUklORz0kT1BUQVJHOzsKPiAr
-Cj4gKyAgICAgICBTKSAgY2FzZSAkT1BUQVJHIGluCj4gKyAgICAgICAgICAgIC8qKQo+ICsgICAg
-ICAgICAgICAgICAgU0tJUEZJTEU9JE9QVEFSRzs7Cj4gKyAgICAgICAgICAgICopCj4gKyAgICAg
-ICAgICAgICAgICBTS0lQRklMRT0iJExUUFJPT1QvJE9QVEFSRyI7OwoKV2UganVzdCBuZWVkZWQg
-YW46CisgZXNhYyA7OwpoZXJlLgoKQW55d2F5cyB0aGlzIG9wdGlvbiB3aWxsIGJlIHVzZWQgaW4g
-TFRQIGZyb20gbm93IG9ud2FyZHMuCgpSZWdhcmRzLS0KU3VicmF0YQoKPiAgICAgIAo+ICAgICAg
-ICAgIHQpICAjIEluIGNhc2UgeW91IHdhbnQgdG8gc3BlY2lmeSB0aGUgdGltZSAKPiAgICAgICAg
-ICAgICAgIyB0byBydW4gZnJvbSB0aGUgY29tbWFuZCBsaW5lIAo+IEBAIC02MzAsNiArNjM3LDE0
-IEBAIG1haW4oKQo+ICAgICAgICAgIG12IC1mICR7VE1QfS9hbGx0ZXN0cyAke1RNUH0vYWxsdGVz
-dHMub3JpZwo+ICAgICAgICAgICAgIGdyZXAgJFRBR19SRVNUUklDVF9TVFJJTkcgJHtUTVB9L2Fs
-bHRlc3RzLm9yaWcgPgo+ICR7VE1QfS9hbGx0ZXN0cyAjTm90IHdvcnRoIGNoZWNraW5nIHJldHVy
-biBjb2RlcyBmb3IgdGhpcyBjYXNlCj4gICAgICBmaQo+ICsKPiArICAgICMgQmxhY2tsaXN0IG9y
-IHNraXAgdGVzdHMgaWYgYSBTS0lQRklMRSB3YXMgc3BlY2lmaWVkIHdpdGggLVMKPiArICAgIGlm
-IFsgLW4gIiRTS0lQRklMRSIgXQo+ICsgICAgdGhlbgo+ICsgICAgICAgIGZvciBmaWxlIGluICQo
-IGNhdCAkU0tJUEZJTEUgKTsgZG8KPiArICAgICAgICAgICAgc2VkIC1pICIvJGZpbGUvZCIgJHtU
-TVB9L2FsbHRlc3RzCj4gKyAgICAgICAgZG9uZQo+ICsgICAgZmkKPiAgICAgIAo+ICAgICAgIyBj
-aGVjayBmb3IgcmVxdWlyZWQgdXNlcnMgYW5kIGdyb3Vwcwo+ICAgICAgJHtMVFBST09UfS9JRGNo
-ZWNrLnNoICY+L2Rldi9udWxsIHx8IFwKPiAKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTGV0IENy
-eXN0YWwgUmVwb3J0cyBoYW5kbGUgdGhlIHJlcG9ydGluZyAtIEZyZWUgQ3J5c3RhbCBSZXBvcnRz
-IDIwMDggMzAtRGF5IAp0cmlhbC4gU2ltcGxpZnkgeW91ciByZXBvcnQgZGVzaWduLCBpbnRlZ3Jh
-dGlvbiBhbmQgZGVwbG95bWVudCAtIGFuZCBmb2N1cyBvbiAKd2hhdCB5b3UgZG8gYmVzdCwgY29y
-ZSBhcHBsaWNhdGlvbiBjb2RpbmcuIERpc2NvdmVyIHdoYXQncyBuZXcgd2l0aCAKQ3J5c3RhbCBS
-ZXBvcnRzIG5vdy4gIGh0dHA6Ly9wLnNmLm5ldC9zZnUvYm9iai1qdWx5Cl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApM
-dHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5u
-ZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+Hi Michal/Garret/all,
+
+On Tue, 2009-08-04 at 10:37 +0200, Michal Simek wrote:
+> Garrett Cooper wrote:
+> > On Mon, Aug 3, 2009 at 7:46 AM, Michal Simek<michal.simek@petalogix.com> wrote:
+> >   
+> >> Cyril Hrubis wrote:
+> >>     
+> >>> Hi!
+> >>>
+> >>>       
+> >>>>> What's wrong with linux kernel coding style? Most of the decent text editors
+> >>>>> that are used these days (vim, emacs...) just helps format code like this. (Eg.
+> >>>>> default intendation is done by tabs and so on...) I don't like the idea
+> >>>>> changing tabs to spaces before sending a patch.
+> >>>>>
+> >>>>>           
+> >>>> There is only one thing which is IMHO not good - it is 80 char line size.
+> >>>> I would prefer longer lines (maybe 120 chars).
+> >>>> This is for C code not for any other.
+> >>>> Are you ok with it?
+> >>>>
+> >>>>         
+> >>> Well, I'm not happy with very long lines, but there are indeed circumstances
+> >>> where long lines are best solution.
+> >>>
+> >>>       
+> >> I am not happy with it too but there are some cases where is really ugly
+> >> to have 80chars lines.
+> >>     
+> >
+> > IMHO 95% of the time you can get away with shorter lines with
+> > different constructs or more clever indentation. 
+> I don't want to do any clever indentation. This discuss is again and
+> again the same!!!
+> 
+> I vote for standard linux indentation - tab (size 8 chars) for whole C code.
+> Follow linux kernel coding style for whole C code. As we discussed in
+> this thread 80 chars line are strongly recommended.
+> For checking C source code use checkpatch.pl script which is in linux
+> kernel before sending patches to mailing list
+> and of course checking patches before applying.
+> 
+
+Yes, checkpatch.pl for C code patches.
+
+> Cyril, Mike, Subrata and others: Can you send us your opinion? I don't
+> want to spend my time with discuss about it.
+> 
+> I am not interested in any other code that's why I don't write any
+> comment to it.
+> You can choose what you want. Of course if is similar utility like
+> checkpatch.pl it will be good to use it and not to check
+> it by hand.
+> 
+> Subrata can we please write output from this discussion to web / doc
+> somewhere?
+> 
+
+I will do that soon.
+
+> Thanks,
+> Michal
+> 
+> 
+> > Take for example what
+> > I just did with delete_module* -- now that was a mess to cleanup, but
+> > quick nonetheless and necessary:
+> > http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/module/delete_module/delete_module01.c?view=log&pathrev=makefile_infra_rework
+> > , http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/module/delete_module/delete_module02.c?view=log&pathrev=makefile_infra_rework
+> > , http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/module/delete_module/delete_module03.c?view=log&pathrev=makefile_infra_rework
+> >
+> > We should aim for 80 column lines wherever possible because it's the
+> > defacto standard, and where we can't do that (and there are a handful
+> > of areas with shell code and Makefile code where I couldn't without
+> > changing the meaning of the message I was trying to convey), we should
+> > go over 80 cols.
+> >
+> > At least that's how every project I know has done it.
+> >
+> > General rules of thumb for shell / python / perl code (from dealing
+> > with other projects) was 4 space indents. Perl tends to go whacky
+> > though because of all of the different ways to express constructs
+> > though xD.
+
+Again, checkpatch.pl for non-C code as well. But, need to carefully
+review the errors it will generate for non-C code like the Makefiles,
+perl, shell, python, etc.
+
+Garret,
+
+Can you please come up with a list of exceptions for
+     1. line length,
+     2. tab length,
+     3. etc
+
+for non-C code like the perl, Makefiles, etc. I would then document them
+all.
+
+Regards--
+Subrata
+
+> >
+> > Thanks!
+> > -Garrett
+> >   
+> 
+> 
+
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
