@@ -1,21 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MgeGf-0000fD-UR
-	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 12:39:53 +0000
-Received: from vervifontaine.sonytel.be ([80.88.33.193]
-	helo=pophost.sonytel.be) by 72vjzd1.ch3.sourceforge.com with esmtp 
-	(Exim 4.69) id 1MgeGb-00045y-9r
-	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 12:39:53 +0000
-Date: Thu, 27 Aug 2009 14:19:49 +0200 (CEST)
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-In-Reply-To: <200908130304.49839.vapier@gentoo.org>
-Message-ID: <alpine.LRH.2.00.0908271416250.22490@vixen.sonytel.be>
-References: <4A8330A1.20001@canonical.com>
-	<200908130304.49839.vapier@gentoo.org>
-MIME-Version: 1.0
-Subject: Re: [LTP] fix mail_tests for systems without mail installed
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MYIpE-0001I1-Jb
+	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 12:09:04 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MYIp9-0000Vf-8y
+	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 12:09:04 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n74C80hr006950
+	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 06:08:00 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n74C8b4T225948
+	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 06:08:38 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n74C8aOp009264
+	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 06:08:37 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <b27f5b6149545ef2a1f3483d14d51d29f83aa7c6.1249304223.git.monstr@monstr.eu>
+References: <1249305859-23722-1-git-send-email-michal.simek@petalogix.com>
+	<0f2557dbada823cdbdf1080b36ca0cf41d29c58f.1249304223.git.monstr@monstr.eu>
+	<b27f5b6149545ef2a1f3483d14d51d29f83aa7c6.1249304223.git.monstr@monstr.eu>
+Date: Tue, 04 Aug 2009 17:38:13 +0530
+Message-Id: <1249387694.15587.35.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH 2/4] tst_is_cwd: Add support for ramfs
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,55 +39,167 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>, Paul Larson <paul.larson@canonical.com>
-Cc: Linux Test Project <ltp-list@lists.sourceforge.net>
+To: michal.simek@petalogix.com
+Cc: ltp-list@lists.sourceforge.net, monstr@monstr.eu
 
-T24gVGh1LCAxMyBBdWcgMjAwOSwgTWlrZSBGcnlzaW5nZXIgd3JvdGU6Cj4gT24gV2VkbmVzZGF5
-IDEyIEF1Z3VzdCAyMDA5IDE3OjE0OjA5IFBhdWwgTGFyc29uIHdyb3RlOgo+ID4gK2B3aGljaCBt
-YWlsYAo+ID4gK2lmIFsgJD8gIT0gMCBdOyB0aGVuCj4gCj4gdGhpcyByZXN1bHRzIGluIHByZXR0
-eSB1Z2x5IG91dHB1dCwgYW5kIHRoZSByZXR1cm4gdmFsdWUvb3V0cHV0IG9mIGB3aGljaGAgaXMg
-Cj4gbm90IHBvcnRhYmxlLiAgdXNlIHRoZSB0eXBlIGJ1aWx0aW4gaW5zdGVhZC4KPiAKPiA+ICsg
-ICAgTUFJTF9OT1RfSU5TVEFMTEVEPTEKPiAKPiB5b3Ugc2hvdWxkIG1ha2Ugc3VyZSB0aGlzIGlz
-IGFsd2F5cyBzZXQvdW5zZXQgYXQgdGhlIHRvcCBvZiB0aGUgc2NyaXB0IHNvIAo+IHBhcmVudCBl
-bnZpcm9ubWVudCBwb2lzb25pbmcgd29udCBzY3JldyB0aGluZ3MgdXAuCj4gCj4gPiAraWYgWyAt
-eiAkTUFJTF9OT1RfSU5TVEFMTEVEIF07IHRoZW4KPiAKPiB0ZXN0cyBtdXN0IGFsd2F5cyBiZSBx
-dW90ZWQ6Cj4gWyAteiAiJGZvbyIgXQoKV29yc2UsIGFzICRNQUlMX05PVF9JTlNUQUxMRUQgaXMg
-YWx3YXlzICIwIiBvciAiMSIsIC16IGFsd2F5cyByZXR1cm4gZmFsc2UuLi4KCkZyb20gODAzNTA5
-MWM0MjMyZThkNmM3YjNhNzVkNjEyYmM4MmMxYWQ4NDM2NSBNb24gU2VwIDE3IDAwOjAwOjAwIDIw
-MDEKRnJvbTogR2VlcnQgVXl0dGVyaG9ldmVuIDxHZWVydC5VeXR0ZXJob2V2ZW5Ac29ueWNvbS5j
-b20+CkRhdGU6IFRodSwgMjcgQXVnIDIwMDkgMTQ6MTE6NTggKzAyMDAKU3ViamVjdDogW1BBVENI
-XSBGaXggbWFpbF90ZXN0cyBmb3Igc3lzdGVtcyB3aXRoIG1haWwgaW5zdGFsbGVkCgpgLXonIHRl
-c3RzIGZvciBhIHN0cmluZyBsZW5ndGggb2YgemVybywgbm90IGZvciBhIHplcm8gdmFsdWUsIGNh
-dXNpbmcgdGhlCnRlc3QgYWx3YXlzIHRvIHJldHVybiBmYWxzZS4KSW5pdGlhbGl6ZSAkTUFJTF9O
-T1RfSU5TVEFMTEVEIHRvIGFuIGVtcHR5IHN0cmluZyBpbnN0ZWFkIG9mIGEgbnVtZXJpY2FsCnpl
-cm8gdG8gZml4IHRoaXMuCgpTaWduZWQtb2ZmLWJ5OiBHZWVydCBVeXR0ZXJob2V2ZW4gPEdlZXJ0
-LlV5dHRlcmhvZXZlbkBzb255Y29tLmNvbT4KLS0tCiB0ZXN0Y2FzZXMvY29tbWFuZHMvbWFpbC9t
-YWlsX3Rlc3RzLnNoIHwgICAgMiArLQogMSBmaWxlcyBjaGFuZ2VkLCAxIGluc2VydGlvbnMoKyks
-IDEgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2NvbW1hbmRzL21haWwvbWFp
-bF90ZXN0cy5zaCBiL3Rlc3RjYXNlcy9jb21tYW5kcy9tYWlsL21haWxfdGVzdHMuc2gKaW5kZXgg
-MDk1OWEwYy4uNDViYWM5MyAxMDA3NTUKLS0tIGEvdGVzdGNhc2VzL2NvbW1hbmRzL21haWwvbWFp
-bF90ZXN0cy5zaAorKysgYi90ZXN0Y2FzZXMvY29tbWFuZHMvbWFpbC9tYWlsX3Rlc3RzLnNoCkBA
-IC01OSw3ICs1OSw3IEBAIFJDPTAKIGV4cG9ydCBUQ0lEPVNFVFVQCiBleHBvcnQgVFNUX0NPVU5U
-PTEKIAotTUFJTF9OT1RfSU5TVEFMTEVEPTAKK01BSUxfTk9UX0lOU1RBTExFRD0KIGB0eXBlIG1h
-aWwgJj4gL2Rldi9udWxsYAogaWYgWyAkPyAhPSAwIF07IHRoZW4KICAgICBNQUlMX05PVF9JTlNU
-QUxMRUQ9MQotLSAKMS42LjIuNAoKV2l0aCBraW5kIHJlZ2FyZHMsCgpHZWVydCBVeXR0ZXJob2V2
-ZW4KU29mdHdhcmUgQXJjaGl0ZWN0ClRlY2hzb2Z0IENlbnRyZQoKVGVjaG5vbG9neSBhbmQgU29m
-dHdhcmUgQ2VudHJlIEV1cm9wZQpUaGUgQ29ycG9yYXRlIFZpbGxhZ2UgwrcgRGEgVmluY2lsYWFu
-IDctRDEgwrcgQi0xOTM1IFphdmVudGVtIMK3IEJlbGdpdW0KClBob25lOiAgICArMzIgKDApMiA3
-MDAgODQ1MwpGYXg6ICAgICAgKzMyICgwKTIgNzAwIDg2MjIKRS1tYWlsOiAgIEdlZXJ0LlV5dHRl
-cmhvZXZlbkBzb255Y29tLmNvbQpJbnRlcm5ldDogaHR0cDovL3d3dy5zb255LWV1cm9wZS5jb20v
-CgpBIGRpdmlzaW9uIG9mIFNvbnkgRXVyb3BlIChCZWxnaXVtKSBOLlYuClZBVCBCRSAwNDEzLjgy
-NS4xNjAgwrcgUlBSIEJydXNzZWxzCkZvcnRpcyDCtyBCSUMgR0VCQUJFQkIgwrcgSUJBTiBCRTQx
-MjkzMDM3NjgwMDEwCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTGV0IENyeXN0YWwgUmVwb3J0cyBo
-YW5kbGUgdGhlIHJlcG9ydGluZyAtIEZyZWUgQ3J5c3RhbCBSZXBvcnRzIDIwMDggMzAtRGF5IAp0
-cmlhbC4gU2ltcGxpZnkgeW91ciByZXBvcnQgZGVzaWduLCBpbnRlZ3JhdGlvbiBhbmQgZGVwbG95
-bWVudCAtIGFuZCBmb2N1cyBvbiAKd2hhdCB5b3UgZG8gYmVzdCwgY29yZSBhcHBsaWNhdGlvbiBj
-b2RpbmcuIERpc2NvdmVyIHdoYXQncyBuZXcgd2l0aCAKQ3J5c3RhbCBSZXBvcnRzIG5vdy4gIGh0
-dHA6Ly9wLnNmLm5ldC9zZnUvYm9iai1qdWx5Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5z
-b3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGlu
-Zm8vbHRwLWxpc3QK
+On Mon, 2009-08-03 at 15:24 +0200, michal.simek@petalogix.com wrote: 
+> From: Michal Simek <monstr@monstr.eu>
+> 
+> I added support for testing ramfs and add together
+> tests for nfs, tmpfs and ramfs.
+> 
+> Signed-off-by: Michal Simek <monstr@monstr.eu>
+
+Thanks.
+
+Regards--
+Subrata
+
+> ---
+>  lib/tst_is_cwd.c       |   42 ++++++++++++++++++++++++++++++++++++++++++
+>  lib/tst_is_cwd_nfs.c   |   41 -----------------------------------------
+>  lib/tst_is_cwd_tmpfs.c |   24 ------------------------
+>  3 files changed, 42 insertions(+), 65 deletions(-)
+>  create mode 100644 lib/tst_is_cwd.c
+>  delete mode 100644 lib/tst_is_cwd_nfs.c
+>  delete mode 100644 lib/tst_is_cwd_tmpfs.c
+> 
+> diff --git a/lib/tst_is_cwd.c b/lib/tst_is_cwd.c
+> new file mode 100644
+> index 0000000..ad6b747
+> --- /dev/null
+> +++ b/lib/tst_is_cwd.c
+> @@ -0,0 +1,42 @@
+> +/*
+> + * Michal Simek <monstr@monstr.eu>, 2009-08-03 - ramfs
+> + * Kumar Gala <galak@kernel.crashing.org>, 2007-11-14 - nfs
+> + * Ricky Ng-Adam <rngadam@yahoo.com>, 2005-01-01 - tmpfs
+> + *
+> + * DESCRIPTION
+> + *	Check if current directory is on a tmpfs/nfs/ramfs filesystem
+> + *	If current directory is tmpfs/nfs/ramfs, return 1
+> + *	If current directory is NOT tmpfs/nfs/ramfs, return 0
+> + */
+> +
+> +#include <sys/vfs.h>
+> +
+> +#define TMPFS_MAGIC 0x01021994 /* man 2 statfs */
+> +int tst_is_cwd_tmpfs(void)
+> +{
+> +	struct statfs sf;
+> +	statfs(".", &sf);
+> +
+> +	/* Verify that the file is not on a tmpfs (in-memory) filesystem */
+> +	return sf.f_type == TMPFS_MAGIC ? 1 : 0;
+> +}
+> +
+> +#define NFS_MAGIC 0x6969 /* man 2 statfs */
+> +int tst_is_cwd_nfs(void)
+> +{
+> +	struct statfs sf;
+> +	statfs(".", &sf);
+> +
+> +	/* Verify that the file is not on a nfs filesystem */
+> +	return sf.f_type == NFS_MAGIC ? 1 : 0;
+> +}
+> +
+> +#define RAMFS_MAGIC 0x858458f6
+> +int tst_is_cwd_ramfs(void)
+> +{
+> +	struct statfs sf;
+> +	statfs(".", &sf);
+> +
+> +	/* Verify that the file is not on a ramfs (in-memory) filesystem */
+> +	return sf.f_type == RAMFS_MAGIC ? 1 : 0;
+> +}
+> diff --git a/lib/tst_is_cwd_nfs.c b/lib/tst_is_cwd_nfs.c
+> deleted file mode 100644
+> index 130c6c2..0000000
+> --- a/lib/tst_is_cwd_nfs.c
+> +++ /dev/null
+> @@ -1,41 +0,0 @@
+> -/******************************************************************************/
+> -/* This program is free software;  you can redistribute it and/or modify      */
+> -/* it under the terms of the GNU General Public License as published by       */
+> -/* the Free Software Foundation; either version 2 of the License, or          */
+> -/* (at your option) any later version.                                        */
+> -/*                                                                            */
+> -/* This program is distributed in the hope that it will be useful,            */
+> -/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
+> -/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
+> -/* the GNU General Public License for more details.                           */
+> -/*                                                                            */
+> -/* You should have received a copy of the GNU General Public License          */
+> -/* along with this program;  if not, write to the Free Software               */
+> -/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
+> -/******************************************************************************/
+> -/*
+> - *    AUTHOR
+> - *     Kumar Gala <galak@kernel.crashing.org>, 2007-11-14
+> - *     based on tst_is_cwd_tmpfs()
+> - *
+> - *    DESCRIPTION
+> - *     Check if current directory is on a nfs filesystem
+> - *     If current directory is nfs, return 1
+> - *     If current directory is NOT nfs, return 0
+> - *
+> - *
+> - */
+> -/******************************************************************************/
+> -
+> -#include <sys/vfs.h>
+> -
+> -#define NFS_MAGIC 0x6969 /* man 2 statfs */
+> -
+> -int tst_is_cwd_nfs(void)
+> -{
+> -	struct statfs sf;
+> -	statfs(".", &sf);
+> -
+> -	/* Verify that the file is not on a nfs filesystem */
+> -	return sf.f_type == NFS_MAGIC?1:0;
+> -}
+> diff --git a/lib/tst_is_cwd_tmpfs.c b/lib/tst_is_cwd_tmpfs.c
+> deleted file mode 100644
+> index 61c5c39..0000000
+> --- a/lib/tst_is_cwd_tmpfs.c
+> +++ /dev/null
+> @@ -1,24 +0,0 @@
+> -/*
+> - *    AUTHOR
+> - *    	Ricky Ng-Adam <rngadam@yahoo.com>, 2005-01-01
+> - *
+> - *    DESCRIPTION
+> - * 	Check if current directory is on a tmpfs filesystem
+> - * 	If current directory is tmpfs, return 1
+> - * 	If current directory is NOT tmpfs, return 0
+> - *
+> - *
+> - */
+> -
+> -#include <sys/vfs.h>
+> -
+> -#define TMPFS_MAGIC 0x01021994 /* man 2 statfs */
+> -
+> -int tst_is_cwd_tmpfs(void)
+> -{
+> -	struct statfs sf;
+> -	statfs(".", &sf);
+> -
+> -	/* Verify that the file is not on a tmpfs (in-memory) filesystem */
+> -	return sf.f_type == TMPFS_MAGIC?1:0;
+> -}
+
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
