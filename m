@@ -1,28 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MZz3P-0002mW-Gu
-	for ltp-list@lists.sourceforge.net; Sun, 09 Aug 2009 03:26:39 +0000
-Received: from qw-out-1920.google.com ([74.125.92.148])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MZz3J-0007My-Tz
-	for ltp-list@lists.sourceforge.net; Sun, 09 Aug 2009 03:26:39 +0000
-Received: by qw-out-1920.google.com with SMTP id 5so866180qwc.4
-	for <ltp-list@lists.sourceforge.net>;
-	Sat, 08 Aug 2009 20:26:28 -0700 (PDT)
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <rohit.170309@gmail.com>) id 1MYJ2G-0001uq-GZ
+	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 12:22:32 +0000
+Received: from mail-yw0-f194.google.com ([209.85.211.194])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MYJ28-00035q-H6
+	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 12:22:32 +0000
 MIME-Version: 1.0
-In-Reply-To: <2E55F490-102A-4179-B0F2-ED7F5C0D1A12@kernel.crashing.org>
-References: <E69DB27D-E186-4934-AB69-C5EDB67A48AF@kernel.crashing.org>
-	<1249494775.13131.18.camel@lucio-laptop>
-	<3E7F2B7B-6BA8-4179-B973-5DA7F4D7618A@kernel.crashing.org>
-	<364299f40908061024l42cd1200n99e6e762a77c91d2@mail.gmail.com>
-	<D4B24F3A-3BF2-41BA-9626-2D13AC12B515@kernel.crashing.org>
-	<2E55F490-102A-4179-B0F2-ED7F5C0D1A12@kernel.crashing.org>
-Date: Sat, 8 Aug 2009 20:26:28 -0700
-Message-ID: <364299f40908082026r1fa95822p538298b334eaaefa@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] top of tree fails to build on PPC fc11 box
+In-Reply-To: <1249387637.15587.29.camel@subratamodak.linux.ibm.com>
+References: <d51f89b0908032310k20c3843am7ea069d03436a7a@mail.gmail.com>
+	<1249387637.15587.29.camel@subratamodak.linux.ibm.com>
+Date: Tue, 4 Aug 2009 17:46:25 +0530
+Message-ID: <d51f89b0908040516i7c65740bi3e30e0972c8374fa@mail.gmail.com>
+From: rohit verma <rohit.170309@gmail.com>
+Subject: [LTP] Issue with rt_sigqueueinfo testcase in LTP.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,49 +28,89 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kumar Gala <galak@kernel.crashing.org>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: ltp-list <ltp-list@lists.sf.net>
 
-On Thu, Aug 6, 2009 at 11:07 AM, Kumar Gala<galak@kernel.crashing.org> wrot=
-e:
->
-> On Aug 6, 2009, at 12:43 PM, Kumar Gala wrote:
->
->>> =A0Ok. I have the time now so I'll install F11 amd64 and see what
->>> happens. Something leads me to think that the build toolchain is
->>> fubared, but that's just a hunch, as my copy of F10 (the last time I
->>> ran the build) worked.
->>> Thanks,
->>> -Garrett
->>
->> interesting since I saw the same issues w/F10 amd64.
->>
->> - k
->
-> I also just tried installing clean versions of automake, autoconf, m4 to
-> match the versions in the INSTALL file and got:
->
-> autoconf-2.61
-> automake-1.10.2
-> m4-1.4.12
->
-> and still get the same issue:
->
-> touch config.mk
-> aclocal -I m4
-> autoconf
-> configure.ac:9: error: possibly undefined macro: AC_PROG_AR
-> =A0 =A0 If this token and others are legitimate, please use m4_pattern_al=
-low.
-> =A0 =A0 See the Autoconf documentation.
-> make: *** [configure] Error 1
+FYI...
 
-Kumar,
-    I have no idea what's wrong with your install, but it compiles
-perfectly fine on Fedora 11 / x86. I'll try with Fedora 10 in a few
-mins...
-Thanks,
--Garrett
+
+---------- Forwarded message ----------
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+Date: Tue, Aug 4, 2009 at 5:37 PM
+Subject: Re: Issue with rt_sigqueueinfo testcase in LTP.
+To: rohit verma <rohit.170309@gmail.com>
+Cc: maknayak@in.ibm.com
+
+
+Hi Rohit,
+
+On Tue, 2009-08-04 at 11:40 +0530, rohit verma wrote:
+> Dear Manas Kumar Nayak,
+>
+> I have found an issue with rt_sigqueueinfo test-case.
+>
+> Following is the test output:
+>
+> rt_sigqueueinfo01 =A0 =A01 =A0PASS =A0: =A0Test Succeeded
+> rt_sigqueueinfo01 =A0 =A01 =A0FAIL =A0: =A0Test Failed, errno=3D1 : Opera=
+tion not permitted
+> rt_sigqueueinfo01 =A0 =A01 =A0PASS =A0: =A0Test Succeeded
+> rt_sigqueueinfo01 =A0 =A01 =A0FAIL =A0: =A0Test Failed, errno=3D1 : Opera=
+tion not permitted
+> rt_sigqueueinfo01 =A0 =A00 =A0WARN =A0: =A0tst_rmdir(): rmobj(/tmp/rt_3Fa=
+SpK)
+> failed: lstat(/tmp/rt_3FaSpK) failed; errno=3D2: No such file or
+> directory
+>
+> I think the following lines are causing the failures:
+>
+> (Line - 164)
+>
+> uinfo.si_errno =3D 0;
+> uinfo.si_code =3D 0;//SI_USER
+> TEST(retval =3D syscall(__NR_rt_sigqueueinfo, getpid(), 17, &uinfo));
+>
+> Reason -
+>
+> You can observe the following comment & source when you look at the
+> Linux source (v 2.6.29)
+> (linux-2.6.29/kernel/signal.c)
+>
+> =A0 =A0 =A0 =A0 =A0 /* Not even root can pretend to send signals from the=
+ kernel.
+> =A0 =A0 =A0 =A0 =A0 =A0Nor can they impersonate a kill(), which adds sour=
+ce info. =A0*/
+> =A0 =A0 =A0 =A0 if (info.si_code >=3D 0)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EPERM;
+>
+> which implies that si_code cannot be set to ' 0 ' (SI_USER) when
+> invoking the rt_sigqueueinfo syscall.
+>
+>
+> I am not sure how to fix this issue. But, a possible fix would be to
+> remove the second set of fork &
+> rt_sigqueueinfo invocations and use the first set (with SI_QUEUE). If
+> needed, the loop count can be
+> increased.
+
+Please propose this over to the mailing list. Manas has just ported the
+test case from Crackerjack to LTP. He may not be exactly aware of the
+issues, as it was a blind port, which in one way was good, as the
+porting generated issues, people interested discussed and solved
+them ;-)
+
+Regards--
+Subrata
+
+>
+>
+
+
+
+
+-- =
+
+Regards,
+Rohit
 
 ---------------------------------------------------------------------------=
 ---
