@@ -1,25 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MYLAR-0007b5-8J
-	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 14:39:07 +0000
-Received: from qw-out-1920.google.com ([74.125.92.145])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MYLAJ-0006VG-8Y
-	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 14:39:07 +0000
-Received: by qw-out-1920.google.com with SMTP id 5so1884619qwc.4
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 04 Aug 2009 07:38:53 -0700 (PDT)
+	(envelope-from <dvhltc@us.ibm.com>) id 1MYL05-0007B0-2y
+	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 14:28:25 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MYKzu-0000TU-7V
+	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 14:28:18 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n74ELsJV028888
+	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 10:21:54 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n74ES3NN242586
+	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 10:28:03 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n74ES2S8022219
+	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 10:28:03 -0400
+Message-ID: <4A784570.4080201@us.ibm.com>
+Date: Tue, 04 Aug 2009 07:28:00 -0700
+From: Darren Hart <dvhltc@us.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <1249387714.15587.38.camel@subratamodak.linux.ibm.com>
-References: <1249305859-23722-1-git-send-email-michal.simek@petalogix.com>
-	<0f2557dbada823cdbdf1080b36ca0cf41d29c58f.1249304223.git.monstr@monstr.eu>
-	<1249387714.15587.38.camel@subratamodak.linux.ibm.com>
-Date: Tue, 4 Aug 2009 07:38:53 -0700
-Message-ID: <364299f40908040738n32fb4983j1fa09f0d50449cf8@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 1/4] utimensat: Remove utimensat_user from script
+References: <4A7772FE.20808@us.ibm.com>
+	<1249387682.15587.32.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1249387682.15587.32.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] realtime measurement tests: approach to criteria
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,85 +36,53 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: subrata@linux.vnet.ibm.com
-Cc: monstr@monstr.eu, ltp-list@lists.sourceforge.net
+Cc: Clark Williams <williams@redhat.com>, LTP <ltp-list@lists.sourceforge.net>, linux-rt-users <linux-rt-users@vger.kernel.org>, amrith <amrith@linux.ibm.com>
 
-On Tue, Aug 4, 2009 at 5:08 AM, Subrata Modak<subrata@linux.vnet.ibm.com> w=
-rote:
-> On Mon, 2009-08-03 at 15:24 +0200, michal.simek@petalogix.com wrote:
->> From: Michal Simek <monstr@monstr.eu>
+Subrata Modak wrote:
+> Hi Darren,
+> 
+> On Mon, 2009-08-03 at 16:30 -0700, Darren Hart wrote: 
+>> The current ltp/testcases/realtime tests belong to one of func, perf, or 
+>> stress.  While strict pass/fail criteria make sense for functional tests 
+>> (did the tasks wake up in priority order?), the others use "arbitrary" 
+>> values and compare those against the whatever is being measured (wakeup 
+>> latency, etc.) and then determine pass/fail.  Ideally the tests 
+>> themselves would not determine the pass/fail criteria, and would instead 
+>> simply report on their measurements since the criteria will vary in 
+>> every use-case based on requirements, workload, hardware, etc.
 >>
->> We can use nobody user instead of creating new one
->> for this special test. Latest busybox source
->> code not support userdel, useradd that's why
->> is better to use user which exists.
+>> I'd like to propose an approach where the tests only report their 
+>> measured values (with the exception of the func/* tests which will 
+>> maintain their pass/fail criteria).  Users should be able to populate a 
+>> criteria.conf file that specified the criteria of each test.  The 
+>> results could then be parsed, compared against the results, and a 
+>> pass/fail determined from there.  I suspect it would be best for the .c 
+>> tests to just report the numbers and the statistics in a common format 
+>> and rely on python parser scripts to read the config file and determine 
+>> pass/fail from there.
 >>
->> Signed-off-by: Michal Simek <monstr@monstr.eu>
->
-> Ok.
+>> I'd like users thoughts on this approach before we jump in and start 
+>> changing things (as this is a fairly invasive change).
+> 
+> This is indeed a good approach. Should we also ask the RT-USERS, who
+> might be interested to comment on this ?
 
-If that's the case, then a lot of testcases need to change in
-network/ipv6, network/tcp_cmds, etc...
--Garrett
+Thanks for including the rt-users list, yes I should have done that 
+originally as well.
 
->> =A0.../kernel/syscalls/utimensat/utimensat_tests.sh =A0 | =A0 =A04 +---
->> =A01 files changed, 1 insertions(+), 3 deletions(-)
->>
->> diff --git a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh b/te=
-stcases/kernel/syscalls/utimensat/utimensat_tests.sh
->> index 19c59c7..d0e940a 100644
->> --- a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
->> +++ b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
->> @@ -243,8 +243,7 @@ run_test()
->> =A0}
->> =A0#=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>
->> -user_tester=3Dutimensat_tester
->> -useradd $user_tester
->> +user_tester=3Dnobody
->> =A0sudo -u $user_tester mkdir -p $TEST_DIR
->>
->> =A0chown root $LTPROOT/testcases/bin/$TEST_PROG
->> @@ -434,7 +433,6 @@ echo "=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D"
->>
->> =A0echo
->>
->> -userdel -r utimensat_tester
->> =A0rm -rf $TEST_PROG
->> =A0uname -a
->> =A0date
->
->
-> -------------------------------------------------------------------------=
------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-D=
-ay
-> trial. Simplify your report design, integration and deployment - and focu=
-s on
-> what you do best, core application coding. Discover what's new with
-> Crystal Reports now. =A0http://p.sf.net/sfu/bobj-july
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
->
+-- 
+Darren Hart
+IBM Linux Technology Center
+Real-Time Linux Team
 
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
-
-trial. Simplify your report design, integration and deployment - and focus =
-on =
-
-what you do best, core application coding. Discover what's new with =
-
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
