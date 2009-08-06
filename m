@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <skrishnakar@gmail.com>) id 1MZRLZ-0000HY-4k
-	for Ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 15:27:09 +0000
-Received: from wf-out-1314.google.com ([209.85.200.175])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MZRLR-0003bt-QN
-	for Ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 15:27:09 +0000
-Received: by wf-out-1314.google.com with SMTP id 26so654852wfd.4
-	for <Ltp-list@lists.sourceforge.net>;
-	Fri, 07 Aug 2009 08:26:55 -0700 (PDT)
-MIME-Version: 1.0
-Date: Fri, 7 Aug 2009 20:56:55 +0530
-Message-ID: <6213bc560908070826u6c2b321ay446997891f2cc21f@mail.gmail.com>
-From: srikanth krishnakar <skrishnakar@gmail.com>
-Subject: [LTP] add_key01 & add_key02 test cases fails and shown as PASS in
-	log file
+	(envelope-from <ljhc@br.ibm.com>) id 1MZ7cE-0006US-1H
+	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 18:23:02 +0000
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MZ7c8-0000ZT-Vh
+	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 18:23:01 +0000
+From: Lucio Correia <ljhc@br.ibm.com>
+In-Reply-To: <OFC57A047B.CF64D210-ON852575FB.007EFB24-852575FB.0081AD79@us.ibm.com>
+References: <OFC57A047B.CF64D210-ON852575FB.007EFB24-852575FB.0081AD79@us.ibm.com>
+Date: Thu, 06 Aug 2009 14:55:17 -0300
+Message-Id: <1249581317.9358.11.camel@lucio-laptop>
+Mime-Version: 1.0
+Subject: Re: [LTP] eventfd2_03
+Reply-To: ljhc@br.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,145 +25,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8494325790755215376=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Ltp-list@lists.sourceforge.net
-
---===============8494325790755215376==
-Content-Type: multipart/alternative; boundary=000e0cd242b2ce6bdb04708edd8b
-
---000e0cd242b2ce6bdb04708edd8b
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-I see these two test cases are failing on PowerPC target (ppc440) as shown
-in output file, but they are listed as PASS in log file of the LTP :
-
-Target : PowerPC (ppc440)
-Kernel: Linux-2.6.29
-LTP Version : ltp-full-20090731
-
-LTP output file :
-#############
-
-
-1. add_key01
---------------------
-
-<<<test_start>>>
-tag=add_key01 stime=1248549741
-cmdline="add_key01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-add_key01    1  TFAIL  :  add_key01 failed - errno = 38 : Function not
-implemented
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-
-2. add_key02
-----------------------
-
-<<<test_start>>>
-tag=add_key02 stime=1248549741
-cmdline="add_key02"
-contacts=""
-analysis=exit
-<<<test_output>>>
-add_key02    0  TINFO  :  call add_key() with wrong args got UNEXPECTED
-errno:38
-add_key02    1  TFAIL  :  add_key02 failed - errno = 38 : Function not
-implemented
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=0 corefile=no
-cutime=0 cstime=1
-<<<test_end>>>
-
---------------------------------------------------------
-
-BUT the Log file shows as PASS to the above test cases :
-
-###########################
-
-add_key01                      PASS       0
-add_key02                      PASS       0
-
-###########################
-
-
-May anyone explain, why it is so ? Is it a known behaviour ?
-
-
-Regards
-Srikanth Krishnakar
-**********************
-
---000e0cd242b2ce6bdb04708edd8b
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-I see these two test cases are failing on PowerPC target (ppc440) as shown =
-in output file, but they are listed as PASS in log file of the LTP :<br><br=
->Target : PowerPC (ppc440)<br>Kernel: Linux-2.6.29<br>LTP Version : ltp-ful=
-l-20090731<br>
-<br>LTP output file :<br>#############<br><br><br>1. add_key01<br>---------=
------------<br><br>&lt;&lt;&lt;test_start&gt;&gt;&gt;<br>tag=3Dadd_key01 st=
-ime=3D1248549741<br>cmdline=3D&quot;add_key01&quot;<br>contacts=3D&quot;&qu=
-ot;<br>
-analysis=3Dexit<br>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>add_key01=A0=A0=
-=A0 1=A0 TFAIL=A0 :=A0 add_key01 failed - errno =3D 38 : Function not imple=
-mented<br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initiation_status=3D&=
-quot;ok&quot;<br>
-duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno<br>=
-cutime=3D0 cstime=3D0<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br><br>2. add_key=
-02<br>----------------------<br><br>&lt;&lt;&lt;test_start&gt;&gt;&gt;<br>t=
-ag=3Dadd_key02 stime=3D1248549741<br>
-cmdline=3D&quot;add_key02&quot;<br>contacts=3D&quot;&quot;<br>analysis=3Dex=
-it<br>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>add_key02=A0=A0=A0 0=A0 TINFO=
-=A0 :=A0 call add_key() with wrong args got UNEXPECTED errno:38<br>add_key0=
-2=A0=A0=A0 1=A0 TFAIL=A0 :=A0 add_key02 failed - errno =3D 38 : Function no=
-t implemented<br>
-&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initiation_status=3D&quot;ok&qu=
-ot;<br>duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=
-=3Dno<br>cutime=3D0 cstime=3D1<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br><br>-=
--------------------------------------------------------<br>
-<br>BUT the Log file shows as PASS to the above test cases :<br><br>#######=
-####################<br><br>add_key01=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0 PASS=A0=A0=A0=A0=A0=A0 0<br>add_key02=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 PASS=A0=A0=A0=A0=A0=
-=A0 0<br><br>###########################<br>
-<br><br clear=3D"all">May anyone explain, why it is so ? Is it a known beha=
-viour ?<br>=A0<br><br>Regards<br>Srikanth Krishnakar<br>*******************=
-***<br>
-
---000e0cd242b2ce6bdb04708edd8b--
-
-
---===============8494325790755215376==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Mark Ver <markver@us.ibm.com>
+Cc: ltp-list@lists.sf.net
+
+On Wed, 2009-07-22 at 19:36 -0400, Mark Ver wrote:
+> Hi,
+> 
+> Just recently downloaded the 20090630 version LTP. But it looks like
+> there is a new testcase "eventfd2_03" included as part of default
+> which is getting a compile problem and causing the LTP build to abort
+> on s390x architecture:
+> 
+
+Hi Mark,
+
+I sent a patch to fix this issue for ppc on July 1st:
+
+http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg07222.html
+
+This patch also fixes some issues with the test suite, and I believe you
+will just need to define the correct syscall number in the .in file for
+s390x.
+
+Regards,
+
+-- 
+Lucio Correia
+Software Engineer
+IBM LTC Brazil
+
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---===============8494325790755215376==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============8494325790755215376==--
-
