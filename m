@@ -2,28 +2,20 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <paul.larson@canonical.com>) id 1MfYxL-0000oT-DA
-	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 12:47:27 +0000
-Received: from adelie.canonical.com ([91.189.90.139])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MfYxF-0003N5-66
-	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 12:47:27 +0000
-Received: from hutte.canonical.com ([91.189.90.181])
-	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
-	id 1MfYx9-0004Wg-4q
-	for <ltp-list@lists.sourceforge.net>; Mon, 24 Aug 2009 13:47:15 +0100
-Received: from 75-27-138-126.lightspeed.austtx.sbcglobal.net ([75.27.138.126]
-	helo=[192.168.1.70]) by hutte.canonical.com with esmtpsa
-	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
-	(envelope-from <paul.larson@canonical.com>) id 1MfYx8-0004f9-UQ
-	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 13:47:15 +0100
-Message-ID: <4A928BD0.4000508@canonical.com>
-Date: Mon, 24 Aug 2009 07:47:12 -0500
-From: Paul Larson <paul.larson@canonical.com>
-MIME-Version: 1.0
-References: <20090824093204.31997.18175.sendpatchset@subratamodak.linux.ibm.com>
-In-Reply-To: <20090824093204.31997.18175.sendpatchset@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] [PATCH 00/02] Integrate Valgrind Memory Check Tool to LTP
+	(envelope-from <galak@kernel.crashing.org>) id 1MZ5g4-0000S2-VB
+	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 16:18:52 +0000
+Received: from gate.crashing.org ([63.228.1.57])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MZ5fv-000640-RJ
+	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 16:18:52 +0000
+Received: from [IPv6:::1] (localhost.localdomain [127.0.0.1])
+	by gate.crashing.org (8.14.1/8.13.8) with ESMTP id n76GIa3O018283
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 Aug 2009 11:18:37 -0500
+Message-Id: <1842FA33-8C6C-4BE1-8FB4-B8836F1C8F6E@kernel.crashing.org>
+From: Kumar Gala <galak@kernel.crashing.org>
+Mime-Version: 1.0 (Apple Message framework v935.3)
+Date: Thu, 6 Aug 2009 11:18:36 -0500
+Subject: [LTP] RANLIB not set?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,18 +28,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP Mailing List <ltp-list@lists.sourceforge.net>
+To: LTP <ltp-list@lists.sourceforge.net>
 
-Subrata Modak wrote:
-> ./runltp -f <your-command-file> -M [1,2,3]
-Due to runltp already becoming fairly bloated, and the fact that this is
-really just to "test the tests", would it make sense to put it under
-/scratch or /testscripts as a separate script, rather than just include
-it as yet-another-option for runltp?
+I'm seeing this on fedora 11 on ppc64:
 
-Thanks,
-Paul Larson
+make[3]: Leaving directory `/root/ltp/testcases/network/ipv6'
+make[3]: Entering directory `/root/ltp/testcases/network/lib6'
+cc -Wall  -I../../../include -g -D_GNU_SOURCE   -c -o runcc.o runcc.c
+ar cr runcc.a runcc.o
+runcc.a
+make[3]: runcc.a: Command not found
+make[3]: *** [runcc.a] Error 127
+make[3]: Leaving directory `/root/ltp/testcases/network/lib6'
+make[2]: *** [all] Error 2
+make[2]: Leaving directory `/root/ltp/testcases/network'
+make[1]: *** [all] Error 2
+make[1]: Leaving directory `/root/ltp/testcases'
+make: *** [all] Error 2
 
+- k
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
