@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MaQ8a-0000oD-Gi
-	for ltp-list@lists.sourceforge.net; Mon, 10 Aug 2009 08:21:48 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MaQ8V-00042S-ET
-	for ltp-list@lists.sourceforge.net; Mon, 10 Aug 2009 08:21:47 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <XNM1$9$0$3$$2$7$9$A$9009743U4a7f7b5f@hitachi.com>
-References: <XNM1$9$0$3$$2$7$9$A$9009743U4a7f7b5f@hitachi.com>
-Date: Mon, 10 Aug 2009 13:51:08 +0530
-Message-Id: <1249892473.5187.15.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Fw:[Lf-announce] Japan Linux Symposium Program &	Schedule
-	Announcement
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <naresh.kernel@gmail.com>) id 1MYzYf-0003Wv-OE
+	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 09:46:49 +0000
+Received: from mail-gx0-f220.google.com ([209.85.217.220])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MYzYU-0003Rw-Gz
+	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 09:46:44 +0000
+Received: by gxk20 with SMTP id 20so1873964gxk.10
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 06 Aug 2009 02:46:32 -0700 (PDT)
+MIME-Version: 1.0
+Date: Thu, 6 Aug 2009 15:16:32 +0530
+Message-ID: <f5a7b3810908060246o597813b8gaf5a6b1087f0fba7@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Content-Type: multipart/mixed; boundary=000e0cd6b23ea7ca2b047075fe9b
+Subject: [LTP] [FIX PATCHE]ltp-sched_setparam_26-1.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,136 +26,167 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: hisashi.hashimoto.wh@hitachi.com, Masatake YAMATO <yamato@redhat.com>
-Cc: ltp-list@lists.sf.net, crackerjack-devel@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
+Cc: Brandon Philips <bphilips@suse.de>
 
-RGVhciBIaXNhc2hpIFNhbiwKCk9uIE1vbiwgMjAwOS0wOC0xMCBhdCAxMDo0NCArMDkwMCwgaGlz
-YXNoaS5oYXNoaW1vdG8ud2hAaGl0YWNoaS5jb20Kd3JvdGU6IAo+IExUUCBhbmQgQ3JhY2tlckph
-Y2sgTWVtYmVycywKPiAKPiAgIFBsZWFzZSBsZXQgbWUgaW50cm9kdWNlIHRvIHlvdQo+IGFib3V0
-IG15IHNlc3Npb24gYXQgdGhlIEphcGFuIExpbnV4IFN5bXBvc2l1bSBpbiBPY3RvYmVyIGluIEph
-cGFuLgo+IExGIGhhcyBhbm5vdW5jZWQgdGhlIHByb2dyYW0gb2YgdGhlIEpMUy4KPiBQbHMgc2Vl
-IGJlbG93IGZvciBkZXRhaWwuCj4gCj4gICBJIHdpbGwgaGF2ZSBhIHNlc3Npb24gb24gdGVzdCBw
-cm9qZWN0IG9uIHRoZSBmaW5hbCBkYXksIAo+IDE0OjMwIC0gMTU6MzAsIEZyaWRheSwgT2N0b2Jl
-ciAyM3JkLgo+IAo+ICAgSSB3aWxsIG1ha2UgYSBwcmVzZW50YXRpb24gYWJvdXQgbXkgcmVncmVz
-c2lvbiB0ZXN0IHByb2plY3QuCj4gIk5vdyBhbmQgRnV0dXJlIiBhbmQgbWFrZSBkZW1vbnN0cmF0
-aW9uLgo+ICBBbmQgSSBob3BlIHRoZSBlbmdpbmVlcnMgd2hvIGFyZSBub3Qgb25seSB3b3JraW5n
-IGluIG91ciBwcm9qZWN0LCBidXQgYWxzbwo+IHdvcmtpbmcgaW4gb3RoZXIgdGVzdCBwcm9qZWN0
-cyBhbmQgb3RoZXIgZGV2ZWxvcG1lbnQgcHJvamVjdHMgd2lsbAo+IGpvaW4gYW5kIGRpc2N1c3Mu
-CgpJdCBpcyBncmVhdCBvIGhlYXIgdGhhdCB5b3Ugd2lsbCBoYXZlIHlvdXIgcHJlc2VudGF0aW9u
-IG9uIFRlc3QgUHJvamVjdC4KSSBhbSBob3BpbmcgdGhhdCBNYXNhdGFrZSBwcm9iYWJseSB3b3Vs
-ZCBiZSBhYmxlIHRvIGpvaW4gYW5kIHRhbGsgYWJvdXQKTFRQIGlmIHBvc3NpYmxlLiBIb3dldmVy
-LCBpIGFtIG5vdCBzdXJlIGFib3V0IGhpcyBwbGFucy4KClBsZWFzZSBzaGFyZSB5b3VyIHRob3Vn
-aHRzIHBvc3QgY29uZmVyZW5jZS4KClJlZ2FyZHMtLQpTdWJyYXRhCgo+IAo+ICAgSWYgeW91IGhh
-dmUgYSBjaGFuY2UgdG8gY29tZSB0byBKTFMsIHBsZWFzZSBqb2luIHVzIGFuZCBnaXZlIHVzCj4g
-eW91ciBzdWdnZXNpb25zLgo+IAo+IFRoYW5rcywKPiAKPiBIYXNoaW1vdG8gSGlzYXNoaQo+IC0t
-LS0tLS0tLS0tLS0tLSBCZWdpbiBvZiBmb3J3YXJkZWQgbWVzc2FnZSAtLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tCj4gVE86IDxsZi1hbm5vdW5jZUBsaW51eC1mb3VuZGF0aW9uLm9yZz4KPiBCQ0M6IOap
-i+acrO+8v+Wwmgo+IOmAgeS/oeiAhSDvvJogTGludXggRm91bmRhdGlvbiA8ZXZlbnRzQGxpbnV4
-LWZvdW5kYXRpb24ub3JnPgo+IOS4u+mhjCDvvJogW0xmLWFubm91bmNlXSBKYXBhbiBMaW51eCBT
-eW1wb3NpdW0gUHJvZ3JhbSAmIFNjaGVkdWxlIEFubm91bmNlbWVudAo+IOWPl+S/oeaXpSDvvJow
-OS8wOC8wOCAwMjo1MAo+IOWxnuaApyDvvJog44Gq44GXCj4gCj4gPT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT0KPiBQcm9ncmFtIEFubm91bmNlbWVudCBmb3IgSmFwYW4gTGlu
-dXggU3ltcG9zaXVtCj4gT2N0b2JlciAyMS0yMywgMjAwOQo+IFRva3lvLCBKYXBhbgo+IAo+IEZl
-YXR1cmVkIGtleW5vdGVzIGluY2x1ZGVzIEphbWVzIEJvdHRvbWxleSBhbmQgSm9uYXRoYW4gQ29y
-YmV0LCBhcwo+IHdlbGwgYXMgc3BlYWtlcnMgaW5jbHVkaW5nIEdyZWcgS0ggKE5vdmVsbCksIEhp
-ZGVha2kgWW9zaGlmdWppIChLZWlvCj4gVW5pdmVyc2l0eSkgYW5kIFRvc2hpaGFydSBIYXJhZGEg
-KE5UVCBEQVRBIENvcnAuKS4KPiAKPiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PQo+IFdlIGFyZSBwbGVhc2VkIHRvIGFubm91bmNlIHRoZSBkZXRhaWxlZCBwcm9ncmFtIGZv
-ciB0aGlzIHllYXLnl7QgSmFwYW4KPiBMaW51eCBTeW1wb3NpdW0gKEpMUykuIFRoZSBldmVudCwg
-YSBuZXcgYW5udWFsIHRlY2huaWNhbCBjb25mZXJlbmNlCj4gZGVzaWduZWQgdG8gcHJvdmlkZSBh
-IGNvbGxhYm9yYXRpb24gYW5kIGVkdWNhdGlvbiBzcGFjZSBpbiB0aGUgUGFjaWZpYwo+IFJpbSBj
-b3ZlcmluZyBhbGwgbWF0dGVycyBMaW51eCwgdGFrZXMgcGxhY2UgT2N0b2JlciAyMSBLATIzLCAy
-MDA5IGF0Cj4gQWtpaGFiYXJhIENvbnZlbnRpb24gSGFsbCwgVG9reW8sIEphcGFuLiAgTW9yZSB0
-aGFuIGZpZnR5IHRlY2huaWNhbAo+IHNlc3Npb25zIGFyZSBpbmNsdWRlZCB3aXRoIHNwZWFrZXJz
-IGZlYXR1cmluZyB0aGUgdG9wIHRlY2huaWNhbCB0YWxlbnQKPiBmcm9tIGFjcm9zcyB0aGUgZ2xv
-YmUuCj4gCj4gUmVnaXN0ZXIgTm93IGZvciBPbmx5IFVTJDIwMCBLAXRoaXMgcmVkdWNlZCByYXRl
-IGVuZHMgQXVndXN0IDMxc3Q6Cj4gaHR0cDovL2V2ZW50cy5saW51eGZvdW5kYXRpb24ub3JnL2Nv
-bXBvbmVudC9yZWdpc3RyYXRpb25wcm8vP2Z1bmM9ZGV0YWlscyZkaWQ9MTQKPiAKPiBWaWV3IHRo
-ZSBkZXRhaWxlZCBwcm9ncmFtIGhlcmU6Cj4gaHR0cDovL2V2ZW50cy5saW51eGZvdW5kYXRpb24u
-b3JnL2V2ZW50cy9qYXBhbi1saW51eC1zeW1wb3NpdW0vc2NoZWR1bGUKPiAKPiA9PT09PT09PT09
-PT09PT09PT0KPiBLZXlub3RlIFBhbmVscyBJbmNsdWRlOgo+ID09PT09PT09PT09PT09PT09PQo+
-IOi3tW93IE9TUy9MaW51eCBNZWV0cyBCdXNpbmVzcz/ljZMKPiBEZXZlbG9wZXIvQnVzaW5lc3Mg
-UGFuZWxpc3RzOiBEYW5pZWwgRnJ5ZSAoSUJNKSwgSmFtZXMgQm90dG9tbGV5Cj4gKE5vdmVsbCks
-IFNoaW5pY2hpIFlhbWFkYSAoTlRUIERBVEEgQ29ycG9yYXRpb24pIGFuZCBIaXJveXVraSBLYW1l
-emF3YQo+IChGdWppdHN1KS4gIE1vZGVyYXRlZCBieSBOb2J1eW9yaSBUYWthaGFzaGkgKE5pa2tl
-aSBCUCkuCj4gCj4g57OOaGVyZSBkb2VzIExpbnV4IEdvP+WNkwo+IEtlcm5lbCBQYW5lbGlzdHM6
-IEpvbmF0aGFuIENvcmJldCAoTFdOLm5ldCksIEFuZHJldyBNb3J0b24gKEdvb2dsZSksCj4gVGFr
-YXNoaSBJd2FpIChOb3ZlbGwpIGFuZCBUZWp1biBIZW8gKE5vdmVsbCkuICBNb2RlcmF0ZWQgYnkg
-VGVkIFRz5bybCj4gKElCTS9UaGUgTGludXggRm91bmRhdGlvbikuCj4gCj4gPT09PT09PT09PT09
-PT09PT09PQo+IE5vdGV3b3J0aHkgVGFsa3MgSW5jbHVkZToKPiA9PT09PT09PT09PT09PT09PT09
-Cj4gPkRldmVsb3BtZW50IGFuZCBNYWludGVuYW5jZSBvZiB0aGUgRmVkb3JhIGtlcm5lbCAtIERh
-dmUgSm9uZXMgKFJlZCBIYXQsIEZlZG9yYSBtYWludGFpbmVyKQo+ID5CdHJmczogRmlsZXN5c3Rl
-bSBTdGF0dXMgYW5kIEZ1dHVyZSBQbGFucyAtIENocmlzIE1hc29uIChPcmFjbGUsIEJ0cmZzIGRl
-dmVsb3BlcikKPiA+VGhlIEtlcm5lbCBSZXBvcnQgLSBKb25hdGhhbiBDb3JiZXQgKExXTi5uZXQp
-Cj4gPkhvdyB0byBDb250cmlidXRlIHRvIHRoZSBMaW51eCBLZXJuZWwgYW5kIFdoeSBJdCBNYWtl
-cyBFY29ub21pYyBTZW5zZSAtICBKYW1lcyBCb3R0b21sZXkgKE5vdmVsbCkKPiA+S2VybmVsIERl
-dmVsb3BtZW50OiBEcmF3aW5nIExlc3NvbnMgRnJvbSBNaXN0YWtlcyAtIFRvc2hpaGFydSBIYXJh
-ZGEgKE5UVCBEQVRBIENvcnBvcmF0aW9uKQo+ID5VcHN0cmVhbSBJbi1Ib3VzZSBCb2FyZCBTdXBw
-b3J0IFBhY2thZ2UgLSBNYWdudXMgRGFtbQo+ID5NZW1vcnkgQ2dyb3VwOiBTdW1tYXJ5IGFuZCBV
-cGNvbWluZyBFbmhhbmNlbWVudHMgLSAgSGlyb3l1a2kgS2FtZXphd2EgKEZ1aml0c3UpCj4gPklt
-cHJvdmVtZW50IG9mIEkvTyBFcnJvciBIYW5kbGluZyBvbiBFeHQzIEZpbGVzeXN0ZW0gLSAgSGlk
-ZWhpcm8gS2F3YWkgKEhpdGFjaGksIEx0ZC4pCj4gPlN0YXRpc3RpY3Mgb2YgTGludXggS2VybmVs
-IERldmVsb3BtZW50IC0gIFRzdWdpa2F6dSBTaGliYXRhIChORUMpCj4gPlRoZSBNb2JsaW4gU0RL
-IC0gIE1pa2lvIFNha2Vtb3RvIChJbnRlbCBLLksuIFNTRykKPiA+QSBEaXNrIEkvTyBCYW5kd2lk
-dGggQ29udHJvbGxlciBLAUltcGxlbWVudGVkIGFzIGEgRGV2aWNlLU1hcHBlciBNb2R1bGUgLSBS
-eW8gVHN1cnV0YSAoVkEgTGludXggU3lzdGVtcyBKYXBhbiBLLksuKQo+ID5aQUJCSVggSwFBbiBF
-bnRlcnByaXNlLUNsYXNzIE9wZW4tU291cmNlIERpc3RyaWJ1dGVkIE1vbml0b3JpbmcgU29sdXRp
-b24gLSBLb2RhaSBUZXJhc2hpbWEgKE1pcmFjbGUgTGludXgpCj4gPldoeSBBcmUgV2UgSGVzaXRh
-dGluZyB0byBKb2luIHRoZSBDb21tdW5pdHkgLSAgU2F0b3J1IFVlZGEgKFNvbnkgQ29ycG9yYXRp
-b24pCj4gPlNhdmluZyBCYXR0ZXJ5IExpZmUgV2l0aCBMaW51eCBQb3dlciBNYW5hZ2VtZW50IC0g
-IEJyYWQgRGl4b24gKE1vbnRhVmlzdGEgU29mdHdhcmUpCj4gPlVuZGVyc3RhbmRpbmcgRGViaWFu
-IC0gIEJkYWxlIEdhcmJlZSAoSGV3bGV0dC1QYWNrYXJkKQo+ID5MaW51eCBJUHY2IC0gV2hlcmUg
-V2UgQXJlLCBXaGVyZSBXZSBXaWxsIEJlIC0gWW9zaGlmdWppIEhpZGVha2kgKEtlaW8gVW5pdmVy
-c2l0eSkKPiAKPiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT0KPiBBZGRpdGlvbmFsIEtleW5vdGUgU2Vzc2lvbnMgb24gV2VkbmVzZGF5
-LCBPY3RvYmVyIDIxc3QgZmVhdHVyaW5nIExpbnVzIFRvcnZhbGRzCj4gPT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cj4gSW4gYWRkaXRp
-b24gdG8gdGhlIGNvbmZlcmVuY2Ugc2Vzc2lvbnMgYW5kIGtleW5vdGVzIG5vdGVkIGFib3ZlLCBU
-aGUKPiBMaW51eCBGb3VuZGF0aW9uIGFuZCBJUEEgYWxzbyBicmluZyB5b3UgYSBzcGVjaWFsIGtl
-eW5vdGUgc2Vzc2lvbiBvbgo+IFdlZG5lc2RheSwgT2N0b2JlciAyMXN0IHRvIGJlIGhlbGQgYXQg
-dGhlIEFOQSBJbnRlcmNvbnRpbmVudGFsIEhvdGVsCj4gaW4gVG9reW8uICBGZWF0dXJlZCBrZXlu
-b3RlcyBpbmNsdWRlOiBMaW51eCBjcmVhdG9yIExpbnVzIFRvcnZhbGRzLAo+IFJ1YnkgY3JlYXRv
-ciBZdWtpaGlybyBNYXRzdW1vdG8gKE5ldHdvcmsgQXBwbGllZCBDb21tdW5pY2F0aW9uCj4gTGFi
-b3JhdG9yeSksIEFudGhvbnkgV2lsbGlhbXMgKENvLUF1dGhvciBvZiBXaWtpbm9taWNzKSBhbmQg
-SmltIFplbWxpbgo+IChUaGUgTGludXggRm91bmRhdGlvbiksCj4gCj4gPT09PT09PT09PT0KPiBK
-TFMgU3BvbnNvcnMKPiA9PT09PT09PT09PQo+IFRoZSBKYXBhbiBMaW51eCBTeW1wb3NpdW0gaXMg
-Z2VuZXJvdXNseSBzcG9uc29yZWQgYnkgY29tcGFuaWVzIGFuZAo+IG9yZ2FuaXphdGlvbnMgZnJv
-bSBib3RoIEphcGFuIGFuZCB0aGUgVVMgd2hvIGVtcGhhdGljYWxseSBzdXBwb3J0IHRoZQo+IHBy
-b21vdGlvbiBhbmQgZ3Jvd3RoIG9mIHRoZSBMaW51eCBwbGF0Zm9ybS4gWW91IGNhbiBzZWUgbmFt
-ZXMgb2YKPiBzcG9uc29yIGNvbXBhbmllcyBpbiB0aGUgZm9sbG93aW5nIHdlYiBzaXRlOgo+IGh0
-dHA6Ly9ldmVudHMubGludXhmb3VuZGF0aW9uLm9yZy9ldmVudHMvamFwYW4tbGludXgtc3ltcG9z
-aXVtL3Nwb25zb3JzCj4gCj4gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-Cj4gUXVlc3Rpb25zPyBDb250YWN0IHVzIGF0IGV2ZW50c0BsaW51eGZvdW5kYXRpb24ub3JnCj4g
-VW5zdWJzY3JpYmU6IGh0dHBzOi8vbGlzdHMubGludXgtZm91bmRhdGlvbi5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9sZi1hbm5vdW5jZQo+ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4g
-TGYtYW5ub3VuY2UgbWFpbGluZyBsaXN0Cj4gTGYtYW5ub3VuY2VAbGlzdHMubGludXgtZm91bmRh
-dGlvbi5vcmcKPiBodHRwczovL2xpc3RzLmxpbnV4LWZvdW5kYXRpb24ub3JnL21haWxtYW4vbGlz
-dGluZm8vbGYtYW5ub3VuY2UKPiAKPiAtLS0tLS0tLS0tLS0tLS0tIEVuZCBvZiBmb3J3YXJkZWQg
-bWVzc2FnZSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+IEhpc2FzaGkgSGFzaGltb3RvCj4gQm9h
-cmQgb2YgRGlyZWN0b3Igb2YgdGhlIExpbnV4IEZvdW5kYXRpb24sCj4gCj4gU2VuaW9yIEVuZ2lu
-ZWVyCj4gCj4gT3BlbiBTb3VyY2UgU29mdHdhcmUgUHJvbW90aW9uIENlbnRlcgo+IEVudGVycHJp
-c2UgQnVzaW5lc3MgUGxhbm5pbmcKPiBIaXRhY2hpLCBMdGQuLCBTb2Z0d2FyZSBEaXZpc2lvbgo+
-IFRlbCA6ICs4MS00NS04NjItODQ3MCwgRmF4IDogKzgxLTQ1LTg2Mi04NDcxCj4gaGlzYXNoaS5o
-YXNoaW1vdG8ud2hAaGl0YWNoaS5jb20KPiAKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBMZXQg
-Q3J5c3RhbCBSZXBvcnRzIGhhbmRsZSB0aGUgcmVwb3J0aW5nIC0gRnJlZSBDcnlzdGFsIFJlcG9y
-dHMgMjAwOCAzMC1EYXkgCj4gdHJpYWwuIFNpbXBsaWZ5IHlvdXIgcmVwb3J0IGRlc2lnbiwgaW50
-ZWdyYXRpb24gYW5kIGRlcGxveW1lbnQgLSBhbmQgZm9jdXMgb24gCj4gd2hhdCB5b3UgZG8gYmVz
-dCwgY29yZSBhcHBsaWNhdGlvbiBjb2RpbmcuIERpc2NvdmVyIHdoYXQncyBuZXcgd2l0aCAKPiBD
-cnlzdGFsIFJlcG9ydHMgbm93LiAgaHR0cDovL3Auc2YubmV0L3NmdS9ib2JqLWp1bHkKPiBfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEx0cC1saXN0IG1h
-aWxpbmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+IGh0dHBzOi8vbGlz
-dHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0CgoKLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tCkxldCBDcnlzdGFsIFJlcG9ydHMgaGFuZGxlIHRoZSByZXBvcnRpbmcgLSBGcmVl
-IENyeXN0YWwgUmVwb3J0cyAyMDA4IDMwLURheSAKdHJpYWwuIFNpbXBsaWZ5IHlvdXIgcmVwb3J0
-IGRlc2lnbiwgaW50ZWdyYXRpb24gYW5kIGRlcGxveW1lbnQgLSBhbmQgZm9jdXMgb24gCndoYXQg
-eW91IGRvIGJlc3QsIGNvcmUgYXBwbGljYXRpb24gY29kaW5nLiBEaXNjb3ZlciB3aGF0J3MgbmV3
-IHdpdGggCkNyeXN0YWwgUmVwb3J0cyBub3cuICBodHRwOi8vcC5zZi5uZXQvc2Z1L2JvYmotanVs
-eQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlz
-dCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlz
-dHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+--000e0cd6b23ea7ca2b047075fe9b
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+Hi,
+
+I have noticed UNTESTED behavior with sched_setparam/26-1.c test case
+under open_posix_testsuite.
+
+Test needs to be executed as non-root user.
+So I have changed user id from root to non-root user by adding
+set_nonroot() function.
+Now test case got PASSED.
+
+I have attached patch and results before and after the patch.
+please review the same.
+
+
+Best regards,
+Naresh Kamboju
+
+/*********************************************************************************************/
+Before Patch:
+/*********************************************************************************************/
+# ./26-1.test
+Run this test case as a Regular User, but not ROOT
+conformance/interfaces/sched_setparam/26-1.test:execution:UNTESTED
+/*********************************************************************************************/
+After Patch:
+/*********************************************************************************************/
+# ./26-1.test
+Testing with user 'bin' (uid: 1)
+Test PASSED
+conformance/interfaces/sched_setparam/26-1.test:execution:PASSED
+/*********************************************************************************************/
+
+Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+
+diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/26-1.c
+b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/26-1.c
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/26-1.c	2005-06-03
+22:03:02.000000000 +0530
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/26-1.c	2009-08-06
+14:36:01.000000000 +0530
+@@ -16,9 +16,39 @@
+ #include <stdio.h>
+ #include <errno.h>
+ #include <unistd.h>
++#include <pwd.h>
+ #include "posixtest.h"
+
+
++/** Set the euid of this process to a non-root uid */
++int set_nonroot()
++{
++	struct passwd *pw;
++	setpwent();
++	/* search for the first user which is non root */
++	while((pw = getpwent()) != NULL)
++		if(strcmp(pw->pw_name, "root"))
++			break;
++	endpwent();
++	if(pw == NULL) {
++		printf("There is no other user than current and root.\n");
++		return 1;
++	}
++
++	if(seteuid(pw->pw_uid) != 0) {
++		if(errno == EPERM) {
++			printf("You don't have permission to change your UID.\n");
++			return 1;
++		}
++		perror("An error occurs when calling seteuid()");
++		return 1;
++	}
++	
++	printf("Testing with user '%s' (uid: %d)\n",
++	       pw->pw_name, (int)geteuid());
++	return 0;
++}
++
+
+ int main(){
+ 	int result;
+@@ -28,9 +58,11 @@
+         /* and can only be accessed by root */
+         /* This test should be run under standard user permissions */
+         if (getuid() == 0) {
+-                puts("Run this test case as a Regular User, but not ROOT");
++	  	if (set_nonroot() != 0) {
++			  printf("Cannot run this test as non-root user\n");	
+                 return PTS_UNTESTED;
+         }
++        }
+
+ 	if(sched_getparam(0, &param) == -1) {
+ 		perror("An error occurs when calling sched_getparam()");
+
+--000e0cd6b23ea7ca2b047075fe9b
+Content-Type: application/octet-stream; 
+	name="ltp-fix-sched_setparam_26-1.patch"
+Content-Disposition: attachment; filename="ltp-fix-sched_setparam_26-1.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fy1ay00y0
+
+ZGlmZiAtTmF1cmIgYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2Uv
+aW50ZXJmYWNlcy9zY2hlZF9zZXRwYXJhbS8yNi0xLmMgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90
+ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9zY2hlZF9zZXRwYXJhbS8yNi0xLmMKLS0t
+IGEvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMv
+c2NoZWRfc2V0cGFyYW0vMjYtMS5jCTIwMDUtMDYtMDMgMjI6MDM6MDIuMDAwMDAwMDAwICswNTMw
+CisrKyBiL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZh
+Y2VzL3NjaGVkX3NldHBhcmFtLzI2LTEuYwkyMDA5LTA4LTA2IDE0OjM2OjAxLjAwMDAwMDAwMCAr
+MDUzMApAQCAtMTYsOSArMTYsMzkgQEAKICNpbmNsdWRlIDxzdGRpby5oPgogI2luY2x1ZGUgPGVy
+cm5vLmg+CiAjaW5jbHVkZSA8dW5pc3RkLmg+CisjaW5jbHVkZSA8cHdkLmg+CiAjaW5jbHVkZSAi
+cG9zaXh0ZXN0LmgiCiAKIAorLyoqIFNldCB0aGUgZXVpZCBvZiB0aGlzIHByb2Nlc3MgdG8gYSBu
+b24tcm9vdCB1aWQgKi8KK2ludCBzZXRfbm9ucm9vdCgpCit7CisJc3RydWN0IHBhc3N3ZCAqcHc7
+CisJc2V0cHdlbnQoKTsKKwkvKiBzZWFyY2ggZm9yIHRoZSBmaXJzdCB1c2VyIHdoaWNoIGlzIG5v
+biByb290ICovIAorCXdoaWxlKChwdyA9IGdldHB3ZW50KCkpICE9IE5VTEwpCisJCWlmKHN0cmNt
+cChwdy0+cHdfbmFtZSwgInJvb3QiKSkKKwkJCWJyZWFrOworCWVuZHB3ZW50KCk7CisJaWYocHcg
+PT0gTlVMTCkgeworCQlwcmludGYoIlRoZXJlIGlzIG5vIG90aGVyIHVzZXIgdGhhbiBjdXJyZW50
+IGFuZCByb290LlxuIik7CisJCXJldHVybiAxOworCX0KKworCWlmKHNldGV1aWQocHctPnB3X3Vp
+ZCkgIT0gMCkgeworCQlpZihlcnJubyA9PSBFUEVSTSkgeworCQkJcHJpbnRmKCJZb3UgZG9uJ3Qg
+aGF2ZSBwZXJtaXNzaW9uIHRvIGNoYW5nZSB5b3VyIFVJRC5cbiIpOworCQkJcmV0dXJuIDE7CisJ
+CX0KKwkJcGVycm9yKCJBbiBlcnJvciBvY2N1cnMgd2hlbiBjYWxsaW5nIHNldGV1aWQoKSIpOwor
+CQlyZXR1cm4gMTsKKwl9CisJCisJcHJpbnRmKCJUZXN0aW5nIHdpdGggdXNlciAnJXMnICh1aWQ6
+ICVkKVxuIiwKKwkgICAgICAgcHctPnB3X25hbWUsIChpbnQpZ2V0ZXVpZCgpKTsKKwlyZXR1cm4g
+MDsKK30KKwogCiBpbnQgbWFpbigpewogCWludCByZXN1bHQ7CkBAIC0yOCw5ICs1OCwxMSBAQAog
+ICAgICAgICAvKiBhbmQgY2FuIG9ubHkgYmUgYWNjZXNzZWQgYnkgcm9vdCAqLyAKICAgICAgICAg
+LyogVGhpcyB0ZXN0IHNob3VsZCBiZSBydW4gdW5kZXIgc3RhbmRhcmQgdXNlciBwZXJtaXNzaW9u
+cyAqLwogICAgICAgICBpZiAoZ2V0dWlkKCkgPT0gMCkgewotICAgICAgICAgICAgICAgIHB1dHMo
+IlJ1biB0aGlzIHRlc3QgY2FzZSBhcyBhIFJlZ3VsYXIgVXNlciwgYnV0IG5vdCBST09UIik7CisJ
+ICAJaWYgKHNldF9ub25yb290KCkgIT0gMCkgeworCQkJICBwcmludGYoIkNhbm5vdCBydW4gdGhp
+cyB0ZXN0IGFzIG5vbi1yb290IHVzZXJcbiIpOwkKICAgICAgICAgICAgICAgICByZXR1cm4gUFRT
+X1VOVEVTVEVEOwogICAgICAgICB9CisgICAgICAgIH0KIAogCWlmKHNjaGVkX2dldHBhcmFtKDAs
+ICZwYXJhbSkgPT0gLTEpIHsKIAkJcGVycm9yKCJBbiBlcnJvciBvY2N1cnMgd2hlbiBjYWxsaW5n
+IHNjaGVkX2dldHBhcmFtKCkiKTsK
+--000e0cd6b23ea7ca2b047075fe9b
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--000e0cd6b23ea7ca2b047075fe9b
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--000e0cd6b23ea7ca2b047075fe9b--
+
