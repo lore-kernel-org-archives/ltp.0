@@ -2,20 +2,23 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <galak@kernel.crashing.org>) id 1MZ5g4-0000S2-VB
-	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 16:18:52 +0000
+	(envelope-from <galak@kernel.crashing.org>) id 1MZ7NT-0007ZP-5D
+	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 18:07:47 +0000
 Received: from gate.crashing.org ([63.228.1.57])
 	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MZ5fv-000640-RJ
-	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 16:18:52 +0000
-Received: from [IPv6:::1] (localhost.localdomain [127.0.0.1])
-	by gate.crashing.org (8.14.1/8.13.8) with ESMTP id n76GIa3O018283
-	for <ltp-list@lists.sourceforge.net>; Thu, 6 Aug 2009 11:18:37 -0500
-Message-Id: <1842FA33-8C6C-4BE1-8FB4-B8836F1C8F6E@kernel.crashing.org>
+	(Exim 4.69) id 1MZ7NS-0004bO-AC
+	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 18:07:47 +0000
+Message-Id: <2E55F490-102A-4179-B0F2-ED7F5C0D1A12@kernel.crashing.org>
 From: Kumar Gala <galak@kernel.crashing.org>
-Mime-Version: 1.0 (Apple Message framework v935.3)
-Date: Thu, 6 Aug 2009 11:18:36 -0500
-Subject: [LTP] RANLIB not set?
+In-Reply-To: <D4B24F3A-3BF2-41BA-9626-2D13AC12B515@kernel.crashing.org>
+Mime-Version: 1.0 (Apple Message framework v936)
+Date: Thu, 6 Aug 2009 13:07:35 -0500
+References: <E69DB27D-E186-4934-AB69-C5EDB67A48AF@kernel.crashing.org>
+	<1249494775.13131.18.camel@lucio-laptop>
+	<3E7F2B7B-6BA8-4179-B973-5DA7F4D7618A@kernel.crashing.org>
+	<364299f40908061024l42cd1200n99e6e762a77c91d2@mail.gmail.com>
+	<D4B24F3A-3BF2-41BA-9626-2D13AC12B515@kernel.crashing.org>
+Subject: Re: [LTP] top of tree fails to build on PPC fc11 box
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,23 +31,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP <ltp-list@lists.sourceforge.net>
+To: Kumar Gala <galak@kernel.crashing.org>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-I'm seeing this on fedora 11 on ppc64:
 
-make[3]: Leaving directory `/root/ltp/testcases/network/ipv6'
-make[3]: Entering directory `/root/ltp/testcases/network/lib6'
-cc -Wall  -I../../../include -g -D_GNU_SOURCE   -c -o runcc.o runcc.c
-ar cr runcc.a runcc.o
-runcc.a
-make[3]: runcc.a: Command not found
-make[3]: *** [runcc.a] Error 127
-make[3]: Leaving directory `/root/ltp/testcases/network/lib6'
-make[2]: *** [all] Error 2
-make[2]: Leaving directory `/root/ltp/testcases/network'
-make[1]: *** [all] Error 2
-make[1]: Leaving directory `/root/ltp/testcases'
-make: *** [all] Error 2
+On Aug 6, 2009, at 12:43 PM, Kumar Gala wrote:
+
+>>   Ok. I have the time now so I'll install F11 amd64 and see what
+>> happens. Something leads me to think that the build toolchain is
+>> fubared, but that's just a hunch, as my copy of F10 (the last time I
+>> ran the build) worked.
+>> Thanks,
+>> -Garrett
+>
+> interesting since I saw the same issues w/F10 amd64.
+>
+> - k
+
+I also just tried installing clean versions of automake, autoconf, m4  
+to match the versions in the INSTALL file and got:
+
+autoconf-2.61
+automake-1.10.2
+m4-1.4.12
+
+and still get the same issue:
+
+touch config.mk
+aclocal -I m4
+autoconf
+configure.ac:9: error: possibly undefined macro: AC_PROG_AR
+      If this token and others are legitimate, please use  
+m4_pattern_allow.
+      See the Autoconf documentation.
+make: *** [configure] Error 1
 
 - k
 
