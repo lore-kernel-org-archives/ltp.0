@@ -1,33 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MXvaF-0003ER-1M
-	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 11:20:03 +0000
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MXva8-0000xq-Bq
-	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 11:20:02 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e5.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n73BCCik026506
-	for <ltp-list@lists.sourceforge.net>; Mon, 3 Aug 2009 07:12:12 -0400
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n73BJj6A188920
-	for <ltp-list@lists.sourceforge.net>; Mon, 3 Aug 2009 07:19:45 -0400
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n73BJikW009946
-	for <ltp-list@lists.sourceforge.net>; Mon, 3 Aug 2009 07:19:45 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090720110521.GA3594@linux.vnet.ibm.com>
-References: <20090720110521.GA3594@linux.vnet.ibm.com>
-Date: Mon, 03 Aug 2009 16:49:38 +0530
-Message-Id: <1249298378.7460.22.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [RFC] Making Testcases aware that they are running in
-	a	virtualization environment
-Reply-To: subrata@linux.vnet.ibm.com
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MZ6bG-0002Ta-O2
+	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 17:17:58 +0000
+Received: from mail-qy0-f181.google.com ([209.85.221.181])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MZ6b9-0002yt-18
+	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 17:17:58 +0000
+Received: by qyk11 with SMTP id 11so984579qyk.28
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 06 Aug 2009 10:17:45 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1842FA33-8C6C-4BE1-8FB4-B8836F1C8F6E@kernel.crashing.org>
+References: <1842FA33-8C6C-4BE1-8FB4-B8836F1C8F6E@kernel.crashing.org>
+Date: Thu, 6 Aug 2009 10:17:45 -0700
+Message-ID: <364299f40908061017g44fd05ecv9c6454ebf04badb4@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] RANLIB not set?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,68 +27,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sudhir Kumar <skumar@linux.vnet.ibm.com>
-Cc: Poornima Nayak <Poornima.Nayak@in.ibm.com>, ltp-list <ltp-list@lists.sourceforge.net>, Supriya Kaneri <supriyak@linux.vnet.ibm.com>, mrodrigu@redhat.com, mbligh@google.com, Yogananth <anantyog@linux.vnet.ibm.com>, smalik <smalikphy@gmail.com>
+To: Kumar Gala <galak@kernel.crashing.org>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-Hi Sudhir,
+On Thu, Aug 6, 2009 at 9:18 AM, Kumar Gala<galak@kernel.crashing.org> wrote:
+> I'm seeing this on fedora 11 on ppc64:
+>
+> make[3]: Leaving directory `/root/ltp/testcases/network/ipv6'
+> make[3]: Entering directory `/root/ltp/testcases/network/lib6'
+> cc -Wall =A0-I../../../include -g -D_GNU_SOURCE =A0 -c -o runcc.o runcc.c
+> ar cr runcc.a runcc.o
+> runcc.a
+> make[3]: runcc.a: Command not found
+> make[3]: *** [runcc.a] Error 127
+> make[3]: Leaving directory `/root/ltp/testcases/network/lib6'
+> make[2]: *** [all] Error 2
+> make[2]: Leaving directory `/root/ltp/testcases/network'
+> make[1]: *** [all] Error 2
+> make[1]: Leaving directory `/root/ltp/testcases'
+> make: *** [all] Error 2
+>
+> - k
 
-Thanks for your suggestion. Let us suppose
-On Mon, 2009-07-20 at 16:35 +0530, Sudhir Kumar wrote: 
-> Hi LTP users and developers,
-> This is a discussion which needs the comments and thoughts from
-> everyone. Currently we see a major focus on operating system
-> virtualization. There are many hypervisors, KVM being one of the latest
-> ones. LTP has been executed on a variety of OSes on different hardware
-> plateforms. However the envronment for an application(or say LTP itslef)
-> running in the host OS vs in the guest OS might not be same in all
-> respects. Though the goal of virtualization is to make the two
-> environments almost exact, but for some tools like LTP this may not be
-> 100% possible. For example, If I am calculating cpu time under a guest OS
-> I can not normalize it to the total cpu time in the system as it all
-> depends on the guest scheduling.(different hypervisors have their own
-> mechanism). Other example can be cpu consolidation testcases which can
-> not be executed under a kvm test-bed. I think group scheduling may be
-> the next example. Similarly there can be more testcases or scenarios
-> which need them be aware that they are running under a virtualization
-> environment and should be able to handle the test execution accordingly.
-> Thus in some cases the test should either run with proper care or should
-> not execute or should break instead of failing due to improper
-> configuration.
-> 
-> The outcome of this discussion should be able to provide:
-> 
-> 1. What are the thoughts of the community on this concern of LTP.
-> 
-> 2. To collect the existing testcases in LTP which need this
-> modification.
-> 
-> 3. Taking care that all the future cases which are virtualization
-> sensitive should be able to handle it well.
-> 
-> 4. In what all ways we can come to know which hypervisor is the guest
-> running on. For KVM we can do something like
-> if [ `cat /proc/cpuinfo | grep -w "model name" | cut -f3 -d " " | head
-> -n 1` == "QEMU" ]; then echo "KVM Guest"; else echo "Non KVM Guest"; fi
-> 
-> 5. Test developers can send quick patches if the testcases developed by
-> them need to have this feature.
-> 
-> 6. Modify the LTP How-To to include the virtualization awareness warning
-> for testcases.
-> 
-> Please provide your valuable comments and the name of tescases which you
-> know do need such a modification. If people do not have time we may try to
-> modify them or put at least in the TODO on the wiki.
-> 
+    Make sure to export CROSS_COMPILER=3D1 at the top-level make, or
+define RANLIB=3D$(CROSS_COMPILE)ranlib, where $(CROSS_COMPILE) is the
+prefix for your compiler set, e.g. $(CROSS_COMPILE)gcc.
+    One of the many things that will be fixed in a more kosher manner
+in the next couple months.
+Thanks,
+-Garrett
 
+---------------------------------------------------------------------------=
+---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
 
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
+trial. Simplify your report design, integration and deployment - and focus =
+on =
+
+what you do best, core application coding. Discover what's new with =
+
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
