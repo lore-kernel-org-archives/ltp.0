@@ -1,25 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MgCIB-0005FF-JW
-	for ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 06:47:35 +0000
-Received: from e4.ny.us.ibm.com ([32.97.182.144])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MgCI5-0008WS-DM
-	for ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 06:47:35 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090825.173615.866357745773642713.caiqian@cclom.cn>
-References: <1251184057.5534.4.camel@subratamodak.linux.ibm.com>
-	<20090825.163437.1076064300636358628.caiqian@cclom.cn>
-	<1251192163.5534.13.camel@subratamodak.linux.ibm.com>
-	<20090825.173615.866357745773642713.caiqian@cclom.cn>
-Date: Wed, 26 Aug 2009 12:16:58 +0530
-Message-Id: <1251269219.19240.0.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Let set_thread_area Choose either user_desc
-	or	modify_ldt_ldt_s
-Reply-To: subrata@linux.vnet.ibm.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1MYyDH-00016F-Dw
+	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 08:20:39 +0000
+Received: from mail-qy0-f201.google.com ([209.85.221.201])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MYyDB-0003ey-9v
+	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 08:20:39 +0000
+Message-ID: <4A7A85F9.60502@petalogix.com>
+Date: Thu, 06 Aug 2009 09:27:53 +0200
+From: Michal Simek <michal.simek@petalogix.com>
+MIME-Version: 1.0
+References: <d51f89b0907230130k158cbfbeo31f290cf207432b6@mail.gmail.com>	<1248978557.5788.61.camel@subratamodak.linux.ibm.com>	<d51f89b0908040422o17ac20f6q36aaff23ea88e839@mail.gmail.com>	<1249385096.15587.17.camel@subratamodak.linux.ibm.com>	<d51f89b0908040431w6208a47fgbe79b5df30c6268c@mail.gmail.com>	<1249387539.15587.24.camel@subratamodak.linux.ibm.com>
+	<d51f89b0908040514w188e9c2obceb53fdd266588a@mail.gmail.com>
+In-Reply-To: <d51f89b0908040514w188e9c2obceb53fdd266588a@mail.gmail.com>
+Subject: Re: [LTP] waitid02 testcase fails on 2.6.29 kernel
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,46 +26,155 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@cclom.cn>
-Cc: ltp-list@lists.sf.net
+To: rohit verma <rohit.170309@gmail.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-T24gVHVlLCAyMDA5LTA4LTI1IGF0IDE3OjM2ICswODAwLCBDQUkgUWlhbiB3cm90ZToKPiBGcm9t
-OiBTdWJyYXRhIE1vZGFrIDxzdWJyYXRhQGxpbnV4LnZuZXQuaWJtLmNvbT4KPiBTdWJqZWN0OiBS
-ZTogW0xUUF0gW1BBVENIXSBMZXQgc2V0X3RocmVhZF9hcmVhIENob29zZSBlaXRoZXIgdXNlcl9k
-ZXNjIG9yIG1vZGlmeV9sZHRfbGR0X3MKPiBEYXRlOiBUdWUsIDI1IEF1ZyAyMDA5IDE0OjUyOjQz
-ICswNTMwCj4gCj4gPiAKPiA+IFRoYXTFmyBob3cgdGhlIGJhc2ljIHRlbXBsYXRlIGZvciBMVFAg
-dGVzdCBjYXNlcyB3b3JrLiBJbmNsdWRlIHRoZSBMVFAKPiA+IGxpYnJhcnkgc3BlY2lmaWMgaGVh
-ZGVycyBvbmx5IGZyb20gd2l0aGluIHRoZSBUZXN0IGNhc2Ugc291cmNlIGNvZGUuIEFuZAo+ID4g
-YWxzbyBpdCBpcyBsb2dpY2FsIHRvIG91dCBvbmx5IHRoZSBzZXRfdGhyZWFkKiBzcGVjaWZpYyBz
-dHVmZiBpbiBpdMWbIG93bgo+ID4gc3BlY2lmaWMgaGVhZGVyIGFzIHlvdSBhcmUgZG9pbmcuCj4g
-PiAKPiAKPiBTbywgdGhlIGNvZGUgd2lsbCBub3Qgd29yayBzb21ld2hlcmUgaWYgbW92ZSB0aGUg
-TFRQIGxpYnJhcnkgc3BlY2lmaWMKPiBoZWFkZXJzIHRvIGEgY29tbW9uIGhlYWRlcj8gVGhvc2Ug
-dGVzdHMgYXJlIHVzaW5nIHRoZSBzYW1lIExUUCBzcGVjaWZpYwo+IGhlYWRlcnMsIHNvIHdvbid0
-IGl0IHNpbXBsZXIgZnJvbSB0aGUgbWFpbnRlbmFuY2UgcG9pbnQgb2YgdmlldyB0byBoYXZlCj4g
-YWxsIGhlYWRlcnMgaW4gdGhlIHNhbWUgcGxhY2UgaWYgcG9zc2libGU/IEkgZG9uJ3QgdW5kZXJz
-dGFuZCB3aHkgIml0IGlzCj4gbG9naWNhbCB0byBvdXQgb25seSB0aGUgc2V0X3RocmVhZCogc3Bl
-Y2lmaWMgc3R1ZmYgaW4gaXTFmyBvd24gc3BlY2lmaWMKPiBoZWFkZXIiLiBUaG9zZSBMVFAgc3Bl
-Y2lmaWMgaGVhZGVycyBhcmUgYWxzbyByZXF1aXJlZCBmb3IgdGhvc2UgdGVzdHMgdG8KPiBydW4u
-CgpPay4gQXMgeW91IHdpc2guIERvbmUuCgpSZWdhcmRzLS0KU3VicmF0YQoKPiAKPiBDQUkgUWlh
-bgo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+IExldCBDcnlzdGFsIFJlcG9ydHMgaGFuZGxlIHRo
-ZSByZXBvcnRpbmcgLSBGcmVlIENyeXN0YWwgUmVwb3J0cyAyMDA4IDMwLURheSAKPiB0cmlhbC4g
-U2ltcGxpZnkgeW91ciByZXBvcnQgZGVzaWduLCBpbnRlZ3JhdGlvbiBhbmQgZGVwbG95bWVudCAt
-IGFuZCBmb2N1cyBvbiAKPiB3aGF0IHlvdSBkbyBiZXN0LCBjb3JlIGFwcGxpY2F0aW9uIGNvZGlu
-Zy4gRGlzY292ZXIgd2hhdCdzIG5ldyB3aXRoIAo+IENyeXN0YWwgUmVwb3J0cyBub3cuICBodHRw
-Oi8vcC5zZi5uZXQvc2Z1L2JvYmotanVseQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCj4gTHRwLWxpc3QgbWFpbGluZyBsaXN0Cj4gTHRwLWxpc3RAbGlz
-dHMuc291cmNlZm9yZ2UubmV0Cj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMv
-bGlzdGluZm8vbHRwLWxpc3QKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTGV0IENyeXN0YWwgUmVw
-b3J0cyBoYW5kbGUgdGhlIHJlcG9ydGluZyAtIEZyZWUgQ3J5c3RhbCBSZXBvcnRzIDIwMDggMzAt
-RGF5IAp0cmlhbC4gU2ltcGxpZnkgeW91ciByZXBvcnQgZGVzaWduLCBpbnRlZ3JhdGlvbiBhbmQg
-ZGVwbG95bWVudCAtIGFuZCBmb2N1cyBvbiAKd2hhdCB5b3UgZG8gYmVzdCwgY29yZSBhcHBsaWNh
-dGlvbiBjb2RpbmcuIERpc2NvdmVyIHdoYXQncyBuZXcgd2l0aCAKQ3J5c3RhbCBSZXBvcnRzIG5v
-dy4gIGh0dHA6Ly9wLnNmLm5ldC9zZnUvYm9iai1qdWx5Cl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBs
-aXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMv
-bGlzdGluZm8vbHRwLWxpc3QK
+rohit verma wrote:
+> PFA the patch for waitid02
+>   
+I can confirm that this patch fixed problem with waitid02.
+It is just confirmation - I haven't look at style/patch in detail - just
+works and pass on Microblaze
+
+Subrate: Do you want to add it to cvs?
+
+Michal
+
+> On Tue, Aug 4, 2009 at 5:35 PM, Subrata Modak<subrata@linux.vnet.ibm.com> wrote:
+>   
+>> On Tue, 2009-08-04 at 17:01 +0530, rohit verma wrote:
+>>     
+>>> FYI
+>>>       
+>> unfortunately, you did not attach the patch itself ;-)
+>>
+>> Regards--
+>> Subrata
+>>
+>>     
+>>> ---------- Forwarded message ----------
+>>> From: Subrata Modak <subrata@linux.vnet.ibm.com>
+>>> Date: Tue, Aug 4, 2009 at 4:54 PM
+>>> Subject: Re: [LTP] waitid02 testcase fails on 2.6.29 kernel
+>>> To: rohit verma <rohit.170309@gmail.com>
+>>> Cc: maknayak@in.ibm.com, CAI Qian <caiqian@cclom.cn>
+>>>
+>>>
+>>> Rohit,
+>>>
+>>> Post this to ltp mailing list.
+>>>
+>>> Regards--
+>>> Subrata
+>>>
+>>> On Tue, 2009-08-04 at 16:52 +0530, rohit verma wrote:
+>>>       
+>>>> Dear Manas Kumar Nayak,
+>>>>
+>>>> Pls find attached patch for waitid02 test case.I have modified the
+>>>> test case.I have also added 2 test scenarios in the test case using
+>>>> WSTOPPED and WNOWAIT.
+>>>>
+>>>> Note:
+>>>> The testcase was failing in LTP July, 2009 release.
+>>>> The warning- "implicit declaration of function 'getpgid", has been removed
+>>>>
+>>>> Pls verify the patch.
+>>>>
+>>>> Regards--
+>>>> Rohit Verma
+>>>>
+>>>>
+>>>>
+>>>> On Thu, Jul 30, 2009 at 11:59 PM, Subrata
+>>>> Modak<subrata@linux.vnet.ibm.com> wrote:
+>>>>         
+>>>>> Fixed this now.
+>>>>>
+>>>>> Regards--
+>>>>> Subrata
+>>>>>
+>>>>> On Thu, 2009-07-23 at 14:00 +0530, rohit verma wrote:
+>>>>>           
+>>>>>> Hi,
+>>>>>>
+>>>>>> I am running waitid02.c
+>>>>>> (ltp-full-20090630/testcases/kernel/syscalls/waitid/ ) test case on
+>>>>>> 2.6.29 kernel.
+>>>>>> Test case gives following error:
+>>>>>> "Error. is your system >2.6.9 ?";
+>>>>>>
+>>>>>>  Anybody facing the same issue?
+>>>>>>
+>>>>>> Code:
+>>>>>>
+>>>>>> TEST(waitid(P_ALL,0,&infop,WNOHANG));
+>>>>>>         if(TEST_RETURN == 0)
+>>>>>>                 tst_resm(TPASS,"Success !");
+>>>>>>         else{
+>>>>>>                 printf("value of return is %d\n",TEST_RETURN);
+>>>>>>                 tst_resm(TFAIL,"Error. is your system >2.6.9 ?");
+>>>>>>                errnochoose();
+>>>>>>         }
+>>>>>>
+>>>>>>
+>>>>>> Regards,
+>>>>>> Rohit
+>>>>>>
+>>>>>> ------------------------------------------------------------------------------
+>>>>>> _______________________________________________
+>>>>>> Ltp-list mailing list
+>>>>>> Ltp-list@lists.sourceforge.net
+>>>>>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>>>>>             
+>>>>>           
+>>>>
+>>>>         
+>>> ------------------------------------------------------------------------------
+>>> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day
+>>> trial. Simplify your report design, integration and deployment - and focus on
+>>> what you do best, core application coding. Discover what's new with
+>>> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+>>> _______________________________________________
+>>> Ltp-list mailing list
+>>> Ltp-list@lists.sourceforge.net
+>>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>>       
+>>     
+>
+>
+>
+>   
+> ------------------------------------------------------------------------
+>
+> ------------------------------------------------------------------------------
+> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+> trial. Simplify your report design, integration and deployment - and focus on 
+> what you do best, core application coding. Discover what's new with 
+> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
