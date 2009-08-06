@@ -1,19 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MZL9E-0001A3-ON
-	for Ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 08:50:00 +0000
-Received: from vervifontaine.sonytel.be ([80.88.33.193]
-	helo=pophost.sonytel.be) by 3b2kzd1.ch3.sourceforge.com with esmtp 
-	(Exim 4.69) id 1MZL99-00015d-Mu
-	for Ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 08:50:00 +0000
-Date: Fri, 7 Aug 2009 10:49:45 +0200 (CEST)
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Message-ID: <alpine.LRH.2.00.0908071046001.9737@vixen.sonytel.be>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1MYzV3-0001Ie-N5
+	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 09:43:05 +0000
+Received: from mail-bw0-f206.google.com ([209.85.218.206])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MYzUz-00066L-Na
+	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 09:43:05 +0000
+Message-ID: <4A7A9DFB.7050305@petalogix.com>
+Date: Thu, 06 Aug 2009 11:10:19 +0200
+From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] Fix calculated syscall numbers for hppa/powerpc{,
- 64}/s390{, x}/sh/sparc{, 64}
+References: <d51f89b0908032310k20c3843am7ea069d03436a7a@mail.gmail.com>	<1249387637.15587.29.camel@subratamodak.linux.ibm.com>
+	<d51f89b0908040516i7c65740bi3e30e0972c8374fa@mail.gmail.com>
+In-Reply-To: <d51f89b0908040516i7c65740bi3e30e0972c8374fa@mail.gmail.com>
+Subject: Re: [LTP] Issue with rt_sigqueueinfo testcase in LTP.
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,189 +26,106 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-7"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@users.sourceforge.net>
-Cc: Linux Test Project <Ltp-list@lists.sourceforge.net>
+To: rohit verma <rohit.170309@gmail.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-Q29tbWl0ICJtb3ZlIGxlYWRpbmcgX19OUl8gdG8gc2NyaXB0IHRvIG1ha2UgYWxsIHRoZSAuaW4g
-ZmlsZXMgc2ltcGxlciIKYWNjaWRlbnRhbGx5IHJlbW92ZWQgYWxsIHBsdXMgc2lnbnMgc3Vycm91
-bmRlZCBieSBzcGFjZXMgZnJvbSB0aGUgc3lzY2FsbApkZWZpbml0aW9uIGZpbGVzIGZvciBocHBh
-L3Bvd2VycGN7LDY0fS9zMzkweyx4fS9zaC9zcGFyY3ssNjR9LCBicmVha2luZyB0aGUKYnVpbGQg
-bGlrZToKCglmc3RhdGF0MDEuYzogSW4gZnVuY3Rpb24goW1haW6iOgoJZnN0YXRhdDAxLmM6MTI2
-OiBlcnJvcjogZXhwZWN0ZWQgoSmiIGJlZm9yZSBudW1lcmljIGNvbnN0YW50CgltYWtlWzRdOiAq
-KiogW2ZzdGF0YXQwMV82NC5vXSBFcnJvciAxCgpSZS1hZGQgdGhlIG1pc3NpbmcgcGx1cyBzaWdu
-cyB0byBmaXggaXQuCgpTaWduZWQtb2ZmLWJ5OiBHZWVydCBVeXR0ZXJob2V2ZW4gPEdlZXJ0LlV5
-dHRlcmhvZXZlbkBzb255Y29tLmNvbT4KLS0tCkRpc2NvdmVyZWQgb24gcHBjCgogdGVzdGNhc2Vz
-L2tlcm5lbC9pbmNsdWRlL2hwcGEuaW4gICAgICB8ICAgMjYgKysrKysrKysrKysrKy0tLS0tLS0t
-LS0tLS0KIHRlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZS9wb3dlcnBjLmluICAgfCAgIDI2ICsrKysr
-KysrKysrKystLS0tLS0tLS0tLS0tCiB0ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvcG93ZXJwYzY0
-LmluIHwgICAyNiArKysrKysrKysrKysrLS0tLS0tLS0tLS0tLQogdGVzdGNhc2VzL2tlcm5lbC9p
-bmNsdWRlL3MzOTAuaW4gICAgICB8ICAgMjYgKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0KIHRl
-c3RjYXNlcy9rZXJuZWwvaW5jbHVkZS9zMzkweC5pbiAgICAgfCAgIDI2ICsrKysrKysrKysrKyst
-LS0tLS0tLS0tLS0tCiB0ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvc2guaW4gICAgICAgIHwgICAy
-NiArKysrKysrKysrKysrLS0tLS0tLS0tLS0tLQogdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlL3Nw
-YXJjLmluICAgICB8ICAgMjYgKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0KIHRlc3RjYXNlcy9r
-ZXJuZWwvaW5jbHVkZS9zcGFyYzY0LmluICAgfCAgIDI2ICsrKysrKysrKysrKystLS0tLS0tLS0t
-LS0tCiA4IGZpbGVzIGNoYW5nZWQsIDEwNCBpbnNlcnRpb25zKCspLCAxMDQgZGVsZXRpb25zKC0p
-CgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlL2hwcGEuaW4gYi90ZXN0Y2Fz
-ZXMva2VybmVsL2luY2x1ZGUvaHBwYS5pbgppbmRleCA1NmI2OTk0Li5iNzg0YTJiIDEwMDY0NAot
-LS0gYS90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvaHBwYS5pbgorKysgYi90ZXN0Y2FzZXMva2Vy
-bmVsL2luY2x1ZGUvaHBwYS5pbgpAQCAtMSwxNyArMSwxNyBAQAogb3BlbmF0IDI3NQotbWtkaXJh
-dCAoX19OUl9vcGVuYXQgIDEpCi1ta25vZGF0IChfX05SX29wZW5hdCAgMikKLWZjaG93bmF0IChf
-X05SX29wZW5hdCAgMykKLWZ1dGltZXNhdCAoX19OUl9vcGVuYXQgIDQpCi1uZXdmc3RhdGF0IChf
-X05SX29wZW5hdCAgNSkKLWZzdGF0YXQ2NCAoX19OUl9vcGVuYXQgIDUpCi11bmxpbmthdCAoX19O
-Ul9vcGVuYXQgIDYpCi1yZW5hbWVhdCAoX19OUl9vcGVuYXQgIDcpCi1saW5rYXQgKF9fTlJfb3Bl
-bmF0ICA4KQotc3ltbGlua2F0IChfX05SX29wZW5hdCAgOSkKLXJlYWRsaW5rYXQgKF9fTlJfb3Bl
-bmF0ICAxMCkKLWZjaG1vZGF0IChfX05SX29wZW5hdCAgMTEpCi1mYWNjZXNzYXQgKF9fTlJfb3Bl
-bmF0ICAxMikKK21rZGlyYXQgKF9fTlJfb3BlbmF0ICsgMSkKK21rbm9kYXQgKF9fTlJfb3BlbmF0
-ICsgMikKK2ZjaG93bmF0IChfX05SX29wZW5hdCArIDMpCitmdXRpbWVzYXQgKF9fTlJfb3BlbmF0
-ICsgNCkKK25ld2ZzdGF0YXQgKF9fTlJfb3BlbmF0ICsgNSkKK2ZzdGF0YXQ2NCAoX19OUl9vcGVu
-YXQgKyA1KQordW5saW5rYXQgKF9fTlJfb3BlbmF0ICsgNikKK3JlbmFtZWF0IChfX05SX29wZW5h
-dCArIDcpCitsaW5rYXQgKF9fTlJfb3BlbmF0ICsgOCkKK3N5bWxpbmthdCAoX19OUl9vcGVuYXQg
-KyA5KQorcmVhZGxpbmthdCAoX19OUl9vcGVuYXQgKyAxMCkKK2ZjaG1vZGF0IChfX05SX29wZW5h
-dCArIDExKQorZmFjY2Vzc2F0IChfX05SX29wZW5hdCArIDEyKQogc3BsaWNlIDI5MQogdGVlIDI5
-Mwogdm1zcGxpY2UgMjk0CmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvcG93
-ZXJwYy5pbiBiL3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZS9wb3dlcnBjLmluCmluZGV4IGVjOTlm
-M2QuLmZjMTQ3NjUgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZS9wb3dlcnBj
-LmluCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZS9wb3dlcnBjLmluCkBAIC03LDE5ICs3
-LDE5IEBAIHNwbGljZSAyODMKIHRlZSAyODQKIHZtc3BsaWNlIDI4NQogb3BlbmF0IDI4NgotbWtk
-aXJhdCAoX19OUl9vcGVuYXQgIDEpCi1ta25vZGF0IChfX05SX29wZW5hdCAgMikKLWZjaG93bmF0
-IChfX05SX29wZW5hdCAgMykKLWZ1dGltZXNhdCAoX19OUl9vcGVuYXQgIDQpCi1uZXdmc3RhdGF0
-IChfX05SX29wZW5hdCAgNSkKLWZzdGF0YXQ2NCAoX19OUl9vcGVuYXQgIDUpCi11bmxpbmthdCAo
-X19OUl9vcGVuYXQgIDYpCi1yZW5hbWVhdCAoX19OUl9vcGVuYXQgIDcpCi1saW5rYXQgKF9fTlJf
-b3BlbmF0ICA4KQotc3ltbGlua2F0IChfX05SX29wZW5hdCAgOSkKLXJlYWRsaW5rYXQgKF9fTlJf
-b3BlbmF0ICAxMCkKLWZjaG1vZGF0IChfX05SX29wZW5hdCAgMTEpCi1mYWNjZXNzYXQgKF9fTlJf
-b3BlbmF0ICAxMikKK21rZGlyYXQgKF9fTlJfb3BlbmF0ICsgMSkKK21rbm9kYXQgKF9fTlJfb3Bl
-bmF0ICsgMikKK2ZjaG93bmF0IChfX05SX29wZW5hdCArIDMpCitmdXRpbWVzYXQgKF9fTlJfb3Bl
-bmF0ICsgNCkKK25ld2ZzdGF0YXQgKF9fTlJfb3BlbmF0ICsgNSkKK2ZzdGF0YXQ2NCAoX19OUl9v
-cGVuYXQgKyA1KQordW5saW5rYXQgKF9fTlJfb3BlbmF0ICsgNikKK3JlbmFtZWF0IChfX05SX29w
-ZW5hdCArIDcpCitsaW5rYXQgKF9fTlJfb3BlbmF0ICsgOCkKK3N5bWxpbmthdCAoX19OUl9vcGVu
-YXQgKyA5KQorcmVhZGxpbmthdCAoX19OUl9vcGVuYXQgKyAxMCkKK2ZjaG1vZGF0IChfX05SX29w
-ZW5hdCArIDExKQorZmFjY2Vzc2F0IChfX05SX29wZW5hdCArIDEyKQogdXRpbWVuc2F0IDMwNAog
-ZXZlbnRmZCAzMDcKIGZhbGxvY2F0ZSAzMDkKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwv
-aW5jbHVkZS9wb3dlcnBjNjQuaW4gYi90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvcG93ZXJwYzY0
-LmluCmluZGV4IDI0OWQwNmEuLjllMTMwMGYgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwv
-aW5jbHVkZS9wb3dlcnBjNjQuaW4KKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlL3Bvd2Vy
-cGM2NC5pbgpAQCAtNywxOSArNywxOSBAQCBzcGxpY2UgMjgzCiB0ZWUgMjg0CiB2bXNwbGljZSAy
-ODUKIG9wZW5hdCAyODYKLW1rZGlyYXQgKF9fTlJfb3BlbmF0ICAxKQotbWtub2RhdCAoX19OUl9v
-cGVuYXQgIDIpCi1mY2hvd25hdCAoX19OUl9vcGVuYXQgIDMpCi1mdXRpbWVzYXQgKF9fTlJfb3Bl
-bmF0ICA0KQotbmV3ZnN0YXRhdCAoX19OUl9vcGVuYXQgIDUpCi1mc3RhdGF0NjQgKF9fTlJfb3Bl
-bmF0ICA1KQotdW5saW5rYXQgKF9fTlJfb3BlbmF0ICA2KQotcmVuYW1lYXQgKF9fTlJfb3BlbmF0
-ICA3KQotbGlua2F0IChfX05SX29wZW5hdCAgOCkKLXN5bWxpbmthdCAoX19OUl9vcGVuYXQgIDkp
-Ci1yZWFkbGlua2F0IChfX05SX29wZW5hdCAgMTApCi1mY2htb2RhdCAoX19OUl9vcGVuYXQgIDEx
-KQotZmFjY2Vzc2F0IChfX05SX29wZW5hdCAgMTIpCitta2RpcmF0IChfX05SX29wZW5hdCArIDEp
-Citta25vZGF0IChfX05SX29wZW5hdCArIDIpCitmY2hvd25hdCAoX19OUl9vcGVuYXQgKyAzKQor
-ZnV0aW1lc2F0IChfX05SX29wZW5hdCArIDQpCituZXdmc3RhdGF0IChfX05SX29wZW5hdCArIDUp
-Citmc3RhdGF0NjQgKF9fTlJfb3BlbmF0ICsgNSkKK3VubGlua2F0IChfX05SX29wZW5hdCArIDYp
-CityZW5hbWVhdCAoX19OUl9vcGVuYXQgKyA3KQorbGlua2F0IChfX05SX29wZW5hdCArIDgpCitz
-eW1saW5rYXQgKF9fTlJfb3BlbmF0ICsgOSkKK3JlYWRsaW5rYXQgKF9fTlJfb3BlbmF0ICsgMTAp
-CitmY2htb2RhdCAoX19OUl9vcGVuYXQgKyAxMSkKK2ZhY2Nlc3NhdCAoX19OUl9vcGVuYXQgKyAx
-MikKIHV0aW1lbnNhdCAzMDQKIGV2ZW50ZmQgMzA3CiBmYWxsb2NhdGUgMzA5CmRpZmYgLS1naXQg
-YS90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvczM5MC5pbiBiL3Rlc3RjYXNlcy9rZXJuZWwvaW5j
-bHVkZS9zMzkwLmluCmluZGV4IGIxOGM2Y2YuLjU2MDU2M2EgMTAwNjQ0Ci0tLSBhL3Rlc3RjYXNl
-cy9rZXJuZWwvaW5jbHVkZS9zMzkwLmluCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZS9z
-MzkwLmluCkBAIC0xLDE3ICsxLDE3IEBACiBvcGVuYXQgMjg4Ci1ta2RpcmF0IChfX05SX29wZW5h
-dCAgMSkKLW1rbm9kYXQgKF9fTlJfb3BlbmF0ICAyKQotZmNob3duYXQgKF9fTlJfb3BlbmF0ICAz
-KQotZnV0aW1lc2F0IChfX05SX29wZW5hdCAgNCkKLW5ld2ZzdGF0YXQgKF9fTlJfb3BlbmF0ICA1
-KQotZnN0YXRhdDY0IChfX05SX29wZW5hdCAgNSkKLXVubGlua2F0IChfX05SX29wZW5hdCAgNikK
-LXJlbmFtZWF0IChfX05SX29wZW5hdCAgNykKLWxpbmthdCAoX19OUl9vcGVuYXQgIDgpCi1zeW1s
-aW5rYXQgKF9fTlJfb3BlbmF0ICA5KQotcmVhZGxpbmthdCAoX19OUl9vcGVuYXQgIDEwKQotZmNo
-bW9kYXQgKF9fTlJfb3BlbmF0ICAxMSkKLWZhY2Nlc3NhdCAoX19OUl9vcGVuYXQgIDEyKQorbWtk
-aXJhdCAoX19OUl9vcGVuYXQgKyAxKQorbWtub2RhdCAoX19OUl9vcGVuYXQgKyAyKQorZmNob3du
-YXQgKF9fTlJfb3BlbmF0ICsgMykKK2Z1dGltZXNhdCAoX19OUl9vcGVuYXQgKyA0KQorbmV3ZnN0
-YXRhdCAoX19OUl9vcGVuYXQgKyA1KQorZnN0YXRhdDY0IChfX05SX29wZW5hdCArIDUpCit1bmxp
-bmthdCAoX19OUl9vcGVuYXQgKyA2KQorcmVuYW1lYXQgKF9fTlJfb3BlbmF0ICsgNykKK2xpbmth
-dCAoX19OUl9vcGVuYXQgKyA4KQorc3ltbGlua2F0IChfX05SX29wZW5hdCArIDkpCityZWFkbGlu
-a2F0IChfX05SX29wZW5hdCArIDEwKQorZmNobW9kYXQgKF9fTlJfb3BlbmF0ICsgMTEpCitmYWNj
-ZXNzYXQgKF9fTlJfb3BlbmF0ICsgMTIpCiBzcGxpY2UgMzA2CiB0ZWUgMzA4CiB2bXNwbGljZSAz
-MDkKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZS9zMzkweC5pbiBiL3Rlc3Rj
-YXNlcy9rZXJuZWwvaW5jbHVkZS9zMzkweC5pbgppbmRleCBkNWE1NDhkLi4yODQ1MWZjIDEwMDY0
-NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvczM5MHguaW4KKysrIGIvdGVzdGNhc2Vz
-L2tlcm5lbC9pbmNsdWRlL3MzOTB4LmluCkBAIC0xLDE2ICsxLDE2IEBACiBvcGVuYXQgMjg4Ci1t
-a2RpcmF0IChfX05SX29wZW5hdCAgMSkKLW1rbm9kYXQgKF9fTlJfb3BlbmF0ICAyKQotZmNob3du
-YXQgKF9fTlJfb3BlbmF0ICAzKQotZnV0aW1lc2F0IChfX05SX29wZW5hdCAgNCkKLW5ld2ZzdGF0
-YXQgKF9fTlJfb3BlbmF0ICA1KQotZnN0YXRhdDY0IChfX05SX29wZW5hdCAgNSkKLXVubGlua2F0
-IChfX05SX29wZW5hdCAgNikKLXJlbmFtZWF0IChfX05SX29wZW5hdCAgNykKLWxpbmthdCAoX19O
-Ul9vcGVuYXQgIDgpCi1zeW1saW5rYXQgKF9fTlJfb3BlbmF0ICA5KQotcmVhZGxpbmthdCAoX19O
-Ul9vcGVuYXQgIDEwKQotZmNobW9kYXQgKF9fTlJfb3BlbmF0ICAxMSkKLWZhY2Nlc3NhdCAoX19O
-Ul9vcGVuYXQgIDEyKQorbWtkaXJhdCAoX19OUl9vcGVuYXQgKyAxKQorbWtub2RhdCAoX19OUl9v
-cGVuYXQgKyAyKQorZmNob3duYXQgKF9fTlJfb3BlbmF0ICsgMykKK2Z1dGltZXNhdCAoX19OUl9v
-cGVuYXQgKyA0KQorbmV3ZnN0YXRhdCAoX19OUl9vcGVuYXQgKyA1KQorZnN0YXRhdDY0IChfX05S
-X29wZW5hdCArIDUpCit1bmxpbmthdCAoX19OUl9vcGVuYXQgKyA2KQorcmVuYW1lYXQgKF9fTlJf
-b3BlbmF0ICsgNykKK2xpbmthdCAoX19OUl9vcGVuYXQgKyA4KQorc3ltbGlua2F0IChfX05SX29w
-ZW5hdCArIDkpCityZWFkbGlua2F0IChfX05SX29wZW5hdCArIDEwKQorZmNobW9kYXQgKF9fTlJf
-b3BlbmF0ICsgMTEpCitmYWNjZXNzYXQgKF9fTlJfb3BlbmF0ICsgMTIpCiBldmVudGZkIDMxOAog
-ZmFsbG9jYXRlIDMxNApkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlL3NoLmlu
-IGIvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlL3NoLmluCmluZGV4IGUxYTQ5ZWUuLjdiNGFjZDkg
-MTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZS9zaC5pbgorKysgYi90ZXN0Y2Fz
-ZXMva2VybmVsL2luY2x1ZGUvc2guaW4KQEAgLTE0LDE5ICsxNCwxOSBAQCBpbm90aWZ5X2luaXQg
-MjkwCiBpbm90aWZ5X2FkZF93YXRjaCAyOTEKIGlub3RpZnlfcm1fd2F0Y2ggMjkyCiBvcGVuYXQg
-Mjk1Ci1ta2RpcmF0IChfX05SX29wZW5hdCAgMSkKLW1rbm9kYXQgKF9fTlJfb3BlbmF0ICAyKQot
-ZmNob3duYXQgKF9fTlJfb3BlbmF0ICAzKQotZnV0aW1lc2F0IChfX05SX29wZW5hdCAgNCkKLW5l
-d2ZzdGF0YXQgKF9fTlJfb3BlbmF0ICA1KQotZnN0YXRhdDY0IChfX05SX29wZW5hdCAgNSkKLXVu
-bGlua2F0IChfX05SX29wZW5hdCAgNikKLXJlbmFtZWF0IChfX05SX29wZW5hdCAgNykKLWxpbmth
-dCAoX19OUl9vcGVuYXQgIDgpCi1zeW1saW5rYXQgKF9fTlJfb3BlbmF0ICA5KQotcmVhZGxpbmth
-dCAoX19OUl9vcGVuYXQgIDEwKQotZmNobW9kYXQgKF9fTlJfb3BlbmF0ICAxMSkKLWZhY2Nlc3Nh
-dCAoX19OUl9vcGVuYXQgIDEyKQorbWtkaXJhdCAoX19OUl9vcGVuYXQgKyAxKQorbWtub2RhdCAo
-X19OUl9vcGVuYXQgKyAyKQorZmNob3duYXQgKF9fTlJfb3BlbmF0ICsgMykKK2Z1dGltZXNhdCAo
-X19OUl9vcGVuYXQgKyA0KQorbmV3ZnN0YXRhdCAoX19OUl9vcGVuYXQgKyA1KQorZnN0YXRhdDY0
-IChfX05SX29wZW5hdCArIDUpCit1bmxpbmthdCAoX19OUl9vcGVuYXQgKyA2KQorcmVuYW1lYXQg
-KF9fTlJfb3BlbmF0ICsgNykKK2xpbmthdCAoX19OUl9vcGVuYXQgKyA4KQorc3ltbGlua2F0IChf
-X05SX29wZW5hdCArIDkpCityZWFkbGlua2F0IChfX05SX29wZW5hdCArIDEwKQorZmNobW9kYXQg
-KF9fTlJfb3BlbmF0ICsgMTEpCitmYWNjZXNzYXQgKF9fTlJfb3BlbmF0ICsgMTIpCiBzcGxpY2Ug
-MzEzCiB0ZWUgMzE1CiB2bXNwbGljZSAzMTYKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwv
-aW5jbHVkZS9zcGFyYy5pbiBiL3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZS9zcGFyYy5pbgppbmRl
-eCA1YzAwNDdiLi5hNTY3NjU5IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUv
-c3BhcmMuaW4KKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlL3NwYXJjLmluCkBAIC0yLDE4
-ICsyLDE4IEBAIHZtc3BsaWNlIDI1CiBzcGxpY2UgMjMyCiB0ZWUgMjgwCiBvcGVuYXQgMjg0Ci1t
-a2RpcmF0IChfX05SX29wZW5hdCAgMSkKLW1rbm9kYXQgKF9fTlJfb3BlbmF0ICAyKQotZmNob3du
-YXQgKF9fTlJfb3BlbmF0ICAzKQotZnV0aW1lc2F0IChfX05SX29wZW5hdCAgNCkKLW5ld2ZzdGF0
-YXQgKF9fTlJfb3BlbmF0ICA1KQotZnN0YXRhdDY0IChfX05SX29wZW5hdCAgNSkKLXVubGlua2F0
-IChfX05SX29wZW5hdCAgNikKLXJlbmFtZWF0IChfX05SX29wZW5hdCAgNykKLWxpbmthdCAoX19O
-Ul9vcGVuYXQgIDgpCi1zeW1saW5rYXQgKF9fTlJfb3BlbmF0ICA5KQotcmVhZGxpbmthdCAoX19O
-Ul9vcGVuYXQgIDEwKQotZmNobW9kYXQgKF9fTlJfb3BlbmF0ICAxMSkKLWZhY2Nlc3NhdCAoX19O
-Ul9vcGVuYXQgIDEyKQorbWtkaXJhdCAoX19OUl9vcGVuYXQgKyAxKQorbWtub2RhdCAoX19OUl9v
-cGVuYXQgKyAyKQorZmNob3duYXQgKF9fTlJfb3BlbmF0ICsgMykKK2Z1dGltZXNhdCAoX19OUl9v
-cGVuYXQgKyA0KQorbmV3ZnN0YXRhdCAoX19OUl9vcGVuYXQgKyA1KQorZnN0YXRhdDY0IChfX05S
-X29wZW5hdCArIDUpCit1bmxpbmthdCAoX19OUl9vcGVuYXQgKyA2KQorcmVuYW1lYXQgKF9fTlJf
-b3BlbmF0ICsgNykKK2xpbmthdCAoX19OUl9vcGVuYXQgKyA4KQorc3ltbGlua2F0IChfX05SX29w
-ZW5hdCArIDkpCityZWFkbGlua2F0IChfX05SX29wZW5hdCArIDEwKQorZmNobW9kYXQgKF9fTlJf
-b3BlbmF0ICsgMTEpCitmYWNjZXNzYXQgKF9fTlJfb3BlbmF0ICsgMTIpCiBldmVudGZkIDMxMwog
-ZmFsbG9jYXRlIDMxNApkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlL3NwYXJj
-NjQuaW4gYi90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvc3BhcmM2NC5pbgppbmRleCBiM2FmYjBm
-Li45NTQ5MzFjIDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvc3BhcmM2NC5p
-bgorKysgYi90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvc3BhcmM2NC5pbgpAQCAtMiwxOCArMiwx
-OCBAQCB2bXNwbGljZSAyNQogc3BsaWNlIDIzMgogdGVlIDI4MAogb3BlbmF0IDI4NAotbWtkaXJh
-dCAoX19OUl9vcGVuYXQgIDEpCi1ta25vZGF0IChfX05SX29wZW5hdCAgMikKLWZjaG93bmF0IChf
-X05SX29wZW5hdCAgMykKLWZ1dGltZXNhdCAoX19OUl9vcGVuYXQgIDQpCi1uZXdmc3RhdGF0IChf
-X05SX29wZW5hdCAgNSkKLWZzdGF0YXQ2NCAoX19OUl9vcGVuYXQgIDUpCi11bmxpbmthdCAoX19O
-Ul9vcGVuYXQgIDYpCi1yZW5hbWVhdCAoX19OUl9vcGVuYXQgIDcpCi1saW5rYXQgKF9fTlJfb3Bl
-bmF0ICA4KQotc3ltbGlua2F0IChfX05SX29wZW5hdCAgOSkKLXJlYWRsaW5rYXQgKF9fTlJfb3Bl
-bmF0ICAxMCkKLWZjaG1vZGF0IChfX05SX29wZW5hdCAgMTEpCi1mYWNjZXNzYXQgKF9fTlJfb3Bl
-bmF0ICAxMikKK21rZGlyYXQgKF9fTlJfb3BlbmF0ICsgMSkKK21rbm9kYXQgKF9fTlJfb3BlbmF0
-ICsgMikKK2ZjaG93bmF0IChfX05SX29wZW5hdCArIDMpCitmdXRpbWVzYXQgKF9fTlJfb3BlbmF0
-ICsgNCkKK25ld2ZzdGF0YXQgKF9fTlJfb3BlbmF0ICsgNSkKK2ZzdGF0YXQ2NCAoX19OUl9vcGVu
-YXQgKyA1KQordW5saW5rYXQgKF9fTlJfb3BlbmF0ICsgNikKK3JlbmFtZWF0IChfX05SX29wZW5h
-dCArIDcpCitsaW5rYXQgKF9fTlJfb3BlbmF0ICsgOCkKK3N5bWxpbmthdCAoX19OUl9vcGVuYXQg
-KyA5KQorcmVhZGxpbmthdCAoX19OUl9vcGVuYXQgKyAxMCkKK2ZjaG1vZGF0IChfX05SX29wZW5h
-dCArIDExKQorZmFjY2Vzc2F0IChfX05SX29wZW5hdCArIDEyKQogZXZlbnRkIDMxMwogZmFsbG9j
-YXRlIDMxNAotLSAKMS42LjIuNAoKV2l0aCBraW5kIHJlZ2FyZHMsCgpHZWVydCBVeXR0ZXJob2V2
-ZW4KU29mdHdhcmUgQXJjaGl0ZWN0ClRlY2hzb2Z0IENlbnRyZQoKVGVjaG5vbG9neSBhbmQgU29m
-dHdhcmUgQ2VudHJlIEV1cm9wZQpUaGUgQ29ycG9yYXRlIFZpbGxhZ2UgtyBEYSBWaW5jaWxhYW4g
-Ny1EMSC3IEItMTkzNSBaYXZlbnRlbSC3IEJlbGdpdW0KClBob25lOiAgICArMzIgKDApMiA3MDAg
-ODQ1MwpGYXg6ICAgICAgKzMyICgwKTIgNzAwIDg2MjIKRS1tYWlsOiAgIEdlZXJ0LlV5dHRlcmhv
-ZXZlbkBzb255Y29tLmNvbQpJbnRlcm5ldDogaHR0cDovL3d3dy5zb255LWV1cm9wZS5jb20vCgpB
-IGRpdmlzaW9uIG9mIFNvbnkgRXVyb3BlIChCZWxnaXVtKSBOLlYuClZBVCBCRSAwNDEzLjgyNS4x
-NjAgtyBSUFIgQnJ1c3NlbHMKRm9ydGlzILcgQklDIEdFQkFCRUJCILcgSUJBTiBCRTQxMjkzMDM3
-NjgwMDEwCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTGV0IENyeXN0YWwgUmVwb3J0cyBoYW5kbGUg
-dGhlIHJlcG9ydGluZyAtIEZyZWUgQ3J5c3RhbCBSZXBvcnRzIDIwMDggMzAtRGF5IAp0cmlhbC4g
-U2ltcGxpZnkgeW91ciByZXBvcnQgZGVzaWduLCBpbnRlZ3JhdGlvbiBhbmQgZGVwbG95bWVudCAt
-IGFuZCBmb2N1cyBvbiAKd2hhdCB5b3UgZG8gYmVzdCwgY29yZSBhcHBsaWNhdGlvbiBjb2Rpbmcu
-IERpc2NvdmVyIHdoYXQncyBuZXcgd2l0aCAKQ3J5c3RhbCBSZXBvcnRzIG5vdy4gIGh0dHA6Ly9w
-LnNmLm5ldC9zZnUvYm9iai1qdWx5Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vm
-b3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRw
-LWxpc3QK
+I can confirm that fault too - on Microblaze and x86 too.
+The funny thing is that this test failed but it is reported as passed in
+log.
+
+Michal
+> FYI...
+>
+>
+> ---------- Forwarded message ----------
+> From: Subrata Modak <subrata@linux.vnet.ibm.com>
+> Date: Tue, Aug 4, 2009 at 5:37 PM
+> Subject: Re: Issue with rt_sigqueueinfo testcase in LTP.
+> To: rohit verma <rohit.170309@gmail.com>
+> Cc: maknayak@in.ibm.com
+>
+>
+> Hi Rohit,
+>
+> On Tue, 2009-08-04 at 11:40 +0530, rohit verma wrote:
+>   
+>> Dear Manas Kumar Nayak,
+>>
+>> I have found an issue with rt_sigqueueinfo test-case.
+>>
+>> Following is the test output:
+>>
+>> rt_sigqueueinfo01    1  PASS  :  Test Succeeded
+>> rt_sigqueueinfo01    1  FAIL  :  Test Failed, errno=1 : Operation not permitted
+>> rt_sigqueueinfo01    1  PASS  :  Test Succeeded
+>> rt_sigqueueinfo01    1  FAIL  :  Test Failed, errno=1 : Operation not permitted
+>> rt_sigqueueinfo01    0  WARN  :  tst_rmdir(): rmobj(/tmp/rt_3FaSpK)
+>> failed: lstat(/tmp/rt_3FaSpK) failed; errno=2: No such file or
+>> directory
+>>
+>> I think the following lines are causing the failures:
+>>
+>> (Line - 164)
+>>
+>> uinfo.si_errno = 0;
+>> uinfo.si_code = 0;//SI_USER
+>> TEST(retval = syscall(__NR_rt_sigqueueinfo, getpid(), 17, &uinfo));
+>>
+>> Reason -
+>>
+>> You can observe the following comment & source when you look at the
+>> Linux source (v 2.6.29)
+>> (linux-2.6.29/kernel/signal.c)
+>>
+>>           /* Not even root can pretend to send signals from the kernel.
+>>            Nor can they impersonate a kill(), which adds source info.  */
+>>         if (info.si_code >= 0)
+>>                 return -EPERM;
+>>
+>> which implies that si_code cannot be set to ' 0 ' (SI_USER) when
+>> invoking the rt_sigqueueinfo syscall.
+>>
+>>
+>> I am not sure how to fix this issue. But, a possible fix would be to
+>> remove the second set of fork &
+>> rt_sigqueueinfo invocations and use the first set (with SI_QUEUE). If
+>> needed, the loop count can be
+>> increased.
+>>     
+>
+> Please propose this over to the mailing list. Manas has just ported the
+> test case from Crackerjack to LTP. He may not be exactly aware of the
+> issues, as it was a blind port, which in one way was good, as the
+> porting generated issues, people interested discussed and solved
+> them ;-)
+>
+> Regards--
+> Subrata
+>
+>   
+>>     
+>
+>
+>
+>
+>   
+
+
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
