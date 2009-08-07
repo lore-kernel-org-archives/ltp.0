@@ -1,26 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <michal.simek@petalogix.com>) id 1MawDj-0001zZ-4m
-	for Ltp-list@lists.sourceforge.net; Tue, 11 Aug 2009 18:37:15 +0000
-Received: from mail-fx0-f222.google.com ([209.85.220.222])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MawDZ-0003sw-Bk
-	for Ltp-list@lists.sourceforge.net; Tue, 11 Aug 2009 18:37:10 +0000
-Received: by fxm22 with SMTP id 22so3122299fxm.33
-	for <Ltp-list@lists.sourceforge.net>;
-	Tue, 11 Aug 2009 11:36:57 -0700 (PDT)
-Message-ID: <4A81BA46.3050302@petalogix.com>
-Date: Tue, 11 Aug 2009 20:36:54 +0200
-From: Michal Simek <michal.simek@petalogix.com>
+	(envelope-from <naresh.kernel@gmail.com>) id 1MZRrN-0000C8-T5
+	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 16:00:01 +0000
+Received: from mail-yw0-f185.google.com ([209.85.211.185])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MZRrM-0006nY-Ux
+	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 16:00:01 +0000
+Received: by ywh15 with SMTP id 15so2242719ywh.10
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 07 Aug 2009 08:59:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <6213bc560908070826u6c2b321ay446997891f2cc21f@mail.gmail.com>	<1249892426.5187.12.camel@subratamodak.linux.ibm.com>	<6213bc560908100129r7d59547ale6f55de87e858470@mail.gmail.com>	<364299f40908100844l44497151g750f745648080c24@mail.gmail.com>	<6213bc560908100924h2d0da433y52391da42aeeaa16@mail.gmail.com>
-	<6213bc560908110605q45ced45dgd36026da8adc0bb5@mail.gmail.com>
-In-Reply-To: <6213bc560908110605q45ced45dgd36026da8adc0bb5@mail.gmail.com>
-Subject: Re: [LTP] add_key01 & add_key02 test cases fails and shown as PASS
- in log file
-Reply-To: michal.simek@petalogix.com
+In-Reply-To: <1249648903.4851.42.camel@subratamodak.linux.ibm.com>
+References: <f5a7b3810908060909p4d9c06f6rd5f6e8e35c58bb69@mail.gmail.com>
+	<1249648903.4851.42.camel@subratamodak.linux.ibm.com>
+Date: Fri, 7 Aug 2009 21:29:55 +0530
+Message-ID: <f5a7b3810908070859l77e94fb2jbea0eedc5c6fce3@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Subject: Re: [LTP] [PATCH 1/1] openposix_mmap_11_4
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,234 +28,185 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: srikanth krishnakar <skrishnakar@gmail.com>
-Cc: Ltp-list@lists.sourceforge.net
+To: Fan He <fhe@novell.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, Brandon Philips <bphilips@suse.de>, Ulrich Drepper <drepper@gmail.com>
 
-Trace add_key syscall and find that for this testcases you have to
-enable CONFIG_KEYS in your kernel.
-This could be reason to add new return value for Function is not
-implemented and any sensible description
-to test.
-
-Cheers,
-Michal
-> Hi all,
->
-> I observed that these two test cases are known to be failing on
-> following architectures :
->
-> 1. *PowerPC* (ppc440)    > Kernel */Linux-2.6.29.6/*
-> 2. *MIPS*                       > Kernel /*Linux-2.6.28.10*/
->
-> <<<test_start>>>
-> tag=*add_key01* stime=1249655730
-> cmdline="add_key01"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> add_key01    1  TFAIL  :  add_key01 failed - errno = 38 : *Function
-> not implemented*
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=0 termination_type=exited termination_id=0 corefile=no
-> cutime=1 cstime=0
-> <<<test_end>>>
->
->
-> <<<test_start>>>
-> tag=*add_key02* stime=1249655730
-> cmdline="add_key02"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> add_key02    0  TINFO  :  call add_key() with wrong args got
-> UNEXPECTED errno:38
-> add_key02    1  TFAIL  :  add_key02 failed - errno = 38 :* Function
-> not implemented*
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=1 termination_type=exited termination_id=0 corefile=no
-> cutime=0 cstime=2
-> <<<test_end>>>
->  
-> Are these two test cases intended for these architectures ? Have you
-> tested these tests on any of above mentioned architectures ?
->
-> Waiting for your comments ?
->
-> -Srikanth
->  
-> On Mon, Aug 10, 2009 at 9:54 PM, srikanth krishnakar
-> <skrishnakar@gmail.com <mailto:skrishnakar@gmail.com>> wrote:
->
->
->
->     On Mon, Aug 10, 2009 at 9:14 PM, Garrett Cooper
->     <yanegomi@gmail.com <mailto:yanegomi@gmail.com>> wrote:
->
->         On Mon, Aug 10, 2009 at 1:29 AM, srikanth
->         krishnakar<skrishnakar@gmail.com
->         <mailto:skrishnakar@gmail.com>> wrote:
->         >
->         >
->         > On Mon, Aug 10, 2009 at 1:50 PM, Subrata Modak
->         <subrata@linux.vnet.ibm.com <mailto:subrata@linux.vnet.ibm.com>>
->         > wrote:
->         >>
->         >> On Fri, 2009-08-07 at 20:56 +0530, srikanth krishnakar wrote:
->         >> > I see these two test cases are failing on PowerPC target
->         (ppc440) as
->         >> > shown in output file, but they are listed as PASS in log
->         file of the
->         >> > LTP :
->         >> >
->         >> > Target : PowerPC (ppc440)
->         >> > Kernel: Linux-2.6.29
->         >> > LTP Version : ltp-full-20090731
->         >> >
->         >> > LTP output file :
->         >> > #############
->         >> >
->         >> >
->         >> > 1. add_key01
->         >> > --------------------
->         >> >
->         >> > <<<test_start>>>
->         >> > tag=add_key01 stime=1248549741
->         >> > cmdline="add_key01"
->         >> > contacts=""
->         >> > analysis=exit
->         >> > <<<test_output>>>
->         >> > add_key01    1  TFAIL  :  add_key01 failed - errno = 38 :
->         Function not
->         >> > implemented
->         >> > <<<execution_status>>>
->         >> > initiation_status="ok"
->         >> > duration=0 termination_type=exited termination_id=0
->         corefile=no
->         >> > cutime=0 cstime=0
->         >> > <<<test_end>>>
->         >> >
->         >> > 2. add_key02
->         >> > ----------------------
->         >> >
->         >> > <<<test_start>>>
->         >> > tag=add_key02 stime=1248549741
->         >> > cmdline="add_key02"
->         >> > contacts=""
->         >> > analysis=exit
->         >> > <<<test_output>>>
->         >> > add_key02    0  TINFO  :  call add_key() with wrong args got
->         >> > UNEXPECTED errno:38
->         >> > add_key02    1  TFAIL  :  add_key02 failed - errno = 38 :
->         Function not
->         >> > implemented
->         >> > <<<execution_status>>>
->         >> > initiation_status="ok"
->         >> > duration=0 termination_type=exited termination_id=0
->         corefile=no
->         >> > cutime=0 cstime=1
->         >> > <<<test_end>>>
->         >> >
->         >> > --------------------------------------------------------
->         >> >
->         >> > BUT the Log file shows as PASS to the above test cases :
->         >> >
->         >> > ###########################
->         >> >
->         >> > add_key01                      PASS       0
->         >> > add_key02                      PASS       0
->         >> >
->         >> > ###########################
->         >> >
->         >> >
->         >> > May anyone explain, why it is so ? Is it a known behaviour ?
->         >>
->         >> No. It is not. On my X_32, it passes fine.
->         >
->         > Is it PowePC target on which you have tested ?
->         >>
->         >>
->         >> $ ./testcases/bin/add_key01
->         >> add_key01    1  TPASS  :  add_key call succeeded
->         >> $ echo $?
->         >> 0
->         >> $ ./testcases/bin/add_key02
->         >> add_key02    0  TINFO  :  call add_key() with wrong args
->         got EXPECTED
->         >> errno:22
->         >> add_key02    1  TPASS  :  add_key call succeeded
->         >> $ echo $?
->         >> 0
->         >> $ uname -a
->         >> Linux 2.6.18-92.el5 #1 SMP Tue Apr 29 13:16:12 EDT 2008
->         i686 i686 i386
->         >> GNU/Linux
->
->         Hi Srikanth,
->            I think that the error is fairly intuitive (function not
->         implemented). Are you sure that your subarchitecture supports
->         add_key(2)?
->         Hi Subrata,
->            As far as the actual issue is concerned, I think that the
->         problem
->         is that someone's exiting with exit(0) instead of tst_exit()...
->         Thanks,
->         -Garrett
->
->
->     Thanks Garrett,
->
->     I will look into it.
->
->
->     -- 
->     "The Good You Do, The Best You GET"
->
->     Regards
->     Srikanth Krishnakar
->     **********************
->
->
->
->
-> -- 
-> "The Good You Do, The Best You GET"
->
-> Regards
-> Srikanth Krishnakar
-> **********************
-> ------------------------------------------------------------------------
->
-> ------------------------------------------------------------------------------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> trial. Simplify your report design, integration and deployment - and focus on 
-> what you do best, core application coding. Discover what's new with 
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> ------------------------------------------------------------------------
->
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
->   
-
-
--- 
-Michal Simek, Ing. (M.Eng)
-PetaLogix - Linux Solutions for a Reconfigurable World
-w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
-
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+SGkgRmFuLAoKcGxlYXNlIGdpdmUgeW91ciBjb21tZW50cyBvbiB0aGlzIGlzc3VlLgoKSXQgaXMg
+Z2xpYmMgYW5kIGtlcm5lbCBpc3N1ZSBkaXNjdXNzaW9ucy4KCmh0dHA6Ly9idWdzLmdlbnRvby5v
+cmcvMTk3MTkxCgpJcyB0aGlzIGluZm8gaXMgdXAgdG8gdGhlIGRhdGU/CgogaHR0cDovL3d3dy5v
+cGVuZ3JvdXAub3JnL29ubGluZXB1YnMvMDA5Njk1Mzk5L2Z1bmN0aW9ucy9tbWFwLmh0bWwKCkkg
+ZGlkIG5vdCBmaW5kIG1tYXAgKDMpIGluIGtlcm5lbCBtYW4gcGFnZXMuCgpodHRwOi8vd3d3Lmtl
+cm5lbC5vcmcvZG9jL21hbi1wYWdlcy9vbmxpbmUvZGlyX3NlY3Rpb25fMy5odG1sCgpJIGFtIG5v
+dCBzdXJlIGFib3V0IGdsaWJjIG1tYXAgaW1wbGVtZW50YXRpb24uCgpodHRwOi8vc291cmNlcy5y
+ZWRoYXQuY29tL2NnaS1iaW4vY3Zzd2ViLmNnaS8/Y3Zzcm9vdD1nbGliYwoKaWYgeW91IGZpbmQg
+YW55IGluZm8uCnBsZWFzZSBzaGFyZS4KCkJlc3QgcmVnYXJkcywKTmFyZXNoIEthbWJvanUKCk9u
+IEZyaSwgQXVnIDcsIDIwMDkgYXQgNjoxMSBQTSwgU3VicmF0YSBNb2RhazxzdWJyYXRhQGxpbnV4
+LnZuZXQuaWJtLmNvbT4gd3JvdGU6Cj4gT24gVGh1LCAyMDA5LTA4LTA2IGF0IDIxOjM5ICswNTMw
+LCBuYXJlc2gga2FtYm9qdSB3cm90ZToKPj4gSGksCj4+Cj4+IEluIGFkZGl0aW9uIHRvIHRoZSBi
+ZWxvdyBMaW5rIGRpc2N1c3Npb24KPj4KPj4gRGF0ZTogMTYgSnVsIDIwMDkKPj4gaHR0cDovL3d3
+dy5tYWlsLWFyY2hpdmUuY29tL2x0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldC9tc2cwNzUw
+Ni5odG1sCj4+Cj4+IHBhdGNoIGlzIG5vdCB5ZXQgY29tbWl0dGVkIHRvIExUUCBDVnMuCj4KPiBJ
+IGFtIGEgYml0IHBlcnBsZXhlZCBieSBhbGwgdGhlc2UgbGlua3MuIENhbiB5b3UgcGxlYXNlIFJF
+U0VORCB0aGUKPiBjb25jZXJuZWQgcGF0Y2ggd2l0aCB0aGUgcmVxdWlyZWQgZGVzY3JpcHRpb24u
+IEkgd291bGQgdGhlbiBjaGVjayB0aGF0Cj4gaW4uCj4KPiBSZWdhcmRzLS0KPiBTdWJyYXRhCj4K
+Pj4KPj4gYXMgcGVyIHRlc3QgY2FzZSBEZXNjcmlwdGlvbgo+Pgo+PiAvKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCj4+IMKgKiBJbXBsZW1lbnRh
+dGlvbiBwZXJmb3JtcyBtYXBwaW5nIG9wZXJhdGlvbnMgb3ZlciB3aG9sZSBwYWdlcy4KPj4gwqAq
+IFRodXMsIHdoaWxlIHRoZSBhcmd1bWVudCBsZW4KPj4gwqAqIG5lZWQgbm90IG1lZXQgYSBzaXpl
+IG9yIGFsaWdubWVudCBjb25zdHJhaW50LAo+PiDCoCogdGhlIGltcGxlbWVudGF0aW9uIHNoYWxs
+IGluY2x1ZGUsIGluIGFueSBtYXBwaW5nCj4+IMKgKiBvcGVyYXRpb24sIGFueSBwYXJ0aWFsIHBh
+Z2Ugc3BlY2lmaWVkIGJ5IHRoZSByYW5nZSBbcGEscGErbGVuKS4KPj4gwqAqIFRoZSBzeXN0ZW0g
+c2hhbGwgYWx3YXlzIHplcm8tZmlsbCBhbnkgcGFydGlhbCBwYWdlIGF0IHRoZSBlbmQgb2YgYW4g
+b2JqZWN0Lgo+PiDCoCogRnVydGhlciwgdGhlIHN5c3RlbSBzaGFsbCBuZXZlciB3cml0ZSBvdXQg
+YW55IG1vZGlmaWVkIHBvcnRpb25zIG9mCj4+IMKgKiB0aGUgbGFzdCBwYWdlIG9mIGFuIG9iamVj
+dCB3aGljaCBhcmUgYmV5b25kIGl0cyBlbmQuCj4+IMKgKgo+PiDCoCogVGVzdCBzdGVwOgo+PiDC
+oCogMS4gQ3JlYXRlIGEgcHJvY2VzcywgaW4gdGhpcyBwcm9jZXNzOgo+PiDCoCDCoCDCoCBhLiBt
+YXAgYSBmaWxlIMKgd2l0aCBzaXplIG9mIDEvMiAqIHBhZ2Vfc2l6ZSwKPj4gwqAqIMKgIMKgIMKg
+IHNldCBsZW4gPSAxLzIgKiBwYWdlX3NpemUKPj4gwqAqIMKgIMKgYi4gUmVhZCB0aGUgcGFydGlh
+bCBwYWdlIGJleW9uZCB0aGUgb2JqZWN0IHNpemUuCj4+IMKgKiDCoCDCoCDCoCBNYWtlIHN1cmUg
+dGhlIHBhcnRpYWwgcGFnZSBpcyB6ZXJvLWZpbGxlZDsKPj4gwqAqIMKgIMKgYy4gTW9kaWZ5IGEg
+Ynl0ZSBpbiB0aGUgcGFydGlhbCBwYWdlLCB0aGVuIHVuLW1hcCB0aGUgYW5kIGNsb3NlIHRoZQo+
+PiDCoCogwqAgwqAgwqAgZmlsZSBkZXNjcmlwdG9yLgo+PiDCoCogMi4gV2FpdCBmb3IgdGhlIGNo
+aWxkIHByb2NlcyB0byBleGl0LCB0aGVuCj4+IMKgKiDCoCDCoE1hcCB0aGUgZmlsZSBhZ2FpbiwK
+Pj4gwqAqIMKgIMKgcmVhZCB0aGUgYnl0ZSBmcm9tIHRoZSBwb3NpdGlvbiBtb2RpZmllZCBhdCBz
+dGVwIDEtYyBhbmQgY2hlY2suCj4+IMKgKi8KPj4gLyoqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKiovCj4+Cj4+IHBsZWFzZSBub3RlIHRoZSBiZWxvdyBk
+aXNjdXNzaW9uCj4+Cj4+IGh0dHA6Ly9idWdzLmdlbnRvby5vcmcvMTk3MTkxCj4+Cj4+IFJlZjoK
+Pj4gaHR0cDovL3d3dy5vcGVuZ3JvdXAub3JnL29ubGluZXB1YnMvMDA5Njk1Mzk5L2Z1bmN0aW9u
+cy9tbWFwLmh0bWwKPj4KPj4gZmFuIGhlLAo+Pgo+PiBwbGVhc2UgbWFrZSBzdXJlIHdobyBpcyBn
+b2luZyB0byBkbyB0aGlzIGlzIGl0IGNvbWluZyBmcm9tIGtlcm5lbCBvciBnbGliYz8KPj4KPj4g
+QmVzdCByZWdhcmRzCj4+IE5hcmVzaCBLYW1ib2p1Cj4+Cj4+Cj4+ID5PbiBNb24sIDIwMDktMDct
+MjAgYXQgMDA6NDYgLTA3MDAsIEdhcnJldHQgQ29vcGVyIHdyb3RlOgo+PiA+IE9uIFN1biwgSnVs
+IDE5LCAyMDA5IGF0IDEwOjU0IFBNLCBNaWNoYWwKPj4gPiBTaW1lazxtaWNoYWwuc2kuLi5AcGV0
+YWxvZ2l4LmNvbT4gd3JvdGU6Cj4+ID4gPiBIaSwKPj4gPiA+PiBPbiBTYXQsIDIwMDktMDctMTgg
+YXQgMTI6MjggLTA3MDAsIEdhcnJldHQgQ29vcGVyIHdyb3RlOgo+PiA+ID4+Cj4+ID4gPj4+IE9u
+IFRodSwgSnVsIDE2LCAyMDA5IGF0IDExOjM3IFBNLCBoZWZhbjxmLi4uQG5vdmVsbC5jb20+IHdy
+b3RlOgo+PiA+ID4+Pgo+PiA+ID4+Pj4gaGksCj4+ID4gPj4+Pgo+PiA+ID4+Pj4gKltQYXRjaCAx
+LzFdIFBhdGNoIGZvciBmaXhpbmcgdGhlIO+7v2ZhaWxlZCDvu790ZXN0Y2FzZSBvcGVucG9zaXhf
+bW1hcF8xMV80Cj4+ID4gPj4+Pgo+PiA+ID4+Pj4gLW1vZGlmaWVkIHRoZSBmaWxlCj4+ID4gPj4+
+PiAqdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMv
+77u/bW1hcC8xMS00LmMKPj4gPiA+Cj4+ID4gPiBGaXJzdCBvZiBhbGwgLSB0aGlzIGlzIHJlYWxs
+eSBzbWFsbCBleHBsYW5hdGlvbiB3aHkgeW91IGFyZSBmaXhpbmcgdGhpcwo+PiA+ID4gaXNzdWUu
+IEFmdGVyIHNvbWUgbW9udGgKPj4gPiA+IG5vbmUgd2lsbCBrbm93IHdoeSB5b3UgZGlkIHRoaXMg
+Y2hhbmdlLgo+PiA+ID4KPj4gPiA+Cj4+ID4gPj4+Pgo+PiA+ID4+Pj4g77u/U2lnbmVkLW9mZi1i
+eTogwqBmcmVkcmljayBoZSA8Zi4uLkBub3ZlbGwuY29tPgo+PiA+ID4+Pj4KPj4gPiA+Pj4+IC0t
+LQo+PiA+ID4+Pj4gbHRwLm9yaWcvdGVzdGNhc2VzL29wZW5fcG9zaXhfdGVzdHN1aXRlL2NvbmZv
+cm1hbmNlL2ludGVyZmFjZXMvbW1hcC8xMS00LmMKPj4gPiA+Pj4+IMKgIMKgIMKgIDIwMDktMDct
+MTcgMTE6NTM6MzYuMDAwMDAwMDAwICswODAwCj4+ID4gPj4+PiArKysKPj4gPiA+Pj4+IGx0cC90
+ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9tbWFw
+LzExLTQuYwo+PiA+ID4+Pj4gMjAwOS0wNy0xNyAxMTo1NzowOS4wMDAwMDAwMDAgKzA4MDAKPj4g
+PiA+Pj4+IEBAIC0xMzAsNyArMTMwLDkgQEAgaW50IG1haW4oKQo+PiA+ID4+Pj4gwqAgZmxhZyA9
+IE1BUF9TSEFSRUQ7Cj4+ID4gPj4+PiDCoCBvZmYgPSAwOwo+PiA+ID4+Pj4gwqAgcGEgPSBtbWFw
+KGFkZHIsIGxlbiwgcHJvdCwgZmxhZywgZmRfMiwgb2ZmKTsKPj4gPiA+Pj4+IC0gwqBwYV8yID0g
+bW1hcChhZGRyLCBsZW4sIHByb3QsIGZsYWcsIGZkXzIsIG9mZik7Cj4+ID4gPj4+PiArIMKgYWRk
+ciA9IHBhOwo+PiA+ID4+Pj4gKyDCoG1lbXNldChhZGRyLDAsbGVuKjIpOwo+PiA+ID4+Pj4gKyDC
+oHBhXzIgPSBtbWFwKGFkZHIsIGxlbiwgcHJvdCwgZmxhZ3xNQVBfRklYRUQsIGZkXzIsIG9mZik7
+Cj4+ID4gPj4+PiDCoCBpZiAocGFfMiA9PSBNQVBfRkFJTEVEKQo+PiA+ID4+Pj4gwqAgewo+PiA+
+ID4+Pj4gwqAgwqAgcHJpbnRmKCJUZXN0IEZBSUw6ICIgVE5BTUUgIiBFcnJvciBhdCAybmQgbW1h
+cCgpOiAlc1xuIiwKPj4gPiA+Pj4+Cj4+ID4gPj4+IEhpIEZhbiwKPj4gPiA+Pj4gwqAgwqAgU29t
+ZSBxdWVzdGlvbnMgLyBvYnNlcnZhdGlvbnM6Cj4+ID4gPj4+Cj4+ID4gPj4+IDEuIFllcywgdGhl
+IHRlc3RjYXNlcyBkb2VzIGZhaWwgb24gbXkgbWFjaGluZSB0b2RheS4KPj4gPiA+Pj4gMi4gWWVz
+LCBkb2luZyB3aGF0IHlvdSBzYXkgYWJvdmUgZG9lcyB3b3JrIChhdCBsZWFzdCB0aGUgdGVzdGNh
+c2UgcGFzc2VzKS4KPj4gPiA+Pj4gMy4gQXJlIHlvdSBwb3NpdGl2ZSB0aGF0IHlvdXIgc2V0IG9m
+IHN0ZXBzIGFib3ZlIGluIGZhY3QgZG9uJ3QKPj4gPiA+Pj4gaW52YWxpZGF0ZSB0aGUgcHVycG9z
+ZSBvZiB0aGUgdGVzdGNhc2UsIGJ5IGFjY2lkZW50LCBpbiBwYXJ0aWN1bGFyIHRoZQo+PiA+ID4+
+PiBtZW1zZXQgY2FsbD8gSSBhc2sgYmVjYXVzZSBvZiB0aGUgZm9sbG93aW5nIHN0YXRlbWVudCBp
+biB0aGUgbW1hcAo+PiA+ID4+PiBtYW5wYWdlOgo+PiA+ID4+Pgo+PiA+ID4+PiDCoCDCoCDCoCDC
+oElmIGFkZHIgaXMgTlVMTCwgdGhlbiB0aGUga2VybmVsIGNob29zZXMgdGhlIGFkZHJlc3MgYXQg
+d2hpY2ggdG8KPj4gPiA+Pj4gY3JlYXRlCj4+ID4gPj4+IMKgIMKgIMKgIMKgdGhlIG1hcHBpbmc7
+IHRoaXMgaXMgdGhlIG1vc3QgcG9ydGFibGUgbWV0aG9kIG9mIGNyZWF0aW5nIMKgYSDCoG5ldwo+
+PiA+ID4+PiBtYXAtCj4+ID4gPj4+IMKgIMKgIMKgIMKgcGluZy4gwqAgSWYgwqBhZGRyIMKgaXMg
+bm90IE5VTEwsIHRoZW4gdGhlIGtlcm5lbCB0YWtlcyBpdCBhcyBhIGhpbnQKPj4gPiA+Pj4gYWJv
+dXQKPj4gPiA+Pj4gwqAgwqAgwqAgwqB3aGVyZSB0byBwbGFjZSB0aGUgbWFwcGluZzsgb24gTGlu
+dXgsIHRoZSBtYXBwaW5nIHdpbGwgYmUgY3JlYXRlZAo+PiA+ID4+PiBhdCDCoGEKPj4gPiA+Pj4g
+wqAgwqAgwqAgwqBuZWFyYnkgwqBwYWdlIMKgYm91bmRhcnkuIMKgIFRoZSBhZGRyZXNzIG9mIHRo
+ZSBuZXcgbWFwcGluZyBpcwo+PiA+ID4+PiByZXR1cm5lZCBhcwo+PiA+ID4+PiDCoCDCoCDCoCDC
+oHRoZSByZXN1bHQgb2YgdGhlIGNhbGwuCj4+ID4gPj4+Cj4+ID4gPj4+IFdoYXQgeW91J3JlIGlu
+IGVmZmVjdCBkb2luZyBpcyBjaGFuZ2luZyB0aGUgMm5kIG1tYXAgY2FsbCBmcm9tIGFuCj4+ID4g
+Pj4+IGFyYml0cmFyeSBhZGRyZXNzIHRvIGEgc2V0IHZpcnR1YWwgYWRkcmVzcyBhdCAweDAuIElz
+IHRoYXQgaW5kZWVkCj4+ID4gPj4+IGNvcnJlY3Q/Cj4+ID4gPj4+Cj4+ID4gPj4gaW4gdGhpcyBj
+YXNlLCB0aGUgc2l0dWF0aW9uIGlzIGxpa2UgdGhpcywgd2UgY3JlYXRlIGEgbmV3IGZpbGUgYWJv
+dXQgNTEyCj4+ID4gPj4gYnl0ZXMgYW5kIG1tYXAgaXQgaW50byB0aGUgbWVtLCB0aGVuIHdlIG1v
+ZGlmeSBvbmUgYnl0ZSBiZXNpZGVzIHRoZSA1MTIKPj4gPiA+PiBieXRlcyBhZGRyZXNzLCBhbmQg
+bXVubWFwIGl0LiBhbmQgaW4gdGhlIGZhdGhlciBwcm9jZXNzIHJlbW1hcCBpdCBiYWNrCj4+ID4g
+Pj4gdG8gY2hlY2sgd2hldGhlciB0aGUgb25lIG1vcmUgYnl0ZSBpcyB3cml0ZSBiYWNrIHRvIHRo
+ZSBmaWxlcy4KPj4gPgo+PiA+IE9rLgo+PiA+Cj4+ID4gPj4gaSBoYXZlIGNoZWNrZWQgdGhhdCB3
+aGVuIGZpbmlzaGVkIG11bm1hcCBhbmQgY2xvc2UgdGhlIGZpbGUgaW4gdGhlIGNoaWxkCj4+ID4g
+Pj4gcHJvY2VzcywgdGhlIGZpbGUgZGlkbid0IGNvbnRhaW4gdGhlIDUxM3RoIGJ5dGUsIHRoZSBz
+aXplIG9mIHRoaXMgZmlsZQo+PiA+ID4+IGlzIHJpZ2h0IDUxMiBieXRlcy5idXQgaW4gdGhpcyBj
+YXNlIGFmdGVyIHRoZSBzZWNvbmQgbW1hcCBmaW5pc2hlZCwgdGhlCj4+ID4gPj4gNTEzdGggYnl0
+ZSBkb2VzIGFwcGVhciBhZ2Fpbi4gaXQncyBhIGNvbmZsaWN0Lgo+PiA+ID4+Cj4+ID4gPj4gaW4g
+bXkgb3BpbmlvbiB0aGlzIGlzIGJlY2F1c2Ugb2YgdGhlIGNvbXBpbGVyIG9yIHNvbWUgb3B0aW1p
+emF0aW9ucy4gc28KPj4gPiA+PiBpIHRoaW5rIHRoZSBtZW1vcnkgc2hvdWxkIHRvIGJlIG1lbXNl
+dCBiZWZvcmUgbW1hcCBhbmQgaXQgZG9lcyB3b3JrLgo+PiA+Cj4+ID4gTm8sIGFjY29yZGluZyB0
+byB0aGUgbWFucGFnZSBpdCdsbCBtYXAgdG8gdGhlIGJvdW5kYXJ5IG9mIHRoZSBjbG9zZXN0Cj4+
+ID4gcGFnZSBzaXplLCBpbiBteSBvcGluaW9uIHdoYXQgbWlnaHQgYmUgb2NjdXJyaW5nIGlzIHRo
+ZSBzeXN0ZW0gaXMKPj4gPiBlaXRoZXIgb3ZlcmFsbG9jYXRpbmcgb3IgdW5kZXJhbGxvY2F0aW5n
+LCBkZXBlbmRpbmcgb24gdGhlIHN5c3RlbSBwYWdlCj4+ID4gc2l6ZSBhbmQgd2hhdCdzIGJlaW5n
+IHBhc3NlZCBpbiBmb3IgYSBsZW5ndGguIFdoYXQgdGhlIHBhZ2Ugc2l6ZSBpcywKPj4gPiBJJ2Qg
+c3VyZWx5IGxpa2UgdG8ga25vdy4uLgo+PiBoZXJlIGluIG15IGVudmlyb25tZW50IHRoZSBwYWdl
+IHNpemUgaXMgMTAyNCBnb3QgYnkgdXNpbmcKPj4gc3lzY29uZihfU0NfUEFHRV9TSVpFKSBpbiB0
+aGlzIHRlc3RjYXNlCj4+ID4KPj4gPiA+IElmIGlzIHRoZSBwcm9ibGVtIHdpdGggY29tcGlsZXIv
+b3B0aW1pemF0aW9uIG1lYW5zIHRoYXQgdGVzdHMgaXMgb2sgLQo+PiA+ID4gdGhlIHByb2JsZW0g
+aXMgd2l0aCB5b3VyCj4+ID4gPiBjb21waWxlciBub3Qgd2l0aCBjb2RlLgo+PiA+ID4gVGhpcyBu
+ZWVkIG1vcmUgaW52ZXN0aWdhdGlvbnMgdG8gZmluZCBvdXQgd2hlcmUgdGhlIHByb2JsZW0gaXMu
+Cj4+ID4KPj4gPiBJIHdvdWxkbid0IG5lY2Vzc2FyaWx5IHNheSB0aGF0LiBCYXNlZCBvbiBGcmVk
+ZXJpY2sncyBleHBsYW5hdGlvbiwgaXQKPj4gPiBzb3VuZHMgbGlrZSBzb21lb25lIGZlZCBpbiBh
+biBpbmFwcHJvcHJpYXRlIGJvdW5kLCBvciBkaWRuJ3QgTlVMCj4+ID4gdGVybWluYXRlIHRoZSBi
+b3VuZGFyeSBhbmQganVzdCB3ZW50IG9mZiBpbnRvIHVuY2hhcnRlZCB0ZXJyaXRvcnkKPj4gPiB3
+aXRob3V0IGZpcnN0IGNoZWNraW5nIHdoZXJlIHRoZXkgd2VyZSBgb24gdGhlIG1hcCcuCj4+ID4K
+Pj4gPiBCYXNlZCBvbiBteSBleHBlcmllbmNlIGFuZCByZWNvbGxlY3Rpb24sIHRoaXMgaXMgbGVn
+aXRpbWF0ZSBpbiBDCj4+ID4gYmVoYXZpb3IgYXMgbG9uZyBhcyB5b3UncmUgd2l0aGluIHRoZSBh
+cHBsaWNhdGlvbnMgbWVtb3J5IGxpbWl0cyAtLQo+PiA+IHlvdSd2ZSBqdXN0IGVudGVyZWQgdGhl
+IHR3aWxpZ2h0IHpvbmUgYmV0d2VlbiByZWFsaXRpZXMsIHdoZXJlIHlvdSdyZQo+PiA+IGJleW9u
+ZCB5b3VyIGFkZHJlc3Mgc3BhY2UsIGJ1dCBub3QgYmV5b25kIHRoZSBwb2ludCBvZiBubyByZXR1
+cm4KPj4gPiAoRUFDQ0VTKSwgd2hlcmUgdGhlIGtlcm5lbCAqc2hvdWxkKiB0ZXJtaW5hdGUgeW91
+ciB1c2VybGFuZCBhcHAuCj4+ID55ZWFoLCB0aGF0J3MgdGhlIGtleXBvaW50LiBidXQgaXQgZG9l
+c24ndCB0ZXJtaW5hdGUgb3VyIHVzZXJsYW5kIGFwcC4KPj4KPj4gPmkgbWVhbiB0aGF0IGhlcmUg
+aXMgYSBtaXN0YWtlIG9uIHRoZSB3YXkgdGhpcyB0ZXN0Y2FzZSBjaGVjayB0aGUgcmVzdWx0Lgo+
+PiA+aWRlYWxseSwgdGhlIG1tYXAgc2hvdWxkIG9ubHkgdXNlIGhhbGYgYSBwYWdlIGFuZCBpdCBo
+YXMgbm8KPj4gPnJlc3Bvc2liaWxpdHkgb24gdGhlIHJlc3Qgb2YgdGhlIHBhZ2UsIHNvIHdlIHNo
+b3VsZG4ndCBqdWRnZSB0aGUgbW1hcCBieQo+PiA+dGhlIHJlc3Qgb2YgdGhlIHBhZ2Ugd2hpY2gg
+aXMgbm9uZSBvZiBidXNpbmVzcyB3aXRoIG1tYXAuCj4+Cj4+ID5zbyBpZiB3ZSBzdXBwb3NlIHRo
+YXQgdGhlIG1tYXAgZG9lcyBhZmZlY3QgdGhlIHJlc3Qgb2YgdGhlIHBhZ2UoIO+7vyBpcyBpdAo+
+PiA+dGhlIHB1cnBvc2UgdG8gZGVzaWduIHRoaXMgdGVzdGNhc2UgPyApLCB3ZSBzaG91bGQgbWFr
+ZSBzdXJlIHRoYXQgdGhpcwo+PiA+YXJlYSBoYXMgYmVlbiBjbGVhciBiZWZvcmUgd2UgbW1hcCB0
+aGUgZmlsZSBpbnRvIHRoaXMgYXJlYS4gdGhhdCdzIHdoeSBpCj4+ID51c2UgbWVtc2V0IGFuZCDv
+u79mbGFnIE1BUF9GSVhFRC4KPj4KPj4gPgo+PiA+IFdoZXRoZXIgb3Igbm90IHRoYXQgd2FzIHRo
+ZSBpbnRlbnRpb24gb2YgdGhlIFBPU0lYIGZvbGtzLCBpcyBhbm90aGVyCj4+ID4gcXVlc3Rpb24g
+aW5kZWVkLCBhcyB0aGUgZG9jdW1lbnRhdGlvbiBzdGF0ZXMgKGluIHRoZSBoZWFkZXIgb2YgdGhl
+IC5jCj4+ID4gZmlsZSk6Cj4+ID4KPj4gPiDCoCogSW1wbGVtZW50YXRpb24gcGVyZm9ybXMgbWFw
+cGluZyBvcGVyYXRpb25zIG92ZXIgd2hvbGUgcGFnZXMuCj4+ID4gwqAqIFRodXMsIHdoaWxlIHRo
+ZSBhcmd1bWVudCBsZW4KPj4gPiDCoCogbmVlZCBub3QgbWVldCBhIHNpemUgb3IgYWxpZ25tZW50
+IGNvbnN0cmFpbnQsCj4+ID4gwqAqIHRoZSBpbXBsZW1lbnRhdGlvbiBzaGFsbCBpbmNsdWRlLCBp
+biBhbnkgbWFwcGluZwo+PiA+IMKgKiBvcGVyYXRpb24sIGFueSBwYXJ0aWFsIHBhZ2Ugc3BlY2lm
+aWVkIGJ5IHRoZSByYW5nZSBbcGEscGErbGVuKS4KPj4gPiDCoCogVGhlIHN5c3RlbSBzaGFsbCBh
+bHdheXMgemVyby1maWxsIGFueSBwYXJ0aWFsIHBhZ2UgYXQgdGhlIGVuZCBvZiBhbiBvYmplY3Qu
+Cj4+ID4gwqAqIEZ1cnRoZXIsIHRoZSBzeXN0ZW0gc2hhbGwgbmV2ZXIgd3JpdGUgb3V0IGFueSBt
+b2RpZmllZCBwb3J0aW9ucyBvZgo+PiA+IMKgKiB0aGUgbGFzdCBwYWdlIG9mIGFuIG9iamVjdCB3
+aGljaCBhcmUgYmV5b25kIGl0cyBlbmQuCj4+ID4KPj4gPiBTbyB1bmxlc3MgdGhleSdyZSBjb21w
+bGV0ZWx5IG1pc2ludGVycHJldGluZyB0aGUgbWVhbmluZyBvZiBtbWFwLCBpdAo+PiA+IHNvdW5k
+cyBsaWtlIHRoZXJlJ3MgYSBidWcgaW4gYSBudW1iZXIgb2YgYFBPU0lYLWNvbXBsaWFudCcgb3Bl
+cmF0aW5nCj4+ID4gc3lzdGVtcyB0aGF0IG5lZWRzIHRvIGJlIHJlc29sdmVkIChGcmVlQlNEIGFu
+ZCBMaW51eCBpbmNsdWRlZCkuCj4+ID4KPj4gPiBIb3dldmVyLCBiZWZvcmUganVtcGluZyB0byBj
+b25jbHVzaW9ucywgSSB0aGluayB0aGF0IGl0J3MgcHJ1ZGVudCB0bwo+PiA+IG5hcnJvdyBkb3du
+IHdoZXJlIGFuZCB3aHkgdGhpcyBpcyBvY2N1cnJpbmcuLi4KPj4gPgo+PiA+ID4+PiA0LiBIYXZl
+IHlvdSB0YWxrZWQgdG8gdGhlIG9wZW5wb3NpeCB0ZXN0IHN1aXRlIGZvbGtzIGFib3V0IHRoaXMg
+eWV0Pwo+PiA+ID4+Pgo+PiA+ID4+IG5vLGkgaGF2ZSBubyBpZGVhIG9uIGhvdyB0byB0YWxrIHRv
+IHRoZSBvcGVucG9zaXggYW5kIGkgZG8gd2FudCB0byB0YWxrCj4+ID4gPj4gdG8gdGhlbSA6KSBj
+YW4geW91IGdpdmUgbWUgc29tZSBzdWdnZXN0aW9ucyBhYm91dCB0aGlzPyB0aHh+Cj4+ID4KPj4g
+PiBUaGUgcHJvamVjdCBhZG1pbmlzdHJhdG9ycyBhcmUgYXZhaWxhYmxlLCBhcyBub3RlZCwgaGVy
+ZToKPj4gPgo+PiA+IGh0dHBzOi8vc291cmNlZm9yZ2UubmV0L3Byb2plY3QvbWVtYmVybGlzdC5w
+aHA/Z3JvdXBfaWQ9NjQ1OTIKPj4gPgo+PiA+IFRoYW5rcywKPj4gPiAtR2FycmV0dAo+Cj4KCi0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLQpMZXQgQ3J5c3RhbCBSZXBvcnRzIGhhbmRsZSB0aGUgcmVwb3J0
+aW5nIC0gRnJlZSBDcnlzdGFsIFJlcG9ydHMgMjAwOCAzMC1EYXkgCnRyaWFsLiBTaW1wbGlmeSB5
+b3VyIHJlcG9ydCBkZXNpZ24sIGludGVncmF0aW9uIGFuZCBkZXBsb3ltZW50IC0gYW5kIGZvY3Vz
+IG9uIAp3aGF0IHlvdSBkbyBiZXN0LCBjb3JlIGFwcGxpY2F0aW9uIGNvZGluZy4gRGlzY292ZXIg
+d2hhdCdzIG5ldyB3aXRoIApDcnlzdGFsIFJlcG9ydHMgbm93LiAgaHR0cDovL3Auc2YubmV0L3Nm
+dS9ib2JqLWp1bHkKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApo
+dHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
