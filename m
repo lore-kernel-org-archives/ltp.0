@@ -1,21 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MebU3-0000g0-Fm
-	for ltp-list@lists.sourceforge.net; Fri, 21 Aug 2009 21:17:15 +0000
-Received: from qw-out-2122.google.com ([74.125.92.26])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MebU1-0006Tl-7a
-	for ltp-list@lists.sourceforge.net; Fri, 21 Aug 2009 21:17:15 +0000
-MIME-Version: 1.0
-In-Reply-To: <200908211200.33401.vapier@gentoo.org>
-References: <20090821.195739.1000278277145530969.caiqian@cclom.cn>
-	<200908211200.33401.vapier@gentoo.org>
-Date: Fri, 21 Aug 2009 14:17:06 -0700
-Message-ID: <364299f40908211417i21840c17n4e144c85852cb08a@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] The Best Practice to Skip Syscall Tests
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MZOmT-0007HP-SJ
+	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 12:42:45 +0000
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MZOmP-0006Sl-Th
+	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 12:42:45 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <364299f40908061921i39ad3e51q4aeffc666166c496@mail.gmail.com>
+References: <d51f89b0908032310k20c3843am7ea069d03436a7a@mail.gmail.com>
+	<1249387637.15587.29.camel@subratamodak.linux.ibm.com>
+	<d51f89b0908040516i7c65740bi3e30e0972c8374fa@mail.gmail.com>
+	<4A7A9DFB.7050305@petalogix.com>
+	<8368651DACC1964480F951191B94A078F8A312@svexch01.mvista.com>
+	<364299f40908061921i39ad3e51q4aeffc666166c496@mail.gmail.com>
+Date: Fri, 07 Aug 2009 18:11:55 +0530
+Message-Id: <1249648916.4851.45.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Issue with rt_sigqueueinfo testcase in LTP.
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,67 +30,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net, ltp-list@lists.sf.net
+To: Garrett Cooper <yanegomi@gmail.com>, Henry Yei <hyei@mvista.com>
+Cc: ltp-list <ltp-list@lists.sf.net>, rohit verma <rohit.170309@gmail.com>
 
-On Fri, Aug 21, 2009 at 9:00 AM, Mike Frysinger<vapier@gentoo.org> wrote:
-> On Friday 21 August 2009 07:57:39 CAI Qian wrote:
->> Test cases unshare failed to compile on systems without such a
->> syscall. I am unsure what the best way to handle it. The old ways are,
->>
->> * add a kernel version check in the unshare tests code.
->>
->> or
->>
->> * add a m4 rule.
->> * modify the unshare tests code to check if the macro, and add stub
->> =A0 functions if the macro is false.
->>
->> The first approach is unable to handle non-vanilla kernels. The second
->> approach needs to add stub functions which are unclean. What I would
->> like to do is,
->>
->> * add a m4 rule.
->> * modify unshare Makefile like this,
->>
->> =A0 ifdef HAVE_UNSHARE =A0<-- if the syscall is present, compile the tes=
-ts.
->
-> the configure test should always be there if the code needs new headers (=
-like
-> sys/signalfd.h). =A0if it's only a new syscall, then the configure test s=
-hould
-> only be for the new symbol (assuming one is provided). =A0in all cases, t=
-he
-> tests should be compiled. =A0your proposal doesnt handle the case where t=
-he C
-> library is in place, but the kernel is older so returns ENOSYS.
-
-    check_for_unshare was a poorly hacked app, IMO and Mike is
-correct. The issue needs to be a combination of buildtime and runtime
-tests as it needs to pass through the build and the issue with the
-syscall needs to be detected and marked TBROK if the syscall isn't
-implemented.
-    I'll already removed that app from the build in
-makefile-infra-rework, but I agree that more autoconf testcases can be
-added at buildtime.
-Thanks,
--Garrett
-
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
-
-trial. Simplify your report design, integration and deployment - and focus =
-on =
-
-what you do best, core application coding. Discover what's new with =
-
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gVGh1LCAyMDA5LTA4LTA2IGF0IDE5OjIxIC0wNzAwLCBHYXJyZXR0IENvb3BlciB3cm90ZTog
+Cj4gT24gVGh1LCBBdWcgNiwgMjAwOSBhdCA1OjUwIFBNLCBIZW5yeSBZZWk8aHllaUBtdmlzdGEu
+Y29tPiB3cm90ZToKPiA+IFllcywgSSBoYWQganVzdCBub3RpY2VkIHRoaXMgYXMgd2VsbC4gIFNp
+bmNlIGl0IHdhcyAicGFzc2luZyIsIGl0IHRvb2sgYXdoaWxlIHRvIHNwb3QuCj4gPgo+ID4gUmV0
+dXJuaW5nIHBhc3MgZXZlbiB3aXRoIHRzdF9yZXNtKFRGQUlMLC4uIEJlaW5nIGNhbGxlZCBtdXN0
+IGhhdmUgc29tZXRoaW5nIHRvIGRvIHdpdGggdGhlIGZvcmtpbmcsIGJ1dCBJJ20gbm90IGZhbWls
+aWFyIHdpdGggaG93IHRoZSBMVFAgZnJhbWV3b3JrIGRlYWxzIHdpdGggdGhhdC4KPiAKPiBJIGRv
+bid0IHRoaW5rIHRoYXQncyB0aGUgcHJvYmxlbS4gSSB0aGluayB0aGF0IHRoZSByZWFsIHByb2Js
+ZW0gaXMgaG93CgpUaGUgcGFydCBvZiB0aGUgcHJvYmxlbSBpcyBob3cgYW5kIHdoZW4gYXJlIHNl
+dHVwKCkgYW5kIGNsZWFudXAoKXMgYXJlCmhhbmRsZWQuCgo+IHRoZSB0ZXN0Y2FzZSBpdHNlbGYg
+aXMgd3JpdHRlbiwgYmVjYXVzZSBJIGRvbid0IHNlZSBhbnkgY29kZSB0aGF0Cj4gY2hlY2tzIFdJ
+RkVYSVRFRCBhbmQgV0lGU0lHTkFMRUQgKEkgd291bGQgY2hlY2sgZm9yIGJvdGggdGhvc2UgaXRl
+bXMKPiB3aGVuIGRvaW5nIHNpZ3F1ZXVlKSwgYW5kIEkgZG9uJ3Qgc2VlIHdoZXJlIHRoZSBjaGls
+ZChyZW4pIGFjdHVhbGx5CgpDYW4geW91IGp1c3QgYWRkIHRoZW0gdXAgd2hlbiB5b3UgZmluZCB0
+aW1lLiBNZWFud2hpbGUgaSBhbSBjaGVja2luZyBpbgpIZW5yecWbIHBhdGNoLiBUaGFua3MuCgpS
+ZWdhcmRzLS0KU3VicmF0YQoKPiBleGl0Li4uIEhNTU0uLi4KPiAKPiBUaG91Z2h0cz8KPiAtR2Fy
+cmV0dAo+IAo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+IExldCBDcnlzdGFsIFJlcG9ydHMgaGFu
+ZGxlIHRoZSByZXBvcnRpbmcgLSBGcmVlIENyeXN0YWwgUmVwb3J0cyAyMDA4IDMwLURheSAKPiB0
+cmlhbC4gU2ltcGxpZnkgeW91ciByZXBvcnQgZGVzaWduLCBpbnRlZ3JhdGlvbiBhbmQgZGVwbG95
+bWVudCAtIGFuZCBmb2N1cyBvbiAKPiB3aGF0IHlvdSBkbyBiZXN0LCBjb3JlIGFwcGxpY2F0aW9u
+IGNvZGluZy4gRGlzY292ZXIgd2hhdCdzIG5ldyB3aXRoIAo+IENyeXN0YWwgUmVwb3J0cyBub3cu
+ICBodHRwOi8vcC5zZi5uZXQvc2Z1L2JvYmotanVseQo+IF9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCj4gTHRwLWxpc3QgbWFpbGluZyBsaXN0Cj4gTHRwLWxp
+c3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQv
+bGlzdHMvbGlzdGluZm8vbHRwLWxpc3QKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTGV0IENyeXN0
+YWwgUmVwb3J0cyBoYW5kbGUgdGhlIHJlcG9ydGluZyAtIEZyZWUgQ3J5c3RhbCBSZXBvcnRzIDIw
+MDggMzAtRGF5IAp0cmlhbC4gU2ltcGxpZnkgeW91ciByZXBvcnQgZGVzaWduLCBpbnRlZ3JhdGlv
+biBhbmQgZGVwbG95bWVudCAtIGFuZCBmb2N1cyBvbiAKd2hhdCB5b3UgZG8gYmVzdCwgY29yZSBh
+cHBsaWNhdGlvbiBjb2RpbmcuIERpc2NvdmVyIHdoYXQncyBuZXcgd2l0aCAKQ3J5c3RhbCBSZXBv
+cnRzIG5vdy4gIGh0dHA6Ly9wLnNmLm5ldC9zZnUvYm9iai1qdWx5Cl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAt
+bGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQv
+bGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
