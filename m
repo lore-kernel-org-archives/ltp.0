@@ -1,32 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mgahagan@redhat.com>) id 1MgKwN-0005a8-PG
-	for ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 16:01:39 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MgKwJ-0003lT-Hz
-	for ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 16:01:39 +0000
-Received: from int-mx06.intmail.prod.int.phx2.redhat.com
-	(int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.19])
-	by mx1.redhat.com (8.13.8/8.13.8) with ESMTP id n7QG1Ta5018479
-	for <ltp-list@lists.sourceforge.net>; Wed, 26 Aug 2009 12:01:29 -0400
-Received: from dhcp231-193.rdu.redhat.com (dhcp231-49.rdu.redhat.com
-	[10.11.231.49])
-	by int-mx06.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
-	id n7QG1SkJ026452
-	for <ltp-list@lists.sourceforge.net>; Wed, 26 Aug 2009 12:01:28 -0400
-Message-ID: <4A955C57.7020502@redhat.com>
-Date: Wed, 26 Aug 2009 12:01:27 -0400
-From: Mike Gahagan <mgahagan@redhat.com>
-MIME-Version: 1.0
-References: <4A92DCAE.5060102@redhat.com>
-	<1251194293.5534.24.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1251194293.5534.24.camel@subratamodak.linux.ibm.com>
-Content-Type: multipart/mixed; boundary="------------060300040908040304050105"
-Subject: Re: [LTP] Bug in memory controller test - memctl test #4 - PATCH
- repost
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MZOmY-0007Hz-Ts
+	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 12:42:50 +0000
+Received: from e6.ny.us.ibm.com ([32.97.182.146])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MZOmT-00007Z-5V
+	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 12:42:50 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e6.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n77CkQbG003588
+	for <ltp-list@lists.sourceforge.net>; Fri, 7 Aug 2009 08:46:26 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n77CgbeM229960
+	for <ltp-list@lists.sourceforge.net>; Fri, 7 Aug 2009 08:42:37 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n77Cgb8x016275
+	for <ltp-list@lists.sourceforge.net>; Fri, 7 Aug 2009 08:42:37 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <8368651DACC1964480F951191B94A078F8A313@svexch01.mvista.com>
+References: <4A7AA1BE.9050901@petalogix.com>
+	<8368651DACC1964480F951191B94A078F8A313@svexch01.mvista.com>
+Date: Fri, 07 Aug 2009 18:12:00 +0530
+Message-Id: <1249648920.4851.46.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] utimes01
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,116 +37,144 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-This is a multi-part message in MIME format.
---------------060300040908040304050105
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 08/25/2009 05:58 AM, Subrata Modak wrote:
-> On Mon, 2009-08-24 at 14:32 -0400, Mike Gahagan wrote:
->> When running the Memory Controller test # 4, I'm seeing this behavior below.
->>
->> TEST 4: MEMORY CONTROLLER TESTING
->> RUNNING SETUP.....
->> TEST STARTED: Please avoid using system while this test executes
->> /mnt/tests/kernel/distribution/ltp/20090731/ltp-full-20090731/testcases/bin/run_memctl_test.sh:
->> line 327: [: 62955520: unary operator expected
->> TINFO   Memory Resource Controller: stat check test fails in first run
->> /mnt/tests/kernel/distribution/ltp/20090731/ltp-full-20090731/testcases/bin/run_memctl_test.sh:
->> line 364: [: 78704640: unary operator expected
->> TFAIL   Memory Resource Controller: stat check test FAILED
->> *** infinite loop here, script exists memctl_test01 remains running ***
->> ^Cincrementing stop
->>
->> The bash error is due to the 'grep -w "active"' not matching anything so
->> one of the variables isn't getting set like it is supposed to. I believe
->> the test was written with an old version of the memory controller what
->> put a field called memory.stat.active in the file memory.stat. The
->
-> Correct. Somebody needs to revisit these tests, as the ABIs has changed.
-> Thanks for pointing that out. However, your patch has the following
-> problem:
->
-> 1) Missing Signed-off-by:
-> 2) missing header for unified diff at line 3 of patch
-> patching file testcases/kernel/controllers/memctl/run_memctl_test.sh
->
-> Please look into them when you send a patch next time ;-)
->
-> Regards--
-> Subrata
->
->> current memory controller I am testing appears to have replaced this
->> field with "rss". There are fields showing anonymous and file backed
->> pages in memory.stat, but I don't think they are ever going to match the
->> memory.usage.in.bytes the test is looking for. Rss always matches and I
->> believe that is what we should update the check in the test to look for.
->> The attached patch fixes test #4 to compare memory.usage.in.bytes with rss.
->> ------------------------------------------------------------------------------
-
-Hello,
-
-Here is a resubmission of my memctl test patch. It should clear up the 
-issues noted above. No functional change from the previous patch.
-
-Signed-off-by: Mike Gahagan <mgahagan@redhat.com>
-
-
---------------060300040908040304050105
-Content-Type: text/plain;
- name="run_memctl_test.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="run_memctl_test.patch"
-
- run_memctl_test.sh |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-diff -uNr ltp-full-20090731/testcases/kernel/controllers/memctl/run_memctl_test.sh ltp-full-20090731.new/testcases/kernel/controllers/memctl/run_memctl_test.sh
---- ltp-full-20090731/testcases/kernel/controllers/memctl/run_memctl_test.sh	2009-08-25 16:21:47.298273822 -0400
-+++ ltp-full-20090731.new/testcases/kernel/controllers/memctl/run_memctl_test.sh	2009-08-25 16:41:57.606201495 -0400
-@@ -323,7 +323,7 @@
- 		check_mem_allocated;# $MEM_TOTAL;
- 		# now we can check the memory usage from both files
- 		USAGE_FROM_STAT=`cat /dev/memctl/group_1/memory.stat \
--					| grep -w "active" | cut -d" " -f2`;
-+					| grep -w "rss" | cut -d" " -f2`;
- 		if [ $USAGE_FROM_USAGE_IN_BYTES -eq $USAGE_FROM_STAT ]
- 		then
- 			echo "memory usage from memory.usage_in_bytes= $USAGE_FROM_USAGE_IN_BYTES";
-@@ -360,7 +360,7 @@
- 
- 		# now we can check the memory usage from both files
- 		USAGE_FROM_STAT=`cat /dev/memctl/group_1/memory.stat \
--					| grep -w "active" | cut -d" " -f2`;
-+					| grep -w "rss" | cut -d" " -f2`;
- 		if [ $USAGE_FROM_USAGE_IN_BYTESGRP1_MEMUSAGE -eq $USAGE_FROM_STAT ] \
- 							&& [ $FIRST_STEP_PASS -eq 1 ]
- 		then
-
---------------060300040908040304050105
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Henry Yei <hyei@mvista.com>, michal.simek@petalogix.com
+Cc: LTP <ltp-list@lists.sourceforge.net>
+
+Michal,
+
+My x86_32 behaves fine with this Syscall test, may be because it is
+2.6.18 kernel as henry said.
+
+$ uname -a
+Linux 2.6.18-92.el5 #1 SMP Tue Apr 29 13:16:12 EDT 2008 i686 i686 i386
+GNU/Linux
+
+$ ./testcases/bin/utimes01 
+utimes01    0  TINFO  :  (case00) START
+utimes01    0  TINFO  :  E:0,1000 <=> R:0,1000
+EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
+RESULT: return value(ret)=       0 errno=0 (Success)
+utimes01    0  TINFO  :  (case00) END => OK
+utimes01    0  TINFO  :  (case01) START
+utimes01    0  TINFO  :  E:1000,0 <=> R:1000,0
+EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
+RESULT: return value(ret)=       0 errno=0 (Success)
+utimes01    0  TINFO  :  (case01) END => OK
+utimes01    0  TINFO  :  (case02) START
+seteuid failed.
+utimes01    0  TINFO  :  (case02) END => OK
+utimes01    0  TINFO  :  (case03) START
+EXPECT: return value(ret)=-1 errno=2 (No such file or directory)
+RESULT: return value(ret)=-1 errno=2 (No such file or directory)
+utimes01    0  TINFO  :  (case03) END => OK
+utimes01    0  TINFO  :  (case04) START
+EXPECT: return value(ret)=-1 errno=14 (Bad address)
+RESULT: return value(ret)=-1 errno=14 (Bad address)
+utimes01    0  TINFO  :  (case04) END => OK
+utimes01    1  TPASS  :  utimes call succeeded 
+[ltp-full-20090731]$ echo $?
+0
+
+However,
+
+On Thu, 2009-08-06 at 17:56 -0700, Henry Yei wrote: 
+> Michal, 
+> 
+> This is a known issue. If you look at the manpages it states the following under the BUGS section:
+> 
+> Linux is not careful to distinguish between the EACCES and EPERM
+>     error returns.  On the other hand,  POSIX.1-2001 is buggy in its
+>     error description for utimes().
+> 
+> utimes01 passes on 2.6.28-13 kernel (Ubuntu 9.04) as well as the 2.6.18 kernel in CentOS 4.
+
+Can you send across a patch to update include the above information in
+the test case itself ?
+
+Regards--
+Subrata
+
+> 
+> 
+> -----Original Message-----
+> From: Michal Simek [mailto:michal.simek@petalogix.com] 
+> Sent: Thursday, August 06, 2009 2:26 AM
+> To: LTP
+> Subject: [LTP] utimes01
+> 
+> Hi All,
+> 
+> Can you please run utimes01 test? I see there on x86 and Microblaze this fault.
+> There is different errno value.
+> 
+> Thanks,
+> Michal
+> 
+> EXPECT: return value(ret)=-1 errno=13 (Permission denied)
+> RESULT: return value(ret)=-1 errno=1 (Operation not permitted)
+> 
+> [root@monstr utimes]# ./utimes01
+> utimes01    0  TINFO  :  (case00) START
+> utimes01    0  TINFO  :  E:0,1000 <=> R:0,1000
+> EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
+> RESULT: return value(ret)=       0 errno=0 (Success)
+> utimes01    0  TINFO  :  (case00) END => OK
+> utimes01    0  TINFO  :  (case01) START
+> utimes01    0  TINFO  :  E:1000,0 <=> R:1000,0
+> EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
+> RESULT: return value(ret)=       0 errno=0 (Success)
+> utimes01    0  TINFO  :  (case01) END => OK
+> utimes01    0  TINFO  :  (case02) START
+> EXPECT: return value(ret)=-1 errno=13 (Permission denied)
+> RESULT: return value(ret)=-1 errno=1 (Operation not permitted)
+> utimes01    0  TINFO  :  (case02) END => NG
+> utimes01    0  TINFO  :  (case03) START
+> EXPECT: return value(ret)=-1 errno=2 (No such file or directory)
+> RESULT: return value(ret)=-1 errno=2 (No such file or directory)
+> utimes01    0  TINFO  :  (case03) END => OK
+> utimes01    0  TINFO  :  (case04) START
+> EXPECT: return value(ret)=-1 errno=14 (Bad address)
+> RESULT: return value(ret)=-1 errno=14 (Bad address)
+> utimes01    0  TINFO  :  (case04) END => OK
+> utimes01    1  TFAIL  :  utimes01 failed - errno = 0 : Success
+> utimes01    0  TINFO  :  NG
+> 
+> --
+> Michal Simek, Ing. (M.Eng)
+> PetaLogix - Linux Solutions for a Reconfigurable World
+> w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+> 
+> 
+> ------------------------------------------------------------------------------
+> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+> trial. Simplify your report design, integration and deployment - and focus on 
+> what you do best, core application coding. Discover what's new with 
+> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+> ------------------------------------------------------------------------------
+> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+> trial. Simplify your report design, integration and deployment - and focus on 
+> what you do best, core application coding. Discover what's new with 
+> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---------------060300040908040304050105
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------060300040908040304050105--
-
