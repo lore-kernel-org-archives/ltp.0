@@ -1,34 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <ljhc@br.ibm.com>) id 1MYl3S-0007P5-Tx
-	for ltp-list@lists.sourceforge.net; Wed, 05 Aug 2009 18:17:38 +0000
-Received: from e32.co.us.ibm.com ([32.97.110.150])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MYl3R-00086K-PK
-	for ltp-list@lists.sourceforge.net; Wed, 05 Aug 2009 18:17:38 +0000
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MZOlr-0000H4-7L
+	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 12:42:07 +0000
+Received: from e35.co.us.ibm.com ([32.97.110.153])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MZOlk-0006He-Ex
+	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 12:42:07 +0000
 Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
 	[9.17.195.227])
-	by e32.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n75HmujR010085
-	for <ltp-list@lists.sourceforge.net>; Wed, 5 Aug 2009 11:48:56 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by e35.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n77CX9fU006391
+	for <ltp-list@lists.sourceforge.net>; Fri, 7 Aug 2009 06:33:09 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
 	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n75HrCJc215252
-	for <ltp-list@lists.sourceforge.net>; Wed, 5 Aug 2009 11:53:14 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n75Hr15x016434
-	for <ltp-list@lists.sourceforge.net>; Wed, 5 Aug 2009 11:53:04 -0600
-From: Lucio Correia <ljhc@br.ibm.com>
-In-Reply-To: <E69DB27D-E186-4934-AB69-C5EDB67A48AF@kernel.crashing.org>
-References: <E69DB27D-E186-4934-AB69-C5EDB67A48AF@kernel.crashing.org>
-Content-Type: multipart/mixed; boundary="=-gYWGJSRkVkRwJDeybhZ+"
-Date: Wed, 05 Aug 2009 14:52:55 -0300
-Message-Id: <1249494775.13131.18.camel@lucio-laptop>
+	n77Cfok7245354
+	for <ltp-list@lists.sourceforge.net>; Fri, 7 Aug 2009 06:41:50 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n77CfjVW027294
+	for <ltp-list@lists.sourceforge.net>; Fri, 7 Aug 2009 06:41:49 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <1249521485.24238.308.camel@yhuang-dev.sh.intel.com>
+References: <20090805105529.23399.60242.sendpatchset@subratamodak.linux.ibm.com>
+	<1249494939.3623.12.camel@subratamodak.linux.ibm.com>
+	<1249521485.24238.308.camel@yhuang-dev.sh.intel.com>
+Date: Fri, 07 Aug 2009 18:11:36 +0530
+Message-Id: <1249648896.4851.40.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] top of tree fails to build on PPC fc11 box
-Reply-To: ljhc@br.ibm.com
+Subject: Re: [LTP] [PATCH] Integration of MCE test suite into LTP
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,195 +39,89 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kumar Gala <galak@kernel.crashing.org>
-Cc: LTP <ltp-list@lists.sourceforge.net>
-
-
---=-gYWGJSRkVkRwJDeybhZ+
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-
-Hi Kumar,
-
-On Wed, 2009-07-29 at 13:33 -0500, Kumar Gala wrote:
-> I get the following compile error:
-> 
-> make[4]: Leaving directory `/root/ltp/testcases/kernel/syscalls/fstat'
-> make[4]: Entering directory `/root/ltp/testcases/kernel/syscalls/ 
-> fstatat'
-> cc -Wall  -I../../include -g -Wall -I../../../../include -Wall - 
-> DTST_USE_NEWER64_SYSCALL=1 -D_FILE_OFFSET_BITS=64   -c -o  
-> fstatat01_64.o fstatat01.c
-> fstatat01.c:95:37: error: missing binary operator before token "5"
-> fstatat01.c: In function 'main':
-> fstatat01.c:126: error: expected ')' before numeric constant
-> make[4]: *** [fstatat01_64.o] Error 1
-> make[4]: Leaving directory `/root/ltp/testcases/kernel/syscalls/fstatat'
-> make[3]: *** [all] Error 2
-> make[3]: Leaving directory `/root/ltp/testcases/kernel/syscalls'
-> make[2]: *** [all] Error 2
-> make[2]: Leaving directory `/root/ltp/testcases/kernel'
-> make[1]: *** [all] Error 2
-> make[1]: Leaving directory `/root/ltp/testcases'
-> make: *** [all] Error 2
-
-This failure is being caused because .in files in kernel/includes are 
-wrong. The prefixes for the names (__NR_) and the plus signs were 
-removed. I've noticed it in .in files for several architectures in the
-latest LTP release (July 2009). 
-
-
-
-This patch fixes bad updates to syscalls declarations for powerpc, that
-are causing build failures. This should be fixed for other archs 
-accordingly.
-
-Signed-off-by Lucio Correia <luciojhc@br.ibm.com>
-
---=-gYWGJSRkVkRwJDeybhZ+
-Content-Disposition: attachment; filename="july2009-ppc-build-fix.patch"
-Content-Type: text/x-patch; name="july2009-ppc-build-fix.patch";
-	charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-
-diff -Nurp ltp-full-20090731.orig/testcases/kernel/include/powerpc64.in ltp-full-20090731.new/testcases/kernel/include/powerpc64.in
---- ltp-full-20090731.orig/testcases/kernel/include/powerpc64.in	2009-07-20 00:41:12.000000000 -0400
-+++ ltp-full-20090731.new/testcases/kernel/include/powerpc64.in	2009-08-05 17:00:31.000000000 -0400
-@@ -1,26 +1,26 @@
--timer_create 240
--timer_settime 241
--timer_delete 244
--clock_settime 245
--clock_gettime 246
--splice 283
--tee 284
--vmsplice 285
--openat 286
--mkdirat (__NR_openat  1)
--mknodat (__NR_openat  2)
--fchownat (__NR_openat  3)
--futimesat (__NR_openat  4)
--newfstatat (__NR_openat  5)
--fstatat64 (__NR_openat  5)
--unlinkat (__NR_openat  6)
--renameat (__NR_openat  7)
--linkat (__NR_openat  8)
--symlinkat (__NR_openat  9)
--readlinkat (__NR_openat  10)
--fchmodat (__NR_openat  11)
--faccessat (__NR_openat  12)
--utimensat 304
--eventfd 307
--fallocate 309
--eventfd2 314
-+__NR_timer_create 240
-+__NR_timer_settime 241
-+__NR_timer_delete 244
-+__NR_clock_settime 245
-+__NR_clock_gettime 246
-+__NR_splice 283
-+__NR_tee 284
-+__NR_vmsplice 285
-+__NR_openat 286
-+__NR_mkdirat (__NR_openat + 1)
-+__NR_mknodat (__NR_openat + 2)
-+__NR_fchownat (__NR_openat + 3)
-+__NR_futimesat (__NR_openat + 4)
-+__NR_newfstatat (__NR_openat + 5)
-+__NR_fstatat64 (__NR_openat + 5)
-+__NR_unlinkat (__NR_openat + 6)
-+__NR_renameat (__NR_openat + 7)
-+__NR_linkat (__NR_openat + 8)
-+__NR_symlinkat (__NR_openat + 9)
-+__NR_readlinkat (__NR_openat + 10)
-+__NR_fchmodat (__NR_openat + 11)
-+__NR_faccessat (__NR_openat + 12)
-+__NR_utimensat 304
-+__NR_eventfd 307
-+__NR_fallocate 309
-+__NR_eventfd2 314
-diff -Nurp ltp-full-20090731.orig/testcases/kernel/include/powerpc.in ltp-full-20090731.new/testcases/kernel/include/powerpc.in
---- ltp-full-20090731.orig/testcases/kernel/include/powerpc.in	2009-07-20 00:41:11.000000000 -0400
-+++ ltp-full-20090731.new/testcases/kernel/include/powerpc.in	2009-08-05 16:57:47.000000000 -0400
-@@ -1,27 +1,27 @@
--timer_create 240
--timer_settime 241
--timer_delete 244
--clock_settime 245
--clock_gettime 246
--splice 283
--tee 284
--vmsplice 285
--openat 286
--mkdirat (__NR_openat  1)
--mknodat (__NR_openat  2)
--fchownat (__NR_openat  3)
--futimesat (__NR_openat  4)
--newfstatat (__NR_openat  5)
--fstatat64 (__NR_openat  5)
--unlinkat (__NR_openat  6)
--renameat (__NR_openat  7)
--linkat (__NR_openat  8)
--symlinkat (__NR_openat  9)
--readlinkat (__NR_openat  10)
--fchmodat (__NR_openat  11)
--faccessat (__NR_openat  12)
--utimensat 304
--eventfd 307
--fallocate 309
--eventfd2 314
--perf_counter_open 319
-+__NR_timer_create 240
-+__NR_timer_settime 241
-+__NR_timer_delete 244
-+__NR_clock_settime 245
-+__NR_clock_gettime 246
-+__NR_splice 283
-+__NR_tee 284
-+__NR_vmsplice 285
-+__NR_openat 286
-+__NR_mkdirat (__NR_openat + 1)
-+__NR_mknodat (__NR_openat + 2)
-+__NR_fchownat (__NR_openat + 3)
-+__NR_futimesat (__NR_openat + 4)
-+__NR_newfstatat (__NR_openat + 5)
-+__NR_fstatat64 (__NR_openat + 5)
-+__NR_unlinkat (__NR_openat + 6)
-+__NR_renameat (__NR_openat + 7)
-+__NR_linkat (__NR_openat + 8)
-+__NR_symlinkat (__NR_openat + 9)
-+__NR_readlinkat (__NR_openat + 10)
-+__NR_fchmodat (__NR_openat + 11)
-+__NR_faccessat (__NR_openat + 12)
-+__NR_utimensat 304
-+__NR_eventfd 307
-+__NR_fallocate 309
-+__NR_eventfd2 314
-+__NR_perf_counter_open 319
-
---=-gYWGJSRkVkRwJDeybhZ+
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Huang Ying <ying.huang@intel.com>
+Cc: "Kleen, Andi" <andi.kleen@intel.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+
+On Thu, 2009-08-06 at 09:18 +0800, Huang Ying wrote: 
+> On Thu, 2009-08-06 at 01:55 +0800, Subrata Modak wrote:
+> > Hi Huang Ying,
+> > 
+> > On Wed, 2009-08-05 at 16:25 +0530, Subrata Modak wrote:
+> > > Hi Huang Ying,
+> > > 
+> > > >On Tue, 2009-06-30 at 10:56 +0800, Huang Ying wrote:
+> > > >Hi, All,
+> > > > 
+> > > > We are working on a test suite to test the Linux kernel MCE handling
+> > > > logic named mce-test, which can be find at:
+> > > > git://git.kernel.org/pub/scm/utils/cpu/mce/mce-test.git. There is a
+> > > > HOWTO for it, which is attached with the mail.
+> > > > 
+> > > > We think the testing target of mce-test is part of that of LTP, so it is
+> > > > better to integrate mce-test into LTP. Do you think so?
+> > > > 
+> > > > As for integration scheme, maybe we can first add mce-test into LTP as a
+> > > > separate test case, just as kdump test case. What's your opinions?
+> > > > 
+> > > > Any comment is welcome!
+> > > > 
+> > > 
+> > > Sorry for the very late response to your proposal. Please find below the
+> > > first patch which will integrate the existing mce-test to LTP. I had just
+> > > done a sanity checking of building it. The following patch will still need:
+> > > 
+> > > 1) Exclusive testing and sharing those results with the LTP community,
+> > 
+> > My initial first tests results are:
+> > 
+> > # uname -a
+> > Linux x206f 2.6.29-gcov #1 SMP Fri Jun 19 12:14:27 IST 2009 i686 i686
+> > i386 GNU/Linux
+> 
+> mce-test needs at least Linux kernel 2.6.31-rc? and some additional
+> injection related patches from:
+> http://ftp.kernel.org/pub/linux/kernel/people/yhuang/mce/. We are
+> working on pushing these additional patches into 2.6.32.
+> 
+
+Can you please then provide this information inside mce-test/README, so
+that users are exactly aware of:
+
+     1. Which kernel to pick up, 
+     2. Which additional patches to apply, 
+     3. Which config options to set,
+
+before building and running these tests.
+
+Once mainline stable releases are through, you can then again update
+mce-test/README with similar information.
+
+I would like people to start doing some testing with your present
+mce-test as well. As suggested by Andi, please drop in:
+
+     1. a minimal patch which adds the tests(you want) to LTP, 
+     2. update mce-test/README in the same patch with all the above
+        info, 
+     3. attach test results against the patches you have dropped to ltp,
+
+Regards--
+Subrata
+
+> Best Regards,
+> Huang Ying
+> 
+> 
+
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---=-gYWGJSRkVkRwJDeybhZ+
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---=-gYWGJSRkVkRwJDeybhZ+--
-
-
