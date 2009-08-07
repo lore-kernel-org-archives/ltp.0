@@ -1,20 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MgKnr-0008Fl-5Z
-	for ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 15:52:51 +0000
-Received: from vervifontaine.sonytel.be ([80.88.33.193]
-	helo=pophost.sonytel.be) by 3b2kzd1.ch3.sourceforge.com with esmtp 
-	(Exim 4.69) id 1MgKno-00026n-8o
-	for ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 15:52:51 +0000
-Date: Wed, 26 Aug 2009 17:52:42 +0200 (CEST)
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-In-Reply-To: <4A8C4246.4060607@canonical.com>
-Message-ID: <alpine.LRH.2.00.0908261748140.17269@vixen.sonytel.be>
-References: <4A8C4246.4060607@canonical.com>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MZKHJ-0004sU-SU
+	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 07:54:17 +0000
+Received: from qw-out-1920.google.com ([74.125.92.147])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MZKHF-0000P5-9C
+	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 07:54:17 +0000
+Received: by qw-out-1920.google.com with SMTP id 5so539656qwc.4
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 07 Aug 2009 00:54:07 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [LTP] fix for file_test for systems without rpm installed
+In-Reply-To: <4A7BC3F0.9090508@petalogix.com>
+References: <1249305859-23722-1-git-send-email-michal.simek@petalogix.com>
+	<0f2557dbada823cdbdf1080b36ca0cf41d29c58f.1249304223.git.monstr@monstr.eu>
+	<b27f5b6149545ef2a1f3483d14d51d29f83aa7c6.1249304223.git.monstr@monstr.eu>
+	<364299f40908061837r4f27c93at80061628cb8e880c@mail.gmail.com>
+	<4A7BC3F0.9090508@petalogix.com>
+Date: Fri, 7 Aug 2009 00:54:07 -0700
+Message-ID: <364299f40908070054r7d2ef714na75ce466f08513cf@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH 2/4] tst_is_cwd: Add support for ramfs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,73 +31,55 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Paul Larson <paul.larson@canonical.com>
-Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
+To: michal.simek@petalogix.com
+Cc: ltp-list@lists.sourceforge.net
 
-On Wed, 19 Aug 2009, Paul Larson wrote:
-> Here's the fixed version, forgot I needed to redo these...
-> =
+On Thu, Aug 6, 2009 at 11:04 PM, Michal Simek<michal.simek@petalogix.com> wrote:
+> Hi,
+>
+>> On Mon, Aug 3, 2009 at 6:24 AM, <michal.simek@petalogix.com> wrote:
+>>> From: Michal Simek <monstr@monstr.eu>
+>>>
+>>> I added support for testing ramfs and add together
+>>> tests for nfs, tmpfs and ramfs.
+>>
+>> [...]
+>>
+>> Hi Michal,
+>>
+>> I'm looking at this code to solve another interesting problem, but
+>> just out of curiosity -- why did you #define the constants instead of
+>> using the definitions in sys/vfs.h? To ensure that the manpage was
+>> correct :)?
+>
+> Not though about. Just find value and add it like for others.
 
-> If you run file_test.sh on a system without rpm installed, it should
-> return tconf instead of tfail.
-> =
+It'd be better if we used #ifndef - #define - #endif though, right?
 
-> Signed-off-by: Paul Larson <paul.larson@canonical.com>
-> ---
+> But anyway for Ramfs I don't have that value in toolchain. For tmpfs and nfs I have.
+> From my quick look the problem seems to be that ramfs magic is not in linux/magic.h
+> but in fs/ramfs/inode.c which is wrong.
 
-> index 4fc9dec..4e30d43 100755
-> --- a/testcases/commands/ade/file/file_test.sh
-> +++ b/testcases/commands/ade/file/file_test.sh
-> @@ -582,11 +587,7 @@ fi
->  export TCID=3Dfile10
->  export TST_COUNT=3D10
->  =
+Well, that's something that should be filed as a bug and cleaned up,
+right :)? It's better to have those exposed so folks can use it.
 
-> -if [ -f /etc/redhat-release ]; then
-> -   KERNEL=3Dvmlinuz
-> -else
-> -   KERNEL=3Dvmlinux
-> -fi
-> +KERNEL=3Dvmlinu
->  =
+> What interesting problem?
 
->  $LTPBIN/tst_resm TINFO "TEST #10: file command recognizes $KERNEL file"
+We boot off nfs rootfs and I was trying to find a way to determine
+whether or not something was initramfs, so we could call
+default_rootfs() from init_post(), only when initramfs is not present
+and mounted as root -- would this in fact apply?
 
-I guess this change was not supposed to be part of this patch?
+Thanks,
+-Garrett
 
-Not that I'm complaining, as it fixes another vmlinuz vs. vmlinux mismatch I
-was seeing ;-)
-
-With kind regards,
-
-Geert Uytterhoeven
-Software Architect
-Techsoft Centre
-
-Technology and Software Centre Europe
-The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Belgium
-
-Phone:    +32 (0)2 700 8453
-Fax:      +32 (0)2 700 8622
-E-mail:   Geert.Uytterhoeven@sonycom.com
-Internet: http://www.sony-europe.com/
-
-A division of Sony Europe (Belgium) N.V.
-VAT BE 0413.825.160 =B7 RPR Brussels
-Fortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
-
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
-
-trial. Simplify your report design, integration and deployment - and focus =
-on =
-
-what you do best, core application coding. Discover what's new with =
-
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
