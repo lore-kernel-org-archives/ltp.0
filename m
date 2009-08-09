@@ -2,18 +2,27 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <caiqian@cclom.cn>) id 1MfHt2-0006bU-Hi
-	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 18:33:52 +0000
-Received: from smtp103.biz.mail.mud.yahoo.com ([68.142.200.238])
-	by 1b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1MfHsu-0002g7-Bm
-	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 18:33:52 +0000
-Date: Mon, 24 Aug 2009 02:37:36 +0800 (CST)
-Message-Id: <20090824.023736.115924320.caiqian@cclom.cn>
-From: CAI Qian <caiqian@cclom.cn>
-Mime-Version: 1.0
-Subject: [LTP] [PATCH] Let set_thread_area Choose either user_desc or
- modify_ldt_ldt_s
+	(envelope-from <yanegomi@gmail.com>) id 1MZz3P-0002mW-Gu
+	for ltp-list@lists.sourceforge.net; Sun, 09 Aug 2009 03:26:39 +0000
+Received: from qw-out-1920.google.com ([74.125.92.148])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MZz3J-0007My-Tz
+	for ltp-list@lists.sourceforge.net; Sun, 09 Aug 2009 03:26:39 +0000
+Received: by qw-out-1920.google.com with SMTP id 5so866180qwc.4
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 08 Aug 2009 20:26:28 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <2E55F490-102A-4179-B0F2-ED7F5C0D1A12@kernel.crashing.org>
+References: <E69DB27D-E186-4934-AB69-C5EDB67A48AF@kernel.crashing.org>
+	<1249494775.13131.18.camel@lucio-laptop>
+	<3E7F2B7B-6BA8-4179-B973-5DA7F4D7618A@kernel.crashing.org>
+	<364299f40908061024l42cd1200n99e6e762a77c91d2@mail.gmail.com>
+	<D4B24F3A-3BF2-41BA-9626-2D13AC12B515@kernel.crashing.org>
+	<2E55F490-102A-4179-B0F2-ED7F5C0D1A12@kernel.crashing.org>
+Date: Sat, 8 Aug 2009 20:26:28 -0700
+Message-ID: <364299f40908082026r1fa95822p538298b334eaaefa@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] top of tree fails to build on PPC fc11 box
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,145 +32,62 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sf.net
+To: Kumar Gala <galak@kernel.crashing.org>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-Old glibc (like in RHEL4) has modify_ldt_ldt_s instead of user_desc
-structure defined in asm/ldt.h. It should follow the example of
-modify_ldt test cases to choose the feasible structure based on
-build-time checking. Also, a new header file has been created to handle
-code duplication.
+On Thu, Aug 6, 2009 at 11:07 AM, Kumar Gala<galak@kernel.crashing.org> wrot=
+e:
+>
+> On Aug 6, 2009, at 12:43 PM, Kumar Gala wrote:
+>
+>>> =A0Ok. I have the time now so I'll install F11 amd64 and see what
+>>> happens. Something leads me to think that the build toolchain is
+>>> fubared, but that's just a hunch, as my copy of F10 (the last time I
+>>> ran the build) worked.
+>>> Thanks,
+>>> -Garrett
+>>
+>> interesting since I saw the same issues w/F10 amd64.
+>>
+>> - k
+>
+> I also just tried installing clean versions of automake, autoconf, m4 to
+> match the versions in the INSTALL file and got:
+>
+> autoconf-2.61
+> automake-1.10.2
+> m4-1.4.12
+>
+> and still get the same issue:
+>
+> touch config.mk
+> aclocal -I m4
+> autoconf
+> configure.ac:9: error: possibly undefined macro: AC_PROG_AR
+> =A0 =A0 If this token and others are legitimate, please use m4_pattern_al=
+low.
+> =A0 =A0 See the Autoconf documentation.
+> make: *** [configure] Error 1
 
-Signed-off-by: CAI Qian <caiqian@cclom.cn>
+Kumar,
+    I have no idea what's wrong with your install, but it compiles
+perfectly fine on Fedora 11 / x86. I'll try with Fedora 10 in a few
+mins...
+Thanks,
+-Garrett
 
- .../syscalls/set_thread_area/set_thread_area.h     |   32 ++++++++++++++++++++
- .../syscalls/set_thread_area/set_thread_area01.c   |   13 +-------
- .../syscalls/set_thread_area/set_thread_area02.c   |   14 +-------
- 3 files changed, 36 insertions(+), 23 deletions(-)
+---------------------------------------------------------------------------=
+---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
 
-diff --git a/testcases/kernel/syscalls/set_thread_area/set_thread_area.h b/testcases/kernel/syscalls/set_thread_area/set_thread_area.h
-new file mode 100644
-index 0000000..66e9278
---- /dev/null
-+++ b/testcases/kernel/syscalls/set_thread_area/set_thread_area.h
-@@ -0,0 +1,32 @@
-+#include <stdio.h>
-+#include <errno.h>
-+#include <linux/unistd.h>
-+
-+/* Harness Specific Include Files. */
-+#include "test.h"
-+#include "usctest.h"
-+#include "linux_syscall_numbers.h"
-+#include "config.h"
-+
-+#if defined HAVE_ASM_LDT_H
-+#include <asm/ldt.h>
-+
-+#if defined HAVE_STRUCT_USER_DESC
-+typedef struct user_desc thread_area_s;
-+#elif defined HAVE_STRUCT_MODIFY_LDT_LDT_S
-+typedef struct modify_ldt_ldt_s thread_area_s;
-+#else
-+typedef struct user_desc {
-+	unsigned int entry_number;
-+	unsigned long int base_addr;
-+	unsigned int limit;
-+	unsigned int seg_32bit:1;
-+	unsigned int contents:2;
-+	unsigned int read_exec_only:1;
-+	unsigned int limit_in_pages:1;
-+	unsigned int seg_not_present:1;
-+	unsigned int useable:1;
-+	unsigned int empty:25;
-+} thread_area_s;
-+#endif /* HAVE_STRUCT_USER_DESC */
-+#endif /* HAVE_ASM_LDT_H */
-diff --git a/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c b/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c
-index 6f10c05..a6aacf8 100644
---- a/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c
-+++ b/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c
-@@ -48,15 +48,8 @@
- /* History:     Porting from Crackerjack to LTP is done by                    */
- /*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
- /******************************************************************************/
--#include <stdio.h>
--#include <errno.h>
--#include <linux/unistd.h>
-+#include "set_thread_area.h"
- 
--/* Harness Specific Include Files. */
--#include "test.h"
--#include "usctest.h"
--#include "linux_syscall_numbers.h"
--#include "config.h"
- 
- /* Global Variables */
- char *TCID = "set_thread_area01";  /* Test program identifier.*/
-@@ -64,8 +57,6 @@ int  testno;
- int  TST_TOTAL = 2;                   /* total number of tests in this file.   */
- 
- #if defined HAVE_ASM_LDT_H
--#include <asm/ldt.h>
--
- /* Extern Global Variables */
- extern int Tst_count;           /* counter for tst_xxx routines.         */
- extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
-@@ -124,7 +115,7 @@ void setup() {
- 
- int main(int ac, char **av) {
-         
--	struct user_desc u_info;
-+        thread_area_s u_info;
-         int lc;                 /* loop counter */
-         char *msg;              /* message returned from parse_opts */
- 	
-diff --git a/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c b/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c
-index 3effebd..1b351c1 100644
---- a/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c
-+++ b/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c
-@@ -49,15 +49,7 @@
- /* History:     Porting from Crackerjack to LTP is done by                    */
- /*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
- /******************************************************************************/
--#include <stdio.h>
--#include <errno.h>
--#include <linux/unistd.h>
--
--/* Harness Specific Include Files. */
--#include "test.h"
--#include "usctest.h"
--#include "linux_syscall_numbers.h"
--#include "config.h"
-+#include "set_thread_area.h"
- 
- /* Global Variables */
- char *TCID = "set_thread_area_02";  /* Test program identifier.*/
-@@ -65,8 +57,6 @@ int  testno;
- int  TST_TOTAL = 3;                   /* total number of tests in this file.   */
- 
- #if defined HAVE_ASM_LDT_H
--#include <asm/ldt.h>
--
- /* Extern Global Variables */
- extern int Tst_count;           /* counter for tst_xxx routines.         */
- extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
-@@ -125,7 +115,7 @@ void setup() {
- 
- int main(int ac, char **av) {
-         
--	struct user_desc u_info;
-+	thread_area_s u_info;
-         int lc;                 /* loop counter */
-         char *msg;              /* message returned from parse_opts */
- 	
+trial. Simplify your report design, integration and deployment - and focus =
+on =
 
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
+what you do best, core application coding. Discover what's new with =
+
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
