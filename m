@@ -1,34 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MZOlr-0000H4-7L
-	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 12:42:07 +0000
-Received: from e35.co.us.ibm.com ([32.97.110.153])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MZOlk-0006He-Ex
-	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 12:42:07 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e35.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n77CX9fU006391
-	for <ltp-list@lists.sourceforge.net>; Fri, 7 Aug 2009 06:33:09 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n77Cfok7245354
-	for <ltp-list@lists.sourceforge.net>; Fri, 7 Aug 2009 06:41:50 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n77CfjVW027294
-	for <ltp-list@lists.sourceforge.net>; Fri, 7 Aug 2009 06:41:49 -0600
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MaQ8C-0005WQ-KC
+	for ltp-list@lists.sourceforge.net; Mon, 10 Aug 2009 08:21:24 +0000
+Received: from e7.ny.us.ibm.com ([32.97.182.137])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MaQ85-0000U6-AY
+	for ltp-list@lists.sourceforge.net; Mon, 10 Aug 2009 08:21:24 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e7.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7A8KTVP007712
+	for <ltp-list@lists.sourceforge.net>; Mon, 10 Aug 2009 04:20:29 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7A8LB8S112634
+	for <ltp-list@lists.sourceforge.net>; Mon, 10 Aug 2009 04:21:11 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7A8LB4e003478
+	for <ltp-list@lists.sourceforge.net>; Mon, 10 Aug 2009 04:21:11 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1249521485.24238.308.camel@yhuang-dev.sh.intel.com>
-References: <20090805105529.23399.60242.sendpatchset@subratamodak.linux.ibm.com>
-	<1249494939.3623.12.camel@subratamodak.linux.ibm.com>
-	<1249521485.24238.308.camel@yhuang-dev.sh.intel.com>
-Date: Fri, 07 Aug 2009 18:11:36 +0530
-Message-Id: <1249648896.4851.40.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <f5a7b3810908070843r77eb24b3i57a8ce4a6a929362@mail.gmail.com>
+References: <f5a7b3810906300005q2cafdd3dtfe4d659ae6834bb@mail.gmail.com>
+	<20090721044529.GB9807@jenkins.home.ifup.org>
+	<f5a7b3810907210622o1539087al1eca42cc900e9a02@mail.gmail.com>
+	<f5a7b3810908070059x33ffce53n6b00e999232101e2@mail.gmail.com>
+	<1249648941.4851.47.camel@subratamodak.linux.ibm.com>
+	<f5a7b3810908070843r77eb24b3i57a8ce4a6a929362@mail.gmail.com>
+Date: Mon, 10 Aug 2009 13:50:41 +0530
+Message-Id: <1249892442.5187.13.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Integration of MCE test suite into LTP
+Subject: Re: [LTP] [PATCH v2] mq_send/5-1.c: Fix race conditions in the test
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -42,78 +44,429 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Huang Ying <ying.huang@intel.com>
-Cc: "Kleen, Andi" <andi.kleen@intel.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Brandon Philips <bphilips@suse.de>, maxin john <maxinbjohn@gmail.com>
 
-On Thu, 2009-08-06 at 09:18 +0800, Huang Ying wrote: 
-> On Thu, 2009-08-06 at 01:55 +0800, Subrata Modak wrote:
-> > Hi Huang Ying,
-> > 
-> > On Wed, 2009-08-05 at 16:25 +0530, Subrata Modak wrote:
-> > > Hi Huang Ying,
-> > > 
-> > > >On Tue, 2009-06-30 at 10:56 +0800, Huang Ying wrote:
-> > > >Hi, All,
-> > > > 
-> > > > We are working on a test suite to test the Linux kernel MCE handling
-> > > > logic named mce-test, which can be find at:
-> > > > git://git.kernel.org/pub/scm/utils/cpu/mce/mce-test.git. There is a
-> > > > HOWTO for it, which is attached with the mail.
-> > > > 
-> > > > We think the testing target of mce-test is part of that of LTP, so it is
-> > > > better to integrate mce-test into LTP. Do you think so?
-> > > > 
-> > > > As for integration scheme, maybe we can first add mce-test into LTP as a
-> > > > separate test case, just as kdump test case. What's your opinions?
-> > > > 
-> > > > Any comment is welcome!
-> > > > 
-> > > 
-> > > Sorry for the very late response to your proposal. Please find below the
-> > > first patch which will integrate the existing mce-test to LTP. I had just
-> > > done a sanity checking of building it. The following patch will still need:
-> > > 
-> > > 1) Exclusive testing and sharing those results with the LTP community,
-> > 
-> > My initial first tests results are:
-> > 
-> > # uname -a
-> > Linux x206f 2.6.29-gcov #1 SMP Fri Jun 19 12:14:27 IST 2009 i686 i686
-> > i386 GNU/Linux
+> >
+> > And then resend.
 > 
-> mce-test needs at least Linux kernel 2.6.31-rc? and some additional
-> injection related patches from:
-> http://ftp.kernel.org/pub/linux/kernel/people/yhuang/mce/. We are
-> working on pushing these additional patches into 2.6.32.
+> I am resending the same patch after this change.
 > 
+> Best regards,
+> Naresh Kamboju
+> 
+> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
 
-Can you please then provide this information inside mce-test/README, so
-that users are exactly aware of:
+Thanks. Applied. However, they create the following avoidable issues.
+Please take care next time while creating a patch :-)
 
-     1. Which kernel to pick up, 
-     2. Which additional patches to apply, 
-     3. Which config options to set,
-
-before building and running these tests.
-
-Once mainline stable releases are through, you can then again update
-mce-test/README with similar information.
-
-I would like people to start doing some testing with your present
-mce-test as well. As suggested by Andi, please drop in:
-
-     1. a minimal patch which adds the tests(you want) to LTP, 
-     2. update mce-test/README in the same patch with all the above
-        info, 
-     3. attach test results against the patches you have dropped to ltp,
+(Stripping trailing CRs from patch.)
+patching file
+testcases/open_posix_testsuite/conformance/interfaces/mq_send/5-1.c
+(Stripping trailing CRs from patch.)
+patching file testcases/open_posix_testsuite/include/mq_send.h
+(Stripping trailing CRs from patch.)
+patching file testcases/open_posix_testsuite/include/posixtest.h
 
 Regards--
 Subrata
 
-> Best Regards,
-> Huang Ying
 > 
+> diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/mq_send/5-1.c
+> b/testcases/open_posix_testsuite/conformance/interfaces/mq_send/5-1.c
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/mq_send/5-1.c	2008-12-12
+> 18:26:25.000000000 +0530
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mq_send/5-1.c	2009-08-07
+> 11:29:42.000000000 +0530
+> @@ -37,6 +37,7 @@
+>  #include <signal.h>
+>  #include <errno.h>
+>  #include "posixtest.h"
+> +#include "mq_send.h"
 > 
+>  #define NAMESIZE 50
+>  #define MSGSTR "0123456789"
+> diff -Naurb a/testcases/open_posix_testsuite/include/mq_send.h
+> b/testcases/open_posix_testsuite/include/mq_send.h
+> --- a/testcases/open_posix_testsuite/include/mq_send.h	1970-01-01
+> 05:30:00.000000000 +0530
+> +++ b/testcases/open_posix_testsuite/include/mq_send.h	2009-08-07
+> 11:28:41.000000000 +0530
+> @@ -0,0 +1,92 @@
+> +
+> +/*
+> + * Copyright (c) 2002, Intel Corporation.
+> + * Created by:  julie.n.fleischer REMOVE-THIS AT intel DOT com
+> + * This file is licensed under the GPL license.  For the full content
+> + * of this license, see the COPYING file at the top level of this
+> + * source tree.
+> + */
+> +
+> +
+> +#include <sys/select.h>
+> +
+> +
+> +int sync_pipe_create(int fd[])
+> +{
+> +        return pipe (fd);
+> +}
+> +
+> +int sync_pipe_close(int fd[])
+> +{
+> +        int r = 0;
+> +
+> +        if (fd[0] != -1)
+> +                r = close (fd[0]);
+> +        if (fd[1] != -1)
+> +                r |= close (fd[1]);
+> +        return r;
+> +}
+> +
+> +int sync_pipe_wait(int fd[])
+> +{
+> +        char buf;
+> +        int r;
+> +
+> +        if (fd[1] != -1) {
+> +                close (fd[1]);
+> +                fd[1] = -1;
+> +        }
+> +
+> +        r = read (fd[0], &buf, 1);
+> +
+> +        if ((r != 1) || (buf != 'A'))
+> +                return -1;
+> +        return 0;
+> +}
+> +
+> +int sync_pipe_wait_select(int fd[], long tv_sec)
+> +{
+> +        char buf;
+> +        int r;
+> +       fd_set rfds;
+> +       struct timeval tv;
+> +       int err;
+> +
+> +       tv.tv_sec = tv_sec;
+> +       tv.tv_usec = 0;
+> +
+> +        if (fd[1] != -1) {
+> +                close (fd[1]);
+> +                fd[1] = -1;
+> +        }
+> +
+> +       FD_ZERO(&rfds);
+> +       FD_SET(fd[0], &rfds);
+> +
+> +       r = select(fd[0] + 1, &rfds, NULL, NULL, &tv);
+> +       err = errno;
+> +
+> +       if (FD_ISSET(fd[0], &rfds)) {
+> +               return sync_pipe_wait(fd);
+> +       }
+> +
+> +       return r ? err : -ETIMEDOUT;
+> +}
+> +
+> +
+> +int sync_pipe_notify(int fd[])
+> +{
+> +        char buf = 'A';
+> +        int r;
+> +
+> +        if (fd[0] != -1) {
+> +                close (fd[0]);
+> +                fd[0] = -1;
+> +        }
+> +
+> +        r = write (fd[1], &buf, 1);
+> +
+> +        if (r != 1)
+> +                return -1;
+> +        return 0;
+> +}
+> diff -Naurb a/testcases/open_posix_testsuite/include/posixtest.h
+> b/testcases/open_posix_testsuite/include/posixtest.h
+> --- a/testcases/open_posix_testsuite/include/posixtest.h	2009-08-06
+> 21:49:42.000000000 +0530
+> +++ b/testcases/open_posix_testsuite/include/posixtest.h	2009-08-07
+> 11:28:41.000000000 +0530
+> @@ -15,86 +15,3 @@
+>  #define PTS_UNSUPPORTED 4
+>  #define PTS_UNTESTED    5
+> 
+> -
+> -#include <sys/select.h>
+> -
+> -
+> -int sync_pipe_create(int fd[])
+> -{
+> -        return pipe (fd);
+> -}
+> -
+> -int sync_pipe_close(int fd[])
+> -{
+> -        int r = 0;
+> -
+> -        if (fd[0] != -1)
+> -                r = close (fd[0]);
+> -        if (fd[1] != -1)
+> -                r |= close (fd[1]);
+> -        return r;
+> -}
+> -
+> -int sync_pipe_wait(int fd[])
+> -{
+> -        char buf;
+> -        int r;
+> -
+> -        if (fd[1] != -1) {
+> -                close (fd[1]);
+> -                fd[1] = -1;
+> -        }
+> -
+> -        r = read (fd[0], &buf, 1);
+> -
+> -        if ((r != 1) || (buf != 'A'))
+> -                return -1;
+> -        return 0;
+> -}
+> -
+> -int sync_pipe_wait_select(int fd[], long tv_sec)
+> -{
+> -        char buf;
+> -        int r;
+> -       fd_set rfds;
+> -       struct timeval tv;
+> -       int err;
+> -
+> -       tv.tv_sec = tv_sec;
+> -       tv.tv_usec = 0;
+> -
+> -        if (fd[1] != -1) {
+> -                close (fd[1]);
+> -                fd[1] = -1;
+> -        }
+> -
+> -       FD_ZERO(&rfds);
+> -       FD_SET(fd[0], &rfds);
+> -
+> -       r = select(fd[0] + 1, &rfds, NULL, NULL, &tv);
+> -       err = errno;
+> -
+> -       if (FD_ISSET(fd[0], &rfds)) {
+> -               return sync_pipe_wait(fd);
+> -       }
+> -
+> -       return r ? err : -ETIMEDOUT;
+> -}
+> -
+> -
+> -int sync_pipe_notify(int fd[])
+> -{
+> -        char buf = 'A';
+> -        int r;
+> -
+> -        if (fd[0] != -1) {
+> -                close (fd[0]);
+> -                fd[0] = -1;
+> -        }
+> -
+> -        r = write (fd[1], &buf, 1);
+> -
+> -        if (r != 1)
+> -                return -1;
+> -        return 0;
+> -}
+> 
+> >
+> > Regards--
+> > Subrata
+> >
+> >> + * Created by:  julie.n.fleischer REMOVE-THIS AT intel DOT com
+> >> + * This file is licensed under the GPL license.  For the full content
+> >> + * of this license, see the COPYING file at the top level of this
+> >> + * source tree.
+> >> + */
+> >> +
+> >> +
+> >> +#include <sys/select.h>
+> >> +
+> >> +
+> >> +int sync_pipe_create(int fd[])
+> >> +{
+> >> +        return pipe (fd);
+> >> +}
+> >> +
+> >> +int sync_pipe_close(int fd[])
+> >> +{
+> >> +        int r = 0;
+> >> +
+> >> +        if (fd[0] != -1)
+> >> +                r = close (fd[0]);
+> >> +        if (fd[1] != -1)
+> >> +                r |= close (fd[1]);
+> >> +        return r;
+> >> +}
+> >> +
+> >> +int sync_pipe_wait(int fd[])
+> >> +{
+> >> +        char buf;
+> >> +        int r;
+> >> +
+> >> +        if (fd[1] != -1) {
+> >> +                close (fd[1]);
+> >> +                fd[1] = -1;
+> >> +        }
+> >> +
+> >> +        r = read (fd[0], &buf, 1);
+> >> +
+> >> +        if ((r != 1) || (buf != 'A'))
+> >> +                return -1;
+> >> +        return 0;
+> >> +}
+> >> +
+> >> +int sync_pipe_wait_select(int fd[], long tv_sec)
+> >> +{
+> >> +        char buf;
+> >> +        int r;
+> >> +       fd_set rfds;
+> >> +       struct timeval tv;
+> >> +       int err;
+> >> +
+> >> +       tv.tv_sec = tv_sec;
+> >> +       tv.tv_usec = 0;
+> >> +
+> >> +        if (fd[1] != -1) {
+> >> +                close (fd[1]);
+> >> +                fd[1] = -1;
+> >> +        }
+> >> +
+> >> +       FD_ZERO(&rfds);
+> >> +       FD_SET(fd[0], &rfds);
+> >> +
+> >> +       r = select(fd[0] + 1, &rfds, NULL, NULL, &tv);
+> >> +       err = errno;
+> >> +
+> >> +       if (FD_ISSET(fd[0], &rfds)) {
+> >> +               return sync_pipe_wait(fd);
+> >> +       }
+> >> +
+> >> +       return r ? err : -ETIMEDOUT;
+> >> +}
+> >> +
+> >> +
+> >> +int sync_pipe_notify(int fd[])
+> >> +{
+> >> +        char buf = 'A';
+> >> +        int r;
+> >> +
+> >> +        if (fd[0] != -1) {
+> >> +                close (fd[0]);
+> >> +                fd[0] = -1;
+> >> +        }
+> >> +
+> >> +        r = write (fd[1], &buf, 1);
+> >> +
+> >> +        if (r != 1)
+> >> +                return -1;
+> >> +        return 0;
+> >> +}
+> >> diff -Naurb a/testcases/open_posix_testsuite/include/posixtest.h
+> >> b/testcases/open_posix_testsuite/include/posixtest.h
+> >> --- a/testcases/open_posix_testsuite/include/posixtest.h      2009-08-06
+> >> 21:49:42.000000000 +0530
+> >> +++ b/testcases/open_posix_testsuite/include/posixtest.h      2009-08-07
+> >> 11:28:41.000000000 +0530
+> >> @@ -15,86 +15,3 @@
+> >>  #define PTS_UNSUPPORTED 4
+> >>  #define PTS_UNTESTED    5
+> >>
+> >> -
+> >> -#include <sys/select.h>
+> >> -
+> >> -
+> >> -int sync_pipe_create(int fd[])
+> >> -{
+> >> -        return pipe (fd);
+> >> -}
+> >> -
+> >> -int sync_pipe_close(int fd[])
+> >> -{
+> >> -        int r = 0;
+> >> -
+> >> -        if (fd[0] != -1)
+> >> -                r = close (fd[0]);
+> >> -        if (fd[1] != -1)
+> >> -                r |= close (fd[1]);
+> >> -        return r;
+> >> -}
+> >> -
+> >> -int sync_pipe_wait(int fd[])
+> >> -{
+> >> -        char buf;
+> >> -        int r;
+> >> -
+> >> -        if (fd[1] != -1) {
+> >> -                close (fd[1]);
+> >> -                fd[1] = -1;
+> >> -        }
+> >> -
+> >> -        r = read (fd[0], &buf, 1);
+> >> -
+> >> -        if ((r != 1) || (buf != 'A'))
+> >> -                return -1;
+> >> -        return 0;
+> >> -}
+> >> -
+> >> -int sync_pipe_wait_select(int fd[], long tv_sec)
+> >> -{
+> >> -        char buf;
+> >> -        int r;
+> >> -       fd_set rfds;
+> >> -       struct timeval tv;
+> >> -       int err;
+> >> -
+> >> -       tv.tv_sec = tv_sec;
+> >> -       tv.tv_usec = 0;
+> >> -
+> >> -        if (fd[1] != -1) {
+> >> -                close (fd[1]);
+> >> -                fd[1] = -1;
+> >> -        }
+> >> -
+> >> -       FD_ZERO(&rfds);
+> >> -       FD_SET(fd[0], &rfds);
+> >> -
+> >> -       r = select(fd[0] + 1, &rfds, NULL, NULL, &tv);
+> >> -       err = errno;
+> >> -
+> >> -       if (FD_ISSET(fd[0], &rfds)) {
+> >> -               return sync_pipe_wait(fd);
+> >> -       }
+> >> -
+> >> -       return r ? err : -ETIMEDOUT;
+> >> -}
+> >> -
+> >> -
+> >> -int sync_pipe_notify(int fd[])
+> >> -{
+> >> -        char buf = 'A';
+> >> -        int r;
+> >> -
+> >> -        if (fd[0] != -1) {
+> >> -                close (fd[0]);
+> >> -                fd[0] = -1;
+> >> -        }
+> >> -
+> >> -        r = write (fd[1], &buf, 1);
+> >> -
+> >> -        if (r != 1)
+> >> -                return -1;
+> >> -        return 0;
+> >> -}
+> >
+> >
 
 
 ------------------------------------------------------------------------------
