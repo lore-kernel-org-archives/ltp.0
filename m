@@ -1,28 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MZOlM-0002ZZ-S4
-	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 12:41:36 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <galak@kernel.crashing.org>) id 1MacnT-0000A0-0U
+	for ltp-list@lists.sourceforge.net; Mon, 10 Aug 2009 21:52:51 +0000
+Received: from gate.crashing.org ([63.228.1.57])
 	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MZOlI-0002A0-VA
-	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 12:41:36 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4A7A85F9.60502@petalogix.com>
-References: <d51f89b0907230130k158cbfbeo31f290cf207432b6@mail.gmail.com>
-	<1248978557.5788.61.camel@subratamodak.linux.ibm.com>
-	<d51f89b0908040422o17ac20f6q36aaff23ea88e839@mail.gmail.com>
-	<1249385096.15587.17.camel@subratamodak.linux.ibm.com>
-	<d51f89b0908040431w6208a47fgbe79b5df30c6268c@mail.gmail.com>
-	<1249387539.15587.24.camel@subratamodak.linux.ibm.com>
-	<d51f89b0908040514w188e9c2obceb53fdd266588a@mail.gmail.com>
-	<4A7A85F9.60502@petalogix.com>
-Date: Fri, 07 Aug 2009 18:11:15 +0530
-Message-Id: <1249648875.4851.35.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] waitid02 testcase fails on 2.6.29 kernel
-Reply-To: subrata@linux.vnet.ibm.com
+	(Exim 4.69) id 1MacnO-0000g9-M1
+	for ltp-list@lists.sourceforge.net; Mon, 10 Aug 2009 21:52:50 +0000
+Message-Id: <9723E7E2-ABB6-40C0-AE3E-AD42B6A57705@kernel.crashing.org>
+From: Kumar Gala <galak@kernel.crashing.org>
+In-Reply-To: <364299f40908100840w329abda8q178a3b8ace628bfe@mail.gmail.com>
+Mime-Version: 1.0 (Apple Message framework v936)
+Date: Mon, 10 Aug 2009 16:52:26 -0500
+References: <1842FA33-8C6C-4BE1-8FB4-B8836F1C8F6E@kernel.crashing.org>
+	<364299f40908061017g44fd05ecv9c6454ebf04badb4@mail.gmail.com>
+	<2A1B6719-9C0B-4271-8A81-1730F79F5E33@kernel.crashing.org>
+	<1249892416.5187.10.camel@subratamodak.linux.ibm.com>
+	<364299f40908100840w329abda8q178a3b8ace628bfe@mail.gmail.com>
+Subject: Re: [LTP] RANLIB not set?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,153 +31,105 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: michal.simek@petalogix.com
-Cc: rohit verma <rohit.170309@gmail.com>, ltp-list <ltp-list@lists.sf.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-On Thu, 2009-08-06 at 09:27 +0200, Michal Simek wrote: 
-> rohit verma wrote:
-> > PFA the patch for waitid02
-> >   
-> I can confirm that this patch fixed problem with waitid02.
-> It is just confirmation - I haven't look at style/patch in detail - just
-> works and pass on Microblaze
-> 
-> Subrate: Do you want to add it to cvs?
 
-Yes. Thanks Rohit.
+On Aug 10, 2009, at 10:40 AM, Garrett Cooper wrote:
 
-Regards--
-Subrata
+> On Mon, Aug 10, 2009 at 1:20 AM, Subrata
+> Modak<subrata@linux.vnet.ibm.com> wrote:
+>> On Fri, 2009-08-07 at 08:14 -0500, Kumar Gala wrote:
+>>> On Aug 6, 2009, at 12:17 PM, Garrett Cooper wrote:
+>>>
+>>>> On Thu, Aug 6, 2009 at 9:18 AM, Kumar
+>>>> Gala<galak@kernel.crashing.org> wrote:
+>>>>> I'm seeing this on fedora 11 on ppc64:
+>>>>>
+>>>>> make[3]: Leaving directory `/root/ltp/testcases/network/ipv6'
+>>>>> make[3]: Entering directory `/root/ltp/testcases/network/lib6'
+>>>>> cc -Wall  -I../../../include -g -D_GNU_SOURCE   -c -o runcc.o  
+>>>>> runcc.c
+>>>>> ar cr runcc.a runcc.o
+>>>>> runcc.a
+>>>>> make[3]: runcc.a: Command not found
+>>>>> make[3]: *** [runcc.a] Error 127
+>>>>> make[3]: Leaving directory `/root/ltp/testcases/network/lib6'
+>>>>> make[2]: *** [all] Error 2
+>>>>> make[2]: Leaving directory `/root/ltp/testcases/network'
+>>>>> make[1]: *** [all] Error 2
+>>>>> make[1]: Leaving directory `/root/ltp/testcases'
+>>>>> make: *** [all] Error 2
+>>>>>
+>>>>> - k
+>>>>
+>>>>    Make sure to export CROSS_COMPILER=1 at the top-level make, or
+>>>> define RANLIB=$(CROSS_COMPILE)ranlib, where $(CROSS_COMPILE) is the
+>>>> prefix for your compiler set, e.g. $(CROSS_COMPILE)gcc.
+>>>>    One of the many things that will be fixed in a more kosher  
+>>>> manner
+>>>> in the next couple months.
+>>>> Thanks,
+>>>> -Garrett
+>>>
+>>> I see you committed a change to the lib6/Makefile for ranlib.  I
+>>> believe we need a similar patch to the toplevel Makefile since it
+>>> exports RANLIB:
+>>>
+>>
+>> True. But, can you create a patch from LTPROOT, as, the below fails  
+>> to
+>> apply:
+>>
+>> patching file Makefile
+>> Hunk #1 FAILED at 9.
+>> 1 out of 1 hunk FAILED -- saving rejects to file Makefile.rej
+>>
+>> Regards--
+>> Subrata
+>>
+>>> diff --git a/Makefile b/Makefile
+>>> index 953eddf..9f8056a 100644
+>>> --- a/Makefile
+>>> +++ b/Makefile
+>>> @@ -9,6 +9,8 @@ AR=$(CROSS_COMPILER)ar
+>>>   RANLIB=$(CROSS_COMPILER)ranlib
+>>>   endif
+>>>
+>>> +RANLIB         ?= ranlib
+>>> +
+>
+> Hi Kumar,
+>    The suggestion you made (noble as it may have been) is completely
+> useless as you're not exporting the variable in the Makefile (and thus
+> the value goes out of scope when you drop into the lower level
+> Makefiles). Please see this link for more details:
+> http://www.gnu.org/software/make/manual/make.html#Variables_002fRecursion
 
-> 
-> Michal
-> 
-> > On Tue, Aug 4, 2009 at 5:35 PM, Subrata Modak<subrata@linux.vnet.ibm.com> wrote:
-> >   
-> >> On Tue, 2009-08-04 at 17:01 +0530, rohit verma wrote:
-> >>     
-> >>> FYI
-> >>>       
-> >> unfortunately, you did not attach the patch itself ;-)
-> >>
-> >> Regards--
-> >> Subrata
-> >>
-> >>     
-> >>> ---------- Forwarded message ----------
-> >>> From: Subrata Modak <subrata@linux.vnet.ibm.com>
-> >>> Date: Tue, Aug 4, 2009 at 4:54 PM
-> >>> Subject: Re: [LTP] waitid02 testcase fails on 2.6.29 kernel
-> >>> To: rohit verma <rohit.170309@gmail.com>
-> >>> Cc: maknayak@in.ibm.com, CAI Qian <caiqian@cclom.cn>
-> >>>
-> >>>
-> >>> Rohit,
-> >>>
-> >>> Post this to ltp mailing list.
-> >>>
-> >>> Regards--
-> >>> Subrata
-> >>>
-> >>> On Tue, 2009-08-04 at 16:52 +0530, rohit verma wrote:
-> >>>       
-> >>>> Dear Manas Kumar Nayak,
-> >>>>
-> >>>> Pls find attached patch for waitid02 test case.I have modified the
-> >>>> test case.I have also added 2 test scenarios in the test case using
-> >>>> WSTOPPED and WNOWAIT.
-> >>>>
-> >>>> Note:
-> >>>> The testcase was failing in LTP July, 2009 release.
-> >>>> The warning- "implicit declaration of function 'getpgid", has been removed
-> >>>>
-> >>>> Pls verify the patch.
-> >>>>
-> >>>> Regards--
-> >>>> Rohit Verma
-> >>>>
-> >>>>
-> >>>>
-> >>>> On Thu, Jul 30, 2009 at 11:59 PM, Subrata
-> >>>> Modak<subrata@linux.vnet.ibm.com> wrote:
-> >>>>         
-> >>>>> Fixed this now.
-> >>>>>
-> >>>>> Regards--
-> >>>>> Subrata
-> >>>>>
-> >>>>> On Thu, 2009-07-23 at 14:00 +0530, rohit verma wrote:
-> >>>>>           
-> >>>>>> Hi,
-> >>>>>>
-> >>>>>> I am running waitid02.c
-> >>>>>> (ltp-full-20090630/testcases/kernel/syscalls/waitid/ ) test case on
-> >>>>>> 2.6.29 kernel.
-> >>>>>> Test case gives following error:
-> >>>>>> "Error. is your system >2.6.9 ?";
-> >>>>>>
-> >>>>>>  Anybody facing the same issue?
-> >>>>>>
-> >>>>>> Code:
-> >>>>>>
-> >>>>>> TEST(waitid(P_ALL,0,&infop,WNOHANG));
-> >>>>>>         if(TEST_RETURN == 0)
-> >>>>>>                 tst_resm(TPASS,"Success !");
-> >>>>>>         else{
-> >>>>>>                 printf("value of return is %d\n",TEST_RETURN);
-> >>>>>>                 tst_resm(TFAIL,"Error. is your system >2.6.9 ?");
-> >>>>>>                errnochoose();
-> >>>>>>         }
-> >>>>>>
-> >>>>>>
-> >>>>>> Regards,
-> >>>>>> Rohit
-> >>>>>>
-> >>>>>> ------------------------------------------------------------------------------
-> >>>>>> _______________________________________________
-> >>>>>> Ltp-list mailing list
-> >>>>>> Ltp-list@lists.sourceforge.net
-> >>>>>> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> >>>>>>             
-> >>>>>           
-> >>>>
-> >>>>         
-> >>> ------------------------------------------------------------------------------
-> >>> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day
-> >>> trial. Simplify your report design, integration and deployment - and focus on
-> >>> what you do best, core application coding. Discover what's new with
-> >>> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> >>> _______________________________________________
-> >>> Ltp-list mailing list
-> >>> Ltp-list@lists.sourceforge.net
-> >>> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> >>>       
-> >>     
-> >
-> >
-> >
-> >   
-> > ------------------------------------------------------------------------
-> >
-> > ------------------------------------------------------------------------------
-> > Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> > trial. Simplify your report design, integration and deployment - and focus on 
-> > what you do best, core application coding. Discover what's new with 
-> > Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> > ------------------------------------------------------------------------
-> >
-> > _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-> 
-> -- 
-> Michal Simek, Ing. (M.Eng)
-> PetaLogix - Linux Solutions for a Reconfigurable World
-> w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
-> 
+But we are exporting it..
 
+ifdef CROSS_COMPILE
+CROSS_COMPILER = $(CROSS_COMPILE)
+endif
+ifdef CROSS_COMPILER
+CC=$(CROSS_COMPILER)gcc
+AR=$(CROSS_COMPILER)ar
+RANLIB=$(CROSS_COMPILER)ranlib
+endif
+
+...
+
+export CFLAGS += -Wall $(CROSS_CFLAGS)
+export CC AR RANLIB CPPFLAGS LDFLAGS HAS_NUMA
+
+>    All in all, please be patient... give me another 2 weeks and I'll
+> have a better solution (the new Makefile infrastructure) back in HEAD.
+> I just did the quick fix because it was gating any building off of
+
+Just reporting what I'm seeing and trying to help.  I'll look forward  
+to trying out the new Makefile infrastructure.
+
+- k
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
