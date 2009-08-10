@@ -1,33 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MYIpc-0001Kv-Ev
-	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 12:09:28 +0000
-Received: from e9.ny.us.ibm.com ([32.97.182.139])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MYIpU-0000W6-Kl
-	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 12:09:28 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e9.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n74C8jH7000612
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 08:08:45 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n74C9FIS245020
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 08:09:15 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n74C9E4P016797
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 08:09:15 -0400
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MaQ7N-0000N4-Fk
+	for ltp-list@lists.sourceforge.net; Mon, 10 Aug 2009 08:20:33 +0000
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MaQ7J-0003n2-Ng
+	for ltp-list@lists.sourceforge.net; Mon, 10 Aug 2009 08:20:33 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e2.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7A8EZum020203
+	for <ltp-list@lists.sourceforge.net>; Mon, 10 Aug 2009 04:14:35 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7A8KMrc237254
+	for <ltp-list@lists.sourceforge.net>; Mon, 10 Aug 2009 04:20:22 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7A8KLUX021950
+	for <ltp-list@lists.sourceforge.net>; Mon, 10 Aug 2009 04:20:22 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4A76F76B.9070704@petalogix.com>
-References: <200907301305.n6UD5G7F023361@e32.co.us.ibm.com>
-	<1249298406.7460.25.camel@subratamodak.linux.ibm.com>
-	<4A76F76B.9070704@petalogix.com>
-Date: Tue, 04 Aug 2009 17:38:46 +0530
-Message-Id: <1249387726.15587.40.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <2A1B6719-9C0B-4271-8A81-1730F79F5E33@kernel.crashing.org>
+References: <1842FA33-8C6C-4BE1-8FB4-B8836F1C8F6E@kernel.crashing.org>
+	<364299f40908061017g44fd05ecv9c6454ebf04badb4@mail.gmail.com>
+	<2A1B6719-9C0B-4271-8A81-1730F79F5E33@kernel.crashing.org>
+Date: Mon, 10 Aug 2009 13:50:16 +0530
+Message-Id: <1249892416.5187.10.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Make the test result codes a real bitfield again
+Subject: Re: [LTP] RANLIB not set?
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -41,88 +41,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: michal.simek@petalogix.com
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>, Jiri Palecek <jpalecek@web.de>
+To: Kumar Gala <galak@kernel.crashing.org>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-On Mon, 2009-08-03 at 16:42 +0200, Michal Simek wrote: 
-> Hi Mike and Subrata,
-> > Mike,
+On Fri, 2009-08-07 at 08:14 -0500, Kumar Gala wrote: 
+> On Aug 6, 2009, at 12:17 PM, Garrett Cooper wrote:
+> 
+> > On Thu, Aug 6, 2009 at 9:18 AM, Kumar  
+> > Gala<galak@kernel.crashing.org> wrote:
+> >> I'm seeing this on fedora 11 on ppc64:
+> >>
+> >> make[3]: Leaving directory `/root/ltp/testcases/network/ipv6'
+> >> make[3]: Entering directory `/root/ltp/testcases/network/lib6'
+> >> cc -Wall  -I../../../include -g -D_GNU_SOURCE   -c -o runcc.o runcc.c
+> >> ar cr runcc.a runcc.o
+> >> runcc.a
+> >> make[3]: runcc.a: Command not found
+> >> make[3]: *** [runcc.a] Error 127
+> >> make[3]: Leaving directory `/root/ltp/testcases/network/lib6'
+> >> make[2]: *** [all] Error 2
+> >> make[2]: Leaving directory `/root/ltp/testcases/network'
+> >> make[1]: *** [all] Error 2
+> >> make[1]: Leaving directory `/root/ltp/testcases'
+> >> make: *** [all] Error 2
+> >>
+> >> - k
 > >
-> > You would need to see this.
-> >   
-> Jiri is right. I sent one email about some minutes ago (but not solution).
-> Please ignore my email and add this change. I tested it and works.
+> >    Make sure to export CROSS_COMPILER=1 at the top-level make, or
+> > define RANLIB=$(CROSS_COMPILE)ranlib, where $(CROSS_COMPILE) is the
+> > prefix for your compiler set, e.g. $(CROSS_COMPILE)gcc.
+> >    One of the many things that will be fixed in a more kosher manner
+> > in the next couple months.
+> > Thanks,
+> > -Garrett
+> 
+> I see you committed a change to the lib6/Makefile for ranlib.  I  
+> believe we need a similar patch to the toplevel Makefile since it  
+> exports RANLIB:
+> 
 
-Thanks. Did it.
+True. But, can you create a patch from LTPROOT, as, the below fails to
+apply:
+
+patching file Makefile
+Hunk #1 FAILED at 9.
+1 out of 1 hunk FAILED -- saving rejects to file Makefile.rej
 
 Regards--
 Subrata
 
+> diff --git a/Makefile b/Makefile
+> index 953eddf..9f8056a 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -9,6 +9,8 @@ AR=$(CROSS_COMPILER)ar
+>   RANLIB=$(CROSS_COMPILER)ranlib
+>   endif
 > 
-> BTW: I haven't seen that Mike's patches on mailing list.
+> +RANLIB         ?= ranlib
+> +
+>   HAS_NUMA=$(shell sh tools/scripts/numa_test.sh)
 > 
-> Thanks,
-> Michal
-> 
-> > Regards--
-> > Subrata
-> >
-> > On Thu, 2009-07-30 at 11:57 +0200, Jiri Palecek wrote: 
-> >   
-> >> Hello,
-> >>
-> >> the commit "extend the test result to a bit field so we can extend the output further" from July 20th unfortunately changes the code, that was previously a bitfield, to a non-bitfield. This causes FAILED tests to return erroneously 0.
-> >>
-> >> This patch changes the test result codes to be individual bits in the bitfield (effectively reverting  a small part of aforementioned patch).
-> >>
-> >> Regards
-> >>     Jiri Palecek
-> >>
-> >> ---
-> >>  include/test.h |   12 ++++++------
-> >>  1 files changed, 6 insertions(+), 6 deletions(-)
-> >>
-> >> diff --git a/include/test.h b/include/test.h
-> >> index 5c325b3..4d9803a 100644
-> >> --- a/include/test.h
-> >> +++ b/include/test.h
-> >> @@ -44,15 +44,15 @@
-> >>
-> >>  #include "compiler.h"
-> >>
-> >> -/* Use low 4 bits to encode test type */
-> >> -#define TTYPE_MASK 0xf
-> >> +/* Use low 6 bits to encode test type */
-> >> +#define TTYPE_MASK 0x3f
-> >>  #define TPASS      0    /* Test passed flag */
-> >>  #define TFAIL      1    /* Test failed flag */
-> >>  #define TBROK      2    /* Test broken flag */
-> >> -#define TWARN      3    /* Test warning flag */
-> >> -#define TRETR      4    /* Test retire flag */
-> >> -#define TINFO      5    /* Test information flag */
-> >> -#define TCONF      6    /* Test not appropriate for configuration flag */
-> >> +#define TWARN      4    /* Test warning flag */
-> >> +#define TRETR      8    /* Test retire flag */
-> >> +#define TINFO      16   /* Test information flag */
-> >> +#define TCONF      32   /* Test not appropriate for configuration flag */
-> >>  #define TTYPE_RESULT(ttype) ((ttype) & TTYPE_MASK)
-> >>
-> >>  #define TERRNO     0x100   /* Append errno information to output */
-> >>     
-> >
-> >
-> > ------------------------------------------------------------------------------
-> > Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> > trial. Simplify your report design, integration and deployment - and focus on 
-> > what you do best, core application coding. Discover what's new with 
-> > Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> > _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> >   
+>   export CFLAGS += -Wall $(CROSS_CFLAGS)
 > 
 > 
+> ------------------------------------------------------------------------------
+> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+> trial. Simplify your report design, integration and deployment - and focus on 
+> what you do best, core application coding. Discover what's new with 
+> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
