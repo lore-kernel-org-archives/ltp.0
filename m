@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <rohit.170309@gmail.com>) id 1MbsFH-0001a6-Nm
-	for ltp-list@lists.sourceforge.net; Fri, 14 Aug 2009 08:34:43 +0000
-Received: from mail-px0-f181.google.com ([209.85.216.181])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MbsFB-0002sG-Ik
-	for ltp-list@lists.sourceforge.net; Fri, 14 Aug 2009 08:34:43 +0000
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <paul.larson@canonical.com>) id 1Mavg2-00035j-6v
+	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2009 18:02:26 +0000
+Received: from adelie.canonical.com ([91.189.90.139])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Mavg0-000358-0n
+	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2009 18:02:26 +0000
+Message-ID: <4A81B227.7020500@canonical.com>
+Date: Tue, 11 Aug 2009 13:02:15 -0500
+From: Paul Larson <paul.larson@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <4A850550.7080109@cn.fujitsu.com>
-References: <d51f89b0908130131u5742ff3epf58617e3f4ab38a3@mail.gmail.com>
-	<4A850550.7080109@cn.fujitsu.com>
-Date: Fri, 14 Aug 2009 14:04:30 +0530
-Message-ID: <d51f89b0908140134g18b7b34cr9858edad1242373a@mail.gmail.com>
-From: rohit verma <rohit.170309@gmail.com>
-Subject: Re: [LTP] utimes01 test case issue
+References: <20090811172957.7074.62874.sendpatchset@subratamodak.linux.ibm.com>
+	<20090811173101.7074.31798.sendpatchset@subratamodak.linux.ibm.com>
+In-Reply-To: <20090811173101.7074.31798.sendpatchset@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [PATCH 05/05] Add the necessary Interface and Option
+ through "runltp"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,96 +26,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wei Yongjun <yjwei@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
 
-Hi Wang Yong,
+Subrata Modak wrote:
+...
+> +	-F LOOPS,PERCENTAGE Induce PERCENTAGE Fault in the Kernel Subsystems, and, run each test for LOOPS loop
 
-I am getting following  O/P for case02 :
+I haven't had time for an exhaustive review, but here are a few
+questions/comments I had:
 
-As root user:
+1. Why introduce yet another looping mechanism within LTP when we
+already have one?  Is there an advantage that you see to doing it this
+way, rather than just having an additional option that calls the script
+to generate this additional random fault injection?
 
-utimes01    0  TINFO  :  (case02) START
-EXPECT: return value(ret)=3D-1 errno=3D13 (Permission denied)
-RESULT: return value(ret)=3D-1 errno=3D1 (Operation not permitted)
-utimes01    0  TINFO  :  (case02) END =3D> NG
+2. Would be good to push the check for /debug being mounted down into
+one of the other scripts rather than in runltp.  runltp is already
+hideously bloated and this would make it more useful when running
+standalone.
 
-As non-root user:
-utimes01    0  TINFO  :  (case02) START
-seteuid failed.
-utimes01    0  TINFO  :  (case02) END =3D> OK
+3. would be great if there were some way to tag the results to say when
+a fault was or was not in the process of being generated.  That is,
+perhaps, not possible at this time though.
 
-Are you getting the same?
+4. more granularity possible with the fault injections to specify the
+type of faults, or optionally, the behaviour you have here?
 
-
-
-
-On Fri, Aug 14, 2009 at 12:03 PM, Wei Yongjun<yjwei@cn.fujitsu.com> wrote:
-> rohit verma wrote:
->> Hi Wang Yong,
->>
->> I have observed the following thing in case02 of the test case
->> utimes01 in latest ltp release.
->>
->> Expected error value is =A0EACCES (In the code below)
->> But the actual error value is EPERM.I have checked this on =A02.6.27 and
->> 2.6.29 kernel.
->>
->
-> You can try root user and noroot user, the return error is different.
->
->> static struct test_case tcase[] =3D {
->>
->> =A0 =A0 =A0 =A0 { // case00
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ...
->> =A0 =A0 =A0 =A0 },
->> =A0 =A0 =A0 =A0 { // case01
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ...
->> =A0 =A0 =A0 =A0 },
->> =A0 =A0 =A0 =A0 { // case02
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .ttype =A0 =A0 =A0 =A0 =A0=3D NORMAL,
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .a_sec =A0 =A0 =A0 =A0=3D 1000,
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .m_sec =A0 =A0 =A0 =3D 2000,
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .user =A0 =A0 =A0 =A0 =A0=3D "nobody",
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .ret =A0 =A0 =A0 =A0 =A0 =A0 =3D -1,
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .err =A0 =A0 =A0 =A0 =A0 =A0 =3D EACCES,=
- // RHEL4U1 + 2.6.18 returns EPERM
->> =A0 =A0 =A0 =A0 },
->> =A0 =A0 =A0 =A0 { // case03
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ...
->> =A0 =A0 =A0 =A0 },
->>
->> =A0 =A0 =A0 =A0 { // case04
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ...
->> =A0 =A0 =A0 =A0 },
->> };
->>
->> Kindly confirm whether you are facing the same issue at your end.
->>
->>
->
->
->
+Thanks,
+Paul Larson
 
 
-
--- =
-
-Regards,
-Rohit
-
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
-
-trial. Simplify your report design, integration and deployment - and focus =
-on =
-
-what you do best, core application coding. Discover what's new with =
-
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
