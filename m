@@ -1,20 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hisashi.hashimoto.wh@hitachi.com>)
-	id 1MaKTU-0003er-Tt
-	for ltp-list@lists.sourceforge.net; Mon, 10 Aug 2009 02:19:00 +0000
-Received: from mailx.hitachi.co.jp ([133.145.228.49])
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <skrishnakar@gmail.com>) id 1Mar2R-0000wj-2o
+	for Ltp-list@lists.sourceforge.net; Tue, 11 Aug 2009 13:05:15 +0000
+Received: from wf-out-1314.google.com ([209.85.200.168])
 	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MaKTO-000587-Is
-	for ltp-list@lists.sourceforge.net; Mon, 10 Aug 2009 02:19:00 +0000
-From: hisashi.hashimoto.wh@hitachi.com
+	id 1Mar2M-0008Th-1P
+	for Ltp-list@lists.sourceforge.net; Tue, 11 Aug 2009 13:05:15 +0000
+Received: by wf-out-1314.google.com with SMTP id 26so1380896wfd.4
+	for <Ltp-list@lists.sourceforge.net>;
+	Tue, 11 Aug 2009 06:05:03 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <XNM1$9$0$3$$2$7$9$A$9009743U4a7f7b5f@hitachi.com>
-Date: Mon, 10 Aug 2009 10:44:11 +0900
-Subject: [LTP] Fw:[Lf-announce] Japan Linux Symposium Program & Schedule
-	Announcement
+In-Reply-To: <6213bc560908100924h2d0da433y52391da42aeeaa16@mail.gmail.com>
+References: <6213bc560908070826u6c2b321ay446997891f2cc21f@mail.gmail.com>
+	<1249892426.5187.12.camel@subratamodak.linux.ibm.com>
+	<6213bc560908100129r7d59547ale6f55de87e858470@mail.gmail.com>
+	<364299f40908100844l44497151g750f745648080c24@mail.gmail.com>
+	<6213bc560908100924h2d0da433y52391da42aeeaa16@mail.gmail.com>
+Date: Tue, 11 Aug 2009 18:35:03 +0530
+Message-ID: <6213bc560908110605q45ced45dgd36026da8adc0bb5@mail.gmail.com>
+From: srikanth krishnakar <skrishnakar@gmail.com>
+Subject: Re: [LTP] add_key01 & add_key02 test cases fails and shown as PASS
+	in log file
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,145 +32,386 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1545953818910923200=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sf.net, crackerjack-devel@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: Ltp-list@lists.sourceforge.net
 
-LTP and CrackerJack Members,
+--===============1545953818910923200==
+Content-Type: multipart/alternative; boundary=00504502c4e1cef0460470dd59ec
 
-  Please let me introduce to you
-about my session at the Japan Linux Symposium in October in Japan.
-LF has announced the program of the JLS.
-Pls see below for detail.
+--00504502c4e1cef0460470dd59ec
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-  I will have a session on test project on the final day, 
-14:30 - 15:30, Friday, October 23rd.
+Hi all,
 
-  I will make a presentation about my regression test project.
-"Now and Future" and make demonstration.
- And I hope the engineers who are not only working in our project, but also
-working in other test projects and other development projects will
-join and discuss.
- 
-  If you have a chance to come to JLS, please join us and give us
-your suggesions.
+I observed that these two test cases are known to be failing on following
+architectures :
 
-Thanks,
+1. *PowerPC* (ppc440)    > Kernel *Linux-2.6.29.6*
+2. *MIPS*                       > Kernel *Linux-2.6.28.10*
 
-Hashimoto Hisashi
---------------- Begin of forwarded message ----------------------
-TO: <lf-announce@linux-foundation.org>
-BCC: 橋本＿尚
-送信者 ： Linux Foundation <events@linux-foundation.org>
-主題 ： [Lf-announce] Japan Linux Symposium Program & Schedule Announcement
-受信日 ：09/08/08 02:50
-属性 ： なし
+<<<test_start>>>
+tag=*add_key01* stime=1249655730
+cmdline="add_key01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+add_key01    1  TFAIL  :  add_key01 failed - errno = 38 : *Function not
+implemented*
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
 
-======================================
-Program Announcement for Japan Linux Symposium
-October 21-23, 2009
-Tokyo, Japan
 
-Featured keynotes includes James Bottomley and Jonathan Corbet, as
-well as speakers including Greg KH (Novell), Hideaki Yoshifuji (Keio
-University) and Toshiharu Harada (NTT DATA Corp.).
+<<<test_start>>>
+tag=*add_key02* stime=1249655730
+cmdline="add_key02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+add_key02    0  TINFO  :  call add_key() with wrong args got UNEXPECTED
+errno:38
+add_key02    1  TFAIL  :  add_key02 failed - errno = 38 :* Function not
+implemented*
+<<<execution_status>>>
+initiation_status="ok"
+duration=1 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=2
+<<<test_end>>>
 
-======================================
-We are pleased to announce the detailed program for this year痴 Japan
-Linux Symposium (JLS). The event, a new annual technical conference
-designed to provide a collaboration and education space in the Pacific
-Rim covering all matters Linux, takes place October 21 K23, 2009 at
-Akihabara Convention Hall, Tokyo, Japan.  More than fifty technical
-sessions are included with speakers featuring the top technical talent
-from across the globe.
+Are these two test cases intended for these architectures ? Have you tested
+these tests on any of above mentioned architectures ?
 
-Register Now for Only US$200 Kthis reduced rate ends August 31st:
-http://events.linuxfoundation.org/component/registrationpro/?func=details&did=14
+Waiting for your comments ?
 
-View the detailed program here:
-http://events.linuxfoundation.org/events/japan-linux-symposium/schedule
+-Srikanth
 
-==================
-Keynote Panels Include:
-==================
-践ow OSS/Linux Meets Business?卓
-Developer/Business Panelists: Daniel Frye (IBM), James Bottomley
-(Novell), Shinichi Yamada (NTT DATA Corporation) and Hiroyuki Kamezawa
-(Fujitsu).  Moderated by Nobuyori Takahashi (Nikkei BP).
+On Mon, Aug 10, 2009 at 9:54 PM, srikanth krishnakar
+<skrishnakar@gmail.com>wrote:
 
-糎here does Linux Go?卓
-Kernel Panelists: Jonathan Corbet (LWN.net), Andrew Morton (Google),
-Takashi Iwai (Novell) and Tejun Heo (Novell).  Moderated by Ted Ts弛
-(IBM/The Linux Foundation).
+>
+>
+> On Mon, Aug 10, 2009 at 9:14 PM, Garrett Cooper <yanegomi@gmail.com>wrote:
+>
+>> On Mon, Aug 10, 2009 at 1:29 AM, srikanth
+>> krishnakar<skrishnakar@gmail.com> wrote:
+>> >
+>> >
+>> > On Mon, Aug 10, 2009 at 1:50 PM, Subrata Modak <
+>> subrata@linux.vnet.ibm.com>
+>> > wrote:
+>> >>
+>> >> On Fri, 2009-08-07 at 20:56 +0530, srikanth krishnakar wrote:
+>> >> > I see these two test cases are failing on PowerPC target (ppc440) as
+>> >> > shown in output file, but they are listed as PASS in log file of the
+>> >> > LTP :
+>> >> >
+>> >> > Target : PowerPC (ppc440)
+>> >> > Kernel: Linux-2.6.29
+>> >> > LTP Version : ltp-full-20090731
+>> >> >
+>> >> > LTP output file :
+>> >> > #############
+>> >> >
+>> >> >
+>> >> > 1. add_key01
+>> >> > --------------------
+>> >> >
+>> >> > <<<test_start>>>
+>> >> > tag=add_key01 stime=1248549741
+>> >> > cmdline="add_key01"
+>> >> > contacts=""
+>> >> > analysis=exit
+>> >> > <<<test_output>>>
+>> >> > add_key01    1  TFAIL  :  add_key01 failed - errno = 38 : Function
+>> not
+>> >> > implemented
+>> >> > <<<execution_status>>>
+>> >> > initiation_status="ok"
+>> >> > duration=0 termination_type=exited termination_id=0 corefile=no
+>> >> > cutime=0 cstime=0
+>> >> > <<<test_end>>>
+>> >> >
+>> >> > 2. add_key02
+>> >> > ----------------------
+>> >> >
+>> >> > <<<test_start>>>
+>> >> > tag=add_key02 stime=1248549741
+>> >> > cmdline="add_key02"
+>> >> > contacts=""
+>> >> > analysis=exit
+>> >> > <<<test_output>>>
+>> >> > add_key02    0  TINFO  :  call add_key() with wrong args got
+>> >> > UNEXPECTED errno:38
+>> >> > add_key02    1  TFAIL  :  add_key02 failed - errno = 38 : Function
+>> not
+>> >> > implemented
+>> >> > <<<execution_status>>>
+>> >> > initiation_status="ok"
+>> >> > duration=0 termination_type=exited termination_id=0 corefile=no
+>> >> > cutime=0 cstime=1
+>> >> > <<<test_end>>>
+>> >> >
+>> >> > --------------------------------------------------------
+>> >> >
+>> >> > BUT the Log file shows as PASS to the above test cases :
+>> >> >
+>> >> > ###########################
+>> >> >
+>> >> > add_key01                      PASS       0
+>> >> > add_key02                      PASS       0
+>> >> >
+>> >> > ###########################
+>> >> >
+>> >> >
+>> >> > May anyone explain, why it is so ? Is it a known behaviour ?
+>> >>
+>> >> No. It is not. On my X_32, it passes fine.
+>> >
+>> > Is it PowePC target on which you have tested ?
+>> >>
+>> >>
+>> >> $ ./testcases/bin/add_key01
+>> >> add_key01    1  TPASS  :  add_key call succeeded
+>> >> $ echo $?
+>> >> 0
+>> >> $ ./testcases/bin/add_key02
+>> >> add_key02    0  TINFO  :  call add_key() with wrong args got EXPECTED
+>> >> errno:22
+>> >> add_key02    1  TPASS  :  add_key call succeeded
+>> >> $ echo $?
+>> >> 0
+>> >> $ uname -a
+>> >> Linux 2.6.18-92.el5 #1 SMP Tue Apr 29 13:16:12 EDT 2008 i686 i686 i386
+>> >> GNU/Linux
+>>
+>> Hi Srikanth,
+>>    I think that the error is fairly intuitive (function not
+>> implemented). Are you sure that your subarchitecture supports
+>> add_key(2)?
+>> Hi Subrata,
+>>    As far as the actual issue is concerned, I think that the problem
+>> is that someone's exiting with exit(0) instead of tst_exit()...
+>> Thanks,
+>> -Garrett
+>>
+>
+> Thanks Garrett,
+>
+> I will look into it.
+>
+>
+> --
+> "The Good You Do, The Best You GET"
+>
+> Regards
+> Srikanth Krishnakar
+> **********************
+>
 
-===================
-Noteworthy Talks Include:
-===================
->Development and Maintenance of the Fedora kernel - Dave Jones (Red Hat, Fedora maintainer)
->Btrfs: Filesystem Status and Future Plans - Chris Mason (Oracle, Btrfs developer)
->The Kernel Report - Jonathan Corbet (LWN.net)
->How to Contribute to the Linux Kernel and Why It Makes Economic Sense -  James Bottomley (Novell)
->Kernel Development: Drawing Lessons From Mistakes - Toshiharu Harada (NTT DATA Corporation)
->Upstream In-House Board Support Package - Magnus Damm
->Memory Cgroup: Summary and Upcoming Enhancements -  Hiroyuki Kamezawa (Fujitsu)
->Improvement of I/O Error Handling on Ext3 Filesystem -  Hidehiro Kawai (Hitachi, Ltd.)
->Statistics of Linux Kernel Development -  Tsugikazu Shibata (NEC)
->The Moblin SDK -  Mikio Sakemoto (Intel K.K. SSG)
->A Disk I/O Bandwidth Controller KImplemented as a Device-Mapper Module - Ryo Tsuruta (VA Linux Systems Japan K.K.)
->ZABBIX KAn Enterprise-Class Open-Source Distributed Monitoring Solution - Kodai Terashima (Miracle Linux)
->Why Are We Hesitating to Join the Community -  Satoru Ueda (Sony Corporation)
->Saving Battery Life With Linux Power Management -  Brad Dixon (MontaVista Software)
->Understanding Debian -  Bdale Garbee (Hewlett-Packard)
->Linux IPv6 - Where We Are, Where We Will Be - Yoshifuji Hideaki (Keio University)
 
-============================================================
-Additional Keynote Sessions on Wednesday, October 21st featuring Linus Torvalds
-============================================================
-In addition to the conference sessions and keynotes noted above, The
-Linux Foundation and IPA also bring you a special keynote session on
-Wednesday, October 21st to be held at the ANA Intercontinental Hotel
-in Tokyo.  Featured keynotes include: Linux creator Linus Torvalds,
-Ruby creator Yukihiro Matsumoto (Network Applied Communication
-Laboratory), Anthony Williams (Co-Author of Wikinomics) and Jim Zemlin
-(The Linux Foundation),
 
-===========
-JLS Sponsors
-===========
-The Japan Linux Symposium is generously sponsored by companies and
-organizations from both Japan and the US who emphatically support the
-promotion and growth of the Linux platform. You can see names of
-sponsor companies in the following web site:
-http://events.linuxfoundation.org/events/japan-linux-symposium/sponsors
+-- 
+"The Good You Do, The Best You GET"
 
-=======================================
-Questions? Contact us at events@linuxfoundation.org
-Unsubscribe: https://lists.linux-foundation.org/mailman/listinfo/lf-announce
-=======================================
-_______________________________________________
-Lf-announce mailing list
-Lf-announce@lists.linux-foundation.org
-https://lists.linux-foundation.org/mailman/listinfo/lf-announce
+Regards
+Srikanth Krishnakar
+**********************
 
----------------- End of forwarded message -----------------------
-Hisashi Hashimoto
-Board of Director of the Linux Foundation,
+--00504502c4e1cef0460470dd59ec
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Senior Engineer
+Hi all,<br><br>I observed that these two test cases are known to be failing=
+ on following architectures :<br><br>1. <b>PowerPC</b> (ppc440)=A0=A0=A0 &g=
+t; Kernel <b><i>Linux-2.6.29.6</i></b><br>2. <b>MIPS</b>=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 &gt; Kernel <i><b>Linux-2.=
+6.28.10</b></i><br>
+<br>&lt;&lt;&lt;test_start&gt;&gt;&gt;<br>tag=3D<b style=3D"background-colo=
+r: rgb(255, 255, 102);">add_key01</b> stime=3D1249655730<br>cmdline=3D&quot=
+;add_key01&quot;<br>contacts=3D&quot;&quot;<br>analysis=3Dexit<br>&lt;&lt;&=
+lt;test_output&gt;&gt;&gt;<br>
+add_key01=A0=A0=A0 1=A0 <span style=3D"background-color: rgb(255, 255, 102)=
+;">TFAIL=A0 :=A0 add_key01 failed - errno =3D 38 : <b>Function not implemen=
+ted</b></span><br>&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initiation_st=
+atus=3D&quot;ok&quot;<br>
+duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=3Dno<br>=
+cutime=3D1 cstime=3D0<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br><br><br>&lt;&l=
+t;&lt;test_start&gt;&gt;&gt;<br>tag=3D<b style=3D"background-color: rgb(255=
+, 255, 102);">add_key02</b> stime=3D1249655730<br>
+cmdline=3D&quot;add_key02&quot;<br>contacts=3D&quot;&quot;<br>analysis=3Dex=
+it<br>&lt;&lt;&lt;test_output&gt;&gt;&gt;<br>add_key02=A0=A0=A0 0=A0 TINFO=
+=A0 :=A0 call add_key() with wrong args got UNEXPECTED errno:38<br>add_key0=
+2=A0=A0=A0 1=A0 <span style=3D"background-color: rgb(255, 255, 51);">TFAIL=
+=A0 :=A0 add_key02 failed - errno =3D 38 :<b> Function not implemented</b><=
+/span><br>
+&lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>initiation_status=3D&quot;ok&qu=
+ot;<br>duration=3D1 termination_type=3Dexited termination_id=3D0 corefile=
+=3Dno<br>cutime=3D0 cstime=3D2<br>&lt;&lt;&lt;test_end&gt;&gt;&gt;<br>=A0<b=
+r>Are these two test cases intended for these architectures ? Have you test=
+ed these tests on any of above mentioned architectures ?<br>
+<br>Waiting for your comments ?<br><br>-Srikanth<br>=A0<br><div class=3D"gm=
+ail_quote">On Mon, Aug 10, 2009 at 9:54 PM, srikanth krishnakar <span dir=
+=3D"ltr">&lt;<a href=3D"mailto:skrishnakar@gmail.com">skrishnakar@gmail.com=
+</a>&gt;</span> wrote:<br>
+<blockquote class=3D"gmail_quote" style=3D"border-left: 1px solid rgb(204, =
+204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;"><div><div></div><=
+div class=3D"h5"><br><br><div class=3D"gmail_quote">On Mon, Aug 10, 2009 at=
+ 9:14 PM, Garrett Cooper <span dir=3D"ltr">&lt;<a href=3D"mailto:yanegomi@g=
+mail.com" target=3D"_blank">yanegomi@gmail.com</a>&gt;</span> wrote:<br>
+<blockquote class=3D"gmail_quote" style=3D"border-left: 1px solid rgb(204, =
+204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
+<div><div></div><div>On Mon, Aug 10, 2009 at 1:29 AM, srikanth<br>
+krishnakar&lt;<a href=3D"mailto:skrishnakar@gmail.com" target=3D"_blank">sk=
+rishnakar@gmail.com</a>&gt; wrote:<br>
+&gt;<br>
+&gt;<br>
+&gt; On Mon, Aug 10, 2009 at 1:50 PM, Subrata Modak &lt;<a href=3D"mailto:s=
+ubrata@linux.vnet.ibm.com" target=3D"_blank">subrata@linux.vnet.ibm.com</a>=
+&gt;<br>
+&gt; wrote:<br>
+&gt;&gt;<br>
+&gt;&gt; On Fri, 2009-08-07 at 20:56 +0530, srikanth krishnakar wrote:<br>
+&gt;&gt; &gt; I see these two test cases are failing on PowerPC target (ppc=
+440) as<br>
+&gt;&gt; &gt; shown in output file, but they are listed as PASS in log file=
+ of the<br>
+&gt;&gt; &gt; LTP :<br>
+&gt;&gt; &gt;<br>
+&gt;&gt; &gt; Target : PowerPC (ppc440)<br>
+&gt;&gt; &gt; Kernel: Linux-2.6.29<br>
+&gt;&gt; &gt; LTP Version : ltp-full-20090731<br>
+&gt;&gt; &gt;<br>
+&gt;&gt; &gt; LTP output file :<br>
+&gt;&gt; &gt; #############<br>
+&gt;&gt; &gt;<br>
+&gt;&gt; &gt;<br>
+&gt;&gt; &gt; 1. add_key01<br>
+&gt;&gt; &gt; --------------------<br>
+&gt;&gt; &gt;<br>
+&gt;&gt; &gt; &lt;&lt;&lt;test_start&gt;&gt;&gt;<br>
+&gt;&gt; &gt; tag=3Dadd_key01 stime=3D1248549741<br>
+&gt;&gt; &gt; cmdline=3D&quot;add_key01&quot;<br>
+&gt;&gt; &gt; contacts=3D&quot;&quot;<br>
+&gt;&gt; &gt; analysis=3Dexit<br>
+&gt;&gt; &gt; &lt;&lt;&lt;test_output&gt;&gt;&gt;<br>
+&gt;&gt; &gt; add_key01 =A0 =A01 =A0TFAIL =A0: =A0add_key01 failed - errno =
+=3D 38 : Function not<br>
+&gt;&gt; &gt; implemented<br>
+&gt;&gt; &gt; &lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>
+&gt;&gt; &gt; initiation_status=3D&quot;ok&quot;<br>
+&gt;&gt; &gt; duration=3D0 termination_type=3Dexited termination_id=3D0 cor=
+efile=3Dno<br>
+&gt;&gt; &gt; cutime=3D0 cstime=3D0<br>
+&gt;&gt; &gt; &lt;&lt;&lt;test_end&gt;&gt;&gt;<br>
+&gt;&gt; &gt;<br>
+&gt;&gt; &gt; 2. add_key02<br>
+&gt;&gt; &gt; ----------------------<br>
+&gt;&gt; &gt;<br>
+&gt;&gt; &gt; &lt;&lt;&lt;test_start&gt;&gt;&gt;<br>
+&gt;&gt; &gt; tag=3Dadd_key02 stime=3D1248549741<br>
+&gt;&gt; &gt; cmdline=3D&quot;add_key02&quot;<br>
+&gt;&gt; &gt; contacts=3D&quot;&quot;<br>
+&gt;&gt; &gt; analysis=3Dexit<br>
+&gt;&gt; &gt; &lt;&lt;&lt;test_output&gt;&gt;&gt;<br>
+&gt;&gt; &gt; add_key02 =A0 =A00 =A0TINFO =A0: =A0call add_key() with wrong=
+ args got<br>
+&gt;&gt; &gt; UNEXPECTED errno:38<br>
+&gt;&gt; &gt; add_key02 =A0 =A01 =A0TFAIL =A0: =A0add_key02 failed - errno =
+=3D 38 : Function not<br>
+&gt;&gt; &gt; implemented<br>
+&gt;&gt; &gt; &lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>
+&gt;&gt; &gt; initiation_status=3D&quot;ok&quot;<br>
+&gt;&gt; &gt; duration=3D0 termination_type=3Dexited termination_id=3D0 cor=
+efile=3Dno<br>
+&gt;&gt; &gt; cutime=3D0 cstime=3D1<br>
+&gt;&gt; &gt; &lt;&lt;&lt;test_end&gt;&gt;&gt;<br>
+&gt;&gt; &gt;<br>
+&gt;&gt; &gt; --------------------------------------------------------<br>
+&gt;&gt; &gt;<br>
+&gt;&gt; &gt; BUT the Log file shows as PASS to the above test cases :<br>
+&gt;&gt; &gt;<br>
+&gt;&gt; &gt; ###########################<br>
+&gt;&gt; &gt;<br>
+&gt;&gt; &gt; add_key01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0PASS =A0=
+ =A0 =A0 0<br>
+&gt;&gt; &gt; add_key02 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0PASS =A0=
+ =A0 =A0 0<br>
+&gt;&gt; &gt;<br>
+&gt;&gt; &gt; ###########################<br>
+&gt;&gt; &gt;<br>
+&gt;&gt; &gt;<br>
+&gt;&gt; &gt; May anyone explain, why it is so ? Is it a known behaviour ?<=
+br>
+&gt;&gt;<br>
+&gt;&gt; No. It is not. On my X_32, it passes fine.<br>
+&gt;<br>
+&gt; Is it PowePC target on which you have tested ?<br>
+&gt;&gt;<br>
+&gt;&gt;<br>
+&gt;&gt; $ ./testcases/bin/add_key01<br>
+&gt;&gt; add_key01 =A0 =A01 =A0TPASS =A0: =A0add_key call succeeded<br>
+&gt;&gt; $ echo $?<br>
+&gt;&gt; 0<br>
+&gt;&gt; $ ./testcases/bin/add_key02<br>
+&gt;&gt; add_key02 =A0 =A00 =A0TINFO =A0: =A0call add_key() with wrong args=
+ got EXPECTED<br>
+&gt;&gt; errno:22<br>
+&gt;&gt; add_key02 =A0 =A01 =A0TPASS =A0: =A0add_key call succeeded<br>
+&gt;&gt; $ echo $?<br>
+&gt;&gt; 0<br>
+&gt;&gt; $ uname -a<br>
+&gt;&gt; Linux 2.6.18-92.el5 #1 SMP Tue Apr 29 13:16:12 EDT 2008 i686 i686 =
+i386<br>
+&gt;&gt; GNU/Linux<br>
+<br>
+</div></div>Hi Srikanth,<br>
+ =A0 =A0I think that the error is fairly intuitive (function not<br>
+implemented). Are you sure that your subarchitecture supports<br>
+add_key(2)?<br>
+Hi Subrata,<br>
+ =A0 =A0As far as the actual issue is concerned, I think that the problem<b=
+r>
+is that someone&#39;s exiting with exit(0) instead of tst_exit()...<br>
+Thanks,<br>
+<font color=3D"#888888">-Garrett<br>
+</font></blockquote></div><br></div></div>Thanks Garrett,<br><br>I will loo=
+k into it.<div><div></div><div class=3D"h5"><br><br>-- <br>&quot;The Good Y=
+ou Do, The Best You GET&quot;<br><br>Regards<br>Srikanth Krishnakar<br>****=
+******************<br>
 
-Open Source Software Promotion Center
-Enterprise Business Planning
-Hitachi, Ltd., Software Division
-Tel : +81-45-862-8470, Fax : +81-45-862-8471
-hisashi.hashimoto.wh@hitachi.com
+</div></div></blockquote></div><br><br clear=3D"all"><br>-- <br>&quot;The G=
+ood You Do, The Best You GET&quot;<br><br>Regards<br>Srikanth Krishnakar<br=
+>**********************<br>
+
+--00504502c4e1cef0460470dd59ec--
+
+
+--===============1545953818910923200==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============1545953818910923200==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1545953818910923200==--
+
