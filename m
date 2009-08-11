@@ -1,23 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MdIRT-0001wv-Pu
-	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2009 06:45:11 +0000
-Received: from mail-qy0-f181.google.com ([209.85.221.181])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MdIRM-0008Q6-1I
-	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2009 06:45:11 +0000
-Received: by qyk11 with SMTP id 11so2718044qyk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 17 Aug 2009 23:44:58 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <f5a7b3810908170937u516ee718yd6db8df547752bc4@mail.gmail.com>
-References: <f5a7b3810908170937u516ee718yd6db8df547752bc4@mail.gmail.com>
-Date: Mon, 17 Aug 2009 23:44:58 -0700
-Message-ID: <364299f40908172344o62861d02rc8e0c3f87de80134@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [FIX PATCHE]ltp-fix-posix-mq_send_5-1 warning
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MavAx-0007Dr-Gs
+	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2009 17:30:19 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MavAs-0007nb-QB
+	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2009 17:30:19 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7BHPBFI032043
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Aug 2009 11:25:11 -0600
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7BHU43Y235490
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Aug 2009 11:30:04 -0600
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7BHU4b4022504
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Aug 2009 11:30:04 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+Date: Tue, 11 Aug 2009 22:59:57 +0530
+Message-Id: <20090811172957.7074.62874.sendpatchset@subratamodak.linux.ibm.com>
+Subject: [LTP] [PATCH 00/05] Integration of "Fault Injection Framework" into
+	LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,24 +34,33 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: naresh kamboju <naresh.kernel@gmail.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, Brandon Philips <bphilips@suse.de>
+To: LTP Mailing List <ltp-list@lists.sourceforge.net>
+Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>, Mike Frysinger <vapier@gentoo.org>, Michael Reed <mreed10@us.ibm.com>, Nate Straz <nate@refried.org>, Paul Larson <paul.larson@ubuntu.com>, Manoj Iyer <manoj.iyer@ubuntu.com>, Balbir Singh <balbir@linux.vnet.ibm.com>
 
-On Mon, Aug 17, 2009 at 9:37 AM, naresh kamboju<naresh.kernel@gmail.com> wrote:
-> Hi,
->
-> I have noticed build warnings for the following test case.
-> This patch will fix warnings by removing unused variables in test code.
->
-> I have attached patch and below
-> Please review the same
+Hi,
 
-    Log before and after?
-Thanks,
--Garrett
+Introducing the "Kernel Fault Injection Framework" generation and testing
+capability in LTP. This is in line with the recent proposal made through
+LTP Paper at OLS 2009:
+"Putting LTP to test - Validating both the Linux kernel and Test-cases"
+(http://ltp.sourceforge.net/documentation/technical_papers/Putting_LTP_to_Test.pdf)
+
+This infrasturcture will help LTP directly in the following ways:
+1) Allow test developers to test their new test cases against a faulted kernel,
+and then compare it on stable kernel run, impacting in better test development,
+2) Allow test engineers to be able to generate more code coverage by traversing
+the rarely touched parts of the kernel code,
+
+As we move forward in using this, we would definitely find some other
+advantages of this framework.
+
+Regards--
+Subrata
+
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
