@@ -2,25 +2,25 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MgxXN-000108-Ms
-	for ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 09:14:25 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MgxXA-0004gl-Ry
-	for ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 09:14:20 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Fri, 28 Aug 2009 05:14:02 -0400
-References: <alpine.LRH.2.00.0908271703550.1134@vixen.sonytel.be>
-	<1251439738.9081.9.camel@subratamodak.linux.ibm.com>
-	<1251448700.9081.13.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1251448700.9081.13.camel@subratamodak.linux.ibm.com>
+	(envelope-from <michal.simek@petalogix.com>) id 1MawDj-0001zZ-4m
+	for Ltp-list@lists.sourceforge.net; Tue, 11 Aug 2009 18:37:15 +0000
+Received: from mail-fx0-f222.google.com ([209.85.220.222])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MawDZ-0003sw-Bk
+	for Ltp-list@lists.sourceforge.net; Tue, 11 Aug 2009 18:37:10 +0000
+Received: by fxm22 with SMTP id 22so3122299fxm.33
+	for <Ltp-list@lists.sourceforge.net>;
+	Tue, 11 Aug 2009 11:36:57 -0700 (PDT)
+Message-ID: <4A81BA46.3050302@petalogix.com>
+Date: Tue, 11 Aug 2009 20:36:54 +0200
+From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-Message-Id: <200908280514.03971.vapier@gentoo.org>
-Subject: Re: [LTP]
- =?iso-8859-1?q?=5BPATCH=5D_Annotate_tst=5F*=28=29_helpers_w?=
- =?iso-8859-1?q?ith=09=5F=5Fattribute=5F=5F_=28=28format_=28printf=2C_M=2C?=
- =?iso-8859-1?q?_N=29=29=29_=28was=3A_Re=3A_=5BPATCH=5D_quotactl01=3A_Fix?=
- =?iso-8859-1?q?=09tst=5Fresm_=28=29_=09format_causing=09crash_=29?=
+References: <6213bc560908070826u6c2b321ay446997891f2cc21f@mail.gmail.com>	<1249892426.5187.12.camel@subratamodak.linux.ibm.com>	<6213bc560908100129r7d59547ale6f55de87e858470@mail.gmail.com>	<364299f40908100844l44497151g750f745648080c24@mail.gmail.com>	<6213bc560908100924h2d0da433y52391da42aeeaa16@mail.gmail.com>
+	<6213bc560908110605q45ced45dgd36026da8adc0bb5@mail.gmail.com>
+In-Reply-To: <6213bc560908110605q45ced45dgd36026da8adc0bb5@mail.gmail.com>
+Subject: Re: [LTP] add_key01 & add_key02 test cases fails and shown as PASS
+ in log file
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,111 +30,234 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4679905769427863565=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, subrata@linux.vnet.ibm.com
-Cc: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-
---===============4679905769427863565==
-Content-Type: multipart/signed; boundary="nextPart1896111.QZRjM7U8qt";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1896111.QZRjM7U8qt
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-On Friday 28 August 2009 04:38:17 Subrata Modak wrote:
-> On Fri, 2009-08-28 at 11:38 +0530, Subrata Modak wrote:
-> > On Thu, 2009-08-27 at 17:29 +0200, Geert Uytterhoeven wrote:
-> > > On Thu, 27 Aug 2009, Geert Uytterhoeven wrote:
-> > > > When the quotactl syscall fails, quotactl01 crashes with a
-> > > > segmentation fault due to an incorrect printf()-style format.
-> > >
-> > > This bug encouraged me to add annotations to the test helpers that ta=
-ke
-> > > printf()-style formats, cfr. the patch below.
-> > >
-> > > It causes a massive amount of compiler warnings, most of them caused =
-by
-> > > TEST_ERRNO being long. According to CVS history, both TEST_RETURN and
-> > > TEST_ERRNO have been changed from int to long to accomodate 64-bit
-> > > platforms, but to me the change of TEST_ERRNO looks bogus.
-> > > As errno is int according to C99, TEST_ERRNO should actually be int
-> > > too, right?
-> > >
-> > > Note that there are also a few other cases where integers are used on
-> > > pointer type format specifiers. These will cause crashes when the code
-> > > path is executed.
-> > >
-> > > >From 601578f79c05779acefe023fd499726d9fe4ce03 Mon Sep 17 00:00:00 20=
-01
-> > >
-> > > From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-> > > Date: Thu, 27 Aug 2009 17:08:18 +0200
-> > > Subject: [PATCH] Annotate tst_*() helpers with __attribute__ ((format
-> > > (printf, M, N)))
-> > >
-> > > Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-> >
-> > Ok. Thanks.
->
-> Sorry. I need to revert this as it generates a huge set of warning for
-> all the tests compiled. It should not only get fixed at test.h, but also
-> in all tests that uses the tst_* family of functions, which obviously is
-> too big to fix.
-
-nothing is too big.  the proposed patch is a great idea and anything=20
-preventing it from being merged should be resolved so it can go back in.
-=2Dmike
-
---nextPart1896111.QZRjM7U8qt
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJKl5/bAAoJEEFjO5/oN/WBp/EP/01a3PAG9xC1wue9L6jNELHw
-K5fYIN4r+kTvu+ns7CIPTpjAt8UXyZaPHJLmZCOuNm6O2E/b4cAAmZ/lzRRVUJE6
-vH37O12FMwyrd1Fc+Tigg5owmiDQejT6NRmx3lTqe1AbtZfUy/igHsMewjPHPKFe
-bxkGnLCkfWdSHJQMSNyMff3AYWv8yMw06APud2rwZ8mNgSsFs7SZfbsA4MAmJVKI
-5ofJ5YjjdU7AcoSljhNzFQwXX2U0OafT7QYfyobmNOzp5eAHsQ/emUJIVQW/v3Xj
-qEjQMy9iyK7mbGEb3CytE6azMLe03j2XhfpLfsHuHH1uVsJSgGaX351JQn7wC3oy
-voV/IFD6tQDIxsQvXbyiJ8UQmWK+1iaVPD8hUMrLnscyn6rJaQo8wSPIIFGQWKmM
-6jA7J456onpjC9OCYedU5J0uIOO+CWUFf/z1nnZXcL92Ri4//tFMNlzpAlT9fvIK
-BrGD8pGB7GqObR44NtKYnz7Kw+MbGux/FE4voidz5Z9cGnFNc7lQI6GXVfOhiwJl
-t6WPbKLGx3lZ/wJIuLHeoXU/KSTxgVHfnAjAGc3rm2Y85xn1l1P+52nOedTdx36U
-T3ePLJMNiqJZCcFaccMLD8qIaaNAz4oHaBmnxeOPkbrVHTAPxD2JBLVomTwXEzlu
-zen1dke/wcmMll6iK81i
-=kFul
------END PGP SIGNATURE-----
-
---nextPart1896111.QZRjM7U8qt--
-
-
---===============4679905769427863565==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: srikanth krishnakar <skrishnakar@gmail.com>
+Cc: Ltp-list@lists.sourceforge.net
+
+Trace add_key syscall and find that for this testcases you have to
+enable CONFIG_KEYS in your kernel.
+This could be reason to add new return value for Function is not
+implemented and any sensible description
+to test.
+
+Cheers,
+Michal
+> Hi all,
+>
+> I observed that these two test cases are known to be failing on
+> following architectures :
+>
+> 1. *PowerPC* (ppc440)    > Kernel */Linux-2.6.29.6/*
+> 2. *MIPS*                       > Kernel /*Linux-2.6.28.10*/
+>
+> <<<test_start>>>
+> tag=*add_key01* stime=1249655730
+> cmdline="add_key01"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> add_key01    1  TFAIL  :  add_key01 failed - errno = 38 : *Function
+> not implemented*
+> <<<execution_status>>>
+> initiation_status="ok"
+> duration=0 termination_type=exited termination_id=0 corefile=no
+> cutime=1 cstime=0
+> <<<test_end>>>
+>
+>
+> <<<test_start>>>
+> tag=*add_key02* stime=1249655730
+> cmdline="add_key02"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> add_key02    0  TINFO  :  call add_key() with wrong args got
+> UNEXPECTED errno:38
+> add_key02    1  TFAIL  :  add_key02 failed - errno = 38 :* Function
+> not implemented*
+> <<<execution_status>>>
+> initiation_status="ok"
+> duration=1 termination_type=exited termination_id=0 corefile=no
+> cutime=0 cstime=2
+> <<<test_end>>>
+>  
+> Are these two test cases intended for these architectures ? Have you
+> tested these tests on any of above mentioned architectures ?
+>
+> Waiting for your comments ?
+>
+> -Srikanth
+>  
+> On Mon, Aug 10, 2009 at 9:54 PM, srikanth krishnakar
+> <skrishnakar@gmail.com <mailto:skrishnakar@gmail.com>> wrote:
+>
+>
+>
+>     On Mon, Aug 10, 2009 at 9:14 PM, Garrett Cooper
+>     <yanegomi@gmail.com <mailto:yanegomi@gmail.com>> wrote:
+>
+>         On Mon, Aug 10, 2009 at 1:29 AM, srikanth
+>         krishnakar<skrishnakar@gmail.com
+>         <mailto:skrishnakar@gmail.com>> wrote:
+>         >
+>         >
+>         > On Mon, Aug 10, 2009 at 1:50 PM, Subrata Modak
+>         <subrata@linux.vnet.ibm.com <mailto:subrata@linux.vnet.ibm.com>>
+>         > wrote:
+>         >>
+>         >> On Fri, 2009-08-07 at 20:56 +0530, srikanth krishnakar wrote:
+>         >> > I see these two test cases are failing on PowerPC target
+>         (ppc440) as
+>         >> > shown in output file, but they are listed as PASS in log
+>         file of the
+>         >> > LTP :
+>         >> >
+>         >> > Target : PowerPC (ppc440)
+>         >> > Kernel: Linux-2.6.29
+>         >> > LTP Version : ltp-full-20090731
+>         >> >
+>         >> > LTP output file :
+>         >> > #############
+>         >> >
+>         >> >
+>         >> > 1. add_key01
+>         >> > --------------------
+>         >> >
+>         >> > <<<test_start>>>
+>         >> > tag=add_key01 stime=1248549741
+>         >> > cmdline="add_key01"
+>         >> > contacts=""
+>         >> > analysis=exit
+>         >> > <<<test_output>>>
+>         >> > add_key01    1  TFAIL  :  add_key01 failed - errno = 38 :
+>         Function not
+>         >> > implemented
+>         >> > <<<execution_status>>>
+>         >> > initiation_status="ok"
+>         >> > duration=0 termination_type=exited termination_id=0
+>         corefile=no
+>         >> > cutime=0 cstime=0
+>         >> > <<<test_end>>>
+>         >> >
+>         >> > 2. add_key02
+>         >> > ----------------------
+>         >> >
+>         >> > <<<test_start>>>
+>         >> > tag=add_key02 stime=1248549741
+>         >> > cmdline="add_key02"
+>         >> > contacts=""
+>         >> > analysis=exit
+>         >> > <<<test_output>>>
+>         >> > add_key02    0  TINFO  :  call add_key() with wrong args got
+>         >> > UNEXPECTED errno:38
+>         >> > add_key02    1  TFAIL  :  add_key02 failed - errno = 38 :
+>         Function not
+>         >> > implemented
+>         >> > <<<execution_status>>>
+>         >> > initiation_status="ok"
+>         >> > duration=0 termination_type=exited termination_id=0
+>         corefile=no
+>         >> > cutime=0 cstime=1
+>         >> > <<<test_end>>>
+>         >> >
+>         >> > --------------------------------------------------------
+>         >> >
+>         >> > BUT the Log file shows as PASS to the above test cases :
+>         >> >
+>         >> > ###########################
+>         >> >
+>         >> > add_key01                      PASS       0
+>         >> > add_key02                      PASS       0
+>         >> >
+>         >> > ###########################
+>         >> >
+>         >> >
+>         >> > May anyone explain, why it is so ? Is it a known behaviour ?
+>         >>
+>         >> No. It is not. On my X_32, it passes fine.
+>         >
+>         > Is it PowePC target on which you have tested ?
+>         >>
+>         >>
+>         >> $ ./testcases/bin/add_key01
+>         >> add_key01    1  TPASS  :  add_key call succeeded
+>         >> $ echo $?
+>         >> 0
+>         >> $ ./testcases/bin/add_key02
+>         >> add_key02    0  TINFO  :  call add_key() with wrong args
+>         got EXPECTED
+>         >> errno:22
+>         >> add_key02    1  TPASS  :  add_key call succeeded
+>         >> $ echo $?
+>         >> 0
+>         >> $ uname -a
+>         >> Linux 2.6.18-92.el5 #1 SMP Tue Apr 29 13:16:12 EDT 2008
+>         i686 i686 i386
+>         >> GNU/Linux
+>
+>         Hi Srikanth,
+>            I think that the error is fairly intuitive (function not
+>         implemented). Are you sure that your subarchitecture supports
+>         add_key(2)?
+>         Hi Subrata,
+>            As far as the actual issue is concerned, I think that the
+>         problem
+>         is that someone's exiting with exit(0) instead of tst_exit()...
+>         Thanks,
+>         -Garrett
+>
+>
+>     Thanks Garrett,
+>
+>     I will look into it.
+>
+>
+>     -- 
+>     "The Good You Do, The Best You GET"
+>
+>     Regards
+>     Srikanth Krishnakar
+>     **********************
+>
+>
+>
+>
+> -- 
+> "The Good You Do, The Best You GET"
+>
+> Regards
+> Srikanth Krishnakar
+> **********************
+> ------------------------------------------------------------------------
+>
+> ------------------------------------------------------------------------------
+> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+> trial. Simplify your report design, integration and deployment - and focus on 
+> what you do best, core application coding. Discover what's new with 
+> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>   
+
+
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---===============4679905769427863565==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4679905769427863565==--
-
