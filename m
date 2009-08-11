@@ -1,22 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1Mi5ad-0004ET-Jo
-	for ltp-list@lists.sourceforge.net; Mon, 31 Aug 2009 12:02:27 +0000
-Received: from mail-gx0-f212.google.com ([209.85.217.212])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mi5aV-00087U-RJ
-	for ltp-list@lists.sourceforge.net; Mon, 31 Aug 2009 12:02:27 +0000
-Received: by gxk8 with SMTP id 8so4960110gxk.9
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 31 Aug 2009 05:02:14 -0700 (PDT)
-MIME-Version: 1.0
-Date: Mon, 31 Aug 2009 17:32:14 +0530
-Message-ID: <f5a7b3810908310502h61d97cafv770e664d4becb4a1@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Content-Type: multipart/mixed; boundary=000e0cd76054f7735704726ecd34
-Subject: [LTP] LTP-LDFLAGS-enable
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MavBi-0001N0-Ps
+	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2009 17:31:06 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MavBe-00058y-A3
+	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2009 17:31:06 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e1.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7BHUrhq007753
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Aug 2009 13:30:53 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7BHUuE3254486
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Aug 2009 13:30:56 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7BHUunD008303
+	for <ltp-list@lists.sourceforge.net>; Tue, 11 Aug 2009 13:30:56 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+Date: Tue, 11 Aug 2009 23:00:48 +0530
+Message-Id: <20090811173048.7074.51813.sendpatchset@subratamodak.linux.ibm.com>
+In-Reply-To: <20090811172957.7074.62874.sendpatchset@subratamodak.linux.ibm.com>
+References: <20090811172957.7074.62874.sendpatchset@subratamodak.linux.ibm.com>
+Subject: [LTP] [PATCH 04/05] Add Script which will be at the heart of this
+	infrastructure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,121 +35,146 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
-Cc: Mike Frysinger <vapier@gentoo.org>, Brandon Philips <bphilips@suse.de>, Geert.Uytterhoeven@sonycom.com
-
---000e0cd76054f7735704726ecd34
-Content-Type: text/plain; charset=ISO-8859-1
-
-Hi,
-
-To make use of full testsuite of open_posix_testsuite we need to
-enable LDFLAGS. It is file used by the Makefile to link to what you
-specify in it. e.g. if you want to link with lpthread. By using these
-Flags can build up to 1888 test case with out the flags can build up
-to 486.
-
-However, the Best practice is to use posix test suite with the LDFLAGS.
-
-I have attached patch and below, please review the same
-
-Best regards,
-Naresh Kamboju
-
-/************************************************************/
-Before patch:
-With out LDFLAGS:
-
-		***************************
-		 CONFORMANCE TEST RESULTS
-		***************************
-		* TOTAL:   486
-		* PASSED:  449
-		* FAILED:  12
-		* UNRESOLVED:  7
-		* UNSUPPORTED:  10
-		* UNTESTED:  4
-		* INTERRUPTED:  0
-		* HUNG:  0
-		* SEGV:  0
-		* OTHERS:  4
-		***************************
-
-After patch:
-With LDFLAGS:
-                ***************************
-                 CONFORMANCE TEST RESULTS
-                ***************************
-                * TOTAL:   1888
-                * PASSED:  1731
-                * FAILED:  26
-                * UNRESOLVED:  14
-                * UNSUPPORTED:  22
-                * UNTESTED:  94
-                * INTERRUPTED:  0
-                * HUNG:  1
-                * SEGV:  0
-                * OTHERS:  0
-                ***************************
-
-/************************************************************/
-
-Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
-
-
-diff -Naurb a/testcases/open_posix_testsuite/LDFLAGS
-b/testcases/open_posix_testsuite/LDFLAGS
---- a/testcases/open_posix_testsuite/LDFLAGS	2005-06-03 21:59:49.000000000 +0530
-+++ b/testcases/open_posix_testsuite/LDFLAGS	2009-08-31 16:22:57.000000000 +0530
-@@ -8,7 +8,7 @@
- #-lpthread -D_GNU_SOURCE
- #
- #Recommended flags:
--#-D_XOPEN_SOURCE=600 -lpthread -lrt -lm
-+-D_XOPEN_SOURCE=600 -lpthread -lrt -lm
- #
- # For use with Linux, you may try the following flags to
- # allow for the NPTL-specific compilation (used in some test cases)
-
---000e0cd76054f7735704726ecd34
-Content-Type: message/rfc822; name="ltp-fix-posix-LDFLAGS.patch"
-Content-Disposition: attachment; filename="ltp-fix-posix-LDFLAGS.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fz15n9ur0
-
-
-ZGlmZiAtTmF1cmIgYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvTERGTEFHUyBiL3Rl
-c3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9MREZMQUdTCi0tLSBhL3Rlc3RjYXNlcy9vcGVu
-X3Bvc2l4X3Rlc3RzdWl0ZS9MREZMQUdTCTIwMDUtMDYtMDMgMjE6NTk6NDkuMDAwMDAwMDAwICsw
-NTMwCisrKyBiL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9MREZMQUdTCTIwMDktMDgt
-MzEgMTY6MjI6NTcuMDAwMDAwMDAwICswNTMwCkBAIC04LDcgKzgsNyBAQAogIy1scHRocmVhZCAt
-RF9HTlVfU09VUkNFCiAjCiAjUmVjb21tZW5kZWQgZmxhZ3M6Ci0jLURfWE9QRU5fU09VUkNFPTYw
-MCAtbHB0aHJlYWQgLWxydCAtbG0KKy1EX1hPUEVOX1NPVVJDRT02MDAgLWxwdGhyZWFkIC1scnQg
-LWxtCiAjCiAjIEZvciB1c2Ugd2l0aCBMaW51eCwgeW91IG1heSB0cnkgdGhlIGZvbGxvd2luZyBm
-bGFncyB0bwogIyBhbGxvdyBmb3IgdGhlIE5QVEwtc3BlY2lmaWMgY29tcGlsYXRpb24gKHVzZWQg
-aW4gc29tZSB0ZXN0IGNhc2VzKQo=
---000e0cd76054f7735704726ecd34
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: LTP Mailing List <ltp-list@lists.sourceforge.net>
+Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>, Mike Frysinger <vapier@gentoo.org>, Michael Reed <mreed10@us.ibm.com>, Nate Straz <nate@refried.org>, Paul Larson <paul.larson@ubuntu.com>, Manoj Iyer <manoj.iyer@ubuntu.com>, Balbir Singh <balbir@linux.vnet.ibm.com>
+
+At the heart of this infrastructure is this Script, which will actually:
+1) Change the temporary command file generated by runltp,
+2) Create a new temporary command file which will have the following entries
+against each one entry in the command file:
+	i) Same TAG COMMAND_LINE entry,
+	ii) Entry to call the script to insert faults,
+	iii) Entry to run as many loops as specified by the user,
+	iv) Entry to call the script to restore kernel to default state,
+
+It is capable of creating new entries in the temporary command file with the
+following tags and command lines:
+TAG_NAME=tag1,	COMMANDLINE="test1",
+TAG_NAME=tag1_loop1,	COMMANDLINE="insert_fault_in_kernel; test1",
+TAG_NAME=tag1_loop2,	COMMANDLINE="test1",
+...
+TAG_NAME=tag1_loopn,	COMMANDLINE="test1; restore_default_kernel",
+
+Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>
+---
+
+diff -uprN ltp-full-20090731.orig/tools/create_kernel_faults_in_loops_and_probability.pl ltp-full-20090731/tools/create_kernel_faults_in_loops_and_probability.pl
+--- ltp-full-20090731.orig/tools/create_kernel_faults_in_loops_and_probability.pl	1970-01-01 05:30:00.000000000 +0530
++++ ltp-full-20090731/tools/create_kernel_faults_in_loops_and_probability.pl	2009-08-11 20:23:54.000000000 +0530
+@@ -0,0 +1,97 @@
++#!/usr/bin/perl
++################################################################################
++##                                                                            ##
++## Copyright (c) International Business Machines  Corp., 2009                 ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and/or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software               ##
++## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
++##                                                                            ##
++################################################################################
++#                                                                             ##
++# File :        create_kernel_faults_in_loops_and_probability.pl	      ##
++#                                                                             ##
++# Usage:        create_kernel_faults_in_loops_and_probability.pl\	      ##
++#		<LTP_COMMAND_FILE> <NO_OF_LOOPS_EACH_TEST_WILL_RUN>\	      ##
++#		<PROBABILITY_OF_FAULT_INJECTION>			      ##
++#                                                                             ##
++# Description:  This is a simple perl script which will take ltp command file ##
++#		as input and then create a final command file while will have ##
++#		the following entries for each test tag:		      ##
++#		1) <tag_name_loop1> <test_binary_name>			      ##
++#		2) <tag_name_loop2> <insert_kernel_faults.sh test_binary_name>##
++#		3) tag entried from loop3 to loop(n-1)			      ##
++#		4) <tag_name_loopn> <restore_kernel_faults_default.sh test_binary_name>##
++#                                                                             ##
++# Author:       Subrata Modak <subrata@linux.vnet.ibm.com>                    ##
++#                                                                             ##
++# History:      Aug 11 2009 - Created - Subrata Modak.                        ##
++################################################################################
++
++my $command_file	= shift (@ARGV) || syntax();
++my $loops		= shift (@ARGV) || syntax();
++my $failure_probability	= shift (@ARGV) || syntax();
++
++sub syntax() {
++	print "syntax: create_fault_in_loops_and_probability.pl\
++	<LTP_COMMAND_FILE> <NO_OF_LOOPS_EACH_TEST_WILL_RUN>\
++	<PROBABILITY_OF_FAULT_INJECTION>\n";
++	exit (1);
++}
++#$ENV{TEST_START_TIME})
++
++
++open (FILE, $command_file) || die "Cannot open file: $command_file\n";
++while ($line = <FILE>) {
++	if ($line =~ /^#/) {
++		print "$line";
++		next;
++	}
++	if ($line =~ /^\n$/) {
++		next;
++	}
++	chomp $line;
++	print "$line\n"; #Print one instance for stable execution
++	@tag_and_actual_command = split(/\ /, $line);
++
++	#The remaining loops should be running under fault injection
++	for ($counter=1; $counter<=$loops; $counter++) {
++		my $token_counter = 0;
++		foreach my $token (@tag_and_actual_command) {
++			if ($token_counter == 0 ) {
++				#Time to append the actual command tag with the loop no.
++				print $token . "_loop_" . $counter . " ";
++				$token_counter++;
++				next;
++			}
++			if ($token_counter == 1 && $counter == 1) {
++				#Time to include the fault injection script in the first loop
++				print "\$LTPROOT/tools/insert_kernel_faults.sh " . $failure_probability . "; " . $token;
++				$token_counter++;
++				next;
++			}
++			print " " . $token . " ";
++		}
++		if ($counter == $loops) {
++			#Time to withdraw the faults once the last loop has been executed
++			#Until all faults has been successfully restored to default values...
++			#Keep restoring them
++			print "; " . "\$LTPROOT/tools/restore_kernel_faults_default.sh; RC=\$?; while [ \$RC -ne 0 ]; do \$LTPROOT/tools/restore_kernel_faults_default.sh; RC=\$?; done\n"
++		} else {
++			print "\n"
++		}
++	}
++
++}
++close (FILE);
++
+
+---
+Regards--
+Subrata
+
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---000e0cd76054f7735704726ecd34
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---000e0cd76054f7735704726ecd34--
-
