@@ -1,22 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1Mf4Ce-0006ZW-2V
-	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 03:57:12 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mf4CX-0004Iz-Jt
-	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 03:57:11 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sat, 22 Aug 2009 23:57:12 -0400
-References: <20090821.195739.1000278277145530969.caiqian@cclom.cn>
-	<200908211200.33401.vapier@gentoo.org>
-	<20090823.103037.104044604.caiqian@cclom.cn>
-In-Reply-To: <20090823.103037.104044604.caiqian@cclom.cn>
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <paul.larson@canonical.com>) id 1MbL8S-0005bb-1t
+	for ltp-list@lists.sourceforge.net; Wed, 12 Aug 2009 21:13:28 +0000
+Received: from adelie.canonical.com ([91.189.90.139])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MbL8K-0007sH-CV
+	for ltp-list@lists.sourceforge.net; Wed, 12 Aug 2009 21:13:27 +0000
+Received: from hutte.canonical.com ([91.189.90.181])
+	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
+	id 1MbL8E-0002iY-5I
+	for <ltp-list@lists.sourceforge.net>; Wed, 12 Aug 2009 22:13:14 +0100
+Received: from 75-27-138-126.lightspeed.austtx.sbcglobal.net ([75.27.138.126]
+	helo=[192.168.1.70]) by hutte.canonical.com with esmtpsa
+	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
+	(envelope-from <paul.larson@canonical.com>) id 1MbL8D-0006E4-Uk
+	for ltp-list@lists.sourceforge.net; Wed, 12 Aug 2009 22:13:14 +0100
+Message-ID: <4A833067.2000204@canonical.com>
+Date: Wed, 12 Aug 2009 16:13:11 -0500
+From: Paul Larson <paul.larson@canonical.com>
 MIME-Version: 1.0
-Message-Id: <200908222357.13105.vapier@gentoo.org>
-Subject: Re: [LTP] The Best Practice to Skip Syscall Tests
+Content-Type: multipart/mixed; boundary="------------060804080609040206070006"
+Subject: [LTP] fix file_test.sh for systems without rpm installed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,112 +32,66 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8377233947676232831=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP Mailing List <ltp-list@lists.sourceforge.net>
 
---===============8377233947676232831==
-Content-Type: multipart/signed; boundary="nextPart5846528.RMEbbiV1ic";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
+This is a multi-part message in MIME format.
+--------------060804080609040206070006
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 
---nextPart5846528.RMEbbiV1ic
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+If you run file_test.sh on a system without rpm installed, it should
+return tconf instead of tfail.
 
-On Saturday 22 August 2009 22:30:37 CAI Qian wrote:
-> From: Mike Frysinger <vapier@gentoo.org>
-> > On Friday 21 August 2009 07:57:39 CAI Qian wrote:
-> >> Test cases unshare failed to compile on systems without such a
-> >> syscall. I am unsure what the best way to handle it. The old ways are,
-> >>
-> >> * add a kernel version check in the unshare tests code.
-> >>
-> >> or
-> >>
-> >> * add a m4 rule.
-> >> * modify the unshare tests code to check if the macro, and add stub
-> >>   functions if the macro is false.
-> >>
-> >> The first approach is unable to handle non-vanilla kernels. The second
-> >> approach needs to add stub functions which are unclean. What I would
-> >> like to do is,
-> >>
-> >> * add a m4 rule.
-> >> * modify unshare Makefile like this,
-> >>
-> >>   ifdef HAVE_UNSHARE  <-- if the syscall is present, compile the tests.
-> >
-> > the configure test should always be there if the code needs new
-> > headers (like sys/signalfd.h).  if it's only a new syscall, then the
-> > configure test should only be for the new symbol (assuming one is
-> > provided).  in all cases, the tests should be compiled.  your proposal
-> > doesnt handle the case where the C library is in place, but the kernel
-> > is older so returns ENOSYS.
->
-> OK, how about those two approaches?
->
-> * add a stub C program to check if kernel returns ENOSYS. If so, returns
->   1. Otherwise, 0.
-> * add a m4 rule to check the headers or/and functions.
-> * if ./configure found all headers and functions, and execute the stub
->   program to return 0, it will set HAVE_UNSHARE.
-> * modify unshare Makefile to complie it only if HAVE_UNSHARE set.
->
-> or
->
-> * add a m4 rule to check the headers or/and functions.
-> * if ./configure found all headers and functions, , it will set
->   HAVE_UNSHARE.
-> * modify the test code to deal with three situations.
->   * HAVE_UNSHARE =3D 0
->   * HAVE_UNSHARE =3D 1 + ENOSYS
->   * HAVE_UNSHARE =3D 1 + no ENOSYS
-
-in addition to the reasoning Garrett provided, this makes for a fairly=20
-complicated setup for no real gain.  the solution i mentioned (and is being=
-=20
-used) covers all known build/runtime issues.
-
-if you need a new C library function, check for it.  if you need a new C=20
-library header, check for it.  if a test may be run on an older system and=
-=20
-thus the call fails with ENOSYS, the test must check for it and error out w=
-ith=20
-TCONF (and a helper message).  whether someone chooses to also add a runtim=
-e=20
-kernel version check (as can be seen in a few tests) is up to whoever feels=
-=20
-like doing the work.
-=2Dmike
-
---nextPart5846528.RMEbbiV1ic
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJKkL4ZAAoJEEFjO5/oN/WBbsYP/j1fp2WKwDUjGvrtjFSl2hdC
-EcF+AkVl62LWgitz+mr0kSX8yNjZST2R9EIF8Hezhcj6wVRsYkoF/dRECIFeIJiZ
-jFz/7OWWGg+MmFrspECyvljkA3acIkMwPzTO/TutmlxzxrMrrgqxPYPBhZd7Vzif
-Mz9esbpOxP/N2+qOl8976AVXQ7ve8CykKlywTM5hAjZcxPaKMCFbfNttVzYY0hsI
-htG3JAdEYujkaDhvxnAONz3A4fEk7bo2vh4z8C4OuST7XhxqKW1S7chzX339ZErz
-rd5lRW0OCJtg8Jsbdw4w24fmEzcv3AlKLDnYn1bTH8FNGZg/pGY09ZflsCbyGZLB
-a4CPbr6ERx/DDPQOHr5laiIQ30kvTrJxp59M3NPxkxXtiiMCrUYIJoz8RGjggqB7
-NoezQVvvs+iGzIOZTcGpMJNnvEMEz663j7CeKwo1B2DUzo/8B8Gg226DVdPj2dI0
-23n+eGWEbTEL+z6URuM6VXrC8Vsza4PsO9bYEkf2bGmGamKmk4MigClvpvwLsaVm
-t+zVK68x4ULghDsddgLOAPVXDd3uVL99eQyBX+CRcGGNvcA9XDJR4g5QtuWQVt9H
-UgiGgc9bEaxM7/vNAj80Odh7i7MKUYG5S2QQk/rKCJpBw/chSfZPl9SNZx/jydll
-d6evRJiE74jZYclltq4F
-=AjMs
------END PGP SIGNATURE-----
-
---nextPart5846528.RMEbbiV1ic--
+Signed-off-by: Paul Larson <paul.larson@canonical.com>
+---
 
 
---===============8377233947676232831==
+--------------060804080609040206070006
+Content-Type: text/x-patch;
+ name="file_test.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="file_test.patch"
+
+diff --git a/testcases/commands/ade/file/file_test.sh b/testcases/commands/ade/file/file_test.sh
+index 4fc9dec..0225b56 100755
+--- a/testcases/commands/ade/file/file_test.sh
++++ b/testcases/commands/ade/file/file_test.sh
+@@ -472,6 +472,8 @@ export TCID=file09
+ export TST_COUNT=9
+ 
+ $LTPBIN/tst_resm TINFO "TEST #9: file command recognizes RPM files"
++`which rpm`
++if [ $? = 0 ]; then
+ if [ -f /etc/redhat-release ]; then
+ 	bDIR=/usr/src/redhat
+ 	bCMD=rpmbuild
+@@ -574,6 +576,9 @@ else
+     $LTPBIN/tst_resm TFAIL "file: Failed to recognize RPM file"
+     TFAILCNT=$(( $TFAILCNT+1 ))
+ fi
++else
++    $LTPBIN/tst_resm TCONF "rpm not installed"
++fi
+ 
+ 
+ # TEST #10
+@@ -582,11 +587,7 @@ fi
+ export TCID=file10
+ export TST_COUNT=10
+ 
+-if [ -f /etc/redhat-release ]; then
+-   KERNEL=vmlinuz
+-else
+-   KERNEL=vmlinux
+-fi
++KERNEL=vmlinu
+ 
+ $LTPBIN/tst_resm TINFO "TEST #10: file command recognizes $KERNEL file"
+ 
+
+--------------060804080609040206070006
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -142,7 +102,7 @@ Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---===============8377233947676232831==
+--------------060804080609040206070006
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -153,5 +113,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============8377233947676232831==--
+--------------060804080609040206070006--
 
