@@ -1,21 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <rohit.170309@gmail.com>) id 1MYJ2G-0001uq-GZ
-	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 12:22:32 +0000
-Received: from mail-yw0-f194.google.com ([209.85.211.194])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MYJ28-00035q-H6
-	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 12:22:32 +0000
-MIME-Version: 1.0
-In-Reply-To: <1249387637.15587.29.camel@subratamodak.linux.ibm.com>
-References: <d51f89b0908032310k20c3843am7ea069d03436a7a@mail.gmail.com>
-	<1249387637.15587.29.camel@subratamodak.linux.ibm.com>
-Date: Tue, 4 Aug 2009 17:46:25 +0530
-Message-ID: <d51f89b0908040516i7c65740bi3e30e0972c8374fa@mail.gmail.com>
-From: rohit verma <rohit.170309@gmail.com>
-Subject: [LTP] Issue with rt_sigqueueinfo testcase in LTP.
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MbBtS-00005l-K2
+	for ltp-list@lists.sourceforge.net; Wed, 12 Aug 2009 11:21:22 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MbBtM-0000x2-11
+	for ltp-list@lists.sourceforge.net; Wed, 12 Aug 2009 11:21:22 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7CBKEA5009905
+	for <ltp-list@lists.sourceforge.net>; Wed, 12 Aug 2009 05:20:14 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7CBL6CF239480
+	for <ltp-list@lists.sourceforge.net>; Wed, 12 Aug 2009 05:21:06 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7CBL5FA002282
+	for <ltp-list@lists.sourceforge.net>; Wed, 12 Aug 2009 05:21:06 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <364299f40908120145h13955b1eyaa4abdd477612b6a@mail.gmail.com>
+References: <20090811172957.7074.62874.sendpatchset@subratamodak.linux.ibm.com>
+	<20090811173021.7074.87879.sendpatchset@subratamodak.linux.ibm.com>
+	<364299f40908120145h13955b1eyaa4abdd477612b6a@mail.gmail.com>
+Date: Wed, 12 Aug 2009 16:50:56 +0530
+Message-Id: <1250076056.5373.21.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH 02/05] Add Script which would actually do the job
+	of	injecting faults
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,102 +40,96 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sf.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>, LTP Mailing List <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>, Michael Reed <mreed10@us.ibm.com>, Nate Straz <nate@refried.org>, Paul Larson <paul.larson@ubuntu.com>, Manoj Iyer <manoj.iyer@ubuntu.com>, Balbir Singh <balbir@linux.vnet.ibm.com>
 
-FYI...
+On Wed, 2009-08-12 at 01:45 -0700, Garrett Cooper wrote: 
+> On Tue, Aug 11, 2009 at 10:30 AM, Subrata
+> Modak<subrata@linux.vnet.ibm.com> wrote:
+> > Script which would actually do the job of injecting faults by changing various
+> > parametrs available under /debug/fail*. This would be done dynamically during
+> > LTP run, and, is capable of taking parameters from 0 to 100 to vary the
+> > probability of Fault the user wants to inject in the running kernel.
+> >
+> > Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>
+> > ---
+> >
+> > diff -uprN ltp-full-20090731.orig/tools/insert_kernel_faults.sh ltp-full-20090731/tools/insert_kernel_faults.sh
+> > --- ltp-full-20090731.orig/tools/insert_kernel_faults.sh        1970-01-01 05:30:00.000000000 +0530
+> > +++ ltp-full-20090731/tools/insert_kernel_faults.sh     2009-08-11 18:44:45.000000000 +0530
+> > @@ -0,0 +1,52 @@
+> > +#!/bin/sh
+> > +################################################################################
+> > +##                                                                            ##
+> > +## Copyright (c) International Business Machines  Corp., 2009                 ##
+> > +##                                                                            ##
+> > +## This program is free software;  you can redistribute it and/or modify      ##
+> > +## it under the terms of the GNU General Public License as published by       ##
+> > +## the Free Software Foundation; either version 2 of the License, or          ##
+> > +## (at your option) any later version.                                        ##
+> > +##                                                                            ##
+> > +## This program is distributed in the hope that it will be useful, but        ##
+> > +## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+> > +## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+> > +## for more details.                                                          ##
+> > +##                                                                            ##
+> > +## You should have received a copy of the GNU General Public License          ##
+> > +## along with this program;  if not, write to the Free Software               ##
+> > +## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
+> > +##                                                                            ##
+> > +################################################################################
+> > +#                                                                            ##
+> > +# File :        insert_kernel_faults.sh                                              ##
+> > +#                                                                            ##
+> > +# Usage:       insert_kernel_faults.sh <fault_percentage>                    ##
+> > +#                                                                            ##
+> > +# Description:  This is a simple script that inserts faults at various       ##
+> > +#              subsystems of the kernel. Please refer to the ltp/README      ##
+> > +#              for the various kernel CONFIG options needed to exploit       ##
+> > +#              all those features                                            ##
+> > +#                                                                            ##
+> > +# Author:      Subrata Modak <subrata@linux.vnet.ibm.com>                    ##
+> > +#                                                                            ##
+> > +# History:      Aug 11 2009 - Created - Subrata Modak.                       ##
+> > +################################################################################
+> > +
+> > +if [ -z $1 ]
+> > +       then
+> > +       #Check if Useage has been proper
+> > +       echo "Usage: $0 <fault_percentage>"
+> > +       exit 1
+> > +fi
+> > +
+> > +#These are the types of Subsystems where fault will be injected
+> > +#Make sure debugfs has been mounted
+> > +for FAILTYPE in `echo fail_io_timeout fail_make_request fail_page_alloc failslab`
+> > +do
+> > +       echo $1 > /debug/$FAILTYPE/probability
+> > +       echo 100 > /debug/$FAILTYPE/interval
+> > +       echo -1 > /debug/$FAILTYPE/times
+> > +       echo 0 > /debug/$FAILTYPE/space
+> > +done
+> 
+>     Why ```for FAILTYPE in `echo list-of-values`'''? ```for FAILTYPE
+> in list-of-values''' works just as well without the echo.
 
-
----------- Forwarded message ----------
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Tue, Aug 4, 2009 at 5:37 PM
-Subject: Re: Issue with rt_sigqueueinfo testcase in LTP.
-To: rohit verma <rohit.170309@gmail.com>
-Cc: maknayak@in.ibm.com
-
-
-Hi Rohit,
-
-On Tue, 2009-08-04 at 11:40 +0530, rohit verma wrote:
-> Dear Manas Kumar Nayak,
->
-> I have found an issue with rt_sigqueueinfo test-case.
->
-> Following is the test output:
->
-> rt_sigqueueinfo01 =A0 =A01 =A0PASS =A0: =A0Test Succeeded
-> rt_sigqueueinfo01 =A0 =A01 =A0FAIL =A0: =A0Test Failed, errno=3D1 : Opera=
-tion not permitted
-> rt_sigqueueinfo01 =A0 =A01 =A0PASS =A0: =A0Test Succeeded
-> rt_sigqueueinfo01 =A0 =A01 =A0FAIL =A0: =A0Test Failed, errno=3D1 : Opera=
-tion not permitted
-> rt_sigqueueinfo01 =A0 =A00 =A0WARN =A0: =A0tst_rmdir(): rmobj(/tmp/rt_3Fa=
-SpK)
-> failed: lstat(/tmp/rt_3FaSpK) failed; errno=3D2: No such file or
-> directory
->
-> I think the following lines are causing the failures:
->
-> (Line - 164)
->
-> uinfo.si_errno =3D 0;
-> uinfo.si_code =3D 0;//SI_USER
-> TEST(retval =3D syscall(__NR_rt_sigqueueinfo, getpid(), 17, &uinfo));
->
-> Reason -
->
-> You can observe the following comment & source when you look at the
-> Linux source (v 2.6.29)
-> (linux-2.6.29/kernel/signal.c)
->
-> =A0 =A0 =A0 =A0 =A0 /* Not even root can pretend to send signals from the=
- kernel.
-> =A0 =A0 =A0 =A0 =A0 =A0Nor can they impersonate a kill(), which adds sour=
-ce info. =A0*/
-> =A0 =A0 =A0 =A0 if (info.si_code >=3D 0)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EPERM;
->
-> which implies that si_code cannot be set to ' 0 ' (SI_USER) when
-> invoking the rt_sigqueueinfo syscall.
->
->
-> I am not sure how to fix this issue. But, a possible fix would be to
-> remove the second set of fork &
-> rt_sigqueueinfo invocations and use the first set (with SI_QUEUE). If
-> needed, the loop count can be
-> increased.
-
-Please propose this over to the mailing list. Manas has just ported the
-test case from Crackerjack to LTP. He may not be exactly aware of the
-issues, as it was a blind port, which in one way was good, as the
-porting generated issues, people interested discussed and solved
-them ;-)
+Oops. True. I will do that. Let me hear some more comments from people
+and i will redo the patches again.
 
 Regards--
 Subrata
 
->
->
+> Thanks,
+> -Garrett
 
 
-
-
--- =
-
-Regards,
-Rohit
-
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
-
-trial. Simplify your report design, integration and deployment - and focus =
-on =
-
-what you do best, core application coding. Discover what's new with =
-
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
