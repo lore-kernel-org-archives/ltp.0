@@ -1,29 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1MgyTx-0000eW-KA
-	for ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 10:14:57 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MgyTr-0004rs-CY
-	for ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 10:14:57 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e8.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7SAEctZ016344
-	for <ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 06:14:38 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7SAEjgN251808
-	for <ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 06:14:45 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7SAEiBj028977
-	for <ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 06:14:45 -0400
-From: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Date: Fri, 28 Aug 2009 15:44:40 +0530
-Message-Id: <20090828101440.12177.32012.sendpatchset@localhost.localdomain>
-Subject: [LTP] [Patch 1/8] New testcase to validate Ideal Load Balancer
-	Functionality
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <paul.larson@canonical.com>) id 1MbL53-0005FX-9N
+	for ltp-list@lists.sourceforge.net; Wed, 12 Aug 2009 21:09:57 +0000
+Received: from adelie.canonical.com ([91.189.90.139])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MbL4x-00077J-GK
+	for ltp-list@lists.sourceforge.net; Wed, 12 Aug 2009 21:09:57 +0000
+Message-ID: <4A832F96.4020701@canonical.com>
+Date: Wed, 12 Aug 2009 16:09:42 -0500
+From: Paul Larson <paul.larson@canonical.com>
+MIME-Version: 1.0
+References: <4A7AEE38.60101@canonical.com>
+	<364299f40908061022m926d148o661e1c8a2eb58a5@mail.gmail.com>
+	<4A82DC0A.3050502@canonical.com>
+	<E831A4F6-658A-47BE-9778-D00D7D3E9741@gmail.com>
+In-Reply-To: <E831A4F6-658A-47BE-9778-D00D7D3E9741@gmail.com>
+Subject: Re: [LTP] fix lib6 test building
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,79 +27,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, svaidy@linux.vnet.ibm.com, ego@in.ibm.com, arun@linux.vnet.ibm.com
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-New testcase to validate Ideal Load Balancer Functionality.
-By default sets sched_mc_power_savings & sched_smt_power savings to the value
-passed as argument and then triggers kernbench by pinning it to the CPUn
+Garrett Cooper wrote:
+> On Aug 12, 2009, at 8:13 AM, Paul Larson wrote:
+> 
+>> Garrett Cooper wrote:
+>>> On Thu, Aug 6, 2009 at 7:52 AM, Paul
+>>> Larson<paul.larson@canonical.com> wrote:
+>>>> The lib6 tests seem to fail the first pass through building for me
+>>>> because ranlib does not seem to get set correctly at any point.  This
+>>>> seems to fix it up for me.
+>>>
+>>> Fixed on HEAD moments ago:
+>>>
+>>> gcooper@orangebox /scratch/ltp-dev2/ltp $ cvs diff
+>>> testcases/network/lib6/Makefile
+>>> Index: testcases/network/lib6/Makefile
+>>> ===================================================================
+>>> RCS file: /cvsroot/ltp/ltp/testcases/network/lib6/Makefile,v
+>>> retrieving revision 1.6
+>>> diff -r1.6 Makefile
+>>> 25a26,27
+>>>> RANLIB                ?= ranlib
+>> The patch you checked in does not correct the build failure.
+> 
+>     Error message please?
+Same error as before:
+make[3]: Entering directory `/home/plars/ltp2/testcases/network/lib6'
+cc -Wall  -I../../../include -g -D_GNU_SOURCE   -c -o runcc.o runcc.c
+ar cr runcc.a runcc.o
+runcc.a
+make[3]: runcc.a: Command not found
+make[3]: *** [runcc.a] Error 127
+make[3]: Leaving directory `/home/plars/ltp2/testcases/network/lib6'
+make[2]: *** [all] Error 2
+make[2]: Leaving directory `/home/plars/ltp2/testcases/network'
+make[1]: *** [all] Error 2
+make[1]: Leaving directory `/home/plars/ltp2/testcases'
+make: *** [all] Error 2
 
-Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+My make-foo is a bit rusty, but I'm guessing that the higher level
+export is exporting an empty RANLIB, so the RANLIB ?= ranlib is not
+doing anything since RANLIB already exists.
 
-diff -uprN ltp_orig/testcases/kernel/power_management/ilb_test.py ltp/testcases/kernel/power_management/ilb_test.py
---- ltp_orig/testcases/kernel/power_management/ilb_test.py	1970-01-01 05:30:00.000000000 +0530
-+++ ltp/testcases/kernel/power_management/ilb_test.py	2009-08-28 12:13:27.000000000 +0530
-@@ -0,0 +1,57 @@
-+#!/usr/bin/python
-+''' This Python script interprets interrupt values.
-+    Validates Ideal load balancer runs in same package where workload is running
-+'''
-+
-+import os
-+import sys
-+LIB_DIR = "%s/testcases/kernel/power_management/lib" % os.environ['LTPROOT']
-+sys.path.append(LIB_DIR)
-+from optparse import OptionParser
-+from sched_mc import *
-+
-+__author__ = "Poornima Nayak <mpnayak@linux.vnet.ibm.com>"
-+
-+class Usage(Exception):
-+    def __init__(self, msg):
-+        self.msg = msg
-+
-+def main(argv=None):
-+    if argv is None:
-+        argv = sys.argv
-+
-+    usage = "-w"
-+    parser = OptionParser(usage)
-+    parser.add_option("-c", "--mc_level", dest="mc_level",
-+        default=0, help="Sched mc power saving value 0/1/2")
-+    parser.add_option("-t", "--smt_level", dest="smt_level",
-+        default=0, help="Sched smt power saving value 0/1/2")
-+    parser.add_option("-w", "--workload", dest="work_ld",
-+        default="kernbench", help="Workload can be ebizzy/kernbench")
-+    (options, args) = parser.parse_args()
-+
-+    try:
-+        count_num_cpu()
-+        count_num_sockets()
-+        if is_multi_socket():
-+            set_sched_mc_power(options.mc_level)
-+        if is_hyper_threaded():
-+            set_sched_smt_power(options.smt_level)
-+        map_cpuid_pkgid()
-+        print "INFO: Created table mapping cpu to package"
-+        background="no"
-+        duration=60
-+        pinned="yes"
-+        trigger_workld(options.work_ld, "single_job", duration, background, pinned)
-+        generate_loc_intr_report()
-+        status = validate_ilb(options.mc_level, options.smt_level)
-+        reset_schedmc()
-+        if is_hyper_threaded():
-+            reset_schedsmt()
-+        return(status)        
-+    except Exception, details:
-+        print "INFO: Idle Load Balancer test failed", details
-+        return(1)
-+
-+if __name__ == "__main__":
-+    sys.exit(main())
+Thanks,
+Paul Larson
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
