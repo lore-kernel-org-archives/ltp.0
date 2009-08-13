@@ -1,30 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1MeABd-0004rD-Hl
-	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2009 16:08:25 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MeABc-0006gd-Ji
-	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2009 16:08:25 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e2.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7KG2I03027099
-	for <ltp-list@lists.sourceforge.net>; Thu, 20 Aug 2009 12:02:18 -0400
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7KG8IIL209074
-	for <ltp-list@lists.sourceforge.net>; Thu, 20 Aug 2009 12:08:18 -0400
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7KG8I4q003661
-	for <ltp-list@lists.sourceforge.net>; Thu, 20 Aug 2009 12:08:18 -0400
-From: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Date: Thu, 20 Aug 2009 21:38:09 +0530
-Message-Id: <20090820160809.30926.5725.sendpatchset@localhost.localdomain>
-In-Reply-To: <20090820160655.30926.34854.sendpatchset@localhost.localdomain>
-References: <20090820160655.30926.34854.sendpatchset@localhost.localdomain>
-Subject: [LTP] New testcase to test timer_migration interface
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MbWqX-0001TA-UB
+	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2009 09:43:45 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MbWqO-0001w0-Or
+	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2009 09:43:45 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 13 Aug 2009 05:43:28 -0400
+References: <4A77F5D9.8030101@petalogix.com>
+	<200908130346.26150.vapier@gentoo.org>
+	<364299f40908130204h609050e7g702a415f2559c29e@mail.gmail.com>
+In-Reply-To: <364299f40908130204h609050e7g702a415f2559c29e@mail.gmail.com>
+MIME-Version: 1.0
+Message-Id: <200908130543.30084.vapier@gentoo.org>
+Subject: Re: [LTP] Extended return flag
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,49 +26,88 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3681116082443180806=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: vaidy <svaidy@linux.vnet.ibm.com>, ltp-list@lists.sourceforge.net, gautham <ego@in.ibm.com>, arun@linux.vnet.ibm.com
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Jiri Palecek <jpalecek@web.de>
 
-This is the new tescase to test timer migration interface.
+--===============3681116082443180806==
+Content-Type: multipart/signed; boundary="nextPart1453559.S6rGsx2rpB";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+--nextPart1453559.S6rGsx2rpB
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-diff -uprN ltp-full-20090731_orig/testcases/kernel/power_management/test_timer_migration.sh ltp-full-20090731/testcases/kernel/power_management/test_timer_migration.sh
---- ltp-full-20090731_orig/testcases/kernel/power_management/test_timer_migration.sh	1970-01-01 05:30:00.000000000 +0530
-+++ ltp-full-20090731/testcases/kernel/power_management/test_timer_migration.sh	2009-08-20 20:49:48.000000000 +0530
-@@ -0,0 +1,22 @@
-+#!/bin/bash
-+
-+. pm_include.sh
-+
-+valid_input="0 1"
-+invalid_input="3 4 5 6 7 8 a abcefg x1999 xffff -1 -00000
-+200000000000000000000000000000000000000000000000000000000000000000000000000000
-+ox324 -0xfffffffffffffffffffff"
-+test_file="/proc/sys/kernel/timer_migration"
-+if [ ! -f ${test_file} ] ; then
-+	echo "MISSING_FILE: missing file ${test_file}"
-+	exit $MISSING_FILE
-+fi
-+
-+RC=0
-+echo "${0}: ---Valid test cases---"
-+check_input "${valid_input}" valid $test_file 
-+RC=$?
-+echo "${0}: ---Invalid test cases---"
-+check_input "${invalid_input}" invalid $test_file
-+RC=$(( RC | $? ))
-+exit $RC
+On Thursday 13 August 2009 05:04:13 Garrett Cooper wrote:
+> On Thu, Aug 13, 2009 at 12:46 AM, Mike Frysinger<vapier@gentoo.org> wrote:
+> > On Tuesday 04 August 2009 04:48:25 Michal Simek wrote:
+> >> I am thinking that will be good to extend return flag for function not
+> >> implemented (errno 38) because
+> >> some of tests return it when you don't have enable that option is kern=
+el
+> >> config.
+> >> What do you think?
+> >
+> > what "return flag" are you talking about ?  do you mean test status like
+> > TINFO/TBROK/etc... ?
+>
+> I was wondering about this earlier -- why wouldn't TCONF be sufficient?
+
+should be fine i think ... we just have to (1) pick a method (2) document i=
+t=20
+and (3) start using it
+=2Dmike
+
+--nextPart1453559.S6rGsx2rpB
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJKg+BCAAoJEEFjO5/oN/WBQgcP/3tdF+osUHgCbsHanGgLc2K8
+yZICH0vsi5LH9jgsTW0JdmtS/sjcxVXZcqxcSsT9fTzewmE1rRAWdU8cMiOua1Zl
+yHfmKey889Opd3AdKLanCy5fVMw39pCGFTqjMbaKWJoqA+xa75dRBT8NS4YOLOBe
+IatulbO1yv/tQtd0NTU7YDtDEnKSi2+ed/9kFGe9Z1qJQFVw2xdE0L7hD72vqJ7o
+tKVGyecibbCOAIggMDs44VOq9V1r1hN0BAwkbYRvCOcHMoTTnG6nv02sx4niePe5
+/Zxfq6cZpJ65KTyA2284w9pQotFhhDnbEGteSauGXV/LfFJfq/wxNTiB/uL143uS
+n3xD6RhCbauubVVyYQCSe0cM9s5itYpKACHZluIQinIO1JQhGSly5Ik36KMTI0nw
+PdeMLzZBDgWHM/i9roXHn9gyWvPwMNJl1TCJCrlTgO0yqkYGGETGoDBNALWsnpJ2
+OaiPUFaHyTfU2SOwvk6G8cxsJHQTzHzzdWu5kGFdWn0bV/NE2o+XDPGe6PsPueqw
+neXncNNA0awbiSNZo/eggc9wPj85xJrYE6t0sTT+OTcHC7zJJmINOlVz+942gmoe
+DGxUQM8J1TtvVCuu3Ud2ZG2faheDVYYLOxoGlfpBocOvsSl9mWW+Nl+IGDdJw341
+Y5z8nf0dcVGW9jcJFSVP
+=iiGg
+-----END PGP SIGNATURE-----
+
+--nextPart1453559.S6rGsx2rpB--
+
+
+--===============3681116082443180806==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============3681116082443180806==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3681116082443180806==--
+
