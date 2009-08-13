@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MdKfb-0003EZ-As
-	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2009 09:07:55 +0000
-Received: from e7.ny.us.ibm.com ([32.97.182.137])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MdKfX-0006E7-4k
-	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2009 09:07:55 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Tue, 18 Aug 2009 14:37:11 +0530
-Message-Id: <1250586433.9913.15.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: [LTP] Dead End with LTP Options
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <yanegomi@gmail.com>) id 1MbWEa-0008Ee-7h
+	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2009 09:04:32 +0000
+Received: from mail-qy0-f181.google.com ([209.85.221.181])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MbWEN-0003ii-EH
+	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2009 09:04:24 +0000
+Received: by qyk11 with SMTP id 11so539859qyk.28
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 13 Aug 2009 02:04:13 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <200908130346.26150.vapier@gentoo.org>
+References: <4A77F5D9.8030101@petalogix.com>
+	<200908130346.26150.vapier@gentoo.org>
+Date: Thu, 13 Aug 2009 02:04:13 -0700
+Message-ID: <364299f40908130204h609050e7g702a415f2559c29e@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Extended return flag
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,52 +28,36 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>, Garrett Cooper <yanegomi@gmail.com>, Masatake YAMATO <yamato@redhat.com>, Cai Qian <qcai@redhat.com>, Paul Larson <paul.larson@canonical.com>, Robbie Williamson <robbie@ubuntu.com>, Nate Straz <nate@refried.org>, "manoj.iyer" <manoj.iyer@canonical.com>, Michael Reed <mreed10@us.ibm.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net, Jiri Palecek <jpalecek@web.de>
 
-Hi,
+On Thu, Aug 13, 2009 at 12:46 AM, Mike Frysinger<vapier@gentoo.org> wrote:
+> On Tuesday 04 August 2009 04:48:25 Michal Simek wrote:
+>> I am thinking that will be good to extend return flag for function not
+>> implemented (errno 38) because
+>> some of tests return it when you don't have enable that option is kernel
+>> config.
+>> What do you think?
+>
+> what "return flag" are you talking about ? =A0do you mean test status like
+> TINFO/TBROK/etc... ?
 
-We are about to hit the dead end for LTP options with increasing no. of
-options being added to 'runltp' with each passing day. And even with
-line items i have for ltp in 2009 alone, it will easily add up to 3-4
-options.
+I was wondering about this earlier -- why wouldn't TCONF be sufficient?
+Thanks,
+-Garrett
 
-Now, this will become a mess in future:
+---------------------------------------------------------------------------=
+---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
 
-     1. "./runltp -h" will scroll up and will not show on a single
-        screen,
-     2. It will be difficult for users to remember all options and their
-        usage as no. of options increase manifold, which is already too
-        much.
+trial. Simplify your report design, integration and deployment - and focus =
+on =
 
-While there is no doubt that we will keep adding more punch to ltp and
-the way it provisions tests in future, so, the time has come for us to
-adhere to a simpler process which can be easily:
+what you do best, core application coding. Discover what's new with =
 
-     1. Used &
-     2. Maintained
-
-I have no reservations of how it should be implemented, so, would like
-to hear from you on how it can be done best. I would like to see just
-the following command execute LTP as desired by the user:
-
-./runltp
-
-And the remaining choice of providing more options to 'runltp' hidden
-somewhere.
-
-Regards--
-Subrata
-
-
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
