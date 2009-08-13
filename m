@@ -1,25 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Mb9SP-0005QF-Hb
-	for ltp-list@lists.sourceforge.net; Wed, 12 Aug 2009 08:45:17 +0000
-Received: from qw-out-1920.google.com ([74.125.92.148])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mb9SN-00050W-9P
-	for ltp-list@lists.sourceforge.net; Wed, 12 Aug 2009 08:45:17 +0000
-Received: by qw-out-1920.google.com with SMTP id 5so1478722qwc.4
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 12 Aug 2009 01:45:09 -0700 (PDT)
+	(envelope-from <vapier@gentoo.org>) id 1MbSzI-0006g4-Qi
+	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2009 05:36:32 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MbSzA-0007bF-VE
+	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2009 05:36:32 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 13 Aug 2009 01:36:16 -0400
+References: <364299f40907182138w484cc898gac9fe00dbde75afd@mail.gmail.com>
+In-Reply-To: <364299f40907182138w484cc898gac9fe00dbde75afd@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20090811173021.7074.87879.sendpatchset@subratamodak.linux.ibm.com>
-References: <20090811172957.7074.62874.sendpatchset@subratamodak.linux.ibm.com>
-	<20090811173021.7074.87879.sendpatchset@subratamodak.linux.ibm.com>
-Date: Wed, 12 Aug 2009 01:45:09 -0700
-Message-ID: <364299f40908120145h13955b1eyaa4abdd477612b6a@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 02/05] Add Script which would actually do the job
-	of injecting faults
+Message-Id: <200908130136.16712.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] Fix bad strerror calls in
+	testcases/kernel/syscalls/waitid01.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,143 +25,90 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============6131543700672215755=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>, LTP Mailing List <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>, Michael Reed <mreed10@us.ibm.com>, Nate Straz <nate@refried.org>, Paul Larson <paul.larson@ubuntu.com>, Manoj Iyer <manoj.iyer@ubuntu.com>, Balbir Singh <balbir@linux.vnet.ibm.com>
+To: ltp-list@lists.sourceforge.net
 
-On Tue, Aug 11, 2009 at 10:30 AM, Subrata
-Modak<subrata@linux.vnet.ibm.com> wrote:
-> Script which would actually do the job of injecting faults by changing va=
-rious
-> parametrs available under /debug/fail*. This would be done dynamically du=
-ring
-> LTP run, and, is capable of taking parameters from 0 to 100 to vary the
-> probability of Fault the user wants to inject in the running kernel.
+--===============6131543700672215755==
+Content-Type: multipart/signed; boundary="nextPart2191923.utev9z7QoY";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+
+--nextPart2191923.utev9z7QoY
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+On Sunday 19 July 2009 00:38:39 Garrett Cooper wrote:
+>  int errnochoose(void){   //choose the relative errno
 >
-> Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>
-> ---
->
-> diff -uprN ltp-full-20090731.orig/tools/insert_kernel_faults.sh ltp-full-=
-20090731/tools/insert_kernel_faults.sh
-> --- ltp-full-20090731.orig/tools/insert_kernel_faults.sh =A0 =A0 =A0 =A01=
-970-01-01 05:30:00.000000000 +0530
-> +++ ltp-full-20090731/tools/insert_kernel_faults.sh =A0 =A0 2009-08-11 18=
-:44:45.000000000 +0530
-> @@ -0,0 +1,52 @@
-> +#!/bin/sh
-> +########################################################################=
-########
-> +## =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0##
-> +## Copyright (c) International Business Machines =A0Corp., 2009 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 ##
-> +## =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0##
-> +## This program is free software; =A0you can redistribute it and/or modi=
-fy =A0 =A0 =A0##
-> +## it under the terms of the GNU General Public License as published by =
-=A0 =A0 =A0 ##
-> +## the Free Software Foundation; either version 2 of the License, or =A0=
- =A0 =A0 =A0 =A0##
-> +## (at your option) any later version. =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0##
-> +## =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0##
-> +## This program is distributed in the hope that it will be useful, but =
-=A0 =A0 =A0 =A0##
-> +## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTAB=
-ILITY ##
-> +## or FITNESS FOR A PARTICULAR PURPOSE. =A0See the GNU General Public Li=
-cense =A0 ##
-> +## for more details. =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0##
-> +## =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0##
-> +## You should have received a copy of the GNU General Public License =A0=
- =A0 =A0 =A0 =A0##
-> +## along with this program; =A0if not, write to the Free Software =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 ##
-> +## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 U=
-SA =A0 =A0##
-> +## =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0##
-> +########################################################################=
-########
-> +# =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0##
-> +# File : =A0 =A0 =A0 =A0insert_kernel_faults.sh =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0##
-> +# =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0##
-> +# Usage: =A0 =A0 =A0 insert_kernel_faults.sh <fault_percentage> =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0##
-> +# =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0##
-> +# Description: =A0This is a simple script that inserts faults at various=
- =A0 =A0 =A0 ##
-> +# =A0 =A0 =A0 =A0 =A0 =A0 =A0subsystems of the kernel. Please refer to t=
-he ltp/README =A0 =A0 =A0##
-> +# =A0 =A0 =A0 =A0 =A0 =A0 =A0for the various kernel CONFIG options neede=
-d to exploit =A0 =A0 =A0 ##
-> +# =A0 =A0 =A0 =A0 =A0 =A0 =A0all those features =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0##
-> +# =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0##
-> +# Author: =A0 =A0 =A0Subrata Modak <subrata@linux.vnet.ibm.com> =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0##
-> +# =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0##
-> +# History: =A0 =A0 =A0Aug 11 2009 - Created - Subrata Modak. =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ##
-> +########################################################################=
-########
-> +
-> +if [ -z $1 ]
-> + =A0 =A0 =A0 then
-> + =A0 =A0 =A0 #Check if Useage has been proper
-> + =A0 =A0 =A0 echo "Usage: $0 <fault_percentage>"
-> + =A0 =A0 =A0 exit 1
-> +fi
-> +
-> +#These are the types of Subsystems where fault will be injected
-> +#Make sure debugfs has been mounted
-> +for FAILTYPE in `echo fail_io_timeout fail_make_request fail_page_alloc =
-failslab`
-> +do
-> + =A0 =A0 =A0 echo $1 > /debug/$FAILTYPE/probability
-> + =A0 =A0 =A0 echo 100 > /debug/$FAILTYPE/interval
-> + =A0 =A0 =A0 echo -1 > /debug/$FAILTYPE/times
-> + =A0 =A0 =A0 echo 0 > /debug/$FAILTYPE/space
-> +done
+>      switch (TEST_ERRNO){
+> -        case    0:      tst_exit();
+> -        case    ECHILD: strerror((int)"ECHILD");
+> -        	        break;
+> -        case    EINTR:  strerror((int)"EINTR");
+> -                	break;
+> -        case    EINVAL: strerror((int)"EINVAL");
+> -                	break;
+> -        default:     strerror((int)"Other Error");
+> +        case  0:     tst_exit();
+> +		     break;
+> +        default:     strerror(TEST_ERRNO);
+>                       break;
+>     }
 
-    Why ```for FAILTYPE in `echo list-of-values`'''? ```for FAILTYPE
-in list-of-values''' works just as well without the echo.
-Thanks,
--Garrett
+maybe i'm missing something, but strerror() doesnt write any output, it=20
+returns a string.  so ignoring the return value of strerror() makes it=20
+pointless.  which means this whole function is useless ?
+=2Dmike
 
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+--nextPart2191923.utev9z7QoY
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-trial. Simplify your report design, integration and deployment - and focus =
-on =
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.12 (GNU/Linux)
 
-what you do best, core application coding. Discover what's new with =
+iQIcBAABAgAGBQJKg6ZQAAoJEEFjO5/oN/WBRakQANUUPhT9dCFhFOJDz9OIrrQ0
+ZdckHNQaEyM7pAgj1pauDjh4+y98QTC4qGcv2n56cDph/sDO3ABFuqZM8cB6uV5m
+ouw3mSe0aM/NkMVvYk+QVH/5e80ZwnRsht66hYXunNG1luDg4KSApSxLdbE4MVVO
+t+mZ2fgf11ROykDzuozBIFlega3wWZaKrXgkv/11JmbE4NYVZSSL0uqNg+AiORiT
+d2x4Y/HUpWhDDO1hqXYdD9O4pb3e5Klkc8u0Klo4gEHUmWuWXVFd21RbCgyouULJ
+dOhIePDnvNMk0U8GUcwPNIyrbI8BYoQvAZ6KfmSLtmPT7Rx2IcwBKQ3iMf/I0W0s
+BgnIq7B4WCBkwdVyZ5QkbvoEecWvEN6N3L8pqNFTNJgmdG8pU1yzSxvxQQ3KHQ5h
+71oBzzCXQ08d0ZKplJkZG0t6kktex60cROIaLrpXkaadzLDEdSs9Uhdg+iPuLHoN
+q57hm3WflX45DIp7sjcV8685BxQYLS61JaJQFezXFg6Aht2GLidKjgWyo3XslOpJ
+hJMIniGZJBZMW6+52gCGUTO+4iXNwl/mWwtMoXfdvJWctBpO68QuBRAkZg8pZnke
+IZmrrrp22d3iiQ0pyguX2kxtxmK6TcbM1cegiIdmUL7Y87CT2MMqcDU6XGXOfuvJ
+aVrVLWXGr+75CP5HdcZq
+=L2w3
+-----END PGP SIGNATURE-----
 
+--nextPart2191923.utev9z7QoY--
+
+
+--===============6131543700672215755==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============6131543700672215755==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6131543700672215755==--
+
