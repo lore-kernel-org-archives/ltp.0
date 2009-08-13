@@ -1,35 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Md6G8-0002at-JF
-	for ltp-list@lists.sourceforge.net; Mon, 17 Aug 2009 17:44:40 +0000
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Md6G4-00074H-3D
-	for ltp-list@lists.sourceforge.net; Mon, 17 Aug 2009 17:44:40 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e5.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7HHaVK6004049
-	for <ltp-list@lists.sourceforge.net>; Mon, 17 Aug 2009 13:36:31 -0400
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7HHiUSP226156
-	for <ltp-list@lists.sourceforge.net>; Mon, 17 Aug 2009 13:44:30 -0400
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7HHiTXH017222
-	for <ltp-list@lists.sourceforge.net>; Mon, 17 Aug 2009 13:44:30 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <364299f40908171011s55fdd4a1pbf5e5e6bad352a13@mail.gmail.com>
-References: <20090817120835.8902.4597.sendpatchset@subratamodak.linux.ibm.com>
-	<20090817120920.8902.89815.sendpatchset@subratamodak.linux.ibm.com>
-	<364299f40908171011s55fdd4a1pbf5e5e6bad352a13@mail.gmail.com>
-Date: Mon, 17 Aug 2009 23:14:13 +0530
-Message-Id: <1250531055.2439.3.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH v2 02/05] Add Script which would actually do the
-	job of	injecting faults
-Reply-To: subrata@linux.vnet.ibm.com
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MbUNR-00026I-9f
+	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2009 07:05:33 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MbUNM-0007aW-PN
+	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2009 07:05:33 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 13 Aug 2009 03:05:21 -0400
+References: <4A833067.2000204@canonical.com>
+In-Reply-To: <4A833067.2000204@canonical.com>
+MIME-Version: 1.0
+Message-Id: <200908130305.22282.vapier@gentoo.org>
+Subject: Re: [LTP] fix file_test.sh for systems without rpm installed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,88 +24,74 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============6048718895277632911=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>, LTP Mailing List <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>, Michael Reed <mreed10@us.ibm.com>, Nate Straz <nate@refried.org>, Paul Larson <paul.larson@ubuntu.com>, Manoj Iyer <manoj.iyer@ubuntu.com>, Balbir Singh <balbir@linux.vnet.ibm.com>
+To: ltp-list@lists.sourceforge.net
 
-T24gTW9uLCAyMDA5LTA4LTE3IGF0IDEwOjExIC0wNzAwLCBHYXJyZXR0IENvb3BlciB3cm90ZToK
-PiBIaSBTdWJyYXRhLAo+IAo+IE9uIE1vbiwgQXVnIDE3LCAyMDA5IGF0IDU6MDkgQU0sIFN1YnJh
-dGEKPiBNb2RhazxzdWJyYXRhQGxpbnV4LnZuZXQuaWJtLmNvbT4gd3JvdGU6Cj4gPiBTY3JpcHQg
-d2hpY2ggd291bGQgYWN0dWFsbHkgZG8gdGhlIGpvYiBvZiBpbmplY3RpbmcgZmF1bHRzIGJ5IGNo
-YW5naW5nIHZhcmlvdXMKPiA+IHBhcmFtZXRycyBhdmFpbGFibGUgdW5kZXIgL2RlYnVnL2ZhaWwq
-LiBUaGlzIHdvdWxkIGJlIGRvbmUgZHluYW1pY2FsbHkgZHVyaW5nCj4gPiBMVFAgcnVuLCBhbmQs
-IGlzIGNhcGFibGUgb2YgdGFraW5nIHBhcmFtZXRlcnMgZnJvbSAwIHRvIDEwMCB0byB2YXJ5IHRo
-ZQo+ID4gcHJvYmFiaWxpdHkgb2YgRmF1bHQgdGhlIHVzZXIgd2FudHMgdG8gaW5qZWN0IGluIHRo
-ZSBydW5uaW5nIGtlcm5lbC4KPiA+Cj4gPiBJbmNvcnBvcmF0ZWQgTWlrZcWbICYgR2FycmV0cyBj
-b21tZW50cyBhbmQgY29uY2VybnMuCj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogU3VicmF0YSBNb2Rh
-azxzdWJyYXRhQGxpbnV4LnZuZXQuaWJtLmNvbT4KPiA+IC0tLQo+ID4KPiA+IC0tLSBsdHAtZnVs
-bC0yMDA5MDczMS5vcmlnL3Rvb2xzL2luc2VydF9rZXJuZWxfZmF1bHRzLnNoICAgICAgICAxOTcw
-LTAxLTAxIDA1OjMwOjAwLjAwMDAwMDAwMCArMDUzMAo+ID4gKysrIGx0cC1mdWxsLTIwMDkwNzMx
-L3Rvb2xzL2luc2VydF9rZXJuZWxfZmF1bHRzLnNoICAgICAyMDA5LTA4LTE3IDEyOjE3OjMxLjAw
-MDAwMDAwMCArMDUzMAo+ID4gQEAgLTAsMCArMSw1MyBAQAo+ID4gKyMhL2Jpbi9zaAo+ID4gKyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjCj4gPiArIyMgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyMKPiA+ICsj
-IyBDb3B5cmlnaHQgKGMpIEludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGluZXMgIENvcnAuLCAy
-MDA5ICAgICAgICAgICAgICAgICAjIwo+ID4gKyMjICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMjCj4gPiAr
-IyMgVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7ICB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBp
-dCBhbmQvb3IgbW9kaWZ5ICAgICAgIyMKPiA+ICsjIyBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhl
-IEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieSAgICAgICAjIwo+ID4g
-KyMjIHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJzaW9uIDIgb2YgdGhl
-IExpY2Vuc2UsIG9yICAgICAgICAgICMjCj4gPiArIyMgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0
-ZXIgdmVyc2lvbi4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyMKPiA+
-ICsjIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAjIwo+ID4gKyMjIFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmli
-dXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLCBidXQgICAgICAgICMjCj4g
-PiArIyMgV0lUSE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJy
-YW50eSBvZiBNRVJDSEFOVEFCSUxJVFkgIyMKPiA+ICsjIyBvciBGSVRORVNTIEZPUiBBIFBBUlRJ
-Q1VMQVIgUFVSUE9TRS4gIFNlZSB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgICAjIwo+
-ID4gKyMjIGZvciBtb3JlIGRldGFpbHMuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICMjCj4gPiArIyMgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyMK
-PiA+ICsjIyBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJh
-bCBQdWJsaWMgTGljZW5zZSAgICAgICAgICAjIwo+ID4gKyMjIGFsb25nIHdpdGggdGhpcyBwcm9n
-cmFtOyAgaWYgbm90LCB3cml0ZSB0byB0aGUgRnJlZSBTb2Z0d2FyZSAgICAgICAgICAgICAgICMj
-Cj4gPiArIyMgRm91bmRhdGlvbiwgSW5jLiwgNTkgVGVtcGxlIFBsYWNlLCBTdWl0ZSAzMzAsIEJv
-c3RvbiwgTUEgMDIxMTEtMTMwNyBVU0EgICAgIyMKPiA+ICsjIyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAj
-Iwo+ID4gKyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCj4gPiArIyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAj
-Iwo+ID4gKyMgRmlsZSA6ICAgICAgICBpbnNlcnRfa2VybmVsX2ZhdWx0cy5zaCAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAjIwo+ID4gKyMgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIyMKPiA+ICsjIFVzYWdlOiAgICAgICBpbnNlcnRfa2VybmVsX2ZhdWx0cy5zaCA8ZmF1
-bHRfcGVyY2VudGFnZT4gICAgICAgICAgICAgICAgICAgICMjCj4gPiArIyAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAjIwo+ID4gKyMgRGVzY3JpcHRpb246ICBUaGlzIGlzIGEgc2ltcGxlIHNjcmlwdCB0aGF0
-IGluc2VydHMgZmF1bHRzIGF0IHZhcmlvdXMgICAgICAgIyMKPiA+ICsjICAgICAgICAgICAgICBz
-dWJzeXN0ZW1zIG9mIHRoZSBrZXJuZWwuIFBsZWFzZSByZWZlciB0byB0aGUgbHRwL1JFQURNRSAg
-ICAgICMjCj4gPiArIyAgICAgICAgICAgICAgZm9yIHRoZSB2YXJpb3VzIGtlcm5lbCBDT05GSUcg
-b3B0aW9ucyBuZWVkZWQgdG8gZXhwbG9pdCAgICAgICAjIwo+ID4gKyMgICAgICAgICAgICAgIGFs
-bCB0aG9zZSBmZWF0dXJlcyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIyMKPiA+ICsjICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMjCj4gPiArIyBBdXRob3I6ICAgICAgU3Vi
-cmF0YSBNb2RhayA8c3VicmF0YUBsaW51eC52bmV0LmlibS5jb20+ICAgICAgICAgICAgICAgICAg
-ICAjIwo+ID4gKyMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyMKPiA+ICsjIEhpc3Rvcnk6ICAgICAgQXVn
-IDExIDIwMDkgLSBDcmVhdGVkIC0gU3VicmF0YSBNb2Rhay4gICAgICAgICAgICAgICAgICAgICAg
-ICMjCj4gPiArIyAgICAgICAgICAgICAgQXVnIDE3IDIwMDkgLSBDaGFuZ2VkIHRoZSBkZWJ1Z2Zz
-IG1vdW50IHBvaW50IC0gU3VicmF0YSBNb2Rhay4jIwo+ID4gKyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjCj4gPiArCj4gPiAraWYgWyAteiAkMSBdCj4gCj4gT25lIGNvbmNlcm46ICQxIHNob3VsZCBi
-ZSBxdW90ZWQuCgpUaGFua3MgR2FycmV0LiBTdXJlbHkgaSB3aWxsIHRha2UgY2FyZSBvZiB0aGF0
-IGJlZm9yZSBjaGVja2luZyBpbi4KClJlZ2FyZHMtLQpTdWJyYXRhCgo+IAo+IFRoYW5rcyEKPiAt
-R2FycmV0dAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMZXQgQ3J5c3RhbCBSZXBvcnRzIGhhbmRs
-ZSB0aGUgcmVwb3J0aW5nIC0gRnJlZSBDcnlzdGFsIFJlcG9ydHMgMjAwOCAzMC1EYXkgCnRyaWFs
-LiBTaW1wbGlmeSB5b3VyIHJlcG9ydCBkZXNpZ24sIGludGVncmF0aW9uIGFuZCBkZXBsb3ltZW50
-IC0gYW5kIGZvY3VzIG9uIAp3aGF0IHlvdSBkbyBiZXN0LCBjb3JlIGFwcGxpY2F0aW9uIGNvZGlu
-Zy4gRGlzY292ZXIgd2hhdCdzIG5ldyB3aXRoIApDcnlzdGFsIFJlcG9ydHMgbm93LiAgaHR0cDov
-L3Auc2YubmV0L3NmdS9ib2JqLWp1bHkKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJj
-ZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9s
-dHAtbGlzdAo=
+--===============6048718895277632911==
+Content-Type: multipart/signed; boundary="nextPart1882884.h2nHaK9o0M";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+
+--nextPart1882884.h2nHaK9o0M
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+On Wednesday 12 August 2009 17:13:11 Paul Larson wrote:
+> If you run file_test.sh on a system without rpm installed, it should
+> return tconf instead of tfail.
+
+this has the same problems as i mentioned with your mail_tests patch
+-mike
+
+--nextPart1882884.h2nHaK9o0M
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJKg7syAAoJEEFjO5/oN/WBa6AP/1c+bfDEbaI5roOotf9dflfQ
+SrShI8QeNkup+kgZJZwH6RO/sorslD5RyrEfldqbuUQbXkpiB8cRM4DsdS55ImR/
+tpu5wfzVMnELdPOJHoJfLQ/1wsPNBGj7bwWoNRc4qWY623MAz58btUnJ71Pd5xIj
+EMdAmIamcJP90kKPI+2+BHpUcnuLB3Xn2RmmU5Jr3t0Xue0Zp0RXX7kN1me5jyNa
+U+VzpymzNXhTOBwUTYeS7rVs2DAJtnknXp1cBmiZ25Db0+fFxAEMwtMlmKtkmdzo
+14IHWmFXl9HuKp2TZ1taaD6ovr0pdjeV1bYffh4jOSkK/oL/Rd9LncGmaafsetEY
+NcLEBjEencublEPhw+vipV1obGv2RpBtICD64uw3xgeU4/xsgqyZa9ROTgZAnyMi
+08UkxnemT3/Nz0ykm04Yw4LP0MutBEIPBYXtS+gC5ETSBYRrZMcVKg9Kw2u6tKgf
+Ck2BPMJgrEK0xc44FwUmM+s9Xk6Z47QseC7wmx55Wxq0r6gAkLzwNj+FH6LVU8/b
+s6lO4mUC+WctSg1jTWqCW9MuDhLyh4+jobclyd6/IZ6kp/F86LSvtg7M3gpCd3KA
+IlOK/s1xj0vxP0x7kz7qMH6p0h+cdKAXxX0BQ3vRXlOq+MKxkShJT98Rr8rgZUgX
+uE8K7fZC7qwi1y0KfKOy
+=M94q
+-----END PGP SIGNATURE-----
+
+--nextPart1882884.h2nHaK9o0M--
+
+
+--===============6048718895277632911==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============6048718895277632911==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6048718895277632911==--
+
