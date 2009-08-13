@@ -1,36 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <matthltc@us.ibm.com>) id 1MX11Y-0004bD-Md
-	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 22:56:28 +0000
-Received: from e33.co.us.ibm.com ([32.97.110.151])
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MbS3s-0000l0-En
+	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2009 04:37:12 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
 	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MX11O-0008AR-Rz
-	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2009 22:56:28 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e33.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n6VMsM2e008266
-	for <ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2009 16:54:22 -0600
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n6VMuATE200172
-	for <ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2009 16:56:10 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n6VMuAt8023332
-	for <ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2009 16:56:10 -0600
-Date: Fri, 31 Jul 2009 15:56:09 -0700
-From: Matt Helsley <matthltc@us.ibm.com>
-Message-ID: <20090731225609.GB5479@count0.beaverton.ibm.com>
-References: <1248272525-13205-1-git-send-email-nobuhiro@andestech.com>
-	<20090724182457.GJ5878@count0.beaverton.ibm.com>
-	<1248978565.5788.63.camel@subratamodak.linux.ibm.com>
+	(Exim 4.69) id 1MbS3o-0005QI-91
+	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2009 04:37:12 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 13 Aug 2009 00:36:59 -0400
+References: <364299f40908021920v5b743b6k7a4516b79731de5d@mail.gmail.com>
+In-Reply-To: <364299f40908021920v5b743b6k7a4516b79731de5d@mail.gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1248978565.5788.63.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] [PATCH] Fixed static build which needs to link
-	the	pthread library in pidns and pipeio.
+Message-Id: <200908130037.00080.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] Fix compiler warnings for performance_counter
+	tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,71 +25,80 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============1270434360725097947=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-T24gVGh1LCBKdWwgMzAsIDIwMDkgYXQgMTE6NTk6MjVQTSArMDUzMCwgU3VicmF0YSBNb2RhayB3
-cm90ZToKPiBPbiBGcmksIDIwMDktMDctMjQgYXQgMTE6MjQgLTA3MDAsIE1hdHQgSGVsc2xleSB3
-cm90ZTogCj4gPiBPbiBXZWQsIEp1bCAyMiwgMjAwOSBhdCAxMDoyMjowNVBNICswODAwLCBub2J1
-aGlybyB3cm90ZToKPiA+ID4gCj4gPiA+IFNpZ25lZC1vZmYtYnk6IG5vYnVoaXJvIDxub2J1aGly
-b0BhbmRlc3RlY2guY29tPgo+ID4gPiAtLS0KPiA+ID4gIHRlc3RjYXNlcy9rZXJuZWwvY29udGFp
-bmVycy9waWRucy9NYWtlZmlsZSB8ICAgIDIgKy0KPiA+ID4gIHRlc3RjYXNlcy9rZXJuZWwvaXBj
-L3BpcGVpby9NYWtlZmlsZSAgICAgICB8ICAgIDIgKy0KPiA+ID4gIDIgZmlsZXMgY2hhbmdlZCwg
-MiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQo+ID4gPiAKPiA+ID4gZGlmZiAtLWdpdCBh
-L3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9waWRucy9NYWtlZmlsZSBiL3Rlc3RjYXNlcy9r
-ZXJuZWwvY29udGFpbmVycy9waWRucy9NYWtlZmlsZQo+ID4gPiBpbmRleCA0ODg2ZDU4Li4xNGY0
-OWRhIDEwMDY0NAo+ID4gPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvcGlkbnMv
-TWFrZWZpbGUKPiA+ID4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL3BpZG5zL01h
-a2VmaWxlCj4gPiA+IEBAIC0yMCw3ICsyMCw3IEBACj4gPiA+IAo+ID4gPiAgQ0ZMQUdTICs9IC1X
-YWxsCj4gPiA+ICBDUFBGTEFHUyArPSAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgLUkuLi9saWJjbG9u
-ZQo+ID4gPiAtTERMSUJTICs9IC1MLi4vLi4vLi4vLi4vbGliIC1MLi4vbGliY2xvbmUgLi4vbGli
-Y2xvbmUvbGliY2xvbmUuYSAtbGx0cCAtbHJ0Cj4gPiA+ICtMRExJQlMgKz0gLUwuLi8uLi8uLi8u
-Li9saWIgLUwuLi9saWJjbG9uZSAuLi9saWJjbG9uZS9saWJjbG9uZS5hIC1sbHRwIC1scnQgLWxw
-dGhyZWFkCj4gPiAKPiA+IEknbSBub3Qgc3VyZSB0aGlzIGlzIGNvcnJlY3QuIEkganVzdCBkaWQg
-YSBDVlMgdXBkYXRlIGFuZCBncmVwcGVkIGZvcgo+ID4gInB0aHJlYWQiLiBJIGRvbid0IHNlZSBh
-IHNpbmdsZSB1c2Ugb2YgcHRocmVhZHMgaW4gdGhlcmUuIFdoYXQgb3V0cHV0Cj4gPiBzdWdnZXN0
-ZWQgYWxsIG9mIHRoZXNlIHRlc3RzIG5lZWQgdG8gbGluayB0byBwdGhyZWFkcz8gQ291bGQgeW91
-IGF0Cj4gPiBsZWFzdCBzdGljayB0aGF0IGluIHRoZSBjaGFuZ2Vsb2c/Cj4gPiAKPiAKPiBEaWQg
-eW91IHJlcGx5IHRvIE1hdHTFmyBtYWlsIG9uIHRoaXMgPwoKWWVzLCBJIGdvdCBhIHJlcGx5LiBN
-YXliZSBpdCB3YXNuJ3QgY2MnZCB0byB0aGUgTFRQIG1haWxpbmcgbGlzdD8KClJlZ2FyZGxlc3Ms
-IEknbSBzYXRpc2ZpZWQgd2l0aCB0aGUgcGF0Y2ggaXRzZWxmLiBBcyBJIHNhaWQgYmVmb3JlIHRo
-ZQpjaGFuZ2Vsb2cgd291bGQgYmUgbmljZXIgaWYgaXQgaW5jbHVkZWQgYSBzbmlwcGV0IG9mIHRo
-ZSBvdXRwdXQgdGhhdApqdXN0aWZpZXMgaXQgKGluY2x1ZGVkIGhlcmUgZm9yIGNvbnZlbmllbmNl
-KToKCglXaGVuIHN0YXRpYyBsaW5raW5nLCB0aGUgcHRocmVhZCBzdHVmZiBpcyBkdWUgdG8gdGhl
-IHVuZGVmaW5lZCBwdGhyZWFkIHN5bWJvbHMKCWluIGxpYnJ0LmEgYW5kIGxpYmdjY19laC5hLgoJ
-bWFrZVs0XTogRW50ZXJpbmcgZGlyZWN0b3J5CglgL2hvbWUvbm9idWhpcm8vZ2l0X3JlcG8vb3Mv
-bHRwL3Rlc3RjYXNlcy9rZXJuZWwvaXBjL3BpcGVpbycKCWNjIC1XYWxsICAtc3RhdGljIC1XYWxs
-ICAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgICBwaXBlaW8uYyAgLUwuLi8uLi8uLi8uLi9saWIKCS1s
-bHRwIC1scnQgLW8gcGlwZWlvCgkvdXNyL2xpYi9nY2MveDg2XzY0LXBjLWxpbnV4LWdudS80LjMu
-My8uLi8uLi8uLi8uLi9saWI2NC9saWJydC5hKGFpb19zdXNwZW5kLm8pOgoJSW4gZnVuY3Rpb24g
-YGNsZWFudXAnOgoJKC50ZXh0KzB4YSk6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYHB0aHJlYWRf
-bXV0ZXhfbG9jaycKCgpUaGFua3MgdG8gTm9idWhpcm8uCgpDaGVlcnMsCgktTWF0dCBIZWxzbGV5
-Cgo+IAo+IFJlZ2FyZHMtLQo+IFN1YnJhdGEKPiAKPiA+ID4gCj4gPiA+ICBTUkNTICAgIDo9ICQo
-d2lsZGNhcmQgKi5jKQo+ID4gPiAgVEFSR0VUUyA6PSAkKFNSQ1M6JS5jPSUpCj4gPiA+IGRpZmYg
-LS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL2lwYy9waXBlaW8vTWFrZWZpbGUgYi90ZXN0Y2FzZXMv
-a2VybmVsL2lwYy9waXBlaW8vTWFrZWZpbGUKPiA+ID4gaW5kZXggYWZkM2U4ZC4uZDJhMWQ1ZiAx
-MDA2NDQKPiA+ID4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9pcGMvcGlwZWlvL01ha2VmaWxlCj4g
-PiA+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvaXBjL3BpcGVpby9NYWtlZmlsZQo+ID4gPiBAQCAt
-MjIsNyArMjIsNyBAQAo+ID4gPiAgIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCj4gPiA+ICBDRkxBR1MgICAr
-PSAtV2FsbAo+ID4gPiAgQ1BQRkxBR1MgKz0gLUkuLi8uLi8uLi8uLi9pbmNsdWRlCj4gPiA+IC1M
-RExJQlMgICArPSAtTC4uLy4uLy4uLy4uL2xpYiAtbGx0cCAtbHJ0Cj4gPiA+ICtMRExJQlMgICAr
-PSAtTC4uLy4uLy4uLy4uL2xpYiAtbGx0cCAtbHJ0IC1scHRocmVhZAo+ID4gCj4gPiBTYW1lIGhl
-cmUuCj4gPiAKPiA+IENoZWVycywKPiA+IAktTWF0dCBIZWxzbGV5Cj4gPiAKPiA+IC0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLQo+ID4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KPiA+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+ID4gTHRwLWxpc3RAbGlzdHMuc291
-cmNlZm9yZ2UubmV0Cj4gPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0
-aW5mby9sdHAtbGlzdAo+IAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxldCBDcnlzdGFsIFJlcG9y
-dHMgaGFuZGxlIHRoZSByZXBvcnRpbmcgLSBGcmVlIENyeXN0YWwgUmVwb3J0cyAyMDA4IDMwLURh
-eSAKdHJpYWwuIFNpbXBsaWZ5IHlvdXIgcmVwb3J0IGRlc2lnbiwgaW50ZWdyYXRpb24gYW5kIGRl
-cGxveW1lbnQgLSBhbmQgZm9jdXMgb24gCndoYXQgeW91IGRvIGJlc3QsIGNvcmUgYXBwbGljYXRp
-b24gY29kaW5nLiBEaXNjb3ZlciB3aGF0J3MgbmV3IHdpdGggCkNyeXN0YWwgUmVwb3J0cyBub3cu
-ICBodHRwOi8vcC5zZi5uZXQvc2Z1L2JvYmotanVseQpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlz
-dHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xp
-c3RpbmZvL2x0cC1saXN0Cg==
+--===============1270434360725097947==
+Content-Type: multipart/signed; boundary="nextPart1262781.2IFFBWrvf5";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+
+--nextPart1262781.2IFFBWrvf5
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+On Sunday 02 August 2009 22:20:07 Garrett Cooper wrote:
+> This simply fixes some missing declarations and linux_syscall_number.h
+> cleanup related compiler warnings.
+
+your e-mail has line wrapping problems
+
+> -int main(void) {
+> +int
+> +main(void) {
+
+unrelated noise
+-mike
+
+--nextPart1262781.2IFFBWrvf5
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.12 (GNU/Linux)
+
+iQIcBAABAgAGBQJKg5hsAAoJEEFjO5/oN/WByToQAJb3PikpOxrPYX1MzRWDqnS0
+pKYWaGBW9RFpI5ZJvs3P1bHWLZ1ysjcZo/jOF2AP+wkXKcu5ijSpFtCyyLioEhur
+hfxh9IsAfQKm+dogUd6i50sQoQbxhf2c+KlnYB1GtUpPpVZy4rdTBOARVlmGwqrl
+qjJR0EnsnnMFmfdl97HX4vpAse3lprSpUZzmwn278R/yX4H9K25Pqb+5dWSGR0M7
+OsQB3D8t+A7npvwSXzJfV19hHXVXqRlLin+gWgAK7qxuaNaxYKWtWTmNkuThpUqj
+OkRQL2LsGP5fVelbCcpPD2aR1ajJkQVWOC1JU1FOJWhbd4YnmevihVm5oyrtY2bL
+mtTxchQ2w3dHEnc00KG8y1Ist7X7VVuBfwHdvBrMdfR/1c8Q58SFrUYsI7X65ofs
+mgOzwSNMgAhL9ykCSGgPcUrPQs0ZR1843Ej6ERN0rBgWTDpoScgXYtCo4kae/yX2
+OYEBvX9p/dotSSKfaem1z35qEo+Qwmz78qppYav55Cpj+JkYIuhzcI4T1WY/BxTd
+rm/SBSIdJWL8LeV6RdDZqxpqKKmxDm3WWs4GMmntUBZ4aGV+ThS6lvopgD81hBvG
+Lsr6kWjwgClHHH2cpatRCyTH4W62ht5+J/VEd/d7oZ9kcHif5dFKQ3glhWVl8byV
+jJHx4vrCr7asudlSjs7k
+=w50Y
+-----END PGP SIGNATURE-----
+
+--nextPart1262781.2IFFBWrvf5--
+
+
+--===============1270434360725097947==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============1270434360725097947==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1270434360725097947==--
+
