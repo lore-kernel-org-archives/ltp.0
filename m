@@ -1,43 +1,11 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
-	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MYH04-0003fM-TT
-	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 10:12:08 +0000
-Received: from e31.co.us.ibm.com ([32.97.110.149])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MYH00-0005g7-JD
-	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 10:12:08 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e31.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n74A6hSf003333
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 04:06:43 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n74ABwEd218878
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 04:11:58 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n74ABw4F007081
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 04:11:58 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4A77F359.40901@petalogix.com>
-References: <20090724110008.GA11878@linux.vnet.ibm.com>
-	<4A6AA306.3060107@petalogix.com>
-	<364299f40907250948sb1a8cc5o7afba11ac2d83ef9@mail.gmail.com>
-	<4A6D7367.70306@petalogix.com>
-	<1248978579.5788.66.camel@subratamodak.linux.ibm.com>
-	<20090803104746.GA31767@schrodinger.suse.cz>
-	<4A76EA47.7070209@petalogix.com>
-	<20090803135451.GA11225@schrodinger.suse.cz>
-	<4A76F856.6030307@petalogix.com>
-	<364299f40908030944n74d79509r716dcbcc8875677b@mail.gmail.com>
-	<4A77F359.40901@petalogix.com>
-Date: Tue, 04 Aug 2009 15:41:47 +0530
-Message-Id: <1249380712.15587.3.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Submitting patch
-Reply-To: subrata@linux.vnet.ibm.com
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Fri, 14 Aug 2009 13:20:27 -0400
+References: <alpine.LRH.2.00.0908071113370.11434@vixen.sonytel.be>
+In-Reply-To: <alpine.LRH.2.00.0908071113370.11434@vixen.sonytel.be>
+MIME-Version: 1.0
+Message-Id: <200908141320.29316.vapier@gentoo.org>
+Subject: Re: [LTP] linux-libc-dev and LTP compile failures on ppc
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -47,128 +15,91 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3575988983247780980=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: michal.simek@petalogix.com
-Cc: ltp-list@lists.sourceforge.net, naresh.kernel@gmail.com, Jyoti <jyotiv@linux.vnet.ibm.com>, Mike Frysinger <vapier.adi@gmail.com>
+To: ltp-list@lists.sourceforge.net
+Cc: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>, bugs@debian.org, ltp-results@lists.sourceforge.net
 
-Hi Michal/Garret/all,
+--===============3575988983247780980==
+Content-Type: multipart/signed; boundary="nextPart4493318.zjXK1euune";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-On Tue, 2009-08-04 at 10:37 +0200, Michal Simek wrote:
-> Garrett Cooper wrote:
-> > On Mon, Aug 3, 2009 at 7:46 AM, Michal Simek<michal.simek@petalogix.com> wrote:
-> >   
-> >> Cyril Hrubis wrote:
-> >>     
-> >>> Hi!
-> >>>
-> >>>       
-> >>>>> What's wrong with linux kernel coding style? Most of the decent text editors
-> >>>>> that are used these days (vim, emacs...) just helps format code like this. (Eg.
-> >>>>> default intendation is done by tabs and so on...) I don't like the idea
-> >>>>> changing tabs to spaces before sending a patch.
-> >>>>>
-> >>>>>           
-> >>>> There is only one thing which is IMHO not good - it is 80 char line size.
-> >>>> I would prefer longer lines (maybe 120 chars).
-> >>>> This is for C code not for any other.
-> >>>> Are you ok with it?
-> >>>>
-> >>>>         
-> >>> Well, I'm not happy with very long lines, but there are indeed circumstances
-> >>> where long lines are best solution.
-> >>>
-> >>>       
-> >> I am not happy with it too but there are some cases where is really ugly
-> >> to have 80chars lines.
-> >>     
-> >
-> > IMHO 95% of the time you can get away with shorter lines with
-> > different constructs or more clever indentation. 
-> I don't want to do any clever indentation. This discuss is again and
-> again the same!!!
-> 
-> I vote for standard linux indentation - tab (size 8 chars) for whole C code.
-> Follow linux kernel coding style for whole C code. As we discussed in
-> this thread 80 chars line are strongly recommended.
-> For checking C source code use checkpatch.pl script which is in linux
-> kernel before sending patches to mailing list
-> and of course checking patches before applying.
-> 
+--nextPart4493318.zjXK1euune
+Content-Type: text/plain;
+  charset="iso-8859-7"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Yes, checkpatch.pl for C code patches.
+On Friday 14 August 2009 08:48:10 Geert Uytterhoeven wrote:
+> This seems to be caused by <linux/cgroupstats.h> not being self-contained
+>
+> (it needs but doesn't include <linux/types.h>)
 
-> Cyril, Mike, Subrata and others: Can you send us your opinion? I don't
-> want to spend my time with discuss about it.
-> 
-> I am not interested in any other code that's why I don't write any
-> comment to it.
-> You can choose what you want. Of course if is similar utility like
-> checkpatch.pl it will be good to use it and not to check
-> it by hand.
-> 
-> Subrata can we please write output from this discussion to web / doc
-> somewhere?
-> 
+bug report should go to debian and/or lkml
 
-I will do that soon.
+> | gcc -g -O2 -I../../include -g -Wall -I../../../../include -Wall  =20
+> | signalfd01.c  -L../../../../lib -lltp -o signalfd01 In file included fr=
+om
+> | /usr/include/asm/fcntl.h:9,
+> |                  from /usr/include/linux/fcntl.h:4,
+> |                  from /usr/include/linux/signalfd.h:13,
+> |                  from signalfd01.c:62:
+> | /usr/include/asm-generic/fcntl.h:117: error: redefinition of =A1struct
+> | flock=A2 /usr/include/asm-generic/fcntl.h:140: error: redefinition of
+> | =A1struct flock64=A2 make[4]: *** [signalfd01] Error 1
+> | make[4]: Leaving directory
+> | `/root/ltp-full-20090731/testcases/kernel/syscalls/signalfd'
 
-> Thanks,
-> Michal
-> 
-> 
-> > Take for example what
-> > I just did with delete_module* -- now that was a mess to cleanup, but
-> > quick nonetheless and necessary:
-> > http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/module/delete_module/delete_module01.c?view=log&pathrev=makefile_infra_rework
-> > , http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/module/delete_module/delete_module02.c?view=log&pathrev=makefile_infra_rework
-> > , http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/module/delete_module/delete_module03.c?view=log&pathrev=makefile_infra_rework
-> >
-> > We should aim for 80 column lines wherever possible because it's the
-> > defacto standard, and where we can't do that (and there are a handful
-> > of areas with shell code and Makefile code where I couldn't without
-> > changing the meaning of the message I was trying to convey), we should
-> > go over 80 cols.
-> >
-> > At least that's how every project I know has done it.
-> >
-> > General rules of thumb for shell / python / perl code (from dealing
-> > with other projects) was 4 space indents. Perl tends to go whacky
-> > though because of all of the different ways to express constructs
-> > though xD.
+upgrade your C library so that it provides sys/signalfd.h
+=2Dmike
 
-Again, checkpatch.pl for non-C code as well. But, need to carefully
-review the errors it will generate for non-C code like the Makefiles,
-perl, shell, python, etc.
+--nextPart4493318.zjXK1euune
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-Garret,
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.12 (GNU/Linux)
 
-Can you please come up with a list of exceptions for
-     1. line length,
-     2. tab length,
-     3. etc
+iQIcBAABAgAGBQJKhZzdAAoJEEFjO5/oN/WBX7sQAKA8lx59gendAfssbM08V8fD
+x0v5rkuoO8XHoZHXgDFSlq9A5FTQERkoWm5zZS5zd8h0Vx6QISxHXtw75IdJH8zs
+c/nqdsQRsTJyhIDXidm8C8gPv215xgeRsGsKQ9p1188nXUdasWb4UatT30xIUM3B
+/75Dk0t1dMFNTRQ7RJdnLru20CDl59hjGCvOiEFmyZ01cuE1S7EhqioDq1JTc6u2
+9BvkPl+3tn21qpEZogOHth59HqZVh1+o0yuv8MfWSwbhMow1d1T7l+QJ5lZf5jNO
+6YOJnzGQ0I7uq6do2EqbBdNlk3Z4Zr8Oy9mgXJoOeHua2boDw6N6c/BRa2nF//yz
+MfmrPAGvonKrzwpqK3uwrjC5rXWEQqhX7G+aylpjH4s4YdLuz0R65ScStqRvz2us
+PRkfJ52Mh9aHmcOQzFIfcRBIyXtw1z6DILigVsl0bnaiADfjB7s9K43aXU5CHNd3
+0MwKIEFCoVQgV5z/oTfyH1EQi0BH9kOUsn3VVrNtEI5NEm3sdzFxMbEG81IlmvIc
+zQw4BxVCWcaOMZRjWtgYWbWT2YVMXOeyZ7HUTIGALy9VSzHBvqsJkQrQeIJcqPPv
+v6foH7f5UpOs6tcjlV5EHcheLJxJAhZoEP3wGzP9QH5IQ/XqjIRBTv6nIxHtI7Tu
+IyND6BP9fYSO8/ekUDwC
+=O1Ol
+-----END PGP SIGNATURE-----
 
-for non-C code like the perl, Makefiles, etc. I would then document them
-all.
+--nextPart4493318.zjXK1euune--
 
-Regards--
-Subrata
 
-> >
-> > Thanks!
-> > -Garrett
-> >   
-> 
-> 
-
+--===============3575988983247780980==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============3575988983247780980==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3575988983247780980==--
+
