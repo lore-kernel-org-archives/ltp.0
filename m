@@ -1,20 +1,9 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
-	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MbX4T-000802-F9
-	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2009 09:58:09 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MbX4N-0006wD-28
-	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2009 09:58:09 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Thu, 13 Aug 2009 05:57:55 -0400
-References: <4a719afc.9f13f30a.2eaa.ffffa236SMTPIN_ADDED@mx.google.com>
-In-Reply-To: <4a719afc.9f13f30a.2eaa.ffffa236SMTPIN_ADDED@mx.google.com>
+Date: Fri, 14 Aug 2009 14:48:10 +0200 (CEST)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Message-ID: <alpine.LRH.2.00.0908071113370.11434@vixen.sonytel.be>
 MIME-Version: 1.0
-Message-Id: <200908130557.56436.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] Make the test result codes a real bitfield again
+Subject: [LTP] linux-libc-dev and LTP compile failures on ppc
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,84 +13,79 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5609274353063086955=="
+Content-Type: text/plain; charset="iso-8859-7"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Jiri Palecek <jpalecek@web.de>
+To: bugs@debian.org, ltp-results@lists.sourceforge.net
+Cc: Linux Test Project <Ltp-list@lists.sourceforge.net>
 
---===============5609274353063086955==
-Content-Type: multipart/signed; boundary="nextPart3898523.tGOiJ8f3TR";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart3898523.tGOiJ8f3TR
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-On Thursday 30 July 2009 05:57:54 Jiri Palecek wrote:
-> the commit "extend the test result to a bit field so we can extend the
-> output further" from July 20th unfortunately changes the code, that was
-> previously a bitfield, to a non-bitfield. This causes FAILED tests to
-> return erroneously 0.
->
-> This patch changes the test result codes to be individual bits in the
-> bitfield (effectively reverting  a small part of aforementioned patch).
-
-what tests exactly are failing ?  where/why is this causing a problem ?  i=
-=20
-cant imagine a bit field being used for these values to really be necessary=
-=20
-considering their values are mutually exclusive.
-=2Dmike
-
---nextPart3898523.tGOiJ8f3TR
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJKg+OkAAoJEEFjO5/oN/WBllwP/i2KSuArEkbWkxZ8VrnFei7e
-P+C/0PDQ8r4Xi3k4ui0ejnpRFdFduuRUlMvVJHWPduf2DIVlKB8gUjRZE8D7MDWg
-N9uXDDNvkfm6Mx5ak1kvnEa2k7dcsQ+KGnMA6j1jGrmNaRRKQomre3LpWph3X1qi
-3dhFYP6CgBD9t27cfIeWeXC0qqAfTKxOM1EVSeFBNymAk1EF91ziz6VJbZrPQN6j
-4Id2OE7fW6BP7YnGk4eUYqGn+lU0x44IgC/G9wK5zzU5YcpkcIWtLdBGJddAui4f
-4xzWh9QgfR5tbVTtjZeFIB0H/7+ZO1Rnj08gUZVB8u6WE6h0698pAukfiMI89iPf
-j/lf4S90meHpa7BuAwfg8S0McU66nNUEetqbANUpM23lo8kukU8ORnRi2Rk0plZr
-YjeoKBZupY9nkyEAw5PP4k91DNPdYPOij7gBewDAuD/WNlwy4QdGKsNDz7zUtW2/
-IK9HJIXyYF9bOlT5L0Fc48lI1DZ3n1zfprLR3bzgpGaLr5RMpZQiv1/0oCZIcUwK
-jdVboum0POLDsnnpsHinTniEWryiAVTKdRG0agXG1IfHcVxNpAYpzkPWtJKABcXc
-hau/BygwgaBP0spCeqccdV04+4S8oABnEnYW4+9KMMS+4fTB9h12EzAvFcK9G3GJ
-HgdZ3cl+/GdhgEChzjqY
-=iEIm
------END PGP SIGNATURE-----
-
---nextPart3898523.tGOiJ8f3TR--
-
-
---===============5609274353063086955==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---===============5609274353063086955==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5609274353063086955==--
-
+UGFja2FnZTogbGludXgtbGliYy1kZXYKVmVyc2lvbjogMi42LjI2LTE3bGVubnkxCgpXaGVuIGNv
+bmZpZ3VyaW5nIHVwc3RyZWFtIExUUCAoaHR0cDovL2x0cC5zb3VyY2Vmb3JnZS5uZXQvKSBvbiBw
+cGMsIEkgZ2V0OgoKfCBjaGVja2luZyBsaW51eC9jZ3JvdXBzdGF0cy5oIHVzYWJpbGl0eS4uLiBu
+bwp8IGNoZWNraW5nIGxpbnV4L2Nncm91cHN0YXRzLmggcHJlc2VuY2UuLi4geWVzCnwgY29uZmln
+dXJlOiBXQVJOSU5HOiBsaW51eC9jZ3JvdXBzdGF0cy5oOiBwcmVzZW50IGJ1dCBjYW5ub3QgYmUg
+Y29tcGlsZWQKfCBjb25maWd1cmU6IFdBUk5JTkc6IGxpbnV4L2Nncm91cHN0YXRzLmg6ICAgICBj
+aGVjayBmb3IgbWlzc2luZyBwcmVyZXF1aXNpdGUgaGVhZGVycz8KfCBjb25maWd1cmU6IFdBUk5J
+Tkc6IGxpbnV4L2Nncm91cHN0YXRzLmg6IHNlZSB0aGUgQXV0b2NvbmYgZG9jdW1lbnRhdGlvbgp8
+IGNvbmZpZ3VyZTogV0FSTklORzogbGludXgvY2dyb3Vwc3RhdHMuaDogICAgIHNlY3Rpb24gIlBy
+ZXNlbnQgQnV0IENhbm5vdCBCZSBDb21waWxlZCIKfCBjb25maWd1cmU6IFdBUk5JTkc6IGxpbnV4
+L2Nncm91cHN0YXRzLmg6IHByb2NlZWRpbmcgd2l0aCB0aGUgcHJlcHJvY2Vzc29yJ3MgcmVzdWx0
+CnwgY29uZmlndXJlOiBXQVJOSU5HOiBsaW51eC9jZ3JvdXBzdGF0cy5oOiBpbiB0aGUgZnV0dXJl
+LCB0aGUgY29tcGlsZXIgd2lsbCB0YWtlIHByZWNlZGVuY2UKfCBjb25maWd1cmU6IFdBUk5JTkc6
+ICAgICAjIyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0g
+IyMKfCBjb25maWd1cmU6IFdBUk5JTkc6ICAgICAjIyBSZXBvcnQgdGhpcyB0byBsdHAtcmVzdWx0
+c0BsaXN0cy5zb3VyY2Vmb3JnZS5uZXQgIyMKfCBjb25maWd1cmU6IFdBUk5JTkc6ICAgICAjIyAt
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0gIyMKfCBjaGVj
+a2luZyBmb3IgbGludXgvY2dyb3Vwc3RhdHMuaC4uLiB5ZXMKClRoaXMgc2VlbXMgdG8gYmUgY2F1
+c2VkIGJ5IDxsaW51eC9jZ3JvdXBzdGF0cy5oPiBub3QgYmVpbmcgc2VsZi1jb250YWluZWQKKGl0
+IG5lZWRzIGJ1dCBkb2Vzbid0IGluY2x1ZGUgPGxpbnV4L3R5cGVzLmg+KToKCnwgSW4gZmlsZSBp
+bmNsdWRlZCBmcm9tIC91c3IvaW5jbHVkZS9saW51eC9jZ3JvdXBzdGF0cy5oOjE4LAp8ICAgICAg
+ICAgICAgICAgICAgZnJvbSAvdG1wL2EuYzoxOgp8IC91c3IvaW5jbHVkZS9saW51eC90YXNrc3Rh
+dHMuaDo0NDogZXJyb3I6IGV4cGVjdGVkIHNwZWNpZmllci1xdWFsaWZpZXItbGlzdCBiZWZvcmUg
+oV9fdTE2ogp8IEluIGZpbGUgaW5jbHVkZWQgZnJvbSAvdG1wL2EuYzoxOgp8IC91c3IvaW5jbHVk
+ZS9saW51eC9jZ3JvdXBzdGF0cy5oOjMxOiBlcnJvcjogZXhwZWN0ZWQgc3BlY2lmaWVyLXF1YWxp
+Zmllci1saXN0IGJlZm9yZSChX191NjSiCgp8ICMgZHBrZyAtUyBjZ3JvdXBzdGF0cy5oCnwgbGlu
+dXgtbGliYy1kZXY6IC91c3IvaW5jbHVkZS9saW51eC9jZ3JvdXBzdGF0cy5oCnwgIyBhcHQtY2Fj
+aGUgcG9saWN5IGxpbnV4LWxpYmMtZGV2CnwgbGludXgtbGliYy1kZXY6CnwgICBJbnN0YWxsZWQ6
+IDIuNi4yNi0xN2xlbm55MQp8ICAgQ2FuZGlkYXRlOiAyLjYuMjYtMTdsZW5ueTEKfCAgIFZlcnNp
+b24gdGFibGU6CnwgICAgICAyLjYuMzAtNSAwCnwgICAgICAgICA1MDAgaHR0cDovL2Z0cC5kZS5k
+ZWJpYW4ub3JnIHNpZC9tYWluIFBhY2thZ2VzCnwgICoqKiAyLjYuMjYtMTdsZW5ueTEgMAp8ICAg
+ICAgICAgOTkwIGh0dHA6Ly9zZWN1cml0eS5kZWJpYW4ub3JnIGxlbm55L3VwZGF0ZXMvbWFpbiBQ
+YWNrYWdlcwp8ICAgICAgICAgMTAwIC92YXIvbGliL2Rwa2cvc3RhdHVzCnwgICAgICAyLjYuMjYt
+MTcgMAp8ICAgICAgICAgOTkwIGh0dHA6Ly9odHRwLnVzLmRlYmlhbi5vcmcgbGVubnkvbWFpbiBQ
+YWNrYWdlcwp8ICAgICAgICAgNTAwIGh0dHA6Ly9mdHAuZGUuZGViaWFuLm9yZyBzcXVlZXplL21h
+aW4gUGFja2FnZXMKfCAjIAoKTFRQIGRvZXMgY29tcGlsZSBmaW5lLCB0aG91Z2guCgoKQWZ0ZXIg
+dXBncmFkaW5nIGxpbnV4LWxpYmMtZGV2IHRvIHZlcnNpb24gMi42LjMwLTUgZnJvbSBzaWQsIGNv
+bmZpZ3VyZSB3b3JrcwpmaW5lIGFnYWluLiAgSG93ZXZlciwgdGhlIGJ1aWxkIG9mIExUUCBmYWls
+cyB3aXRoOgoKfCBnY2MgLWcgLU8yIC1JLi4vLi4vaW5jbHVkZSAtZyAtV2FsbCAtSS4uLy4uLy4u
+Ly4uL2luY2x1ZGUgLVdhbGwgICAgc2lnbmFsZmQwMS5jICAtTC4uLy4uLy4uLy4uL2xpYiAtbGx0
+cCAtbyBzaWduYWxmZDAxCnwgSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC91c3IvaW5jbHVkZS9hc20v
+ZmNudGwuaDo5LAp8ICAgICAgICAgICAgICAgICAgZnJvbSAvdXNyL2luY2x1ZGUvbGludXgvZmNu
+dGwuaDo0LAp8ICAgICAgICAgICAgICAgICAgZnJvbSAvdXNyL2luY2x1ZGUvbGludXgvc2lnbmFs
+ZmQuaDoxMywKfCAgICAgICAgICAgICAgICAgIGZyb20gc2lnbmFsZmQwMS5jOjYyOgp8IC91c3Iv
+aW5jbHVkZS9hc20tZ2VuZXJpYy9mY250bC5oOjExNzogZXJyb3I6IHJlZGVmaW5pdGlvbiBvZiCh
+c3RydWN0IGZsb2Nrogp8IC91c3IvaW5jbHVkZS9hc20tZ2VuZXJpYy9mY250bC5oOjE0MDogZXJy
+b3I6IHJlZGVmaW5pdGlvbiBvZiChc3RydWN0IGZsb2NrNjSiCnwgbWFrZVs0XTogKioqIFtzaWdu
+YWxmZDAxXSBFcnJvciAxCnwgbWFrZVs0XTogTGVhdmluZyBkaXJlY3RvcnkgYC9yb290L2x0cC1m
+dWxsLTIwMDkwNzMxL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2lnbmFsZmQnCgpUaGUgb3Jp
+Z2luYWwgZGVmaW5pdGlvbnMgb2YgYHN0cnVjdCBmbG9jaycgYW5kIGBzdHJ1Y3QgZmxvY2s2NCcg
+YXJlIGluCi91c3IvaW5jbHVkZS9iaXRzL2ZjbnRsLmguCgpQcmVzdW1hYmx5IC91c3IvaW5jbHVk
+ZS9iaXRzL2ZjbnRsLmggc2hvdWxkIHVzZSB0aGUgZGVmaW5pdGlvbiBwdWxsZWQgaW4gZnJvbQov
+dXNyL2luY2x1ZGUvYXNtL2ZjbnRsLmgsIGluc3RlYWQgb2YgZGVmaW5pbmcgaXRzIG93bj8KCldp
+dGgga2luZCByZWdhcmRzLAoKR2VlcnQgVXl0dGVyaG9ldmVuClNvZnR3YXJlIEFyY2hpdGVjdApU
+ZWNoc29mdCBDZW50cmUKClRlY2hub2xvZ3kgYW5kIFNvZnR3YXJlIENlbnRyZSBFdXJvcGUKVGhl
+IENvcnBvcmF0ZSBWaWxsYWdlILcgRGEgVmluY2lsYWFuIDctRDEgtyBCLTE5MzUgWmF2ZW50ZW0g
+tyBCZWxnaXVtCgpQaG9uZTogICAgKzMyICgwKTIgNzAwIDg0NTMKRmF4OiAgICAgICszMiAoMCky
+IDcwMCA4NjIyCkUtbWFpbDogICBHZWVydC5VeXR0ZXJob2V2ZW5Ac29ueWNvbS5jb20KSW50ZXJu
+ZXQ6IGh0dHA6Ly93d3cuc29ueS1ldXJvcGUuY29tLwoKQSBkaXZpc2lvbiBvZiBTb255IEV1cm9w
+ZSAoQmVsZ2l1bSkgTi5WLgpWQVQgQkUgMDQxMy44MjUuMTYwILcgUlBSIEJydXNzZWxzCkZvcnRp
+cyC3IEJJQyBHRUJBQkVCQiC3IElCQU4gQkU0MTI5MzAzNzY4MDAxMAoKLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tCkxldCBDcnlzdGFsIFJlcG9ydHMgaGFuZGxlIHRoZSByZXBvcnRpbmcgLSBGcmVlIENy
+eXN0YWwgUmVwb3J0cyAyMDA4IDMwLURheSAKdHJpYWwuIFNpbXBsaWZ5IHlvdXIgcmVwb3J0IGRl
+c2lnbiwgaW50ZWdyYXRpb24gYW5kIGRlcGxveW1lbnQgLSBhbmQgZm9jdXMgb24gCndoYXQgeW91
+IGRvIGJlc3QsIGNvcmUgYXBwbGljYXRpb24gY29kaW5nLiBEaXNjb3ZlciB3aGF0J3MgbmV3IHdp
+dGggCkNyeXN0YWwgUmVwb3J0cyBub3cuICBodHRwOi8vcC5zZi5uZXQvc2Z1L2JvYmotanVseQpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBt
+YWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMu
+c291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
