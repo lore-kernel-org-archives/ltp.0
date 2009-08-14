@@ -1,20 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yjwei@cn.fujitsu.com>) id 1MbrvS-0004DG-A2
-	for ltp-list@lists.sourceforge.net; Fri, 14 Aug 2009 08:14:14 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MbrvL-0000Wd-Mp
-	for ltp-list@lists.sourceforge.net; Fri, 14 Aug 2009 08:14:14 +0000
-Message-ID: <4A850550.7080109@cn.fujitsu.com>
-Date: Fri, 14 Aug 2009 14:33:52 +0800
-From: Wei Yongjun <yjwei@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <d51f89b0908130131u5742ff3epf58617e3f4ab38a3@mail.gmail.com>
-In-Reply-To: <d51f89b0908130131u5742ff3epf58617e3f4ab38a3@mail.gmail.com>
-Subject: Re: [LTP] utimes01 test case issue
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mc0WB-0003J3-SH
+	for ltp-list@lists.sourceforge.net; Fri, 14 Aug 2009 17:24:43 +0000
+Received: from e5.ny.us.ibm.com ([32.97.182.145])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Mc0W8-00089J-2h
+	for ltp-list@lists.sourceforge.net; Fri, 14 Aug 2009 17:24:43 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e5.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7EHGcig002707
+	for <ltp-list@lists.sourceforge.net>; Fri, 14 Aug 2009 13:16:38 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7EHOV55240466
+	for <ltp-list@lists.sourceforge.net>; Fri, 14 Aug 2009 13:24:31 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7EHOVwT024042
+	for <ltp-list@lists.sourceforge.net>; Fri, 14 Aug 2009 13:24:31 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4A845364.6070308@canonical.com>
+References: <4A833919.9040603@canonical.com>
+	<1250183880.6656.21.camel@subratamodak.linux.ibm.com>
+	<4A845364.6070308@canonical.com>
+Date: Fri, 14 Aug 2009 22:54:22 +0530
+Message-Id: <1250270663.5958.6.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Add option to skip tests
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,62 +38,64 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rohit verma <rohit.170309@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Paul Larson <paul.larson@canonical.com>
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
 
-rohit verma wrote:
-> Hi Wang Yong,
->
-> I have observed the following thing in case02 of the test case
-> utimes01 in latest ltp release.
->
-> Expected error value is  EACCES (In the code below)
-> But the actual error value is EPERM.I have checked this on  2.6.27 and
-> 2.6.29 kernel.
->   
-
-You can try root user and noroot user, the return error is different.
-
-> static struct test_case tcase[] = {
->
->         { // case00
->                 ...
->         },
->         { // case01
->                 ...
->         },
->         { // case02
->                 .ttype          = NORMAL,
->                 .a_sec        = 1000,
->                 .m_sec       = 2000,
->                 .user          = "nobody",
->                 .ret             = -1,
->                 .err             = EACCES, // RHEL4U1 + 2.6.18 returns EPERM
->         },
->         { // case03
->                 ...
->         },
->
->         { // case04
->                 ...
->         },
-> };
->
-> Kindly confirm whether you are facing the same issue at your end.
->
->   
-
-
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+V293ICEhIFRoYXTFmyBncmVhdCBhbmQgaXQgd29ya3MgZmluZSBub3cuCgpPbiBUaHUsIDIwMDkt
+MDgtMTMgYXQgMTI6NTQgLTA1MDAsIFBhdWwgTGFyc29uIHdyb3RlOgo+IFlvdSB3ZXJlIG5vdCBw
+cm92aWRpbmcgdGhlIGZ1bGwgcGF0aC4gIEhlcmUncyBhIG5ldyB2ZXJzaW9uIHRoYXQKPiBzaG91
+bGQKPiBsZXQgeW91IGVpdGhlciBwcm92aWRlIGFic29sdXRlIG9yIHJlbGF0aXZlIHBhdGggKGlu
+Y2x1ZGluZyBubyBwYXRjaAo+IGFzc3VtaW5nIHRoZSBmaWxlIGlzIGluIExUUFJPT1QpLiAgU2Vl
+IGlmIHRoaXMgd29ya3MgYmV0dGVyIGZvciB5b3UuCj4gCj4gCj4gQWRkIGEgLVMgb3B0aW9uIHRv
+IHJ1bmx0cCB0aGF0IGFsbG93cyB0aGUgdXNlciB0byBzcGVjaWZ5IGEgU0tJUEZJTEUKPiBvZgo+
+IHRlc3RzIHRvIHNraXAuCj4gCj4gU2lnbmVkLW9mZi1ieTogUGF1bCBMYXJzb24gPHBhdWwubGFy
+c29uQGNhbm9uaWNhbC5jb20+Cj4gLS0tCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4gCj4g
+Cj4gZGlmZmVyZW5jZXMKPiBiZXR3ZWVuIGZpbGVzCj4gYXR0YWNobWVudAo+IChydW5sdHAtc2tp
+cGZpbGUtMi5wYXRjaCkKPiAKPiAKPiBkaWZmIC0tZ2l0IGEvcnVubHRwIGIvcnVubHRwCj4gaW5k
+ZXggYzI2ZjRhYi4uMTVkYTVhYiAxMDA3NTUKPiAtLS0gYS9ydW5sdHAKPiArKysgYi9ydW5sdHAK
+PiBAQCAtMTQxLDYgKzE0MSw3IEBAIHVzYWdlKCkKPiAgICAgIC1xICAgICAgICAgICAgICBQcmlu
+dCBsZXNzIHZlcmJvc2Ugb3V0cHV0IHRvIHNjcmVlbi4KPiAgICAgIC1yIExUUFJPT1QgICAgICBG
+dWxseSBxdWFsaWZpZWQgcGF0aCB3aGVyZSB0ZXN0c3VpdGUgaXMKPiBpbnN0YWxsZWQuCj4gICAg
+ICAtcyBQQVRURVJOICAgICAgT25seSBydW4gdGVzdCBjYXNlcyB3aGljaCBtYXRjaCBQQVRURVJO
+Lgo+ICsgICAgLVMgU0tJUEZJTEUgICAgIFNraXAgdGVzdHMgc3BlY2lmaWVkIGluIFNLSVBGSUxF
+Cj4gICAgICAtdCBEVVJBVElPTiAgICAgRXhlY3V0ZSB0aGUgdGVzdHN1aXRlIGZvciBnaXZlbiBk
+dXJhdGlvbi4KPiBFeGFtcGxlczoKPiAgICAgICAgICAgICAgICAgICAgICAgIC10IDYwcyA9IDYw
+IHNlY29uZHMKPiAgICAgICAgICAgICAgICAgICAgICAgIC10IDQ1bSA9IDQ1IG1pbnV0ZXMKPiBA
+QCAtMTkzLDcgKzE5NCw3IEBAIG1haW4oKQo+ICAgICAgbG9jYWwgREVGQVVMVF9GSUxFX05BTUVf
+R0VORVJBVElPTl9USU1FPWBkYXRlICsiJVlfJWJfJWQtJUhoXyVNbV8KPiAlU3MiYAo+ICAgICAg
+dmVyc2lvbl9kYXRlPWBoZWFkIC1uIDEgJExUUFJPT1QvQ2hhbmdlTG9nYAo+IAo+IC0gICAgd2hp
+bGUgZ2V0b3B0cyBhOmM6QzpkOkQ6ZjplaGk6ZzpsOm06Tm5vOnBxcjpzOnQ6VDp2dzp4OmI6Qjog
+YXJnCj4gKyAgICB3aGlsZSBnZXRvcHRzIGE6YzpDOmQ6RDpmOmVoaTpnOmw6bTpObm86cHFyOnM6
+Uzp0OlQ6dnc6eDpiOkI6IGFyZwo+ICAgICAgZG8gIGNhc2UgJGFyZyBpbgo+ICAgICAgICAgIGEp
+ICBFTUFJTF9UTz0kT1BUQVJHCj4gICAgICAgICAgICAgIEFMVF9FTUFJTF9PVVQ9MTs7Cj4gQEAg
+LTM1Myw2ICszNTQsMTIgQEAgbWFpbigpCj4gICAgICAgICAgcikgIExUUFJPT1Q9JE9QVEFSRzs7
+Cj4gICAgICAKPiAgICAgICAgICBzKSAgVEFHX1JFU1RSSUNUX1NUUklORz0kT1BUQVJHOzsKPiAr
+Cj4gKyAgICAgICBTKSAgY2FzZSAkT1BUQVJHIGluCj4gKyAgICAgICAgICAgIC8qKQo+ICsgICAg
+ICAgICAgICAgICAgU0tJUEZJTEU9JE9QVEFSRzs7Cj4gKyAgICAgICAgICAgICopCj4gKyAgICAg
+ICAgICAgICAgICBTS0lQRklMRT0iJExUUFJPT1QvJE9QVEFSRyI7OwoKV2UganVzdCBuZWVkZWQg
+YW46CisgZXNhYyA7OwpoZXJlLgoKQW55d2F5cyB0aGlzIG9wdGlvbiB3aWxsIGJlIHVzZWQgaW4g
+TFRQIGZyb20gbm93IG9ud2FyZHMuCgpSZWdhcmRzLS0KU3VicmF0YQoKPiAgICAgIAo+ICAgICAg
+ICAgIHQpICAjIEluIGNhc2UgeW91IHdhbnQgdG8gc3BlY2lmeSB0aGUgdGltZSAKPiAgICAgICAg
+ICAgICAgIyB0byBydW4gZnJvbSB0aGUgY29tbWFuZCBsaW5lIAo+IEBAIC02MzAsNiArNjM3LDE0
+IEBAIG1haW4oKQo+ICAgICAgICAgIG12IC1mICR7VE1QfS9hbGx0ZXN0cyAke1RNUH0vYWxsdGVz
+dHMub3JpZwo+ICAgICAgICAgICAgIGdyZXAgJFRBR19SRVNUUklDVF9TVFJJTkcgJHtUTVB9L2Fs
+bHRlc3RzLm9yaWcgPgo+ICR7VE1QfS9hbGx0ZXN0cyAjTm90IHdvcnRoIGNoZWNraW5nIHJldHVy
+biBjb2RlcyBmb3IgdGhpcyBjYXNlCj4gICAgICBmaQo+ICsKPiArICAgICMgQmxhY2tsaXN0IG9y
+IHNraXAgdGVzdHMgaWYgYSBTS0lQRklMRSB3YXMgc3BlY2lmaWVkIHdpdGggLVMKPiArICAgIGlm
+IFsgLW4gIiRTS0lQRklMRSIgXQo+ICsgICAgdGhlbgo+ICsgICAgICAgIGZvciBmaWxlIGluICQo
+IGNhdCAkU0tJUEZJTEUgKTsgZG8KPiArICAgICAgICAgICAgc2VkIC1pICIvJGZpbGUvZCIgJHtU
+TVB9L2FsbHRlc3RzCj4gKyAgICAgICAgZG9uZQo+ICsgICAgZmkKPiAgICAgIAo+ICAgICAgIyBj
+aGVjayBmb3IgcmVxdWlyZWQgdXNlcnMgYW5kIGdyb3Vwcwo+ICAgICAgJHtMVFBST09UfS9JRGNo
+ZWNrLnNoICY+L2Rldi9udWxsIHx8IFwKPiAKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTGV0IENy
+eXN0YWwgUmVwb3J0cyBoYW5kbGUgdGhlIHJlcG9ydGluZyAtIEZyZWUgQ3J5c3RhbCBSZXBvcnRz
+IDIwMDggMzAtRGF5IAp0cmlhbC4gU2ltcGxpZnkgeW91ciByZXBvcnQgZGVzaWduLCBpbnRlZ3Jh
+dGlvbiBhbmQgZGVwbG95bWVudCAtIGFuZCBmb2N1cyBvbiAKd2hhdCB5b3UgZG8gYmVzdCwgY29y
+ZSBhcHBsaWNhdGlvbiBjb2RpbmcuIERpc2NvdmVyIHdoYXQncyBuZXcgd2l0aCAKQ3J5c3RhbCBS
+ZXBvcnRzIG5vdy4gIGh0dHA6Ly9wLnNmLm5ldC9zZnUvYm9iai1qdWx5Cl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApM
+dHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5u
+ZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
