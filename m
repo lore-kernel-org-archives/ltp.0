@@ -1,35 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Meufl-0002je-IB
-	for ltp-list@lists.sourceforge.net; Sat, 22 Aug 2009 17:46:37 +0000
-Received: from e31.co.us.ibm.com ([32.97.110.149])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Meufd-0003NA-9g
-	for ltp-list@lists.sourceforge.net; Sat, 22 Aug 2009 17:46:37 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e31.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7MHelfj020872
-	for <ltp-list@lists.sourceforge.net>; Sat, 22 Aug 2009 11:40:47 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7MHkLP5258592
-	for <ltp-list@lists.sourceforge.net>; Sat, 22 Aug 2009 11:46:21 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7MHkLcH027815
-	for <ltp-list@lists.sourceforge.net>; Sat, 22 Aug 2009 11:46:21 -0600
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Md127-00039w-BE
+	for ltp-list@lists.sourceforge.net; Mon, 17 Aug 2009 12:09:51 +0000
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Md11z-0007qW-Se
+	for ltp-list@lists.sourceforge.net; Mon, 17 Aug 2009 12:09:51 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e2.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7HC3ftK027419
+	for <ltp-list@lists.sourceforge.net>; Mon, 17 Aug 2009 08:03:41 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7HC9cto179634
+	for <ltp-list@lists.sourceforge.net>; Mon, 17 Aug 2009 08:09:38 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7HC9bQQ021047
+	for <ltp-list@lists.sourceforge.net>; Mon, 17 Aug 2009 08:09:37 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <f5a7b3810908180725l326c08f1l863f8d17c74f0a95@mail.gmail.com>
-References: <f5a7b3810908170937u516ee718yd6db8df547752bc4@mail.gmail.com>
-	<364299f40908172344o62861d02rc8e0c3f87de80134@mail.gmail.com>
-	<f5a7b3810908180725l326c08f1l863f8d17c74f0a95@mail.gmail.com>
-Date: Sat, 22 Aug 2009 23:15:45 +0530
-Message-Id: <1250963151.10642.28.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [FIX PATCHE]ltp-fix-posix-mq_send_5-1 warning
-Reply-To: subrata@linux.vnet.ibm.com
+Date: Mon, 17 Aug 2009 17:39:22 +0530
+Message-Id: <20090817120920.8902.89815.sendpatchset@subratamodak.linux.ibm.com>
+In-Reply-To: <20090817120835.8902.4597.sendpatchset@subratamodak.linux.ibm.com>
+References: <20090817120835.8902.4597.sendpatchset@subratamodak.linux.ibm.com>
+Subject: [LTP] [PATCH v2 02/05] Add Script which would actually do the job
+	of injecting faults
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,65 +35,106 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6461955475153135586=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: naresh kamboju <naresh.kernel@gmail.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, Brandon Philips <bphilips@suse.de>
+To: LTP Mailing List <ltp-list@lists.sourceforge.net>
+Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>, Mike Frysinger <vapier@gentoo.org>, Michael Reed <mreed10@us.ibm.com>, Nate Straz <nate@refried.org>, Paul Larson <paul.larson@ubuntu.com>, Manoj Iyer <manoj.iyer@ubuntu.com>, Balbir Singh <balbir@linux.vnet.ibm.com>
 
-On Tue, 2009-08-18 at 19:55 +0530, naresh kamboju wrote: 
-> On Tue, Aug 18, 2009 at 12:14 PM, Garrett Cooper<yanegomi@gmail.com> wrote:
-> > On Mon, Aug 17, 2009 at 9:37 AM, naresh kamboju<naresh.kernel@gmail.com> wrote:
-> >> Hi,
-> >>
-> >> I have noticed build warnings for the following test case.
-> >> This patch will fix warnings by removing unused variables in test code.
-> >>
-> >> I have attached patch and below
-> >> Please review the same
-> >
-> Hi,
-> >    Log before and after?
-> 
-> Build log
-> =========================================
-> Before patch:
-> ==========
-> conformance/interfaces/mq_send/5-1: build: FAILED: Compiler output:
-> cc1: warnings being treated as errors
-> In file included from conformance/interfaces/mq_send/5-1.c:40:
-> include/mq_send.h: In function 'sync_pipe_wait_select':
-> include/mq_send.h:49: warning: unused variable 'buf'
-> conformance/interfaces/mq_send/5-1.c: In function 'main':
-> conformance/interfaces/mq_send/5-1.c:107: warning: unused variable 'r'
-> conformance/interfaces/mq_send/5-1.c:105: warning: unused variable 'act'
-> 
-> ==========
-> After patch:
-> ==========
-> conformance/interfaces/mq_send/5-1: build: PASS
-> conformance/interfaces/mq_send/5-1: link: PASS
-> =========================================
-> Best regards
-> Naresh Kamboju
+--===============6461955475153135586==
 
-Thanks.
+Script which would actually do the job of injecting faults by changing various
+parametrs available under /debug/fail*. This would be done dynamically during
+LTP run, and, is capable of taking parameters from 0 to 100 to vary the
+probability of Fault the user wants to inject in the running kernel.
 
+Incorporated Mike�� & Garrets comments and concerns.
+
+Signed-off-by: Subrata Modak<subrata@linux.vnet.ibm.com>
+---
+
+--- ltp-full-20090731.orig/tools/insert_kernel_faults.sh	1970-01-01 05:30:00.000000000 +0530
++++ ltp-full-20090731/tools/insert_kernel_faults.sh	2009-08-17 12:17:31.000000000 +0530
+@@ -0,0 +1,53 @@
++#!/bin/sh
++################################################################################
++##                                                                            ##
++## Copyright (c) International Business Machines  Corp., 2009                 ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and/or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software               ##
++## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
++##                                                                            ##
++################################################################################
++#									      ##
++# File :        insert_kernel_faults.sh					      ##
++#									      ##
++# Usage:	insert_kernel_faults.sh <fault_percentage>		      ##
++#									      ##
++# Description:  This is a simple script that inserts faults at various	      ##
++#		subsystems of the kernel. Please refer to the ltp/README      ##
++#		for the various kernel CONFIG options needed to exploit	      ##
++#		all those features					      ##
++#									      ##
++# Author:	Subrata Modak <subrata@linux.vnet.ibm.com>		      ##
++#									      ##
++# History:      Aug 11 2009 - Created - Subrata Modak.			      ##
++#		Aug 17 2009 - Changed the debugfs mount point - Subrata Modak.##
++################################################################################
++
++if [ -z $1 ]
++	then
++	#Check if Useage has been proper
++	echo "Usage: $0 <fault_percentage>"
++	exit 1
++fi
++
++#These are the types of Subsystems where fault will be injected
++#Make sure debugfs has been mounted
++for FAILTYPE in fail_io_timeout fail_make_request fail_page_alloc failslab
++do
++	echo $1 > /sys/kernel/debug/$FAILTYPE/probability
++	echo 100 > /sys/kernel/debug/$FAILTYPE/interval
++	echo -1 > /sys/kernel/debug/$FAILTYPE/times
++	echo 0 > /sys/kernel/debug/$FAILTYPE/space
++done
++
+
+---
 Regards--
 Subrata
 
-> 
-> > Thanks,
-> > -Garrett
-> >
 
+
+--===============6461955475153135586==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============6461955475153135586==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6461955475153135586==--
