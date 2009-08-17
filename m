@@ -1,19 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <rohit.170309@gmail.com>) id 1MfYc7-0005BR-P5
-	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 12:25:31 +0000
-Received: from mail-px0-f181.google.com ([209.85.216.181])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MfYby-000071-Q9
-	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 12:25:31 +0000
-MIME-Version: 1.0
-Date: Mon, 24 Aug 2009 17:46:09 +0530
-Message-ID: <d51f89b0908240516n1b4ca28m988feb00f077fbd7@mail.gmail.com>
-From: rohit verma <rohit.170309@gmail.com>
-Content-Type: multipart/mixed; boundary=00504502dab6dfaf970471e22ee7
-Subject: [LTP] Patch for smt_smp_affinity
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Md12W-0007T1-CC
+	for ltp-list@lists.sourceforge.net; Mon, 17 Aug 2009 12:10:16 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Md12Q-0007tm-4U
+	for ltp-list@lists.sourceforge.net; Mon, 17 Aug 2009 12:10:16 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7HC52q9006867
+	for <ltp-list@lists.sourceforge.net>; Mon, 17 Aug 2009 06:05:02 -0600
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7HCA0rf241222
+	for <ltp-list@lists.sourceforge.net>; Mon, 17 Aug 2009 06:10:00 -0600
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7HC9x5A020937
+	for <ltp-list@lists.sourceforge.net>; Mon, 17 Aug 2009 06:10:00 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+Date: Mon, 17 Aug 2009 17:39:44 +0530
+Message-Id: <20090817120942.8902.85335.sendpatchset@subratamodak.linux.ibm.com>
+In-Reply-To: <20090817120835.8902.4597.sendpatchset@subratamodak.linux.ibm.com>
+References: <20090817120835.8902.4597.sendpatchset@subratamodak.linux.ibm.com>
+Subject: [LTP] [PATCH v2 03/05] Add Script so the kernel is restored back to
+	its original pristine form
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,107 +36,124 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sf.net>
-
---00504502dab6dfaf970471e22ee7
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-Dear Subrata,
-
-smt_smp_ affinity test case is passing on Fedora but fails on Ubuntu
-for the same H/W.On Ubuntu system, after doing strace i observed that
-system call sched_getaffinity was returning -1 [ERROR:EINVAL] due to
-second argument.
-
-sched_getaffinity(pid, sizeof(unsigned int), &mask1)
-
-Please find attached herewith the patch which fixes the issue.
-
-Thank you,
-
--- 
-Regards,
-Rohit
-
---00504502dab6dfaf970471e22ee7
-Content-Type: text/plain; charset=US-ASCII; name="smt_smp_affinity_patch.txt"
-Content-Disposition: attachment; filename="smt_smp_affinity_patch.txt"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fymxch4a0
-
-U2lnbmVkLW9mZi1ieTogcm9oaXQgdmVybWEgKHJvaGl0MTcwMzA5QGdtYWlsLmNvbSkKPT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PQpkaWZmIC1ydU5CIGx0cC1mdWxsLTIwMDkwNzMxX29sZC90ZXN0Y2Fz
-ZXMva2VybmVsL3NjaGVkL2h5cGVydGhyZWFkaW5nL2h0X2FmZmluaXR5L0hUYWZmaW5pdHkuYyBs
-dHAtZnVsbC0yMDA5MDczMS90ZXN0Y2FzZXMva2VybmVsL3NjaGVkL2h5cGVydGhyZWFkaW5nL2h0
-X2FmZmluaXR5L0hUYWZmaW5pdHkuYwotLS0gbHRwLWZ1bGwtMjAwOTA3MzFfb2xkL3Rlc3RjYXNl
-cy9rZXJuZWwvc2NoZWQvaHlwZXJ0aHJlYWRpbmcvaHRfYWZmaW5pdHkvSFRhZmZpbml0eS5jCTIw
-MDktMDYtMjMgMTk6MjM6NTUuMDAwMDAwMDAwICswNTMwCisrKyBsdHAtZnVsbC0yMDA5MDczMS90
-ZXN0Y2FzZXMva2VybmVsL3NjaGVkL2h5cGVydGhyZWFkaW5nL2h0X2FmZmluaXR5L0hUYWZmaW5p
-dHkuYwkyMDA5LTA4LTIxIDE3OjEwOjUzLjAwMDAwMDAwMCArMDUzMApAQCAtMTYsNiArMTYsNyBA
-QAogI2luY2x1ZGUgPHN5cy9zeXNjYWxsLmg+CiAjaW5jbHVkZSA8c3lzL3R5cGVzLmg+CiAjaW5j
-bHVkZSA8dW5pc3RkLmg+CisjaW5jbHVkZSA8c3lzL3dhaXQuaD4KICNpbmNsdWRlIDxzdGRpby5o
-PgogI2luY2x1ZGUgPHN0ZGxpYi5oPgogI2luY2x1ZGUgPHN0cmluZy5oPgpAQCAtNDcsNyArNDgs
-NyBAQAogCiBpbnQgSFRfU2V0QWZmaW5pdHkoKQogewotCXVuc2lnbmVkIG1hc2s7CisJdW5zaWdu
-ZWQgaW50IG1hc2s7CiAJcGlkX3QgcGlkOwogCWludCByZXN1bHQ9MTsKIAlpbnQgY3B1X2NvdW50
-LCBpLCBqLCBrLCBjcHVpZDsKQEAgLTE2MSwzMCArMTYyLDMwIEBACiAKIGludCBIVF9HZXRBZmZp
-bml0eSgpCiB7Ci0JdW5zaWduZWQgbG9uZyBtYXNrLCBtYXNrMTsKKwl1bnNpZ25lZCBpbnQgbWFz
-a1syXSwgbWFzazFbMl07CiAJcGlkX3QgcGlkOwogCi0JbWFzaz0weDE7Ci0JcGlkPWdldHBpZCgp
-OworCW1hc2tbMF0gPSAweDE7CisJcGlkID0gZ2V0cGlkKCk7CiAKIAl0c3RfcmVzbShUSU5GTywg
-IkdldCBhZmZpbml0eSB0aHJvdWdoIHN5c3RlbSBjYWxsLlxuIik7CiAKLQlzY2hlZF9zZXRhZmZp
-bml0eShwaWQsIHNpemVvZih1bnNpZ25lZCBpbnQpLCAmbWFzayk7CisJc2NoZWRfc2V0YWZmaW5p
-dHkocGlkLCBzaXplb2YobWFzayksIG1hc2spOwogCiAJc2xlZXAoMSk7CiAKLQlzY2hlZF9nZXRh
-ZmZpbml0eShwaWQsIHNpemVvZih1bnNpZ25lZCBpbnQpLCAmbWFzazEpOworCXNjaGVkX2dldGFm
-ZmluaXR5KHBpZCwgc2l6ZW9mKG1hc2spLCBtYXNrMSk7CiAKLQlpZiAobWFzayA9PSAweDEgJiYg
-bWFzayA9PSBtYXNrMSkKKwlpZiAobWFza1swXSA9PSAweDEgJiYgbWFza1swXSA9PSBtYXNrMVsw
-XSkKIAl7Ci0JCW1hc2s9MHgyOwotCQlzY2hlZF9zZXRhZmZpbml0eShwaWQsIHNpemVvZih1bnNp
-Z25lZCBsb25nKSwgJm1hc2spOworCQltYXNrWzBdID0gMHgyOworCQlzY2hlZF9zZXRhZmZpbml0
-eShwaWQsIHNpemVvZihtYXNrKSwgbWFzayk7CiAKIAkJc2xlZXAoMSk7CiAKLQkJc2NoZWRfZ2V0
-YWZmaW5pdHkocGlkLCBzaXplb2YodW5zaWduZWQgaW50KSwgJm1hc2sxKTsKKwkJc2NoZWRfZ2V0
-YWZmaW5pdHkocGlkLCBzaXplb2YobWFzayksIG1hc2sxKTsKIAotCQlpZiAobWFzayA9PSAweDIg
-JiYgbWFzayA9PSBtYXNrMSkKKwkJaWYgKG1hc2tbMF0gPT0gMHgyICYmIG1hc2tbMF0gPT0gbWFz
-azFbMF0pCiAJCQlyZXR1cm4gMTsKIAkJZWxzZQogCQkJcmV0dXJuIDA7CkBAIC0xOTUsMjkgKzE5
-NiwzNSBAQAogCiBpbnQgSFRfSW5oZXJpdEFmZmluaXR5KCkKIHsKLQl1bnNpZ25lZCBsb25nIG1h
-c2s7CisJdW5zaWduZWQgaW50IG1hc2tbMl07CiAJcGlkX3QgcGlkOworCWludCBzdGF0dXM7CisJ
-bWFza1swXSA9IDB4MjsKKwlwaWQgPSBnZXRwaWQoKTsKIAotCW1hc2s9MHgyOwotCXBpZD1nZXRw
-aWQoKTsKLQotCXRzdF9yZXNtKFRJTkZPLCAiSW5oZXJpdCBhZmZpbml0eSBmcm9tIHBhcmVudCBw
-cm9jZXNzLlxuIik7Ci0KLQlzY2hlZF9zZXRhZmZpbml0eShwaWQsIHNpemVvZih1bnNpZ25lZCBp
-bnQpLCAmbWFzayk7CisJc2NoZWRfc2V0YWZmaW5pdHkocGlkLCBzaXplb2YobWFzayksIG1hc2sp
-OwogCiAJc2xlZXAoMSk7Ci0KLQlpZigocGlkPWZvcmsoKSk9PTApCisJcGlkID0gZm9yaygpOwor
-CWlmIChwaWQgID09IDApCiAJewogCQlzbGVlcCgxKTsKLQkJc3lzdGVtKCJwcyA+IC9kZXYvbnVs
-bCIpOwotCQlleGl0KDApOwotCX0KKwkJc2NoZWRfZ2V0YWZmaW5pdHkocGlkLCBzaXplb2YobWFz
-ayksIG1hc2spOworCQlpZiAobWFza1swXSA9PSAweDIpCisJCQlleGl0KDApOwogCi0Jc2NoZWRf
-Z2V0YWZmaW5pdHkocGlkLCBzaXplb2YodW5zaWduZWQgaW50KSwgJm1hc2spOworCQllbHNlCisJ
-CQlleGl0KDEpOworCX0gZWxzZSBpZiAocGlkIDwgMCkgeworCQl0c3RfcmVzbShUSU5GTywgIklu
-aGVyaXQgYWZmaW5pdHk6Zm9yayBmYWlsZWQhIC5cbiIpOworCQlyZXR1cm4gMDsKKwl9CisJd2Fp
-dHBpZChwaWQsICZzdGF0dXMsIDApOwogCi0JaWYobWFzaz09MHgyKQorCWlmIChXRVhJVFNUQVRV
-UyhzdGF0dXMpID09IDApIHsKKwkJdHN0X3Jlc20oVElORk8sICJJbmhlcml0ZWQgYWZmaW5pdHkg
-ZnJvbSBwYXJlbnQgcHJvY2Vzcy5cbiIpOwogCQlyZXR1cm4gMTsKKwl9CiAJZWxzZQogCQlyZXR1
-cm4gMDsKIH0K
---00504502dab6dfaf970471e22ee7
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: LTP Mailing List <ltp-list@lists.sourceforge.net>
+Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>, Mike Frysinger <vapier@gentoo.org>, Michael Reed <mreed10@us.ibm.com>, Nate Straz <nate@refried.org>, Paul Larson <paul.larson@ubuntu.com>, Manoj Iyer <manoj.iyer@ubuntu.com>, Balbir Singh <balbir@linux.vnet.ibm.com>
+
+Once the faults has been injected and all the concerned tests have been run
+completely, the kernel needs to be restored back to its original pristine
+form so that it is stable again. This Script does just exactly that.
+
+This again has changes regarding the debugfs mount point.
+
+Signed-off-by: Subrata Modak<subrata@linux.vnet.ibm.com>
+---
+
+diff -uprN ltp-full-20090731.orig/tools/restore_kernel_faults_default.sh ltp-full-20090731/tools/restore_kernel_faults_default.sh
+--- ltp-full-20090731.orig/tools/restore_kernel_faults_default.sh	1970-01-01 05:30:00.000000000 +0530
++++ ltp-full-20090731/tools/restore_kernel_faults_default.sh	2009-08-17 11:11:59.000000000 +0530
+@@ -0,0 +1,86 @@
++#!/bin/sh
++################################################################################
++##                                                                            ##
++## Copyright (c) International Business Machines  Corp., 2009                 ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and/or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software               ##
++## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
++##                                                                            ##
++################################################################################
++#                                                                             ##
++# File :        restore_kernel_faults_default.sh			      ##
++#                                                                             ##
++# Usage:        restore_kernel_faults_default.sh	                      ##
++#                                                                             ##
++# Description:  This is a simple script that will restore the /debugfs/fail*  ##
++#		entries to their default values				      ##
++#                                                                             ##
++# Author:       Subrata Modak <subrata@linux.vnet.ibm.com>                    ##
++#                                                                             ##
++# History:      Aug 11 2009 - Created - Subrata Modak.                        ##
++#		Aug 17 2009 - Changed debugfs mount point - Subrata Modak.    ##
++################################################################################
++
++echo  0 > /sys/kernel/debug/fail_io_timeout/reject-end
++echo  0 > /sys/kernel/debug/fail_io_timeout/reject-start
++echo  4294967295 > /sys/kernel/debug/fail_io_timeout/require-end
++echo  0 > /sys/kernel/debug/fail_io_timeout/require-start
++echo  32 > /sys/kernel/debug/fail_io_timeout/stacktrace-depth
++echo  N > /sys/kernel/debug/fail_io_timeout/task-filter
++echo  2 > /sys/kernel/debug/fail_io_timeout/verbose
++echo  0 > /sys/kernel/debug/fail_io_timeout/space
++echo  1 > /sys/kernel/debug/fail_io_timeout/times
++echo  1 > /sys/kernel/debug/fail_io_timeout/interval
++echo  0 > /sys/kernel/debug/fail_io_timeout/probability
++
++echo  0 > /sys/kernel/debug/fail_make_request/reject-end
++echo  0 > /sys/kernel/debug/fail_make_request/reject-start
++echo  4294967295 > /sys/kernel/debug/fail_make_request/require-end
++echo  0 > /sys/kernel/debug/fail_make_request/require-start
++echo  32 > /sys/kernel/debug/fail_make_request/stacktrace-depth
++echo  N > /sys/kernel/debug/fail_make_request/task-filter
++echo  2 > /sys/kernel/debug/fail_make_request/verbose
++echo  0 > /sys/kernel/debug/fail_make_request/space
++echo  1 > /sys/kernel/debug/fail_make_request/times
++echo  1 > /sys/kernel/debug/fail_make_request/interval
++echo  0 > /sys/kernel/debug/fail_make_request/probability
++
++echo  1 > /sys/kernel/debug/fail_page_alloc/min-order
++echo  Y > /sys/kernel/debug/fail_page_alloc/ignore-gfp-highmem
++echo  Y > /sys/kernel/debug/fail_page_alloc/ignore-gfp-wait
++echo  0 > /sys/kernel/debug/fail_page_alloc/reject-end
++echo  0 > /sys/kernel/debug/fail_page_alloc/reject-start
++echo  4294967295 > /sys/kernel/debug/fail_page_alloc/require-end
++echo  0 > /sys/kernel/debug/fail_page_alloc/require-start
++echo  32 > /sys/kernel/debug/fail_page_alloc/stacktrace-depth
++echo  N > /sys/kernel/debug/fail_page_alloc/task-filter
++echo  2 > /sys/kernel/debug/fail_page_alloc/verbose
++echo  0 > /sys/kernel/debug/fail_page_alloc/space
++echo  1 > /sys/kernel/debug/fail_page_alloc/times
++echo  1 > /sys/kernel/debug/fail_page_alloc/interval
++echo  0 > /sys/kernel/debug/fail_page_alloc/probability
++
++echo  Y > /sys/kernel/debug/failslab/ignore-gfp-wait
++echo  0 > /sys/kernel/debug/failslab/reject-end
++echo  0 > /sys/kernel/debug/failslab/reject-start
++echo  4294967295 > /sys/kernel/debug/failslab/require-end
++echo  0 > /sys/kernel/debug/failslab/require-start
++echo  32 > /sys/kernel/debug/failslab/stacktrace-depth
++echo  N > /sys/kernel/debug/failslab/task-filter
++echo  2 > /sys/kernel/debug/failslab/verbose
++echo  0 > /sys/kernel/debug/failslab/space
++echo  1 > /sys/kernel/debug/failslab/times
++echo  1 > /sys/kernel/debug/failslab/interval
++echo  0 > /sys/kernel/debug/failslab/probability
++
+
+---
+Regards--
+Subrata
+
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---00504502dab6dfaf970471e22ee7
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---00504502dab6dfaf970471e22ee7--
-
