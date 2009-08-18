@@ -1,29 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Md11M-0005op-Px
-	for ltp-list@lists.sourceforge.net; Mon, 17 Aug 2009 12:09:04 +0000
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Md11G-00045w-PM
-	for ltp-list@lists.sourceforge.net; Mon, 17 Aug 2009 12:09:04 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e5.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7HC0sUg025171
-	for <ltp-list@lists.sourceforge.net>; Mon, 17 Aug 2009 08:00:54 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7HC8rcT247200
-	for <ltp-list@lists.sourceforge.net>; Mon, 17 Aug 2009 08:08:53 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7HC60hV019053
-	for <ltp-list@lists.sourceforge.net>; Mon, 17 Aug 2009 08:06:00 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Mon, 17 Aug 2009 17:38:37 +0530
-Message-Id: <20090817120835.8902.4597.sendpatchset@subratamodak.linux.ibm.com>
-Subject: [LTP] [PATCH v2 00/05] Integration of "Fault Injection Framework"
-	into LTP
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naresh.kernel@gmail.com>) id 1MdPfA-0002HI-GM
+	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2009 14:27:48 +0000
+Received: from mail-yw0-f185.google.com ([209.85.211.185])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MdPf4-0003gC-NA
+	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2009 14:27:43 +0000
+Received: by ywh15 with SMTP id 15so5063266ywh.10
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 18 Aug 2009 07:27:37 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <364299f40908172345o21a2d7a8j11a41eeb8455f596@mail.gmail.com>
+References: <f5a7b3810908170941n6885b036ub45f9d14ec5c3768@mail.gmail.com>
+	<364299f40908172345o21a2d7a8j11a41eeb8455f596@mail.gmail.com>
+Date: Tue, 18 Aug 2009 19:57:37 +0530
+Message-ID: <f5a7b3810908180727i7ddbcab4t3b0d74c2f1ac0e6@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Subject: Re: [LTP] [FIX PATCH] ltp-fix-posix-sched_setparam_26-1 warning fix
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,39 +28,60 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP Mailing List <ltp-list@lists.sourceforge.net>
-Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>, Mike Frysinger <vapier@gentoo.org>, Michael Reed <mreed10@us.ibm.com>, Nate Straz <nate@refried.org>, Paul Larson <paul.larson@ubuntu.com>, Manoj Iyer <manoj.iyer@ubuntu.com>, Balbir Singh <balbir@linux.vnet.ibm.com>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, Brandon Philips <bphilips@suse.de>
 
+On Tue, Aug 18, 2009 at 12:15 PM, Garrett Cooper<yanegomi@gmail.com> wrote:
+> On Mon, Aug 17, 2009 at 9:41 AM, naresh kamboju<naresh.kernel@gmail.com> =
+wrote:
+>> Hi,
+>>
+>> I have noticed build warnings for the following test case.
+>> This patch will fix warnings by adding <string.h> header file.
+>>
+>> I have attached patch and below
+>> Please review the same
+>
 Hi,
+> =A0 =A0Log before and after?
 
-Introducing the "Kernel Fault Injection Framework" generation and testing
-capability in LTP. This is in line with the recent proposal made through
-LTP Paper at OLS 2009:
-"Putting LTP to test - Validating both the Linux kernel and Test-cases"
-(http://ltp.sourceforge.net/documentation/technical_papers/Putting_LTP_to_Test.pdf)
+Build log:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Before patch:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+conformance/interfaces/sched_setparam/26-1: build: FAILED: Compiler output:
+cc1: warnings being treated as errors
+conformance/interfaces/sched_setparam/26-1.c: In function 'set_nonroot':
+conformance/interfaces/sched_setparam/26-1.c:30: warning: implicit
+declaration of function 'strcmp'
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+After patch:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+conformance/interfaces/sched_setparam/26-1: build: PASS
+conformance/interfaces/sched_setparam/26-1: link: PASS
 
-This infrasturcture will help LTP directly in the following ways:
-1) Allow test developers to test their new test cases against a faulted kernel,
-and then compare it on stable kernel run, impacting in better test development,
-2) Allow test engineers to be able to generate more code coverage by traversing
-the rarely touched parts of the kernel code,
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-As we move forward in using this, we would definitely find some other
-advantages of this framework. This is V2 of patchset after incorporating
-comments from Mike, Paul & Garret.
+Best regards
+Naresh Kamboju
+> Thanks,
+> -Garrett
+>
 
-Regards--
-Subrata
+---------------------------------------------------------------------------=
+---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
 
+trial. Simplify your report design, integration and deployment - and focus =
+on =
 
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
+what you do best, core application coding. Discover what's new with =
+
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
