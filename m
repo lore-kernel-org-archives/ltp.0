@@ -1,31 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1MeABN-0004nK-DY
-	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2009 16:08:09 +0000
-Received: from e33.co.us.ibm.com ([32.97.110.151])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MeABJ-0006cv-JL
-	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2009 16:08:09 +0000
-Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
-	[9.17.195.107])
-	by e33.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7KG5ulf004157
-	for <ltp-list@lists.sourceforge.net>; Thu, 20 Aug 2009 10:05:56 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7KG7bUV134162
-	for <ltp-list@lists.sourceforge.net>; Thu, 20 Aug 2009 10:07:38 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7KG7aNu003135
-	for <ltp-list@lists.sourceforge.net>; Thu, 20 Aug 2009 10:07:36 -0600
-From: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Date: Thu, 20 Aug 2009 21:37:31 +0530
-Message-Id: <20090820160731.30926.75897.sendpatchset@localhost.localdomain>
-In-Reply-To: <20090820160655.30926.34854.sendpatchset@localhost.localdomain>
-References: <20090820160655.30926.34854.sendpatchset@localhost.localdomain>
-Subject: [LTP] New & modified reusable functions for new & existing testcases
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naresh.kernel@gmail.com>) id 1MdRZp-0006gU-Q0
+	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2009 16:30:25 +0000
+Received: from mail-yx0-f174.google.com ([209.85.210.174])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MdRZh-0003Vd-SO
+	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2009 16:30:25 +0000
+Received: by yxe4 with SMTP id 4so5058443yxe.28
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 18 Aug 2009 09:30:12 -0700 (PDT)
+MIME-Version: 1.0
+Date: Tue, 18 Aug 2009 22:00:12 +0530
+Message-ID: <f5a7b3810908180930q41ceddc0w24a15c21f3c4d796@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Content-Type: multipart/mixed; boundary=000e0cd23f3657409e04716d085a
+Subject: [LTP] [FIX PATCH] ltp-fix-sched_setscheduler_17-6
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,331 +26,167 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: vaidy <svaidy@linux.vnet.ibm.com>, ltp-list@lists.sourceforge.net, gautham <ego@in.ibm.com>, arun@linux.vnet.ibm.com
+To: ltp-list <ltp-list@lists.sourceforge.net>
+Cc: Brandon Philips <bphilips@suse.de>
 
-Implemented reusable functions to learn system architecture before executing 
-architecture specific testcases.  
+--000e0cd23f3657409e04716d085a
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+Hi,
 
-diff -uprN ltp-full-20090731_orig/testcases/kernel/power_management/pm_include.sh ltp-full-20090731/testcases/kernel/power_management/pm_include.sh
---- ltp-full-20090731_orig/testcases/kernel/power_management/pm_include.sh	2009-08-20 19:59:11.000000000 +0530
-+++ ltp-full-20090731/testcases/kernel/power_management/pm_include.sh	2009-08-20 20:29:21.000000000 +0530
-@@ -112,6 +112,46 @@ function is_multi_socket() {
- 	fi
- }
- 
-+function is_multi_core() {
-+	siblings=`cat /proc/cpuinfo | grep siblings | uniq | cut -f2 -d':'`
-+	cpu_cores=`cat /proc/cpuinfo | grep "cpu cores" | uniq | cut -f2 -d':'`
-+	echo "siblings count $siblings cores count $cpu_cores"
-+	if [ $siblings -eq $cpu_cores ]; then
-+		if [ $cpu_cores -gt 1 ]; then
-+			return 0
-+		else
-+			return 1
-+		fi
-+	else
-+		: $(( num_of_cpus = siblings / cpu_cores ))
-+		if [ $num_of_cpus -gt 1 ]; then
-+			return 0
-+		else
-+			return 1
-+		fi
-+	fi
-+}		
+I have noticed sched_setscheduler/17-6.c test case as UNTESTED.
+
+Test needs to be executed as non-root user.
+So I have changed user id from root to non-root user by adding
+set_nonroot() function. Now test case got PASSED.
+
+I have attached patch and results before and after the patch.
+Please review the same.
+
+Best regards
+Naresh Kamboju
+
+/************************************************************/
+ Results:
+/************************************************************/
+Before patch:
+conformance/interfaces/sched_setscheduler/17-6.test:execution:UNTESTED
+
+After patch:
+conformance/interfaces/sched_setscheduler/17-6.test:execution:PASS
+/*************************************************************/
+
+
+Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+
+
+diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/sched_setscheduler/17-6.c
+b/testcases/open_posix_testsuite/conformance/interfaces/sched_setscheduler/17-6.c
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sched_setscheduler/17-6.c	2005-06-03
+22:03:12.000000000 +0530
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sched_setscheduler/17-6.c	2009-08-18
+21:03:50.000000000 +0530
+@@ -24,10 +24,42 @@
+ #include <stdio.h>
+ #include <errno.h>
+ #include <unistd.h>
++#include <pwd.h>
++#include <string.h>
+ #include "posixtest.h"
+
+
+
++/** Set the euid of this process to a non-root uid */
++int set_nonroot()
++{
++	struct passwd *pw;
++	setpwent();
++	/* search for the first user which is non root */
++	while((pw = getpwent()) != NULL)
++		if(strcmp(pw->pw_name, "root"))
++			break;
++	endpwent();
++	if(pw == NULL) {
++		printf("There is no other user than current and root.\n");
++		return 1;
++	}
 +
-+function is_dual_core() {
-+	siblings=`cat /proc/cpuinfo | grep siblings | uniq | cut -f2 -d':'`
-+        cpu_cores=`cat /proc/cpuinfo | grep "cpu cores" | uniq | cut -f2 -d':'`
-+        if [ $siblings -eq $cpu_cores ]; then
-+                if [ $cpu_cores -eq 2 ]; then
-+                        return 1
-+                else
-+                        return 0
-+                fi
-+        else
-+                : $(( num_of_cpus = siblings / cpu_cores ))
-+                if [ $num_of_cpus -eq 2 ]; then
-+                        echo "number of cpus $num_of_cpus"
-+                        return 1
-+                else
-+                        return 0
-+                fi
-+        fi
++	if(seteuid(pw->pw_uid) != 0) {
++		if(errno == EPERM) {
++			printf("You don't have permission to change your UID.\n");
++			return 1;
++		}
++		perror("An error occurs when calling seteuid()");
++		return 1;
++	}
++	
++	printf("Testing with user '%s' (uid: %d)\n",
++	       pw->pw_name, (int)geteuid());
++	return 0;
 +}
 +
- function get_kernel_version() {
- 	# Get kernel minor version
- 	export kernel_version=`uname -r | awk -F. '{print $1"."$2"."$3}' | cut -f1 -d'-'`
-@@ -120,42 +160,12 @@ function get_kernel_version() {
- function get_valid_input() {
- 	kernel_version=$1
- 	case "$kernel_version" in
--	'2.6.29' | '2.6.30' | '2.6.31')
--			export valid_input="0 1 2" ;;
--		*) export valid_input="0 1" ;;
-+	'2.6.26' | '2.6.27' | '2.6.28')
-+			export valid_input="0 1" ;;
-+		*) export valid_input="0 1 2" ;;
- 	esac
- }
- 		
--function get_max_sched_mc() {
--	get_kernel_version
--	case "$kernel_version" in
--	'2.6.29' | '2.6.30' | '2.6.31') 
--		return 2
--		;;
--	'2.6.26' | '2.6.27' | '2.6.28') 
--		return 1
--		;;
--	*) 
--		return 0
--		;;
--	esac
--}
--
--function get_max_sched_smt() {
--    get_kernel_version
--    case "$kernel_version" in
--        '2.6.29' | '2.6.30' | '2.6.31') 
--                    return 2
--				;;
--        '2.6.26' | '2.6.27' | '2.6.28') 
--                    return 1
--				;;
--        *) 
--			return 0
--			;;
--	esac
--}
--
- function check_supp_wkld() {
- 	sched_mcsmt=$1
- 	work_load=$2
-@@ -184,58 +194,33 @@ function analyze_wrt_workload_hyperthrea
-     work_load=$2
-     pass_count=$3
-     sched_smt=$4
--    stress=$5
- 
--	if [ $sched_mc > $sched_smt ]; then
-+	if [ $sched_mc -gt $sched_smt ]; then
- 		check_supp_wkld $sched_mc $work_load; valid_workload=$?
- 	else
- 		check_supp_wkld $sched_smt $work_load; valid_workload=$?
- 	fi
- 
--	if [ "$stress" = "thread" ]; then
--		case "$valid_workload" in
--        0)
--			if [ $pass_count -lt 5 ]; then
--				RC=1
--				tst_resm TFAIL "Consolidation at core level failed for \
--sched_mc=$sched_mc, sched_smt=$sched_smt for workload=$work_load"
--			else
--				tst_resm TPASS "Consolidation at core level passed for \
--sched_mc=$sched_mc, sched_smt=$sched_smt & workload=$work_load"
--			fi ;;
--        1)
--            if [ $pass_count -lt 5 ]; then
--                tst_resm TPASS "Consolidation at core level failed for \
--unsupported workload $work_load when sched_mc=$sched_mc & sched_smt=$sched_smt"
--            else
--				RC=1
--                tst_resm TFAIL "Consolidation at core level passed for \
--unsupported workload $work_load when sched_mc=$sched_mc & sched_smt=$sched_smt"
--            fi ;;
--        esac
--	else
--		case "$valid_workload" in
--        0)
--            if [ $pass_count -lt 5 ]; then
--				RC=1
--                tst_resm TFAIL "Consolidation at package level failed for \
-+	case "$valid_workload" in
-+	0)
-+		if [ $pass_count -lt 5 ]; then
-+			RC=1
-+			tst_resm TFAIL "Consolidation at package level failed for \
- sched_mc=$sched_mc, sched_smt=$sched_smt for workload=$work_load"
--            else
--                tst_resm TPASS "Consolidation at package level passed for \
-+		else
-+			tst_resm TPASS "Consolidation at package level passed for \
- sched_mc=$sched_mc, sched_smt=$sched_smt & workload=$work_load"
--            fi ;;
--        1)
--			echo "pass count is $pass_count"
--            if [ $pass_count -lt 5 ]; then
--                tst_resm TPASS "Consolidation at package level failed for \
-+		fi ;;
-+	1)
-+		if [ $pass_count -lt 5 ]; then
-+			tst_resm TPASS "Consolidation at package level failed for \
- unsupported workload $work_load when sched_mc=$sched_mc & sched_smt=$sched_smt"
--            else
--				RC=1
--                tst_resm TFAIL "Consolidation at package level passed for \
-+		else
-+			RC=1
-+			tst_resm TFAIL "Consolidation at package level passed for \
- unsupported workload $work_load when sched_mc=$sched_mc & sched_smt=$sched_smt"
--            fi ;;
-+		fi ;;
-         esac
--	fi
- }
- 
- function analyze_wrt_wkld() {
-@@ -243,12 +228,11 @@ function analyze_wrt_wkld() {
-     work_load=$2
-     pass_count=$3
- 	sched_smt=$4
--	stress=$5
- 
- 	check_supp_wkld $sched_mc $work_load; valid_workload=$?
- 	if [ $hyper_threaded -eq $YES ]; then
- 		analyze_wrt_workload_hyperthreaded $sched_mc $work_load $pass_count\
--		 $sched_smt $stress
-+		 $sched_smt 
- 	else
- 		case "$valid_workload" in
- 		0)
-@@ -278,74 +262,56 @@ function analyze_result_hyperthreaded() 
-     work_load=$2
-     pass_count=$3
-     sched_smt=$4
--    stress=$5
- 
-+	echo "sched_mc =$sched_mc  work-load=$work_load  pass_count=$pass_count  sched_smt=$sched_smt"
- 	case "$sched_mc" in
- 	0)
- 		if [ $sched_smt ]; then
- 			case "$sched_smt" in
- 			0)
--				if [ "$stress" = "thread" ]; then
--					if [ $pass_count -lt 1 ]; then
--						tst_resm TPASS "Consolidation at core level failed for sched_mc=\
--$sched_mc & sched_smt=$sched_smt for workload=$work_load"
--					else
--						RC=1
--						tst_resm TFAIL "Consolidation at core level passed for sched_mc=\
-+				if [ "$pass_count" -lt 5 ]; then
-+					tst_resm TPASS "cpu consolidation failed for sched_mc=\
- $sched_mc & sched_smt=$sched_smt for workload=$work_load"
--					fi
- 				else
--					if [ "$pass_count" -lt 1 ]; then
--						tst_resm TPASS "cpu consolidation failed for sched_mc=\
--$sched_mc & sched_smt=$sched_smt for workload=$work_load"
--					else
--						RC=1
--						tst_resm TFAIL "cpu consolidation passed for sched_mc=\
-+					RC=1
-+				tst_resm TFAIL "cpu consolidation passed for sched_mc=\
- $sched_mc & sched_smt=$sched_smt for workload=$work_load"
--					fi
- 				fi
- 				;;
- 			*)
--				if [ "$stress" = "thread" ]; then
--					analyze_wrt_wkld $sched_mc $work_load $pass_count $sched_smt $stress
--				else
--					analyze_wrt_wkld $sched_mc $work_load $pass_count $sched_smt
--				fi ;;
-+				analyze_wrt_wkld $sched_mc $work_load $pass_count $sched_smt
-+				;;
- 			esac
- 		else
--			if [ $pass_count -lt 1 ]; then
-+			if [ $pass_count -lt 5 ]; then
- 				tst_resm TPASS "cpu consolidation failed for sched_mc=\
- $sched_mc for workload=$work_load"
- 			else
- 				RC=1
- 				tst_resm TFAIL "cpu consolidation passed for sched_mc=\
--$sched_mc & sched_smt=$sched_smt for workload=$work_load"
-+$sched_mc for workload=$work_load"
- 			fi
- 		fi
- 		;;
- 	*)
--		if [ "$stress" = "thread" ]; then
--			analyze_wrt_wkld $sched_mc $work_load $pass_count $sched_smt $stress
--		else
- 			analyze_wrt_wkld $sched_mc $work_load $pass_count $sched_smt
--		fi
- 		;;
- 	esac
- }
- 
--function analyze_consolidation_result() {
-+function analyze_package_consolidation_result() {
- 	sched_mc=$1
-     work_load=$2
-     pass_count=$3
- 	sched_smt=$4
--	stress=$5
- 
-+	echo "sched mc $sched_mc sched smt is $sched_smt workload $work_load pass count $pass_count"
- 	if [ $hyper_threaded -eq $YES ]; then
--		analyze_result_hyperthreaded $sched_mc $work_load $pass_count $sched_smt $stress
-+		analyze_result_hyperthreaded $sched_mc $work_load $pass_count $sched_smt
- 	else
- 		case "$sched_mc" in
- 	    0)
--    	    if [ $pass_count -lt 1 ]; then
-+    	    if [ $pass_count -lt 5 ]; then
-         	    tst_resm TPASS "cpu consolidation failed for sched_mc=\
- $sched_mc for workload=$work_load"
-         	else
-@@ -360,6 +326,33 @@ $sched_mc for workload=$work_load"
- 	fi
- }
- 
-+function analyze_core_consolidation_result() {
-+	sched_smt=$1
-+	work_load=$2
-+	pass_count=$3
 +
-+	case "$valid_workload" in
-+	0)
-+		if [ $pass_count -lt 5 ]; then
-+			RC=1
-+			tst_resm TFAIL "Consolidation at core level failed for \
-+sched_mc=$sched_mc, sched_smt=$sched_smt for workload=$work_load"
-+		else
-+			tst_resm TPASS "Consolidation at core level passed for \
-+sched_mc=$sched_mc, sched_smt=$sched_smt & workload=$work_load"
-+		fi ;;
-+	1)
-+		if [ $pass_count -lt 5 ]; then
-+			tst_resm TPASS "Consolidation at core level failed for \
-+unsupported workload $work_load when sched_mc=$sched_mc & sched_smt=$sched_smt"
-+		else
-+			RC=1
-+			tst_resm TFAIL "Consolidation at core level passed for \
-+unsupported workload $work_load when sched_mc=$sched_mc & sched_smt=$sched_smt"
-+		fi ;;
-+	esac
-+}
-+
- function analyze_sched_domain_result(){
- 	sched_mc=$1
- 	result=$2
+ int main(){
+ 	int max_priority, old_priority, old_policy, new_policy, policy;
+         struct sched_param param;
+@@ -36,9 +68,11 @@
+         /* and can only be accessed by root */
+         /* This test should be run under standard user permissions */
+         if (getuid() == 0) {
+-                puts("Run this test case as a Regular User, but not ROOT");
++	  	if (set_nonroot() != 0) {
++			printf("Cannot run this test as non-root user\n");	
+                 return PTS_UNTESTED;
+         }	
++        }	
+
+ 	if(sched_getparam(getpid(), &param) == -1) {
+ 		perror("An error occurs when calling sched_getparam()");
+
+--000e0cd23f3657409e04716d085a
+Content-Type: application/octet-stream; 
+	name="ltp-fix-sched_setscheduler_17-6.patch"
+Content-Disposition: attachment; 
+	filename="ltp-fix-sched_setscheduler_17-6.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fyiugnsd0
+
+ZGlmZiAtTmF1cmIgYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2Uv
+aW50ZXJmYWNlcy9zY2hlZF9zZXRzY2hlZHVsZXIvMTctNi5jIGIvdGVzdGNhc2VzL29wZW5fcG9z
+aXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvc2NoZWRfc2V0c2NoZWR1bGVyLzE3
+LTYuYwotLS0gYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50
+ZXJmYWNlcy9zY2hlZF9zZXRzY2hlZHVsZXIvMTctNi5jCTIwMDUtMDYtMDMgMjI6MDM6MTIuMDAw
+MDAwMDAwICswNTMwCisrKyBiL3Rlc3RjYXNlcy9vcGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3Jt
+YW5jZS9pbnRlcmZhY2VzL3NjaGVkX3NldHNjaGVkdWxlci8xNy02LmMJMjAwOS0wOC0xOCAyMTow
+Mzo1MC4wMDAwMDAwMDAgKzA1MzAKQEAgLTI0LDEwICsyNCw0MiBAQAogI2luY2x1ZGUgPHN0ZGlv
+Lmg+CiAjaW5jbHVkZSA8ZXJybm8uaD4KICNpbmNsdWRlIDx1bmlzdGQuaD4KKyNpbmNsdWRlIDxw
+d2QuaD4KKyNpbmNsdWRlIDxzdHJpbmcuaD4KICNpbmNsdWRlICJwb3NpeHRlc3QuaCIKIAogCiAK
+Ky8qKiBTZXQgdGhlIGV1aWQgb2YgdGhpcyBwcm9jZXNzIHRvIGEgbm9uLXJvb3QgdWlkICovCitp
+bnQgc2V0X25vbnJvb3QoKQoreworCXN0cnVjdCBwYXNzd2QgKnB3OworCXNldHB3ZW50KCk7CisJ
+Lyogc2VhcmNoIGZvciB0aGUgZmlyc3QgdXNlciB3aGljaCBpcyBub24gcm9vdCAqLyAKKwl3aGls
+ZSgocHcgPSBnZXRwd2VudCgpKSAhPSBOVUxMKQorCQlpZihzdHJjbXAocHctPnB3X25hbWUsICJy
+b290IikpCisJCQlicmVhazsKKwllbmRwd2VudCgpOworCWlmKHB3ID09IE5VTEwpIHsKKwkJcHJp
+bnRmKCJUaGVyZSBpcyBubyBvdGhlciB1c2VyIHRoYW4gY3VycmVudCBhbmQgcm9vdC5cbiIpOwor
+CQlyZXR1cm4gMTsKKwl9CisKKwlpZihzZXRldWlkKHB3LT5wd191aWQpICE9IDApIHsKKwkJaWYo
+ZXJybm8gPT0gRVBFUk0pIHsKKwkJCXByaW50ZigiWW91IGRvbid0IGhhdmUgcGVybWlzc2lvbiB0
+byBjaGFuZ2UgeW91ciBVSUQuXG4iKTsKKwkJCXJldHVybiAxOworCQl9CisJCXBlcnJvcigiQW4g
+ZXJyb3Igb2NjdXJzIHdoZW4gY2FsbGluZyBzZXRldWlkKCkiKTsKKwkJcmV0dXJuIDE7CisJfQor
+CQorCXByaW50ZigiVGVzdGluZyB3aXRoIHVzZXIgJyVzJyAodWlkOiAlZClcbiIsCisJICAgICAg
+IHB3LT5wd19uYW1lLCAoaW50KWdldGV1aWQoKSk7CisJcmV0dXJuIDA7Cit9CisKKwogaW50IG1h
+aW4oKXsKIAlpbnQgbWF4X3ByaW9yaXR5LCBvbGRfcHJpb3JpdHksIG9sZF9wb2xpY3ksIG5ld19w
+b2xpY3ksIHBvbGljeTsKICAgICAgICAgc3RydWN0IHNjaGVkX3BhcmFtIHBhcmFtOwpAQCAtMzYs
+OSArNjgsMTEgQEAKICAgICAgICAgLyogYW5kIGNhbiBvbmx5IGJlIGFjY2Vzc2VkIGJ5IHJvb3Qg
+Ki8gCiAgICAgICAgIC8qIFRoaXMgdGVzdCBzaG91bGQgYmUgcnVuIHVuZGVyIHN0YW5kYXJkIHVz
+ZXIgcGVybWlzc2lvbnMgKi8KICAgICAgICAgaWYgKGdldHVpZCgpID09IDApIHsKLSAgICAgICAg
+ICAgICAgICBwdXRzKCJSdW4gdGhpcyB0ZXN0IGNhc2UgYXMgYSBSZWd1bGFyIFVzZXIsIGJ1dCBu
+b3QgUk9PVCIpOworCSAgCWlmIChzZXRfbm9ucm9vdCgpICE9IDApIHsKKwkJCXByaW50ZigiQ2Fu
+bm90IHJ1biB0aGlzIHRlc3QgYXMgbm9uLXJvb3QgdXNlclxuIik7CQogICAgICAgICAgICAgICAg
+IHJldHVybiBQVFNfVU5URVNURUQ7CiAgICAgICAgIH0JCisgICAgICAgIH0JCiAKIAlpZihzY2hl
+ZF9nZXRwYXJhbShnZXRwaWQoKSwgJnBhcmFtKSA9PSAtMSkgewogCQlwZXJyb3IoIkFuIGVycm9y
+IG9jY3VycyB3aGVuIGNhbGxpbmcgc2NoZWRfZ2V0cGFyYW0oKSIpOwo=
+--000e0cd23f3657409e04716d085a
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--000e0cd23f3657409e04716d085a
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--000e0cd23f3657409e04716d085a--
+
