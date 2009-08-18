@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MbWJQ-00004u-TT
-	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2009 09:09:32 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MbWJK-00088U-Id
-	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2009 09:09:32 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Thu, 13 Aug 2009 05:09:18 -0400
-References: <200907031601.52650.vapier@gentoo.org> <4A736253.90209@us.ibm.com>
-In-Reply-To: <4A736253.90209@us.ibm.com>
+	(envelope-from <robbie@ubuntu.com>) id 1MdQB3-0005XM-Gq
+	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2009 15:00:45 +0000
+Received: from adelie.canonical.com ([91.189.90.139])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MdQAy-0001R5-KK
+	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2009 15:00:45 +0000
+Message-ID: <4A8AB639.8030000@ubuntu.com>
+Date: Tue, 18 Aug 2009 09:10:01 -0500
+From: Robbie Williamson <robbie@ubuntu.com>
 MIME-Version: 1.0
-Message-Id: <200908130509.19765.vapier@gentoo.org>
-Subject: Re: [LTP] futex syscall tests
+References: <1250586433.9913.15.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1250586433.9913.15.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] Dead End with LTP Options
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,87 +24,61 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============9167902532131560903=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Darren Hart <dvhltc@us.ibm.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
-
---===============9167902532131560903==
-Content-Type: multipart/signed; boundary="nextPart1512811.irKdXvnQTR";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1512811.irKdXvnQTR
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-On Friday 31 July 2009 17:29:55 Darren Hart wrote:
-> Mike Frysinger wrote:
-> > are there any futex syscall tests already in ltp that i cant seem to
-> > locate ? if not, i can adapt the few that already exist in the libfutex
-> > code ...
->
-> I recently done a lot of cleanup and a couple feature additions to the
-> kernel futex code.  In doing so I was noticing the lack of a good futex
-> system call test suite.  I had started a writeup of what such a test
-> suite should accomplish.  I hadn't decided if I wanted to push it to LTP
-> eventually or not.  As it sounds like you may have similar interests in
-> this test, please find my very early, very incomplete, initial thoughts
-> on such a testsuite.
-
-i noticed recently the checkpoint/resume guys seem to have already started=
-=20
-some.  google for "c/r futex".
-=2Dmike
-
---nextPart1512811.irKdXvnQTR
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJKg9g/AAoJEEFjO5/oN/WBHLEP/3SDL5huS+ClAB/6FDiTK7RE
-WFKPJypy8zo4dGwnpd+8V8GSf9Dibx+ODEmQS5UmdZ6C9DVHP+WQo47lVvxxKgLn
-Olx5QGcXaUiYo9kHfmd/3HftHOokzqtbw+aiABmt0CY6VURmcQBPVw2YtLHeEEAw
-emI20SfvE0pCGOypdm91xx2nzJytJsgKpaOGW278ScJEOglE/n8okwtqc+RanVIt
-CuAvZa8GuhBe5+Lkym3P3r54SvksS1A/MGAXualT3sIz7i0LAMz9u1LF/8B0W2rX
-xbldekJozh/4AdC2doEgme3Fml+ISKSypYcEGAGujKsdPjX3B5H1voLQ1FBnVJjP
-bvjd/PrSkzI/bf3IprLZXct5qGztSioNjdmjrPEJqFUpDOshOwyKDVXPKPtJ4La+
-oqop48DEO95rGc3+WQK6z2PmUrXajzWih2Y90UnqfcfBmpJaaqRljBKrM2b8RPkJ
-XkJJMUI7+77bFIAkJSGae7voL9k+zXEq6Hh///wmMFt1UysUJGY56qqBvdN15S2E
-e/wecG9FXjd67iWEOUYKbRqIiA+mgM1pg15o5ZqMp8rT64MPvC6R4SjS7/rzrEYt
-LyGjC876n1AzDln48djzN+DFztMpJ/oRgDUY8OfzFlcpFs6axmRPU479ai8HDHXY
-wPsohELFeU4IFOWEF3+K
-=o06X
------END PGP SIGNATURE-----
-
---nextPart1512811.irKdXvnQTR--
-
-
---===============9167902532131560903==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list <ltp-list@lists.sf.net>, Mike Frysinger <vapier@gentoo.org>, Michael Reed <mreed10@us.ibm.com>, Cai Qian <qcai@redhat.com>, Nate Straz <nate@refried.org>, "manoj.iyer" <manoj.iyer@canonical.com>
+
+On 08/18/2009 04:07 AM, Subrata Modak wrote:
+> Hi,
+> 
+> We are about to hit the dead end for LTP options with increasing no. of
+> options being added to 'runltp' with each passing day. And even with
+> line items i have for ltp in 2009 alone, it will easily add up to 3-4
+> options.
+> 
+> Now, this will become a mess in future:
+> 
+>      1. "./runltp -h" will scroll up and will not show on a single
+>         screen,
+I really don't see this as a problem, as I'd expect someone running the ltp to
+know how to |more....or |less. ;)
+
+>      2. It will be difficult for users to remember all options and their
+>         usage as no. of options increase manifold, which is already too
+>         much.
+Perhaps it's time to create a manpage?
+
+> 
+> While there is no doubt that we will keep adding more punch to ltp and
+> the way it provisions tests in future, so, the time has come for us to
+> adhere to a simpler process which can be easily:
+> 
+>      1. Used &
+>      2. Maintained
+> 
+> I have no reservations of how it should be implemented, so, would like
+> to hear from you on how it can be done best. I would like to see just
+> the following command execute LTP as desired by the user:
+> 
+> ./runltp
+> 
+> And the remaining choice of providing more options to 'runltp' hidden
+> somewhere.
+> 
+> Regards--
+> Subrata
+> 
+> 
+
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---===============9167902532131560903==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============9167902532131560903==--
-
