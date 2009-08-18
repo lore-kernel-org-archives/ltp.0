@@ -1,33 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MYIpL-0001Io-Uf
-	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 12:09:11 +0000
-Received: from e4.ny.us.ibm.com ([32.97.182.144])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MYIpF-0004qK-QS
-	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 12:09:11 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e4.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n74C2xDk018030
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 08:02:59 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n74C8wQ9245240
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 08:08:58 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n74C8wjF014370
-	for <ltp-list@lists.sourceforge.net>; Tue, 4 Aug 2009 08:08:58 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <0f2557dbada823cdbdf1080b36ca0cf41d29c58f.1249304223.git.monstr@monstr.eu>
-References: <1249305859-23722-1-git-send-email-michal.simek@petalogix.com>
-	<0f2557dbada823cdbdf1080b36ca0cf41d29c58f.1249304223.git.monstr@monstr.eu>
-Date: Tue, 04 Aug 2009 17:38:34 +0530
-Message-Id: <1249387714.15587.38.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH 1/4] utimensat: Remove utimensat_user from script
-Reply-To: subrata@linux.vnet.ibm.com
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MdIRl-0006YL-6B
+	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2009 06:45:29 +0000
+Received: from mail-qy0-f181.google.com ([209.85.221.181])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MdIRd-0008Q6-1l
+	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2009 06:45:29 +0000
+Received: by mail-qy0-f181.google.com with SMTP id 11so2718044qyk.28
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 17 Aug 2009 23:45:20 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <f5a7b3810908170941n6885b036ub45f9d14ec5c3768@mail.gmail.com>
+References: <f5a7b3810908170941n6885b036ub45f9d14ec5c3768@mail.gmail.com>
+Date: Mon, 17 Aug 2009 23:45:20 -0700
+Message-ID: <364299f40908172345o21a2d7a8j11a41eeb8455f596@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [FIX PATCH] ltp-fix-posix-sched_setparam_26-1 warning fix
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,51 +30,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: michal.simek@petalogix.com
-Cc: ltp-list@lists.sourceforge.net, monstr@monstr.eu
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, Brandon Philips <bphilips@suse.de>
 
-On Mon, 2009-08-03 at 15:24 +0200, michal.simek@petalogix.com wrote: 
-> From: Michal Simek <monstr@monstr.eu>
-> 
-> We can use nobody user instead of creating new one
-> for this special test. Latest busybox source
-> code not support userdel, useradd that's why
-> is better to use user which exists.
-> 
-> Signed-off-by: Michal Simek <monstr@monstr.eu>
+On Mon, Aug 17, 2009 at 9:41 AM, naresh kamboju<naresh.kernel@gmail.com> wrote:
+> Hi,
+>
+> I have noticed build warnings for the following test case.
+> This patch will fix warnings by adding <string.h> header file.
+>
+> I have attached patch and below
+> Please review the same
 
-Ok.
-
-Regards--
-Subrata
-
-> ---
->  .../kernel/syscalls/utimensat/utimensat_tests.sh   |    4 +---
->  1 files changed, 1 insertions(+), 3 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
-> index 19c59c7..d0e940a 100644
-> --- a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
-> +++ b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
-> @@ -243,8 +243,7 @@ run_test()
->  }
->  #=====================================================================
-> 
-> -user_tester=utimensat_tester
-> -useradd $user_tester
-> +user_tester=nobody
->  sudo -u $user_tester mkdir -p $TEST_DIR
-> 
->  chown root $LTPROOT/testcases/bin/$TEST_PROG
-> @@ -434,7 +433,6 @@ echo "============================================================"
-> 
->  echo
-> 
-> -userdel -r utimensat_tester
->  rm -rf $TEST_PROG
->  uname -a
->  date
-
+    Log before and after?
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
