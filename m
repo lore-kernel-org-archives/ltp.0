@@ -1,33 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MZOmY-0007Hz-Ts
-	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 12:42:50 +0000
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MZOmT-00007Z-5V
-	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 12:42:50 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e6.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n77CkQbG003588
-	for <ltp-list@lists.sourceforge.net>; Fri, 7 Aug 2009 08:46:26 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n77CgbeM229960
-	for <ltp-list@lists.sourceforge.net>; Fri, 7 Aug 2009 08:42:37 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n77Cgb8x016275
-	for <ltp-list@lists.sourceforge.net>; Fri, 7 Aug 2009 08:42:37 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <8368651DACC1964480F951191B94A078F8A313@svexch01.mvista.com>
-References: <4A7AA1BE.9050901@petalogix.com>
-	<8368651DACC1964480F951191B94A078F8A313@svexch01.mvista.com>
-Date: Fri, 07 Aug 2009 18:12:00 +0530
-Message-Id: <1249648920.4851.46.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] utimes01
-Reply-To: subrata@linux.vnet.ibm.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <manoj.iyer@canonical.com>) id 1MdZyg-00083U-M3
+	for ltp-list@lists.sourceforge.net; Wed, 19 Aug 2009 01:28:38 +0000
+Received: from adelie.canonical.com ([91.189.90.139])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MdZyZ-00044i-Th
+	for ltp-list@lists.sourceforge.net; Wed, 19 Aug 2009 01:28:38 +0000
+Date: Tue, 18 Aug 2009 19:44:07 -0500 (CDT)
+From: manoj.iyer@canonical.com
+In-Reply-To: <1250586433.9913.15.camel@subratamodak.linux.ibm.com>
+Message-ID: <alpine.DEB.2.00.0908181914590.3832@little>
+References: <1250586433.9913.15.camel@subratamodak.linux.ibm.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] Dead End with LTP Options
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,134 +27,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Henry Yei <hyei@mvista.com>, michal.simek@petalogix.com
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: ltp-list <ltp-list@lists.sf.net>, Mike Frysinger <vapier@gentoo.org>, Michael Reed <mreed10@us.ibm.com>, Cai Qian <qcai@redhat.com>, Nate Straz <nate@refried.org>, "manoj.iyer" <manoj.iyer@canonical.com>
 
-Michal,
 
-My x86_32 behaves fine with this Syscall test, may be because it is
-2.6.18 kernel as henry said.
+>     1. "./runltp -h" will scroll up and will not show on a single
+>        screen,
+>     2. It will be difficult for users to remember all options and their
+>        usage as no. of options increase manifold, which is already too
+>        much.
 
-$ uname -a
-Linux 2.6.18-92.el5 #1 SMP Tue Apr 29 13:16:12 EDT 2008 i686 i686 i386
-GNU/Linux
+Well many applications do that, and something that cannot be avoided, you 
+could spend some time and remove least useful options if you want to trim 
+the output a little.
 
-$ ./testcases/bin/utimes01 
-utimes01    0  TINFO  :  (case00) START
-utimes01    0  TINFO  :  E:0,1000 <=> R:0,1000
-EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
-RESULT: return value(ret)=       0 errno=0 (Success)
-utimes01    0  TINFO  :  (case00) END => OK
-utimes01    0  TINFO  :  (case01) START
-utimes01    0  TINFO  :  E:1000,0 <=> R:1000,0
-EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
-RESULT: return value(ret)=       0 errno=0 (Success)
-utimes01    0  TINFO  :  (case01) END => OK
-utimes01    0  TINFO  :  (case02) START
-seteuid failed.
-utimes01    0  TINFO  :  (case02) END => OK
-utimes01    0  TINFO  :  (case03) START
-EXPECT: return value(ret)=-1 errno=2 (No such file or directory)
-RESULT: return value(ret)=-1 errno=2 (No such file or directory)
-utimes01    0  TINFO  :  (case03) END => OK
-utimes01    0  TINFO  :  (case04) START
-EXPECT: return value(ret)=-1 errno=14 (Bad address)
-RESULT: return value(ret)=-1 errno=14 (Bad address)
-utimes01    0  TINFO  :  (case04) END => OK
-utimes01    1  TPASS  :  utimes call succeeded 
-[ltp-full-20090731]$ echo $?
-0
+I think your other option is to use /etc/bash_completion and create a CLI 
+for 
+runltp. something like this:
 
-However,
+./runltp option option option=value
 
-On Thu, 2009-08-06 at 17:56 -0700, Henry Yei wrote: 
-> Michal, 
-> 
-> This is a known issue. If you look at the manpages it states the following under the BUGS section:
-> 
-> Linux is not careful to distinguish between the EACCES and EPERM
->     error returns.  On the other hand,  POSIX.1-2001 is buggy in its
->     error description for utimes().
-> 
-> utimes01 passes on 2.6.28-13 kernel (Ubuntu 9.04) as well as the 2.6.18 kernel in CentOS 4.
+for example:
+./runltp <tab-tab> prints something like:
+./runltp verbose prettyprint iostress ...<more options>... logfile=<enter 
+filename>
 
-Can you send across a patch to update include the above information in
-the test case itself ?
+./runltp ver<tab-tab> expands to ./runltp verbose
 
-Regards--
-Subrata
+./runltp verbose lo<tab-tab> expands to ./runltp verbose logfile= and the 
+user enters the filename.
 
-> 
-> 
-> -----Original Message-----
-> From: Michal Simek [mailto:michal.simek@petalogix.com] 
-> Sent: Thursday, August 06, 2009 2:26 AM
-> To: LTP
-> Subject: [LTP] utimes01
-> 
-> Hi All,
-> 
-> Can you please run utimes01 test? I see there on x86 and Microblaze this fault.
-> There is different errno value.
-> 
-> Thanks,
-> Michal
-> 
-> EXPECT: return value(ret)=-1 errno=13 (Permission denied)
-> RESULT: return value(ret)=-1 errno=1 (Operation not permitted)
-> 
-> [root@monstr utimes]# ./utimes01
-> utimes01    0  TINFO  :  (case00) START
-> utimes01    0  TINFO  :  E:0,1000 <=> R:0,1000
-> EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
-> RESULT: return value(ret)=       0 errno=0 (Success)
-> utimes01    0  TINFO  :  (case00) END => OK
-> utimes01    0  TINFO  :  (case01) START
-> utimes01    0  TINFO  :  E:1000,0 <=> R:1000,0
-> EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
-> RESULT: return value(ret)=       0 errno=0 (Success)
-> utimes01    0  TINFO  :  (case01) END => OK
-> utimes01    0  TINFO  :  (case02) START
-> EXPECT: return value(ret)=-1 errno=13 (Permission denied)
-> RESULT: return value(ret)=-1 errno=1 (Operation not permitted)
-> utimes01    0  TINFO  :  (case02) END => NG
-> utimes01    0  TINFO  :  (case03) START
-> EXPECT: return value(ret)=-1 errno=2 (No such file or directory)
-> RESULT: return value(ret)=-1 errno=2 (No such file or directory)
-> utimes01    0  TINFO  :  (case03) END => OK
-> utimes01    0  TINFO  :  (case04) START
-> EXPECT: return value(ret)=-1 errno=14 (Bad address)
-> RESULT: return value(ret)=-1 errno=14 (Bad address)
-> utimes01    0  TINFO  :  (case04) END => OK
-> utimes01    1  TFAIL  :  utimes01 failed - errno = 0 : Success
-> utimes01    0  TINFO  :  NG
-> 
-> --
-> Michal Simek, Ing. (M.Eng)
-> PetaLogix - Linux Solutions for a Reconfigurable World
-> w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
-> 
-> 
-> ------------------------------------------------------------------------------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> trial. Simplify your report design, integration and deployment - and focus on 
-> what you do best, core application coding. Discover what's new with 
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-> ------------------------------------------------------------------------------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> trial. Simplify your report design, integration and deployment - and focus on 
-> what you do best, core application coding. Discover what's new with 
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+etc. I think you get the drift.
 
+So the user can build the command line on the fly and dont have to hit -h 
+then remember options etc.
+
+You could also write the entire CLI in perl which I think offers more 
+flexibility to do command complition & CLI.
+
+You can then parse those options & arguments do construct your command 
+line for runltp.
+
+> to hear from you on how it can be done best. I would like to see just
+> the following command execute LTP as desired by the user:
+>
+> ./runltp
+>
+> And the remaining choice of providing more options to 'runltp' hidden
+> somewhere.
+
+have you polled to see what options consumers of LTP are using? my 
+guess is they are just running with the options that the help command 
+prints at the end.
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
