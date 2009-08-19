@@ -1,22 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yjwei@cn.fujitsu.com>) id 1Mc9Xv-0002gw-I7
-	for ltp-list@lists.sourceforge.net; Sat, 15 Aug 2009 03:03:07 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mc9Xn-0002zJ-RY
-	for ltp-list@lists.sourceforge.net; Sat, 15 Aug 2009 03:03:07 +0000
-Message-ID: <4A861EA2.6070701@cn.fujitsu.com>
-Date: Sat, 15 Aug 2009 10:34:10 +0800
-From: Wei Yongjun <yjwei@cn.fujitsu.com>
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <paul.larson@canonical.com>) id 1MdplR-0000qH-6U
+	for ltp-list@lists.sourceforge.net; Wed, 19 Aug 2009 18:20:01 +0000
+Received: from adelie.canonical.com ([91.189.90.139])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MdplO-00012w-RZ
+	for ltp-list@lists.sourceforge.net; Wed, 19 Aug 2009 18:20:01 +0000
+Received: from hutte.canonical.com ([91.189.90.181])
+	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
+	id 1MdplI-0003hU-TL
+	for <ltp-list@lists.sourceforge.net>; Wed, 19 Aug 2009 19:19:52 +0100
+Received: from 75-27-138-126.lightspeed.austtx.sbcglobal.net ([75.27.138.126]
+	helo=[192.168.1.70]) by hutte.canonical.com with esmtpsa
+	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
+	(envelope-from <paul.larson@canonical.com>) id 1MdplI-0007tx-MX
+	for ltp-list@lists.sourceforge.net; Wed, 19 Aug 2009 19:19:52 +0100
+Message-ID: <4A8C4246.4060607@canonical.com>
+Date: Wed, 19 Aug 2009 13:19:50 -0500
+From: Paul Larson <paul.larson@canonical.com>
 MIME-Version: 1.0
-References: <d51f89b0908130131u5742ff3epf58617e3f4ab38a3@mail.gmail.com>	
-	<4A850550.7080109@cn.fujitsu.com>
-	<d51f89b0908140134g18b7b34cr9858edad1242373a@mail.gmail.com>
-In-Reply-To: <d51f89b0908140134g18b7b34cr9858edad1242373a@mail.gmail.com>
-Subject: Re: [LTP] utimes01 test case issue
+Content-Type: multipart/mixed; boundary="------------020402050400000909040507"
+Subject: [LTP] fix for file_test for systems without rpm installed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,98 +32,88 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rohit verma <rohit.170309@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: LTP Mailing List <ltp-list@lists.sourceforge.net>
 
-rohit verma wrote:
-> Hi Wang Yong,
->
-> I am getting following  O/P for case02 :
->
-> As root user:
->
-> utimes01    0  TINFO  :  (case02) START
-> EXPECT: return value(ret)=-1 errno=13 (Permission denied)
-> RESULT: return value(ret)=-1 errno=1 (Operation not permitted)
-> utimes01    0  TINFO  :  (case02) END => NG
->
-> As non-root user:
-> utimes01    0  TINFO  :  (case02) START
-> seteuid failed.
-> utimes01    0  TINFO  :  (case02) END => OK
->
-> Are you getting the same?
->
->
->   
+This is a multi-part message in MIME format.
+--------------020402050400000909040507
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-yes, the same result.
+Here's the fixed version, forgot I needed to redo these...
 
->
-> On Fri, Aug 14, 2009 at 12:03 PM, Wei Yongjun<yjwei@cn.fujitsu.com> wrote:
->   
->> rohit verma wrote:
->>     
->>> Hi Wang Yong,
->>>
->>> I have observed the following thing in case02 of the test case
->>> utimes01 in latest ltp release.
->>>
->>> Expected error value is  EACCES (In the code below)
->>> But the actual error value is EPERM.I have checked this on  2.6.27 and
->>> 2.6.29 kernel.
->>>
->>>       
->> You can try root user and noroot user, the return error is different.
->>
->>     
->>> static struct test_case tcase[] = {
->>>
->>>         { // case00
->>>                 ...
->>>         },
->>>         { // case01
->>>                 ...
->>>         },
->>>         { // case02
->>>                 .ttype          = NORMAL,
->>>                 .a_sec        = 1000,
->>>                 .m_sec       = 2000,
->>>                 .user          = "nobody",
->>>                 .ret             = -1,
->>>                 .err             = EACCES, // RHEL4U1 + 2.6.18 returns EPERM
->>>         },
->>>         { // case03
->>>                 ...
->>>         },
->>>
->>>         { // case04
->>>                 ...
->>>         },
->>> };
->>>
->>> Kindly confirm whether you are facing the same issue at your end.
->>>
->>>
->>>       
->>
->>     
->
->
->
->   
+If you run file_test.sh on a system without rpm installed, it should
+return tconf instead of tfail.
+
+Signed-off-by: Paul Larson <paul.larson@canonical.com>
+---
 
 
+--------------020402050400000909040507
+Content-Type: text/x-patch;
+ name="file_test-2.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="file_test-2.patch"
+
+diff --git a/testcases/commands/ade/file/file_test.sh b/testcases/commands/ade/file/file_test.sh
+index 4fc9dec..4e30d43 100755
+--- a/testcases/commands/ade/file/file_test.sh
++++ b/testcases/commands/ade/file/file_test.sh
+@@ -472,6 +472,8 @@ export TCID=file09
+ export TST_COUNT=9
+ 
+ $LTPBIN/tst_resm TINFO "TEST #9: file command recognizes RPM files"
++`type rpm &> /dev/null`
++if [ $? = 0 ]; then
+ if [ -f /etc/redhat-release ]; then
+ 	bDIR=/usr/src/redhat
+ 	bCMD=rpmbuild
+@@ -574,6 +576,9 @@ else
+     $LTPBIN/tst_resm TFAIL "file: Failed to recognize RPM file"
+     TFAILCNT=$(( $TFAILCNT+1 ))
+ fi
++else
++    $LTPBIN/tst_resm TCONF "rpm not installed"
++fi
+ 
+ 
+ # TEST #10
+@@ -582,11 +587,7 @@ fi
+ export TCID=file10
+ export TST_COUNT=10
+ 
+-if [ -f /etc/redhat-release ]; then
+-   KERNEL=vmlinuz
+-else
+-   KERNEL=vmlinux
+-fi
++KERNEL=vmlinu
+ 
+ $LTPBIN/tst_resm TINFO "TEST #10: file command recognizes $KERNEL file"
+ 
+
+--------------020402050400000909040507
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--------------020402050400000909040507
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------020402050400000909040507--
+
