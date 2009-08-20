@@ -1,25 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MbKD0-0005ss-Sg
-	for ltp-list@lists.sourceforge.net; Wed, 12 Aug 2009 20:14:06 +0000
-Received: from rv-out-0708.google.com ([209.85.198.247])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MbKCv-0006dz-D4
-	for ltp-list@lists.sourceforge.net; Wed, 12 Aug 2009 20:14:06 +0000
-Received: by rv-out-0708.google.com with SMTP id b17so67139rvf.22
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 12 Aug 2009 13:13:55 -0700 (PDT)
-Message-Id: <E831A4F6-658A-47BE-9778-D00D7D3E9741@gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <4A82DC0A.3050502@canonical.com>
-Mime-Version: 1.0 (Apple Message framework v935.3)
-Date: Wed, 12 Aug 2009 13:14:32 -0700
-References: <4A7AEE38.60101@canonical.com>
-	<364299f40908061022m926d148o661e1c8a2eb58a5@mail.gmail.com>
-	<4A82DC0A.3050502@canonical.com>
-Subject: Re: [LTP] fix lib6 test building
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1MeABd-0004rD-Hl
+	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2009 16:08:25 +0000
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MeABc-0006gd-Ji
+	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2009 16:08:25 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e2.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7KG2I03027099
+	for <ltp-list@lists.sourceforge.net>; Thu, 20 Aug 2009 12:02:18 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7KG8IIL209074
+	for <ltp-list@lists.sourceforge.net>; Thu, 20 Aug 2009 12:08:18 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7KG8I4q003661
+	for <ltp-list@lists.sourceforge.net>; Thu, 20 Aug 2009 12:08:18 -0400
+From: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+Date: Thu, 20 Aug 2009 21:38:09 +0530
+Message-Id: <20090820160809.30926.5725.sendpatchset@localhost.localdomain>
+In-Reply-To: <20090820160655.30926.34854.sendpatchset@localhost.localdomain>
+References: <20090820160655.30926.34854.sendpatchset@localhost.localdomain>
+Subject: [LTP] New testcase to test timer_migration interface
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,38 +34,42 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Paul Larson <paul.larson@canonical.com>
-Cc: ltp-list@lists.sourceforge.net
+To: vaidy <svaidy@linux.vnet.ibm.com>, ltp-list@lists.sourceforge.net, gautham <ego@in.ibm.com>, arun@linux.vnet.ibm.com
 
-On Aug 12, 2009, at 8:13 AM, Paul Larson wrote:
+This is the new tescase to test timer migration interface.
 
-> Garrett Cooper wrote:
->> On Thu, Aug 6, 2009 at 7:52 AM, Paul  
->> Larson<paul.larson@canonical.com> wrote:
->>> The lib6 tests seem to fail the first pass through building for me
->>> because ranlib does not seem to get set correctly at any point.   
->>> This
->>> seems to fix it up for me.
->>
->> Fixed on HEAD moments ago:
->>
->> gcooper@orangebox /scratch/ltp-dev2/ltp $ cvs diff
->> testcases/network/lib6/Makefile
->> Index: testcases/network/lib6/Makefile
->> ===================================================================
->> RCS file: /cvsroot/ltp/ltp/testcases/network/lib6/Makefile,v
->> retrieving revision 1.6
->> diff -r1.6 Makefile
->> 25a26,27
->>> RANLIB                ?= ranlib
-> The patch you checked in does not correct the build failure.
+Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
 
-     Error message please?
-Thanks,
--Garrett
+diff -uprN ltp-full-20090731_orig/testcases/kernel/power_management/test_timer_migration.sh ltp-full-20090731/testcases/kernel/power_management/test_timer_migration.sh
+--- ltp-full-20090731_orig/testcases/kernel/power_management/test_timer_migration.sh	1970-01-01 05:30:00.000000000 +0530
++++ ltp-full-20090731/testcases/kernel/power_management/test_timer_migration.sh	2009-08-20 20:49:48.000000000 +0530
+@@ -0,0 +1,22 @@
++#!/bin/bash
++
++. pm_include.sh
++
++valid_input="0 1"
++invalid_input="3 4 5 6 7 8 a abcefg x1999 xffff -1 -00000
++200000000000000000000000000000000000000000000000000000000000000000000000000000
++ox324 -0xfffffffffffffffffffff"
++test_file="/proc/sys/kernel/timer_migration"
++if [ ! -f ${test_file} ] ; then
++	echo "MISSING_FILE: missing file ${test_file}"
++	exit $MISSING_FILE
++fi
++
++RC=0
++echo "${0}: ---Valid test cases---"
++check_input "${valid_input}" valid $test_file 
++RC=$?
++echo "${0}: ---Invalid test cases---"
++check_input "${invalid_input}" invalid $test_file
++RC=$(( RC | $? ))
++exit $RC
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
