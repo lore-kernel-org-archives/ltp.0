@@ -1,32 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1MgyU9-0001cN-EH
-	for ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 10:15:09 +0000
-Received: from e36.co.us.ibm.com ([32.97.110.154])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MgyU4-0001QC-3t
-	for ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 10:15:09 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e36.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7SAD7Qo018118
-	for <ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 04:13:07 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7SAErvR191222
-	for <ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 04:14:53 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7SAEqDY001854
-	for <ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 04:14:53 -0600
-From: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Date: Fri, 28 Aug 2009 15:44:49 +0530
-Message-Id: <20090828101449.12177.9632.sendpatchset@localhost.localdomain>
-In-Reply-To: <20090828101440.12177.32012.sendpatchset@localhost.localdomain>
-References: <20090828101440.12177.32012.sendpatchset@localhost.localdomain>
-Subject: [LTP] [Patch 2/8] Power management master script modified to
-	integrate ILB testcase
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MeB1U-00027E-Hh
+	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2009 17:02:00 +0000
+Received: from qw-out-1920.google.com ([74.125.92.144])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MeB1Q-0007ns-V5
+	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2009 17:02:00 +0000
+Received: by qw-out-1920.google.com with SMTP id 5so24394qwc.4
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 20 Aug 2009 10:01:51 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20090820160741.30926.293.sendpatchset@localhost.localdomain>
+References: <20090820160655.30926.34854.sendpatchset@localhost.localdomain>
+	<20090820160741.30926.293.sendpatchset@localhost.localdomain>
+Date: Thu, 20 Aug 2009 10:01:50 -0700
+Message-ID: <364299f40908201001q30e8859t85aa3cd38205872e@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Patch for PM makefile for new testcases & fix
+	test_sched_smt integration issue
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,103 +29,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, arun@linux.vnet.ibm.com, svaidy@linux.vnet.ibm.com, ego@in.ibm.com
+To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, arun@linux.vnet.ibm.com, vaidy <svaidy@linux.vnet.ibm.com>, gautham <ego@in.ibm.com>
 
-Power management master script modified to integrate ILB testcases
+On Thu, Aug 20, 2009 at 9:07 AM, Poornima
+Nayak<mpnayak@linux.vnet.ibm.com> wrote:
+> Patch to integrate test_sched_smt and timer_migration testcase to LTP.
+> Also intergrates the new file get_sched_value to LTP.
+>
+> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+>
+> diff -uprN ltp-full-20090731_orig/testcases/kernel/power_management/Makef=
+ile ltp-full-20090731/testcases/kernel/power_management/Makefile
+> --- ltp-full-20090731_orig/testcases/kernel/power_management/Makefile =A0=
+ 2009-08-20 19:59:11.000000000 +0530
+> +++ ltp-full-20090731/testcases/kernel/power_management/Makefile =A0 =A0 =
+=A0 =A02009-08-20 20:26:39.000000000 +0530
+> @@ -23,12 +23,16 @@ SUBDIRS :=3D
+> =A0all:
+> =A0 =A0 =A0 =A0@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i $@; done;
+> =A0 =A0 =A0 =A0$(MAKE) check_kv_arch ;
+> + =A0 =A0 =A0 $(MAKE) get_sched_values ;
+>
+> -check_kv_arch: check_kv_arch.c
+> +check_kv_arch: check_kv_arch.c
+> + =A0 =A0 =A0 $(CC) -o $@ $< ../../../lib/tst_kvercmp.c -I../../../include
+> +get_sched_values: get_sched_values.c
+> =A0 =A0 =A0 =A0$(CC) -o $@ $< ../../../lib/tst_kvercmp.c -I../../../inclu=
+de
+>
+> =A0install:
+> =A0 =A0 =A0 =A0@set -e; ln -f check_kv_arch ../../bin/check_kv_arch; \
+> + =A0 =A0 =A0 ln -f get_sched_values ../../bin/get_sched_values; \
+> =A0 =A0 =A0 =A0ln -f =A0change_freq.sh ../../bin/change_freq.sh; \
+> =A0 =A0 =A0 =A0ln -f =A0change_govr.sh ../../bin/change_govr.sh; \
+> =A0 =A0 =A0 =A0ln -f =A0check_cpufreq_sysfs_files.sh ../../bin/check_cpuf=
+req_sysfs_files.sh; \
+> @@ -37,6 +41,8 @@ install:
+> =A0 =A0 =A0 =A0ln -f =A0pm_include.sh ../../bin/pm_include.sh; \
+> =A0 =A0 =A0 =A0ln -f =A0runpwtests.sh ../../bin/runpwtests.sh; \
+> =A0 =A0 =A0 =A0ln -f =A0test_sched_mc.sh ../../bin/test_sched_mc.sh; \
+> + =A0 =A0 =A0 ln -f =A0test_sched_mc.sh ../../bin/test_sched_smt.sh; \
+> + =A0 =A0 =A0 ln -f =A0test_sched_mc.sh ../../bin/test_timer_migration.sh=
+; \
+> =A0 =A0 =A0 =A0ln -f =A0config_cpu_freq ../../bin/config_cpu_freq; \
+> =A0 =A0 =A0 =A0ln -f =A0config_cpu_idle ../../bin/config_cpu_idle; \
+> =A0 =A0 =A0 =A0ln -f =A0config_sched_mc ../../bin/config_sched_mc;
+> @@ -47,4 +53,4 @@ install:
+> =A0clean:
+> =A0 =A0 =A0 =A0@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i $@ ; done
+> =A0 =A0 =A0 =A0rm -f check_kv_arch
+> -
+> + =A0 =A0 =A0 rm -f get_sched_values
 
-Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+Please don't worry about this. It's handled in my makefile-infra-rework pat=
+ch.
+Thanks,
+-Garrett
 
-diff -uprN ltp_orig/testcases/kernel/power_management/runpwtests.sh ltp/testcases/kernel/power_management/runpwtests.sh
---- ltp_orig/testcases/kernel/power_management/runpwtests.sh	2009-08-28 10:54:59.000000000 +0530
-+++ ltp/testcases/kernel/power_management/runpwtests.sh	2009-08-28 12:29:52.000000000 +0530
-@@ -69,7 +69,7 @@ is_dual_core; dual_core=$?
- #Checking sched_mc sysfs interface
- #check_config.sh config_sched_mc || RC=$?
- TST_COUNT=1
--if [ $multi_socket -eq $YES -a $dual_core -eq $YES ] ; then
-+if [ $multi_socket -eq $YES -a $multi_core -eq $YES ] ; then
- 	if [ -f /sys/devices/system/cpu/sched_mc_power_savings ] ; then
- 		if test_sched_mc.sh ; then
- 			tst_resm TPASS "SCHED_MC sysfs tests"
-@@ -232,7 +232,7 @@ if [ $# -gt 0 -a "$1" = "-exclusive" ]; 
- 			if [ $hyper_threaded -eq $YES ]; then
- 				for sched_smt in `seq 0 $max_sched_smt`; do
- 					for work_load in ${work_loads_list}; do
--                   		: $(( TST_COUNT += 1 ))
-+                   				: $(( TST_COUNT += 1 ))
- 						sched_mc_smt_pass_cnt=0
- 						for repeat_test in `seq 1  10`; do
- 							# Testcase to validate CPU consolidation for
-@@ -260,6 +260,60 @@ if [ $# -gt 0 -a "$1" = "-exclusive" ]; 
- 		done
- 		analyze_core_consolidation_result $sched_smt $work_load $sched_smt_pass_cnt
- 	fi
-+        # Verify ILB runs in same package as workload
-+        if [ $multi_socket -eq $YES -a $multi_core -eq $YES ]; then
-+		work_loads_list="ebizzy kernbench"	
-+		for sched_mc in `seq 0 $max_sched_mc`; do
-+			for work_load in ${work_loads_list}
-+			do
-+				: $(( TST_COUNT += 1 ))
-+                                ilb_test.py -c $sched_mc -w $work_load; RC=$?
-+				if [ $RC -eq 0 ]; then
-+					tst_resm TPASS "ILB & workload in same package for sched_mc=$sched_mc"
-+				else
-+					if [ $sched_mc -eq 0 ]; then
-+						tst_resm TPASS "ILB & workload is not in same package when sched_mc=0"
-+					else
-+						tst_resm TFAIL "ILB did not run in same package"
-+					fi
-+				fi
-+			done
-+			if [ $hyper_threaded -eq $YES ]; then
-+				for sched_smt in `seq 0 $max_sched_smt`; do
-+					for work_load in ${work_loads_list}; do
-+						: $(( TST_COUNT += 1 ))
-+						ilb_test.py -c $sched_mc -t sched_smt -w $work_load; RC=$?
-+ 						if [ $RC -eq 0 ]; then
-+							tst_resm TPASS "ILB & workload in same package for sched_mc=$sched_mc"
-+						else
-+							if [ $sched_mc -eq 0 ]; then
-+								tst_resm TPASS "ILB & workload is not in same package when sched_mc=0"
-+							else
-+								tst_resm TFAIL "ILB did not run in same package"    
-+							fi
-+						fi
-+					done
-+				done
-+			fi
-+		done
-+	fi
-+	if [ $multi_socket -eq $YES -a $hyper_threaded -eq $YES -a $multi_core -eq $YES ]; then
-+		for sched_smt in `seq 0 $max_sched_smt`; do
-+			for work_load in ${work_loads_list}; do
-+				: $(( TST_COUNT += 1 ))
-+				ilb_test.py -t $sched_smt -w $work_load; RC=$?
-+				if [ $RC -eq 0 ]; then
-+					tst_resm TPASS "ILB & workload not load not in same package for sched_smt=$sched_smt"
-+				else
-+					if [ $sched_smt -eq 0 ]; then
-+						tst_resm TPASS "Its oky if ILB is not in same package when sched_smt=0"
-+					else
-+						tst_resm TFAIL "ILB did not run in same package"
-+					fi
-+				fi
-+			done
-+		done
-+	fi
- fi
- 
- exit $RC
+---------------------------------------------------------------------------=
+---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
 
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
+trial. Simplify your report design, integration and deployment - and focus =
+on =
+
+what you do best, core application coding. Discover what's new with =
+
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
