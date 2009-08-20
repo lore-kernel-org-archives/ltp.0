@@ -1,21 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <galak@kernel.crashing.org>) id 1MZPHa-0003Y1-Ji
-	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 13:14:54 +0000
-Received: from gate.crashing.org ([63.228.1.57])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MZPHU-0007oT-Bm
-	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 13:14:54 +0000
-Message-Id: <2A1B6719-9C0B-4271-8A81-1730F79F5E33@kernel.crashing.org>
-From: Kumar Gala <galak@kernel.crashing.org>
-In-Reply-To: <364299f40908061017g44fd05ecv9c6454ebf04badb4@mail.gmail.com>
-Mime-Version: 1.0 (Apple Message framework v936)
-Date: Fri, 7 Aug 2009 08:14:38 -0500
-References: <1842FA33-8C6C-4BE1-8FB4-B8836F1C8F6E@kernel.crashing.org>
-	<364299f40908061017g44fd05ecv9c6454ebf04badb4@mail.gmail.com>
-Subject: Re: [LTP] RANLIB not set?
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1MeAAj-0003EX-Tu
+	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2009 16:07:29 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MeAAj-00043Y-1j
+	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2009 16:07:29 +0000
+Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
+	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7KG0oks016063
+	for <ltp-list@lists.sourceforge.net>; Thu, 20 Aug 2009 12:00:51 -0400
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7KG7Iw82642022
+	for <ltp-list@lists.sourceforge.net>; Thu, 20 Aug 2009 12:07:19 -0400
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7KG7IgD023507
+	for <ltp-list@lists.sourceforge.net>; Thu, 20 Aug 2009 10:07:18 -0600
+From: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+Date: Thu, 20 Aug 2009 21:37:14 +0530
+Message-Id: <20090820160714.30926.24455.sendpatchset@localhost.localdomain>
+In-Reply-To: <20090820160655.30926.34854.sendpatchset@localhost.localdomain>
+References: <20090820160655.30926.34854.sendpatchset@localhost.localdomain>
+Subject: [LTP] Patch to include workload for consolidation verification
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,61 +34,29 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: vaidy <svaidy@linux.vnet.ibm.com>, ltp-list@lists.sourceforge.net, gautham <ego@in.ibm.com>, arun@linux.vnet.ibm.com
 
+Modified to pass workload as a parameter for cpu cosolidation verifcation function.
+This is required to verify cpu consolidation on Hypre threaded system for kernbench workload.
 
-On Aug 6, 2009, at 12:17 PM, Garrett Cooper wrote:
+Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
 
-> On Thu, Aug 6, 2009 at 9:18 AM, Kumar  
-> Gala<galak@kernel.crashing.org> wrote:
->> I'm seeing this on fedora 11 on ppc64:
->>
->> make[3]: Leaving directory `/root/ltp/testcases/network/ipv6'
->> make[3]: Entering directory `/root/ltp/testcases/network/lib6'
->> cc -Wall  -I../../../include -g -D_GNU_SOURCE   -c -o runcc.o runcc.c
->> ar cr runcc.a runcc.o
->> runcc.a
->> make[3]: runcc.a: Command not found
->> make[3]: *** [runcc.a] Error 127
->> make[3]: Leaving directory `/root/ltp/testcases/network/lib6'
->> make[2]: *** [all] Error 2
->> make[2]: Leaving directory `/root/ltp/testcases/network'
->> make[1]: *** [all] Error 2
->> make[1]: Leaving directory `/root/ltp/testcases'
->> make: *** [all] Error 2
->>
->> - k
->
->    Make sure to export CROSS_COMPILER=1 at the top-level make, or
-> define RANLIB=$(CROSS_COMPILE)ranlib, where $(CROSS_COMPILE) is the
-> prefix for your compiler set, e.g. $(CROSS_COMPILE)gcc.
->    One of the many things that will be fixed in a more kosher manner
-> in the next couple months.
-> Thanks,
-> -Garrett
-
-I see you committed a change to the lib6/Makefile for ranlib.  I  
-believe we need a similar patch to the toplevel Makefile since it  
-exports RANLIB:
-
-diff --git a/Makefile b/Makefile
-index 953eddf..9f8056a 100644
---- a/Makefile
-+++ b/Makefile
-@@ -9,6 +9,8 @@ AR=$(CROSS_COMPILER)ar
-  RANLIB=$(CROSS_COMPILER)ranlib
-  endif
-
-+RANLIB         ?= ranlib
-+
-  HAS_NUMA=$(shell sh tools/scripts/numa_test.sh)
-
-  export CFLAGS += -Wall $(CROSS_CFLAGS)
-
+diff -uprN ltp-full-20090731_orig/testcases/kernel/power_management/cpu_consolidation.py ltp-full-20090731/testcases/kernel/power_management/cpu_consolidation.py
+--- ltp-full-20090731_orig/testcases/kernel/power_management/cpu_consolidation.py	2009-08-20 19:59:11.000000000 +0530
++++ ltp-full-20090731/testcases/kernel/power_management/cpu_consolidation.py	2009-08-20 20:39:25.000000000 +0530
+@@ -45,7 +45,7 @@ def main(argv=None):
+         duration=60
+         trigger_workld(options.work_ld, options.stress, duration, background)
+         generate_report()
+-        status = validate_cpu_consolidation(options.mc_level, options.smt_level)
++        status = validate_cpu_consolidation(options.work_ld,options.mc_level, options.smt_level)
+         reset_schedmc()
+         if is_hyper_threaded():
+             reset_schedsmt()
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
