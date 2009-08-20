@@ -1,20 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MgkYv-00051w-CM
-	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 19:23:09 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MgkYq-0001lc-IE
-	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 19:23:09 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Thu, 27 Aug 2009 15:22:54 -0400
-References: <alpine.LRH.2.00.0908271703550.1134@vixen.sonytel.be>
-In-Reply-To: <alpine.LRH.2.00.0908271703550.1134@vixen.sonytel.be>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MeAsE-0002Nb-NN
+	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2009 16:52:26 +0000
+Received: from qw-out-1920.google.com ([74.125.92.144])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MeAs8-0003lN-D5
+	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2009 16:52:26 +0000
+Received: by qw-out-1920.google.com with SMTP id 5so20184qwc.4
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 20 Aug 2009 09:52:15 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <200908271522.55732.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] quotactl01: Fix tst_resm() format causing crash
+In-Reply-To: <20090820160705.30926.960.sendpatchset@localhost.localdomain>
+References: <20090820160655.30926.34854.sendpatchset@localhost.localdomain>
+	<20090820160705.30926.960.sendpatchset@localhost.localdomain>
+Date: Thu, 20 Aug 2009 09:52:15 -0700
+Message-ID: <364299f40908200952l402269bfy65eb0fc3f50702bc@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Patch to fix make install issue in ebizzy
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,76 +28,52 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2604447283662243082=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, arun@linux.vnet.ibm.com, vaidy <svaidy@linux.vnet.ibm.com>, gautham <ego@in.ibm.com>
 
---===============2604447283662243082==
-Content-Type: multipart/signed; boundary="nextPart1673283.dKSsKlcvxA";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+On Thu, Aug 20, 2009 at 9:07 AM, Poornima
+Nayak<mpnayak@linux.vnet.ibm.com> wrote:
+> install: was missing in Makefile of ebizzy, hence make install was throwi=
+ng error.
+> This patch will fix make install error.
+>
+> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+>
+>
+> diff -uprN ltp-full-20090731_orig/utils/benchmark/ebizzy-0.3/Makefile ltp=
+-full-20090731/utils/benchmark/ebizzy-0.3/Makefile
+> --- ltp-full-20090731_orig/utils/benchmark/ebizzy-0.3/Makefile =A02009-08=
+-20 19:59:13.000000000 +0530
+> +++ ltp-full-20090731/utils/benchmark/ebizzy-0.3/Makefile =A0 =A0 =A0 200=
+9-08-20 20:23:19.000000000 +0530
+> @@ -4,5 +4,7 @@ configure:
+> =A0 =A0 =A0 =A0./configure
+> =A0ebizzy: configure
+> =A0 =A0 =A0 =A0gcc -Wall -Wshadow -lpthread =A0-o ebizzy ebizzy.c
+> +install:
+> +
+> =A0clean:
+> =A0 =A0 =A0 =A0rm -f ebizzy *~
 
---nextPart1673283.dKSsKlcvxA
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
+No need to address this. It's already been addressed in my
+makefile-infra-rework patch.
+Thanks,
+-Garrett
 
-On Thursday 27 August 2009 11:04:40 Geert Uytterhoeven wrote:
-> -                 	   	tst_resm(TFAIL, "%s failed - errno = %d : %s
-> ...cmderror=%s", TCID, TEST_ERRNO, strerror(TEST_ERRNO),cmd[i]);
-> +				tst_resm(TFAIL, "%s failed - errno = %d : %s ...cmd=0x%x", TCID,
-> TEST_ERRNO, strerror(TEST_ERRNO), cmd[i]);
+---------------------------------------------------------------------------=
+---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
 
-please use the new TTERRNO flag: tst_resm(TFAIL|TTERRNO, ....)
--mike
+trial. Simplify your report design, integration and deployment - and focus =
+on =
 
---nextPart1673283.dKSsKlcvxA
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+what you do best, core application coding. Discover what's new with =
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJKlt0PAAoJEEFjO5/oN/WBII4QAI/i+SAwqVJt5Oxjken0d5iY
-QQ4WtByFS271lRwJtX6mOiF6+MHiXnYmFDD4VS9h/LrCWxonkUKtC5U/8cDQjc2w
-l6qbulu7SYh1Cg9TbzZooALtLSuD60/Q1CueHviDe5aFu20LFoDW1AhZABnDeKbB
-3IRRvePxOtCPE23Im1NzZ9aY2wVMMEQ+at8noOm1QWOGfMx8AAdmW70qNotjKTPq
-2qh/zfc40CWqKDcN/lFEdNWDWxf1yf0awXWhaeStygUM6nmNFsBgdcpoRQFWjjSU
-vR3vRcqSQ2kEMKE17GN7krAjvPWf22xkc0OYBL4iNtw+Tiom/1UhDY9dchQk8yBX
-mPrnRkr+e+mcSC2Og/bMJI9/17VGgiYvvCdBpa0Gtu4gewLz9ZfGSMXcNc5O/dIS
-JpRSCZMmRHSg293LTMrndqckdp4isUVD4eK1wdsiaiEsVAoiWSblWtmnTGjNSOIH
-HsdbVnddh1sX9ZLwFdGEIA9PPS9ZQnJMongz8MdXHrC55rju3RXorlOzpaDYTGkW
-hupnfHZpk01IfYmhrlWwgx0Ig1ESpIDbUvzL0uQIG4YDVvFH5AS5X525iIQqFPqu
-88YSYXH9Wesr1MXaTDimMOZcEI6KR68SwMh91XPOBV/RjF4VdXRIE1NiuaPUEXG9
-f+QOs/4nSxxs6jrqEurV
-=kUzn
------END PGP SIGNATURE-----
-
---nextPart1673283.dKSsKlcvxA--
-
-
---===============2604447283662243082==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---===============2604447283662243082==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============2604447283662243082==--
-
