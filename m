@@ -1,22 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MgJqH-0006cw-4h
-	for Ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 14:51:17 +0000
-Received: from vervifontaine.sonytel.be ([80.88.33.193]
-	helo=pophost.sonytel.be) by 3b2kzd1.ch3.sourceforge.com with esmtp 
-	(Exim 4.69) id 1MgJqE-0005bw-HJ
-	for Ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 14:51:17 +0000
-Received: from vixen.sonytel.be (piraat.sonytel.be [43.221.60.197])
-	by pophost.sonytel.be (Postfix) with ESMTP id 6C9FC44483
-	for <Ltp-list@lists.sourceforge.net>;
-	Wed, 26 Aug 2009 16:51:07 +0200 (CEST)
-Date: Wed, 26 Aug 2009 16:51:07 +0200 (CEST)
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Message-ID: <alpine.LRH.2.00.0908261650540.29010@vixen.sonytel.be>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] Spelling fixes: initalization => initialization
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1MeAAP-0007qy-Cl
+	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2009 16:07:09 +0000
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MeAAM-0006RL-Vw
+	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2009 16:07:09 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e2.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7KG119E025086
+	for <ltp-list@lists.sourceforge.net>; Thu, 20 Aug 2009 12:01:01 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7KG71Kk201844
+	for <ltp-list@lists.sourceforge.net>; Thu, 20 Aug 2009 12:07:01 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7KG70VQ027581
+	for <ltp-list@lists.sourceforge.net>; Thu, 20 Aug 2009 12:07:00 -0400
+From: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+Date: Thu, 20 Aug 2009 21:36:55 +0530
+Message-Id: <20090820160655.30926.34854.sendpatchset@localhost.localdomain>
+Subject: [LTP] Patch to fix kernbench integration issue
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,62 +32,33 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Linux Test Project <Ltp-list@lists.sourceforge.net>
+To: vaidy <svaidy@linux.vnet.ibm.com>, ltp-list@lists.sourceforge.net, gautham <ego@in.ibm.com>, arun@linux.vnet.ibm.com
 
-Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
----
- testcases/network/nfsv4/locks/locktests.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Kernbench script's mode was not getting modified to executable as 'utils install'
+was missing in LTP Makefile. Hence this patch fixes this issue.
 
-diff --git a/testcases/network/nfsv4/locks/locktests.c b/testcases/network/=
-nfsv4/locks/locktests.c
-index 3268733..38b2e9d 100644
---- a/testcases/network/nfsv4/locks/locktests.c
-+++ b/testcases/network/nfsv4/locks/locktests.c
-@@ -236,7 +236,7 @@ int initialise(int clnt){
-         perror("Master pipe creation error\n");
-         exit(1);
-     }
--    printf("%s initalization\n",eType);
-+    printf("%s initialization\n",eType);
-     load();
-     initTest();
-     =
+Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
 
--- =
+diff -uprN ltp-full-20090731_orig/Makefile ltp-full-20090731/Makefile
+--- ltp-full-20090731_orig/Makefile	2009-08-20 19:59:13.000000000 +0530
++++ ltp-full-20090731/Makefile	2009-08-20 20:19:09.000000000 +0530
+@@ -40,6 +40,7 @@ install: all
+ 	@$(MAKE) -C m4 install
+ 	@$(MAKE) -C doc/man1 install
+ 	@$(MAKE) -C doc/man3 install
++	@$(MAKE) -C utils install
+ ifneq ($(strip $(SKIP_IDCHECK)),1)
+ 	@./IDcheck.sh
+ endif
 
-1.6.2.4
-
-With kind regards,
-
-Geert Uytterhoeven
-Software Architect
-Techsoft Centre
-
-Technology and Software Centre Europe
-The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Belgium
-
-Phone:    +32 (0)2 700 8453
-Fax:      +32 (0)2 700 8622
-E-mail:   Geert.Uytterhoeven@sonycom.com
-Internet: http://www.sony-europe.com/
-
-A division of Sony Europe (Belgium) N.V.
-VAT BE 0413.825.160 =B7 RPR Brussels
-Fortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
-
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
-
-trial. Simplify your report design, integration and deployment - and focus =
-on =
-
-what you do best, core application coding. Discover what's new with =
-
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
