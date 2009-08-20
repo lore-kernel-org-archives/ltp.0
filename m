@@ -2,22 +2,18 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MbUYH-00082V-Ub
-	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2009 07:16:45 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MbUYB-0000Ik-GV
-	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2009 07:16:45 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Thu, 13 Aug 2009 03:16:31 -0400
-References: <6213bc560908070826u6c2b321ay446997891f2cc21f@mail.gmail.com>
-	<6213bc560908100129r7d59547ale6f55de87e858470@mail.gmail.com>
-	<364299f40908100844l44497151g750f745648080c24@mail.gmail.com>
-In-Reply-To: <364299f40908100844l44497151g750f745648080c24@mail.gmail.com>
-MIME-Version: 1.0
-Message-Id: <200908130316.32386.vapier@gentoo.org>
-Subject: Re: [LTP] add_key01 & add_key02 test cases fails and shown as PASS
-	in log file
+	(envelope-from <geert@sonycom.com>) id 1Me9WA-0000Pb-2Z
+	for Ltp-list@lists.sourceforge.net; Thu, 20 Aug 2009 15:25:34 +0000
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=pophost.sonytel.be) by 3b2kzd1.ch3.sourceforge.com with esmtp 
+	(Exim 4.69) id 1Me9W4-0005FU-9o
+	for Ltp-list@lists.sourceforge.net; Thu, 20 Aug 2009 15:25:34 +0000
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Date: Thu, 20 Aug 2009 17:25:16 +0200
+Message-Id: <1250781918-23897-2-git-send-email-Geert.Uytterhoeven@sonycom.com>
+In-Reply-To: <1250781918-23897-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
+References: <1250781918-23897-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
+Subject: [LTP] [PATCH] Spelling fixes: commad => command
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,168 +23,124 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7442703103644030367=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: srikanth krishnakar <skrishnakar@gmail.com>
-
---===============7442703103644030367==
-Content-Type: multipart/signed; boundary="nextPart1957307.K8X5mGhoEB";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1957307.K8X5mGhoEB
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-On Monday 10 August 2009 11:44:57 Garrett Cooper wrote:
-> On Mon, Aug 10, 2009 at 1:29 AM, srikanth krishnakar wrote:
-> > On Mon, Aug 10, 2009 at 1:50 PM, Subrata Modak wrote:
-> >> On Fri, 2009-08-07 at 20:56 +0530, srikanth krishnakar wrote:
-> >> > I see these two test cases are failing on PowerPC target (ppc440) as
-> >> > shown in output file, but they are listed as PASS in log file of the
-> >> > LTP :
-> >> >
-> >> > Target : PowerPC (ppc440)
-> >> > Kernel: Linux-2.6.29
-> >> > LTP Version : ltp-full-20090731
-> >> >
-> >> > LTP output file :
-> >> > #############
-> >> >
-> >> >
-> >> > 1. add_key01
-> >> > --------------------
-> >> >
-> >> > <<<test_start>>>
-> >> > tag=3Dadd_key01 stime=3D1248549741
-> >> > cmdline=3D"add_key01"
-> >> > contacts=3D""
-> >> > analysis=3Dexit
-> >> > <<<test_output>>>
-> >> > add_key01    1  TFAIL  :  add_key01 failed - errno =3D 38 : Function=
- not
-> >> > implemented
-> >> > <<<execution_status>>>
-> >> > initiation_status=3D"ok"
-> >> > duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=
-=3Dno
-> >> > cutime=3D0 cstime=3D0
-> >> > <<<test_end>>>
-> >> >
-> >> > 2. add_key02
-> >> > ----------------------
-> >> >
-> >> > <<<test_start>>>
-> >> > tag=3Dadd_key02 stime=3D1248549741
-> >> > cmdline=3D"add_key02"
-> >> > contacts=3D""
-> >> > analysis=3Dexit
-> >> > <<<test_output>>>
-> >> > add_key02    0  TINFO  :  call add_key() with wrong args got
-> >> > UNEXPECTED errno:38
-> >> > add_key02    1  TFAIL  :  add_key02 failed - errno =3D 38 : Function=
- not
-> >> > implemented
-> >> > <<<execution_status>>>
-> >> > initiation_status=3D"ok"
-> >> > duration=3D0 termination_type=3Dexited termination_id=3D0 corefile=
-=3Dno
-> >> > cutime=3D0 cstime=3D1
-> >> > <<<test_end>>>
-> >> >
-> >> > --------------------------------------------------------
-> >> >
-> >> > BUT the Log file shows as PASS to the above test cases :
-> >> >
-> >> > ###########################
-> >> >
-> >> > add_key01                      PASS       0
-> >> > add_key02                      PASS       0
-> >> >
-> >> > ###########################
-> >> >
-> >> >
-> >> > May anyone explain, why it is so ? Is it a known behaviour ?
-> >>
-> >> No. It is not. On my X_32, it passes fine.
-> >
-> > Is it PowePC target on which you have tested ?
-> >
-> >> $ ./testcases/bin/add_key01
-> >> add_key01    1  TPASS  :  add_key call succeeded
-> >> $ echo $?
-> >> 0
-> >> $ ./testcases/bin/add_key02
-> >> add_key02    0  TINFO  :  call add_key() with wrong args got EXPECTED
-> >> errno:22
-> >> add_key02    1  TPASS  :  add_key call succeeded
-> >> $ echo $?
-> >> 0
-> >> $ uname -a
-> >> Linux 2.6.18-92.el5 #1 SMP Tue Apr 29 13:16:12 EDT 2008 i686 i686 i386
-> >> GNU/Linux
->
-> Hi Srikanth,
->     I think that the error is fairly intuitive (function not
-> implemented). Are you sure that your subarchitecture supports
-> add_key(2)?
-> Hi Subrata,
->     As far as the actual issue is concerned, I think that the problem
-> is that someone's exiting with exit(0) instead of tst_exit()...
-
-and ENOSYS really should be TBROK or something, not TINFO+TPASS.  or this=20
-leads into a past thread where LTP handles this case inconsistently.
-=2Dmike
-
---nextPart1957307.K8X5mGhoEB
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.12 (GNU/Linux)
-
-iQIcBAABAgAGBQJKg73QAAoJEEFjO5/oN/WBUZYQAKxaA32SFX7xKWjuE99ACnQm
-+PFqi/wo8Fzrq1QjPL+pjv4MiaCu9VIiYFpi7c69cFGPNOsvg2TZps7jQWeaSzmX
-Xris4qwxTVOInCsQE217L8IYnYYTz5xhvT3TtdIjdXRpvKIxE8t/dXTb3xBfcZi0
-O3FyNDncUh8TJUvpfMFZXma8YJFHfNPX4jD6assV+Hem+MxJd6VCtZ6kE1MIi4qp
-Ya8kMA7a06ufMS4i8M374sXfQ0L/U6qec1ytJ3QWZgVRhDntDDgPMDGQKyAb2Pz4
-pXu1Vh68tnbTmKDeVYG2V3wicoCUJVPM5C5UJTR1Z4mNdlluHKSZadU4ImxgHxK8
-cLFlQrapv7xyBXVSMR555GkU7uBbR5Yk4q3xZvmkJH5LVshUxbMWrkkkH0q0oy6/
-0ShC1gUcK5Z0MONZGwFmfTzSi56lddKHVEw5dClAFzeLkGcpKiItRMgFkDnpy7pc
-8fh7KjyCRPFhG+Z3L+I/x/Hgc5GJohhy8IAEiOvkHu3uiPdBp8My4g7AVcExUhgT
-Tjo6onC62J3oQkjCmjrGMRpMiG3RLvgnQVetWx+qwjSnb4gqfBOEElafXZWOy40u
-IULtUyqQJIXc9m9UaBHY0+yK6cL5iOHCIZR039j4mFYY2phBTV30xMo/9LbB9RtG
-NzdD2NVp7+NsGJcYUsEf
-=v/Zq
------END PGP SIGNATURE-----
-
---nextPart1957307.K8X5mGhoEB--
-
-
---===============7442703103644030367==
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Ltp-list@lists.sourceforge.net
+Cc: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+
+Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+---
+ ChangeLog                                          |    2 +-
+ testcases/commands/ade/file/file_test.sh           |    8 ++++----
+ testcases/commands/eject/eject-tests.sh            |    2 +-
+ .../plugins/ilo2_ribcl/ilo2_ribcl_reset.c          |    2 +-
+ tools/mkrootfs/mkrootfs                            |    2 +-
+ 5 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/ChangeLog b/ChangeLog
+index 1e087c1..b96acf3 100644
+--- a/ChangeLog
++++ b/ChangeLog
+@@ -959,7 +959,7 @@ ltp/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+ ltp/testcases/kernel/syscalls/utils/common_j_h.c
+ 
+ 49) Log Message:
+-Some makefiles ignore errors from commads ran in shell loops. This patch fixes that. Signed-off-by: Jiri Palecek <jpalecek@web.de>.
++Some makefiles ignore errors from commands ran in shell loops. This patch fixes that. Signed-off-by: Jiri Palecek <jpalecek@web.de>.
+ 
+ Modified Files:
+ ltp/doc/man1/Makefile
+diff --git a/testcases/commands/ade/file/file_test.sh b/testcases/commands/ade/file/file_test.sh
+index 4fc9dec..6f09f21 100755
+--- a/testcases/commands/ade/file/file_test.sh
++++ b/testcases/commands/ade/file/file_test.sh
+@@ -149,7 +149,7 @@ RC=0
+ export TCID=file01
+ export TST_COUNT=1
+ 
+-$LTPBIN/tst_resm TINFO "TEST #1: file commad recogizes ASCII text files"
++$LTPBIN/tst_resm TINFO "TEST #1: file command recogizes ASCII text files"
+ 
+ cat > $LTPTMP/test_file.txt <<EOF
+ This is a text file 
+@@ -191,7 +191,7 @@ cat > $LTPTMP/bash_script.sh <<EOF
+ #! /bin/bash
+ 
+ echo "this is a shell script"
+-echo "used to test file commad"
++echo "used to test file command"
+ 
+ EOF
+ 
+@@ -226,7 +226,7 @@ cat > $LTPTMP/ksh_script.sh <<EOF
+ #! /bin/ksh
+ 
+ echo "this is a shell script"
+-echo "used to test file commad"
++echo "used to test file command"
+ 
+ EOF
+ 
+@@ -262,7 +262,7 @@ cat > $LTPTMP/C_script.sh <<EOF
+ #! /bin/csh
+ 
+ echo "this is a shell script"
+-echo "used to test file commad"
++echo "used to test file command"
+ 
+ EOF
+ 
+diff --git a/testcases/commands/eject/eject-tests.sh b/testcases/commands/eject/eject-tests.sh
+index 1b2b3e8..f7fce60 100755
+--- a/testcases/commands/eject/eject-tests.sh
++++ b/testcases/commands/eject/eject-tests.sh
+@@ -101,7 +101,7 @@ export TCID=eject02
+ export TST_COUNT=2
+ RC=0
+ 
+-$LTPBIN/tst_resm TINFO "Test #2: eject commad with no options"
++$LTPBIN/tst_resm TINFO "Test #2: eject command with no options"
+ $LTPBIN/tst_resm TINFO "Test #2: will eject the default cdrom device."
+ 
+ eject -v > $LTPTMP/tst_eject.res 2>&1 || RC=$?
+diff --git a/testcases/open_hpi_testsuite/plugins/ilo2_ribcl/ilo2_ribcl_reset.c b/testcases/open_hpi_testsuite/plugins/ilo2_ribcl/ilo2_ribcl_reset.c
+index b20c644..466a767 100644
+--- a/testcases/open_hpi_testsuite/plugins/ilo2_ribcl/ilo2_ribcl_reset.c
++++ b/testcases/open_hpi_testsuite/plugins/ilo2_ribcl/ilo2_ribcl_reset.c
+@@ -116,7 +116,7 @@ SaErrorT ilo2_ribcl_get_reset_state(void *hnd,
+  * Sets a resource's reset action state.
+  * Retrieves a resource's reset action state. If the resource has
+  * SAHPI_CAPABILITY_RESET then sends RESET_SERVER RIBCL command to iLO2
+- * to do a warm reset the system and a COLD_BOOT_SERVER commad to do a
++ * to do a warm reset the system and a COLD_BOOT_SERVER command to do a
+  * cold reset. Please note that this command doesn't bring the system and
+  * (OS running on it down gracefully.
+  *
+diff --git a/tools/mkrootfs/mkrootfs b/tools/mkrootfs/mkrootfs
+index 9adf8b4..0c77153 100755
+--- a/tools/mkrootfs/mkrootfs
++++ b/tools/mkrootfs/mkrootfs
+@@ -84,7 +84,7 @@ usage()
+ 
+ help()
+ {
+-    echo "This program will create a root file system with busybox commads."
++    echo "This program will create a root file system with busybox commands."
+     echo "Follow these steps to boot your machine with this file system"
+     echo "1. create a boot floppy."
+     echo "   - use command: dd if=<path>/bzImage of=/dev/fd0h1440 bs=1k"
+-- 
+1.6.2.4
+
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---===============7442703103644030367==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============7442703103644030367==--
-
