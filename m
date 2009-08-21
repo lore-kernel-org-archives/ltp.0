@@ -1,29 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <dvhltc@us.ibm.com>) id 1MfiDG-00034s-9L
-	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 22:40:30 +0000
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MfiDA-0000oI-4j
-	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 22:40:30 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e1.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7OMGU2x014501
-	for <ltp-list@lists.sourceforge.net>; Mon, 24 Aug 2009 18:16:30 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7OMGm1t248180
-	for <ltp-list@lists.sourceforge.net>; Mon, 24 Aug 2009 18:16:48 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7OMDnaN020829
-	for <ltp-list@lists.sourceforge.net>; Mon, 24 Aug 2009 18:13:50 -0400
-Message-ID: <4A93114B.4000809@us.ibm.com>
-Date: Mon, 24 Aug 2009 15:16:43 -0700
-From: Darren Hart <dvhltc@us.ibm.com>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <rohit.170309@gmail.com>) id 1MeMSH-0000Tu-Fa
+	for ltp-list@lists.sourceforge.net; Fri, 21 Aug 2009 05:14:25 +0000
+Received: from mail-px0-f197.google.com ([209.85.216.197])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MeMS9-0001nI-KQ
+	for ltp-list@lists.sourceforge.net; Fri, 21 Aug 2009 05:14:25 +0000
 MIME-Version: 1.0
-Subject: [LTP] [PATCH][realtime] prio-wake: enable using more than 95 threads
+In-Reply-To: <4A861EA2.6070701@cn.fujitsu.com>
+References: <d51f89b0908130131u5742ff3epf58617e3f4ab38a3@mail.gmail.com>
+	<4A850550.7080109@cn.fujitsu.com>
+	<d51f89b0908140134g18b7b34cr9858edad1242373a@mail.gmail.com>
+	<4A861EA2.6070701@cn.fujitsu.com>
+Date: Fri, 21 Aug 2009 10:44:10 +0530
+Message-ID: <d51f89b0908202214l795ceb5bp5530fa4666f7ba87@mail.gmail.com>
+From: rohit verma <rohit.170309@gmail.com>
+Content-Type: multipart/mixed; boundary=0016e64ea26235620104719ff0fa
+Subject: Re: [LTP] utimes01 test case issue
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,104 +28,162 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
-Cc: Gowrishankar <gowrishankar.m@in.ibm.com>, vernux@us.ibm.com
+To: subrata@linux.vnet.ibm.com, Wei Yongjun <yjwei@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
+
+--0016e64ea26235620104719ff0fa
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Hi Wang Yong,
+
+I have changed the expected error for root user in case02 as following.
+
+From tcase[2].err =3D EACCES to tcase[2].err =3D EPERM (For root user) .
+
+Pls check the attached patch for the same.
 
 
-prio-wake: enable using more than 95 threads
+On Sat, Aug 15, 2009 at 8:04 AM, Wei Yongjun<yjwei@cn.fujitsu.com> wrote:
+> rohit verma wrote:
+>> Hi Wang Yong,
+>>
+>> I am getting following =A0O/P for case02 :
+>>
+>> As root user:
+>>
+>> utimes01 =A0 =A00 =A0TINFO =A0: =A0(case02) START
+>> EXPECT: return value(ret)=3D-1 errno=3D13 (Permission denied)
+>> RESULT: return value(ret)=3D-1 errno=3D1 (Operation not permitted)
+>> utimes01 =A0 =A00 =A0TINFO =A0: =A0(case02) END =3D> NG
+>>
+>> As non-root user:
+>> utimes01 =A0 =A00 =A0TINFO =A0: =A0(case02) START
+>> seteuid failed.
+>> utimes01 =A0 =A00 =A0TINFO =A0: =A0(case02) END =3D> OK
+>>
+>> Are you getting the same?
+>>
+>>
+>>
+>
+> yes, the same result.
+>
+>>
+>> On Fri, Aug 14, 2009 at 12:03 PM, Wei Yongjun<yjwei@cn.fujitsu.com> wrot=
+e:
+>>
+>>> rohit verma wrote:
+>>>
+>>>> Hi Wang Yong,
+>>>>
+>>>> I have observed the following thing in case02 of the test case
+>>>> utimes01 in latest ltp release.
+>>>>
+>>>> Expected error value is =A0EACCES (In the code below)
+>>>> But the actual error value is EPERM.I have checked this on =A02.6.27 a=
+nd
+>>>> 2.6.29 kernel.
+>>>>
+>>>>
+>>> You can try root user and noroot user, the return error is different.
+>>>
+>>>
+>>>> static struct test_case tcase[] =3D {
+>>>>
+>>>> =A0 =A0 =A0 =A0 { // case00
+>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ...
+>>>> =A0 =A0 =A0 =A0 },
+>>>> =A0 =A0 =A0 =A0 { // case01
+>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ...
+>>>> =A0 =A0 =A0 =A0 },
+>>>> =A0 =A0 =A0 =A0 { // case02
+>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .ttype =A0 =A0 =A0 =A0 =A0=3D NORMAL,
+>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .a_sec =A0 =A0 =A0 =A0=3D 1000,
+>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .m_sec =A0 =A0 =A0 =3D 2000,
+>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .user =A0 =A0 =A0 =A0 =A0=3D "nobody",
+>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .ret =A0 =A0 =A0 =A0 =A0 =A0 =3D -1,
+>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .err =A0 =A0 =A0 =A0 =A0 =A0 =3D EACCE=
+S, // RHEL4U1 + 2.6.18 returns EPERM
+>>>> =A0 =A0 =A0 =A0 },
+>>>> =A0 =A0 =A0 =A0 { // case03
+>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ...
+>>>> =A0 =A0 =A0 =A0 },
+>>>>
+>>>> =A0 =A0 =A0 =A0 { // case04
+>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ...
+>>>> =A0 =A0 =A0 =A0 },
+>>>> };
+>>>>
+>>>> Kindly confirm whether you are facing the same issue at your end.
+>>>>
+>>>>
+>>>>
+>>>
+>>>
+>>
+>>
+>>
+>>
+>
+>
+>
 
-prio-wake will currently spew pthread errors on systems with more
-than 95 CPUS, or if an -n value > 95 is specified on the command line.
-To avoid this, spread threads out equally over the priorities by
-calculated the number of threads per priority.
 
-Tested with all pathological numbers (i.e. mod=0 mod=1, etc) of threads.
-Ran 10000 times in parallel.  Confirmed failure continues to exist without
-requeue PI (as it should) and success is seen with requeue PI 
-(as it should be).
 
-Signed-off-by: Darren Hart <dvhltc@us.ibm.com>
-Acked-By: Dinakar Guniguntala <dino@in.ibm.com>
-Acked-by: Vernon Mauery <vernux@us.ibm.com>
-Acked-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+--=20
+Regards,
+Rohit
 
----
- func/prio-wake/prio-wake.c |   24 +++++++++++++++++++-----
- 1 file changed, 19 insertions(+), 5 deletions(-)
+--0016e64ea26235620104719ff0fa
+Content-Type: text/plain; charset=US-ASCII; name="utimes01_patch.txt"
+Content-Disposition: attachment; filename="utimes01_patch.txt"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fymgktou0
 
-Index: realtime/func/prio-wake/prio-wake.c
-===================================================================
---- realtime.orig/func/prio-wake/prio-wake.c
-+++ realtime/func/prio-wake/prio-wake.c
-@@ -54,6 +54,8 @@
- #include <errno.h>
- #include <sys/syscall.h>
- #include <librttest.h>
-+#include <libstats.h>
-+
- volatile int running_threads = 0;
- static int rt_threads = 0;
- static int locked_broadcast = 1;
-@@ -164,8 +166,10 @@ void *worker_thread(void* arg)
- 
- int main(int argc, char* argv[])
- {
--	int pri_boost;
-+	int threads_per_prio;
-         int numcpus;
-+	int numprios;
-+	int prio;
- 	int i;
- 	setup();
- 
-@@ -184,19 +188,29 @@ int main(int argc, char* argv[])
- 	printf("Calling pthread_cond_broadcast() with mutex: %s\n\n",
- 	       locked_broadcast ? "LOCKED" : "UNLOCKED");
- 
--	pri_boost = 3;
--
- 	beginrun = rt_gettime();
- 
- 	init_pi_mutex(&mutex);
- 
-+	/* calculate the number of threads per priority */
-+	/* we get num numprios -1 for the workers, leaving one for the master */
-+	numprios = sched_get_priority_max(SCHED_FIFO) -
-+		   sched_get_priority_min(SCHED_FIFO);
-+
-+	threads_per_prio = rt_threads /	numprios;
-+	if (rt_threads % numprios)
-+		threads_per_prio++;
-+
- 	/* start the worker threads */
-+	prio = sched_get_priority_min(SCHED_FIFO);
- 	for (i = rt_threads; i > 0; i--) {
--		create_fifo_thread(worker_thread, (void*)(intptr_t)i, sched_get_priority_min(SCHED_FIFO) + pri_boost++);
-+		if ((i != rt_threads && (i % threads_per_prio) == 0))
-+			prio++;
-+		create_fifo_thread(worker_thread, (void*)(intptr_t)i, prio);
- 	}
- 
- 	/* start the master thread */
--	create_fifo_thread(master_thread, (void*)(intptr_t)i, sched_get_priority_min(SCHED_FIFO) + pri_boost);
-+	create_fifo_thread(master_thread, (void*)(intptr_t)i, ++prio);
- 
- 	/* wait for threads to complete */
- 	join_threads();
--- 
-Darren Hart
-IBM Linux Technology Center
-Real-Time Linux Team
+U2lnbmVkLW9mZi1ieTogcm9oaXQgdmVybWEgKHJvaGl0MTcwMzA5QGdtYWlsLmNvbSkKPT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PQpkaWZmIC1ydU5CIGx0cC1mdWxsLTIwMDkwNzMxL3Rlc3RjYXNlcy9r
+ZXJuZWwvc3lzY2FsbHMvdXRpbWVzL3V0aW1lczAxLmMgbHRwLWZ1bGwtMjAwOTA3MzFfbmV3L3Rl
+c3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdXRpbWVzL3V0aW1lczAxLmMKLS0tIGx0cC1mdWxsLTIw
+MDkwNzMxL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdXRpbWVzL3V0aW1lczAxLmMJMjAwOS0w
+Ny0yMSAxMjowNToyMy4wMDAwMDAwMDAgKzA1MzAKKysrIGx0cC1mdWxsLTIwMDkwNzMxX25ldy90
+ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3V0aW1lcy91dGltZXMwMS5jCTIwMDktMDgtMjEgMDY6
+MjQ6MDguMDAwMDAwMDAwICswNTMwCkBAIC0zMzgsNiArMzM4LDcgQEAKICAgICAgICAgaW50IGk7
+CiAgICAgICAgIGludCBsYzsgICAgICAgICAgICAgICAgIC8qIGxvb3AgY291bnRlciAqLwogICAg
+ICAgICBjaGFyICptc2c7ICAgICAgICAgICAgICAvKiBtZXNzYWdlIHJldHVybmVkIGZyb20gcGFy
+c2Vfb3B0cyAqLworCXVpZF90IHVpZDsKIAogCXN0cnVjdCBvcHRpb24gbG9uZ19vcHRpb25zW10g
+PSB7CiAgICAgICAgICAgICAgICAgeyAiZGVidWciLCBub19hcmd1bWVudCwgMCwgJ2QnIH0sCkBA
+IC0zNTYsNyArMzU3LDEzIEBACiAKICAgICAgICAgc2V0dXAoKTsKIAotICAgICAgICAvKiBDaGVj
+ayBsb29waW5nIHN0YXRlIGlmIC1pIG9wdGlvbiBnaXZlbiAqLworCS8qIEFzIGEgcm9vdCB1c2Vy
+IGVycm9yIHZhbHVlIHNob3VsZCBiZSBFUEVSTSBmb3IgY2FzZTAyICovCisJdWlkID0gZ2V0dWlk
+KCk7CisJaWYgKHVpZCA9PSAwKSB7CisJCXRjYXNlWzJdLmVyciA9IEVQRVJNOworCX0KKworCS8q
+IENoZWNrIGxvb3Bpbmcgc3RhdGUgaWYgLWkgb3B0aW9uIGdpdmVuICovCiAgICAgICAgIGZvciAo
+bGMgPSAwOyBURVNUX0xPT1BJTkcobGMpOyArK2xjKSB7CiAgICAgICAgICAgICAgICAgVHN0X2Nv
+dW50ID0gMDsKICAgICAgICAgICAgICAgICBmb3IgKHRlc3RubyA9IDA7IHRlc3RubyA8IFRTVF9U
+T1RBTDsgKyt0ZXN0bm8pIHsK
+--0016e64ea26235620104719ff0fa
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--0016e64ea26235620104719ff0fa
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--0016e64ea26235620104719ff0fa--
+
