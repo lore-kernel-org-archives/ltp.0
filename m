@@ -1,28 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <paul.larson@canonical.com>) id 1MbL9Q-0007or-Kj
-	for ltp-list@lists.sourceforge.net; Wed, 12 Aug 2009 21:14:28 +0000
-Received: from adelie.canonical.com ([91.189.90.139])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MbL9E-0007yt-MW
-	for ltp-list@lists.sourceforge.net; Wed, 12 Aug 2009 21:14:23 +0000
-Received: from hutte.canonical.com ([91.189.90.181])
-	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
-	id 1MbL99-0002lp-9H
-	for <ltp-list@lists.sourceforge.net>; Wed, 12 Aug 2009 22:14:11 +0100
-Received: from 75-27-138-126.lightspeed.austtx.sbcglobal.net ([75.27.138.126]
-	helo=[192.168.1.70]) by hutte.canonical.com with esmtpsa
-	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
-	(envelope-from <paul.larson@canonical.com>) id 1MbL99-0006En-2S
-	for ltp-list@lists.sourceforge.net; Wed, 12 Aug 2009 22:14:11 +0100
-Message-ID: <4A8330A1.20001@canonical.com>
-Date: Wed, 12 Aug 2009 16:14:09 -0500
-From: Paul Larson <paul.larson@canonical.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------090801070807060008090709"
-Subject: [LTP] fix mail_tests for systems without mail installed
+	(envelope-from <caiqian@cclom.cn>) id 1MeSjt-0003Ru-HV
+	for ltp-list@lists.sourceforge.net; Fri, 21 Aug 2009 11:57:01 +0000
+Received: from smtp108.biz.mail.re2.yahoo.com ([206.190.52.47])
+	by 29vjzd1.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1MeSjl-0004Yi-AZ
+	for ltp-list@lists.sourceforge.net; Fri, 21 Aug 2009 11:57:01 +0000
+Date: Fri, 21 Aug 2009 19:57:39 +0800 (CST)
+Message-Id: <20090821.195739.1000278277145530969.caiqian@cclom.cn>
+From: CAI Qian <caiqian@cclom.cn>
+Mime-Version: 1.0
+Subject: [LTP] The Best Practice to Skip Syscall Tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,158 +22,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP Mailing List <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
---------------090801070807060008090709
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-mail_tests should return tconf instead of tfail if mail is not installed.
-
-Signed-off-by: Paul Larson <paul.larson@canonical.com>
----
-
-
---------------090801070807060008090709
-Content-Type: text/x-patch;
- name="mail_tests.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="mail_tests.patch"
-
-diff --git a/testcases/commands/mail/mail_tests.sh b/testcases/commands/mail/mail_tests.sh
-index 7458944..a2c6487 100755
---- a/testcases/commands/mail/mail_tests.sh
-+++ b/testcases/commands/mail/mail_tests.sh
-@@ -59,6 +59,11 @@ RC=0
- export TCID=SETUP
- export TST_COUNT=1
- 
-+`which mail`
-+if [ $? != 0 ]; then
-+    MAIL_NOT_INSTALLED=1
-+fi
-+
- # check if the user mail_test exists on this system.
- # if not add that user mail_test, will removed before exiting test.
- RC=$(awk '/^mail_test/ {print 1}' /etc/passwd)
-@@ -97,6 +102,7 @@ $LTPBIN/tst_resm TINFO "Test #1: mail root@localhost will send mail to root"
- $LTPBIN/tst_resm TINFO "Test #1: user on local machine."
- 
- 
-+if [ -z $MAIL_NOT_INSTALLED ]; then
- cat > $LTPTMP/tst_mail.in <<EOF
- This is a test email.
- EOF
-@@ -125,6 +131,9 @@ else
-         TFAILCNT=$(( $TFAILCNT+1 ))
-     fi
- fi
-+else
-+    $LTPBIN/tst_resm TCONF "mail command not installed"
-+fi
- 
- 
- # Test #2
-@@ -142,6 +151,7 @@ $LTPBIN/tst_resm TINFO \
- $LTPBIN/tst_resm TINFO "Test #2: to deliver the mail. Mailer daemon should"
- $LTPBIN/tst_resm TINFO "Test #2: report this failure."
- 
-+if [ -z $MAIL_NOT_INSTALLED ]; then
- cat > $LTPTMP/tst_mail.in <<EOF
- This is a test email.
- EOF
-@@ -193,7 +203,9 @@ fi
-         fi
-     fi
- fi
--    
-+else
-+    $LTPBIN/tst_resm TCONF "mail command not installed"
-+fi    
- 
- # Test #3
- # Test that mail non_existant_user@localhost will result in delivery failure.
-@@ -210,6 +222,7 @@ $LTPBIN/tst_resm TINFO \
- $LTPBIN/tst_resm TINFO "Test #3: to deliver the mail. Mailer daemon should"
- $LTPBIN/tst_resm TINFO "Test #3: report this failure."
- 
-+if [ -z $MAIL_NOT_INSTALLED ]; then
- cat > $LTPTMP/tst_mail.in <<EOF
- This is a test email.
- EOF
-@@ -260,6 +273,9 @@ fi
-         fi
-     fi
- fi
-+else
-+    $LTPBIN/tst_resm TCONF "mail command not installed"
-+fi
- 
- # Test #4 
- # Test that mail -c user@domain option will carbon copy that user.
-@@ -270,6 +286,7 @@ RC=0
- 
- $LTPBIN/tst_resm TINFO "Test #4: Test that mail -c user@domain will"
- $LTPBIN/tst_resm TINFO "Test #4: carbon copy user@domain"
-+if [ -z $MAIL_NOT_INSTALLED ]; then
- 
- # send mail to root and carbon copy mail_test 
- mail -s "Test" root@localhost -c mail_test@localhost < \
-@@ -297,7 +314,9 @@ else
-         TFAILCNT=$(( $TFAILCNT+1 ))
-     fi
- fi
--
-+else
-+    $LTPBIN/tst_resm TCONF "mail command not installed"
-+fi
- 
- # Test #5 
- # Test that mail -b user@domain option will blind carbon copy that user.
-@@ -308,6 +327,7 @@ RC=0
- 
- $LTPBIN/tst_resm TINFO "Test #5: Test that mail -b user@domain will"
- $LTPBIN/tst_resm TINFO "Test #5: blind carbon copy user@domain"
-+if [ -z $MAIL_NOT_INSTALLED ]; then
- 
- # send mail to root and carbon copy mail_test 
- mail -s "Test" root@localhost -c mail_test@localhost < \
-@@ -335,7 +355,9 @@ else
-         TFAILCNT=$(( $TFAILCNT+1 ))
-     fi
- fi
--    
-+else
-+    $LTPBIN/tst_resm TCONF "mail command not installed"
-+fi
- 
- #CLEANUP & EXIT
- # remove all the temporary files created by this test.
-
---------------090801070807060008090709
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sf.net
+
+Hi,
+
+Test cases unshare failed to compile on systems without such a
+syscall. I am unsure what the best way to handle it. The old ways are,
+
+* add a kernel version check in the unshare tests code.
+
+or
+
+* add a m4 rule.
+* modify the unshare tests code to check if the macro, and add stub
+  functions if the macro is false.
+
+The first approach is unable to handle non-vanilla kernels. The second
+approach needs to add stub functions which are unclean. What I would
+like to do is,
+
+* add a m4 rule.
+* modify unshare Makefile like this,
+
+  ifdef HAVE_UNSHARE  <-- if the syscall is present, compile the tests.
+
+  CFLAGS += -I../../../../include -Wall
+  LDLIBS += -L../../../../lib -lltp
+
+  SRCS    = $(wildcard *.c)
+  TARGETS = $(patsubst %.c,%,$(SRCS))
+
+  all: $(TARGETS)
+
+  install:
+          @set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i ; done
+
+  else               <-- Otherwise, skip them.
+  all:
+
+However, I am not sure how to pass the HAVE_UNSHARE value to the
+Makefile yet.
+
+CAI Qian
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---------------090801070807060008090709
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---------------090801070807060008090709--
-
