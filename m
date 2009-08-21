@@ -1,32 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Meufa-0002ic-Iy
-	for ltp-list@lists.sourceforge.net; Sat, 22 Aug 2009 17:46:26 +0000
-Received: from e7.ny.us.ibm.com ([32.97.182.137])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MeufT-0003Ig-BA
-	for ltp-list@lists.sourceforge.net; Sat, 22 Aug 2009 17:46:26 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e7.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7MHj7TP030590
-	for <ltp-list@lists.sourceforge.net>; Sat, 22 Aug 2009 13:45:07 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7MHkDCF174466
-	for <ltp-list@lists.sourceforge.net>; Sat, 22 Aug 2009 13:46:13 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7MHkDXP029207
-	for <ltp-list@lists.sourceforge.net>; Sat, 22 Aug 2009 13:46:13 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <f5a7b3810908180135m6d185842i78ac522f4a163e25@mail.gmail.com>
-References: <f5a7b3810908180135m6d185842i78ac522f4a163e25@mail.gmail.com>
-Date: Sat, 22 Aug 2009 23:15:41 +0530
-Message-Id: <1250963141.10642.27.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [FIX PATCH] ltp-fix-mlockall_15-1.c
-Reply-To: subrata@linux.vnet.ibm.com
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MeWXc-0003c9-Gw
+	for ltp-list@lists.sourceforge.net; Fri, 21 Aug 2009 16:00:36 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MeWXX-0001qT-Pp
+	for ltp-list@lists.sourceforge.net; Fri, 21 Aug 2009 16:00:36 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Fri, 21 Aug 2009 12:00:32 -0400
+References: <20090821.195739.1000278277145530969.caiqian@cclom.cn>
+In-Reply-To: <20090821.195739.1000278277145530969.caiqian@cclom.cn>
+MIME-Version: 1.0
+Message-Id: <200908211200.33401.vapier@gentoo.org>
+Subject: Re: [LTP] The Best Practice to Skip Syscall Tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,132 +24,98 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2652675519903856444=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: naresh kamboju <naresh.kernel@gmail.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, Brandon Philips <bphilips@suse.de>
+To: ltp-list@lists.sourceforge.net
+Cc: ltp-list@lists.sf.net
 
-On Tue, 2009-08-18 at 14:05 +0530, naresh kamboju wrote: 
-> Hi,
-> 
-> I have noticed UNRESOLVED of following test cases
-> mlockall/15-1.c
-> mlockall/speculative/15-1.c
+--===============2652675519903856444==
+Content-Type: multipart/signed; boundary="nextPart9225501.4tzxDqKQj9";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Thanks.
+--nextPart9225501.4tzxDqKQj9
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Regards--
-Subrata
+On Friday 21 August 2009 07:57:39 CAI Qian wrote:
+> Test cases unshare failed to compile on systems without such a
+> syscall. I am unsure what the best way to handle it. The old ways are,
+>
+> * add a kernel version check in the unshare tests code.
+>
+> or
+>
+> * add a m4 rule.
+> * modify the unshare tests code to check if the macro, and add stub
+>   functions if the macro is false.
+>
+> The first approach is unable to handle non-vanilla kernels. The second
+> approach needs to add stub functions which are unclean. What I would
+> like to do is,
+>
+> * add a m4 rule.
+> * modify unshare Makefile like this,
+>
+>   ifdef HAVE_UNSHARE  <-- if the syscall is present, compile the tests.
 
-> 
-> These test cases are fixed by setting the Rlimit to zero to get EPERM
-> as per the kernel code.
-> 
-> I have attached patch and below
-> Please review the same
-> 
-> Best regards,
-> Naresh Kamboju
-> 
-> /***********************************************************/
-> Results:
-> Before patch:
-> =============
-> 
-> conformance/interfaces/mlockall/15-1.test:execution:UNRESOLVED
-> conformance/interfaces/mlockall/speculative/15-1.test:execution:UNRESOLVED
-> 
-> After Patch:
-> ============
-> 
-> conformance/interfaces/mlockall/15-1.test:execution:PASS
-> conformance/interfaces/mlockall/speculative/15-1.test:execution:PASS
-> 
-> /***********************************************************/
-> 
-> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
-> 
-> diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/mlockall/15-1.c
-> b/testcases/open_posix_testsuite/conformance/interfaces/mlockall/15-1.c
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/mlockall/15-1.c	2005-06-03
-> 22:00:33.000000000 +0530
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mlockall/15-1.c	2009-08-18
-> 11:28:02.000000000 +0530
-> @@ -21,6 +21,7 @@
->  #include <sys/types.h>
->  #include <pwd.h>
->  #include <string.h>
-> +#include <sys/resource.h>
->  #include "posixtest.h"
-> 
-> 
-> @@ -28,6 +29,9 @@
->  int set_nonroot()
->  {
->  	struct passwd *pw;
-> +        struct rlimit rlim;
-> +        int ret=0;
-> +
->  	setpwent();
->  	/* search for the first user which is non root */
->  	while((pw = getpwent()) != NULL)
-> @@ -39,6 +43,11 @@
->  		return 1;
->  	}
-> 
-> +        rlim.rlim_cur = 0;
-> +        rlim.rlim_max = 0;
-> +        if ((ret = setrlimit(RLIMIT_MEMLOCK,&rlim)) != 0)
-> +                printf("Failed at setrlimit() return %d \n", ret);
-> +
->  	if(seteuid(pw->pw_uid) != 0) {
->  		if(errno == EPERM) {
->  			printf("You don't have permission to change your UID.\n");
-> diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/mlockall/speculative/15-1.c
-> b/testcases/open_posix_testsuite/conformance/interfaces/mlockall/speculative/15-1.c
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/mlockall/speculative/15-1.c	2007-07-26
-> 17:32:13.000000000 +0530
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mlockall/speculative/15-1.c	2009-08-18
-> 11:28:00.000000000 +0530
-> @@ -21,6 +21,7 @@
->  #include <sys/types.h>
->  #include <pwd.h>
->  #include <string.h>
-> +#include <sys/resource.h>
->  #include "posixtest.h"
-> 
-> 
-> @@ -28,6 +29,9 @@
->  int set_nonroot()
->  {
->  	struct passwd *pw;
-> +        struct rlimit rlim;
-> +        int ret=0;
-> +
->  	setpwent();
->  	/* search for the first user which is non root */
->  	while((pw = getpwent()) != NULL)
-> @@ -39,6 +43,11 @@
->  		return 1;
->  	}
-> 
-> +        rlim.rlim_cur = 0;
-> +        rlim.rlim_max = 0;
-> +        if ((ret = setrlimit(RLIMIT_MEMLOCK,&rlim)) != 0)
-> +                printf("Failed at setrlimit() return %d \n", ret);
-> +
->  	if(seteuid(pw->pw_uid) != 0) {
->  		if(errno == EPERM) {
->  			printf("You don't have permission to change your UID.\n");
+the configure test should always be there if the code needs new headers (li=
+ke=20
+sys/signalfd.h).  if it's only a new syscall, then the configure test shoul=
+d=20
+only be for the new symbol (assuming one is provided).  in all cases, the=20
+tests should be compiled.  your proposal doesnt handle the case where the C=
+=20
+library is in place, but the kernel is older so returns ENOSYS.
+=2Dmike
 
+--nextPart9225501.4tzxDqKQj9
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJKjsShAAoJEEFjO5/oN/WBY8gQAINCF20W72gJy9jojVoookPt
+bPhKWW30qdXl70YtrfjO4bH25bMnZY3jo/rI4kBMKoPwrOOp11Qje3X+yOI08sF7
+ec6s0ZbfKDNTde1w2Vq2B++oeLItWVxvi3Kum86NHed9kfrTTA1CogxyEhcWIlJ2
+ABxVW9BwvqGFl13v+srchhI2S+RTNXGH1mmIHQ3TM2q/Gpk4t+7n/tzSthzrtJ89
+458cuFdXhRt3G+oaUfOz/RhFcQAugjHnZHVitr/KA+R1P26VOzW9zWBsUjM1idMR
+qs9WbpcYBXscC+MrzhjxkNX21cjV34GEDE3PeiCwL9dvcFZ4h3wJdrkrhOQclLGr
+5vkZaQFFwrB4Coi8j8DI4RYoPfkQPdTn8rmbEVB8gSBk3M7u6dLqd17I2tnMNrUp
+Byq4Ejj0nO1LoaVcaw85IBmAGeGm+cFZGdtgM5/obAP/G2S7V4GXlVlqX44HlfI8
+k+66aMCAzgD5I85uS7lGjWD+66eTJEvq96y4A3Q9n66B+61UTWkAWrLHC7i04o31
+5b43u2ZMzD7H64oYhcoKNcApXsa/Fbgd/dPSBJpv7k6hDSCs4ovnfS8pMcWZlC2r
+rMYfeeaeEO+GgL9lXmpxwgjCbu7nccnRSmMEVjT78XGIrVkeYzRxuTgl/xwIxnwb
+G2ccasnmdbHNFE++8Rfv
+=VsTj
+-----END PGP SIGNATURE-----
+
+--nextPart9225501.4tzxDqKQj9--
+
+
+--===============2652675519903856444==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============2652675519903856444==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2652675519903856444==--
+
