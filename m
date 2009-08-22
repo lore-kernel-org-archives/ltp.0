@@ -1,27 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MbitN-0003tB-7K
-	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2009 22:35:29 +0000
-Received: from mail-qy0-f181.google.com ([209.85.221.181])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MbitK-0004pN-Bl
-	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2009 22:35:29 +0000
-Received: by qyk11 with SMTP id 11so962497qyk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 13 Aug 2009 15:35:20 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1250183886.6656.22.camel@subratamodak.linux.ibm.com>
-References: <20090807111950.GD4761@rajasekhar>
-	<1249648957.4851.49.camel@subratamodak.linux.ibm.com>
-	<1249968754.5507.2.camel@subratamodak.linux.ibm.com>
-	<20090813075404.GA10982@rajasekhar>
-	<1250183886.6656.22.camel@subratamodak.linux.ibm.com>
-Date: Thu, 13 Aug 2009 15:35:20 -0700
-Message-ID: <364299f40908131535v2e161ba1s24eb148282ecf8e@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] CPU Accounting Controller test case for LTP.
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Meufr-00055V-EU
+	for ltp-list@lists.sourceforge.net; Sat, 22 Aug 2009 17:46:43 +0000
+Received: from e38.co.us.ibm.com ([32.97.110.159])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Meufk-0003Nz-76
+	for ltp-list@lists.sourceforge.net; Sat, 22 Aug 2009 17:46:43 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7MHglTP007790
+	for <ltp-list@lists.sourceforge.net>; Sat, 22 Aug 2009 11:42:47 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7MHkSXB156706
+	for <ltp-list@lists.sourceforge.net>; Sat, 22 Aug 2009 11:46:28 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7MHkSfp022538
+	for <ltp-list@lists.sourceforge.net>; Sat, 22 Aug 2009 11:46:28 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <f5a7b3810908180727i7ddbcab4t3b0d74c2f1ac0e6@mail.gmail.com>
+References: <f5a7b3810908170941n6885b036ub45f9d14ec5c3768@mail.gmail.com>
+	<364299f40908172345o21a2d7a8j11a41eeb8455f596@mail.gmail.com>
+	<f5a7b3810908180727i7ddbcab4t3b0d74c2f1ac0e6@mail.gmail.com>
+Date: Sat, 22 Aug 2009 23:16:14 +0530
+Message-Id: <1250963174.10642.29.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [FIX PATCH] ltp-fix-posix-sched_setparam_26-1 warning fix
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,95 +39,62 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net, dhaval@linux.vnet.ibm.com, Peter Zijlstra <peterz@infradead.org>, Miao Xie <miaox@cn.fujitsu.com>, bharata@linux.vnet.ibm.com, Ingo Molnar <mingo@elte.hu>, KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>, balbir <balbir@linux.vnet.ibm.com>
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, Brandon Philips <bphilips@suse.de>
 
-biBUaHUsIEF1ZyAxMywgMjAwOSBhdCAxMDoxOCBBTSwgU3VicmF0YQpNb2RhazxzdWJyYXRhQGxp
-bnV4LnZuZXQuaWJtLmNvbT4gd3JvdGU6Cj4gSGV5LAo+Cj4gVGhhbmtzIGZvciBzZW5kaW5nIHRo
-YXQgdXBkYXRlIG9uY2UgYWdhaW4uIEJ1dCBzdGlsbCBpc3N1ZXMgcmVtYWluIHRvIGJlCj4gYWRk
-cmVzc2VkOgo+Cj4gMSkgIyBscyAtbCB0ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2NwdWFj
-Y3QvCj4gdG90YWwgNzIKPiAtcnd4ci14ci14IDEgcm9vdCByb290IMKgNDkwMyBBdWcgMTMgMjM6
-MDggY3B1YWNjdF90YXNrCj4gLXJ3LXItLXItLSAxIHJvb3Qgcm9vdCDCoCAxMjEgQXVnIDEzIDIz
-OjA1IGNwdWFjY3RfdGFzay5jCj4gLXJ3LXItLXItLSAxIHJvb3Qgcm9vdCDCoDE2NjUgQXVnIDEz
-IDIzOjA1IGNwdWFjY3RfdGVzdHBsYW4udHh0Cj4gLXJ3LXItLXItLSAxIHJvb3Qgcm9vdCDCoCAz
-NzcgQXVnIDEzIDIzOjA1IE1ha2VmaWxlCj4gLXJ3LXItLXItLSAxIHJvb3Qgcm9vdCDCoDE2MTEg
-QXVnIDEzIDIzOjA1IFJFQURNRQo+IC1yd3hyLXhyLXggMiByb290IHJvb3QgMTEyMTMgQXVnIDEz
-IDIzOjA4IHJ1bl9jcHVhY2N0X3Rlc3Quc2gKPiAtcnd4ci14ci14IDIgcm9vdCByb290IMKgNTA3
-NSBBdWcgMTMgMjM6MDUgc2V0dXAuc2gKPgo+IFlvdSBjYW5ub3QgaGF2ZSBhIGdlbmVyaWMgZmls
-ZSBjYWxsZWQgInNldHVwLnNoIiBhbmQgdGhlbiBpbnN0YWxsIGl0Cj4gb3ZlciB0byAiJExUUFJP
-T1QvdGVzdGNhc2VzL2Jpbi8iLiBUaGVyZSBhcmUgbWFueSB0ZXN0cyB3aGljaCB3aWxsIHRyeQo+
-IHRvIGRvIHRoZSBzYW1lIGFuZCBzb21lYm9kecWbICJzZXR1cC5zaCIgd2lsbCBiZSBmaW5hbGx5
-IHJlcGxhY2VkIGJ5IHRoZQo+IG90aGVyIGF0ICIkTFRQUk9PVC90ZXN0Y2FzZXMvYmluLyIuIFNv
-LCByZXBsYWNlIHRoaXMgZmlsZSBuYW1lIHdpdGgKPiBzb21ldGhpbmcgbW9yZSBzcGVjaWZpYyBs
-aWtlICJydW5fY3B1YWNjdF90ZXN0X3NldHVwLnNoIiwgd2hpY2ggaXMgbW9yZQo+IG1lYW5pbmdm
-dWwuCj4KPiAyKSBUaGUgdGVzdCByZXN1bHRzIGFyZSBub3QgZW5jb3VyYWdpbmcgdGhvdWdoLiBZ
-b3UgaGF2ZSB0cmllZCB0bwo+IGRpcmVjdGx5IHJ1biBpdCBmcm9tIGJ5IChjZCB0ZXN0Y2FzZXMv
-YmluLykgYW5kIHRoZW46Cj4gIyAuL3J1bl9jcHVhY2N0X3Rlc3Quc2ggMQo+ICMgLi9ydW5fY3B1
-YWNjdF90ZXN0LnNoIDIKPgo+IHdoaWNoIGlzIG5vdCBjb3JyZWN0LiBJZiB5b3Ugd2FudCB0byBy
-dW4ganVzdCB0aGUgQ1BVQUNDT1VOVElORwo+IGNvbnRyb2xsZXJzIHdpdGhvdXQgdGhlIG5lZWQg
-dG8gcnVuIHRoZSBlbnRpcmUgY29udHJvbGxlciB0ZXN0cyB0aHJvdWdoCj4gdGVzdF9jb250cm9s
-bGVyLnNoLCB0aGVuIGNyZWF0ZSBhIGZvbGxvd2luZyBmaWxlIGxpa2U6Cj4KPiAjIGNhdCBydW50
-ZXN0L2NwdWFjY3QKPiBDUFVBQ0NUMDEgJExUUFJPT1QvdGVzdGNhc2VzL2Jpbi9ydW5fY3B1YWNj
-dF90ZXN0LnNoIDEKPiBDUFVBQ0NUMDIgJExUUFJPT1QvdGVzdGNhc2VzL2Jpbi9ydW5fY3B1YWNj
-dF90ZXN0LnNoIDIKPgo+IFRoZW4gdHJ5IHdpdGg6Cj4KPiAuL3J1bmx0cCAtZiBjcHVhY2N0Cj4K
-PiBCdXQgaSBnZXQgdGhlIGZvbGxvd2luZyBvdXRwdXQgb24gbXkgbWFjaGluZToKPgo+IDw8PHRl
-c3Rfc3RhcnQ+Pj4KPiB0YWc9Q1BVQUNDVDAxIHN0aW1lPTEyNTAxODUzMTMKPiBjbWRsaW5lPSIk
-TFRQUk9PVC90ZXN0Y2FzZXMvYmluL3J1bl9jcHVhY2N0X3Rlc3Quc2ggMSIKPiBjb250YWN0cz0i
-Igo+IGFuYWx5c2lzPWV4aXQKPiA8PDx0ZXN0X291dHB1dD4+Pgo+IENsZWFudXAgY2FsbGVkCj4g
-VEVTVCAxOkNQVSBBQ0NPVU5USU5HIENPTlRST0xMRVIgVEVTVElORwo+IFJVTk5JTkcgU0VUVVAu
-Li4uLgo+IFRFU1QgU1RBUlRFRDogUGxlYXNlIGF2b2lkIHVzaW5nIHN5c3RlbSB3aGlsZSB0aGlz
-IHRlc3QgZXhlY3V0ZXMKPiBnY2M6IC9yb290L3N1YnJhdGEvbHRwL2x0cC1mdWxsLTIwMDkwNzMx
-L3Rlc3RjYXNlcy9iaW4vY3B1YWNjdF90YXNrLmM6Cj4gTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9y
-eQo+IGdjYzogbm8gaW5wdXQgZmlsZXMKPiBURkFJTCBUYXNrIGZpbGUgY3B1YWNjdF90YXNrLmMg
-bm90IGNvbXBpbGVkCj4gUGxlYXNlIGNoZWNrIE1ha2VmaWxlIEV4aXRpbmcgdGVzdAo+IDw8PGV4
-ZWN1dGlvbl9zdGF0dXM+Pj4KPiBpbml0aWF0aW9uX3N0YXR1cz0ib2siCj4gZHVyYXRpb249MCB0
-ZXJtaW5hdGlvbl90eXBlPWV4aXRlZCB0ZXJtaW5hdGlvbl9pZD0yNTUgY29yZWZpbGU9bm8KPiBj
-dXRpbWU9MyBjc3RpbWU9MTEKPiA8PDx0ZXN0X2VuZD4+Pgo+IDw8PHRlc3Rfc3RhcnQ+Pj4KPiB0
-YWc9Q1BVQUNDVDAyIHN0aW1lPTEyNTAxODUzMTMKPiBjbWRsaW5lPSIkTFRQUk9PVC90ZXN0Y2Fz
-ZXMvYmluL3J1bl9jcHVhY2N0X3Rlc3Quc2ggMiIKPiBjb250YWN0cz0iIgo+IGFuYWx5c2lzPWV4
-aXQKPiA8PDx0ZXN0X291dHB1dD4+Pgo+IGluY3JlbWVudGluZyBzdG9wCj4gQ2xlYW51cCBjYWxs
-ZWQKPiBURVNUIDI6Q1BVIEFDQ09VTlRJTkcgQ09OVFJPTExFUiBURVNUSU5HCj4gUlVOTklORyBT
-RVRVUC4uLi4uCj4gVEVTVCBTVEFSVEVEOiBQbGVhc2UgYXZvaWQgdXNpbmcgc3lzdGVtIHdoaWxl
-IHRoaXMgdGVzdCBleGVjdXRlcwo+IGdjYzogL3Jvb3Qvc3VicmF0YS9sdHAvbHRwLWZ1bGwtMjAw
-OTA3MzEvdGVzdGNhc2VzL2Jpbi9jcHVhY2N0X3Rhc2suYzoKPiBObyBzdWNoIGZpbGUgb3IgZGly
-ZWN0b3J5Cj4gZ2NjOiBubyBpbnB1dCBmaWxlcwo+IFRGQUlMIFRhc2sgZmlsZSBjcHVhY2N0X3Rh
-c2suYyBub3QgY29tcGlsZWQKPiBQbGVhc2UgY2hlY2sgTWFrZWZpbGUgRXhpdGluZyB0ZXN0Cj4g
-Q2xlYW51cCBjYWxsZWQKPiA8PDxleGVjdXRpb25fc3RhdHVzPj4+Cj4gaW5pdGlhdGlvbl9zdGF0
-dXM9Im9rIgo+IGR1cmF0aW9uPTEgdGVybWluYXRpb25fdHlwZT1leGl0ZWQgdGVybWluYXRpb25f
-aWQ9MjU1IGNvcmVmaWxlPW5vCj4gY3V0aW1lPTUgY3N0aW1lPTEzCj4gPDw8dGVzdF9lbmQ+Pj4K
-Pgo+IFdoYXQgaGFzIGdjYyBnb3QgdG8gZG8gZHVyaW5nIHRlc3QgcnVuID8/Cj4gWW91ciBtYWtl
-ZmlsZSBzYXlzIHRoYXQKPiAidGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9jcHVhY2N0L2Nw
-dWFjY3RfdGFzayIgd2lsbCBnZXQgaW5zdGFsbGVkCj4gYXQgInRlc3RjYXNlcy9iaW4vIiwgYnV0
-IGkgZG8gbm90IGZpbmQgaXQgYWZ0ZXIgIm1ha2UgaW5zdGFsbCIsIGhvd2V2ZXIKPiAicnVuX2Nw
-dWFjY3RfdGVzdC5zaCIgd2FzIHByZXNlbnQgYXQgInRlc3RjYXNlcy9iaW4vIi4gVGhvdWdoIGkg
-bWFudWFsbHkKPiBjb3BpZWQgInRlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvY3B1YWNjdC9j
-cHVhY2N0X3Rhc2siIHRvCj4gInRlc3RjYXNlcy9iaW4vIiwgc3RpbGwgaSBnZXQgdGhlIGFib3Zl
-IG91dHB1dC4gUGxlYXNlIGZpeCB0aGlzIGFuZAo+IHJlc2VuZC4KCkR1ZGR1LAoKICAgIEknZCBy
-ZWplY3QgdGhpcyByaWdodCBhd2F5OgoKK2Nhc2UgJHtURVNUX05VTX0gaW4KKyAgICAgICAiMSIg
-KQorICAgICAgICAgICAgICAgZ2NjIC1vICRQV0QvY3B1YWNjdF90YXNrICRQV0QvY3B1YWNjdF90
-YXNrLmMKKyAgICAgICAgICAgICAgIGxzICRQV0QvY3B1YWNjdF90YXNrICY+IC9kZXYvbnVsbAor
-ICAgICAgICAgICAgICAgaWYgWyAkPyAtbmUgMCBdCisgICAgICAgICAgICAgICB0aGVuCisgICAg
-ICAgICAgICAgICAgICAgICAgIGVjaG8gIlRGQUlMIFRhc2sgZmlsZSBjcHVhY2N0X3Rhc2suYyBu
-b3QgY29tcGlsZWQiCisgICAgICAgICAgICAgICAgICAgICAgIGVjaG8gIlBsZWFzZSBjaGVjayBN
-YWtlZmlsZSBFeGl0aW5nIHRlc3QiCisgICAgICAgICAgICAgICAgICAgICAgIGV4aXQgLTEKKyAg
-ICAgICAgICAgICAgIGZpCgogICAgSWYgeW91ciB0ZXN0Y2FzZSBjYW4ndCBsaXZlIHdpdGhvdXQg
-Z2NjLCB0aGVuIGl0IG5lZWRzIHRvIGJlCnJlZGVzaWduZWQuIEkgd2lsbCBkbyB0aGUgTWFrZWZp
-bGUgd29yayBtYWtpbmcgdGhpbmdzIGNvbmZvcm0gdG8gYQpwcm9wZXIgc3RhbmRhcmQsIGJ1dCBJ
-IGRvbid0IHdhbnQgdG8gaGF2ZSB0byBnbyBoYWNraW5nIGEgYnVuY2ggb2YKc2NyaXB0cyBpZiBJ
-IGNhbiBoZWxwIGl0Li4uClRoYW5rcywKLUdhcnJldHQKCj4gT24gVGh1LCAyMDA5LTA4LTEzIGF0
-IDEzOjI0ICswNTMwLCBSYWphc2VraGFyIER1ZGR1IHdyb3RlOgo+PiBIaSBTdWJyYXRhLCBJIGhh
-dmUgZG9uZSB0aGUgY2hhbmdlcyB0byB0aGUgcGF0Y2ggYXMgeW91IGhhdmUKPj4gc3VnZ2VzdGVk
-LCBwbGVhc2UgcmV2aWV3IGl0IGFuZCBsZXQgbWUga25vdyBpZiBpdCBuZWVkcyBhbnkKPj4gY2hh
-bmdlcyB0aGFua3UuCj4+Cj4+IEkgYW0gcHNvdGluZyB0aGUgcmVzdWx0cyBhbHNvIGhlcmUuCgot
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0KTGV0IENyeXN0YWwgUmVwb3J0cyBoYW5kbGUgdGhlIHJlcG9y
-dGluZyAtIEZyZWUgQ3J5c3RhbCBSZXBvcnRzIDIwMDggMzAtRGF5IAp0cmlhbC4gU2ltcGxpZnkg
-eW91ciByZXBvcnQgZGVzaWduLCBpbnRlZ3JhdGlvbiBhbmQgZGVwbG95bWVudCAtIGFuZCBmb2N1
-cyBvbiAKd2hhdCB5b3UgZG8gYmVzdCwgY29yZSBhcHBsaWNhdGlvbiBjb2RpbmcuIERpc2NvdmVy
-IHdoYXQncyBuZXcgd2l0aCAKQ3J5c3RhbCBSZXBvcnRzIG5vdy4gIGh0dHA6Ly9wLnNmLm5ldC9z
-ZnUvYm9iai1qdWx5Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
-aHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+On Tue, 2009-08-18 at 19:57 +0530, naresh kamboju wrote: 
+> On Tue, Aug 18, 2009 at 12:15 PM, Garrett Cooper<yanegomi@gmail.com> wrote:
+> > On Mon, Aug 17, 2009 at 9:41 AM, naresh kamboju<naresh.kernel@gmail.com> wrote:
+> >> Hi,
+> >>
+> >> I have noticed build warnings for the following test case.
+> >> This patch will fix warnings by adding <string.h> header file.
+> >>
+> >> I have attached patch and below
+> >> Please review the same
+> >
+> Hi,
+> >    Log before and after?
+> 
+> Build log:
+> ========================================
+> Before patch:
+> ==========
+> conformance/interfaces/sched_setparam/26-1: build: FAILED: Compiler output:
+> cc1: warnings being treated as errors
+> conformance/interfaces/sched_setparam/26-1.c: In function 'set_nonroot':
+> conformance/interfaces/sched_setparam/26-1.c:30: warning: implicit
+> declaration of function 'strcmp'
+> ============
+> After patch:
+> ============
+> conformance/interfaces/sched_setparam/26-1: build: PASS
+> conformance/interfaces/sched_setparam/26-1: link: PASS
+> 
+> ========================================
+> 
+> Best regards
+> Naresh Kamboju
+
+Thanks.
+
+Regards--
+Subrata
+
+> > Thanks,
+> > -Garrett
+> >
+
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
