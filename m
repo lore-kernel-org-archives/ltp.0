@@ -1,33 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MXvaO-0003qs-P4
-	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 11:20:12 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MXvaI-0002VO-4m
-	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 11:20:12 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n73BFElO003872
-	for <ltp-list@lists.sourceforge.net>; Mon, 3 Aug 2009 05:15:14 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n73BK0u3190998
-	for <ltp-list@lists.sourceforge.net>; Mon, 3 Aug 2009 05:20:00 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n73BJxhe017621
-	for <ltp-list@lists.sourceforge.net>; Mon, 3 Aug 2009 05:20:00 -0600
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MeqDv-0001BK-TH
+	for ltp-list@lists.sourceforge.net; Sat, 22 Aug 2009 13:01:35 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MeqDo-0005cV-BB
+	for ltp-list@lists.sourceforge.net; Sat, 22 Aug 2009 13:01:35 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7MCsjY7027120
+	for <ltp-list@lists.sourceforge.net>; Sat, 22 Aug 2009 08:54:45 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7MD1KMk226608
+	for <ltp-list@lists.sourceforge.net>; Sat, 22 Aug 2009 09:01:20 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7MD1JX8020410
+	for <ltp-list@lists.sourceforge.net>; Sat, 22 Aug 2009 09:01:20 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4A717D05.2070603@petalogix.com>
-References: <20090730075802.GE3058@console-pimps.org>
-	<4A717D05.2070603@petalogix.com>
-Date: Mon, 03 Aug 2009 16:49:55 +0530
-Message-Id: <1249298395.7460.24.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <20090817120835.8902.4597.sendpatchset@subratamodak.linux.ibm.com>
+References: <20090817120835.8902.4597.sendpatchset@subratamodak.linux.ibm.com>
+Date: Sat, 22 Aug 2009 18:31:11 +0530
+Message-Id: <1250946071.10642.15.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] fcntl24,25,26 fail when run on tmpfs
+Subject: Re: [LTP] [PATCH v2 00/05] Integration of "Fault Injection
+	Framework"	into LTP
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -41,53 +40,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: michal.simek@petalogix.com, Matt Fleming <matt@console-pimps.org>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP Mailing List <ltp-list@lists.sourceforge.net>
+Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>, Mike Frysinger <vapier@gentoo.org>, Michael Reed <mreed10@us.ibm.com>, Nate Straz <nate@refried.org>, Paul Larson <paul.larson@ubuntu.com>, Manoj Iyer <manoj.iyer@ubuntu.com>, Balbir Singh <balbir@linux.vnet.ibm.com>
 
-On Thu, 2009-07-30 at 12:59 +0200, Michal Simek wrote: 
-> Hi Matt,
-> > Attached is a patch to skip testcases fcntl24, fcntl25 and fcntl26 if
-> > the host is running on tmpfs. The reason being that, as documented here
-> > http://bugzilla.kernel.org/show_bug.cgi?id=13626, F_SETLEASE and F_WRLCK
-> > cannot work on tmpfs.
+On Mon, 2009-08-17 at 17:38 +0530, Subrata Modak wrote:
+> Hi,
+> 
+> Introducing the "Kernel Fault Injection Framework" generation and testing
 
-Thanks for this patch, except that it does not have a Signed-off-by:
-Matt Fleming <matt@console-pimps.org>, though i have added the same in
-CVS log message:
-http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/syscalls/fcntl/fcntl24.c?view=log,
-http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/syscalls/fcntl/fcntl25.c?view=log,
-http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/syscalls/fcntl/fcntl26.c?view=log,
-
-> >   
-> I tested it and works. The same issue is for RAMFS. But for this fs in
-> necessary to create
-> tst_is_cwd_ramfs function. Maybe worth to add together
-> tst_is_cwd_tmpfs.c and tst_cwd_has_free.c too.
-
-Thanks Michal for testing this.
+This has now become part of LTP. Hope all of you will start using it and
+help improve it further.
 
 Regards--
 Subrata
 
+> capability in LTP. This is in line with the recent proposal made through
+> LTP Paper at OLS 2009:
+> "Putting LTP to test - Validating both the Linux kernel and Test-cases"
+> (http://ltp.sourceforge.net/documentation/technical_papers/Putting_LTP_to_Test.pdf)
 > 
-> Regards,
-> Michal
+> This infrasturcture will help LTP directly in the following ways:
+> 1) Allow test developers to test their new test cases against a faulted kernel,
+> and then compare it on stable kernel run, impacting in better test development,
+> 2) Allow test engineers to be able to generate more code coverage by traversing
+> the rarely touched parts of the kernel code,
 > 
-> >   
-> > ------------------------------------------------------------------------
-> >
-> > ------------------------------------------------------------------------------
-> > Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> > trial. Simplify your report design, integration and deployment - and focus on 
-> > what you do best, core application coding. Discover what's new with 
-> > Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> > ------------------------------------------------------------------------
-> >
-> > _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> As we move forward in using this, we would definitely find some other
+> advantages of this framework. This is V2 of patchset after incorporating
+> comments from Mike, Paul & Garret.
 > 
+> Regards--
+> Subrata
 > 
 
 
