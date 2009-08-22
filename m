@@ -1,34 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MYjzU-0001nG-Rr
-	for ltp-list@lists.sourceforge.net; Wed, 05 Aug 2009 17:09:28 +0000
-Received: from e33.co.us.ibm.com ([32.97.110.151])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MYjzQ-0005Pr-VP
-	for ltp-list@lists.sourceforge.net; Wed, 05 Aug 2009 17:09:28 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e33.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n75H7S1m031370
-	for <ltp-list@lists.sourceforge.net>; Wed, 5 Aug 2009 11:07:28 -0600
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n75H9FIt190548
-	for <ltp-list@lists.sourceforge.net>; Wed, 5 Aug 2009 11:09:17 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n75H9EtX012144
-	for <ltp-list@lists.sourceforge.net>; Wed, 5 Aug 2009 11:09:14 -0600
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Meufa-0002ic-Iy
+	for ltp-list@lists.sourceforge.net; Sat, 22 Aug 2009 17:46:26 +0000
+Received: from e7.ny.us.ibm.com ([32.97.182.137])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MeufT-0003Ig-BA
+	for ltp-list@lists.sourceforge.net; Sat, 22 Aug 2009 17:46:26 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e7.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7MHj7TP030590
+	for <ltp-list@lists.sourceforge.net>; Sat, 22 Aug 2009 13:45:07 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7MHkDCF174466
+	for <ltp-list@lists.sourceforge.net>; Sat, 22 Aug 2009 13:46:13 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7MHkDXP029207
+	for <ltp-list@lists.sourceforge.net>; Sat, 22 Aug 2009 13:46:13 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090805111710.GB7428@linux.vnet.ibm.com>
-References: <20090805090005.GA7428@linux.vnet.ibm.com>
-	<1249463418.5937.6.camel@subratamodak.linux.ibm.com>
-	<20090805111710.GB7428@linux.vnet.ibm.com>
-Date: Wed, 05 Aug 2009 22:39:06 +0530
-Message-Id: <1249492146.3623.6.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <f5a7b3810908180135m6d185842i78ac522f4a163e25@mail.gmail.com>
+References: <f5a7b3810908180135m6d185842i78ac522f4a163e25@mail.gmail.com>
+Date: Sat, 22 Aug 2009 23:15:41 +0530
+Message-Id: <1250963141.10642.27.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] patch for kernel/fs/fs_di fs_di.patch
+Subject: Re: [LTP] [FIX PATCH] ltp-fix-mlockall_15-1.c
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -42,38 +39,121 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jyoti <jyotiv@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, ssant@in.ibm.com
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, Brandon Philips <bphilips@suse.de>
 
-On Wed, 2009-08-05 at 16:47 +0530, Jyoti wrote: 
-> * Subrata Modak <subrata@linux.vnet.ibm.com> [2009-08-05 14:40:18]:
+On Tue, 2009-08-18 at 14:05 +0530, naresh kamboju wrote: 
+> Hi,
 > 
-> > On Wed, 2009-08-05 at 14:30 +0530, Jyoti wrote:
-> > > Hello,
-> > 
-> > Please change the subject line accordingly. It should reflect the patch
-> > you are submitting.
-> > 
-> > Regards--
-> > Subrata
-> > 
-> > > 
-> > > The attached patch adds one more way of testing dataitegrity of files.
-> > > The data integrity test is performed on fragmented files.
-> > > 
-> > > Thanks,
-> > > Jyoti
+> I have noticed UNRESOLVED of following test cases
+> mlockall/15-1.c
+> mlockall/speculative/15-1.c
 
-And neither is this a good Subject heading. Better could be like:
-
-Subject: [PATCH] Added one more approach for data integrity.
-
-Nevertheless, checked in.
+Thanks.
 
 Regards--
 Subrata
 
-> > 
+> 
+> These test cases are fixed by setting the Rlimit to zero to get EPERM
+> as per the kernel code.
+> 
+> I have attached patch and below
+> Please review the same
+> 
+> Best regards,
+> Naresh Kamboju
+> 
+> /***********************************************************/
+> Results:
+> Before patch:
+> =============
+> 
+> conformance/interfaces/mlockall/15-1.test:execution:UNRESOLVED
+> conformance/interfaces/mlockall/speculative/15-1.test:execution:UNRESOLVED
+> 
+> After Patch:
+> ============
+> 
+> conformance/interfaces/mlockall/15-1.test:execution:PASS
+> conformance/interfaces/mlockall/speculative/15-1.test:execution:PASS
+> 
+> /***********************************************************/
+> 
+> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+> 
+> diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/mlockall/15-1.c
+> b/testcases/open_posix_testsuite/conformance/interfaces/mlockall/15-1.c
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/mlockall/15-1.c	2005-06-03
+> 22:00:33.000000000 +0530
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mlockall/15-1.c	2009-08-18
+> 11:28:02.000000000 +0530
+> @@ -21,6 +21,7 @@
+>  #include <sys/types.h>
+>  #include <pwd.h>
+>  #include <string.h>
+> +#include <sys/resource.h>
+>  #include "posixtest.h"
+> 
+> 
+> @@ -28,6 +29,9 @@
+>  int set_nonroot()
+>  {
+>  	struct passwd *pw;
+> +        struct rlimit rlim;
+> +        int ret=0;
+> +
+>  	setpwent();
+>  	/* search for the first user which is non root */
+>  	while((pw = getpwent()) != NULL)
+> @@ -39,6 +43,11 @@
+>  		return 1;
+>  	}
+> 
+> +        rlim.rlim_cur = 0;
+> +        rlim.rlim_max = 0;
+> +        if ((ret = setrlimit(RLIMIT_MEMLOCK,&rlim)) != 0)
+> +                printf("Failed at setrlimit() return %d \n", ret);
+> +
+>  	if(seteuid(pw->pw_uid) != 0) {
+>  		if(errno == EPERM) {
+>  			printf("You don't have permission to change your UID.\n");
+> diff -Naurb a/testcases/open_posix_testsuite/conformance/interfaces/mlockall/speculative/15-1.c
+> b/testcases/open_posix_testsuite/conformance/interfaces/mlockall/speculative/15-1.c
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/mlockall/speculative/15-1.c	2007-07-26
+> 17:32:13.000000000 +0530
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/mlockall/speculative/15-1.c	2009-08-18
+> 11:28:00.000000000 +0530
+> @@ -21,6 +21,7 @@
+>  #include <sys/types.h>
+>  #include <pwd.h>
+>  #include <string.h>
+> +#include <sys/resource.h>
+>  #include "posixtest.h"
+> 
+> 
+> @@ -28,6 +29,9 @@
+>  int set_nonroot()
+>  {
+>  	struct passwd *pw;
+> +        struct rlimit rlim;
+> +        int ret=0;
+> +
+>  	setpwent();
+>  	/* search for the first user which is non root */
+>  	while((pw = getpwent()) != NULL)
+> @@ -39,6 +43,11 @@
+>  		return 1;
+>  	}
+> 
+> +        rlim.rlim_cur = 0;
+> +        rlim.rlim_max = 0;
+> +        if ((ret = setrlimit(RLIMIT_MEMLOCK,&rlim)) != 0)
+> +                printf("Failed at setrlimit() return %d \n", ret);
+> +
+>  	if(seteuid(pw->pw_uid) != 0) {
+>  		if(errno == EPERM) {
+>  			printf("You don't have permission to change your UID.\n");
 
 
 ------------------------------------------------------------------------------
