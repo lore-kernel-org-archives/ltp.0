@@ -1,25 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MeB1U-00027E-Hh
-	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2009 17:02:00 +0000
-Received: from qw-out-1920.google.com ([74.125.92.144])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MeB1Q-0007ns-V5
-	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2009 17:02:00 +0000
-Received: by qw-out-1920.google.com with SMTP id 5so24394qwc.4
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 20 Aug 2009 10:01:51 -0700 (PDT)
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1Mf4Ce-0006ZW-2V
+	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 03:57:12 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Mf4CX-0004Iz-Jt
+	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 03:57:11 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sat, 22 Aug 2009 23:57:12 -0400
+References: <20090821.195739.1000278277145530969.caiqian@cclom.cn>
+	<200908211200.33401.vapier@gentoo.org>
+	<20090823.103037.104044604.caiqian@cclom.cn>
+In-Reply-To: <20090823.103037.104044604.caiqian@cclom.cn>
 MIME-Version: 1.0
-In-Reply-To: <20090820160741.30926.293.sendpatchset@localhost.localdomain>
-References: <20090820160655.30926.34854.sendpatchset@localhost.localdomain>
-	<20090820160741.30926.293.sendpatchset@localhost.localdomain>
-Date: Thu, 20 Aug 2009 10:01:50 -0700
-Message-ID: <364299f40908201001q30e8859t85aa3cd38205872e@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Patch for PM makefile for new testcases & fix
-	test_sched_smt integration issue
+Message-Id: <200908222357.13105.vapier@gentoo.org>
+Subject: Re: [LTP] The Best Practice to Skip Syscall Tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,78 +26,132 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============8377233947676232831=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, arun@linux.vnet.ibm.com, vaidy <svaidy@linux.vnet.ibm.com>, gautham <ego@in.ibm.com>
+To: ltp-list@lists.sourceforge.net
 
-On Thu, Aug 20, 2009 at 9:07 AM, Poornima
-Nayak<mpnayak@linux.vnet.ibm.com> wrote:
-> Patch to integrate test_sched_smt and timer_migration testcase to LTP.
-> Also intergrates the new file get_sched_value to LTP.
+--===============8377233947676232831==
+Content-Type: multipart/signed; boundary="nextPart5846528.RMEbbiV1ic";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+
+--nextPart5846528.RMEbbiV1ic
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+On Saturday 22 August 2009 22:30:37 CAI Qian wrote:
+> From: Mike Frysinger <vapier@gentoo.org>
+> > On Friday 21 August 2009 07:57:39 CAI Qian wrote:
+> >> Test cases unshare failed to compile on systems without such a
+> >> syscall. I am unsure what the best way to handle it. The old ways are,
+> >>
+> >> * add a kernel version check in the unshare tests code.
+> >>
+> >> or
+> >>
+> >> * add a m4 rule.
+> >> * modify the unshare tests code to check if the macro, and add stub
+> >>   functions if the macro is false.
+> >>
+> >> The first approach is unable to handle non-vanilla kernels. The second
+> >> approach needs to add stub functions which are unclean. What I would
+> >> like to do is,
+> >>
+> >> * add a m4 rule.
+> >> * modify unshare Makefile like this,
+> >>
+> >>   ifdef HAVE_UNSHARE  <-- if the syscall is present, compile the tests.
+> >
+> > the configure test should always be there if the code needs new
+> > headers (like sys/signalfd.h).  if it's only a new syscall, then the
+> > configure test should only be for the new symbol (assuming one is
+> > provided).  in all cases, the tests should be compiled.  your proposal
+> > doesnt handle the case where the C library is in place, but the kernel
+> > is older so returns ENOSYS.
 >
-> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+> OK, how about those two approaches?
 >
-> diff -uprN ltp-full-20090731_orig/testcases/kernel/power_management/Makef=
-ile ltp-full-20090731/testcases/kernel/power_management/Makefile
-> --- ltp-full-20090731_orig/testcases/kernel/power_management/Makefile =A0=
- 2009-08-20 19:59:11.000000000 +0530
-> +++ ltp-full-20090731/testcases/kernel/power_management/Makefile =A0 =A0 =
-=A0 =A02009-08-20 20:26:39.000000000 +0530
-> @@ -23,12 +23,16 @@ SUBDIRS :=3D
-> =A0all:
-> =A0 =A0 =A0 =A0@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i $@; done;
-> =A0 =A0 =A0 =A0$(MAKE) check_kv_arch ;
-> + =A0 =A0 =A0 $(MAKE) get_sched_values ;
+> * add a stub C program to check if kernel returns ENOSYS. If so, returns
+>   1. Otherwise, 0.
+> * add a m4 rule to check the headers or/and functions.
+> * if ./configure found all headers and functions, and execute the stub
+>   program to return 0, it will set HAVE_UNSHARE.
+> * modify unshare Makefile to complie it only if HAVE_UNSHARE set.
 >
-> -check_kv_arch: check_kv_arch.c
-> +check_kv_arch: check_kv_arch.c
-> + =A0 =A0 =A0 $(CC) -o $@ $< ../../../lib/tst_kvercmp.c -I../../../include
-> +get_sched_values: get_sched_values.c
-> =A0 =A0 =A0 =A0$(CC) -o $@ $< ../../../lib/tst_kvercmp.c -I../../../inclu=
-de
+> or
 >
-> =A0install:
-> =A0 =A0 =A0 =A0@set -e; ln -f check_kv_arch ../../bin/check_kv_arch; \
-> + =A0 =A0 =A0 ln -f get_sched_values ../../bin/get_sched_values; \
-> =A0 =A0 =A0 =A0ln -f =A0change_freq.sh ../../bin/change_freq.sh; \
-> =A0 =A0 =A0 =A0ln -f =A0change_govr.sh ../../bin/change_govr.sh; \
-> =A0 =A0 =A0 =A0ln -f =A0check_cpufreq_sysfs_files.sh ../../bin/check_cpuf=
-req_sysfs_files.sh; \
-> @@ -37,6 +41,8 @@ install:
-> =A0 =A0 =A0 =A0ln -f =A0pm_include.sh ../../bin/pm_include.sh; \
-> =A0 =A0 =A0 =A0ln -f =A0runpwtests.sh ../../bin/runpwtests.sh; \
-> =A0 =A0 =A0 =A0ln -f =A0test_sched_mc.sh ../../bin/test_sched_mc.sh; \
-> + =A0 =A0 =A0 ln -f =A0test_sched_mc.sh ../../bin/test_sched_smt.sh; \
-> + =A0 =A0 =A0 ln -f =A0test_sched_mc.sh ../../bin/test_timer_migration.sh=
-; \
-> =A0 =A0 =A0 =A0ln -f =A0config_cpu_freq ../../bin/config_cpu_freq; \
-> =A0 =A0 =A0 =A0ln -f =A0config_cpu_idle ../../bin/config_cpu_idle; \
-> =A0 =A0 =A0 =A0ln -f =A0config_sched_mc ../../bin/config_sched_mc;
-> @@ -47,4 +53,4 @@ install:
-> =A0clean:
-> =A0 =A0 =A0 =A0@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i $@ ; done
-> =A0 =A0 =A0 =A0rm -f check_kv_arch
-> -
-> + =A0 =A0 =A0 rm -f get_sched_values
+> * add a m4 rule to check the headers or/and functions.
+> * if ./configure found all headers and functions, , it will set
+>   HAVE_UNSHARE.
+> * modify the test code to deal with three situations.
+>   * HAVE_UNSHARE =3D 0
+>   * HAVE_UNSHARE =3D 1 + ENOSYS
+>   * HAVE_UNSHARE =3D 1 + no ENOSYS
 
-Please don't worry about this. It's handled in my makefile-infra-rework pat=
-ch.
-Thanks,
--Garrett
+in addition to the reasoning Garrett provided, this makes for a fairly=20
+complicated setup for no real gain.  the solution i mentioned (and is being=
+=20
+used) covers all known build/runtime issues.
 
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+if you need a new C library function, check for it.  if you need a new C=20
+library header, check for it.  if a test may be run on an older system and=
+=20
+thus the call fails with ENOSYS, the test must check for it and error out w=
+ith=20
+TCONF (and a helper message).  whether someone chooses to also add a runtim=
+e=20
+kernel version check (as can be seen in a few tests) is up to whoever feels=
+=20
+like doing the work.
+=2Dmike
 
-trial. Simplify your report design, integration and deployment - and focus =
-on =
+--nextPart5846528.RMEbbiV1ic
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-what you do best, core application coding. Discover what's new with =
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
 
+iQIcBAABAgAGBQJKkL4ZAAoJEEFjO5/oN/WBbsYP/j1fp2WKwDUjGvrtjFSl2hdC
+EcF+AkVl62LWgitz+mr0kSX8yNjZST2R9EIF8Hezhcj6wVRsYkoF/dRECIFeIJiZ
+jFz/7OWWGg+MmFrspECyvljkA3acIkMwPzTO/TutmlxzxrMrrgqxPYPBhZd7Vzif
+Mz9esbpOxP/N2+qOl8976AVXQ7ve8CykKlywTM5hAjZcxPaKMCFbfNttVzYY0hsI
+htG3JAdEYujkaDhvxnAONz3A4fEk7bo2vh4z8C4OuST7XhxqKW1S7chzX339ZErz
+rd5lRW0OCJtg8Jsbdw4w24fmEzcv3AlKLDnYn1bTH8FNGZg/pGY09ZflsCbyGZLB
+a4CPbr6ERx/DDPQOHr5laiIQ30kvTrJxp59M3NPxkxXtiiMCrUYIJoz8RGjggqB7
+NoezQVvvs+iGzIOZTcGpMJNnvEMEz663j7CeKwo1B2DUzo/8B8Gg226DVdPj2dI0
+23n+eGWEbTEL+z6URuM6VXrC8Vsza4PsO9bYEkf2bGmGamKmk4MigClvpvwLsaVm
+t+zVK68x4ULghDsddgLOAPVXDd3uVL99eQyBX+CRcGGNvcA9XDJR4g5QtuWQVt9H
+UgiGgc9bEaxM7/vNAj80Odh7i7MKUYG5S2QQk/rKCJpBw/chSfZPl9SNZx/jydll
+d6evRJiE74jZYclltq4F
+=AjMs
+-----END PGP SIGNATURE-----
+
+--nextPart5846528.RMEbbiV1ic--
+
+
+--===============8377233947676232831==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============8377233947676232831==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============8377233947676232831==--
+
