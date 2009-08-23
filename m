@@ -1,34 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mf7W4-0002is-1b
-	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 07:29:28 +0000
-Received: from e31.co.us.ibm.com ([32.97.110.149])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mf7Vx-0004Kp-OF
-	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 07:29:28 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e31.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7N7NfdE031102
-	for <ltp-list@lists.sourceforge.net>; Sun, 23 Aug 2009 01:23:41 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7N7TGsm220376
-	for <ltp-list@lists.sourceforge.net>; Sun, 23 Aug 2009 01:29:16 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7N7TFYC025850
-	for <ltp-list@lists.sourceforge.net>; Sun, 23 Aug 2009 01:29:16 -0600
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mf7Ve-0008HT-3a
+	for Ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 07:29:02 +0000
+Received: from e9.ny.us.ibm.com ([32.97.182.139])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Mf7VX-0001nZ-47
+	for Ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 07:29:02 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e9.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7N7RRlY022768
+	for <Ltp-list@lists.sourceforge.net>; Sun, 23 Aug 2009 03:27:27 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7N7SlBR230160
+	for <Ltp-list@lists.sourceforge.net>; Sun, 23 Aug 2009 03:28:47 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7N7Ppvs013918
+	for <Ltp-list@lists.sourceforge.net>; Sun, 23 Aug 2009 03:25:51 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090820160800.30926.41644.sendpatchset@localhost.localdomain>
-References: <20090820160655.30926.34854.sendpatchset@localhost.localdomain>
-	<20090820160800.30926.41644.sendpatchset@localhost.localdomain>
-Date: Sun, 23 Aug 2009 12:58:58 +0530
-Message-Id: <1251012538.16822.36.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1250781918-23897-4-git-send-email-Geert.Uytterhoeven@sonycom.com>
+References: <1250781918-23897-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1250781918-23897-2-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1250781918-23897-3-git-send-email-Geert.Uytterhoeven@sonycom.com>
+	<1250781918-23897-4-git-send-email-Geert.Uytterhoeven@sonycom.com>
+Date: Sun, 23 Aug 2009 12:58:18 +0530
+Message-Id: <1251012499.16822.31.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] Patch to fix cpu consolidation failure for kernbench
-	on	HT system
+Subject: Re: [LTP] [PATCH] Spelling fixes: brok -> broke
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -42,120 +42,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, arun@linux.vnet.ibm.com, vaidy <svaidy@linux.vnet.ibm.com>, gautham <ego@in.ibm.com>
+To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Cc: Ltp-list@lists.sourceforge.net
 
-On Thu, 2009-08-20 at 21:38 +0530, Poornima Nayak wrote: 
-> Threshold and validation functions modified for testcases run on HT systems. 
-> 
-> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+On Thu, 2009-08-20 at 17:25 +0200, Geert Uytterhoeven wrote: 
+> Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
 
 Thanks.
 
 Regards--
 Subrata
 
+> ---
+>  testcases/commands/ade/file/file_test.sh |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff -uprN ltp-full-20090731_orig/testcases/kernel/power_management/lib/sched_mc.py ltp-full-20090731/testcases/kernel/power_management/lib/sched_mc.py
-> --- ltp-full-20090731_orig/testcases/kernel/power_management/lib/sched_mc.py	2009-08-20 19:59:11.000000000 +0530
-> +++ ltp-full-20090731/testcases/kernel/power_management/lib/sched_mc.py	2009-08-20 20:33:21.000000000 +0530
-> @@ -193,6 +193,8 @@ def trigger_ebizzy (stress, duration, ba
->              threads = get_hyper_thread_count()
->          if stress == "partial":
->              threads = cpu_count / socket_count
-> +            if is_hyper_threaded():
-> +                threads = threads / get_hyper_thread_count()
->          if stress == "full":
->  	    threads = cpu_count
+> diff --git a/testcases/commands/ade/file/file_test.sh b/testcases/commands/ade/file/file_test.sh
+> index 6f09f21..b4719fc 100755
+> --- a/testcases/commands/ade/file/file_test.sh
+> +++ b/testcases/commands/ade/file/file_test.sh
+> @@ -532,7 +532,7 @@ fi
 > 
-> @@ -244,9 +246,11 @@ def trigger_kernbench (stress, backgroun
->      olddir = os.getcwd()
->      try:
->          if stress == "thread":
-> -	        threads = 2
-> +	    threads = 2
->          if stress == "partial":
-> -	        threads = cpu_count / socket_count
-> +	    threads = cpu_count / socket_count
-> +            if is_hyper_threaded():
-> +                threads = threads / get_hyper_thread_count()
->          if stress == "full":
->              threads = cpu_count
+>  if [ $RC -ne 0 ]
+>  then
+> -    $LTPBIN/tst_brk TBROK $LTPTMP/file.out NULL "mkdir: brok. Reason:"
+> +    $LTPBIN/tst_brk TBROK $LTPTMP/file.out NULL "mkdir: broke. Reason:"
+>  fi
 > 
-> @@ -281,7 +285,8 @@ def trigger_kernbench (stress, backgroun
->  	    sys.exit(1)
->     
->          get_proc_data(stats_start)
-> -        os.system ( '%s/kernbench -o 2 -M -H -n 1 >/dev/null 2>&1' % benchmark_path)
-> +        os.system ( '%s/kernbench -o %s -M -H -n 1 >/dev/null 2>&1' % (benchmark_path, threads))
-> +        print threads
->          
->          print "INFO: Workload kernbench triggerd"
->          os.chdir(olddir)
-> @@ -438,6 +443,8 @@ def validate_cpugrp_map(cpu_group, sched
->                          for i in range(0, len(core_cpus)):
->                              if core_cpus[i] in modi_cpu_grp:
->                                  modi_cpu_grp.remove(core_cpus[i]) 
-> +                                if len(modi_cpu_grp) == 0:
-> +                                    return 0
->                              else:
->                                  # If sched_smt == 0 then its oky if threads run
->                                  # in different cores of same package 
-> @@ -499,24 +506,35 @@ def verify_sched_domain_dmesg(sched_mc_l
->          print "Reading dmesg failed", details
->          sys.exit(1)
+>  cat > $bDIR/SOURCES/cprog.c <<EOF
+> @@ -552,7 +552,7 @@ fi
+>  $bCMD --define "_topdir $bDIR" -bs  $LTPTMP/files.spec > $LTPTMP/file.out 2>&1
+>  if [ $? -ne 0 ]
+>  then
+> -    $LTPBIN/tst_brk TBROK $LTPTMP/file.out NULL "rpm command brok. Reason:"
+> +    $LTPBIN/tst_brk TBROK $LTPTMP/file.out NULL "rpm command broke. Reason:"
+>  fi
 > 
-> -def validate_cpu_consolidation(sched_mc_level, sched_smt_level):
-> +def validate_cpu_consolidation(work_ld, sched_mc_level, sched_smt_level):
->      ''' Verify if cpu's on which threads executed belong to same
->      package
->      '''
->      cpus_utilized = list()
->      try:
->          for l in sorted(stats_percentage.keys()):
-> -	    #modify threshold
-> -            if stats_percentage[l][1] > 50:
-> -                cpu_id = stats_percentage[l][0].split("cpu")
-> -                if cpu_id[1] != '':
-> -                    cpus_utilized.append(int(cpu_id[1]))
-> -        cpus_utilized.sort()
-> +            #modify threshold
-> +            if is_hyper_threaded():
-> +                if stats_percentage[l][1] > 25 and work_ld == "kernbench":
-> +                    cpu_id = stats_percentage[l][0].split("cpu")
-> +                    if cpu_id[1] != '':
-> +                        cpus_utilized.append(int(cpu_id[1]))
-> +                else:
-> +                    if stats_percentage[l][1] > 50:
-> +                        cpu_id = stats_percentage[l][0].split("cpu")
-> +                        if cpu_id[1] != '':
-> +                            cpus_utilized.append(int(cpu_id[1]))
-> +            else:
-> +                if stats_percentage[l][1] > 50:
-> +                    cpu_id = stats_percentage[l][0].split("cpu")
-> +                    if cpu_id[1] != '':
-> +                        cpus_utilized.append(int(cpu_id[1]))
-> +                    cpus_utilized.sort()
->          print "INFO: CPU's utilized ", cpus_utilized
-> 
->          status = validate_cpugrp_map(cpus_utilized, sched_mc_level, sched_smt_level)
-> -	if status == 1:
-> -	    print "INFO: CPUs utilized is not in same package or core"
-> +        if status == 1:
-> +            print "INFO: CPUs utilized is not in same package or core"
->          return(status)
->      except Exception, details:
->          print "Exception in validate_cpu_consolidation: ", details
-> 
-> ------------------------------------------------------------------------------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> trial. Simplify your report design, integration and deployment - and focus on 
-> what you do best, core application coding. Discover what's new with 
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>  file $bDIR/SRPMS/cprog-0.0.7-3.src.rpm > $LTPTMP/file.out 2>&1
 
 
 ------------------------------------------------------------------------------
