@@ -1,35 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MhoLM-0005hk-EP
-	for ltp-list@lists.sourceforge.net; Sun, 30 Aug 2009 17:37:32 +0000
-Received: from e32.co.us.ibm.com ([32.97.110.150])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MhoLI-0001vw-HZ
-	for ltp-list@lists.sourceforge.net; Sun, 30 Aug 2009 17:37:32 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e32.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7UHWhWY029235
-	for <ltp-list@lists.sourceforge.net>; Sun, 30 Aug 2009 11:32:43 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7UHbN38250542
-	for <ltp-list@lists.sourceforge.net>; Sun, 30 Aug 2009 11:37:23 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7UHbMDD008315
-	for <ltp-list@lists.sourceforge.net>; Sun, 30 Aug 2009 11:37:22 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090828101505.12177.78037.sendpatchset@localhost.localdomain>
-References: <20090828101440.12177.32012.sendpatchset@localhost.localdomain>
-	<20090828101505.12177.78037.sendpatchset@localhost.localdomain>
-Date: Sun, 30 Aug 2009 23:06:47 +0530
-Message-Id: <1251653809.12120.22.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [Patch 4/8] Addional new reusable functions for
-	ILB	testing
-Reply-To: subrata@linux.vnet.ibm.com
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1Mf48I-0006Sn-43
+	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 03:52:42 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Mf48B-0006tx-R5
+	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 03:52:42 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sat, 22 Aug 2009 23:52:41 -0400
+References: <20090821.195739.1000278277145530969.caiqian@cclom.cn>
+	<364299f40908211417i21840c17n4e144c85852cb08a@mail.gmail.com>
+	<20090823.103728.112603315.caiqian@cclom.cn>
+In-Reply-To: <20090823.103728.112603315.caiqian@cclom.cn>
+MIME-Version: 1.0
+Message-Id: <200908222352.42884.vapier@gentoo.org>
+Subject: Re: [LTP] The Best Practice to Skip Syscall Tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,269 +26,110 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8080874763841013911=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, svaidy@linux.vnet.ibm.com, ego@in.ibm.com, arun@linux.vnet.ibm.com
+To: CAI Qian <caiqian@cclom.cn>
+Cc: ltp-list@lists.sf.net
 
-On Fri, 2009-08-28 at 15:45 +0530, Poornima Nayak wrote: 
-> Developed new functions to support ILB test execution and result verification.
-> Minimal changes has been done for exisitng function to support ILB
-> test execution.
-> 
-> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+--===============8080874763841013911==
+Content-Type: multipart/signed; boundary="nextPart2331791.AItcSb0iHm";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Thanks.
+--nextPart2331791.AItcSb0iHm
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-> 
-> diff -uprN ltp_orig/testcases/kernel/power_management/lib/sched_mc.py ltp/testcases/kernel/power_management/lib/sched_mc.py
-> --- ltp_orig/testcases/kernel/power_management/lib/sched_mc.py	2009-08-28 10:54:59.000000000 +0530
-> +++ ltp/testcases/kernel/power_management/lib/sched_mc.py	2009-08-28 12:24:55.000000000 +0530
-> @@ -15,8 +15,12 @@ cpu_map = {}
->  stats_start = {}
->  stats_stop = {}
->  stats_percentage = {}
-> +intr_start = []
-> +intr_stop = []
->  cpu_count = 0
->  socket_count = 0
-> +cpu1_max_intr = 0
-> +cpu2_max_intr = 0
-> 
->  def clear_dmesg():
->      '''
-> @@ -162,6 +166,23 @@ def get_proc_data(stats_list):
->          print "Could not read statistics", e
->          sys.exit(1)
-> 
-> +def get_proc_loc_count(loc_stats):
-> +    ''' Read /proc/stat info and store in dictionary
-> +    '''
-> +    try:
-> +        file_procstat = open("/proc/interrupts", 'r')
-> +        for line in file_procstat:
-> +            if line.startswith('LOC:'):
-> +                data = line.split()
-> +                for i in range(0, cpu_count):
-> +                    # To skip LOC
-> +                    loc_stats.append(data[i+1])
-> +        file_procstat.close()
-> +    except Exception, details:
-> +        print "Could not read interrupt statistics", details
-> +        sys.exit(1)
-> +
-> +
->  def set_sched_mc_power(sched_mc_level):
->      ''' Routine to set sched_mc_power_savings to required level
->      '''
-> @@ -184,7 +205,23 @@ def set_sched_smt_power(sched_smt_level)
->          print "Could not set sched_smt_power_savings to", sched_smt_level, e
->  	sys.exit(1)
-> 
-> -def trigger_ebizzy (stress, duration, background):
-> +def set_timer_migration_interface(value):
-> +    ''' Set value of timer migration interface to a value
-> +        passed as argument
-> +    '''
-> +    try:
-> +        os.system('echo %s > \
-> +            /proc/sys/kernel/timer_migration 2>/dev/null' % value)
-> +    except OSError, e:
-> +        print "Could not set timer_migration to ", value, e
-> +        sys.exit(1)
-> +
-> +def start_cyclictest():
-> +    ''' Trigger cyclictest in background to increase
-> +        timer interrupts
-> +    '''
-> +    
-> +def trigger_ebizzy (stress, duration, background, pinned):
->      ''' Triggers ebizzy workload for sched_mc=1
->          testing
->      '''
-> @@ -197,6 +234,9 @@ def trigger_ebizzy (stress, duration, ba
->                  threads = threads / get_hyper_thread_count()
->          if stress == "full":
->  	    threads = cpu_count
-> +        if stress == "single_job":
-> +            threads = 1
-> +            duration = 180
-> 
->          olddir = os.getcwd()
->          path = '%s/utils/benchmark' % os.environ['LTPROOT']
-> @@ -220,7 +260,10 @@ def trigger_ebizzy (stress, duration, ba
->                  if background == "yes":
->                      succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null &' % (threads, duration))
->                  else:
-> -                    succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null' % (threads, duration))
-> +                    if pinned == "yes":
-> +                        succ = os.system('taskset -c %s ./ebizzy -t%s -s4096 -S %s >/dev/null' % (cpu_count -1, threads, duration))
-> +                    else:
-> +                        succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null' % (threads, duration))
->           
->                  if succ == 0: 
->                      print "INFO: ebizzy workload triggerd"
-> @@ -238,7 +281,7 @@ def trigger_ebizzy (stress, duration, ba
->          print "Ebizzy workload trigger failed ", details
->          sys.exit(1)   
-> 
-> -def trigger_kernbench (stress, background):
-> +def trigger_kernbench (stress, background, pinned):
->      ''' Trigger load on system like kernbench.
->          Copys existing copy of LTP into as LTP2 and then builds it
->          with make -j
-> @@ -253,6 +296,8 @@ def trigger_kernbench (stress, backgroun
->                  threads = threads / get_hyper_thread_count()
->          if stress == "full":
->              threads = cpu_count
-> +        if stress == "single_job":
-> +            threads = 1
-> 
->          dst_path = "/root"
->          olddir = os.getcwd()      
-> @@ -283,27 +328,31 @@ def trigger_kernbench (stress, backgroun
->          else:
->              print "INFO: Linux kernel source not found. Kernbench cannot be executed"
->  	    sys.exit(1)
-> -   
-> +  
->          get_proc_data(stats_start)
-> -        os.system ( '%s/kernbench -o %s -M -H -n 1 >/dev/null 2>&1' % (benchmark_path, threads))
-> -        print threads
-> +        get_proc_loc_count(intr_start)
-> +        if pinned == "yes":
-> +            os.system ( 'taskset -c %s %s/kernbench -o %s -M -H -n 1 >/dev/null 2>&1' % (cpu_count-1, benchmark_path, threads))
-> +        else:
-> +            os.system ( '%s/kernbench -o %s -M -H -n 1 >/dev/null 2>&1' % (benchmark_path, threads))
->          
->          print "INFO: Workload kernbench triggerd"
->          os.chdir(olddir)
->          get_proc_data(stats_stop)
-> +        get_proc_loc_count(intr_stop)
->      except Exception, details:
-> -        print "Workload trigger kernbench failed ", details
-> +        print "Workload kernbench trigger failed ", details
->          sys.exit(1)
->     
-> -def trigger_workld(workload, stress, duration, background):
-> +def trigger_workld(workload, stress, duration, background, pinned):
->      ''' Triggers workload passed as argument. Number of threads 
->          triggered is based on stress value.
->      '''
->      try:
->          if workload == "ebizzy":
-> -            trigger_ebizzy (stress, duration, background)
-> +            trigger_ebizzy (stress, duration, background, pinned)
->          if workload == "kernbench":
-> -            trigger_kernbench (stress, background)
-> +            trigger_kernbench (stress, background, pinned)
->      except Exception, details:
->          print "INFO: Trigger workload failed", details
->          sys.exit(1)
-> @@ -386,6 +435,22 @@ def generate_report():
->      print >> keyvalfile
->      keyvalfile.close()
-> 
-> +def generate_loc_intr_report():
-> +    ''' Generate interrupt report of CPU's
-> +    '''
-> +    if (not os.path.exists('/procstat')):
-> +        os.mkdir('/procstat')
-> +
-> +    reportfile = open('/procstat/cpu-loc_interrupts', 'a')
-> +    print >> reportfile, "=============================================================="
-> +    print >> reportfile, "                Local timer interrupt stats                   "
-> +    print >> reportfile, "=============================================================="
-> +    for i in range(0, cpu_count):
-> +        intr_stop[i] =  int(intr_stop[i]) - int(intr_start[i])
-> +        print >> reportfile, "CPU%s: %s" %(i, intr_stop[i])
-> +    print >> reportfile
-> +    reportfile.close()
-> +
->  def expand_range(range_val):
->      '''
->         Expand the range of value into actual numbers
-> @@ -462,6 +527,7 @@ def validate_cpugrp_map(cpu_group, sched
->                  pkg_cpus = cpu_map[pkg]
->                  if pkg_cpus == cpu_group:
->                      return(0)
-> +                 
->              return(1) 
->      except Exception, details:
->          print "Exception in validate_cpugrp_map: ", details
-> @@ -540,6 +606,53 @@ def validate_cpu_consolidation(work_ld, 
->          print "Exception in validate_cpu_consolidation: ", details
->          sys.exit(1)
-> 
-> +def get_cpuid_max_intr_count():
-> +    '''Return the cpu id's of two cpu's with highest number of intr'''
-> +    try:
-> +        highest = 0
-> +        second_highest = 0
-> +        global cpu1_max_intr, cpu2_max_intr
-> +        #Skipping CPU0 as it is generally high
-> +        for i in range(1, cpu_count):
-> +            if int(intr_stop[i]) > int(highest):
-> +                if highest != 0:
-> +                    second_highest = highest
-> +                    cpu2_max_intr = cpu1_max_intr
-> +                highest = int(intr_stop[i])
-> +                cpu1_max_intr = i
-> +            else:
-> +                if int(intr_stop[i]) > int(second_highest):
-> +                    second_highest = int(intr_stop[i])
-> +                    cpu2_max_intr = i
-> +        for i in range(1, cpu_count):
-> +            if i != cpu1_max_intr and i != cpu2_max_intr:
-> +                diff = second_highest - intr_stop[i]
-> +                ''' Threshold of difference has to be manipulated with multiple test'''
-> +                if diff < 10000:
-> +                    print "INFO: Difference in interrupt count is below threshold"
-> +                    return 1
-> +        print "INFO: Interrupt count in other CPU's low as expected"
-> +        return 0 
-> +    except Exception, details:
-> +        print "Exception in get_cpuid_max_intr_count: ", details
-> +        sys.exit(1)
-> +  
-> +def validate_ilb (sched_mc_level, sched_smt_level):
-> +    ''' Validate if ilb is running in same package where work load is running
-> +    '''
-> +    try:
-> +        status = get_cpuid_max_intr_count()
-> +        if status == 1:
-> +            return 1
-> +        for pkg in sorted(cpu_map.keys()):
-> +            if cpu1_max_intr in cpu_map[pkg] and cpu2_max_intr in cpu_map[pkg]:
-> +                return 0
-> +        print "INFO: CPUs with higher interrupt count is not in same package"
-> +        return 1
-> +    except Exception, details:
-> +        print "Exception in validate_ilb: ", details
-> +        sys.exit(1)
-> +    
->  def reset_schedmc():
->      ''' Routine to reset sched_mc_power_savings to Zero level
->      '''
-> 
-> ------------------------------------------------------------------------------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> trial. Simplify your report design, integration and deployment - and focus on 
-> what you do best, core application coding. Discover what's new with 
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+On Saturday 22 August 2009 22:37:28 CAI Qian wrote:
+> From: Garrett Cooper <yanegomi@gmail.com>
+> > On Fri, Aug 21, 2009 at 9:00 AM, Mike Frysinger wrote:
+> >> On Friday 21 August 2009 07:57:39 CAI Qian wrote:
+> >>> Test cases unshare failed to compile on systems without such a
+> >>> syscall. I am unsure what the best way to handle it. The old ways are,
+> >>>
+> >>> * add a kernel version check in the unshare tests code.
+> >>>
+> >>> or
+> >>>
+> >>> * add a m4 rule.
+> >>> * modify the unshare tests code to check if the macro, and add stub
+> >>>   functions if the macro is false.
+> >>>
+> >>> The first approach is unable to handle non-vanilla kernels. The second
+> >>> approach needs to add stub functions which are unclean. What I would
+> >>> like to do is,
+> >>>
+> >>> * add a m4 rule.
+> >>> * modify unshare Makefile like this,
+> >>>
+> >>>   ifdef HAVE_UNSHARE  <-- if the syscall is present, compile the tests.
+> >>
+> >> the configure test should always be there if the code needs new headers
+> >> (like sys/signalfd.h).  if it's only a new syscall, then the configure
+> >> test should only be for the new symbol (assuming one is provided).  in
+> >> all cases, the tests should be compiled.  your proposal doesnt handle
+> >> the case where the C library is in place, but the kernel is older so
+> >> returns ENOSYS.
+> >
+> >     check_for_unshare was a poorly hacked app, IMO and Mike is
+> > correct. The issue needs to be a combination of buildtime and runtime
+> > tests as it needs to pass through the build and the issue with the
+> > syscall needs to be detected and marked TBROK if the syscall isn't
+> > implemented.
+>
+> ENOSYS is the expected result if the kernel under test has no such
+> implementation, so I would consider TPASS or TCONF.
 
+TPASS is wrong.  in another thread, people seemed to be OK with TCONF.
+-mike
+
+--nextPart2331791.AItcSb0iHm
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJKkL0KAAoJEEFjO5/oN/WB48EP/1gm+Vb1muNDDzxRjBZ5Odrs
+8dtTRgK6HUwh77rswdIweqMGUvOWsXLFaoOHQXQYMij2VIUd6aFpIgN6+mID/+yw
+ygpOtWeQsAbHKZMNSMhDVX8biCpC/+DSC8U7/6xJbSYg1aZta/h2aqcthY+cDtwm
+JEzso9wjhe+oQ0UIac8ILtISwU7T17UZmdDoKnUxZy8abmXvh7QHt2fzFMHhxMR7
+bfAmTPGB80xS0YzTownsu+Q3lEG0AOh/K3qAae7qZ9eZhhKe2tdHpog1Dq+MIiY9
+E4kTvscrLrZWwSrbX0LZrJ+NiSA7deKm2UBq7ZE1QHfei2sfw/hJK39prfgUGnF5
+FJHjZVsBYiEbVxjDKnbw6AU1cfNS+eyLR8OhYrHIJwT6JE40aY6qMrgcneJDJogn
+h/AM7GV7LdVspjLWnP/OkNZyi94kpXkOS14YuGA11Kkqwrn9r6FJQSkqzRWX4gF8
+MR+vASG68OcxumcP/7HPd5J54lVigcLVF399qpdcN66CwrEgUnAHOcNQzc5SbcFf
+31fooorPsH7s8TUpfg0mOMAUUaqu2baPvk+c1HvONysZ85HiC1sNFLW/fazI1UKS
++xqh4xOgxdWIjjMc7Tdcu3sGmeKCYfvgXyEp2QNvXK0YQeaHTXJR8sBhrzIZGjc/
+3XXB2of9Mb5hRYHiN+Af
+=MA0p
+-----END PGP SIGNATURE-----
+
+--nextPart2331791.AItcSb0iHm--
+
+
+--===============8080874763841013911==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============8080874763841013911==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============8080874763841013911==--
+
