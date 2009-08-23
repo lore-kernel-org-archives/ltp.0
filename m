@@ -1,13 +1,12 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-From: Shuah Khan <shuah.khan@hp.com>
-In-Reply-To: <41008.95.24.171.156.1251178978.squirrel@mail.pigeonpoint.com>
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <364299f40908191611x4accc24yc36b344956c7a40c@mail.gmail.com>
 References: <364299f40908191611x4accc24yc36b344956c7a40c@mail.gmail.com>
-	<1251162918.4388.33.camel@OSLORic>
-	<41008.95.24.171.156.1251178978.squirrel@mail.pigeonpoint.com>
-Date: Tue, 25 Aug 2009 09:12:03 -0600
-Message-Id: <1251213123.7108.8.camel@orthanc>
+Date: Sun, 23 Aug 2009 12:58:15 +0530
+Message-Id: <1251012495.16822.30.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [Openhpi-devel] [PATCH] Cross-compile configure bug
+Subject: Re: [LTP] [PATCH] Cross-compile configure bug
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -17,157 +16,59 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "openhpi-devel@lists.sourceforge.net" <openhpi-devel@lists.sourceforge.net>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Ric White <richard.white@hp.com>
+Cc: openhpi-devel@lists.sourceforge.net, LTP list <ltp-list@lists.sourceforge.net>
 
-On Tue, 2009-08-25 at 05:42 +0000, anton.pak@pigeonpoint.com wrote:
-> Hello!
-> 
-> We have the following lines in include/SaHpi.h:
-> 
-> typedef unsigned char     SaHpiUint8T;
-> typedef unsigned short    SaHpiUint16T;
-> typedef unsigned int      SaHpiUint32T;
-> typedef signed char       SaHpiInt8T;
-> typedef signed short      SaHpiInt16T;
-> typedef signed int        SaHpiInt32T;
-> 
-> Also I suspect there can be marshalling issues, i.e. when
-> daemon on platform with sizeof(int) == 4 but library is not and vice versa.
-> 
->    Anton Pak
-
-The proposed fix might help compile OpenHpi on a 64-bit platform,
-however I agree with the concerns from others that we will see run-time
-issues. Running 32-bit binary and libraries on a 64-bit platform might
-be an option.
-
--- Shuah
-
-
-> 
-> 
-> > Hi Garrett,
-> >
-> > I was wondering about your addition of the cross_compiling test. If
-> > there is OpenHPI code that may behave badly on a system where an int
-> > isn't 4 bytes, I'm thinking that a warning should be issued even for a
-> > cross compile to such an architecture as well. Like:
-> >
-> > if test "x$OH_SIZEOF_INT" != "x4"; then
-> >     AC_MSG_WARN([
-> > *** int is not 4 bytes, it is $OH_SIZEOF_INT bytes on this platform
-> > *** undefined behavior may result from this.
-> > ])
-> > fi
-> >
-> > Will having a warning instead of an error cause problems for LTP when
-> > cross compiling?
-> >
-> > Does anyone else in the OpenHPI community oppose changing this error to
-> > a warning?
-> >
-> > Best Regards,
-> > Ric White
-> >
-> >
-> > On Wed, 2009-08-19 at 23:11 +0000, Garrett Cooper wrote:
-> >> Hi,
-> >>     Found this bug while trying to cross-compile with the
-> >> openhpi-test-suite in LTP, and made the ERROR into WARN. Please fix
-> >> this item as per the attached patch.
-> >> Thanks,
-> >> -Garrett
-> >>
-> >> PS Please CC my address in all correspondence w.r.t. this email thread.
-> >>
-> >> Summary:
-> >>
-> >> 1. int != 4 shouldn't be checked for while cross-compiling.
-> >> 2. Warn instead of erroring out, because we have a _lot_ of 64-bit
-> >> platforms that we test on which will be negatively impacted by this
-> >> check.
-> >>
-> >> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
-> >>
-> >> ---
-> >> /nfs.mac/ltp-upgrade/contrib/ltp/src/testcases/open_hpi_testsuite//configure.ac.orig	2009-08-19
-> >> 16:04:08.000000000 -0700
-> >> +++
-> >> /nfs.mac/ltp-upgrade/contrib/ltp/src/testcases/open_hpi_testsuite//configure.ac	2009-08-19
-> >> 16:10:47.000000000 -0700
-> >> @@ -44,14 +44,13 @@
-> >>  AC_PROG_LN_S
-> >>  AC_PROG_MAKE_SET
-> >>
-> >> -dnl die on int != 32bits.  This is too instrumental to our code right
-> >> now.
-> >> +dnl Warn when int != 32bits.  This is too instrumental to our code
-> >> right now.
-> >>  dnl AC_MSG_CHECKING(int is 4 bytes)
-> >>  OH_SET_SIZES
-> >> -if test "x$OH_SIZEOF_INT" != "x4"; then
-> >> -    AC_MSG_ERROR([
-> >> +if test x$cross_compiling != xyes && test "x$OH_SIZEOF_INT" != "x4";
-> >> then
-> >> +    AC_MSG_WARN([
-> >>  *** int is not 4 bytes, it is $OH_SIZEOF_INT bytes on this platform
-> >> -*** undefined behavior will result
-> >> -*** please contact the openhpi development team to fix this
-> >> +*** undefined behavior may result from this.
-> >>  ])
-> >>  fi
-> >>
-> >> ------------------------------------------------------------------------------
-> >> Let Crystal Reports handle the reporting - Free Crystal Reports 2008
-> >> 30-Day
-> >> trial. Simplify your report design, integration and deployment - and
-> >> focus on
-> >> what you do best, core application coding. Discover what's new with
-> >> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> >> _______________________________________________
-> >> Openhpi-devel mailing list
-> >> Openhpi-devel@lists.sourceforge.net
-> >> https://lists.sourceforge.net/lists/listinfo/openhpi-devel
-> >
-> >
-> > ------------------------------------------------------------------------------
-> > Let Crystal Reports handle the reporting - Free Crystal Reports 2008
-> > 30-Day
-> > trial. Simplify your report design, integration and deployment - and focus
-> > on
-> > what you do best, core application coding. Discover what's new with
-> > Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> > _______________________________________________
-> > Openhpi-devel mailing list
-> > Openhpi-devel@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/openhpi-devel
-> >
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> trial. Simplify your report design, integration and deployment - and focus on 
-> what you do best, core application coding. Discover what's new with 
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________
-> Openhpi-devel mailing list
-> Openhpi-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/openhpi-devel
--- 
-
-
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+UmljLAoKQ2FuIHlvdSBwbGVhc2UgbG9vayBpbnRvIEdhcnJldHTFmyBwYXRjaCA/IFRoaXMgc29s
+dmVzIHNvbWUgY3Jvc3MKY29tcGlsYXRpb24gcHJvYmxlbSBpbiBPcGVuIEhQSSwgd2hpY2ggd2Ug
+bm9ybWFsbHkgaW50ZWdyYXRlIGludG8gTFRQCndoZW5ldmVyIHRoZXJlIGlzIGEgZnJlc2ggcmVs
+ZWFzZSBmcm9tIHlvdXIgc2lkZS4KClJlZ2FyZHMtLQpTdWJyYXRhCgpPbiBXZWQsIDIwMDktMDgt
+MTkgYXQgMTY6MTEgLTA3MDAsIEdhcnJldHQgQ29vcGVyIHdyb3RlOiAKPiBIaSwKPiAgICAgRm91
+bmQgdGhpcyBidWcgd2hpbGUgdHJ5aW5nIHRvIGNyb3NzLWNvbXBpbGUgd2l0aCB0aGUKPiBvcGVu
+aHBpLXRlc3Qtc3VpdGUgaW4gTFRQLCBhbmQgbWFkZSB0aGUgRVJST1IgaW50byBXQVJOLiBQbGVh
+c2UgZml4Cj4gdGhpcyBpdGVtIGFzIHBlciB0aGUgYXR0YWNoZWQgcGF0Y2guCj4gVGhhbmtzLAo+
+IC1HYXJyZXR0Cj4gCj4gUFMgUGxlYXNlIENDIG15IGFkZHJlc3MgaW4gYWxsIGNvcnJlc3BvbmRl
+bmNlIHcuci50LiB0aGlzIGVtYWlsIHRocmVhZC4KPiAKPiBTdW1tYXJ5Ogo+IAo+IDEuIGludCAh
+PSA0IHNob3VsZG4ndCBiZSBjaGVja2VkIGZvciB3aGlsZSBjcm9zcy1jb21waWxpbmcuCj4gMi4g
+V2FybiBpbnN0ZWFkIG9mIGVycm9yaW5nIG91dCwgYmVjYXVzZSB3ZSBoYXZlIGEgX2xvdF8gb2Yg
+NjQtYml0Cj4gcGxhdGZvcm1zIHRoYXQgd2UgdGVzdCBvbiB3aGljaCB3aWxsIGJlIG5lZ2F0aXZl
+bHkgaW1wYWN0ZWQgYnkgdGhpcwo+IGNoZWNrLgo+IAo+IFNpZ25lZC1vZmYtYnk6IEdhcnJldHQg
+Q29vcGVyIDx5YW5lZ29taUBnbWFpbC5jb20+Cj4gCj4gLS0tIC9uZnMubWFjL2x0cC11cGdyYWRl
+L2NvbnRyaWIvbHRwL3NyYy90ZXN0Y2FzZXMvb3Blbl9ocGlfdGVzdHN1aXRlLy9jb25maWd1cmUu
+YWMub3JpZwkyMDA5LTA4LTE5Cj4gMTY6MDQ6MDguMDAwMDAwMDAwIC0wNzAwCj4gKysrIC9uZnMu
+bWFjL2x0cC11cGdyYWRlL2NvbnRyaWIvbHRwL3NyYy90ZXN0Y2FzZXMvb3Blbl9ocGlfdGVzdHN1
+aXRlLy9jb25maWd1cmUuYWMJMjAwOS0wOC0xOQo+IDE2OjEwOjQ3LjAwMDAwMDAwMCAtMDcwMAo+
+IEBAIC00NCwxNCArNDQsMTMgQEAKPiAgQUNfUFJPR19MTl9TCj4gIEFDX1BST0dfTUFLRV9TRVQK
+PiAKPiAtZG5sIGRpZSBvbiBpbnQgIT0gMzJiaXRzLiAgVGhpcyBpcyB0b28gaW5zdHJ1bWVudGFs
+IHRvIG91ciBjb2RlIHJpZ2h0IG5vdy4KPiArZG5sIFdhcm4gd2hlbiBpbnQgIT0gMzJiaXRzLiAg
+VGhpcyBpcyB0b28gaW5zdHJ1bWVudGFsIHRvIG91ciBjb2RlIHJpZ2h0IG5vdy4KPiAgZG5sIEFD
+X01TR19DSEVDS0lORyhpbnQgaXMgNCBieXRlcykKPiAgT0hfU0VUX1NJWkVTCj4gLWlmIHRlc3Qg
+IngkT0hfU0laRU9GX0lOVCIgIT0gIng0IjsgdGhlbgo+IC0gICAgQUNfTVNHX0VSUk9SKFsKPiAr
+aWYgdGVzdCB4JGNyb3NzX2NvbXBpbGluZyAhPSB4eWVzICYmIHRlc3QgIngkT0hfU0laRU9GX0lO
+VCIgIT0gIng0IjsgdGhlbgo+ICsgICAgQUNfTVNHX1dBUk4oWwo+ICAqKiogaW50IGlzIG5vdCA0
+IGJ5dGVzLCBpdCBpcyAkT0hfU0laRU9GX0lOVCBieXRlcyBvbiB0aGlzIHBsYXRmb3JtCj4gLSoq
+KiB1bmRlZmluZWQgYmVoYXZpb3Igd2lsbCByZXN1bHQKPiAtKioqIHBsZWFzZSBjb250YWN0IHRo
+ZSBvcGVuaHBpIGRldmVsb3BtZW50IHRlYW0gdG8gZml4IHRoaXMKPiArKioqIHVuZGVmaW5lZCBi
+ZWhhdmlvciBtYXkgcmVzdWx0IGZyb20gdGhpcy4KPiAgXSkKPiAgZmkKPiAKPiAtLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0KPiBMZXQgQ3J5c3RhbCBSZXBvcnRzIGhhbmRsZSB0aGUgcmVwb3J0aW5nIC0g
+RnJlZSBDcnlzdGFsIFJlcG9ydHMgMjAwOCAzMC1EYXkgCj4gdHJpYWwuIFNpbXBsaWZ5IHlvdXIg
+cmVwb3J0IGRlc2lnbiwgaW50ZWdyYXRpb24gYW5kIGRlcGxveW1lbnQgLSBhbmQgZm9jdXMgb24g
+Cj4gd2hhdCB5b3UgZG8gYmVzdCwgY29yZSBhcHBsaWNhdGlvbiBjb2RpbmcuIERpc2NvdmVyIHdo
+YXQncyBuZXcgd2l0aCAKPiBDcnlzdGFsIFJlcG9ydHMgbm93LiAgaHR0cDovL3Auc2YubmV0L3Nm
+dS9ib2JqLWp1bHkKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwo+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdl
+Lm5ldAo+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1s
+aXN0CgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxldCBDcnlzdGFsIFJlcG9ydHMgaGFuZGxlIHRo
+ZSByZXBvcnRpbmcgLSBGcmVlIENyeXN0YWwgUmVwb3J0cyAyMDA4IDMwLURheSAKdHJpYWwuIFNp
+bXBsaWZ5IHlvdXIgcmVwb3J0IGRlc2lnbiwgaW50ZWdyYXRpb24gYW5kIGRlcGxveW1lbnQgLSBh
+bmQgZm9jdXMgb24gCndoYXQgeW91IGRvIGJlc3QsIGNvcmUgYXBwbGljYXRpb24gY29kaW5nLiBE
+aXNjb3ZlciB3aGF0J3MgbmV3IHdpdGggCkNyeXN0YWwgUmVwb3J0cyBub3cuICBodHRwOi8vcC5z
+Zi5uZXQvc2Z1L2JvYmotanVseQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9y
+Z2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1s
+aXN0Cg==
