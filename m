@@ -1,18 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <caiqian@cclom.cn>) id 1MfRAr-0003Xk-Ap
-	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 04:28:53 +0000
-Received: from smtp103.biz.mail.re2.yahoo.com ([68.142.229.217])
-	by 1b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1MfRAl-0001Tm-4w
-	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 04:28:53 +0000
-Date: Mon, 24 Aug 2009 12:05:59 +0800 (CST)
-Message-Id: <20090824.120559.39168049.caiqian@cclom.cn>
-From: CAI Qian <caiqian@cclom.cn>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mf7WA-0002jR-G8
+	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 07:29:34 +0000
+Received: from e36.co.us.ibm.com ([32.97.110.154])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Mf7W4-00027N-75
+	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 07:29:34 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e36.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7N7RcUQ008417
+	for <ltp-list@lists.sourceforge.net>; Sun, 23 Aug 2009 01:27:38 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7N7TMgW227260
+	for <ltp-list@lists.sourceforge.net>; Sun, 23 Aug 2009 01:29:22 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7N7TMbp018213
+	for <ltp-list@lists.sourceforge.net>; Sun, 23 Aug 2009 01:29:22 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <364299f40908200957x659a4113y19b97cc6cb60d5c0@mail.gmail.com>
+References: <20090820160655.30926.34854.sendpatchset@localhost.localdomain>
+	<20090820160809.30926.5725.sendpatchset@localhost.localdomain>
+	<364299f40908200957x659a4113y19b97cc6cb60d5c0@mail.gmail.com>
+Date: Sun, 23 Aug 2009 12:59:02 +0530
+Message-Id: <1251012542.16822.37.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: [LTP] [PATCH 2/3] Fix unshare01
+Subject: Re: [LTP] New testcase to test timer_migration interface
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,167 +42,74 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>, Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, vaidy <svaidy@linux.vnet.ibm.com>, gautham <ego@in.ibm.com>, arun@linux.vnet.ibm.com
 
-When no unshare function found during the build-time checking or the
-kernel returns ENOSYS, it reports TCONF. It also simplify logic a little
-bit and fix some coding style issues.
+On Thu, 2009-08-20 at 09:57 -0700, Garrett Cooper wrote: 
+> On Thu, Aug 20, 2009 at 9:08 AM, Poornima
+> Nayak<mpnayak@linux.vnet.ibm.com> wrote:
+> > This is the new tescase to test timer migration interface.
+> >
+> > Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+> >
+> > diff -uprN ltp-full-20090731_orig/testcases/kernel/power_management/test_timer_migration.sh ltp-full-20090731/testcases/kernel/power_management/test_timer_migration.sh
+> > --- ltp-full-20090731_orig/testcases/kernel/power_management/test_timer_migration.sh    1970-01-01 05:30:00.000000000 +0530
+> > +++ ltp-full-20090731/testcases/kernel/power_management/test_timer_migration.sh 2009-08-20 20:49:48.000000000 +0530
+> > @@ -0,0 +1,22 @@
+> > +#!/bin/bash
+> > +
+> > +. pm_include.sh
+> > +
+> > +valid_input="0 1"
+> > +invalid_input="3 4 5 6 7 8 a abcefg x1999 xffff -1 -00000
+> > +200000000000000000000000000000000000000000000000000000000000000000000000000000
+> > +ox324 -0xfffffffffffffffffffff"
+> > +test_file="/proc/sys/kernel/timer_migration"
+> > +if [ ! -f ${test_file} ] ; then
+> > +       echo "MISSING_FILE: missing file ${test_file}"
+> > +       exit $MISSING_FILE
+> > +fi
+> > +
+> > +RC=0
+> > +echo "${0}: ---Valid test cases---"
+> > +check_input "${valid_input}" valid $test_file
+> > +RC=$?
+> > +echo "${0}: ---Invalid test cases---"
+> > +check_input "${invalid_input}" invalid $test_file
+> > +RC=$(( RC | $? ))
+> > +exit $RC
+> 
+> 1. Please replace
+> 
+> ${0}
+> 
+> with:
+> 
+> ${0##*}
+> 
+> 2. Wouldn't it make more sense to say `exit $(( RC | $? )'?
+> 
 
-Signed-off-by: CAI Qian <caiqian@cclom.cn>
+Poornima,
 
- testcases/kernel/syscalls/unshare/unshare01.c |  105 ++++++++++++++++++-------
- 1 files changed, 78 insertions(+), 27 deletions(-)
+Can you also please address them in a new patch ?
 
-diff --git a/testcases/kernel/syscalls/unshare/unshare01.c b/testcases/kernel/syscalls/unshare/unshare01.c
-index 2a7cc1b..4ff58c5 100644
---- a/testcases/kernel/syscalls/unshare/unshare01.c
-+++ b/testcases/kernel/syscalls/unshare/unshare01.c
-@@ -92,7 +92,7 @@
- /* Harness Specific Include Files. */
- #include "test.h"
- #include "usctest.h"
--#include "linux_syscall_numbers.h"
-+#include "config.h"
- 
- /* Extern Global Variables */
- extern int Tst_count;           /* counter for tst_xxx routines.         */
-@@ -103,6 +103,9 @@ char *TCID = "unshare01";  /* Test program identifier.*/
- int  testno;
- int  TST_TOTAL =1;                   /* total number of tests in this file.   */
- 
-+#ifdef HAVE_UNSHARE
-+#include "linux_syscall_numbers.h"
-+
- /* Extern Global Functions */
- /******************************************************************************/
- /*                                                                            */
-@@ -177,47 +180,89 @@ int main(int ac, char **av) {
-  *fork a child process;testing which one is a child or a parent;
-  * */
- 		        TEST(pid1=fork());    //call to fork()
--			if (TEST_RETURN == -1){
--				tst_resm(TFAIL, "fork() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
-+			if (TEST_RETURN == -1) {
-+				tst_resm(TFAIL, "fork() Failed, errno=%d : %s",
-+					TEST_ERRNO, strerror(TEST_ERRNO));
- 				cleanup();
- 				tst_exit();
--			}else if (TEST_RETURN == 0){
--				if((TEST_RETURN = unshare(CLONE_FILES)) == 0) {
--	        		tst_resm(TPASS, "unshare with CLONE_FILES call succeeded");
-+			} else if (TEST_RETURN == 0) {
-+				TEST_RETURN = unshare(CLONE_FS);
-+				if (TEST_RETURN == 0)
-+					tst_resm(TPASS,
-+						"unshare with CLONE_FILES call "
-+						"succeeded");
-+				else if (TEST_RETURN == -1) {
-+					if (errno == ENOSYS)
-+						tst_resm(TCONF,
-+							"unshare is not "
-+							"implemented in kernel."
-+							);
-+					else
-+						tst_resm(TFAIL,
-+							"unshare Failed, "
-+							"errno=%d : %s",
-+							errno,
-+							strerror(errno));
-+				}
- 				tst_exit();
--				}else if (TEST_RETURN == -1 )
--					tst_resm(TFAIL,"unshare Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
--					tst_exit();
- 			}else{
- 			}
- 
- 			TEST(pid1=fork());    //call to fork()
-                         if (TEST_RETURN == -1){
--                	        tst_resm(TFAIL, "fork() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
-+				tst_resm(TFAIL, "fork() Failed, errno=%d : %s",
-+					TEST_ERRNO, strerror(TEST_ERRNO));
- 	                        cleanup();
-                         	tst_exit();
--                        }else if (TEST_RETURN == 0){
--                                if((TEST_RETURN = unshare(CLONE_FS)) == 0) {
--                                	tst_resm(TPASS, "unshare with CLONE_FS call succeeded");
--					tst_exit();
--                                }else if (TEST_RETURN == -1 )
--                                        tst_resm(TFAIL,"unshare Failed 2, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
--					tst_exit();
-+			} else if (TEST_RETURN == 0) {
-+				TEST_RETURN = unshare(CLONE_FS);
-+				if (TEST_RETURN == 0)
-+					tst_resm(TPASS,
-+						"unshare with CLONE_FS call "
-+						"succeeded");
-+				else if (TEST_RETURN == -1) {
-+					if (errno == ENOSYS)
-+						tst_resm(TCONF,
-+							"unshare is not "
-+							"implemented in kernel."
-+							);
-+					else
-+						tst_resm(TFAIL,
-+							"unshare Failed 2, "
-+							"errno=%d : %s",
-+							errno,
-+							strerror(errno));
-+				}
-+				tst_exit();
-                         }else{
- 			}
- 
- 			TEST(pid1=fork());    //call to fork()
--                        if (TEST_RETURN == -1){
--                	        tst_resm(TFAIL, "fork() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
-+			if (TEST_RETURN == -1) {
-+				tst_resm(TFAIL, "fork() Failed, errno=%d : %s",
-+					TEST_ERRNO, strerror(TEST_ERRNO));
- 	                        cleanup();
-                         	tst_exit();
--                        }else if (TEST_RETURN == 0){
--                                if((TEST_RETURN = unshare(CLONE_NEWNS)) == 0) {
--                                	tst_resm(TPASS, "unshare call with CLONE_NEWNS succeeded");
--					tst_exit();
--                                }else if (TEST_RETURN == -1 )
--                                        tst_resm(TFAIL,"unshare Failed 2, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
--					tst_exit();
-+			} else if (TEST_RETURN == 0) {
-+				TEST_RETURN = unshare(CLONE_NEWNS);
-+				if (TEST_RETURN == 0) {
-+					tst_resm(TPASS,
-+						"unshare call with CLONE_NEWNS "
-+						"succeeded");
-+				} else if (TEST_RETURN == -1) {
-+					if (errno == ENOSYS)
-+						tst_resm(TCONF,
-+							"unshare is not "
-+							"implemented in kernel."
-+							);
-+					else
-+						tst_resm(TFAIL,
-+							"unshare Failed 2, "
-+							"errno=%d : %s",
-+							errno,
-+							strerror(errno));
-+				}
-+				tst_exit();
-                         }else{
- 			}
- 
-@@ -228,4 +273,10 @@ int main(int ac, char **av) {
- 	cleanup();
- 	tst_exit();
- }
--
-+#else
-+int main(void)
-+{
-+	tst_resm(TCONF, "unshare is undefined.");
-+	return 0;
-+}
-+#endif
+Regards--
+Subrata
+
+> Thanks,
+> -Garrett
+> 
+> ------------------------------------------------------------------------------
+> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+> trial. Simplify your report design, integration and deployment - and focus on 
+> what you do best, core application coding. Discover what's new with 
+> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
