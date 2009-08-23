@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1Mh3uD-0001yT-07
-	for ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 16:02:25 +0000
-Date: Fri, 28 Aug 2009 18:02:11 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20090828160210.GA7218@schrodinger.suse.cz>
-References: <20090828152415.GB4567@schrodinger.suse.cz>
-	<200908281144.24993.vapier@gentoo.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <200908281144.24993.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] Add autoconf tests for taskstats members
-	not	present?on older kernels
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <caiqian@cclom.cn>) id 1MfHdH-0004qh-UW
+	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 18:17:35 +0000
+Received: from smtp105.biz.mail.mud.yahoo.com ([68.142.200.253])
+	by 72vjzd1.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1MfHdG-0004cW-QO
+	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 18:17:35 +0000
+Date: Mon, 24 Aug 2009 01:27:23 +0800 (CST)
+Message-Id: <20090824.012723.112609532.caiqian@cclom.cn>
+From: CAI Qian <caiqian@cclom.cn>
+Mime-Version: 1.0
+Subject: [LTP] What is the Story of "make autotools"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,38 +25,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net, Jiri Palecek <jpalecek@web.de>
+To: ltp-list@lists.sf.net
 
-Hi!
-> > > this patch adds autoconf checks for some build failures reported by Cyril
-> > > Hrubis. Please note I have not tested this on an old kernel.
-> > >
-> > > Also, it corrects the names of the preprocessor macros defined by
-> > > autoconf
-> > >
-> > > The remaining issue (the cgroupstats.h file) should be solved using the
-> > > autoconf test that was committed recently.
-> >
-> > The autoconf part is okay, but getdelays.c needs some more #ifdef
-> > HAVE_LINUX_CGROUPSTAT_H to build correctly on all I have here.
-> >
-> > Patch attached, however it may need minor cleanups.
-> 
-> preprocessor macros should never be intended
+Hi,
 
-I allways forgot this one...
+Looks like it stops working recently with,
 
-> can the test case pass at all if the linux headers are missing ?  if they 
-> cant, there's no point in sprinkling #ifdef's throughout the code.  stub the 
-> whole thing out.
+  autoconf-2.63-2.fc11.noarch
+  automake-1.11-2.fc11.noarch
 
-As far as I see the cgroupstat code is activated only by -C switch, so it does
-make sence spread #ifdefs around.
+$ make autotools
+make: *** No rule to make target `m4/Makefile.am', needed by
+      `m4/Makefile.in'.  Stop.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+CAI Qian
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
