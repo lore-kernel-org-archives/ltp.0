@@ -1,33 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mf7Vt-0008Iy-Ef
-	for Ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 07:29:17 +0000
-Received: from e33.co.us.ibm.com ([32.97.110.151])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mf7Vk-0001oi-PU
-	for Ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 07:29:17 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e33.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7N7R4as030010
-	for <Ltp-list@lists.sourceforge.net>; Sun, 23 Aug 2009 01:27:04 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7N7T3FA165162
-	for <Ltp-list@lists.sourceforge.net>; Sun, 23 Aug 2009 01:29:03 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7N7T2P2010039
-	for <Ltp-list@lists.sourceforge.net>; Sun, 23 Aug 2009 01:29:03 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1250781918-23897-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
-References: <1250781918-23897-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
-Date: Sun, 23 Aug 2009 12:58:50 +0530
-Message-Id: <1251012531.16822.34.camel@subratamodak.linux.ibm.com>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <caiqian@cclom.cn>) id 1Mf3DD-0005jT-JJ
+	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 02:53:43 +0000
+Received: from smtp104.biz.mail.mud.yahoo.com ([68.142.200.252])
+	by 1b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1Mf3D7-0007yl-2E
+	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 02:53:43 +0000
+Date: Sun, 23 Aug 2009 10:30:37 +0800 (CST)
+Message-Id: <20090823.103037.104044604.caiqian@cclom.cn>
+From: CAI Qian <caiqian@cclom.cn>
+In-Reply-To: <200908211200.33401.vapier@gentoo.org>
+References: <20090821.195739.1000278277145530969.caiqian@cclom.cn>
+	<200908211200.33401.vapier@gentoo.org>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] cron tests: autodetect crond vs. cron
-Reply-To: subrata@linux.vnet.ibm.com
+Subject: Re: [LTP] The Best Practice to Skip Syscall Tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,86 +28,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Cc: Ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sf.net
 
-On Thu, 2009-08-20 at 17:25 +0200, Geert Uytterhoeven wrote: 
-> The cron tests check for Red Hat to decide whether to use /etc/init.d/crond
-> or /etc/init.d/cron. This fails on other distros that use crond, e.g. on
-> Yellow Dog Linux.
-> 
-> Replace the distro test by an actual file existence test, as is done in
-> testcases/kdump/runkdump.sh.
-> 
-> Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [LTP] The Best Practice to Skip Syscall Tests
+Date: Fri, 21 Aug 2009 12:00:32 -0400
 
-Thanks.
+> On Friday 21 August 2009 07:57:39 CAI Qian wrote:
+>> Test cases unshare failed to compile on systems without such a
+>> syscall. I am unsure what the best way to handle it. The old ways are,
+>>
+>> * add a kernel version check in the unshare tests code.
+>>
+>> or
+>>
+>> * add a m4 rule.
+>> * modify the unshare tests code to check if the macro, and add stub
+>>   functions if the macro is false.
+>>
+>> The first approach is unable to handle non-vanilla kernels. The second
+>> approach needs to add stub functions which are unclean. What I would
+>> like to do is,
+>>
+>> * add a m4 rule.
+>> * modify unshare Makefile like this,
+>>
+>>   ifdef HAVE_UNSHARE  <-- if the syscall is present, compile the tests.
+> 
+> the configure test should always be there if the code needs new
+> headers (like sys/signalfd.h).  if it's only a new syscall, then the
+> configure test should only be for the new symbol (assuming one is
+> provided).  in all cases, the tests should be compiled.  your proposal
+> doesnt handle the case where the C library is in place, but the kernel
+> is older so returns ENOSYS.
 
-Regards--
-Subrata
+OK, how about those two approaches?
 
-> ---
->  testcases/commands/cron/cron02 |   17 ++++++-----------
->  testcases/commands/cron/cron03 |   17 ++++++-----------
->  2 files changed, 12 insertions(+), 22 deletions(-)
-> 
-> diff --git a/testcases/commands/cron/cron02 b/testcases/commands/cron/cron02
-> index 6e4d8fe..b2656e3 100755
-> --- a/testcases/commands/cron/cron02
-> +++ b/testcases/commands/cron/cron02
-> @@ -53,17 +53,12 @@ do_setup(){
->          fi
-> 
->  	# restart cron daemon
-> -# Red Hat uses crond, SuSE/Other uses cron. Check if this is Red Hat/SuSE/Other
-> -tvar=${MACHTYPE%-*}
-> -tvar=${tvar#*-}
-> -printf "Distro type is: $tvar\n\n"
-> -
-> -if [ $tvar != "redhat" -a $tvar != "redhat-linux" ]; then
-> -
-> -	/etc/init.d/cron restart
-> -else
-> -	/etc/init.d/crond restart
-> -fi
-> +	# Red Hat uses crond, SuSE/Other uses cron.
-> +	if [ -f /etc/init.d/crond ]; then
-> +		/etc/init.d/crond restart
-> +	else
-> +		/etc/init.d/cron restart
-> +	fi
->  }
-> 
->  #-----------------------------------------------------------------------
-> diff --git a/testcases/commands/cron/cron03 b/testcases/commands/cron/cron03
-> index 9448cc4..2cb157a 100755
-> --- a/testcases/commands/cron/cron03
-> +++ b/testcases/commands/cron/cron03
-> @@ -56,17 +56,12 @@ do_setup(){
->          }
->          fi
->          # restart cron daemon
-> -# Red Hat uses crond, SuSE/Other uses cron. Check if this is Red Hat/SuSE/Other
-> -tvar=${MACHTYPE%-*}
-> -tvar=${tvar#*-}
-> -printf "Distro type is: $tvar\n\n"
-> -
-> -if [ $tvar != "redhat" -a $tvar != "redhat-linux" ]; then
-> -
-> -	/etc/init.d/cron restart
-> -else
-> -	/etc/init.d/crond restart
-> -fi
-> +	# Red Hat uses crond, SuSE/Other uses cron.
-> +	if [ -f /etc/init.d/crond ]; then
-> +		/etc/init.d/crond restart
-> +	else
-> +		/etc/init.d/cron restart
-> +	fi
->  }
-> 
->  #-----------------------------------------------------------------------
+* add a stub C program to check if kernel returns ENOSYS. If so, returns
+  1. Otherwise, 0.
+* add a m4 rule to check the headers or/and functions.
+* if ./configure found all headers and functions, and execute the stub
+  program to return 0, it will set HAVE_UNSHARE.
+* modify unshare Makefile to complie it only if HAVE_UNSHARE set.
 
+or
+
+* add a m4 rule to check the headers or/and functions.
+* if ./configure found all headers and functions, , it will set
+  HAVE_UNSHARE.
+* modify the test code to deal with three situations.
+  * HAVE_UNSHARE = 0
+  * HAVE_UNSHARE = 1 + ENOSYS
+  * HAVE_UNSHARE = 1 + no ENOSYS
+
+CAI Qian
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
