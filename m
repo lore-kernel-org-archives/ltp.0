@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <caiqian@cclom.cn>) id 1MfrTR-0006G7-5Q
-	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 08:33:49 +0000
-Received: from smtp103.biz.mail.re2.yahoo.com ([68.142.229.217])
-	by 29vjzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1MfrTM-000280-No
-	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 08:33:49 +0000
-Date: Tue, 25 Aug 2009 16:34:37 +0800 (CST)
-Message-Id: <20090825.163437.1076064300636358628.caiqian@cclom.cn>
-From: CAI Qian <caiqian@cclom.cn>
-In-Reply-To: <1251184057.5534.4.camel@subratamodak.linux.ibm.com>
-References: <20090824.023736.115924320.caiqian@cclom.cn>
-	<1251184057.5534.4.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Let set_thread_area Choose either user_desc or
- modify_ldt_ldt_s
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MfQmh-0001YD-6V
+	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 04:03:55 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MfQmd-0003eu-2y
+	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 04:03:55 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 24 Aug 2009 00:03:40 -0400
+References: <20090824.012723.112609532.caiqian@cclom.cn>
+	<200908232249.46097.vapier@gentoo.org>
+	<20090824.114921.104053885.caiqian@cclom.cn>
+In-Reply-To: <20090824.114921.104053885.caiqian@cclom.cn>
+MIME-Version: 1.0
+Message-Id: <200908240003.42716.vapier@gentoo.org>
+Subject: Re: [LTP] What is the Story of "make autotools"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,182 +26,82 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1026626106395252789=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sf.net
+To: CAI Qian <caiqian@cclom.cn>
+Cc: ltp-list@lists.sourceforge.net
 
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Subject: Re: [LTP] [PATCH] Let set_thread_area Choose either user_desc or modify_ldt_ldt_s
-Date: Tue, 25 Aug 2009 12:37:37 +0530
+--===============1026626106395252789==
+Content-Type: multipart/signed; boundary="nextPart1503262.nDmJAv56du";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-> Cai,
-> 
-> On Mon, 2009-08-24 at 02:37 +0800, CAI Qian wrote:
-> > Old glibc (like in RHEL4) has modify_ldt_ldt_s instead of user_desc
-> > structure defined in asm/ldt.h. It should follow the example of
-> > modify_ldt test cases to choose the feasible structure based on
-> > build-time checking. Also, a new header file has been created to handle
-> > code duplication.
-> > 
-> > Signed-off-by: CAI Qian <caiqian@cclom.cn>
-> > 
-> >  .../syscalls/set_thread_area/set_thread_area.h     |   32 ++++++++++++++++++++
-> >  .../syscalls/set_thread_area/set_thread_area01.c   |   13 +-------
-> >  .../syscalls/set_thread_area/set_thread_area02.c   |   14 +-------
-> >  3 files changed, 36 insertions(+), 23 deletions(-)
-> > 
-> > diff --git a/testcases/kernel/syscalls/set_thread_area/set_thread_area.h b/testcases/kernel/syscalls/set_thread_area/set_thread_area.h
-> > new file mode 100644
-> > index 0000000..66e9278
-> > --- /dev/null
-> > +++ b/testcases/kernel/syscalls/set_thread_area/set_thread_area.h
-> > @@ -0,0 +1,32 @@
-> > +#include <stdio.h>
-> > +#include <errno.h>
-> > +#include <linux/unistd.h>
-> > +
-> > +/* Harness Specific Include Files. */
-> > +#include "test.h"
-> > +#include "usctest.h"
-> > +#include "linux_syscall_numbers.h"
-> 
-> Do not include these 3 headers into some other header file. Instead,
-> keep them inside the main *.c file only. Let only the set_thread*
-> specific stuff be inside this header.
+--nextPart1503262.nDmJAv56du
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+
+On Sunday 23 August 2009 23:49:21 CAI Qian wrote:
+> From: Mike Frysinger <vapier@gentoo.org>
+> > On Sunday 23 August 2009 13:27:23 CAI Qian wrote:
+> >> $ make autotools
+> >> make: *** No rule to make target `m4/Makefile.am', needed by
+> >>       `m4/Makefile.in'.  Stop.
+> >
+> > that file is in cvs.  if you have an incomplete checkout, there's nothing
+> > we can do about it.
 >
+> Hmm, looks like the GIT repository has no such file though,
 
-Why?
- 
-> > +#include "config.h"
-> > +
-> > +#if defined HAVE_ASM_LDT_H
-> > +#include <asm/ldt.h>
-> > +
-> > +#if defined HAVE_STRUCT_USER_DESC
-> > +typedef struct user_desc thread_area_s;
-> > +#elif defined HAVE_STRUCT_MODIFY_LDT_LDT_S
-> > +typedef struct modify_ldt_ldt_s thread_area_s;
-> > +#else
-> > +typedef struct user_desc {
-> > +	unsigned int entry_number;
-> > +	unsigned long int base_addr;
-> > +	unsigned int limit;
-> > +	unsigned int seg_32bit:1;
-> > +	unsigned int contents:2;
-> > +	unsigned int read_exec_only:1;
-> > +	unsigned int limit_in_pages:1;
-> > +	unsigned int seg_not_present:1;
-> > +	unsigned int useable:1;
-> > +	unsigned int empty:25;
-> > +} thread_area_s;
-> > +#endif /* HAVE_STRUCT_USER_DESC */
-> > +#endif /* HAVE_ASM_LDT_H */
-> > diff --git a/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c b/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c
-> > index 6f10c05..a6aacf8 100644
-> > --- a/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c
-> > +++ b/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c
-> > @@ -48,15 +48,8 @@
-> >  /* History:     Porting from Crackerjack to LTP is done by                    */
-> >  /*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
-> >  /******************************************************************************/
-> > -#include <stdio.h>
-> > -#include <errno.h>
-> > -#include <linux/unistd.h>
-> > +#include "set_thread_area.h"
-> > 
-> > -/* Harness Specific Include Files. */
-> > -#include "test.h"
-> > -#include "usctest.h"
-> > -#include "linux_syscall_numbers.h"
-> 
-> Keep them here only.
-> 
-> > -#include "config.h"
-> > 
-> >  /* Global Variables */
-> >  char *TCID = "set_thread_area01";  /* Test program identifier.*/
-> > @@ -64,8 +57,6 @@ int  testno;
-> >  int  TST_TOTAL = 2;                   /* total number of tests in this file.   */
-> > 
-> >  #if defined HAVE_ASM_LDT_H
-> > -#include <asm/ldt.h>
-> > -
-> >  /* Extern Global Variables */
-> >  extern int Tst_count;           /* counter for tst_xxx routines.         */
-> >  extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
-> > @@ -124,7 +115,7 @@ void setup() {
-> > 
-> >  int main(int ac, char **av) {
-> >          
-> > -	struct user_desc u_info;
-> > +        thread_area_s u_info;
-> >          int lc;                 /* loop counter */
-> >          char *msg;              /* message returned from parse_opts */
-> >  	
-> > diff --git a/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c b/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c
-> > index 3effebd..1b351c1 100644
-> > --- a/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c
-> > +++ b/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c
-> > @@ -49,15 +49,7 @@
-> >  /* History:     Porting from Crackerjack to LTP is done by                    */
-> >  /*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
-> >  /******************************************************************************/
-> > -#include <stdio.h>
-> > -#include <errno.h>
-> > -#include <linux/unistd.h>
-> > -
-> > -/* Harness Specific Include Files. */
-> > -#include "test.h"
-> > -#include "usctest.h"
-> > -#include "linux_syscall_numbers.h"
-> 
-> Same here.
-> 
-> Regards--
-> Subrata
-> 
-> > -#include "config.h"
-> > +#include "set_thread_area.h"
-> > 
-> >  /* Global Variables */
-> >  char *TCID = "set_thread_area_02";  /* Test program identifier.*/
-> > @@ -65,8 +57,6 @@ int  testno;
-> >  int  TST_TOTAL = 3;                   /* total number of tests in this file.   */
-> > 
-> >  #if defined HAVE_ASM_LDT_H
-> > -#include <asm/ldt.h>
-> > -
-> >  /* Extern Global Variables */
-> >  extern int Tst_count;           /* counter for tst_xxx routines.         */
-> >  extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
-> > @@ -125,7 +115,7 @@ void setup() {
-> > 
-> >  int main(int ac, char **av) {
-> >          
-> > -	struct user_desc u_info;
-> > +	thread_area_s u_info;
-> >          int lc;                 /* loop counter */
-> >          char *msg;              /* message returned from parse_opts */
-> >  	
-> > 
-> > ------------------------------------------------------------------------------
-> > Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> > trial. Simplify your report design, integration and deployment - and focus on 
-> > what you do best, core application coding. Discover what's new with 
-> > Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> > _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+you'll have to complain to whoever runs the git repo.  it isnt us.
+-mike
+
+--nextPart1503262.nDmJAv56du
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJKkhEeAAoJEEFjO5/oN/WBmhgQAJIB3LnU02wJTRwyJjxmGheu
+2waonOXqHuTRCQShx3qSzjQzpfvOe/u2GFdLgsnkaJfQs2aygdO8LV7ITn07qNZx
+Aill3B60greBbI2B2gunyKHW4Vg9V8dmC6Y5YUwl8/u3Qapxq6za2M47KrVtHlOn
+xvtPTRwrAAqj0lseC7jg/UKX8LZ99QqTej+y4i0GCb/XrBx2Hoeatqt5Ep1RpXXb
+oNI0mRPYyCMIpFsrVQ3hVQoqAaBEc3/N1F3IVXsJ9hGwGoukK2SnUEJlbqBr23E9
+rwV0vtV53RdRgqRq7ZQnploBshYVQ6qrg3KFtARDYQfqI9HkiYBRDNKqj+2sStl2
+/c7vjXHeq28GHwVjq0YKOrwet+4eT3M98nhHuhOYiAYL1gL/4a1YIQnhj6iUX306
+netxcAiJprKNqPvbtd1gRace5/boncs5qS07EFllhTKic+TqO+VC8qGP6CnnvAP7
+JXuYi92KuatxE+4WL6IRpxKKTvxNWlDySTwiN38rkLTlaEvslu4YCzuGyGWAqeGR
+Zdv/pwddctQyiUwkR8r8EG6u8o6V8r6EeQ/ZW1gyNhbXt5SCOqKDMn0bkdzKGh04
+n4bqnasnHQuHszQdw3agpiefLeszmKwaWU/Jv1EDYK2OUsSOD1n+E+YYXY+xda9p
+XZdIo3NLXr1OmkALINsf
+=20Ra
+-----END PGP SIGNATURE-----
+
+--nextPart1503262.nDmJAv56du--
+
+
+--===============1026626106395252789==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============1026626106395252789==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1026626106395252789==--
+
