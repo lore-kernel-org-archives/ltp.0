@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MZ6fY-00058a-6n
-	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 17:22:24 +0000
-Received: from qw-out-1920.google.com ([74.125.92.144])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MZ6fT-0002Nv-DZ
-	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 17:22:24 +0000
-Received: by qw-out-1920.google.com with SMTP id 5so378864qwc.4
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 06 Aug 2009 10:22:14 -0700 (PDT)
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MfVH1-0000NA-71
+	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 08:51:31 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MfVGs-0007Od-NE
+	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 08:51:31 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 24 Aug 2009 04:51:12 -0400
+References: <20090821.195739.1000278277145530969.caiqian@cclom.cn>
+	<200908222352.42884.vapier@gentoo.org>
+	<alpine.LRH.2.00.0908241040450.31587@vixen.sonytel.be>
+In-Reply-To: <alpine.LRH.2.00.0908241040450.31587@vixen.sonytel.be>
 MIME-Version: 1.0
-In-Reply-To: <4A7AEE38.60101@canonical.com>
-References: <4A7AEE38.60101@canonical.com>
-Date: Thu, 6 Aug 2009 10:22:14 -0700
-Message-ID: <364299f40908061022m926d148o661e1c8a2eb58a5@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] fix lib6 test building
+Message-Id: <200908240451.14426.vapier@gentoo.org>
+Subject: Re: [LTP] The Best Practice to Skip Syscall Tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,54 +26,95 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============3486147234438492508=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Paul Larson <paul.larson@canonical.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Cc: ltp-list@lists.sf.net
 
-On Thu, Aug 6, 2009 at 7:52 AM, Paul Larson<paul.larson@canonical.com> wrot=
-e:
-> The lib6 tests seem to fail the first pass through building for me
-> because ranlib does not seem to get set correctly at any point. =A0This
-> seems to fix it up for me.
+--===============3486147234438492508==
+Content-Type: multipart/signed; boundary="nextPart1357472.fKTTx30blU";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Fixed on HEAD moments ago:
+--nextPart1357472.fKTTx30blU
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-gcooper@orangebox /scratch/ltp-dev2/ltp $ cvs diff
-testcases/network/lib6/Makefile
-Index: testcases/network/lib6/Makefile
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: /cvsroot/ltp/ltp/testcases/network/lib6/Makefile,v
-retrieving revision 1.6
-diff -r1.6 Makefile
-25a26,27
-> RANLIB                ?=3D ranlib
+On Monday 24 August 2009 04:44:05 Geert Uytterhoeven wrote:
+> On Sat, 22 Aug 2009, Mike Frysinger wrote:
+> > On Saturday 22 August 2009 22:37:28 CAI Qian wrote:
+> > > ENOSYS is the expected result if the kernel under test has no such
+> > > implementation, so I would consider TPASS or TCONF.
+> >
+> > TPASS is wrong.  in another thread, people seemed to be OK with TCONF.
 >
+> Still, the summary only shows `FAIL' or `PASS'. What is it supposed to
+> show for TCONF?
 
-The problem is that while configure specifies RANLIB, make doesn't. So
-if you don't run from a top-level make, there's no guarantee [today]
-that the right variables will be set. This will be fixed soon.
+i think acct01 handles this OK:
+        if (errno =3D=3D ENOSYS) {
+            tst_resm(TCONF,
+                 "BSD process accounting is not configured in this kernel."=
+);
+            tst_resm(TCONF, "Test will not run.");
+            tst_exit();
 
-If cross-compiling, please specify $(CROSS_COMPILE)ranlib, and the
-compile will go through in the child make.
+although we could perhaps codify this nicely by adding a new=20
+tst_missing_support() or similar function that would do this kind of thing.=
+ =20
+first argument would be an explanatory message like "BSD process accounting=
+ is=20
+not configured in this kernel".  any suggestions for a better function name=
+ ?
+=2Dmike
 
-Thanks,
--Garrett
+--nextPart1357472.fKTTx30blU
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
 
-trial. Simplify your report design, integration and deployment - and focus =
-on =
+iQIcBAABAgAGBQJKklSCAAoJEEFjO5/oN/WBn4EP/1X/X905iA3yBTzy12OYwpsj
+ZdBSSxtdaN3N+xuv6T4H0CpVi3NkEwGJUTZpkz96pXASFhZRKa33HcL9KSdiB3sy
+HU9gxh6NPlqciP2KCGKn4gTI0xzeEe1MF/6+jNlK5mW8VN1n/pisN273R1DRwG/8
+O/YZrb5Oqyme+0VA05ep2cn9W5joUs2oYCrOyFWJqI3ZDep5gku1icGXD0+Nh6MS
+ZJdZ28K6Bn6T9FlWRUjLh/2GQ8qq8n0lEy0GTzd7IosQxl5Fqb1i879KmQ2Roqkk
+3WxOzqcMOvRGDxtUhdCHVYkrScN09aej09Y+kUEeik8kU2+18RnIpCfoh1jdwIxU
+bTAqpJrPkok13VdyaPLbJ3/xBP5wXX8xSzCcMU47cZRFsIOwWeMWSM0L/p8L6x+r
+fLyCEfZdf5q+byxphQmfyFPMoGbK8/ulKAwyHmjpnR9KKGpnYRr4QXXrwEC2XTU7
+iHoIBSKWXN4i2149XuUtmWJ/Z3jnfstOZgqdfLn2lUBPDXsBNyV8skN8LzK9r9FI
+b911BgtRX9g10/IvjKc+K/yxEMvwZ1k8sXFRro78xw868EGqSJFqE0mE+gqExUZH
+kqF5vfry/olyv2+fTsSxLy7Tza3BW+JJMb4e1uFks9Hh/N+sXNEajkURA2RDVTXA
+e3JeOX3uREKlQbVh4rVC
+=UUMI
+-----END PGP SIGNATURE-----
 
-what you do best, core application coding. Discover what's new with =
+--nextPart1357472.fKTTx30blU--
 
+
+--===============3486147234438492508==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============3486147234438492508==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3486147234438492508==--
+
