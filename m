@@ -1,25 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MeAxm-0001jN-Q6
-	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2009 16:58:10 +0000
-Received: from mail-qy0-f173.google.com ([209.85.221.173])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MeAxg-000303-S3
-	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2009 16:58:05 +0000
-Received: by qyk3 with SMTP id 3so775qyk.4
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Mfiw8-0006IQ-SF
+	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 23:26:52 +0000
+Received: from qw-out-1920.google.com ([74.125.92.148])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Mfiw3-0007cS-Hm
+	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 23:26:52 +0000
+Received: by qw-out-1920.google.com with SMTP id 5so1413842qwc.4
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 20 Aug 2009 09:57:59 -0700 (PDT)
+	Mon, 24 Aug 2009 16:26:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <364299f40908200957x659a4113y19b97cc6cb60d5c0@mail.gmail.com>
-References: <20090820160655.30926.34854.sendpatchset@localhost.localdomain>
-	<20090820160809.30926.5725.sendpatchset@localhost.localdomain>
-	<364299f40908200957x659a4113y19b97cc6cb60d5c0@mail.gmail.com>
-Date: Thu, 20 Aug 2009 09:57:59 -0700
-Message-ID: <364299f40908200957j4caf6be8pd6d9208e8c2bbd09@mail.gmail.com>
+In-Reply-To: <1251012586.16822.44.camel@subratamodak.linux.ibm.com>
+References: <364299f40908221131h75bad0bdm85d5831cf8bddeda@mail.gmail.com>
+	<1251012586.16822.44.camel@subratamodak.linux.ibm.com>
+Date: Mon, 24 Aug 2009 16:26:40 -0700
+Message-ID: <364299f40908241626v22effcd2p5ab84bc4f81e9352@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] New testcase to test timer_migration interface
+Subject: Re: [LTP] Schedule for makefile-infra-rework to hit HEAD
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,58 +31,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, arun@linux.vnet.ibm.com, vaidy <svaidy@linux.vnet.ibm.com>, gautham <ego@in.ibm.com>
+To: subrata@linux.vnet.ibm.com
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On Thu, Aug 20, 2009 at 9:57 AM, Garrett Cooper<yanegomi@gmail.com> wrote:
-> On Thu, Aug 20, 2009 at 9:08 AM, Poornima
-> Nayak<mpnayak@linux.vnet.ibm.com> wrote:
->> This is the new tescase to test timer migration interface.
->>
->> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
->>
->> diff -uprN ltp-full-20090731_orig/testcases/kernel/power_management/test=
-_timer_migration.sh ltp-full-20090731/testcases/kernel/power_management/tes=
-t_timer_migration.sh
->> --- ltp-full-20090731_orig/testcases/kernel/power_management/test_timer_=
-migration.sh =A0 =A01970-01-01 05:30:00.000000000 +0530
->> +++ ltp-full-20090731/testcases/kernel/power_management/test_timer_migra=
-tion.sh 2009-08-20 20:49:48.000000000 +0530
->> @@ -0,0 +1,22 @@
->> +#!/bin/bash
->> +
->> +. pm_include.sh
->> +
->> +valid_input=3D"0 1"
->> +invalid_input=3D"3 4 5 6 7 8 a abcefg x1999 xffff -1 -00000
->> +20000000000000000000000000000000000000000000000000000000000000000000000=
-0000000
->> +ox324 -0xfffffffffffffffffffff"
->> +test_file=3D"/proc/sys/kernel/timer_migration"
->> +if [ ! -f ${test_file} ] ; then
->> + =A0 =A0 =A0 echo "MISSING_FILE: missing file ${test_file}"
->> + =A0 =A0 =A0 exit $MISSING_FILE
->> +fi
->> +
->> +RC=3D0
->> +echo "${0}: ---Valid test cases---"
->> +check_input "${valid_input}" valid $test_file
->> +RC=3D$?
->> +echo "${0}: ---Invalid test cases---"
->> +check_input "${invalid_input}" invalid $test_file
->> +RC=3D$(( RC | $? ))
->> +exit $RC
+On Sun, Aug 23, 2009 at 12:29 AM, Subrata
+Modak<subrata@linux.vnet.ibm.com> wrote:
+> On Sat, 2009-08-22 at 11:31 -0700, Garrett Cooper wrote:
+>> Hi all,
+>> =A0 =A0 Given the fact that the intermediate date has already passed for
+>> the August snapshot, the earliest date that I can have this hit the
+>> tree is right after the August release. I want a full cycle of testing
+>> to be done for any and all nits to be worked out with my changes, so
+>> committing now would be foolish.
+>> =A0 =A0 I'm working on out-of-buildtree support, as I found a few nits
+>> during this process so I'll commit the critical items as soon as
+>> possible. Would anyone oppose me committing after the August snapshot
+>> given that it works at the same level of functionality as the current
+>> version (and improves upon it in a number of other areas)?
 >
-> 1. Please replace
->
-> ${0}
->
-> with:
->
-> ${0##*}
+> Let me try the basic sanity checking. I would update you Garret.
 
-    Sorry. I meant ${0##/*}
-Thanks,
+Ok. I'm really close to finishing off out-of-buildtree support (~1.5
+weeks with my other work), so I hope to add that seemingly `minor'
+functionality before committing next month. It required some changes
+to master_rules.mk because I wasn't approaching the problem correctly
+100% in some areas, and some of the code wasn't as portable as it
+should have been, and plus I wasn't following auto[conf|make]
+convention 100%.
+
+I'll recommit to the branch and generate another standard diff and an
+rdiff so folks can run patch directly.
+
+Thanks!
 -Garrett
 
 ---------------------------------------------------------------------------=
