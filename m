@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <ying.huang@intel.com>) id 1MYwmh-0008G6-24
-	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 06:49:07 +0000
-Received: from mga14.intel.com ([143.182.124.37])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MYwmZ-0004SV-9Y
-	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 06:49:07 +0000
-From: Huang Ying <ying.huang@intel.com>
-In-Reply-To: <20090805105529.23399.60242.sendpatchset@subratamodak.linux.ibm.com>
-References: <20090805105529.23399.60242.sendpatchset@subratamodak.linux.ibm.com>
-Date: Thu, 06 Aug 2009 14:48:51 +0800
-Message-Id: <1249541331.27116.4.camel@yhuang-dev.sh.intel.com>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <caiqian@cclom.cn>) id 1MfUNB-0002iM-SL
+	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 07:53:49 +0000
+Received: from smtp106.biz.mail.re2.yahoo.com ([206.190.52.175])
+	by 3b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1MfUN5-0000Jp-Dy
+	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 07:53:49 +0000
+Date: Mon, 24 Aug 2009 15:57:37 +0800 (CST)
+Message-Id: <20090824.155737.112607920.caiqian@cclom.cn>
+From: CAI Qian <caiqian@cclom.cn>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Integration of MCE test suite into LTP
+Subject: [LTP] [PATCH 3/3 v2] Fix unshare02
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,52 +25,149 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: "Kleen, Andi" <andi.kleen@intel.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On Wed, 2009-08-05 at 18:55 +0800, Subrata Modak wrote:
-> Hi Huang Ying,
-> 
-> >On Tue, 2009-06-30 at 10:56 +0800, Huang Ying wrote:
-> >Hi, All,
-> >
-> > We are working on a test suite to test the Linux kernel MCE handling
-> > logic named mce-test, which can be find at:
-> > git://git.kernel.org/pub/scm/utils/cpu/mce/mce-test.git. There is a
-> > HOWTO for it, which is attached with the mail.
-> >
-> > We think the testing target of mce-test is part of that of LTP, so it is
-> > better to integrate mce-test into LTP. Do you think so?
-> >
-> > As for integration scheme, maybe we can first add mce-test into LTP as a
-> > separate test case, just as kdump test case. What's your opinions?
-> >
-> > Any comment is welcome!
-> >
-> 
-> Sorry for the very late response to your proposal. Please find below the
-> first patch which will integrate the existing mce-test to LTP. I had just
-> done a sanity checking of building it. The following patch will still need:
-> 
-> 1) Exclusive testing and sharing those results with the LTP community,
+v2: remove unneeded linux_syscall_numbers.h and simplify the checking of
+errno according to Mike's suggestion.
 
-We do test with mce-test regularly. Do you need our results?
+When no unshare function found during the build-time checking or the
+kernel returns ENOSYS, it reports TCONF. It also simplify logic a little
+bit and fix some coding style issues. In addition, the original test
+expects the following call to return 0,
 
-> 2) Comments for and rewriting of this patch for coding styles,
+  TEST_RETURN = unshare(-1);
 
-Where can I find the coding style guide for LTP? Are there "indent"
-command line for LTP coding style? So we can do some coding style
-conversion work automatically.
+and checking TEST_ERRNO for errors. Those look like incorrect, since
+"-1" looks like an invalid flag, and TEST_ERRNO does not set to errno
+from the syscall. It has been modified to expect,
 
-> 3) Sign off from Huang Ying <ying.huang@intel.com>, or, the concerned Authors,
+  TEST_RETURN = -1;
+  errno = EINVAL;
 
-Signed-off-by: Huang Ying <ying.huang@intel.com>
-You can add that to the patch.
+Signed-off-by: CAI Qian <caiqian@cclom.cn>
 
-Best Regards,
-Huang Ying
+ testcases/kernel/syscalls/unshare/unshare02.c |   84 +++++++++++++++++--------
+ 1 files changed, 57 insertions(+), 27 deletions(-)
 
-
+diff --git a/testcases/kernel/syscalls/unshare/unshare02.c b/testcases/kernel/syscalls/unshare/unshare02.c
+index 1075936..24228eb 100644
+--- a/testcases/kernel/syscalls/unshare/unshare02.c
++++ b/testcases/kernel/syscalls/unshare/unshare02.c
+@@ -56,7 +56,7 @@
+ /* Harness Specific Include Files. */
+ #include "test.h"
+ #include "usctest.h"
+-#include "linux_syscall_numbers.h"
++#include "config.h"
+ 
+ /* Extern Global Variables */
+ extern int Tst_count;           /* counter for tst_xxx routines.         */
+@@ -67,6 +67,8 @@ char *TCID = "unshare02";  /* Test program identifier.*/
+ int  testno;
+ int  TST_TOTAL = 2;                   /* total number of tests in this file.   */
+ 
++#ifdef HAVE_UNSHARE
++
+ /* Extern Global Functions */
+ /******************************************************************************/
+ /*                                                                            */
+@@ -141,37 +143,59 @@ int main(int ac, char **av) {
+  *fork a child process;testing which one is a child or a parent;
+  * */
+ 		        TEST(pid1=fork());    //call to fork()
+-			if (TEST_RETURN == -1){
+-			tst_resm(TFAIL, "fork() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+-			cleanup();
+-			tst_exit();
+-			}
+-			else if (TEST_RETURN == 0){
+-				if((TEST_RETURN = unshare(-1)) == 0) {
+-	        		tst_resm(TPASS, "Call succeeded");
++			if (TEST_RETURN == -1) {
++				tst_resm(TFAIL|TTERRNO,
++					"fork() failed.");
++				cleanup();
+ 				tst_exit();
++			} else if (TEST_RETURN == 0) {
++				TEST_RETURN = unshare(-1);
++				if (TEST_RETURN == 0)
++					tst_resm(TFAIL,
++						"Call unexpectedly succeeded.");
++				else if (TEST_RETURN == -1) {
++					if (errno == EINVAL)
++						tst_resm(TPASS,
++							"Expect EINVAL.");
++					else if (errno == ENOSYS)
++						tst_resm(TCONF,
++							"unshare is not "
++							"implemented in kernel."
++							);
++					else
++						tst_resm(TFAIL,
++							"Test Failed, "
++							"errno=%d : %s",
++							errno,
++							strerror(errno));
+ 				}
+-				else if (TEST_RETURN == -1 ){
+-					tst_resm(TFAIL,"Test Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+-					tst_exit();
+-                     			}
++				tst_exit();
+ 			}
+ 
+ 			TEST(pid1=fork());    //call to fork()
+-                        if (pid1 == -1){
+-                        tst_resm(TFAIL, "fork() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+-                        cleanup();
+-                        tst_exit();
+-                        }
+-                        else if (TEST_RETURN == 0){
+-                                if((TEST_RETURN = unshare((int)NULL)) == 0) {
+-                                tst_resm(TPASS, "Call succeeded");
++			if (pid1 == -1) {
++				tst_resm(TFAIL|TTERRNO,
++					"fork() failed.");
++				cleanup();
++				tst_exit();
++			} else if (TEST_RETURN == 0) {
++				TEST_RETURN = unshare((int)NULL);
++				if (TEST_RETURN == 0)
++					tst_resm(TPASS, "Call succeeded");
++				else if (TEST_RETURN == -1) {
++					if (errno == ENOSYS)
++						tst_resm(TCONF,
++							"unshare is not "
++							"implemented in kernel."
++							);
++					else
++						tst_resm(TFAIL,
++							"Test Failed 2, "
++							"errno=%d : %s",
++							errno,
++							strerror(errno));
++				}
+ 				tst_exit();
+-                                }
+-                                else if (TEST_RETURN == -1 ){
+-                                        tst_resm(TFAIL,"Test Failed 2, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+-					tst_exit();
+-                                        }
+                         }
+ 
+ 
+@@ -180,4 +204,10 @@ int main(int ac, char **av) {
+ 	cleanup();
+         tst_exit();
+ }
+-
++#else
++int main(void)
++{
++	tst_resm(TCONF, "unshare is undefined.");
++	return 0;
++}
++#endif
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
