@@ -1,34 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MZOmm-0004KZ-27
-	for Ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 12:43:04 +0000
-Received: from e33.co.us.ibm.com ([32.97.110.151])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MZOmg-0000Bl-SW
-	for Ltp-list@lists.sourceforge.net; Fri, 07 Aug 2009 12:43:02 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e33.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n77CevfT024969
-	for <Ltp-list@lists.sourceforge.net>; Fri, 7 Aug 2009 06:40:57 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n77CglHJ176492
-	for <Ltp-list@lists.sourceforge.net>; Fri, 7 Aug 2009 06:42:48 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n77CglcN029392
-	for <Ltp-list@lists.sourceforge.net>; Fri, 7 Aug 2009 06:42:47 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <alpine.LRH.2.00.0908071046001.9737@vixen.sonytel.be>
-References: <alpine.LRH.2.00.0908071046001.9737@vixen.sonytel.be>
-Date: Fri, 07 Aug 2009 18:12:29 +0530
-Message-Id: <1249648949.4851.48.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix calculated syscall numbers for	hppa/powerpc{,
-	64}/s390{, x}/sh/sparc{, 64}
-Reply-To: subrata@linux.vnet.ibm.com
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <dvhltc@us.ibm.com>) id 1Mfi84-0002xo-G4
+	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 22:35:08 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Mfi7z-0008R0-Iq
+	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 22:35:08 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7OM9bBc015032
+	for <ltp-list@lists.sourceforge.net>; Mon, 24 Aug 2009 16:09:37 -0600
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7OMAQaj220580
+	for <ltp-list@lists.sourceforge.net>; Mon, 24 Aug 2009 16:10:28 -0600
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7OMAQG4024205
+	for <ltp-list@lists.sourceforge.net>; Mon, 24 Aug 2009 16:10:26 -0600
+Message-ID: <4A930FD1.9060903@us.ibm.com>
+Date: Mon, 24 Aug 2009 15:10:25 -0700
+From: Darren Hart <dvhltc@us.ibm.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH][realtime] add support for long options
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,205 +34,160 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Cc: Linux Test Project <Ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@users.sourceforge.net>
+To: ltp-list <ltp-list@lists.sourceforge.net>
+Cc: Vernon Mauery <vernux@us.ibm.com>
 
-T24gRnJpLCAyMDA5LTA4LTA3IGF0IDEwOjQ5ICswMjAwLCBHZWVydCBVeXR0ZXJob2V2ZW4gd3Jv
-dGU6IAo+IENvbW1pdCAibW92ZSBsZWFkaW5nIF9fTlJfIHRvIHNjcmlwdCB0byBtYWtlIGFsbCB0
-aGUgLmluIGZpbGVzIHNpbXBsZXIiCj4gYWNjaWRlbnRhbGx5IHJlbW92ZWQgYWxsIHBsdXMgc2ln
-bnMgc3Vycm91bmRlZCBieSBzcGFjZXMgZnJvbSB0aGUgc3lzY2FsbAo+IGRlZmluaXRpb24gZmls
-ZXMgZm9yIGhwcGEvcG93ZXJwY3ssNjR9L3MzOTB7LHh9L3NoL3NwYXJjeyw2NH0sIGJyZWFraW5n
-IHRoZQo+IGJ1aWxkIGxpa2U6Cj4gCj4gCWZzdGF0YXQwMS5jOiBJbiBmdW5jdGlvbiDigJhtYWlu
-4oCZOgo+IAlmc3RhdGF0MDEuYzoxMjY6IGVycm9yOiBleHBlY3RlZCDigJgp4oCZIGJlZm9yZSBu
-dW1lcmljIGNvbnN0YW50Cj4gCW1ha2VbNF06ICoqKiBbZnN0YXRhdDAxXzY0Lm9dIEVycm9yIDEK
-ClRoYW5rcyBmb3IgcG9pbnRpbmcgdGhhdCBvdXQuCgo+IAo+IFJlLWFkZCB0aGUgbWlzc2luZyBw
-bHVzIHNpZ25zIHRvIGZpeCBpdC4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBHZWVydCBVeXR0ZXJob2V2
-ZW4gPEdlZXJ0LlV5dHRlcmhvZXZlbkBzb255Y29tLmNvbT4KCkhvd2V2ZXIsIGl0IGZhaWxzIHRv
-IGFwcGx5IGluIHRoZSBwcmVzZW50IENWUyBzbmFwc2hvdDoKCnBhdGNoaW5nIGZpbGUgdGVzdGNh
-c2VzL2tlcm5lbC9pbmNsdWRlL3Bvd2VycGMuaW4KSHVuayAjMSBGQUlMRUQgYXQgNy4KMSBvdXQg
-b2YgMSBodW5rIEZBSUxFRCAtLSBzYXZpbmcgcmVqZWN0cyB0byBmaWxlCnRlc3RjYXNlcy9rZXJu
-ZWwvaW5jbHVkZS9wb3dlcnBjLmluLnJlagpwYXRjaGluZyBmaWxlIHRlc3RjYXNlcy9rZXJuZWwv
-aW5jbHVkZS9wb3dlcnBjNjQuaW4KSHVuayAjMSBGQUlMRUQgYXQgNy4KMSBvdXQgb2YgMSBodW5r
-IEZBSUxFRCAtLSBzYXZpbmcgcmVqZWN0cyB0byBmaWxlCnRlc3RjYXNlcy9rZXJuZWwvaW5jbHVk
-ZS9wb3dlcnBjNjQuaW4ucmVqCnBhdGNoaW5nIGZpbGUgdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRl
-L3MzOTAuaW4KcGF0Y2hpbmcgZmlsZSB0ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvczM5MHguaW4K
-cGF0Y2hpbmcgZmlsZSB0ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvc2guaW4KcGF0Y2hpbmcgZmls
-ZSB0ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvc3BhcmMuaW4KcGF0Y2hpbmcgZmlsZSB0ZXN0Y2Fz
-ZXMva2VybmVsL2luY2x1ZGUvc3BhcmM2NC5pbgoKQ2FuIHlvdSBwbGVhc2UgcmVzZW5kIGl0ID8K
-ClJlZ2FyZHMtLQpTdWJyYXRhCgo+IC0tLQo+IERpc2NvdmVyZWQgb24gcHBjCj4gCj4gIHRlc3Rj
-YXNlcy9rZXJuZWwvaW5jbHVkZS9ocHBhLmluICAgICAgfCAgIDI2ICsrKysrKysrKysrKystLS0t
-LS0tLS0tLS0tCj4gIHRlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZS9wb3dlcnBjLmluICAgfCAgIDI2
-ICsrKysrKysrKysrKystLS0tLS0tLS0tLS0tCj4gIHRlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZS9w
-b3dlcnBjNjQuaW4gfCAgIDI2ICsrKysrKysrKysrKystLS0tLS0tLS0tLS0tCj4gIHRlc3RjYXNl
-cy9rZXJuZWwvaW5jbHVkZS9zMzkwLmluICAgICAgfCAgIDI2ICsrKysrKysrKysrKystLS0tLS0t
-LS0tLS0tCj4gIHRlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZS9zMzkweC5pbiAgICAgfCAgIDI2ICsr
-KysrKysrKysrKystLS0tLS0tLS0tLS0tCj4gIHRlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZS9zaC5p
-biAgICAgICAgfCAgIDI2ICsrKysrKysrKysrKystLS0tLS0tLS0tLS0tCj4gIHRlc3RjYXNlcy9r
-ZXJuZWwvaW5jbHVkZS9zcGFyYy5pbiAgICAgfCAgIDI2ICsrKysrKysrKysrKystLS0tLS0tLS0t
-LS0tCj4gIHRlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZS9zcGFyYzY0LmluICAgfCAgIDI2ICsrKysr
-KysrKysrKystLS0tLS0tLS0tLS0tCj4gIDggZmlsZXMgY2hhbmdlZCwgMTA0IGluc2VydGlvbnMo
-KyksIDEwNCBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9p
-bmNsdWRlL2hwcGEuaW4gYi90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvaHBwYS5pbgo+IGluZGV4
-IDU2YjY5OTQuLmI3ODRhMmIgMTAwNjQ0Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRl
-L2hwcGEuaW4KPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvaHBwYS5pbgo+IEBAIC0x
-LDE3ICsxLDE3IEBACj4gIG9wZW5hdCAyNzUKPiAtbWtkaXJhdCAoX19OUl9vcGVuYXQgIDEpCj4g
-LW1rbm9kYXQgKF9fTlJfb3BlbmF0ICAyKQo+IC1mY2hvd25hdCAoX19OUl9vcGVuYXQgIDMpCj4g
-LWZ1dGltZXNhdCAoX19OUl9vcGVuYXQgIDQpCj4gLW5ld2ZzdGF0YXQgKF9fTlJfb3BlbmF0ICA1
-KQo+IC1mc3RhdGF0NjQgKF9fTlJfb3BlbmF0ICA1KQo+IC11bmxpbmthdCAoX19OUl9vcGVuYXQg
-IDYpCj4gLXJlbmFtZWF0IChfX05SX29wZW5hdCAgNykKPiAtbGlua2F0IChfX05SX29wZW5hdCAg
-OCkKPiAtc3ltbGlua2F0IChfX05SX29wZW5hdCAgOSkKPiAtcmVhZGxpbmthdCAoX19OUl9vcGVu
-YXQgIDEwKQo+IC1mY2htb2RhdCAoX19OUl9vcGVuYXQgIDExKQo+IC1mYWNjZXNzYXQgKF9fTlJf
-b3BlbmF0ICAxMikKPiArbWtkaXJhdCAoX19OUl9vcGVuYXQgKyAxKQo+ICtta25vZGF0IChfX05S
-X29wZW5hdCArIDIpCj4gK2ZjaG93bmF0IChfX05SX29wZW5hdCArIDMpCj4gK2Z1dGltZXNhdCAo
-X19OUl9vcGVuYXQgKyA0KQo+ICtuZXdmc3RhdGF0IChfX05SX29wZW5hdCArIDUpCj4gK2ZzdGF0
-YXQ2NCAoX19OUl9vcGVuYXQgKyA1KQo+ICt1bmxpbmthdCAoX19OUl9vcGVuYXQgKyA2KQo+ICty
-ZW5hbWVhdCAoX19OUl9vcGVuYXQgKyA3KQo+ICtsaW5rYXQgKF9fTlJfb3BlbmF0ICsgOCkKPiAr
-c3ltbGlua2F0IChfX05SX29wZW5hdCArIDkpCj4gK3JlYWRsaW5rYXQgKF9fTlJfb3BlbmF0ICsg
-MTApCj4gK2ZjaG1vZGF0IChfX05SX29wZW5hdCArIDExKQo+ICtmYWNjZXNzYXQgKF9fTlJfb3Bl
-bmF0ICsgMTIpCj4gIHNwbGljZSAyOTEKPiAgdGVlIDI5Mwo+ICB2bXNwbGljZSAyOTQKPiBkaWZm
-IC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlL3Bvd2VycGMuaW4gYi90ZXN0Y2FzZXMv
-a2VybmVsL2luY2x1ZGUvcG93ZXJwYy5pbgo+IGluZGV4IGVjOTlmM2QuLmZjMTQ3NjUgMTAwNjQ0
-Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlL3Bvd2VycGMuaW4KPiArKysgYi90ZXN0
-Y2FzZXMva2VybmVsL2luY2x1ZGUvcG93ZXJwYy5pbgo+IEBAIC03LDE5ICs3LDE5IEBAIHNwbGlj
-ZSAyODMKPiAgdGVlIDI4NAo+ICB2bXNwbGljZSAyODUKPiAgb3BlbmF0IDI4Ngo+IC1ta2RpcmF0
-IChfX05SX29wZW5hdCAgMSkKPiAtbWtub2RhdCAoX19OUl9vcGVuYXQgIDIpCj4gLWZjaG93bmF0
-IChfX05SX29wZW5hdCAgMykKPiAtZnV0aW1lc2F0IChfX05SX29wZW5hdCAgNCkKPiAtbmV3ZnN0
-YXRhdCAoX19OUl9vcGVuYXQgIDUpCj4gLWZzdGF0YXQ2NCAoX19OUl9vcGVuYXQgIDUpCj4gLXVu
-bGlua2F0IChfX05SX29wZW5hdCAgNikKPiAtcmVuYW1lYXQgKF9fTlJfb3BlbmF0ICA3KQo+IC1s
-aW5rYXQgKF9fTlJfb3BlbmF0ICA4KQo+IC1zeW1saW5rYXQgKF9fTlJfb3BlbmF0ICA5KQo+IC1y
-ZWFkbGlua2F0IChfX05SX29wZW5hdCAgMTApCj4gLWZjaG1vZGF0IChfX05SX29wZW5hdCAgMTEp
-Cj4gLWZhY2Nlc3NhdCAoX19OUl9vcGVuYXQgIDEyKQo+ICtta2RpcmF0IChfX05SX29wZW5hdCAr
-IDEpCj4gK21rbm9kYXQgKF9fTlJfb3BlbmF0ICsgMikKPiArZmNob3duYXQgKF9fTlJfb3BlbmF0
-ICsgMykKPiArZnV0aW1lc2F0IChfX05SX29wZW5hdCArIDQpCj4gK25ld2ZzdGF0YXQgKF9fTlJf
-b3BlbmF0ICsgNSkKPiArZnN0YXRhdDY0IChfX05SX29wZW5hdCArIDUpCj4gK3VubGlua2F0IChf
-X05SX29wZW5hdCArIDYpCj4gK3JlbmFtZWF0IChfX05SX29wZW5hdCArIDcpCj4gK2xpbmthdCAo
-X19OUl9vcGVuYXQgKyA4KQo+ICtzeW1saW5rYXQgKF9fTlJfb3BlbmF0ICsgOSkKPiArcmVhZGxp
-bmthdCAoX19OUl9vcGVuYXQgKyAxMCkKPiArZmNobW9kYXQgKF9fTlJfb3BlbmF0ICsgMTEpCj4g
-K2ZhY2Nlc3NhdCAoX19OUl9vcGVuYXQgKyAxMikKPiAgdXRpbWVuc2F0IDMwNAo+ICBldmVudGZk
-IDMwNwo+ICBmYWxsb2NhdGUgMzA5Cj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvaW5j
-bHVkZS9wb3dlcnBjNjQuaW4gYi90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvcG93ZXJwYzY0Lmlu
-Cj4gaW5kZXggMjQ5ZDA2YS4uOWUxMzAwZiAxMDA2NDQKPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVs
-L2luY2x1ZGUvcG93ZXJwYzY0LmluCj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlL3Bv
-d2VycGM2NC5pbgo+IEBAIC03LDE5ICs3LDE5IEBAIHNwbGljZSAyODMKPiAgdGVlIDI4NAo+ICB2
-bXNwbGljZSAyODUKPiAgb3BlbmF0IDI4Ngo+IC1ta2RpcmF0IChfX05SX29wZW5hdCAgMSkKPiAt
-bWtub2RhdCAoX19OUl9vcGVuYXQgIDIpCj4gLWZjaG93bmF0IChfX05SX29wZW5hdCAgMykKPiAt
-ZnV0aW1lc2F0IChfX05SX29wZW5hdCAgNCkKPiAtbmV3ZnN0YXRhdCAoX19OUl9vcGVuYXQgIDUp
-Cj4gLWZzdGF0YXQ2NCAoX19OUl9vcGVuYXQgIDUpCj4gLXVubGlua2F0IChfX05SX29wZW5hdCAg
-NikKPiAtcmVuYW1lYXQgKF9fTlJfb3BlbmF0ICA3KQo+IC1saW5rYXQgKF9fTlJfb3BlbmF0ICA4
-KQo+IC1zeW1saW5rYXQgKF9fTlJfb3BlbmF0ICA5KQo+IC1yZWFkbGlua2F0IChfX05SX29wZW5h
-dCAgMTApCj4gLWZjaG1vZGF0IChfX05SX29wZW5hdCAgMTEpCj4gLWZhY2Nlc3NhdCAoX19OUl9v
-cGVuYXQgIDEyKQo+ICtta2RpcmF0IChfX05SX29wZW5hdCArIDEpCj4gK21rbm9kYXQgKF9fTlJf
-b3BlbmF0ICsgMikKPiArZmNob3duYXQgKF9fTlJfb3BlbmF0ICsgMykKPiArZnV0aW1lc2F0IChf
-X05SX29wZW5hdCArIDQpCj4gK25ld2ZzdGF0YXQgKF9fTlJfb3BlbmF0ICsgNSkKPiArZnN0YXRh
-dDY0IChfX05SX29wZW5hdCArIDUpCj4gK3VubGlua2F0IChfX05SX29wZW5hdCArIDYpCj4gK3Jl
-bmFtZWF0IChfX05SX29wZW5hdCArIDcpCj4gK2xpbmthdCAoX19OUl9vcGVuYXQgKyA4KQo+ICtz
-eW1saW5rYXQgKF9fTlJfb3BlbmF0ICsgOSkKPiArcmVhZGxpbmthdCAoX19OUl9vcGVuYXQgKyAx
-MCkKPiArZmNobW9kYXQgKF9fTlJfb3BlbmF0ICsgMTEpCj4gK2ZhY2Nlc3NhdCAoX19OUl9vcGVu
-YXQgKyAxMikKPiAgdXRpbWVuc2F0IDMwNAo+ICBldmVudGZkIDMwNwo+ICBmYWxsb2NhdGUgMzA5
-Cj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZS9zMzkwLmluIGIvdGVzdGNh
-c2VzL2tlcm5lbC9pbmNsdWRlL3MzOTAuaW4KPiBpbmRleCBiMThjNmNmLi41NjA1NjNhIDEwMDY0
-NAo+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZS9zMzkwLmluCj4gKysrIGIvdGVzdGNh
-c2VzL2tlcm5lbC9pbmNsdWRlL3MzOTAuaW4KPiBAQCAtMSwxNyArMSwxNyBAQAo+ICBvcGVuYXQg
-Mjg4Cj4gLW1rZGlyYXQgKF9fTlJfb3BlbmF0ICAxKQo+IC1ta25vZGF0IChfX05SX29wZW5hdCAg
-MikKPiAtZmNob3duYXQgKF9fTlJfb3BlbmF0ICAzKQo+IC1mdXRpbWVzYXQgKF9fTlJfb3BlbmF0
-ICA0KQo+IC1uZXdmc3RhdGF0IChfX05SX29wZW5hdCAgNSkKPiAtZnN0YXRhdDY0IChfX05SX29w
-ZW5hdCAgNSkKPiAtdW5saW5rYXQgKF9fTlJfb3BlbmF0ICA2KQo+IC1yZW5hbWVhdCAoX19OUl9v
-cGVuYXQgIDcpCj4gLWxpbmthdCAoX19OUl9vcGVuYXQgIDgpCj4gLXN5bWxpbmthdCAoX19OUl9v
-cGVuYXQgIDkpCj4gLXJlYWRsaW5rYXQgKF9fTlJfb3BlbmF0ICAxMCkKPiAtZmNobW9kYXQgKF9f
-TlJfb3BlbmF0ICAxMSkKPiAtZmFjY2Vzc2F0IChfX05SX29wZW5hdCAgMTIpCj4gK21rZGlyYXQg
-KF9fTlJfb3BlbmF0ICsgMSkKPiArbWtub2RhdCAoX19OUl9vcGVuYXQgKyAyKQo+ICtmY2hvd25h
-dCAoX19OUl9vcGVuYXQgKyAzKQo+ICtmdXRpbWVzYXQgKF9fTlJfb3BlbmF0ICsgNCkKPiArbmV3
-ZnN0YXRhdCAoX19OUl9vcGVuYXQgKyA1KQo+ICtmc3RhdGF0NjQgKF9fTlJfb3BlbmF0ICsgNSkK
-PiArdW5saW5rYXQgKF9fTlJfb3BlbmF0ICsgNikKPiArcmVuYW1lYXQgKF9fTlJfb3BlbmF0ICsg
-NykKPiArbGlua2F0IChfX05SX29wZW5hdCArIDgpCj4gK3N5bWxpbmthdCAoX19OUl9vcGVuYXQg
-KyA5KQo+ICtyZWFkbGlua2F0IChfX05SX29wZW5hdCArIDEwKQo+ICtmY2htb2RhdCAoX19OUl9v
-cGVuYXQgKyAxMSkKPiArZmFjY2Vzc2F0IChfX05SX29wZW5hdCArIDEyKQo+ICBzcGxpY2UgMzA2
-Cj4gIHRlZSAzMDgKPiAgdm1zcGxpY2UgMzA5Cj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJu
-ZWwvaW5jbHVkZS9zMzkweC5pbiBiL3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZS9zMzkweC5pbgo+
-IGluZGV4IGQ1YTU0OGQuLjI4NDUxZmMgMTAwNjQ0Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9p
-bmNsdWRlL3MzOTB4LmluCj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlL3MzOTB4Lmlu
-Cj4gQEAgLTEsMTYgKzEsMTYgQEAKPiAgb3BlbmF0IDI4OAo+IC1ta2RpcmF0IChfX05SX29wZW5h
-dCAgMSkKPiAtbWtub2RhdCAoX19OUl9vcGVuYXQgIDIpCj4gLWZjaG93bmF0IChfX05SX29wZW5h
-dCAgMykKPiAtZnV0aW1lc2F0IChfX05SX29wZW5hdCAgNCkKPiAtbmV3ZnN0YXRhdCAoX19OUl9v
-cGVuYXQgIDUpCj4gLWZzdGF0YXQ2NCAoX19OUl9vcGVuYXQgIDUpCj4gLXVubGlua2F0IChfX05S
-X29wZW5hdCAgNikKPiAtcmVuYW1lYXQgKF9fTlJfb3BlbmF0ICA3KQo+IC1saW5rYXQgKF9fTlJf
-b3BlbmF0ICA4KQo+IC1zeW1saW5rYXQgKF9fTlJfb3BlbmF0ICA5KQo+IC1yZWFkbGlua2F0IChf
-X05SX29wZW5hdCAgMTApCj4gLWZjaG1vZGF0IChfX05SX29wZW5hdCAgMTEpCj4gLWZhY2Nlc3Nh
-dCAoX19OUl9vcGVuYXQgIDEyKQo+ICtta2RpcmF0IChfX05SX29wZW5hdCArIDEpCj4gK21rbm9k
-YXQgKF9fTlJfb3BlbmF0ICsgMikKPiArZmNob3duYXQgKF9fTlJfb3BlbmF0ICsgMykKPiArZnV0
-aW1lc2F0IChfX05SX29wZW5hdCArIDQpCj4gK25ld2ZzdGF0YXQgKF9fTlJfb3BlbmF0ICsgNSkK
-PiArZnN0YXRhdDY0IChfX05SX29wZW5hdCArIDUpCj4gK3VubGlua2F0IChfX05SX29wZW5hdCAr
-IDYpCj4gK3JlbmFtZWF0IChfX05SX29wZW5hdCArIDcpCj4gK2xpbmthdCAoX19OUl9vcGVuYXQg
-KyA4KQo+ICtzeW1saW5rYXQgKF9fTlJfb3BlbmF0ICsgOSkKPiArcmVhZGxpbmthdCAoX19OUl9v
-cGVuYXQgKyAxMCkKPiArZmNobW9kYXQgKF9fTlJfb3BlbmF0ICsgMTEpCj4gK2ZhY2Nlc3NhdCAo
-X19OUl9vcGVuYXQgKyAxMikKPiAgZXZlbnRmZCAzMTgKPiAgZmFsbG9jYXRlIDMxNAo+IGRpZmYg
-LS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvc2guaW4gYi90ZXN0Y2FzZXMva2VybmVs
-L2luY2x1ZGUvc2guaW4KPiBpbmRleCBlMWE0OWVlLi43YjRhY2Q5IDEwMDY0NAo+IC0tLSBhL3Rl
-c3RjYXNlcy9rZXJuZWwvaW5jbHVkZS9zaC5pbgo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvaW5j
-bHVkZS9zaC5pbgo+IEBAIC0xNCwxOSArMTQsMTkgQEAgaW5vdGlmeV9pbml0IDI5MAo+ICBpbm90
-aWZ5X2FkZF93YXRjaCAyOTEKPiAgaW5vdGlmeV9ybV93YXRjaCAyOTIKPiAgb3BlbmF0IDI5NQo+
-IC1ta2RpcmF0IChfX05SX29wZW5hdCAgMSkKPiAtbWtub2RhdCAoX19OUl9vcGVuYXQgIDIpCj4g
-LWZjaG93bmF0IChfX05SX29wZW5hdCAgMykKPiAtZnV0aW1lc2F0IChfX05SX29wZW5hdCAgNCkK
-PiAtbmV3ZnN0YXRhdCAoX19OUl9vcGVuYXQgIDUpCj4gLWZzdGF0YXQ2NCAoX19OUl9vcGVuYXQg
-IDUpCj4gLXVubGlua2F0IChfX05SX29wZW5hdCAgNikKPiAtcmVuYW1lYXQgKF9fTlJfb3BlbmF0
-ICA3KQo+IC1saW5rYXQgKF9fTlJfb3BlbmF0ICA4KQo+IC1zeW1saW5rYXQgKF9fTlJfb3BlbmF0
-ICA5KQo+IC1yZWFkbGlua2F0IChfX05SX29wZW5hdCAgMTApCj4gLWZjaG1vZGF0IChfX05SX29w
-ZW5hdCAgMTEpCj4gLWZhY2Nlc3NhdCAoX19OUl9vcGVuYXQgIDEyKQo+ICtta2RpcmF0IChfX05S
-X29wZW5hdCArIDEpCj4gK21rbm9kYXQgKF9fTlJfb3BlbmF0ICsgMikKPiArZmNob3duYXQgKF9f
-TlJfb3BlbmF0ICsgMykKPiArZnV0aW1lc2F0IChfX05SX29wZW5hdCArIDQpCj4gK25ld2ZzdGF0
-YXQgKF9fTlJfb3BlbmF0ICsgNSkKPiArZnN0YXRhdDY0IChfX05SX29wZW5hdCArIDUpCj4gK3Vu
-bGlua2F0IChfX05SX29wZW5hdCArIDYpCj4gK3JlbmFtZWF0IChfX05SX29wZW5hdCArIDcpCj4g
-K2xpbmthdCAoX19OUl9vcGVuYXQgKyA4KQo+ICtzeW1saW5rYXQgKF9fTlJfb3BlbmF0ICsgOSkK
-PiArcmVhZGxpbmthdCAoX19OUl9vcGVuYXQgKyAxMCkKPiArZmNobW9kYXQgKF9fTlJfb3BlbmF0
-ICsgMTEpCj4gK2ZhY2Nlc3NhdCAoX19OUl9vcGVuYXQgKyAxMikKPiAgc3BsaWNlIDMxMwo+ICB0
-ZWUgMzE1Cj4gIHZtc3BsaWNlIDMxNgo+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL2lu
-Y2x1ZGUvc3BhcmMuaW4gYi90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvc3BhcmMuaW4KPiBpbmRl
-eCA1YzAwNDdiLi5hNTY3NjU5IDEwMDY0NAo+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVk
-ZS9zcGFyYy5pbgo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZS9zcGFyYy5pbgo+IEBA
-IC0yLDE4ICsyLDE4IEBAIHZtc3BsaWNlIDI1Cj4gIHNwbGljZSAyMzIKPiAgdGVlIDI4MAo+ICBv
-cGVuYXQgMjg0Cj4gLW1rZGlyYXQgKF9fTlJfb3BlbmF0ICAxKQo+IC1ta25vZGF0IChfX05SX29w
-ZW5hdCAgMikKPiAtZmNob3duYXQgKF9fTlJfb3BlbmF0ICAzKQo+IC1mdXRpbWVzYXQgKF9fTlJf
-b3BlbmF0ICA0KQo+IC1uZXdmc3RhdGF0IChfX05SX29wZW5hdCAgNSkKPiAtZnN0YXRhdDY0IChf
-X05SX29wZW5hdCAgNSkKPiAtdW5saW5rYXQgKF9fTlJfb3BlbmF0ICA2KQo+IC1yZW5hbWVhdCAo
-X19OUl9vcGVuYXQgIDcpCj4gLWxpbmthdCAoX19OUl9vcGVuYXQgIDgpCj4gLXN5bWxpbmthdCAo
-X19OUl9vcGVuYXQgIDkpCj4gLXJlYWRsaW5rYXQgKF9fTlJfb3BlbmF0ICAxMCkKPiAtZmNobW9k
-YXQgKF9fTlJfb3BlbmF0ICAxMSkKPiAtZmFjY2Vzc2F0IChfX05SX29wZW5hdCAgMTIpCj4gK21r
-ZGlyYXQgKF9fTlJfb3BlbmF0ICsgMSkKPiArbWtub2RhdCAoX19OUl9vcGVuYXQgKyAyKQo+ICtm
-Y2hvd25hdCAoX19OUl9vcGVuYXQgKyAzKQo+ICtmdXRpbWVzYXQgKF9fTlJfb3BlbmF0ICsgNCkK
-PiArbmV3ZnN0YXRhdCAoX19OUl9vcGVuYXQgKyA1KQo+ICtmc3RhdGF0NjQgKF9fTlJfb3BlbmF0
-ICsgNSkKPiArdW5saW5rYXQgKF9fTlJfb3BlbmF0ICsgNikKPiArcmVuYW1lYXQgKF9fTlJfb3Bl
-bmF0ICsgNykKPiArbGlua2F0IChfX05SX29wZW5hdCArIDgpCj4gK3N5bWxpbmthdCAoX19OUl9v
-cGVuYXQgKyA5KQo+ICtyZWFkbGlua2F0IChfX05SX29wZW5hdCArIDEwKQo+ICtmY2htb2RhdCAo
-X19OUl9vcGVuYXQgKyAxMSkKPiArZmFjY2Vzc2F0IChfX05SX29wZW5hdCArIDEyKQo+ICBldmVu
-dGZkIDMxMwo+ICBmYWxsb2NhdGUgMzE0Cj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwv
-aW5jbHVkZS9zcGFyYzY0LmluIGIvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlL3NwYXJjNjQuaW4K
-PiBpbmRleCBiM2FmYjBmLi45NTQ5MzFjIDEwMDY0NAo+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwv
-aW5jbHVkZS9zcGFyYzY0LmluCj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlL3NwYXJj
-NjQuaW4KPiBAQCAtMiwxOCArMiwxOCBAQCB2bXNwbGljZSAyNQo+ICBzcGxpY2UgMjMyCj4gIHRl
-ZSAyODAKPiAgb3BlbmF0IDI4NAo+IC1ta2RpcmF0IChfX05SX29wZW5hdCAgMSkKPiAtbWtub2Rh
-dCAoX19OUl9vcGVuYXQgIDIpCj4gLWZjaG93bmF0IChfX05SX29wZW5hdCAgMykKPiAtZnV0aW1l
-c2F0IChfX05SX29wZW5hdCAgNCkKPiAtbmV3ZnN0YXRhdCAoX19OUl9vcGVuYXQgIDUpCj4gLWZz
-dGF0YXQ2NCAoX19OUl9vcGVuYXQgIDUpCj4gLXVubGlua2F0IChfX05SX29wZW5hdCAgNikKPiAt
-cmVuYW1lYXQgKF9fTlJfb3BlbmF0ICA3KQo+IC1saW5rYXQgKF9fTlJfb3BlbmF0ICA4KQo+IC1z
-eW1saW5rYXQgKF9fTlJfb3BlbmF0ICA5KQo+IC1yZWFkbGlua2F0IChfX05SX29wZW5hdCAgMTAp
-Cj4gLWZjaG1vZGF0IChfX05SX29wZW5hdCAgMTEpCj4gLWZhY2Nlc3NhdCAoX19OUl9vcGVuYXQg
-IDEyKQo+ICtta2RpcmF0IChfX05SX29wZW5hdCArIDEpCj4gK21rbm9kYXQgKF9fTlJfb3BlbmF0
-ICsgMikKPiArZmNob3duYXQgKF9fTlJfb3BlbmF0ICsgMykKPiArZnV0aW1lc2F0IChfX05SX29w
-ZW5hdCArIDQpCj4gK25ld2ZzdGF0YXQgKF9fTlJfb3BlbmF0ICsgNSkKPiArZnN0YXRhdDY0IChf
-X05SX29wZW5hdCArIDUpCj4gK3VubGlua2F0IChfX05SX29wZW5hdCArIDYpCj4gK3JlbmFtZWF0
-IChfX05SX29wZW5hdCArIDcpCj4gK2xpbmthdCAoX19OUl9vcGVuYXQgKyA4KQo+ICtzeW1saW5r
-YXQgKF9fTlJfb3BlbmF0ICsgOSkKPiArcmVhZGxpbmthdCAoX19OUl9vcGVuYXQgKyAxMCkKPiAr
-ZmNobW9kYXQgKF9fTlJfb3BlbmF0ICsgMTEpCj4gK2ZhY2Nlc3NhdCAoX19OUl9vcGVuYXQgKyAx
-MikKPiAgZXZlbnRkIDMxMwo+ICBmYWxsb2NhdGUgMzE0CgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-CkxldCBDcnlzdGFsIFJlcG9ydHMgaGFuZGxlIHRoZSByZXBvcnRpbmcgLSBGcmVlIENyeXN0YWwg
-UmVwb3J0cyAyMDA4IDMwLURheSAKdHJpYWwuIFNpbXBsaWZ5IHlvdXIgcmVwb3J0IGRlc2lnbiwg
-aW50ZWdyYXRpb24gYW5kIGRlcGxveW1lbnQgLSBhbmQgZm9jdXMgb24gCndoYXQgeW91IGRvIGJl
-c3QsIGNvcmUgYXBwbGljYXRpb24gY29kaW5nLiBEaXNjb3ZlciB3aGF0J3MgbmV3IHdpdGggCkNy
-eXN0YWwgUmVwb3J0cyBub3cuICBodHRwOi8vcC5zZi5uZXQvc2Z1L2JvYmotanVseQpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5n
-IGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNl
-Zm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+add support for long options
+
+Incorporating existing tests (like pthread_cond_many) may require support
+for long options if the existing arguments are to remain supported.  This
+patch adds support for long options, while keeping the default of only
+short options in place.  long opts MUST have an equivalent short opt so
+as to not require changing (and complicating) the parse_arg signature.
+This patch tests for this in the rt_init routine.
+
+Signed-off-by: Darren Hart <dvhltc@us.ibm.com>
+Acked-by: Vernon Mauery <vernux@us.ibm.com>
+
+---
+ include/librttest.h |   12 ++++++++++--
+ lib/librttest.c     |   49 +++++++++++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 55 insertions(+), 6 deletions(-)
+
+Index: realtime/include/librttest.h
+===================================================================
+--- realtime.orig/include/librttest.h
++++ realtime/include/librttest.h
+@@ -235,10 +235,12 @@ static volatile int _debug_count = 0;
+ /* rt_help: print help for standard args */
+ void rt_help();
+ 
+-/* rt_init: initialize librttest
++/* rt_init_long: initialize librttest
+  * options: pass in an getopt style string of options -- e.g. "ab:cd::e:"
+  *          if this or parse_arg is null, no option parsing will be done
+  *          on behalf of the calling program (only internal args will be parsed)
++ * longopts: a pointer to the first element of an array of struct option, the
++ *           last entry must be set to all zeros.
+  * parse_arg: a function that will get called when one of the above
+  *            options is encountered on the command line.  It will be passed
+  *            the option -- e.g. 'b' -- and the value.  Something like:
+@@ -267,7 +269,13 @@ void rt_help();
+  * argc: passed from main
+  * argv: passed from main
+  */
+-int rt_init(const char *options, int (*parse_arg)(int option, char *value), int argc, char *argv[]);
++int rt_init_long(const char *options, const struct option *longopts,
++		 int (*parse_arg)(int option, char *value),
++		 int argc, char *argv[]);
++
++/* rt_init: same as rt_init_long with no long options */
++int rt_init(const char *options, int (*parse_arg)(int option, char *value),
++	    int argc, char *argv[]);
+ 
+ int create_thread(void*(*func)(void*), void *arg, int prio, int policy);
+ 
+Index: realtime/lib/librttest.c
+===================================================================
+--- realtime.orig/lib/librttest.c
++++ realtime/lib/librttest.c
+@@ -99,9 +99,13 @@ void calibrate_busyloop(void)
+ 	iters_per_us = (CALIBRATE_LOOPS * NS_PER_US) / (end-start);
+ }
+ 
+-int rt_init(const char *options, int (*parse_arg)(int option, char *value), int argc, char *argv[])
++int rt_init_long(const char *options, const struct option *longopts,
++		 int (*parse_arg)(int option, char *value), int argc,
++		 char *argv[])
+ {
++	const struct option *cur_opt;
+ 	int use_buffer = 1;
++	char *longopt_vals;
+ 	size_t i;
+ 	int c;
+ 	opterr = 0;
+@@ -126,8 +130,33 @@ int rt_init(const char *options, int (*p
+ 			exit(1);
+ 		}
+ 	}
++
++	/* Ensure each long options has a known unique short option in val. */
++	longopt_vals = "";
++	cur_opt = longopts;
++	while (cur_opt && cur_opt->name) {
++		if (cur_opt->flag) {
++			fprintf(stderr, "Programmer error -- argument --%s flag"
++				" is non-null\n", cur_opt->name);
++			exit(1);
++		}
++		if (!strchr(all_options, cur_opt->val)) {
++			fprintf(stderr, "Progreammer error -- argument --%s "
++				"shortopt -%c wasn't listed in options (%s)\n",
++				cur_opt->name, cur_opt->val, all_options);
++			exit(1);
++		}
++		if (strchr(longopt_vals, cur_opt->val)) {
++			fprintf(stderr, "Programmer error -- argument --%s "
++				"shortopt -%c is used more than once\n",
++				cur_opt->name, cur_opt->val);
++			exit(1);
++		}
++		asprintf(&longopt_vals, "%s%c", longopt_vals, cur_opt->val);
++		cur_opt++;
++	}
+ 	
+-	while ((c = getopt(argc, argv, all_options)) != -1) {
++	while ((c = getopt_long(argc, argv, all_options, longopts, NULL)) != -1) {
+ 		switch (c) {
+ 		case 'c':
+ 			pass_criteria = atof(optarg);
+@@ -148,11 +177,17 @@ int rt_init(const char *options, int (*p
+ 			save_stats = 1;
+ 			break;
+ 		case ':':
+-			fprintf(stderr, "option -%c: missing arg\n", optopt);
++			if (optopt == '-')
++				fprintf(stderr, "long option missing arg\n");
++			else
++				fprintf(stderr, "option -%c: missing arg\n", optopt);
+ 			parse_arg('h', optarg); /* Just to display usage */
+ 			exit (1); /* Just in case. (should normally be done by usage()) */
+ 		case '?':
+-			fprintf(stderr, "option -%c not recognized\n", optopt);
++			if (optopt == '-')
++				fprintf(stderr, "unrecognized long option\n");
++			else
++				fprintf(stderr, "option -%c not recognized\n", optopt);
+ 			parse_arg('h', optarg); /* Just to display usage */
+ 			exit (1); /* Just in case. (should normally be done by usage()) */
+ 		default:
+@@ -185,6 +220,12 @@ int rt_init(const char *options, int (*p
+ 	return 0;
+ }
+ 
++int rt_init(const char *options, int (*parse_arg)(int option, char *value),
++	    int argc, char *argv[])
++{
++	return rt_init_long(options, NULL, parse_arg, argc, argv);
++}
++
+ void buffer_init(void)
+ {
+ 	_print_buffer = (char *)malloc(PRINT_BUFFER_SIZE);
+-- 
+Darren Hart
+IBM Linux Technology Center
+Real-Time Linux Team
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
