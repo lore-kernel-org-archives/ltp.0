@@ -1,9 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Date: Fri, 14 Aug 2009 14:48:10 +0200 (CEST)
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Message-ID: <alpine.LRH.2.00.0908071113370.11434@vixen.sonytel.be>
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+	helo=mx.sourceforge.net)
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MfiyP-0006Ph-P9
+	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 23:29:13 +0000
+Received: from qw-out-2122.google.com ([74.125.92.25])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MfiyI-0000uP-Vb
+	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 23:29:13 +0000
 MIME-Version: 1.0
-Subject: [LTP] linux-libc-dev and LTP compile failures on ppc
+In-Reply-To: <d51f89b0908240516n1b4ca28m988feb00f077fbd7@mail.gmail.com>
+References: <d51f89b0908240516n1b4ca28m988feb00f077fbd7@mail.gmail.com>
+Date: Mon, 24 Aug 2009 16:29:01 -0700
+Message-ID: <364299f40908241629x7dcfcbc2sdb2322198b7b729c@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Patch for smt_smp_affinity
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -13,79 +24,36 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-7"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: bugs@debian.org, ltp-results@lists.sourceforge.net
-Cc: Linux Test Project <Ltp-list@lists.sourceforge.net>
+To: rohit verma <rohit.170309@gmail.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-UGFja2FnZTogbGludXgtbGliYy1kZXYKVmVyc2lvbjogMi42LjI2LTE3bGVubnkxCgpXaGVuIGNv
-bmZpZ3VyaW5nIHVwc3RyZWFtIExUUCAoaHR0cDovL2x0cC5zb3VyY2Vmb3JnZS5uZXQvKSBvbiBw
-cGMsIEkgZ2V0OgoKfCBjaGVja2luZyBsaW51eC9jZ3JvdXBzdGF0cy5oIHVzYWJpbGl0eS4uLiBu
-bwp8IGNoZWNraW5nIGxpbnV4L2Nncm91cHN0YXRzLmggcHJlc2VuY2UuLi4geWVzCnwgY29uZmln
-dXJlOiBXQVJOSU5HOiBsaW51eC9jZ3JvdXBzdGF0cy5oOiBwcmVzZW50IGJ1dCBjYW5ub3QgYmUg
-Y29tcGlsZWQKfCBjb25maWd1cmU6IFdBUk5JTkc6IGxpbnV4L2Nncm91cHN0YXRzLmg6ICAgICBj
-aGVjayBmb3IgbWlzc2luZyBwcmVyZXF1aXNpdGUgaGVhZGVycz8KfCBjb25maWd1cmU6IFdBUk5J
-Tkc6IGxpbnV4L2Nncm91cHN0YXRzLmg6IHNlZSB0aGUgQXV0b2NvbmYgZG9jdW1lbnRhdGlvbgp8
-IGNvbmZpZ3VyZTogV0FSTklORzogbGludXgvY2dyb3Vwc3RhdHMuaDogICAgIHNlY3Rpb24gIlBy
-ZXNlbnQgQnV0IENhbm5vdCBCZSBDb21waWxlZCIKfCBjb25maWd1cmU6IFdBUk5JTkc6IGxpbnV4
-L2Nncm91cHN0YXRzLmg6IHByb2NlZWRpbmcgd2l0aCB0aGUgcHJlcHJvY2Vzc29yJ3MgcmVzdWx0
-CnwgY29uZmlndXJlOiBXQVJOSU5HOiBsaW51eC9jZ3JvdXBzdGF0cy5oOiBpbiB0aGUgZnV0dXJl
-LCB0aGUgY29tcGlsZXIgd2lsbCB0YWtlIHByZWNlZGVuY2UKfCBjb25maWd1cmU6IFdBUk5JTkc6
-ICAgICAjIyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0g
-IyMKfCBjb25maWd1cmU6IFdBUk5JTkc6ICAgICAjIyBSZXBvcnQgdGhpcyB0byBsdHAtcmVzdWx0
-c0BsaXN0cy5zb3VyY2Vmb3JnZS5uZXQgIyMKfCBjb25maWd1cmU6IFdBUk5JTkc6ICAgICAjIyAt
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0gIyMKfCBjaGVj
-a2luZyBmb3IgbGludXgvY2dyb3Vwc3RhdHMuaC4uLiB5ZXMKClRoaXMgc2VlbXMgdG8gYmUgY2F1
-c2VkIGJ5IDxsaW51eC9jZ3JvdXBzdGF0cy5oPiBub3QgYmVpbmcgc2VsZi1jb250YWluZWQKKGl0
-IG5lZWRzIGJ1dCBkb2Vzbid0IGluY2x1ZGUgPGxpbnV4L3R5cGVzLmg+KToKCnwgSW4gZmlsZSBp
-bmNsdWRlZCBmcm9tIC91c3IvaW5jbHVkZS9saW51eC9jZ3JvdXBzdGF0cy5oOjE4LAp8ICAgICAg
-ICAgICAgICAgICAgZnJvbSAvdG1wL2EuYzoxOgp8IC91c3IvaW5jbHVkZS9saW51eC90YXNrc3Rh
-dHMuaDo0NDogZXJyb3I6IGV4cGVjdGVkIHNwZWNpZmllci1xdWFsaWZpZXItbGlzdCBiZWZvcmUg
-oV9fdTE2ogp8IEluIGZpbGUgaW5jbHVkZWQgZnJvbSAvdG1wL2EuYzoxOgp8IC91c3IvaW5jbHVk
-ZS9saW51eC9jZ3JvdXBzdGF0cy5oOjMxOiBlcnJvcjogZXhwZWN0ZWQgc3BlY2lmaWVyLXF1YWxp
-Zmllci1saXN0IGJlZm9yZSChX191NjSiCgp8ICMgZHBrZyAtUyBjZ3JvdXBzdGF0cy5oCnwgbGlu
-dXgtbGliYy1kZXY6IC91c3IvaW5jbHVkZS9saW51eC9jZ3JvdXBzdGF0cy5oCnwgIyBhcHQtY2Fj
-aGUgcG9saWN5IGxpbnV4LWxpYmMtZGV2CnwgbGludXgtbGliYy1kZXY6CnwgICBJbnN0YWxsZWQ6
-IDIuNi4yNi0xN2xlbm55MQp8ICAgQ2FuZGlkYXRlOiAyLjYuMjYtMTdsZW5ueTEKfCAgIFZlcnNp
-b24gdGFibGU6CnwgICAgICAyLjYuMzAtNSAwCnwgICAgICAgICA1MDAgaHR0cDovL2Z0cC5kZS5k
-ZWJpYW4ub3JnIHNpZC9tYWluIFBhY2thZ2VzCnwgICoqKiAyLjYuMjYtMTdsZW5ueTEgMAp8ICAg
-ICAgICAgOTkwIGh0dHA6Ly9zZWN1cml0eS5kZWJpYW4ub3JnIGxlbm55L3VwZGF0ZXMvbWFpbiBQ
-YWNrYWdlcwp8ICAgICAgICAgMTAwIC92YXIvbGliL2Rwa2cvc3RhdHVzCnwgICAgICAyLjYuMjYt
-MTcgMAp8ICAgICAgICAgOTkwIGh0dHA6Ly9odHRwLnVzLmRlYmlhbi5vcmcgbGVubnkvbWFpbiBQ
-YWNrYWdlcwp8ICAgICAgICAgNTAwIGh0dHA6Ly9mdHAuZGUuZGViaWFuLm9yZyBzcXVlZXplL21h
-aW4gUGFja2FnZXMKfCAjIAoKTFRQIGRvZXMgY29tcGlsZSBmaW5lLCB0aG91Z2guCgoKQWZ0ZXIg
-dXBncmFkaW5nIGxpbnV4LWxpYmMtZGV2IHRvIHZlcnNpb24gMi42LjMwLTUgZnJvbSBzaWQsIGNv
-bmZpZ3VyZSB3b3JrcwpmaW5lIGFnYWluLiAgSG93ZXZlciwgdGhlIGJ1aWxkIG9mIExUUCBmYWls
-cyB3aXRoOgoKfCBnY2MgLWcgLU8yIC1JLi4vLi4vaW5jbHVkZSAtZyAtV2FsbCAtSS4uLy4uLy4u
-Ly4uL2luY2x1ZGUgLVdhbGwgICAgc2lnbmFsZmQwMS5jICAtTC4uLy4uLy4uLy4uL2xpYiAtbGx0
-cCAtbyBzaWduYWxmZDAxCnwgSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC91c3IvaW5jbHVkZS9hc20v
-ZmNudGwuaDo5LAp8ICAgICAgICAgICAgICAgICAgZnJvbSAvdXNyL2luY2x1ZGUvbGludXgvZmNu
-dGwuaDo0LAp8ICAgICAgICAgICAgICAgICAgZnJvbSAvdXNyL2luY2x1ZGUvbGludXgvc2lnbmFs
-ZmQuaDoxMywKfCAgICAgICAgICAgICAgICAgIGZyb20gc2lnbmFsZmQwMS5jOjYyOgp8IC91c3Iv
-aW5jbHVkZS9hc20tZ2VuZXJpYy9mY250bC5oOjExNzogZXJyb3I6IHJlZGVmaW5pdGlvbiBvZiCh
-c3RydWN0IGZsb2Nrogp8IC91c3IvaW5jbHVkZS9hc20tZ2VuZXJpYy9mY250bC5oOjE0MDogZXJy
-b3I6IHJlZGVmaW5pdGlvbiBvZiChc3RydWN0IGZsb2NrNjSiCnwgbWFrZVs0XTogKioqIFtzaWdu
-YWxmZDAxXSBFcnJvciAxCnwgbWFrZVs0XTogTGVhdmluZyBkaXJlY3RvcnkgYC9yb290L2x0cC1m
-dWxsLTIwMDkwNzMxL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2lnbmFsZmQnCgpUaGUgb3Jp
-Z2luYWwgZGVmaW5pdGlvbnMgb2YgYHN0cnVjdCBmbG9jaycgYW5kIGBzdHJ1Y3QgZmxvY2s2NCcg
-YXJlIGluCi91c3IvaW5jbHVkZS9iaXRzL2ZjbnRsLmguCgpQcmVzdW1hYmx5IC91c3IvaW5jbHVk
-ZS9iaXRzL2ZjbnRsLmggc2hvdWxkIHVzZSB0aGUgZGVmaW5pdGlvbiBwdWxsZWQgaW4gZnJvbQov
-dXNyL2luY2x1ZGUvYXNtL2ZjbnRsLmgsIGluc3RlYWQgb2YgZGVmaW5pbmcgaXRzIG93bj8KCldp
-dGgga2luZCByZWdhcmRzLAoKR2VlcnQgVXl0dGVyaG9ldmVuClNvZnR3YXJlIEFyY2hpdGVjdApU
-ZWNoc29mdCBDZW50cmUKClRlY2hub2xvZ3kgYW5kIFNvZnR3YXJlIENlbnRyZSBFdXJvcGUKVGhl
-IENvcnBvcmF0ZSBWaWxsYWdlILcgRGEgVmluY2lsYWFuIDctRDEgtyBCLTE5MzUgWmF2ZW50ZW0g
-tyBCZWxnaXVtCgpQaG9uZTogICAgKzMyICgwKTIgNzAwIDg0NTMKRmF4OiAgICAgICszMiAoMCky
-IDcwMCA4NjIyCkUtbWFpbDogICBHZWVydC5VeXR0ZXJob2V2ZW5Ac29ueWNvbS5jb20KSW50ZXJu
-ZXQ6IGh0dHA6Ly93d3cuc29ueS1ldXJvcGUuY29tLwoKQSBkaXZpc2lvbiBvZiBTb255IEV1cm9w
-ZSAoQmVsZ2l1bSkgTi5WLgpWQVQgQkUgMDQxMy44MjUuMTYwILcgUlBSIEJydXNzZWxzCkZvcnRp
-cyC3IEJJQyBHRUJBQkVCQiC3IElCQU4gQkU0MTI5MzAzNzY4MDAxMAoKLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tCkxldCBDcnlzdGFsIFJlcG9ydHMgaGFuZGxlIHRoZSByZXBvcnRpbmcgLSBGcmVlIENy
-eXN0YWwgUmVwb3J0cyAyMDA4IDMwLURheSAKdHJpYWwuIFNpbXBsaWZ5IHlvdXIgcmVwb3J0IGRl
-c2lnbiwgaW50ZWdyYXRpb24gYW5kIGRlcGxveW1lbnQgLSBhbmQgZm9jdXMgb24gCndoYXQgeW91
-IGRvIGJlc3QsIGNvcmUgYXBwbGljYXRpb24gY29kaW5nLiBEaXNjb3ZlciB3aGF0J3MgbmV3IHdp
-dGggCkNyeXN0YWwgUmVwb3J0cyBub3cuICBodHRwOi8vcC5zZi5uZXQvc2Z1L2JvYmotanVseQpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBt
-YWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMu
-c291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+On Mon, Aug 24, 2009 at 5:16 AM, rohit verma<rohit.170309@gmail.com> wrote:
+> Dear Subrata,
+>
+> smt_smp_ affinity test case is passing on Fedora but fails on Ubuntu
+> for the same H/W.On Ubuntu system, after doing strace i observed that
+> system call sched_getaffinity was returning -1 [ERROR:EINVAL] due to
+> second argument.
+>
+> sched_getaffinity(pid, sizeof(unsigned int), &mask1)
+>
+> Please find attached herewith the patch which fixes the issue.
+
+Rohit,
+    Good catch -- one style note though: tst_resm doesn't require a
+"\n" because that's automatically appended to each message.
+Thanks,
+-Garrett
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
