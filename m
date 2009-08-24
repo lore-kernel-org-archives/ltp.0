@@ -1,25 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Md5kM-00008N-9c
-	for ltp-list@lists.sourceforge.net; Mon, 17 Aug 2009 17:11:50 +0000
-Received: from qw-out-1920.google.com ([74.125.92.145])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Md5kH-0000l9-E2
-	for ltp-list@lists.sourceforge.net; Mon, 17 Aug 2009 17:11:50 +0000
-Received: by qw-out-1920.google.com with SMTP id 5so914621qwc.4
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 17 Aug 2009 10:11:38 -0700 (PDT)
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MfPd9-0001j0-Gg
+	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 02:49:59 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MfPd3-000065-Mq
+	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 02:49:59 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sun, 23 Aug 2009 22:49:44 -0400
+References: <20090824.012723.112609532.caiqian@cclom.cn>
+In-Reply-To: <20090824.012723.112609532.caiqian@cclom.cn>
 MIME-Version: 1.0
-In-Reply-To: <20090817120920.8902.89815.sendpatchset@subratamodak.linux.ibm.com>
-References: <20090817120835.8902.4597.sendpatchset@subratamodak.linux.ibm.com>
-	<20090817120920.8902.89815.sendpatchset@subratamodak.linux.ibm.com>
-Date: Mon, 17 Aug 2009 10:11:37 -0700
-Message-ID: <364299f40908171011s55fdd4a1pbf5e5e6bad352a13@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH v2 02/05] Add Script which would actually do the
-	job of injecting faults
+Message-Id: <200908232249.46097.vapier@gentoo.org>
+Subject: Re: [LTP] What is the Story of "make autotools"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,94 +24,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============5112596443260848284=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: Sachin P Sant <sachinp@linux.vnet.ibm.com>, LTP Mailing List <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>, Michael Reed <mreed10@us.ibm.com>, Nate Straz <nate@refried.org>, Paul Larson <paul.larson@ubuntu.com>, Manoj Iyer <manoj.iyer@ubuntu.com>, Balbir Singh <balbir@linux.vnet.ibm.com>
+To: ltp-list@lists.sourceforge.net
 
-SGkgU3VicmF0YSwKCk9uIE1vbiwgQXVnIDE3LCAyMDA5IGF0IDU6MDkgQU0sIFN1YnJhdGEKTW9k
-YWs8c3VicmF0YUBsaW51eC52bmV0LmlibS5jb20+IHdyb3RlOgo+IFNjcmlwdCB3aGljaCB3b3Vs
-ZCBhY3R1YWxseSBkbyB0aGUgam9iIG9mIGluamVjdGluZyBmYXVsdHMgYnkgY2hhbmdpbmcgdmFy
-aW91cwo+IHBhcmFtZXRycyBhdmFpbGFibGUgdW5kZXIgL2RlYnVnL2ZhaWwqLiBUaGlzIHdvdWxk
-IGJlIGRvbmUgZHluYW1pY2FsbHkgZHVyaW5nCj4gTFRQIHJ1biwgYW5kLCBpcyBjYXBhYmxlIG9m
-IHRha2luZyBwYXJhbWV0ZXJzIGZyb20gMCB0byAxMDAgdG8gdmFyeSB0aGUKPiBwcm9iYWJpbGl0
-eSBvZiBGYXVsdCB0aGUgdXNlciB3YW50cyB0byBpbmplY3QgaW4gdGhlIHJ1bm5pbmcga2VybmVs
-Lgo+Cj4gSW5jb3Jwb3JhdGVkIE1pa2XFmyAmIEdhcnJldHMgY29tbWVudHMgYW5kIGNvbmNlcm5z
-Lgo+Cj4gU2lnbmVkLW9mZi1ieTogU3VicmF0YSBNb2RhazxzdWJyYXRhQGxpbnV4LnZuZXQuaWJt
-LmNvbT4KPiAtLS0KPgo+IC0tLSBsdHAtZnVsbC0yMDA5MDczMS5vcmlnL3Rvb2xzL2luc2VydF9r
-ZXJuZWxfZmF1bHRzLnNoIMKgIMKgIMKgIMKgMTk3MC0wMS0wMSAwNTozMDowMC4wMDAwMDAwMDAg
-KzA1MzAKPiArKysgbHRwLWZ1bGwtMjAwOTA3MzEvdG9vbHMvaW5zZXJ0X2tlcm5lbF9mYXVsdHMu
-c2ggwqAgwqAgMjAwOS0wOC0xNyAxMjoxNzozMS4wMDAwMDAwMDAgKzA1MzAKPiBAQCAtMCwwICsx
-LDUzIEBACj4gKyMhL2Jpbi9zaAo+ICsjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIwo+ICsjIyDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCMjCj4g
-KyMjIENvcHlyaWdodCAoYykgSW50ZXJuYXRpb25hbCBCdXNpbmVzcyBNYWNoaW5lcyDCoENvcnAu
-LCAyMDA5IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICMjCj4gKyMjIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIyMKPiArIyMgVGhpcyBwcm9n
-cmFtIGlzIGZyZWUgc29mdHdhcmU7IMKgeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29yIG1v
-ZGlmeSDCoCDCoCDCoCMjCj4gKyMjIGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdlbmVy
-YWwgUHVibGljIExpY2Vuc2UgYXMgcHVibGlzaGVkIGJ5IMKgIMKgIMKgICMjCj4gKyMjIHRoZSBG
-cmVlIFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJzaW9uIDIgb2YgdGhlIExpY2Vuc2Us
-IG9yIMKgIMKgIMKgIMKgIMKgIyMKPiArIyMgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVy
-c2lvbi4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAjIwo+ICsjIyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCMjCj4gKyMjIFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0
-aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLCBidXQgwqAgwqAgwqAgwqAjIwo+ICsjIyBX
-SVRIT1VUIEFOWSBXQVJSQU5UWTsgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9m
-IE1FUkNIQU5UQUJJTElUWSAjIwo+ICsjIyBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVS
-UE9TRS4gwqBTZWUgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIMKgICMjCj4gKyMjIGZv
-ciBtb3JlIGRldGFpbHMuIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIyMKPiArIyMgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAjIwo+
-ICsjIyBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQ
-dWJsaWMgTGljZW5zZSDCoCDCoCDCoCDCoCDCoCMjCj4gKyMjIGFsb25nIHdpdGggdGhpcyBwcm9n
-cmFtOyDCoGlmIG5vdCwgd3JpdGUgdG8gdGhlIEZyZWUgU29mdHdhcmUgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgIyMKPiArIyMgRm91bmRhdGlvbiwgSW5jLiwgNTkgVGVtcGxlIFBsYWNlLCBTdWl0ZSAz
-MzAsIEJvc3RvbiwgTUEgMDIxMTEtMTMwNyBVU0EgwqAgwqAjIwo+ICsjIyDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCMjCj4gKyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjCj4gKyMgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAjIwo+ICsjIEZpbGUgOiDCoCDCoCDCoCDCoGluc2VydF9rZXJu
-ZWxfZmF1bHRzLnNoIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIyMKPiArIyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCMjCj4gKyMgVXNhZ2U6IMKgIMKgIMKgIGlu
-c2VydF9rZXJuZWxfZmF1bHRzLnNoIDxmYXVsdF9wZXJjZW50YWdlPiDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCMjCj4gKyMgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAjIwo+ICsjIERlc2NyaXB0aW9uOiDCoFRoaXMgaXMgYSBzaW1w
-bGUgc2NyaXB0IHRoYXQgaW5zZXJ0cyBmYXVsdHMgYXQgdmFyaW91cyDCoCDCoCDCoCAjIwo+ICsj
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgc3Vic3lzdGVtcyBvZiB0aGUga2VybmVsLiBQbGVhc2UgcmVm
-ZXIgdG8gdGhlIGx0cC9SRUFETUUgwqAgwqAgwqAjIwo+ICsjIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-Zm9yIHRoZSB2YXJpb3VzIGtlcm5lbCBDT05GSUcgb3B0aW9ucyBuZWVkZWQgdG8gZXhwbG9pdCDC
-oCDCoCDCoCAjIwo+ICsjIMKgIMKgIMKgIMKgIMKgIMKgIMKgYWxsIHRob3NlIGZlYXR1cmVzIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIyMKPiArIyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCMjCj4gKyMgQXV0aG9yOiDCoCDCoCDCoFN1YnJhdGEgTW9kYWsgPHN1YnJh
-dGFAbGludXgudm5ldC5pYm0uY29tPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCMjCj4g
-KyMgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAjIwo+ICsjIEhpc3Rvcnk6IMKgIMKgIMKgQXVnIDExIDIwMDkgLSBDcmVhdGVkIC0gU3VicmF0
-YSBNb2Rhay4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgIyMKPiArIyDCoCDCoCDC
-oCDCoCDCoCDCoCDCoEF1ZyAxNyAyMDA5IC0gQ2hhbmdlZCB0aGUgZGVidWdmcyBtb3VudCBwb2lu
-dCAtIFN1YnJhdGEgTW9kYWsuIyMKPiArIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKPiArCj4gK2lm
-IFsgLXogJDEgXQoKT25lIGNvbmNlcm46ICQxIHNob3VsZCBiZSBxdW90ZWQuCgpUaGFua3MhCi1H
-YXJyZXR0Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMZXQgQ3J5c3RhbCBSZXBvcnRzIGhhbmRsZSB0
-aGUgcmVwb3J0aW5nIC0gRnJlZSBDcnlzdGFsIFJlcG9ydHMgMjAwOCAzMC1EYXkgCnRyaWFsLiBT
-aW1wbGlmeSB5b3VyIHJlcG9ydCBkZXNpZ24sIGludGVncmF0aW9uIGFuZCBkZXBsb3ltZW50IC0g
-YW5kIGZvY3VzIG9uIAp3aGF0IHlvdSBkbyBiZXN0LCBjb3JlIGFwcGxpY2F0aW9uIGNvZGluZy4g
-RGlzY292ZXIgd2hhdCdzIG5ldyB3aXRoIApDcnlzdGFsIFJlcG9ydHMgbm93LiAgaHR0cDovL3Au
-c2YubmV0L3NmdS9ib2JqLWp1bHkKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZv
-cmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAt
-bGlzdAo=
+--===============5112596443260848284==
+Content-Type: multipart/signed; boundary="nextPart1862356.fj4DtxQ3KK";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+
+--nextPart1862356.fj4DtxQ3KK
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+On Sunday 23 August 2009 13:27:23 CAI Qian wrote:
+> $ make autotools
+> make: *** No rule to make target `m4/Makefile.am', needed by
+>       `m4/Makefile.in'.  Stop.
+
+that file is in cvs.  if you have an incomplete checkout, there's nothing w=
+e=20
+can do about it.
+=2Dmike
+
+--nextPart1862356.fj4DtxQ3KK
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJKkf/KAAoJEEFjO5/oN/WBYvgQAN3qLVcqTu5+XrnM4aJmm9Un
+b0WSIHY/yHCeTZhGg8GPOQBPrlTadKfMX0eYojixwPLfXWgBq+JPfnVRpAg1kf1x
+4tcXVruJMJ1hx4LhDAQXtfdyreYjotYCv6CecjTZhO0NtbI+ArWC4eCJwp9XJCr6
+XIlOEmV2yf6pHFKe9nwkwVNOALK8oV5OJhDUBR4RS+YbZMDZD+50c6+dktdnkTWn
+pnCv8YJ+hDPeMWzbU4hM61c8L159I7veZfXgEVDrdlLi/VBvRQhV/Gm3oxMV9DQy
+ntKWZg6kWXinOpOd5yo315Fdt6RQGfpr5X5byACV0wgCypOdINpRpgaEAtDw1syZ
+6RpqV9uHt8vE4tcWX1p3IwogRhpoDroR46YoDIskd+yD/PQBWMhM0u+qbN2/RHki
+yBJzh222cFVT8608xm0xsfgJebk1okzYhWobU/Qx7pS9nA3sczmA891WYoPm6MP/
+SoDN9z5JCrgcA/8YuDvUffR4RDvkj5aWx+SnkNerAZPFW9FrJoTUkwsM65P+s+Eo
+CFAXXDmuaBPgf0ptsIjCcxXmf0y3Ae0whhQO/0Qg+BxZYeSof+exMtl/7LDOXt5r
+eqOMgO3OS33YYHyjYgNd1pF6wqEPzjVVQ6gRZZn0M3VOJ0h4gaJ0Pr0VwKeDuQoh
+ri/MHdVMoyBF4Sb1LHWO
+=cuZ2
+-----END PGP SIGNATURE-----
+
+--nextPart1862356.fj4DtxQ3KK--
+
+
+--===============5112596443260848284==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============5112596443260848284==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============5112596443260848284==--
+
