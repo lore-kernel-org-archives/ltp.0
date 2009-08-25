@@ -1,20 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MXvbE-0003JR-In
-	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 11:21:04 +0000
-Received: from e33.co.us.ibm.com ([32.97.110.151])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MXvbA-0001C5-KN
-	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 11:21:04 +0000
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MfsnE-000349-In
+	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 09:58:20 +0000
+Received: from e31.co.us.ibm.com ([32.97.110.149])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MfsnA-0000LS-7g
+	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 09:58:20 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e31.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7P9qVWM018474
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 03:52:31 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7P9w5po226482
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 03:58:07 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7P9w4RR031839
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 03:58:05 -0600
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1249044151.5432.73.camel@kiran-laptop>
-References: <1249044151.5432.73.camel@kiran-laptop>
-Date: Mon, 03 Aug 2009 16:50:47 +0530
-Message-Id: <1249298447.7460.32.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <20090824.120051.112612549.caiqian@cclom.cn>
+References: <20090824.120051.112612549.caiqian@cclom.cn>
+Date: Tue, 25 Aug 2009 15:28:03 +0530
+Message-Id: <1251194283.5534.21.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH 2/3] libstats: replace data->size by data->index
+Subject: Re: [LTP] [PATCH 1/3] Check unshare Function
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -28,141 +40,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kiran <kiran@linux.vnet.ibm.com>
-Cc: gowrishankar.m@in.ibm.com, ltp-list <ltp-list@lists.sf.net>
+To: CAI Qian <caiqian@cclom.cn>
+Cc: ltp-list@lists.sourceforge.net
 
-On Fri, 2009-07-31 at 18:12 +0530, Kiran wrote: 
-> This patch replaces the occurrences of data->size by data->index+1 as
-> the index starts with 0 and ends at data->size-1.
-> data->size holds the max size of the records list in data->container_t.
-> data->index holds the index of the last record in the list. Since the
-> records list may not be completely filled, data->index + 1 gives the
-> total number of records currently in the list and it may not be equal to
-> data->size. 
+On Mon, 2009-08-24 at 12:00 +0800, CAI Qian wrote: 
+> This patch set fixes several problems for unshare tests. The first one
+> is to add a build-time checking for unshare function. The second one is
+> to fix unshare01 test,
 > 
-> Signed-off-by: Kiran Prakash <kiran@linux.vnet.ibm.com>
+> * deal with no unshare implementation in both glibc and kernel.
+> * simplify logic.
+> * fix coding style.
+> 
+> The final one is to fix unshare02 test,
+> 
+> * deal with no unshare implementation in both glibc and kernel.
+> * fix an incorrect expected result and simplify logic.
+> * fix coding style.
+> 
+> Signed-off-by: CAI Qian <caiqian@cclom.cn>
 
-Thanks.
+Thanks Cai.
 
 Regards--
 Subrata
 
-> Acked-by: Gowrishankar <gowrishankar.m@in.ibm.com>
-> Acked-by: Darren Hart <dvhltc@us.ibm.com>
-> Acked-by: Sripathi Kodi <sripathik@in.ibm.com> 
 > 
-> diff -upr ltp-full-20090531_orig/testcases/realtime/lib/libstats.c ltp-full-20090531/testcases/realtime/lib/libstats.c
-> --- ltp-full-20090531_orig/testcases/realtime/lib/libstats.c	2009-07-22 21:12:47.000000000 +0530
-> +++ ltp-full-20090531/testcases/realtime/lib/libstats.c	2009-07-22 21:16:59.000000000 +0530
-> @@ -105,7 +105,7 @@ int stats_container_free(stats_container
->  int stats_sort(stats_container_t *data, enum stats_sort_method method)
->  {
->  	// method not implemented, always ascending on y atm
-> -	qsort(data->records, data->size, sizeof(stats_record_t),
-> +	qsort(data->records, data->index + 1, sizeof(stats_record_t),
->  	      stats_record_compare);
->  	return 0;
->  }
-> @@ -117,7 +117,7 @@ float stats_stddev(stats_container_t *da
->  	long n;
+>  configure.ac      |    1 +
+>  m4/ltp-unshare.m4 |    2 ++
+>  2 files changed, 3 insertions(+), 0 deletions(-)
 > 
->  	sd = 0.0;
-> -	n = data->size;
-> +	n = data->index + 1;
->  	sum = 0.0;
-> 
->  	/* calculate the mean */
-> @@ -145,7 +145,7 @@ float stats_avg(stats_container_t *data)
->  	float avg, sum;
->  	long n;
-> 
-> -	n = data->size;
-> +	n = data->index + 1;
->  	sum = 0.0;
-> 
->  	/* calculate the mean */
-> @@ -163,7 +163,7 @@ long stats_min(stats_container_t *data)
->  	long min;
->  	long n;
-> 
-> -	n = data->size;
-> +	n = data->index + 1;
-> 
->  	/* calculate the mean */
->  	min = data->records[0].y;
-> @@ -182,7 +182,7 @@ long stats_max(stats_container_t *data)
->  	long max;
->  	long n;
-> 
-> -	n = data->size;
-> +	n = data->index + 1;
-> 
->  	/* calculate the mean */
->  	max = data->records[0].y;
-> @@ -223,16 +223,17 @@ int stats_quantiles_calc(stats_container
->  	int index;
-> 
->  	// check for sufficient data size of accurate calculation
-> -	if (data->size <= 0 || data->size < (long)exp10(quantiles->nines)) {
-> +	if (data->index < 0 || (data->index + 1) \
-> +	    < (long)exp10(quantiles->nines)) {
->  		//printf("ERROR: insufficient data size for %d nines\n", data->size);
->  		return -1;
->  	}
-> 
-> -	size = data->size;
-> +	size = data->index + 1;
->  	stats_sort(data, ASCENDING_ON_Y);
-> 
->  	for (i = 2; i <= quantiles->nines; i++) {
-> -		index = data->size - data->size / exp10(i);
-> +		index = size - size / exp10(i);
->  		quantiles->quantiles[i-2] = data->records[index].y;
->  	}
->  	return 0;
-> @@ -259,13 +260,13 @@ int stats_hist(stats_container_t *hist, 
-> 
->  	ret = 0;
-> 
-> -	if (hist->size <= 0 || data->size <= 0) {
-> +	if (hist->size <= 0 || data->index < 0) {
->  		return -1;
->  	}
-> 
->  	/* calculate the range of dataset */
->  	min = max = data->records[0].y;
-> -	for (i = 0; i < data->size; i++) {
-> +	for (i = 0; i <= data->index; i++) {
->  		y = data->records[i].y;
->  		if (y > max) max = y;
->  		if (y < min) min = y;
-> @@ -284,7 +285,7 @@ int stats_hist(stats_container_t *hist, 
->  	}
-> 
->  	/* fill in the counts */
-> -	for (i = 0; i < data->size; i++) {
-> +	for (i = 0; i <= data->index; i++) {
->  		y = data->records[i].y;
->  		b = MIN((y-min)/width, hist->size-1);
->  		//printf("%d will go in bucket %d\n", y, b);
-> @@ -336,8 +337,8 @@ int stats_container_save(char *filename,
->          return -1;
->      } else {
->          minx = maxx = data->records[0].x;
-> -        miny = maxy = data->records[0].y;
-> -        for (i = 0; i < data->size; i++) {
-> +	miny = maxy = data->records[0].y;
-> +	for (i = 0; i <= data->index; i++) {
->              rec = &data->records[i];
->              minx = MIN(minx, rec->x);
->              maxx = MAX(maxx, rec->x);
-> 
-> 
-> -- 
-> 
-> Thanks,
-> Kiran
-> 
+> diff --git a/configure.ac b/configure.ac
+> index aa7bef4..ca8adc5 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -18,6 +18,7 @@ sys/inotify.h \
+>  LTP_CHECK_SYSCALL_EVENTFD
+>  LTP_CHECK_SYSCALL_MODIFY_LDT
+>  LTP_CHECK_SYSCALL_SIGNALFD
+> +LTP_CHECK_SYSCALL_UNSHARE
+>  LTP_CHECK_SELINUX
+>  LTP_CHECK_CRYPTO
+>  LTP_CHECK_TASKSTATS
+> diff --git a/m4/ltp-unshare.m4 b/m4/ltp-unshare.m4
+> new file mode 100644
+> index 0000000..6476141
+> --- /dev/null
+> +++ b/m4/ltp-unshare.m4
+> @@ -0,0 +1,2 @@
+> +AC_DEFUN([LTP_CHECK_SYSCALL_UNSHARE],
+> +AC_CHECK_FUNCS_ONCE(unshare))
 > 
 > ------------------------------------------------------------------------------
 > Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
