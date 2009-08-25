@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1MZ5Xd-0008VM-8m
-	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 16:10:09 +0000
-Received: from mail-yx0-f174.google.com ([209.85.210.174])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MZ5XX-0002Ce-Rm
-	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 16:10:09 +0000
-Received: by yxe4 with SMTP id 4so1239787yxe.28
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 06 Aug 2009 09:09:58 -0700 (PDT)
+	(envelope-from <anton.pak@pigeonpoint.com>) id 1MfoqK-0003W3-3X
+	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 05:45:16 +0000
+Received: from [209.59.14.42] (helo=pigeonpoint.com)
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MfoqE-00072z-3F
+	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 05:45:16 +0000
+Message-ID: <41008.95.24.171.156.1251178978.squirrel@mail.pigeonpoint.com>
+In-Reply-To: <1251162918.4388.33.camel@OSLORic>
+References: <364299f40908191611x4accc24yc36b344956c7a40c@mail.gmail.com>
+	<1251162918.4388.33.camel@OSLORic>
+Date: Tue, 25 Aug 2009 01:42:58 -0400 (EDT)
+From: anton.pak@pigeonpoint.com
 MIME-Version: 1.0
-Date: Thu, 6 Aug 2009 21:39:58 +0530
-Message-ID: <f5a7b3810908060909p4d9c06f6rd5f6e8e35c58bb69@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Subject: Re: [LTP] [PATCH 1/1] openposix_mmap_11_4
+Subject: Re: [LTP] [Openhpi-devel] [PATCH] Cross-compile configure bug
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,159 +25,134 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
-Cc: Brandon Philips <bphilips@suse.de>, Ulrich Drepper <drepper@gmail.com>
+To: openhpi-devel@lists.sourceforge.net
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-SGksCgpJbiBhZGRpdGlvbiB0byB0aGUgYmVsb3cgTGluayBkaXNjdXNzaW9uCgpEYXRlOiAxNiBK
-dWwgMjAwOQpodHRwOi8vd3d3Lm1haWwtYXJjaGl2ZS5jb20vbHRwLWxpc3RAbGlzdHMuc291cmNl
-Zm9yZ2UubmV0L21zZzA3NTA2Lmh0bWwKCnBhdGNoIGlzIG5vdCB5ZXQgY29tbWl0dGVkIHRvIExU
-UCBDVnMuCgphcyBwZXIgdGVzdCBjYXNlIERlc2NyaXB0aW9uCgovKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCiAqIEltcGxlbWVudGF0aW9uIHBl
-cmZvcm1zIG1hcHBpbmcgb3BlcmF0aW9ucyBvdmVyIHdob2xlIHBhZ2VzLgogKiBUaHVzLCB3aGls
-ZSB0aGUgYXJndW1lbnQgbGVuCiAqIG5lZWQgbm90IG1lZXQgYSBzaXplIG9yIGFsaWdubWVudCBj
-b25zdHJhaW50LAogKiB0aGUgaW1wbGVtZW50YXRpb24gc2hhbGwgaW5jbHVkZSwgaW4gYW55IG1h
-cHBpbmcKICogb3BlcmF0aW9uLCBhbnkgcGFydGlhbCBwYWdlIHNwZWNpZmllZCBieSB0aGUgcmFu
-Z2UgW3BhLHBhK2xlbikuCiAqIFRoZSBzeXN0ZW0gc2hhbGwgYWx3YXlzIHplcm8tZmlsbCBhbnkg
-cGFydGlhbCBwYWdlIGF0IHRoZSBlbmQgb2YgYW4gb2JqZWN0LgogKiBGdXJ0aGVyLCB0aGUgc3lz
-dGVtIHNoYWxsIG5ldmVyIHdyaXRlIG91dCBhbnkgbW9kaWZpZWQgcG9ydGlvbnMgb2YKICogdGhl
-IGxhc3QgcGFnZSBvZiBhbiBvYmplY3Qgd2hpY2ggYXJlIGJleW9uZCBpdHMgZW5kLgogKgogKiBU
-ZXN0IHN0ZXA6CiAqIDEuIENyZWF0ZSBhIHByb2Nlc3MsIGluIHRoaXMgcHJvY2VzczoKICAgICAg
-YS4gbWFwIGEgZmlsZSAgd2l0aCBzaXplIG9mIDEvMiAqIHBhZ2Vfc2l6ZSwKICogICAgICAgc2V0
-IGxlbiA9IDEvMiAqIHBhZ2Vfc2l6ZQogKiAgICBiLiBSZWFkIHRoZSBwYXJ0aWFsIHBhZ2UgYmV5
-b25kIHRoZSBvYmplY3Qgc2l6ZS4KICogICAgICAgTWFrZSBzdXJlIHRoZSBwYXJ0aWFsIHBhZ2Ug
-aXMgemVyby1maWxsZWQ7CiAqICAgIGMuIE1vZGlmeSBhIGJ5dGUgaW4gdGhlIHBhcnRpYWwgcGFn
-ZSwgdGhlbiB1bi1tYXAgdGhlIGFuZCBjbG9zZSB0aGUKICogICAgICAgZmlsZSBkZXNjcmlwdG9y
-LgogKiAyLiBXYWl0IGZvciB0aGUgY2hpbGQgcHJvY2VzIHRvIGV4aXQsIHRoZW4KICogICAgTWFw
-IHRoZSBmaWxlIGFnYWluLAogKiAgICByZWFkIHRoZSBieXRlIGZyb20gdGhlIHBvc2l0aW9uIG1v
-ZGlmaWVkIGF0IHN0ZXAgMS1jIGFuZCBjaGVjay4KICovCi8qKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLwoKcGxlYXNlIG5vdGUgdGhlIGJlbG93IGRp
-c2N1c3Npb24KCmh0dHA6Ly9idWdzLmdlbnRvby5vcmcvMTk3MTkxCgpSZWY6Cmh0dHA6Ly93d3cu
-b3Blbmdyb3VwLm9yZy9vbmxpbmVwdWJzLzAwOTY5NTM5OS9mdW5jdGlvbnMvbW1hcC5odG1sCgpm
-YW4gaGUsCgpwbGVhc2UgbWFrZSBzdXJlIHdobyBpcyBnb2luZyB0byBkbyB0aGlzIGlzIGl0IGNv
-bWluZyBmcm9tIGtlcm5lbCBvciBnbGliYz8KCkJlc3QgcmVnYXJkcwpOYXJlc2ggS2FtYm9qdQoK
-Cj5PbiBNb24sIDIwMDktMDctMjAgYXQgMDA6NDYgLTA3MDAsIEdhcnJldHQgQ29vcGVyIHdyb3Rl
-Ogo+IE9uIFN1biwgSnVsIDE5LCAyMDA5IGF0IDEwOjU0IFBNLCBNaWNoYWwKPiBTaW1lazxtaWNo
-YWwuc2kuLi5AcGV0YWxvZ2l4LmNvbT4gd3JvdGU6Cj4gPiBIaSwKPiA+PiBPbiBTYXQsIDIwMDkt
-MDctMTggYXQgMTI6MjggLTA3MDAsIEdhcnJldHQgQ29vcGVyIHdyb3RlOgo+ID4+Cj4gPj4+IE9u
-IFRodSwgSnVsIDE2LCAyMDA5IGF0IDExOjM3IFBNLCBoZWZhbjxmLi4uQG5vdmVsbC5jb20+IHdy
-b3RlOgo+ID4+Pgo+ID4+Pj4gaGksCj4gPj4+Pgo+ID4+Pj4gKltQYXRjaCAxLzFdIFBhdGNoIGZv
-ciBmaXhpbmcgdGhlIO+7v2ZhaWxlZCDvu790ZXN0Y2FzZSBvcGVucG9zaXhfbW1hcF8xMV80Cj4g
-Pj4+Pgo+ID4+Pj4gLW1vZGlmaWVkIHRoZSBmaWxlCj4gPj4+PiAqdGVzdGNhc2VzL29wZW5fcG9z
-aXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMv77u/bW1hcC8xMS00LmMKPiA+Cj4g
-PiBGaXJzdCBvZiBhbGwgLSB0aGlzIGlzIHJlYWxseSBzbWFsbCBleHBsYW5hdGlvbiB3aHkgeW91
-IGFyZSBmaXhpbmcgdGhpcwo+ID4gaXNzdWUuIEFmdGVyIHNvbWUgbW9udGgKPiA+IG5vbmUgd2ls
-bCBrbm93IHdoeSB5b3UgZGlkIHRoaXMgY2hhbmdlLgo+ID4KPiA+Cj4gPj4+Pgo+ID4+Pj4g77u/
-U2lnbmVkLW9mZi1ieTogIGZyZWRyaWNrIGhlIDxmLi4uQG5vdmVsbC5jb20+Cj4gPj4+Pgo+ID4+
-Pj4gLS0tCj4gPj4+PiBsdHAub3JpZy90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29u
-Zm9ybWFuY2UvaW50ZXJmYWNlcy9tbWFwLzExLTQuYwo+ID4+Pj4gICAgICAgMjAwOS0wNy0xNyAx
-MTo1MzozNi4wMDAwMDAwMDAgKzA4MDAKPiA+Pj4+ICsrKwo+ID4+Pj4gbHRwL3Rlc3RjYXNlcy9v
-cGVuX3Bvc2l4X3Rlc3RzdWl0ZS9jb25mb3JtYW5jZS9pbnRlcmZhY2VzL21tYXAvMTEtNC5jCj4g
-Pj4+PiAyMDA5LTA3LTE3IDExOjU3OjA5LjAwMDAwMDAwMCArMDgwMAo+ID4+Pj4gQEAgLTEzMCw3
-ICsxMzAsOSBAQCBpbnQgbWFpbigpCj4gPj4+PiAgIGZsYWcgPSBNQVBfU0hBUkVEOwo+ID4+Pj4g
-ICBvZmYgPSAwOwo+ID4+Pj4gICBwYSA9IG1tYXAoYWRkciwgbGVuLCBwcm90LCBmbGFnLCBmZF8y
-LCBvZmYpOwo+ID4+Pj4gLSAgcGFfMiA9IG1tYXAoYWRkciwgbGVuLCBwcm90LCBmbGFnLCBmZF8y
-LCBvZmYpOwo+ID4+Pj4gKyAgYWRkciA9IHBhOwo+ID4+Pj4gKyAgbWVtc2V0KGFkZHIsMCxsZW4q
-Mik7Cj4gPj4+PiArICBwYV8yID0gbW1hcChhZGRyLCBsZW4sIHByb3QsIGZsYWd8TUFQX0ZJWEVE
-LCBmZF8yLCBvZmYpOwo+ID4+Pj4gICBpZiAocGFfMiA9PSBNQVBfRkFJTEVEKQo+ID4+Pj4gICB7
-Cj4gPj4+PiAgICAgcHJpbnRmKCJUZXN0IEZBSUw6ICIgVE5BTUUgIiBFcnJvciBhdCAybmQgbW1h
-cCgpOiAlc1xuIiwKPiA+Pj4+Cj4gPj4+IEhpIEZhbiwKPiA+Pj4gICAgIFNvbWUgcXVlc3Rpb25z
-IC8gb2JzZXJ2YXRpb25zOgo+ID4+Pgo+ID4+PiAxLiBZZXMsIHRoZSB0ZXN0Y2FzZXMgZG9lcyBm
-YWlsIG9uIG15IG1hY2hpbmUgdG9kYXkuCj4gPj4+IDIuIFllcywgZG9pbmcgd2hhdCB5b3Ugc2F5
-IGFib3ZlIGRvZXMgd29yayAoYXQgbGVhc3QgdGhlIHRlc3RjYXNlIHBhc3NlcykuCj4gPj4+IDMu
-IEFyZSB5b3UgcG9zaXRpdmUgdGhhdCB5b3VyIHNldCBvZiBzdGVwcyBhYm92ZSBpbiBmYWN0IGRv
-bid0Cj4gPj4+IGludmFsaWRhdGUgdGhlIHB1cnBvc2Ugb2YgdGhlIHRlc3RjYXNlLCBieSBhY2Np
-ZGVudCwgaW4gcGFydGljdWxhciB0aGUKPiA+Pj4gbWVtc2V0IGNhbGw/IEkgYXNrIGJlY2F1c2Ug
-b2YgdGhlIGZvbGxvd2luZyBzdGF0ZW1lbnQgaW4gdGhlIG1tYXAKPiA+Pj4gbWFucGFnZToKPiA+
-Pj4KPiA+Pj4gICAgICAgIElmIGFkZHIgaXMgTlVMTCwgdGhlbiB0aGUga2VybmVsIGNob29zZXMg
-dGhlIGFkZHJlc3MgYXQgd2hpY2ggdG8KPiA+Pj4gY3JlYXRlCj4gPj4+ICAgICAgICB0aGUgbWFw
-cGluZzsgdGhpcyBpcyB0aGUgbW9zdCBwb3J0YWJsZSBtZXRob2Qgb2YgY3JlYXRpbmcgIGEgIG5l
-dwo+ID4+PiBtYXAtCj4gPj4+ICAgICAgICBwaW5nLiAgIElmICBhZGRyICBpcyBub3QgTlVMTCwg
-dGhlbiB0aGUga2VybmVsIHRha2VzIGl0IGFzIGEgaGludAo+ID4+PiBhYm91dAo+ID4+PiAgICAg
-ICAgd2hlcmUgdG8gcGxhY2UgdGhlIG1hcHBpbmc7IG9uIExpbnV4LCB0aGUgbWFwcGluZyB3aWxs
-IGJlIGNyZWF0ZWQKPiA+Pj4gYXQgIGEKPiA+Pj4gICAgICAgIG5lYXJieSAgcGFnZSAgYm91bmRh
-cnkuICAgVGhlIGFkZHJlc3Mgb2YgdGhlIG5ldyBtYXBwaW5nIGlzCj4gPj4+IHJldHVybmVkIGFz
-Cj4gPj4+ICAgICAgICB0aGUgcmVzdWx0IG9mIHRoZSBjYWxsLgo+ID4+Pgo+ID4+PiBXaGF0IHlv
-dSdyZSBpbiBlZmZlY3QgZG9pbmcgaXMgY2hhbmdpbmcgdGhlIDJuZCBtbWFwIGNhbGwgZnJvbSBh
-bgo+ID4+PiBhcmJpdHJhcnkgYWRkcmVzcyB0byBhIHNldCB2aXJ0dWFsIGFkZHJlc3MgYXQgMHgw
-LiBJcyB0aGF0IGluZGVlZAo+ID4+PiBjb3JyZWN0Pwo+ID4+Pgo+ID4+IGluIHRoaXMgY2FzZSwg
-dGhlIHNpdHVhdGlvbiBpcyBsaWtlIHRoaXMsIHdlIGNyZWF0ZSBhIG5ldyBmaWxlIGFib3V0IDUx
-Mgo+ID4+IGJ5dGVzIGFuZCBtbWFwIGl0IGludG8gdGhlIG1lbSwgdGhlbiB3ZSBtb2RpZnkgb25l
-IGJ5dGUgYmVzaWRlcyB0aGUgNTEyCj4gPj4gYnl0ZXMgYWRkcmVzcywgYW5kIG11bm1hcCBpdC4g
-YW5kIGluIHRoZSBmYXRoZXIgcHJvY2VzcyByZW1tYXAgaXQgYmFjawo+ID4+IHRvIGNoZWNrIHdo
-ZXRoZXIgdGhlIG9uZSBtb3JlIGJ5dGUgaXMgd3JpdGUgYmFjayB0byB0aGUgZmlsZXMuCj4KPiBP
-ay4KPgo+ID4+IGkgaGF2ZSBjaGVja2VkIHRoYXQgd2hlbiBmaW5pc2hlZCBtdW5tYXAgYW5kIGNs
-b3NlIHRoZSBmaWxlIGluIHRoZSBjaGlsZAo+ID4+IHByb2Nlc3MsIHRoZSBmaWxlIGRpZG4ndCBj
-b250YWluIHRoZSA1MTN0aCBieXRlLCB0aGUgc2l6ZSBvZiB0aGlzIGZpbGUKPiA+PiBpcyByaWdo
-dCA1MTIgYnl0ZXMuYnV0IGluIHRoaXMgY2FzZSBhZnRlciB0aGUgc2Vjb25kIG1tYXAgZmluaXNo
-ZWQsIHRoZQo+ID4+IDUxM3RoIGJ5dGUgZG9lcyBhcHBlYXIgYWdhaW4uIGl0J3MgYSBjb25mbGlj
-dC4KPiA+Pgo+ID4+IGluIG15IG9waW5pb24gdGhpcyBpcyBiZWNhdXNlIG9mIHRoZSBjb21waWxl
-ciBvciBzb21lIG9wdGltaXphdGlvbnMuIHNvCj4gPj4gaSB0aGluayB0aGUgbWVtb3J5IHNob3Vs
-ZCB0byBiZSBtZW1zZXQgYmVmb3JlIG1tYXAgYW5kIGl0IGRvZXMgd29yay4KPgo+IE5vLCBhY2Nv
-cmRpbmcgdG8gdGhlIG1hbnBhZ2UgaXQnbGwgbWFwIHRvIHRoZSBib3VuZGFyeSBvZiB0aGUgY2xv
-c2VzdAo+IHBhZ2Ugc2l6ZSwgaW4gbXkgb3BpbmlvbiB3aGF0IG1pZ2h0IGJlIG9jY3VycmluZyBp
-cyB0aGUgc3lzdGVtIGlzCj4gZWl0aGVyIG92ZXJhbGxvY2F0aW5nIG9yIHVuZGVyYWxsb2NhdGlu
-ZywgZGVwZW5kaW5nIG9uIHRoZSBzeXN0ZW0gcGFnZQo+IHNpemUgYW5kIHdoYXQncyBiZWluZyBw
-YXNzZWQgaW4gZm9yIGEgbGVuZ3RoLiBXaGF0IHRoZSBwYWdlIHNpemUgaXMsCj4gSSdkIHN1cmVs
-eSBsaWtlIHRvIGtub3cuLi4KaGVyZSBpbiBteSBlbnZpcm9ubWVudCB0aGUgcGFnZSBzaXplIGlz
-IDEwMjQgZ290IGJ5IHVzaW5nCnN5c2NvbmYoX1NDX1BBR0VfU0laRSkgaW4gdGhpcyB0ZXN0Y2Fz
-ZQo+Cj4gPiBJZiBpcyB0aGUgcHJvYmxlbSB3aXRoIGNvbXBpbGVyL29wdGltaXphdGlvbiBtZWFu
-cyB0aGF0IHRlc3RzIGlzIG9rIC0KPiA+IHRoZSBwcm9ibGVtIGlzIHdpdGggeW91cgo+ID4gY29t
-cGlsZXIgbm90IHdpdGggY29kZS4KPiA+IFRoaXMgbmVlZCBtb3JlIGludmVzdGlnYXRpb25zIHRv
-IGZpbmQgb3V0IHdoZXJlIHRoZSBwcm9ibGVtIGlzLgo+Cj4gSSB3b3VsZG4ndCBuZWNlc3Nhcmls
-eSBzYXkgdGhhdC4gQmFzZWQgb24gRnJlZGVyaWNrJ3MgZXhwbGFuYXRpb24sIGl0Cj4gc291bmRz
-IGxpa2Ugc29tZW9uZSBmZWQgaW4gYW4gaW5hcHByb3ByaWF0ZSBib3VuZCwgb3IgZGlkbid0IE5V
-TAo+IHRlcm1pbmF0ZSB0aGUgYm91bmRhcnkgYW5kIGp1c3Qgd2VudCBvZmYgaW50byB1bmNoYXJ0
-ZWQgdGVycml0b3J5Cj4gd2l0aG91dCBmaXJzdCBjaGVja2luZyB3aGVyZSB0aGV5IHdlcmUgYG9u
-IHRoZSBtYXAnLgo+Cj4gQmFzZWQgb24gbXkgZXhwZXJpZW5jZSBhbmQgcmVjb2xsZWN0aW9uLCB0
-aGlzIGlzIGxlZ2l0aW1hdGUgaW4gQwo+IGJlaGF2aW9yIGFzIGxvbmcgYXMgeW91J3JlIHdpdGhp
-biB0aGUgYXBwbGljYXRpb25zIG1lbW9yeSBsaW1pdHMgLS0KPiB5b3UndmUganVzdCBlbnRlcmVk
-IHRoZSB0d2lsaWdodCB6b25lIGJldHdlZW4gcmVhbGl0aWVzLCB3aGVyZSB5b3UncmUKPiBiZXlv
-bmQgeW91ciBhZGRyZXNzIHNwYWNlLCBidXQgbm90IGJleW9uZCB0aGUgcG9pbnQgb2Ygbm8gcmV0
-dXJuCj4gKEVBQ0NFUyksIHdoZXJlIHRoZSBrZXJuZWwgKnNob3VsZCogdGVybWluYXRlIHlvdXIg
-dXNlcmxhbmQgYXBwLgo+eWVhaCwgdGhhdCdzIHRoZSBrZXlwb2ludC4gYnV0IGl0IGRvZXNuJ3Qg
-dGVybWluYXRlIG91ciB1c2VybGFuZCBhcHAuCgo+aSBtZWFuIHRoYXQgaGVyZSBpcyBhIG1pc3Rh
-a2Ugb24gdGhlIHdheSB0aGlzIHRlc3RjYXNlIGNoZWNrIHRoZSByZXN1bHQuCj5pZGVhbGx5LCB0
-aGUgbW1hcCBzaG91bGQgb25seSB1c2UgaGFsZiBhIHBhZ2UgYW5kIGl0IGhhcyBubwo+cmVzcG9z
-aWJpbGl0eSBvbiB0aGUgcmVzdCBvZiB0aGUgcGFnZSwgc28gd2Ugc2hvdWxkbid0IGp1ZGdlIHRo
-ZSBtbWFwIGJ5Cj50aGUgcmVzdCBvZiB0aGUgcGFnZSB3aGljaCBpcyBub25lIG9mIGJ1c2luZXNz
-IHdpdGggbW1hcC4KCj5zbyBpZiB3ZSBzdXBwb3NlIHRoYXQgdGhlIG1tYXAgZG9lcyBhZmZlY3Qg
-dGhlIHJlc3Qgb2YgdGhlIHBhZ2UoIO+7vyBpcyBpdAo+dGhlIHB1cnBvc2UgdG8gZGVzaWduIHRo
-aXMgdGVzdGNhc2UgPyApLCB3ZSBzaG91bGQgbWFrZSBzdXJlIHRoYXQgdGhpcwo+YXJlYSBoYXMg
-YmVlbiBjbGVhciBiZWZvcmUgd2UgbW1hcCB0aGUgZmlsZSBpbnRvIHRoaXMgYXJlYS4gdGhhdCdz
-IHdoeSBpCj51c2UgbWVtc2V0IGFuZCDvu79mbGFnIE1BUF9GSVhFRC4KCj4KPiBXaGV0aGVyIG9y
-IG5vdCB0aGF0IHdhcyB0aGUgaW50ZW50aW9uIG9mIHRoZSBQT1NJWCBmb2xrcywgaXMgYW5vdGhl
-cgo+IHF1ZXN0aW9uIGluZGVlZCwgYXMgdGhlIGRvY3VtZW50YXRpb24gc3RhdGVzIChpbiB0aGUg
-aGVhZGVyIG9mIHRoZSAuYwo+IGZpbGUpOgo+Cj4gICogSW1wbGVtZW50YXRpb24gcGVyZm9ybXMg
-bWFwcGluZyBvcGVyYXRpb25zIG92ZXIgd2hvbGUgcGFnZXMuCj4gICogVGh1cywgd2hpbGUgdGhl
-IGFyZ3VtZW50IGxlbgo+ICAqIG5lZWQgbm90IG1lZXQgYSBzaXplIG9yIGFsaWdubWVudCBjb25z
-dHJhaW50LAo+ICAqIHRoZSBpbXBsZW1lbnRhdGlvbiBzaGFsbCBpbmNsdWRlLCBpbiBhbnkgbWFw
-cGluZwo+ICAqIG9wZXJhdGlvbiwgYW55IHBhcnRpYWwgcGFnZSBzcGVjaWZpZWQgYnkgdGhlIHJh
-bmdlIFtwYSxwYStsZW4pLgo+ICAqIFRoZSBzeXN0ZW0gc2hhbGwgYWx3YXlzIHplcm8tZmlsbCBh
-bnkgcGFydGlhbCBwYWdlIGF0IHRoZSBlbmQgb2YgYW4gb2JqZWN0Lgo+ICAqIEZ1cnRoZXIsIHRo
-ZSBzeXN0ZW0gc2hhbGwgbmV2ZXIgd3JpdGUgb3V0IGFueSBtb2RpZmllZCBwb3J0aW9ucyBvZgo+
-ICAqIHRoZSBsYXN0IHBhZ2Ugb2YgYW4gb2JqZWN0IHdoaWNoIGFyZSBiZXlvbmQgaXRzIGVuZC4K
-Pgo+IFNvIHVubGVzcyB0aGV5J3JlIGNvbXBsZXRlbHkgbWlzaW50ZXJwcmV0aW5nIHRoZSBtZWFu
-aW5nIG9mIG1tYXAsIGl0Cj4gc291bmRzIGxpa2UgdGhlcmUncyBhIGJ1ZyBpbiBhIG51bWJlciBv
-ZiBgUE9TSVgtY29tcGxpYW50JyBvcGVyYXRpbmcKPiBzeXN0ZW1zIHRoYXQgbmVlZHMgdG8gYmUg
-cmVzb2x2ZWQgKEZyZWVCU0QgYW5kIExpbnV4IGluY2x1ZGVkKS4KPgo+IEhvd2V2ZXIsIGJlZm9y
-ZSBqdW1waW5nIHRvIGNvbmNsdXNpb25zLCBJIHRoaW5rIHRoYXQgaXQncyBwcnVkZW50IHRvCj4g
-bmFycm93IGRvd24gd2hlcmUgYW5kIHdoeSB0aGlzIGlzIG9jY3VycmluZy4uLgo+Cj4gPj4+IDQu
-IEhhdmUgeW91IHRhbGtlZCB0byB0aGUgb3BlbnBvc2l4IHRlc3Qgc3VpdGUgZm9sa3MgYWJvdXQg
-dGhpcyB5ZXQ/Cj4gPj4+Cj4gPj4gbm8saSBoYXZlIG5vIGlkZWEgb24gaG93IHRvIHRhbGsgdG8g
-dGhlIG9wZW5wb3NpeCBhbmQgaSBkbyB3YW50IHRvIHRhbGsKPiA+PiB0byB0aGVtIDopIGNhbiB5
-b3UgZ2l2ZSBtZSBzb21lIHN1Z2dlc3Rpb25zIGFib3V0IHRoaXM/IHRoeH4KPgo+IFRoZSBwcm9q
-ZWN0IGFkbWluaXN0cmF0b3JzIGFyZSBhdmFpbGFibGUsIGFzIG5vdGVkLCBoZXJlOgo+Cj4gaHR0
-cHM6Ly9zb3VyY2Vmb3JnZS5uZXQvcHJvamVjdC9tZW1iZXJsaXN0LnBocD9ncm91cF9pZD02NDU5
-Mgo+Cj4gVGhhbmtzLAo+IC1HYXJyZXR0CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTGV0IENyeXN0
-YWwgUmVwb3J0cyBoYW5kbGUgdGhlIHJlcG9ydGluZyAtIEZyZWUgQ3J5c3RhbCBSZXBvcnRzIDIw
-MDggMzAtRGF5IAp0cmlhbC4gU2ltcGxpZnkgeW91ciByZXBvcnQgZGVzaWduLCBpbnRlZ3JhdGlv
-biBhbmQgZGVwbG95bWVudCAtIGFuZCBmb2N1cyBvbiAKd2hhdCB5b3UgZG8gYmVzdCwgY29yZSBh
-cHBsaWNhdGlvbiBjb2RpbmcuIERpc2NvdmVyIHdoYXQncyBuZXcgd2l0aCAKQ3J5c3RhbCBSZXBv
-cnRzIG5vdy4gIGh0dHA6Ly9wLnNmLm5ldC9zZnUvYm9iai1qdWx5Cl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAt
-bGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQv
-bGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+Hello!
+
+We have the following lines in include/SaHpi.h:
+
+typedef unsigned char     SaHpiUint8T;
+typedef unsigned short    SaHpiUint16T;
+typedef unsigned int      SaHpiUint32T;
+typedef signed char       SaHpiInt8T;
+typedef signed short      SaHpiInt16T;
+typedef signed int        SaHpiInt32T;
+
+Also I suspect there can be marshalling issues, i.e. when
+daemon on platform with sizeof(int) == 4 but library is not and vice versa.
+
+   Anton Pak
+
+
+> Hi Garrett,
+>
+> I was wondering about your addition of the cross_compiling test. If
+> there is OpenHPI code that may behave badly on a system where an int
+> isn't 4 bytes, I'm thinking that a warning should be issued even for a
+> cross compile to such an architecture as well. Like:
+>
+> if test "x$OH_SIZEOF_INT" != "x4"; then
+>     AC_MSG_WARN([
+> *** int is not 4 bytes, it is $OH_SIZEOF_INT bytes on this platform
+> *** undefined behavior may result from this.
+> ])
+> fi
+>
+> Will having a warning instead of an error cause problems for LTP when
+> cross compiling?
+>
+> Does anyone else in the OpenHPI community oppose changing this error to
+> a warning?
+>
+> Best Regards,
+> Ric White
+>
+>
+> On Wed, 2009-08-19 at 23:11 +0000, Garrett Cooper wrote:
+>> Hi,
+>>     Found this bug while trying to cross-compile with the
+>> openhpi-test-suite in LTP, and made the ERROR into WARN. Please fix
+>> this item as per the attached patch.
+>> Thanks,
+>> -Garrett
+>>
+>> PS Please CC my address in all correspondence w.r.t. this email thread.
+>>
+>> Summary:
+>>
+>> 1. int != 4 shouldn't be checked for while cross-compiling.
+>> 2. Warn instead of erroring out, because we have a _lot_ of 64-bit
+>> platforms that we test on which will be negatively impacted by this
+>> check.
+>>
+>> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+>>
+>> ---
+>> /nfs.mac/ltp-upgrade/contrib/ltp/src/testcases/open_hpi_testsuite//configure.ac.orig	2009-08-19
+>> 16:04:08.000000000 -0700
+>> +++
+>> /nfs.mac/ltp-upgrade/contrib/ltp/src/testcases/open_hpi_testsuite//configure.ac	2009-08-19
+>> 16:10:47.000000000 -0700
+>> @@ -44,14 +44,13 @@
+>>  AC_PROG_LN_S
+>>  AC_PROG_MAKE_SET
+>>
+>> -dnl die on int != 32bits.  This is too instrumental to our code right
+>> now.
+>> +dnl Warn when int != 32bits.  This is too instrumental to our code
+>> right now.
+>>  dnl AC_MSG_CHECKING(int is 4 bytes)
+>>  OH_SET_SIZES
+>> -if test "x$OH_SIZEOF_INT" != "x4"; then
+>> -    AC_MSG_ERROR([
+>> +if test x$cross_compiling != xyes && test "x$OH_SIZEOF_INT" != "x4";
+>> then
+>> +    AC_MSG_WARN([
+>>  *** int is not 4 bytes, it is $OH_SIZEOF_INT bytes on this platform
+>> -*** undefined behavior will result
+>> -*** please contact the openhpi development team to fix this
+>> +*** undefined behavior may result from this.
+>>  ])
+>>  fi
+>>
+>> ------------------------------------------------------------------------------
+>> Let Crystal Reports handle the reporting - Free Crystal Reports 2008
+>> 30-Day
+>> trial. Simplify your report design, integration and deployment - and
+>> focus on
+>> what you do best, core application coding. Discover what's new with
+>> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+>> _______________________________________________
+>> Openhpi-devel mailing list
+>> Openhpi-devel@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/openhpi-devel
+>
+>
+> ------------------------------------------------------------------------------
+> Let Crystal Reports handle the reporting - Free Crystal Reports 2008
+> 30-Day
+> trial. Simplify your report design, integration and deployment - and focus
+> on
+> what you do best, core application coding. Discover what's new with
+> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> _______________________________________________
+> Openhpi-devel mailing list
+> Openhpi-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/openhpi-devel
+>
+
+
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
