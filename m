@@ -1,22 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MfsoF-0003AY-68
-	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 09:59:23 +0000
-Received: from e38.co.us.ibm.com ([32.97.110.159])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mfso9-0003H2-0y
-	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 09:59:23 +0000
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mfso1-000380-4j
+	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 09:59:09 +0000
+Received: from e35.co.us.ibm.com ([32.97.110.153])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Mfsnw-0007SE-Jy
+	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 09:59:09 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e35.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7P9nhNW009025
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 03:49:43 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7P9wu9b203906
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 03:58:56 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7P9wukN002160
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 03:58:56 -0600
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <d51f89b0908242305x19faae50h741f0d3bd9de5df1@mail.gmail.com>
-References: <d51f89b0908240516n1b4ca28m988feb00f077fbd7@mail.gmail.com>
-	<364299f40908241629x7dcfcbc2sdb2322198b7b729c@mail.gmail.com>
-	<d51f89b0908242305x19faae50h741f0d3bd9de5df1@mail.gmail.com>
-Date: Tue, 25 Aug 2009 15:28:35 +0530
-Message-Id: <1251194315.5534.30.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <364299f40908241626v22effcd2p5ab84bc4f81e9352@mail.gmail.com>
+References: <364299f40908221131h75bad0bdm85d5831cf8bddeda@mail.gmail.com>
+	<1251012586.16822.44.camel@subratamodak.linux.ibm.com>
+	<364299f40908241626v22effcd2p5ab84bc4f81e9352@mail.gmail.com>
+Date: Tue, 25 Aug 2009 15:28:30 +0530
+Message-Id: <1251194311.5534.29.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] Patch for smt_smp_affinity
+Subject: Re: [LTP] Schedule for makefile-infra-rework to hit HEAD
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -30,40 +42,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rohit verma <rohit.170309@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On Tue, 2009-08-25 at 11:35 +0530, rohit verma wrote: 
-> Thanks Garrett...
+On Mon, 2009-08-24 at 16:26 -0700, Garrett Cooper wrote: 
+> On Sun, Aug 23, 2009 at 12:29 AM, Subrata
+> Modak<subrata@linux.vnet.ibm.com> wrote:
+> > On Sat, 2009-08-22 at 11:31 -0700, Garrett Cooper wrote:
+> >> Hi all,
+> >>     Given the fact that the intermediate date has already passed for
+> >> the August snapshot, the earliest date that I can have this hit the
+> >> tree is right after the August release. I want a full cycle of testing
+> >> to be done for any and all nits to be worked out with my changes, so
+> >> committing now would be foolish.
+> >>     I'm working on out-of-buildtree support, as I found a few nits
+> >> during this process so I'll commit the critical items as soon as
+> >> possible. Would anyone oppose me committing after the August snapshot
+> >> given that it works at the same level of functionality as the current
+> >> version (and improves upon it in a number of other areas)?
+> >
+> > Let me try the basic sanity checking. I would update you Garret.
 > 
-> On Tue, Aug 25, 2009 at 4:59 AM, Garrett Cooper<yanegomi@gmail.com> wrote:
-> > On Mon, Aug 24, 2009 at 5:16 AM, rohit verma<rohit.170309@gmail.com> wrote:
-> >> Dear Subrata,
-> >>
-> >> smt_smp_ affinity test case is passing on Fedora but fails on Ubuntu
-> >> for the same H/W.On Ubuntu system, after doing strace i observed that
-> >> system call sched_getaffinity was returning -1 [ERROR:EINVAL] due to
-> >> second argument.
-> >>
-> >> sched_getaffinity(pid, sizeof(unsigned int), &mask1)
+> Ok. I'm really close to finishing off out-of-buildtree support (~1.5
+> weeks with my other work), so I hope to add that seemingly `minor'
+> functionality before committing next month. It required some changes
+> to master_rules.mk because I wasn't approaching the problem correctly
+> 100% in some areas, and some of the code wasn't as portable as it
+> should have been, and plus I wasn't following auto[conf|make]
+> convention 100%.
+> 
+> I'll recommit to the branch and generate another standard diff and an
+> rdiff so folks can run patch directly.
 
-Thanks. Also removed the "\n"s.
+Would be great.
 
 Regards--
 Subrata
 
-> >>
-> >> Please find attached herewith the patch which fixes the issue.
-> >
-> > Rohit,
-> >    Good catch -- one style note though: tst_resm doesn't require a
-> > "\n" because that's automatically appended to each message.
-> > Thanks,
-> > -Garrett
-> >
 > 
-> 
-> 
+> Thanks!
+> -Garrett
 
 
 ------------------------------------------------------------------------------
