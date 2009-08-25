@@ -1,23 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MfVD9-00005W-27
-	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 08:47:31 +0000
-Received: from vervifontaine.sonytel.be ([80.88.33.193]
-	helo=pophost.sonytel.be) by 1b2kzd1.ch3.sourceforge.com with esmtp 
-	(Exim 4.69) id 1MfVD2-0008BS-LN
-	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 08:47:31 +0000
-Date: Mon, 24 Aug 2009 10:47:14 +0200 (CEST)
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-In-Reply-To: <200908240003.42716.vapier@gentoo.org>
-Message-ID: <alpine.LRH.2.00.0908241046480.31587@vixen.sonytel.be>
-References: <20090824.012723.112609532.caiqian@cclom.cn>
-	<200908232249.46097.vapier@gentoo.org>
-	<20090824.114921.104053885.caiqian@cclom.cn>
-	<200908240003.42716.vapier@gentoo.org>
-MIME-Version: 1.0
-Subject: Re: [LTP] What is the Story of "make autotools"
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MfsnH-0004tR-Pj
+	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 09:58:23 +0000
+Received: from e31.co.us.ibm.com ([32.97.110.149])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MfsnC-0005Ji-Cy
+	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 09:58:23 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e31.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7P9qXFt018589
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 03:52:33 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7P9w9A2212012
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 03:58:10 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7P9w9MD032541
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 03:58:09 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <20090824.214707.245407769.caiqian@cclom.cn>
+References: <20090824.214707.245407769.caiqian@cclom.cn>
+Date: Tue, 25 Aug 2009 15:28:06 +0530
+Message-Id: <1251194286.5534.22.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH 2/3 v3] Fix unshare01
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,59 +37,187 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>, Kumar Gala <galak@kernel.crashing.org>
-Cc: Linux Test Project <ltp-list@lists.sourceforge.net>
+To: CAI Qian <caiqian@cclom.cn>
+Cc: ltp-list@lists.sourceforge.net
 
-On Mon, 24 Aug 2009, Mike Frysinger wrote:
-> On Sunday 23 August 2009 23:49:21 CAI Qian wrote:
-> > From: Mike Frysinger <vapier@gentoo.org>
-> > > On Sunday 23 August 2009 13:27:23 CAI Qian wrote:
-> > >> $ make autotools
-> > >> make: *** No rule to make target `m4/Makefile.am', needed by
-> > >>       `m4/Makefile.in'.  Stop.
-> > >
-> > > that file is in cvs.  if you have an incomplete checkout, there's not=
-hing
-> > > we can do about it.
-> >
-> > Hmm, looks like the GIT repository has no such file though,
-> =
+On Mon, 2009-08-24 at 21:47 +0800, CAI Qian wrote: 
+> v3: simplify reporting by using TERRNO.
+> 
+> v2: remove unneeded linux_syscall_numbers.h and simplify the checking of
+> errno according to Mike's suggestion.
+> 
+> When no unshare function found during the build-time checking or the
+> kernel returns ENOSYS, it reports TCONF. It also simplify logic a little
+> bit and fix some coding style issues.
+> 
+> Signed-off-by: CAI Qian <caiqian@cclom.cn>
 
-> you'll have to complain to whoever runs the git repo.  it isnt us.
-> -mike
+Thanks.
 
-I already reported this (also to Kumar) on Fri, 14 Aug...
+Regards--
+Subrata
 
-With kind regards,
+> 
+>  testcases/kernel/syscalls/unshare/unshare01.c |   94 +++++++++++++++++-------
+>  1 files changed, 66 insertions(+), 28 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/unshare/unshare01.c b/testcases/kernel/syscalls/unshare/unshare01.c
+> index 2a7cc1b..a928e65 100644
+> --- a/testcases/kernel/syscalls/unshare/unshare01.c
+> +++ b/testcases/kernel/syscalls/unshare/unshare01.c
+> @@ -92,7 +92,7 @@
+>  /* Harness Specific Include Files. */
+>  #include "test.h"
+>  #include "usctest.h"
+> -#include "linux_syscall_numbers.h"
+> +#include "config.h"
+> 
+>  /* Extern Global Variables */
+>  extern int Tst_count;           /* counter for tst_xxx routines.         */
+> @@ -103,6 +103,8 @@ char *TCID = "unshare01";  /* Test program identifier.*/
+>  int  testno;
+>  int  TST_TOTAL =1;                   /* total number of tests in this file.   */
+> 
+> +#ifdef HAVE_UNSHARE
+> +
+>  /* Extern Global Functions */
+>  /******************************************************************************/
+>  /*                                                                            */
+> @@ -177,47 +179,77 @@ int main(int ac, char **av) {
+>   *fork a child process;testing which one is a child or a parent;
+>   * */
+>  		        TEST(pid1=fork());    //call to fork()
+> -			if (TEST_RETURN == -1){
+> -				tst_resm(TFAIL, "fork() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> +			if (TEST_RETURN == -1) {
+> +				tst_resm(TFAIL|TTERRNO, "fork() failed.");
+>  				cleanup();
+>  				tst_exit();
+> -			}else if (TEST_RETURN == 0){
+> -				if((TEST_RETURN = unshare(CLONE_FILES)) == 0) {
+> -	        		tst_resm(TPASS, "unshare with CLONE_FILES call succeeded");
+> +			} else if (TEST_RETURN == 0) {
+> +				TEST_RETURN = unshare(CLONE_FS);
+> +				if (TEST_RETURN == 0)
+> +					tst_resm(TPASS,
+> +						"unshare with CLONE_FILES call "
+> +						"succeeded");
+> +				else if (TEST_RETURN == -1) {
+> +					if (errno == ENOSYS)
+> +						tst_resm(TCONF,
+> +							"unshare is not "
+> +							"implemented in kernel."
+> +							);
+> +					else
+> +						tst_resm(TFAIL|TERRNO,
+> +							"unshare failed.");
+> +				}
+>  				tst_exit();
+> -				}else if (TEST_RETURN == -1 )
+> -					tst_resm(TFAIL,"unshare Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> -					tst_exit();
+>  			}else{
+>  			}
+> 
+>  			TEST(pid1=fork());    //call to fork()
+> -                        if (TEST_RETURN == -1){
+> -                	        tst_resm(TFAIL, "fork() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> +			if (TEST_RETURN == -1) {
+> +				tst_resm(TFAIL|TTERRNO, "fork() failed.");
+>  	                        cleanup();
+>                          	tst_exit();
+> -                        }else if (TEST_RETURN == 0){
+> -                                if((TEST_RETURN = unshare(CLONE_FS)) == 0) {
+> -                                	tst_resm(TPASS, "unshare with CLONE_FS call succeeded");
+> -					tst_exit();
+> -                                }else if (TEST_RETURN == -1 )
+> -                                        tst_resm(TFAIL,"unshare Failed 2, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> -					tst_exit();
+> +			} else if (TEST_RETURN == 0) {
+> +				TEST_RETURN = unshare(CLONE_FS);
+> +				if (TEST_RETURN == 0)
+> +					tst_resm(TPASS,
+> +						"unshare with CLONE_FS call "
+> +						"succeeded");
+> +				else if (TEST_RETURN == -1) {
+> +					if (errno == ENOSYS)
+> +						tst_resm(TCONF,
+> +							"unshare is not "
+> +							"implemented in kernel."
+> +							);
+> +					else
+> +						tst_resm(TFAIL|TERRNO,
+> +							"unshare failed 2.");
+> +				}
+> +				tst_exit();
+>                          }else{
+>  			}
+> 
+>  			TEST(pid1=fork());    //call to fork()
+> -                        if (TEST_RETURN == -1){
+> -                	        tst_resm(TFAIL, "fork() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> +			if (TEST_RETURN == -1) {
+> +				tst_resm(TFAIL|TTERRNO, "fork() failed.");
+>  	                        cleanup();
+>                          	tst_exit();
+> -                        }else if (TEST_RETURN == 0){
+> -                                if((TEST_RETURN = unshare(CLONE_NEWNS)) == 0) {
+> -                                	tst_resm(TPASS, "unshare call with CLONE_NEWNS succeeded");
+> -					tst_exit();
+> -                                }else if (TEST_RETURN == -1 )
+> -                                        tst_resm(TFAIL,"unshare Failed 2, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> -					tst_exit();
+> +			} else if (TEST_RETURN == 0) {
+> +				TEST_RETURN = unshare(CLONE_NEWNS);
+> +				if (TEST_RETURN == 0) {
+> +					tst_resm(TPASS,
+> +						"unshare call with CLONE_NEWNS "
+> +						"succeeded");
+> +				} else if (TEST_RETURN == -1) {
+> +					if (errno == ENOSYS)
+> +						tst_resm(TCONF,
+> +							"unshare is not "
+> +							"implemented in kernel."
+> +							);
+> +					else
+> +						tst_resm(TFAIL|TERRNO,
+> +							"unshare failed 2.");
+> +				}
+> +				tst_exit();
+>                          }else{
+>  			}
+> 
+> @@ -228,4 +260,10 @@ int main(int ac, char **av) {
+>  	cleanup();
+>  	tst_exit();
+>  }
+> -
+> +#else
+> +int main(void)
+> +{
+> +	tst_resm(TCONF, "unshare is undefined.");
+> +	return 0;
+> +}
+> +#endif
+> 
+> ------------------------------------------------------------------------------
+> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+> trial. Simplify your report design, integration and deployment - and focus on 
+> what you do best, core application coding. Discover what's new with 
+> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-Geert Uytterhoeven
-Software Architect
-Techsoft Centre
 
-Technology and Software Centre Europe
-The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Belgium
-
-Phone:    +32 (0)2 700 8453
-Fax:      +32 (0)2 700 8622
-E-mail:   Geert.Uytterhoeven@sonycom.com
-Internet: http://www.sony-europe.com/
-
-A division of Sony Europe (Belgium) N.V.
-VAT BE 0413.825.160 =B7 RPR Brussels
-Fortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
-
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
-
-trial. Simplify your report design, integration and deployment - and focus =
-on =
-
-what you do best, core application coding. Discover what's new with =
-
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
