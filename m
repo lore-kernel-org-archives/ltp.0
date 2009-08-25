@@ -1,22 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MggX4-00073U-JX
-	for Ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 15:04:58 +0000
-Received: from vervifontaine.sonytel.be ([80.88.33.193]
-	helo=pophost.sonytel.be) by 29vjzd1.ch3.sourceforge.com with esmtp 
-	(Exim 4.69) id 1MggWz-0005RW-2M
-	for Ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 15:04:58 +0000
-Received: from vixen.sonytel.be (piraat.sonytel.be [43.221.60.197])
-	by pophost.sonytel.be (Postfix) with ESMTP id 5F7DC44483
-	for <Ltp-list@lists.sourceforge.net>;
-	Thu, 27 Aug 2009 17:04:40 +0200 (CEST)
-Date: Thu, 27 Aug 2009 17:04:40 +0200 (CEST)
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Message-ID: <alpine.LRH.2.00.0908271703550.1134@vixen.sonytel.be>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] quotactl01: Fix tst_resm() format causing crash
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MfsnQ-00088x-3R
+	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 09:58:32 +0000
+Received: from e9.ny.us.ibm.com ([32.97.182.139])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MfsnN-00035T-07
+	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 09:58:31 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e9.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7P9uvHm009272
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 05:56:57 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7P9wNRK230570
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 05:58:23 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7P9wNDT003449
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 05:58:23 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4A930FD1.9060903@us.ibm.com>
+References: <4A930FD1.9060903@us.ibm.com>
+Date: Tue, 25 Aug 2009 15:28:17 +0530
+Message-Id: <1251194297.5534.25.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH][realtime] add support for long options
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,68 +36,162 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Linux Test Project <Ltp-list@lists.sourceforge.net>
+To: Darren Hart <dvhltc@us.ibm.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, Vernon Mauery <vernux@us.ibm.com>
 
-When the quotactl syscall fails, quotactl01 crashes with a segmentation fau=
-lt
-due to an incorrect printf()-style format.
+On Mon, 2009-08-24 at 15:10 -0700, Darren Hart wrote: 
+> add support for long options
+> 
+> Incorporating existing tests (like pthread_cond_many) may require support
+> for long options if the existing arguments are to remain supported.  This
+> patch adds support for long options, while keeping the default of only
+> short options in place.  long opts MUST have an equivalent short opt so
+> as to not require changing (and complicating) the parse_arg signature.
+> This patch tests for this in the rt_init routine.
+> 
+> Signed-off-by: Darren Hart <dvhltc@us.ibm.com>
 
-Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
----
- testcases/kernel/syscalls/quotactl/quotactl01.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Thanks Darren.
 
-diff --git a/testcases/kernel/syscalls/quotactl/quotactl01.c b/testcases/ke=
-rnel/syscalls/quotactl/quotactl01.c
-index 6800a25..0be4fd5 100644
---- a/testcases/kernel/syscalls/quotactl/quotactl01.c
-+++ b/testcases/kernel/syscalls/quotactl/quotactl01.c
-@@ -147,7 +147,7 @@ int main(int ac, char **av) {
-                 for (i =3D 0; i <=3D 7; i++){
-                         TEST(retval =3D syscall(__NR_quotactl, cmd[i], (co=
-nst char *)NULL, id, (caddr_t)NULL));
- 			if(TEST_RETURN !=3D 0){
--                 	   	tst_resm(TFAIL, "%s failed - errno =3D %d : %s ...cm=
-derror=3D%s", TCID, TEST_ERRNO, strerror(TEST_ERRNO),cmd[i]);
-+				tst_resm(TFAIL, "%s failed - errno =3D %d : %s ...cmd=3D0x%x", TCID, T=
-EST_ERRNO, strerror(TEST_ERRNO), cmd[i]);
-                         }else{
-         			tst_resm(TPASS, "quotactl call succeeded");
-                         }
--- =
+Regards--
+Subrata
 
-1.6.2.4
+> Acked-by: Vernon Mauery <vernux@us.ibm.com>
+> 
+> ---
+>  include/librttest.h |   12 ++++++++++--
+>  lib/librttest.c     |   49 +++++++++++++++++++++++++++++++++++++++++++++----
+>  2 files changed, 55 insertions(+), 6 deletions(-)
+> 
+> Index: realtime/include/librttest.h
+> ===================================================================
+> --- realtime.orig/include/librttest.h
+> +++ realtime/include/librttest.h
+> @@ -235,10 +235,12 @@ static volatile int _debug_count = 0;
+>  /* rt_help: print help for standard args */
+>  void rt_help();
+> 
+> -/* rt_init: initialize librttest
+> +/* rt_init_long: initialize librttest
+>   * options: pass in an getopt style string of options -- e.g. "ab:cd::e:"
+>   *          if this or parse_arg is null, no option parsing will be done
+>   *          on behalf of the calling program (only internal args will be parsed)
+> + * longopts: a pointer to the first element of an array of struct option, the
+> + *           last entry must be set to all zeros.
+>   * parse_arg: a function that will get called when one of the above
+>   *            options is encountered on the command line.  It will be passed
+>   *            the option -- e.g. 'b' -- and the value.  Something like:
+> @@ -267,7 +269,13 @@ void rt_help();
+>   * argc: passed from main
+>   * argv: passed from main
+>   */
+> -int rt_init(const char *options, int (*parse_arg)(int option, char *value), int argc, char *argv[]);
+> +int rt_init_long(const char *options, const struct option *longopts,
+> +		 int (*parse_arg)(int option, char *value),
+> +		 int argc, char *argv[]);
+> +
+> +/* rt_init: same as rt_init_long with no long options */
+> +int rt_init(const char *options, int (*parse_arg)(int option, char *value),
+> +	    int argc, char *argv[]);
+> 
+>  int create_thread(void*(*func)(void*), void *arg, int prio, int policy);
+> 
+> Index: realtime/lib/librttest.c
+> ===================================================================
+> --- realtime.orig/lib/librttest.c
+> +++ realtime/lib/librttest.c
+> @@ -99,9 +99,13 @@ void calibrate_busyloop(void)
+>  	iters_per_us = (CALIBRATE_LOOPS * NS_PER_US) / (end-start);
+>  }
+> 
+> -int rt_init(const char *options, int (*parse_arg)(int option, char *value), int argc, char *argv[])
+> +int rt_init_long(const char *options, const struct option *longopts,
+> +		 int (*parse_arg)(int option, char *value), int argc,
+> +		 char *argv[])
+>  {
+> +	const struct option *cur_opt;
+>  	int use_buffer = 1;
+> +	char *longopt_vals;
+>  	size_t i;
+>  	int c;
+>  	opterr = 0;
+> @@ -126,8 +130,33 @@ int rt_init(const char *options, int (*p
+>  			exit(1);
+>  		}
+>  	}
+> +
+> +	/* Ensure each long options has a known unique short option in val. */
+> +	longopt_vals = "";
+> +	cur_opt = longopts;
+> +	while (cur_opt && cur_opt->name) {
+> +		if (cur_opt->flag) {
+> +			fprintf(stderr, "Programmer error -- argument --%s flag"
+> +				" is non-null\n", cur_opt->name);
+> +			exit(1);
+> +		}
+> +		if (!strchr(all_options, cur_opt->val)) {
+> +			fprintf(stderr, "Progreammer error -- argument --%s "
+> +				"shortopt -%c wasn't listed in options (%s)\n",
+> +				cur_opt->name, cur_opt->val, all_options);
+> +			exit(1);
+> +		}
+> +		if (strchr(longopt_vals, cur_opt->val)) {
+> +			fprintf(stderr, "Programmer error -- argument --%s "
+> +				"shortopt -%c is used more than once\n",
+> +				cur_opt->name, cur_opt->val);
+> +			exit(1);
+> +		}
+> +		asprintf(&longopt_vals, "%s%c", longopt_vals, cur_opt->val);
+> +		cur_opt++;
+> +	}
+>  	
+> -	while ((c = getopt(argc, argv, all_options)) != -1) {
+> +	while ((c = getopt_long(argc, argv, all_options, longopts, NULL)) != -1) {
+>  		switch (c) {
+>  		case 'c':
+>  			pass_criteria = atof(optarg);
+> @@ -148,11 +177,17 @@ int rt_init(const char *options, int (*p
+>  			save_stats = 1;
+>  			break;
+>  		case ':':
+> -			fprintf(stderr, "option -%c: missing arg\n", optopt);
+> +			if (optopt == '-')
+> +				fprintf(stderr, "long option missing arg\n");
+> +			else
+> +				fprintf(stderr, "option -%c: missing arg\n", optopt);
+>  			parse_arg('h', optarg); /* Just to display usage */
+>  			exit (1); /* Just in case. (should normally be done by usage()) */
+>  		case '?':
+> -			fprintf(stderr, "option -%c not recognized\n", optopt);
+> +			if (optopt == '-')
+> +				fprintf(stderr, "unrecognized long option\n");
+> +			else
+> +				fprintf(stderr, "option -%c not recognized\n", optopt);
+>  			parse_arg('h', optarg); /* Just to display usage */
+>  			exit (1); /* Just in case. (should normally be done by usage()) */
+>  		default:
+> @@ -185,6 +220,12 @@ int rt_init(const char *options, int (*p
+>  	return 0;
+>  }
+> 
+> +int rt_init(const char *options, int (*parse_arg)(int option, char *value),
+> +	    int argc, char *argv[])
+> +{
+> +	return rt_init_long(options, NULL, parse_arg, argc, argv);
+> +}
+> +
+>  void buffer_init(void)
+>  {
+>  	_print_buffer = (char *)malloc(PRINT_BUFFER_SIZE);
 
-With kind regards,
 
-Geert Uytterhoeven
-Software Architect
-Techsoft Centre
-
-Technology and Software Centre Europe
-The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Belgium
-
-Phone:    +32 (0)2 700 8453
-Fax:      +32 (0)2 700 8622
-E-mail:   Geert.Uytterhoeven@sonycom.com
-Internet: http://www.sony-europe.com/
-
-A division of Sony Europe (Belgium) N.V.
-VAT BE 0413.825.160 =B7 RPR Brussels
-Fortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
-
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
-
-trial. Simplify your report design, integration and deployment - and focus =
-on =
-
-what you do best, core application coding. Discover what's new with =
-
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
