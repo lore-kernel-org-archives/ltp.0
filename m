@@ -1,23 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MZ6bG-0002Ta-O2
-	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 17:17:58 +0000
-Received: from mail-qy0-f181.google.com ([209.85.221.181])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MZ6b9-0002yt-18
-	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 17:17:58 +0000
-Received: by qyk11 with SMTP id 11so984579qyk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 06 Aug 2009 10:17:45 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1842FA33-8C6C-4BE1-8FB4-B8836F1C8F6E@kernel.crashing.org>
-References: <1842FA33-8C6C-4BE1-8FB4-B8836F1C8F6E@kernel.crashing.org>
-Date: Thu, 6 Aug 2009 10:17:45 -0700
-Message-ID: <364299f40908061017g44fd05ecv9c6454ebf04badb4@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] RANLIB not set?
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MfsnW-0008A7-3l
+	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 09:58:38 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MfsnS-0005MV-BE
+	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 09:58:38 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7P9pnd2014644
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 05:51:49 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7P9wSt9211384
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 05:58:28 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7P9wSqF006781
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 05:58:28 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4A931047.7030000@us.ibm.com>
+References: <4A931047.7030000@us.ibm.com>
+Date: Tue, 25 Aug 2009 15:28:20 +0530
+Message-Id: <1251194300.5534.26.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH][realtime] Use librttest arg parsing
+	and	init_pi_mutex
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,48 +37,192 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kumar Gala <galak@kernel.crashing.org>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: Darren Hart <dvhltc@us.ibm.com>
+Cc: gowrishankar.m@in.ibm.com, ltp-list <ltp-list@lists.sourceforge.net>, Paul McKenney <paulmck@linux.vnet.ibm.com>
 
-On Thu, Aug 6, 2009 at 9:18 AM, Kumar Gala<galak@kernel.crashing.org> wrote:
-> I'm seeing this on fedora 11 on ppc64:
->
-> make[3]: Leaving directory `/root/ltp/testcases/network/ipv6'
-> make[3]: Entering directory `/root/ltp/testcases/network/lib6'
-> cc -Wall =A0-I../../../include -g -D_GNU_SOURCE =A0 -c -o runcc.o runcc.c
-> ar cr runcc.a runcc.o
-> runcc.a
-> make[3]: runcc.a: Command not found
-> make[3]: *** [runcc.a] Error 127
-> make[3]: Leaving directory `/root/ltp/testcases/network/lib6'
-> make[2]: *** [all] Error 2
-> make[2]: Leaving directory `/root/ltp/testcases/network'
-> make[1]: *** [all] Error 2
-> make[1]: Leaving directory `/root/ltp/testcases'
-> make: *** [all] Error 2
->
-> - k
+On Mon, 2009-08-24 at 15:12 -0700, Darren Hart wrote: 
+> Use librttest arg parsing and init_pi_mutex
+> 
+> This patch converts pthread_cond_many to use the librttest infrastructure
+> for argument parsing and mutex initialization.  The default behavior of the
+> test changes from using a non-pi mutex to a pi mutex.  This is because -p
+> defaults to 1 in librttest.  We could update run.sh with -p0, but I feel
+> inside a realtime testsuite this test should be using PI mutexes anyway.
+> 
+> Signed-off-by: Darren Hart <dvhltc@us.ibm.com>
 
-    Make sure to export CROSS_COMPILER=3D1 at the top-level make, or
-define RANLIB=3D$(CROSS_COMPILE)ranlib, where $(CROSS_COMPILE) is the
-prefix for your compiler set, e.g. $(CROSS_COMPILE)gcc.
-    One of the many things that will be fixed in a more kosher manner
-in the next couple months.
-Thanks,
--Garrett
+OK. Thanks.
 
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+Regards--
+Subrata
 
-trial. Simplify your report design, integration and deployment - and focus =
-on =
+> Acked-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+> CC: Paul McKenney <paulmck@linux.vnet.ibm.com>
+> 
+> Index: realtime/perf/latency/pthread_cond_many.c
+> ===================================================================
+> --- realtime.orig/perf/latency/pthread_cond_many.c	2009-08-03 14:47:01.000000000 -0700
+> +++ realtime/perf/latency/pthread_cond_many.c	2009-08-03 14:51:01.000000000 -0700
+> @@ -24,12 +24,12 @@
+>   *
+>   * USAGE:
+>   *      Use run_auto.sh script in current directory to build and run test.
+> - *      Use "-j" to enable jvm simulator.
+>   *
+>   * AUTHOR
+>   *      Paul E. McKenney <paulmck@us.ibm.com>
+>   *
+>   * HISTORY
+> + *      librttest parsing, threading, and mutex initialization - Darren Hart
+>   *
+>   *
+>   *****************************************************************************/
+> @@ -46,10 +46,12 @@
+>  #include <librttest.h>
+>  #include <libstats.h>
+>  #define PASS_US 100
+> -pthread_mutex_t child_mutex = PTHREAD_MUTEX_INITIALIZER;
+> +pthread_mutex_t child_mutex;
+>  volatile int *child_waiting = NULL;
+>  double endtime;
+>  pthread_cond_t *condlist = NULL;
+> +int iterations = 0;
+> +int nthreads = 0;
+>  int realtime = 0;
+>  int broadcast_flag = 0;
+>  unsigned long latency = 0;
+> @@ -242,42 +244,68 @@
+>  	printf("Standard Deviation: %f\n", stats_stddev(&dat));
+>  }
+> 
+> -void
+> -usage(char *progname)
+> +void usage(void)
+>  {
+> -	fprintf(stderr,
+> -		"Usage: %s [--realtime] [--broadcast] iterations nthreads\n",
+> -		progname);
+> -	printf("currently options are not supported\n");
+> -	exit(-1);
+> +	rt_help();
+> +	printf("pthread_cond_many specific options:\n");
+> +	printf("  -r,--realtime   run with realtime priority\n");
+> +	printf("  -b,--broadcast  use cond_broadcast instead of cond_signal\n");
+> +	printf("  -iITERATIONS    iterations (required)\n");
+> +	printf("  -nNTHREADS      number of threads (required)\n");
+> +	printf("deprecated unnamed arguments:\n");
+> +	printf("  pthread_cond_many [options] iterations nthreads\n");
+> +}
+> +
+> +int parse_args(int c, char *v)
+> +{
+> +	int handled;
+> +        switch (c) {
+> +		case 'h':
+> +			usage();
+> +			exit(0);
+> +                case 'a':
+> +			broadcast_flag = 1;
+> +                        break;
+> +		case 'i':
+> +			iterations = atoi(v);
+> +			break;
+> +		case 'n':
+> +			nthreads = atoi(v);
+> +			break;
+> +		case 'r':
+> +			realtime = 1;
+> +			break;
+> +                default:
+> +                        handled = 0;
+> +                        break;
+> +        }
+> +        return handled;
+>  }
+> 
+>  int
+>  main(int argc, char *argv[])
+>  {
+> -	int i = 1;
+> -	long iter;
+> -	long nthreads;
+> +	struct option longopts[] = {
+> +		{"broadcast", 0, NULL, 'a'},
+> +		{"realtime", 0, NULL, 'r'},
+> +		{NULL, 0, NULL, 0},
+> +	};
+>  	setup();
+> 
+> -	while (i < argc) {
+> -		if (strcmp(argv[i], "--realtime") == 0) {
+> -			realtime = 1;
+> -			i++;
+> -		} else if (strcmp(argv[i], "--broadcast") == 0) {
+> -			broadcast_flag = 1;
+> -			i++;
+> -		} else if (argv[i][0] == '-') {
+> -			usage(argv[0]);
+> -		} else {
+> -			break;
+> -		}
+> -	}
+> -	if (argc - i < 2) {
+> -		usage(argv[0]);
+> +	init_pi_mutex(&child_mutex);
+> +	rt_init_long("ahi:n:r", longopts, parse_args, argc, argv);
+> +
+> +	/* Legacy command line arguments support, overrides getopt args. */
+> +	if (optind < argc)
+> +		iterations = strtol(argv[optind++], NULL, 0);
+> +	if (optind < argc)
+> +		nthreads = strtol(argv[optind++], NULL, 0);
+> +
+> +	/* Ensure we have the required arguments. */
+> +	if (iterations == 0 || nthreads == 0) {
+> +		usage();
+> +		exit(1);
+>  	}
+> -	iter = strtol(argv[i], NULL, 0);
+> -	nthreads = strtol(argv[i + 1], NULL, 0);
+> 
+>  	child_waiting = (int *)malloc(sizeof(*child_waiting) * nthreads);
+>  	condlist = (pthread_cond_t *)malloc(sizeof(*condlist) * nthreads);
+> @@ -285,7 +313,7 @@
+>  		fprintf(stderr, "Out of memory\n");
+>  		exit(-1);
+>  	}
+> -	test_signal(iter, nthreads);
+> +	test_signal(iterations, nthreads);
+>  	printf("\nCriteria: latencies < %d us\n", PASS_US);
+>  	printf("Result: %s\n", fail ? "FAIL" : "PASS");
+>  	return 0;
+> Index: realtime/perf/latency/run.sh
+> ===================================================================
+> --- realtime.orig/perf/latency/run.sh	2009-08-03 14:47:01.000000000 -0700
+> +++ realtime/perf/latency/run.sh	2009-08-03 14:47:33.000000000 -0700
+> @@ -35,11 +35,11 @@
+>  rm -f $nthread.$iter.$nproc.*.out
+> 
+>  i=0
+> -./pthread_cond_many --realtime  --broadcast $iter $nthread > $nthread.$iter.$nproc.$i.out &
+> +./pthread_cond_many --realtime --broadcast -i $iter -n $nthread > $nthread.$iter.$nproc.$i.out &
+>  i=1
+>  while test $i -lt $nproc
+>  do
+> -        ./pthread_cond_many --broadcast $iter $nthread > $nthread.$iter.$nproc.$i.out &
+> +        ./pthread_cond_many --broadcast -i $iter -n $nthread > $nthread.$iter.$nproc.$i.out &
+>          i=`expr $i + 1`
+>  done
+>  wait
 
-what you do best, core application coding. Discover what's new with =
 
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
