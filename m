@@ -1,21 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MYoOH-00066y-Sm
-	for ltp-list@lists.sourceforge.net; Wed, 05 Aug 2009 21:51:21 +0000
-Received: from qw-out-1920.google.com ([74.125.92.145])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MYoO6-0002Pk-DC
-	for ltp-list@lists.sourceforge.net; Wed, 05 Aug 2009 21:51:16 +0000
-Received: by qw-out-1920.google.com with SMTP id 5so168559qwc.4
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 05 Aug 2009 14:51:04 -0700 (PDT)
-MIME-Version: 1.0
-Date: Wed, 5 Aug 2009 14:51:04 -0700
-Message-ID: <364299f40908051451h20e9a265m1b9edc19a67b2ceb@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] waitid(2) broken on 2.6.29?
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mfsng-0004vh-6J
+	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 09:58:48 +0000
+Received: from e34.co.us.ibm.com ([32.97.110.152])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MfsnZ-00037i-Hi
+	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 09:58:48 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e34.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7P9sY3B025386
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 03:54:34 -0600
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7P9wYJ4247540
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 03:58:34 -0600
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7P9wXnx008257
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 03:58:33 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4A9310BE.8050109@us.ibm.com>
+References: <4A9310BE.8050109@us.ibm.com>
+Date: Tue, 25 Aug 2009 15:28:24 +0530
+Message-Id: <1251194304.5534.27.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH][realtime] prio-wake: allow for optional
+	locking	prior to broadcast
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,61 +41,99 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Darren Hart <dvhltc@us.ibm.com>
+Cc: Gowrishankar <gowrishankar.m@in.ibm.com>, ltp-list <ltp-list@lists.sourceforge.net>, Vernon Mauery <vernux@us.ibm.com>
 
-Sorry -- I know this isn't a linux support list but I was wondering
-whether or not anyone else could stimulate this error on x64:
+On Mon, 2009-08-24 at 15:14 -0700, Darren Hart wrote: 
+> prio-wake: allow for optional locking prior to broadcast
+> 
+> Allow the user to decide if the mutex should be held prior to
+> calling pthread_cond_broadcast().  Default remains the same.
+> Tested with and without the argument as well as with both 0 and 1
+> passed to the argument. Values other than 0 and 1 will result in locking
+> the mutex.
+> 
+> Signed-off-by: Darren Hart <dvhltc@us.ibm.com>
 
-gcooper@orangebox ~ $ gcc -D_GNU_SOURCE -Wall -o foo foo.c
-gcooper@orangebox ~ $ ./foo
-strerror: Invalid argument
-gcooper@orangebox ~ $ cat foo.c
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
-#include <stdlib.h>
-#include <unistd.h>
+Thanks.
 
-int
-main (void)
-{
-        siginfo_t infop;
-        errno = 0;
-        pid_t id = fork();
-        if (0 <= id) {
-                if (! id) {
-                        exit (0);
-                }
-        } else {
-                perror("fork()");
-        }
-        /*printf("errno: %d\n", errno);*/
-        waitid(P_ALL, 0, &infop, WNOHANG);
-        /*printf("errno: %d\n", errno);*/
-        if (errno) {
-                printf("strerror: %s\n", strerror(errno));
-        }
-        return 0;
-}
-gcooper@orangebox ~ $ uname -a
-Linux orangebox 2.6.29-gentoo-r5 #2 SMP PREEMPT Sun Jun 14 01:11:32
-PDT 2009 x86_64 Intel(R) Core(TM)2 Quad CPU Q9400 @ 2.66GHz
-GenuineIntel GNU/Linux
+Regards--
+Subrata
 
-For whatever reason it doesn't seem to function, even in a simple test
-program, and it wasn't functioning before in waitid02, so I'm trying
-to determine whether or not this is a valid issue.
+> Acked-By: Dinakar Guniguntala <dino@in.ibm.com>
+> Acked-by: Vernon Mauery <vernux@us.ibm.com>
+> Acked-by: Gowrishankar <gowrishankar.m@in.ibm.com>
+> 
+> ---
+>  func/prio-wake/prio-wake.c |   18 ++++++++++++++----
+>  1 file changed, 14 insertions(+), 4 deletions(-)
+> 
+> Index: realtime/func/prio-wake/prio-wake.c
+> ===================================================================
+> --- realtime.orig/func/prio-wake/prio-wake.c
+> +++ realtime/func/prio-wake/prio-wake.c
+> @@ -56,6 +56,7 @@
+>  #include <librttest.h>
+>  volatile int running_threads = 0;
+>  static int rt_threads = 0;
+> +static int locked_broadcast = 1;
+>  static pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+>  static pthread_mutex_t mutex;
+>  static volatile nsec_t beginrun;
+> @@ -67,6 +68,8 @@ void usage(void)
+>          rt_help();
+>          printf("prio-wake specific options:\n");
+>          printf("  -n#           #: number of worker threads\n");
+> +        printf("  -l#           1:lock the mutex before broadcast, 0:don't\n");
+> +	printf("                defaults to 1\n");
+>  }
+> 
+>  int parse_args(int c, char *v)
+> @@ -80,6 +83,9 @@ int parse_args(int c, char *v)
+>                  case 'n':
+>                          rt_threads = atoi(v);
+>                          break;
+> +                case 'l':
+> +                        locked_broadcast = atoi(v);
+> +                        break;
+>                  default:
+>                          handled = 0;
+>                          break;
+> @@ -106,9 +112,11 @@ void *master_thread(void* arg)
+> 
+>  	printf("%08lld us: Master thread about to wake the workers\n", start/NS_PER_US);
+>  	/* start the children threads */
+> -	rc = pthread_mutex_lock(&mutex);
+> +	if (locked_broadcast)
+> +		rc = pthread_mutex_lock(&mutex);
+>  	rc = pthread_cond_broadcast(&cond);
+> -	rc = pthread_mutex_unlock(&mutex);
+> +	if (locked_broadcast)
+> +		rc = pthread_mutex_unlock(&mutex);
+> 
+>  	while (running_threads > 0)
+>  		sleep(1);
+> @@ -161,7 +169,7 @@ int main(int argc, char* argv[])
+>  	int i;
+>  	setup();
+> 
+> -        rt_init("hn:", parse_args, argc, argv);
+> +        rt_init("hn:l:", parse_args, argc, argv);
+> 
+>  	if (rt_threads == 0) {
+>  		numcpus = sysconf(_SC_NPROCESSORS_ONLN);
+> @@ -172,7 +180,9 @@ int main(int argc, char* argv[])
+>  	printf("\n-----------------------\n");
+>  	printf("Priority Ordered Wakeup\n");
+>  	printf("-----------------------\n");
+> -	printf("Worker Threads: %d\n\n", rt_threads);
+> +	printf("Worker Threads: %d\n", rt_threads);
+> +	printf("Calling pthread_cond_broadcast() with mutex: %s\n\n",
+> +	       locked_broadcast ? "LOCKED" : "UNLOCKED");
+> 
+>  	pri_boost = 3;
+> 
 
-IIRC we saw similar issues on 2.6.24 with PPC on mips n32 with cavium
-boards, so this might be a bit-width issue?
-
-If someone can provide a counterargument for where waitid02 passes
-(say x86) and it passes with my test app above, that would be helpful.
-
-Thanks,
--Garrett
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
