@@ -1,22 +1,14 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
-	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MgI4B-00031L-Pf
-	for Ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 12:57:31 +0000
-Received: from vervifontaine.sonytel.be ([80.88.33.193]
-	helo=pophost.sonytel.be) by 1b2kzd1.ch3.sourceforge.com with esmtp 
-	(Exim 4.69) id 1MgI44-0006mq-Nv
-	for Ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 12:57:26 +0000
-Received: from vixen.sonytel.be (piraat.sonytel.be [43.221.60.197])
-	by pophost.sonytel.be (Postfix) with ESMTP id E452844483
-	for <Ltp-list@lists.sourceforge.net>;
-	Wed, 26 Aug 2009 14:57:10 +0200 (CEST)
-Date: Wed, 26 Aug 2009 14:57:10 +0200 (CEST)
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Message-ID: <alpine.LRH.2.00.0908261443220.25669@vixen.sonytel.be>
-MIME-Version: 1.0
-Subject: [LTP] undefined macro: _m4_divert_diversion
+From: Shuah Khan <shuah.khan@hp.com>
+In-Reply-To: <op.uy74unolo8angs@localhost>
+References: <364299f40908191611x4accc24yc36b344956c7a40c@mail.gmail.com>
+	<1251162918.4388.33.camel@OSLORic>
+	<41008.95.24.171.156.1251178978.squirrel@mail.pigeonpoint.com>
+	<1251213123.7108.8.camel@orthanc>  <op.uy74unolo8angs@localhost>
+Date: Tue, 25 Aug 2009 11:42:15 -0600
+Message-Id: <1251222135.7108.16.camel@orthanc>
+Mime-Version: 1.0
+Subject: Re: [LTP] [Openhpi-devel] [PATCH] Cross-compile configure bug
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,115 +18,195 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Linux Test Project <Ltp-list@lists.sourceforge.net>
+To: "openhpi-devel@lists.sourceforge.net" <openhpi-devel@lists.sourceforge.net>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-When trying to autoconfigure current LTP on YDL, I get:
+On Tue, 2009-08-25 at 15:19 +0000, Anton Pak wrote:
+> I tried many times OpenHPI on x86_64.
+> It worked fine in the configurations x86 client - x86_64 daemon and x86_64  
+> client - x86 daemon.
+> However, the functioning on non-x86 64-bit platform or on Itanium is still  
+> an open question for me.
+> 
+> 	Anton Pak
 
-    # make autotools =
+Instead of changing the error to a warning, itcould be controlled via a
+config option, so this error could be ignored on certain architectures
+using this config tune. 
 
-    touch config.mk
-    aclocal -I m4
-    m4/ltp-unshare.m4:2: error: m4_defn: undefined macro: _m4_divert_divers=
-ion
-    m4/ltp-unshare.m4:2: the top level
-    autom4te: /usr/local/bin/m4 failed with exit status: 1
-    aclocal: autom4te failed with exit status: 1
-    make: *** [aclocal.m4] Error 1
-    #
+-- Shuah
+> 
+> On Tue, 25 Aug 2009 19:12:03 +0400, Shuah Khan <shuah.khan@hp.com> wrote:
+> 
+> > On Tue, 2009-08-25 at 05:42 +0000, anton.pak@pigeonpoint.com wrote:
+> >> Hello!
+> >>
+> >> We have the following lines in include/SaHpi.h:
+> >>
+> >> typedef unsigned char     SaHpiUint8T;
+> >> typedef unsigned short    SaHpiUint16T;
+> >> typedef unsigned int      SaHpiUint32T;
+> >> typedef signed char       SaHpiInt8T;
+> >> typedef signed short      SaHpiInt16T;
+> >> typedef signed int        SaHpiInt32T;
+> >>
+> >> Also I suspect there can be marshalling issues, i.e. when
+> >> daemon on platform with sizeof(int) == 4 but library is not and vice  
+> >> versa.
+> >>
+> >>    Anton Pak
+> >
+> > The proposed fix might help compile OpenHpi on a 64-bit platform,
+> > however I agree with the concerns from others that we will see run-time
+> > issues. Running 32-bit binary and libraries on a 64-bit platform might
+> > be an option.
+> >
+> > -- Shuah
+> >
+> >
+> >>
+> >>
+> >> > Hi Garrett,
+> >> >
+> >> > I was wondering about your addition of the cross_compiling test. If
+> >> > there is OpenHPI code that may behave badly on a system where an int
+> >> > isn't 4 bytes, I'm thinking that a warning should be issued even for a
+> >> > cross compile to such an architecture as well. Like:
+> >> >
+> >> > if test "x$OH_SIZEOF_INT" != "x4"; then
+> >> >     AC_MSG_WARN([
+> >> > *** int is not 4 bytes, it is $OH_SIZEOF_INT bytes on this platform
+> >> > *** undefined behavior may result from this.
+> >> > ])
+> >> > fi
+> >> >
+> >> > Will having a warning instead of an error cause problems for LTP when
+> >> > cross compiling?
+> >> >
+> >> > Does anyone else in the OpenHPI community oppose changing this error  
+> >> to
+> >> > a warning?
+> >> >
+> >> > Best Regards,
+> >> > Ric White
+> >> >
+> >> >
+> >> > On Wed, 2009-08-19 at 23:11 +0000, Garrett Cooper wrote:
+> >> >> Hi,
+> >> >>     Found this bug while trying to cross-compile with the
+> >> >> openhpi-test-suite in LTP, and made the ERROR into WARN. Please fix
+> >> >> this item as per the attached patch.
+> >> >> Thanks,
+> >> >> -Garrett
+> >> >>
+> >> >> PS Please CC my address in all correspondence w.r.t. this email  
+> >> thread.
+> >> >>
+> >> >> Summary:
+> >> >>
+> >> >> 1. int != 4 shouldn't be checked for while cross-compiling.
+> >> >> 2. Warn instead of erroring out, because we have a _lot_ of 64-bit
+> >> >> platforms that we test on which will be negatively impacted by this
+> >> >> check.
+> >> >>
+> >> >> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+> >> >>
+> >> >> ---
+> >> >>  
+> >> /nfs.mac/ltp-upgrade/contrib/ltp/src/testcases/open_hpi_testsuite//configure.ac.orig	2009-08-19
+> >> >> 16:04:08.000000000 -0700
+> >> >> +++
+> >> >>  
+> >> /nfs.mac/ltp-upgrade/contrib/ltp/src/testcases/open_hpi_testsuite//configure.ac	2009-08-19
+> >> >> 16:10:47.000000000 -0700
+> >> >> @@ -44,14 +44,13 @@
+> >> >>  AC_PROG_LN_S
+> >> >>  AC_PROG_MAKE_SET
+> >> >>
+> >> >> -dnl die on int != 32bits.  This is too instrumental to our code  
+> >> right
+> >> >> now.
+> >> >> +dnl Warn when int != 32bits.  This is too instrumental to our code
+> >> >> right now.
+> >> >>  dnl AC_MSG_CHECKING(int is 4 bytes)
+> >> >>  OH_SET_SIZES
+> >> >> -if test "x$OH_SIZEOF_INT" != "x4"; then
+> >> >> -    AC_MSG_ERROR([
+> >> >> +if test x$cross_compiling != xyes && test "x$OH_SIZEOF_INT" != "x4";
+> >> >> then
+> >> >> +    AC_MSG_WARN([
+> >> >>  *** int is not 4 bytes, it is $OH_SIZEOF_INT bytes on this platform
+> >> >> -*** undefined behavior will result
+> >> >> -*** please contact the openhpi development team to fix this
+> >> >> +*** undefined behavior may result from this.
+> >> >>  ])
+> >> >>  fi
+> >> >>
+> >> >>  
+> >> ------------------------------------------------------------------------------
+> >> >> Let Crystal Reports handle the reporting - Free Crystal Reports 2008
+> >> >> 30-Day
+> >> >> trial. Simplify your report design, integration and deployment - and
+> >> >> focus on
+> >> >> what you do best, core application coding. Discover what's new with
+> >> >> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> >> >> _______________________________________________
+> >> >> Openhpi-devel mailing list
+> >> >> Openhpi-devel@lists.sourceforge.net
+> >> >> https://lists.sourceforge.net/lists/listinfo/openhpi-devel
+> >> >
+> >> >
+> >> >  
+> >> ------------------------------------------------------------------------------
+> >> > Let Crystal Reports handle the reporting - Free Crystal Reports 2008
+> >> > 30-Day
+> >> > trial. Simplify your report design, integration and deployment - and  
+> >> focus
+> >> > on
+> >> > what you do best, core application coding. Discover what's new with
+> >> > Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> >> > _______________________________________________
+> >> > Openhpi-devel mailing list
+> >> > Openhpi-devel@lists.sourceforge.net
+> >> > https://lists.sourceforge.net/lists/listinfo/openhpi-devel
+> >> >
+> >>
+> >>
+> >>
+> >> ------------------------------------------------------------------------------
+> >> Let Crystal Reports handle the reporting - Free Crystal Reports 2008  
+> >> 30-Day
+> >> trial. Simplify your report design, integration and deployment - and  
+> >> focus on
+> >> what you do best, core application coding. Discover what's new with
+> >> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> >> _______________________________________________
+> >> Openhpi-devel mailing list
+> >> Openhpi-devel@lists.sourceforge.net
+> >> https://lists.sourceforge.net/lists/listinfo/openhpi-devel
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+> trial. Simplify your report design, integration and deployment - and focus on 
+> what you do best, core application coding. Discover what's new with 
+> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> _______________________________________________
+> Openhpi-devel mailing list
+> Openhpi-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/openhpi-devel
+-- 
 
-Autoconf, automake, and m4 have been compiled from source, using the versio=
-ns
-specified in INSTALL:
-
-    # autoconf --version
-    autoconf (GNU Autoconf) 2.61
-    Copyright (C) 2006 Free Software Foundation, Inc.
-    This is free software.  You may redistribute copies of it under the ter=
-ms of
-    the GNU General Public License <http://www.gnu.org/licenses/gpl.html>.
-    There is NO WARRANTY, to the extent permitted by law.
-
-    Written by David J. MacKenzie and Akim Demaille.
-    # automake --version
-    automake (GNU automake) 1.10.2
-    Copyright (C) 2008 Free Software Foundation, Inc.
-    License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl=
-.html>
-    This is free software: you are free to change and redistribute it.
-    There is NO WARRANTY, to the extent permitted by law.
-
-    Written by Tom Tromey <tromey@redhat.com>
-	   and Alexandre Duret-Lutz <adl@gnu.org>.
-    # m4 --version
-    m4 (GNU M4) 1.4.12
-    Copyright (C) 2008 Free Software Foundation, Inc.
-    License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl=
-.html>
-    This is free software: you are free to change and redistribute it.
-    There is NO WARRANTY, to the extent permitted by law.
-
-    Written by Rene' Seindal.
-    # =
 
 
-(I'm seeing the same thing on stock Ubuntu 9.04, but that one has autoconf
- 2.63, and only automake 1.9.6 and m4 1.4.11.)
-
-I also tried installing the latest m4 (1.4.13), but that didn't help.
-I also tried installing the latest autoconf (2.64), but that failed even
-harder:
-
-    # make autotools
-    touch config.mk
-    aclocal -I m4
-    m4/ltp-unshare.m4:2: error: _AC_LANG_ABBREV: unknown language: _AC_LANG
-    ../../lib/autoconf/lang.m4:164: _AC_LANG_ABBREV is expanded from...
-    ../../lib/autoconf/functions.m4:82: AC_CHECK_FUNC is expanded from...
-    ../../lib/m4sugar/m4sh.m4:588: AS_FOR is expanded from...
-    ../../lib/autoconf/functions.m4:109: AC_CHECK_FUNCS is expanded from...
-    m4/ltp-unshare.m4:2: _AC_Func_unshare is expanded from...
-    ../../lib/autoconf/functions.m4:130: AC_CHECK_FUNCS_ONCE is expanded fr=
-om...
-    m4/ltp-unshare.m4:2: the top level
-    autom4te: /usr/local/bin/m4 failed with exit status: 1
-    aclocal: autom4te failed with exit status: 1
-    make: *** [aclocal.m4] Error 1
-    # =
-
-
-Anyone with a clue?
-Thanks!
-
-With kind regards,
-
-Geert Uytterhoeven
-Software Architect
-Techsoft Centre
-
-Technology and Software Centre Europe
-The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Belgium
-
-Phone:    +32 (0)2 700 8453
-Fax:      +32 (0)2 700 8622
-E-mail:   Geert.Uytterhoeven@sonycom.com
-Internet: http://www.sony-europe.com/
-
-A division of Sony Europe (Belgium) N.V.
-VAT BE 0413.825.160 =B7 RPR Brussels
-Fortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
-
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
-
-trial. Simplify your report design, integration and deployment - and focus =
-on =
-
-what you do best, core application coding. Discover what's new with =
-
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
