@@ -1,22 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MXvow-0000z4-4k
-	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 11:35:14 +0000
-Received: from e37.co.us.ibm.com ([32.97.110.158])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MXvor-0005tC-Un
-	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 11:35:14 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4A72A052.7070607@petalogix.com>
-References: <1248978649.5788.74.camel@subratamodak.linux.ibm.com>
-	<4A72A052.7070607@petalogix.com>
-Date: Mon, 03 Aug 2009 16:50:11 +0530
-Message-Id: <1249298412.7460.26.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [REMINDER] Did i miss any patch ?
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <yanegomi@gmail.com>) id 1Mg7xR-0005JZ-Qk
+	for ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 02:09:53 +0000
+Received: from qw-out-1920.google.com ([74.125.92.147])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Mg7xJ-0001HI-FT
+	for ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 02:09:53 +0000
+Received: by qw-out-1920.google.com with SMTP id 5so1706920qwc.4
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 25 Aug 2009 19:09:39 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <4A945616.7000805@canonical.com>
+References: <20090824093204.31997.18175.sendpatchset@subratamodak.linux.ibm.com>
+	<4A928BD0.4000508@canonical.com>
+	<1251195139.5534.32.camel@subratamodak.linux.ibm.com>
+	<4A945616.7000805@canonical.com>
+Date: Tue, 25 Aug 2009 19:09:39 -0700
+Message-ID: <364299f40908251909m7ed3e630r475500b21b16a54f@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH 00/02] Integrate Valgrind Memory Check Tool to LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,58 +30,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: michal.simek@petalogix.com
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Paul Larson <paul.larson@canonical.com>
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
 
-On Fri, 2009-07-31 at 09:42 +0200, Michal Simek wrote: 
-> Hi Subrata,
-> 
-> please add Matt's patch for fcntl24,25,26
+On Tue, Aug 25, 2009 at 2:22 PM, Paul Larson<paul.larson@canonical.com> wro=
+te:
+> Subrata Modak wrote:
+>
+>>> really just to "test the tests", would it make sense to put it under
+>>> /scratch or /testscripts as a separate script, rather than just include
+>>> it as yet-another-option for runltp?
+>>
+>> But, creating another script say under testscripts will be to duplicate
+>> again runltp code, as the same script should be able to parse all the
+>> options what we use with runltp. So, keeping it in runltp will just a
+>> little overhead. And, may be we can introduce some longoptions or
+>> manpage for ltp as suggested by people earlier !!
+>
+> It doesn't need to have anywhere near the same options available as
+> under runltp. =A0Other than being able to specify a set of tests to run, I
+> can't really think of a need for many of the others.
 
-Sorry,
+Rather than make runltp into a huge long-options setup, why not
+separate out the common functionality in runltp into a library, make
+it source-able from runltp, runltp-lite, and whatever script is used
+to call valgrind?
+Thanks,
+-Garrett
 
-By the time i received this mail, i had already initiated the download.
-But, i had included this now and will be available in the intermediate
-release.
+---------------------------------------------------------------------------=
+---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
 
-Regards--
-Subrata
+trial. Simplify your report design, integration and deployment - and focus =
+on =
 
-> 
-> Thanks,
-> Michal
-> > Hi,
-> >
-> > Most of the patches were taken care of Garrett. I applied the remaining
-> > today. If you feel that we missed out some important stuffs, please
-> > point us before i start the release process tomorrow.
-> >
-> > Regards--
-> > Subrata
-> >
-> >
-> >
-> > ------------------------------------------------------------------------------
-> > Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> > trial. Simplify your report design, integration and deployment - and focus on 
-> > what you do best, core application coding. Discover what's new with 
-> > Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> > _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> >   
-> 
-> 
+what you do best, core application coding. Discover what's new with =
 
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
