@@ -1,18 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1Mi60G-0004K7-ML
-	for ltp-list@lists.sourceforge.net; Mon, 31 Aug 2009 12:28:56 +0000
-Date: Mon, 31 Aug 2009 14:17:35 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20090831121735.GA12136@schrodinger.suse.cz>
-References: <20090518190905.9777.91288.sendpatchset@subratamodak.linux.ibm.com>
-	<20090518191145.9777.22704.sendpatchset@subratamodak.linux.ibm.com>
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1MgBVn-0003Ag-1k
+	for ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 05:57:35 +0000
+Received: from e34.co.us.ibm.com ([32.97.110.152])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MgBVf-00007K-2t
+	for ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 05:57:35 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e34.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7Q5rHLg009023
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 23:53:17 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7Q5vHS5224758
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 23:57:17 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7Q5vGIU006741
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 23:57:17 -0600
+Date: Wed, 26 Aug 2009 00:57:14 -0500
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20090826055713.GA22281@us.ibm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20090518191145.9777.22704.sendpatchset@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] [PATCH 16/21] Add sigreturn01 test for sigreturn syscall
+Subject: [LTP] [PATCH 1/1] netns: don't run sysfsview testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,34 +38,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Manas Kumar Nayak <maknayak@in.ibm.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>, Deepakraj B Himavantharaj <deepakraj@in.ibm.com>, pasky@suse.cz
+To: LTP <ltp-list@lists.sourceforge.net>
 
-Hi!
-This test doesn't compile cleanly because on all linuxes I've try to do so
-sigreturn() is not defined as manual says.
+It can't pass right now, and leaves the system in a bad state on
+its inevitable failure.
 
-Instead of:
+Leave the testcase there though since one day we will hopefully
+support it.
 
-sigreturn(unsigned long __unused);
+Signed-off-by: Serge Hallyn <serge@us.ibm.com>
+---
+ testcases/kernel/containers/netns/runnetnstest.sh |   25 ++++++++++++--------
+ 1 files changed, 15 insertions(+), 10 deletions(-)
 
-It's defined as:
-
-extern int sigreturn (struct sigcontext *__scp) __THROW;
-
-And it also seems to be unimplemented on linux.
-
-Anyway after looking into the source and manual, the test seems to be testing
-return value of call that does some magic on the stack of the process in order
-to return from signal handler. And the "never return" in manual means IMHO that
-execution path of the program is changed in a way the return value of sigreturn
-can't be checked at all. To me it looks like some old and unused internal
-kernel/glibc api that is not worth testing. So I vote for removing this one
-from ltp.
-
+diff --git a/testcases/kernel/containers/netns/runnetnstest.sh b/testcases/kernel/containers/netns/runnetnstest.sh
+index 8a52e7b..e5ae694 100755
+--- a/testcases/kernel/containers/netns/runnetnstest.sh
++++ b/testcases/kernel/containers/netns/runnetnstest.sh
+@@ -90,16 +90,21 @@ else
+ fi
+ echo
+ 
+-sysfsview
+-rc=$?
+-if [ $rc -ne 0 ]; then
+-    exit_code=$rc
+-    errmesg="$errmesg sysfsview: return code is $exit_code ; "
+-    echo $errmesg
+-else
+-   echo "sysfsview: PASS"
+-fi
+-echo
++# sysfs tagging does not exist, so this test can't pass.  In
++# fact at the moment it fails when mount -t sysfs none /sys is
++# refused, fails in a bad state, leaving the system hard to
++# reboot.  Revisit enabling this test when per-container sysfs
++# views are supported.
++#sysfsview
++#rc=$?
++#if [ $rc -ne 0 ]; then
++#    exit_code=$rc
++#    errmesg="$errmesg sysfsview: return code is $exit_code ; "
++#    echo $errmesg
++#else
++#   echo "sysfsview: PASS"
++#fi
++#echo
+ 
+ par_chld_ftp
+ rc=$?
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.6.0.4
+
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
