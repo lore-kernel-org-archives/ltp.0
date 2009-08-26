@@ -1,31 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1MYYsA-0007u1-MC
-	for ltp-list@lists.sourceforge.net; Wed, 05 Aug 2009 05:17:10 +0000
-Received: from e28smtp08.in.ibm.com ([59.145.155.8])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MYYs3-0008Th-F7
-	for ltp-list@lists.sourceforge.net; Wed, 05 Aug 2009 05:17:10 +0000
-Received: from d28relay05.in.ibm.com (d28relay05.in.ibm.com [9.184.220.62])
-	by e28smtp08.in.ibm.com (8.14.3/8.13.1) with ESMTP id n7555ZT9027752
-	for <ltp-list@lists.sourceforge.net>; Wed, 5 Aug 2009 10:35:35 +0530
-Received: from d28av05.in.ibm.com (d28av05.in.ibm.com [9.184.220.67])
-	by d28relay05.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n755A8cA1093836
-	for <ltp-list@lists.sourceforge.net>; Wed, 5 Aug 2009 10:40:08 +0530
-Received: from d28av05.in.ibm.com (loopback [127.0.0.1])
-	by d28av05.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	n755A8pV018337
-	for <ltp-list@lists.sourceforge.net>; Wed, 5 Aug 2009 15:10:08 +1000
-Message-ID: <4A791430.2000407@linux.vnet.ibm.com>
-Date: Wed, 05 Aug 2009 10:40:08 +0530
-From: Rishikesh <risrajak@linux.vnet.ibm.com>
+	(envelope-from <vapier@gentoo.org>) id 1MgOUi-0007o9-5y
+	for ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 19:49:20 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MgOUU-00060O-4g
+	for ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 19:49:15 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Wed, 26 Aug 2009 15:48:57 -0400
+References: <alpine.LRH.2.00.0908261651080.29020@vixen.sonytel.be>
+In-Reply-To: <alpine.LRH.2.00.0908261651080.29020@vixen.sonytel.be>
 MIME-Version: 1.0
-References: <5D25ED72-13B4-4ED7-959C-4974F4DF2FCA@kernel.crashing.org>
-In-Reply-To: <5D25ED72-13B4-4ED7-959C-4974F4DF2FCA@kernel.crashing.org>
-Subject: Re: [LTP] building LTP on fedora 10 or 11
+Message-Id: <200908261548.58741.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] LTP must be extracted to an accessible location
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,59 +24,84 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1149753311252227877=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kumar Gala <galak@kernel.crashing.org>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
 
-Kumar Gala wrote:
-> Has anyone been able to build LTP on fedora 10 or 11.
->
-> When I try on a x86_64 fedora 10 box:
->
-> [galak@komodo ltp]$ make autotools
-> aclocal -I m4
-> autoconf
-> configure.ac:9: error: possibly undefined macro: AC_PROG_AR
->        If this token and others are legitimate, please use  
-> m4_pattern_allow.
->        See the Autoconf documentation.
-> make: *** [configure] Error 1
->
-> than if I run it again I get:
->
-> [galak@komodo ltp]$ make autotools
-> make: *** No rule to make target `m4/Makefile.am', needed by `m4/ 
-> Makefile.in'.  Stop.
->
-> I pretty much see the same behavior on fedora 11.  Tried both x86_64  
-> and PPC.
->
-> - k
->
-> ------------------------------------------------------------------------------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> trial. Simplify your report design, integration and deployment - and focus on 
-> what you do best, core application coding. Discover what's new with 
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
->   
-Hi Kumar,
+--===============1149753311252227877==
+Content-Type: multipart/signed; boundary="nextPart3677431.thj9pA8k9C";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Which version of LTP is producing this error ? Have you tried latest LTP 
-that is July'09  version ?
--Rishi
+--nextPart3677431.thj9pA8k9C
+Content-Type: Text/Plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+
+On Wednesday 26 August 2009 10:51:29 Geert Uytterhoeven wrote:
+> --- a/INSTALL
+> +++ b/INSTALL
+> @@ -67,6 +67,9 @@ contributions are welcome.
+>  2. Untar the ltp tarball into a spare directory.  There is not a
+>     standard location for it yet.  We put it in our home directory
+>     while we're working on it.
+> +   Note that this location must be accessible for unprivileged users, as
+> +   some tests are run as a different user than root.  Hence /root is not=
+ a
+> +   good choice on several distributions.
+
+i would use the phrase "full path to this location".  non-root could access=
+=20
+=2E/foo/, but it could not access $PWD/foo/ ...
+=2Dmike
+
+--nextPart3677431.thj9pA8k9C
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJKlZGqAAoJEEFjO5/oN/WB2+gQAJuiWr35zdNb+UZgjL90XAHN
+oa2W7ij2oFuozMf2+xGKNfFqFts/DA7p3D8JNKHBfvEFBX0654oDPGyQ28rB+pIT
+0SEhzLkughewjzH5zjCEWWMwiQH2ZfJyhpcHfIyXE+89uLT4GhPZmL1IZicobMsH
+f4Me/lpE8Sqq4y4b/sfftI0PMmw4mZ9XVKB4qLQ832fNvpi/OL6f1p2qUwDouYIu
+uVWsaQgOjdABWmBRCd4NCshdpUHJ6vmp4IdXFzZUaXDwf1/NwHWwuKb2M79ThMzw
+ebtd55WjQL9MNiEMUOO1mKFgF0BdPh7EeyUZ+S5uiHghBEYpviHQdJIxJGk1wKYA
+3R7baDIFkyUXvtS9sxa1OvB0XPeIS/YFHIqUJMkXQg4e3RUqgspPpAHg2XZrdnNv
+SENQFILEIPtcHnxtt0L/L8Nj8G16YKQOcjwAWHcGQ/maLtWZF4P5NwYjV7t07eRr
+JoguFUA4VEgNIaK1Nw7zM3hoSn2SJz/FbGCbEY738wrMxRGul3df30ca6RZJvQ8o
+/epp4PPBpKZir2xL4Y5c5aAYW+Zawp1tiBiJcUMYfkLsGrE4iSPT8TDpEptI388Y
+yysCscHhkrWarwdKs/0MhJDvc7nLj9s1IO3G0/ccvEysCITfO9h3uIiUpAFP/hG1
+aPCLcfW4t1+GP3kHvMqx
+=ufdm
+-----END PGP SIGNATURE-----
+
+--nextPart3677431.thj9pA8k9C--
+
+
+--===============1149753311252227877==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============1149753311252227877==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1149753311252227877==--
+
