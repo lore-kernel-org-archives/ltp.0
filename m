@@ -1,33 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MhoMP-0005nP-M8
-	for Ltp-list@lists.sourceforge.net; Sun, 30 Aug 2009 17:38:37 +0000
-Received: from e38.co.us.ibm.com ([32.97.110.159])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MhoMK-00050s-Ot
-	for Ltp-list@lists.sourceforge.net; Sun, 30 Aug 2009 17:38:37 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7UHYeiv029637
-	for <Ltp-list@lists.sourceforge.net>; Sun, 30 Aug 2009 11:34:40 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7UHcRoj227942
-	for <Ltp-list@lists.sourceforge.net>; Sun, 30 Aug 2009 11:38:27 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7UHcQT3019215
-	for <Ltp-list@lists.sourceforge.net>; Sun, 30 Aug 2009 11:38:26 -0600
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MgBzn-0007hL-9T
+	for ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 06:28:35 +0000
+Received: from e6.ny.us.ibm.com ([32.97.182.146])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MgBzi-0005ML-Dd
+	for ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 06:28:35 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e6.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7Q6WYFO004239
+	for <ltp-list@lists.sourceforge.net>; Wed, 26 Aug 2009 02:32:34 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7Q6SONv217494
+	for <ltp-list@lists.sourceforge.net>; Wed, 26 Aug 2009 02:28:24 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7Q6SOTT027737
+	for <ltp-list@lists.sourceforge.net>; Wed, 26 Aug 2009 02:28:24 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <alpine.LRH.2.00.0908281125160.31615@vixen.sonytel.be>
-References: <alpine.LRH.2.00.0908281125160.31615@vixen.sonytel.be>
-Date: Sun, 30 Aug 2009 23:07:10 +0530
-Message-Id: <1251653832.12120.27.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <20090826055713.GA22281@us.ibm.com>
+References: <20090826055713.GA22281@us.ibm.com>
+Date: Wed, 26 Aug 2009 11:57:54 +0530
+Message-Id: <1251268075.4895.9.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] sched_cli_serv: Wait a bit before trying
-	to	connect
+Subject: Re: [LTP] [PATCH 1/1] netns: don't run sysfsview testcase
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -41,38 +39,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Cc: Linux Test Project <Ltp-list@lists.sourceforge.net>
+To: "Serge E. Hallyn" <serue@us.ibm.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-On Fri, 2009-08-28 at 11:25 +0200, Geert Uytterhoeven wrote: 
-> The sched_cli_serv test launches the server in the background and expects
-> the client to be able to connect to it immediately. Depending on (earlier)
-> system load, that may fail.
-> Wait a bit before starting the client.
+On Wed, 2009-08-26 at 00:57 -0500, Serge E. Hallyn wrote:
+> It can't pass right now, and leaves the system in a bad state on
+> its inevitable failure.
 > 
-> Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+> Leave the testcase there though since one day we will hopefully
+> support it.
+> 
+> Signed-off-by: Serge Hallyn <serge@us.ibm.com>
 
-Ok.
+Ok. Merged.
 
 Regards--
 Subrata
 
 > ---
->  testcases/kernel/sched/clisrv/run_sched_cliserv.sh |    1 +
->  1 files changed, 1 insertions(+), 0 deletions(-)
+>  testcases/kernel/containers/netns/runnetnstest.sh |   25 ++++++++++++--------
+>  1 files changed, 15 insertions(+), 10 deletions(-)
 > 
-> diff --git a/testcases/kernel/sched/clisrv/run_sched_cliserv.sh b/testcases/kernel/sched/clisrv/run_sched_cliserv.sh
-> index 68176c4..f063ebd 100755
-> --- a/testcases/kernel/sched/clisrv/run_sched_cliserv.sh
-> +++ b/testcases/kernel/sched/clisrv/run_sched_cliserv.sh
-> @@ -1,6 +1,7 @@
->  #!/bin/sh -x
->  
->  pthserv &
-> +sleep 5
->  pthcli 127.0.0.1 $LTPROOT/testcases/bin/data
->  clientCode=$?
->  killall pthserv
+> diff --git a/testcases/kernel/containers/netns/runnetnstest.sh b/testcases/kernel/containers/netns/runnetnstest.sh
+> index 8a52e7b..e5ae694 100755
+> --- a/testcases/kernel/containers/netns/runnetnstest.sh
+> +++ b/testcases/kernel/containers/netns/runnetnstest.sh
+> @@ -90,16 +90,21 @@ else
+>  fi
+>  echo
+> 
+> -sysfsview
+> -rc=$?
+> -if [ $rc -ne 0 ]; then
+> -    exit_code=$rc
+> -    errmesg="$errmesg sysfsview: return code is $exit_code ; "
+> -    echo $errmesg
+> -else
+> -   echo "sysfsview: PASS"
+> -fi
+> -echo
+> +# sysfs tagging does not exist, so this test can't pass.  In
+> +# fact at the moment it fails when mount -t sysfs none /sys is
+> +# refused, fails in a bad state, leaving the system hard to
+> +# reboot.  Revisit enabling this test when per-container sysfs
+> +# views are supported.
+> +#sysfsview
+> +#rc=$?
+> +#if [ $rc -ne 0 ]; then
+> +#    exit_code=$rc
+> +#    errmesg="$errmesg sysfsview: return code is $exit_code ; "
+> +#    echo $errmesg
+> +#else
+> +#   echo "sysfsview: PASS"
+> +#fi
+> +#echo
+> 
+>  par_chld_ftp
+>  rc=$?
 
 
 ------------------------------------------------------------------------------
