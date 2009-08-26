@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <rohit.170309@gmail.com>) id 1MgaWb-00012q-Bd
-	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 08:40:05 +0000
-Received: from mail-pz0-f199.google.com ([209.85.222.199])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MgaWS-00023x-SM
-	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 08:40:05 +0000
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MgIV5-0005bN-RP
+	for Ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 13:25:19 +0000
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=pophost.sonytel.be) by 29vjzd1.ch3.sourceforge.com with esmtp 
+	(Exim 4.69) id 1MgIV4-0003nx-9u
+	for Ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 13:25:19 +0000
+Date: Wed, 26 Aug 2009 15:25:05 +0200 (CEST)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+In-Reply-To: <20090826130717.GA50086@medusa.sis.pasteur.fr>
+Message-ID: <alpine.LRH.2.00.0908261524310.17269@vixen.sonytel.be>
+References: <alpine.LRH.2.00.0908261443220.25669@vixen.sonytel.be>
+	<20090826130717.GA50086@medusa.sis.pasteur.fr>
 MIME-Version: 1.0
-In-Reply-To: <d51f89b0908202214l795ceb5bp5530fa4666f7ba87@mail.gmail.com>
-References: <d51f89b0908130131u5742ff3epf58617e3f4ab38a3@mail.gmail.com>
-	<4A850550.7080109@cn.fujitsu.com>
-	<d51f89b0908140134g18b7b34cr9858edad1242373a@mail.gmail.com>
-	<4A861EA2.6070701@cn.fujitsu.com>
-	<d51f89b0908202214l795ceb5bp5530fa4666f7ba87@mail.gmail.com>
-Date: Thu, 27 Aug 2009 14:09:50 +0530
-Message-ID: <d51f89b0908270139j541bc03dtc0ece34af392f501@mail.gmail.com>
-From: rohit verma <rohit.170309@gmail.com>
-Subject: Re: [LTP] utimes01 test case issue
+Subject: Re: [LTP] undefined macro: _m4_divert_diversion
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,129 +25,71 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-15"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com, Wei Yongjun <yjwei@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Nicolas Joly <njoly@pasteur.fr>
+Cc: Linux Test Project <Ltp-list@lists.sourceforge.net>
 
-Hi Wang Yong/Subrata,
+On Wed, 26 Aug 2009, Nicolas Joly wrote:
+> On Wed, Aug 26, 2009 at 02:57:10PM +0200, Geert Uytterhoeven wrote:
+> > When trying to autoconfigure current LTP on YDL, I get:
+> > =
 
-Kindly confirm whether the patch which i send you on 21st Aug is working fi=
-ne.
+> >     # make autotools =
 
+> >     touch config.mk
+> >     aclocal -I m4
+> >     m4/ltp-unshare.m4:2: error: m4_defn: undefined macro: _m4_divert_di=
+version
+> >     m4/ltp-unshare.m4:2: the top level
+> >     autom4te: /usr/local/bin/m4 failed with exit status: 1
+> >     aclocal: autom4te failed with exit status: 1
+> >     make: *** [aclocal.m4] Error 1
+> >     #
+> [...]
+> =
 
-Thank you,
+> This is a quoting problem ... The following patch should fix it.
 
+Thanks, now it works!
 
-On Fri, Aug 21, 2009 at 10:44 AM, rohit verma<rohit.170309@gmail.com> wrote:
-> Hi Wang Yong,
->
-> I have changed the expected error for root user in case02 as following.
->
-> From tcase[2].err =3D EACCES to tcase[2].err =3D EPERM (For root user) .
->
-> Pls check the attached patch for the same.
->
->
-> On Sat, Aug 15, 2009 at 8:04 AM, Wei Yongjun<yjwei@cn.fujitsu.com> wrote:
->> rohit verma wrote:
->>> Hi Wang Yong,
->>>
->>> I am getting following =A0O/P for case02 :
->>>
->>> As root user:
->>>
->>> utimes01 =A0 =A00 =A0TINFO =A0: =A0(case02) START
->>> EXPECT: return value(ret)=3D-1 errno=3D13 (Permission denied)
->>> RESULT: return value(ret)=3D-1 errno=3D1 (Operation not permitted)
->>> utimes01 =A0 =A00 =A0TINFO =A0: =A0(case02) END =3D> NG
->>>
->>> As non-root user:
->>> utimes01 =A0 =A00 =A0TINFO =A0: =A0(case02) START
->>> seteuid failed.
->>> utimes01 =A0 =A00 =A0TINFO =A0: =A0(case02) END =3D> OK
->>>
->>> Are you getting the same?
->>>
->>>
->>>
->>
->> yes, the same result.
->>
->>>
->>> On Fri, Aug 14, 2009 at 12:03 PM, Wei Yongjun<yjwei@cn.fujitsu.com> wro=
-te:
->>>
->>>> rohit verma wrote:
->>>>
->>>>> Hi Wang Yong,
->>>>>
->>>>> I have observed the following thing in case02 of the test case
->>>>> utimes01 in latest ltp release.
->>>>>
->>>>> Expected error value is =A0EACCES (In the code below)
->>>>> But the actual error value is EPERM.I have checked this on =A02.6.27 =
-and
->>>>> 2.6.29 kernel.
->>>>>
->>>>>
->>>> You can try root user and noroot user, the return error is different.
->>>>
->>>>
->>>>> static struct test_case tcase[] =3D {
->>>>>
->>>>> =A0 =A0 =A0 =A0 { // case00
->>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ...
->>>>> =A0 =A0 =A0 =A0 },
->>>>> =A0 =A0 =A0 =A0 { // case01
->>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ...
->>>>> =A0 =A0 =A0 =A0 },
->>>>> =A0 =A0 =A0 =A0 { // case02
->>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .ttype =A0 =A0 =A0 =A0 =A0=3D NORMAL,
->>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .a_sec =A0 =A0 =A0 =A0=3D 1000,
->>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .m_sec =A0 =A0 =A0 =3D 2000,
->>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .user =A0 =A0 =A0 =A0 =A0=3D "nobody",
->>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .ret =A0 =A0 =A0 =A0 =A0 =A0 =3D -1,
->>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .err =A0 =A0 =A0 =A0 =A0 =A0 =3D EACC=
-ES, // RHEL4U1 + 2.6.18 returns EPERM
->>>>> =A0 =A0 =A0 =A0 },
->>>>> =A0 =A0 =A0 =A0 { // case03
->>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ...
->>>>> =A0 =A0 =A0 =A0 },
->>>>>
->>>>> =A0 =A0 =A0 =A0 { // case04
->>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ...
->>>>> =A0 =A0 =A0 =A0 },
->>>>> };
->>>>>
->>>>> Kindly confirm whether you are facing the same issue at your end.
->>>>>
->>>>>
->>>>>
->>>>
->>>>
->>>
->>>
->>>
->>>
->>
->>
->>
->
->
->
-> --
-> Regards,
-> Rohit
->
+> Index: m4/ltp-unshare.m4
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> RCS file: /cvsroot/ltp/ltp/m4/ltp-unshare.m4,v
+> retrieving revision 1.1
+> diff -u -p -r1.1 ltp-unshare.m4
+> --- m4/ltp-unshare.m4	25 Aug 2009 07:37:46 -0000	1.1
+> +++ m4/ltp-unshare.m4	26 Aug 2009 13:04:03 -0000
+> @@ -1,2 +1,2 @@
+>  AC_DEFUN([LTP_CHECK_SYSCALL_UNSHARE],
+> -AC_CHECK_FUNCS_ONCE(unshare))
+> +[AC_CHECK_FUNCS_ONCE([unshare])])
+> =
 
+> Signed-off-by: Nicolas Joly <njoly@pasteur.fr>
 
+Tested-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
 
--- =
+With kind regards,
 
-Regards,
-Rohit
+Geert Uytterhoeven
+Software Architect
+Techsoft Centre
+
+Technology and Software Centre Europe
+The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Belgium
+
+Phone:    +32 (0)2 700 8453
+Fax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 =B7 RPR Brussels
+Fortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
 
 ---------------------------------------------------------------------------=
 ---
