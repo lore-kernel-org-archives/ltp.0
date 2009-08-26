@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MfSGf-0004iy-KB
-	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 05:38:57 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MfSGX-0004Q5-PB
-	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 05:38:57 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 24 Aug 2009 01:38:42 -0400
-References: <20090824.121538.48518939.caiqian@cclom.cn>
-In-Reply-To: <20090824.121538.48518939.caiqian@cclom.cn>
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MgKIx-0005WU-80
+	for Ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 15:20:55 +0000
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=pophost.sonytel.be) by 3b2kzd1.ch3.sourceforge.com with esmtp 
+	(Exim 4.69) id 1MgKIs-0002rb-Jn
+	for Ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 15:20:55 +0000
+Received: from vixen.sonytel.be (piraat.sonytel.be [43.221.60.197])
+	by pophost.sonytel.be (Postfix) with ESMTP id DD52044483
+	for <Ltp-list@lists.sourceforge.net>;
+	Wed, 26 Aug 2009 17:20:44 +0200 (CEST)
+Date: Wed, 26 Aug 2009 17:20:44 +0200 (CEST)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Message-ID: <alpine.LRH.2.00.0908261719130.29807@vixen.sonytel.be>
 MIME-Version: 1.0
-Message-Id: <200908240138.43350.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 3/3] Fix unshare02
+Subject: [LTP] [PATCH] su01: Yellow Dog Linux doesn't support passwd -e
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,69 +26,68 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7149771690526506974=="
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Linux Test Project <Ltp-list@lists.sourceforge.net>
 
---===============7149771690526506974==
-Content-Type: multipart/signed; boundary="nextPart2591638.k67PrSzer3";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+---
+Is there any better way to handle this??
 
---nextPart2591638.k67PrSzer3
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+ testcases/commands/su/su01_s1 |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-this has the same problems i pointed out with your unshare01 chanes
--mike
+diff --git a/testcases/commands/su/su01_s1 b/testcases/commands/su/su01_s1
+index 2fba82b..b676f84 100755
+--- a/testcases/commands/su/su01_s1
++++ b/testcases/commands/su/su01_s1
+@@ -406,7 +406,7 @@ if { ($displayed_error=3D=3D1) && ($exit_code!=3D0) && =
+($pid>0) } {
+ # Become root and expire $USER1 password
+ =
 
---nextPart2591638.k67PrSzer3
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+ #  Skip this if Red Hat; -e option not supported.
+-if { $distro !=3D "redhat" && $distro !=3D "redhat-linux" } {
++if { $distro !=3D "redhat" && $distro !=3D "redhat-linux" && $distro !=3D =
+"yellowdog-linux" } {
+ =
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.11 (GNU/Linux)
+ if { $test_one_passed=3D=3D1} {
+ send_user "TEST:  su to user1 with the user1 password expired.\n"
+-- =
 
-iQIcBAABAgAGBQJKkidjAAoJEEFjO5/oN/WBXMoQAM4PlzaXPjSiC8I7C87luwnm
-HYjwzsheJf7sal2rMjq++IfOf59LiCkgwQVfCgJVx0PFawIMZNdIMfcAZ0AlbSwa
-ObQP/giNuY2GlbxIlYpA8Orz1zBaTQMNj5W2qV47eBF3MtzRydkUtsvoRUlm5Ys1
-ZYzOY0pyNmZMc8G7AgnfBouR+B1GXLUsSuheOQlQ3DQVZmWcLyoi5aZMGk6qqSl3
-U/gAcUIrhj3RlV/Q7pR6PkbP7mgpJLf8DMoZbXMSPDhuEoFyO2Y7GnfyZ7Oe1CQw
-mjJZS39hRUqTyE1OXkuFEeDHnRb7wnGhsA8qybqYsjLalQd/5nYoXEE1UFMJ9DAB
-/Vf46an9cS09VwRKJvfTGdCXOCVwS6MCrhhAHB8etwxSSCuesQew9SuPcP8604qg
-PqdIoRwxZ8M5kmv/VWn2RVjXyDLiqNrZOqVjlXpuemeDNk2rgW5jlvy99Kdktnrx
-b4dRdnYhWD16QYW6y2FBKIXUImWPMyVFF9l5zIn7zN5znz3stx9484wNcyN1yU/u
-4QAiW0LACBnXbjJKW3wIuaXg8usMckEJG5xn5ByOQOXbWVCM292vuEr+lY1FUVtv
-WmzvJFr7hEGXbWDP7EkNXF9Qv7UTcZ5e+JHIyeJl73XEVo7/7Wan6IPK9L/TYr1m
-yEvN385P8Ljme9lekM5u
-=r/yH
------END PGP SIGNATURE-----
+1.6.2.4
 
---nextPart2591638.k67PrSzer3--
+With kind regards,
 
+Geert Uytterhoeven
+Software Architect
+Techsoft Centre
 
---===============7149771690526506974==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Technology and Software Centre Europe
+The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Belgium
 
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
+Phone:    +32 (0)2 700 8453
+Fax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 =B7 RPR Brussels
+Fortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
+
+---------------------------------------------------------------------------=
+---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+
+trial. Simplify your report design, integration and deployment - and focus =
+on =
+
+what you do best, core application coding. Discover what's new with =
+
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---===============7149771690526506974==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============7149771690526506974==--
-
