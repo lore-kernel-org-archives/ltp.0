@@ -1,21 +1,37 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MgbcC-0007jR-C0
-	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 09:49:56 +0000
-Received: from vervifontaine.sonytel.be ([80.88.33.193]
-	helo=pophost.sonytel.be) by 29vjzd1.ch3.sourceforge.com with esmtp 
-	(Exim 4.69) id 1MgbcB-00049T-DQ
-	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 09:49:56 +0000
-Date: Thu, 27 Aug 2009 11:49:49 +0200 (CEST)
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-In-Reply-To: <200908261550.10710.vapier@gentoo.org>
-Message-ID: <alpine.LRH.2.00.0908271148570.22490@vixen.sonytel.be>
-References: <alpine.LRH.2.00.0908261719130.29807@vixen.sonytel.be>
-	<200908261550.10710.vapier@gentoo.org>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] su01: Yellow Dog Linux doesn't support passwd -e
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MgCfj-0003s6-3M
+	for ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 07:11:55 +0000
+Received: from e38.co.us.ibm.com ([32.97.110.159])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MgCfa-00081I-Da
+	for ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 07:11:55 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7Q77v6Q019830
+	for <ltp-list@lists.sourceforge.net>; Wed, 26 Aug 2009 01:07:57 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7Q7Begm239422
+	for <ltp-list@lists.sourceforge.net>; Wed, 26 Aug 2009 01:11:40 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7Q7BeVH032036
+	for <ltp-list@lists.sourceforge.net>; Wed, 26 Aug 2009 01:11:40 -0600
+Received: from [9.124.223.50] ([9.124.223.50])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
+	n7Q7BcqX031948
+	for <ltp-list@lists.sourceforge.net>; Wed, 26 Aug 2009 01:11:39 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <20090824093204.31997.18175.sendpatchset@subratamodak.linux.ibm.com>
+References: <20090824093204.31997.18175.sendpatchset@subratamodak.linux.ibm.com>
+Date: Wed, 26 Aug 2009 12:41:34 +0530
+Message-Id: <1251270695.19240.5.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH 00/02] Integrate Valgrind Memory Check Tool to LTP
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,53 +41,66 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP Mailing List <ltp-list@lists.sourceforge.net>
 
-On Wed, 26 Aug 2009, Mike Frysinger wrote:
-> On Wednesday 26 August 2009 11:20:44 Geert Uytterhoeven wrote:
-> > Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-> > ---
-> > Is there any better way to handle this??
-> =
+On Mon, 2009-08-24 at 15:02 +0530, Subrata Modak wrote: 
+> Hi,
+> 
+> Introducing and Integrating the Valgrind Memory Leak Check tools to LTP.
 
-> change it to:
-> if passwd -h | grep -q -e '--expire\>' ; then
-              ^
-	      2>&1
+Now in LTP.
 
-Next question: Does Google Translator do bash =3D> expect? ;-)
+Regards--
+Subrata
 
-With kind regards,
+> This again is in line with the OLS 2009 paper where we proposed that
+> memory leak check for LTP test cases will become part of LTP soon. 
+> 
+> Valgrind is one of the best Memory Leak Check tools available to the open
+> source community and being widely used by many maintainers of Open Source
+> Projects to regularly check the health of their code. On similar lines, we
+> would like it to check the various dynamic issues related to Memory Leaks,
+> Thread Concurrencies for the LTP tests so that we minimize those errors
+> for the LTP tests. The following set of Patches will:
+> 
+> 1) Integrate within LTP infrastructure the use of VALGRIND tool,
+> 2) Internal check against unavailability of this tools on your machine,
+> 3) Running through runltp, the various:
+> 	3.1) Memory Leak Checks,
+> 	3.2) Thread Concurrency Checks,
+> on all LTP tests that the user intents to run/check,
+> 4) Comparisn of how a normal test run differs from the the test run
+> through Valgrind,
+> 
+> Now, you may ask the question why donB4t we use Valgrind independantly ?
+> True, it can be done. But, it becomes more simple when we can ask runltp
+> to do the job for us and remaining everything remains in LTP format. And,
+> this is handy for test case developers who can do a quick check on the
+> tests they have just developed.
+> 
+> When you want to run your tests/sub-tests through Valgrind tool, what you
+> have to just do is:
+> 
+> ./runltp -f <your-command-file> -M [1,2,3]
+> 
+> CHECK_TYPE=1 => Full Memory Leak Check tracing children as well
+> CHECK_TYPE=2 => Thread Concurrency Check tracing children as well
+> CHECK_TYPE=3 => Full Memory Leak & Thread Concurrency Check tracing children as well
+> 
+> The above options in LTP will usher in better Test Case development.
+> 
+> Regards--
+> Subrata
+> 
 
-Geert Uytterhoeven
-Software Architect
-Techsoft Centre
 
-Technology and Software Centre Europe
-The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Belgium
-
-Phone:    +32 (0)2 700 8453
-Fax:      +32 (0)2 700 8622
-E-mail:   Geert.Uytterhoeven@sonycom.com
-Internet: http://www.sony-europe.com/
-
-A division of Sony Europe (Belgium) N.V.
-VAT BE 0413.825.160 =B7 RPR Brussels
-Fortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
-
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
-
-trial. Simplify your report design, integration and deployment - and focus =
-on =
-
-what you do best, core application coding. Discover what's new with =
-
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
