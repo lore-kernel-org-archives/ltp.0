@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MXhWG-0002gm-R6
-	for ltp-list@lists.sourceforge.net; Sun, 02 Aug 2009 20:19:00 +0000
-Received: from qw-out-1920.google.com ([74.125.92.150])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MXhWE-00009d-Ll
-	for ltp-list@lists.sourceforge.net; Sun, 02 Aug 2009 20:19:00 +0000
-Received: by qw-out-1920.google.com with SMTP id 5so1416453qwc.4
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 02 Aug 2009 13:18:52 -0700 (PDT)
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MgOVk-0007HN-2j
+	for ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 19:50:24 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MgOVd-0002ng-O8
+	for ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 19:50:24 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Wed, 26 Aug 2009 15:50:09 -0400
+References: <alpine.LRH.2.00.0908261719130.29807@vixen.sonytel.be>
+In-Reply-To: <alpine.LRH.2.00.0908261719130.29807@vixen.sonytel.be>
 MIME-Version: 1.0
-Date: Sun, 2 Aug 2009 13:18:52 -0700
-Message-ID: <364299f40908021318y7cb6f8edl24ae1a9b85157758@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] [PATCH] Fix rsh01
+Message-Id: <200908261550.10710.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] su01: Yellow Dog Linux doesn't support passwd -e
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,139 +24,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2375710212955725743=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
 
-1. The indentation in this script was off (defacto standard for shell
-scripts is 4-space indents).
-2. rsh is becoming a deprecated app, so the likelihood of someone
-executing this app and having it fail the first time and succeed in
-the remaining runs is low. So let's do two things:
-    i. Provide a means to toggle immediately failure to provide a
-quick failure short circuit (FAIL_IMMEDIATELY => 1).
-    ii. Fail on the first try if FAIL_IMMEDIATELY is set and exit the script.
-3. Export TCID, TST_COUNT, and TST_TOTAL so tst_resm doesn't complain.
-4. Prefix the number of tries so folks don't need to scroll up the
-terminal buffer and count to see what iteration they're executing.
-5. Convert `"$CHECK" -eq 9' to `"$CHECK" = "9"' so test(1) doesn't
-complain if and when the rsh(1) fails, and thus doesn't return an
-integer value to stdout.
+--===============2375710212955725743==
+Content-Type: multipart/signed; boundary="nextPart1643880.QUbr9n88QD";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+--nextPart1643880.QUbr9n88QD
+Content-Type: Text/Plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 7bit
 
-Index: testcases/network/tcp_cmds/rsh/rsh01
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/network/tcp_cmds/rsh/rsh01,v
-retrieving revision 1.5
-diff -u -r1.5 rsh01
---- testcases/network/tcp_cmds/rsh/rsh01	13 Aug 2003 20:39:48 -0000	1.5
-+++ testcases/network/tcp_cmds/rsh/rsh01	2 Aug 2009 20:12:00 -0000
-@@ -37,10 +37,14 @@
- #trace_logic=${trace_logic:-"set -x"}
- $trace_logic
+On Wednesday 26 August 2009 11:20:44 Geert Uytterhoeven wrote:
+> Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+> ---
+> Is there any better way to handle this??
 
-+FAIL_IMMEDIATELY=${FAIL_IMMEDIATELY:-1}
- RHOST=${RHOST:-`hostname`}
- SLEEPTIME=${SLEEPTIME:-0}
--NUMLOOPS=${NUMLOOPS:-25}
-+NUMLOOPS=${NUMLOOPS:-1}
+change it to:
+if passwd -h | grep -q -e '--expire\>' ; then
+-mike
 
-+export TCID=rsh01
-+export TST_TOTAL=$NUM_LOOPS
-+export TST_COUNT=$NUM_LOOPS
+--nextPart1643880.QUbr9n88QD
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
- #-----------------------------------------------------------------------
- #
-@@ -50,15 +54,12 @@
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
 
- exists()
- {
--   for cmd in $1
--   do
--       which $cmd 2>&1 1>/dev/null
--	   if [ $? -ne 0 ]
--	   then
--	       tst_resm TBROK "Test broke: command $cmd not found"
--		   exit 1
--       fi
--   done
-+    for cmd in $1; do
-+        if ! which $cmd 2>&1 1>/dev/null; then
-+            tst_resm TBROK "$cmd not found"
-+            exit 1
-+        fi
-+    done
- }
+iQIcBAABAgAGBQJKlZHyAAoJEEFjO5/oN/WB6KwQAI0b08M/jxMn+AomTiThfjBf
+uTDFLScI6rpYTMQ30TV37QBOeQp8J9084IJgiRxBcejSMnn0qc+3QkR72Ba1ceAL
+EO5WczJjAY7nvUlfeDkTWnw3GA0eMAKWV8B91oaHnmxE6taAl2Q4r2wcXqO2COrB
+LpC1IjwPLA2Sfm3QPKnyir3Nwzxy1zeU5qmE+WY6zKc3WrHm38HnVIdRzASRifeQ
+sYTMb0TWOnR6CL/dz8zHKfwdMzNSk/x2GZaiKhR0LcWhZbdFcBTWzrigUOS1OVRQ
+h29ckiyL7u39089OOuZ0tj68vAp8tsb6f4UcLGrJYO9ISGPQ6nAfr4fBUH+nZweZ
+DNetNi8Jjhor2yF8YV35/VVE5eFUYeR0p5Sj4/FefxHVVLPRr53rqn7sFDNXQxL+
+Yd8nUI4FT39o9uFH7aDkIVvPn3RhBKF3uo7TVAlCe+1v4XkV4dxe9k0Vcw+dqfmU
+M+IvqPlaKJJDSB4M3jLSSFM4fvg2441Nl5yo+nsh/Rqw87DQWAPDX3WLQyQpiDbv
+KaOFbDyYy/+IVA9fWRrDpArsyq2uxdegCQwiACOq6uparRty7hl9lbgoB5Hb9kVX
+zw0i51m+vvLO0QmvxYcz8Cl58d4I0EXfALAkKoS9hSZjuwuLO4Ciy1qVdVlVXqc0
+LZOcyVb2Rjczf9UNlfma
+=AbQf
+-----END PGP SIGNATURE-----
 
- #-----------------------------------------------------------------------
-@@ -69,21 +70,27 @@
+--nextPart1643880.QUbr9n88QD--
 
- do_test()
- {
--   $trace_logic
-+    $trace_logic
 
--   COUNT=1
--   while [ $COUNT -le $NUMLOOPS ]
--   do
--      CHECK=$(rsh -n -l root $RHOST "ls -l /etc/hosts | wc -w")
--
--      if [ "$CHECK" -eq 9 ]; then
--         tst_resm TINFO "rsh Test successful in loop $COUNT"
--      else
--         tst_resm TBROK "FAILED: rsh failed"
--      fi
--      sleep $SLEEPTIME
--      COUNT=$(( $COUNT + 1 ))
--   done
-+    COUNT=1
-+    while [ $COUNT -le $NUMLOOPS ]
-+    do
-+        CHECK=$(rsh -n -l root $RHOST "ls -l /etc/hosts | wc -w")
-+
-+        if [ "$CHECK" -eq 9 ]; then
-+            tst_resm TINFO "[$COUNT/$NUM_LOOPS] rsh to $RHOST test succeeded"
-+        else
-+            tst_resm TFAIL "[$COUNT/$NUM_LOOPS] rsh to $RHOST failed"
-+            # If the first rsh failed, the likelihood that the rest will
-+            # succeed is low.
-+            if [ -n "$FAIL_IMMEDIATELY" -a "$FAIL_IMMEDIATELY" = "1"
-] && [ $COUNT -eq 1 ]
-+            then
-+                exit 2
-+            fi
-+        fi
-+        sleep $SLEEPTIME
-+        COUNT=$(( $COUNT + 1 ))
-+    done
- }
-
- #=============================================================================
-@@ -98,11 +105,11 @@
-
- end_testcase()
- {
--   $trace_logic
-+    $trace_logic
-
--   [ $# -eq 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
--   tst_resm TFAIL "Test Failed: $@"
--   exit 1
-+    [ $# -eq 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
-+    tst_resm TFAIL "Test Failed: $@"
-+    exit 1
- }
-
- #----------------------------------------------------------------------
+--===============2375710212955725743==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============2375710212955725743==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2375710212955725743==--
+
