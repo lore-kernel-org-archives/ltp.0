@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <rohit.170309@gmail.com>) id 1MYIEu-0007Mk-NY
-	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 11:31:32 +0000
-Received: from mail-gx0-f209.google.com ([209.85.217.209])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MYIEi-0004Cr-0m
-	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 11:31:27 +0000
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MgdIY-0006hw-6g
+	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 11:37:46 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MgdIS-0000TK-3V
+	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 11:37:46 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 27 Aug 2009 07:37:31 -0400
+References: <alpine.LRH.2.00.0908261719130.29807@vixen.sonytel.be>
+	<200908270606.16787.vapier@gentoo.org>
+	<alpine.LRH.2.00.0908271311410.22490@vixen.sonytel.be>
+In-Reply-To: <alpine.LRH.2.00.0908271311410.22490@vixen.sonytel.be>
 MIME-Version: 1.0
-In-Reply-To: <1249385096.15587.17.camel@subratamodak.linux.ibm.com>
-References: <d51f89b0907230130k158cbfbeo31f290cf207432b6@mail.gmail.com>
-	<1248978557.5788.61.camel@subratamodak.linux.ibm.com>
-	<d51f89b0908040422o17ac20f6q36aaff23ea88e839@mail.gmail.com>
-	<1249385096.15587.17.camel@subratamodak.linux.ibm.com>
-Date: Tue, 4 Aug 2009 17:01:14 +0530
-Message-ID: <d51f89b0908040431w6208a47fgbe79b5df30c6268c@mail.gmail.com>
-From: rohit verma <rohit.170309@gmail.com>
-Subject: [LTP]  waitid02 testcase fails on 2.6.29 kernel
+Message-Id: <200908270737.32793.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] su01: Yellow Dog Linux doesn't support passwd -e
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,104 +26,91 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============0099634157009928461=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sf.net>
+To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Cc: ltp-list@lists.sourceforge.net
 
-FYI
+--===============0099634157009928461==
+Content-Type: multipart/signed; boundary="nextPart5139974.N8YWJrkLK6";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
----------- Forwarded message ----------
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Tue, Aug 4, 2009 at 4:54 PM
-Subject: Re: [LTP] waitid02 testcase fails on 2.6.29 kernel
-To: rohit verma <rohit.170309@gmail.com>
-Cc: maknayak@in.ibm.com, CAI Qian <caiqian@cclom.cn>
+--nextPart5139974.N8YWJrkLK6
+Content-Type: Text/Plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 
-
-Rohit,
-
-Post this to ltp mailing list.
-
-Regards--
-Subrata
-
-On Tue, 2009-08-04 at 16:52 +0530, rohit verma wrote:
-> Dear Manas Kumar Nayak,
->
-> Pls find attached patch for waitid02 test case.I have modified the
-> test case.I have also added 2 test scenarios in the test case using
-> WSTOPPED and WNOWAIT.
->
-> Note:
-> The testcase was failing in LTP July, 2009 release.
-> The warning- "implicit declaration of function 'getpgid", has been removed
->
-> Pls verify the patch.
->
-> Regards--
-> Rohit Verma
->
->
->
-> On Thu, Jul 30, 2009 at 11:59 PM, Subrata
-> Modak<subrata@linux.vnet.ibm.com> wrote:
-> > Fixed this now.
+On Thursday 27 August 2009 07:12:01 Geert Uytterhoeven wrote:
+> On Thu, 27 Aug 2009, Mike Frysinger wrote:
+> > On Thursday 27 August 2009 05:49:49 Geert Uytterhoeven wrote:
+> > > Next question: Does Google Translator do bash =3D> expect? ;-)
 > >
-> > Regards--
-> > Subrata
-> >
-> > On Thu, 2009-07-23 at 14:00 +0530, rohit verma wrote:
-> >> Hi,
-> >>
-> >> I am running waitid02.c
-> >> (ltp-full-20090630/testcases/kernel/syscalls/waitid/ ) test case on
-> >> 2.6.29 kernel.
-> >> Test case gives following error:
-> >> "Error. is your system >2.6.9 ?";
-> >>
-> >> =A0Anybody facing the same issue?
-> >>
-> >> Code:
-> >>
-> >> TEST(waitid(P_ALL,0,&infop,WNOHANG));
-> >> =A0 =A0 =A0 =A0 if(TEST_RETURN =3D=3D 0)
-> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TPASS,"Success !");
-> >> =A0 =A0 =A0 =A0 else{
-> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 printf("value of return is %d\n",TEST_=
-RETURN);
-> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TFAIL,"Error. is your system =
->2.6.9 ?");
-> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0errnochoose();
-> >> =A0 =A0 =A0 =A0 }
-> >>
-> >>
-> >> Regards,
-> >> Rohit
-> >>
-> >> ----------------------------------------------------------------------=
---------
-> >> _______________________________________________
-> >> Ltp-list mailing list
-> >> Ltp-list@lists.sourceforge.net
-> >> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> >
-> >
+> > not sure what you mean ... program options are not translated
 >
->
->
+> The script that does the test is written in expect.
 
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+not sure whether you want to convert it all to expect (TCL) or you actually=
+=20
+meant "expect =3D> bash".  while converting POSIX shell to TCL is pretty ea=
+sy,=20
+going the other way is largely infeasible.  expect does the right thing wit=
+h=20
+ttys and sessions and such which are either a huge hack under POSIX shell o=
+r=20
+downright impossible.
 
-trial. Simplify your report design, integration and deployment - and focus =
-on =
+in either case, i'm not interested in converting anything as i dont use the=
+se=20
+tests ;)
+=2Dmike
 
-what you do best, core application coding. Discover what's new with =
+--nextPart5139974.N8YWJrkLK6
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJKlm/8AAoJEEFjO5/oN/WBi0kP/0ewwFyw/cElfk0AiPLpn6sB
+8OvpoxjAOa3HXq+u81gVp3e0tFkusuLJL1y8jmN8NNeDVCsd78WScEu0U4LH9oZo
+cBTyrcv+8BYx1WNordcBh0JqNdQSZLFpnCaHHz74b8p7/UZMqlMzVR239EYvBOA4
+XzUD1MTrxnJPE5cJ+2VkcmoWs+i/pUEgnvdBWS04hs4vb+rzripIAE0mcNLPEs0N
+k9S44SxuPTB5ezZYXfaawIYrHnPOC96yru/8wst4TMZ0df55CtqFu3y4ugkAQi0M
+/8OlEtaTn0WbnOh4XVi7GCNUVQFtNEx6AltDrbJdqW6yPGWF0ghZUzYiYt9ATxYN
+x4oVgYfAfJd+OCXCKGDppRo1X9GJApd2Leh1undNBrXP/nazbG1onL+UfPmgqXtZ
+KsycFJ8VJF6DJoNdGOVmHQtDw3TpCqe9Yklwu/SQvag2XynbImJFW4UyLk32peof
+fan6MUgvsphnivnF2wMwXBN6VV/fmbHeJ2yZBcn86v57MY6OaPK1+JPDXxnKjY+N
+02dvMXTJIlMrDmqx/jA12OiMsIat+iJBGEqGsVwjC0INMAnpJ//fE1Iwul6DonNt
+H4AboMnGzmnMBLgIB163l0xe+RN8aVit9+cBJW7MZtmMAaQlCdRRT2Lm5BwuXbit
+3VLEFfLknvmTjP1s4um0
+=W5JO
+-----END PGP SIGNATURE-----
+
+--nextPart5139974.N8YWJrkLK6--
+
+
+--===============0099634157009928461==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============0099634157009928461==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0099634157009928461==--
+
