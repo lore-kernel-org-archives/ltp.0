@@ -1,40 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MgyQP-0000f1-V5
-	for ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 10:11:17 +0000
-Received: from e9.ny.us.ibm.com ([32.97.182.139])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MgyQJ-00061J-TY
-	for ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 10:11:17 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e9.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7SA9WqC006471
-	for <ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 06:09:32 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7SAB6nf245910
-	for <ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 06:11:06 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7SAB5em005761
-	for <ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 06:11:06 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200908280514.03971.vapier@gentoo.org>
-References: <alpine.LRH.2.00.0908271703550.1134@vixen.sonytel.be>
-	<1251439738.9081.9.camel@subratamodak.linux.ibm.com>
-	<1251448700.9081.13.camel@subratamodak.linux.ibm.com>
-	<200908280514.03971.vapier@gentoo.org>
-Date: Fri, 28 Aug 2009 15:41:02 +0530
-Message-Id: <1251454262.9081.16.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP]
-	=?iso-8859-1?q?=5BPATCH=5D_Annotate_tst=5F*=28=29_helpers_w?=
-	=?iso-8859-1?q?ith=09=5F=5Fattribute=5F=5F_=28=28format_=28printf?=
-	=?iso-8859-1?q?=2C_M=2C_N=29=29=29_=28was=3A_Re=3A_=5BPATCH=5D_quo?=
-	=?iso-8859-1?q?tactl01=3A_Fix=09tst=5Fresm_=28=29_=09format__causi?=
-	=?iso-8859-1?q?ng=09crash_=29?=
-Reply-To: subrata@linux.vnet.ibm.com
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <shiwh@cn.fujitsu.com>) id 1MgSVp-0003Dw-Ko
+	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 00:06:45 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MgSVh-0000g7-JF
+	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 00:06:45 +0000
+Message-ID: <4A95CDEE.2040103@cn.fujitsu.com>
+Date: Thu, 27 Aug 2009 08:06:06 +0800
+From: Shi Weihua <shiwh@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <4A947C25.5090809@cn.fujitsu.com>
+	<20090826152844.GL8078@count0.beaverton.ibm.com>
+In-Reply-To: <20090826152844.GL8078@count0.beaverton.ibm.com>
+Subject: Re: [LTP] [PATCH] Add new testcases for cgroup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -47,59 +28,156 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>, ltp-list@lists.sourceforge.net
+To: Matt Helsley <matthltc@us.ibm.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-On Fri, 2009-08-28 at 05:14 -0400, Mike Frysinger wrote:
-> On Friday 28 August 2009 04:38:17 Subrata Modak wrote:
-> > On Fri, 2009-08-28 at 11:38 +0530, Subrata Modak wrote:
-> > > On Thu, 2009-08-27 at 17:29 +0200, Geert Uytterhoeven wrote:
-> > > > On Thu, 27 Aug 2009, Geert Uytterhoeven wrote:
-> > > > > When the quotactl syscall fails, quotactl01 crashes with a
-> > > > > segmentation fault due to an incorrect printf()-style format.
-> > > >
-> > > > This bug encouraged me to add annotations to the test helpers that take
-> > > > printf()-style formats, cfr. the patch below.
-> > > >
-> > > > It causes a massive amount of compiler warnings, most of them caused by
-> > > > TEST_ERRNO being long. According to CVS history, both TEST_RETURN and
-> > > > TEST_ERRNO have been changed from int to long to accomodate 64-bit
-> > > > platforms, but to me the change of TEST_ERRNO looks bogus.
-> > > > As errno is int according to C99, TEST_ERRNO should actually be int
-> > > > too, right?
-> > > >
-> > > > Note that there are also a few other cases where integers are used on
-> > > > pointer type format specifiers. These will cause crashes when the code
-> > > > path is executed.
-> > > >
-> > > > >From 601578f79c05779acefe023fd499726d9fe4ce03 Mon Sep 17 00:00:00 2001
-> > > >
-> > > > From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-> > > > Date: Thu, 27 Aug 2009 17:08:18 +0200
-> > > > Subject: [PATCH] Annotate tst_*() helpers with __attribute__ ((format
-> > > > (printf, M, N)))
-> > > >
-> > > > Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-> > >
-> > > Ok. Thanks.
-> >
-> > Sorry. I need to revert this as it generates a huge set of warning for
-> > all the tests compiled. It should not only get fixed at test.h, but also
-> > in all tests that uses the tst_* family of functions, which obviously is
-> > too big to fix.
+Matt Helsley wrote:
+> On Wed, Aug 26, 2009 at 08:04:53AM +0800, Shi Weihua wrote:
+>> We has created some testcases for cgroup in the last year. 
+>> There are total 194 testcases that have been added. These testcases contain 
+>> the basis operation test, part functionality test and stress test of cgroup.
+>>
+>> How to run this test:
+>> 	# runltp -f controllers
+>>
+>> Result:
+>> Now, we start the test for cgroup...
+>> cgroup_test_fj    1  TPASS  :  case1(function   1 1 1 1 1 2 3 2 1)    PASS
+>> cgroup_test_fj    1  TPASS  :  case2(function   1 2 1 1 1 2 3 2 1)    PASS
 > 
-> nothing is too big.  the proposed patch is a great idea and anything 
-> preventing it from being merged should be resolved so it can go back in.
+> <snip>
+> 
+>> cgroup_test_fj    1  TPASS  :  case93(function  12 1 1 8 1 2 3 2 1)    PASS
+> 
+> <snip>
+> 
+>> diff -urpN ltp-full-20090731.orig/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh ltp-full-20090731.cg/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh
+>> --- ltp-full-20090731.orig/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh	1969-12-31 19:00:00.000000000 -0500
+>> +++ ltp-full-20090731.cg/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh	2009-08-23 10:15:08.000000000 -0400
+>> @@ -0,0 +1,269 @@
+>> +#! /bin/sh
+>> +
+>> +################################################################################
+>> +##                                                                            ##
+>> +## Copyright (c) 2009 FUJITSU LIMITED                                         ##
+>> +##                                                                            ##
+>> +## This program is free software;  you can redistribute it and#or modify      ##
+>> +## it under the terms of the GNU General Public License as published by       ##
+>> +## the Free Software Foundation; either version 2 of the License, or          ##
+>> +## (at your option) any later version.                                        ##
+>> +##                                                                            ##
+>> +## This program is distributed in the hope that it will be useful, but        ##
+>> +## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+>> +## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+>> +## for more details.                                                          ##
+>> +##                                                                            ##
+>> +## You should have received a copy of the GNU General Public License          ##
+>> +## along with this program;  if not, write to the Free Software               ##
+>> +## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
+>> +##                                                                            ##
+>> +## Author: Shi Weihua <shiwh@cn.fujitsu.com>                                  ##
+>> +##                                                                            ##
+>> +################################################################################
+>> +
+>> +subsystem=$1
+>> +remount_use=$2
+>> +noprefix_use=$3	
+>> +release_agent_para=$4
+>> +subgroup_exist=$5
+>> +attach_operation=$6
+>> +remove_operation=$7
+>> +notify_on_release=$8
+>> +release_agent_echo=$9
+>> +
+>> +subsystem_str="";
+>> +remount_use_str="";
+>> +noprefix_use_str="";
+>> +release_agent_para_str="";
+>> +notify_on_release_str="";
+>> +release_agent_str="";
+>> +
+>> +expectted=1;
+>> +
+>> +# Create some processes and move them to cgroups
+>> +pid=0;
+>> +pid2=0;
+>> +
+>> +# not output debug info
+>> +no_debug=0
+>> +
+>> +usage()
+>> +{
+>> +	echo "usage of cgroup_fj_function.sh: "
+>> +	echo "  ./cgroup_fj_function.sh -subsystem -remount_use -noprefix_use -release_agent_para"
+>> +	echo "                          -subgroup_exist -attach_operation -remove_operation"
+>> +	echo "                          -notify_on_release -release_agent_echo"
+>> +	echo "    subsystem's usable number"
+>> +	echo "      1: debug"
+>> +	echo "      2: cpuset"
+>> +	echo "      3: ns"
+>> +	echo "      4: cpu"
+>> +	echo "      5: cpuacct"
+>> +	echo "      6: memory"
+>> +	echo "      7: all"
+>> +	echo "      8: (none)"
+>> +	echo "      9: debug,debug"
+>> +	echo "      10: (nonexistent subsystem), e.g. abc"
+>> +	echo "      11: freezer"
+>> +	echo "      11: devices"
+> 
+> Looks like this should be 12.
 
-Great Mike. I am already seeing you doing some changes to the headers in
-CVS. Can you also push this patch once you are done with all the
-changes. Please notify me once all are done. I plan to checkout a fresh
-one for the upcoming release ;-)
+Yes, here should be 12. Sorry for it.
+The following small patch fixed it.
 
-Regards--
-Subrata
+Signed-off-by: Shi Weihua <shiwh@cn.fujitsu.com>
+---
+diff -urpN ltp-full-20090731.orig/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh ltp-full-20090731/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh
+--- ltp-full-20090731.orig/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh	2009-08-27 04:09:41.000000000 -0400
++++ ltp-full-20090731/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh	2009-08-27 04:11:07.000000000 -0400
+@@ -66,7 +66,7 @@ usage()
+ 	echo "      9: debug,debug"
+ 	echo "      10: (nonexistent subsystem), e.g. abc"
+ 	echo "      11: freezer"
+-	echo "      11: devices"
++	echo "      12: devices"
+ 	echo "    remount_use's usable number"
+ 	echo "      1: do not use remount in "-o"'s parameter"
+ 	echo "      2: use it"
 
-> -mike
+
+> 
+> Why not just use the subsystem names both to iterate over and to print
+> out? Then it will be a little clearer what test has[n't] passed.
+> e.g.:
+> 
+> SUBSYSTEMS=( debug cpuset ns cpu cpuacct memory debug,debug freezer \
+> 		devices nonexistent none all )
+> 
+> Then when you're running the test cases or printing usage you could do:
+> 
+> for SUBSYS in "${SUBSYSTEMS[@]}" ; do
+> 	...
+> done
+> 
+> Sadly I didn't have a close enough look at all of the code to tell if
+> this is do-able. Is it? If you could similarly map the other numbers
+> it may be easier to read the output and the code.
+
+Thanks for your advice. Basically, I agree.
+But using strings to instead of number will need one or more weeks, I will 
+do this improvement work base on August Release.
+ 
+> 
+> Cheers,
+> 	-Matt Helsley
+> 
+> 
+> 
+
+-- 
+Shi Weihua
+79955-852
 
 
 ------------------------------------------------------------------------------
