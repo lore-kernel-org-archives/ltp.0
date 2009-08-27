@@ -1,33 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mf7V0-0008EQ-Ej
-	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 07:28:22 +0000
-Received: from e38.co.us.ibm.com ([32.97.110.159])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mf7Uw-0001kc-Kv
-	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 07:28:22 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7N7OVAG031031
-	for <ltp-list@lists.sourceforge.net>; Sun, 23 Aug 2009 01:24:31 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7N7SCuF160204
-	for <ltp-list@lists.sourceforge.net>; Sun, 23 Aug 2009 01:28:12 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7N7SCpK008343
-	for <ltp-list@lists.sourceforge.net>; Sun, 23 Aug 2009 01:28:12 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4A8C4246.4060607@canonical.com>
-References: <4A8C4246.4060607@canonical.com>
-Date: Sun, 23 Aug 2009 12:58:05 +0530
-Message-Id: <1251012486.16822.28.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] fix for file_test for systems without rpm installed
-Reply-To: subrata@linux.vnet.ibm.com
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MgkcT-0000cx-2C
+	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 19:26:49 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MgkcO-0002Rq-BU
+	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 19:26:49 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 27 Aug 2009 15:26:34 -0400
+References: <alpine.LRH.2.00.0908271705160.1189@vixen.sonytel.be>
+In-Reply-To: <alpine.LRH.2.00.0908271705160.1189@vixen.sonytel.be>
+MIME-Version: 1.0
+Message-Id: <200908271526.35613.vapier@gentoo.org>
+Subject: Re: [LTP] quotactl01: syscall(258, ...)???
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,41 +24,82 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8639449985161881033=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Paul Larson <paul.larson@canonical.com>
-Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
 
-On Wed, 2009-08-19 at 13:19 -0500, Paul Larson wrote: 
-> Here's the fixed version, forgot I needed to redo these...
-> 
-> If you run file_test.sh on a system without rpm installed, it should
-> return tconf instead of tfail.
-> 
-> Signed-off-by: Paul Larson <paul.larson@canonical.com>
+--===============8639449985161881033==
+Content-Type: multipart/signed; boundary="nextPart5499997.zAhvsBIZaS";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Thanks Paul.
+--nextPart5499997.zAhvsBIZaS
+Content-Type: Text/Plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 
-Regards--
-Subrata
+On Thursday 27 August 2009 11:07:55 Geert Uytterhoeven wrote:
+> testcases/kernel/syscalls/quotactl/quotactl01.c has:
+>
+> 	TEST(result =3D syscall(258, &newtid));     //call quotactl()
+>
+> From the number and the parameter, it looks like __NR_set_tid_address is
+> intended. But the comment suggests otherwise?
 
-> ---
-> 
-> ------------------------------------------------------------------------------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> trial. Simplify your report design, integration and deployment - and focus on 
-> what you do best, core application coding. Discover what's new with 
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
+quotactl() takes more arguments while set_tid_address() only takes a pointe=
+r. =20
+so i'd change it to __NR_set_tid_address and see if it still works on your =
+x86=20
+system.
+=2Dmike
 
+--nextPart5499997.zAhvsBIZaS
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJKlt3rAAoJEEFjO5/oN/WBXwYQALadCDUUDVejJGTeDN6wDRJP
+r+HF0plGp9jRw5R1vsEkkiZgtjAwGMlDzHoxKQHjfdQUi2rkC4Fbu3hQmSIpXNok
+uDVEo689yBIQ3K7Y84EZIM6G+v58BwLPFz/WEvFwji5l/GeVBBVI3YzzXsq4/ghH
+qhXJXbERCADwdJepYrqCpR4B5SCejqkPsyRta10fBA32M/Ifxtt8ciFbWAX2z6y4
+7WYHRrvz1uLkD9eJyzCxfHTeP+uU15AKvAmXaZRtGMeB4IOqNLIRkcxAaVFh6J87
+CnhfUwt3HiXb+xArd6SzWf2KDxRXKQ0VAyTNkcqIuCzHEEKyfPmK4Bsyt1ZSC6qP
+BRFj964HjBcW7v9EGOUX4dBmu6ErIob63eZRk8V8+r5dv2d/AI26ks3Axzta4yha
+6mg9ihaIwA1H1OYHuKL9EfPe10Dgxn0cHUbXrsEC2sdJC+81EPY5eQhV1B+gVfRV
+GA2yI2HCUkKxujB1t0+/apSU4DeTuieeScLWwcU/LmtLDS+vtIrrmMbsCE+nO9F7
+S34wOHf65S+M6UkzVGk1HFB63YrA8Pq3HzzojfAk+bXdW25gqXcDTvLv7VN9To5G
+9U4kdkxMjOpdznLAc+uBy9Orm+xDaz7OscRl84KAo8fsT5x23qMUI0SGOxE6yTNz
+7cuM3woxNb/2tAwQqdWP
+=Nnn0
+-----END PGP SIGNATURE-----
+
+--nextPart5499997.zAhvsBIZaS--
+
+
+--===============8639449985161881033==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============8639449985161881033==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============8639449985161881033==--
+
