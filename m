@@ -1,26 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <michal.simek@petalogix.com>) id 1MYLzm-0006FJ-MT
-	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 15:32:10 +0000
-Received: from mail-fx0-f211.google.com ([209.85.220.211])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MYLzg-0005Ul-HF
-	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 15:32:10 +0000
-Received: by fxm7 with SMTP id 7so3367533fxm.10
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 04 Aug 2009 08:31:57 -0700 (PDT)
-Message-ID: <4A785468.6020803@petalogix.com>
-Date: Tue, 04 Aug 2009 17:31:52 +0200
-From: Michal Simek <michal.simek@petalogix.com>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MggaJ-0007Rv-27
+	for Ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 15:08:19 +0000
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=pophost.sonytel.be) by 72vjzd1.ch3.sourceforge.com with esmtp 
+	(Exim 4.69) id 1Mgga7-0008S4-Vf
+	for Ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 15:08:13 +0000
+Received: from vixen.sonytel.be (piraat.sonytel.be [43.221.60.197])
+	by pophost.sonytel.be (Postfix) with ESMTP id 3784544483
+	for <Ltp-list@lists.sourceforge.net>;
+	Thu, 27 Aug 2009 17:07:55 +0200 (CEST)
+Date: Thu, 27 Aug 2009 17:07:55 +0200 (CEST)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Message-ID: <alpine.LRH.2.00.0908271705160.1189@vixen.sonytel.be>
 MIME-Version: 1.0
-References: <4A76D6DD.4020401@petalogix.com>	
-	<20090803151449.GA29794@us.ibm.com>
-	<1249387690.15587.34.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1249387690.15587.34.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] clone01 -c 10 on x86
-Reply-To: michal.simek@petalogix.com
+Subject: [LTP] quotactl01: syscall(258, ...)???
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,117 +26,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: Linux Test Project <Ltp-list@lists.sourceforge.net>
 
-Subrata Modak wrote:
-> On Mon, 2009-08-03 at 10:14 -0500, Serge E. Hallyn wrote: 
->   
->> Quoting Michal Simek (michal.simek@petalogix.com):
->>     
->>> Hi All,
->>>
->>> can you please to run clone01 syscall test on any x86 machine? I am
->>> getting fault there when I run it 10 times for example.
->>> The same problem I have on Microblaze.
->>>
->>>  ./clone01  -c 10
->>> clone01     1  TPASS  :  clone() returned 22738
->>> clone01     1  TPASS  :  clone() returned 22740
->>> clone01     1  TPASS  :  clone() returned 22742
->>> clone01     1  TPASS  :  clone() returned 22748
->>> clone01     1  TPASS  :  clone() returned 22750
->>> clone01     1  TPASS  :  clone() returned 22752
->>> clone01     1  TPASS  :  clone() returned 22754
->>> clone01     1  TFAIL  :  clone() returned 134919589, errno = 22755
->>> [monstr@monstr clone]$ clone01     1  TPASS  :  clone() returned 22744
->>> clone01     1  TPASS  :  clone() returned 22746
->>>
->>> Thanks,
->>> Michal
->>>       
->> All right I don't have the patiente to wade through the parse_opts
->> and usc_lib crap, but this is not a clone failure.  What appears to
->> be happening is setup() at the top of clone01.c is calling
->> lib/parse_opts.c:usc_global_setup_hook(), with STD_COPIES set to the
->> count option you passed in.  That forks of 10 copies of the test.
->> I don't know what happens with the actual loop then, but the reason
->> you get the error for the last clone test is that one of those
->> forked copies of clone01 (*not* one of the cloned children) exits,
->> and wait() catches that one.  That is why wait() returned 22744,
->> which isn't any of the cloned children.
->>
->> So one stupid way of fixing this without dealing with the convoluted
->> setup junk would be to change the waitpid chunk of the code like so:
->>     
->
-> Yes, it fixes the issue.
->   
-Yes, but as Serge wrote above his patch just cover different fault not
-solve it.
+testcases/kernel/syscalls/quotactl/quotactl01.c has:
 
-Regards,
-Michal
-> Regards--
-> Subrata
->
->   
->> --- /usr/src/ltp-intermediate-20090721/testcases/kernel/syscalls/clone/clone01.c	2009-03-23 09:35:39.000000000 -0400
->> +++ /usr/src/ltp-intermediate-20090721.patched/testcases/kernel/syscalls/clone/clone01.c	2009-08-03 11:11:25.000000000 -0400
->> @@ -130,6 +132,7 @@ int main(int ac, char **av)
->>  		     (do_child, child_stack + CHILD_STACK_SIZE, SIGCHLD, NULL));
->>  #endif
->>
->> +again:
->>  		if ((child_pid = wait(&status)) == -1) {
->>  			tst_brkm(TBROK, cleanup, "wait() failed; error no ="
->>  				 " %d, %s", errno, strerror(errno));
->> @@ -138,11 +141,11 @@ int main(int ac, char **av)
->>  		/* check return code */
->>  		if (TEST_RETURN == child_pid) {
->>  			tst_resm(TPASS, "clone() returned %d", TEST_RETURN);
->> -		} else {
->> -			tst_resm(TFAIL, "clone() returned %d, errno = %d ",
->> -				 "wait() returned %d", TEST_RETURN, TEST_ERRNO,
->> +		} else if (TEST_RETURN == -1) {
->> +			tst_resm(TFAIL, "clone() returned %d, errno = %d wait() returned %d\n", TEST_RETURN, TEST_ERRNO,
->>  				 child_pid);
->> -		}
->> +		} else
->> +			goto again;
->>
->>  	}			/* End for TEST_LOOPING */
->>
->>
->> -serge
->>
->> ------------------------------------------------------------------------------
->> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
->> trial. Simplify your report design, integration and deployment - and focus on 
->> what you do best, core application coding. Discover what's new with 
->> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>     
->
->   
+	TEST(result =3D syscall(258, &newtid));     //call quotactl()
 
+From the number and the parameter, it looks like __NR_set_tid_address is
+intended. But the comment suggests otherwise?
 
--- 
-Michal Simek, Ing. (M.Eng)
-PetaLogix - Linux Solutions for a Reconfigurable World
-w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+With kind regards,
 
+Geert Uytterhoeven
+Software Architect
+Techsoft Centre
 
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
+Technology and Software Centre Europe
+The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Belgium
+
+Phone:    +32 (0)2 700 8453
+Fax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 =B7 RPR Brussels
+Fortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
+
+---------------------------------------------------------------------------=
+---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+
+trial. Simplify your report design, integration and deployment - and focus =
+on =
+
+what you do best, core application coding. Discover what's new with =
+
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
