@@ -1,25 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
-	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MZ6i0-00011n-MJ
-	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 17:24:56 +0000
-Received: from qw-out-1920.google.com ([74.125.92.149])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MZ6hu-00030H-IT
-	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2009 17:24:56 +0000
-Received: by qw-out-1920.google.com with SMTP id 5so379544qwc.4
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 06 Aug 2009 10:24:45 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <3E7F2B7B-6BA8-4179-B973-5DA7F4D7618A@kernel.crashing.org>
-References: <E69DB27D-E186-4934-AB69-C5EDB67A48AF@kernel.crashing.org>
-	<1249494775.13131.18.camel@lucio-laptop>
-	<3E7F2B7B-6BA8-4179-B973-5DA7F4D7618A@kernel.crashing.org>
-Date: Thu, 6 Aug 2009 10:24:45 -0700
-Message-ID: <364299f40908061024l42cd1200n99e6e762a77c91d2@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] top of tree fails to build on PPC fc11 box
+From: Ric White <richard.white@hp.com>
+In-Reply-To: <364299f40908251716w38d8570esa60e08eaa6b7064d@mail.gmail.com>
+References: <364299f40908191611x4accc24yc36b344956c7a40c@mail.gmail.com>
+	<1251162918.4388.33.camel@OSLORic>
+	<41008.95.24.171.156.1251178978.squirrel@mail.pigeonpoint.com>
+	<1251213123.7108.8.camel@orthanc> <op.uy74unolo8angs@localhost>
+	<1251222135.7108.16.camel@orthanc>
+	<364299f40908251716w38d8570esa60e08eaa6b7064d@mail.gmail.com>
+Content-Type: multipart/mixed; boundary="=-LzaxikfTICOpcNsCsWhZ"
+Date: Wed, 26 Aug 2009 18:51:56 -0600
+Message-Id: <1251334316.4388.64.camel@OSLORic>
+Mime-Version: 1.0
+Subject: Re: [LTP] [Openhpi-devel]   [PATCH] Cross-compile configure bug
+Reply-To: richard.white@hp.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,83 +22,245 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kumar Gala <galak@kernel.crashing.org>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: "openhpi-devel@lists.sourceforge.net" <openhpi-devel@lists.sourceforge.net>, Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>, "Khan,  Shuah" <shuah.khan@hp.com>
 
-On Thu, Aug 6, 2009 at 9:07 AM, Kumar Gala<galak@kernel.crashing.org> wrote:
->
-> On Aug 5, 2009, at 12:52 PM, Lucio Correia wrote:
->
->> Hi Kumar,
->>
->> On Wed, 2009-07-29 at 13:33 -0500, Kumar Gala wrote:
->>> I get the following compile error:
->>>
->>> make[4]: Leaving directory `/root/ltp/testcases/kernel/syscalls/
->>> fstat'
->>> make[4]: Entering directory `/root/ltp/testcases/kernel/syscalls/
->>> fstatat'
->>> cc -Wall =A0-I../../include -g -Wall -I../../../../include -Wall -
->>> DTST_USE_NEWER64_SYSCALL=3D1 -D_FILE_OFFSET_BITS=3D64 =A0 -c -o
->>> fstatat01_64.o fstatat01.c
->>> fstatat01.c:95:37: error: missing binary operator before token "5"
->>> fstatat01.c: In function 'main':
->>> fstatat01.c:126: error: expected ')' before numeric constant
->>> make[4]: *** [fstatat01_64.o] Error 1
->>> make[4]: Leaving directory `/root/ltp/testcases/kernel/syscalls/
->>> fstatat'
->>> make[3]: *** [all] Error 2
->>> make[3]: Leaving directory `/root/ltp/testcases/kernel/syscalls'
->>> make[2]: *** [all] Error 2
->>> make[2]: Leaving directory `/root/ltp/testcases/kernel'
->>> make[1]: *** [all] Error 2
->>> make[1]: Leaving directory `/root/ltp/testcases'
->>> make: *** [all] Error 2
->>
->> This failure is being caused because .in files in kernel/includes are
->> wrong. The prefixes for the names (__NR_) and the plus signs were
->> removed. I've noticed it in .in files for several architectures in the
->> latest LTP release (July 2009).
->>
->>
->>
->> This patch fixes bad updates to syscalls declarations for powerpc,
->> that
->> are causing build failures. This should be fixed for other archs
->> accordingly.
->>
->> Signed-off-by Lucio Correia <luciojhc@br.ibm.com>
->> <july2009-ppc-build-fix.patch>
->
-> thanks. =A0This still doesn't address the fact that I can't even
-> configure ltp on fedora 10 or 11.
->
-> see for more details:
->
-> http://sourceforge.net/mailarchive/forum.php?thread_name=3D5D25ED72-13B4-=
-4ED7-959C-4974F4DF2FCA%40kernel.crashing.org&forum_name=3Dltp-list
 
-    Ok. I have the time now so I'll install F11 amd64 and see what
-happens. Something leads me to think that the build toolchain is
-fubared, but that's just a hunch, as my copy of F10 (the last time I
-ran the build) worked.
-Thanks,
--Garrett
+--=-LzaxikfTICOpcNsCsWhZ
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+I really like Shuah's idea for a configuration parameter to allow this.
 
-trial. Simplify your report design, integration and deployment - and focus =
-on =
+Garrett, could you try the attached patch and let us know if it works
+for you? If you call configure with a --enable-non32bit-int parameter
+now, a warning message will be generated and the build will be allowed
+on targets where ints are not 32 bits.
 
-what you do best, core application coding. Discover what's new with =
+Best Regards,
+Ric
 
+
+
+On Wed, 2009-08-26 at 00:16 +0000, Garrett Cooper wrote:
+> On Tue, Aug 25, 2009 at 10:42 AM, Shuah Khan<shuah.khan@hp.com> wrote:
+> > On Tue, 2009-08-25 at 15:19 +0000, Anton Pak wrote:
+> >> I tried many times OpenHPI on x86_64.
+> >> It worked fine in the configurations x86 client - x86_64 daemon and x86_64
+> >> client - x86 daemon.
+> >> However, the functioning on non-x86 64-bit platform or on Itanium is still
+> >> an open question for me.
+> >>
+> >>       Anton Pak
+> >
+> > Instead of changing the error to a warning, itcould be controlled via a
+> > config option, so this error could be ignored on certain architectures
+> > using this config tune.
+> >
+> > -- Shuah
+> >>
+> >> On Tue, 25 Aug 2009 19:12:03 +0400, Shuah Khan <shuah.khan@hp.com> wrote:
+> >>
+> >> > On Tue, 2009-08-25 at 05:42 +0000, anton.pak@pigeonpoint.com wrote:
+> >> >> Hello!
+> >> >>
+> >> >> We have the following lines in include/SaHpi.h:
+> >> >>
+> >> >> typedef unsigned char     SaHpiUint8T;
+> >> >> typedef unsigned short    SaHpiUint16T;
+> >> >> typedef unsigned int      SaHpiUint32T;
+> >> >> typedef signed char       SaHpiInt8T;
+> >> >> typedef signed short      SaHpiInt16T;
+> >> >> typedef signed int        SaHpiInt32T;
+> >> >>
+> >> >> Also I suspect there can be marshalling issues, i.e. when
+> >> >> daemon on platform with sizeof(int) == 4 but library is not and vice
+> >> >> versa.
+> >> >>
+> >> >>    Anton Pak
+> >> >
+> >> > The proposed fix might help compile OpenHpi on a 64-bit platform,
+> >> > however I agree with the concerns from others that we will see run-time
+> >> > issues. Running 32-bit binary and libraries on a 64-bit platform might
+> >> > be an option.
+> >> >
+> >> > -- Shuah
+> >> >
+> >> >
+> >> >>
+> >> >>
+> >> >> > Hi Garrett,
+> >> >> >
+> >> >> > I was wondering about your addition of the cross_compiling test. If
+> >> >> > there is OpenHPI code that may behave badly on a system where an int
+> >> >> > isn't 4 bytes, I'm thinking that a warning should be issued even for a
+> >> >> > cross compile to such an architecture as well. Like:
+> >> >> >
+> >> >> > if test "x$OH_SIZEOF_INT" != "x4"; then
+> >> >> >     AC_MSG_WARN([
+> >> >> > *** int is not 4 bytes, it is $OH_SIZEOF_INT bytes on this platform
+> >> >> > *** undefined behavior may result from this.
+> >> >> > ])
+> >> >> > fi
+> >> >> >
+> >> >> > Will having a warning instead of an error cause problems for LTP when
+> >> >> > cross compiling?
+> >> >> >
+> >> >> > Does anyone else in the OpenHPI community oppose changing this error
+> >> >> to
+> >> >> > a warning?
+> >> >> >
+> >> >> > Best Regards,
+> >> >> > Ric White
+> >> >> >
+> >> >> >
+> >> >> > On Wed, 2009-08-19 at 23:11 +0000, Garrett Cooper wrote:
+> >> >> >> Hi,
+> >> >> >>     Found this bug while trying to cross-compile with the
+> >> >> >> openhpi-test-suite in LTP, and made the ERROR into WARN. Please fix
+> >> >> >> this item as per the attached patch.
+> >> >> >> Thanks,
+> >> >> >> -Garrett
+> >> >> >>
+> >> >> >> PS Please CC my address in all correspondence w.r.t. this email
+> >> >> thread.
+> >> >> >>
+> >> >> >> Summary:
+> >> >> >>
+> >> >> >> 1. int != 4 shouldn't be checked for while cross-compiling.
+> >> >> >> 2. Warn instead of erroring out, because we have a _lot_ of 64-bit
+> >> >> >> platforms that we test on which will be negatively impacted by this
+> >> >> >> check.
+> >> >> >>
+> >> >> >> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+> >> >> >>
+> >> >> >> ---
+> >> >> >>
+> >> >> /nfs.mac/ltp-upgrade/contrib/ltp/src/testcases/open_hpi_testsuite//configure.ac.orig       2009-08-19
+> >> >> >> 16:04:08.000000000 -0700
+> >> >> >> +++
+> >> >> >>
+> >> >> /nfs.mac/ltp-upgrade/contrib/ltp/src/testcases/open_hpi_testsuite//configure.ac    2009-08-19
+> >> >> >> 16:10:47.000000000 -0700
+> >> >> >> @@ -44,14 +44,13 @@
+> >> >> >>  AC_PROG_LN_S
+> >> >> >>  AC_PROG_MAKE_SET
+> >> >> >>
+> >> >> >> -dnl die on int != 32bits.  This is too instrumental to our code
+> >> >> right
+> >> >> >> now.
+> >> >> >> +dnl Warn when int != 32bits.  This is too instrumental to our code
+> >> >> >> right now.
+> >> >> >>  dnl AC_MSG_CHECKING(int is 4 bytes)
+> >> >> >>  OH_SET_SIZES
+> >> >> >> -if test "x$OH_SIZEOF_INT" != "x4"; then
+> >> >> >> -    AC_MSG_ERROR([
+> >> >> >> +if test x$cross_compiling != xyes && test "x$OH_SIZEOF_INT" != "x4";
+> >> >> >> then
+> >> >> >> +    AC_MSG_WARN([
+> >> >> >>  *** int is not 4 bytes, it is $OH_SIZEOF_INT bytes on this platform
+> >> >> >> -*** undefined behavior will result
+> >> >> >> -*** please contact the openhpi development team to fix this
+> >> >> >> +*** undefined behavior may result from this.
+> >> >> >>  ])
+> >> >> >>  fi
+> 
+> Shuah,
+>     Whichever way you find necessary is fine as long as it doesn't
+> break builds and there are sufficient warnings at both buildtime and
+> at runtime that say `Hey -- this code might not work because of
+> integer sizing issues!' so you guys can cover yourself from FAQ-like
+> questions as much as possible :).
+> Thanks,
+> -Garrett
+> 
+> ------------------------------------------------------------------------------
+> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+> trial. Simplify your report design, integration and deployment - and focus on 
+> what you do best, core application coding. Discover what's new with 
+> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> _______________________________________________
+> Openhpi-devel mailing list
+> Openhpi-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/openhpi-devel
+
+--=-LzaxikfTICOpcNsCsWhZ
+Content-Disposition: attachment; filename="non32_enable.patch"
+Content-Type: text/x-patch; name="non32_enable.patch"; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+--- configure.ac	2009-08-26 18:34:15.000000000 -0600
++++ configure.ac.non32	2009-08-26 18:33:06.000000000 -0600
+@@ -44,15 +44,32 @@
+ AC_PROG_LN_S
+ AC_PROG_MAKE_SET
+ 
++enabled_non32bit="no"
++AC_ARG_ENABLE([non32bit-int],
++    [  --enable-non32bit-int   Allow compile on non 32bit int architectures [[default=no]]],
++    [if test "x$enableval" = "xyes"; then
++        enabled_non32bit="yes"
++    fi])
++
+ dnl die on int != 32bits.  This is too instrumental to our code right now.
+ dnl AC_MSG_CHECKING(int is 4 bytes)
+ OH_SET_SIZES
+ if test "x$OH_SIZEOF_INT" != "x4"; then
+-    AC_MSG_ERROR([
+-*** int is not 4 bytes, it is $OH_SIZEOF_INT bytes on this platform
+-*** undefined behavior will result
+-*** please contact the openhpi development team to fix this
+-])
++    if test "x$enabled_non32bit" = "xyes"; then
++        AC_MSG_WARN([
++*** Size of int is not 4 bytes, it is $OH_SIZEOF_INT bytes on this platform.
++*** The --enable_non32bit_int arg has been used to force compilation regardless.
++*** Execution on this platform is not supported and could produce undefined
++*** behavior.
++        ])
++    else
++        AC_MSG_ERROR([
++*** Size of int is not 4 bytes, it is $OH_SIZEOF_INT bytes on this platform.
++*** Execution on this platform is not supported and could produce undefined
++*** behavior.
++*** Please contact the openhpi development team to fix this
++        ])
++    fi
+ fi
+ 
+ AM_CONDITIONAL(CROSS_COMPILATION, test x$cross_compiling = xyes)
+@@ -164,7 +181,6 @@
+ 
+ AM_CONDITIONAL(OPENHPID_STATIC, test x$openhpid_static = xyes)
+ 
+-
+ AC_ARG_ENABLE([clients],
+     [  --enable-clients        build HPI client programs [[default=yes]]],
+     [if test "x$enableval" = "xyes"; then
+
+--=-LzaxikfTICOpcNsCsWhZ
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--=-LzaxikfTICOpcNsCsWhZ
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--=-LzaxikfTICOpcNsCsWhZ--
+
+
