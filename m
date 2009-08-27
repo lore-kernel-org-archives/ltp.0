@@ -1,30 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <andi.kleen@intel.com>) id 1Mevu0-0005Nq-I6
-	for ltp-list@lists.sourceforge.net; Sat, 22 Aug 2009 19:05:24 +0000
-Received: from mga11.intel.com ([192.55.52.93])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mevtt-0005Ri-Dv
-	for ltp-list@lists.sourceforge.net; Sat, 22 Aug 2009 19:05:24 +0000
-From: "Kleen, Andi" <andi.kleen@intel.com>
-Date: Sat, 22 Aug 2009 20:05:08 +0100
-Message-ID: <2E9E6F5F5978EF44A8590E339E888CF90143075853@irsmsx503.ger.corp.intel.com>
-References: <20090805105529.23399.60242.sendpatchset@subratamodak.linux.ibm.com>
-	<1249494939.3623.12.camel@subratamodak.linux.ibm.com>
-	<1249521485.24238.308.camel@yhuang-dev.sh.intel.com>
-	<1249648896.4851.40.camel@subratamodak.linux.ibm.com>
-	<1249888606.5337.158.camel@yhuang-dev.sh.intel.com>
-	<2E9E6F5F5978EF44A8590E339E888CF901425402ED@irsmsx503.ger.corp.intel.com>
-	<1249975494.5337.168.camel@yhuang-dev.sh.intel.com>
-	<1250076050.5373.20.camel@subratamodak.linux.ibm.com>
-	<1250670949.5337.492.camel@yhuang-dev.sh.intel.com>
-	<1250963183.10642.31.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1250963183.10642.31.camel@subratamodak.linux.ibm.com>
-Content-Language: en-US
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MgkYv-00051w-CM
+	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 19:23:09 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MgkYq-0001lc-IE
+	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 19:23:09 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 27 Aug 2009 15:22:54 -0400
+References: <alpine.LRH.2.00.0908271703550.1134@vixen.sonytel.be>
+In-Reply-To: <alpine.LRH.2.00.0908271703550.1134@vixen.sonytel.be>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] Integration of MCE test suite into LTP
+Message-Id: <200908271522.55732.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] quotactl01: Fix tst_resm() format causing crash
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,34 +24,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2604447283662243082=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "subrata@linux.vnet.ibm.com" <subrata@linux.vnet.ibm.com>, "Huang, Ying" <ying.huang@intel.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: ltp-list@lists.sourceforge.net
+Cc: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
 
- 
->Thanks Huang and Andi. This has now been integrated to LTP. We 
->will keep
->testing them as new kernel releases are available. Please keep 
->this test
->suite updated as you push respective patches in the kernel.
+--===============2604447283662243082==
+Content-Type: multipart/signed; boundary="nextPart1673283.dKSsKlcvxA";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Thanks for merging.
+--nextPart1673283.dKSsKlcvxA
+Content-Type: Text/Plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 7bit
 
-FYI -- there's already one change. The value of the MADV_POISON
-injection interface has changed in linux-next (12->100). That's fixed
-in the git tree now.
+On Thursday 27 August 2009 11:04:40 Geert Uytterhoeven wrote:
+> -                 	   	tst_resm(TFAIL, "%s failed - errno = %d : %s
+> ...cmderror=%s", TCID, TEST_ERRNO, strerror(TEST_ERRNO),cmd[i]);
+> +				tst_resm(TFAIL, "%s failed - errno = %d : %s ...cmd=0x%x", TCID,
+> TEST_ERRNO, strerror(TEST_ERRNO), cmd[i]);
 
--Andi
+please use the new TTERRNO flag: tst_resm(TFAIL|TTERRNO, ....)
+-mike
 
+--nextPart1673283.dKSsKlcvxA
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJKlt0PAAoJEEFjO5/oN/WBII4QAI/i+SAwqVJt5Oxjken0d5iY
+QQ4WtByFS271lRwJtX6mOiF6+MHiXnYmFDD4VS9h/LrCWxonkUKtC5U/8cDQjc2w
+l6qbulu7SYh1Cg9TbzZooALtLSuD60/Q1CueHviDe5aFu20LFoDW1AhZABnDeKbB
+3IRRvePxOtCPE23Im1NzZ9aY2wVMMEQ+at8noOm1QWOGfMx8AAdmW70qNotjKTPq
+2qh/zfc40CWqKDcN/lFEdNWDWxf1yf0awXWhaeStygUM6nmNFsBgdcpoRQFWjjSU
+vR3vRcqSQ2kEMKE17GN7krAjvPWf22xkc0OYBL4iNtw+Tiom/1UhDY9dchQk8yBX
+mPrnRkr+e+mcSC2Og/bMJI9/17VGgiYvvCdBpa0Gtu4gewLz9ZfGSMXcNc5O/dIS
+JpRSCZMmRHSg293LTMrndqckdp4isUVD4eK1wdsiaiEsVAoiWSblWtmnTGjNSOIH
+HsdbVnddh1sX9ZLwFdGEIA9PPS9ZQnJMongz8MdXHrC55rju3RXorlOzpaDYTGkW
+hupnfHZpk01IfYmhrlWwgx0Ig1ESpIDbUvzL0uQIG4YDVvFH5AS5X525iIQqFPqu
+88YSYXH9Wesr1MXaTDimMOZcEI6KR68SwMh91XPOBV/RjF4VdXRIE1NiuaPUEXG9
+f+QOs/4nSxxs6jrqEurV
+=kUzn
+-----END PGP SIGNATURE-----
+
+--nextPart1673283.dKSsKlcvxA--
+
+
+--===============2604447283662243082==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============2604447283662243082==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2604447283662243082==--
+
