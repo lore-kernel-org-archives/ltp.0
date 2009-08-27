@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <michal.simek@petalogix.com>) id 1MXxLm-0003aT-FM
-	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 13:13:14 +0000
-Received: from mail-gx0-f209.google.com ([209.85.217.209])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MXxLh-0004cA-QQ
-	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2009 13:13:14 +0000
-Message-ID: <4A76C828.4060008@petalogix.com>
-Date: Mon, 03 Aug 2009 13:21:12 +0200
-From: Michal Simek <michal.simek@petalogix.com>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MgeGf-0000fD-UR
+	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 12:39:53 +0000
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=pophost.sonytel.be) by 72vjzd1.ch3.sourceforge.com with esmtp 
+	(Exim 4.69) id 1MgeGb-00045y-9r
+	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 12:39:53 +0000
+Date: Thu, 27 Aug 2009 14:19:49 +0200 (CEST)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+In-Reply-To: <200908130304.49839.vapier@gentoo.org>
+Message-ID: <alpine.LRH.2.00.0908271416250.22490@vixen.sonytel.be>
+References: <4A8330A1.20001@canonical.com>
+	<200908130304.49839.vapier@gentoo.org>
 MIME-Version: 1.0
-References: <1248978649.5788.74.camel@subratamodak.linux.ibm.com>	
-	<4A72A052.7070607@petalogix.com>
-	<1249298412.7460.26.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1249298412.7460.26.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] [REMINDER] Did i miss any patch ?
-Reply-To: michal.simek@petalogix.com
+Subject: Re: [LTP] fix mail_tests for systems without mail installed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,76 +25,55 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Mike Frysinger <vapier@gentoo.org>, Paul Larson <paul.larson@canonical.com>
+Cc: Linux Test Project <ltp-list@lists.sourceforge.net>
 
-Subrata Modak wrote:
-> On Fri, 2009-07-31 at 09:42 +0200, Michal Simek wrote: 
->   
->> Hi Subrata,
->>
->> please add Matt's patch for fcntl24,25,26
->>     
->
-> Sorry,
->
-> By the time i received this mail, i had already initiated the download.
-> But, i had included this now and will be available in the intermediate
-> release.
->   
-No worries about.
-
-Cheers,
-Michal
-> Regards--
-> Subrata
->
->   
->> Thanks,
->> Michal
->>     
->>> Hi,
->>>
->>> Most of the patches were taken care of Garrett. I applied the remaining
->>> today. If you feel that we missed out some important stuffs, please
->>> point us before i start the release process tomorrow.
->>>
->>> Regards--
->>> Subrata
->>>
->>>
->>>
->>> ------------------------------------------------------------------------------
->>> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
->>> trial. Simplify your report design, integration and deployment - and focus on 
->>> what you do best, core application coding. Discover what's new with 
->>> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
->>> _______________________________________________
->>> Ltp-list mailing list
->>> Ltp-list@lists.sourceforge.net
->>> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>>   
->>>       
->>     
->
->   
-
-
--- 
-Michal Simek, Ing. (M.Eng)
-PetaLogix - Linux Solutions for a Reconfigurable World
-w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
-
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gVGh1LCAxMyBBdWcgMjAwOSwgTWlrZSBGcnlzaW5nZXIgd3JvdGU6Cj4gT24gV2VkbmVzZGF5
+IDEyIEF1Z3VzdCAyMDA5IDE3OjE0OjA5IFBhdWwgTGFyc29uIHdyb3RlOgo+ID4gK2B3aGljaCBt
+YWlsYAo+ID4gK2lmIFsgJD8gIT0gMCBdOyB0aGVuCj4gCj4gdGhpcyByZXN1bHRzIGluIHByZXR0
+eSB1Z2x5IG91dHB1dCwgYW5kIHRoZSByZXR1cm4gdmFsdWUvb3V0cHV0IG9mIGB3aGljaGAgaXMg
+Cj4gbm90IHBvcnRhYmxlLiAgdXNlIHRoZSB0eXBlIGJ1aWx0aW4gaW5zdGVhZC4KPiAKPiA+ICsg
+ICAgTUFJTF9OT1RfSU5TVEFMTEVEPTEKPiAKPiB5b3Ugc2hvdWxkIG1ha2Ugc3VyZSB0aGlzIGlz
+IGFsd2F5cyBzZXQvdW5zZXQgYXQgdGhlIHRvcCBvZiB0aGUgc2NyaXB0IHNvIAo+IHBhcmVudCBl
+bnZpcm9ubWVudCBwb2lzb25pbmcgd29udCBzY3JldyB0aGluZ3MgdXAuCj4gCj4gPiAraWYgWyAt
+eiAkTUFJTF9OT1RfSU5TVEFMTEVEIF07IHRoZW4KPiAKPiB0ZXN0cyBtdXN0IGFsd2F5cyBiZSBx
+dW90ZWQ6Cj4gWyAteiAiJGZvbyIgXQoKV29yc2UsIGFzICRNQUlMX05PVF9JTlNUQUxMRUQgaXMg
+YWx3YXlzICIwIiBvciAiMSIsIC16IGFsd2F5cyByZXR1cm4gZmFsc2UuLi4KCkZyb20gODAzNTA5
+MWM0MjMyZThkNmM3YjNhNzVkNjEyYmM4MmMxYWQ4NDM2NSBNb24gU2VwIDE3IDAwOjAwOjAwIDIw
+MDEKRnJvbTogR2VlcnQgVXl0dGVyaG9ldmVuIDxHZWVydC5VeXR0ZXJob2V2ZW5Ac29ueWNvbS5j
+b20+CkRhdGU6IFRodSwgMjcgQXVnIDIwMDkgMTQ6MTE6NTggKzAyMDAKU3ViamVjdDogW1BBVENI
+XSBGaXggbWFpbF90ZXN0cyBmb3Igc3lzdGVtcyB3aXRoIG1haWwgaW5zdGFsbGVkCgpgLXonIHRl
+c3RzIGZvciBhIHN0cmluZyBsZW5ndGggb2YgemVybywgbm90IGZvciBhIHplcm8gdmFsdWUsIGNh
+dXNpbmcgdGhlCnRlc3QgYWx3YXlzIHRvIHJldHVybiBmYWxzZS4KSW5pdGlhbGl6ZSAkTUFJTF9O
+T1RfSU5TVEFMTEVEIHRvIGFuIGVtcHR5IHN0cmluZyBpbnN0ZWFkIG9mIGEgbnVtZXJpY2FsCnpl
+cm8gdG8gZml4IHRoaXMuCgpTaWduZWQtb2ZmLWJ5OiBHZWVydCBVeXR0ZXJob2V2ZW4gPEdlZXJ0
+LlV5dHRlcmhvZXZlbkBzb255Y29tLmNvbT4KLS0tCiB0ZXN0Y2FzZXMvY29tbWFuZHMvbWFpbC9t
+YWlsX3Rlc3RzLnNoIHwgICAgMiArLQogMSBmaWxlcyBjaGFuZ2VkLCAxIGluc2VydGlvbnMoKyks
+IDEgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2NvbW1hbmRzL21haWwvbWFp
+bF90ZXN0cy5zaCBiL3Rlc3RjYXNlcy9jb21tYW5kcy9tYWlsL21haWxfdGVzdHMuc2gKaW5kZXgg
+MDk1OWEwYy4uNDViYWM5MyAxMDA3NTUKLS0tIGEvdGVzdGNhc2VzL2NvbW1hbmRzL21haWwvbWFp
+bF90ZXN0cy5zaAorKysgYi90ZXN0Y2FzZXMvY29tbWFuZHMvbWFpbC9tYWlsX3Rlc3RzLnNoCkBA
+IC01OSw3ICs1OSw3IEBAIFJDPTAKIGV4cG9ydCBUQ0lEPVNFVFVQCiBleHBvcnQgVFNUX0NPVU5U
+PTEKIAotTUFJTF9OT1RfSU5TVEFMTEVEPTAKK01BSUxfTk9UX0lOU1RBTExFRD0KIGB0eXBlIG1h
+aWwgJj4gL2Rldi9udWxsYAogaWYgWyAkPyAhPSAwIF07IHRoZW4KICAgICBNQUlMX05PVF9JTlNU
+QUxMRUQ9MQotLSAKMS42LjIuNAoKV2l0aCBraW5kIHJlZ2FyZHMsCgpHZWVydCBVeXR0ZXJob2V2
+ZW4KU29mdHdhcmUgQXJjaGl0ZWN0ClRlY2hzb2Z0IENlbnRyZQoKVGVjaG5vbG9neSBhbmQgU29m
+dHdhcmUgQ2VudHJlIEV1cm9wZQpUaGUgQ29ycG9yYXRlIFZpbGxhZ2UgwrcgRGEgVmluY2lsYWFu
+IDctRDEgwrcgQi0xOTM1IFphdmVudGVtIMK3IEJlbGdpdW0KClBob25lOiAgICArMzIgKDApMiA3
+MDAgODQ1MwpGYXg6ICAgICAgKzMyICgwKTIgNzAwIDg2MjIKRS1tYWlsOiAgIEdlZXJ0LlV5dHRl
+cmhvZXZlbkBzb255Y29tLmNvbQpJbnRlcm5ldDogaHR0cDovL3d3dy5zb255LWV1cm9wZS5jb20v
+CgpBIGRpdmlzaW9uIG9mIFNvbnkgRXVyb3BlIChCZWxnaXVtKSBOLlYuClZBVCBCRSAwNDEzLjgy
+NS4xNjAgwrcgUlBSIEJydXNzZWxzCkZvcnRpcyDCtyBCSUMgR0VCQUJFQkIgwrcgSUJBTiBCRTQx
+MjkzMDM3NjgwMDEwCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KTGV0IENyeXN0YWwgUmVwb3J0cyBo
+YW5kbGUgdGhlIHJlcG9ydGluZyAtIEZyZWUgQ3J5c3RhbCBSZXBvcnRzIDIwMDggMzAtRGF5IAp0
+cmlhbC4gU2ltcGxpZnkgeW91ciByZXBvcnQgZGVzaWduLCBpbnRlZ3JhdGlvbiBhbmQgZGVwbG95
+bWVudCAtIGFuZCBmb2N1cyBvbiAKd2hhdCB5b3UgZG8gYmVzdCwgY29yZSBhcHBsaWNhdGlvbiBj
+b2RpbmcuIERpc2NvdmVyIHdoYXQncyBuZXcgd2l0aCAKQ3J5c3RhbCBSZXBvcnRzIG5vdy4gIGh0
+dHA6Ly9wLnNmLm5ldC9zZnUvYm9iai1qdWx5Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5z
+b3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGlu
+Zm8vbHRwLWxpc3QK
