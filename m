@@ -1,25 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <ying.huang@intel.com>) id 1MaljH-0008Jm-2f
-	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2009 07:25:07 +0000
-Received: from mga09.intel.com ([134.134.136.24])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MaljC-000472-10
-	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2009 07:25:06 +0000
-From: Huang Ying <ying.huang@intel.com>
-In-Reply-To: <2E9E6F5F5978EF44A8590E339E888CF901425402ED@irsmsx503.ger.corp.intel.com>
-References: <20090805105529.23399.60242.sendpatchset@subratamodak.linux.ibm.com>
-	<1249494939.3623.12.camel@subratamodak.linux.ibm.com>
-	<1249521485.24238.308.camel@yhuang-dev.sh.intel.com>
-	<1249648896.4851.40.camel@subratamodak.linux.ibm.com>
-	<1249888606.5337.158.camel@yhuang-dev.sh.intel.com>
-	<2E9E6F5F5978EF44A8590E339E888CF901425402ED@irsmsx503.ger.corp.intel.com>
-Date: Tue, 11 Aug 2009 15:24:54 +0800
-Message-Id: <1249975494.5337.168.camel@yhuang-dev.sh.intel.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Integration of MCE test suite into LTP
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1Mgctl-0005At-8b
+	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 11:12:09 +0000
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=pophost.sonytel.be) by 72vjzd1.ch3.sourceforge.com with esmtp 
+	(Exim 4.69) id 1Mgcti-0004Nb-UX
+	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 11:12:09 +0000
+Date: Thu, 27 Aug 2009 13:12:01 +0200 (CEST)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+In-Reply-To: <200908270606.16787.vapier@gentoo.org>
+Message-ID: <alpine.LRH.2.00.0908271311410.22490@vixen.sonytel.be>
+References: <alpine.LRH.2.00.0908261719130.29807@vixen.sonytel.be>
+	<200908261550.10710.vapier@gentoo.org>
+	<alpine.LRH.2.00.0908271148570.22490@vixen.sonytel.be>
+	<200908270606.16787.vapier@gentoo.org>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH] su01: Yellow Dog Linux doesn't support passwd -e
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,37 +27,64 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "subrata@linux.vnet.ibm.com" <subrata@linux.vnet.ibm.com>
-Cc: "Kleen, Andi" <andi.kleen@intel.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi, Subrata,
+On Thu, 27 Aug 2009, Mike Frysinger wrote:
+> On Thursday 27 August 2009 05:49:49 Geert Uytterhoeven wrote:
+> > On Wed, 26 Aug 2009, Mike Frysinger wrote:
+> > > On Wednesday 26 August 2009 11:20:44 Geert Uytterhoeven wrote:
+> > > > Is there any better way to handle this??
+> > >
+> > > change it to:
+> > > if passwd -h | grep -q -e '--expire\>' ; then
+> >               ^
+> > 	      2>&1
+> =
 
-What's your opinions about Andi's comments?
+> yeah, some utils are pretty stupid and send help output to stderr.  i'll =
+send =
 
-Best Regards,
-Huang Ying
+> a patch to the shadow guys.
+> =
 
-On Mon, 2009-08-10 at 16:05 +0800, Kleen, Andi wrote:
-> >I will check the coding style with checkpatch.pl. Do you have other
-> >comments about the code?
-> 
-> I would prefer no wide scale reformattings for now, that will
-> impact any out of tree patches other people have and the benefits
-> would seem to be small.
-> 
-> The code is probably not fully compliant, but should be close enough to
-> kernel style (after all it was written by experienced kernel developers)
-> 
-> -Andi
+> > Next question: Does Google Translator do bash =3D> expect? ;-)
+> =
 
+> not sure what you mean ... program options are not translated
 
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
+The script that does the test is written in expect.
+
+With kind regards,
+
+Geert Uytterhoeven
+Software Architect
+Techsoft Centre
+
+Technology and Software Centre Europe
+The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Belgium
+
+Phone:    +32 (0)2 700 8453
+Fax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 =B7 RPR Brussels
+Fortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
+
+---------------------------------------------------------------------------=
+---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+
+trial. Simplify your report design, integration and deployment - and focus =
+on =
+
+what you do best, core application coding. Discover what's new with =
+
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
