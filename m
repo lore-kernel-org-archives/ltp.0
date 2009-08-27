@@ -1,33 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MfsnE-000349-In
-	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 09:58:20 +0000
-Received: from e31.co.us.ibm.com ([32.97.110.149])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MfsnA-0000LS-7g
-	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 09:58:20 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e31.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7P9qVWM018474
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 03:52:31 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7P9w5po226482
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 03:58:07 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7P9w4RR031839
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 03:58:05 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090824.120051.112612549.caiqian@cclom.cn>
-References: <20090824.120051.112612549.caiqian@cclom.cn>
-Date: Tue, 25 Aug 2009 15:28:03 +0530
-Message-Id: <1251194283.5534.21.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH 1/3] Check unshare Function
-Reply-To: subrata@linux.vnet.ibm.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MggX4-00073U-JX
+	for Ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 15:04:58 +0000
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=pophost.sonytel.be) by 29vjzd1.ch3.sourceforge.com with esmtp 
+	(Exim 4.69) id 1MggWz-0005RW-2M
+	for Ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 15:04:58 +0000
+Received: from vixen.sonytel.be (piraat.sonytel.be [43.221.60.197])
+	by pophost.sonytel.be (Postfix) with ESMTP id 5F7DC44483
+	for <Ltp-list@lists.sourceforge.net>;
+	Thu, 27 Aug 2009 17:04:40 +0200 (CEST)
+Date: Thu, 27 Aug 2009 17:04:40 +0200 (CEST)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Message-ID: <alpine.LRH.2.00.0908271703550.1134@vixen.sonytel.be>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] quotactl01: Fix tst_resm() format causing crash
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,75 +26,68 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@cclom.cn>
-Cc: ltp-list@lists.sourceforge.net
+To: Linux Test Project <Ltp-list@lists.sourceforge.net>
 
-On Mon, 2009-08-24 at 12:00 +0800, CAI Qian wrote: 
-> This patch set fixes several problems for unshare tests. The first one
-> is to add a build-time checking for unshare function. The second one is
-> to fix unshare01 test,
-> 
-> * deal with no unshare implementation in both glibc and kernel.
-> * simplify logic.
-> * fix coding style.
-> 
-> The final one is to fix unshare02 test,
-> 
-> * deal with no unshare implementation in both glibc and kernel.
-> * fix an incorrect expected result and simplify logic.
-> * fix coding style.
-> 
-> Signed-off-by: CAI Qian <caiqian@cclom.cn>
+When the quotactl syscall fails, quotactl01 crashes with a segmentation fau=
+lt
+due to an incorrect printf()-style format.
 
-Thanks Cai.
+Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+---
+ testcases/kernel/syscalls/quotactl/quotactl01.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Regards--
-Subrata
+diff --git a/testcases/kernel/syscalls/quotactl/quotactl01.c b/testcases/ke=
+rnel/syscalls/quotactl/quotactl01.c
+index 6800a25..0be4fd5 100644
+--- a/testcases/kernel/syscalls/quotactl/quotactl01.c
++++ b/testcases/kernel/syscalls/quotactl/quotactl01.c
+@@ -147,7 +147,7 @@ int main(int ac, char **av) {
+                 for (i =3D 0; i <=3D 7; i++){
+                         TEST(retval =3D syscall(__NR_quotactl, cmd[i], (co=
+nst char *)NULL, id, (caddr_t)NULL));
+ 			if(TEST_RETURN !=3D 0){
+-                 	   	tst_resm(TFAIL, "%s failed - errno =3D %d : %s ...cm=
+derror=3D%s", TCID, TEST_ERRNO, strerror(TEST_ERRNO),cmd[i]);
++				tst_resm(TFAIL, "%s failed - errno =3D %d : %s ...cmd=3D0x%x", TCID, T=
+EST_ERRNO, strerror(TEST_ERRNO), cmd[i]);
+                         }else{
+         			tst_resm(TPASS, "quotactl call succeeded");
+                         }
+-- =
 
-> 
->  configure.ac      |    1 +
->  m4/ltp-unshare.m4 |    2 ++
->  2 files changed, 3 insertions(+), 0 deletions(-)
-> 
-> diff --git a/configure.ac b/configure.ac
-> index aa7bef4..ca8adc5 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -18,6 +18,7 @@ sys/inotify.h \
->  LTP_CHECK_SYSCALL_EVENTFD
->  LTP_CHECK_SYSCALL_MODIFY_LDT
->  LTP_CHECK_SYSCALL_SIGNALFD
-> +LTP_CHECK_SYSCALL_UNSHARE
->  LTP_CHECK_SELINUX
->  LTP_CHECK_CRYPTO
->  LTP_CHECK_TASKSTATS
-> diff --git a/m4/ltp-unshare.m4 b/m4/ltp-unshare.m4
-> new file mode 100644
-> index 0000000..6476141
-> --- /dev/null
-> +++ b/m4/ltp-unshare.m4
-> @@ -0,0 +1,2 @@
-> +AC_DEFUN([LTP_CHECK_SYSCALL_UNSHARE],
-> +AC_CHECK_FUNCS_ONCE(unshare))
-> 
-> ------------------------------------------------------------------------------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> trial. Simplify your report design, integration and deployment - and focus on 
-> what you do best, core application coding. Discover what's new with 
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+1.6.2.4
 
+With kind regards,
 
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
+Geert Uytterhoeven
+Software Architect
+Techsoft Centre
+
+Technology and Software Centre Europe
+The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Belgium
+
+Phone:    +32 (0)2 700 8453
+Fax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 =B7 RPR Brussels
+Fortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
+
+---------------------------------------------------------------------------=
+---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+
+trial. Simplify your report design, integration and deployment - and focus =
+on =
+
+what you do best, core application coding. Discover what's new with =
+
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
