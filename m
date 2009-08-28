@@ -1,20 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <geert@sonycom.com>) id 1Me9WD-0000Qg-N4
-	for Ltp-list@lists.sourceforge.net; Thu, 20 Aug 2009 15:25:37 +0000
-Received: from vervifontaine.sonytel.be ([80.88.33.193]
-	helo=pophost.sonytel.be) by 72vjzd1.ch3.sourceforge.com with esmtp 
-	(Exim 4.69) id 1Me9W6-00005M-C6
-	for Ltp-list@lists.sourceforge.net; Thu, 20 Aug 2009 15:25:37 +0000
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Date: Thu, 20 Aug 2009 17:25:17 +0200
-Message-Id: <1250781918-23897-3-git-send-email-Geert.Uytterhoeven@sonycom.com>
-In-Reply-To: <1250781918-23897-2-git-send-email-Geert.Uytterhoeven@sonycom.com>
-References: <1250781918-23897-1-git-send-email-Geert.Uytterhoeven@sonycom.com>
-	<1250781918-23897-2-git-send-email-Geert.Uytterhoeven@sonycom.com>
-Subject: [LTP] [PATCH] Spelling fixes: exectue => execute
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mguew-0004Wj-D0
+	for ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 06:10:02 +0000
+Received: from e38.co.us.ibm.com ([32.97.110.159])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Mgueq-0001JA-2g
+	for ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 06:10:02 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7S665J2021815
+	for <ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 00:06:05 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7S69occ170260
+	for <ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 00:09:50 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7S69oQB010472
+	for <ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 00:09:50 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <alpine.LRH.2.00.0908271416250.22490@vixen.sonytel.be>
+References: <4A8330A1.20001@canonical.com>
+	<200908130304.49839.vapier@gentoo.org>
+	<alpine.LRH.2.00.0908271416250.22490@vixen.sonytel.be>
+Date: Fri, 28 Aug 2009 11:39:25 +0530
+Message-Id: <1251439768.9081.11.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] fix mail_tests for systems without mail installed
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,111 +39,67 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Ltp-list@lists.sourceforge.net
-Cc: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Cc: Linux Test Project <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>
 
-Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
----
- testcases/commands/at/at_allow01     |    4 ++--
- testcases/commands/at/at_deny01      |    4 ++--
- testcases/commands/cron/cron_allow01 |    4 ++--
- testcases/commands/cron/cron_deny01  |    4 ++--
- 4 files changed, 8 insertions(+), 8 deletions(-)
+On Thu, 2009-08-27 at 14:19 +0200, Geert Uytterhoeven wrote: 
+> On Thu, 13 Aug 2009, Mike Frysinger wrote:
+> > On Wednesday 12 August 2009 17:14:09 Paul Larson wrote:
+> > > +`which mail`
+> > > +if [ $? != 0 ]; then
+> > 
+> > this results in pretty ugly output, and the return value/output of `which` is 
+> > not portable.  use the type builtin instead.
+> > 
+> > > +    MAIL_NOT_INSTALLED=1
+> > 
+> > you should make sure this is always set/unset at the top of the script so 
+> > parent environment poisoning wont screw things up.
+> > 
+> > > +if [ -z $MAIL_NOT_INSTALLED ]; then
+> > 
+> > tests must always be quoted:
+> > [ -z "$foo" ]
+> 
+> Worse, as $MAIL_NOT_INSTALLED is always "0" or "1", -z always return false...
+> 
+> From 8035091c4232e8d6c7b3a75d612bc82c1ad84365 Mon Sep 17 00:00:00 2001
+> From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+> Date: Thu, 27 Aug 2009 14:11:58 +0200
+> Subject: [PATCH] Fix mail_tests for systems with mail installed
+> 
+> `-z' tests for a string length of zero, not for a zero value, causing the
+> test always to return false.
+> Initialize $MAIL_NOT_INSTALLED to an empty string instead of a numerical
+> zero to fix this.
+> 
+> Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
 
-diff --git a/testcases/commands/at/at_allow01 b/testcases/commands/at/at_allow01
-index fcad4df..dab34bd 100755
---- a/testcases/commands/at/at_allow01
-+++ b/testcases/commands/at/at_allow01
-@@ -114,7 +114,7 @@ run_test()
-         if [ ${exit_code} -eq 1 ]; then
-             echo "At did not allow user to execute job, TEST FAILED."
- 	else
--            echo "At allowed user to exectue test job, TEST PASSED."
-+            echo "At allowed user to execute test job, TEST PASSED."
- 	fi
- 
- 	rm -f "${tmpfile}" >/dev/null 2>&1
-@@ -135,7 +135,7 @@ run_test()
-         exit_code=1
-         test -e "${tmpfile}" || exit_code=0
-         if [ ${exit_code} -eq 1 ]; then
--            echo "At allowed user to exectue test job, TEST FAILED."
-+            echo "At allowed user to execute test job, TEST FAILED."
-         else
-             echo "At did not allow user to execute job, TEST PASSED."
-         fi
-diff --git a/testcases/commands/at/at_deny01 b/testcases/commands/at/at_deny01
-index 2fcb76d..9c03845 100755
---- a/testcases/commands/at/at_deny01
-+++ b/testcases/commands/at/at_deny01
-@@ -122,7 +122,7 @@ run_test()
-         exit_code=1
-         test -e "${tmpfile}" && exit_code=0
-         if [ ${exit_code} -eq 1 ]; then
--            echo "At denyed user to exectue test job, TEST FAILED."
-+            echo "At denyed user to execute test job, TEST FAILED."
-         else
-             echo "At did not deny user to execute job, TEST PASSED."
-         fi
-@@ -147,7 +147,7 @@ run_test()
-         if [ ${exit_code} -eq 1 ]; then
-             echo "At did not deny user to execute job, TEST FAILED."
-         else
--            echo "At denyed user to exectue test job, TEST PASSED."
-+            echo "At denyed user to execute test job, TEST PASSED."
-         fi
- 
-         rm -f "${tmpfile}" >/dev/null 2>&1
-diff --git a/testcases/commands/cron/cron_allow01 b/testcases/commands/cron/cron_allow01
-index 266700a..404ca28 100755
---- a/testcases/commands/cron/cron_allow01
-+++ b/testcases/commands/cron/cron_allow01
-@@ -126,7 +126,7 @@ EOF
- 	if [ $EXIT_CODE = 1 ]; then
- 		echo "Cron did not allow user to execute job , TEST FAILED"
- 	else
--		echo "Cron allowed user to exectue test job, TEST PASSED"
-+		echo "Cron allowed user to execute test job, TEST PASSED"
- 	fi
- 	
- 	 echo "restore old crontab..."
-@@ -162,7 +162,7 @@ EOF
-         if [ $EXIT_CODE = 0 ]; then
-                 echo "Cron did not allow user to execute job , TEST PASSED"
-         else
--                echo "Cron allowed user to exectue test job, TEST FAILED"
-+                echo "Cron allowed user to execute test job, TEST FAILED"
-         fi
- 
- 		echo "restore old crontab..."
-diff --git a/testcases/commands/cron/cron_deny01 b/testcases/commands/cron/cron_deny01
-index 527d79c..563f857 100755
---- a/testcases/commands/cron/cron_deny01
-+++ b/testcases/commands/cron/cron_deny01
-@@ -128,7 +128,7 @@ EOF
- 	if [ $EXIT_CODE = 1 ]; then
- 		echo "Cron did not allow user to execute job , TEST FAILED"
- 	else
--		echo "Cron allowed user to exectue test job, TEST PASSED"
-+		echo "Cron allowed user to execute test job, TEST PASSED"
- 	fi
- 
- 	rm -f /tmp/cron_deny_test
-@@ -156,7 +156,7 @@ EOF
-         if [ $EXIT_CODE = 0 ]; then
-                 echo "Cron did not allow user to execute job , TEST PASSED"
-         else
--                echo "Cron allowed user to exectue test job, TEST FAILED"
-+                echo "Cron allowed user to execute test job, TEST FAILED"
-         fi
-                                                                                                              
-         rm -f /tmp/cron_deny_test1
--- 
-1.6.2.4
+Ok. Thanks.
+
+Regards--
+Subrata
+
+> ---
+>  testcases/commands/mail/mail_tests.sh |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/testcases/commands/mail/mail_tests.sh b/testcases/commands/mail/mail_tests.sh
+> index 0959a0c..45bac93 100755
+> --- a/testcases/commands/mail/mail_tests.sh
+> +++ b/testcases/commands/mail/mail_tests.sh
+> @@ -59,7 +59,7 @@ RC=0
+>  export TCID=SETUP
+>  export TST_COUNT=1
+>  
+> -MAIL_NOT_INSTALLED=0
+> +MAIL_NOT_INSTALLED=
+>  `type mail &> /dev/null`
+>  if [ $? != 0 ]; then
+>      MAIL_NOT_INSTALLED=1
 
 
 ------------------------------------------------------------------------------
