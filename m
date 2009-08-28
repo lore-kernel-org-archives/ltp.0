@@ -1,14 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-From: Shuah Khan <shuah.khan@hp.com>
-In-Reply-To: <op.uy74unolo8angs@localhost>
-References: <364299f40908191611x4accc24yc36b344956c7a40c@mail.gmail.com>
-	<1251162918.4388.33.camel@OSLORic>
-	<41008.95.24.171.156.1251178978.squirrel@mail.pigeonpoint.com>
-	<1251213123.7108.8.camel@orthanc>  <op.uy74unolo8angs@localhost>
-Date: Tue, 25 Aug 2009 11:42:15 -0600
-Message-Id: <1251222135.7108.16.camel@orthanc>
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+	helo=mx.sourceforge.net)
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MgueG-0004bn-07
+	for ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 06:09:20 +0000
+Received: from e38.co.us.ibm.com ([32.97.110.159])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Mgue9-0007Vw-Oz
+	for ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 06:09:19 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7S65JAm020915
+	for <ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 00:05:19 -0600
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7S693hw259020
+	for <ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 00:09:03 -0600
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7S693bJ015959
+	for <ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 00:09:03 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <alpine.LRH.2.00.0908271148120.22490@vixen.sonytel.be>
+References: <alpine.LRH.2.00.0908261651080.29020@vixen.sonytel.be>
+	<200908261548.58741.vapier@gentoo.org>
+	<alpine.LRH.2.00.0908271148120.22490@vixen.sonytel.be>
+Date: Fri, 28 Aug 2009 11:38:46 +0530
+Message-Id: <1251439729.9081.8.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [Openhpi-devel] [PATCH] Cross-compile configure bug
+Subject: Re: [LTP] [PATCH] LTP must be extracted to an accessible location
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,186 +42,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "openhpi-devel@lists.sourceforge.net" <openhpi-devel@lists.sourceforge.net>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
 
-On Tue, 2009-08-25 at 15:19 +0000, Anton Pak wrote:
-> I tried many times OpenHPI on x86_64.
-> It worked fine in the configurations x86 client - x86_64 daemon and x86_64  
-> client - x86 daemon.
-> However, the functioning on non-x86 64-bit platform or on Itanium is still  
-> an open question for me.
+On Thu, 2009-08-27 at 11:48 +0200, Geert Uytterhoeven wrote: 
+> On Wed, 26 Aug 2009, Mike Frysinger wrote:
+> > On Wednesday 26 August 2009 10:51:29 Geert Uytterhoeven wrote:
+> > > --- a/INSTALL
+> > > +++ b/INSTALL
+> > > @@ -67,6 +67,9 @@ contributions are welcome.
+> > >  2. Untar the ltp tarball into a spare directory.  There is not a
+> > >     standard location for it yet.  We put it in our home directory
+> > >     while we're working on it.
+> > > +   Note that this location must be accessible for unprivileged users, as
+> > > +   some tests are run as a different user than root.  Hence /root is not a
+> > > +   good choice on several distributions.
+> > 
+> > i would use the phrase "full path to this location".  non-root could access 
+> > ./foo/, but it could not access $PWD/foo/ ...
+> > -mike
 > 
-> 	Anton Pak
+> Thanks, that's indeed better!
+> 
+> >From 741d03a6753015ba6373d1f629f4117f978d6129 Mon Sep 17 00:00:00 2001
+> From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+> Date: Wed, 26 Aug 2009 16:24:59 +0200
+> Subject: [PATCH] LTP must be extracted to an accessible location
+> 
+> If extracted to /root and /root has permissions 750, the following
+> tests will fail:
+> 
+>   - cron02:
+> 
+>     bash: /root/ltp-cvs/testcases/bin/cron_pos_tests.sh: Permission denied
+> 
+>   - cron_allow01:
+> 
+>     bash: /root/ltp-cvs/testcases/bin/cron_allow01: Permission denied
+>     bash: /root/ltp-cvs/testcases/bin/cron_allow01: Permission denied
+> 
+>   - cron_deny01:
+> 
+>     bash: /root/ltp-cvs/testcases/bin/cron_deny01: Permission denied
+>     bash: /root/ltp-cvs/testcases/bin/cron_deny01: Permission denied
+> 
+>   - su01:
+> 
+>     bash: /root/ltp-cvs/testcases/bin/su01_s1: Permission denied
+> 
+> Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
 
-Instead of changing the error to a warning, itcould be controlled via a
-config option, so this error could be ignored on certain architectures
-using this config tune. 
+Thanks.
 
--- Shuah
-> 
-> On Tue, 25 Aug 2009 19:12:03 +0400, Shuah Khan <shuah.khan@hp.com> wrote:
-> 
-> > On Tue, 2009-08-25 at 05:42 +0000, anton.pak@pigeonpoint.com wrote:
-> >> Hello!
-> >>
-> >> We have the following lines in include/SaHpi.h:
-> >>
-> >> typedef unsigned char     SaHpiUint8T;
-> >> typedef unsigned short    SaHpiUint16T;
-> >> typedef unsigned int      SaHpiUint32T;
-> >> typedef signed char       SaHpiInt8T;
-> >> typedef signed short      SaHpiInt16T;
-> >> typedef signed int        SaHpiInt32T;
-> >>
-> >> Also I suspect there can be marshalling issues, i.e. when
-> >> daemon on platform with sizeof(int) == 4 but library is not and vice  
-> >> versa.
-> >>
-> >>    Anton Pak
-> >
-> > The proposed fix might help compile OpenHpi on a 64-bit platform,
-> > however I agree with the concerns from others that we will see run-time
-> > issues. Running 32-bit binary and libraries on a 64-bit platform might
-> > be an option.
-> >
-> > -- Shuah
-> >
-> >
-> >>
-> >>
-> >> > Hi Garrett,
-> >> >
-> >> > I was wondering about your addition of the cross_compiling test. If
-> >> > there is OpenHPI code that may behave badly on a system where an int
-> >> > isn't 4 bytes, I'm thinking that a warning should be issued even for a
-> >> > cross compile to such an architecture as well. Like:
-> >> >
-> >> > if test "x$OH_SIZEOF_INT" != "x4"; then
-> >> >     AC_MSG_WARN([
-> >> > *** int is not 4 bytes, it is $OH_SIZEOF_INT bytes on this platform
-> >> > *** undefined behavior may result from this.
-> >> > ])
-> >> > fi
-> >> >
-> >> > Will having a warning instead of an error cause problems for LTP when
-> >> > cross compiling?
-> >> >
-> >> > Does anyone else in the OpenHPI community oppose changing this error  
-> >> to
-> >> > a warning?
-> >> >
-> >> > Best Regards,
-> >> > Ric White
-> >> >
-> >> >
-> >> > On Wed, 2009-08-19 at 23:11 +0000, Garrett Cooper wrote:
-> >> >> Hi,
-> >> >>     Found this bug while trying to cross-compile with the
-> >> >> openhpi-test-suite in LTP, and made the ERROR into WARN. Please fix
-> >> >> this item as per the attached patch.
-> >> >> Thanks,
-> >> >> -Garrett
-> >> >>
-> >> >> PS Please CC my address in all correspondence w.r.t. this email  
-> >> thread.
-> >> >>
-> >> >> Summary:
-> >> >>
-> >> >> 1. int != 4 shouldn't be checked for while cross-compiling.
-> >> >> 2. Warn instead of erroring out, because we have a _lot_ of 64-bit
-> >> >> platforms that we test on which will be negatively impacted by this
-> >> >> check.
-> >> >>
-> >> >> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
-> >> >>
-> >> >> ---
-> >> >>  
-> >> /nfs.mac/ltp-upgrade/contrib/ltp/src/testcases/open_hpi_testsuite//configure.ac.orig	2009-08-19
-> >> >> 16:04:08.000000000 -0700
-> >> >> +++
-> >> >>  
-> >> /nfs.mac/ltp-upgrade/contrib/ltp/src/testcases/open_hpi_testsuite//configure.ac	2009-08-19
-> >> >> 16:10:47.000000000 -0700
-> >> >> @@ -44,14 +44,13 @@
-> >> >>  AC_PROG_LN_S
-> >> >>  AC_PROG_MAKE_SET
-> >> >>
-> >> >> -dnl die on int != 32bits.  This is too instrumental to our code  
-> >> right
-> >> >> now.
-> >> >> +dnl Warn when int != 32bits.  This is too instrumental to our code
-> >> >> right now.
-> >> >>  dnl AC_MSG_CHECKING(int is 4 bytes)
-> >> >>  OH_SET_SIZES
-> >> >> -if test "x$OH_SIZEOF_INT" != "x4"; then
-> >> >> -    AC_MSG_ERROR([
-> >> >> +if test x$cross_compiling != xyes && test "x$OH_SIZEOF_INT" != "x4";
-> >> >> then
-> >> >> +    AC_MSG_WARN([
-> >> >>  *** int is not 4 bytes, it is $OH_SIZEOF_INT bytes on this platform
-> >> >> -*** undefined behavior will result
-> >> >> -*** please contact the openhpi development team to fix this
-> >> >> +*** undefined behavior may result from this.
-> >> >>  ])
-> >> >>  fi
-> >> >>
-> >> >>  
-> >> ------------------------------------------------------------------------------
-> >> >> Let Crystal Reports handle the reporting - Free Crystal Reports 2008
-> >> >> 30-Day
-> >> >> trial. Simplify your report design, integration and deployment - and
-> >> >> focus on
-> >> >> what you do best, core application coding. Discover what's new with
-> >> >> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> >> >> _______________________________________________
-> >> >> Openhpi-devel mailing list
-> >> >> Openhpi-devel@lists.sourceforge.net
-> >> >> https://lists.sourceforge.net/lists/listinfo/openhpi-devel
-> >> >
-> >> >
-> >> >  
-> >> ------------------------------------------------------------------------------
-> >> > Let Crystal Reports handle the reporting - Free Crystal Reports 2008
-> >> > 30-Day
-> >> > trial. Simplify your report design, integration and deployment - and  
-> >> focus
-> >> > on
-> >> > what you do best, core application coding. Discover what's new with
-> >> > Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> >> > _______________________________________________
-> >> > Openhpi-devel mailing list
-> >> > Openhpi-devel@lists.sourceforge.net
-> >> > https://lists.sourceforge.net/lists/listinfo/openhpi-devel
-> >> >
-> >>
-> >>
-> >>
-> >> ------------------------------------------------------------------------------
-> >> Let Crystal Reports handle the reporting - Free Crystal Reports 2008  
-> >> 30-Day
-> >> trial. Simplify your report design, integration and deployment - and  
-> >> focus on
-> >> what you do best, core application coding. Discover what's new with
-> >> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> >> _______________________________________________
-> >> Openhpi-devel mailing list
-> >> Openhpi-devel@lists.sourceforge.net
-> >> https://lists.sourceforge.net/lists/listinfo/openhpi-devel
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> trial. Simplify your report design, integration and deployment - and focus on 
-> what you do best, core application coding. Discover what's new with 
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________
-> Openhpi-devel mailing list
-> Openhpi-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/openhpi-devel
--- 
+Regards--
+Subrata
 
+> ---
+>  INSTALL |    3 +++
+>  1 files changed, 3 insertions(+), 0 deletions(-)
+> 
+> diff --git a/INSTALL b/INSTALL
+> index 98883fb..73ff29c 100644
+> --- a/INSTALL
+> +++ b/INSTALL
+> @@ -67,6 +67,9 @@ contributions are welcome.
+>  2. Untar the ltp tarball into a spare directory.  There is not a
+>     standard location for it yet.  We put it in our home directory
+>     while we're working on it.
+> +   Note that the full path to this location must be accessible for
+> +   unprivileged users, as some tests are run as a different user than root.
+> +   Hence /root is not a good choice on several distributions.
+>  
+>  3. Run "make" to build everything.
+>     *NOTE: Some of the Makefiles (example: pan/Makefile) require the lex (or
 
 
 ------------------------------------------------------------------------------
