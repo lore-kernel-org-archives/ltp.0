@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MfVVW-0006Gy-Su
-	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 09:06:30 +0000
-Received: from vervifontaine.sonytel.be ([80.88.33.193]
-	helo=pophost.sonytel.be) by 1b2kzd1.ch3.sourceforge.com with esmtp 
-	(Exim 4.69) id 1MfVVV-0002oj-7l
-	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2009 09:06:30 +0000
-Date: Mon, 24 Aug 2009 10:44:05 +0200 (CEST)
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-In-Reply-To: <200908222352.42884.vapier@gentoo.org>
-Message-ID: <alpine.LRH.2.00.0908241040450.31587@vixen.sonytel.be>
-References: <20090821.195739.1000278277145530969.caiqian@cclom.cn>
-	<364299f40908211417i21840c17n4e144c85852cb08a@mail.gmail.com>
-	<20090823.103728.112603315.caiqian@cclom.cn>
-	<200908222352.42884.vapier@gentoo.org>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1Mh3uD-0001yT-07
+	for ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 16:02:25 +0000
+Date: Fri, 28 Aug 2009 18:02:11 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20090828160210.GA7218@schrodinger.suse.cz>
+References: <20090828152415.GB4567@schrodinger.suse.cz>
+	<200908281144.24993.vapier@gentoo.org>
 MIME-Version: 1.0
-Subject: Re: [LTP] The Best Practice to Skip Syscall Tests
+Content-Disposition: inline
+In-Reply-To: <200908281144.24993.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] Add autoconf tests for taskstats members
+	not	present?on older kernels
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,93 +23,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sf.net
+Cc: ltp-list@lists.sourceforge.net, Jiri Palecek <jpalecek@web.de>
 
-On Sat, 22 Aug 2009, Mike Frysinger wrote:
-> On Saturday 22 August 2009 22:37:28 CAI Qian wrote:
-> > From: Garrett Cooper <yanegomi@gmail.com>
-> > > On Fri, Aug 21, 2009 at 9:00 AM, Mike Frysinger wrote:
-> > >> On Friday 21 August 2009 07:57:39 CAI Qian wrote:
-> > >>> Test cases unshare failed to compile on systems without such a
-> > >>> syscall. I am unsure what the best way to handle it. The old ways a=
-re,
-> > >>>
-> > >>> * add a kernel version check in the unshare tests code.
-> > >>>
-> > >>> or
-> > >>>
-> > >>> * add a m4 rule.
-> > >>> * modify the unshare tests code to check if the macro, and add stub
-> > >>>   functions if the macro is false.
-> > >>>
-> > >>> The first approach is unable to handle non-vanilla kernels. The sec=
-ond
-> > >>> approach needs to add stub functions which are unclean. What I would
-> > >>> like to do is,
-> > >>>
-> > >>> * add a m4 rule.
-> > >>> * modify unshare Makefile like this,
-> > >>>
-> > >>>   ifdef HAVE_UNSHARE  <-- if the syscall is present, compile the te=
-sts.
-> > >>
-> > >> the configure test should always be there if the code needs new head=
-ers
-> > >> (like sys/signalfd.h).  if it's only a new syscall, then the configu=
-re
-> > >> test should only be for the new symbol (assuming one is provided).  =
-in
-> > >> all cases, the tests should be compiled.  your proposal doesnt handle
-> > >> the case where the C library is in place, but the kernel is older so
-> > >> returns ENOSYS.
+Hi!
+> > > this patch adds autoconf checks for some build failures reported by Cyril
+> > > Hrubis. Please note I have not tested this on an old kernel.
 > > >
-> > >     check_for_unshare was a poorly hacked app, IMO and Mike is
-> > > correct. The issue needs to be a combination of buildtime and runtime
-> > > tests as it needs to pass through the build and the issue with the
-> > > syscall needs to be detected and marked TBROK if the syscall isn't
-> > > implemented.
+> > > Also, it corrects the names of the preprocessor macros defined by
+> > > autoconf
+> > >
+> > > The remaining issue (the cgroupstats.h file) should be solved using the
+> > > autoconf test that was committed recently.
 > >
-> > ENOSYS is the expected result if the kernel under test has no such
-> > implementation, so I would consider TPASS or TCONF.
-> =
+> > The autoconf part is okay, but getdelays.c needs some more #ifdef
+> > HAVE_LINUX_CGROUPSTAT_H to build correctly on all I have here.
+> >
+> > Patch attached, however it may need minor cleanups.
+> 
+> preprocessor macros should never be intended
 
-> TPASS is wrong.  in another thread, people seemed to be OK with TCONF.
-> -mike
+I allways forgot this one...
 
-Still, the summary only shows `FAIL' or `PASS'. What is it supposed to
-show for TCONF?
+> can the test case pass at all if the linux headers are missing ?  if they 
+> cant, there's no point in sprinkling #ifdef's throughout the code.  stub the 
+> whole thing out.
 
-With kind regards,
+As far as I see the cgroupstat code is activated only by -C switch, so it does
+make sence spread #ifdefs around.
 
-Geert Uytterhoeven
-Software Architect
-Techsoft Centre
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
-Technology and Software Centre Europe
-The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Belgium
-
-Phone:    +32 (0)2 700 8453
-Fax:      +32 (0)2 700 8622
-E-mail:   Geert.Uytterhoeven@sonycom.com
-Internet: http://www.sony-europe.com/
-
-A division of Sony Europe (Belgium) N.V.
-VAT BE 0413.825.160 =B7 RPR Brussels
-Fortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
-
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
-
-trial. Simplify your report design, integration and deployment - and focus =
-on =
-
-what you do best, core application coding. Discover what's new with =
-
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
