@@ -1,25 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MYImb-0003Dw-As
-	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 12:06:21 +0000
-Received: from e33.co.us.ibm.com ([32.97.110.151])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MYImT-0000EY-55
-	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2009 12:06:21 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <d51f89b0908040431w6208a47fgbe79b5df30c6268c@mail.gmail.com>
-References: <d51f89b0907230130k158cbfbeo31f290cf207432b6@mail.gmail.com>
-	<1248978557.5788.61.camel@subratamodak.linux.ibm.com>
-	<d51f89b0908040422o17ac20f6q36aaff23ea88e839@mail.gmail.com>
-	<1249385096.15587.17.camel@subratamodak.linux.ibm.com>
-	<d51f89b0908040431w6208a47fgbe79b5df30c6268c@mail.gmail.com>
-Date: Tue, 04 Aug 2009 17:35:39 +0530
-Message-Id: <1249387539.15587.24.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] waitid02 testcase fails on 2.6.29 kernel
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1MgyUj-0005oJ-Vq
+	for ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 10:15:45 +0000
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MgyUX-0000mS-1i
+	for ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 10:15:40 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e4.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7SA8uGG031574
+	for <ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 06:08:56 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7SAFRaX238326
+	for <ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 06:15:27 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7SAFQo5014575
+	for <ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 06:15:27 -0400
+From: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+Date: Fri, 28 Aug 2009 15:45:22 +0530
+Message-Id: <20090828101522.12177.4630.sendpatchset@localhost.localdomain>
+In-Reply-To: <20090828101440.12177.32012.sendpatchset@localhost.localdomain>
+References: <20090828101440.12177.32012.sendpatchset@localhost.localdomain>
+Subject: [LTP] [Patch 6/8] Included new function to check feature versus
+	kernel version
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,108 +35,53 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rohit verma <rohit.170309@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: ltp-list@lists.sourceforge.net, arun@linux.vnet.ibm.com, svaidy@linux.vnet.ibm.com, ego@in.ibm.com
 
-On Tue, 2009-08-04 at 17:01 +0530, rohit verma wrote:
-> FYI
+Included new function to check feature versus kernel version
 
-unfortunately, you did not attach the patch itself ;-)
+Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
 
-Regards--
-Subrata
-
-> 
-> ---------- Forwarded message ----------
-> From: Subrata Modak <subrata@linux.vnet.ibm.com>
-> Date: Tue, Aug 4, 2009 at 4:54 PM
-> Subject: Re: [LTP] waitid02 testcase fails on 2.6.29 kernel
-> To: rohit verma <rohit.170309@gmail.com>
-> Cc: maknayak@in.ibm.com, CAI Qian <caiqian@cclom.cn>
-> 
-> 
-> Rohit,
-> 
-> Post this to ltp mailing list.
-> 
-> Regards--
-> Subrata
-> 
-> On Tue, 2009-08-04 at 16:52 +0530, rohit verma wrote:
-> > Dear Manas Kumar Nayak,
-> >
-> > Pls find attached patch for waitid02 test case.I have modified the
-> > test case.I have also added 2 test scenarios in the test case using
-> > WSTOPPED and WNOWAIT.
-> >
-> > Note:
-> > The testcase was failing in LTP July, 2009 release.
-> > The warning- "implicit declaration of function 'getpgid", has been removed
-> >
-> > Pls verify the patch.
-> >
-> > Regards--
-> > Rohit Verma
-> >
-> >
-> >
-> > On Thu, Jul 30, 2009 at 11:59 PM, Subrata
-> > Modak<subrata@linux.vnet.ibm.com> wrote:
-> > > Fixed this now.
-> > >
-> > > Regards--
-> > > Subrata
-> > >
-> > > On Thu, 2009-07-23 at 14:00 +0530, rohit verma wrote:
-> > >> Hi,
-> > >>
-> > >> I am running waitid02.c
-> > >> (ltp-full-20090630/testcases/kernel/syscalls/waitid/ ) test case on
-> > >> 2.6.29 kernel.
-> > >> Test case gives following error:
-> > >> "Error. is your system >2.6.9 ?";
-> > >>
-> > >>  Anybody facing the same issue?
-> > >>
-> > >> Code:
-> > >>
-> > >> TEST(waitid(P_ALL,0,&infop,WNOHANG));
-> > >>         if(TEST_RETURN == 0)
-> > >>                 tst_resm(TPASS,"Success !");
-> > >>         else{
-> > >>                 printf("value of return is %d\n",TEST_RETURN);
-> > >>                 tst_resm(TFAIL,"Error. is your system >2.6.9 ?");
-> > >>                errnochoose();
-> > >>         }
-> > >>
-> > >>
-> > >> Regards,
-> > >> Rohit
-> > >>
-> > >> ------------------------------------------------------------------------------
-> > >> _______________________________________________
-> > >> Ltp-list mailing list
-> > >> Ltp-list@lists.sourceforge.net
-> > >> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> > >
-> > >
-> >
-> >
-> >
-> 
-> ------------------------------------------------------------------------------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> trial. Simplify your report design, integration and deployment - and focus on 
-> what you do best, core application coding. Discover what's new with 
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
+diff -uprN ltp_orig/testcases/kernel/power_management/check_kv_arch.c ltp/testcases/kernel/power_management/check_kv_arch.c
+--- ltp_orig/testcases/kernel/power_management/check_kv_arch.c	2009-08-28 10:54:59.000000000 +0530
++++ ltp/testcases/kernel/power_management/check_kv_arch.c	2009-08-28 12:36:07.000000000 +0530
+@@ -23,6 +23,12 @@ int kernel_is_too_old(void) {
+ 	return 0;
+ }
+ 
++int check_timer_migr_supp(void) {
++	if (tst_kvercmp(2,6,31) < 0)
++		return 1;
++	return 0;
++}
++
+ /*
+  * yeah, to make the makefile coding easier, do_check returns
+  * 1 if unshare is not supported, 0 if it is
+@@ -35,7 +41,17 @@ int do_check(void) { return kernel_is_to
+ int do_check(void) { return 1; }
+ #endif
+ 
+-int main() {
+-	return do_check();
++int main(int argc, char *argv[]) {
++	char feature[20];
++	if (argc == 1) 
++		return do_check();
++	else
++	{
++		printf("argument is %s", argv[1]);
++		if (strcmp(argv[1], "timer_migration")==0)
++			if (check_timer_migr_supp() == 0)
++				return 0;
++			else
++				return 1;
++	} 
+ }
+-
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
