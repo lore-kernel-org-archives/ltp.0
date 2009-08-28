@@ -1,32 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mf7Wo-0005Uw-9R
-	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 07:30:14 +0000
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mf7Wj-0002cF-Df
-	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 07:30:14 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e5.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7N7LueX012560
-	for <ltp-list@lists.sourceforge.net>; Sun, 23 Aug 2009 03:21:56 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7N7U44i254640
-	for <ltp-list@lists.sourceforge.net>; Sun, 23 Aug 2009 03:30:04 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7N7U35L006300
-	for <ltp-list@lists.sourceforge.net>; Sun, 23 Aug 2009 03:30:03 -0400
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mgueg-0004V4-M7
+	for Ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 06:09:46 +0000
+Received: from e32.co.us.ibm.com ([32.97.110.150])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MgueZ-0001Gy-2f
+	for Ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 06:09:46 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e32.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7S64pQV010259
+	for <Ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 00:04:51 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7S69Tdo064452
+	for <Ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 00:09:29 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7S69TEY013260
+	for <Ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 00:09:29 -0600
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090820160750.30926.34693.sendpatchset@localhost.localdomain>
-References: <20090820160655.30926.34854.sendpatchset@localhost.localdomain>
-	<20090820160750.30926.34693.sendpatchset@localhost.localdomain>
-Date: Sun, 23 Aug 2009 12:59:19 +0530
-Message-Id: <1251012559.16822.41.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <alpine.LRH.2.00.0908271709060.22490@vixen.sonytel.be>
+References: <alpine.LRH.2.00.0908271703550.1134@vixen.sonytel.be>
+	<alpine.LRH.2.00.0908271709060.22490@vixen.sonytel.be>
+Date: Fri, 28 Aug 2009 11:38:55 +0530
+Message-Id: <1251439738.9081.9.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] Patch for PM Master script to integrate new testcases
+Subject: Re: [LTP] [PATCH] Annotate tst_*() helpers with
+	__attribute__	((format (printf, M,
+	N))) (was: Re: [PATCH] quotactl01: Fix tst_resm()	format causing
+	crash)
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -40,226 +44,72 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, arun@linux.vnet.ibm.com, vaidy <svaidy@linux.vnet.ibm.com>, gautham <ego@in.ibm.com>
+To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Cc: Linux Test Project <Ltp-list@lists.sourceforge.net>
 
-On Thu, 2009-08-20 at 21:37 +0530, Poornima Nayak wrote: 
-> Modified Master script of power management testcases to include new test case
-> and to increase test coverage on system which is not multi core but hyper threaded.
+On Thu, 2009-08-27 at 17:29 +0200, Geert Uytterhoeven wrote: 
+> On Thu, 27 Aug 2009, Geert Uytterhoeven wrote:
+> > When the quotactl syscall fails, quotactl01 crashes with a segmentation fault
+> > due to an incorrect printf()-style format.
 > 
-> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+> This bug encouraged me to add annotations to the test helpers that take
+> printf()-style formats, cfr. the patch below.
+> 
+> It causes a massive amount of compiler warnings, most of them caused by
+> TEST_ERRNO being long. According to CVS history, both TEST_RETURN and
+> TEST_ERRNO have been changed from int to long to accomodate 64-bit platforms,
+> but to me the change of TEST_ERRNO looks bogus.
+> As errno is int according to C99, TEST_ERRNO should actually be int too, right? 
+> 
+> Note that there are also a few other cases where integers are used on pointer
+> type format specifiers. These will cause crashes when the code path is
+> executed.
+> 
+> >From 601578f79c05779acefe023fd499726d9fe4ce03 Mon Sep 17 00:00:00 2001
+> From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+> Date: Thu, 27 Aug 2009 17:08:18 +0200
+> Subject: [PATCH] Annotate tst_*() helpers with __attribute__ ((format (printf, M, N)))
+> 
+> Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
 
-Thanks.
+Ok. Thanks.
 
 Regards--
 Subrata
 
+> ---
+>  include/test.h |   18 ++++++++++++------
+>  1 files changed, 12 insertions(+), 6 deletions(-)
 > 
-> diff -uprN ltp-full-20090731_orig/testcases/kernel/power_management/runpwtests.sh ltp-full-20090731/testcases/kernel/power_management/runpwtests.sh
-> --- ltp-full-20090731_orig/testcases/kernel/power_management/runpwtests.sh	2009-08-20 19:59:11.000000000 +0530
-> +++ ltp-full-20090731/testcases/kernel/power_management/runpwtests.sh	2009-08-20 20:41:02.000000000 +0530
-> @@ -40,6 +40,7 @@ export contacts="mpnayak@linux.vnet.ibm.
->  export analysis="/proctstat"
-> 
->  YES=0
-> +NO=1
->  #List of reusable functions defined in pm_include.sh
->  . ./pm_include.sh
-> 
-> @@ -61,34 +62,50 @@ if [ $RC -eq 1 ] ; then
->  fi
-> 
->  is_hyper_threaded; hyper_threaded=$?
-> +is_multi_socket; multi_socket=$?
-> +is_multi_core; multi_core=$?
-> +is_dual_core; dual_core=$?
-> 
->  #Checking sched_mc sysfs interface
->  #check_config.sh config_sched_mc || RC=$?
->  TST_COUNT=1
-> -if [ -f /sys/devices/system/cpu/sched_mc_power_savings ] ; then
-> -	if test_sched_mc.sh ; then
-> -		tst_resm TPASS "SCHED_MC sysfs tests"
-> +if [ $multi_socket -eq $YES -a $dual_core -eq $YES ] ; then
-> +	if [ -f /sys/devices/system/cpu/sched_mc_power_savings ] ; then
-> +		if test_sched_mc.sh ; then
-> +			tst_resm TPASS "SCHED_MC sysfs tests"
-> +		else
-> +			RC=$?
-> +			tst_resm TFAIL "SCHED_MC sysfs tests"
-> +		fi
->  	else
-> -		RC=$?
-> -		tst_resm TFAIL "SCHED_MC sysfs tests"
-> +    	tst_resm TCONF "Required kernel configuration for SCHED_MC NOT set"
->  	fi
->  else
-> -    tst_resm TCONF "Required kernel configuration for SCHED_MC NOT set"
-> +	if [ -f /sys/devices/system/cpu/sched_mc_power_savings ] ; then
-> +		tst_resm TFAIL "sched_mc_power_savings interface in system which is not a multi socket &(/) multi core"
-> +	else
-> +		tst_resm TCONF "Not a suitable architecture for SCHED_MC test"
-> +	fi
->  fi
-> 
->  # Test sched_smt_power_savings interface on HT machines
->  : $(( TST_COUNT += 1 ))
-> -if [ -f /sys/devices/system/cpu/sched_smt_power_savings ] ; then
-> -    if test_sched_smt.sh; then
-> -		tst_resm TPASS "SCHED_SMT sysfs test"
-> +if [ $hyper_threaded -eq $YES ]; then
-> +	if [ -f /sys/devices/system/cpu/sched_smt_power_savings ] ; then
-> +    	if test_sched_smt.sh; then
-> +			tst_resm TPASS "SCHED_SMT sysfs test"
-> +		else
-> +			RC=$?
-> +        	tst_resm TFAIL "SCHED_SMT sysfs test"
-> +    	fi
->  	else
->  		RC=$?
-> -        tst_resm TFAIL "SCHED_SMT sysfs test"
-> -    fi
-> +		tst_resm TFAIL "Required kernel configuration for SCHED_SMT NOT set"
-> +	fi
->  else
-> -    if [ $hyper_threaded -eq $YES ]; then
-> +	if [ -f /sys/devices/system/cpu/sched_smt_power_savings ] ; then
->  		RC=$?
-> -        tst_resm TFAIL "Required kernel configuration for SCHED_SMT NOT set"
-> +        tst_resm TFAIL "sched_smt_power_saving interface in system not hyper-threaded"
->      else
->          tst_resm TCONF "Required Hyper Threading support for SCHED_SMT test"
->      fi
-> @@ -152,13 +169,13 @@ if [ $? -ne 0 ] ; then
->  	tst_resm TCONF "Python is not installed, CPU Consoldation\
->  test cannot run"
->  else
-> -	get_max_sched_mc; max_sched_mc=$?
-> +	get_sched_values sched_mc; max_sched_mc=$?
->  	for sched_mc in `seq 0 $max_sched_mc`; do
->  		: $(( TST_COUNT+=1))
->  		sched_domain.py -c $sched_mc; RC=$?
->  		analyze_sched_domain_result $sched_mc $RC 
->  		if [ $hyper_threaded -eq $YES ]; then
-> -			get_max_sched_smt ; max_sched_smt=$?
-> +			get_sched_values sched_smt; max_sched_smt=$?
->  			for sched_smt in `seq 0 $max_sched_smt`; do
->  				# Testcase to validate sched_domain tree
->  				: $(( TST_COUNT+=1))
-> @@ -168,32 +185,54 @@ else
->  		fi
->  	done
->  fi
-> +
-> +: $(( TST_COUNT+=1))
-> +if [ -f /proc/sys/kernel/timer_migration ]; then
-> +	if test_timer_migration.sh; then
-> +        tst_resm TPASS "Timer Migration interface test"
-> +    else
-> +        RC=$?
-> +        tst_resm TFAIL "Timer migration interface test"
-> +    fi
-> +else
-> +	check_kv_arch "timer_migration"; supp=$? 
-> +	if [ $supp -eq $YES ]; then
-> +		RC=$?
-> +		tst_resm TFAIL "Timer migration interface missing"
-> +	else
-> +		tst_resm TCONF "Kernel version does not support Timer migration"
-> +	fi
-> +fi
-> +
-> +: $(( TST_COUNT+=1))	
-> +if check_cpufreq_sysfs_files.sh; then
-> +        tst_resm TPASS "CPUFREQ sysfs tests"
-> +    else
-> +        RC=$?
-> +        tst_resm TFAIL "CPUFREQ sysfs tests "
-> +    fi
-> +
->  if [ $# -gt 0 -a "$1" = "-exclusive" ]; then 
->  	# Test CPU consolidation 
-> -	which python > /dev/null
-> -	if [ $? -ne 0 ] ; then
-> -		tst_resm TCONF "Python is not installed, CPU Consoldation\
-> - test not run"
-> -	else
-> -		sched_mc_smt_pass_cnt=0
-> +	if [ $multi_socket -eq $YES -a $multi_core -eq $YES ]; then
->  		work_loads_list="ebizzy kernbench"
->  		for sched_mc in `seq 0 $max_sched_mc`; do
->  			for work_load in ${work_loads_list}
-> -            do
-> +           	do
->  				: $(( TST_COUNT += 1 ))
->  				sched_mc_pass_cnt=0
->  				for repeat_test in `seq 1  10`; do
-> -					 #Testcase to validate CPU consolidation for sched_mc
-> +					#Testcase to validate CPU consolidation for sched_mc
->  					if cpu_consolidation.py -c $sched_mc -w $work_load ; then
->  						: $(( sched_mc_pass_cnt += 1 ))
->  					fi
->  				done
-> -				analyze_consolidation_result $sched_mc $work_load $sched_mc_pass_cnt	
-> +				analyze_package_consolidation_result $sched_mc $work_load $sched_mc_pass_cnt	
->  			done	
->  			if [ $hyper_threaded -eq $YES ]; then
->  				for sched_smt in `seq 0 $max_sched_smt`; do
->  					for work_load in ${work_loads_list}; do
-> -                    	: $(( TST_COUNT += 1 ))
-> +                   		: $(( TST_COUNT += 1 ))
->  						sched_mc_smt_pass_cnt=0
->  						for repeat_test in `seq 1  10`; do
->  							# Testcase to validate CPU consolidation for
-> @@ -201,24 +240,26 @@ if [ $# -gt 0 -a "$1" = "-exclusive" ]; 
->  							if cpu_consolidation.py -c $sched_mc -t $sched_smt -w $work_load; then
->  								: $(( sched_mc_smt_pass_cnt += 1 ))
->  							fi
-> +							echo "sched_mc_smt_pass_cnt = $sched_mc_smt_pass_cnt"
->  						done
-> -						analyze_consolidation_result $sched_mc $work_load $sched_mc_smt_pass_cnt $sched_smt
-> -
-> -						#Testcase to validate consolidation at core level
-> -						sched_mc_smt_pass_cnt=0
-> -						stress="thread"
-> -						: $(( TST_COUNT += 1 ))
-> -						for repeat_test in `seq 1  10`; do
-> -							if cpu_consolidation.py -c $sched_mc -t $sched_smt -w $work_load -s $stress; then
-> -								: $(( sched_mc_smt_pass_cnt += 1 ))
-> -							fi
-> -						done
-> -						analyze_consolidation_result $sched_mc $work_load $sched_mc_smt_pass_cnt $sched_smt $stress
-> +						analyze_package_consolidation_result $sched_mc $work_load $sched_mc_smt_pass_cnt $sched_smt
->  					done
->  				done
->  			fi
->  		done
->  	fi
-> +	if [ $hyper_threaded -eq $YES ]; then
-> +		#Testcase to validate consolidation at core level
-> +		sched_smt_pass_cnt=0
-> +		: $(( TST_COUNT += 1 ))
-> +		stress="thread"
-> +		for repeat_test in `seq 1  10`; do
-> +			if cpu_consolidation.py -c $sched_mc -t $sched_smt -w $work_load -s $stress; then
-> +				: $(( sched_smt_pass_cnt += 1 ))
-> +			fi
-> +		done
-> +		analyze_core_consolidation_result $sched_smt $work_load $sched_smt_pass_cnt
-> +	fi
->  fi
-> 
->  exit $RC
-> 
-> ------------------------------------------------------------------------------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> trial. Simplify your report design, integration and deployment - and focus on 
-> what you do best, core application coding. Discover what's new with 
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> diff --git a/include/test.h b/include/test.h
+> index 34ed5d2..03b0d46 100644
+> --- a/include/test.h
+> +++ b/include/test.h
+> @@ -186,12 +186,18 @@
+>   * Functions from lib/tst_res.c
+>   */
+>  const char *strttype(int ttype);
+> -void tst_res(int ttype, char *fname, char *arg_fmt, ...);
+> -void tst_resm(int ttype, char *arg_fmt, ...);
+> -void tst_brk(int ttype, char *fname, void (*func)(void), char *arg_fmt, ...);
+> -void tst_brkloop(int ttype, char *fname, void (*func)(void), char *arg_fmt, ...);
+> -void tst_brkm(int ttype, void (*func)(void), char *arg_fmt, ...);
+> -void tst_brkloopm(int ttype, void (*func)(void), char *arg_fmt, ...);
+> +void tst_res(int ttype, char *fname, char *arg_fmt, ...)
+> +	__attribute__ ((format (printf, 3, 4)));
+> +void tst_resm(int ttype, char *arg_fmt, ...)
+> +	__attribute__ ((format (printf, 2, 3)));
+> +void tst_brk(int ttype, char *fname, void (*func)(void), char *arg_fmt, ...)
+> +	__attribute__ ((format (printf, 4, 5)));
+> +void tst_brkloop(int ttype, char *fname, void (*func)(void), char *arg_fmt, ...)
+> +	__attribute__ ((format (printf, 4, 5)));
+> +void tst_brkm(int ttype, void (*func)(void), char *arg_fmt, ...)
+> +	__attribute__ ((format (printf, 3, 4)));
+> +void tst_brkloopm(int ttype, void (*func)(void), char *arg_fmt, ...)
+> +	__attribute__ ((format (printf, 3, 4)));
+>  void tst_require_root(void (*func)(void));
+>  int  tst_environ(void);
+>  void tst_exit(void) LTP_ATTRIBUTE_NORETURN;
 
 
 ------------------------------------------------------------------------------
