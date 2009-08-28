@@ -1,22 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mfq8Y-0001fH-Gf
-	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 07:08:10 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mfq8T-0003NN-4Y
-	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2009 07:08:10 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090824.023736.115924320.caiqian@cclom.cn>
-References: <20090824.023736.115924320.caiqian@cclom.cn>
-Date: Tue, 25 Aug 2009 12:37:37 +0530
-Message-Id: <1251184057.5534.4.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Let set_thread_area Choose either user_desc
-	or	modify_ldt_ldt_s
-Reply-To: subrata@linux.vnet.ibm.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1MgyUs-0005po-VF
+	for ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 10:15:54 +0000
+Received: from e7.ny.us.ibm.com ([32.97.182.137])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MgyUo-0000pD-0U
+	for ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 10:15:54 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e7.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7SAEQ8H008702
+	for <ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 06:14:26 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7SAFiKS257284
+	for <ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 06:15:44 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7SAFheB015083
+	for <ltp-list@lists.sourceforge.net>; Fri, 28 Aug 2009 06:15:44 -0400
+From: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+Date: Fri, 28 Aug 2009 15:45:39 +0530
+Message-Id: <20090828101539.12177.96172.sendpatchset@localhost.localdomain>
+In-Reply-To: <20090828101440.12177.32012.sendpatchset@localhost.localdomain>
+References: <20090828101440.12177.32012.sendpatchset@localhost.localdomain>
+Subject: [LTP] [Patch 8/8]Patch to modify Readme file as new functionality
+	testcase is integrated
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,169 +35,26 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@cclom.cn>
-Cc: ltp-list@lists.sf.net
+To: ltp-list@lists.sourceforge.net, arun@linux.vnet.ibm.com, svaidy@linux.vnet.ibm.com, ego@in.ibm.com
 
-Cai,
+Updated Readme w.r.t new testcases
 
-On Mon, 2009-08-24 at 02:37 +0800, CAI Qian wrote:
-> Old glibc (like in RHEL4) has modify_ldt_ldt_s instead of user_desc
-> structure defined in asm/ldt.h. It should follow the example of
-> modify_ldt test cases to choose the feasible structure based on
-> build-time checking. Also, a new header file has been created to handle
-> code duplication.
-> 
-> Signed-off-by: CAI Qian <caiqian@cclom.cn>
-> 
->  .../syscalls/set_thread_area/set_thread_area.h     |   32 ++++++++++++++++++++
->  .../syscalls/set_thread_area/set_thread_area01.c   |   13 +-------
->  .../syscalls/set_thread_area/set_thread_area02.c   |   14 +-------
->  3 files changed, 36 insertions(+), 23 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/set_thread_area/set_thread_area.h b/testcases/kernel/syscalls/set_thread_area/set_thread_area.h
-> new file mode 100644
-> index 0000000..66e9278
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/set_thread_area/set_thread_area.h
-> @@ -0,0 +1,32 @@
-> +#include <stdio.h>
-> +#include <errno.h>
-> +#include <linux/unistd.h>
-> +
-> +/* Harness Specific Include Files. */
-> +#include "test.h"
-> +#include "usctest.h"
-> +#include "linux_syscall_numbers.h"
+Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
 
-Do not include these 3 headers into some other header file. Instead,
-keep them inside the main *.c file only. Let only the set_thread*
-specific stuff be inside this header.
-
-> +#include "config.h"
-> +
-> +#if defined HAVE_ASM_LDT_H
-> +#include <asm/ldt.h>
-> +
-> +#if defined HAVE_STRUCT_USER_DESC
-> +typedef struct user_desc thread_area_s;
-> +#elif defined HAVE_STRUCT_MODIFY_LDT_LDT_S
-> +typedef struct modify_ldt_ldt_s thread_area_s;
-> +#else
-> +typedef struct user_desc {
-> +	unsigned int entry_number;
-> +	unsigned long int base_addr;
-> +	unsigned int limit;
-> +	unsigned int seg_32bit:1;
-> +	unsigned int contents:2;
-> +	unsigned int read_exec_only:1;
-> +	unsigned int limit_in_pages:1;
-> +	unsigned int seg_not_present:1;
-> +	unsigned int useable:1;
-> +	unsigned int empty:25;
-> +} thread_area_s;
-> +#endif /* HAVE_STRUCT_USER_DESC */
-> +#endif /* HAVE_ASM_LDT_H */
-> diff --git a/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c b/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c
-> index 6f10c05..a6aacf8 100644
-> --- a/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c
-> +++ b/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c
-> @@ -48,15 +48,8 @@
->  /* History:     Porting from Crackerjack to LTP is done by                    */
->  /*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
->  /******************************************************************************/
-> -#include <stdio.h>
-> -#include <errno.h>
-> -#include <linux/unistd.h>
-> +#include "set_thread_area.h"
-> 
-> -/* Harness Specific Include Files. */
-> -#include "test.h"
-> -#include "usctest.h"
-> -#include "linux_syscall_numbers.h"
-
-Keep them here only.
-
-> -#include "config.h"
-> 
->  /* Global Variables */
->  char *TCID = "set_thread_area01";  /* Test program identifier.*/
-> @@ -64,8 +57,6 @@ int  testno;
->  int  TST_TOTAL = 2;                   /* total number of tests in this file.   */
-> 
->  #if defined HAVE_ASM_LDT_H
-> -#include <asm/ldt.h>
-> -
->  /* Extern Global Variables */
->  extern int Tst_count;           /* counter for tst_xxx routines.         */
->  extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
-> @@ -124,7 +115,7 @@ void setup() {
-> 
->  int main(int ac, char **av) {
->          
-> -	struct user_desc u_info;
-> +        thread_area_s u_info;
->          int lc;                 /* loop counter */
->          char *msg;              /* message returned from parse_opts */
->  	
-> diff --git a/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c b/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c
-> index 3effebd..1b351c1 100644
-> --- a/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c
-> +++ b/testcases/kernel/syscalls/set_thread_area/set_thread_area02.c
-> @@ -49,15 +49,7 @@
->  /* History:     Porting from Crackerjack to LTP is done by                    */
->  /*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
->  /******************************************************************************/
-> -#include <stdio.h>
-> -#include <errno.h>
-> -#include <linux/unistd.h>
-> -
-> -/* Harness Specific Include Files. */
-> -#include "test.h"
-> -#include "usctest.h"
-> -#include "linux_syscall_numbers.h"
-
-Same here.
-
-Regards--
-Subrata
-
-> -#include "config.h"
-> +#include "set_thread_area.h"
-> 
->  /* Global Variables */
->  char *TCID = "set_thread_area_02";  /* Test program identifier.*/
-> @@ -65,8 +57,6 @@ int  testno;
->  int  TST_TOTAL = 3;                   /* total number of tests in this file.   */
-> 
->  #if defined HAVE_ASM_LDT_H
-> -#include <asm/ldt.h>
-> -
->  /* Extern Global Variables */
->  extern int Tst_count;           /* counter for tst_xxx routines.         */
->  extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
-> @@ -125,7 +115,7 @@ void setup() {
-> 
->  int main(int ac, char **av) {
->          
-> -	struct user_desc u_info;
-> +	thread_area_s u_info;
->          int lc;                 /* loop counter */
->          char *msg;              /* message returned from parse_opts */
->  	
-> 
-> ------------------------------------------------------------------------------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> trial. Simplify your report design, integration and deployment - and focus on 
-> what you do best, core application coding. Discover what's new with 
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
+diff -uprN ltp_orig/testcases/kernel/power_management/README ltp/testcases/kernel/power_management/README
+--- ltp_orig/testcases/kernel/power_management/README	2009-08-28 10:54:59.000000000 +0530
++++ ltp/testcases/kernel/power_management/README	2009-08-28 12:31:08.000000000 +0530
+@@ -82,3 +82,6 @@ To run cpu consolidation test user has t
+ Refer to README in LTPROOT/utils/benchmark/ebizzy-0.2 directory for details of ebizzy.
+ 
+ To test CPU consolidation for sched_mc 2 kernbench has to run. Kernbench needs linux kernel source as input in /root directory . For example download from http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.29.4.tar.bz2. If Linux kernel source not found kernbench wiil  not execute.
++CPU consolidation testcases will not execute if number of CPU's in package is less then 2. If system is hyper threaded but number of CPU is 1 only sched_smt testcases will be excuted. For better coverage of testcases select a system which is atleast quad core and then hyper threaded so that you will observe 8 CPU's in each package.
++
++Timer migration interface test will execute on kernel versions 2.6.31 and above. Timer migration functionality verification testcases will be executed only on suitable architecture like quad core or the number of CPU's in each package should be atleast 4 and above
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
