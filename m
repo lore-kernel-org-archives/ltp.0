@@ -1,31 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1MgBVn-0003Ag-1k
-	for ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 05:57:35 +0000
-Received: from e34.co.us.ibm.com ([32.97.110.152])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MgBVf-00007K-2t
-	for ltp-list@lists.sourceforge.net; Wed, 26 Aug 2009 05:57:35 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e34.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7Q5rHLg009023
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 23:53:17 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7Q5vHS5224758
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 23:57:17 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7Q5vGIU006741
-	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2009 23:57:17 -0600
-Date: Wed, 26 Aug 2009 00:57:14 -0500
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20090826055713.GA22281@us.ibm.com>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mgahagan@redhat.com>) id 1Mh33D-0004py-2w
+	for ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 15:07:39 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Mh336-0006cm-Qx
+	for ltp-list@lists.sourceforge.net; Fri, 28 Aug 2009 15:07:39 +0000
+Message-ID: <4A97F2A6.1060803@redhat.com>
+Date: Fri, 28 Aug 2009 11:07:18 -0400
+From: Mike Gahagan <mgahagan@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] [PATCH 1/1] netns: don't run sysfsview testcase
+References: <4A92DCAE.5060102@redhat.com>	<1251194293.5534.24.camel@subratamodak.linux.ibm.com>	<4A955C57.7020502@redhat.com>
+	<1251368398.4993.18.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1251368398.4993.18.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] Bug in memory controller test - memctl test #4 -	PATCH
+ repost
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,57 +29,78 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP <ltp-list@lists.sourceforge.net>
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net
 
-It can't pass right now, and leaves the system in a bad state on
-its inevitable failure.
+On 08/27/2009 06:19 AM, Subrata Modak wrote:
+> Hi,
+>
+> On Wed, 2009-08-26 at 12:01 -0400, Mike Gahagan wrote:
+>> On 08/25/2009 05:58 AM, Subrata Modak wrote:
+>>> On Mon, 2009-08-24 at 14:32 -0400, Mike Gahagan wrote:
+>>>> When running the Memory Controller test # 4, I'm seeing this behavior below.
+>>>>
+>>>> TEST 4: MEMORY CONTROLLER TESTING
+>>>> RUNNING SETUP.....
+>>>> TEST STARTED: Please avoid using system while this test executes
+>>>> /mnt/tests/kernel/distribution/ltp/20090731/ltp-full-20090731/testcases/bin/run_memctl_test.sh:
+>>>> line 327: [: 62955520: unary operator expected
+>>>> TINFO   Memory Resource Controller: stat check test fails in first run
+>>>> /mnt/tests/kernel/distribution/ltp/20090731/ltp-full-20090731/testcases/bin/run_memctl_test.sh:
+>>>> line 364: [: 78704640: unary operator expected
+>>>> TFAIL   Memory Resource Controller: stat check test FAILED
+>>>> *** infinite loop here, script exists memctl_test01 remains running ***
+>>>> ^Cincrementing stop
+>>>>
+>>>> The bash error is due to the 'grep -w "active"' not matching anything so
+>>>> one of the variables isn't getting set like it is supposed to. I believe
+>>>> the test was written with an old version of the memory controller what
+>>>> put a field called memory.stat.active in the file memory.stat. The
+>>>
+>>> Correct. Somebody needs to revisit these tests, as the ABIs has changed.
+>
+> Would be able to spend some time here ?
+>
 
-Leave the testcase there though since one day we will hopefully
-support it.
+Sure, I would be glad to. So far this was the only issue I have found 
+(or the only really obvious one at least). I plan on picking up and 
+running the recently checked in new tests as well, probably in the next 
+week or so.
 
-Signed-off-by: Serge Hallyn <serge@us.ibm.com>
----
- testcases/kernel/containers/netns/runnetnstest.sh |   25 ++++++++++++--------
- 1 files changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/testcases/kernel/containers/netns/runnetnstest.sh b/testcases/kernel/containers/netns/runnetnstest.sh
-index 8a52e7b..e5ae694 100755
---- a/testcases/kernel/containers/netns/runnetnstest.sh
-+++ b/testcases/kernel/containers/netns/runnetnstest.sh
-@@ -90,16 +90,21 @@ else
- fi
- echo
- 
--sysfsview
--rc=$?
--if [ $rc -ne 0 ]; then
--    exit_code=$rc
--    errmesg="$errmesg sysfsview: return code is $exit_code ; "
--    echo $errmesg
--else
--   echo "sysfsview: PASS"
--fi
--echo
-+# sysfs tagging does not exist, so this test can't pass.  In
-+# fact at the moment it fails when mount -t sysfs none /sys is
-+# refused, fails in a bad state, leaving the system hard to
-+# reboot.  Revisit enabling this test when per-container sysfs
-+# views are supported.
-+#sysfsview
-+#rc=$?
-+#if [ $rc -ne 0 ]; then
-+#    exit_code=$rc
-+#    errmesg="$errmesg sysfsview: return code is $exit_code ; "
-+#    echo $errmesg
-+#else
-+#   echo "sysfsview: PASS"
-+#fi
-+#echo
- 
- par_chld_ftp
- rc=$?
--- 
-1.6.0.4
+
+>>> Thanks for pointing that out. However, your patch has the following
+>>> problem:
+>>>
+>>> 1) Missing Signed-off-by:
+>>> 2) missing header for unified diff at line 3 of patch
+>>> patching file testcases/kernel/controllers/memctl/run_memctl_test.sh
+>>>
+>>> Please look into them when you send a patch next time ;-)
+>>>
+>>> Regards--
+>>> Subrata
+>>>
+>>>> current memory controller I am testing appears to have replaced this
+>>>> field with "rss". There are fields showing anonymous and file backed
+>>>> pages in memory.stat, but I don't think they are ever going to match the
+>>>> memory.usage.in.bytes the test is looking for. Rss always matches and I
+>>>> believe that is what we should update the check in the test to look for.
+>>>> The attached patch fixes test #4 to compare memory.usage.in.bytes with rss.
+>>>> ------------------------------------------------------------------------------
+>>
+>> Hello,
+>>
+>> Here is a resubmission of my memctl test patch. It should clear up the
+>> issues noted above. No functional change from the previous patch.
+>>
+>> Signed-off-by: Mike Gahagan<mgahagan@redhat.com>
+>
+> Thanks. I already merged your patch.
+>
+
+Thank you !
+
 
 
 ------------------------------------------------------------------------------
