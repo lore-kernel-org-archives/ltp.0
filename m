@@ -1,22 +1,38 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MgdIY-0006hw-6g
-	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 11:37:46 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MgdIS-0000TK-3V
-	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2009 11:37:46 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Thu, 27 Aug 2009 07:37:31 -0400
-References: <alpine.LRH.2.00.0908261719130.29807@vixen.sonytel.be>
-	<200908270606.16787.vapier@gentoo.org>
-	<alpine.LRH.2.00.0908271311410.22490@vixen.sonytel.be>
-In-Reply-To: <alpine.LRH.2.00.0908271311410.22490@vixen.sonytel.be>
-MIME-Version: 1.0
-Message-Id: <200908270737.32793.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] su01: Yellow Dog Linux doesn't support passwd -e
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MhoMh-0004MZ-BC
+	for ltp-list@lists.sourceforge.net; Sun, 30 Aug 2009 17:38:55 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MhoMd-0002YV-JO
+	for ltp-list@lists.sourceforge.net; Sun, 30 Aug 2009 17:38:55 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7UHXaJC004416
+	for <ltp-list@lists.sourceforge.net>; Sun, 30 Aug 2009 11:33:36 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7UHckYF262432
+	for <ltp-list@lists.sourceforge.net>; Sun, 30 Aug 2009 11:38:46 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7UHcjbF019001
+	for <ltp-list@lists.sourceforge.net>; Sun, 30 Aug 2009 11:38:45 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4A97F2A6.1060803@redhat.com>
+References: <4A92DCAE.5060102@redhat.com>
+	<1251194293.5534.24.camel@subratamodak.linux.ibm.com>
+	<4A955C57.7020502@redhat.com>
+	<1251368398.4993.18.camel@subratamodak.linux.ibm.com>
+	<4A97F2A6.1060803@redhat.com>
+Date: Sun, 30 Aug 2009 23:07:17 +0530
+Message-Id: <1251653840.12120.29.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Bug in memory controller test - memctl test #4
+	-	PATCH	repost
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,91 +42,97 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0099634157009928461=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+To: Mike Gahagan <mgahagan@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
---===============0099634157009928461==
-Content-Type: multipart/signed; boundary="nextPart5139974.N8YWJrkLK6";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart5139974.N8YWJrkLK6
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
-
-On Thursday 27 August 2009 07:12:01 Geert Uytterhoeven wrote:
-> On Thu, 27 Aug 2009, Mike Frysinger wrote:
-> > On Thursday 27 August 2009 05:49:49 Geert Uytterhoeven wrote:
-> > > Next question: Does Google Translator do bash =3D> expect? ;-)
+On Fri, 2009-08-28 at 11:07 -0400, Mike Gahagan wrote: 
+> On 08/27/2009 06:19 AM, Subrata Modak wrote:
+> > Hi,
 > >
-> > not sure what you mean ... program options are not translated
->
-> The script that does the test is written in expect.
+> > On Wed, 2009-08-26 at 12:01 -0400, Mike Gahagan wrote:
+> >> On 08/25/2009 05:58 AM, Subrata Modak wrote:
+> >>> On Mon, 2009-08-24 at 14:32 -0400, Mike Gahagan wrote:
+> >>>> When running the Memory Controller test # 4, I'm seeing this behavior below.
+> >>>>
+> >>>> TEST 4: MEMORY CONTROLLER TESTING
+> >>>> RUNNING SETUP.....
+> >>>> TEST STARTED: Please avoid using system while this test executes
+> >>>> /mnt/tests/kernel/distribution/ltp/20090731/ltp-full-20090731/testcases/bin/run_memctl_test.sh:
+> >>>> line 327: [: 62955520: unary operator expected
+> >>>> TINFO   Memory Resource Controller: stat check test fails in first run
+> >>>> /mnt/tests/kernel/distribution/ltp/20090731/ltp-full-20090731/testcases/bin/run_memctl_test.sh:
+> >>>> line 364: [: 78704640: unary operator expected
+> >>>> TFAIL   Memory Resource Controller: stat check test FAILED
+> >>>> *** infinite loop here, script exists memctl_test01 remains running ***
+> >>>> ^Cincrementing stop
+> >>>>
+> >>>> The bash error is due to the 'grep -w "active"' not matching anything so
+> >>>> one of the variables isn't getting set like it is supposed to. I believe
+> >>>> the test was written with an old version of the memory controller what
+> >>>> put a field called memory.stat.active in the file memory.stat. The
+> >>>
+> >>> Correct. Somebody needs to revisit these tests, as the ABIs has changed.
+> >
+> > Would be able to spend some time here ?
+> >
+> 
+> Sure, I would be glad to. So far this was the only issue I have found 
+> (or the only really obvious one at least). I plan on picking up and 
+> running the recently checked in new tests as well, probably in the next 
+> week or so.
 
-not sure whether you want to convert it all to expect (TCL) or you actually=
-=20
-meant "expect =3D> bash".  while converting POSIX shell to TCL is pretty ea=
-sy,=20
-going the other way is largely infeasible.  expect does the right thing wit=
-h=20
-ttys and sessions and such which are either a huge hack under POSIX shell o=
-r=20
-downright impossible.
+Great. Thanks for this interest.
 
-in either case, i'm not interested in converting anything as i dont use the=
-se=20
-tests ;)
-=2Dmike
+Regards--
+Subrata
 
---nextPart5139974.N8YWJrkLK6
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+> 
+> 
+> 
+> >>> Thanks for pointing that out. However, your patch has the following
+> >>> problem:
+> >>>
+> >>> 1) Missing Signed-off-by:
+> >>> 2) missing header for unified diff at line 3 of patch
+> >>> patching file testcases/kernel/controllers/memctl/run_memctl_test.sh
+> >>>
+> >>> Please look into them when you send a patch next time ;-)
+> >>>
+> >>> Regards--
+> >>> Subrata
+> >>>
+> >>>> current memory controller I am testing appears to have replaced this
+> >>>> field with "rss". There are fields showing anonymous and file backed
+> >>>> pages in memory.stat, but I don't think they are ever going to match the
+> >>>> memory.usage.in.bytes the test is looking for. Rss always matches and I
+> >>>> believe that is what we should update the check in the test to look for.
+> >>>> The attached patch fixes test #4 to compare memory.usage.in.bytes with rss.
+> >>>> ------------------------------------------------------------------------------
+> >>
+> >> Hello,
+> >>
+> >> Here is a resubmission of my memctl test patch. It should clear up the
+> >> issues noted above. No functional change from the previous patch.
+> >>
+> >> Signed-off-by: Mike Gahagan<mgahagan@redhat.com>
+> >
+> > Thanks. I already merged your patch.
+> >
+> 
+> Thank you !
+> 
+> 
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJKlm/8AAoJEEFjO5/oN/WBi0kP/0ewwFyw/cElfk0AiPLpn6sB
-8OvpoxjAOa3HXq+u81gVp3e0tFkusuLJL1y8jmN8NNeDVCsd78WScEu0U4LH9oZo
-cBTyrcv+8BYx1WNordcBh0JqNdQSZLFpnCaHHz74b8p7/UZMqlMzVR239EYvBOA4
-XzUD1MTrxnJPE5cJ+2VkcmoWs+i/pUEgnvdBWS04hs4vb+rzripIAE0mcNLPEs0N
-k9S44SxuPTB5ezZYXfaawIYrHnPOC96yru/8wst4TMZ0df55CtqFu3y4ugkAQi0M
-/8OlEtaTn0WbnOh4XVi7GCNUVQFtNEx6AltDrbJdqW6yPGWF0ghZUzYiYt9ATxYN
-x4oVgYfAfJd+OCXCKGDppRo1X9GJApd2Leh1undNBrXP/nazbG1onL+UfPmgqXtZ
-KsycFJ8VJF6DJoNdGOVmHQtDw3TpCqe9Yklwu/SQvag2XynbImJFW4UyLk32peof
-fan6MUgvsphnivnF2wMwXBN6VV/fmbHeJ2yZBcn86v57MY6OaPK1+JPDXxnKjY+N
-02dvMXTJIlMrDmqx/jA12OiMsIat+iJBGEqGsVwjC0INMAnpJ//fE1Iwul6DonNt
-H4AboMnGzmnMBLgIB163l0xe+RN8aVit9+cBJW7MZtmMAaQlCdRRT2Lm5BwuXbit
-3VLEFfLknvmTjP1s4um0
-=W5JO
------END PGP SIGNATURE-----
-
---nextPart5139974.N8YWJrkLK6--
-
-
---===============0099634157009928461==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---===============0099634157009928461==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============0099634157009928461==--
-
