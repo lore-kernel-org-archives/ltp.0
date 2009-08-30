@@ -1,34 +1,37 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mf7X2-0002ov-1E
-	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 07:30:28 +0000
-Received: from e38.co.us.ibm.com ([32.97.110.159])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mf7Wt-0002DD-Rp
-	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 07:30:27 +0000
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MhoMr-0001kH-R4
+	for ltp-list@lists.sourceforge.net; Sun, 30 Aug 2009 17:39:05 +0000
+Received: from e33.co.us.ibm.com ([32.97.110.151])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MhoMn-0002F6-7j
+	for ltp-list@lists.sourceforge.net; Sun, 30 Aug 2009 17:39:05 +0000
 Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
 	[9.17.195.227])
-	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7N7QWPT032595
-	for <ltp-list@lists.sourceforge.net>; Sun, 23 Aug 2009 01:26:32 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by e33.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7UHarus008907
+	for <ltp-list@lists.sourceforge.net>; Sun, 30 Aug 2009 11:36:53 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
 	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n7N7UEM7257944
-	for <ltp-list@lists.sourceforge.net>; Sun, 23 Aug 2009 01:30:14 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n7N7UDKg012784
-	for <ltp-list@lists.sourceforge.net>; Sun, 23 Aug 2009 01:30:13 -0600
+	n7UHctnO263956
+	for <ltp-list@lists.sourceforge.net>; Sun, 30 Aug 2009 11:38:55 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7UHctlJ000412
+	for <ltp-list@lists.sourceforge.net>; Sun, 30 Aug 2009 11:38:55 -0600
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090820160723.30926.96672.sendpatchset@localhost.localdomain>
-References: <20090820160655.30926.34854.sendpatchset@localhost.localdomain>
-	<20090820160723.30926.96672.sendpatchset@localhost.localdomain>
-Date: Sun, 23 Aug 2009 12:59:39 +0530
-Message-Id: <1251012580.16822.42.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <200908281044.04663.vapier@gentoo.org>
+References: <alpine.LRH.2.00.0908271703550.1134@vixen.sonytel.be>
+	<200908280514.03971.vapier@gentoo.org>
+	<1251454262.9081.16.camel@subratamodak.linux.ibm.com>
+	<200908281044.04663.vapier@gentoo.org>
+Date: Sun, 30 Aug 2009 23:07:21 +0530
+Message-Id: <1251653843.12120.30.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] Patch to get max sched mc & smt values based on
-	kernel	version
+Subject: Re: [LTP]
+	=?utf-8?q?=5BPATCH=5D_Annotate_tst=5F*=28=29_helpers_with?=
+	=?utf-8?b?CV9fYXR0cmlidXRlX18gKChmb3JtYXQgKHByaW50ZiwgTSwgTikpKQ==?=
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -42,87 +45,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, arun@linux.vnet.ibm.com, vaidy <svaidy@linux.vnet.ibm.com>, gautham <ego@in.ibm.com>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>, ltp-list@lists.sourceforge.net
 
-On Thu, 2009-08-20 at 21:37 +0530, Poornima Nayak wrote: 
-> Replaces shell function with C functions to get max sched_mc & sched_smt value.
-> Since this uses LTP libraray function to analyze kernel version maintenence of the 
-> code will be easier.
+On Fri, 2009-08-28 at 10:44 -0400, Mike Frysinger wrote: 
+> On Friday 28 August 2009 06:11:02 Subrata Modak wrote:
+> > On Fri, 2009-08-28 at 05:14 -0400, Mike Frysinger wrote:
+> > > On Friday 28 August 2009 04:38:17 Subrata Modak wrote:
+> > > > Sorry. I need to revert this as it generates a huge set of warning for
+> > > > all the tests compiled. It should not only get fixed at test.h, but
+> > > > also in all tests that uses the tst_* family of functions, which
+> > > > obviously is too big to fix.
+> > >
+> > > nothing is too big.  the proposed patch is a great idea and anything
+> > > preventing it from being merged should be resolved so it can go back in.
+> >
+> > Great Mike. I am already seeing you doing some changes to the headers in
+> > CVS. Can you also push this patch once you are done with all the
+> > changes. Please notify me once all are done. I plan to checkout a fresh
+> > one for the upcoming release ;-)
 > 
-> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+> ive fixed a good chunk of the warnings now, but there's still a good number 
 
-Thanks.
+Thanks Mike.
+
+> left.  maybe someone else feels like taking a crack at them, but i'm bored 
+> now.  i'll leave it up to you to apply said patch now or wait a few days so it
+
+I will do that right away.
+
+Regards--
+Subrata
 
 > 
-> 
-> diff -uprN ltp-full-20090731_orig/testcases/kernel/power_management/get_sched_values.c ltp-full-20090731/testcases/kernel/power_management/get_sched_values.c
-> --- ltp-full-20090731_orig/testcases/kernel/power_management/get_sched_values.c	1970-01-01 05:30:00.000000000 +0530
-> +++ ltp-full-20090731/testcases/kernel/power_management/get_sched_values.c	2009-08-20 20:38:13.000000000 +0530
-> @@ -0,0 +1,53 @@
-> +/************************************************************************
-> +* Copyright (c) International Business Machines Corp., 2008
-> +* This program is free software; you can redistribute it and/or modify
-> +* it under the terms of the GNU General Public License as published by
-> +* the Free Software Foundation; either version 2 of the License, or
-> +* (at your option) any later version.
-> +*
-> +* This program is distributed in the hope that it will be useful,
-> +* but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-> +* the GNU General Public License for more details.
-> +* You should have received a copy of the GNU General Public License
-> +* along with this program; if not, write to the Free Software
-> +* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-> +*
-> +***************************************************************************/
-> +#include <stdio.h>
-> +#include <test.h>
-> +
-> +int get_supp_sched_mc(void) {
-> +	if (tst_kvercmp(2,6,29) < 0 )
-> +		return 1;
-> +	else
-> +		return 2;
-> +}
-> +
-> +int get_supp_sched_smt(void) {
-> +	if (tst_kvercmp(2,6,29) < 0 )
-> +		return 1;
-> +	else
-> +		return 2;
-> +}
-> +
-> +int main(int argc, char **argv)
-> +{
-> +	char *param;
-> +	if (argc == 0)
-> +		return 1;
-> +	else
-> +	{
-> +		param = argv[1];
-> +		if (strcmp(param, "sched_mc")==0)
-> +			if (get_supp_sched_mc() == 0)
-> +				return 0;
-> +			else
-> +				return 1;
-> +		if (strcmp(param, "sched_smt")==0)
-> +                        if (get_supp_sched_smt() == 0)
-> +                                return 0;
-> +                        else
-> +                                return 1;
-> +	}
-> +}
-> 
-> ------------------------------------------------------------------------------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> trial. Simplify your report design, integration and deployment - and focus on 
-> what you do best, core application coding. Discover what's new with 
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> goes in after the next release.
+> -mike
 
 
 ------------------------------------------------------------------------------
