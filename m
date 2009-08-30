@@ -1,22 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <caiqian@cclom.cn>) id 1Mf30K-0000De-Rb
-	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 02:40:24 +0000
-Received: from smtp102.biz.mail.mud.yahoo.com ([68.142.200.237])
-	by 72vjzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1Mf30F-00086b-BJ
-	for ltp-list@lists.sourceforge.net; Sun, 23 Aug 2009 02:40:24 +0000
-Date: Sun, 23 Aug 2009 10:37:28 +0800 (CST)
-Message-Id: <20090823.103728.112603315.caiqian@cclom.cn>
-From: CAI Qian <caiqian@cclom.cn>
-In-Reply-To: <364299f40908211417i21840c17n4e144c85852cb08a@mail.gmail.com>
-References: <20090821.195739.1000278277145530969.caiqian@cclom.cn>
-	<200908211200.33401.vapier@gentoo.org>
-	<364299f40908211417i21840c17n4e144c85852cb08a@mail.gmail.com>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MhoM0-0001bk-54
+	for ltp-list@lists.sourceforge.net; Sun, 30 Aug 2009 17:38:12 +0000
+Received: from e38.co.us.ibm.com ([32.97.110.159])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MhoLq-0002Pp-I6
+	for ltp-list@lists.sourceforge.net; Sun, 30 Aug 2009 17:38:07 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7UHYAZ7029543
+	for <ltp-list@lists.sourceforge.net>; Sun, 30 Aug 2009 11:34:10 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7UHbuku262644
+	for <ltp-list@lists.sourceforge.net>; Sun, 30 Aug 2009 11:37:56 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7UHbuVL032226
+	for <ltp-list@lists.sourceforge.net>; Sun, 30 Aug 2009 11:37:56 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <20090828101522.12177.4630.sendpatchset@localhost.localdomain>
+References: <20090828101440.12177.32012.sendpatchset@localhost.localdomain>
+	<20090828101522.12177.4630.sendpatchset@localhost.localdomain>
+Date: Sun, 30 Aug 2009 23:06:56 +0530
+Message-Id: <1251653818.12120.24.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] The Best Practice to Skip Syscall Tests
+Subject: Re: [LTP] [Patch 6/8] Included new function to check feature	versus
+	kernel version
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,93 +39,73 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sf.net
-Cc: vapier@gentoo.org
+To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, svaidy@linux.vnet.ibm.com, ego@in.ibm.com, arun@linux.vnet.ibm.com
 
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] The Best Practice to Skip Syscall Tests
-Date: Fri, 21 Aug 2009 14:17:06 -0700
+On Fri, 2009-08-28 at 15:45 +0530, Poornima Nayak wrote: 
+> Included new function to check feature versus kernel version
+> 
+> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
 
-> On Fri, Aug 21, 2009 at 9:00 AM, Mike Frysinger<vapier@gentoo.org> wrote:
->> On Friday 21 August 2009 07:57:39 CAI Qian wrote:
->>> Test cases unshare failed to compile on systems without such a
->>> syscall. I am unsure what the best way to handle it. The old ways are,
->>>
->>> * add a kernel version check in the unshare tests code.
->>>
->>> or
->>>
->>> * add a m4 rule.
->>> * modify the unshare tests code to check if the macro, and add stub
->>> =A0 functions if the macro is false.
->>>
->>> The first approach is unable to handle non-vanilla kernels. The second
->>> approach needs to add stub functions which are unclean. What I would
->>> like to do is,
->>>
->>> * add a m4 rule.
->>> * modify unshare Makefile like this,
->>>
->>> =A0 ifdef HAVE_UNSHARE =A0<-- if the syscall is present, compile the te=
-sts.
->>
->> the configure test should always be there if the code needs new headers =
-(like
->> sys/signalfd.h). =A0if it's only a new syscall, then the configure test =
-should
->> only be for the new symbol (assuming one is provided). =A0in all cases, =
-the
->> tests should be compiled. =A0your proposal doesnt handle the case where =
-the C
->> library is in place, but the kernel is older so returns ENOSYS.
-> =
+Ok.
 
->     check_for_unshare was a poorly hacked app, IMO and Mike is
-> correct. The issue needs to be a combination of buildtime and runtime
-> tests as it needs to pass through the build and the issue with the
-> syscall needs to be detected and marked TBROK if the syscall isn't
-> implemented.
-
-ENOSYS is the expected result if the kernel under test has no such
-implementation, so I would consider TPASS or TCONF.
-
-CAI Qian
-
->     I'll already removed that app from the build in
-> makefile-infra-rework, but I agree that more autoconf testcases can be
-> added at buildtime.
-> Thanks,
-> -Garrett
-> =
-
-> -------------------------------------------------------------------------=
------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-D=
-ay =
-
-> trial. Simplify your report design, integration and deployment - and focu=
-s on =
-
-> what you do best, core application coding. Discover what's new with =
-
+> 
+> diff -uprN ltp_orig/testcases/kernel/power_management/check_kv_arch.c ltp/testcases/kernel/power_management/check_kv_arch.c
+> --- ltp_orig/testcases/kernel/power_management/check_kv_arch.c	2009-08-28 10:54:59.000000000 +0530
+> +++ ltp/testcases/kernel/power_management/check_kv_arch.c	2009-08-28 12:36:07.000000000 +0530
+> @@ -23,6 +23,12 @@ int kernel_is_too_old(void) {
+>  	return 0;
+>  }
+> 
+> +int check_timer_migr_supp(void) {
+> +	if (tst_kvercmp(2,6,31) < 0)
+> +		return 1;
+> +	return 0;
+> +}
+> +
+>  /*
+>   * yeah, to make the makefile coding easier, do_check returns
+>   * 1 if unshare is not supported, 0 if it is
+> @@ -35,7 +41,17 @@ int do_check(void) { return kernel_is_to
+>  int do_check(void) { return 1; }
+>  #endif
+> 
+> -int main() {
+> -	return do_check();
+> +int main(int argc, char *argv[]) {
+> +	char feature[20];
+> +	if (argc == 1) 
+> +		return do_check();
+> +	else
+> +	{
+> +		printf("argument is %s", argv[1]);
+> +		if (strcmp(argv[1], "timer_migration")==0)
+> +			if (check_timer_migr_supp() == 0)
+> +				return 0;
+> +			else
+> +				return 1;
+> +	} 
+>  }
+> -
+> 
+> ------------------------------------------------------------------------------
+> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+> trial. Simplify your report design, integration and deployment - and focus on 
+> what you do best, core application coding. Discover what's new with 
 > Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 > _______________________________________________
 > Ltp-list mailing list
 > Ltp-list@lists.sourceforge.net
 > https://lists.sourceforge.net/lists/listinfo/ltp-list
 
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
 
-trial. Simplify your report design, integration and deployment - and focus =
-on =
-
-what you do best, core application coding. Discover what's new with =
-
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
