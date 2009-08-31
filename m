@@ -1,19 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Jacky.Malcles@bull.net>) id 1Mke8i-00004y-C8
-	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2009 13:20:12 +0000
-Received: from ecfrec.frec.bull.fr ([129.183.4.8])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mke8X-0006ZP-VY
-	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2009 13:20:12 +0000
-Message-ID: <4AA5085D.2060201@bull.net>
-Date: Mon, 07 Sep 2009 15:19:25 +0200
-From: Jacky Malcles <Jacky.Malcles@bull.net>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <markver@us.ibm.com>) id 1MiF9b-0004QP-PN
+	for ltp-list@lists.sourceforge.net; Mon, 31 Aug 2009 22:15:11 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MiF9Q-0001iL-5L
+	for ltp-list@lists.sourceforge.net; Mon, 31 Aug 2009 22:15:06 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e1.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n7VMESnv026820
+	for <ltp-list@lists.sourceforge.net>; Mon, 31 Aug 2009 18:14:28 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n7VMEsA1239966
+	for <ltp-list@lists.sourceforge.net>; Mon, 31 Aug 2009 18:14:54 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n7VMEsgr022441
+	for <ltp-list@lists.sourceforge.net>; Mon, 31 Aug 2009 18:14:54 -0400
+Received: from d01ml096.pok.ibm.com (d01ml096.pok.ibm.com [9.63.10.19])
+	by d01av03.pok.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
+	n7VMEsiN022433
+	for <ltp-list@lists.sourceforge.net>; Mon, 31 Aug 2009 18:14:54 -0400
+Message-ID: <OF78939903.9E28133E-ON85257623.00782F9F-85257623.007A366B@us.ibm.com>
+From: Mark Ver <markver@us.ibm.com>
+Date: Mon, 31 Aug 2009 18:14:52 -0400
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------010201010504090100010509"
-Subject: [LTP] acl_test01 TestCase
+Subject: [LTP] older distribution levels
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,193 +37,98 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============2909682017682878774=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: jyoung5@us.ibm.com
 
-This is a multi-part message in MIME format.
---------------010201010504090100010509
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+--===============2909682017682878774==
+Content-type: multipart/alternative; 
+	Boundary="0__=0ABBFCB0DFEBA90F8f9e8a93df938690918c0ABBFCB0DFEBA90F"
+Content-Disposition: inline
 
-Subrata,
-
-runltp can not run acl_test01 by default, we need a mounted partition 
- with ACL options.
- 
- To have acl_test01 started by runltp (or manually) without any acl aware partition,
- 
- if you agree I suggest the following patch: a kind of new setup and
-  
- at the same time the activation of a non root user.
- 
- regards,
- 
- Jacky
-
--- 
- Jacky Malcles    	     B1-403   Email : Jacky.Malcles@bull.net
- Bull SA, 1 rue de Provence, B.P 208, 38432 Echirolles CEDEX, FRANCE
- Tel : 04.76.29.73.14
+--0__=0ABBFCB0DFEBA90F8f9e8a93df938690918c0ABBFCB0DFEBA90F
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: quoted-printable
 
 
---------------010201010504090100010509
-Content-Type: text/plain;
- name="envoi"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="envoi"
 
---- acl_test01.ori	2009-09-01 16:12:53.000000000 +0200
-+++ acl_test01	2009-09-01 16:12:39.000000000 +0200
-@@ -24,17 +24,91 @@
- #
- #  HISTORY:
- #    03/03 Jerone Young  (jyoung5@us.ibm.com)
-+#    09/08 Jacky Malcles changing the setup to have this TC started by runltp 
- #*********************************************************************
--export PATH=$PATH:/usr/sbin/
-+#
-+################################################################
-+# 
-+# Make sure that uid=root is running this script. 
-+# Make sure that loop device is built into the kernel  
-+# Make sure that ACL(Access Control List) and Extended Attribute are
-+#     built into the kernel
-+#
-+#
-+################################################################
- 
- TEST_USER1="acltest1"
- TEST_USER1_GROUP="users"
- TEST_USER1_PASSWD="ltp_test_pass1"
--#ensure the test partition is ACL aware
--TEST_USER1_HOMEDIR="/tmp/$TEST_USER1"
-+TEST_USER1_HOMEDIR="tacl/mount-ext3/$TEST_USER1"
-+
-+FILE_ACL="tacl/mount-ext3/test_file"
-+FILE_ACL_LINK="tacl/mount-ext3/test_file_link"
-+TCbin=`pwd`
-+
-+iam=`whoami`
-+if [ "z$iam" = "z$TEST_USER1" ]
-+then
-+	echo ""
-+else
-+if [ $UID != 0 ]
-+then
-+        echo "FAILED: Must have root access to execute this script"
-+        exit 1
-+fi
-+
-+if [ ! -e tacl ]
-+then
-+        mkdir -m 777 tacl
-+else
-+        echo "FAILED: Directory tacl are exist"
-+        exit 1
-+fi
-+
-+#       The  following  commands  can  be  used as an example of using the loop
-+#       device.
-+
-+dd if=/dev/zero of=tacl/blkext3 bs=1k count=10240
-+chmod 777 tacl/blkext3
-+#
-+losetup /dev/loop0 tacl/blkext3 2>&1 > /dev/null
-+if [ $? != 0 ]
-+then
-+        echo ""
-+        echo "FAILED:  [ losetup ] Must have loop device support by kernel"
-+        echo -e "\t to execute this script"
-+        exit 1
-+fi
-+
-+mount | grep ext2
-+if [ $? != 0 ] 
-+then
-+        mkfs -t ext3 /dev/loop0 #> /dev/null 2>&1
-+        mkdir  -m 777 tacl/mount-ext3
-+        mount -t ext3 -o defaults,acl,user_xattr /dev/loop0 tacl/mount-ext3
-+        if [ $? != 0 ]
-+        then
-+                echo ""
-+                echo "FAILED: [ mount ] Make sure that ACL (Access Control List)"
-+                echo -e "\t and Extended Attribute are built into the kernel"
-+                echo -e "\t Can not mount ext3 file system with acl and user_xattr options"
-+                exit 1
-+        fi
-+else
-+        mkfs -t ext2 /dev/loop0
-+        mkdir  -m 777 tacl/mount-ext3
-+        mount -t ext2 -o defaults,acl,user_xattr /dev/loop0 tacl/mount-ext3
-+        if [ $? != 0 ]
-+        then
-+                echo ""
-+                echo "FAILED: [ mount ] Make sure that ACL (Access Control List)"
-+                echo -e "\t and Extended Attribute are built into the kernel"
-+                echo -e "\t Can not mount ext2 file system with acl and user_xattr options"
-+                exit 1
-+        fi
-+fi
-+fi
- 
--FILE_ACL="/tmp/test_file"
--FILE_ACL_LINK="/tmp/test_file_link"
- 
- #-----------------------------------------------------------------------
- # FUNCTION:  do_setup
-@@ -55,7 +129,7 @@ do_setup(){
- 	rm -rf $TEST_USER1_HOMEDIR 
- 	userdel $TEST_USER1 > /dev/null 2>&1
- 	sleep 1
--	useradd -d $TEST_USER1_HOMEDIR -m -g $TEST_USER1_GROUP $TEST_USER1 -s /bin/sh
-+	useradd -d `pwd`/$TEST_USER1_HOMEDIR -m -g $TEST_USER1_GROUP $TEST_USER1 -s /bin/sh
- 
- 	if [ $? != 0 ]
- 	then {
-@@ -81,6 +155,9 @@ do_cleanup() {
- 	userdel $TEST_USER1
- 	rm -f $FILE_ACL > /dev/null 2>&1
- 	rm -f $FILE_ACL_LINK > /dev/null 2>&1
-+	umount -d tacl/mount-ext3
-+	rm -rf tacl
-+
- }
- 
- #-----------------------------------------------------------------------
-@@ -91,6 +168,7 @@ iam=`whoami`
- EXIT_CODE=0
- if [ "z$iam" = "z$TEST_USER1" ]
- then
-+	echo ""
- 	echo "TESTING ACLS FOR 2ND USER $iam"
- 
- 	#setup files for extended attributes
-@@ -118,6 +196,7 @@ then
-         fi
- else
- 	do_setup
-+	echo ""
- 	echo "TESTING ACLS FOR USER $iam"
- 
- 	touch $FILE_ACL
-@@ -150,11 +229,8 @@ else
- 	chown $TEST_USER1 $FILE_ACL
- 	chown $TEST_USER1 $FILE_ACL_LINK
- 
--	if [ -z ${TCbin} ]
--	then
--   		export TCbin=$PWD
--	fi
--	
-+	su $TEST_USER1 -c "$0"
-+	echo ""
- 	do_cleanup
- fi	
- 
+We've used LTP to run general verification on supported distribution
+levels.  But sometimes supported distributions (even with the latest
+updates) still run old stuff.
 
---------------010201010504090100010509
+This usually leads to 2 kinds of issues as the LTP version marches on:
+1)  new testcases expect new features and don't properly address compil=
+ing
+and/or running on the kernel and subsystems provided on the older
+distribution.
+2)  the LTP build itself requires new software (mostly new versions of
+autoconf) which are not yet provided on the older distribution.
+
+Any thoughts on the general policy to use with these distributions?  Fr=
+om a
+verification stand point, we'd like to use only software that comes as =
+part
+of the distribution.  Ideally we'd like to build as little as possible =
+and
+run things straight out of the box.
+
+Does it make sense to just stick to older LTP versions?  Or does it mak=
+e
+more sense to bug developers and such to update levels and patch code u=
+ntil
+LTP runs/builds out of the box on target x?  In the meanwhile of course=
+
+building software and patching LTP manually to get around problems.
+
+
+Thanks,
+- Mark Ver
+
+office:  Building 710 / Room 2-RF-10
+phone: (845) 435-7794  [tie 8 295-7794]=
+
+--0__=0ABBFCB0DFEBA90F8f9e8a93df938690918c0ABBFCB0DFEBA90F
+Content-type: text/html; charset=US-ASCII
+Content-Disposition: inline
+Content-transfer-encoding: quoted-printable
+
+<html><body>
+<p>We've used LTP to run general verification on supported distribution=
+ levels.  But sometimes supported distributions (even with the latest u=
+pdates) still run old stuff.<br>
+<br>
+This usually leads to 2 kinds of issues as the LTP version marches on:<=
+br>
+1)  new testcases expect new features and don't properly address compil=
+ing and/or running on the kernel and subsystems provided on the older d=
+istribution.<br>
+2)  the LTP build itself requires new software (mostly new versions of =
+autoconf) which are not yet provided on the older distribution.<br>
+<br>
+Any thoughts on the general policy to use with these distributions?  Fr=
+om a verification stand point, we'd like to use only software that come=
+s as part of the distribution.  Ideally we'd like to build as little as=
+ possible and run things straight out of the box.<br>
+<br>
+Does it make sense to just stick to older LTP versions?  Or does it mak=
+e more sense to bug developers and such to update levels and patch code=
+ until LTP runs/builds out of the box on target x?  In the meanwhile of=
+ course building software and patching LTP manually to get around probl=
+ems.   <br>
+<br>
+<br>
+Thanks,<br>
+- Mark Ver<br>
+<br>
+office:  Building 710 / Room 2-RF-10<br>
+phone: (845) 435-7794  [tie 8 295-7794]<br>
+</body></html>=
+
+--0__=0ABBFCB0DFEBA90F8f9e8a93df938690918c0ABBFCB0DFEBA90F--
+
+
+
+--===============2909682017682878774==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -220,7 +139,7 @@ Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---------------010201010504090100010509
+--===============2909682017682878774==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -231,5 +150,6 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---------------010201010504090100010509--
+--===============2909682017682878774==--
+
 
