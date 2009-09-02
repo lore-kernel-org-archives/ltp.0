@@ -1,34 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MpleI-000890-5F
-	for ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 16:21:58 +0000
-Received: from e38.co.us.ibm.com ([32.97.110.159])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MpleA-0000i0-8O
-	for ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 16:21:57 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8LGHhBq028366
-	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 10:17:43 -0600
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n8LGLRfH160010
-	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 10:21:27 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n8LGLQqO002502
-	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 10:21:26 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090921072453.7307.96056.sendpatchset@localhost.localdomain>
-References: <20090921072444.7307.84825.sendpatchset@localhost.localdomain>
-	<20090921072453.7307.96056.sendpatchset@localhost.localdomain>
-Date: Mon, 21 Sep 2009 21:50:28 +0530
-Message-Id: <1253550030.6736.25.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [Patch 2/6] To fix issue in get_sched_values
-Reply-To: subrata@linux.vnet.ibm.com
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <zhangxiliang@cn.fujitsu.com>) id 1MikVf-0006VA-Cc
+	for ltp-list@lists.sourceforge.net; Wed, 02 Sep 2009 07:44:03 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MikVX-0005yn-0c
+	for ltp-list@lists.sourceforge.net; Wed, 02 Sep 2009 07:44:03 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id ED979170028
+	for <ltp-list@lists.sourceforge.net>;
+	Wed,  2 Sep 2009 15:43:41 +0800 (CST)
+Received: from fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id n827hdcK005137
+	for <ltp-list@lists.sourceforge.net>; Wed, 2 Sep 2009 15:43:39 +0800
+Received: from [127.0.0.1] (unknown [10.167.141.212])
+	by fnst.cn.fujitsu.com (Postfix) with ESMTPA id 7BBD1D4181
+	for <ltp-list@lists.sourceforge.net>;
+	Wed,  2 Sep 2009 15:43:22 +0800 (CST)
+Message-ID: <4A9E236B.6040606@cn.fujitsu.com>
+Date: Wed, 02 Sep 2009 15:48:59 +0800
+From: Zhang Xiliang <zhangxiliang@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP]  [PATCH] mbind01: Fix the bug of mind case10
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,60 +36,69 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, svaidy@linux.vnet.ibm.com, ego@in.ibm.com, arun@linux.vnet.ibm.com
+To: ltp-list@lists.sourceforge.net
 
-On Mon, 2009-09-21 at 12:54 +0530, Poornima Nayak wrote: 
-> get_sched_values was returning 1 & 0 instead of max sched_mc & max sched_smt.
-> This patch fixes the issue in the first version of this file.
-> 
-> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+I tested ltp mbind01 case and found the case10 failed.
 
-Thanks.
+In case10, the expect errno is EFAULT. 
 
-Regards--
-Subrata
+In mbind manual, it says "EFAULT Part or all of the memory range specified by nodemask 
+and maxnode points outside your accessible address space. "
 
-> 
-> diff -uprN ltp-full-20090831/testcases/kernel/power_management/get_sched_values.c ltp-full-20090831_patched/testcases/kernel/power_management/get_sched_values.c
-> --- ltp-full-20090831/testcases/kernel/power_management/get_sched_values.c	2009-08-31 10:45:45.000000000 +0530
-> +++ ltp-full-20090831_patched/testcases/kernel/power_management/get_sched_values.c	2009-09-21 12:27:01.528978103 +0530
-> @@ -40,14 +40,8 @@ int main(int argc, char **argv)
->  	{
->  		param = argv[1];
->  		if (strcmp(param, "sched_mc")==0)
-> -			if (get_supp_sched_mc() == 0)
-> -				return 0;
-> -			else
-> -				return 1;
-> +			return (get_supp_sched_mc());
->  		if (strcmp(param, "sched_smt")==0)
-> -                        if (get_supp_sched_smt() == 0)
-> -                                return 0;
-> -                        else
-> -                                return 1;
-> +                        return (get_supp_sched_smt());
->  	}
->  }
-> 
-> ------------------------------------------------------------------------------
-> Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
-> is the only developer event you need to attend this year. Jumpstart your
-> developing skills, take BlackBerry mobile applications to market and stay 
-> ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-> http://p.sf.net/sfu/devconf
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+So the case should use invalid "nodemask" instead of invalid "p" to test.
+
+Signed-off-by: Zhang Xiliang <zhangxiliang@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/mbind/mbind01.c |    9 ++++++---
+ 1 files changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/mbind/mbind01.c b/testcases/kernel/syscalls/mbind/mbind01.c
+index 446fdaf..4afa71b 100644
+--- a/testcases/kernel/syscalls/mbind/mbind01.c
++++ b/testcases/kernel/syscalls/mbind/mbind01.c
+@@ -238,8 +238,8 @@ static struct test_case tcase[] = {
+         },
+         { // case10
+                 .ttype          = INVALID_POINTER,
+-                .policy         = MPOL_DEFAULT,
+-                .from_node      = NONE,
++                .policy         = MPOL_PREFERRED,
++                .from_node      = SELF,
+                 .ret            = -1,
+                 .err            = EFAULT,
+         },
+@@ -263,6 +263,7 @@ static int do_test(struct test_case *tc) {
+         nodemask_t nodemask, getnodemask;
+         unsigned long maxnode = NUMA_NUM_NODES;
+         unsigned long len = MEM_LENGTH;
++	unsigned long *invalid_nodemask;
+ 
+         /* We assume that there is only one node(node0). */
+         nodemask_zero(&nodemask);
+@@ -279,13 +280,15 @@ static int do_test(struct test_case *tc) {
+                 tst_exit();
+         }
+         if(tc->ttype == INVALID_POINTER)
+-                p = (char*)0xc0000000;
++		invalid_nodemask = (unsigned long *)0xc0000000;
+ /*
+          * Execute system call
+          */
+         errno = 0;
+         if (tc->from_node == NONE)
+                 TEST(sys_ret = syscall(__NR_mbind, p, len, tc->policy,NULL, 0, tc->flags));
++	else if (tc->ttype == INVALID_POINTER)
++		TEST(sys_ret = syscall(__NR_mbind, p, len, tc->policy, invalid_nodemask, maxnode, tc->flags));
+         else
+                 TEST(sys_ret = syscall(__NR_mbind, p, len, tc->policy,&nodemask, maxnode, tc->flags));
+         sys_errno = errno;
 
 
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-http://p.sf.net/sfu/devconf
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
