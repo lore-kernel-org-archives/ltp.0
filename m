@@ -1,34 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MlH0L-0002NM-6D
-	for ltp-list@lists.sourceforge.net; Wed, 09 Sep 2009 06:50:09 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MlH0E-0006bH-HI
-	for ltp-list@lists.sourceforge.net; Wed, 09 Sep 2009 06:50:09 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n896idMF021204
-	for <ltp-list@lists.sourceforge.net>; Wed, 9 Sep 2009 00:44:39 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n896nurt210164
-	for <ltp-list@lists.sourceforge.net>; Wed, 9 Sep 2009 00:49:56 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n896nu0G005183
-	for <ltp-list@lists.sourceforge.net>; Wed, 9 Sep 2009 00:49:56 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4AA73AB0.9020202@in.ibm.com>
-References: <4AA67D12.5010602@in.ibm.com> <4AA7391B.4020804@cn.fujitsu.com>
-	<4AA73AB0.9020202@in.ibm.com>
-Date: Wed, 09 Sep 2009 12:19:47 +0530
-Message-Id: <1252478989.5006.9.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] LTP : Fix connectors event_generator program : gen_fork
-Reply-To: subrata@linux.vnet.ibm.com
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <hjia@redhat.com>) id 1Mj8Wb-00032N-T3
+	for ltp-list@lists.sourceforge.net; Thu, 03 Sep 2009 09:22:37 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Mj8Wa-0003kL-VK
+	for ltp-list@lists.sourceforge.net; Thu, 03 Sep 2009 09:22:37 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.13.8/8.13.8) with ESMTP id n839MVuU017995
+	for <ltp-list@lists.sourceforge.net>; Thu, 3 Sep 2009 05:22:31 -0400
+Message-ID: <4A9F8AE9.300@redhat.com>
+Date: Thu, 03 Sep 2009 17:22:49 +0800
+From: Hushan Jia <hjia@redhat.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] network: Fix iproute test case error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,105 +29,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Suzuki Poulose <suzuki@in.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Wed, 2009-09-09 at 10:48 +0530, Suzuki Poulose wrote: 
-> Li Zefan wrote:
-> > Suzuki Poulose wrote:
-> >> Hi,
-> >>
-> >> There is a testcase issue in the event_generator code. The gen_fork() is
-> >> called to generate the fork event.
-> >>
-> >> The child process prints the following message:
-> >>
-> >> static inline void gen_fork(void)
-> >> {
-> >>         pid_t pid;
-> >>         int status;
-> >>
-> >>         pid = fork();
-> >>         if (pid == 0) {
-> >>                 printf("fork parent: %d, child: %d\n", getppid(),
-> >> getpid());
-> >>                 exit(0);
-> >>         } else if (pid < 0) {
-> >>                 fprintf(stderr, "fork() failed\n");
-> >>                 exit(1);
-> >>         }
-> >> }
-> >>
-> >> Now the parent process just exits after this call. So, if the child
-> >> doesn't get to run before parent exits, the child will see the ppid as
-> >> 1, that of INIT and this contradicts the actual data. Hence the test fails.
-> >>
-> >> Attached patch fixes the issue. I have verified the same. Please apply.
-> >>
-> > 
-> > Thanks for fixing it.
-> > 
-> > Acked-by: Li Zefan <lizf@cn.fujitsu.com>
-> > 
-> > But you forgot to add your Signed-off-by in the patch. ;)
-> > 
-> Ah! Thanks for catching that ! Re-attaching it ;)
-> 
-> Thanks
-> 
-> Suzuki
-> plain text document attachment
-> (connectors-gen_fork-wait-for-child.diff)
-> gen_fork() event should wait until the child exits. Otherwise the child would see INIT as the parent and
-> end up in collecting wrong information to compare with.
-> 
-> 
-> Signed-off-by: Suzuki K P <suzuki@in.ibm.com>
+Hello,
 
-Thanks.
+When I run network test case testcases/network/iproute/ip_tests.sh, some errors shown:
+ip01        0  TINFO  :  Test #1: changing mtu size of eth0:1 device.
+/mnt/ltp/ltp-full-20090731/testcases/bin/ip_tests.sh: line 198: [: -eq: unary operator expected.
 
-Regards--
-Subrata
+The output of
+ifconfig eth0:1 | grep -i MTU | sed "s/^.*MTU://"
+is like:
+1500  Metric:1
+so should print field 1 instead of field 5.
 
-> Acked-by: Li Zefan <lizf@cn.fujitsu.com>
-> 
-> Index: ltp/testcases/kernel/connectors/pec/event_generator.c
-> ===================================================================
-> --- ltp.orig/testcases/kernel/connectors/pec/event_generator.c	2008-10-22 13:40:31.000000000 +0000
-> +++ ltp/testcases/kernel/connectors/pec/event_generator.c	2009-09-08 13:52:14.000000000 +0000
-> @@ -25,6 +25,9 @@
->  #include <stdlib.h>
->  #include <stdio.h>
->  #include <pwd.h>
-> +#include <sys/types.h>
-> +#include <sys/wait.h>
-> +
->  #include "test.h"
-> 
->  #define DEFAULT_EVENT_NUM       1
-> @@ -94,6 +97,7 @@
->  static inline void gen_fork(void)
->  {
->  	pid_t pid;
-> +	int status;
-> 
->  	pid = fork();
->  	if (pid == 0) {
-> @@ -102,6 +106,8 @@
->  	} else if (pid < 0) {
->  		fprintf(stderr, "fork() failed\n");
->  		exit(1);
-> +	} else {  /* Parent should wait for the child */
-> +		wait(&status);
->  	}
->  }
-> 
-> ------------------------------------------------------------------------------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> trial. Simplify your report design, integration and deployment - and focus on 
-> what you do best, core application coding. Discover what's new with 
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
+Thanks&  Regards,
+Hushan
+
+---
+
+network: Fix iproute test case error
+
+Signed-off-by: Hushan Jia<hjia@redhat.com>
+
+diff -Nrup ltp-full-20090831-orig/testcases/network/iproute/ip_tests.sh ltp-full-20090831/testcases/network/iproute/ip_tests.sh
+--- ltp-full-20090831-orig/testcases/network/iproute/ip_tests.sh	2009-09-03 16:47:56.000000000 +0800
++++ ltp-full-20090831/testcases/network/iproute/ip_tests.sh	2009-09-03 16:51:04.000000000 +0800
+@@ -194,7 +194,7 @@ test01()
+  			"Test #1: ip command failed. Reason: "
+  		return $RC
+  	else
+-		MTUSZ=`ifconfig eth0:1 | grep -i MTU | sed "s/^.*MTU://" | awk '{print $5}'`
++		MTUSZ=`ifconfig eth0:1 | grep -i MTU | sed "s/^.*MTU://" | awk '{print $1}'`
+  		if [ $MTUSZ -eq 300 ]
+  		then
+  			tst_resm TPASS "Test #1: changing mtu size success"
 
 
 ------------------------------------------------------------------------------
