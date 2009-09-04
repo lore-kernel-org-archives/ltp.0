@@ -1,24 +1,52 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <kiran@linux.vnet.ibm.com>) id 1MocGx-0006Km-0G
-	for ltp-list@lists.sourceforge.net; Fri, 18 Sep 2009 12:09:07 +0000
-Received: from e23smtp01.au.ibm.com ([202.81.31.143])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MocGq-0004XL-HH
-	for ltp-list@lists.sourceforge.net; Fri, 18 Sep 2009 12:09:06 +0000
-From: Kiran <kiran@linux.vnet.ibm.com>
-In-Reply-To: <4AB23BCE.4030703@redhat.com>
-References: <1251794259.3881.6.camel@kiran-laptop>
-	<1251875695.4930.8.camel@subratamodak.linux.ibm.com>
-	<1252057746.4698.6.camel@kiran-laptop> <4AB037E4.9000904@redhat.com>
-	<4AB23BCE.4030703@redhat.com>
-Date: Fri, 18 Sep 2009 17:38:47 +0530
-Message-Id: <1253275727.6773.41.camel@kiran-laptop>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Patch to change the format of Steve Rostedt's
- rt-migrate-test testcase
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <s.ikarashi@jp.fujitsu.com>) id 1MjOGp-0005D8-D3
+	for ltp-list@lists.sourceforge.net; Fri, 04 Sep 2009 02:11:23 +0000
+Received: from fgwmail9.fujitsu.co.jp ([192.51.44.39])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MjOGh-00040e-RR
+	for ltp-list@lists.sourceforge.net; Fri, 04 Sep 2009 02:11:23 +0000
+Received: from fgwmail5.fujitsu.co.jp (fgwmail5.fujitsu.co.jp [192.51.44.35])
+	by fgwmail9.fujitsu.co.jp (Fujitsu Gateway) with ESMTP id
+	n841ZEgr032489 for <ltp-list@lists.sourceforge.net> (envelope-from
+	s.ikarashi@jp.fujitsu.com); Fri, 4 Sep 2009 10:35:14 +0900
+Received: from m1.gw.fujitsu.co.jp ([10.0.50.71])
+	by fgwmail5.fujitsu.co.jp (Fujitsu Gateway) with ESMTP id
+	n841ZCeo006021 for <ltp-list@lists.sourceforge.net> (envelope-from
+	s.ikarashi@jp.fujitsu.com); Fri, 4 Sep 2009 10:35:13 +0900
+Received: from smail (m1 [127.0.0.1])
+	by outgoing.m1.gw.fujitsu.co.jp (Postfix) with ESMTP id C395045DE4E
+	for <ltp-list@lists.sourceforge.net>;
+	Fri,  4 Sep 2009 10:35:12 +0900 (JST)
+Received: from s1.gw.fujitsu.co.jp (s1.gw.fujitsu.co.jp [10.0.50.91])
+	by m1.gw.fujitsu.co.jp (Postfix) with ESMTP id 9FCBA45DE4F
+	for <ltp-list@lists.sourceforge.net>;
+	Fri,  4 Sep 2009 10:35:12 +0900 (JST)
+Received: from s1.gw.fujitsu.co.jp (localhost.localdomain [127.0.0.1])
+	by s1.gw.fujitsu.co.jp (Postfix) with ESMTP id 89220E08001
+	for <ltp-list@lists.sourceforge.net>;
+	Fri,  4 Sep 2009 10:35:12 +0900 (JST)
+Received: from m106.s.css.fujitsu.com (m106.s.css.fujitsu.com [10.249.87.106])
+	by s1.gw.fujitsu.co.jp (Postfix) with ESMTP id 3970B1DB8040
+	for <ltp-list@lists.sourceforge.net>;
+	Fri,  4 Sep 2009 10:35:12 +0900 (JST)
+Received: from m106.css.fujitsu.com (m106 [127.0.0.1])
+	by m106.s.css.fujitsu.com (Postfix) with ESMTP id 0CEC65B88DC
+	for <ltp-list@lists.sourceforge.net>;
+	Fri,  4 Sep 2009 10:35:12 +0900 (JST)
+Received: from dune.soft.fujitsu.com (dune.soft.fujitsu.com [10.124.100.185])
+	by m106.s.css.fujitsu.com (Postfix) with ESMTP id A0C1B5B88C3
+	for <ltp-list@lists.sourceforge.net>;
+	Fri,  4 Sep 2009 10:35:11 +0900 (JST)
+Message-ID: <4AA06ECF.4040508@jp.fujitsu.com>
+Date: Fri, 04 Sep 2009 10:35:11 +0900
+From: Seiichi Ikarashi <s.ikarashi@jp.fujitsu.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="------------030505090506070203060008"
+Subject: [LTP] [PATCH] fix UNRESOLVED failures of pthread tests in
+	open_posix_testsuite
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,89 +56,177 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jburke@redhat.com
-Cc: ltp-list@lists.sf.net, rostedt <rostedt@goodmis.org>
+To: ltp-list@lists.sourceforge.net
 
-On Thu, 2009-09-17 at 09:38 -0400, Jeff Burke wrote:
-> Jeff Burke wrote:
-> > Kiran wrote:
-> >> Hi Subrata,
-> >>
-> >> This patch places the rt-migrate testcase into the
-> >> realtime/func/rt-migrate directory.
-> >>
-> >> Signed-off-by: Kiran Prakash <kiran@linux.vnet.ibm.com>
-> >>
-> > Kiran,
-> >     Did you get a chance to test this on both x86_64 and i386? In my 
-> > stand alone version(Before you ported it to LTP). My results vary quite 
-> > a bit for i386. I have attached two files.
-> > standalone - Is the rt-migrate test results outside of LTP
-> > ltpver - Is the rt-migrate test results ported into LTP
-> > 
-> > Note: The results are from the same system same kernel. The test were 
-> > run back to back.
-> > 
-> Kiran,
-> 	Did you get a chance to review the results?
-> Jeff
-> > Thanks,
-> > Jeff
-> > 
-> 
+This is a multi-part message in MIME format.
+--------------030505090506070203060008
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+
 Hi,
 
-This is a patch on the cvs version of LTP.
+I report a couple of "UNRESOLVED" failures of open_posix_testsuite in ltp
+and send a patch for them.
 
-Signed-off-by: Kiran Prakash <kiran@linux.vnet.ibm.com>
+I got following failures while executing open_posix_testsuite.
 
-diff -Naur ltp_orig/testcases/realtime/func/rt-migrate/rt-migrate.c ltp/testcases/realtime/func/rt-migrate/rt-migrate.c
---- ltp_orig/testcases/realtime/func/rt-migrate/rt-migrate.c	2009-09-07 14:29:10.000000000 +0530
-+++ ltp/testcases/realtime/func/rt-migrate/rt-migrate.c	2009-09-18 17:30:34.000000000 +0530
-@@ -46,7 +46,6 @@
-  *                    testcases by Kiran Prakash
-  *
-  */
--#define _GNU_SOURCE
- #include <stdio.h>
- #ifndef __USE_XOPEN2K
- # define __USE_XOPEN2K
-@@ -247,17 +246,17 @@
- 	for (i = 0; i < nr_runs; i++) {
- 		printf("%4d:   ", i);
- 		for (t = 0; t < nr_tasks; t++)
--			printf("%6lld  ", intervals[t].records[i].y);
-+			printf("%ld  ", intervals[t].records[i].y);
+> conformance/interfaces/pthread_setschedparam/5-1: execution: UNRESOLVED: Output: 
+> [07:16:29]Test conformance/interfaces/pthread_setschedparam/5-1.c unresolved: got 22 (Invalid argument) on line 152 (Sem_post in signal handler 1)
+
+> conformance/interfaces/pthread_detach/4-3: execution: UNRESOLVED: Output:
+> *snip*
+> [12:05:38]Test conformance/interfaces/pthread_detach/4-3.c unresolved: got 22 (Invalid argument) on line 157 (Sem_post in signal handler 1)
+
+Both of them have wrong steps of its test preparation:
+  1. register signal handlers (just do sem_post()) for SIGUSR1/SIGUSR2.
+  2. block those signals
+  3. prepare something (sem_init()) for these signal handlers
+  4. send signals to itself from sub-threads.
+
+They have a window of not-yet-prepared-for-signals
+between step 1 and 2. I think above "UNRESOLVED" failures
+(sem_post() before sem_init()) are the result of getting a
+signal during this window.
+I don't know who sent a signal to them but I guess
+neighboring tests are suspects, because number of tests run
+concurrently in open_posix_testsuite.
+
+The fix shall be just delaying step 1 to between step 2 and 4,
+so I wrote such a patch for both pthread_setschedparam and
+pthread_detach. I have confirmed that this UNRESOLVED failure
+disappeared with this patch applied.
+
+Signed-off-by: Seiichi Ikarashi <s.ikarashi@jp.fujitsu.com>
+
+Regards,
+
+
+--------------030505090506070203060008
+Content-Type: text/x-patch;
+ name="opt_pthread.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="opt_pthread.patch"
+
+Index: ltp/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-3.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-3.c,v
+retrieving revision 1.3
+diff -u -r1.3 4-3.c
+--- ltp/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-3.c	3 Jun 2005 16:31:46 -0000	1.3
++++ ltp/testcases/open_posix_testsuite/conformance/interfaces/pthread_detach/4-3.c	4 Sep 2009 00:51:35 -0000
+@@ -258,16 +258,6 @@
+ 	/* Initialize thread attribute objects */
+ 	scenar_init();
+ 	
+-	/* We need to register the signal handlers for the PROCESS */
+-	sigemptyset (&sa.sa_mask);
+-	sa.sa_flags = 0;
+-	sa.sa_handler = sighdl1;
+-	if ((ret = sigaction (SIGUSR1, &sa, NULL)))
+-	{ UNRESOLVED(ret, "Unable to register signal handler1"); }
+-	sa.sa_handler = sighdl2;
+-	if ((ret = sigaction (SIGUSR2, &sa, NULL)))
+-	{ UNRESOLVED(ret, "Unable to register signal handler2"); }
+-
+ 	/* We prepare a signal set which includes SIGUSR1 and SIGUSR2 */
+ 	sigemptyset(&usersigs);
+ 	ret = sigaddset(&usersigs, SIGUSR1);
+@@ -285,6 +275,16 @@
+ 	{ UNRESOLVED(errno, "Semsig2  init"); }
+ 	#endif
  
- 		printf("\n");
- 		printf(" len:   ");
- 		for (t = 0; t < nr_tasks; t++)
--			printf("%6lld  ", intervals_length[t].records[i].y);
-+			printf("%ld  ", intervals_length[t].records[i].y);
++	/* We need to register the signal handlers for the PROCESS */
++	sigemptyset (&sa.sa_mask);
++	sa.sa_flags = 0;
++	sa.sa_handler = sighdl1;
++	if ((ret = sigaction (SIGUSR1, &sa, NULL)))
++	{ UNRESOLVED(ret, "Unable to register signal handler1"); }
++	sa.sa_handler = sighdl2;
++	if ((ret = sigaction (SIGUSR2, &sa, NULL)))
++	{ UNRESOLVED(ret, "Unable to register signal handler2"); }
++
+ 	if ((ret = pthread_create(&th_work, NULL, test, NULL)))
+ 	{ UNRESOLVED(ret, "Worker thread creation failed"); }
+ 	
+Index: ltp/testcases/open_posix_testsuite/conformance/interfaces/pthread_setschedparam/5-1.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/open_posix_testsuite/conformance/interfaces/pthread_setschedparam/5-1.c,v
+retrieving revision 1.1
+diff -u -r1.1 5-1.c
+--- ltp/testcases/open_posix_testsuite/conformance/interfaces/pthread_setschedparam/5-1.c	3 Jun 2005 16:32:47 -0000	1.1
++++ ltp/testcases/open_posix_testsuite/conformance/interfaces/pthread_setschedparam/5-1.c	4 Sep 2009 00:51:35 -0000
+@@ -224,23 +224,6 @@
+ 	/* Initialize output routine */
+ 	output_init();
  
- 		printf("\n");
- 		printf(" loops: ");
- 		for (t = 0; t < nr_tasks; t++)
--			printf("%6ld  ", intervals_loops[t].records[i].y);
-+			printf("%ld  ", intervals_loops[t].records[i].y);
+-	/* We need to register the signal handlers for the PROCESS */
+-	sigemptyset ( &sa.sa_mask );
+-	sa.sa_flags = 0;
+-	sa.sa_handler = sighdl1;
+-
+-	if ( ( ret = sigaction ( SIGUSR1, &sa, NULL ) ) )
+-	{
+-		UNRESOLVED( ret, "Unable to register signal handler1" );
+-	}
+-
+-	sa.sa_handler = sighdl2;
+-
+-	if ( ( ret = sigaction ( SIGUSR2, &sa, NULL ) ) )
+-	{
+-		UNRESOLVED( ret, "Unable to register signal handler2" );
+-	}
+-
+ 	/* We prepare a signal set which includes SIGUSR1 and SIGUSR2 */
+ 	sigemptyset( &usersigs );
  
- 		printf("\n");
- 		printf("\n");
+@@ -274,6 +257,23 @@
+ 
+ #endif
+ 
++	/* We need to register the signal handlers for the PROCESS */
++	sigemptyset ( &sa.sa_mask );
++	sa.sa_flags = 0;
++	sa.sa_handler = sighdl1;
++
++	if ( ( ret = sigaction ( SIGUSR1, &sa, NULL ) ) )
++	{
++		UNRESOLVED( ret, "Unable to register signal handler1" );
++	}
++
++	sa.sa_handler = sighdl2;
++
++	if ( ( ret = sigaction ( SIGUSR2, &sa, NULL ) ) )
++	{
++		UNRESOLVED( ret, "Unable to register signal handler2" );
++	}
++
+ 	me = pthread_self();
+ 
+ 	if ( ( ret = pthread_create( &th_work, NULL, test, &me ) ) )
 
-Thanks,
-Kiran
-
+--------------030505090506070203060008
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-http://p.sf.net/sfu/devconf
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--------------030505090506070203060008
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------030505090506070203060008--
+
