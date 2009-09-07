@@ -1,29 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1MpdGg-0007nr-0d
-	for ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 07:25:02 +0000
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MpdGd-0002Z2-N5
-	for ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 07:25:01 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e6.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8L7TQpg031797
-	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 03:29:26 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n8L7OnFb178594
-	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 03:24:49 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n8L7LZrW024028
-	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 03:21:35 -0400
-From: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Date: Mon, 21 Sep 2009 12:54:44 +0530
-Message-Id: <20090921072444.7307.84825.sendpatchset@localhost.localdomain>
-Subject: [LTP] [Patch 1/6] To test consolidation resets when interfaces are
-	set to 0
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MkYRh-0006G0-Vi
+	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2009 07:15:25 +0000
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MkYRc-0001xW-Mr
+	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2009 07:15:25 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e2.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8778qoe015949
+	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 03:08:52 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n877FFLZ254764
+	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 03:15:15 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n877FEBu024587
+	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 03:15:14 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4AA4A299.1020105@cn.fujitsu.com>
+References: <4AA4A299.1020105@cn.fujitsu.com>
+Date: Mon, 07 Sep 2009 12:45:09 +0530
+Message-Id: <1252307709.4922.0.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] controller: fix the bug of missing
+	compilation	for controller cases
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,161 +37,52 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, svaidy@linux.vnet.ibm.com, ego@in.ibm.com, arun@linux.vnet.ibm.com
+To: Shan Wei <shanwei@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net, =?UTF-8?Q?=E7=BC=AA_=E5=8B=B0?= <miaox@cn.fujitsu.com>
 
-CPU consolidation testcase modified to test when sched_mc &(/) sched_smt
-is set to Zero processes dont consolidate to single package or CPU.
+On Mon, 2009-09-07 at 14:05 +0800, Shan Wei wrote:
+> When doing "./configure && make", I found the controller cases couldn't be compiled.
+> 
+> Because the config.mk file included into testcases/kernel/Makefile lost the definition
+> of LTP_CHECK_CGROUPSTATS_HEADER, so ltp never enters the controller directory to do "make".
+> 
+> And config.mk file is created by config.mk.in file in fact. In config.mk.in,
+> LTP_CHECK_CGROUPSTATS_HEADER is lost, it leads to the wrong config.mk.
+> Add LTP_CHECK_CGROUPSTATS_HEADER in config.mk.in to fix the problem.
+> 
+> 
+> Signed-off-by: Miao Xie <miaox@cn.fujitsu.com>
+> Signed-off-by: Shan Wei <shanwei@cn.fujitsu.com>
 
-Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+Thanks.
 
-diff -uprN ltp-full-20090831/testcases/kernel/power_management/cpu_consolidation.py ltp-full-20090831_patched/testcases/kernel/power_management/cpu_consolidation.py
---- ltp-full-20090831/testcases/kernel/power_management/cpu_consolidation.py	2009-08-31 10:45:45.000000000 +0530
-+++ ltp-full-20090831_patched/testcases/kernel/power_management/cpu_consolidation.py	2009-09-21 12:16:50.790630427 +0530
-@@ -5,6 +5,7 @@
- 
- import os
- import sys
-+import time
- LIB_DIR = "%s/testcases/kernel/power_management/lib" % os.environ['LTPROOT']
- sys.path.append(LIB_DIR)
- from optparse import OptionParser
-@@ -22,9 +23,12 @@ def main(argv=None):
- 
-     usage = "-w"
-     parser = OptionParser(usage)
--    parser.add_option("-c", "--mc_level", dest="mc_level",
-+    parser.add_option("-v", "--variation_test", dest="vary_mc_smt",
-+        default=False, action="store_true", help="Vary sched_mc & sched_smt. \
-+            -c and -t inputs are initial value of sched_mc & sched_smt")
-+    parser.add_option("-c", "--mc_value", dest="mc_value",
-         default=0, help="Sched mc power saving value 0/1/2")
--    parser.add_option("-t", "--smt_level", dest="smt_level",
-+    parser.add_option("-t", "--smt_value", dest="smt_value",
-         default=0, help="Sched smt power saving value 0/1/2")
-     parser.add_option("-w", "--workload", dest="work_ld",
-         default="ebizzy", help="Workload can be ebizzy/kernbench")
-@@ -35,22 +39,94 @@ def main(argv=None):
-     try:
-         count_num_cpu()
-         count_num_sockets()
--        if is_multi_socket():
--            set_sched_mc_power(options.mc_level)
--        if is_hyper_threaded():
--            set_sched_smt_power(options.smt_level)
--        map_cpuid_pkgid()
--        print "INFO: Created table mapping cpu to package"
--        background="no"
--        duration=60
--        pinned ="no"
--        trigger_workld(options.work_ld, options.stress, duration, background, pinned)
--        generate_report()
--        status = validate_cpu_consolidation(options.work_ld,options.mc_level, options.smt_level)
--        reset_schedmc()
--        if is_hyper_threaded():
--            reset_schedsmt()
--        return(status)        
-+        # User would set option -v / -vc / -vt to test cpu consolidation
-+        # gets disabled when sched_mc &(/) sched_smt is disabled when
-+        # workload is already running in the system 
-+        if options.vary_mc_smt:
-+
-+            # Since same code is used for testing package consolidation and core
-+            # consolidation is_multi_socket & is_hyper_threaded check is done
-+            if is_multi_socket():
-+                if options.mc_value:
-+                    set_sched_mc_power(options.mc_value)
-+                    mc_value=int(options.mc_value)
-+                else:    
-+                    set_sched_mc_power(1)
-+                    mc_value=int(options.mc_value)
-+            if is_hyper_threaded():
-+                if options.smt_value:
-+                    set_sched_smt_power(options.smt_value)
-+                    smt_value=int(options.smt_value)
-+                else:
-+                    set_sched_smt_power(1)
-+                    smt_value=1
-+
-+            #Generate arguments for trigger workload, run workload in background
-+            map_cpuid_pkgid()
-+            background="yes"
-+            duration=360
-+            pinned="no"
-+            if int(options.mc_value) < 2:
-+                trigger_ebizzy (smt_value, "partial", duration, background, pinned)
-+                work_ld="ebizzy"
-+                #Wait for 120 seconds and then validate cpu consolidation works
-+                #When sched_mc & sched_smt is set
-+                import time
-+                time.sleep(120)
-+            else:
-+                #Wait for 120 seconds and then validate cpu consolidation works
-+                #When sched_mc & sched_smt is set
-+                trigger_kernbench (smt_value, "partial", background, pinned) 
-+                work_ld="kernbench"
-+                import time
-+                time.sleep(240)
-+
-+            generate_report()
-+            status = validate_cpu_consolidation(work_ld, mc_value, smt_value)
-+            if status == 0:
-+                print "INFO: Consolidation worked sched_smt &(/) sched_mc is set"
-+                #Disable sched_smt & sched_mc interface values
-+                if (options.vary_mc_smt and options.mc_value) and is_multi_socket():
-+                    set_sched_mc_power(0)
-+                    #Reset sched_smt bcoz when sched_smt is set process still
-+                    #continue to consolidate
-+                    if is_hyper_threaded():
-+                        set_sched_smt_power(0)
-+                if (options.vary_mc_smt and options.smt_value) and is_hyper_threaded():
-+                    set_sched_smt_power(0)
-+                time.sleep(120)
-+                generate_report()
-+                status = validate_cpu_consolidation(options.work_ld,options.mc_value, options.smt_value)
-+                #CPU consolidation should fail as sched_mc &(/) sched_smt is disabled
-+                if status == 1:
-+                    return(0)
-+                else:
-+                    return(1)
-+            else:
-+                print "INFO: CPU consolidation failed when sched_mc &(/) \
-+sched_smt was enabled. This is pre-requisite to proceed"
-+                return(status)
-+        else:           
-+            #The else part of the code validates behaviour of sched_mc
-+            # and sched_smt set to 0, 1 & 2
-+            if is_multi_socket():
-+                set_sched_mc_power(options.mc_value)
-+            if is_hyper_threaded():
-+                set_sched_smt_power(options.smt_value)
-+                #Commented after observing changes in behaviour in 2.6.31-rc7
-+                #stress="thread"
-+            map_cpuid_pkgid()
-+            print "INFO: Created table mapping cpu to package"
-+            background="no"
-+            duration=60
-+            pinned ="no"
-+            trigger_workld( options.smt_value, options.work_ld, options.stress, duration, background, pinned)
-+            generate_report()
-+            status = validate_cpu_consolidation(options.work_ld,options.mc_value, options.smt_value)
-+            reset_schedmc()
-+            if is_hyper_threaded():
-+                reset_schedsmt()
-+            return(status)        
-     except Exception, details:
-         print "INFO: CPU consolidation failed", details
-         return(1)
+Regards--
+Subrata
+
+> ---
+>  config.mk.in |    2 ++
+>  1 files changed, 2 insertions(+), 0 deletions(-)
+> 
+> diff --git a/config.mk.in b/config.mk.in
+> index 0fcb80a..64e3847 100644
+> --- a/config.mk.in
+> +++ b/config.mk.in
+> @@ -9,3 +9,5 @@ LDFLAGS = @LDFLAGS@
+>  AIO_LIBS = @AIO_LIBS@
+>  SELINUX_LIBS = @SELINUX_LIBS@
+>  CRYPTO_LIB = @CRYPTO_LIB@
+> +
+> +LTP_CHECK_CGROUPSTATS_HEADER = @LTP_CHECK_CGROUPSTATS_HEADER@
+
 
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-http://p.sf.net/sfu/devconf
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
