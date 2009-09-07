@@ -1,32 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MkcbJ-0000kk-Uc
-	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2009 11:41:37 +0000
-Received: from e33.co.us.ibm.com ([32.97.110.151])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MkcbF-0006eo-Dl
-	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2009 11:41:37 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e33.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n87BdLQi031448
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 05:39:21 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n87BfR98252212
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 05:41:27 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n87BfQvR007175
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 05:41:27 -0600
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mkca7-0000ep-LZ
+	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2009 11:40:23 +0000
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Mkca1-000804-12
+	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2009 11:40:23 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e4.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n87BXPKV029926
+	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 07:33:25 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n87BeBMu241542
+	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 07:40:11 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n87Bb6GQ017297
+	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 07:37:06 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4A9E0655.4030703@cn.fujitsu.com>
-References: <4A9E0655.4030703@cn.fujitsu.com>
-Date: Mon, 07 Sep 2009 17:11:01 +0530
-Message-Id: <1252323674.4922.30.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <4AA06ECF.4040508@jp.fujitsu.com>
+References: <4AA06ECF.4040508@jp.fujitsu.com>
+Date: Mon, 07 Sep 2009 17:09:52 +0530
+Message-Id: <1252323604.4922.26.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH 2/2] mbind01: Fix the bug of mind case06
+Subject: Re: [LTP] [PATCH] fix UNRESOLVED failures of pthread tests
+	in	open_posix_testsuite
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -40,57 +40,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zhang Xiliang <zhangxiliang@cn.fujitsu.com>
+To: Seiichi Ikarashi <s.ikarashi@jp.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Wed, 2009-09-02 at 13:44 +0800, Zhang Xiliang wrote: 
-> I tested ltp mbind case and found the case06 failed.
+On Fri, 2009-09-04 at 10:35 +0900, Seiichi Ikarashi wrote: 
+> Hi,
 > 
-> In mbind manual, it says "If the nodemask and maxnode arguments specify the empty set, 
-> then the memory is allocated on the node of the CPU that triggered the allocation."
+> I report a couple of "UNRESOLVED" failures of open_posix_testsuite in ltp
+> and send a patch for them.
 > 
-> In case06, when tc->policy is MPOL_PREFERRED and tc->from_node is NONE, the getnodemask 
-> which is get by get_mempolicy() refer to the node of the CPU that triggered the allocation.
-> But the nodemask is zero.(It is not used by mbind(), mbind() used "NULL".)
+> I got following failures while executing open_posix_testsuite.
 > 
-> So in this case, the cmp_ok should only compare the policy.
+> > conformance/interfaces/pthread_setschedparam/5-1: execution: UNRESOLVED: Output: 
+> > [07:16:29]Test conformance/interfaces/pthread_setschedparam/5-1.c unresolved: got 22 (Invalid argument) on line 152 (Sem_post in signal handler 1)
 > 
-> Signed-off-by: Zhang Xiliang <zhangxiliang@cn.fujitsu.com>
+> > conformance/interfaces/pthread_detach/4-3: execution: UNRESOLVED: Output:
+> > *snip*
+> > [12:05:38]Test conformance/interfaces/pthread_detach/4-3.c unresolved: got 22 (Invalid argument) on line 157 (Sem_post in signal handler 1)
+> 
+> Both of them have wrong steps of its test preparation:
+>   1. register signal handlers (just do sem_post()) for SIGUSR1/SIGUSR2.
+>   2. block those signals
+>   3. prepare something (sem_init()) for these signal handlers
+>   4. send signals to itself from sub-threads.
+> 
+> They have a window of not-yet-prepared-for-signals
+> between step 1 and 2. I think above "UNRESOLVED" failures
+> (sem_post() before sem_init()) are the result of getting a
+> signal during this window.
+> I don't know who sent a signal to them but I guess
+> neighboring tests are suspects, because number of tests run
+> concurrently in open_posix_testsuite.
+> 
+> The fix shall be just delaying step 1 to between step 2 and 4,
+> so I wrote such a patch for both pthread_setschedparam and
+> pthread_detach. I have confirmed that this UNRESOLVED failure
+> disappeared with this patch applied.
+> 
+> Signed-off-by: Seiichi Ikarashi <s.ikarashi@jp.fujitsu.com>
 
-Thanks.
+Ok Thanks.
 
-> ---
->  testcases/kernel/syscalls/mbind/mbind01.c |    5 ++++-
->  1 files changed, 4 insertions(+), 1 deletions(-)
+Regards--
+Subrata
+
 > 
-> diff --git a/testcases/kernel/syscalls/mbind/mbind01.c b/testcases/kernel/syscalls/mbind/mbind01.c
-> index 94c2dd0..446fdaf 100644
-> --- a/testcases/kernel/syscalls/mbind/mbind01.c
-> +++ b/testcases/kernel/syscalls/mbind/mbind01.c
-> @@ -305,7 +305,10 @@ static int do_test(struct test_case *tc) {
->  // When policy equals MPOL_DEFAULT, then get_mempolicy not return node
->          if (tc->policy == MPOL_DEFAULT)
->  		nodemask_zero(&nodemask);
-> -	cmp_ok = ((tc->policy == policy) && nodemask_equal(&nodemask,&getnodemask));
-> +	if ((tc->policy == MPOL_PREFERRED) && (tc->from_node == NONE))
-> +		cmp_ok = (tc->policy == policy);
-> +	else
-> +		cmp_ok = ((tc->policy == policy) && nodemask_equal(&nodemask,&getnodemask));
->          if (opt_debug) {
->  		nodemask_dump("nodemask Expect:", &nodemask);
->  		nodemask_dump("nodemask Result:", &getnodemask);
-> 
-> 
+> Regards,
 > 
 > ------------------------------------------------------------------------------
 > Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 > trial. Simplify your report design, integration and deployment - and focus on 
 > what you do best, core application coding. Discover what's new with 
 > Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
