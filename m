@@ -1,22 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MnxVP-0000BP-Nx
-	for Ltp-list@lists.sourceforge.net; Wed, 16 Sep 2009 16:37:19 +0000
-Received: from vervifontaine.sonytel.be ([80.88.33.193]
-	helo=pophost.sonytel.be) by 1b2kzd1.ch3.sourceforge.com with esmtp 
-	(Exim 4.69) id 1MnxVK-0006z4-R6
-	for Ltp-list@lists.sourceforge.net; Wed, 16 Sep 2009 16:37:19 +0000
-Received: from vixen.sonytel.be (piraat.sonytel.be [43.221.60.197])
-	by pophost.sonytel.be (Postfix) with ESMTP id 9A99F44483
-	for <Ltp-list@lists.sourceforge.net>;
-	Wed, 16 Sep 2009 18:37:07 +0200 (CEST)
-Date: Wed, 16 Sep 2009 18:37:12 +0200 (CEST)
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Message-ID: <alpine.LRH.2.00.0909161825390.9257@vixen.sonytel.be>
-MIME-Version: 1.0
-Subject: [LTP] mmapstress03 weirdness?
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mkcb3-0003Xr-0i
+	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2009 11:41:21 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Mkcay-0006al-CG
+	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2009 11:41:20 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n87BeFws000917
+	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 05:40:15 -0600
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n87BfATf214518
+	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 05:41:10 -0600
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n87BfA5s002833
+	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 05:41:10 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4A9E0612.2030003@cn.fujitsu.com>
+References: <4A9E0612.2030003@cn.fujitsu.com>
+Date: Mon, 07 Sep 2009 17:10:43 +0530
+Message-Id: <1252323649.4922.29.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH 1/3] mbind01: Fix the bug of result output
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,72 +37,115 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Linux Test Project <Ltp-list@lists.sourceforge.net>
+To: Zhang Xiliang <zhangxiliang@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-T24gcHBjNjQsIHdpdGggMzItYml0IHVzZXJsYW5kLCBJIGdldDoKCnwgUnVubmluZyB0ZXN0cy4u
-Li4uLi4KfCA8PDx0ZXN0X3N0YXJ0Pj4+CnwgdGFnPW1tYXBzdHJlc3MwMyBzdGltZT0xMjUzMTE3
-MjUxCnwgY21kbGluZT0ibW1hcHN0cmVzczAzIgp8IGNvbnRhY3RzPSIiCnwgYW5hbHlzaXM9ZXhp
-dAp8IDw8PHRlc3Rfb3V0cHV0Pj4+CnwgaW5jcmVtZW50aW5nIHN0b3AKfCA6IGVycm5vID0gMDog
-cmVhbGx5IGxhcmdlIG1tYXAgZGlkbid0IGZhaWwKfCBtbWFwc3RyZXNzMDMgICAgMSAgVEZBSUwg
-IDogIFRlc3QgZmFpbGVkCiAgICAgICAgICAgICAgICAgICAgIF5eXl5eXl5eXl5eXl5eXl5eXl5e
-Xgp8IDw8PGV4ZWN1dGlvbl9zdGF0dXM+Pj4KfCBpbml0aWF0aW9uX3N0YXR1cz0ib2siCnwgZHVy
-YXRpb249MCB0ZXJtaW5hdGlvbl90eXBlPWV4aXRlZCB0ZXJtaW5hdGlvbl9pZD0wIGNvcmVmaWxl
-PW5vCnwgY3V0aW1lPTAgY3N0aW1lPTAKfCA8PDx0ZXN0X2VuZD4+Pgp8IElORk86IGx0cC1wYW4g
-cmVwb3J0ZWQgYWxsIHRlc3RzIFBBU1MKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBeXl5eCgpUaGUgY29yZSBwYXJ0IG9mIHRoaXMgdGVzdCBpczoKCiAgICAgICAgLyogQXNrIGZv
-ciBhIHJpZGljdWxvdXNseSBsYXJnZSBtbWFwIHJlZ2lvbiBhdCBhIGhpZ2ggYWRkcmVzcyAqLwog
-ICAgICAgIGlmIChtbWFwKChjYWRkcl90KSgxVUwgPDwgKFBPSU5URVJfU0laRSAgLSAxKSkgLSBw
-YWdlc2l6ZSwKICAgICAgICAgICAgICAgIChzaXplX3QpKCgxVUwgPDwgKFBPSU5URVJfU0laRSAt
-IDEpKSAtIHBhZ2VzaXplKSwKICAgICAgICAgICAgICAgIFBST1RfUkVBRHxQUk9UX1dSSVRFLCBN
-QVBfQU5PTllNT1VTfE1BUF9GSVhFRHxNQVBfU0hBUkVELCAwLCAwKQogICAgICAgICAgICAgICAg
-IT0gKGNhZGRyX3QpLTEpCiAgICAgICAgewogICAgICAgICAgICAgICAgRVJST1IoInJlYWxseSBs
-YXJnZSBtbWFwIGRpZG4ndCBmYWlsIik7CiAgICAgICAgICAgICAgICBhbnlmYWlsKCk7CiAgICAg
-ICAgfQogICAgICAgIGlmIChlcnJubyAhPSBFTk9NRU0gJiYgZXJybm8gIT0gRUlOVkFMKSB7CiAg
-ICAgICAgICAgICAgICBFUlJPUigicmVhbGx5IGxhcmdlIG1tYXAgZGlkbid0IHNldCBlcnJubyA9
-IEVOT01FTSBub3IgRUlOVkFMIik7CiAgICAgICAgICAgICAgICBhbnlmYWlsKCk7CiAgICAgICAg
-fQoKV2l0aCAzMi1iaXQgdXNlcmxhbmQsIHRoaXMgYm9pbHMgZG93biB0bzoKCnwgbW1hcCBhZGRy
-IDB4N2ZmZjAwMDAgc2l6ZSAweDdmZmYwMDAwCnwgbW1hcCByZXR1cm5lZCAweDdmZmYwMDAwCgpp
-LmUuIG1tYXAoKSBzdWNjZWVkcywgYnV0ICgxKSB0aGUgdGVzdCBleHBlY3RzIGl0IHRvIGZhaWws
-IHNvIHRoZSB0ZXN0IHJldHVybnMKVEZBSUwsIGJ1dCAoMikgbHRwLXBhbiBzdGlsbCByZXBvcnRz
-IHRoYXQgdGhlIHRlc3RzIHBhc3NlZD8KCkluIGFkZGl0aW9uLCBzb21ldGltZXMgbW1hcHN0cmVz
-czAzIGZhaWxzIGR1ZSB0byBTRUdWLiBJIGNyZWF0ZWQgYSBzbWFsbCB0ZXN0CnByb2dyYW0gdGhh
-dCBqdXN0IGRvZXMgdGhlIGFib3ZlIG1tYXAoKSwgYW5kIGRlcGVuZGluZyBvbiB0aGUgZGlzdHJv
-IGFuZCB3aGF0CmVsc2UgSSBwcmludCBsYXRlciBpdCBjcmFzaGVzIHdpdGggYSBTRUdWLCB0b28u
-IFByb2JhYmx5IHRoaXMgaGFwcGVucyBiZWNhdXNlCnRoZSBtbWFwKCkgZGlkIHN1Y2NlZWQsIGFu
-ZCBjb3JydXB0ZWQgc29tZSBleGlzdGluZyBtYXBwaW5ncywgY2ZyLiB0aGUgbm90ZXMKZm9yIE1B
-UF9GSVhFRDoKCiAgICAgICBNQVBfRklYRUQKICAgICAgICAgICAgICBEb27igJl0ICBpbnRlcnBy
-ZXQgIGFkZHIgIGFzICBhIGhpbnQ6IHBsYWNlIHRoZSBtYXBwaW5nIGF0IGV4YWN0bHkKICAgICAg
-ICAgICAgICB0aGF0IGFkZHJlc3MuICBhZGRyIG11c3QgYmUgYSBtdWx0aXBsZSBvZiB0aGUgcGFn
-ZSBzaXplLiAgSWYgdGhlCiAgICAgICAgICAgICAgbWVtb3J5ICByZWdpb24gIHNwZWNpZmllZCAg
-YnkgYWRkciBhbmQgbGVuIG92ZXJsYXBzIHBhZ2VzIG9mIGFueQogICAgICAgICAgICAgIGV4aXN0
-aW5nIG1hcHBpbmcocyksIHRoZW4gdGhlIG92ZXJsYXBwZWQgcGFydCAgb2YgIHRoZSAgZXhpc3Rp
-bmcKICAgICAgICAgICAgICBtYXBwaW5nKHMpICB3aWxsICBiZSBkaXNjYXJkZWQuICBJZiB0aGUg
-c3BlY2lmaWVkIGFkZHJlc3MgY2Fubm90CiAgICAgICAgICAgICAgYmUgdXNlZCwgbW1hcCgpIHdp
-bGwgZmFpbC4gIEJlY2F1c2UgcmVxdWlyaW5nICBhICBmaXhlZCAgYWRkcmVzcwogICAgICAgICAg
-ICAgIGZvciAgYSAgbWFwcGluZyBpcyBsZXNzIHBvcnRhYmxlLCB0aGUgdXNlIG9mIHRoaXMgb3B0
-aW9uIGlzIGRpc+KAkAogICAgICAgICAgICAgIGNvdXJhZ2VkLgoKCkpGWUksIHdpdGggNjQtYml0
-IHVzZXJsYW5kLCB0aGlzIGJvaWxzIGRvd24gdG86Cgp8IG1tYXAgYWRkciAweDdmZmZmZmZmZmZm
-ZjAwMDAgc2l6ZSAweDdmZmZmZmZmZmZmZjAwMDAKfCBtbWFwIHJldHVybmVkIDB4ZmZmZmZmZmZm
-ZmZmZmZmZgoKaS5lLiBtbWFwKCkgZmFpbHMgYXMgZXhwZWN0ZWQsIGFuZCB0aGUgdGVzdCBzdWNj
-ZWVkcy4KCkRvZXMgYWxsIG9mIHRoaXMgc291bmQgT0s/ClRoYW5rcyBmb3IgeW91ciBjb21tZW50
-cyEKCldpdGgga2luZCByZWdhcmRzLAoKR2VlcnQgVXl0dGVyaG9ldmVuClNvZnR3YXJlIEFyY2hp
-dGVjdApUZWNoc29mdCBDZW50cmUKClRlY2hub2xvZ3kgYW5kIFNvZnR3YXJlIENlbnRyZSBFdXJv
-cGUKVGhlIENvcnBvcmF0ZSBWaWxsYWdlIMK3IERhIFZpbmNpbGFhbiA3LUQxIMK3IEItMTkzNSBa
-YXZlbnRlbSDCtyBCZWxnaXVtCgpQaG9uZTogICAgKzMyICgwKTIgNzAwIDg0NTMKRmF4OiAgICAg
-ICszMiAoMCkyIDcwMCA4NjIyCkUtbWFpbDogICBHZWVydC5VeXR0ZXJob2V2ZW5Ac29ueWNvbS5j
-b20KSW50ZXJuZXQ6IGh0dHA6Ly93d3cuc29ueS1ldXJvcGUuY29tLwoKQSBkaXZpc2lvbiBvZiBT
-b255IEV1cm9wZSAoQmVsZ2l1bSkgTi5WLgpWQVQgQkUgMDQxMy44MjUuMTYwIMK3IFJQUiBCcnVz
-c2VscwpGb3J0aXMgwrcgQklDIEdFQkFCRUJCIMK3IElCQU4gQkU0MTI5MzAzNzY4MDAxMAoKLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tCkNvbWUgYnVpbGQgd2l0aCB1cyEgVGhlIEJsYWNrQmVycnkmcmVn
-OyBEZXZlbG9wZXIgQ29uZmVyZW5jZSBpbiBTRiwgQ0EKaXMgdGhlIG9ubHkgZGV2ZWxvcGVyIGV2
-ZW50IHlvdSBuZWVkIHRvIGF0dGVuZCB0aGlzIHllYXIuIEp1bXBzdGFydCB5b3VyCmRldmVsb3Bp
-bmcgc2tpbGxzLCB0YWtlIEJsYWNrQmVycnkgbW9iaWxlIGFwcGxpY2F0aW9ucyB0byBtYXJrZXQg
-YW5kIHN0YXkgCmFoZWFkIG9mIHRoZSBjdXJ2ZS4gSm9pbiB1cyBmcm9tIE5vdmVtYmVyIDkmIzQ1
-OzEyLCAyMDA5LiBSZWdpc3RlciBub3cmIzMzOwpodHRwOi8vcC5zZi5uZXQvc2Z1L2RldmNvbmYK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3Qg
-bWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3Rz
-LnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+On Wed, 2009-09-02 at 13:43 +0800, Zhang Xiliang wrote: 
+> I tested ltp mbind case and found the result is error as follows:
+> 
+> mbind01     0  TINFO  :  (case00) START
+> EXPECT: return value(ret)=0 errno=0 (Success)
+> RESULT: return value(ret)=0 errno=0 (Success)
+> mbind01     0  TINFO  :  (case00) END => OK
+> mbind01     0  TINFO  :  (case01) START
+> EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+> RESULT: return value(ret)=-1 errno=22 (Invalid argument)
+> mbind01     0  TINFO  :  (case01) END => NG
+> mbind01     0  TINFO  :  (case02) START
+> EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+> RESULT: return value(ret)=-1 errno=22 (Invalid argument)
+> mbind01     0  TINFO  :  (case02) END => NG
+> mbind01     0  TINFO  :  (case03) START
+> EXPECT: return value(ret)=0 errno=0 (Success)
+> RESULT: return value(ret)=0 errno=0 (Success)
+> mbind01     0  TINFO  :  (case03) END => OK
+> mbind01     0  TINFO  :  (case04) START
+> EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+> RESULT: return value(ret)=-1 errno=22 (Invalid argument)
+> mbind01     0  TINFO  :  (case04) END => NG
+> mbind01     0  TINFO  :  (case05) START
+> EXPECT: return value(ret)=0 errno=0 (Success)
+> RESULT: return value(ret)=0 errno=0 (Success)
+> mbind01     0  TINFO  :  (case05) END => OK
+> mbind01     0  TINFO  :  (case06) START
+> EXPECT: return value(ret)=0 errno=0 (Success), r/w check=OK
+> RESULT: return value(ret)=0 errno=0 (Success), r/w check=NG
+> mbind01     0  TINFO  :  (case06) END => OK
+> mbind01     0  TINFO  :  (case07) START
+> EXPECT: return value(ret)=0 errno=0 (Success)
+> RESULT: return value(ret)=0 errno=0 (Success)
+> mbind01     0  TINFO  :  (case07) END => OK
+> mbind01     0  TINFO  :  (case08) START
+> EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+> RESULT: return value(ret)=-1 errno=22 (Invalid argument)
+> mbind01     0  TINFO  :  (case08) END => NG
+> mbind01     0  TINFO  :  (case09) START
+> EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+> RESULT: return value(ret)=-1 errno=22 (Invalid argument)
+> mbind01     0  TINFO  :  (case09) END => NG
+> mbind01     0  TINFO  :  (case10) START
+> mbind01     1  TFAIL  :  get_mempolicy failed - errno = 14 : Bad address
+> 
+> In case01,case02,case04,case08,case09, the expect is same with the result.
+> So these cases should be OK instead of NG.
+> 
+> In sourse code, TEST_RETURN should get value by "ret".
+> By the way, the "switch/case RESULT_OK" missed "break".
+> 
+> Signed-off-by: Zhang Xiliang <zhangxiliang@cn.fujitsu.com>
+
+Thanks.
+
+Regards--
+Subrata
+
+> ---
+>  testcases/kernel/syscalls/mbind/mbind01.c |    2 ++
+>  1 files changed, 2 insertions(+), 0 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/mbind/mbind01.c b/testcases/kernel/syscalls/mbind/mbind01.c
+> index 2b861ac..94c2dd0 100644
+> --- a/testcases/kernel/syscalls/mbind/mbind01.c
+> +++ b/testcases/kernel/syscalls/mbind/mbind01.c
+> @@ -389,6 +389,7 @@ int main(int ac, char **av) {
+>          		        int ret;
+>  	        	        tst_resm(TINFO,"(case%02d) START", i);
+>          	        	ret = do_test(&tcase[i]);
+> +				TEST_RETURN = ret;
+>  	        	        tst_resm(TINFO,"(case%02d) END => %s", i, ( TEST_RETURN== 0) ? "OK" : "NG");
+>  	                	result |= ret;
+>          		}
+> @@ -399,6 +400,7 @@ int main(int ac, char **av) {
+>  		        switch(result) {
+>          		case RESULT_OK:
+>  					tst_resm(TPASS, "mbind call succeeded --OK-- ");
+> +					break;
+> 
+>  		        default:
+>                  		tst_resm(TFAIL, "%s failed - errno = %d : %s --NG--", TCID, TEST_ERRNO, strerror(TEST_ERRNO));
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+> trial. Simplify your report design, integration and deployment - and focus on 
+> what you do best, core application coding. Discover what's new with 
+> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
