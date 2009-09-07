@@ -1,24 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MoCBB-0000U4-K8
-	for Ltp-list@lists.sourceforge.net; Thu, 17 Sep 2009 08:17:25 +0000
-Received: from vervifontaine.sonytel.be ([80.88.33.193]
-	helo=pophost.sonytel.be) by 3b2kzd1.ch3.sourceforge.com with esmtp 
-	(Exim 4.69) id 1MoCB7-0007M9-1m
-	for Ltp-list@lists.sourceforge.net; Thu, 17 Sep 2009 08:17:25 +0000
-Date: Thu, 17 Sep 2009 10:17:21 +0200 (CEST)
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-In-Reply-To: <20090916170753.GB7549@us.ibm.com>
-Message-ID: <alpine.LRH.2.00.0909171014440.13477@vixen.sonytel.be>
-References: <alpine.LRH.2.00.0909151730320.29846@vixen.sonytel.be>
-	<20090915215307.GD10922@count0.beaverton.ibm.com>
-	<1253114232.6343.30.camel@subratamodak.linux.ibm.com>
-	<alpine.LRH.2.00.0909161801310.6362@vixen.sonytel.be>
-	<20090916170753.GB7549@us.ibm.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] Filecaps: Update error message for recent kernels
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MkcaU-0003VO-0H
+	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2009 11:40:46 +0000
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MkcaN-000858-VR
+	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2009 11:40:45 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e8.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n87Be7lU027198
+	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 07:40:07 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n87BeYQg249250
+	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 07:40:34 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n87BeY5B028413
+	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 07:40:34 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4A9F8AE9.300@redhat.com>
+References: <4A9F8AE9.300@redhat.com>
+Date: Mon, 07 Sep 2009 17:10:08 +0530
+Message-Id: <1252323623.4922.27.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] network: Fix iproute test case error
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,92 +36,69 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serue@us.ibm.com>
-Cc: Linux Test Project <Ltp-list@lists.sourceforge.net>, Serge Hallyn <serue@linux.vnet.ibm.com>
+To: Hushan Jia <hjia@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Wed, 16 Sep 2009, Serge E. Hallyn wrote:
-> Quoting Geert Uytterhoeven (Geert.Uytterhoeven@sonycom.com):
-> > >From 0e13026c931d26393671884f63446b7389318b27 Mon Sep 17 00:00:00 2001
-> > From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-> > Date: Tue, 15 Sep 2009 17:06:09 +0200
-> > Subject: [PATCH 9/9] Filecaps: Update error message for recent kernels
-> > =
+On Thu, 2009-09-03 at 17:22 +0800, Hushan Jia wrote: 
+> Hello,
+> 
+> When I run network test case testcases/network/iproute/ip_tests.sh, some errors shown:
+> ip01        0  TINFO  :  Test #1: changing mtu size of eth0:1 device.
+> /mnt/ltp/ltp-full-20090731/testcases/bin/ip_tests.sh: line 198: [: -eq: unary operator expected.
+> 
+> The output of
+> ifconfig eth0:1 | grep -i MTU | sed "s/^.*MTU://"
+> is like:
+> 1500  Metric:1
+> so should print field 1 instead of field 5.
+> 
+> Thanks&  Regards,
+> Hushan
+> 
+> ---
+> 
+> network: Fix iproute test case error
+> 
+> Signed-off-by: Hushan Jia<hjia@redhat.com>
 
-> >    - As of 2.6.24, `capability' can no longer be a module,
-> >    - As of 2.6.27, CONFIG_SECURITY_CAPABILITIES no longer exists.
-> > =
+Hey, Thanks.
 
-> > Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-> > --
-> > v2: Make the message dependent on the kernel version, as suggested by M=
-att
-> >     Helsley
-> > ---
-> >  .../kernel/security/filecaps/checkforfilecaps.sh   |   10 ++++++++--
-> >  1 files changed, 8 insertions(+), 2 deletions(-)
-> > =
+Regards--
+Subrata
 
-> > diff --git a/testcases/kernel/security/filecaps/checkforfilecaps.sh b/t=
-estcases/kernel/security/filecaps/checkforfilecaps.sh
-> > index 20f97f5..5ca385e 100755
-> > --- a/testcases/kernel/security/filecaps/checkforfilecaps.sh
-> > +++ b/testcases/kernel/security/filecaps/checkforfilecaps.sh
-> > @@ -23,8 +23,14 @@ check_simple_capset
-> >  ret=3D$?
-> >  if [ $ret -ne 0 ]; then
-> >  	echo Posix capabilities not compiled into the kernel.  Please
-> > -	echo modprobe capability or recompile your kernel with
-> > -	echo CONFIG_SECURITY_CAPABILITIES=3Dy.
-> > +	if tst_kvercmp 2 6 24 ; then
-> > +		echo modprobe capability or recompile your kernel with
-> > +		echo CONFIG_SECURITY_CAPABILITIES=3Dy.
-> > +	elif tst_kvercmp 2 6 27 ; then
-> > +		echo recompile your kernel with CONFIG_SECURITY_CAPABILITIES=3Dy.
-> > +	else
-> > +		echo recompile your kernel with CONFIG_SECURITY_FILE_CAPABILITIES=3D=
-y.
-> =
+> diff -Nrup ltp-full-20090831-orig/testcases/network/iproute/ip_tests.sh ltp-full-20090831/testcases/network/iproute/ip_tests.sh
+> --- ltp-full-20090831-orig/testcases/network/iproute/ip_tests.sh	2009-09-03 16:47:56.000000000 +0800
+> +++ ltp-full-20090831/testcases/network/iproute/ip_tests.sh	2009-09-03 16:51:04.000000000 +0800
+> @@ -194,7 +194,7 @@ test01()
+>   			"Test #1: ip command failed. Reason: "
+>   		return $RC
+>   	else
+> -		MTUSZ=`ifconfig eth0:1 | grep -i MTU | sed "s/^.*MTU://" | awk '{print $5}'`
+> +		MTUSZ=`ifconfig eth0:1 | grep -i MTU | sed "s/^.*MTU://" | awk '{print $1}'`
+>   		if [ $MTUSZ -eq 300 ]
+>   		then
+>   			tst_resm TPASS "Test #1: changing mtu size success"
+> 
+> 
+> ------------------------------------------------------------------------------
+> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+> trial. Simplify your report design, integration and deployment - and focus on 
+> what you do best, core application coding. Discover what's new with 
+> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-> I don't think splitting these last two up is necessary - the
-> CONFIG_SECURITY_FILE_CAPABILITIES check is in the next stanza
-> in checkforfilecaps.sh.  This check is only for
-> CONFIG_SECURITY_CAPABILITIES itself.
 
-However, this (first) check is triggered on my 2.6.31+ kernel with
-CONFIG_SECURITY_FILE_CAPABILITIES=3Dn, where the config symbol
-CONFIG_SECURITY_CAPABILITIES no longer exists.
-
-Or should it be plain CONFIG_SECURITY?
-
-With kind regards,
-
-Geert Uytterhoeven
-Software Architect
-Techsoft Centre
-
-Technology and Software Centre Europe
-The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Belgium
-
-Phone:    +32 (0)2 700 8453
-Fax:      +32 (0)2 700 8622
-E-mail:   Geert.Uytterhoeven@sonycom.com
-Internet: http://www.sony-europe.com/
-
-A division of Sony Europe (Belgium) N.V.
-VAT BE 0413.825.160 =B7 RPR Brussels
-Fortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
-
----------------------------------------------------------------------------=
----
-Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay =
-
-ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-http://p.sf.net/sfu/devconf
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
