@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mmox2-0005hl-HR
-	for ltp-list@lists.sourceforge.net; Sun, 13 Sep 2009 13:17:08 +0000
-Received: from e7.ny.us.ibm.com ([32.97.182.137])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mmowv-0002EJ-Fb
-	for ltp-list@lists.sourceforge.net; Sun, 13 Sep 2009 13:17:08 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Sun, 13 Sep 2009 18:46:26 +0530
-Message-Id: <1252847788.5357.33.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: [LTP] [Testing 2.6.31] smack: implement logging V3
-Reply-To: subrata@linux.vnet.ibm.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <hjia@redhat.com>) id 1MkpQA-0005sS-Ri
+	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2009 01:22:58 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MkpQ4-0005f7-G3
+	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2009 01:22:58 +0000
+Message-ID: <4AA5B1F3.7020403@redhat.com>
+Date: Tue, 08 Sep 2009 09:22:59 +0800
+From: Hushan Jia <hjia@redhat.com>
+MIME-Version: 1.0
+References: <4AA4EC94.6020209@redhat.com>
+	<1252323511.4922.22.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1252323511.4922.22.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [PATCH] network: Fix ip_tests error 2
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,19 +28,84 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Casey Schaufler <casey@schaufler-ca.com>
-Cc: ltp-list <ltp-list@lists.sf.net>, Eric Paris <eparis@redhat.com>, Etienne Basset <etienne.basset@numericable.fr>, James Morris <jmorris@namei.org>
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net
 
-Hi Casey,
+Hi Subrata,
+I have remade the patch based on the first ip_tests.sh patch, changes:
 
-Would you like to revisit the LTP SMACK tests after 2.6.31 is released
-with the following SMACK changes for both 2.6.30 and 2.6.31:
+1. Test #4:
+ip tools now print nud state as follows:
+REACHABLE, STALE, FAILED, etc.
 
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=6e837fb152410e571a81aaadbd9884f0bc46a55e,
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=ecfcc53fef3c357574bb6143dce6631e6d56295c,
+2. Test #3, #4, #5:
+If delete entry succefully, grep will return 1,
+indicating test PASS, so return code RC should be set to 0.
 
-Regards--
-Subrata
+Thanks&  Regards,
+Hushan
+
+---
+network: Fix iproute test case error 2
+
+Signed-off-by: Hushan Jia<hjia@redhat.com>
+
+--- ltp-full-20090831/testcases/network/iproute/ip_tests.sh.orig	2009-09-08 09:04:54.000000000 +0800
++++ ltp-full-20090831/testcases/network/iproute/ip_tests.sh	2009-09-08 09:11:21.000000000 +0800
+@@ -310,7 +310,9 @@ test03()
+  				tst_res TFAIL $LTPTMP/tst_ip.err \
+  				"Test #3: ip addr del command failed. Reason: "
+  				return $(($RC+1))
+-		fi
++			else
++				RC=0
++			fi
+  		
+  		tst_resm TPASS \
+  			"Test #3: ip addr command tests successful"
+@@ -354,7 +356,7 @@ test04()
+  		 "Test #4: ip neigh show - shows all neighbour entries in arp tables."
+
+  		cat>  $LTPTMP/tst_ip.exp<<-EOF
+-		127.0.0.1 dev lo lladdr 00:00:00:00:00:00 nud reachable
++		127.0.0.1 dev lo lladdr 00:00:00:00:00:00 REACHABLE
+  		EOF
+
+  		ip neigh show 127.0.0.1 | head -n1>$LTPTMP/tst_ip.out 2>&1 || RC=$?
+@@ -384,12 +386,14 @@ test04()
+  				"Test #4: ip neigh del command failed return = $RC. Reason: "
+  			return $RC
+  		else
+-			ip neigh show | grep 127.0.0.1 grep -v "nud failed$">$LTPTMP/tst_ip.err 2>&1 || RC=$?
++			ip neigh show | grep 127.0.0.1 | grep -v " FAILED$">$LTPTMP/tst_ip.err 2>&1 || RC=$?
+  			if [ $RC -eq 0 ]
+  			then
+  				tst_res TFAIL $LTPTMP/tst_ip.err \
+  				"Test #4: 127.0.0.1 still listed in arp. ip cmd Error Message:"
+  				return $(($RC+1))
++			else
++				RC=0
+  			fi
+  		fi
+  		
+@@ -482,6 +486,8 @@ test05()
+  				tst_res TFAIL $LTPTMP/tst_ip.err \
+  				"Test #5: route not deleted. ip route show:"
+  				return $(($RC+1))
++			else
++				RC=0
+  			fi
+  		fi
+  		
+@@ -570,6 +576,8 @@ test06()
+  				tst_res TFAIL $LTPTMP/tst_ip.err \
+  				"Test #6: 66:66:00:00:00:66 is not deleted. Details:"
+  				return $(($RC+1))
++			else
++				RC=0
+  			fi
+  		fi
+  		
 
 
 
