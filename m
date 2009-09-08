@@ -1,29 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <zhangxiliang@cn.fujitsu.com>) id 1MikVf-0006VA-Cc
-	for ltp-list@lists.sourceforge.net; Wed, 02 Sep 2009 07:44:03 +0000
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <liubo-fnst@cn.fujitsu.com>) id 1MkwmS-0008Uv-Qn
+	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2009 09:14:28 +0000
 Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MikVX-0005yn-0c
-	for ltp-list@lists.sourceforge.net; Wed, 02 Sep 2009 07:44:03 +0000
+	id 1MkwmK-0003LX-KN
+	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2009 09:14:28 +0000
 Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
-	by song.cn.fujitsu.com (Postfix) with ESMTP id ED979170028
+	by song.cn.fujitsu.com (Postfix) with ESMTP id 8A84F170141
 	for <ltp-list@lists.sourceforge.net>;
-	Wed,  2 Sep 2009 15:43:41 +0800 (CST)
+	Tue,  8 Sep 2009 17:14:01 +0800 (CST)
 Received: from fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id n827hdcK005137
-	for <ltp-list@lists.sourceforge.net>; Wed, 2 Sep 2009 15:43:39 +0800
-Received: from [127.0.0.1] (unknown [10.167.141.212])
-	by fnst.cn.fujitsu.com (Postfix) with ESMTPA id 7BBD1D4181
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id n889DsKd023467
+	for <ltp-list@lists.sourceforge.net>; Tue, 8 Sep 2009 17:13:54 +0800
+Received: from localhost.localdomain (unknown [10.167.141.170])
+	by fnst.cn.fujitsu.com (Postfix) with ESMTPA id 8D719D41E4
 	for <ltp-list@lists.sourceforge.net>;
-	Wed,  2 Sep 2009 15:43:22 +0800 (CST)
-Message-ID: <4A9E236B.6040606@cn.fujitsu.com>
-Date: Wed, 02 Sep 2009 15:48:59 +0800
-From: Zhang Xiliang <zhangxiliang@cn.fujitsu.com>
+	Tue,  8 Sep 2009 17:14:25 +0800 (CST)
+Message-ID: <4AA62094.7060505@cn.fujitsu.com>
+Date: Tue, 08 Sep 2009 17:15:00 +0800
+From: liubo <liubo-fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP]  [PATCH] mbind01: Fix the bug of mind case10
+Subject: [LTP] [PATCH] cpuctl of controllers: fix the bug of while loop
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,60 +38,174 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-I tested ltp mbind01 case and found the case10 failed.
+When running the ltp tool by "./runltp -f controllers",
+I found "while" loop cannot stop in following files of
+cpuctl test.
 
-In case10, the expect errno is EFAULT. 
+File list:
+cpuctl_def_task01.c
+cpuctl_def_task02.c
+cpuctl_def_task03.c
+cpuctl_def_task04.c
+cpuctl_test01.c
+cpuctl_test02.c
+cpuctl_test03.c
+cpuctl_test04.c
 
-In mbind manual, it says "EFAULT Part or all of the memory range specified by nodemask 
-and maxnode points outside your accessible address space. "
+Key code:
+timer_expired=0;
+while(!timer_expired)
+	f=sqrt(f*f);
 
-So the case should use invalid "nodemask" instead of invalid "p" to test.
+Reason:
+During the compilation of these files, gcc's O2 mechanism
+  causes the change of variable "timer_expired" to be omitted,
+hence the loop, "while(!timer_expired) f=sqrt(f*f);" cannot
+get out from itself.
 
-Signed-off-by: Zhang Xiliang <zhangxiliang@cn.fujitsu.com>
+Change the type of "timer_expired" from "int" to "volatile int"
+to fix this bug.
+
+By the way, it is necessary to modify the file,
+ltp-full-xxxxxxxx/testcases/kernel/controllers/libcontrollers/
+libcontrollers.h for compilation.
+
+
+Signed-off-by: Miao Xie <miaox@cn.fujitsu.com>
+Signed-off-by: Liu Bo <liubo-fnst@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/mbind/mbind01.c |    9 ++++++---
- 1 files changed, 6 insertions(+), 3 deletions(-)
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c 
+b/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
+index 00a25bc..1fb398a 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
+@@ -82,7 +82,7 @@ extern void cleanup()
+         kill(scriptpid, SIGUSR1);/* Inform the shell to do cleanup*/
+         tst_exit();             /* Report exit status*/
+  }
+-int timer_expired = 0;
++volatile int timer_expired = 0;
 
-diff --git a/testcases/kernel/syscalls/mbind/mbind01.c b/testcases/kernel/syscalls/mbind/mbind01.c
-index 446fdaf..4afa71b 100644
---- a/testcases/kernel/syscalls/mbind/mbind01.c
-+++ b/testcases/kernel/syscalls/mbind/mbind01.c
-@@ -238,8 +238,8 @@ static struct test_case tcase[] = {
-         },
-         { // case10
-                 .ttype          = INVALID_POINTER,
--                .policy         = MPOL_DEFAULT,
--                .from_node      = NONE,
-+                .policy         = MPOL_PREFERRED,
-+                .from_node      = SELF,
-                 .ret            = -1,
-                 .err            = EFAULT,
-         },
-@@ -263,6 +263,7 @@ static int do_test(struct test_case *tc) {
-         nodemask_t nodemask, getnodemask;
-         unsigned long maxnode = NUMA_NUM_NODES;
-         unsigned long len = MEM_LENGTH;
-+	unsigned long *invalid_nodemask;
- 
-         /* We assume that there is only one node(node0). */
-         nodemask_zero(&nodemask);
-@@ -279,13 +280,15 @@ static int do_test(struct test_case *tc) {
-                 tst_exit();
-         }
-         if(tc->ttype == INVALID_POINTER)
--                p = (char*)0xc0000000;
-+		invalid_nodemask = (unsigned long *)0xc0000000;
- /*
-          * Execute system call
-          */
-         errno = 0;
-         if (tc->from_node == NONE)
-                 TEST(sys_ret = syscall(__NR_mbind, p, len, tc->policy,NULL, 0, tc->flags));
-+	else if (tc->ttype == INVALID_POINTER)
-+		TEST(sys_ret = syscall(__NR_mbind, p, len, tc->policy, invalid_nodemask, maxnode, tc->flags));
-         else
-                 TEST(sys_ret = syscall(__NR_mbind, p, len, tc->policy,&nodemask, maxnode, tc->flags));
-         sys_errno = errno;
+  int main(int argc, char *argv[])
+  {
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c 
+b/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
+index 1bfa187..56ddacc 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
+@@ -79,7 +79,7 @@ cleanup()
+         tst_exit();             /* Report exit status*/
+  }
+
+-int timer_expired = 0;
++volatile int timer_expired = 0;
+
+  int main(int argc, char *argv[])
+  {
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c 
+b/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
+index e4ce3ad..4f3ddc1 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
+@@ -79,7 +79,7 @@ cleanup()
+         tst_exit();               /* Report exit status*/
+  }
+
+-int timer_expired = 0;
++volatile int timer_expired = 0;
+
+  int main(int argc, char *argv[])
+  {
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c 
+b/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
+index 15e2b5f..7f184c8 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
+@@ -78,7 +78,7 @@ cleanup()
+         tst_exit();               /* Report exit status*/
+  }
+
+-int timer_expired = 0;
++volatile int timer_expired = 0;
+
+  int main(int argc, char *argv[])
+  {
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test01.c 
+b/testcases/kernel/controllers/cpuctl/cpuctl_test01.c
+index ab0a4c9..7d7cc48 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_test01.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_test01.c
+@@ -80,7 +80,7 @@ cleanup()
+         kill (scriptpid, SIGUSR1);/* Inform the shell to do cleanup*/
+         tst_exit ();            /* Report exit status*/
+  }
+-int timer_expired = 0;
++volatile int timer_expired = 0;
+
+  int main(int argc, char* argv[])
+  {
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test02.c 
+b/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
+index 801716d..153a293 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
+@@ -80,7 +80,7 @@ cleanup()
+  }
+
+  int migrate_task ();
+-int timer_expired = 0;
++volatile int timer_expired = 0;
+
+  int main(int argc, char* argv[])
+  {
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test03.c 
+b/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
+index c4b9978..c21b69c 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
+@@ -79,7 +79,7 @@ cleanup()
+         tst_exit ();              /* Report exit status*/
+  }
+
+-int timer_expired = 0;
++volatile int timer_expired = 0;
+
+  int main(int argc, char* argv[])
+  {
+diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test04.c 
+b/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
+index b0a2329..ed00b0d 100644
+--- a/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
++++ b/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
+@@ -79,7 +79,7 @@ cleanup()
+         tst_exit ();              /* Report exit status*/
+  }
+
+-int timer_expired = 0;
++volatile int timer_expired = 0;
+
+  int main(int argc, char* argv[])
+  {
+diff --git 
+a/testcases/kernel/controllers/libcontrollers/libcontrollers.h 
+b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
+index 777ff67..e6ab6a0 100644
+--- a/testcases/kernel/controllers/libcontrollers/libcontrollers.h
++++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
+@@ -48,7 +48,8 @@ char fullpath[PATH_MAX];
+  char fullpath[1024]; /* Guess */
+  #endif
+
+-int FLAG, timer_expired;
++int FLAG;
++volatile int timer_expired;
+
+  int retval;
+
+
+
+
+
 
 
 ------------------------------------------------------------------------------
