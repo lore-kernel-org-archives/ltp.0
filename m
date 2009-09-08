@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1Mq23w-0003nj-VA
-	for Ltp-list@lists.sourceforge.net; Tue, 22 Sep 2009 09:53:32 +0000
-Received: from vervifontaine.sonytel.be ([80.88.33.193]
-	helo=pophost.sonytel.be) by 1b2kzd1.ch3.sourceforge.com with esmtp 
-	(Exim 4.69) id 1Mq23q-0004M1-35
-	for Ltp-list@lists.sourceforge.net; Tue, 22 Sep 2009 09:53:32 +0000
-Date: Tue, 22 Sep 2009 11:53:27 +0200 (CEST)
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-In-Reply-To: <1253578781.7103.186.camel@pasglop>
-Message-ID: <alpine.LRH.2.00.0909221151550.328@vixen.sonytel.be>
-References: <alpine.LRH.2.00.0909211539520.16077@vixen.sonytel.be>
-	<1253578781.7103.186.camel@pasglop>
+	(envelope-from <hjia@redhat.com>) id 1Mkyfb-0006N1-3x
+	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2009 11:15:31 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MkyfV-0005f6-Oi
+	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2009 11:15:31 +0000
+Received: from int-mx03.intmail.prod.int.phx2.redhat.com
+	(int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+	by mx1.redhat.com (8.13.8/8.13.8) with ESMTP id n88BFIA8019096
+	for <ltp-list@lists.sourceforge.net>; Tue, 8 Sep 2009 07:15:18 -0400
+Message-ID: <4AA63CD6.2000300@redhat.com>
+Date: Tue, 08 Sep 2009 19:15:34 +0800
+From: Hushan Jia <hjia@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] mmapstress03 weirdness? (fwd)
+Subject: [LTP]  [PATCH] network: fix multicast testcases Makefile
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,86 +26,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Linux/PPC Development <linuxppc-dev@ozlabs.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux Test Project <Ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-T24gVHVlLCAyMiBTZXAgMjAwOSwgQmVuamFtaW4gSGVycmVuc2NobWlkdCB3cm90ZToKPiBPbiBN
-b24sIDIwMDktMDktMjEgYXQgMTU6NDAgKzAyMDAsIEdlZXJ0IFV5dHRlcmhvZXZlbiB3cm90ZToK
-PiA+IFdpdGggMzItYml0IHVzZXJsYW5kLCB0aGlzIGJvaWxzIGRvd24gdG86Cj4gPiB8IG1tYXAg
-YWRkciAweDdmZmYwMDAwIHNpemUgMHg3ZmZmMDAwMAo+ID4gfCBtbWFwIHJldHVybmVkIDB4N2Zm
-ZjAwMDAKPiA+IAo+ID4gaS5lLiBtbWFwKCkgc3VjY2VlZHMsIGJ1dCAoMSkgdGhlIHRlc3QgZXhw
-ZWN0cyBpdCB0byBmYWlsLCBzbyB0aGUgdGVzdCByZXR1cm5zCj4gPiBURkFJTCwgYnV0ICgyKSBs
-dHAtcGFuIHN0aWxsIHJlcG9ydHMgdGhhdCB0aGUgdGVzdHMgcGFzc2VkPwo+IAo+IFdoYXQgaXMg
-dGhlIG91dHB1dCBvZiAvcHJvYy88cGlkPi9tYXBzIGFmdGVyIHRoYXQgbW1hcCA/Cgp8IDAwMTAw
-MDAwLTAwMTIwMDAwIHIteHAgMDAxMDAwMDAgMDA6MDAgMCAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICBbdmRzb10KfCAwZjQ3MDAwMC0wZjVkMDAwMCByLXhwIDAwMDAwMDAwIDAzOjAz
-IDU2ODUyNTY1ICAgICAgICAgICAgICAgICAgICAgICAgICAgL2xpYi9saWJjLTIuNS5zbwp8IDBm
-NWQwMDAwLTBmNWUwMDAwIHItLXAgMDAxNjAwMDAgMDM6MDMgNTY4NTI1NjUgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAvbGliL2xpYmMtMi41LnNvCnwgMGY1ZTAwMDAtMGY1ZjAwMDAgcnctcCAw
-MDE3MDAwMCAwMzowMyA1Njg1MjU2NSAgICAgICAgICAgICAgICAgICAgICAgICAgIC9saWIvbGli
-Yy0yLjUuc28KfCAwZmZjMDAwMC0wZmZlMDAwMCByLXhwIDAwMDAwMDAwIDAzOjAzIDU2ODUyNDgy
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgL2xpYi9sZC0yLjUuc28KfCAwZmZlMDAwMC0wZmZm
-MDAwMCByLS1wIDAwMDEwMDAwIDAzOjAzIDU2ODUyNDgyICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgL2xpYi9sZC0yLjUuc28KfCAwZmZmMDAwMC0xMDAwMDAwMCBydy1wIDAwMDIwMDAwIDAzOjAz
-IDU2ODUyNDgyICAgICAgICAgICAgICAgICAgICAgICAgICAgL2xpYi9sZC0yLjUuc28KfCAxMDAw
-MDAwMC0xMDAxMDAwMCByLXhwIDAwMDAwMDAwIDAzOjAzIDY1NTcxMTI2ICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgL3RtcC9hLm91dAp8IDEwMDEwMDAwLTEwMDIwMDAwIHJ3LXAgMDAwMDAwMDAg
-MDM6MDMgNjU1NzExMjYgICAgICAgICAgICAgICAgICAgICAgICAgICAvdG1wL2Eub3V0CnwgN2Zm
-ZjAwMDAtZmZmZTAwMDAgcnctcyAwMDAwMDAwMCAwMDowOSA1NTgwODA2ICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIC9kZXYvemVybyAoZGVsZXRlZCkKCkkuZS4gdGhlIGJpZyBtbWFwKCkgdG9v
-ayBvdXQgdGhlIHN0YWNrIG1hcHBpbmcsIHdoaWNoIHdhcyBwcmV2aW91c2x5IGF0OgoKfCBmZmEw
-MDAwMC1mZmI1MDAwMCBydy1wIGZmYTAwMDAwIDAwOjAwIDAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgW3N0YWNrXQoKPiBXaXRoIGEgNjQtYml0IGtlcm5lbCwgMzItYml0IHVzZXJz
-cGFjZSBoYXMgYWNjZXNzIHRvIHRoZSBlbnRpcmUgNEcKPiBhZGRyZXNzIHNwYWNlLCBzbyBtYXBw
-aW5nIDJHLTY0ayBhdCB0aGUgMkctNjRrIHBvaW50IGNhbiB3b3JrLCBwcm92aWRlZAo+IHlvdSBh
-cmVuJ3Qgb3ZlcmxhcHBpbmcgYW4gZXhpc3RpbmcgbWFwcGluZyBzdWNoIGFzIHRoZSBzdGFjay4K
-PiAKPiA+IEluIGFkZGl0aW9uLCBzb21ldGltZXMgbW1hcHN0cmVzczAzIGZhaWxzIGR1ZSB0byBT
-RUdWLiBJIGNyZWF0ZWQgYSBzbWFsbCB0ZXN0Cj4gPiBwcm9ncmFtIHRoYXQganVzdCBkb2VzIHRo
-ZSBhYm92ZSBtbWFwKCksIGFuZCBkZXBlbmRpbmcgb24gdGhlIGRpc3RybyBhbmQgd2hhdAo+ID4g
-ZWxzZSBJIHByaW50IGxhdGVyIGl0IGNyYXNoZXMgd2l0aCBhIFNFR1YsIHRvby4gUHJvYmFibHkg
-dGhpcyBoYXBwZW5zIGJlY2F1c2UKPiA+IHRoZSBtbWFwKCkgZGlkIHN1Y2NlZWQsIGFuZCBjb3Jy
-dXB0ZWQgc29tZSBleGlzdGluZyBtYXBwaW5ncywgY2ZyLiB0aGUgbm90ZXMKPiA+IGZvciBNQVBf
-RklYRUQ6Cj4gCj4gVGhhdCdzIHBvc3NpYmxlLgo+IAo+ID4gICAgICAgIE1BUF9GSVhFRAo+ID4g
-ICAgICAgICAgICAgICBEb27igJl0ICBpbnRlcnByZXQgIGFkZHIgIGFzICBhIGhpbnQ6IHBsYWNl
-IHRoZSBtYXBwaW5nIGF0IGV4YWN0bHkKPiA+ICAgICAgICAgICAgICAgdGhhdCBhZGRyZXNzLiAg
-YWRkciBtdXN0IGJlIGEgbXVsdGlwbGUgb2YgdGhlIHBhZ2Ugc2l6ZS4gIElmIHRoZQo+ID4gICAg
-ICAgICAgICAgICBtZW1vcnkgIHJlZ2lvbiAgc3BlY2lmaWVkICBieSBhZGRyIGFuZCBsZW4gb3Zl
-cmxhcHMgcGFnZXMgb2YgYW55Cj4gPiAgICAgICAgICAgICAgIGV4aXN0aW5nIG1hcHBpbmcocyks
-IHRoZW4gdGhlIG92ZXJsYXBwZWQgcGFydCAgb2YgIHRoZSAgZXhpc3RpbmcKPiA+ICAgICAgICAg
-ICAgICAgbWFwcGluZyhzKSAgd2lsbCAgYmUgZGlzY2FyZGVkLiAgSWYgdGhlIHNwZWNpZmllZCBh
-ZGRyZXNzIGNhbm5vdAo+ID4gICAgICAgICAgICAgICBiZSB1c2VkLCBtbWFwKCkgd2lsbCBmYWls
-LiAgQmVjYXVzZSByZXF1aXJpbmcgIGEgIGZpeGVkICBhZGRyZXNzCj4gPiAgICAgICAgICAgICAg
-IGZvciAgYSAgbWFwcGluZyBpcyBsZXNzIHBvcnRhYmxlLCB0aGUgdXNlIG9mIHRoaXMgb3B0aW9u
-IGlzIGRpc+KAkAo+ID4gICAgICAgICAgICAgICBjb3VyYWdlZC4KPiAKPiBZZWFoLCBJIHN1cHBv
-c2UgdGhlIHRlc3QgbWlnaHQgYmUgd2lwaW5nIG91dCBpdHMgb3duIHN0YWNrIGZvciBleGFtcGxl
-CgpJbmRlZWQuCgo+IElFLiBJIHRoaW5rIHRoYXQgdGVzdCBpcyBqdXN0IGJvZ3VzIDotKQo+IAo+
-ID4gSkZZSSwgd2l0aCA2NC1iaXQgdXNlcmxhbmQsIHRoaXMgYm9pbHMgZG93biB0bzoKPiA+IAo+
-ID4gfCBtbWFwIGFkZHIgMHg3ZmZmZmZmZmZmZmYwMDAwIHNpemUgMHg3ZmZmZmZmZmZmZmYwMDAw
-Cj4gPiB8IG1tYXAgcmV0dXJuZWQgMHhmZmZmZmZmZmZmZmZmZmZmCj4gPiAKPiA+IGkuZS4gbW1h
-cCgpIGZhaWxzIGFzIGV4cGVjdGVkLCBhbmQgdGhlIHRlc3Qgc3VjY2VlZHMuCj4gCj4gUmlnaHQg
-YmVjYXVzZSBvbiA2NC1iaXQgdXNlcnNwYWNlLCB5b3Ugb25seSBhcmUgYWxsb3dlZCBzb21ldGhp
-bmcgbGlrZQo+IDE2VCBvZiBhZGRyZXNzIHNwYWNlLgo+IAo+ID4gRG9lcyBhbGwgb2YgdGhpcyBz
-b3VuZCBPSz8KPiA+IFRoYW5rcyBmb3IgeW91ciBjb21tZW50cyEKPiAKPiBZZXMsIEkgdGhpbmsg
-c28gZmFyLCBpdCdzIGp1c3QgYm9ndXMgdGVzdHMgOi0pCgpUaGFua3MgZm9yIHRoZSBjb25maXJt
-YXRpb24sIFNlZ2hlciBhbmQgQmVuIQoKV2l0aCBraW5kIHJlZ2FyZHMsCgpHZWVydCBVeXR0ZXJo
-b2V2ZW4KU29mdHdhcmUgQXJjaGl0ZWN0ClRlY2hzb2Z0IENlbnRyZQoKVGVjaG5vbG9neSBhbmQg
-U29mdHdhcmUgQ2VudHJlIEV1cm9wZQpUaGUgQ29ycG9yYXRlIFZpbGxhZ2UgwrcgRGEgVmluY2ls
-YWFuIDctRDEgwrcgQi0xOTM1IFphdmVudGVtIMK3IEJlbGdpdW0KClBob25lOiAgICArMzIgKDAp
-MiA3MDAgODQ1MwpGYXg6ICAgICAgKzMyICgwKTIgNzAwIDg2MjIKRS1tYWlsOiAgIEdlZXJ0LlV5
-dHRlcmhvZXZlbkBzb255Y29tLmNvbQpJbnRlcm5ldDogaHR0cDovL3d3dy5zb255LWV1cm9wZS5j
-b20vCgpBIGRpdmlzaW9uIG9mIFNvbnkgRXVyb3BlIChCZWxnaXVtKSBOLlYuClZBVCBCRSAwNDEz
-LjgyNS4xNjAgwrcgUlBSIEJydXNzZWxzCkZvcnRpcyDCtyBCSUMgR0VCQUJFQkIgwrcgSUJBTiBC
-RTQxMjkzMDM3NjgwMDEwCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ29tZSBidWlsZCB3aXRoIHVz
-ISBUaGUgQmxhY2tCZXJyeSZyZWc7IERldmVsb3BlciBDb25mZXJlbmNlIGluIFNGLCBDQQppcyB0
-aGUgb25seSBkZXZlbG9wZXIgZXZlbnQgeW91IG5lZWQgdG8gYXR0ZW5kIHRoaXMgeWVhci4gSnVt
-cHN0YXJ0IHlvdXIKZGV2ZWxvcGluZyBza2lsbHMsIHRha2UgQmxhY2tCZXJyeSBtb2JpbGUgYXBw
-bGljYXRpb25zIHRvIG1hcmtldCBhbmQgc3RheSAKYWhlYWQgb2YgdGhlIGN1cnZlLiBKb2luIHVz
-IGZyb20gTm92ZW1iZXIgOSYjNDU7MTIsIDIwMDkuIFJlZ2lzdGVyIG5vdyYjMzM7Cmh0dHA6Ly9w
-LnNmLm5ldC9zZnUvZGV2Y29uZgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9y
-Z2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1s
-aXN0Cg==
+Hi,
+The Makefile of testcases/network/multicast/mc_commo and mc_member do not link binary file and config files to ../../../bin dirs.
+This patch add the links.
+
+Thanks&  Regards,
+Hushan
+
+---
+
+network: Fix multicast testcases Makefile
+
+Signed-off-by: Hushan Jia<hjia@redhat.com>
+
+diff -Nrup ltp-full-20090831.orig/testcases/network/multicast/mc_commo/Makefile ltp-full-20090831/testcases/network/multicast/mc_commo/Makefile
+--- ltp-full-20090831.orig/testcases/network/multicast/mc_commo/Makefile	2009-08-31 13:16:03.000000000 +0800
++++ ltp-full-20090831/testcases/network/multicast/mc_commo/Makefile	2009-09-08 18:45:37.000000000 +0800
+@@ -8,6 +8,8 @@ all: $(TARGETS)
+
+  install:
+  	ln -f mc_commo ../../../bin
++	ln -f mc_recv ../../../bin
++	ln -f mc_send ../../../bin
+
+  clean:
+  	rm -f $(TARGETS)
+diff -Nrup ltp-full-20090831.orig/testcases/network/multicast/mc_member/Makefile ltp-full-20090831/testcases/network/multicast/mc_member/Makefile
+--- ltp-full-20090831.orig/testcases/network/multicast/mc_member/Makefile	2009-08-31 13:16:03.000000000 +0800
++++ ltp-full-20090831/testcases/network/multicast/mc_member/Makefile	2009-09-08 19:04:40.000000000 +0800
+@@ -8,6 +8,9 @@ all: $(TARGETS)
+
+  install:
+  	ln -f mc_member ../../../bin
++	ln -f member ../../../bin
++	ln -f ManyGroups ../../../bin
++	ln -f TooManyGroups ../../../bin
+
+  clean:
+  	rm -f $(TARGETS)
+
+
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
