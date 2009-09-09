@@ -1,27 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1MqpHP-0007zD-Rg
-	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2009 14:26:43 +0000
-Received: from fmmailgate03.web.de ([217.72.192.234])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MqpHJ-0000y2-8n
-	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2009 14:26:43 +0000
-Received: from smtp06.web.de (fmsmtp06.dlan.cinetic.de [172.20.5.172])
-	by fmmailgate03.web.de (Postfix) with ESMTP id E207911A17124
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 24 Sep 2009 16:26:27 +0200 (CEST)
-Received: from [83.208.36.163] (helo=debian)
-	by smtp06.web.de with asmtp (WEB.DE 4.110 #314) id 1MqpH7-00045Z-00
-	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2009 16:26:25 +0200
-Date: Thu, 09 Jul 2009 01:46:56 +0200
-From: "Jiri Palecek" <jpalecek@web.de>
-MIME-Version: 1.0
-Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-Resent-Message-ID: <op.u0rmesnocfnueu@debian>
-Subject: [LTP] [PATCH] Make sure some Crackerjack tests are running under
-	root
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MlH0c-0000bJ-Tu
+	for ltp-list@lists.sourceforge.net; Wed, 09 Sep 2009 06:50:26 +0000
+Received: from e32.co.us.ibm.com ([32.97.110.150])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MlH0V-00054P-EP
+	for ltp-list@lists.sourceforge.net; Wed, 09 Sep 2009 06:50:26 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e32.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n896jhA5017801
+	for <ltp-list@lists.sourceforge.net>; Wed, 9 Sep 2009 00:45:43 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n896oDAK123494
+	for <ltp-list@lists.sourceforge.net>; Wed, 9 Sep 2009 00:50:13 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n896oD3M010028
+	for <ltp-list@lists.sourceforge.net>; Wed, 9 Sep 2009 00:50:13 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4AA5B1F3.7020403@redhat.com>
+References: <4AA4EC94.6020209@redhat.com>
+	<1252323511.4922.22.camel@subratamodak.linux.ibm.com>
+	<4AA5B1F3.7020403@redhat.com>
+Date: Wed, 09 Sep 2009 12:19:56 +0530
+Message-Id: <1252478998.5006.11.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] network: Fix ip_tests error 2
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,56 +41,110 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: ltp-list-bounces@lists.sourceforge.net
 Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Hushan Jia <hjia@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
-Message-ID: <20090708234656.ZpxlZAzIrevF_NgK5KBFLLxnKPCagyjP0KNZORxrtL4@z>
 
- The tests need to run under root to change their EUID
+On Tue, 2009-09-08 at 09:22 +0800, Hushan Jia wrote: 
+> Hi Subrata,
+> I have remade the patch based on the first ip_tests.sh patch, changes:
+> 
+> 1. Test #4:
+> ip tools now print nud state as follows:
+> REACHABLE, STALE, FAILED, etc.
+> 
+> 2. Test #3, #4, #5:
+> If delete entry succefully, grep will return 1,
+> indicating test PASS, so return code RC should be set to 0.
+> 
+> Thanks&  Regards,
+> Hushan
+> 
+> ---
+> network: Fix iproute test case error 2
+> 
+> Signed-off-by: Hushan Jia<hjia@redhat.com>
 
-Signed-off-by: Jiri Palecek <jpalecek@web.de>
----
- testcases/kernel/syscalls/mq_unlink/mq_unlink01.c |    1 +
- testcases/kernel/syscalls/utimes/utimes01.c       |    2 ++
- 2 files changed, 3 insertions(+), 0 deletions(-)
+Sorry, this fail to apply too:
 
-diff --git a/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c b/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c
-index 067656c..85baa2b 100644
---- a/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c
-+++ b/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c
-@@ -123,6 +123,7 @@ extern void cleanup() {
- /*                                                                            */
- /******************************************************************************/
- void setup() {
-+        tst_require_root(tst_exit);
-         /* Capture signals if any */
-         /* Create temporary directories */
-         TEST_PAUSE;
-diff --git a/testcases/kernel/syscalls/utimes/utimes01.c b/testcases/kernel/syscalls/utimes/utimes01.c
-index e52495b..7705269 100644
---- a/testcases/kernel/syscalls/utimes/utimes01.c
-+++ b/testcases/kernel/syscalls/utimes/utimes01.c
-@@ -130,6 +130,8 @@ extern void cleanup() {
- /*                                                                            */
- /******************************************************************************/
- void setup() {
-+        tst_require_root(tst_exit);
-+
-         /* Capture signals if any */
-         /* Create temporary directories */
-         TEST_PAUSE;
--- 
-1.6.4.3
+patching file testcases/network/iproute/ip_tests.sh
+Hunk #1 FAILED at 310.
+Hunk #2 FAILED at 356.
+Hunk #3 FAILED at 386.
+Hunk #4 FAILED at 486.
+Hunk #5 FAILED at 576.
+5 out of 5 hunks FAILED -- saving rejects to file
+testcases/network/iproute/ip_tests.sh.rej
 
+Regards--
+Subrata
 
+> 
+> --- ltp-full-20090831/testcases/network/iproute/ip_tests.sh.orig	2009-09-08 09:04:54.000000000 +0800
+> +++ ltp-full-20090831/testcases/network/iproute/ip_tests.sh	2009-09-08 09:11:21.000000000 +0800
+> @@ -310,7 +310,9 @@ test03()
+>   				tst_res TFAIL $LTPTMP/tst_ip.err \
+>   				"Test #3: ip addr del command failed. Reason: "
+>   				return $(($RC+1))
+> -		fi
+> +			else
+> +				RC=0
+> +			fi
+>   		
+>   		tst_resm TPASS \
+>   			"Test #3: ip addr command tests successful"
+> @@ -354,7 +356,7 @@ test04()
+>   		 "Test #4: ip neigh show - shows all neighbour entries in arp tables."
+> 
+>   		cat>  $LTPTMP/tst_ip.exp<<-EOF
+> -		127.0.0.1 dev lo lladdr 00:00:00:00:00:00 nud reachable
+> +		127.0.0.1 dev lo lladdr 00:00:00:00:00:00 REACHABLE
+>   		EOF
+> 
+>   		ip neigh show 127.0.0.1 | head -n1>$LTPTMP/tst_ip.out 2>&1 || RC=$?
+> @@ -384,12 +386,14 @@ test04()
+>   				"Test #4: ip neigh del command failed return = $RC. Reason: "
+>   			return $RC
+>   		else
+> -			ip neigh show | grep 127.0.0.1 grep -v "nud failed$">$LTPTMP/tst_ip.err 2>&1 || RC=$?
+> +			ip neigh show | grep 127.0.0.1 | grep -v " FAILED$">$LTPTMP/tst_ip.err 2>&1 || RC=$?
+>   			if [ $RC -eq 0 ]
+>   			then
+>   				tst_res TFAIL $LTPTMP/tst_ip.err \
+>   				"Test #4: 127.0.0.1 still listed in arp. ip cmd Error Message:"
+>   				return $(($RC+1))
+> +			else
+> +				RC=0
+>   			fi
+>   		fi
+>   		
+> @@ -482,6 +486,8 @@ test05()
+>   				tst_res TFAIL $LTPTMP/tst_ip.err \
+>   				"Test #5: route not deleted. ip route show:"
+>   				return $(($RC+1))
+> +			else
+> +				RC=0
+>   			fi
+>   		fi
+>   		
+> @@ -570,6 +576,8 @@ test06()
+>   				tst_res TFAIL $LTPTMP/tst_ip.err \
+>   				"Test #6: 66:66:00:00:00:66 is not deleted. Details:"
+>   				return $(($RC+1))
+> +			else
+> +				RC=0
+>   			fi
+>   		fi
+>   		
+> 
+> 
 
 
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-http://p.sf.net/sfu/devconf
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
