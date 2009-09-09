@@ -1,25 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <avagin@gmail.com>) id 1Mrg3H-0000Wa-DW
-	for ltp-list@lists.sourceforge.net; Sat, 26 Sep 2009 22:47:39 +0000
-Received: from fg-out-1718.google.com ([72.14.220.156])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mrg38-00013s-QZ
-	for ltp-list@lists.sourceforge.net; Sat, 26 Sep 2009 22:47:39 +0000
-Received: by fg-out-1718.google.com with SMTP id d23so1154635fga.10
-	for <ltp-list@lists.sourceforge.net>;
-	Sat, 26 Sep 2009 15:47:23 -0700 (PDT)
-Message-ID: <4ABE99F9.7000907@parallels.com>
-Date: Sun, 27 Sep 2009 02:47:21 +0400
-From: Vagin Andrew <avagin@gmail.com>
-MIME-Version: 1.0
-References: <1253964859-23928-1-git-send-email-avagin@gmail.com>
-	<364299f40909261429k75a74d3ej709c42e5e207c548@mail.gmail.com>
-In-Reply-To: <364299f40909261429k75a74d3ej709c42e5e207c548@mail.gmail.com>
-Subject: Re: [LTP] [PATCH 1/3] fsstress: fix memory leaks
-Reply-To: avagin@parallels.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MlROv-00028A-5a
+	for ltp-list@lists.sourceforge.net; Wed, 09 Sep 2009 17:56:13 +0000
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MlROq-0008BO-T5
+	for ltp-list@lists.sourceforge.net; Wed, 09 Sep 2009 17:56:13 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4AA7BFED.3050508@bull.net>
+References: <4AA7BFED.3050508@bull.net>
+Date: Wed, 09 Sep 2009 23:25:47 +0530
+Message-Id: <1252518949.4836.5.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] acl_test01 TC -
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,106 +28,213 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Jacky Malcles <Jacky.Malcles@bull.net>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-On 09/27/2009 01:29 AM, Garrett Cooper wrote:
+On Wed, 2009-09-09 at 16:47 +0200, Jacky Malcles wrote: 
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA1
+> 
+> Subrata,
+> 
+> Here is the right patch.
+> I'm sorry for my confusing with the "signed-off" process,
+> this should work ..
+> 
+> regards,
+> 
+> Signed-off-by: JACKY MALCLES <Jacky.Malcles@bull.net>
 
-Thanks for your comments, I resent all patches.
+Thanks.
 
-> On Sat, Sep 26, 2009 at 4:34 AM, Andrew Vagin<avagin@gmail.com>  wrote:
->    
->> ==11424== 156 bytes in 1 blocks are definitely lost in loss record 2 of 2
->> ==11424==    at 0x4A0763E: malloc (vg_replace_malloc.c:207)
->> ==11424==    by 0x402E4C: make_freq_table (fsstress.c:986)
->> ==11424==    by 0x401C26: main (fsstress.c:410)
->>
->> make_freq_table is executed on each iterations, but freq_table is not
->> changed during test, so this patch moves it from the loop
->> ---
->>   testcases/kernel/fs/fsstress/fsstress.c |   30 ++++++++++++++++--------------
->>   1 files changed, 16 insertions(+), 14 deletions(-)
->>
->> diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
->> index 1f11f6e..3df0ce5 100644
->> --- a/testcases/kernel/fs/fsstress/fsstress.c
->> +++ b/testcases/kernel/fs/fsstress/fsstress.c
->> @@ -375,21 +375,24 @@ int main(int argc, char **argv)
->>                         break;
->>                 }
->>         }
->> -        while ( (loopcntr<= loops) || (loops == 0) )
->> -        {
->> -               if (no_xfs&&  errtag) {
->> -                       fprintf(stderr, "error injection only works on XFS\n");
->> -                       exit(1);
->> -               }
->>
->> -               if (no_xfs) {
->> -                       int i;
->> -                       for (i = 0; ops+i<  ops_end; ++i) {
->> -                               if (ops[i].isxfs)
->> -                                       ops[i].freq = 0;
->> -                       }
->> +       if (no_xfs&&  errtag) {
->> +               fprintf(stderr, "error injection only works on XFS\n");
->> +               exit(1);
->> +       }
->> +
->> +       if (no_xfs) {
->> +               int i;
->> +               for (i = 0; ops+i<  ops_end; ++i) {
->> +                       if (ops[i].isxfs)
->> +                               ops[i].freq = 0;
->>                 }
->> -
->> +       }
->> +
->> +       make_freq_table();
->> +
->> +        while ( (loopcntr<= loops) || (loops == 0) )
->> +        {
->>                         if (!dirname) {
->>                         /* no directory specified */
->>                         if (!nousage) usage();
->> @@ -407,7 +410,6 @@ int main(int argc, char **argv)
->>                         maxfsize = (off64_t)MAXFSIZE32;
->>                 else
->>                         maxfsize = (off64_t)MAXFSIZE;
->> -               make_freq_table();
->>                 dcache_init();
->>                 setlinebuf(stdout);
->>                 if (!seed) {
->> --
->> 1.6.2.5
->>      
-> Andrew,
->      Please use tabs instead of spaces for indentation. Run
-> checkpatch.pl after everything's said and done to validate style.
-> Thanks,
-> -Garrett
->
-> ------------------------------------------------------------------------------
-> Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
-> is the only developer event you need to attend this year. Jumpstart your
-> developing skills, take BlackBerry mobile applications to market and stay
-> ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-> http://p.sf.net/sfu/devconf
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
->
->
->    
+Regards--
+Subrata
+
+> 
+> - --- ltp-full-20090831.orig/testcases/kernel/fs/acls/acl_test01
+> 2009-08-31 07:15:46.000000000 +0200
+> +++ ltp-full-20090831/testcases/kernel/fs/acls/acl_test01	2009-09-09
+> 09:02:48.000000000 +0200
+> @@ -24,17 +24,91 @@
+>  #
+>  #  HISTORY:
+>  #    03/03 Jerone Young  (jyoung5@us.ibm.com)
+> +#    09/08 Jacky Malcles changing the setup to have this TC started by
+> runltp
+>  #*********************************************************************
+> - -export PATH=$PATH:/usr/sbin/
+> +#
+> +################################################################
+> +#
+> +# Make sure that uid=root is running this script.
+> +# Make sure that loop device is built into the kernel
+> +# Make sure that ACL(Access Control List) and Extended Attribute are
+> +#     built into the kernel
+> +#
+> +#
+> +################################################################
+> 
+>  TEST_USER1="acltest1"
+>  TEST_USER1_GROUP="users"
+>  TEST_USER1_PASSWD="ltp_test_pass1"
+> - -#ensure the test partition is ACL aware
+> - -TEST_USER1_HOMEDIR="/tmp/$TEST_USER1"
+> +TEST_USER1_HOMEDIR="tacl/mount-ext3/$TEST_USER1"
+> +
+> +FILE_ACL="tacl/mount-ext3/test_file"
+> +FILE_ACL_LINK="tacl/mount-ext3/test_file_link"
+> +TCbin=`pwd`
+> +
+> +iam=`whoami`
+> +if [ "z$iam" = "z$TEST_USER1" ]
+> +then
+> +	echo ""
+> +else
+> +if [ $UID != 0 ]
+> +then
+> +        echo "FAILED: Must have root access to execute this script"
+> +        exit 1
+> +fi
+> +
+> +if [ ! -e tacl ]
+> +then
+> +        mkdir -m 777 tacl
+> +else
+> +        echo "FAILED: Directory tacl are exist"
+> +        exit 1
+> +fi
+> +
+> +#       The  following  commands  can  be  used as an example of using
+> the loop
+> +#       device.
+> +
+> +dd if=/dev/zero of=tacl/blkext3 bs=1k count=10240
+> +chmod 777 tacl/blkext3
+> +#
+> +losetup /dev/loop0 tacl/blkext3 2>&1 > /dev/null
+> +if [ $? != 0 ]
+> +then
+> +        echo ""
+> +        echo "FAILED:  [ losetup ] Must have loop device support by kernel"
+> +        echo -e "\t to execute this script"
+> +        exit 1
+> +fi
+> +
+> +mount | grep ext2
+> +if [ $? != 0 ]
+> +then
+> +        mkfs -t ext3 /dev/loop0 #> /dev/null 2>&1
+> +        mkdir  -m 777 tacl/mount-ext3
+> +        mount -t ext3 -o defaults,acl,user_xattr /dev/loop0 tacl/mount-ext3
+> +        if [ $? != 0 ]
+> +        then
+> +                echo ""
+> +                echo "FAILED: [ mount ] Make sure that ACL (Access
+> Control List)"
+> +                echo -e "\t and Extended Attribute are built into the
+> kernel"
+> +                echo -e "\t Can not mount ext3 file system with acl and
+> user_xattr options"
+> +                exit 1
+> +        fi
+> +else
+> +        mkfs -t ext2 /dev/loop0
+> +        mkdir  -m 777 tacl/mount-ext3
+> +        mount -t ext2 -o defaults,acl,user_xattr /dev/loop0 tacl/mount-ext3
+> +        if [ $? != 0 ]
+> +        then
+> +                echo ""
+> +                echo "FAILED: [ mount ] Make sure that ACL (Access
+> Control List)"
+> +                echo -e "\t and Extended Attribute are built into the
+> kernel"
+> +                echo -e "\t Can not mount ext2 file system with acl and
+> user_xattr options"
+> +                exit 1
+> +        fi
+> +fi
+> +fi
+> 
+> - -FILE_ACL="/tmp/test_file"
+> - -FILE_ACL_LINK="/tmp/test_file_link"
+> 
+>  #-----------------------------------------------------------------------
+>  # FUNCTION:  do_setup
+> @@ -55,7 +129,7 @@ do_setup(){
+>  	rm -rf $TEST_USER1_HOMEDIR
+>  	userdel $TEST_USER1 > /dev/null 2>&1
+>  	sleep 1
+> - -	useradd -d $TEST_USER1_HOMEDIR -m -g $TEST_USER1_GROUP $TEST_USER1 -s
+> /bin/sh
+> +	useradd -d `pwd`/$TEST_USER1_HOMEDIR -m -g $TEST_USER1_GROUP
+> $TEST_USER1 -s /bin/sh
+> 
+>  	if [ $? != 0 ]
+>  	then {
+> @@ -81,6 +155,9 @@ do_cleanup() {
+>  	userdel $TEST_USER1
+>  	rm -f $FILE_ACL > /dev/null 2>&1
+>  	rm -f $FILE_ACL_LINK > /dev/null 2>&1
+> +	umount -d tacl/mount-ext3
+> +	rm -rf tacl
+> +
+>  }
+> 
+>  #-----------------------------------------------------------------------
+> @@ -91,6 +168,7 @@ iam=`whoami`
+>  EXIT_CODE=0
+>  if [ "z$iam" = "z$TEST_USER1" ]
+>  then
+> +	echo ""
+>  	echo "TESTING ACLS FOR 2ND USER $iam"
+> 
+>  	#setup files for extended attributes
+> @@ -118,6 +196,7 @@ then
+>          fi
+>  else
+>  	do_setup
+> +	echo ""
+>  	echo "TESTING ACLS FOR USER $iam"
+> 
+>  	touch $FILE_ACL
+> @@ -150,11 +229,8 @@ else
+>  	chown $TEST_USER1 $FILE_ACL
+>  	chown $TEST_USER1 $FILE_ACL_LINK
+> 
+> - -	if [ -z ${TCbin} ]
+> - -	then
+> - -   		export TCbin=$PWD
+> - -	fi
+> - -	
+> +	su $TEST_USER1 -c "$0"
+> +	echo ""
+>  	do_cleanup
+>  fi	
+> 
+> 
+> - --
+>  Jacky Malcles    	     B1-403   Email : Jacky.Malcles@bull.net
+>  Bull SA, 1 rue de Provence, B.P 208, 38432 Echirolles CEDEX, FRANCE
+>  Tel : 04.76.29.73.14
+> -----BEGIN PGP SIGNATURE-----
+> Version: GnuPG v1.4.5 (GNU/Linux)
+> Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+> 
+> iQEVAwUBSqe/7XFYHhojb+kFAQIGlAf/UxDdPVCFPEYbXU1VeIQvMo4is8KkpMPn
+> eOYsoPx7Dx2+A4ukEaojZqFLRTzMgSpHg2Te/O7LHPMFVM6MoLDqMrkEC0+Ey05V
+> qgnWtLotjtn1z5MN2fCgyO+g1xVN7ZnH50Kj8x+MeBmziUGgrM0rxWqLk5x2nF2w
+> vDmgTpCtqX+l+pwwtJp0/2n3vS1eYLklVJIS53/2nYLEGWhn79abDaLjvOyuzlWT
+> BC70RmDtpD0o+gUGhBsAnHA+u7PxpsaanNPSP90d+rKSZdwt2KveQLUIk5Gzj9hp
+> t8/yHlk7U914ygUeFZg5ywH1lCeLIvteG17DhFHP0T9M0AliWnSH7w==
+> =KLQc
+> -----END PGP SIGNATURE-----
 
 
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-http://p.sf.net/sfu/devconf
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
