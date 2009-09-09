@@ -1,32 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mkca7-0000ep-LZ
-	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2009 11:40:23 +0000
-Received: from e4.ny.us.ibm.com ([32.97.182.144])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mkca1-000804-12
-	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2009 11:40:23 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e4.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n87BXPKV029926
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 07:33:25 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n87BeBMu241542
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 07:40:11 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n87Bb6GQ017297
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 07:37:06 -0400
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MlH0w-0004Wl-0O
+	for ltp-list@lists.sourceforge.net; Wed, 09 Sep 2009 06:50:46 +0000
+Received: from e9.ny.us.ibm.com ([32.97.182.139])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MlH0p-0006Ub-O5
+	for ltp-list@lists.sourceforge.net; Wed, 09 Sep 2009 06:50:45 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e9.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n896mNfY027977
+	for <ltp-list@lists.sourceforge.net>; Wed, 9 Sep 2009 02:48:23 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n896oTps237118
+	for <ltp-list@lists.sourceforge.net>; Wed, 9 Sep 2009 02:50:29 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n896oTni028856
+	for <ltp-list@lists.sourceforge.net>; Wed, 9 Sep 2009 02:50:29 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4AA06ECF.4040508@jp.fujitsu.com>
-References: <4AA06ECF.4040508@jp.fujitsu.com>
-Date: Mon, 07 Sep 2009 17:09:52 +0530
-Message-Id: <1252323604.4922.26.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <4AA62094.7060505@cn.fujitsu.com>
+References: <4AA62094.7060505@cn.fujitsu.com>
+Date: Wed, 09 Sep 2009 12:20:01 +0530
+Message-Id: <1252479003.5006.12.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] fix UNRESOLVED failures of pthread tests
-	in	open_posix_testsuite
+Subject: Re: [LTP] [PATCH] cpuctl of controllers: fix the bug of while loop
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -40,59 +39,222 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Seiichi Ikarashi <s.ikarashi@jp.fujitsu.com>
+To: liubo <liubo-fnst@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Fri, 2009-09-04 at 10:35 +0900, Seiichi Ikarashi wrote: 
-> Hi,
+On Tue, 2009-09-08 at 17:15 +0800, liubo wrote: 
+> When running the ltp tool by "./runltp -f controllers",
+> I found "while" loop cannot stop in following files of
+> cpuctl test.
 > 
-> I report a couple of "UNRESOLVED" failures of open_posix_testsuite in ltp
-> and send a patch for them.
+> File list:
+> cpuctl_def_task01.c
+> cpuctl_def_task02.c
+> cpuctl_def_task03.c
+> cpuctl_def_task04.c
+> cpuctl_test01.c
+> cpuctl_test02.c
+> cpuctl_test03.c
+> cpuctl_test04.c
 > 
-> I got following failures while executing open_posix_testsuite.
+> Key code:
+> timer_expired=0;
+> while(!timer_expired)
+> 	f=sqrt(f*f);
 > 
-> > conformance/interfaces/pthread_setschedparam/5-1: execution: UNRESOLVED: Output: 
-> > [07:16:29]Test conformance/interfaces/pthread_setschedparam/5-1.c unresolved: got 22 (Invalid argument) on line 152 (Sem_post in signal handler 1)
+> Reason:
+> During the compilation of these files, gcc's O2 mechanism
+>   causes the change of variable "timer_expired" to be omitted,
+> hence the loop, "while(!timer_expired) f=sqrt(f*f);" cannot
+> get out from itself.
 > 
-> > conformance/interfaces/pthread_detach/4-3: execution: UNRESOLVED: Output:
-> > *snip*
-> > [12:05:38]Test conformance/interfaces/pthread_detach/4-3.c unresolved: got 22 (Invalid argument) on line 157 (Sem_post in signal handler 1)
+> Change the type of "timer_expired" from "int" to "volatile int"
+> to fix this bug.
 > 
-> Both of them have wrong steps of its test preparation:
->   1. register signal handlers (just do sem_post()) for SIGUSR1/SIGUSR2.
->   2. block those signals
->   3. prepare something (sem_init()) for these signal handlers
->   4. send signals to itself from sub-threads.
+> By the way, it is necessary to modify the file,
+> ltp-full-xxxxxxxx/testcases/kernel/controllers/libcontrollers/
+> libcontrollers.h for compilation.
 > 
-> They have a window of not-yet-prepared-for-signals
-> between step 1 and 2. I think above "UNRESOLVED" failures
-> (sem_post() before sem_init()) are the result of getting a
-> signal during this window.
-> I don't know who sent a signal to them but I guess
-> neighboring tests are suspects, because number of tests run
-> concurrently in open_posix_testsuite.
 > 
-> The fix shall be just delaying step 1 to between step 2 and 4,
-> so I wrote such a patch for both pthread_setschedparam and
-> pthread_detach. I have confirmed that this UNRESOLVED failure
-> disappeared with this patch applied.
-> 
-> Signed-off-by: Seiichi Ikarashi <s.ikarashi@jp.fujitsu.com>
+> Signed-off-by: Miao Xie <miaox@cn.fujitsu.com>
+> Signed-off-by: Liu Bo <liubo-fnst@cn.fujitsu.com>
 
-Ok Thanks.
+This fails to apply. Needs to be re-created against the latest LTP
+snapshots from CVS:
+
+patching file testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
+Hunk #1 FAILED at 82.
+1 out of 1 hunk FAILED -- saving rejects to file
+testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c.rej
+patching file testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
+Hunk #1 succeeded at 79 with fuzz 2.
+patching file testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
+Hunk #1 succeeded at 79 with fuzz 2.
+patching file testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
+Hunk #1 succeeded at 78 with fuzz 2.
+patching file testcases/kernel/controllers/cpuctl/cpuctl_test01.c
+Hunk #1 FAILED at 80.
+1 out of 1 hunk FAILED -- saving rejects to file
+testcases/kernel/controllers/cpuctl/cpuctl_test01.c.rej
+patching file testcases/kernel/controllers/cpuctl/cpuctl_test02.c
+Hunk #1 FAILED at 80.
+1 out of 1 hunk FAILED -- saving rejects to file
+testcases/kernel/controllers/cpuctl/cpuctl_test02.c.rej
+patching file testcases/kernel/controllers/cpuctl/cpuctl_test03.c
+Hunk #1 succeeded at 79 with fuzz 2.
+patching file testcases/kernel/controllers/cpuctl/cpuctl_test04.c
+Hunk #1 succeeded at 79 with fuzz 2.
+patching file
+testcases/kernel/controllers/libcontrollers/libcontrollers.h
+Hunk #1 succeeded at 48 with fuzz 2.
 
 Regards--
 Subrata
 
+> ---
+> diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c 
+> b/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
+> index 00a25bc..1fb398a 100644
+> --- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
+> +++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
+> @@ -82,7 +82,7 @@ extern void cleanup()
+>          kill(scriptpid, SIGUSR1);/* Inform the shell to do cleanup*/
+>          tst_exit();             /* Report exit status*/
+>   }
+> -int timer_expired = 0;
+> +volatile int timer_expired = 0;
 > 
-> Regards,
+>   int main(int argc, char *argv[])
+>   {
+> diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c 
+> b/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
+> index 1bfa187..56ddacc 100644
+> --- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
+> +++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
+> @@ -79,7 +79,7 @@ cleanup()
+>          tst_exit();             /* Report exit status*/
+>   }
+> 
+> -int timer_expired = 0;
+> +volatile int timer_expired = 0;
+> 
+>   int main(int argc, char *argv[])
+>   {
+> diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c 
+> b/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
+> index e4ce3ad..4f3ddc1 100644
+> --- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
+> +++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
+> @@ -79,7 +79,7 @@ cleanup()
+>          tst_exit();               /* Report exit status*/
+>   }
+> 
+> -int timer_expired = 0;
+> +volatile int timer_expired = 0;
+> 
+>   int main(int argc, char *argv[])
+>   {
+> diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c 
+> b/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
+> index 15e2b5f..7f184c8 100644
+> --- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
+> +++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
+> @@ -78,7 +78,7 @@ cleanup()
+>          tst_exit();               /* Report exit status*/
+>   }
+> 
+> -int timer_expired = 0;
+> +volatile int timer_expired = 0;
+> 
+>   int main(int argc, char *argv[])
+>   {
+> diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test01.c 
+> b/testcases/kernel/controllers/cpuctl/cpuctl_test01.c
+> index ab0a4c9..7d7cc48 100644
+> --- a/testcases/kernel/controllers/cpuctl/cpuctl_test01.c
+> +++ b/testcases/kernel/controllers/cpuctl/cpuctl_test01.c
+> @@ -80,7 +80,7 @@ cleanup()
+>          kill (scriptpid, SIGUSR1);/* Inform the shell to do cleanup*/
+>          tst_exit ();            /* Report exit status*/
+>   }
+> -int timer_expired = 0;
+> +volatile int timer_expired = 0;
+> 
+>   int main(int argc, char* argv[])
+>   {
+> diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test02.c 
+> b/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
+> index 801716d..153a293 100644
+> --- a/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
+> +++ b/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
+> @@ -80,7 +80,7 @@ cleanup()
+>   }
+> 
+>   int migrate_task ();
+> -int timer_expired = 0;
+> +volatile int timer_expired = 0;
+> 
+>   int main(int argc, char* argv[])
+>   {
+> diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test03.c 
+> b/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
+> index c4b9978..c21b69c 100644
+> --- a/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
+> +++ b/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
+> @@ -79,7 +79,7 @@ cleanup()
+>          tst_exit ();              /* Report exit status*/
+>   }
+> 
+> -int timer_expired = 0;
+> +volatile int timer_expired = 0;
+> 
+>   int main(int argc, char* argv[])
+>   {
+> diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test04.c 
+> b/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
+> index b0a2329..ed00b0d 100644
+> --- a/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
+> +++ b/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
+> @@ -79,7 +79,7 @@ cleanup()
+>          tst_exit ();              /* Report exit status*/
+>   }
+> 
+> -int timer_expired = 0;
+> +volatile int timer_expired = 0;
+> 
+>   int main(int argc, char* argv[])
+>   {
+> diff --git 
+> a/testcases/kernel/controllers/libcontrollers/libcontrollers.h 
+> b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
+> index 777ff67..e6ab6a0 100644
+> --- a/testcases/kernel/controllers/libcontrollers/libcontrollers.h
+> +++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
+> @@ -48,7 +48,8 @@ char fullpath[PATH_MAX];
+>   char fullpath[1024]; /* Guess */
+>   #endif
+> 
+> -int FLAG, timer_expired;
+> +int FLAG;
+> +volatile int timer_expired;
+> 
+>   int retval;
+> 
+> 
+> 
+> 
+> 
+> 
 > 
 > ------------------------------------------------------------------------------
 > Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 > trial. Simplify your report design, integration and deployment - and focus on 
 > what you do best, core application coding. Discover what's new with 
 > Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
