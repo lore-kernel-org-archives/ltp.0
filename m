@@ -1,18 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hjia@redhat.com>) id 1Mlw0t-0002HD-Qn
-	for ltp-list@lists.sourceforge.net; Fri, 11 Sep 2009 02:37:27 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mlw0h-0004NG-IW
-	for ltp-list@lists.sourceforge.net; Fri, 11 Sep 2009 02:37:22 +0000
-Message-ID: <4AA9AEB5.3020905@redhat.com>
-Date: Fri, 11 Sep 2009 09:58:13 +0800
-From: Hushan Jia <hjia@redhat.com>
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <lizf@cn.fujitsu.com>) id 1MlFUk-0006Yn-Ss
+	for ltp-list@lists.sourceforge.net; Wed, 09 Sep 2009 05:13:26 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MlFUd-00023X-Cn
+	for ltp-list@lists.sourceforge.net; Wed, 09 Sep 2009 05:13:26 +0000
+Message-ID: <4AA7391B.4020804@cn.fujitsu.com>
+Date: Wed, 09 Sep 2009 13:11:55 +0800
+From: Li Zefan <lizf@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP]  [PATCH] network: Fix ip_tests error 2
+References: <4AA67D12.5010602@in.ibm.com>
+In-Reply-To: <4AA67D12.5010602@in.ibm.com>
+Subject: Re: [LTP] LTP : Fix connectors event_generator program : gen_fork
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,87 +27,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Suzuki Poulose <suzuki@in.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
+Suzuki Poulose wrote:
+> Hi,
+> 
+> There is a testcase issue in the event_generator code. The gen_fork() is
+> called to generate the fork event.
+> 
+> The child process prints the following message:
+> 
+> static inline void gen_fork(void)
+> {
+>         pid_t pid;
+>         int status;
+> 
+>         pid = fork();
+>         if (pid == 0) {
+>                 printf("fork parent: %d, child: %d\n", getppid(),
+> getpid());
+>                 exit(0);
+>         } else if (pid < 0) {
+>                 fprintf(stderr, "fork() failed\n");
+>                 exit(1);
+>         }
+> }
+> 
+> Now the parent process just exits after this call. So, if the child
+> doesn't get to run before parent exits, the child will see the ppid as
+> 1, that of INIT and this contradicts the actual data. Hence the test fails.
+> 
+> Attached patch fixes the issue. I have verified the same. Please apply.
+> 
 
-Hello,
+Thanks for fixing it.
 
-Repost the ip tests patch:
+Acked-by: Li Zefan <lizf@cn.fujitsu.com>
 
-1. Test #4:
-ip tools now print nud state as follows:
-REACHABLE, STALE, FAILED, etc.
+But you forgot to add your Signed-off-by in the patch. ;)
 
-2. Test #3, #4, #5:
-If delete entry succefully, grep will return 1,
-indicating test PASS, so return code RC should be set to 0.
-
-Thanks & Regards,
-Hushan
-
----
-
-network: Fix iproute test case error 2
-
-Signed-off-by: Hushan Jia <hjia@redhat.com>
-
-
---- ltp/testcases/network/iproute/ip_tests.sh.orig	2009-09-09 18:31:31.000000000 +0800
-+++ ltp/testcases/network/iproute/ip_tests.sh	2009-09-09 18:32:43.000000000 +0800
-@@ -310,7 +310,9 @@ test03()
- 				tst_res TFAIL $LTPTMP/tst_ip.err \
- 				"Test #3: ip addr del command failed. Reason: "
- 				return $(($RC+1))
--		fi
-+			else
-+				RC=0
-+			fi
- 		
- 		tst_resm TPASS \
- 			"Test #3: ip addr command tests successful"
-@@ -354,7 +356,7 @@ test04()
- 		 "Test #4: ip neigh show - shows all neighbour entries in arp tables."
- 
- 		cat > $LTPTMP/tst_ip.exp <<-EOF
--		127.0.0.1 dev lo lladdr 00:00:00:00:00:00 nud reachable
-+		127.0.0.1 dev lo lladdr 00:00:00:00:00:00 REACHABLE
- 		EOF
- 
- 		ip neigh show 127.0.0.1 | head -n1 >$LTPTMP/tst_ip.out 2>&1 || RC=$?
-@@ -384,12 +386,14 @@ test04()
- 				"Test #4: ip neigh del command failed return = $RC. Reason: "
- 			return $RC
- 		else
--			ip neigh show | grep 127.0.0.1 grep -v "nud failed$" >$LTPTMP/tst_ip.err 2>&1 || RC=$?
-+			ip neigh show | grep 127.0.0.1 | grep -v " FAILED$" >$LTPTMP/tst_ip.err 2>&1 || RC=$?
- 			if [ $RC -eq 0 ]
- 			then
- 				tst_res TFAIL $LTPTMP/tst_ip.err \
- 				"Test #4: 127.0.0.1 still listed in arp. ip cmd Error Message:"
- 				return $(($RC+1))
-+			else
-+				RC=0
- 			fi
- 		fi
- 		
-@@ -482,6 +486,8 @@ test05()
- 				tst_res TFAIL $LTPTMP/tst_ip.err \
- 				"Test #5: route not deleted. ip route show:"
- 				return $(($RC+1))
-+			else
-+				RC=0
- 			fi
- 		fi
- 		
-@@ -570,6 +576,8 @@ test06()
- 				tst_res TFAIL $LTPTMP/tst_ip.err \
- 				"Test #6: 66:66:00:00:00:66 is not deleted. Details:"
- 				return $(($RC+1))
-+			else
-+				RC=0
- 			fi
- 		fi
- 		
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
