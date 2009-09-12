@@ -1,32 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MnRDd-0006ab-8A
-	for ltp-list@lists.sourceforge.net; Tue, 15 Sep 2009 06:08:49 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1Mm76m-0000jD-WE
+	for ltp-list@lists.sourceforge.net; Fri, 11 Sep 2009 14:28:17 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
 	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MnRDV-0008Na-JB
-	for ltp-list@lists.sourceforge.net; Tue, 15 Sep 2009 06:08:49 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e8.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8F67q2N012554
-	for <ltp-list@lists.sourceforge.net>; Tue, 15 Sep 2009 02:07:52 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n8F68ZkB247012
-	for <ltp-list@lists.sourceforge.net>; Tue, 15 Sep 2009 02:08:35 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n8F68ZPl013222
-	for <ltp-list@lists.sourceforge.net>; Tue, 15 Sep 2009 02:08:35 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4AAD88CB.8090403@jp.fujitsu.com>
-References: <4AAD88CB.8090403@jp.fujitsu.com>
-Date: Tue, 15 Sep 2009 11:38:29 +0530
-Message-Id: <1252994909.5874.10.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] build rule for t0 in open_posix_testsuite
-Reply-To: subrata@linux.vnet.ibm.com
+	(Exim 4.69) id 1Mm76i-0003WD-4T
+	for ltp-list@lists.sourceforge.net; Fri, 11 Sep 2009 14:28:16 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Fri, 11 Sep 2009 22:28:07 -0400
+References: <1252675233-19350-1-git-send-email-nobuhiro@andestech.com>
+In-Reply-To: <1252675233-19350-1-git-send-email-nobuhiro@andestech.com>
+MIME-Version: 1.0
+Message-Id: <200909112228.08664.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] pselect01: Fixed the checking logic to also
+	consider some variation.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,51 +25,78 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7486422928483556186=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Seiichi Ikarashi <s.ikarashi@jp.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On Mon, 2009-09-14 at 09:05 +0900, Seiichi Ikarashi wrote: 
-> Hi,
-> 
-> I propose two patches (two patterns of fix) for an issue of open_posix_testsuite.
-> I hope either one of them (or more better one someone will write) is committed.
-> 
-> You need to do three steps below in order to run execute.sh of open_posix_testsuite:
->  1) make build-tests
->  2) cc -O2 -o t0 t0.c
+--===============7486422928483556186==
+Content-Type: multipart/signed; boundary="nextPart7806937.vaf3DSBs5j";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-I prefer the first patch, as, all build items should be combined and
-completed before any actual execution.
+--nextPart7806937.vaf3DSBs5j
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Regards--
-Subrata
+On Friday 11 September 2009 09:20:33 Nobuhiro Lin wrote:
+> -		if (total_sec >=3D (end - start))
+> +		if(((end - start) >=3D total_sec) && ((end - start) <=3D total_sec + 1=
+))
 
-> 3) ./execute.sh
-> 
-> I think it's better to include step 2 into step 1 or 3 for convenience.
-> So I wrote two different patches for these cases.
-> 
-> Signed-off-by: Seiichi Ikarashi <s.ikarashi@jp.fujitsu.com>
-> 
-> Regards,
-> ------------------------------------------------------------------------------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> trial. Simplify your report design, integration and deployment - and focus on 
-> what you do best, core application coding. Discover what's new with 
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
+please fix your style.  skimping on whitespace doesnt make for smaller code.
 
+that said, your test boils down to "=3D=3D total_sec" or "=3D=3D total_sec =
++ 1". =20
+might as well use that rather than confusing greater/less than comparisons.
+=2Dmike
+
+--nextPart7806937.vaf3DSBs5j
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJKqwc4AAoJEEFjO5/oN/WB4hQQANlo7/UNyHoLy4/mJ+g11KrH
+x0CnUUdFOsyD76O2qtRfbt614JATgvZ2FxksblSjxjo3WPXujOWXhpjT83SwTzfD
+HcneDn89zsRzJriiVvw59Cim/9nWW1ZNTJSQ7UTn/ORtZDUzqEnG+GRF73RA/rUR
+TNLit1TJmWcdvVhSNjJWLgNJjSUYMx/AILutECm49D49G+w2q5pJs8Z4IJErotQm
+F/a9QbKjiZZd9z+jeH4ncVQI6bVHl8iiaTIrkd35rpCPYSBsF1SpsCz8xpODkrQe
+V4uBV3aYLC+SkCcjxri2ptgfE+MlC/FFvJDsq4HGv47GBlpumKOM02mWJ3i47FOT
+dfEd4qP/YpEX7f5cp/4jsmrtsv4BIsN8YFLNSfhNB//OkEH0gtgPJYrF1V6hKHj9
+OUiISb1lyIlUQFaIMa4/9btiC2Cte3sUZcbm+u3e6Ncu1ONFLn6qY7E0d87IWsG4
+pwMrqcvxvVLr+jK8veMejZj7/kDDVehe4986T60ETP1agd5YyYkM4ImuzgawPA+V
+yZvnWaAjNDQy4Bu6Edc8ctpwk0HFxgFAryGrwSTi64k7ov1DVsv1r1LhabmlqRy0
+1aX+XcDYKAWoHvx/HwE3jXpdkCHzK5DmNP68Nocyap+NW437cetwjX9b7sm+WtND
+FwlKvZXiWhAvZe59LFIW
+=7ukZ
+-----END PGP SIGNATURE-----
+
+--nextPart7806937.vaf3DSBs5j--
+
+
+--===============7486422928483556186==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-http://p.sf.net/sfu/devconf
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============7486422928483556186==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============7486422928483556186==--
+
