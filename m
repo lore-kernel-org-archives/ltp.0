@@ -1,24 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <avagin@gmail.com>) id 1Mrg27-0005XS-LY
-	for ltp-list@lists.sourceforge.net; Sat, 26 Sep 2009 22:46:27 +0000
-Received: from fg-out-1718.google.com ([72.14.220.156])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mrg1z-0000xE-EX
-	for ltp-list@lists.sourceforge.net; Sat, 26 Sep 2009 22:46:27 +0000
-Received: by fg-out-1718.google.com with SMTP id d23so1154524fga.10
-	for <ltp-list@lists.sourceforge.net>;
-	Sat, 26 Sep 2009 15:46:13 -0700 (PDT)
-From: Andrew Vagin <avagin@gmail.com>
-Date: Sun, 27 Sep 2009 02:46:01 +0400
-Message-Id: <1254005162-27353-4-git-send-email-avagin@gmail.com>
-In-Reply-To: <1254005162-27353-3-git-send-email-avagin@gmail.com>
-References: <1254005162-27353-1-git-send-email-avagin@gmail.com>
-	<1254005162-27353-2-git-send-email-avagin@gmail.com>
-	<1254005162-27353-3-git-send-email-avagin@gmail.com>
-Subject: [LTP] [PATCH 4/5] fsstress: fix memory leak in fread_d
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MmoxY-0004yN-Pw
+	for ltp-list@lists.sourceforge.net; Sun, 13 Sep 2009 13:17:40 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MmoxS-0000Ax-I8
+	for ltp-list@lists.sourceforge.net; Sun, 13 Sep 2009 13:17:40 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <1245921029.5542.44.camel@subratamodak.linux.ibm.com>
+References: <9a14a0630903130632s36a7f059hd093d30e97f894eb@mail.gmail.com>
+	<1236962876.7439.3.camel@subratamodak.linux.ibm.com>
+	<1237272937.5622.11.camel@subratamodak.linux.ibm.com>
+	<43e72e890903181242i1be5818et8afd1157cff8af83@mail.gmail.com>
+	<1237446038.5260.9.camel@subratamodak.linux.ibm.com>
+	<1245768529.4860.61.camel@subratamodak.linux.ibm.com>
+	<43e72e890906230831q6e6c9e2v49454ab66ca99156@mail.gmail.com>
+	<ee8eb53d0906231508ta738039m562dee936319624c@mail.gmail.com>
+	<1245921029.5542.44.camel@subratamodak.linux.ibm.com>
+Date: Sun, 13 Sep 2009 18:46:45 +0530
+Message-Id: <1252847807.5357.36.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Support of WIFI and W-LAN test cases in LTP
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,84 +33,104 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net
+To: Georgy Berdyshev <codingmaster@gmail.com>
+Cc: ltp-list@lists.sf.net, "Luis R. Rodriguez" <lrodriguez@atheros.com>, Jouni Malinen <j@w1.fi>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "John W. Linville" <linville@tuxdriver.com>, rahul Baliyan <rahul.lpt@gmail.com>, Luis Carlos Cobo <luisca@cozybit.com>, Johannes Berg <johannes@sipsolutions.net>, "Jouni.Malinen" <Jouni.Malinen@atheros.com>
 
-1. check result from operation open before set flags
-2. close descriptor and free path if set flags failed
+Hi Georgy,
 
-valgrind --leak-check=full --show-reachable=yes ./fsstress -d /home/shpagin/git-archive/ltp/testcases/kernel/fs/fsstress/tmp -l 10 -n 100
+On Thu, 2009-06-25 at 14:40 +0530, Subrata Modak wrote: 
+> On Tue, 2009-06-23 at 19:08 -0300, Georgy Berdyshev wrote: 
+> > Hi,
+> > 
+> > Luis did already mention that the idea is to contribute things back to
+> > LTP or have LTP use it.
+> 
 
-==23212== 1,134 bytes in 108 blocks are definitely lost in loss record 4 of 5
-==23212==    at 0x4A0776F: realloc (vg_replace_malloc.c:429)
-==23212==    by 0x401E6A: append_pathname (fsstress.c:528)
-==23212==    by 0x4024E3: fent_to_name (fsstress.c:760)
-==23212==    by 0x40284F: get_fname (fsstress.c:846)
-==23212==    by 0x4041E0: dread_f (fsstress.c:1757)
-==23212==    by 0x402368: doproc (fsstress.c:728)
-==23212==    by 0x401CC1: main (fsstress.c:463)
+Any headway towards Code contribution to LTP ?
 
-Signed-off-by: Andrew Vagin <avagin@gmail.com>
----
- testcases/kernel/fs/fsstress/fsstress.c |   16 +++++++++++-----
- 1 files changed, 11 insertions(+), 5 deletions(-)
+Regards--
+Subrata
 
-diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
-index 715c08d..cf7ba76 100644
---- a/testcases/kernel/fs/fsstress/fsstress.c
-+++ b/testcases/kernel/fs/fsstress/fsstress.c
-@@ -1764,10 +1764,6 @@ dread_f(int opno, long r)
- 	}
- 	fd = open_path(&f, O_RDONLY);
- 
--	if (!setdirect(fd)) {
--		return;
--	}
--
- 	e = fd < 0 ? errno : 0;
- 	check_cwd();
- 	if (fd < 0) {
-@@ -1777,6 +1773,13 @@ dread_f(int opno, long r)
- 		free_pathname(&f);
- 		return;
- 	}
-+
-+	if (!setdirect(fd)) {
-+		close(fd);
-+		free_pathname(&f);
-+		return;
-+	}
-+
- 	if (fstat64(fd, &stb) < 0) {
- 		if (v)
- 			printf("%d/%d: dread - fstat64 %s failed %d\n",
-@@ -1864,8 +1867,11 @@ dwrite_f(int opno, long r)
- 		return;
- 	}
- 
--	if (!setdirect(fd))
-+	if (!setdirect(fd)) {
-+		close(fd);
-+		free_pathname(&f);
- 		return;
-+	}
- 	if (fstat64(fd, &stb) < 0) {
- 		if (v)
- 			printf("%d/%d: dwrite - fstat64 %s failed %d\n",
--- 
-1.6.2.5
+> Great to hear that again. I was trying to figure out the status of that
+> work ? When is it expected to complete, any idea ?
+> 
+> Regards--
+> Subrata
+> 
+> > In case that there is some work going on, I would like to merge those
+> > tests also into my project
+> > and later on extend the work with LTP.
+> > 
+> > In any case, feel free to contact me.
+> > 
+> > Regards, Georgy
+> > 
+> > On Tue, Jun 23, 2009 at 12:31 PM, Luis R.
+> > Rodriguez<lrodriguez@atheros.com> wrote:
+> > > On Tue, Jun 23, 2009 at 7:48 AM, Subrata
+> > > Modak<subrata@linux.vnet.ibm.com> wrote:
+> > >> On Thu, 2009-03-19 at 12:30 +0530, Subrata Modak wrote:
+> > >>> On Wed, 2009-03-18 at 12:42 -0700, Luis R. Rodriguez wrote:
+> > >>> > On Mon, Mar 16, 2009 at 11:55 PM, Subrata Modak
+> > >>> > <subrata@linux.vnet.ibm.com> wrote:
+> > >>> > > Hi Rahul,
+> > >>> > >
+> > >>> > > On Fri, 2009-03-13 at 22:17 +0530, Subrata Modak wrote:
+> > >>> > >> Hi,
+> > >>> > >>
+> > >>> > >> On Fri, 2009-03-13 at 19:02 +0530, rahul Baliyan wrote:
+> > >>> > >> > Hi,
+> > >>> > >> >
+> > >>> > >> > Pl.  confirm if LTP contains the test cases of W-LAN and WI-FI.
+> > >>> > >>
+> > >>> > >> Nope. We do not have till now. However, we initiated some discussion
+> > >>> > >> some 6 months back in the same mailing list regarding Wireless Mesh
+> > >>> > >> Netwoking tests. Please follow the following thread:
+> > >>> > >>
+> > >>> > >> http://marc.info/?t=121969812900007&r=1&w=2&n=4,
+> > >>> > >>
+> > >>> > >> There are some tests already avilable. We need somebody to volunteer to
+> > >>> > >> bring them to some shape so that they can be automated and then
+> > >>> > >> integrated inside LTP. Would you be ready to do that ?
+> > >>> > >
+> > >>> > > Would you like to take up my proposal ?
+> > >>> >
+> > >>> > BTW I've stashed a Linux wireless testing entry in the Linux
+> > >>> > Foundation GSoC, hopefully that can be merged back into LTP.
+> > >>> >
+> > >>> > https://www.linuxfoundation.org/en/Google_Summer_of_Code_2009#Automation_of_testing_using_mac80211_hwsim_and_Orbit
+> > >>>
+> > >>
+> > >> Hi,
+> > >>
+> > >> Is somebody working on this, and still interested to contribute the same
+> > >> to LTP ?
+> > >
+> > > Yes, the idea is to hopefully contribute it back to LTP. Or have LTP
+> > > use it. I've added Georgy, the student working on this project.
+> > >
+> > >  Luis
+> > >
+> > 
+> > 
+> > 
+> 
+> 
+> ------------------------------------------------------------------------------
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-http://p.sf.net/sfu/devconf
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
