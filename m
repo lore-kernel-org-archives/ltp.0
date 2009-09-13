@@ -1,21 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1Mkgfq-0004Qq-TG
-	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2009 16:02:34 +0000
-Date: Mon, 7 Sep 2009 18:02:22 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20090907160222.GA29017@schrodinger.suse.cz>
-References: <20090831174107.GB30788@schrodinger.suse.cz>
-	<1252323725.4922.33.camel@subratamodak.linux.ibm.com>
-	<20090907114715.GA10983@schrodinger.suse.cz>
-	<1252324203.4922.37.camel@subratamodak.linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="17pEHd4RhPHOinZp"
-Content-Disposition: inline
-In-Reply-To: <1252324203.4922.37.camel@subratamodak.linux.ibm.com>
-Subject: [LTP] [PATCH] broken epoll Makefile
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MmozD-0001KC-29
+	for ltp-list@lists.sourceforge.net; Sun, 13 Sep 2009 13:19:23 +0000
+Received: from e7.ny.us.ibm.com ([32.97.182.137])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Mmoz5-0002Nf-7l
+	for ltp-list@lists.sourceforge.net; Sun, 13 Sep 2009 13:19:23 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e7.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8DDHFtU015137
+	for <ltp-list@lists.sourceforge.net>; Sun, 13 Sep 2009 09:17:15 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n8DDJ7rG191402
+	for <ltp-list@lists.sourceforge.net>; Sun, 13 Sep 2009 09:19:07 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n8DDJ7iQ027527
+	for <ltp-list@lists.sourceforge.net>; Sun, 13 Sep 2009 09:19:07 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4AA9AF1A.5090505@redhat.com>
+References: <4AA9AF1A.5090505@redhat.com>
+Date: Sun, 13 Sep 2009 18:47:13 +0530
+Message-Id: <1252847835.5357.42.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] network: fix multicast testcases Makefile
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,229 +36,66 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
+To: Hushan Jia <hjia@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi!
-> > Working on. Should be hopefully finished today.
+On Fri, 2009-09-11 at 09:59 +0800, Hushan Jia wrote: 
+> Hi,
+> Repost the multicast Makefile patch:
+> The Makefile of testcases/network/multicast/mc_commo and mc_member do not link binary file and config files to ../../../bin dirs.
+> This patch add the links.
 > 
-> Great.
+> Thanks&  Regards,
+> Hushan
+> 
+> ---
+> 
+> network: Fix multicast testcases Makefile
+> 
+> Signed-off-by: Hushan Jia<hjia@redhat.com>
 
-After trying to find old enough glibc (2.2.2 and older) in any distribution
-I've given up modifying the test to compile with non glibc epoll library. So
-when glibc epoll headers are not found the test is disabled entirely and dummy
-version of the test is compiled. Patch that also fixes some minor problems is 
-attached.
+Thanks.
 
-Signed-off-by: Cyril Hrubis chrubis@suse.cz
+Regards--
+Subrata
 
+> 
+> 
+> 
+> --- ltp/testcases/network/multicast/mc_commo/Makefile.orig	2009-09-09 19:00:32.000000000 +0800
+> +++ ltp/testcases/network/multicast/mc_commo/Makefile	2009-09-09 19:02:26.000000000 +0800
+> @@ -8,6 +8,8 @@ all: $(TARGETS)
+> 
+>  install:
+>  	ln -f mc_commo ../../../bin
+> +	ln -f mc_recv ../../../bin
+> +	ln -f mc_send ../../../bin
+> 
+>  clean:
+>  	rm -f $(TARGETS)
+> --- ltp/testcases/network/multicast/mc_member/Makefile.orig	2009-09-09 19:00:52.000000000 +0800
+> +++ ltp/testcases/network/multicast/mc_member/Makefile	2009-09-09 19:02:00.000000000 +0800
+> @@ -8,6 +8,9 @@ all: $(TARGETS)
+> 
+>  install:
+>  	ln -f mc_member ../../../bin
+> +	ln -f member ../../../bin
+> +	ln -f ManyGroups ../../../bin
+> +	ln -f TooManyGroups ../../../bin
+> 
+>  clean:
+>  	rm -f $(TARGETS)
 
-Also there are several directories that doesn't contain Makefile (or any files)
-so the are not used or not compiled anyway. IMHO they should be removed. For
-example in CVS tree:
-
-in testcases/kernel/syscals/
-
-epoll2
-epoll_create2
-create_module
-destroy_module
-getcontext01 
-...
-
-Empty directories are not exported to releases. At least it seems so, but still
-there are directories containing useless data, for example epoll2.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
---17pEHd4RhPHOinZp
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="configure_epoll.patch"
-
-Index: ltp/configure.ac
-===================================================================
---- ltp.orig/configure.ac
-+++ ltp/configure.ac
-@@ -13,6 +13,7 @@ AC_CHECK_HEADERS_ONCE([ \
- ifaddrs.h \
- sys/capability.h \
- sys/inotify.h \
-+sys/epoll.h \
- ])
- 
- LTP_CHECK_SYSCALL_EVENTFD
-Index: ltp/testcases/kernel/syscalls/epoll/Makefile
-===================================================================
---- ltp.orig/testcases/kernel/syscalls/epoll/Makefile
-+++ ltp/testcases/kernel/syscalls/epoll/Makefile
-@@ -19,14 +19,6 @@
- CFLAGS += -I../../../../include -Wall
- LDLIBS += -L../../../../lib -lltp
- 
--LIBC_HAS_EPOLL := $(shell echo '\#include <sys/epoll.h>' | $(CC) -E - > /dev/null 2>&1 && echo yes)
--ifeq ($(LIBC_HAS_EPOLL),yes)
--CFLAGS += -DLTP_EPOLL_USE_SYS_LIBC
--else
--CFLAGS += -I. -DLTP_EPOLL_USE_LIB
--LDLIBS += -lepoll
--endif
--
- SRCS    = $(wildcard *.c)
- TARGETS = $(patsubst %.c,%,$(SRCS))
- 
-Index: ltp/testcases/kernel/syscalls/epoll/epoll-ltp.c
-===================================================================
---- ltp.orig/testcases/kernel/syscalls/epoll/epoll-ltp.c
-+++ ltp/testcases/kernel/syscalls/epoll/epoll-ltp.c
-@@ -71,7 +71,7 @@
- *******************************************************************************/
- 
- #ifndef _GNU_SOURCE
--# define _GNU_SOURCE
-+#define _GNU_SOURCE
- #endif
- 
- #include <stdio.h>
-@@ -95,14 +95,15 @@
- #include <sys/select.h>
- #include <sys/wait.h>
- 
--#ifdef LTP_EPOLL_USE_LIB
--# include <epoll.h>
--#else
--# include <sys/epoll.h>
--#endif
--
--/* Harness Specific Include Files. */
-+#include "config.h"
- #include "test.h"
-+
-+char *TCID = "sys_epoll02";	/* test program identifier */
-+int TST_TOTAL = 1;		/* total number of tests in this file */
-+
-+#ifdef HAVE_SYS_EPOLL_H
-+
-+#include <sys/epoll.h>
- #include "usctest.h"
- 
- /* Local Defines */
-@@ -114,11 +115,6 @@
- #define NUM_RAND_ATTEMPTS 16
- #define BACKING_STORE_SIZE_HINT 32
- 
--/* Dummy function for tst_brk* */
--extern void cleanup(void)
--{
--}
--
- /*
-   Define the beginning of a "protected region".
-   This is a region where a wide variety of errors
-@@ -202,9 +198,6 @@ kid_status = kid_status;})
- extern int Tst_count;		/* counter for tst_xxx routines */
- extern char *TESTDIR;		/* temporary dir created by tst_tmpdir() */
- 
--/* Global Variables */
--char *TCID = "sys_epoll02";	/* test program identifier */
--int TST_TOTAL = 1;		/* total number of tests in this file */
- 
- /*
-  * Given the number of random size requests to test,
-@@ -367,7 +360,7 @@ static const char *result_strings[] = {
- 	if (ev_ptr != NULL){ \
- 		tst_resm(TFAIL, ( "(epoll_ctl(%d,%08x,%d,%p = {%08x,%08d}) returned %d:%s)" ) , ##__VA_ARGS__ , \
- 			epoll_fds[epfd_index], epoll_ctl_ops[op_index], \
--			epoll_fds[fd_index], ev_ptr, ev_ptr->events, ev_ptr->data, errno, \
-+			epoll_fds[fd_index], ev_ptr, ev_ptr->events, ev_ptr->data.fd, errno, \
- 			strerror(errno)); \
- 	} else { \
- 		tst_resm(TFAIL, ( "(epoll_ctl(%d,%08x,%d,%p) returned %d:%s)" ) , ##__VA_ARGS__  , \
-@@ -381,7 +374,7 @@ static const char *result_strings[] = {
- 	if (ev_ptr != NULL){ \
- 		tst_resm(TPASS, ( "(epoll_ctl(%d,%08x,%d,%p = {%08x,%08d}) returned %d:%s)" ) , ##__VA_ARGS__ , \
- 			epoll_fds[epfd_index], epoll_ctl_ops[op_index], \
--			epoll_fds[fd_index], ev_ptr, ev_ptr->events, ev_ptr->data, errno, \
-+			epoll_fds[fd_index], ev_ptr, ev_ptr->events, ev_ptr->data.fd, errno, \
- 			strerror(errno)); \
- 	} else { \
- 		tst_resm(TPASS, ( "(epoll_ctl(%d,%08x,%d,%p) returned %d:%s)" ) , ##__VA_ARGS__  , \
-@@ -390,8 +383,8 @@ static const char *result_strings[] = {
- 	} \
- })
- #else
--#define EPOLL_CTL_TEST_FAIL(msg , ...) tst_resm(TFAIL, (const char*)(msg) , ##__VA_ARGS__)
--#define EPOLL_CTL_TEST_PASS(msg , ...) tst_resm(TPASS, (const char*)(msg) , ##__VA_ARGS__)
-+#define EPOLL_CTL_TEST_FAIL(msg , ...) tst_resm(TFAIL, msg , ##__VA_ARGS__)
-+#define EPOLL_CTL_TEST_PASS(msg , ...) tst_resm(TPASS, msg , ##__VA_ARGS__)
- #endif
- 
- /****************************************************************************************/
-@@ -642,12 +635,6 @@ int test_epoll_ctl(int epoll_fd)
- 						} else	/* The call of epoll_ctl behaved as expected */
- 							EPOLL_CTL_TEST_PASS((result_strings
- 									     [result]));
--
--/* Just to be safe, undefine our macros */
--#undef EPOLL_CTL_TEST_FAIL
--#undef EPOLL_CTL_TEST_PASS
--#undef PROTECT_REGION_BEGIN
--#undef PROTECT_REGION_END
- 					}
- 				}
- 			}
-@@ -673,7 +660,7 @@ int main(int argc, char **argv)
- 
- 	/* Get the current time */
- 	if (gettimeofday(&tv, NULL) != 0) {
--		tst_brkm(TBROK, cleanup, "gettimeofday failed");
-+		tst_brkm(TBROK, NULL, "gettimeofday failed");
- 		tst_exit();
- 	} else {
- 		tst_resm(TINFO, "gettimeofday() works");
-@@ -704,3 +691,13 @@ int main(int argc, char **argv)
- 
- 	return 0;
- }
-+
-+#else
-+
-+int main(void)
-+{
-+	tst_resm(TINFO, "Epoll library was missing in compilation.");
-+	tst_exit();
-+}
-+
-+#endif
-
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---17pEHd4RhPHOinZp--
-
