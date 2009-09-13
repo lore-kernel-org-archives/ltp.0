@@ -1,25 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MlUli-0000qL-1W
-	for ltp-list@lists.sourceforge.net; Wed, 09 Sep 2009 21:31:58 +0000
-Received: from qw-out-1920.google.com ([74.125.92.150])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MlUlZ-00065b-Se
-	for ltp-list@lists.sourceforge.net; Wed, 09 Sep 2009 21:31:57 +0000
-Received: by qw-out-1920.google.com with SMTP id 5so1200361qwc.4
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 09 Sep 2009 14:31:44 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1252478989.5006.9.camel@subratamodak.linux.ibm.com>
-References: <4AA67D12.5010602@in.ibm.com> <4AA7391B.4020804@cn.fujitsu.com>
-	<4AA73AB0.9020202@in.ibm.com>
-	<1252478989.5006.9.camel@subratamodak.linux.ibm.com>
-Date: Wed, 9 Sep 2009 14:31:42 -0700
-Message-ID: <364299f40909091431w5726183bq147ccb482fd61ecc@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] LTP : Fix connectors event_generator program : gen_fork
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mmoz2-0004wp-KA
+	for ltp-list@lists.sourceforge.net; Sun, 13 Sep 2009 13:19:12 +0000
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Mmoyw-00021L-Ls
+	for ltp-list@lists.sourceforge.net; Sun, 13 Sep 2009 13:19:12 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e2.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8DDCSZc002991
+	for <ltp-list@lists.sourceforge.net>; Sun, 13 Sep 2009 09:12:28 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n8DDIx7Y226074
+	for <ltp-list@lists.sourceforge.net>; Sun, 13 Sep 2009 09:18:59 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n8DDIxRw021817
+	for <ltp-list@lists.sourceforge.net>; Sun, 13 Sep 2009 09:18:59 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4AA9AEB5.3020905@redhat.com>
+References: <4AA9AEB5.3020905@redhat.com>
+Date: Sun, 13 Sep 2009 18:47:09 +0530
+Message-Id: <1252847831.5357.41.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] network: Fix ip_tests error 2
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,127 +36,103 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net, Suzuki Poulose <suzuki@in.ibm.com>
+To: Hushan Jia <hjia@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Tue, Sep 8, 2009 at 11:49 PM, Subrata
-Modak<subrata@linux.vnet.ibm.com> wrote:
-> On Wed, 2009-09-09 at 10:48 +0530, Suzuki Poulose wrote:
->> Li Zefan wrote:
->> > Suzuki Poulose wrote:
->> >> Hi,
->> >>
->> >> There is a testcase issue in the event_generator code. The gen_fork()=
- is
->> >> called to generate the fork event.
->> >>
->> >> The child process prints the following message:
->> >>
->> >> static inline void gen_fork(void)
->> >> {
->> >> =A0 =A0 =A0 =A0 pid_t pid;
->> >> =A0 =A0 =A0 =A0 int status;
->> >>
->> >> =A0 =A0 =A0 =A0 pid =3D fork();
->> >> =A0 =A0 =A0 =A0 if (pid =3D=3D 0) {
->> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 printf("fork parent: %d, child: %d\n"=
-, getppid(),
->> >> getpid());
->> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 exit(0);
->> >> =A0 =A0 =A0 =A0 } else if (pid < 0) {
->> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 fprintf(stderr, "fork() failed\n");
->> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 exit(1);
->> >> =A0 =A0 =A0 =A0 }
->> >> }
->> >>
->> >> Now the parent process just exits after this call. So, if the child
->> >> doesn't get to run before parent exits, the child will see the ppid as
->> >> 1, that of INIT and this contradicts the actual data. Hence the test =
-fails.
->> >>
->> >> Attached patch fixes the issue. I have verified the same. Please appl=
-y.
->> >>
->> >
->> > Thanks for fixing it.
->> >
->> > Acked-by: Li Zefan <lizf@cn.fujitsu.com>
->> >
->> > But you forgot to add your Signed-off-by in the patch. ;)
->> >
->> Ah! Thanks for catching that ! Re-attaching it ;)
->>
->> Thanks
->>
->> Suzuki
->> plain text document attachment
->> (connectors-gen_fork-wait-for-child.diff)
->> gen_fork() event should wait until the child exits. Otherwise the child =
-would see INIT as the parent and
->> end up in collecting wrong information to compare with.
->>
->>
->> Signed-off-by: Suzuki K P <suzuki@in.ibm.com>
->
-> Thanks.
->
-> Regards--
-> Subrata
->
->> Acked-by: Li Zefan <lizf@cn.fujitsu.com>
->>
->> Index: ltp/testcases/kernel/connectors/pec/event_generator.c
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> --- ltp.orig/testcases/kernel/connectors/pec/event_generator.c =A0 =A0 =
-=A0 =A02008-10-22 13:40:31.000000000 +0000
->> +++ ltp/testcases/kernel/connectors/pec/event_generator.c =A0 =A0 2009-0=
-9-08 13:52:14.000000000 +0000
->> @@ -25,6 +25,9 @@
->> =A0#include <stdlib.h>
->> =A0#include <stdio.h>
->> =A0#include <pwd.h>
->> +#include <sys/types.h>
->> +#include <sys/wait.h>
->> +
->> =A0#include "test.h"
->>
->> =A0#define DEFAULT_EVENT_NUM =A0 =A0 =A0 1
->> @@ -94,6 +97,7 @@
->> =A0static inline void gen_fork(void)
->> =A0{
->> =A0 =A0 =A0 pid_t pid;
->> + =A0 =A0 int status;
->>
->> =A0 =A0 =A0 pid =3D fork();
->> =A0 =A0 =A0 if (pid =3D=3D 0) {
->> @@ -102,6 +106,8 @@
->> =A0 =A0 =A0 } else if (pid < 0) {
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 fprintf(stderr, "fork() failed\n");
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 exit(1);
->> + =A0 =A0 } else { =A0/* Parent should wait for the child */
->> + =A0 =A0 =A0 =A0 =A0 =A0 wait(&status);
->> =A0 =A0 =A0 }
->> =A0}
+On Fri, 2009-09-11 at 09:58 +0800, Hushan Jia wrote: 
+> Hello,
+> 
+> Repost the ip tests patch:
+> 
+> 1. Test #4:
+> ip tools now print nud state as follows:
+> REACHABLE, STALE, FAILED, etc.
+> 
+> 2. Test #3, #4, #5:
+> If delete entry succefully, grep will return 1,
+> indicating test PASS, so return code RC should be set to 0.
+> 
+> Thanks & Regards,
+> Hushan
+> 
+> ---
+> 
+> network: Fix iproute test case error 2
+> 
+> Signed-off-by: Hushan Jia <hjia@redhat.com>
 
-Sorry -- this really could have been done `better' with waitpid
-because you wouldn't need the extra status field.
-Thanks,
--Garrett
+Thanks.
 
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+Regards--
+Subrata
 
-trial. Simplify your report design, integration and deployment - and focus =
-on =
+> 
+> 
+> --- ltp/testcases/network/iproute/ip_tests.sh.orig	2009-09-09 18:31:31.000000000 +0800
+> +++ ltp/testcases/network/iproute/ip_tests.sh	2009-09-09 18:32:43.000000000 +0800
+> @@ -310,7 +310,9 @@ test03()
+>  				tst_res TFAIL $LTPTMP/tst_ip.err \
+>  				"Test #3: ip addr del command failed. Reason: "
+>  				return $(($RC+1))
+> -		fi
+> +			else
+> +				RC=0
+> +			fi
+>  		
+>  		tst_resm TPASS \
+>  			"Test #3: ip addr command tests successful"
+> @@ -354,7 +356,7 @@ test04()
+>  		 "Test #4: ip neigh show - shows all neighbour entries in arp tables."
+> 
+>  		cat > $LTPTMP/tst_ip.exp <<-EOF
+> -		127.0.0.1 dev lo lladdr 00:00:00:00:00:00 nud reachable
+> +		127.0.0.1 dev lo lladdr 00:00:00:00:00:00 REACHABLE
+>  		EOF
+> 
+>  		ip neigh show 127.0.0.1 | head -n1 >$LTPTMP/tst_ip.out 2>&1 || RC=$?
+> @@ -384,12 +386,14 @@ test04()
+>  				"Test #4: ip neigh del command failed return = $RC. Reason: "
+>  			return $RC
+>  		else
+> -			ip neigh show | grep 127.0.0.1 grep -v "nud failed$" >$LTPTMP/tst_ip.err 2>&1 || RC=$?
+> +			ip neigh show | grep 127.0.0.1 | grep -v " FAILED$" >$LTPTMP/tst_ip.err 2>&1 || RC=$?
+>  			if [ $RC -eq 0 ]
+>  			then
+>  				tst_res TFAIL $LTPTMP/tst_ip.err \
+>  				"Test #4: 127.0.0.1 still listed in arp. ip cmd Error Message:"
+>  				return $(($RC+1))
+> +			else
+> +				RC=0
+>  			fi
+>  		fi
+>  		
+> @@ -482,6 +486,8 @@ test05()
+>  				tst_res TFAIL $LTPTMP/tst_ip.err \
+>  				"Test #5: route not deleted. ip route show:"
+>  				return $(($RC+1))
+> +			else
+> +				RC=0
+>  			fi
+>  		fi
+>  		
+> @@ -570,6 +576,8 @@ test06()
+>  				tst_res TFAIL $LTPTMP/tst_ip.err \
+>  				"Test #6: 66:66:00:00:00:66 is not deleted. Details:"
+>  				return $(($RC+1))
+> +			else
+> +				RC=0
+>  			fi
+>  		fi
+>  		
 
-what you do best, core application coding. Discover what's new with =
 
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
