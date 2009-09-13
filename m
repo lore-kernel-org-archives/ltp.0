@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1MoIx5-0006MV-G2
-	for ltp-list@lists.sourceforge.net; Thu, 17 Sep 2009 15:31:19 +0000
-Date: Thu, 17 Sep 2009 17:31:04 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20090917153104.GA12550@schrodinger.suse.cz>
-References: <20090831174107.GB30788@schrodinger.suse.cz>
-	<20090907160222.GA29017@schrodinger.suse.cz>
-	<20090917120306.GB26142@schrodinger.suse.cz>
-	<200909171053.28153.vapier@gentoo.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <200909171053.28153.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] broken epoll Makefile
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mmox2-0005hl-HR
+	for ltp-list@lists.sourceforge.net; Sun, 13 Sep 2009 13:17:08 +0000
+Received: from e7.ny.us.ibm.com ([32.97.182.137])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Mmowv-0002EJ-Fb
+	for ltp-list@lists.sourceforge.net; Sun, 13 Sep 2009 13:17:08 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+Date: Sun, 13 Sep 2009 18:46:26 +0530
+Message-Id: <1252847788.5357.33.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: [LTP] [Testing 2.6.31] smack: implement logging V3
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,27 +26,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: Casey Schaufler <casey@schaufler-ca.com>
+Cc: ltp-list <ltp-list@lists.sf.net>, Eric Paris <eparis@redhat.com>, Etienne Basset <etienne.basset@numericable.fr>, James Morris <jmorris@namei.org>
 
-Hi!
-> fix your cvs up.  cvs itself prunes empty dirs.  there's nothing for us to 
-> "commit" to "fix" this.
+Hi Casey,
 
-Okay, cvs is even crazier than I was expecting.  But still there are
-directories that are not empty but doesn't contain Makefile and are not used
-for anything. For example epoll2.
+Would you like to revisit the LTP SMACK tests after 2.6.31 is released
+with the following SMACK changes for both 2.6.30 and 2.6.31:
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=6e837fb152410e571a81aaadbd9884f0bc46a55e,
+http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=ecfcc53fef3c357574bb6143dce6631e6d56295c,
+
+Regards--
+Subrata
+
+
 
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-http://p.sf.net/sfu/devconf
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
