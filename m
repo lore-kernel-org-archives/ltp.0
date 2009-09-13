@@ -2,32 +2,28 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MoiEG-0006cK-M2
-	for ltp-list@lists.sourceforge.net; Fri, 18 Sep 2009 18:30:44 +0000
-Received: from e38.co.us.ibm.com ([32.97.110.159])
+	(envelope-from <serge@us.ibm.com>) id 1Mmvdz-00023S-Ig
+	for ltp-list@lists.sourceforge.net; Sun, 13 Sep 2009 20:25:55 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
 	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MoiEC-0007lP-Og
-	for ltp-list@lists.sourceforge.net; Fri, 18 Sep 2009 18:30:44 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8IIQa5c009644
-	for <ltp-list@lists.sourceforge.net>; Fri, 18 Sep 2009 12:26:36 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n8IIUJDC140686
-	for <ltp-list@lists.sourceforge.net>; Fri, 18 Sep 2009 12:30:22 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n8IIUARO029141
-	for <ltp-list@lists.sourceforge.net>; Fri, 18 Sep 2009 12:30:11 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200909161747.31638.Renaud.Lottiaux@kerlabs.com>
-References: <200909161747.31638.Renaud.Lottiaux@kerlabs.com>
-Date: Fri, 18 Sep 2009 23:59:42 +0530
-Message-Id: <1253298583.15071.8.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] [CONCURRENCY] Fix kill07
-Reply-To: subrata@linux.vnet.ibm.com
+	(Exim 4.69) id 1Mmvdv-0008WC-Kz
+	for ltp-list@lists.sourceforge.net; Sun, 13 Sep 2009 20:25:55 +0000
+Date: Sun, 13 Sep 2009 15:06:27 -0500
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20090913200627.GB21695@us.ibm.com>
+References: <1233076092-8660-1-git-send-email-orenl@cs.columbia.edu>
+	<bb33bcf20903160526v56f16a82m9192770e228016b1@mail.gmail.com>
+	<1237365510.5381.34.camel@subratamodak.linux.ibm.com>
+	<20090318133943.GA22636@us.ibm.com>
+	<1237385013.5381.58.camel@subratamodak.linux.ibm.com>
+	<1245768524.4860.60.camel@subratamodak.linux.ibm.com>
+	<20090623150230.GA20383@us.ibm.com>
+	<1245921017.5542.41.camel@subratamodak.linux.ibm.com>
+	<1252847811.5357.37.camel@subratamodak.linux.ibm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1252847811.5357.37.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [RFC v13][PATCH 00/14] Kernel based checkpoint/restart
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,55 +36,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Renaud Lottiaux <Renaud.Lottiaux@kerlabs.com>, Matthieu Fertr <Matthieu.Fertre@kerlabs.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: ltp-list <ltp-list@lists.sf.net>, Oren Laadan <orenl@cs.columbia.edu>, Alexander Viro <viro@zeniv.linux.org.uk>, matthltc <matthltc@linux.vnet.ibm.com>, "H. Peter Anvin" <hpa@zytor.com>, Serge Hallyn <serue@linux.vnet.ibm.com>, sukadev <sukadev@linux.vnet.ibm.com>
 
-On Wed, 2009-09-16 at 17:47 +0200, Renaud Lottiaux wrote:
-> The following patch avoids that all kill07 test instances running
-> concurrently work with the same SHM object.
+Quoting Subrata Modak (subrata@linux.vnet.ibm.com):
+> Serge,
 > 
-> Signed-off-by: Matthieu Fertr <Matthieu.Fertre@kerlabs.com>
-
-Thanks. Long time no CONCURRENCY Fixes :-)
-
-Regards--
-Subrata
-
+> On Thu, 2009-06-25 at 14:40 +0530, Subrata Modak wrote: 
+> > > > > > So definately let's talk again after patches hit mainline.  I'll
+> > > > > > whip up some testcases based on existing code.
 > 
-> --- a/testcases/kernel/syscalls/kill/kill07.c
-> +++ b/testcases/kernel/syscalls/kill/kill07.c
-> @@ -219,6 +219,13 @@ void setup(void)
->         /* Pause if that option was specified */
->         TEST_PAUSE;
->  
-> +       /*
-> +        * Create a temporary directory and cd into it.
-> +        * This helps to ensure that a unique msgkey is created.
-> +        * See ../lib/libipc.c for more information.
-> +        */
-> +       tst_tmpdir();
-> +
->         /* get an IPC resource key */
->         semkey = getipckey();
->  
-> @@ -241,6 +248,9 @@ void cleanup(void)
->          */
->         rm_shm(shmid1);
->  
-> +       /* Remove the temporary directory */
-> +       tst_rmdir();
-> +
->         /* exit with return code appropriate for results */
->         tst_exit();
->  }
+> Any good news for LTP here ?
 
+Fraid not
+
+-serge
 
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-http://p.sf.net/sfu/devconf
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
