@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1MjGgN-0001vS-9U
-	for ltp-list@lists.sourceforge.net; Thu, 03 Sep 2009 18:05:15 +0000
-Date: Thu, 3 Sep 2009 20:05:02 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20090903180502.GA30854@schrodinger.suse.cz>
-References: <alpine.LRH.2.00.0908271703550.1134@vixen.sonytel.be>
-	<200908281517.46228.vapier@gentoo.org>
-	<20090831100651.GA4020@schrodinger.suse.cz>
-	<200908311633.32124.vapier@gentoo.org>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <liubo-fnst@cn.fujitsu.com>) id 1Mn6Oi-0004rl-UW
+	for ltp-list@lists.sourceforge.net; Mon, 14 Sep 2009 07:54:52 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Mn6Oc-0007ZT-Ea
+	for ltp-list@lists.sourceforge.net; Mon, 14 Sep 2009 07:54:52 +0000
+Message-ID: <4AADF6FD.3020802@cn.fujitsu.com>
+Date: Mon, 14 Sep 2009 15:55:41 +0800
+From: liubo <liubo-fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <200908311633.32124.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] Annotate tst_*() helpers
-	with?__attribute__	((format (printf, M, N)))
+Subject: [LTP] [PATCH]:fix the bug of macro in getdelays.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,32 +25,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: ltp-list@lists.sf.net
 
-Ahoj!
-> > That's still gives warning for me:
-> >
-> > warning: format '%lld' expects type 'long long int', but argument 6 has
-> > type 'off_t'
-> >
-> > > i converted some tests to do this already (fallocate maybe?)
-> >
-> > Hmm, looks like there is loff_t used instead of off_t.
-> 
-> loff_t is probably PRId64 while off_t is probably PRIu64
+When running cgroup test, I found a bug of macro in 
+getdelays.c, which refers to the spelling mistake. 
+And this leads to testcase_eight's abnormal delay. 
 
-Hmm, seems like off_t is defined as long int on my machine. So following code
-is came to my mind:
+Relative macro:
+	HAVE_LINUX_CGROUPSTATS_H
 
-off_t t;
-...
-printf("off_t value %"PRId64"\n", (uint64_t) t);
+Change macro HAVE_LINUX_CGROUPSTAT_H to HAVE_LINUX_CGROUPSTATS_H
+to fix the bug.
 
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+signed-off-by:Liu Bo <liubo-fnst@cn.fujitsu.com>
+---
+diff --git a/testcases/kernel/controllers/cgroup/getdelays.c b/testcases/kernel/controllers/cgroup/getdelays.c
+index 478b325..c9f532d 100644
+--- a/testcases/kernel/controllers/cgroup/getdelays.c
++++ b/testcases/kernel/controllers/cgroup/getdelays.c
+@@ -397,7 +397,7 @@ int main(int argc, char *argv[])
+ 	}
+ 
+ 	if (containerset) {
+-		#ifdef HAVE_LINUX_CGROUPSTAT_H
++		#ifdef HAVE_LINUX_CGROUPSTATS_H
+ 		cfd = open(containerpath, O_RDONLY);
+ 		if (cfd < 0) {
+ 			perror("error opening container file");
+
+
+
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
