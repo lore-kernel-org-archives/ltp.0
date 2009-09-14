@@ -1,24 +1,47 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <kdlucas@gmail.com>) id 1MquvW-00043n-Uf
-	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2009 20:28:30 +0000
-Received: from mail-yx0-f198.google.com ([209.85.210.198])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MquvP-0004Nu-30
-	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2009 20:28:30 +0000
-Received: by yxe36 with SMTP id 36so2569428yxe.11
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <s.ikarashi@jp.fujitsu.com>) id 1Mmz4l-0004g5-NA
+	for ltp-list@lists.sourceforge.net; Mon, 14 Sep 2009 00:05:47 +0000
+Received: from fgwmail6.fujitsu.co.jp ([192.51.44.36])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Mmz4g-0004Tm-3N
+	for ltp-list@lists.sourceforge.net; Mon, 14 Sep 2009 00:05:47 +0000
+Received: from m4.gw.fujitsu.co.jp ([10.0.50.74])
+	by fgwmail6.fujitsu.co.jp (Fujitsu Gateway) with ESMTP id
+	n8E05XIt005728 for <ltp-list@lists.sourceforge.net> (envelope-from
+	s.ikarashi@jp.fujitsu.com); Mon, 14 Sep 2009 09:05:34 +0900
+Received: from smail (m4 [127.0.0.1])
+	by outgoing.m4.gw.fujitsu.co.jp (Postfix) with ESMTP id 902122AFA14
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 24 Sep 2009 13:28:17 -0700 (PDT)
+	Mon, 14 Sep 2009 09:05:33 +0900 (JST)
+Received: from s4.gw.fujitsu.co.jp (s4.gw.fujitsu.co.jp [10.0.50.94])
+	by m4.gw.fujitsu.co.jp (Postfix) with ESMTP id 4D1D41F7042
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 14 Sep 2009 09:05:33 +0900 (JST)
+Received: from s4.gw.fujitsu.co.jp (localhost.localdomain [127.0.0.1])
+	by s4.gw.fujitsu.co.jp (Postfix) with ESMTP id 0480F1DB803A
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 14 Sep 2009 09:05:33 +0900 (JST)
+Received: from m105.s.css.fujitsu.com (m105.s.css.fujitsu.com [10.249.87.105])
+	by s4.gw.fujitsu.co.jp (Postfix) with ESMTP id 84337E18003
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 14 Sep 2009 09:05:32 +0900 (JST)
+Received: from m105.css.fujitsu.com (m105 [127.0.0.1])
+	by m105.s.css.fujitsu.com (Postfix) with ESMTP id 06CD95D8003
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 14 Sep 2009 09:05:32 +0900 (JST)
+Received: from dune.soft.fujitsu.com (dune.soft.fujitsu.com [10.124.100.185])
+	by m105.s.css.fujitsu.com (Postfix) with ESMTP id 998555D8002
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 14 Sep 2009 09:05:31 +0900 (JST)
+Message-ID: <4AAD88CB.8090403@jp.fujitsu.com>
+Date: Mon, 14 Sep 2009 09:05:31 +0900
+From: Seiichi Ikarashi <s.ikarashi@jp.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <200909241229.32866.chandru@in.ibm.com>
-References: <200909241229.32866.chandru@in.ibm.com>
-Date: Thu, 24 Sep 2009 13:28:17 -0700
-Message-ID: <b9d696240909241328p25fdc8dcrac4f8bbfa4adad23@mail.gmail.com>
-From: "K.D. Lucas" <kdlucas@gmail.com>
-Subject: Re: [LTP] [PATCH] ppoll01: add signal() syscall to register the
-	signal handler
+Content-Type: multipart/mixed; boundary="------------080408030305050701030904"
+Subject: [LTP] [PATCH] build rule for t0 in open_posix_testsuite
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,232 +51,114 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6377939257368379663=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Chandru <chandru@in.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
---===============6377939257368379663==
-Content-Type: multipart/alternative; boundary=001636c597c3f46d62047458ab43
-
---001636c597c3f46d62047458ab43
+This is a multi-part message in MIME format.
+--------------080408030305050701030904
 Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-I applied this patch, and it fixed ppoll01 on an Ubuntu Hardy box which had
-been failing. Kernel is 2.6.24.
+Hi,
 
-Kelly
+I propose two patches (two patterns of fix) for an issue of open_posix_testsuite.
+I hope either one of them (or more better one someone will write) is committed.
 
-On Wed, Sep 23, 2009 at 11:59 PM, Chandru <chandru@in.ibm.com> wrote:
+You need to do three steps below in order to run execute.sh of open_posix_testsuite:
+ 1) make build-tests
+ 2) cc -O2 -o t0 t0.c
+ 3) ./execute.sh
 
-> The ppoll01 testcase has a signal handler in it but this signal handler is
-> not registered with the kernel through the signal() syscal. The testcase
-> fails when it sends a SIGINT to itself as part of one of the case of the
-> test run.
-> The following patch
-> 1. Adds a signal() syscall to register the signal handler
-> 2. Corrects the expected 'revents' for the case where ppoll() is called on
-> a file which is only opened in read/write mode, i.e case00.
-> 3. Takes away printing the type of error ( i.e strerror(errno) ) since it
-> only prints the last error seen and does not report the failures seen in the
-> cases before the last failed one. The reporting of NG or OK shoudl take care
-> of
->    letting the user know the cases that have passed and cases that have
-> failed.
->
-> Signed-off-by: Chandru S <chandru@linux.vnet.ibm.com>
-> ---
->
-> --- ppoll01.c.orig      2009-09-22 19:22:39.371235396 +0530
-> +++ ppoll01.c   2009-09-24 01:24:38.706487228 +0530
-> @@ -106,6 +106,8 @@ extern void cleanup() {
->         tst_exit();
->  }
->
-> +void sighandler(int sig);       /* signals handler function for the test
-> */
-> +
->  /* Local  Functions */
->
->  /******************************************************************************/
->  /*
->    */
-> @@ -125,7 +127,8 @@ extern void cleanup() {
->  /*
->    */
->
->  /******************************************************************************/
->  void setup() {
-> -        /* Capture signals if any */
-> +        /* Capture signals*/
-> +       signal(SIGINT, &sighandler);
->         /* Create temporary directories */
->         TEST_PAUSE;
->         tst_tmpdir();
-> @@ -191,7 +194,7 @@ struct test_case {
->  static struct test_case tcase[] = {
->        { // case00
->                 .ttype          = NORMAL,
-> -                .expect_revents = POLLOUT,
-> +                .expect_revents = POLLOUT | POLLIN,
->                 .ret            = 0,
->                 .err            = 0,
->         },
-> @@ -463,7 +466,7 @@ int main(int ac, char **av) {
->                                break;
->
->                default:
-> -                               tst_resm(TFAIL, "%s failed - errno = %d :
-> %s", TCID, TEST_ERRNO, strerror(TEST_ERRNO));
-> +                               tst_resm(TFAIL, "%s failed", TCID);
->                                RPRINTF("NG");
->                                cleanup();
->                                tst_exit();
->
->
->
->
-> ------------------------------------------------------------------------------
-> Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
-> is the only developer event you need to attend this year. Jumpstart your
-> developing skills, take BlackBerry mobile applications to market and stay
-> ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-> http://p.sf.net/sfu/devconf
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
->
+I think it's better to include step 2 into step 1 or 3 for convenience.
+So I wrote two different patches for these cases.
 
+Signed-off-by: Seiichi Ikarashi <s.ikarashi@jp.fujitsu.com>
 
+Regards,
 
--- 
-K.D. Lucas
-kdlucas@gmail.com
+--------------080408030305050701030904
+Content-Type: text/x-patch;
+ name="into1.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="into1.patch"
 
---001636c597c3f46d62047458ab43
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Index: ltp/testcases/open_posix_testsuite/Makefile
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/open_posix_testsuite/Makefile,v
+retrieving revision 1.25
+diff -u -r1.25 Makefile
+--- ltp/testcases/open_posix_testsuite/Makefile	23 Oct 2008 07:36:28 -0000	1.25
++++ ltp/testcases/open_posix_testsuite/Makefile	13 Sep 2009 23:58:41 -0000
+@@ -76,7 +76,7 @@
+ # Rule to run a build test
+ # If the .o doesn't export main, then we don't need to link
+ .PRECIOUS: %.test
+-%.test: %.o
++%.test: %.o $(top_builddir)/t0
+ 	@COMPLOG=$(LOGFILE).$$$$; \
+ 	[ -f $< ] || exit 0; \
+ 	{ nm -g $< | grep -q ' T main\| D main'; } || \
+@@ -96,7 +96,7 @@
+ # Rule to run an executable test
+ # If it is only a build test, then the binary exist, so we don't need to run
+ .PHONY: %.run-test
+-%.run-test: %.test $(top_builddir)/t0 $(top_builddir)/t0.val
++%.run-test: %.test $(top_builddir)/t0.val
+ 	@COMPLOG=$(LOGFILE).$$$$; \
+ 	[ -f $< ] || exit 0; \
+ 	$(TIMEOUT) $< > $$COMPLOG 2>&1; \
+@@ -144,7 +144,7 @@
+ $(top_builddir)/t0.val: $(top_builddir)/t0
+ 	echo `$(top_builddir)/t0 0; echo $$?` > $(top_builddir)/t0.val
+ 	
+-%.run-test: %.sh $(top_builddir)/t0 $(top_builddir)/t0.val
++%.run-test: %.sh $(top_builddir)/t0.val
+ 	@COMPLOG=$(LOGFILE).$$$$; \
+ 	chmod +x $<; \
+ 	$(TIMEOUT) $< > $$COMPLOG 2>&1; \
 
-I applied this patch, and it fixed ppoll01 on an Ubuntu Hardy box which had=
- been failing. Kernel is 2.6.24.<br><br>Kelly<br><br><div class=3D"gmail_qu=
-ote">On Wed, Sep 23, 2009 at 11:59 PM, Chandru <span dir=3D"ltr">&lt;<a hre=
-f=3D"mailto:chandru@in.ibm.com">chandru@in.ibm.com</a>&gt;</span> wrote:<br=
->
-<blockquote class=3D"gmail_quote" style=3D"border-left: 1px solid rgb(204, =
-204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">The ppoll01 testc=
-ase has a signal handler in it but this signal handler is not registered wi=
-th the kernel through the signal() syscal. The testcase fails when it sends=
- a SIGINT to itself as part of one of the case of the test run.<br>
+--------------080408030305050701030904
+Content-Type: text/x-patch;
+ name="into3.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="into3.patch"
 
-The following patch<br>
-1. Adds a signal() syscall to register the signal handler<br>
-2. Corrects the expected &#39;revents&#39; for the case where ppoll() is ca=
-lled on a file which is only opened in read/write mode, i.e case00.<br>
-3. Takes away printing the type of error ( i.e strerror(errno) ) since it o=
-nly prints the last error seen and does not report the failures seen in the=
- cases before the last failed one. The reporting of NG or OK shoudl take ca=
-re of<br>
+Index: ltp/testcases/open_posix_testsuite/execute.sh
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/open_posix_testsuite/execute.sh,v
+retrieving revision 1.3
+diff -u -r1.3 execute.sh
+--- ltp/testcases/open_posix_testsuite/execute.sh	4 Aug 2009 10:50:07 -0000	1.3
++++ ltp/testcases/open_posix_testsuite/execute.sh	13 Sep 2009 23:58:41 -0000
+@@ -166,8 +166,11 @@
+ # Maximum five minutes waiting time period to execute a test. If it exceeds, the test case will go into the 'HUNG' category.
+ TIMEOUT_VAL=300
+ 
+-# if gcc available then remove the below line comment else put the t0 in posixtestsuite directory.
+-#gcc -o t0 t0.c
++if [ ! -x t0 ]
++then
++      cc -O2 -o t0 t0.c
++fi
++
+ ./t0 0 > /dev/null 2>&1
+ TIMEVAL_RET=$?
+ 
 
- =A0 =A0letting the user know the cases that have passed and cases that hav=
-e failed.<br>
-<br>
-Signed-off-by: Chandru S &lt;<a href=3D"mailto:chandru@linux.vnet.ibm.com">=
-chandru@linux.vnet.ibm.com</a>&gt;<br>
----<br>
-<br>
---- ppoll01.c.orig =A0 =A0 =A02009-09-22 19:22:39.371235396 +0530<br>
-+++ ppoll01.c =A0 2009-09-24 01:24:38.706487228 +0530<br>
-@@ -106,6 +106,8 @@ extern void cleanup() {<br>
- =A0 =A0 =A0 =A0 tst_exit();<br>
-=A0}<br>
-<br>
-+void sighandler(int sig); =A0 =A0 =A0 /* signals handler function for the =
-test */<br>
-+<br>
-=A0/* Local =A0Functions */<br>
-=A0/***********************************************************************=
-*******/<br>
-=A0/* =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0*/<br>
-@@ -125,7 +127,8 @@ extern void cleanup() {<br>
-=A0/* =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0*/<br>
-=A0/***********************************************************************=
-*******/<br>
-=A0void setup() {<br>
-- =A0 =A0 =A0 =A0/* Capture signals if any */<br>
-+ =A0 =A0 =A0 =A0/* Capture signals*/<br>
-+ =A0 =A0 =A0 signal(SIGINT, &amp;sighandler);<br>
- =A0 =A0 =A0 =A0 /* Create temporary directories */<br>
- =A0 =A0 =A0 =A0 TEST_PAUSE;<br>
- =A0 =A0 =A0 =A0 tst_tmpdir();<br>
-@@ -191,7 +194,7 @@ struct test_case {<br>
-=A0static struct test_case tcase[] =3D {<br>
- =A0 =A0 =A0 =A0{ // case00<br>
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .ttype =A0 =A0 =A0 =A0 =A0=3D NORMAL,<br>
-- =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.expect_revents =3D POLLOUT,<br>
-+ =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.expect_revents =3D POLLOUT | POLLIN,<br>
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .ret =A0 =A0 =A0 =A0 =A0 =A0=3D 0,<br>
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .err =A0 =A0 =A0 =A0 =A0 =A0=3D 0,<br>
- =A0 =A0 =A0 =A0 },<br>
-@@ -463,7 +466,7 @@ int main(int ac, char **av) {<br>
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;<br>
-<br>
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0default:<br>
-- =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TFAI=
-L, &quot;%s failed - errno =3D %d : %s&quot;, TCID, TEST_ERRNO, strerror(TE=
-ST_ERRNO));<br>
-+ =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TFAI=
-L, &quot;%s failed&quot;, TCID);<br>
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0RPRINTF(&qu=
-ot;NG&quot;);<br>
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0cleanup();<=
-br>
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_exit();=
-<br>
-<br>
-<br>
-<br>
----------------------------------------------------------------------------=
----<br>
-Come build with us! The BlackBerry&amp;reg; Developer Conference in SF, CA<=
-br>
-is the only developer event you need to attend this year. Jumpstart your<br=
->
-developing skills, take BlackBerry mobile applications to market and stay<b=
-r>
-ahead of the curve. Join us from November 9&amp;#45;12, 2009. Register now&=
-amp;#33;<br>
-<a href=3D"http://p.sf.net/sfu/devconf" target=3D"_blank">http://p.sf.net/s=
-fu/devconf</a><br>
-_______________________________________________<br>
-Ltp-list mailing list<br>
-<a href=3D"mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforg=
-e.net</a><br>
-<a href=3D"https://lists.sourceforge.net/lists/listinfo/ltp-list" target=3D=
-"_blank">https://lists.sourceforge.net/lists/listinfo/ltp-list</a><br>
-</blockquote></div><br><br clear=3D"all"><br>-- <br>K.D. Lucas<br><a href=
-=3D"mailto:kdlucas@gmail.com">kdlucas@gmail.com</a><br>
-
---001636c597c3f46d62047458ab43--
-
-
---===============6377939257368379663==
+--------------080408030305050701030904
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-http://p.sf.net/sfu/devconf
---===============6377939257368379663==
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with 
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--------------080408030305050701030904
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -264,5 +169,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============6377939257368379663==--
+--------------080408030305050701030904--
 
