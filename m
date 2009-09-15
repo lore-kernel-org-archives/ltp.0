@@ -1,29 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <liubo-fnst@cn.fujitsu.com>) id 1MkwmS-0008Uv-Qn
-	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2009 09:14:28 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MkwmK-0003LX-KN
-	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2009 09:14:28 +0000
-Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
-	by song.cn.fujitsu.com (Postfix) with ESMTP id 8A84F170141
-	for <ltp-list@lists.sourceforge.net>;
-	Tue,  8 Sep 2009 17:14:01 +0800 (CST)
-Received: from fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id n889DsKd023467
-	for <ltp-list@lists.sourceforge.net>; Tue, 8 Sep 2009 17:13:54 +0800
-Received: from localhost.localdomain (unknown [10.167.141.170])
-	by fnst.cn.fujitsu.com (Postfix) with ESMTPA id 8D719D41E4
-	for <ltp-list@lists.sourceforge.net>;
-	Tue,  8 Sep 2009 17:14:25 +0800 (CST)
-Message-ID: <4AA62094.7060505@cn.fujitsu.com>
-Date: Tue, 08 Sep 2009 17:15:00 +0800
-From: liubo <liubo-fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] cpuctl of controllers: fix the bug of while loop
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MnRDd-0006ab-8A
+	for ltp-list@lists.sourceforge.net; Tue, 15 Sep 2009 06:08:49 +0000
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MnRDV-0008Na-JB
+	for ltp-list@lists.sourceforge.net; Tue, 15 Sep 2009 06:08:49 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e8.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8F67q2N012554
+	for <ltp-list@lists.sourceforge.net>; Tue, 15 Sep 2009 02:07:52 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n8F68ZkB247012
+	for <ltp-list@lists.sourceforge.net>; Tue, 15 Sep 2009 02:08:35 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n8F68ZPl013222
+	for <ltp-list@lists.sourceforge.net>; Tue, 15 Sep 2009 02:08:35 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4AAD88CB.8090403@jp.fujitsu.com>
+References: <4AAD88CB.8090403@jp.fujitsu.com>
+Date: Tue, 15 Sep 2009 11:38:29 +0530
+Message-Id: <1252994909.5874.10.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] build rule for t0 in open_posix_testsuite
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,183 +39,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Seiichi Ikarashi <s.ikarashi@jp.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-When running the ltp tool by "./runltp -f controllers",
-I found "while" loop cannot stop in following files of
-cpuctl test.
+On Mon, 2009-09-14 at 09:05 +0900, Seiichi Ikarashi wrote: 
+> Hi,
+> 
+> I propose two patches (two patterns of fix) for an issue of open_posix_testsuite.
+> I hope either one of them (or more better one someone will write) is committed.
+> 
+> You need to do three steps below in order to run execute.sh of open_posix_testsuite:
+>  1) make build-tests
+>  2) cc -O2 -o t0 t0.c
 
-File list:
-cpuctl_def_task01.c
-cpuctl_def_task02.c
-cpuctl_def_task03.c
-cpuctl_def_task04.c
-cpuctl_test01.c
-cpuctl_test02.c
-cpuctl_test03.c
-cpuctl_test04.c
+I prefer the first patch, as, all build items should be combined and
+completed before any actual execution.
 
-Key code:
-timer_expired=0;
-while(!timer_expired)
-	f=sqrt(f*f);
+Regards--
+Subrata
 
-Reason:
-During the compilation of these files, gcc's O2 mechanism
-  causes the change of variable "timer_expired" to be omitted,
-hence the loop, "while(!timer_expired) f=sqrt(f*f);" cannot
-get out from itself.
-
-Change the type of "timer_expired" from "int" to "volatile int"
-to fix this bug.
-
-By the way, it is necessary to modify the file,
-ltp-full-xxxxxxxx/testcases/kernel/controllers/libcontrollers/
-libcontrollers.h for compilation.
-
-
-Signed-off-by: Miao Xie <miaox@cn.fujitsu.com>
-Signed-off-by: Liu Bo <liubo-fnst@cn.fujitsu.com>
----
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c 
-b/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
-index 00a25bc..1fb398a 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
-@@ -82,7 +82,7 @@ extern void cleanup()
-         kill(scriptpid, SIGUSR1);/* Inform the shell to do cleanup*/
-         tst_exit();             /* Report exit status*/
-  }
--int timer_expired = 0;
-+volatile int timer_expired = 0;
-
-  int main(int argc, char *argv[])
-  {
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c 
-b/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
-index 1bfa187..56ddacc 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
-@@ -79,7 +79,7 @@ cleanup()
-         tst_exit();             /* Report exit status*/
-  }
-
--int timer_expired = 0;
-+volatile int timer_expired = 0;
-
-  int main(int argc, char *argv[])
-  {
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c 
-b/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
-index e4ce3ad..4f3ddc1 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
-@@ -79,7 +79,7 @@ cleanup()
-         tst_exit();               /* Report exit status*/
-  }
-
--int timer_expired = 0;
-+volatile int timer_expired = 0;
-
-  int main(int argc, char *argv[])
-  {
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c 
-b/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
-index 15e2b5f..7f184c8 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
-@@ -78,7 +78,7 @@ cleanup()
-         tst_exit();               /* Report exit status*/
-  }
-
--int timer_expired = 0;
-+volatile int timer_expired = 0;
-
-  int main(int argc, char *argv[])
-  {
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test01.c 
-b/testcases/kernel/controllers/cpuctl/cpuctl_test01.c
-index ab0a4c9..7d7cc48 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_test01.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_test01.c
-@@ -80,7 +80,7 @@ cleanup()
-         kill (scriptpid, SIGUSR1);/* Inform the shell to do cleanup*/
-         tst_exit ();            /* Report exit status*/
-  }
--int timer_expired = 0;
-+volatile int timer_expired = 0;
-
-  int main(int argc, char* argv[])
-  {
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test02.c 
-b/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
-index 801716d..153a293 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
-@@ -80,7 +80,7 @@ cleanup()
-  }
-
-  int migrate_task ();
--int timer_expired = 0;
-+volatile int timer_expired = 0;
-
-  int main(int argc, char* argv[])
-  {
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test03.c 
-b/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
-index c4b9978..c21b69c 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
-@@ -79,7 +79,7 @@ cleanup()
-         tst_exit ();              /* Report exit status*/
-  }
-
--int timer_expired = 0;
-+volatile int timer_expired = 0;
-
-  int main(int argc, char* argv[])
-  {
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test04.c 
-b/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
-index b0a2329..ed00b0d 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
-@@ -79,7 +79,7 @@ cleanup()
-         tst_exit ();              /* Report exit status*/
-  }
-
--int timer_expired = 0;
-+volatile int timer_expired = 0;
-
-  int main(int argc, char* argv[])
-  {
-diff --git 
-a/testcases/kernel/controllers/libcontrollers/libcontrollers.h 
-b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
-index 777ff67..e6ab6a0 100644
---- a/testcases/kernel/controllers/libcontrollers/libcontrollers.h
-+++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
-@@ -48,7 +48,8 @@ char fullpath[PATH_MAX];
-  char fullpath[1024]; /* Guess */
-  #endif
-
--int FLAG, timer_expired;
-+int FLAG;
-+volatile int timer_expired;
-
-  int retval;
-
-
-
-
-
+> 3) ./execute.sh
+> 
+> I think it's better to include step 2 into step 1 or 3 for convenience.
+> So I wrote two different patches for these cases.
+> 
+> Signed-off-by: Seiichi Ikarashi <s.ikarashi@jp.fujitsu.com>
+> 
+> Regards,
+> ------------------------------------------------------------------------------
+> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+> trial. Simplify your report design, integration and deployment - and focus on 
+> what you do best, core application coding. Discover what's new with 
+> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
+http://p.sf.net/sfu/devconf
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
