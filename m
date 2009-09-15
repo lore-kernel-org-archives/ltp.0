@@ -1,27 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <paul.larson@canonical.com>) id 1MqSUC-00040p-3y
-	for Ltp-list@lists.sourceforge.net; Wed, 23 Sep 2009 14:06:24 +0000
-Received: from adelie.canonical.com ([91.189.90.139])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MqSU5-0004aD-S1
-	for Ltp-list@lists.sourceforge.net; Wed, 23 Sep 2009 14:06:23 +0000
-Received: from hutte.canonical.com ([91.189.90.181])
-	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
-	id 1MqSKc-0005Or-1l
-	for <Ltp-list@lists.sourceforge.net>; Wed, 23 Sep 2009 14:56:30 +0100
-Received: from 75-27-138-126.lightspeed.austtx.sbcglobal.net ([75.27.138.126]
-	helo=[192.168.1.70]) by hutte.canonical.com with esmtpsa
-	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
-	(envelope-from <paul.larson@canonical.com>) id 1MqSKb-00009N-MX
-	for Ltp-list@lists.sourceforge.net; Wed, 23 Sep 2009 14:56:30 +0100
-From: Paul Larson <paul.larson@canonical.com>
-Date: Wed, 23 Sep 2009 08:56:27 -0500
-Message-Id: <1253714187.5697.13.camel@plars-t500>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MnRDX-0006aL-Jy
+	for ltp-list@lists.sourceforge.net; Tue, 15 Sep 2009 06:08:43 +0000
+Received: from e35.co.us.ibm.com ([32.97.110.153])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MnRDP-00075H-CF
+	for ltp-list@lists.sourceforge.net; Tue, 15 Sep 2009 06:08:43 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4AADF6FD.3020802@cn.fujitsu.com>
+References: <4AADF6FD.3020802@cn.fujitsu.com>
+Date: Tue, 15 Sep 2009 11:38:25 +0530
+Message-Id: <1252994905.5874.9.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: [LTP] quotactl01 broken
+Subject: Re: [LTP] [PATCH]:fix the bug of macro in getdelays.c
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,57 +28,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Linux Test Project <Ltp-list@lists.sourceforge.net>
+To: liubo <liubo-fnst@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-quotactl01 appears to need some work.  I'm not terribly familiar with
-this interface, but I spent a few minutes playing around with it this
-morning.
+On Mon, 2009-09-14 at 15:55 +0800, liubo wrote: 
+> When running cgroup test, I found a bug of macro in 
+> getdelays.c, which refers to the spelling mistake. 
+> And this leads to testcase_eight's abnormal delay. 
+> 
+> Relative macro:
+> 	HAVE_LINUX_CGROUPSTATS_H
+> 
+> Change macro HAVE_LINUX_CGROUPSTAT_H to HAVE_LINUX_CGROUPSTATS_H
+> to fix the bug.
+> 
+> 
+> signed-off-by:Liu Bo <liubo-fnst@cn.fujitsu.com>
 
-First problem I was seeing is that all tests within it return EFAULT due
-to a bad addr value  (for ref, see man page [1]).  This is not
-surprising since it is being passed (caddr_t)NULL for the address.  I
-worked around this by simply creating a dummy struct dqblk for it to use
-instead.
+Thanks.
 
-Next problem is that it complained that the device it was being passed
-was not valid.  Again, not a big surprise here since (const char *)NULL
-is being passed as the device.  A possible workaround for this would be
-to create a dummy loop0 device and mount it as part of the test setup.
+Regards--
+Subrata
 
-Next problem I was seeing is that the QCMDs passed to it were not
-correctly specified.  I believe in the TEST() call, we should be passing
-QCMD(cmd[i],USRQUOTA) instead of just cmd[i].
-
-I didn't get all the way to making it function correctly, but these 3
-things alone got me to a point where several of the tests would pass at
-least.  Before doing any of this, my output (running on x86_64, 2.6.31
-based kernel) looked like:
-quotactl01    1  TFAIL  :  quotactl01 failed, cmd=0x800002:
-TEST_ERRNO=EFAULT(14): Bad address
-quotactl01    2  TFAIL  :  quotactl01 failed, cmd=0x800003:
-TEST_ERRNO=EFAULT(14): Bad address
-quotactl01    3  TFAIL  :  quotactl01 failed, cmd=0x800007:
-TEST_ERRNO=EFAULT(14): Bad address
-quotactl01    4  TFAIL  :  quotactl01 failed, cmd=0x800008:
-TEST_ERRNO=EFAULT(14): Bad address
-quotactl01    5  TFAIL  :  quotactl01 failed, cmd=0x800005:
-TEST_ERRNO=EFAULT(14): Bad address
-quotactl01    6  TFAIL  :  quotactl01 failed, cmd=0x800006:
-TEST_ERRNO=EFAULT(14): Bad address
-quotactl01    7  TFAIL  :  quotactl01 failed, cmd=0x800004:
-TEST_ERRNO=EFAULT(14): Bad address
-quotactl01    8  TFAIL  :  quotactl01 failed, cmd=0x800001:
-TEST_ERRNO=EFAULT(14): Bad address
-
-I believe this test should be removed from the runtest file until it can
-be fixed properly.
-
-Thanks,
-Paul Larson
-
-
-[1]
-http://www.kernel.org/doc/man-pages/online/pages/man2/quotactl.2.html
+> ---
+> diff --git a/testcases/kernel/controllers/cgroup/getdelays.c b/testcases/kernel/controllers/cgroup/getdelays.c
+> index 478b325..c9f532d 100644
+> --- a/testcases/kernel/controllers/cgroup/getdelays.c
+> +++ b/testcases/kernel/controllers/cgroup/getdelays.c
+> @@ -397,7 +397,7 @@ int main(int argc, char *argv[])
+>  	}
+> 
+>  	if (containerset) {
+> -		#ifdef HAVE_LINUX_CGROUPSTAT_H
+> +		#ifdef HAVE_LINUX_CGROUPSTATS_H
+>  		cfd = open(containerpath, O_RDONLY);
+>  		if (cfd < 0) {
+>  			perror("error opening container file");
+> 
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+> trial. Simplify your report design, integration and deployment - and focus on 
+> what you do best, core application coding. Discover what's new with 
+> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
