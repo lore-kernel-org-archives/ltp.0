@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MnZxU-0000Tf-P2
-	for Ltp-list@lists.sourceforge.net; Tue, 15 Sep 2009 15:28:44 +0000
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MnZzf-0005C1-Jo
+	for Ltp-list@lists.sourceforge.net; Tue, 15 Sep 2009 15:30:59 +0000
 Received: from vervifontaine.sonytel.be ([80.88.33.193]
 	helo=pophost.sonytel.be) by 1b2kzd1.ch3.sourceforge.com with esmtp 
-	(Exim 4.69) id 1MnZxO-0002KU-I0
-	for Ltp-list@lists.sourceforge.net; Tue, 15 Sep 2009 15:28:44 +0000
+	(Exim 4.69) id 1MnZza-0002Zi-IR
+	for Ltp-list@lists.sourceforge.net; Tue, 15 Sep 2009 15:30:59 +0000
 Received: from vixen.sonytel.be (piraat.sonytel.be [43.221.60.197])
-	by pophost.sonytel.be (Postfix) with ESMTP id CEB3944485
+	by pophost.sonytel.be (Postfix) with ESMTP id F0E9F44485
 	for <Ltp-list@lists.sourceforge.net>;
-	Tue, 15 Sep 2009 17:28:32 +0200 (CEST)
-Date: Tue, 15 Sep 2009 17:28:39 +0200 (CEST)
+	Tue, 15 Sep 2009 17:30:48 +0200 (CEST)
+Date: Tue, 15 Sep 2009 17:30:55 +0200 (CEST)
 From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Message-ID: <alpine.LRH.2.00.0909151727490.29706@vixen.sonytel.be>
+Message-ID: <alpine.LRH.2.00.0909151730320.29846@vixen.sonytel.be>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] quotactl01: Fix tst_resm() format causing crash
+Subject: [LTP] [PATCH] Filecaps: Update error message for recent kernels
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,33 +31,30 @@ Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Linux Test Project <Ltp-list@lists.sourceforge.net>
 
-When the quotactl syscall fails, quotactl01 crashes with a segmentation fau=
-lt
-due to an incorrect printf()-style format.
+   - As of 2.6.24, `capability' can no longer be a module,
+   - As of 2.6.27, CONFIG_SECURITY_CAPABILITIES no longer exists.
 
 Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
---
-v2: Use TTERRNO
+---
+ .../kernel/security/filecaps/checkforfilecaps.sh   |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
 
- testcases/kernel/syscalls/quotactl/quotactl01.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+diff --git a/testcases/kernel/security/filecaps/checkforfilecaps.sh b/testc=
+ases/kernel/security/filecaps/checkforfilecaps.sh
+index 20f97f5..3f6a4ec 100755
+--- a/testcases/kernel/security/filecaps/checkforfilecaps.sh
++++ b/testcases/kernel/security/filecaps/checkforfilecaps.sh
+@@ -23,8 +23,7 @@ check_simple_capset
+ ret=3D$?
+ if [ $ret -ne 0 ]; then
+ 	echo Posix capabilities not compiled into the kernel.  Please
+-	echo modprobe capability or recompile your kernel with
+-	echo CONFIG_SECURITY_CAPABILITIES=3Dy.
++	echo recompile your kernel with CONFIG_SECURITY_FILE_CAPABILITIES=3Dy.
+ 	exit 1
+ fi
+ =
 
-diff --git a/testcases/kernel/syscalls/quotactl/quotactl01.c b/testcases/ke=
-rnel/syscalls/quotactl/quotactl01.c
-index 6800a25..fe8df33 100644
---- a/testcases/kernel/syscalls/quotactl/quotactl01.c
-+++ b/testcases/kernel/syscalls/quotactl/quotactl01.c
-@@ -147,7 +147,7 @@ int main(int ac, char **av) {
-                 for (i =3D 0; i <=3D 7; i++){
-                         TEST(retval =3D syscall(__NR_quotactl, cmd[i], (co=
-nst char *)NULL, id, (caddr_t)NULL));
- 			if(TEST_RETURN !=3D 0){
--                 	   	tst_resm(TFAIL, "%s failed - errno =3D %d : %s ...cm=
-derror=3D%s", TCID, TEST_ERRNO, strerror(TEST_ERRNO),cmd[i]);
-+				tst_resm(TFAIL|TTERRNO, "%s failed, cmd=3D0x%x", TCID, cmd[i]);
-                         }else{
-         			tst_resm(TPASS, "quotactl call succeeded");
-                         }
 -- =
 
 1.6.2.4
