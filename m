@@ -1,25 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MkcZa-0000cd-Te
-	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2009 11:39:50 +0000
-Received: from e34.co.us.ibm.com ([32.97.110.152])
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1MnaON-0007PZ-Ac
+	for Ltp-list@lists.sourceforge.net; Tue, 15 Sep 2009 15:56:31 +0000
+Received: from e31.co.us.ibm.com ([32.97.110.149])
 	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MkcZV-0006Cf-6H
-	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2009 11:39:50 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1252104882.21544.34.camel@gandalf.stny.rr.com>
-References: <1251794259.3881.6.camel@kiran-laptop>
-	<1251875695.4930.8.camel@subratamodak.linux.ibm.com>
-	<1252057746.4698.6.camel@kiran-laptop>
-	<1252104882.21544.34.camel@gandalf.stny.rr.com>
-Date: Mon, 07 Sep 2009 17:09:07 +0530
-Message-Id: <1252323561.4922.24.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Patch to change the format of Steve
-	Rostedt's	rt-migrate-test testcase
-Reply-To: subrata@linux.vnet.ibm.com
+	(Exim 4.69) id 1MnaOJ-0001ho-5D
+	for Ltp-list@lists.sourceforge.net; Tue, 15 Sep 2009 15:56:31 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e31.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8FFoLq6023600
+	for <Ltp-list@lists.sourceforge.net>; Tue, 15 Sep 2009 09:50:21 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n8FFuHNw165728
+	for <Ltp-list@lists.sourceforge.net>; Tue, 15 Sep 2009 09:56:19 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n8FFuH83027126
+	for <Ltp-list@lists.sourceforge.net>; Tue, 15 Sep 2009 09:56:17 -0600
+Date: Tue, 15 Sep 2009 10:56:11 -0500
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20090915155611.GA17263@us.ibm.com>
+References: <alpine.LRH.2.00.0909151730320.29846@vixen.sonytel.be>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <alpine.LRH.2.00.0909151730320.29846@vixen.sonytel.be>
+Subject: Re: [LTP] [PATCH] Filecaps: Update error message for recent kernels
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,43 +37,97 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rostedt@goodmis.org, Kiran <kiran@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sf.net, Sripathi Kodi <sripathik@linux.vnet.ibm.com>
+To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Cc: Linux Test Project <Ltp-list@lists.sourceforge.net>
 
-On Fri, 2009-09-04 at 18:54 -0400, Steven Rostedt wrote: 
-> On Fri, 2009-09-04 at 15:19 +0530, Kiran wrote:
-> > Hi Subrata,
-> > 
-> > This patch places the rt-migrate testcase into the
-> > realtime/func/rt-migrate directory.
-> > 
-> > Signed-off-by: Kiran Prakash <kiran@linux.vnet.ibm.com>
-> 
-> Acked-by: Steven Rostedt <rostedt@goodmis.org>
+Quoting Geert Uytterhoeven (Geert.Uytterhoeven@sonycom.com):
+>    - As of 2.6.24, `capability' can no longer be a module,
+>    - As of 2.6.27, CONFIG_SECURITY_CAPABILITIES no longer exists.
+> =
 
-Thanks Steven for acking this.
+> Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
 
-Thanks Kiran for finally converting and integrating it to LTP.
+Yup, thanks.
 
-Regards--
-Subrata
+Acked-by: Serge Hallyn <serue@us.ibm.com>
 
-> 
-> Thanks guys!
-> 
-> -- Steve
-> 
-> 
+-serge
 
+> ---
+>  .../kernel/security/filecaps/checkforfilecaps.sh   |    3 +--
+>  1 files changed, 1 insertions(+), 2 deletions(-)
+> =
 
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> diff --git a/testcases/kernel/security/filecaps/checkforfilecaps.sh b/tes=
+tcases/kernel/security/filecaps/checkforfilecaps.sh
+> index 20f97f5..3f6a4ec 100755
+> --- a/testcases/kernel/security/filecaps/checkforfilecaps.sh
+> +++ b/testcases/kernel/security/filecaps/checkforfilecaps.sh
+> @@ -23,8 +23,7 @@ check_simple_capset
+>  ret=3D$?
+>  if [ $ret -ne 0 ]; then
+>  	echo Posix capabilities not compiled into the kernel.  Please
+> -	echo modprobe capability or recompile your kernel with
+> -	echo CONFIG_SECURITY_CAPABILITIES=3Dy.
+> +	echo recompile your kernel with CONFIG_SECURITY_FILE_CAPABILITIES=3Dy.
+>  	exit 1
+>  fi
+>  =
+
+> -- =
+
+> 1.6.2.4
+> =
+
+> With kind regards,
+> =
+
+> Geert Uytterhoeven
+> Software Architect
+> Techsoft Centre
+> =
+
+> Technology and Software Centre Europe
+> The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Belgi=
+um
+> =
+
+> Phone:    +32 (0)2 700 8453
+> Fax:      +32 (0)2 700 8622
+> E-mail:   Geert.Uytterhoeven@sonycom.com
+> Internet: http://www.sony-europe.com/
+> =
+
+> A division of Sony Europe (Belgium) N.V.
+> VAT BE 0413.825.160 =B7 RPR Brussels
+> Fortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
+> =
+
+> -------------------------------------------------------------------------=
+-----
+> Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+> is the only developer event you need to attend this year. Jumpstart your
+> developing skills, take BlackBerry mobile applications to market and stay =
+
+> ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#3=
+3;
+> http://p.sf.net/sfu/devconf
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+---------------------------------------------------------------------------=
+---
+Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay =
+
+ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
+http://p.sf.net/sfu/devconf
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
