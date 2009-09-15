@@ -1,24 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Mrerx-00027d-UH
-	for ltp-list@lists.sourceforge.net; Sat, 26 Sep 2009 21:31:53 +0000
-Received: from mail-qy0-f204.google.com ([209.85.221.204])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mrerr-0003JF-FJ
-	for ltp-list@lists.sourceforge.net; Sat, 26 Sep 2009 21:31:53 +0000
-Received: by qyk42 with SMTP id 42so2906294qyk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Sat, 26 Sep 2009 14:31:42 -0700 (PDT)
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MnU9J-00027F-MB
+	for Ltp-list@lists.sourceforge.net; Tue, 15 Sep 2009 09:16:33 +0000
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=pophost.sonytel.be) by 29vjzd1.ch3.sourceforge.com with esmtp 
+	(Exim 4.69) id 1MnU9D-0003xo-EI
+	for Ltp-list@lists.sourceforge.net; Tue, 15 Sep 2009 09:16:33 +0000
+Received: from vixen.sonytel.be (piraat.sonytel.be [43.221.60.197])
+	by pophost.sonytel.be (Postfix) with ESMTP id 8D45144483
+	for <Ltp-list@lists.sourceforge.net>;
+	Tue, 15 Sep 2009 11:16:17 +0200 (CEST)
+Date: Tue, 15 Sep 2009 11:16:23 +0200 (CEST)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Message-ID: <alpine.LRH.2.00.0909151115200.18790@vixen.sonytel.be>
 MIME-Version: 1.0
-In-Reply-To: <1253964859-23928-2-git-send-email-avagin@gmail.com>
-References: <1253964859-23928-1-git-send-email-avagin@gmail.com>
-	<1253964859-23928-2-git-send-email-avagin@gmail.com>
-Date: Sat, 26 Sep 2009 14:31:41 -0700
-Message-ID: <364299f40909261431u389b1a1cnea82a829c252c54d@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 2/3] fsstress: fix memory leak in fread_d
+Subject: [LTP] ppoll01 failures?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,85 +26,31 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-15"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Andrew Vagin <avagin@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Linux Test Project <Ltp-list@lists.sourceforge.net>
 
-On Sat, Sep 26, 2009 at 4:34 AM, Andrew Vagin <avagin@gmail.com> wrote:
-> 1. check result from operation open before set flags
-> 2. close descriptor and free path if set flags failed
->
-> valgrind --leak-check=3Dfull --show-reachable=3Dyes ./fsstress -d /home/s=
-hpagin/git-archive/ltp/testcases/kernel/fs/fsstress/tmp -l 10 -n 100
->
-> =3D=3D23212=3D=3D 1,134 bytes in 108 blocks are definitely lost in loss r=
-ecord 4 of 5
-> =3D=3D23212=3D=3D =A0 =A0at 0x4A0776F: realloc (vg_replace_malloc.c:429)
-> =3D=3D23212=3D=3D =A0 =A0by 0x401E6A: append_pathname (fsstress.c:528)
-> =3D=3D23212=3D=3D =A0 =A0by 0x4024E3: fent_to_name (fsstress.c:760)
-> =3D=3D23212=3D=3D =A0 =A0by 0x40284F: get_fname (fsstress.c:846)
-> =3D=3D23212=3D=3D =A0 =A0by 0x4041E0: dread_f (fsstress.c:1757)
-> =3D=3D23212=3D=3D =A0 =A0by 0x402368: doproc (fsstress.c:728)
-> =3D=3D23212=3D=3D =A0 =A0by 0x401CC1: main (fsstress.c:463)
->
->
-> ---
-> =A0testcases/kernel/fs/fsstress/fsstress.c | =A0 16 +++++++++++-----
-> =A01 files changed, 11 insertions(+), 5 deletions(-)
->
-> diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/f=
-s/fsstress/fsstress.c
-> index 3df0ce5..db6b358 100644
-> --- a/testcases/kernel/fs/fsstress/fsstress.c
-> +++ b/testcases/kernel/fs/fsstress/fsstress.c
-> @@ -1764,10 +1764,6 @@ dread_f(int opno, long r)
-> =A0 =A0 =A0 =A0}
-> =A0 =A0 =A0 =A0fd =3D open_path(&f, O_RDONLY);
->
-> - =A0 =A0 =A0 if (!setdirect(fd)) {
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 return;
-> - =A0 =A0 =A0 }
-> -
-> =A0 =A0 =A0 =A0e =3D fd < 0 ? errno : 0;
-> =A0 =A0 =A0 =A0check_cwd();
-> =A0 =A0 =A0 =A0if (fd < 0) {
-> @@ -1777,6 +1773,13 @@ dread_f(int opno, long r)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0free_pathname(&f);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return;
-> =A0 =A0 =A0 =A0}
-> +
-> + =A0 =A0 =A0 if (!setdirect(fd)) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 close(fd);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 free_pathname(&f);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return;
-> + =A0 =A0 =A0 }
-> +
-> =A0 =A0 =A0 =A0if (fstat64(fd, &stb) < 0) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (v)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf("%d/%d: dread - fst=
-at64 %s failed %d\n",
-> @@ -1864,8 +1867,11 @@ dwrite_f(int opno, long r)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return;
-> =A0 =A0 =A0 =A0}
->
-> - =A0 =A0 =A0 if (!setdirect(fd))
-> + =A0 =A0 =A0 if (!setdirect(fd)) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 free_pathname(&f);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 close(fd);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return;
-> + =A0 =A0 =A0 }
-> =A0 =A0 =A0 =A0if (fstat64(fd, &stb) < 0) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (v)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf("%d/%d: dwrite - fs=
-tat64 %s failed %d\n",
+It seems ppoll01 always fails, as witnessed by all sample test results.
+Is this expected?
 
-Andrew,
-    This change looks good, but the indentation is a bit catywampus.
-Please fix and run with checkpatch.pl.
-Thanks!
--Garrett
+With kind regards,
+
+Geert Uytterhoeven
+Software Architect
+Techsoft Centre
+
+Technology and Software Centre Europe
+The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Belgium
+
+Phone:    +32 (0)2 700 8453
+Fax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 =B7 RPR Brussels
+Fortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
 
 ---------------------------------------------------------------------------=
 ---
