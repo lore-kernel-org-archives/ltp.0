@@ -1,22 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vksavl@gmail.com>) id 1MsXC3-0000e3-Ew
-	for ltp-list@lists.sourceforge.net; Tue, 29 Sep 2009 07:32:15 +0000
-Received: from mail-ew0-f207.google.com ([209.85.219.207])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MsXBv-0007BG-KB
-	for ltp-list@lists.sourceforge.net; Tue, 29 Sep 2009 07:32:15 +0000
-Received: by mail-ew0-f207.google.com with SMTP id 3so4891477ewy.33
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 29 Sep 2009 00:32:06 -0700 (PDT)
-MIME-Version: 1.0
-Date: Tue, 29 Sep 2009 11:32:06 +0400
-Message-ID: <73cd086a0909290032o7f60b80buf41f1426bf5b3013@mail.gmail.com>
-From: Pavel Kiryukhin <vksavl@gmail.com>
-Content-Type: multipart/mixed; boundary=0016e6db2d7b4ef1530474b269e4
-Subject: [LTP] false success for exp test.
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MnwGL-0003FW-AA
+	for Ltp-list@lists.sourceforge.net; Wed, 16 Sep 2009 15:17:41 +0000
+Received: from e5.ny.us.ibm.com ([32.97.182.145])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MnwGD-0000m6-4V
+	for Ltp-list@lists.sourceforge.net; Wed, 16 Sep 2009 15:17:41 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e5.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8GF8ZXg018100
+	for <Ltp-list@lists.sourceforge.net>; Wed, 16 Sep 2009 11:08:35 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n8GFHPtm073716
+	for <Ltp-list@lists.sourceforge.net>; Wed, 16 Sep 2009 11:17:25 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n8GFHP1F015898
+	for <Ltp-list@lists.sourceforge.net>; Wed, 16 Sep 2009 11:17:25 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <alpine.LRH.2.00.0909151727490.29706@vixen.sonytel.be>
+References: <alpine.LRH.2.00.0909151727490.29706@vixen.sonytel.be>
+Date: Wed, 16 Sep 2009 20:47:15 +0530
+Message-Id: <1253114235.6343.31.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] quotactl01: Fix tst_resm() format causing crash
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,55 +36,43 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vksavl@gmail.com
-
---0016e6db2d7b4ef1530474b269e4
-Content-Type: text/plain; charset=ISO-8859-1
-
-Hi,
-if I get it right there is error in
-ltp-full-20090831/testcases/misc/math/float/exp_log/genexp.c (see
-genexp_resfile.patch)
-Resulting file exp_out.ref is wrong, but it is not catch by test -
-nan_compare.patch make correct nan comparison.
---
-Regards,
-Pavel Kiryukhin
-
---0016e6db2d7b4ef1530474b269e4
-Content-Type: application/octet-stream; name="genexp_resfile.patch"
-Content-Disposition: attachment; filename="genexp_resfile.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g054xpl40
-
-LS0tIHRlc3RjYXNlcy9taXNjL21hdGgvZmxvYXQvZXhwX2xvZy9nZW5leHAuY19vcmcJMjAwOS0w
-OS0yOCAxNDo1ODozMy45NDQ4Mjc0MDkgKzA0MDAKKysrIHRlc3RjYXNlcy9taXNjL21hdGgvZmxv
-YXQvZXhwX2xvZy9nZW5leHAuYwkyMDA5LTA5LTI4IDE1OjAzOjEwLjg2MDEwMTEzMyArMDQwMApA
-QCAtNTEsNyArNTEsNyBAQAogCUluYyA9IGxvZyggZXhwKDEpLzEwICk7CiAKIAlmb3IgKGk9MDsg
-aTxuYlZhbDsgaSsrKQotCQl0YWJSW2ldID0gbG9nICggKEluYyppKSArIEluYyApOworCQl0YWJS
-W2ldID0gZXhwICggKEluYyppKSArIEluYyApOwogCiAKIAlmcCA9IG9wZW4oRl9uYW1lLE9fUkRX
-UnxPX0NSRUFUfE9fVFJVTkMsMDc3Nyk7Cg==
---0016e6db2d7b4ef1530474b269e4
-Content-Type: application/octet-stream; name="nan_compare.patch"
-Content-Disposition: attachment; filename="nan_compare.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g054ycjl1
-
-LS0tIHRlc3RjYXNlcy9taXNjL21hdGgvZmxvYXQvdGhyZWFkX2NvZGUuY19vcmcJMjAwOS0wOS0y
-NyAyMjoyODo0Ny43NDIwNDMyMjcgKzA0MDAKKysrIHRlc3RjYXNlcy9taXNjL21hdGgvZmxvYXQv
-dGhyZWFkX2NvZGUuYwkyMDA5LTA5LTI4IDEzOjQxOjUxLjc5OTgyNzI2OSArMDQwMApAQCAtMTI0
-LDcgKzEyNCw3IEBACiAKIAl4ID0gZmFicyhyIC0gZSk7IC8qIGRpZmYgZXhwZWN0ZWQvY29tcHV0
-ZWQgKi8KIAotCWlmKHggPiBFUFMpIHsgLyogZXJyb3IgPyAqLworCWlmICgoeCA+IEVQUykgfHwg
-KHggIT0geCkpIHsgLyogZXJyb3IgPyAqLwogCQkvKiBjb21wdXRlIGV4cG9uZW50IHBhcnRzICov
-CiAJCSh2b2lkKWZyZXhwKHIsICZwcik7IC8qIGZvciBjb21wdXRlZCAqLwogCQkodm9pZClmcmV4
-cCh4LCAmcHgpOyAvKiBmb3IgZGlmZmVyZW5jZSAqLwo=
---0016e6db2d7b4ef1530474b269e4
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Cc: Linux Test Project <Ltp-list@lists.sourceforge.net>
+
+On Tue, 2009-09-15 at 17:28 +0200, Geert Uytterhoeven wrote: 
+> When the quotactl syscall fails, quotactl01 crashes with a segmentation fault
+> due to an incorrect printf()-style format.
+> 
+> Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+
+Thanks.
+
+Regards--
+Subrata
+
+> --
+> v2: Use TTERRNO
+> 
+>  testcases/kernel/syscalls/quotactl/quotactl01.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/quotactl/quotactl01.c b/testcases/kernel/syscalls/quotactl/quotactl01.c
+> index 6800a25..fe8df33 100644
+> --- a/testcases/kernel/syscalls/quotactl/quotactl01.c
+> +++ b/testcases/kernel/syscalls/quotactl/quotactl01.c
+> @@ -147,7 +147,7 @@ int main(int ac, char **av) {
+>                  for (i = 0; i <= 7; i++){
+>                          TEST(retval = syscall(__NR_quotactl, cmd[i], (const char *)NULL, id, (caddr_t)NULL));
+>  			if(TEST_RETURN != 0){
+> -                 	   	tst_resm(TFAIL, "%s failed - errno = %d : %s ...cmderror=%s", TCID, TEST_ERRNO, strerror(TEST_ERRNO),cmd[i]);
+> +				tst_resm(TFAIL|TTERRNO, "%s failed, cmd=0x%x", TCID, cmd[i]);
+>                          }else{
+>          			tst_resm(TPASS, "quotactl call succeeded");
+>                          }
+
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
@@ -82,16 +80,7 @@ is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
 http://p.sf.net/sfu/devconf
---0016e6db2d7b4ef1530474b269e4
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---0016e6db2d7b4ef1530474b269e4--
-
