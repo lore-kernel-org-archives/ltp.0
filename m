@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MlROv-00028A-5a
-	for ltp-list@lists.sourceforge.net; Wed, 09 Sep 2009 17:56:13 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MlROq-0008BO-T5
-	for ltp-list@lists.sourceforge.net; Wed, 09 Sep 2009 17:56:13 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4AA7BFED.3050508@bull.net>
-References: <4AA7BFED.3050508@bull.net>
-Date: Wed, 09 Sep 2009 23:25:47 +0530
-Message-Id: <1252518949.4836.5.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] acl_test01 TC -
-Reply-To: subrata@linux.vnet.ibm.com
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MnwxD-0006WZ-Cx
+	for Ltp-list@lists.sourceforge.net; Wed, 16 Sep 2009 16:01:59 +0000
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=pophost.sonytel.be) by 29vjzd1.ch3.sourceforge.com with esmtp 
+	(Exim 4.69) id 1Mnwx8-0002Gw-Mb
+	for Ltp-list@lists.sourceforge.net; Wed, 16 Sep 2009 16:01:59 +0000
+Date: Wed, 16 Sep 2009 18:01:52 +0200 (CEST)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+In-Reply-To: <1253114232.6343.30.camel@subratamodak.linux.ibm.com>
+Message-ID: <alpine.LRH.2.00.0909161801310.6362@vixen.sonytel.be>
+References: <alpine.LRH.2.00.0909151730320.29846@vixen.sonytel.be>
+	<20090915215307.GD10922@count0.beaverton.ibm.com>
+	<1253114232.6343.30.camel@subratamodak.linux.ibm.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH] Filecaps: Update error message for recent kernels
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,216 +26,133 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jacky Malcles <Jacky.Malcles@bull.net>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: Linux Test Project <Ltp-list@lists.sourceforge.net>, Serge Hallyn <serue@linux.vnet.ibm.com>
 
-On Wed, 2009-09-09 at 16:47 +0200, Jacky Malcles wrote: 
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
-> 
-> Subrata,
-> 
-> Here is the right patch.
-> I'm sorry for my confusing with the "signed-off" process,
-> this should work ..
-> 
-> regards,
-> 
-> Signed-off-by: JACKY MALCLES <Jacky.Malcles@bull.net>
+On Wed, 16 Sep 2009, Subrata Modak wrote:
+> On Tue, 2009-09-15 at 14:53 -0700, Matt Helsley wrote: =
 
-Thanks.
+> > On Tue, Sep 15, 2009 at 05:30:55PM +0200, Geert Uytterhoeven wrote:
+> > >    - As of 2.6.24, `capability' can no longer be a module,
+> > >    - As of 2.6.27, CONFIG_SECURITY_CAPABILITIES no longer exists.
+> > > =
 
-Regards--
-Subrata
+> > > Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+> > > ---
+> > >  .../kernel/security/filecaps/checkforfilecaps.sh   |    3 +--
+> > >  1 files changed, 1 insertions(+), 2 deletions(-)
+> > > =
 
-> 
-> - --- ltp-full-20090831.orig/testcases/kernel/fs/acls/acl_test01
-> 2009-08-31 07:15:46.000000000 +0200
-> +++ ltp-full-20090831/testcases/kernel/fs/acls/acl_test01	2009-09-09
-> 09:02:48.000000000 +0200
-> @@ -24,17 +24,91 @@
->  #
->  #  HISTORY:
->  #    03/03 Jerone Young  (jyoung5@us.ibm.com)
-> +#    09/08 Jacky Malcles changing the setup to have this TC started by
-> runltp
->  #*********************************************************************
-> - -export PATH=$PATH:/usr/sbin/
-> +#
-> +################################################################
-> +#
-> +# Make sure that uid=root is running this script.
-> +# Make sure that loop device is built into the kernel
-> +# Make sure that ACL(Access Control List) and Extended Attribute are
-> +#     built into the kernel
-> +#
-> +#
-> +################################################################
-> 
->  TEST_USER1="acltest1"
->  TEST_USER1_GROUP="users"
->  TEST_USER1_PASSWD="ltp_test_pass1"
-> - -#ensure the test partition is ACL aware
-> - -TEST_USER1_HOMEDIR="/tmp/$TEST_USER1"
-> +TEST_USER1_HOMEDIR="tacl/mount-ext3/$TEST_USER1"
-> +
-> +FILE_ACL="tacl/mount-ext3/test_file"
-> +FILE_ACL_LINK="tacl/mount-ext3/test_file_link"
-> +TCbin=`pwd`
-> +
-> +iam=`whoami`
-> +if [ "z$iam" = "z$TEST_USER1" ]
-> +then
-> +	echo ""
-> +else
-> +if [ $UID != 0 ]
-> +then
-> +        echo "FAILED: Must have root access to execute this script"
-> +        exit 1
-> +fi
-> +
-> +if [ ! -e tacl ]
-> +then
-> +        mkdir -m 777 tacl
-> +else
-> +        echo "FAILED: Directory tacl are exist"
-> +        exit 1
-> +fi
-> +
-> +#       The  following  commands  can  be  used as an example of using
-> the loop
-> +#       device.
-> +
-> +dd if=/dev/zero of=tacl/blkext3 bs=1k count=10240
-> +chmod 777 tacl/blkext3
-> +#
-> +losetup /dev/loop0 tacl/blkext3 2>&1 > /dev/null
-> +if [ $? != 0 ]
-> +then
-> +        echo ""
-> +        echo "FAILED:  [ losetup ] Must have loop device support by kernel"
-> +        echo -e "\t to execute this script"
-> +        exit 1
-> +fi
-> +
-> +mount | grep ext2
-> +if [ $? != 0 ]
-> +then
-> +        mkfs -t ext3 /dev/loop0 #> /dev/null 2>&1
-> +        mkdir  -m 777 tacl/mount-ext3
-> +        mount -t ext3 -o defaults,acl,user_xattr /dev/loop0 tacl/mount-ext3
-> +        if [ $? != 0 ]
-> +        then
-> +                echo ""
-> +                echo "FAILED: [ mount ] Make sure that ACL (Access
-> Control List)"
-> +                echo -e "\t and Extended Attribute are built into the
-> kernel"
-> +                echo -e "\t Can not mount ext3 file system with acl and
-> user_xattr options"
-> +                exit 1
-> +        fi
-> +else
-> +        mkfs -t ext2 /dev/loop0
-> +        mkdir  -m 777 tacl/mount-ext3
-> +        mount -t ext2 -o defaults,acl,user_xattr /dev/loop0 tacl/mount-ext3
-> +        if [ $? != 0 ]
-> +        then
-> +                echo ""
-> +                echo "FAILED: [ mount ] Make sure that ACL (Access
-> Control List)"
-> +                echo -e "\t and Extended Attribute are built into the
-> kernel"
-> +                echo -e "\t Can not mount ext2 file system with acl and
-> user_xattr options"
-> +                exit 1
-> +        fi
-> +fi
-> +fi
-> 
-> - -FILE_ACL="/tmp/test_file"
-> - -FILE_ACL_LINK="/tmp/test_file_link"
-> 
->  #-----------------------------------------------------------------------
->  # FUNCTION:  do_setup
-> @@ -55,7 +129,7 @@ do_setup(){
->  	rm -rf $TEST_USER1_HOMEDIR
->  	userdel $TEST_USER1 > /dev/null 2>&1
->  	sleep 1
-> - -	useradd -d $TEST_USER1_HOMEDIR -m -g $TEST_USER1_GROUP $TEST_USER1 -s
-> /bin/sh
-> +	useradd -d `pwd`/$TEST_USER1_HOMEDIR -m -g $TEST_USER1_GROUP
-> $TEST_USER1 -s /bin/sh
-> 
->  	if [ $? != 0 ]
->  	then {
-> @@ -81,6 +155,9 @@ do_cleanup() {
->  	userdel $TEST_USER1
->  	rm -f $FILE_ACL > /dev/null 2>&1
->  	rm -f $FILE_ACL_LINK > /dev/null 2>&1
-> +	umount -d tacl/mount-ext3
-> +	rm -rf tacl
-> +
->  }
-> 
->  #-----------------------------------------------------------------------
-> @@ -91,6 +168,7 @@ iam=`whoami`
->  EXIT_CODE=0
->  if [ "z$iam" = "z$TEST_USER1" ]
->  then
-> +	echo ""
->  	echo "TESTING ACLS FOR 2ND USER $iam"
-> 
->  	#setup files for extended attributes
-> @@ -118,6 +196,7 @@ then
->          fi
->  else
->  	do_setup
-> +	echo ""
->  	echo "TESTING ACLS FOR USER $iam"
-> 
->  	touch $FILE_ACL
-> @@ -150,11 +229,8 @@ else
->  	chown $TEST_USER1 $FILE_ACL
->  	chown $TEST_USER1 $FILE_ACL_LINK
-> 
-> - -	if [ -z ${TCbin} ]
-> - -	then
-> - -   		export TCbin=$PWD
-> - -	fi
-> - -	
-> +	su $TEST_USER1 -c "$0"
-> +	echo ""
->  	do_cleanup
->  fi	
-> 
-> 
-> - --
->  Jacky Malcles    	     B1-403   Email : Jacky.Malcles@bull.net
->  Bull SA, 1 rue de Provence, B.P 208, 38432 Echirolles CEDEX, FRANCE
->  Tel : 04.76.29.73.14
-> -----BEGIN PGP SIGNATURE-----
-> Version: GnuPG v1.4.5 (GNU/Linux)
-> Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-> 
-> iQEVAwUBSqe/7XFYHhojb+kFAQIGlAf/UxDdPVCFPEYbXU1VeIQvMo4is8KkpMPn
-> eOYsoPx7Dx2+A4ukEaojZqFLRTzMgSpHg2Te/O7LHPMFVM6MoLDqMrkEC0+Ey05V
-> qgnWtLotjtn1z5MN2fCgyO+g1xVN7ZnH50Kj8x+MeBmziUGgrM0rxWqLk5x2nF2w
-> vDmgTpCtqX+l+pwwtJp0/2n3vS1eYLklVJIS53/2nYLEGWhn79abDaLjvOyuzlWT
-> BC70RmDtpD0o+gUGhBsAnHA+u7PxpsaanNPSP90d+rKSZdwt2KveQLUIk5Gzj9hp
-> t8/yHlk7U914ygUeFZg5ywH1lCeLIvteG17DhFHP0T9M0AliWnSH7w==
-> =KLQc
-> -----END PGP SIGNATURE-----
+> > > diff --git a/testcases/kernel/security/filecaps/checkforfilecaps.sh b=
+/testcases/kernel/security/filecaps/checkforfilecaps.sh
+> > > index 20f97f5..3f6a4ec 100755
+> > > --- a/testcases/kernel/security/filecaps/checkforfilecaps.sh
+> > > +++ b/testcases/kernel/security/filecaps/checkforfilecaps.sh
+> > > @@ -23,8 +23,7 @@ check_simple_capset
+> > >  ret=3D$?
+> > >  if [ $ret -ne 0 ]; then
+> > >  	echo Posix capabilities not compiled into the kernel.  Please
+> > > -	echo modprobe capability or recompile your kernel with
+> > > -	echo CONFIG_SECURITY_CAPABILITIES=3Dy.
+> > > +	echo recompile your kernel with CONFIG_SECURITY_FILE_CAPABILITIES=
+=3Dy.
+> > =
 
+> > Then the advice is incorrect for older kernels. If LTP should still run
+> > nicely for users of older kernels then perhaps something like this is b=
+etter:
+> > =
 
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> > -	echo modprobe capability or recompile your kernel with
+> > -	echo CONFIG_SECURITY_CAPABILITIES=3Dy.
+> > +	if tst_kvercmp 2 6 24 ; then
+> > +		echo modprobe capability or recompile your kernel with
+> > +		echo CONFIG_SECURITY_CAPABILITIES=3Dy.
+> > +	elif tst_kvercmp 2 6 27 ; then
+> > +		echo recompile your kernel with CONFIG_SECURITY_CAPABILITIES=3Dy.
+> > +	else
+> > +		echo recompile your kernel with CONFIG_SECURITY_FILE_CAPABILITIES=3D=
+y.
+> > +	fi
+> =
+
+> Yes, this is better. Please shoot off a patch.
+
+At your service!
+
+---
+From 0e13026c931d26393671884f63446b7389318b27 Mon Sep 17 00:00:00 2001
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Date: Tue, 15 Sep 2009 17:06:09 +0200
+Subject: [PATCH 9/9] Filecaps: Update error message for recent kernels
+
+   - As of 2.6.24, `capability' can no longer be a module,
+   - As of 2.6.27, CONFIG_SECURITY_CAPABILITIES no longer exists.
+
+Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+--
+v2: Make the message dependent on the kernel version, as suggested by Matt
+    Helsley
+---
+ .../kernel/security/filecaps/checkforfilecaps.sh   |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/security/filecaps/checkforfilecaps.sh b/testc=
+ases/kernel/security/filecaps/checkforfilecaps.sh
+index 20f97f5..5ca385e 100755
+--- a/testcases/kernel/security/filecaps/checkforfilecaps.sh
++++ b/testcases/kernel/security/filecaps/checkforfilecaps.sh
+@@ -23,8 +23,14 @@ check_simple_capset
+ ret=3D$?
+ if [ $ret -ne 0 ]; then
+ 	echo Posix capabilities not compiled into the kernel.  Please
+-	echo modprobe capability or recompile your kernel with
+-	echo CONFIG_SECURITY_CAPABILITIES=3Dy.
++	if tst_kvercmp 2 6 24 ; then
++		echo modprobe capability or recompile your kernel with
++		echo CONFIG_SECURITY_CAPABILITIES=3Dy.
++	elif tst_kvercmp 2 6 27 ; then
++		echo recompile your kernel with CONFIG_SECURITY_CAPABILITIES=3Dy.
++	else
++		echo recompile your kernel with CONFIG_SECURITY_FILE_CAPABILITIES=3Dy.
++	fi
+ 	exit 1
+ fi
+ =
+
+-- =
+
+1.6.2.4
+
+With kind regards,
+
+Geert Uytterhoeven
+Software Architect
+Techsoft Centre
+
+Technology and Software Centre Europe
+The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Belgium
+
+Phone:    +32 (0)2 700 8453
+Fax:      +32 (0)2 700 8622
+E-mail:   Geert.Uytterhoeven@sonycom.com
+Internet: http://www.sony-europe.com/
+
+A division of Sony Europe (Belgium) N.V.
+VAT BE 0413.825.160 =B7 RPR Brussels
+Fortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
+
+---------------------------------------------------------------------------=
+---
+Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay =
+
+ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
+http://p.sf.net/sfu/devconf
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
