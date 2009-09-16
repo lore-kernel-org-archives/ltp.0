@@ -1,32 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mkcd9-0001gA-7L
-	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2009 11:43:31 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mkcd3-0007B6-7M
-	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2009 11:43:31 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e8.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n87Bgql1028934
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 07:42:52 -0400
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n87BhJjL248582
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 07:43:19 -0400
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n87BhJrL032594
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 07:43:19 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <f5a7b3810908310502h61d97cafv770e664d4becb4a1@mail.gmail.com>
-References: <f5a7b3810908310502h61d97cafv770e664d4becb4a1@mail.gmail.com>
-Date: Mon, 07 Sep 2009 17:12:46 +0530
-Message-Id: <1252323777.4922.35.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] LTP-LDFLAGS-enable
-Reply-To: subrata@linux.vnet.ibm.com
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MnxVP-0000BP-Nx
+	for Ltp-list@lists.sourceforge.net; Wed, 16 Sep 2009 16:37:19 +0000
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=pophost.sonytel.be) by 1b2kzd1.ch3.sourceforge.com with esmtp 
+	(Exim 4.69) id 1MnxVK-0006z4-R6
+	for Ltp-list@lists.sourceforge.net; Wed, 16 Sep 2009 16:37:19 +0000
+Received: from vixen.sonytel.be (piraat.sonytel.be [43.221.60.197])
+	by pophost.sonytel.be (Postfix) with ESMTP id 9A99F44483
+	for <Ltp-list@lists.sourceforge.net>;
+	Wed, 16 Sep 2009 18:37:07 +0200 (CEST)
+Date: Wed, 16 Sep 2009 18:37:12 +0200 (CEST)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Message-ID: <alpine.LRH.2.00.0909161825390.9257@vixen.sonytel.be>
+MIME-Version: 1.0
+Subject: [LTP] mmapstress03 weirdness?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,96 +26,72 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: naresh kamboju <naresh.kernel@gmail.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, Mike Frysinger <vapier@gentoo.org>, Brandon Philips <bphilips@suse.de>, Geert.Uytterhoeven@sonycom.com
+To: Linux Test Project <Ltp-list@lists.sourceforge.net>
 
-On Mon, 2009-08-31 at 17:32 +0530, naresh kamboju wrote: 
-> Hi,
-> 
-> To make use of full testsuite of open_posix_testsuite we need to
-> enable LDFLAGS. It is file used by the Makefile to link to what you
-> specify in it. e.g. if you want to link with lpthread. By using these
-> Flags can build up to 1888 test case with out the flags can build up
-> to 486.
-> 
-> However, the Best practice is to use posix test suite with the LDFLAGS.
-> 
-> I have attached patch and below, please review the same
-> 
-> Best regards,
-> Naresh Kamboju
-> 
-> /************************************************************/
-> Before patch:
-> With out LDFLAGS:
-> 
-> 		***************************
-> 		 CONFORMANCE TEST RESULTS
-> 		***************************
-> 		* TOTAL:   486
-> 		* PASSED:  449
-> 		* FAILED:  12
-> 		* UNRESOLVED:  7
-> 		* UNSUPPORTED:  10
-> 		* UNTESTED:  4
-> 		* INTERRUPTED:  0
-> 		* HUNG:  0
-> 		* SEGV:  0
-> 		* OTHERS:  4
-> 		***************************
-> 
-> After patch:
-> With LDFLAGS:
->                 ***************************
->                  CONFORMANCE TEST RESULTS
->                 ***************************
->                 * TOTAL:   1888
->                 * PASSED:  1731
->                 * FAILED:  26
->                 * UNRESOLVED:  14
->                 * UNSUPPORTED:  22
->                 * UNTESTED:  94
->                 * INTERRUPTED:  0
->                 * HUNG:  1
->                 * SEGV:  0
->                 * OTHERS:  0
->                 ***************************
-> 
-> /************************************************************/
-> 
-> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
-
-Ok. Thanks.
-
-Regards--
-Subrata
-
-> 
-> 
-> diff -Naurb a/testcases/open_posix_testsuite/LDFLAGS
-> b/testcases/open_posix_testsuite/LDFLAGS
-> --- a/testcases/open_posix_testsuite/LDFLAGS	2005-06-03 21:59:49.000000000 +0530
-> +++ b/testcases/open_posix_testsuite/LDFLAGS	2009-08-31 16:22:57.000000000 +0530
-> @@ -8,7 +8,7 @@
->  #-lpthread -D_GNU_SOURCE
->  #
->  #Recommended flags:
-> -#-D_XOPEN_SOURCE=600 -lpthread -lrt -lm
-> +-D_XOPEN_SOURCE=600 -lpthread -lrt -lm
->  #
->  # For use with Linux, you may try the following flags to
->  # allow for the NPTL-specific compilation (used in some test cases)
-
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gcHBjNjQsIHdpdGggMzItYml0IHVzZXJsYW5kLCBJIGdldDoKCnwgUnVubmluZyB0ZXN0cy4u
+Li4uLi4KfCA8PDx0ZXN0X3N0YXJ0Pj4+CnwgdGFnPW1tYXBzdHJlc3MwMyBzdGltZT0xMjUzMTE3
+MjUxCnwgY21kbGluZT0ibW1hcHN0cmVzczAzIgp8IGNvbnRhY3RzPSIiCnwgYW5hbHlzaXM9ZXhp
+dAp8IDw8PHRlc3Rfb3V0cHV0Pj4+CnwgaW5jcmVtZW50aW5nIHN0b3AKfCA6IGVycm5vID0gMDog
+cmVhbGx5IGxhcmdlIG1tYXAgZGlkbid0IGZhaWwKfCBtbWFwc3RyZXNzMDMgICAgMSAgVEZBSUwg
+IDogIFRlc3QgZmFpbGVkCiAgICAgICAgICAgICAgICAgICAgIF5eXl5eXl5eXl5eXl5eXl5eXl5e
+Xgp8IDw8PGV4ZWN1dGlvbl9zdGF0dXM+Pj4KfCBpbml0aWF0aW9uX3N0YXR1cz0ib2siCnwgZHVy
+YXRpb249MCB0ZXJtaW5hdGlvbl90eXBlPWV4aXRlZCB0ZXJtaW5hdGlvbl9pZD0wIGNvcmVmaWxl
+PW5vCnwgY3V0aW1lPTAgY3N0aW1lPTAKfCA8PDx0ZXN0X2VuZD4+Pgp8IElORk86IGx0cC1wYW4g
+cmVwb3J0ZWQgYWxsIHRlc3RzIFBBU1MKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBeXl5eCgpUaGUgY29yZSBwYXJ0IG9mIHRoaXMgdGVzdCBpczoKCiAgICAgICAgLyogQXNrIGZv
+ciBhIHJpZGljdWxvdXNseSBsYXJnZSBtbWFwIHJlZ2lvbiBhdCBhIGhpZ2ggYWRkcmVzcyAqLwog
+ICAgICAgIGlmIChtbWFwKChjYWRkcl90KSgxVUwgPDwgKFBPSU5URVJfU0laRSAgLSAxKSkgLSBw
+YWdlc2l6ZSwKICAgICAgICAgICAgICAgIChzaXplX3QpKCgxVUwgPDwgKFBPSU5URVJfU0laRSAt
+IDEpKSAtIHBhZ2VzaXplKSwKICAgICAgICAgICAgICAgIFBST1RfUkVBRHxQUk9UX1dSSVRFLCBN
+QVBfQU5PTllNT1VTfE1BUF9GSVhFRHxNQVBfU0hBUkVELCAwLCAwKQogICAgICAgICAgICAgICAg
+IT0gKGNhZGRyX3QpLTEpCiAgICAgICAgewogICAgICAgICAgICAgICAgRVJST1IoInJlYWxseSBs
+YXJnZSBtbWFwIGRpZG4ndCBmYWlsIik7CiAgICAgICAgICAgICAgICBhbnlmYWlsKCk7CiAgICAg
+ICAgfQogICAgICAgIGlmIChlcnJubyAhPSBFTk9NRU0gJiYgZXJybm8gIT0gRUlOVkFMKSB7CiAg
+ICAgICAgICAgICAgICBFUlJPUigicmVhbGx5IGxhcmdlIG1tYXAgZGlkbid0IHNldCBlcnJubyA9
+IEVOT01FTSBub3IgRUlOVkFMIik7CiAgICAgICAgICAgICAgICBhbnlmYWlsKCk7CiAgICAgICAg
+fQoKV2l0aCAzMi1iaXQgdXNlcmxhbmQsIHRoaXMgYm9pbHMgZG93biB0bzoKCnwgbW1hcCBhZGRy
+IDB4N2ZmZjAwMDAgc2l6ZSAweDdmZmYwMDAwCnwgbW1hcCByZXR1cm5lZCAweDdmZmYwMDAwCgpp
+LmUuIG1tYXAoKSBzdWNjZWVkcywgYnV0ICgxKSB0aGUgdGVzdCBleHBlY3RzIGl0IHRvIGZhaWws
+IHNvIHRoZSB0ZXN0IHJldHVybnMKVEZBSUwsIGJ1dCAoMikgbHRwLXBhbiBzdGlsbCByZXBvcnRz
+IHRoYXQgdGhlIHRlc3RzIHBhc3NlZD8KCkluIGFkZGl0aW9uLCBzb21ldGltZXMgbW1hcHN0cmVz
+czAzIGZhaWxzIGR1ZSB0byBTRUdWLiBJIGNyZWF0ZWQgYSBzbWFsbCB0ZXN0CnByb2dyYW0gdGhh
+dCBqdXN0IGRvZXMgdGhlIGFib3ZlIG1tYXAoKSwgYW5kIGRlcGVuZGluZyBvbiB0aGUgZGlzdHJv
+IGFuZCB3aGF0CmVsc2UgSSBwcmludCBsYXRlciBpdCBjcmFzaGVzIHdpdGggYSBTRUdWLCB0b28u
+IFByb2JhYmx5IHRoaXMgaGFwcGVucyBiZWNhdXNlCnRoZSBtbWFwKCkgZGlkIHN1Y2NlZWQsIGFu
+ZCBjb3JydXB0ZWQgc29tZSBleGlzdGluZyBtYXBwaW5ncywgY2ZyLiB0aGUgbm90ZXMKZm9yIE1B
+UF9GSVhFRDoKCiAgICAgICBNQVBfRklYRUQKICAgICAgICAgICAgICBEb27igJl0ICBpbnRlcnBy
+ZXQgIGFkZHIgIGFzICBhIGhpbnQ6IHBsYWNlIHRoZSBtYXBwaW5nIGF0IGV4YWN0bHkKICAgICAg
+ICAgICAgICB0aGF0IGFkZHJlc3MuICBhZGRyIG11c3QgYmUgYSBtdWx0aXBsZSBvZiB0aGUgcGFn
+ZSBzaXplLiAgSWYgdGhlCiAgICAgICAgICAgICAgbWVtb3J5ICByZWdpb24gIHNwZWNpZmllZCAg
+YnkgYWRkciBhbmQgbGVuIG92ZXJsYXBzIHBhZ2VzIG9mIGFueQogICAgICAgICAgICAgIGV4aXN0
+aW5nIG1hcHBpbmcocyksIHRoZW4gdGhlIG92ZXJsYXBwZWQgcGFydCAgb2YgIHRoZSAgZXhpc3Rp
+bmcKICAgICAgICAgICAgICBtYXBwaW5nKHMpICB3aWxsICBiZSBkaXNjYXJkZWQuICBJZiB0aGUg
+c3BlY2lmaWVkIGFkZHJlc3MgY2Fubm90CiAgICAgICAgICAgICAgYmUgdXNlZCwgbW1hcCgpIHdp
+bGwgZmFpbC4gIEJlY2F1c2UgcmVxdWlyaW5nICBhICBmaXhlZCAgYWRkcmVzcwogICAgICAgICAg
+ICAgIGZvciAgYSAgbWFwcGluZyBpcyBsZXNzIHBvcnRhYmxlLCB0aGUgdXNlIG9mIHRoaXMgb3B0
+aW9uIGlzIGRpc+KAkAogICAgICAgICAgICAgIGNvdXJhZ2VkLgoKCkpGWUksIHdpdGggNjQtYml0
+IHVzZXJsYW5kLCB0aGlzIGJvaWxzIGRvd24gdG86Cgp8IG1tYXAgYWRkciAweDdmZmZmZmZmZmZm
+ZjAwMDAgc2l6ZSAweDdmZmZmZmZmZmZmZjAwMDAKfCBtbWFwIHJldHVybmVkIDB4ZmZmZmZmZmZm
+ZmZmZmZmZgoKaS5lLiBtbWFwKCkgZmFpbHMgYXMgZXhwZWN0ZWQsIGFuZCB0aGUgdGVzdCBzdWNj
+ZWVkcy4KCkRvZXMgYWxsIG9mIHRoaXMgc291bmQgT0s/ClRoYW5rcyBmb3IgeW91ciBjb21tZW50
+cyEKCldpdGgga2luZCByZWdhcmRzLAoKR2VlcnQgVXl0dGVyaG9ldmVuClNvZnR3YXJlIEFyY2hp
+dGVjdApUZWNoc29mdCBDZW50cmUKClRlY2hub2xvZ3kgYW5kIFNvZnR3YXJlIENlbnRyZSBFdXJv
+cGUKVGhlIENvcnBvcmF0ZSBWaWxsYWdlIMK3IERhIFZpbmNpbGFhbiA3LUQxIMK3IEItMTkzNSBa
+YXZlbnRlbSDCtyBCZWxnaXVtCgpQaG9uZTogICAgKzMyICgwKTIgNzAwIDg0NTMKRmF4OiAgICAg
+ICszMiAoMCkyIDcwMCA4NjIyCkUtbWFpbDogICBHZWVydC5VeXR0ZXJob2V2ZW5Ac29ueWNvbS5j
+b20KSW50ZXJuZXQ6IGh0dHA6Ly93d3cuc29ueS1ldXJvcGUuY29tLwoKQSBkaXZpc2lvbiBvZiBT
+b255IEV1cm9wZSAoQmVsZ2l1bSkgTi5WLgpWQVQgQkUgMDQxMy44MjUuMTYwIMK3IFJQUiBCcnVz
+c2VscwpGb3J0aXMgwrcgQklDIEdFQkFCRUJCIMK3IElCQU4gQkU0MTI5MzAzNzY4MDAxMAoKLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tCkNvbWUgYnVpbGQgd2l0aCB1cyEgVGhlIEJsYWNrQmVycnkmcmVn
+OyBEZXZlbG9wZXIgQ29uZmVyZW5jZSBpbiBTRiwgQ0EKaXMgdGhlIG9ubHkgZGV2ZWxvcGVyIGV2
+ZW50IHlvdSBuZWVkIHRvIGF0dGVuZCB0aGlzIHllYXIuIEp1bXBzdGFydCB5b3VyCmRldmVsb3Bp
+bmcgc2tpbGxzLCB0YWtlIEJsYWNrQmVycnkgbW9iaWxlIGFwcGxpY2F0aW9ucyB0byBtYXJrZXQg
+YW5kIHN0YXkgCmFoZWFkIG9mIHRoZSBjdXJ2ZS4gSm9pbiB1cyBmcm9tIE5vdmVtYmVyIDkmIzQ1
+OzEyLCAyMDA5LiBSZWdpc3RlciBub3cmIzMzOwpodHRwOi8vcC5zZi5uZXQvc2Z1L2RldmNvbmYK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3Qg
+bWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3Rz
+LnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
