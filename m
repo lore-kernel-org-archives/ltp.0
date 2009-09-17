@@ -2,17 +2,17 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <zohar@linux.vnet.ibm.com>) id 1MscCI-0005f7-P3
-	for ltp-list@lists.sourceforge.net; Tue, 29 Sep 2009 12:52:50 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MscC7-0000hg-GJ
-	for ltp-list@lists.sourceforge.net; Tue, 29 Sep 2009 12:52:45 +0000
-From: Mimi Zohar <zohar@linux.vnet.ibm.com>
-Date: Tue, 29 Sep 2009 08:52:25 -0400
-Message-Id: <1254228745.3843.10.camel@dyn9002018117.watson.ibm.com>
-Mime-Version: 1.0
-Subject: [LTP] IMA tcb policy
+	(envelope-from <chrubis@suse.de>) id 1MoHa0-0004K5-Ps
+	for ltp-list@lists.sourceforge.net; Thu, 17 Sep 2009 14:03:24 +0000
+Date: Thu, 17 Sep 2009 15:48:06 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20090917134805.GA5337@schrodinger.suse.cz>
+References: <f5a7b3810908310549t6ced24qd9e0faf634d2319f@mail.gmail.com>
+	<1252323746.4922.34.camel@subratamodak.linux.ibm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1252323746.4922.34.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [PATCH 16/21] Add sigreturn01 test for sigreturn syscall
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,36 +25,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sf.net>
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, naresh kamboju <naresh.kernel@gmail.com>, Manas Kumar Nayak <maknayak@in.ibm.com>
 
-Dependency section update.
+Hi!
+> Ok. Please send a signed-off patch to remove this from LTP.
+>
 
-Signed-off-by: Mimi Zohar <zohar@us.ibm.com>
+Hmm, IMHO there is no way how to delete directory in standard patch.
 
-Index: ltp-full-20090831/testcases/kernel/security/integrity/ima/README
-===================================================================
---- ltp-full-20090831.orig/testcases/kernel/security/integrity/ima/README
-+++ ltp-full-20090831/testcases/kernel/security/integrity/ima/README
-@@ -46,11 +46,13 @@ CONFIG_IMA_LSM_RULES=y
- 
- Dependency
- ----------
--The testsuite is dependent on the default policy being enabled, which
-+The testsuite is dependent on the default TCB policy being enabled, which
- measures all executables, all files mmapped for execute and all files
--open for read by root. If the default policy has been replaced, loading
--another measurement policy will fail, as the policy may only be replaced
--once per boot. Some of the policy dependency tests might also fail as well.
-+open for read by root.  For kernels 2.6.31 and greater, enable the
-+trusted computing base(TCB) policy using the ima_tcb=1 boot parameter.
-+If the TCB policy has been replaced, loading another measurement
-+policy will fail, as the policy may only be replaced once per boot.
-+Some of the policy dependency tests might also fail as well.
- 
- ima_tpm.sh: test02, verifying the PCR-10 value, requires a hard reboot.
- [On Ubuntu, before running the ltp tests, disable /etc/init.d/kexec-load
+I could create a patch that would remove all sigreturn files but not the
+directory itself and that would lead just to another empty directory in cvs
+tree.
 
+Are there any other solutions?
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
