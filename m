@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hjia@redhat.com>) id 1Mkyfb-0006N1-3x
-	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2009 11:15:31 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MkyfV-0005f6-Oi
-	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2009 11:15:31 +0000
-Received: from int-mx03.intmail.prod.int.phx2.redhat.com
-	(int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-	by mx1.redhat.com (8.13.8/8.13.8) with ESMTP id n88BFIA8019096
-	for <ltp-list@lists.sourceforge.net>; Tue, 8 Sep 2009 07:15:18 -0400
-Message-ID: <4AA63CD6.2000300@redhat.com>
-Date: Tue, 08 Sep 2009 19:15:34 +0800
-From: Hushan Jia <hjia@redhat.com>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1MoIx5-0006MV-G2
+	for ltp-list@lists.sourceforge.net; Thu, 17 Sep 2009 15:31:19 +0000
+Date: Thu, 17 Sep 2009 17:31:04 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20090917153104.GA12550@schrodinger.suse.cz>
+References: <20090831174107.GB30788@schrodinger.suse.cz>
+	<20090907160222.GA29017@schrodinger.suse.cz>
+	<20090917120306.GB26142@schrodinger.suse.cz>
+	<200909171053.28153.vapier@gentoo.org>
 MIME-Version: 1.0
-Subject: [LTP]  [PATCH] network: fix multicast testcases Makefile
+Content-Disposition: inline
+In-Reply-To: <200909171053.28153.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] broken epoll Makefile
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,54 +27,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,
-The Makefile of testcases/network/multicast/mc_commo and mc_member do not link binary file and config files to ../../../bin dirs.
-This patch add the links.
+Hi!
+> fix your cvs up.  cvs itself prunes empty dirs.  there's nothing for us to 
+> "commit" to "fix" this.
 
-Thanks&  Regards,
-Hushan
+Okay, cvs is even crazier than I was expecting.  But still there are
+directories that are not empty but doesn't contain Makefile and are not used
+for anything. For example epoll2.
 
----
-
-network: Fix multicast testcases Makefile
-
-Signed-off-by: Hushan Jia<hjia@redhat.com>
-
-diff -Nrup ltp-full-20090831.orig/testcases/network/multicast/mc_commo/Makefile ltp-full-20090831/testcases/network/multicast/mc_commo/Makefile
---- ltp-full-20090831.orig/testcases/network/multicast/mc_commo/Makefile	2009-08-31 13:16:03.000000000 +0800
-+++ ltp-full-20090831/testcases/network/multicast/mc_commo/Makefile	2009-09-08 18:45:37.000000000 +0800
-@@ -8,6 +8,8 @@ all: $(TARGETS)
-
-  install:
-  	ln -f mc_commo ../../../bin
-+	ln -f mc_recv ../../../bin
-+	ln -f mc_send ../../../bin
-
-  clean:
-  	rm -f $(TARGETS)
-diff -Nrup ltp-full-20090831.orig/testcases/network/multicast/mc_member/Makefile ltp-full-20090831/testcases/network/multicast/mc_member/Makefile
---- ltp-full-20090831.orig/testcases/network/multicast/mc_member/Makefile	2009-08-31 13:16:03.000000000 +0800
-+++ ltp-full-20090831/testcases/network/multicast/mc_member/Makefile	2009-09-08 19:04:40.000000000 +0800
-@@ -8,6 +8,9 @@ all: $(TARGETS)
-
-  install:
-  	ln -f mc_member ../../../bin
-+	ln -f member ../../../bin
-+	ln -f ManyGroups ../../../bin
-+	ln -f TooManyGroups ../../../bin
-
-  clean:
-  	rm -f $(TARGETS)
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
+http://p.sf.net/sfu/devconf
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
