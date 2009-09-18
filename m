@@ -1,34 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1MqJ7M-0007jv-OQ
-	for ltp-list@lists.sourceforge.net; Wed, 23 Sep 2009 04:06:12 +0000
-Received: from e36.co.us.ibm.com ([32.97.110.154])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MqJ7I-0006f3-2U
-	for ltp-list@lists.sourceforge.net; Wed, 23 Sep 2009 04:06:12 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e36.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8N446kl017679
-	for <ltp-list@lists.sourceforge.net>; Tue, 22 Sep 2009 22:04:06 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n8N45kEJ061162
-	for <ltp-list@lists.sourceforge.net>; Tue, 22 Sep 2009 22:05:53 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n8N45k1l006898
-	for <ltp-list@lists.sourceforge.net>; Tue, 22 Sep 2009 22:05:46 -0600
-Date: Tue, 22 Sep 2009 23:05:46 -0500
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20090923040546.GC9662@us.ibm.com>
-References: <20090921230644.GA30741@us.ibm.com>
-	<200909221100.42467.vapier@gentoo.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <200909221100.42467.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH RFC] ltp: define and use common clone helpers
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <kiran@linux.vnet.ibm.com>) id 1MocGx-0006Km-0G
+	for ltp-list@lists.sourceforge.net; Fri, 18 Sep 2009 12:09:07 +0000
+Received: from e23smtp01.au.ibm.com ([202.81.31.143])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MocGq-0004XL-HH
+	for ltp-list@lists.sourceforge.net; Fri, 18 Sep 2009 12:09:06 +0000
+From: Kiran <kiran@linux.vnet.ibm.com>
+In-Reply-To: <4AB23BCE.4030703@redhat.com>
+References: <1251794259.3881.6.camel@kiran-laptop>
+	<1251875695.4930.8.camel@subratamodak.linux.ibm.com>
+	<1252057746.4698.6.camel@kiran-laptop> <4AB037E4.9000904@redhat.com>
+	<4AB23BCE.4030703@redhat.com>
+Date: Fri, 18 Sep 2009 17:38:47 +0530
+Message-Id: <1253275727.6773.41.camel@kiran-laptop>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Patch to change the format of Steve Rostedt's
+ rt-migrate-test testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,101 +31,78 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: LTP list <ltp-list@lists.sourceforge.net>, Nathan T Lynch <natlynch@us.ibm.com>
+To: jburke@redhat.com
+Cc: ltp-list@lists.sf.net, rostedt <rostedt@goodmis.org>
 
-Quoting Mike Frysinger (vapier@gentoo.org):
-> On Monday 21 September 2009 19:06:44 Serge E. Hallyn wrote:
-> > Define ltp_clone() and ltp_clone_malloc() in libltp, and convert existing
-> > clone usages to them.  (clone04 can't use it bc it wants to pass NULL,
-> > which ltp_clone() will for many arches convert to NULL+stacksize-1).
+On Thu, 2009-09-17 at 09:38 -0400, Jeff Burke wrote:
+> Jeff Burke wrote:
+> > Kiran wrote:
+> >> Hi Subrata,
+> >>
+> >> This patch places the rt-migrate testcase into the
+> >> realtime/func/rt-migrate directory.
+> >>
+> >> Signed-off-by: Kiran Prakash <kiran@linux.vnet.ibm.com>
+> >>
+> > Kiran,
+> >     Did you get a chance to test this on both x86_64 and i386? In my 
+> > stand alone version(Before you ported it to LTP). My results vary quite 
+> > a bit for i386. I have attached two files.
+> > standalone - Is the rt-migrate test results outside of LTP
+> > ltpver - Is the rt-migrate test results ported into LTP
+> > 
+> > Note: The results are from the same system same kernel. The test were 
+> > run back to back.
+> > 
+> Kiran,
+> 	Did you get a chance to review the results?
+> Jeff
+> > Thanks,
+> > Jeff
+> > 
 > 
-> so have the code handle NULL specially:
-> (stack ? stack + stack_size - 1 : NULL)
+Hi,
 
-<grumble> yeah that occurred to me but I was rebelling against the clone04.c
-code...  But I guess I should.
+This is a patch on the cvs version of LTP.
 
-> > +ltp_clone(unsigned long clone_flags, void *stack, int stack_size,
-> > +		int (*fn)(void *arg), void *arg)
-> > +{
-> > +	int ret;
-> > +
-> > +#if defined(__hppa__)
-> > +	ret = clone(fn, stack, clone_flags, arg);
-> > +#elif defined(__ia64__)
-> > +	ret = clone2(fn, stack, stack_size, clone_flags, arg, NULL, NULL, NULL);
-> > +#else
-> > +	ret = clone(fn, stack + stack_size - 1, clone_flags, arg);
-> > +#endif
-> > +
-> > +	if (ret == -1)
-> > +		perror("clone");
-> 
-> we cant be sure why the higher layers are calling clone.  maybe the args given 
-> expect the clone() call to fail.  so we dont want any perror() invocation 
-> here.
+Signed-off-by: Kiran Prakash <kiran@linux.vnet.ibm.com>
 
-Makes sense.
+diff -Naur ltp_orig/testcases/realtime/func/rt-migrate/rt-migrate.c ltp/testcases/realtime/func/rt-migrate/rt-migrate.c
+--- ltp_orig/testcases/realtime/func/rt-migrate/rt-migrate.c	2009-09-07 14:29:10.000000000 +0530
++++ ltp/testcases/realtime/func/rt-migrate/rt-migrate.c	2009-09-18 17:30:34.000000000 +0530
+@@ -46,7 +46,6 @@
+  *                    testcases by Kiran Prakash
+  *
+  */
+-#define _GNU_SOURCE
+ #include <stdio.h>
+ #ifndef __USE_XOPEN2K
+ # define __USE_XOPEN2K
+@@ -247,17 +246,17 @@
+ 	for (i = 0; i < nr_runs; i++) {
+ 		printf("%4d:   ", i);
+ 		for (t = 0; t < nr_tasks; t++)
+-			printf("%6lld  ", intervals[t].records[i].y);
++			printf("%ld  ", intervals[t].records[i].y);
+ 
+ 		printf("\n");
+ 		printf(" len:   ");
+ 		for (t = 0; t < nr_tasks; t++)
+-			printf("%6lld  ", intervals_length[t].records[i].y);
++			printf("%ld  ", intervals_length[t].records[i].y);
+ 
+ 		printf("\n");
+ 		printf(" loops: ");
+ 		for (t = 0; t < nr_tasks; t++)
+-			printf("%6ld  ", intervals_loops[t].records[i].y);
++			printf("%ld  ", intervals_loops[t].records[i].y);
+ 
+ 		printf("\n");
+ 		printf("\n");
 
-> > +/***********************************************************************
-> > + * ltp_clone_malloc: also does the memory allocation for clone.
-> > + * Experience thus far suggests that one page is often insufficient,
-> > + * while 4*getpagesize() seems adequate.
-> > + ***********************************************************************/
-> 
-> a malloc() function implies you should be giving it a size.  i think there 
-> should be another helper here.
-> ltp_clone_malloc() - takes a size
-> ltp_clone_quick() - calls ltp_clone_malloc() with getpagesize() * 4
-> 
-> or a better name than "quick" ...
-> 
-> > +int
-> > +ltp_clone_malloc(unsigned long clone_flags, int (*fn)(void *arg), void
-> >  *arg)
-> 
-> i think argument order should be consistent.  i.e. have all ltp_clone_* calls 
-> start with (flags, func, arg) and then the malloc/etc... calls can add on 
-> (..., size) and (..., size, buffer).
+Thanks,
+Kiran
 
-makes sense.
-
-> > +	void *stack = malloc (stack_size);
-> 
-> no spacing around function calls
-> 
-> > +	if (!stack) {
-> > +		perror("malloc");
-> > +		return -1;
-> > +	}
-> 
-> since people are linking in -lltp to get these clone helpers, we can assume 
-> the tst_* funcs exist.  so this should invoke one of them with TBROK|TERRNO.
-
-True.
-
-> > +	ret = ltp_clone(clone_flags, stack, stack_size, fn, arg);
-> > +
-> > +	if (ret == -1) {
-> > +		perror("clone");
-> > +		free(stack);
-> > +	}
-> 
-> same issue as the other func -- dont call perror()
-> 
-> i think we should make sure to save/restore errno across the free() invocation 
-> so that the caller gets the result from clone() ...
-
-Good point.
-
-> otherwise this looks great.  thanks for doing the footwork here.
-> -mike
-
-Will hopefully whip up a new patch later this week and resend.
-
-thanks,
--serge
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
