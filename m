@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hjia@redhat.com>) id 1MkpQA-0005sS-Ri
-	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2009 01:22:58 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MkpQ4-0005f7-G3
-	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2009 01:22:58 +0000
-Message-ID: <4AA5B1F3.7020403@redhat.com>
-Date: Tue, 08 Sep 2009 09:22:59 +0800
-From: Hushan Jia <hjia@redhat.com>
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MpkGU-0007TC-P8
+	for Ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 14:53:18 +0000
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=pophost.sonytel.be) by 72vjzd1.ch3.sourceforge.com with esmtp 
+	(Exim 4.69) id 1MpkGN-000375-OQ
+	for Ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 14:53:18 +0000
+Date: Mon, 21 Sep 2009 15:40:46 +0200 (CEST)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Message-ID: <alpine.LRH.2.00.0909211539520.16077@vixen.sonytel.be>
 MIME-Version: 1.0
-References: <4AA4EC94.6020209@redhat.com>
-	<1252323511.4922.22.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1252323511.4922.22.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] [PATCH] network: Fix ip_tests error 2
+Subject: [LTP]  mmapstress03 weirdness? (fwd)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,96 +22,77 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net
+To: Linux/PPC Development <linuxppc-dev@ozlabs.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>
+Cc: Linux Test Project <Ltp-list@lists.sourceforge.net>
 
-Hi Subrata,
-I have remade the patch based on the first ip_tests.sh patch, changes:
-
-1. Test #4:
-ip tools now print nud state as follows:
-REACHABLE, STALE, FAILED, etc.
-
-2. Test #3, #4, #5:
-If delete entry succefully, grep will return 1,
-indicating test PASS, so return code RC should be set to 0.
-
-Thanks&  Regards,
-Hushan
-
----
-network: Fix iproute test case error 2
-
-Signed-off-by: Hushan Jia<hjia@redhat.com>
-
---- ltp-full-20090831/testcases/network/iproute/ip_tests.sh.orig	2009-09-08 09:04:54.000000000 +0800
-+++ ltp-full-20090831/testcases/network/iproute/ip_tests.sh	2009-09-08 09:11:21.000000000 +0800
-@@ -310,7 +310,9 @@ test03()
-  				tst_res TFAIL $LTPTMP/tst_ip.err \
-  				"Test #3: ip addr del command failed. Reason: "
-  				return $(($RC+1))
--		fi
-+			else
-+				RC=0
-+			fi
-  		
-  		tst_resm TPASS \
-  			"Test #3: ip addr command tests successful"
-@@ -354,7 +356,7 @@ test04()
-  		 "Test #4: ip neigh show - shows all neighbour entries in arp tables."
-
-  		cat>  $LTPTMP/tst_ip.exp<<-EOF
--		127.0.0.1 dev lo lladdr 00:00:00:00:00:00 nud reachable
-+		127.0.0.1 dev lo lladdr 00:00:00:00:00:00 REACHABLE
-  		EOF
-
-  		ip neigh show 127.0.0.1 | head -n1>$LTPTMP/tst_ip.out 2>&1 || RC=$?
-@@ -384,12 +386,14 @@ test04()
-  				"Test #4: ip neigh del command failed return = $RC. Reason: "
-  			return $RC
-  		else
--			ip neigh show | grep 127.0.0.1 grep -v "nud failed$">$LTPTMP/tst_ip.err 2>&1 || RC=$?
-+			ip neigh show | grep 127.0.0.1 | grep -v " FAILED$">$LTPTMP/tst_ip.err 2>&1 || RC=$?
-  			if [ $RC -eq 0 ]
-  			then
-  				tst_res TFAIL $LTPTMP/tst_ip.err \
-  				"Test #4: 127.0.0.1 still listed in arp. ip cmd Error Message:"
-  				return $(($RC+1))
-+			else
-+				RC=0
-  			fi
-  		fi
-  		
-@@ -482,6 +486,8 @@ test05()
-  				tst_res TFAIL $LTPTMP/tst_ip.err \
-  				"Test #5: route not deleted. ip route show:"
-  				return $(($RC+1))
-+			else
-+				RC=0
-  			fi
-  		fi
-  		
-@@ -570,6 +576,8 @@ test06()
-  				tst_res TFAIL $LTPTMP/tst_ip.err \
-  				"Test #6: 66:66:00:00:00:66 is not deleted. Details:"
-  				return $(($RC+1))
-+			else
-+				RC=0
-  			fi
-  		fi
-  		
-
-
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+LS0tLS0tLS0tLSBGb3J3YXJkZWQgbWVzc2FnZSAtLS0tLS0tLS0tCkRhdGU6IFdlZCwgMTYgU2Vw
+IDIwMDkgMTg6Mzc6MTIgKzAyMDAgKENFU1QpCkZyb206IEdlZXJ0IFV5dHRlcmhvZXZlbiA8R2Vl
+cnQuVXl0dGVyaG9ldmVuQHNvbnljb20uY29tPgpUbzogTGludXggVGVzdCBQcm9qZWN0IDxMdHAt
+bGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQ+ClN1YmplY3Q6IFtMVFBdIG1tYXBzdHJlc3MwMyB3
+ZWlyZG5lc3M/CgpPbiBwcGM2NCwgd2l0aCAzMi1iaXQgdXNlcmxhbmQsIEkgZ2V0OgoKfCBSdW5u
+aW5nIHRlc3RzLi4uLi4uLgp8IDw8PHRlc3Rfc3RhcnQ+Pj4KfCB0YWc9bW1hcHN0cmVzczAzIHN0
+aW1lPTEyNTMxMTcyNTEKfCBjbWRsaW5lPSJtbWFwc3RyZXNzMDMiCnwgY29udGFjdHM9IiIKfCBh
+bmFseXNpcz1leGl0CnwgPDw8dGVzdF9vdXRwdXQ+Pj4KfCBpbmNyZW1lbnRpbmcgc3RvcAp8IDog
+ZXJybm8gPSAwOiByZWFsbHkgbGFyZ2UgbW1hcCBkaWRuJ3QgZmFpbAp8IG1tYXBzdHJlc3MwMyAg
+ICAxICBURkFJTCAgOiAgVGVzdCBmYWlsZWQKICAgICAgICAgICAgICAgICAgICAgXl5eXl5eXl5e
+Xl5eXl5eXl5eXl5eCnwgPDw8ZXhlY3V0aW9uX3N0YXR1cz4+Pgp8IGluaXRpYXRpb25fc3RhdHVz
+PSJvayIKfCBkdXJhdGlvbj0wIHRlcm1pbmF0aW9uX3R5cGU9ZXhpdGVkIHRlcm1pbmF0aW9uX2lk
+PTAgY29yZWZpbGU9bm8KfCBjdXRpbWU9MCBjc3RpbWU9MAp8IDw8PHRlc3RfZW5kPj4+CnwgSU5G
+TzogbHRwLXBhbiByZXBvcnRlZCBhbGwgdGVzdHMgUEFTUwogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIF5eXl4KClRoZSBjb3JlIHBhcnQgb2YgdGhpcyB0ZXN0IGlzOgoKICAgICAg
+ICAvKiBBc2sgZm9yIGEgcmlkaWN1bG91c2x5IGxhcmdlIG1tYXAgcmVnaW9uIGF0IGEgaGlnaCBh
+ZGRyZXNzICovCiAgICAgICAgaWYgKG1tYXAoKGNhZGRyX3QpKDFVTCA8PCAoUE9JTlRFUl9TSVpF
+ICAtIDEpKSAtIHBhZ2VzaXplLAogICAgICAgICAgICAgICAgKHNpemVfdCkoKDFVTCA8PCAoUE9J
+TlRFUl9TSVpFIC0gMSkpIC0gcGFnZXNpemUpLAogICAgICAgICAgICAgICAgUFJPVF9SRUFEfFBS
+T1RfV1JJVEUsIE1BUF9BTk9OWU1PVVN8TUFQX0ZJWEVEfE1BUF9TSEFSRUQsIDAsIDApCiAgICAg
+ICAgICAgICAgICAhPSAoY2FkZHJfdCktMSkKICAgICAgICB7CiAgICAgICAgICAgICAgICBFUlJP
+UigicmVhbGx5IGxhcmdlIG1tYXAgZGlkbid0IGZhaWwiKTsKICAgICAgICAgICAgICAgIGFueWZh
+aWwoKTsKICAgICAgICB9CiAgICAgICAgaWYgKGVycm5vICE9IEVOT01FTSAmJiBlcnJubyAhPSBF
+SU5WQUwpIHsKICAgICAgICAgICAgICAgIEVSUk9SKCJyZWFsbHkgbGFyZ2UgbW1hcCBkaWRuJ3Qg
+c2V0IGVycm5vID0gRU5PTUVNIG5vciBFSU5WQUwiKTsKICAgICAgICAgICAgICAgIGFueWZhaWwo
+KTsKICAgICAgICB9CgpXaXRoIDMyLWJpdCB1c2VybGFuZCwgdGhpcyBib2lscyBkb3duIHRvOgoK
+fCBtbWFwIGFkZHIgMHg3ZmZmMDAwMCBzaXplIDB4N2ZmZjAwMDAKfCBtbWFwIHJldHVybmVkIDB4
+N2ZmZjAwMDAKCmkuZS4gbW1hcCgpIHN1Y2NlZWRzLCBidXQgKDEpIHRoZSB0ZXN0IGV4cGVjdHMg
+aXQgdG8gZmFpbCwgc28gdGhlIHRlc3QgcmV0dXJucwpURkFJTCwgYnV0ICgyKSBsdHAtcGFuIHN0
+aWxsIHJlcG9ydHMgdGhhdCB0aGUgdGVzdHMgcGFzc2VkPwoKSW4gYWRkaXRpb24sIHNvbWV0aW1l
+cyBtbWFwc3RyZXNzMDMgZmFpbHMgZHVlIHRvIFNFR1YuIEkgY3JlYXRlZCBhIHNtYWxsIHRlc3QK
+cHJvZ3JhbSB0aGF0IGp1c3QgZG9lcyB0aGUgYWJvdmUgbW1hcCgpLCBhbmQgZGVwZW5kaW5nIG9u
+IHRoZSBkaXN0cm8gYW5kIHdoYXQKZWxzZSBJIHByaW50IGxhdGVyIGl0IGNyYXNoZXMgd2l0aCBh
+IFNFR1YsIHRvby4gUHJvYmFibHkgdGhpcyBoYXBwZW5zIGJlY2F1c2UKdGhlIG1tYXAoKSBkaWQg
+c3VjY2VlZCwgYW5kIGNvcnJ1cHRlZCBzb21lIGV4aXN0aW5nIG1hcHBpbmdzLCBjZnIuIHRoZSBu
+b3Rlcwpmb3IgTUFQX0ZJWEVEOgoKICAgICAgIE1BUF9GSVhFRAogICAgICAgICAgICAgIERvbuKA
+mXQgIGludGVycHJldCAgYWRkciAgYXMgIGEgaGludDogcGxhY2UgdGhlIG1hcHBpbmcgYXQgZXhh
+Y3RseQogICAgICAgICAgICAgIHRoYXQgYWRkcmVzcy4gIGFkZHIgbXVzdCBiZSBhIG11bHRpcGxl
+IG9mIHRoZSBwYWdlIHNpemUuICBJZiB0aGUKICAgICAgICAgICAgICBtZW1vcnkgIHJlZ2lvbiAg
+c3BlY2lmaWVkICBieSBhZGRyIGFuZCBsZW4gb3ZlcmxhcHMgcGFnZXMgb2YgYW55CiAgICAgICAg
+ICAgICAgZXhpc3RpbmcgbWFwcGluZyhzKSwgdGhlbiB0aGUgb3ZlcmxhcHBlZCBwYXJ0ICBvZiAg
+dGhlICBleGlzdGluZwogICAgICAgICAgICAgIG1hcHBpbmcocykgIHdpbGwgIGJlIGRpc2NhcmRl
+ZC4gIElmIHRoZSBzcGVjaWZpZWQgYWRkcmVzcyBjYW5ub3QKICAgICAgICAgICAgICBiZSB1c2Vk
+LCBtbWFwKCkgd2lsbCBmYWlsLiAgQmVjYXVzZSByZXF1aXJpbmcgIGEgIGZpeGVkICBhZGRyZXNz
+CiAgICAgICAgICAgICAgZm9yICBhICBtYXBwaW5nIGlzIGxlc3MgcG9ydGFibGUsIHRoZSB1c2Ug
+b2YgdGhpcyBvcHRpb24gaXMgZGlz4oCQCiAgICAgICAgICAgICAgY291cmFnZWQuCgoKSkZZSSwg
+d2l0aCA2NC1iaXQgdXNlcmxhbmQsIHRoaXMgYm9pbHMgZG93biB0bzoKCnwgbW1hcCBhZGRyIDB4
+N2ZmZmZmZmZmZmZmMDAwMCBzaXplIDB4N2ZmZmZmZmZmZmZmMDAwMAp8IG1tYXAgcmV0dXJuZWQg
+MHhmZmZmZmZmZmZmZmZmZmZmCgppLmUuIG1tYXAoKSBmYWlscyBhcyBleHBlY3RlZCwgYW5kIHRo
+ZSB0ZXN0IHN1Y2NlZWRzLgoKRG9lcyBhbGwgb2YgdGhpcyBzb3VuZCBPSz8KVGhhbmtzIGZvciB5
+b3VyIGNvbW1lbnRzIQoKV2l0aCBraW5kIHJlZ2FyZHMsCgpHZWVydCBVeXR0ZXJob2V2ZW4KU29m
+dHdhcmUgQXJjaGl0ZWN0ClRlY2hzb2Z0IENlbnRyZQoKVGVjaG5vbG9neSBhbmQgU29mdHdhcmUg
+Q2VudHJlIEV1cm9wZQpUaGUgQ29ycG9yYXRlIFZpbGxhZ2UgwrcgRGEgVmluY2lsYWFuIDctRDEg
+wrcgQi0xOTM1IFphdmVudGVtIMK3IEJlbGdpdW0KClBob25lOiAgICArMzIgKDApMiA3MDAgODQ1
+MwpGYXg6ICAgICAgKzMyICgwKTIgNzAwIDg2MjIKRS1tYWlsOiAgIEdlZXJ0LlV5dHRlcmhvZXZl
+bkBzb255Y29tLmNvbQpJbnRlcm5ldDogaHR0cDovL3d3dy5zb255LWV1cm9wZS5jb20vCgpBIGRp
+dmlzaW9uIG9mIFNvbnkgRXVyb3BlIChCZWxnaXVtKSBOLlYuClZBVCBCRSAwNDEzLjgyNS4xNjAg
+wrcgUlBSIEJydXNzZWxzCkZvcnRpcyDCtyBCSUMgR0VCQUJFQkIgwrcgSUJBTiBCRTQxMjkzMDM3
+NjgwMDEwCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ29tZSBidWlsZCB3aXRoIHVzISBUaGUgQmxh
+Y2tCZXJyeSZyZWc7IERldmVsb3BlciBDb25mZXJlbmNlIGluIFNGLCBDQQppcyB0aGUgb25seSBk
+ZXZlbG9wZXIgZXZlbnQgeW91IG5lZWQgdG8gYXR0ZW5kIHRoaXMgeWVhci4gSnVtcHN0YXJ0IHlv
+dXIKZGV2ZWxvcGluZyBza2lsbHMsIHRha2UgQmxhY2tCZXJyeSBtb2JpbGUgYXBwbGljYXRpb25z
+IHRvIG1hcmtldCBhbmQgc3RheSAKYWhlYWQgb2YgdGhlIGN1cnZlLiBKb2luIHVzIGZyb20gTm92
+ZW1iZXIgOSYjNDU7MTIsIDIwMDkuIFJlZ2lzdGVyIG5vdyYjMzM7Cmh0dHA6Ly9wLnNmLm5ldC9z
+ZnUvZGV2Y29uZgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0
+dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
