@@ -1,33 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MryIG-0005kv-Ax
-	for ltp-list@lists.sourceforge.net; Sun, 27 Sep 2009 18:16:20 +0000
-Received: from e7.ny.us.ibm.com ([32.97.182.137])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MryI8-0001YI-Fu
-	for ltp-list@lists.sourceforge.net; Sun, 27 Sep 2009 18:16:20 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e7.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8RIDkMN010754
-	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 14:13:46 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n8RIG7kP223692
-	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 14:16:07 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n8RIG694005503
-	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 14:16:06 -0400
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MpleI-000890-5F
+	for ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 16:21:58 +0000
+Received: from e38.co.us.ibm.com ([32.97.110.159])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MpleA-0000i0-8O
+	for ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 16:21:57 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8LGHhBq028366
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 10:17:43 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n8LGLRfH160010
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 10:21:27 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n8LGLQqO002502
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 10:21:26 -0600
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1254005162-27353-3-git-send-email-avagin@gmail.com>
-References: <1254005162-27353-1-git-send-email-avagin@gmail.com>
-	<1254005162-27353-2-git-send-email-avagin@gmail.com>
-	<1254005162-27353-3-git-send-email-avagin@gmail.com>
-Date: Sun, 27 Sep 2009 23:45:29 +0530
-Message-Id: <1254075331.10457.26.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <20090921072453.7307.96056.sendpatchset@localhost.localdomain>
+References: <20090921072444.7307.84825.sendpatchset@localhost.localdomain>
+	<20090921072453.7307.96056.sendpatchset@localhost.localdomain>
+Date: Mon, 21 Sep 2009 21:50:28 +0530
+Message-Id: <1253550030.6736.25.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH 3/5] fsstress: fix memory leaks
+Subject: Re: [LTP] [Patch 2/6] To fix issue in get_sched_values
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -41,78 +41,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Andrew Vagin <avagin@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, svaidy@linux.vnet.ibm.com, ego@in.ibm.com, arun@linux.vnet.ibm.com
 
-On Sun, 2009-09-27 at 02:46 +0400, Andrew Vagin wrote: 
-> ==11424== 156 bytes in 1 blocks are definitely lost in loss record 2 of 2
-> ==11424==    at 0x4A0763E: malloc (vg_replace_malloc.c:207)
-> ==11424==    by 0x402E4C: make_freq_table (fsstress.c:986)
-> ==11424==    by 0x401C26: main (fsstress.c:410)
+On Mon, 2009-09-21 at 12:54 +0530, Poornima Nayak wrote: 
+> get_sched_values was returning 1 & 0 instead of max sched_mc & max sched_smt.
+> This patch fixes the issue in the first version of this file.
 > 
-> make_freq_table is executed on each iterations, but freq_table is not
-> changed during test, so this patch moves it from the loop
-> 
-> Signed-off-by: Andrew Vagin <avagin@gmail.com>
+> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
 
 Thanks.
 
 Regards--
 Subrata
 
-> ---
->  testcases/kernel/fs/fsstress/fsstress.c |   28 +++++++++++++++-------------
->  1 files changed, 15 insertions(+), 13 deletions(-)
 > 
-> diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
-> index 5ada3d8..715c08d 100644
-> --- a/testcases/kernel/fs/fsstress/fsstress.c
-> +++ b/testcases/kernel/fs/fsstress/fsstress.c
-> @@ -375,21 +375,24 @@ int main(int argc, char **argv)
->  			break;
->  		}
+> diff -uprN ltp-full-20090831/testcases/kernel/power_management/get_sched_values.c ltp-full-20090831_patched/testcases/kernel/power_management/get_sched_values.c
+> --- ltp-full-20090831/testcases/kernel/power_management/get_sched_values.c	2009-08-31 10:45:45.000000000 +0530
+> +++ ltp-full-20090831_patched/testcases/kernel/power_management/get_sched_values.c	2009-09-21 12:27:01.528978103 +0530
+> @@ -40,14 +40,8 @@ int main(int argc, char **argv)
+>  	{
+>  		param = argv[1];
+>  		if (strcmp(param, "sched_mc")==0)
+> -			if (get_supp_sched_mc() == 0)
+> -				return 0;
+> -			else
+> -				return 1;
+> +			return (get_supp_sched_mc());
+>  		if (strcmp(param, "sched_smt")==0)
+> -                        if (get_supp_sched_smt() == 0)
+> -                                return 0;
+> -                        else
+> -                                return 1;
+> +                        return (get_supp_sched_smt());
 >  	}
-> -	while ( (loopcntr <= loops) || (loops == 0) )
-> -	{
-> -		if (no_xfs && errtag) {
-> -			fprintf(stderr, "error injection only works on XFS\n");
-> -			exit(1);
-> -		}
+>  }
 > 
-> -		if (no_xfs) {
-> -			int i;
-> -			for (i = 0; ops+i < ops_end; ++i) {
-> -				if (ops[i].isxfs)
-> -					ops[i].freq = 0;
-> -			}
-> +	if (no_xfs && errtag) {
-> +		fprintf(stderr, "error injection only works on XFS\n");
-> +		exit(1);
-> +	}
-> +
-> +	if (no_xfs) {
-> +		int i;
-> +		for (i = 0; ops+i < ops_end; ++i) {
-> +			if (ops[i].isxfs)
-> +				ops[i].freq = 0;
->  		}
-> +	}
-> 
-> +	make_freq_table();
-> +
-> +	while ( (loopcntr <= loops) || (loops == 0) )
-> +	{
->  		if (!dirname) {
->  			/* no directory specified */
->  			if (!nousage) usage();
-> @@ -407,7 +410,6 @@ int main(int argc, char **argv)
->  			maxfsize = (off64_t)MAXFSIZE32;
->  		else
->  			maxfsize = (off64_t)MAXFSIZE;
-> -		make_freq_table();
->  		dcache_init();
->  		setlinebuf(stdout);
->  		if (!seed) {
+> ------------------------------------------------------------------------------
+> Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+> is the only developer event you need to attend this year. Jumpstart your
+> developing skills, take BlackBerry mobile applications to market and stay 
+> ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
+> http://p.sf.net/sfu/devconf
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
