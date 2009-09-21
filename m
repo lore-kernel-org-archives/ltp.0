@@ -1,20 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <benh@kernel.crashing.org>) id 1MptPY-0005NU-Fn
-	for Ltp-list@lists.sourceforge.net; Tue, 22 Sep 2009 00:39:16 +0000
-Received: from gate.crashing.org ([63.228.1.57])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MptPT-0000jy-7k
-	for Ltp-list@lists.sourceforge.net; Tue, 22 Sep 2009 00:39:16 +0000
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-In-Reply-To: <alpine.LRH.2.00.0909211539520.16077@vixen.sonytel.be>
-References: <alpine.LRH.2.00.0909211539520.16077@vixen.sonytel.be>
-Date: Tue, 22 Sep 2009 10:19:41 +1000
-Message-Id: <1253578781.7103.186.camel@pasglop>
-Mime-Version: 1.0
-Subject: Re: [LTP] mmapstress03 weirdness? (fwd)
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1MpcCl-0001Iv-6y
+	for ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 06:16:55 +0000
+Received: from e33.co.us.ibm.com ([32.97.110.151])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MpcCg-0006dl-UX
+	for ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 06:16:55 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e33.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8L6EV8b014953
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 00:14:31 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n8L6GgYj224678
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 00:16:42 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n8L6GgSS027831
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 00:16:42 -0600
+Date: Mon, 21 Sep 2009 01:16:42 -0500
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20090921061642.GA3276@us.ibm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+Subject: [LTP] [PATCH] Create testcase for p9auth kernel module (v2)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,67 +35,501 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Cc: Linux/PPC Development <linuxppc-dev@ozlabs.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux Test Project <Ltp-list@lists.sourceforge.net>
+To: Subrata Modak1 <subrata.modak@in.ibm.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>, Ashwin Ganti <ashwin.ganti@gmail.com>
 
-T24gTW9uLCAyMDA5LTA5LTIxIGF0IDE1OjQwICswMjAwLCBHZWVydCBVeXR0ZXJob2V2ZW4gd3Jv
-dGU6Cgo+IAo+IFdpdGggMzItYml0IHVzZXJsYW5kLCB0aGlzIGJvaWxzIGRvd24gdG86Cj4gCj4g
-fCBtbWFwIGFkZHIgMHg3ZmZmMDAwMCBzaXplIDB4N2ZmZjAwMDAKPiB8IG1tYXAgcmV0dXJuZWQg
-MHg3ZmZmMDAwMAo+IAo+IGkuZS4gbW1hcCgpIHN1Y2NlZWRzLCBidXQgKDEpIHRoZSB0ZXN0IGV4
-cGVjdHMgaXQgdG8gZmFpbCwgc28gdGhlIHRlc3QgcmV0dXJucwo+IFRGQUlMLCBidXQgKDIpIGx0
-cC1wYW4gc3RpbGwgcmVwb3J0cyB0aGF0IHRoZSB0ZXN0cyBwYXNzZWQ/CgpXaGF0IGlzIHRoZSBv
-dXRwdXQgb2YgL3Byb2MvPHBpZD4vbWFwcyBhZnRlciB0aGF0IG1tYXAgPwoKV2l0aCBhIDY0LWJp
-dCBrZXJuZWwsIDMyLWJpdCB1c2Vyc3BhY2UgaGFzIGFjY2VzcyB0byB0aGUgZW50aXJlIDRHCmFk
-ZHJlc3Mgc3BhY2UsIHNvIG1hcHBpbmcgMkctNjRrIGF0IHRoZSAyRy02NGsgcG9pbnQgY2FuIHdv
-cmssIHByb3ZpZGVkCnlvdSBhcmVuJ3Qgb3ZlcmxhcHBpbmcgYW4gZXhpc3RpbmcgbWFwcGluZyBz
-dWNoIGFzIHRoZSBzdGFjay4KCj4gSW4gYWRkaXRpb24sIHNvbWV0aW1lcyBtbWFwc3RyZXNzMDMg
-ZmFpbHMgZHVlIHRvIFNFR1YuIEkgY3JlYXRlZCBhIHNtYWxsIHRlc3QKPiBwcm9ncmFtIHRoYXQg
-anVzdCBkb2VzIHRoZSBhYm92ZSBtbWFwKCksIGFuZCBkZXBlbmRpbmcgb24gdGhlIGRpc3RybyBh
-bmQgd2hhdAo+IGVsc2UgSSBwcmludCBsYXRlciBpdCBjcmFzaGVzIHdpdGggYSBTRUdWLCB0b28u
-IFByb2JhYmx5IHRoaXMgaGFwcGVucyBiZWNhdXNlCj4gdGhlIG1tYXAoKSBkaWQgc3VjY2VlZCwg
-YW5kIGNvcnJ1cHRlZCBzb21lIGV4aXN0aW5nIG1hcHBpbmdzLCBjZnIuIHRoZSBub3Rlcwo+IGZv
-ciBNQVBfRklYRUQ6CgpUaGF0J3MgcG9zc2libGUuCgo+ICAgICAgICBNQVBfRklYRUQKPiAgICAg
-ICAgICAgICAgIERvbuKAmXQgIGludGVycHJldCAgYWRkciAgYXMgIGEgaGludDogcGxhY2UgdGhl
-IG1hcHBpbmcgYXQgZXhhY3RseQo+ICAgICAgICAgICAgICAgdGhhdCBhZGRyZXNzLiAgYWRkciBt
-dXN0IGJlIGEgbXVsdGlwbGUgb2YgdGhlIHBhZ2Ugc2l6ZS4gIElmIHRoZQo+ICAgICAgICAgICAg
-ICAgbWVtb3J5ICByZWdpb24gIHNwZWNpZmllZCAgYnkgYWRkciBhbmQgbGVuIG92ZXJsYXBzIHBh
-Z2VzIG9mIGFueQo+ICAgICAgICAgICAgICAgZXhpc3RpbmcgbWFwcGluZyhzKSwgdGhlbiB0aGUg
-b3ZlcmxhcHBlZCBwYXJ0ICBvZiAgdGhlICBleGlzdGluZwo+ICAgICAgICAgICAgICAgbWFwcGlu
-ZyhzKSAgd2lsbCAgYmUgZGlzY2FyZGVkLiAgSWYgdGhlIHNwZWNpZmllZCBhZGRyZXNzIGNhbm5v
-dAo+ICAgICAgICAgICAgICAgYmUgdXNlZCwgbW1hcCgpIHdpbGwgZmFpbC4gIEJlY2F1c2UgcmVx
-dWlyaW5nICBhICBmaXhlZCAgYWRkcmVzcwo+ICAgICAgICAgICAgICAgZm9yICBhICBtYXBwaW5n
-IGlzIGxlc3MgcG9ydGFibGUsIHRoZSB1c2Ugb2YgdGhpcyBvcHRpb24gaXMgZGlz4oCQCj4gICAg
-ICAgICAgICAgICBjb3VyYWdlZC4KClllYWgsIEkgc3VwcG9zZSB0aGUgdGVzdCBtaWdodCBiZSB3
-aXBpbmcgb3V0IGl0cyBvd24gc3RhY2sgZm9yIGV4YW1wbGUKCklFLiBJIHRoaW5rIHRoYXQgdGVz
-dCBpcyBqdXN0IGJvZ3VzIDotKQoKPiBKRllJLCB3aXRoIDY0LWJpdCB1c2VybGFuZCwgdGhpcyBi
-b2lscyBkb3duIHRvOgo+IAo+IHwgbW1hcCBhZGRyIDB4N2ZmZmZmZmZmZmZmMDAwMCBzaXplIDB4
-N2ZmZmZmZmZmZmZmMDAwMAo+IHwgbW1hcCByZXR1cm5lZCAweGZmZmZmZmZmZmZmZmZmZmYKPiAK
-PiBpLmUuIG1tYXAoKSBmYWlscyBhcyBleHBlY3RlZCwgYW5kIHRoZSB0ZXN0IHN1Y2NlZWRzLgoK
-UmlnaHQgYmVjYXVzZSBvbiA2NC1iaXQgdXNlcnNwYWNlLCB5b3Ugb25seSBhcmUgYWxsb3dlZCBz
-b21ldGhpbmcgbGlrZQoxNlQgb2YgYWRkcmVzcyBzcGFjZS4KCj4gRG9lcyBhbGwgb2YgdGhpcyBz
-b3VuZCBPSz8KPiBUaGFua3MgZm9yIHlvdXIgY29tbWVudHMhCgpZZXMsIEkgdGhpbmsgc28gZmFy
-LCBpdCdzIGp1c3QgYm9ndXMgdGVzdHMgOi0pCgpDaGVlcnMsCkJlbi4KCj4gV2l0aCBraW5kIHJl
-Z2FyZHMsCj4gCj4gR2VlcnQgVXl0dGVyaG9ldmVuCj4gU29mdHdhcmUgQXJjaGl0ZWN0Cj4gVGVj
-aHNvZnQgQ2VudHJlCj4gCj4gVGVjaG5vbG9neSBhbmQgU29mdHdhcmUgQ2VudHJlIEV1cm9wZQo+
-IFRoZSBDb3Jwb3JhdGUgVmlsbGFnZSDCtyBEYSBWaW5jaWxhYW4gNy1EMSDCtyBCLTE5MzUgWmF2
-ZW50ZW0gwrcgQmVsZ2l1bQo+IAo+IFBob25lOiAgICArMzIgKDApMiA3MDAgODQ1Mwo+IEZheDog
-ICAgICArMzIgKDApMiA3MDAgODYyMgo+IEUtbWFpbDogICBHZWVydC5VeXR0ZXJob2V2ZW5Ac29u
-eWNvbS5jb20KPiBJbnRlcm5ldDogaHR0cDovL3d3dy5zb255LWV1cm9wZS5jb20vCj4gCj4gQSBk
-aXZpc2lvbiBvZiBTb255IEV1cm9wZSAoQmVsZ2l1bSkgTi5WLgo+IFZBVCBCRSAwNDEzLjgyNS4x
-NjAgwrcgUlBSIEJydXNzZWxzCj4gRm9ydGlzIMK3IEJJQyBHRUJBQkVCQiDCtyBJQkFOIEJFNDEy
-OTMwMzc2ODAwMTAKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwo+IExpbnV4cHBjLWRldiBtYWlsaW5nIGxpc3QKPiBMaW51eHBwYy1kZXZAbGlzdHMub3ps
-YWJzLm9yZwo+IGh0dHBzOi8vbGlzdHMub3psYWJzLm9yZy9saXN0aW5mby9saW51eHBwYy1kZXYK
-CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ29tZSBidWlsZCB3aXRoIHVzISBUaGUgQmxhY2tCZXJy
-eSZyZWc7IERldmVsb3BlciBDb25mZXJlbmNlIGluIFNGLCBDQQppcyB0aGUgb25seSBkZXZlbG9w
-ZXIgZXZlbnQgeW91IG5lZWQgdG8gYXR0ZW5kIHRoaXMgeWVhci4gSnVtcHN0YXJ0IHlvdXIKZGV2
-ZWxvcGluZyBza2lsbHMsIHRha2UgQmxhY2tCZXJyeSBtb2JpbGUgYXBwbGljYXRpb25zIHRvIG1h
-cmtldCBhbmQgc3RheSAKYWhlYWQgb2YgdGhlIGN1cnZlLiBKb2luIHVzIGZyb20gTm92ZW1iZXIg
-OSYjNDU7MTIsIDIwMDkuIFJlZ2lzdGVyIG5vdyYjMzM7Cmh0dHA6Ly9wLnNmLm5ldC9zZnUvZGV2
-Y29uZgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAt
-bGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8v
-bGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+The p9auth module is a driver in the staging/ directory, which
+implements kernel functionality supporting plan 9-style setuid.
+Programs can be completely unprivileged, authorize themselves
+to a privileged server, and obtain a token which they can use to
+authorize a single setuid to a single specified new uid.
+
+This testcase runs three tests:
+	1. make sure we can't setuid without a hash
+		(this is actually short-cut in the kernel code
+		so it might be worthwhile having a separate
+		test for having a hash, but an invalid one)
+	2. make sure we can setuid when there is a valid hash
+	3. make sure we cannot setuid if there is a valid hash,
+		but our original uid isn't the one specified
+		in the token.
+
+Changelog:
+	Sep 21: Comment README, add runp9auth.sh to the patch, and
+		add the openssl check to checkp9auth.sh.
+
+Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
+---
+ README                                          |    9 ++
+ runtest/p9auth                                  |    2 +
+ testcases/kernel/security/Makefile              |    2 +-
+ testcases/kernel/security/p9auth/Makefile       |   40 ++++++++
+ testcases/kernel/security/p9auth/checkp9auth.sh |   78 ++++++++++++++++
+ testcases/kernel/security/p9auth/p9priv.sh      |  111 +++++++++++++++++++++++
+ testcases/kernel/security/p9auth/p9unpriv.sh    |   51 +++++++++++
+ testcases/kernel/security/p9auth/runp9auth.sh   |   37 ++++++++
+ testcases/kernel/security/p9auth/unhex.c        |   47 ++++++++++
+ 9 files changed, 376 insertions(+), 1 deletions(-)
+ create mode 100644 runtest/p9auth
+ create mode 100644 testcases/kernel/security/p9auth/Makefile
+ create mode 100644 testcases/kernel/security/p9auth/checkp9auth.sh
+ create mode 100644 testcases/kernel/security/p9auth/p9priv.sh
+ create mode 100644 testcases/kernel/security/p9auth/p9unpriv.sh
+ create mode 100644 testcases/kernel/security/p9auth/runp9auth.sh
+ create mode 100644 testcases/kernel/security/p9auth/unhex.c
+
+diff --git a/README b/README
+index 63dbc72..de8d4f0 100644
+--- a/README
++++ b/README
+@@ -179,6 +179,15 @@ Enabling Kernel Configuration to test filecaps security feature
+ ---------------------------------
+ CONFIG_SECURITY_FILE_CAPABILITIES=y
+ ---------------------------------
++Enabling Kernel Configuration to test p9auth security feature
++---------------------------------
++CONFIG_CRYPTO=y
++CONFIG_STAGING=y
++# CONFIG_STAGING_EXCLUDE_BUILD is not set
++CONFIG_PLAN9AUTH=m
++(Or CONFIG_PLAN9AUTH=y)
++You also will need openssl installed.
++---------------------------------
+ Enabling Kernel Configuration to test SELinux security feature
+ ---------------------------------
+ Your Kernel should have been built with the following options to
+diff --git a/runtest/p9auth b/runtest/p9auth
+new file mode 100644
+index 0000000..17b1550
+--- /dev/null
++++ b/runtest/p9auth
+@@ -0,0 +1,2 @@
++#DESCRIPTION:p9auth /dev/caphash module
++p9auth		runp9auth.sh
+diff --git a/testcases/kernel/security/Makefile b/testcases/kernel/security/Makefile
+index 862691a..3a26b22 100644
+--- a/testcases/kernel/security/Makefile
++++ b/testcases/kernel/security/Makefile
+@@ -1,4 +1,4 @@
+-SUBDIRS = mmc_security filecaps integrity cap_bound
++SUBDIRS = mmc_security filecaps integrity cap_bound p9auth
+ 
+ all:
+ 	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i ; done
+diff --git a/testcases/kernel/security/p9auth/Makefile b/testcases/kernel/security/p9auth/Makefile
+new file mode 100644
+index 0000000..1c03e5b
+--- /dev/null
++++ b/testcases/kernel/security/p9auth/Makefile
+@@ -0,0 +1,40 @@
++################################################################################
++##                                                                            ##
++## Copyright (c) International Business Machines  Corp., 2008                 ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and#or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software               ##
++## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
++##                                                                            ##
++################################################################################
++
++HAVE_P9AUTH := $(shell sh checkp9auth.sh yesno)
++
++SCRIPTS = runp9auth.sh checkp9auth.sh p9priv.sh p9unpriv.sh
++
++CFLAGS += -I../../../../include -Wall
++LDLIBS += -L../../../../lib -lltp -lcap
++
++ifeq ($(HAVE_P9AUTH),yes)
++SRCS    = $(wildcard *.c)
++TARGETS+= $(patsubst %.c,%,$(SRCS))
++endif
++
++all: $(TARGETS)
++
++INSTALLTARGETS = $(TARGETS) $(SCRIPTS)
++install: $(INSTALLTARGETS)
++	@set -e; for i in $(INSTALLTARGETS); do ln -f $$i ../../../bin/$$i ; chmod +x ../../../bin/$$i; done
++
++clean:
++	rm -f $(TARGETS) *.o unhex
+diff --git a/testcases/kernel/security/p9auth/checkp9auth.sh b/testcases/kernel/security/p9auth/checkp9auth.sh
+new file mode 100644
+index 0000000..4365427
+--- /dev/null
++++ b/testcases/kernel/security/p9auth/checkp9auth.sh
+@@ -0,0 +1,78 @@
++#!/bin/sh
++################################################################################
++##                                                                            ##
++## Copyright (c) International Business Machines  Corp., 2009                 ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and#or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software               ##
++## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
++##                                                                            ##
++################################################################################
++
++yesno=0
++if [ "$1" = "yesno" ]; then
++	yesno=1
++fi
++
++# check for openssl
++OPENSSL=`which openssl`
++if [ $? -ne 0 ]; then
++	if [ $yesno -eq 1 ]; then echo
++		echo "no"
++	else
++		echo "Openssl not installed.  Skipping p9auth tests."
++	fi
++	exit 1
++fi
++# and make sure openssl understands -hmac
++echo -n "501@0" > plain
++$OPENSSL sha1 -hmac ab plain > hexed
++if [ $? -ne 0 ]; then
++	if [ $yesno -eq 1 ]; then echo
++		echo "no"
++	else
++		echo "Openssl too old (no -hmac).  Skipping p9auth tests."
++	fi
++	exit 1
++fi
++
++majfile=/sys/module/p9auth/parameters/cap_major
++minfile=/sys/module/p9auth/parameters/cap_minor
++if [ ! -f "$majfile" ]; then
++	if [ $yesno -eq 1 ]; then echo
++		echo "no"
++	else
++		echo "p9auth not detected.  Skipping p9auth tests."
++	fi
++	exit 1
++fi
++
++if [ ! -c "/dev/caphash" ]; then
++	rm -f /dev/caphash
++	maj=`cat $majfile`
++	mknod /dev/caphash c $maj 0
++fi
++
++if [ ! -c "/dev/capuse" ]; then
++	rm -f /dev/capuse
++	min=`cat $minfile`
++	mknod /dev/capuse c $maj 1
++fi
++chmod ugo+w /dev/capuse
++
++if [ $yesno -eq 1 ]; then
++	echo "yes"
++else
++	echo "p9auth ready for testing"
++fi
++exit 0
+diff --git a/testcases/kernel/security/p9auth/p9priv.sh b/testcases/kernel/security/p9auth/p9priv.sh
+new file mode 100644
+index 0000000..0ff4ca7
+--- /dev/null
++++ b/testcases/kernel/security/p9auth/p9priv.sh
+@@ -0,0 +1,111 @@
++#!/bin/sh -v
++################################################################################
++##                                                                            ##
++## Copyright (c) International Business Machines  Corp., 2009                 ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and#or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software               ##
++## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
++##                                                                            ##
++################################################################################
++
++LTPTMP=/tmp/p9auth_ltp
++rm -rf $LTPTMP
++mkdir $LTPTMP
++chmod 755 $LTPTMP
++
++comms="$LTPTMP/childgo $LTPTMP/d/childready $LTPTMP/d/childfail $LTPTMP/d/childpass $LTPTMP/childexit"
++
++RM=`which rm`
++MKDIR=`which mkdir`
++CHOWN=`which chown`
++
++cleanup() {
++	$RM -rf $LTPTMP/d $comms
++	$MKDIR -p $LTPTMP/d
++	$CHOWN -R ltp $LTPTMP/d
++}
++
++if [ `id -u` -ne 0 ]; then
++	echo "Must start p9auth tests as root"
++	exit 1
++fi
++
++ltpuid=`grep ltp /etc/passwd | head -1 | awk -F: '{ print $3 '}`
++ret=$?
++if [ $? -ne 0 ]; then
++	echo "Failed to find ltp userid"
++	exit 1
++fi
++
++# TEST 1: ltp setuids to 0 but no valid hash
++# launch an unprivileged helper
++cleanup
++
++su ltp p9unpriv.sh &
++while [ ! -f $LTPTMP/d/childready ]; do :; done
++touch $LTPTMP/childgo
++while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do :; done;
++if [ -f $LTPTMP/d/childpass ]; then
++	echo "FAIL: child could setuid with bad hash"
++	exit 1
++fi
++echo "PASS: child couldn't setuid with bad hash"
++
++# TEST 2: ltp setuids to 0 with valid hash
++
++# create the hash.  randstr doesn't have to be int, but it's ok
++cleanup
++randstr=$RANDOM
++txt="$ltpuid@0"
++echo -n "$txt" > $LTPTMP/txtfile
++openssl sha1 -hmac "$randstr" $LTPTMP/txtfile | awk '{ print $2 '} > $LTPTMP/hex
++unhex < $LTPTMP/hex > /dev/caphash
++# give the child its token
++echo -n "$txt@$randstr" > $LTPTMP/d/txtfile
++chown ltp $LTPTMP/d/txtfile
++
++su ltp p9unpriv.sh &
++while [ ! -f $LTPTMP/d/childready ]; do :; done
++touch $LTPTMP/childgo
++while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do :; done;
++if [ -f $LTPTMP/d/childfail ]; then
++	echo "FAIL: child couldn't setuid with good hash"
++	exit 1
++fi
++echo "PASS: child could setuid with good hash"
++
++# TEST 3: 0 setuids to 0 with hash valid for ltp user
++cleanup
++randstr=$RANDOM
++txt="0@0"
++echo -n "$txt" > $LTPTMP/txtfile
++openssl sha1 -hmac "$randstr" $LTPTMP/txtfile | awk '{ print $2 '} > $LTPTMP/hex
++unhex < $LTPTMP/hex > /dev/caphash
++# give the child its token
++echo -n "$txt@$randstr" > $LTPTMP/d/txtfile
++chown ltp $LTPTMP/d/txtfile
++
++su ltp p9unpriv.sh &
++while [ ! -f $LTPTMP/d/childready ]; do :; done
++touch $LTPTMP/childgo
++while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do :; done;
++if [ -f $LTPTMP/d/childpass ]; then
++	echo "PASS: child could setuid from wrong source uid"
++	exit 1
++fi
++echo "PASS: child couldn't setuid from wrong source uid"
++
++touch $LTPTMP/childexit
++
++exit 0
+diff --git a/testcases/kernel/security/p9auth/p9unpriv.sh b/testcases/kernel/security/p9auth/p9unpriv.sh
+new file mode 100644
+index 0000000..8a0f162
+--- /dev/null
++++ b/testcases/kernel/security/p9auth/p9unpriv.sh
+@@ -0,0 +1,51 @@
++#!/bin/sh -v
++################################################################################
++##                                                                            ##
++## Copyright (c) International Business Machines  Corp., 2009                 ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and#or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software               ##
++## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
++##                                                                            ##
++################################################################################
++
++LTPTMP=/tmp/p9auth_ltp
++
++TOUCH=`which touch`
++ID=`which id`
++echo ltptmp is $LTPTMP
++
++myuid=`id -u`
++if [ "$myuid" -eq 0 ]; then
++	echo "Unprivileged child was started as root!"
++	exit 1
++fi
++
++$TOUCH $LTPTMP/d/childready
++
++while [ 1 ]; do
++	if [ -f $LTPTMP/childexit ]; then
++		exit 0
++	fi
++	if [ -f $LTPTMP/childgo ]; then
++		echo -n `cat $LTPTMP/d/txtfile` > /dev/capuse
++		if [ `$ID -u` -eq 0 ]; then
++			$TOUCH $LTPTMP/d/childpass
++		else
++			$TOUCH $LTPTMP/d/childfail
++		fi
++		exit 0
++	fi
++done
++
++exit 0
+diff --git a/testcases/kernel/security/p9auth/runp9auth.sh b/testcases/kernel/security/p9auth/runp9auth.sh
+new file mode 100644
+index 0000000..b61844e
+--- /dev/null
++++ b/testcases/kernel/security/p9auth/runp9auth.sh
+@@ -0,0 +1,37 @@
++#!/bin/sh
++################################################################################
++##                                                                            ##
++## Copyright (c) International Business Machines  Corp., 2008                 ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and#or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software               ##
++## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
++##                                                                            ##
++################################################################################
++
++checkp9auth.sh
++ret=$?
++if [ $ret -ne 0 ]; then
++	echo "p9auth module is not supported by this kernel."
++	exit 0
++fi
++
++exit_code=0
++
++p9priv.sh
++tmp=$?
++if [ $tmp -ne 0 ]; then
++	exit_code=$tmp
++fi
++
++exit $exit_code
+diff --git a/testcases/kernel/security/p9auth/unhex.c b/testcases/kernel/security/p9auth/unhex.c
+new file mode 100644
+index 0000000..7c78b6a
+--- /dev/null
++++ b/testcases/kernel/security/p9auth/unhex.c
+@@ -0,0 +1,47 @@
++/******************************************************************************/
++/*                                                                            */
++/* Copyright (c) International Business Machines  Corp., 2008                 */
++/*                                                                            */
++/* This program is free software;  you can redistribute it and/or modify      */
++/* it under the terms of the GNU General Public License as published by       */
++/* the Free Software Foundation; either version 2 of the License, or          */
++/* (at your option) any later version.                                        */
++/*                                                                            */
++/* This program is distributed in the hope that it will be useful,            */
++/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
++/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
++/* the GNU General Public License for more details.                           */
++/*                                                                            */
++/* You should have received a copy of the GNU General Public License          */
++/* along with this program;  if not, write to the Free Software               */
++/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
++/*                                                                            */
++/******************************************************************************/
++
++/*
++ * File: unhex.c
++ * Author: Serge Hallyn
++ * Purpose: Read a 40 char hex value from stdin, output 20 char byte
++ * value on stdout.
++ */
++
++#include <stdio.h>
++#include <unistd.h>
++
++int main(int argc, char *argv[])
++{
++	char in[41], out[20];
++	unsigned int v;
++	int i, ret;
++
++	ret = read(STDIN_FILENO, in, 40);
++	if (ret != 40)
++		return 1;
++	in[40] = '\0';
++	for (i = 0; i < 20; i++) {
++		sscanf(&in[2*i], "%02x", &v);
++		out[i] = v;
++	}
++	write(STDOUT_FILENO, out, 20);
++	return 0;
++}
+-- 
+1.6.1.1
+
+
+------------------------------------------------------------------------------
+Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
+http://p.sf.net/sfu/devconf
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
