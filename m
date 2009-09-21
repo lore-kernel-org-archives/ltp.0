@@ -1,33 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MnwGB-0001DY-G1
-	for Ltp-list@lists.sourceforge.net; Wed, 16 Sep 2009 15:17:31 +0000
-Received: from e7.ny.us.ibm.com ([32.97.182.137])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MnwG6-0005Qa-2c
-	for Ltp-list@lists.sourceforge.net; Wed, 16 Sep 2009 15:17:31 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e7.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8GFFK1Q020072
-	for <Ltp-list@lists.sourceforge.net>; Wed, 16 Sep 2009 11:15:20 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n8GFHIdI246084
-	for <Ltp-list@lists.sourceforge.net>; Wed, 16 Sep 2009 11:17:18 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n8GFE8mm002099
-	for <Ltp-list@lists.sourceforge.net>; Wed, 16 Sep 2009 11:14:08 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20090915215307.GD10922@count0.beaverton.ibm.com>
-References: <alpine.LRH.2.00.0909151730320.29846@vixen.sonytel.be>
-	<20090915215307.GD10922@count0.beaverton.ibm.com>
-Date: Wed, 16 Sep 2009 20:47:12 +0530
-Message-Id: <1253114232.6343.30.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Filecaps: Update error message for recent kernels
-Reply-To: subrata@linux.vnet.ibm.com
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <kdlucas@gmail.com>) id 1Mpru5-0002nn-Sa
+	for ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 23:02:41 +0000
+Received: from an-out-0708.google.com ([209.85.132.241])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Mpru0-00084Y-3w
+	for ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 23:02:41 +0000
+Received: by an-out-0708.google.com with SMTP id c38so1274869ana.37
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 21 Sep 2009 16:02:30 -0700 (PDT)
+MIME-Version: 1.0
+Date: Mon, 21 Sep 2009 16:02:29 -0700
+Message-ID: <b9d696240909211602o51c38c2ei41a8622d3250f06b@mail.gmail.com>
+From: "K.D. Lucas" <kdlucas@gmail.com>
+Subject: [LTP] Buffer Overflow with ftest03 and ftest07
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,57 +25,208 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3951793423790607578=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Matt Helsley <matthltc@us.ibm.com>
-Cc: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>, Linux Test Project <Ltp-list@lists.sourceforge.net>, Serge Hallyn <serue@linux.vnet.ibm.com>
+To: ltp-list@lists.sourceforge.net
 
-On Tue, 2009-09-15 at 14:53 -0700, Matt Helsley wrote: 
-> On Tue, Sep 15, 2009 at 05:30:55PM +0200, Geert Uytterhoeven wrote:
-> >    - As of 2.6.24, `capability' can no longer be a module,
-> >    - As of 2.6.27, CONFIG_SECURITY_CAPABILITIES no longer exists.
-> > 
-> > Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-> > ---
-> >  .../kernel/security/filecaps/checkforfilecaps.sh   |    3 +--
-> >  1 files changed, 1 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/testcases/kernel/security/filecaps/checkforfilecaps.sh b/testcases/kernel/security/filecaps/checkforfilecaps.sh
-> > index 20f97f5..3f6a4ec 100755
-> > --- a/testcases/kernel/security/filecaps/checkforfilecaps.sh
-> > +++ b/testcases/kernel/security/filecaps/checkforfilecaps.sh
-> > @@ -23,8 +23,7 @@ check_simple_capset
-> >  ret=$?
-> >  if [ $ret -ne 0 ]; then
-> >  	echo Posix capabilities not compiled into the kernel.  Please
-> > -	echo modprobe capability or recompile your kernel with
-> > -	echo CONFIG_SECURITY_CAPABILITIES=y.
-> > +	echo recompile your kernel with CONFIG_SECURITY_FILE_CAPABILITIES=y.
-> 
-> Then the advice is incorrect for older kernels. If LTP should still run
-> nicely for users of older kernels then perhaps something like this is better:
-> 
-> -	echo modprobe capability or recompile your kernel with
-> -	echo CONFIG_SECURITY_CAPABILITIES=y.
-> +	if tst_kvercmp 2 6 24 ; then
-> +		echo modprobe capability or recompile your kernel with
-> +		echo CONFIG_SECURITY_CAPABILITIES=y.
-> +	elif tst_kvercmp 2 6 27 ; then
-> +		echo recompile your kernel with CONFIG_SECURITY_CAPABILITIES=y.
-> +	else
-> +		echo recompile your kernel with CONFIG_SECURITY_FILE_CAPABILITIES=y.
-> +	fi
+--===============3951793423790607578==
+Content-Type: multipart/alternative; boundary=0016e68ed77eed40fe04741e792b
 
-Yes, this is better. Please shoot off a patch.
+--0016e68ed77eed40fe04741e792b
+Content-Type: text/plain; charset=ISO-8859-1
 
-Regards--
-Subrata
+Since I started using LTP 20090831 I've been seeing buffer overflow messages
+when running ftest03 and ftest07. The back trace is:
 
-> 
-> Cheers,
-> 	-Matt Helsley
+*** buffer overflow detected ***: ftest03 terminated
+======= Backtrace: =========
+/lib/tls/i686/cmov/libc.so.6(__fortify_fail+0x48)[0xa17038]
+/lib/tls/i686/cmov/libc.so.6[0xa15140]
+/lib/tls/i686/cmov/libc.so.6[0xa14838]
+/lib/tls/i686/cmov/libc.so.6(_IO_default_xsputn+0xc8)[0x986d18]
+/lib/tls/i686/cmov/libc.so.6(_IO_vfprintf+0xf4c)[0x95981c]
+/lib/tls/i686/cmov/libc.so.6(__vsprintf_chk+0xa4)[0xa148e4]
+/lib/tls/i686/cmov/libc.so.6(__sprintf_chk+0x2d)[0xa1482d]
+ftest03[0x804a7d9]
+ftest03[0x804a884]
+/lib/tls/i686/cmov/libc.so.6(__libc_start_main+0xe5)[0x92f7a5]
+ftest03[0x8049461]
+======= Memory map: ========
+00919000-00a75000 r-xp 00000000 08:01 132417     /lib/tls/i686/cmov/
+libc-2.9.so
+00a75000-00a76000 ---p 0015c000 08:01 132417     /lib/tls/i686/cmov/
+libc-2.9.so
+00a76000-00a78000 r--p 0015c000 08:01 132417     /lib/tls/i686/cmov/
+libc-2.9.so
+00a78000-00a79000 rw-p 0015e000 08:01 132417     /lib/tls/i686/cmov/
+libc-2.9.so
+00a79000-00a7c000 rw-p 00000000 00:00 0
+00a8c000-00aa8000 r-xp 00000000 08:01 367        /lib/ld-2.9.so
+00aa8000-00aa9000 r--p 0001b000 08:01 367        /lib/ld-2.9.so
+00aa9000-00aaa000 rw-p 0001c000 08:01 367        /lib/ld-2.9.so
+00c91000-00cbb000 r-xp 00000000 08:01 409        /lib/libgcc_s.so.1
+00cbb000-00cbc000 r--p 00029000 08:01 409        /lib/libgcc_s.so.1
+00cbc000-00cbd000 rw-p 0002a000 08:01 409        /lib/libgcc_s.so.1
+00cce000-00ccf000 r-xp 00000000 00:00 0          [vdso]
+08048000-08050000 r-xp 00000000 08:01 231138
+/var/tmp/tests/ltp-full-20090831/testcases/bin/ftest03
+08050000-08051000 r--p 00007000 08:01 231138
+/var/tmp/tests/ltp-full-20090831/testcases/bin/ftest03
+08051000-08052000 rw-p 00008000 08:01 231138
+/var/tmp/tests/ltp-full-20090831/testcases/bin/ftest03
+08052000-08056000 rw-p 00000000 00:00 0
+09ead000-09ece000 rw-p 00000000 00:00 0          [heap]
+b7f8d000-b7f8e000 rw-p 00000000 00:00 0
+b7f9b000-b7f9d000 rw-p 00000000 00:00 0
+bff91000-bffa6000 rw-p 00000000 00:00 0          [stack]
+*** buffer overflow detected ***: ftest07 terminated
+======= Backtrace: =========
+/lib/tls/i686/cmov/libc.so.6(__fortify_fail+0x48)[0x20e038]
+/lib/tls/i686/cmov/libc.so.6[0x20c140]
+/lib/tls/i686/cmov/libc.so.6[0x20b838]
+/lib/tls/i686/cmov/libc.so.6(_IO_default_xsputn+0xc8)[0x17dd18]
+/lib/tls/i686/cmov/libc.so.6(_IO_vfprintf+0xf4c)[0x15081c]
+/lib/tls/i686/cmov/libc.so.6(__vsprintf_chk+0xa4)[0x20b8e4]
+/lib/tls/i686/cmov/libc.so.6(__sprintf_chk+0x2d)[0x20b82d]
+ftest07[0x804a9d1]
+ftest07[0x804aa74]
+/lib/tls/i686/cmov/libc.so.6(__libc_start_main+0xe5)[0x1267a5]
+ftest07[0x8049421]
+======= Memory map: ========
+00110000-0026c000 r-xp 00000000 08:01 132417     /lib/tls/i686/cmov/
+libc-2.9.so
+0026c000-0026d000 ---p 0015c000 08:01 132417     /lib/tls/i686/cmov/
+libc-2.9.so
+0026d000-0026f000 r--p 0015c000 08:01 132417     /lib/tls/i686/cmov/
+libc-2.9.so
+0026f000-00270000 rw-p 0015e000 08:01 132417     /lib/tls/i686/cmov/
+libc-2.9.so
+00270000-00273000 rw-p 00000000 00:00 0
+00642000-0066c000 r-xp 00000000 08:01 409        /lib/libgcc_s.so.1
+0066c000-0066d000 r--p 00029000 08:01 409        /lib/libgcc_s.so.1
+0066d000-0066e000 rw-p 0002a000 08:01 409        /lib/libgcc_s.so.1
+00d7c000-00d7d000 r-xp 00000000 00:00 0          [vdso]
+00dfe000-00e1a000 r-xp 00000000 08:01 367        /lib/ld-2.9.so
+00e1a000-00e1b000 r--p 0001b000 08:01 367        /lib/ld-2.9.so
+00e1b000-00e1c000 rw-p 0001c000 08:01 367        /lib/ld-2.9.so
+08048000-08050000 r-xp 00000000 08:01 231142
+/var/tmp/tests/ltp-full-20090831/testcases/bin/ftest07
+08050000-08051000 r--p 00007000 08:01 231142
+/var/tmp/tests/ltp-full-20090831/testcases/bin/ftest07
+08051000-08052000 rw-p 00008000 08:01 231142
+/var/tmp/tests/ltp-full-20090831/testcases/bin/ftest07
+08052000-08057000 rw-p 00000000 00:00 0
+09fce000-09fef000 rw-p 00000000 00:00 0          [heap]
+b802f000-b8030000 rw-p 00000000 00:00 0
+b803d000-b803f000 rw-p 00000000 00:00 0
+bfdfb000-bfe10000 rw-p 00000000 00:00 0          [stack]
 
+
+This is running against an Ubuntu Karmic Alpha netbook remix. I don't see
+this issue when testing on dapper or hardy distros. I saw some other posts
+about this, but no one has offered any suggestions or solutions yet.
+
+The kernel is 2.6.30-8-generic, i686 arch.
+
+kdl
+
+--0016e68ed77eed40fe04741e792b
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Since I started using LTP 20090831 I&#39;ve been seeing buffer overflow mes=
+sages when running ftest03 and ftest07. The back trace is:<br><br>*** buffe=
+r overflow detected ***: ftest03 terminated<br>=3D=3D=3D=3D=3D=3D=3D Backtr=
+ace: =3D=3D=3D=3D=3D=3D=3D=3D=3D<br>
+/lib/tls/i686/cmov/libc.so.6(__fortify_fail+0x48)[0xa17038]<br>/lib/tls/i68=
+6/cmov/libc.so.6[0xa15140]<br>/lib/tls/i686/cmov/libc.so.6[0xa14838]<br>/li=
+b/tls/i686/cmov/libc.so.6(_IO_default_xsputn+0xc8)[0x986d18]<br>/lib/tls/i6=
+86/cmov/libc.so.6(_IO_vfprintf+0xf4c)[0x95981c]<br>
+/lib/tls/i686/cmov/libc.so.6(__vsprintf_chk+0xa4)[0xa148e4]<br>/lib/tls/i68=
+6/cmov/libc.so.6(__sprintf_chk+0x2d)[0xa1482d]<br>ftest03[0x804a7d9]<br>fte=
+st03[0x804a884]<br>/lib/tls/i686/cmov/libc.so.6(__libc_start_main+0xe5)[0x9=
+2f7a5]<br>
+ftest03[0x8049461]<br>=3D=3D=3D=3D=3D=3D=3D Memory map: =3D=3D=3D=3D=3D=3D=
+=3D=3D<br>00919000-00a75000 r-xp 00000000 08:01 132417=A0=A0=A0=A0 /lib/tls=
+/i686/cmov/<a href=3D"http://libc-2.9.so">libc-2.9.so</a><br>00a75000-00a76=
+000 ---p 0015c000 08:01 132417=A0=A0=A0=A0 /lib/tls/i686/cmov/<a href=3D"ht=
+tp://libc-2.9.so">libc-2.9.so</a><br>
+00a76000-00a78000 r--p 0015c000 08:01 132417=A0=A0=A0=A0 /lib/tls/i686/cmov=
+/<a href=3D"http://libc-2.9.so">libc-2.9.so</a><br>00a78000-00a79000 rw-p 0=
+015e000 08:01 132417=A0=A0=A0=A0 /lib/tls/i686/cmov/<a href=3D"http://libc-=
+2.9.so">libc-2.9.so</a><br>
+00a79000-00a7c000 rw-p 00000000 00:00 0<br>00a8c000-00aa8000 r-xp 00000000 =
+08:01 367=A0=A0=A0=A0=A0=A0=A0 /lib/<a href=3D"http://ld-2.9.so">ld-2.9.so<=
+/a><br>00aa8000-00aa9000 r--p 0001b000 08:01 367=A0=A0=A0=A0=A0=A0=A0 /lib/=
+<a href=3D"http://ld-2.9.so">ld-2.9.so</a><br>
+00aa9000-00aaa000 rw-p 0001c000 08:01 367=A0=A0=A0=A0=A0=A0=A0 /lib/<a href=
+=3D"http://ld-2.9.so">ld-2.9.so</a><br>00c91000-00cbb000 r-xp 00000000 08:0=
+1 409=A0=A0=A0=A0=A0=A0=A0 /lib/libgcc_s.so.1<br>00cbb000-00cbc000 r--p 000=
+29000 08:01 409=A0=A0=A0=A0=A0=A0=A0 /lib/libgcc_s.so.1<br>
+00cbc000-00cbd000 rw-p 0002a000 08:01 409=A0=A0=A0=A0=A0=A0=A0 /lib/libgcc_=
+s.so.1<br>00cce000-00ccf000 r-xp 00000000 00:00 0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 [vdso]<br>08048000-08050000 r-xp 00000000 08:01 231138=A0=A0=A0=A0 /var=
+/tmp/tests/ltp-full-20090831/testcases/bin/ftest03<br>
+08050000-08051000 r--p 00007000 08:01 231138=A0=A0=A0=A0 /var/tmp/tests/ltp=
+-full-20090831/testcases/bin/ftest03<br>08051000-08052000 rw-p 00008000 08:=
+01 231138=A0=A0=A0=A0 /var/tmp/tests/ltp-full-20090831/testcases/bin/ftest0=
+3<br>08052000-08056000 rw-p 00000000 00:00 0<br>
+09ead000-09ece000 rw-p 00000000 00:00 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 [heap]<b=
+r>b7f8d000-b7f8e000 rw-p 00000000 00:00 0<br>b7f9b000-b7f9d000 rw-p 0000000=
+0 00:00 0<br>bff91000-bffa6000 rw-p 00000000 00:00 0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0 [stack]<br>*** buffer overflow detected ***: ftest07 terminated<br>
+=3D=3D=3D=3D=3D=3D=3D Backtrace: =3D=3D=3D=3D=3D=3D=3D=3D=3D<br>/lib/tls/i6=
+86/cmov/libc.so.6(__fortify_fail+0x48)[0x20e038]<br>/lib/tls/i686/cmov/libc=
+.so.6[0x20c140]<br>/lib/tls/i686/cmov/libc.so.6[0x20b838]<br>/lib/tls/i686/=
+cmov/libc.so.6(_IO_default_xsputn+0xc8)[0x17dd18]<br>
+/lib/tls/i686/cmov/libc.so.6(_IO_vfprintf+0xf4c)[0x15081c]<br>/lib/tls/i686=
+/cmov/libc.so.6(__vsprintf_chk+0xa4)[0x20b8e4]<br>/lib/tls/i686/cmov/libc.s=
+o.6(__sprintf_chk+0x2d)[0x20b82d]<br>ftest07[0x804a9d1]<br>ftest07[0x804aa7=
+4]<br>
+/lib/tls/i686/cmov/libc.so.6(__libc_start_main+0xe5)[0x1267a5]<br>ftest07[0=
+x8049421]<br>=3D=3D=3D=3D=3D=3D=3D Memory map: =3D=3D=3D=3D=3D=3D=3D=3D<br>=
+00110000-0026c000 r-xp 00000000 08:01 132417=A0=A0=A0=A0 /lib/tls/i686/cmov=
+/<a href=3D"http://libc-2.9.so">libc-2.9.so</a><br>
+0026c000-0026d000 ---p 0015c000 08:01 132417=A0=A0=A0=A0 /lib/tls/i686/cmov=
+/<a href=3D"http://libc-2.9.so">libc-2.9.so</a><br>0026d000-0026f000 r--p 0=
+015c000 08:01 132417=A0=A0=A0=A0 /lib/tls/i686/cmov/<a href=3D"http://libc-=
+2.9.so">libc-2.9.so</a><br>
+0026f000-00270000 rw-p 0015e000 08:01 132417=A0=A0=A0=A0 /lib/tls/i686/cmov=
+/<a href=3D"http://libc-2.9.so">libc-2.9.so</a><br>00270000-00273000 rw-p 0=
+0000000 00:00 0<br>00642000-0066c000 r-xp 00000000 08:01 409=A0=A0=A0=A0=A0=
+=A0=A0 /lib/libgcc_s.so.1<br>
+0066c000-0066d000 r--p 00029000 08:01 409=A0=A0=A0=A0=A0=A0=A0 /lib/libgcc_=
+s.so.1<br>0066d000-0066e000 rw-p 0002a000 08:01 409=A0=A0=A0=A0=A0=A0=A0 /l=
+ib/libgcc_s.so.1<br>00d7c000-00d7d000 r-xp 00000000 00:00 0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0 [vdso]<br>00dfe000-00e1a000 r-xp 00000000 08:01 367=A0=A0=A0=
+=A0=A0=A0=A0 /lib/<a href=3D"http://ld-2.9.so">ld-2.9.so</a><br>
+00e1a000-00e1b000 r--p 0001b000 08:01 367=A0=A0=A0=A0=A0=A0=A0 /lib/<a href=
+=3D"http://ld-2.9.so">ld-2.9.so</a><br>00e1b000-00e1c000 rw-p 0001c000 08:0=
+1 367=A0=A0=A0=A0=A0=A0=A0 /lib/<a href=3D"http://ld-2.9.so">ld-2.9.so</a><=
+br>08048000-08050000 r-xp 00000000 08:01 231142=A0=A0=A0=A0 /var/tmp/tests/=
+ltp-full-20090831/testcases/bin/ftest07<br>
+08050000-08051000 r--p 00007000 08:01 231142=A0=A0=A0=A0 /var/tmp/tests/ltp=
+-full-20090831/testcases/bin/ftest07<br>08051000-08052000 rw-p 00008000 08:=
+01 231142=A0=A0=A0=A0 /var/tmp/tests/ltp-full-20090831/testcases/bin/ftest0=
+7<br>08052000-08057000 rw-p 00000000 00:00 0<br>
+09fce000-09fef000 rw-p 00000000 00:00 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 [heap]<b=
+r>b802f000-b8030000 rw-p 00000000 00:00 0<br>b803d000-b803f000 rw-p 0000000=
+0 00:00 0<br>bfdfb000-bfe10000 rw-p 00000000 00:00 0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0 [stack]<br clear=3D"all"><br>
+<br>This is running against an Ubuntu Karmic Alpha netbook remix. I don&#39=
+;t see this issue when testing on dapper or hardy distros. I saw some other=
+ posts about this, but no one has offered any suggestions or solutions yet.=
+<br>
+<br>The kernel is 2.6.30-8-generic, i686 arch.<br><br>kdl<br><br>
+
+--0016e68ed77eed40fe04741e792b--
+
+
+--===============3951793423790607578==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
@@ -95,7 +234,16 @@ is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
 http://p.sf.net/sfu/devconf
+--===============3951793423790607578==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3951793423790607578==--
+
