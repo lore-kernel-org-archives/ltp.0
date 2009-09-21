@@ -1,36 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1MksiO-00074X-Bn
-	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2009 04:54:00 +0000
-Received: from e34.co.us.ibm.com ([32.97.110.152])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MksiI-0001cD-3M
-	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2009 04:54:00 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e34.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n884nbOX025253
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 22:49:37 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n884rmPv248754
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 22:53:48 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n884rltW013285
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 22:53:48 -0600
-Date: Mon, 7 Sep 2009 23:53:43 -0500
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20090908045343.GA28650@us.ibm.com>
-References: <20090902141027.GA13905@us.ibm.com>
-	<200909021613.39566.vapier@gentoo.org>
-	<1252323640.4922.28.camel@subratamodak.linux.ibm.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1252323640.4922.28.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] [PATCH 1/1] Containers: Pass a valid stack address
-	to	clone
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1MpdH4-0001Fr-PM
+	for ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 07:25:26 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MpdH1-0003cL-Fs
+	for ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 07:25:26 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8L7JmSn012219
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 01:19:48 -0600
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n8L7PFg1153880
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 01:25:15 -0600
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n8L7PFDf027360
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 01:25:15 -0600
+From: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+Date: Mon, 21 Sep 2009 12:55:11 +0530
+Message-Id: <20090921072511.7307.49358.sendpatchset@localhost.localdomain>
+In-Reply-To: <20090921072444.7307.84825.sendpatchset@localhost.localdomain>
+References: <20090921072444.7307.84825.sendpatchset@localhost.localdomain>
+Subject: [LTP] [Patch 4/6] To include Additional 5 new test cases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,38 +35,289 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, Nathan T Lynch <natlynch@us.ibm.com>, Mike Frysinger <vapier@gentoo.org>
+To: ltp-list@lists.sourceforge.net, arun@linux.vnet.ibm.com, svaidy@linux.vnet.ibm.com, ego@in.ibm.com
 
-UXVvdGluZyBTdWJyYXRhIE1vZGFrIChzdWJyYXRhQGxpbnV4LnZuZXQuaWJtLmNvbSk6Cj4gT24g
-V2VkLCAyMDA5LTA5LTAyIGF0IDE2OjEzIC0wNDAwLCBNaWtlIEZyeXNpbmdlciB3cm90ZTogCj4g
-PiBPbiBXZWRuZXNkYXkgMDIgU2VwdGVtYmVyIDIwMDkgMTA6MTA6MjcgU2VyZ2UgRS4gSGFsbHlu
-IHdyb3RlOgo+ID4gPiBBbHNvIGZpeCB0aGUgbGlibmV0bnMgaGVscGVyIHRvLCBsaWtlIHRoZSBs
-aWJjbG9uZSBvbmUsIHNwZWNpYWwtY2FzZQo+ID4gPiBocHBhIGFuZCBwYXNzIHRoZSBib3R0b20g
-b2YgdGhlIHN0YWNrIHRvIGNsb25lMiBmb3IgX19pYTY0X18gKGFzIHBlcgo+ID4gPiB0aGUgbGli
-Y2xvbmUgZXhhbXBsZSBhbmQgdGhlIGNsb25lMiBtYW5wYWdlKS4gIEkgZG9uJ3Qga25vdyBhbmQg
-Y2FuJ3QKPiA+ID4gdGVzdCB3aGV0aGVyIGl0J3MgcmlnaHQsIGJ1dCBoYXZlIHRvIGFzc3VtZSB0
-aGF0IG9uZSBvZiB0aGUgb3RoZXIgd2FzCj4gPiA+IHdyb25nLgo+ID4gCj4gPiBwbGVhc2UsIGxl
-dCdzIHN0b3Agc2NyZXdpbmcgYXJvdW5kIHdpdGggdGhpcyBhbmQgY29weWluZyAmIHBhc3Rpbmcg
-aXQgCj4gPiBldmVyeXdoZXJlLiAgY3JlYXRlIGEgbmV3IGRlZGljYXRlICJsdHBfY2xvbmUiIG9y
-IHNpbWlsYXIgZnVuY3Rpb24gYW5kIHN0aWNrIAo+ID4gdGhlIGFyY2gtc3BlY2lmaWMgbG9naWMg
-dGhlcmUuCj4gPiBpbnQgbHRwX2Nsb25lKGZ1bmMgcHRyLCBzdGFjayBiYXNlLCBzdGFjayBzaXpl
-LCBjbG9uZSBmbGFncywgZnVuYyBhcmdzLi4uKQo+ID4gLW1pa2UKPiA+IC0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tCj4gCj4gU2VyZ2UsCj4gCj4gRGlkIHlvdSBwb3N0IGFueSBuZXcgcGF0Y2hlcyBh
-ZnRlciBNaWtlxZsgY29tbWVudHMgPwoKTm8gSSBoYXZlbid0LiAgSSBhZ3JlZSB3aXRoIGhpbSwg
-YW5kIHNlZSBvdGhlciBjYXNlcyB3aGljaCBjb3VsZApzdGFuZCBjb25zb2xpZGF0aW9uIHVuZGVy
-IHN5c2NhbGxzL2Nsb25lLCBmcy9mc19iaW5kL25zY2xvbmUsCmNvbnRyb2xsZXJzL2Nncm91cCwg
-c2VjdXJpdHkvdG9tb3lvLCBzZWN1cml0eS9zZWxpbnV4LXRlc3RzdWl0ZSwKYXVkaXQtdGVzdCwg
-YW5kIG1pc2MvY3Jhc2guCgotc2VyZ2UKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMZXQgQ3J5c3Rh
-bCBSZXBvcnRzIGhhbmRsZSB0aGUgcmVwb3J0aW5nIC0gRnJlZSBDcnlzdGFsIFJlcG9ydHMgMjAw
-OCAzMC1EYXkgCnRyaWFsLiBTaW1wbGlmeSB5b3VyIHJlcG9ydCBkZXNpZ24sIGludGVncmF0aW9u
-IGFuZCBkZXBsb3ltZW50IC0gYW5kIGZvY3VzIG9uIAp3aGF0IHlvdSBkbyBiZXN0LCBjb3JlIGFw
-cGxpY2F0aW9uIGNvZGluZy4gRGlzY292ZXIgd2hhdCdzIG5ldyB3aXRoIApDcnlzdGFsIFJlcG9y
-dHMgbm93LiAgaHR0cDovL3Auc2YubmV0L3NmdS9ib2JqLWp1bHkKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1s
-aXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9s
-aXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+Additional 5 new testcases to test cpu consolidation resets when sched_smt &(/)
+sched_mc is reset to zero.
+
+Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+
+diff -uprN ltp-full-20090831/testcases/kernel/power_management/runpwtests.sh ltp-full-20090831_patched/testcases/kernel/power_management/runpwtests.sh
+--- ltp-full-20090831/testcases/kernel/power_management/runpwtests.sh	2009-08-31 10:45:45.000000000 +0530
++++ ltp-full-20090831_patched/testcases/kernel/power_management/runpwtests.sh	2009-09-21 12:28:07.766970834 +0530
+@@ -170,6 +170,7 @@ if [ $? -ne 0 ] ; then
+ test cannot run"
+ else
+ 	get_sched_values sched_mc; max_sched_mc=$?
++    echo "max sched mc $max_sched_mc"
+ 	for sched_mc in `seq 0 $max_sched_mc`; do
+ 		: $(( TST_COUNT+=1))
+ 		sched_domain.py -c $sched_mc; RC=$?
+@@ -187,15 +188,17 @@ else
+ fi
+ 
+ : $(( TST_COUNT+=1))
++check_kv_arch "timer_migration"; supp=$?
+ if [ -f /proc/sys/kernel/timer_migration ]; then
+-	if test_timer_migration.sh; then
+-        tst_resm TPASS "Timer Migration interface test"
+-    else
+-        RC=$?
+-        tst_resm TFAIL "Timer migration interface test"
+-    fi
++	if [ $supp -eq $YES ]; then
++		if test_timer_migration.sh; then
++        	tst_resm TPASS "Timer Migration interface test"
++    	else
++        	RC=$?
++        	tst_resm TFAIL "Timer migration interface test"
++		fi
++	fi
+ else
+-	check_kv_arch "timer_migration"; supp=$? 
+ 	if [ $supp -eq $YES ]; then
+ 		RC=$?
+ 		tst_resm TFAIL "Timer migration interface missing"
+@@ -204,52 +207,45 @@ else
+ 	fi
+ fi
+ 
+-: $(( TST_COUNT+=1))	
+-if check_cpufreq_sysfs_files.sh; then
+-        tst_resm TPASS "CPUFREQ sysfs tests"
+-    else
+-        RC=$?
+-        tst_resm TFAIL "CPUFREQ sysfs tests "
+-    fi
+-
+ if [ $# -gt 0 -a "$1" = "-exclusive" ]; then 
+ 	# Test CPU consolidation 
+ 	if [ $multi_socket -eq $YES -a $multi_core -eq $YES ]; then
+-		work_loads_list="ebizzy kernbench"
+ 		for sched_mc in `seq 0 $max_sched_mc`; do
+-			for work_load in ${work_loads_list}
+-           	do
+-				: $(( TST_COUNT += 1 ))
+-				sched_mc_pass_cnt=0
+-				for repeat_test in `seq 1  10`; do
+-					#Testcase to validate CPU consolidation for sched_mc
+-					if cpu_consolidation.py -c $sched_mc -w $work_load ; then
+-						: $(( sched_mc_pass_cnt += 1 ))
+-					fi
+-				done
+-				analyze_package_consolidation_result $sched_mc $work_load $sched_mc_pass_cnt	
+-			done	
++			: $(( TST_COUNT += 1 ))
++			sched_mc_pass_cnt=0
++			if [ $sched_mc -eq 2 ]; then
++				work_load="kernbench"
++			else
++				work_load="ebizzy"
++			fi
++			for repeat_test in `seq 1  10`; do
++				#Testcase to validate CPU consolidation for sched_mc
++				if cpu_consolidation.py -c $sched_mc -w $work_load ; then
++					: $(( sched_mc_pass_cnt += 1 ))
++				fi
++			done
++			analyze_package_consolidation_result $sched_mc $sched_mc_pass_cnt	
++			
+ 			if [ $hyper_threaded -eq $YES ]; then
+ 				for sched_smt in `seq 0 $max_sched_smt`; do
+-					for work_load in ${work_loads_list}; do
+-                   				: $(( TST_COUNT += 1 ))
+-						sched_mc_smt_pass_cnt=0
+-						for repeat_test in `seq 1  10`; do
+-							# Testcase to validate CPU consolidation for
+-							# for sched_mc & sched_smt with stress=50%
+-							if cpu_consolidation.py -c $sched_mc -t $sched_smt -w $work_load; then
+-								: $(( sched_mc_smt_pass_cnt += 1 ))
+-							fi
+-							echo "sched_mc_smt_pass_cnt = $sched_mc_smt_pass_cnt"
+-						done
+-						analyze_package_consolidation_result $sched_mc $work_load $sched_mc_smt_pass_cnt $sched_smt
++					: $(( TST_COUNT += 1 ))
++					sched_mc_smt_pass_cnt=0
++					for repeat_test in `seq 1  10`; do
++						# Testcase to validate CPU consolidation for
++						# for sched_mc & sched_smt with stress=50%
++						if cpu_consolidation.py -c $sched_mc -t $sched_smt -w $work_load; then
++							: $(( sched_mc_smt_pass_cnt += 1 ))
++						fi
+ 					done
++					analyze_package_consolidation_result $sched_mc $sched_mc_smt_pass_cnt $sched_smt
+ 				done
+ 			fi
+ 		done
++
+ 	fi
+-	if [ $hyper_threaded -eq $YES ]; then
++	if [ $hyper_threaded -eq $YES -a $multi_socket -eq $YES ]; then
+ 		#Testcase to validate consolidation at core level
++		work_load="ebizzy"
+ 		sched_smt_pass_cnt=0
+ 		: $(( TST_COUNT += 1 ))
+ 		stress="thread"
+@@ -259,61 +255,104 @@ if [ $# -gt 0 -a "$1" = "-exclusive" ]; 
+ 			fi
+ 		done
+ 		analyze_core_consolidation_result $sched_smt $work_load $sched_smt_pass_cnt
++
++		# Vary only sched_smt from 1 to 0 when workload is running and ensure that
++		# tasks do not consolidate to single core when sched_smt is set to 0
++		: $(( TST_COUNT += 1 ))
++		if cpu_consolidation.py -vt; then
++			tst_resm TPASS "CPU consolidation test by varying sched_smt"
++		else
++			tst_resm TFAIL "CPU consolidation test by varying sched_smt"
++		fi
+ 	fi
+-        # Verify ILB runs in same package as workload
+-        if [ $multi_socket -eq $YES -a $multi_core -eq $YES ]; then
+-		work_loads_list="ebizzy kernbench"	
++
++	# Verify threads consolidation stops when sched_mc &(/) sched_smt is disabled
++    if [ $multi_socket -eq $YES -a $multi_core -eq $YES ]; then
++		: $(( TST_COUNT += 1 ))
++		# Vary sched_mc from 1 to 0 when workload is running and ensure that
++		# tasks do not consolidate to single package when sched_mc is set to 0
++		if cpu_consolidation.py -v -c 1; then
++            tst_resm TPASS "CPU consolidation test by varying sched_mc 1 to 0"
++        else
++            tst_resm TFAIL "CPU consolidation test by varying sched_mc 1 to 0"
++        fi
++
++		# Vary sched_mc from 2 to 0 when workload is running and ensure that
++        # tasks do not consolidate to single package when sched_mc is set to 0
++		: $(( TST_COUNT += 1 ))
++		if cpu_consolidation.py -v -c 2; then
++			tst_resm TPASS "CPU consolidation test by varying sched_mc 2 to 0"
++		else
++			tst_resm TFAIL "CPU consolidation test by varying sched_mc 2 to 0"
++		fi
++
++		if [ $hyper_threaded -eq $YES ]; then
++			# Vary sched_mc & sched_smt from 1 to 0 & 2 to 0 when workload is running and ensure that
++            # tasks do not consolidate to single package when sched_mc is set to 0
++            : $(( TST_COUNT += 1 ))
++			if cpu_consolidation.py -v -c 1 -t 1; then
++				tst_resm TPASS "CPU consolidation test by varying sched_mc \
++& sched_smt from 1 to 0"
++			else
++				tst_resm TFAIL "CPU consolidation test by varying sched_mc \
++& sched_smt from 1 to 0"
++			fi
++
++			: $(( TST_COUNT += 1 ))
++			if cpu_consolidation.py -v -c 2 -t 2; then
++				tst_resm TPASS "CPU consolidation test by varying sched_mc \
++ & sched_smt from 2 to 0"
++			else
++				tst_resm TFAIL "CPU consolidation test by varying sched_mc \
++ & sched_smt from 2 to 0"
++			fi
++		fi
++	fi
++
++    # Verify threads consolidation stops when is disabled in HT systems
++	if [ $hyper_threaded -eq $YES -a $multi_socket -eq $YES ]; then
++		# Vary only sched_smt from 1 to 0 when workload is running and ensure that
++		# tasks do not consolidate to single core when sched_smt is set to 0
++		: $(( TST_COUNT += 1 ))
++		if cpu_consolidation.py -v -t 1; then
++			tst_resm TPASS "CPU consolidation test by varying sched_smt 1 to 0"
++		else
++			tst_resm TFAIL "CPU consolidation test by varying sched_smt 1 to 0"
++		fi
++	fi
++
++	# Verify ILB runs in same package as workload
++    if [ $multi_socket -eq $YES -a $multi_core -eq $YES ]; then
+ 		for sched_mc in `seq 0 $max_sched_mc`; do
+-			for work_load in ${work_loads_list}
+-			do
+-				: $(( TST_COUNT += 1 ))
+-                                ilb_test.py -c $sched_mc -w $work_load; RC=$?
+-				if [ $RC -eq 0 ]; then
+-					tst_resm TPASS "ILB & workload in same package for sched_mc=$sched_mc"
++			: $(( TST_COUNT += 1 ))
++            ilb_test.py -c $sched_mc; RC=$?
++			if [ $RC -eq 0 ]; then
++				tst_resm TPASS "ILB & workload in same package for sched_mc=$sched_mc"
++			else
++				if [ $sched_mc -eq 0 ]; then
++					tst_resm TPASS "ILB & workload is not in same package when sched_mc=0"
+ 				else
+-					if [ $sched_mc -eq 0 ]; then
+-						tst_resm TPASS "ILB & workload is not in same package when sched_mc=0"
+-					else
+-						tst_resm TFAIL "ILB did not run in same package"
+-					fi
++					tst_resm TFAIL "ILB did not run in same package"
+ 				fi
+-			done
++			fi
+ 			if [ $hyper_threaded -eq $YES ]; then
+ 				for sched_smt in `seq 0 $max_sched_smt`; do
+-					for work_load in ${work_loads_list}; do
+-						: $(( TST_COUNT += 1 ))
+-						ilb_test.py -c $sched_mc -t sched_smt -w $work_load; RC=$?
+- 						if [ $RC -eq 0 ]; then
+-							tst_resm TPASS "ILB & workload in same package for sched_mc=$sched_mc"
++					: $(( TST_COUNT += 1 ))
++					ilb_test.py -c $sched_mc -t sched_smt; RC=$?
++ 					if [ $RC -eq 0 ]; then
++						tst_resm TPASS "ILB & workload in same package for sched_mc=$sched_mc"
++					else
++						if [ $sched_mc -eq 0 -a $sched_smt -eq 0 ]; then
++							tst_resm TPASS "ILB & workload is not in same package when\
++sched_mc & sched_smt is 0"
+ 						else
+-							if [ $sched_mc -eq 0 ]; then
+-								tst_resm TPASS "ILB & workload is not in same package when sched_mc=0"
+-							else
+-								tst_resm TFAIL "ILB did not run in same package"    
+-							fi
++							tst_resm TFAIL "ILB did not run in same package"    
+ 						fi
+-					done
++					fi
+ 				done
+ 			fi
+ 		done
+ 	fi
+-	if [ $multi_socket -eq $YES -a $hyper_threaded -eq $YES -a $multi_core -eq $YES ]; then
+-		for sched_smt in `seq 0 $max_sched_smt`; do
+-			for work_load in ${work_loads_list}; do
+-				: $(( TST_COUNT += 1 ))
+-				ilb_test.py -t $sched_smt -w $work_load; RC=$?
+-				if [ $RC -eq 0 ]; then
+-					tst_resm TPASS "ILB & workload not load not in same package for sched_smt=$sched_smt"
+-				else
+-					if [ $sched_smt -eq 0 ]; then
+-						tst_resm TPASS "Its oky if ILB is not in same package when sched_smt=0"
+-					else
+-						tst_resm TFAIL "ILB did not run in same package"
+-					fi
+-				fi
+-			done
+-		done
+-	fi
+ fi
+ 
+ exit $RC
+
+------------------------------------------------------------------------------
+Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
+http://p.sf.net/sfu/devconf
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
