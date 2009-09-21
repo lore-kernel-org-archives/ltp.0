@@ -1,31 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1MpdH4-0001Fr-PM
-	for ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 07:25:26 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1MpdHQ-0004JE-3f
+	for ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 07:25:48 +0000
+Received: from e38.co.us.ibm.com ([32.97.110.159])
 	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MpdH1-0003cL-Fs
-	for ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 07:25:26 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8L7JmSn012219
-	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 01:19:48 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n8L7PFg1153880
-	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 01:25:15 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n8L7PFDf027360
-	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 01:25:15 -0600
+	(Exim 4.69) id 1MpdHJ-0003eg-6W
+	for ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 07:25:48 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8L7LYpx011789
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 01:21:34 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n8L7PX9A250194
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 01:25:33 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n8L7PWBA007108
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 01:25:33 -0600
 From: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Date: Mon, 21 Sep 2009 12:55:11 +0530
-Message-Id: <20090921072511.7307.49358.sendpatchset@localhost.localdomain>
+Date: Mon, 21 Sep 2009 12:55:29 +0530
+Message-Id: <20090921072529.7307.95690.sendpatchset@localhost.localdomain>
 In-Reply-To: <20090921072444.7307.84825.sendpatchset@localhost.localdomain>
 References: <20090921072444.7307.84825.sendpatchset@localhost.localdomain>
-Subject: [LTP] [Patch 4/6] To include Additional 5 new test cases
+Subject: [LTP] [Patch 6/6] Modified python functions based on requirement
+	for new testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,275 +42,280 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net, arun@linux.vnet.ibm.com, svaidy@linux.vnet.ibm.com, ego@in.ibm.com
 
-Additional 5 new testcases to test cpu consolidation resets when sched_smt &(/)
-sched_mc is reset to zero.
+Fixed some issues that affect verification code of new test scenarios.
 
 Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
 
-diff -uprN ltp-full-20090831/testcases/kernel/power_management/runpwtests.sh ltp-full-20090831_patched/testcases/kernel/power_management/runpwtests.sh
---- ltp-full-20090831/testcases/kernel/power_management/runpwtests.sh	2009-08-31 10:45:45.000000000 +0530
-+++ ltp-full-20090831_patched/testcases/kernel/power_management/runpwtests.sh	2009-09-21 12:28:07.766970834 +0530
-@@ -170,6 +170,7 @@ if [ $? -ne 0 ] ; then
- test cannot run"
- else
- 	get_sched_values sched_mc; max_sched_mc=$?
-+    echo "max sched mc $max_sched_mc"
- 	for sched_mc in `seq 0 $max_sched_mc`; do
- 		: $(( TST_COUNT+=1))
- 		sched_domain.py -c $sched_mc; RC=$?
-@@ -187,15 +188,17 @@ else
- fi
+diff -uprN ltp-full-20090831/testcases/kernel/power_management/lib/sched_mc.py ltp-full-20090831_patched/testcases/kernel/power_management/lib/sched_mc.py
+--- ltp-full-20090831/testcases/kernel/power_management/lib/sched_mc.py	2009-08-31 10:45:45.000000000 +0530
++++ ltp-full-20090831_patched/testcases/kernel/power_management/lib/sched_mc.py	2009-09-21 12:23:17.342934615 +0530
+@@ -21,6 +21,7 @@ cpu_count = 0
+ socket_count = 0
+ cpu1_max_intr = 0
+ cpu2_max_intr = 0
++intr_stat_timer_0 = []
  
- : $(( TST_COUNT+=1))
-+check_kv_arch "timer_migration"; supp=$?
- if [ -f /proc/sys/kernel/timer_migration ]; then
--	if test_timer_migration.sh; then
--        tst_resm TPASS "Timer Migration interface test"
--    else
--        RC=$?
--        tst_resm TFAIL "Timer migration interface test"
--    fi
-+	if [ $supp -eq $YES ]; then
-+		if test_timer_migration.sh; then
-+        	tst_resm TPASS "Timer Migration interface test"
-+    	else
-+        	RC=$?
-+        	tst_resm TFAIL "Timer migration interface test"
-+		fi
-+	fi
- else
--	check_kv_arch "timer_migration"; supp=$? 
- 	if [ $supp -eq $YES ]; then
- 		RC=$?
- 		tst_resm TFAIL "Timer migration interface missing"
-@@ -204,52 +207,45 @@ else
- 	fi
- fi
+ def clear_dmesg():
+     '''
+@@ -177,6 +178,7 @@ def get_proc_loc_count(loc_stats):
+                 for i in range(0, cpu_count):
+                     # To skip LOC
+                     loc_stats.append(data[i+1])
++                    print data[i+1]
+         file_procstat.close()
+     except Exception, details:
+         print "Could not read interrupt statistics", details
+@@ -216,12 +218,7 @@ def set_timer_migration_interface(value)
+         print "Could not set timer_migration to ", value, e
+         sys.exit(1)
  
--: $(( TST_COUNT+=1))	
--if check_cpufreq_sysfs_files.sh; then
--        tst_resm TPASS "CPUFREQ sysfs tests"
--    else
--        RC=$?
--        tst_resm TFAIL "CPUFREQ sysfs tests "
--    fi
--
- if [ $# -gt 0 -a "$1" = "-exclusive" ]; then 
- 	# Test CPU consolidation 
- 	if [ $multi_socket -eq $YES -a $multi_core -eq $YES ]; then
--		work_loads_list="ebizzy kernbench"
- 		for sched_mc in `seq 0 $max_sched_mc`; do
--			for work_load in ${work_loads_list}
--           	do
--				: $(( TST_COUNT += 1 ))
--				sched_mc_pass_cnt=0
--				for repeat_test in `seq 1  10`; do
--					#Testcase to validate CPU consolidation for sched_mc
--					if cpu_consolidation.py -c $sched_mc -w $work_load ; then
--						: $(( sched_mc_pass_cnt += 1 ))
--					fi
--				done
--				analyze_package_consolidation_result $sched_mc $work_load $sched_mc_pass_cnt	
--			done	
-+			: $(( TST_COUNT += 1 ))
-+			sched_mc_pass_cnt=0
-+			if [ $sched_mc -eq 2 ]; then
-+				work_load="kernbench"
-+			else
-+				work_load="ebizzy"
-+			fi
-+			for repeat_test in `seq 1  10`; do
-+				#Testcase to validate CPU consolidation for sched_mc
-+				if cpu_consolidation.py -c $sched_mc -w $work_load ; then
-+					: $(( sched_mc_pass_cnt += 1 ))
-+				fi
-+			done
-+			analyze_package_consolidation_result $sched_mc $sched_mc_pass_cnt	
-+			
- 			if [ $hyper_threaded -eq $YES ]; then
- 				for sched_smt in `seq 0 $max_sched_smt`; do
--					for work_load in ${work_loads_list}; do
--                   				: $(( TST_COUNT += 1 ))
--						sched_mc_smt_pass_cnt=0
--						for repeat_test in `seq 1  10`; do
--							# Testcase to validate CPU consolidation for
--							# for sched_mc & sched_smt with stress=50%
--							if cpu_consolidation.py -c $sched_mc -t $sched_smt -w $work_load; then
--								: $(( sched_mc_smt_pass_cnt += 1 ))
--							fi
--							echo "sched_mc_smt_pass_cnt = $sched_mc_smt_pass_cnt"
--						done
--						analyze_package_consolidation_result $sched_mc $work_load $sched_mc_smt_pass_cnt $sched_smt
-+					: $(( TST_COUNT += 1 ))
-+					sched_mc_smt_pass_cnt=0
-+					for repeat_test in `seq 1  10`; do
-+						# Testcase to validate CPU consolidation for
-+						# for sched_mc & sched_smt with stress=50%
-+						if cpu_consolidation.py -c $sched_mc -t $sched_smt -w $work_load; then
-+							: $(( sched_mc_smt_pass_cnt += 1 ))
-+						fi
- 					done
-+					analyze_package_consolidation_result $sched_mc $sched_mc_smt_pass_cnt $sched_smt
- 				done
- 			fi
- 		done
-+
- 	fi
--	if [ $hyper_threaded -eq $YES ]; then
-+	if [ $hyper_threaded -eq $YES -a $multi_socket -eq $YES ]; then
- 		#Testcase to validate consolidation at core level
-+		work_load="ebizzy"
- 		sched_smt_pass_cnt=0
- 		: $(( TST_COUNT += 1 ))
- 		stress="thread"
-@@ -259,61 +255,104 @@ if [ $# -gt 0 -a "$1" = "-exclusive" ]; 
- 			fi
- 		done
- 		analyze_core_consolidation_result $sched_smt $work_load $sched_smt_pass_cnt
-+
-+		# Vary only sched_smt from 1 to 0 when workload is running and ensure that
-+		# tasks do not consolidate to single core when sched_smt is set to 0
-+		: $(( TST_COUNT += 1 ))
-+		if cpu_consolidation.py -vt; then
-+			tst_resm TPASS "CPU consolidation test by varying sched_smt"
-+		else
-+			tst_resm TFAIL "CPU consolidation test by varying sched_smt"
-+		fi
- 	fi
--        # Verify ILB runs in same package as workload
--        if [ $multi_socket -eq $YES -a $multi_core -eq $YES ]; then
--		work_loads_list="ebizzy kernbench"	
-+
-+	# Verify threads consolidation stops when sched_mc &(/) sched_smt is disabled
-+    if [ $multi_socket -eq $YES -a $multi_core -eq $YES ]; then
-+		: $(( TST_COUNT += 1 ))
-+		# Vary sched_mc from 1 to 0 when workload is running and ensure that
-+		# tasks do not consolidate to single package when sched_mc is set to 0
-+		if cpu_consolidation.py -v -c 1; then
-+            tst_resm TPASS "CPU consolidation test by varying sched_mc 1 to 0"
-+        else
-+            tst_resm TFAIL "CPU consolidation test by varying sched_mc 1 to 0"
-+        fi
-+
-+		# Vary sched_mc from 2 to 0 when workload is running and ensure that
-+        # tasks do not consolidate to single package when sched_mc is set to 0
-+		: $(( TST_COUNT += 1 ))
-+		if cpu_consolidation.py -v -c 2; then
-+			tst_resm TPASS "CPU consolidation test by varying sched_mc 2 to 0"
-+		else
-+			tst_resm TFAIL "CPU consolidation test by varying sched_mc 2 to 0"
-+		fi
-+
-+		if [ $hyper_threaded -eq $YES ]; then
-+			# Vary sched_mc & sched_smt from 1 to 0 & 2 to 0 when workload is running and ensure that
-+            # tasks do not consolidate to single package when sched_mc is set to 0
-+            : $(( TST_COUNT += 1 ))
-+			if cpu_consolidation.py -v -c 1 -t 1; then
-+				tst_resm TPASS "CPU consolidation test by varying sched_mc \
-+& sched_smt from 1 to 0"
-+			else
-+				tst_resm TFAIL "CPU consolidation test by varying sched_mc \
-+& sched_smt from 1 to 0"
-+			fi
-+
-+			: $(( TST_COUNT += 1 ))
-+			if cpu_consolidation.py -v -c 2 -t 2; then
-+				tst_resm TPASS "CPU consolidation test by varying sched_mc \
-+ & sched_smt from 2 to 0"
-+			else
-+				tst_resm TFAIL "CPU consolidation test by varying sched_mc \
-+ & sched_smt from 2 to 0"
-+			fi
-+		fi
-+	fi
-+
-+    # Verify threads consolidation stops when is disabled in HT systems
-+	if [ $hyper_threaded -eq $YES -a $multi_socket -eq $YES ]; then
-+		# Vary only sched_smt from 1 to 0 when workload is running and ensure that
-+		# tasks do not consolidate to single core when sched_smt is set to 0
-+		: $(( TST_COUNT += 1 ))
-+		if cpu_consolidation.py -v -t 1; then
-+			tst_resm TPASS "CPU consolidation test by varying sched_smt 1 to 0"
-+		else
-+			tst_resm TFAIL "CPU consolidation test by varying sched_smt 1 to 0"
-+		fi
-+	fi
-+
-+	# Verify ILB runs in same package as workload
-+    if [ $multi_socket -eq $YES -a $multi_core -eq $YES ]; then
- 		for sched_mc in `seq 0 $max_sched_mc`; do
--			for work_load in ${work_loads_list}
--			do
--				: $(( TST_COUNT += 1 ))
--                                ilb_test.py -c $sched_mc -w $work_load; RC=$?
--				if [ $RC -eq 0 ]; then
--					tst_resm TPASS "ILB & workload in same package for sched_mc=$sched_mc"
-+			: $(( TST_COUNT += 1 ))
-+            ilb_test.py -c $sched_mc; RC=$?
-+			if [ $RC -eq 0 ]; then
-+				tst_resm TPASS "ILB & workload in same package for sched_mc=$sched_mc"
-+			else
-+				if [ $sched_mc -eq 0 ]; then
-+					tst_resm TPASS "ILB & workload is not in same package when sched_mc=0"
- 				else
--					if [ $sched_mc -eq 0 ]; then
--						tst_resm TPASS "ILB & workload is not in same package when sched_mc=0"
--					else
--						tst_resm TFAIL "ILB did not run in same package"
--					fi
-+					tst_resm TFAIL "ILB did not run in same package"
- 				fi
--			done
-+			fi
- 			if [ $hyper_threaded -eq $YES ]; then
- 				for sched_smt in `seq 0 $max_sched_smt`; do
--					for work_load in ${work_loads_list}; do
--						: $(( TST_COUNT += 1 ))
--						ilb_test.py -c $sched_mc -t sched_smt -w $work_load; RC=$?
-- 						if [ $RC -eq 0 ]; then
--							tst_resm TPASS "ILB & workload in same package for sched_mc=$sched_mc"
-+					: $(( TST_COUNT += 1 ))
-+					ilb_test.py -c $sched_mc -t sched_smt; RC=$?
-+ 					if [ $RC -eq 0 ]; then
-+						tst_resm TPASS "ILB & workload in same package for sched_mc=$sched_mc"
-+					else
-+						if [ $sched_mc -eq 0 -a $sched_smt -eq 0 ]; then
-+							tst_resm TPASS "ILB & workload is not in same package when\
-+sched_mc & sched_smt is 0"
- 						else
--							if [ $sched_mc -eq 0 ]; then
--								tst_resm TPASS "ILB & workload is not in same package when sched_mc=0"
--							else
--								tst_resm TFAIL "ILB did not run in same package"    
--							fi
-+							tst_resm TFAIL "ILB did not run in same package"    
- 						fi
--					done
-+					fi
- 				done
- 			fi
- 		done
- 	fi
--	if [ $multi_socket -eq $YES -a $hyper_threaded -eq $YES -a $multi_core -eq $YES ]; then
--		for sched_smt in `seq 0 $max_sched_smt`; do
--			for work_load in ${work_loads_list}; do
--				: $(( TST_COUNT += 1 ))
--				ilb_test.py -t $sched_smt -w $work_load; RC=$?
--				if [ $RC -eq 0 ]; then
--					tst_resm TPASS "ILB & workload not load not in same package for sched_smt=$sched_smt"
--				else
--					if [ $sched_smt -eq 0 ]; then
--						tst_resm TPASS "Its oky if ILB is not in same package when sched_smt=0"
--					else
--						tst_resm TFAIL "ILB did not run in same package"
--					fi
--				fi
--			done
--		done
--	fi
- fi
+-def start_cyclictest():
+-    ''' Trigger cyclictest in background to increase
+-        timer interrupts
+-    '''
+-    
+-def trigger_ebizzy (stress, duration, background, pinned):
++def trigger_ebizzy (sched_smt, stress, duration, background, pinned):
+     ''' Triggers ebizzy workload for sched_mc=1
+         testing
+     '''
+@@ -230,8 +227,6 @@ def trigger_ebizzy (stress, duration, ba
+             threads = get_hyper_thread_count()
+         if stress == "partial":
+             threads = cpu_count / socket_count
+-            if is_hyper_threaded():
+-                threads = threads / get_hyper_thread_count()
+         if stress == "full":
+ 	    threads = cpu_count
+         if stress == "single_job":
+@@ -255,24 +250,30 @@ def trigger_ebizzy (stress, duration, ba
+         if workload_dir != "":
+             new_path = os.path.join(path,"%s" % workload_dir)
+             get_proc_data(stats_start)
++            get_proc_loc_count(intr_start)
+             try:
+                 os.chdir(new_path)
+                 if background == "yes":
+-                    succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null &' % (threads, duration))
++                    succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null &'
++                        % (threads, duration))
+                 else:
+                     if pinned == "yes":
+-                        succ = os.system('taskset -c %s ./ebizzy -t%s -s4096 -S %s >/dev/null' % (cpu_count -1, threads, duration))
++                        succ = os.system('taskset -c %s ./ebizzy -t%s -s4096 -S %s >/dev/null' 
++                            % (cpu_count -1, threads, duration))
+                     else:
+-                        succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null' % (threads, duration))
++                        succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null' 
++                            % (threads, duration))
+          
+                 if succ == 0: 
+                     print "INFO: ebizzy workload triggerd"
+                     os.chdir(olddir)
+-                    get_proc_data(stats_stop)
++                    #Commented bcoz it doesnt make sense to capture it when workload triggered 
++                    #in background
++                    #get_proc_loc_count(intr_stop)
++                    #get_proc_data(stats_stop)
+ 		else:
+                     print "INFO: ebizzy workload triggerd failed"
+                     os.chdir(olddir)
+-                    get_proc_data(stats_stop)
+                     sys.exit(1)
+             except Exception, details:
+                 print "Ebizzy workload trigger failed ", details
+@@ -281,7 +282,7 @@ def trigger_ebizzy (stress, duration, ba
+         print "Ebizzy workload trigger failed ", details
+         sys.exit(1)   
  
- exit $RC
+-def trigger_kernbench (stress, background, pinned):
++def trigger_kernbench (sched_smt, stress, background, pinned):
+     ''' Trigger load on system like kernbench.
+         Copys existing copy of LTP into as LTP2 and then builds it
+         with make -j
+@@ -292,7 +293,7 @@ def trigger_kernbench (stress, backgroun
+ 	    threads = 2
+         if stress == "partial":
+ 	    threads = cpu_count / socket_count
+-            if is_hyper_threaded():
++            if is_hyper_threaded() and int(sched_smt) !=2:
+                 threads = threads / get_hyper_thread_count()
+         if stress == "full":
+             threads = cpu_count
+@@ -326,33 +327,40 @@ def trigger_kernbench (stress, backgroun
+         if linux_source_dir != "":
+             os.chdir(linux_source_dir)
+         else:
+-            print "INFO: Linux kernel source not found. Kernbench cannot be executed"
++            print "INFO: Linux kernel source not found in /root. Workload\
++               Kernbench cannot be executed"
+ 	    sys.exit(1)
+   
+         get_proc_data(stats_start)
+         get_proc_loc_count(intr_start)
+         if pinned == "yes":
+-            os.system ( 'taskset -c %s %s/kernbench -o %s -M -H -n 1 >/dev/null 2>&1' % (cpu_count-1, benchmark_path, threads))
++            os.system ( 'taskset -c %s %s/kernbench -o %s -M -H -n 1 \
++                >/dev/null 2>&1' % (cpu_count-1, benchmark_path, threads))
+         else:
+-            os.system ( '%s/kernbench -o %s -M -H -n 1 >/dev/null 2>&1' % (benchmark_path, threads))
++            if background == "yes":
++                os.system ( '%s/kernbench -o %s -M -H -n 1 >/dev/null 2>&1 &' \
++                    % (benchmark_path, threads))
++            else:
++                os.system ( '%s/kernbench -o %s -M -H -n 1 >/dev/null 2>&1' \
++                    % (benchmark_path, threads))
+         
+         print "INFO: Workload kernbench triggerd"
+         os.chdir(olddir)
+-        get_proc_data(stats_stop)
+-        get_proc_loc_count(intr_stop)
++        #get_proc_data(stats_stop)
++        #get_proc_loc_count(intr_stop)
+     except Exception, details:
+         print "Workload kernbench trigger failed ", details
+         sys.exit(1)
+    
+-def trigger_workld(workload, stress, duration, background, pinned):
++def trigger_workld(sched_smt, workload, stress, duration, background, pinned):
+     ''' Triggers workload passed as argument. Number of threads 
+         triggered is based on stress value.
+     '''
+     try:
+         if workload == "ebizzy":
+-            trigger_ebizzy (stress, duration, background, pinned)
++            trigger_ebizzy (sched_smt, stress, duration, background, pinned)
+         if workload == "kernbench":
+-            trigger_kernbench (stress, background, pinned)
++            trigger_kernbench (sched_smt, stress, background, pinned)
+     except Exception, details:
+         print "INFO: Trigger workload failed", details
+         sys.exit(1)
+@@ -365,6 +373,8 @@ def generate_report():
+     if (not os.path.exists('/procstat')):
+         os.mkdir('/procstat')
+ 
++    get_proc_data(stats_stop)
++
+     reportfile = open('/procstat/cpu-utilisation', 'a')
+     debugfile = open('/procstat/cpu-utilisation.debug', 'a')
+     for l in stats_stop:
+@@ -438,18 +448,40 @@ def generate_report():
+ def generate_loc_intr_report():
+     ''' Generate interrupt report of CPU's
+     '''
+-    if (not os.path.exists('/procstat')):
+-        os.mkdir('/procstat')
++    try:
++        if (not os.path.exists('/procstat')):
++            os.mkdir('/procstat')
+ 
+-    reportfile = open('/procstat/cpu-loc_interrupts', 'a')
+-    print >> reportfile, "=============================================================="
+-    print >> reportfile, "                Local timer interrupt stats                   "
+-    print >> reportfile, "=============================================================="
+-    for i in range(0, cpu_count):
+-        intr_stop[i] =  int(intr_stop[i]) - int(intr_start[i])
+-        print >> reportfile, "CPU%s: %s" %(i, intr_stop[i])
+-    print >> reportfile
+-    reportfile.close()
++        get_proc_loc_count(intr_stop)
++
++        print "Before substracting"
++        for i in range(0, cpu_count):
++            print "CPU",i, intr_start[i], intr_stop[i]
++            reportfile = open('/procstat/cpu-loc_interrupts', 'a')
++            print >> reportfile, "=============================================="
++            print >> reportfile, "     Local timer interrupt stats              "
++            print >> reportfile, "=============================================="
++        for i in range(0, cpu_count):
++            intr_stop[i] =  int(intr_stop[i]) - int(intr_start[i])
++            print >> reportfile, "CPU%s: %s" %(i, intr_stop[i])
++        print >> reportfile
++        reportfile.close()
++    except Exception, details:
++        print "Generating reportfile failed: ", details
++        sys.exit(1)
++
++def record_loc_intr_count():
++    ''' Record Interrupt statistics when timer_migration
++        was disabled
++    '''
++    try:
++        global intr_start, intr_stop
++        for i in range(0, cpu_count):
++            intr_stat_timer_0.append(intr_stop[i]) 
++        intr_start = []
++        intr_stop = []
++    except Exception, details:
++        print "INFO: Record interrupt statistics when timer_migration=0",details 
+ 
+ def expand_range(range_val):
+     '''
+@@ -519,7 +551,7 @@ def validate_cpugrp_map(cpu_group, sched
+                                     if len(cpu_group) == 2 and \
+                                         len(modi_cpu_grp) < len(cpu_group):
+                                         print "INFO:CPUs utilized not in a core"
+-                                        return 0                                        
++                                        return 1                                        
+             print "INFO: CPUs utilized is not in same package or core"
+             return(1)
+ 	else:
+@@ -550,7 +582,8 @@ def verify_sched_domain_dmesg(sched_mc_l
+                     if group_info.find("(") != -1:
+                         openindex=group_info.index("(")
+                         closeindex=group_info.index(")")
+-                        group_info=group_info.replace(group_info[openindex:closeindex+1],"")
++                        group_info=group_info.replace\
++                            (group_info[openindex:closeindex+1],"")
+ 
+                     subgroup = group_info.split()
+                     for j in range(0, len(subgroup)):
+@@ -586,19 +619,20 @@ def validate_cpu_consolidation(work_ld, 
+                     if cpu_id[1] != '':
+                         cpus_utilized.append(int(cpu_id[1]))
+                 else:
+-                    if stats_percentage[l][1] > 50:
++                    if stats_percentage[l][1] > 70:
+                         cpu_id = stats_percentage[l][0].split("cpu")
+                         if cpu_id[1] != '':
+                             cpus_utilized.append(int(cpu_id[1]))
+             else:
+-                if stats_percentage[l][1] > 50:
++                if stats_percentage[l][1] > 70:
+                     cpu_id = stats_percentage[l][0].split("cpu")
+                     if cpu_id[1] != '':
+                         cpus_utilized.append(int(cpu_id[1]))
+                     cpus_utilized.sort()
+         print "INFO: CPU's utilized ", cpus_utilized
+ 
+-        status = validate_cpugrp_map(cpus_utilized, sched_mc_level, sched_smt_level)
++        status = validate_cpugrp_map(cpus_utilized, sched_mc_level, \
++            sched_smt_level)
+         if status == 1:
+             print "INFO: CPUs utilized is not in same package or core"
+         return(status)
+@@ -627,9 +661,9 @@ def get_cpuid_max_intr_count():
+         for i in range(1, cpu_count):
+             if i != cpu1_max_intr and i != cpu2_max_intr:
+                 diff = second_highest - intr_stop[i]
+-                ''' Threshold of difference has to be manipulated with multiple test'''
++                ''' Threshold of difference has to be manipulated '''
+                 if diff < 10000:
+-                    print "INFO: Difference in interrupt count is below threshold"
++                    print "INFO: Diff in interrupt count is below threshold"
+                     return 1
+         print "INFO: Interrupt count in other CPU's low as expected"
+         return 0 
+@@ -652,7 +686,7 @@ def validate_ilb (sched_mc_level, sched_
+     except Exception, details:
+         print "Exception in validate_ilb: ", details
+         sys.exit(1)
+-    
++
+ def reset_schedmc():
+     ''' Routine to reset sched_mc_power_savings to Zero level
+     '''
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
