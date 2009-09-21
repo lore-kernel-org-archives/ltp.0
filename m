@@ -1,22 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hjia@redhat.com>) id 1MkcH9-0001yT-U5
-	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2009 11:20:47 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MkcH5-0002w2-LH
-	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2009 11:20:47 +0000
-Received: from int-mx05.intmail.prod.int.phx2.redhat.com
-	(int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.18])
-	by mx1.redhat.com (8.13.8/8.13.8) with ESMTP id n87BKaVt012703
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Sep 2009 07:20:36 -0400
-Message-ID: <4AA4EC94.6020209@redhat.com>
-Date: Mon, 07 Sep 2009 19:20:52 +0800
-From: Hushan Jia <hjia@redhat.com>
-MIME-Version: 1.0
-Subject: [LTP]  [PATCH] network: Fix ip_tests error
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mpldu-0004Gt-BF
+	for ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 16:21:34 +0000
+Received: from e38.co.us.ibm.com ([32.97.110.159])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Mpldn-00039x-PF
+	for ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 16:21:34 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8LGHL48028038
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 10:17:21 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n8LGLIsi087698
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 10:21:18 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n8LGLHAv021390
+	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 10:21:17 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <20090921072502.7307.58886.sendpatchset@localhost.localdomain>
+References: <20090921072444.7307.84825.sendpatchset@localhost.localdomain>
+	<20090921072502.7307.58886.sendpatchset@localhost.localdomain>
+Date: Mon, 21 Sep 2009 21:50:24 +0530
+Message-Id: <1253550026.6736.24.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [Patch 3/6] To incorporate changes in reusable function
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,112 +41,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, arun@linux.vnet.ibm.com, svaidy@linux.vnet.ibm.com, ego@in.ibm.com
 
-Hi,
+On Mon, 2009-09-21 at 12:55 +0530, Poornima Nayak wrote: 
+> ILB testcase uses trigger workload to pin a task to CPU. This patch is to incorporate the changes in
+> the prototype of function testcase invokes to trigger workload.
+> 
+> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
 
-This patch fix several errors of testcases/network/iproute/ip_test.sh case:
+Thanks.
 
-1. Teset #1:
-ip01        0  TINFO  :  Test #1: changing mtu size of eth0:1 device.
-/mnt/ltp/ltp-full-20090731/testcases/bin/ip_tests.sh: line 198: [: -eq: unary operator expected.
+Regards--
+Subrata
 
-The output of
-ifconfig eth0:1 | grep -i MTU | sed "s/^.*MTU://"
-is like:
-1500  Metric:1
-so should print field 1 instead of field 5.
-
-2. Test #4:
-ip tools now print nud state as follows:
-REACHABLE, STALE, FAILED, etc.
-
-3. Test #3, #4, #5:
-If delete entry successfully, grep will return 1,
-indicating test PASS, so return code RC should be set to 0.
-
-Thanks&  Regards,
-Hushan
-
----
-
-network: Fix ip_tests test case error
-
-Signed-off-by: Hushan Jia<hjia@redhat.com>
-
---- ltp-full-20090831/testcases/network/iproute/ip_tests.sh.orig	2009-09-07 15:20:29.000000000 +0800
-+++ ltp-full-20090831/testcases/network/iproute/ip_tests.sh	2009-09-07 15:32:43.000000000 +0800
-@@ -194,7 +194,7 @@ test01()
-  			"Test #1: ip command failed. Reason: "
-  		return $RC
-  	else
--		MTUSZ=`ifconfig eth0:1 | grep -i MTU | sed "s/^.*MTU://" | awk '{print $5}'`
-+		MTUSZ=`ifconfig eth0:1 | grep -i MTU | sed "s/^.*MTU://" | awk '{print $1}'`
-  		if [ $MTUSZ -eq 300 ]
-  		then
-  			tst_resm TPASS "Test #1: changing mtu size success"
-@@ -310,7 +310,9 @@ test03()
-  				tst_res TFAIL $LTPTMP/tst_ip.err \
-  				"Test #3: ip addr del command failed. Reason: "
-  				return $(($RC+1))
--		fi
-+			else
-+				RC=0
-+			fi
-  		
-  		tst_resm TPASS \
-  			"Test #3: ip addr command tests successful"
-@@ -354,7 +356,7 @@ test04()
-  		 "Test #4: ip neigh show - shows all neighbour entries in arp tables."
-
-  		cat>  $LTPTMP/tst_ip.exp<<-EOF
--		127.0.0.1 dev lo lladdr 00:00:00:00:00:00 nud reachable
-+		127.0.0.1 dev lo lladdr 00:00:00:00:00:00 REACHABLE
-  		EOF
-
-  		ip neigh show 127.0.0.1 | head -n1>$LTPTMP/tst_ip.out 2>&1 || RC=$?
-@@ -384,12 +386,14 @@ test04()
-  				"Test #4: ip neigh del command failed return = $RC. Reason: "
-  			return $RC
-  		else
--			ip neigh show | grep 127.0.0.1 grep -v "nud failed$">$LTPTMP/tst_ip.err 2>&1 || RC=$?
-+			ip neigh show | grep 127.0.0.1 | grep -v " FAILED$">$LTPTMP/tst_ip.err 2>&1 || RC=$?
-  			if [ $RC -eq 0 ]
-  			then
-  				tst_res TFAIL $LTPTMP/tst_ip.err \
-  				"Test #4: 127.0.0.1 still listed in arp. ip cmd Error Message:"
-  				return $(($RC+1))
-+			else
-+				RC=0
-  			fi
-  		fi
-  		
-@@ -482,6 +486,8 @@ test05()
-  				tst_res TFAIL $LTPTMP/tst_ip.err \
-  				"Test #5: route not deleted. ip route show:"
-  				return $(($RC+1))
-+			else
-+				RC=0
-  			fi
-  		fi
-  		
-@@ -570,6 +576,8 @@ test06()
-  				tst_res TFAIL $LTPTMP/tst_ip.err \
-  				"Test #6: 66:66:00:00:00:66 is not deleted. Details:"
-  				return $(($RC+1))
-+			else
-+				RC=0
-  			fi
-  		fi
-  		
-
+> 
+> diff -uprN ltp-full-20090831/testcases/kernel/power_management/ilb_test.py ltp-full-20090831_patched/testcases/kernel/power_management/ilb_test.py
+> --- ltp-full-20090831/testcases/kernel/power_management/ilb_test.py	2009-08-31 10:45:45.000000000 +0530
+> +++ ltp-full-20090831_patched/testcases/kernel/power_management/ilb_test.py	2009-09-21 12:13:26.205934090 +0530
+> @@ -42,13 +42,15 @@ def main(argv=None):
+>          background="no"
+>          duration=60
+>          pinned="yes"
+> -        trigger_workld(options.work_ld, "single_job", duration, background, pinned)
+> +
+> +        trigger_workld(options.smt_level,options.work_ld, "single_job", duration, background, pinned)
+>          generate_loc_intr_report()
+>          status = validate_ilb(options.mc_level, options.smt_level)
+>          reset_schedmc()
+>          if is_hyper_threaded():
+>              reset_schedsmt()
+> -        return(status)        
+> +        return(status)     
+> +   
+>      except Exception, details:
+>          print "INFO: Idle Load Balancer test failed", details
+>          return(1)
+> 
+> ------------------------------------------------------------------------------
+> Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+> is the only developer event you need to attend this year. Jumpstart your
+> developing skills, take BlackBerry mobile applications to market and stay 
+> ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
+> http://p.sf.net/sfu/devconf
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
+http://p.sf.net/sfu/devconf
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
