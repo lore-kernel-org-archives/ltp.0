@@ -1,33 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MlH0Z-0000az-Ov
-	for ltp-list@lists.sourceforge.net; Wed, 09 Sep 2009 06:50:23 +0000
-Received: from e31.co.us.ibm.com ([32.97.110.149])
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <segher@kernel.crashing.org>) id 1MplT4-0007Mi-LF
+	for Ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 16:10:22 +0000
+Received: from gate.crashing.org ([63.228.1.57])
 	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MlH0M-0006c2-TF
-	for ltp-list@lists.sourceforge.net; Wed, 09 Sep 2009 06:50:18 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e31.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n896iCm8022003
-	for <ltp-list@lists.sourceforge.net>; Wed, 9 Sep 2009 00:44:12 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n896o5Ki198686
-	for <ltp-list@lists.sourceforge.net>; Wed, 9 Sep 2009 00:50:05 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n896o5kq018471
-	for <ltp-list@lists.sourceforge.net>; Wed, 9 Sep 2009 00:50:05 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4AA63CD6.2000300@redhat.com>
-References: <4AA63CD6.2000300@redhat.com>
-Date: Wed, 09 Sep 2009 12:19:52 +0530
-Message-Id: <1252478994.5006.10.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] network: fix multicast testcases Makefile
-Reply-To: subrata@linux.vnet.ibm.com
+	(Exim 4.69) id 1MplT0-0001mu-Aj
+	for Ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 16:10:22 +0000
+In-Reply-To: <alpine.LRH.2.00.0909211539520.16077@vixen.sonytel.be>
+References: <alpine.LRH.2.00.0909211539520.16077@vixen.sonytel.be>
+Mime-Version: 1.0 (Apple Message framework v753.1)
+Message-Id: <87FFD936-384D-4A04-AD6D-90BBDD3DAD18@kernel.crashing.org>
+From: Segher Boessenkool <segher@kernel.crashing.org>
+Date: Mon, 21 Sep 2009 18:10:32 +0200
+Subject: Re: [LTP] mmapstress03 weirdness? (fwd)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,83 +27,68 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Hushan Jia <hjia@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Cc: Linux/PPC Development <linuxppc-dev@ozlabs.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux Test Project <Ltp-list@lists.sourceforge.net>
 
-On Tue, 2009-09-08 at 19:15 +0800, Hushan Jia wrote: 
-> Hi,
-> The Makefile of testcases/network/multicast/mc_commo and mc_member do not link binary file and config files to ../../../bin dirs.
-> This patch add the links.
-> 
-> Thanks&  Regards,
-> Hushan
-> 
-> ---
-> 
-> network: Fix multicast testcases Makefile
-> 
-> Signed-off-by: Hushan Jia<hjia@redhat.com>
+>         if (mmap((caddr_t)(1UL << (POINTER_SIZE  - 1)) - pagesize,
+>                 (size_t)((1UL << (POINTER_SIZE - 1)) - pagesize),
+>                 PROT_READ|PROT_WRITE, MAP_ANONYMOUS|MAP_FIXED| 
+> MAP_SHARED, 0, 0)
+>                 != (caddr_t)-1)
 
-Sorry, they fail to apply. Please rebase against the latest CVS snapshot
-and resend:
+> With 32-bit userland, this boils down to:
+>
+> | mmap addr 0x7fff0000 size 0x7fff0000
+> | mmap returned 0x7fff0000
+>
+> i.e. mmap() succeeds,
 
-patching file testcases/network/multicast/mc_commo/Makefile
-Hunk #1 FAILED at 8.
-1 out of 1 hunk FAILED -- saving rejects to file
-testcases/network/multicast/mc_commo/Makefile.rej
-patching file testcases/network/multicast/mc_member/Makefile
-Hunk #1 FAILED at 8.
-1 out of 1 hunk FAILED -- saving rejects to file
-testcases/network/multicast/mc_member/Makefile.rej
+Yes, on a powerpc64 kernel, every 32-bit userspace process has 4GB
+available (well, except the lowest few pages).  The process text sits
+normally at 1M and the shared libs around 256M.
 
-Regards--
-Subrata
+> but (1) the test expects it to fail, so the test returns
+> TFAIL,
 
-> 
-> diff -Nrup ltp-full-20090831.orig/testcases/network/multicast/mc_commo/Makefile ltp-full-20090831/testcases/network/multicast/mc_commo/Makefile
-> --- ltp-full-20090831.orig/testcases/network/multicast/mc_commo/Makefile	2009-08-31 13:16:03.000000000 +0800
-> +++ ltp-full-20090831/testcases/network/multicast/mc_commo/Makefile	2009-09-08 18:45:37.000000000 +0800
-> @@ -8,6 +8,8 @@ all: $(TARGETS)
-> 
->   install:
->   	ln -f mc_commo ../../../bin
-> +	ln -f mc_recv ../../../bin
-> +	ln -f mc_send ../../../bin
-> 
->   clean:
->   	rm -f $(TARGETS)
-> diff -Nrup ltp-full-20090831.orig/testcases/network/multicast/mc_member/Makefile ltp-full-20090831/testcases/network/multicast/mc_member/Makefile
-> --- ltp-full-20090831.orig/testcases/network/multicast/mc_member/Makefile	2009-08-31 13:16:03.000000000 +0800
-> +++ ltp-full-20090831/testcases/network/multicast/mc_member/Makefile	2009-09-08 19:04:40.000000000 +0800
-> @@ -8,6 +8,9 @@ all: $(TARGETS)
-> 
->   install:
->   	ln -f mc_member ../../../bin
-> +	ln -f member ../../../bin
-> +	ln -f ManyGroups ../../../bin
-> +	ln -f TooManyGroups ../../../bin
-> 
->   clean:
->   	rm -f $(TARGETS)
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> trial. Simplify your report design, integration and deployment - and focus on 
-> what you do best, core application coding. Discover what's new with 
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+That's a bug in the test then.
+
+> but (2) ltp-pan still reports that the tests passed?
+
+Sounds like another bug.
+
+> In addition, sometimes mmapstress03 fails due to SEGV. I created a  
+> small test
+> program that just does the above mmap(), and depending on the  
+> distro and what
+> else I print later it crashes with a SEGV, too. Probably this  
+> happens because
+> the mmap() did succeed, and corrupted some existing mappings,
+
+It probably killed the stack, which sits all the way up near 4G.
+
+> JFYI, with 64-bit userland, this boils down to:
+>
+> | mmap addr 0x7fffffffffff0000 size 0x7fffffffffff0000
+> | mmap returned 0xffffffffffffffff
+>
+> i.e. mmap() fails as expected, and the test succeeds.
+
+It tries to map space that is reserved for the kernel (c000...)
+
+> Does all of this sound OK?
+
+Seems to me everything works fine, except the tests themselves.
+
+
+Segher
 
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
+http://p.sf.net/sfu/devconf
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
