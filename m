@@ -2,17 +2,19 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Jacky.Malcles@bull.net>) id 1Mqpaw-0001OM-Oj
-	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2009 14:46:54 +0000
-Received: from ecfrec.frec.bull.fr ([129.183.4.8])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mqpaq-0003dw-SH
-	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2009 14:46:54 +0000
-Message-ID: <4ABB864B.8000801@bull.net>
-Date: Thu, 24 Sep 2009 16:46:35 +0200
-From: Jacky Malcles <Jacky.Malcles@bull.net>
-MIME-Version: 1.0
-Subject: [LTP] fs_di TestCase
+	(envelope-from <benh@kernel.crashing.org>) id 1MptPY-0005NU-Fn
+	for Ltp-list@lists.sourceforge.net; Tue, 22 Sep 2009 00:39:16 +0000
+Received: from gate.crashing.org ([63.228.1.57])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MptPT-0000jy-7k
+	for Ltp-list@lists.sourceforge.net; Tue, 22 Sep 2009 00:39:16 +0000
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+In-Reply-To: <alpine.LRH.2.00.0909211539520.16077@vixen.sonytel.be>
+References: <alpine.LRH.2.00.0909211539520.16077@vixen.sonytel.be>
+Date: Tue, 22 Sep 2009 10:19:41 +1000
+Message-Id: <1253578781.7103.186.camel@pasglop>
+Mime-Version: 1.0
+Subject: Re: [LTP] mmapstress03 weirdness? (fwd)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,65 +24,67 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net
+To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+Cc: Linux/PPC Development <linuxppc-dev@ozlabs.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux Test Project <Ltp-list@lists.sourceforge.net>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-Hi Subrata,
-
-when this TC is ending it removes all directories/files  under /tmp that
-may be embarrassing so,
-if you agree I suggest that it only removes what has to do with the
-TestCase; this is the purpose of the following patch.
-
-Signed-off-by: JACKY MALCLES <Jacky.Malcles@bull.net>
-
-diff -uprN ltp-full-20090831.orig/testcases/kernel/fs/fs_di
-ltp-full-20090831/testcases/kernel/fs/fs_di
-diff -uprN ltp-full-20090831.orig/testcases/kernel/fs/fs_di/fs_di
-ltp-full-20090831/testcases/kernel/fs/fs_di/fs_di
-- --- ltp-full-20090831.orig/testcases/kernel/fs/fs_di/fs_di
-2009-08-31 07:15:46.000000000 +0200
-+++ ltp-full-20090831/testcases/kernel/fs/fs_di/fs_di   2009-09-24
-16:06:05.000000000 +0200
-@@ -95,7 +95,6 @@ $trace_logic
-     if [ "$CLEANUP" = "ON" ]; then
-        rm -rf $TCtmp
-        rm -rf ${TESTFS}
-- -       rm -rf $TMPBASE/*
-         rm -f $TCtmp/testfile*
-     fi
-
-regards,
-- --
- Jacky Malcles    	     B1-403   Email : Jacky.Malcles@bull.net
- Bull SA, 1 rue de Provence, B.P 208, 38432 Echirolles CEDEX, FRANCE
- Tel : 04.76.29.73.14
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iQEVAwUBSruGS3FYHhojb+kFAQILlQgAj+G7Ey6K8EBiskbySOs2VU/MbuI1zv+s
-YnkVVSWj1dx7VMGCYdxvz+xINTunBMeLtomskodYmGkbSS12+012MmlsDHiYf/05
-oybPYxc+6qp+JKQBUBjESdQ2/7YC58pW+uk6AJRinpfjczeozDk49E9EeEd9qtJn
-tlZy72mIscZe4u8nHVferPpMTzA2O5VqQp9Iy34YjYeEob0ttrLiqSMwTtN4RAWK
-DUD/l9FwPgdxBQjwEvtKItKUxB9rMS+Vu6Np1gYGBQYrwFzTm+M2UGwwmdyUCwdM
-yjJQx0SRqImR2ldVg0QbgrAsdwRRfIAkvhWFSCCSQzN67JP3QW84/w==
-=UWZ2
------END PGP SIGNATURE-----
-
-------------------------------------------------------------------------------
-Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-http://p.sf.net/sfu/devconf
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gTW9uLCAyMDA5LTA5LTIxIGF0IDE1OjQwICswMjAwLCBHZWVydCBVeXR0ZXJob2V2ZW4gd3Jv
+dGU6Cgo+IAo+IFdpdGggMzItYml0IHVzZXJsYW5kLCB0aGlzIGJvaWxzIGRvd24gdG86Cj4gCj4g
+fCBtbWFwIGFkZHIgMHg3ZmZmMDAwMCBzaXplIDB4N2ZmZjAwMDAKPiB8IG1tYXAgcmV0dXJuZWQg
+MHg3ZmZmMDAwMAo+IAo+IGkuZS4gbW1hcCgpIHN1Y2NlZWRzLCBidXQgKDEpIHRoZSB0ZXN0IGV4
+cGVjdHMgaXQgdG8gZmFpbCwgc28gdGhlIHRlc3QgcmV0dXJucwo+IFRGQUlMLCBidXQgKDIpIGx0
+cC1wYW4gc3RpbGwgcmVwb3J0cyB0aGF0IHRoZSB0ZXN0cyBwYXNzZWQ/CgpXaGF0IGlzIHRoZSBv
+dXRwdXQgb2YgL3Byb2MvPHBpZD4vbWFwcyBhZnRlciB0aGF0IG1tYXAgPwoKV2l0aCBhIDY0LWJp
+dCBrZXJuZWwsIDMyLWJpdCB1c2Vyc3BhY2UgaGFzIGFjY2VzcyB0byB0aGUgZW50aXJlIDRHCmFk
+ZHJlc3Mgc3BhY2UsIHNvIG1hcHBpbmcgMkctNjRrIGF0IHRoZSAyRy02NGsgcG9pbnQgY2FuIHdv
+cmssIHByb3ZpZGVkCnlvdSBhcmVuJ3Qgb3ZlcmxhcHBpbmcgYW4gZXhpc3RpbmcgbWFwcGluZyBz
+dWNoIGFzIHRoZSBzdGFjay4KCj4gSW4gYWRkaXRpb24sIHNvbWV0aW1lcyBtbWFwc3RyZXNzMDMg
+ZmFpbHMgZHVlIHRvIFNFR1YuIEkgY3JlYXRlZCBhIHNtYWxsIHRlc3QKPiBwcm9ncmFtIHRoYXQg
+anVzdCBkb2VzIHRoZSBhYm92ZSBtbWFwKCksIGFuZCBkZXBlbmRpbmcgb24gdGhlIGRpc3RybyBh
+bmQgd2hhdAo+IGVsc2UgSSBwcmludCBsYXRlciBpdCBjcmFzaGVzIHdpdGggYSBTRUdWLCB0b28u
+IFByb2JhYmx5IHRoaXMgaGFwcGVucyBiZWNhdXNlCj4gdGhlIG1tYXAoKSBkaWQgc3VjY2VlZCwg
+YW5kIGNvcnJ1cHRlZCBzb21lIGV4aXN0aW5nIG1hcHBpbmdzLCBjZnIuIHRoZSBub3Rlcwo+IGZv
+ciBNQVBfRklYRUQ6CgpUaGF0J3MgcG9zc2libGUuCgo+ICAgICAgICBNQVBfRklYRUQKPiAgICAg
+ICAgICAgICAgIERvbuKAmXQgIGludGVycHJldCAgYWRkciAgYXMgIGEgaGludDogcGxhY2UgdGhl
+IG1hcHBpbmcgYXQgZXhhY3RseQo+ICAgICAgICAgICAgICAgdGhhdCBhZGRyZXNzLiAgYWRkciBt
+dXN0IGJlIGEgbXVsdGlwbGUgb2YgdGhlIHBhZ2Ugc2l6ZS4gIElmIHRoZQo+ICAgICAgICAgICAg
+ICAgbWVtb3J5ICByZWdpb24gIHNwZWNpZmllZCAgYnkgYWRkciBhbmQgbGVuIG92ZXJsYXBzIHBh
+Z2VzIG9mIGFueQo+ICAgICAgICAgICAgICAgZXhpc3RpbmcgbWFwcGluZyhzKSwgdGhlbiB0aGUg
+b3ZlcmxhcHBlZCBwYXJ0ICBvZiAgdGhlICBleGlzdGluZwo+ICAgICAgICAgICAgICAgbWFwcGlu
+ZyhzKSAgd2lsbCAgYmUgZGlzY2FyZGVkLiAgSWYgdGhlIHNwZWNpZmllZCBhZGRyZXNzIGNhbm5v
+dAo+ICAgICAgICAgICAgICAgYmUgdXNlZCwgbW1hcCgpIHdpbGwgZmFpbC4gIEJlY2F1c2UgcmVx
+dWlyaW5nICBhICBmaXhlZCAgYWRkcmVzcwo+ICAgICAgICAgICAgICAgZm9yICBhICBtYXBwaW5n
+IGlzIGxlc3MgcG9ydGFibGUsIHRoZSB1c2Ugb2YgdGhpcyBvcHRpb24gaXMgZGlz4oCQCj4gICAg
+ICAgICAgICAgICBjb3VyYWdlZC4KClllYWgsIEkgc3VwcG9zZSB0aGUgdGVzdCBtaWdodCBiZSB3
+aXBpbmcgb3V0IGl0cyBvd24gc3RhY2sgZm9yIGV4YW1wbGUKCklFLiBJIHRoaW5rIHRoYXQgdGVz
+dCBpcyBqdXN0IGJvZ3VzIDotKQoKPiBKRllJLCB3aXRoIDY0LWJpdCB1c2VybGFuZCwgdGhpcyBi
+b2lscyBkb3duIHRvOgo+IAo+IHwgbW1hcCBhZGRyIDB4N2ZmZmZmZmZmZmZmMDAwMCBzaXplIDB4
+N2ZmZmZmZmZmZmZmMDAwMAo+IHwgbW1hcCByZXR1cm5lZCAweGZmZmZmZmZmZmZmZmZmZmYKPiAK
+PiBpLmUuIG1tYXAoKSBmYWlscyBhcyBleHBlY3RlZCwgYW5kIHRoZSB0ZXN0IHN1Y2NlZWRzLgoK
+UmlnaHQgYmVjYXVzZSBvbiA2NC1iaXQgdXNlcnNwYWNlLCB5b3Ugb25seSBhcmUgYWxsb3dlZCBz
+b21ldGhpbmcgbGlrZQoxNlQgb2YgYWRkcmVzcyBzcGFjZS4KCj4gRG9lcyBhbGwgb2YgdGhpcyBz
+b3VuZCBPSz8KPiBUaGFua3MgZm9yIHlvdXIgY29tbWVudHMhCgpZZXMsIEkgdGhpbmsgc28gZmFy
+LCBpdCdzIGp1c3QgYm9ndXMgdGVzdHMgOi0pCgpDaGVlcnMsCkJlbi4KCj4gV2l0aCBraW5kIHJl
+Z2FyZHMsCj4gCj4gR2VlcnQgVXl0dGVyaG9ldmVuCj4gU29mdHdhcmUgQXJjaGl0ZWN0Cj4gVGVj
+aHNvZnQgQ2VudHJlCj4gCj4gVGVjaG5vbG9neSBhbmQgU29mdHdhcmUgQ2VudHJlIEV1cm9wZQo+
+IFRoZSBDb3Jwb3JhdGUgVmlsbGFnZSDCtyBEYSBWaW5jaWxhYW4gNy1EMSDCtyBCLTE5MzUgWmF2
+ZW50ZW0gwrcgQmVsZ2l1bQo+IAo+IFBob25lOiAgICArMzIgKDApMiA3MDAgODQ1Mwo+IEZheDog
+ICAgICArMzIgKDApMiA3MDAgODYyMgo+IEUtbWFpbDogICBHZWVydC5VeXR0ZXJob2V2ZW5Ac29u
+eWNvbS5jb20KPiBJbnRlcm5ldDogaHR0cDovL3d3dy5zb255LWV1cm9wZS5jb20vCj4gCj4gQSBk
+aXZpc2lvbiBvZiBTb255IEV1cm9wZSAoQmVsZ2l1bSkgTi5WLgo+IFZBVCBCRSAwNDEzLjgyNS4x
+NjAgwrcgUlBSIEJydXNzZWxzCj4gRm9ydGlzIMK3IEJJQyBHRUJBQkVCQiDCtyBJQkFOIEJFNDEy
+OTMwMzc2ODAwMTAKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwo+IExpbnV4cHBjLWRldiBtYWlsaW5nIGxpc3QKPiBMaW51eHBwYy1kZXZAbGlzdHMub3ps
+YWJzLm9yZwo+IGh0dHBzOi8vbGlzdHMub3psYWJzLm9yZy9saXN0aW5mby9saW51eHBwYy1kZXYK
+CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ29tZSBidWlsZCB3aXRoIHVzISBUaGUgQmxhY2tCZXJy
+eSZyZWc7IERldmVsb3BlciBDb25mZXJlbmNlIGluIFNGLCBDQQppcyB0aGUgb25seSBkZXZlbG9w
+ZXIgZXZlbnQgeW91IG5lZWQgdG8gYXR0ZW5kIHRoaXMgeWVhci4gSnVtcHN0YXJ0IHlvdXIKZGV2
+ZWxvcGluZyBza2lsbHMsIHRha2UgQmxhY2tCZXJyeSBtb2JpbGUgYXBwbGljYXRpb25zIHRvIG1h
+cmtldCBhbmQgc3RheSAKYWhlYWQgb2YgdGhlIGN1cnZlLiBKb2luIHVzIGZyb20gTm92ZW1iZXIg
+OSYjNDU7MTIsIDIwMDkuIFJlZ2lzdGVyIG5vdyYjMzM7Cmh0dHA6Ly9wLnNmLm5ldC9zZnUvZGV2
+Y29uZgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAt
+bGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8v
+bGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
