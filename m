@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <kiran@linux.vnet.ibm.com>) id 1Moaji-0000tZ-52
-	for ltp-list@lists.sourceforge.net; Fri, 18 Sep 2009 10:30:42 +0000
-Received: from e23smtp01.au.ibm.com ([202.81.31.143])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Moajf-00017M-2s
-	for ltp-list@lists.sourceforge.net; Fri, 18 Sep 2009 10:30:42 +0000
-From: Kiran <kiran@linux.vnet.ibm.com>
-In-Reply-To: <4AB23BCE.4030703@redhat.com>
-References: <1251794259.3881.6.camel@kiran-laptop>
-	<1251875695.4930.8.camel@subratamodak.linux.ibm.com>
-	<1252057746.4698.6.camel@kiran-laptop> <4AB037E4.9000904@redhat.com>
-	<4AB23BCE.4030703@redhat.com>
-Date: Fri, 18 Sep 2009 15:56:25 +0530
-Message-Id: <1253269585.6773.25.camel@kiran-laptop>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Patch to change the format of Steve Rostedt's
- rt-migrate-test testcase
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1Mq23w-0003nj-VA
+	for Ltp-list@lists.sourceforge.net; Tue, 22 Sep 2009 09:53:32 +0000
+Received: from vervifontaine.sonytel.be ([80.88.33.193]
+	helo=pophost.sonytel.be) by 1b2kzd1.ch3.sourceforge.com with esmtp 
+	(Exim 4.69) id 1Mq23q-0004M1-35
+	for Ltp-list@lists.sourceforge.net; Tue, 22 Sep 2009 09:53:32 +0000
+Date: Tue, 22 Sep 2009 11:53:27 +0200 (CEST)
+From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+In-Reply-To: <1253578781.7103.186.camel@pasglop>
+Message-ID: <alpine.LRH.2.00.0909221151550.328@vixen.sonytel.be>
+References: <alpine.LRH.2.00.0909211539520.16077@vixen.sonytel.be>
+	<1253578781.7103.186.camel@pasglop>
+MIME-Version: 1.0
+Subject: Re: [LTP] mmapstress03 weirdness? (fwd)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,627 +25,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jburke@redhat.com
-Cc: ltp-list@lists.sf.net, rostedt <rostedt@goodmis.org>
+To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Linux/PPC Development <linuxppc-dev@ozlabs.org>, Linux Kernel Development <linux-kernel@vger.kernel.org>, Linux Test Project <Ltp-list@lists.sourceforge.net>
 
-On Thu, 2009-09-17 at 09:38 -0400, Jeff Burke wrote:
-> Jeff Burke wrote:
-> > Kiran wrote:
-> >> Hi Subrata,
-> >>
-> >> This patch places the rt-migrate testcase into the
-> >> realtime/func/rt-migrate directory.
-> >>
-> >> Signed-off-by: Kiran Prakash <kiran@linux.vnet.ibm.com>
-> >>
-> > Kiran,
-> >     Did you get a chance to test this on both x86_64 and i386? In my 
-> > stand alone version(Before you ported it to LTP). My results vary quite 
-> > a bit for i386. I have attached two files.
-> > standalone - Is the rt-migrate test results outside of LTP
-> > ltpver - Is the rt-migrate test results ported into LTP
-> > 
-> > Note: The results are from the same system same kernel. The test were 
-> > run back to back.
-> > 
-> Kiran,
-> 	Did you get a chance to review the results?
-> Jeff
-> > Thanks,
-> > Jeff
-> > 
-> 
-Hi Jeff,
-
-The problem was with the way the results were getting displayed. I have
-corrected the problem and tested on i386, x86_64 and ppc. There's little
-difference between the results of the standalone and ltp versions of the
-testcase.
-
-Signed-off-by: Kiran Prakash <kiran@linux.vnet.ibm.com>
-
-diff -Naur ltp-full-20090831_orig/testcases/realtime/func/rt-migrate/Makefile ltp-full-20090831/testcases/realtime/func/rt-migrate/Makefile
---- ltp-full-20090831_orig/testcases/realtime/func/rt-migrate/Makefile	1970-01-01 05:30:00.000000000 +0530
-+++ ltp-full-20090831/testcases/realtime/func/rt-migrate/Makefile	2009-09-18 14:33:42.000000000 +0530
-@@ -0,0 +1,21 @@
-+
-+srcdir := ../..
-+include $(srcdir)/config.mk
-+
-+
-+SRCS    = $(wildcard *.c)
-+
-+ifeq ($(HAVE_PI_MUTEX), yes)
-+TARGETS = $(SRCS:%.c=%)
-+else
-+TARGETS =
-+endif
-+
-+all: $(TARGETS)
-+
-+install:
-+	@set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i; done
-+
-+clean:
-+	rm -f $(TARGETS) *~
-+
-diff -Naur ltp-full-20090831_orig/testcases/realtime/func/rt-migrate/rt-migrate.c ltp-full-20090831/testcases/realtime/func/rt-migrate/rt-migrate.c
---- ltp-full-20090831_orig/testcases/realtime/func/rt-migrate/rt-migrate.c	1970-01-01 05:30:00.000000000 +0530
-+++ ltp-full-20090831/testcases/realtime/func/rt-migrate/rt-migrate.c	2009-09-18 15:49:21.000000000 +0530
-@@ -0,0 +1,507 @@
-+
-+/******************************************************************************
-+ *
-+ * Copyright (C) 2007-2009 Steven Rostedt <srostedt@redhat.com>
-+ *
-+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; version 2 of the License (not later!)
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-+ *
-+ * NAME
-+ *      rt-migrate-test.c
-+ *
-+ * DESCRIPTION
-+ *     This test makes sure that all the high prio tasks that are in the
-+ *     running state are actually running on a CPU if it can.
-+ ** Steps:
-+ *     - Creates N+1 threads with lower real time priorities.
-+ *       Where N is the number of CPUs in the system.
-+ *     - If the thread is high priority, and if a CPU is available, the
-+ *       thread runs on that CPU.
-+ *     - The thread records the start time and the number of ticks in the run
-+ *       interval.
-+ *     - The output indicates if lower prio task is quicker than higher
-+ *       priority task.
-+ *
-+ * USAGE:
-+ *     Use run_auto.sh in the current directory to build and run the test.
-+ *
-+ * AUTHOR
-+ *      Steven Rostedt <srostedt@redhat.com>
-+ *
-+ * HISTORY
-+ *      30 July, 2009: Initial version by Steven Rostedt
-+ *      11 Aug, 2009: Converted the coding style to the one used by the realtime
-+ *                    testcases by Kiran Prakash
-+ *
-+ */
-+#include <stdio.h>
-+#ifndef __USE_XOPEN2K
-+# define __USE_XOPEN2K
-+#endif
-+#include <stdlib.h>
-+#include <string.h>
-+#include <getopt.h>
-+#include <stdarg.h>
-+#include <unistd.h>
-+#include <ctype.h>
-+#include <time.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+#include <signal.h>
-+#include <sys/time.h>
-+#include <linux/unistd.h>
-+#include <sys/syscall.h>
-+#include <errno.h>
-+#include <sched.h>
-+#include <pthread.h>
-+#include <librttest.h>
-+#include <libstats.h>
-+
-+#define gettid() syscall(__NR_gettid)
-+
-+#define VERSION_STRING "V 0.4LTP"
-+
-+int nr_tasks;
-+int lfd;
-+
-+int numcpus;
-+static int mark_fd = -1;
-+static __thread char buff[BUFSIZ+1];
-+
-+static void setup_ftrace_marker(void)
-+{
-+	struct stat st;
-+	char *files[] = {
-+		"/sys/kernel/debug/tracing/trace_marker",
-+		"/debug/tracing/trace_marker",
-+		"/debugfs/tracing/trace_marker",
-+	};
-+	int ret;
-+	int i;
-+
-+	for (i = 0; i < (sizeof(files) / sizeof(char *)); i++) {
-+		ret = stat(files[i], &st);
-+		if (ret >= 0)
-+			goto found;
-+	}
-+	/* todo, check mounts system */
-+	return;
-+found:
-+		mark_fd = open(files[i], O_WRONLY);
-+}
-+
-+static void ftrace_write(const char *fmt, ...)
-+{
-+	va_list ap;
-+	int n;
-+
-+	if (mark_fd < 0)
-+		return;
-+
-+	va_start(ap, fmt);
-+	n = vsnprintf(buff, BUFSIZ, fmt, ap);
-+	va_end(ap);
-+
-+	write(mark_fd, buff, n);
-+}
-+
-+#define INTERVAL 100ULL * NS_PER_MS
-+#define RUN_INTERVAL 20ULL * NS_PER_MS
-+#define NR_RUNS 50
-+#define PRIO_START 2
-+/* 1 millisec off */
-+#define MAX_ERR  1000 * NS_PER_US
-+
-+#define PROGRESS_CHARS 70
-+
-+static unsigned long long interval = INTERVAL;
-+static unsigned long long run_interval = RUN_INTERVAL;
-+static unsigned long long max_err = MAX_ERR;
-+static int nr_runs = NR_RUNS;
-+static int prio_start = PRIO_START;
-+static int check = 1;
-+static int stop;
-+
-+static unsigned long long now;
-+
-+static int done;
-+static int loop;
-+
-+static pthread_barrier_t start_barrier;
-+static pthread_barrier_t end_barrier;
-+stats_container_t *intervals;
-+stats_container_t *intervals_length;
-+stats_container_t *intervals_loops;
-+static long *thread_pids;
-+
-+static void print_progress_bar(int percent)
-+{
-+	int i;
-+	int p;
-+
-+	if (percent > 100)
-+		percent = 100;
-+
-+	/* Use stderr, so we don't capture it */
-+	putc('\r', stderr);
-+	putc('|', stderr);
-+	for (i = 0; i < PROGRESS_CHARS; i++)
-+		putc(' ', stderr);
-+		putc('|', stderr);
-+		putc('\r', stderr);
-+		putc('|', stderr);
-+
-+	p = PROGRESS_CHARS * percent / 100;
-+
-+	for (i = 0; i < p; i++)
-+		putc('-', stderr);
-+
-+	fflush(stderr);
-+}
-+
-+static void usage()
-+{
-+	rt_help();
-+	printf("Usage:\n"
-+		"-a priority Priority of the threads"
-+		"-r time     Run time (ms) to busy loop the threads (20)\n"
-+		"-t time     Sleep time (ms) between intervals (100)\n"
-+		"-e time     Max allowed error (microsecs)\n"
-+		"-l loops    Number of iterations to run (50)\n"
-+		);
-+}
-+
-+static int parse_args(int c, char *v)
-+{
-+	switch (c) {
-+	case 'a': prio_start = atoi(v); break;
-+	case 'r':
-+		run_interval = atoi(v);
-+		break;
-+	case 't': interval = atoi(v); break;
-+	case 'l': nr_runs = atoi(v); break;
-+	case 'e': max_err = atoi(v) * NS_PER_US; break;
-+	case '?':
-+	case 'h':
-+		usage();
-+		exit(0);
-+	}
-+	return 0;
-+}
-+
-+static void record_time(int id, unsigned long long time, unsigned long l)
-+{
-+	unsigned long long ltime;
-+	stats_record_t rec;
-+	if (loop >= nr_runs)
-+		return;
-+	time -= now;
-+	ltime = rt_gettime() / NS_PER_US;
-+	ltime -= now;
-+	rec.x = loop;
-+	rec.y = time;
-+	stats_container_append(&intervals[id], rec);
-+	rec.x = loop;
-+	rec.y = ltime;
-+	stats_container_append(&intervals_length[id], rec);
-+	rec.x = loop;
-+	rec.y = l;
-+	stats_container_append(&intervals_loops[id], rec);
-+}
-+
-+static void print_results(void)
-+{
-+	int i;
-+	int t;
-+	unsigned long long tasks_max[nr_tasks];
-+	unsigned long long tasks_min[nr_tasks];
-+	unsigned long long tasks_avg[nr_tasks];
-+
-+	memset(tasks_max, 0, sizeof(tasks_max[0])*nr_tasks);
-+	memset(tasks_min, 0xff, sizeof(tasks_min[0])*nr_tasks);
-+	memset(tasks_avg, 0, sizeof(tasks_avg[0])*nr_tasks);
-+
-+	printf("Iter: ");
-+	for (t = 0; t < nr_tasks; t++)
-+		printf("%6d  ", t);
-+	printf("\n");
-+
-+	for (t = 0; t < nr_tasks; t++) {
-+		tasks_max[t] = stats_max(&intervals[t]);
-+		tasks_min[t] = stats_min(&intervals[t]);
-+		tasks_avg[t] = stats_avg(&intervals[t]);
-+	}
-+	for (i = 0; i < nr_runs; i++) {
-+		printf("%4d:   ", i);
-+		for (t = 0; t < nr_tasks; t++)
-+			printf("%ld  ", intervals[t].records[i].y);
-+
-+		printf("\n");
-+		printf(" len:   ");
-+		for (t = 0; t < nr_tasks; t++)
-+			printf("%ld  ", intervals_length[t].records[i].y);
-+
-+		printf("\n");
-+		printf(" loops: ");
-+		for (t = 0; t < nr_tasks; t++)
-+			printf("%ld  ", intervals_loops[t].records[i].y);
-+
-+		printf("\n");
-+		printf("\n");
-+	}
-+
-+	printf("Parent pid: %d\n", getpid());
-+
-+	for (t = 0; t < nr_tasks; t++) {
-+		printf(" Task %d (prio %d) (pid %ld):\n", t, t + prio_start,
-+			thread_pids[t]);
-+		printf("   Max: %lld us\n", tasks_max[t]);
-+		printf("   Min: %lld us\n", tasks_min[t]);
-+		printf("   Tot: %lld us\n", tasks_avg[t] * nr_runs);
-+		printf("   Avg: %lld us\n", tasks_avg[t]);
-+		printf("\n");
-+	}
-+
-+	printf(" Result: %s\n", (check < 0) ? "FAIL" : "PASS");
-+}
-+
-+static unsigned long busy_loop(unsigned long long start_time)
-+{
-+	unsigned long long time;
-+	unsigned long l = 0;
-+
-+	do {
-+		l++;
-+		time = rt_gettime();
-+	} while ((time - start_time) < RUN_INTERVAL);
-+
-+	return l;
-+}
-+
-+void *start_task(void *data)
-+{
-+	struct thread *thr = (struct thread *)data;
-+	long id = (long) thr->arg;
-+	thread_pids[id] = gettid();
-+	unsigned long long start_time;
-+	int ret;
-+	int high = 0;
-+	cpu_set_t cpumask;
-+	cpu_set_t save_cpumask;
-+	int cpu = 0;
-+	unsigned long l;
-+	long pid;
-+
-+	ret = sched_getaffinity(0, sizeof(save_cpumask), &save_cpumask);
-+	if (ret < 0)
-+		debug(DBG_ERR, "sched_getaffinity failed: %s\n", strerror(ret));
-+
-+	pid = gettid();
-+
-+	/* Check if we are the highest prio task */
-+	if (id == nr_tasks-1)
-+		high = 1;
-+
-+	while (!done) {
-+		if (high) {
-+		/* rotate around the CPUS */
-+			if (!CPU_ISSET(cpu, &save_cpumask))
-+				cpu = 0;
-+			CPU_ZERO(&cpumask);
-+			CPU_SET(cpu, &cpumask); cpu++;
-+			sched_setaffinity(0, sizeof(cpumask), &cpumask);
-+		}
-+		pthread_barrier_wait(&start_barrier);
-+		start_time = rt_gettime();
-+		ftrace_write("Thread %d: started %lld diff %lld\n",
-+			pid, start_time, start_time - now);
-+		l = busy_loop(start_time);
-+		record_time(id, start_time / NS_PER_US, l);
-+		pthread_barrier_wait(&end_barrier);
-+	}
-+
-+	return (void *)pid;
-+}
-+
-+static int check_times(int l)
-+{
-+	int i;
-+	unsigned long long last;
-+	unsigned long long last_loops;
-+	unsigned long long last_length;
-+
-+	for (i = 0; i < nr_tasks; i++) {
-+		if (i && last < intervals[i].records[l].y &&
-+			((intervals[i].records[l].y - last) > max_err)) {
-+			/*
-+			 * May be a false positive.
-+			 * Make sure that we did more loops
-+			 * our start is before the end
-+			 * and the end should be tested.
-+			 */
-+			if (intervals_loops[i].records[l].y < last_loops ||
-+			intervals[i].records[l].y > last_length ||
-+			 (intervals_length[i].records[l].y > last_length &&
-+			 intervals_length[i].records[l].y - last_length >
-+			 max_err)) {
-+					check = -1;
-+					return 1;
-+			}
-+		}
-+		last = intervals[i].records[l].y;
-+		last_loops = intervals_loops[i].records[l].y;
-+		last_length = intervals_length[i].records[l].y;
-+	}
-+	return 0;
-+}
-+
-+static void stop_log(int sig)
-+{
-+	stop = 1;
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	pthread_t *threads;
-+	long i;
-+	int ret;
-+	struct timespec intv;
-+	struct sched_param param;
-+
-+	rt_init("a:r:t:e:l:h:", parse_args, argc, argv);
-+	signal(SIGINT, stop_log);
-+
-+	if (argc >= (optind + 1))
-+		nr_tasks = atoi(argv[optind]);
-+	else {
-+		numcpus = sysconf(_SC_NPROCESSORS_ONLN);
-+		nr_tasks = numcpus + 1;
-+	}
-+
-+	intervals = malloc(sizeof(stats_container_t) * nr_tasks);
-+	if (!intervals)
-+		debug(DBG_ERR, "malloc failed\n");
-+	memset(intervals, 0, sizeof(stats_container_t) * nr_tasks);
-+
-+	intervals_length = malloc(sizeof(stats_container_t) * nr_tasks);
-+	if (!intervals_length)
-+		debug(DBG_ERR, "malloc failed\n");
-+	memset(intervals_length, 0, sizeof(stats_container_t) * nr_tasks);
-+
-+	if (!intervals_loops)
-+		debug(DBG_ERR, "malloc failed\n");
-+	intervals_loops = malloc(sizeof(stats_container_t) * nr_tasks);
-+	memset(intervals_loops, 0, sizeof(stats_container_t) * nr_tasks);
-+
-+	threads = malloc(sizeof(*threads) * nr_tasks);
-+	if (!threads)
-+		debug(DBG_ERR, "malloc failed\n");
-+	memset(threads, 0, sizeof(*threads) * nr_tasks);
-+
-+	ret = pthread_barrier_init(&start_barrier, NULL, nr_tasks + 1);
-+	ret = pthread_barrier_init(&end_barrier, NULL, nr_tasks + 1);
-+	if (ret < 0)
-+		debug(DBG_ERR, "pthread_barrier_init failed: %s\n",
-+		 strerror(ret));
-+
-+
-+	for (i = 0; i < nr_tasks; i++) {
-+		stats_container_init(&intervals[i], nr_runs);
-+		stats_container_init(&intervals_length[i], nr_runs);
-+		stats_container_init(&intervals_loops[i], nr_runs);
-+	}
-+
-+	thread_pids = malloc(sizeof(long) * nr_tasks);
-+	if (!thread_pids)
-+		debug(DBG_ERR, "malloc thread_pids failed\n");
-+
-+	for (i = 0; i < nr_tasks; i++) {
-+		threads[i] = create_fifo_thread(start_task, (void *)i,
-+			prio_start + i);
-+	}
-+
-+	/*
-+	 * Progress bar uses stderr to let users see it when
-+	 * redirecting output. So we convert stderr to use line
-+	 * buffering so the progress bar doesn't flicker.
-+	 */
-+	setlinebuf(stderr);
-+
-+	/* up our prio above all tasks */
-+	memset(&param, 0, sizeof(param));
-+	param.sched_priority = nr_tasks + prio_start;
-+	if (sched_setscheduler(0, SCHED_FIFO, &param))
-+		debug(DBG_WARN, "Warning, can't set priority of"
-+				"main thread !\n");
-+	intv.tv_sec = INTERVAL / NS_PER_SEC;
-+	intv.tv_nsec = INTERVAL % (1 * NS_PER_SEC);
-+
-+	print_progress_bar(0);
-+
-+	setup_ftrace_marker();
-+
-+	for (loop = 0; loop < nr_runs; loop++) {
-+		unsigned long long end;
-+
-+	now = rt_gettime() / NS_PER_US;
-+
-+	ftrace_write("Loop %d now=%lld\n", loop, now);
-+
-+	pthread_barrier_wait(&start_barrier);
-+
-+	ftrace_write("All running!!!\n");
-+
-+	rt_nanosleep(intv.tv_nsec);
-+	print_progress_bar((loop * 100) / nr_runs);
-+
-+	end = rt_gettime() / NS_PER_US;
-+	ftrace_write("Loop %d end now=%lld diff=%lld\n",
-+			loop, end, end - now);
-+	ret = pthread_barrier_wait(&end_barrier);
-+
-+	if (stop || (check && check_times(loop))) {
-+		loop++;
-+		nr_runs = loop;
-+		break;
-+	}
-+	}
-+	putc('\n', stderr);
-+
-+	pthread_barrier_wait(&start_barrier);
-+	done = 1;
-+	pthread_barrier_wait(&end_barrier);
-+
-+	join_threads();
-+	print_results();
-+
-+	if (stop) {
-+	/*
-+	 * We use this test in bash while loops
-+	 * So if we hit Ctrl-C then let the while
-+	 * loop know to break.
-+	 */
-+	if (check < 0)
-+		exit(-1);
-+	else
-+		exit(1);
-+	}
-+	if (check < 0)
-+		exit(-1);
-+	else
-+		exit(0);
-+
-+	return 0;
-+}
-diff -Naur ltp-full-20090831_orig/testcases/realtime/func/rt-migrate/run_auto.sh ltp-full-20090831/testcases/realtime/func/rt-migrate/run_auto.sh
---- ltp-full-20090831_orig/testcases/realtime/func/rt-migrate/run_auto.sh	1970-01-01 05:30:00.000000000 +0530
-+++ ltp-full-20090831/testcases/realtime/func/rt-migrate/run_auto.sh	2009-09-18 14:33:42.000000000 +0530
-@@ -0,0 +1,12 @@
-+#! /bin/bash
-+
-+profile=${1:-default}
-+
-+cd $(dirname $0) # Move to test directory
-+if [ ! $SCRIPTS_DIR ]; then
-+        # assume we're running standalone
-+        export SCRIPTS_DIR=../../scripts/
-+fi
-+source $SCRIPTS_DIR/setenv.sh
-+# Warning: tests args are now set in profiles
-+$SCRIPTS_DIR/run_c_files.sh $profile rt-migrate
-diff -Naur ltp-full-20090831_orig/testcases/realtime/profiles/default ltp-full-20090831/testcases/realtime/profiles/default
---- ltp-full-20090831_orig/testcases/realtime/profiles/default	2009-08-31 10:45:41.000000000 +0530
-+++ ltp-full-20090831/testcases/realtime/profiles/default	2009-09-18 14:33:42.000000000 +0530
-@@ -60,4 +60,4 @@
- func/pi-tests			testpi-5
- func/pi-tests			testpi-6
- func/pi-tests			sbrk_mutex
--
-+func/rt-migrate			rt-migrate
-
-
-
-
-
-Thanks,
-Kiran
-
-
-
-
-------------------------------------------------------------------------------
-Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-http://p.sf.net/sfu/devconf
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gVHVlLCAyMiBTZXAgMjAwOSwgQmVuamFtaW4gSGVycmVuc2NobWlkdCB3cm90ZToKPiBPbiBN
+b24sIDIwMDktMDktMjEgYXQgMTU6NDAgKzAyMDAsIEdlZXJ0IFV5dHRlcmhvZXZlbiB3cm90ZToK
+PiA+IFdpdGggMzItYml0IHVzZXJsYW5kLCB0aGlzIGJvaWxzIGRvd24gdG86Cj4gPiB8IG1tYXAg
+YWRkciAweDdmZmYwMDAwIHNpemUgMHg3ZmZmMDAwMAo+ID4gfCBtbWFwIHJldHVybmVkIDB4N2Zm
+ZjAwMDAKPiA+IAo+ID4gaS5lLiBtbWFwKCkgc3VjY2VlZHMsIGJ1dCAoMSkgdGhlIHRlc3QgZXhw
+ZWN0cyBpdCB0byBmYWlsLCBzbyB0aGUgdGVzdCByZXR1cm5zCj4gPiBURkFJTCwgYnV0ICgyKSBs
+dHAtcGFuIHN0aWxsIHJlcG9ydHMgdGhhdCB0aGUgdGVzdHMgcGFzc2VkPwo+IAo+IFdoYXQgaXMg
+dGhlIG91dHB1dCBvZiAvcHJvYy88cGlkPi9tYXBzIGFmdGVyIHRoYXQgbW1hcCA/Cgp8IDAwMTAw
+MDAwLTAwMTIwMDAwIHIteHAgMDAxMDAwMDAgMDA6MDAgMCAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBbdmRzb10KfCAwZjQ3MDAwMC0wZjVkMDAwMCByLXhwIDAwMDAwMDAwIDAzOjAz
+IDU2ODUyNTY1ICAgICAgICAgICAgICAgICAgICAgICAgICAgL2xpYi9saWJjLTIuNS5zbwp8IDBm
+NWQwMDAwLTBmNWUwMDAwIHItLXAgMDAxNjAwMDAgMDM6MDMgNTY4NTI1NjUgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAvbGliL2xpYmMtMi41LnNvCnwgMGY1ZTAwMDAtMGY1ZjAwMDAgcnctcCAw
+MDE3MDAwMCAwMzowMyA1Njg1MjU2NSAgICAgICAgICAgICAgICAgICAgICAgICAgIC9saWIvbGli
+Yy0yLjUuc28KfCAwZmZjMDAwMC0wZmZlMDAwMCByLXhwIDAwMDAwMDAwIDAzOjAzIDU2ODUyNDgy
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgL2xpYi9sZC0yLjUuc28KfCAwZmZlMDAwMC0wZmZm
+MDAwMCByLS1wIDAwMDEwMDAwIDAzOjAzIDU2ODUyNDgyICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgL2xpYi9sZC0yLjUuc28KfCAwZmZmMDAwMC0xMDAwMDAwMCBydy1wIDAwMDIwMDAwIDAzOjAz
+IDU2ODUyNDgyICAgICAgICAgICAgICAgICAgICAgICAgICAgL2xpYi9sZC0yLjUuc28KfCAxMDAw
+MDAwMC0xMDAxMDAwMCByLXhwIDAwMDAwMDAwIDAzOjAzIDY1NTcxMTI2ICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgL3RtcC9hLm91dAp8IDEwMDEwMDAwLTEwMDIwMDAwIHJ3LXAgMDAwMDAwMDAg
+MDM6MDMgNjU1NzExMjYgICAgICAgICAgICAgICAgICAgICAgICAgICAvdG1wL2Eub3V0CnwgN2Zm
+ZjAwMDAtZmZmZTAwMDAgcnctcyAwMDAwMDAwMCAwMDowOSA1NTgwODA2ICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIC9kZXYvemVybyAoZGVsZXRlZCkKCkkuZS4gdGhlIGJpZyBtbWFwKCkgdG9v
+ayBvdXQgdGhlIHN0YWNrIG1hcHBpbmcsIHdoaWNoIHdhcyBwcmV2aW91c2x5IGF0OgoKfCBmZmEw
+MDAwMC1mZmI1MDAwMCBydy1wIGZmYTAwMDAwIDAwOjAwIDAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgW3N0YWNrXQoKPiBXaXRoIGEgNjQtYml0IGtlcm5lbCwgMzItYml0IHVzZXJz
+cGFjZSBoYXMgYWNjZXNzIHRvIHRoZSBlbnRpcmUgNEcKPiBhZGRyZXNzIHNwYWNlLCBzbyBtYXBw
+aW5nIDJHLTY0ayBhdCB0aGUgMkctNjRrIHBvaW50IGNhbiB3b3JrLCBwcm92aWRlZAo+IHlvdSBh
+cmVuJ3Qgb3ZlcmxhcHBpbmcgYW4gZXhpc3RpbmcgbWFwcGluZyBzdWNoIGFzIHRoZSBzdGFjay4K
+PiAKPiA+IEluIGFkZGl0aW9uLCBzb21ldGltZXMgbW1hcHN0cmVzczAzIGZhaWxzIGR1ZSB0byBT
+RUdWLiBJIGNyZWF0ZWQgYSBzbWFsbCB0ZXN0Cj4gPiBwcm9ncmFtIHRoYXQganVzdCBkb2VzIHRo
+ZSBhYm92ZSBtbWFwKCksIGFuZCBkZXBlbmRpbmcgb24gdGhlIGRpc3RybyBhbmQgd2hhdAo+ID4g
+ZWxzZSBJIHByaW50IGxhdGVyIGl0IGNyYXNoZXMgd2l0aCBhIFNFR1YsIHRvby4gUHJvYmFibHkg
+dGhpcyBoYXBwZW5zIGJlY2F1c2UKPiA+IHRoZSBtbWFwKCkgZGlkIHN1Y2NlZWQsIGFuZCBjb3Jy
+dXB0ZWQgc29tZSBleGlzdGluZyBtYXBwaW5ncywgY2ZyLiB0aGUgbm90ZXMKPiA+IGZvciBNQVBf
+RklYRUQ6Cj4gCj4gVGhhdCdzIHBvc3NpYmxlLgo+IAo+ID4gICAgICAgIE1BUF9GSVhFRAo+ID4g
+ICAgICAgICAgICAgICBEb27igJl0ICBpbnRlcnByZXQgIGFkZHIgIGFzICBhIGhpbnQ6IHBsYWNl
+IHRoZSBtYXBwaW5nIGF0IGV4YWN0bHkKPiA+ICAgICAgICAgICAgICAgdGhhdCBhZGRyZXNzLiAg
+YWRkciBtdXN0IGJlIGEgbXVsdGlwbGUgb2YgdGhlIHBhZ2Ugc2l6ZS4gIElmIHRoZQo+ID4gICAg
+ICAgICAgICAgICBtZW1vcnkgIHJlZ2lvbiAgc3BlY2lmaWVkICBieSBhZGRyIGFuZCBsZW4gb3Zl
+cmxhcHMgcGFnZXMgb2YgYW55Cj4gPiAgICAgICAgICAgICAgIGV4aXN0aW5nIG1hcHBpbmcocyks
+IHRoZW4gdGhlIG92ZXJsYXBwZWQgcGFydCAgb2YgIHRoZSAgZXhpc3RpbmcKPiA+ICAgICAgICAg
+ICAgICAgbWFwcGluZyhzKSAgd2lsbCAgYmUgZGlzY2FyZGVkLiAgSWYgdGhlIHNwZWNpZmllZCBh
+ZGRyZXNzIGNhbm5vdAo+ID4gICAgICAgICAgICAgICBiZSB1c2VkLCBtbWFwKCkgd2lsbCBmYWls
+LiAgQmVjYXVzZSByZXF1aXJpbmcgIGEgIGZpeGVkICBhZGRyZXNzCj4gPiAgICAgICAgICAgICAg
+IGZvciAgYSAgbWFwcGluZyBpcyBsZXNzIHBvcnRhYmxlLCB0aGUgdXNlIG9mIHRoaXMgb3B0aW9u
+IGlzIGRpc+KAkAo+ID4gICAgICAgICAgICAgICBjb3VyYWdlZC4KPiAKPiBZZWFoLCBJIHN1cHBv
+c2UgdGhlIHRlc3QgbWlnaHQgYmUgd2lwaW5nIG91dCBpdHMgb3duIHN0YWNrIGZvciBleGFtcGxl
+CgpJbmRlZWQuCgo+IElFLiBJIHRoaW5rIHRoYXQgdGVzdCBpcyBqdXN0IGJvZ3VzIDotKQo+IAo+
+ID4gSkZZSSwgd2l0aCA2NC1iaXQgdXNlcmxhbmQsIHRoaXMgYm9pbHMgZG93biB0bzoKPiA+IAo+
+ID4gfCBtbWFwIGFkZHIgMHg3ZmZmZmZmZmZmZmYwMDAwIHNpemUgMHg3ZmZmZmZmZmZmZmYwMDAw
+Cj4gPiB8IG1tYXAgcmV0dXJuZWQgMHhmZmZmZmZmZmZmZmZmZmZmCj4gPiAKPiA+IGkuZS4gbW1h
+cCgpIGZhaWxzIGFzIGV4cGVjdGVkLCBhbmQgdGhlIHRlc3Qgc3VjY2VlZHMuCj4gCj4gUmlnaHQg
+YmVjYXVzZSBvbiA2NC1iaXQgdXNlcnNwYWNlLCB5b3Ugb25seSBhcmUgYWxsb3dlZCBzb21ldGhp
+bmcgbGlrZQo+IDE2VCBvZiBhZGRyZXNzIHNwYWNlLgo+IAo+ID4gRG9lcyBhbGwgb2YgdGhpcyBz
+b3VuZCBPSz8KPiA+IFRoYW5rcyBmb3IgeW91ciBjb21tZW50cyEKPiAKPiBZZXMsIEkgdGhpbmsg
+c28gZmFyLCBpdCdzIGp1c3QgYm9ndXMgdGVzdHMgOi0pCgpUaGFua3MgZm9yIHRoZSBjb25maXJt
+YXRpb24sIFNlZ2hlciBhbmQgQmVuIQoKV2l0aCBraW5kIHJlZ2FyZHMsCgpHZWVydCBVeXR0ZXJo
+b2V2ZW4KU29mdHdhcmUgQXJjaGl0ZWN0ClRlY2hzb2Z0IENlbnRyZQoKVGVjaG5vbG9neSBhbmQg
+U29mdHdhcmUgQ2VudHJlIEV1cm9wZQpUaGUgQ29ycG9yYXRlIFZpbGxhZ2UgwrcgRGEgVmluY2ls
+YWFuIDctRDEgwrcgQi0xOTM1IFphdmVudGVtIMK3IEJlbGdpdW0KClBob25lOiAgICArMzIgKDAp
+MiA3MDAgODQ1MwpGYXg6ICAgICAgKzMyICgwKTIgNzAwIDg2MjIKRS1tYWlsOiAgIEdlZXJ0LlV5
+dHRlcmhvZXZlbkBzb255Y29tLmNvbQpJbnRlcm5ldDogaHR0cDovL3d3dy5zb255LWV1cm9wZS5j
+b20vCgpBIGRpdmlzaW9uIG9mIFNvbnkgRXVyb3BlIChCZWxnaXVtKSBOLlYuClZBVCBCRSAwNDEz
+LjgyNS4xNjAgwrcgUlBSIEJydXNzZWxzCkZvcnRpcyDCtyBCSUMgR0VCQUJFQkIgwrcgSUJBTiBC
+RTQxMjkzMDM3NjgwMDEwCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ29tZSBidWlsZCB3aXRoIHVz
+ISBUaGUgQmxhY2tCZXJyeSZyZWc7IERldmVsb3BlciBDb25mZXJlbmNlIGluIFNGLCBDQQppcyB0
+aGUgb25seSBkZXZlbG9wZXIgZXZlbnQgeW91IG5lZWQgdG8gYXR0ZW5kIHRoaXMgeWVhci4gSnVt
+cHN0YXJ0IHlvdXIKZGV2ZWxvcGluZyBza2lsbHMsIHRha2UgQmxhY2tCZXJyeSBtb2JpbGUgYXBw
+bGljYXRpb25zIHRvIG1hcmtldCBhbmQgc3RheSAKYWhlYWQgb2YgdGhlIGN1cnZlLiBKb2luIHVz
+IGZyb20gTm92ZW1iZXIgOSYjNDU7MTIsIDIwMDkuIFJlZ2lzdGVyIG5vdyYjMzM7Cmh0dHA6Ly9w
+LnNmLm5ldC9zZnUvZGV2Y29uZgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9y
+Z2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1s
+aXN0Cg==
