@@ -1,32 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1MpdHQ-0004JE-3f
-	for ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 07:25:48 +0000
-Received: from e38.co.us.ibm.com ([32.97.110.159])
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1MqJ7M-0007jv-OQ
+	for ltp-list@lists.sourceforge.net; Wed, 23 Sep 2009 04:06:12 +0000
+Received: from e36.co.us.ibm.com ([32.97.110.154])
 	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MpdHJ-0003eg-6W
-	for ltp-list@lists.sourceforge.net; Mon, 21 Sep 2009 07:25:48 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8L7LYpx011789
-	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 01:21:34 -0600
+	(Exim 4.69) id 1MqJ7I-0006f3-2U
+	for ltp-list@lists.sourceforge.net; Wed, 23 Sep 2009 04:06:12 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e36.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8N446kl017679
+	for <ltp-list@lists.sourceforge.net>; Tue, 22 Sep 2009 22:04:06 -0600
 Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n8L7PX9A250194
-	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 01:25:33 -0600
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n8N45kEJ061162
+	for <ltp-list@lists.sourceforge.net>; Tue, 22 Sep 2009 22:05:53 -0600
 Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
 	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n8L7PWBA007108
-	for <ltp-list@lists.sourceforge.net>; Mon, 21 Sep 2009 01:25:33 -0600
-From: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Date: Mon, 21 Sep 2009 12:55:29 +0530
-Message-Id: <20090921072529.7307.95690.sendpatchset@localhost.localdomain>
-In-Reply-To: <20090921072444.7307.84825.sendpatchset@localhost.localdomain>
-References: <20090921072444.7307.84825.sendpatchset@localhost.localdomain>
-Subject: [LTP] [Patch 6/6] Modified python functions based on requirement
-	for new testcase
+	n8N45k1l006898
+	for <ltp-list@lists.sourceforge.net>; Tue, 22 Sep 2009 22:05:46 -0600
+Date: Tue, 22 Sep 2009 23:05:46 -0500
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20090923040546.GC9662@us.ibm.com>
+References: <20090921230644.GA30741@us.ibm.com>
+	<200909221100.42467.vapier@gentoo.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <200909221100.42467.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH RFC] ltp: define and use common clone helpers
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,286 +38,104 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, arun@linux.vnet.ibm.com, svaidy@linux.vnet.ibm.com, ego@in.ibm.com
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: LTP list <ltp-list@lists.sourceforge.net>, Nathan T Lynch <natlynch@us.ibm.com>
 
-Fixed some issues that affect verification code of new test scenarios.
+Quoting Mike Frysinger (vapier@gentoo.org):
+> On Monday 21 September 2009 19:06:44 Serge E. Hallyn wrote:
+> > Define ltp_clone() and ltp_clone_malloc() in libltp, and convert existing
+> > clone usages to them.  (clone04 can't use it bc it wants to pass NULL,
+> > which ltp_clone() will for many arches convert to NULL+stacksize-1).
+> 
+> so have the code handle NULL specially:
+> (stack ? stack + stack_size - 1 : NULL)
 
-Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+<grumble> yeah that occurred to me but I was rebelling against the clone04.c
+code...  But I guess I should.
 
-diff -uprN ltp-full-20090831/testcases/kernel/power_management/lib/sched_mc.py ltp-full-20090831_patched/testcases/kernel/power_management/lib/sched_mc.py
---- ltp-full-20090831/testcases/kernel/power_management/lib/sched_mc.py	2009-08-31 10:45:45.000000000 +0530
-+++ ltp-full-20090831_patched/testcases/kernel/power_management/lib/sched_mc.py	2009-09-21 12:23:17.342934615 +0530
-@@ -21,6 +21,7 @@ cpu_count = 0
- socket_count = 0
- cpu1_max_intr = 0
- cpu2_max_intr = 0
-+intr_stat_timer_0 = []
- 
- def clear_dmesg():
-     '''
-@@ -177,6 +178,7 @@ def get_proc_loc_count(loc_stats):
-                 for i in range(0, cpu_count):
-                     # To skip LOC
-                     loc_stats.append(data[i+1])
-+                    print data[i+1]
-         file_procstat.close()
-     except Exception, details:
-         print "Could not read interrupt statistics", details
-@@ -216,12 +218,7 @@ def set_timer_migration_interface(value)
-         print "Could not set timer_migration to ", value, e
-         sys.exit(1)
- 
--def start_cyclictest():
--    ''' Trigger cyclictest in background to increase
--        timer interrupts
--    '''
--    
--def trigger_ebizzy (stress, duration, background, pinned):
-+def trigger_ebizzy (sched_smt, stress, duration, background, pinned):
-     ''' Triggers ebizzy workload for sched_mc=1
-         testing
-     '''
-@@ -230,8 +227,6 @@ def trigger_ebizzy (stress, duration, ba
-             threads = get_hyper_thread_count()
-         if stress == "partial":
-             threads = cpu_count / socket_count
--            if is_hyper_threaded():
--                threads = threads / get_hyper_thread_count()
-         if stress == "full":
- 	    threads = cpu_count
-         if stress == "single_job":
-@@ -255,24 +250,30 @@ def trigger_ebizzy (stress, duration, ba
-         if workload_dir != "":
-             new_path = os.path.join(path,"%s" % workload_dir)
-             get_proc_data(stats_start)
-+            get_proc_loc_count(intr_start)
-             try:
-                 os.chdir(new_path)
-                 if background == "yes":
--                    succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null &' % (threads, duration))
-+                    succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null &'
-+                        % (threads, duration))
-                 else:
-                     if pinned == "yes":
--                        succ = os.system('taskset -c %s ./ebizzy -t%s -s4096 -S %s >/dev/null' % (cpu_count -1, threads, duration))
-+                        succ = os.system('taskset -c %s ./ebizzy -t%s -s4096 -S %s >/dev/null' 
-+                            % (cpu_count -1, threads, duration))
-                     else:
--                        succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null' % (threads, duration))
-+                        succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null' 
-+                            % (threads, duration))
-          
-                 if succ == 0: 
-                     print "INFO: ebizzy workload triggerd"
-                     os.chdir(olddir)
--                    get_proc_data(stats_stop)
-+                    #Commented bcoz it doesnt make sense to capture it when workload triggered 
-+                    #in background
-+                    #get_proc_loc_count(intr_stop)
-+                    #get_proc_data(stats_stop)
- 		else:
-                     print "INFO: ebizzy workload triggerd failed"
-                     os.chdir(olddir)
--                    get_proc_data(stats_stop)
-                     sys.exit(1)
-             except Exception, details:
-                 print "Ebizzy workload trigger failed ", details
-@@ -281,7 +282,7 @@ def trigger_ebizzy (stress, duration, ba
-         print "Ebizzy workload trigger failed ", details
-         sys.exit(1)   
- 
--def trigger_kernbench (stress, background, pinned):
-+def trigger_kernbench (sched_smt, stress, background, pinned):
-     ''' Trigger load on system like kernbench.
-         Copys existing copy of LTP into as LTP2 and then builds it
-         with make -j
-@@ -292,7 +293,7 @@ def trigger_kernbench (stress, backgroun
- 	    threads = 2
-         if stress == "partial":
- 	    threads = cpu_count / socket_count
--            if is_hyper_threaded():
-+            if is_hyper_threaded() and int(sched_smt) !=2:
-                 threads = threads / get_hyper_thread_count()
-         if stress == "full":
-             threads = cpu_count
-@@ -326,33 +327,40 @@ def trigger_kernbench (stress, backgroun
-         if linux_source_dir != "":
-             os.chdir(linux_source_dir)
-         else:
--            print "INFO: Linux kernel source not found. Kernbench cannot be executed"
-+            print "INFO: Linux kernel source not found in /root. Workload\
-+               Kernbench cannot be executed"
- 	    sys.exit(1)
-   
-         get_proc_data(stats_start)
-         get_proc_loc_count(intr_start)
-         if pinned == "yes":
--            os.system ( 'taskset -c %s %s/kernbench -o %s -M -H -n 1 >/dev/null 2>&1' % (cpu_count-1, benchmark_path, threads))
-+            os.system ( 'taskset -c %s %s/kernbench -o %s -M -H -n 1 \
-+                >/dev/null 2>&1' % (cpu_count-1, benchmark_path, threads))
-         else:
--            os.system ( '%s/kernbench -o %s -M -H -n 1 >/dev/null 2>&1' % (benchmark_path, threads))
-+            if background == "yes":
-+                os.system ( '%s/kernbench -o %s -M -H -n 1 >/dev/null 2>&1 &' \
-+                    % (benchmark_path, threads))
-+            else:
-+                os.system ( '%s/kernbench -o %s -M -H -n 1 >/dev/null 2>&1' \
-+                    % (benchmark_path, threads))
-         
-         print "INFO: Workload kernbench triggerd"
-         os.chdir(olddir)
--        get_proc_data(stats_stop)
--        get_proc_loc_count(intr_stop)
-+        #get_proc_data(stats_stop)
-+        #get_proc_loc_count(intr_stop)
-     except Exception, details:
-         print "Workload kernbench trigger failed ", details
-         sys.exit(1)
-    
--def trigger_workld(workload, stress, duration, background, pinned):
-+def trigger_workld(sched_smt, workload, stress, duration, background, pinned):
-     ''' Triggers workload passed as argument. Number of threads 
-         triggered is based on stress value.
-     '''
-     try:
-         if workload == "ebizzy":
--            trigger_ebizzy (stress, duration, background, pinned)
-+            trigger_ebizzy (sched_smt, stress, duration, background, pinned)
-         if workload == "kernbench":
--            trigger_kernbench (stress, background, pinned)
-+            trigger_kernbench (sched_smt, stress, background, pinned)
-     except Exception, details:
-         print "INFO: Trigger workload failed", details
-         sys.exit(1)
-@@ -365,6 +373,8 @@ def generate_report():
-     if (not os.path.exists('/procstat')):
-         os.mkdir('/procstat')
- 
-+    get_proc_data(stats_stop)
-+
-     reportfile = open('/procstat/cpu-utilisation', 'a')
-     debugfile = open('/procstat/cpu-utilisation.debug', 'a')
-     for l in stats_stop:
-@@ -438,18 +448,40 @@ def generate_report():
- def generate_loc_intr_report():
-     ''' Generate interrupt report of CPU's
-     '''
--    if (not os.path.exists('/procstat')):
--        os.mkdir('/procstat')
-+    try:
-+        if (not os.path.exists('/procstat')):
-+            os.mkdir('/procstat')
- 
--    reportfile = open('/procstat/cpu-loc_interrupts', 'a')
--    print >> reportfile, "=============================================================="
--    print >> reportfile, "                Local timer interrupt stats                   "
--    print >> reportfile, "=============================================================="
--    for i in range(0, cpu_count):
--        intr_stop[i] =  int(intr_stop[i]) - int(intr_start[i])
--        print >> reportfile, "CPU%s: %s" %(i, intr_stop[i])
--    print >> reportfile
--    reportfile.close()
-+        get_proc_loc_count(intr_stop)
-+
-+        print "Before substracting"
-+        for i in range(0, cpu_count):
-+            print "CPU",i, intr_start[i], intr_stop[i]
-+            reportfile = open('/procstat/cpu-loc_interrupts', 'a')
-+            print >> reportfile, "=============================================="
-+            print >> reportfile, "     Local timer interrupt stats              "
-+            print >> reportfile, "=============================================="
-+        for i in range(0, cpu_count):
-+            intr_stop[i] =  int(intr_stop[i]) - int(intr_start[i])
-+            print >> reportfile, "CPU%s: %s" %(i, intr_stop[i])
-+        print >> reportfile
-+        reportfile.close()
-+    except Exception, details:
-+        print "Generating reportfile failed: ", details
-+        sys.exit(1)
-+
-+def record_loc_intr_count():
-+    ''' Record Interrupt statistics when timer_migration
-+        was disabled
-+    '''
-+    try:
-+        global intr_start, intr_stop
-+        for i in range(0, cpu_count):
-+            intr_stat_timer_0.append(intr_stop[i]) 
-+        intr_start = []
-+        intr_stop = []
-+    except Exception, details:
-+        print "INFO: Record interrupt statistics when timer_migration=0",details 
- 
- def expand_range(range_val):
-     '''
-@@ -519,7 +551,7 @@ def validate_cpugrp_map(cpu_group, sched
-                                     if len(cpu_group) == 2 and \
-                                         len(modi_cpu_grp) < len(cpu_group):
-                                         print "INFO:CPUs utilized not in a core"
--                                        return 0                                        
-+                                        return 1                                        
-             print "INFO: CPUs utilized is not in same package or core"
-             return(1)
- 	else:
-@@ -550,7 +582,8 @@ def verify_sched_domain_dmesg(sched_mc_l
-                     if group_info.find("(") != -1:
-                         openindex=group_info.index("(")
-                         closeindex=group_info.index(")")
--                        group_info=group_info.replace(group_info[openindex:closeindex+1],"")
-+                        group_info=group_info.replace\
-+                            (group_info[openindex:closeindex+1],"")
- 
-                     subgroup = group_info.split()
-                     for j in range(0, len(subgroup)):
-@@ -586,19 +619,20 @@ def validate_cpu_consolidation(work_ld, 
-                     if cpu_id[1] != '':
-                         cpus_utilized.append(int(cpu_id[1]))
-                 else:
--                    if stats_percentage[l][1] > 50:
-+                    if stats_percentage[l][1] > 70:
-                         cpu_id = stats_percentage[l][0].split("cpu")
-                         if cpu_id[1] != '':
-                             cpus_utilized.append(int(cpu_id[1]))
-             else:
--                if stats_percentage[l][1] > 50:
-+                if stats_percentage[l][1] > 70:
-                     cpu_id = stats_percentage[l][0].split("cpu")
-                     if cpu_id[1] != '':
-                         cpus_utilized.append(int(cpu_id[1]))
-                     cpus_utilized.sort()
-         print "INFO: CPU's utilized ", cpus_utilized
- 
--        status = validate_cpugrp_map(cpus_utilized, sched_mc_level, sched_smt_level)
-+        status = validate_cpugrp_map(cpus_utilized, sched_mc_level, \
-+            sched_smt_level)
-         if status == 1:
-             print "INFO: CPUs utilized is not in same package or core"
-         return(status)
-@@ -627,9 +661,9 @@ def get_cpuid_max_intr_count():
-         for i in range(1, cpu_count):
-             if i != cpu1_max_intr and i != cpu2_max_intr:
-                 diff = second_highest - intr_stop[i]
--                ''' Threshold of difference has to be manipulated with multiple test'''
-+                ''' Threshold of difference has to be manipulated '''
-                 if diff < 10000:
--                    print "INFO: Difference in interrupt count is below threshold"
-+                    print "INFO: Diff in interrupt count is below threshold"
-                     return 1
-         print "INFO: Interrupt count in other CPU's low as expected"
-         return 0 
-@@ -652,7 +686,7 @@ def validate_ilb (sched_mc_level, sched_
-     except Exception, details:
-         print "Exception in validate_ilb: ", details
-         sys.exit(1)
--    
-+
- def reset_schedmc():
-     ''' Routine to reset sched_mc_power_savings to Zero level
-     '''
+> > +ltp_clone(unsigned long clone_flags, void *stack, int stack_size,
+> > +		int (*fn)(void *arg), void *arg)
+> > +{
+> > +	int ret;
+> > +
+> > +#if defined(__hppa__)
+> > +	ret = clone(fn, stack, clone_flags, arg);
+> > +#elif defined(__ia64__)
+> > +	ret = clone2(fn, stack, stack_size, clone_flags, arg, NULL, NULL, NULL);
+> > +#else
+> > +	ret = clone(fn, stack + stack_size - 1, clone_flags, arg);
+> > +#endif
+> > +
+> > +	if (ret == -1)
+> > +		perror("clone");
+> 
+> we cant be sure why the higher layers are calling clone.  maybe the args given 
+> expect the clone() call to fail.  so we dont want any perror() invocation 
+> here.
+
+Makes sense.
+
+> > +/***********************************************************************
+> > + * ltp_clone_malloc: also does the memory allocation for clone.
+> > + * Experience thus far suggests that one page is often insufficient,
+> > + * while 4*getpagesize() seems adequate.
+> > + ***********************************************************************/
+> 
+> a malloc() function implies you should be giving it a size.  i think there 
+> should be another helper here.
+> ltp_clone_malloc() - takes a size
+> ltp_clone_quick() - calls ltp_clone_malloc() with getpagesize() * 4
+> 
+> or a better name than "quick" ...
+> 
+> > +int
+> > +ltp_clone_malloc(unsigned long clone_flags, int (*fn)(void *arg), void
+> >  *arg)
+> 
+> i think argument order should be consistent.  i.e. have all ltp_clone_* calls 
+> start with (flags, func, arg) and then the malloc/etc... calls can add on 
+> (..., size) and (..., size, buffer).
+
+makes sense.
+
+> > +	void *stack = malloc (stack_size);
+> 
+> no spacing around function calls
+> 
+> > +	if (!stack) {
+> > +		perror("malloc");
+> > +		return -1;
+> > +	}
+> 
+> since people are linking in -lltp to get these clone helpers, we can assume 
+> the tst_* funcs exist.  so this should invoke one of them with TBROK|TERRNO.
+
+True.
+
+> > +	ret = ltp_clone(clone_flags, stack, stack_size, fn, arg);
+> > +
+> > +	if (ret == -1) {
+> > +		perror("clone");
+> > +		free(stack);
+> > +	}
+> 
+> same issue as the other func -- dont call perror()
+> 
+> i think we should make sure to save/restore errno across the free() invocation 
+> so that the caller gets the result from clone() ...
+
+Good point.
+
+> otherwise this looks great.  thanks for doing the footwork here.
+> -mike
+
+Will hopefully whip up a new patch later this week and resend.
+
+thanks,
+-serge
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
