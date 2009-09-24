@@ -1,18 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <liubo-fnst@cn.fujitsu.com>) id 1MkuN0-00027T-EZ
-	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2009 06:40:02 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MkuMj-0004bH-Jm
-	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2009 06:39:52 +0000
-Message-ID: <4AA5FC62.2020503@cn.fujitsu.com>
-Date: Tue, 08 Sep 2009 14:40:34 +0800
-From: liubo <liubo-fnst@cn.fujitsu.com>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chandru@in.ibm.com>) id 1MqiIw-0007Jh-Fq
+	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2009 06:59:50 +0000
+Received: from e28smtp09.in.ibm.com ([59.145.155.9])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MqiIr-0005UP-Nc
+	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2009 06:59:50 +0000
+Received: from d28relay05.in.ibm.com (d28relay05.in.ibm.com [9.184.220.62])
+	by e28smtp09.in.ibm.com (8.14.3/8.13.1) with ESMTP id n8O6rEa4012021
+	for <ltp-list@lists.sourceforge.net>; Thu, 24 Sep 2009 12:23:14 +0530
+Received: from d28av03.in.ibm.com (d28av03.in.ibm.com [9.184.220.65])
+	by d28relay05.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n8O6xYjJ1925282
+	for <ltp-list@lists.sourceforge.net>; Thu, 24 Sep 2009 12:29:34 +0530
+Received: from d28av03.in.ibm.com (loopback [127.0.0.1])
+	by d28av03.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	n8O6xY8E031830
+	for <ltp-list@lists.sourceforge.net>; Thu, 24 Sep 2009 16:59:34 +1000
+Received: from guara.localnet (guara-009124035039.in.ibm.com [9.124.35.39])
+	by d28av03.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVin) with ESMTP id
+	n8O6xYxj031827
+	for <ltp-list@lists.sourceforge.net>; Thu, 24 Sep 2009 16:59:34 +1000
+From: Chandru <chandru@in.ibm.com>
+Date: Thu, 24 Sep 2009 12:29:32 +0530
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] cpuctl of controllers: fix the bug of while loop
+Content-Disposition: inline
+Message-Id: <200909241229.32866.chandru@in.ibm.com>
+Subject: [LTP] [PATCH] ppoll01: add signal() syscall to register the signal
+	handler
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,183 +42,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sf.net
+To: ltp-list@lists.sourceforge.net
 
-When running the ltp tool by "./runltp -f controllers",
-I found "while" loop cannot stop in following files of
-cpuctl test.
+The ppoll01 testcase has a signal handler in it but this signal handler is not registered with the kernel through the signal() syscal. The testcase fails when it sends a SIGINT to itself as part of one of the case of the test run.
+The following patch
+1. Adds a signal() syscall to register the signal handler
+2. Corrects the expected 'revents' for the case where ppoll() is called on a file which is only opened in read/write mode, i.e case00.
+3. Takes away printing the type of error ( i.e strerror(errno) ) since it only prints the last error seen and does not report the failures seen in the cases before the last failed one. The reporting of NG or OK shoudl take care of 
+    letting the user know the cases that have passed and cases that have failed.
 
-File list:
-cpuctl_def_task01.c
-cpuctl_def_task02.c
-cpuctl_def_task03.c
-cpuctl_def_task04.c
-cpuctl_test01.c
-cpuctl_test02.c
-cpuctl_test03.c
-cpuctl_test04.c
-
-Key code:
-timer_expired=0;
-while(!timer_expired)
-	f=sqrt(f*f);
-
-Reason:
-During the compilation of these files, gcc's O2 mechanism
-  causes the change of variable "timer_expired" to be omitted,
-hence the loop, "while(!timer_expired) f=sqrt(f*f);" cannot
-get out from itself.
-
-Change the type of "timer_expired" from "int" to "volatile int"
-to fix this bug.
-
-By the way, it is necessary to modify the file,
-ltp-full-xxxxxxxx/testcases/kernel/controllers/libcontrollers/
-libcontrollers.h for compilation.
-
-
-Signed-off-by: Miao Xie <miaox@cn.fujitsu.com>
-Signed-off-by: Liu Bo <liubo-fnst@cn.fujitsu.com>
+Signed-off-by: Chandru S <chandru@linux.vnet.ibm.com>
 ---
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c 
-b/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
-index 00a25bc..1fb398a 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
-@@ -82,7 +82,7 @@ extern void cleanup()
-         kill(scriptpid, SIGUSR1);/* Inform the shell to do cleanup*/
-         tst_exit();             /* Report exit status*/
-  }
--int timer_expired = 0;
-+volatile int timer_expired = 0;
 
-  int main(int argc, char *argv[])
-  {
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c 
-b/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
-index 1bfa187..56ddacc 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
-@@ -79,7 +79,7 @@ cleanup()
-         tst_exit();             /* Report exit status*/
-  }
-
--int timer_expired = 0;
-+volatile int timer_expired = 0;
-
-  int main(int argc, char *argv[])
-  {
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c 
-b/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
-index e4ce3ad..4f3ddc1 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
-@@ -79,7 +79,7 @@ cleanup()
-         tst_exit();               /* Report exit status*/
-  }
-
--int timer_expired = 0;
-+volatile int timer_expired = 0;
-
-  int main(int argc, char *argv[])
-  {
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c 
-b/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
-index 15e2b5f..7f184c8 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
-@@ -78,7 +78,7 @@ cleanup()
-         tst_exit();               /* Report exit status*/
-  }
-
--int timer_expired = 0;
-+volatile int timer_expired = 0;
-
-  int main(int argc, char *argv[])
-  {
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test01.c 
-b/testcases/kernel/controllers/cpuctl/cpuctl_test01.c
-index ab0a4c9..7d7cc48 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_test01.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_test01.c
-@@ -80,7 +80,7 @@ cleanup()
-         kill (scriptpid, SIGUSR1);/* Inform the shell to do cleanup*/
-         tst_exit ();            /* Report exit status*/
-  }
--int timer_expired = 0;
-+volatile int timer_expired = 0;
-
-  int main(int argc, char* argv[])
-  {
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test02.c 
-b/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
-index 801716d..153a293 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
-@@ -80,7 +80,7 @@ cleanup()
-  }
-
-  int migrate_task ();
--int timer_expired = 0;
-+volatile int timer_expired = 0;
-
-  int main(int argc, char* argv[])
-  {
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test03.c 
-b/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
-index c4b9978..c21b69c 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
-@@ -79,7 +79,7 @@ cleanup()
-         tst_exit ();              /* Report exit status*/
-  }
-
--int timer_expired = 0;
-+volatile int timer_expired = 0;
-
-  int main(int argc, char* argv[])
-  {
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test04.c 
-b/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
-index b0a2329..ed00b0d 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
-@@ -79,7 +79,7 @@ cleanup()
-         tst_exit ();              /* Report exit status*/
-  }
-
--int timer_expired = 0;
-+volatile int timer_expired = 0;
-
-  int main(int argc, char* argv[])
-  {
-diff --git 
-a/testcases/kernel/controllers/libcontrollers/libcontrollers.h 
-b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
-index 777ff67..e6ab6a0 100644
---- a/testcases/kernel/controllers/libcontrollers/libcontrollers.h
-+++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
-@@ -48,7 +48,8 @@ char fullpath[PATH_MAX];
-  char fullpath[1024]; /* Guess */
-  #endif
-
--int FLAG, timer_expired;
-+int FLAG;
-+volatile int timer_expired;
-
-  int retval;
-
-
-
-
+--- ppoll01.c.orig	2009-09-22 19:22:39.371235396 +0530
++++ ppoll01.c	2009-09-24 01:24:38.706487228 +0530
+@@ -106,6 +106,8 @@ extern void cleanup() {
+         tst_exit();
+ }
+ 
++void sighandler(int sig);       /* signals handler function for the test */
++
+ /* Local  Functions */
+ /******************************************************************************/
+ /*                                                                            */
+@@ -125,7 +127,8 @@ extern void cleanup() {
+ /*                                                                            */
+ /******************************************************************************/
+ void setup() {
+-        /* Capture signals if any */
++        /* Capture signals*/
++	signal(SIGINT, &sighandler);
+         /* Create temporary directories */
+         TEST_PAUSE;
+         tst_tmpdir();
+@@ -191,7 +194,7 @@ struct test_case {
+ static struct test_case tcase[] = {
+ 	{ // case00
+                 .ttype          = NORMAL,
+-                .expect_revents = POLLOUT,
++                .expect_revents = POLLOUT | POLLIN,
+                 .ret            = 0,
+                 .err            = 0,
+         },
+@@ -463,7 +466,7 @@ int main(int ac, char **av) {
+ 		                break;
+ 
+ 	        default:
+-                 	   	tst_resm(TFAIL, "%s failed - errno = %d : %s", TCID, TEST_ERRNO, strerror(TEST_ERRNO));
++                 	   	tst_resm(TFAIL, "%s failed", TCID);
+         		        RPRINTF("NG");
+ 				cleanup();
+ 				tst_exit();
 
 
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
+http://p.sf.net/sfu/devconf
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
