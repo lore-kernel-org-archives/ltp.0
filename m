@@ -1,33 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MnwGM-0003Fk-LO
-	for Ltp-list@lists.sourceforge.net; Wed, 16 Sep 2009 15:17:42 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MnwGE-0005Ro-RY
-	for Ltp-list@lists.sourceforge.net; Wed, 16 Sep 2009 15:17:42 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e8.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8GFGfYU008867
-	for <Ltp-list@lists.sourceforge.net>; Wed, 16 Sep 2009 11:16:41 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n8GFHQjc181306
-	for <Ltp-list@lists.sourceforge.net>; Wed, 16 Sep 2009 11:17:26 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n8GFHQlw017249
-	for <Ltp-list@lists.sourceforge.net>; Wed, 16 Sep 2009 11:17:26 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <alpine.LRH.2.00.0909151728510.29741@vixen.sonytel.be>
-References: <alpine.LRH.2.00.0909151728510.29741@vixen.sonytel.be>
-Date: Wed, 16 Sep 2009 20:47:18 +0530
-Message-Id: <1253114238.6343.32.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] quotactl01: Replace hardcoded 258
-	by	__NR_set_tid_address
-Reply-To: subrata@linux.vnet.ibm.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <Jacky.Malcles@bull.net>) id 1Mqpaw-0001OM-Oj
+	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2009 14:46:54 +0000
+Received: from ecfrec.frec.bull.fr ([129.183.4.8])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Mqpaq-0003dw-SH
+	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2009 14:46:54 +0000
+Message-ID: <4ABB864B.8000801@bull.net>
+Date: Thu, 24 Sep 2009 16:46:35 +0200
+From: Jacky Malcles <Jacky.Malcles@bull.net>
+MIME-Version: 1.0
+Subject: [LTP] fs_di TestCase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,38 +25,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Cc: Linux Test Project <Ltp-list@lists.sourceforge.net>
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net
 
-On Tue, 2009-09-15 at 17:29 +0200, Geert Uytterhoeven wrote: 
-> The call signature seems to match the set_tid_address() syscall.
-> Also remove the comment about calling quotactl, as it's obviously bogus.
-> 
-> Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Thanks.
+Hi Subrata,
 
-Regards--
-Subrata
+when this TC is ending it removes all directories/files  under /tmp that
+may be embarrassing so,
+if you agree I suggest that it only removes what has to do with the
+TestCase; this is the purpose of the following patch.
 
-> ---
->  testcases/kernel/syscalls/quotactl/quotactl01.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/quotactl/quotactl01.c b/testcases/kernel/syscalls/quotactl/quotactl01.c
-> index fe8df33..f410948 100644
-> --- a/testcases/kernel/syscalls/quotactl/quotactl01.c
-> +++ b/testcases/kernel/syscalls/quotactl/quotactl01.c
-> @@ -152,7 +152,7 @@ int main(int ac, char **av) {
->          			tst_resm(TPASS, "quotactl call succeeded");
->                          }
->                  }
-> -	             TEST(result = syscall(258, &newtid));     //call quotactl()
-> +	             TEST(result = syscall(__NR_set_tid_address, &newtid));
->                       if(TEST_RETURN == getpid()) {
->                          cleanup();
->                       }
+Signed-off-by: JACKY MALCLES <Jacky.Malcles@bull.net>
 
+diff -uprN ltp-full-20090831.orig/testcases/kernel/fs/fs_di
+ltp-full-20090831/testcases/kernel/fs/fs_di
+diff -uprN ltp-full-20090831.orig/testcases/kernel/fs/fs_di/fs_di
+ltp-full-20090831/testcases/kernel/fs/fs_di/fs_di
+- --- ltp-full-20090831.orig/testcases/kernel/fs/fs_di/fs_di
+2009-08-31 07:15:46.000000000 +0200
++++ ltp-full-20090831/testcases/kernel/fs/fs_di/fs_di   2009-09-24
+16:06:05.000000000 +0200
+@@ -95,7 +95,6 @@ $trace_logic
+     if [ "$CLEANUP" = "ON" ]; then
+        rm -rf $TCtmp
+        rm -rf ${TESTFS}
+- -       rm -rf $TMPBASE/*
+         rm -f $TCtmp/testfile*
+     fi
+
+regards,
+- --
+ Jacky Malcles    	     B1-403   Email : Jacky.Malcles@bull.net
+ Bull SA, 1 rue de Provence, B.P 208, 38432 Echirolles CEDEX, FRANCE
+ Tel : 04.76.29.73.14
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.5 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iQEVAwUBSruGS3FYHhojb+kFAQILlQgAj+G7Ey6K8EBiskbySOs2VU/MbuI1zv+s
+YnkVVSWj1dx7VMGCYdxvz+xINTunBMeLtomskodYmGkbSS12+012MmlsDHiYf/05
+oybPYxc+6qp+JKQBUBjESdQ2/7YC58pW+uk6AJRinpfjczeozDk49E9EeEd9qtJn
+tlZy72mIscZe4u8nHVferPpMTzA2O5VqQp9Iy34YjYeEob0ttrLiqSMwTtN4RAWK
+DUD/l9FwPgdxBQjwEvtKItKUxB9rMS+Vu6Np1gYGBQYrwFzTm+M2UGwwmdyUCwdM
+yjJQx0SRqImR2ldVg0QbgrAsdwRRfIAkvhWFSCCSQzN67JP3QW84/w==
+=UWZ2
+-----END PGP SIGNATURE-----
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
