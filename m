@@ -1,18 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hjia@redhat.com>) id 1MlvQn-0003M6-2j
-	for ltp-list@lists.sourceforge.net; Fri, 11 Sep 2009 02:00:09 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <avagin@gmail.com>) id 1Mrg3H-0000Wa-DW
+	for ltp-list@lists.sourceforge.net; Sat, 26 Sep 2009 22:47:39 +0000
+Received: from fg-out-1718.google.com ([72.14.220.156])
 	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MlvQa-0006sd-9D
-	for ltp-list@lists.sourceforge.net; Fri, 11 Sep 2009 02:00:04 +0000
-Message-ID: <4AA9AF1A.5090505@redhat.com>
-Date: Fri, 11 Sep 2009 09:59:54 +0800
-From: Hushan Jia <hjia@redhat.com>
+	id 1Mrg38-00013s-QZ
+	for ltp-list@lists.sourceforge.net; Sat, 26 Sep 2009 22:47:39 +0000
+Received: by fg-out-1718.google.com with SMTP id d23so1154635fga.10
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 26 Sep 2009 15:47:23 -0700 (PDT)
+Message-ID: <4ABE99F9.7000907@parallels.com>
+Date: Sun, 27 Sep 2009 02:47:21 +0400
+From: Vagin Andrew <avagin@gmail.com>
 MIME-Version: 1.0
-Subject: [LTP]  [PATCH] network: fix multicast testcases Makefile
+References: <1253964859-23928-1-git-send-email-avagin@gmail.com>
+	<364299f40909261429k75a74d3ej709c42e5e207c548@mail.gmail.com>
+In-Reply-To: <364299f40909261429k75a74d3ej709c42e5e207c548@mail.gmail.com>
+Subject: Re: [LTP] [PATCH 1/3] fsstress: fix memory leaks
+Reply-To: avagin@parallels.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,54 +32,106 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
+On 09/27/2009 01:29 AM, Garrett Cooper wrote:
 
-Hi,
-Repost the multicast Makefile patch:
-The Makefile of testcases/network/multicast/mc_commo and mc_member do not link binary file and config files to ../../../bin dirs.
-This patch add the links.
+Thanks for your comments, I resent all patches.
 
-Thanks&  Regards,
-Hushan
+> On Sat, Sep 26, 2009 at 4:34 AM, Andrew Vagin<avagin@gmail.com>  wrote:
+>    
+>> ==11424== 156 bytes in 1 blocks are definitely lost in loss record 2 of 2
+>> ==11424==    at 0x4A0763E: malloc (vg_replace_malloc.c:207)
+>> ==11424==    by 0x402E4C: make_freq_table (fsstress.c:986)
+>> ==11424==    by 0x401C26: main (fsstress.c:410)
+>>
+>> make_freq_table is executed on each iterations, but freq_table is not
+>> changed during test, so this patch moves it from the loop
+>> ---
+>>   testcases/kernel/fs/fsstress/fsstress.c |   30 ++++++++++++++++--------------
+>>   1 files changed, 16 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
+>> index 1f11f6e..3df0ce5 100644
+>> --- a/testcases/kernel/fs/fsstress/fsstress.c
+>> +++ b/testcases/kernel/fs/fsstress/fsstress.c
+>> @@ -375,21 +375,24 @@ int main(int argc, char **argv)
+>>                         break;
+>>                 }
+>>         }
+>> -        while ( (loopcntr<= loops) || (loops == 0) )
+>> -        {
+>> -               if (no_xfs&&  errtag) {
+>> -                       fprintf(stderr, "error injection only works on XFS\n");
+>> -                       exit(1);
+>> -               }
+>>
+>> -               if (no_xfs) {
+>> -                       int i;
+>> -                       for (i = 0; ops+i<  ops_end; ++i) {
+>> -                               if (ops[i].isxfs)
+>> -                                       ops[i].freq = 0;
+>> -                       }
+>> +       if (no_xfs&&  errtag) {
+>> +               fprintf(stderr, "error injection only works on XFS\n");
+>> +               exit(1);
+>> +       }
+>> +
+>> +       if (no_xfs) {
+>> +               int i;
+>> +               for (i = 0; ops+i<  ops_end; ++i) {
+>> +                       if (ops[i].isxfs)
+>> +                               ops[i].freq = 0;
+>>                 }
+>> -
+>> +       }
+>> +
+>> +       make_freq_table();
+>> +
+>> +        while ( (loopcntr<= loops) || (loops == 0) )
+>> +        {
+>>                         if (!dirname) {
+>>                         /* no directory specified */
+>>                         if (!nousage) usage();
+>> @@ -407,7 +410,6 @@ int main(int argc, char **argv)
+>>                         maxfsize = (off64_t)MAXFSIZE32;
+>>                 else
+>>                         maxfsize = (off64_t)MAXFSIZE;
+>> -               make_freq_table();
+>>                 dcache_init();
+>>                 setlinebuf(stdout);
+>>                 if (!seed) {
+>> --
+>> 1.6.2.5
+>>      
+> Andrew,
+>      Please use tabs instead of spaces for indentation. Run
+> checkpatch.pl after everything's said and done to validate style.
+> Thanks,
+> -Garrett
+>
+> ------------------------------------------------------------------------------
+> Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+> is the only developer event you need to attend this year. Jumpstart your
+> developing skills, take BlackBerry mobile applications to market and stay
+> ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
+> http://p.sf.net/sfu/devconf
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>
+>
+>    
 
----
-
-network: Fix multicast testcases Makefile
-
-Signed-off-by: Hushan Jia<hjia@redhat.com>
-
-
-
---- ltp/testcases/network/multicast/mc_commo/Makefile.orig	2009-09-09 19:00:32.000000000 +0800
-+++ ltp/testcases/network/multicast/mc_commo/Makefile	2009-09-09 19:02:26.000000000 +0800
-@@ -8,6 +8,8 @@ all: $(TARGETS)
- 
- install:
- 	ln -f mc_commo ../../../bin
-+	ln -f mc_recv ../../../bin
-+	ln -f mc_send ../../../bin
- 
- clean:
- 	rm -f $(TARGETS)
---- ltp/testcases/network/multicast/mc_member/Makefile.orig	2009-09-09 19:00:52.000000000 +0800
-+++ ltp/testcases/network/multicast/mc_member/Makefile	2009-09-09 19:02:00.000000000 +0800
-@@ -8,6 +8,9 @@ all: $(TARGETS)
- 
- install:
- 	ln -f mc_member ../../../bin
-+	ln -f member ../../../bin
-+	ln -f ManyGroups ../../../bin
-+	ln -f TooManyGroups ../../../bin
- 
- clean:
- 	rm -f $(TARGETS)
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
+http://p.sf.net/sfu/devconf
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
