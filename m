@@ -1,36 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1Ms7Uc-0003E3-Cj
-	for ltp-list@lists.sourceforge.net; Mon, 28 Sep 2009 04:05:42 +0000
-Received: from e33.co.us.ibm.com ([32.97.110.151])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Ms7UU-0005KD-Hn
-	for ltp-list@lists.sourceforge.net; Mon, 28 Sep 2009 04:05:42 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e33.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8S43DP2026877
-	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 22:03:13 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n8S45Sjd211006
-	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 22:05:28 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n8S45SWQ009567
-	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 22:05:28 -0600
-Date: Sun, 27 Sep 2009 22:56:00 -0500
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20090928035600.GA24437@us.ibm.com>
-References: <20090921230644.GA30741@us.ibm.com>
-	<200909221100.42467.vapier@gentoo.org>
-	<20090923040546.GC9662@us.ibm.com>
-	<1254075344.10457.30.camel@subratamodak.linux.ibm.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1254075344.10457.30.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] [PATCH RFC] ltp: define and use common clone helpers
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <avagin@gmail.com>) id 1MrVXy-00069l-O8
+	for ltp-list@lists.sourceforge.net; Sat, 26 Sep 2009 11:34:38 +0000
+Received: from fg-out-1718.google.com ([72.14.220.154])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MrVXq-0004e3-9l
+	for ltp-list@lists.sourceforge.net; Sat, 26 Sep 2009 11:34:38 +0000
+Received: by fg-out-1718.google.com with SMTP id e21so396723fga.10
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 26 Sep 2009 04:34:24 -0700 (PDT)
+From: Andrew Vagin <avagin@gmail.com>
+Date: Sat, 26 Sep 2009 15:34:17 +0400
+Message-Id: <1253964859-23928-1-git-send-email-avagin@gmail.com>
+Subject: [LTP] [PATCH 1/3] fsstress: fix memory leaks
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,80 +24,85 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>, Nathan T Lynch <natlynch@us.ibm.com>, Mike Frysinger <vapier@gentoo.org>
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net
 
-UXVvdGluZyBTdWJyYXRhIE1vZGFrIChzdWJyYXRhQGxpbnV4LnZuZXQuaWJtLmNvbSk6Cj4gT24g
-VHVlLCAyMDA5LTA5LTIyIGF0IDIzOjA1IC0wNTAwLCBTZXJnZSBFLiBIYWxseW4gd3JvdGU6IAo+
-ID4gUXVvdGluZyBNaWtlIEZyeXNpbmdlciAodmFwaWVyQGdlbnRvby5vcmcpOgo+ID4gPiBPbiBN
-b25kYXkgMjEgU2VwdGVtYmVyIDIwMDkgMTk6MDY6NDQgU2VyZ2UgRS4gSGFsbHluIHdyb3RlOgo+
-ID4gPiA+IERlZmluZSBsdHBfY2xvbmUoKSBhbmQgbHRwX2Nsb25lX21hbGxvYygpIGluIGxpYmx0
-cCwgYW5kIGNvbnZlcnQgZXhpc3RpbmcKPiA+ID4gPiBjbG9uZSB1c2FnZXMgdG8gdGhlbS4gIChj
-bG9uZTA0IGNhbid0IHVzZSBpdCBiYyBpdCB3YW50cyB0byBwYXNzIE5VTEwsCj4gPiA+ID4gd2hp
-Y2ggbHRwX2Nsb25lKCkgd2lsbCBmb3IgbWFueSBhcmNoZXMgY29udmVydCB0byBOVUxMK3N0YWNr
-c2l6ZS0xKS4KPiA+ID4gCj4gPiA+IHNvIGhhdmUgdGhlIGNvZGUgaGFuZGxlIE5VTEwgc3BlY2lh
-bGx5Ogo+ID4gPiAoc3RhY2sgPyBzdGFjayArIHN0YWNrX3NpemUgLSAxIDogTlVMTCkKPiA+IAo+
-ID4gPGdydW1ibGU+IHllYWggdGhhdCBvY2N1cnJlZCB0byBtZSBidXQgSSB3YXMgcmViZWxsaW5n
-IGFnYWluc3QgdGhlIGNsb25lMDQuYwo+ID4gY29kZS4uLiAgQnV0IEkgZ3Vlc3MgSSBzaG91bGQu
-Cj4gPiAKPiA+ID4gPiArbHRwX2Nsb25lKHVuc2lnbmVkIGxvbmcgY2xvbmVfZmxhZ3MsIHZvaWQg
-KnN0YWNrLCBpbnQgc3RhY2tfc2l6ZSwKPiA+ID4gPiArCQlpbnQgKCpmbikodm9pZCAqYXJnKSwg
-dm9pZCAqYXJnKQo+ID4gPiA+ICt7Cj4gPiA+ID4gKwlpbnQgcmV0Owo+ID4gPiA+ICsKPiA+ID4g
-PiArI2lmIGRlZmluZWQoX19ocHBhX18pCj4gPiA+ID4gKwlyZXQgPSBjbG9uZShmbiwgc3RhY2ss
-IGNsb25lX2ZsYWdzLCBhcmcpOwo+ID4gPiA+ICsjZWxpZiBkZWZpbmVkKF9faWE2NF9fKQo+ID4g
-PiA+ICsJcmV0ID0gY2xvbmUyKGZuLCBzdGFjaywgc3RhY2tfc2l6ZSwgY2xvbmVfZmxhZ3MsIGFy
-ZywgTlVMTCwgTlVMTCwgTlVMTCk7Cj4gPiA+ID4gKyNlbHNlCj4gPiA+ID4gKwlyZXQgPSBjbG9u
-ZShmbiwgc3RhY2sgKyBzdGFja19zaXplIC0gMSwgY2xvbmVfZmxhZ3MsIGFyZyk7Cj4gPiA+ID4g
-KyNlbmRpZgo+ID4gPiA+ICsKPiA+ID4gPiArCWlmIChyZXQgPT0gLTEpCj4gPiA+ID4gKwkJcGVy
-cm9yKCJjbG9uZSIpOwo+ID4gPiAKPiA+ID4gd2UgY2FudCBiZSBzdXJlIHdoeSB0aGUgaGlnaGVy
-IGxheWVycyBhcmUgY2FsbGluZyBjbG9uZS4gIG1heWJlIHRoZSBhcmdzIGdpdmVuIAo+ID4gPiBl
-eHBlY3QgdGhlIGNsb25lKCkgY2FsbCB0byBmYWlsLiAgc28gd2UgZG9udCB3YW50IGFueSBwZXJy
-b3IoKSBpbnZvY2F0aW9uIAo+ID4gPiBoZXJlLgo+ID4gCj4gPiBNYWtlcyBzZW5zZS4KPiA+IAo+
-ID4gPiA+ICsvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioKPiA+ID4gPiArICogbHRwX2Nsb25lX21hbGxvYzogYWxz
-byBkb2VzIHRoZSBtZW1vcnkgYWxsb2NhdGlvbiBmb3IgY2xvbmUuCj4gPiA+ID4gKyAqIEV4cGVy
-aWVuY2UgdGh1cyBmYXIgc3VnZ2VzdHMgdGhhdCBvbmUgcGFnZSBpcyBvZnRlbiBpbnN1ZmZpY2ll
-bnQsCj4gPiA+ID4gKyAqIHdoaWxlIDQqZ2V0cGFnZXNpemUoKSBzZWVtcyBhZGVxdWF0ZS4KPiA+
-ID4gPiArICoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqLwo+ID4gPiAKPiA+ID4gYSBtYWxsb2MoKSBmdW5jdGlvbiBp
-bXBsaWVzIHlvdSBzaG91bGQgYmUgZ2l2aW5nIGl0IGEgc2l6ZS4gIGkgdGhpbmsgdGhlcmUgCj4g
-PiA+IHNob3VsZCBiZSBhbm90aGVyIGhlbHBlciBoZXJlLgo+ID4gPiBsdHBfY2xvbmVfbWFsbG9j
-KCkgLSB0YWtlcyBhIHNpemUKPiA+ID4gbHRwX2Nsb25lX3F1aWNrKCkgLSBjYWxscyBsdHBfY2xv
-bmVfbWFsbG9jKCkgd2l0aCBnZXRwYWdlc2l6ZSgpICogNAo+ID4gPiAKPiA+ID4gb3IgYSBiZXR0
-ZXIgbmFtZSB0aGFuICJxdWljayIgLi4uCj4gPiA+IAo+ID4gPiA+ICtpbnQKPiA+ID4gPiArbHRw
-X2Nsb25lX21hbGxvYyh1bnNpZ25lZCBsb25nIGNsb25lX2ZsYWdzLCBpbnQgKCpmbikodm9pZCAq
-YXJnKSwgdm9pZAo+ID4gPiA+ICAqYXJnKQo+ID4gPiAKPiA+ID4gaSB0aGluayBhcmd1bWVudCBv
-cmRlciBzaG91bGQgYmUgY29uc2lzdGVudC4gIGkuZS4gaGF2ZSBhbGwgbHRwX2Nsb25lXyogY2Fs
-bHMgCj4gPiA+IHN0YXJ0IHdpdGggKGZsYWdzLCBmdW5jLCBhcmcpIGFuZCB0aGVuIHRoZSBtYWxs
-b2MvZXRjLi4uIGNhbGxzIGNhbiBhZGQgb24gCj4gPiA+ICguLi4sIHNpemUpIGFuZCAoLi4uLCBz
-aXplLCBidWZmZXIpLgo+ID4gCj4gPiBtYWtlcyBzZW5zZS4KPiA+IAo+ID4gPiA+ICsJdm9pZCAq
-c3RhY2sgPSBtYWxsb2MgKHN0YWNrX3NpemUpOwo+ID4gPiAKPiA+ID4gbm8gc3BhY2luZyBhcm91
-bmQgZnVuY3Rpb24gY2FsbHMKPiA+ID4gCj4gPiA+ID4gKwlpZiAoIXN0YWNrKSB7Cj4gPiA+ID4g
-KwkJcGVycm9yKCJtYWxsb2MiKTsKPiA+ID4gPiArCQlyZXR1cm4gLTE7Cj4gPiA+ID4gKwl9Cj4g
-PiA+IAo+ID4gPiBzaW5jZSBwZW9wbGUgYXJlIGxpbmtpbmcgaW4gLWxsdHAgdG8gZ2V0IHRoZXNl
-IGNsb25lIGhlbHBlcnMsIHdlIGNhbiBhc3N1bWUgCj4gPiA+IHRoZSB0c3RfKiBmdW5jcyBleGlz
-dC4gIHNvIHRoaXMgc2hvdWxkIGludm9rZSBvbmUgb2YgdGhlbSB3aXRoIFRCUk9LfFRFUlJOTy4K
-PiA+IAo+ID4gVHJ1ZS4KPiA+IAo+ID4gPiA+ICsJcmV0ID0gbHRwX2Nsb25lKGNsb25lX2ZsYWdz
-LCBzdGFjaywgc3RhY2tfc2l6ZSwgZm4sIGFyZyk7Cj4gPiA+ID4gKwo+ID4gPiA+ICsJaWYgKHJl
-dCA9PSAtMSkgewo+ID4gPiA+ICsJCXBlcnJvcigiY2xvbmUiKTsKPiA+ID4gPiArCQlmcmVlKHN0
-YWNrKTsKPiA+ID4gPiArCX0KPiA+ID4gCj4gPiA+IHNhbWUgaXNzdWUgYXMgdGhlIG90aGVyIGZ1
-bmMgLS0gZG9udCBjYWxsIHBlcnJvcigpCj4gPiA+IAo+ID4gPiBpIHRoaW5rIHdlIHNob3VsZCBt
-YWtlIHN1cmUgdG8gc2F2ZS9yZXN0b3JlIGVycm5vIGFjcm9zcyB0aGUgZnJlZSgpIGludm9jYXRp
-b24gCj4gPiA+IHNvIHRoYXQgdGhlIGNhbGxlciBnZXRzIHRoZSByZXN1bHQgZnJvbSBjbG9uZSgp
-IC4uLgo+ID4gCj4gPiBHb29kIHBvaW50Lgo+ID4gCj4gPiA+IG90aGVyd2lzZSB0aGlzIGxvb2tz
-IGdyZWF0LiAgdGhhbmtzIGZvciBkb2luZyB0aGUgZm9vdHdvcmsgaGVyZS4KPiA+ID4gLW1pa2UK
-PiA+IAo+ID4gV2lsbCBob3BlZnVsbHkgd2hpcCB1cCBhIG5ldyBwYXRjaCBsYXRlciB0aGlzIHdl
-ZWsgYW5kIHJlc2VuZC4KPiAKPiBTZXJnZSwKPiAKPiBJcyB0aGlzIG9uIGl0xZsgd2F5IG91dCA7
-LSkKCk5vIEkgZGlkbid0IGdldCBhIGNoYW5jZSBsYXN0IHdlZWsuCgotc2VyZ2UKCi0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLQpDb21lIGJ1aWxkIHdpdGggdXMhIFRoZSBCbGFja0JlcnJ5JnJlZzsgRGV2
-ZWxvcGVyIENvbmZlcmVuY2UgaW4gU0YsIENBCmlzIHRoZSBvbmx5IGRldmVsb3BlciBldmVudCB5
-b3UgbmVlZCB0byBhdHRlbmQgdGhpcyB5ZWFyLiBKdW1wc3RhcnQgeW91cgpkZXZlbG9waW5nIHNr
-aWxscywgdGFrZSBCbGFja0JlcnJ5IG1vYmlsZSBhcHBsaWNhdGlvbnMgdG8gbWFya2V0IGFuZCBz
-dGF5IAphaGVhZCBvZiB0aGUgY3VydmUuIEpvaW4gdXMgZnJvbSBOb3ZlbWJlciA5JiM0NTsxMiwg
-MjAwOS4gUmVnaXN0ZXIgbm93JiMzMzsKaHR0cDovL3Auc2YubmV0L3NmdS9kZXZjb25mCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxp
-bmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3Vy
-Y2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+==11424== 156 bytes in 1 blocks are definitely lost in loss record 2 of 2
+==11424==    at 0x4A0763E: malloc (vg_replace_malloc.c:207)
+==11424==    by 0x402E4C: make_freq_table (fsstress.c:986)
+==11424==    by 0x401C26: main (fsstress.c:410)
+
+make_freq_table is executed on each iterations, but freq_table is not
+changed during test, so this patch moves it from the loop
+---
+ testcases/kernel/fs/fsstress/fsstress.c |   30 ++++++++++++++++--------------
+ 1 files changed, 16 insertions(+), 14 deletions(-)
+
+diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
+index 1f11f6e..3df0ce5 100644
+--- a/testcases/kernel/fs/fsstress/fsstress.c
++++ b/testcases/kernel/fs/fsstress/fsstress.c
+@@ -375,21 +375,24 @@ int main(int argc, char **argv)
+ 			break;
+ 		}
+ 	}
+-        while ( (loopcntr <= loops) || (loops == 0) )
+-        {
+-		if (no_xfs && errtag) {
+-			fprintf(stderr, "error injection only works on XFS\n");
+-			exit(1);
+-		}
+ 
+-		if (no_xfs) {
+-			int i;
+-			for (i = 0; ops+i < ops_end; ++i) {
+-				if (ops[i].isxfs)
+-					ops[i].freq = 0;
+-			}
++	if (no_xfs && errtag) {
++		fprintf(stderr, "error injection only works on XFS\n");
++		exit(1);
++	}
++
++	if (no_xfs) {
++		int i;
++		for (i = 0; ops+i < ops_end; ++i) {
++			if (ops[i].isxfs)
++				ops[i].freq = 0;
+ 		}
+-       
++	}
++
++	make_freq_table();
++
++        while ( (loopcntr <= loops) || (loops == 0) )
++        {
+        	 	if (!dirname) {
+        	     	/* no directory specified */
+     	        	if (!nousage) usage();
+@@ -407,7 +410,6 @@ int main(int argc, char **argv)
+ 			maxfsize = (off64_t)MAXFSIZE32;
+ 		else
+ 			maxfsize = (off64_t)MAXFSIZE;
+-		make_freq_table();
+ 		dcache_init();
+ 		setlinebuf(stdout);
+ 		if (!seed) {
+-- 
+1.6.2.5
+
+
+------------------------------------------------------------------------------
+Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
+http://p.sf.net/sfu/devconf
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
