@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MiwJx-0001eI-5I
-	for ltp-list@lists.sourceforge.net; Wed, 02 Sep 2009 20:20:45 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MiwJs-0000p1-Fo
-	for ltp-list@lists.sourceforge.net; Wed, 02 Sep 2009 20:20:45 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Wed, 2 Sep 2009 16:13:38 -0400
-References: <20090902141027.GA13905@us.ibm.com>
-In-Reply-To: <20090902141027.GA13905@us.ibm.com>
-MIME-Version: 1.0
-Message-Id: <200909021613.39566.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 1/1] Containers: Pass a valid stack address to
-	clone
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <avagin@gmail.com>) id 1Mrg27-0005XS-LY
+	for ltp-list@lists.sourceforge.net; Sat, 26 Sep 2009 22:46:27 +0000
+Received: from fg-out-1718.google.com ([72.14.220.156])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Mrg1z-0000xE-EX
+	for ltp-list@lists.sourceforge.net; Sat, 26 Sep 2009 22:46:27 +0000
+Received: by fg-out-1718.google.com with SMTP id d23so1154524fga.10
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 26 Sep 2009 15:46:13 -0700 (PDT)
+From: Andrew Vagin <avagin@gmail.com>
+Date: Sun, 27 Sep 2009 02:46:01 +0400
+Message-Id: <1254005162-27353-4-git-send-email-avagin@gmail.com>
+In-Reply-To: <1254005162-27353-3-git-send-email-avagin@gmail.com>
+References: <1254005162-27353-1-git-send-email-avagin@gmail.com>
+	<1254005162-27353-2-git-send-email-avagin@gmail.com>
+	<1254005162-27353-3-git-send-email-avagin@gmail.com>
+Subject: [LTP] [PATCH 4/5] fsstress: fix memory leak in fread_d
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,81 +28,85 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0227509990708839906=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Subrata Modak1 <subrata.modak@in.ibm.com>, Nathan T Lynch <natlynch@us.ibm.com>
-
---===============0227509990708839906==
-Content-Type: multipart/signed; boundary="nextPart2459092.fnQumbBiUx";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart2459092.fnQumbBiUx
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-On Wednesday 02 September 2009 10:10:27 Serge E. Hallyn wrote:
-> Also fix the libnetns helper to, like the libclone one, special-case
-> hppa and pass the bottom of the stack to clone2 for __ia64__ (as per
-> the libclone example and the clone2 manpage).  I don't know and can't
-> test whether it's right, but have to assume that one of the other was
-> wrong.
-
-please, let's stop screwing around with this and copying & pasting it=20
-everywhere.  create a new dedicate "ltp_clone" or similar function and stic=
-k=20
-the arch-specific logic there.
-int ltp_clone(func ptr, stack base, stack size, clone flags, func args...)
-=2Dmike
-
---nextPart2459092.fnQumbBiUx
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJKntHzAAoJEEFjO5/oN/WBnCcQAJ087onZpq9udKjUMLGzozyu
-5xV10Bc9DtaSih5jfH/8EsEEnpSa4QrXpgz67EV5itchRelvt+yQ9bGZHRUgiyj6
-tOqa0WIf82vMfYpVGgopdzavR97cKvXdjemyhLahKNdzvXBim1Kt/mFEYAiwXIxh
-arfP/TZoQkXZ9k6m6IH2sF5YmQU5DIqZDMEy+0Kizwv5mkAa4oue1wB/HHxI5u/v
-OInRUeCfhN2U7wsdGKihNSlbFrue/j1P6E5Q24OAtc1tbbvXJFKICSQCLChRXbun
-771Yg3Z5SbOUzWLEB/JtVfFpEkMj5uN95ntpKrLvmecr2NE4320VPqAJ+Q/01+A6
-WyEeGxhAhW3tUiYWimOf70FyyGx4wgYpiN/rp+gGV+DTV3/iMGHhIVFtR65Tqnpr
-9DTYv/QqXyLmL70qCebT8le/BgnmMDuTrteT63t9nVUX1zd8BdNGGslbxnqUutH3
-50hSPkkxOMFAjB/rTNl3B2J4PboEYqAr0yv3K8JzNekqIBnBz0zhfyBOqFP8o1gu
-TeezthSTpfLGgq5jtyQYOpNhqgQ14VTgNMJRRGBJWJj6ZrkfCLtdMSGAE0kdhSYk
-Of7sr/2MvCpk4x4I56n1rQ6Vp9xzUqjUfBQmnDllnSlh+oBFqaJvHGAEqfcYp8HL
-Jif4KKG8nQDAWsCx5u+s
-=q8qX
------END PGP SIGNATURE-----
-
---nextPart2459092.fnQumbBiUx--
-
-
---===============0227509990708839906==
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net
+
+1. check result from operation open before set flags
+2. close descriptor and free path if set flags failed
+
+valgrind --leak-check=full --show-reachable=yes ./fsstress -d /home/shpagin/git-archive/ltp/testcases/kernel/fs/fsstress/tmp -l 10 -n 100
+
+==23212== 1,134 bytes in 108 blocks are definitely lost in loss record 4 of 5
+==23212==    at 0x4A0776F: realloc (vg_replace_malloc.c:429)
+==23212==    by 0x401E6A: append_pathname (fsstress.c:528)
+==23212==    by 0x4024E3: fent_to_name (fsstress.c:760)
+==23212==    by 0x40284F: get_fname (fsstress.c:846)
+==23212==    by 0x4041E0: dread_f (fsstress.c:1757)
+==23212==    by 0x402368: doproc (fsstress.c:728)
+==23212==    by 0x401CC1: main (fsstress.c:463)
+
+Signed-off-by: Andrew Vagin <avagin@gmail.com>
+---
+ testcases/kernel/fs/fsstress/fsstress.c |   16 +++++++++++-----
+ 1 files changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
+index 715c08d..cf7ba76 100644
+--- a/testcases/kernel/fs/fsstress/fsstress.c
++++ b/testcases/kernel/fs/fsstress/fsstress.c
+@@ -1764,10 +1764,6 @@ dread_f(int opno, long r)
+ 	}
+ 	fd = open_path(&f, O_RDONLY);
+ 
+-	if (!setdirect(fd)) {
+-		return;
+-	}
+-
+ 	e = fd < 0 ? errno : 0;
+ 	check_cwd();
+ 	if (fd < 0) {
+@@ -1777,6 +1773,13 @@ dread_f(int opno, long r)
+ 		free_pathname(&f);
+ 		return;
+ 	}
++
++	if (!setdirect(fd)) {
++		close(fd);
++		free_pathname(&f);
++		return;
++	}
++
+ 	if (fstat64(fd, &stb) < 0) {
+ 		if (v)
+ 			printf("%d/%d: dread - fstat64 %s failed %d\n",
+@@ -1864,8 +1867,11 @@ dwrite_f(int opno, long r)
+ 		return;
+ 	}
+ 
+-	if (!setdirect(fd))
++	if (!setdirect(fd)) {
++		close(fd);
++		free_pathname(&f);
+ 		return;
++	}
+ 	if (fstat64(fd, &stb) < 0) {
+ 		if (v)
+ 			printf("%d/%d: dwrite - fstat64 %s failed %d\n",
+-- 
+1.6.2.5
+
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---===============0227509990708839906==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
+http://p.sf.net/sfu/devconf
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============0227509990708839906==--
-
