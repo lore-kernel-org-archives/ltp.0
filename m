@@ -1,33 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MryHF-0005g5-Aa
-	for ltp-list@lists.sourceforge.net; Sun, 27 Sep 2009 18:15:17 +0000
-Received: from e31.co.us.ibm.com ([32.97.110.149])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MryH8-0001Hz-1a
-	for ltp-list@lists.sourceforge.net; Sun, 27 Sep 2009 18:15:17 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e31.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8RI8pAA012824
-	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 12:08:51 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n8RIF3Dj227192
-	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 12:15:03 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n8RIF3EB024161
-	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 12:15:03 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4ABB2C98.4090403@redhat.com>
-References: <4ABB2C98.4090403@redhat.com>
-Date: Sun, 27 Sep 2009 23:44:53 +0530
-Message-Id: <1254075295.10457.19.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] network: fix nfs testcases Makefile error
-Reply-To: subrata@linux.vnet.ibm.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <avagin@gmail.com>) id 1Mrg28-0005Xe-Qs
+	for ltp-list@lists.sourceforge.net; Sat, 26 Sep 2009 22:46:28 +0000
+Received: from fg-out-1718.google.com ([72.14.220.159])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Mrg20-0000xM-CE
+	for ltp-list@lists.sourceforge.net; Sat, 26 Sep 2009 22:46:28 +0000
+Received: by fg-out-1718.google.com with SMTP id e21so474931fga.10
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 26 Sep 2009 15:46:14 -0700 (PDT)
+From: Andrew Vagin <avagin@gmail.com>
+Date: Sun, 27 Sep 2009 02:46:02 +0400
+Message-Id: <1254005162-27353-5-git-send-email-avagin@gmail.com>
+In-Reply-To: <1254005162-27353-4-git-send-email-avagin@gmail.com>
+References: <1254005162-27353-1-git-send-email-avagin@gmail.com>
+	<1254005162-27353-2-git-send-email-avagin@gmail.com>
+	<1254005162-27353-3-git-send-email-avagin@gmail.com>
+	<1254005162-27353-4-git-send-email-avagin@gmail.com>
+Subject: [LTP] [PATCH 5/5] fsstress: renew flist if clean up test directory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,64 +29,40 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Hushan Jia <hjia@redhat.com>
+To: subrata@linux.vnet.ibm.com
 Cc: ltp-list@lists.sourceforge.net
 
-On Thu, 2009-09-24 at 16:23 +0800, Hushan Jia wrote: 
-> Hi,
-> 
-> The nfslock01 and nfsstress testcases' Makefile does not link excutables to testcase/bin
-> directory, and nfslock01 does not build nfs_flock_dgen excutables, which will cause test fail.
-> This patch add the links and build the nfs_flock_dgen.
-> 
-> Thanks & Regards,
-> Hushan
-> 
-> ---
-> 
-> network: fix nfslock01 and nfsstress Makefile error
-> 
-> Signed-off-by: Hushan Jia <hjia@redhat.com>
+flist contain all files created by fsstress. If test clean up direcory
+on each interations that it should reinitilize flist.
 
-Thanks.
+Signed-off-by: Andrew Vagin <avagin@gmail.com>
+---
+ testcases/kernel/fs/fsstress/fsstress.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
 
-Regards--
-Subrata
-
-> 
-> --- ltp/testcases/network/nfs/nfslock01/Makefile.orig	2009-09-24 15:54:24.000000000 +0800
-> +++ ltp/testcases/network/nfs/nfslock01/Makefile	2009-09-24 15:58:31.000000000 +0800
-> @@ -5,6 +5,7 @@ all: $(TESTS)
-> 
->  install:
->  	ln -f nfslock01 ../../../bin
-> +	ln -f $(TESTS) ../../../bin
-> 
->  nfs_flock:
->  	$(CC) $(CFLAGS) $(LDFLAGS) -o nfs_flock nfs_flock.c nfs_flock_func.c
-> @@ -12,6 +13,9 @@ nfs_flock:
->  nfs_flock_frk:
->  	$(CC) $(CFLAGS) $(LDFLAGS) -o nfs_flock_frk nfs_flock_frk.c
-> 
-> +nfs_flock_dgen:
-> +	$(CC) $(CFLAGS) $(LDFLAGS) -o nfs_flock_dgen nfs_flock_dgen.c
-> +
->  clean:
->  	rm -f $(TESTS)
-> 
-> --- ltp/testcases/network/nfs/nfsstress/Makefile.orig	2009-09-24 15:54:12.000000000 +0800
-> +++ ltp/testcases/network/nfs/nfsstress/Makefile	2009-09-24 15:59:58.000000000 +0800
-> @@ -8,6 +8,7 @@ all: $(TARGETS)
-> 
->  install:
->  	ln -f nfsstress ../../../bin
-> +	ln -f $(TARGETS) ../../../bin
-> 
->  clean:
->  	rm -f $(TARGETS)
+diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
+index cf7ba76..736bd53 100644
+--- a/testcases/kernel/fs/fsstress/fsstress.c
++++ b/testcases/kernel/fs/fsstress/fsstress.c
+@@ -491,6 +491,12 @@ int main(int argc, char **argv)
+ 		{
+ 			sprintf(cmd,"rm -rf %s/*",dirname);
+ 			system(cmd);
++			for (i = 0; i < FT_nft; i++) {
++				flist[i].nslots = 0;
++				flist[i].nfiles = 0;
++				free(flist[i].fents);
++				flist[i].fents = NULL;
++			}
+ 		}
+ 		loopcntr++;
+ 	}
+-- 
+1.6.2.5
 
 
 ------------------------------------------------------------------------------
