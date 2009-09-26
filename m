@@ -1,29 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <liubo-fnst@cn.fujitsu.com>) id 1MsA8J-0000As-1z
-	for ltp-list@lists.sourceforge.net; Mon, 28 Sep 2009 06:54:51 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MsA8E-0000TM-Kn
-	for ltp-list@lists.sourceforge.net; Mon, 28 Sep 2009 06:54:50 +0000
-Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
-	by song.cn.fujitsu.com (Postfix) with ESMTP id F1B0017008D
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 28 Sep 2009 14:54:37 +0800 (CST)
-Received: from fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id n8S6sFec019907
-	for <ltp-list@lists.sourceforge.net>; Mon, 28 Sep 2009 14:54:15 +0800
-Received: from localhost.localdomain (unknown [10.167.141.170])
-	by fnst.cn.fujitsu.com (Postfix) with ESMTPA id AB977D42C4
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 28 Sep 2009 14:57:21 +0800 (CST)
-Message-ID: <4AC05D99.9010907@cn.fujitsu.com>
-Date: Mon, 28 Sep 2009 14:54:17 +0800
-From: liubo <liubo-fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] memcg : fix various test failures
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mrade-0007A5-2R
+	for ltp-list@lists.sourceforge.net; Sat, 26 Sep 2009 17:00:50 +0000
+Received: from e36.co.us.ibm.com ([32.97.110.154])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Mrada-0006QJ-48
+	for ltp-list@lists.sourceforge.net; Sat, 26 Sep 2009 17:00:50 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+Date: Sat, 26 Sep 2009 22:30:16 +0530
+Message-Id: <1253984418.13529.11.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: [LTP] LTP October09 Month End Release may get delayed
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,78 +26,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sf.net>
 
-In memcg testcases,
+Hi All,
 
-1. use /dev/memcg consistently
+Due to some personal reasons i may not be able to release LTP Oct09
+month end release on time. In such a case, the release may get postponed
+by a week, and i may have to forego the October Intermediate release.
 
-2. for testcase_25, since 2.6.31, writing -1 to 
-   memory.limit_in_bytes will reset to unlimit.
+Regards--
+Subrata
 
-3. for testcase_35, writing to memory.force_empty for 
-   non-empty cgroup should return failure.
 
-Signed-off-by: Liu Bo <liubo-fnst@cn.fujitsu.com>
-
----
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
-index e48c8dd..e22954f 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
-@@ -398,8 +398,12 @@ testcase_24()
- testcase_25()
- {
- 	echo -1 > memory.limit_in_bytes 2> /dev/null
--#	result $(( !($? != 0) ))  "return value is $?"  //lizf
--	result $(( !($? == 0) ))  "return value is $?"
-+	tst_kvercmp 2 6 31
-+	if [ $? -eq 0 ]; then
-+		result $(( !($? != 0) ))  "return value is $?"
-+       else
-+		result $(( !($? == 0) ))  "return value is $?"
-+	fi
- }
- 
- testcase_26()
-@@ -488,8 +492,8 @@ testcase_35()
- {
- 	# writing to non-empty top mem cgroup's force_empty
- 	# should return failure
--	echo 1 > /memcg/memory.force_empty 2> /dev/null
--	result $(( $? )) "return value is $?"
-+	echo 1 > /dev/memcg/memory.force_empty 2> /dev/null
-+	result $(( !$? )) "return value is $?"
- }
- 
- # Case 36 - 38: Test that group and subgroup have no relationship
-diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-index 1e17525..86b8cb9 100755
---- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-+++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-@@ -68,11 +68,11 @@ run_stress()
- 
- 	for ((i = 0; i < $1; i++))
- 	{
--		mkdir /memcg/$i 2> /dev/null
-+		mkdir /dev/memcg/$i 2> /dev/null
- 		./memcg_process_stress $2 $3 &
- 		pid[$i]=$!
- 
--		echo ${pid[$i]} > /memcg/$i/tasks
-+		echo ${pid[$i]} > /dev/memcg/$i/tasks
- 	}
- 
- 	for ((i = 0; i < $1; i++))
-@@ -87,7 +87,7 @@ run_stress()
- 		/bin/kill -s SIGINT ${pid[$i]} 2> /dev/null
- 		wait ${pid[$i]}
- 
--		rmdir /memcg/$i 2> /dev/null
-+		rmdir /dev/memcg/$i 2> /dev/null
- 	}
- 
- 	cleanup;
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
