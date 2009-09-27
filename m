@@ -1,32 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MryHK-0005gH-Ek
-	for ltp-list@lists.sourceforge.net; Sun, 27 Sep 2009 18:15:22 +0000
-Received: from e35.co.us.ibm.com ([32.97.110.153])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MryHG-0007VB-7I
-	for ltp-list@lists.sourceforge.net; Sun, 27 Sep 2009 18:15:22 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e35.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8RI4v4Q029094
-	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 12:04:57 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n8RIFCis200440
-	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 12:15:12 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n8RIFB6u020694
-	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 12:15:12 -0600
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MryJH-0006iJ-Dh
+	for ltp-list@lists.sourceforge.net; Sun, 27 Sep 2009 18:17:23 +0000
+Received: from e6.ny.us.ibm.com ([32.97.182.146])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MryJ3-0004f9-Kx
+	for ltp-list@lists.sourceforge.net; Sun, 27 Sep 2009 18:17:13 +0000
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4ABB864B.8000801@bull.net>
-References: <4ABB864B.8000801@bull.net>
-Date: Sun, 27 Sep 2009 23:44:58 +0530
-Message-Id: <1254075300.10457.20.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1252847807.5357.36.camel@subratamodak.linux.ibm.com>
+References: <9a14a0630903130632s36a7f059hd093d30e97f894eb@mail.gmail.com>
+	<1236962876.7439.3.camel@subratamodak.linux.ibm.com>
+	<1237272937.5622.11.camel@subratamodak.linux.ibm.com>
+	<43e72e890903181242i1be5818et8afd1157cff8af83@mail.gmail.com>
+	<1237446038.5260.9.camel@subratamodak.linux.ibm.com>
+	<1245768529.4860.61.camel@subratamodak.linux.ibm.com>
+	<43e72e890906230831q6e6c9e2v49454ab66ca99156@mail.gmail.com>
+	<ee8eb53d0906231508ta738039m562dee936319624c@mail.gmail.com>
+	<1245921029.5542.44.camel@subratamodak.linux.ibm.com>
+	<1252847807.5357.36.camel@subratamodak.linux.ibm.com>
+Date: Sun, 27 Sep 2009 23:45:53 +0530
+Message-Id: <1254075355.10457.32.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] fs_di TestCase
+Subject: Re: [LTP] Support of WIFI and W-LAN test cases in LTP
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -40,66 +37,109 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jacky Malcles <Jacky.Malcles@bull.net>
-Cc: ltp-list@lists.sourceforge.net
+To: Georgy Berdyshev <codingmaster@gmail.com>
+Cc: ltp-list@lists.sf.net, "Luis R. Rodriguez" <lrodriguez@atheros.com>, Jouni Malinen <j@w1.fi>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "John W. Linville" <linville@tuxdriver.com>, rahul Baliyan <rahul.lpt@gmail.com>, Luis Carlos Cobo <luisca@cozybit.com>, Johannes Berg <johannes@sipsolutions.net>, "Jouni.Malinen" <Jouni.Malinen@atheros.com>
 
-On Thu, 2009-09-24 at 16:46 +0200, Jacky Malcles wrote: 
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
+On Sun, 2009-09-13 at 18:46 +0530, Subrata Modak wrote: 
+> Hi Georgy,
 > 
-> Hi Subrata,
+> On Thu, 2009-06-25 at 14:40 +0530, Subrata Modak wrote: 
+> > On Tue, 2009-06-23 at 19:08 -0300, Georgy Berdyshev wrote: 
+> > > Hi,
+> > > 
+> > > Luis did already mention that the idea is to contribute things back to
+> > > LTP or have LTP use it.
+> > 
 > 
-> when this TC is ending it removes all directories/files  under /tmp that
-> may be embarrassing so,
-> if you agree I suggest that it only removes what has to do with the
-> TestCase; this is the purpose of the following patch.
-> 
-> Signed-off-by: JACKY MALCLES <Jacky.Malcles@bull.net>
+> Any headway towards Code contribution to LTP ?
 
-This does not apply:
-
-patching file testcases/kernel/fs/fs_di/fs_di
-Hunk #1 FAILED at 95.
-1 out of 1 hunk FAILED -- saving rejects to file
-testcases/kernel/fs/fs_di/fs_di.rej
-
-Regards--
-Subrata
+Ping.
 
 > 
-> diff -uprN ltp-full-20090831.orig/testcases/kernel/fs/fs_di
-> ltp-full-20090831/testcases/kernel/fs/fs_di
-> diff -uprN ltp-full-20090831.orig/testcases/kernel/fs/fs_di/fs_di
-> ltp-full-20090831/testcases/kernel/fs/fs_di/fs_di
-> - --- ltp-full-20090831.orig/testcases/kernel/fs/fs_di/fs_di
-> 2009-08-31 07:15:46.000000000 +0200
-> +++ ltp-full-20090831/testcases/kernel/fs/fs_di/fs_di   2009-09-24
-> 16:06:05.000000000 +0200
-> @@ -95,7 +95,6 @@ $trace_logic
->      if [ "$CLEANUP" = "ON" ]; then
->         rm -rf $TCtmp
->         rm -rf ${TESTFS}
-> - -       rm -rf $TMPBASE/*
->          rm -f $TCtmp/testfile*
->      fi
+> Regards--
+> Subrata
 > 
-> regards,
-> - --
->  Jacky Malcles    	     B1-403   Email : Jacky.Malcles@bull.net
->  Bull SA, 1 rue de Provence, B.P 208, 38432 Echirolles CEDEX, FRANCE
->  Tel : 04.76.29.73.14
-> -----BEGIN PGP SIGNATURE-----
-> Version: GnuPG v1.4.5 (GNU/Linux)
-> Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+> > Great to hear that again. I was trying to figure out the status of that
+> > work ? When is it expected to complete, any idea ?
+> > 
+> > Regards--
+> > Subrata
+> > 
+> > > In case that there is some work going on, I would like to merge those
+> > > tests also into my project
+> > > and later on extend the work with LTP.
+> > > 
+> > > In any case, feel free to contact me.
+> > > 
+> > > Regards, Georgy
+> > > 
+> > > On Tue, Jun 23, 2009 at 12:31 PM, Luis R.
+> > > Rodriguez<lrodriguez@atheros.com> wrote:
+> > > > On Tue, Jun 23, 2009 at 7:48 AM, Subrata
+> > > > Modak<subrata@linux.vnet.ibm.com> wrote:
+> > > >> On Thu, 2009-03-19 at 12:30 +0530, Subrata Modak wrote:
+> > > >>> On Wed, 2009-03-18 at 12:42 -0700, Luis R. Rodriguez wrote:
+> > > >>> > On Mon, Mar 16, 2009 at 11:55 PM, Subrata Modak
+> > > >>> > <subrata@linux.vnet.ibm.com> wrote:
+> > > >>> > > Hi Rahul,
+> > > >>> > >
+> > > >>> > > On Fri, 2009-03-13 at 22:17 +0530, Subrata Modak wrote:
+> > > >>> > >> Hi,
+> > > >>> > >>
+> > > >>> > >> On Fri, 2009-03-13 at 19:02 +0530, rahul Baliyan wrote:
+> > > >>> > >> > Hi,
+> > > >>> > >> >
+> > > >>> > >> > Pl.  confirm if LTP contains the test cases of W-LAN and WI-FI.
+> > > >>> > >>
+> > > >>> > >> Nope. We do not have till now. However, we initiated some discussion
+> > > >>> > >> some 6 months back in the same mailing list regarding Wireless Mesh
+> > > >>> > >> Netwoking tests. Please follow the following thread:
+> > > >>> > >>
+> > > >>> > >> http://marc.info/?t=121969812900007&r=1&w=2&n=4,
+> > > >>> > >>
+> > > >>> > >> There are some tests already avilable. We need somebody to volunteer to
+> > > >>> > >> bring them to some shape so that they can be automated and then
+> > > >>> > >> integrated inside LTP. Would you be ready to do that ?
+> > > >>> > >
+> > > >>> > > Would you like to take up my proposal ?
+> > > >>> >
+> > > >>> > BTW I've stashed a Linux wireless testing entry in the Linux
+> > > >>> > Foundation GSoC, hopefully that can be merged back into LTP.
+> > > >>> >
+> > > >>> > https://www.linuxfoundation.org/en/Google_Summer_of_Code_2009#Automation_of_testing_using_mac80211_hwsim_and_Orbit
+> > > >>>
+> > > >>
+> > > >> Hi,
+> > > >>
+> > > >> Is somebody working on this, and still interested to contribute the same
+> > > >> to LTP ?
+> > > >
+> > > > Yes, the idea is to hopefully contribute it back to LTP. Or have LTP
+> > > > use it. I've added Georgy, the student working on this project.
+> > > >
+> > > >  Luis
+> > > >
+> > > 
+> > > 
+> > > 
+> > 
+> > 
+> > ------------------------------------------------------------------------------
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
 > 
-> iQEVAwUBSruGS3FYHhojb+kFAQILlQgAj+G7Ey6K8EBiskbySOs2VU/MbuI1zv+s
-> YnkVVSWj1dx7VMGCYdxvz+xINTunBMeLtomskodYmGkbSS12+012MmlsDHiYf/05
-> oybPYxc+6qp+JKQBUBjESdQ2/7YC58pW+uk6AJRinpfjczeozDk49E9EeEd9qtJn
-> tlZy72mIscZe4u8nHVferPpMTzA2O5VqQp9Iy34YjYeEob0ttrLiqSMwTtN4RAWK
-> DUD/l9FwPgdxBQjwEvtKItKUxB9rMS+Vu6Np1gYGBQYrwFzTm+M2UGwwmdyUCwdM
-> yjJQx0SRqImR2ldVg0QbgrAsdwRRfIAkvhWFSCCSQzN67JP3QW84/w==
-> =UWZ2
-> -----END PGP SIGNATURE-----
+> 
+> ------------------------------------------------------------------------------
+> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+> trial. Simplify your report design, integration and deployment - and focus on 
+> what you do best, core application coding. Discover what's new with 
+> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
