@@ -1,35 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chandru@in.ibm.com>) id 1MqiIw-0007Jh-Fq
-	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2009 06:59:50 +0000
-Received: from e28smtp09.in.ibm.com ([59.145.155.9])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MqiIr-0005UP-Nc
-	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2009 06:59:50 +0000
-Received: from d28relay05.in.ibm.com (d28relay05.in.ibm.com [9.184.220.62])
-	by e28smtp09.in.ibm.com (8.14.3/8.13.1) with ESMTP id n8O6rEa4012021
-	for <ltp-list@lists.sourceforge.net>; Thu, 24 Sep 2009 12:23:14 +0530
-Received: from d28av03.in.ibm.com (d28av03.in.ibm.com [9.184.220.65])
-	by d28relay05.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n8O6xYjJ1925282
-	for <ltp-list@lists.sourceforge.net>; Thu, 24 Sep 2009 12:29:34 +0530
-Received: from d28av03.in.ibm.com (loopback [127.0.0.1])
-	by d28av03.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	n8O6xY8E031830
-	for <ltp-list@lists.sourceforge.net>; Thu, 24 Sep 2009 16:59:34 +1000
-Received: from guara.localnet (guara-009124035039.in.ibm.com [9.124.35.39])
-	by d28av03.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVin) with ESMTP id
-	n8O6xYxj031827
-	for <ltp-list@lists.sourceforge.net>; Thu, 24 Sep 2009 16:59:34 +1000
-From: Chandru <chandru@in.ibm.com>
-Date: Thu, 24 Sep 2009 12:29:32 +0530
-MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200909241229.32866.chandru@in.ibm.com>
-Subject: [LTP] [PATCH] ppoll01: add signal() syscall to register the signal
-	handler
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MryIG-0005kv-Ax
+	for ltp-list@lists.sourceforge.net; Sun, 27 Sep 2009 18:16:20 +0000
+Received: from e7.ny.us.ibm.com ([32.97.182.137])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MryI8-0001YI-Fu
+	for ltp-list@lists.sourceforge.net; Sun, 27 Sep 2009 18:16:20 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e7.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8RIDkMN010754
+	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 14:13:46 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n8RIG7kP223692
+	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 14:16:07 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n8RIG694005503
+	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 14:16:06 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <1254005162-27353-3-git-send-email-avagin@gmail.com>
+References: <1254005162-27353-1-git-send-email-avagin@gmail.com>
+	<1254005162-27353-2-git-send-email-avagin@gmail.com>
+	<1254005162-27353-3-git-send-email-avagin@gmail.com>
+Date: Sun, 27 Sep 2009 23:45:29 +0530
+Message-Id: <1254075331.10457.26.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH 3/5] fsstress: fix memory leaks
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,58 +41,78 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Andrew Vagin <avagin@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-The ppoll01 testcase has a signal handler in it but this signal handler is not registered with the kernel through the signal() syscal. The testcase fails when it sends a SIGINT to itself as part of one of the case of the test run.
-The following patch
-1. Adds a signal() syscall to register the signal handler
-2. Corrects the expected 'revents' for the case where ppoll() is called on a file which is only opened in read/write mode, i.e case00.
-3. Takes away printing the type of error ( i.e strerror(errno) ) since it only prints the last error seen and does not report the failures seen in the cases before the last failed one. The reporting of NG or OK shoudl take care of 
-    letting the user know the cases that have passed and cases that have failed.
+On Sun, 2009-09-27 at 02:46 +0400, Andrew Vagin wrote: 
+> ==11424== 156 bytes in 1 blocks are definitely lost in loss record 2 of 2
+> ==11424==    at 0x4A0763E: malloc (vg_replace_malloc.c:207)
+> ==11424==    by 0x402E4C: make_freq_table (fsstress.c:986)
+> ==11424==    by 0x401C26: main (fsstress.c:410)
+> 
+> make_freq_table is executed on each iterations, but freq_table is not
+> changed during test, so this patch moves it from the loop
+> 
+> Signed-off-by: Andrew Vagin <avagin@gmail.com>
 
-Signed-off-by: Chandru S <chandru@linux.vnet.ibm.com>
----
+Thanks.
 
---- ppoll01.c.orig	2009-09-22 19:22:39.371235396 +0530
-+++ ppoll01.c	2009-09-24 01:24:38.706487228 +0530
-@@ -106,6 +106,8 @@ extern void cleanup() {
-         tst_exit();
- }
- 
-+void sighandler(int sig);       /* signals handler function for the test */
-+
- /* Local  Functions */
- /******************************************************************************/
- /*                                                                            */
-@@ -125,7 +127,8 @@ extern void cleanup() {
- /*                                                                            */
- /******************************************************************************/
- void setup() {
--        /* Capture signals if any */
-+        /* Capture signals*/
-+	signal(SIGINT, &sighandler);
-         /* Create temporary directories */
-         TEST_PAUSE;
-         tst_tmpdir();
-@@ -191,7 +194,7 @@ struct test_case {
- static struct test_case tcase[] = {
- 	{ // case00
-                 .ttype          = NORMAL,
--                .expect_revents = POLLOUT,
-+                .expect_revents = POLLOUT | POLLIN,
-                 .ret            = 0,
-                 .err            = 0,
-         },
-@@ -463,7 +466,7 @@ int main(int ac, char **av) {
- 		                break;
- 
- 	        default:
--                 	   	tst_resm(TFAIL, "%s failed - errno = %d : %s", TCID, TEST_ERRNO, strerror(TEST_ERRNO));
-+                 	   	tst_resm(TFAIL, "%s failed", TCID);
-         		        RPRINTF("NG");
- 				cleanup();
- 				tst_exit();
+Regards--
+Subrata
 
+> ---
+>  testcases/kernel/fs/fsstress/fsstress.c |   28 +++++++++++++++-------------
+>  1 files changed, 15 insertions(+), 13 deletions(-)
+> 
+> diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
+> index 5ada3d8..715c08d 100644
+> --- a/testcases/kernel/fs/fsstress/fsstress.c
+> +++ b/testcases/kernel/fs/fsstress/fsstress.c
+> @@ -375,21 +375,24 @@ int main(int argc, char **argv)
+>  			break;
+>  		}
+>  	}
+> -	while ( (loopcntr <= loops) || (loops == 0) )
+> -	{
+> -		if (no_xfs && errtag) {
+> -			fprintf(stderr, "error injection only works on XFS\n");
+> -			exit(1);
+> -		}
+> 
+> -		if (no_xfs) {
+> -			int i;
+> -			for (i = 0; ops+i < ops_end; ++i) {
+> -				if (ops[i].isxfs)
+> -					ops[i].freq = 0;
+> -			}
+> +	if (no_xfs && errtag) {
+> +		fprintf(stderr, "error injection only works on XFS\n");
+> +		exit(1);
+> +	}
+> +
+> +	if (no_xfs) {
+> +		int i;
+> +		for (i = 0; ops+i < ops_end; ++i) {
+> +			if (ops[i].isxfs)
+> +				ops[i].freq = 0;
+>  		}
+> +	}
+> 
+> +	make_freq_table();
+> +
+> +	while ( (loopcntr <= loops) || (loops == 0) )
+> +	{
+>  		if (!dirname) {
+>  			/* no directory specified */
+>  			if (!nousage) usage();
+> @@ -407,7 +410,6 @@ int main(int argc, char **argv)
+>  			maxfsize = (off64_t)MAXFSIZE32;
+>  		else
+>  			maxfsize = (off64_t)MAXFSIZE;
+> -		make_freq_table();
+>  		dcache_init();
+>  		setlinebuf(stdout);
+>  		if (!seed) {
 
 
 ------------------------------------------------------------------------------
