@@ -1,25 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Mqvu4-0003It-LJ
-	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2009 21:31:04 +0000
-Received: from mail-qy0-f204.google.com ([209.85.221.204])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mqvty-0005VE-Ty
-	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2009 21:31:04 +0000
-Received: by qyk42 with SMTP id 42so1755629qyk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 24 Sep 2009 14:30:53 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <b9d696240909241155x5be217a3t4564e6b1bb64a9be@mail.gmail.com>
-References: <b9d696240909211602o51c38c2ei41a8622d3250f06b@mail.gmail.com>
-	<200909241423.45226.jpalecek@web.de>
-	<b9d696240909241155x5be217a3t4564e6b1bb64a9be@mail.gmail.com>
-Date: Thu, 24 Sep 2009 14:30:51 -0700
-Message-ID: <364299f40909241430w4bbf5e03x660b3fa4343f6dc7@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Buffer Overflow with ftest03 and ftest07
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MryJN-0005to-2z
+	for ltp-list@lists.sourceforge.net; Sun, 27 Sep 2009 18:17:29 +0000
+Received: from e7.ny.us.ibm.com ([32.97.182.137])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MryJD-0004jP-AA
+	for ltp-list@lists.sourceforge.net; Sun, 27 Sep 2009 18:17:27 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <1252847803.5357.35.camel@subratamodak.linux.ibm.com>
+References: <1252847803.5357.35.camel@subratamodak.linux.ibm.com>
+Date: Sun, 27 Sep 2009 23:46:06 +0530
+Message-Id: <1254075368.10457.33.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [Testing 2.6.31] CAN Network device driver and
+	Netlink	interface
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,162 +26,50 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "K.D. Lucas" <kdlucas@gmail.com>
-Cc: Jiri Palecek <jpalecek@web.de>, ltp-list@lists.sourceforge.net
+To: Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
+Cc: ltp-list <ltp-list@lists.sf.net>, "David S. Miller" <davem@davemloft.net>, Wolfgang Grandegger <wg@grandegger.com>
 
-On Thu, Sep 24, 2009 at 11:55 AM, K.D. Lucas <kdlucas@gmail.com> wrote:
-> Ok, I applied your patch, and it didn't compile initially so I had to cle=
-an
-> up a few things. They were mostly minor like casting a few vars to intege=
-rs,
-> or changing the format specifiers from %XL to %ld, etc, and adding the
-> variable char fuss[40] back into ftest07.c.
->
-> After that I tested them. Both ftest03.c and ftest07.c passes when run fr=
-om
-> the command line. But when executed by runltp, they fail with return code
-> 11. This is identical to the behavior without your patch.
->
-> Thanks for attempting to fix this. Any other ideas?
->
-> Kelly
->
-> 2009/9/24 Jiri Palecek <jpalecek@web.de>
->>
->> Hi,
->>
->> On Tuesday 22 September 2009 01:02:29 K.D. Lucas wrote:
->> > Since I started using LTP 20090831 I've been seeing buffer overflow
->> > messages
->> > when running ftest03 and ftest07. The back trace is:
->> >
->> > *** buffer overflow detected ***: ftest03 terminated
->> > =3D=3D=3D=3D=3D=3D=3D Backtrace: =3D=3D=3D=3D=3D=3D=3D=3D=3D
->> > /lib/tls/i686/cmov/libc.so.6(__fortify_fail+0x48)[0xa17038]
->> > /lib/tls/i686/cmov/libc.so.6[0xa15140]
->> > /lib/tls/i686/cmov/libc.so.6[0xa14838]
->> > /lib/tls/i686/cmov/libc.so.6(_IO_default_xsputn+0xc8)[0x986d18]
->> > /lib/tls/i686/cmov/libc.so.6(_IO_vfprintf+0xf4c)[0x95981c]
->> > /lib/tls/i686/cmov/libc.so.6(__vsprintf_chk+0xa4)[0xa148e4]
->> > /lib/tls/i686/cmov/libc.so.6(__sprintf_chk+0x2d)[0xa1482d]
->> > ftest03[0x804a7d9]
->> > ftest03[0x804a884]
->> > /lib/tls/i686/cmov/libc.so.6(__libc_start_main+0xe5)[0x92f7a5]
->> > ftest03[0x8049461]
->> > =3D=3D=3D=3D=3D=3D=3D Memory map: =3D=3D=3D=3D=3D=3D=3D=3D
->> > 00919000-00a75000 r-xp 00000000 08:01 132417 =A0 =A0 /lib/tls/i686/cmo=
-v/
->> > libc-2.9.so
->> > 00a75000-00a76000 ---p 0015c000 08:01 132417 =A0 =A0 /lib/tls/i686/cmo=
-v/
->> > libc-2.9.so
->> > 00a76000-00a78000 r--p 0015c000 08:01 132417 =A0 =A0 /lib/tls/i686/cmo=
-v/
->> > libc-2.9.so
->> > 00a78000-00a79000 rw-p 0015e000 08:01 132417 =A0 =A0 /lib/tls/i686/cmo=
-v/
->> > libc-2.9.so
->> > 00a79000-00a7c000 rw-p 00000000 00:00 0
->> > 00a8c000-00aa8000 r-xp 00000000 08:01 367 =A0 =A0 =A0 =A0/lib/ld-2.9.so
->> > 00aa8000-00aa9000 r--p 0001b000 08:01 367 =A0 =A0 =A0 =A0/lib/ld-2.9.so
->> > 00aa9000-00aaa000 rw-p 0001c000 08:01 367 =A0 =A0 =A0 =A0/lib/ld-2.9.so
->> > 00c91000-00cbb000 r-xp 00000000 08:01 409 =A0 =A0 =A0 =A0/lib/libgcc_s=
-.so.1
->> > 00cbb000-00cbc000 r--p 00029000 08:01 409 =A0 =A0 =A0 =A0/lib/libgcc_s=
-.so.1
->> > 00cbc000-00cbd000 rw-p 0002a000 08:01 409 =A0 =A0 =A0 =A0/lib/libgcc_s=
-.so.1
->> > 00cce000-00ccf000 r-xp 00000000 00:00 0 =A0 =A0 =A0 =A0 =A0[vdso]
->> > 08048000-08050000 r-xp 00000000 08:01 231138
->> > /var/tmp/tests/ltp-full-20090831/testcases/bin/ftest03
->> > 08050000-08051000 r--p 00007000 08:01 231138
->> > /var/tmp/tests/ltp-full-20090831/testcases/bin/ftest03
->> > 08051000-08052000 rw-p 00008000 08:01 231138
->> > /var/tmp/tests/ltp-full-20090831/testcases/bin/ftest03
->> > 08052000-08056000 rw-p 00000000 00:00 0
->> > 09ead000-09ece000 rw-p 00000000 00:00 0 =A0 =A0 =A0 =A0 =A0[heap]
->> > b7f8d000-b7f8e000 rw-p 00000000 00:00 0
->> > b7f9b000-b7f9d000 rw-p 00000000 00:00 0
->> > bff91000-bffa6000 rw-p 00000000 00:00 0 =A0 =A0 =A0 =A0 =A0[stack]
->> > *** buffer overflow detected ***: ftest07 terminated
->> > =3D=3D=3D=3D=3D=3D=3D Backtrace: =3D=3D=3D=3D=3D=3D=3D=3D=3D
->> > /lib/tls/i686/cmov/libc.so.6(__fortify_fail+0x48)[0x20e038]
->> > /lib/tls/i686/cmov/libc.so.6[0x20c140]
->> > /lib/tls/i686/cmov/libc.so.6[0x20b838]
->> > /lib/tls/i686/cmov/libc.so.6(_IO_default_xsputn+0xc8)[0x17dd18]
->> > /lib/tls/i686/cmov/libc.so.6(_IO_vfprintf+0xf4c)[0x15081c]
->> > /lib/tls/i686/cmov/libc.so.6(__vsprintf_chk+0xa4)[0x20b8e4]
->> > /lib/tls/i686/cmov/libc.so.6(__sprintf_chk+0x2d)[0x20b82d]
->> > ftest07[0x804a9d1]
->> > ftest07[0x804aa74]
->> > /lib/tls/i686/cmov/libc.so.6(__libc_start_main+0xe5)[0x1267a5]
->> > ftest07[0x8049421]
->> > =3D=3D=3D=3D=3D=3D=3D Memory map: =3D=3D=3D=3D=3D=3D=3D=3D
->> > 00110000-0026c000 r-xp 00000000 08:01 132417 =A0 =A0 /lib/tls/i686/cmo=
-v/
->> > libc-2.9.so
->> > 0026c000-0026d000 ---p 0015c000 08:01 132417 =A0 =A0 /lib/tls/i686/cmo=
-v/
->> > libc-2.9.so
->> > 0026d000-0026f000 r--p 0015c000 08:01 132417 =A0 =A0 /lib/tls/i686/cmo=
-v/
->> > libc-2.9.so
->> > 0026f000-00270000 rw-p 0015e000 08:01 132417 =A0 =A0 /lib/tls/i686/cmo=
-v/
->> > libc-2.9.so
->> > 00270000-00273000 rw-p 00000000 00:00 0
->> > 00642000-0066c000 r-xp 00000000 08:01 409 =A0 =A0 =A0 =A0/lib/libgcc_s=
-.so.1
->> > 0066c000-0066d000 r--p 00029000 08:01 409 =A0 =A0 =A0 =A0/lib/libgcc_s=
-.so.1
->> > 0066d000-0066e000 rw-p 0002a000 08:01 409 =A0 =A0 =A0 =A0/lib/libgcc_s=
-.so.1
->> > 00d7c000-00d7d000 r-xp 00000000 00:00 0 =A0 =A0 =A0 =A0 =A0[vdso]
->> > 00dfe000-00e1a000 r-xp 00000000 08:01 367 =A0 =A0 =A0 =A0/lib/ld-2.9.so
->> > 00e1a000-00e1b000 r--p 0001b000 08:01 367 =A0 =A0 =A0 =A0/lib/ld-2.9.so
->> > 00e1b000-00e1c000 rw-p 0001c000 08:01 367 =A0 =A0 =A0 =A0/lib/ld-2.9.so
->> > 08048000-08050000 r-xp 00000000 08:01 231142
->> > /var/tmp/tests/ltp-full-20090831/testcases/bin/ftest07
->> > 08050000-08051000 r--p 00007000 08:01 231142
->> > /var/tmp/tests/ltp-full-20090831/testcases/bin/ftest07
->> > 08051000-08052000 rw-p 00008000 08:01 231142
->> > /var/tmp/tests/ltp-full-20090831/testcases/bin/ftest07
->> > 08052000-08057000 rw-p 00000000 00:00 0
->> > 09fce000-09fef000 rw-p 00000000 00:00 0 =A0 =A0 =A0 =A0 =A0[heap]
->> > b802f000-b8030000 rw-p 00000000 00:00 0
->> > b803d000-b803f000 rw-p 00000000 00:00 0
->> > bfdfb000-bfe10000 rw-p 00000000 00:00 0 =A0 =A0 =A0 =A0 =A0[stack]
->> >
->> >
->> > This is running against an Ubuntu Karmic Alpha netbook remix. I don't
->> > see
->> > this issue when testing on dapper or hardy distros. I saw some other
->> > posts
->> > about this, but no one has offered any suggestions or solutions yet.
->>
->> It seems the problem is with some sprintf() call, and indeed, there is o=
-ne
->> in the code. I propose deleting it (with other code) altogether, because=
- it
->> =A0was needed just for creation of a temporary directory and we have
->> tst_tmpdir() for that. See the attachment and please report whether it w=
-orks
->> and whether such solution is acceptable.
->>
->> Note that the code was not tested in any way.
+On Sun, 2009-09-13 at 18:46 +0530, Subrata Modak wrote: 
+> Hi Oliver,
+> 
+> Good day. CAN has undergone lot of changes since you added the CAN tests
+> to LTP. Would you like to send us some changes in the CAN tests w.r.t
+> the changes it had in both 2.6.30 to 2.6.31 kernels:
+> 
+> http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=39549eef3587f1c1e8c65c88a2400d10fd30ea17,
+> http://git.kernel.org/linus/429da1cc841bc9f2e762fd7272fc2b80314b890a,
+> 
 
-    Compile with -g and run with gdb to see where it crashes?
--Garrett
+Oliver,
 
----------------------------------------------------------------------------=
----
+Any thoughts ?
+
+Regards--
+Subrata
+
+> Regards--
+> Subrata
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+> trial. Simplify your report design, integration and deployment - and focus on 
+> what you do best, core application coding. Discover what's new with 
+> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
+------------------------------------------------------------------------------
 Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay =
-
+developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
 http://p.sf.net/sfu/devconf
 _______________________________________________
