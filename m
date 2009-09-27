@@ -2,21 +2,33 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Geert.Uytterhoeven@sonycom.com>) id 1MnZyt-0000RS-NH
-	for Ltp-list@lists.sourceforge.net; Tue, 15 Sep 2009 15:30:11 +0000
-Received: from vervifontaine.sonytel.be ([80.88.33.193]
-	helo=pophost.sonytel.be) by 1b2kzd1.ch3.sourceforge.com with esmtp 
-	(Exim 4.69) id 1MnZym-0002UK-OL
-	for Ltp-list@lists.sourceforge.net; Tue, 15 Sep 2009 15:30:11 +0000
-Received: from vixen.sonytel.be (piraat.sonytel.be [43.221.60.197])
-	by pophost.sonytel.be (Postfix) with ESMTP id 2FD2644485
-	for <Ltp-list@lists.sourceforge.net>;
-	Tue, 15 Sep 2009 17:29:59 +0200 (CEST)
-Date: Tue, 15 Sep 2009 17:30:05 +0200 (CEST)
-From: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
-Message-ID: <alpine.LRH.2.00.0909151729460.29769@vixen.sonytel.be>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] smt_smp: Return TCONF if SMT/SMP is not supported
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MryI7-0006s5-KA
+	for ltp-list@lists.sourceforge.net; Sun, 27 Sep 2009 18:16:11 +0000
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MryHz-0001Wl-O0
+	for ltp-list@lists.sourceforge.net; Sun, 27 Sep 2009 18:16:11 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e4.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8RI8j7s016213
+	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 14:08:45 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n8RIFw6P255244
+	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 14:15:58 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n8RIFvUG002889
+	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 14:15:58 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <1254005162-27353-2-git-send-email-avagin@gmail.com>
+References: <1254005162-27353-1-git-send-email-avagin@gmail.com>
+	<1254005162-27353-2-git-send-email-avagin@gmail.com>
+Date: Sun, 27 Sep 2009 23:45:21 +0530
+Message-Id: <1254075323.10457.25.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH 2/5] fsstress: use tabs instead of spaces
+	for	indentation
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,78 +38,292 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Linux Test Project <Ltp-list@lists.sourceforge.net>
+To: Andrew Vagin <avagin@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Currently the tests just fails if SMT/SMP is not supported.
+On Sun, 2009-09-27 at 02:45 +0400, Andrew Vagin wrote: 
+> Signed-off-by: Andrew Vagin <avagin@gmail.com>
 
-Signed-off-by: Geert Uytterhoeven <Geert.Uytterhoeven@sonycom.com>
----
- .../hyperthreading/ht_affinity/smt_smp_affinity.sh |    3 +--
- .../hyperthreading/ht_enabled/smt_smp_enabled.sh   |    3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+Thanks.
 
-diff --git a/testcases/kernel/sched/hyperthreading/ht_affinity/smt_smp_affi=
-nity.sh b/testcases/kernel/sched/hyperthreading/ht_affinity/smt_smp_affinit=
-y.sh
-index 109800d..0a33f51 100755
---- a/testcases/kernel/sched/hyperthreading/ht_affinity/smt_smp_affinity.sh
-+++ b/testcases/kernel/sched/hyperthreading/ht_affinity/smt_smp_affinity.sh
-@@ -44,8 +44,7 @@ if [ -f ./ht_enabled ];then
- 	if [ $ret_value -ne 0 ];then
- 		tst_resm TCONF "SMT/SMP is not supported"
- 		tst_resm TINFO "End: SMT/SMP Affinity"
--		TFAILCNT=3D$(( $TFAILCNT+1 ))
--		exit $TFAILCNT
-+		exit 0
- 	fi
- else
- 	tst_resm TBROK "ht_enabled:File not found"
-diff --git a/testcases/kernel/sched/hyperthreading/ht_enabled/smt_smp_enabl=
-ed.sh b/testcases/kernel/sched/hyperthreading/ht_enabled/smt_smp_enabled.sh
-index 8b8a909..e234ea4 100755
---- a/testcases/kernel/sched/hyperthreading/ht_enabled/smt_smp_enabled.sh
-+++ b/testcases/kernel/sched/hyperthreading/ht_enabled/smt_smp_enabled.sh
-@@ -41,8 +41,7 @@ if [ -f ./ht_enabled ];then
- 	if [ $ret_value -ne 0 ];then
- 		tst_resm TCONF "SMT/SMP is not supported"
- 		tst_resm TINFO "End: SMT/SMP Enabled"
--		TFAILCNT=3D$(( $TFAILCNT+1 ))
--		exit $TFAILCNT
-+		exit 0
- 	fi
- else
- 	tst_resm TBROK "ht_enabled:File not found"
--- =
+Regards--
+Subrata
 
-1.6.2.4
+> ---
+>  testcases/kernel/fs/fsstress/fsstress.c |  144 +++++++++++++++---------------
+>  1 files changed, 72 insertions(+), 72 deletions(-)
+> 
+> diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
+> index b313b62..5ada3d8 100644
+> --- a/testcases/kernel/fs/fsstress/fsstress.c
+> +++ b/testcases/kernel/fs/fsstress/fsstress.c
+> @@ -294,7 +294,7 @@ int main(int argc, char **argv)
+>  #ifndef NO_XFS
+>  	ptrdiff_t	srval;
+>  #endif
+> -        int             nousage=0;
+> +	int		nousage=0;
+>  #ifndef NO_XFS
+>  	xfs_error_injection_t	err_inj;
+>  #endif
+> @@ -361,7 +361,7 @@ int main(int argc, char **argv)
+>  		case 'S':
+>  			show_ops(0, NULL);
+>  			printf("\n");
+> -                        nousage=1;
+> +			nousage=1;
+>  			break;
+>  		case '?':
+>  			fprintf(stderr, "%s - invalid parameters\n",
+> @@ -375,8 +375,8 @@ int main(int argc, char **argv)
+>  			break;
+>  		}
+>  	}
+> -        while ( (loopcntr <= loops) || (loops == 0) )
+> -        {
+> +	while ( (loopcntr <= loops) || (loops == 0) )
+> +	{
+>  		if (no_xfs && errtag) {
+>  			fprintf(stderr, "error injection only works on XFS\n");
+>  			exit(1);
+> @@ -390,11 +390,11 @@ int main(int argc, char **argv)
+>  			}
+>  		}
+> 
+> -       	 	if (!dirname) {
+> -       	     	/* no directory specified */
+> -    	        	if (!nousage) usage();
+> -           	 exit(1);
+> -        	}
+> +		if (!dirname) {
+> +			/* no directory specified */
+> +			if (!nousage) usage();
+> +			exit(1);
+> +		}
+> 
+>  		(void)mkdir(dirname, 0777);
+>  		if (chdir(dirname) < 0) {
+> @@ -485,12 +485,12 @@ int main(int argc, char **argv)
+>  			close(fd);
+>  		}
+>  #endif
+> -	if (cleanup == 0)
+> -	{
+> -	  sprintf(cmd,"rm -rf %s/*",dirname);
+> -	  system(cmd);
+> -	}
+> -        loopcntr++;
+> +		if (cleanup == 0)
+> +		{
+> +			sprintf(cmd,"rm -rf %s/*",dirname);
+> +			system(cmd);
+> +		}
+> +		loopcntr++;
+>  	}
+>  	return 0;
+>  }
+> @@ -864,7 +864,7 @@ get_fname(int which, long r, pathname_t *name, flist_t **flpp, fent_t **fepp,
+>  	fprintf(stderr, "fsstress: get_fname failure\n");
+>  	abort();
+>  #endif
+> -        return -1;
+> +	return -1;
+>  	/* NOTREACHED */
+>  }
+> 
+> @@ -1222,33 +1222,33 @@ show_ops(int flag, char *lead_str)
+>  {
+>  	opdesc_t	*p;
+> 
+> -        if (flag<0) {
+> -                /* print in list form */
+> -                int             x = WIDTH;
+> +	if (flag<0) {
+> +		/* print in list form */
+> +		int x = WIDTH;
+> 
+> -	        for (p = ops; p < ops_end; p++) {
+> +		for (p = ops; p < ops_end; p++) {
+>  			if (lead_str != NULL && x+strlen(p->name)>=WIDTH-5)
+>  				x=printf("%s%s", (p==ops)?"":"\n", lead_str);
+> -                        x+=printf("%s ", p->name);
+> -                }
+> -                printf("\n");
+> -        } else {
+> -	        int		f;
+> -	        for (f = 0, p = ops; p < ops_end; p++)
+> -		        f += p->freq;
+> -
+> -	        if (f == 0)
+> -		        flag = 1;
+> -
+> -	        for (p = ops; p < ops_end; p++) {
+> -		        if (flag != 0 || p->freq > 0) {
+> -			        if (lead_str != NULL)
+> -				        printf("%s", lead_str);
+> -			        printf("%20s %d/%d %s\n",
+> -			        p->name, p->freq, f,
+> -			        (p->iswrite == 0) ? " " : "write op");
+> -		        }
+> -                }
+> +			x+=printf("%s ", p->name);
+> +		}
+> +		printf("\n");
+> +	} else {
+> +		int f;
+> +		for (f = 0, p = ops; p < ops_end; p++)
+> +			f += p->freq;
+> +
+> +		if (f == 0)
+> +			flag = 1;
+> +
+> +		for (p = ops; p < ops_end; p++) {
+> +			if (flag != 0 || p->freq > 0) {
+> +				if (lead_str != NULL)
+> +					printf("%s", lead_str);
+> +				printf("%20s %d/%d %s\n",
+> +				p->name, p->freq, f,
+> +				(p->iswrite == 0) ? " " : "write op");
+> +			}
+> +		}
+>  	}
+>  }
+> 
+> @@ -1278,10 +1278,10 @@ symlink_path(const char *name1, pathname_t *name)
+>  	pathname_t	newname;
+>  	int		rval;
+> 
+> -        if (!strcmp(name1, name->path)) {
+> -            printf("yikes! %s %s\n", name1, name->path);
+> -            return 0;
+> -        }
+> +	if (!strcmp(name1, name->path)) {
+> +		printf("yikes! %s %s\n", name1, name->path);
+> +		return 0;
+> +	}
+> 
+>  	rval = symlink(name1, name->path);
+>  	if (rval >= 0 || errno != ENAMETOOLONG)
+> @@ -1546,7 +1546,7 @@ bulkstat_f(int opno, long r)
+>  	int		nent;
+>  	xfs_bstat_t	*t;
+>  	__int64_t	total;
+> -        xfs_fsop_bulkreq_t bsr;
+> +	xfs_fsop_bulkreq_t bsr;
+> 
+>  	last = 0;
+>  	nent = (r % 999) + 2;
+> @@ -1554,10 +1554,10 @@ bulkstat_f(int opno, long r)
+>  	fd = open(".", O_RDONLY);
+>  	total = 0;
+> 
+> -        bsr.lastip=&last;
+> -        bsr.icount=nent;
+> -        bsr.ubuffer=t;
+> -        bsr.ocount=&count;
+> +	bsr.lastip=&last;
+> +	bsr.icount=nent;
+> +	bsr.ubuffer=t;
+> +	bsr.ocount=&count;
+> 
+>  	while (ioctl(fd, XFS_IOC_FSBULKSTAT, &bsr) == 0 && count > 0)
+>  		total += count;
+> @@ -1579,12 +1579,12 @@ bulkstat1_f(int opno, long r)
+>  	struct stat64	s;
+>  	xfs_bstat_t	t;
+>  	int		v;
+> -        xfs_fsop_bulkreq_t bsr;
+> +	xfs_fsop_bulkreq_t bsr;
+> 
+> 
+>  	good = random() & 1;
+>  	if (good) {
+> -               /* use an inode we know exists */
+> +		/* use an inode we know exists */
+>  		init_pathname(&f);
+>  		if (!get_fname(FT_ANYm, r, &f, NULL, NULL, &v))
+>  			append_pathname(&f, ".");
+> @@ -1592,34 +1592,34 @@ bulkstat1_f(int opno, long r)
+>  		check_cwd();
+>  		free_pathname(&f);
+>  	} else {
+> -                /*
+> -                 * pick a random inode
+> -                 *
+> -                 * note this can generate kernel warning messages
+> -                 * since bulkstat_one will read the disk block that
+> -                 * would contain a given inode even if that disk
+> -                 * block doesn't contain inodes.
+> -                 *
+> -                 * this is detected later, but not until after the
+> -                 * warning is displayed.
+> -                 *
+> -                 * "XFS: device 0x825- bad inode magic/vsn daddr 0x0 #0"
+> -                 *
+> -                 */
+> +		/*
+> +		 * pick a random inode
+> +		 *
+> +		 * note this can generate kernel warning messages
+> +		 * since bulkstat_one will read the disk block that
+> +		 * would contain a given inode even if that disk
+> +		 * block doesn't contain inodes.
+> +		 *
+> +		 * this is detected later, but not until after the
+> +		 * warning is displayed.
+> +		 *
+> +		 * "XFS: device 0x825- bad inode magic/vsn daddr 0x0 #0"
+> +		 *
+> +		 */
+>  		ino = (ino64_t)r;
+>  		v = verbose;
+>  	}
+>  	fd = open(".", O_RDONLY);
+> 
+> -        bsr.lastip=&ino;
+> -        bsr.icount=1;
+> -        bsr.ubuffer=&t;
+> -        bsr.ocount=NULL;
+> +	bsr.lastip=&ino;
+> +	bsr.icount=1;
+> +	bsr.ubuffer=&t;
+> +	bsr.ocount=NULL;
+> 
+>  	e = ioctl(fd, XFS_IOC_FSBULKSTAT_SINGLE, &bsr) < 0 ? errno : 0;
+>  	if (v)
+>  		printf("%d/%d: bulkstat1 %s ino %lld %d\n",
+> -                    procid, opno, good?"real":"random", (int64_t)ino, e);
+> +			procid, opno, good?"real":"random", (int64_t)ino, e);
+>  	close(fd);
+>  }
+> 
+> @@ -1702,7 +1702,7 @@ creat_f(int opno, long r)
+> 
+>  		}
+>  #endif
+> -		 		 add_to_flist(type, id, parid);
+> +		add_to_flist(type, id, parid);
+>  		close(fd);
+>  	}
+>  	if (v)
+> @@ -1798,7 +1798,7 @@ dread_f(int opno, long r)
+>  		diob.d_mem = stb.st_blksize;
+>  	}
+>  #ifndef NO_XFS
+> -	   else 	if (ioctl(fd, XFS_IOC_DIOINFO, &diob) < 0) {
+> +	else if (ioctl(fd, XFS_IOC_DIOINFO, &diob) < 0) {
+>  		if (v)
+>  			printf(
+>  			"%d/%d: dread - ioctl(fd, XFS_IOC_DIOINFO) %s failed %d\n",
 
-With kind regards,
 
-Geert Uytterhoeven
-Software Architect
-Techsoft Centre
-
-Technology and Software Centre Europe
-The Corporate Village =B7 Da Vincilaan 7-D1 =B7 B-1935 Zaventem =B7 Belgium
-
-Phone:    +32 (0)2 700 8453
-Fax:      +32 (0)2 700 8622
-E-mail:   Geert.Uytterhoeven@sonycom.com
-Internet: http://www.sony-europe.com/
-
-A division of Sony Europe (Belgium) N.V.
-VAT BE 0413.825.160 =B7 RPR Brussels
-Fortis =B7 BIC GEBABEBB =B7 IBAN BE41293037680010
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay =
-
+developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
 http://p.sf.net/sfu/devconf
 _______________________________________________
