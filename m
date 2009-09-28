@@ -1,20 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <avagin@gmail.com>) id 1Mrg23-0000SS-GA
-	for ltp-list@lists.sourceforge.net; Sat, 26 Sep 2009 22:46:23 +0000
-Received: from fg-out-1718.google.com ([72.14.220.154])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mrg1w-0004vq-UI
-	for ltp-list@lists.sourceforge.net; Sat, 26 Sep 2009 22:46:23 +0000
-Received: by fg-out-1718.google.com with SMTP id e21so474923fga.10
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <liubo-fnst@cn.fujitsu.com>) id 1MsA4K-00078v-UW
+	for ltp-list@lists.sourceforge.net; Mon, 28 Sep 2009 06:50:44 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MsA4F-0003w4-BT
+	for ltp-list@lists.sourceforge.net; Mon, 28 Sep 2009 06:50:44 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id 33B5517008D
 	for <ltp-list@lists.sourceforge.net>;
-	Sat, 26 Sep 2009 15:46:11 -0700 (PDT)
-From: Andrew Vagin <avagin@gmail.com>
-Date: Sun, 27 Sep 2009 02:45:58 +0400
-Message-Id: <1254005162-27353-1-git-send-email-avagin@gmail.com>
-Subject: [LTP] [PATCH 1/5] fsstress: delete tralling spaces
+	Mon, 28 Sep 2009 14:50:26 +0800 (CST)
+Received: from fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id n8S6o3Qv019750
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Sep 2009 14:50:03 +0800
+Received: from localhost.localdomain (unknown [10.167.141.170])
+	by fnst.cn.fujitsu.com (Postfix) with ESMTPA id 33496D429C
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 28 Sep 2009 14:53:10 +0800 (CST)
+Message-ID: <4AC05C9E.1040201@cn.fujitsu.com>
+Date: Mon, 28 Sep 2009 14:50:06 +0800
+From: liubo <liubo-fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] memcg : fix various test failures
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,174 +33,81 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
+In memcg testcases,
 
-Signed-off-by: Andrew Vagin <avagin@gmail.com>
+1. use /dev/memcg consistently
+
+2. for testcase_25, since 2.6.31, writing -1 to 
+   memory.limit_in_bytes will reset to unlimit.
+
+3. for testcase 35, writing to memory.force_empty for 
+   non-empty cgroup should return failure.
+
+Signed-off-by: Liu Bo <liubo-fnst@cn.fujitsu.com>
+
 ---
- testcases/kernel/fs/fsstress/fsstress.c |   36 +++++++++++++++---------------
- 1 files changed, 18 insertions(+), 18 deletions(-)
-
-diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
-index 1f11f6e..b313b62 100644
---- a/testcases/kernel/fs/fsstress/fsstress.c
-+++ b/testcases/kernel/fs/fsstress/fsstress.c
-@@ -295,7 +295,7 @@ int main(int argc, char **argv)
- 	ptrdiff_t	srval;
- #endif
-         int             nousage=0;
--#ifndef NO_XFS	
-+#ifndef NO_XFS
- 	xfs_error_injection_t	err_inj;
- #endif
- 
-@@ -308,7 +308,7 @@ int main(int argc, char **argv)
- 		switch (c) {
- 		case 'c':
- 			/*Don't cleanup*/
--			cleanup=1; 
-+			cleanup=1;
- 			break;
- 		case 'd':
- 			dirname = optarg;
-@@ -389,13 +389,13 @@ int main(int argc, char **argv)
- 					ops[i].freq = 0;
- 			}
- 		}
--       
-+
-        	 	if (!dirname) {
-        	     	/* no directory specified */
-     	        	if (!nousage) usage();
-            	 exit(1);
-         	}
--       
-+
- 		(void)mkdir(dirname, 0777);
- 		if (chdir(dirname) < 0) {
- 			perror(dirname);
-@@ -472,7 +472,7 @@ int main(int argc, char **argv)
- 			while (wait(&stat) > 0)
- 				continue;
- 		}
--#ifndef NO_XFS	
-+#ifndef NO_XFS
- 		if (errtag != 0) {
- 			err_inj.errtag = 0;
- 			err_inj.fd = fd;
-@@ -724,7 +724,7 @@ doproc(void)
- 		p = &ops[freq_table[random() % freq_table_size]];
- 		if ((unsigned long)p->func < 4096) abort();
- 
--	
-+
- 		p->func(opno, random());
- 		/*
- 		 * test for forced shutdown by stat'ing the test
-@@ -1225,7 +1225,7 @@ show_ops(int flag, char *lead_str)
-         if (flag<0) {
-                 /* print in list form */
-                 int             x = WIDTH;
--               
-+
- 	        for (p = ops; p < ops_end; p++) {
- 			if (lead_str != NULL && x+strlen(p->name)>=WIDTH-5)
- 				x=printf("%s%s", (p==ops)?"":"\n", lead_str);
-@@ -1277,7 +1277,7 @@ symlink_path(const char *name1, pathname_t *name)
- 	char		buf[MAXNAMELEN];
- 	pathname_t	newname;
- 	int		rval;
--       
-+
-         if (!strcmp(name1, name->path)) {
-             printf("yikes! %s %s\n", name1, name->path);
-             return 0;
-@@ -1553,12 +1553,12 @@ bulkstat_f(int opno, long r)
- 	t = malloc(nent * sizeof(*t));
- 	fd = open(".", O_RDONLY);
- 	total = 0;
--   
-+
-         bsr.lastip=&last;
-         bsr.icount=nent;
-         bsr.ubuffer=t;
-         bsr.ocount=&count;
--           
-+
- 	while (ioctl(fd, XFS_IOC_FSBULKSTAT, &bsr) == 0 && count > 0)
- 		total += count;
- 	free(t);
-@@ -1580,7 +1580,7 @@ bulkstat1_f(int opno, long r)
- 	xfs_bstat_t	t;
- 	int		v;
-         xfs_fsop_bulkreq_t bsr;
--       
-+
- 
- 	good = random() & 1;
- 	if (good) {
-@@ -1610,12 +1610,12 @@ bulkstat1_f(int opno, long r)
- 		v = verbose;
- 	}
- 	fd = open(".", O_RDONLY);
--       
-+
-         bsr.lastip=&ino;
-         bsr.icount=1;
-         bsr.ubuffer=&t;
-         bsr.ocount=NULL;
--       
-+
- 	e = ioctl(fd, XFS_IOC_FSBULKSTAT_SINGLE, &bsr) < 0 ? errno : 0;
- 	if (v)
- 		printf("%d/%d: bulkstat1 %s ino %lld %d\n",
-@@ -1699,9 +1699,9 @@ creat_f(int opno, long r)
- 			if (ioctl(fd, XFS_IOC_FSSETXATTR, &a) < 0)
- 				e1 = errno;
- 			esz = a.fsx_estsize;
--		
-+
- 		}
--#endif	
-+#endif
- 		 		 add_to_flist(type, id, parid);
- 		close(fd);
- 	}
-@@ -1723,7 +1723,7 @@ setdirect(int fd)
- 		return 0;
- 
- 	flags = fcntl(fd, F_GETFL, 0);
--	if (flags < 0) 
-+	if (flags < 0)
- 		return 0;
- 
- 	if (fcntl(fd, F_SETFL, flags|O_DIRECT)  < 0) {
-@@ -1734,7 +1734,7 @@ setdirect(int fd)
- 		printf("cannot set O_DIRECT: %s\n",strerror(errno));
- 		return 0;
- 	}
--			      
-+
- 	return 1;
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+index e48c8dd..e22954f 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+@@ -398,8 +398,12 @@ testcase_24()
+ testcase_25()
+ {
+ 	echo -1 > memory.limit_in_bytes 2> /dev/null
+-#	result $(( !($? != 0) ))  "return value is $?"  //lizf
+-	result $(( !($? == 0) ))  "return value is $?"
++	tst_kvercmp 2 6 31
++	if [ $? -eq 0 ]; then
++		result $(( !($? != 0) ))  "return value is $?"
++       else
++		result $(( !($? == 0) ))  "return value is $?"
++	fi
  }
  
-@@ -1752,7 +1752,7 @@ dread_f(int opno, long r)
- 	off64_t		off;
- 	struct stat64	stb;
- 	int		v;
--      
-+
- 	init_pathname(&f);
- 	if (!get_fname(FT_REGFILE, r, &f, NULL, NULL, &v)) {
- 		if (v)
--- 
-1.6.2.5
-
+ testcase_26()
+@@ -488,8 +492,8 @@ testcase_35()
+ {
+ 	# writing to non-empty top mem cgroup's force_empty
+ 	# should return failure
+-	echo 1 > /memcg/memory.force_empty 2> /dev/null
+-	result $(( $? )) "return value is $?"
++	echo 1 > /dev/memcg/memory.force_empty 2> /dev/null
++	result $(( !$? )) "return value is $?"
+ }
+ 
+ # Case 36 - 38: Test that group and subgroup have no relationship
+diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+index 1e17525..86b8cb9 100755
+--- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
++++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+@@ -68,11 +68,11 @@ run_stress()
+ 
+ 	for ((i = 0; i < $1; i++))
+ 	{
+-		mkdir /memcg/$i 2> /dev/null
++		mkdir /dev/memcg/$i 2> /dev/null
+ 		./memcg_process_stress $2 $3 &
+ 		pid[$i]=$!
+ 
+-		echo ${pid[$i]} > /memcg/$i/tasks
++		echo ${pid[$i]} > /dev/memcg/$i/tasks
+ 	}
+ 
+ 	for ((i = 0; i < $1; i++))
+@@ -87,7 +87,7 @@ run_stress()
+ 		/bin/kill -s SIGINT ${pid[$i]} 2> /dev/null
+ 		wait ${pid[$i]}
+ 
+-		rmdir /memcg/$i 2> /dev/null
++		rmdir /dev/memcg/$i 2> /dev/null
+ 	}
+ 
+ 	cleanup;
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
