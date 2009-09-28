@@ -1,38 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MryIY-0001a2-0w
-	for ltp-list@lists.sourceforge.net; Sun, 27 Sep 2009 18:16:38 +0000
-Received: from e38.co.us.ibm.com ([32.97.110.159])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MryIP-00017Q-Jt
-	for ltp-list@lists.sourceforge.net; Sun, 27 Sep 2009 18:16:37 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8RICKnr016435
-	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 12:12:20 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n8RIGNpe258550
-	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 12:16:23 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n8RIGN7h022583
-	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 12:16:23 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1254005162-27353-5-git-send-email-avagin@gmail.com>
-References: <1254005162-27353-1-git-send-email-avagin@gmail.com>
-	<1254005162-27353-2-git-send-email-avagin@gmail.com>
-	<1254005162-27353-3-git-send-email-avagin@gmail.com>
-	<1254005162-27353-4-git-send-email-avagin@gmail.com>
-	<1254005162-27353-5-git-send-email-avagin@gmail.com>
-Date: Sun, 27 Sep 2009 23:45:36 +0530
-Message-Id: <1254075338.10457.28.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH 5/5] fsstress: renew flist if clean up test
-	directory
-Reply-To: subrata@linux.vnet.ibm.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1Ms7Uc-0003E3-Cj
+	for ltp-list@lists.sourceforge.net; Mon, 28 Sep 2009 04:05:42 +0000
+Received: from e33.co.us.ibm.com ([32.97.110.151])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Ms7UU-0005KD-Hn
+	for ltp-list@lists.sourceforge.net; Mon, 28 Sep 2009 04:05:42 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e33.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8S43DP2026877
+	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 22:03:13 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n8S45Sjd211006
+	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 22:05:28 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n8S45SWQ009567
+	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 22:05:28 -0600
+Date: Sun, 27 Sep 2009 22:56:00 -0500
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20090928035600.GA24437@us.ibm.com>
+References: <20090921230644.GA30741@us.ibm.com>
+	<200909221100.42467.vapier@gentoo.org>
+	<20090923040546.GC9662@us.ibm.com>
+	<1254075344.10457.30.camel@subratamodak.linux.ibm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1254075344.10457.30.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [PATCH RFC] ltp: define and use common clone helpers
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,53 +40,80 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Andrew Vagin <avagin@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>, Nathan T Lynch <natlynch@us.ibm.com>, Mike Frysinger <vapier@gentoo.org>
 
-On Sun, 2009-09-27 at 02:46 +0400, Andrew Vagin wrote: 
-> flist contain all files created by fsstress. If test clean up direcory
-> on each interations that it should reinitilize flist.
-> 
-> Signed-off-by: Andrew Vagin <avagin@gmail.com>
-
-Thanks.
-
-Regards--
-Subrata
-
-> ---
->  testcases/kernel/fs/fsstress/fsstress.c |    6 ++++++
->  1 files changed, 6 insertions(+), 0 deletions(-)
-> 
-> diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
-> index cf7ba76..736bd53 100644
-> --- a/testcases/kernel/fs/fsstress/fsstress.c
-> +++ b/testcases/kernel/fs/fsstress/fsstress.c
-> @@ -491,6 +491,12 @@ int main(int argc, char **argv)
->  		{
->  			sprintf(cmd,"rm -rf %s/*",dirname);
->  			system(cmd);
-> +			for (i = 0; i < FT_nft; i++) {
-> +				flist[i].nslots = 0;
-> +				flist[i].nfiles = 0;
-> +				free(flist[i].fents);
-> +				flist[i].fents = NULL;
-> +			}
->  		}
->  		loopcntr++;
->  	}
-
-
-------------------------------------------------------------------------------
-Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-http://p.sf.net/sfu/devconf
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+UXVvdGluZyBTdWJyYXRhIE1vZGFrIChzdWJyYXRhQGxpbnV4LnZuZXQuaWJtLmNvbSk6Cj4gT24g
+VHVlLCAyMDA5LTA5LTIyIGF0IDIzOjA1IC0wNTAwLCBTZXJnZSBFLiBIYWxseW4gd3JvdGU6IAo+
+ID4gUXVvdGluZyBNaWtlIEZyeXNpbmdlciAodmFwaWVyQGdlbnRvby5vcmcpOgo+ID4gPiBPbiBN
+b25kYXkgMjEgU2VwdGVtYmVyIDIwMDkgMTk6MDY6NDQgU2VyZ2UgRS4gSGFsbHluIHdyb3RlOgo+
+ID4gPiA+IERlZmluZSBsdHBfY2xvbmUoKSBhbmQgbHRwX2Nsb25lX21hbGxvYygpIGluIGxpYmx0
+cCwgYW5kIGNvbnZlcnQgZXhpc3RpbmcKPiA+ID4gPiBjbG9uZSB1c2FnZXMgdG8gdGhlbS4gIChj
+bG9uZTA0IGNhbid0IHVzZSBpdCBiYyBpdCB3YW50cyB0byBwYXNzIE5VTEwsCj4gPiA+ID4gd2hp
+Y2ggbHRwX2Nsb25lKCkgd2lsbCBmb3IgbWFueSBhcmNoZXMgY29udmVydCB0byBOVUxMK3N0YWNr
+c2l6ZS0xKS4KPiA+ID4gCj4gPiA+IHNvIGhhdmUgdGhlIGNvZGUgaGFuZGxlIE5VTEwgc3BlY2lh
+bGx5Ogo+ID4gPiAoc3RhY2sgPyBzdGFjayArIHN0YWNrX3NpemUgLSAxIDogTlVMTCkKPiA+IAo+
+ID4gPGdydW1ibGU+IHllYWggdGhhdCBvY2N1cnJlZCB0byBtZSBidXQgSSB3YXMgcmViZWxsaW5n
+IGFnYWluc3QgdGhlIGNsb25lMDQuYwo+ID4gY29kZS4uLiAgQnV0IEkgZ3Vlc3MgSSBzaG91bGQu
+Cj4gPiAKPiA+ID4gPiArbHRwX2Nsb25lKHVuc2lnbmVkIGxvbmcgY2xvbmVfZmxhZ3MsIHZvaWQg
+KnN0YWNrLCBpbnQgc3RhY2tfc2l6ZSwKPiA+ID4gPiArCQlpbnQgKCpmbikodm9pZCAqYXJnKSwg
+dm9pZCAqYXJnKQo+ID4gPiA+ICt7Cj4gPiA+ID4gKwlpbnQgcmV0Owo+ID4gPiA+ICsKPiA+ID4g
+PiArI2lmIGRlZmluZWQoX19ocHBhX18pCj4gPiA+ID4gKwlyZXQgPSBjbG9uZShmbiwgc3RhY2ss
+IGNsb25lX2ZsYWdzLCBhcmcpOwo+ID4gPiA+ICsjZWxpZiBkZWZpbmVkKF9faWE2NF9fKQo+ID4g
+PiA+ICsJcmV0ID0gY2xvbmUyKGZuLCBzdGFjaywgc3RhY2tfc2l6ZSwgY2xvbmVfZmxhZ3MsIGFy
+ZywgTlVMTCwgTlVMTCwgTlVMTCk7Cj4gPiA+ID4gKyNlbHNlCj4gPiA+ID4gKwlyZXQgPSBjbG9u
+ZShmbiwgc3RhY2sgKyBzdGFja19zaXplIC0gMSwgY2xvbmVfZmxhZ3MsIGFyZyk7Cj4gPiA+ID4g
+KyNlbmRpZgo+ID4gPiA+ICsKPiA+ID4gPiArCWlmIChyZXQgPT0gLTEpCj4gPiA+ID4gKwkJcGVy
+cm9yKCJjbG9uZSIpOwo+ID4gPiAKPiA+ID4gd2UgY2FudCBiZSBzdXJlIHdoeSB0aGUgaGlnaGVy
+IGxheWVycyBhcmUgY2FsbGluZyBjbG9uZS4gIG1heWJlIHRoZSBhcmdzIGdpdmVuIAo+ID4gPiBl
+eHBlY3QgdGhlIGNsb25lKCkgY2FsbCB0byBmYWlsLiAgc28gd2UgZG9udCB3YW50IGFueSBwZXJy
+b3IoKSBpbnZvY2F0aW9uIAo+ID4gPiBoZXJlLgo+ID4gCj4gPiBNYWtlcyBzZW5zZS4KPiA+IAo+
+ID4gPiA+ICsvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioKPiA+ID4gPiArICogbHRwX2Nsb25lX21hbGxvYzogYWxz
+byBkb2VzIHRoZSBtZW1vcnkgYWxsb2NhdGlvbiBmb3IgY2xvbmUuCj4gPiA+ID4gKyAqIEV4cGVy
+aWVuY2UgdGh1cyBmYXIgc3VnZ2VzdHMgdGhhdCBvbmUgcGFnZSBpcyBvZnRlbiBpbnN1ZmZpY2ll
+bnQsCj4gPiA+ID4gKyAqIHdoaWxlIDQqZ2V0cGFnZXNpemUoKSBzZWVtcyBhZGVxdWF0ZS4KPiA+
+ID4gPiArICoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqLwo+ID4gPiAKPiA+ID4gYSBtYWxsb2MoKSBmdW5jdGlvbiBp
+bXBsaWVzIHlvdSBzaG91bGQgYmUgZ2l2aW5nIGl0IGEgc2l6ZS4gIGkgdGhpbmsgdGhlcmUgCj4g
+PiA+IHNob3VsZCBiZSBhbm90aGVyIGhlbHBlciBoZXJlLgo+ID4gPiBsdHBfY2xvbmVfbWFsbG9j
+KCkgLSB0YWtlcyBhIHNpemUKPiA+ID4gbHRwX2Nsb25lX3F1aWNrKCkgLSBjYWxscyBsdHBfY2xv
+bmVfbWFsbG9jKCkgd2l0aCBnZXRwYWdlc2l6ZSgpICogNAo+ID4gPiAKPiA+ID4gb3IgYSBiZXR0
+ZXIgbmFtZSB0aGFuICJxdWljayIgLi4uCj4gPiA+IAo+ID4gPiA+ICtpbnQKPiA+ID4gPiArbHRw
+X2Nsb25lX21hbGxvYyh1bnNpZ25lZCBsb25nIGNsb25lX2ZsYWdzLCBpbnQgKCpmbikodm9pZCAq
+YXJnKSwgdm9pZAo+ID4gPiA+ICAqYXJnKQo+ID4gPiAKPiA+ID4gaSB0aGluayBhcmd1bWVudCBv
+cmRlciBzaG91bGQgYmUgY29uc2lzdGVudC4gIGkuZS4gaGF2ZSBhbGwgbHRwX2Nsb25lXyogY2Fs
+bHMgCj4gPiA+IHN0YXJ0IHdpdGggKGZsYWdzLCBmdW5jLCBhcmcpIGFuZCB0aGVuIHRoZSBtYWxs
+b2MvZXRjLi4uIGNhbGxzIGNhbiBhZGQgb24gCj4gPiA+ICguLi4sIHNpemUpIGFuZCAoLi4uLCBz
+aXplLCBidWZmZXIpLgo+ID4gCj4gPiBtYWtlcyBzZW5zZS4KPiA+IAo+ID4gPiA+ICsJdm9pZCAq
+c3RhY2sgPSBtYWxsb2MgKHN0YWNrX3NpemUpOwo+ID4gPiAKPiA+ID4gbm8gc3BhY2luZyBhcm91
+bmQgZnVuY3Rpb24gY2FsbHMKPiA+ID4gCj4gPiA+ID4gKwlpZiAoIXN0YWNrKSB7Cj4gPiA+ID4g
+KwkJcGVycm9yKCJtYWxsb2MiKTsKPiA+ID4gPiArCQlyZXR1cm4gLTE7Cj4gPiA+ID4gKwl9Cj4g
+PiA+IAo+ID4gPiBzaW5jZSBwZW9wbGUgYXJlIGxpbmtpbmcgaW4gLWxsdHAgdG8gZ2V0IHRoZXNl
+IGNsb25lIGhlbHBlcnMsIHdlIGNhbiBhc3N1bWUgCj4gPiA+IHRoZSB0c3RfKiBmdW5jcyBleGlz
+dC4gIHNvIHRoaXMgc2hvdWxkIGludm9rZSBvbmUgb2YgdGhlbSB3aXRoIFRCUk9LfFRFUlJOTy4K
+PiA+IAo+ID4gVHJ1ZS4KPiA+IAo+ID4gPiA+ICsJcmV0ID0gbHRwX2Nsb25lKGNsb25lX2ZsYWdz
+LCBzdGFjaywgc3RhY2tfc2l6ZSwgZm4sIGFyZyk7Cj4gPiA+ID4gKwo+ID4gPiA+ICsJaWYgKHJl
+dCA9PSAtMSkgewo+ID4gPiA+ICsJCXBlcnJvcigiY2xvbmUiKTsKPiA+ID4gPiArCQlmcmVlKHN0
+YWNrKTsKPiA+ID4gPiArCX0KPiA+ID4gCj4gPiA+IHNhbWUgaXNzdWUgYXMgdGhlIG90aGVyIGZ1
+bmMgLS0gZG9udCBjYWxsIHBlcnJvcigpCj4gPiA+IAo+ID4gPiBpIHRoaW5rIHdlIHNob3VsZCBt
+YWtlIHN1cmUgdG8gc2F2ZS9yZXN0b3JlIGVycm5vIGFjcm9zcyB0aGUgZnJlZSgpIGludm9jYXRp
+b24gCj4gPiA+IHNvIHRoYXQgdGhlIGNhbGxlciBnZXRzIHRoZSByZXN1bHQgZnJvbSBjbG9uZSgp
+IC4uLgo+ID4gCj4gPiBHb29kIHBvaW50Lgo+ID4gCj4gPiA+IG90aGVyd2lzZSB0aGlzIGxvb2tz
+IGdyZWF0LiAgdGhhbmtzIGZvciBkb2luZyB0aGUgZm9vdHdvcmsgaGVyZS4KPiA+ID4gLW1pa2UK
+PiA+IAo+ID4gV2lsbCBob3BlZnVsbHkgd2hpcCB1cCBhIG5ldyBwYXRjaCBsYXRlciB0aGlzIHdl
+ZWsgYW5kIHJlc2VuZC4KPiAKPiBTZXJnZSwKPiAKPiBJcyB0aGlzIG9uIGl0xZsgd2F5IG91dCA7
+LSkKCk5vIEkgZGlkbid0IGdldCBhIGNoYW5jZSBsYXN0IHdlZWsuCgotc2VyZ2UKCi0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLQpDb21lIGJ1aWxkIHdpdGggdXMhIFRoZSBCbGFja0JlcnJ5JnJlZzsgRGV2
+ZWxvcGVyIENvbmZlcmVuY2UgaW4gU0YsIENBCmlzIHRoZSBvbmx5IGRldmVsb3BlciBldmVudCB5
+b3UgbmVlZCB0byBhdHRlbmQgdGhpcyB5ZWFyLiBKdW1wc3RhcnQgeW91cgpkZXZlbG9waW5nIHNr
+aWxscywgdGFrZSBCbGFja0JlcnJ5IG1vYmlsZSBhcHBsaWNhdGlvbnMgdG8gbWFya2V0IGFuZCBz
+dGF5IAphaGVhZCBvZiB0aGUgY3VydmUuIEpvaW4gdXMgZnJvbSBOb3ZlbWJlciA5JiM0NTsxMiwg
+MjAwOS4gUmVnaXN0ZXIgbm93JiMzMzsKaHR0cDovL3Auc2YubmV0L3NmdS9kZXZjb25mCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxp
+bmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3Vy
+Y2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
