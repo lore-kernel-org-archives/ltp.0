@@ -1,32 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MryHl-0005is-Mv
-	for ltp-list@lists.sourceforge.net; Sun, 27 Sep 2009 18:15:49 +0000
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MryHh-0007dr-R7
-	for ltp-list@lists.sourceforge.net; Sun, 27 Sep 2009 18:15:49 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e5.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n8RI6UU3004440
-	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 14:06:30 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n8RIFeFs254356
-	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 14:15:40 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n8RIFerC032341
-	for <ltp-list@lists.sourceforge.net>; Sun, 27 Sep 2009 14:15:40 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200909241421.n8OELZvo008862@e5.ny.us.ibm.com>
-References: <200909241421.n8OELZvo008862@e5.ny.us.ibm.com>
-Date: Sun, 27 Sep 2009 23:45:10 +0530
-Message-Id: <1254075312.10457.23.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Add a test for race-free operation of ppoll
-Reply-To: subrata@linux.vnet.ibm.com
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <liubo-fnst@cn.fujitsu.com>) id 1MsA8J-0000As-1z
+	for ltp-list@lists.sourceforge.net; Mon, 28 Sep 2009 06:54:51 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MsA8E-0000TM-Kn
+	for ltp-list@lists.sourceforge.net; Mon, 28 Sep 2009 06:54:50 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id F1B0017008D
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 28 Sep 2009 14:54:37 +0800 (CST)
+Received: from fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id n8S6sFec019907
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Sep 2009 14:54:15 +0800
+Received: from localhost.localdomain (unknown [10.167.141.170])
+	by fnst.cn.fujitsu.com (Postfix) with ESMTPA id AB977D42C4
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 28 Sep 2009 14:57:21 +0800 (CST)
+Message-ID: <4AC05D99.9010907@cn.fujitsu.com>
+Date: Mon, 28 Sep 2009 14:54:17 +0800
+From: liubo <liubo-fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] memcg : fix various test failures
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,132 +36,78 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Thu, 2009-07-30 at 12:17 +0200, Jiri Palecek wrote: 
-> Hello,
-> 
-> after the previous patch, this patch adds a test to test a use of ppoll() without races (ie. the intended use of ppoll). It blocks the signal, schedules a signal to be delivered and expects ppoll to return EINTR (and never lose the signal.
-> 
-> Regards
->     Jiri Palecek
-> 
-> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+In memcg testcases,
 
-Thanks.
+1. use /dev/memcg consistently
 
-Regards--
-Subrata
+2. for testcase_25, since 2.6.31, writing -1 to 
+   memory.limit_in_bytes will reset to unlimit.
 
-> ---
->  testcases/kernel/syscalls/ppoll/ppoll01.c |   53 ++++++++++++++++++++++++++--
->  1 files changed, 49 insertions(+), 4 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/ppoll/ppoll01.c b/testcases/kernel/syscalls/ppoll/ppoll01.c
-> index a04935c..507eddc 100644
-> --- a/testcases/kernel/syscalls/ppoll/ppoll01.c
-> +++ b/testcases/kernel/syscalls/ppoll/ppoll01.c
-> @@ -155,6 +155,7 @@ enum test_type {
->          TIMEOUT,
->          FD_ALREADY_CLOSED,
->          SEND_SIGINT,
-> +        SEND_SIGINT_RACE_TEST,
->          INVALID_NFDS,
->          INVALID_FDS,
->          MINUS_NSEC,
-> @@ -219,22 +220,27 @@ static struct test_case tcase[] = {
->                  .err            = EINTR,
->          },
->          { // case05
-> +                .ttype          = SEND_SIGINT_RACE_TEST,
-> +                .ret            = -1,
-> +                .err            = EINTR,
-> +        },
-> +        { // case06
->                  .ttype          = INVALID_NFDS,
->                  .ret            = -1,
->                  .err            = EINVAL,
->          },
-> -        { // case06
-> +        { // case07
->                  .ttype          = INVALID_FDS,
->                  .ret            = -1,
->                  .err            = EFAULT,
->          },
->  #if 0
-> -        { // case07
-> +        { // case08
->                  .ttype          = MINUS_NSEC,
->                  .ret            = -1,
->                  .err            = EINVAL, // RHEL4U1 + 2.6.18 returns SUCCESS
->          },
-> -        { // case08
-> +        { // case09
->                  .ttype          = TOO_LARGE_NSEC,
->                  .ret            = -1,
->                  .err            = EINVAL, // RHEL4U1 + 2.6.18 returns SUCCESS
-> @@ -306,6 +312,29 @@ static int do_test(struct test_case *tc)
->                  if (pid < 0)
->                          return 1;
->                  break;
-> +  case SEND_SIGINT_RACE_TEST:
-> +    /* block the INT signal */
-> +                sigemptyset(&sigmask);
-> +                sigaddset(&sigmask, SIGINT);
-> +                sigprocmask(SIG_SETMASK, &sigmask, NULL);
-> +
-> +                /* and let it be unblocked when the syscall runs */
-> +                sigemptyset(&sigmask);
-> +                p_sigmask = &sigmask;
-> +                //sigsetsize = sizeof(sigmask);
-> +                sigsetsize = 8;
-> +                nfds = 0;
-> +                ts.tv_sec = 0;
-> +                ts.tv_nsec = 300000000; // 300msec => need to be enough for
-> +                                        //   waiting the signal
-> +                p_ts = &ts;
-> +                nfds = 0;
-> +                pid = create_sig_proc(0, SIGINT, 1);
-> +                if (pid < 0) {
-> +                  result=1;
-> +                  goto cleanup;
-> +                }
-> +                break;
->          case INVALID_NFDS:
->                  //nfds = RLIMIT_NOFILE + 1; ==> RHEL4U1 + 2.6.18 returns SUCCESS
->                  nfds = -1;
-> @@ -344,12 +373,28 @@ TEST_END:
->          /*
->           * Check results
->           */
-> +        if(tc->ttype == SEND_SIGINT_RACE_TEST) {
-> +          int sig;
-> +          sigprocmask(SIG_SETMASK, NULL, &sigmask);
-> +          for(sig=1; sig < SIGRTMAX; sig++) {
-> +              TEST(sigismember(&sigmask, sig));
-> +              if(TEST_RETURN < 0 && TEST_ERRNO == EINVAL && sig != SIGINT)
-> +                continue; /* let's ignore errors if they are for other signal than SIGINT that we set */
-> +              if((sig==SIGINT) != (TEST_RETURN!=0)) {
-> +                tst_resm(TFAIL, "Bad value of signal mask, signal %d is %s", sig, TEST_RETURN ? "on" : "off");
-> +                cmp_ok |=1;
-> +              }
-> +            }
-> +        }
->          result |= (sys_errno != tc->err) || !cmp_ok;
->          PRINT_RESULT_CMP(sys_ret >= 0, tc->ret, tc->err, sys_ret, sys_errno,
->                           cmp_ok);
-> -
-> + cleanup:
->          if (fd >= 0)
->                  cleanup_file(fpath);
-> +
-> +        sigemptyset(&sigmask);
-> +        sigprocmask(SIG_SETMASK, &sigmask, NULL);
->          if (pid > 0) {
->                  int st;
->                  kill(pid, SIGTERM);
+3. for testcase_35, writing to memory.force_empty for 
+   non-empty cgroup should return failure.
 
+Signed-off-by: Liu Bo <liubo-fnst@cn.fujitsu.com>
+
+---
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+index e48c8dd..e22954f 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+@@ -398,8 +398,12 @@ testcase_24()
+ testcase_25()
+ {
+ 	echo -1 > memory.limit_in_bytes 2> /dev/null
+-#	result $(( !($? != 0) ))  "return value is $?"  //lizf
+-	result $(( !($? == 0) ))  "return value is $?"
++	tst_kvercmp 2 6 31
++	if [ $? -eq 0 ]; then
++		result $(( !($? != 0) ))  "return value is $?"
++       else
++		result $(( !($? == 0) ))  "return value is $?"
++	fi
+ }
+ 
+ testcase_26()
+@@ -488,8 +492,8 @@ testcase_35()
+ {
+ 	# writing to non-empty top mem cgroup's force_empty
+ 	# should return failure
+-	echo 1 > /memcg/memory.force_empty 2> /dev/null
+-	result $(( $? )) "return value is $?"
++	echo 1 > /dev/memcg/memory.force_empty 2> /dev/null
++	result $(( !$? )) "return value is $?"
+ }
+ 
+ # Case 36 - 38: Test that group and subgroup have no relationship
+diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+index 1e17525..86b8cb9 100755
+--- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
++++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+@@ -68,11 +68,11 @@ run_stress()
+ 
+ 	for ((i = 0; i < $1; i++))
+ 	{
+-		mkdir /memcg/$i 2> /dev/null
++		mkdir /dev/memcg/$i 2> /dev/null
+ 		./memcg_process_stress $2 $3 &
+ 		pid[$i]=$!
+ 
+-		echo ${pid[$i]} > /memcg/$i/tasks
++		echo ${pid[$i]} > /dev/memcg/$i/tasks
+ 	}
+ 
+ 	for ((i = 0; i < $1; i++))
+@@ -87,7 +87,7 @@ run_stress()
+ 		/bin/kill -s SIGINT ${pid[$i]} 2> /dev/null
+ 		wait ${pid[$i]}
+ 
+-		rmdir /memcg/$i 2> /dev/null
++		rmdir /dev/memcg/$i 2> /dev/null
+ 	}
+ 
+ 	cleanup;
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
