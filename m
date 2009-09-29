@@ -1,24 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <rostedt@goodmis.org>) id 1Mjhyu-0005Y0-TU
-	for ltp-list@lists.sourceforge.net; Fri, 04 Sep 2009 23:14:12 +0000
-Received: from hrndva-omtalb.mail.rr.com ([71.74.56.125])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mjhyn-0005eL-Qf
-	for ltp-list@lists.sourceforge.net; Fri, 04 Sep 2009 23:14:12 +0000
-From: Steven Rostedt <rostedt@goodmis.org>
-In-Reply-To: <1252057746.4698.6.camel@kiran-laptop>
-References: <1251794259.3881.6.camel@kiran-laptop>
-	<1251875695.4930.8.camel@subratamodak.linux.ibm.com>
-	<1252057746.4698.6.camel@kiran-laptop>
-Date: Fri, 04 Sep 2009 18:54:42 -0400
-Message-Id: <1252104882.21544.34.camel@gandalf.stny.rr.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Patch to change the format of Steve Rostedt's
- rt-migrate-test testcase
-Reply-To: rostedt@goodmis.org
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1Msdhj-0004TK-OE
+	for ltp-list@lists.sourceforge.net; Tue, 29 Sep 2009 14:29:23 +0000
+Received: from fmmailgate02.web.de ([217.72.192.227])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Msdhd-0002JY-G3
+	for ltp-list@lists.sourceforge.net; Tue, 29 Sep 2009 14:29:23 +0000
+Received: from smtp07.web.de (fmsmtp07.dlan.cinetic.de [172.20.5.215])
+	by fmmailgate02.web.de (Postfix) with ESMTP id 5794F126CAD6C
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 29 Sep 2009 16:29:01 +0200 (CEST)
+Received: from [83.208.36.163] (helo=debian)
+	by smtp07.web.de with asmtp (TLSv1:AES256-SHA:256)
+	(WEB.DE 4.110 #314) id 1MsdhH-0002LZ-00
+	for ltp-list@lists.sourceforge.net; Tue, 29 Sep 2009 16:28:56 +0200
+Date: Tue, 29 Sep 2009 16:28:53 +0200
+From: =?iso-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
+MIME-Version: 1.0
+Message-ID: <op.u00vt9vju2flwt@debian>
+Subject: [LTP] New test?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,30 +33,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Kiran <kiran@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sf.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On Fri, 2009-09-04 at 15:19 +0530, Kiran wrote:
-> Hi Subrata,
-> 
-> This patch places the rt-migrate testcase into the
-> realtime/func/rt-migrate directory.
-> 
-> Signed-off-by: Kiran Prakash <kiran@linux.vnet.ibm.com>
+Hello,
 
-Acked-by: Steven Rostedt <rostedt@goodmis.org>
+I've decided to create a test for the rt_sigwaitinfo syscall. There are  
+other functions with similar interface (defined by POSIX) in libc -  
+particularly sigwait, sigtimedwait and sigwaitinfo. The rt_sigwaitinfo  
+test could easily tests these too, so I wonder whether we want to test  
+these too, and if yes, whether these tests can be located in the same  
+executable.
 
-Thanks guys!
+Regards
+     Jiri Palecek
 
--- Steve
-
-
+-- 
+Using Opera's revolutionary e-mail client: http://www.opera.com/mail/
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with 
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
+http://p.sf.net/sfu/devconf
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
