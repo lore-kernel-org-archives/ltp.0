@@ -2,30 +2,18 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1MvwQT-0003xp-3g
-	for ltp-list@lists.sourceforge.net; Thu, 08 Oct 2009 17:05:13 +0000
-Received: from e35.co.us.ibm.com ([32.97.110.153])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MvwQN-0002vF-4a
-	for ltp-list@lists.sourceforge.net; Thu, 08 Oct 2009 17:05:13 +0000
-Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
-	[9.17.195.107])
-	by e35.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n98GsL5G024963
-	for <ltp-list@lists.sourceforge.net>; Thu, 8 Oct 2009 10:54:21 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n98H4dQL066730
-	for <ltp-list@lists.sourceforge.net>; Thu, 8 Oct 2009 11:04:40 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n98H4cE3013366
-	for <ltp-list@lists.sourceforge.net>; Thu, 8 Oct 2009 11:04:39 -0600
-Date: Thu, 8 Oct 2009 11:59:29 -0500
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20091008165929.GA27576@us.ibm.com>
+	(envelope-from <nm127@freemail.hu>) id 1MuY7M-000617-Tx
+	for ltp-list@lists.sourceforge.net; Sun, 04 Oct 2009 20:55:44 +0000
+Received: from mail00d.mail.t-online.hu ([84.2.42.5])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MuY7H-0003iq-6T
+	for ltp-list@lists.sourceforge.net; Sun, 04 Oct 2009 20:55:44 +0000
+Message-ID: <4AC90BBF.9040803@freemail.hu>
+Date: Sun, 04 Oct 2009 22:55:27 +0200
+From: =?UTF-8?B?TsOpbWV0aCBNw6FydG9u?= <nm127@freemail.hu>
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] [PATCH 1/1] p9auth: fix a bug in the p9auth setup script
+Subject: [LTP] [PATCH] pac_common: redesign function for finding Start Of
+	Frame
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,61 +23,72 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak1 <subrata.modak@in.ibm.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Jean-Francois Moine <moinejf@free.fr>, Thomas Kaiser <thomas@kaiser-linux.li>, Kyle Guinn <elyk03@gmail.com>, Theodore Kilgore <kilgota@auburn.edu>
+Cc: ltp-list@lists.sourceforge.net, LKML <linux-kernel@vger.kernel.org>, V4L Mailing List <linux-media@vger.kernel.org>
 
-If by chance /dev/caphash existed but /dev/capuse did not, then
-the checkp9auth.sh script would use $maj without setting it.
-
-Signed-off-by: Serge Hallyn <serue@us.ibm.com>
----
- testcases/kernel/security/p9auth/checkp9auth.sh |    4 +---
- 1 files changed, 1 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/security/p9auth/checkp9auth.sh b/testcases/kernel/security/p9auth/checkp9auth.sh
-index 4365427..4a5a7d4 100755
---- a/testcases/kernel/security/p9auth/checkp9auth.sh
-+++ b/testcases/kernel/security/p9auth/checkp9auth.sh
-@@ -47,7 +47,6 @@ if [ $? -ne 0 ]; then
- fi
- 
- majfile=/sys/module/p9auth/parameters/cap_major
--minfile=/sys/module/p9auth/parameters/cap_minor
- if [ ! -f "$majfile" ]; then
- 	if [ $yesno -eq 1 ]; then echo
- 		echo "no"
-@@ -56,16 +55,15 @@ if [ ! -f "$majfile" ]; then
- 	fi
- 	exit 1
- fi
-+maj=`cat $majfile`
- 
- if [ ! -c "/dev/caphash" ]; then
- 	rm -f /dev/caphash
--	maj=`cat $majfile`
- 	mknod /dev/caphash c $maj 0
- fi
- 
- if [ ! -c "/dev/capuse" ]; then
- 	rm -f /dev/capuse
--	min=`cat $minfile`
- 	mknod /dev/capuse c $maj 1
- fi
- chmod ugo+w /dev/capuse
--- 
-1.6.3.3
-
-
-------------------------------------------------------------------------------
-Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-http://p.sf.net/sfu/devconference
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+RnJvbTogTcOhcnRvbiBOw6ltZXRoIDxubTEyN0BmcmVlbWFpbC5odT4KClRoZSBvcmlnaW5hbCBp
+bXBsZW1lbnRhdGlvbiBvZiBwYWNfZmluZF9zb2YoKSBkb2VzIG5vdCBhbHdheXMgZmluZAp0aGUg
+U3RhcnQgT2YgRnJhbWUgKFNPRikgbWFya2VyLiBSZXBsYWNlIGl0IHdpdGggYSBzdGF0ZSBtYWNo
+aW5lCmJhc2VkIGRlc2lnbi4KClRoZSBjaGFuZ2Ugd2FzIHRlc3RlZCB3aXRoIExhYnRlYyBXZWJj
+YW0gMjIwMC4KClNpZ25lZC1vZmYtYnk6IE3DoXJ0b24gTsOpbWV0aCA8bm0xMjdAZnJlZW1haWwu
+aHU+Ci0tLQotLS0gbGludXgtMi42LjMyLXJjMS5vcmlnL2RyaXZlcnMvbWVkaWEvdmlkZW8vZ3Nw
+Y2EvcGFjX2NvbW1vbi5oCTIwMDktMDktMTAgMDA6MTM6NTkuMDAwMDAwMDAwICswMjAwCisrKyBs
+aW51eC0yLjYuMzItcmMxL2RyaXZlcnMvbWVkaWEvdmlkZW8vZ3NwY2EvcGFjX2NvbW1vbi5oCTIw
+MDktMTAtMDQgMjE6NDk6MTkuMDAwMDAwMDAwICswMjAwCkBAIC0zMyw2ICszMyw0NSBAQAogc3Rh
+dGljIGNvbnN0IHVuc2lnbmVkIGNoYXIgcGFjX3NvZl9tYXJrZXJbNV0gPQogCQl7IDB4ZmYsIDB4
+ZmYsIDB4MDAsIDB4ZmYsIDB4OTYgfTsKCisvKgorICAgVGhlIGZvbGxvd2luZyBzdGF0ZSBtYWNo
+aW5lIGZpbmRzIHRoZSBTT0YgbWFya2VyIHNlcXVlbmNlCisgICAweGZmLCAweGZmLCAweDAwLCAw
+eGZmLCAweDk2IGluIGEgYnl0ZSBzdHJlYW0uCisKKwkgICArLS0tLS0tLS0tLSsKKwkgICB8IDA6
+IFNUQVJUIHw8LS0tLS0tLS0tLS0tLS0tXAorCSAgICstLS0tLS0tLS0tKzwtXCAgICAgICAgICAg
+ICB8CisJICAgICB8ICAgICAgIFwtLS0vb3RoZXJ3aXNlICAgIHwKKwkgICAgIHYgMHhmZiAgICAg
+ICAgICAgICAgICAgICAgfAorCSAgICstLS0tLS0tLS0tKyBvdGhlcndpc2UgICAgICB8CisJICAg
+fCAgICAgMSAgICB8LS0tLS0tLS0tLS0tLS0tPioKKwkgICB8ICAgICAgICAgIHwgICAgICAgICAg
+ICAgICAgXgorCSAgICstLS0tLS0tLS0tKyAgICAgICAgICAgICAgICB8CisJICAgICB8ICAgICAg
+ICAgICAgICAgICAgICAgICAgIHwKKwkgICAgIHYgMHhmZiAgICAgICAgICAgICAgICAgICAgfAor
+CSAgICstLS0tLS0tLS0tKzwtXDB4ZmYgICAgICAgICB8CisJLy0+fCAgICAgICAgICB8LS0vICAg
+ICAgICAgICAgIHwKKwl8ICB8ICAgICAyICAgIHwtLS0tLS0tLS0tLS0tLS0+KgorCXwgIHwgICAg
+ICAgICAgfCBvdGhlcndpc2UgICAgICBeCisJfCAgKy0tLS0tLS0tLS0rICAgICAgICAgICAgICAg
+IHwKKwl8ICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgfAorCXwgICAgdiAweDAwICAgICAg
+ICAgICAgICAgICAgICB8CisJfCAgKy0tLS0tLS0tLS0rICAgICAgICAgICAgICAgIHwKKwl8ICB8
+ICAgICAzICAgIHwgICAgICAgICAgICAgICAgfAorCXwgIHwgICAgICAgICAgfC0tLS0tLS0tLS0t
+LS0tLT4qCisJfCAgKy0tLS0tLS0tLS0rIG90aGVyd2lzZSAgICAgIF4KKwl8ICAgIHwgICAgICAg
+ICAgICAgICAgICAgICAgICAgfAorICAgMHhmZiB8ICAgIHYgMHhmZiAgICAgICAgICAgICAgICAg
+ICAgfAorCXwgICstLS0tLS0tLS0tKyAgICAgICAgICAgICAgICB8CisJXC0tfCAgICAgNCAgICB8
+ICAgICAgICAgICAgICAgIHwKKwkgICB8ICAgICAgICAgIHwtLS0tLS0tLS0tLS0tLS0tLworCSAg
+ICstLS0tLS0tLS0tKyBvdGhlcndpc2UKKwkgICAgIHwKKwkgICAgIHYgMHg5NgorCSAgICstLS0t
+LS0tLS0tKworCSAgIHwgIEZPVU5EICAgfAorCSAgICstLS0tLS0tLS0tKworKi8KKwogc3RhdGlj
+IHVuc2lnbmVkIGNoYXIgKnBhY19maW5kX3NvZihzdHJ1Y3QgZ3NwY2FfZGV2ICpnc3BjYV9kZXYs
+CiAJCQkJCXVuc2lnbmVkIGNoYXIgKm0sIGludCBsZW4pCiB7CkBAIC00MSwxNyArODAsNTQgQEAg
+c3RhdGljIHVuc2lnbmVkIGNoYXIgKnBhY19maW5kX3NvZihzdHJ1YwoKIAkvKiBTZWFyY2ggZm9y
+IHRoZSBTT0YgbWFya2VyIChmaXhlZCBwYXJ0KSBpbiB0aGUgaGVhZGVyICovCiAJZm9yIChpID0g
+MDsgaSA8IGxlbjsgaSsrKSB7Ci0JCWlmIChtW2ldID09IHBhY19zb2ZfbWFya2VyW3NkLT5zb2Zf
+cmVhZF0pIHsKLQkJCXNkLT5zb2ZfcmVhZCsrOwotCQkJaWYgKHNkLT5zb2ZfcmVhZCA9PSBzaXpl
+b2YocGFjX3NvZl9tYXJrZXIpKSB7CisJCXN3aXRjaCAoc2QtPnNvZl9yZWFkKSB7CisJCWNhc2Ug
+MDoKKwkJCWlmIChtW2ldID09IDB4ZmYpCisJCQkJc2QtPnNvZl9yZWFkID0gMTsKKwkJCWJyZWFr
+OworCQljYXNlIDE6CisJCQlpZiAobVtpXSA9PSAweGZmKQorCQkJCXNkLT5zb2ZfcmVhZCA9IDI7
+CisJCQllbHNlCisJCQkJc2QtPnNvZl9yZWFkID0gMDsKKwkJCWJyZWFrOworCQljYXNlIDI6CisJ
+CQlzd2l0Y2ggKG1baV0pIHsKKwkJCWNhc2UgMHgwMDoKKwkJCQlzZC0+c29mX3JlYWQgPSAzOwor
+CQkJCWJyZWFrOworCQkJY2FzZSAweGZmOgorCQkJCS8qIHN0YXkgaW4gdGhpcyBzdGF0ZSAqLwor
+CQkJCWJyZWFrOworCQkJZGVmYXVsdDoKKwkJCQlzZC0+c29mX3JlYWQgPSAwOworCQkJfQorCQkJ
+YnJlYWs7CisJCWNhc2UgMzoKKwkJCWlmIChtW2ldID09IDB4ZmYpCisJCQkJc2QtPnNvZl9yZWFk
+ID0gNDsKKwkJCWVsc2UKKwkJCQlzZC0+c29mX3JlYWQgPSAwOworCQkJYnJlYWs7CisJCWNhc2Ug
+NDoKKwkJCXN3aXRjaCAobVtpXSkgeworCQkJY2FzZSAweDk2OgorCQkJCS8qIFBhdHRlcm4gZm91
+bmQgKi8KIAkJCQlQREVCVUcoRF9GUkFNLAogCQkJCQkiU09GIGZvdW5kLCBieXRlcyB0byBhbmFs
+eXplOiAldS4iCiAJCQkJCSIgRnJhbWUgc3RhcnRzIGF0IGJ5dGUgIyV1IiwKIAkJCQkJbGVuLCBp
+ICsgMSk7CiAJCQkJc2QtPnNvZl9yZWFkID0gMDsKIAkJCQlyZXR1cm4gbSArIGkgKyAxOworCQkJ
+CWJyZWFrOworCQkJY2FzZSAweGZmOgorCQkJCXNkLT5zb2ZfcmVhZCA9IDI7CisJCQkJYnJlYWs7
+CisJCQlkZWZhdWx0OgorCQkJCXNkLT5zb2ZfcmVhZCA9IDA7CiAJCQl9Ci0JCX0gZWxzZSB7CisJ
+CQlicmVhazsKKwkJZGVmYXVsdDoKIAkJCXNkLT5zb2ZfcmVhZCA9IDA7CiAJCX0KIAl9CgotLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0KQ29tZSBidWlsZCB3aXRoIHVzISBUaGUgQmxhY2tCZXJyeSZyZWc7
+IERldmVsb3BlciBDb25mZXJlbmNlIGluIFNGLCBDQQppcyB0aGUgb25seSBkZXZlbG9wZXIgZXZl
+bnQgeW91IG5lZWQgdG8gYXR0ZW5kIHRoaXMgeWVhci4gSnVtcHN0YXJ0IHlvdXIKZGV2ZWxvcGlu
+ZyBza2lsbHMsIHRha2UgQmxhY2tCZXJyeSBtb2JpbGUgYXBwbGljYXRpb25zIHRvIG1hcmtldCBh
+bmQgc3RheSAKYWhlYWQgb2YgdGhlIGN1cnZlLiBKb2luIHVzIGZyb20gTm92ZW1iZXIgOSYjNDU7
+MTIsIDIwMDkuIFJlZ2lzdGVyIG5vdyYjMzM7Cmh0dHA6Ly9wLnNmLm5ldC9zZnUvZGV2Y29uZgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBt
+YWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMu
+c291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
