@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yamato@redhat.com>) id 1Mw9BF-0004NA-Dy
-	for ltp-list@lists.sourceforge.net; Fri, 09 Oct 2009 06:42:21 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1MuZOX-0002aE-9N
+	for ltp-list@lists.sourceforge.net; Sun, 04 Oct 2009 22:17:33 +0000
+Received: from fmmailgate01.web.de ([217.72.192.221])
 	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mw9Ay-0006nU-AT
-	for ltp-list@lists.sourceforge.net; Fri, 09 Oct 2009 06:42:13 +0000
-Date: Fri, 09 Oct 2009 15:45:51 +0900 (JST)
-Message-Id: <20091009.154551.510197147100430652.yamato@redhat.com>
-From: Masatake YAMATO <yamato@redhat.com>
-In-Reply-To: <200910090234.56735.vapier@gentoo.org>
-References: <20091009.152108.954124754429052503.yamato@redhat.com>
-	<200910090234.56735.vapier@gentoo.org>
-Mime-Version: 1.0
-Subject: Re: [LTP] Checking flex existance in configure
+	id 1MuZOP-00052T-0X
+	for ltp-list@lists.sourceforge.net; Sun, 04 Oct 2009 22:17:33 +0000
+From: Jiri Palecek <jpalecek@web.de>
+Date: Mon, 5 Oct 2009 00:18:12 +0200
+References: <8368651DACC1964480F951191B94A0780142442B@svexch01.mvista.com>
+In-Reply-To: <8368651DACC1964480F951191B94A0780142442B@svexch01.mvista.com>
+MIME-Version: 1.0
+Message-Id: <200910050018.12711.jpalecek@web.de>
+Subject: Re: [LTP] [PATCH][openfile] file descriptors not cleaned up
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,24 +27,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: vapier@gentoo.org
-Cc: ltp-list@lists.sourceforge.net
+To: Henry Yei <hyei@mvista.com>
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
 
-> Garrett has this fixed in his pending build patch.  i dont think this fix is 
-> critical, so it can be merged when Garrett commits his changes (hopefully 
-> soon).  it'll make his life easier as it'll avoid conflicts (which suck with 
-> CVS).
+Hello,
 
-Oh, thank you. Yes, it is not critical.
+On Wednesday 30 September 2009 04:06:46 Henry Yei wrote:
+> This patch for openfile contains the following changes:
+> - test output to use tst_resm functions
+> - sets ups and cleans up tmp dir properly
+> - closes all opened file descriptors before thread exit(fixes nfs issues on removing tmp dir)
+> 
+> Signed-off-by: Henry Yei <hyei@mvista.com>
+> 
+> 
+> This test opens multiple file descriptors to the same file. Perhaps the author meant to open file handles for separate files?
 
-Masatake
+This is suspicious, for me too. But maybe there is some logic behind opening the same file many times.
+
+I just have a small remark about your patch: Shouldn't you call close_files() here, too? (With a partially full fd_list array handled, of course)
+
++void * threads(void* thread_id_) {
++	int thread_id = (uintptr_t) thread_id_;
++	char errmsg[80];
++	FILE *fd_list[MAXFILES];
++	int i;
++
++	/* Open files */
++	for (i = 0; i < numfiles; i++) {
++		if (debug)
++			printf("Thread  %d : Opening file number %d \n", thread_id, i);
++		if ((fd_list[i] = fopen(filename, "rw")) == NULL) {
++			sprintf(errmsg, "FAIL - Couldn't open file #%d", i);
++			perror(errmsg);
+
+Regards
+    Jiri Palecek
 
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-http://p.sf.net/sfu/devconference
+ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
+http://p.sf.net/sfu/devconf
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
