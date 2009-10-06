@@ -1,24 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MxmtC-0002ps-V0
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 19:18:30 +0000
-Received: from mail-pz0-f188.google.com ([209.85.222.188])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mxmt7-0001Dx-NT
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 19:18:30 +0000
-Received: by pzk26 with SMTP id 26so9267944pzk.4
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1Mv6ix-0003Dg-7j
+	for ltp-list@lists.sourceforge.net; Tue, 06 Oct 2009 09:52:51 +0000
+Received: from fmmailgate02.web.de ([217.72.192.227])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Mv6iq-0000HX-Q9
+	for ltp-list@lists.sourceforge.net; Tue, 06 Oct 2009 09:52:49 +0000
+Received: from smtp08.web.de (fmsmtp08.dlan.cinetic.de [172.20.5.216])
+	by fmmailgate02.web.de (Postfix) with ESMTP id 242CB129FD71F
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 13 Oct 2009 12:18:20 -0700 (PDT)
+	Tue,  6 Oct 2009 11:49:00 +0200 (CEST)
+Received: from [83.208.36.163] (helo=debian)
+	by smtp08.web.de with asmtp (TLSv1:AES256-SHA:256)
+	(WEB.DE 4.110 #314) id 1Mv6fD-00048k-00
+	for ltp-list@lists.sourceforge.net; Tue, 06 Oct 2009 11:49:00 +0200
+Date: Tue, 06 Oct 2009 11:50:02 +0200
+From: =?iso-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
+Message-ID: <op.u1dhh1gru2flwt@debian>
 MIME-Version: 1.0
-In-Reply-To: <1255445031.8438.70.camel@subratamodak.linux.ibm.com>
-References: <20091008165929.GA27576@us.ibm.com>
-	<1255445031.8438.70.camel@subratamodak.linux.ibm.com>
-Date: Tue, 13 Oct 2009 12:18:20 -0700
-Message-ID: <364299f40910131218y7581540eo7f09fc08f7957c2@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH 1/1] p9auth: fix a bug in the p9auth setup script
+Subject: [LTP] [RFC] uClinux vs. Crackerjack tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,60 +30,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-T24gVHVlLCBPY3QgMTMsIDIwMDkgYXQgNzo0MyBBTSwgU3VicmF0YSBNb2Rhawo8c3VicmF0YUBs
-aW51eC52bmV0LmlibS5jb20+IHdyb3RlOgo+IE9uIFRodSwgMjAwOS0xMC0wOCBhdCAxMTo1OSAt
-MDUwMCwgU2VyZ2UgRS4gSGFsbHluIHdyb3RlOgo+PiBJZiBieSBjaGFuY2UgL2Rldi9jYXBoYXNo
-IGV4aXN0ZWQgYnV0IC9kZXYvY2FwdXNlIGRpZCBub3QsIHRoZW4KPj4gdGhlIGNoZWNrcDlhdXRo
-LnNoIHNjcmlwdCB3b3VsZCB1c2UgJG1haiB3aXRob3V0IHNldHRpbmcgaXQuCj4+Cj4+IFNpZ25l
-ZC1vZmYtYnk6IFNlcmdlIEhhbGx5biA8c2VydWVAdXMuaWJtLmNvbT4KPgo+IEdhcnJldHTFmyBy
-ZWNlbnQgY2hhbmdlcyBkZWxldGVkIHRoaXMgZmlsZToKPiBodHRwOi8vbHRwLmN2cy5zb3VyY2Vm
-b3JnZS5uZXQvdmlld3ZjL2x0cC9sdHAvdGVzdGNhc2VzL2tlcm5lbC9zZWN1cml0eS9wOWF1dGgv
-Y2hlY2twOWF1dGguc2g/aGlkZWF0dGljPTAmdmlldz1sb2csCj4KPiB8ZGlmZiAtLWdpdCBhL3Rl
-c3RjYXNlcy9rZXJuZWwvc2VjdXJpdHkvcDlhdXRoL2NoZWNrcDlhdXRoLnNoCj4gYi90ZXN0Y2Fz
-ZXMva2VybmVsL3NlY3VyaXR5L3A5YXV0aC9jaGVja3A5YXV0aC5zaAo+IHxpbmRleCA0MzY1NDI3
-Li40YTVhN2Q0IDEwMDc1NQo+IHwtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3NlY3VyaXR5L3A5YXV0
-aC9jaGVja3A5YXV0aC5zaAo+IHwrKysgYi90ZXN0Y2FzZXMva2VybmVsL3NlY3VyaXR5L3A5YXV0
-aC9jaGVja3A5YXV0aC5zaAo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gRmlsZSB0byBw
-YXRjaDoKPiBTa2lwIHRoaXMgcGF0Y2g/IFt5XQo+IFNraXBwaW5nIHBhdGNoLgo+IDIgb3V0IG9m
-IDIgaHVua3MgaWdub3JlZAo+Cj4gUmVnYXJkcy0tCj4gU3VicmF0YQo+Cj4+IC0tLQo+PiDCoHRl
-c3RjYXNlcy9rZXJuZWwvc2VjdXJpdHkvcDlhdXRoL2NoZWNrcDlhdXRoLnNoIHwgwqAgwqA0ICst
-LS0KPj4gwqAxIGZpbGVzIGNoYW5nZWQsIDEgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkK
-Pj4KPj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc2VjdXJpdHkvcDlhdXRoL2NoZWNr
-cDlhdXRoLnNoIGIvdGVzdGNhc2VzL2tlcm5lbC9zZWN1cml0eS9wOWF1dGgvY2hlY2twOWF1dGgu
-c2gKPj4gaW5kZXggNDM2NTQyNy4uNGE1YTdkNCAxMDA3NTUKPj4gLS0tIGEvdGVzdGNhc2VzL2tl
-cm5lbC9zZWN1cml0eS9wOWF1dGgvY2hlY2twOWF1dGguc2gKPj4gKysrIGIvdGVzdGNhc2VzL2tl
-cm5lbC9zZWN1cml0eS9wOWF1dGgvY2hlY2twOWF1dGguc2gKPj4gQEAgLTQ3LDcgKzQ3LDYgQEAg
-aWYgWyAkPyAtbmUgMCBdOyB0aGVuCj4+IMKgZmkKPj4KPj4gwqBtYWpmaWxlPS9zeXMvbW9kdWxl
-L3A5YXV0aC9wYXJhbWV0ZXJzL2NhcF9tYWpvcgo+PiAtbWluZmlsZT0vc3lzL21vZHVsZS9wOWF1
-dGgvcGFyYW1ldGVycy9jYXBfbWlub3IKPj4gwqBpZiBbICEgLWYgIiRtYWpmaWxlIiBdOyB0aGVu
-Cj4+IMKgIMKgIMKgIGlmIFsgJHllc25vIC1lcSAxIF07IHRoZW4gZWNobwo+PiDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCBlY2hvICJubyIKPj4gQEAgLTU2LDE2ICs1NSwxNSBAQCBpZiBbICEgLWYgIiRt
-YWpmaWxlIiBdOyB0aGVuCj4+IMKgIMKgIMKgIGZpCj4+IMKgIMKgIMKgIGV4aXQgMQo+PiDCoGZp
-Cj4+ICttYWo9YGNhdCAkbWFqZmlsZWAKPj4KPj4gwqBpZiBbICEgLWMgIi9kZXYvY2FwaGFzaCIg
-XTsgdGhlbgo+PiDCoCDCoCDCoCBybSAtZiAvZGV2L2NhcGhhc2gKPj4gLSDCoCDCoCBtYWo9YGNh
-dCAkbWFqZmlsZWAKPj4gwqAgwqAgwqAgbWtub2QgL2Rldi9jYXBoYXNoIGMgJG1haiAwCj4+IMKg
-ZmkKPj4KPj4gwqBpZiBbICEgLWMgIi9kZXYvY2FwdXNlIiBdOyB0aGVuCj4+IMKgIMKgIMKgIHJt
-IC1mIC9kZXYvY2FwdXNlCj4+IC0gwqAgwqAgbWluPWBjYXQgJG1pbmZpbGVgCj4+IMKgIMKgIMKg
-IG1rbm9kIC9kZXYvY2FwdXNlIGMgJG1haiAxCj4+IMKgZmkKPj4gwqBjaG1vZCB1Z28rdyAvZGV2
-L2NhcHVzZQoKICAgIE9rLi4uIEkgZGlkbid0IGFkZCBpbiBhIHJlcGxhY2VtZW50IGZvciB0aGlz
-IGl0ZW0gPjwuIEJhc2ljYWxseSBpdAp3YXMgYmVpbmcgdXNlZCBhdCBidWlsZCB0aW1lLCBpbmNv
-cnJlY3RseSwgYW5kIHRodXMgd291bGQgcG9zc2libHkKZ2l2ZSBmYWxzZSBwb3NpdGl2ZXMgb3Ig
-ZmFsc2UgbmVnYXRpdmVzIHdoZW4gY3Jvc3MtY29tcGlsaW5nLiBTb21lIG9mCnRoZXNlIHJvdXRp
-bmVzIG5lZWQgdG8gYmUgYWRkZWQgdG8gdGhlIGNhbGxpbmcgc2NyaXB0LgogICAgV2hhdCBpcyBy
-ZXF1aXJlZCBhbmQgd2hhdCBpc24ndCByZXF1aXJlZCBmb3IgZXhlY3V0aW9uPwpUaGFua3MsCi1H
-YXJyZXR0CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ29tZSBidWlsZCB3aXRoIHVzISBUaGUgQmxh
-Y2tCZXJyeShSKSBEZXZlbG9wZXIgQ29uZmVyZW5jZSBpbiBTRiwgQ0EKaXMgdGhlIG9ubHkgZGV2
-ZWxvcGVyIGV2ZW50IHlvdSBuZWVkIHRvIGF0dGVuZCB0aGlzIHllYXIuIEp1bXBzdGFydCB5b3Vy
-CmRldmVsb3Bpbmcgc2tpbGxzLCB0YWtlIEJsYWNrQmVycnkgbW9iaWxlIGFwcGxpY2F0aW9ucyB0
-byBtYXJrZXQgYW5kIHN0YXkgCmFoZWFkIG9mIHRoZSBjdXJ2ZS4gSm9pbiB1cyBmcm9tIE5vdmVt
-YmVyIDkgLSAxMiwgMjAwOS4gUmVnaXN0ZXIgbm93IQpodHRwOi8vcC5zZi5uZXQvc2Z1L2RldmNv
-bmZlcmVuY2UKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-THRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRw
-czovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+Hello,
+
+the recently introduced tests from Crackerjack use some subroutines that
+use fork(). However, according to the documentation, fork is not available
+on uClinux, and LTP seems to support this. Although I haven't noticed any
+complaints to the functionality of the tests on uClinux, I wonder whether
+they actually work.
+
+I wonder whether simple functions executed in the child process couldn't
+be replaced by some shell code, like this, to make them work on uClinux:
+
+diff --git a/testcases/kernel/syscalls/utils/common_j_h.c
+b/testcases/kernel/syscalls/utils/common_j_h.c
+index c460d85..8e7dbf8 100644
+--- a/testcases/kernel/syscalls/utils/common_j_h.c
++++ b/testcases/kernel/syscalls/utils/common_j_h.c
+@@ -117,15 +117,25 @@ static void sigterm_handler(int sig)
+    */
+   pid_t create_sig_proc(unsigned long usec, int sig, unsigned count)
+   {
+-       pid_t pid, cpid;
++       pid_t pid = getpid(), cpid;
++#ifdef UCLINUX
++       char buffer[256];
++
++       snprintf(buffer, 256, "COUNT=%d TIME=%ld SIG=%d; while [
+$(COUNT-=1) -gt 0 ]; do sleep $TIME; kill -$SIG $PPID; done",
++                                        count, (usec+999999)/1000000,
+sig);
++       if((cpid = vfork()) == 0) {
++               execlp("sh", "-c", buffer, (void*)0);
++               _exit(1);
++       }
+
+-       pid = getpid();
++#else
+          WITH_SIGNALS_BLOCKED(
+                          if((cpid = fork()) == 0) {
+                                  tst_sig(NOFORK, SIG_DFL, NULL);
+                                  signal(SIGTERM, sigterm_handler);
+                          }
+          );
++#endif
+          switch (cpid) {
+          case 0:
+                  while(count-- > 0) {
+
+It isn't an exact replacement (the sleep interval granularity is 1 second
+in the shell version), but this parameter isn't crucial for the function
+of the tests that use it. It would save us an extra binary or altering all
+the tests that use this function.
+
+Regards
+      Jiri Palecek
+
+-- 
+Using Opera's revolutionary e-mail client: http://www.opera.com/mail/
+
+------------------------------------------------------------------------------
+Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
+http://p.sf.net/sfu/devconf
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
