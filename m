@@ -1,30 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sripathik@in.ibm.com>) id 1MvoFA-0003KE-TQ
-	for ltp-list@lists.sourceforge.net; Thu, 08 Oct 2009 08:21:00 +0000
-Received: from e28smtp05.in.ibm.com ([59.145.155.5])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MvoF1-0003xV-VO
-	for ltp-list@lists.sourceforge.net; Thu, 08 Oct 2009 08:21:00 +0000
-Received: from d28relay03.in.ibm.com (d28relay03.in.ibm.com [9.184.220.60])
-	by e28smtp05.in.ibm.com (8.14.3/8.13.1) with ESMTP id n988KdSm014458
-	for <ltp-list@lists.sourceforge.net>; Thu, 8 Oct 2009 13:50:39 +0530
-Received: from d28av01.in.ibm.com (d28av01.in.ibm.com [9.184.220.63])
-	by d28relay03.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n988KdEa2867416
-	for <ltp-list@lists.sourceforge.net>; Thu, 8 Oct 2009 13:50:39 +0530
-Received: from d28av01.in.ibm.com (loopback [127.0.0.1])
-	by d28av01.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	n988Kc3W005802
-	for <ltp-list@lists.sourceforge.net>; Thu, 8 Oct 2009 13:50:39 +0530
-Date: Thu, 8 Oct 2009 13:50:38 +0530
-From: Sripathi Kodi <sripathik@in.ibm.com>
-Message-ID: <20091008135038.008f8df7@sripathi.in.ibm.com>
-Mime-Version: 1.0
-Subject: [LTP] [PATCH] realtime: Remove printing of cpu affinity masks in
-	pi-tests
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MvPZe-0001ba-Ml
+	for ltp-list@lists.sourceforge.net; Wed, 07 Oct 2009 06:00:30 +0000
+Received: from mail-pz0-f193.google.com ([209.85.222.193])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MvPZW-0007n8-Cq
+	for ltp-list@lists.sourceforge.net; Wed, 07 Oct 2009 06:00:30 +0000
+Received: by pzk31 with SMTP id 31so1411545pzk.28
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 06 Oct 2009 23:00:16 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <200910060643.35041.vapier@gentoo.org>
+References: <364299f40910060307g33fcf21chcfcdb4cefe4e9bc@mail.gmail.com>
+	<200910060643.35041.vapier@gentoo.org>
+Date: Tue, 6 Oct 2009 23:00:16 -0700
+Message-ID: <364299f40910062300s65c43c93w9cccdfe8835c2334@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Issue 3 - ptrace06 hung for 7 hours
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,178 +28,62 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: gowrishankar <gowrishankar.m@linux.vnet.ibm.com>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,
+On Tue, Oct 6, 2009 at 3:43 AM, Mike Frysinger <vapier@gentoo.org> wrote:
+> On Tuesday 06 October 2009 06:07:40 Garrett Cooper wrote:
+>> =A0 =A0 Ran into another issue. When I was running ptrace06 in the
+>> syscalls test I noticed that it had been hung for over 7 hours -- is
+>> this a known issue?
+>> =A0 =A0 strace'ing the child proc didn't help (got ENOPERM), and
+>> strace'ing the parent proc returned nada. I'm going to attach gdb and
+>> figure out what the issue is, but I was wondering whether or not
+>> anyone else knew.
+>
+> you wont be able to strace the child because it's already attached with p=
+trace
+> from the parent. =A0most likely the parent is sleeping and awaiting a sig=
+nal
+> from the child as there was some race that caused a mismatch.
+>
+> the test probably could do with a alarm() to prevent such hangs -- in the
+> normal case, it should execute in a few seconds if that.
 
-Some tests under realtime/func/pi-tests in LTP display junk values for
-cpu affinity masks:
+    Looks like it wasn't a well documented known issue:
 
-Start ./testpi-2
-protocol in mutexattr is 1
-Thread 14574 started running with priority 10 on CPU 1110536304
-Thread 14574 at start pthread pol 2 pri 10 - Got global lock
-Thread 14575 started running with prio 20 on CPU 1084272752
-Thread 14576 started running with prio 30 on CPU 1118929008
-Thread 14577 started running with prio 40 on CPU 1127321712
-Noise Thread 14578 started running with prio 40 on CPU 1099915376
+Index: testcases/kernel/syscalls/ptrace/Makefile
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/ptrace/Makefile,v
+retrieving revision 1.6
+diff -u -r1.6 Makefile
+--- testcases/kernel/syscalls/ptrace/Makefile   15 Oct 2008 17:07:36
+-0000      1.6
++++ testcases/kernel/syscalls/ptrace/Makefile   7 Oct 2009 05:57:23 -0000
+@@ -16,16 +16,8 @@
+ #  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  =
+USA
+ #
 
-testpi-1 and testpi-4 also report similar wrong values.
+-SRCS    =3D $(wildcard *[^6].c)
+-TARGETS =3D $(patsubst ptrace%.c,ptrace%,$(SRCS))
 
-The cause of this problem is the incorrect way in which
-sched_getaffinity output is used in the tests. I think there is no need
-to call getaffinity() to know the cpu mask, because we test the return
-value of setaffinity() before that. The following patch removes all
-calls to sched_affinity() and removes printing cpu affinity masks.
-
+    I'm going to yank it from the runtest file (comment it out) and
+leave a pointer back to the Makefile / this thread.
 Thanks,
-Sripathi.
+-Garrett
 
-
-Signed-off-by: Sripathi Kodi <sripathik@in.ibm.com>
-Acked-by: Gowrishankar <gowrishankar.m@in.ibm.com>
-
-diff -uprN ltp_org/testcases/realtime/func/pi-tests/testpi-1.c ltp/testcases/realtime/func/pi-tests/testpi-1.c
---- ltp_org/testcases/realtime/func/pi-tests/testpi-1.c	2009-10-06 23:09:13.000000000 -0700
-+++ ltp/testcases/realtime/func/pi-tests/testpi-1.c	2009-10-06 23:10:10.000000000 -0700
-@@ -91,9 +91,8 @@ void* func_nonrt(void* arg)
-      printf("Thread %d: Can't set affinity: %d %s\n", tid, rc, strerror(rc));
-      exit(-1);
-   }
--  rc = sched_getaffinity(0, sizeof(mask), &mask);
- 
--  printf("Thread %d started running with priority %d on CPU %ld\n", tid, pthr->priority, (long)mask.__bits);
-+  printf("Thread %d started running with priority %d\n", tid, pthr->priority);
-   pthread_mutex_lock(&glob_mutex);
-   printf("Thread %d at start pthread pol %d pri %d - Got global lock\n", tid, pthr->policy, pthr->priority);
-   /* Wait for other RT threads to start up */
-@@ -127,9 +126,8 @@ void* func_rt(void* arg)
-      printf("Thread %d: Can't set affinity: %d %s\n", tid, rc, strerror(rc));
-      exit(-1);
-   }
--  rc = sched_getaffinity(0, sizeof(mask), &mask);
- 
--  printf("Thread %d started running with prio %d on CPU %ld\n", tid, pthr->priority, (long)mask.__bits);
-+  printf("Thread %d started running with prio %d\n", tid, pthr->priority);
-   pthread_barrier_wait(&barrier);
-   pthread_mutex_lock(&glob_mutex);
-   printf("Thread %d at start pthread pol %d pri %d - Got global lock\n", tid, pthr->policy, pthr->priority);
-@@ -167,9 +165,8 @@ void* func_noise(void* arg)
-      printf("Thread %d: Can't set affinity: %d %s\n", tid, rc, strerror(rc));
-      exit(-1);
-   }
--  rc = sched_getaffinity(0, sizeof(mask), &mask);
- 
--  printf("Noise Thread %d started running with prio %d on CPU %ld\n", tid, pthr->priority, (long)mask.__bits);
-+  printf("Noise Thread %d started running with prio %d\n", tid, pthr->priority);
-   pthread_barrier_wait(&barrier);
- 
-   for (i=0;i<10000;i++) {
-@@ -209,7 +206,6 @@ int main(int argc, char* argv[]) {
-      printf("Main Thread: Can't set affinity: %d %s\n", retc, strerror(retc));
-      exit(-1);
-   }
--  retc = sched_getaffinity(0, sizeof(mask), &mask);
-   for (i=0;i<argc;i++) {
-     if (strcmp(argv[i],"nopi") == 0) nopi = 1;
-   }
-diff -uprN ltp_org/testcases/realtime/func/pi-tests/testpi-2.c ltp/testcases/realtime/func/pi-tests/testpi-2.c
---- ltp_org/testcases/realtime/func/pi-tests/testpi-2.c	2009-10-06 23:09:13.000000000 -0700
-+++ ltp/testcases/realtime/func/pi-tests/testpi-2.c	2009-10-06 23:10:10.000000000 -0700
-@@ -91,9 +91,8 @@ void* func_lowrt(void* arg)
-      printf("Thread %d: Can't set affinity: %d %s\n", tid, rc, strerror(rc));
-      exit(-1);
-   }
--  rc = sched_getaffinity(0, sizeof(mask), &mask);
- 
--  printf("Thread %d started running with priority %d on CPU %ld\n", tid, pthr->priority, (long)mask.__bits);
-+  printf("Thread %d started running with priority %d\n", tid, pthr->priority);
-   pthread_mutex_lock(&glob_mutex);
-   printf("Thread %d at start pthread pol %d pri %d - Got global lock\n", tid, pthr->policy, pthr->priority);
-   /* Wait for other RT threads to start up */
-@@ -127,9 +126,8 @@ void* func_rt(void* arg)
-      printf("Thread %d: Can't set affinity: %d %s\n", tid, rc, strerror(rc));
-      exit(-1);
-   }
--  rc = sched_getaffinity(0, sizeof(mask), &mask);
- 
--  printf("Thread %d started running with prio %d on CPU %ld\n", tid, pthr->priority, (long)mask.__bits);
-+  printf("Thread %d started running with prio %d\n", tid, pthr->priority);
-   pthread_barrier_wait(&barrier);
-   pthread_mutex_lock(&glob_mutex);
-   printf("Thread %d at start pthread pol %d pri %d - Got global lock\n", tid, pthr->policy, pthr->priority);
-@@ -167,9 +165,8 @@ void* func_noise(void* arg)
-      printf("Thread %d: Can't set affinity: %d %s\n", tid, rc, strerror(rc));
-      exit(-1);
-   }
--  rc = sched_getaffinity(0, sizeof(mask), &mask);
- 
--  printf("Noise Thread %d started running with prio %d on CPU %ld\n", tid, pthr->priority, (long)mask.__bits);
-+  printf("Noise Thread %d started running with prio %d\n", tid, pthr->priority);
-   pthread_barrier_wait(&barrier);
- 
-   for (i=0;i<10000;i++) {
-@@ -208,7 +205,6 @@ int main(int argc, char* argv[]) {
-      printf("Main Thread: Can't set affinity: %d %s\n", retc, strerror(retc));
-      exit(-1);
-   }
--  retc = sched_getaffinity(0, sizeof(mask), &mask);
- 
-   for (i=0;i<argc;i++) {
-     if (strcmp(argv[i],"nopi") == 0) nopi = 1;
-diff -uprN ltp_org/testcases/realtime/func/pi-tests/testpi-4.c ltp/testcases/realtime/func/pi-tests/testpi-4.c
---- ltp_org/testcases/realtime/func/pi-tests/testpi-4.c	2009-10-06 23:09:13.000000000 -0700
-+++ ltp/testcases/realtime/func/pi-tests/testpi-4.c	2009-10-06 23:10:10.000000000 -0700
-@@ -92,9 +92,8 @@ void* func_nonrt(void* arg)
-      printf("Thread %d: Can't set affinity: %d %s\n", tid, rc, strerror(rc));
-      exit(-1);
-   }
--  rc = sched_getaffinity(0, sizeof(mask), &mask);
- 
--  printf("Thread %d started running with priority %d on CPU %ld\n", tid, pthr->priority, (long)mask.__bits);
-+  printf("Thread %d started running with priority %d\n", tid, pthr->priority);
-   pthread_mutex_lock(glob_mutex);
-   printf("Thread %d at start pthread pol %d pri %d - Got global lock\n", tid, pthr->policy, pthr->priority);
-   pthread_barrier_wait(&barrier);
-@@ -127,9 +126,8 @@ void* func_rt(void* arg)
-      printf("Thread %d: Can't set affinity: %d %s\n", tid, rc, strerror(rc));
-      exit(-1);
-   }
--  rc = sched_getaffinity(0, sizeof(mask), &mask);
- 
--  printf("Thread %d started running with prio %d on CPU %ld\n", tid, pthr->priority, (long)mask.__bits);
-+  printf("Thread %d started running with prio %d\n", tid, pthr->priority);
-   pthread_barrier_wait(&barrier);
-   pthread_mutex_lock(glob_mutex);
-   printf("Thread %d at start pthread pol %d pri %d - Got global lock\n", tid, pthr->policy, pthr->priority);
-@@ -167,9 +165,8 @@ void* func_noise(void* arg)
-      printf("Thread %d: Can't set affinity: %d %s\n", tid, rc, strerror(rc));
-      exit(-1);
-   }
--  rc = sched_getaffinity(0, sizeof(mask), &mask);
- 
--  printf("Noise Thread started running with prio %d on CPU %ld\n", pthr->priority, (long)mask.__bits);
-+  printf("Noise Thread started running with prio %d\n", pthr->priority);
-   pthread_barrier_wait(&barrier);
- 
-   for (i=0;i<10000;i++) {
-@@ -209,7 +206,6 @@ int main(int argc, char* argv[]) {
-      printf("Main Thread: Can't set affinity: %d %s\n", retc, strerror(retc));
-      exit(-1);
-   }
--  retc = sched_getaffinity(0, sizeof(mask), &mask);
-   for (i=0;i<argc;i++) {
-     if (strcmp(argv[i],"nopi") == 0) nopi = 1;
-   }
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
+developing skills, take BlackBerry mobile applications to market and stay =
+
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
 _______________________________________________
