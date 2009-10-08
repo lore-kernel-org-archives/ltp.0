@@ -1,26 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1Mv6ix-0003Dg-7j
-	for ltp-list@lists.sourceforge.net; Tue, 06 Oct 2009 09:52:51 +0000
-Received: from fmmailgate02.web.de ([217.72.192.227])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mv6iq-0000HX-Q9
-	for ltp-list@lists.sourceforge.net; Tue, 06 Oct 2009 09:52:49 +0000
-Received: from smtp08.web.de (fmsmtp08.dlan.cinetic.de [172.20.5.216])
-	by fmmailgate02.web.de (Postfix) with ESMTP id 242CB129FD71F
-	for <ltp-list@lists.sourceforge.net>;
-	Tue,  6 Oct 2009 11:49:00 +0200 (CEST)
-Received: from [83.208.36.163] (helo=debian)
-	by smtp08.web.de with asmtp (TLSv1:AES256-SHA:256)
-	(WEB.DE 4.110 #314) id 1Mv6fD-00048k-00
-	for ltp-list@lists.sourceforge.net; Tue, 06 Oct 2009 11:49:00 +0200
-Date: Tue, 06 Oct 2009 11:50:02 +0200
-From: =?iso-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
-Message-ID: <op.u1dhh1gru2flwt@debian>
+	(envelope-from <serge@us.ibm.com>) id 1MvwQT-0003xp-3g
+	for ltp-list@lists.sourceforge.net; Thu, 08 Oct 2009 17:05:13 +0000
+Received: from e35.co.us.ibm.com ([32.97.110.153])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MvwQN-0002vF-4a
+	for ltp-list@lists.sourceforge.net; Thu, 08 Oct 2009 17:05:13 +0000
+Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
+	[9.17.195.107])
+	by e35.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n98GsL5G024963
+	for <ltp-list@lists.sourceforge.net>; Thu, 8 Oct 2009 10:54:21 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n98H4dQL066730
+	for <ltp-list@lists.sourceforge.net>; Thu, 8 Oct 2009 11:04:40 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n98H4cE3013366
+	for <ltp-list@lists.sourceforge.net>; Thu, 8 Oct 2009 11:04:39 -0600
+Date: Thu, 8 Oct 2009 11:59:29 -0500
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20091008165929.GA27576@us.ibm.com>
 MIME-Version: 1.0
-Subject: [LTP] [RFC] uClinux vs. Crackerjack tests
+Content-Disposition: inline
+Subject: [LTP] [PATCH 1/1] p9auth: fix a bug in the p9auth setup script
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,72 +38,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Subrata Modak1 <subrata.modak@in.ibm.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-Hello,
+If by chance /dev/caphash existed but /dev/capuse did not, then
+the checkp9auth.sh script would use $maj without setting it.
 
-the recently introduced tests from Crackerjack use some subroutines that
-use fork(). However, according to the documentation, fork is not available
-on uClinux, and LTP seems to support this. Although I haven't noticed any
-complaints to the functionality of the tests on uClinux, I wonder whether
-they actually work.
+Signed-off-by: Serge Hallyn <serue@us.ibm.com>
+---
+ testcases/kernel/security/p9auth/checkp9auth.sh |    4 +---
+ 1 files changed, 1 insertions(+), 3 deletions(-)
 
-I wonder whether simple functions executed in the child process couldn't
-be replaced by some shell code, like this, to make them work on uClinux:
-
-diff --git a/testcases/kernel/syscalls/utils/common_j_h.c
-b/testcases/kernel/syscalls/utils/common_j_h.c
-index c460d85..8e7dbf8 100644
---- a/testcases/kernel/syscalls/utils/common_j_h.c
-+++ b/testcases/kernel/syscalls/utils/common_j_h.c
-@@ -117,15 +117,25 @@ static void sigterm_handler(int sig)
-    */
-   pid_t create_sig_proc(unsigned long usec, int sig, unsigned count)
-   {
--       pid_t pid, cpid;
-+       pid_t pid = getpid(), cpid;
-+#ifdef UCLINUX
-+       char buffer[256];
-+
-+       snprintf(buffer, 256, "COUNT=%d TIME=%ld SIG=%d; while [
-$(COUNT-=1) -gt 0 ]; do sleep $TIME; kill -$SIG $PPID; done",
-+                                        count, (usec+999999)/1000000,
-sig);
-+       if((cpid = vfork()) == 0) {
-+               execlp("sh", "-c", buffer, (void*)0);
-+               _exit(1);
-+       }
-
--       pid = getpid();
-+#else
-          WITH_SIGNALS_BLOCKED(
-                          if((cpid = fork()) == 0) {
-                                  tst_sig(NOFORK, SIG_DFL, NULL);
-                                  signal(SIGTERM, sigterm_handler);
-                          }
-          );
-+#endif
-          switch (cpid) {
-          case 0:
-                  while(count-- > 0) {
-
-It isn't an exact replacement (the sleep interval granularity is 1 second
-in the shell version), but this parameter isn't crucial for the function
-of the tests that use it. It would save us an extra binary or altering all
-the tests that use this function.
-
-Regards
-      Jiri Palecek
-
+diff --git a/testcases/kernel/security/p9auth/checkp9auth.sh b/testcases/kernel/security/p9auth/checkp9auth.sh
+index 4365427..4a5a7d4 100755
+--- a/testcases/kernel/security/p9auth/checkp9auth.sh
++++ b/testcases/kernel/security/p9auth/checkp9auth.sh
+@@ -47,7 +47,6 @@ if [ $? -ne 0 ]; then
+ fi
+ 
+ majfile=/sys/module/p9auth/parameters/cap_major
+-minfile=/sys/module/p9auth/parameters/cap_minor
+ if [ ! -f "$majfile" ]; then
+ 	if [ $yesno -eq 1 ]; then echo
+ 		echo "no"
+@@ -56,16 +55,15 @@ if [ ! -f "$majfile" ]; then
+ 	fi
+ 	exit 1
+ fi
++maj=`cat $majfile`
+ 
+ if [ ! -c "/dev/caphash" ]; then
+ 	rm -f /dev/caphash
+-	maj=`cat $majfile`
+ 	mknod /dev/caphash c $maj 0
+ fi
+ 
+ if [ ! -c "/dev/capuse" ]; then
+ 	rm -f /dev/capuse
+-	min=`cat $minfile`
+ 	mknod /dev/capuse c $maj 1
+ fi
+ chmod ugo+w /dev/capuse
 -- 
-Using Opera's revolutionary e-mail client: http://www.opera.com/mail/
+1.6.3.3
+
 
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-http://p.sf.net/sfu/devconf
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
