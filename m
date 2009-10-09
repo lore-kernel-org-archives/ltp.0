@@ -1,35 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MxeNg-0004Al-Ec
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 10:13:24 +0000
-Received: from e35.co.us.ibm.com ([32.97.110.153])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MxeNa-0001JP-Iu
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 10:13:24 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e35.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9DA2OlO021540
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 04:02:24 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n9DAD8n8176370
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 04:13:08 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n9DAD8Ys007811
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 04:13:08 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20091013074346.22414.9377.sendpatchset@localhost.localdomain>
-References: <20091013074337.22414.20968.sendpatchset@localhost.localdomain>
-	<20091013074346.22414.9377.sendpatchset@localhost.localdomain>
-Date: Tue, 13 Oct 2009 15:42:44 +0530
-Message-Id: <1255428764.8438.14.camel@subratamodak.linux.ibm.com>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yamato@redhat.com>) id 1Mw9Pw-0002at-Tv
+	for ltp-list@lists.sourceforge.net; Fri, 09 Oct 2009 06:57:32 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Mw9Po-0006pi-RP
+	for ltp-list@lists.sourceforge.net; Fri, 09 Oct 2009 06:57:32 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.13.8/8.13.8) with ESMTP id n996vIKB006342
+	for <ltp-list@lists.sourceforge.net>; Fri, 9 Oct 2009 02:57:18 -0400
+Received: from localhost (beach.nrt.redhat.com [10.64.200.71])
+	by int-mx02.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
+	id n996vGFa008884
+	for <ltp-list@lists.sourceforge.net>; Fri, 9 Oct 2009 02:57:17 -0400
+Date: Fri, 09 Oct 2009 16:01:16 +0900 (JST)
+Message-Id: <20091009.160116.554867037284655652.yamato@redhat.com>
+From: Masatake YAMATO <yamato@redhat.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [Patch 2/6] Developed new functions and fixed
-	issues	causing ilb test failure
-Reply-To: subrata@linux.vnet.ibm.com
+Subject: [LTP] the status about porting testcases in Crackerjack to LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,511 +33,636 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, svaidy@linux.vnet.ibm.com, ego@in.ibm.com, arun@linux.vnet.ibm.com
+To: ltp-list@lists.sourceforge.net
 
-On Tue, 2009-10-13 at 13:13 +0530, Poornima Nayak wrote: 
-> CPU Consolidation verification function is fixed to handle variations in
-> CPU utilization. Threshold is selected based on test conducted on 2.6.31 on
-> dual core, quad core & hyper threaded system.
-> Developed new function to generate hyper threaded siblings list and get job count
-> for hyper threaded system and multisocket system.
-> Modified kernbench workload execution time for 5 min, hence test execution time
-> will be reduced further. Developed new functions to stop workload.
-> 
-> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+The table in http://ltp.sourceforge.net/wiki/ about "porting testcases
+in Crackerjack to LTP" is a bit obsolete.
 
-Thanks.
+Before restarting to work on *16 and *64 testcases, I've summarized
+the status of porting.
 
-Regards--
-Subrata
+Subrata, could you update the page based on following information?
 
-> 
-> diff -uprN ltp-full-20090930/testcases/kernel/power_management/lib/sched_mc.py ltp-full-20090930_patched/testcases/kernel/power_management/lib/sched_mc.py
-> --- ltp-full-20090930/testcases/kernel/power_management/lib/sched_mc.py	2009-10-05 02:10:56.000000000 -0400
-> +++ ltp-full-20090930_patched/testcases/kernel/power_management/lib/sched_mc.py	2009-10-12 23:00:30.000000000 -0400
-> @@ -22,6 +22,7 @@ socket_count = 0
->  cpu1_max_intr = 0
->  cpu2_max_intr = 0
->  intr_stat_timer_0 = []
-> +siblings_list = []
-> 
->  def clear_dmesg():
->      '''
-> @@ -96,6 +97,36 @@ def is_hyper_threaded():
->          print "Failed to check if system is hyper-threaded"
->          sys.exit(1)
-> 
-> +def is_multi_core():
-> +    ''' Return true if system has sockets has multiple cores
-> +    '''
-> +  
-> +    try:
-> +        file_cpuinfo = open("/proc/cpuinfo", 'r')
-> +        for line in file_cpuinfo:
-> +            if line.startswith('siblings'):
-> +                siblings = line.split(":")
-> +            if line.startswith('cpu cores'):
-> +                cpu_cores = line.split(":")
-> +                break
-> +       
-> +        if int( siblings[1] ) == int( cpu_cores[1] ): 
-> +            if int( cpu_cores[1] ) > 1:
-> +                multi_core = 1
-> +            else:
-> +                multi_core = 0
-> +        else:
-> +            num_of_cpus = int(siblings[1]) / int(cpu_cores[1])
-> +            if num_of_cpus > 1:
-> +                multi_core = 1
-> +            else:
-> +                multi_core = 0
-> +        file_cpuinfo.close()
-> +        return multi_core
-> +    except Exception:
-> +        print "Failed to check if system is multi core system"
-> +        sys.exit(1)
-> +
->  def get_hyper_thread_count():
->      ''' Return number of threads in CPU. For eg for x3950 this function
->          would return 2. In future if 4 threads are supported in CPU, this
-> @@ -153,6 +184,40 @@ def map_cpuid_pkgid():
->                  sys.exit(1)
-> 
-> 
-> +def generate_sibling_list():
-> +    ''' Routine to generate siblings list
-> +    '''
-> +    try:
-> +        for i in range(0, cpu_count):
-> +            siblings_file = '/sys/devices/system/cpu/cpu%s' % i
-> +            siblings_file += '/topology/thread_siblings_list'
-> +            threads_sibs = open(siblings_file).read().rstrip()
-> +            thread_ids = threads_sibs.split("-")
-> +    
-> +            if not thread_ids in siblings_list:
-> +                siblings_list.append(thread_ids)
-> +    except Exception, details:
-> +        print "Exception in generate_siblings_list", details
-> +        sys.exit(1)
-> +
-> +def get_siblings(cpu_id):
-> +    ''' Return siblings of cpu_id
-> +    '''
-> +    try:
-> +        cpus = ""
-> +        for i in range(0, len(siblings_list)):
-> +            for cpu in siblings_list[i]:
-> +                if cpu_id == cpu:
-> +                    for j in siblings_list[i]:
-> +                        # Exclude cpu_id in the list of siblings
-> +                        if j != cpu_id:
-> +                            cpus += j
-> +                    return cpus
-> +        return cpus
-> +    except Exception, details:
-> +        print "Exception in get_siblings", details
-> +        sys.exit(1)
-> +
->  def get_proc_data(stats_list):
->      ''' Read /proc/stat info and store in dictionary
->      '''
-> @@ -168,18 +233,18 @@ def get_proc_data(stats_list):
->          sys.exit(1)
-> 
->  def get_proc_loc_count(loc_stats):
-> -    ''' Read /proc/stat info and store in dictionary
-> +    ''' Read /proc/interrupts info and store in list
->      '''
->      try:
->          file_procstat = open("/proc/interrupts", 'r')
->          for line in file_procstat:
-> -            if line.startswith('LOC:'):
-> +            if line.startswith(' LOC:') or line.startswith('LOC:'):
->                  data = line.split()
->                  for i in range(0, cpu_count):
->                      # To skip LOC
->                      loc_stats.append(data[i+1])
-> -                    print data[i+1]
-> -        file_procstat.close()
-> +                file_procstat.close()
-> +                return
->      except Exception, details:
->          print "Could not read interrupt statistics", details
->          sys.exit(1)
-> @@ -192,6 +257,8 @@ def set_sched_mc_power(sched_mc_level):
->          os.system('echo %s > \
->              /sys/devices/system/cpu/sched_mc_power_savings 2>/dev/null'
->              % sched_mc_level)
-> +
-> +        get_proc_data(stats_start)
->      except OSError, e:
->          print "Could not set sched_mc_power_savings to", sched_mc_level, e
->  	sys.exit(1)
-> @@ -203,6 +270,8 @@ def set_sched_smt_power(sched_smt_level)
->          os.system('echo %s > \
->              /sys/devices/system/cpu/sched_smt_power_savings 2>/dev/null'
->              % sched_smt_level)
-> +
-> +        get_proc_data(stats_start)
->      except OSError, e:
->          print "Could not set sched_smt_power_savings to", sched_smt_level, e
->  	sys.exit(1)
-> @@ -218,21 +287,36 @@ def set_timer_migration_interface(value)
->          print "Could not set timer_migration to ", value, e
->          sys.exit(1)
-> 
-> -def trigger_ebizzy (sched_smt, stress, duration, background, pinned):
-> -    ''' Triggers ebizzy workload for sched_mc=1
-> -        testing
-> +def get_job_count(stress, workload, sched_smt):
-> +    ''' Returns number of jobs/threads to be triggered
->      '''
-> +    
->      try:
->          if stress == "thread":
->              threads = get_hyper_thread_count()
->          if stress == "partial":
->              threads = cpu_count / socket_count
-> +            if is_hyper_threaded():
-> +                if workload == "ebizzy" and int(sched_smt) ==0:
-> +                    threads = threads / get_hyper_thread_count()
-> +                if workload == "kernbench" and int(sched_smt) < 2:
-> +                    threads = threads / get_hyper_thread_count()    
->          if stress == "full":
-> -	    threads = cpu_count
-> +            threads = cpu_count
->          if stress == "single_job":
->              threads = 1
->              duration = 180
-> +        return threads
-> +    except Exception, details:
-> +        print "get job count failed ", details
-> +        sys.exit(1)
-> 
-> +def trigger_ebizzy (sched_smt, stress, duration, background, pinned):
-> +    ''' Triggers ebizzy workload for sched_mc=1
-> +        testing
-> +    '''
-> +    try:
-> +        threads = get_job_count(stress, "ebizzy", sched_smt)
->          olddir = os.getcwd()
->          path = '%s/utils/benchmark' % os.environ['LTPROOT']
->          os.chdir(path)
-> @@ -282,23 +366,14 @@ def trigger_ebizzy (sched_smt, stress, d
->          print "Ebizzy workload trigger failed ", details
->          sys.exit(1)   
-> 
-> -def trigger_kernbench (sched_smt, stress, background, pinned):
-> +def trigger_kernbench (sched_smt, stress, background, pinned, perf_test):
->      ''' Trigger load on system like kernbench.
->          Copys existing copy of LTP into as LTP2 and then builds it
->          with make -j
->      '''
->      olddir = os.getcwd()
->      try:
-> -        if stress == "thread":
-> -	    threads = 2
-> -        if stress == "partial":
-> -	    threads = cpu_count / socket_count
-> -            if is_hyper_threaded() and int(sched_smt) !=2:
-> -                threads = threads / get_hyper_thread_count()
-> -        if stress == "full":
-> -            threads = cpu_count
-> -        if stress == "single_job":
-> -            threads = 1
-> +        threads = get_job_count(stress, "kernbench", sched_smt)
-> 
->          dst_path = "/root"
->          olddir = os.getcwd()      
-> @@ -335,24 +410,35 @@ def trigger_kernbench (sched_smt, stress
->          get_proc_loc_count(intr_start)
->          if pinned == "yes":
->              os.system ( 'taskset -c %s %s/kernbench -o %s -M -H -n 1 \
-> -                >/dev/null 2>&1' % (cpu_count-1, benchmark_path, threads))
-> +                >/dev/null 2>&1 &' % (cpu_count-1, benchmark_path, threads))
-> +
-> +            # We have to delete import in future
-> +            import time
-> +            time.sleep(240)
-> +            stop_wkld("kernbench")
->          else:
->              if background == "yes":
->                  os.system ( '%s/kernbench -o %s -M -H -n 1 >/dev/null 2>&1 &' \
->                      % (benchmark_path, threads))
->              else:
-> -                os.system ( '%s/kernbench -o %s -M -H -n 1 >/dev/null 2>&1' \
-> -                    % (benchmark_path, threads))
-> +                if perf_test == "yes":
-> +                    os.system ( '%s/kernbench -o %s -M -H -n 1 >/dev/null 2>&1' \
-> +                        % (benchmark_path, threads))
-> +                else:
-> +                    os.system ( '%s/kernbench -o %s -M -H -n 1 >/dev/null 2>&1 &' \
-> +                        % (benchmark_path, threads))
-> +                    # We have to delete import in future
-> +                    import time
-> +                    time.sleep(240)
-> +                    stop_wkld("kernbench")
->          
->          print "INFO: Workload kernbench triggerd"
->          os.chdir(olddir)
-> -        #get_proc_data(stats_stop)
-> -        #get_proc_loc_count(intr_stop)
->      except Exception, details:
->          print "Workload kernbench trigger failed ", details
->          sys.exit(1)
->     
-> -def trigger_workld(sched_smt, workload, stress, duration, background, pinned):
-> +def trigger_workld(sched_smt, workload, stress, duration, background, pinned, perf_test):
->      ''' Triggers workload passed as argument. Number of threads 
->          triggered is based on stress value.
->      '''
-> @@ -360,7 +446,7 @@ def trigger_workld(sched_smt, workload, 
->          if workload == "ebizzy":
->              trigger_ebizzy (sched_smt, stress, duration, background, pinned)
->          if workload == "kernbench":
-> -            trigger_kernbench (sched_smt, stress, background, pinned)
-> +            trigger_kernbench (sched_smt, stress, background, pinned, perf_test)
->      except Exception, details:
->          print "INFO: Trigger workload failed", details
->          sys.exit(1)
-> @@ -434,7 +520,7 @@ def generate_report():
->              print >> keyvalfile, "package-%s=%3.4f" % \
->  		(pkg, (float(total_idle)*100/total))
->      except Exception, details:
-> -        print "Generating reportfile failed: ", details
-> +        print "Generating utilization report failed: ", details
->          sys.exit(1)
-> 
->      #Add record delimiter '\n' before closing these files
-> @@ -454,20 +540,18 @@ def generate_loc_intr_report():
-> 
->          get_proc_loc_count(intr_stop)
-> 
-> -        print "Before substracting"
-> -        for i in range(0, cpu_count):
-> -            print "CPU",i, intr_start[i], intr_stop[i]
-> -            reportfile = open('/procstat/cpu-loc_interrupts', 'a')
-> -            print >> reportfile, "=============================================="
-> -            print >> reportfile, "     Local timer interrupt stats              "
-> -            print >> reportfile, "=============================================="
-> +        reportfile = open('/procstat/cpu-loc_interrupts', 'a')
-> +        print >> reportfile, "=============================================="
-> +        print >> reportfile, "     Local timer interrupt stats              "
-> +        print >> reportfile, "=============================================="
-> +
->          for i in range(0, cpu_count):
->              intr_stop[i] =  int(intr_stop[i]) - int(intr_start[i])
->              print >> reportfile, "CPU%s: %s" %(i, intr_stop[i])
->          print >> reportfile
->          reportfile.close()
->      except Exception, details:
-> -        print "Generating reportfile failed: ", details
-> +        print "Generating interrupt report failed: ", details
->          sys.exit(1)
-> 
->  def record_loc_intr_count():
-> @@ -542,25 +626,24 @@ def validate_cpugrp_map(cpu_group, sched
->                                  modi_cpu_grp.remove(core_cpus[i]) 
->                                  if len(modi_cpu_grp) == 0:
->                                      return 0
-> -                            else:
-> +                            #This code has to be deleted 
-> +                            #else:
->                                  # If sched_smt == 0 then its oky if threads run
->                                  # in different cores of same package 
-> -                                if sched_smt_level == 1:
-> -                                    sys.exit(1)
-> -                                else:
-> -                                    if len(cpu_group) == 2 and \
-> -                                        len(modi_cpu_grp) < len(cpu_group):
-> -                                        print "INFO:CPUs utilized not in a core"
-> -                                        return 1                                        
-> -            print "INFO: CPUs utilized is not in same package or core"
-> -            return(1)
-> +                                #if sched_smt_level > 0 :
-> +                                    #return 1
->  	else:
->              for pkg in sorted(cpu_map.keys()):
->                  pkg_cpus = cpu_map[pkg]
-> -                if pkg_cpus == cpu_group:
-> -                    return(0)
-> -                 
-> -            return(1) 
-> +                if len(cpu_group) == len(pkg_cpus):
-> +                    if pkg_cpus == cpu_group:
-> +                        return(0)
-> +                else:
-> +                    if int(cpus_utilized[0]) in cpu_map[pkg] or int(cpus_utilized[1]) in cpu_map[pkg]:
-> +                        return(0)
-> +
-> +        return(1) 
-> +
->      except Exception, details:
->          print "Exception in validate_cpugrp_map: ", details
->          sys.exit(1)
-> @@ -605,36 +688,70 @@ def verify_sched_domain_dmesg(sched_mc_l
->          print "Reading dmesg failed", details
->          sys.exit(1)
-> 
-> -def validate_cpu_consolidation(work_ld, sched_mc_level, sched_smt_level):
-> +def get_cpu_utilization(cpu):
-> +    ''' Return cpu utilization of cpu_id
-> +    '''
-> +    try:
-> +        for l in sorted(stats_percentage.keys()):
-> +            if cpu == stats_percentage[l][0]:
-> +                return stats_percentage[l][1]
-> +        return -1
-> +    except Exception, details:
-> +        print "Exception in get_cpu_utilization", details
-> +        sys.exit(1)
-> +
-> +def validate_cpu_consolidation(stress, work_ld, sched_mc_level, sched_smt_level):
->      ''' Verify if cpu's on which threads executed belong to same
->      package
->      '''
->      cpus_utilized = list()
-> +    threads = get_job_count(stress, work_ld, sched_smt_level)
->      try:
->          for l in sorted(stats_percentage.keys()):
->              #modify threshold
-> +            cpu_id = stats_percentage[l][0].split("cpu")
-> +            if cpu_id[1] == '':
-> +                continue
-> +            if int(cpu_id[1]) in cpus_utilized:
-> +                continue
->              if is_hyper_threaded():
-> -                if stats_percentage[l][1] > 25 and work_ld == "kernbench":
-> -                    cpu_id = stats_percentage[l][0].split("cpu")
-> -                    if cpu_id[1] != '':
-> +                if work_ld == "kernbench" and sched_smt_level < sched_mc_level:
-> +                    siblings = get_siblings(cpu_id[1])
-> +                    if siblings != "":
-> +                        sib_list = siblings.split()
-> +                        utilization = int(stats_percentage[l][1])
-> +                        for i in range(0, len(sib_list)):
-> +                            utilization += int(get_cpu_utilization("cpu%s" %sib_list[i])) 
-> +                    else:
-> +                        utilization = stats_percentage[l][1]
-> +                    if utilization > 40:
->                          cpus_utilized.append(int(cpu_id[1]))
-> +                        if siblings != "":
-> +                            for i in range(0, len(sib_list)):
-> +                                cpus_utilized.append(int(sib_list[i]))
->                  else:
-> -                    if stats_percentage[l][1] > 70:
-> -                        cpu_id = stats_percentage[l][0].split("cpu")
-> -                        if cpu_id[1] != '':
-> -                            cpus_utilized.append(int(cpu_id[1]))
-> +                    # This threshold wuld be modified based on results
-> +                    if stats_percentage[l][1] > 40:
-> +                        cpus_utilized.append(int(cpu_id[1]))
->              else:
-> -                if stats_percentage[l][1] > 70:
-> -                    cpu_id = stats_percentage[l][0].split("cpu")
-> -                    if cpu_id[1] != '':
-> +                if work_ld == "kernbench" :
-> +                    if stats_percentage[l][1] > 50:
->                          cpus_utilized.append(int(cpu_id[1]))
-> -                    cpus_utilized.sort()
-> +                else:
-> +                    if stats_percentage[l][1] > 70:
-> +                        cpus_utilized.append(int(cpu_id[1]))
-> +            cpus_utilized.sort()
->          print "INFO: CPU's utilized ", cpus_utilized
-> 
-> +        # If length of CPU's utilized is not = number of jobs exit with 1
-> +        if len(cpus_utilized) < threads:
-> +            return 1
-> +
->          status = validate_cpugrp_map(cpus_utilized, sched_mc_level, \
->              sched_smt_level)
->          if status == 1:
->              print "INFO: CPUs utilized is not in same package or core"
-> +
->          return(status)
->      except Exception, details:
->          print "Exception in validate_cpu_consolidation: ", details
-> @@ -645,7 +762,8 @@ def get_cpuid_max_intr_count():
->      try:
->          highest = 0
->          second_highest = 0
-> -        global cpu1_max_intr, cpu2_max_intr
-> +        cpus_utilized = []
-> +        
->          #Skipping CPU0 as it is generally high
->          for i in range(1, cpu_count):
->              if int(intr_stop[i]) > int(highest):
-> @@ -658,15 +776,19 @@ def get_cpuid_max_intr_count():
->                  if int(intr_stop[i]) > int(second_highest):
->                      second_highest = int(intr_stop[i])
->                      cpu2_max_intr = i
-> +        cpus_utilized.append(cpu1_max_intr)
-> +        cpus_utilized.append(cpu2_max_intr)
-> +        
->          for i in range(1, cpu_count):
->              if i != cpu1_max_intr and i != cpu2_max_intr:
->                  diff = second_highest - intr_stop[i]
->                  ''' Threshold of difference has to be manipulated '''
->                  if diff < 10000:
->                      print "INFO: Diff in interrupt count is below threshold"
-> -                    return 1
-> +                    cpus_utilized = []
-> +                    return cpus_utilized
->          print "INFO: Interrupt count in other CPU's low as expected"
-> -        return 0 
-> +        return cpus_utilized
->      except Exception, details:
->          print "Exception in get_cpuid_max_intr_count: ", details
->          sys.exit(1)
-> @@ -675,14 +797,12 @@ def validate_ilb (sched_mc_level, sched_
->      ''' Validate if ilb is running in same package where work load is running
->      '''
->      try:
-> -        status = get_cpuid_max_intr_count()
-> -        if status == 1:
-> +        cpus_utilized = get_cpuid_max_intr_count()
-> +        if not cpus_utilized:
->              return 1
-> -        for pkg in sorted(cpu_map.keys()):
-> -            if cpu1_max_intr in cpu_map[pkg] and cpu2_max_intr in cpu_map[pkg]:
-> -                return 0
-> -        print "INFO: CPUs with higher interrupt count is not in same package"
-> -        return 1
-> +       
-> +        status = validate_cpugrp_map(cpus_utilized, sched_mc_level, sched_smt_level)
-> +        return status
->      except Exception, details:
->          print "Exception in validate_ilb: ", details
->          sys.exit(1)
-> @@ -706,3 +826,14 @@ def reset_schedsmt():
->      except OSError, e:
->          print "Could not set sched_smt_power_savings to 0", e
->          sys.exit(1)
-> +
-> +def stop_wkld(work_ld):
-> +    ''' Kill workload triggered in background
-> +    '''
-> +    try:
-> +        os.system('pkill %s 2>/dev/null' %work_ld)
-> +        if work_ld == "kernbench":
-> +            os.system('pkill make 2>/dev/null')
-> +    except OSError, e:
-> +        print "Exception in stop_wkld", e
-> +        sys.exit(1)
-> 
-> ------------------------------------------------------------------------------
-> Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-> is the only developer event you need to attend this year. Jumpstart your
-> developing skills, take BlackBerry mobile applications to market and stay 
-> ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-> http://p.sf.net/sfu/devconference
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+Masatake YAMATO
 
+
+Already ported to LTP from crackerjack (42/92)
+----------------------------------------------------------------------
+@  Done(42/92)
+
+Not ported to LTP yet (45/92)
+----------------------------------------------------------------------
+!  None are working on. (22/92)
+?  No completed. Masatake YAMATO will do. (23/92)
+>  In review-phase.
+
+
+No need to work (3/92)
+------------------------------------------------------------------------
+-  LTP maintainer said "Need not look into this right now. " or something (2/92)
+=  LTP maintainer said "We have a different form of this at ... 
+                       But i would like to see this tested inside testcases/kernel/ syscalls..."(1/92)
+
+
+
+Detail
+------------------------------------------------------------------------
+No. System Call       Comment on its position To-be-Ported-by              Status                      
+                      w.r.t LTP                                                                        
+                      We have ftruncate at                                                             
+                      testcases/kernel/                                                                
+                      syscalls/ftruncate/.                                                             
+                      But this may not be                                                              
+@   ftruncate64       doing the ftruncate64() Masatake YAMATO <            Completed on 05/08/2008     
+                      test. You may need to   yamato@redhat.com>                                       
+                      include/port                                                                     
+                      ftruncate64 on similar                                                           
+                      lines to sendfile64 and                                                          
+                      fadvise64                                                                        
+
+                      We have setgid at                                                                
+                      testcases/kernel/                                                                
+                      syscalls/setgid. You                                                             
+@   setgid16          may need to include/    Masatake YAMATO <            Completed on 04/08/2008     
+                      port setgid16 on        yamato@redhat.com>                                       
+                      similar lines to                                                                 
+                      sendfile64 and                                                                   
+                      fadvise64.                                                                       
+
+                      We have this at                                                                  
+                      testcases/kernel/                                                                
+                      syscalls/ipc/shmget.                                                             
+                      Need not look into this                                                          
+                      right now. May be after                                                          
+                      the porting is over, we                                                          
+                      can see whether there                                                            
+                      is some additional                                                               
+-   shmget            functionality that      Need Volunteer               N/A                         
+                      Crackerjack shmget is                                                            
+                      covering over                                                                    
+                      LTP-shmget. We may then                                                          
+                      need to add 1/2 test                                                             
+                      cases in this regard.                                                            
+                      But, not to be                                                                   
+                      prioritized                                                                      
+                      immediately.                                                                     
+
+                      We need this from                                                                
+@   mbind             Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+!   removexattr       Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+@   exit_group        Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere
+                                                                         
+                      We need this from                                                                
+@   io_cancel         Crackerjack as we do    Masatake YAMATO<             Completed on 26/06/2008     
+                      not have this in LTP    yamato@redhat.com>                                       
+                      anywhere                                                                         
+
+                      We have a different                                                              
+                      form of this at                                                                  
+                      recently added Memory                                                            
+                      Hotplug testcases at                                                             
+                      testcases/kernel/                                                                
+                      hotplug/memory_hotplug/                                                          
+=   migrate_pages     . But i would like to   Need Volunteer               N/A                         
+                      see this tested inside                                                           
+                      testcases/kernel/                                                                
+                      syscalls, as hotplug                                                             
+                      testing presently is                                                             
+                      optional. So, please                                                             
+                      include/port this as                                                             
+                      well                                                                             
+
+                      We have setgroups at                                                             
+                      testcases/kernel/                                                                
+                      syscalls/setgroups. You                                                          
+@   setgroups16       may need to include/    Masatake YAMATO <            Completed on 27/08/2008     
+                      port setgroups16 on     yamato@redhat.com>                                       
+                      similar lines to                                                                 
+                      sendfile64 and                                                                   
+                      fadvise64                                                                        
+
+                      We have getdents at                                                              
+                      testcases/kernel/                                                                
+                      syscalls/getdents. You                                                           
+?  getdents64         may need to include/    Subrata Modak<               Completed on 07/11/2008     
+                      port getdents64 on      subrata@linux.vnet.ibm.com>                              
+                      similar lines to                                                                 
+                      sendfile64 and                                                                   
+                      fadvise64                                                                        
+
+                      We need this from                                                                
+@  add_key            Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We have getegid at                                                               
+                      testcases/kernel/                                                                
+                      syscalls/getegid. You                                                            
+@  getegid16          may need to include/    Masatake YAMATO <            Completed on 04/09/2008     
+                      port getegid16 on       yamato@redhat.com>                                       
+                      similar lines to                                                                 
+                      sendfile64 and                                                                   
+                      fadvise64                                                                        
+
+                      We need this from                                                                
+@  io_destroy         Crackerjack as we do    Masatake YAMATO <            Completed on 12/07/2008     
+                      not have this in LTP    yamato@redhat.com>                                       
+                      anywhere                                                                         
+
+                      We need this from                                                                
+!  newfstat           Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+!   set_mempolicy     Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+!  timer_getoverrun   Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We have fadvise64                                                                
+                      support added by                                                                 
+                      Masatake Yamato. But i  Already Taken care of by                                 
+@  fadvise64_64       am not sure what this   Masatake yamato              Completed                   
+                      fadvise64_64 is. May                                                             
+                      need to include/port                                                             
+                      this as well                                                                     
+                      We need this from                                                                
+@  io_getevents       Crackerjack as we do    Masatake YAMATO <            Completed on 12/07/2008     
+                      not have this in LTP    yamato@redhat.com>                                       
+                      anywhere                                                                         
+
+                      We need this from                                                                
+!   newlstat          Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+@  rt_sigaction       Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+@  sigreturn          Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+@  timer_gettime      Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We have geteuid at                                                               
+                      testcases/kernel/                                                                
+                      syscalls/geteuid. You                                                            
+?  geteuid16          may need to include/    Subrata Modak<               Completed on 07/11/2008     
+                      port geteuid16 on       subrata@linux.vnet.ibm.com>                              
+                      similar lines to                                                                 
+                      sendfile64 and                                                                   
+                      fadvise64                                                                        
+
+                      We need this from                                                                
+!  newuname           Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+@  rt_sigprocmask     Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+@  bdflush            Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We have getgid at                                                                
+                      testcases/kernel/                                                                
+                      syscalls/getgid. You                                                             
+@  getgid16           may need to include/    Masatake YAMATO <            Completed on 19/09/2008     
+                      port getgid16 on        yamato@redhat.com>                                       
+                      similar lines to                                                                 
+                      sendfile64 and                                                                   
+                      fadvise64                                                                        
+
+                      We need this from                                                                
+@  rt_sigqueueinfo    Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+!  ioprio_get         Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+@  rt_sigsuspend      Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We have setregid at                                                              
+                      testcases/kernel/                                                                
+                      syscalls/setregid. You                                                           
+?  setregid16         may need to include/    Subrata Modak<               Subrata Modak<              
+                      port setregid16 on      subrata@linux.vnet.ibm.com>  subrata@linux.vnet.ibm.com> 
+                      similar lines to                                                                 
+                      sendfile64 and                                                                   
+                      fadvise64                                                                        
+
+                      We need this from                                                                
+@  tkill              Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We have getgroups at                                                             
+                      testcases/kernel/                                                                
+                      syscalls/getgroups. You                                                          
+?   getgroups16       may need to include/    Subrata Modak<               Subrata Modak<              
+                      port getgroups16 on     subrata@linux.vnet.ibm.com>  subrata@linux.vnet.ibm.com> 
+                      similar lines to                                                                 
+                      sendfile64 and                                                                   
+                      fadvise64                                                                        
+
+                      We need this from                                                                
+!   ioprio_set        Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+@   sched_getaffinity Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+@   ssetmask          Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We have fchown at                                                                
+                      testcases/kernel/                                                                
+                      syscalls/fchown. You                                                             
+?   fchown16          may need to include/    Subrata Modak<               Completed on 07/11/2008     
+                      port fchown16 on        subrata@linux.vnet.ibm.com>                              
+                      similar lines to                                                                 
+                      sendfile64 and                                                                   
+                      fadvise64                                                                        
+
+                      We need this from                                                                
+@  io_setup           Crackerjack as we do    Masatake YAMATO <            Completed on 12/07/2008     
+                      not have this in LTP    yamato@redhat.com>                                       
+                      anywhere                                                                         
+
+                      We need this from                                                                
+!  mmap2              Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+                      We have setresgid at                                                             
+                      testcases/kernel/                                                                
+                      syscalls/setresgid. You                                                          
+?  setresgid16        may need to include/    Subrata Modak<               Completed on 07/11/2008     
+                      port setresgid16 on     subrata@linux.vnet.ibm.com>                              
+                      similar lines to                                                                 
+                      sendfile64 and                                                                   
+                      fadvise64                                                                        
+
+                      We have truncate at                                                              
+                      testcases/kernel/                                                                
+                      syscalls/truncate. You                                                           
+@  truncate64         may need to include/    Masatake YAMATO <            Completed on 05/08/2008     
+                      port truncate64 on      yamato@redhat.com>                                       
+                      similar lines to                                                                 
+                      sendfile64 and                                                                   
+                      fadvise64                                                                        
+
+                      We need this from                                                                
+@  get_mempolicy      Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+                      We need this from                                                                
+@  io_submit          Crackerjack as we do    Masatake YAMATO <            Completed on 12/07/2008     
+                      not have this in LTP    yamato@redhat.com>                                       
+                      anywhere                                                                         
+
+                      We have stat at                                                                  
+                      testcases/kernel/                                                                
+                      syscalls/stat. You may  Subrata Modak<                                           
+?  stat64             need to include/port    subrata@linux.vnet.ibm.com>  Completed on 07/11/2008     
+                      stat64 on similar lines                                                          
+                      to sendfile64 and                                                                
+                      fadvise64                                                                        
+
+                      We need this from                                                                
+@  keyctl             Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We have setresuid at                                                             
+                      testcases/kernel/                                                                
+                      syscalls/setresuid. You                                                          
+?  setresuid16        may need to include/    Subrata Modak<               Completed on 07/11/2008     
+                      port setresuid16 on     subrata@linux.vnet.ibm.com>                              
+                      similar lines to                                                                 
+                      sendfile64 and                                                                   
+                      fadvise64                                                                        
+
+                      We have chown at                                                                 
+                      testcases/kernel/                                                                
+                      syscalls/chown. You may Subrata Modak<                                           
+?   chown16           need to include/port    subrata@linux.vnet.ibm.com>  Completed on 07/11/2008     
+                      chown16 on similar                                                               
+                      lines to sendfile64 and                                                          
+                      fadvise64                                                                        
+
+                      We have fcntl at                                                                 
+                      testcases/kernel/                                                                
+                      syscalls/fcntl. You may Subrata Modak<                                           
+?  fcntl64            need to include/port    subrata@linux.vnet.ibm.com>  Completed on 07/11/2008     
+                      fcntl64 on similar                                                               
+                      lines to sendfile64 and                                                          
+                      fadvise64                                                                        
+
+                      But work for this has   Vijay Kumar B. <             Completed on 26/07/2008.    
+-  move_pages         been already initiated. vijaykumar@bravegnu.org>     This was not ported, but    
+                      Need not consider this                               written by him              
+
+                      We have statfs at                                                                
+                      testcases/kernel/                                                                
+                      syscalls/statfs. You                                                             
+?   statfs64          may need to include/    Subrata Modak<               Completed on 07/11/2008     
+                      port statfs64 on        subrata@linux.vnet.ibm.com>                              
+                      similar lines to                                                                 
+                      sendfile64 and                                                                   
+                      fadvise64                                                                        
+
+                      We need this from                                                                
+@   clock_getres      Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We have lchown at                                                                
+                      testcases/kernel/                                                                
+                      syscalls/lchown. You                                                             
+?  lchown16           may need to include/    Subrata Modak<               Subrata Modak<              
+                      port lchown16 on        subrata@linux.vnet.ibm.com>  subrata@linux.vnet.ibm.com> 
+                      similar lines to                                                                 
+                      sendfile64 and                                                                   
+                      fadvise64                                                                        
+
+                      We have setreuid at                                                              
+                      testcases/kernel/                                                                
+                      syscalls/setreuid. You                                                           
+?   setreuid16        may need to include/    Subrata Modak<               Completed on 07/11/2008     
+                      port setreuid16 on      subrata@linux.vnet.ibm.com>                              
+                      similar lines to                                                                 
+                      sendfile64 and                                                                   
+                      fadvise64                                                                        
+
+                      We need this from                                                                
+!  fgetxattr          Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+!   lgetxattr         Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+!   mq_getsetattr     Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+@  unshare            Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+@  clock_nanosleep    Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+!  flistxattr         Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+@  mq_notify          Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+@  ppoll              Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+!  useclock_settime   Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+@  mq_open            Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+@  set_thread_area    Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+!  listxattr          Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+@  mq_timedreceive    Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We have pread at                                                                 
+                      testcases/kernel/                                                                
+                      syscalls/pread. You may Subrata Modak<                                           
+?  pread64            need to include/port    subrata@linux.vnet.ibm.com>  Completed on 07/11/2008     
+                      pread64 on similar                                                               
+                      lines to sendfile64 and                                                          
+                      fadvise64                                                                        
+
+                      We need this from                                                                
+68  set_tid_address   Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+!  fremovexattr       Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+!  llistxatt          Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+@  mq_timedsend       Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We have pselect at                                                               
+                      testcases/kernel/                                                                
+                      syscalls/pselect. You                                                            
+?  pselect64          may need to include/    Subrata Modak<               Completed on 07/11/2008     
+                      port pselect64 on       subrata@linux.vnet.ibm.com>                              
+                      similar lines to                                                                 
+                      sendfile64 and                                                                   
+                      fadvise64                                                                        
+
+                      We need this from                                                                
+@  utimes             Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+!  fsetxattr          Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+@  mq_unlink          Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+@  gettid             Crackerjack as we do    Masatake YAMATO <            Completed on 17/06/2008     
+                      not have this in LTP    yamato@redhat.com>                                       
+                      anywhere                                                                         
+
+                      We need this from                                                                
+!  lremovexattr       Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+@  quotactl           Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We have setuid at                                                                
+                      testcases/kernel/                                                                
+                      syscalls/setuid and                                                              
+                      testcases/kernel/       Subrata Modak<                                           
+?  setuid16           syscalls/mount. You may subrata@linux.vnet.ibm.com>  Completed on 07/11/2008     
+                      need to include/port                                                             
+                      setuid16 on similar                                                              
+                      lines to sendfile64 and                                                          
+                      fadvise64                                                                        
+
+                      We have fstat at                                                                 
+                      testcases/kernel/                                                                
+                      syscalls/fstat. You may Subrata Modak<                                           
+?  fstat64            need to include/port    subrata@linux.vnet.ibm.com>  Completed on 07/11/2008     
+                      fstat64 on similar                                                               
+                      lines to sendfile64 and                                                          
+                      fadvise64                                                                        
+
+                      We need this from                                                                
+!  setxattr           Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We have fstatat at                                                               
+                      testcases/kernel/                                                                
+                      syscalls/fstatat. You                                                            
+?  fstatat64          may need to include/    Subrata Modak<               Completed on 07/11/2008     
+                      port fstatat64 on       subrata@linux.vnet.ibm.com>                              
+                      similar lines to s                                                               
+                      sendfile64 and                                                                   
+                      fadvise64                                                                        
+
+                      We need this from                                                                
+  lsetxattr           Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+!  readahead          Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We have setfsgid at                                                              
+                      testcases/kernel/                                                                
+                      syscalls/setfsgid. You                                                           
+?  setfsgid16         may need to include/    Subrata Modak<               Completed on 07/11/2008     
+                      port setfsgid16 on      subrata@linux.vnet.ibm.com>                              
+                      similar lines to                                                                 
+                      sendfile64 and                                                                   
+                      fadvise64                                                                        
+
+                      We need this from                                                                
+@  sgetmask           Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We need this from                                                                
+@  waitid             Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We have fstatfs at                                                               
+                      testcases/kernel/                                                                
+                      syscalls/fstatfs. You                                                            
+?  fstatfs64          may need to include/    Subrata Modak<               Completed on 07/11/2008     
+                      port fstatfs64 on       subrata@linux.vnet.ibm.com>                              
+                      similar lines to s                                                               
+                      sendfile64 and                                                                   
+                      fadvise64                                                                        
+
+                      We have getuid at                                                                
+                      testcases/kernel/                                                                
+                      syscalls/getuid. You                                                             
+>  getuid16           may need to include/    Subrata Modak<               Completed on 07/11/2008     
+                      port getuid16 on        subrata@linux.vnet.ibm.com>                              
+                      similar lines to                                                                 
+                      sendfile64 and                                                                   
+                      fadvise64                                                                        
+
+                      We need this from                                                                
+!  getxattr           Crackerjack as we do    Need Volunteer               N/A                         
+                      not have this in LTP                                                             
+                      anywhere                                                                         
+
+                      We have lstat at                                                                 
+                      testcases/kernel/                                                                
+                      syscalls/lstat. You may Subrata Modak<                                           
+?  lstat64            need to include/port    subrata@linux.vnet.ibm.com>  Completed on 07/11/2008     
+                      lstat64 on similar                                                               
+                      lines to sendfile64 and                                                          
+                      fadvise64                                                                        
+
+                      We have setfsuid at                                                              
+                      testcases/kernel/                                                                
+                      syscalls/setfsuid. You                                                           
+?  setfsuid16         may need to include/    Subrata Modak<               Completed on 07/11/2008     
+                      port setfsuid16 on      subrata@linux.vnet.ibm.com>                              
+                      similar lines to                                                                 
+                      sendfile64 and                                                                   
+                      fadvise64                                                                        
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
