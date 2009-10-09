@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1Mw94I-0001Au-LC
-	for ltp-list@lists.sourceforge.net; Fri, 09 Oct 2009 06:35:10 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mw94C-0003Pn-Im
-	for ltp-list@lists.sourceforge.net; Fri, 09 Oct 2009 06:35:10 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Fri, 9 Oct 2009 02:34:55 -0400
-References: <20091009.152108.954124754429052503.yamato@redhat.com>
-In-Reply-To: <20091009.152108.954124754429052503.yamato@redhat.com>
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1MwE5u-0007J3-Vs
+	for ltp-list@lists.sourceforge.net; Fri, 09 Oct 2009 11:57:10 +0000
+Date: Fri, 9 Oct 2009 13:56:55 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20091009115655.GB3725@schrodinger.suse.cz>
+References: <f5a7b3810908310549t6ced24qd9e0faf634d2319f@mail.gmail.com>
+	<1252323746.4922.34.camel@subratamodak.linux.ibm.com>
+	<20090917134805.GA5337@schrodinger.suse.cz>
+	<1253298631.15071.10.camel@subratamodak.linux.ibm.com>
 MIME-Version: 1.0
-Message-Id: <200910090234.56735.vapier@gentoo.org>
-Subject: Re: [LTP] Checking flex existance in configure
+Content-Type: multipart/mixed; boundary="rJwd6BRFiFCcLxzm"
+Content-Disposition: inline
+In-Reply-To: <1253298631.15071.10.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [PATCH 16/21] Add sigreturn01 test for sigreturn syscall
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,65 +25,244 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3849537889277724396=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============3849537889277724396==
-Content-Type: multipart/signed; boundary="nextPart2316273.hOka4qUOii";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart2316273.hOka4qUOii
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-On Friday 09 October 2009 02:21:08 Masatake YAMATO wrote:
-> In INSTALL file:
->=20
->     3. Run "make" to build everything.
->        *NOTE: Some of the Makefiles (example: pan/Makefile) require the l=
-ex
->  (or flex) package to be installed.
->=20
-> I've added AC_PROG_LEX to configure.ac to check the existance of flex or
->  lex command.
-
-Garrett has this fixed in his pending build patch.  i dont think this fix i=
-s=20
-critical, so it can be merged when Garrett commits his changes (hopefully=20
-soon).  it'll make his life easier as it'll avoid conflicts (which suck wit=
-h=20
-CVS).
-=2Dmike
-
---nextPart2316273.hOka4qUOii
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJKztmQAAoJEEFjO5/oN/WBpp0QAKGg7J+xrSG48iixdYfwR54d
-dBz1kUCpTpNGYLXvQLgFFpuFoMzUKO7pPfTiU9dSOp4Vq/eDFoUrKvZY5ElLqk8c
-fpjawMhRQdm6Ddg3AlmxQsRKFfv+tUEdVZOKCSA9ApQ8qR+RM5RIbhp95fe7HI8j
-0UfOgKCzZDxW4ZqMusJ9yHBTMzqN/Sf8C/RlRGe8N7rvfTBwAWq/4Q5RuYieLFc9
-o9JAsWB/5jZOI/qVK26LtySHT7MF6UlD5t1svBNv3EOA+jS6HyMSe69vYtg1ORHc
-GyPULswiLx5PIEiIa7JS8NrIkFKGeO/wp2J7U2pC4ZORmZOOPcw0YO5wujF8+HdN
-iY2yISKPjiR+ybRFpXtIJyH347d6b9d/KrZj/cXsnyb1GSlv5qyYTB04b1R3TjMo
-dJvAkXALVeyzldDyG2lEVNmg46v/9HGte/6uWIOXS3N8NKabHi5z1QFf3vxMpvBL
-dfZIGbmVuVuhVYQBZevn4TA49Nmk9s+vN4QTwgGm+HmStY0qQ2owOhCdoT8Jp7KQ
-bDe47ve5KDt6ULjwC0dnxtTXEUTjJCkx1/hFefcc/lksErXmpQMTU0kltuWzAcXo
-81L34mJipiSUglVTuQxcvtvkJpun4Pay69ry16Ul9P5ZU6hYeoTrNwHCmprxc1ka
-7HOHPsi1Q7T4MWN9t8Br
-=z7Tm
------END PGP SIGNATURE-----
-
---nextPart2316273.hOka4qUOii--
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, naresh kamboju <naresh.kernel@gmail.com>, Manas Kumar Nayak <maknayak@in.ibm.com>
 
 
---===============3849537889277724396==
+--rJwd6BRFiFCcLxzm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi!
+
+Requested patch attached.
+
+Signed-off-by: chrubis@suse.cz
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+--rJwd6BRFiFCcLxzm
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="remove_sigreturn.patch"
+
+Index: ltp/testcases/kernel/syscalls/sigreturn/Makefile
+===================================================================
+--- ltp.orig/testcases/kernel/syscalls/sigreturn/Makefile
++++ /dev/null
+@@ -1,31 +0,0 @@
+-#
+-#  Copyright (c) International Business Machines  Corp., 2009
+-#
+-#  This program is free software;  you can redistribute it and/or modify
+-#  it under the terms of the GNU General Public License as published by
+-#  the Free Software Foundation; either version 2 of the License, or
+-#  (at your option) any later version.
+-#
+-#  This program is distributed in the hope that it will be useful,
+-#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#  the GNU General Public License for more details.
+-#
+-#  You should have received a copy of the GNU General Public License
+-#  along with this program;  if not, write to the Free Software
+-#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+-#
+-
+-CFLAGS += -I../../../../include -Wall
+-LDLIBS += -L../../../../lib -lltp
+-
+-SRCS    = $(wildcard *.c)
+-TARGETS = $(patsubst %.c,%,$(SRCS))
+-
+-all: $(TARGETS)
+-
+-install:
+-	@set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i ; done
+-
+-clean:
+-	rm -f $(TARGETS)
+Index: ltp/testcases/kernel/syscalls/sigreturn/sigreturn01.c
+===================================================================
+--- ltp.orig/testcases/kernel/syscalls/sigreturn/sigreturn01.c
++++ /dev/null
+@@ -1,172 +0,0 @@
+-/******************************************************************************/
+-/* Copyright (c) Crackerjack Project., 2007                                   */
+-/*                                                                            */
+-/* This program is free software;  you can redistribute it and/or modify      */
+-/* it under the terms of the GNU General Public License as published by       */
+-/* the Free Software Foundation; either version 2 of the License, or          */
+-/* (at your option) any later version.                                        */
+-/*                                                                            */
+-/* This program is distributed in the hope that it will be useful,            */
+-/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
+-/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
+-/* the GNU General Public License for more details.                           */
+-/*                                                                            */
+-/* You should have received a copy of the GNU General Public License          */
+-/* along with this program;  if not, write to the Free Software               */
+-/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
+-/*                                                                            */
+-/******************************************************************************/
+-/******************************************************************************/
+-/*                                                                            */
+-/* File:        sigreturn01.c                                           */
+-/*                                                                            */
+-/* Description: This tests the sigreturn() syscall  
+-	sigreturn - return from signal handler and cleanup stack frame.	
+-	When the Linux kernel creates the stack frame for a signal handler, 
+-	a call to sigreturn() is inserted into the stack frame so that the
+-	signal handler will call sigreturn() upon return. This inserted call
+-	to sigreturn() cleans up the stack so that the process can restart 
+-	from where it was interrupted by the signal.  		
+-		                    */
+-/*                                                                            */
+-/* Usage:  <for command-line>                                                 */
+-/* sigreturn01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                     */
+-/*      where,  -c n : Run n copies concurrently.                             */
+-/*              -e   : Turn on errno logging.                                 */
+-/*              -i n : Execute test n times.                                  */
+-/*              -I x : Execute test for x seconds.                            */
+-/*              -P x : Pause for x seconds between iterations.                */
+-/*              -t   : Turn on syscall timing.                                */
+-/*                                                                            */
+-/* Total Tests: 1                                                             */
+-/*                                                                            */
+-/* Test Name:   sigreturn01                                             */
+-/* History:     Porting from Crackerjack to LTP is done by                    */
+-/*              Manas Kumar Nayak maknayak@in.ibm.com>                        */
+-/******************************************************************************/
+-#include <limits.h>
+-#include <unistd.h>
+-#include <sys/types.h>
+-#include <sys/syscall.h>
+-#include <pwd.h>
+-#include <grp.h>
+-#include <string.h>
+-#include <sys/param.h>
+-#include <stdio.h>
+-#include <errno.h>
+-
+-/* Harness Specific Include Files. */
+-#include "test.h"
+-#include "usctest.h"
+-#include "linux_syscall_numbers.h"
+-
+-/* Extern Global Variables */
+-extern int Tst_count;           /* counter for tst_xxx routines.         */
+-extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
+-
+-/* Global Variables */
+-char *TCID = "sigreturn01";  /* Test program identifier.*/
+-int  testno;
+-int  TST_TOTAL = 2;                   /* total number of tests in this file.   */
+-
+-/* Extern Global Functions */
+-/******************************************************************************/
+-/*                                                                            */
+-/* Function:    cleanup                                                       */
+-/*                                                                            */
+-/* Description: Performs all one time clean up for this test on successful    */
+-/*              completion,  premature exit or  failure. Closes all temporary */
+-/*              files, removes all temporary directories exits the test with  */
+-/*              appropriate return code by calling tst_exit() function.       */
+-/*                                                                            */
+-/* Input:       None.                                                         */
+-/*                                                                            */
+-/* Output:      None.                                                         */
+-/*                                                                            */
+-/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
+-/*              On success - Exits calling tst_exit(). With '0' return code.  */
+-/*                                                                            */
+-/******************************************************************************/
+-extern void cleanup() {
+-        /* Remove tmp dir and all files in it */
+-        TEST_CLEANUP;
+-        tst_rmdir();
+-
+-        /* Exit with appropriate return code. */
+-        tst_exit();
+-}
+-
+-/* Local  Functions */
+-/******************************************************************************/
+-/*                                                                            */
+-/* Function:    setup                                                         */
+-/*                                                                            */
+-/* Description: Performs all one time setup for this test. This function is   */
+-/*              typically used to capture signals, create temporary dirs      */
+-/*              and temporary files that may be used in the course of this    */
+-/*              test.                                                         */
+-/*                                                                            */
+-/* Input:       None.                                                         */
+-/*                                                                            */
+-/* Output:      None.                                                         */
+-/*                                                                            */
+-/* Return:      On failure - Exits by calling cleanup().                      */
+-/*              On success - returns 0.                                       */
+-/*                                                                            */
+-/******************************************************************************/
+-void setup() {
+-        /* Capture signals if any */
+-        /* Create temporary directories */
+-        TEST_PAUSE;
+-        tst_tmpdir();
+-}
+-
+-
+-#define PRINT(X) fprintf(stdout,"%s\n", X)
+-
+-int ngexit(void);
+-
+-int main(int ac, char **av) {
+-        int retval = 0;
+-        unsigned long parm = 0;
+-	int lc;                 /* loop counter */
+-        char *msg;              /* message returned from parse_opts */
+-	
+-        /* parse standard options */
+-        if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
+-             tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
+-             tst_exit();
+-           }
+-
+-        setup();
+-
+-        /* Check looping state if -i option given */
+-        for (lc = 0; TEST_LOOPING(lc); ++lc) {
+-                Tst_count = 0;
+-                for (testno = 0; testno < TST_TOTAL; ++testno) {
+-                    TEST(retval = sigreturn(parm)); 
+-                    if(TEST_RETURN > 0 ) {
+-                 	tst_resm(TFAIL, "%s ERROR!! sigreturn never return- errno = %d : %s", TCID, TEST_ERRNO, strerror(TEST_ERRNO));
+-			cleanup();
+-                        tst_exit();
+-                     }
+-                     else if (TEST_RETURN <= 0 ){
+-        	 	   tst_resm(TPASS, "sigreturn call succeeded: result = %d ",TEST_RETURN);
+-                     }
+-
+-	            parm = 0xffffffff;
+-		    TEST(retval = sigreturn(parm)); 
+-                    if(TEST_RETURN > 0 ) {
+-                 	tst_resm(TFAIL, "%s ERROR!! sigreturn never return- errno = %d : %s", TCID, TEST_ERRNO, strerror(TEST_ERRNO));
+-			cleanup();
+-			tst_exit();
+-                     }
+-                     else if (TEST_RETURN <= 0 ){
+-        	 	   tst_resm(TPASS, "sigreturn call succeeded: result = %d ",TEST_RETURN);
+-                     }
+-                }
+-        }	
+-	cleanup();
+-        tst_exit();
+-}
+-
+
+--rJwd6BRFiFCcLxzm
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -94,7 +274,7 @@ is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
---===============3849537889277724396==
+--rJwd6BRFiFCcLxzm
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -105,5 +285,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============3849537889277724396==--
+--rJwd6BRFiFCcLxzm--
 
