@@ -1,24 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Mzk6P-0006IA-IX
-	for ltp-list@lists.sourceforge.net; Mon, 19 Oct 2009 04:44:13 +0000
-Received: from mail-px0-f181.google.com ([209.85.216.181])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mzk6J-0001jm-A7
-	for ltp-list@lists.sourceforge.net; Mon, 19 Oct 2009 04:44:13 +0000
-Received: by pxi11 with SMTP id 11so529625pxi.28
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 18 Oct 2009 21:44:01 -0700 (PDT)
+	(envelope-from <yanegomi@gmail.com>) id 1Mw9HK-0004en-8s
+	for ltp-list@lists.sourceforge.net; Fri, 09 Oct 2009 06:48:38 +0000
+Received: from mail-px0-f172.google.com ([209.85.216.172])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Mw9HF-0007lC-L5
+	for ltp-list@lists.sourceforge.net; Fri, 09 Oct 2009 06:48:38 +0000
 MIME-Version: 1.0
-In-Reply-To: <364299f40910141403mc5e784bpa8c76113a95edbbf@mail.gmail.com>
-References: <364299f40910141403mc5e784bpa8c76113a95edbbf@mail.gmail.com>
-Date: Sun, 18 Oct 2009 21:44:01 -0700
-Message-ID: <364299f40910182144s7d46e09cxa72be5659bdc1945@mail.gmail.com>
+In-Reply-To: <20091009.152108.954124754429052503.yamato@redhat.com>
+References: <20091009.152108.954124754429052503.yamato@redhat.com>
+Date: Thu, 8 Oct 2009 23:48:27 -0700
+Message-ID: <364299f40910082348j371f839cice2b3e3113c5f084@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] [PATCH] Re: [issue 12] check_envval is looking for the locale
-	command (doesn't exist on all systems)
+Subject: Re: [LTP] Checking flex existance in configure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,85 +27,109 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Masatake YAMATO <yamato@redhat.com>
+Cc: ltp-list@lists.sf.net
 
-On Wed, Oct 14, 2009 at 2:03 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> =A0 =A0I'm seeing a lot of output from network_stress.log with the follow=
-ing lines:
+On Thu, Oct 8, 2009 at 11:21 PM, Masatake YAMATO <yamato@redhat.com> wrote:
+> Hi,
 >
-> /tests/ltp/output/network_stress.whole-output.log:/tests/ltp/testcases/bi=
-n/check_envval:
-> line 48: locale: command not found
 >
-> =A0 =A0Looks like the test needs to be integrated with cmdlib.sh and
-> check for the command before continuing.
-
-Checking into cvs now...
-
-1. Add check for locale command with exists command in cmdlib.sh
-2. Predefine any and all unbound variables so the set -u call in
-cmdlib.sh will allow the script to continue on to a failure point of
-some kind (or succeed if all is defined).
-
-Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
-
-Index: stress/ns-tools/check_envval
+> In INSTALL file:
+>
+> =A0 =A03. Run "make" to build everything.
+> =A0 =A0 =A0 *NOTE: Some of the Makefiles (example: pan/Makefile) require =
+the lex (or
+> =A0 =A0 =A0 flex) package to be installed.
+>
+> I've added AC_PROG_LEX to configure.ac to check the existance of flex or =
+lex command.
+>
+> Signed-off-by: Masatake YAMATO <yamato@redhat.com>
+>
+> Index: config.mk.in
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> RCS file: /cvsroot/ltp/ltp/config.mk.in,v
+> retrieving revision 1.5
+> diff -u -r1.5 config.mk.in
+> --- config.mk.in =A0 =A0 =A0 =A07 Sep 2009 07:08:53 -0000 =A0 =A0 =A0 1.5
+> +++ config.mk.in =A0 =A0 =A0 =A09 Oct 2009 06:13:07 -0000
+> @@ -2,6 +2,9 @@
+> =A0AR =3D @AR@
+> =A0RANLIB =3D @RANLIB@
+>
+> +LEX =3D @LEX@
+> +LEXLIB =3D @LEXLIB@
+> +
+> =A0CPPFLAGS =3D @CPPFLAGS@
+> =A0CFLAGS =3D @CFLAGS@
+> =A0LDFLAGS =3D @LDFLAGS@
+> Index: configure.ac
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: /cvsroot/ltp/ltp/testcases/network/stress/ns-tools/check_envval,v
-retrieving revision 1.1
-diff -u -r1.1 check_envval
---- stress/ns-tools/check_envval        24 Oct 2005 20:18:22 -0000      1.1
-+++ stress/ns-tools/check_envval        19 Oct 2009 04:41:17 -0000
-@@ -42,6 +42,10 @@
- #trace_logic=3D${trace_logic:-"set -x"}
- $trace_logic
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> RCS file: /cvsroot/ltp/ltp/configure.ac,v
+> retrieving revision 1.16
+> diff -u -r1.16 configure.ac
+> --- configure.ac =A0 =A0 =A0 =A09 Sep 2009 17:48:08 -0000 =A0 =A0 =A0 1.16
+> +++ configure.ac =A0 =A0 =A0 =A09 Oct 2009 06:13:07 -0000
+> @@ -8,6 +8,7 @@
+> =A0AC_PROG_CC
+> =A0AC_PROG_AR
+> =A0AC_PROG_RANLIB
+> +AC_PROG_LEX
+>
+> =A0AC_CHECK_HEADERS_ONCE([ \
+> =A0ifaddrs.h \
+> Index: pan/Makefile
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> RCS file: /cvsroot/ltp/ltp/pan/Makefile,v
+> retrieving revision 1.19
+> diff -u -r1.19 Makefile
+> --- pan/Makefile =A0 =A0 =A0 =A019 May 2009 09:39:11 -0000 =A0 =A0 =A01.19
+> +++ pan/Makefile =A0 =A0 =A0 =A09 Oct 2009 06:13:07 -0000
+> @@ -1,3 +1,4 @@
+> +include ../config.mk
+>
+> =A0LOADLIBES +=3D -lm
+> =A0LFLAGS +=3D -l -w
+> Index: testcases/ballista/ballista/compile/Makefile
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> RCS file: /cvsroot/ltp/ltp/testcases/ballista/ballista/compile/Makefile,v
+> retrieving revision 1.2
+> diff -u -r1.2 Makefile
+> --- testcases/ballista/ballista/compile/Makefile =A0 =A0 =A0 =A026 Feb 20=
+09 06:29:46 -0000 =A0 =A0 =A01.2
+> +++ testcases/ballista/ballista/compile/Makefile =A0 =A0 =A0 =A09 Oct 200=
+9 06:13:08 -0000
+> @@ -15,6 +15,9 @@
+> =A0# along with this program; if not, write to the Free Software
+> =A0# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA =A002111-1=
+307, USA.
+>
+> +include ../../../config.mk
+> +
+> +
+> =A0dFLAGS=3D-g -DDEBUG
+> =A0FLAGS=3D -O -Wall
+> =A0PFLAGS=3D -p -g3
+> @@ -53,7 +56,7 @@
+> =A0lex.yy.o: lex.yy.c
+>
+> =A0lex.yy.c: ballista.l tokens.h
+> - =A0 =A0 =A0 flex ballista.l
+> + =A0 =A0 =A0 $(LEX) ballista.l
+>
+> =A0blexer.o: blexer.c blexer.h jlist.h butil.h
 
-+. cmdlib.sh
-+
-+exists cut locale rsh
-+
- # Unset the locale cocerned variables
- for env in `locale | cut -f 1 -d '=3D'` ; do
-     unset $env
-@@ -49,24 +53,28 @@
- unset LANGUAGE
-
- # RHOST
-+RHOST=3D${RHOST:=3D127.0.0.1}
- if [ x${RHOST} =3D x ]; then
-     tst_resm TBROK "Environment variable RHOST is not set."
-     exit 1
- fi
-
- # LHOST_HWADDRS
-+LHOST_HWADDRS=3D${LHOST_HWADDRS:=3D}
- if [ x"${LHOST_HWADDRS}" =3D x ]; then
-     tst_resm TBROK "Environment variable LHOST_HWADDRS is not set."
-     exit 1
- fi
-
- # RHOST_HWADDRS
-+RHOST_HWADDRS=3D${RHOST_HWADDRS:=3D}
- if [ x"${RHOST_HWADDRS}" =3D x ]; then
-     tst_resm TBROK "Environment variable RHOST_HWADDRS is not set."
-     exit 1
- fi
-
- # LTP_RSH
-+LTP_RSH=3D${LTP_RSH:=3D}
- if [ x"${LTP_RSH}" =3D x ]; then
-     LTP_RSH=3D"rsh -n"
- elif [ "$LTP_RSH" =3D "rsh" ]; then
-@@ -74,6 +82,7 @@
- fi
-
- # TMPDIR
-+TMPDIR=3D${TMPDIR:=3D}
- if [ x"${TMPDIR}" =3D x ]; then
-     TMPDIR=3D/tmp
- fi
+I'll gladly add in the one-liner to ballista.
+Thanks!
+-Garrett
 
 ---------------------------------------------------------------------------=
 ---
