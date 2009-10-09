@@ -1,33 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mxicx-00079r-Lk
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 14:45:27 +0000
-Received: from e36.co.us.ibm.com ([32.97.110.154])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mxict-0005aI-6Q
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 14:45:27 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e36.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9DEhBrR013508
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:43:11 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n9DEjAtF042250
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:45:11 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n9DEj9tr029387
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:45:09 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4ACEE1D4.5000202@cn.fujitsu.com>
-References: <4ACEE1D4.5000202@cn.fujitsu.com>
-Date: Tue, 13 Oct 2009 20:14:02 +0530
-Message-Id: <1255445042.8438.74.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] : fix memcg_function_test's bug
-Reply-To: subrata@linux.vnet.ibm.com
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1MwFkj-0005x1-WB
+	for ltp-list@lists.sourceforge.net; Fri, 09 Oct 2009 13:43:25 +0000
+Date: Fri, 9 Oct 2009 15:43:09 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20091009134309.GA8327@schrodinger.suse.cz>
+References: <4ABACAA3.2020206@cn.fujitsu.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <4ABACAA3.2020206@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] Add new testcases for ext4 new features
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,55 +24,90 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: liubo <liubo-fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Miao Xie <miaox@cn.fujitsu.com>
+Cc: LTP-ML <ltp-list@lists.sourceforge.net>
 
-On Fri, 2009-10-09 at 15:10 +0800, liubo wrote: 
-> testcase_25() uses a wrong "$?" value ,
-> Now use "ret" to record the real "$?" 
-> value for test .
-> 
-> 
-> Signed-off-by: Liu Bo <liubo-fnst@cn.fujitsu.com>
+Hi!
+Here comes just a few comments of some parts of the code (sorry for commenting
+old patch, the original mail just got stuck, thus resending).
 
-Thanks.
+> b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_test_inode_version.c
 
-Regards--
-Subrata
+> +char *filename;
+> +char *filepath;
+> +int fd;
+> +
+> +int old_inode_version;
+> +int new_inode_version;
 
-> 
-> ---
-> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
-> index ea4c8a2..0f11835 100755
-> --- a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
-> +++ b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
-> @@ -398,11 +398,12 @@ testcase_24()
->  testcase_25()
->  {
->  	echo -1 > memory.limit_in_bytes 2> /dev/null
-> +	ret=$?
->  	tst_kvercmp 2 6 31
->  	if [ $? -eq 0 ]; then
-> -		result $(( !($? != 0) ))  "return value is $?"
-> +		result $(( !($ret != 0) ))  "return value is $ret"
->         else
-> -		result $(( !($? == 0) ))  "return value is $?"
-> +		result $(( !($ret == 0) ))  "return value is $ret"
->  	fi
->  }
-> 
-> 
-> ------------------------------------------------------------------------------
-> Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-> is the only developer event you need to attend this year. Jumpstart your
-> developing skills, take BlackBerry mobile applications to market and stay 
-> ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-> http://p.sf.net/sfu/devconference
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+Global variables should be declared as static, otherwise compiler losts track
+of unused global variables and doesn't warn you about them.
 
+> +     if (strcmp(argv[1], "create") == 0) {
+> +             printf("%d\n", old_inode_version);
+> +             return 0;
+> +     } else if (strcmp(argv[1], "chmod") == 0) {
+> +             test_chmod();
+> +     } else if (strcmp(argv[1], "chown") == 0) {
+> +             test_chown();
+> +     } else if (strcmp(argv[1], "read") == 0) {
+> +             test_read();
+> +     } else if (strcmp(argv[1], "write") == 0) {
+> +             test_write();
+> +     } else if (strcmp(argv[1], "mmap_read") == 0) {
+> +             test_mmap_read();
+> +     } else if (strcmp(argv[1], "mmap_write") == 0) {
+> +             test_mmap_write();
+> +     } else {
+> +             fprintf(stderr, "wrong file operation: %s\n", argv[1]);
+> +             return 1;
+> +     }
+
+This is just easier and cleaner with defining field of strings (char *) and
+looping trough them. Eg:
+
+#define NPARAMS 4
+
+const char *params[NPARAMS] = {"chmod", "chown", "read", "write"};
+
+for (i = 0; i < NPARAMS; i++)
+        if (!strcmp(argv[1], params[i})
+                break;
+
+Now you have number of selected param in variable i, so traditionall switch()
+could be used. Or if called functions have similar type, array of pointers to
+them is even easier.
+
+const void (*(func[NPARAMS])(void) = {test_chmod, test_chown, ...};
+
+
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/e4defrag.c
+
+Hmm, man 3 free says "if ptr is NULL, no operation is performed"
+
+> +/* Wrap up the free function */
+> +#define FREE(tmp)                            \
+> +     do {                                    \
+> +             if ((tmp) != NULL)              \
+> +                     free(tmp);              \
+> +     } while (0)                             \
+
+Macro in lowercase is usually considered to be bad practise.
+
+> +/* Insert list2 after list1 */
+> +#define insert(list1, list2)                 \
+> +     do {                                    \
+> +             list2->next = list1->next;      \
+> +             list1->next->prev = list2;      \
+> +             list2->prev = list1;            \
+> +             list1->next = list2;            \
+> +     } while (0)
+> +
+
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
