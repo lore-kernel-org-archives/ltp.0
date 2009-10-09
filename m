@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1Muv9W-00051o-4F
-	for ltp-list@lists.sourceforge.net; Mon, 05 Oct 2009 21:31:30 +0000
-Received: from gateway-1237.mvista.com ([63.81.120.158])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Muv9P-0007aQ-Fd
-	for ltp-list@lists.sourceforge.net; Mon, 05 Oct 2009 21:31:30 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01CA4603.15C34616"
-Date: Mon, 5 Oct 2009 14:33:00 -0700
-Message-ID: <8368651DACC1964480F951191B94A0780153CC19@svexch01.mvista.com>
-In-Reply-To: <200910050018.12711.jpalecek@web.de>
-References: <8368651DACC1964480F951191B94A0780142442B@svexch01.mvista.com>
-	<200910050018.12711.jpalecek@web.de>
-From: "Henry Yei" <hyei@mvista.com>
-Subject: Re: [LTP] [PATCH][openfile] file descriptors not cleaned up
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yamato@redhat.com>) id 1Mw99w-0001sJ-BJ
+	for ltp-list@lists.sourceforge.net; Fri, 09 Oct 2009 06:41:00 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Mw99p-0005OU-Cj
+	for ltp-list@lists.sourceforge.net; Fri, 09 Oct 2009 06:41:00 +0000
+Date: Fri, 09 Oct 2009 15:44:45 +0900 (JST)
+Message-Id: <20091009.154445.548431512384017812.yamato@redhat.com>
+From: Masatake YAMATO <yamato@redhat.com>
+Mime-Version: 1.0
+Content-Type: Multipart/Mixed;
+	boundary="--Next_Part(Fri_Oct__9_15_44_45_2009_670)--"
+Content-Transfer-Encoding: 7bit
+Subject: [LTP] Complete the test cases for getuid16
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,266 +26,292 @@ List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jpalecek@web.de
-Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sf.net
 
-This is a multi-part message in MIME format.
+----Next_Part(Fri_Oct__9_15_44_45_2009_670)--
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-------_=_NextPart_001_01CA4603.15C34616
-Content-Type: text/plain;
-	charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Some of testcases for *16 and *64 system calls have not been completed yet
+though my makefile trick were introduced by Suburata. *16 may not be so important
+but I'd like to complete them anyway. The first one is for getuid16.
 
-On Wednesday 04, October 2009 04:06:46 Jiri Palecek wrote:
+To apply getuid16.patch use -p0 option.
+Put compat_uid.h  at testcases/kernel/syscalls/utils/compat_uid.h.
+Put compat_16.h.  at testcases/kernel/syscalls/getuid/compat_16.h.
 
-Hello,
 
-On Wednesday 30 September 2009 04:06:46 Henry Yei wrote:
-> This patch for openfile contains the following changes:
-> - test output to use tst_resm functions
-> - sets ups and cleans up tmp dir properly
-> - closes all opened file descriptors before thread exit(fixes nfs =
-issues on removing tmp dir)
->=20
-> Signed-off-by: Henry Yei <hyei@mvista.com>
->=20
->=20
-> This test opens multiple file descriptors to the same file. Perhaps =
-the author meant to open file handles for separate files?
+Signed-off-by: Masatake YAMATO <yamato@redhat.com>
 
-This is suspicious, for me too. But maybe there is some logic behind =
-opening the same file many times.
 
-I just have a small remark about your patch: Shouldn't you call =
-close_files() here, too? (With a partially full fd_list array handled, =
-of course)
+----Next_Part(Fri_Oct__9_15_44_45_2009_670)--
+Content-Type: Text/X-Patch; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline; filename="getuid16.patch"
 
-+void * threads(void* thread_id_) {
-+	int thread_id =3D (uintptr_t) thread_id_;
-+	char errmsg[80];
-+	FILE *fd_list[MAXFILES];
-+	int i;
+Index: testcases/kernel/syscalls/getuid/Makefile
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/getuid/Makefile,v
+retrieving revision 1.8
+diff -u -r1.8 Makefile
+--- testcases/kernel/syscalls/getuid/Makefile	7 Nov 2008 08:45:27 -0000	1.8
++++ testcases/kernel/syscalls/getuid/Makefile	8 Oct 2009 14:21:44 -0000
+@@ -16,7 +16,7 @@
+ #  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ #
+ 
+-CFLAGS += -I../../../../include -Wall
++CFLAGS += -I../../../../include  -I../utils -Wall
+ LDLIBS += -L../../../../lib -lltp
+ 
+ include ../utils/compat_16.mk
+Index: testcases/kernel/syscalls/getuid/getuid01.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/getuid/getuid01.c,v
+retrieving revision 1.7
+diff -u -r1.7 getuid01.c
+--- testcases/kernel/syscalls/getuid/getuid01.c	23 Mar 2009 13:35:45 -0000	1.7
++++ testcases/kernel/syscalls/getuid/getuid01.c	8 Oct 2009 14:21:45 -0000
+@@ -116,11 +116,12 @@
+ #include <signal.h>
+ #include "test.h"
+ #include "usctest.h"
++#include "compat_16.h"
+ 
+ void setup();
+ void cleanup();
+ 
+-char *TCID = "getuid01";	/* Test program identifier.    */
++TCID_DEFINE(getuid01);          /* Test program identifier.    */
+ int TST_TOTAL = 1;		/* Total number of test cases. */
+ extern int Tst_count;		/* Test Case counter for tst_* routines */
+ 
+@@ -156,7 +157,7 @@
+ 		/*
+ 		 * Call getuid(2)
+ 		 */
+-		TEST(getuid());
++		TEST(GETUID());
+ 
+ 		/* check return code */
+ 		if (TEST_RETURN == -1) {
+Index: testcases/kernel/syscalls/getuid/getuid02.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/getuid/getuid02.c,v
+retrieving revision 1.4
+diff -u -r1.4 getuid02.c
+--- testcases/kernel/syscalls/getuid/getuid02.c	23 Mar 2009 13:35:45 -0000	1.4
++++ testcases/kernel/syscalls/getuid/getuid02.c	8 Oct 2009 14:21:45 -0000
+@@ -44,8 +44,9 @@
+ #include <errno.h>
+ #include <test.h>
+ #include <usctest.h>
++#include "compat_16.h"
+ 
+-char *TCID = "getuid02";
++TCID_DEFINE(getuid02);
+ int TST_TOTAL = 1;
+ extern int Tst_count;
+ 
+@@ -71,7 +72,7 @@
+ 		/* reset Tst_count in case we are looping */
+ 		Tst_count = 0;
+ 
+-		TEST(geteuid());
++		TEST(GETEUID());
+ 
+ 		if (TEST_RETURN < 0) {
+ 			tst_brkm(TBROK, cleanup, "This should never happen");
+@@ -83,6 +84,11 @@
+ 			if (pwent == NULL) {
+ 				tst_resm(TFAIL, "geteuid() returned unexpected "
+ 					 "value %d", TEST_RETURN);
++			} else if (!UID_SIZE_CHECK(pwent->pw_uid)) {
++				tst_brkm(TBROK,
++					 cleanup,
++					 "uid(%d) is too large for testing geteuid16",
++					 TEST_RETURN);
+ 			} else {
+ 				if (pwent->pw_uid != TEST_RETURN) {
+ 					tst_resm(TFAIL, "getpwuid() value, %d, "
+Index: testcases/kernel/syscalls/getuid/getuid03.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/getuid/getuid03.c,v
+retrieving revision 1.6
+diff -u -r1.6 getuid03.c
+--- testcases/kernel/syscalls/getuid/getuid03.c	23 Mar 2009 13:35:45 -0000	1.6
++++ testcases/kernel/syscalls/getuid/getuid03.c	8 Oct 2009 14:21:45 -0000
+@@ -44,8 +44,10 @@
+ #include <errno.h>
+ #include <test.h>
+ #include <usctest.h>
++#include "compat_16.h"
+ 
+-char *TCID = "getuid03";
 +
-+	/* Open files */
-+	for (i =3D 0; i < numfiles; i++) {
-+		if (debug)
-+			printf("Thread  %d : Opening file number %d \n", thread_id, i);
-+		if ((fd_list[i] =3D fopen(filename, "rw")) =3D=3D NULL) {
-+			sprintf(errmsg, "FAIL - Couldn't open file #%d", i);
-+			perror(errmsg);
++TCID_DEFINE(getuid03);
+ int TST_TOTAL = 1;
+ extern int Tst_count;
+ 
+@@ -72,7 +74,7 @@
+ 		/* reset Tst_count in case we are looping */
+ 		Tst_count = 0;
+ 
+-		TEST(getuid());
++		TEST(GETUID());
+ 
+ 		if (TEST_RETURN < 0) {
+ 			tst_brkm(TBROK, cleanup, "This should never happen");
+@@ -84,6 +86,12 @@
+ 			if (pwent == NULL) {
+ 				tst_resm(TFAIL, "getuid() returned unexpected "
+ 					 "value %d", TEST_RETURN);
++			} else if (!UID_SIZE_CHECK(pwent->pw_uid)) {
++				tst_brkm(TBROK,
++					 cleanup,
++					 "uid(%d) is too large for testing getuid16",
++					 TEST_RETURN);
++			  
+ 			} else {
+ 				if (pwent->pw_uid != TEST_RETURN) {
+ 					tst_resm(TFAIL, "getpwuid() value, %d, "
+
+----Next_Part(Fri_Oct__9_15_44_45_2009_670)--
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline; filename="compat_uid.h"
+
+/*
+ *
+ *   Copyright (c) Red Hat Inc., 2009
+ *
+ *   This program is free software;  you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 2 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+ *   the GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program;  if not, write to the Free Software
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
+
+/* Author: Masatake YAMATO <yamato@redhat.com> */
+
+#ifndef __COMPAT_UID_16_H__
+#define __COMPAT_UID_16_H__
 
 
-
-Jiri,=20
-
-Thanks for reviewing the patch. Yes, that was an omission on my part. I =
-have attached an updated patch. Let me know if there are any more =
-comments.
+#include <asm/posix_types.h>
 
 
+#ifdef TST_USE_COMPAT16_SYSCALL
+typedef __kernel_old_uid_t UID_T;
+int 
+UID_SIZE_CHECK(uid_t uid)
+{
+	/* See high2lowuid in linux/highuid.h
+	   Return 0 if uid is too large to store
+	   it to __kernel_old_uid_t. */
+	return ((uid) & ~0xFFFF)? 0: 1;
+}
 
-Henry Yei
+#else
+
+typedef uid_t UID_T;
+int 
+UID_SIZE_CHECK(uid_t uid)
+{
+	return 1;
+}
+
+#endif
+
+#endif /* __SETUID_COMPAT_16_H__ */
+
+----Next_Part(Fri_Oct__9_15_44_45_2009_670)--
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline; filename="compat_16.h"
+
+/*
+ *
+ *   Copyright (c) Red Hat Inc., 2008
+ *
+ *   This program is free software;  you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 2 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+ *   the GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program;  if not, write to the Free Software
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
+
+/* Author: Masatake YAMATO <yamato@redhat.com> */
+
+#ifndef __GETUID_COMPAT_16_H__
+#define __GETUID_COMPAT_16_H__
 
 
+#include "linux_syscall_numbers.h"
+#include "compat_uid.h"
 
 
-------_=_NextPart_001_01CA4603.15C34616
-Content-Type: application/octet-stream;
-	name="openfile.patch"
-Content-Transfer-Encoding: base64
-Content-Description: openfile.patch
-Content-Disposition: attachment;
-	filename="openfile.patch"
+#ifdef TST_USE_COMPAT16_SYSCALL
 
-ZGlmZiAtTnVycCAteCBDVlMgbHRwLTIwMDkwNTMxL3Rlc3RjYXNlcy9rZXJuZWwvZnMvb3BlbmZp
-bGUvTWFrZWZpbGUgbHRwLXdkaXIvdGVzdGNhc2VzL2tlcm5lbC9mcy9vcGVuZmlsZS9NYWtlZmls
-ZQotLS0gbHRwLTIwMDkwNTMxL3Rlc3RjYXNlcy9rZXJuZWwvZnMvb3BlbmZpbGUvTWFrZWZpbGUJ
-MjAwMy0wMy0wNCAwODoxMzo1Mi4wMDAwMDAwMDAgLTA4MDAKKysrIGx0cC13ZGlyL3Rlc3RjYXNl
-cy9rZXJuZWwvZnMvb3BlbmZpbGUvTWFrZWZpbGUJMjAwOS0wOS0yOSAxODozNzoyNS43MDQwOTY4
-MDYgLTA3MDAKQEAgLTEsNSArMSw1IEBACi1DRkxBR1MgKz0gLVdhbGwKLUxPQURMSUJFUyArPSAt
-bHB0aHJlYWQKK0NGTEFHUys9IC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAtV2FsbAorTERMSUJTKz0g
-LUwuLi8uLi8uLi8uLi9saWIgLWxsdHAgLWxwdGhyZWFkCiAKIFNSQ1M9JCh3aWxkY2FyZCAqLmMp
-CiBUQVJHRVRTPSQocGF0c3Vic3QgJS5jLCUsJChTUkNTKSkKZGlmZiAtTnVycCAteCBDVlMgbHRw
-LTIwMDkwNTMxL3Rlc3RjYXNlcy9rZXJuZWwvZnMvb3BlbmZpbGUvb3BlbmZpbGUuYyBsdHAtd2Rp
-ci90ZXN0Y2FzZXMva2VybmVsL2ZzL29wZW5maWxlL29wZW5maWxlLmMKLS0tIGx0cC0yMDA5MDUz
-MS90ZXN0Y2FzZXMva2VybmVsL2ZzL29wZW5maWxlL29wZW5maWxlLmMJMjAwOS0wMi0yNiAwNDox
-NDo1Mi4wMDAwMDAwMDAgLTA4MDAKKysrIGx0cC13ZGlyL3Rlc3RjYXNlcy9rZXJuZWwvZnMvb3Bl
-bmZpbGUvb3BlbmZpbGUuYwkyMDA5LTEwLTA1IDE0OjI4OjIzLjU4NDA5NzgyNiAtMDcwMApAQCAt
-MjksOTQgKzI5LDEwNyBAQAogICoKICAqLwogCi0KICNpbmNsdWRlIDxwdGhyZWFkLmg+CiAjaW5j
-bHVkZSA8c3RkaW8uaD4KICNpbmNsdWRlIDxzdGRsaWIuaD4KICNpbmNsdWRlIDxzdGRpbnQuaD4K
-ICNpbmNsdWRlIDx1bmlzdGQuaD4KIAorI2luY2x1ZGUgInRlc3QuaCIKKyNpbmNsdWRlICJ1c2N0
-ZXN0LmgiCisKK2NoYXIgKlRDSUQgPSAib3BlbmZpbGUwMSI7CS8qIFRlc3QgcHJvZ3JhbSBpZGVu
-dGlmaWVyLiAgICAqLworaW50IFRTVF9UT1RBTCA9IDE7CiAKICNkZWZpbmUgTUFYRklMRVMgICAg
-ICAgIDMyNzY4CiAjZGVmaW5lIE1BWFRIUkVBRFMgICAgICAxMAogCi0KIC8qIENvbnRyb2wgU3Ry
-dWN0dXJlICovCiBzdHJ1Y3QgY2IgewogCXB0aHJlYWRfbXV0ZXhfdCBtOwotCXB0aHJlYWRfY29u
-ZF90ICBpbml0X2N2OwotCXB0aHJlYWRfY29uZF90ICB0aHJfY3Y7Ci0JaW50CQl0aHJfc2xlZXBp
-bmc7CisJcHRocmVhZF9jb25kX3QgaW5pdF9jdjsKKwlwdGhyZWFkX2NvbmRfdCB0aHJfY3Y7CisJ
-aW50IHRocl9zbGVlcGluZzsKIH0gYzsKIAotCiAvKiBHbG9iYWwgVmFyaWFibGVzICovCi1pbnQg
-ICAgIG51bXRocmVhZHM9MTAsIG51bWZpbGVzPTEwOwotaW50ICAgICBkZWJ1Zz0wOwotY2hhciAq
-ICBmaWxlbmFtZT0iRklMRVRPT1BFTiI7CitpbnQgbnVtdGhyZWFkcyA9IDEwLCBudW1maWxlcyA9
-IDEwOworaW50IGRlYnVnID0gMDsKK2NoYXIgKiBmaWxlbmFtZSA9ICJGSUxFVE9PUEVOIjsKIAor
-dm9pZCBzZXR1cCh2b2lkKQoreworCXRzdF90bXBkaXIoKTsKK30KIAotLyogUHJvY2VkdXJlcyAq
-Lwotdm9pZCAqdGhyZWFkcyh2b2lkKiB0aHJlYWRfaWQpOwordm9pZCBjbGVhbnVwKHZvaWQpCit7
-CisJdHN0X3JtZGlyKCk7CisJdHN0X2V4aXQoKTsKK30KIAogCisvKiBQcm9jZWR1cmVzICovCit2
-b2lkICp0aHJlYWRzKHZvaWQqIHRocmVhZF9pZCk7CiAKIC8qICoqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCi0g
-ICAqICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTUFJTiBQUk9DRURVUkUgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgKgotICAgKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiogKi8KKyAqICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgTUFJTiBQUk9DRURVUkUgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgKgorICoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqICovCiAKIGludCBtYWluKGludCBhcmdjLCBjaGFy
-ICphcmd2W10pCiB7Ci0JaW50IAkgICBpLG9wdCxiYWRvcHRzPTA7Ci0gICAgICAgIEZJTEUgCSAg
-ICpmZDsKLQlwdGhyZWFkX3QgIHRoX2lkOwotCWNoYXIgICAgICAgbXNnWzgwXT0iIjsKLSAgICAg
-ICAgZXh0ZXJuIGNoYXIgKm9wdGFyZzsKLQotICAgICAgICB3aGlsZSgob3B0PWdldG9wdChhcmdj
-LCBhcmd2LCAiZGY6dDpoIikpICE9IEVPRikgewotICAgICAgICAgIHN3aXRjaCgoY2hhcikgb3B0
-KSB7Ci0gICAgICAgICAgICBjYXNlICdkJzoKLSAgICAgICAgICAgICAgZGVidWc9MTsKLSAgICAg
-ICAgICAgICAgYnJlYWs7Ci0gICAgICAgICAgICBjYXNlICdmJzoKLSAgICAgICAgICAgICAgbnVt
-ZmlsZXM9YXRvaShvcHRhcmcpOwotICAgICAgICAgICAgICBpZihudW1maWxlcyA8PSAwKQotICAg
-ICAgICAgICAgICAgIGJhZG9wdHM9MTsKLSAgICAgICAgICAgICAgYnJlYWs7Ci0gICAgICAgICAg
-ICBjYXNlICd0JzoKLSAgICAgICAgICAgICAgbnVtdGhyZWFkcz1hdG9pKG9wdGFyZyk7Ci0gICAg
-ICAgICAgICAgIGlmKG51bXRocmVhZHMgPD0gMCkKLSAgICAgICAgICAgICAgICBiYWRvcHRzPTE7
-Ci0gICAgICAgICAgICAgIGJyZWFrOwotICAgICAgICAgICAgY2FzZSAnaCc6Ci0gICAgICAgICAg
-ICBkZWZhdWx0OgotICAgICAgICAgICAgICBwcmludGYoIlVzYWdlOiBvcGVuZmlsZSBbLWRdIC1m
-IEZJTEVTIC10IFRIUkVBRFNcbiIpOwotICAgICAgIAkgICAgICBfZXhpdCgxKTsKLSAgICAgICAg
-ICB9Ci0gICAgICAgIH0KLSAgICAgICAgaWYoYmFkb3B0cykgewotICAgICAgICAgIHByaW50Zigi
-VXNhZ2U6IG9wZW5maWxlIFstZF0gLWYgRklMRVMgLXQgVEhSRUFEU1xuIik7Ci0gICAgICAgCSAg
-X2V4aXQoMSk7Ci0gICAgICAgIH0KLQotICAgIAkvKiBDaGVjayBpZiBudW10aHJlYWRzIGlzIGxl
-c3MgdGhhbiBNQVhGSUxFUyAqLwotICAgIAlpZiAoIG51bWZpbGVzID4gTUFYRklMRVMgKXsKLSAg
-ICAgICAgICAJc3ByaW50Zihtc2csIiVzXG5DYW5ub3QgdXNlICVkIGZpbGVzIiwgbXNnLCBudW1m
-aWxlcyk7Ci0gICAgICAgICAgCXNwcmludGYobXNnLCIlcywgdXNlZCAlZCBmaWxlcyBpbnN0ZWFk
-XG4iLCBtc2csIE1BWEZJTEVTKTsKLSAgICAgICAgICAJbnVtZmlsZXMgPSBNQVhGSUxFUzsKLSAg
-ICAJfQotCi0gICAgCS8qIENoZWNrIGlmIG51bXRocmVhZHMgaXMgbGVzcyB0aGFuIE1BWFRIUkVB
-RFMgKi8KLSAgICAJaWYgKCBudW10aHJlYWRzID4gTUFYVEhSRUFEUyApewotICAgICAgICAgIAlz
-cHJpbnRmKG1zZywiJXNcbkNhbm5vdCB1c2UgJWQgdGhyZWFkcyIsIG1zZywgbnVtdGhyZWFkcyk7
-Ci0gICAgICAgICAgCXNwcmludGYobXNnLCIlcywgdXNlZCAlZCB0aHJlYWRzIGluc3RlYWRcbiIs
-IG1zZywgTUFYVEhSRUFEUyk7Ci0gICAgICAgICAgCW51bXRocmVhZHMgPSBNQVhUSFJFQURTOwor
-CWludCBpLCBvcHQsIGJhZG9wdHMgPSAwOworCUZJTEUgKmZkOworCXB0aHJlYWRfdCB0aF9pZDsK
-KwljaGFyIG1zZ1s4MF0gPSAiIjsKKwlleHRlcm4gY2hhciAqb3B0YXJnOworCisJd2hpbGUgKChv
-cHQgPSBnZXRvcHQoYXJnYywgYXJndiwgImRmOnQ6aCIpKSAhPSBFT0YpIHsKKwkJc3dpdGNoICgo
-Y2hhcikgb3B0KSB7CisJCWNhc2UgJ2QnOgorCQkJZGVidWcgPSAxOworCQkJYnJlYWs7CisJCWNh
-c2UgJ2YnOgorCQkJbnVtZmlsZXMgPSBhdG9pKG9wdGFyZyk7CisJCQlpZiAobnVtZmlsZXMgPD0g
-MCkKKwkJCQliYWRvcHRzID0gMTsKKwkJCWJyZWFrOworCQljYXNlICd0JzoKKwkJCW51bXRocmVh
-ZHMgPSBhdG9pKG9wdGFyZyk7CisJCQlpZiAobnVtdGhyZWFkcyA8PSAwKQorCQkJCWJhZG9wdHMg
-PSAxOworCQkJYnJlYWs7CisJCWNhc2UgJ2gnOgorCQlkZWZhdWx0OgorCQkJcHJpbnRmKCJVc2Fn
-ZTogb3BlbmZpbGUgWy1kXSAtZiBGSUxFUyAtdCBUSFJFQURTXG4iKTsKKwkJCV9leGl0KDEpOwor
-CQl9CisJfQorCWlmIChiYWRvcHRzKSB7CisJCXByaW50ZigiVXNhZ2U6IG9wZW5maWxlIFstZF0g
-LWYgRklMRVMgLXQgVEhSRUFEU1xuIik7CisJCV9leGl0KDEpOworCX0KKworCXNldHVwKCk7CisK
-KwkvKiBDaGVjayBpZiBudW10aHJlYWRzIGlzIGxlc3MgdGhhbiBNQVhGSUxFUyAqLworCWlmIChu
-dW1maWxlcyA+IE1BWEZJTEVTKSB7CisJCXNwcmludGYobXNnLCAiJXNcbkNhbm5vdCB1c2UgJWQg
-ZmlsZXMiLCBtc2csIG51bWZpbGVzKTsKKwkJc3ByaW50Zihtc2csICIlcywgdXNlZCAlZCBmaWxl
-cyBpbnN0ZWFkXG4iLCBtc2csIE1BWEZJTEVTKTsKKwkJbnVtZmlsZXMgPSBNQVhGSUxFUzsKKwl9
-CisKKwkvKiBDaGVjayBpZiBudW10aHJlYWRzIGlzIGxlc3MgdGhhbiBNQVhUSFJFQURTICovCisJ
-aWYgKG51bXRocmVhZHMgPiBNQVhUSFJFQURTKSB7CisJCXNwcmludGYobXNnLCAiJXNcbkNhbm5v
-dCB1c2UgJWQgdGhyZWFkcyIsIG1zZywgbnVtdGhyZWFkcyk7CisJCXNwcmludGYobXNnLCAiJXMs
-IHVzZWQgJWQgdGhyZWFkcyBpbnN0ZWFkXG4iLCBtc2csIE1BWFRIUkVBRFMpOworCQludW10aHJl
-YWRzID0gTUFYVEhSRUFEUzsKIAl9CiAKIAkvKiBDcmVhdGUgZmlsZXMgKi8KLQlpZiAoKGZkPWZv
-cGVuKGZpbGVuYW1lLCJ3IikpID09IE5VTEwpewotCQlwZXJyb3IgKCJGQUlMIC0gQ291bGQgbm90
-IGNyZWF0ZSBmaWxlIik7Ci0JCV9leGl0KDEpOworCWlmICgoZmQgPSBmb3BlbihmaWxlbmFtZSwg
-InciKSkgPT0gTlVMTCkgeworCQl0c3RfcmVzbShURkFJTCwgIkNvdWxkIG5vdCBjcmVhdGUgZmls
-ZSIpOworCQljbGVhbnVwKCk7CiAJfQogCiAJLyogSW5pdGlhbGl6ZSB0aHJlYWQgY29udHJvbCB2
-YXJpYWJsZXMsIGxvY2sgJiBjb25kaXRpb24gKi8KQEAgLTEyNiwxMjAgKzEzOSwxMjYgQEAgaW50
-IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKIAljLnRocl9zbGVlcGluZyA9IDA7CiAKIAkv
-KiBHcmFiIG11dGV4IGxvY2sgKi8KLQlpZiAocHRocmVhZF9tdXRleF9sb2NrKCZjLm0pKXsKLQkJ
-cGVycm9yKCJGQUlMIC0gZmFpbGVkIHRvIGdyYWIgbXV0ZXggbG9jayIpOworCWlmIChwdGhyZWFk
-X211dGV4X2xvY2soJmMubSkpIHsKKwkJdHN0X3Jlc20oVEZBSUwsICJmYWlsZWQgdG8gZ3JhYiBt
-dXRleCBsb2NrIik7CiAJCWZjbG9zZShmZCk7CiAJCXVubGluayhmaWxlbmFtZSk7Ci0JCV9leGl0
-KDEpOworCQljbGVhbnVwKCk7CiAJfQogCiAJcHJpbnRmKCJDcmVhdGluZyBSZWFkaW5nIFRocmVh
-ZHNcbiIpOwogCiAJLyogQ3JlYXRlIHRocmVhZHMgKi8KLQlmb3IgKGk9MDsgaTxudW10aHJlYWRz
-OyBpKyspCi0JCWlmIChwdGhyZWFkX2NyZWF0ZSgmdGhfaWQsIChwdGhyZWFkX2F0dHJfdCAqKU5V
-TEwsIHRocmVhZHMsCi0JCQkJKHZvaWQgKikodWludHB0cl90KWkpKSB7Ci0JCQlwZXJyb3IoIkZB
-SUwgLSBmYWlsZWQgY3JlYXRpbmcgYSBwdGhyZWFkOyBpbmNyZWFzZSBsaW1pdHMiKTsKKwlmb3Ig
-KGkgPSAwOyBpIDwgbnVtdGhyZWFkczsgaSsrKQorCQlpZiAocHRocmVhZF9jcmVhdGUoJnRoX2lk
-LCAocHRocmVhZF9hdHRyX3QgKikgTlVMTCwgdGhyZWFkcywKKwkJCQkodm9pZCAqKSAodWludHB0
-cl90KSBpKSkgeworCQkJdHN0X3Jlc20oVEZBSUwsICJmYWlsZWQgY3JlYXRpbmcgYSBwdGhyZWFk
-OyBpbmNyZWFzZSBsaW1pdHMiKTsKIAkJCWZjbG9zZShmZCk7CiAJCQl1bmxpbmsoZmlsZW5hbWUp
-OwotCQkJX2V4aXQoMSk7CisJCQljbGVhbnVwKCk7CiAJCX0KIAogCS8qIFNsZWVwIHVudGlsIGFs
-bCB0aHJlYWRzIGFyZSBjcmVhdGVkICovCiAJd2hpbGUgKGMudGhyX3NsZWVwaW5nICE9IG51bXRo
-cmVhZHMpCi0JCWlmIChwdGhyZWFkX2NvbmRfd2FpdCgmYy5pbml0X2N2LCAmYy5tKSl7Ci0JCQlw
-ZXJyb3IoIkZBSUwgLSBlcnJvciB3aGlsZSB3YWl0aW5nIGZvciByZWFkaW5nIHRocmVhZHMiKTsK
-KwkJaWYgKHB0aHJlYWRfY29uZF93YWl0KCZjLmluaXRfY3YsICZjLm0pKSB7CisJCQl0c3RfcmVz
-bShURkFJTCwgImVycm9yIHdoaWxlIHdhaXRpbmcgZm9yIHJlYWRpbmcgdGhyZWFkcyIpOwogCQkJ
-ZmNsb3NlKGZkKTsKIAkJCXVubGluayhmaWxlbmFtZSk7Ci0JCQlfZXhpdCgxKTsKKwkJCWNsZWFu
-dXAoKTsKIAkJfQogCiAJLyogV2FrZSB1cCBhbGwgdGhyZWFkcyAqLwotCWlmIChwdGhyZWFkX2Nv
-bmRfYnJvYWRjYXN0KCZjLnRocl9jdikpewotCQlwZXJyb3IoIkZBSUwgLSBmYWlsZWQgdHJ5aW5n
-IHRvIHdha2UgdXAgcmVhZGluZyB0aHJlYWRzIik7CisJaWYgKHB0aHJlYWRfY29uZF9icm9hZGNh
-c3QoJmMudGhyX2N2KSkgeworCQl0c3RfcmVzbShURkFJTCwgImZhaWxlZCB0cnlpbmcgdG8gd2Fr
-ZSB1cCByZWFkaW5nIHRocmVhZHMiKTsKIAkJZmNsb3NlKGZkKTsKIAkJdW5saW5rKGZpbGVuYW1l
-KTsKLQkJX2V4aXQoMSk7CisJCWNsZWFudXAoKTsKIAl9CiAJLyogUmVsZWFzZSBtdXRleCBsb2Nr
-ICovCiAJaWYgKHB0aHJlYWRfbXV0ZXhfdW5sb2NrKCZjLm0pKSB7Ci0JCXBlcnJvcigiRkFJTCAt
-IGZhaWxlZCB0byByZWxlYXNlIG11dGV4IGxvY2siKTsKKwkJdHN0X3Jlc20oVEZBSUwsICJmYWls
-ZWQgdG8gcmVsZWFzZSBtdXRleCBsb2NrIik7CiAJCWZjbG9zZShmZCk7CiAJCXVubGluayhmaWxl
-bmFtZSk7Ci0JCV9leGl0KDEpOworCQljbGVhbnVwKCk7CiAJfQogCi0gICAgICAgIHByaW50Zigi
-UEFTUyAtIFRocmVhZHMgYXJlIGRvbmUgcmVhZGluZ1xuIik7CisJdHN0X3Jlc20oVFBBU1MsICJU
-aHJlYWRzIGFyZSBkb25lIHJlYWRpbmciKTsKIAotICAgIAlwcmludGYoIiVzIiwgbXNnKTsKIAlm
-Y2xvc2UoZmQpOwogCXVubGluayhmaWxlbmFtZSk7CisJY2xlYW51cCgpOwogCV9leGl0KDApOwog
-fQogCi0KLQogLyogKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioKLSAgICoJCQkJT1RIRVIgUFJPQ0VEVVJFUwkJ
-CSAgICAqCi0gICAqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKiAqLworICoJCQkJT1RIRVIgUFJPQ0VEVVJFUwkJ
-CSAgICAqCisgKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKiogKi8KKwordm9pZCBjbG9zZV9maWxlcyhGSUxFICpm
-ZF9saXN0W10sIGludCBsZW4pIHsKKwlpbnQgaTsKKwlmb3IgKGkgPSAwOyBpIDwgbGVuOyBpKysp
-IHsKKwkJZmNsb3NlKGZkX2xpc3RbaV0pOworCX0KK30KIAogLyogdGhyZWFkczogRWFjaCB0aHJl
-YWQgb3BlbnMgdGhlIGZpbGVzIHNwZWNpZmllZCAqLwotdm9pZCAqIHRocmVhZHModm9pZCogdGhy
-ZWFkX2lkXykKLXsKLSAgaW50IHRocmVhZF9pZD0odWludHB0cl90KXRocmVhZF9pZF87Ci0gICAg
-CWNoYXIgIGVycm1zZ1s4MF07Ci0gICAgICAgIEZJTEUgICpmZDsKLQlpbnQgICBpOwotCi0gICAg
-CS8qIE9wZW4gZmlsZXMgKi8KLSAgICAJZm9yIChpPTA7IGk8bnVtZmlsZXM7IGkrKykgewotICAg
-ICAgICAgICAgICAgIGlmKGRlYnVnKQotICAgICAgIAkJICBwcmludGYoIlRocmVhZCAgJWQgOiBP
-cGVuaW5nIGZpbGUgbnVtYmVyICVkIFxuIiwgdGhyZWFkX2lkLCBpKTsKLSAgICAgICAJCWlmICgo
-ZmQgPSBmb3BlbihmaWxlbmFtZSwicnciKSkgPT0gTlVMTCkgewotICAgICAgICAgIAkJc3ByaW50
-ZihlcnJtc2csIkZBSUwgLSBDb3VsZG4ndCBvcGVuIGZpbGUgIyVkIixpKTsKLSAgICAgICAgICAJ
-CXBlcnJvcihlcnJtc2cpOwordm9pZCAqIHRocmVhZHModm9pZCogdGhyZWFkX2lkXykgeworCWlu
-dCB0aHJlYWRfaWQgPSAodWludHB0cl90KSB0aHJlYWRfaWRfOworCWNoYXIgZXJybXNnWzgwXTsK
-KwlGSUxFICpmZF9saXN0W01BWEZJTEVTXTsKKwlpbnQgaTsKKworCS8qIE9wZW4gZmlsZXMgKi8K
-Kwlmb3IgKGkgPSAwOyBpIDwgbnVtZmlsZXM7IGkrKykgeworCQlpZiAoZGVidWcpCisJCQlwcmlu
-dGYoIlRocmVhZCAgJWQgOiBPcGVuaW5nIGZpbGUgbnVtYmVyICVkIFxuIiwgdGhyZWFkX2lkLCBp
-KTsKKwkJaWYgKChmZF9saXN0W2ldID0gZm9wZW4oZmlsZW5hbWUsICJydyIpKSA9PSBOVUxMKSB7
-CisJCQlzcHJpbnRmKGVycm1zZywgIkZBSUwgLSBDb3VsZG4ndCBvcGVuIGZpbGUgIyVkIiwgaSk7
-CisJCQlwZXJyb3IoZXJybXNnKTsKKwkJCWlmIChpID4gMCkgeworCQkJCWNsb3NlX2ZpbGVzKGZk
-X2xpc3QsIGktMSk7CisJCQl9CiAJCQl1bmxpbmsoZmlsZW5hbWUpOwotCQkJcHRocmVhZF9leGl0
-KCh2b2lkKikxKTsKLSAgICAgICAJCX0KLSAgICAJfQorCQkJcHRocmVhZF9leGl0KCh2b2lkKikg
-MSk7CisJCX0KKwl9CiAKIAkvKiBHcmFiIG11dGV4IGxvY2sgKi8KIAlpZiAocHRocmVhZF9tdXRl
-eF9sb2NrKCZjLm0pKSB7CiAJCXBlcnJvcigiRkFJTCAtIGZhaWxlZCB0byBncmFiIG11dGV4IGxv
-Y2siKTsKLSAgICAgICAJCWZjbG9zZShmZCk7CisJCWNsb3NlX2ZpbGVzKGZkX2xpc3QsIG51bWZp
-bGVzKTsKIAkJdW5saW5rKGZpbGVuYW1lKTsKLQkJcHRocmVhZF9leGl0KCh2b2lkKikxKTsKKwkJ
-cHRocmVhZF9leGl0KCh2b2lkKikgMSk7CiAJfQogCiAJLyogQ2hlY2sgaWYgeW91IHNob3VsZCB3
-YWtlIHVwIG1haW4gdGhyZWFkICovCi0gICAgICAgIGlmICgrK2MudGhyX3NsZWVwaW5nID09IG51
-bXRocmVhZHMpCi0gICAgICAgICAgICAgICAgaWYgKHB0aHJlYWRfY29uZF9zaWduYWwoJmMuaW5p
-dF9jdikpeworCWlmICgrK2MudGhyX3NsZWVwaW5nID09IG51bXRocmVhZHMpCisJCWlmIChwdGhy
-ZWFkX2NvbmRfc2lnbmFsKCZjLmluaXRfY3YpKSB7CiAJCQlwZXJyb3IoIkZBSUwgLSBmYWlsZWQg
-dG8gc2lnbmFsIG1haW4gdGhyZWFkIik7Ci0gICAgICAgCQkJZmNsb3NlKGZkKTsKKwkJCWNsb3Nl
-X2ZpbGVzKGZkX2xpc3QsIG51bWZpbGVzKTsKIAkJCXVubGluayhmaWxlbmFtZSk7Ci0JCQlwdGhy
-ZWFkX2V4aXQoKHZvaWQqKTEpOworCQkJcHRocmVhZF9leGl0KCh2b2lkKikgMSk7CiAJCX0KIAog
-CS8qIFNsZWVwIHVudGlsIHdva2VuIHVwICovCi0gICAgICAgIGlmIChwdGhyZWFkX2NvbmRfd2Fp
-dCgmYy50aHJfY3YsICZjLm0pKXsKKwlpZiAocHRocmVhZF9jb25kX3dhaXQoJmMudGhyX2N2LCAm
-Yy5tKSkgewogCQlwZXJyb3IoIkZBSUwgLSBmYWlsZWQgdG8gd2FrZSB1cCBjb3JyZWN0bHkiKTsK
-LSAgICAgICAJCWZjbG9zZShmZCk7CisJCWNsb3NlX2ZpbGVzKGZkX2xpc3QsIG51bWZpbGVzKTsK
-IAkJdW5saW5rKGZpbGVuYW1lKTsKLQkJcHRocmVhZF9leGl0KCh2b2lkKikxKTsKKwkJcHRocmVh
-ZF9leGl0KCh2b2lkKikgMSk7CiAJfQogCiAJLyogUmVsZWFzZSBtdXRleCBsb2NrICovCi0gICAg
-ICAgIGlmIChwdGhyZWFkX211dGV4X3VubG9jaygmYy5tKSl7CisJaWYgKHB0aHJlYWRfbXV0ZXhf
-dW5sb2NrKCZjLm0pKSB7CiAJCXBlcnJvcigiRkFJTCAtIGZhaWxlZCB0byByZWxlYXNlIG11dGV4
-IGxvY2siKTsKLSAgICAgICAJCWZjbG9zZShmZCk7CisJCWNsb3NlX2ZpbGVzKGZkX2xpc3QsIG51
-bWZpbGVzKTsKIAkJdW5saW5rKGZpbGVuYW1lKTsKLQkJcHRocmVhZF9leGl0KCh2b2lkKikxKTsK
-KwkJcHRocmVhZF9leGl0KCh2b2lkKikgMSk7CiAJfQogCi0JLyogQ2xvc2UgZmlsZSBhbmQgZXhp
-dCAqLwotICAgICAgIAlmY2xvc2UoZmQpOworCS8qIENsb3NlIGZpbGUgaGFuZGxlcyBhbmQgZXhp
-dCAqLworCWNsb3NlX2ZpbGVzKGZkX2xpc3QsIG51bWZpbGVzKTsKIAl1bmxpbmsoZmlsZW5hbWUp
-OwotICAgICAgICBwdGhyZWFkX2V4aXQoKHZvaWQqKTApOworCXB0aHJlYWRfZXhpdCgodm9pZCop
-IDApOwogfQogCi0K
+UID_T
+GETUID(void)
+{
+	return syscall(__NR_getuid);
+}
 
-------_=_NextPart_001_01CA4603.15C34616
+UID_T
+GETEUID(void)
+{
+	return syscall(__NR_geteuid);
+}
+
+#else
+
+UID_T
+GETUID(void)
+{
+	return getuid();
+}
+
+UID_T
+GETEUID(void)
+{
+	return geteuid();
+}
+
+#endif
+
+#endif /* __GETUID_COMPAT_16_H__ */
+
+----Next_Part(Fri_Oct__9_15_44_45_2009_670)--
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-http://p.sf.net/sfu/devconf
-------_=_NextPart_001_01CA4603.15C34616
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
+----Next_Part(Fri_Oct__9_15_44_45_2009_670)--
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -298,5 +322,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-------_=_NextPart_001_01CA4603.15C34616--
+----Next_Part(Fri_Oct__9_15_44_45_2009_670)----
 
