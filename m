@@ -1,27 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MyF66-0004OQ-Ad
-	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 01:25:42 +0000
-Received: from mail-px0-f201.google.com ([209.85.216.201])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MyF5z-0005qu-Tw
-	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 01:25:42 +0000
-Received: by pxi39 with SMTP id 39so326270pxi.10
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Mwk1m-000174-T1
+	for ltp-list@lists.sourceforge.net; Sat, 10 Oct 2009 22:03:02 +0000
+Received: from mail-pz0-f193.google.com ([209.85.222.193])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Mwk1d-00071A-5q
+	for ltp-list@lists.sourceforge.net; Sat, 10 Oct 2009 22:03:02 +0000
+Received: by pzk31 with SMTP id 31so4789558pzk.28
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 14 Oct 2009 18:25:30 -0700 (PDT)
+	Sat, 10 Oct 2009 15:02:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1255552134.4892.12.camel@subratamodak.linux.ibm.com>
-References: <200910011340.32046.chandru@in.ibm.com>
-	<1255436017.8438.36.camel@subratamodak.linux.ibm.com>
-	<200910141211.11379.chandru@in.ibm.com>
-	<1255552134.4892.12.camel@subratamodak.linux.ibm.com>
-Date: Wed, 14 Oct 2009 18:25:29 -0700
-Message-ID: <364299f40910141825k6d8a8e15w5843dd9d2574d262@mail.gmail.com>
+In-Reply-To: <200910101551.16789.vapier@gentoo.org>
+References: <364299f40910091048w54ece725l2b07a04bb82f6a4f@mail.gmail.com>
+	<200910101551.16789.vapier@gentoo.org>
+Date: Sat, 10 Oct 2009 15:02:47 -0700
+Message-ID: <364299f40910101502l19472085v233d75751e1badb6@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH V2] ppoll01: add signal() syscall to register the
-	signal handler
+Subject: Re: [LTP] mixing of install/build targets
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,91 +31,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net, vapier@gentoo.org
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-On Wed, Oct 14, 2009 at 1:28 PM, Subrata Modak
-<subrata@linux.vnet.ibm.com> wrote:
-> On Wed, 2009-10-14 at 12:11 +0530, Chandru wrote:
->> On Tuesday 13 October 2009 17:43:37 Subrata Modak wrote:
->> > On Thu, 2009-10-01 at 13:40 +0530, Chandru wrote:
->> > > The ppoll01 testcase has a signal handler in it but this signal hand=
-ler is not registered with the kernel through the signal() syscall. The tes=
-tcase fails when it sends a SIGINT to itself as part of one of the case of =
-the test run.
->> > > The following patch
->> > > 1. Adds a signal() syscall to register the signal handler
->> > > 2. Corrects the expected 'revents' for the case where ppoll() is cal=
-led on a file which is only opened in read/write mode, i.e case00.
->> > >
->> > > Signed-off-by: Chandru S <chandru@linux.vnet.ibm.com>
->> >
->> > Hi Chandru,
->> >
->> > Can you please resend this with a diff from the Latest CVS snapshot ?
->> >
->>
->> Hi Subrata,
->>
->> Thanks for letting me know. Here is the patch taken from the latest snap=
-shot.
->>
->> The following patch adds a signal() syscall to the ppoll01 testcase. The=
- testcase has a signal handler in it but this signal handler is not registe=
-red with the kernel through the signal() syscall. =A0Without the patch the =
-testcase fails when it sends a SIGINT to itself as part of one of the case =
-of the test run.
->>
->> Signed-off-by: Chandru S <chandru@linux.vnet.ibm.com>
+On Sat, Oct 10, 2009 at 12:51 PM, Mike Frysinger <vapier@gentoo.org> wrote:
+> On Friday 09 October 2009 13:48:42 Garrett Cooper wrote:
+>> =A0 =A0 I'm posting the following diff as reference (it's compressed
+>> because the entire diff is ~1.8MB) as I'm now going to commit the
+>> following to CVS after 1.25 years of anticipation waiting for this
+>> enhancement in the Makefiles to correct issues related to difficulty
+>> primarily in 1) terms of maintenance, 2) lack of out-of-build-tree
+>> support, and 3) the fact that we weren't following autoconf-like
+>> practices for installation [ties into 1) and 2)].
+>> =A0 =A0 If there are any issues in building the sourcebase after this,
+>> please consult the TODO file in the root directory to determine
+>> whether or not it's a known issue. If the issue isn't listed there,
+>> please email the list and CC me. I ran it on Fedora 10, Gentoo Linux,
+>> and Ubuntu Feisty Fawn, so I tried to get as much coverage as possible
+>> when making these changes.
 >
-> Thanks.
+> seems like the compile step depends on install dirs. =A0a simple make in a
+> subdir fails with:
+> $ make
+> mkdir -p "/opt/ltp/testcases/bin"
+> mkdir: cannot create directory `/opt/ltp': Permission denied
+> make: *** [/opt/ltp/testcases/bin] Error 1
 >
-> Regards--
-> Subrata
->
->> ---
->>
->> --- ltp/testcases/kernel/syscalls/ppoll/ppoll01.c.orig =A0 =A0 =A0 =A020=
-09-10-14 16:58:45.547235527 +0530
->> +++ ltp/testcases/kernel/syscalls/ppoll/ppoll01.c =A0 =A0 2009-10-14 16:=
-53:42.828486675 +0530
->> @@ -106,6 +106,8 @@ extern void cleanup() {
->> =A0 =A0 =A0 =A0 =A0tst_exit();
->> =A0}
->>
->> +void sighandler(int sig); =A0 =A0 =A0 /* signals handler function for t=
-he test */
->> +
->> =A0/* Local =A0Functions */
->> =A0/********************************************************************=
-**********/
->> =A0/* =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0*/
->> @@ -126,6 +128,8 @@ extern void cleanup() {
->> =A0/********************************************************************=
-**********/
->> =A0void setup() {
->> =A0 =A0 =A0 =A0 =A0/* Capture signals if any */
->> + =A0 =A0 signal(SIGINT, &sighandler);
->> +
->> =A0 =A0 =A0 =A0 =A0/* Create temporary directories */
->> =A0 =A0 =A0 =A0 =A0TEST_PAUSE;
->> =A0 =A0 =A0 =A0 =A0tst_tmpdir();
+> or if prefix isnt set:
+> $ make
+> mkdir -p "/testcases/bin"
+> mkdir: cannot create directory `/testcases': Permission denied
+> make: *** [/testcases/bin] Error 1
 
-Just curious -- was the issue seen at the following point in the code
-previously?
-
-361             TEST(sys_ret =3D syscall(__NR_ppoll, p_fds, nfds, p_ts,
-p_sigmask, sigsetsize)); /* <-- Blocks here indefinitely */
-362             sys_errno =3D errno;
-363             if (sys_ret <=3D 0 || tc->ret < 0)
-364                     goto TEST_END;
-365
-366             cmp_ok =3D fds[0].revents =3D=3D tc->expect_revents;
-
-I've seen this issue 1 out of the 8 or 9 times I've run this test.
-
+    Both of these items requires the appropriate prefix to be put in
+config.mk, and/or the definition of DESTDIR, because the new Makefile
+infra installs directly to the destination folder.
+    I'll go and fix the latter case though...
 Thanks!
 -Garrett
 
