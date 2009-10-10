@@ -1,29 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <liubo2009@cn.fujitsu.com>) id 1N0SFd-00086T-VA
-	for ltp-list@lists.sourceforge.net; Wed, 21 Oct 2009 03:52:41 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N0SFU-0008OZ-Mc
-	for ltp-list@lists.sourceforge.net; Wed, 21 Oct 2009 03:52:41 +0000
-Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
-	by song.cn.fujitsu.com (Postfix) with ESMTP id 563E7170028
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 21 Oct 2009 11:52:23 +0800 (CST)
-Received: from fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id n9L3phr7009249
-	for <ltp-list@lists.sourceforge.net>; Wed, 21 Oct 2009 11:51:43 +0800
-Received: from localhost.localdomain (unknown [10.167.141.167])
-	by fnst.cn.fujitsu.com (Postfix) with ESMTPA id 8DDF7D4368
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 21 Oct 2009 11:51:34 +0800 (CST)
-Message-ID: <4ADE856B.4030509@cn.fujitsu.com>
-Date: Wed, 21 Oct 2009 11:52:11 +0800
-From: liubo <liubo2009@cn.fujitsu.com>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1Mwl0T-0004ei-NQ
+	for ltp-list@lists.sourceforge.net; Sat, 10 Oct 2009 23:05:45 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Mwl0N-000244-6Z
+	for ltp-list@lists.sourceforge.net; Sat, 10 Oct 2009 23:05:45 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sat, 10 Oct 2009 19:05:31 -0400
+References: <364299f40910091048w54ece725l2b07a04bb82f6a4f@mail.gmail.com>
+	<364299f40910101502l19472085v233d75751e1badb6@mail.gmail.com>
+	<364299f40910101530t3be5d6d8i5e530c5137d923b8@mail.gmail.com>
+In-Reply-To: <364299f40910101530t3be5d6d8i5e530c5137d923b8@mail.gmail.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] mem/hugetlb: fix failure of hugemmap03
+Message-Id: <200910101905.32534.vapier@gentoo.org>
+Subject: Re: [LTP] mixing of install/build targets
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,58 +26,85 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3990426066114333991=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-1)    In mmap's manual,
-The starting address for the new mapping is specified in addr.
+--===============3990426066114333991==
+Content-Type: multipart/signed; boundary="nextPart1459631.uFjO8PtUsW";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-So, if mmap's argument "addr" is reachable, the mmap will
-creates a new mapping in the virtual address space of the
-call-ing process.
-The test hugemmap03 will test that a normal page cannot
- be mapped into a high memory region. This infers that "addr"
-should be higher for 64-bit mode.
+--nextPart1459631.uFjO8PtUsW
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+On Saturday 10 October 2009 18:30:11 Garrett Cooper wrote:
+>     I just changed it so it won't do this anymore, but what I need to
+> know exactly is how do you intend to do submakes, e.g. do you intend
+> to manually compile the library, NOT do the install, then go to a
+> subdir, run make all, and that's it?
+>     make install (IMO) still needs $(prefix) to be defined to a sane
+> setting, so it's now only a requirement for install.
+
+requiring install-related variables to be sane in order to do `make install=
+`=20
+is fine (i.e. prefix/etc...).  but that is the only time install related=20
+variables should be needed/consulted.
+
+when you compile a package (i.e. run `make`) regardless of this being done =
+at=20
+the toplevel or a subdir only, the build process should never need anything=
+=20
+ltp related outside of the source tree (so i'm not talking about libcap or=
+=20
+whatever, just libltp).  this is the expected behavior for all packages out=
+=20
+there, not just ltp.
+
+one reason for why this is a bad idea is that it is then impossible to=20
+compile/test a new version of a package locally before installing it into t=
+he=20
+live filesystem.  you would have to first uninstall the old version (rm -rf=
+=20
+/opt/ltp), then compile/install the new version, and then hope that (1) the=
+=20
+build is successful as well as (2) the package working as expected (bug fre=
+e).
+=2Dmike
+
+--nextPart1459631.uFjO8PtUsW
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJK0RM8AAoJEEFjO5/oN/WBfmwQAKef2BTJmftczZfnblYh1fu/
+xffM5Tm1IWdUEl/2+SV9TjpKJO5A+cf0jaUfdpITlys/IZ5c4AD4Jos9DbhnZ97s
+/LEhJW53Of2RME7Wj7p+K9ZfXuxNVTkK/rxDymn7bHtqRyyyLjcAe06FPKxohv1n
+leyrKoJXvTRh4IaK8bmzLAkLi+/i8aKfKWJUFsakj8lbgfNXkXHulMlHaNazLeIX
+j6/xk29s5N/YjiZilRFMi1ZPAxk4MQOB9lrNAM+g3r95gxn7zSzLqK5TH4Iz73n9
+qO3LJ7j121/53K44DhtjATPZic21qBQ3KKHk4oSFVIochhjbq6+8srxcIa08eku4
+BKCkA9i1t0TEiuVhes0h7bfJfrjBmP02c9bii1osE67cg4891vD3iT5x/iiCT58O
+uKj6uerK98B1Y0Gh+JywK7gFUPGYHK1lu9GcECpetLJbxVxa9nNUBoUVl8NDG4AN
+rVMQvvlV1EEBQJm5n02L9UkTQAnBrCqqQ4hEZMYroSMNAPRYtPNN1RZ/j/bjMk41
+5taU8Is7xJHx7x7QUs61Yd9lV0ejV/sZo0qfeREmEflGT60QL4WpH+7JlejHEAhl
+tBO8jLyGEJ+1U+xU2O3l97aBrOrKfgBZ7BoK8ddIPZ2bUxVaQV7rQKn09H+UAlxE
+97WDrq7Vf+mc6LTPVc8I
+=9pZ1
+-----END PGP SIGNATURE-----
+
+--nextPart1459631.uFjO8PtUsW--
 
 
-2)    The test use "-I2" option, and this not only causes TFAIL's
-loop, but also causes TPASS's loop.
-For TFAIL, loop is deserved, nor for TPASS.
-
-This patch fixed these problems.
-
-Signed-off-by: Liu Bo <liubo2009@cn.fujitsu.com>
-
----
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
-
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c
-index 892d24b..a07b9aa 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c
-@@ -55,7 +55,7 @@
- #include "usctest.h"
- 
- #define PAGE_SIZE      ((1UL) << 12) 	/* Normal page size */
--#define HIGH_ADDR      (void *)(0x10000000000)
-+#define HIGH_ADDR      (void *)(0x1000000000000)
- 
- char* TEMPFILE="mmapfile";
- 
-@@ -130,6 +130,7 @@ main(int ac, char **av)
- 			continue;
- 		} else {
- 			tst_resm(TPASS, "Normal mmap() into high region failed correctly");
-+			break;
- 		}
- 
- 		close(fildes);
-
-
-
+--===============3990426066114333991==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
@@ -92,7 +112,16 @@ is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
+--===============3990426066114333991==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3990426066114333991==--
+
