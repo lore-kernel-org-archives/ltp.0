@@ -1,26 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1N2Gay-0001FE-Sq
-	for ltp-list@lists.sourceforge.net; Mon, 26 Oct 2009 03:50:12 +0000
-Received: from mail-pw0-f43.google.com ([209.85.160.43])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N2Gap-00061E-N6
-	for ltp-list@lists.sourceforge.net; Mon, 26 Oct 2009 03:50:07 +0000
-Received: by pwj6 with SMTP id 6so1584386pwj.2
+	(envelope-from <yanegomi@gmail.com>) id 1MwkSG-0007ZI-DJ
+	for ltp-list@lists.sourceforge.net; Sat, 10 Oct 2009 22:30:24 +0000
+Received: from mail-pz0-f193.google.com ([209.85.222.193])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MwkS9-0004a1-H6
+	for ltp-list@lists.sourceforge.net; Sat, 10 Oct 2009 22:30:24 +0000
+Received: by pzk31 with SMTP id 31so4798398pzk.28
 	for <ltp-list@lists.sourceforge.net>;
-	Sun, 25 Oct 2009 20:49:57 -0700 (PDT)
+	Sat, 10 Oct 2009 15:30:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <op.u2dtmvt9u2flwt@debian>
-References: <op.u00vt9vju2flwt@debian>
-	<1255436013.8438.34.camel@subratamodak.linux.ibm.com>
-	<1255890120.5359.18.camel@subratamodak.linux.ibm.com>
-	<op.u2dtmvt9u2flwt@debian>
-Date: Sun, 25 Oct 2009 20:49:57 -0700
-Message-ID: <364299f40910252049g2b30f5afq1f689ccbb820e05b@mail.gmail.com>
+In-Reply-To: <364299f40910101502l19472085v233d75751e1badb6@mail.gmail.com>
+References: <364299f40910091048w54ece725l2b07a04bb82f6a4f@mail.gmail.com>
+	<200910101551.16789.vapier@gentoo.org>
+	<364299f40910101502l19472085v233d75751e1badb6@mail.gmail.com>
+Date: Sat, 10 Oct 2009 15:30:11 -0700
+Message-ID: <364299f40910101530t3be5d6d8i5e530c5137d923b8@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] New test?
+Subject: Re: [LTP] mixing of install/build targets
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,58 +29,55 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-2"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: =?ISO-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-2009/10/25 Ji=F8=ED Pale=E8ek <jpalecek@web.de>:
-> On Sun, 18 Oct 2009 20:22:00 +0200, Subrata Modak
-> <subrata@linux.vnet.ibm.com> wrote:
->
->> Jiri,
+On Sat, Oct 10, 2009 at 3:02 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Sat, Oct 10, 2009 at 12:51 PM, Mike Frysinger <vapier@gentoo.org> wrot=
+e:
+>> On Friday 09 October 2009 13:48:42 Garrett Cooper wrote:
+>>> =A0 =A0 I'm posting the following diff as reference (it's compressed
+>>> because the entire diff is ~1.8MB) as I'm now going to commit the
+>>> following to CVS after 1.25 years of anticipation waiting for this
+>>> enhancement in the Makefiles to correct issues related to difficulty
+>>> primarily in 1) terms of maintenance, 2) lack of out-of-build-tree
+>>> support, and 3) the fact that we weren't following autoconf-like
+>>> practices for installation [ties into 1) and 2)].
+>>> =A0 =A0 If there are any issues in building the sourcebase after this,
+>>> please consult the TODO file in the root directory to determine
+>>> whether or not it's a known issue. If the issue isn't listed there,
+>>> please email the list and CC me. I ran it on Fedora 10, Gentoo Linux,
+>>> and Ubuntu Feisty Fawn, so I tried to get as much coverage as possible
+>>> when making these changes.
 >>
->> Any further thoughts on this ?
->
-> Yes, see the attachment.
->
-> I created the directories for the different tests (rt_sigtimedwait,
-> sigwaitinfo etc.), but to avoid copy-pasting the code, they share the same
-> source. Please, tell me if that is OK.
->
-> Regards
-> =A0 =A0Jiri Palecek
+>> seems like the compile step depends on install dirs. =A0a simple make in=
+ a
+>> subdir fails with:
+>> $ make
+>> mkdir -p "/opt/ltp/testcases/bin"
+>> mkdir: cannot create directory `/opt/ltp': Permission denied
+>> make: *** [/opt/ltp/testcases/bin] Error 1
 >>
->> On Tue, 2009-10-13 at 17:43 +0530, Subrata Modak wrote:
->>>
->>> Hey Jiri,
->>>
->>> On Tue, 2009-09-29 at 16:28 +0200, Ji=F8=ED Pale=E8ek wrote:
->>> > Hello,
->>> >
->>> > I've decided to create a test for the rt_sigwaitinfo syscall. There a=
-re
->>> > other functions with similar interface (defined by POSIX) in libc -
->>> > particularly sigwait, sigtimedwait and sigwaitinfo. The rt_sigwaitinfo
->>>
->>> The sigwait, sigtimedwait and sigwaitinfo testcases are not in LTP.
->>>
->>> > test could easily tests these too, so I wonder whether we want to test
->>> > these too, and if yes, whether these tests can be located in the same
->>> > executable.
->>>
->>> If you already have the logic to write the above tests, then please
->>> create separate tests for sigwait, sigtimedwait and sigwaitinfo
->>> (separate directories as well), and separate for rt_sigwaitinfo syscall.
->>>
->>> Regards--
->>> Subrata
+>> or if prefix isnt set:
+>> $ make
+>> mkdir -p "/testcases/bin"
+>> mkdir: cannot create directory `/testcases': Permission denied
+>> make: *** [/testcases/bin] Error 1
+>
+> =A0 =A0Both of these items requires the appropriate prefix to be put in
+> config.mk, and/or the definition of DESTDIR, because the new Makefile
+> infra installs directly to the destination folder.
+> =A0 =A0I'll go and fix the latter case though...
 
-    The Makefiles need to be rewritten because a) they don't use the
-new infrastructure, and b) they break requirements for
-out-of-build-tree support. Please read README.mk-devel and ping me
-with any questions you may have.
+    I just changed it so it won't do this anymore, but what I need to
+know exactly is how do you intend to do submakes, e.g. do you intend
+to manually compile the library, NOT do the install, then go to a
+subdir, run make all, and that's it?
+    make install (IMO) still needs $(prefix) to be defined to a sane
+setting, so it's now only a requirement for install.
 Thanks,
 -Garrett
 
