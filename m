@@ -1,31 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1Mxc3J-0007tM-Sp
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 07:44:13 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mxc3C-00022f-0E
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 07:44:13 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e8.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9D7fANu020642
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 03:41:10 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n9D7i0vl242858
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 03:44:00 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n9D7hx1M018692
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 03:44:00 -0400
-From: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Date: Tue, 13 Oct 2009 13:13:56 +0530
-Message-Id: <20091013074356.22414.15869.sendpatchset@localhost.localdomain>
-In-Reply-To: <20091013074337.22414.20968.sendpatchset@localhost.localdomain>
-References: <20091013074337.22414.20968.sendpatchset@localhost.localdomain>
-Subject: [LTP] [Patch 3/6] Modified ilb test to run with ebizzy as default
-	workload.
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MwhyV-0008H7-0W
+	for ltp-list@lists.sourceforge.net; Sat, 10 Oct 2009 19:51:31 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MwhyO-0003RQ-GW
+	for ltp-list@lists.sourceforge.net; Sat, 10 Oct 2009 19:51:30 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sat, 10 Oct 2009 15:51:15 -0400
+References: <364299f40910091048w54ece725l2b07a04bb82f6a4f@mail.gmail.com>
+In-Reply-To: <364299f40910091048w54ece725l2b07a04bb82f6a4f@mail.gmail.com>
+MIME-Version: 1.0
+Message-Id: <200910101551.16789.vapier@gentoo.org>
+Subject: [LTP] mixing of install/build targets
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,41 +24,81 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4557353515075568215=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, svaidy@linux.vnet.ibm.com, ego@in.ibm.com, arun@linux.vnet.ibm.com
+To: ltp-list@lists.sourceforge.net
 
-Modified ilb test to run with ebizzy as default workload.
- 
-Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+--===============4557353515075568215==
+Content-Type: multipart/signed; boundary="nextPart3470176.SE30j35Ln8";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-diff -uprN ltp-full-20090930/testcases/kernel/power_management/ilb_test.py ltp-full-20090930_patched/testcases/kernel/power_management/ilb_test.py
---- ltp-full-20090930/testcases/kernel/power_management/ilb_test.py	2009-10-05 02:10:56.000000000 -0400
-+++ ltp-full-20090930_patched/testcases/kernel/power_management/ilb_test.py	2009-10-12 23:05:40.000000000 -0400
-@@ -27,7 +27,7 @@ def main(argv=None):
-     parser.add_option("-t", "--smt_level", dest="smt_level",
-         default=0, help="Sched smt power saving value 0/1/2")
-     parser.add_option("-w", "--workload", dest="work_ld",
--        default="kernbench", help="Workload can be ebizzy/kernbench")
-+        default="ebizzy", help="Workload can be ebizzy/kernbench")
-     (options, args) = parser.parse_args()
- 
-     try:
-@@ -40,10 +40,10 @@ def main(argv=None):
-         map_cpuid_pkgid()
-         print "INFO: Created table mapping cpu to package"
-         background="no"
--        duration=60
-+        duration=120
-         pinned="yes"
- 
--        trigger_workld(options.smt_level,options.work_ld, "single_job", duration, background, pinned)
-+        trigger_workld(options.smt_level,options.work_ld, "single_job", duration, background, pinned, "no")
-         generate_loc_intr_report()
-         status = validate_ilb(options.mc_level, options.smt_level)
-         reset_schedmc()
+--nextPart3470176.SE30j35Ln8
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Friday 09 October 2009 13:48:42 Garrett Cooper wrote:
+>     I'm posting the following diff as reference (it's compressed
+> because the entire diff is ~1.8MB) as I'm now going to commit the
+> following to CVS after 1.25 years of anticipation waiting for this
+> enhancement in the Makefiles to correct issues related to difficulty
+> primarily in 1) terms of maintenance, 2) lack of out-of-build-tree
+> support, and 3) the fact that we weren't following autoconf-like
+> practices for installation [ties into 1) and 2)].
+>     If there are any issues in building the sourcebase after this,
+> please consult the TODO file in the root directory to determine
+> whether or not it's a known issue. If the issue isn't listed there,
+> please email the list and CC me. I ran it on Fedora 10, Gentoo Linux,
+> and Ubuntu Feisty Fawn, so I tried to get as much coverage as possible
+> when making these changes.
+
+seems like the compile step depends on install dirs.  a simple make in a=20
+subdir fails with:
+$ make
+mkdir -p "/opt/ltp/testcases/bin"
+mkdir: cannot create directory `/opt/ltp': Permission denied
+make: *** [/opt/ltp/testcases/bin] Error 1
+
+or if prefix isnt set:
+$ make
+mkdir -p "/testcases/bin"
+mkdir: cannot create directory `/testcases': Permission denied
+make: *** [/testcases/bin] Error 1
+
+these are only needed during the install step
+=2Dmike
+
+--nextPart3470176.SE30j35Ln8
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJK0OW0AAoJEEFjO5/oN/WBsOkP/jrZb0qHtZ9NHULHf2HSTcag
+jXiWEab+DirSZqe1m91j/rGwz3Low//eGYVLlB9WATUTTMXadgoLWtafw85G9cNC
+2SsGkxBwnLEEjBM6GPSGbeOX6bUJ1FSHDluBGWrSG+4Rj5cPL0Ri5so1H8EcsH/A
+JO//lq9uycu+fGMKo90Uk3NtczV31nUhLlen2sFfxlOPp91KIzNau9hGyA9ugUGq
+Xsdl6EloLt5xd1XFiNuXTagnTL6X1cacQXkVxGPbLWeGotQMFyMJ0mTiEs6d+dX3
+u85lPkNOnkD7JoCi0jao7bH15qxTn8mrdLWu415zYePUes3Q5jIqxBoZMo9j1ni7
+qDawR/QI08Rkrqf+oGE4GvuojZ7/DxuMTgYdKGP1RhvnFYBwPeJ7gKiGx3175D0M
+qO0MgH6JRnyKj0721ypct6XOeYkYub6Sb0okKvCtPO1VFpaH2blL3OAG6eoSx+3n
+Wy2masGhpJ//fqN7yEaPqKyxiqDF14peo1hjRJmEWnLCaMw/ddHFjoOFB1Tq0A1L
++vYMXtojeU5pdsI9YChWb6/2+XD2ztJ6raPYL/5UsBRnU8QSxNycKfvjnfigDoAV
+M/NXF91CAseRK4TOqzasExMhw70aMhNliMu7KiTzuq+GSyK1OEiGcEjP9krk8hD4
+Vgi3ogmTtoIsNGslELYr
+=+rGv
+-----END PGP SIGNATURE-----
+
+--nextPart3470176.SE30j35Ln8--
+
+
+--===============4557353515075568215==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
@@ -77,7 +106,16 @@ is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
+--===============4557353515075568215==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============4557353515075568215==--
+
