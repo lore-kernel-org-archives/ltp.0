@@ -1,34 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1N3Znb-0001tM-O3
-	for ltp-list@lists.sourceforge.net; Thu, 29 Oct 2009 18:32:39 +0000
-Received: from e37.co.us.ibm.com ([32.97.110.158])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N3ZnV-00027b-Hx
-	for ltp-list@lists.sourceforge.net; Thu, 29 Oct 2009 18:32:39 +0000
-Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
-	[9.17.195.228])
-	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9TIVG3X024027
-	for <ltp-list@lists.sourceforge.net>; Thu, 29 Oct 2009 12:31:16 -0600
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n9TIWHKr169516
-	for <ltp-list@lists.sourceforge.net>; Thu, 29 Oct 2009 12:32:18 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id n9TIWCNO022475
-	for <ltp-list@lists.sourceforge.net>; Thu, 29 Oct 2009 12:32:12 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1256576586.4929.60.camel@subratamodak.linux.ibm.com>
-References: <364299f40910202206m10020bdg389ee8ab5994a488@mail.gmail.com>
-	<1256576586.4929.60.camel@subratamodak.linux.ibm.com>
-Date: Fri, 30 Oct 2009 00:02:00 +0530
-Message-Id: <1256841120.5210.27.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] New test : sniperkill - killing processes from a distance
-Reply-To: subrata@linux.vnet.ibm.com
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MxBgQ-00072x-Gf
+	for ltp-list@lists.sourceforge.net; Mon, 12 Oct 2009 03:34:50 +0000
+Received: from mail-px0-f179.google.com ([209.85.216.179])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MxBgM-0006b5-Gp
+	for ltp-list@lists.sourceforge.net; Mon, 12 Oct 2009 03:34:50 +0000
+Received: by pxi9 with SMTP id 9so8262567pxi.4
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 11 Oct 2009 20:34:40 -0700 (PDT)
+MIME-Version: 1.0
+Date: Sun, 11 Oct 2009 20:34:40 -0700
+Message-ID: <364299f40910112034u423458afxd6242fb2d50eaa59@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: [LTP] [PATCH] Solve some netns app issues w/ missing utils,
+	build-tree 	relative path to smount, and some other QA concerns
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,69 +29,307 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-On Mon, 2009-10-26 at 22:33 +0530, Subrata Modak wrote: 
-> On Tue, 2009-10-20 at 22:06 -0700, Garrett Cooper wrote: 
-> > Hi all,
-> >     The LTP signal tests are wonderful, but due to issues in our
-> > architecture, there were some unforeseen problems with some signal
-> > handling. As such I came up with a test and a C app named `sniperkill'
-> > and `killme.c'. sniperkill invokes killme according to a set matrix of
-> > signal numbers, according to the signal(7) manpage, verifying that the
-> > signal 1) terminates, 2) is ignored, or 3) is terminated producing a
-> > coredump. This also exercises the RT signals as well as the standard
-> > POSIX and Linux signals.
-> >     I verified the results on x86 and they were functional (minus
-> > SIGSYS which coredumped unexpectedly -- which means I get to file a
-> > bug with kernel.org -- yay!). I penciled in the other architectures as
-> > per the manpage, given that the other architectures we test on are
-> > clearly mentioned, I'm almost positive the data's in the correct
-> > spots, despite the ambiguity in the statement: `the first one is
-> > usually valid for alpha and sparc'.
-> >     I'm going to try running it on mips* and ppc, but the results
-> > won't be 100% sane with our OS platform (I know -- that's why wrote
-> > the test :(...).
-> >     An example log of my execution on x86_64 is included.
-> >     Please let me know if I should add this and where I should add
-> > this, so I can check it into the repo and more can benefit from this
-> > post-mortem analysis signal tool :).
-> > Thanks,
-> > -Garrett
-> 
-> Hey Garret. I feel it should go to a place where it signifies more:
-> testcases/kernel/syscalls/kill/
+1. My Gentoo system lacks the ip utility, which is required for this
+test. So I took care of that issue by integrating this script in with
+the `cmdlib.sh' script's exist function.
+2. Several variables were either improperly quoted, or incorrectly
+used. -eq, -lt, -ne, etc should be used for integers, = and != for
+strings.
+3. When using ps | {awk,grep}, one must do filter out awk or grep,
+respectively, or the script will accidentally grab a false positive
+from the output, like so:
 
-What do you think about my suggestion ?
+gcooper@orangebox ~ $ ps ax | grep ps | egrep -v 'mice|mouse'
+21057 pts/4    R+     0:00 ps ax
+21058 pts/4    S+     0:00 grep --colour=auto ps
 
-Regards--
-Subrata
+4. Block off the rest of the testcases if one of the prerequisite
+steps fails to initialize properly.
+5. Fix up a build-tree dependent pathname to the smount script in the
+fs_bind directory.
 
-> 
-> Regards--
-> Subrata
-> 
-> > ------------------------------------------------------------------------------
-> > Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-> > is the only developer event you need to attend this year. Jumpstart your
-> > developing skills, take BlackBerry mobile applications to market and stay 
-> > ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-> > http://p.sf.net/sfu/devconference
-> > _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-> 
-> ------------------------------------------------------------------------------
-> Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-> is the only developer event you need to attend this year. Jumpstart your
-> developing skills, take BlackBerry mobile applications to market and stay 
-> ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-> http://p.sf.net/sfu/devconference
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+Index: childns.sh
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/containers/netns/childns.sh,v
+retrieving revision 1.5
+diff -u -r1.5 childns.sh
+--- childns.sh	8 Jul 2009 17:53:47 -0000	1.5
++++ childns.sh	12 Oct 2009 03:33:07 -0000
+@@ -32,59 +32,58 @@
+ # set -x
+ # The test case ID, the test case count and the total number of test case
 
+-TCID=${TCID:-childns.sh}
+-TST_TOTAL=1
+-TST_COUNT=1
+-export TCID
+-export TST_COUNT
+-export TST_TOTAL
+-.  initialize.sh
++export TCID=${TCID:-childns.sh}
++. cmdlib.sh
++exists awk grep ip ping sshd
++. initialize.sh
+ status=0
+
+-    if [ $# = 1 ] ; then
+-        childscrpt=$1
+-        debug "INFO: The script to be executed in child NS is $childscrpt"
+-    fi
+-
+-    # Passing the PID of child
+-    echo "child ready" > /tmp/FIFO1;
+-
+-    # waiting for the device name from parent
+-    vnet1=`cat /tmp/FIFO2`;
+-    debug "INFO: network dev name received $vnet1";
+-    # Assigning the dev addresses
+-    ifconfig $vnet1 $IP2/24 up > /dev/null 2>&1
+-	if [ $? -ne 0 ]; then
+-		debug "Failed to make interface $vnet1 up in child....."
+-	fi
++if [ $# -eq 1 ] ; then
++    childscrpt=$1
++    debug "INFO: The script to be executed in child NS is $childscrpt"
++fi
++
++# Passing the PID of child
++echo "child ready" > /tmp/FIFO1;
++
++# waiting for the device name from parent
++vnet1=`cat /tmp/FIFO2`;
++debug "INFO: network dev name received $vnet1";
++# Assigning the dev addresses
++if ! ifconfig $vnet1 $IP2/24 up > /dev/null 2>&1 ; then
++    debug "Failed to make interface $vnet1 up in child....."
++fi
++
++ifconfig lo up
++sleep 2
++
++#starting the sshd inside the child NS
++if ! sshd -p $PORT; then
++    debug "INFO: started the sshd @ port no $PORT"
++    sshpid=`ps -ef | grep "sshd -p $PORT" | grep -v grep | awk '{
+print $2 ; exit 0} ' `
++else
++    tst_resm TFAIL "Failed in starting ssh @ port $PORT"
++    cleanup $vnet1
++    status=1
++fi
++
++if [ $status -eq 0 ] ; then
+
+-    ifconfig lo up ;
+-    sleep 2
+-
+-    #starting the sshd inside the child NS
+-    /usr/sbin/sshd -p $PORT
+-    if [ $? = 0 ]; then
+-        debug "INFO: started the sshd @ port no $PORT"
+-        sshpid=`ps -ef | grep "sshd -p $PORT" | awk '{ print $2 ; exit 0} ' `
+-    else
+-        tst_resm TFAIL "Failed in starting ssh @ port $PORT"
+-        status=1
+-    fi
+-
+     # checking if parent ns responding
+-    ping -q -c 2 $IP1 > /dev/null
+-    if [ $? != 0 ] ; then
++    if ! ping -q -c 2 $IP1 > /dev/null ; then
+         tst_resm TFAIL "FAIL: ParentNS not responding"
+         status=1
+         cleanup $sshpid $vnet1
+         exit $status
+     fi
+-
+-    if [ -f  $childscrpt ]; then
+-        . $childscrpt
++
++    if [ -f "$childscrpt" ]; then
++        . "$childscrpt"
+     fi
+-
++
+     cleanup $sshpid $vnet1
+     debug "INFO: Done with executing child script $0, status is $status"
+-
+-    exit $status
++
++fi
++
++exit $status
+Index: initialize.sh
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/containers/netns/initialize.sh,v
+retrieving revision 1.5
+diff -u -r1.5 initialize.sh
+--- initialize.sh	23 Jun 2009 14:09:10 -0000	1.5
++++ initialize.sh	12 Oct 2009 03:33:07 -0000
+@@ -25,60 +25,63 @@
+ # to be used and cleanup functions.
+ # set -x
+
+-TCID=${TCID:-initialize}
+-TST_TOTAL=1
+-TST_COUNT=1
+-export TCID
+-export TST_COUNT
+-export TST_TOTAL
+-
+-IP1='192.168.0.181'
+-IP2='192.168.0.182'
+-IP3='192.168.0.183'
+-IP4='192.168.0.184'
++export TCID=${TCID:-initialize}
++export TST_TOTAL=1
++export TST_COUNT=1
++
++TEST_SUBNET=${TEST_SUBNET:=192.168.0}
++i=0
++while [ $i -lt 4 ] ; do
++    eval "IP${i}=\"$TEST_SUBNET.181\""
++    (( i++ ))
++done
+ mask=/24
+ PORT=7890
+ PORT2=9876
+ DEBUG=0
+
+-    # set the LTPROOT directory
+-    cd `dirname $0`
+-    env | grep -q LTPROOT
+-    if [ $? -eq 0 ]; then
+-        FS_BIND=${LTPROOT}/testcases/kernel/fs/fs_bind/bin/smount
+-        if [ -f $FS_BIND ] ; then
+-            smount=$FS_BIND
+-        fi
+-    else
+-        tst_resm TFAIL "Please set the LTP root env variable, and retry again"
+-        exit -1
+-    fi
+-
+-    IPver=`ip -V | awk  -F"-" ' {  print $2 } '` ;
+-    if ! printf "%s\n%s\n" "ss080417" "$IPver" | sort -c ; then
+-        tst_resm  TINFO "ip version should be atleast ss080417"
+-        exit -1
+-    fi
+-    mkfifo /tmp/FIFO1 /tmp/FIFO2 /tmp/FIFO3 /tmp/FIFO4 /tmp/FIFO5
+/tmp/FIFO6 2> /dev/null
++# set the LTPROOT directory
++cd "${0##*/}"
++if [ -n "${LTPROOT:-}" ]; then
++    FS_BIND=${LTPROOT}/testcases/bin/smount
++    if [ -f $FS_BIND ] ; then
++        smount=$FS_BIND
++    fi
++else
++    tst_resm TFAIL "Please set the LTP root env variable, and retry again"
++    exit -1
++fi
++
++IPver=`ip -V | awk  -F"-" ' { print $2 } '` ;
++if ! printf "%s\n%s\n" "ss080417" "$IPver" | sort -c ; then
++    tst_resm  TINFO "ip version should be atleast ss080417"
++    exit -1
++fi
++i=1
++while [ $i -le 6 ] ; do
++    mkfifo /tmp/FIFO$i 2> /dev/null
++    (( i++ ))
++done
++
++netdev=`ip addr show | awk '/^[0-9]*:.*UP/ { a=$2 } /inet / { b=$2 ; \
++        if ( a !~ /lo/  && b ! NULL ) {  print a ; exit 0 } } ' `
++netdev=`basename $netdev ":"`
++if [ -z "$netdev" ] ; then
++    tst_resm  TINFO "Not able to determine the ethernet dev name"
++    exit -1
++fi
++
++# copying the values for restoring it later.
++ipfwd=`cat /proc/sys/net/ipv4/ip_forward`
++if [ -f "/proc/sys/net/ipv4/conf/$netdev/proxy_arp" ] ; then
++    arpproxy=`cat /proc/sys/net/ipv4/conf/$netdev/proxy_arp`
++else
++    arpproxy=0
++fi
+
+-    netdev=`ip addr show | awk '/^[0-9]*:.*UP/ { a=$2 } /inet / { b=$2 ; \
+-            if ( a !~ /lo/  && b ! NULL ) {  print a ; exit 0 } } ' `
+-    netdev=`basename $netdev ":"`
+-    if [ -z $netdev ] ; then
+-        tst_resm  TINFO "Not able to determine the ethernet dev name"
+-        exit -1
+-    fi
+-
+-    # copying the values for restoring it later.
+-    ipfwd=`cat /proc/sys/net/ipv4/ip_forward`
+-    if [ -f /proc/sys/net/ipv4/conf/$netdev/proxy_arp ] ; then
+-        arpproxy=`cat /proc/sys/net/ipv4/conf/$netdev/proxy_arp`
+-    else
+-	arpproxy=0
+-    fi
+ cleanup()
+ {
+-   if [ $# = 2 ]; then
++    if [ $# -eq 2 ]; then
+         pid=$1
+         netdev=$2
+     fi
+@@ -89,7 +92,7 @@
+     sleep 1
+
+     #Restoring the orignial values .
+-    echo $ipfwd > /proc/sys/net/ipv4/ip_forward
++    echo "$ipfwd" > /proc/sys/net/ipv4/ip_forward
+     if [ -f /proc/sys/net/ipv4/conf/$netdev/proxy_arp ] ; then
+     	echo $arpproxy > /proc/sys/net/ipv4/conf/$netdev/proxy_arp
+     fi
+@@ -100,10 +103,7 @@
+
+ debug()
+ {
+-    if [ "$DEBUG" = 1 ]
+-    then
+-        echo $1;
+-    fi
++    [ "$DEBUG" = 1 ] && echo $1
+ }
+
+ create_veth()
+@@ -112,8 +112,5 @@
+     ip link add type veth
+     sleep 1
+     ip link show > /tmp/net2
+-    eval `diff /tmp/net1 /tmp/net2 | awk -F": "  ' /^> [0-9]*:/ {
+print "dev" i+0 "=" $2; i++  }  '`
++    eval `diff /tmp/net1 /tmp/net2 | awk -F": "  '/^> [0-9]*:/ {
+print "dev" i+0 "=" $2; i++  }'`
+ }
+-
+-
+-
+Index: nw_under_ns.sh
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/containers/netns/nw_under_ns.sh,v
+retrieving revision 1.1
+diff -u -r1.1 nw_under_ns.sh
+--- nw_under_ns.sh	30 Dec 2008 06:25:50 -0000	1.1
++++ nw_under_ns.sh	12 Oct 2009 03:33:07 -0000
+@@ -29,8 +29,7 @@
+ echo "*****************************************************"
+ echo "Running network testcases under containers..."
+
+-create_container;
+-if [ $? -ne 0 ]; then
+-	echo "some of the network testcases under netns failled"
++if ! create_container; then
++	echo "some of the network testcases under netns failed"
+ 	exit 1;
+ fi
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
