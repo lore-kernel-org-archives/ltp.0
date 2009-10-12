@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MyFP6-00051F-NE
-	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 01:45:20 +0000
-Received: from mail-pz0-f188.google.com ([209.85.222.188])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MyFOy-0005Xt-Vr
-	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 01:45:20 +0000
-Received: by pzk26 with SMTP id 26so327785pzk.4
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 14 Oct 2009 18:45:07 -0700 (PDT)
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1MxPlC-0002Yc-0A
+	for ltp-list@lists.sourceforge.net; Mon, 12 Oct 2009 18:36:42 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MxPl4-0005qK-4q
+	for ltp-list@lists.sourceforge.net; Mon, 12 Oct 2009 18:36:41 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 12 Oct 2009 14:36:25 -0400
+References: <4AD2F942.1090004@cn.fujitsu.com>
+	<364299f40910121128w48dbef1bpb8ab9fe4b48029ec@mail.gmail.com>
+In-Reply-To: <364299f40910121128w48dbef1bpb8ab9fe4b48029ec@mail.gmail.com>
 MIME-Version: 1.0
-Date: Wed, 14 Oct 2009 18:40:00 -0700
-Message-ID: <364299f40910141840t15b6489s38e232575652677f@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] [Issue 15] ima testcases issues
+Message-Id: <200910121436.26663.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] ppoll01: Fix to set the signal handler of SIGINT
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,65 +25,107 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0676574530375795933=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: liubo <liubo-fnst@cn.fujitsu.com>
 
-    The ima testcases should check and see whether or not the /sys
-directory that they're testing in exists before continuing. Otherwise
-there's a lot of unnecessary noise that shows up in the logs:
+--===============0676574530375795933==
+Content-Type: multipart/signed; boundary="nextPart1564947.tbJvIHxbhG";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-mkdir: cannot create directory `/sys/kernel/security': No such file or directory
+--nextPart1564947.tbJvIHxbhG
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Usage: mount -V                 : print version
+On Monday 12 October 2009 14:28:02 Garrett Cooper wrote:
+> On Mon, Oct 12, 2009 at 2:39 AM, liubo <liubo-fnst@cn.fujitsu.com> wrote:
+> > The test case ppoll01 does not register the signal handler
+> > of SIGINT, so the program will be terminated by SIGINT
+> > from child process.
+> >
+> > Then, the rest cases will not be tested.
+> >
+> > This patch fixed the problem.
+> >
+> > --- a/testcases/kernel/syscalls/ppoll/ppoll01.c
+> > +++ b/testcases/kernel/syscalls/ppoll/ppoll01.c
+> > @@ -124,9 +124,17 @@ extern void cleanup() {
+> > +/*
+> > + * sighandler()
+> > + */
+> > +void sighandler(int sig)
+> > +{
+> > +       return;
+> > +}
+> >  void setup() {
+> >         /* Capture signals if any */
+> > -        /* Create temporary directories */
+> > +       signal(SIGINT, sighandler);
+> > +       /* Create temporary directories */
+> >         TEST_PAUSE;
+> >         tst_tmpdir();
+> >  }
+> > @@ -404,16 +412,6 @@ TEST_END:
+> >  }
+> >
+> >
+> > -/*
+> > - * sighandler()
+> > - */
+> > -void sighandler(int sig)
+> > -{
+> > -        if (sig =3D=3D SIGINT)
+> > -                return;
+> > -        // NOTREACHED
+> > -        return;
+> > -}
+>=20
+> 1. If all that the signal handler does is just return, it should have
+> been doing SIG_IGN from the beginning.
+> 2. I don't understand how your change fixes this because the signal
+> handler's function is almost the same (the original handler was more
+> generic).
 
-       mount -h                 : print this help
+default behavior with SIGINT is to terminate, and going by this patch, no o=
+ne=20
+set up a signal handler for SIGINT.  so the fix as you implied sounds like:
+	- call signal(SIGINT, SIG_IGN);
+	- delete sighandlerr()
+=2Dmike
 
-       mount                    : list mounted filesystems
+--nextPart1564947.tbJvIHxbhG
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-       mount -l                 : idem, including volume labels
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
 
-So far the informational part. Next the mounting.
+iQIcBAABAgAGBQJK03cqAAoJEEFjO5/oN/WBaB4QAJdR6aw6qfHIHU0mMKF6Vuh0
+D9z3vLDnu/0vnwpavexmYX0BF/lO+gwZroX+9XhJD57Mjd3ER38pXCaSwLpT6PDB
+M99kn4DUP+LgI0ENN0br8mMJhD4nnwQcdigxlyAnWCLjNLjrFkNuoUUKm/rw6b0W
+KL95GDohOgyHu8AfKGCKZDRtYxu117DAlRCta1MdmUFp5ZJ4VPFVTnUHQKEkipOw
+LiqHXx2uiNRLVdCiRRfk0N+7Djr6F/mNaPodXLWSbzZkGp4maLmnS1gIsQHyPUr2
+jwIJTgHMVrhAV1v/J2ZdvOW3C1VFFFROarmi6ENfrMRHAa5GpEslQC0Y+fdkVwCt
+et2+U1hJU4ncx2tr7/nwxD7sUwV8zBtGqAtb28J92/PtEkZJEHKbGtqUl6jhUbZk
+S5yL/MGGQtg+NF4hxbULfg3aanwTwvfAkngPqv90fLJtwy8Nl1/sM22MwqzCQhb1
+LCBRi+f3nawf2+bBzCOlNufYF6Rrk/v2nKyIAwg46p0UCR4z0Dey2CduwL9OyvJX
+iGn7AZQOzFzDPkT1YWvQf71pVcU3dYB1bDGdB1Yf46e9zDLqcgj+7jGcmM/pNnne
+xvGKU5zcb2K96DpbPf6jyOPQ+M2NSliaI6RsGs3ivvI/P1/SY/6gvX7W60zfhjqC
+B3PC63saQICJ0tTGkdZM
+=7zgK
+-----END PGP SIGNATURE-----
 
-The command is `mount [-t fstype] something somewhere'.
+--nextPart1564947.tbJvIHxbhG--
 
-Details found in /etc/fstab may be omitted.
 
-       mount -a [-t|-O] ...     : mount all stuff from /etc/fstab
-
-       mount device             : mount device at the known place
-
-       mount directory          : mount known device here
-
-       mount -t type dev dir    : ordinary mount command
-
-Note that one does not really mount a device, one mounts
-
-a filesystem (of the given type) found on the device.
-
-One can also mount an already visible directory tree elsewhere:
-
-       mount --bind olddir newdir
-
-or move a subtree:
-
-       mount --move olddir newdir
-
-A device can be given by name, say /dev/hda1 or /dev/cdrom,
-
-or by label, using  -L label  or by uuid, using  -U uuid .
-
-Other options: [-nfFrsvw] [-o options] [-p passwdfd].
-
-For many more details, say  man 8 mount .
-
-setup       1  TBROK  :  setup: cannot mount securityfs
-
-setup       0  TINFO  :  CLEAN: removing /tmp/ltp-JJyTa10956/ima
-
-Thanks,
--Garrett
+--===============0676574530375795933==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
@@ -91,7 +133,16 @@ is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
+--===============0676574530375795933==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0676574530375795933==--
+
