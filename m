@@ -1,21 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mxi2X-0003Os-S9
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 14:07:49 +0000
-Received: from e37.co.us.ibm.com ([32.97.110.158])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mxi2S-0005MW-E2
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 14:07:49 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1254228745.3843.10.camel@dyn9002018117.watson.ibm.com>
-References: <1254228745.3843.10.camel@dyn9002018117.watson.ibm.com>
-Date: Tue, 13 Oct 2009 17:43:31 +0530
-Message-Id: <1255436011.8438.33.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] IMA tcb policy
-Reply-To: subrata@linux.vnet.ibm.com
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <liubo-fnst@cn.fujitsu.com>) id 1MxHNl-0007fM-3z
+	for ltp-list@lists.sourceforge.net; Mon, 12 Oct 2009 09:39:57 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MxHNd-0000Ge-3F
+	for ltp-list@lists.sourceforge.net; Mon, 12 Oct 2009 09:39:57 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id 0D5F2170080
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 12 Oct 2009 17:39:40 +0800 (CST)
+Received: from fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id n9C9d6N2019903
+	for <ltp-list@lists.sourceforge.net>; Mon, 12 Oct 2009 17:39:07 +0800
+Received: from localhost.localdomain (unknown [10.167.141.167])
+	by fnst.cn.fujitsu.com (Postfix) with ESMTPA id 9E76C290117
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 12 Oct 2009 17:49:34 +0800 (CST)
+Message-ID: <4AD2F942.1090004@cn.fujitsu.com>
+Date: Mon, 12 Oct 2009 17:39:14 +0800
+From: liubo <liubo-fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] ppoll01: Fix to set the signal handler of SIGINT
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,45 +36,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mimi Zohar <zohar@linux.vnet.ibm.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: ltp-list@lists.sourceforge.net
 
-On Tue, 2009-09-29 at 08:52 -0400, Mimi Zohar wrote: 
-> Dependency section update.
-> 
-> Signed-off-by: Mimi Zohar <zohar@us.ibm.com>
+The test case ppoll01 does not register the signal handler
+of SIGINT, so the program will be terminated by SIGINT
+from child process.
 
-Thanks Mimi.
+Then, the rest cases will not be tested.
 
-Regards--
-Subrata
+This patch fixed the problem.
 
-> 
-> Index: ltp-full-20090831/testcases/kernel/security/integrity/ima/README
-> ===================================================================
-> --- ltp-full-20090831.orig/testcases/kernel/security/integrity/ima/README
-> +++ ltp-full-20090831/testcases/kernel/security/integrity/ima/README
-> @@ -46,11 +46,13 @@ CONFIG_IMA_LSM_RULES=y
-> 
->  Dependency
->  ----------
-> -The testsuite is dependent on the default policy being enabled, which
-> +The testsuite is dependent on the default TCB policy being enabled, which
->  measures all executables, all files mmapped for execute and all files
-> -open for read by root. If the default policy has been replaced, loading
-> -another measurement policy will fail, as the policy may only be replaced
-> -once per boot. Some of the policy dependency tests might also fail as well.
-> +open for read by root.  For kernels 2.6.31 and greater, enable the
-> +trusted computing base(TCB) policy using the ima_tcb=1 boot parameter.
-> +If the TCB policy has been replaced, loading another measurement
-> +policy will fail, as the policy may only be replaced once per boot.
-> +Some of the policy dependency tests might also fail as well.
-> 
->  ima_tpm.sh: test02, verifying the PCR-10 value, requires a hard reboot.
->  [On Ubuntu, before running the ltp tests, disable /etc/init.d/kexec-load
-> 
-> 
-
+Signed-off-by: Liu Bo <liubo-fnst@cn.fujitsu.com>
+---
+diff --git a/testcases/kernel/syscalls/ppoll/ppoll01.c b/testcases/kernel/syscalls/ppoll/ppoll01.c
+index f76d61f..585297c 100644
+--- a/testcases/kernel/syscalls/ppoll/ppoll01.c
++++ b/testcases/kernel/syscalls/ppoll/ppoll01.c
+@@ -124,9 +124,17 @@ extern void cleanup() {
+ /*              On success - returns 0.                                       */
+ /*                                                                            */
+ /******************************************************************************/
++/*
++ * sighandler()
++ */
++void sighandler(int sig)
++{
++       return;
++}
+ void setup() {
+         /* Capture signals if any */
+-        /* Create temporary directories */
++       signal(SIGINT, sighandler);
++       /* Create temporary directories */
+         TEST_PAUSE;
+         tst_tmpdir();
+ }
+@@ -404,16 +412,6 @@ TEST_END:
+ }
+ 
+ 
+-/*
+- * sighandler()
+- */
+-void sighandler(int sig)
+-{
+-        if (sig == SIGINT)
+-                return;
+-        // NOTREACHED
+-        return;
+-}
+ 
+ 
+ /*
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
