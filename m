@@ -1,38 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MyATZ-0001Zs-TD
-	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 20:29:37 +0000
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MyATT-0007tS-R2
-	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 20:29:37 +0000
-Received: from d01relay07.pok.ibm.com (d01relay07.pok.ibm.com [9.56.227.147])
-	by e1.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9EKS67G006389
-	for <ltp-list@lists.sourceforge.net>; Wed, 14 Oct 2009 16:28:06 -0400
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d01relay07.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n9EKTPc92384100
-	for <ltp-list@lists.sourceforge.net>; Wed, 14 Oct 2009 16:29:25 -0400
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n9EKTEtf001864
-	for <ltp-list@lists.sourceforge.net>; Wed, 14 Oct 2009 14:29:16 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <8368651DACC1964480F951191B94A0780153D3FC@svexch01.mvista.com>
-References: <8368651DACC1964480F951191B94A0780142442B@svexch01.mvista.com>
-	<200910050018.12711.jpalecek@web.de>
-	<8368651DACC1964480F951191B94A0780153CC19@svexch01.mvista.com>
-	<1255445017.8438.66.camel@subratamodak.linux.ibm.com>
-	<364299f40910131220x162b5e02u65bae87e349f7dda@mail.gmail.com>
-	<364299f40910131221h7f9acf01te65be5b462281463@mail.gmail.com>
-	<8368651DACC1964480F951191B94A0780153D3FC@svexch01.mvista.com>
-Date: Thu, 15 Oct 2009 01:58:57 +0530
-Message-Id: <1255552138.4892.13.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH][openfile] file descriptors not cleaned up
-Reply-To: subrata@linux.vnet.ibm.com
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MxWsQ-0003Lx-Lg
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 02:12:38 +0000
+Received: from mail-px0-f201.google.com ([209.85.216.201])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MxWsK-0000NR-Vz
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 02:12:38 +0000
+Received: by pxi39 with SMTP id 39so9467253pxi.10
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 12 Oct 2009 19:12:27 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <364299f40910121908y47554fabgbda2f5411c720f92@mail.gmail.com>
+References: <364299f40910121908y47554fabgbda2f5411c720f92@mail.gmail.com>
+Date: Mon, 12 Oct 2009 19:12:26 -0700
+Message-ID: <364299f40910121912j5f36d912idab5477daec48e65@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Fix genhtml.pl (was "Re: HTML not reporting
+	number of Failed test cases")
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,101 +28,184 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Henry Yei <hyei@mvista.com>
-Cc: jpalecek@web.de, LTP Mailing List <ltp-list@lists.sourceforge.net>
+To: rohit verma <rohit.170309@gmail.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, naresh kamboju <naresh.kernel@gmail.com>
 
-Thanks Henry.
+On Mon, Oct 12, 2009 at 7:08 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Fri, Oct 9, 2009 at 3:00 AM, rohit verma <rohit.170309@gmail.com> wrot=
+e:
+>> Hi,
+>>
+>> Thanks Naresh for pointing out the issue in the HTML report. I had
+>> also noticed the issue in my test reports.
+>>
+>> However, I wish to confirm that the issue being mentioned is not a
+>> side-effect of the fix that I had posted for the pan driver.
+>> If you compare the HTML reports from the previous releases and the
+>> recent one, you can notice all the tags - FAIL, WARN, BROK, PASS,CONF
+>> & RETR are now prefixed by ' T ' for reasons not known to me
+>> (resulting in - TFAIL, TPASS etc).
+>>
+>> Now, if you check ltp-full-20090831/tools/genhtml.pl file you can see
+>> all that old tags (FAIL, WARN, etc) are used instead of the new
+>> ones(tags). As a result the numbers are not updated in the summary in
+>> HTML report. Also FAIL/WARN/BROK test-cases are not uniquely colored
+>> like in the old versions of LTP.
+>>
+>> Please check the same.
+>> If possible I will generate a patch and submit the same.
+>>
+>> On Wed, Oct 7, 2009 at 4:43 PM, naresh kamboju <naresh.kernel@gmail.com>=
+ wrote:
+>>> Hi,
+>>>
+>>> I think you have noticed difference in the HTML file generation.
+>>> HTML file is not reporting number of failure test cases
+>>> in summary and failed column with different color.
+>>> Some changes are made by Rohit recently.
+>>>
+>>> Rohit,
+>>> Please investigate the changes made to HTML file generator.
+>>>
+>>> You can refer the results logs share in LTP release in the below link f=
+or
+>>> X86
+>>> (ltp-full-20090930_results_kernel-2.6.31_architecture-i386.tgz)
+>>> Ia64
+>>> (ltp-full-20090930_results_kernel-2.6.23.13_architecture-ia64.tgz)
+>
+> Try this.
+>
+> Fix genhtml.pl so that it functions with the new T-prefixing in the
+> lib/tst_res.c result codes.
+>
+> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+>
+> Index: contrib/ltp/src/tools/genhtml.pl
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- src/tools/.CC/cache/genhtml.pl@@/main/ltp-upgrade/1 2009-10-12
+> 19:08:28.000000000 -0700
+> +++ src/tools/genhtml.pl =A0 =A0 =A0 =A02009-10-12 19:08:18.000000000 -07=
+00
+> @@ -179,31 +179,31 @@
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if ( $flag2 =3D=3D 1 ) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0$row_line =3D $row=
+_line . "$line \n";
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if ($line =3D~ /\ F=
+AIL\ / ) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if ($line =3D~ /\ T=
+FAIL\ / ) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0$detected_=
+fail =3D 1;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if ( $fail=
+ed_test_counter_flag =3D=3D 0 ) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0$f=
+ailed_test_counter++;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0$f=
+ailed_test_counter_flag=3D1;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 } elsif ($line =3D~=
+ /\ BROK\ / ) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 } elsif ($line =3D~=
+ /\ TBROK\ / ) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0$detected_=
+brok =3D 1;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if ( $brok=
+_test_counter_flag =3D=3D 0 ) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0$b=
+rok_test_counter++;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0$b=
+rok_test_counter_flag=3D1;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 } elsif ($line =3D~=
+ /\ WARN\ / ) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 } elsif ($line =3D~=
+ /\ TWARN\ / ) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0$detected_=
+warn =3D 1;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if ( $warn=
+_test_counter_flag =3D=3D 0 ) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0$w=
+arn_test_counter++;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0$w=
+arn_test_counter_flag=3D1;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 } elsif ($line =3D~=
+ /\ RETR\ / ) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 } elsif ($line =3D~=
+ /\ TRETR\ / ) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0$detected_=
+retr =3D 1;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if ( $retr=
+_test_counter_flag =3D=3D 0 ) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0$r=
+etr_test_counter++;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0$r=
+etr_test_counter_flag=3D1;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 } elsif ($line =3D~=
+ /\ CONF\ / ) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 } elsif ($line =3D~=
+ /\ TCONF\ / ) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0$detected_=
+conf =3D 1;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if ( $conf=
+_test_counter_flag =3D=3D 0 ) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0$c=
+onf_test_counter++;
+> @@ -251,3 +251,5 @@
+> =A0print "<tr><td><strong>Hostname</strong> =A0</td> <td><strong>";
+> =A0$hostname=3Dsystem("uname -n"); =A0 =A0 =A0 =A0 =A0 =A0 chop($hostname=
+);
+> =A0print " $hostname </strong></td></tr></tbody></table></div></body></ht=
+ml>\n";
+> +
+> +# vim: syntax=3Dperl
 
-Regards--
-Subrata
+    This was the checkin that changed the output format, BTW:
+Cheers,
+-Garrett
 
-On Tue, 2009-10-13 at 19:25 -0700, Henry Yei wrote: 
-> All,
-> 
-> Here is the openfile patch without the Makefile changes as they are not needed with the new Makefile changes.
-> I regenerated and tested the patch with the latest version of the ltp from CVS.
-> 
-> I had trouble compiling LTP without autoconf 2.61 even after following instructions from the README.mk-users file to try to build without autoconf. Most of our test hosts are running autoconf 2.59. Does anyone have updated instructions?
-> 
-> 
-> -----Original Message-----
-> From: Garrett Cooper [mailto:yanegomi@gmail.com] 
-> Sent: Tuesday, October 13, 2009 12:22 PM
-> To: subrata@linux.vnet.ibm.com
-> Cc: Henry Yei; jpalecek@web.de; LTP Mailing List
-> Subject: Re: [LTP] [PATCH][openfile] file descriptors not cleaned up
-> 
-> On Tue, Oct 13, 2009 at 12:20 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> > On Tue, Oct 13, 2009 at 7:43 AM, Subrata Modak
-> > <subrata@linux.vnet.ibm.com> wrote:
-> >> On Mon, 2009-10-05 at 14:33 -0700, Henry Yei wrote:
-> >>> On Wednesday 04, October 2009 04:06:46 Jiri Palecek wrote:
-> >>>
-> >>> Hello,
-> >>>
-> >>> On Wednesday 30 September 2009 04:06:46 Henry Yei wrote:
-> >>> > This patch for openfile contains the following changes:
-> >>> > - test output to use tst_resm functions
-> >>> > - sets ups and cleans up tmp dir properly
-> >>> > - closes all opened file descriptors before thread exit(fixes nfs issues on removing tmp dir)
-> >>> >
-> >>> > Signed-off-by: Henry Yei <hyei@mvista.com>
-> >>> >
-> >>> >
-> >>> > This test opens multiple file descriptors to the same file. Perhaps the author meant to open file handles for separate files?
-> >>>
-> >>> This is suspicious, for me too. But maybe there is some logic behind opening the same file many times.
-> >>>
-> >>> I just have a small remark about your patch: Shouldn't you call close_files() here, too? (With a partially full fd_list array handled, of course)
-> >>>
-> >>> +void * threads(void* thread_id_) {
-> >>> +     int thread_id = (uintptr_t) thread_id_;
-> >>> +     char errmsg[80];
-> >>> +     FILE *fd_list[MAXFILES];
-> >>> +     int i;
-> >>> +
-> >>> +     /* Open files */
-> >>> +     for (i = 0; i < numfiles; i++) {
-> >>> +             if (debug)
-> >>> +                     printf("Thread  %d : Opening file number %d \n", thread_id, i);
-> >>> +             if ((fd_list[i] = fopen(filename, "rw")) == NULL) {
-> >>> +                     sprintf(errmsg, "FAIL - Couldn't open file #%d", i);
-> >>> +                     perror(errmsg);
-> >>>
-> >>>
-> >>>
-> >>> Jiri,
-> >>>
-> >>> Thanks for reviewing the patch. Yes, that was an omission on my part. I have attached an updated patch. Let me know if there are any more comments.
-> >>>
-> >>
-> >> Henry,
-> >>
-> >> This patch is ineffective on the present Makefile(s). Please rebase them
-> >> over latest CVS and resend:
-> >>
-> >> patching file testcases/kernel/fs/openfile/Makefile
-> >> Hunk #1 FAILED at 1.
-> >> 1 out of 1 hunk FAILED -- saving rejects to file
-> >> testcases/kernel/fs/openfile/Makefile.rej
-> >> patching file testcases/kernel/fs/openfile/openfile.c
-> >
-> >    I'll gladly help if help is needed. Feel free to ping me and we
-> > can setup a rendezvous on IRC or something.
-> 
->     I looked at the diff again and if you just omit the Makefile
-> change then the rest should go through.
-> HTH,
-> -Garrett
+---------------------------------------------------------------------------=
+-------------------------------
 
+Update of /cvsroot/ltp/ltp/lib
+In directory ddv4jf1.ch3.sourceforge.com:/tmp/cvs-serv24617/lib
 
-------------------------------------------------------------------------------
+Modified Files:
+       tst_res.c
+Log Message:
+extend the test result to a bit field so we can extend the output further
+
+Index: tst_res.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: /cvsroot/ltp/ltp/lib/tst_res.c,v
+retrieving revision 1.8
+retrieving revision 1.9
+diff -C2 -d -r1.8 -r1.9
+*** tst_res.c   9 Jun 2009 16:01:20 -0000       1.8
+--- tst_res.c   20 Jul 2009 02:42:32 -0000      1.9
+***************
+*** 116,119 ****
+--- 116,120 ----
+ #include <unistd.h>
+ #include "test.h"
++ #include "usctest.h"
+
+---------------------------------------------------------------------------=
+---
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
+developing skills, take BlackBerry mobile applications to market and stay =
+
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
 _______________________________________________
