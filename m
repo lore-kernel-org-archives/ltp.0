@@ -2,33 +2,25 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MyRjf-0003hZ-6m
-	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 14:55:23 +0000
-Received: from e37.co.us.ibm.com ([32.97.110.158])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MyRje-0000cB-AW
-	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 14:55:23 +0000
-Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
-	[9.17.195.226])
-	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9FEsAuq006761
-	for <ltp-list@lists.sourceforge.net>; Thu, 15 Oct 2009 08:54:10 -0600
-Received: from d03av05.boulder.ibm.com (d03av05.boulder.ibm.com [9.17.195.85])
-	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP
-	id n9FEsxf2145518
-	for <ltp-list@lists.sourceforge.net>; Thu, 15 Oct 2009 08:55:00 -0600
-Received: from d03av05.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av05.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id n9FEsxuH026514
-	for <ltp-list@lists.sourceforge.net>; Thu, 15 Oct 2009 08:54:59 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <364299f40910121908y47554fabgbda2f5411c720f92@mail.gmail.com>
-References: <364299f40910121908y47554fabgbda2f5411c720f92@mail.gmail.com>
-Date: Thu, 15 Oct 2009 20:21:22 +0530
-Message-Id: <1255618282.5869.19.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix genhtml.pl (was "Re: HTML not
-	reporting	number of Failed test cases")
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <yanegomi@gmail.com>) id 1MxmvR-0002UL-O3
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 19:20:49 +0000
+Received: from mail-pz0-f188.google.com ([209.85.222.188])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MxmvF-0002ti-0N
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 19:20:44 +0000
+Received: by pzk26 with SMTP id 26so9269655pzk.4
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 13 Oct 2009 12:20:31 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1255445017.8438.66.camel@subratamodak.linux.ibm.com>
+References: <8368651DACC1964480F951191B94A0780142442B@svexch01.mvista.com>
+	<200910050018.12711.jpalecek@web.de>
+	<8368651DACC1964480F951191B94A0780153CC19@svexch01.mvista.com>
+	<1255445017.8438.66.camel@subratamodak.linux.ibm.com>
+Date: Tue, 13 Oct 2009 12:20:31 -0700
+Message-ID: <364299f40910131220x162b5e02u65bae87e349f7dda@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH][openfile] file descriptors not cleaned up
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,135 +30,85 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: rohit verma <rohit.170309@gmail.com>, naresh kamboju <naresh.kernel@gmail.com>, ltp-list <ltp-list@lists.sourceforge.net>
+To: subrata@linux.vnet.ibm.com
+Cc: jpalecek@web.de, LTP Mailing List <ltp-list@lists.sourceforge.net>
 
-On Mon, 2009-10-12 at 19:08 -0700, Garrett Cooper wrote: 
-> On Fri, Oct 9, 2009 at 3:00 AM, rohit verma <rohit.170309@gmail.com> wrote:
-> > Hi,
-> >
-> > Thanks Naresh for pointing out the issue in the HTML report. I had
-> > also noticed the issue in my test reports.
-> >
-> > However, I wish to confirm that the issue being mentioned is not a
-> > side-effect of the fix that I had posted for the pan driver.
-> > If you compare the HTML reports from the previous releases and the
-> > recent one, you can notice all the tags - FAIL, WARN, BROK, PASS,CONF
-> > & RETR are now prefixed by ' T ' for reasons not known to me
-> > (resulting in - TFAIL, TPASS etc).
-> >
-> > Now, if you check ltp-full-20090831/tools/genhtml.pl file you can see
-> > all that old tags (FAIL, WARN, etc) are used instead of the new
-> > ones(tags). As a result the numbers are not updated in the summary in
-> > HTML report. Also FAIL/WARN/BROK test-cases are not uniquely colored
-> > like in the old versions of LTP.
-> >
-> > Please check the same.
-> > If possible I will generate a patch and submit the same.
-> >
-> > On Wed, Oct 7, 2009 at 4:43 PM, naresh kamboju <naresh.kernel@gmail.com> wrote:
-> >> Hi,
-> >>
-> >> I think you have noticed difference in the HTML file generation.
-> >> HTML file is not reporting number of failure test cases
-> >> in summary and failed column with different color.
-> >> Some changes are made by Rohit recently.
-> >>
-> >> Rohit,
-> >> Please investigate the changes made to HTML file generator.
-> >>
-> >> You can refer the results logs share in LTP release in the below link for
-> >> X86
-> >> (ltp-full-20090930_results_kernel-2.6.31_architecture-i386.tgz)
-> >> Ia64
-> >> (ltp-full-20090930_results_kernel-2.6.23.13_architecture-ia64.tgz)
-> 
-> Try this.
-> 
-> Fix genhtml.pl so that it functions with the new T-prefixing in the
-> lib/tst_res.c result codes.
-> 
-> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+On Tue, Oct 13, 2009 at 7:43 AM, Subrata Modak
+<subrata@linux.vnet.ibm.com> wrote:
+> On Mon, 2009-10-05 at 14:33 -0700, Henry Yei wrote:
+>> On Wednesday 04, October 2009 04:06:46 Jiri Palecek wrote:
+>>
+>> Hello,
+>>
+>> On Wednesday 30 September 2009 04:06:46 Henry Yei wrote:
+>> > This patch for openfile contains the following changes:
+>> > - test output to use tst_resm functions
+>> > - sets ups and cleans up tmp dir properly
+>> > - closes all opened file descriptors before thread exit(fixes nfs issu=
+es on removing tmp dir)
+>> >
+>> > Signed-off-by: Henry Yei <hyei@mvista.com>
+>> >
+>> >
+>> > This test opens multiple file descriptors to the same file. Perhaps th=
+e author meant to open file handles for separate files?
+>>
+>> This is suspicious, for me too. But maybe there is some logic behind ope=
+ning the same file many times.
+>>
+>> I just have a small remark about your patch: Shouldn't you call close_fi=
+les() here, too? (With a partially full fd_list array handled, of course)
+>>
+>> +void * threads(void* thread_id_) {
+>> + =A0 =A0 int thread_id =3D (uintptr_t) thread_id_;
+>> + =A0 =A0 char errmsg[80];
+>> + =A0 =A0 FILE *fd_list[MAXFILES];
+>> + =A0 =A0 int i;
+>> +
+>> + =A0 =A0 /* Open files */
+>> + =A0 =A0 for (i =3D 0; i < numfiles; i++) {
+>> + =A0 =A0 =A0 =A0 =A0 =A0 if (debug)
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 printf("Thread =A0%d : Opening=
+ file number %d \n", thread_id, i);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 if ((fd_list[i] =3D fopen(filename, "rw")) =3D=
+=3D NULL) {
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sprintf(errmsg, "FAIL - Couldn=
+'t open file #%d", i);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 perror(errmsg);
+>>
+>>
+>>
+>> Jiri,
+>>
+>> Thanks for reviewing the patch. Yes, that was an omission on my part. I =
+have attached an updated patch. Let me know if there are any more comments.
+>>
+>
+> Henry,
+>
+> This patch is ineffective on the present Makefile(s). Please rebase them
+> over latest CVS and resend:
+>
+> patching file testcases/kernel/fs/openfile/Makefile
+> Hunk #1 FAILED at 1.
+> 1 out of 1 hunk FAILED -- saving rejects to file
+> testcases/kernel/fs/openfile/Makefile.rej
+> patching file testcases/kernel/fs/openfile/openfile.c
 
-Directly checkin this as well:
+    I'll gladly help if help is needed. Feel free to ping me and we
+can setup a rendezvous on IRC or something.
+Thanks!
+-Garrett
 
-patching file tools/genhtml.pl
-Hunk #1 FAILED at 179.
-Hunk #2 succeeded at 251 with fuzz 2.
-1 out of 2 hunks FAILED -- saving rejects to file tools/genhtml.pl.rej
-
-Regards--
-Subrata
-
-> 
-> Index: contrib/ltp/src/tools/genhtml.pl
-> ===================================================================
-> --- src/tools/.CC/cache/genhtml.pl@@/main/ltp-upgrade/1 2009-10-12
-> 19:08:28.000000000 -0700
-> +++ src/tools/genhtml.pl        2009-10-12 19:08:18.000000000 -0700
-> @@ -179,31 +179,31 @@
->                          }
->                          if ( $flag2 == 1 ) {
->                             $row_line = $row_line . "$line \n";
-> -                           if ($line =~ /\ FAIL\ / ) {
-> +                           if ($line =~ /\ TFAIL\ / ) {
->                                 $detected_fail = 1;
->                                 if ( $failed_test_counter_flag == 0 ) {
->                                     $failed_test_counter++;
->                                     $failed_test_counter_flag=1;
->                                 }
-> -                           } elsif ($line =~ /\ BROK\ / ) {
-> +                           } elsif ($line =~ /\ TBROK\ / ) {
->                                 $detected_brok = 1;
->                                 if ( $brok_test_counter_flag == 0 ) {
->                                     $brok_test_counter++;
->                                     $brok_test_counter_flag=1;
->                                 }
-> -                           } elsif ($line =~ /\ WARN\ / ) {
-> +                           } elsif ($line =~ /\ TWARN\ / ) {
->                                 $detected_warn = 1;
->                                 if ( $warn_test_counter_flag == 0 ) {
->                                     $warn_test_counter++;
->                                     $warn_test_counter_flag=1;
->                                 }
-> -                           } elsif ($line =~ /\ RETR\ / ) {
-> +                           } elsif ($line =~ /\ TRETR\ / ) {
->                                 $detected_retr = 1;
->                                 if ( $retr_test_counter_flag == 0 ) {
->                                     $retr_test_counter++;
->                                     $retr_test_counter_flag=1;
->                                 }
-> -                           } elsif ($line =~ /\ CONF\ / ) {
-> +                           } elsif ($line =~ /\ TCONF\ / ) {
->                                 $detected_conf = 1;
->                                 if ( $conf_test_counter_flag == 0 ) {
->                                     $conf_test_counter++;
-> @@ -251,3 +251,5 @@
->  print "<tr><td><strong>Hostname</strong>  </td> <td><strong>";
->  $hostname=system("uname -n");             chop($hostname);
->  print " $hostname </strong></td></tr></tbody></table></div></body></html>\n";
-> +
-> +# vim: syntax=perl
-> 
-> ------------------------------------------------------------------------------
-> Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-> is the only developer event you need to attend this year. Jumpstart your
-> developing skills, take BlackBerry mobile applications to market and stay 
-> ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-> http://p.sf.net/sfu/devconference
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
+developing skills, take BlackBerry mobile applications to market and stay =
+
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
 _______________________________________________
