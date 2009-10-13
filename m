@@ -1,21 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1My8Fo-0000Ab-7y
-	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 18:07:16 +0000
-Received: from mail-pz0-f188.google.com ([209.85.222.188])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1My8Fc-0004vM-Tm
-	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 18:07:11 +0000
-Received: by pzk26 with SMTP id 26so35416pzk.4
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 14 Oct 2009 11:06:59 -0700 (PDT)
-MIME-Version: 1.0
-Date: Wed, 14 Oct 2009 11:06:59 -0700
-Message-ID: <364299f40910141106s66c7c2bejd08ee702fb895e77@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] [issue 7] rpc01 arguments don't match up with rpc1's usage
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MxhhN-0003JC-Da
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 13:45:57 +0000
+Received: from e9.ny.us.ibm.com ([32.97.182.139])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MxhhG-0005Cb-Py
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 13:45:57 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e9.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9DCAAvf016785
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:10:10 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n9DCDots233762
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:13:50 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n9DCAOke031782
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:10:24 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <200910011340.32046.chandru@in.ibm.com>
+References: <200910011340.32046.chandru@in.ibm.com>
+Date: Tue, 13 Oct 2009 17:43:37 +0530
+Message-Id: <1255436017.8438.36.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH V2] ppoll01: add signal() syscall to
+	register	the	signal handler
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,26 +40,75 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Chandru <chandru@in.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, vapier@gentoo.org
 
-<<<test_output>>>
-/tests/ltp/testcases/bin/rpc01: line 61: rsh: command not found
-/tests/ltp/testcases/bin/rpc01: line 62: rsh: command not found
-The rpc_server PID is
-Starting rpc01
-server o unknown
-Usage: /tests/ltp/testcases/bin/rpc1 -s server -f file [-p
-program-number] [-v version]
-rpc01: doing /tests/ltp/testcases/bin/rpc01.
-Test Failed: Fail on using file.1
-<<<execution_status>>>
-initiation_status="ok"
-duration=1 termination_type=exited termination_id=1 corefile=no
-cutime=2 cstime=3
-<<<test_end>>>
+On Thu, 2009-10-01 at 13:40 +0530, Chandru wrote: 
+> The ppoll01 testcase has a signal handler in it but this signal handler is not registered with the kernel through the signal() syscall. The testcase fails when it sends a SIGINT to itself as part of one of the case of the test run.
+> The following patch
+> 1. Adds a signal() syscall to register the signal handler
+> 2. Corrects the expected 'revents' for the case where ppoll() is called on a file which is only opened in read/write mode, i.e case00.
+> 
+> Signed-off-by: Chandru S <chandru@linux.vnet.ibm.com>
 
-Thanks,
--Garrett
+Hi Chandru,
+
+Can you please resend this with a diff from the Latest CVS snapshot ?
+
+patching file testcases/kernel/syscalls/ppoll/ppoll01.c
+Hunk #3 FAILED at 194.
+1 out of 3 hunks FAILED -- saving rejects to file
+testcases/kernel/syscalls/ppoll/ppoll01.c.rej
+
+Regards--
+Subrata
+
+> ---
+>  testcases/kernel/syscalls/ppoll/ppoll01.c |    7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> --- testcases/kernel/syscalls/ppoll/ppoll01.c.orig	2009-09-29 21:28:55.510487735 +0530
+> +++ testcases/kernel/syscalls/ppoll/ppoll01.c	2009-10-01 18:27:30.452236128 +0530
+> @@ -79,6 +79,8 @@ char *TCID = "ppoll01";  /* Test program
+>  int  testno;
+>  int  TST_TOTAL = 1;                   /* total number of tests in this file.   */
+> 
+> +void sighandler(int sig);       /* signals handler function for the test */
+> +
+>  /* Extern Global Functions */
+>  /******************************************************************************/
+>  /*                                                                            */
+> @@ -125,7 +127,8 @@ extern void cleanup() {
+>  /*                                                                            */
+>  /******************************************************************************/
+>  void setup() {
+> -        /* Capture signals if any */
+> +        /* Capture signals */
+> +	signal(SIGINT, &sighandler);
+>          /* Create temporary directories */
+>          TEST_PAUSE;
+>          tst_tmpdir();
+> @@ -191,7 +194,7 @@ struct test_case {
+>  static struct test_case tcase[] = {
+>  	{ // case00
+>                  .ttype          = NORMAL,
+> -                .expect_revents = POLLOUT,
+> +                .expect_revents = POLLOUT | POLLIN,
+>                  .ret            = 0,
+>                  .err            = 0,
+>          },
+> 
+> ------------------------------------------------------------------------------
+> Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+> is the only developer event you need to attend this year. Jumpstart your
+> developing skills, take BlackBerry mobile applications to market and stay 
+> ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
+> http://p.sf.net/sfu/devconf
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
