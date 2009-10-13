@@ -1,33 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1N3Zn0-0001ol-Td
-	for ltp-list@lists.sourceforge.net; Thu, 29 Oct 2009 18:32:02 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N3Zmw-0000Yy-1v
-	for ltp-list@lists.sourceforge.net; Thu, 29 Oct 2009 18:32:02 +0000
-Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
-	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9TINhHV022700
-	for <ltp-list@lists.sourceforge.net>; Thu, 29 Oct 2009 14:23:43 -0400
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n9TIVqU6099786
-	for <ltp-list@lists.sourceforge.net>; Thu, 29 Oct 2009 14:31:52 -0400
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	n9TIVqFJ031477
-	for <ltp-list@lists.sourceforge.net>; Thu, 29 Oct 2009 14:31:52 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20091028093757.19484.89637.sendpatchset@localhost.localdomain>
-References: <20091028093749.19484.92103.sendpatchset@localhost.localdomain>
-	<20091028093757.19484.89637.sendpatchset@localhost.localdomain>
-Date: Fri, 30 Oct 2009 00:01:47 +0530
-Message-Id: <1256841108.5210.23.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [Patch 2/2] to delete hardcoded cpu freq governers
-Reply-To: subrata@linux.vnet.ibm.com
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Mxa81-00036m-8h
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 05:40:57 +0000
+Received: from mail-px0-f201.google.com ([209.85.216.201])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Mxa7u-0007fT-Lj
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 05:40:57 +0000
+Received: by pxi39 with SMTP id 39so9596096pxi.10
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 12 Oct 2009 22:40:44 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <200910130130.30228.vapier@gentoo.org>
+References: <364299f40910122222q5117ecf0i854db292154132c7@mail.gmail.com>
+	<200910130130.30228.vapier@gentoo.org>
+Date: Mon, 12 Oct 2009 22:40:44 -0700
+Message-ID: <364299f40910122240p586a60aarc796112b68c519e2@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] convert linktest.pl to linktest.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,61 +28,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+To: Mike Frysinger <vapier@gentoo.org>
 Cc: ltp-list@lists.sourceforge.net
 
-On Wed, 2009-10-28 at 15:07 +0530, Poornima Nayak wrote: 
-> Patch to remove hard coded cpu governers
-> 
-> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+On Mon, Oct 12, 2009 at 10:30 PM, Mike Frysinger <vapier@gentoo.org> wrote:
+> On Tuesday 13 October 2009 01:22:02 Garrett Cooper wrote:
+>> +do_link() {
+>> + =A0 =A0 =A0 pfix=3D$1; shift
+>> + =A0 =A0 =A0 ln_opts=3D$1; shift
+>> + =A0 =A0 =A0 limit=3D$1; shift
+>
+> any point in shifting ? =A0be simpler to just use $1 $2 $3
 
-Thanks. Applied.
+No point really -- I'll change that.
 
-Regards--
-Subrata
+>> + =A0 =A0 =A0 cd ${pfix}link; \
+>> + =A0 =A0 =A0 while [ $i -lt $limit ]; do \
+>
+> why the line continuation ?
 
-> 
-> diff -uprN ltp/testcases/kernel/power_management/pwkm_load_unload.sh ltp_fixed/testcases/kernel/power_management/pwkm_load_unload.sh
-> --- ltp/testcases/kernel/power_management/pwkm_load_unload.sh	2009-03-25 02:19:22.000000000 -0400
-> +++ ltp_fixed/testcases/kernel/power_management/pwkm_load_unload.sh	2009-10-28 00:54:39.000000000 -0400
-> @@ -3,7 +3,7 @@
->  #Loading modules
->  RC=0
->  loaded_governor=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
-> -for module in cpufreq_conservative cpufreq_powersave cpufreq_userspace
-> +for module in `modprobe -l | grep cpufreq_ | cut -f8 -d"/" | cut -f1 -d"."`
->  do
->  	#echo -n "Loading $module ... "
->      if [ $module != "cpufreq_$loaded_governor" ];
-> @@ -15,7 +15,7 @@ do
->  		fi
->  	fi
->  done
-> -for module in cpufreq_conservative cpufreq_powersave cpufreq_userspace
-> +for module in `modprobe -l | grep cpufreq_ | cut -f8 -d"/" | cut -f1 -d"."`
->  do
->  	#echo -n "Unloading $module ... "
->      if [ $module != "cpufreq_$loaded_governor" ];
-> 
-> ------------------------------------------------------------------------------
-> Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-> is the only developer event you need to attend this year. Jumpstart your
-> developing skills, take BlackBerry mobile applications to market and stay 
-> ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-> http://p.sf.net/sfu/devconference
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+I deleted that stupidity.
 
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (( lerrors++ ))
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 (( i++ ))
+>> + =A0 =A0 =A0 (( TST_COUNT++ ))
+>
+> i think you want:
+> =A0 =A0 =A0 =A0: $(( TST_COUNT +=3D 1 ))
 
-------------------------------------------------------------------------------
+Ok, dumb question again -- $(( TST_COUNT +=3D 1 )) is the POSIX
+compliant method? (( TST_COUNT++ )) works too... (I keep on forgetting
+what's POSIX compliant on this item...).
+
+I also fixed a variable not being defined too, which resulted in a cosmetic=
+ bug:
+
+        pfix=3D$1; shift
+        ln_opts=3D$1; shift
+        limit=3D$1; shift
++       prefix_msg=3D$1; shift
+
+Thanks!
+-Garrett
+
+---------------------------------------------------------------------------=
+---
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
+developing skills, take BlackBerry mobile applications to market and stay =
+
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
 _______________________________________________
