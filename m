@@ -1,34 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chandru@in.ibm.com>) id 1MtG5A-0001sX-UT
-	for ltp-list@lists.sourceforge.net; Thu, 01 Oct 2009 07:28:08 +0000
-Received: from e23smtp09.au.ibm.com ([202.81.31.142])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MtG54-0001Cd-B9
-	for ltp-list@lists.sourceforge.net; Thu, 01 Oct 2009 07:28:08 +0000
-Received: from d23relay05.au.ibm.com (d23relay05.au.ibm.com [202.81.31.247])
-	by e23smtp09.au.ibm.com (8.14.3/8.13.1) with ESMTP id n917Iitl012706
-	for <ltp-list@lists.sourceforge.net>; Thu, 1 Oct 2009 17:18:44 +1000
-Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
-	by d23relay05.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n917PV3r381078
-	for <ltp-list@lists.sourceforge.net>; Thu, 1 Oct 2009 17:25:31 +1000
-Received: from d23av02.au.ibm.com (loopback [127.0.0.1])
-	by d23av02.au.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	n917RpKe008513
-	for <ltp-list@lists.sourceforge.net>; Thu, 1 Oct 2009 17:27:51 +1000
-From: Chandru <chandru@in.ibm.com>
-Date: Thu, 1 Oct 2009 12:57:46 +0530
-References: <200909241229.32866.chandru@in.ibm.com>
-	<200909260725.29279.vapier@gentoo.org>
-In-Reply-To: <200909260725.29279.vapier@gentoo.org>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <liubo-fnst@cn.fujitsu.com>) id 1Mxdsc-0007qk-Tc
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 09:41:18 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MxdsV-0003iM-S8
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 09:41:18 +0000
+Message-ID: <4AD44B1C.4000103@cn.fujitsu.com>
+Date: Tue, 13 Oct 2009 17:40:44 +0800
+From: liubo <liubo-fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200910011257.47226.chandru@in.ibm.com>
-Subject: Re: [LTP] [PATCH] ppoll01: add signal() syscall to register the
-	signal handler
+References: <4AD2F942.1090004@cn.fujitsu.com>	<364299f40910121128w48dbef1bpb8ab9fe4b48029ec@mail.gmail.com>
+	<200910121436.26663.vapier@gentoo.org>
+In-Reply-To: <200910121436.26663.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] ppoll01: Fix to set the signal handler of SIGINT
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,103 +25,258 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8477789560491169947=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: Mike Frysinger <vapier@gentoo.org>
 
-On Saturday 26 September 2009 16:55:28 Mike Frysinger wrote:
-> On Thursday 24 September 2009 02:59:32 Chandru wrote:
-> >  3. Takes away
-> >  printing the type of error ( i.e strerror(errno) ) since it only prints
-> >  the last error seen and does not report the failures seen in the cases
-> >  before the last failed one. The reporting of NG or OK shoudl take care of
-> >  letting the user know the cases that have passed and cases that have
-> >  failed.
-> >
-> > -                 	   	tst_resm(TFAIL, "%s failed - errno = %d : %s", TCID,
-> >  TEST_ERRNO, strerror(TEST_ERRNO));
-> >  +                 	   	tst_resm(TFAIL, "%s failed", TCID);
-> 
-> why dont you *fix* the issues you see with this output instead of making the 
-> output even more useless ?  also, this should be converted to TFAIL|TTERRNO.
+This is a multi-part message in MIME format.
+--===============8477789560491169947==
+Content-Type: multipart/alternative;
+	boundary="------------080702090003080208030706"
+
+This is a multi-part message in MIME format.
+--------------080702090003080208030706
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+On 12/24/-28158 03:59 AM, Mike Frysinger wrote:
+> On Monday 12 October 2009 14:28:02 Garrett Cooper wrote:
+>   
+>> On Mon, Oct 12, 2009 at 2:39 AM, liubo <liubo-fnst@cn.fujitsu.com> wrote:
+>>     
+>>> The test case ppoll01 does not register the signal handler
+>>> of SIGINT, so the program will be terminated by SIGINT
+>>> from child process.
+>>>
+>>> Then, the rest cases will not be tested.
+>>>
+>>> This patch fixed the problem.
+>>>
+>>> --- a/testcases/kernel/syscalls/ppoll/ppoll01.c
+>>> +++ b/testcases/kernel/syscalls/ppoll/ppoll01.c
+>>> @@ -124,9 +124,17 @@ extern void cleanup() {
+>>> +/*
+>>> + * sighandler()
+>>> + */
+>>> +void sighandler(int sig)
+>>> +{
+>>> +       return;
+>>> +}
+>>>  void setup() {
+>>>         /* Capture signals if any */
+>>> -        /* Create temporary directories */
+>>> +       signal(SIGINT, sighandler);
+>>> +       /* Create temporary directories */
+>>>         TEST_PAUSE;
+>>>         tst_tmpdir();
+>>>  }
+>>> @@ -404,16 +412,6 @@ TEST_END:
+>>>  }
+>>>
+>>>
+>>> -/*
+>>> - * sighandler()
+>>> - */
+>>> -void sighandler(int sig)
+>>> -{
+>>> -        if (sig == SIGINT)
+>>> -                return;
+>>> -        // NOTREACHED
+>>> -        return;
+>>> -}
+>>>       
+>> 1. If all that the signal handler does is just return, it should have
+>> been doing SIG_IGN from the beginning.
+>> 2. I don't understand how your change fixes this because the signal
+>> handler's function is almost the same (the original handler was more
+>> generic).
+>>     
+>
+> default behavior with SIGINT is to terminate, and going by this patch, no one 
+> set up a signal handler for SIGINT.  so the fix as you implied sounds like:
+> 	- call signal(SIGINT, SIG_IGN);
+> 	- delete sighandlerr()
 > -mike
-> 
+>   
+>   
+Mike,
 
-em, the change was not useless, the existing reporting of failure was. The output on failure of only the
-first case prints as
-"ppoll01     1  TFAIL  :  ppoll01 failed - errno = 0 : Success"
+I apply your suggestions on a X86_64 system, and it shows
+signal(SIGINT, SIG_IGN) also blocks the case04 itself.
 
-The words 'failed' and 'Success' on the same line could confuse us. The testcase has 8 scenarios of which 5 are
-made to fail by passing invalid arguments. Although we could have a fix as the following
+        { // case04
+                .ttype          = SEND_SIGINT,
+                .ret            = -1,
+                .err            = EINTR,
+        },
 
-=====================================================================
+Then, the testcase will hang on here.
 
---- ppoll01.c.orig	2009-09-29 21:28:55.510487735 +0530
-+++ ppoll01.c	2009-10-01 17:34:42.651235797 +0530
-@@ -242,6 +242,8 @@ static struct test_case tcase[] = {
- #endif
- };
- 
-+int tstatus, terrno[16];
-+
- #define NUM_TEST_FDS    1
- 
- /*
-@@ -265,6 +267,7 @@ static int do_test(struct test_case *tc)
-         sigset_t *p_sigmask, sigmask;
-         size_t sigsetsize = 0;
-         pid_t pid = 0;
-+	static int tc_no;
- 
- 	TEST(fd = setup_file(progdir, "test.file", fpath));
-         if (fd < 0)
-@@ -331,6 +334,11 @@ static int do_test(struct test_case *tc)
-         errno = 0;
-         TEST(sys_ret = syscall(__NR_ppoll, p_fds, nfds, p_ts, p_sigmask, sigsetsize));
-         sys_errno = errno;
-+	if (((tc->ret == 0) && (sys_ret == -1)) || ((tc->ret == -1) && (sys_ret == 0))) {
-+		tstatus |= (1 << tc_no);
-+		terrno[tc_no] = errno;
-+	}
-+	tc_no++;
-         if (sys_ret <= 0 || tc->ret < 0)
-                 goto TEST_END;
- 
-@@ -463,7 +471,10 @@ int main(int ac, char **av) {
- 		                break;
- 
- 	        default:
--                 	   	tst_resm(TFAIL, "%s failed - errno = %d : %s", TCID, TEST_ERRNO, strerror(TEST_ERRNO));
-+        			tst_resm(TPASS, "ppoll result = %d  ",result);
-+                                for (i = 0; i < (int)(sizeof(tcase) / sizeof(tcase[0])); i++)
-+                                        if (tstatus & (1 << i))
-+                                                tst_resm(TFAIL|TTERRNO, "%s failed - errno = %d : %s", TCID, terrno[i], strerror(terrno[i]));
-         		        RPRINTF("NG");
- 				cleanup();
- 				tst_exit();
-
-
-
-======================================================================
-
-I will retain the current existing tst_resm lines and add TFAIL|TTERRNO to it as per your suggestion. The reason being that 
-there is not much gain in making the above changes to the test case.
+So, I suggest we remain "void sighandler(int sig)" to fix the problem.
 
 Thanks,
-Chandru
+
+> ------------------------------------------------------------------------
+>
+> ------------------------------------------------------------------------------
+> Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+> is the only developer event you need to attend this year. Jumpstart your
+> developing skills, take BlackBerry mobile applications to market and stay 
+> ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+> http://p.sf.net/sfu/devconference
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>   
 
 
+--------------080702090003080208030706
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="Content-Type">
+</head>
+<body text="#000000" bgcolor="#ffffff">
+On 12/24/-28158 03:59 AM, Mike Frysinger wrote:
+<blockquote cite="mid:%3C200910121436.26663.vapier@gentoo.org%3E"
+ type="cite">
+  <pre wrap="">On Monday 12 October 2009 14:28:02 Garrett Cooper wrote:
+  </pre>
+  <blockquote type="cite">
+    <pre wrap="">On Mon, Oct 12, 2009 at 2:39 AM, liubo <a class="moz-txt-link-rfc2396E" href="mailto:liubo-fnst@cn.fujitsu.com">&lt;liubo-fnst@cn.fujitsu.com&gt;</a> wrote:
+    </pre>
+    <blockquote type="cite">
+      <pre wrap="">The test case ppoll01 does not register the signal handler
+of SIGINT, so the program will be terminated by SIGINT
+from child process.
+
+Then, the rest cases will not be tested.
+
+This patch fixed the problem.
+
+--- a/testcases/kernel/syscalls/ppoll/ppoll01.c
++++ b/testcases/kernel/syscalls/ppoll/ppoll01.c
+@@ -124,9 +124,17 @@ extern void cleanup() {
++/*
++ * sighandler()
++ */
++void sighandler(int sig)
++{
++       return;
++}
+ void setup() {
+        /* Capture signals if any */
+-        /* Create temporary directories */
++       signal(SIGINT, sighandler);
++       /* Create temporary directories */
+        TEST_PAUSE;
+        tst_tmpdir();
+ }
+@@ -404,16 +412,6 @@ TEST_END:
+ }
 
 
+-/*
+- * sighandler()
+- */
+-void sighandler(int sig)
+-{
+-        if (sig == SIGINT)
+-                return;
+-        // NOTREACHED
+-        return;
+-}
+      </pre>
+    </blockquote>
+    <pre wrap="">1. If all that the signal handler does is just return, it should have
+been doing SIG_IGN from the beginning.
+2. I don't understand how your change fixes this because the signal
+handler's function is almost the same (the original handler was more
+generic).
+    </pre>
+  </blockquote>
+  <pre wrap=""><!---->
+default behavior with SIGINT is to terminate, and going by this patch, no one 
+set up a signal handler for SIGINT.  so the fix as you implied sounds like:
+	- call signal(SIGINT, SIG_IGN);
+	- delete sighandlerr()
+-mike
+  </pre>
+  <pre wrap="">
+  </pre>
+</blockquote>
+Mike,<br>
+<br>
+I apply your suggestions on a X86_64 system, and it shows <br>
+signal(SIGINT, SIG_IGN)
+also blocks the case04 itself. <br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { // case04<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .ttype&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = SEND_SIGINT,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .ret&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = -1,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .err&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = EINTR,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; },<br>
+<br>
+Then, the testcase will hang on here. <br>
+<br>
+So, I suggest we remain "void sighandler(int sig)" to fix the problem. <br>
+<br>
+Thanks,<br>
+<br>
+<blockquote cite="mid:%3C200910121436.26663.vapier@gentoo.org%3E"
+ type="cite">
+  <pre wrap=""><hr size="4" width="90%">
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-http://p.sf.net/sfu/devconf
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+<a class="moz-txt-link-freetext" href="http://p.sf.net/sfu/devconference">http://p.sf.net/sfu/devconference</a></pre>
+  <pre wrap="">
+<hr size="4" width="90%">
+_______________________________________________
+Ltp-list mailing list
+<a class="moz-txt-link-abbreviated" href="mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.net</a>
+<a class="moz-txt-link-freetext" href="https://lists.sourceforge.net/lists/listinfo/ltp-list">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
+  </pre>
+</blockquote>
+<br>
+</body>
+</html>
+
+--------------080702090003080208030706--
+
+
+--===============8477789560491169947==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
+--===============8477789560491169947==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============8477789560491169947==--
+
