@@ -1,20 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Mw9HK-0004en-8s
-	for ltp-list@lists.sourceforge.net; Fri, 09 Oct 2009 06:48:38 +0000
-Received: from mail-px0-f172.google.com ([209.85.216.172])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mw9HF-0007lC-L5
-	for ltp-list@lists.sourceforge.net; Fri, 09 Oct 2009 06:48:38 +0000
-MIME-Version: 1.0
-In-Reply-To: <20091009.152108.954124754429052503.yamato@redhat.com>
-References: <20091009.152108.954124754429052503.yamato@redhat.com>
-Date: Thu, 8 Oct 2009 23:48:27 -0700
-Message-ID: <364299f40910082348j371f839cice2b3e3113c5f084@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Checking flex existance in configure
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mxic7-00073e-FE
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 14:44:35 +0000
+Received: from e34.co.us.ibm.com ([32.97.110.152])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Mxic1-0005RQ-99
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 14:44:35 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e34.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9DEde87026780
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:39:40 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n9DEiA6S023172
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:44:12 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n9DEhwRd027500
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:44:05 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <8368651DACC1964480F951191B94A0780153CC19@svexch01.mvista.com>
+References: <8368651DACC1964480F951191B94A0780142442B@svexch01.mvista.com>
+	<200910050018.12711.jpalecek@web.de>
+	<8368651DACC1964480F951191B94A0780153CC19@svexch01.mvista.com>
+Date: Tue, 13 Oct 2009 20:13:37 +0530
+Message-Id: <1255445017.8438.66.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH][openfile] file descriptors not cleaned up
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,119 +39,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Masatake YAMATO <yamato@redhat.com>
-Cc: ltp-list@lists.sf.net
+To: Henry Yei <hyei@mvista.com>
+Cc: jpalecek@web.de, LTP Mailing List <ltp-list@lists.sourceforge.net>
 
-On Thu, Oct 8, 2009 at 11:21 PM, Masatake YAMATO <yamato@redhat.com> wrote:
-> Hi,
->
->
-> In INSTALL file:
->
-> =A0 =A03. Run "make" to build everything.
-> =A0 =A0 =A0 *NOTE: Some of the Makefiles (example: pan/Makefile) require =
-the lex (or
-> =A0 =A0 =A0 flex) package to be installed.
->
-> I've added AC_PROG_LEX to configure.ac to check the existance of flex or =
-lex command.
->
-> Signed-off-by: Masatake YAMATO <yamato@redhat.com>
->
-> Index: config.mk.in
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> RCS file: /cvsroot/ltp/ltp/config.mk.in,v
-> retrieving revision 1.5
-> diff -u -r1.5 config.mk.in
-> --- config.mk.in =A0 =A0 =A0 =A07 Sep 2009 07:08:53 -0000 =A0 =A0 =A0 1.5
-> +++ config.mk.in =A0 =A0 =A0 =A09 Oct 2009 06:13:07 -0000
-> @@ -2,6 +2,9 @@
-> =A0AR =3D @AR@
-> =A0RANLIB =3D @RANLIB@
->
-> +LEX =3D @LEX@
-> +LEXLIB =3D @LEXLIB@
+On Mon, 2009-10-05 at 14:33 -0700, Henry Yei wrote: 
+> On Wednesday 04, October 2009 04:06:46 Jiri Palecek wrote:
+> 
+> Hello,
+> 
+> On Wednesday 30 September 2009 04:06:46 Henry Yei wrote:
+> > This patch for openfile contains the following changes:
+> > - test output to use tst_resm functions
+> > - sets ups and cleans up tmp dir properly
+> > - closes all opened file descriptors before thread exit(fixes nfs issues on removing tmp dir)
+> > 
+> > Signed-off-by: Henry Yei <hyei@mvista.com>
+> > 
+> > 
+> > This test opens multiple file descriptors to the same file. Perhaps the author meant to open file handles for separate files?
+> 
+> This is suspicious, for me too. But maybe there is some logic behind opening the same file many times.
+> 
+> I just have a small remark about your patch: Shouldn't you call close_files() here, too? (With a partially full fd_list array handled, of course)
+> 
+> +void * threads(void* thread_id_) {
+> +	int thread_id = (uintptr_t) thread_id_;
+> +	char errmsg[80];
+> +	FILE *fd_list[MAXFILES];
+> +	int i;
 > +
-> =A0CPPFLAGS =3D @CPPFLAGS@
-> =A0CFLAGS =3D @CFLAGS@
-> =A0LDFLAGS =3D @LDFLAGS@
-> Index: configure.ac
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> RCS file: /cvsroot/ltp/ltp/configure.ac,v
-> retrieving revision 1.16
-> diff -u -r1.16 configure.ac
-> --- configure.ac =A0 =A0 =A0 =A09 Sep 2009 17:48:08 -0000 =A0 =A0 =A0 1.16
-> +++ configure.ac =A0 =A0 =A0 =A09 Oct 2009 06:13:07 -0000
-> @@ -8,6 +8,7 @@
-> =A0AC_PROG_CC
-> =A0AC_PROG_AR
-> =A0AC_PROG_RANLIB
-> +AC_PROG_LEX
->
-> =A0AC_CHECK_HEADERS_ONCE([ \
-> =A0ifaddrs.h \
-> Index: pan/Makefile
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> RCS file: /cvsroot/ltp/ltp/pan/Makefile,v
-> retrieving revision 1.19
-> diff -u -r1.19 Makefile
-> --- pan/Makefile =A0 =A0 =A0 =A019 May 2009 09:39:11 -0000 =A0 =A0 =A01.19
-> +++ pan/Makefile =A0 =A0 =A0 =A09 Oct 2009 06:13:07 -0000
-> @@ -1,3 +1,4 @@
-> +include ../config.mk
->
-> =A0LOADLIBES +=3D -lm
-> =A0LFLAGS +=3D -l -w
-> Index: testcases/ballista/ballista/compile/Makefile
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> RCS file: /cvsroot/ltp/ltp/testcases/ballista/ballista/compile/Makefile,v
-> retrieving revision 1.2
-> diff -u -r1.2 Makefile
-> --- testcases/ballista/ballista/compile/Makefile =A0 =A0 =A0 =A026 Feb 20=
-09 06:29:46 -0000 =A0 =A0 =A01.2
-> +++ testcases/ballista/ballista/compile/Makefile =A0 =A0 =A0 =A09 Oct 200=
-9 06:13:08 -0000
-> @@ -15,6 +15,9 @@
-> =A0# along with this program; if not, write to the Free Software
-> =A0# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA =A002111-1=
-307, USA.
->
-> +include ../../../config.mk
-> +
-> +
-> =A0dFLAGS=3D-g -DDEBUG
-> =A0FLAGS=3D -O -Wall
-> =A0PFLAGS=3D -p -g3
-> @@ -53,7 +56,7 @@
-> =A0lex.yy.o: lex.yy.c
->
-> =A0lex.yy.c: ballista.l tokens.h
-> - =A0 =A0 =A0 flex ballista.l
-> + =A0 =A0 =A0 $(LEX) ballista.l
->
-> =A0blexer.o: blexer.c blexer.h jlist.h butil.h
+> +	/* Open files */
+> +	for (i = 0; i < numfiles; i++) {
+> +		if (debug)
+> +			printf("Thread  %d : Opening file number %d \n", thread_id, i);
+> +		if ((fd_list[i] = fopen(filename, "rw")) == NULL) {
+> +			sprintf(errmsg, "FAIL - Couldn't open file #%d", i);
+> +			perror(errmsg);
+> 
+> 
+> 
+> Jiri, 
+> 
+> Thanks for reviewing the patch. Yes, that was an omission on my part. I have attached an updated patch. Let me know if there are any more comments.
+> 
 
-I'll gladly add in the one-liner to ballista.
-Thanks!
--Garrett
+Henry,
 
----------------------------------------------------------------------------=
----
+This patch is ineffective on the present Makefile(s). Please rebase them
+over latest CVS and resend:
+
+patching file testcases/kernel/fs/openfile/Makefile
+Hunk #1 FAILED at 1.
+1 out of 1 hunk FAILED -- saving rejects to file
+testcases/kernel/fs/openfile/Makefile.rej
+patching file testcases/kernel/fs/openfile/openfile.c
+
+Regards--
+Subrata
+
+> 
+> 
+> Henry Yei
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+> is the only developer event you need to attend this year. Jumpstart your
+> developing skills, take BlackBerry mobile applications to market and stay 
+> ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
+> http://p.sf.net/sfu/devconf
+> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
+------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay =
-
+developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
 _______________________________________________
