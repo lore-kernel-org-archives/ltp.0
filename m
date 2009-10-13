@@ -1,21 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MvIqg-00030C-L8
-	for ltp-list@lists.sourceforge.net; Tue, 06 Oct 2009 22:49:38 +0000
-Received: from mail-qy0-f173.google.com ([209.85.221.173])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MvIqY-0000N0-SC
-	for ltp-list@lists.sourceforge.net; Tue, 06 Oct 2009 22:49:38 +0000
-Received: by qyk3 with SMTP id 3so3876626qyk.4
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 06 Oct 2009 15:49:25 -0700 (PDT)
-MIME-Version: 1.0
-Date: Tue, 6 Oct 2009 15:49:24 -0700
-Message-ID: <364299f40910061549k4684906eu8731521a226021c9@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] [Issue 4] sched_mc_powersavings missing results in TPASS
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mxicx-00079r-Lk
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 14:45:27 +0000
+Received: from e36.co.us.ibm.com ([32.97.110.154])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Mxict-0005aI-6Q
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 14:45:27 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e36.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9DEhBrR013508
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:43:11 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n9DEjAtF042250
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:45:11 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n9DEj9tr029387
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:45:09 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4ACEE1D4.5000202@cn.fujitsu.com>
+References: <4ACEE1D4.5000202@cn.fujitsu.com>
+Date: Tue, 13 Oct 2009 20:14:02 +0530
+Message-Id: <1255445042.8438.74.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] : fix memcg_function_test's bug
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,42 +40,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: liubo <liubo-fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,
-    I've noticed that if /sys/devices/system/cpu/sched_mc_powersavings
-is missing, the result is TPASS (even though it shouldn't be):
+On Fri, 2009-10-09 at 15:10 +0800, liubo wrote: 
+> testcase_25() uses a wrong "$?" value ,
+> Now use "ret" to record the real "$?" 
+> value for test .
+> 
+> 
+> Signed-off-by: Liu Bo <liubo-fnst@cn.fujitsu.com>
 
-sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-Power_Management 8704  TPASS  :  sched domain test for sched_mc=67 &
-sched_smt=52
-sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-Power_Management 8705  TPASS  :  sched domain test for sched_mc=67 &
-sched_smt=53
-sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-Power_Management 8706  TPASS  :  sched domain test for sched_mc=67 &
-sched_smt=54
-sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-Power_Management 8707  TPASS  :  sched domain test for sched_mc=67 &
-sched_smt=55
-sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-Power_Management 8708  TPASS  :  sched domain test for sched_mc=67 &
-sched_smt=56
-sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-Power_Management 8709  TPASS  :  sched domain test for sched_mc=67 &
-sched_smt=57
-sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
+Thanks.
 
-    It should be TCONF and only one check should be required at the
-script doing the call / loop.
-Thanks,
--Garrett
+Regards--
+Subrata
+
+> 
+> ---
+> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+> index ea4c8a2..0f11835 100755
+> --- a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+> +++ b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+> @@ -398,11 +398,12 @@ testcase_24()
+>  testcase_25()
+>  {
+>  	echo -1 > memory.limit_in_bytes 2> /dev/null
+> +	ret=$?
+>  	tst_kvercmp 2 6 31
+>  	if [ $? -eq 0 ]; then
+> -		result $(( !($? != 0) ))  "return value is $?"
+> +		result $(( !($ret != 0) ))  "return value is $ret"
+>         else
+> -		result $(( !($? == 0) ))  "return value is $?"
+> +		result $(( !($ret == 0) ))  "return value is $ret"
+>  	fi
+>  }
+> 
+> 
+> ------------------------------------------------------------------------------
+> Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+> is the only developer event you need to attend this year. Jumpstart your
+> developing skills, take BlackBerry mobile applications to market and stay 
+> ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+> http://p.sf.net/sfu/devconference
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
