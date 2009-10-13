@@ -1,29 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <glt-ltp-list@m.gmane.org>) id 1N3ZqB-00045Z-08
-	for ltp-list@lists.sourceforge.net; Thu, 29 Oct 2009 18:35:19 +0000
-Received: from lo.gmane.org ([80.91.229.12])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N3Zq4-0001Bd-Nh
-	for ltp-list@lists.sourceforge.net; Thu, 29 Oct 2009 18:35:18 +0000
-Received: from list by lo.gmane.org with local (Exim 4.50) id 1N3Zpw-00031D-LO
-	for ltp-list@lists.sourceforge.net; Thu, 29 Oct 2009 19:35:04 +0100
-Received: from 163.36.broadband2.iol.cz ([83.208.36.163])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <ltp-list@lists.sourceforge.net>; Thu, 29 Oct 2009 19:35:04 +0100
-Received: from jpalecek by 163.36.broadband2.iol.cz with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <ltp-list@lists.sourceforge.net>; Thu, 29 Oct 2009 19:35:04 +0100
-From: =?utf-8?b?SmnFmcOt?= =?utf-8?b?UGFsZcSNZWs=?= <jpalecek@web.de>
-Date: Thu, 29 Oct 2009 18:12:13 +0000 (UTC)
-Message-ID: <loom.20091029T190532-79@post.gmane.org>
-References: <200910211528.n9LFST8q028289@e35.co.us.ibm.com>
-	<1256576544.4929.54.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix some bashisms
+	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1Mxc3e-0000Fr-8D
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 07:44:34 +0000
+Received: from e36.co.us.ibm.com ([32.97.110.154])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Mxc3Y-00024U-5z
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 07:44:34 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e36.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9D7gHAB008069
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 01:42:17 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n9D7iID5256664
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 01:44:18 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n9D7iHmB004493
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 01:44:18 -0600
+From: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+Date: Tue, 13 Oct 2009 13:14:14 +0530
+Message-Id: <20091013074414.22414.46233.sendpatchset@localhost.localdomain>
+In-Reply-To: <20091013074337.22414.20968.sendpatchset@localhost.localdomain>
+References: <20091013074337.22414.20968.sendpatchset@localhost.localdomain>
+Subject: [LTP] [Patch 5/6] Modified master script to pass appropriate
+	arguments
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,112 +36,214 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net, svaidy@linux.vnet.ibm.com, ego@in.ibm.com, arun@linux.vnet.ibm.com
 
-Hello,
+Modified master script to pass appropriate arguments for cpu consolidation
+test cases. 
 
-Subrata Modak <subrata@...> writes:
+Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
 
-> 
-> On Wed, 2009-10-21 at 02:19 +0200, Jiri Palecek wrote: 
-> > Hello,
-> > 
-> > this is another patch fixing bashisms in LTP tests (the fixes are more or 
-less the same as in the previous
-> patches, except for a few exceptions). Note that the patch is not complete, 
-in the sense that there may
-> remain further bashisms in the source even after applying the patch (like use 
-of arrays, which is visible
-> even from this patch).
-> > 
-> > Regards
-> >     Jiri Palecek
-> > 
-> > Signed-off-by: Jiri Palecek <jpalecek@...>
-> 
-> Hmm,. Some of them failed to apply. Can you please resend only the error
-> part(s):
-> 
-
-according to my git repository. these are the missing parts:
-
-Signed-off-by: Jiri Palecek <jpalecek@web.de>
----
- testcases/kernel/fs/fs-bench/modaltr.sh      |    2 +-
- testcases/kernel/fs/mongo/test.sh            |    8 +++-----
- testcases/network/tcp_cmds/netstat/netstat01 |    2 +-
- 3 files changed, 5 insertions(+), 7 deletions(-)
-
-diff --git a/testcases/kernel/fs/fs-bench/modaltr.sh b/testcases/kernel/fs/fs-
-bench/modaltr.sh
-index 85d2c30..36e6f0c 100755
---- a/testcases/kernel/fs/fs-bench/modaltr.sh
-+++ b/testcases/kernel/fs/fs-bench/modaltr.sh
-@@ -43,7 +43,7 @@ LOG_DIR1=/tmp/log1
- HOME_DIR=/home
- BLOCK_DIR=/dev/mtdblock
- export PATH=$PATH:/sbin
--	if [ $UID -ne 0 ]; 
-+	if [ $(id -ru) -ne 0 ]; 
- then 
- 	echo "must be root to run this"
- 	exit
-diff --git a/testcases/kernel/fs/mongo/test.sh b/testcases/kernel/fs/mongo/
-test.sh
-index fe75664..eccb079 100755
---- a/testcases/kernel/fs/mongo/test.sh
-+++ b/testcases/kernel/fs/mongo/test.sh
-@@ -26,7 +26,7 @@ TEST_DIR=testdir
+diff -uprN ltp-full-20090930/testcases/kernel/power_management/runpwtests.sh ltp-full-20090930_patched/testcases/kernel/power_management/runpwtests.sh
+--- ltp-full-20090930/testcases/kernel/power_management/runpwtests.sh	2009-10-05 02:10:56.000000000 -0400
++++ ltp-full-20090930_patched/testcases/kernel/power_management/runpwtests.sh	2009-10-12 22:43:46.000000000 -0400
+@@ -210,7 +210,7 @@ fi
+ if [ $# -gt 0 -a "$1" = "-exclusive" ]; then 
+ 	# Test CPU consolidation 
+ 	if [ $multi_socket -eq $YES -a $multi_core -eq $YES ]; then
+-		for sched_mc in `seq 0 $max_sched_mc`; do
++		for sched_mc in `seq 0  $max_sched_mc`; do
+ 			: $(( TST_COUNT += 1 ))
+ 			sched_mc_pass_cnt=0
+ 			if [ $sched_mc -eq 2 ]; then
+@@ -243,111 +243,108 @@ if [ $# -gt 0 -a "$1" = "-exclusive" ]; 
+ 		done
  
- 
-    		#should be root  to execute this script .
--	if [ $UID -ne 0 ]; then
-+	if [ $(id -ru) -ne 0 ]; then
- 		echo "This script must be run as root"
- 		exit
  	fi
-@@ -52,8 +52,7 @@ modprobe loop
+-	if [ $hyper_threaded -eq $YES -a $multi_socket -eq $YES ]; then
+-		#Testcase to validate consolidation at core level
+-		work_load="ebizzy"
+-		sched_smt_pass_cnt=0
+-		: $(( TST_COUNT += 1 ))
+-		stress="thread"
+-		for repeat_test in `seq 1  10`; do
+-			if cpu_consolidation.py -c $sched_mc -t $sched_smt -w $work_load -s $stress; then
+-				: $(( sched_smt_pass_cnt += 1 ))
+-			fi
+-		done
+-		analyze_core_consolidation_result $sched_smt $work_load $sched_smt_pass_cnt
+ 
+-		# Vary only sched_smt from 1 to 0 when workload is running and ensure that
+-		# tasks do not consolidate to single core when sched_smt is set to 0
+-		: $(( TST_COUNT += 1 ))
+-		if cpu_consolidation.py -vt; then
+-			tst_resm TPASS "CPU consolidation test by varying sched_smt"
+-		else
+-			tst_resm TFAIL "CPU consolidation test by varying sched_smt"
+-		fi
++	if [ $hyper_threaded -eq $YES -a $multi_socket -eq $YES -a $multi_core -eq $NO ]; then
++			#Testcase to validate consolidation at core level
++			for sched_smt in `seq 0 $max_sched_smt`; do
++				if [ $sched_smt -eq 2 ]; then
++				 	work_load="kernbench"
++				else	
++					work_load="ebizzy"
++				fi
++				sched_smt_pass_cnt=0
++				: $(( TST_COUNT += 1 ))
++				stress="thread"
++				for repeat_test in `seq 1  10`; do
++					if cpu_consolidation.py -t $sched_smt -w $work_load -s $stress; then
++						: $(( sched_smt_pass_cnt += 1 ))
++					fi
++				done
++				analyze_core_consolidation_result $sched_smt $sched_smt_pass_cnt
++			done
  	fi
  
- 	#run the mongo test on reiserfs file system type 
--function reiserfs
+ 	# Verify threads consolidation stops when sched_mc &(/) sched_smt is disabled
+     if [ $multi_socket -eq $YES -a $multi_core -eq $YES ]; then
+-		: $(( TST_COUNT += 1 ))
+-		# Vary sched_mc from 1 to 0 when workload is running and ensure that
+-		# tasks do not consolidate to single package when sched_mc is set to 0
+-		if cpu_consolidation.py -v -c 1; then
+-            tst_resm TPASS "CPU consolidation test by varying sched_mc 1 to 0"
+-        else
+-            tst_resm TFAIL "CPU consolidation test by varying sched_mc 1 to 0"
+-        fi
 -
-+reiserfs()
- {
- cat > fs.sh <<EOF
- echo "performing mongo on reiserfs"
-@@ -71,8 +70,7 @@ EOF
- 	
- 
- #To run on jfs file system type 
--function  JFS
+-		# Vary sched_mc from 2 to 0 when workload is running and ensure that
+-        # tasks do not consolidate to single package when sched_mc is set to 0
+-		: $(( TST_COUNT += 1 ))
+-		if cpu_consolidation.py -v -c 2; then
+-			tst_resm TPASS "CPU consolidation test by varying sched_mc 2 to 0"
+-		else
+-			tst_resm TFAIL "CPU consolidation test by varying sched_mc 2 to 0"
+-		fi
 -
-+JFS()
- {
- cat >> fs.sh <<EOF
- echo "performing mongo on jfs file system"
-diff --git a/testcases/network/tcp_cmds/netstat/netstat01 b/testcases/network/
-tcp_cmds/netstat/netstat01
-index 6a197de..365c142 100755
---- a/testcases/network/tcp_cmds/netstat/netstat01
-+++ b/testcases/network/tcp_cmds/netstat/netstat01
-@@ -58,7 +58,7 @@ do_test() {
-     while [ $TST_COUNT -le $NUMLOOPS ]; do
+-		if [ $hyper_threaded -eq $YES ]; then
+-			# Vary sched_mc & sched_smt from 1 to 0 & 2 to 0 when workload is running and ensure that
+-            # tasks do not consolidate to single package when sched_mc is set to 0
+-            : $(( TST_COUNT += 1 ))
+-			if cpu_consolidation.py -v -c 1 -t 1; then
+-				tst_resm TPASS "CPU consolidation test by varying sched_mc \
+-& sched_smt from 1 to 0"
+-			else
+-				tst_resm TFAIL "CPU consolidation test by varying sched_mc \
+-& sched_smt from 1 to 0"
+-			fi
+-
++        for sched_mc in `seq 1  $max_sched_mc`; do
+ 			: $(( TST_COUNT += 1 ))
+-			if cpu_consolidation.py -v -c 2 -t 2; then
+-				tst_resm TPASS "CPU consolidation test by varying sched_mc \
+- & sched_smt from 2 to 0"
+-			else
+-				tst_resm TFAIL "CPU consolidation test by varying sched_mc \
+- & sched_smt from 2 to 0"
++		
++			# Vary sched_mc from 1/2 to 0 when workload is running and ensure that
++			# tasks do not consolidate to single package when sched_mc is set to 0
++			if cpu_consolidation.py -v -c $sched_mc; then
++            	tst_resm TPASS "CPU consolidation test by varying sched_mc $sched_mc to 0"
++        	else
++            	tst_resm TFAIL "CPU consolidation test by varying sched_mc $sched_mc to 0"
++        	fi
++
++			if [ $hyper_threaded -eq $YES ]; then
++				for sched_smt in `seq 1  $max_sched_smt`; do		
++					if [ $sched_smt -eq $sched_mc ]; then
++						# Vary sched_mc & sched_smt from 1 to 0 & 2 to 0 when workload is running and ensure that
++            			# tasks do not consolidate to single package when sched_mc is set to 0
++            			: $(( TST_COUNT += 1 ))
++						if cpu_consolidation.py -v -c $sched_mc -t $sched_smt; then
++							tst_resm TPASS "CPU consolidation test by varying sched_mc \
++& sched_smt from $sched_mc to 0"
++						else
++							tst_resm TFAIL "CPU consolidation test by varying sched_mc \
++& sched_smt from $sched_mc to 0"
++						fi
++					fi
++				done
+ 			fi
+-		fi
++		done
+ 	fi
  
-         for flag in "-s" "-rn" "-i" "-gn" "-apn"; do
--            if ! netstat $flag 2>&1 1>/dev/null; then
-+            if ! netstat $flag 1>/dev/null 2>&1; then
-                 end_testcase "$COMMAND failed"
-             fi
-         done
--- 
-1.6.4.3
-
-
-
+-    # Verify threads consolidation stops when is disabled in HT systems
++    # Verify threads consolidation stops when sched_smt is disabled in HT systems
+ 	if [ $hyper_threaded -eq $YES -a $multi_socket -eq $YES ]; then
+ 		# Vary only sched_smt from 1 to 0 when workload is running and ensure that
+ 		# tasks do not consolidate to single core when sched_smt is set to 0
+ 		: $(( TST_COUNT += 1 ))
+ 		if cpu_consolidation.py -v -t 1; then
+-			tst_resm TPASS "CPU consolidation test by varying sched_smt 1 to 0"
++			tst_resm TPASS "CPU consolidation test by varying sched_smt from 1 to 0"
+ 		else
+-			tst_resm TFAIL "CPU consolidation test by varying sched_smt 1 to 0"
++			tst_resm TFAIL "CPU consolidation test by varying sched_smt from 1 to 0"
+ 		fi
++        
++        # Vary only sched_smt from 2 to 0 when workload is running and ensure that
++        # tasks do not consolidate to single core when sched_smt is set to 0
++        : $(( TST_COUNT += 1 )) 
++        if cpu_consolidation.py -v -t 2; then 
++            tst_resm TPASS "CPU consolidation test by varying sched_smt 2 to 0"
++        else
++            tst_resm TFAIL "CPU consolidation test by varying sched_smt 2 to 0"
++        fi
++
+ 	fi
+ 
+ 	# Verify ILB runs in same package as workload
+     if [ $multi_socket -eq $YES -a $multi_core -eq $YES ]; then
+-		for sched_mc in `seq 0 $max_sched_mc`; do
++		for sched_mc in `seq 1 $max_sched_mc`; do
+ 			: $(( TST_COUNT += 1 ))
+-            ilb_test.py -c $sched_mc; RC=$?
++            if [ $sched_mc -eq 2 ]; then
++                work_load="kernbench"
++            else
++                work_load="ebizzy"
++            fi
++
++            ilb_test.py -c $sched_mc -w $work_load; RC=$?
+ 			if [ $RC -eq 0 ]; then
+ 				tst_resm TPASS "ILB & workload in same package for sched_mc=$sched_mc"
+ 			else
+-				if [ $sched_mc -eq 0 ]; then
+-					tst_resm TPASS "ILB & workload is not in same package when sched_mc=0"
+-				else
+-					tst_resm TFAIL "ILB did not run in same package"
+-				fi
++				tst_resm TFAIL "ILB & workload did not run in same package for sched_mc=$sched_mc\
++. Ensure CONFIG_NO_HZ is set"
+ 			fi
+ 			if [ $hyper_threaded -eq $YES ]; then
+-				for sched_smt in `seq 0 $max_sched_smt`; do
++				for sched_smt in `seq 1 $max_sched_smt`; do
+ 					: $(( TST_COUNT += 1 ))
+-					ilb_test.py -c $sched_mc -t sched_smt; RC=$?
++					ilb_test.py -c $sched_mc -t sched_smt -w $work_load; RC=$?
+  					if [ $RC -eq 0 ]; then
+-						tst_resm TPASS "ILB & workload in same package for sched_mc=$sched_mc"
++						tst_resm TPASS "ILB & workload in same package for sched_mc=$sched_mc \
++& sched_smt=$sched_smt"
+ 					else
+-						if [ $sched_mc -eq 0 -a $sched_smt -eq 0 ]; then
+-							tst_resm TPASS "ILB & workload is not in same package when\
+-sched_mc & sched_smt is 0"
+-						else
+-							tst_resm TFAIL "ILB did not run in same package"    
+-						fi
++						tst_resm TFAIL "ILB & workload did not execute in same package for \
++sched_mc=$sched_mc & sched_smt=$sched_smt. Ensure CONFIG_NO_HZ is set"    
+ 					fi
+ 				done
+ 			fi
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
