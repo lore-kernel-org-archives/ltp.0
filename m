@@ -1,25 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1Mywkw-0004gG-Qu
-	for ltp-list@lists.sourceforge.net; Sat, 17 Oct 2009 00:02:46 +0000
-Received: from gateway-1237.mvista.com ([63.81.120.158])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mywko-00069X-SM
-	for ltp-list@lists.sourceforge.net; Sat, 17 Oct 2009 00:02:46 +0000
-Received: from svexch01.mvista.com (svexch01.mvista.com [10.0.0.82])
-	by hermes.mvista.com (Postfix) with ESMTP id 2FBB61C472
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 16 Oct 2009 17:02:30 -0700 (PDT)
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01CA4EBD.1E658E80"
-Date: Fri, 16 Oct 2009 17:03:58 -0700
-Message-ID: <8368651DACC1964480F951191B94A0780153D7EE@svexch01.mvista.com>
-From: "Henry Yei" <hyei@mvista.com>
-Subject: [LTP] [PATCH][runtest/fs] modify fs scenario to use working
-	directory specified by runltp
+	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1Mxc3J-0007tM-Sp
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 07:44:13 +0000
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Mxc3C-00022f-0E
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 07:44:13 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e8.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9D7fANu020642
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 03:41:10 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n9D7i0vl242858
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 03:44:00 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n9D7hx1M018692
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 03:44:00 -0400
+From: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+Date: Tue, 13 Oct 2009 13:13:56 +0530
+Message-Id: <20091013074356.22414.15869.sendpatchset@localhost.localdomain>
+In-Reply-To: <20091013074337.22414.20968.sendpatchset@localhost.localdomain>
+References: <20091013074337.22414.20968.sendpatchset@localhost.localdomain>
+Subject: [LTP] [Patch 3/6] Modified ilb test to run with ebizzy as default
+	workload.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,173 +35,41 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP Mailing List <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
-
-------_=_NextPart_001_01CA4EBD.1E658E80
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-This patch modifies the fs scenario to remove hard coded paths with /tmp =
-as well as make sure that tests that take directory arguments use the =
-temporary directory specified by runltp.=20
-
-I've chosen to pass in the temporary directory rather than change the =
-tests themselves for certain tests take a path as an argument.
-
-Signed-off by: Henry Yei <hyei@mvista.com>
-
-Henry Yei
-hyei@mvista.com
-
-
-
-------_=_NextPart_001_01CA4EBD.1E658E80
-Content-Type: application/octet-stream;
-	name="fs.patch"
-Content-Transfer-Encoding: base64
-Content-Description: fs.patch
-Content-Disposition: attachment;
-	filename="fs.patch"
-
-LS0tIGx0cC9ydW50ZXN0L2ZzCTIwMDktMTAtMTYgMTQ6MTc6MjcuOTc0MDAwMDAwIC0wNzAwCisr
-KyBsdHAtd2Rpci9ydW50ZXN0L2ZzCTIwMDktMTAtMTYgMTQ6MzM6MzcuNzE1MzI4NDA2IC0wNzAw
-CkBAIC0xLDM5ICsxLDM5IEBACiAjREVTQ1JJUFRJT046RmlsZXN5c3RlbSBzdHJlc3MgdGVzdHMK
-LWdmMDEgZ3Jvd2ZpbGVzIC1XIGdmMDEgLWIgLWUgMSAtdSAtaSAwIC1MIDIwIC13IC1DIDEgLWwg
-LUkgciAtVCAxMCBnbHNlZWsyMCBnbHNlZWsyMC4yCi1nZjAyIGdyb3dmaWxlcyAtVyBnZjAyIC1i
-IC1lIDEgLUwgMTAgLWkgMTAwIC1JIHAgLVMgMiAtdSAtZiBnZjAzXwotZ2YwMyBncm93ZmlsZXMg
-LVcgZ2YwMyAtYiAtZSAxIC1nIDEgLWkgMSAtUyAxNTAgLXUgLWYgZ2YwNV8KLWdmMDQgZ3Jvd2Zp
-bGVzIC1XIGdmMDQgLWIgLWUgMSAtZyA0MDkwIC1pIDUwMCAtdCAzOTAwMCAtdSAtZiBnZjA2Xwot
-Z2YwNSBncm93ZmlsZXMgLVcgZ2YwNSAtYiAtZSAxIC1nIDUwMDAgLWkgNTAwIC10IDQ5OTAwIC1U
-MTAgLWM5IC1JIHAgLXUgLWYgZ2YwN18KLWdmMDYgZ3Jvd2ZpbGVzIC1XIGdmMDYgLWIgLWUgMSAt
-dSAtciAxLTUwMDAgLVIgMC0tMSAtaSAwIC1MIDMwIC1DIDEgZ19yYW5kMTAgZ19yYW5kMTAuMgot
-Z2YwNyBncm93ZmlsZXMgLVcgZ2YwNyAtYiAtZSAxIC11IC1yIDEtNTAwMCAtUiAwLS0yIC1pIDAg
-LUwgMzAgLUMgMSAtSSBwIGdfcmFuZDEzIGdfcmFuZDEzLjIKLWdmMDggZ3Jvd2ZpbGVzIC1XIGdm
-MDggLWIgLWUgMSAtdSAtciAxLTUwMDAgLVIgMC0tMiAtaSAwIC1MIDMwIC1DIDEgZ19yYW5kMTEg
-Z19yYW5kMTEuMgotZ2YwOSBncm93ZmlsZXMgLVcgZ2YwOSAtYiAtZSAxIC11IC1yIDEtNTAwMCAt
-UiAwLS0xIC1pIDAgLUwgMzAgLUMgMSAtSSBwIGdfcmFuZDEyIGdfcmFuZDEyLjIKLWdmMTAgZ3Jv
-d2ZpbGVzIC1XIGdmMTAgLWIgLWUgMSAtdSAtciAxLTUwMDAgLWkgMCAtTCAzMCAtQyAxIC1JIGwg
-Z19saW8xNCBnX2xpbzE0LjIKLWdmMTEgZ3Jvd2ZpbGVzIC1XIGdmMTEgLWIgLWUgMSAtdSAtciAx
-LTUwMDAgLWkgMCAtTCAzMCAtQyAxIC1JIEwgZ19saW8xNSBnX2xpbzE1LjIKLWdmMTIgbWtmaWZv
-IGdmZmlmbzE3OyBncm93ZmlsZXMgLWIgLVcgZ2YxMiAtZSAxIC11IC1pIDAgLUwgMzAgZ2ZmaWZv
-MTcKLWdmMTMgbWtmaWZvIGdmZmlmbzE4OyBncm93ZmlsZXMgLWIgLVcgZ2YxMyAtZSAxIC11IC1p
-IDAgLUwgMzAgLUkgciAtciAxLTQwOTYgZ2ZmaWZvMTgKLWdmMTQgZ3Jvd2ZpbGVzIC1XIGdmMTQg
-LWIgLWUgMSAtdSAtaSAwIC1MIDIwIC13IC1sIC1DIDEgLVQgMTAgZ2xzZWVrMTkgZ2xzZWVrMTku
-MgotZ2YxNSBncm93ZmlsZXMgLVcgZ2YxNSAtYiAtZSAxIC11IC1yIDEtNDk2MDAgLUkgciAtdSAt
-aSAwIC1MIDEyMCBMZ2ZpbGUxCi1nZjE2IGdyb3dmaWxlcyAtVyBnZjE2IC1iIC1lIDEgLWkgMCAt
-TCAxMjAgLXUgLWcgNDA5MCAtVCAxMDAgLXQgNDA4OTkwIC1sIC1DIDEwIC1jIDEwMDAgLVMgMTAg
-LWYgTGdmMDJfCi1nZjE3IGdyb3dmaWxlcyAtVyBnZjE3IC1iIC1lIDEgLWkgMCAtTCAxMjAgLXUg
-LWcgNTAwMCAtVCAxMDAgLXQgNDk5OTkwIC1sIC1DIDEwIC1jIDEwMDAgLVMgMTAgLWYgTGdmMDNf
-Ci1nZjE4IGdyb3dmaWxlcyAtVyBnZjE4IC1iIC1lIDEgLWkgMCAtTCAxMjAgLXcgLXUgLXIgMTAt
-NTAwMCAtSSByIC1sIC1TIDIgLWYgTGdmMDRfCi1nZjE5IGdyb3dmaWxlcyAtVyBnZjE5IC1iIC1l
-IDEgLWcgNTAwMCAtaSA1MDAgLXQgNDk5MDAgLVQxMCAtYzkgLUkgcCAtbyBPX1JEV1IsT19DUkVB
-VCxPX1RSVU5DIC11IC1mIGdmMDhpXwotZ2YyMCBncm93ZmlsZXMgLVcgZ2YyMCAtRCAwIC1iIC1p
-IDAgLUwgNjAgLXUgLUIgMTAwMGIgLWUgMSAtciAxLTI1NjAwMDo1MTIgLVIgNTEyLTI1NjAwMCAt
-VCA0IGdmYmlnaW8tJCQKLWdmMjEgZ3Jvd2ZpbGVzIC1XIGdmMjEgLUQgMCAtYiAtaSAwIC1MIDYw
-IC11IC1CIDEwMDBiIC1lIDEgLWcgMjA0ODAgLVQgMTAgLXQgMjA0ODAgZ2YtYmxkLSQkCi1nZjIy
-IGdyb3dmaWxlcyAtVyBnZjIyIC1EIDAgLWIgLWkgMCAtTCA2MCAtdSAtQiAxMDAwYiAtZSAxIC1n
-IDIwNDgwIC1UIDEwIC10IDIwNDgwIGdmLWJsZGYtJCQKLWdmMjMgZ3Jvd2ZpbGVzIC1XIGdmMjMg
-LUQgMCAtYiAtaSAwIC1MIDYwIC11IC1CIDEwMDBiIC1lIDEgLXIgNTEyLTY0MDAwOjEwMjQgLVIg
-MS0zODQwMDAgLVQgNCBnZi1pbmYtJCQKLWdmMjQgZ3Jvd2ZpbGVzIC1XIGdmMjQgLUQgMCAtYiAt
-aSAwIC1MIDYwIC11IC1CIDEwMDBiIC1lIDEgLWcgMjA0ODAgZ2YtamJsZC0kJAotZ2YyNSBncm93
-ZmlsZXMgLVcgZ2YyNSAtRCAwIC1iIC1pIDAgLUwgNjAgLXUgLUIgMTAwMGIgLWUgMSAtciAxMDI0
-MDAwLTIwNDgwMDA6MjA0OCAtUiA0MDk1LTIwNDgwMDAgLVQgMSBnZi1sYXJnZS1ncy0kJAotZ2Yy
-NiBncm93ZmlsZXMgLVcgZ2YyNiAtRCAwIC1iIC1pIDAgLUwgNjAgLXUgLUIgMTAwMGIgLWUgMSAt
-ciAxMjgtMzI3Njg6MTI4IC1SIDUxMi02NDAwMCAtVCA0IGdmc21hbGxpby0kJAotZ2YyNyBncm93
-ZmlsZXMgLVcgZ2YyNyAtYiAtRCAwIC13IC1nIDhiIC1DIDEgLWIgLWkgMTAwMCAtdSBnZnNwYXJz
-ZS0xLSQkCi1nZjI4IGdyb3dmaWxlcyAtVyBnZjI4IC1iIC1EIDAgLXcgLWcgMTZiIC1DIDEgLWIg
-LWkgMTAwMCAtdSBnZnNwYXJzZS0yLSQkCi1nZjI5IGdyb3dmaWxlcyAtVyBnZjI5IC1iIC1EIDAg
-LXIgMS00MDk2IC1SIDAtMzM1NTQ0MzIgLWkgMCAtTCA2MCAtQyAxIC11IGdmc3BhcnNlLTMtJCQK
-LWdmMzAgZ3Jvd2ZpbGVzIC1XIGdmMzAgLUQgMCAtYiAtaSAwIC1MIDYwIC11IC1CIDEwMDBiIC1l
-IDEgLW8gT19SRFdSLE9fQ1JFQVQsT19TWU5DIC1nIDIwNDgwIC1UIDEwIC10IDIwNDgwIGdmLXN5
-bmMtJCQKLXJ3dGVzdDAxIGV4cG9ydCBMVFBST09UOyByd3Rlc3Quc2ggLU4gcnd0ZXN0MDEgLWMg
-LXEgLWkgNjBzICAtZiBzeW5jIDEwJTI1MDAwOnJ3LXN5bmMtJCQKLXJ3dGVzdDAyIGV4cG9ydCBM
-VFBST09UOyByd3Rlc3Quc2ggLU4gcnd0ZXN0MDIgLWMgLXEgLWkgNjBzICAtZiBidWZmZXJlZCAx
-MCUyNTAwMDpydy1idWZmZXJlZC0kJAotcnd0ZXN0MDMgZXhwb3J0IExUUFJPT1Q7IHJ3dGVzdC5z
-aCAtTiByd3Rlc3QwMyAtYyAtcSAtaSA2MHMgLW4gMiAgLWYgYnVmZmVyZWQgLXMgbW1yZWFkLG1t
-d3JpdGUgLW0gcmFuZG9tIC1EdiAxMCUyNTAwMDptbS1idWZmLSQkCi1yd3Rlc3QwNCBleHBvcnQg
-TFRQUk9PVDsgcnd0ZXN0LnNoIC1OIHJ3dGVzdDA0IC1jIC1xIC1pIDYwcyAtbiAyICAtZiBzeW5j
-IC1zIG1tcmVhZCxtbXdyaXRlIC1tIHJhbmRvbSAtRHYgMTAlMjUwMDA6bW0tc3luYy0kJAotcnd0
-ZXN0MDUgZXhwb3J0IExUUFJPT1Q7IHJ3dGVzdC5zaCAtTiByd3Rlc3QwNSAtYyAtcSAtaSA1MCAt
-VCA2NGIgNTAwYjovdG1wL3J3dGVzdDAxJWYKK2dmMDEgZ3Jvd2ZpbGVzIC1XIGdmMDEgLWIgLWUg
-MSAtdSAtaSAwIC1MIDIwIC13IC1DIDEgLWwgLUkgciAtVCAxMCBnbHNlZWsyMCBnbHNlZWsyMC4y
-IC1kICRUTVBESVIKK2dmMDIgZ3Jvd2ZpbGVzIC1XIGdmMDIgLWIgLWUgMSAtTCAxMCAtaSAxMDAg
-LUkgcCAtUyAyIC11IC1mIGdmMDNfIC1kICRUTVBESVIKK2dmMDMgZ3Jvd2ZpbGVzIC1XIGdmMDMg
-LWIgLWUgMSAtZyAxIC1pIDEgLVMgMTUwIC11IC1mIGdmMDVfIC1kICRUTVBESVIKK2dmMDQgZ3Jv
-d2ZpbGVzIC1XIGdmMDQgLWIgLWUgMSAtZyA0MDkwIC1pIDUwMCAtdCAzOTAwMCAtdSAtZiBnZjA2
-XyAtZCAkVE1QRElSCitnZjA1IGdyb3dmaWxlcyAtVyBnZjA1IC1iIC1lIDEgLWcgNTAwMCAtaSA1
-MDAgLXQgNDk5MDAgLVQxMCAtYzkgLUkgcCAtdSAtZiBnZjA3XyAtZCAkVE1QRElSCitnZjA2IGdy
-b3dmaWxlcyAtVyBnZjA2IC1iIC1lIDEgLXUgLXIgMS01MDAwIC1SIDAtLTEgLWkgMCAtTCAzMCAt
-QyAxIGdfcmFuZDEwIGdfcmFuZDEwLjIgLWQgJFRNUERJUgorZ2YwNyBncm93ZmlsZXMgLVcgZ2Yw
-NyAtYiAtZSAxIC11IC1yIDEtNTAwMCAtUiAwLS0yIC1pIDAgLUwgMzAgLUMgMSAtSSBwIGdfcmFu
-ZDEzIGdfcmFuZDEzLjIgLWQgJFRNUERJUgorZ2YwOCBncm93ZmlsZXMgLVcgZ2YwOCAtYiAtZSAx
-IC11IC1yIDEtNTAwMCAtUiAwLS0yIC1pIDAgLUwgMzAgLUMgMSBnX3JhbmQxMSBnX3JhbmQxMS4y
-IC1kICRUTVBESVIKK2dmMDkgZ3Jvd2ZpbGVzIC1XIGdmMDkgLWIgLWUgMSAtdSAtciAxLTUwMDAg
-LVIgMC0tMSAtaSAwIC1MIDMwIC1DIDEgLUkgcCBnX3JhbmQxMiBnX3JhbmQxMi4yIC1kICRUTVBE
-SVIKK2dmMTAgZ3Jvd2ZpbGVzIC1XIGdmMTAgLWIgLWUgMSAtdSAtciAxLTUwMDAgLWkgMCAtTCAz
-MCAtQyAxIC1JIGwgZ19saW8xNCBnX2xpbzE0LjIgLWQgJFRNUERJUgorZ2YxMSBncm93ZmlsZXMg
-LVcgZ2YxMSAtYiAtZSAxIC11IC1yIDEtNTAwMCAtaSAwIC1MIDMwIC1DIDEgLUkgTCBnX2xpbzE1
-IGdfbGlvMTUuMiAtZCAkVE1QRElSCitnZjEyIG1rZmlmbyAkVE1QRElSL2dmZmlmbzE3OyBncm93
-ZmlsZXMgLWIgLVcgZ2YxMiAtZSAxIC11IC1pIDAgLUwgMzAgZ2ZmaWZvMTcgLWQgJFRNUERJUgor
-Z2YxMyBta2ZpZm8gJFRNUERJUi9nZmZpZm8xODsgZ3Jvd2ZpbGVzIC1iIC1XIGdmMTMgLWUgMSAt
-dSAtaSAwIC1MIDMwIC1JIHIgLXIgMS00MDk2IGdmZmlmbzE4IC1kICRUTVBESVIKK2dmMTQgZ3Jv
-d2ZpbGVzIC1XIGdmMTQgLWIgLWUgMSAtdSAtaSAwIC1MIDIwIC13IC1sIC1DIDEgLVQgMTAgZ2xz
-ZWVrMTkgZ2xzZWVrMTkuMiAtZCAkVE1QRElSCitnZjE1IGdyb3dmaWxlcyAtVyBnZjE1IC1iIC1l
-IDEgLXUgLXIgMS00OTYwMCAtSSByIC11IC1pIDAgLUwgMTIwIExnZmlsZTEgLWQgJFRNUERJUgor
-Z2YxNiBncm93ZmlsZXMgLVcgZ2YxNiAtYiAtZSAxIC1pIDAgLUwgMTIwIC11IC1nIDQwOTAgLVQg
-MTAwIC10IDQwODk5MCAtbCAtQyAxMCAtYyAxMDAwIC1TIDEwIC1mIExnZjAyXyAtZCAkVE1QRElS
-CitnZjE3IGdyb3dmaWxlcyAtVyBnZjE3IC1iIC1lIDEgLWkgMCAtTCAxMjAgLXUgLWcgNTAwMCAt
-VCAxMDAgLXQgNDk5OTkwIC1sIC1DIDEwIC1jIDEwMDAgLVMgMTAgLWYgTGdmMDNfIC1kICRUTVBE
-SVIKK2dmMTggZ3Jvd2ZpbGVzIC1XIGdmMTggLWIgLWUgMSAtaSAwIC1MIDEyMCAtdyAtdSAtciAx
-MC01MDAwIC1JIHIgLWwgLVMgMiAtZiBMZ2YwNF8gLWQgJFRNUERJUgorZ2YxOSBncm93ZmlsZXMg
-LVcgZ2YxOSAtYiAtZSAxIC1nIDUwMDAgLWkgNTAwIC10IDQ5OTAwIC1UMTAgLWM5IC1JIHAgLW8g
-T19SRFdSLE9fQ1JFQVQsT19UUlVOQyAtdSAtZiBnZjA4aV8gLWQgJFRNUERJUgorZ2YyMCBncm93
-ZmlsZXMgLVcgZ2YyMCAtRCAwIC1iIC1pIDAgLUwgNjAgLXUgLUIgMTAwMGIgLWUgMSAtciAxLTI1
-NjAwMDo1MTIgLVIgNTEyLTI1NjAwMCAtVCA0IGdmYmlnaW8tJCQgLWQgJFRNUERJUgorZ2YyMSBn
-cm93ZmlsZXMgLVcgZ2YyMSAtRCAwIC1iIC1pIDAgLUwgNjAgLXUgLUIgMTAwMGIgLWUgMSAtZyAy
-MDQ4MCAtVCAxMCAtdCAyMDQ4MCBnZi1ibGQtJCQgLWQgJFRNUERJUgorZ2YyMiBncm93ZmlsZXMg
-LVcgZ2YyMiAtRCAwIC1iIC1pIDAgLUwgNjAgLXUgLUIgMTAwMGIgLWUgMSAtZyAyMDQ4MCAtVCAx
-MCAtdCAyMDQ4MCBnZi1ibGRmLSQkIC1kICRUTVBESVIKK2dmMjMgZ3Jvd2ZpbGVzIC1XIGdmMjMg
-LUQgMCAtYiAtaSAwIC1MIDYwIC11IC1CIDEwMDBiIC1lIDEgLXIgNTEyLTY0MDAwOjEwMjQgLVIg
-MS0zODQwMDAgLVQgNCBnZi1pbmYtJCQgLWQgJFRNUERJUgorZ2YyNCBncm93ZmlsZXMgLVcgZ2Yy
-NCAtRCAwIC1iIC1pIDAgLUwgNjAgLXUgLUIgMTAwMGIgLWUgMSAtZyAyMDQ4MCBnZi1qYmxkLSQk
-IC1kICRUTVBESVIKK2dmMjUgZ3Jvd2ZpbGVzIC1XIGdmMjUgLUQgMCAtYiAtaSAwIC1MIDYwIC11
-IC1CIDEwMDBiIC1lIDEgLXIgMTAyNDAwMC0yMDQ4MDAwOjIwNDggLVIgNDA5NS0yMDQ4MDAwIC1U
-IDEgZ2YtbGFyZ2UtZ3MtJCQgLWQgJFRNUERJUgorZ2YyNiBncm93ZmlsZXMgLVcgZ2YyNiAtRCAw
-IC1iIC1pIDAgLUwgNjAgLXUgLUIgMTAwMGIgLWUgMSAtciAxMjgtMzI3Njg6MTI4IC1SIDUxMi02
-NDAwMCAtVCA0IGdmc21hbGxpby0kJCAtZCAkVE1QRElSCitnZjI3IGdyb3dmaWxlcyAtVyBnZjI3
-IC1iIC1EIDAgLXcgLWcgOGIgLUMgMSAtYiAtaSAxMDAwIC11IGdmc3BhcnNlLTEtJCQgLWQgJFRN
-UERJUgorZ2YyOCBncm93ZmlsZXMgLVcgZ2YyOCAtYiAtRCAwIC13IC1nIDE2YiAtQyAxIC1iIC1p
-IDEwMDAgLXUgZ2ZzcGFyc2UtMi0kJCAtZCAkVE1QRElSCitnZjI5IGdyb3dmaWxlcyAtVyBnZjI5
-IC1iIC1EIDAgLXIgMS00MDk2IC1SIDAtMzM1NTQ0MzIgLWkgMCAtTCA2MCAtQyAxIC11IGdmc3Bh
-cnNlLTMtJCQgLWQgJFRNUERJUgorZ2YzMCBncm93ZmlsZXMgLVcgZ2YzMCAtRCAwIC1iIC1pIDAg
-LUwgNjAgLXUgLUIgMTAwMGIgLWUgMSAtbyBPX1JEV1IsT19DUkVBVCxPX1NZTkMgLWcgMjA0ODAg
-LVQgMTAgLXQgMjA0ODAgZ2Ytc3luYy0kJCAtZCAkVE1QRElSCityd3Rlc3QwMSBleHBvcnQgTFRQ
-Uk9PVDsgcnd0ZXN0IC1OIHJ3dGVzdDAxIC1jIC1xIC1pIDYwcyAgLWYgc3luYyAxMCUyNTAwMDok
-VE1QRElSL3J3LXN5bmMtJCQKK3J3dGVzdDAyIGV4cG9ydCBMVFBST09UOyByd3Rlc3QgLU4gcnd0
-ZXN0MDIgLWMgLXEgLWkgNjBzICAtZiBidWZmZXJlZCAxMCUyNTAwMDokVE1QRElSL3J3LWJ1ZmZl
-cmVkLSQkCityd3Rlc3QwMyBleHBvcnQgTFRQUk9PVDsgcnd0ZXN0IC1OIHJ3dGVzdDAzIC1jIC1x
-IC1pIDYwcyAtbiAyICAtZiBidWZmZXJlZCAtcyBtbXJlYWQsbW13cml0ZSAtbSByYW5kb20gLUR2
-IDEwJTI1MDAwOiRUTVBESVIvbW0tYnVmZi0kJAorcnd0ZXN0MDQgZXhwb3J0IExUUFJPT1Q7IHJ3
-dGVzdCAtTiByd3Rlc3QwNCAtYyAtcSAtaSA2MHMgLW4gMiAgLWYgc3luYyAtcyBtbXJlYWQsbW13
-cml0ZSAtbSByYW5kb20gLUR2IDEwJTI1MDAwOiRUTVBESVIvbW0tc3luYy0kJAorcnd0ZXN0MDUg
-ZXhwb3J0IExUUFJPT1Q7IHJ3dGVzdCAtTiByd3Rlc3QwNSAtYyAtcSAtaSA1MCAtVCA2NGIgNTAw
-YjokVE1QRElSL3J3dGVzdDAxJWYKIAogI211c3QgYmUgcnVuIGFzIHJvb3QKICNpb2dlbjAxIGlv
-Z2VuIC1pIDEyMHMgLXMgcmVhZCx3cml0ZSA1MDBiOmRvaW8uZjEuJCQgMTAwMGI6ZG9pby5mMi4k
-JCB8IGRvaW8gLWFrdiAtbiAyCkBAIC02Miw3ICs2Miw3IEBAIGxmdGVzdDAxCWxmdGVzdCAxMDAK
-IHdyaXRldGVzdDAxCXdyaXRldGVzdAogCiAjQWxzbyBydW4gdGhlIGZzX2RpIChEYXRhIEludGVn
-cml0eSB0ZXN0cykKLWZzX2RpIGZzX2RpIC1kIC90bXAvCitmc19kaSBmc19kaSAtZCAkVE1QRElS
-CiAKICNBbHNvIHJ1biB0aGUgZnNfcGVybXMgKEZpbGUgU3lzdGVtIFBlcm1pc3Npb24gVGVzdHMp
-CiBmc19wZXJtcyBmc19wZXJtc19zaW1wbGV0ZXN0LnNoCg==
-
-------_=_NextPart_001_01CA4EBD.1E658E80
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net, svaidy@linux.vnet.ibm.com, ego@in.ibm.com, arun@linux.vnet.ibm.com
+
+Modified ilb test to run with ebizzy as default workload.
+ 
+Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+
+diff -uprN ltp-full-20090930/testcases/kernel/power_management/ilb_test.py ltp-full-20090930_patched/testcases/kernel/power_management/ilb_test.py
+--- ltp-full-20090930/testcases/kernel/power_management/ilb_test.py	2009-10-05 02:10:56.000000000 -0400
++++ ltp-full-20090930_patched/testcases/kernel/power_management/ilb_test.py	2009-10-12 23:05:40.000000000 -0400
+@@ -27,7 +27,7 @@ def main(argv=None):
+     parser.add_option("-t", "--smt_level", dest="smt_level",
+         default=0, help="Sched smt power saving value 0/1/2")
+     parser.add_option("-w", "--workload", dest="work_ld",
+-        default="kernbench", help="Workload can be ebizzy/kernbench")
++        default="ebizzy", help="Workload can be ebizzy/kernbench")
+     (options, args) = parser.parse_args()
+ 
+     try:
+@@ -40,10 +40,10 @@ def main(argv=None):
+         map_cpuid_pkgid()
+         print "INFO: Created table mapping cpu to package"
+         background="no"
+-        duration=60
++        duration=120
+         pinned="yes"
+ 
+-        trigger_workld(options.smt_level,options.work_ld, "single_job", duration, background, pinned)
++        trigger_workld(options.smt_level,options.work_ld, "single_job", duration, background, pinned, "no")
+         generate_loc_intr_report()
+         status = validate_ilb(options.mc_level, options.smt_level)
+         reset_schedmc()
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
@@ -203,16 +77,7 @@ is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
-------_=_NextPart_001_01CA4EBD.1E658E80
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------_=_NextPart_001_01CA4EBD.1E658E80--
-
