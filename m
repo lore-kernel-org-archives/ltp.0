@@ -1,32 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mxj8A-00026P-Vk
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 15:17:42 +0000
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mxj83-0004NV-OS
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 15:17:42 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e5.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9DF7qWe028443
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 11:07:52 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n9DFHUbv121978
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 11:17:30 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n9DFDPdp014784
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 11:14:04 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200910050851.n958pjtn011127@e35.co.us.ibm.com>
-References: <200910050851.n958pjtn011127@e35.co.us.ibm.com>
-Date: Tue, 13 Oct 2009 20:14:18 +0530
-Message-Id: <1255445058.8438.79.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Two fixes of the utimes01 test
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <liubo-fnst@cn.fujitsu.com>) id 1Mxdi8-0005Ct-8v
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 09:30:29 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Mxdhz-00026O-0D
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 09:30:28 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id E2CA517011B
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 13 Oct 2009 17:30:07 +0800 (CST)
+Received: from fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id n9D9TYus019349
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 17:29:34 +0800
+Received: from localhost.localdomain (unknown [10.167.141.167])
+	by fnst.cn.fujitsu.com (Postfix) with ESMTPA id 9D296D42F8
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 13 Oct 2009 17:29:07 +0800 (CST)
+Message-ID: <4AD44889.7000406@cn.fujitsu.com>
+Date: Tue, 13 Oct 2009 17:29:45 +0800
+From: liubo <liubo-fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] utimes: fix failure of utimes01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,66 +33,75 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Sat, 2009-07-11 at 11:31 +0200, Jiri Palecek wrote: 
-> - POSIX specifies utimes returns EPERM, not EACCESS, when there are
->    insufficient rights and times is not NULL
-> 
->  - the timeval structures need to be initialized, because garbage in
->    the nanosecond part would cause EINVAL
-> 
-> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+In /testcases/kernel/syscalls/utimes, case02 expects
+"EACCES" error.
 
-Some of your patches like this arrives with old dates and hence my mail
-client pushed them down, sometimes remains un-noticible by me. Tried to
-apply, but failed, probably because of the changes i did today:
-
-patching file testcases/kernel/syscalls/utimes/utimes01.c
-Hunk #1 succeeded at 193 with fuzz 1 (offset -16 lines).
-Hunk #2 FAILED at 224.
-1 out of 2 hunks FAILED -- saving rejects to file
-testcases/kernel/syscalls/utimes/utimes01.c.rej
-
-Regards--
-Subrata
-
-> ---
->  testcases/kernel/syscalls/utimes/utimes01.c |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/utimes/utimes01.c b/testcases/kernel/syscalls/utimes/utimes01.c
-> index 7705269..2fddb99 100644
-> --- a/testcases/kernel/syscalls/utimes/utimes01.c
-> +++ b/testcases/kernel/syscalls/utimes/utimes01.c
-> @@ -209,7 +209,7 @@ static struct test_case tcase[] = {
->                  .m_sec          = 2000,
->                  .user           = "nobody",
->                  .ret            = -1,
-> -                .err            = EACCES, // RHEL4U1 + 2.6.18 returns EPERM
-> +                .err            = EPERM, // RHEL4U1 + 2.6.18 returns EPERM,
->          },
->          { // case03
->                  .ttype          = FILE_NOT_EXIST,
-> @@ -240,7 +240,7 @@ static int do_test(struct test_case *tc)
->  {
->          int sys_ret;
->          int result = RESULT_OK;
-> -	struct timeval tv[2];
-> +        struct timeval tv[2] = { 0 };
->          const char *fpath = FNAME;
->          int rc, cmp_ok = 1;
->          struct stat st;
+According to utimes's manual, =
 
 
-------------------------------------------------------------------------------
+EACCES	times is NULL, the caller=92s effective user ID does not match the
+	owner  of the file, the caller does not have write access to the
+	file, and the caller is not privileged  (Linux:  does  not  have
+	either the CAP_DAC_OVERRIDE or the CAP_FOWNER capability).
+
+However, now case02's times is not NULL so that it can only get "EPERM". =
+
+
+So, change case02's times to NULL to reach its expect. =
+
+
+This patch fixes the problem.
+
+Signed-off-by: Liu Bo <liubo-fnst@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/utimes/utimes01.c |   12 +++++++-----
+ 1 files changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/utimes/utimes01.c b/testcases/kernel=
+/syscalls/utimes/utimes01.c
+index 390b572..ae2fa2d 100644
+--- a/testcases/kernel/syscalls/utimes/utimes01.c
++++ b/testcases/kernel/syscalls/utimes/utimes01.c
+@@ -191,8 +191,6 @@ static struct test_case tcase[] =3D {
+         },
+         { // case02
+                 .ttype          =3D NORMAL,
+-                .a_sec          =3D 1000,
+-                .m_sec          =3D 2000,
+                 .user           =3D "nobody",
+                 .ret            =3D -1,
+                 .err            =3D EACCES, // RHEL4U1 + 2.6.18 returns EP=
+ERM
+@@ -270,9 +268,13 @@ static int do_test(struct test_case *tc)
+                 const char *dummy =3D NULL;
+                 TEST(sys_ret =3D utimes(dummy, tv));
+         }
+-	else
+-                TEST(sys_ret =3D utimes(fpath, tv));
+-        sys_errno =3D errno;
++        else {
++                if (tc->user =3D=3D NULL)
++                        TEST(sys_ret =3D utimes(fpath, tv));
++                else
++                        TEST(sys_ret =3D utimes(fpath, (struct timeval *)N=
+ULL));
++        }
++	sys_errno =3D errno;
+         if (tc->ttype =3D=3D FILE_NOT_EXIST)
+                 fpath[len - 1] =3D c;
+         if (sys_ret < 0)
+
+---------------------------------------------------------------------------=
+---
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
+developing skills, take BlackBerry mobile applications to market and stay =
+
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
 _______________________________________________
