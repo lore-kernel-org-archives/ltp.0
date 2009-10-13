@@ -1,32 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MxicL-00074Y-UC
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 14:44:49 +0000
-Received: from e31.co.us.ibm.com ([32.97.110.149])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MxicF-0005TE-Kw
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 14:44:49 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e31.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9DEbwoq006533
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:37:58 -0600
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n9DEiFls019806
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:44:18 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n9DEiDe6013795
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:44:15 -0600
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MxexZ-0003fn-KR
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 10:50:29 +0000
+Received: from e35.co.us.ibm.com ([32.97.110.153])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MxexT-0007LU-HN
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 10:50:24 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e35.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9DAdTSk021319
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 04:39:29 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n9DAoDuO243118
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 04:50:13 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n9DAoDqi003636
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 04:50:13 -0600
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <364299f40910061549k4684906eu8731521a226021c9@mail.gmail.com>
-References: <364299f40910061549k4684906eu8731521a226021c9@mail.gmail.com>
-Date: Tue, 13 Oct 2009 20:13:45 +0530
-Message-Id: <1255445025.8438.68.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <4AD44889.7000406@cn.fujitsu.com>
+References: <4AD44889.7000406@cn.fujitsu.com>
+Date: Tue, 13 Oct 2009 16:20:10 +0530
+Message-Id: <1255431010.8438.18.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [Issue 4] sched_mc_powersavings missing results in TPASS
+Subject: Re: [LTP] [PATCH] utimes: fix failure of utimes01
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -37,72 +37,66 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "poornima.nayak" <poornima.nayak@in.ibm.com>, poornima nayak <mpnayak@linux.vnet.ibm.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: liubo <liubo-fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Over to Poornima on this.
-
-Regards--
-Subrata
-
-On Tue, 2009-10-06 at 15:49 -0700, Garrett Cooper wrote: 
-> Hi,
->     I've noticed that if /sys/devices/system/cpu/sched_mc_powersavings
-> is missing, the result is TPASS (even though it shouldn't be):
-> 
-> sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-> sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-> Power_Management 8704  TPASS  :  sched domain test for sched_mc=67 &
-> sched_smt=52
-> sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-> sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-> Power_Management 8705  TPASS  :  sched domain test for sched_mc=67 &
-> sched_smt=53
-> sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-> sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-> Power_Management 8706  TPASS  :  sched domain test for sched_mc=67 &
-> sched_smt=54
-> sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-> sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-> Power_Management 8707  TPASS  :  sched domain test for sched_mc=67 &
-> sched_smt=55
-> sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-> sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-> Power_Management 8708  TPASS  :  sched domain test for sched_mc=67 &
-> sched_smt=56
-> sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-> sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-> Power_Management 8709  TPASS  :  sched domain test for sched_mc=67 &
-> sched_smt=57
-> sh: /sys/devices/system/cpu/sched_mc_power_savings: No such file or directory
-> 
->     It should be TCONF and only one check should be required at the
-> script doing the call / loop.
-> Thanks,
-> -Garrett
-> 
-> ------------------------------------------------------------------------------
-> Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-> is the only developer event you need to attend this year. Jumpstart your
-> developing skills, take BlackBerry mobile applications to market and stay 
-> ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-> http://p.sf.net/sfu/devconference
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
-------------------------------------------------------------------------------
-Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-http://p.sf.net/sfu/devconference
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gVHVlLCAyMDA5LTEwLTEzIGF0IDE3OjI5ICswODAwLCBsaXVibyB3cm90ZTogCj4gSW4gL3Rl
+c3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdXRpbWVzLCBjYXNlMDIgZXhwZWN0cwo+ICJFQUNDRVMi
+IGVycm9yLgo+IAo+IEFjY29yZGluZyB0byB1dGltZXMncyBtYW51YWwsIAo+IAo+IEVBQ0NFUwl0
+aW1lcyBpcyBOVUxMLCB0aGUgY2FsbGVy4oCZcyBlZmZlY3RpdmUgdXNlciBJRCBkb2VzIG5vdCBt
+YXRjaCB0aGUKPiAJb3duZXIgIG9mIHRoZSBmaWxlLCB0aGUgY2FsbGVyIGRvZXMgbm90IGhhdmUg
+d3JpdGUgYWNjZXNzIHRvIHRoZQo+IAlmaWxlLCBhbmQgdGhlIGNhbGxlciBpcyBub3QgcHJpdmls
+ZWdlZCAgKExpbnV4OiAgZG9lcyAgbm90ICBoYXZlCj4gCWVpdGhlciB0aGUgQ0FQX0RBQ19PVkVS
+UklERSBvciB0aGUgQ0FQX0ZPV05FUiBjYXBhYmlsaXR5KS4KPiAKPiBIb3dldmVyLCBub3cgY2Fz
+ZTAyJ3MgdGltZXMgaXMgbm90IE5VTEwgc28gdGhhdCBpdCBjYW4gb25seSBnZXQgIkVQRVJNIi4g
+Cj4gCj4gU28sIGNoYW5nZSBjYXNlMDIncyB0aW1lcyB0byBOVUxMIHRvIHJlYWNoIGl0cyBleHBl
+Y3QuIAo+IAo+IFRoaXMgcGF0Y2ggZml4ZXMgdGhlIHByb2JsZW0uCj4gCj4gU2lnbmVkLW9mZi1i
+eTogTGl1IEJvIDxsaXViby1mbnN0QGNuLmZ1aml0c3UuY29tPgoKT2suIFRoYW5rcy4KClJlZ2Fy
+ZHMtLQpTdWJyYXRhCgo+IC0tLQo+ICB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3V0aW1lcy91
+dGltZXMwMS5jIHwgICAxMiArKysrKysrLS0tLS0KPiAgMSBmaWxlcyBjaGFuZ2VkLCA3IGluc2Vy
+dGlvbnMoKyksIDUgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJu
+ZWwvc3lzY2FsbHMvdXRpbWVzL3V0aW1lczAxLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
+L3V0aW1lcy91dGltZXMwMS5jCj4gaW5kZXggMzkwYjU3Mi4uYWUyZmEyZCAxMDA2NDQKPiAtLS0g
+YS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3V0aW1lcy91dGltZXMwMS5jCj4gKysrIGIvdGVz
+dGNhc2VzL2tlcm5lbC9zeXNjYWxscy91dGltZXMvdXRpbWVzMDEuYwo+IEBAIC0xOTEsOCArMTkx
+LDYgQEAgc3RhdGljIHN0cnVjdCB0ZXN0X2Nhc2UgdGNhc2VbXSA9IHsKPiAgICAgICAgICB9LAo+
+ICAgICAgICAgIHsgLy8gY2FzZTAyCj4gICAgICAgICAgICAgICAgICAudHR5cGUgICAgICAgICAg
+PSBOT1JNQUwsCj4gLSAgICAgICAgICAgICAgICAuYV9zZWMgICAgICAgICAgPSAxMDAwLAo+IC0g
+ICAgICAgICAgICAgICAgLm1fc2VjICAgICAgICAgID0gMjAwMCwKPiAgICAgICAgICAgICAgICAg
+IC51c2VyICAgICAgICAgICA9ICJub2JvZHkiLAo+ICAgICAgICAgICAgICAgICAgLnJldCAgICAg
+ICAgICAgID0gLTEsCj4gICAgICAgICAgICAgICAgICAuZXJyICAgICAgICAgICAgPSBFQUNDRVMs
+IC8vIFJIRUw0VTEgKyAyLjYuMTggcmV0dXJucyBFUEVSTQo+IEBAIC0yNzAsOSArMjY4LDEzIEBA
+IHN0YXRpYyBpbnQgZG9fdGVzdChzdHJ1Y3QgdGVzdF9jYXNlICp0YykKPiAgICAgICAgICAgICAg
+ICAgIGNvbnN0IGNoYXIgKmR1bW15ID0gTlVMTDsKPiAgICAgICAgICAgICAgICAgIFRFU1Qoc3lz
+X3JldCA9IHV0aW1lcyhkdW1teSwgdHYpKTsKPiAgICAgICAgICB9Cj4gLQllbHNlCj4gLSAgICAg
+ICAgICAgICAgICBURVNUKHN5c19yZXQgPSB1dGltZXMoZnBhdGgsIHR2KSk7Cj4gLSAgICAgICAg
+c3lzX2Vycm5vID0gZXJybm87Cj4gKyAgICAgICAgZWxzZSB7Cj4gKyAgICAgICAgICAgICAgICBp
+ZiAodGMtPnVzZXIgPT0gTlVMTCkKPiArICAgICAgICAgICAgICAgICAgICAgICAgVEVTVChzeXNf
+cmV0ID0gdXRpbWVzKGZwYXRoLCB0dikpOwo+ICsgICAgICAgICAgICAgICAgZWxzZQo+ICsgICAg
+ICAgICAgICAgICAgICAgICAgICBURVNUKHN5c19yZXQgPSB1dGltZXMoZnBhdGgsIChzdHJ1Y3Qg
+dGltZXZhbCAqKU5VTEwpKTsKPiArICAgICAgICB9Cj4gKwlzeXNfZXJybm8gPSBlcnJubzsKPiAg
+ICAgICAgICBpZiAodGMtPnR0eXBlID09IEZJTEVfTk9UX0VYSVNUKQo+ICAgICAgICAgICAgICAg
+ICAgZnBhdGhbbGVuIC0gMV0gPSBjOwo+ICAgICAgICAgIGlmIChzeXNfcmV0IDwgMCkKPiAKPiAt
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBDb21lIGJ1aWxkIHdpdGggdXMhIFRoZSBCbGFja0JlcnJ5
+KFIpIERldmVsb3BlciBDb25mZXJlbmNlIGluIFNGLCBDQQo+IGlzIHRoZSBvbmx5IGRldmVsb3Bl
+ciBldmVudCB5b3UgbmVlZCB0byBhdHRlbmQgdGhpcyB5ZWFyLiBKdW1wc3RhcnQgeW91cgo+IGRl
+dmVsb3Bpbmcgc2tpbGxzLCB0YWtlIEJsYWNrQmVycnkgbW9iaWxlIGFwcGxpY2F0aW9ucyB0byBt
+YXJrZXQgYW5kIHN0YXkgCj4gYWhlYWQgb2YgdGhlIGN1cnZlLiBKb2luIHVzIGZyb20gTm92ZW1i
+ZXIgOSAtIDEyLCAyMDA5LiBSZWdpc3RlciBub3chCj4gaHR0cDovL3Auc2YubmV0L3NmdS9kZXZj
+b25mZXJlbmNlCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KPiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QKPiBMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5u
+ZXQKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlz
+dAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpDb21lIGJ1aWxkIHdpdGggdXMhIFRoZSBCbGFja0Jl
+cnJ5KFIpIERldmVsb3BlciBDb25mZXJlbmNlIGluIFNGLCBDQQppcyB0aGUgb25seSBkZXZlbG9w
+ZXIgZXZlbnQgeW91IG5lZWQgdG8gYXR0ZW5kIHRoaXMgeWVhci4gSnVtcHN0YXJ0IHlvdXIKZGV2
+ZWxvcGluZyBza2lsbHMsIHRha2UgQmxhY2tCZXJyeSBtb2JpbGUgYXBwbGljYXRpb25zIHRvIG1h
+cmtldCBhbmQgc3RheSAKYWhlYWQgb2YgdGhlIGN1cnZlLiBKb2luIHVzIGZyb20gTm92ZW1iZXIg
+OSAtIDEyLCAyMDA5LiBSZWdpc3RlciBub3chCmh0dHA6Ly9wLnNmLm5ldC9zZnUvZGV2Y29uZmVy
+ZW5jZQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAt
+bGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8v
+bGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
