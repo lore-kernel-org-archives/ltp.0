@@ -1,23 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Mzi2L-0005fu-6I
-	for ltp-list@lists.sourceforge.net; Mon, 19 Oct 2009 02:31:53 +0000
-Received: from mail-px0-f181.google.com ([209.85.216.181])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mzi2C-0002TK-35
-	for ltp-list@lists.sourceforge.net; Mon, 19 Oct 2009 02:31:53 +0000
-Received: by pxi11 with SMTP id 11so461122pxi.28
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 18 Oct 2009 19:31:38 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <364299f40910141841o53235062k4b2ce3ff508ac247@mail.gmail.com>
-References: <364299f40910141841o53235062k4b2ce3ff508ac247@mail.gmail.com>
-Date: Sun, 18 Oct 2009 19:31:38 -0700
-Message-ID: <364299f40910181931y21b2d8chcdd3c77e5e64f785@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [issue 16] ping01 shouldn't use hostname
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mxibh-0007gJ-7O
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 14:44:09 +0000
+Received: from e38.co.us.ibm.com ([32.97.110.159])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MxibY-0005Md-Vp
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 14:44:09 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9DEdb5G009719
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:39:37 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n9DEho5H187512
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:43:50 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n9DEhmeb002779
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:43:50 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4AC90C17.70103@freemail.hu>
+References: <4AC90BBF.9040803@freemail.hu>  <4AC90C17.70103@freemail.hu>
+Date: Tue, 13 Oct 2009 20:13:34 +0530
+Message-Id: <1255445014.8438.65.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] pac_common: redesign function for
+	finding	Start	Of Frame
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,84 +38,121 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: =?ISO-8859-1?Q?N=E9meth_M=E1rton?= <nm127@freemail.hu>
+Cc: Jean-Francois Moine <moinejf@free.fr>, ltp-list@lists.sourceforge.net, LKML <linux-kernel@vger.kernel.org>, Theodore Kilgore <kilgota@auburn.edu>, Thomas Kaiser <thomas@kaiser-linux.li>, V4L Mailing List <linux-media@vger.kernel.org>, Kyle Guinn <elyk03@gmail.com>
 
-On Wed, Oct 14, 2009 at 6:41 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> <output test=3D"ipv6_noexpect : ping6">
-> ping01 =A0 =A0 =A00 =A0TINFO =A0: =A0ping with 8 16 32 64 128 256 512 102=
-4 2048
-> 4064 ICMP packets
->
-> ping01 =A0 =A0 =A00 =A0TINFO =A0: =A0calling ping with packet size =3D 8
->
-> ping: unknown host nova_k5
->
-> ping01 =A0 =A0 =A00 =A0TINFO =A0: =A0Cleaning up.
->
-> ping01 =A0 =A0 =A01 =A0TFAIL =A0: =A0Test broken: failed: ping -c 5 -s 8 =
-nova_k5
->
-> ping01 =A0 =A0 =A00 =A0TINFO =A0: =A0Cleaning up.
-> </output>
-
-This change (which I'm committing to cvs right now) changes the
-default to the loopback address:
-
-gcooper@orangebox
-/scratch/ltp-dev2/ltp/testcases/network/tcp_cmds/ping $ ./ping01
-ping01      0  TINFO  :  ping with 8 16 32 64 128 256 512 1024 2048
-4064 ICMP packets
-ping01      0  TINFO  :  calling ping with packet size =3D 8
-ping01      0  TINFO  :  calling ping with packet size =3D 16
-ping01      0  TINFO  :  calling ping with packet size =3D 32
-ping01      0  TINFO  :  calling ping with packet size =3D 64
-ping01      0  TINFO  :  calling ping with packet size =3D 128
-ping01      0  TINFO  :  calling ping with packet size =3D 256
-ping01      0  TINFO  :  calling ping with packet size =3D 512
-ping01      0  TINFO  :  calling ping with packet size =3D 1024
-ping01      0  TINFO  :  calling ping with packet size =3D 2048
-ping01      0  TINFO  :  calling ping with packet size =3D 4064
-ping01      0  TINFO  :  Cleaning up.
-ping01      1  TPASS  :  Test successful
-gcooper@orangebox /scratch/ltp-dev2/ltp/testcases/network/tcp_cmds/ping $
-
-The default can still be changed by specifying the RHOST environment variab=
-le.
-
-Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
-
-Index: ping01
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: /cvsroot/ltp/ltp/testcases/network/tcp_cmds/ping/ping01,v
-retrieving revision 1.6
-diff -u -r1.6 ping01
---- ping01      9 Oct 2009 17:56:07 -0000       1.6
-+++ ping01      19 Oct 2009 02:30:42 -0000
-@@ -48,9 +48,9 @@
-
-     tst_setup
-
--    exists hostname ping
-+    exists ping
-
--    RHOST=3D${RHOST:-`hostname`}
-+    RHOST=3D${RHOST:-127.0.0.1}
- }
-
----------------------------------------------------------------------------=
----
-Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay =
-
-ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-http://p.sf.net/sfu/devconference
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gU3VuLCAyMDA5LTEwLTA0IGF0IDIyOjU2ICswMjAwLCBOw6ltZXRoIE3DoXJ0b24gd3JvdGU6
+IAo+IEhpLAo+IAo+IEkgd3JvdGUgYSBzaW1wbGUgdGVzdCBmb3IgcGFjX2ZpbmRfc29mKCkuIEkg
+aW1wbGVtZW50ZWQgYSB1c2VyLXNwYWNlIHRlc3QKPiB3aGljaCB0YWtlcyB0aGUgaW1wbGVtZW50
+YXRpb24gZnJvbSB0aGUgc291cmNlIGZpbGUgYW5kIGNhbGxzIGl0IGRpcmVjdGx5Lgo+IFlvdSBj
+YW4gZmluZCB0aGUgc291cmNlIGNvZGUgb2YgdGhlIHRlc3QgYXR0YWNoZWQuCgpOw6ltZXRoLAoK
+Q2FuIHlvdSBwbGVhc2UgYWRkIHRoaXMgdGVzdCB0byBMVFAgdGhlbiA/CgpSZWdhcmRzLS0KU3Vi
+cmF0YQoKPiAKPiBUaGUgdGVzdCByZXN1bHRzIGZvciB0aGUgcGFjX2ZpbmRfc29mKCkgaW1wbGVt
+ZW50YXRpb24gaW4gdGhlIExpbnV4IGtlcm5lbAo+IDIuNi4zMi1yYzEgaXMgdGhlIGZvbGxvd2lu
+ZzoKPiAKPiBUZXN0IGNhc2UgMTogZXhhY3QgbWF0Y2gKPiBQREVCVUc6IFNPRiBmb3VuZCwgYnl0
+ZXMgdG8gYW5hbHl6ZTogNS4gRnJhbWUgc3RhcnRzIGF0IGJ5dGUgIzUKPiBQQVNTRUQKPiAKPiBU
+ZXN0IGNhc2UgMjogb2Zmc2V0IDEKPiBQREVCVUc6IFNPRiBmb3VuZCwgYnl0ZXMgdG8gYW5hbHl6
+ZTogNi4gRnJhbWUgc3RhcnRzIGF0IGJ5dGUgIzYKPiBQQVNTRUQKPiAKPiBUZXN0IGNhc2UgMzog
+b2Zmc2V0IDEsIGZpcnN0IGJ5dGUgbWF5IGJlIG1pc2xlYWRpbmcKPiBGQUlMRUQKPiAKPiBUZXN0
+IGNhc2UgNDogb2Zmc2V0IDIsIGZpcnN0IHR3byBieXRlcyBtYXkgYmUgbWlzbGVhZGluZwo+IFBE
+RUJVRzogU09GIGZvdW5kLCBieXRlcyB0byBhbmFseXplOiA3LiBGcmFtZSBzdGFydHMgYXQgYnl0
+ZSAjNwo+IFBBU1NFRAo+IAo+IFRlc3QgY2FzZSA1OiBvZmZzZXQgMywgZmlyc3QgdGhyZWUgYnl0
+ZXMgbWF5IGJlIG1pc2xlYWRpbmcKPiBGQUlMRUQKPiAKPiBUZXN0IGNhc2UgNjogb2Zmc2V0IDQs
+IGZpcnN0IGZvdXIgYnl0ZXMgbWF5IGJlIG1pc2xlYWRpbmcKPiBGQUlMRUQKPiAKPiBUZXN0IGNh
+c2UgNzogcGF0dGVybiBzdGFydHMgYXQgZW5kIG9mIHBhY2tldCBhbmQgY29udGludWVzIGluIHRo
+ZSBuZXh0IG9uZQo+IFBERUJVRzogU09GIGZvdW5kLCBieXRlcyB0byBhbmFseXplOiAxLiBGcmFt
+ZSBzdGFydHMgYXQgYnl0ZSAjMQo+IFBBU1NFRAo+IAo+IFRlc3QgY2FzZSA4OiBzcGxpdGVkIHBh
+dHRlcm4sIHdpdGggbWlzbGVhZGluZyBmaXJzdCBieXRlCj4gRkFJTEVECj4gCj4gVGVzdCBjYXNl
+IDk6IHNwbGl0ZWQgcGF0dGVybiwgd2l0aCBtaXNsZWFkaW5nIGZpcnN0IHRocmVlIGJ5dGVzCj4g
+RkFJTEVECj4gCj4gVGVzdCBjYXNlIDEwOiBubyBtYXRjaCwgZXh0cmEgYnl0ZSBhdCBvZmZzZXQg
+MQo+IFBBU1NFRAo+IAo+IFRlc3QgY2FzZSAxMTogbm8gbWF0Y2gsIGV4dHJhIGJ5dGUgYXQgb2Zm
+c2V0IDIKPiBQQVNTRUQKPiAKPiBUZXN0IGNhc2UgMTI6IG5vIG1hdGNoLCBleHRyYSBieXRlIGF0
+IG9mZnNldCAzCj4gUEFTU0VECj4gCj4gVGVzdCBjYXNlIDEzOiBubyBtYXRjaCwgZXh0cmEgYnl0
+ZSBhdCBvZmZzZXQgNAo+IFBBU1NFRAo+IAo+IEkgYWxzbyBleGVjdXRlZCB0aGUgdGVzdCB3aXRo
+IHRoZSBwYXRjaGVkIHBhY19maW5kX3NvZigpIGltcGxlbWVudGF0aW9uCj4gYW5kIHRoYXQgb25l
+IHBhc3NlcyBhbGwgdGhlc2UgdGVzdCBjYXNlcy4KPiAKPiBSZWdhcmRzLAo+IAo+IAlNw6FydG9u
+IE7DqW1ldGgKPiAKPiBOw6ltZXRoIE3DoXJ0b24gd3JvdGU6Cj4gPiBGcm9tOiBNw6FydG9uIE7D
+qW1ldGggPG5tMTI3QGZyZWVtYWlsLmh1Pgo+ID4gCj4gPiBUaGUgb3JpZ2luYWwgaW1wbGVtZW50
+YXRpb24gb2YgcGFjX2ZpbmRfc29mKCkgZG9lcyBub3QgYWx3YXlzIGZpbmQKPiA+IHRoZSBTdGFy
+dCBPZiBGcmFtZSAoU09GKSBtYXJrZXIuIFJlcGxhY2UgaXQgd2l0aCBhIHN0YXRlIG1hY2hpbmUK
+PiA+IGJhc2VkIGRlc2lnbi4KPiA+IAo+ID4gVGhlIGNoYW5nZSB3YXMgdGVzdGVkIHdpdGggTGFi
+dGVjIFdlYmNhbSAyMjAwLgo+ID4gCj4gPiBTaWduZWQtb2ZmLWJ5OiBNw6FydG9uIE7DqW1ldGgg
+PG5tMTI3QGZyZWVtYWlsLmh1Pgo+ID4gLS0tCj4gPiAtLS0gbGludXgtMi42LjMyLXJjMS5vcmln
+L2RyaXZlcnMvbWVkaWEvdmlkZW8vZ3NwY2EvcGFjX2NvbW1vbi5oCTIwMDktMDktMTAgMDA6MTM6
+NTkuMDAwMDAwMDAwICswMjAwCj4gPiArKysgbGludXgtMi42LjMyLXJjMS9kcml2ZXJzL21lZGlh
+L3ZpZGVvL2dzcGNhL3BhY19jb21tb24uaAkyMDA5LTEwLTA0IDIxOjQ5OjE5LjAwMDAwMDAwMCAr
+MDIwMAo+ID4gQEAgLTMzLDYgKzMzLDQ1IEBACj4gPiAgc3RhdGljIGNvbnN0IHVuc2lnbmVkIGNo
+YXIgcGFjX3NvZl9tYXJrZXJbNV0gPQo+ID4gIAkJeyAweGZmLCAweGZmLCAweDAwLCAweGZmLCAw
+eDk2IH07Cj4gPiAKPiA+ICsvKgo+ID4gKyAgIFRoZSBmb2xsb3dpbmcgc3RhdGUgbWFjaGluZSBm
+aW5kcyB0aGUgU09GIG1hcmtlciBzZXF1ZW5jZQo+ID4gKyAgIDB4ZmYsIDB4ZmYsIDB4MDAsIDB4
+ZmYsIDB4OTYgaW4gYSBieXRlIHN0cmVhbS4KPiA+ICsKPiA+ICsJICAgKy0tLS0tLS0tLS0rCj4g
+PiArCSAgIHwgMDogU1RBUlQgfDwtLS0tLS0tLS0tLS0tLS1cCj4gPiArCSAgICstLS0tLS0tLS0t
+KzwtXCAgICAgICAgICAgICB8Cj4gPiArCSAgICAgfCAgICAgICBcLS0tL290aGVyd2lzZSAgICB8
+Cj4gPiArCSAgICAgdiAweGZmICAgICAgICAgICAgICAgICAgICB8Cj4gPiArCSAgICstLS0tLS0t
+LS0tKyBvdGhlcndpc2UgICAgICB8Cj4gPiArCSAgIHwgICAgIDEgICAgfC0tLS0tLS0tLS0tLS0t
+LT4qCj4gPiArCSAgIHwgICAgICAgICAgfCAgICAgICAgICAgICAgICBeCj4gPiArCSAgICstLS0t
+LS0tLS0tKyAgICAgICAgICAgICAgICB8Cj4gPiArCSAgICAgfCAgICAgICAgICAgICAgICAgICAg
+ICAgICB8Cj4gPiArCSAgICAgdiAweGZmICAgICAgICAgICAgICAgICAgICB8Cj4gPiArCSAgICst
+LS0tLS0tLS0tKzwtXDB4ZmYgICAgICAgICB8Cj4gPiArCS8tPnwgICAgICAgICAgfC0tLyAgICAg
+ICAgICAgICB8Cj4gPiArCXwgIHwgICAgIDIgICAgfC0tLS0tLS0tLS0tLS0tLT4qCj4gPiArCXwg
+IHwgICAgICAgICAgfCBvdGhlcndpc2UgICAgICBeCj4gPiArCXwgICstLS0tLS0tLS0tKyAgICAg
+ICAgICAgICAgICB8Cj4gPiArCXwgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICB8Cj4gPiAr
+CXwgICAgdiAweDAwICAgICAgICAgICAgICAgICAgICB8Cj4gPiArCXwgICstLS0tLS0tLS0tKyAg
+ICAgICAgICAgICAgICB8Cj4gPiArCXwgIHwgICAgIDMgICAgfCAgICAgICAgICAgICAgICB8Cj4g
+PiArCXwgIHwgICAgICAgICAgfC0tLS0tLS0tLS0tLS0tLT4qCj4gPiArCXwgICstLS0tLS0tLS0t
+KyBvdGhlcndpc2UgICAgICBeCj4gPiArCXwgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICB8
+Cj4gPiArICAgMHhmZiB8ICAgIHYgMHhmZiAgICAgICAgICAgICAgICAgICAgfAo+ID4gKwl8ICAr
+LS0tLS0tLS0tLSsgICAgICAgICAgICAgICAgfAo+ID4gKwlcLS18ICAgICA0ICAgIHwgICAgICAg
+ICAgICAgICAgfAo+ID4gKwkgICB8ICAgICAgICAgIHwtLS0tLS0tLS0tLS0tLS0tLwo+ID4gKwkg
+ICArLS0tLS0tLS0tLSsgb3RoZXJ3aXNlCj4gPiArCSAgICAgfAo+ID4gKwkgICAgIHYgMHg5Ngo+
+ID4gKwkgICArLS0tLS0tLS0tLSsKPiA+ICsJICAgfCAgRk9VTkQgICB8Cj4gPiArCSAgICstLS0t
+LS0tLS0tKwo+ID4gKyovCj4gPiArCj4gPiAgc3RhdGljIHVuc2lnbmVkIGNoYXIgKnBhY19maW5k
+X3NvZihzdHJ1Y3QgZ3NwY2FfZGV2ICpnc3BjYV9kZXYsCj4gPiAgCQkJCQl1bnNpZ25lZCBjaGFy
+ICptLCBpbnQgbGVuKQo+ID4gIHsKPiA+IEBAIC00MSwxNyArODAsNTQgQEAgc3RhdGljIHVuc2ln
+bmVkIGNoYXIgKnBhY19maW5kX3NvZihzdHJ1Ywo+ID4gCj4gPiAgCS8qIFNlYXJjaCBmb3IgdGhl
+IFNPRiBtYXJrZXIgKGZpeGVkIHBhcnQpIGluIHRoZSBoZWFkZXIgKi8KPiA+ICAJZm9yIChpID0g
+MDsgaSA8IGxlbjsgaSsrKSB7Cj4gPiAtCQlpZiAobVtpXSA9PSBwYWNfc29mX21hcmtlcltzZC0+
+c29mX3JlYWRdKSB7Cj4gPiAtCQkJc2QtPnNvZl9yZWFkKys7Cj4gPiAtCQkJaWYgKHNkLT5zb2Zf
+cmVhZCA9PSBzaXplb2YocGFjX3NvZl9tYXJrZXIpKSB7Cj4gPiArCQlzd2l0Y2ggKHNkLT5zb2Zf
+cmVhZCkgewo+ID4gKwkJY2FzZSAwOgo+ID4gKwkJCWlmIChtW2ldID09IDB4ZmYpCj4gPiArCQkJ
+CXNkLT5zb2ZfcmVhZCA9IDE7Cj4gPiArCQkJYnJlYWs7Cj4gPiArCQljYXNlIDE6Cj4gPiArCQkJ
+aWYgKG1baV0gPT0gMHhmZikKPiA+ICsJCQkJc2QtPnNvZl9yZWFkID0gMjsKPiA+ICsJCQllbHNl
+Cj4gPiArCQkJCXNkLT5zb2ZfcmVhZCA9IDA7Cj4gPiArCQkJYnJlYWs7Cj4gPiArCQljYXNlIDI6
+Cj4gPiArCQkJc3dpdGNoIChtW2ldKSB7Cj4gPiArCQkJY2FzZSAweDAwOgo+ID4gKwkJCQlzZC0+
+c29mX3JlYWQgPSAzOwo+ID4gKwkJCQlicmVhazsKPiA+ICsJCQljYXNlIDB4ZmY6Cj4gPiArCQkJ
+CS8qIHN0YXkgaW4gdGhpcyBzdGF0ZSAqLwo+ID4gKwkJCQlicmVhazsKPiA+ICsJCQlkZWZhdWx0
+Ogo+ID4gKwkJCQlzZC0+c29mX3JlYWQgPSAwOwo+ID4gKwkJCX0KPiA+ICsJCQlicmVhazsKPiA+
+ICsJCWNhc2UgMzoKPiA+ICsJCQlpZiAobVtpXSA9PSAweGZmKQo+ID4gKwkJCQlzZC0+c29mX3Jl
+YWQgPSA0Owo+ID4gKwkJCWVsc2UKPiA+ICsJCQkJc2QtPnNvZl9yZWFkID0gMDsKPiA+ICsJCQli
+cmVhazsKPiA+ICsJCWNhc2UgNDoKPiA+ICsJCQlzd2l0Y2ggKG1baV0pIHsKPiA+ICsJCQljYXNl
+IDB4OTY6Cj4gPiArCQkJCS8qIFBhdHRlcm4gZm91bmQgKi8KPiA+ICAJCQkJUERFQlVHKERfRlJB
+TSwKPiA+ICAJCQkJCSJTT0YgZm91bmQsIGJ5dGVzIHRvIGFuYWx5emU6ICV1LiIKPiA+ICAJCQkJ
+CSIgRnJhbWUgc3RhcnRzIGF0IGJ5dGUgIyV1IiwKPiA+ICAJCQkJCWxlbiwgaSArIDEpOwo+ID4g
+IAkJCQlzZC0+c29mX3JlYWQgPSAwOwo+ID4gIAkJCQlyZXR1cm4gbSArIGkgKyAxOwo+ID4gKwkJ
+CQlicmVhazsKPiA+ICsJCQljYXNlIDB4ZmY6Cj4gPiArCQkJCXNkLT5zb2ZfcmVhZCA9IDI7Cj4g
+PiArCQkJCWJyZWFrOwo+ID4gKwkJCWRlZmF1bHQ6Cj4gPiArCQkJCXNkLT5zb2ZfcmVhZCA9IDA7
+Cj4gPiAgCQkJfQo+ID4gLQkJfSBlbHNlIHsKPiA+ICsJCQlicmVhazsKPiA+ICsJCWRlZmF1bHQ6
+Cj4gPiAgCQkJc2QtPnNvZl9yZWFkID0gMDsKPiA+ICAJCX0KPiA+ICAJfQo+ID4gCj4gCj4gLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tCj4gQ29tZSBidWlsZCB3aXRoIHVzISBUaGUgQmxhY2tCZXJyeSZy
+ZWc7IERldmVsb3BlciBDb25mZXJlbmNlIGluIFNGLCBDQQo+IGlzIHRoZSBvbmx5IGRldmVsb3Bl
+ciBldmVudCB5b3UgbmVlZCB0byBhdHRlbmQgdGhpcyB5ZWFyLiBKdW1wc3RhcnQgeW91cgo+IGRl
+dmVsb3Bpbmcgc2tpbGxzLCB0YWtlIEJsYWNrQmVycnkgbW9iaWxlIGFwcGxpY2F0aW9ucyB0byBt
+YXJrZXQgYW5kIHN0YXkgCj4gYWhlYWQgb2YgdGhlIGN1cnZlLiBKb2luIHVzIGZyb20gTm92ZW1i
+ZXIgOSYjNDU7MTIsIDIwMDkuIFJlZ2lzdGVyIG5vdyYjMzM7Cj4gaHR0cDovL3Auc2YubmV0L3Nm
+dS9kZXZjb25mCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18gTHRwLWxpc3QgbWFpbGluZyBsaXN0IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldCBo
+dHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAoKCi0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLQpDb21lIGJ1aWxkIHdpdGggdXMhIFRoZSBCbGFja0JlcnJ5KFIp
+IERldmVsb3BlciBDb25mZXJlbmNlIGluIFNGLCBDQQppcyB0aGUgb25seSBkZXZlbG9wZXIgZXZl
+bnQgeW91IG5lZWQgdG8gYXR0ZW5kIHRoaXMgeWVhci4gSnVtcHN0YXJ0IHlvdXIKZGV2ZWxvcGlu
+ZyBza2lsbHMsIHRha2UgQmxhY2tCZXJyeSBtb2JpbGUgYXBwbGljYXRpb25zIHRvIG1hcmtldCBh
+bmQgc3RheSAKYWhlYWQgb2YgdGhlIGN1cnZlLiBKb2luIHVzIGZyb20gTm92ZW1iZXIgOSAtIDEy
+LCAyMDA5LiBSZWdpc3RlciBub3chCmh0dHA6Ly9wLnNmLm5ldC9zZnUvZGV2Y29uZmVyZW5jZQpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBt
+YWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMu
+c291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
