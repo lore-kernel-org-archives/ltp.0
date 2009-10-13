@@ -1,21 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <rpaulsen@us.ibm.com>) id 1N0g7a-0007jJ-01
-	for ltp-list@lists.sourceforge.net; Wed, 21 Oct 2009 18:41:18 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N0g7U-00006s-0P
-	for ltp-list@lists.sourceforge.net; Wed, 21 Oct 2009 18:41:17 +0000
-In-Reply-To: <364299f40910201401q7d1a6c67k32198b5487b5db92@mail.gmail.com>
-References: <OF87E660BB.5D2E0F9D-ON85257655.005F2225-86257655.005F2F51@us.ibm.com>
-	<364299f40910201401q7d1a6c67k32198b5487b5db92@mail.gmail.com>
-Message-ID: <OF5B77612C.4E892873-ON85257656.00664FFD-86257656.00666FA8@us.ibm.com>
-From: Robert Paulsen <rpaulsen@us.ibm.com>
-Date: Wed, 21 Oct 2009 13:41:03 -0500
-MIME-Version: 1.0
-Subject: Re: [LTP] Fw: LTP vs. SLES11 -- Some FAILs.
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1Mxc3z-0000Pp-Av
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 07:44:55 +0000
+Received: from e31.co.us.ibm.com ([32.97.110.149])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Mxc3s-0003p1-1y
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 07:44:55 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e31.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9D7bwMQ012620
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 01:37:58 -0600
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n9D7iRGj219036
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 01:44:27 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n9D7iR2U013480
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 01:44:27 -0600
+From: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+Date: Tue, 13 Oct 2009 13:14:23 +0530
+Message-Id: <20091013074423.22414.52234.sendpatchset@localhost.localdomain>
+In-Reply-To: <20091013074337.22414.20968.sendpatchset@localhost.localdomain>
+References: <20091013074337.22414.20968.sendpatchset@localhost.localdomain>
+Subject: [LTP] [Patch 6/6] Patch to fix workload installation issue
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,182 +35,32 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sf.net
+To: ltp-list@lists.sourceforge.net, arun@linux.vnet.ibm.com, svaidy@linux.vnet.ibm.com, ego@in.ibm.com
 
-Garrett,
+Patch to fix workload installation issue
 
-Thank for the reply. A couple of follow-up questions:
+Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
 
-   If the tests are not written to the LTP standards why are they accepted
-   into he LTP? At least they should not be included in the default set of
-   tests that get run.
-   Is there any formal acceptance testing before a new/changed test is
-   accepted into the LTP?
+diff -uprN ltp-full-20090930/utils/Makefile ltp-full-20090930_patched/utils/Makefile
+--- ltp-full-20090930/utils/Makefile	2009-10-05 02:10:46.000000000 -0400
++++ ltp-full-20090930_patched/utils/Makefile	2009-10-12 22:48:30.000000000 -0400
+@@ -27,6 +27,6 @@ all: configure
+ 	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i $@; done;
+ 
+ install:
+-
++	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i $@; done;
+ clean:
+ 	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i $@; done;
 
-Robert Paulsen
-IBM Linux Technology Center, Austin
-rpaulsen@us.ibm.com
-512-468-0565
-
-Garrett Cooper <yanegomi@gmail.com> wrote on 10/20/2009 04:01:58 PM:
-
-> Garrett Cooper <yanegomi@gmail.com>
-> 10/20/2009 04:01 PM
->
-> To
->
-> Robert Paulsen/Austin/IBM@IBMUS
->
-> cc
->
-> ltp-list@lists.sf.net
->
-> Subject
->
-> Re: [LTP] Fw: LTP vs. SLES11 -- Some FAILs.
->
-> On Tue, Oct 20, 2009 at 10:21 AM, Robert Paulsen <rpaulsen@us.ibm.com>
-wrote:
-> >
-> > Hello,
-> >
-> > I ran the latest LTP (20090930) against SLES11:
-> >
-> > # cat /etc/issue
-> > Welcome to SUSE Linux Enterprise Server 11 (ppc64) - Kernel \r (\l).
-> > # uname -a
-> > Linux beavis 2.6.27.19-5-ppc64 #1 SMP 2009-02-28 04:40:21 +0100
-> ppc64 ppc64 ppc64 GNU/Linux
-> >
-> > These were all run via "runalltests" so are part of the default set of
-LTP
-> > tests that run.
-> >
-> > There were a number of errors. I didn't expect this as I thought that
-one
-> > way or another the LTP would have been validated against a standard
-distro
-> > like SLES11.
-> >
-> > Are these known failures? In the LTP or SLES11?
-> >
-> > Some of these tests apparently rely on kernel configurations and/or
-> > available resources like real memory that cannot be guaranteed on any
-> > arbitrary installation. Should such tests be run by default?
-> >
-> > Some of these tests just look like sloppy tests, for example the
-> > cron_allow01 an cron_deny01 tests.
-> >
-> > Some tests assume they will be built on the same system on which they
-are
-> > run. In his case that assumption was true but it seems like a very
-unsafe
-> > assumption, especially if a cross build is needed. Even without a cross
-> > build the build and test systems may not always be the same -- the
-reason
-> > for "make package" as describe in README.ltp-devel and why the Makefile
-has
-> > a CROSS_COMPILE macro.
-> >
-> > Here are the fails from the log file:
-> >
-> > eventfd2_03 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 1
-> > inotify01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 1
-> > inotify02 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 1
-> > ppoll01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0=
- 2
-> > quotactl01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
-> > timer_getoverrun01 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
-> > timer_gettime01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 1
-> > utimes01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
-> > Cap_bounds =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 127
-> > su01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =
-=A0 1
-> > cron02 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0=
- 1
-> > cron_deny01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 1
-> > cron_allow01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
-> > at_deny01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 1
-> > at_allow01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
-> > timer_delete02 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
-> > Numa-testcases =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
-> > hugemmap03 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
-> > hugemmap04 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
-> > hugeshmat01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 6
-> > hugeshmat02 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 6
-> > hugeshmat03 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 2
-> > hugeshmctl01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 6
-> > hugeshmctl02 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 6
-> > hugeshmctl03 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 2
-> > hugeshmdt01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 6
-> > hugeshmget01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 2
-> > hugeshmget02 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 6
-> > hugeshmget03 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 6
-> > hugeshmget05 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 2
-> >
-> > A number of tests FAILed despite not showing in the above list.
-> Here is some info from the detailed output file:
-> >
-> > pid_namespace4 =A0 =A01 =A0TFAIL =A0: =A0Container init is killed by SI=
-GKILL !!!
-> > pid_namespace4 =A0 =A02 =A0TFAIL =A0: =A0Container init pid got killed =
-by signal
-9
-> > pidns12 =A0 =A0 1 =A0TFAIL =A0: =A0cinit: signalling PID (from other
-> namespace) is not 0, but 27810.
-> > quotactl01 =A0 =A01 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800002:
-> TEST_ERRNO=3DEFAULT(14): Bad address
-> > quotactl01 =A0 =A02 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800003:
-> TEST_ERRNO=3DEFAULT(14): Bad address
-> > quotactl01 =A0 =A03 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800007:
-> TEST_ERRNO=3DEFAULT(14): Bad address
-> > quotactl01 =A0 =A04 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800008:
-> TEST_ERRNO=3DEFAULT(14): Bad address
-> > quotactl01 =A0 =A05 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800005:
-> TEST_ERRNO=3DEFAULT(14): Bad address
-> > quotactl01 =A0 =A06 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800006:
-> TEST_ERRNO=3DEFAULT(14): Bad address
-> > quotactl01 =A0 =A07 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800004:
-> TEST_ERRNO=3DEFAULT(14): Bad address
-> > quotactl01 =A0 =A08 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800001:
-> TEST_ERRNO=3DEFAULT(14): Bad address
->
-> Hi Robert,
->     I'm not sure about the snapshot you're referring to, but the
-> latest version no longer uses CROSS_COMPILE. You instead must specify
-> CC, CXX, LD, etc either via configure or manually in config.mk, and
-> then move it over to $(abs_top_builddir)/include/mk/config.mk; the
-> preferred method is the former one.
->     Some points:
->     1. quotactl01, etc might have issues because they're half-baked
-> from the point of view that they were functionally moved over to
-> tst_res.c's output format, but instead don't call tst_exit(3) at the
-> end (which is required if you want a sensible exit code). These items
-> need to be found and squashed in the tree.
->     2. genhtml.pl was broken because it's simple parsing method wasn't
-> updated to match the fact that it's now TPASS, TFAIL instead of PASS,
-> FAIL, etc. I fixed it a week ago.
->     That aside, part of the reason I've written up execltp is to parse
-> the exec logs (as opposed to the output log because the output log is
-> all over the place) and find problems using the exec logs depending on
-> the tst_res format to provide all of the details -- I've found that
-> many test writers and porters to LTP have been inconsistent when
-> porting tests, and thus issues with results are harder to find than
-> they should be.
-> Thanks,
-> -Garrett
-
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay =
-
+developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
 _______________________________________________
