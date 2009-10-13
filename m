@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yamato@redhat.com>) id 1My0us-00078O-6T
-	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 10:17:10 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1My0un-0001vK-W9
-	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 10:17:10 +0000
-Date: Wed, 14 Oct 2009 19:23:22 +0900 (JST)
-Message-Id: <20091014.192322.1139091462053274638.yamato@redhat.com>
-From: Masatake YAMATO <yamato@redhat.com>
-In-Reply-To: <1255445034.8438.71.camel@subratamodak.linux.ibm.com>
-References: <20091009.154445.548431512384017812.yamato@redhat.com>
-	<1255445034.8438.71.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-	boundary="--Next_Part(Wed_Oct_14_19_23_22_2009_888)--"
-Content-Transfer-Encoding: 7bit
-Subject: Re: [LTP] Complete the test cases for getuid16
+	(envelope-from <yanegomi@gmail.com>) id 1MxmtC-0002ps-V0
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 19:18:30 +0000
+Received: from mail-pz0-f188.google.com ([209.85.222.188])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Mxmt7-0001Dx-NT
+	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 19:18:30 +0000
+Received: by pzk26 with SMTP id 26so9267944pzk.4
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 13 Oct 2009 12:18:20 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1255445031.8438.70.camel@subratamodak.linux.ibm.com>
+References: <20091008165929.GA27576@us.ibm.com>
+	<1255445031.8438.70.camel@subratamodak.linux.ibm.com>
+Date: Tue, 13 Oct 2009 12:18:20 -0700
+Message-ID: <364299f40910131218y7581540eo7f09fc08f7957c2@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH 1/1] p9auth: fix a bug in the p9auth setup script
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,316 +28,60 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sf.net
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-----Next_Part(Wed_Oct_14_19_23_22_2009_888)--
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-Hi,
-
-> Except the Makefile part, others would apply fine:
-> 
-> patching file testcases/kernel/syscalls/getuid/Makefile
-> Hunk #1 FAILED at 16.
-> 1 out of 1 hunk FAILED -- saving rejects to file
-> testcases/kernel/syscalls/getuid/Makefile.rej
-> patching file testcases/kernel/syscalls/getuid/getuid01.c
-> patching file testcases/kernel/syscalls/getuid/getuid02.c
-> patching file testcases/kernel/syscalls/getuid/getuid03.c
-
-Sorry. I forgot to update my local copy.
-
-I've just recreated the patch with newer build system.
-
-To apply getuid-20091015.patch use -p0 option.
-Put compat_uid.h  at testcases/kernel/syscalls/utils/compat_uid.h.
-Put compat_16.h.  at testcases/kernel/syscalls/getuid/compat_16.h.
-
-I've just modified Makefile since last submitting.
-
-
-Signed-off-by: Masatake YAMATO <yamato@redhat.com>
-
-
-----Next_Part(Wed_Oct_14_19_23_22_2009_888)--
-Content-Type: Text/X-Patch; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline; filename="getuid-20091015.patch"
-
-Index: testcases/kernel/syscalls/getuid/Makefile
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/getuid/Makefile,v
-retrieving revision 1.9
-diff -u -r1.9 Makefile
---- testcases/kernel/syscalls/getuid/Makefile	9 Oct 2009 17:55:56 -0000	1.9
-+++ testcases/kernel/syscalls/getuid/Makefile	14 Oct 2009 10:12:41 -0000
-@@ -20,4 +20,7 @@
- 
- include $(top_srcdir)/include/mk/testcases.mk
- include $(abs_srcdir)/../utils/compat_16.mk
-+
-+CPPFLAGS		+= -I$(abs_srcdir)/../utils
-+
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-Index: testcases/kernel/syscalls/getuid/getuid01.c
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/getuid/getuid01.c,v
-retrieving revision 1.7
-diff -u -r1.7 getuid01.c
---- testcases/kernel/syscalls/getuid/getuid01.c	23 Mar 2009 13:35:45 -0000	1.7
-+++ testcases/kernel/syscalls/getuid/getuid01.c	14 Oct 2009 10:12:41 -0000
-@@ -116,11 +116,12 @@
- #include <signal.h>
- #include "test.h"
- #include "usctest.h"
-+#include "compat_16.h"
- 
- void setup();
- void cleanup();
- 
--char *TCID = "getuid01";	/* Test program identifier.    */
-+TCID_DEFINE(getuid01);          /* Test program identifier.    */
- int TST_TOTAL = 1;		/* Total number of test cases. */
- extern int Tst_count;		/* Test Case counter for tst_* routines */
- 
-@@ -156,7 +157,7 @@
- 		/*
- 		 * Call getuid(2)
- 		 */
--		TEST(getuid());
-+		TEST(GETUID());
- 
- 		/* check return code */
- 		if (TEST_RETURN == -1) {
-Index: testcases/kernel/syscalls/getuid/getuid02.c
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/getuid/getuid02.c,v
-retrieving revision 1.4
-diff -u -r1.4 getuid02.c
---- testcases/kernel/syscalls/getuid/getuid02.c	23 Mar 2009 13:35:45 -0000	1.4
-+++ testcases/kernel/syscalls/getuid/getuid02.c	14 Oct 2009 10:12:41 -0000
-@@ -44,8 +44,9 @@
- #include <errno.h>
- #include <test.h>
- #include <usctest.h>
-+#include "compat_16.h"
- 
--char *TCID = "getuid02";
-+TCID_DEFINE(getuid02);
- int TST_TOTAL = 1;
- extern int Tst_count;
- 
-@@ -71,7 +72,7 @@
- 		/* reset Tst_count in case we are looping */
- 		Tst_count = 0;
- 
--		TEST(geteuid());
-+		TEST(GETEUID());
- 
- 		if (TEST_RETURN < 0) {
- 			tst_brkm(TBROK, cleanup, "This should never happen");
-@@ -83,6 +84,11 @@
- 			if (pwent == NULL) {
- 				tst_resm(TFAIL, "geteuid() returned unexpected "
- 					 "value %d", TEST_RETURN);
-+			} else if (!UID_SIZE_CHECK(pwent->pw_uid)) {
-+				tst_brkm(TBROK,
-+					 cleanup,
-+					 "uid(%d) is too large for testing geteuid16",
-+					 TEST_RETURN);
- 			} else {
- 				if (pwent->pw_uid != TEST_RETURN) {
- 					tst_resm(TFAIL, "getpwuid() value, %d, "
-Index: testcases/kernel/syscalls/getuid/getuid03.c
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/getuid/getuid03.c,v
-retrieving revision 1.6
-diff -u -r1.6 getuid03.c
---- testcases/kernel/syscalls/getuid/getuid03.c	23 Mar 2009 13:35:45 -0000	1.6
-+++ testcases/kernel/syscalls/getuid/getuid03.c	14 Oct 2009 10:12:41 -0000
-@@ -44,8 +44,10 @@
- #include <errno.h>
- #include <test.h>
- #include <usctest.h>
-+#include "compat_16.h"
- 
--char *TCID = "getuid03";
-+
-+TCID_DEFINE(getuid03);
- int TST_TOTAL = 1;
- extern int Tst_count;
- 
-@@ -72,7 +74,7 @@
- 		/* reset Tst_count in case we are looping */
- 		Tst_count = 0;
- 
--		TEST(getuid());
-+		TEST(GETUID());
- 
- 		if (TEST_RETURN < 0) {
- 			tst_brkm(TBROK, cleanup, "This should never happen");
-@@ -84,6 +86,12 @@
- 			if (pwent == NULL) {
- 				tst_resm(TFAIL, "getuid() returned unexpected "
- 					 "value %d", TEST_RETURN);
-+			} else if (!UID_SIZE_CHECK(pwent->pw_uid)) {
-+				tst_brkm(TBROK,
-+					 cleanup,
-+					 "uid(%d) is too large for testing getuid16",
-+					 TEST_RETURN);
-+			  
- 			} else {
- 				if (pwent->pw_uid != TEST_RETURN) {
- 					tst_resm(TFAIL, "getpwuid() value, %d, "
-
-----Next_Part(Wed_Oct_14_19_23_22_2009_888)--
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline; filename="compat_16.h"
-
-/*
- *
- *   Copyright (c) Red Hat Inc., 2008
- *
- *   This program is free software;  you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
- *   the GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program;  if not, write to the Free Software
- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-
-/* Author: Masatake YAMATO <yamato@redhat.com> */
-
-#ifndef __GETUID_COMPAT_16_H__
-#define __GETUID_COMPAT_16_H__
-
-
-#include "linux_syscall_numbers.h"
-#include "compat_uid.h"
-
-
-#ifdef TST_USE_COMPAT16_SYSCALL
-
-UID_T
-GETUID(void)
-{
-	return syscall(__NR_getuid);
-}
-
-UID_T
-GETEUID(void)
-{
-	return syscall(__NR_geteuid);
-}
-
-#else
-
-UID_T
-GETUID(void)
-{
-	return getuid();
-}
-
-UID_T
-GETEUID(void)
-{
-	return geteuid();
-}
-
-#endif
-
-#endif /* __GETUID_COMPAT_16_H__ */
-
-----Next_Part(Wed_Oct_14_19_23_22_2009_888)--
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline; filename="compat_uid.h"
-
-/*
- *
- *   Copyright (c) Red Hat Inc., 2009
- *
- *   This program is free software;  you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
- *   the GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program;  if not, write to the Free Software
- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-
-/* Author: Masatake YAMATO <yamato@redhat.com> */
-
-#ifndef __COMPAT_UID_16_H__
-#define __COMPAT_UID_16_H__
-
-
-#include <asm/posix_types.h>
-
-
-#ifdef TST_USE_COMPAT16_SYSCALL
-typedef __kernel_old_uid_t UID_T;
-int 
-UID_SIZE_CHECK(uid_t uid)
-{
-	/* See high2lowuid in linux/highuid.h
-	   Return 0 if uid is too large to store
-	   it to __kernel_old_uid_t. */
-	return ((uid) & ~0xFFFF)? 0: 1;
-}
-
-#else
-
-typedef uid_t UID_T;
-int 
-UID_SIZE_CHECK(uid_t uid)
-{
-	return 1;
-}
-
-#endif
-
-#endif /* __SETUID_COMPAT_16_H__ */
-
-----Next_Part(Wed_Oct_14_19_23_22_2009_888)--
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-http://p.sf.net/sfu/devconference
-----Next_Part(Wed_Oct_14_19_23_22_2009_888)--
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-----Next_Part(Wed_Oct_14_19_23_22_2009_888)----
-
+T24gVHVlLCBPY3QgMTMsIDIwMDkgYXQgNzo0MyBBTSwgU3VicmF0YSBNb2Rhawo8c3VicmF0YUBs
+aW51eC52bmV0LmlibS5jb20+IHdyb3RlOgo+IE9uIFRodSwgMjAwOS0xMC0wOCBhdCAxMTo1OSAt
+MDUwMCwgU2VyZ2UgRS4gSGFsbHluIHdyb3RlOgo+PiBJZiBieSBjaGFuY2UgL2Rldi9jYXBoYXNo
+IGV4aXN0ZWQgYnV0IC9kZXYvY2FwdXNlIGRpZCBub3QsIHRoZW4KPj4gdGhlIGNoZWNrcDlhdXRo
+LnNoIHNjcmlwdCB3b3VsZCB1c2UgJG1haiB3aXRob3V0IHNldHRpbmcgaXQuCj4+Cj4+IFNpZ25l
+ZC1vZmYtYnk6IFNlcmdlIEhhbGx5biA8c2VydWVAdXMuaWJtLmNvbT4KPgo+IEdhcnJldHTFmyBy
+ZWNlbnQgY2hhbmdlcyBkZWxldGVkIHRoaXMgZmlsZToKPiBodHRwOi8vbHRwLmN2cy5zb3VyY2Vm
+b3JnZS5uZXQvdmlld3ZjL2x0cC9sdHAvdGVzdGNhc2VzL2tlcm5lbC9zZWN1cml0eS9wOWF1dGgv
+Y2hlY2twOWF1dGguc2g/aGlkZWF0dGljPTAmdmlldz1sb2csCj4KPiB8ZGlmZiAtLWdpdCBhL3Rl
+c3RjYXNlcy9rZXJuZWwvc2VjdXJpdHkvcDlhdXRoL2NoZWNrcDlhdXRoLnNoCj4gYi90ZXN0Y2Fz
+ZXMva2VybmVsL3NlY3VyaXR5L3A5YXV0aC9jaGVja3A5YXV0aC5zaAo+IHxpbmRleCA0MzY1NDI3
+Li40YTVhN2Q0IDEwMDc1NQo+IHwtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3NlY3VyaXR5L3A5YXV0
+aC9jaGVja3A5YXV0aC5zaAo+IHwrKysgYi90ZXN0Y2FzZXMva2VybmVsL3NlY3VyaXR5L3A5YXV0
+aC9jaGVja3A5YXV0aC5zaAo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gRmlsZSB0byBw
+YXRjaDoKPiBTa2lwIHRoaXMgcGF0Y2g/IFt5XQo+IFNraXBwaW5nIHBhdGNoLgo+IDIgb3V0IG9m
+IDIgaHVua3MgaWdub3JlZAo+Cj4gUmVnYXJkcy0tCj4gU3VicmF0YQo+Cj4+IC0tLQo+PiDCoHRl
+c3RjYXNlcy9rZXJuZWwvc2VjdXJpdHkvcDlhdXRoL2NoZWNrcDlhdXRoLnNoIHwgwqAgwqA0ICst
+LS0KPj4gwqAxIGZpbGVzIGNoYW5nZWQsIDEgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkK
+Pj4KPj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc2VjdXJpdHkvcDlhdXRoL2NoZWNr
+cDlhdXRoLnNoIGIvdGVzdGNhc2VzL2tlcm5lbC9zZWN1cml0eS9wOWF1dGgvY2hlY2twOWF1dGgu
+c2gKPj4gaW5kZXggNDM2NTQyNy4uNGE1YTdkNCAxMDA3NTUKPj4gLS0tIGEvdGVzdGNhc2VzL2tl
+cm5lbC9zZWN1cml0eS9wOWF1dGgvY2hlY2twOWF1dGguc2gKPj4gKysrIGIvdGVzdGNhc2VzL2tl
+cm5lbC9zZWN1cml0eS9wOWF1dGgvY2hlY2twOWF1dGguc2gKPj4gQEAgLTQ3LDcgKzQ3LDYgQEAg
+aWYgWyAkPyAtbmUgMCBdOyB0aGVuCj4+IMKgZmkKPj4KPj4gwqBtYWpmaWxlPS9zeXMvbW9kdWxl
+L3A5YXV0aC9wYXJhbWV0ZXJzL2NhcF9tYWpvcgo+PiAtbWluZmlsZT0vc3lzL21vZHVsZS9wOWF1
+dGgvcGFyYW1ldGVycy9jYXBfbWlub3IKPj4gwqBpZiBbICEgLWYgIiRtYWpmaWxlIiBdOyB0aGVu
+Cj4+IMKgIMKgIMKgIGlmIFsgJHllc25vIC1lcSAxIF07IHRoZW4gZWNobwo+PiDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCBlY2hvICJubyIKPj4gQEAgLTU2LDE2ICs1NSwxNSBAQCBpZiBbICEgLWYgIiRt
+YWpmaWxlIiBdOyB0aGVuCj4+IMKgIMKgIMKgIGZpCj4+IMKgIMKgIMKgIGV4aXQgMQo+PiDCoGZp
+Cj4+ICttYWo9YGNhdCAkbWFqZmlsZWAKPj4KPj4gwqBpZiBbICEgLWMgIi9kZXYvY2FwaGFzaCIg
+XTsgdGhlbgo+PiDCoCDCoCDCoCBybSAtZiAvZGV2L2NhcGhhc2gKPj4gLSDCoCDCoCBtYWo9YGNh
+dCAkbWFqZmlsZWAKPj4gwqAgwqAgwqAgbWtub2QgL2Rldi9jYXBoYXNoIGMgJG1haiAwCj4+IMKg
+ZmkKPj4KPj4gwqBpZiBbICEgLWMgIi9kZXYvY2FwdXNlIiBdOyB0aGVuCj4+IMKgIMKgIMKgIHJt
+IC1mIC9kZXYvY2FwdXNlCj4+IC0gwqAgwqAgbWluPWBjYXQgJG1pbmZpbGVgCj4+IMKgIMKgIMKg
+IG1rbm9kIC9kZXYvY2FwdXNlIGMgJG1haiAxCj4+IMKgZmkKPj4gwqBjaG1vZCB1Z28rdyAvZGV2
+L2NhcHVzZQoKICAgIE9rLi4uIEkgZGlkbid0IGFkZCBpbiBhIHJlcGxhY2VtZW50IGZvciB0aGlz
+IGl0ZW0gPjwuIEJhc2ljYWxseSBpdAp3YXMgYmVpbmcgdXNlZCBhdCBidWlsZCB0aW1lLCBpbmNv
+cnJlY3RseSwgYW5kIHRodXMgd291bGQgcG9zc2libHkKZ2l2ZSBmYWxzZSBwb3NpdGl2ZXMgb3Ig
+ZmFsc2UgbmVnYXRpdmVzIHdoZW4gY3Jvc3MtY29tcGlsaW5nLiBTb21lIG9mCnRoZXNlIHJvdXRp
+bmVzIG5lZWQgdG8gYmUgYWRkZWQgdG8gdGhlIGNhbGxpbmcgc2NyaXB0LgogICAgV2hhdCBpcyBy
+ZXF1aXJlZCBhbmQgd2hhdCBpc24ndCByZXF1aXJlZCBmb3IgZXhlY3V0aW9uPwpUaGFua3MsCi1H
+YXJyZXR0CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ29tZSBidWlsZCB3aXRoIHVzISBUaGUgQmxh
+Y2tCZXJyeShSKSBEZXZlbG9wZXIgQ29uZmVyZW5jZSBpbiBTRiwgQ0EKaXMgdGhlIG9ubHkgZGV2
+ZWxvcGVyIGV2ZW50IHlvdSBuZWVkIHRvIGF0dGVuZCB0aGlzIHllYXIuIEp1bXBzdGFydCB5b3Vy
+CmRldmVsb3Bpbmcgc2tpbGxzLCB0YWtlIEJsYWNrQmVycnkgbW9iaWxlIGFwcGxpY2F0aW9ucyB0
+byBtYXJrZXQgYW5kIHN0YXkgCmFoZWFkIG9mIHRoZSBjdXJ2ZS4gSm9pbiB1cyBmcm9tIE5vdmVt
+YmVyIDkgLSAxMiwgMjAwOS4gUmVnaXN0ZXIgbm93IQpodHRwOi8vcC5zZi5uZXQvc2Z1L2RldmNv
+bmZlcmVuY2UKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+THRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRw
+czovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
