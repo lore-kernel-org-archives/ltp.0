@@ -1,26 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1N4BNH-00045C-Mo
-	for ltp-list@lists.sourceforge.net; Sat, 31 Oct 2009 10:39:59 +0000
-Received: from fmmailgate03.web.de ([217.72.192.234])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N4BNB-0006Jl-5m
-	for ltp-list@lists.sourceforge.net; Sat, 31 Oct 2009 10:39:59 +0000
-Date: Sat, 31 Oct 2009 12:42:12 +0100
-From: =?iso-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <hyei@mvista.com>) id 1MyB9Z-0006AZ-KD
+	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 21:13:01 +0000
+Received: from gateway-1237.mvista.com ([63.81.120.158])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MyB9T-00017I-BT
+	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 21:13:01 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-References: <200910211528.n9LFST8q028289@e35.co.us.ibm.com>
-	<1256576544.4929.54.camel@subratamodak.linux.ibm.com>
-	<loom.20091029T190532-79@post.gmane.org>
-	<1256902668.13702.2.camel@subratamodak.linux.ibm.com>
-	<op.u2l52sjuu2flwt@debian>
-	<1256905177.13702.4.camel@subratamodak.linux.ibm.com>
-	<364299f40910302339h5940a0cdjdcb9a18ccbbb0a7d@mail.gmail.com>
-Message-ID: <op.u2nxgmm3u2flwt@debian>
-In-Reply-To: <364299f40910302339h5940a0cdjdcb9a18ccbbb0a7d@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] Fix some bashisms
+Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01CA4D11.C9710FE0"
+Date: Wed, 14 Oct 2009 14:04:37 -0700
+Message-ID: <8368651DACC1964480F951191B94A0780153D52A@svexch01.mvista.com>
+In-Reply-To: <364299f40910141219q59e9b87evdfe4a5f2e131b7f4@mail.gmail.com>
+References: <8368651DACC1964480F951191B94A0780153D4DC@svexch01.mvista.com>
+	<364299f40910141219q59e9b87evdfe4a5f2e131b7f4@mail.gmail.com>
+From: "Henry Yei" <hyei@mvista.com>
+Subject: Re: [LTP] [PATCH][rwtest] use default size for blks if parsing df
+	output fails to return numeric argument
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,186 +28,172 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>, subrata@linux.vnet.ibm.com
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
 
-On Sat, 31 Oct 2009 07:39:54 +0100, Garrett Cooper <yanegomi@gmail.com>  =
+This is a multi-part message in MIME format.
 
-wrote:
+------_=_NextPart_001_01CA4D11.C9710FE0
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
-> On Fri, Oct 30, 2009 at 5:19 AM, Subrata Modak
-> <subrata@linux.vnet.ibm.com> wrote:
->> On Fri, 2009-10-30 at 13:53 +0100, Ji=F8=ED Pale=E8ek wrote:
->>> On Fri, 30 Oct 2009 12:37:48 +0100, Subrata Modak
->>> <subrata@linux.vnet.ibm.com> wrote:
->>>
->>> > On Thu, 2009-10-29 at 18:12 +0000, Ji=F8=EDPale=E8ek wrote:
->>> >> Hello,
->>> >>
->>> >> Subrata Modak <subrata@...> writes:
->>> >>
->>> >> >
->>> >> > On Wed, 2009-10-21 at 02:19 +0200, Jiri Palecek wrote:
->>> >> > > Hello,
->>> >> > >
->>> >> > > this is another patch fixing bashisms in LTP tests (the fixes  =
+> -----Original Message-----
+> From: Garrett Cooper [mailto:yanegomi@gmail.com]
+> Sent: Wednesday, October 14, 2009 12:19 PM
+> To: Henry Yei
+> Cc: LTP Mailing List
+> Subject: Re: [LTP] [PATCH][rwtest] use default size for blks if =
+parsing
+> df output fails to return numeric argument
+>=20
+> On Wed, Oct 14, 2009 at 12:04 PM, Henry Yei <hyei@mvista.com> wrote:
+> > All,
+> >
+> > This patch for rwtest.sh sets a default size for the number of =
+blocks
+> within the filesystem the test is executing on if parsing "df output"
+> somehow results in a non-numeric value(unexpected df output). Also
+> removes trailing whitespace.
+> >
+> > Signed-off-by: Henry Yei <hyei@mvista.com>
+> >
+> >
+> > Garret,
+> >
+> > Per message Subject: [LTP] [issue 8] rwtest*: iogen / rwtest needs =
+to
+> createprerequisite directory paths,
+> > Would a simple mkdir suffice inside the rwtest script to handle that
+> issue?
+>=20
+> mkdir -p would, yup!
+> Thanks,
+> -Garrett
 
->>> are
->>> >> more or
->>> >> less the same as in the previous
->>> >> > patches, except for a few exceptions). Note that the patch is not
->>> >> complete,
->>> >> in the sense that there may
->>> >> > remain further bashisms in the source even after applying the  =
+Here is the updated rwtest.sh patch that includes creation of the =
+directory if it doesn=92t exist, and cleanup of the directory afterwards =
+to resolve issue # pointed out by Garrett Cooper.
 
->>> patch
->>> >> (like use
->>> >> of arrays, which is visible
->>> >> > even from this patch).
->>> >> > >
->>> >> > > Regards
->>> >> > > =A0 =A0 Jiri Palecek
->>> >> > >
->>> >> > > Signed-off-by: Jiri Palecek <jpalecek@...>
->>> >> >
->>> >> > Hmm,. Some of them failed to apply. Can you please resend only the
->>> >> error
->>> >> > part(s):
->>> >> >
->>> >>
->>> >> according to my git repository. these are the missing parts:
->>> >>
->>> >> Signed-off-by: Jiri Palecek <jpalecek@web.de>
->>> >
->>> > Then something wrong with my CVS:
->>> >
->>> > patching file testcases/kernel/fs/fs-bench/modaltr.sh
->>> > Hunk #1 FAILED at 43.
->>> > 1 out of 1 hunk FAILED -- saving rejects to file
->>> > testcases/kernel/fs/fs-bench/modaltr.sh.rej
->>> > patching file testcases/kernel/fs/mongo/test.sh
->>> > Hunk #1 FAILED at 26.
->>> > Hunk #2 FAILED at 52.
->>> > Hunk #3 FAILED at 70.
->>> > 3 out of 3 hunks FAILED -- saving rejects to file
->>> > testcases/kernel/fs/mongo/test.sh.rej
->>> > patching file testcases/network/tcp_cmds/netstat/netstat01
->>> >
->>> > Can you please verify ?
->>>
->>> It works for me in CVS, so I guess it was just a linewrap, whitespace  =
+Henry
 
->>> or
->>> something issue. See attachment for the original (uncrippled) patch.
->>
->> Yes, it works fine now :-)
->> patching file testcases/kernel/fs/fs-bench/modaltr.sh
->> patching file testcases/kernel/fs/mongo/test.sh
->> patching file testcases/network/tcp_cmds/netstat/netstat01
->
-> Sorry for replying late again, but just for future reference, there's
-> a function called is_root in $(abs_top_srcdir)/testcases/lib/cmdlib.sh
-> [in the install tree -- it gets put in
-> $(abs_top_builddir)/testcases/bin] that can be leveraged s.t. you
-> don't have to do $(id -ru) -eq 0 everywhere. There are some other
-> handy constructs and functions too that can be used for expediting
-> setup, execution, and teardown. The only thing that might be a
-> detractor for some legacy scripts is that I explicitly did set -u to
-> avoid QA issues with unset variables, so all variables must be defined
-> before including the cmd library.
->
-> Using that script though would be helpful as it cuts down on a lot of
-> duplicate code and aims to be completely POSIX compliant. Some other
-> pluses:
->
-> 1. incr_tst_count - increments $TST_COUNT appropriately.
-> 2. TCID is automatically set if not already provided.
-> 3. exists is a function which ensures that commands exist on a given
-> system before executing a test.
-> 4. Common SHELL_DEBUG logic.
->
-> Just trying to make life a little easier for test writers and
-> maintainers if possible :]...
+------_=_NextPart_001_01CA4D11.C9710FE0
+Content-Type: application/octet-stream;
+	name="rwtest_sh.patch"
+Content-Transfer-Encoding: base64
+Content-Description: rwtest_sh.patch
+Content-Disposition: attachment;
+	filename="rwtest_sh.patch"
 
-Thanks for noting it. I think, however, that it would be much morer  =
+LS0tIGx0cC90ZXN0Y2FzZXMva2VybmVsL2ZzL2RvaW8vcnd0ZXN0LnNoCTIwMDktMTAtMTMgMTI6
+NDE6MDMuNTg4MDAwMDAwIC0wNzAwCisrKyBsdHAtd2Rpci90ZXN0Y2FzZXMva2VybmVsL2ZzL2Rv
+aW8vcnd0ZXN0LnNoCTIwMDktMTAtMTQgMTM6NDk6NDkuNTY3ODI1MDQyIC0wNzAwCkBAIC0xLDMz
+ICsxLDMzIEBACiAjIS9iaW4vYmFzaAogCiAjIENvcHlyaWdodCAoYykgMjAwMCBTaWxpY29uIEdy
+YXBoaWNzLCBJbmMuICBBbGwgUmlnaHRzIFJlc2VydmVkLgotIyAKKyMKICMgVGhpcyBwcm9ncmFt
+IGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkg
+aXQKICMgdW5kZXIgdGhlIHRlcm1zIG9mIHZlcnNpb24gMiBvZiB0aGUgR05VIEdlbmVyYWwgUHVi
+bGljIExpY2Vuc2UgYXMKICMgcHVibGlzaGVkIGJ5IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRp
+b24uCi0jIAorIwogIyBUaGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhh
+dCBpdCB3b3VsZCBiZSB1c2VmdWwsIGJ1dAogIyBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgd2l0aG91
+dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCiAjIE1FUkNIQU5UQUJJTElUWSBvciBGSVRO
+RVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4KLSMgCisjCiAjIEZ1cnRoZXIsIHRoaXMgc29m
+dHdhcmUgaXMgZGlzdHJpYnV0ZWQgd2l0aG91dCBhbnkgd2FycmFudHkgdGhhdCBpdCBpcwogIyBm
+cmVlIG9mIHRoZSByaWdodGZ1bCBjbGFpbSBvZiBhbnkgdGhpcmQgcGVyc29uIHJlZ2FyZGluZyBp
+bmZyaW5nZW1lbnQKICMgb3IgdGhlIGxpa2UuICBBbnkgbGljZW5zZSBwcm92aWRlZCBoZXJlaW4s
+IHdoZXRoZXIgaW1wbGllZCBvcgogIyBvdGhlcndpc2UsIGFwcGxpZXMgb25seSB0byB0aGlzIHNv
+ZnR3YXJlIGZpbGUuICBQYXRlbnQgbGljZW5zZXMsIGlmCiAjIGFueSwgcHJvdmlkZWQgaGVyZWlu
+IGRvIG5vdCBhcHBseSB0byBjb21iaW5hdGlvbnMgb2YgdGhpcyBwcm9ncmFtIHdpdGgKICMgb3Ro
+ZXIgc29mdHdhcmUsIG9yIGFueSBvdGhlciBwcm9kdWN0IHdoYXRzb2V2ZXIuCi0jIAorIwogIyBZ
+b3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMg
+TGljZW5zZSBhbG9uZwogIyB3aXRoIHRoaXMgcHJvZ3JhbTsgaWYgbm90LCB3cml0ZSB0aGUgRnJl
+ZSBTb2Z0d2FyZSBGb3VuZGF0aW9uLCBJbmMuLCA1OQogIyBUZW1wbGUgUGxhY2UgLSBTdWl0ZSAz
+MzAsIEJvc3RvbiBNQSAwMjExMS0xMzA3LCBVU0EuCi0jIAorIwogIyBDb250YWN0IGluZm9ybWF0
+aW9uOiBTaWxpY29uIEdyYXBoaWNzLCBJbmMuLCAxNjAwIEFtcGhpdGhlYXRyZSBQa3d5LAogIyBN
+b3VudGFpbiBWaWV3LCBDQSAgOTQwNDMsIG9yOgotIyAKLSMgaHR0cDovL3d3dy5zZ2kuY29tIAot
+IyAKLSMgRm9yIGZ1cnRoZXIgaW5mb3JtYXRpb24gcmVnYXJkaW5nIHRoaXMgbm90aWNlLCBzZWU6
+IAotIyAKKyMKKyMgaHR0cDovL3d3dy5zZ2kuY29tCisjCisjIEZvciBmdXJ0aGVyIGluZm9ybWF0
+aW9uIHJlZ2FyZGluZyB0aGlzIG5vdGljZSwgc2VlOgorIwogIyBodHRwOi8vb3NzLnNnaS5jb20v
+cHJvamVjdHMvR2VuSW5mby9Ob3RpY2VFeHBsYW4vCiAKICMKQEAgLTU5LDcgKzU5LDcgQEAgaGVs
+cCgpCiB7CiAJZWNobyAiXAogICAgIC1jICAgICAgICAgICBDbGVhbnVwIHRlc3QgZmlsZXMgY3Jl
+YXRlZCBieSB0aGlzIGludm9jYXRpb24gb24gZXhpdC4KLSAgICAgICAgICAgICAgICAgRGVmYXVs
+dCBpcyB0byBsZWF2ZSB0aGVtLiAgCisgICAgICAgICAgICAgICAgIERlZmF1bHQgaXMgdG8gbGVh
+dmUgdGhlbS4KICAgICAtaCAgICAgICAgICAgVGhpcyBoZWxwIC0gaWdub3JlIGFsbCBvdGhlciBv
+cHRpb25zL2FyZ3VtZW50cwogICAgIC1GCQkgT25seSBwcm9jZXNzIGZpbGVuYW1lcyAtIGRvZXMg
+bm90IHJ1biBpb2dlbiAmIGRvaW8uCiAgICAgLVAgUGxhY2VzCSBOb3QgdXNlZApAQCAtNzgsNyAr
+NzgsNyBAQCBoZWxwKCkKICAgICAgICAgICAgICAgICAgRGVmYXVsdCBpcyAxLiAgSWYgLW4gaXMg
+bm9uLXplcm8sIGRvaW8ncyAtayBvcHRpb24gKHVzZQogCQkgZmlsZSBsb2NraW5nKSBpcyBmb3Jj
+ZWQuCiAKLSAgICBmaWxlcyAgICAgICAgRmlsZXMgdG8gdGVzdCBvbi4gIEZpbGUgbmFtZXMgaGF2
+ZSB0aGUgZm9sbG93aW5nIGZvbWF0OgorICAgIGZpbGVzICAgICAgICBGaWxlcyB0byB0ZXN0IG9u
+LiAgRmlsZSBuYW1lcyBoYXZlIHRoZSBmb2xsb3dpbmcgZm9ybWF0OgogCQkgWyBzaXplOiBdIHBh
+dGgKIAkJIFsgZnJlZSUgWyBtYXggc2l6ZSBdIDogXSBwYXRoCiAJCSBJZiBubyBzaXplIGlzIHNw
+ZWNpZmllZCwgdGhlIGZpbGVzIG11c3QgZXhpc3QKQEAgLTg2LDcgKzg2LDcgQEAgaGVscCgpCiAg
+ICAgICAgICAgICAgICAgIHdyaXRlYSBzeXN0ZW0gY2FsbHMuICBJZiBhIHNpemUgaXMgc3VwcGxp
+ZWQsIGFuIGF0dGVtcHQgdG8KICAgICAgICAgICAgICAgICAgY3JlYXRlL2dyb3cvc2hyaW5rIHBh
+dGggdG8gdGhlIGRlc2lyZWQgc2l6ZSB3aWxsIGJlIG1hZGUuCiAgICAgICAgICAgICAgICAgIHNp
+emUgaXMgYW4gaW50ZWdlciB3aGljaCBkZWZhdWx0cyB0byBieXRlcywgYnV0IG1heSBiZQotICAg
+ICAgICAgICAgICAgICBzdWZmaXhlZCBieSAnYicsICdrJywgb3IgJ20nIGZvciBibG9ja3MgKDQw
+OTYgYnl0ZSB1bml0cyksIAorICAgICAgICAgICAgICAgICBzdWZmaXhlZCBieSAnYicsICdrJywg
+b3IgJ20nIGZvciBibG9ja3MgKDQwOTYgYnl0ZSB1bml0cyksCiAJICAgICAgICAga2lsb2J5dGVz
+ICgxMDI0IGJ5dGUgdW5pdHMpLCBvciBtZWdhYnl0ZXMgKDJeMjAgYnl0ZSB1bml0cykuCiAKIAkJ
+IElmIHRoZSBzaXplIGlzIGEgcGVyY2VudGFnZSwgZGYgaXMgdXNlZCB0byBmaW5kIGhvdyBtdWNo
+CkBAIC0xMTIsNyArMTEyLDcgQEAgY2xlYW51cF9hbmRfZXhpdCgpCiAJdGhlbgogCQlpZiBbIC1u
+ICIkRmlsZXNfVG9fUmVtb3ZlIiBdCiAJCXRoZW4KLQkJCXJtIC1mICRGaWxlc19Ub19SZW1vdmUK
+KwkJCXJtIC1yZiAkRmlsZXNfVG9fUmVtb3ZlCiAJCWZpCiAJZmkKIApAQCAtMzA0LDYgKzMwNCwx
+MiBAQCBkbwogCWZpCiAKIAlkaXI9JChkaXJuYW1lICRmaWxlKQorCSMgY3JlYXRlIGRpcmVjdG9y
+eSBmb3IgZmlsZSBpZiBub24tZXhpc3RlbnQKKwlpZiBbICEgLWQgIiRkaXIiIF0KKwl0aGVuCisJ
+CW1rZGlyIC1wICRkaXIKKwkJRmlsZXNfVG9fUmVtb3ZlPSIkRmlsZXNfVG9fUmVtb3ZlICRkaXIi
+CisJZmkKIAlzaXplPSR7ZiUlOip9CiAJaWYgW1sgJHNpemUgPSAqJSogXV0KIAl0aGVuCkBAIC0z
+MjYsOCArMzMyLDggQEAgZG8KICAgICAgICAgICAgICAgICAgICAgICAgIGlmIHRlc3QgLWggJCh3
+aGljaCBkZikKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRoZW4KICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICBkaXI9IiI7IGRmT3B0cz0iIjsKLSAgICAgICAgICAgICAgICAgICAg
+ICAgIGZpICAgICAgCi0JCisgICAgICAgICAgICAgICAgICAgICAgICBmaQorCiAJCQlibGtzPSQo
+ZGYgJGRmT3B0cyAkZGlyIHwKIAkJCSh3aGlsZSByZWFkIGZzIGJsa3MgdXNlZCBhdmFpbCBjYXAg
+bW91bnRwb2ludAogCQkJIGRvCkBAIC0zMzYsMzMgKzM0Miw0MSBAQCBkbwogCQkJIGRvbmUKIAkJ
+CSBlY2hvICRiKSApCiAKLQkJCWNhc2UgJCh1bmFtZSkgaW4KLQkJCUxpbnV4KSAgYmxrcz0kKCBl
+eHByICRibGtzIC8gMiApIDs7Ci0JCQllc2FjCi0KLQkJCXN6Y2FjaGVbJHsjc3pjYWNoZVsqXX0r
+MV09JGRpcgotCQkJc3pibGtzWyR7I3N6Ymxrc1sqXX0rMV09JGJsa3MKLQkJZmkKLQotCQltYXg9
+JHtzaXplIyMqXCV9Ci0JCWlmIFtbICIkbWF4IiA9ICIiIF1dCi0JCXRoZW4KLQkJCW1heD0xMDAw
+MDAwCi0JCWZpCi0JCXNpemU9JHtzaXplJSVcJSp9Ci0KLQkJY2FzZSAkKHVuYW1lKSBpbgotCQlJ
+UklYKikKLQkJICBzej0kKCBwZXJsIC1sZSAncHJpbnQgaW50KCAnJGJsa3MnICogJyRzaXplJyAv
+IDEwMCApJyApCi0JCSAgOzsKLQkJKikKLQkJICBzej0kKGV4cHIgXCggJGJsa3MgJyonICRzaXpl
+IFwpIC8gMTAwKQotCQkgIDs7Ci0JCWVzYWMKLQotCQlpZiBbICRzeiAtZ3QgJG1heCBdCi0JCXRo
+ZW4KLQkJCXN6PSRtYXgKKwkJCSMgY2hlY2sgaWYgYmxrcyBpcyBhIG51bWJlciwgZWxzZSBzZXQg
+YSBkZWZhdWx0IHZhbHVlIGZvciBibGtzCisJCQlkZWZhdWx0X3N6PTEwMDAwMDAKKwkJCWlmIFsg
+JGJsa3MgLWVxICRibGtzIDI+IC9kZXYvbnVsbCBdCisJCQl0aGVuCisKKwkJCQljYXNlICQodW5h
+bWUpIGluCisJCQkJTGludXgpICBibGtzPSQoIGV4cHIgJGJsa3MgLyAyICkgOzsKKwkJCQllc2Fj
+CisKKwkJCQlzemNhY2hlWyR7I3N6Y2FjaGVbKl19KzFdPSRkaXIKKwkJCQlzemJsa3NbJHsjc3pi
+bGtzWypdfSsxXT0kYmxrcworCisJCQkJbWF4PSR7c2l6ZSMjKlwlfQorCQkJCWlmIFtbICIkbWF4
+IiA9ICIiIF1dCisJCQkJdGhlbgorCQkJCQltYXg9JGRlZmF1bHRfc3oKKwkJCQlmaQorCQkJCXNp
+emU9JHtzaXplJSVcJSp9CisKKwkJCQljYXNlICQodW5hbWUpIGluCisJCQkJSVJJWCopCisJCQkJ
+ICBzej0kKCBwZXJsIC1sZSAncHJpbnQgaW50KCAnJGJsa3MnICogJyRzaXplJyAvIDEwMCApJyAp
+CisJCQkJICA7OworCQkJCSopCisJCQkJICBzej0kKGV4cHIgXCggJGJsa3MgJyonICRzaXplIFwp
+IC8gMTAwKQorCQkJCSAgOzsKKwkJCQllc2FjCisKKwkJCQlpZiBbICRzeiAtZ3QgJG1heCBdCisJ
+CQkJdGhlbgorCQkJCQlzej0kbWF4CisJCQkJZmkKKwkJCWVsc2UKKwkJCQlzej0kZGVmYXVsdF9z
+egorCQkJZmkKIAkJZmkKIAkJZj0kc3oiYjoiJGZpbGUKIAlmaQo=
 
-valuable to create exact duplicate of the C test API (or a subset of it)  =
+------_=_NextPart_001_01CA4D11.C9710FE0
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-for shell scripts, as this would permit to remove much of the hacky stuff  =
-
-about maintaining TST_COUNT and return value from the shell scripts.
-
-Looking at the file you mentioned, I have just a few remarks:
-
-tst_cleanup()
-{
-     # Disable the trap EXIT handler.
-     trap '' EXIT
-     # To ensure set -u passes...
-     TCtmp=3D${TCtmp:=3D}
-
-Why? Shouldn't it catch invalid use (eg. without doing tst_setup first)?
-
-     # Nuke the testcase temporary directory if it exists.
-     [ -d "$TCtmp" ] && rm -rf "$TCtmp"                           (1)
-}
-
-tst_setup() {
-
-     TST_COUNT=3D1
-     TST_TOTAL=3D${TST_TOTAL:=3D1}                                    (2)
-     export TCID TST_COUNT TST_TOTAL
-
-     for varname in TST_TOTAL; do
-         if eval "test -z \"\$${varname}\""; then
-             end_testcase "You must set ${varname} before calling setup()."
-         fi
-     done
-
-What is the sense of doing "test -z "$TST_TOTAL"" in such an elaborate  =
-
-way, especially when you reset TST_TOTAL in (2) so test -z $TST_TOTAL can  =
-
-never be true here?
-
-...
-
-     TCtmp=3D${TCtmp:=3D$TEMPDIR/$TC$$}
-     # User wants a temporary sandbox to play with.
-     if [ -n "$TCtmp" -a "$TCtmp" !=3D "$TEMPDIR/$$" ] ; then
-         test -d "$TCtmp" || mkdir -p "$TCtmp"
-
-What is so special about "$TEMPDIR/$$" that you refuse to create a  =
-
-directory with this name, but still delete it in (1)?
-
-...
-}
-
-incr_tst_count()
-{
-     : $(( TST_COUNT + 1 ))
-}
-
-Was this really meant this way (ie. as a code with no effect), or should  =
-
-it be "+=3D"?
-
-Regards
-     Jiri Palecek
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay =
-
+developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
+------_=_NextPart_001_01CA4D11.C9710FE0
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------_=_NextPart_001_01CA4D11.C9710FE0--
+
