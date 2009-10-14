@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Mz1ob-0000Yq-F7
-	for ltp-list@lists.sourceforge.net; Sat, 17 Oct 2009 05:26:53 +0000
-Received: from mail-pz0-f199.google.com ([209.85.222.199])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mz1oT-0003kt-NX
-	for ltp-list@lists.sourceforge.net; Sat, 17 Oct 2009 05:26:53 +0000
-Received: by pzk37 with SMTP id 37so2237261pzk.10
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 16 Oct 2009 22:26:39 -0700 (PDT)
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1My7sA-0006HA-Au
+	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 17:42:50 +0000
+Received: from mail-pz0-f191.google.com ([209.85.222.191])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1My7s5-0003hZ-H3
+	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 17:42:50 +0000
 MIME-Version: 1.0
-Date: Fri, 16 Oct 2009 22:26:39 -0700
-Message-ID: <364299f40910162226h3266a625j96b408bf3632f530@mail.gmail.com>
+In-Reply-To: <20091014.192322.1139091462053274638.yamato@redhat.com>
+References: <20091009.154445.548431512384017812.yamato@redhat.com>
+	<1255445034.8438.71.camel@subratamodak.linux.ibm.com>
+	<20091014.192322.1139091462053274638.yamato@redhat.com>
+Date: Wed, 14 Oct 2009 10:42:39 -0700
+Message-ID: <364299f40910141042j3db8f375u9ce668b55c1089e@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] Issue with autoconf not honoring linux/types.h
+Subject: Re: [LTP] Complete the test cases for getuid16
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,138 +26,64 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Masatake YAMATO <yamato@redhat.com>
+Cc: ltp-list@lists.sf.net
 
-Hi Mike,
-    Looking at the configure log, autoconf is incorrectly pruning
-linux/types.h from the list of headers, and as such linux/taskstats.h
-fails to compile successfully.
-    Do you have any idea how I should fix this noise?
-AC_DEFAULT_INCLUDES didn't help.
-    The log snippet and the m4 file (minus the comments) are attached.
-Thanks,
+On Wed, Oct 14, 2009 at 3:23 AM, Masatake YAMATO <yamato@redhat.com> wrote:
+> Hi,
+>
+>> Except the Makefile part, others would apply fine:
+>>
+>> patching file testcases/kernel/syscalls/getuid/Makefile
+>> Hunk #1 FAILED at 16.
+>> 1 out of 1 hunk FAILED -- saving rejects to file
+>> testcases/kernel/syscalls/getuid/Makefile.rej
+>> patching file testcases/kernel/syscalls/getuid/getuid01.c
+>> patching file testcases/kernel/syscalls/getuid/getuid02.c
+>> patching file testcases/kernel/syscalls/getuid/getuid03.c
+>
+> Sorry. I forgot to update my local copy.
+>
+> I've just recreated the patch with newer build system.
+>
+> To apply getuid-20091015.patch use -p0 option.
+> Put compat_uid.h =A0at testcases/kernel/syscalls/utils/compat_uid.h.
+> Put compat_16.h. =A0at testcases/kernel/syscalls/getuid/compat_16.h.
+>
+> I've just modified Makefile since last submitting.
+>
+>
+> Signed-off-by: Masatake YAMATO <yamato@redhat.com>
+
+Looks good! One question (just for my personal curiosity), is
+__NR_geteuid a 16-bit syscall? I'm asking because of this code...
+
+UID_T
+GETUID(void)
+{
+	return syscall(__NR_getuid);
+}
+
+UID_T
+GETEUID(void)
+{
+	return syscall(__NR_geteuid);
+}
+
+If so, what's the 32-bit syscall constant?
+
+Thanks!
 -Garrett
 
-### ltp-taskstats.m4 ###
-
-AC_DEFUN([LTP_CHECK_TASKSTATS],
-_LTP_CHECK_TASKSTATS_FREEPAGES
-)
-
-AC_DEFUN([_LTP_CHECK_TASKSTATS_FREEPAGES],[
-AC_INCLUDES_DEFAULT([
-#include <linux/types.h>
-])
-AC_CHECK_HEADERS_ONCE([linux/taskstats.h],[
-    AC_CHECK_MEMBERS([struct taskstats.freepages_count, struct
-taskstats.nvcsw, struct taskstats.read_bytes],
-                     [],[],[dnl
-#include <linux/taskstats.h>
-])
-])
-])
-
-### config.log snippet ###
-
-configure:4766: checking for linux/types.h
-configure:4775: result: yes
-configure:4655: checking linux/taskstats.h usability
-configure:4672: gcc -c -g -O2  conftest.c >&5
-In file included from conftest.c:64:
-/usr/include/linux/taskstats.h:44: error: expected
-specifier-qualifier-list before '__u16'
-configure:4679: $? = 1
-configure: failed program was:
-| /* confdefs.h.  */
-| #define PACKAGE_NAME "ltp"
-| #define PACKAGE_TARNAME "ltp"
-| #define PACKAGE_VERSION "20090930"
-| #define PACKAGE_STRING "ltp 20090930"
-| #define PACKAGE_BUGREPORT "ltp-results@lists.sourceforge.net"
-| #define PACKAGE "ltp"
-| #define VERSION "20090930"
-| #define YYTEXT_POINTER 1
-| #define STDC_HEADERS 1
-| #define HAVE_SYS_TYPES_H 1
-| #define HAVE_SYS_STAT_H 1
-| #define HAVE_STDLIB_H 1
-| #define HAVE_STRING_H 1
-| #define HAVE_MEMORY_H 1
-| #define HAVE_STRINGS_H 1
-| #define HAVE_INTTYPES_H 1
-| #define HAVE_STDINT_H 1
-| #define HAVE_UNISTD_H 1
-| #define HAVE_IFADDRS_H 1
-| #define HAVE_LIBAIO_H 1
-| #define HAVE_MM_H 1
-| #define HAVE_LINUX_GENETLINK_H 1
-| #define HAVE_LINUX_NETLINK_H 1
-| #define HAVE_SYS_ACL_H 1
-| #define HAVE_SYS_EPOLL_H 1
-| #define HAVE_SYS_INOTIFY_H 1
-| #define HAVE_SYS_PRCTL_H 1
-| #define HAVE_LINUX_TYPES_H 1
-| /* end confdefs.h.  */
-| #include <stdio.h>
-| #ifdef HAVE_SYS_TYPES_H
-| # include <sys/types.h>
-| #endif
-| #ifdef HAVE_SYS_STAT_H
-| # include <sys/stat.h>
-| #endif
-| #ifdef STDC_HEADERS
-| # include <stdlib.h>
-| # include <stddef.h>
-| #else
-| # ifdef HAVE_STDLIB_H
-| #  include <stdlib.h>
-| # endif
-| #endif
-| #ifdef HAVE_STRING_H
-| # if !defined STDC_HEADERS && defined HAVE_MEMORY_H
-| #  include <memory.h>
-| # endif
-| # include <string.h>
-| #endif
-| #ifdef HAVE_STRINGS_H
-| # include <strings.h>
-| #endif
-| #ifdef HAVE_INTTYPES_H
-| # include <inttypes.h>
-| #endif
-| #ifdef HAVE_STDINT_H
-| # include <stdint.h>
-| #endif
-| #ifdef HAVE_UNISTD_H
-| # include <unistd.h>
-| #endif
-| #include <linux/taskstats.h>
-configure:4693: result: no
-configure:4697: checking linux/taskstats.h presence
-configure:4712: gcc -E  conftest.c
-configure:4719: $? = 0
-configure:4733: result: yes
-configure:4746: WARNING: linux/taskstats.h: present but cannot be compiled
-configure:4748: WARNING: linux/taskstats.h:     check for missing
-prerequisite headers?
-configure:4750: WARNING: linux/taskstats.h: see the Autoconf documentation
-configure:4752: WARNING: linux/taskstats.h:     section "Present But
-Cannot Be Compiled"
-configure:4754: WARNING: linux/taskstats.h: proceeding with the
-preprocessor's result
-configure:4756: WARNING: linux/taskstats.h: in the future, the
-compiler will take precedence
-configure:4766: checking for linux/taskstats.h
-configure:4775: result: yes
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
+developing skills, take BlackBerry mobile applications to market and stay =
+
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
 _______________________________________________
