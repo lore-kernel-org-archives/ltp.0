@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <rpaulsen@us.ibm.com>) id 1N0IPP-0004od-3z
-	for ltp-list@lists.sourceforge.net; Tue, 20 Oct 2009 17:22:07 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N0IPG-0004Uj-5z
-	for ltp-list@lists.sourceforge.net; Tue, 20 Oct 2009 17:22:07 +0000
-Message-ID: <OF87E660BB.5D2E0F9D-ON85257655.005F2225-86257655.005F2F51@us.ibm.com>
-From: Robert Paulsen <rpaulsen@us.ibm.com>
-Date: Tue, 20 Oct 2009 12:21:47 -0500
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MyB0Q-0004Jp-UO
+	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 21:03:34 +0000
+Received: from mail-pz0-f188.google.com ([209.85.222.188])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MyB0O-0001eJ-3W
+	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 21:03:34 +0000
+Received: by pzk26 with SMTP id 26so160331pzk.4
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 14 Oct 2009 14:03:26 -0700 (PDT)
 MIME-Version: 1.0
-Subject: [LTP] Fw: LTP vs. SLES11 -- Some FAILs.
+Date: Wed, 14 Oct 2009 14:03:26 -0700
+Message-ID: <364299f40910141403mc5e784bpa8c76113a95edbbf@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: [LTP] [issue 12] check_envval is looking for the locale command
+	(doesn't exist on all systems)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,93 +29,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sf.net
+To: LTP list <ltp-list@lists.sourceforge.net>
 
+    I'm seeing a lot of output from network_stress.log with the following lines:
 
-Hello,
+/tests/ltp/output/network_stress.whole-output.log:/tests/ltp/testcases/bin/check_envval:
+line 48: locale: command not found
 
-I ran the latest LTP (20090930) against SLES11:
+    Looks like the test needs to be integrated with cmdlib.sh and
+check for the command before continuing.
 
-# cat /etc/issue
-Welcome to SUSE Linux Enterprise Server 11 (ppc64) - Kernel \r (\l).
-# uname -a
-Linux beavis 2.6.27.19-5-ppc64 #1 SMP 2009-02-28 04:40:21 +0100 ppc64 ppc64 ppc64 GNU/Linux
-
-These were all run via "runalltests" so are part of the default set of LTP
-tests that run.
-
-There were a number of errors. I didn't expect this as I thought that one
-way or another the LTP would have been validated against a standard distro
-like SLES11.
-
-Are these known failures? In the LTP or SLES11?
-
-Some of these tests apparently rely on kernel configurations and/or
-available resources like real memory that cannot be guaranteed on any
-arbitrary installation. Should such tests be run by default?
-
-Some of these tests just look like sloppy tests, for example the
-cron_allow01 an cron_deny01 tests.
-
-Some tests assume they will be built on the same system on which they are
-run. In his case that assumption was true but it seems like a very unsafe
-assumption, especially if a cross build is needed. Even without a cross
-build the build and test systems may not always be the same -- the reason
-for "make package" as describe in README.ltp-devel and why the Makefile has
-a CROSS_COMPILE macro.
-
-Here are the fails from the log file:
-
-eventfd2_03                    FAIL       1
-inotify01                      FAIL       1
-inotify02                      FAIL       1
-ppoll01                        FAIL       2
-quotactl01                     FAIL       1
-timer_getoverrun01             FAIL       1
-timer_gettime01                FAIL       1
-utimes01                       FAIL       1
-Cap_bounds                     FAIL       127
-su01                           FAIL       1
-cron02                         FAIL       1
-cron_deny01                    FAIL       1
-cron_allow01                   FAIL       1
-at_deny01                      FAIL       1
-at_allow01                     FAIL       1
-timer_delete02                 FAIL       1
-Numa-testcases                 FAIL       1
-hugemmap03                     FAIL       1
-hugemmap04                     FAIL       1
-hugeshmat01                    FAIL       6
-hugeshmat02                    FAIL       6
-hugeshmat03                    FAIL       2
-hugeshmctl01                   FAIL       6
-hugeshmctl02                   FAIL       6
-hugeshmctl03                   FAIL       2
-hugeshmdt01                    FAIL       6
-hugeshmget01                   FAIL       2
-hugeshmget02                   FAIL       6
-hugeshmget03                   FAIL       6
-hugeshmget05                   FAIL       2
-
-A number of tests FAILed despite not showing in the above list. Here is some info from the detailed output file:
-
-pid_namespace4    1  TFAIL  :  Container init is killed by SIGKILL !!!
-pid_namespace4    2  TFAIL  :  Container init pid got killed by signal 9
-pidns12     1  TFAIL  :  cinit: signalling PID (from other namespace) is not 0, but 27810.
-quotactl01    1  TFAIL  :  quotactl01 failed, cmd=0x800002: TEST_ERRNO=EFAULT(14): Bad address
-quotactl01    2  TFAIL  :  quotactl01 failed, cmd=0x800003: TEST_ERRNO=EFAULT(14): Bad address
-quotactl01    3  TFAIL  :  quotactl01 failed, cmd=0x800007: TEST_ERRNO=EFAULT(14): Bad address
-quotactl01    4  TFAIL  :  quotactl01 failed, cmd=0x800008: TEST_ERRNO=EFAULT(14): Bad address
-quotactl01    5  TFAIL  :  quotactl01 failed, cmd=0x800005: TEST_ERRNO=EFAULT(14): Bad address
-quotactl01    6  TFAIL  :  quotactl01 failed, cmd=0x800006: TEST_ERRNO=EFAULT(14): Bad address
-quotactl01    7  TFAIL  :  quotactl01 failed, cmd=0x800004: TEST_ERRNO=EFAULT(14): Bad address
-quotactl01    8  TFAIL  :  quotactl01 failed, cmd=0x800001: TEST_ERRNO=EFAULT(14): Bad address
-
-Robert Paulsen
-IBM Linux Technology Center, Austin
-rpaulsen@us.ibm.com
-512-468-0565
-
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
