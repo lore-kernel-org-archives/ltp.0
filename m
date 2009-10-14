@@ -2,32 +2,26 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MxexZ-0003fn-KR
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 10:50:29 +0000
-Received: from e35.co.us.ibm.com ([32.97.110.153])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MxexT-0007LU-HN
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 10:50:24 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e35.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9DAdTSk021319
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 04:39:29 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n9DAoDuO243118
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 04:50:13 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n9DAoDqi003636
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 04:50:13 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4AD44889.7000406@cn.fujitsu.com>
-References: <4AD44889.7000406@cn.fujitsu.com>
-Date: Tue, 13 Oct 2009 16:20:10 +0530
-Message-Id: <1255431010.8438.18.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] utimes: fix failure of utimes01
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <yanegomi@gmail.com>) id 1My9at-0006ah-Lo
+	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 19:33:07 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1My9ap-0005q5-6d
+	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 19:33:07 +0000
+Received: by pwj1 with SMTP id 1so106189pwj.2
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 14 Oct 2009 12:32:56 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <364299f40910141231x6fb16559obe7470e34209b080@mail.gmail.com>
+References: <364299f40910122222q5117ecf0i854db292154132c7@mail.gmail.com>
+	<200910130130.30228.vapier@gentoo.org>
+	<364299f40910122240p586a60aarc796112b68c519e2@mail.gmail.com>
+	<200910130143.53176.vapier@gentoo.org>
+	<364299f40910141231x6fb16559obe7470e34209b080@mail.gmail.com>
+Date: Wed, 14 Oct 2009 12:32:56 -0700
+Message-ID: <364299f40910141232h2ea46499r637654312897aa3b@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] convert linktest.pl to linktest.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,66 +31,280 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: liubo <liubo-fnst@cn.fujitsu.com>
+To: Mike Frysinger <vapier@gentoo.org>
 Cc: ltp-list@lists.sourceforge.net
 
-T24gVHVlLCAyMDA5LTEwLTEzIGF0IDE3OjI5ICswODAwLCBsaXVibyB3cm90ZTogCj4gSW4gL3Rl
-c3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvdXRpbWVzLCBjYXNlMDIgZXhwZWN0cwo+ICJFQUNDRVMi
-IGVycm9yLgo+IAo+IEFjY29yZGluZyB0byB1dGltZXMncyBtYW51YWwsIAo+IAo+IEVBQ0NFUwl0
-aW1lcyBpcyBOVUxMLCB0aGUgY2FsbGVy4oCZcyBlZmZlY3RpdmUgdXNlciBJRCBkb2VzIG5vdCBt
-YXRjaCB0aGUKPiAJb3duZXIgIG9mIHRoZSBmaWxlLCB0aGUgY2FsbGVyIGRvZXMgbm90IGhhdmUg
-d3JpdGUgYWNjZXNzIHRvIHRoZQo+IAlmaWxlLCBhbmQgdGhlIGNhbGxlciBpcyBub3QgcHJpdmls
-ZWdlZCAgKExpbnV4OiAgZG9lcyAgbm90ICBoYXZlCj4gCWVpdGhlciB0aGUgQ0FQX0RBQ19PVkVS
-UklERSBvciB0aGUgQ0FQX0ZPV05FUiBjYXBhYmlsaXR5KS4KPiAKPiBIb3dldmVyLCBub3cgY2Fz
-ZTAyJ3MgdGltZXMgaXMgbm90IE5VTEwgc28gdGhhdCBpdCBjYW4gb25seSBnZXQgIkVQRVJNIi4g
-Cj4gCj4gU28sIGNoYW5nZSBjYXNlMDIncyB0aW1lcyB0byBOVUxMIHRvIHJlYWNoIGl0cyBleHBl
-Y3QuIAo+IAo+IFRoaXMgcGF0Y2ggZml4ZXMgdGhlIHByb2JsZW0uCj4gCj4gU2lnbmVkLW9mZi1i
-eTogTGl1IEJvIDxsaXViby1mbnN0QGNuLmZ1aml0c3UuY29tPgoKT2suIFRoYW5rcy4KClJlZ2Fy
-ZHMtLQpTdWJyYXRhCgo+IC0tLQo+ICB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3V0aW1lcy91
-dGltZXMwMS5jIHwgICAxMiArKysrKysrLS0tLS0KPiAgMSBmaWxlcyBjaGFuZ2VkLCA3IGluc2Vy
-dGlvbnMoKyksIDUgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJu
-ZWwvc3lzY2FsbHMvdXRpbWVzL3V0aW1lczAxLmMgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
-L3V0aW1lcy91dGltZXMwMS5jCj4gaW5kZXggMzkwYjU3Mi4uYWUyZmEyZCAxMDA2NDQKPiAtLS0g
-YS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3V0aW1lcy91dGltZXMwMS5jCj4gKysrIGIvdGVz
-dGNhc2VzL2tlcm5lbC9zeXNjYWxscy91dGltZXMvdXRpbWVzMDEuYwo+IEBAIC0xOTEsOCArMTkx
-LDYgQEAgc3RhdGljIHN0cnVjdCB0ZXN0X2Nhc2UgdGNhc2VbXSA9IHsKPiAgICAgICAgICB9LAo+
-ICAgICAgICAgIHsgLy8gY2FzZTAyCj4gICAgICAgICAgICAgICAgICAudHR5cGUgICAgICAgICAg
-PSBOT1JNQUwsCj4gLSAgICAgICAgICAgICAgICAuYV9zZWMgICAgICAgICAgPSAxMDAwLAo+IC0g
-ICAgICAgICAgICAgICAgLm1fc2VjICAgICAgICAgID0gMjAwMCwKPiAgICAgICAgICAgICAgICAg
-IC51c2VyICAgICAgICAgICA9ICJub2JvZHkiLAo+ICAgICAgICAgICAgICAgICAgLnJldCAgICAg
-ICAgICAgID0gLTEsCj4gICAgICAgICAgICAgICAgICAuZXJyICAgICAgICAgICAgPSBFQUNDRVMs
-IC8vIFJIRUw0VTEgKyAyLjYuMTggcmV0dXJucyBFUEVSTQo+IEBAIC0yNzAsOSArMjY4LDEzIEBA
-IHN0YXRpYyBpbnQgZG9fdGVzdChzdHJ1Y3QgdGVzdF9jYXNlICp0YykKPiAgICAgICAgICAgICAg
-ICAgIGNvbnN0IGNoYXIgKmR1bW15ID0gTlVMTDsKPiAgICAgICAgICAgICAgICAgIFRFU1Qoc3lz
-X3JldCA9IHV0aW1lcyhkdW1teSwgdHYpKTsKPiAgICAgICAgICB9Cj4gLQllbHNlCj4gLSAgICAg
-ICAgICAgICAgICBURVNUKHN5c19yZXQgPSB1dGltZXMoZnBhdGgsIHR2KSk7Cj4gLSAgICAgICAg
-c3lzX2Vycm5vID0gZXJybm87Cj4gKyAgICAgICAgZWxzZSB7Cj4gKyAgICAgICAgICAgICAgICBp
-ZiAodGMtPnVzZXIgPT0gTlVMTCkKPiArICAgICAgICAgICAgICAgICAgICAgICAgVEVTVChzeXNf
-cmV0ID0gdXRpbWVzKGZwYXRoLCB0dikpOwo+ICsgICAgICAgICAgICAgICAgZWxzZQo+ICsgICAg
-ICAgICAgICAgICAgICAgICAgICBURVNUKHN5c19yZXQgPSB1dGltZXMoZnBhdGgsIChzdHJ1Y3Qg
-dGltZXZhbCAqKU5VTEwpKTsKPiArICAgICAgICB9Cj4gKwlzeXNfZXJybm8gPSBlcnJubzsKPiAg
-ICAgICAgICBpZiAodGMtPnR0eXBlID09IEZJTEVfTk9UX0VYSVNUKQo+ICAgICAgICAgICAgICAg
-ICAgZnBhdGhbbGVuIC0gMV0gPSBjOwo+ICAgICAgICAgIGlmIChzeXNfcmV0IDwgMCkKPiAKPiAt
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBDb21lIGJ1aWxkIHdpdGggdXMhIFRoZSBCbGFja0JlcnJ5
-KFIpIERldmVsb3BlciBDb25mZXJlbmNlIGluIFNGLCBDQQo+IGlzIHRoZSBvbmx5IGRldmVsb3Bl
-ciBldmVudCB5b3UgbmVlZCB0byBhdHRlbmQgdGhpcyB5ZWFyLiBKdW1wc3RhcnQgeW91cgo+IGRl
-dmVsb3Bpbmcgc2tpbGxzLCB0YWtlIEJsYWNrQmVycnkgbW9iaWxlIGFwcGxpY2F0aW9ucyB0byBt
-YXJrZXQgYW5kIHN0YXkgCj4gYWhlYWQgb2YgdGhlIGN1cnZlLiBKb2luIHVzIGZyb20gTm92ZW1i
-ZXIgOSAtIDEyLCAyMDA5LiBSZWdpc3RlciBub3chCj4gaHR0cDovL3Auc2YubmV0L3NmdS9kZXZj
-b25mZXJlbmNlCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KPiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QKPiBMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5u
-ZXQKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlz
-dAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpDb21lIGJ1aWxkIHdpdGggdXMhIFRoZSBCbGFja0Jl
-cnJ5KFIpIERldmVsb3BlciBDb25mZXJlbmNlIGluIFNGLCBDQQppcyB0aGUgb25seSBkZXZlbG9w
-ZXIgZXZlbnQgeW91IG5lZWQgdG8gYXR0ZW5kIHRoaXMgeWVhci4gSnVtcHN0YXJ0IHlvdXIKZGV2
-ZWxvcGluZyBza2lsbHMsIHRha2UgQmxhY2tCZXJyeSBtb2JpbGUgYXBwbGljYXRpb25zIHRvIG1h
-cmtldCBhbmQgc3RheSAKYWhlYWQgb2YgdGhlIGN1cnZlLiBKb2luIHVzIGZyb20gTm92ZW1iZXIg
-OSAtIDEyLCAyMDA5LiBSZWdpc3RlciBub3chCmh0dHA6Ly9wLnNmLm5ldC9zZnUvZGV2Y29uZmVy
-ZW5jZQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAt
-bGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8v
-bGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+On Wed, Oct 14, 2009 at 12:31 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> This proposed change makes linktest.pl into linktest.sh, to avoid
+> missing coverage with symlinks and hardlinks due to a lacking perl
+> dependency on the target host.
+>
+> This change has been outstanding for some time in our private copy of
+> LTP and needed to get checked into CVS.
+>
+> //edit[1]: Incorporate comments made by Mike F.
+>
+> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+>
+> diff --exclude '*CVS*' -NaurP ./runtest/fs ../ltp.bk/runtest/fs
+> --- ./runtest/fs =A0 =A0 =A0 =A02009-10-12 22:06:10.000000000 -0700
+> +++ ../ltp.bk/runtest/fs =A0 =A0 =A0 =A02009-10-12 22:09:12.000000000 -07=
+00
+> @@ -40,7 +40,7 @@
+> =A0iogen01 export LTPROOT; rwtest.sh -N iogen01 -i 120s -s read,write
+> -Da -Dv -n 2 500b:doio.f1.$$ 1000b:doio.f2.$$
+>
+> =A0fs_inod01 fs_inod $TMP 10 10 10
+> -linker01 linktest.sh 1000 1000
+> +linker01 linktest.pl 1000 1000
+> =A0openfile01 openfile -f10 -t10
+> =A0inode01 inode01
+> =A0inode02 inode02
+> diff --exclude '*CVS*' -NaurP ./runtest/stress.part1
+> ../ltp.bk/runtest/stress.part1
+> --- ./runtest/stress.part1 =A0 =A0 =A02009-10-12 22:06:15.000000000 -0700
+> +++ ../ltp.bk/runtest/stress.part1 =A0 =A0 =A02009-10-12 22:09:12.0000000=
+00 -0700
+> @@ -156,7 +156,7 @@
+> =A0iogen01 export LTPROOT; rwtest.sh -N iogen01 -i 120s -s read,write
+> -Da -Dv -n 2 500b:doio.f1.$$ 1000b:doio.f2.$$
+>
+> =A0fs_inod01 fs_inod $TMP 10 10 1
+> -linker01 linktest.sh
+> +linker01 linktest.pl
+> =A0openfile01 openfile -f10 -t10
+> =A0inode01 inode01
+> =A0inode02 inode02
+> diff --exclude '*CVS*' -NaurP
+> ./testcases/kernel/fs/linktest/linktest.pl
+> ../ltp.bk/testcases/kernel/fs/linktest/linktest.pl
+> --- ./testcases/kernel/fs/linktest/linktest.pl =A01969-12-31
+> 16:00:00.000000000 -0800
+> +++ ../ltp.bk/testcases/kernel/fs/linktest/linktest.pl =A02009-10-12
+> 22:18:49.000000000 -0700
+> @@ -0,0 +1,89 @@
+> +#!/usr/bin/perl
+> +
+> +# =A0 Copyright (c) International Business Machines =A0Corp., 2000
+> +#
+> +# =A0 This program is free software; =A0you can redistribute it and/or m=
+odify
+> +# =A0 it under the terms of the GNU General Public License as published =
+by
+> +# =A0 the Free Software Foundation; either version 2 of the License, or
+> +# =A0 (at your option) any later version.
+> +#
+> +# =A0 This program is distributed in the hope that it will be useful,
+> +# =A0 but WITHOUT ANY WARRANTY; =A0without even the implied warranty of
+> +# =A0 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. =A0See
+> +# =A0 the GNU General Public License for more details.
+> +#
+> +# =A0 You should have received a copy of the GNU General Public License
+> +# =A0 along with this program; =A0if not, write to the Free Software
+> +# =A0 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-130=
+7 USA
+> +
+> +
+> +#
+> +# =A0FILE(s) =A0 =A0 : linktest.pl README
+> +# =A0DESCRIPTION : Regression test for max links per file
+> +# =A0USE =A0 =A0 =A0 =A0 : linktest.pl <number of symlinks> <number of h=
+ardlinks>
+> +# =A0AUTHOR =A0 =A0 =A0: Jeff Martin (martinjn@us.ibm.com)
+> +# =A0HISTORY =A0 =A0 :
+> +# =A0 =A0 (05/07/01)v.99 =A0Needed a quick script to test a hardlink
+> limitation that was found.
+> +# =A0 =A0 (28/07/08) Veerendra C <vechandr@in.ibm.com>
+> +# =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Modified to return proper retu=
+rn code on
+> failure/success.
+> +# =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 Also modified to return errors=
+ if unable to
+> create dir/files
+> +
+> +$ret =3D 0;
+> +if ( system("mkdir hlink") ) {
+> + =A0 =A0 $ret =3D -1 ;
+> +}
+> +
+> +if ( system("mkdir slink") ) {
+> + =A0 =A0 $ret =3D -1 ;
+> +}
+> +
+> +if ( system("touch hlink/hfile") ) {
+> + =A0 =A0 $ret =3D -1 ;
+> +}
+> +
+> +if ( system("touch slink/sfile") ) {
+> + =A0 =A0 $ret =3D -1 ;
+> +}
+> +
+> +if ( $ret =3D=3D -1 ) {
+> + =A0 =A0printf ("Error %d: Not able to create dir/file's\n " , $ret);
+> + =A0 =A0exit -1;
+> +}
+> +
+> +$scount=3Dshift @ARGV;
+> +chdir "slink";
+> +for($x=3D0;$x<$scount;$x++) {
+> + =A0 $result=3Dsymlink("sfile","sfile$x");
+> + =A0 if(!$result) {
+> + =A0 =A0 =A0$serrors++;
+> + =A0 =A0 =A0}
+> + =A0 }
+> +chdir "..";
+> +$hcount=3Dshift @ARGV;
+> +for($x=3D0;$x<$hcount;$x++) {
+> + =A0 $result=3Dlink("hlink/hfile","hlink/hfile$x");
+> + =A0 if(!$result) {
+> + =A0 =A0 =A0$herrors++;
+> + =A0 =A0 =A0}
+> + =A0 }
+> +
+> +if($herrors) {
+> + =A0 =A0printf ("linker01 : FAIL Hard Link Errors =3D %d\n", $herrors);
+> + =A0 =A0$ret =3D -1
+> +}
+> +else {
+> + =A0 =A0printf ("linker01 : HardLink Test PASS\n" )
+> +}
+> +if($serrors) {
+> + =A0 =A0printf ("linker01 : FAIL Soft Link Errors =3D %d\n", $serrors);
+> + =A0 =A0$ret =3D -1
+> +}
+> +else {
+> + =A0 =A0printf ("linker01 : SoftLink Test PASS\n" );
+> +}
+> +
+> +unlink <hlink/hfile*>;
+> +unlink <slink/sfile*>;
+> +rmdir hlink;
+> +rmdir slink;
+> +exit $ret;
+> diff --exclude '*CVS*' -NaurP
+> ./testcases/kernel/fs/linktest/linktest.sh
+> ../ltp.bk/testcases/kernel/fs/linktest/linktest.sh
+> --- ./testcases/kernel/fs/linktest/linktest.sh =A02009-10-14
+> 12:27:10.000000000 -0700
+> +++ ../ltp.bk/testcases/kernel/fs/linktest/linktest.sh =A01969-12-31
+> 16:00:00.000000000 -0800
+> @@ -1,76 +0,0 @@
+> -#!/bin/sh
+> -
+> -# =A0 Copyright (c) International Business Machines =A0Corp., 2000
+> -#
+> -# =A0 This program is free software; =A0you can redistribute it and/or m=
+odify
+> -# =A0 it under the terms of the GNU General Public License as published =
+by
+> -# =A0 the Free Software Foundation; either version 2 of the License, or
+> -# =A0 (at your option) any later version.
+> -#
+> -# =A0 This program is distributed in the hope that it will be useful,
+> -# =A0 but WITHOUT ANY WARRANTY; =A0without even the implied warranty of
+> -# =A0 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. =A0See
+> -# =A0 the GNU General Public License for more details.
+> -#
+> -# =A0 You should have received a copy of the GNU General Public License
+> -# =A0 along with this program; =A0if not, write to the Free Software
+> -# =A0 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-130=
+7 USA
+> -
+> -
+> -#
+> -# =A0FILE(s) =A0 =A0 : linktest.sh README
+> -# =A0DESCRIPTION : Regression test for max links per file
+> -# =A0USE =A0 =A0 =A0 =A0 : linktest.sh <number of symlinks> <number of h=
+ardlinks>
+> -# =A0AUTHOR =A0 =A0 =A0: Garrett Cooper (yanegomi@gmail.com)
+> -# =A0HISTORY =A0 =A0 :
+> -# =A0 =A0 =A0A rewrite of testcases/kernel/fs/linktest.pl
+> -
+> -# XXX: Change to a temp dir via mktemp -d.
+> -cd "${0%/*}"
+> -
+> -export TCID=3Dlinker01
+> -export TST_TOTAL=3D2
+> -export TST_COUNT=3D1
+> -
+> -if [ $# -ne 2 ]; then
+> - =A0 =A0 =A0 tst_res TBROK "" "Usage: $0 {softlink count} {hardlink coun=
+t}"
+> - =A0 =A0 =A0 exit -1
+> -fi
+> -
+> -mkdir hlink slink && touch hlink/hfile slink/sfile
+> -
+> -do_link() {
+> - =A0 =A0 =A0 pfix=3D$1
+> - =A0 =A0 =A0 ln_opts=3D$2
+> - =A0 =A0 =A0 limit=3D$3
+> - =A0 =A0 =A0 prefix_msg=3D$4
+> -
+> - =A0 =A0 =A0 lerrors=3D0
+> -
+> - =A0 =A0 =A0 i=3D0
+> -
+> - =A0 =A0 =A0 cd ${pfix}link
+> - =A0 =A0 =A0 while [ $i -lt $limit ]; do
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 if ! ln ${ln_opts} "$PWD/${pfix}file" ${pfi=
+x}file${i}; then
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 : $(( lerrors +=3D 1 ))
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 fi
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 : $(( i+=3D 1 ))
+> - =A0 =A0 =A0 done
+> - =A0 =A0 =A0 cd ..
+> -
+> - =A0 =A0 =A0 if [ $lerrors -eq 0 ]; then
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 RTYPE=3DTPASS
+> - =A0 =A0 =A0 else
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 RTYPE=3DTFAIL
+> - =A0 =A0 =A0 fi
+> -
+> - =A0 =A0 =A0 tst_res $RTYPE "" "$prefix_msg Link Errors: $lerrors"
+> -
+> - =A0 =A0 =A0 : $(( TST_COUNT +=3D 1 ))
+> -
+> -}
+> -
+> -do_link s "-s" ${1} "Symbolic"
+> -do_link h =A0 "" ${2} "Hard"
+> -
+> -rm -Rf hlink slink
+> diff --exclude '*CVS*' -NaurP ./testcases/kernel/fs/linktest/Makefile
+> ../ltp.bk/testcases/kernel/fs/linktest/Makefile
+> --- ./testcases/kernel/fs/linktest/Makefile =A0 =A0 2009-10-12 22:05:06.0=
+00000000 -0700
+> +++ ../ltp.bk/testcases/kernel/fs/linktest/Makefile =A0 =A0 2009-10-12
+> 22:09:13.000000000 -0700
+> @@ -24,6 +24,6 @@
+>
+> =A0include $(top_srcdir)/include/mk/env_pre.mk
+>
+> -INSTALL_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D link=
+test.sh
+> +INSTALL_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D link=
+test.pl
+>
+> =A0include $(top_srcdir)/include/mk/generic_leaf_target.mk
+
+Sorry -- the patch was reversed... the version checked into CVS just
+now is correct of course :)...
+Thanks,
+-Garrett
+
+---------------------------------------------------------------------------=
+---
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay =
+
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
