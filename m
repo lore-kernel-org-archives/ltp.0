@@ -1,33 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MxeNT-00076l-Kw
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 10:13:11 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MxeNL-0001H4-BB
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 10:13:11 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e2.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9DA5kgW023866
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 06:05:46 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n9DACvOo255124
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 06:12:57 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n9DA9Vvk031889
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 06:09:31 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20091013074405.22414.27163.sendpatchset@localhost.localdomain>
-References: <20091013074337.22414.20968.sendpatchset@localhost.localdomain>
-	<20091013074405.22414.27163.sendpatchset@localhost.localdomain>
-Date: Tue, 13 Oct 2009 15:42:40 +0530
-Message-Id: <1255428760.8438.12.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [Patch 4/6] Enhanced & Modified cpu_consolidation	testcase
-Reply-To: subrata@linux.vnet.ibm.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1My9ZB-0006P1-76
+	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 19:31:21 +0000
+Received: from mail-px0-f180.google.com ([209.85.216.180])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1My9Z6-0000hn-5b
+	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 19:31:21 +0000
+Received: by mail-px0-f180.google.com with SMTP id 10so53834pxi.4
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 14 Oct 2009 12:31:15 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <200910130143.53176.vapier@gentoo.org>
+References: <364299f40910122222q5117ecf0i854db292154132c7@mail.gmail.com>
+	<200910130130.30228.vapier@gentoo.org>
+	<364299f40910122240p586a60aarc796112b68c519e2@mail.gmail.com>
+	<200910130143.53176.vapier@gentoo.org>
+Date: Wed, 14 Oct 2009 12:31:15 -0700
+Message-ID: <364299f40910141231x6fb16559obe7470e34209b080@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] convert linktest.pl to linktest.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,166 +33,244 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, svaidy@linux.vnet.ibm.com, ego@in.ibm.com, arun@linux.vnet.ibm.com
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-On Tue, 2009-10-13 at 13:14 +0530, Poornima Nayak wrote: 
-> We can pass additional argument performance to use the same testcase for 
-> Performance test. Fixed issues in cpu consolidation test.
-> 
-> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+This proposed change makes linktest.pl into linktest.sh, to avoid
+missing coverage with symlinks and hardlinks due to a lacking perl
+dependency on the target host.
 
-Thanks.
+This change has been outstanding for some time in our private copy of
+LTP and needed to get checked into CVS.
 
-Regards--
-Subrata
+//edit[1]: Incorporate comments made by Mike F.
 
-> 
-> diff -uprN ltp-full-20090930/testcases/kernel/power_management/cpu_consolidation.py ltp-full-20090930_patched/testcases/kernel/power_management/cpu_consolidation.py
-> --- ltp-full-20090930/testcases/kernel/power_management/cpu_consolidation.py	2009-10-05 02:10:56.000000000 -0400
-> +++ ltp-full-20090930_patched/testcases/kernel/power_management/cpu_consolidation.py	2009-10-12 23:03:04.000000000 -0400
-> @@ -34,40 +34,37 @@ def main(argv=None):
->          default="ebizzy", help="Workload can be ebizzy/kernbench")
->      parser.add_option("-s", "--stress", dest="stress",
->          default="partial", help="Load on system is full/partial [i.e 50%]/thread")
-> +    parser.add_option("-p", "--performance", dest="perf_test",
-> +        default=False, action="store_true", help="Enable performance test")
->      (options, args) = parser.parse_args()
-> 
->      try:
->          count_num_cpu()
->          count_num_sockets()
-> -        # User would set option -v / -vc / -vt to test cpu consolidation
-> -        # gets disabled when sched_mc &(/) sched_smt is disabled when
-> -        # workload is already running in the system 
-> +        if is_hyper_threaded():
-> +            generate_sibling_list()
-> +        
-> +        # User should set option -v to test cpu consolidation
-> +        # resets when sched_mc &(/) sched_smt is disabled when
-> +        # workload is already running in the system
-> + 
->          if options.vary_mc_smt:
-> 
->              # Since same code is used for testing package consolidation and core
->              # consolidation is_multi_socket & is_hyper_threaded check is done
-> -            if is_multi_socket():
-> -                if options.mc_value:
-> -                    set_sched_mc_power(options.mc_value)
-> -                    mc_value=int(options.mc_value)
-> -                else:    
-> -                    set_sched_mc_power(1)
-> -                    mc_value=int(options.mc_value)
-> -            if is_hyper_threaded():
-> -                if options.smt_value:
-> -                    set_sched_smt_power(options.smt_value)
-> -                    smt_value=int(options.smt_value)
-> -                else:
-> -                    set_sched_smt_power(1)
-> -                    smt_value=1
-> +            if is_multi_socket() and is_multi_core() and options.mc_value:
-> +                set_sched_mc_power(options.mc_value)
-> +
-> +            if is_hyper_threaded() and options.smt_value:
-> +                set_sched_smt_power(options.smt_value)
-> 
->              #Generate arguments for trigger workload, run workload in background
->              map_cpuid_pkgid()
->              background="yes"
->              duration=360
->              pinned="no"
-> -            if int(options.mc_value) < 2:
-> -                trigger_ebizzy (smt_value, "partial", duration, background, pinned)
-> +            if int(options.mc_value) < 2 and int(options.smt_value) < 2:
-> +                trigger_ebizzy (options.smt_value, "partial", duration, background, pinned)
->                  work_ld="ebizzy"
->                  #Wait for 120 seconds and then validate cpu consolidation works
->                  #When sched_mc & sched_smt is set
-> @@ -76,27 +73,36 @@ def main(argv=None):
->              else:
->                  #Wait for 120 seconds and then validate cpu consolidation works
->                  #When sched_mc & sched_smt is set
-> -                trigger_kernbench (smt_value, "partial", background, pinned) 
-> +                trigger_kernbench (options.smt_value, "partial", background, pinned, "no") 
->                  work_ld="kernbench"
->                  import time
-> -                time.sleep(240)
-> +                time.sleep(300)
-> 
->              generate_report()
-> -            status = validate_cpu_consolidation(work_ld, mc_value, smt_value)
-> +            status = validate_cpu_consolidation("partial", work_ld, options.mc_value, options.smt_value)
->              if status == 0:
->                  print "INFO: Consolidation worked sched_smt &(/) sched_mc is set"
->                  #Disable sched_smt & sched_mc interface values
-> -                if (options.vary_mc_smt and options.mc_value) and is_multi_socket():
-> +                if options.vary_mc_smt and options.mc_value > 0:
->                      set_sched_mc_power(0)
-> -                    #Reset sched_smt bcoz when sched_smt is set process still
-> -                    #continue to consolidate
-> -                    if is_hyper_threaded():
-> -                        set_sched_smt_power(0)
-> -                if (options.vary_mc_smt and options.smt_value) and is_hyper_threaded():
-> +                    mc_value = options.mc_value
-> +                else:
-> +                    mc_value = 0
-> +                if options.vary_mc_smt and options.smt_value > 0 and is_hyper_threaded():
->                      set_sched_smt_power(0)
-> -                time.sleep(120)
-> +                    smt_value = options.smt_value
-> +                else:
-> +                    smt_value = 0
-> +
-> +                if work_ld == "kernbench":
-> +                    time.sleep(240)
-> +                else:
-> +                    time.sleep(120)
-> +
->                  generate_report()
-> -                status = validate_cpu_consolidation(options.work_ld,options.mc_value, options.smt_value)
-> +                status = validate_cpu_consolidation("partial", work_ld, mc_value, smt_value)
-> +                if background == "yes":
-> +                    stop_wkld(work_ld)
->                  #CPU consolidation should fail as sched_mc &(/) sched_smt is disabled
->                  if status == 1:
->                      return(0)
-> @@ -113,16 +119,20 @@ sched_smt was enabled. This is pre-requi
->                  set_sched_mc_power(options.mc_value)
->              if is_hyper_threaded():
->                  set_sched_smt_power(options.smt_value)
-> -                #Commented after observing changes in behaviour in 2.6.31-rc7
-> -                #stress="thread"
->              map_cpuid_pkgid()
->              print "INFO: Created table mapping cpu to package"
->              background="no"
->              duration=60
->              pinned ="no"
-> -            trigger_workld( options.smt_value, options.work_ld, options.stress, duration, background, pinned)
-> +
-> +            if options.perf_test:
-> +                perf_test="yes"
-> +            else:
-> +                perf_test="no"
-> +
-> +            trigger_workld( options.smt_value, options.work_ld, options.stress, duration, background, pinned, perf_test)
->              generate_report()
-> -            status = validate_cpu_consolidation(options.work_ld,options.mc_value, options.smt_value)
-> +            status = validate_cpu_consolidation(options.stress, options.work_ld,options.mc_value, options.smt_value)
->              reset_schedmc()
->              if is_hyper_threaded():
->                  reset_schedsmt()
-> 
-> ------------------------------------------------------------------------------
-> Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-> is the only developer event you need to attend this year. Jumpstart your
-> developing skills, take BlackBerry mobile applications to market and stay 
-> ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-> http://p.sf.net/sfu/devconference
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
 
+diff --exclude '*CVS*' -NaurP ./runtest/fs ../ltp.bk/runtest/fs
+--- ./runtest/fs	2009-10-12 22:06:10.000000000 -0700
++++ ../ltp.bk/runtest/fs	2009-10-12 22:09:12.000000000 -0700
+@@ -40,7 +40,7 @@
+ iogen01 export LTPROOT; rwtest.sh -N iogen01 -i 120s -s read,write
+-Da -Dv -n 2 500b:doio.f1.$$ 1000b:doio.f2.$$
+
+ fs_inod01 fs_inod $TMP 10 10 10
+-linker01 linktest.sh 1000 1000
++linker01 linktest.pl 1000 1000
+ openfile01 openfile -f10 -t10
+ inode01 inode01
+ inode02 inode02
+diff --exclude '*CVS*' -NaurP ./runtest/stress.part1
+../ltp.bk/runtest/stress.part1
+--- ./runtest/stress.part1	2009-10-12 22:06:15.000000000 -0700
++++ ../ltp.bk/runtest/stress.part1	2009-10-12 22:09:12.000000000 -0700
+@@ -156,7 +156,7 @@
+ iogen01 export LTPROOT; rwtest.sh -N iogen01 -i 120s -s read,write
+-Da -Dv -n 2 500b:doio.f1.$$ 1000b:doio.f2.$$
+
+ fs_inod01 fs_inod $TMP 10 10 1
+-linker01 linktest.sh
++linker01 linktest.pl
+ openfile01 openfile -f10 -t10
+ inode01 inode01
+ inode02 inode02
+diff --exclude '*CVS*' -NaurP
+./testcases/kernel/fs/linktest/linktest.pl
+../ltp.bk/testcases/kernel/fs/linktest/linktest.pl
+--- ./testcases/kernel/fs/linktest/linktest.pl	1969-12-31
+16:00:00.000000000 -0800
++++ ../ltp.bk/testcases/kernel/fs/linktest/linktest.pl	2009-10-12
+22:18:49.000000000 -0700
+@@ -0,0 +1,89 @@
++#!/usr/bin/perl
++
++#   Copyright (c) International Business Machines  Corp., 2000
++#
++#   This program is free software;  you can redistribute it and/or modify
++#   it under the terms of the GNU General Public License as published by
++#   the Free Software Foundation; either version 2 of the License, or
++#   (at your option) any later version.
++#
++#   This program is distributed in the hope that it will be useful,
++#   but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#   the GNU General Public License for more details.
++#
++#   You should have received a copy of the GNU General Public License
++#   along with this program;  if not, write to the Free Software
++#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++
++
++#
++#  FILE(s)     : linktest.pl README
++#  DESCRIPTION : Regression test for max links per file
++#  USE         : linktest.pl <number of symlinks> <number of hardlinks>
++#  AUTHOR      : Jeff Martin (martinjn@us.ibm.com)
++#  HISTORY     :
++#     (05/07/01)v.99  Needed a quick script to test a hardlink
+limitation that was found.
++#     (28/07/08) Veerendra C <vechandr@in.ibm.com>
++#                     Modified to return proper return code on
+failure/success.
++#                     Also modified to return errors if unable to
+create dir/files
++
++$ret = 0;
++if ( system("mkdir hlink") ) {
++     $ret = -1 ;
++}
++
++if ( system("mkdir slink") ) {
++     $ret = -1 ;
++}
++
++if ( system("touch hlink/hfile") ) {
++     $ret = -1 ;
++}
++
++if ( system("touch slink/sfile") ) {
++     $ret = -1 ;
++}
++
++if ( $ret == -1 ) {
++    printf ("Error %d: Not able to create dir/file's\n " , $ret);
++    exit -1;
++}
++
++$scount=shift @ARGV;
++chdir "slink";
++for($x=0;$x<$scount;$x++) {
++   $result=symlink("sfile","sfile$x");
++   if(!$result) {
++      $serrors++;
++      }
++   }
++chdir "..";
++$hcount=shift @ARGV;
++for($x=0;$x<$hcount;$x++) {
++   $result=link("hlink/hfile","hlink/hfile$x");
++   if(!$result) {
++      $herrors++;
++      }
++   }
++
++if($herrors) {
++    printf ("linker01 : FAIL Hard Link Errors = %d\n", $herrors);
++    $ret = -1
++}
++else {
++    printf ("linker01 : HardLink Test PASS\n" )
++}
++if($serrors) {
++    printf ("linker01 : FAIL Soft Link Errors = %d\n", $serrors);
++    $ret = -1
++}
++else {
++    printf ("linker01 : SoftLink Test PASS\n" );
++}
++
++unlink <hlink/hfile*>;
++unlink <slink/sfile*>;
++rmdir hlink;
++rmdir slink;
++exit $ret;
+diff --exclude '*CVS*' -NaurP
+./testcases/kernel/fs/linktest/linktest.sh
+../ltp.bk/testcases/kernel/fs/linktest/linktest.sh
+--- ./testcases/kernel/fs/linktest/linktest.sh	2009-10-14
+12:27:10.000000000 -0700
++++ ../ltp.bk/testcases/kernel/fs/linktest/linktest.sh	1969-12-31
+16:00:00.000000000 -0800
+@@ -1,76 +0,0 @@
+-#!/bin/sh
+-
+-#   Copyright (c) International Business Machines  Corp., 2000
+-#
+-#   This program is free software;  you can redistribute it and/or modify
+-#   it under the terms of the GNU General Public License as published by
+-#   the Free Software Foundation; either version 2 of the License, or
+-#   (at your option) any later version.
+-#
+-#   This program is distributed in the hope that it will be useful,
+-#   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#   the GNU General Public License for more details.
+-#
+-#   You should have received a copy of the GNU General Public License
+-#   along with this program;  if not, write to the Free Software
+-#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+-
+-
+-#
+-#  FILE(s)     : linktest.sh README
+-#  DESCRIPTION : Regression test for max links per file
+-#  USE         : linktest.sh <number of symlinks> <number of hardlinks>
+-#  AUTHOR      : Garrett Cooper (yanegomi@gmail.com)
+-#  HISTORY     :
+-#	A rewrite of testcases/kernel/fs/linktest.pl
+-
+-# XXX: Change to a temp dir via mktemp -d.
+-cd "${0%/*}"
+-
+-export TCID=linker01
+-export TST_TOTAL=2
+-export TST_COUNT=1
+-
+-if [ $# -ne 2 ]; then
+-	tst_res TBROK "" "Usage: $0 {softlink count} {hardlink count}"
+-	exit -1
+-fi
+-
+-mkdir hlink slink && touch hlink/hfile slink/sfile
+-
+-do_link() {
+-	pfix=$1
+-	ln_opts=$2
+-	limit=$3
+-	prefix_msg=$4
+-
+-	lerrors=0
+-
+-	i=0
+-
+-	cd ${pfix}link
+-	while [ $i -lt $limit ]; do
+-		if ! ln ${ln_opts} "$PWD/${pfix}file" ${pfix}file${i}; then
+-			: $(( lerrors += 1 ))
+-		fi
+-		: $(( i+= 1 ))
+-	done
+-	cd ..
+-
+-	if [ $lerrors -eq 0 ]; then
+-		RTYPE=TPASS
+-	else
+-		RTYPE=TFAIL
+-	fi
+-
+-	tst_res $RTYPE "" "$prefix_msg Link Errors: $lerrors"
+-
+-	: $(( TST_COUNT += 1 ))
+-
+-}
+-
+-do_link s "-s" ${1} "Symbolic"
+-do_link h   "" ${2} "Hard"
+-
+-rm -Rf hlink slink
+diff --exclude '*CVS*' -NaurP ./testcases/kernel/fs/linktest/Makefile
+../ltp.bk/testcases/kernel/fs/linktest/Makefile
+--- ./testcases/kernel/fs/linktest/Makefile	2009-10-12 22:05:06.000000000 -0700
++++ ../ltp.bk/testcases/kernel/fs/linktest/Makefile	2009-10-12
+22:09:13.000000000 -0700
+@@ -24,6 +24,6 @@
+
+ include $(top_srcdir)/include/mk/env_pre.mk
+
+-INSTALL_TARGETS			:= linktest.sh
++INSTALL_TARGETS			:= linktest.pl
+
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
