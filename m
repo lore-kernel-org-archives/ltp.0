@@ -1,21 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1My8ci-0004F1-4Q
-	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 18:30:56 +0000
-Received: from mail-px0-f180.google.com ([209.85.216.180])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1My8cd-0001Fl-M0
-	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 18:30:56 +0000
-Received: by pxi10 with SMTP id 10so10034pxi.4
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MxsvW-0002LA-TU
+	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 01:45:18 +0000
+Received: from mail-pz0-f188.google.com ([209.85.222.188])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MxsvP-0006jk-5k
+	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 01:45:18 +0000
+Received: by pzk26 with SMTP id 26so9519005pzk.4
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 14 Oct 2009 11:30:44 -0700 (PDT)
+	Tue, 13 Oct 2009 18:45:05 -0700 (PDT)
 MIME-Version: 1.0
-Date: Wed, 14 Oct 2009 11:30:44 -0700
-Message-ID: <364299f40910141130wfac08a7tc69a49ecea707fd5@mail.gmail.com>
+In-Reply-To: <20091013074414.22414.46233.sendpatchset@localhost.localdomain>
+References: <20091013074337.22414.20968.sendpatchset@localhost.localdomain>
+	<20091013074414.22414.46233.sendpatchset@localhost.localdomain>
+Date: Tue, 13 Oct 2009 18:38:12 -0700
+Message-ID: <364299f40910131838n1bcf8ed4u1ff121c87987d366@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] [issue 10] mail requires useradd to function
+Subject: Re: [LTP] [Patch 5/6] Modified master script to pass appropriate
+	arguments
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,33 +32,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, arun@linux.vnet.ibm.com, svaidy@linux.vnet.ibm.com, ego@in.ibm.com
 
-As seen below useradd is required for mail to function:
+On Tue, Oct 13, 2009 at 12:44 AM, Poornima Nayak
+<mpnayak@linux.vnet.ibm.com> wrote:
+> Modified master script to pass appropriate arguments for cpu consolidation
+> test cases.
+>
+> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
 
-<<<test_start>>>
-tag=mail stime=1255544778
-cmdline="export TCdat=$LTPROOT/testcases/bin; mail_tests.sh"
-contacts=""
-analysis=exit
-<<<test_output>>>
-SETUP       0  TINFO  :  INIT: Adding temporary user mail_test
-SETUP       1  TBROK  :  Test INIT: Failed adding user mail_test. Reason:
-/tests/ltp/testcases/bin/mail_tests.sh: line 75: useradd: command not found
-SETUP       2  TBROK  :  Remaining cases broken
-SETUP       3  TBROK  :  Remaining cases broken
-SETUP       4  TBROK  :  Remaining cases broken
-SETUP       5  TBROK  :  Remaining cases broken
-<<<execution_status>>>
-initiation_status="ok"
-duration=0 termination_type=exited termination_id=1 corefile=no
-cutime=2 cstime=2
-<<<test_end>>>
+Sorry for not commenting sooner.
 
-But this should // could be done by echoing to /etc/passwd //
-/etc/group for systems that don't come equipped with useradd.
+You could use a while loop with an initial value and increment in the
+loop instead of `for i in $(seq {0,1} $max)'; that's guaranteed to
+work better with systems that don't have seq(1) ;)...
 
-Thanks,
+Thanks!
 -Garrett
 
 ------------------------------------------------------------------------------
