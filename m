@@ -1,24 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1N0JBA-0003YQ-Uo
-	for ltp-list@lists.sourceforge.net; Tue, 20 Oct 2009 18:11:28 +0000
-Received: from [206.112.117.47] (helo=gateway-1237.mvista.com)
-	by 1b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1N0JAy-0005LX-Lc
-	for ltp-list@lists.sourceforge.net; Tue, 20 Oct 2009 18:11:28 +0000
-Content-class: urn:content-classes:message
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1My8Kg-00087B-Av
+	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 18:12:18 +0000
+Received: from mail-px0-f180.google.com ([209.85.216.180])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1My8Ka-0006nc-Iz
+	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 18:12:13 +0000
+Received: by pxi10 with SMTP id 10so40502pxi.4
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 14 Oct 2009 11:12:07 -0700 (PDT)
 MIME-Version: 1.0
-Date: Tue, 20 Oct 2009 10:53:27 -0700
-Message-ID: <8368651DACC1964480F951191B94A0780153D9A8@svexch01.mvista.com>
-In-Reply-To: <364299f40910181839w5c5dc73agfa147469881d4cc3@mail.gmail.com>
-References: <8368651DACC1964480F951191B94A0780153D7EE@svexch01.mvista.com>
-	<1255890114.5359.16.camel@subratamodak.linux.ibm.com>
-	<364299f40910181839w5c5dc73agfa147469881d4cc3@mail.gmail.com>
-From: "Henry Yei" <hyei@mvista.com>
-Subject: Re: [LTP] [PATCH][runtest/fs] modify fs scenario to use working
-	directory specified by runltp
+Date: Wed, 14 Oct 2009 11:12:06 -0700
+Message-ID: <364299f40910141112v7847fc77s3dbd14b5ee543090@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: [LTP] [issue 8] rwtest*: iogen / rwtest needs to create
+	prerequisite directory paths
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,42 +29,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>, subrata@linux.vnet.ibm.com
-Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-> -----Original Message-----
-> From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> Sent: Sunday, October 18, 2009 6:39 PM
-> To: subrata@linux.vnet.ibm.com
-> Cc: Henry Yei; LTP Mailing List
-> Subject: Re: [LTP] [PATCH][runtest/fs] modify fs scenario to use
-> working directory specified by runltp
-> 
-> On Sun, Oct 18, 2009 at 11:21 AM, Subrata Modak
-> <subrata@linux.vnet.ibm.com> wrote:
-> > On Fri, 2009-10-16 at 17:03 -0700, Henry Yei wrote:
-> >> This patch modifies the fs scenario to remove hard coded paths with
-> /tmp as well as make sure that tests that take directory arguments use
-> the temporary directory specified by runltp.
-> >>
-> >> I've chosen to pass in the temporary directory rather than change
-> the tests themselves for certain tests take a path as an argument.
-> >>
-> >> Signed-off by: Henry Yei <hyei@mvista.com>
-> >
-> > Thanks.
-> 
->     Dumb question (and this is part of the reason why I didn't reply
-> earlier or check this into cvs) -- what happens if TMPDIR is unset or
-> is an empty value? Another function and/or set of bourne shell calls
-> should be added to tst_setup() in cmdlib.sh so it checks for this
-> directory and creates it as necessary, similar to what I did in
-> linktest.sh.
-> Thanks,
-> -Garrett
+Many of the rwtest apps fail because the directory to the path where
+they're trying to generate the file doesn't already exist:
 
-AFAIK, ff the user does not use the -d command when start the tests from the runltp script, $TMPDIR defaults to '/tmp/'. I'm not aware of another way to run execute the commands in the runtest files without the use of runltp so I did not take that into account.
+<<<test_start>>>
+tag=rwtest01 stime=1255493917
+cmdline="export LTPROOT; rwtest.sh -N rwtest01 -c -q -i 60s  -f sync
+10%25000:rw-sync-$$ 500b:/test/growfiles/reiser/rwtest06%s"
+contacts=""
+analysis=exit
+<<<test_output>>>
+iogen(rwtest01):  Could not create/open file
+/test/growfiles/reiser/rwtest067013_1: No such file or directory (2)
+iogen(rwtest01) warning:  Couldn't create file
+/test/growfiles/reiser/rwtest067013_1 of 256000 bytes
+rwtest01    1  TPASS  :  Test passed
+Test passed
+<<<execution_status>>>
+initiation_status="ok"
+duration=68 termination_type=exited termination_id=0 corefile=no
+cutime=33 cstime=158
+<<<test_end>>>
 
+I assume that this is covered with one of the testscripts/... scripts,
+but this should be a common requirement of all invocations for
+rwtest.sh so that running the test script beforehand for this kind of
+trivial functionality isn't necessary.
+
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
