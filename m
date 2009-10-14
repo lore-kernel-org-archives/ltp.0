@@ -1,34 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MxeNW-00049F-7Q
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 10:13:14 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MxeNQ-0003e4-Hy
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 10:13:14 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9DA5Go9005591
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 06:05:16 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n9DAD3Be135876
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 06:13:03 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n9DAD2mi001671
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 06:13:03 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20091013074356.22414.15869.sendpatchset@localhost.localdomain>
-References: <20091013074337.22414.20968.sendpatchset@localhost.localdomain>
-	<20091013074356.22414.15869.sendpatchset@localhost.localdomain>
-Date: Tue, 13 Oct 2009 15:42:42 +0530
-Message-Id: <1255428762.8438.13.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [Patch 3/6] Modified ilb test to run with ebizzy
-	as	default workload.
-Reply-To: subrata@linux.vnet.ibm.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chandru@in.ibm.com>) id 1MxxY9-0006yF-Mh
+	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 06:41:29 +0000
+Received: from e28smtp06.in.ibm.com ([59.145.155.6])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MxxY3-0003WO-TT
+	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 06:41:29 +0000
+Received: from d28relay01.in.ibm.com (d28relay01.in.ibm.com [9.184.220.58])
+	by e28smtp06.in.ibm.com (8.14.3/8.13.1) with ESMTP id n9E6fC1H012930
+	for <ltp-list@lists.sourceforge.net>; Wed, 14 Oct 2009 12:11:12 +0530
+Received: from d28av01.in.ibm.com (d28av01.in.ibm.com [9.184.220.63])
+	by d28relay01.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n9E6fCRe2670818
+	for <ltp-list@lists.sourceforge.net>; Wed, 14 Oct 2009 12:11:12 +0530
+Received: from d28av01.in.ibm.com (loopback [127.0.0.1])
+	by d28av01.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	n9E6fBX5012306
+	for <ltp-list@lists.sourceforge.net>; Wed, 14 Oct 2009 12:11:12 +0530
+From: Chandru <chandru@in.ibm.com>
+Date: Wed, 14 Oct 2009 12:11:11 +0530
+References: <200910011340.32046.chandru@in.ibm.com>
+	<1255436017.8438.36.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1255436017.8438.36.camel@subratamodak.linux.ibm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+Message-Id: <200910141211.11379.chandru@in.ibm.com>
+Subject: Re: [LTP] [PATCH V2] ppoll01: add signal() syscall to register the
+	signal handler
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,57 +41,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, arun@linux.vnet.ibm.com, svaidy@linux.vnet.ibm.com, ego@in.ibm.com
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net, vapier@gentoo.org
 
-On Tue, 2009-10-13 at 13:13 +0530, Poornima Nayak wrote: 
-> Modified ilb test to run with ebizzy as default workload.
+On Tuesday 13 October 2009 17:43:37 Subrata Modak wrote:
+> On Thu, 2009-10-01 at 13:40 +0530, Chandru wrote: 
+> > The ppoll01 testcase has a signal handler in it but this signal handler is not registered with the kernel through the signal() syscall. The testcase fails when it sends a SIGINT to itself as part of one of the case of the test run.
+> > The following patch
+> > 1. Adds a signal() syscall to register the signal handler
+> > 2. Corrects the expected 'revents' for the case where ppoll() is called on a file which is only opened in read/write mode, i.e case00.
+> > 
+> > Signed-off-by: Chandru S <chandru@linux.vnet.ibm.com>
 > 
-> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+> Hi Chandru,
+> 
+> Can you please resend this with a diff from the Latest CVS snapshot ?
+> 
 
-Thanks.
+Hi Subrata, 
 
-Regards--
-Subrata
+Thanks for letting me know. Here is the patch taken from the latest snapshot. 
 
-> 
-> diff -uprN ltp-full-20090930/testcases/kernel/power_management/ilb_test.py ltp-full-20090930_patched/testcases/kernel/power_management/ilb_test.py
-> --- ltp-full-20090930/testcases/kernel/power_management/ilb_test.py	2009-10-05 02:10:56.000000000 -0400
-> +++ ltp-full-20090930_patched/testcases/kernel/power_management/ilb_test.py	2009-10-12 23:05:40.000000000 -0400
-> @@ -27,7 +27,7 @@ def main(argv=None):
->      parser.add_option("-t", "--smt_level", dest="smt_level",
->          default=0, help="Sched smt power saving value 0/1/2")
->      parser.add_option("-w", "--workload", dest="work_ld",
-> -        default="kernbench", help="Workload can be ebizzy/kernbench")
-> +        default="ebizzy", help="Workload can be ebizzy/kernbench")
->      (options, args) = parser.parse_args()
-> 
->      try:
-> @@ -40,10 +40,10 @@ def main(argv=None):
->          map_cpuid_pkgid()
->          print "INFO: Created table mapping cpu to package"
->          background="no"
-> -        duration=60
-> +        duration=120
->          pinned="yes"
-> 
-> -        trigger_workld(options.smt_level,options.work_ld, "single_job", duration, background, pinned)
-> +        trigger_workld(options.smt_level,options.work_ld, "single_job", duration, background, pinned, "no")
->          generate_loc_intr_report()
->          status = validate_ilb(options.mc_level, options.smt_level)
->          reset_schedmc()
-> 
-> ------------------------------------------------------------------------------
-> Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-> is the only developer event you need to attend this year. Jumpstart your
-> developing skills, take BlackBerry mobile applications to market and stay 
-> ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-> http://p.sf.net/sfu/devconference
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+The following patch adds a signal() syscall to the ppoll01 testcase. The testcase has a signal handler in it but this signal handler is not registered with the kernel through the signal() syscall.  Without the patch the testcase fails when it sends a SIGINT to itself as part of one of the case of the test run.
 
+Signed-off-by: Chandru S <chandru@linux.vnet.ibm.com>
+---
+
+--- ltp/testcases/kernel/syscalls/ppoll/ppoll01.c.orig	2009-10-14 16:58:45.547235527 +0530
++++ ltp/testcases/kernel/syscalls/ppoll/ppoll01.c	2009-10-14 16:53:42.828486675 +0530
+@@ -106,6 +106,8 @@ extern void cleanup() {
+         tst_exit();
+ }
+ 
++void sighandler(int sig);       /* signals handler function for the test */
++
+ /* Local  Functions */
+ /******************************************************************************/
+ /*                                                                            */
+@@ -126,6 +128,8 @@ extern void cleanup() {
+ /******************************************************************************/
+ void setup() {
+         /* Capture signals if any */
++	signal(SIGINT, &sighandler);
++
+         /* Create temporary directories */
+         TEST_PAUSE;
+         tst_tmpdir();
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
