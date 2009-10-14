@@ -1,29 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1Mxc3A-0007rf-OK
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 07:44:04 +0000
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mxc33-0006qo-8k
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 07:44:04 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e6.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9D7mgxu022996
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 03:48:42 -0400
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1My2T6-0003mW-3Y
+	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 11:56:36 +0000
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1My2Sy-0007Yl-VM
+	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 11:56:36 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e4.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9EBmlLJ013952
+	for <ltp-list@lists.sourceforge.net>; Wed, 14 Oct 2009 07:48:47 -0400
 Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n9D7hfAa257118
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 03:43:41 -0400
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n9EBuNE6252346
+	for <ltp-list@lists.sourceforge.net>; Wed, 14 Oct 2009 07:56:23 -0400
 Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
 	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n9D7eFqT028018
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 03:40:15 -0400
-From: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Date: Tue, 13 Oct 2009 13:13:37 +0530
-Message-Id: <20091013074337.22414.20968.sendpatchset@localhost.localdomain>
-Subject: [LTP] [Patch 1/6] Fix issues in cpu consolidation verification
-	functions
+	n9EBquI1020323
+	for <ltp-list@lists.sourceforge.net>; Wed, 14 Oct 2009 07:52:56 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+Date: Wed, 14 Oct 2009 17:26:18 +0530
+Message-Id: <20091014115618.7801.69877.sendpatchset@subratamodak.linux.ibm.com>
+Subject: [LTP] [PATCH] Re: compile fails for libcpuset.c on SLES-11 s390x
+	with ltp-full-20090930
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,91 +33,110 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7655599578203598415=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, svaidy@linux.vnet.ibm.com, ego@in.ibm.com, arun@linux.vnet.ibm.com
+To: Mark Ver <markver@us.ibm.com>
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>, Sachin P Sant <sachinp@in.ibm.com>
 
-Arguments passed for cpu consolidation was not used appropriatly. Provided
-TINFO messages to indicate dependency test failures.
+--===============7655599578203598415==
 
-Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+Hi Mark,
 
-diff -uprN ltp-full-20090930/testcases/kernel/power_management/pm_include.sh ltp-full-20090930_patched/testcases/kernel/power_management/pm_include.sh
---- ltp-full-20090930/testcases/kernel/power_management/pm_include.sh	2009-10-05 02:10:56.000000000 -0400
-+++ ltp-full-20090930_patched/testcases/kernel/power_management/pm_include.sh	2009-10-12 22:46:12.000000000 -0400
-@@ -71,7 +71,7 @@ get_supporting_govr() {
- is_hyper_threaded() {
- 	siblings=`cat /proc/cpuinfo | grep siblings | uniq | cut -f2 -d':'`
- 	cpu_cores=`cat /proc/cpuinfo | grep "cpu cores" | uniq | cut -f2 -d':'`
--	[ $siblings > $cpu_cores ]; return $?
-+	[ $siblings -gt $cpu_cores ]; return $?
- }
- 
- check_input() {
-@@ -148,8 +148,8 @@ get_valid_input() {
- 		
- analyze_result_hyperthreaded() {
- 	sched_mc=$1
--    pass_count=$3
--    sched_smt=$4
-+    pass_count=$2
-+    sched_smt=$3
- 
- 	case "$sched_mc" in
- 	0)
-@@ -165,7 +165,7 @@ $sched_mc & sched_smt=$sched_smt"
- 			fi
- 			;;
- 		*)
--           	if [ $pass_count -lt 5 ]; then
-+			if [ $pass_count -lt 5 ]; then
-                	tst_resm TFAIL "cpu consolidation for sched_mc=\
- $sched_mc & sched_smt=$sched_smt"
-            	else
-@@ -190,10 +190,16 @@ $sched_mc & sched_smt=$sched_smt"
- 
- analyze_package_consolidation_result() {
- 	sched_mc=$1
--    pass_count=$3
--	sched_smt=$4
-+    pass_count=$2
+>On Tue, 2009-10-13 at 20:42 -0700, Garrett Cooper wrote:
+>On Tue, Oct 13, 2009 at 7:18 PM, Mark Ver <markver@us.ibm.com> wrote:
+> > Trying to build ltp-full-20090930 on SLES-11. The "make all" gets the
+> > following:
+> >
+> > ...
+> > make[5]: Entering directory
+> > `/root/ltp-full-20090930/testcases/kernel/controllers/cpuset/cpuset_lib'
+> > gcc -g -O2 -Wall -g -Wextra -I../../../../include -c -o cpuinfo.o cpuinfo.c
+> > gcc -g -O2 -Wall -g -Wextra -I../../../../include -c -o libbitmask.o
+> > libbitmask.c
+> > gcc -g -O2 -Wall -g -Wextra -I../../../../include -c -o libcpuset.o
+> > libcpuset.c
+> > libcpuset.c: In function ���get_mempolicy���:
+> > libcpuset.c:3092: error: ���__NR_get_mempolicy��� undeclared (first use in this
+> > function)
+> > libcpuset.c:3092: error: (Each undeclared identifier is reported only once
+> > libcpuset.c:3092: error: for each function it appears in.)
+> > libcpuset.c: In function ���set_mempolicy���:
+> > libcpuset.c:3097: error: ���__NR_set_mempolicy��� undeclared (first use in this
+> > function)
+> > make[5]: *** [libcpuset.o] Error 1
+> > make[5]: Leaving directory
+> > `/root/ltp-full-20090930/testcases/kernel/controllers/cpuset/cpuset_lib'
+> > make[4]: *** [all] Error 2
+> > make[4]: Leaving directory
+> > `/root/ltp-full-20090930/testcases/kernel/controllers/cpuset'
+> > make[3]: *** [all] Error 2
+> > make[3]: Leaving directory
+> > `/root/ltp-full-20090930/testcases/kernel/controllers'
+> > make[2]: *** [all] Error 2
+> > make[2]: Leaving directory `/root/ltp-full-20090930/testcases/kernel'
+> > make[1]: *** [all] Error 2
+> > make[1]: Leaving directory `/root/ltp-full-20090930/testcases'
+> > make: *** [all] Error 2
+> >
+> > As far as I can tell the architecture does not support get_mempolicy and
+> > set_mem_policy.
+> >
+> > Here are the configure logs and stuff from the build attempt:
+> > (See attached file: ltp-full-20090930-s390x-builderr.tar.gz)
+> 
+> The constant is defined for the platform, but not with the correct name:
+> 
+> /usr/src/linux/arch/s390/kernel/syscalls.S:NI_SYSCALL
+>                                  /* 269 sys_get_mempolicy */
+> /usr/src/linux/arch/s390/include/asm/unistd.h:/* Number 269 is
+> reserved for new sys_get_mempolicy */
+> /usr/src/linux/arch/s390/include/asm/unistd.h:#define __IGNORE_get_mempolicy
+> 
+> This needs to be added to testcases/kernel/include/generate.sh for
+> linux_syscall_numbers.h, or an arch specific #ifdef should be added
+> for that test / to an autoconf test that would automatically determine
+> whether or not your platform had a usable get_mempolicy syscall.
+> 
+> Hope that helps describe what needs to take place next...
+
+As Garret proposed, can you please apply the following Patch and see if it
+solves your build problem. I get the following instructions from 2.6.31
+kernel sources:
+
+linux-2.6.31/arch/s390/include/asm/unistd.h:
+208 #define __NR_remap_file_pages   267
+209 /* Number 268 is reserved for new sys_mbind */
+210 /* Number 269 is reserved for new sys_get_mempolicy */
+211 /* Number 270 is reserved for new sys_set_mempolicy */
+212 #define __NR_mq_open            271
+
+Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>,
+---
+
+--- ltp-intermediate-20091013/testcases/kernel/include/s390x.in.orig	2009-10-14 17:14:39.000000000 +0530
++++ ltp-intermediate-20091013/testcases/kernel/include/s390x.in	2009-10-14 17:15:26.000000000 +0530
+@@ -14,3 +14,6 @@ fchmodat (__NR_openat + 11)
+ faccessat (__NR_openat + 12)
+ eventfd 318
+ fallocate 314
++get_mempolicy 269
++set_mempolicy 270
 +
-+	if [ $# -gt 2 ]
-+	then
-+		sched_smt=$3
-+	else
-+		sched_smt=-1
-+	fi
- 
--	if [ $hyper_threaded -eq $YES -a $sched_smt ]; then
-+	if [ $hyper_threaded -eq $YES -a $sched_smt -gt -1 ]; then
- 		analyze_result_hyperthreaded $sched_mc $pass_count $sched_smt
- 	else
- 		case "$sched_mc" in
-@@ -209,10 +215,10 @@ $sched_mc"
-     	*)
- 			if [ $pass_count -lt 5 ]; then
- 				tst_resm TFAIL "Consolidation at package level failed for \
--sched_mc=$sched_mc & sched_smt=$sched_smt"
-+sched_mc=$sched_mc"
- 			else
- 				tst_resm TPASS "Consolidation at package level passed for \
--sched_mc=$sched_mc & sched_smt=$sched_smt"
-+sched_mc=$sched_mc"
- 			fi	
-         	;;
-     	esac
-@@ -221,7 +227,7 @@ sched_mc=$sched_mc & sched_smt=$sched_sm
- 
- analyze_core_consolidation_result() {
- 	sched_smt=$1
--	pass_count=$3
-+	pass_count=$2
- 
- 	case "$sched_smt" in
- 	0)
+
+---
+Regards--
+Subrata
+
+-Garrett
+> 
+> 
+
+
+--===============7655599578203598415==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
@@ -125,7 +144,15 @@ is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
+--===============7655599578203598415==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============7655599578203598415==--
