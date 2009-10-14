@@ -1,21 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1MxPlC-0002Yc-0A
-	for ltp-list@lists.sourceforge.net; Mon, 12 Oct 2009 18:36:42 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MxPl4-0005qK-4q
-	for ltp-list@lists.sourceforge.net; Mon, 12 Oct 2009 18:36:41 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 12 Oct 2009 14:36:25 -0400
-References: <4AD2F942.1090004@cn.fujitsu.com>
-	<364299f40910121128w48dbef1bpb8ab9fe4b48029ec@mail.gmail.com>
-In-Reply-To: <364299f40910121128w48dbef1bpb8ab9fe4b48029ec@mail.gmail.com>
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MxsvO-00030L-8r
+	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 01:45:10 +0000
+Received: from mail-pz0-f188.google.com ([209.85.222.188])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MxsvG-0000Hg-Ga
+	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 01:45:10 +0000
+Received: by pzk26 with SMTP id 26so9518915pzk.4
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 13 Oct 2009 18:44:56 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <200910121436.26663.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] ppoll01: Fix to set the signal handler of SIGINT
+In-Reply-To: <1255428755.8438.10.camel@subratamodak.linux.ibm.com>
+References: <20091013074337.22414.20968.sendpatchset@localhost.localdomain>
+	<20091013074423.22414.52234.sendpatchset@localhost.localdomain>
+	<1255428755.8438.10.camel@subratamodak.linux.ibm.com>
+Date: Tue, 13 Oct 2009 18:39:15 -0700
+Message-ID: <364299f40910131839r6a8ecfbdk31e4407e7f027d97@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [Patch 6/6] Patch to fix workload installation issue
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,124 +29,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0676574530375795933=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: liubo <liubo-fnst@cn.fujitsu.com>
-
---===============0676574530375795933==
-Content-Type: multipart/signed; boundary="nextPart1564947.tbJvIHxbhG";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1564947.tbJvIHxbhG
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net, arun@linux.vnet.ibm.com, svaidy@linux.vnet.ibm.com, ego@in.ibm.com
 
-On Monday 12 October 2009 14:28:02 Garrett Cooper wrote:
-> On Mon, Oct 12, 2009 at 2:39 AM, liubo <liubo-fnst@cn.fujitsu.com> wrote:
-> > The test case ppoll01 does not register the signal handler
-> > of SIGINT, so the program will be terminated by SIGINT
-> > from child process.
-> >
-> > Then, the rest cases will not be tested.
-> >
-> > This patch fixed the problem.
-> >
-> > --- a/testcases/kernel/syscalls/ppoll/ppoll01.c
-> > +++ b/testcases/kernel/syscalls/ppoll/ppoll01.c
-> > @@ -124,9 +124,17 @@ extern void cleanup() {
-> > +/*
-> > + * sighandler()
-> > + */
-> > +void sighandler(int sig)
-> > +{
-> > +       return;
-> > +}
-> >  void setup() {
-> >         /* Capture signals if any */
-> > -        /* Create temporary directories */
-> > +       signal(SIGINT, sighandler);
-> > +       /* Create temporary directories */
-> >         TEST_PAUSE;
-> >         tst_tmpdir();
-> >  }
-> > @@ -404,16 +412,6 @@ TEST_END:
-> >  }
-> >
-> >
-> > -/*
-> > - * sighandler()
-> > - */
-> > -void sighandler(int sig)
-> > -{
-> > -        if (sig =3D=3D SIGINT)
-> > -                return;
-> > -        // NOTREACHED
-> > -        return;
-> > -}
->=20
-> 1. If all that the signal handler does is just return, it should have
-> been doing SIG_IGN from the beginning.
-> 2. I don't understand how your change fixes this because the signal
-> handler's function is almost the same (the original handler was more
-> generic).
+On Tue, Oct 13, 2009 at 3:12 AM, Subrata Modak
+<subrata@linux.vnet.ibm.com> wrote:
+> On Tue, 2009-10-13 at 13:14 +0530, Poornima Nayak wrote:
+>> Patch to fix workload installation issue
+>>
+>> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+>
+> This will not apply as all the LTP Makefiles has undergon huge changes.
+> Checkout the latest LTP and re-create this patch:
+>
+> Hunk #1 FAILED at 27.
+> 1 out of 1 hunk FAILED -- saving rejects to file utils/Makefile.rej
+>
+> Regards--
+> Subrata
+>
+>>
+>> diff -uprN ltp-full-20090930/utils/Makefile ltp-full-20090930_patched/ut=
+ils/Makefile
+>> --- ltp-full-20090930/utils/Makefile =A02009-10-05 02:10:46.000000000 -0=
+400
+>> +++ ltp-full-20090930_patched/utils/Makefile =A02009-10-12 22:48:30.0000=
+00000 -0400
+>> @@ -27,6 +27,6 @@ all: configure
+>> =A0 =A0 =A0 @set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i $@; done;
+>>
+>> =A0install:
+>> -
+>> + =A0 =A0 @set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i $@; done;
+>> =A0clean:
+>> =A0 =A0 =A0 @set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i $@; done;
 
-default behavior with SIGINT is to terminate, and going by this patch, no o=
-ne=20
-set up a signal handler for SIGINT.  so the fix as you implied sounds like:
-	- call signal(SIGINT, SIG_IGN);
-	- delete sighandlerr()
-=2Dmike
+    That was fixed as a `side-effect' of the new Makefile changes :)...
+Thanks!
+-Garrett
 
---nextPart1564947.tbJvIHxbhG
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJK03cqAAoJEEFjO5/oN/WBaB4QAJdR6aw6qfHIHU0mMKF6Vuh0
-D9z3vLDnu/0vnwpavexmYX0BF/lO+gwZroX+9XhJD57Mjd3ER38pXCaSwLpT6PDB
-M99kn4DUP+LgI0ENN0br8mMJhD4nnwQcdigxlyAnWCLjNLjrFkNuoUUKm/rw6b0W
-KL95GDohOgyHu8AfKGCKZDRtYxu117DAlRCta1MdmUFp5ZJ4VPFVTnUHQKEkipOw
-LiqHXx2uiNRLVdCiRRfk0N+7Djr6F/mNaPodXLWSbzZkGp4maLmnS1gIsQHyPUr2
-jwIJTgHMVrhAV1v/J2ZdvOW3C1VFFFROarmi6ENfrMRHAa5GpEslQC0Y+fdkVwCt
-et2+U1hJU4ncx2tr7/nwxD7sUwV8zBtGqAtb28J92/PtEkZJEHKbGtqUl6jhUbZk
-S5yL/MGGQtg+NF4hxbULfg3aanwTwvfAkngPqv90fLJtwy8Nl1/sM22MwqzCQhb1
-LCBRi+f3nawf2+bBzCOlNufYF6Rrk/v2nKyIAwg46p0UCR4z0Dey2CduwL9OyvJX
-iGn7AZQOzFzDPkT1YWvQf71pVcU3dYB1bDGdB1Yf46e9zDLqcgj+7jGcmM/pNnne
-xvGKU5zcb2K96DpbPf6jyOPQ+M2NSliaI6RsGs3ivvI/P1/SY/6gvX7W60zfhjqC
-B3PC63saQICJ0tTGkdZM
-=7zgK
------END PGP SIGNATURE-----
-
---nextPart1564947.tbJvIHxbhG--
-
-
---===============0676574530375795933==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
+developing skills, take BlackBerry mobile applications to market and stay =
+
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
---===============0676574530375795933==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============0676574530375795933==--
-
