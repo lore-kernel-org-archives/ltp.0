@@ -2,22 +2,34 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1N20Yu-0006G3-1v
-	for ltp-list@lists.sourceforge.net; Sun, 25 Oct 2009 10:43:00 +0000
-Received: from mail-pz0-f184.google.com ([209.85.222.184])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N20Yo-0007by-Gm
-	for ltp-list@lists.sourceforge.net; Sun, 25 Oct 2009 10:42:59 +0000
-MIME-Version: 1.0
-In-Reply-To: <364299f40910231450l36536a7blc395fa95c7bddc37@mail.gmail.com>
-References: <4AE19E86.8070100@linux.vnet.ibm.com>
-	<364299f40910230844n7650eb82y1deb56b062e809a8@mail.gmail.com>
-	<364299f40910231450l36536a7blc395fa95c7bddc37@mail.gmail.com>
-Date: Sun, 25 Oct 2009 03:42:46 -0700
-Message-ID: <364299f40910250342w6343b8bl6af6884d25790740@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] realtime: fix broken build configuration files
-	and warnings
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MyATF-0002ww-GH
+	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 20:29:17 +0000
+Received: from e9.ny.us.ibm.com ([32.97.182.139])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MyAT9-0007pv-EN
+	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 20:29:17 +0000
+Received: from d01relay07.pok.ibm.com (d01relay07.pok.ibm.com [9.56.227.147])
+	by e9.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9EKPMAe023111
+	for <ltp-list@lists.sourceforge.net>; Wed, 14 Oct 2009 16:25:22 -0400
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d01relay07.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n9EKT4ui2420858
+	for <ltp-list@lists.sourceforge.net>; Wed, 14 Oct 2009 16:29:04 -0400
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n9EKT3gH000424
+	for <ltp-list@lists.sourceforge.net>; Wed, 14 Oct 2009 14:29:04 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <200910141211.11379.chandru@in.ibm.com>
+References: <200910011340.32046.chandru@in.ibm.com>
+	<1255436017.8438.36.camel@subratamodak.linux.ibm.com>
+	<200910141211.11379.chandru@in.ibm.com>
+Date: Thu, 15 Oct 2009 01:58:54 +0530
+Message-Id: <1255552134.4892.12.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH V2] ppoll01: add signal() syscall to register
+	the	signal handler
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,115 +39,68 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gowrishankar <gomuthuk@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sf.net
+To: Chandru <chandru@in.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, vapier@gentoo.org
 
-On Fri, Oct 23, 2009 at 2:50 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Fri, Oct 23, 2009 at 8:44 AM, Garrett Cooper <yanegomi@gmail.com> wrot=
-e:
->> On Fri, Oct 23, 2009 at 5:16 AM, gowrishankar
->> <gomuthuk@linux.vnet.ibm.com> wrote:
->>> Hi Subrata,
->>> Please accept the patch below.
->>>
->>> Thanks,
->>> Gowri
->>
->> =A0 =A0I'll get back to you on this in a day Gowri... there are some
->> things I wanted to note.
->
-> Hi Gowri,
-> =A0 =A0I've reviewed the changes and checked in the ones that were OK,
-> and definitely needed to be fixed. There are a few items that I'm
-> unsure about with your proposed changes in the Makefiles that need to
-> be discussed:
-> 1. I'm trying to make sure that out-of-build-tree functionality isn't
-> broken. In order to do that, as you see I had to use abs_builddir and
-> abs_srcdir, instead of just realtimedir.
-> 2. config.mk shouldn't be included by lib/Makefile -- otherwise I have
-> to add LDLIBS +=3D -lrealtime to all Makefiles that require that
-> library. So by virtue of laziness and keeping things common, it's best
-> just to add the required variables and includes in lib/Makefile.
-> =A0 =A0This patch has been attached as realtime-makefile-fixes.diff.
-> =A0 =A0Now, for the other part that I don't agree with 100%, but I agree
-> needs fixing:
->
-> Index: func/pi-tests/Makefile
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> RCS file: /cvsroot/ltp/ltp/testcases/realtime/func/pi-tests/Makefile,v
-> retrieving revision 1.2
-> diff -u -r1.2 Makefile
-> --- func/pi-tests/Makefile =A0 =A0 =A09 Oct 2009 17:56:07 -0000 =A0 =A0 =
-=A0 1.2
-> +++ func/pi-tests/Makefile =A0 =A0 =A023 Oct 2009 21:36:02 -0000
-> @@ -24,4 +24,15 @@
->
-> =A0include $(top_srcdir)/include/mk/env_pre.mk
-> =A0include $(abs_srcdir)/../../config.mk
+On Wed, 2009-10-14 at 12:11 +0530, Chandru wrote: 
+> On Tuesday 13 October 2009 17:43:37 Subrata Modak wrote:
+> > On Thu, 2009-10-01 at 13:40 +0530, Chandru wrote: 
+> > > The ppoll01 testcase has a signal handler in it but this signal handler is not registered with the kernel through the signal() syscall. The testcase fails when it sends a SIGINT to itself as part of one of the case of the test run.
+> > > The following patch
+> > > 1. Adds a signal() syscall to register the signal handler
+> > > 2. Corrects the expected 'revents' for the case where ppoll() is called on a file which is only opened in read/write mode, i.e case00.
+> > > 
+> > > Signed-off-by: Chandru S <chandru@linux.vnet.ibm.com>
+> > 
+> > Hi Chandru,
+> > 
+> > Can you please resend this with a diff from the Latest CVS snapshot ?
+> > 
+> 
+> Hi Subrata, 
+> 
+> Thanks for letting me know. Here is the patch taken from the latest snapshot. 
+> 
+> The following patch adds a signal() syscall to the ppoll01 testcase. The testcase has a signal handler in it but this signal handler is not registered with the kernel through the signal() syscall.  Without the patch the testcase fails when it sends a SIGINT to itself as part of one of the case of the test run.
+> 
+> Signed-off-by: Chandru S <chandru@linux.vnet.ibm.com>
+
+Thanks.
+
+Regards--
+Subrata
+
+> ---
+> 
+> --- ltp/testcases/kernel/syscalls/ppoll/ppoll01.c.orig	2009-10-14 16:58:45.547235527 +0530
+> +++ ltp/testcases/kernel/syscalls/ppoll/ppoll01.c	2009-10-14 16:53:42.828486675 +0530
+> @@ -106,6 +106,8 @@ extern void cleanup() {
+>          tst_exit();
+>  }
+> 
+> +void sighandler(int sig);       /* signals handler function for the test */
 > +
-> +MAKE_TARGETS =A0 =A0 =A0 =A0 =A0 :=3D testpi-0
+>  /* Local  Functions */
+>  /******************************************************************************/
+>  /*                                                                            */
+> @@ -126,6 +128,8 @@ extern void cleanup() {
+>  /******************************************************************************/
+>  void setup() {
+>          /* Capture signals if any */
+> +	signal(SIGINT, &sighandler);
 > +
-> +ifeq ($(HAVE_PI_MUTEX), yes)
-> +MAKE_TARGETS =A0 =A0 =A0 =A0 =A0 +=3D testpi-1 testpi-2 testpi-4 testpi-=
-5 testpi-7
-> +endif
-> +
-> +ifeq ($(HAVE_ROBUST_MUTEX), yes)
-> +MAKE_TARGETS =A0 =A0 =A0 =A0 =A0 +=3D testpi-6 sbrk_mutex
-> +endif
-> +
->
-> =A0 =A0I agree that these should be toggable or built appropriate to
-> whether or not the system has this kind of functionality. The method
-> used to determine whether or not a system has this functionality is
-> questionable though, and I believe all of this can be established
-> through additional autoconf tests added to the $(abs_top_srcdir)/m4 --
-> do you agree with this?
-> =A0 =A0Is the realtime test suite this made available as a separate
-> package outside of LTP in-house at IBM, or is it strictly available
-> with LTP?
-> =A0 =A0Once these build integration issues are resolved, should it be
-> enabled by default, or still remain an optional package to build and
-> execute?
-> =A0 =A0Should this component have a runtest file as well so it can be
-> integrated into the execution portion of LTP?
-> =A0 =A0Finally, I also discovered some QA issues with rt-migrate.c (diff
-> attached as well); I patterned the code to match the other tests. Do
-> you agree with the fixes?
+>          /* Create temporary directories */
+>          TEST_PAUSE;
+>          tst_tmpdir();
 
-Gowri,
-    I read more about the project and determined what the scope was,
-so I created and integrated testcases/realtime into the rest of the
-autoconf infrastructure, but as a subcomponent in LTP.
-    So if you check out LTP from HEAD as of a few moments ago, you'll
-discover that all of the issues you reported have been fixed (AFAIK)
-and all of the unnecessary autoconf-like scripts and additional
-autoconf-related files and directories have been cleaned out.
-    The directions for compiling realtime by itself are the same as
-the rest of LTP:
 
-make autotools
-./configure
-make all
-make install
-
-    This is only required when doing this as a subcomponent, as this
-is already handled with the same commands above issued from the
-top-level LTP source directory.
-HTH,
--Garrett
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay =
-
+developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
 _______________________________________________
