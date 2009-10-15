@@ -1,27 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MxmwS-0004EG-Qf
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 19:21:52 +0000
-Received: from mail-pz0-f188.google.com ([209.85.222.188])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MxmwL-0002NN-2w
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 19:21:52 +0000
-Received: by pzk26 with SMTP id 26so9270500pzk.4
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 13 Oct 2009 12:21:39 -0700 (PDT)
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1MyWHa-00008i-Uk
+	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 19:46:42 +0000
+Date: Thu, 15 Oct 2009 21:46:30 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20091015194630.GC2875@schrodinger.suse.cz>
+References: <20091014115618.7801.69877.sendpatchset@subratamodak.linux.ibm.com>
+	<20091015162356.GB4152@schrodinger.suse.cz>
+	<20091015173026.GA25999@schrodinger.suse.cz>
+	<364299f40910151155x646bcf38naa53e5af4aad75b3@mail.gmail.com>
+	<364299f40910151209s4a75e999he76b9c1d9b58a88a@mail.gmail.com>
+	<364299f40910151211r48d7510fnfc3c69a685923ca5@mail.gmail.com>
+	<20091015192053.GA2875@schrodinger.suse.cz>
+	<364299f40910151225lea3392fj9e36f4afe43fe67d@mail.gmail.com>
+	<364299f40910151228n23d96e98g3850bfa9e78bd987@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <364299f40910131220x162b5e02u65bae87e349f7dda@mail.gmail.com>
-References: <8368651DACC1964480F951191B94A0780142442B@svexch01.mvista.com>
-	<200910050018.12711.jpalecek@web.de>
-	<8368651DACC1964480F951191B94A0780153CC19@svexch01.mvista.com>
-	<1255445017.8438.66.camel@subratamodak.linux.ibm.com>
-	<364299f40910131220x162b5e02u65bae87e349f7dda@mail.gmail.com>
-Date: Tue, 13 Oct 2009 12:21:39 -0700
-Message-ID: <364299f40910131221h7f9acf01te65be5b462281463@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH][openfile] file descriptors not cleaned up
+Content-Disposition: inline
+In-Reply-To: <364299f40910151228n23d96e98g3850bfa9e78bd987@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] Re: compile fails for libcpuset.c on
+	SLES-11	s390x with ltp-full-20090930
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,79 +33,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: jpalecek@web.de, LTP Mailing List <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>, Mark Ver <markver@us.ibm.com>, Sachin P Sant <sachinp@in.ibm.com>
 
-On Tue, Oct 13, 2009 at 12:20 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Tue, Oct 13, 2009 at 7:43 AM, Subrata Modak
-> <subrata@linux.vnet.ibm.com> wrote:
->> On Mon, 2009-10-05 at 14:33 -0700, Henry Yei wrote:
->>> On Wednesday 04, October 2009 04:06:46 Jiri Palecek wrote:
->>>
->>> Hello,
->>>
->>> On Wednesday 30 September 2009 04:06:46 Henry Yei wrote:
->>> > This patch for openfile contains the following changes:
->>> > - test output to use tst_resm functions
->>> > - sets ups and cleans up tmp dir properly
->>> > - closes all opened file descriptors before thread exit(fixes nfs iss=
-ues on removing tmp dir)
->>> >
->>> > Signed-off-by: Henry Yei <hyei@mvista.com>
->>> >
->>> >
->>> > This test opens multiple file descriptors to the same file. Perhaps t=
-he author meant to open file handles for separate files?
->>>
->>> This is suspicious, for me too. But maybe there is some logic behind op=
-ening the same file many times.
->>>
->>> I just have a small remark about your patch: Shouldn't you call close_f=
-iles() here, too? (With a partially full fd_list array handled, of course)
->>>
->>> +void * threads(void* thread_id_) {
->>> + =A0 =A0 int thread_id =3D (uintptr_t) thread_id_;
->>> + =A0 =A0 char errmsg[80];
->>> + =A0 =A0 FILE *fd_list[MAXFILES];
->>> + =A0 =A0 int i;
->>> +
->>> + =A0 =A0 /* Open files */
->>> + =A0 =A0 for (i =3D 0; i < numfiles; i++) {
->>> + =A0 =A0 =A0 =A0 =A0 =A0 if (debug)
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 printf("Thread =A0%d : Openin=
-g file number %d \n", thread_id, i);
->>> + =A0 =A0 =A0 =A0 =A0 =A0 if ((fd_list[i] =3D fopen(filename, "rw")) =
-=3D=3D NULL) {
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sprintf(errmsg, "FAIL - Could=
-n't open file #%d", i);
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 perror(errmsg);
->>>
->>>
->>>
->>> Jiri,
->>>
->>> Thanks for reviewing the patch. Yes, that was an omission on my part. I=
- have attached an updated patch. Let me know if there are any more comments.
->>>
->>
->> Henry,
->>
->> This patch is ineffective on the present Makefile(s). Please rebase them
->> over latest CVS and resend:
->>
->> patching file testcases/kernel/fs/openfile/Makefile
->> Hunk #1 FAILED at 1.
->> 1 out of 1 hunk FAILED -- saving rejects to file
->> testcases/kernel/fs/openfile/Makefile.rej
->> patching file testcases/kernel/fs/openfile/openfile.c
->
-> =A0 =A0I'll gladly help if help is needed. Feel free to ping me and we
-> can setup a rendezvous on IRC or something.
+Hi!
+> >> Hmm, may be we should really move testcases/kernel/include into
+> >> $(topdir)/include or better move them them to subdir in $(topdir)/incl=
+ude and
+> >> put the generated header into $(topdir)/include, it would save us some=
+ more
+> >> complexity when creating makefiles.
+> >
+> > Cyril,
+> > =A0 =A0Files generated at build time should _never_ live in the source
+> > directory. Otherwise tidiness becomes a serious issue, esp with source
+> > control.
+> > =A0 =A0This can be corrected by adding this logic to a common Makefile =
+if
+> > you like, so that way it does get picked up from one common source.
+> > This makes more sense from a design perspective.
+> =
 
-    I looked at the diff again and if you just omit the Makefile
-change then the rest should go through.
-HTH,
--Garrett
+>     Ugh, I'm tired... yes, what you proposed above was correct, but
+> not complete from a submake perspective, but then again making
+> Makefiles aren't correct. I will implement the complete part this
+> weekend.
+
+Okay ;)
+
+-- =
+
+Cyril Hrubis
+chrubis@suse.cz
 
 ---------------------------------------------------------------------------=
 ---
