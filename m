@@ -1,32 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1N2Sxv-0008RY-Bn
-	for ltp-list@lists.sourceforge.net; Mon, 26 Oct 2009 17:02:43 +0000
-Received: from e9.ny.us.ibm.com ([32.97.182.139])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N2Sxs-0007z5-T3
-	for ltp-list@lists.sourceforge.net; Mon, 26 Oct 2009 17:02:43 +0000
-Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
-	by e9.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9QGwIqm027169
-	for <ltp-list@lists.sourceforge.net>; Mon, 26 Oct 2009 12:58:18 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n9QH2Zgh087080
-	for <ltp-list@lists.sourceforge.net>; Mon, 26 Oct 2009 13:02:35 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	n9QD13HB000821
-	for <ltp-list@lists.sourceforge.net>; Mon, 26 Oct 2009 09:01:03 -0400
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200910211528.n9LFST8q028289@e35.co.us.ibm.com>
-References: <200910211528.n9LFST8q028289@e35.co.us.ibm.com>
-Date: Mon, 26 Oct 2009 22:32:24 +0530
-Message-Id: <1256576544.4929.54.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix some bashisms
-Reply-To: subrata@linux.vnet.ibm.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1MyVmM-0003yu-Ro
+	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 19:14:26 +0000
+Date: Thu, 15 Oct 2009 21:14:17 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20091015191417.GA791@schrodinger.suse.cz>
+References: <20091014115618.7801.69877.sendpatchset@subratamodak.linux.ibm.com>
+	<20091015162356.GB4152@schrodinger.suse.cz>
+	<20091015173026.GA25999@schrodinger.suse.cz>
+	<364299f40910151155x646bcf38naa53e5af4aad75b3@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="Kj7319i9nmIyA2yE"
+Content-Disposition: inline
+In-Reply-To: <364299f40910151155x646bcf38naa53e5af4aad75b3@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] Re: compile fails for libcpuset.c on
+	SLES-11	s390x with ltp-full-20090930
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,665 +26,124 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>, Mark Ver <markver@us.ibm.com>, Sachin P Sant <sachinp@in.ibm.com>
 
-On Wed, 2009-10-21 at 02:19 +0200, Jiri Palecek wrote: 
-> Hello,
-> 
-> this is another patch fixing bashisms in LTP tests (the fixes are more or less the same as in the previous patches, except for a few exceptions). Note that the patch is not complete, in the sense that there may remain further bashisms in the source even after applying the patch (like use of arrays, which is visible even from this patch).
-> 
-> Regards
->     Jiri Palecek
-> 
-> Signed-off-by: Jiri Palecek <jpalecek@web.de>
 
-Hmm,. Some of them failed to apply. Can you please resend only the error
-part(s):
+--Kj7319i9nmIyA2yE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-patching file testcases/kernel/fs/fs-bench/modaltr.sh
-Hunk #1 FAILED at 43.
-1 out of 1 hunk FAILED -- saving rejects to file
-testcases/kernel/fs/fs-bench/modaltr.sh.rej
-patching file testcases/kernel/fs/fs_di/fs_di
-patching file testcases/kernel/fs/mongo/test.sh
-Hunk #1 FAILED at 26.
-Hunk #2 FAILED at 52.
-Hunk #3 FAILED at 70.
-3 out of 3 hunks FAILED -- saving rejects to file
-testcases/kernel/fs/mongo/test.sh.rej
-patching file testcases/network/tcp_cmds/netstat/netstat01
-Hunk #1 FAILED at 77.
-1 out of 1 hunk FAILED -- saving rejects to file
-testcases/network/tcp_cmds/netstat/netstat01.rej
+Hi!
+>     This logic is covered in include/mk/testcases.mk as follows:
+> 
+> include $(top_srcdir)/include/mk/env_pre.mk
+> 
+> # For linux_syscall_numbers.h
+> CPPFLAGS                += -I$(abs_top_builddir)/testcases/kernel/include
+> 
+> INSTALL_DIR             := testcases/bin
+> 
+> LDLIBS                  += -lltp
+> 
+>     There's no reason why we have to go back to the hackish Makefile's
+> -- we can just include testcases.mk if it's not included already (I
+> admit, a smallhandful of testcases/... Makefile's didn't do this, but
+> I did this on need-to-have basis).
 
-Regards--
-Subrata
+I still would rather have one place to store all commonly used headers eg.
+$(topdir)/include. And stroring makefile "libraries" in $(topdir)/include/mk/
+is IMHO not cleanest solution, may be it sould have it's onw directory in
+$(topdir).
 
-> ---
->  .../controllers/cgroup_fj/cgroup_fj_utility.sh     |    2 +-
->  .../controllers/cgroup_fj/run_cgroup_test_fj.sh    |    8 ++--
->  .../controllers/cpuctl_fj/run_cpuctl_test_fj.sh    |   51 ++++++++++----------
->  .../memcg/functional/memcg_function_test.sh        |    6 +-
->  .../controllers/memcg/stress/memcg_stress_test.sh  |   18 ++++----
->  testcases/kernel/fs/acls/acl_test01                |   12 ++--
->  testcases/kernel/fs/fs-bench/modaltr.sh            |    2 +-
->  testcases/kernel/fs/fs_di/fs_di                    |    4 +-
->  testcases/kernel/fs/mongo/test.sh                  |    8 +--
->  .../hotplug/cpu_hotplug/functional/hotplug02.sh    |    6 +-
->  .../hotplug/cpu_hotplug/functional/hotplug03.sh    |   16 +++---
->  .../hotplug/cpu_hotplug/functional/hotplug04.sh    |   10 ++--
->  .../cpu_hotplug/functional/hotplug06.sar.sh        |    6 +-
->  .../cpu_hotplug/functional/hotplug06.top.sh        |    6 +-
->  .../hotplug/cpu_hotplug/functional/hotplug07.sh    |    6 +-
->  .../network/can/filter-tests/run_ltp-can_tests.sh  |    2 +-
->  testcases/network/tcp_cmds/netstat/netstat01       |    2 +-
->  17 files changed, 82 insertions(+), 83 deletions(-)
-> 
-> diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_utility.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_utility.sh
-> index 4ba15d6..ed161fa 100755
-> --- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_utility.sh
-> +++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_utility.sh
-> @@ -547,7 +547,7 @@ reclaim_foundling()
->  		if [ -e /proc/$cur_pid/ ];then
->  			echo "ERROR: pid $cur_pid reclaimed"
->  			do_echo 0 1 "$cur_pid" "/dev/cgroup/tasks"
-> -			let "foundlings = $foundlings + 1"
-> +			: $((foundlings += 1))
->  		fi
->  	done
-> 
-> diff --git a/testcases/kernel/controllers/cgroup_fj/run_cgroup_test_fj.sh b/testcases/kernel/controllers/cgroup_fj/run_cgroup_test_fj.sh
-> index 70e4078..eb2d1db 100755
-> --- a/testcases/kernel/controllers/cgroup_fj/run_cgroup_test_fj.sh
-> +++ b/testcases/kernel/controllers/cgroup_fj/run_cgroup_test_fj.sh
-> @@ -33,7 +33,7 @@ export TMPFILE=$TESTROOT/tmp_tasks
->  export CASENO1=0
->  export CASENO2=0
-> 
-> -if [ "$UID" -ne 0 ]; then
-> +if [ "$(id -ru)" -ne 0 ]; then
->  	echo "***error***:you must use root to test"
->  	exit -1
->  fi
-> @@ -107,17 +107,17 @@ do
->  	if [ $? -ne 0 ]; then
->  		case $CASETYPE in
->  		"function" )
-> -			let "CASENO1 = $CASENO1 + 1"
-> +			: $(( CASENO1 += 1 ))
->  			export CASENO1=$CASENO1
->  			$TESTROOT/cgroup_fj_function.sh $CASECMD
->  			;;
->  		"function2" )
-> -			let "CASENO1 = $CASENO1 + 1"
-> +			: $(( CASENO1 += 1 ))
->  			export CASENO1=$CASENO1
->  			$TESTROOT/cgroup_fj_function2.sh $CASECMD
->  			;;
->  		"stress" )
-> -			let "CASENO2 = $CASENO2 + 1"
-> +			: $(( CASENO2 += 1 ))
->  			export CASENO2=$CASENO2
->  			$TESTROOT/cgroup_fj_stress.sh $CASECMD
->  			;;
-> diff --git a/testcases/kernel/controllers/cpuctl_fj/run_cpuctl_test_fj.sh b/testcases/kernel/controllers/cpuctl_fj/run_cpuctl_test_fj.sh
-> index 6ab0f65..f02f59a 100755
-> --- a/testcases/kernel/controllers/cpuctl_fj/run_cpuctl_test_fj.sh
-> +++ b/testcases/kernel/controllers/cpuctl_fj/run_cpuctl_test_fj.sh
-> @@ -58,8 +58,8 @@ setup()
->  # Write the cleanup function
->  cleanup()
->  {
-> -	mount | grep "$CPUCTL" &> /dev/null || {
-> -		rm -rf "$CPUCTL" &> /dev/null
-> +	mount | grep "$CPUCTL" > /dev/null 2>&1 || {
-> +		rm -rf "$CPUCTL" > /dev/null 2>&1
->  		return 0
->  	}
-> 
-> @@ -73,22 +73,19 @@ cleanup()
->  	done
-> 
->  	umount $CPUCTL || return 1
-> -	rmdir $CPUCTL &> /dev/null
-> +	rmdir $CPUCTL > /dev/null 2>&1
->  }
-> 
->  creat_process()
->  {
->  	cat /dev/zero > /dev/null 2>/dev/null &
-> -	taskset -p 1 $! &>/dev/null
-> +	taskset -p 1 $! >/dev/null 2>&1
->  	echo $!
->  }
-> 
->  get_cpu_usage()
->  {
-> -	top=($(top -b -n 1 -p $1 | tail -2 | head -1))
-> -	top=${top[8]}
-> -	top=`echo $top | awk -F "." '{print $1}'`
-> -	echo "$top"
-> +	top -b -n 1 -p $1 | tail -2 | head -1 | awk 'print $9' | awk -F "." '{print $1}'
->  }
-> 
->  kill_all_pid()
-> @@ -424,7 +421,7 @@ case12 ()
->  	wait $pid
->  }
-> 
-> -max_shares=$((2**18))
-> +max_shares=$((1 << 18))
-> 
->  # echo MAX_SHARES into shares
->  case13 ()
-> @@ -589,7 +586,7 @@ case19()
->  	echo "pid $pid cpu_usage $cpu_usage"
-> 
->  	kill -9 $pid $pid_other
-> -	expr 96 \< "$cpu_usage" \& "$cpu_usage" \< 103 &> /dev/null || return 1
-> +	expr 96 \< "$cpu_usage" \& "$cpu_usage" \< 103 > /dev/null 2>&1 || return 1
->  	return 0
->  }
-> 
-> @@ -605,7 +602,7 @@ case20()
->  	echo "pid $pid cpu_usage $cpu_usage"
-> 
->  	kill -9 $pid $pid_other
-> -	expr 96 \< "$cpu_usage" \& "$cpu_usage" \< 103 &> /dev/null || return 1
-> +	expr 96 \< "$cpu_usage" \& "$cpu_usage" \< 103 > /dev/null 2>&1 || return 1
->  	return 0
->  }
-> 
-> @@ -615,7 +612,7 @@ case21()
->  	pid=$(creat_process)
->  	echo $pid > "$CPUCTL/1/tasks"
-> 
-> -	while ((1))
-> +	while true
->  	do
->  		creat_process > "$CPUCTL/1/2/tasks"
->  		sleep 1
-> @@ -625,18 +622,20 @@ case21()
->  	sleep 10
->  	ret=0
-> 
-> -	for ((top_times=0; top_times<10 && ret==0; top_times++))
-> +	top_times=0
-> +	while [ "$top_times" -lt 10 -a "$ret" = 0 ]
->  	do
->  		cpu_usage=$(get_cpu_usage $pid)
->  		echo "pid $pid cpu_usage $cpu_usage"
-> -		expr 44 \< "$cpu_usage" \& "$cpu_usage" \< 56 &> /dev/null
-> +		expr 44 \< "$cpu_usage" \& "$cpu_usage" \< 56 > /dev/null 2>&1
->  		ret=$?
-> +		: $(( top_times+=1 ))
->  	done
-> 
-> -	kill -9 $pid $loop_pid &> /dev/null
-> -	wait $pid $loop_pid &>/dev/null
-> +	kill -9 $pid $loop_pid > /dev/null 2>&1
-> +	wait $pid $loop_pid >/dev/null 2>&1
->  	sleep 2
-> -	kill_all_pid < "$CPUCTL/1/2/tasks" &>/dev/null
-> +	kill_all_pid < "$CPUCTL/1/2/tasks"  >/dev/null 2>&1
->  	sleep 2
->  	return $ret
->  }
-> @@ -645,7 +644,7 @@ case22()
->  {
->  	mkdir "$CPUCTL/1" "$CPUCTL/1/2"
->  	pid=$(creat_process)
-> -	while ((1))
-> +	while true
->  	do
->  		echo $pid > "$CPUCTL/1/tasks"
->  		echo $pid > "$CPUCTL/1/2/tasks"
-> @@ -656,26 +655,28 @@ case22()
->  	sleep 10
->  	ret=0
-> 
-> -	for ((top_times=0; top_times<10 && ret==0; top_times++))
-> +	top_times=0
-> +	while [ "$top_times" -lt 10 -a "$ret" = 0 ]
->  	do
->  		cpu_usage=$(get_cpu_usage $pid)
->  		echo "pid $pid cpu_usage $cpu_usage"
-> -		expr 94 \< "$cpu_usage" \& "$cpu_usage" \< 106 &> /dev/null
-> +		expr 94 \< "$cpu_usage" \& "$cpu_usage" \< 106 > /dev/null 2>&1
->  		ret=$?
-> +		: $(( top_times+=1 ))
->  	done
->  	
-> -	kill -9 $pid $loop_pid &> /dev/null
-> -	wait $pid $loop_pid &>/dev/null
-> +	kill -s KILL $pid $loop_pid > /dev/null 2>&1
-> +	wait $pid $loop_pid >/dev/null 2>&1
->  	return $ret
->  }
-> 
-> -rm -rf "$CPUCTL_TMP" &>/dev/null || exit 1
-> +rm -rf "$CPUCTL_TMP" >/dev/null 2>&1 || exit 1
->  mkdir -p "$CPUCTL_TMP" || exit 1
-> 
->  # test
->  do_test ()
->  {
-> -	for (( i=1; i<=$TST_TOTAL; i++ ))
-> +	for i in $(seq 1 $TST_TOTAL)
->  	do
->  		setup || {
->  			tst_resm TFAIL "case$i    FAIL"
-> @@ -698,5 +699,5 @@ do_test ()
-> 
->  do_test
-> 
-> -rm -rf "$CPUCTL_TMP" &>/dev/null
-> +rm -rf "$CPUCTL_TMP" >/dev/null 2>&1
-> 
-> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
-> index 0f11835..003af1c 100755
-> --- a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
-> +++ b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
-> @@ -536,8 +536,8 @@ do_mount()
->  }
-> 
->  # Run all the test cases
-> -for ((i = 1; i <= $TST_TOTAL; i++))
-> -{
-> +for i in $(seq 1 $TST_TOTAL)
-> +do
->  	export TST_COUNT=$(( $TST_COUNT + 1 ))
->  	cur_id=$i
-> 
-> @@ -556,7 +556,7 @@ for ((i = 1; i <= $TST_TOTAL; i++))
->  	rmdir /dev/memcg/$i
-> 
->  	cleanup;
-> -}
-> +done
-> 
->  echo $shmmax > /proc/sys/kernel/shmmax
-> 
-> diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-> index 86b8cb9..6c9cd75 100755
-> --- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-> +++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-> @@ -66,29 +66,29 @@ run_stress()
->  {
->  	do_mount;
-> 
-> -	for ((i = 0; i < $1; i++))
-> -	{
-> +	for i in $(seq 0 $(($1-1)))
-> +	do
->  		mkdir /dev/memcg/$i 2> /dev/null
->  		./memcg_process_stress $2 $3 &
->  		pid[$i]=$!
-> 
->  		echo ${pid[$i]} > /dev/memcg/$i/tasks
-> -	}
-> +	done
-> 
-> -	for ((i = 0; i < $1; i++))
-> -	{
-> +	for i in $(seq 0 $(($1-1)))
-> +	do
->  		/bin/kill -s SIGUSR1 ${pid[$i]} 2> /dev/null
-> -	}
-> +	done
-> 
->  	sleep $4
-> 
-> -	for ((i = 0; i < $1; i++))
-> -	{
-> +	for i in $(seq 0 $(($1-1)))
-> +	do
->  		/bin/kill -s SIGINT ${pid[$i]} 2> /dev/null
->  		wait ${pid[$i]}
-> 
->  		rmdir /dev/memcg/$i 2> /dev/null
-> -	}
-> +	done
-> 
->  	cleanup;
->  }
-> diff --git a/testcases/kernel/fs/acls/acl_test01 b/testcases/kernel/fs/acls/acl_test01
-> index c892b0e..20cd1ac 100755
-> --- a/testcases/kernel/fs/acls/acl_test01
-> +++ b/testcases/kernel/fs/acls/acl_test01
-> @@ -51,7 +51,7 @@ if [ "z$iam" = "z$TEST_USER1" ]
->  then
->  	echo ""
->  else
-> -if [ $UID != 0 ]
-> +if [ $(id -ru) != 0 ]
->  then
->          echo "FAILED: Must have root access to execute this script"
->          exit 1
-> @@ -76,7 +76,7 @@ if [ $? != 0 ]
->  then
->          echo ""
->          echo "FAILED:  [ losetup ] Must have loop device support by kernel"
-> -        echo -e "\t to execute this script"
-> +        printf "\t to execute this script\n"
->          exit 1
->  fi
-> 
-> @@ -90,8 +90,8 @@ then
->          then
->                  echo ""
->                  echo "FAILED: [ mount ] Make sure that ACL (Access Control List)"
-> -                echo -e "\t and Extended Attribute are built into the kernel"
-> -                echo -e "\t Can not mount ext3 file system with acl and user_xattr options"
-> +                printf "\t and Extended Attribute are built into the kernel\n"
-> +                printf "\t Can not mount ext3 file system with acl and user_xattr options\n"
->                  exit 1
->          fi
->  else
-> @@ -102,8 +102,8 @@ else
->          then
->                  echo ""
->                  echo "FAILED: [ mount ] Make sure that ACL (Access Control List)"
-> -                echo -e "\t and Extended Attribute are built into the kernel"
-> -                echo -e "\t Can not mount ext2 file system with acl and user_xattr options"
-> +                printf "\t and Extended Attribute are built into the kernel\n"
-> +                printf "\t Can not mount ext2 file system with acl and user_xattr options\n"
->                  exit 1
->          fi
->  fi
-> diff --git a/testcases/kernel/fs/fs-bench/modaltr.sh b/testcases/kernel/fs/fs-bench/modaltr.sh
-> index 85d2c30..36e6f0c 100755
-> --- a/testcases/kernel/fs/fs-bench/modaltr.sh
-> +++ b/testcases/kernel/fs/fs-bench/modaltr.sh
-> @@ -43,7 +43,7 @@ LOG_DIR1=/tmp/log1
->  HOME_DIR=/home
->  BLOCK_DIR=/dev/mtdblock
->  export PATH=$PATH:/sbin
-> -	if [ $UID -ne 0 ]; 
-> +	if [ $(id -ru) -ne 0 ]; 
->  then 
->  	echo "must be root to run this"
->  	exit
-> diff --git a/testcases/kernel/fs/fs_di/fs_di b/testcases/kernel/fs/fs_di/fs_di
-> index 54dd8b4..c6447ef 100755
-> --- a/testcases/kernel/fs/fs_di/fs_di
-> +++ b/testcases/kernel/fs/fs_di/fs_di
-> @@ -201,10 +201,10 @@ $trace_logic
->  		end_testcase "Could not create testfile of size ${SIZE}Mb"
->  	  fi
->  	RANDOM_DEPTH=$RANDOM
-> -	let "RANDOM_DEPTH %= 500"
-> +	: $(( RANDOM_DEPTH %= 500 ))
-> 
->  	RANDOM_LENGTH=$RANDOM
-> -	let "RANDOM_LENGTH %= 500"
-> +	: $(( RANDOM_LENGTH %= 500 ))
->  	RANDOM_LENGTH=$(( $RANDOM_LENGTH / 10 ))
-> 
->  	NameCount=0
-> diff --git a/testcases/kernel/fs/mongo/test.sh b/testcases/kernel/fs/mongo/test.sh
-> index fe75664..eccb079 100755
-> --- a/testcases/kernel/fs/mongo/test.sh
-> +++ b/testcases/kernel/fs/mongo/test.sh
-> @@ -26,7 +26,7 @@ TEST_DIR=testdir
-> 
-> 
->     		#should be root  to execute this script .
-> -	if [ $UID -ne 0 ]; then
-> +	if [ $(id -ru) -ne 0 ]; then
->  		echo "This script must be run as root"
->  		exit
->  	fi
-> @@ -52,8 +52,7 @@ modprobe loop
->  	fi
-> 
->  	#run the mongo test on reiserfs file system type 
-> -function reiserfs
-> -
-> +reiserfs()
->  {
->  cat > fs.sh <<EOF
->  echo "performing mongo on reiserfs"
-> @@ -71,8 +70,7 @@ EOF
->  	
-> 
->  #To run on jfs file system type 
-> -function  JFS
-> -
-> +JFS()
->  {
->  cat >> fs.sh <<EOF
->  echo "performing mongo on jfs file system"
-> diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug02.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug02.sh
-> index 08e9301..7f1c5b1 100755
-> --- a/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug02.sh
-> +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug02.sh
-> @@ -15,8 +15,8 @@ fi
-> 
->  # Includes:
->  LHCS_PATH=${LHCS_PATH:-".."}
-> -source $LHCS_PATH/include/testsuite.fns
-> -source $LHCS_PATH/include/hotplug.fns
-> +. $LHCS_PATH/include/testsuite.fns
-> +. $LHCS_PATH/include/hotplug.fns
-> 
->  echo "Name:   $CASE"
->  echo "Date:   `date`"
-> @@ -73,7 +73,7 @@ until [ $loop = 0 ]; do
->      
->      # Turn the CPU back online just to see what happens.
->      online_cpu ${CPU_TO_TEST}
-> -    let "loop = loop - 1"
-> +    : $(( loop -= 1 ))
->  done
-> 
->  sleep 2
-> diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug03.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug03.sh
-> index c550890..97d5205 100755
-> --- a/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug03.sh
-> +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug03.sh
-> @@ -15,8 +15,8 @@ fi
-> 
->  # Includes:
->  LHCS_PATH=${LHCS_PATH:-".."}
-> -source $LHCS_PATH/include/testsuite.fns
-> -source $LHCS_PATH/include/hotplug.fns
-> +. $LHCS_PATH/include/testsuite.fns
-> +. $LHCS_PATH/include/hotplug.fns
-> 
->  echo "Name:   $CASE"
->  echo "Date:   `date`"
-> @@ -48,7 +48,7 @@ do_clean()
->      # Turn off the CPUs that were off before the test start
->      until [ $cpu = 0 ];do
->          offline_cpu ${on[${cpu}]}
-> -        let "cpu = cpu - 1"
-> +        : $(( cpu -= 1 ))
->      done
->  }
-> 
-> @@ -60,10 +60,10 @@ until [ $loop = 0 ]; do
->      for i in $( get_all_cpus ); do 
->          online_cpu $1
->          if [ $? = 0 ]; then
-> -            let "cpu = cpu + 1"
-> +            : $(( cpu += 1 ))
->              on[${cpu}]=$i
->          fi
-> -        let "number_of_cpus = number_of_cpus + 1"
-> +        : $(( number_of_cpus += 1 ))
->      done
-> 
->      offline_cpu ${CPU_TO_TEST}
-> @@ -76,11 +76,11 @@ until [ $loop = 0 ]; do
->      # CPUs we have.  This is to help ensure we've got enough processes
->      # that at least one will migrate to the new CPU.  Store the PIDs 
->      # so we can kill them later.
-> -    let "number_of_cpus = number_of_cpus * 2"
-> +    : $(( number_of_cpus *= 2 ))
->      until [ $number_of_cpus = 0 ]; do
->          $LHCS_PATH/tools/do_spin_loop > /dev/null 2>&1 &
->          echo $! >> /var/run/hotplug4_$$.pid
-> -        let "number_of_cpus = number_of_cpus - 1"
-> +        : $(( number_of_cpus -= 1 ))
->      done
-> 
->      ps aux | head -n 1
-> @@ -111,7 +111,7 @@ until [ $loop = 0 ]; do
-> 
->      do_clean
-> 
-> -    let "loop = loop -1"
-> +    : $(( loop -=1 ))
->  done
-> 
->  exit_clean
-> diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug04.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug04.sh
-> index b147286..00a634b 100755
-> --- a/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug04.sh
-> +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug04.sh
-> @@ -9,8 +9,8 @@ loop=${HOTPLUG04_LOOPS:-1}
-> 
->  # Includes:
->  LHCS_PATH=${LHCS_PATH:-".."}
-> -source $LHCS_PATH/include/testsuite.fns
-> -source $LHCS_PATH/include/hotplug.fns
-> +. $LHCS_PATH/include/testsuite.fns
-> +. $LHCS_PATH/include/hotplug.fns
-> 
->  echo "Name:   $CASE"
->  echo "Date:   `date`"
-> @@ -26,7 +26,7 @@ until [ $loop = 0 ]; do
->          online_cpu $i
->          RC=$?
->          if [ $RC != 0 ]; then
-> -            let "cpu = cpu + 1"
-> +            : $(( cpu += 1 ))
->              on[${cpu}]=$i
->              echo "${on[${cpu}]}"
->          fi
-> @@ -51,7 +51,7 @@ until [ $loop = 0 ]; do
->      # Online the ones that were on initially
->      until [ $cpu = 0 ]; do
->          online_cpu ${on[${cpu}]}
-> -        let "cpu = cpu - 1"
-> +        : $(( cpu -= 1 ))
->      done
-> 
->      # Return CPU 0 to its initial state
-> @@ -61,7 +61,7 @@ until [ $loop = 0 ]; do
->          offline_cpu 0
->      fi
-> 
-> -    let "loop = loop -1"
-> +    : $(( loop -=1 ))
->  done
-> 
->  exit_clean
-> \ No newline at end of file
-> diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug06.sar.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug06.sar.sh
-> index d6f4601..aba658a 100755
-> --- a/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug06.sar.sh
-> +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug06.sar.sh
-> @@ -15,8 +15,8 @@ fi
-> 
->  # Includes:
->  LHCS_PATH=${LHCS_PATH:-".."}
-> -source $LHCS_PATH/include/testsuite.fns
-> -source $LHCS_PATH/include/hotplug.fns
-> +. $LHCS_PATH/include/testsuite.fns
-> +. $LHCS_PATH/include/hotplug.fns
-> 
->  echo "Name:   $CASE"
->  echo "Date:   `date`"
-> @@ -81,7 +81,7 @@ until [ $loop = 0 ]; do
-> 
->      # Check that SAR registered the change in CPU online/offline states
->      NEW_NUMBER_CPU_OFF=`cat /tmp/log_$$ | grep ${time} | grep -i nan | wc -l`
-> -    let "NUMBER_CPU_OFF = NUMBER_CPU_OFF - 1"
-> +    : $(( NUMBER_CPU_OFF -= 1 ))
->      if [ $NUMBER_CPU_OFF = $NEW_NUMBER_CPU_OFF ]; then
->          echo "$CASE     PASS: CPU was found after turned on."
->      else
-> diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug06.top.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug06.top.sh
-> index a9bf17e..f9efe2a 100755
-> --- a/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug06.top.sh
-> +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug06.top.sh
-> @@ -15,8 +15,8 @@ fi
-> 
->  # Includes:
->  LHCS_PATH=${LHCS_PATH:-".."}
-> -source $LHCS_PATH/include/testsuite.fns
-> -source $LHCS_PATH/include/hotplug.fns
-> +. $LHCS_PATH/include/testsuite.fns
-> +. $LHCS_PATH/include/hotplug.fns
-> 
->  echo "Name:   $CASE"
->  echo "Date:   `date`"
-> @@ -76,7 +76,7 @@ until [ $loop = 0 ]; do
->          exit_clean -1
->      fi
-> 
-> -    let "loop = loop - 1"
-> +    : $(( loop -= 1 ))
-> 
->  done
-> 
-> diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug07.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug07.sh
-> index d57c561..8f5ca44 100755
-> --- a/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug07.sh
-> +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/hotplug07.sh
-> @@ -11,8 +11,8 @@ loop_one=${HOTPLUG07_LOOPS:-1}
-> 
->  # Includes:
->  LHCS_PATH=${LHCS_PATH:-".."}
-> -source $LHCS_PATH/include/testsuite.fns
-> -source $LHCS_PATH/include/hotplug.fns
-> +. $LHCS_PATH/include/testsuite.fns
-> +. $LHCS_PATH/include/hotplug.fns
-> 
->  echo "Name:   HotPlug Test - Test Case 7"
->  echo "Date:   `date`"
-> @@ -89,7 +89,7 @@ do
->    RC=$?
->    echo "Onlining cpu${CPU_TO_TEST}: Return Code = ${RC}"
-> 
-> -  let "loop_one = loop_one - 1"
-> +  : $(( loop_one -= 1 ))
-> 
->  done
-> 
-> diff --git a/testcases/network/can/filter-tests/run_ltp-can_tests.sh b/testcases/network/can/filter-tests/run_ltp-can_tests.sh
-> index aefcbe1..6d7aafc 100644
-> --- a/testcases/network/can/filter-tests/run_ltp-can_tests.sh
-> +++ b/testcases/network/can/filter-tests/run_ltp-can_tests.sh
-> @@ -19,7 +19,7 @@
->  ##                                                                            ##
->  ################################################################################
-> 
-> -if [ $UID -ne 0 ]; then
-> +if [ $(id -ru) -ne 0 ]; then
->       echo You need to be root to execute these tests
->       exit 1
->  fi
-> diff --git a/testcases/network/tcp_cmds/netstat/netstat01 b/testcases/network/tcp_cmds/netstat/netstat01
-> index 1cf0d9d..f0b2462 100755
-> --- a/testcases/network/tcp_cmds/netstat/netstat01
-> +++ b/testcases/network/tcp_cmds/netstat/netstat01
-> @@ -77,7 +77,7 @@ do_test() {
->     do
->        for COMMAND in "netstat -s" "netstat -rn" "netstat -i" "netstat -gn" "netstat -apn"
->        do
-> -         $COMMAND 2>&1 1>/dev/null
-> +         $COMMAND 1>/dev/null 2>&1
->           [ $? -eq 0 ] || end_testcase "$COMMAND failed" 
->        done
-> 
+Anyway fixed patch attached.
 
+Signed-off-by: chrubis@suse.cz
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+--Kj7319i9nmIyA2yE
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment;
+	filename="get_set_memopolicy_syscall_missing.patch"
+
+Index: delme/testcases/kernel/include/powerpc.in
+===================================================================
+--- delme.orig/testcases/kernel/include/powerpc.in
++++ delme/testcases/kernel/include/powerpc.in
+@@ -3,6 +3,8 @@ timer_settime 241
+ timer_delete 244
+ clock_settime 245
+ clock_gettime 246
++get_mempolicy 260
++set_mempolicy 261
+ splice 283
+ tee 284
+ vmsplice 285
+Index: delme/testcases/kernel/include/powerpc64.in
+===================================================================
+--- delme.orig/testcases/kernel/include/powerpc64.in
++++ delme/testcases/kernel/include/powerpc64.in
+@@ -3,6 +3,8 @@ timer_settime 241
+ timer_delete 244
+ clock_settime 245
+ clock_gettime 246
++get_mempolicy 260
++set_mempolicy 261
+ splice 283
+ tee 284
+ vmsplice 285
+Index: delme/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c
+===================================================================
+--- delme.orig/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c
++++ delme/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c
+@@ -48,6 +48,9 @@
+ #include "cpuset.h"
+ #include "common.h"
+ 
++#include "test.h"
++#include "linux_syscall_numbers.h"
++
+ /* Bump version, and update Change History, when libcpuset API changes */
+ #define CPUSET_VERSION 3
+ 
+Index: delme/testcases/kernel/include/s390x.in
+===================================================================
+--- delme.orig/testcases/kernel/include/s390x.in
++++ delme/testcases/kernel/include/s390x.in
+@@ -1,3 +1,5 @@
++get_mempolicy 269
++set_mempolicy 270
+ openat 288
+ mkdirat (__NR_openat + 1)
+ mknodat (__NR_openat + 2)
+Index: delme/testcases/kernel/controllers/cpuset/cpuset_lib/Makefile
+===================================================================
+--- delme.orig/testcases/kernel/controllers/cpuset/cpuset_lib/Makefile
++++ delme/testcases/kernel/controllers/cpuset/cpuset_lib/Makefile
+@@ -18,11 +18,12 @@
+ #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ #
+ # Garrett Cooper, July 2009
++# Cyril Hrubis, October 2009
+ #
+ 
+ top_srcdir 		?= ../../../../..
+ 
+-include $(top_srcdir)/include/mk/env_pre.mk
++include $(top_srcdir)/include/mk/testcases.mk
+ 
+ LDLIBS			+= -lm -lcontrollers
+ 
+
+--Kj7319i9nmIyA2yE
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
@@ -702,7 +151,16 @@ is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
+--Kj7319i9nmIyA2yE
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--Kj7319i9nmIyA2yE--
+
