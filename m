@@ -1,21 +1,37 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1MvUSy-0004DU-KK
-	for ltp-list@lists.sourceforge.net; Wed, 07 Oct 2009 11:13:56 +0000
-Received: from mail-px0-f179.google.com ([209.85.216.179])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MvUSt-0003So-Px
-	for ltp-list@lists.sourceforge.net; Wed, 07 Oct 2009 11:13:56 +0000
-Received: by pxi9 with SMTP id 9so4695165pxi.4
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 07 Oct 2009 04:13:46 -0700 (PDT)
-MIME-Version: 1.0
-Date: Wed, 7 Oct 2009 16:43:46 +0530
-Message-ID: <f5a7b3810910070413me5f0995j2540c28415f095d8@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Subject: [LTP] HTML not reporting number of Failed test cases
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MyRg4-0005k3-4a
+	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 14:51:40 +0000
+Received: from e5.ny.us.ibm.com ([32.97.182.145])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MyRfx-0008L8-3q
+	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 14:51:40 +0000
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e5.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9FEfiAU014420
+	for <ltp-list@lists.sourceforge.net>; Thu, 15 Oct 2009 10:41:44 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n9FEpPqT248048
+	for <ltp-list@lists.sourceforge.net>; Thu, 15 Oct 2009 10:51:25 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n9FEpMqP010612
+	for <ltp-list@lists.sourceforge.net>; Thu, 15 Oct 2009 10:51:23 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <8368651DACC1964480F951191B94A0780153D575@svexch01.mvista.com>
+References: <8368651DACC1964480F951191B94A0780153D4DC@svexch01.mvista.com>
+	<364299f40910141219q59e9b87evdfe4a5f2e131b7f4@mail.gmail.com>
+	<8368651DACC1964480F951191B94A0780153D52A@svexch01.mvista.com>
+	<364299f40910141429yad16b3fr19946daf53f7d878@mail.gmail.com>
+	<8368651DACC1964480F951191B94A0780153D575@svexch01.mvista.com>
+Date: Thu, 15 Oct 2009 20:21:13 +0530
+Message-Id: <1255618273.5869.16.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH][rwtest] use default size for blks if parsing
+	df	output fails to return numeric argument
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,41 +41,80 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
-Cc: rohit.170309@gmail.com
+To: Henry Yei <hyei@mvista.com>
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
 
-Hi,
-
-I think you have noticed difference in the HTML file generation.
-HTML file is not reporting number of failure test cases
-in summary and failed column with different color.
-Some changes are made by Rohit recently.
-
-Rohit,
-Please investigate the changes made to HTML file generator.
-
-You can refer the results logs share in LTP release in the below link for
-X86
-(ltp-full-20090930_results_kernel-2.6.31_architecture-i386.tgz)
-Ia64
-(ltp-full-20090930_results_kernel-2.6.23.13_architecture-ia64.tgz)
-
-Link : http://sourceforge.net/projects/ltp/files/
-
-
-Best regards
-Naresh Kamboju
-
-------------------------------------------------------------------------------
-Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-http://p.sf.net/sfu/devconference
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+VGhhbmtzIEhlbnJ5LgoKUmVnYXJkcy0tClN1YnJhdGEKCk9uIFdlZCwgMjAwOS0xMC0xNCBhdCAx
+NjoyNCAtMDcwMCwgSGVucnkgWWVpIHdyb3RlOiAKPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0t
+LS0tCj4gPiBGcm9tOiBHYXJyZXR0IENvb3BlciBbbWFpbHRvOnlhbmVnb21pQGdtYWlsLmNvbV0K
+PiA+IFNlbnQ6IFdlZG5lc2RheSwgT2N0b2JlciAxNCwgMjAwOSAyOjMwIFBNCj4gPiBUbzogSGVu
+cnkgWWVpCj4gPiBDYzogTFRQIE1haWxpbmcgTGlzdAo+ID4gU3ViamVjdDogUmU6IFtMVFBdIFtQ
+QVRDSF1bcnd0ZXN0XSB1c2UgZGVmYXVsdCBzaXplIGZvciBibGtzIGlmIHBhcnNpbmcKPiA+IGRm
+IG91dHB1dCBmYWlscyB0byByZXR1cm4gbnVtZXJpYyBhcmd1bWVudAo+ID4gCj4gPiBPbiBXZWQs
+IE9jdCAxNCwgMjAwOSBhdCAyOjA0IFBNLCBIZW5yeSBZZWkgPGh5ZWlAbXZpc3RhLmNvbT4gd3Jv
+dGU6Cj4gPiA+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+ID4gPj4gRnJvbTogR2FycmV0
+dCBDb29wZXIgW21haWx0bzp5YW5lZ29taUBnbWFpbC5jb21dCj4gPiA+PiBTZW50OiBXZWRuZXNk
+YXksIE9jdG9iZXIgMTQsIDIwMDkgMTI6MTkgUE0KPiA+ID4+IFRvOiBIZW5yeSBZZWkKPiA+ID4+
+IENjOiBMVFAgTWFpbGluZyBMaXN0Cj4gPiA+PiBTdWJqZWN0OiBSZTogW0xUUF0gW1BBVENIXVty
+d3Rlc3RdIHVzZSBkZWZhdWx0IHNpemUgZm9yIGJsa3MgaWYKPiA+IHBhcnNpbmcKPiA+ID4+IGRm
+IG91dHB1dCBmYWlscyB0byByZXR1cm4gbnVtZXJpYyBhcmd1bWVudAo+ID4gPj4KPiA+ID4+IE9u
+IFdlZCwgT2N0IDE0LCAyMDA5IGF0IDEyOjA0IFBNLCBIZW5yeSBZZWkgPGh5ZWlAbXZpc3RhLmNv
+bT4gd3JvdGU6Cj4gPiA+PiA+IEFsbCwKPiA+ID4+ID4KPiA+ID4+ID4gVGhpcyBwYXRjaCBmb3Ig
+cnd0ZXN0LnNoIHNldHMgYSBkZWZhdWx0IHNpemUgZm9yIHRoZSBudW1iZXIgb2YKPiA+IGJsb2Nr
+cwo+ID4gPj4gd2l0aGluIHRoZSBmaWxlc3lzdGVtIHRoZSB0ZXN0IGlzIGV4ZWN1dGluZyBvbiBp
+ZiBwYXJzaW5nICJkZgo+ID4gb3V0cHV0Igo+ID4gPj4gc29tZWhvdyByZXN1bHRzIGluIGEgbm9u
+LW51bWVyaWMgdmFsdWUodW5leHBlY3RlZCBkZiBvdXRwdXQpLiBBbHNvCj4gPiA+PiByZW1vdmVz
+IHRyYWlsaW5nIHdoaXRlc3BhY2UuCj4gPiA+PiA+Cj4gPiA+PiA+IFNpZ25lZC1vZmYtYnk6IEhl
+bnJ5IFllaSA8aHllaUBtdmlzdGEuY29tPgo+ID4gPj4gPgo+ID4gPj4gPgo+ID4gPj4gPiBHYXJy
+ZXQsCj4gPiA+PiA+Cj4gPiA+PiA+IFBlciBtZXNzYWdlIFN1YmplY3Q6IFtMVFBdIFtpc3N1ZSA4
+XSByd3Rlc3QqOiBpb2dlbiAvIHJ3dGVzdCBuZWVkcwo+ID4gdG8KPiA+ID4+IGNyZWF0ZXByZXJl
+cXVpc2l0ZSBkaXJlY3RvcnkgcGF0aHMsCj4gPiA+PiA+IFdvdWxkIGEgc2ltcGxlIG1rZGlyIHN1
+ZmZpY2UgaW5zaWRlIHRoZSByd3Rlc3Qgc2NyaXB0IHRvIGhhbmRsZQo+ID4gdGhhdAo+ID4gPj4g
+aXNzdWU/Cj4gPiA+Pgo+ID4gPj4gbWtkaXIgLXAgd291bGQsIHl1cCEKPiA+ID4+IFRoYW5rcywK
+PiA+ID4+IC1HYXJyZXR0Cj4gPiA+Cj4gPiA+IEhlcmUgaXMgdGhlIHVwZGF0ZWQgcnd0ZXN0LnNo
+IHBhdGNoIHRoYXQgaW5jbHVkZXMgY3JlYXRpb24gb2YgdGhlCj4gPiBkaXJlY3RvcnkgaWYgaXQg
+ZG9lc27igJl0IGV4aXN0LCBhbmQgY2xlYW51cCBvZiB0aGUgZGlyZWN0b3J5IGFmdGVyd2FyZHMK
+PiA+IHRvIHJlc29sdmUgaXNzdWUgIyBwb2ludGVkIG91dCBieSBHYXJyZXR0IENvb3Blci4KPiA+
+IAo+ID4gSGVucnksCj4gPiAKPiA+IExvb2tzIGdvb2QgYXMgZmFyIGFzIHlvdXIgZml4IHRvIG15
+IGl0ZW0gaXMgY29uY2VybmVkLgo+ID4gCj4gPiBUd28gdGhpbmdzOgo+ID4gCj4gPiArICAgICAg
+ICAgICAgICAgICAgICAgICAjIGNoZWNrIGlmIGJsa3MgaXMgYSBudW1iZXIsIGVsc2Ugc2V0IGEK
+PiA+IGRlZmF1bHQgdmFsdWUgZm9yIGJsa3MKPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGRl
+ZmF1bHRfc3o9MTAwMDAwMAo+ID4gCj4gPiBJcyB0aGlzIGEgZ29vZCBkZWZhdWx0Pwo+ID4gCj4g
+PiBDb3VsZCB5b3UgYWxzbyBwbGVhc2UgY2hhbmdlIHRoaXM6Cj4gPiAKPiA+ICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICBtYXg9JHtzaXplIyMqXCV9Cj4gPiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgaWYgW1sgIiRtYXgiID0gIiIgXV0KPiA+ICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICB0aGVuCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICBtYXg9JGRlZmF1bHRfc3oKPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBm
+aQo+ID4gCj4gPiB0byB0aGlzPwo+ID4gCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgbWF4PSR7c2l6ZSMjKlwlfQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFsg
+IngkbWF4IiA9ICJ4IiBdICYmIG1heD0kZGVmYXVsdF9zego+ID4gCj4gPiBUaGFua3MhCj4gPiAt
+R2FycmV0dAo+IAo+IAo+IEdhcnJldHQsIEkndmUgYXR0YWNoZWQgdGhlIHBhdGNoIHdpdGggeW91
+ciBzdWdnZXN0ZWQgY2hhbmdlcy4KPiBBcyBmb3IgbWFraW5nIGRlZmF1bHRfc3ogMTAwMDAwMCwg
+dGhpcyB3YXMgdG8ga2VlcCB0byB0aGUgb3JpZ2luYWwgZnVuY3Rpb25hbGl0eSwgYnV0IGZpeCBj
+YXNlcyB3aGVyZSBkZiBvdXRwdXQgd2FzIG5vdCBleHBlY3RlZC4gSWYgeW91IHNlZSB0aGUgb3Jp
+Z2luYWwgY29kZSwgaWYgc3ogPiBtYXgsIHRoYW4gaXQgaXMgY2FwcGVkIGF0IG1heD0xMDAwMDAw
+IGFzIHdlbGwuIFdoZXRoZXIgfiAxR0IgaXMgYSBnb29kIG1heGltdW0sIEknbSBub3Qgc3VyZS4K
+PiAKPiBUaGFua3MgZm9yIHJldmlld2luZywKPiAtSGVucnkKPiAKPiAKPiAKPiAKPiAKPiAtLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0KPiBDb21lIGJ1aWxkIHdpdGggdXMhIFRoZSBCbGFja0JlcnJ5KFIp
+IERldmVsb3BlciBDb25mZXJlbmNlIGluIFNGLCBDQQo+IGlzIHRoZSBvbmx5IGRldmVsb3BlciBl
+dmVudCB5b3UgbmVlZCB0byBhdHRlbmQgdGhpcyB5ZWFyLiBKdW1wc3RhcnQgeW91cgo+IGRldmVs
+b3Bpbmcgc2tpbGxzLCB0YWtlIEJsYWNrQmVycnkgbW9iaWxlIGFwcGxpY2F0aW9ucyB0byBtYXJr
+ZXQgYW5kIHN0YXkgCj4gYWhlYWQgb2YgdGhlIGN1cnZlLiBKb2luIHVzIGZyb20gTm92ZW1iZXIg
+OSAtIDEyLCAyMDA5LiBSZWdpc3RlciBub3chCj4gaHR0cDovL3Auc2YubmV0L3NmdS9kZXZjb25m
+ZXJlbmNlCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18g
+THRwLWxpc3QgbWFpbGluZyBsaXN0IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldCBodHRw
+czovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAoKCi0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLQpDb21lIGJ1aWxkIHdpdGggdXMhIFRoZSBCbGFja0JlcnJ5KFIpIERl
+dmVsb3BlciBDb25mZXJlbmNlIGluIFNGLCBDQQppcyB0aGUgb25seSBkZXZlbG9wZXIgZXZlbnQg
+eW91IG5lZWQgdG8gYXR0ZW5kIHRoaXMgeWVhci4gSnVtcHN0YXJ0IHlvdXIKZGV2ZWxvcGluZyBz
+a2lsbHMsIHRha2UgQmxhY2tCZXJyeSBtb2JpbGUgYXBwbGljYXRpb25zIHRvIG1hcmtldCBhbmQg
+c3RheSAKYWhlYWQgb2YgdGhlIGN1cnZlLiBKb2luIHVzIGZyb20gTm92ZW1iZXIgOSAtIDEyLCAy
+MDA5LiBSZWdpc3RlciBub3chCmh0dHA6Ly9wLnNmLm5ldC9zZnUvZGV2Y29uZmVyZW5jZQpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWls
+aW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291
+cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
