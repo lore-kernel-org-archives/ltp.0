@@ -1,21 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mxicm-00077j-HW
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 14:45:16 +0000
-Received: from e4.ny.us.ibm.com ([32.97.182.144])
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chandru@in.ibm.com>) id 1MyLwq-0007gl-1c
+	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 08:44:36 +0000
+Received: from e28smtp03.in.ibm.com ([59.145.155.3])
 	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mxica-0005X0-9K
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 14:45:11 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <20091009.154445.548431512384017812.yamato@redhat.com>
-References: <20091009.154445.548431512384017812.yamato@redhat.com>
-Date: Tue, 13 Oct 2009 20:13:54 +0530
-Message-Id: <1255445034.8438.71.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Complete the test cases for getuid16
-Reply-To: subrata@linux.vnet.ibm.com
+	(Exim 4.69) id 1MyLwg-0007QY-3Q
+	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 08:44:36 +0000
+Received: from d28relay01.in.ibm.com (d28relay01.in.ibm.com [9.184.220.58])
+	by e28smtp03.in.ibm.com (8.14.3/8.13.1) with ESMTP id n9F8iEQA022723
+	for <ltp-list@lists.sourceforge.net>; Thu, 15 Oct 2009 14:14:14 +0530
+Received: from d28av05.in.ibm.com (d28av05.in.ibm.com [9.184.220.67])
+	by d28relay01.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n9F8iDi42310324
+	for <ltp-list@lists.sourceforge.net>; Thu, 15 Oct 2009 14:14:14 +0530
+Received: from d28av05.in.ibm.com (loopback [127.0.0.1])
+	by d28av05.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	n9F8iDm0024627
+	for <ltp-list@lists.sourceforge.net>; Thu, 15 Oct 2009 19:44:13 +1100
+From: Chandru <chandru@in.ibm.com>
+Date: Thu, 15 Oct 2009 14:14:12 +0530
+References: <200910011340.32046.chandru@in.ibm.com>
+	<1255552134.4892.12.camel@subratamodak.linux.ibm.com>
+	<364299f40910141825k6d8a8e15w5843dd9d2574d262@mail.gmail.com>
+In-Reply-To: <364299f40910141825k6d8a8e15w5843dd9d2574d262@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+Message-Id: <200910151414.13027.chandru@in.ibm.com>
+Subject: Re: [LTP] [PATCH V2] ppoll01: add signal() syscall to register the
+	signal handler
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,110 +39,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Masatake YAMATO <yamato@redhat.com>
-Cc: ltp-list@lists.sf.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: vapier@gentoo.org, ltp-list@lists.sourceforge.net
 
-T24gRnJpLCAyMDA5LTEwLTA5IGF0IDE1OjQ0ICswOTAwLCBNYXNhdGFrZSBZQU1BVE8gd3JvdGU6
-IAo+IFNvbWUgb2YgdGVzdGNhc2VzIGZvciAqMTYgYW5kICo2NCBzeXN0ZW0gY2FsbHMgaGF2ZSBu
-b3QgYmVlbiBjb21wbGV0ZWQgeWV0Cj4gdGhvdWdoIG15IG1ha2VmaWxlIHRyaWNrIHdlcmUgaW50
-cm9kdWNlZCBieSBTdWJ1cmF0YS4gKjE2IG1heSBub3QgYmUgc28gaW1wb3J0YW50Cj4gYnV0IEkn
-ZCBsaWtlIHRvIGNvbXBsZXRlIHRoZW0gYW55d2F5LiBUaGUgZmlyc3Qgb25lIGlzIGZvciBnZXR1
-aWQxNi4KPiAKPiBUbyBhcHBseSBnZXR1aWQxNi5wYXRjaCB1c2UgLXAwIG9wdGlvbi4KPiBQdXQg
-Y29tcGF0X3VpZC5oICBhdCB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3V0aWxzL2NvbXBhdF91
-aWQuaC4KPiBQdXQgY29tcGF0XzE2LmguICBhdCB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2dl
-dHVpZC9jb21wYXRfMTYuaC4KPiAKPiAKPiBTaWduZWQtb2ZmLWJ5OiBNYXNhdGFrZSBZQU1BVE8g
-PHlhbWF0b0ByZWRoYXQuY29tPgoKRXhjZXB0IHRoZSBNYWtlZmlsZSBwYXJ0LCBvdGhlcnMgd291
-bGQgYXBwbHkgZmluZToKCnBhdGNoaW5nIGZpbGUgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9n
-ZXR1aWQvTWFrZWZpbGUKSHVuayAjMSBGQUlMRUQgYXQgMTYuCjEgb3V0IG9mIDEgaHVuayBGQUlM
-RUQgLS0gc2F2aW5nIHJlamVjdHMgdG8gZmlsZQp0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2dl
-dHVpZC9NYWtlZmlsZS5yZWoKcGF0Y2hpbmcgZmlsZSB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxz
-L2dldHVpZC9nZXR1aWQwMS5jCnBhdGNoaW5nIGZpbGUgdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
-cy9nZXR1aWQvZ2V0dWlkMDIuYwpwYXRjaGluZyBmaWxlIHRlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
-bHMvZ2V0dWlkL2dldHVpZDAzLmMKCkhvd2V2ZXIsIHRoaXMgd2lsbCBpbnRyb2R1Y2UgYnVpbGQg
-YnJlYWtzIGFzIHdlbGw6CgpJbiBmaWxlIGluY2x1ZGVkIGZyb20gZ2V0dWlkMDEuYzoxMTk6CmNv
-bXBhdF8xNi5oOjI3OjI0OiBlcnJvcjogY29tcGF0X3VpZC5oOiBObyBzdWNoIGZpbGUgb3IgZGly
-ZWN0b3J5CkluIGZpbGUgaW5jbHVkZWQgZnJvbSBnZXR1aWQwMS5jOjExOToKY29tcGF0XzE2Lmg6
-NDc6IGVycm9yOiBleHBlY3RlZCDigJg94oCZLCDigJgs4oCZLCDigJg74oCZLCDigJhhc23igJkg
-b3Ig4oCYX19hdHRyaWJ1dGVfX+KAmQpiZWZvcmUg4oCYR0VUVUlE4oCZCmNvbXBhdF8xNi5oOjUz
-OiBlcnJvcjogZXhwZWN0ZWQg4oCYPeKAmSwg4oCYLOKAmSwg4oCYO+KAmSwg4oCYYXNt4oCZIG9y
-IOKAmF9fYXR0cmlidXRlX1/igJkKYmVmb3JlIOKAmEdFVEVVSUTigJkKZ2V0dWlkMDEuYzogSW4g
-ZnVuY3Rpb24g4oCYbWFpbuKAmToKZ2V0dWlkMDEuYzoxNjA6IHdhcm5pbmc6IGltcGxpY2l0IGRl
-Y2xhcmF0aW9uIG9mIGZ1bmN0aW9uIOKAmEdFVFVJROKAmQpnZXR1aWQwMS5jOjE3NTogd2Fybmlu
-ZzogZm9ybWF0IOKAmCVk4oCZIGV4cGVjdHMgdHlwZSDigJhpbnTigJksIGJ1dCBhcmd1bWVudCAz
-CmhhcyB0eXBlIOKAmGxvbmcgaW504oCZCm1ha2VbNF06ICoqKiBbZ2V0dWlkMDFdIEVycm9yIDEK
-CkNhbiB5b3UgcGxlYXNlIHRha2UgaW50byBhY2NvdW50IHRoZSByZWNlbnQgY2hhbmdlcyBkb25l
-IGJ5IEdhcnJldCwgYW5kLAp0aGVuIHJlc2VuZCB0aGlzIFBhdGNoID8KClJlZ2FyZHMtLQpTdWJy
-YXRhCgo+IAo+IHBsYWluIHRleHQgZG9jdW1lbnQgYXR0YWNobWVudCAoY29tcGF0X3VpZC5oKQo+
-IC8qCj4gICoKPiAgKiAgIENvcHlyaWdodCAoYykgUmVkIEhhdCBJbmMuLCAyMDA5Cj4gICoKPiAg
-KiAgIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyAgeW91IGNhbiByZWRpc3RyaWJ1dGUg
-aXQgYW5kL29yIG1vZGlmeQo+ICAqICAgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2Vu
-ZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkKPiAgKiAgIHRoZSBGcmVlIFNvZnR3
-YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJzaW9uIDIgb2YgdGhlIExpY2Vuc2UsIG9yCj4gICog
-ICAoYXQgeW91ciBvcHRpb24pIGFueSBsYXRlciB2ZXJzaW9uLgo+ICAqCj4gICogICBUaGlzIHBy
-b2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBpdCB3aWxsIGJlIHVzZWZ1bCwK
-PiAgKiAgIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgIHdpdGhvdXQgZXZlbiB0aGUgaW1wbGll
-ZCB3YXJyYW50eSBvZgo+ICAqICAgTUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFS
-VElDVUxBUiBQVVJQT1NFLiAgU2VlCj4gICogICB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vu
-c2UgZm9yIG1vcmUgZGV0YWlscy4KPiAgKgo+ICAqICAgWW91IHNob3VsZCBoYXZlIHJlY2VpdmVk
-IGEgY29weSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UKPiAgKiAgIGFsb25nIHdp
-dGggdGhpcyBwcm9ncmFtOyAgaWYgbm90LCB3cml0ZSB0byB0aGUgRnJlZSBTb2Z0d2FyZQo+ICAq
-ICAgRm91bmRhdGlvbiwgSW5jLiwgNTkgVGVtcGxlIFBsYWNlLCBTdWl0ZSAzMzAsIEJvc3Rvbiwg
-TUEgMDIxMTEtMTMwNyBVU0EKPiAgKi8KPiAKPiAvKiBBdXRob3I6IE1hc2F0YWtlIFlBTUFUTyA8
-eWFtYXRvQHJlZGhhdC5jb20+ICovCj4gCj4gI2lmbmRlZiBfX0NPTVBBVF9VSURfMTZfSF9fCj4g
-I2RlZmluZSBfX0NPTVBBVF9VSURfMTZfSF9fCj4gCj4gCj4gI2luY2x1ZGUgPGFzbS9wb3NpeF90
-eXBlcy5oPgo+IAo+IAo+ICNpZmRlZiBUU1RfVVNFX0NPTVBBVDE2X1NZU0NBTEwKPiB0eXBlZGVm
-IF9fa2VybmVsX29sZF91aWRfdCBVSURfVDsKPiBpbnQgCj4gVUlEX1NJWkVfQ0hFQ0sodWlkX3Qg
-dWlkKQo+IHsKPiAJLyogU2VlIGhpZ2gybG93dWlkIGluIGxpbnV4L2hpZ2h1aWQuaAo+IAkgICBS
-ZXR1cm4gMCBpZiB1aWQgaXMgdG9vIGxhcmdlIHRvIHN0b3JlCj4gCSAgIGl0IHRvIF9fa2VybmVs
-X29sZF91aWRfdC4gKi8KPiAJcmV0dXJuICgodWlkKSAmIH4weEZGRkYpPyAwOiAxOwo+IH0KPiAK
-PiAjZWxzZQo+IAo+IHR5cGVkZWYgdWlkX3QgVUlEX1Q7Cj4gaW50IAo+IFVJRF9TSVpFX0NIRUNL
-KHVpZF90IHVpZCkKPiB7Cj4gCXJldHVybiAxOwo+IH0KPiAKPiAjZW5kaWYKPiAKPiAjZW5kaWYg
-LyogX19TRVRVSURfQ09NUEFUXzE2X0hfXyAqLwo+IHBsYWluIHRleHQgZG9jdW1lbnQgYXR0YWNo
-bWVudCAoY29tcGF0XzE2LmgpCj4gLyoKPiAgKgo+ICAqICAgQ29weXJpZ2h0IChjKSBSZWQgSGF0
-IEluYy4sIDIwMDgKPiAgKgo+ICAqICAgVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7ICB5
-b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5Cj4gICogICBpdCB1bmRlciB0aGUg
-dGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieQo+
-ICAqICAgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24gMiBvZiB0
-aGUgTGljZW5zZSwgb3IKPiAgKiAgIChhdCB5b3VyIG9wdGlvbikgYW55IGxhdGVyIHZlcnNpb24u
-Cj4gICoKPiAgKiAgIFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0
-IGl0IHdpbGwgYmUgdXNlZnVsLAo+ICAqICAgYnV0IFdJVEhPVVQgQU5ZIFdBUlJBTlRZOyAgd2l0
-aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCj4gICogICBNRVJDSEFOVEFCSUxJVFkg
-b3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UuICBTZWUKPiAgKiAgIHRoZSBHTlUg
-R2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgo+ICAqCj4gICogICBZb3Ug
-c2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGlj
-ZW5zZQo+ICAqICAgYWxvbmcgd2l0aCB0aGlzIHByb2dyYW07ICBpZiBub3QsIHdyaXRlIHRvIHRo
-ZSBGcmVlIFNvZnR3YXJlCj4gICogICBGb3VuZGF0aW9uLCBJbmMuLCA1OSBUZW1wbGUgUGxhY2Us
-IFN1aXRlIDMzMCwgQm9zdG9uLCBNQSAwMjExMS0xMzA3IFVTQQo+ICAqLwo+IAo+IC8qIEF1dGhv
-cjogTWFzYXRha2UgWUFNQVRPIDx5YW1hdG9AcmVkaGF0LmNvbT4gKi8KPiAKPiAjaWZuZGVmIF9f
-R0VUVUlEX0NPTVBBVF8xNl9IX18KPiAjZGVmaW5lIF9fR0VUVUlEX0NPTVBBVF8xNl9IX18KPiAK
-PiAKPiAjaW5jbHVkZSAibGludXhfc3lzY2FsbF9udW1iZXJzLmgiCj4gI2luY2x1ZGUgImNvbXBh
-dF91aWQuaCIKPiAKPiAKPiAjaWZkZWYgVFNUX1VTRV9DT01QQVQxNl9TWVNDQUxMCj4gCj4gVUlE
-X1QKPiBHRVRVSUQodm9pZCkKPiB7Cj4gCXJldHVybiBzeXNjYWxsKF9fTlJfZ2V0dWlkKTsKPiB9
-Cj4gCj4gVUlEX1QKPiBHRVRFVUlEKHZvaWQpCj4gewo+IAlyZXR1cm4gc3lzY2FsbChfX05SX2dl
-dGV1aWQpOwo+IH0KPiAKPiAjZWxzZQo+IAo+IFVJRF9UCj4gR0VUVUlEKHZvaWQpCj4gewo+IAly
-ZXR1cm4gZ2V0dWlkKCk7Cj4gfQo+IAo+IFVJRF9UCj4gR0VURVVJRCh2b2lkKQo+IHsKPiAJcmV0
-dXJuIGdldGV1aWQoKTsKPiB9Cj4gCj4gI2VuZGlmCj4gCj4gI2VuZGlmIC8qIF9fR0VUVUlEX0NP
-TVBBVF8xNl9IX18gKi8KPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBDb21lIGJ1aWxkIHdpdGgg
-dXMhIFRoZSBCbGFja0JlcnJ5KFIpIERldmVsb3BlciBDb25mZXJlbmNlIGluIFNGLCBDQQo+IGlz
-IHRoZSBvbmx5IGRldmVsb3BlciBldmVudCB5b3UgbmVlZCB0byBhdHRlbmQgdGhpcyB5ZWFyLiBK
-dW1wc3RhcnQgeW91cgo+IGRldmVsb3Bpbmcgc2tpbGxzLCB0YWtlIEJsYWNrQmVycnkgbW9iaWxl
-IGFwcGxpY2F0aW9ucyB0byBtYXJrZXQgYW5kIHN0YXkgCj4gYWhlYWQgb2YgdGhlIGN1cnZlLiBK
-b2luIHVzIGZyb20gTm92ZW1iZXIgOSAtIDEyLCAyMDA5LiBSZWdpc3RlciBub3chCj4gaHR0cDov
-L3Auc2YubmV0L3NmdS9kZXZjb25mZXJlbmNlCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18gTHRwLWxpc3QgbWFpbGluZyBsaXN0IEx0cC1saXN0QGxpc3Rz
-LnNvdXJjZWZvcmdlLm5ldCBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0
-aW5mby9sdHAtbGlzdAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpDb21lIGJ1aWxkIHdpdGggdXMh
-IFRoZSBCbGFja0JlcnJ5KFIpIERldmVsb3BlciBDb25mZXJlbmNlIGluIFNGLCBDQQppcyB0aGUg
-b25seSBkZXZlbG9wZXIgZXZlbnQgeW91IG5lZWQgdG8gYXR0ZW5kIHRoaXMgeWVhci4gSnVtcHN0
-YXJ0IHlvdXIKZGV2ZWxvcGluZyBza2lsbHMsIHRha2UgQmxhY2tCZXJyeSBtb2JpbGUgYXBwbGlj
-YXRpb25zIHRvIG1hcmtldCBhbmQgc3RheSAKYWhlYWQgb2YgdGhlIGN1cnZlLiBKb2luIHVzIGZy
-b20gTm92ZW1iZXIgOSAtIDEyLCAyMDA5LiBSZWdpc3RlciBub3chCmh0dHA6Ly9wLnNmLm5ldC9z
-ZnUvZGV2Y29uZmVyZW5jZQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2Uu
-bmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0
-Cg==
+On Thursday 15 October 2009 06:55:29 Garrett Cooper wrote:
+> Just curious -- was the issue seen at the following point in the code
+> previously?
+> 
+> 361             TEST(sys_ret = syscall(__NR_ppoll, p_fds, nfds, p_ts,
+> p_sigmask, sigsetsize)); /* <-- Blocks here indefinitely */
+> 362             sys_errno = errno;
+> 363             if (sys_ret <= 0 || tc->ret < 0)
+> 364                     goto TEST_END;
+> 365
+> 366             cmp_ok = fds[0].revents == tc->expect_revents;
+> 
+> I've seen this issue 1 out of the 8 or 9 times I've run this test.
+
+Nope, without the patch we only see case00 completing and the test exits while in the middle of case01
+
+# ./ppoll01
+ppoll01     0  TINFO  :  (case00) START
+EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
+RESULT: return value(ret)=       1 errno=0 (Success)
+ppoll01     0  TINFO  :  (case00) END => OK
+ppoll01     0  TINFO  :  (case01) START
+# 
+
+
+With the patch we see the output as follows...
+
+# ./ppoll01
+ppoll01     0  TINFO  :  (case00) START
+EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
+RESULT: return value(ret)=       1 errno=0 (Success)
+ppoll01     0  TINFO  :  (case00) END => OK
+ppoll01     0  TINFO  :  (case01) START
+EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
+RESULT: return value(ret)=       0 errno=0 (Success)
+ppoll01     0  TINFO  :  (case01) END => OK
+ppoll01     0  TINFO  :  (case02) START
+EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
+RESULT: return value(ret)=       0 errno=0 (Success)
+ppoll01     0  TINFO  :  (case02) END => OK
+ppoll01     0  TINFO  :  (case03) START
+EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
+RESULT: return value(ret)=       1 errno=0 (Success)
+ppoll01     0  TINFO  :  (case03) END => OK
+ppoll01     0  TINFO  :  (case04) START
+EXPECT: return value(ret)=-1 errno=4 (Interrupted system call)
+RESULT: return value(ret)=-1 errno=4 (Interrupted system call)
+ppoll01     0  TINFO  :  (case04) END => OK
+ppoll01     0  TINFO  :  (case05) START
+EXPECT: return value(ret)=-1 errno=4 (Interrupted system call)
+RESULT: return value(ret)=-1 errno=4 (Interrupted system call)
+ppoll01     0  TINFO  :  (case05) END => OK
+ppoll01     0  TINFO  :  (case06) START
+EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+RESULT: return value(ret)=-1 errno=22 (Invalid argument)
+ppoll01     0  TINFO  :  (case06) END => OK
+ppoll01     0  TINFO  :  (case07) START
+EXPECT: return value(ret)=-1 errno=14 (Bad address)
+RESULT: return value(ret)=-1 errno=14 (Bad address)
+ppoll01     0  TINFO  :  (case07) END => OK
+ppoll01     1  TPASS  :  ppoll01 call succeeded
+
+#
+
+
+
+
+------------------------------------------------------------------------------
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
