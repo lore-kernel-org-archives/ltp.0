@@ -1,35 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mxic1-0007uc-LS
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 14:44:29 +0000
-Received: from e37.co.us.ibm.com ([32.97.110.158])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mxibv-0008GC-06
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 14:44:29 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9DEhAbF010722
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:43:10 -0600
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n9DEi7xt226982
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:44:09 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n9DEi5Su012810
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:44:06 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <XNM1$9$0$3$$2$7$9$A$9010029U4ac95f25@hitachi.com>
-References: <8368651DACC1964480F951191B94A0780142442B@svexch01.mvista.com>
-	<200910050018.12711.jpalecek@web.de>
-	<XNM1$9$0$3$$2$7$9$A$9010029U4ac95f25@hitachi.com>
-Date: Tue, 13 Oct 2009 20:13:43 +0530
-Message-Id: <1255445023.8438.67.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] GPL License in CrackerJack
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <yanegomi@gmail.com>) id 1MyFRD-0001yw-Bl
+	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 01:47:31 +0000
+Received: from mail-pz0-f188.google.com ([209.85.222.188])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MyFR9-0003ex-3c
+	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 01:47:31 +0000
+Received: by pzk26 with SMTP id 26so329278pzk.4
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 14 Oct 2009 18:47:21 -0700 (PDT)
+MIME-Version: 1.0
+Date: Wed, 14 Oct 2009 18:40:33 -0700
+Message-ID: <364299f40910141840v4914215fjd6809284d6937c35@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: [LTP] [issue 16] aiodio looking for non-existent file
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,58 +28,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: hisashi.hashimoto.wh@hitachi.com
-Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-On Mon, 2009-10-05 at 11:51 +0900, hisashi.hashimoto.wh@hitachi.com
-wrote: 
-> Suburata-san,
-> Yamato-san,
-> 
->    This is Hashimoto of CrackerJack.
-> 
-> I inserted License Description into all source code of our project.
-> (GPL V2)
->    If you need our latest source code,
-> please do one of followings.
+<output test="ltp-aiodio.part3 : FSX053">
+/test/aiodio/junkfile: No such file or directory
+</output>
+<output test="ltp-aiodio.part3 : FSX052">
+/test/aiodio/junkfile: No such file or directory
+</output>
+<output test="ltp-aiodio.part3 : FSX051">
+/test/aiodio/junkfile: No such file or directory
+</output>
+<output test="ltp-aiodio.part3 : FSX050">
+/test/aiodio/junkfile: No such file or directory
+</output>
+<output test="ltp-aiodio.part3 : FSX057">
+/test/aiodio/junkfile: No such file or directory
+</output>
+<output test="ltp-aiodio.part3 : FSX056">
+/test/aiodio/junkfile: No such file or directory
+</output>
+<output test="ltp-aiodio.part3 : FSX055">
+/test/aiodio/junkfile: No such file or directory
+</output>
+<output test="ltp-aiodio.part3 : FSX054">
+/test/aiodio/junkfile: No such file or directory
+</output>
 
-Thank you Hashimoto-san. We will refer to your code whenever needed.
-
-Regards--
-Subrata
-
-> 
-> SVN
-> svn co https://crackerjack.svn.sourceforge.net/svnroot/crackerjack crackerjack 
-> 
-> Download tar ball.
-> crackerjack-3.0.tgz at http://sourceforge.net/projects/crackerjack/files/
-> 
-> Thanks,
-> 
-> Hisashi Hashimoto
-> 
-> Board of Director, the Linux Foundation,
-> 
-> Senior Engineer
-> 
-> Open Source Software Promotion Center
-> Enterprise Business Planning
-> Hitachi, Ltd., Software Division
-> Tel : +81-45-862-8470, Fax : +81-45-862-8471
-> hisashi.hashimoto.wh@hitachi.com
-> 
-> ------------------------------------------------------------------------------
-> Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
-> is the only developer event you need to attend this year. Jumpstart your
-> developing skills, take BlackBerry mobile applications to market and stay 
-> ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-> http://p.sf.net/sfu/devconf
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
