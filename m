@@ -1,25 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1N2WC5-0004Yd-TI
-	for ltp-list@lists.sourceforge.net; Mon, 26 Oct 2009 20:29:33 +0000
-Received: from mail-px0-f185.google.com ([209.85.216.185])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N2WBy-0003XH-Lb
-	for ltp-list@lists.sourceforge.net; Mon, 26 Oct 2009 20:29:33 +0000
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1MyPi0-0003RO-8o
+	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 12:45:32 +0000
+Received: from mail-pz0-f188.google.com ([209.85.222.188])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1MyPhg-0003Nw-Oj
+	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 12:45:19 +0000
+Received: by pzk26 with SMTP id 26so724642pzk.4
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 15 Oct 2009 05:45:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4AE593FF.9070905@linux.vnet.ibm.com>
-References: <4AE19E86.8070100@linux.vnet.ibm.com>
-	<364299f40910230844n7650eb82y1deb56b062e809a8@mail.gmail.com>
-	<364299f40910231450l36536a7blc395fa95c7bddc37@mail.gmail.com>
-	<364299f40910250342w6343b8bl6af6884d25790740@mail.gmail.com>
-	<4AE593FF.9070905@linux.vnet.ibm.com>
-Date: Mon, 26 Oct 2009 13:22:49 -0700
-Message-ID: <364299f40910261322v8f33533q5cbc69b1d37c84c8@mail.gmail.com>
+In-Reply-To: <364299f40910150543n6d370096q15bdc6e7e930bff0@mail.gmail.com>
+References: <200910011340.32046.chandru@in.ibm.com>
+	<1255552134.4892.12.camel@subratamodak.linux.ibm.com>
+	<364299f40910141825k6d8a8e15w5843dd9d2574d262@mail.gmail.com>
+	<200910151414.13027.chandru@in.ibm.com>
+	<364299f40910150543n6d370096q15bdc6e7e930bff0@mail.gmail.com>
+Date: Thu, 15 Oct 2009 05:45:06 -0700
+Message-ID: <364299f40910150545t1aa8e539q474398012b2c0310@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] realtime: fix broken build configuration files
-	and warnings
+Subject: Re: [LTP] [PATCH V2] ppoll01: add signal() syscall to register the
+	signal handler
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,133 +35,131 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gowrishankar <gomuthuk@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sf.net
+To: Chandru <chandru@in.ibm.com>
+Cc: vapier@gentoo.org, ltp-list@lists.sourceforge.net
 
-On Mon, Oct 26, 2009 at 5:20 AM, gowrishankar
-<gomuthuk@linux.vnet.ibm.com> wrote:
-> Garrett Cooper wrote:
+On Thu, Oct 15, 2009 at 5:43 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Thu, Oct 15, 2009 at 1:44 AM, Chandru <chandru@in.ibm.com> wrote:
+>> On Thursday 15 October 2009 06:55:29 Garrett Cooper wrote:
+>>> Just curious -- was the issue seen at the following point in the code
+>>> previously?
+>>>
+>>> 361 =A0 =A0 =A0 =A0 =A0 =A0 TEST(sys_ret =3D syscall(__NR_ppoll, p_fds,=
+ nfds, p_ts,
+>>> p_sigmask, sigsetsize)); /* <-- Blocks here indefinitely */
+>>> 362 =A0 =A0 =A0 =A0 =A0 =A0 sys_errno =3D errno;
+>>> 363 =A0 =A0 =A0 =A0 =A0 =A0 if (sys_ret <=3D 0 || tc->ret < 0)
+>>> 364 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto TEST_END;
+>>> 365
+>>> 366 =A0 =A0 =A0 =A0 =A0 =A0 cmp_ok =3D fds[0].revents =3D=3D tc->expect=
+_revents;
+>>>
+>>> I've seen this issue 1 out of the 8 or 9 times I've run this test.
 >>
->> On Fri, Oct 23, 2009 at 2:50 PM, Garrett Cooper <yanegomi@gmail.com>
->> wrote:
->>>
->>> On Fri, Oct 23, 2009 at 8:44 AM, Garrett Cooper <yanegomi@gmail.com>
->>> wrote:
->>>>
->>>> On Fri, Oct 23, 2009 at 5:16 AM, gowrishankar
->>>> <gomuthuk@linux.vnet.ibm.com> wrote:
->>>>>
->>>>> Hi Subrata,
->>>>> Please accept the patch below.
->>>>>
->>>>> Thanks,
->>>>> Gowri
->>>>
->>>> =A0 I'll get back to you on this in a day Gowri... there are some
->>>> things I wanted to note.
->>>
->>> Hi Gowri,
->>> =A0 I've reviewed the changes and checked in the ones that were OK,
->>> and definitely needed to be fixed. There are a few items that I'm
->>> unsure about with your proposed changes in the Makefiles that need to
->>> be discussed:
->>> 1. I'm trying to make sure that out-of-build-tree functionality isn't
->>> broken. In order to do that, as you see I had to use abs_builddir and
->>> abs_srcdir, instead of just realtimedir.
->>> 2. config.mk shouldn't be included by lib/Makefile -- otherwise I have
->>> to add LDLIBS +=3D -lrealtime to all Makefiles that require that
->>> library. So by virtue of laziness and keeping things common, it's best
->>> just to add the required variables and includes in lib/Makefile.
->>> =A0 This patch has been attached as realtime-makefile-fixes.diff.
->>> =A0 Now, for the other part that I don't agree with 100%, but I agree
->>> needs fixing:
->>>
->>> Index: func/pi-tests/Makefile
->>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>> RCS file: /cvsroot/ltp/ltp/testcases/realtime/func/pi-tests/Makefile,v
->>> retrieving revision 1.2
->>> diff -u -r1.2 Makefile
->>> --- func/pi-tests/Makefile =A0 =A0 =A09 Oct 2009 17:56:07 -0000 =A0 =A0=
- =A0 1.2
->>> +++ func/pi-tests/Makefile =A0 =A0 =A023 Oct 2009 21:36:02 -0000
->>> @@ -24,4 +24,15 @@
->>>
->>> =A0include $(top_srcdir)/include/mk/env_pre.mk
->>> =A0include $(abs_srcdir)/../../config.mk
->>> +
->>> +MAKE_TARGETS =A0 =A0 =A0 =A0 =A0 :=3D testpi-0
->>> +
->>> +ifeq ($(HAVE_PI_MUTEX), yes)
->>> +MAKE_TARGETS =A0 =A0 =A0 =A0 =A0 +=3D testpi-1 testpi-2 testpi-4 testp=
-i-5 testpi-7
->>> +endif
->>> +
->>> +ifeq ($(HAVE_ROBUST_MUTEX), yes)
->>> +MAKE_TARGETS =A0 =A0 =A0 =A0 =A0 +=3D testpi-6 sbrk_mutex
->>> +endif
->>> +
->>>
->>> =A0 I agree that these should be toggable or built appropriate to
->>> whether or not the system has this kind of functionality. The method
->>> used to determine whether or not a system has this functionality is
->>> questionable though, and I believe all of this can be established
->>> through additional autoconf tests added to the $(abs_top_srcdir)/m4 --
->>> do you agree with this?
->>> =A0 Is the realtime test suite this made available as a separate
->>> package outside of LTP in-house at IBM, or is it strictly available
->>> with LTP?
->>> =A0 Once these build integration issues are resolved, should it be
->>> enabled by default, or still remain an optional package to build and
->>> execute?
->>> =A0 Should this component have a runtest file as well so it can be
->>> integrated into the execution portion of LTP?
->>> =A0 Finally, I also discovered some QA issues with rt-migrate.c (diff
->>> attached as well); I patterned the code to match the other tests. Do
->>> you agree with the fixes?
+>> Nope, without the patch we only see case00 completing and the test exits=
+ while in the middle of case01
 >>
->> Gowri,
->> =A0 =A0I read more about the project and determined what the scope was,
->> so I created and integrated testcases/realtime into the rest of the
->> autoconf infrastructure, but as a subcomponent in LTP.
->> =A0 =A0So if you check out LTP from HEAD as of a few moments ago, you'll
->> discover that all of the issues you reported have been fixed (AFAIK)
->> and all of the unnecessary autoconf-like scripts and additional
->> autoconf-related files and directories have been cleaned out.
->> =A0 =A0The directions for compiling realtime by itself are the same as
->> the rest of LTP:
+>> # ./ppoll01
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case00) START
+>> EXPECT: return value(ret)=3D(N >=3D 0) errno=3D0 (Success)
+>> RESULT: return value(ret)=3D =A0 =A0 =A0 1 errno=3D0 (Success)
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case00) END =3D> OK
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case01) START
+>> #
 >>
-> Garrett,
-> First of all, thanks a lot for assisting me in getting RT tests neatly
-> built. Seems like, you are missing macro files:
+>>
+>> With the patch we see the output as follows...
+>>
+>> # ./ppoll01
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case00) START
+>> EXPECT: return value(ret)=3D(N >=3D 0) errno=3D0 (Success)
+>> RESULT: return value(ret)=3D =A0 =A0 =A0 1 errno=3D0 (Success)
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case00) END =3D> OK
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case01) START
+>> EXPECT: return value(ret)=3D(N >=3D 0) errno=3D0 (Success)
+>> RESULT: return value(ret)=3D =A0 =A0 =A0 0 errno=3D0 (Success)
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case01) END =3D> OK
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case02) START
+>> EXPECT: return value(ret)=3D(N >=3D 0) errno=3D0 (Success)
+>> RESULT: return value(ret)=3D =A0 =A0 =A0 0 errno=3D0 (Success)
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case02) END =3D> OK
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case03) START
+>> EXPECT: return value(ret)=3D(N >=3D 0) errno=3D0 (Success)
+>> RESULT: return value(ret)=3D =A0 =A0 =A0 1 errno=3D0 (Success)
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case03) END =3D> OK
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case04) START
+>> EXPECT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
+>> RESULT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case04) END =3D> OK
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case05) START
+>> EXPECT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
+>> RESULT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case05) END =3D> OK
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case06) START
+>> EXPECT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
+>> RESULT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case06) END =3D> OK
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case07) START
+>> EXPECT: return value(ret)=3D-1 errno=3D14 (Bad address)
+>> RESULT: return value(ret)=3D-1 errno=3D14 (Bad address)
+>> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case07) END =3D> OK
+>> ppoll01 =A0 =A0 1 =A0TPASS =A0: =A0ppoll01 call succeeded
 >
-> aclocal: couldn't open directory `/test/ltp/testcases/realtime/m4': No su=
-ch
-> file or directory
+> =A0 =A0Interesting. The cause may be the same, but the effect may be
+> different, as this is blocking with this section of the test:
 >
-> Can you please checkin those as well.
+> =A0 =A0 =A0 =A0case MINUS_NSEC:
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ts.tv_sec =3D 0;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ts.tv_nsec =3D -1;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0p_ts =3D &ts;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
+>
+> =A0 =A0Which is fine, but depending on whether or not a previous testcase
+> fails with EOK and a return code of 0. Example:
 
-Hi Gowri,
-    The macros and the files are there already -- configure just
-hasn't been run yet, because config.mk doesn't exist. I'll try
-tweaking some stuff a bit and will get back in ~30 mins.
+Sorry -- incomplete thought.
+
+Depending on whether or not it fails with a return code of 0 -- it may
+be in our best interest to retry a finite number of times, then give
+up and cordon off that testcase so that it can't run and thus block
+indefinitely.
+
+> #define _GNU_SOURCE
+> #include <signal.h>
+> #include <poll.h>
+> #include <errno.h>
+> #include <string.h>
+>
+> int main (void) {
+>
+> =A0 =A0 =A0 =A0struct pollfd fds;
+> =A0 =A0 =A0 =A0struct timespec timeout;
+> =A0 =A0 =A0 =A0sigset_t sigmask;
+>
+> =A0 =A0 =A0 =A0sigemptyset(&sigmask);
+>
+> =A0 =A0 =A0 =A0timeout.tv_sec =3D 0;
+> =A0 =A0 =A0 =A0timeout.tv_nsec =3D 5e8; /* .5 sec */
+>
+> =A0 =A0 =A0 =A0if (ppoll(&fds, 1, &timeout, &sigmask) <=3D 0) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0perror("ppoll");
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return 0;
+> =A0 =A0 =A0 =A0}
+> =A0 =A0 =A0 =A0return 1;
+> }
+>
+> gcooper@orangebox ~ $ ./ppoll_test
+> ppoll: Success
+>
+> =A0 =A0The manpage doesn't say that it shouldn't set errno to ETIME, etc,
+> so this is a legitimate return value (despite the fact that the
+> testcase fails claiming that the subtestcase failed and the call
+> succeeded, IIRC -- or maybe it was another test...).
+> =A0 =A0I'll definitely keep my eyes peeled for this particular issue
+> though in the future.
+
 Thanks,
 -Garrett
-
->> make autotools
->> ./configure
->> make all
->> make install
->>
->> =A0 =A0This is only required when doing this as a subcomponent, as this
->> is already handled with the same commands above issued from the
->> top-level LTP source directory.
->> HTH,
->> -Garrett
->>
->
->
 
 ---------------------------------------------------------------------------=
 ---
