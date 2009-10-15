@@ -1,28 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MyPi0-0003RO-8o
-	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 12:45:32 +0000
-Received: from mail-pz0-f188.google.com ([209.85.222.188])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MyPhg-0003Nw-Oj
-	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 12:45:19 +0000
-Received: by pzk26 with SMTP id 26so724642pzk.4
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 15 Oct 2009 05:45:07 -0700 (PDT)
+	(envelope-from <vapier@gentoo.org>) id 1MyTlC-0002Cg-SA
+	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 17:05:06 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MyTl3-0006s5-QM
+	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 17:05:06 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 15 Oct 2009 13:04:48 -0400
+References: <c651035e0910150449p2792fc3eu653719afe4c354b4@mail.gmail.com>
+In-Reply-To: <c651035e0910150449p2792fc3eu653719afe4c354b4@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <364299f40910150543n6d370096q15bdc6e7e930bff0@mail.gmail.com>
-References: <200910011340.32046.chandru@in.ibm.com>
-	<1255552134.4892.12.camel@subratamodak.linux.ibm.com>
-	<364299f40910141825k6d8a8e15w5843dd9d2574d262@mail.gmail.com>
-	<200910151414.13027.chandru@in.ibm.com>
-	<364299f40910150543n6d370096q15bdc6e7e930bff0@mail.gmail.com>
-Date: Thu, 15 Oct 2009 05:45:06 -0700
-Message-ID: <364299f40910150545t1aa8e539q474398012b2c0310@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH V2] ppoll01: add signal() syscall to register the
-	signal handler
+Message-Id: <200910151304.49265.vapier@gentoo.org>
+Subject: Re: [LTP] LTP - usage of DESTDIR instead of relative paths
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,144 +24,88 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============6028305780578770000=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Chandru <chandru@in.ibm.com>
-Cc: vapier@gentoo.org, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: Martin Persson <martin.r.persson@gmail.com>
 
-On Thu, Oct 15, 2009 at 5:43 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Thu, Oct 15, 2009 at 1:44 AM, Chandru <chandru@in.ibm.com> wrote:
->> On Thursday 15 October 2009 06:55:29 Garrett Cooper wrote:
->>> Just curious -- was the issue seen at the following point in the code
->>> previously?
->>>
->>> 361 =A0 =A0 =A0 =A0 =A0 =A0 TEST(sys_ret =3D syscall(__NR_ppoll, p_fds,=
- nfds, p_ts,
->>> p_sigmask, sigsetsize)); /* <-- Blocks here indefinitely */
->>> 362 =A0 =A0 =A0 =A0 =A0 =A0 sys_errno =3D errno;
->>> 363 =A0 =A0 =A0 =A0 =A0 =A0 if (sys_ret <=3D 0 || tc->ret < 0)
->>> 364 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto TEST_END;
->>> 365
->>> 366 =A0 =A0 =A0 =A0 =A0 =A0 cmp_ok =3D fds[0].revents =3D=3D tc->expect=
-_revents;
->>>
->>> I've seen this issue 1 out of the 8 or 9 times I've run this test.
->>
->> Nope, without the patch we only see case00 completing and the test exits=
- while in the middle of case01
->>
->> # ./ppoll01
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case00) START
->> EXPECT: return value(ret)=3D(N >=3D 0) errno=3D0 (Success)
->> RESULT: return value(ret)=3D =A0 =A0 =A0 1 errno=3D0 (Success)
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case00) END =3D> OK
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case01) START
->> #
->>
->>
->> With the patch we see the output as follows...
->>
->> # ./ppoll01
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case00) START
->> EXPECT: return value(ret)=3D(N >=3D 0) errno=3D0 (Success)
->> RESULT: return value(ret)=3D =A0 =A0 =A0 1 errno=3D0 (Success)
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case00) END =3D> OK
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case01) START
->> EXPECT: return value(ret)=3D(N >=3D 0) errno=3D0 (Success)
->> RESULT: return value(ret)=3D =A0 =A0 =A0 0 errno=3D0 (Success)
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case01) END =3D> OK
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case02) START
->> EXPECT: return value(ret)=3D(N >=3D 0) errno=3D0 (Success)
->> RESULT: return value(ret)=3D =A0 =A0 =A0 0 errno=3D0 (Success)
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case02) END =3D> OK
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case03) START
->> EXPECT: return value(ret)=3D(N >=3D 0) errno=3D0 (Success)
->> RESULT: return value(ret)=3D =A0 =A0 =A0 1 errno=3D0 (Success)
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case03) END =3D> OK
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case04) START
->> EXPECT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
->> RESULT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case04) END =3D> OK
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case05) START
->> EXPECT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
->> RESULT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case05) END =3D> OK
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case06) START
->> EXPECT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
->> RESULT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case06) END =3D> OK
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case07) START
->> EXPECT: return value(ret)=3D-1 errno=3D14 (Bad address)
->> RESULT: return value(ret)=3D-1 errno=3D14 (Bad address)
->> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case07) END =3D> OK
->> ppoll01 =A0 =A0 1 =A0TPASS =A0: =A0ppoll01 call succeeded
->
-> =A0 =A0Interesting. The cause may be the same, but the effect may be
-> different, as this is blocking with this section of the test:
->
-> =A0 =A0 =A0 =A0case MINUS_NSEC:
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ts.tv_sec =3D 0;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ts.tv_nsec =3D -1;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0p_ts =3D &ts;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
->
-> =A0 =A0Which is fine, but depending on whether or not a previous testcase
-> fails with EOK and a return code of 0. Example:
+--===============6028305780578770000==
+Content-Type: multipart/signed; boundary="nextPart2390232.2HOft8DFlf";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Sorry -- incomplete thought.
+--nextPart2390232.2HOft8DFlf
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Depending on whether or not it fails with a return code of 0 -- it may
-be in our best interest to retry a finite number of times, then give
-up and cordon off that testcase so that it can't run and thus block
-indefinitely.
+On Thursday 15 October 2009 07:49:19 Martin Persson wrote:
+> I wonder if you plan to update the Makefiles in LTP in order to use
+> $(DESTDIR) instead of relative "install paths"?
+>=20
+> I.e. update from:
+> install:
+>     @set -e; for i in $(TARGETS); do ln -f $$i ../../../bin/$$i ; done
+>=20
+> to:
+> install:
+>     @set -e; for i in $(TARGETS); do ln -f $$i $(DESTDIR)/$$i ; done
 
-> #define _GNU_SOURCE
-> #include <signal.h>
-> #include <poll.h>
-> #include <errno.h>
-> #include <string.h>
->
-> int main (void) {
->
-> =A0 =A0 =A0 =A0struct pollfd fds;
-> =A0 =A0 =A0 =A0struct timespec timeout;
-> =A0 =A0 =A0 =A0sigset_t sigmask;
->
-> =A0 =A0 =A0 =A0sigemptyset(&sigmask);
->
-> =A0 =A0 =A0 =A0timeout.tv_sec =3D 0;
-> =A0 =A0 =A0 =A0timeout.tv_nsec =3D 5e8; /* .5 sec */
->
-> =A0 =A0 =A0 =A0if (ppoll(&fds, 1, &timeout, &sigmask) <=3D 0) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0perror("ppoll");
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return 0;
-> =A0 =A0 =A0 =A0}
-> =A0 =A0 =A0 =A0return 1;
-> }
->
-> gcooper@orangebox ~ $ ./ppoll_test
-> ppoll: Success
->
-> =A0 =A0The manpage doesn't say that it shouldn't set errno to ETIME, etc,
-> so this is a legitimate return value (despite the fact that the
-> testcase fails claiming that the subtestcase failed and the call
-> succeeded, IIRC -- or maybe it was another test...).
-> =A0 =A0I'll definitely keep my eyes peeled for this particular issue
-> though in the future.
+you're using outdated sources.  this should be resolved already in latest c=
+vs.
 
-Thanks,
--Garrett
+also, your proposed change is incorrect.  DESTDIR is the root path, so=20
+installing symlinks into the root path is wrong.  it should have been=20
+something like $(DESTDIR)$(bindir)/$$i
+=2Dmike
 
----------------------------------------------------------------------------=
----
+--nextPart2390232.2HOft8DFlf
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
+
+iQIcBAABAgAGBQJK11YxAAoJEEFjO5/oN/WBsloQANerTwmn9h2lGfC4atwDV0f9
+bmh0p011kcEF8lkHK1jwDuVATUFpprkOjCCuEPADTlnMVS/Ch6B0tVfEUf1vG6U5
+tjYVkZG6FfifQlzONQf5rMNNw0yawhDIF5MI6nt0H/f4vQzighDK2oDcWiryUpj/
+QSJ7XecbCfQ32Bc48WAra/bGXDuztRPo/yd7Fb5fsDmwl53MKHni1WOv2ehBHnOu
+SS8g4wY+qgKI8jmuni/mECIK/RhuYoutySrJDENKomE52tZQbBbkmqzMb/bcxOWl
+DsQC2bulC1a7WzdcUsqehJNrKTxhLdvVAAEGdBnUDfnuPQSMSIopV5/ln5UCuUHl
+AyBGkQHkiDx/PvIbFKkYXEgwCisjexTW/40nwlRq3RhryT/WgWKxDS4aISlF/xQc
+QAJfq+DqBIvxDLsRmdCad83YwmtLTmak5zsowjxUv+en0Q+kbqpzrUztqsbfu78X
+O3aaT0CGjV+oEaXgb2o62l3/4IDAR4hqH1jGcWA5+4pS76I86btc8Ly+eeryCPNX
+WuYoGoz/kr96/OKUV4SEw99bLFz79ETsagbzK/Yvmw+cS4eGQa8LyK6AMvZgykcL
+ppAdlkNMkHBPrHVVFp6fMP3OQk6WA5Nd110Q3o2bmcKUxUbJBCmdU6++RqwhiSKE
+/t6DYobjEoW6ZbqAEgkN
+=ph4r
+-----END PGP SIGNATURE-----
+
+--nextPart2390232.2HOft8DFlf--
+
+
+--===============6028305780578770000==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay =
-
+developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
+--===============6028305780578770000==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6028305780578770000==--
+
