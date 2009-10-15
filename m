@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MxWof-0001Kn-Qm
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 02:08:45 +0000
-Received: from mail-pz0-f199.google.com ([209.85.222.199])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MxWoY-0004CA-TN
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 02:08:45 +0000
-Received: by pzk37 with SMTP id 37so8973992pzk.10
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 12 Oct 2009 19:08:33 -0700 (PDT)
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1MyT7Z-0007La-3f
+	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 16:24:09 +0000
+Date: Thu, 15 Oct 2009 18:23:56 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20091015162356.GB4152@schrodinger.suse.cz>
+References: <20091014115618.7801.69877.sendpatchset@subratamodak.linux.ibm.com>
 MIME-Version: 1.0
-Date: Mon, 12 Oct 2009 19:08:33 -0700
-Message-ID: <364299f40910121908y47554fabgbda2f5411c720f92@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] [PATCH] Fix genhtml.pl (was "Re: HTML not reporting number of
-	Failed test cases")
+Content-Disposition: inline
+In-Reply-To: <20091014115618.7801.69877.sendpatchset@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [PATCH] Re: compile fails for libcpuset.c on
+	SLES-11	s390x with ltp-full-20090930
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,103 +25,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: rohit verma <rohit.170309@gmail.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, naresh kamboju <naresh.kernel@gmail.com>
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>, Mark Ver <markver@us.ibm.com>, Sachin P Sant <sachinp@in.ibm.com>
 
-On Fri, Oct 9, 2009 at 3:00 AM, rohit verma <rohit.170309@gmail.com> wrote:
-> Hi,
->
-> Thanks Naresh for pointing out the issue in the HTML report. I had
-> also noticed the issue in my test reports.
->
-> However, I wish to confirm that the issue being mentioned is not a
-> side-effect of the fix that I had posted for the pan driver.
-> If you compare the HTML reports from the previous releases and the
-> recent one, you can notice all the tags - FAIL, WARN, BROK, PASS,CONF
-> & RETR are now prefixed by ' T ' for reasons not known to me
-> (resulting in - TFAIL, TPASS etc).
->
-> Now, if you check ltp-full-20090831/tools/genhtml.pl file you can see
-> all that old tags (FAIL, WARN, etc) are used instead of the new
-> ones(tags). As a result the numbers are not updated in the summary in
-> HTML report. Also FAIL/WARN/BROK test-cases are not uniquely colored
-> like in the old versions of LTP.
->
-> Please check the same.
-> If possible I will generate a patch and submit the same.
->
-> On Wed, Oct 7, 2009 at 4:43 PM, naresh kamboju <naresh.kernel@gmail.com> wrote:
->> Hi,
->>
->> I think you have noticed difference in the HTML file generation.
->> HTML file is not reporting number of failure test cases
->> in summary and failed column with different color.
->> Some changes are made by Rohit recently.
->>
->> Rohit,
->> Please investigate the changes made to HTML file generator.
->>
->> You can refer the results logs share in LTP release in the below link for
->> X86
->> (ltp-full-20090930_results_kernel-2.6.31_architecture-i386.tgz)
->> Ia64
->> (ltp-full-20090930_results_kernel-2.6.23.13_architecture-ia64.tgz)
+Hi!
+> --- ltp-intermediate-20091013/testcases/kernel/include/s390x.in.orig	2009-10-14 17:14:39.000000000 +0530
+> +++ ltp-intermediate-20091013/testcases/kernel/include/s390x.in	2009-10-14 17:15:26.000000000 +0530
+> @@ -14,3 +14,6 @@ fchmodat (__NR_openat + 11)
+>  faccessat (__NR_openat + 12)
+>  eventfd 318
+>  fallocate 314
+> +get_mempolicy 269
+> +set_mempolicy 270
 
-Try this.
+This should fix it. Anyway, I have some more architectures that are broken on
+sles9.  Will send patch soon.
 
-Fix genhtml.pl so that it functions with the new T-prefixing in the
-lib/tst_res.c result codes.
-
-Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
-
-Index: contrib/ltp/src/tools/genhtml.pl
-===================================================================
---- src/tools/.CC/cache/genhtml.pl@@/main/ltp-upgrade/1 2009-10-12
-19:08:28.000000000 -0700
-+++ src/tools/genhtml.pl        2009-10-12 19:08:18.000000000 -0700
-@@ -179,31 +179,31 @@
-                         }
-                         if ( $flag2 == 1 ) {
-                            $row_line = $row_line . "$line \n";
--                           if ($line =~ /\ FAIL\ / ) {
-+                           if ($line =~ /\ TFAIL\ / ) {
-                                $detected_fail = 1;
-                                if ( $failed_test_counter_flag == 0 ) {
-                                    $failed_test_counter++;
-                                    $failed_test_counter_flag=1;
-                                }
--                           } elsif ($line =~ /\ BROK\ / ) {
-+                           } elsif ($line =~ /\ TBROK\ / ) {
-                                $detected_brok = 1;
-                                if ( $brok_test_counter_flag == 0 ) {
-                                    $brok_test_counter++;
-                                    $brok_test_counter_flag=1;
-                                }
--                           } elsif ($line =~ /\ WARN\ / ) {
-+                           } elsif ($line =~ /\ TWARN\ / ) {
-                                $detected_warn = 1;
-                                if ( $warn_test_counter_flag == 0 ) {
-                                    $warn_test_counter++;
-                                    $warn_test_counter_flag=1;
-                                }
--                           } elsif ($line =~ /\ RETR\ / ) {
-+                           } elsif ($line =~ /\ TRETR\ / ) {
-                                $detected_retr = 1;
-                                if ( $retr_test_counter_flag == 0 ) {
-                                    $retr_test_counter++;
-                                    $retr_test_counter_flag=1;
-                                }
--                           } elsif ($line =~ /\ CONF\ / ) {
-+                           } elsif ($line =~ /\ TCONF\ / ) {
-                                $detected_conf = 1;
-                                if ( $conf_test_counter_flag == 0 ) {
-                                    $conf_test_counter++;
-@@ -251,3 +251,5 @@
- print "<tr><td><strong>Hostname</strong>  </td> <td><strong>";
- $hostname=system("uname -n");             chop($hostname);
- print " $hostname </strong></td></tr></tbody></table></div></body></html>\n";
-+
-+# vim: syntax=perl
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
