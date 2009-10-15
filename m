@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1N0ZWT-00043G-Jm
-	for ltp-list@lists.sourceforge.net; Wed, 21 Oct 2009 11:38:33 +0000
-Received: from mail-ew0-f214.google.com ([209.85.219.214])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N0ZWN-0003uM-0r
-	for ltp-list@lists.sourceforge.net; Wed, 21 Oct 2009 11:38:33 +0000
-Received: by ewy10 with SMTP id 10so8213362ewy.33
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 21 Oct 2009 04:38:21 -0700 (PDT)
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1MyWBJ-00088R-8x
+	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 19:40:13 +0000
+Date: Thu, 15 Oct 2009 21:39:58 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20091015193958.GB2875@schrodinger.suse.cz>
+References: <20091014115618.7801.69877.sendpatchset@subratamodak.linux.ibm.com>
+	<20091015162356.GB4152@schrodinger.suse.cz>
+	<20091015173026.GA25999@schrodinger.suse.cz>
+	<364299f40910151155x646bcf38naa53e5af4aad75b3@mail.gmail.com>
+	<364299f40910151209s4a75e999he76b9c1d9b58a88a@mail.gmail.com>
+	<364299f40910151211r48d7510fnfc3c69a685923ca5@mail.gmail.com>
+	<20091015192053.GA2875@schrodinger.suse.cz>
+	<364299f40910151225lea3392fj9e36f4afe43fe67d@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1256124888.6398.4.camel@subratamodak.linux.ibm.com>
-References: <1256124888.6398.4.camel@subratamodak.linux.ibm.com>
-Date: Wed, 21 Oct 2009 04:38:20 -0700
-Message-ID: <364299f40910210438v5eede756y1f6ca7bb58f4dd66@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Need to Update ltp/INSTALL file
+Content-Disposition: inline
+In-Reply-To: <364299f40910151225lea3392fj9e36f4afe43fe67d@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] Re: compile fails for libcpuset.c on
+	SLES-11	s390x with ltp-full-20090930
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,35 +29,28 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>, Mark Ver <markver@us.ibm.com>, Sachin P Sant <sachinp@in.ibm.com>
 
-On Wed, Oct 21, 2009 at 4:34 AM, Subrata Modak
-<subrata@linux.vnet.ibm.com> wrote:
-> Hi Garrett,
->
-> Can you please also update the ltp/INSTALL file regarding the ways:
->
-> =A0 =A0 1. Where does the new ltp-binaries get installed by default ?
-> =A0 =A0 2. How to run LTP when installed default, etc,
->
-> Since the format has changed now, incase of default install, user has to
-> go to /opt/ltp/ and then execute ./runltp -f <>
+Hi!
+>     This can be corrected by adding this logic to a common Makefile if
+> you like, so that way it does get picked up from one common source.
+> This makes more sense from a design perspective.
 
-    Sure. I'll fix all of the INSTALL and development documentation
-this weekend. Reviewers welcome.
-Cheers,
--Garrett
+Okay, this way people wouldn't be using ugly hacks to include that header. IMHO
+the easier to use is the buildsystem, the less ugly hacks will come.
 
----------------------------------------------------------------------------=
----
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay =
-
+developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
 _______________________________________________
