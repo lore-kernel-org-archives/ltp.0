@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hdegoede@redhat.com>) id 1MuhzW-00071C-HM
-	for ltp-list@lists.sourceforge.net; Mon, 05 Oct 2009 07:28:18 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <njoly@pasteur.fr>) id 1MyqeW-000679-77
+	for ltp-list@lists.sourceforge.net; Fri, 16 Oct 2009 17:31:44 +0000
+Received: from munster3.sis.pasteur.fr ([157.99.64.214])
 	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MuhzO-00018j-CH
-	for ltp-list@lists.sourceforge.net; Mon, 05 Oct 2009 07:28:18 +0000
-Message-ID: <4AC9A108.8040504@redhat.com>
-Date: Mon, 05 Oct 2009 09:32:24 +0200
-From: Hans de Goede <hdegoede@redhat.com>
-MIME-Version: 1.0
-References: <4AC90BBF.9040803@freemail.hu>
-In-Reply-To: <4AC90BBF.9040803@freemail.hu>
-Subject: Re: [LTP] [PATCH] pac_common: redesign function for finding Start
-	Of Frame
+	id 1MyqeN-0000jQ-PQ
+	for ltp-list@lists.sourceforge.net; Fri, 16 Oct 2009 17:31:44 +0000
+Date: Fri, 16 Oct 2009 19:15:58 +0200
+From: Nicolas Joly <njoly@pasteur.fr>
+Message-ID: <20091016171558.GA360691@medusa.sis.pasteur.fr>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="ZPt4rx8FFjLCG7dd"
+Content-Disposition: inline
+Subject: [LTP] Add x86_64 ppoll(2) syscall number
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,83 +24,107 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: =?UTF-8?B?TsOpbWV0aCBNw6FydG9u?= <nm127@freemail.hu>
-Cc: Jean-Francois Moine <moinejf@free.fr>, ltp-list@lists.sourceforge.net, LKML <linux-kernel@vger.kernel.org>, Theodore Kilgore <kilgota@auburn.edu>, Thomas Kaiser <thomas@kaiser-linux.li>, Kyle Guinn <elyk03@gmail.com>, V4L Mailing List <linux-media@vger.kernel.org>
+To: LTP list <ltp-list@lists.sf.net>
 
-SGksCgpHb29kIG9uZSwKCkFja2VkLWJ5OiBIYW5zIGRlIEdvZWRlIDxoZGVnb2VkZUByZWRoYXQu
-Y29tPgoKSmVhbi1GcmFuY29pcywgY2FuIHlvdSBwbGVhc2UgYWRkIHRoaXMgcGF0Y2ggdG8geW91
-ciB0cmVlPwoKVGhhbmtzLAoKSGFucwoKCk9uIDEwLzA0LzIwMDkgMTA6NTUgUE0sIE7DqW1ldGgg
-TcOhcnRvbiB3cm90ZToKPiBGcm9tOiBNw6FydG9uIE7DqW1ldGg8bm0xMjdAZnJlZW1haWwuaHU+
-Cj4KPiBUaGUgb3JpZ2luYWwgaW1wbGVtZW50YXRpb24gb2YgcGFjX2ZpbmRfc29mKCkgZG9lcyBu
-b3QgYWx3YXlzIGZpbmQKPiB0aGUgU3RhcnQgT2YgRnJhbWUgKFNPRikgbWFya2VyLiBSZXBsYWNl
-IGl0IHdpdGggYSBzdGF0ZSBtYWNoaW5lCj4gYmFzZWQgZGVzaWduLgo+Cj4gVGhlIGNoYW5nZSB3
-YXMgdGVzdGVkIHdpdGggTGFidGVjIFdlYmNhbSAyMjAwLgo+Cj4gU2lnbmVkLW9mZi1ieTogTcOh
-cnRvbiBOw6ltZXRoPG5tMTI3QGZyZWVtYWlsLmh1Pgo+IC0tLQo+IC0tLSBsaW51eC0yLjYuMzIt
-cmMxLm9yaWcvZHJpdmVycy9tZWRpYS92aWRlby9nc3BjYS9wYWNfY29tbW9uLmgJMjAwOS0wOS0x
-MCAwMDoxMzo1OS4wMDAwMDAwMDAgKzAyMDAKPiArKysgbGludXgtMi42LjMyLXJjMS9kcml2ZXJz
-L21lZGlhL3ZpZGVvL2dzcGNhL3BhY19jb21tb24uaAkyMDA5LTEwLTA0IDIxOjQ5OjE5LjAwMDAw
-MDAwMCArMDIwMAo+IEBAIC0zMyw2ICszMyw0NSBAQAo+ICAgc3RhdGljIGNvbnN0IHVuc2lnbmVk
-IGNoYXIgcGFjX3NvZl9tYXJrZXJbNV0gPQo+ICAgCQl7IDB4ZmYsIDB4ZmYsIDB4MDAsIDB4ZmYs
-IDB4OTYgfTsKPgo+ICsvKgo+ICsgICBUaGUgZm9sbG93aW5nIHN0YXRlIG1hY2hpbmUgZmluZHMg
-dGhlIFNPRiBtYXJrZXIgc2VxdWVuY2UKPiArICAgMHhmZiwgMHhmZiwgMHgwMCwgMHhmZiwgMHg5
-NiBpbiBhIGJ5dGUgc3RyZWFtLgo+ICsKPiArCSAgICstLS0tLS0tLS0tKwo+ICsJICAgfCAwOiBT
-VEFSVCB8PC0tLS0tLS0tLS0tLS0tLVwKPiArCSAgICstLS0tLS0tLS0tKzwtXCAgICAgICAgICAg
-ICB8Cj4gKwkgICAgIHwgICAgICAgXC0tLS9vdGhlcndpc2UgICAgfAo+ICsJICAgICB2IDB4ZmYg
-ICAgICAgICAgICAgICAgICAgIHwKPiArCSAgICstLS0tLS0tLS0tKyBvdGhlcndpc2UgICAgICB8
-Cj4gKwkgICB8ICAgICAxICAgIHwtLS0tLS0tLS0tLS0tLS0+Kgo+ICsJICAgfCAgICAgICAgICB8
-ICAgICAgICAgICAgICAgIF4KPiArCSAgICstLS0tLS0tLS0tKyAgICAgICAgICAgICAgICB8Cj4g
-KwkgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgfAo+ICsJICAgICB2IDB4ZmYgICAgICAg
-ICAgICAgICAgICAgIHwKPiArCSAgICstLS0tLS0tLS0tKzwtXDB4ZmYgICAgICAgICB8Cj4gKwkv
-LT58ICAgICAgICAgIHwtLS8gICAgICAgICAgICAgfAo+ICsJfCAgfCAgICAgMiAgICB8LS0tLS0t
-LS0tLS0tLS0tPioKPiArCXwgIHwgICAgICAgICAgfCBvdGhlcndpc2UgICAgICBeCj4gKwl8ICAr
-LS0tLS0tLS0tLSsgICAgICAgICAgICAgICAgfAo+ICsJfCAgICB8ICAgICAgICAgICAgICAgICAg
-ICAgICAgIHwKPiArCXwgICAgdiAweDAwICAgICAgICAgICAgICAgICAgICB8Cj4gKwl8ICArLS0t
-LS0tLS0tLSsgICAgICAgICAgICAgICAgfAo+ICsJfCAgfCAgICAgMyAgICB8ICAgICAgICAgICAg
-ICAgIHwKPiArCXwgIHwgICAgICAgICAgfC0tLS0tLS0tLS0tLS0tLT4qCj4gKwl8ICArLS0tLS0t
-LS0tLSsgb3RoZXJ3aXNlICAgICAgXgo+ICsJfCAgICB8ICAgICAgICAgICAgICAgICAgICAgICAg
-IHwKPiArICAgMHhmZiB8ICAgIHYgMHhmZiAgICAgICAgICAgICAgICAgICAgfAo+ICsJfCAgKy0t
-LS0tLS0tLS0rICAgICAgICAgICAgICAgIHwKPiArCVwtLXwgICAgIDQgICAgfCAgICAgICAgICAg
-ICAgICB8Cj4gKwkgICB8ICAgICAgICAgIHwtLS0tLS0tLS0tLS0tLS0tLwo+ICsJICAgKy0tLS0t
-LS0tLS0rIG90aGVyd2lzZQo+ICsJICAgICB8Cj4gKwkgICAgIHYgMHg5Ngo+ICsJICAgKy0tLS0t
-LS0tLS0rCj4gKwkgICB8ICBGT1VORCAgIHwKPiArCSAgICstLS0tLS0tLS0tKwo+ICsqLwo+ICsK
-PiAgIHN0YXRpYyB1bnNpZ25lZCBjaGFyICpwYWNfZmluZF9zb2Yoc3RydWN0IGdzcGNhX2RldiAq
-Z3NwY2FfZGV2LAo+ICAgCQkJCQl1bnNpZ25lZCBjaGFyICptLCBpbnQgbGVuKQo+ICAgewo+IEBA
-IC00MSwxNyArODAsNTQgQEAgc3RhdGljIHVuc2lnbmVkIGNoYXIgKnBhY19maW5kX3NvZihzdHJ1
-Ywo+Cj4gICAJLyogU2VhcmNoIGZvciB0aGUgU09GIG1hcmtlciAoZml4ZWQgcGFydCkgaW4gdGhl
-IGhlYWRlciAqLwo+ICAgCWZvciAoaSA9IDA7IGk8ICBsZW47IGkrKykgewo+IC0JCWlmIChtW2ld
-ID09IHBhY19zb2ZfbWFya2VyW3NkLT5zb2ZfcmVhZF0pIHsKPiAtCQkJc2QtPnNvZl9yZWFkKys7
-Cj4gLQkJCWlmIChzZC0+c29mX3JlYWQgPT0gc2l6ZW9mKHBhY19zb2ZfbWFya2VyKSkgewo+ICsJ
-CXN3aXRjaCAoc2QtPnNvZl9yZWFkKSB7Cj4gKwkJY2FzZSAwOgo+ICsJCQlpZiAobVtpXSA9PSAw
-eGZmKQo+ICsJCQkJc2QtPnNvZl9yZWFkID0gMTsKPiArCQkJYnJlYWs7Cj4gKwkJY2FzZSAxOgo+
-ICsJCQlpZiAobVtpXSA9PSAweGZmKQo+ICsJCQkJc2QtPnNvZl9yZWFkID0gMjsKPiArCQkJZWxz
-ZQo+ICsJCQkJc2QtPnNvZl9yZWFkID0gMDsKPiArCQkJYnJlYWs7Cj4gKwkJY2FzZSAyOgo+ICsJ
-CQlzd2l0Y2ggKG1baV0pIHsKPiArCQkJY2FzZSAweDAwOgo+ICsJCQkJc2QtPnNvZl9yZWFkID0g
-MzsKPiArCQkJCWJyZWFrOwo+ICsJCQljYXNlIDB4ZmY6Cj4gKwkJCQkvKiBzdGF5IGluIHRoaXMg
-c3RhdGUgKi8KPiArCQkJCWJyZWFrOwo+ICsJCQlkZWZhdWx0Ogo+ICsJCQkJc2QtPnNvZl9yZWFk
-ID0gMDsKPiArCQkJfQo+ICsJCQlicmVhazsKPiArCQljYXNlIDM6Cj4gKwkJCWlmIChtW2ldID09
-IDB4ZmYpCj4gKwkJCQlzZC0+c29mX3JlYWQgPSA0Owo+ICsJCQllbHNlCj4gKwkJCQlzZC0+c29m
-X3JlYWQgPSAwOwo+ICsJCQlicmVhazsKPiArCQljYXNlIDQ6Cj4gKwkJCXN3aXRjaCAobVtpXSkg
-ewo+ICsJCQljYXNlIDB4OTY6Cj4gKwkJCQkvKiBQYXR0ZXJuIGZvdW5kICovCj4gICAJCQkJUERF
-QlVHKERfRlJBTSwKPiAgIAkJCQkJIlNPRiBmb3VuZCwgYnl0ZXMgdG8gYW5hbHl6ZTogJXUuIgo+
-ICAgCQkJCQkiIEZyYW1lIHN0YXJ0cyBhdCBieXRlICMldSIsCj4gICAJCQkJCWxlbiwgaSArIDEp
-Owo+ICAgCQkJCXNkLT5zb2ZfcmVhZCA9IDA7Cj4gICAJCQkJcmV0dXJuIG0gKyBpICsgMTsKPiAr
-CQkJCWJyZWFrOwo+ICsJCQljYXNlIDB4ZmY6Cj4gKwkJCQlzZC0+c29mX3JlYWQgPSAyOwo+ICsJ
-CQkJYnJlYWs7Cj4gKwkJCWRlZmF1bHQ6Cj4gKwkJCQlzZC0+c29mX3JlYWQgPSAwOwo+ICAgCQkJ
-fQo+IC0JCX0gZWxzZSB7Cj4gKwkJCWJyZWFrOwo+ICsJCWRlZmF1bHQ6Cj4gICAJCQlzZC0+c29m
-X3JlYWQgPSAwOwo+ICAgCQl9Cj4gICAJfQo+IC0tCj4gVG8gdW5zdWJzY3JpYmUgZnJvbSB0aGlz
-IGxpc3Q6IHNlbmQgdGhlIGxpbmUgInVuc3Vic2NyaWJlIGxpbnV4LW1lZGlhIiBpbgo+IHRoZSBi
-b2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRvbW9Admdlci5rZXJuZWwub3JnCj4gTW9yZSBtYWpv
-cmRvbW8gaW5mbyBhdCAgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9tYWpvcmRvbW8taW5mby5odG1s
-CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ29tZSBidWlsZCB3aXRoIHVzISBUaGUgQmxhY2tCZXJy
-eSZyZWc7IERldmVsb3BlciBDb25mZXJlbmNlIGluIFNGLCBDQQppcyB0aGUgb25seSBkZXZlbG9w
-ZXIgZXZlbnQgeW91IG5lZWQgdG8gYXR0ZW5kIHRoaXMgeWVhci4gSnVtcHN0YXJ0IHlvdXIKZGV2
-ZWxvcGluZyBza2lsbHMsIHRha2UgQmxhY2tCZXJyeSBtb2JpbGUgYXBwbGljYXRpb25zIHRvIG1h
-cmtldCBhbmQgc3RheSAKYWhlYWQgb2YgdGhlIGN1cnZlLiBKb2luIHVzIGZyb20gTm92ZW1iZXIg
-OSYjNDU7MTIsIDIwMDkuIFJlZ2lzdGVyIG5vdyYjMzM7Cmh0dHA6Ly9wLnNmLm5ldC9zZnUvZGV2
-Y29uZgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAt
-bGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8v
-bGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+
+--ZPt4rx8FFjLCG7dd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+
+Hi,
+
+The attached patch add the ppoll(2) syscall number to the x86_64 list,
+and make the corresponding testcase succeed.
+
+Signed-off-by: Nicolas Joly <njoly@pasteur.fr>
+
+njoly@xxx [syscalls/ppoll]> uname -a
+Linux xxx 2.6.18-164.el5 #1 SMP Thu Sep 3 03:28:30 EDT 2009 x86_64 x86_64 x86_64 GNU/Linux
+njoly@xxx [syscalls/ppoll]> ./ppoll01 
+ppoll01     0  TINFO  :  (case00) START
+EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
+RESULT: return value(ret)=       1 errno=0 (Success)
+ppoll01     0  TINFO  :  (case00) END => OK
+ppoll01     0  TINFO  :  (case01) START
+EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
+RESULT: return value(ret)=       0 errno=0 (Success)
+ppoll01     0  TINFO  :  (case01) END => OK
+ppoll01     0  TINFO  :  (case02) START
+EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
+RESULT: return value(ret)=       0 errno=0 (Success)
+ppoll01     0  TINFO  :  (case02) END => OK
+ppoll01     0  TINFO  :  (case03) START
+EXPECT: return value(ret)=(N >= 0) errno=0 (Success)
+RESULT: return value(ret)=       1 errno=0 (Success)
+ppoll01     0  TINFO  :  (case03) END => OK
+ppoll01     0  TINFO  :  (case04) START
+EXPECT: return value(ret)=-1 errno=4 (Interrupted system call)
+RESULT: return value(ret)=-1 errno=4 (Interrupted system call)
+ppoll01     0  TINFO  :  (case04) END => OK
+ppoll01     0  TINFO  :  (case05) START
+EXPECT: return value(ret)=-1 errno=4 (Interrupted system call)
+RESULT: return value(ret)=-1 errno=4 (Interrupted system call)
+ppoll01     0  TINFO  :  (case05) END => OK
+ppoll01     0  TINFO  :  (case06) START
+EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
+RESULT: return value(ret)=-1 errno=22 (Invalid argument)
+ppoll01     0  TINFO  :  (case06) END => OK
+ppoll01     0  TINFO  :  (case07) START
+EXPECT: return value(ret)=-1 errno=14 (Bad address)
+RESULT: return value(ret)=-1 errno=14 (Bad address)
+ppoll01     0  TINFO  :  (case07) END => OK
+ppoll01     1  TPASS  :  ppoll01 call succeeded 
+
+-- 
+Nicolas Joly
+
+Biological Software and Databanks.
+Institut Pasteur, Paris.
+
+--ZPt4rx8FFjLCG7dd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="ltp-ppollx86_64.diff"
+
+Index: testcases/kernel/include/x86_64.in
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/include/x86_64.in,v
+retrieving revision 1.12
+diff -u -p -r1.12 x86_64.in
+--- testcases/kernel/include/x86_64.in	20 Jul 2009 04:41:12 -0000	1.12
++++ testcases/kernel/include/x86_64.in	16 Oct 2009 17:08:25 -0000
+@@ -30,6 +30,7 @@ symlinkat 266
+ readlinkat 267
+ fchmodat 268
+ faccessat 269
++ppoll 271
+ splice 275
+ tee 276
+ vmsplice 278
+
+--ZPt4rx8FFjLCG7dd
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
+--ZPt4rx8FFjLCG7dd
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--ZPt4rx8FFjLCG7dd--
+
