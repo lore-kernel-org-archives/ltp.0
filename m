@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Mz3oO-0006f9-B8
-	for ltp-list@lists.sourceforge.net; Sat, 17 Oct 2009 07:34:48 +0000
-Received: from mail-pz0-f191.google.com ([209.85.222.191])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mz3oA-0003sK-8I
-	for ltp-list@lists.sourceforge.net; Sat, 17 Oct 2009 07:34:43 +0000
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Mz1rx-0004hj-Aj
+	for ltp-list@lists.sourceforge.net; Sat, 17 Oct 2009 05:30:21 +0000
+Received: from mail-pz0-f199.google.com ([209.85.222.199])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Mz1rn-0004cp-4i
+	for ltp-list@lists.sourceforge.net; Sat, 17 Oct 2009 05:30:21 +0000
+Received: by pzk37 with SMTP id 37so2238563pzk.10
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 16 Oct 2009 22:30:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20091016171558.GA360691@medusa.sis.pasteur.fr>
-References: <20091016171558.GA360691@medusa.sis.pasteur.fr>
-Date: Sat, 17 Oct 2009 00:28:43 -0700
-Message-ID: <364299f40910170028q3f77657ftb78fa130ca0b5886@mail.gmail.com>
+In-Reply-To: <364299f40910162226h3266a625j96b408bf3632f530@mail.gmail.com>
+References: <364299f40910162226h3266a625j96b408bf3632f530@mail.gmail.com>
+Date: Fri, 16 Oct 2009 22:30:05 -0700
+Message-ID: <364299f40910162230u4a9ed97et6336d1191e1ec54b@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Add x86_64 ppoll(2) syscall number
+Subject: Re: [LTP] Issue with autoconf not honoring linux/types.h
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,60 +30,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Nicolas Joly <njoly@pasteur.fr>
-Cc: LTP list <ltp-list@lists.sf.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On Fri, Oct 16, 2009 at 10:15 AM, Nicolas Joly <njoly@pasteur.fr> wrote:
+On Fri, Oct 16, 2009 at 10:26 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> Hi Mike,
+> =A0 =A0Looking at the configure log, autoconf is incorrectly pruning
+> linux/types.h from the list of headers, and as such linux/taskstats.h
+> fails to compile successfully.
+> =A0 =A0Do you have any idea how I should fix this noise?
+> AC_DEFAULT_INCLUDES didn't help.
+> =A0 =A0The log snippet and the m4 file (minus the comments) are attached.
+> Thanks,
+> -Garrett
 >
-> Hi,
+> ### ltp-taskstats.m4 ###
 >
-> The attached patch add the ppoll(2) syscall number to the x86_64 list,
-> and make the corresponding testcase succeed.
+> AC_DEFUN([LTP_CHECK_TASKSTATS],
+> _LTP_CHECK_TASKSTATS_FREEPAGES
+> )
 >
-> Signed-off-by: Nicolas Joly <njoly@pasteur.fr>
->
-> njoly@xxx [syscalls/ppoll]> uname -a
-> Linux xxx 2.6.18-164.el5 #1 SMP Thu Sep 3 03:28:30 EDT 2009 x86_64 x86_64=
- x86_64 GNU/Linux
-> njoly@xxx [syscalls/ppoll]> ./ppoll01
-> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case00) START
-> EXPECT: return value(ret)=3D(N >=3D 0) errno=3D0 (Success)
-> RESULT: return value(ret)=3D =A0 =A0 =A0 1 errno=3D0 (Success)
-> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case00) END =3D> OK
-> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case01) START
-> EXPECT: return value(ret)=3D(N >=3D 0) errno=3D0 (Success)
-> RESULT: return value(ret)=3D =A0 =A0 =A0 0 errno=3D0 (Success)
-> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case01) END =3D> OK
-> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case02) START
-> EXPECT: return value(ret)=3D(N >=3D 0) errno=3D0 (Success)
-> RESULT: return value(ret)=3D =A0 =A0 =A0 0 errno=3D0 (Success)
-> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case02) END =3D> OK
-> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case03) START
-> EXPECT: return value(ret)=3D(N >=3D 0) errno=3D0 (Success)
-> RESULT: return value(ret)=3D =A0 =A0 =A0 1 errno=3D0 (Success)
-> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case03) END =3D> OK
-> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case04) START
-> EXPECT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
-> RESULT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
-> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case04) END =3D> OK
-> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case05) START
-> EXPECT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
-> RESULT: return value(ret)=3D-1 errno=3D4 (Interrupted system call)
-> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case05) END =3D> OK
-> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case06) START
-> EXPECT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
-> RESULT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
-> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case06) END =3D> OK
-> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case07) START
-> EXPECT: return value(ret)=3D-1 errno=3D14 (Bad address)
-> RESULT: return value(ret)=3D-1 errno=3D14 (Bad address)
-> ppoll01 =A0 =A0 0 =A0TINFO =A0: =A0(case07) END =3D> OK
-> ppoll01 =A0 =A0 1 =A0TPASS =A0: =A0ppoll01 call succeeded
+> AC_DEFUN([_LTP_CHECK_TASKSTATS_FREEPAGES],[
+> AC_INCLUDES_DEFAULT([
+> #include <linux/types.h>
+> ])
+> AC_CHECK_HEADERS_ONCE([linux/taskstats.h],[
+> =A0 =A0AC_CHECK_MEMBERS([struct taskstats.freepages_count, struct
+> taskstats.nvcsw, struct taskstats.read_bytes],
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 [],[],[dnl
+> #include <linux/taskstats.h>
+> ])
+> ])
+> ])
 
-    Thanks for the heads up Nicolas! I added the ppoll syscall numbers
-for all supported architectures (it isn't available on arm according
-to my 2.6.30 kernel sources).
-Cheers!
+AHA. AC_CHECK_HEADERS_ONCE was the culprit. Fixed now 8-).
 -Garrett
 
 ---------------------------------------------------------------------------=
