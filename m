@@ -1,21 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <casey@schaufler-ca.com>) id 1MtC1c-0006Pw-FE
-	for ltp-list@lists.sourceforge.net; Thu, 01 Oct 2009 03:08:12 +0000
-Received: from smtp107.prem.mail.sp1.yahoo.com ([98.136.44.62])
-	by 29vjzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1MtC1T-00088C-SA
-	for ltp-list@lists.sourceforge.net; Thu, 01 Oct 2009 03:08:11 +0000
-Message-ID: <4AC416C2.9070004@schaufler-ca.com>
-Date: Wed, 30 Sep 2009 19:41:06 -0700
-From: Casey Schaufler <casey@schaufler-ca.com>
-MIME-Version: 1.0
-References: <1252847788.5357.33.camel@subratamodak.linux.ibm.com>
-	<1254075380.10457.35.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1254075380.10457.35.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] [Testing 2.6.31] smack: implement logging V3
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MzaOR-000074-Fo
+	for ltp-list@lists.sourceforge.net; Sun, 18 Oct 2009 18:22:11 +0000
+Received: from e35.co.us.ibm.com ([32.97.110.153])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1MzaOJ-0006Q7-9m
+	for ltp-list@lists.sourceforge.net; Sun, 18 Oct 2009 18:22:11 +0000
+Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
+	[9.17.195.107])
+	by e35.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9IIB21x019490
+	for <ltp-list@lists.sourceforge.net>; Sun, 18 Oct 2009 12:11:02 -0600
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n9IILtnR165326
+	for <ltp-list@lists.sourceforge.net>; Sun, 18 Oct 2009 12:21:55 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id n9IILtds020096
+	for <ltp-list@lists.sourceforge.net>; Sun, 18 Oct 2009 12:21:55 -0600
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <8368651DACC1964480F951191B94A0780153D6ED@svexch01.mvista.com>
+References: <8368651DACC1964480F951191B94A0780153D6ED@svexch01.mvista.com>
+Date: Sun, 18 Oct 2009 23:51:36 +0530
+Message-Id: <1255890097.5359.15.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH][mq_* clock_nanosleep01] change use of signal
+	to	sigaction for more reliability, fix time issue
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,41 +41,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: Casey Schaufler <casey@schaufler-ca.com>, ltp-list <ltp-list@lists.sf.net>, Etienne Basset <etienne.basset@numericable.fr>, Eric Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>
+To: Henry Yei <hyei@mvista.com>, Jiri Palecek <jpalecek@web.de>, Randy Vinson <rvinson@mvista.com>
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
 
-Subrata Modak wrote:
-> On Sun, 2009-09-13 at 18:46 +0530, Subrata Modak wrote: 
->   
->> Hi Casey,
->>
->> Would you like to revisit the LTP SMACK tests after 2.6.31 is released
->> with the following SMACK changes for both 2.6.30 and 2.6.31:
->>
->> http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=6e837fb152410e571a81aaadbd9884f0bc46a55e,
->> http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=ecfcc53fef3c357574bb6143dce6631e6d56295c,
->>     
->
-> Casey,
->
-> Any news ?
->   
+On Thu, 2009-10-15 at 19:48 -0700, Henry Yei wrote: 
+> All,
+> 
+> Here are three patches the help with the issue where these tests miss a signal and hang. The original patches were created before the latest check-ins by jpalecek@web.de , but I believe they still help. I've regenerated the patches against CVS source and tested on a multi-core machine running MVL6 (x86 2.6.28) 
+> 
+> The clock_nanosleep01 patch changes signal to the more reliable sigaction().
+> 
+> mq_timedsend01 patch changes from signal() to sigaction() and corrects the time-specs
+> used by the test. Timespec's passed to mq_timedsend are abs time, not relative
+> time. The patch adds the current time to convert relative time to abs time but
+> only if the change won't invalidate the test objective. For example, if the
+> test would have passed -1 for tv_sec to cause an invalid time error, adding the
+> current time would prevent the expected error.
+> 
+> mq_timedrecieve01.patch changes from signal() to sigaction() and corrects the time-specs
+> used by the test. Timespec's passed to mq_timedreceive are abs time, not
+> relative
+> time. The patch adds the current time to convert relative time to abs time but
+> only if the change won't invalidate the test objective. For example, if the
+> test would have passed -1 for tv_sec to cause an invalid time error, adding the
+> current time would prevent the expected error. The timeout for SIGINT test is
+> extended to allow time for the signal to arrive.
+> 
+> Original patches provided by Randy Vinson <rvinson@mvista.com>
+> 
+> Signed-off by: Henry Yei <hyei@mvista.com>
 
-I would very much like to add some tests for these features. I do not
-have them
-yet and as always am way behind on most of my projects. Don't feel left
-out, there
-are lots of other things that I am behind on as well.
+Thanks.
 
-Thank you for your patience.
+Regards--
+Subrata
+
+> 
+> 
+> ------------------------------------------------------------------------------
+> Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+> is the only developer event you need to attend this year. Jumpstart your
+> developing skills, take BlackBerry mobile applications to market and stay 
+> ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+> http://p.sf.net/sfu/devconference
+> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-http://p.sf.net/sfu/devconf
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
