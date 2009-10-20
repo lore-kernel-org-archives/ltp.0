@@ -1,22 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1Mwl0T-0004ei-NQ
-	for ltp-list@lists.sourceforge.net; Sat, 10 Oct 2009 23:05:45 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Mwl0N-000244-6Z
-	for ltp-list@lists.sourceforge.net; Sat, 10 Oct 2009 23:05:45 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sat, 10 Oct 2009 19:05:31 -0400
-References: <364299f40910091048w54ece725l2b07a04bb82f6a4f@mail.gmail.com>
-	<364299f40910101502l19472085v233d75751e1badb6@mail.gmail.com>
-	<364299f40910101530t3be5d6d8i5e530c5137d923b8@mail.gmail.com>
-In-Reply-To: <364299f40910101530t3be5d6d8i5e530c5137d923b8@mail.gmail.com>
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <rpaulsen@us.ibm.com>) id 1N0HSG-0002ke-En
+	for ltp-list@lists.sourceforge.net; Tue, 20 Oct 2009 16:21:00 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1N0HSC-0008Im-FH
+	for ltp-list@lists.sourceforge.net; Tue, 20 Oct 2009 16:21:00 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e1.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9KGJD10012689
+	for <ltp-list@lists.sourceforge.net>; Tue, 20 Oct 2009 12:19:13 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n9KGKdDa247778
+	for <ltp-list@lists.sourceforge.net>; Tue, 20 Oct 2009 12:20:39 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	n9KGKcbb001442
+	for <ltp-list@lists.sourceforge.net>; Tue, 20 Oct 2009 12:20:39 -0400
+Message-ID: <OFCE335715.B4309B60-ON85257655.005644B5-86257655.00592CEC@us.ibm.com>
+From: Robert Paulsen <rpaulsen@us.ibm.com>
+Date: Tue, 20 Oct 2009 11:16:10 -0500
 MIME-Version: 1.0
-Message-Id: <200910101905.32534.vapier@gentoo.org>
-Subject: Re: [LTP] mixing of install/build targets
+Subject: [LTP] LTP vs. SLES11 -- Some FAILs.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,85 +33,97 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3990426066114333991=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
-
---===============3990426066114333991==
-Content-Type: multipart/signed; boundary="nextPart1459631.uFjO8PtUsW";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1459631.uFjO8PtUsW
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-On Saturday 10 October 2009 18:30:11 Garrett Cooper wrote:
->     I just changed it so it won't do this anymore, but what I need to
-> know exactly is how do you intend to do submakes, e.g. do you intend
-> to manually compile the library, NOT do the install, then go to a
-> subdir, run make all, and that's it?
->     make install (IMO) still needs $(prefix) to be defined to a sane
-> setting, so it's now only a requirement for install.
-
-requiring install-related variables to be sane in order to do `make install=
-`=20
-is fine (i.e. prefix/etc...).  but that is the only time install related=20
-variables should be needed/consulted.
-
-when you compile a package (i.e. run `make`) regardless of this being done =
-at=20
-the toplevel or a subdir only, the build process should never need anything=
-=20
-ltp related outside of the source tree (so i'm not talking about libcap or=
-=20
-whatever, just libltp).  this is the expected behavior for all packages out=
-=20
-there, not just ltp.
-
-one reason for why this is a bad idea is that it is then impossible to=20
-compile/test a new version of a package locally before installing it into t=
-he=20
-live filesystem.  you would have to first uninstall the old version (rm -rf=
-=20
-/opt/ltp), then compile/install the new version, and then hope that (1) the=
-=20
-build is successful as well as (2) the package working as expected (bug fre=
-e).
-=2Dmike
-
---nextPart1459631.uFjO8PtUsW
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.11 (GNU/Linux)
-
-iQIcBAABAgAGBQJK0RM8AAoJEEFjO5/oN/WBfmwQAKef2BTJmftczZfnblYh1fu/
-xffM5Tm1IWdUEl/2+SV9TjpKJO5A+cf0jaUfdpITlys/IZ5c4AD4Jos9DbhnZ97s
-/LEhJW53Of2RME7Wj7p+K9ZfXuxNVTkK/rxDymn7bHtqRyyyLjcAe06FPKxohv1n
-leyrKoJXvTRh4IaK8bmzLAkLi+/i8aKfKWJUFsakj8lbgfNXkXHulMlHaNazLeIX
-j6/xk29s5N/YjiZilRFMi1ZPAxk4MQOB9lrNAM+g3r95gxn7zSzLqK5TH4Iz73n9
-qO3LJ7j121/53K44DhtjATPZic21qBQ3KKHk4oSFVIochhjbq6+8srxcIa08eku4
-BKCkA9i1t0TEiuVhes0h7bfJfrjBmP02c9bii1osE67cg4891vD3iT5x/iiCT58O
-uKj6uerK98B1Y0Gh+JywK7gFUPGYHK1lu9GcECpetLJbxVxa9nNUBoUVl8NDG4AN
-rVMQvvlV1EEBQJm5n02L9UkTQAnBrCqqQ4hEZMYroSMNAPRYtPNN1RZ/j/bjMk41
-5taU8Is7xJHx7x7QUs61Yd9lV0ejV/sZo0qfeREmEflGT60QL4WpH+7JlejHEAhl
-tBO8jLyGEJ+1U+xU2O3l97aBrOrKfgBZ7BoK8ddIPZ2bUxVaQV7rQKn09H+UAlxE
-97WDrq7Vf+mc6LTPVc8I
-=9pZ1
------END PGP SIGNATURE-----
-
---nextPart1459631.uFjO8PtUsW--
-
-
---===============3990426066114333991==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Linux Test Project <ltp-list@lists.sourceforge.net>
+Cc: iranna.ankad@in.ibm.com, Suzuki Poulose <suzuki@in.ibm.com>
+
+
+Hello,
+
+I ran the latest LTP (20090930) against SLES11:
+
+# cat /etc/issue
+Welcome to SUSE Linux Enterprise Server 11 (ppc64) - Kernel \r (\l).
+# uname -a
+Linux beavis 2.6.27.19-5-ppc64 #1 SMP 2009-02-28 04:40:21 +0100 ppc64 ppc64 ppc64 GNU/Linux
+
+These were all run via "runalltests" so are part of the default set of LTP
+tests that run.
+
+There were a number of errors. I didn't expect this as I thought that one
+way or another the LTP would have been validated against a standard distro
+like SLES11.
+
+Are these known failures? In the LTP or SLES11?
+
+Some of these tests apparently rely on kernel configurations and/or
+available resources like real memory that cannot be guaranteed on any
+arbitrary installation. Should such tests be run by default?
+
+Some of these tests just look like sloppy tests, for example the
+cron_allow01 an cron_deny01 tests.
+
+Some tests assume they will be built on the same system on which they are
+run. In his case that assumption was true but it seems like a very unsafe
+assumption, especially if a cross build is needed. Even without a cross
+build the build and test systems may not always be the same -- the reason
+for "make package" as describe in README.ltp-devel and why the Makefile has
+a CROSS_COMPILE macro.
+
+Here are the fails from the log file:
+
+eventfd2_03                    FAIL       1
+inotify01                      FAIL       1
+inotify02                      FAIL       1
+ppoll01                        FAIL       2
+quotactl01                     FAIL       1
+timer_getoverrun01             FAIL       1
+timer_gettime01                FAIL       1
+utimes01                       FAIL       1
+Cap_bounds                     FAIL       127
+su01                           FAIL       1
+cron02                         FAIL       1
+cron_deny01                    FAIL       1
+cron_allow01                   FAIL       1
+at_deny01                      FAIL       1
+at_allow01                     FAIL       1
+timer_delete02                 FAIL       1
+Numa-testcases                 FAIL       1
+hugemmap03                     FAIL       1
+hugemmap04                     FAIL       1
+hugeshmat01                    FAIL       6
+hugeshmat02                    FAIL       6
+hugeshmat03                    FAIL       2
+hugeshmctl01                   FAIL       6
+hugeshmctl02                   FAIL       6
+hugeshmctl03                   FAIL       2
+hugeshmdt01                    FAIL       6
+hugeshmget01                   FAIL       2
+hugeshmget02                   FAIL       6
+hugeshmget03                   FAIL       6
+hugeshmget05                   FAIL       2
+
+A number of tests FAILed despite not showing in the above list. Here is some info from the detailed output file:
+
+pid_namespace4    1  TFAIL  :  Container init is killed by SIGKILL !!!
+pid_namespace4    2  TFAIL  :  Container init pid got killed by signal 9
+pidns12     1  TFAIL  :  cinit: signalling PID (from other namespace) is not 0, but 27810.
+quotactl01    1  TFAIL  :  quotactl01 failed, cmd=0x800002: TEST_ERRNO=EFAULT(14): Bad address
+quotactl01    2  TFAIL  :  quotactl01 failed, cmd=0x800003: TEST_ERRNO=EFAULT(14): Bad address
+quotactl01    3  TFAIL  :  quotactl01 failed, cmd=0x800007: TEST_ERRNO=EFAULT(14): Bad address
+quotactl01    4  TFAIL  :  quotactl01 failed, cmd=0x800008: TEST_ERRNO=EFAULT(14): Bad address
+quotactl01    5  TFAIL  :  quotactl01 failed, cmd=0x800005: TEST_ERRNO=EFAULT(14): Bad address
+quotactl01    6  TFAIL  :  quotactl01 failed, cmd=0x800006: TEST_ERRNO=EFAULT(14): Bad address
+quotactl01    7  TFAIL  :  quotactl01 failed, cmd=0x800004: TEST_ERRNO=EFAULT(14): Bad address
+quotactl01    8  TFAIL  :  quotactl01 failed, cmd=0x800001: TEST_ERRNO=EFAULT(14): Bad address
+
+Robert Paulsen
+IBM Linux Technology Center, Austin
+rpaulsen@us.ibm.com
+512-468-0565
+
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
@@ -112,16 +131,7 @@ is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
---===============3990426066114333991==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============3990426066114333991==--
-
