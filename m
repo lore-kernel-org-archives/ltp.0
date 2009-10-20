@@ -1,20 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1MyT4a-0006RJ-OJ
-	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 16:21:04 +0000
-Date: Thu, 15 Oct 2009 18:20:44 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20091015162044.GA4152@schrodinger.suse.cz>
-References: <mailman.29696.1255455058.5878.ltp-list@lists.sourceforge.net>
-	<OF09CD3626.9C4C3745-ON8525764F.00076525-8525764F.000CA5FF@us.ibm.com>
-	<364299f40910132042o1ec2bd0eyf4eff3bb1b28756b@mail.gmail.com>
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <hyei@mvista.com>) id 1N0JBA-0003YQ-Uo
+	for ltp-list@lists.sourceforge.net; Tue, 20 Oct 2009 18:11:28 +0000
+Received: from [206.112.117.47] (helo=gateway-1237.mvista.com)
+	by 1b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1N0JAy-0005LX-Lc
+	for ltp-list@lists.sourceforge.net; Tue, 20 Oct 2009 18:11:28 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <364299f40910132042o1ec2bd0eyf4eff3bb1b28756b@mail.gmail.com>
-Subject: Re: [LTP] compile fails for libcpuset.c on SLES-11 s390x
-	with	ltp-full-20090930
+Date: Tue, 20 Oct 2009 10:53:27 -0700
+Message-ID: <8368651DACC1964480F951191B94A0780153D9A8@svexch01.mvista.com>
+In-Reply-To: <364299f40910181839w5c5dc73agfa147469881d4cc3@mail.gmail.com>
+References: <8368651DACC1964480F951191B94A0780153D7EE@svexch01.mvista.com>
+	<1255890114.5359.16.camel@subratamodak.linux.ibm.com>
+	<364299f40910181839w5c5dc73agfa147469881d4cc3@mail.gmail.com>
+From: "Henry Yei" <hyei@mvista.com>
+Subject: Re: [LTP] [PATCH][runtest/fs] modify fs scenario to use working
+	directory specified by runltp
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,69 +31,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Mark Ver <markver@us.ibm.com>
+To: Garrett Cooper <yanegomi@gmail.com>, subrata@linux.vnet.ibm.com
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> > make[5]: Entering directory
-> > `/root/ltp-full-20090930/testcases/kernel/controllers/cpuset/cpuset_lib'
-> > gcc -g -O2 -Wall -g -Wextra -I../../../../include -c -o cpuinfo.o cpuinfo.c
-> > gcc -g -O2 -Wall -g -Wextra -I../../../../include -c -o libbitmask.o
-> > libbitmask.c
-> > gcc -g -O2 -Wall -g -Wextra -I../../../../include -c -o libcpuset.o
-> > libcpuset.c
-> > libcpuset.c: In function ?get_mempolicy?:
-> > libcpuset.c:3092: error: ?__NR_get_mempolicy? undeclared (first use in this
-> > function)
-> > libcpuset.c:3092: error: (Each undeclared identifier is reported only once
-> > libcpuset.c:3092: error: for each function it appears in.)
-> > libcpuset.c: In function ?set_mempolicy?:
-> > libcpuset.c:3097: error: ?__NR_set_mempolicy? undeclared (first use in this
-> > function)
-> > make[5]: *** [libcpuset.o] Error 1
-> > make[5]: Leaving directory
-> > `/root/ltp-full-20090930/testcases/kernel/controllers/cpuset/cpuset_lib'
-> > make[4]: *** [all] Error 2
-> > make[4]: Leaving directory
-> > `/root/ltp-full-20090930/testcases/kernel/controllers/cpuset'
-> > make[3]: *** [all] Error 2
-> > make[3]: Leaving directory
-> > `/root/ltp-full-20090930/testcases/kernel/controllers'
-> > make[2]: *** [all] Error 2
-> > make[2]: Leaving directory `/root/ltp-full-20090930/testcases/kernel'
-> > make[1]: *** [all] Error 2
-> > make[1]: Leaving directory `/root/ltp-full-20090930/testcases'
-> > make: *** [all] Error 2
+> -----Original Message-----
+> From: Garrett Cooper [mailto:yanegomi@gmail.com]
+> Sent: Sunday, October 18, 2009 6:39 PM
+> To: subrata@linux.vnet.ibm.com
+> Cc: Henry Yei; LTP Mailing List
+> Subject: Re: [LTP] [PATCH][runtest/fs] modify fs scenario to use
+> working directory specified by runltp
+> 
+> On Sun, Oct 18, 2009 at 11:21 AM, Subrata Modak
+> <subrata@linux.vnet.ibm.com> wrote:
+> > On Fri, 2009-10-16 at 17:03 -0700, Henry Yei wrote:
+> >> This patch modifies the fs scenario to remove hard coded paths with
+> /tmp as well as make sure that tests that take directory arguments use
+> the temporary directory specified by runltp.
+> >>
+> >> I've chosen to pass in the temporary directory rather than change
+> the tests themselves for certain tests take a path as an argument.
+> >>
+> >> Signed-off by: Henry Yei <hyei@mvista.com>
 > >
-> > As far as I can tell the architecture does not support get_mempolicy and
-> > set_mem_policy.
-> >
-> > Here are the configure logs and stuff from the build attempt:
-> > (See attached file: ltp-full-20090930-s390x-builderr.tar.gz)
+> > Thanks.
 > 
-> The constant is defined for the platform, but not with the correct name:
-> 
-> /usr/src/linux/arch/s390/kernel/syscalls.S:NI_SYSCALL
->                                  /* 269 sys_get_mempolicy */
-> /usr/src/linux/arch/s390/include/asm/unistd.h:/* Number 269 is
-> reserved for new sys_get_mempolicy */
-> /usr/src/linux/arch/s390/include/asm/unistd.h:#define __IGNORE_get_mempolicy
-> 
-> This needs to be added to testcases/kernel/include/generate.sh for
-> linux_syscall_numbers.h, or an arch specific #ifdef should be added
-> for that test / to an autoconf test that would automatically determine
-> whether or not your platform had a usable get_mempolicy syscall.
-> 
-> Hope that helps describe what needs to take place next...
+>     Dumb question (and this is part of the reason why I didn't reply
+> earlier or check this into cvs) -- what happens if TMPDIR is unset or
+> is an empty value? Another function and/or set of bourne shell calls
+> should be added to tst_setup() in cmdlib.sh so it checks for this
+> directory and creates it as necessary, similar to what I did in
+> linktest.sh.
+> Thanks,
+> -Garrett
 
-This is even simplier. Just look into testcases/kernel/include/ directory and
-add "get_mempolicy xxx" and "set_mempolicy yyy" into corresponding file (for
-you it's s390.in). The build porcess should generate file
-linux_syscall_numbers.h for you. Anyway I'm preparing patch fixing this.
+AFAIK, ff the user does not use the -d command when start the tests from the runltp script, $TMPDIR defaults to '/tmp/'. I'm not aware of another way to run execute the commands in the runtest files without the use of runltp so I did not take that into account.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
