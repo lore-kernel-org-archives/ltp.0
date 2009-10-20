@@ -1,26 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1N0NNA-0006HP-MM
-	for ltp-list@lists.sourceforge.net; Tue, 20 Oct 2009 22:40:08 +0000
-Received: from [206.112.117.47] (helo=gateway-1237.mvista.com)
-	by 1b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1N0NMx-00038F-96
-	for ltp-list@lists.sourceforge.net; Tue, 20 Oct 2009 22:40:03 +0000
-Content-class: urn:content-classes:message
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1N0LqT-000229-SZ
+	for ltp-list@lists.sourceforge.net; Tue, 20 Oct 2009 21:02:17 +0000
+Received: from mail-ew0-f208.google.com ([209.85.219.208])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N0LqP-00059t-FK
+	for ltp-list@lists.sourceforge.net; Tue, 20 Oct 2009 21:02:17 +0000
 MIME-Version: 1.0
-Date: Tue, 20 Oct 2009 15:41:58 -0700
-Message-ID: <8368651DACC1964480F951191B94A0780153DA1C@svexch01.mvista.com>
-In-Reply-To: <364299f40910201351t5ccb6ei9828b41823d007d1@mail.gmail.com>
-References: <8368651DACC1964480F951191B94A0780153D7EE@svexch01.mvista.com>
-	<1255890114.5359.16.camel@subratamodak.linux.ibm.com>
-	<364299f40910181839w5c5dc73agfa147469881d4cc3@mail.gmail.com>
-	<8368651DACC1964480F951191B94A0780153D9A8@svexch01.mvista.com>
-	<364299f40910201351t5ccb6ei9828b41823d007d1@mail.gmail.com>
-From: "Henry Yei" <hyei@mvista.com>
-Subject: Re: [LTP] [PATCH][runtest/fs] modify fs scenario to use working
-	directory specified by runltp
+In-Reply-To: <OF87E660BB.5D2E0F9D-ON85257655.005F2225-86257655.005F2F51@us.ibm.com>
+References: <OF87E660BB.5D2E0F9D-ON85257655.005F2225-86257655.005F2F51@us.ibm.com>
+Date: Tue, 20 Oct 2009 14:01:58 -0700
+Message-ID: <364299f40910201401q7d1a6c67k32198b5487b5db92@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Fw: LTP vs. SLES11 -- Some FAILs.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,98 +24,133 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
+To: Robert Paulsen <rpaulsen@us.ibm.com>
+Cc: ltp-list@lists.sf.net
 
-> -----Original Message-----
-> From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> Sent: Tuesday, October 20, 2009 1:52 PM
-> To: Henry Yei
-> Cc: subrata@linux.vnet.ibm.com; LTP Mailing List
-> Subject: Re: [LTP] [PATCH][runtest/fs] modify fs scenario to use
-> working directory specified by runltp
-> =
+On Tue, Oct 20, 2009 at 10:21 AM, Robert Paulsen <rpaulsen@us.ibm.com> wrot=
+e:
+>
+> Hello,
+>
+> I ran the latest LTP (20090930) against SLES11:
+>
+> # cat /etc/issue
+> Welcome to SUSE Linux Enterprise Server 11 (ppc64) - Kernel \r (\l).
+> # uname -a
+> Linux beavis 2.6.27.19-5-ppc64 #1 SMP 2009-02-28 04:40:21 +0100 ppc64 ppc=
+64 ppc64 GNU/Linux
+>
+> These were all run via "runalltests" so are part of the default set of LTP
+> tests that run.
+>
+> There were a number of errors. I didn't expect this as I thought that one
+> way or another the LTP would have been validated against a standard distro
+> like SLES11.
+>
+> Are these known failures? In the LTP or SLES11?
+>
+> Some of these tests apparently rely on kernel configurations and/or
+> available resources like real memory that cannot be guaranteed on any
+> arbitrary installation. Should such tests be run by default?
+>
+> Some of these tests just look like sloppy tests, for example the
+> cron_allow01 an cron_deny01 tests.
+>
+> Some tests assume they will be built on the same system on which they are
+> run. In his case that assumption was true but it seems like a very unsafe
+> assumption, especially if a cross build is needed. Even without a cross
+> build the build and test systems may not always be the same -- the reason
+> for "make package" as describe in README.ltp-devel and why the Makefile h=
+as
+> a CROSS_COMPILE macro.
+>
+> Here are the fails from the log file:
+>
+> eventfd2_03 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 1
+> inotify01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 1
+> inotify02 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 1
+> ppoll01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 2
+> quotactl01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
+> timer_getoverrun01 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
+> timer_gettime01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 1
+> utimes01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
+> Cap_bounds =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 127
+> su01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0=
+ 1
+> cron02 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
+> cron_deny01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 1
+> cron_allow01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
+> at_deny01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 1
+> at_allow01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
+> timer_delete02 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
+> Numa-testcases =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
+> hugemmap03 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
+> hugemmap04 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
+> hugeshmat01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 6
+> hugeshmat02 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 6
+> hugeshmat03 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 2
+> hugeshmctl01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 6
+> hugeshmctl02 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 6
+> hugeshmctl03 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 2
+> hugeshmdt01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 6
+> hugeshmget01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 2
+> hugeshmget02 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 6
+> hugeshmget03 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 6
+> hugeshmget05 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 2
+>
+> A number of tests FAILed despite not showing in the above list. Here is s=
+ome info from the detailed output file:
+>
+> pid_namespace4 =A0 =A01 =A0TFAIL =A0: =A0Container init is killed by SIGK=
+ILL !!!
+> pid_namespace4 =A0 =A02 =A0TFAIL =A0: =A0Container init pid got killed by=
+ signal 9
+> pidns12 =A0 =A0 1 =A0TFAIL =A0: =A0cinit: signalling PID (from other name=
+space) is not 0, but 27810.
+> quotactl01 =A0 =A01 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800002: T=
+EST_ERRNO=3DEFAULT(14): Bad address
+> quotactl01 =A0 =A02 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800003: T=
+EST_ERRNO=3DEFAULT(14): Bad address
+> quotactl01 =A0 =A03 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800007: T=
+EST_ERRNO=3DEFAULT(14): Bad address
+> quotactl01 =A0 =A04 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800008: T=
+EST_ERRNO=3DEFAULT(14): Bad address
+> quotactl01 =A0 =A05 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800005: T=
+EST_ERRNO=3DEFAULT(14): Bad address
+> quotactl01 =A0 =A06 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800006: T=
+EST_ERRNO=3DEFAULT(14): Bad address
+> quotactl01 =A0 =A07 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800004: T=
+EST_ERRNO=3DEFAULT(14): Bad address
+> quotactl01 =A0 =A08 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800001: T=
+EST_ERRNO=3DEFAULT(14): Bad address
 
-> On Tue, Oct 20, 2009 at 10:53 AM, Henry Yei <hyei@mvista.com> wrote:
-> >> -----Original Message-----
-> >> From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> >> Sent: Sunday, October 18, 2009 6:39 PM
-> >> To: subrata@linux.vnet.ibm.com
-> >> Cc: Henry Yei; LTP Mailing List
-> >> Subject: Re: [LTP] [PATCH][runtest/fs] modify fs scenario to use
-> >> working directory specified by runltp
-> >>
-> >> On Sun, Oct 18, 2009 at 11:21 AM, Subrata Modak
-> >> <subrata@linux.vnet.ibm.com> wrote:
-> >> > On Fri, 2009-10-16 at 17:03 -0700, Henry Yei wrote:
-> >> >> This patch modifies the fs scenario to remove hard coded paths
-> with
-> >> /tmp as well as make sure that tests that take directory arguments
-> use
-> >> the temporary directory specified by runltp.
-> >> >>
-> >> >> I've chosen to pass in the temporary directory rather than change
-> >> the tests themselves for certain tests take a path as an argument.
-> >> >>
-> >> >> Signed-off by: Henry Yei <hyei@mvista.com>
-> >> >
-> >> > Thanks.
-> >>
-> >> =A0 =A0 Dumb question (and this is part of the reason why I didn't rep=
-ly
-> >> earlier or check this into cvs) -- what happens if TMPDIR is unset
-> or
-> >> is an empty value? Another function and/or set of bourne shell calls
-> >> should be added to tst_setup() in cmdlib.sh so it checks for this
-> >> directory and creates it as necessary, similar to what I did in
-> >> linktest.sh.
-> >> Thanks,
-> >> -Garrett
-> >
-> > AFAIK, ff the user does not use the -d command when start the tests
-> from the runltp script, $TMPDIR defaults to '/tmp/'. I'm not aware of
-> another way to run execute the commands in the runtest files without
-> the use of runltp so I did not take that into account.
-> =
-
->     Ah, but what about standalone execution. This is currently broken,
-> is it not? Then again, this was broken even before your change I
-> think...
-> Thanks,
-> -Garrett
-
-When you mean standalone execution, you mean running a specific testcase on=
- the command line like below?:
-growfiles -W gf01 -b -e 1 -u -i 0 -L 20 -w -C 1 -l -I r -T 10 glseek20 glse=
-ek20.2
-
-In that case, the temporary files will be created in the current working di=
-rectory that the command was invoked from.
-
-One reason I didn't just modify the growfiles to use tst_tmpdir internally =
-was because of the large amount of testcases that rely on it (all gf* and r=
-wtest* testcases), some of which needs to know which directory it is workin=
-g in even before growfiles is executed such as the example below. I took th=
-e easy way out :)
-
-Ex)
-gf12 mkfifo gffifo17; growfiles -b -W gf12 -e 1 -u -i 0 -L 30 gffifo17
-
-
-
-
-
-
-
-
-
-
-
-
-
+Hi Robert,
+    I'm not sure about the snapshot you're referring to, but the
+latest version no longer uses CROSS_COMPILE. You instead must specify
+CC, CXX, LD, etc either via configure or manually in config.mk, and
+then move it over to $(abs_top_builddir)/include/mk/config.mk; the
+preferred method is the former one.
+    Some points:
+    1. quotactl01, etc might have issues because they're half-baked
+from the point of view that they were functionally moved over to
+tst_res.c's output format, but instead don't call tst_exit(3) at the
+end (which is required if you want a sensible exit code). These items
+need to be found and squashed in the tree.
+    2. genhtml.pl was broken because it's simple parsing method wasn't
+updated to match the fact that it's now TPASS, TFAIL instead of PASS,
+FAIL, etc. I fixed it a week ago.
+    That aside, part of the reason I've written up execltp is to parse
+the exec logs (as opposed to the output log because the output log is
+all over the place) and find problems using the exec logs depending on
+the tst_res format to provide all of the details -- I've found that
+many test writers and porters to LTP have been inconsistent when
+porting tests, and thus issues with results are harder to find than
+they should be.
+Thanks,
+-Garrett
 
 ---------------------------------------------------------------------------=
 ---
