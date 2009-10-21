@@ -2,30 +2,28 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hisashi.hashimoto.wh@hitachi.com>)
-	id 1MyEYa-0007iZ-QN
-	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 00:51:04 +0000
-Received: from mail9.hitachi.co.jp ([133.145.228.44])
+	(envelope-from <liubo2009@cn.fujitsu.com>) id 1N0SFd-00086T-VA
+	for ltp-list@lists.sourceforge.net; Wed, 21 Oct 2009 03:52:41 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
 	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MyEYT-0007mA-P3
-	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 00:51:04 +0000
-Received: from mlsv6.hitachi.co.jp (unknown [133.144.234.166])
-	by mail9.hitachi.co.jp (Postfix) with ESMTP id 62AE737C83
+	id 1N0SFU-0008OZ-Mc
+	for ltp-list@lists.sourceforge.net; Wed, 21 Oct 2009 03:52:41 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id 563E7170028
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 15 Oct 2009 09:50:50 +0900 (JST)
-Received: from hitachi.com (mfbcchk2.hitachi.co.jp [10.201.6.151])
-	by mfilter1.hitachi.co.jp (Switch-3.3.2/Switch-3.3.2) with ESMTP id
-	n9ENVkGh009211
-	for <ltp-list@lists.sourceforge.net>; Thu, 15 Oct 2009 09:50:50 +0900
-Received: from gmml01.itg.hitachi.co.jp (unknown [158.213.165.31])
-	by vshuts2.hitachi.co.jp (Symantec Mail Security) with ESMTP id
-	318E18B027B for <ltp-list@lists.sourceforge.net>;
-	Thu, 15 Oct 2009 09:50:49 +0900 (JST)
+	Wed, 21 Oct 2009 11:52:23 +0800 (CST)
+Received: from fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id n9L3phr7009249
+	for <ltp-list@lists.sourceforge.net>; Wed, 21 Oct 2009 11:51:43 +0800
+Received: from localhost.localdomain (unknown [10.167.141.167])
+	by fnst.cn.fujitsu.com (Postfix) with ESMTPA id 8DDF7D4368
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 21 Oct 2009 11:51:34 +0800 (CST)
+Message-ID: <4ADE856B.4030509@cn.fujitsu.com>
+Date: Wed, 21 Oct 2009 11:52:11 +0800
+From: liubo <liubo2009@cn.fujitsu.com>
 MIME-Version: 1.0
-Message-ID: <XNM1$9$0$3$$2$7$9$A$9010141U4ad671c8@hitachi.com>
-From: <hisashi.hashimoto.wh@hitachi.com>
-Date: Thu, 15 Oct 2009 09:50:26 +0900
-Subject: [LTP] New Crackerjack site has opened
+Subject: [LTP] [PATCH] mem/hugetlb: fix failure of hugemmap03
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,33 +36,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-All,
+1)    In mmap's manual,
+The starting address for the new mapping is specified in addr.
 
-   We are pleased to announce that new Crackerjack site has opened yesterday 14:00 JST.
-You can reach at:
-http://ossipedia.ipa.go.jp/crackerjack
+So, if mmap's argument "addr" is reachable, the mmap will
+creates a new mapping in the virtual address space of the
+call-ing process.
+The test hugemmap03 will test that a normal page cannot
+ be mapped into a high memory region. This infers that "addr"
+should be higher for 64-bit mode.
 
-  We also would like to let you know
-that Autotest site has a link pointing to our site.
-http://test.kernel.org/tko
 
-Thank you for your collaboration and contribution.
+2)    The test use "-I2" option, and this not only causes TFAIL's
+loop, but also causes TPASS's loop.
+For TFAIL, loop is deserved, nor for TPASS.
 
-Regards,
+This patch fixed these problems.
 
-Hisashi Hashimoto
+Signed-off-by: Liu Bo <liubo2009@cn.fujitsu.com>
 
-Board of Director, the Linux Foundation,
+---
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-Senior Engineer
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c
+index 892d24b..a07b9aa 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap03.c
+@@ -55,7 +55,7 @@
+ #include "usctest.h"
+ 
+ #define PAGE_SIZE      ((1UL) << 12) 	/* Normal page size */
+-#define HIGH_ADDR      (void *)(0x10000000000)
++#define HIGH_ADDR      (void *)(0x1000000000000)
+ 
+ char* TEMPFILE="mmapfile";
+ 
+@@ -130,6 +130,7 @@ main(int ac, char **av)
+ 			continue;
+ 		} else {
+ 			tst_resm(TPASS, "Normal mmap() into high region failed correctly");
++			break;
+ 		}
+ 
+ 		close(fildes);
 
-Open Source Software Promotion Center
-Enterprise Business Planning
-Hitachi, Ltd., Software Division
-Tel : +81-45-862-8470, Fax : +81-45-862-8471
-hisashi.hashimoto.wh@hitachi.com
+
+
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
