@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1My7sA-0006HA-Au
-	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 17:42:50 +0000
-Received: from mail-pz0-f191.google.com ([209.85.222.191])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1My7s5-0003hZ-H3
-	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 17:42:50 +0000
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <rpaulsen@us.ibm.com>) id 1N0g7a-0007jJ-01
+	for ltp-list@lists.sourceforge.net; Wed, 21 Oct 2009 18:41:18 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1N0g7U-00006s-0P
+	for ltp-list@lists.sourceforge.net; Wed, 21 Oct 2009 18:41:17 +0000
+In-Reply-To: <364299f40910201401q7d1a6c67k32198b5487b5db92@mail.gmail.com>
+References: <OF87E660BB.5D2E0F9D-ON85257655.005F2225-86257655.005F2F51@us.ibm.com>
+	<364299f40910201401q7d1a6c67k32198b5487b5db92@mail.gmail.com>
+Message-ID: <OF5B77612C.4E892873-ON85257656.00664FFD-86257656.00666FA8@us.ibm.com>
+From: Robert Paulsen <rpaulsen@us.ibm.com>
+Date: Wed, 21 Oct 2009 13:41:03 -0500
 MIME-Version: 1.0
-In-Reply-To: <20091014.192322.1139091462053274638.yamato@redhat.com>
-References: <20091009.154445.548431512384017812.yamato@redhat.com>
-	<1255445034.8438.71.camel@subratamodak.linux.ibm.com>
-	<20091014.192322.1139091462053274638.yamato@redhat.com>
-Date: Wed, 14 Oct 2009 10:42:39 -0700
-Message-ID: <364299f40910141042j3db8f375u9ce668b55c1089e@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Complete the test cases for getuid16
+Subject: Re: [LTP] Fw: LTP vs. SLES11 -- Some FAILs.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,54 +28,172 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Masatake YAMATO <yamato@redhat.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sf.net
 
-On Wed, Oct 14, 2009 at 3:23 AM, Masatake YAMATO <yamato@redhat.com> wrote:
-> Hi,
->
->> Except the Makefile part, others would apply fine:
->>
->> patching file testcases/kernel/syscalls/getuid/Makefile
->> Hunk #1 FAILED at 16.
->> 1 out of 1 hunk FAILED -- saving rejects to file
->> testcases/kernel/syscalls/getuid/Makefile.rej
->> patching file testcases/kernel/syscalls/getuid/getuid01.c
->> patching file testcases/kernel/syscalls/getuid/getuid02.c
->> patching file testcases/kernel/syscalls/getuid/getuid03.c
->
-> Sorry. I forgot to update my local copy.
->
-> I've just recreated the patch with newer build system.
->
-> To apply getuid-20091015.patch use -p0 option.
-> Put compat_uid.h =A0at testcases/kernel/syscalls/utils/compat_uid.h.
-> Put compat_16.h. =A0at testcases/kernel/syscalls/getuid/compat_16.h.
->
-> I've just modified Makefile since last submitting.
->
->
-> Signed-off-by: Masatake YAMATO <yamato@redhat.com>
+Garrett,
 
-Looks good! One question (just for my personal curiosity), is
-__NR_geteuid a 16-bit syscall? I'm asking because of this code...
+Thank for the reply. A couple of follow-up questions:
 
-UID_T
-GETUID(void)
-{
-	return syscall(__NR_getuid);
-}
+   If the tests are not written to the LTP standards why are they accepted
+   into he LTP? At least they should not be included in the default set of
+   tests that get run.
+   Is there any formal acceptance testing before a new/changed test is
+   accepted into the LTP?
 
-UID_T
-GETEUID(void)
-{
-	return syscall(__NR_geteuid);
-}
+Robert Paulsen
+IBM Linux Technology Center, Austin
+rpaulsen@us.ibm.com
+512-468-0565
 
-If so, what's the 32-bit syscall constant?
+Garrett Cooper <yanegomi@gmail.com> wrote on 10/20/2009 04:01:58 PM:
 
-Thanks!
--Garrett
+> Garrett Cooper <yanegomi@gmail.com>
+> 10/20/2009 04:01 PM
+>
+> To
+>
+> Robert Paulsen/Austin/IBM@IBMUS
+>
+> cc
+>
+> ltp-list@lists.sf.net
+>
+> Subject
+>
+> Re: [LTP] Fw: LTP vs. SLES11 -- Some FAILs.
+>
+> On Tue, Oct 20, 2009 at 10:21 AM, Robert Paulsen <rpaulsen@us.ibm.com>
+wrote:
+> >
+> > Hello,
+> >
+> > I ran the latest LTP (20090930) against SLES11:
+> >
+> > # cat /etc/issue
+> > Welcome to SUSE Linux Enterprise Server 11 (ppc64) - Kernel \r (\l).
+> > # uname -a
+> > Linux beavis 2.6.27.19-5-ppc64 #1 SMP 2009-02-28 04:40:21 +0100
+> ppc64 ppc64 ppc64 GNU/Linux
+> >
+> > These were all run via "runalltests" so are part of the default set of
+LTP
+> > tests that run.
+> >
+> > There were a number of errors. I didn't expect this as I thought that
+one
+> > way or another the LTP would have been validated against a standard
+distro
+> > like SLES11.
+> >
+> > Are these known failures? In the LTP or SLES11?
+> >
+> > Some of these tests apparently rely on kernel configurations and/or
+> > available resources like real memory that cannot be guaranteed on any
+> > arbitrary installation. Should such tests be run by default?
+> >
+> > Some of these tests just look like sloppy tests, for example the
+> > cron_allow01 an cron_deny01 tests.
+> >
+> > Some tests assume they will be built on the same system on which they
+are
+> > run. In his case that assumption was true but it seems like a very
+unsafe
+> > assumption, especially if a cross build is needed. Even without a cross
+> > build the build and test systems may not always be the same -- the
+reason
+> > for "make package" as describe in README.ltp-devel and why the Makefile
+has
+> > a CROSS_COMPILE macro.
+> >
+> > Here are the fails from the log file:
+> >
+> > eventfd2_03 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 1
+> > inotify01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 1
+> > inotify02 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 1
+> > ppoll01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0=
+ 2
+> > quotactl01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
+> > timer_getoverrun01 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
+> > timer_gettime01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 1
+> > utimes01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
+> > Cap_bounds =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 127
+> > su01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =
+=A0 1
+> > cron02 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0=
+ 1
+> > cron_deny01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 1
+> > cron_allow01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
+> > at_deny01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 1
+> > at_allow01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
+> > timer_delete02 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
+> > Numa-testcases =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
+> > hugemmap03 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
+> > hugemmap04 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 1
+> > hugeshmat01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 6
+> > hugeshmat02 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 6
+> > hugeshmat03 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 2
+> > hugeshmctl01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 6
+> > hugeshmctl02 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 6
+> > hugeshmctl03 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 2
+> > hugeshmdt01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0FAIL =A0 =A0 =A0 6
+> > hugeshmget01 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 2
+> > hugeshmget02 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 6
+> > hugeshmget03 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 6
+> > hugeshmget05 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAIL =A0 =A0 =A0 2
+> >
+> > A number of tests FAILed despite not showing in the above list.
+> Here is some info from the detailed output file:
+> >
+> > pid_namespace4 =A0 =A01 =A0TFAIL =A0: =A0Container init is killed by SI=
+GKILL !!!
+> > pid_namespace4 =A0 =A02 =A0TFAIL =A0: =A0Container init pid got killed =
+by signal
+9
+> > pidns12 =A0 =A0 1 =A0TFAIL =A0: =A0cinit: signalling PID (from other
+> namespace) is not 0, but 27810.
+> > quotactl01 =A0 =A01 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800002:
+> TEST_ERRNO=3DEFAULT(14): Bad address
+> > quotactl01 =A0 =A02 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800003:
+> TEST_ERRNO=3DEFAULT(14): Bad address
+> > quotactl01 =A0 =A03 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800007:
+> TEST_ERRNO=3DEFAULT(14): Bad address
+> > quotactl01 =A0 =A04 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800008:
+> TEST_ERRNO=3DEFAULT(14): Bad address
+> > quotactl01 =A0 =A05 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800005:
+> TEST_ERRNO=3DEFAULT(14): Bad address
+> > quotactl01 =A0 =A06 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800006:
+> TEST_ERRNO=3DEFAULT(14): Bad address
+> > quotactl01 =A0 =A07 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800004:
+> TEST_ERRNO=3DEFAULT(14): Bad address
+> > quotactl01 =A0 =A08 =A0TFAIL =A0: =A0quotactl01 failed, cmd=3D0x800001:
+> TEST_ERRNO=3DEFAULT(14): Bad address
+>
+> Hi Robert,
+>     I'm not sure about the snapshot you're referring to, but the
+> latest version no longer uses CROSS_COMPILE. You instead must specify
+> CC, CXX, LD, etc either via configure or manually in config.mk, and
+> then move it over to $(abs_top_builddir)/include/mk/config.mk; the
+> preferred method is the former one.
+>     Some points:
+>     1. quotactl01, etc might have issues because they're half-baked
+> from the point of view that they were functionally moved over to
+> tst_res.c's output format, but instead don't call tst_exit(3) at the
+> end (which is required if you want a sensible exit code). These items
+> need to be found and squashed in the tree.
+>     2. genhtml.pl was broken because it's simple parsing method wasn't
+> updated to match the fact that it's now TPASS, TFAIL instead of PASS,
+> FAIL, etc. I fixed it a week ago.
+>     That aside, part of the reason I've written up execltp is to parse
+> the exec logs (as opposed to the output log because the output log is
+> all over the place) and find problems using the exec logs depending on
+> the tst_res format to provide all of the details -- I've found that
+> many test writers and porters to LTP have been inconsistent when
+> porting tests, and thus issues with results are harder to find than
+> they should be.
+> Thanks,
+> -Garrett
+
 
 ---------------------------------------------------------------------------=
 ---
