@@ -1,27 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hjia@redhat.com>) id 1MxY1i-0006Dk-73
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 03:26:18 +0000
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yamato@redhat.com>) id 1N1IJF-0008TR-QG
+	for ltp-list@lists.sourceforge.net; Fri, 23 Oct 2009 11:27:53 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
 	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MxY1b-0000ac-QE
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 03:26:18 +0000
-Received: from int-mx04.intmail.prod.int.phx2.redhat.com
-	(int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.17])
-	by mx1.redhat.com (8.13.8/8.13.8) with ESMTP id n9D3Q5ie005899
-	for <ltp-list@lists.sourceforge.net>; Mon, 12 Oct 2009 23:26:05 -0400
-Received: from hushan-t.usersys.redhat.com (dhcp-65-44.nay.redhat.com
-	[10.66.65.44])
-	by int-mx04.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
-	id n9D3Q4pA006643
-	for <ltp-list@lists.sourceforge.net>; Mon, 12 Oct 2009 23:26:04 -0400
-Message-ID: <4AD3F376.9080506@redhat.com>
-Date: Tue, 13 Oct 2009 11:26:46 +0800
-From: Hushan Jia <hjia@redhat.com>
-MIME-Version: 1.0
-Subject: [LTP]  [PATCH] network: fix rpc use rsh instead of ssh
+	id 1N1IJB-0001Zn-L2
+	for ltp-list@lists.sourceforge.net; Fri, 23 Oct 2009 11:27:53 +0000
+Date: Fri, 23 Oct 2009 20:38:32 +0900 (JST)
+Message-Id: <20091023.203832.41091033407475231.yamato@redhat.com>
+From: Masatake YAMATO <yamato@redhat.com>
+Mime-Version: 1.0
+Content-Type: Multipart/Mixed;
+	boundary="--Next_Part(Fri_Oct_23_20_38_32_2009_205)--"
+Content-Transfer-Encoding: 7bit
+Subject: [LTP] [patch] Complete the test cases for geteuid16
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,43 +25,129 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sf.net
 
-Hello,
+----Next_Part(Fri_Oct_23_20_38_32_2009_205)--
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-rpcinfo01 testcase use ssh to run command on remote machine, which will prompt for authentication
-and password.
-I think it is a typo because all network tests use rsh.
+Another small patch to complete the test cases for *16.
 
-Thanks & Regards,
-Hushan
+Put compat_16.h to testcases/kernel/syscalls/geteuid.
 
----
+Signed-off-by: Masatake YAMATO <yamato@redhat.com>
 
-network: fix rpc use rsh instead of ssh
+----Next_Part(Fri_Oct_23_20_38_32_2009_205)--
+Content-Type: Text/X-Patch; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline; filename="geteuid16.patch"
 
-Signed-off-by: Hushan Jia <hjia@redhat.com>
-
----
-
---- ltp/testcases/network/rpc/basic_tests/rpcinfo/rpcinfo01.orig	2009-10-13 10:52:59.000000000 +0800
-+++ ltp/testcases/network/rpc/basic_tests/rpcinfo/rpcinfo01	2009-10-13 10:54:51.000000000 +0800
-@@ -94,8 +94,8 @@ else
- 	fi
- fi
+Index: testcases/kernel/syscalls/geteuid/Makefile
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/geteuid/Makefile,v
+retrieving revision 1.8
+diff -u -r1.8 Makefile
+--- testcases/kernel/syscalls/geteuid/Makefile	9 Oct 2009 17:55:55 -0000	1.8
++++ testcases/kernel/syscalls/geteuid/Makefile	23 Oct 2009 11:02:08 -0000
+@@ -20,4 +20,7 @@
  
--ssh -n $RHOST "ps -ewf" | grep portmap | grep -v grep > /dev/null
--[ $? -eq 0 ] || ssh -n $RHOST "ps -ewf" | grep rpcbind | grep -v grep > /dev/null
-+rsh -n $RHOST "ps -ewf" | grep portmap | grep -v grep > /dev/null
-+[ $? -eq 0 ] || rsh -n $RHOST "ps -ewf" | grep rpcbind | grep -v grep > /dev/null
- [ $? -eq 0 ] || end_testcase "The portmap or rpcbind daemon is NOT running on $RHOST"
+ include $(top_srcdir)/include/mk/testcases.mk
+ include $(abs_srcdir)/../utils/compat_16.mk
++
++CPPFLAGS		+= -I$(abs_srcdir)/../utils
++
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+Index: testcases/kernel/syscalls/geteuid/geteuid01.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/geteuid/geteuid01.c,v
+retrieving revision 1.5
+diff -u -r1.5 geteuid01.c
+--- testcases/kernel/syscalls/geteuid/geteuid01.c	23 Mar 2009 13:35:42 -0000	1.5
++++ testcases/kernel/syscalls/geteuid/geteuid01.c	23 Oct 2009 11:02:08 -0000
+@@ -116,10 +116,12 @@
+ #include "test.h"
+ #include "usctest.h"
  
- echo "Test rpcinfo with default options"
++#include "compat_16.h"
++
+ void setup();
+ void cleanup();
+ 
+-char *TCID = "geteuid01";	/* Test program identifier.    */
++TCID_DEFINE(geteuid01);	        /* Test program identifier.    */
+ int TST_TOTAL = 1;		/* Total number of test cases. */
+ extern int Tst_count;		/* Test Case counter for tst_* routines */
+ 
+@@ -161,7 +163,7 @@
+ 		;
+ 
+ 		/* Call geteuid(2) */
+-		TEST(geteuid());
++		TEST(GETEUID());
+ 
+ 		/* check return code */
+ 		if (TEST_RETURN < 0) {
+
+----Next_Part(Fri_Oct_23_20_38_32_2009_205)--
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline; filename="compat_16.h"
+
+/*
+ *
+ *   Copyright (c) Red Hat Inc., 2009
+ *
+ *   This program is free software;  you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 2 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+ *   the GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program;  if not, write to the Free Software
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
+
+/* Author: Masatake YAMATO <yamato@redhat.com> */
+
+#ifndef __GETUID_COMPAT_16_H__
+#define __GETUID_COMPAT_16_H__
 
 
+#include "linux_syscall_numbers.h"
+#include "compat_uid.h"
+
+
+#ifdef TST_USE_COMPAT16_SYSCALL
+
+UID_T
+GETEUID(void)
+{
+	return syscall(__NR_geteuid);
+}
+
+#else
+
+UID_T
+GETEUID(void)
+{
+	return geteuid();
+}
+
+#endif
+
+#endif /* __GETUID_COMPAT_16_H__ */
+
+----Next_Part(Fri_Oct_23_20_38_32_2009_205)--
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
@@ -75,7 +155,16 @@ is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
+----Next_Part(Fri_Oct_23_20_38_32_2009_205)--
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+----Next_Part(Fri_Oct_23_20_38_32_2009_205)----
+
