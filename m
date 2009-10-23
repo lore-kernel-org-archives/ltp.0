@@ -1,26 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yamato@redhat.com>) id 1Mw9Pw-0002at-Tv
-	for ltp-list@lists.sourceforge.net; Fri, 09 Oct 2009 06:57:32 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mw9Po-0006pi-RP
-	for ltp-list@lists.sourceforge.net; Fri, 09 Oct 2009 06:57:32 +0000
-Received: from int-mx02.intmail.prod.int.phx2.redhat.com
-	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-	by mx1.redhat.com (8.13.8/8.13.8) with ESMTP id n996vIKB006342
-	for <ltp-list@lists.sourceforge.net>; Fri, 9 Oct 2009 02:57:18 -0400
-Received: from localhost (beach.nrt.redhat.com [10.64.200.71])
-	by int-mx02.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
-	id n996vGFa008884
-	for <ltp-list@lists.sourceforge.net>; Fri, 9 Oct 2009 02:57:17 -0400
-Date: Fri, 09 Oct 2009 16:01:16 +0900 (JST)
-Message-Id: <20091009.160116.554867037284655652.yamato@redhat.com>
-From: Masatake YAMATO <yamato@redhat.com>
-Mime-Version: 1.0
-Subject: [LTP] the status about porting testcases in Crackerjack to LTP
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1N1S1k-0001hu-EA
+	for ltp-list@lists.sourceforge.net; Fri, 23 Oct 2009 21:50:28 +0000
+Received: from mail-ew0-f215.google.com ([209.85.219.215])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N1S1Y-0002eF-RR
+	for ltp-list@lists.sourceforge.net; Fri, 23 Oct 2009 21:50:23 +0000
+MIME-Version: 1.0
+In-Reply-To: <364299f40910230844n7650eb82y1deb56b062e809a8@mail.gmail.com>
+References: <4AE19E86.8070100@linux.vnet.ibm.com>
+	<364299f40910230844n7650eb82y1deb56b062e809a8@mail.gmail.com>
+Date: Fri, 23 Oct 2009 14:50:10 -0700
+Message-ID: <364299f40910231450l36536a7blc395fa95c7bddc37@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Content-Type: multipart/mixed; boundary=0016e6dab0562d0ab00476a1327e
+Subject: Re: [LTP] [PATCH] realtime: fix broken build configuration files
+	and warnings
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,639 +27,170 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-The table in http://ltp.sourceforge.net/wiki/ about "porting testcases
-in Crackerjack to LTP" is a bit obsolete.
-
-Before restarting to work on *16 and *64 testcases, I've summarized
-the status of porting.
-
-Subrata, could you update the page based on following information?
-
-Masatake YAMATO
-
-
-Already ported to LTP from crackerjack (42/92)
-----------------------------------------------------------------------
-@  Done(42/92)
-
-Not ported to LTP yet (45/92)
-----------------------------------------------------------------------
-!  None are working on. (22/92)
-?  No completed. Masatake YAMATO will do. (23/92)
->  In review-phase.
-
-
-No need to work (3/92)
-------------------------------------------------------------------------
--  LTP maintainer said "Need not look into this right now. " or something (2/92)
-=  LTP maintainer said "We have a different form of this at ... 
-                       But i would like to see this tested inside testcases/kernel/ syscalls..."(1/92)
-
-
-
-Detail
-------------------------------------------------------------------------
-No. System Call       Comment on its position To-be-Ported-by              Status                      
-                      w.r.t LTP                                                                        
-                      We have ftruncate at                                                             
-                      testcases/kernel/                                                                
-                      syscalls/ftruncate/.                                                             
-                      But this may not be                                                              
-@   ftruncate64       doing the ftruncate64() Masatake YAMATO <            Completed on 05/08/2008     
-                      test. You may need to   yamato@redhat.com>                                       
-                      include/port                                                                     
-                      ftruncate64 on similar                                                           
-                      lines to sendfile64 and                                                          
-                      fadvise64                                                                        
-
-                      We have setgid at                                                                
-                      testcases/kernel/                                                                
-                      syscalls/setgid. You                                                             
-@   setgid16          may need to include/    Masatake YAMATO <            Completed on 04/08/2008     
-                      port setgid16 on        yamato@redhat.com>                                       
-                      similar lines to                                                                 
-                      sendfile64 and                                                                   
-                      fadvise64.                                                                       
-
-                      We have this at                                                                  
-                      testcases/kernel/                                                                
-                      syscalls/ipc/shmget.                                                             
-                      Need not look into this                                                          
-                      right now. May be after                                                          
-                      the porting is over, we                                                          
-                      can see whether there                                                            
-                      is some additional                                                               
--   shmget            functionality that      Need Volunteer               N/A                         
-                      Crackerjack shmget is                                                            
-                      covering over                                                                    
-                      LTP-shmget. We may then                                                          
-                      need to add 1/2 test                                                             
-                      cases in this regard.                                                            
-                      But, not to be                                                                   
-                      prioritized                                                                      
-                      immediately.                                                                     
-
-                      We need this from                                                                
-@   mbind             Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-!   removexattr       Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-@   exit_group        Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere
-                                                                         
-                      We need this from                                                                
-@   io_cancel         Crackerjack as we do    Masatake YAMATO<             Completed on 26/06/2008     
-                      not have this in LTP    yamato@redhat.com>                                       
-                      anywhere                                                                         
-
-                      We have a different                                                              
-                      form of this at                                                                  
-                      recently added Memory                                                            
-                      Hotplug testcases at                                                             
-                      testcases/kernel/                                                                
-                      hotplug/memory_hotplug/                                                          
-=   migrate_pages     . But i would like to   Need Volunteer               N/A                         
-                      see this tested inside                                                           
-                      testcases/kernel/                                                                
-                      syscalls, as hotplug                                                             
-                      testing presently is                                                             
-                      optional. So, please                                                             
-                      include/port this as                                                             
-                      well                                                                             
-
-                      We have setgroups at                                                             
-                      testcases/kernel/                                                                
-                      syscalls/setgroups. You                                                          
-@   setgroups16       may need to include/    Masatake YAMATO <            Completed on 27/08/2008     
-                      port setgroups16 on     yamato@redhat.com>                                       
-                      similar lines to                                                                 
-                      sendfile64 and                                                                   
-                      fadvise64                                                                        
-
-                      We have getdents at                                                              
-                      testcases/kernel/                                                                
-                      syscalls/getdents. You                                                           
-?  getdents64         may need to include/    Subrata Modak<               Completed on 07/11/2008     
-                      port getdents64 on      subrata@linux.vnet.ibm.com>                              
-                      similar lines to                                                                 
-                      sendfile64 and                                                                   
-                      fadvise64                                                                        
-
-                      We need this from                                                                
-@  add_key            Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We have getegid at                                                               
-                      testcases/kernel/                                                                
-                      syscalls/getegid. You                                                            
-@  getegid16          may need to include/    Masatake YAMATO <            Completed on 04/09/2008     
-                      port getegid16 on       yamato@redhat.com>                                       
-                      similar lines to                                                                 
-                      sendfile64 and                                                                   
-                      fadvise64                                                                        
-
-                      We need this from                                                                
-@  io_destroy         Crackerjack as we do    Masatake YAMATO <            Completed on 12/07/2008     
-                      not have this in LTP    yamato@redhat.com>                                       
-                      anywhere                                                                         
-
-                      We need this from                                                                
-!  newfstat           Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-!   set_mempolicy     Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-!  timer_getoverrun   Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We have fadvise64                                                                
-                      support added by                                                                 
-                      Masatake Yamato. But i  Already Taken care of by                                 
-@  fadvise64_64       am not sure what this   Masatake yamato              Completed                   
-                      fadvise64_64 is. May                                                             
-                      need to include/port                                                             
-                      this as well                                                                     
-                      We need this from                                                                
-@  io_getevents       Crackerjack as we do    Masatake YAMATO <            Completed on 12/07/2008     
-                      not have this in LTP    yamato@redhat.com>                                       
-                      anywhere                                                                         
-
-                      We need this from                                                                
-!   newlstat          Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-@  rt_sigaction       Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-@  sigreturn          Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-@  timer_gettime      Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We have geteuid at                                                               
-                      testcases/kernel/                                                                
-                      syscalls/geteuid. You                                                            
-?  geteuid16          may need to include/    Subrata Modak<               Completed on 07/11/2008     
-                      port geteuid16 on       subrata@linux.vnet.ibm.com>                              
-                      similar lines to                                                                 
-                      sendfile64 and                                                                   
-                      fadvise64                                                                        
-
-                      We need this from                                                                
-!  newuname           Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-@  rt_sigprocmask     Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-@  bdflush            Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We have getgid at                                                                
-                      testcases/kernel/                                                                
-                      syscalls/getgid. You                                                             
-@  getgid16           may need to include/    Masatake YAMATO <            Completed on 19/09/2008     
-                      port getgid16 on        yamato@redhat.com>                                       
-                      similar lines to                                                                 
-                      sendfile64 and                                                                   
-                      fadvise64                                                                        
-
-                      We need this from                                                                
-@  rt_sigqueueinfo    Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-!  ioprio_get         Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-@  rt_sigsuspend      Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We have setregid at                                                              
-                      testcases/kernel/                                                                
-                      syscalls/setregid. You                                                           
-?  setregid16         may need to include/    Subrata Modak<               Subrata Modak<              
-                      port setregid16 on      subrata@linux.vnet.ibm.com>  subrata@linux.vnet.ibm.com> 
-                      similar lines to                                                                 
-                      sendfile64 and                                                                   
-                      fadvise64                                                                        
-
-                      We need this from                                                                
-@  tkill              Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We have getgroups at                                                             
-                      testcases/kernel/                                                                
-                      syscalls/getgroups. You                                                          
-?   getgroups16       may need to include/    Subrata Modak<               Subrata Modak<              
-                      port getgroups16 on     subrata@linux.vnet.ibm.com>  subrata@linux.vnet.ibm.com> 
-                      similar lines to                                                                 
-                      sendfile64 and                                                                   
-                      fadvise64                                                                        
-
-                      We need this from                                                                
-!   ioprio_set        Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-@   sched_getaffinity Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-@   ssetmask          Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We have fchown at                                                                
-                      testcases/kernel/                                                                
-                      syscalls/fchown. You                                                             
-?   fchown16          may need to include/    Subrata Modak<               Completed on 07/11/2008     
-                      port fchown16 on        subrata@linux.vnet.ibm.com>                              
-                      similar lines to                                                                 
-                      sendfile64 and                                                                   
-                      fadvise64                                                                        
-
-                      We need this from                                                                
-@  io_setup           Crackerjack as we do    Masatake YAMATO <            Completed on 12/07/2008     
-                      not have this in LTP    yamato@redhat.com>                                       
-                      anywhere                                                                         
-
-                      We need this from                                                                
-!  mmap2              Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-                      We have setresgid at                                                             
-                      testcases/kernel/                                                                
-                      syscalls/setresgid. You                                                          
-?  setresgid16        may need to include/    Subrata Modak<               Completed on 07/11/2008     
-                      port setresgid16 on     subrata@linux.vnet.ibm.com>                              
-                      similar lines to                                                                 
-                      sendfile64 and                                                                   
-                      fadvise64                                                                        
-
-                      We have truncate at                                                              
-                      testcases/kernel/                                                                
-                      syscalls/truncate. You                                                           
-@  truncate64         may need to include/    Masatake YAMATO <            Completed on 05/08/2008     
-                      port truncate64 on      yamato@redhat.com>                                       
-                      similar lines to                                                                 
-                      sendfile64 and                                                                   
-                      fadvise64                                                                        
-
-                      We need this from                                                                
-@  get_mempolicy      Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-                      We need this from                                                                
-@  io_submit          Crackerjack as we do    Masatake YAMATO <            Completed on 12/07/2008     
-                      not have this in LTP    yamato@redhat.com>                                       
-                      anywhere                                                                         
-
-                      We have stat at                                                                  
-                      testcases/kernel/                                                                
-                      syscalls/stat. You may  Subrata Modak<                                           
-?  stat64             need to include/port    subrata@linux.vnet.ibm.com>  Completed on 07/11/2008     
-                      stat64 on similar lines                                                          
-                      to sendfile64 and                                                                
-                      fadvise64                                                                        
-
-                      We need this from                                                                
-@  keyctl             Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We have setresuid at                                                             
-                      testcases/kernel/                                                                
-                      syscalls/setresuid. You                                                          
-?  setresuid16        may need to include/    Subrata Modak<               Completed on 07/11/2008     
-                      port setresuid16 on     subrata@linux.vnet.ibm.com>                              
-                      similar lines to                                                                 
-                      sendfile64 and                                                                   
-                      fadvise64                                                                        
-
-                      We have chown at                                                                 
-                      testcases/kernel/                                                                
-                      syscalls/chown. You may Subrata Modak<                                           
-?   chown16           need to include/port    subrata@linux.vnet.ibm.com>  Completed on 07/11/2008     
-                      chown16 on similar                                                               
-                      lines to sendfile64 and                                                          
-                      fadvise64                                                                        
-
-                      We have fcntl at                                                                 
-                      testcases/kernel/                                                                
-                      syscalls/fcntl. You may Subrata Modak<                                           
-?  fcntl64            need to include/port    subrata@linux.vnet.ibm.com>  Completed on 07/11/2008     
-                      fcntl64 on similar                                                               
-                      lines to sendfile64 and                                                          
-                      fadvise64                                                                        
-
-                      But work for this has   Vijay Kumar B. <             Completed on 26/07/2008.    
--  move_pages         been already initiated. vijaykumar@bravegnu.org>     This was not ported, but    
-                      Need not consider this                               written by him              
-
-                      We have statfs at                                                                
-                      testcases/kernel/                                                                
-                      syscalls/statfs. You                                                             
-?   statfs64          may need to include/    Subrata Modak<               Completed on 07/11/2008     
-                      port statfs64 on        subrata@linux.vnet.ibm.com>                              
-                      similar lines to                                                                 
-                      sendfile64 and                                                                   
-                      fadvise64                                                                        
-
-                      We need this from                                                                
-@   clock_getres      Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We have lchown at                                                                
-                      testcases/kernel/                                                                
-                      syscalls/lchown. You                                                             
-?  lchown16           may need to include/    Subrata Modak<               Subrata Modak<              
-                      port lchown16 on        subrata@linux.vnet.ibm.com>  subrata@linux.vnet.ibm.com> 
-                      similar lines to                                                                 
-                      sendfile64 and                                                                   
-                      fadvise64                                                                        
-
-                      We have setreuid at                                                              
-                      testcases/kernel/                                                                
-                      syscalls/setreuid. You                                                           
-?   setreuid16        may need to include/    Subrata Modak<               Completed on 07/11/2008     
-                      port setreuid16 on      subrata@linux.vnet.ibm.com>                              
-                      similar lines to                                                                 
-                      sendfile64 and                                                                   
-                      fadvise64                                                                        
-
-                      We need this from                                                                
-!  fgetxattr          Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-!   lgetxattr         Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-!   mq_getsetattr     Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-@  unshare            Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-@  clock_nanosleep    Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-!  flistxattr         Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-@  mq_notify          Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-@  ppoll              Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-!  useclock_settime   Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-@  mq_open            Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-@  set_thread_area    Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-!  listxattr          Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-@  mq_timedreceive    Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We have pread at                                                                 
-                      testcases/kernel/                                                                
-                      syscalls/pread. You may Subrata Modak<                                           
-?  pread64            need to include/port    subrata@linux.vnet.ibm.com>  Completed on 07/11/2008     
-                      pread64 on similar                                                               
-                      lines to sendfile64 and                                                          
-                      fadvise64                                                                        
-
-                      We need this from                                                                
-68  set_tid_address   Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-!  fremovexattr       Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-!  llistxatt          Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-@  mq_timedsend       Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We have pselect at                                                               
-                      testcases/kernel/                                                                
-                      syscalls/pselect. You                                                            
-?  pselect64          may need to include/    Subrata Modak<               Completed on 07/11/2008     
-                      port pselect64 on       subrata@linux.vnet.ibm.com>                              
-                      similar lines to                                                                 
-                      sendfile64 and                                                                   
-                      fadvise64                                                                        
-
-                      We need this from                                                                
-@  utimes             Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-!  fsetxattr          Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-@  mq_unlink          Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-@  gettid             Crackerjack as we do    Masatake YAMATO <            Completed on 17/06/2008     
-                      not have this in LTP    yamato@redhat.com>                                       
-                      anywhere                                                                         
-
-                      We need this from                                                                
-!  lremovexattr       Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-@  quotactl           Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We have setuid at                                                                
-                      testcases/kernel/                                                                
-                      syscalls/setuid and                                                              
-                      testcases/kernel/       Subrata Modak<                                           
-?  setuid16           syscalls/mount. You may subrata@linux.vnet.ibm.com>  Completed on 07/11/2008     
-                      need to include/port                                                             
-                      setuid16 on similar                                                              
-                      lines to sendfile64 and                                                          
-                      fadvise64                                                                        
-
-                      We have fstat at                                                                 
-                      testcases/kernel/                                                                
-                      syscalls/fstat. You may Subrata Modak<                                           
-?  fstat64            need to include/port    subrata@linux.vnet.ibm.com>  Completed on 07/11/2008     
-                      fstat64 on similar                                                               
-                      lines to sendfile64 and                                                          
-                      fadvise64                                                                        
-
-                      We need this from                                                                
-!  setxattr           Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We have fstatat at                                                               
-                      testcases/kernel/                                                                
-                      syscalls/fstatat. You                                                            
-?  fstatat64          may need to include/    Subrata Modak<               Completed on 07/11/2008     
-                      port fstatat64 on       subrata@linux.vnet.ibm.com>                              
-                      similar lines to s                                                               
-                      sendfile64 and                                                                   
-                      fadvise64                                                                        
-
-                      We need this from                                                                
-  lsetxattr           Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-!  readahead          Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We have setfsgid at                                                              
-                      testcases/kernel/                                                                
-                      syscalls/setfsgid. You                                                           
-?  setfsgid16         may need to include/    Subrata Modak<               Completed on 07/11/2008     
-                      port setfsgid16 on      subrata@linux.vnet.ibm.com>                              
-                      similar lines to                                                                 
-                      sendfile64 and                                                                   
-                      fadvise64                                                                        
-
-                      We need this from                                                                
-@  sgetmask           Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We need this from                                                                
-@  waitid             Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We have fstatfs at                                                               
-                      testcases/kernel/                                                                
-                      syscalls/fstatfs. You                                                            
-?  fstatfs64          may need to include/    Subrata Modak<               Completed on 07/11/2008     
-                      port fstatfs64 on       subrata@linux.vnet.ibm.com>                              
-                      similar lines to s                                                               
-                      sendfile64 and                                                                   
-                      fadvise64                                                                        
-
-                      We have getuid at                                                                
-                      testcases/kernel/                                                                
-                      syscalls/getuid. You                                                             
->  getuid16           may need to include/    Subrata Modak<               Completed on 07/11/2008     
-                      port getuid16 on        subrata@linux.vnet.ibm.com>                              
-                      similar lines to                                                                 
-                      sendfile64 and                                                                   
-                      fadvise64                                                                        
-
-                      We need this from                                                                
-!  getxattr           Crackerjack as we do    Need Volunteer               N/A                         
-                      not have this in LTP                                                             
-                      anywhere                                                                         
-
-                      We have lstat at                                                                 
-                      testcases/kernel/                                                                
-                      syscalls/lstat. You may Subrata Modak<                                           
-?  lstat64            need to include/port    subrata@linux.vnet.ibm.com>  Completed on 07/11/2008     
-                      lstat64 on similar                                                               
-                      lines to sendfile64 and                                                          
-                      fadvise64                                                                        
-
-                      We have setfsuid at                                                              
-                      testcases/kernel/                                                                
-                      syscalls/setfsuid. You                                                           
-?  setfsuid16         may need to include/    Subrata Modak<               Completed on 07/11/2008     
-                      port setfsuid16 on      subrata@linux.vnet.ibm.com>                              
-                      similar lines to                                                                 
-                      sendfile64 and                                                                   
-                      fadvise64                                                                        
+To: gowrishankar <gomuthuk@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sf.net
+
+--0016e6dab0562d0ab00476a1327e
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Oct 23, 2009 at 8:44 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Fri, Oct 23, 2009 at 5:16 AM, gowrishankar
+> <gomuthuk@linux.vnet.ibm.com> wrote:
+>> Hi Subrata,
+>> Please accept the patch below.
+>>
+>> Thanks,
+>> Gowri
+>
+> =A0 =A0I'll get back to you on this in a day Gowri... there are some
+> things I wanted to note.
+
+Hi Gowri,
+    I've reviewed the changes and checked in the ones that were OK,
+and definitely needed to be fixed. There are a few items that I'm
+unsure about with your proposed changes in the Makefiles that need to
+be discussed:
+1. I'm trying to make sure that out-of-build-tree functionality isn't
+broken. In order to do that, as you see I had to use abs_builddir and
+abs_srcdir, instead of just realtimedir.
+2. config.mk shouldn't be included by lib/Makefile -- otherwise I have
+to add LDLIBS +=3D -lrealtime to all Makefiles that require that
+library. So by virtue of laziness and keeping things common, it's best
+just to add the required variables and includes in lib/Makefile.
+    This patch has been attached as realtime-makefile-fixes.diff.
+    Now, for the other part that I don't agree with 100%, but I agree
+needs fixing:
+
+Index: func/pi-tests/Makefile
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: /cvsroot/ltp/ltp/testcases/realtime/func/pi-tests/Makefile,v
+retrieving revision 1.2
+diff -u -r1.2 Makefile
+--- func/pi-tests/Makefile      9 Oct 2009 17:56:07 -0000       1.2
++++ func/pi-tests/Makefile      23 Oct 2009 21:36:02 -0000
+@@ -24,4 +24,15 @@
+
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(abs_srcdir)/../../config.mk
++
++MAKE_TARGETS           :=3D testpi-0
++
++ifeq ($(HAVE_PI_MUTEX), yes)
++MAKE_TARGETS           +=3D testpi-1 testpi-2 testpi-4 testpi-5 testpi-7
++endif
++
++ifeq ($(HAVE_ROBUST_MUTEX), yes)
++MAKE_TARGETS           +=3D testpi-6 sbrk_mutex
++endif
++
+
+    I agree that these should be toggable or built appropriate to
+whether or not the system has this kind of functionality. The method
+used to determine whether or not a system has this functionality is
+questionable though, and I believe all of this can be established
+through additional autoconf tests added to the $(abs_top_srcdir)/m4 --
+do you agree with this?
+    Is the realtime test suite this made available as a separate
+package outside of LTP in-house at IBM, or is it strictly available
+with LTP?
+    Once these build integration issues are resolved, should it be
+enabled by default, or still remain an optional package to build and
+execute?
+    Should this component have a runtest file as well so it can be
+integrated into the execution portion of LTP?
+    Finally, I also discovered some QA issues with rt-migrate.c (diff
+attached as well); I patterned the code to match the other tests. Do
+you agree with the fixes?
+Thanks!
+-Garrett
+
+--0016e6dab0562d0ab00476a1327e
+Content-Type: application/octet-stream; name="realtime-makefile-fixes.diff"
+Content-Disposition: attachment; filename="realtime-makefile-fixes.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g15guj1m0
+
+SW5kZXg6IGNvbmZpZy5tawo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09ClJDUyBmaWxlOiAvY3Zzcm9vdC9sdHAvbHRwL3Rl
+c3RjYXNlcy9yZWFsdGltZS9jb25maWcubWssdgpyZXRyaWV2aW5nIHJldmlzaW9uIDEuOApkaWZm
+IC11IC1yMS44IGNvbmZpZy5tawotLS0gY29uZmlnLm1rCTkgT2N0IDIwMDkgMTc6NTY6MDcgLTAw
+MDAJMS44CisrKyBjb25maWcubWsJMjMgT2N0IDIwMDkgMjE6Mjk6MjEgLTAwMDAKQEAgLTIyLDcg
+KzIyLDEzIEBACiAKIAogIyBEZWZhdWx0IHN0dWZmIGNvbW1vbiB0byBhbGwgdGVzdGNhc2VzCisj
+CisjIFRISVMgSVMgTk9UIFRPIEJFIElOQ0xVREVEIFdJVEggbGliISEhCiAKLUNQUEZMQUdTICs9
+IC1JJChhYnNfdG9wX3NyY2RpcikvdGVzdGNhc2VzL3JlYWx0aW1lL2luY2x1ZGUgLURfR05VX1NP
+VVJDRQotQ0ZMQUdTICAgKz0gLVdhbGwKLUxETElCUyAgICs9IC1scmVhbHRpbWUgLWxwdGhyZWFk
+IC1scnQgLWxtCityZWFsdGltZV9idWlsZGRpcgk6PSAkKGFic190b3BfYnVpbGRkaXIpL3Rlc3Rj
+YXNlcy9yZWFsdGltZQorcmVhbHRpbWVfc3JjZGlyCQk6PSAkKGFic190b3Bfc3JjZGlyKS90ZXN0
+Y2FzZXMvcmVhbHRpbWUKKworQ1BQRkxBR1MJCSs9IC1JJChyZWFsdGltZV9zcmNkaXIpL2luY2x1
+ZGUKK0NGTEFHUwkJCSs9IC1EX0dOVV9TT1VSQ0UKK0xETElCUwkJCSs9IC1scmVhbHRpbWUgLWxw
+dGhyZWFkIC1scnQgLWxtCitMREZMQUdTCQkJKz0gLUwkKHJlYWx0aW1lX2J1aWxkZGlyKS9saWIK
+SW5kZXg6IGxpYi9NYWtlZmlsZQo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ClJDUyBmaWxlOiAvY3Zzcm9vdC9sdHAvbHRw
+L3Rlc3RjYXNlcy9yZWFsdGltZS9saWIvTWFrZWZpbGUsdgpyZXRyaWV2aW5nIHJldmlzaW9uIDEu
+NApkaWZmIC11IC1yMS40IE1ha2VmaWxlCi0tLSBsaWIvTWFrZWZpbGUJOSBPY3QgMjAwOSAxNzo1
+NjowOCAtMDAwMAkxLjQKKysrIGxpYi9NYWtlZmlsZQkyMyBPY3QgMjAwOSAyMToyOToyMSAtMDAw
+MApAQCAtMjQsNiArMjQsMTIgQEAKIAogaW5jbHVkZSAkKHRvcF9zcmNkaXIpL2luY2x1ZGUvbWsv
+ZW52X3ByZS5tawogCitDUFBGTEFHUwkJKz0gLUkkKGFic19zcmNkaXIpLy4uL2luY2x1ZGUKKwor
+Q0ZMQUdTCQkJKz0gLURfR05VX1NPVVJDRQorCitMRExJQlMJCQkrPSAtbHJlYWx0aW1lIC1scHRo
+cmVhZCAtbHJ0IC1sbQorCiBMSUIJCQk6PSBsaWJyZWFsdGltZS5hCiAKLWluY2x1ZGUgJCh0b3Bf
+c3JjZGlyKS9pbmNsdWRlL21rL2dlbmVyaWNfbGVhZl90YXJnZXQubWsKK2luY2x1ZGUgJCh0b3Bf
+c3JjZGlyKS9pbmNsdWRlL21rL2xpYi5tawo=
+--0016e6dab0562d0ab00476a1327e
+Content-Type: application/octet-stream; name="realtime-rt-migrate-fixes.diff"
+Content-Disposition: attachment; filename="realtime-rt-migrate-fixes.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g15gv0ut1
+
+SW5kZXg6IGZ1bmMvcnQtbWlncmF0ZS9ydC1taWdyYXRlLmMKPT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQpSQ1MgZmlsZTog
+L2N2c3Jvb3QvbHRwL2x0cC90ZXN0Y2FzZXMvcmVhbHRpbWUvZnVuYy9ydC1taWdyYXRlL3J0LW1p
+Z3JhdGUuYyx2CnJldHJpZXZpbmcgcmV2aXNpb24gMS4xCmRpZmYgLXUgLXIxLjEgcnQtbWlncmF0
+ZS5jCi0tLSBmdW5jL3J0LW1pZ3JhdGUvcnQtbWlncmF0ZS5jCTcgU2VwIDIwMDkgMDg6NTk6MTAg
+LTAwMDAJMS4xCisrKyBmdW5jL3J0LW1pZ3JhdGUvcnQtbWlncmF0ZS5jCTIzIE9jdCAyMDA5IDIx
+OjI5OjU1IC0wMDAwCkBAIC00Niw3ICs0Niw5IEBACiAgKiAgICAgICAgICAgICAgICAgICAgdGVz
+dGNhc2VzIGJ5IEtpcmFuIFByYWthc2gKICAqCiAgKi8KKyNpZm5kZWYgX0dOVV9TT1VSQ0UKICNk
+ZWZpbmUgX0dOVV9TT1VSQ0UKKyNlbmRpZgogI2luY2x1ZGUgPHN0ZGlvLmg+CiAjaWZuZGVmIF9f
+VVNFX1hPUEVOMksKICMgZGVmaW5lIF9fVVNFX1hPUEVOMksKQEAgLTExNiw3ICsxMTgsMTMgQEAK
+IAluID0gdnNucHJpbnRmKGJ1ZmYsIEJVRlNJWiwgZm10LCBhcCk7CiAJdmFfZW5kKGFwKTsKIAot
+CXdyaXRlKG1hcmtfZmQsIGJ1ZmYsIG4pOworCS8qCisJICogVGhpcyBkb2Vzbid0IHJldHVybiBh
+bnkgdmFsaWQgdnMgaW52YWxpZCBleGl0IGNvZGVzLCBzbyBwcmludGluZyBvdXQKKwkgKiBhIHBl
+cnJvciB0byB3YXJuIHRoZSBlbmQtdXNlciBvZiBhbiBpc3N1ZSBpcyBzdWZmaWNpZW50LgorCSAq
+LworCWlmICh3cml0ZShtYXJrX2ZkLCBidWZmLCBuKSA8IDApIHsKKwkJcGVycm9yKCJ3cml0ZSIp
+OworCX0KIH0KIAogI2RlZmluZSBJTlRFUlZBTCAxMDBVTEwgKiBOU19QRVJfTVMKQEAgLTE4NSwy
+MSArMTkzLDM1IEBACiAJICAgICAgKTsKIH0KIAotc3RhdGljIHZvaWQgcGFyc2VfYXJncyhpbnQg
+YywgY2hhciAqdikKLXsKLQkJc3dpdGNoIChjKSB7Ci0JCWNhc2UgJ2EnOiBwcmlvX3N0YXJ0ID0g
+YXRvaSh2KTsgYnJlYWs7Ci0JCWNhc2UgJ3InOgotCQkJcnVuX2ludGVydmFsID0gYXRvaSh2KTsK
+LQkJCWJyZWFrOwotCQljYXNlICd0JzogaW50ZXJ2YWwgPSBhdG9pKHYpOyBicmVhazsKLQkJY2Fz
+ZSAnbCc6IG5yX3J1bnMgPSBhdG9pKHYpOyBicmVhazsKLQkJY2FzZSAnZSc6IG1heF9lcnIgPSBh
+dG9pKHYpICogTlNfUEVSX1VTOyBicmVhazsKLQkJY2FzZSAnPyc6Ci0JCWNhc2UgJ2gnOgotCQkJ
+dXNhZ2UoKTsKLQkJCWV4aXQoMCk7Ci0JCX0KKy8qCitpbnQgcnRfaW5pdChjb25zdCBjaGFyICpv
+cHRpb25zLCBpbnQgKCpwYXJzZV9hcmcpKGludCBvcHRpb24sIGNoYXIgKnZhbHVlKSwKKyAgICAg
+ICAgICAgIGludCBhcmdjLCBjaGFyICphcmd2W10pOworICovCitzdGF0aWMgaW50IHBhcnNlX2Fy
+Z3MoaW50IGMsIGNoYXIgKnYpCit7CisJaW50IGhhbmRsZWQgPSAxOworCXN3aXRjaCAoYykgewor
+CWNhc2UgJ2EnOgorCQlwcmlvX3N0YXJ0ID0gYXRvaSh2KTsKKwkJYnJlYWs7CisJY2FzZSAncic6
+CisJCXJ1bl9pbnRlcnZhbCA9IGF0b2kodik7CisJCWJyZWFrOworCWNhc2UgJ3QnOgorCQlpbnRl
+cnZhbCA9IGF0b2kodik7CisJCWJyZWFrOworCWNhc2UgJ2wnOgorCQlucl9ydW5zID0gYXRvaSh2
+KTsKKwkJYnJlYWs7CisJY2FzZSAnZSc6CisJCW1heF9lcnIgPSBhdG9pKHYpICogTlNfUEVSX1VT
+OworCQlicmVhazsKKwljYXNlICc/JzoKKwljYXNlICdoJzoKKwkJdXNhZ2UoKTsKKwkJaGFuZGxl
+ZCA9IDA7CisJfQorCXJldHVybiBoYW5kbGVkOwogfQogCiBzdGF0aWMgdm9pZCByZWNvcmRfdGlt
+ZShpbnQgaWQsIHVuc2lnbmVkIGxvbmcgbG9uZyB0aW1lLCB1bnNpZ25lZCBsb25nIGwpCkBAIC0y
+NDcsMTIgKzI2OSwxMiBAQAogCWZvciAoaSA9IDA7IGkgPCBucl9ydW5zOyBpKyspIHsKIAkJcHJp
+bnRmKCIlNGQ6ICAgIiwgaSk7CiAJCWZvciAodCA9IDA7IHQgPCBucl90YXNrczsgdCsrKQotCQkJ
+cHJpbnRmKCIlNmxsZCAgIiwgaW50ZXJ2YWxzW3RdLnJlY29yZHNbaV0ueSk7CisJCQlwcmludGYo
+IiU2bGQgICIsIGludGVydmFsc1t0XS5yZWNvcmRzW2ldLnkpOwogCiAJCXByaW50ZigiXG4iKTsK
+IAkJcHJpbnRmKCIgbGVuOiAgICIpOwogCQlmb3IgKHQgPSAwOyB0IDwgbnJfdGFza3M7IHQrKykK
+LQkJCXByaW50ZigiJTZsbGQgICIsIGludGVydmFsc19sZW5ndGhbdF0ucmVjb3Jkc1tpXS55KTsK
+KwkJCXByaW50ZigiJTZsZCAgIiwgaW50ZXJ2YWxzX2xlbmd0aFt0XS5yZWNvcmRzW2ldLnkpOwog
+CiAJCXByaW50ZigiXG4iKTsKIAkJcHJpbnRmKCIgbG9vcHM6ICIpOwo=
+--0016e6dab0562d0ab00476a1327e
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
@@ -670,7 +198,16 @@ is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
+--0016e6dab0562d0ab00476a1327e
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--0016e6dab0562d0ab00476a1327e--
+
