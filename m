@@ -1,25 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1MycqL-0007O7-7o
-	for ltp-list@lists.sourceforge.net; Fri, 16 Oct 2009 02:47:01 +0000
-Received: from gateway-1237.mvista.com ([63.81.120.158])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MycqG-0002LM-51
-	for ltp-list@lists.sourceforge.net; Fri, 16 Oct 2009 02:47:01 +0000
-Received: from svexch01.mvista.com (svexch01.mvista.com [10.0.0.82])
-	by hermes.mvista.com (Postfix) with ESMTP id 529701BF11
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 15 Oct 2009 19:46:47 -0700 (PDT)
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01CA4E0A.E7446530"
-Date: Thu, 15 Oct 2009 19:48:06 -0700
-Message-ID: <8368651DACC1964480F951191B94A0780153D6ED@svexch01.mvista.com>
-From: "Henry Yei" <hyei@mvista.com>
-Subject: [LTP] [PATCH][mq_* clock_nanosleep01] change use of signal to
-	sigaction for more reliability, fix time issue
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <adilger@sun.com>) id 1N2XtH-0005Rv-VV
+	for ltp-list@lists.sourceforge.net; Mon, 26 Oct 2009 22:18:15 +0000
+Received: from sca-es-mail-2.sun.com ([192.18.43.133])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:DES-CBC3-SHA:168)
+	(Exim 4.69) id 1N2XtD-00031A-NB
+	for ltp-list@lists.sourceforge.net; Mon, 26 Oct 2009 22:18:15 +0000
+Received: from fe-sfbay-10.sun.com ([192.18.43.129])
+	by sca-es-mail-2.sun.com (8.13.7+Sun/8.12.9) with ESMTP id
+	n9QMFZam011469 for <ltp-list@lists.sourceforge.net>;
+	Mon, 26 Oct 2009 15:15:35 -0700 (PDT)
+MIME-version: 1.0
+Received: from conversion-daemon.fe-sfbay-10.sun.com by fe-sfbay-10.sun.com
+	(Sun Java(tm) System Messaging Server 7u2-7.04 64bit (built Jul 2
+	2009)) id <0KS500B00715ZK00@fe-sfbay-10.sun.com> for
+	ltp-list@lists.sourceforge.net; 
+	Mon, 26 Oct 2009 15:15:35 -0700 (PDT)
+Date: Mon, 26 Oct 2009 16:15:32 -0600
+From: Andreas Dilger <adilger@sun.com>
+In-reply-to: <1256563577.4929.35.camel@subratamodak.linux.ibm.com>
+Message-id: <C3A9583B-F6C5-4BCC-8D7E-876FA4D62D57@sun.com>
+References: <4AE54BCA.7060104@cn.fujitsu.com>
+	<1256563577.4929.35.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [PATCH] Add new testcases for ext4 new features - V3
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,264 +34,120 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP Mailing List <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
-
-------_=_NextPart_001_01CA4E0A.E7446530
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-All,
-
-Here are three patches the help with the issue where these tests miss a =
-signal and hang. The original patches were created before the latest =
-check-ins by jpalecek@web.de , but I believe they still help. I've =
-regenerated the patches against CVS source and tested on a multi-core =
-machine running MVL6 (x86 2.6.28)=20
-
-The clock_nanosleep01 patch changes signal to the more reliable =
-sigaction().
-
-mq_timedsend01 patch changes from signal() to sigaction() and corrects =
-the time-specs
-used by the test. Timespec's passed to mq_timedsend are abs time, not =
-relative
-time. The patch adds the current time to convert relative time to abs =
-time but
-only if the change won't invalidate the test objective. For example, if =
-the
-test would have passed -1 for tv_sec to cause an invalid time error, =
-adding the
-current time would prevent the expected error.
-
-mq_timedrecieve01.patch changes from signal() to sigaction() and =
-corrects the time-specs
-used by the test. Timespec's passed to mq_timedreceive are abs time, not
-relative
-time. The patch adds the current time to convert relative time to abs =
-time but
-only if the change won't invalidate the test objective. For example, if =
-the
-test would have passed -1 for tv_sec to cause an invalid time error, =
-adding the
-current time would prevent the expected error. The timeout for SIGINT =
-test is
-extended to allow time for the signal to arrive.
-
-Original patches provided by Randy Vinson <rvinson@mvista.com>
-
-Signed-off by: Henry Yei <hyei@mvista.com>
-
-
-
-------_=_NextPart_001_01CA4E0A.E7446530
-Content-Type: application/octet-stream;
-	name="clock_nanosleep01.patch"
-Content-Transfer-Encoding: base64
-Content-Description: clock_nanosleep01.patch
-Content-Disposition: attachment;
-	filename="clock_nanosleep01.patch"
-
-LS0tIGx0cC90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb2NrX25hbm9zbGVlcC9jbG9ja19u
-YW5vc2xlZXAwMS5jCTIwMDktMTAtMTMgMTI6NDE6MDQuODk3MDAwMDAwIC0wNzAwCisrKyBsdHAt
-d2Rpci90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2Nsb2NrX25hbm9zbGVlcC9jbG9ja19uYW5v
-c2xlZXAwMS5jCTIwMDktMTAtMTUgMTg6MjY6NTAuMjc1MzI1ODg5IC0wNzAwCkBAIC03MCw2ICs3
-MCwxOCBAQCBleHRlcm4gY2hhciAqVEVTVERJUjsgICAgICAgICAgIC8qIHRlbXBvCiBjaGFyICpU
-Q0lEID0gImNsb2NrX25hbm9zbGVlcDAxIjsgIC8qIFRlc3QgcHJvZ3JhbSBpZGVudGlmaWVyLiov
-CiBpbnQgIHRlc3RubzsKIGludCAgVFNUX1RPVEFMID0gMTsgICAgICAgICAgICAgICAgICAgLyog
-dG90YWwgbnVtYmVyIG9mIHRlc3RzIGluIHRoaXMgZmlsZS4gICAqLworc3RydWN0IHNpZ2FjdGlv
-biBhY3Q7CisKKy8qCisgKiBzaWdoYW5kbGVyKCkKKyAqLwordm9pZCBzaWdoYW5kbGVyKGludCBz
-aWcpCit7CisgICAgICAgIGlmIChzaWcgPT0gU0lHSU5UKQorICAgICAgICAgICAgICAgIHJldHVy
-bjsKKyAgICAgICAgLy8gTk9UUkVBQ0hFRAorICAgICAgICByZXR1cm47Cit9CiAKIC8qIEV4dGVy
-biBHbG9iYWwgRnVuY3Rpb25zICovCiAvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLwpAQCAtMTE4LDYg
-KzEzMCwxMCBAQCBleHRlcm4gdm9pZCBjbGVhbnVwKCkgewogLyoqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-Ki8KIHZvaWQgc2V0dXAoKSB7CiAgICAgICAgIC8qIENhcHR1cmUgc2lnbmFscyBpZiBhbnkgKi8K
-KwlhY3Quc2FfaGFuZGxlciA9IHNpZ2hhbmRsZXI7CisJc2lnZmlsbHNldCgmYWN0LnNhX21hc2sp
-OworCXNpZ2FjdGlvbihTSUdJTlQsICZhY3QsIE5VTEwpOworCiAgICAgICAgIC8qIENyZWF0ZSB0
-ZW1wb3JhcnkgZGlyZWN0b3JpZXMgKi8KICAgICAgICAgVEVTVF9QQVVTRTsKICAgICAgICAgdHN0
-X3RtcGRpcigpOwpAQCAtMzUzLDE3ICszNjksNiBAQCBFWElUOgogICAgICAgICByZXR1cm4gcmVz
-dWx0OwogfQogCi0vKgotICogc2lnaGFuZGxlcigpCi0gKi8KLXZvaWQgc2lnaGFuZGxlcihpbnQg
-c2lnKQotewotICAgICAgICBpZiAoc2lnID09IFNJR0lOVCkKLSAgICAgICAgICAgICAgICByZXR1
-cm47Ci0gICAgICAgIC8vIE5PVFJFQUNIRUQKLSAgICAgICAgcmV0dXJuOwotfQotCiAKIC8qCiAg
-KiB1c2FnZSgpCkBAIC00MzcsNyArNDQyLDYgQEAgaW50IG1haW4oaW50IGFjLCBjaGFyICoqYXYp
-IHsKIAkJLyoKIAkJKiBFeGVjdXRlIHRlc3QKICAgICAgICAgIAkqLwotCQlURVNUKHNpZ25hbChT
-SUdJTlQsIHNpZ2hhbmRsZXIpKTsKIAkgICAgICAgIGZvciAoaSA9IDA7IGkgPCAoaW50KShzaXpl
-b2YodGNhc2UpIC8gc2l6ZW9mKHRjYXNlWzBdKSk7IGkrKykgewogICAgICAgICAJICAgICAgICBp
-bnQgcmV0OwogCSAgICAgICAgICAgICAgICB0c3RfcmVzbShUSU5GTywiKGNhc2UlMDJkKSBTVEFS
-VCIsIGkpOwo=
-
-------_=_NextPart_001_01CA4E0A.E7446530
-Content-Type: application/octet-stream;
-	name="mq_timedreceive01.patch"
-Content-Transfer-Encoding: base64
-Content-Description: mq_timedreceive01.patch
-Content-Disposition: attachment;
-	filename="mq_timedreceive01.patch"
-
-LS0tIGx0cC90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21xX3RpbWVkcmVjZWl2ZS9tcV90aW1l
-ZHJlY2VpdmUwMS5jCTIwMDktMTAtMTMgMTI6NDE6MDUuODY1MDAwMDAwIC0wNzAwCisrKyBsdHAt
-d2Rpci90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21xX3RpbWVkcmVjZWl2ZS9tcV90aW1lZHJl
-Y2VpdmUwMS5jCTIwMDktMTAtMTUgMTk6Mjc6NTQuMDI3MzI1NTMxIC0wNzAwCkBAIC03OCw2ICs3
-OCwxOCBAQCBleHRlcm4gY2hhciAqVEVTVERJUjsgICAgICAgICAgIC8qIHRlbXBvCiBjaGFyICpU
-Q0lEID0gIm1xX3RpbWVkcmVjZWl2ZTAxIjsgIC8qIFRlc3QgcHJvZ3JhbSBpZGVudGlmaWVyLiov
-CiBpbnQgIHRlc3RubzsKIGludCAgVFNUX1RPVEFMID0gMTsgICAgICAgICAgICAgICAgICAgLyog
-dG90YWwgbnVtYmVyIG9mIHRlc3RzIGluIHRoaXMgZmlsZS4gICAqLworc3RydWN0IHNpZ2FjdGlv
-biBhY3Q7CisKKy8qCisgKiBzaWdoYW5kbGVyKCkKKyAqLwordm9pZCBzaWdoYW5kbGVyKGludCBz
-aWcpCit7CisgICAgICAgIGlmIChzaWcgPT0gU0lHSU5UKQorICAgICAgICAgICAgICAgIHJldHVy
-bjsKKyAgICAgICAgLy8gTk9UUkVBQ0hFRAorICAgICAgICByZXR1cm47Cit9CiAKIC8qIEV4dGVy
-biBHbG9iYWwgRnVuY3Rpb25zICovCiAvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLwpAQCAtMTA2LDEy
-ICsxMTgsNiBAQCBleHRlcm4gdm9pZCBjbGVhbnVwKCkgewogICAgICAgICB0c3RfZXhpdCgpOwog
-fQogCi0vKgotICogc2lnaGFuZGxlcigpCi0gKi8KLXZvaWQgc2lnaGFuZGxlcihpbnQgc2lnKQot
-ewotfQogCiAvKiBMb2NhbCAgRnVuY3Rpb25zICovCiAvKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLwpA
-QCAtMTMyLDggKzEzOCwxMCBAQCB2b2lkIHNpZ2hhbmRsZXIoaW50IHNpZykKIC8qICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICovCiAvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLwogdm9pZCBzZXR1cCgpIHsKLSAg
-ICAgICAgLyogQ2FwdHVyZSBzaWduYWxzIGlmIGFueSAqLwotCXNpZ25hbChTSUdJTlQsIHNpZ2hh
-bmRsZXIpOworCSAgICAvKiBDYXB0dXJlIHNpZ25hbHMgaWYgYW55ICovCisgICAgICAgIGFjdC5z
-YV9oYW5kbGVyID0gc2lnaGFuZGxlcjsKKyAgICAgICAgc2lnZmlsbHNldCgmYWN0LnNhX21hc2sp
-OworICAgICAgICBzaWdhY3Rpb24oU0lHSU5ULCAmYWN0LCBOVUxMKTsKICAgICAgICAgLyogQ3Jl
-YXRlIHRlbXBvcmFyeSBkaXJlY3RvcmllcyAqLwogICAgICAgICBURVNUX1BBVVNFOwogICAgICAg
-ICB0c3RfdG1wZGlyKCk7CkBAIC0yODQsNiArMjkyLDggQEAgc3RhdGljIHN0cnVjdCB0ZXN0X2Nh
-c2UgdGNhc2VbXSA9IHsKICAgICAgICAgeyAvLyBjYXNlMTMKICAgICAgICAgICAgICAgICAudHR5
-cGUgICAgICAgICAgPSBTRU5EX1NJR0lOVCwKICAgICAgICAgICAgICAgICAubGVuICAgICAgICAg
-ICAgPSAxNiwKKyAgICAgICAgICAgICAgICAuc2VjICAgICAgICAgICAgPSAzLAorICAgICAgICAg
-ICAgICAgIC5uc2VjICAgICAgICAgICA9IDAsCiAgICAgICAgICAgICAgICAgLnJldCAgICAgICAg
-ICAgID0gLTEsCiAgICAgICAgICAgICAgICAgLmVyciAgICAgICAgICAgID0gRUlOVFIsCiAgICAg
-ICAgIH0sCkBAIC0zMDYsMTAgKzMxNiwxMCBAQCBzdGF0aWMgaW50IGRvX3Rlc3Qoc3RydWN0IHRl
-c3RfY2FzZSAqdGMpCiAgICAgICAgIGludCBzeXNfcmV0OwogICAgICAgICBpbnQgc3lzX2Vycm5v
-OwogICAgICAgICBpbnQgcmVzdWx0ID0gUkVTVUxUX09LOwotCWludCBvZmxhZzsKKyAgICAgICAg
-aW50IG9mbGFnOwogICAgICAgICBpbnQgaSwgcmMsIGNtcF9vayA9IDEsIGZkID0gLTE7CiAgICAg
-ICAgIGNoYXIgc21zZ1tNQVhfTVNHU0laRV0sIHJtc2dbTUFYX01TR1NJWkVdOwotICAgICAgICBz
-dHJ1Y3QgdGltZXNwZWMgdHMsICpwX3RzID0gTlVMTDsKKyAgICAgICAgc3RydWN0IHRpbWVzcGVj
-IHRzID0gezAsMH07CiAgICAgICAgIHBpZF90IHBpZCA9IDA7CiAgICAgICAgIHVuc2lnbmVkIHBy
-aW87CiAgICAgICAgIHNpemVfdCBtc2dfbGVuOwpAQCAtMzc2LDcgKzM4Niw3IEBAIHN3aXRjaCAo
-dGMtPnR0eXBlKSB7CiAgICAgICAgIGNhc2UgRkRfRklMRToKICAgICAgICAgICAgICAgICBicmVh
-azsKICAgICAgICAgZGVmYXVsdDoKLQkJVEVTVChyYyA9IG1xX3RpbWVkc2VuZChmZCwgc21zZywg
-dGMtPmxlbiwgdGMtPnByaW8sIHBfdHMpKTsKKyAgICAgICAgICAgICAgICBURVNUKHJjID0gbXFf
-dGltZWRzZW5kKGZkLCBzbXNnLCB0Yy0+bGVuLCB0Yy0+cHJpbywgJnRzKSk7CiAgICAgICAgICAg
-ICAgICAgaWYgKFRFU1RfUkVUVVJOIDwgMCkgewogICAgICAgICAgICAgICAgICAJdHN0X3Jlc20o
-VEZBSUwsICJtcV90aW1lZHNlbmQgZmFpbGVkIC0gZXJybm8gPSAlZCA6ICVzIixURVNUX0VSUk5P
-LCBzdHJlcnJvcihURVNUX0VSUk5PKSk7CiAgICAgICAgICAgICAgICAgICAgICAgICByZXN1bHQg
-PSAxOwpAQCAtMzkzLDE5ICs0MDMsMTggQEAgc3dpdGNoICh0Yy0+dHR5cGUpIHsKICAgICAgICAg
-ICAgICAgICBtc2dfbGVuIC09IDE7CiAgICAgICAgIHRzLnR2X3NlYyA9IHRjLT5zZWM7CiAgICAg
-ICAgIHRzLnR2X25zZWMgPSB0Yy0+bnNlYzsKLSAgICAgICAgcF90cyA9ICZ0czsKLSAgICAgICAg
-aWYgKHRjLT5zZWMgPT0gMCAmJiB0Yy0+bnNlYyA9PSAwKQotICAgICAgICAgICAgICAgIHBfdHMg
-PSBOVUxMOworICAgICAgICBpZiAodGMtPnNlYyA+PSAwIHx8IHRjLT5uc2VjICE9IDApCisgICAg
-ICAgICAgICAgICAgdHMudHZfc2VjICs9IHRpbWUoTlVMTCk7CiAKIAkvKgogICAgICAgICAgKiBF
-eGVjdXRlIHN5c3RlbSBjYWxsCiAgICAgICAgICAqLwogICAgICAgICBlcnJubyA9IDA7Ci0gICAg
-ICAgIFRFU1Qoc3lzX3JldCA9IG1xX3RpbWVkcmVjZWl2ZShmZCwgcm1zZywgbXNnX2xlbiwgJnBy
-aW8sIHBfdHMpKTsKKyAgICAgICAgVEVTVChzeXNfcmV0ID0gbXFfdGltZWRyZWNlaXZlKGZkLCBy
-bXNnLCBtc2dfbGVuLCAmcHJpbywgJnRzKSk7CiAgICAgICAgIHN5c19lcnJubyA9IGVycm5vOwog
-ICAgICAgICBpZiAoc3lzX3JldCA8IDApCiAgICAgICAgICAgICAgICAgZ290byBURVNUX0VORDsK
-LSAKKwogCSAvKgogICAgICAgICAgKiBDb21wYXJlIHJlY2VpdmVkIG1lc3NhZ2UKICAgICAgICAg
-ICovCkBAIC00NzgsOCArNDg3LDggQEAgaW50IG1haW4oaW50IGFjLCBjaGFyICoqYXYpIHsKICAg
-ICAgICAgfTsKIAogCXByb2duYW1lID0gc3RyY2hyKGF2WzBdLCAnLycpOwotICAgICAgICBwcm9n
-bmFtZSA9IHByb2duYW1lID8gcHJvZ25hbWUgKyAxIDogYXZbMF07CQotCQorICAgICAgICBwcm9n
-bmFtZSA9IHByb2duYW1lID8gcHJvZ25hbWUgKyAxIDogYXZbMF07CisKICAgICAgICAgLyogcGFy
-c2Ugc3RhbmRhcmQgb3B0aW9ucyAqLwogICAgICAgICBpZiAoKG1zZyA9IHBhcnNlX29wdHMoYWMs
-IGF2LCAob3B0aW9uX3QgKilOVUxMLCBOVUxMKSkgIT0gKGNoYXIgKilOVUxMKXsKICAgICAgICAg
-ICAgICB0c3RfYnJrbShUQlJPSywgY2xlYW51cCwgIk9QVElPTiBQQVJTSU5HIEVSUk9SIC0gJXMi
-LCBtc2cpOwpAQCAtNTIxLDcgKzUzMCw3IEBAIGludCBtYWluKGludCBhYywgY2hhciAqKmF2KSB7
-CiAJICAgICAgICAgICAgICAgIHRzdF9yZXNtKFRJTkZPLCIoY2FzZSUwMmQpIEVORCA9PiAlcyIs
-IGksIChyZXQgPT0gMCkgPyAiT0siIDogIk5HIik7CiAJICAgICAgICAgICAgICAgIHJlc3VsdCB8
-PSByZXQ7CiAgICAgICAgIAl9Ci0JCQorCiAJCS8qCiAgICAgICAgIAkgKiBDaGVjayByZXN1bHRz
-CiAgICAgICAgICAJKi8KQEAgLTUzOSw3ICs1NDgsNyBAQCBpbnQgbWFpbihpbnQgYWMsIGNoYXIg
-KiphdikgewogICAgICAgICAJfQogCiAgICAgICAgICAgICAgICAgfQotICAgICAgICB9CQorICAg
-ICAgICB9CiAgICAgICAgIGNsZWFudXAoKTsKIAl0c3RfZXhpdCgpOwogfQo=
-
-------_=_NextPart_001_01CA4E0A.E7446530
-Content-Type: application/octet-stream;
-	name="mq_timedsend01.patch"
-Content-Transfer-Encoding: base64
-Content-Description: mq_timedsend01.patch
-Content-Disposition: attachment;
-	filename="mq_timedsend01.patch"
-
-LS0tIGx0cC90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21xX3RpbWVkc2VuZC9tcV90aW1lZHNl
-bmQwMS5jCTIwMDktMTAtMTMgMTI6NDE6MDUuODg4MDAwMDAwIC0wNzAwCisrKyBsdHAtd2Rpci90
-ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21xX3RpbWVkc2VuZC9tcV90aW1lZHNlbmQwMS5jCTIw
-MDktMTAtMTUgMTk6MDE6NTEuOTU5MzI2MjYxIC0wNzAwCkBAIC03Nyw2ICs3NywxOCBAQCBleHRl
-cm4gY2hhciAqVEVTVERJUjsgICAgICAgICAgIC8qIHRlbXBvCiBjaGFyICpUQ0lEID0gIm1xX3Rp
-bWVkc2VuZDAxIjsgIC8qIFRlc3QgcHJvZ3JhbSBpZGVudGlmaWVyLiovCiBpbnQgIHRlc3RubzsK
-IGludCAgVFNUX1RPVEFMID0gMTsgICAgICAgICAgICAgICAgICAgLyogdG90YWwgbnVtYmVyIG9m
-IHRlc3RzIGluIHRoaXMgZmlsZS4gICAqLworc3RydWN0IHNpZ2FjdGlvbiBhY3Q7CisKKy8qCisg
-KiBzaWdoYW5kbGVyKCkKKyAqLwordm9pZCBzaWdoYW5kbGVyKGludCBzaWcpCit7CisgICAgICAg
-IGlmIChzaWcgPT0gU0lHSU5UKQorICAgICAgICAgICAgICAgIHJldHVybjsKKyAgICAgICAgLy8g
-Tk9UUkVBQ0hFRAorICAgICAgICByZXR1cm47Cit9CiAKIC8qIEV4dGVybiBHbG9iYWwgRnVuY3Rp
-b25zICovCiAvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLwpAQCAtMTI0LDcgKzEzNiwxMiBAQCBleHRl
-cm4gdm9pZCBjbGVhbnVwKCkgewogLyogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KIC8qKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKiovCiB2b2lkIHNldHVwKCkgeworCQogICAgICAgICAvKiBDYXB0dXJlIHNpZ25h
-bHMgaWYgYW55ICovCisJYWN0LnNhX2hhbmRsZXIgPSBzaWdoYW5kbGVyOworCXNpZ2ZpbGxzZXQo
-JmFjdC5zYV9tYXNrKTsKKworCXNpZ2FjdGlvbihTSUdJTlQsICZhY3QsIE5VTEwpOwogICAgICAg
-ICAvKiBDcmVhdGUgdGVtcG9yYXJ5IGRpcmVjdG9yaWVzICovCiAgICAgICAgIFRFU1RfUEFVU0U7
-CiAgICAgICAgIHRzdF90bXBkaXIoKTsKQEAgLTI4Miw2ICsyOTksOCBAQCBzdGF0aWMgc3RydWN0
-IHRlc3RfY2FzZSB0Y2FzZVtdID0gewogICAgICAgICAgICAgICAgIC50dHlwZSAgICAgICAgICA9
-IFNFTkRfU0lHSU5ULAogICAgICAgICAgICAgICAgIC5sZW4gICAgICAgICAgICA9IDE2LAogICAg
-ICAgICAgICAgICAgIC5yZXQgICAgICAgICAgICA9IC0xLAorICAgICAgICAgICAgICAgIC5zZWMg
-ICAgICAgICAgICA9IDMsCisgICAgICAgICAgICAgICAgLm5zZWMgICAgICAgICAgID0gMCwKICAg
-ICAgICAgICAgICAgICAuZXJyICAgICAgICAgICAgPSBFSU5UUiwKICAgICAgICAgfSwKIH07CkBA
-IC0zMDMsNyArMzIyLDcgQEAgc3RhdGljIGludCBkb190ZXN0KHN0cnVjdCB0ZXN0X2Nhc2UgKnRj
-KQogCWludCBvZmxhZzsKICAgICAgICAgaW50IGksIHJjLCBjbXBfb2sgPSAxLCBmZCA9IC0xOwog
-ICAgICAgICBjaGFyIHNtc2dbTUFYX01TR1NJWkVdLCBybXNnW01BWF9NU0dTSVpFXTsKLSAgICAg
-ICAgc3RydWN0IHRpbWVzcGVjIHRzLCAqcF90czsKKyAgICAgICAgc3RydWN0IHRpbWVzcGVjIHRz
-ID0gezAsMH07CiAgICAgICAgIHBpZF90IHBpZCA9IDA7CiAgICAgICAgIHVuc2lnbmVkIHByaW87
-CiAKQEAgLTM0Myw3ICszNjIsNyBAQCBzdGF0aWMgaW50IGRvX3Rlc3Qoc3RydWN0IHRlc3RfY2Fz
-ZSAqdGMpCiAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgIGlmICh0Yy0+dHR5cGUg
-PT0gRlVMTF9RVUVVRSB8fCB0Yy0+dHR5cGUgPT0gU0VORF9TSUdJTlQpIHsKICAgICAgICAgICAg
-ICAgICAgICAgICAgIGZvciAoaSA9IDA7IGkgPCBNQVhfTVNHOyBpKyspIHsKLSAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgVEVTVChyYyA9IG1xX3RpbWVkc2VuZChmZCwgc21zZywgdGMt
-PmxlbiwgMCwgTlVMTCkpOworICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBURVNUKHJj
-ID0gbXFfdGltZWRzZW5kKGZkLCBzbXNnLCB0Yy0+bGVuLCAwLCAmdHMpKTsKICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgaWYgKHJjIDwgMCkgewogICAgICAgICAgICAgICAgICAJICAg
-CQl0c3RfcmVzbShURkFJTCwgIm1xX3RpbWVkc2VuZCBmYWlsZWQgLSBlcnJubyA9ICVkIDogJXNc
-biIsVEVTVF9FUlJOTywgc3RyZXJyb3IoVEVTVF9FUlJOTykpOwogICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIHJlc3VsdCA9IDE7CkBAIC0zNzIsMTUgKzM5MSwxNCBAQCBz
-dGF0aWMgaW50IGRvX3Rlc3Qoc3RydWN0IHRlc3RfY2FzZSAqdGMpCiAgICAgICAgICAqLwogICAg
-ICAgICB0cy50dl9zZWMgPSB0Yy0+c2VjOwogICAgICAgICB0cy50dl9uc2VjID0gdGMtPm5zZWM7
-Ci0gICAgICAgIHBfdHMgPSAmdHM7Ci0gICAgICAgIGlmICh0Yy0+c2VjID09IDAgJiYgdGMtPm5z
-ZWMgPT0gMCkKLSAgICAgICAgICAgICAgICBwX3RzID0gTlVMTDsKKwlpZiAodGMtPnNlYyA+PSAw
-IHx8IHRjLT5uc2VjICE9IDApCisJCXRzLnR2X3NlYyArPSB0aW1lKE5VTEwpOwogCiAgICAgICAg
-IC8qCiAgICAgICAgICogRXhlY3V0IHRlc3Qgc3lzdGVtIGNhbGwKICAgICAgICAgICovCiAgICAg
-ICAgIGVycm5vID0gMDsKLSAgICAgICAgVEVTVChzeXNfcmV0ID0gbXFfdGltZWRzZW5kKGZkLCBz
-bXNnLCB0Yy0+bGVuLCB0Yy0+cHJpbywgcF90cykpOworICAgICAgICBURVNUKHN5c19yZXQgPSBt
-cV90aW1lZHNlbmQoZmQsIHNtc2csIHRjLT5sZW4sIHRjLT5wcmlvLCAmdHMpKTsKICAgICAgICAg
-c3lzX2Vycm5vID0gZXJybm87CiAgICAgICAgIGlmIChzeXNfcmV0IDwgMCkKICAgICAgICAgICAg
-ICAgICBnb3RvIFRFU1RfRU5EOwpAQCAtMzg4LDcgKzQwNiw5IEBAIHN0YXRpYyBpbnQgZG9fdGVz
-dChzdHJ1Y3QgdGVzdF9jYXNlICp0YykKICAgICAgICAgLyoKICAgICAgICAgICogUmVjZWl2ZSBl
-Y2hvZWQgbWVzc2FnZSBhbmQgY29tcGFyZQogICAgICAgICAgKi8KLSAgICAgICAgVEVTVChyYyA9
-IG1xX3RpbWVkcmVjZWl2ZShmZCwgcm1zZywgTUFYX01TR1NJWkUsICZwcmlvLCBOVUxMKSk7CisJ
-dHMudHZfc2VjID0gMDsKKwl0cy50dl9uc2VjID0gMDsKKyAgICAgICAgVEVTVChyYyA9IG1xX3Rp
-bWVkcmVjZWl2ZShmZCwgcm1zZywgTUFYX01TR1NJWkUsICZwcmlvLCAmdHMpKTsKICAgICAgICAg
-aWYgKHJjIDwgMCkgewogICAgICAgICAgICAgICAgIHRzdF9yZXNtKFRGQUlMLCAibXFfdGltZWRy
-ZWNlaXZlIGZhaWxlZCAtIGVycm5vID0gJWQgOiAlc1xuIixURVNUX0VSUk5PLCBzdHJlcnJvcihU
-RVNUX0VSUk5PKSk7CiAgICAgICAgICAgICAgICAgcmVzdWx0ID0gMTsKQEAgLTQyMCwyMSArNDQw
-LDEwIEBAIEVYSVQ6CiAgICAgICAgICAgICAgICAga2lsbChwaWQsIFNJR1RFUk0pOwogICAgICAg
-ICAgICAgICAgIHdhaXQoJnN0KTsKICAgICAgICAgfQotICAgICAgICBleGl0KHJlc3VsdCk7Cisg
-ICAgICAgIHJldHVybiByZXN1bHQ7CiB9CiAKIAotLyoKLSAqIHNpZ2hhbmRsZXIoKQotICovCi12
-b2lkIHNpZ2hhbmRsZXIoaW50IHNpZykKLXsKLSAgICAgICAgaWYgKHNpZyA9PSBTSUdJTlQpCi0g
-ICAgICAgICAgICAgICAgcmV0dXJuOwotICAgICAgICAvLyBOT1RSRUFDSEVECi0gICAgICAgIHJl
-dHVybjsKLX0KLQogCiAvKgogICogdXNhZ2UoKQpAQCAtNTA3LDcgKzUxNiw2IEBAIGludCBtYWlu
-KGludCBhYywgY2hhciAqKmF2KSB7CiAJCS8qCiAgICAgICAgIAkgKiBFeGVjdXRlIHRlc3QKICAg
-ICAgICAgCSAqLwotICAgICAgICAJc2lnbmFsKFNJR0lOVCwgc2lnaGFuZGxlcik7CiAKIAkgICAg
-ICAgIGZvciAoaSA9IDA7IGkgPCAoaW50KShzaXplb2YodGNhc2UpIC8gc2l6ZW9mKHRjYXNlWzBd
-KSk7IGkrKykgewogICAgICAgICAJICAgICAgICBpbnQgcmV0Owo=
-
-------_=_NextPart_001_01CA4E0A.E7446530
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: LTP-ML <ltp-list@lists.sourceforge.net>, Bhaskar Rangaswamy <bharanga@in.ibm.com>, "Iranna D. Ankad" <iranna.ankad@in.ibm.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>, Miao Xie <miaox@cn.fujitsu.com>, Pradeep kumar Surisetty <pradeepkumars@in.ibm.com>, linux-ext4 <linux-ext4@vger.kernel.org>, Santwana Samantray <santwana.samantray@in.ibm.com>
+
+On 2009-10-26, at 07:26, Subrata Modak wrote:
+> We had recently added EXT4 testcases to LTP. As the author of these
+> tests mentioned, we saw 2 such failures in subdirectory limit test:
+>
+> Ext4 subdir limit test
+> ext4-subdir-limit    0  TINFO  :  Num of dirs to create: 65537, Dir  
+> name
+> len: short name                        Parent dir: mnt_point, Block
+> size: 1024
+> mke2fs 1.41.9 (22-Aug-2009)
+> tune2fs 1.41.9 (22-Aug-2009)
+> Setting test filesystem flag
+> /dev/VG1_EXT4/LV1_EXT4: The test_fs flag is set (and ext4 is  
+> available).
+> CLEARED.
+
+You don't need to set the test_fs flag for modern ext4.
+
+> /dev/VG1_EXT4/LV1_EXT4: clean, 10/8847360 files, 2297019/141557760
+> blocks
+> dumpe2fs 1.41.9 (22-Aug-2009)
+> ext4-subdir-limit    1  TPASS  :  ext4 subdir limit test pass
+> ext4-subdir-limit    0  TINFO  :  Num of dirs to create: 65537, Dir  
+> name
+> len: long name                         Parent dir: mnt_point, Block
+> size: 1024
+> mkdir: No space left on device
+> ext4-subdir-limit    2  TFAIL  :  failed to create directories - 19524
+> ext4-subdir-limit    0  TINFO  :  Num of dirs to create: 65537, Dir  
+> name
+> len: short name                        Parent dir: mnt_point/sub,  
+> Block
+> size: 1024
+> mke2fs 1.41.9 (22-Aug-2009)
+> tune2fs 1.41.9 (22-Aug-2009)
+> Setting test filesystem flag
+> /dev/VG1_EXT4/LV1_EXT4: The test_fs flag is set (and ext4 is  
+> available).
+> CLEARED.
+> /dev/VG1_EXT4/LV1_EXT4: clean, 12/8847360 files, 2297037/141557760
+> blocks
+> dumpe2fs 1.41.9 (22-Aug-2009)
+> ext4-subdir-limit    3  TPASS  :  ext4 subdir limit test pass
+> ext4-subdir-limit    0  TINFO  :  Num of dirs to create: 65537, Dir  
+> name
+> len: long name                         Parent dir: mnt_point/sub,  
+> Block
+> size: 1024
+> mkdir: No space left on device
+> ext4-subdir-limit    4  TFAIL  :  failed to create directories - 19483
+> ext4-subdir-limit    0  TINFO  :  Num of dirs to create: 65537, Dir  
+> name
+> len: short name                        Parent dir: mnt_point, Block
+> size: 2048
+>
+> Is this a known issue for EXT4 ?
+
+Creating many long filenames (255 bytes) in a 1kB block filesystem is a
+known issue that is not expected to be fixed (at least I'm not aware of
+any work being done in this area).  A vast majority of filesystems
+today are formatted with 4kB blocks (due to disk size) and the  
+overhead of
+managing 1kB block filesystems makes these only marginally used, and it
+is also very rare to have applications with such large filenames.
+
+> We also uncovered that the tests gives a decent 50% lines and over 61%
+> function coverage for EXT4 code. Please find the individual coverage
+> under EXT4 attached.
+
+Interesting to see this.
+
+> Following the various system information on which we ran the test:
+> 1) uname -a
+> Linux 2.6.31 #1 SMP Tue Oct 20 22:57:16 IST 2009 i686 i686 i386
+> GNU/Linux
+>
+> 2) grep -i ext4 .config
+> CONFIG_EXT4_FS=m
+> CONFIG_EXT4DEV_COMPAT=y
+> CONFIG_EXT4_FS_XATTR=y
+> CONFIG_EXT4_FS_POSIX_ACL=y
+> CONFIG_EXT4_FS_SECURITY=y
+>
+> 3) mkfs.ext4 -V
+> mke2fs 1.41.9 (22-Aug-2009)
+>        Using EXT2FS Library version 1.41.9
+> e2fsprogs-1.41.9
+> e2fsprogs-libs-1.41.9
+>
+> 4) LTP used:
+> Unreleased CVS repository. See the URL below to download:
+> http://ltp.sourceforge.net/documentation/how-to/ltp.php#_3.1,
+>
+> You can also also directly review the attached patch(which added this
+> test cases):
+> 26_10_2009-(Miao-Xie<miaox@cn.fujitsu.com>)- 
+> Add_new_testcases_for_ext4_new_features_V3.patch.regenerated,
+>
+> 5) I used a single 680GB LVM partition to test this.
+>
+> Kindly let us know your thoughts on this failures.
+
+Cheers, Andreas
+--
+Andreas Dilger
+Sr. Staff Engineer, Lustre Group
+Sun Microsystems of Canada, Inc.
+
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
@@ -294,16 +155,7 @@ is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
-------_=_NextPart_001_01CA4E0A.E7446530
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------_=_NextPart_001_01CA4E0A.E7446530--
-
