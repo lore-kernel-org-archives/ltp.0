@@ -1,35 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1N3ZnJ-0006Ge-Bi
-	for ltp-list@lists.sourceforge.net; Thu, 29 Oct 2009 18:32:21 +0000
-Received: from e7.ny.us.ibm.com ([32.97.182.137])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N3ZnD-0005Rk-12
-	for ltp-list@lists.sourceforge.net; Thu, 29 Oct 2009 18:32:21 +0000
-Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
-	by e7.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9TISgXm025808
-	for <ltp-list@lists.sourceforge.net>; Thu, 29 Oct 2009 14:28:42 -0400
-Received: from d03av06.boulder.ibm.com (d03av06.boulder.ibm.com [9.17.195.245])
-	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n9TIW8gx104856
-	for <ltp-list@lists.sourceforge.net>; Thu, 29 Oct 2009 14:32:09 -0400
-Received: from d03av06.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av06.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id n9TIXYos018579
-	for <ltp-list@lists.sourceforge.net>; Thu, 29 Oct 2009 12:33:34 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1256650551.4957.33.camel@subratamodak.linux.ibm.com>
-References: <4AE54BCA.7060104@cn.fujitsu.com>
-	<1256563577.4929.35.camel@subratamodak.linux.ibm.com>
-	<C3A9583B-F6C5-4BCC-8D7E-876FA4D62D57@sun.com>
-	<1256650551.4957.33.camel@subratamodak.linux.ibm.com>
-Date: Fri, 30 Oct 2009 00:01:54 +0530
-Message-Id: <1256841114.5210.25.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Add new testcases for ext4 new features - V3
-Reply-To: subrata@linux.vnet.ibm.com
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1N2ClI-0004fo-1D
+	for ltp-list@lists.sourceforge.net; Sun, 25 Oct 2009 23:44:36 +0000
+Received: from fmmailgate03.web.de ([217.72.192.234])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N2ClB-0003lW-Fg
+	for ltp-list@lists.sourceforge.net; Sun, 25 Oct 2009 23:44:35 +0000
+Date: Mon, 26 Oct 2009 01:43:41 +0100
+From: =?iso-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
+Content-Type: multipart/mixed; boundary=----------rbf2uAyqbtfkLXYoHJ5A5l
+MIME-Version: 1.0
+References: <op.u00vt9vju2flwt@debian>
+	<1255436013.8438.34.camel@subratamodak.linux.ibm.com>
+	<1255890120.5359.18.camel@subratamodak.linux.ibm.com>
+Message-ID: <op.u2dtmvt9u2flwt@debian>
+In-Reply-To: <1255890120.5359.18.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] New test?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,292 +27,507 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Miao Xie <miaox@cn.fujitsu.com>
-Cc: LTP-ML <ltp-list@lists.sourceforge.net>
+To: subrata@linux.vnet.ibm.com
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Miao,
+------------rbf2uAyqbtfkLXYoHJ5A5l
+Content-Type: text/plain; format=flowed; delsp=yes; charset=iso-8859-2
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2009-10-27 at 19:05 +0530, Subrata Modak wrote: 
-> Hi Andreas,
-> 
-> Thanks for taking a look and clarifying the issues.
-> 
-> On Mon, 2009-10-26 at 16:15 -0600, Andreas Dilger wrote:
-> > On 2009-10-26, at 07:26, Subrata Modak wrote:
-> > > We had recently added EXT4 testcases to LTP. As the author of these
-> > > tests mentioned, we saw 2 such failures in subdirectory limit test:
-> > >
-> > > Ext4 subdir limit test
-> > > ext4-subdir-limit    0  TINFO  :  Num of dirs to create: 65537, Dir  
-> > > name
-> > > len: short name                        Parent dir: mnt_point, Block
-> > > size: 1024
-> > > mke2fs 1.41.9 (22-Aug-2009)
-> > > tune2fs 1.41.9 (22-Aug-2009)
-> > > Setting test filesystem flag
-> > > /dev/VG1_EXT4/LV1_EXT4: The test_fs flag is set (and ext4 is  
-> > > available).
-> > > CLEARED.
-> > 
-> > You don't need to set the test_fs flag for modern ext4.
-> 
-> Miao,
-> 
-> Can we change this ?
-> 
-> > 
-> > > /dev/VG1_EXT4/LV1_EXT4: clean, 10/8847360 files, 2297019/141557760
-> > > blocks
-> > > dumpe2fs 1.41.9 (22-Aug-2009)
-> > > ext4-subdir-limit    1  TPASS  :  ext4 subdir limit test pass
-> > > ext4-subdir-limit    0  TINFO  :  Num of dirs to create: 65537, Dir  
-> > > name
-> > > len: long name                         Parent dir: mnt_point, Block
-> > > size: 1024
-> > > mkdir: No space left on device
-> > > ext4-subdir-limit    2  TFAIL  :  failed to create directories - 19524
-> > > ext4-subdir-limit    0  TINFO  :  Num of dirs to create: 65537, Dir  
-> > > name
-> > > len: short name                        Parent dir: mnt_point/sub,  
-> > > Block
-> > > size: 1024
-> > > mke2fs 1.41.9 (22-Aug-2009)
-> > > tune2fs 1.41.9 (22-Aug-2009)
-> > > Setting test filesystem flag
-> > > /dev/VG1_EXT4/LV1_EXT4: The test_fs flag is set (and ext4 is  
-> > > available).
-> > > CLEARED.
-> > > /dev/VG1_EXT4/LV1_EXT4: clean, 12/8847360 files, 2297037/141557760
-> > > blocks
-> > > dumpe2fs 1.41.9 (22-Aug-2009)
-> > > ext4-subdir-limit    3  TPASS  :  ext4 subdir limit test pass
-> > > ext4-subdir-limit    0  TINFO  :  Num of dirs to create: 65537, Dir  
-> > > name
-> > > len: long name                         Parent dir: mnt_point/sub,  
-> > > Block
-> > > size: 1024
-> > > mkdir: No space left on device
-> > > ext4-subdir-limit    4  TFAIL  :  failed to create directories - 19483
-> > > ext4-subdir-limit    0  TINFO  :  Num of dirs to create: 65537, Dir  
-> > > name
-> > > len: short name                        Parent dir: mnt_point, Block
-> > > size: 2048
-> > >
-> > > Is this a known issue for EXT4 ?
-> > 
-> > Creating many long filenames (255 bytes) in a 1kB block filesystem is a
-> > known issue that is not expected to be fixed (at least I'm not aware of
-> > any work being done in this area).  A vast majority of filesystems
-> > today are formatted with 4kB blocks (due to disk size) and the  
-> > overhead of
-> > managing 1kB block filesystems makes these only marginally used, and it
-> > is also very rare to have applications with such large filenames.
-> 
-> Ok.
-> 
-> > 
-> > > We also uncovered that the tests gives a decent 50% lines and over 61%
-> > > function coverage for EXT4 code. Please find the individual coverage
-> > > under EXT4 attached.
-> > 
-> > Interesting to see this.
-> 
-> And the good news continues. I did a complete run of the tests this
-> time. Unlike last time where it was running for more than 48 hours owing
-> to huge FS size(680GB), i ran it on a small 135GB partition this time.
-> It took around 40 hours completing the entire run which also include the
-> online-defrag tests. Guess, the new Code Coverage results are:
-> 
-> Lines:		56.1%,
-> Functions:	66.4%,
-> 
-> However, it is also accompanied by the following failures in the online-defrag part:
-> ========================================================================================
-> ext4-online-defrag    0  TINFO  :  defrag type: 1, defrag obj: 3, block size: 1024
-> mke2fs 1.41.9 (22-Aug-2009)
-> tune2fs 1.41.9 (22-Aug-2009)
-> Setting test filesystem flag
-> dumpe2fs 1.41.9 (22-Aug-2009)
-> dumpe2fs 1.41.9 (22-Aug-2009)
-> 69630819+0 records in
-> 69630819+0 records out
-> 71301958656 bytes (71 GB) copied, 2694.12 s, 26.5 MB/s
-> ext4-online-defrag    3  TFAIL  :  e4defrag returned failure
-> ext4-online-defrag    0  TINFO  :  defrag type: 2, defrag obj: 1, block size: 1024
-> mke2fs 1.41.9 (22-Aug-2009)
-> tune2fs 1.41.9 (22-Aug-2009)
-> ...
-> ext4-online-defrag    0  TINFO  :  defrag type: 2, defrag obj: 3, block size: 1024
-> mke2fs 1.41.9 (22-Aug-2009)
-> tune2fs 1.41.9 (22-Aug-2009)
-> Setting test filesystem flag
-> dumpe2fs 1.41.9 (22-Aug-2009)
-> dumpe2fs 1.41.9 (22-Aug-2009)
-> 69630819+0 records in
-> 69630819+0 records out
-> 71301958656 bytes (71 GB) copied, 2623.31 s, 27.2 MB/s
-> ext4-online-defrag    6  TFAIL  :  e4defrag returned failure
-> ext4-online-defrag    0  TINFO  :  defrag type: 3, defrag obj: 1, block size: 1024
-> mke2fs 1.41.9 (22-Aug-2009)
-> tune2fs 1.41.9 (22-Aug-2009)
-> Setting test filesystem flag
-> File is not regular file
->  "/dev/VG1_EXT4/LV1_EXT4"
-> ext4-online-defrag    7  TFAIL  :  e4defrag returned failure
-> ext4-online-defrag    0  TINFO  :  defrag type: 3, defrag obj: 2, block size: 1024
-> mke2fs 1.41.9 (22-Aug-2009)
-> tune2fs 1.41.9 (22-Aug-2009)
-> Setting test filesystem flag
-> 40+0 records in
-> 40+0 records out
-> 41943040 bytes (42 MB) copied, 0.737014 s, 56.9 MB/s
-> write: Success
-> Filesystem           1K-blocks      Used Available Use% Mounted on
-> /dev/sda1             25798712  10581072  13907140  44% /
-> udev                   1028576       152   1028424   1% /dev
-> /dev/sda2              4127108    126572   3790888   4% /boot
-> /dev/mapper/VG_EXT3_TO_EXT4_MIGRATION_TEST1-LV_EXT3_TO_EXT4_MIGRATION_TEST2
->                       10321208    154100   9642820   2% /MY_EXT4
-> /dev/mapper/VG_EXT3_TO_EXT4_MIGRATION_TEST1-LV_EXT3_TO_EXT4_MIGRATION_TEST1
->                       10321208    154232   9642688   2% /MY_EXT3
-> /dev/mapper/VG1_EXT4-LV1_EXT4
->                      139299998 139259037     40961 100% /root/subrata/ltp/ltp-full-20090930/testcases/bin/mnt_point
-> File is not regular file
->  "/dev/VG1_EXT4/LV1_EXT4"
-> ext4-online-defrag    8  TFAIL  :  e4defrag returned failure
-> ext4-online-defrag    0  TINFO  :  defrag type: 3, defrag obj: 3, block size: 1024
-> mke2fs 1.41.9 (22-Aug-2009)
-> tune2fs 1.41.9 (22-Aug-2009)
-> Setting test filesystem flag
-> dumpe2fs 1.41.9 (22-Aug-2009)
-> dumpe2fs 1.41.9 (22-Aug-2009)
-> 69630819+0 records in
-> 69630819+0 records out
-> 71301958656 bytes (71 GB) copied, 2544.39 s, 28.0 MB/s
-> File is not regular file
->  "/dev/VG1_EXT4/LV1_EXT4"
-> ext4-online-defrag    9  TFAIL  :  e4defrag returned failure
-> ...
-> ext4-online-defrag    0  TINFO  :  defrag type: 3, defrag obj: 2, block size: 4096
-> mke2fs 1.41.9 (22-Aug-2009)
-> tune2fs 1.41.9 (22-Aug-2009)
-> Setting test filesystem flag
-> 40+0 records in
-> 40+0 records out
-> 41943040 bytes (42 MB) copied, 0.306366 s, 137 MB/s
-> write: Success
-> write: Success
-> write: Success
-> write: Success
-> write: Success
-> Filesystem           1K-blocks      Used Available Use% Mounted on
-> /dev/sda1             25798712  11441524  13046688  47% /
-> udev                   1028576       152   1028424   1% /dev
-> /dev/sda2              4127108    126572   3790888   4% /boot
-> /dev/mapper/VG_EXT3_TO_EXT4_MIGRATION_TEST1-LV_EXT3_TO_EXT4_MIGRATION_TEST2
->                       10321208    154100   9642820   2% /MY_EXT4
-> /dev/mapper/VG_EXT3_TO_EXT4_MIGRATION_TEST1-LV_EXT3_TO_EXT4_MIGRATION_TEST1
->                       10321208    154232   9642688   2% /MY_EXT3
-> /dev/mapper/VG1_EXT4-LV1_EXT4
->                      139336680 139295720     40960 100% /root/subrata/ltp/ltp-full-20090930/testcases/bin/mnt_point
-> File is not regular file
->  "/dev/VG1_EXT4/LV1_EXT4"
-> ext4-online-defrag   17  TFAIL  :  e4defrag returned failure
-> ext4-online-defrag    0  TINFO  :  defrag type: 3, defrag obj: 3, block size: 4096
-> mke2fs 1.41.9 (22-Aug-2009)
-> tune2fs 1.41.9 (22-Aug-2009)
-> Setting test filesystem flag
-> dumpe2fs 1.41.9 (22-Aug-2009)
-> dumpe2fs 1.41.9 (22-Aug-2009)
-> 17392985+0 records in
-> 17392985+0 records out
-> 71241666560 bytes (71 GB) copied, 1019.79 s, 69.9 MB/s
-> File is not regular file
->  "/dev/VG1_EXT4/LV1_EXT4"
-> ext4-online-defrag   18  TFAIL  :  e4defrag returned failure
-> incrementing stop
-> ========================================================================================
-> 
-> Miao,
-> 
-> Did you see these failure on your machine ?
+On Sun, 18 Oct 2009 20:22:00 +0200, Subrata Modak =20
+<subrata@linux.vnet.ibm.com> wrote:
 
-Your take on this ?
+> Jiri,
+>
+> Any further thoughts on this ?
 
-> Some more points are:
-> 
->      1. Can you please run these tests against the backdrop of the
->         Makefile changes in LTP to see all the build/install/run are
->         executing fine,
+Yes, see the attachment.
 
-Could you please verify this before this release. Let me know a patch if
-you find any discrepancy :-)
+I created the directories for the different tests (rt_sigtimedwait, =20
+sigwaitinfo etc.), but to avoid copy-pasting the code, they share the sam=
+e =20
+source. Please, tell me if that is OK.
 
-> 2. Can you also please put all the utilities version info at the
->         beginning of the test rather than printing them again and
->         again(like mke2fs 1.41.9 (22-Aug-2009),tune2fs 1.41.9
->         (22-Aug-2009),dumpe2fs 1.41.9 (22-Aug-2009),dumpe2fs 1.41.9
->         (22-Aug-2009))
+Regards
+     Jiri Palecek
+> On Tue, 2009-10-13 at 17:43 +0530, Subrata Modak wrote:
+>> Hey Jiri,
+>>
+>> On Tue, 2009-09-29 at 16:28 +0200, Ji=F8=ED Pale=E8ek wrote:
+>> > Hello,
+>> >
+>> > I've decided to create a test for the rt_sigwaitinfo syscall. There =
+=20
+>> are
+>> > other functions with similar interface (defined by POSIX) in libc -
+>> > particularly sigwait, sigtimedwait and sigwaitinfo. The rt_sigwaitin=
+fo
+>>
+>> The sigwait, sigtimedwait and sigwaitinfo testcases are not in LTP.
+>>
+>> > test could easily tests these too, so I wonder whether we want to te=
+st
+>> > these too, and if yes, whether these tests can be located in the sam=
+e
+>> > executable.
+>>
+>> If you already have the logic to write the above tests, then please
+>> create separate tests for sigwait, sigtimedwait and sigwaitinfo
+>> (separate directories as well), and separate for rt_sigwaitinfo syscal=
+l.
+>>
+>> Regards--
+>> Subrata
+>>
+>> >
+>> > Regards
+>> >      Jiri Palecek
+>> >
+>>
+>>
+>> ----------------------------------------------------------------------=
+--------
+>> Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+>> is the only developer event you need to attend this year. Jumpstart yo=
+ur
+>> developing skills, take BlackBerry mobile applications to market and =20
+>> stay
+>> ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+>> http://p.sf.net/sfu/devconference
+>> _______________________________________________
+>> Ltp-list mailing list
+>> Ltp-list@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>
 
-This can go in the next month release as well, if you do not have time
-to fix now. Else, i have a bug mouth to eat this as well ;-)
 
-Regards--
-Subrata
 
-> 
-> Regards--
-> Subrata
-> 
-> > 
-> > > Following the various system information on which we ran the test:
-> > > 1) uname -a
-> > > Linux 2.6.31 #1 SMP Tue Oct 20 22:57:16 IST 2009 i686 i686 i386
-> > > GNU/Linux
-> > >
-> > > 2) grep -i ext4 .config
-> > > CONFIG_EXT4_FS=m
-> > > CONFIG_EXT4DEV_COMPAT=y
-> > > CONFIG_EXT4_FS_XATTR=y
-> > > CONFIG_EXT4_FS_POSIX_ACL=y
-> > > CONFIG_EXT4_FS_SECURITY=y
-> > >
-> > > 3) mkfs.ext4 -V
-> > > mke2fs 1.41.9 (22-Aug-2009)
-> > >        Using EXT2FS Library version 1.41.9
-> > > e2fsprogs-1.41.9
-> > > e2fsprogs-libs-1.41.9
-> > >
-> > > 4) LTP used:
-> > > Unreleased CVS repository. See the URL below to download:
-> > > http://ltp.sourceforge.net/documentation/how-to/ltp.php#_3.1,
-> > >
-> > > You can also also directly review the attached patch(which added this
-> > > test cases):
-> > > 26_10_2009-(Miao-Xie<miaox@cn.fujitsu.com>)- 
-> > > Add_new_testcases_for_ext4_new_features_V3.patch.regenerated,
-> > >
-> > > 5) I used a single 680GB LVM partition to test this.
-> > >
-> > > Kindly let us know your thoughts on this failures.
-> > 
-> > Cheers, Andreas
-> > --
-> > Andreas Dilger
-> > Sr. Staff Engineer, Lustre Group
-> > Sun Microsystems of Canada, Inc.
-> > 
-> ------------------------------------------------------------------------------
-> Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-> is the only developer event you need to attend this year. Jumpstart your
-> developing skills, take BlackBerry mobile applications to market and stay 
-> ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-> http://p.sf.net/sfu/devconference
-> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
+--=20
+Using Opera's revolutionary e-mail client: http://www.opera.com/mail/
+------------rbf2uAyqbtfkLXYoHJ5A5l
+Content-Disposition: attachment; filename=sigwaitinfo.patch
+Content-Type: application/octet-stream; name=sigwaitinfo.patch
+Content-Transfer-Encoding: Base64
 
+Y29tbWl0IDE4YjQwMTFhNTJkYzkxNWYxNzgwNTA1YzZhNTI5ZDhhZWQyMWFlYTkK
+QXV0aG9yOiBKaXJpIFBhbGVjZWsgPGppcmthQGRlYmlhbi4obm9uZSk+CkRhdGU6
+ICAgVHVlIE9jdCA2IDIzOjI2OjQ0IDIwMDkgKzAyMDAKCiAgICBOZXcgc2lnd2Fp
+dGluZm8gdGVzdAoKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
+bHMvcnRfc2lndGltZWR3YWl0L01ha2VmaWxlIGIvdGVzdGNhc2VzL2tlcm5lbC9z
+eXNjYWxscy9ydF9zaWd0aW1lZHdhaXQvTWFrZWZpbGUKbmV3IGZpbGUgbW9kZSAx
+MDA2NDQKaW5kZXggMDAwMDAwMC4uYjBkNjcyYgotLS0gL2Rldi9udWxsCisrKyBi
+L3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcnRfc2lndGltZWR3YWl0L01ha2Vm
+aWxlCkBAIC0wLDAgKzEsMzQgQEAKKyMKKyMgIENvcHlyaWdodCAoYykgSW50ZXJu
+YXRpb25hbCBCdXNpbmVzcyBNYWNoaW5lcyAgQ29ycC4sIDIwMDkKKyMKKyMgIFRo
+aXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyAgeW91IGNhbiByZWRpc3RyaWJ1
+dGUgaXQgYW5kL29yIG1vZGlmeQorIyAgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRo
+ZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkKKyMg
+IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJzaW9uIDIg
+b2YgdGhlIExpY2Vuc2UsIG9yCisjICAoYXQgeW91ciBvcHRpb24pIGFueSBsYXRl
+ciB2ZXJzaW9uLgorIworIyAgVGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVkIGlu
+IHRoZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsCisjICBidXQgV0lUSE9V
+VCBBTlkgV0FSUkFOVFk7ICB3aXRob3V0IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFu
+dHkgb2YKKyMgIE1FUkNIQU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJ
+Q1VMQVIgUFVSUE9TRS4gIFNlZQorIyAgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBM
+aWNlbnNlIGZvciBtb3JlIGRldGFpbHMuCisjCisjICBZb3Ugc2hvdWxkIGhhdmUg
+cmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5z
+ZQorIyAgYWxvbmcgd2l0aCB0aGlzIHByb2dyYW07ICBpZiBub3QsIHdyaXRlIHRv
+IHRoZSBGcmVlIFNvZnR3YXJlCisjICBGb3VuZGF0aW9uLCBJbmMuLCA1MSBGcmFu
+a2xpbiBTdCwgRmlmdGggRmxvb3IsIEJvc3RvbiwgTUEgIDAyMTEwLTEzMDEgIFVT
+QQorIworCitDRkxBR1MgKz0gLUkuLi8uLi8uLi8uLi9pbmNsdWRlIC1XYWxsIC1P
+MiAtRFRFU1RfUlRfU0lHVElNRURXQUlUCitMRExJQlMgKz0gLUwuLi8uLi8uLi8u
+Li9saWIgLWxsdHAgCisKK1NSQ1MgICAgPSAkKHdpbGRjYXJkICouYykKK1RBUkdF
+VFMgPSAkKHBhdHN1YnN0ICUuYywlLCQoU1JDUykpIHJ0X3NpZ3RpbWVkd2FpdDAx
+CisKK2FsbDogJChUQVJHRVRTKQorCitydF9zaWd0aW1lZHdhaXQwMS5vOiAuLi9z
+aWd3YWl0aW5mby9zaWd3YWl0aW5mbzAxLmMKKwkkKENDKSAtYyAtbyAkQCAkKENQ
+UEZMQUdTKSAkKENGTEFHUykgJF4KKworaW5zdGFsbDoKKwlAc2V0IC1lOyBmb3Ig
+aSBpbiAkKFRBUkdFVFMpOyBkbyBsbiAtZiAkJGkgLi4vLi4vLi4vYmluLyQkaSA7
+IGRvbmUKKworY2xlYW46CisJcm0gLWYgJChUQVJHRVRTKQpkaWZmIC0tZ2l0IGEv
+dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zaWd0aW1lZHdhaXQvTWFrZWZpbGUg
+Yi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NpZ3RpbWVkd2FpdC9NYWtlZmls
+ZQpuZXcgZmlsZSBtb2RlIDEwMDY0NAppbmRleCAwMDAwMDAwLi5hNzUwZDdhCi0t
+LSAvZGV2L251bGwKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zaWd0
+aW1lZHdhaXQvTWFrZWZpbGUKQEAgLTAsMCArMSwzNCBAQAorIworIyAgQ29weXJp
+Z2h0IChjKSBJbnRlcm5hdGlvbmFsIEJ1c2luZXNzIE1hY2hpbmVzICBDb3JwLiwg
+MjAwOQorIworIyAgVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7ICB5b3Ug
+Y2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5CisjICBpdCB1bmRlciB0
+aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1
+Ymxpc2hlZCBieQorIyAgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsgZWl0
+aGVyIHZlcnNpb24gMiBvZiB0aGUgTGljZW5zZSwgb3IKKyMgIChhdCB5b3VyIG9w
+dGlvbikgYW55IGxhdGVyIHZlcnNpb24uCisjCisjICBUaGlzIHByb2dyYW0gaXMg
+ZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBpdCB3aWxsIGJlIHVzZWZ1bCwK
+KyMgIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgIHdpdGhvdXQgZXZlbiB0aGUg
+aW1wbGllZCB3YXJyYW50eSBvZgorIyAgTUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5F
+U1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2VlCisjICB0aGUgR05VIEdl
+bmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KKyMKKyMgIFlv
+dSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFs
+IFB1YmxpYyBMaWNlbnNlCisjICBhbG9uZyB3aXRoIHRoaXMgcHJvZ3JhbTsgIGlm
+IG5vdCwgd3JpdGUgdG8gdGhlIEZyZWUgU29mdHdhcmUKKyMgIEZvdW5kYXRpb24s
+IEluYy4sIDUxIEZyYW5rbGluIFN0LCBGaWZ0aCBGbG9vciwgQm9zdG9uLCBNQSAg
+MDIxMTAtMTMwMSAgVVNBCisjCisKK0NGTEFHUyArPSAtSS4uLy4uLy4uLy4uL2lu
+Y2x1ZGUgLVdhbGwgLU8yIC1EVEVTVF9TSUdUSU1FRFdBSVQKK0xETElCUyArPSAt
+TC4uLy4uLy4uLy4uL2xpYiAtbGx0cCAKKworU1JDUyAgICA9ICQod2lsZGNhcmQg
+Ki5jKQorVEFSR0VUUyA9ICQocGF0c3Vic3QgJS5jLCUsJChTUkNTKSkgc2lndGlt
+ZWR3YWl0MDEKKworYWxsOiAkKFRBUkdFVFMpCisKK3NpZ3RpbWVkd2FpdDAxLm86
+IC4uL3NpZ3dhaXRpbmZvL3NpZ3dhaXRpbmZvMDEuYworCSQoQ0MpIC1jIC1vICRA
+ICQoQ1BQRkxBR1MpICQoQ0ZMQUdTKSAkXgorCitpbnN0YWxsOgorCUBzZXQgLWU7
+IGZvciBpIGluICQoVEFSR0VUUyk7IGRvIGxuIC1mICQkaSAuLi8uLi8uLi9iaW4v
+JCRpIDsgZG9uZQorCitjbGVhbjoKKwlybSAtZiAkKFRBUkdFVFMpCmRpZmYgLS1n
+aXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NpZ3dhaXQvTWFrZWZpbGUg
+Yi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NpZ3dhaXQvTWFrZWZpbGUKbmV3
+IGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggMDAwMDAwMC4uMmMzYTQ2NQotLS0gL2Rl
+di9udWxsCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2lnd2FpdC9N
+YWtlZmlsZQpAQCAtMCwwICsxLDM0IEBACisjCisjICBDb3B5cmlnaHQgKGMpIElu
+dGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGluZXMgIENvcnAuLCAyMDA5CisjCisj
+ICBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgIHlvdSBjYW4gcmVkaXN0
+cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKKyMgIGl0IHVuZGVyIHRoZSB0ZXJtcyBv
+ZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXMgcHVibGlzaGVkIGJ5
+CisjICB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lv
+biAyIG9mIHRoZSBMaWNlbnNlLCBvcgorIyAgKGF0IHlvdXIgb3B0aW9uKSBhbnkg
+bGF0ZXIgdmVyc2lvbi4KKyMKKyMgIFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRl
+ZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLAorIyAgYnV0IFdJ
+VEhPVVQgQU5ZIFdBUlJBTlRZOyAgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdh
+cnJhbnR5IG9mCisjICBNRVJDSEFOVEFCSUxJVFkgb3IgRklUTkVTUyBGT1IgQSBQ
+QVJUSUNVTEFSIFBVUlBPU0UuICBTZWUKKyMgIHRoZSBHTlUgR2VuZXJhbCBQdWJs
+aWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgorIworIyAgWW91IHNob3VsZCBo
+YXZlIHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExp
+Y2Vuc2UKKyMgIGFsb25nIHdpdGggdGhpcyBwcm9ncmFtOyAgaWYgbm90LCB3cml0
+ZSB0byB0aGUgRnJlZSBTb2Z0d2FyZQorIyAgRm91bmRhdGlvbiwgSW5jLiwgNTEg
+RnJhbmtsaW4gU3QsIEZpZnRoIEZsb29yLCBCb3N0b24sIE1BICAwMjExMC0xMzAx
+ICBVU0EKKyMKKworQ0ZMQUdTICs9IC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAtV2Fs
+bCAtTzIgLURURVNUX1NJR1dBSVQKK0xETElCUyArPSAtTC4uLy4uLy4uLy4uL2xp
+YiAtbGx0cCAKKworU1JDUyAgICA9ICQod2lsZGNhcmQgKi5jKQorVEFSR0VUUyA9
+ICQocGF0c3Vic3QgJS5jLCUsJChTUkNTKSkgc2lnd2FpdDAxCisKK2FsbDogJChU
+QVJHRVRTKQorCitzaWd3YWl0MDEubzogLi4vc2lnd2FpdGluZm8vc2lnd2FpdGlu
+Zm8wMS5jCisJJChDQykgLWMgLW8gJEAgJChDUFBGTEFHUykgJChDRkxBR1MpICRe
+CisKK2luc3RhbGw6CisJQHNldCAtZTsgZm9yIGkgaW4gJChUQVJHRVRTKTsgZG8g
+bG4gLWYgJCRpIC4uLy4uLy4uL2Jpbi8kJGkgOyBkb25lCisKK2NsZWFuOgorCXJt
+IC1mICQoVEFSR0VUUykKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lz
+Y2FsbHMvc2lnd2FpdGluZm8vTWFrZWZpbGUgYi90ZXN0Y2FzZXMva2VybmVsL3N5
+c2NhbGxzL3NpZ3dhaXRpbmZvL01ha2VmaWxlCm5ldyBmaWxlIG1vZGUgMTAwNjQ0
+CmluZGV4IDAwMDAwMDAuLjI5OWQwMjgKLS0tIC9kZXYvbnVsbAorKysgYi90ZXN0
+Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NpZ3dhaXRpbmZvL01ha2VmaWxlCkBAIC0w
+LDAgKzEsMzEgQEAKKyMKKyMgIENvcHlyaWdodCAoYykgSW50ZXJuYXRpb25hbCBC
+dXNpbmVzcyBNYWNoaW5lcyAgQ29ycC4sIDIwMDkKKyMKKyMgIFRoaXMgcHJvZ3Jh
+bSBpcyBmcmVlIHNvZnR3YXJlOyAgeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5k
+L29yIG1vZGlmeQorIyAgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2Vu
+ZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkKKyMgIHRoZSBGcmVl
+IFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJzaW9uIDIgb2YgdGhlIExp
+Y2Vuc2UsIG9yCisjICAoYXQgeW91ciBvcHRpb24pIGFueSBsYXRlciB2ZXJzaW9u
+LgorIworIyAgVGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3Bl
+IHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsCisjICBidXQgV0lUSE9VVCBBTlkgV0FS
+UkFOVFk7ICB3aXRob3V0IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFudHkgb2YKKyMg
+IE1FUkNIQU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVS
+UE9TRS4gIFNlZQorIyAgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGZv
+ciBtb3JlIGRldGFpbHMuCisjCisjICBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQg
+YSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZQorIyAgYWxv
+bmcgd2l0aCB0aGlzIHByb2dyYW07ICBpZiBub3QsIHdyaXRlIHRvIHRoZSBGcmVl
+IFNvZnR3YXJlCisjICBGb3VuZGF0aW9uLCBJbmMuLCA1MSBGcmFua2xpbiBTdCwg
+RmlmdGggRmxvb3IsIEJvc3RvbiwgTUEgIDAyMTEwLTEzMDEgIFVTQQorIworCitD
+RkxBR1MgKz0gLUkuLi8uLi8uLi8uLi9pbmNsdWRlIC1XYWxsIC1PMiAtRFRFU1Rf
+U0lHV0FJVElORk8KK0xETElCUyArPSAtTC4uLy4uLy4uLy4uL2xpYiAtbGx0cCAK
+KworU1JDUyAgICA9ICQod2lsZGNhcmQgKi5jKQorVEFSR0VUUyA9ICQocGF0c3Vi
+c3QgJS5jLCUsJChTUkNTKSkKKworYWxsOiAkKFRBUkdFVFMpCisKK2luc3RhbGw6
+CisJQHNldCAtZTsgZm9yIGkgaW4gJChUQVJHRVRTKTsgZG8gbG4gLWYgJCRpIC4u
+Ly4uLy4uL2Jpbi8kJGkgOyBkb25lCisKK2NsZWFuOgorCXJtIC1mICQoVEFSR0VU
+UykKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2lnd2Fp
+dGluZm8vc2lnd2FpdGluZm8wMS5jIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxs
+cy9zaWd3YWl0aW5mby9zaWd3YWl0aW5mbzAxLmMKbmV3IGZpbGUgbW9kZSAxMDA2
+NDQKaW5kZXggMDAwMDAwMC4uZmY5Y2E4ZgotLS0gL2Rldi9udWxsCisrKyBiL3Rl
+c3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvc2lnd2FpdGluZm8vc2lnd2FpdGluZm8w
+MS5jCkBAIC0wLDAgKzEsNDM1IEBACisvKgorICogQ29weXJpZ2h0IChjKSBKaXJp
+IFBhbGVjZWs8anBhbGVjZWtAd2ViLmRlPiwgMjAwOQorICoKKyAqIFRoaXMgcHJv
+Z3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBh
+bmQvb3IgbW9kaWZ5IGl0CisgKiB1bmRlciB0aGUgdGVybXMgb2YgdmVyc2lvbiAy
+IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcworICogcHVibGlz
+aGVkIGJ5IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24uCisgKgorICogVGhp
+cyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd291
+bGQgYmUgdXNlZnVsLCBidXQKKyAqIFdJVEhPVVQgQU5ZIFdBUlJBTlRZOyB3aXRo
+b3V0IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFudHkgb2YKKyAqIE1FUkNIQU5UQUJJ
+TElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4KKyAqCisg
+KiBGdXJ0aGVyLCB0aGlzIHNvZnR3YXJlIGlzIGRpc3RyaWJ1dGVkIHdpdGhvdXQg
+YW55IHdhcnJhbnR5IHRoYXQgaXQgaXMKKyAqIGZyZWUgb2YgdGhlIHJpZ2h0ZnVs
+IGNsYWltIG9mIGFueSB0aGlyZCBwZXJzb24gcmVnYXJkaW5nIGluZnJpbmdlbWVu
+dAorICogb3IgdGhlIGxpa2UuICBBbnkgbGljZW5zZSBwcm92aWRlZCBoZXJlaW4s
+IHdoZXRoZXIgaW1wbGllZCBvcgorICogb3RoZXJ3aXNlLCBhcHBsaWVzIG9ubHkg
+dG8gdGhpcyBzb2Z0d2FyZSBmaWxlLiAgUGF0ZW50IGxpY2Vuc2VzLCBpZgorICog
+YW55LCBwcm92aWRlZCBoZXJlaW4gZG8gbm90IGFwcGx5IHRvIGNvbWJpbmF0aW9u
+cyBvZiB0aGlzIHByb2dyYW0gd2l0aAorICogb3RoZXIgc29mdHdhcmUsIG9yIGFu
+eSBvdGhlciBwcm9kdWN0IHdoYXRzb2V2ZXIuCisgKgorICogWW91IHNob3VsZCBo
+YXZlIHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExp
+Y2Vuc2UgYWxvbmcKKyAqIHdpdGggdGhpcyBwcm9ncmFtOyBpZiBub3QsIHdyaXRl
+IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24sIEluYy4sIDU5CisgKiBUZW1w
+bGUgUGxhY2UgLSBTdWl0ZSAzMzAsIEJvc3RvbiBNQSAwMjExMS0xMzA3LCBVU0Eu
+CisgKi8KKyNpbmNsdWRlICJ0ZXN0LmgiCisjaW5jbHVkZSAidXNjdGVzdC5oIgor
+I2luY2x1ZGUgPGVycm5vLmg+CisjaW5jbHVkZSA8c2lnbmFsLmg+CisjaW5jbHVk
+ZSAiLi4vdXRpbHMvaW5jbHVkZV9qX2guaCIKKyNpbmNsdWRlICIuLi91dGlscy9j
+b21tb25fal9oLmMiCisjaW5jbHVkZSA8bGltaXRzLmg+CisjaW5jbHVkZSAibGlu
+dXhfc3lzY2FsbF9udW1iZXJzLmgiCisKKyNkZWZpbmUgU1VDQ0VFRF9PUl9ESUUo
+c3lzY2FsbCwgbWVzc2FnZSwgLi4uKQkJCQkJCQkJCQkJCQkJXAorCShlcnJubyA9
+IDAsCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJXAorCQkoe2ludCByZXQ9
+c3lzY2FsbChfX1ZBX0FSR1NfXyk7CQkJCQkJCQkJCQkJCQkJCQkJCVwKKwkJCWlm
+KHJldD09LTEpCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCVwKKwkJCQl0c3Rf
+YnJrbShUQlJPS3xURVJSTk8sIGNsZWFudXAsIG1lc3NhZ2UpOwkJCQkJCQkJCQkJ
+CVwKKwkJCXJldDt9KSkKKworLyogUmVwb3J0IHN1Y2Nlc3MgaWZmIFRFU1RfUkVU
+VVJOIGFuZCBURVNUX0VSUk5PIGFyZSBlcXVhbCB0bworCSBleHBfcmV0dXJuIGFu
+ZCBleHBfZXJybm8sIHJlc3AuLCBhbmQgY29uZCBpcyB0cnVlLiBJZiBjb25kIGlz
+IG5vdAorCSB0cnVlLCByZXBvcnQgY29uZGl0aW9uX2Vycm1zZworKi8KK3N0YXRp
+YyB2b2lkIHJlcG9ydF9zdWNjZXNzX2NvbmQoY29uc3QgY2hhciAqZnVuYywgY29u
+c3QgY2hhciogZmlsZSwgaW50IGxpbmUsCisJCQkJCQkJCQkJCQkJIGxvbmcgZXhw
+X3JldHVybiwgaW50IGV4cF9lcnJubywgaW50IGNvbmRpdGlvbiwgY2hhciogY29u
+ZGl0aW9uX2Vycm1zZykKK3sKKwlpZiAoZXhwX3JldHVybiA9PSBURVNUX1JFVFVS
+TiAmJiAoZXhwX3JldHVybiAhPSAtMSB8fCBleHBfZXJybm8gPT0gVEVTVF9FUlJO
+TykpCisJCWlmKGNvbmRpdGlvbikKKwkJCXRzdF9yZXNtKFRQQVNTLCAiVGVzdCBw
+YXNzZWQiKTsKKwkJZWxzZQorCQkJdHN0X3Jlc20oVEZBSUwsICIlcyAoJXM6ICVk
+KTogJXMiLCBmdW5jLCBmaWxlLCBsaW5lLCBjb25kaXRpb25fZXJybXNnKTsKKwll
+bHNlIGlmKFRFU1RfUkVUVVJOICE9IC0xKQorCQl0c3RfcmVzbShURkFJTCwgIiVz
+ICglczogJWQpOiBVbmV4cGVjdGVkIHJldHVybiB2YWx1ZTsgZXhwZWN0ZWQgJWxk
+LCBnb3QgJWxkIiwKKwkJCQkJCSBmdW5jLCBmaWxlLCBsaW5lLCBleHBfcmV0dXJu
+LCBURVNUX1JFVFVSTik7CisJZWxzZQorCQl0c3RfcmVzbShURkFJTHxUVEVSUk5P
+LCAiJXMgKCVzOiAlZCk6IFVuZXhwZWN0ZWQgZmFpbHVyZSIsIGZ1bmMsIGZpbGUs
+IGxpbmUpOworfQorCisjZGVmaW5lIFJFUE9SVF9TVUNDRVNTX0NPTkQoZXhwX3Jl
+dHVybiwgZXhwX2Vycm5vLCBjb25kaXRpb24sIGNvbmRpdGlvbl9lcnJtc2cpCVwK
+KwlyZXBvcnRfc3VjY2Vzc19jb25kKF9fRlVOQ1RJT05fXywgX19GSUxFX18sIF9f
+TElORV9fLCBleHBfcmV0dXJuLCBleHBfZXJybm8sIGNvbmRpdGlvbiwgY29uZGl0
+aW9uX2Vycm1zZyk7CisKKy8qIFJlcG9ydCBzdWNjZXNzIGlmZiBURVNUX1JFVFVS
+TiBhbmQgVEVTVF9FUlJOTyBhcmUgZXF1YWwgdG8KKwkgZXhwX3JldHVybiBhbmQg
+ZXhwX2Vycm5vLCByZXNwLgorKi8KKyNkZWZpbmUgUkVQT1JUX1NVQ0NFU1MoZXhw
+X3JldHVybiwgZXhwX2Vycm5vKQkJCQkJXAorCVJFUE9SVF9TVUNDRVNTX0NPTkQo
+ZXhwX3JldHVybiwgZXhwX2Vycm5vLCAxLCAiIik7CisKK3N0YXRpYyB2b2lkIGNs
+ZWFudXAodm9pZCkgTFRQX0FUVFJJQlVURV9OT1JFVFVSTjsKKworc3RhdGljIHZv
+aWQgZW1wdHlfaGFuZGxlcihpbnQgc2lnKQoreworfQorCitzdGF0aWMgdm9pZCBz
+ZXR1cCh2b2lkKQoreworCXRzdF9zaWcoRk9SSywgREVGX0hBTkRMRVIsIGNsZWFu
+dXApOworCXNpZ25hbChTSUdVU1IxLCBlbXB0eV9oYW5kbGVyKTsKKwlzaWduYWwo
+U0lHQUxSTSwgZW1wdHlfaGFuZGxlcik7CisJc2lnbmFsKFNJR1VTUjIsIFNJR19J
+R04pOworCisJVEVTVF9QQVVTRTsKK30KKworc3RhdGljIHZvaWQgY2xlYW51cCh2
+b2lkKQoreworCVRFU1RfQ0xFQU5VUDsKKworCXRzdF9leGl0KCk7Cit9CisKK3R5
+cGVkZWYgaW50ICgqc3dpX2Z1bmMpKGNvbnN0IHNpZ3NldF90KiBzZXQsIHNpZ2lu
+Zm9fdCogaW5mbywgc3RydWN0IHRpbWVzcGVjKiB0aW1lb3V0KTsKK3R5cGVkZWYg
+dm9pZCAoKnRlc3RfZnVuYykoc3dpX2Z1bmMsIGludCk7CisKK3N0YXRpYyBpbnQg
+bXlfc2lnd2FpdChjb25zdCBzaWdzZXRfdCogc2V0LCBzaWdpbmZvX3QqIGluZm8s
+IHN0cnVjdCB0aW1lc3BlYyogdGltZW91dCkKK3sKKwlpbnQgcmV0OworCWludCBl
+cnI9c2lnd2FpdChzZXQsICZyZXQpOworCisJaWYoZXJyID09IDApCisJCXJldHVy
+biByZXQ7CisJZXJybm8gPSBlcnI7CisJcmV0dXJuIC0xOworfQorCitzdGF0aWMg
+aW50IG15X3NpZ3dhaXRpbmZvKGNvbnN0IHNpZ3NldF90KiBzZXQsIHNpZ2luZm9f
+dCogaW5mbywgc3RydWN0IHRpbWVzcGVjKiB0aW1lb3V0KQoreworCXJldHVybiBz
+aWd3YWl0aW5mbyhzZXQsIGluZm8pOworfQorCitzdGF0aWMgaW50IG15X3NpZ3Rp
+bWVkd2FpdChjb25zdCBzaWdzZXRfdCogc2V0LCBzaWdpbmZvX3QqIGluZm8sIHN0
+cnVjdCB0aW1lc3BlYyogdGltZW91dCkKK3sKKwlyZXR1cm4gc2lndGltZWR3YWl0
+KHNldCwgaW5mbywgdGltZW91dCk7Cit9CisKK3N0YXRpYyBpbnQgbXlfcnRfc2ln
+dGltZWR3YWl0KGNvbnN0IHNpZ3NldF90KiBzZXQsIHNpZ2luZm9fdCogaW5mbywg
+c3RydWN0IHRpbWVzcGVjKiB0aW1lb3V0KQoreworCS8qIFRoZSBsYXN0IGFyZ3Vt
+ZW50IGlzIChudW1iZXJfb2Zfc2lnbmFscykvKGJpdHNfcGVyX2J5dGUpLCB3aGlj
+aCBhcmUgNjQgYW5kIDgsIHJlc3AuICovCisJcmV0dXJuIHN5c2NhbGwoX19OUl9y
+dF9zaWd0aW1lZHdhaXQsIHNldCwgaW5mbywgdGltZW91dCwgOCk7Cit9CisKK3Zv
+aWQgdGVzdF9lbXB0eV9zZXQoc3dpX2Z1bmMgc2lnd2FpdGluZm8sIGludCBzaWdu
+bykKK3sKKwlzaWdzZXRfdCBzaWdzOworCXNpZ2luZm9fdCBzaTsKKwlwaWRfdCBj
+aGlsZDsKKworCVNVQ0NFRURfT1JfRElFKHNpZ2VtcHR5c2V0LCAic2lnZW1wdHlz
+ZXQgZmFpbGVkIiwgJnNpZ3MpOworCS8qIFJ1biBhIGNoaWxkIHRoYXQgd2lsbCB3
+YWtlIHVzIHVwICovCisJY2hpbGQ9Y3JlYXRlX3NpZ19wcm9jKDEwMDAwMCwgc2ln
+bm8sIFVJTlRfTUFYKTsKKworCVRFU1Qoc2lnd2FpdGluZm8oJnNpZ3MsICZzaSwg
+TlVMTCkpOworCVJFUE9SVF9TVUNDRVNTKC0xLCBFSU5UUik7CisKKwlraWxsKGNo
+aWxkLCBTSUdURVJNKTsKK30KKwordm9pZCB0ZXN0X3RpbWVvdXQoc3dpX2Z1bmMg
+c2lnd2FpdGluZm8sIGludCBzaWdubykKK3sKKwlzaWdzZXRfdCBzaWdzOworCXNp
+Z2luZm9fdCBzaTsKKwlwaWRfdCBjaGlsZDsKKwlzdHJ1Y3QgdGltZXNwZWMgdHMg
+PSB7IC50dl9zZWMgPSAxIH07CisKKwlTVUNDRUVEX09SX0RJRShzaWdlbXB0eXNl
+dCwgInNpZ2VtcHR5c2V0IGZhaWxlZCIsICZzaWdzKTsKKworCS8qIFJ1biBhIGNo
+aWxkIHRoYXQgd2lsbCB3YWtlIHVzIHVwICovCisJY2hpbGQ9Y3JlYXRlX3NpZ19w
+cm9jKDEwMDAwMCwgc2lnbm8sIFVJTlRfTUFYKTsKKworCVRFU1Qoc2lnd2FpdGlu
+Zm8oJnNpZ3MsICZzaSwgJnRzKSk7CisJUkVQT1JUX1NVQ0NFU1MoLTEsIEVBR0FJ
+Tik7CisKKwlraWxsKGNoaWxkLCBTSUdURVJNKTsKK30KKworLyogTm90ZTogc2ln
+d2FpdC1pbmcgZm9yIGEgc2lnbmFsIHRoYXQgaXMgbm90IGJsb2NrZWQgaXMgdW5z
+cGVjaWZpZWQKKyAqIGJ5IFBPU0lYOyBidXQgd29ya3MgZm9yIG5vbi1pZ25vcmVk
+IHNpZ25hbHMgdW5kZXIgTGludXgKKyAqLwordm9pZCB0ZXN0X3VubWFza2VkX21h
+dGNoaW5nKHN3aV9mdW5jIHNpZ3dhaXRpbmZvLCBpbnQgc2lnbm8pCit7CisJc2ln
+c2V0X3Qgc2lnczsKKwlzaWdpbmZvX3Qgc2k7CisJcGlkX3QgY2hpbGQ7CisKKwlT
+VUNDRUVEX09SX0RJRShzaWdlbXB0eXNldCwgInNpZ2VtcHR5c2V0IGZhaWxlZCIs
+ICZzaWdzKTsKKwlTVUNDRUVEX09SX0RJRShzaWdhZGRzZXQsICJzaWdhZGRzZXQg
+ZmFpbGVkIiwgJnNpZ3MsIHNpZ25vKTsKKworCS8qIFJ1biBhIGNoaWxkIHRoYXQg
+d2lsbCB3YWtlIHVzIHVwICovCisJY2hpbGQ9Y3JlYXRlX3NpZ19wcm9jKDEwMDAw
+MCwgc2lnbm8sIFVJTlRfTUFYKTsKKworCVRFU1Qoc2lnd2FpdGluZm8oJnNpZ3Ms
+ICZzaSwgTlVMTCkpOworCVJFUE9SVF9TVUNDRVNTX0NPTkQoc2lnbm8sIDAsIHNp
+LnNpX3BpZD09Y2hpbGQgJiYgc2kuc2lfY29kZT09U0lfVVNFUiAmJiBzaS5zaV9z
+aWdubz09c2lnbm8sICJTdHJ1Y3Qgc2lnaW5mbyBtaXNtYXRjaCIpOworCisJa2ls
+bChjaGlsZCwgU0lHVEVSTSk7Cit9CisKK3ZvaWQgdGVzdF91bm1hc2tlZF9tYXRj
+aGluZ19ub2luZm8oc3dpX2Z1bmMgc2lnd2FpdGluZm8sIGludCBzaWdubykKK3sK
+KwlzaWdzZXRfdCBzaWdzOworCXBpZF90IGNoaWxkOworCisJU1VDQ0VFRF9PUl9E
+SUUoc2lnZW1wdHlzZXQsICJzaWdlbXB0eXNldCBmYWlsZWQiLCAmc2lncyk7CisJ
+U1VDQ0VFRF9PUl9ESUUoc2lnYWRkc2V0LCAic2lnYWRkc2V0IGZhaWxlZCIsICZz
+aWdzLCBzaWdubyk7CisJLyogUnVuIGEgY2hpbGQgdGhhdCB3aWxsIHdha2UgdXMg
+dXAgKi8KKwljaGlsZD1jcmVhdGVfc2lnX3Byb2MoMTAwMDAwLCBzaWdubywgVUlO
+VF9NQVgpOworCisJVEVTVChzaWd3YWl0aW5mbygmc2lncywgTlVMTCwgTlVMTCkp
+OworCVJFUE9SVF9TVUNDRVNTKHNpZ25vLCAwKTsKKworCWtpbGwoY2hpbGQsIFNJ
+R1RFUk0pOworfQorCit2b2lkIHRlc3RfbWFza2VkX21hdGNoaW5nKHN3aV9mdW5j
+IHNpZ3dhaXRpbmZvLCBpbnQgc2lnbm8pCit7CisJc2lnc2V0X3Qgc2lncywgb2xk
+bWFzazsKKwlzaWdpbmZvX3Qgc2k7CisJcGlkX3QgY2hpbGQ7CisKKwlTVUNDRUVE
+X09SX0RJRShzaWdlbXB0eXNldCwgInNpZ2VtcHR5c2V0IGZhaWxlZCIsICZzaWdz
+KTsKKwlTVUNDRUVEX09SX0RJRShzaWdhZGRzZXQsICJzaWdhZGRzZXQgZmFpbGVk
+IiwgJnNpZ3MsIHNpZ25vKTsKKwkvKiBsZXQncyBub3QgZ2V0IGludGVycnVwdGVk
+IGJ5IG91ciBkeWluZyBjaGlsZCAqLworCVNVQ0NFRURfT1JfRElFKHNpZ2FkZHNl
+dCwgInNpZ2FkZHNldCBmYWlsZWQiLCAmc2lncywgU0lHQ0hMRCk7CisKKwlTVUND
+RUVEX09SX0RJRShzaWdwcm9jbWFzaywgInNpZ3Byb2NtYXNrIGZhaWxlZCIsIFNJ
+R19TRVRNQVNLLCAmc2lncywgJm9sZG1hc2spOworCisJLyogZG9uJ3Qgd2FpdCBv
+biBhIFNJR0NITEQgKi8KKwlTVUNDRUVEX09SX0RJRShzaWdkZWxzZXQsICJzaWdh
+ZGRzZXQgZmFpbGVkIiwgJnNpZ3MsIFNJR0NITEQpOworCisJLyogUnVuIGEgY2hp
+bGQgdGhhdCB3aWxsIHdha2UgdXMgdXAgKi8KKwljaGlsZD1jcmVhdGVfc2lnX3By
+b2MoMCwgc2lnbm8sIDEpOworCisJVEVTVChzaWd3YWl0aW5mbygmc2lncywgJnNp
+LCBOVUxMKSk7CisJUkVQT1JUX1NVQ0NFU1NfQ09ORChzaWdubywgMCwgc2kuc2lf
+cGlkPT1jaGlsZCAmJiBzaS5zaV9jb2RlPT1TSV9VU0VSICYmIHNpLnNpX3NpZ25v
+PT1zaWdubywgIlN0cnVjdCBzaWdpbmZvIG1pc21hdGNoIik7CisKKwlTVUNDRUVE
+X09SX0RJRShzaWdwcm9jbWFzaywgInJlc3RvcmluZyBvcmlnaW5hbCBzaWduYWwg
+bWFzayBmYWlsZWQiLCBTSUdfU0VUTUFTSywgJm9sZG1hc2ssICZvbGRtYXNrKTsK
+KworCVRzdF9jb3VudC0tOworCisJaWYoc2lnaXNtZW1iZXIoJm9sZG1hc2ssIHNp
+Z25vKSkKKwkJdHN0X3Jlc20oVFBBU1MsICJzaWd3YWl0aW5mbyByZXN0b3JlZCB0
+aGUgb3JpZ2luYWwgbWFzayIpOworCWVsc2UKKwkJdHN0X3Jlc20oVEZBSUwsICJz
+aWd3YWl0aW5mbyBmYWlsZWQgdG8gcmVzdG9yZSB0aGUgb3JpZ2luYWwgbWFzayIp
+OworfQorCit2b2lkIHRlc3RfbWFza2VkX21hdGNoaW5nX3J0KHN3aV9mdW5jIHNp
+Z3dhaXRpbmZvLCBpbnQgc2lnbm8pCit7CisJc2lnc2V0X3Qgc2lncywgb2xkbWFz
+azsKKwlzaWdpbmZvX3Qgc2k7CisJcGlkX3QgY2hpbGRbMl07CisKKwlzaWdubyA9
+IFNJR1JUTUlOKzE7CisKKwlTVUNDRUVEX09SX0RJRShzaWdlbXB0eXNldCwgInNp
+Z2VtcHR5c2V0IGZhaWxlZCIsICZzaWdzKTsKKwlTVUNDRUVEX09SX0RJRShzaWdh
+ZGRzZXQsICJzaWdhZGRzZXQgZmFpbGVkIiwgJnNpZ3MsIHNpZ25vKTsKKwlTVUND
+RUVEX09SX0RJRShzaWdhZGRzZXQsICJzaWdhZGRzZXQgZmFpbGVkIiwgJnNpZ3Ms
+IHNpZ25vKzEpOworCS8qIGxldCdzIG5vdCBnZXQgaW50ZXJydXB0ZWQgYnkgb3Vy
+IGR5aW5nIGNoaWxkICovCisJU1VDQ0VFRF9PUl9ESUUoc2lnYWRkc2V0LCAic2ln
+YWRkc2V0IGZhaWxlZCIsICZzaWdzLCBTSUdDSExEKTsKKworCVNVQ0NFRURfT1Jf
+RElFKHNpZ3Byb2NtYXNrLCAic2lncHJvY21hc2sgZmFpbGVkIiwgU0lHX1NFVE1B
+U0ssICZzaWdzLCAmb2xkbWFzayk7CisKKwkvKiBkb24ndCB3YWl0IG9uIGEgU0lH
+Q0hMRCAqLworCVNVQ0NFRURfT1JfRElFKHNpZ2RlbHNldCwgInNpZ2RlbHNldCBm
+YWlsZWQiLCAmc2lncywgU0lHQ0hMRCk7CisKKwkvKiBSdW4gYSBjaGlsZCB0aGF0
+IHdpbGwgd2FrZSB1cyB1cCAqLworCWNoaWxkWzBdPWNyZWF0ZV9zaWdfcHJvYygw
+LCBzaWdubywgMSk7CisJY2hpbGRbMV09Y3JlYXRlX3NpZ19wcm9jKDAsIHNpZ25v
+KzEsIDEpOworCisJLyogTmVlZCB0byBiZSBzdXJlIGJvdGggc2lnbmFscyBhcnJp
+dmUgYXQgb25jZSAqLworCXNsZWVwKDEpOyAvKiB3ZSBjb3VsZCBoYXZlIGFzIHdl
+bGwgd2FpdCgpLWVkIGZvciBib3RoIGNoaWxkcmVuLi4uICovCisKKwlURVNUKHNp
+Z3dhaXRpbmZvKCZzaWdzLCAmc2ksIE5VTEwpKTsKKwlSRVBPUlRfU1VDQ0VTU19D
+T05EKHNpZ25vLCAwLCBzaS5zaV9waWQ9PWNoaWxkWzBdICYmIHNpLnNpX2NvZGU9
+PVNJX1VTRVIgJiYgc2kuc2lfc2lnbm89PXNpZ25vLCAiU3RydWN0IHNpZ2luZm8g
+bWlzbWF0Y2giKTsKKworCS8qIGVhdCB0aGUgb3RoZXIgc2lnbmFsICovCisJVHN0
+X2NvdW50LS07CisJVEVTVChzaWd3YWl0aW5mbygmc2lncywgJnNpLCBOVUxMKSk7
+CisJUkVQT1JUX1NVQ0NFU1NfQ09ORChzaWdubysxLCAwLCBzaS5zaV9waWQ9PWNo
+aWxkWzFdICYmIHNpLnNpX2NvZGU9PVNJX1VTRVIgJiYgc2kuc2lfc2lnbm89PXNp
+Z25vKzEsICJTdHJ1Y3Qgc2lnaW5mbyBtaXNtYXRjaCIpOworCisJU1VDQ0VFRF9P
+Ul9ESUUoc2lncHJvY21hc2ssICJyZXN0b3Jpbmcgb3JpZ2luYWwgc2lnbmFsIG1h
+c2sgZmFpbGVkIiwgU0lHX1NFVE1BU0ssICZvbGRtYXNrLCAmb2xkbWFzayk7CisK
+KwlUc3RfY291bnQtLTsKKworCWlmKHNpZ2lzbWVtYmVyKCZvbGRtYXNrLCBzaWdu
+bykpCisJCXRzdF9yZXNtKFRQQVNTLCAic2lnd2FpdGluZm8gcmVzdG9yZWQgdGhl
+IG9yaWdpbmFsIG1hc2siKTsKKwllbHNlCisJCXRzdF9yZXNtKFRGQUlMLCAic2ln
+d2FpdGluZm8gZmFpbGVkIHRvIHJlc3RvcmUgdGhlIG9yaWdpbmFsIG1hc2siKTsK
+K30KKwordm9pZCB0ZXN0X21hc2tlZF9tYXRjaGluZ19ub2luZm8oc3dpX2Z1bmMg
+c2lnd2FpdGluZm8sIGludCBzaWdubykKK3sKKwlzaWdzZXRfdCBzaWdzLCBvbGRt
+YXNrOworCXBpZF90IGNoaWxkOworCisJU1VDQ0VFRF9PUl9ESUUoc2lnZW1wdHlz
+ZXQsICJzaWdlbXB0eXNldCBmYWlsZWQiLCAmc2lncyk7CisJU1VDQ0VFRF9PUl9E
+SUUoc2lnYWRkc2V0LCAic2lnYWRkc2V0IGZhaWxlZCIsICZzaWdzLCBzaWdubyk7
+CisJLyogbGV0J3Mgbm90IGdldCBpbnRlcnJ1cHRlZCBieSBvdXIgZHlpbmcgY2hp
+bGQgKi8KKwlTVUNDRUVEX09SX0RJRShzaWdhZGRzZXQsICJzaWdhZGRzZXQgZmFp
+bGVkIiwgJnNpZ3MsIFNJR0NITEQpOworCisJU1VDQ0VFRF9PUl9ESUUoc2lncHJv
+Y21hc2ssICJzaWdwcm9jbWFzayBmYWlsZWQiLCBTSUdfU0VUTUFTSywgJnNpZ3Ms
+ICZvbGRtYXNrKTsKKworCS8qIGRvbid0IHdhaXQgb24gYSBTSUdDSExEICovCisJ
+U1VDQ0VFRF9PUl9ESUUoc2lnZGVsc2V0LCAic2lnYWRkc2V0IGZhaWxlZCIsICZz
+aWdzLCBTSUdDSExEKTsKKworCS8qIFJ1biBhIGNoaWxkIHRoYXQgd2lsbCB3YWtl
+IHVzIHVwICovCisJY2hpbGQ9Y3JlYXRlX3NpZ19wcm9jKDAsIHNpZ25vLCAxKTsK
+KworCVRFU1Qoc2lnd2FpdGluZm8oJnNpZ3MsIE5VTEwsIE5VTEwpKTsKKwlSRVBP
+UlRfU1VDQ0VTUyhzaWdubywgMCk7CisKKwlTVUNDRUVEX09SX0RJRShzaWdwcm9j
+bWFzaywgInJlc3RvcmluZyBvcmlnaW5hbCBzaWduYWwgbWFzayBmYWlsZWQiLCBT
+SUdfU0VUTUFTSywgJm9sZG1hc2ssICZvbGRtYXNrKTsKKworCVRzdF9jb3VudC0t
+OworCisJaWYoc2lnaXNtZW1iZXIoJm9sZG1hc2ssIHNpZ25vKSkKKwkJdHN0X3Jl
+c20oVFBBU1MsICJzaWd3YWl0aW5mbyByZXN0b3JlZCB0aGUgb3JpZ2luYWwgbWFz
+ayIpOworCWVsc2UKKwkJdHN0X3Jlc20oVEZBSUwsICJzaWd3YWl0aW5mbyBmYWls
+ZWQgdG8gcmVzdG9yZSB0aGUgb3JpZ2luYWwgbWFzayIpOworCit9CisKK3ZvaWQg
+dGVzdF9iYWRfYWRkcmVzcyhzd2lfZnVuYyBzaWd3YWl0aW5mbywgaW50IHNpZ25v
+KQoreworCXNpZ3NldF90IHNpZ3MsIG9sZG1hc2s7CisJcGlkX3QgY2hpbGQ7CisK
+KwlTVUNDRUVEX09SX0RJRShzaWdlbXB0eXNldCwgInNpZ2VtcHR5c2V0IGZhaWxl
+ZCIsICZzaWdzKTsKKwlTVUNDRUVEX09SX0RJRShzaWdhZGRzZXQsICJzaWdhZGRz
+ZXQgZmFpbGVkIiwgJnNpZ3MsIHNpZ25vKTsKKwkvKiBsZXQncyBub3QgZ2V0IGlu
+dGVycnVwdGVkIGJ5IG91ciBkeWluZyBjaGlsZCAqLworCVNVQ0NFRURfT1JfRElF
+KHNpZ2FkZHNldCwgInNpZ2FkZHNldCBmYWlsZWQiLCAmc2lncywgU0lHQ0hMRCk7
+CisKKwlTVUNDRUVEX09SX0RJRShzaWdwcm9jbWFzaywgInNpZ3Byb2NtYXNrIGZh
+aWxlZCIsIFNJR19TRVRNQVNLLCAmc2lncywgJm9sZG1hc2spOworCisJLyogZG9u
+J3Qgd2FpdCBvbiBhIFNJR0NITEQgKi8KKwlTVUNDRUVEX09SX0RJRShzaWdkZWxz
+ZXQsICJzaWdhZGRzZXQgZmFpbGVkIiwgJnNpZ3MsIFNJR0NITEQpOworCisJLyog
+UnVuIGEgY2hpbGQgdGhhdCB3aWxsIHdha2UgdXMgdXAgKi8KKwljaGlsZD1jcmVh
+dGVfc2lnX3Byb2MoMCwgc2lnbm8sIDEpOworCisJVEVTVChzaWd3YWl0aW5mbygm
+c2lncywgKHZvaWQqKTEsIE5VTEwpKTsKKwlSRVBPUlRfU1VDQ0VTUygtMSwgRUZB
+VUxUKTsKKworCVNVQ0NFRURfT1JfRElFKHNpZ3Byb2NtYXNrLCAic2lncHJvY21h
+c2sgZmFpbGVkIiwgU0lHX1NFVE1BU0ssICZvbGRtYXNrLCAmb2xkbWFzayk7CisK
+KwlraWxsKGNoaWxkLCBTSUdURVJNKTsKK30KKwordm9pZCB0ZXN0X2JhZF9hZGRy
+ZXNzMihzd2lfZnVuYyBzaWd3YWl0aW5mbywgaW50IHNpZ25vKQoreworCVRFU1Qo
+c2lnd2FpdGluZm8oKHZvaWQqKTEsIE5VTEwsIE5VTEwpKTsKKwlSRVBPUlRfU1VD
+Q0VTUygtMSwgRUZBVUxUKTsKK30KKwordm9pZCB0ZXN0X2JhZF9hZGRyZXNzMyhz
+d2lfZnVuYyBzaWd3YWl0aW5mbywgaW50IHNpZ25vKQoreworCXNpZ3NldF90IHNp
+Z3M7CisJU1VDQ0VFRF9PUl9ESUUoc2lnZW1wdHlzZXQsICJzaWdlbXB0eXNldCBm
+YWlsZWQiLCAmc2lncyk7CisKKwlURVNUKHNpZ3dhaXRpbmZvKCZzaWdzLCBOVUxM
+LCAodm9pZCopMSkpOworCVJFUE9SVF9TVUNDRVNTKC0xLCBFRkFVTFQpOworfQor
+CitzdHJ1Y3QgdGVzdF9kZXNjIHsKKwl0ZXN0X2Z1bmMgdGY7CisJc3dpX2Z1bmMg
+c3dpOworCWludCBzaWdubzsKK30gdGVzdHNbXT17CisjaWYgZGVmaW5lZCBURVNU
+X1JUX1NJR1RJTUVEV0FJVAorCXRlc3RfZW1wdHlfc2V0LCBteV9ydF9zaWd0aW1l
+ZHdhaXQsIFNJR1VTUjEsCisJdGVzdF91bm1hc2tlZF9tYXRjaGluZywgbXlfcnRf
+c2lndGltZWR3YWl0LCBTSUdVU1IxLAorCXRlc3RfbWFza2VkX21hdGNoaW5nLCBt
+eV9ydF9zaWd0aW1lZHdhaXQsIFNJR1VTUjEsCisJdGVzdF91bm1hc2tlZF9tYXRj
+aGluZ19ub2luZm8sIG15X3J0X3NpZ3RpbWVkd2FpdCwgU0lHVVNSMSwKKwl0ZXN0
+X21hc2tlZF9tYXRjaGluZ19ub2luZm8sIG15X3J0X3NpZ3RpbWVkd2FpdCwgU0lH
+VVNSMSwKKwl0ZXN0X2JhZF9hZGRyZXNzLCBteV9ydF9zaWd0aW1lZHdhaXQsIFNJ
+R1VTUjEsCisJdGVzdF9iYWRfYWRkcmVzczIsIG15X3J0X3NpZ3RpbWVkd2FpdCwg
+U0lHVVNSMSwKKwl0ZXN0X2JhZF9hZGRyZXNzMywgbXlfcnRfc2lndGltZWR3YWl0
+LCBTSUdVU1IxLAorCXRlc3RfdGltZW91dCwgbXlfcnRfc2lndGltZWR3YWl0LCAw
+LAorCisJLyogU3BlY2lhbCBjYXNlcyAqLworCS8qIDE6IHNpZ3dhaXRpbmZvIGRv
+ZXMgcmVzcG9uZCB0byBpZ25vcmVkIHNpZ25hbCAqLworCXRlc3RfbWFza2VkX21h
+dGNoaW5nLCBteV9ydF9zaWd0aW1lZHdhaXQsIFNJR1VTUjIsCisKKwkvKiAyOiBB
+biBpZ25vcmVkIHNpZ25hbCBkb2Vzbid0IGNhdXNlIHNpZ3dhaXRpbmZvIHRvIHJl
+dHVybiBFSU5UUiAqLworCXRlc3RfdGltZW91dCwgbXlfcnRfc2lndGltZWR3YWl0
+LCBTSUdVU1IyLAorCisJLyogMzogVGhlIGhhbmRsZXIgaXMgbm90IGNhbGxlZCB3
+aGVuIHRoZSBzaWduYWwgaXMgd2FpdGVkIGZvciBieSBzaWd3YWl0aW5mbyAqLwor
+CXRlc3RfbWFza2VkX21hdGNoaW5nLCBteV9ydF9zaWd0aW1lZHdhaXQsIFNJR1RF
+Uk0sCisKKwkvKiA0OiBTaW11bHRhbmVvdXMgcmVhbHRpbWUgc2lnbmFscyBhcmUg
+ZGVsaXZlcmVkIGluIHRoZSBvcmRlciBvZiBpbmNyZWFzaW5nIHNpZ25hbCBudW1i
+ZXIgKi8KKwl0ZXN0X21hc2tlZF9tYXRjaGluZ19ydCwgbXlfcnRfc2lndGltZWR3
+YWl0LCAtMSwKKyNlbmRpZgorI2lmIGRlZmluZWQgVEVTVF9TSUdXQUlUCisJdGVz
+dF91bm1hc2tlZF9tYXRjaGluZ19ub2luZm8sIG15X3NpZ3dhaXQsIFNJR1VTUjEs
+CisJdGVzdF9tYXNrZWRfbWF0Y2hpbmdfbm9pbmZvLCBteV9zaWd3YWl0LCBTSUdV
+U1IxLAorI2VuZGlmCisjaWYgZGVmaW5lZCBURVNUX1NJR1dBSVRJTkZPCisJdGVz
+dF9lbXB0eV9zZXQsIG15X3NpZ3dhaXRpbmZvLCBTSUdVU1IxLAorCXRlc3RfdW5t
+YXNrZWRfbWF0Y2hpbmcsIG15X3NpZ3dhaXRpbmZvLCBTSUdVU1IxLAorCXRlc3Rf
+bWFza2VkX21hdGNoaW5nLCBteV9zaWd3YWl0aW5mbywgU0lHVVNSMSwKKwl0ZXN0
+X3VubWFza2VkX21hdGNoaW5nX25vaW5mbywgbXlfc2lnd2FpdGluZm8sIFNJR1VT
+UjEsCisJdGVzdF9tYXNrZWRfbWF0Y2hpbmdfbm9pbmZvLCBteV9zaWd3YWl0aW5m
+bywgU0lHVVNSMSwKKwl0ZXN0X2JhZF9hZGRyZXNzLCBteV9zaWd3YWl0aW5mbywg
+U0lHVVNSMSwKKwl0ZXN0X2JhZF9hZGRyZXNzMiwgbXlfc2lnd2FpdGluZm8sIFNJ
+R1VTUjEsCisjZW5kaWYKKyNpZiBkZWZpbmVkIFRFU1RfU0lHVElNRURXQUlUCisJ
+dGVzdF9lbXB0eV9zZXQsIG15X3NpZ3RpbWVkd2FpdCwgU0lHVVNSMSwKKwl0ZXN0
+X3VubWFza2VkX21hdGNoaW5nLCBteV9zaWd0aW1lZHdhaXQsIFNJR1VTUjEsCisJ
+dGVzdF9tYXNrZWRfbWF0Y2hpbmcsIG15X3NpZ3RpbWVkd2FpdCwgU0lHVVNSMSwK
+Kwl0ZXN0X3VubWFza2VkX21hdGNoaW5nX25vaW5mbywgbXlfc2lndGltZWR3YWl0
+LCBTSUdVU1IxLAorCXRlc3RfbWFza2VkX21hdGNoaW5nX25vaW5mbywgbXlfc2ln
+dGltZWR3YWl0LCBTSUdVU1IxLAorCXRlc3RfYmFkX2FkZHJlc3MsIG15X3NpZ3Rp
+bWVkd2FpdCwgU0lHVVNSMSwKKwl0ZXN0X2JhZF9hZGRyZXNzMiwgbXlfc2lndGlt
+ZWR3YWl0LCBTSUdVU1IxLAorCXRlc3RfYmFkX2FkZHJlc3MzLCBteV9zaWd0aW1l
+ZHdhaXQsIFNJR1VTUjEsCisJdGVzdF90aW1lb3V0LCBteV9zaWd0aW1lZHdhaXQs
+IDAsCisjZW5kaWYKK307CisKKyNpZiBkZWZpbmVkIFRFU1RfU0lHV0FJVElORk8K
+K2NvbnN0IGNoYXIqIFRDSUQ9InNpZ3dhaXRpbmZvMDEiOworI2VsaWYgZGVmaW5l
+ZCBURVNUX1JUX1NJR1RJTUVEV0FJVAorY29uc3QgY2hhciogVENJRD0icnRfc2ln
+dGltZWR3YWl0MDEiOworI2VsaWYgZGVmaW5lZCBURVNUX1NJR1RJTUVEV0FJVAor
+Y29uc3QgY2hhciogVENJRD0ic2lndGltZWR3YWl0MDEiOworI2VsaWYgZGVmaW5l
+ZCBURVNUX1NJR1dBSVQKK2NvbnN0IGNoYXIqIFRDSUQ9InNpZ3dhaXQwMSI7Cisj
+ZW5kaWYKKworZXh0ZXJuIGludCBUc3RfY291bnQ7CisKK2ludCBUU1RfVE9UQUwg
+PSBzaXplb2YodGVzdHMpL3NpemVvZigqdGVzdHMpOworCitpbnQgbWFpbihpbnQg
+YXJnYywgY2hhcioqIGFyZ3YpCit7CisJdW5zaWduZWQgaTsKKwlpbnQgbGM7CisJ
+Y2hhciogbXNnOworCisJLyogcGFyc2Ugc3RhbmRhcmQgb3B0aW9ucyAqLworCWlm
+ICgobXNnID0gcGFyc2Vfb3B0cyhhcmdjLCBhcmd2LCAob3B0aW9uX3QgKikgTlVM
+TCwgTlVMTCkpICE9CisJCQkoY2hhciAqKU5VTEwpIHsKKwkJdHN0X2Jya20oVEJS
+T0ssIGNsZWFudXAsICJPUFRJT04gUEFSU0lORyBFUlJPUiAtICVzIiwgbXNnKTsK
+KwkJLypOT1QgUkVBQ0hFRCAqLworCX0KKworCXNldHVwKCk7CisKKwlmb3IobGMg
+PSAwOyBURVNUX0xPT1BJTkcobGMpOyArK2xjKSB7CisJCVRzdF9jb3VudCA9IDA7
+CisKKwkJZm9yKGk9MDsgaTxzaXplb2YodGVzdHMpL3NpemVvZigqdGVzdHMpOyBp
+KyspIHsKKwkJCWFsYXJtKDEwKTsgLyogYXJyYW5nZSBhIDEwIHNlY29uZCB0aW1l
+b3V0ICovCisJCQl0ZXN0c1tpXS50Zih0ZXN0c1tpXS5zd2ksIHRlc3RzW2ldLnNp
+Z25vKTsKKwkJfQorCQlhbGFybSgwKTsKKwl9CisKKwljbGVhbnVwKCk7Cit9Cg==
+
+------------rbf2uAyqbtfkLXYoHJ5A5l
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
@@ -332,7 +535,17 @@ is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
+------------rbf2uAyqbtfkLXYoHJ5A5l
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------------rbf2uAyqbtfkLXYoHJ5A5l--
+
+
