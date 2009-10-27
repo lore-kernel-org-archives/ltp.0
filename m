@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Mw9gF-0005wG-GZ
-	for ltp-list@lists.sourceforge.net; Fri, 09 Oct 2009 07:14:23 +0000
-Received: from mail-pz0-f188.google.com ([209.85.222.188])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Mw9gA-0003Aa-8P
-	for ltp-list@lists.sourceforge.net; Fri, 09 Oct 2009 07:14:23 +0000
-Received: by pzk26 with SMTP id 26so6085396pzk.4
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 09 Oct 2009 00:14:12 -0700 (PDT)
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1N2hSY-0007MV-5e
+	for ltp-list@lists.sourceforge.net; Tue, 27 Oct 2009 08:31:18 +0000
+Received: from fmmailgate03.web.de ([217.72.192.234])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N2hSM-0002On-H4
+	for ltp-list@lists.sourceforge.net; Tue, 27 Oct 2009 08:31:13 +0000
+Date: Tue, 27 Oct 2009 10:29:16 +0100
+From: =?iso-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
 MIME-Version: 1.0
-In-Reply-To: <4ACEE1D4.5000202@cn.fujitsu.com>
-References: <4ACEE1D4.5000202@cn.fujitsu.com>
-Date: Fri, 9 Oct 2009 00:14:12 -0700
-Message-ID: <364299f40910090014i61a80458u344bbba34d627360@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] : fix memcg_function_test's bug
+References: <op.u00vt9vju2flwt@debian>
+	<1255436013.8438.34.camel@subratamodak.linux.ibm.com>
+	<1255890120.5359.18.camel@subratamodak.linux.ibm.com>
+	<op.u2dtmvt9u2flwt@debian>
+	<364299f40910252049g2b30f5afq1f689ccbb820e05b@mail.gmail.com>
+Message-ID: <op.u2gcm2uyu2flwt@debian>
+In-Reply-To: <364299f40910252049g2b30f5afq1f689ccbb820e05b@mail.gmail.com>
+Subject: Re: [LTP] New test?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,47 +28,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-2"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: liubo <liubo-fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On Fri, Oct 9, 2009 at 12:10 AM, liubo <liubo-fnst@cn.fujitsu.com> wrote:
-> testcase_25() uses a wrong "$?" value ,
-> Now use "ret" to record the real "$?"
-> value for test .
->
->
-> Signed-off-by: Liu Bo <liubo-fnst@cn.fujitsu.com>
->
-> ---
-> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_function=
-_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_function_tes=
-t.sh
-> index ea4c8a2..0f11835 100755
-> --- a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
-> +++ b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
-> @@ -398,11 +398,12 @@ testcase_24()
-> =A0testcase_25()
-> =A0{
-> =A0 =A0 =A0 =A0echo -1 > memory.limit_in_bytes 2> /dev/null
-> + =A0 =A0 =A0 ret=3D$?
-> =A0 =A0 =A0 =A0tst_kvercmp 2 6 31
-> =A0 =A0 =A0 =A0if [ $? -eq 0 ]; then
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 result $(( !($? !=3D 0) )) =A0"return value=
- is $?"
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 result $(( !($ret !=3D 0) )) =A0"return val=
-ue is $ret"
-> =A0 =A0 =A0 =A0else
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 result $(( !($? =3D=3D 0) )) =A0"return val=
-ue is $?"
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 result $(( !($ret =3D=3D 0) )) =A0"return v=
-alue is $ret"
-> =A0 =A0 =A0 =A0fi
-> =A0}
+On Mon, 26 Oct 2009 04:49:57 +0100, Garrett Cooper <yanegomi@gmail.com>  =
 
-Good catch ;)...
+wrote:
+
+> 2009/10/25 Ji=F8=ED Pale=E8ek <jpalecek@web.de>:
+>> On Sun, 18 Oct 2009 20:22:00 +0200, Subrata Modak
+>> <subrata@linux.vnet.ibm.com> wrote:
+>>
+>>> Jiri,
+>>>
+>>> Any further thoughts on this ?
+>>
+>> Yes, see the attachment.
+>>
+>> I created the directories for the different tests (rt_sigtimedwait,
+>> sigwaitinfo etc.), but to avoid copy-pasting the code, they share the  =
+
+>> same
+>> source. Please, tell me if that is OK.
+>>
+>> Regards
+>> =A0 =A0Jiri Palecek
+>>>
+>>> On Tue, 2009-10-13 at 17:43 +0530, Subrata Modak wrote:
+>>>>
+>>>> Hey Jiri,
+>>>>
+>>>> On Tue, 2009-09-29 at 16:28 +0200, Ji=F8=ED Pale=E8ek wrote:
+>>>> > Hello,
+>>>> >
+>>>> > I've decided to create a test for the rt_sigwaitinfo syscall. There  =
+
+>>>> are
+>>>> > other functions with similar interface (defined by POSIX) in libc -
+>>>> > particularly sigwait, sigtimedwait and sigwaitinfo. The  =
+
+>>>> rt_sigwaitinfo
+>>>>
+>>>> The sigwait, sigtimedwait and sigwaitinfo testcases are not in LTP.
+>>>>
+>>>> > test could easily tests these too, so I wonder whether we want to  =
+
+>>>> test
+>>>> > these too, and if yes, whether these tests can be located in the  =
+
+>>>> same
+>>>> > executable.
+>>>>
+>>>> If you already have the logic to write the above tests, then please
+>>>> create separate tests for sigwait, sigtimedwait and sigwaitinfo
+>>>> (separate directories as well), and separate for rt_sigwaitinfo  =
+
+>>>> syscall.
+>>>>
+>>>> Regards--
+>>>> Subrata
+>
+>     The Makefiles need to be rewritten because a) they don't use the
+> new infrastructure, and b) they break requirements for
+> out-of-build-tree support. Please read README.mk-devel and ping me
+> with any questions you may have.
+
+I read the document, but I'm not sure I understand it. What are the actual  =
+
+requirements on makefile rules that are needed? I looked at the  =
+
+commands/unzip makefile, and I can't see where does $(ZIPFILE) come from,  =
+
+and how does it and $(DIR) address out-of-tree build.
+
+I think I'm gonna refactor the code so I don't need that special make rule.
+
+Regards
+     Jiri Palcek
 
 ---------------------------------------------------------------------------=
 ---
