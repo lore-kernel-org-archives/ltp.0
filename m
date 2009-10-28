@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MnRDX-0006aL-Jy
-	for ltp-list@lists.sourceforge.net; Tue, 15 Sep 2009 06:08:43 +0000
-Received: from e35.co.us.ibm.com ([32.97.110.153])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MnRDP-00075H-CF
-	for ltp-list@lists.sourceforge.net; Tue, 15 Sep 2009 06:08:43 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4AADF6FD.3020802@cn.fujitsu.com>
-References: <4AADF6FD.3020802@cn.fujitsu.com>
-Date: Tue, 15 Sep 2009 11:38:25 +0530
-Message-Id: <1252994905.5874.9.camel@subratamodak.linux.ibm.com>
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <njoly@pasteur.fr>) id 1N34g7-0007gE-2F
+	for ltp-list@lists.sourceforge.net; Wed, 28 Oct 2009 09:18:51 +0000
+Received: from maroilles.sis.pasteur.fr ([157.99.64.223]
+	helo=mail-interne3.pasteur.fr)
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N34g2-0007EY-Lb
+	for ltp-list@lists.sourceforge.net; Wed, 28 Oct 2009 09:18:51 +0000
+Date: Wed, 28 Oct 2009 10:18:32 +0100
+From: Nicolas Joly <njoly@pasteur.fr>
+Message-ID: <20091028091832.GA441933@medusa.sis.pasteur.fr>
+References: <8368651DACC1964480F951191B94A078016A156A@svexch01.mvista.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH]:fix the bug of macro in getdelays.c
-Reply-To: subrata@linux.vnet.ibm.com
+Content-Disposition: inline
+In-Reply-To: <8368651DACC1964480F951191B94A078016A156A@svexch01.mvista.com>
+Subject: Re: [LTP] [PATCH][ppoll01]  fix testcase 1,
+	5: pass correct value for sigset_t for mips
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,63 +30,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: liubo <liubo-fnst@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Henry Yei <hyei@mvista.com>
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
 
-On Mon, 2009-09-14 at 15:55 +0800, liubo wrote: 
-> When running cgroup test, I found a bug of macro in 
-> getdelays.c, which refers to the spelling mistake. 
-> And this leads to testcase_eight's abnormal delay. 
+On Tue, Oct 27, 2009 at 06:32:34PM -0700, Henry Yei wrote:
+> All,
 > 
-> Relative macro:
-> 	HAVE_LINUX_CGROUPSTATS_H
+> The patch attached  for ppoll01:
 > 
-> Change macro HAVE_LINUX_CGROUPSTAT_H to HAVE_LINUX_CGROUPSTATS_H
-> to fix the bug.
+> cleans up spacing and code style
 > 
+> removes unneeded/broken debug option parsing
 > 
-> signed-off-by:Liu Bo <liubo-fnst@cn.fujitsu.com>
+> if test fails, it prints out the last failed errno, rather than just the last errno(which may have been successful)
+> 
+> passes in correct size of sigset_t for mips
+
+Hi,
+
+While you are on this one, can you cleanup the test file creation. It
+currently tries to create test files in the diretory where the ppoll
+executable comes from, instead of the test tmp dir ... which is just
+wrong.
+
+	static char *progdir;
+
+        progdir = strdup(av[0]);
+        progdir = dirname(progdir);
+
+        TEST(fd = setup_file(progdir, "test.file", fpath));
+        if (fd < 0)
+                return 1;
+
+progdir should be removed, and "." used instead.
 
 Thanks.
 
-Regards--
-Subrata
+-- 
+Nicolas Joly
 
-> ---
-> diff --git a/testcases/kernel/controllers/cgroup/getdelays.c b/testcases/kernel/controllers/cgroup/getdelays.c
-> index 478b325..c9f532d 100644
-> --- a/testcases/kernel/controllers/cgroup/getdelays.c
-> +++ b/testcases/kernel/controllers/cgroup/getdelays.c
-> @@ -397,7 +397,7 @@ int main(int argc, char *argv[])
->  	}
-> 
->  	if (containerset) {
-> -		#ifdef HAVE_LINUX_CGROUPSTAT_H
-> +		#ifdef HAVE_LINUX_CGROUPSTATS_H
->  		cfd = open(containerpath, O_RDONLY);
->  		if (cfd < 0) {
->  			perror("error opening container file");
-> 
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> trial. Simplify your report design, integration and deployment - and focus on 
-> what you do best, core application coding. Discover what's new with 
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
+Biological Software and Databanks.
+Institut Pasteur, Paris.
 
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-http://p.sf.net/sfu/devconf
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
