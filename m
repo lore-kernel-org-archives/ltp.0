@@ -1,29 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <rpaulsen@us.ibm.com>) id 1N0HSG-0002ke-En
-	for ltp-list@lists.sourceforge.net; Tue, 20 Oct 2009 16:21:00 +0000
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N0HSC-0008Im-FH
-	for ltp-list@lists.sourceforge.net; Tue, 20 Oct 2009 16:21:00 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e1.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9KGJD10012689
-	for <ltp-list@lists.sourceforge.net>; Tue, 20 Oct 2009 12:19:13 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n9KGKdDa247778
-	for <ltp-list@lists.sourceforge.net>; Tue, 20 Oct 2009 12:20:39 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n9KGKcbb001442
-	for <ltp-list@lists.sourceforge.net>; Tue, 20 Oct 2009 12:20:39 -0400
-Message-ID: <OFCE335715.B4309B60-ON85257655.005644B5-86257655.00592CEC@us.ibm.com>
-From: Robert Paulsen <rpaulsen@us.ibm.com>
-Date: Tue, 20 Oct 2009 11:16:10 -0500
-MIME-Version: 1.0
-Subject: [LTP] LTP vs. SLES11 -- Some FAILs.
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1N3Zn0-0001ol-Td
+	for ltp-list@lists.sourceforge.net; Thu, 29 Oct 2009 18:32:02 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1N3Zmw-0000Yy-1v
+	for ltp-list@lists.sourceforge.net; Thu, 29 Oct 2009 18:32:02 +0000
+Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
+	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9TINhHV022700
+	for <ltp-list@lists.sourceforge.net>; Thu, 29 Oct 2009 14:23:43 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n9TIVqU6099786
+	for <ltp-list@lists.sourceforge.net>; Thu, 29 Oct 2009 14:31:52 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	n9TIVqFJ031477
+	for <ltp-list@lists.sourceforge.net>; Thu, 29 Oct 2009 14:31:52 -0400
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <20091028093757.19484.89637.sendpatchset@localhost.localdomain>
+References: <20091028093749.19484.92103.sendpatchset@localhost.localdomain>
+	<20091028093757.19484.89637.sendpatchset@localhost.localdomain>
+Date: Fri, 30 Oct 2009 00:01:47 +0530
+Message-Id: <1256841108.5210.23.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [Patch 2/2] to delete hardcoded cpu freq governers
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,93 +40,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Linux Test Project <ltp-list@lists.sourceforge.net>
-Cc: iranna.ankad@in.ibm.com, Suzuki Poulose <suzuki@in.ibm.com>
+To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
+On Wed, 2009-10-28 at 15:07 +0530, Poornima Nayak wrote: 
+> Patch to remove hard coded cpu governers
+> 
+> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
 
-Hello,
+Thanks. Applied.
 
-I ran the latest LTP (20090930) against SLES11:
+Regards--
+Subrata
 
-# cat /etc/issue
-Welcome to SUSE Linux Enterprise Server 11 (ppc64) - Kernel \r (\l).
-# uname -a
-Linux beavis 2.6.27.19-5-ppc64 #1 SMP 2009-02-28 04:40:21 +0100 ppc64 ppc64 ppc64 GNU/Linux
-
-These were all run via "runalltests" so are part of the default set of LTP
-tests that run.
-
-There were a number of errors. I didn't expect this as I thought that one
-way or another the LTP would have been validated against a standard distro
-like SLES11.
-
-Are these known failures? In the LTP or SLES11?
-
-Some of these tests apparently rely on kernel configurations and/or
-available resources like real memory that cannot be guaranteed on any
-arbitrary installation. Should such tests be run by default?
-
-Some of these tests just look like sloppy tests, for example the
-cron_allow01 an cron_deny01 tests.
-
-Some tests assume they will be built on the same system on which they are
-run. In his case that assumption was true but it seems like a very unsafe
-assumption, especially if a cross build is needed. Even without a cross
-build the build and test systems may not always be the same -- the reason
-for "make package" as describe in README.ltp-devel and why the Makefile has
-a CROSS_COMPILE macro.
-
-Here are the fails from the log file:
-
-eventfd2_03                    FAIL       1
-inotify01                      FAIL       1
-inotify02                      FAIL       1
-ppoll01                        FAIL       2
-quotactl01                     FAIL       1
-timer_getoverrun01             FAIL       1
-timer_gettime01                FAIL       1
-utimes01                       FAIL       1
-Cap_bounds                     FAIL       127
-su01                           FAIL       1
-cron02                         FAIL       1
-cron_deny01                    FAIL       1
-cron_allow01                   FAIL       1
-at_deny01                      FAIL       1
-at_allow01                     FAIL       1
-timer_delete02                 FAIL       1
-Numa-testcases                 FAIL       1
-hugemmap03                     FAIL       1
-hugemmap04                     FAIL       1
-hugeshmat01                    FAIL       6
-hugeshmat02                    FAIL       6
-hugeshmat03                    FAIL       2
-hugeshmctl01                   FAIL       6
-hugeshmctl02                   FAIL       6
-hugeshmctl03                   FAIL       2
-hugeshmdt01                    FAIL       6
-hugeshmget01                   FAIL       2
-hugeshmget02                   FAIL       6
-hugeshmget03                   FAIL       6
-hugeshmget05                   FAIL       2
-
-A number of tests FAILed despite not showing in the above list. Here is some info from the detailed output file:
-
-pid_namespace4    1  TFAIL  :  Container init is killed by SIGKILL !!!
-pid_namespace4    2  TFAIL  :  Container init pid got killed by signal 9
-pidns12     1  TFAIL  :  cinit: signalling PID (from other namespace) is not 0, but 27810.
-quotactl01    1  TFAIL  :  quotactl01 failed, cmd=0x800002: TEST_ERRNO=EFAULT(14): Bad address
-quotactl01    2  TFAIL  :  quotactl01 failed, cmd=0x800003: TEST_ERRNO=EFAULT(14): Bad address
-quotactl01    3  TFAIL  :  quotactl01 failed, cmd=0x800007: TEST_ERRNO=EFAULT(14): Bad address
-quotactl01    4  TFAIL  :  quotactl01 failed, cmd=0x800008: TEST_ERRNO=EFAULT(14): Bad address
-quotactl01    5  TFAIL  :  quotactl01 failed, cmd=0x800005: TEST_ERRNO=EFAULT(14): Bad address
-quotactl01    6  TFAIL  :  quotactl01 failed, cmd=0x800006: TEST_ERRNO=EFAULT(14): Bad address
-quotactl01    7  TFAIL  :  quotactl01 failed, cmd=0x800004: TEST_ERRNO=EFAULT(14): Bad address
-quotactl01    8  TFAIL  :  quotactl01 failed, cmd=0x800001: TEST_ERRNO=EFAULT(14): Bad address
-
-Robert Paulsen
-IBM Linux Technology Center, Austin
-rpaulsen@us.ibm.com
-512-468-0565
+> 
+> diff -uprN ltp/testcases/kernel/power_management/pwkm_load_unload.sh ltp_fixed/testcases/kernel/power_management/pwkm_load_unload.sh
+> --- ltp/testcases/kernel/power_management/pwkm_load_unload.sh	2009-03-25 02:19:22.000000000 -0400
+> +++ ltp_fixed/testcases/kernel/power_management/pwkm_load_unload.sh	2009-10-28 00:54:39.000000000 -0400
+> @@ -3,7 +3,7 @@
+>  #Loading modules
+>  RC=0
+>  loaded_governor=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+> -for module in cpufreq_conservative cpufreq_powersave cpufreq_userspace
+> +for module in `modprobe -l | grep cpufreq_ | cut -f8 -d"/" | cut -f1 -d"."`
+>  do
+>  	#echo -n "Loading $module ... "
+>      if [ $module != "cpufreq_$loaded_governor" ];
+> @@ -15,7 +15,7 @@ do
+>  		fi
+>  	fi
+>  done
+> -for module in cpufreq_conservative cpufreq_powersave cpufreq_userspace
+> +for module in `modprobe -l | grep cpufreq_ | cut -f8 -d"/" | cut -f1 -d"."`
+>  do
+>  	#echo -n "Unloading $module ... "
+>      if [ $module != "cpufreq_$loaded_governor" ];
+> 
+> ------------------------------------------------------------------------------
+> Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+> is the only developer event you need to attend this year. Jumpstart your
+> developing skills, take BlackBerry mobile applications to market and stay 
+> ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+> http://p.sf.net/sfu/devconference
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 
 ------------------------------------------------------------------------------
