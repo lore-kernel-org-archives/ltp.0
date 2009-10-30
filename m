@@ -1,35 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <ego@linux.vnet.ibm.com>) id 1My07g-0002d2-As
-	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 09:26:20 +0000
-Received: from e28smtp02.in.ibm.com ([59.145.155.2])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1My07c-0005ag-RE
-	for ltp-list@lists.sourceforge.net; Wed, 14 Oct 2009 09:26:20 +0000
-Received: from d28relay05.in.ibm.com (d28relay05.in.ibm.com [9.184.220.62])
-	by e28smtp02.in.ibm.com (8.14.3/8.13.1) with ESMTP id n9E9Ptgx015504
-	for <ltp-list@lists.sourceforge.net>; Wed, 14 Oct 2009 14:55:55 +0530
-Received: from d28av01.in.ibm.com (d28av01.in.ibm.com [9.184.220.63])
-	by d28relay05.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n9E9Ptg92580720
-	for <ltp-list@lists.sourceforge.net>; Wed, 14 Oct 2009 14:55:55 +0530
-Received: from d28av01.in.ibm.com (loopback [127.0.0.1])
-	by d28av01.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	n9E9PsKu001608
-	for <ltp-list@lists.sourceforge.net>; Wed, 14 Oct 2009 14:55:55 +0530
-Date: Wed, 14 Oct 2009 14:55:54 +0530
-From: Gautham R Shenoy <ego@in.ibm.com>
-Message-ID: <20091014092554.GA27706@in.ibm.com>
-References: <20091013074337.22414.20968.sendpatchset@localhost.localdomain>
-	<20091013074346.22414.9377.sendpatchset@localhost.localdomain>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1N3pae-0004ru-ED
+	for ltp-list@lists.sourceforge.net; Fri, 30 Oct 2009 11:24:20 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N3paa-0001JE-0T
+	for ltp-list@lists.sourceforge.net; Fri, 30 Oct 2009 11:24:20 +0000
+Received: by pwj6 with SMTP id 6so607132pwj.2
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 30 Oct 2009 04:24:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20091013074346.22414.9377.sendpatchset@localhost.localdomain>
-Subject: Re: [LTP] [Patch 2/6] Developed new functions and fixed issues
-	causing	ilb test failure
-Reply-To: ego@in.ibm.com
+In-Reply-To: <364299f40910300421g20cfc5d4u5e6f00cebaceb29c@mail.gmail.com>
+References: <op.u00vt9vju2flwt@debian>
+	<1255436013.8438.34.camel@subratamodak.linux.ibm.com>
+	<1255890120.5359.18.camel@subratamodak.linux.ibm.com>
+	<op.u2dtmvt9u2flwt@debian>
+	<364299f40910271606v243bfa53l30f2c8c33616d8ae@mail.gmail.com>
+	<26128108.post@talk.nabble.com>
+	<364299f40910300421g20cfc5d4u5e6f00cebaceb29c@mail.gmail.com>
+Date: Fri, 30 Oct 2009 04:24:09 -0700
+Message-ID: <364299f40910300424p17d717ap8a9bf34865c5cfed@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] New test?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,558 +33,206 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, svaidy@linux.vnet.ibm.com, arun@linux.vnet.ibm.com
+To: =?UTF-8?B?SmnFmcOtIFBhbGXEjWVr?= <jpalecek@web.de>
+Cc: ltp-list@lists.sourceforge.net
 
-On Tue, Oct 13, 2009 at 01:13:46PM +0530, Poornima Nayak wrote:
-> +def is_multi_core():
-> +    ''' Return true if system has sockets has multiple cores
-> +    '''
-> +  
-> +    try:
-> +        file_cpuinfo = open("/proc/cpuinfo", 'r')
-> +        for line in file_cpuinfo:
-> +            if line.startswith('siblings'):
-> +                siblings = line.split(":")
-> +            if line.startswith('cpu cores'):
-> +                cpu_cores = line.split(":")
-> +                break
-
-I assume your code works only on x86 machine for now.
-
-The corresponding kernel code found from arch/x86/kernel/cpu/proc.c is
-as follows
-========================================================================
-/*
- *	Get CPU information for use by the procfs.
- */
-static void show_cpuinfo_core(struct seq_file *m, struct cpuinfo_x86 *c,
-			      unsigned int cpu)
-{
-#ifdef CONFIG_SMP
-	if (c->x86_max_cores * smp_num_siblings > 1) {
-		seq_printf(m, "physical id\t: %d\n", c->phys_proc_id);
-		seq_printf(m, "siblings\t: %d\n",
-			   cpumask_weight(cpu_core_mask(cpu)));
-		seq_printf(m, "core id\t\t: %d\n", c->cpu_core_id);
-		seq_printf(m, "cpu cores\t: %d\n", c->booted_cores);
-		seq_printf(m, "apicid\t\t: %d\n", c->apicid);
-		seq_printf(m, "initial apicid\t: %d\n", c->initial_apicid);
-	}
-#endif
-}
-============================================================================
-IIUC, 'siblings' tells us the number of hardware threads available
-within a socket and 'cpu cores' tells us the number of cores available
-within a socket.
-
-So, if you are checking if the socket has multiple cores or not, 'cpu
-cores > 1' would suffice, no ? Why do we need the following code below ?
-
-> +       
-> +        if int( siblings[1] ) == int( cpu_cores[1] ):
-		^^^^^^^^^^^^^^^^^^^^^
-		This only means that each core in the socket has only
-		one processing unit or thread.
-> +            if int( cpu_cores[1] ) > 1:
-> +                multi_core = 1
-> +            else:
-> +                multi_core = 0
-> +        else:
-> +            num_of_cpus = int(siblings[1]) / int(cpu_cores[1])
-		^^^^^^^^^^
-		This tells us the number of hardware threads per core.
-> +            if num_of_cpus > 1:
-> +                multi_core = 1
-> +            else:
-> +                multi_core = 0
-> +        file_cpuinfo.close()
-> +        return multi_core
-> +    except Exception:
-> +        print "Failed to check if system is multi core system"
-> +        sys.exit(1)
-> +
->  def get_hyper_thread_count():
->      ''' Return number of threads in CPU. For eg for x3950 this function
->          would return 2. In future if 4 threads are supported in CPU, this
-> @@ -153,6 +184,40 @@ def map_cpuid_pkgid():
->                  sys.exit(1)
-> 
-> 
-> +def generate_sibling_list():
-> +    ''' Routine to generate siblings list
-> +    '''
-> +    try:
-> +        for i in range(0, cpu_count):
-> +            siblings_file = '/sys/devices/system/cpu/cpu%s' % i
-> +            siblings_file += '/topology/thread_siblings_list'
-> +            threads_sibs = open(siblings_file).read().rstrip()
-> +            thread_ids = threads_sibs.split("-")
-A string '0-3' means that 0,1,2,3 are the siblings and not just 0 and 3.
-Also, you can have strings like '0,4' which means that only 0 and 4 are
-siblings.
-
-Thus I am not sure if the parsing that you're doing is sufficient
-to generate the list.
-
-> +    
-> +            if not thread_ids in siblings_list:
-> +                siblings_list.append(thread_ids)
-> +    except Exception, details:
-> +        print "Exception in generate_siblings_list", details
-> +        sys.exit(1)
-> +
-> +def get_siblings(cpu_id):
-> +    ''' Return siblings of cpu_id
-> +    '''
-> +    try:
-> +        cpus = ""
-> +        for i in range(0, len(siblings_list)):
-> +            for cpu in siblings_list[i]:
-> +                if cpu_id == cpu:
-> +                    for j in siblings_list[i]:
-> +                        # Exclude cpu_id in the list of siblings
-> +                        if j != cpu_id:
-> +                            cpus += j
-> +                    return cpus
-> +        return cpus
-> +    except Exception, details:
-> +        print "Exception in get_siblings", details
-> +        sys.exit(1)
-> +
->  def get_proc_data(stats_list):
->      ''' Read /proc/stat info and store in dictionary
->      '''
-> @@ -168,18 +233,18 @@ def get_proc_data(stats_list):
->          sys.exit(1)
-> 
->  def get_proc_loc_count(loc_stats):
-> -    ''' Read /proc/stat info and store in dictionary
-> +    ''' Read /proc/interrupts info and store in list
->      '''
->      try:
->          file_procstat = open("/proc/interrupts", 'r')
->          for line in file_procstat:
-> -            if line.startswith('LOC:'):
-> +            if line.startswith(' LOC:') or line.startswith('LOC:'):
->                  data = line.split()
->                  for i in range(0, cpu_count):
->                      # To skip LOC
->                      loc_stats.append(data[i+1])
-> -                    print data[i+1]
-> -        file_procstat.close()
-> +                file_procstat.close()
-> +                return
->      except Exception, details:
->          print "Could not read interrupt statistics", details
->          sys.exit(1)
-> @@ -192,6 +257,8 @@ def set_sched_mc_power(sched_mc_level):
->          os.system('echo %s > \
->              /sys/devices/system/cpu/sched_mc_power_savings 2>/dev/null'
->              % sched_mc_level)
-> +
-> +        get_proc_data(stats_start)
->      except OSError, e:
->          print "Could not set sched_mc_power_savings to", sched_mc_level, e
->  	sys.exit(1)
-> @@ -203,6 +270,8 @@ def set_sched_smt_power(sched_smt_level)
->          os.system('echo %s > \
->              /sys/devices/system/cpu/sched_smt_power_savings 2>/dev/null'
->              % sched_smt_level)
-> +
-> +        get_proc_data(stats_start)
->      except OSError, e:
->          print "Could not set sched_smt_power_savings to", sched_smt_level, e
->  	sys.exit(1)
-> @@ -218,21 +287,36 @@ def set_timer_migration_interface(value)
->          print "Could not set timer_migration to ", value, e
->          sys.exit(1)
-> 
-> -def trigger_ebizzy (sched_smt, stress, duration, background, pinned):
-> -    ''' Triggers ebizzy workload for sched_mc=1
-> -        testing
-> +def get_job_count(stress, workload, sched_smt):
-> +    ''' Returns number of jobs/threads to be triggered
->      '''
-> +    
->      try:
->          if stress == "thread":
->              threads = get_hyper_thread_count()
-
-I am assuming get_hyper_thread_count() returns the number of
-hyperthreads within a core.
-
-So, if stress = "thread", the number of software threads we create is
-equal to the numbef of h/w threads within a core ?
-
-
->          if stress == "partial":
->              threads = cpu_count / socket_count
-
-If stress = "partial", the number of software threads we create is equal
-to the number of h/w threads within a socket ?
-
-> +            if is_hyper_threaded():
-> +                if workload == "ebizzy" and int(sched_smt) ==0:
-> +                    threads = threads / get_hyper_thread_count()
-
-Thus if the workload is ebizzy and sched_smt is 0, the number of
-software threads we create is equal to the number of cores within the
-socket, right ?
-
-> +                if workload == "kernbench" and int(sched_smt) < 2:
-> +                    threads = threads / get_hyper_thread_count()    
->          if stress == "full":
-> -	    threads = cpu_count
-> +            threads = cpu_count
->          if stress == "single_job":
->              threads = 1
->              duration = 180
-> +        return threads
-> +    except Exception, details:
-> +        print "get job count failed ", details
-> +        sys.exit(1)
-> 
-> +def trigger_ebizzy (sched_smt, stress, duration, background, pinned):
-> +    ''' Triggers ebizzy workload for sched_mc=1
-> +        testing
-> +    '''
-> +    try:
-> +        threads = get_job_count(stress, "ebizzy", sched_smt)
->          olddir = os.getcwd()
->          path = '%s/utils/benchmark' % os.environ['LTPROOT']
->          os.chdir(path)
-> @@ -282,23 +366,14 @@ def trigger_ebizzy (sched_smt, stress, d
->          print "Ebizzy workload trigger failed ", details
->          sys.exit(1)   
-> 
-> -def trigger_kernbench (sched_smt, stress, background, pinned):
-> +def trigger_kernbench (sched_smt, stress, background, pinned, perf_test):
->      ''' Trigger load on system like kernbench.
->          Copys existing copy of LTP into as LTP2 and then builds it
->          with make -j
->      '''
->      olddir = os.getcwd()
->      try:
-> -        if stress == "thread":
-> -	    threads = 2
-> -        if stress == "partial":
-> -	    threads = cpu_count / socket_count
-> -            if is_hyper_threaded() and int(sched_smt) !=2:
-> -                threads = threads / get_hyper_thread_count()
-> -        if stress == "full":
-> -            threads = cpu_count
-> -        if stress == "single_job":
-> -            threads = 1
-> +        threads = get_job_count(stress, "kernbench", sched_smt)
-> 
->          dst_path = "/root"
->          olddir = os.getcwd()      
-> @@ -335,24 +410,35 @@ def trigger_kernbench (sched_smt, stress
->          get_proc_loc_count(intr_start)
->          if pinned == "yes":
->              os.system ( 'taskset -c %s %s/kernbench -o %s -M -H -n 1 \
-> -                >/dev/null 2>&1' % (cpu_count-1, benchmark_path, threads))
-> +                >/dev/null 2>&1 &' % (cpu_count-1, benchmark_path, threads))
-> +
-> +            # We have to delete import in future
-> +            import time
-> +            time.sleep(240)
-> +            stop_wkld("kernbench")
->          else:
->              if background == "yes":
->                  os.system ( '%s/kernbench -o %s -M -H -n 1 >/dev/null 2>&1 &' \
->                      % (benchmark_path, threads))
->              else:
-> -                os.system ( '%s/kernbench -o %s -M -H -n 1 >/dev/null 2>&1' \
-> -                    % (benchmark_path, threads))
-> +                if perf_test == "yes":
-> +                    os.system ( '%s/kernbench -o %s -M -H -n 1 >/dev/null 2>&1' \
-> +                        % (benchmark_path, threads))
-> +                else:
-> +                    os.system ( '%s/kernbench -o %s -M -H -n 1 >/dev/null 2>&1 &' \
-> +                        % (benchmark_path, threads))
-> +                    # We have to delete import in future
-> +                    import time
-> +                    time.sleep(240)
-> +                    stop_wkld("kernbench")
->          
->          print "INFO: Workload kernbench triggerd"
->          os.chdir(olddir)
-> -        #get_proc_data(stats_stop)
-> -        #get_proc_loc_count(intr_stop)
->      except Exception, details:
->          print "Workload kernbench trigger failed ", details
->          sys.exit(1)
->     
-> -def trigger_workld(sched_smt, workload, stress, duration, background, pinned):
-> +def trigger_workld(sched_smt, workload, stress, duration, background, pinned, perf_test):
->      ''' Triggers workload passed as argument. Number of threads 
->          triggered is based on stress value.
->      '''
-> @@ -360,7 +446,7 @@ def trigger_workld(sched_smt, workload, 
->          if workload == "ebizzy":
->              trigger_ebizzy (sched_smt, stress, duration, background, pinned)
->          if workload == "kernbench":
-> -            trigger_kernbench (sched_smt, stress, background, pinned)
-> +            trigger_kernbench (sched_smt, stress, background, pinned, perf_test)
->      except Exception, details:
->          print "INFO: Trigger workload failed", details
->          sys.exit(1)
-> @@ -434,7 +520,7 @@ def generate_report():
->              print >> keyvalfile, "package-%s=%3.4f" % \
->  		(pkg, (float(total_idle)*100/total))
->      except Exception, details:
-> -        print "Generating reportfile failed: ", details
-> +        print "Generating utilization report failed: ", details
->          sys.exit(1)
-> 
->      #Add record delimiter '\n' before closing these files
-> @@ -454,20 +540,18 @@ def generate_loc_intr_report():
-> 
->          get_proc_loc_count(intr_stop)
-> 
-> -        print "Before substracting"
-> -        for i in range(0, cpu_count):
-> -            print "CPU",i, intr_start[i], intr_stop[i]
-> -            reportfile = open('/procstat/cpu-loc_interrupts', 'a')
-> -            print >> reportfile, "=============================================="
-> -            print >> reportfile, "     Local timer interrupt stats              "
-> -            print >> reportfile, "=============================================="
-> +        reportfile = open('/procstat/cpu-loc_interrupts', 'a')
-> +        print >> reportfile, "=============================================="
-> +        print >> reportfile, "     Local timer interrupt stats              "
-> +        print >> reportfile, "=============================================="
-> +
->          for i in range(0, cpu_count):
->              intr_stop[i] =  int(intr_stop[i]) - int(intr_start[i])
->              print >> reportfile, "CPU%s: %s" %(i, intr_stop[i])
->          print >> reportfile
->          reportfile.close()
->      except Exception, details:
-> -        print "Generating reportfile failed: ", details
-> +        print "Generating interrupt report failed: ", details
->          sys.exit(1)
-> 
->  def record_loc_intr_count():
-> @@ -542,25 +626,24 @@ def validate_cpugrp_map(cpu_group, sched
->                                  modi_cpu_grp.remove(core_cpus[i]) 
->                                  if len(modi_cpu_grp) == 0:
->                                      return 0
-> -                            else:
-> +                            #This code has to be deleted 
-> +                            #else:
->                                  # If sched_smt == 0 then its oky if threads run
->                                  # in different cores of same package 
-> -                                if sched_smt_level == 1:
-> -                                    sys.exit(1)
-> -                                else:
-> -                                    if len(cpu_group) == 2 and \
-> -                                        len(modi_cpu_grp) < len(cpu_group):
-> -                                        print "INFO:CPUs utilized not in a core"
-> -                                        return 1                                        
-> -            print "INFO: CPUs utilized is not in same package or core"
-> -            return(1)
-> +                                #if sched_smt_level > 0 :
-> +                                    #return 1
->  	else:
->              for pkg in sorted(cpu_map.keys()):
->                  pkg_cpus = cpu_map[pkg]
-> -                if pkg_cpus == cpu_group:
-> -                    return(0)
-> -                 
-> -            return(1) 
-> +                if len(cpu_group) == len(pkg_cpus):
-> +                    if pkg_cpus == cpu_group:
-> +                        return(0)
-> +                else:
-> +                    if int(cpus_utilized[0]) in cpu_map[pkg] or int(cpus_utilized[1]) in cpu_map[pkg]:
-> +                        return(0)
-> +
-> +        return(1) 
-> +
->      except Exception, details:
->          print "Exception in validate_cpugrp_map: ", details
->          sys.exit(1)
-> @@ -605,36 +688,70 @@ def verify_sched_domain_dmesg(sched_mc_l
->          print "Reading dmesg failed", details
->          sys.exit(1)
-> 
-> -def validate_cpu_consolidation(work_ld, sched_mc_level, sched_smt_level):
-> +def get_cpu_utilization(cpu):
-> +    ''' Return cpu utilization of cpu_id
-> +    '''
-> +    try:
-> +        for l in sorted(stats_percentage.keys()):
-
-What's the key used to index the elements of this hash table ?
-
-
-> +            if cpu == stats_percentage[l][0]:
-> +                return stats_percentage[l][1]
-> +        return -1
-> +    except Exception, details:
-> +        print "Exception in get_cpu_utilization", details
-> +        sys.exit(1)
-> +
-> +def validate_cpu_consolidation(stress, work_ld, sched_mc_level, sched_smt_level):
->      ''' Verify if cpu's on which threads executed belong to same
->      package
->      '''
->      cpus_utilized = list()
-> +    threads = get_job_count(stress, work_ld, sched_smt_level)
->      try:
->          for l in sorted(stats_percentage.keys()):
->              #modify threshold
-> +            cpu_id = stats_percentage[l][0].split("cpu")
-> +            if cpu_id[1] == '':
-> +                continue
-> +            if int(cpu_id[1]) in cpus_utilized:
-> +                continue
->              if is_hyper_threaded():
-Does is_hyper_threaded() check the status of the system from procfs or
-sysfs every time it's called ? An easier way could be to obtain that
-once and save the state in a variable, if it's not done that way
-already.
-
-> -                if stats_percentage[l][1] > 25 and work_ld == "kernbench":
-> -                    cpu_id = stats_percentage[l][0].split("cpu")
-> -                    if cpu_id[1] != '':
-> +                if work_ld == "kernbench" and sched_smt_level < sched_mc_level:
-> +                    siblings = get_siblings(cpu_id[1])
-> +                    if siblings != "":
-> +                        sib_list = siblings.split()
-> +                        utilization = int(stats_percentage[l][1])
-> +                        for i in range(0, len(sib_list)):
-> +                            utilization += int(get_cpu_utilization("cpu%s" %sib_list[i])) 
-> +                    else:
-> +                        utilization = stats_percentage[l][1]
-> +                    if utilization > 40:
->                          cpus_utilized.append(int(cpu_id[1]))
-> +                        if siblings != "":
-> +                            for i in range(0, len(sib_list)):
-> +                                cpus_utilized.append(int(sib_list[i]))
->                  else:
-> -                    if stats_percentage[l][1] > 70:
-> -                        cpu_id = stats_percentage[l][0].split("cpu")
-> -                        if cpu_id[1] != '':
-> -                            cpus_utilized.append(int(cpu_id[1]))
-> +                    # This threshold wuld be modified based on results
-
-It's easier to have these constants stored in some variables with
-appropriate names. That would be much easier to edit and update later
-instead of searching the code every time.
-
-> +                    if stats_percentage[l][1] > 40:
-> +                        cpus_utilized.append(int(cpu_id[1]))
->              else:
-> -                if stats_percentage[l][1] > 70:
-> -                    cpu_id = stats_percentage[l][0].split("cpu")
-> -                    if cpu_id[1] != '':
-> +                if work_ld == "kernbench" :
-> +                    if stats_percentage[l][1] > 50:
->                          cpus_utilized.append(int(cpu_id[1]))
-> -                    cpus_utilized.sort()
-> +                else:
-> +                    if stats_percentage[l][1] > 70:
-> +                        cpus_utilized.append(int(cpu_id[1]))
-> +            cpus_utilized.sort()
->          print "INFO: CPU's utilized ", cpus_utilized
-> 
-> +        # If length of CPU's utilized is not = number of jobs exit with 1
-> +        if len(cpus_utilized) < threads:
-> +            return 1
-> +
->          status = validate_cpugrp_map(cpus_utilized, sched_mc_level, \
->              sched_smt_level)
->          if status == 1:
->              print "INFO: CPUs utilized is not in same package or core"
-> +
->          return(status)
->      except Exception, details:
->          print "Exception in validate_cpu_consolidation: ", details
-> @@ -645,7 +762,8 @@ def get_cpuid_max_intr_count():
->      try:
->          highest = 0
->          second_highest = 0
-> -        global cpu1_max_intr, cpu2_max_intr
-> +        cpus_utilized = []
-> +        
->          #Skipping CPU0 as it is generally high
->          for i in range(1, cpu_count):
->              if int(intr_stop[i]) > int(highest):
-> @@ -658,15 +776,19 @@ def get_cpuid_max_intr_count():
->                  if int(intr_stop[i]) > int(second_highest):
->                      second_highest = int(intr_stop[i])
->                      cpu2_max_intr = i
-> +        cpus_utilized.append(cpu1_max_intr)
-> +        cpus_utilized.append(cpu2_max_intr)
-> +        
->          for i in range(1, cpu_count):
->              if i != cpu1_max_intr and i != cpu2_max_intr:
->                  diff = second_highest - intr_stop[i]
->                  ''' Threshold of difference has to be manipulated '''
->                  if diff < 10000:
->                      print "INFO: Diff in interrupt count is below threshold"
-> -                    return 1
-> +                    cpus_utilized = []
-> +                    return cpus_utilized
->          print "INFO: Interrupt count in other CPU's low as expected"
-> -        return 0 
-> +        return cpus_utilized
->      except Exception, details:
->          print "Exception in get_cpuid_max_intr_count: ", details
->          sys.exit(1)
-> @@ -675,14 +797,12 @@ def validate_ilb (sched_mc_level, sched_
->      ''' Validate if ilb is running in same package where work load is running
->      '''
->      try:
-> -        status = get_cpuid_max_intr_count()
-> -        if status == 1:
-> +        cpus_utilized = get_cpuid_max_intr_count()
-> +        if not cpus_utilized:
->              return 1
-> -        for pkg in sorted(cpu_map.keys()):
-> -            if cpu1_max_intr in cpu_map[pkg] and cpu2_max_intr in cpu_map[pkg]:
-> -                return 0
-> -        print "INFO: CPUs with higher interrupt count is not in same package"
-> -        return 1
-> +       
-> +        status = validate_cpugrp_map(cpus_utilized, sched_mc_level, sched_smt_level)
-> +        return status
->      except Exception, details:
->          print "Exception in validate_ilb: ", details
->          sys.exit(1)
-> @@ -706,3 +826,14 @@ def reset_schedsmt():
->      except OSError, e:
->          print "Could not set sched_smt_power_savings to 0", e
->          sys.exit(1)
-> +
-> +def stop_wkld(work_ld):
-> +    ''' Kill workload triggered in background
-> +    '''
-> +    try:
-> +        os.system('pkill %s 2>/dev/null' %work_ld)
-> +        if work_ld == "kernbench":
-> +            os.system('pkill make 2>/dev/null')
-> +    except OSError, e:
-> +        print "Exception in stop_wkld", e
-> +        sys.exit(1)
-
--- 
-Thanks and Regards
-gautham
-
-------------------------------------------------------------------------------
-Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-http://p.sf.net/sfu/devconference
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gRnJpLCBPY3QgMzAsIDIwMDkgYXQgNDoyMSBBTSwgR2FycmV0dCBDb29wZXIgPHlhbmVnb21p
+QGdtYWlsLmNvbT4gd3JvdGU6Cj4gT24gRnJpLCBPY3QgMzAsIDIwMDkgYXQgMzo1NiBBTSwgSmnF
+mcOtIFBhbGXEjWVrIDxqcGFsZWNla0B3ZWIuZGU+IHdyb3RlOgo+Pgo+PiBIZWxsbywKPj4KPj4K
+Pj4geWFuZXVyYWJleWEgd3JvdGU6Cj4+Pgo+Pj4gMjAwOS8xMC8yNSBKacWZw60gUGFsZcSNZWsg
+PGpwYWxlY2VrQHdlYi5kZT46Cj4+Pj4gT24gU3VuLCAxOCBPY3QgMjAwOSAyMDoyMjowMCArMDIw
+MCwgU3VicmF0YSBNb2Rhawo+Pj4+IDxzdWJyYXRhQGxpbnV4LnZuZXQuaWJtLmNvbT4gd3JvdGU6
+Cj4+Pj4KPj4+Pj4gSmlyaSwKPj4+Pj4KPj4+Pj4gQW55IGZ1cnRoZXIgdGhvdWdodHMgb24gdGhp
+cyA/Cj4+Pj4KPj4+PiBZZXMsIHNlZSB0aGUgYXR0YWNobWVudC4KPj4+Pgo+Pj4+IEkgY3JlYXRl
+ZCB0aGUgZGlyZWN0b3JpZXMgZm9yIHRoZSBkaWZmZXJlbnQgdGVzdHMgKHJ0X3NpZ3RpbWVkd2Fp
+dCwKPj4+PiBzaWd3YWl0aW5mbyBldGMuKSwgYnV0IHRvIGF2b2lkIGNvcHktcGFzdGluZyB0aGUg
+Y29kZSwgdGhleSBzaGFyZSB0aGUKPj4+PiBzYW1lCj4+Pj4gc291cmNlLiBQbGVhc2UsIHRlbGwg
+bWUgaWYgdGhhdCBpcyBPSy4KPj4+Cj4+PiBJJ20gYSBiaXQgY29uZnVzZWQgYnkgbGV0IG1lIGhl
+bHAgYW5hbHl6ZSB0aGUgTWFrZWZpbGUgYW5kIHByb3ZpZGUKPj4+IGNyaXRpcXVlczoKPj4+Cj4+
+PiBUaGUgYmFzaWMgdGVtcGxhdGUgZm9yIGFueSBNYWtlZmlsZSBub3csIGlzIGFzIGZvbGxvd3M6
+Cj4+Pgo+Pj4gIyBMSUNFTlNJTkcgVE9SVCwgZS5nLiBHUEx2MiBMaWNlbnNlLCBldGMuCj4+Pgo+
+Pj4gIyA8VE9QLVNSQ0RJUiBERUZJTklUSU9OPgo+Pj4KPj4+ICMgPFBSRS1JTkNMVURFPgo+Pj4K
+Pj4+ICMgPEFERElUSU9OQUwgTUFLRSBMT0dJQyBHT0VTIEhFUkU+Cj4+Pgo+Pj4gIyA8UE9TVC1J
+TkNMVURFPgo+Pj4KPj4+IFRoZSBkZXNjcmlwdGlvbiBvZiB0aGVzZSBjb21wb25lbnRzIGlzIGFz
+IGZvbGxvd3M6Cj4+Pgo+Pj4gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT0KPj4+IFRPUC1TUkNESVIgREVGSU5JVElPTgo+Pj4gPT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KPj4+
+IHRvcF9zcmNkaXIgPz0gPHJlbGF0aXZlIHBhdGggZnJvbSBjdXJyZW50IE1ha2VmaWxlIHRvIHRo
+ZSB0b3Agb2YgdGhlCj4+PiBzb3VyY2UgdHJlZT4KPj4+Cj4+PiBFeGFtcGxlIDEgKHNheSwgZnJv
+bSB0ZXN0Y2FzZXMvcmVhbHRpbWUpOgo+Pj4KPj4+IHRvcF9zcmNkaXIgPz0gLi4vLi4KPj4+Cj4+
+PiBFeGFtcGxlIDIgKHNheSwgZnJvbSBsaWIpOgo+Pj4KPj4+IHRvcF9zcmNkaXIgPz0gLi4KPj4+
+Cj4+PiBUaGUgPz0gaXMgaW1wb3J0YW50LCBiZWNhdXNlIHRoaXMgdmFsdWUgY2FuIGJlIHJlZGVm
+aW5lZCBhdCBBTlkgdGltZQo+Pj4gLS0gSSd2ZSBiZWVuIGNvbnNpZGVyaW5nIG1ha2luZyB0aGlz
+IGFzc2lnbm1lbnQgb3BlcmF0b3IgOj0gdGhvdWdoLAo+Pj4gYmVjYXVzZSBpdCBzaG91bGQgYmUg
+c2V0IGp1c3Qgb25jZSBwZXIgTWFrZWZpbGUsIGFuZCBpc24ndCBiZWluZwo+Pj4gZXhwb3J0ZWQg
+YW55bW9yZSAoaXQgd2FzIGEgZGVzaWduIG1pc3Rha2UgSSBtYWRlIGluIHRoZSBiZWdpbm5pbmcg
+dGhhdAo+Pj4gTWlrZSBGLiBjb3JyZWN0ZWQgbWUgYmVjYXVzZSBJIHdhc24ndCBhZGhlcmluZyB0
+byBjb3JyZWN0IGF1dG90b29scwo+Pj4gdmFyaWFibGUgY29udmVudGlvbnMpLgo+Pj4KPj4+ID09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+Cj4+PiBQUkUtSU5DTFVERQo+Pj4gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT0KPj4+IFRoaXMgaXMgaW1wb3J0YW50LCBhbmQgbWF5IGxl
+YWQgdG8gcG90ZW50aWFsIGNvbmZ1c2lvbi4KPj4+Cj4+PiBlbnZfcHJlLm1rIGlzIHVzZWQgZm9y
+IG1vc3QgaW5jbHVkZXMgb3V0c2lkZSBvZiB0aGUgdGVzdGNhc2VzIHBvcnRpb24KPj4+IG9mIHRo
+ZSB0cmVlLiBUaGlzIGhhcyBhIG1pbmltYWwgc2V0IG9mIGFzc3VtcHRpb25zIGFuZCBkZXBlbmRl
+bnQKPj4+IHRhcmdldHMsIGJlY2F1c2UgaXQncyBkZXNpZ25lZCB0byB3b3JrIHdpdGggZG9jLCBs
+aWIsIHRvb2xzLCBhbmQKPj4+IHV0aWxzLiBUaGlzIGNhbiBhbHNvIGJlIHVzZWQgaW4gYHRydW5r
+JyBzaXR1YXRpb25zIChkaXNjdXNzZWQgYmVsb3cpCj4+PiB3aGVyZSBubyBDLWZpbGVzIG5lZWQg
+dG8gYmUgY29tcGlsZWQsIGFuZC9vciBsaW5rZWQgaW4gd2l0aCBsaWJsdHAuYS4KPj4+IFRoaXMg
+YWxzbyBhZGRzICQoYWJzX3RvcF9zcmNkaXIpL2luY2x1ZGUgdG8gdGhlIENQUEZMQUdTIHNvIHlv
+dSBkb24ndAo+Pj4gbmVlZCB0byBhZGQgdGhpcyB0byAzMDArIE1ha2VmaWxlcyAobGlrZSBpdCB3
+YXMgYmVmb3JlIDopLi4uXS4KPj4+Cj4+PiB0ZXN0Y2FzZXMubWsgaXMgdXNlZCBmb3IgcmVzdCBv
+ZiB0aGUgY2FzZXMgdW5kZXIgdGVzdGNhc2VzLiBJdCBkb2VzCj4+PiB0aGUgZm9sbG93aW5nIGZv
+ciB5b3U6Cj4+PiAxLiBFdmVyeXRoaW5nIGluIGVudl9wcmUubWsuCj4+PiAyLiBBZGRzIGRlcGVu
+ZGVuY2llcyBmb3IgbGlibHRwLmEuCj4+PiAzLiBBZGRzIC1sbHRwIHRvIExETElCUy4KPj4+IDQu
+IEFkZHMgZGVwZW5kZW5jaWVzIGZvciB0ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUvc3lzY2FsbF9u
+dW1iZXJzLmgKPj4+IDUuIEFkZHMgYW4gb3B0aW9uYWwgaG9vayBmb3IgdGhlIHRzdF9yZXMgYXBw
+cyBpbiB0b29scy9hcGljbWRzIHNvIHlvdQo+Pj4gY2FuIHJ1biB5b3VyIHRlc3RzIG91dCBvZiB0
+aGUgbG9jYWwgZGlyZWN0b3J5IGJlZm9yZSBpbnN0YWxsIFthc3N1bWluZwo+Pj4gdGhleSdyZSBj
+b2RlZCBwcm9wZXJseSA6KS4uLl0uCj4+Pgo+Pj4gQWxsIG9mIHRoZSBhZGRpdGlvbmFsIHN0ZXBz
+IGFyZSBkb25lIGZvciBkZXZlbG9wZXIgY29udmVuaWVuY2UsIHNvCj4+PiB0aGF0IHJ1bm5pbmcg
+bWFrZSBpbnN0YWxsIGZyb20gdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9vcGVuIGRvZXNuJ3QK
+Pj4+IHJlcXVpcmUgdGhhdCBJIG1hbnVhbGx5IGdvIGludG8gbGliLyBhbmQgdGVzdGNhc2VzL2tl
+cm5lbC9pbmNsdWRlCj4+PiBiZWZvcmVoYW5kIGFuZCBydW4gYSBtYWtlIGFsbCwgYW5kIGhhdmUg
+dG8gZHVwbGljYXRlIGEgbG90IG9mCj4+PiB1bm5lY2Vzc2FyeSBsb2dpYyBpbiB0aGUgTWFrZWZp
+bGVzLgo+Pj4KPj4+ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09Cj4+PiBBRERJVElPTkFMIE1BS0UgTE9HSUMgR09FUyBIRVJFCj4+PiA9
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PQo+Pj4KPj4+IFdoYXRldmVyIHlvdSB3YW50IHRvIHB1dCBpbiBoZXJlIHRoYXQgaXNuJ3QgcHJv
+dmlkZWQgd2l0aCB0aGUgZGVmYXVsdHMKPj4+IGluIGVudl9wb3N0Lm1rLCBnZW5lcmljX2xlYWZf
+dGFyZ2V0LmluYywgb3IgZ2VuZXJpY190cnVua190YXJnZXQuaW5jLAo+Pj4gc28gZmVlbCBmcmVl
+IHRvIGB1c2UgeW91ciBpbWFnaW5hdGlvbicgYXMgdG8gd2hhdGV2ZXIgeW91IG1heSBwdXQgaW4K
+Pj4+IGhlcmUsIGJ1dCB0aGUgb25seSBjYXNlcyB0aGF0IHlvdSBzaG91bGQgaGF2ZSB0byBkZWFs
+IHdpdGggYXJlOgo+Pj4KPj4+IDEuIE11bHRpcGxlIEMgZmlsZXMgLyBvYmplY3RzIC0+IG9uZSBv
+ciBtb3JlIGV4ZWN1dGFibGVzLgo+Pj4gMi4gSXRlbXMgd2l0aG91dCBpbXBsaWNpdCBydWxlIG1h
+cHBpbmdzLCBlLmcuIC5jIC0+IC5vLgo+Pj4KPj4+ID09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cj4+PiBQT1NULUlOQ0xVREU6Cj4+PiA9
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PQo+Pj4KPj4+IC0gRm9yIGFsbCBkaXJlY3RvcnkgdHJhdmVyc2luZyBNYWtlZmlsZXMgeW91IGlu
+Y2x1ZGUgdGhlIGB0cnVuawo+Pj4gdGFyZ2V0JyBNYWtlZmlsZToKPj4+Cj4+PiBpbmNsdWRlICQo
+dG9wX3NyY2RpcikvaW5jbHVkZS9tay9nZW5lcmljX3RydW5rX3RhcmdldC5tawo+Pj4KPj4+IC0g
+Rm9yIGFsbCBub24tZGlyZWN0b3J5IHRyYXZlcnNpbmcgTWFrZWZpbGVzLCB5b3UgaW5jbHVkZSB0
+aGUgYGxlYWYKPj4+IHRhcmdldCcgTWFrZWZpbGUuCj4+Pgo+Pj4gaW5jbHVkZSAkKHRvcF9zcmNk
+aXIpL2luY2x1ZGUvbWsvZ2VuZXJpY19sZWFmX3RhcmdldC5tawo+Pj4KPj4+ID09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cj4+Pgo+Pj4g
+Tm93LCB0byBjcml0aXF1ZSB5b3VyIHByb3Bvc2VkIE1ha2VmaWxlcy4uLgo+Pj4KPj4+IHRlc3Rj
+YXNlcy9rZXJuZWwvc3lzY2FsbHMvcnRfc2lndGltZWR3YWl0L01ha2VmaWxlOgo+Pj4KPj4+ICtD
+RkxBR1MgKz0gLUkuLi8uLi8uLi8uLi9pbmNsdWRlIC1XYWxsIC1PMiAtRFRFU1RfUlRfU0lHVElN
+RURXQUlUCj4+PiArTERMSUJTICs9IC1MLi4vLi4vLi4vLi4vbGliIC1sbHRwCj4+PiArCj4+PiAr
+U1JDUyDCoCDCoD0gJCh3aWxkY2FyZCAqLmMpCj4+PiArVEFSR0VUUyA9ICQocGF0c3Vic3QgJS5j
+LCUsJChTUkNTKSkgcnRfc2lndGltZWR3YWl0MDEKPj4+ICsKPj4+ICthbGw6ICQoVEFSR0VUUykK
+Pj4+ICsKPj4+ICtydF9zaWd0aW1lZHdhaXQwMS5vOiAuLi9zaWd3YWl0aW5mby9zaWd3YWl0aW5m
+bzAxLmMKPj4+ICsgwqAgwqAgJChDQykgLWMgLW8gJEAgJChDUFBGTEFHUykgJChDRkxBR1MpICRe
+Cj4+PiArCj4+PiAraW5zdGFsbDoKPj4+ICsgwqAgwqAgQHNldCAtZTsgZm9yIGkgaW4gJChUQVJH
+RVRTKTsgZG8gbG4gLWYgJCRpIC4uLy4uLy4uL2Jpbi8kJGkgOyBkb25lCj4+PiArCj4+PiArY2xl
+YW46Cj4+PiArIMKgIMKgIHJtIC1mICQoVEFSR0VUUykKPj4+Cj4+PiBHaXZlbiB0aGUgYWJvdmUg
+ZXhwbGFuYXRpb24sIEkgd291bGQgd3JpdGUgdGhpcyBsaWtlIHRoZSBmb2xsb3dpbmcKPj4+ICht
+aW51cyB0aGUgbGljZW5zaW5nIHRvcnQsIGFuZCB3aXRoIGltcHJvcGVyIGluZGVudGVkIHZhcnMg
+LS0gYmxvb2R5Cj4+PiBHTWFpbCA6KC4uLik6Cj4+Pgo+Pj4gPT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09Cj4+PiB0b3Bfc3JjZGlyID89IC4uLy4uLy4uLy4uCj4+
+Pgo+Pj4gaW5jbHVkZSAkKHRvcF9zcmNkaXIpL2luY2x1ZGUvbWsvdGVzdGNhc2VzLm1rCj4+Pgo+
+Pj4gIyBOT1RFOiBQbGFjZW1lbnQgZG9lc24ndCBtYXR0ZXIsIGJ1dCBmb3IgcmVhZGFiaWxpdHkg
+YW5kIGNvbnNpc3RlbmN5Cj4+PiBpdCBzaG91bGQgZ28gaGVyZS4KPj4+IENQUEZMQUdTICs9IC1E
+VEVTVF9SVF9TSUdUSU1FRFdBSVQKPj4+Cj4+PiAjIE5PVEU6IFBsYWNlbWVudCBmb3IgdGhpcyBN
+YWtlIHRhcmdldCBkb2Vzbid0IG1hdHRlci4uLiBqdXN0IHNvIGxvbmcKPj4+IGFzIGl0J3MgZGVm
+aW5lZCBpbiB0aGUgTWFrZWZpbGUuCj4+PiBydF9zaWd0aW1lZHdhaXQwMTogJChhYnNfc3JjZGly
+KS8uLi9zaWd3YWl0aW5mby9zaWd3YWl0aW5mbzAxLmMKPj4+IMKgIMKgIMKgICQoQ09NUElMRS5v
+KSAkKE9VVFBVVF9PUFRJT04pICReCj4+Pgo+Pj4gIyBOT1RFOiBEb24ndCBtb2RpZnkgTUFLRV9U
+QVJHRVRTIGhlcmUgYmVjYXVzZSBpdCBpc24ndCBzZXQgeWV0LCBhbmQKPj4+IHRoZSBkZWZhdWx0
+IGlzIHRvIHBpY2sgdXAgYWxsIGV4aXN0aW5nIEMgZmlsZXMgaW4gdGhlCj4+PiAjIGN1cnJlbnQg
+ZGlyZWN0b3J5IGFuZCBtYWtlIHRoZW0gaW50byBzaW5nbGUtc291cmNlIGV4ZWN1dGFibGVzLCBl
+LmcuCj4+PiAjIHNpZ3dhaXRpbmZvMDEuYyAtPiBzaWd3YWl0aW5mbzAxLm8gLT4gc2lnd2FpdGlu
+Zm8wMSA7KS4uLgo+Pj4KPj4+IGluY2x1ZGUgJCh0b3Bfc3JjZGlyKS9pbmNsdWRlL21rL2dlbmVy
+aWNfbGVhZl90YXJnZXQubWsKPj4+Cj4+PiBNQUtFX1RBUkdFVFMgKz0gcnRfc2lndGltZWR3YWl0
+MDEKPj4+ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQo+Pj4K
+Pj4+IFNpbWlsYXIgbG9naWMgd291bGQgYmUgYXBwbGllZCB0byB5b3VyIG90aGVyIE1ha2VmaWxl
+LCBtaW51cyB0aGUKPj4+IENQUEZMQUdTIGFzc2lnbm1lbnQuCj4+Pgo+Pj4gUGxlYXNlIG5vdGUg
+dGhhdCB5b3VyIGJpbmFyeSBpcyBubyBsb25nZXIgbGlua2VkIGludG8KPj4+ICQoYWJzX3RvcF9i
+dWlsZGRpcikvdGVzdGNhc2VzL2JpbiAtLSBpdCdzIGluc3RlYWQgaW5zdGFsbCgxKSdlZAo+Pj4g
+ZGlyZWN0bHkgaW50byAkKERFU1RESVIpLyQocHJlZml4KS90ZXN0Y2FzZXMvYmluIC4gVGhpcyB3
+YXMgZG9uZSB0bwo+Pj4gZmFjaWxpdGF0ZSBwcm9wZXIgaW5zdGFsbGF0aW9uIGJ5IHVzaW5nIHRo
+ZSBjb3JyZWN0IG1vZGUsIGFuZCBhbHNvIHRvCj4+PiBhdm9pZCBicm9rZW4vaGFja3kgc3ltbGlu
+a2luZyBvcGVyYXRpb25zLgo+Pj4KPj4+IEhvcGUgdGhhdCBoZWxwcyBkZXNjcmliZSB0aGluZ3Mg
+YSBiaXQgYmV0dGVyLi4uIGxldCBtZSBrbm93IGlmIEkKPj4+IHNob3VsZCBhZGQgdGhpcyB0byBh
+IFJFQURNRSBvciBzb21ldGhpbmcuLi4KPj4+Cj4+Pgo+Pgo+PiBUaGFuayB5b3UsIGl0IGlzIGRl
+ZmluaXRlbHkgY2xlYXJlciBub3cuIEkgdGhpbmsgaXQgc2hvdWxkIGJlIG1lbnRpb25lZCBpbgo+
+PiB0aGUgUkVBRE1FLCBpbmNsdWRpbmcgc29tZSBsaXN0IG9mIHRoZSBsdHAgbWFrZWZpbGUgdmFy
+aWFibGVzIChsaWtlCj4+ICQoYWJzX3NyY2RpcikpLiBJJ2xsIHdhaXQgd2l0aCBhIG5ldyBwYXRj
+aCBmb3IgdGhlIG5ldyBidWlsZCBzeXN0ZW0gdG8KPj4gYXBwZWFyIGluIGEgcmVsZWFzZSwgdGhv
+dWdoLgo+Pgo+PiBXaGF0IEkgc3RpbGwgZG9uJ3QgZ2V0IGlzIHdoZXJlIGRvZXMgdGhlIFpJUEZJ
+TEUgdmFyaWFibGUgZ2V0IGl0cyB2YWx1ZQo+PiAodGhpcyB3YXMgdGhlIGZpcnN0IHBsYWNlIHdo
+ZXJlIEkgc291Z2h0IGluc3BpcmF0aW9uKToKPj4KPj4gamlya2FAZGViaWFuOi91c3Ivc3JjL2x0
+cC1jdnMkIGZncmVwIC1SSSAqIC1lIFpJUEZJTEUKPj4gdGVzdGNhc2VzL2NvbW1hbmRzL3Vuemlw
+L01ha2VmaWxlOiQoSU5TVEFMTF9UQVJHRVRTKTogJChaSVBGSUxFKQo+PiB0ZXN0Y2FzZXMvY29t
+bWFuZHMvdW56aXAvTWFrZWZpbGU6JChaSVBGSUxFKTogJChESVIpCj4+IGppcmthQGRlYmlhbjov
+dXNyL3NyYy9sdHAtY3ZzJAo+Cj4gT2ssIEknbGwgYWRkIHRoaXMgaW5mb3JtYXRpb24gYXMgYW4g
+YWRkaXRpb25hbCByZWZlcmVuY2UgdG8gUkVBRE1FLm1rLWRldmVsLgo+Cj4gWklQRklMRSBpcyBt
+b3N0IGxpa2VseSBhbiBhZC1ob2MgdmFyaWFibGUgZGVmaW5lZCBpbiB0aGF0IE1ha2VmaWxlCj4g
+dGhhdCBuZWVkcyB0byBiZSBhZGRlZCB0byB0aGUgbmV3IE1ha2VmaWxlIChpdCdzIG1pc3Npbmcg
+ZnJvbSBpbnN0YWxsCj4gYW5kIGl0J3Mgc29tZXRoaW5nIHRoYXQgSSBmb3Jnb3QgdG8gYWRkIHRv
+IFRPRE8gZXZlbiB0aG91Z2ggSSBub3RpY2VkCj4gaXQgb25jZSBvciB0d2ljZSAtLSBJIG5lZWQg
+dG8gbm90ZSBhbGwgb2YgdGhlIGlzc3VlcyBjbGVhcmx5IHRoaXMKPiB3ZWVrZW5kIGFmdGVyIEkg
+Z28gb3ZlciB0aGUgbG9ncyBtYW51YWxseSB0byBlbnN1cmUgdGhhdCBJIGRpZG4ndCBtaXNzCj4g
+YW55dGhpbmcgYnkgYWNjaWRlbnQpLiBBc3N1bWluZyB0aGF0IFpJUEZJTEUncyBnZW5lcmF0ZWQg
+YXQgYnVpbGQgdGltZQo+ICh3aGljaCBpdCBzaG91bGQgYmUpIHlvdSdyZSBmaW5lIGdldHRpbmcg
+YXdheSB3aXRoIFpJUEZJTEUgYmVpbmcgYQo+IGBiYXJld29yZCcgdmFsdWUgcmVsYXRpdmUgdG8g
+dGhlIGN1cnJlbnQgZGlyZWN0b3J5LiBUaGUgb25seSBwb3NzaWJsZQo+IGlzc3VlIGlzIHRoYXQg
+eW91J2xsIGhhdmUgdG8gZW5zdXJlIHRoYXQgdGhlIGRlc3RpbmF0aW9uIGRpcmVjdG9yeQo+IGV4
+aXN0cyBpbiBvcmRlciBmb3Igb3V0LW9mLWJ1aWxkLXRyZWUgc3VwcG9ydCB0byBjb250aW51ZSB0
+byBmdW5jdGlvbgo+IHByb3Blcmx5IChJIGRvbid0IGV4cGVjdCBwZW9wbGUgdG8gZ2V0IHRoaXMg
+Y29ycmVjdCBhbGwgb2YgdGhlIHRpbWUsCj4gYnV0IEknZCBsaWtlIHRvIGtlZXAgYnJlYWthZ2Ug
+ZG93biB0byBhIG1pbmltdW0gYmVjYXVzZSBpdCBpbXBhY3RzCj4gZm9sa3Mgd2hvIGNyb3NzLWNv
+bXBpbGUgZm9yIG11bHRpcGxlIHRhcmdldHMgdXNpbmcgdGhlIHNhbWUgc3JjCj4gZGlyZWN0b3J5
+IGxpa2UgbXkgZ3JvdXApLiBZb3UgY2FuIGRvIHRoaXMgc2ltaWxhciB0byB0aGUgZm9sbG93aW5n
+Ogo+Cj4gZm9vOgo+IMKgIMKgbWtkaXIgLXAgJEAKPiBmb28vYmFyOiBmb28KPiDCoCDCoCMgZmFr
+ZSB0YWI7IGRvIHNvbWV0aGluZyB0byBjcmVhdGUgZm9vL2Jhcgo+Cj4gSWYgZm9vL2JhciBpc24n
+dCBhIHZhcmlhYmxlLCB0aGVuIGl0IGNhbiBiZSBleHByZXNzZWQgYXM6Cj4KPiBmb286Cj4gwqAg
+wqBta2RpciAtcCAkQAoKU29ycnkuIEkgbWVhbnQ6CgouU0VDT05ERVhQQU5TSU9OOgpmb28vYmFy
+OiAkJChARCkKIMKgIMKgIyBmYWtlIHRhYjsgZG8gc29tZXRoaW5nIHRvIGNyZWF0ZSBmb28vYmFy
+CgpNb3N0IG9mIHRoZSB0aW1lIHRoaXMgaXNuJ3QgdGhlIGNhc2UgdGhvdWdoIGJlY2F1c2Ugc3Bl
+Y2lmeWluZwpJTlNUQUxMX1RBUkdFVFMsIHVzZXMgZ2VuZXJhdGVfaW5zdGFsbF9ydWxlLCB3aGlj
+aCB1c2VzIGEgdmFyaWFibGUgZm9yCnRoZSB0YXJnZXQgdmFsdWUsIGFuZCB0aHVzIG11Y2tzIHVw
+IHRoZSBgLlNFQ09OREVYUEFOU0lPTjonIGNhbGwuCgo+IFNwZWNpZnlpbmcgdGhlIGRpcmVjdG9y
+eSBhcyBhIGRlcGVuZGVuY3kgb2YgdGhlIHRhcmdldCBoYXMgdGhlIHR3bwo+IGZvbGxvd2luZyBi
+ZW5lZml0czoKPiAxLiBFbnN1cmVzIHRoYXQgdGhlIGRlcGVuZGVuY3kgcmVtYWlucyBjb25zdGFu
+dCBhbmQgdGhlIHJlcXVpcmVtZW50IGlzCj4gZW5zdXJlZCBmcm9tIG1ha2UgKHRoaXMgaXMga2V5
+KS4KPiAyLiBTcGVlZHMgdXAgdGhlIGJ1aWxkIGJlY2F1c2UgYWRkaW5nIGNvbXBhcmFibGUgbG9n
+aWMgdG8gZWFjaCBidWlsZAo+IGFuZCBpbnN0YWxsIHJ1bGUgKHRlc3QgLWQgZm9vIHx8IG1rZGly
+IC1wIGZvbykgSSd2ZSBkaXNjb3ZlcmVkIGlzCj4gY29uc2lkZXJhYmx5IHNsb3dlciB0aGFuIGJl
+aW5nIGRlcGVuZGVudCBvbiB0aGUgZGlyZWN0b3J5IGFuZCBoYXZpbmcKPiBtYWtlIGZpbGwgaW4g
+dGhlIGJsYW5rcyBhcyBuZWNlc3NhcnkuIFRoZSBkaWZmZXJlbmNlIHdhcyBvbiB0aGUgb3JkZXIK
+PiBvZiBhdCBsZWFzdCAxfjIgbWlucyBmcm9tIHdoYXQgSSBzYXcgb24gdGhlIENpc2NvIGJ1aWxk
+IHNlcnZlcnMgSSB1c2UKPiBhbmQgbXkgcGVyc29uYWwgbWFjaGluZS4KPgo+IFRoZSBkZXBlbmRl
+bmN5IHRhcmdldHMgKGUuZy4gZm9vKSBzaG91bGQgYmUgYXV0b21hdGljYWxseSBhdmFpbGFibGUK
+PiB2aWEgc29tZSBkZWZhdWx0IGxvZ2ljIGNhbGxlZCB1cCBpbiAuLi4vaW5jbHVkZS9tay9lbnZf
+cG9zdC5tayB1c2luZwo+IGdlbmVyYXRlX2luc3RhbGxfcnVsZV9kaXJfZGVwIC4uLi9pbmNsdWRl
+L21rL2Z1bmN0aW9ucy5taywgYnV0IEkndmUKPiBydW4gaW50byBzb21lIGNvcm5lciBjYXNlcyB3
+aGVyZSB0aGlzIGlzbid0IGNvcnJlY3QgKHNvbWUgb2YgdGhlCj4gSU5TVEFMTF9UQVJHRVRTIHNw
+ZWNpZmllZCBpbiBNYWtlZmlsZS5pbmMsIElJUkMpLCBzbyBJJ2xsIG5lZWQgdG8gZml4Cj4gc29t
+ZXRoaW5nIG1pbm9yIGFmdGVyIEkgc3RhcmUgYXQgdGhlIHByb2JsZW0gZnJvbSBhIGRpZmZlcmVu
+dCBhbmdsZQo+IChpdCdzIG1vc3QgbGlrZWx5IHNvbWV0aGluZyByZWFsbHkgc2ltcGxlIHRoYXQg
+SSBvdmVybG9va2VkIGJ5Cj4gYWNjaWRlbnQpLgo+Cj4gSSd2ZSBtYWRlIHNvbWUgYmFkIGFzc3Vt
+cHRpb25zIHRvbyB0aGF0IEkndmUgaGFkIHRvIGZpeCBhZnRlciB0ZXN0aW5nCj4gaW4gb3V0LW9m
+LWJ1aWxkLXRyZWUsIHNvIHRlc3RpbmcgdGhpcyBuZXcgZnVuY3Rpb25hbGl0eSBpcyBtb3JlCj4g
+Y29tcGxpY2F0ZWQgdGhhbiB0cmFkaXRpb25hbCBpbi1idWlsZC10cmVlIHN1cHBvcnQsIGJ1dCBp
+ZiBJIGNhbiBnZXQgYQo+IGJ1aWxkLWJvdCB1cCBhbmQgZ29pbmcgZm9yIExUUCB3aGljaCB1c2Vz
+IG91dC1vZi1idWlsZC10cmVlLCB0aGlzCj4gd291bGQgYmUgZWFzeSB0byBhdXRvbWF0ZSBsb25n
+dGVybS4gSSBkb24ndCBmb3JzZWUgY29tcGxldGluZyB0aGlzCj4gYmVmb3JlIHRoZSBlbmQgb2Yg
+Tm92ZW1iZXIgdGhvdWdoLgo+Cj4gU28gLS0gaW4gc3VtbWFyeTogcmVsYXRpdmUgcGF0aHMgZnJv
+bSBjdXJyZW50IGRpcmVjdG9yeSBhcmUgb2sgLS0ganVzdAo+IGJlIHN1cmUgdGhhdCB0aGUgZGly
+ZWN0b3J5IGlzIGEgZGVwZW5kZW5jeSBvZiB0aGUgdGFyZ2V0IGFuZCBpcwo+IGNyZWF0ZWQgYmVm
+b3JlIHRoZSB0YXJnZXQgaXMgY3JlYXRlZCBvciBmdW5jdGlvbmFsIGlzc3VlcyB3aWxsIG9jY3Vy
+Cj4gKGJlc3QgY2FzZSBjb25zaXN0ZW50IGJ1aWxkIGVycm9ycyAtLSB3b3JzdCBjYXNlIHJhY2Ug
+Y29uZGl0aW9ucyBpbgo+IHRoZSBzb3VyY2UgdHJlZSA6Wy4uLikuCj4KPiBDaGVlcnMsCj4gLUdh
+cnJldHQKPgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkNvbWUgYnVpbGQgd2l0aCB1cyEgVGhlIEJs
+YWNrQmVycnkoUikgRGV2ZWxvcGVyIENvbmZlcmVuY2UgaW4gU0YsIENBCmlzIHRoZSBvbmx5IGRl
+dmVsb3BlciBldmVudCB5b3UgbmVlZCB0byBhdHRlbmQgdGhpcyB5ZWFyLiBKdW1wc3RhcnQgeW91
+cgpkZXZlbG9waW5nIHNraWxscywgdGFrZSBCbGFja0JlcnJ5IG1vYmlsZSBhcHBsaWNhdGlvbnMg
+dG8gbWFya2V0IGFuZCBzdGF5IAphaGVhZCBvZiB0aGUgY3VydmUuIEpvaW4gdXMgZnJvbSBOb3Zl
+bWJlciA5IC0gMTIsIDIwMDkuIFJlZ2lzdGVyIG5vdyEKaHR0cDovL3Auc2YubmV0L3NmdS9kZXZj
+b25mZXJlbmNlCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+Ckx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0
+cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
