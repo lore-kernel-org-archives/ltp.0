@@ -2,31 +2,32 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1MxhhN-0003JC-Da
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 13:45:57 +0000
-Received: from e9.ny.us.ibm.com ([32.97.182.139])
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1N3po1-0006Pa-TV
+	for ltp-list@lists.sourceforge.net; Fri, 30 Oct 2009 11:38:09 +0000
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
 	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MxhhG-0005Cb-Py
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 13:45:57 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e9.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9DCAAvf016785
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:10:10 -0400
+	(Exim 4.69) id 1N3pnu-0000lC-Qj
+	for ltp-list@lists.sourceforge.net; Fri, 30 Oct 2009 11:38:09 +0000
+Received: from d01relay07.pok.ibm.com (d01relay07.pok.ibm.com [9.56.227.147])
+	by e8.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9U7YTiO027592
+	for <ltp-list@lists.sourceforge.net>; Fri, 30 Oct 2009 03:34:29 -0400
 Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n9DCDots233762
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:13:50 -0400
+	by d01relay07.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	n9UBbuec1478724
+	for <ltp-list@lists.sourceforge.net>; Fri, 30 Oct 2009 07:37:56 -0400
 Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n9DCAOke031782
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:10:24 -0400
+	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	n9U7ZX0K006994
+	for <ltp-list@lists.sourceforge.net>; Fri, 30 Oct 2009 03:35:33 -0400
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200910011340.32046.chandru@in.ibm.com>
-References: <200910011340.32046.chandru@in.ibm.com>
-Date: Tue, 13 Oct 2009 17:43:37 +0530
-Message-Id: <1255436017.8438.36.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <loom.20091029T190532-79@post.gmane.org>
+References: <200910211528.n9LFST8q028289@e35.co.us.ibm.com>
+	<1256576544.4929.54.camel@subratamodak.linux.ibm.com>
+	<loom.20091029T190532-79@post.gmane.org>
+Date: Fri, 30 Oct 2009 17:07:48 +0530
+Message-Id: <1256902668.13702.2.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH V2] ppoll01: add signal() syscall to
-	register	the	signal handler
+Subject: Re: [LTP] [PATCH] Fix some bashisms
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -37,86 +38,80 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Chandru <chandru@in.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, vapier@gentoo.org
+To: =?UTF-8?Q?Ji=C5=99=C3=ADPale=C4=8Dek?= <jpalecek@web.de>
+Cc: ltp-list@lists.sourceforge.net
 
-On Thu, 2009-10-01 at 13:40 +0530, Chandru wrote: 
-> The ppoll01 testcase has a signal handler in it but this signal handler is not registered with the kernel through the signal() syscall. The testcase fails when it sends a SIGINT to itself as part of one of the case of the test run.
-> The following patch
-> 1. Adds a signal() syscall to register the signal handler
-> 2. Corrects the expected 'revents' for the case where ppoll() is called on a file which is only opened in read/write mode, i.e case00.
-> 
-> Signed-off-by: Chandru S <chandru@linux.vnet.ibm.com>
-
-Hi Chandru,
-
-Can you please resend this with a diff from the Latest CVS snapshot ?
-
-patching file testcases/kernel/syscalls/ppoll/ppoll01.c
-Hunk #3 FAILED at 194.
-1 out of 3 hunks FAILED -- saving rejects to file
-testcases/kernel/syscalls/ppoll/ppoll01.c.rej
-
-Regards--
-Subrata
-
-> ---
->  testcases/kernel/syscalls/ppoll/ppoll01.c |    7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> --- testcases/kernel/syscalls/ppoll/ppoll01.c.orig	2009-09-29 21:28:55.510487735 +0530
-> +++ testcases/kernel/syscalls/ppoll/ppoll01.c	2009-10-01 18:27:30.452236128 +0530
-> @@ -79,6 +79,8 @@ char *TCID = "ppoll01";  /* Test program
->  int  testno;
->  int  TST_TOTAL = 1;                   /* total number of tests in this file.   */
-> 
-> +void sighandler(int sig);       /* signals handler function for the test */
-> +
->  /* Extern Global Functions */
->  /******************************************************************************/
->  /*                                                                            */
-> @@ -125,7 +127,8 @@ extern void cleanup() {
->  /*                                                                            */
->  /******************************************************************************/
->  void setup() {
-> -        /* Capture signals if any */
-> +        /* Capture signals */
-> +	signal(SIGINT, &sighandler);
->          /* Create temporary directories */
->          TEST_PAUSE;
->          tst_tmpdir();
-> @@ -191,7 +194,7 @@ struct test_case {
->  static struct test_case tcase[] = {
->  	{ // case00
->                  .ttype          = NORMAL,
-> -                .expect_revents = POLLOUT,
-> +                .expect_revents = POLLOUT | POLLIN,
->                  .ret            = 0,
->                  .err            = 0,
->          },
-> 
-> ------------------------------------------------------------------------------
-> Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
-> is the only developer event you need to attend this year. Jumpstart your
-> developing skills, take BlackBerry mobile applications to market and stay 
-> ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-> http://p.sf.net/sfu/devconf
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
-------------------------------------------------------------------------------
-Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-http://p.sf.net/sfu/devconference
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gVGh1LCAyMDA5LTEwLTI5IGF0IDE4OjEyICswMDAwLCBKacWZw61QYWxlxI1layB3cm90ZToK
+PiBIZWxsbywKPiAKPiBTdWJyYXRhIE1vZGFrIDxzdWJyYXRhQC4uLj4gd3JpdGVzOgo+IAo+ID4g
+Cj4gPiBPbiBXZWQsIDIwMDktMTAtMjEgYXQgMDI6MTkgKzAyMDAsIEppcmkgUGFsZWNlayB3cm90
+ZTogCj4gPiA+IEhlbGxvLAo+ID4gPiAKPiA+ID4gdGhpcyBpcyBhbm90aGVyIHBhdGNoIGZpeGlu
+ZyBiYXNoaXNtcyBpbiBMVFAgdGVzdHMgKHRoZSBmaXhlcyBhcmUgbW9yZSBvciAKPiBsZXNzIHRo
+ZSBzYW1lIGFzIGluIHRoZSBwcmV2aW91cwo+ID4gcGF0Y2hlcywgZXhjZXB0IGZvciBhIGZldyBl
+eGNlcHRpb25zKS4gTm90ZSB0aGF0IHRoZSBwYXRjaCBpcyBub3QgY29tcGxldGUsIAo+IGluIHRo
+ZSBzZW5zZSB0aGF0IHRoZXJlIG1heQo+ID4gcmVtYWluIGZ1cnRoZXIgYmFzaGlzbXMgaW4gdGhl
+IHNvdXJjZSBldmVuIGFmdGVyIGFwcGx5aW5nIHRoZSBwYXRjaCAobGlrZSB1c2UgCj4gb2YgYXJy
+YXlzLCB3aGljaCBpcyB2aXNpYmxlCj4gPiBldmVuIGZyb20gdGhpcyBwYXRjaCkuCj4gPiA+IAo+
+ID4gPiBSZWdhcmRzCj4gPiA+ICAgICBKaXJpIFBhbGVjZWsKPiA+ID4gCj4gPiA+IFNpZ25lZC1v
+ZmYtYnk6IEppcmkgUGFsZWNlayA8anBhbGVjZWtALi4uPgo+ID4gCj4gPiBIbW0sLiBTb21lIG9m
+IHRoZW0gZmFpbGVkIHRvIGFwcGx5LiBDYW4geW91IHBsZWFzZSByZXNlbmQgb25seSB0aGUgZXJy
+b3IKPiA+IHBhcnQocyk6Cj4gPiAKPiAKPiBhY2NvcmRpbmcgdG8gbXkgZ2l0IHJlcG9zaXRvcnku
+IHRoZXNlIGFyZSB0aGUgbWlzc2luZyBwYXJ0czoKPiAKPiBTaWduZWQtb2ZmLWJ5OiBKaXJpIFBh
+bGVjZWsgPGpwYWxlY2VrQHdlYi5kZT4KClRoZW4gc29tZXRoaW5nIHdyb25nIHdpdGggbXkgQ1ZT
+OgoKcGF0Y2hpbmcgZmlsZSB0ZXN0Y2FzZXMva2VybmVsL2ZzL2ZzLWJlbmNoL21vZGFsdHIuc2gK
+SHVuayAjMSBGQUlMRUQgYXQgNDMuCjEgb3V0IG9mIDEgaHVuayBGQUlMRUQgLS0gc2F2aW5nIHJl
+amVjdHMgdG8gZmlsZQp0ZXN0Y2FzZXMva2VybmVsL2ZzL2ZzLWJlbmNoL21vZGFsdHIuc2gucmVq
+CnBhdGNoaW5nIGZpbGUgdGVzdGNhc2VzL2tlcm5lbC9mcy9tb25nby90ZXN0LnNoCkh1bmsgIzEg
+RkFJTEVEIGF0IDI2LgpIdW5rICMyIEZBSUxFRCBhdCA1Mi4KSHVuayAjMyBGQUlMRUQgYXQgNzAu
+CjMgb3V0IG9mIDMgaHVua3MgRkFJTEVEIC0tIHNhdmluZyByZWplY3RzIHRvIGZpbGUKdGVzdGNh
+c2VzL2tlcm5lbC9mcy9tb25nby90ZXN0LnNoLnJlagpwYXRjaGluZyBmaWxlIHRlc3RjYXNlcy9u
+ZXR3b3JrL3RjcF9jbWRzL25ldHN0YXQvbmV0c3RhdDAxCgpDYW4geW91IHBsZWFzZSB2ZXJpZnkg
+PwoKUmVnYXJkcy0tClN1YnJhdGEKCj4gLS0tCj4gIHRlc3RjYXNlcy9rZXJuZWwvZnMvZnMtYmVu
+Y2gvbW9kYWx0ci5zaCAgICAgIHwgICAgMiArLQo+ICB0ZXN0Y2FzZXMva2VybmVsL2ZzL21vbmdv
+L3Rlc3Quc2ggICAgICAgICAgICB8ICAgIDggKysrLS0tLS0KPiAgdGVzdGNhc2VzL25ldHdvcmsv
+dGNwX2NtZHMvbmV0c3RhdC9uZXRzdGF0MDEgfCAgICAyICstCj4gIDMgZmlsZXMgY2hhbmdlZCwg
+NSBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS90ZXN0Y2Fz
+ZXMva2VybmVsL2ZzL2ZzLWJlbmNoL21vZGFsdHIuc2ggYi90ZXN0Y2FzZXMva2VybmVsL2ZzL2Zz
+LQo+IGJlbmNoL21vZGFsdHIuc2gKPiBpbmRleCA4NWQyYzMwLi4zNmU2ZjBjIDEwMDc1NQo+IC0t
+LSBhL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZnMtYmVuY2gvbW9kYWx0ci5zaAo+ICsrKyBiL3Rlc3Rj
+YXNlcy9rZXJuZWwvZnMvZnMtYmVuY2gvbW9kYWx0ci5zaAo+IEBAIC00Myw3ICs0Myw3IEBAIExP
+R19ESVIxPS90bXAvbG9nMQo+ICBIT01FX0RJUj0vaG9tZQo+ICBCTE9DS19ESVI9L2Rldi9tdGRi
+bG9jawo+ICBleHBvcnQgUEFUSD0kUEFUSDovc2Jpbgo+IC0JaWYgWyAkVUlEIC1uZSAwIF07IAo+
+ICsJaWYgWyAkKGlkIC1ydSkgLW5lIDAgXTsgCj4gIHRoZW4gCj4gIAllY2hvICJtdXN0IGJlIHJv
+b3QgdG8gcnVuIHRoaXMiCj4gIAlleGl0Cj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwv
+ZnMvbW9uZ28vdGVzdC5zaCBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvbW9uZ28vCj4gdGVzdC5zaAo+
+IGluZGV4IGZlNzU2NjQuLmVjY2IwNzkgMTAwNzU1Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9m
+cy9tb25nby90ZXN0LnNoCj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9mcy9tb25nby90ZXN0LnNo
+Cj4gQEAgLTI2LDcgKzI2LDcgQEAgVEVTVF9ESVI9dGVzdGRpcgo+IAo+IAo+ICAgICAJCSNzaG91
+bGQgYmUgcm9vdCAgdG8gZXhlY3V0ZSB0aGlzIHNjcmlwdCAuCj4gLQlpZiBbICRVSUQgLW5lIDAg
+XTsgdGhlbgo+ICsJaWYgWyAkKGlkIC1ydSkgLW5lIDAgXTsgdGhlbgo+ICAJCWVjaG8gIlRoaXMg
+c2NyaXB0IG11c3QgYmUgcnVuIGFzIHJvb3QiCj4gIAkJZXhpdAo+ICAJZmkKPiBAQCAtNTIsOCAr
+NTIsNyBAQCBtb2Rwcm9iZSBsb29wCj4gIAlmaQo+IAo+ICAJI3J1biB0aGUgbW9uZ28gdGVzdCBv
+biByZWlzZXJmcyBmaWxlIHN5c3RlbSB0eXBlIAo+IC1mdW5jdGlvbiByZWlzZXJmcwo+IC0KPiAr
+cmVpc2VyZnMoKQo+ICB7Cj4gIGNhdCA+IGZzLnNoIDw8RU9GCj4gIGVjaG8gInBlcmZvcm1pbmcg
+bW9uZ28gb24gcmVpc2VyZnMiCj4gQEAgLTcxLDggKzcwLDcgQEAgRU9GCj4gIAkKPiAKPiAgI1Rv
+IHJ1biBvbiBqZnMgZmlsZSBzeXN0ZW0gdHlwZSAKPiAtZnVuY3Rpb24gIEpGUwo+IC0KPiArSkZT
+KCkKPiAgewo+ICBjYXQgPj4gZnMuc2ggPDxFT0YKPiAgZWNobyAicGVyZm9ybWluZyBtb25nbyBv
+biBqZnMgZmlsZSBzeXN0ZW0iCj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9uZXR3b3JrL3RjcF9j
+bWRzL25ldHN0YXQvbmV0c3RhdDAxIGIvdGVzdGNhc2VzL25ldHdvcmsvCj4gdGNwX2NtZHMvbmV0
+c3RhdC9uZXRzdGF0MDEKPiBpbmRleCA2YTE5N2RlLi4zNjVjMTQyIDEwMDc1NQo+IC0tLSBhL3Rl
+c3RjYXNlcy9uZXR3b3JrL3RjcF9jbWRzL25ldHN0YXQvbmV0c3RhdDAxCj4gKysrIGIvdGVzdGNh
+c2VzL25ldHdvcmsvdGNwX2NtZHMvbmV0c3RhdC9uZXRzdGF0MDEKPiBAQCAtNTgsNyArNTgsNyBA
+QCBkb190ZXN0KCkgewo+ICAgICAgd2hpbGUgWyAkVFNUX0NPVU5UIC1sZSAkTlVNTE9PUFMgXTsg
+ZG8KPiAKPiAgICAgICAgICBmb3IgZmxhZyBpbiAiLXMiICItcm4iICItaSIgIi1nbiIgIi1hcG4i
+OyBkbwo+IC0gICAgICAgICAgICBpZiAhIG5ldHN0YXQgJGZsYWcgMj4mMSAxPi9kZXYvbnVsbDsg
+dGhlbgo+ICsgICAgICAgICAgICBpZiAhIG5ldHN0YXQgJGZsYWcgMT4vZGV2L251bGwgMj4mMTsg
+dGhlbgo+ICAgICAgICAgICAgICAgICAgZW5kX3Rlc3RjYXNlICIkQ09NTUFORCBmYWlsZWQiCj4g
+ICAgICAgICAgICAgIGZpCj4gICAgICAgICAgZG9uZQoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpD
+b21lIGJ1aWxkIHdpdGggdXMhIFRoZSBCbGFja0JlcnJ5KFIpIERldmVsb3BlciBDb25mZXJlbmNl
+IGluIFNGLCBDQQppcyB0aGUgb25seSBkZXZlbG9wZXIgZXZlbnQgeW91IG5lZWQgdG8gYXR0ZW5k
+IHRoaXMgeWVhci4gSnVtcHN0YXJ0IHlvdXIKZGV2ZWxvcGluZyBza2lsbHMsIHRha2UgQmxhY2tC
+ZXJyeSBtb2JpbGUgYXBwbGljYXRpb25zIHRvIG1hcmtldCBhbmQgc3RheSAKYWhlYWQgb2YgdGhl
+IGN1cnZlLiBKb2luIHVzIGZyb20gTm92ZW1iZXIgOSAtIDEyLCAyMDA5LiBSZWdpc3RlciBub3ch
+Cmh0dHA6Ly9wLnNmLm5ldC9zZnUvZGV2Y29uZmVyZW5jZQpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RA
+bGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3Rz
+L2xpc3RpbmZvL2x0cC1saXN0Cg==
