@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1MyFMw-0003qz-9t
-	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 01:43:06 +0000
-Received: from mail-pz0-f188.google.com ([209.85.222.188])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1MyFMq-00037g-41
-	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 01:43:06 +0000
-Received: by pzk26 with SMTP id 26so326396pzk.4
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 14 Oct 2009 18:42:54 -0700 (PDT)
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <oberpar@linux.vnet.ibm.com>) id 1N3vRr-0005fg-A9
+	for ltp-list@lists.sourceforge.net; Fri, 30 Oct 2009 17:39:39 +0000
+Received: from mtagate2.de.ibm.com ([195.212.17.162])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1N3vRi-0001Z8-Ng
+	for ltp-list@lists.sourceforge.net; Fri, 30 Oct 2009 17:39:39 +0000
+Message-ID: <4AEAF762.3050205@linux.vnet.ibm.com>
+Date: Fri, 30 Oct 2009 15:25:38 +0100
+From: Peter Oberparleiter <oberpar@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Date: Wed, 14 Oct 2009 18:37:39 -0700
-Message-ID: <364299f40910141837j51f61ea3h5d337412bba26780@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] [Issue 14] powermanagement test issues
+References: <1256909081.13702.14.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1256909081.13702.14.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] LTP fails to build for Application Code Coverage
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,22 +27,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list <ltp-list@lists.sf.net>, ltp-coverage <ltp-coverage@lists.sourceforge.net>
 
-I'm seeing the following noise in the powermanagement testcases as
-well as what I reported earlier:
+Hi Subrata,
 
-./pm_include.sh: line 74: $cpu_cores: ambiguous redirect
+Subrata Modak wrote:
+> # make CFLAGS=\ -fprofile-arcs\ -ftest-coverage\ -Wall
+[...]
+> gcc   ltp-pan.o zoolib.o splitstr.o -lm  -o ltp-pan
+> ltp-pan.o: In function `run_child':
+> ltp-pan.c:(.text+0x6d54): undefined reference to `__gcov_fork'
 
-cat: /sys/devices/system/cpu/cpu?/topology/physical_package_id: No
-such file or directory
+we already solved this issue via ST but I'll still post the result here 
+for reference: to prevent this particular error, you'll need to also 
+provide the additional linker option -coverage.
 
-./pm_include.sh: line 117: [: -gt: unary operator expected
+As not all ltp Makefile work well when specifying CFLAGS and LDFLAGS on 
+the make command line, you'll need to specify those during the configure 
+step, i.e.
 
-./pm_include.sh: line 128: [: -eq: unary operator expected
+./configure CFLAGS="-fprofile-arcs -ftest-coverage" LDFLAGS="-coverage"
+make
 
-Thanks,
--Garrett
+
+Regards,
+   Peter
+
 
 ------------------------------------------------------------------------------
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
