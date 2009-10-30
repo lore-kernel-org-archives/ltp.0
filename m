@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1MyUA0-0004R6-AB
-	for ltp-list@lists.sourceforge.net; Thu, 15 Oct 2009 17:30:44 +0000
-Date: Thu, 15 Oct 2009 19:30:26 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20091015173026.GA25999@schrodinger.suse.cz>
-References: <20091014115618.7801.69877.sendpatchset@subratamodak.linux.ibm.com>
-	<20091015162356.GB4152@schrodinger.suse.cz>
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1N3wjG-0002YQ-9W
+	for ltp-list@lists.sourceforge.net; Fri, 30 Oct 2009 19:01:42 +0000
+Received: from mail-pw0-f48.google.com ([209.85.160.48])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N3wj8-0006Jt-Cs
+	for ltp-list@lists.sourceforge.net; Fri, 30 Oct 2009 19:01:42 +0000
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="pWyiEgJYm5f9v55/"
-Content-Disposition: inline
-In-Reply-To: <20091015162356.GB4152@schrodinger.suse.cz>
-Subject: Re: [LTP] [PATCH] Re: compile fails for libcpuset.c on
-	SLES-11	s390x with ltp-full-20090930
+In-Reply-To: <4AEAF762.3050205@linux.vnet.ibm.com>
+References: <1256909081.13702.14.camel@subratamodak.linux.ibm.com>
+	<4AEAF762.3050205@linux.vnet.ibm.com>
+Date: Fri, 30 Oct 2009 12:01:28 -0700
+Message-ID: <364299f40910301201x3e185385ndf8a33b892426773@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] LTP fails to build for Application Code Coverage
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,127 +25,51 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>, Mark Ver <markver@us.ibm.com>, Sachin P Sant <sachinp@in.ibm.com>
+To: Peter Oberparleiter <oberpar@linux.vnet.ibm.com>
+Cc: ltp-list <ltp-list@lists.sf.net>, ltp-coverage <ltp-coverage@lists.sourceforge.net>
 
+On Fri, Oct 30, 2009 at 7:25 AM, Peter Oberparleiter
+<oberpar@linux.vnet.ibm.com> wrote:
+> Hi Subrata,
+>
+> Subrata Modak wrote:
+>> # make CFLAGS=3D\ -fprofile-arcs\ -ftest-coverage\ -Wall
+> [...]
+>> gcc =A0 ltp-pan.o zoolib.o splitstr.o -lm =A0-o ltp-pan
+>> ltp-pan.o: In function `run_child':
+>> ltp-pan.c:(.text+0x6d54): undefined reference to `__gcov_fork'
+>
+> we already solved this issue via ST but I'll still post the result here
+> for reference: to prevent this particular error, you'll need to also
+> provide the additional linker option -coverage.
+>
+> As not all ltp Makefile work well when specifying CFLAGS and LDFLAGS on
+> the make command line, you'll need to specify those during the configure
+> step, i.e.
+>
+> ./configure CFLAGS=3D"-fprofile-arcs -ftest-coverage" LDFLAGS=3D"-coverag=
+e"
+> make
 
---pWyiEgJYm5f9v55/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+    Correct. I updated INSTALL to explicitly state `do not define
+CFLAGS, CPPFLAGS, etc' on the command line with make. People need to
+either specify the right values to configure, and/or modify the values
+in include/mk/config.mk (which gets produced by configure).
+Thanks,
+-Garrett
 
-Hi!
-Following patch should fix all troubles with get/set_mempolicy. Header
-linux_syscall_numbers.h wasn't included in libcpuset.c and part of makefile
-that creates symlink in $(LTP_TOPDIR)/include to this header was lost in
-buildsystem rework. May be it would be be cleaner to move content of
-testcases/kernel/include somewhere into include but at least with this patch it
-should compile fine.
-
-signed-off-by: chrubis@suse.cz
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
---pWyiEgJYm5f9v55/
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment;
-	filename="get_set_memopolicy_syscall_missing.patch"
-
-Index: delme/testcases/kernel/include/powerpc.in
-===================================================================
---- delme.orig/testcases/kernel/include/powerpc.in
-+++ delme/testcases/kernel/include/powerpc.in
-@@ -3,6 +3,8 @@ timer_settime 241
- timer_delete 244
- clock_settime 245
- clock_gettime 246
-+get_mempolicy 260
-+set_mempolicy 261
- splice 283
- tee 284
- vmsplice 285
-Index: delme/testcases/kernel/include/powerpc64.in
-===================================================================
---- delme.orig/testcases/kernel/include/powerpc64.in
-+++ delme/testcases/kernel/include/powerpc64.in
-@@ -3,6 +3,8 @@ timer_settime 241
- timer_delete 244
- clock_settime 245
- clock_gettime 246
-+get_mempolicy 260
-+set_mempolicy 261
- splice 283
- tee 284
- vmsplice 285
-Index: delme/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c
-===================================================================
---- delme.orig/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c
-+++ delme/testcases/kernel/controllers/cpuset/cpuset_lib/libcpuset.c
-@@ -48,6 +48,9 @@
- #include "cpuset.h"
- #include "common.h"
- 
-+#include "test.h"
-+#include "linux_syscall_numbers.h"
-+
- /* Bump version, and update Change History, when libcpuset API changes */
- #define CPUSET_VERSION 3
- 
-Index: delme/testcases/kernel/include/Makefile
-===================================================================
---- delme.orig/testcases/kernel/include/Makefile
-+++ delme/testcases/kernel/include/Makefile
-@@ -18,6 +18,7 @@
- #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- #
- # Garrett Cooper, July 2009
-+# Cyril Hrubis, October 2009
- #
- 
- top_srcdir		?= ../../..
-@@ -30,5 +31,7 @@ MAKE_TARGETS		:= linux_syscall_numbers.h
- 
- linux_syscall_numbers.h:
- 	@set -e; $(SHELL) $(abs_srcdir)/regen.sh
-+	rm -f $(top_srcdir)/include/$(MAKE_TARGETS)
-+	ln -s $(abs_srcdir)/$(MAKE_TARGETS) $(top_srcdir)/include/
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-Index: delme/testcases/kernel/include/s390x.in
-===================================================================
---- delme.orig/testcases/kernel/include/s390x.in
-+++ delme/testcases/kernel/include/s390x.in
-@@ -1,3 +1,5 @@
-+get_mempolicy 269
-+set_mempolicy 270
- openat 288
- mkdirat (__NR_openat + 1)
- mknodat (__NR_openat + 2)
-
---pWyiEgJYm5f9v55/
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Come build with us! The BlackBerry(R) Developer Conference in SF, CA
 is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
+developing skills, take BlackBerry mobile applications to market and stay =
+
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
---pWyiEgJYm5f9v55/
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---pWyiEgJYm5f9v55/--
-
