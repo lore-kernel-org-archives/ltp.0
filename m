@@ -1,32 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Mxiba-000700-AK
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 14:44:02 +0000
-Received: from e32.co.us.ibm.com ([32.97.110.150])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1MxibL-0003ZF-QA
-	for ltp-list@lists.sourceforge.net; Tue, 13 Oct 2009 14:43:57 +0000
-Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
-	[9.17.195.228])
-	by e32.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id n9DEciQp029077
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:38:44 -0600
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	n9DEhass159716
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:43:36 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	n9DEhZCE028844
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Oct 2009 08:43:35 -0600
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1N3rTn-0006JB-QD
+	for ltp-list@lists.sourceforge.net; Fri, 30 Oct 2009 13:25:23 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1N3rTf-0004QE-Vg
+	for ltp-list@lists.sourceforge.net; Fri, 30 Oct 2009 13:25:23 +0000
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <364299f40910042116v40757ceene9d99a9a241b23a7@mail.gmail.com>
-References: <364299f40910042116v40757ceene9d99a9a241b23a7@mail.gmail.com>
-Date: Tue, 13 Oct 2009 20:13:31 +0530
-Message-Id: <1255445011.8438.64.camel@subratamodak.linux.ibm.com>
+Date: Fri, 30 Oct 2009 18:54:41 +0530
+Message-Id: <1256909081.13702.14.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Remove ballista binary files
+Subject: [LTP] LTP fails to build for Application Code Coverage
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -37,56 +23,68 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Peter Oberparleiter <oberpar@linux.vnet.ibm.com>
+Cc: ltp-list <ltp-list@lists.sf.net>, ltp-coverage <ltp-coverage@lists.sourceforge.net>
 
-On Sun, 2009-10-04 at 21:16 -0700, Garrett Cooper wrote: 
-> Just before doing a CVS diff I noticed that these binary files made it
-> back into the repository:
-> 
-> testcases/ballista/ballista/blexer
-> testcases/ballista/ballista/bparser
-> testcases/ballista/ballista/mut.out
-> 
-> This change removes them again:
-> 
-> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
-
-Thanks for fixing that already.
-
-Regards--
-Subrata
-
-> 
-> cvs diff: testcases/ballista/ballista/blexer was removed, no
-> comparison available
-> cvs diff: testcases/ballista/ballista/bparser was removed, no
-> comparison available
-> cvs diff: testcases/ballista/ballista/mut.out was removed, no
-> comparison available
-> 
-> ------------------------------------------------------------------------------
-> Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
-> is the only developer event you need to attend this year. Jumpstart your
-> developing skills, take BlackBerry mobile applications to market and stay 
-> ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-> http://p.sf.net/sfu/devconf
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
-------------------------------------------------------------------------------
-Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-http://p.sf.net/sfu/devconference
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+SGkgUGV0ZXIsCgpJIHdhcyBqdXN0IHRyeWluZyB0byBidWlsZCBMVFAgZm9yIGZpbmRpbmcgaXTF
+myBvd24gY29kZSBjb3ZlcmFnZSwgYnV0CndpdGggdGhlIEdDQyBvcHRpb25zIG1lbnRpb25lZCBp
+biBsY292L0lOU1RBTEwsIGkgZ2V0IHRoZSBmb2xsb3dpbmcKYnVpbGQgZmFpbHVyZS4gSXMgdGhl
+cmUgc29tZXRoaW5nIGkgYW0gbWlzc2luZzoKCiMgLi9jb25maWd1cmUKIyBtYWtlIENGTEFHUz1c
+IC1mcHJvZmlsZS1hcmNzXCAtZnRlc3QtY292ZXJhZ2VcIC1XYWxsCmdjYyAtZnByb2ZpbGUtYXJj
+cyAtZnRlc3QtY292ZXJhZ2UgLVdhbGwgICAtYyAtbyBsdHAtcGFuLm8gbHRwLXBhbi5jCmx0cC1w
+YW4uYzogSW4gZnVuY3Rpb24g4oCYbWFpbuKAmToKbHRwLXBhbi5jOjQ4NDogd2FybmluZzogY2Fs
+bCB0byBmdW5jdGlvbiDigJh3YWl0X2hhbmRsZXLigJkgd2l0aG91dCBhIHJlYWwKcHJvdG90eXBl
+Cnpvb2xpYi5oOjUyOiBub3RlOiDigJh3YWl0X2hhbmRsZXLigJkgd2FzIGRlY2xhcmVkIGhlcmUK
+bHRwLXBhbi5jOjU1MDogd2FybmluZzogY2FsbCB0byBmdW5jdGlvbiDigJh3YWl0X2hhbmRsZXLi
+gJkgd2l0aG91dCBhIHJlYWwKcHJvdG90eXBlCnpvb2xpYi5oOjUyOiBub3RlOiDigJh3YWl0X2hh
+bmRsZXLigJkgd2FzIGRlY2xhcmVkIGhlcmUKbHRwLXBhbi5jOjU1OTogd2FybmluZzogY2FsbCB0
+byBmdW5jdGlvbiDigJh3YWl0X2hhbmRsZXLigJkgd2l0aG91dCBhIHJlYWwKcHJvdG90eXBlCnpv
+b2xpYi5oOjUyOiBub3RlOiDigJh3YWl0X2hhbmRsZXLigJkgd2FzIGRlY2xhcmVkIGhlcmUKbHRw
+LXBhbi5jOjU3NDogd2FybmluZzogY2FsbCB0byBmdW5jdGlvbiDigJh3YWl0X2hhbmRsZXLigJkg
+d2l0aG91dCBhIHJlYWwKcHJvdG90eXBlCnpvb2xpYi5oOjUyOiBub3RlOiDigJh3YWl0X2hhbmRs
+ZXLigJkgd2FzIGRlY2xhcmVkIGhlcmUKZ2NjIC1mcHJvZmlsZS1hcmNzIC1mdGVzdC1jb3ZlcmFn
+ZSAtV2FsbCAgIC1jIC1vIHpvb2xpYi5vIHpvb2xpYi5jCmdjYyAtZnByb2ZpbGUtYXJjcyAtZnRl
+c3QtY292ZXJhZ2UgLVdhbGwgICAtYyAtbyBzcGxpdHN0ci5vIHNwbGl0c3RyLmMKZ2NjICAgbHRw
+LXBhbi5vIHpvb2xpYi5vIHNwbGl0c3RyLm8gLWxtICAtbyBsdHAtcGFuCmx0cC1wYW4ubzogSW4g
+ZnVuY3Rpb24gYHJ1bl9jaGlsZCc6Cmx0cC1wYW4uYzooLnRleHQrMHg2ZDU0KTogdW5kZWZpbmVk
+IHJlZmVyZW5jZSB0byBgX19nY292X2ZvcmsnCmx0cC1wYW4uYzooLnRleHQrMHg3YmRhKTogdW5k
+ZWZpbmVkIHJlZmVyZW5jZSB0byBgX19nY292X2V4ZWNscCcKbHRwLXBhbi5jOigudGV4dCsweDdl
+MTUpOiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBfX2djb3ZfZXhlY3ZwJwpsdHAtcGFuLm86IElu
+IGZ1bmN0aW9uIGBnbG9iYWwgY29uc3RydWN0b3JzIGtleWVkIHRvIDY1NTM1XzBfRGVidWcnOgps
+dHAtcGFuLmM6KC50ZXh0KzB4YWY3OSk6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYF9fZ2Nvdl9p
+bml0JwpsdHAtcGFuLm86KC5kYXRhKzB4NDQpOiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBfX2dj
+b3ZfbWVyZ2VfYWRkJwp6b29saWIubzogSW4gZnVuY3Rpb24gYGdsb2JhbCBjb25zdHJ1Y3RvcnMg
+a2V5ZWQgdG8KNjU1MzVfMF96b29fZ2V0bmFtZSc6Cnpvb2xpYi5jOigudGV4dCsweDI5YWIpOiB1
+bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBfX2djb3ZfaW5pdCcKem9vbGliLm86KC5kYXRhKzB4MjQp
+OiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBfX2djb3ZfbWVyZ2VfYWRkJwpzcGxpdHN0ci5vOiBJ
+biBmdW5jdGlvbiBgZ2xvYmFsIGNvbnN0cnVjdG9ycyBrZXllZCB0byA2NTUzNV8wX3NwbGl0c3Ry
+JzoKc3BsaXRzdHIuYzooLnRleHQrMHg1NjUpOiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBfX2dj
+b3ZfaW5pdCcKc3BsaXRzdHIubzooLmRhdGErMHgyNCk6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8g
+YF9fZ2Nvdl9tZXJnZV9hZGQnCmNvbGxlY3QyOiBsZCByZXR1cm5lZCAxIGV4aXQgc3RhdHVzCm1h
+a2VbMV06ICoqKiBbbHRwLXBhbl0gRXJyb3IgMQptYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9yeSBg
+L3Jvb3Qvc3VicmF0YS9sdHAvbHRwLWZ1bGwtMjAwOTA5MzAvcGFuJwptYWtlOiAqKiogW2FsbF0g
+RXJyb3IgMgoKQW5kIHRoaXMgaXMgcnVubmluZyBvbiBhIGdjb3YgZW5hYmxlZCBrZXJuZWwuCiMg
+Z2NjIC0tdmVyc2lvbgpnY2MgKFNVU0UgTGludXgpIDQuMy4yIFtnY2MtNF8zLWJyYW5jaCByZXZp
+c2lvbiAxNDEyOTFdCkNvcHlyaWdodCAoQykgMjAwOCBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24s
+IEluYy4KVGhpcyBpcyBmcmVlIHNvZnR3YXJlOyBzZWUgdGhlIHNvdXJjZSBmb3IgY29weWluZyBj
+b25kaXRpb25zLiAgVGhlcmUgaXMKTk8gd2FycmFudHk7IG5vdCBldmVuIGZvciBNRVJDSEFOVEFC
+SUxJVFkgb3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSClBVUlBPU0UuCgojIHJwbSAtcWEgfCBn
+cmVwIC1pIGdjYwpnY2M0My1pbmZvLTQuMy4zXzIwMDgxMDIyLTExLjE4CmdjYzQzLWMrKy00LjMu
+M18yMDA4MTAyMi0xMS4xOApnY2M0My1kZWJ1Z2luZm8tNC4zLjNfMjAwODEwMjItMTEuMTgKbGli
+Z2NjNDMtNC4zLjNfMjAwODEwMjItMTEuMTgKZ2NjLWluZm8tNC4zLTYyLjE5OApnY2M0My1sb2Nh
+bGUtNC4zLjNfMjAwODEwMjItMTEuMTgKZ2NjLWMrKy00LjMtNjIuMTk4CmdjYzMzLWRlYnVnaW5m
+by0zLjMuMy0xMS45CmdjYy1sb2NhbGUtNC4zLTYyLjE5OApnY2M0My00LjMuM18yMDA4MTAyMi0x
+MS4xOApnY2MtNC4zLTYyLjE5OAoKUmVnYXJkcy0tClN1YnJhdGEKCgoKLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tCkNvbWUgYnVpbGQgd2l0aCB1cyEgVGhlIEJsYWNrQmVycnkoUikgRGV2ZWxvcGVyIENv
+bmZlcmVuY2UgaW4gU0YsIENBCmlzIHRoZSBvbmx5IGRldmVsb3BlciBldmVudCB5b3UgbmVlZCB0
+byBhdHRlbmQgdGhpcyB5ZWFyLiBKdW1wc3RhcnQgeW91cgpkZXZlbG9waW5nIHNraWxscywgdGFr
+ZSBCbGFja0JlcnJ5IG1vYmlsZSBhcHBsaWNhdGlvbnMgdG8gbWFya2V0IGFuZCBzdGF5IAphaGVh
+ZCBvZiB0aGUgY3VydmUuIEpvaW4gdXMgZnJvbSBOb3ZlbWJlciA5IC0gMTIsIDIwMDkuIFJlZ2lz
+dGVyIG5vdyEKaHR0cDovL3Auc2YubmV0L3NmdS9kZXZjb25mZXJlbmNlCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApM
+dHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5u
+ZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
