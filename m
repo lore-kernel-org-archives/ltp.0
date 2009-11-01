@@ -1,23 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1ND8E6-0003Ah-Vf
-	for ltp-list@lists.sourceforge.net; Wed, 25 Nov 2009 03:07:30 +0000
-Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
-	by sfi-mx-2.v28.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1ND8Dz-0008BV-Ar
-	for ltp-list@lists.sourceforge.net; Wed, 25 Nov 2009 03:07:30 +0000
-Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Wed, 25 Nov 2009 12:07:12 +0900
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Wed, 25 Nov 2009 12:07:12 +0900
-Message-ID: <000001ca6d7c$63dc8890$2b9599b0$@co.jp>
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1N4OEq-0001gw-Pk
+	for ltp-list@lists.sourceforge.net; Sun, 01 Nov 2009 00:24:08 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N4OEm-000479-2D
+	for ltp-list@lists.sourceforge.net; Sun, 01 Nov 2009 00:24:08 +0000
+Received: by pwj6 with SMTP id 6so1296759pwj.2
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 31 Oct 2009 17:23:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Language: ja
-Subject: [LTP] mbind01 test failed with after ltp-2009-11-12.tar.gz
+In-Reply-To: <op.u2nxgmm3u2flwt@debian>
+References: <200910211528.n9LFST8q028289@e35.co.us.ibm.com>
+	<1256576544.4929.54.camel@subratamodak.linux.ibm.com>
+	<loom.20091029T190532-79@post.gmane.org>
+	<1256902668.13702.2.camel@subratamodak.linux.ibm.com>
+	<op.u2l52sjuu2flwt@debian>
+	<1256905177.13702.4.camel@subratamodak.linux.ibm.com>
+	<364299f40910302339h5940a0cdjdcb9a18ccbbb0a7d@mail.gmail.com>
+	<op.u2nxgmm3u2flwt@debian>
+Date: Sat, 31 Oct 2009 17:15:46 -0700
+Message-ID: <364299f40910311715s6cc5123aj17052a7aa6da49b@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Fix some bashisms
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,326 +34,216 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: =?ISO-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi,
+Hi Jiri!
 
-Following failure occurred in mbind01 when I execute "runltp" using 
-ltp-2009-11-12.tar.gz.
-Similer failure occured with several recent versions from
-ltp-2009-11-17.tar.gz
-to ltp-2009-11-24.tar.gz, too.
+2009/10/31 Ji=F8=ED Pale=E8ek <jpalecek@web.de>:
+> On Sat, 31 Oct 2009 07:39:54 +0100, Garrett Cooper <yanegomi@gmail.com>
+> wrote:
+>
+>> On Fri, Oct 30, 2009 at 5:19 AM, Subrata Modak
+>> <subrata@linux.vnet.ibm.com> wrote:
+>>>
+>>> On Fri, 2009-10-30 at 13:53 +0100, Ji=F8=ED Pale=E8ek wrote:
+>>>>
+>>>> On Fri, 30 Oct 2009 12:37:48 +0100, Subrata Modak
+>>>> <subrata@linux.vnet.ibm.com> wrote:
+>>>>
+>>>> > On Thu, 2009-10-29 at 18:12 +0000, Ji=F8=EDPale=E8ek wrote:
+>>>> >> Hello,
+>>>> >>
+>>>> >> Subrata Modak <subrata@...> writes:
+>>>> >>
+>>>> >> >
+>>>> >> > On Wed, 2009-10-21 at 02:19 +0200, Jiri Palecek wrote:
+>>>> >> > > Hello,
+>>>> >> > >
+>>>> >> > > this is another patch fixing bashisms in LTP tests (the fixes a=
+re
+>>>> >> more or
+>>>> >> less the same as in the previous
+>>>> >> > patches, except for a few exceptions). Note that the patch is not
+>>>> >> complete,
+>>>> >> in the sense that there may
+>>>> >> > remain further bashisms in the source even after applying the pat=
+ch
+>>>> >> (like use
+>>>> >> of arrays, which is visible
+>>>> >> > even from this patch).
+>>>> >> > >
+>>>> >> > > Regards
+>>>> >> > > =A0 =A0 Jiri Palecek
+>>>> >> > >
+>>>> >> > > Signed-off-by: Jiri Palecek <jpalecek@...>
+>>>> >> >
+>>>> >> > Hmm,. Some of them failed to apply. Can you please resend only the
+>>>> >> error
+>>>> >> > part(s):
+>>>> >> >
+>>>> >>
+>>>> >> according to my git repository. these are the missing parts:
+>>>> >>
+>>>> >> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+>>>> >
+>>>> > Then something wrong with my CVS:
+>>>> >
+>>>> > patching file testcases/kernel/fs/fs-bench/modaltr.sh
+>>>> > Hunk #1 FAILED at 43.
+>>>> > 1 out of 1 hunk FAILED -- saving rejects to file
+>>>> > testcases/kernel/fs/fs-bench/modaltr.sh.rej
+>>>> > patching file testcases/kernel/fs/mongo/test.sh
+>>>> > Hunk #1 FAILED at 26.
+>>>> > Hunk #2 FAILED at 52.
+>>>> > Hunk #3 FAILED at 70.
+>>>> > 3 out of 3 hunks FAILED -- saving rejects to file
+>>>> > testcases/kernel/fs/mongo/test.sh.rej
+>>>> > patching file testcases/network/tcp_cmds/netstat/netstat01
+>>>> >
+>>>> > Can you please verify ?
+>>>>
+>>>> It works for me in CVS, so I guess it was just a linewrap, whitespace =
+or
+>>>> something issue. See attachment for the original (uncrippled) patch.
+>>>
+>>> Yes, it works fine now :-)
+>>> patching file testcases/kernel/fs/fs-bench/modaltr.sh
+>>> patching file testcases/kernel/fs/mongo/test.sh
+>>> patching file testcases/network/tcp_cmds/netstat/netstat01
+>>
+>> Sorry for replying late again, but just for future reference, there's
+>> a function called is_root in $(abs_top_srcdir)/testcases/lib/cmdlib.sh
+>> [in the install tree -- it gets put in
+>> $(abs_top_builddir)/testcases/bin] that can be leveraged s.t. you
+>> don't have to do $(id -ru) -eq 0 everywhere. There are some other
+>> handy constructs and functions too that can be used for expediting
+>> setup, execution, and teardown. The only thing that might be a
+>> detractor for some legacy scripts is that I explicitly did set -u to
+>> avoid QA issues with unset variables, so all variables must be defined
+>> before including the cmd library.
+>>
+>> Using that script though would be helpful as it cuts down on a lot of
+>> duplicate code and aims to be completely POSIX compliant. Some other
+>> pluses:
+>>
+>> 1. incr_tst_count - increments $TST_COUNT appropriately.
+>> 2. TCID is automatically set if not already provided.
+>> 3. exists is a function which ensures that commands exist on a given
+>> system before executing a test.
+>> 4. Common SHELL_DEBUG logic.
+>>
+>> Just trying to make life a little easier for test writers and
+>> maintainers if possible :]...
+>
+> Thanks for noting it. I think, however, that it would be much more valuab=
+le
+> to create exact duplicate of the C test API (or a subset of it) for shell
+> scripts, as this would permit to remove much of the hacky stuff about
+> maintaining TST_COUNT and return value from the shell scripts.
 
-<error message>
------------------------------
-EXPECT: return value(ret)=0 errno=0 (Success)
-RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
-RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
-RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-EXPECT: return value(ret)=0 errno=0 (Success)
-RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
-RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-EXPECT: return value(ret)=0 errno=0 (Success)
-RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-EXPECT: return value(ret)=0 errno=0 (Success)
-RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-EXPECT: return value(ret)=0 errno=0 (Success)
-RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
-RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
-RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-EXPECT: return value(ret)=-1 errno=14 (Bad address)
-RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-EXPECT: return value(ret)=0 errno=0 (Success)
-RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
-RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
-RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-EXPECT: return value(ret)=0 errno=0 (Success)
-RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
-RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-EXPECT: return value(ret)=0 errno=0 (Success)
-RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-EXPECT: return value(ret)=0 errno=0 (Success)
-RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-EXPECT: return value(ret)=0 errno=0 (Success)
-RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
-RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-EXPECT: return value(ret)=-1 errno=22 (Invalid argument)
-RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-EXPECT: return value(ret)=-1 errno=14 (Bad address)
-RESULT: return value(ret)=-1 errno=38 (Function not implemented)
-mbind01     0  TINFO  :  (case00) START
-mbind01     1  TFAIL  :  (case00) END: errno=???(38): Function not
-implemented
-mbind01     0  TINFO  :  (case01) START
-mbind01     2  TFAIL  :  (case01) END: errno=???(38): Function not
-implemented
-mbind01     0  TINFO  :  (case02) START
-mbind01     3  TFAIL  :  (case02) END: errno=???(38): Function not
-implemented
-mbind01     0  TINFO  :  (case03) START
-mbind01     4  TFAIL  :  (case03) END: errno=???(38): Function not
-implemented
-mbind01     0  TINFO  :  (case04) START
-mbind01     5  TFAIL  :  (case04) END: errno=???(38): Function not
-implemented
-mbind01     0  TINFO  :  (case05) START
-mbind01     6  TFAIL  :  (case05) END: errno=???(38): Function not
-implemented
-mbind01     0  TINFO  :  (case06) START
-mbind01     7  TFAIL  :  (case06) END: errno=???(38): Function not
-implemented
-mbind01     0  TINFO  :  (case07) START
-mbind01     8  TFAIL  :  (case07) END: errno=???(38): Function not
-implemented
-mbind01     0  TINFO  :  (case08) START
-mbind01     9  TFAIL  :  (case08) END: errno=???(38): Function not
-implemented
-mbind01     0  TINFO  :  (case09) START
-mbind01    10  TFAIL  :  (case09) END: errno=???(38): Function not
-implemented
-mbind01     0  TINFO  :  (case10) START
-mbind01    11  TFAIL  :  (case10) END: errno=???(38): Function not
-implemented
-mbind01     0  TINFO  :  (case00) START
-mbind01    12  TFAIL  :  (case00) END: errno=???(38): Function not
-implemented
-mbind01     0  TINFO  :  (case01) START
-mbind01    13  TFAIL  :  (case01) END: errno=???(38): Function not
-implemented
-mbind01     0  TINFO  :  (case02) START
-mbind01    14  TFAIL  :  (case02) END: errno=???(38): Function not
-implemented
-mbind01     0  TINFO  :  (case03) START
-mbind01    15  TFAIL  :  (case03) END: errno=???(38): Function not
-implemented
-mbind01     0  TINFO  :  (case04) START
-mbind01    16  TFAIL  :  (case04) END: errno=???(38): Function not
-implemented
-mbind01     0  TINFO  :  (case05) START
-mbind01    17  TFAIL  :  (case05) END: errno=???(38): Function not
-implemented
-mbind01     0  TINFO  :  (case06) START
-mbind01    18  TFAIL  :  (case06) END: errno=???(38): Function not
-implemented
-mbind01     0  TINFO  :  (case07) START
-mbind01    19  TFAIL  :  (case07) END: errno=???(38): Function not
-implemented
-mbind01     0  TINFO  :  (case08) START
-mbind01    20  TFAIL  :  (case08) END: errno=???(38): Function not
-implemented
-mbind01     0  TINFO  :  (case09) START
-mbind01    21  TFAIL  :  (case09) END: errno=???(38): Function not
-implemented
-mbind01     0  TINFO  :  (case10) START
-mbind01    22  TFAIL  :  (case10) END: errno=???(38): Function not
-implemented
------------------------------
+Ok. I'll definitely take that into consideration, but it's up to the
+test writer to determine how many `subtestcases' are being executed in
+a master testcase.
 
+> Looking at the file you mentioned, I have just a few remarks:
+>
+> tst_cleanup()
+> {
+> =A0 =A0# Disable the trap EXIT handler.
+> =A0 =A0trap '' EXIT
+> =A0 =A0# To ensure set -u passes...
+> =A0 =A0TCtmp=3D${TCtmp:=3D}
+>
+> Why? Shouldn't it catch invalid use (eg. without doing tst_setup first)?
 
-On the other hand, with "ltp-full-20091031", it passed as following message
-(My system not supports NUMA).
+Yeah, that's useless if TCtmp is exported in tst_setup and tst_setup
+is executed to completion (or at least this variable is exported
+there) first. I may need to adjust the trap(1) to get this to function
+in a better way.
 
------------------------------
-mbind01     1  TCONF  :  NUMA support not provided.
------------------------------
+> =A0 =A0# Nuke the testcase temporary directory if it exists.
+> =A0 =A0[ -d "$TCtmp" ] && rm -rf "$TCtmp" =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 =A0 =A0 =A0 (1)
+> }
+>
+> tst_setup() {
+>
+> =A0 =A0TST_COUNT=3D1
+> =A0 =A0TST_TOTAL=3D${TST_TOTAL:=3D1} =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0(2)
+> =A0 =A0export TCID TST_COUNT TST_TOTAL
+>
+> =A0 =A0for varname in TST_TOTAL; do
+> =A0 =A0 =A0 =A0if eval "test -z \"\$${varname}\""; then
+> =A0 =A0 =A0 =A0 =A0 =A0end_testcase "You must set ${varname} before calli=
+ng setup()."
+> =A0 =A0 =A0 =A0fi
+> =A0 =A0done
+>
+> What is the sense of doing "test -z "$TST_TOTAL"" in such an elaborate wa=
+y,
+> especially when you reset TST_TOTAL in (2) so test -z $TST_TOTAL can never
+> be true here?
 
+I was trying to avoid duplicate logic, but if it makes sense to do:
 
-Therefore, this problem seems to be after 2009/11/04 revision, I think.
+if test "x$foo" =3D x ; then
 
+fi
+if test "x$foo" =3D x ; then
 
-Following shows revision contribution contents.
+fi
 
-http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/syscalls/mbin
-d/mbind01.c?view=log
+and do some basic arithmetic on the values to ensure they're in range,
+then I'll gladly rewrite it :]. The point was to avoid the nasty `you
+need to defined variable X.Y.Z' message from tst_res*(3), etc, because
+this is quick and resolves coding issues with the underlying
+testcases.
 
------------------------------
-Revision 1.7
-Wed Nov 4 06:18:27 2009 UTC (2 weeks, 6 days ago) by yaberauneya 
-Branch: MAIN 
-Changes since 1.6: +1 -13 lines 
-Diff to previous 1.6 
-I was confused, and numaif.h is in fact a header under
-testcases/kernel/syscalls/utils. As such:
+> ...
+>
+> =A0 =A0TCtmp=3D${TCtmp:=3D$TEMPDIR/$TC$$}
+> =A0 =A0# User wants a temporary sandbox to play with.
+> =A0 =A0if [ -n "$TCtmp" -a "$TCtmp" !=3D "$TEMPDIR/$$" ] ; then
+> =A0 =A0 =A0 =A0test -d "$TCtmp" || mkdir -p "$TCtmp"
+>
+> What is so special about "$TEMPDIR/$$" that you refuse to create a direct=
+ory
+> with this name, but still delete it in (1)?
 
-1. The autoconf test for the header is removed.
-2. An appropriate inclusion is added for numa.h in numaif.h
-3. Remove overengineered code in get_mempolicy01.c because
-linux_syscall_numbers.h handles the unhandled numa syscall numbers.
+Good point; this is not very well thought-out logic that I implemented
+on impulse a while ago (I think that the original logic test was
+`"$TCtmp" !=3D "$TEMPDIR"').
 
-Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+> ...
+> }
+>
+> incr_tst_count()
+> {
+> =A0 =A0: $(( TST_COUNT + 1 ))
+> }
+>
+> Was this really meant this way (ie. as a code with no effect), or should =
+it
+> be "+=3D"?
 
+That's a really stupid mistake that I made. Fixed now (thanks!).
 
-Revision 1.6
-Wed Nov 4 04:59:44 2009 UTC (2 weeks, 6 days ago) by yaberauneya 
-Branch: MAIN 
-Changes since 1.5: +263 -281 lines 
-Diff to previous 1.5 
-1. Disable the test whenever the appropriate headers and syscalls don't
-exist so this will compile on systems without numa and without.
-2. Fix the indentation.
-3. Use TFAIL | TERRNO instead of all of the ad-hoc (TFAIL ... TERRNO,
-strerror(TERRNO)) logic.
+Thanks for the review!
+-Garrett
 
-Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
------------------------------
+---------------------------------------------------------------------------=
+---
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay =
 
-
-According to the contribution of these revisions, it is written that 
-"Disable the test whenever the appropriate headers and syscalls don't
-exist.".
-However, when I compare these revisions, the judgement sentence 
-whether numa is supported or not is deleted, and the error output sentence
-that numa is not supported is deleted.
-
-Following shows the result of compare of "Revision 1.6 and Revision 1.5"
-and "Revision 1.7 and Revision 1.6".
-
-<Revision 1.6 and Revision 1.5>
------------------------------
---- mbind01.c	2009/10/09 17:55:57	1.5
-+++ mbind01.c	2009/11/04 04:59:44	1.6
-@@ -1,50 +1,51 @@
-.
-@@ -55,10 +56,12 @@
-.
-@@ -66,70 +69,72 @@
-.
--#if HAS_NUMA_H
- static struct test_case tcase[] = {
-.
--#else
--static struct test_case tcase[] = { };
--#endif
-.
-@@ -261,82 +262,80 @@
-.
- static int do_test(struct test_case *tc) {
--#if HAS_NUMA_H
-.
--#else
--	return -1;
--#endif
-.
-@@ -346,47 +345,43 @@
-.
--#if HAS_NUMA_H
-.
-@@ -394,45 +389,32 @@
-.
- #else
-+int main (void) {
- 	tst_resm(TCONF, "NUMA support not provided.");
--#endif
--        cleanup();
- 	tst_exit();
- }
-+#endif
------------------------------
-
-<Revision 1.7 and Revision 1.6>
------------------------------
---- mbind01.c	2009/11/04 04:59:44	1.6
-+++ mbind01.c	2009/11/04 06:18:27	1.7
-@@ -59,14 +59,11 @@
-.
-@@ -77,8 +74,6 @@
-.
-@@ -411,10 +406,3 @@
- 	cleanup();
- 	tst_exit();
- }
--
--#else
--int main (void) {
--	tst_resm(TCONF, "NUMA support not provided.");
--	tst_exit();
--}
--#endif
------------------------------
-
-I think that these revisions may contradict the above contribution.
-(Please forgive me if my opinion was wrong.)
-
-
-To revise this problem (error of "Function not implemented") like above 
-contribution, it is necessary to judge numa supporting by using "#if
-HAS_NUMA_H".
-And it is necessary to end with " tst_resm(TCONF, "NUMA support not
-provided.") "
-when not support, I think.
-It is the point same as 2009/10/31 version.
-
-
-Following shows my revise draft.
-
-
-============
---- mbind01.c.org	2009-11-24 18:17:27.000000000 +0900
-+++ mbind01.c	2009-11-24 16:09:03.000000000 +0900
-@@ -176,6 +176,7 @@
-  *		      (only we can do is simulate 1-node NUMA)
-  */
- 
-+#if HAS_NUMA_H
- static struct test_case tcase[] = {
- 	{ /* case00 */
- 		.policy	    = MPOL_DEFAULT,
-@@ -246,6 +247,7 @@
- 		.err	    = EFAULT,
- 	},
- };
-+#endif
- 
- #define MEM_LENGTH	      (4 * 1024 * 1024)
- /*
-@@ -365,6 +367,7 @@
- 
- 	setup();
- 
-+#if HAS_NUMA_H
- 	int lc, i, ret;		 /* loop counter */
- 
- 	/* Check looping state if -i option given */
-@@ -404,4 +407,9 @@
- 	}
- 	cleanup();
- 	tst_exit();
-+
-+#else
-+	tst_resm(TCONF, "NUMA support not provided.");
-+#endif
-+
- }
-============
-
-
-Can I get opinion that my revision is right or not?
-
-
-Thank you--
-
-
--Tomonori Mitani
-
-
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
