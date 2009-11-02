@@ -1,23 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1ND5fK-0000AW-6a
-	for ltp-list@lists.sourceforge.net; Wed, 25 Nov 2009 00:23:26 +0000
-Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
-	by sfi-mx-2.v28.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1ND5fC-0003YU-NL
-	for ltp-list@lists.sourceforge.net; Wed, 25 Nov 2009 00:23:24 +0000
-Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Wed, 25 Nov 2009 09:19:59 +0900
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Wed, 25 Nov 2009 09:19:59 +0900
-Message-ID: <000001ca6d65$076cb650$164622f0$@co.jp>
-MIME-Version: 1.0
-Content-Language: ja
-Subject: [LTP] build failure with 2009-11-24 cvs
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1N4xRo-0004KB-6B
+	for ltp-list@lists.sourceforge.net; Mon, 02 Nov 2009 13:59:52 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1N4xRg-0005hu-J5
+	for ltp-list@lists.sourceforge.net; Mon, 02 Nov 2009 13:59:51 +0000
+Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
+	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nA2DpP5w007070
+	for <ltp-list@lists.sourceforge.net>; Mon, 2 Nov 2009 08:51:25 -0500
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	nA2Dxc2N1122466
+	for <ltp-list@lists.sourceforge.net>; Mon, 2 Nov 2009 08:59:38 -0500
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	nA2Dxc9o032245
+	for <ltp-list@lists.sourceforge.net>; Mon, 2 Nov 2009 08:59:38 -0500
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <200910301649.n9UGnbHJ001240@e34.co.us.ibm.com>
+References: <200910301649.n9UGnbHJ001240@e34.co.us.ibm.com>
+Date: Mon, 02 Nov 2009 19:29:28 +0530
+Message-Id: <1257170368.4977.61.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Other compiler warning fixes
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,159 +39,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jiri Palecek <jpalecek@web.de>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,
+Thanks. Just a small correction below:
 
-I ran "make" in RHEL5.4 (Kernel release : 2.6.18-164.el5) with
-ltp-2009-11-24.tar.gz.
-But it failed with following error message.
-./configure has been done before make.
-I use "make 3.81", "autoconf 2.61", "automake 1.10.2", and "m4 1.4.7".
+On Wed, 2009-10-21 at 21:37 +0200, Jiri Palecek wrote: 
+> Hello,
+> 
+> this is another chunk of compiler warning fixes in LTP tests, related to printf format strings. They have multiple causes:
+> 
+>  - most of them are caused by %d used for the TEST_RETURN variable (as in a previous patch)
+> 
+>  - off_t are cast to (int64_t) and PRId64 output specifier is used for them
+> 
+>  - other types are cast to (intmax_t) or (uintmax_t) and use the %jd or %ju (C99) output specifier. I've used this solution because it's generally correct, easy to use solution that is portable and (IMHO) more readable than using PRId64/PRIu64 and a cast (which you generally can't avoid). This way, there's only a cast.
+> 
+>  - in ioperm test, address should be declared as unsigned long (according to ioperm(2))
+> 
+>  - other little fixes (foo vs. *foo, %S vs. %s, %0 vs. %o)
+> 
+> Regards
+>     Jiri Palecek
+> 
+> diff --git a/testcases/kernel/syscalls/socketcall/socketcall03.c b/testcases/kernel/syscalls/socketcall/socketcall03.c
+> index 9cc2de4..de63784 100644
+> --- a/testcases/kernel/syscalls/socketcall/socketcall03.c
+> +++ b/testcases/kernel/syscalls/socketcall/socketcall03.c
+> @@ -127,12 +127,12 @@ int main(int ac, char **av)
+>  		/* check return code */
+> 
+>  		if (TEST_RETURN == -1) {
+> -			tst_resm(TFAIL, "socketcall() Failed "
+> -				 " with return=%d,errno=%d: %s",
+> -				 TEST_RETURN, TEST_ERRNO, strerror(TEST_ERRNO));
+> +			tst_resm(TFAIL|TTERNO, "socketcall() Failed "
 
-------------
-make[3]: Entering directory
-`/home/LTP/ltp-2009-11-24/testcases/kernel/syscalls'
-make[3]: *** No rule to make target
-`/home/LTP/ltp-2009-11-24/testcases/kernel/syscalls/li
-bevent/test/Makefile', needed by `libevent-all'.  Stop.
-make[3]: Leaving directory
-`/home/LTP/ltp-2009-11-24/testcases/kernel/syscalls'
-make[2]: *** [all] Error 2
-make[2]: Leaving directory `/home/LTP/ltp-2009-11-24/testcases/kernel'
-make[1]: *** [all] Error 2
-make[1]: Leaving directory `/home/LTP/ltp-2009-11-24/testcases'
-make: *** [testcases-all] Error 2
-------------
-
-Similar failure occurred in RHEL5.4 and ltp-2009-11-20.tar.gz too.
-
-
-I confirmed in "${LTPROOT}/testcases/kernel/syscalls/libevent/test"
-directory.
-As a result, there wasn't "Makefile" in this directory.
-I think that the following command in
-"${LTPROOT}/testcases/kernel/syscalls/Makefile"
-failed by this reason.
-
-------------
-libevent-all: $(abs_srcdir)/libevent/test/Makefile libevent/test
-        $(MAKE) -C libevent/test -f "$(firstword $^)" $(LIBEVENT_APPS)
-------------
-
-I judged that "${LTPROOT}/testcases/kernel/syscalls/libevent/configure"
-made "${LTPROOT}/testcases/kernel/syscalls/libevent/test/Makefile".
-After execute this configure,
-"${LTPROOT}/testcases/kernel/syscalls/libevent/test/Makefile"
-was made.
-
-
-I executed "make" command in "${LTPROOT}" directory again.
-Then, this time, it failed in the following error message.
-
-------------
-make[3]: Entering directory
-`/home/LTP/ltp-2009-11-24/testcases/kernel/syscalls'
-make -C libevent/test -f
-"/home/LTP/ltp-2009-11-24/testcases/kernel/syscalls/libevent/test/Makefile"
-regress test-eof test-init test-time test-weof
-make[4]: Entering directory
-`/home/LTP/ltp-2009-11-24/testcases/kernel/syscalls/libevent/test'
-gcc -DHAVE_CONFIG_H -I. -I. -I..     -I../compat -Wall -g -O2 -c regress.c
-make[4]: *** No rule to make target `../libevent.a', needed by `regress'.
-Stop.
-make[4]: Leaving directory
-`/home/LTP/ltp-2009-11-24/testcases/kernel/syscalls/libevent/test'
-make[3]: *** [libevent-all] Error 2
-make[3]: Leaving directory
-`/home/LTP/ltp-2009-11-24/testcases/kernel/syscalls'
-make[2]: *** [all] Error 2
-make[2]: Leaving directory `/home/LTP/ltp-2009-11-24/testcases/kernel'
-make[1]: *** [all] Error 2
-make[1]: Leaving directory `/home/LTP/ltp-2009-11-24/testcases'
-make: *** [testcases-all] Error 2
-------------
-
-
-This time's failure seems to be caused by the fact that there is not
-"${LTPROOT}/testcases/kernel/syscalls/libevent/libevent.a", I think.
-
-
-"libevent.a" file was made after I executed "make" command in 
-"${LTPROOT}/testcases/kernel/syscalls/libevent" directory.
-But, following failure occurred when I executed this "make" command.
-
-------------
-Making all in test
-make[2]: Entering directory
-`/home/LTP/ltp-2009-11-24/testcases/kernel/syscalls/libevent/test'
-gcc -DHAVE_CONFIG_H -I. -I. -I..     -I../compat -Wall -g -O2 -c test-init.c
-gcc  -I../compat -Wall -g -O2  -o test-init  test-init.o -L.. -levent
-gcc -DHAVE_CONFIG_H -I. -I. -I..     -I../compat -Wall -g -O2 -c test-eof.c
-gcc  -I../compat -Wall -g -O2  -o test-eof  test-eof.o -L.. -levent
-gcc -DHAVE_CONFIG_H -I. -I. -I..     -I../compat -Wall -g -O2 -c test-weof.c
-gcc  -I../compat -Wall -g -O2  -o test-weof  test-weof.o -L.. -levent
-gcc -DHAVE_CONFIG_H -I. -I. -I..     -I../compat -Wall -g -O2 -c test-time.c
-gcc  -I../compat -Wall -g -O2  -o test-time  test-time.o -L.. -levent
-gcc  -I../compat -Wall -g -O2  -o regress  regress.o -L.. -levent
-gcc -DHAVE_CONFIG_H -I. -I. -I..     -I../compat -Wall -g -O2 -c bench.c
-gcc  -I../compat -Wall -g -O2  -o bench  bench.o -L.. -levent
-make[2]: ./test.sh: Command not found
-make[2]: *** [test] Error 127
-make[2]: Leaving directory
-`/home/LTP/ltp-2009-11-24/testcases/kernel/syscalls/libevent/test'
-make[1]: *** [all-recursive] Error 1
-make[1]: Leaving directory
-`/home/LTP/ltp-2009-11-24/testcases/kernel/syscalls/libevent'
-make: *** [all-recursive-am] Error 2
-------------
-
-
-This failure depends on there not being "$ LTPROOT
-/testcases/kernel/syscalls/libevent/test.sh".
-I cannot make "test.sh", because I don't know what this "test.sh" do.
-But, "${LTPROOT}/testcases/kernel/syscalls/libevent/libevent.a", was made, 
-then, first of all, I executed "make" command in "${LTPROOT}" directory 
-once again.
-Then "make" succeeded.
-After that, "make install" succeeded too.
-
-
-From the above, I think that there may be three following problems.
-
-(1) "${LTPROOT}/testcases/kernel/syscalls/libevent/test/Makefile" does not
-exist.
-    For this measure, this "Makefile" should be made when
-"${LTPROOT}/configure"
-    executed or this is offered as standard equipment, I think.
-
-(2) "${LTPROOT}/testcases/kernel/syscalls/libevent/libevent.a" does not
-exist.
-    For this measure, this "libevent.a" may be necessary to be made when
-    "make" executed in "${LTPROOT}" directory.
-
-(3) "${LTPROOT}/testcases/kernel/syscalls/libevent/test/test.sh" does not
-exist.
-    For this measure, this "test.sh" may be necessary to be offered as
-standard
-    equipment.
-
-
-Can I get some advice whether my thought above is right?
-
++ tst_resm(TFAIL|TERRNO, "socketcall() Failed "
 
 Regards--
-
--Tomonori Mitani
-
+Subrata
 
 
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
