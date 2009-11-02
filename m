@@ -2,20 +2,19 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1NAuBf-0007FL-AC
-	for ltp-list@lists.sourceforge.net; Wed, 18 Nov 2009 23:43:47 +0000
+	(envelope-from <vapier@gentoo.org>) id 1N55NL-0001Gi-SV
+	for ltp-list@lists.sourceforge.net; Mon, 02 Nov 2009 22:27:47 +0000
 Received: from smtp.gentoo.org ([140.211.166.183])
 	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NAuBZ-0004WO-1U
-	for ltp-list@lists.sourceforge.net; Wed, 18 Nov 2009 23:43:47 +0000
+	(Exim 4.69) id 1N55NC-0003ee-P6
+	for ltp-list@lists.sourceforge.net; Mon, 02 Nov 2009 22:27:47 +0000
 From: Mike Frysinger <vapier@gentoo.org>
-Date: Wed, 18 Nov 2009 18:46:41 -0500
-References: <1258098740-22455-1-git-send-email-avagin@gmail.com>
-	<200911131017.02467.vapier@gentoo.org> <4B03F177.1090103@gmail.com>
-In-Reply-To: <4B03F177.1090103@gmail.com>
+Date: Mon, 2 Nov 2009 18:02:08 -0400
+References: <1257168835.4977.46.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1257168835.4977.46.camel@subratamodak.linux.ibm.com>
 MIME-Version: 1.0
-Message-Id: <200911181846.42873.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] clock_settime03: improve message about fail
+Message-Id: <200911021702.09153.vapier@gentoo.org>
+Subject: Re: [LTP] Build Fails on some archs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,88 +24,93 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1918714590346624649=="
+Content-Type: multipart/mixed; boundary="===============0609405718158838250=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: avagin@gmail.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net, subrata@linux.vnet.ibm.com
+Cc: ltp-list <ltp-list@lists.sf.net>
 
---===============1918714590346624649==
-Content-Type: multipart/signed; boundary="nextPart2067550.16xkU5ibXO";
+--===============0609405718158838250==
+Content-Type: multipart/signed; boundary="nextPart1884308.aJva49Axud";
 	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
---nextPart2067550.16xkU5ibXO
+--nextPart1884308.aJva49Axud
 Content-Type: Text/Plain;
-  charset="koi8-r"
+  charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wednesday 18 November 2009 08:07:03 Andrew Vagin wrote:
-> On 11/13/2009 06:17 PM, Mike Frysinger wrote:
-> > On Friday 13 November 2009 02:52:20 Andrew Vagin wrote:
-> >> ---
-> >>   .../kernel/timers/clock_settime/clock_settime03.c  |    5 +++--
-> >>   1 files changed, 3 insertions(+), 2 deletions(-)
-> >>
-> >> --- a/testcases/kernel/timers/clock_settime/clock_settime03.c
-> >> +++ b/testcases/kernel/timers/clock_settime/clock_settime03.c
-> >> @@ -195,10 +195,11 @@ main(int ac, char **av)
-> >>   			} else {
-> >>   				tst_resm(TFAIL, "clock_settime(2) failed to"
-> >>   						" produce expected error; %d"
-> >> -						" , errno : %s and got %ld",
-> >> +						" , errno : %s and "
-> >> +						"got %ld errno %d",
-> >>   						testcase[i].exp_errno,
-> >>   						testcase[i].exp_errval,
-> >> -						TEST_RETURN);
-> >> +						TEST_RETURN, TEST_ERRNO);
-> >
-> > please convert it to TFAIL|TTERRNO instead
->=20
-> I don't understand. pls describe in detail
+On Monday 02 November 2009 08:33:55 Subrata Modak wrote:
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> -I/root/subrata/ltp/ltp-full-20091031/testcases/kernel/include
+> -I../../../../include -I../../../../include   -L../../../../lib
+> ptrace04.c   -lltp -o ptrace04
+> ptrace03.c: In function 'main':
+> ptrace03.c:182: warning: format '%d' expects type 'int', but argument 3
+> has type 'long int'
+> ptrace04.c: In function 'compare_registers':
+> ptrace04.c:50: error: storage size of 'pt_regs' isn't known
+> ptrace04.c:50: warning: unused variable 'pt_regs'
+> make[4]: *** [ptrace04] Error 1
 
-dont show/parse TEST_ERRNO yourself.  simply use what i showed as the first=
-=20
-argument to the tst_resm func.
+the ptrace stuff has always been fairly unfriendly to cross-arch work.  we'=
+ll=20
+probably have to add header tests for a bunch of files and unify it in a lo=
+cal=20
+ptrace.h header.
+
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> -I../../../../include -I../../../../include   -L../../../../lib
+> tomoyo_file_test.c   -o tomoyo_file_test
+> /tmp/ccvzdsNd.o: In function `main':
+> /root/subrata/ltp/ltp-full-20091031/testcases/kernel/security/tomoyo/newn=
+s.
+> c:43: undefined reference to `clone' collect2: ld returned 1 exit status
+
+these test cases need to be changed to the new common ltp clone code.  as p=
+art=20
+of that, we should probably add a macro that changes clone() to a compile=20
+error so that people stop using it by accident
+#define clone(...) DO_NOT_USE_CLONE
 =2Dmike
 
---nextPart2067550.16xkU5ibXO
+--nextPart1884308.aJva49Axud
 Content-Type: application/pgp-signature; name=signature.asc 
 Content-Description: This is a digitally signed message part.
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.13 (GNU/Linux)
 
-iQIcBAABAgAGBQJLBIdiAAoJEEFjO5/oN/WBpc0P/3wHVcM0vtvCBv6yuCMnunl8
-XEeQ97pv5okjbIfPXUDOR85IJ6wYdBuh01RcB2XkaSrHOeCIRhFr/nJ314M8ATmU
-9mD/R0+iK1FuMpi2r/WgDxM85YDMAPux8zkG+CwboDMBZLUjrC4GB0k8+SNERe0c
-MbfXZlLZslJCrHquuJAl9RQogkPslj2zvWdACKXPnUvYAUwBtKlsWqY9S8NjPGDY
-Cu5jJkLFmNqzfSDTiEKMdyVYvsAEAvuxBVVajEZ8cu18YydU06jLmZetDBzqkSmc
-oN3B0dUdNaHPbqcIlQATZMldIy97Rx7BRGcUJ9goaPEzKP4oA4JGKSsiaLch/4Up
-/gHdeIM6ruUvDih+Q1uEHW8vD9TM4DF7U0R+VB3B8j8+nQANdU0CGR4pMa2mxr+j
-fYzs7kgJCsDyeEtbiQihlAzQORUwToZ7XBL69CaWRDKGhSihwJs0P7UxrigUd3TG
-LZJktqbItanMRf9hKiyFyr3D9b2EmEjbKoO0dgLHQ+ywIMNOg5aSxAglu7+jvu0Y
-Qryn+ETRPFi2vI6iUtGAvWrESOp5mFNetbcuE9A/FOb9Zk2i0918pkikMuMU677+
-0APhu94LuqzUYFoe6LuuNsDSNAvjM9u5z2S+59Ye3a7WvKq131FOPtDRvfl2DlI3
-gGSUSX7nPz9cGVQZv0is
-=coOC
+iQIcBAABAgAGBQJK71bhAAoJEEFjO5/oN/WBDlAP/0xOyjvP45pozPwkhXWTIiV8
+5Z2oTuhfMUFJIWbSwGp/VGpzdl5mHW4qdU9KSHdhkdbolkmARokSFP5kU1VCBVK9
+o9+UPoOxo/pDLJuA8/vypqvQrOwNnVTsC7so/Qm9oIp5B+M4/HUl9nNvrO6FHWgN
+BvdVU51Yvdgd4DzsLZr4FfNFDbPb/4Wbau9e57auyyQdeMbrq0DUL4XuPR0MHdbx
+87SEmhxy0shMKnUZ+gmHQ50HchReU3tScWCYlZM9tICfN68IfsF6E8dCb0i3Obi1
+Kovha7cm5scgj5U/Rk2IwoITAnuTujPmhuEepufCdxuG7r7v4zQhCVwwKroGjuLO
+cG/WcJnDvRsHoW1a8RV5i2y5iFSDCDW4g7uQZUupKKL27jmwYsatMGUKiHzNU/Re
+sIlmxR9ytw829tmw0ykNIJrPKcsacGybdgzI2tHihoNWLLnoAo2LngRzNt3OteX0
+qtilydwFNWOJB0meiCiregjE45M0eVPVD4lEmHVpUf2FX/g1Rm6WblUJjdI9Slmb
+z/JcUu6+LU4exkoAKEEcprxf5IKJjUrBcf5+mWSEH3Yr/UUTdlky07AtFWbkVN4x
+iS3l49QeECiKNGmRyOMQ9frvqDAslUBR+2XJi8bTu/wyhsmLjWOq5ahGQj9XW9Ey
+rPmQcqBhjRvruvCTAdZt
+=gxFz
 -----END PGP SIGNATURE-----
 
---nextPart2067550.16xkU5ibXO--
+--nextPart1884308.aJva49Axud--
 
 
---===============1918714590346624649==
+--===============0609405718158838250==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---===============1918714590346624649==
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
+--===============0609405718158838250==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -117,5 +121,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============1918714590346624649==--
+--===============0609405718158838250==--
 
