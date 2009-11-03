@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1N6UdO-0003x7-RI
-	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 19:38:10 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N6UdB-0004d2-UB
-	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 19:38:05 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Fri, 6 Nov 2009 15:39:21 -0400
-References: <20091106095745.GA25377@basil.fritz.box>
-	<364299f40911061004mbb02ed3lf02a33164890625a@mail.gmail.com>
-	<20091106191343.GC819@basil.fritz.box>
-In-Reply-To: <20091106191343.GC819@basil.fritz.box>
+	(envelope-from <yanegomi@gmail.com>) id 1N5MKs-0008Mw-Eb
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 16:34:22 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N5MKm-0006qs-3r
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 16:34:22 +0000
+Received: by pwj6 with SMTP id 6so2706194pwj.2
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 03 Nov 2009 08:34:10 -0800 (PST)
 MIME-Version: 1.0
-Message-Id: <200911061439.22257.vapier@gentoo.org>
-Subject: Re: [LTP] LTP 20091031 Makefiles totally broken?!?
+In-Reply-To: <200911031130.53505.vapier@gentoo.org>
+References: <1257168835.4977.46.camel@subratamodak.linux.ibm.com>
+	<200911021702.09153.vapier@gentoo.org>
+	<200911031130.53505.vapier@gentoo.org>
+Date: Tue, 3 Nov 2009 08:34:10 -0800
+Message-ID: <364299f40911030834w463f6aa3ga4a24d273f0142bd@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Build Fails on some archs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,91 +29,61 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3403600978449528176=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Andi Kleen <andi@firstfloor.org>
+To: Mike Frysinger <vapier@gentoo.org>
 Cc: ltp-list@lists.sourceforge.net
 
---===============3403600978449528176==
-Content-Type: multipart/signed; boundary="nextPart2852351.msKqnGRb38";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+On Tue, Nov 3, 2009 at 8:30 AM, Mike Frysinger <vapier@gentoo.org> wrote:
+> On Monday 02 November 2009 17:02:08 Mike Frysinger wrote:
+>> On Monday 02 November 2009 08:33:55 Subrata Modak wrote:
+>> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+>> > -I/root/subrata/ltp/ltp-full-20091031/testcases/kernel/include
+>> > -I../../../../include -I../../../../include =A0 -L../../../../lib
+>> > ptrace04.c =A0 -lltp -o ptrace04
+>> > ptrace03.c: In function 'main':
+>> > ptrace03.c:182: warning: format '%d' expects type 'int', but argument 3
+>> > has type 'long int'
+>> > ptrace04.c: In function 'compare_registers':
+>> > ptrace04.c:50: error: storage size of 'pt_regs' isn't known
+>> > ptrace04.c:50: warning: unused variable 'pt_regs'
+>> > make[4]: *** [ptrace04] Error 1
+>>
+>> the ptrace stuff has always been fairly unfriendly to cross-arch work.
+>> =A0we'll probably have to add header tests for a bunch of files and unif=
+y it
+>> =A0in a local ptrace.h header.
+>>
+>> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+>> > -I../../../../include -I../../../../include =A0 -L../../../../lib
+>> > tomoyo_file_test.c =A0 -o tomoyo_file_test
+>> > /tmp/ccvzdsNd.o: In function `main':
+>> > /root/subrata/ltp/ltp-full-20091031/testcases/kernel/security/tomoyo/n=
+ewn
+>> >s. c:43: undefined reference to `clone' collect2: ld returned 1 exit
+>> > status
+>>
+>> these test cases need to be changed to the new common ltp clone code. =
+=A0as
+>> =A0part of that, we should probably add a macro that changes clone() to a
+>> =A0compile error so that people stop using it by accident
+>> #define clone(...) DO_NOT_USE_CLONE
+>
+> i'll take care of both of these issues if you want to look at the others
 
---nextPart2852351.msKqnGRb38
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Sounds good.
+-Garrett
 
-On Friday 06 November 2009 14:13:43 Andi Kleen wrote:
-> > I've considered adding a configure check for the make version. I'm
-> > probably going to do it this weekend to avoid support issues like
-> > these.
->=20
-> That's not a solution.
->=20
-> Please just fix the makefiles or revert this misguided change
-> and give us working makefiles back.
->=20
-> From a quick look at the mailing list archives that doesn't
-> even seem to be the only problem with this "improvement".
+---------------------------------------------------------------------------=
+---
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay =
 
-again, please stop wasting our time with your "revert it" comments.  it isn=
-t=20
-going to happen.  especially considering you apparently have no signficant=
-=20
-plans in helping maintain the huge code base that is LTP.
-
-we can look at working around bugs in make-3.80 if/since there are a number=
- of=20
-people who would like this functionality.
-=2Dmike
-
---nextPart2852351.msKqnGRb38
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.13 (GNU/Linux)
-
-iQIcBAABAgAGBQJK9HtqAAoJEEFjO5/oN/WBo1IP/19bCiy8fLXHCaW1m2kb8KUf
-WZY9aP2CF+QPzUxGAJzk2Ie1xnulOgmUsFTG3R4RN3hhmMlW3vuujoJPZ5gLEzzG
-V5GegPJjcM5ZnJqsFw9d6VFc0V8dftU4eooAYN9DeJeGLCDjQqwHumQYI4GLiV/A
-misnFYf+fP51IiOG6j14zx1WoM3i7wb2BbdBBYHWvdCuKVSATRlWbqILJS0xcgwN
-99lVEs3rtHEivOPBMsw7ePDnz6iCtYPT6aDUrlFQeIMF8TvAmPIL7YHxxuYl+Hmw
-8Z+rX/BYK8in5YXNJ1NAo8AE5W+UrNFhLliEJ8asOY47WATNv45KM5BmzKqu90Fi
-LhPYHXgpreQ7x4AzHy3e/TLyzufg0M2fSYjfFjr0GLdabSCwoHBh9QqORdJKdQia
-XyqQzFlmL2io5Nh742hf9X7tUPCkZmcfmhXeO1XLXFoNBXv+f8/NUE+8KB4YhKpX
-MAAtD7TKCNivDb0RRugyH5Ag5hjqkt9PiUq5rQtIk2ww07aatEXGNTUFELA3M3BK
-iAS3kd2A+5SSfL2vb4lZF96FzpgkFmPb6tVuJwSMdyetQbq3oKYSDZu4HWCA4T2x
-cv0x5L5dZ91q60aFgbd8KgiUQLG/4eJV9w8o0twTG3bvH9qaq68m9EXWiHKjBf2p
-B0vnoGhB5XtaCHnrWeS5
-=gdWF
------END PGP SIGNATURE-----
-
---nextPart2852351.msKqnGRb38--
-
-
---===============3403600978449528176==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---===============3403600978449528176==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============3403600978449528176==--
-
