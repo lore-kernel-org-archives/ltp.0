@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1NBSzw-0005PJ-HA
-	for ltp-list@lists.sourceforge.net; Fri, 20 Nov 2009 12:54:00 +0000
-Received: from relay1.suse.de (relay-ext.suse.de [195.135.221.8])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx1.suse.de (Postfix) with ESMTP id 9BB8A90975
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1N5Mdn-0003ma-5d
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 16:53:55 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N5Mdj-0003Iz-0q
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 16:53:55 +0000
+Received: by pwj6 with SMTP id 6so2719007pwj.2
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 20 Nov 2009 13:53:47 +0100 (CET)
-Date: Fri, 20 Nov 2009 13:53:47 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20091120125347.GA4858@schrodinger.suse.cz>
-References: <20091116151656.GB16811@schrodinger.suse.cz>
+	Tue, 03 Nov 2009 08:53:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20091116151656.GB16811@schrodinger.suse.cz>
-Subject: Re: [LTP] [RFC] utstest.h
+In-Reply-To: <26160192.post@talk.nabble.com>
+References: <26160192.post@talk.nabble.com>
+Date: Tue, 3 Nov 2009 08:53:45 -0800
+Message-ID: <364299f40911030853s43472b81j90a559b4d4667ebe@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] LTP running on Android?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,43 +30,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Greger <ppohjeh@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> I've been looking at sources for usctest.h again today (lib/parse_opts.c) and I
-> still have the feeling that this is badly written/broken code and should be
-> fixed but as there are thousands of tests that uses usctest interface we should
-> be careful when touching these sources. So IMHO the best approach is to change
-> one thing at the time and see if this was a good move.
-> 
-> So let's start with TEST_PAUSE macro. Accordingly to comment in the header,
-> this expands to the code that waits for SIGUSR1 signal (and this is not
-> generaly true).  This macro is expanded to the int usc_global_setup_hook()
-> function. The function forks the program accordingly to STD_COPIES and
-> accordingly STD_PAUSE it sleeps for a SIGUSR1 or not (all forked instances); it
-> also changes program segment size with sbrk().
-> 
-> Looking into the test sources, this is called when the test starts in order to
-> implement test parameters "-c n" (run n copies concurently) and "-p" (pause
-> test) and system variable USC_TP_SBRK. Do we need these parameters or any of
-> them? If you convice me that these parameters are usefull I would gladly clean
-> up and document code that implements TEST_PAUSE, otherwise I would vote for
-> removing them (or at least the useless ones).
-> 
+On Tue, Nov 3, 2009 at 7:07 AM, Greger <ppohjeh@gmail.com> wrote:
+>
+> Hi!
+> Is there anyone that managed to run LTP on an Android device/emulator?
+> Also I read something about that you have to tweek some testcases so it
+> suits an embedded environment. Is there anyone that have some knowledge
+> where I can find info about how to tweeking LTP to suite an embedded
+> environment? Any info on how to run LTP in an embedded environment would be
+> appreciated.
 
-Okay, let me put it like this. Are parameters introduced by TEST_PAUSE really
-used for anything? Would anybody cry if there where removed? Would be patch
-removing them accepted and merged into CVS?
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Hi Greger,
+    Some folks at vxworks are currently running LTP on android. I'll
+hook you up with some contacts offline by the end of the day.
+HTH,
+-Garrett
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
