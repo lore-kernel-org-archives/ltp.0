@@ -1,24 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NDcG2-0006CN-9e
-	for ltp-list@lists.sourceforge.net; Thu, 26 Nov 2009 11:11:30 +0000
-Received: from mail-pz0-f184.google.com ([209.85.222.184])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NDcFu-0000m1-0D
-	for ltp-list@lists.sourceforge.net; Thu, 26 Nov 2009 11:11:27 +0000
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1N5J5f-00027G-54
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 13:06:27 +0000
+Received: from mail-pz0-f191.google.com ([209.85.222.191])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N5J5X-0000Jh-9X
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 13:06:27 +0000
 MIME-Version: 1.0
-In-Reply-To: <4B0112EC.9020202@cn.fujitsu.com>
-References: <4AF93496.3030408@cn.fujitsu.com>
-	<200911102333.55526.vapier@gentoo.org>
-	<4AFA45B0.7070608@cn.fujitsu.com>
-	<1258359225.5677.35.camel@subratamodak.linux.ibm.com>
-	<4B0112EC.9020202@cn.fujitsu.com>
-Date: Thu, 26 Nov 2009 03:11:15 -0800
-Message-ID: <364299f40911260311m6d157453s47f57d1ba47ef643@mail.gmail.com>
+In-Reply-To: <1257168835.4977.46.camel@subratamodak.linux.ibm.com>
+References: <1257168835.4977.46.camel@subratamodak.linux.ibm.com>
+Date: Tue, 3 Nov 2009 05:06:12 -0800
+Message-ID: <364299f40911030506y4411e17g3d644d90e9bdfe32@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] syscalls: fix some failure on arch X86_64
+Subject: Re: [LTP] Build Fails on some archs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,335 +24,232 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: liubo <liubo2009@cn.fujitsu.com>
-Cc: Mike Frysinger <vapier@gentoo.org>, ltp-list <ltp-list@lists.sf.net>
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-On Mon, Nov 16, 2009 at 12:53 AM, liubo <liubo2009@cn.fujitsu.com> wrote:
-> Hi, Subrata,
-> On 11/16/2009 04:13 PM, Subrata Modak wrote:
+On Mon, Nov 2, 2009 at 5:33 AM, Subrata Modak
+<subrata@linux.vnet.ibm.com> wrote:
+> Garret,
 >
-> Liubo,
+> There are some build failures of LTP on some archs. Probably, autoconf
+> files needs to be written for them:
 >
-> Are you sending an updated patch post this discussion ?
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> # uname -a
+> Linux 2.6.27.19-5-default #1 SMP 2009-02-28 04:40:21 +0100 s390x s390x
+> s390x GNU/Linux
+> # cat /etc/issue
+> Welcome to SUSE Linux Enterprise Server 11 (s390x) - Kernel \r (\l).
 >
+> and
 >
+> # uname -a
+> Linux 2.6.18-164.el5 #1 SMP Tue Aug 18 15:53:50 EDT 2009 s390x s390x
+> s390x GNU/Linux
+> # cat /etc/issue
+> Red Hat Enterprise Linux Server release 5.4 (Tikanga)
+> Kernel \r on an \m
 >
-> Yes, I'll resend a updated patch about these rt_sigs.
->
-> Regards--
-> Liubo
->
-> Regards--
-> Subrata
->
-> On Wed, 2009-11-11 at 13:03 +0800, Wei Yongjun wrote:
->
->
-> Mike Frysinger wrote:
->
->
-> On Tuesday 10 November 2009 04:38:30 liubo wrote:
->
->
->
-> 1) rt_sigaction
->     "sigaction" has the structure:
->
->  struct sigaction {
->          __sighandler_t sa_handler;
->          unsigned long sa_flags;
->   #ifdef SA_RESTORER
->           __sigrestore_t sa_restorer;
->   #endif
->           sigset_t sa_mask;               /* mask last for extensibility */
->  };
->
->     However, on arch x86_64, if we directly get to call rt_sigaction,
-> the argument "sa_restorer" will not be fulfilled, and this will lead
->  to segment fault.
->     on arch x86_64, if sa_restorer is not set, kernel will lead to segment
->  fault. In other arch, if sa_restorer is not set, kernel can do the correct
->  work. To avoid this segment fault, we use glibc function
-> "int sigaction(...);" instead, which can fulfill the argument
->  "sa_restorer".
->
->
->
-> which defeats the purpose of the test.  there is no guarantee that the C
-> library sigaction function is implemented via the __NR_rt_sigaction syscall.
->
->
->
-> In x86_64, it do this. And If we want to use __NR_rt_sigaction syscall
-> directly, we must fill the sa_restorer and set the RESTORER flag to
-> sa_mask. If we do not set the sa_restorer, kill will always cause
-> segment fault.
->
->
->
->
->
->
-> 2) rt_sigprocmask
->     This failure contains two aspects,
-> the first is the segment fault as described in 1),
-> the second is that testcase uses a unknown signal 33 for test,
-> and this will lead sigaction cannot bind signal 33 to the action.
->
->     So, we attempt to use a known signal instead, such as 34.
->
->
->
-> which is just as bogus and unportable.  if the test needs a real time
-> signal,
-> it should leverage the sigrtmin...sigrtmax defines.
-> -mike
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> -I/root/subrata/ltp/ltp-full-20091031/testcases/kernel/include
+> -I../../../../include -I../../../../include =A0 -L../../../../lib
+> ptrace04.c =A0 -lltp -o ptrace04
+> ptrace03.c: In function 'main':
+> ptrace03.c:182: warning: format '%d' expects type 'int', but argument 3
+> has type 'long int'
+> ptrace04.c: In function 'compare_registers':
+> ptrace04.c:50: error: storage size of 'pt_regs' isn't known
+> ptrace04.c:50: warning: unused variable 'pt_regs'
+> make[4]: *** [ptrace04] Error 1
 
-I see what you mean about this testcase segfaulting now.
+Like Mike said some ptrace(2) hackery needs to occur in m4 to make the
+ptrace(2) stuff work...
 
-I've done some exploring, and while sigaction does map to rt_sigaction
-on ia64 and x86_64, it won't on arm, mips, s390*, sh, or x86.
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> -I/root/subrata/ltp/ltp-full-20091031/testcases/kernel/include
+> -I../../../../../include -I../../../../../include
+> -L/root/subrata/ltp/ltp-full-20091031/testcases/kernel/controllers/cpuset=
+/cpuset_syscall_test/../cpuset_lib -L../../../../../lib =A0cpuset_syscall_t=
+est.c =A0 -lltp -lcpu_set -o cpuset_syscall_test
+> cpuset_syscall_test.c: In function 'get_mempolicy':
+> cpuset_syscall_test.c:67: error: '__NR_get_mempolicy' undeclared (first
+> use in this function)
+> cpuset_syscall_test.c:67: error: (Each undeclared identifier is reported
+> only once
+> cpuset_syscall_test.c:67: error: for each function it appears in.)
+> cpuset_syscall_test.c: In function 'mbind':
+> cpuset_syscall_test.c:73: error: '__NR_mbind' undeclared (first use in
+> this function)
+> cpuset_syscall_test.c: In function 'set_mempolicy':
+> cpuset_syscall_test.c:78: error: '__NR_set_mempolicy' undeclared (first
+> use in this function)
+> cpuset_syscall_test.c: In function 'process_options':
+> cpuset_syscall_test.c:100: warning: unused variable 'file'
+> cpuset_syscall_test.c: In function 'test_mbind':
+> cpuset_syscall_test.c:177: warning: format '%lx' expects type 'long
+> unsigned int', but argument 2 has type 'void *'
+> make[5]: *** [cpuset_syscall_test] Error 1
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> # uname -a
+> Linux 2.6.18-164.el5 #1 SMP Tue Aug 18 15:58:09 EDT 2009 ppc64 ppc64
+> ppc64 GNU/Linux
+> # cat /etc/issue
+> Red Hat Enterprise Linux Server release 5.4 (Tikanga)
+> Kernel \r on an \m
 
-Furthermore, the problem is actually being caused by the fact that
-we're not even calling sigaddset properly!
+Memory served me correctly ppc64 didn't support numa-related syscalls
+like numa, set_mempolicy, etc. If that's not the case then the
+syscalls need to be added to ppc64.in...
 
-gcooper@orangebox
-/scratch/ltp-dev2/ltp/testcases/kernel/syscalls/rt_sigaction $ gdb
-./rt_sigaction01
-GNU gdb 6.8
-Copyright (C) 2008 Free Software Foundation, Inc.
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
-and "show warranty" for details.
-This GDB was configured as "x86_64-pc-linux-gnu"...
-(gdb) c
-The program is not being run.
-(gdb) r
-Starting program:
-/scratch/ltp-dev2/ltp/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01
-thread:20
-[Thread debugging using libthread_db enabled]
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01    1  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01    2  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01    3  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01    4  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01    5  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01    6  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01    7  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01    8  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01    9  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01   10  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01   11  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01   12  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01   13  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01   14  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01   15  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01   16  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01   17  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01   18  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01   19  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01   20  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01   21  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01   22  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01   23  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01   24  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01   25  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01   26  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01   27  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01   28  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01   29  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
-rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-rt_sigaction01   30  TFAIL  :  rt_sigaction01 failed:
-TEST_ERRNO=EINVAL(22): Invalid argument
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> -I/root/subrata/ltp/ltp-full-20091031/testcases/kernel/include
+> -I../../../../include -I../../../../include =A0 -L../../../../lib
+> ptrace04.c =A0 -lltp -o ptrace04
+> ptrace03.c: In function =91main=92:
+> ptrace03.c:182: warning: format =91%d=92 expects type =91int=92, but argu=
+ment 3
+> has type =91long int=92
+> ptrace04.c: In function =91compare_registers=92:
+> ptrace04.c:57: error: =91PTRACE_GETREGS=92 undeclared (first use in this
+> function)
+> ptrace04.c:57: error: (Each undeclared identifier is reported only once
+> ptrace04.c:57: error: for each function it appears in.)
+> make[4]: *** [ptrace04] Error 1
+> make[4]: *** Waiting for unfinished jobs....
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> -I/root/subrata/ltp/ltp-full-20091031/testcases/kernel/include
+> -I/root/subrata/ltp/ltp-full-20091031/testcases/kernel/controllers/cgroup=
+/../libcontrollers -I../../../../include -I../../../../include =A0 -L/root/=
+subrata/ltp/ltp-full-20091031/testcases/kernel/controllers/cgroup/../libcon=
+trollers -L../../../../lib =A0getdelays.c =A0 -lltp -lcontrollers -o getdel=
+ays
+> make[5]: Entering directory `/root/subrata/ltp/ltp-full-20091031/lib'
+> make[5]: Nothing to be done for `all'.
+> make[5]: Leaving directory `/root/subrata/ltp/ltp-full-20091031/lib'
+> getdelays.c: In function 'send_cmd':
+> getdelays.c:147: error: dereferencing pointer to incomplete type
+> getdelays.c:148: error: dereferencing pointer to incomplete type
+> getdelays.c:148: error: 'NLA_HDRLEN' undeclared (first use in this
+> function)
+> getdelays.c:148: error: (Each undeclared identifier is reported only
+> once
+> getdelays.c:148: error: for each function it appears in.)
+> getdelays.c:150: error: dereferencing pointer to incomplete type
+> getdelays.c: In function 'get_family_id':
+> getdelays.c:194: warning: implicit declaration of function 'NLA_ALIGN'
+> getdelays.c:194: error: dereferencing pointer to incomplete type
+> getdelays.c:195: error: dereferencing pointer to incomplete type
+> getdelays.c:196: error: 'NLA_HDRLEN' undeclared (first use in this
+> function)
+> getdelays.c: In function 'main':
+> getdelays.c:452: error: dereferencing pointer to incomplete type
+> getdelays.c:453: error: dereferencing pointer to incomplete type
+> getdelays.c:457: error: dereferencing pointer to incomplete type
+> getdelays.c:457: error: 'NLA_HDRLEN' undeclared (first use in this
+> function)
+> getdelays.c:463: error: dereferencing pointer to incomplete type
+> getdelays.c:483: error: dereferencing pointer to incomplete type
+> getdelays.c:493: error: dereferencing pointer to incomplete type
+> getdelays.c:496: error: dereferencing pointer to incomplete type
+> getdelays.c:507: error: dereferencing pointer to incomplete type
+> make[4]: *** [getdelays] Error 1
 
-So, the test needs fixing, anyhow. After I fixed it, the test still
-segfaulted >:( --
+Again with the ptrace hackery.
 
-gcooper@orangebox
-/scratch/ltp-dev2/ltp/testcases/kernel/syscalls/rt_sigaction $ gdb
-./rt_sigaction01
-GNU gdb 6.8
-Copyright (C) 2008 Free Software Foundation, Inc.
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
-and "show warranty" for details.
-This GDB was configured as "x86_64-pc-linux-gnu"...
-(gdb) r
-Starting program:
-/scratch/ltp-dev2/ltp/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01
-thread:20
-[Thread debugging using libthread_db enabled]
-rt_sigaction01    0  TINFO  :  signal: 34
-rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO
-[New Thread 0x7fdd451d66f0 (LWP 31927)]
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> -I../../../../include -I../../../../include =A0 -L../../../../lib
+> tomoyo_file_test.c =A0 -o tomoyo_file_test
+> /tmp/ccvzdsNd.o: In function `main':
+> /root/subrata/ltp/ltp-full-20091031/testcases/kernel/security/tomoyo/newn=
+s.c:43: undefined reference to `clone'
+> collect2: ld returned 1 exit status
+> make[4]: *** [newns] Error 1
+> make[4]: *** Waiting for unfinished jobs....
+> make[4]: Leaving directory
+> `/root/subrata/ltp/ltp-full-20091031/testcases/kernel/security/tomoyo'
+> make[3]: *** [all] Error 2
+> make[3]: Leaving directory
+> `/root/subrata/ltp/ltp-full-20091031/testcases/kernel/security'
+> make[2]: *** [all] Error 2
+> make[2]: Leaving directory
+> `/root/subrata/ltp/ltp-full-20091031/testcases/kernel'
+> make[1]: *** [all] Error 2
+> make[1]: Leaving directory
+> `/root/subrata/ltp/ltp-full-20091031/testcases'
+> make: *** [testcases-all] Error 2
+>
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> -I../../../../include -I../../../../include =A0 -L../../../../lib =A0newn=
+s.c
+> -o newns
+> /tmp/ccC18mKb.o: In function `main':
+> /root/subrata/ltp/ltp-full-20091031/testcases/kernel/security/tomoyo/newn=
+s.c:43: undefined reference to `clone'
+> collect2: ld returned 1 exit status
+> make[4]: *** [newns] Error 1
+> make[4]: Leaving directory
+> `/root/subrata/ltp/ltp-full-20091031/testcases/kernel/security/tomoyo'
+> make[3]: *** [all] Error 2
+> make[3]: Leaving directory
+> `/root/subrata/ltp/ltp-full-20091031/testcases/kernel/security'
+> make[2]: *** [all] Error 2
+> make[2]: Leaving directory
+> `/root/subrata/ltp/ltp-full-20091031/testcases/kernel'
+> make[1]: *** [all] Error 2
+> make[1]: Leaving directory
+> `/root/subrata/ltp/ltp-full-20091031/testcases'
+> make: *** [testcases-all] Error 2
 
-Program received signal SIG34, Real-time event 34.
-[Switching to Thread 0x7fdd451d66f0 (LWP 31927)]
-0x00007fdd448944f7 in kill () from /lib/libc.so.6
-(gdb) c
-Continuing.
+I'll defer to Mike's recommendation on this item :)...
 
-Program received signal SIGSEGV, Segmentation fault.
-0x00007fdd448944f7 in kill () from /lib/libc.so.6
+> ptrace03.c: In function 'main':
+> ptrace03.c:182: warning: format '%d' expects type 'int', but argument 3
+> has type 'long int'
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> -I/root/subrata/ltp/ltp-full-20091031/testcases/kernel/include
+> -I../../../../include -I../../../../include =A0 -L../../../../lib
+> ptrace04.c =A0 -lltp -o ptrace04
+> In file included from /usr/include/asm/ptrace.h:58,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from ptrace04.c:17:
+> /usr/include/asm/fpu.h:57: error: redefinition of 'struct ia64_fpreg'
+> In file included from ptrace04.c:17:
+> /usr/include/asm/ptrace.h:306: error: redefinition of 'struct
+> pt_all_user_regs'
+> make[4]: *** [ptrace04] Error 1
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-So I tried to do some digging. glibc 2.8-20080602 does the following
-for alpha, i386, and sysv:
+I have no clue what's going on here, but it looks like the system
+headers are fubared on this machine, and/or the way things are being
+done for ptrace04.c.
 
-      result = INLINE_SYSCALL (rt_sigaction, 4,
-                               sig, act ? __ptrvalue (&kact) : NULL,
-                               oact ? __ptrvalue (&koact) : NULL, _NSIG / 8);
-
-The kernel code for rt_sigaction in kernel/signal.c is as follows:
-
-#ifdef __ARCH_WANT_SYS_RT_SIGACTION
-SYSCALL_DEFINE4(rt_sigaction, int, sig,
-                const struct sigaction __user *, act,
-                struct sigaction __user *, oact,
-                size_t, sigsetsize)
-{
-        struct k_sigaction new_sa, old_sa;
-        int ret = -EINVAL;
-
-        /* XXX: Don't preclude handling different sized sigset_t's.  */
-        if (sigsetsize != sizeof(sigset_t))
-                goto out;
-
-        if (act) {
-                if (copy_from_user(&new_sa.sa, act, sizeof(new_sa.sa)))
-                        return -EFAULT;
-        }
-
-        ret = do_sigaction(sig, act ? &new_sa : NULL, oact ? &old_sa : NULL);
-
-        if (!ret && oact) {
-                if (copy_to_user(oact, &old_sa.sa, sizeof(old_sa.sa)))
-                        return -EFAULT;
-        }
-out:
-        return ret;
-}
-
-This just blows my mind because rt_sigaction is just calling
-do_sigaction, which is the same code as sigaction AFAICT, apart from
-the fact that rt_sigaction completely disregards sa_restorer on some
-architectures because it's obsolete, and requires the end-user to
-specify a signal mask set (here's mips' version, which wasn't the same
-as i386's version -- i386 had the old sa_restorer code):
-
-SYSCALL_DEFINE3(sigaction, int, sig, const struct sigaction __user *, act,
-        struct sigaction __user *, oact)
-{
-        struct k_sigaction new_ka, old_ka;
-        int ret;
-        int err = 0;
-
-        if (act) {
-                old_sigset_t mask;
-
-                if (!access_ok(VERIFY_READ, act, sizeof(*act)))
-                        return -EFAULT;
-                err |= __get_user(new_ka.sa.sa_handler, &act->sa_handler);
-                err |= __get_user(new_ka.sa.sa_flags, &act->sa_flags);
-                err |= __get_user(mask, &act->sa_mask.sig[0]);
-                if (err)
-                        return -EFAULT;
-
-                siginitset(&new_ka.sa.sa_mask, mask);
-        }
-
-        ret = do_sigaction(sig, act ? &new_ka : NULL, oact ? &old_ka : NULL);
-
-        if (!ret && oact) {
-                if (!access_ok(VERIFY_WRITE, oact, sizeof(*oact)))
-                        return -EFAULT;
-                err |= __put_user(old_ka.sa.sa_flags, &oact->sa_flags);
-                err |= __put_user(old_ka.sa.sa_handler, &oact->sa_handler);
-                err |= __put_user(old_ka.sa.sa_mask.sig[0], oact->sa_mask.sig);
-                err |= __put_user(0, &oact->sa_mask.sig[1]);
-                err |= __put_user(0, &oact->sa_mask.sig[2]);
-                err |= __put_user(0, &oact->sa_mask.sig[3]);
-                if (err)
-                        return -EFAULT;
-        }
-
-        return ret;
-}
-
-I dunno -- maybe someone else can read the kernel code better than me,
-but it looks like there's zero real value to the rt_sigaction
-testcases, because it can be covered by sigaction...
+A lot of issues (I feel) are the fact that we're including the wrong
+headers for basic functionality, and thus we're running into space
+that we shouldn't be with kernel defines and what-not... I know that
+it's not smart to use linux/...*.h at least.
 
 Thanks,
 -Garrett
 
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+---------------------------------------------------------------------------=
+---
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay =
+
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
