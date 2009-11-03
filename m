@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1N5PgO-0002MF-6R
-	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 20:08:48 +0000
+	(envelope-from <vapier@gentoo.org>) id 1N5Q3o-0004GB-Mo
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 20:33:00 +0000
 Received: from smtp.gentoo.org ([140.211.166.183])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N5PgB-0008QV-1m
-	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 20:08:43 +0000
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1N5Q3g-0003ZX-01
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 20:32:59 +0000
 From: Mike Frysinger <vapier@gentoo.org>
-Date: Tue, 3 Nov 2009 16:09:35 -0400
-References: <20090929233015.GA22127@us.ibm.com>
-	<20090930043554.GA32007@us.ibm.com>
-	<1255436015.8438.35.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1255436015.8438.35.camel@subratamodak.linux.ibm.com>
+Date: Tue, 3 Nov 2009 16:33:53 -0400
+References: <b9d696240911031223h6734d911s57830e7d859813f9@mail.gmail.com>
+In-Reply-To: <b9d696240911031223h6734d911s57830e7d859813f9@mail.gmail.com>
 MIME-Version: 1.0
-Message-Id: <200911031509.36633.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH 1/1] define and use common clone helpers (v2)
+Message-Id: <200911031533.53910.vapier@gentoo.org>
+Subject: Re: [LTP] 20091031 won't run
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,72 +24,65 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6544340422080488842=="
+Content-Type: multipart/mixed; boundary="===============2345786884348632183=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
---===============6544340422080488842==
-Content-Type: multipart/signed; boundary="nextPart4491199.LqNvppFZ2i";
+--===============2345786884348632183==
+Content-Type: multipart/signed; boundary="nextPart2464640.rCXOz4lvnt";
 	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
---nextPart4491199.LqNvppFZ2i
+--nextPart2464640.rCXOz4lvnt
 Content-Type: Text/Plain;
   charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tuesday 13 October 2009 08:13:35 Subrata Modak wrote:
-> On Tue, 2009-09-29 at 23:35 -0500, Serge E. Hallyn wrote:
-> > Quoting Mike Frysinger (vapier@gentoo.org):
-> > > On Tuesday 29 September 2009 19:30:15 Serge E. Hallyn wrote:
-> > > > Define ltp_clone() and ltp_clone_malloc() in libltp, and convert
-> > > > existing clone usages to them.  (clone04 can't use it bc it wants to
-> > > > pass NULL, which ltp_clone() will for many arches convert to
-> > > > NULL+stacksize-1).
-> > >
-> > > i thought you fixed the clone04 issue ?
-> >
-> > Gah.  That's what i get for just wanting to get the thing out.  Here
-> > is a new version.
+On Tuesday 03 November 2009 15:23:47 K.D. Lucas wrote:
+> I downloaded the latest LTP, which is version 20091031. I ran ./configure,
+> make, and make install. I notice that now make tries to write file to
+> /opt/ltp/, so I needed to run make as root.
+
+ltp installs to wherever you configured and installed it to.  the default i=
+s=20
+merely /opt/ltp/.  so if you didnt change the default, then it's up to you =
+to=20
+make sure the install location is available.
+
+> When I go to run ltp, I get:
 >=20
-> Sorry for being not in action for long. Garret made lot of changes for
-> his Makefile enhancements and lot of files from the containers directory
-> are missing. This patch fails to apply hence:
+> FATAL: Test suite not installed correctly
+> INFO: as root user type 'make ; make install'
 
-ive updated and committed.  things seem to work for me, but if someone coul=
-d=20
-double check on diff arches, that'd probably be good.
-
-thanks for this clean up Serge ... ltp needed it pretty badly
+what user did you run `ltp` as ?
 =2Dmike
 
---nextPart4491199.LqNvppFZ2i
+--nextPart2464640.rCXOz4lvnt
 Content-Type: application/pgp-signature; name=signature.asc 
 Content-Description: This is a digitally signed message part.
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.13 (GNU/Linux)
 
-iQIcBAABAgAGBQJK8I4AAAoJEEFjO5/oN/WBSOkP/A/Kyj2f0phZU7BvTArB5CPo
-gxf8odHiFII/z51qi6fysdTIM+C+/C3c1UCcwUOj2lk+u7GMfSx6rI5gsUOTjFUY
-czJJg6jMoQPfqwo2y7gqfrHjR6RDklXXH236yE9rDrA0u9SBGBAwddI5Zmkb4HHS
-eyMWDzQvhTQ/JgG14L17XqPdFex8QZ3Zwq9ubTl8CFpmO7nDqKMByRi3j2Ks5tQb
-MDCNi3UuNqzwQIYeiQXkFfWh6fTwXBHYR7RVgXD9oPBDbAbAyTa53GA5B0U50dMI
-sDkdUl3GKejTI7Uddy8y77SXAJimDOW4P22wmrv7p1bshnArWztDI+ieW1gQaRR2
-9UPhKqEB9ZV0JwqRtsZWIbuptd+6H8wlpEGxjpPyIQLf9qilzgkduKj3rRi0FWiZ
-06nJn13LWefNcovEhlkUpEi5ZEQH3+VZYQjJjJVRNY6T6rU/ADuv1fjNonAQrOkn
-RNR5VH2BzuAzZ+lmsXux/YGK3W1mCXgmAlCtx7RQj/wJa3FcBvgPgC/MShEPofP/
-wscIZIGChXm4dPUrY66XWvMAXnTxdPHdBCoGji0oYRy30yO60M2GtZrddNrJ7UxV
-NvJk2eaHGsijyKzpmYwyVnS2cp6T4ZxmEqUMre7ck7B0JblAmzHNdcdw6IkC0zSK
-xyL5WQ6XE3GKjiU5xdBj
-=JQPl
+iQIcBAABAgAGBQJK8JOxAAoJEEFjO5/oN/WBZBwP/RuhFnY2/T+B4289oaUbxMji
+LsSkNci9mmi5O4UXMYCg2q5uflCCUqcmCIn/uykM8vZ1GXgwaOOfXpN3WzfMQpPm
+STLfX8dMknu2GTj3aBkf0BO4oa+Fwg9VqEWPO1QevclBd2K9LvdvZGFGMDLhc6jb
+cNqtjBTY+9eem1h9TLIQRqqDIvuH+YZ8puMcGJdimipmscxf2wzCwDk0x+p22wM/
+4RyFh/Ft29CmuGCn8u6Afa4J2FO4V/OQruQvaiG8uD06mzya500qcv6LT+51UiUc
+To/bFRDugWxRivYhXK8GWynServPuye4vrxC8v3ucn2mlizPNqexSiyoqOPY6XlI
+276NBlXLtp9jZ5I8gRmaI/IeNy1Wbcp0va5/Zmj5lDjddVQvQPAhrRYbS+BbEaWs
+KP5R61hpUfMlaq7T55+GznUf8AAHc43ogpsH9+GJ5Ab20jlgICJzO2bbW31CiKpx
+n+wngGCgMcg9EWE/+CFvqvkCvkTS2AxbYbWLgSezF5xxbtDwHttnSURd9qL2oFER
+2YK6HozKgm+nqscrso/2rratqjwu7x2Q/2V6Yv5ZjvppcaGybq6Yh6jSYJ/bfbrD
+GBZFZIL+kBWc35ya1yRW6R0Rl/xgVs0uVgASvQzgYaQ6qTJkMQ6ktpgH5cCM5txZ
+ubuvMMk8Ekr8j/iWiF3P
+=UwEI
 -----END PGP SIGNATURE-----
 
---nextPart4491199.LqNvppFZ2i--
+--nextPart2464640.rCXOz4lvnt--
 
 
---===============6544340422080488842==
+--===============2345786884348632183==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -103,7 +94,7 @@ is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
---===============6544340422080488842==
+--===============2345786884348632183==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -114,5 +105,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============6544340422080488842==--
+--===============2345786884348632183==--
 
