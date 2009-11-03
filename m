@@ -2,21 +2,22 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1N6XuD-0007MR-Kz
-	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 23:07:45 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N6Xu7-0004dw-1z
-	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 23:07:45 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Fri, 6 Nov 2009 18:09:04 -0500
-References: <20091106095745.GA25377@basil.fritz.box>
-	<200911061409.03835.vapier@gentoo.org>
-	<20091106230231.GC26614@count0.beaverton.ibm.com>
-In-Reply-To: <20091106230231.GC26614@count0.beaverton.ibm.com>
+	(envelope-from <yanegomi@gmail.com>) id 1N5Iz8-0006Sf-MR
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 12:59:42 +0000
+Received: from mail-pz0-f188.google.com ([209.85.222.188])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N5Iz0-0005oN-SD
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 12:59:42 +0000
+Received: by pzk26 with SMTP id 26so3927618pzk.4
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 03 Nov 2009 04:59:29 -0800 (PST)
 MIME-Version: 1.0
-Message-Id: <200911061809.05115.vapier@gentoo.org>
-Subject: Re: [LTP] LTP 20091031 Makefiles totally broken?!?
+In-Reply-To: <ab64ec20911030221o71ffbdc9g718e64217ee74b05@mail.gmail.com>
+References: <ab64ec20911030221o71ffbdc9g718e64217ee74b05@mail.gmail.com>
+Date: Tue, 3 Nov 2009 04:59:28 -0800
+Message-ID: <364299f40911030459k78478ddfm766ba8c3ee8cf9a9@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] installation problem...
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,113 +27,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1136738944230377761=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Matt Helsley <matthltc@us.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
-
---===============1136738944230377761==
-Content-Type: multipart/signed; boundary="nextPart1802815.k2GKtN3Tgs";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1802815.k2GKtN3Tgs
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: naveen penumala <naveenspen@gmail.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, LTP list <ltp-list@lists.sf.net>
 
-On Friday 06 November 2009 18:02:31 Matt Helsley wrote:
-> On Fri, Nov 06, 2009 at 03:09:02PM -0400, Mike Frysinger wrote:
-> > On Friday 06 November 2009 13:04:51 Garrett Cooper wrote:
-> > > As I just wrote in the INSTALL file after the release (I apologize for
-> > > not catching this beforehand, but all of the systems I use -- Fedora,
-> > > Gentoo, RHEL 4 update 6, Ubuntu -- have make 3.81):
-> >
-> > hrm, it sucks to not support make 3.80.  while make 3.81 has been out f=
-or
-> > three years now, make 3.80 support would increase the coverage to 8
-> > years. but if you've looked at the situation and found 3.80 support to =
-be
-> > non trivial, i wont whine too loud.
-> >
-> > > In order to compile and use pan, you must have bison/yacc, flex, and
-> > > make 3.81+ installed.
-> >
-> > if we're forcing make-3.81+, then make it explicit:
-> > ifneq ($(findstring x3.7,x$(MAKE_VERSION)),)
->=20
-> This snippet might work better than findstring. If the make version is
-> greater than or equal to 3.81 then NEED_NEWER_MAKE is n:
->=20
-> NEED_NEWER_MAKE :=3D n
-> MAX_VERSION :=3D $(shell echo 3.81 $(MAKE_VERSION) | xargs -r -n 1 | sort=
- -V
->  -r | head -n 1)
+On Tue, Nov 3, 2009 at 2:21 AM, naveen penumala <naveenspen@gmail.com> wrot=
+e:
+> Hiee...
+>
+> I was trying to install latest "ltp-full-20091031" on my SUSE linux machi=
+ne.
+> After configuration (./configure) i was trying to build and install the L=
+TP
+> using "make ; make install" commands.
+>
+> But i got below message and LTP is not installing.
+>
+> make: `testcases/realtime/configure' is up to date.
+> make: *** No rule to make target `/$*', needed by `doc-install'.=A0 Stop.
+>
+> Please suggest me how to over come this installation problem.
 
-this involves executing a shell and a lot of external utilities.  my versio=
-n=20
-requires an internal make string search.  anything that involves $(shell) h=
-ere=20
-is going to be worse.
+Naveen,
+    If you're using make 3.79 (you can determine this with make
+--version), you must upgrade to 3.81.
+Thanks,
+-Garrett
 
-> > also, i thought we were going to rename the top level Makefile to
-> > GNUmakefile and add a dummy Makefile that just spat out "sorry, ltp
-> > requires GNU make".
->=20
-> Bleh. Can't we just check the output of $(MAKE) --version rather than
-> assume other makes use "Makefile"?
+---------------------------------------------------------------------------=
+---
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay =
 
-the assumption is that only GNU make parses "GNUmakefile".  i think that's =
-a=20
-pretty safe assumption.
-=2Dmike
-
---nextPart1802815.k2GKtN3Tgs
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.13 (GNU/Linux)
-
-iQIcBAABAgAGBQJK9KyRAAoJEEFjO5/oN/WBaToP/AzLRp0kS2S5oCATOewNnoY0
-o2f5ot+ISexmb8qUesY+CofJ9/4ITuG85U0PXXetjXOnqjDau0HQC1efpdRk40Hm
-tQR0KS7Sb+RIuJ9jkVzjn54kS2Q9dADUNvD8i1SAtM+Ohpt9q6dLXbNOolLc5Ku6
-WIi8iCTtevh96uwjw5wtodnoOXObnpqGWlSbLTaz5y1CYKEwd8KHw85TjPQq3QB1
-AqLWI5z0LDRW8N3j40CNX25zpaFHHsq3lPwuZ2dSQXNDkuljiCKwr445V1lA9fbo
-WJ/2AwveEqGoHVyYiGsF1g5SAp8EVUXKK9bOEJk2GqiRlIef0SlV+O48uRTKClyj
-GABjr0pyyOiWauezgSLZienqzTDv7knpA4+Qvk9oPdgWWuzEBVsvO/Op5DvyRMt4
-v3Z8LqQfpzjgsBGJsqhsVZbzyeTyYJWAHplMYYq4geUW4qzHfSNRxuLm7mu8b/1J
-jRMqwxD6c4BzETJVOXR3F3TXvwbhiNL3YkdvcpNNMSnH5zKK3WED2ISyXkakOrxI
-RXnHIlt99LmqmU9U50qlVbS9g4jKsGOkMh2fwQIt08Ei8fncedURikOiIRj2li11
-y0J7z+MAwMSyZLMqCrHs6gqiS77HKL6SnmCdNw1hOrjwgp5FjNDJ1BE1dlJKqtnL
-bIzBkwxRTH5I/J8DW+LU
-=w0My
------END PGP SIGNATURE-----
-
---nextPart1802815.k2GKtN3Tgs--
-
-
---===============1136738944230377761==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---===============1136738944230377761==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============1136738944230377761==--
-
