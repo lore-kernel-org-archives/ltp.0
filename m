@@ -1,34 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NBRpb-0000n5-KK
-	for ltp-list@lists.sourceforge.net; Fri, 20 Nov 2009 11:39:15 +0000
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NBRpX-0003xP-Er
-	for ltp-list@lists.sourceforge.net; Fri, 20 Nov 2009 11:39:15 +0000
-Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
-	by e1.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nAKBb2O8004255
-	for <ltp-list@lists.sourceforge.net>; Fri, 20 Nov 2009 06:37:02 -0500
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nAKBd5851331418
-	for <ltp-list@lists.sourceforge.net>; Fri, 20 Nov 2009 06:39:05 -0500
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	nAKBd5br012690
-	for <ltp-list@lists.sourceforge.net>; Fri, 20 Nov 2009 06:39:05 -0500
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <364299f40911192054t4468c150v662836173a53876@mail.gmail.com>
-References: <mailman.132487.1258104166.5845.ltp-list@lists.sourceforge.net>
-	<OF316379BD.F75980D7-ON85257674.000F56B9-85257674.0010FC8C@us.ibm.com>
-	<364299f40911192054t4468c150v662836173a53876@mail.gmail.com>
-Date: Fri, 20 Nov 2009 17:09:01 +0530
-Message-Id: <1258717141.4986.12.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] minimal ltp test set
-Reply-To: subrata@linux.vnet.ibm.com
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <liubo2009@cn.fujitsu.com>) id 1N5Fo0-0006tw-Pj
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 09:36:00 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N5Fnr-0000PH-2i
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 09:36:00 +0000
+Message-ID: <4AEFF972.3080405@cn.fujitsu.com>
+Date: Tue, 03 Nov 2009 17:35:46 +0800
+From: liubo <liubo2009@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <4AEFF53D.1010908@in.ibm.com>
+In-Reply-To: <4AEFF53D.1010908@in.ibm.com>
+Subject: Re: [LTP] [PATCH][RFC]Testcases mbind01.c and get_mempolicy01 fails
+ with EINVAL
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,91 +25,235 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============0140392078504497757=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mark Ver <markver@us.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Sharyathi Nagesh <sharyath@in.ibm.com>
+Cc: "Rishikesh K. Rajak" <risrajak@in.ibm.com>, ltp-list@lists.sourceforge.net
 
-SGkgTWFyaywKCk9uIFRodSwgMjAwOS0xMS0xOSBhdCAyMDo1NCAtMDgwMCwgR2FycmV0dCBDb29w
-ZXIgd3JvdGU6Cj4gT24gVGh1LCBOb3YgMTksIDIwMDkgYXQgNzowNSBQTSwgTWFyayBWZXIgPG1h
-cmt2ZXJAdXMuaWJtLmNvbT4gd3JvdGU6Cj4gPiBUaGUgbnVtYmVyIG9mIHRlc3RjYXNlcyBvdmVy
-IHRoZSBwYXN0IHllYXIgaGFkIGluY3JlYXNlZCBmYXN0ZXIgdGhhbiBjb3VsZAo+ID4gYmUgcHJv
-cGVybHkgZGVidWdnZWQgYnkgb3VyIHNrZWxldG9uIHRlYW0gZm9yIHRoZSBzMzkweCBwbGF0Zm9y
-bS4gTWFueSBvZgo+ID4gdGhlIHRlc3RjYXNlcyBzZWVtZWQgdG8gYmUgZGVzaWduZWQgZm9yIGZl
-YXR1cmVzIG9uIGxhdGVyIGtlcm5lbCB2ZXJzaW9ucwo+ID4gd2l0aCB3ZXJlIG5vdCB5ZXQgZnVs
-bHkgaW50ZWdyYXRlZCBieSBvdXIgc3VwcG9ydGVkIGRpc3RyaWJ1dGlvbnMuCj4gPgo+ID4gU2lu
-Y2Ugd2UgbW9zdGx5IHVzZWQgTFRQIGZvciBhIHF1aWNrIHJlZ3Jlc3Npb24gdGVzdCwgSSB3YXMg
-ZGlzY3Vzc2luZyB3aXRoCj4gPiBTdWJyYXRhIGFib3V0IGNyZWF0aW5nIGEgbWluaW1hbCB0ZXN0
-IHNldCB0aGF0IHdlIGV4cGVjdGVkIHdvdWxkIHJ1bgo+ID4gcHJvcGVybHkgb24gYSBtYWpvcml0
-eSBvZiB0aGUgZGlzdHJpYnV0aW9ucyB3aXRoIGtlcm5lbCAyLjYgYW5kIG5vdCBqdXN0IHRoZQo+
-ID4gbW9yZSByZWNlbnQgdmVyc2lvbnMgb2YgdGhlIGtlcm5lbC4KPiA+Cj4gPiBUaGlzIGlzIG15
-IGZpcnN0IHBhc3MgYXQgdGhlIHRlc3Qgc2V0Ogo+ID4gKFNlZSBhdHRhY2hlZCBmaWxlOiBzMzkw
-eF9sdHBjb3JlX3RhcmdldHMpCgpXZSBjYW4gZGVmaW5pdGVseSBtYWtlIHRoaXMgcGFydCBvZiBs
-dHAvcnVudGVzdCBmb3IgeW91ciBjb252ZW5pZW5jZS4KCkdhcnJldCwKCkNhbiB5b3UgcGxlYXNl
-IGNoZWNrIHRoaXMgaW4uIEkgc2VlbWVkIHRvIGhhdmUgbm90IHJlY2VpdmVkIE1hcmvCtHMKb3Jp
-Z2luYWwgbWFpbCBpbiB0aGlzIElELgoKUmVnYXJkcy0tClN1YnJhdGEKCj4gPgo+ID4gSXQgaXMg
-YmFzaWNhbGx5IGEgc3Vic2V0IG9mIHRoZSBkZWZhdWx0IFNDRU5GSUxFUyBmcm9tIHRoZSBsdHAt
-ZnVsbC0yMDA5MDczMQo+ID4gY29uY2F0ZW5hdGVkIGludG8gb25lIGZpbGUuCj4gPgo+ID4gQmFz
-aWMgcnVuZG93biBvZiB0aGUgY29udGVudHMgLi4uCj4gPiAqIEluY2x1ZGVkIHRlc3RzOgo+ID4g
-c3lzY2FsbHMKPiA+IGZzCj4gPiBmc3gKPiA+IGRpbwo+ID4gbW0KPiA+IGlwYwo+ID4gc2NoZWQK
-PiA+IG1hdGgKPiA+IG5wdGwKPiA+IHB0eQo+ID4gY29udGFpbmVycwo+ID4gZnNfYmluZAo+ID4g
-ZmlsZWNhcHMKPiA+IGZjbnRsLWxvY2t0ZXN0cwo+ID4gLS0tLS0KPiA+ICogRXhjbHVkZWQgdGVz
-dHMgLSBuZXcgaW4gMjAwOSAobWF5YmUgbGF0ZSAyMDA4KSB2ZXJzaW9ucyAoYXBwZWFyIHRvIGhh
-dmUKPiA+IGJ1aWxkLCBydW4sIG9yIHN1cHBvcnQgaXNzdWVzIGRlcGVuZGluZyBvbiBkaXN0cmli
-dXRpb24gcmVsZWFzZSkKPiA+IGlvCj4gPiBjYXBfYm91bmRzCj4gPiBjb25uZWN0b3JzCj4gPiBh
-ZG1pbl90b29scwo+ID4gdGltZXJzCj4gPiBwb3dlcl9tYW5hZ2VtZW50X3Rlc3RzCj4gPiBudW1h
-Cj4gPiBodWdldGxiCj4gPiBjb21tYW5kcwo+ID4gaHlwZXJ0aHJlYWRpbmcKPiA+IC0tLS0tCj4g
-PiAqIEV4Y2x1ZGVkIGZyb20gb3JpZ2luYWwgc2V0Ogo+ID4gY29udHJvbGxlcnMKPiA+IC0gbm90
-ZXM6IHRoaXMgZmVhdHVyZSB3YXMgY3VycmVudGx5IGF2YWlsYWJsZSBvbmx5IG9uIFNMRVMtMTEg
-YW5kIHRoZSBidWlsZAo+ID4gYW5kIGV4ZWN1dGlvbiBvZiB0aGUgdGVzdGNhc2UgYXBwZWFyZWQg
-dG8gbmVlZCBtb3JlIHdvcmsgZm9yIHMzOTB4Cj4gPiAtLS0tLQo+ID4KPiA+IElkZWFsbHkgSSB3
-YXMgaG9waW5nIHRvIGNvbWUgdXAgd2l0aCBhIHNldCBvZiB0ZXN0cyB0aGF0IHdlcmUgc28gYmFz
-aWMsIHRoZXkKPiA+IHNob3VsZCBiZSBzdXBwb3J0ZWQgYnkgcHJhY3RpY2FsbHkgZXZlcnkgcmVs
-ZWFzZSBhbmQgd291bGQgYmUgZXhwZWN0ZWQgdG8KPiA+IHJ1biBjb3JyZWN0bHkgZXZlcnl3aGVy
-ZS4gVGhleSB3b3VsZCBvbmx5IGZhaWwgaWYgbWFqb3IgaXNzdWVzIGhhZCBiZWVuCj4gPiBpbnRy
-b2R1Y2VkIGludG8gdGhlIHN5c3RlbSBidWlsZC4KPiAKPiBNYXJrLAo+ICAgICBBbiBpZGVhbCBz
-b2x1dGlvbiB0byB0aGlzIHByb2JsZW0gaXMgYSB0d28tdGllcmVkIHNvbHV0aW9uOgo+ICAgICAx
-LiBGZWF0dXJlIGJhc2VkIGNvbmRpdGlvbmFsIGNvbXBpbGF0aW9uLgo+ICAgICAyLiBUb29sIGJh
-c2VkIGNvbmRpdGlvbmFsIGNvbXBpbGF0aW9uIChzb21lIHRlc3RzIHJlcXVpcmUgY2VydGFpbgo+
-IHRvb2xzLCBzdWNoIGFzIHBlcmwsIHB5dGhvbiwgYW5kIHZhcmlvdXMgVW5peCB1dGlsaXRpZXMg
-dGhhdCBhcmVuJ3QgYQo+IHBhcnQgb2YgdGhlIG1pbmltYWwgc2V0IG9mIHRvb2xzLCBlLmcuIHVz
-ZXJhZGQsIHVzZXJkZWwsIGV0YykuCj4gICAgIFRoZSB0b29sIGJhc2VkIGNvbmRpdGlvbiBjb21w
-aWxhdGlvbiBpcyBzb21ld2hhdCBzaW1wbGUgYXQgYSAxMGsKPiBmdCBsZXZlbCAoSSBoYXZlIHBl
-cmwsIHB5dGhvbiwgcnVieSwgZXRjIC0tIGFkZCAvIHJlbW92ZSB0aGVzZSB0ZXN0cyAvCj4gZmVh
-dHVyZXMpIC0tIHRoZSBmZWF0dXJlIGJhc2VkIGNvbmRpdGlvbmFsIGNvbXBpbGF0aW9uIGlzc3Vl
-IGlzIGEgYml0Cj4gbW9yZSBkaWZmaWN1bHQgdG8gZGVhbCB3aXRoIGFzIGl0IHJlcXVpcmVzIGEg
-bW9yZSBpbi1kZXB0aAo+IHVuZGVyc3RhbmRpbmcgb2Ygd2hhdCBjb2RlIGV4aXN0cyBpbiB0aGUg
-c291cmNlYmFzZSwgYW5kIHdoYXQKPiBmdW5jdGlvbmFsIHRlc3RzIG1hcCB0byB3aGF0IGZ1bmN0
-aW9uYWwgYmxvY2tzIHVuZGVyIHRlc3QuIFRoaXMgaXMKPiBpZGVhbCwgYnV0IG5vdCB0cml2aWFs
-IHRvIHBlcmZvcm0uCj4gICAgIE15IGZpcnN0IGdvYWwgaXMgdG8gZGVhbCB3aXRoIGFueSBmYWxs
-b3V0IGZyb20gdGhlIG1ha2UKPiBpbmZyYXN0cnVjdHVyZSBjb21taXQocyksIGRlYWxpbmcgd2l0
-aCB0aGUgbWFrZSAzLjgwIGluY29tcGF0aWJpbGl0eQo+IGFuZCBvdGhlciB1bmZvcmVzZWVuIHVz
-ZWNhc2VzIGxpa2UgeW91IGhhdmUgd2l0aCBidWlsZGluZyBhbmQKPiBleGVjdXRpbmcgb3V0IG9m
-IHRoZSBzYW1lIHNvdXJjZSB0cmVlLiBOZXh0LCBJIHdhbnQgdG8gY2xlYW4gdXAgYW55Cj4gYW5k
-IGFsbCBDIHdhcm5pbmdzIHNvIHRoZSB0ZXN0cyBhcmUgbW9yZSByb2J1c3QgKE1pa2UsIEN5cmls
-LCBhbmQgSQo+IGhhdmUgZG9uZSBhIHByZXR0eSBnb29kIGpvYiBidXQgdGhlcmUncyBhIHdheXMg
-dG8gZ28uLi4pLiBUaGVuIEknbGwKPiB1bmRlcnRha2UgY29tcGxldGluZyB0aGUgYmFsbGlzdGEg
-Y2xlYW51cCwgd2hpY2ggd2lsbCBhbHNvIGludm9sdmUKPiBhZGRpbmcgdGhlIHNoaW1zIGZvciBw
-ZXJsIGFuZCBweXRob24gYWNyb3NzIHRoZSBlbnRpcmUgc291cmNlYmFzZS4KPiBXZSdsbCBuZWVk
-IHRvIHJldmlzaXQgdGhlIGZlYXR1cmUgYmFzZWQgZW5hYmxpbmcgYSBsaXR0bGUgbGF0ZXIuCj4g
-ICAgIEhvdyBkb2VzIHRoYXQgc291bmQ/Cj4gVGhhbmtzLAo+IC1HYXJyZXR0Cj4gCj4gLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tCj4gTGV0IENyeXN0YWwgUmVwb3J0cyBoYW5kbGUgdGhlIHJlcG9ydGlu
-ZyAtIEZyZWUgQ3J5c3RhbCBSZXBvcnRzIDIwMDggMzAtRGF5IAo+IHRyaWFsLiBTaW1wbGlmeSB5
-b3VyIHJlcG9ydCBkZXNpZ24sIGludGVncmF0aW9uIGFuZCBkZXBsb3ltZW50IC0gYW5kIGZvY3Vz
-IG9uIAo+IHdoYXQgeW91IGRvIGJlc3QsIGNvcmUgYXBwbGljYXRpb24gY29kaW5nLiBEaXNjb3Zl
-ciB3aGF0J3MgbmV3IHdpdGgKPiBDcnlzdGFsIFJlcG9ydHMgbm93LiAgaHR0cDovL3Auc2YubmV0
-L3NmdS9ib2JqLWp1bHkKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwo+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZv
-cmdlLm5ldAo+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0
-cC1saXN0CgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxldCBDcnlzdGFsIFJlcG9ydHMgaGFuZGxl
-IHRoZSByZXBvcnRpbmcgLSBGcmVlIENyeXN0YWwgUmVwb3J0cyAyMDA4IDMwLURheSAKdHJpYWwu
-IFNpbXBsaWZ5IHlvdXIgcmVwb3J0IGRlc2lnbiwgaW50ZWdyYXRpb24gYW5kIGRlcGxveW1lbnQg
-LSBhbmQgZm9jdXMgb24gCndoYXQgeW91IGRvIGJlc3QsIGNvcmUgYXBwbGljYXRpb24gY29kaW5n
-LiBEaXNjb3ZlciB3aGF0J3MgbmV3IHdpdGgKQ3J5c3RhbCBSZXBvcnRzIG5vdy4gIGh0dHA6Ly9w
-LnNmLm5ldC9zZnUvYm9iai1qdWx5Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vm
-b3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRw
-LWxpc3QK
+This is a multi-part message in MIME format.
+--===============0140392078504497757==
+Content-Type: multipart/alternative;
+	boundary="------------090908070700060301070000"
+
+This is a multi-part message in MIME format.
+--------------090908070700060301070000
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+Hi
+
+On 11/03/2009 05:17 PM, Sharyathi Nagesh wrote:
+> Hi
+>     We observed that LTP test cases are failing when run on some of
+> the distros
+>
+> Problem Statement:
+>
+>     I observed that test cases mbind01.c and get_mempolicy01.c are
+> failing during call to get_mempolicy() with error -EINVAL.
+>     In the kernel code the error comes from
+> ----------------------------------------------------------------
+>
+> SYSCALL_DEFINE5(get_mempolicy, int __user *, policy,
+>                 unsigned long __user *, nmask, unsigned long, maxnode,
+>                 unsigned long, addr, unsigned long, flags)
+> {
+>         int err;
+>         int uninitialized_var(pval);
+>         nodemask_t nodes;
+>
+>         if (nmask != NULL && maxnode < MAX_NUMNODES)
+>                 return -EINVAL;
+>                                                  <== in the kernel code,
+> MAX_NUMNODES comes to 512
+
+  Is it better that "MAX_NUMNODES" get from configure file?
+
+  For different platforms may have different  MAX_NUMNODES.
+
+
+  Regards--
+  Liu Bo
+
+> ----------------------------------------------------------------
+> Analysis:
+>     
+>     When kernel config option 'configure maximum number of SMP
+> processors and NUMA node'  is set MAX_NUMNODES will be initialized to
+> 512 and any call to get_mempolicy() with maxnode value  less than that
+> cause the test to fail.
+> ----------------------------------------------------------------
+> Fix:
+>     increase the default maxnode value in the test case to reflect
+> this value. maxnode value comes from numaif.h and this patch increase
+> the value to 512 from earlier 128.
+>
+> Note:
+>     I will submit it in the format, once the patch is accepted
+>
+> Thanks
+> Yeehaw
+>
+
+> ------------------------------------------------------------------------
+>
+> ------------------------------------------------------------------------------
+> Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+> is the only developer event you need to attend this year. Jumpstart your
+> developing skills, take BlackBerry mobile applications to market and stay 
+> ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+> http://p.sf.net/sfu/devconference
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>   
+
+
+--------------090908070700060301070000
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="Content-Type">
+</head>
+<body text="#000000" bgcolor="#ffffff">
+Hi<br>
+<br>
+On 11/03/2009 05:17 PM, Sharyathi Nagesh wrote:
+<blockquote cite="mid:4AEFF53D.1010908@in.ibm.com" type="cite">Hi
+  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;We observed that LTP test cases are failing when run on some of the
+distros
+  <br>
+  <br>
+Problem Statement:
+  <br>
+  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;I observed that test cases mbind01.c and get_mempolicy01.c are
+failing during call to get_mempolicy() with error -EINVAL.
+  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;In the kernel code the error comes from
+  <br>
+----------------------------------------------------------------
+  <br>
+  <br>
+SYSCALL_DEFINE5(get_mempolicy, int __user *, policy,
+  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned long __user *, nmask, unsigned long, maxnode,
+  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned long, addr, unsigned long, flags)
+  <br>
+{
+  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int err;
+  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int uninitialized_var(pval);
+  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nodemask_t nodes;
+  <br>
+  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (nmask != NULL &amp;&amp; maxnode &lt; MAX_NUMNODES)
+  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return -EINVAL;
+  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;== in the kernel
+code,
+  <br>
+MAX_NUMNODES comes to 512
+  <br>
+</blockquote>
+<br>
+&nbsp; Is it better that "MAX_NUMNODES" get from configure file?<br>
+<br>
+&nbsp; For different platforms may have different&nbsp; MAX_NUMNODES.<br>
+<br>
+<br>
+&nbsp; Regards--<br>
+&nbsp; Liu Bo<br>
+<br>
+<blockquote cite="mid:4AEFF53D.1010908@in.ibm.com" type="cite">----------------------------------------------------------------
+  <br>
+Analysis:
+  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;
+  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;When kernel config option 'configure maximum number of SMP
+processors and NUMA node'&nbsp; is set MAX_NUMNODES will be initialized to
+512 and any call to get_mempolicy() with maxnode value&nbsp; less than that
+cause the test to fail.
+  <br>
+----------------------------------------------------------------
+  <br>
+Fix:
+  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;increase the default maxnode value in the test case to reflect this
+value. maxnode value comes from numaif.h and this patch increase the
+value to 512 from earlier 128.
+  <br>
+  <br>
+Note:
+  <br>
+&nbsp;&nbsp;&nbsp;&nbsp;I will submit it in the format, once the patch is accepted
+  <br>
+  <br>
+Thanks
+  <br>
+Yeehaw
+  <br>
+  <br>
+</blockquote>
+<br>
+<blockquote cite="mid:4AEFF53D.1010908@in.ibm.com" type="cite">
+  <pre wrap=""><hr size="4" width="90%">
+------------------------------------------------------------------------------
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+<a class="moz-txt-link-freetext" href="http://p.sf.net/sfu/devconference">http://p.sf.net/sfu/devconference</a></pre>
+  <pre wrap="">
+<hr size="4" width="90%">
+_______________________________________________
+Ltp-list mailing list
+<a class="moz-txt-link-abbreviated" href="mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.net</a>
+<a class="moz-txt-link-freetext" href="https://lists.sourceforge.net/lists/listinfo/ltp-list">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
+  </pre>
+</blockquote>
+<br>
+</body>
+</html>
+
+--------------090908070700060301070000--
+
+
+--===============0140392078504497757==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
+--===============0140392078504497757==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0140392078504497757==--
+
