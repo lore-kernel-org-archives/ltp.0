@@ -1,22 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1N8gVx-0004sB-Ay
-	for ltp-list@lists.sourceforge.net; Thu, 12 Nov 2009 20:43:33 +0000
-Received: from mail-px0-f172.google.com ([209.85.216.172])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N8gVq-0005Yz-54
-	for ltp-list@lists.sourceforge.net; Thu, 12 Nov 2009 20:43:32 +0000
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <sharyath@in.ibm.com>) id 1N5FWh-0006kM-T7
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 09:18:07 +0000
+Received: from e28smtp09.in.ibm.com ([59.145.155.9])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1N5FWb-0002lO-4S
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 09:18:07 +0000
+Received: from d28relay03.in.ibm.com (d28relay03.in.ibm.com [9.184.220.60])
+	by e28smtp09.in.ibm.com (8.14.3/8.13.1) with ESMTP id nA392xS7014582
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Nov 2009 14:32:59 +0530
+Received: from d28av01.in.ibm.com (d28av01.in.ibm.com [9.184.220.63])
+	by d28relay03.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	nA39Hpxc2838590
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Nov 2009 14:47:51 +0530
+Received: from d28av01.in.ibm.com (loopback [127.0.0.1])
+	by d28av01.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	nA39Hp2J000487
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Nov 2009 14:47:51 +0530
+Message-ID: <4AEFF53D.1010908@in.ibm.com>
+Date: Tue, 03 Nov 2009 14:47:49 +0530
+From: Sharyathi Nagesh <sharyath@in.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <1257788341.7677.62.camel@subratamodak.linux.ibm.com>
-References: <1257765429.7677.23.camel@subratamodak.linux.ibm.com>
-	<200911090749.10428.vapier@gentoo.org>
-	<1257788341.7677.62.camel@subratamodak.linux.ibm.com>
-Date: Thu, 12 Nov 2009 12:43:20 -0800
-Message-ID: <364299f40911121243i2bf72ab5p258fa78989b3df5@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Clone build fail with the latest CVS sanpshot
+Content-Type: multipart/mixed; boundary="------------090506060005050801030808"
+Subject: [LTP] [PATCH][RFC]Testcases mbind01.c and get_mempolicy01 fails
+	with EINVAL
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,43 +35,101 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sf.net>, Mike Frysinger <vapier@gentoo.org>
+To: ltp-list@lists.sourceforge.net, Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: "Rishikesh K. Rajak" <risrajak@in.ibm.com>
 
-T24gTW9uLCBOb3YgOSwgMjAwOSBhdCA5OjM5IEFNLCBTdWJyYXRhIE1vZGFrCjxzdWJyYXRhQGxp
-bnV4LnZuZXQuaWJtLmNvbT4gd3JvdGU6Cj4gT24gTW9uLCAyMDA5LTExLTA5IGF0IDA3OjQ5IC0w
-NTAwLCBNaWtlIEZyeXNpbmdlciB3cm90ZToKPj4gT24gTW9uZGF5IDA5IE5vdmVtYmVyIDIwMDkg
-MDY6MTc6MDkgU3VicmF0YSBNb2RhayB3cm90ZToKPj4gPiBJIGdldCB0aGUgZm9sbG93aW5nIGZh
-aWx1cmUgd2l0aCB0b2RhecWbIENWUy4gLi9jb25maWd1cmUgaGFzIGJlZW4gZG9uZQo+PiA+IGJl
-Zm9yZSBtYWtlOgo+PiA+Cj4+ID4gZ2NjIC1nIC1PMiAtZyAtTzIgLWZuby1zdHJpY3QtYWxpYXNp
-bmcgLXBpcGUgLVdhbGwKPj4gPiAtSS9sdHAtaW50ZXJtZWRpYXRlLTIwMDkxMTA5L3Rlc3RjYXNl
-cy9rZXJuZWwvaW5jbHVkZQo+PiA+IC1JL2x0cC1pbnRlcm1lZGlhdGUtMjAwOTExMDkvdGVzdGNh
-c2VzL2tlcm5lbC9jb250YWluZXJzL21xbnMvLi4vbGliY2xvbmUKPj4gPiDCoC1JLi4vLi4vLi4v
-Li4vaW5jbHVkZSAtSS4uLy4uLy4uLy4uL2luY2x1ZGUKPj4gPiDCoC1ML2x0cC1pbnRlcm1lZGlh
-dGUtMjAwOTExMDkvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL21xbnMvLi4vbGliY2xvbmUK
-Pj4gPiDCoC1MLi4vLi4vLi4vLi4vbGliIMKgbXFuc18wMS5jIMKgIC1sbHRwIC1sY2xvbmUgLWxw
-dGhyZWFkIC1scnQgLW8gbXFuc18wMQo+PiA+IMKgL2x0cC1pbnRlcm1lZGlhdGUtMjAwOTExMDkv
-dGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL21xbnMvLi4vbGliY2xvbmUvbGkKPj4gPiBiY2xv
-bmUuYShsaWJjbG9uZS5vKTogSW4gZnVuY3Rpb24gYGRvX2Nsb25lX3Rlc3RzJzoKPj4gPiDCoC9s
-dHAtaW50ZXJtZWRpYXRlLTIwMDkxMTA5L3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9saWJj
-bG9uZS9saWJjbG9uZS5jCj4+ID4gOjI1OiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBsdHBfY2xv
-bmVfcXVpY2snIGNvbGxlY3QyOiBsZCByZXR1cm5lZCAxIGV4aXQKPj4gPiDCoHN0YXR1cwo+Pgo+
-PiBzaG91bGQgYmUgZml4ZWQgbm93LiDCoHN0YXRpYyBsaWIgbGlua2luZyBvcmRlciBpcyBwaWNr
-eS4KPgo+IFRoYW5rcyBNaWtlLiBidWlsZGluZyBmaW5lIG5vdy4KCldoZW4geW91IHN3aXRjaCB0
-aGF0IGJhY2sgdGhvdWdoLCBpdCBmYWlscyB0byBjb21waWxlIG9uIEdlbnRvby4gSGVuY2UKdGhh
-dCdzIHdoeSBJIGRpZCBgLWxjbG9uZSAkKExETElCUykgLWxwdGhyZWFkIC1scnQnLgoKU29tZSBh
-dXRvY29uZiB0ZXN0cyBuZWVkIHRvIGJlIGNyZWF0ZWQgdG8gZGV0ZWN0IGJyb2tlbiBsaW5rZXJz
-IGxpa2UKdGhpcyBiZWNhdXNlIGl0J3MgcmVhbGx5IGFubm95aW5nIGRvaW5nIHRoaXMgdHVnLW9m
-LXdhciB3aXRoIHRoZQpsaWJyYXJ5IG9yZGVyaW5nLi4uCgpUaGFua3MsCi1HYXJyZXR0CgotLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0KTGV0IENyeXN0YWwgUmVwb3J0cyBoYW5kbGUgdGhlIHJlcG9ydGlu
-ZyAtIEZyZWUgQ3J5c3RhbCBSZXBvcnRzIDIwMDggMzAtRGF5IAp0cmlhbC4gU2ltcGxpZnkgeW91
-ciByZXBvcnQgZGVzaWduLCBpbnRlZ3JhdGlvbiBhbmQgZGVwbG95bWVudCAtIGFuZCBmb2N1cyBv
-biAKd2hhdCB5b3UgZG8gYmVzdCwgY29yZSBhcHBsaWNhdGlvbiBjb2RpbmcuIERpc2NvdmVyIHdo
-YXQncyBuZXcgd2l0aApDcnlzdGFsIFJlcG9ydHMgbm93LiAgaHR0cDovL3Auc2YubmV0L3NmdS9i
-b2JqLWp1bHkKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-THRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRw
-czovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+This is a multi-part message in MIME format.
+--------------090506060005050801030808
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Hi
+	We observed that LTP test cases are failing when run on some of the distros
+
+Problem Statement:
+
+	I observed that test cases mbind01.c and get_mempolicy01.c are failing during call to 
+get_mempolicy() with error -EINVAL.
+	In the kernel code the error comes from
+----------------------------------------------------------------
+
+SYSCALL_DEFINE5(get_mempolicy, int __user *, policy,
+                 unsigned long __user *, nmask, unsigned long, maxnode,
+                 unsigned long, addr, unsigned long, flags)
+{
+         int err;
+         int uninitialized_var(pval);
+         nodemask_t nodes;
+
+         if (nmask != NULL && maxnode < MAX_NUMNODES)
+                 return -EINVAL;
+                                                  <== in the kernel code,
+MAX_NUMNODES comes to 512
+----------------------------------------------------------------
+Analysis:
+	
+	When kernel config option 'configure maximum number of SMP processors and NUMA node'  is 
+set MAX_NUMNODES will be initialized to 512 and any call to get_mempolicy() with maxnode 
+value  less than that cause the test to fail.
+----------------------------------------------------------------
+Fix:
+	increase the default maxnode value in the test case to reflect this value. maxnode value 
+comes from numaif.h and this patch increase the value to 512 from earlier 128.
+
+Note:
+	I will submit it in the format, once the patch is accepted
+
+Thanks
+Yeehaw
+
+
+--------------090506060005050801030808
+Content-Type: text/x-patch; name="increase_maxnode_to_sync_with_kernel.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+	filename="increase_maxnode_to_sync_with_kernel.patch"
+
+This patch fixes the issues noticed while running test case mbind01.c. The test case failed while making call to get_mempolicy system call. The system call fails with kernel returning -EINVAL. This issues is observed due to compatibiliy issue between kernel and ltp code. When kernel configure option 'configure maximum number of SMP processors and NUMA node' is enabled kernel will  initialize MAX_NUMNODES variable to 512. In the user space while calling get_mempolicy if user pass any value lesser than 512 for maxnode, the system calls fails with EINVAL. This patch addresses the issue by increasing the maxnode value to 512
+
+Signed-off-by: Sharyathi Nagesh <sharyath@in.ibm.com>
+
+Index: ltp/testcases/kernel/syscalls/utils/numaif.h
+===================================================================
+--- ltp.orig/testcases/kernel/syscalls/utils/numaif.h	2009-06-23 19:51:32.000000000 +0530
++++ ltp/testcases/kernel/syscalls/utils/numaif.h	2009-10-20 09:16:00.000000000 +0530
+@@ -29,7 +29,7 @@
+ #include "./include_j_h.h"
+ #include "linux_syscall_numbers.h"
+ 
+-#define NUMA_NUM_NODES 	128
++#define NUMA_NUM_NODES 	512	
+ typedef struct { 
+ 	unsigned long n[NUMA_NUM_NODES/(sizeof(unsigned long)*8)];
+ } nodemask_t;
+
+--------------090506060005050801030808
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
+--------------090506060005050801030808
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------090506060005050801030808--
+
