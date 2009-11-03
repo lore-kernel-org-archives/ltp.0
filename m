@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1N5MGb-0005oe-Oh
-	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 16:29:57 +0000
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1N5MFs-0001ih-88
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 16:29:12 +0000
 Received: from smtp.gentoo.org ([140.211.166.183])
 	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N5MGW-0006GX-Pv
-	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 16:29:57 +0000
+	(Exim 4.69) id 1N5MFl-00068p-Nu
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 16:29:12 +0000
 From: Mike Frysinger <vapier@gentoo.org>
-Date: Tue, 3 Nov 2009 12:30:52 -0400
-References: <1257168835.4977.46.camel@subratamodak.linux.ibm.com>
-	<200911021702.09153.vapier@gentoo.org>
-In-Reply-To: <200911021702.09153.vapier@gentoo.org>
+Date: Tue, 3 Nov 2009 12:30:04 -0400
+References: <1257220567.10382.3.camel@munipradeep-laptop>
+	<200911031050.38755.vapier@gentoo.org>
+	<364299f40911030805m5e40d9c8w74a69d7f452200f8@mail.gmail.com>
+In-Reply-To: <364299f40911030805m5e40d9c8w74a69d7f452200f8@mail.gmail.com>
 MIME-Version: 1.0
-Message-Id: <200911031130.53505.vapier@gentoo.org>
-Subject: Re: [LTP] Build Fails on some archs
+Message-Id: <200911031130.05930.vapier@gentoo.org>
+Subject: Re: [LTP] [Ltp-results] Got warning message on ltp-full-20091031
+	while running ./configure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,81 +27,94 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8485501315156740249=="
+Content-Type: multipart/mixed; boundary="===============9176481829317054149=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, Garrett Cooper <yanegomi@gmail.com>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, ltp-list <ltp-list@lists.sf.net>
 
---===============8485501315156740249==
-Content-Type: multipart/signed; boundary="nextPart1406824.aiuHl3jstC";
+--===============9176481829317054149==
+Content-Type: multipart/signed; boundary="nextPart1425083.zxLOelZbN9";
 	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
---nextPart1406824.aiuHl3jstC
+--nextPart1425083.zxLOelZbN9
 Content-Type: Text/Plain;
-  charset="utf-8"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-On Monday 02 November 2009 17:02:08 Mike Frysinger wrote:
-> On Monday 02 November 2009 08:33:55 Subrata Modak wrote:
-> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
-> > -I/root/subrata/ltp/ltp-full-20091031/testcases/kernel/include
-> > -I../../../../include -I../../../../include   -L../../../../lib
-> > ptrace04.c   -lltp -o ptrace04
-> > ptrace03.c: In function 'main':
-> > ptrace03.c:182: warning: format '%d' expects type 'int', but argument 3
-> > has type 'long int'
-> > ptrace04.c: In function 'compare_registers':
-> > ptrace04.c:50: error: storage size of 'pt_regs' isn't known
-> > ptrace04.c:50: warning: unused variable 'pt_regs'
-> > make[4]: *** [ptrace04] Error 1
+On Tuesday 03 November 2009 11:05:10 Garrett Cooper wrote:
+> On Tue, Nov 3, 2009 at 7:50 AM, Mike Frysinger <vapier@gentoo.org> wrote:
+> > On Tuesday 03 November 2009 08:01:08 Garrett Cooper wrote:
+> >> >> On Tue, 2009-11-03 at 09:26 +0530, Munipradeep Beerakam wrote:
+> >> >> > I got the following warning messages while running "./configure" =
+on
+> >> >> > the ltp-full-20091031. However, make and make install worked fine.
+> >> >> >
+> >> >> > configure: WARNING: linux/genetlink.h: present but cannot be
+> >> >> > compiled configure: WARNING: linux/genetlink.h:     check for
+> >> >> > missing prerequisite headers?
+> >> >> > configure: WARNING: linux/genetlink.h: see the Autoconf
+> >> >> > documentation configure: WARNING: linux/genetlink.h:     section
+> >> >> > "Present But Cannot Be Compiled"
+> >> >> > configure: WARNING: linux/genetlink.h: proceeding with the
+> >> >> > preprocessor's result
+> >> >> > configure: WARNING: linux/genetlink.h: in the future, the compiler
+> >> >> > will take precedence
+> >> >> > configure: WARNING:     ##
+> >> >> > ------------------------------------------------ ##
+> >> >> > configure: WARNING:     ## Report this to
+> >> >> > ltp-results@lists.sourceforge.net ##
+> >> >> > configure: WARNING:     ##
+> >> >> > ------------------------------------------------ ##
+> >>
+> >>     Yeah -- I need to find the header that defines u32 (instead of
+> >> uint32 or uint32_t). Does anyone know which one was that again? I
+> >> thought it was a kernel specific datatype (and in that event it
+> >> shouldn't be exported).
+> >
+> > correct -- nothing in userspace should be using u32.  if the kernel
+> > headers are, they're broken and need fixing, so complain to lkml/your
+> > distro.
 >=20
-> the ptrace stuff has always been fairly unfriendly to cross-arch work.=20
->  we'll probably have to add header tests for a bunch of files and unify it
->  in a local ptrace.h header.
->
-> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
-> > -I../../../../include -I../../../../include   -L../../../../lib
-> > tomoyo_file_test.c   -o tomoyo_file_test
-> > /tmp/ccvzdsNd.o: In function `main':
-> > /root/subrata/ltp/ltp-full-20091031/testcases/kernel/security/tomoyo/ne=
-wn
-> >s. c:43: undefined reference to `clone' collect2: ld returned 1 exit
-> > status
->=20
-> these test cases need to be changed to the new common ltp clone code.  as
->  part of that, we should probably add a macro that changes clone() to a
->  compile error so that people stop using it by accident
-> #define clone(...) DO_NOT_USE_CLONE
+>     That's what I figured -- ok. The test and the app should also be
+> converted to straight linux/genetlink.h, because linux/genetlink.h is
+> a superset of linux/netlink.h.
 
-i'll take care of both of these issues if you want to look at the others
+we should get Subrata to generate the release with newer versions of autoto=
+ols=20
+(like autoconf-2.64) so that these warnings dont show up.  if the header ca=
+nt=20
+be compiled, then we want it marked as not usable and so the related tests =
+get=20
+skipped.
 =2Dmike
 
---nextPart1406824.aiuHl3jstC
+--nextPart1425083.zxLOelZbN9
 Content-Type: application/pgp-signature; name=signature.asc 
 Content-Description: This is a digitally signed message part.
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.13 (GNU/Linux)
 
-iQIcBAABAgAGBQJK8Fq9AAoJEEFjO5/oN/WBXBwQAI53E2lo/mHYyKGv3Y7GsXzz
-9R13PZM6Mjupa5EFfwyGGEQrqcGIgpjno0Fp7jiviaW5zxlhSKU3mmcIM3wBOAR3
-sPjwTLmvYNixA8sbWzqK93xvwLF6gDm9RXOX/69I6107oiJToYpKyADknafa5oGs
-/cJjvOJj6vKcvtQvp/v8f+2SKE50CriSp+yCQufhFThMXldS66QpvccnVvZXwban
-bNSRnoX27rUJDIwRuOemhCswpOXah2xpYG3uVCd3oyHXbeenXnmMCg7yLbMRckse
-ew+6wy7tNrbE88ATtERZFBGZ6jWXffN3y3vgK46vHF9CwuPg33lBQP+aHRfYXkZZ
-GhmNAqHmySE2x2jdn0tjJQSJEyxLNx+PR94s5fPBid0/8EPTz3cjujJvbqGOzay0
-Ui6fIKYnDnLW3u9xqQaTHChcmH8OF4LWX0LkFME4rmCpMxpyoHh5LZB9KB/mK1xV
-yUMGCJ5eqWsAwf6K5rl/ve909dPTa7jP0F4HoYqdZvkko2Z1s5P16UbekLgC6s6l
-mVJl9qJ86j50Qu6e5SmJjxnlOBkggcgqLi8PJvdZ1AwV7Eq9uNZFVOr/SC1EJN1U
-0SsM5XHJnBJrEOxKUAGp2UyQ20TTH7gRNwcwxB7loLgR7ZjPCvVnCnkY3XWXig6a
-MVeF90fuQD3rGT2Jl6Nk
-=awqQ
+iQIcBAABAgAGBQJK8FqNAAoJEEFjO5/oN/WBT8AP/3CD6UYXSbw/X5L+4A/NutwS
+9qn1x0xYqMwmA/L57SKYPoO8I2xEjsAVjPEucqFfGcir/5B6o6hGSj846g6ExcUa
+uwG4j6bl984VlWVaSLKyYzZIxSQFzlesvD0atAZVBnmj8xruSiFXUR1Y3Iirzn3K
+ogediytYrAbMtVcimq/ZdLUIGc1Z6nS16+0PIEAEzyp8t1+OopX7ACj3Ipp+dtRv
+GAYsjcNdYmMu/WGZhcK9YYbhr5ydFrX0/GAB75egRyua/kBJS/a22SM36KwhILs1
+GxtrMELBDjTQkt9/PfZdvE6IBjyMt03tpY00c3oAUbYRM17BqIA5Oclw5O9obzR2
+TFUbuvN8QPmL83PoAYcPqKVaFUKy0MTxtuow1fLhritBmRwFmxHiXb7jSaqXjsV+
+C/laTeNb+focMDqupqTKLpzz65gJHNSGUFb1kgWs1hpzcT1YFcl8QyEmBO4OMc3l
+6QIIuqDUA9hDASoY6aFnGBoW2Lj+k23RA3sRUmhtrFNKm9wCO6RuF0s4wel1CauS
+mjNBk2f5XdUn2fRaApUysm9IN7FSVsXolsMsh3yJ6C1roGTknGf0l18UspvsYn9t
+NujEEI6YZXy0yDXmjPEEONZpZfGyH7DM/sS89BgLkBp4I/8guKl7EFuZALT9K7dK
+CE42+l6LHq5uYVYIMVId
+=yKiB
 -----END PGP SIGNATURE-----
 
---nextPart1406824.aiuHl3jstC--
+--nextPart1425083.zxLOelZbN9--
 
 
---===============8485501315156740249==
+--===============9176481829317054149==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -111,7 +126,7 @@ is the only developer event you need to attend this year. Jumpstart your
 developing skills, take BlackBerry mobile applications to market and stay 
 ahead of the curve. Join us from November 9 - 12, 2009. Register now!
 http://p.sf.net/sfu/devconference
---===============8485501315156740249==
+--===============9176481829317054149==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -122,5 +137,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============8485501315156740249==--
+--===============9176481829317054149==--
 
