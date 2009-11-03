@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1NBQfZ-0002D6-1V
-	for ltp-list@lists.sourceforge.net; Fri, 20 Nov 2009 10:24:49 +0000
-Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
-	by 3b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1NBQfR-0002Oz-Dq
-	for ltp-list@lists.sourceforge.net; Fri, 20 Nov 2009 10:24:49 +0000
-Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Fri, 20 Nov 2009 19:24:30 +0900
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Fri, 20 Nov 2009 19:24:30 +0900
-Message-ID: <000401ca69cb$a521e520$ef65af60$@co.jp>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naveenspen@gmail.com>) id 1N5GVw-00019p-S4
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 10:21:24 +0000
+Received: from mail-yw0-f195.google.com ([209.85.211.195])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N5GVp-0001bD-3X
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 10:21:24 +0000
 MIME-Version: 1.0
-Content-Language: ja
-Subject: [LTP] build failure with 2009-11-20 cvs
+Date: Tue, 3 Nov 2009 15:51:11 +0530
+Message-ID: <ab64ec20911030221o71ffbdc9g718e64217ee74b05@mail.gmail.com>
+From: naveen penumala <naveenspen@gmail.com>
+Subject: [LTP] installation problem...
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,75 +22,73 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1262548505243805096=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>, LTP list <ltp-list@lists.sf.net>
 
-Hi,
+--===============1262548505243805096==
+Content-Type: multipart/alternative; boundary=000e0cd5391c7011f3047774da09
 
-I ran "make" in RHEL4.8 (Kernel release : 2.6.9-89.ELsmp) with
-ltp-2009-11-20.tar.gz.
-But it failed with following error message.
-./configure has been done before make.
+--000e0cd5391c7011f3047774da09
+Content-Type: text/plain; charset=ISO-8859-1
 
-------------
-make[4]: Entering directory
-`/home/mitani/LTP/ltp-2009-11-20/testcases/kernel/containers/m
-qns'
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
--I/home/mitani/LTP/ltp-2009-11-20/test
-cases/kernel/include
--I/home/mitani/LTP/ltp-2009-11-20/testcases/kernel/containers/mqns/..
-/libclone -I../../../../include -I../../../../include
--L/home/mitani/LTP/ltp-2009-11-20/
-testcases/kernel/containers/mqns/../libclone -L../../../../lib  mqns_01.c
--lpthread -lrt
--lclone -lltp -o mqns_01
-/home/mitani/LTP/ltp-2009-11-20/testcases/kernel/include/linux_syscall_numbe
-rs.h:19: warni
-ng: 'cleanup' declared `static' but never defined
-/home/mitani/LTP/ltp-2009-11-20/testcases/kernel/containers/mqns/../libclone
-/libclone.a(li
-bclone.o)(.text+0xef): In function `do_unshare_tests':
-/home/mitani/LTP/ltp-2009-11-20/testcases/kernel/containers/libclone/libclon
-e.c:59: undefi
-ned reference to `cleanup'
-collect2: ld returned 1 exit status
-make[4]: *** [mqns_01] Error 1
-make[4]: Leaving directory
-`/home/mitani/LTP/ltp-2009-11-20/testcases/kernel/containers/mq
-ns'
-make[3]: *** [all] Error 2
-make[3]: Leaving directory
-`/home/mitani/LTP/ltp-2009-11-20/testcases/kernel/containers'
-make[2]: *** [all] Error 2
-make[2]: Leaving directory
-`/home/mitani/LTP/ltp-2009-11-20/testcases/kernel'
-make[1]: *** [all] Error 2
-make[1]: Leaving directory `/home/mitani/LTP/ltp-2009-11-20/testcases'
-make: *** [testcases-all] Error 2
-------------
+Hiee...
+
+I was trying to install latest "ltp-full-20091031" on my SUSE linux machine.
+After configuration (./configure) i was trying to build and install the LTP
+using "make ; make install" commands.
+
+But i got below message and LTP is not installing.
+
+make: `testcases/realtime/configure' is up to date.
+make: *** No rule to make target `/$*', needed by `doc-install'.  Stop.
+
+Please suggest me how to over come this installation problem.
+
+Thanks & Regards,
+- NVN
+
+--000e0cd5391c7011f3047774da09
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Hiee...<br><br>I was trying to install latest &quot;ltp-full-20091031&quot;=
+ on my SUSE linux machine. After configuration (./configure) i was trying t=
+o build and install the LTP using &quot;make ; make install&quot; commands.=
+ <br>
+<br>But i got below message and LTP is not installing. <br><br><span style=
+=3D"color: rgb(204, 0, 0);">make: `testcases/realtime/configure&#39; is up =
+to date.</span><br style=3D"color: rgb(204, 0, 0);"><span style=3D"color: r=
+gb(204, 0, 0);">make: *** No rule to make target `/$*&#39;, needed by `doc-=
+install&#39;.=A0 Stop.</span><br>
+<br>Please suggest me how to over come this installation problem.<br><br>Th=
+anks &amp; Regards,<br>- NVN<br>=A0<br>
+
+--000e0cd5391c7011f3047774da09--
 
 
-I use make 3.81, autoconf 2.61, automake 1.10.2, and m4 1.4.7.
-
-Can I get some advice?
-
-
-Regards--
-
--Tomonori Mitani
-
-
-
+--===============1262548505243805096==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
+--===============1262548505243805096==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1262548505243805096==--
+
