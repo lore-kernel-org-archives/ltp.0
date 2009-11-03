@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1NF6dd-0004T3-NL
-	for ltp-list@lists.sourceforge.net; Mon, 30 Nov 2009 13:50:01 +0000
-Date: Mon, 30 Nov 2009 14:50:24 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20091130135024.GA4304@saboteur.suse.cz>
-References: <20091116151656.GB16811@schrodinger.suse.cz>
-	<20091120125347.GA4858@schrodinger.suse.cz>
-	<20091126141346.GA7306@saboteur.suse.cz>
-	<364299f40911260622s4e5ae3c5j555b922a7b85f4b0@mail.gmail.com>
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <kdlucas@gmail.com>) id 1N5Pv7-0002ko-Gj
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 20:24:01 +0000
+Received: from mail-px0-f179.google.com ([209.85.216.179])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N5Puz-0007NH-O0
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 20:24:01 +0000
+Received: by pxi9 with SMTP id 9so4131266pxi.4
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 03 Nov 2009 12:23:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <364299f40911260622s4e5ae3c5j555b922a7b85f4b0@mail.gmail.com>
-Subject: Re: [LTP] [RFC] utstest.h
+Date: Tue, 3 Nov 2009 12:23:47 -0800
+Message-ID: <b9d696240911031223h6734d911s57830e7d859813f9@mail.gmail.com>
+From: "K.D. Lucas" <kdlucas@gmail.com>
+Subject: [LTP] 20091031 won't run
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,82 +25,66 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============7532344295084947735=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> >> > I've been looking at sources for usctest.h again today (lib/parse_op=
-ts.c) and I
-> >> > still have the feeling that this is badly written/broken code and sh=
-ould be
-> >> > fixed but as there are thousands of tests that uses usctest interfac=
-e we should
-> >> > be careful when touching these sources. So IMHO the best approach is=
- to change
-> >> > one thing at the time and see if this was a good move.
-> >> >
-> >> > So let's start with TEST_PAUSE macro. Accordingly to comment in the =
-header,
-> >> > this expands to the code that waits for SIGUSR1 signal (and this is =
-not
-> >> > generaly true). =A0This macro is expanded to the int usc_global_setu=
-p_hook()
-> >> > function. The function forks the program accordingly to STD_COPIES a=
-nd
-> >> > accordingly STD_PAUSE it sleeps for a SIGUSR1 or not (all forked ins=
-tances); it
-> >> > also changes program segment size with sbrk().
-> >> >
-> >> > Looking into the test sources, this is called when the test starts i=
-n order to
-> >> > implement test parameters "-c n" (run n copies concurently) and "-p"=
- (pause
-> >> > test) and system variable USC_TP_SBRK. Do we need these parameters o=
-r any of
-> >> > them? If you convice me that these parameters are usefull I would gl=
-adly clean
-> >> > up and document code that implements TEST_PAUSE, otherwise I would v=
-ote for
-> >> > removing them (or at least the useless ones).
-> >> >
-> >>
-> >> Okay, let me put it like this. Are parameters introduced by TEST_PAUSE=
- really
-> >> used for anything? Would anybody cry if there where removed? Would be =
-patch
-> >> removing them accepted and merged into CVS?
-> >>
-> >
-> > Anybody out there? I would really like to clean up and simplify the tes=
-t interface.
-> =
+--===============7532344295084947735==
+Content-Type: multipart/alternative; boundary=000e0cd14a9a8642a804777d45b8
 
->     I personally don't see why it should still exist when pan delivers
-> this level of functionality, but pan isn't compiled on UCLINUX
-> still... besides, I don't make the designed decisions.
+--000e0cd14a9a8642a804777d45b8
+Content-Type: text/plain; charset=ISO-8859-1
 
-Okay, do we have somebody who is in a charge of desing decisions? Or at lea=
-st
-any mechanism to do that.
+I downloaded the latest LTP, which is version 20091031. I ran ./configure,
+make, and make install. I notice that now make tries to write file to
+/opt/ltp/, so I needed to run make as root.
 
--- =
+When I go to run ltp, I get:
 
-Cyril Hrubis
-chrubis@suse.cz
+FATAL: Test suite not installed correctly
+INFO: as root user type 'make ; make install'
 
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+Is this a known issue?
 
-trial. Simplify your report design, integration and deployment - and focus =
-on =
+kdl
 
-what you do best, core application coding. Discover what's new with
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+-- 
+K.D. Lucas
+kdlucas@gmail.com
+
+--000e0cd14a9a8642a804777d45b8
+Content-Type: text/html; charset=ISO-8859-1
+
+I downloaded the latest LTP, which is version 20091031. I ran ./configure, make, and make install. I notice that now make tries to write file to /opt/ltp/, so I needed to run make as root.<div><br></div><div>When I go to run ltp, I get:</div>
+<div><br></div><div><div>FATAL: Test suite not installed correctly</div><div>INFO: as root user type &#39;make ; make install&#39;</div><div><br></div><div>Is this a known issue?</div><div><br></div><div>kdl</div><br>-- <br>
+K.D. Lucas<br><a href="mailto:kdlucas@gmail.com">kdlucas@gmail.com</a><br>
+</div>
+
+--000e0cd14a9a8642a804777d45b8--
+
+
+--===============7532344295084947735==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
+--===============7532344295084947735==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============7532344295084947735==--
+
