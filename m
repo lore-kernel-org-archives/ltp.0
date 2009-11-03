@@ -1,26 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1N6TBG-0005bM-Tf
-	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 18:05:02 +0000
-Received: from mail-px0-f179.google.com ([209.85.216.179])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N6TBB-0004xG-4Q
-	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 18:05:02 +0000
-Received: by pxi9 with SMTP id 9so842442pxi.4
+	(envelope-from <kdlucas@gmail.com>) id 1N5RB9-00015S-Vn
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 21:44:39 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N5RB0-0006f0-S3
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 21:44:39 +0000
+Received: by pwj6 with SMTP id 6so2885741pwj.2
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 06 Nov 2009 10:04:51 -0800 (PST)
+	Tue, 03 Nov 2009 13:44:25 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <200911060821.40182.vapier@gentoo.org>
-References: <20091106095745.GA25377@basil.fritz.box>
-	<200911060616.40305.vapier@gentoo.org>
-	<20091106130906.GW31511@one.firstfloor.org>
-	<200911060821.40182.vapier@gentoo.org>
-Date: Fri, 6 Nov 2009 10:04:51 -0800
-Message-ID: <364299f40911061004mbb02ed3lf02a33164890625a@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] LTP 20091031 Makefiles totally broken?!?
+In-Reply-To: <200911031619.18266.vapier@gentoo.org>
+References: <b9d696240911031223h6734d911s57830e7d859813f9@mail.gmail.com>
+	<200911031533.53910.vapier@gentoo.org>
+	<b9d696240911031302v7ac8fb27jdf53c159c2ac95f9@mail.gmail.com>
+	<200911031619.18266.vapier@gentoo.org>
+Date: Tue, 3 Nov 2009 13:44:25 -0800
+Message-ID: <b9d696240911031344n3946572ahf75471061ab874e@mail.gmail.com>
+From: "K.D. Lucas" <kdlucas@gmail.com>
+Subject: Re: [LTP] 20091031 won't run
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,141 +30,112 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============7347414008455169894=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net, Andi Kleen <andi@firstfloor.org>
+Cc: ltp-list@lists.sourceforge.net
 
-On Fri, Nov 6, 2009 at 5:21 AM, Mike Frysinger <vapier@gentoo.org> wrote:
-> On Friday 06 November 2009 08:09:06 Andi Kleen wrote:
->> On Fri, Nov 06, 2009 at 07:16:39AM -0400, Mike Frysinger wrote:
->> > On Friday 06 November 2009 04:57:45 Andi Kleen wrote:
->> > > I ran configure, which seems to spend 99% of its time
->> > > checking for stuff that is always there on any Linux,
->> >
->> > not really. =A0most of the configure checks are there because people h=
-ave
->> > complained about specific issues trying to run on older linux distros.
->> > and we
->>
->> I always just deleted the tests that didn't build. That's far better
->> than not building at all like now.
+--===============7347414008455169894==
+Content-Type: multipart/alternative; boundary=000e0cd23a82dc353f04777e656e
+
+--000e0cd23a82dc353f04777e656e
+Content-Type: text/plain; charset=ISO-8859-1
+
+So I see it did install in /opt/ltp and runs fine from there. I've been
+running LTP approximately once per day since 2005 and this is the first time
+it's ever installed in /opt/ltp. The last version I ran was 20090731.
+
+I'll modify it to do what I want.
+
+kdl
+
+On Tue, Nov 3, 2009 at 1:19 PM, Mike Frysinger <vapier@gentoo.org> wrote:
+
+> On Tuesday 03 November 2009 16:02:14 K.D. Lucas wrote:
+> > I tried to execute runltp as root.
+> > So in the past I've always extracted and built it in
+> > /var/tmp/<username>/ltp-full-<version>/
+> > and I don't think it ever tried to write to /opt/ltp. So this seems like
+> a
+> > change in behavior.
 >
-> perhaps an acceptable workaround for you, but certainly not for most peop=
-le
+> you said you did `make install`.  it needs to install somewhere and
+> /opt/ltp
+> is that somewhere.  maybe this behavior has changed, maybe it hasnt.  all
+> that
+> really matters is that ltp now behaves like a standard configure && make
+> package.  if you dont like the default of /opt/ltp, then it's up to you to
+> select a place you do like.
+> -mike
 >
->> > arent actively blocking using LTP on other *nix systems.
->>
->> yes you're just actively blocking running LTP on Linux now it seems.
->
-> please refrain from filling e-mails with unrelated BS
->
->> > > and after that I just get
->> > >
->> > > # make
->> > > make: `testcases/realtime/configure' is up to date.
->> > > #
->> >
->> > -ENEEDINFO
->> >
->> > are you using live cvs ? =A0latest release ? =A0what distro ? =A0what =
-version
->> > of
->>
->> See Subject on SUSE 10.0
->>
->> > autoconf/make ? =A0what does `make -d` show ?
->>
->> autoconf doesn't matter because I didn't regenerate the script.
->>
->> GNU Make 3.80
->
-> looks like a bug in make-3.80. =A0works fine with make-3.81. =A0care to t=
-ake a
-> look Garrett ?
->
-> usually i just install older versions on my system as `make-$VER` to make
-> testing different ones easy. =A0since all the makefiles use $(MAKE), this
-> shouldnt be a problem to execute `make-$VER` instead of `make`.
 
-Hi Andi,
 
-As I just wrote in the INSTALL file after the release (I apologize for
-not catching this beforehand, but all of the systems I use -- Fedora,
-Gentoo, RHEL 4 update 6, Ubuntu -- have make 3.81):
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
+-- 
+K.D. Lucas
+kdlucas@gmail.com
 
-In order to compile and use pan, you must have bison/yacc, flex, and make
-3.81+ installed.
+--000e0cd23a82dc353f04777e656e
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-# ...
+So I see it did install in /opt/ltp and runs fine from there. I&#39;ve been=
+ running LTP approximately once per day since 2005 and this is the first ti=
+me it&#39;s ever installed in /opt/ltp. The last version I ran was 20090731=
+.<div>
+<br></div><div>I&#39;ll modify it to do what I want.</div><div><br></div><d=
+iv>kdl<br><br><div class=3D"gmail_quote">On Tue, Nov 3, 2009 at 1:19 PM, Mi=
+ke Frysinger <span dir=3D"ltr">&lt;<a href=3D"mailto:vapier@gentoo.org">vap=
+ier@gentoo.org</a>&gt;</span> wrote:<br>
+<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex;"><div class=3D"im">On Tuesday 03 November 20=
+09 16:02:14 K.D. Lucas wrote:<br>
+&gt; I tried to execute runltp as root.<br>
+&gt; So in the past I&#39;ve always extracted and built it in<br>
+&gt; /var/tmp/&lt;username&gt;/ltp-full-&lt;version&gt;/<br>
+&gt; and I don&#39;t think it ever tried to write to /opt/ltp. So this seem=
+s like a<br>
+&gt; change in behavior.<br>
+<br>
+</div>you said you did `make install`. =A0it needs to install somewhere and=
+ /opt/ltp<br>
+is that somewhere. =A0maybe this behavior has changed, maybe it hasnt. =A0a=
+ll that<br>
+really matters is that ltp now behaves like a standard configure &amp;&amp;=
+ make<br>
+package. =A0if you dont like the default of /opt/ltp, then it&#39;s up to y=
+ou to<br>
+select a place you do like.<br>
+<font color=3D"#888888">-mike<br>
+</font></blockquote></div><br><br clear=3D"all"><br>-- <br>K.D. Lucas<br><a=
+ href=3D"mailto:kdlucas@gmail.com">kdlucas@gmail.com</a><br>
+</div>
 
-make 3.81 can be obtained here:
-- http://ftp.gnu.org/gnu/make/make-3.81.tar.bz2
+--000e0cd23a82dc353f04777e656e--
 
-# ...
 
-Common Issues
-----------------------
+--===============7347414008455169894==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Issue:    When executing make [all] it says:
+------------------------------------------------------------------------------
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
+--===============7347414008455169894==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-    " *** No rule to make target `/$*', needed by `pan-all'.  Stop."
-
-Solution: You must upgrade to make 3.81. Please see the Requirements
-section above.
-
-Issue:    When executing make [all] it says something like:
-
-    # ...
-    install -m 00644 "/scratch/ltp-dev2/ltp/include/test.h"
-"/scratch/ltp-install12/include/test.h"
-    install -m 00644 "/scratch/ltp-dev2/ltp/include/tlibio.h"
-"/scratch/ltp-install12/include/tlibio.h"
-    install -m 00644 "/scratch/ltp-dev2/ltp/include/usctest.h"
-"/scratch/ltp-install12/include/usctest.h"
-    install -m 00644 "/scratch/ltp-dev2/ltp/include/write_log.h"
-"/scratch/ltp-install12/include/write_log.h"
-    make[1]: Leaving directory `/scratch/ltp-dev2/ltp/include'
-    make -C lib -f "/scratch/ltp-dev2/ltp/lib/Makefile" all
-    make[1]: Entering directory `/scratch/ltp-dev2/ltp/lib'
-    " *** No rule to make target `dataascii.o', needed by `libltp.a'.
-Stop." # <-- the error
-
-Solution: You cannot build LTP with -r / --no-builtin-rules and/or
-          -R / --no-builtin-variables specified. LTP relies heavily on buil=
-t-in
-          implicit rules and variables to function properly.
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-
-So yes, there are known issues with using make versions <3.81. The
-reason being that some macros and functions that I use to determine
-absolute path, etc were not available in make 3.80.
-
-I've considered adding a configure check for the make version. I'm
-probably going to do it this weekend to avoid support issues like
-these.
-
-Thanks,
--Garrett
-
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
-
-trial. Simplify your report design, integration and deployment - and focus =
-on =
-
-what you do best, core application coding. Discover what's new with
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============7347414008455169894==--
+
