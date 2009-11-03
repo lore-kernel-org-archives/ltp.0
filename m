@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1N7Zmq-0005gx-9f
-	for ltp-list@lists.sourceforge.net; Mon, 09 Nov 2009 19:20:24 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N7Zmm-000802-0h
-	for ltp-list@lists.sourceforge.net; Mon, 09 Nov 2009 19:20:24 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 9 Nov 2009 14:22:06 -0500
-References: <1257220567.10382.3.camel@munipradeep-laptop>
-	<200911031130.05930.vapier@gentoo.org>
-	<1257788361.7677.70.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1257788361.7677.70.camel@subratamodak.linux.ibm.com>
+	(envelope-from <miaox@cn.fujitsu.com>) id 1N59RQ-0003jn-Cc
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 02:48:16 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N59RH-0004hI-JN
+	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 02:48:16 +0000
+Message-ID: <4AEF99CF.5080401@cn.fujitsu.com>
+Date: Tue, 03 Nov 2009 11:47:43 +0900
+From: Miao Xie <miaox@cn.fujitsu.com>
 MIME-Version: 1.0
-Message-Id: <200911091422.07495.vapier@gentoo.org>
-Subject: Re: [LTP] Got warning message on ltp-full-20091031 while running
-	./configure
+References: <4AE54BCA.7060104@cn.fujitsu.com>	
+	<1256563577.4929.35.camel@subratamodak.linux.ibm.com>	
+	<C3A9583B-F6C5-4BCC-8D7E-876FA4D62D57@sun.com>	
+	<1256650551.4957.33.camel@subratamodak.linux.ibm.com>
+	<1256841114.5210.25.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1256841114.5210.25.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [PATCH] Add new testcases for ext4 new features - V3
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,131 +28,191 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1850102764760021495=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sf.net>
+Cc: LTP-ML <ltp-list@lists.sourceforge.net>
 
---===============1850102764760021495==
-Content-Type: multipart/signed; boundary="nextPart14003364.IVcLecNshh";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Hi,Subrata
 
---nextPart14003364.IVcLecNshh
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Sorry for the late reply.
 
-On Monday 09 November 2009 12:39:21 Subrata Modak wrote:
-> On Tue, 2009-11-03 at 12:30 -0400, Mike Frysinger wrote:
-> > On Tuesday 03 November 2009 11:05:10 Garrett Cooper wrote:
-> > > On Tue, Nov 3, 2009 at 7:50 AM, Mike Frysinger wrote:
-> > > > On Tuesday 03 November 2009 08:01:08 Garrett Cooper wrote:
-> > > >> >> On Tue, 2009-11-03 at 09:26 +0530, Munipradeep Beerakam wrote:
-> > > >> >> > I got the following warning messages while running
-> > > >> >> > "./configure" on the ltp-full-20091031. However, make and make
-> > > >> >> > install worked fine.
-> > > >> >> >
-> > > >> >> > configure: WARNING: linux/genetlink.h: present but cannot be
-> > > >> >> > compiled configure: WARNING: linux/genetlink.h:     check for
-> > > >> >> > missing prerequisite headers?
-> > > >> >> > configure: WARNING: linux/genetlink.h: see the Autoconf
-> > > >> >> > documentation configure: WARNING: linux/genetlink.h:   =20
-> > > >> >> > section "Present But Cannot Be Compiled"
-> > > >> >> > configure: WARNING: linux/genetlink.h: proceeding with the
-> > > >> >> > preprocessor's result
-> > > >> >> > configure: WARNING: linux/genetlink.h: in the future, the
-> > > >> >> > compiler will take precedence
-> > > >> >> > configure: WARNING:     ##
-> > > >> >> > ------------------------------------------------ ##
-> > > >> >> > configure: WARNING:     ## Report this to
-> > > >> >> > ltp-results@lists.sourceforge.net ##
-> > > >> >> > configure: WARNING:     ##
-> > > >> >> > ------------------------------------------------ ##
-> > > >>
-> > > >>     Yeah -- I need to find the header that defines u32 (instead of
-> > > >> uint32 or uint32_t). Does anyone know which one was that again? I
-> > > >> thought it was a kernel specific datatype (and in that event it
-> > > >> shouldn't be exported).
-> > > >
-> > > > correct -- nothing in userspace should be using u32.  if the kernel
-> > > > headers are, they're broken and need fixing, so complain to lkml/yo=
-ur
-> > > > distro.
-> > >
-> > >     That's what I figured -- ok. The test and the app should also be
-> > > converted to straight linux/genetlink.h, because linux/genetlink.h is
-> > > a superset of linux/netlink.h.
-> >
-> > we should get Subrata to generate the release with newer versions of
-> > autotools (like autoconf-2.64) so that these warnings dont show up.  if
-> > the header cant
->=20
-> I upgraded my system to 2.64 just now.
->=20
-> $ /usr/bin/autoconf --version
-> autoconf (GNU Autoconf) 2.64
-> Copyright (C) 2009 Free Software Foundation, Inc.
-> License GPLv2+: GNU GPL version 2 or later
-> <http://gnu.org/licenses/old-licenses/gpl-2.0.html>
-> This is free software: you are free to change and redistribute it.
-> There is NO WARRANTY, to the extent permitted by law.
-> Written by David J. MacKenzie and Akim Demaille.
->=20
-> Hope this would solve all such problems.
+I have no time to do the following job recently.
+But don't worry. I will do it before the next release.
 
-well, the configure script wasnt really broken before.  people just cant=20
-handle any sort of warning message and reading the related log files can be=
-=20
-too much.
-=2Dmike
+>>> On 2009-10-26, at 07:26, Subrata Modak wrote:
+>>>> We had recently added EXT4 testcases to LTP. As the author of these
+>>>> tests mentioned, we saw 2 such failures in subdirectory limit test:
+>>>>
+>>>> Ext4 subdir limit test
+>>>> ext4-subdir-limit    0  TINFO  :  Num of dirs to create: 65537, Dir  
+>>>> name
+>>>> len: short name                        Parent dir: mnt_point, Block
+>>>> size: 1024
+>>>> mke2fs 1.41.9 (22-Aug-2009)
+>>>> tune2fs 1.41.9 (22-Aug-2009)
+>>>> Setting test filesystem flag
+>>>> /dev/VG1_EXT4/LV1_EXT4: The test_fs flag is set (and ext4 is  
+>>>> available).
+>>>> CLEARED.
+>>> You don't need to set the test_fs flag for modern ext4.
+>> Miao,
+>>
+>> Can we change this ?
 
---nextPart14003364.IVcLecNshh
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+Ok, no problem.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.13 (GNU/Linux)
+>>>> ext4-subdir-limit    0  TINFO  :  Num of dirs to create: 65537, Dir  
+>>>> name
+>>>> len: long name                         Parent dir: mnt_point, Block
+>>>> size: 1024
+>>>> mkdir: No space left on device
+>>>> ext4-subdir-limit    2  TFAIL  :  failed to create directories - 19524
+...
+>>>> ext4-subdir-limit    0  TINFO  :  Num of dirs to create: 65537, Dir  
+>>>> name
+>>>> len: long name                         Parent dir: mnt_point/sub,  
+>>>> Block
+>>>> size: 1024
+>>>> mkdir: No space left on device
+>>>> ext4-subdir-limit    4  TFAIL  :  failed to create directories - 19483
+...
+>>>> Is this a known issue for EXT4 ?
+>>> Creating many long filenames (255 bytes) in a 1kB block filesystem is a
+>>> known issue that is not expected to be fixed (at least I'm not aware of
+>>> any work being done in this area).  A vast majority of filesystems
+>>> today are formatted with 4kB blocks (due to disk size) and the  
+>>> overhead of
+>>> managing 1kB block filesystems makes these only marginally used, and it
+>>> is also very rare to have applications with such large filenames.
+>> Ok.
 
-iQIcBAABAgAGBQJK+GvfAAoJEEFjO5/oN/WBdz8QANRL4DF4C/ESzMttAz0AyS6z
-KMyWvprO4cKPKYvkQeMCiHC2vhrfc+fto2cyUbRY4kwLnWa5Q5+8qkAshNb/OuHw
-ktnHTWx2Kc4HylRJAdcN/udqHjuj/j4dDfk0kGpZTVTyGRuqbKhiKFx5ccpMOoRU
-B/BmkI4QVcPT0nRC1ldRZGwPGeTybG9A7/T8LfNyuDtQsUunjm6sivPq/kBmBRTL
-X0q8ElNVt9ag6HfE0dDgfwT0b9cUVhHC+ebbKvcVmM0WoExM93XsYH9vcDQJuTwu
-yIc/2gG4ZHKXmyIyF+HIk13jATPPRn4zlgHY+R8qk4ZHYBijPWBJEqJNbReYHqlc
-DCrNxboPR2S1wUXjf7NjtdF8V5vBd3HaLr93qffDGxclmo9SjUshfu9HwPtF+XnU
-GpR4j4Q/vemwaV4krLULOxQVi9GKMrKozoM8nJMbGlkhzBGIUZAv7d0FRUc+qh2X
-pbBSee02oCfKeOVd7oLtc9r3cg/PtIcF+TeMJdABUfkNnPOA/q9ouwsdOSJViU8q
-hjuX/8Y7LCycgV5SCBTN7k+NL5jXc15FDj7FQK6Km5xnvKIxMWFoPxE7HGuQOBu6
-zNq8Yg8pxCb4GRgWfNdyqNK64fEhMB3fKkLSQaxf3K8R54uHWjhINUiDdPncrLqF
-BHsti3pvuGHyC4dazSnA
-=JrjS
------END PGP SIGNATURE-----
+I will remove these testcases.
 
---nextPart14003364.IVcLecNshh--
+>> However, it is also accompanied by the following failures in the online-defrag part:
+>> ========================================================================================
+>> ext4-online-defrag    0  TINFO  :  defrag type: 1, defrag obj: 3, block size: 1024
+>> 71301958656 bytes (71 GB) copied, 2694.12 s, 26.5 MB/s
+>> ext4-online-defrag    3  TFAIL  :  e4defrag returned failure
+...
+>> ext4-online-defrag    0  TINFO  :  defrag type: 2, defrag obj: 3, block size: 1024
+>> 71301958656 bytes (71 GB) copied, 2623.31 s, 27.2 MB/s
+>> ext4-online-defrag    6  TFAIL  :  e4defrag returned failure
+>> ext4-online-defrag    0  TINFO  :  defrag type: 3, defrag obj: 1, block size: 1024
+>> ext4-online-defrag    7  TFAIL  :  e4defrag returned failure
+>> ext4-online-defrag    0  TINFO  :  defrag type: 3, defrag obj: 2, block size: 1024
+>> 41943040 bytes (42 MB) copied, 0.737014 s, 56.9 MB/s
+>> ext4-online-defrag    8  TFAIL  :  e4defrag returned failure
+>> ext4-online-defrag    0  TINFO  :  defrag type: 3, defrag obj: 3, block size: 1024
+>> 71301958656 bytes (71 GB) copied, 2544.39 s, 28.0 MB/s
+>> ext4-online-defrag    9  TFAIL  :  e4defrag returned failure
+>> ...
+>> ext4-online-defrag    0  TINFO  :  defrag type: 3, defrag obj: 2, block size: 4096
+>> 41943040 bytes (42 MB) copied, 0.306366 s, 137 MB/s
+>> ext4-online-defrag   17  TFAIL  :  e4defrag returned failure
+>> ext4-online-defrag    0  TINFO  :  defrag type: 3, defrag obj: 3, block size: 4096
+>> 71241666560 bytes (71 GB) copied, 1019.79 s, 69.9 MB/s
+>> ext4-online-defrag   18  TFAIL  :  e4defrag returned failure
+>> incrementing stop
+>> ========================================================================================
+>> Did you see these failure on your machine ?
+
+I didn't find these failure on my box.
+I need more information to analyse. so I'll make a patch to get
+more information later.
+
+>> Some more points are:
+>>
+>>      1. Can you please run these tests against the backdrop of the
+>>         Makefile changes in LTP to see all the build/install/run are
+>>         executing fine,
+> 
+> Could you please verify this before this release. Let me know a patch if
+> you find any discrepancy :-)
+
+Sorry for that I couldn't do it before the release.
+I'll do it before the next release.
+
+> 
+>> 2. Can you also please put all the utilities version info at the
+>>         beginning of the test rather than printing them again and
+>>         again(like mke2fs 1.41.9 (22-Aug-2009),tune2fs 1.41.9
+>>         (22-Aug-2009),dumpe2fs 1.41.9 (22-Aug-2009),dumpe2fs 1.41.9
+>>         (22-Aug-2009))
+> 
+> This can go in the next month release as well, if you do not have time
+> to fix now. Else, i have a bug mouth to eat this as well ;-)
+
+I'll do it before the next release.
+
+Regards.
+Miao
+
+> 
+> Regards--
+> Subrata
+> 
+>> Regards--
+>> Subrata
+>>
+>>>> Following the various system information on which we ran the test:
+>>>> 1) uname -a
+>>>> Linux 2.6.31 #1 SMP Tue Oct 20 22:57:16 IST 2009 i686 i686 i386
+>>>> GNU/Linux
+>>>>
+>>>> 2) grep -i ext4 .config
+>>>> CONFIG_EXT4_FS=m
+>>>> CONFIG_EXT4DEV_COMPAT=y
+>>>> CONFIG_EXT4_FS_XATTR=y
+>>>> CONFIG_EXT4_FS_POSIX_ACL=y
+>>>> CONFIG_EXT4_FS_SECURITY=y
+>>>>
+>>>> 3) mkfs.ext4 -V
+>>>> mke2fs 1.41.9 (22-Aug-2009)
+>>>>        Using EXT2FS Library version 1.41.9
+>>>> e2fsprogs-1.41.9
+>>>> e2fsprogs-libs-1.41.9
+>>>>
+>>>> 4) LTP used:
+>>>> Unreleased CVS repository. See the URL below to download:
+>>>> http://ltp.sourceforge.net/documentation/how-to/ltp.php#_3.1,
+>>>>
+>>>> You can also also directly review the attached patch(which added this
+>>>> test cases):
+>>>> 26_10_2009-(Miao-Xie<miaox@cn.fujitsu.com>)- 
+>>>> Add_new_testcases_for_ext4_new_features_V3.patch.regenerated,
+>>>>
+>>>> 5) I used a single 680GB LVM partition to test this.
+>>>>
+>>>> Kindly let us know your thoughts on this failures.
+>>> Cheers, Andreas
+>>> --
+>>> Andreas Dilger
+>>> Sr. Staff Engineer, Lustre Group
+>>> Sun Microsystems of Canada, Inc.
+>>>
+>> ------------------------------------------------------------------------------
+>> Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+>> is the only developer event you need to attend this year. Jumpstart your
+>> developing skills, take BlackBerry mobile applications to market and stay 
+>> ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+>> http://p.sf.net/sfu/devconference
+>> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+> 
+> 
+> 
 
 
---===============1850102764760021495==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---===============1850102764760021495==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay 
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============1850102764760021495==--
-
