@@ -1,25 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <peppe.cavallaro@st.com>) id 1NBSBO-00070n-UP
-	for ltp-list@lists.sourceforge.net; Fri, 20 Nov 2009 12:01:46 +0000
-Received: from eu1sys200aog118.obsmtp.com ([207.126.144.145])
-	by 1b2kzd1.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NBSBH-0000Wb-BT
-	for ltp-list@lists.sourceforge.net; Fri, 20 Nov 2009 12:01:46 +0000
-Message-ID: <4B068507.4010303@st.com>
-Date: Fri, 20 Nov 2009 13:01:11 +0100
-From: Giuseppe CAVALLARO <peppe.cavallaro@st.com>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1N65gF-0002jA-IW
+	for ltp-list@lists.sourceforge.net; Thu, 05 Nov 2009 16:59:27 +0000
+Date: Thu, 5 Nov 2009 17:59:13 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20091105165913.GD19831@schrodinger.suse.cz>
+References: <20091105131852.GA13908@schrodinger.suse.cz>
+	<200911051129.18046.vapier@gentoo.org>
 MIME-Version: 1.0
-References: <4AF3D509.3060408@st.com> <4AF41677.8030408@linux.vnet.ibm.com>	
-	<4AF41D01.207@st.com> <4AF42CBC.6000204@linux.vnet.ibm.com>	
-	<1257788343.7677.63.camel@subratamodak.linux.ibm.com>	
-	<4B01682C.8040708@st.com> <4B06495F.2060600@st.com>
-	<1258712924.4986.5.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1258712924.4986.5.camel@subratamodak.linux.ibm.com>
-Content-Type: multipart/mixed; boundary="------------090608070602070901030305"
-Subject: Re: [LTP] [PATCH] add iterations option in gtod_latency.
+Content-Type: multipart/mixed; boundary="jq0ap7NbKX2Kqbes"
+Content-Disposition: inline
+In-Reply-To: <200911051129.18046.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] replacing -Wextra with -W
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,199 +24,96 @@ List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
+To: Mike Frysinger <vapier@gentoo.org>
 Cc: ltp-list@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---------------090608070602070901030305
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+--jq0ap7NbKX2Kqbes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hi Subrata,
+Hi!
+> > Lately gcc developers introduced -Wextra flag that does the same as -W but
+> >  is more descriptive. According to this using -W flag should be safe (as
+> >  gcc is backward compatlible) but using -Wextra is limited to newer gcc
+> >  releases.
+> > 
+> > Attached patch replaces all -Wextra occurences with -W and thus fixes
+> > compliation failures with older gcc (mine was gcc-3.3.3 on sles).
+> 
+> it'd be better if we had configure tests for -W flags, but that would take a 
+> bit more effort, and i dont think it should preclude applying your patch.  
+> however, please make this change first:
+>  - integrated Makefiles shouldnt be setting flags at all, so just delete the 
+> whole line in testcases/kernel/controllers/{cpuctl,cgroup}_fj/Makefile
+> 
 
-this is the patch reworked to be applied against the ltp cvs.
+Patch that should be applied over the previous one attached.
 
-Regards
-Peppe
+Signed-off-by: Cyril Hrubis chrubis@suse.cz
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
-iEYEARECAAYFAksGhQcACgkQ2Xo3j31MSSINMACfdqZU48hhlPJETmqJkAKppYdo
-HawAoLc0yJ8JB2iQ4JU+ffNXmSaZW+9z
-=s7E+
------END PGP SIGNATURE-----
+--jq0ap7NbKX2Kqbes
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="remove_cppflags.patch"
 
---------------090608070602070901030305
-Content-Type: text/x-patch;
- name="ltp-gtod_latency_iterations.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ltp-gtod_latency_iterations.patch"
-
-[PATCH] add iterations option in gtod_latency.
-
-This patch adds a new option for tuning the number
-of iterations into the gtod_latency realtime test.
-
-Running gtod_latency on a target with limited resources
-it fails (ENOMEM) as soon as it try to allocate the memory
-for the two buffers start_data and stop_data.
-
-Tested on i386 and sh4 architectures.
-
-Signed-off-by: Giuseppe Cavallaro <peppe.cavallaro@st.com>
-
---- ltp/testcases/realtime/func/gtod_latency/gtod_latency.c.orig	2009-11-20 12:45:57.000000000 +0100
-+++ ltp/testcases/realtime/func/gtod_latency/gtod_latency.c	2009-11-20 12:47:39.000000000 +0100
-@@ -57,6 +57,7 @@
- #include <sys/mman.h>
+Index: delme/testcases/kernel/controllers/cpuctl_fj/Makefile
+===================================================================
+--- delme.orig/testcases/kernel/controllers/cpuctl_fj/Makefile
++++ delme/testcases/kernel/controllers/cpuctl_fj/Makefile
+@@ -25,8 +25,6 @@ top_srcdir		?= ../../../..
+ include $(top_srcdir)/include/mk/testcases.mk
+ include $(abs_srcdir)/../Makefile.inc
  
- #define ITERATIONS 10000000
-+#define MIN_ITERATION 10000
- #define HIST_BUCKETS 20
- 
- #define SCATTER_FILENAME	0
-@@ -82,13 +83,14 @@ char *labels[] = {"scatter plot x-axis",
- 		  "histogram y-axis"};
- 
- static unsigned long long latency_threshold = 0;
-+static unsigned int iterations = ITERATIONS;
- 
- void stats_cmdline_help(void)
- {
- 	printf("Usage: ./gtod_latency {-[so|scatter-output] -[ho|hist-output]"
- 		" -[st|scatter-title] -[ht|hist-title] -[sxl|scatter-xlabel]"
- 		" -[syl|scatter-ylabel] -[hxl|hist-xlabel] -[hyl|hist-ylabel]"
--		" -[lt|latency-trace]}"
-+		" -[lt|latency-trace] -[i|iterations]}"
- 		" -[help] \n");
- 	printf("**command-line options are not supported yet for this testcase\n");
- }
-@@ -195,6 +197,15 @@ int stats_cmdline(int argc, char *argv[]
- 			continue;
- 		}
- 
-+		if (!strcmp(flag, "i") || !strcmp(flag, "iterations")) {
-+			if (i + 1 == argc) {
-+				printf("flag has missing argument\n");
-+				return -1;
-+			}
-+			iterations = strtoull(argv[++i], NULL, 0);
-+			continue;
-+		}
-+
- 		printf("unknown flag given\n");
- 		return -1;
- 	}
-@@ -211,9 +222,6 @@ long long timespec_subtract(struct times
- 	return ns;
- }
- 
--struct timespec start_data[ITERATIONS];
--struct timespec stop_data[ITERATIONS];
+-CPPFLAGS		+= -Wall -O2 -W
 -
- int main(int argc, char *argv[])
- {
- 	int i, j, k, err;
-@@ -224,16 +232,38 @@ int main(int argc, char *argv[])
- 	stats_container_t hist;
- 	stats_quantiles_t quantiles;
- 	stats_record_t rec;
-+	struct timespec *start_data;
-+	struct timespec *stop_data;
-+
-+	if (stats_cmdline(argc, argv) < 0) {
-+		printf("usage: %s help\n", argv[0]);
-+		exit(1);
-+	}
-+
-+	if (iterations < MIN_ITERATION) {
-+		iterations = MIN_ITERATION ;
-+		printf("user \"iterations\" value is too small (use: %d)\n",
-+			iterations);
-+	}
+ INSTALL_TARGETS		:= *.sh
  
--	stats_container_init(&dat, ITERATIONS);
-+	stats_container_init(&dat, iterations);
- 	stats_container_init(&hist, HIST_BUCKETS);
--	stats_quantiles_init(&quantiles, (int)log10(ITERATIONS));
-+	stats_quantiles_init(&quantiles, (int)log10(iterations));
- 	setup();
+ LDLIBS			+= -lm
+Index: delme/testcases/kernel/controllers/cgroup_fj/Makefile
+===================================================================
+--- delme.orig/testcases/kernel/controllers/cgroup_fj/Makefile
++++ delme/testcases/kernel/controllers/cgroup_fj/Makefile
+@@ -25,8 +25,6 @@ top_srcdir		?= ../../../..
+ include $(top_srcdir)/include/mk/testcases.mk
+ include $(abs_srcdir)/../Makefile.inc
  
- 	mlockall(MCL_CURRENT|MCL_FUTURE);
+-CPPFLAGS		+= -Wall -O2 -W
+-
+ INSTALL_TARGETS		:= *.sh
  
--	if (stats_cmdline(argc, argv) < 0) {
--		printf("usage: %s help\n", argv[0]);
-+	start_data = calloc(iterations, sizeof(struct timespec));
-+	if (start_data == NULL) {
-+		printf("Memory allocation Failed (too many Iteration: %d)\n",
-+			iterations);
-+		exit(1);
-+	}
-+	stop_data = calloc(iterations, sizeof(struct timespec));
-+	if (stop_data == NULL) {
-+		printf("Memory allocation Failed (too many Iteration: %d)\n",
-+			iterations);
-+		free(start_data);
- 		exit(1);
- 	}
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+Index: delme/testcases/kernel/controllers/cpuacct/Makefile
+===================================================================
+--- delme.orig/testcases/kernel/controllers/cpuacct/Makefile
++++ delme/testcases/kernel/controllers/cpuacct/Makefile
+@@ -25,8 +25,6 @@ top_srcdir		?= ../../../..
+ include $(top_srcdir)/include/mk/testcases.mk
+ include $(abs_srcdir)/../Makefile.inc
  
-@@ -255,9 +285,9 @@ int main(int argc, char *argv[])
- 	printf("\n----------------------\n");
- 	printf("Gettimeofday() Latency\n");
- 	printf("----------------------\n");
--	printf("Iterations: %d\n\n", ITERATIONS);
-+	printf("Iterations: %d\n\n", iterations);
+-CPPFLAGS		+= -Wall
+-
+ INSTALL_TARGETS		:= *.sh
  
--	/* collect ITERATIONS pairs of gtod calls */
-+	/* collect iterations pairs of gtod calls */
- 	max = min = 0;
- 	if (latency_threshold) {
- 		latency_trace_enable();
-@@ -265,7 +295,7 @@ int main(int argc, char *argv[])
- 	}
- 	/* This loop runs for a long time, hence can cause soft lockups.
- 	   Calling sleep periodically avoids this. */
--	for (i=0; i<(ITERATIONS/10000); i++) {
-+	for (i = 0; i < (iterations/10000); i++) {
- 		for (j=0; j < 10000; j++) {
- 			k = (i * 10000) + j;
- 			clock_gettime(CLOCK_MONOTONIC,&start_data[k]);
-@@ -273,7 +303,7 @@ int main(int argc, char *argv[])
- 		}
- 		usleep(1000);
- 	}
--	for (i = 0; i < ITERATIONS; i++) {
-+	for (i = 0; i < iterations; i++) {
- 		delta = timespec_subtract(&start_data[i], &stop_data[i]);
- 		rec.x = i;
- 		rec.y = delta;
-@@ -285,7 +315,7 @@ int main(int argc, char *argv[])
- 	}
- 	if (latency_threshold) {
- 		latency_trace_stop();
--		if (i != ITERATIONS) {
-+		if (i != iterations) {
- 			printf("Latency threshold (%lluus) exceeded at iteration %d\n",
- 				latency_threshold, i);
- 			latency_trace_print();
-@@ -308,5 +338,9 @@ int main(int argc, char *argv[])
- 	stats_quantiles_calc(&dat, &quantiles);
- 	stats_quantiles_print(&quantiles);
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+Index: delme/testcases/kernel/io/disktest/Makefile
+===================================================================
+--- delme.orig/testcases/kernel/io/disktest/Makefile
++++ delme/testcases/kernel/io/disktest/Makefile
+@@ -188,7 +188,7 @@ include $(top_srcdir)/include/mk/env_pre
  
-+	stats_container_free(&dat);
-+	stats_container_free(&hist);
-+	stats_quantiles_free(&quantiles);
-+
- 	return 0;
- }
+ VER		:= `grep VER_STR $(abs_srcdir)/main.h | awk -F\" '{print $$2}'`
+ 
+-CPPFLAGS	+= -g -Wall -O -DLINUX -D_THREAD_SAFE -D_GNU_SOURCE -D_LARGE_FILES -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 $(RPM_OPT_FLAGS)
++CPPFLAGS	+= -g -O -DLINUX -D_THREAD_SAFE -D_GNU_SOURCE -D_LARGE_FILES -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 $(RPM_OPT_FLAGS)
+ 
+ DISTRO_FILES	:= Makefile* *.[ch] LICENSE README CHANGELOG
+ 
 
---------------090608070602070901030305
+--jq0ap7NbKX2Kqbes
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -233,7 +124,7 @@ Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---------------090608070602070901030305
+--jq0ap7NbKX2Kqbes
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -244,5 +135,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---------------090608070602070901030305--
+--jq0ap7NbKX2Kqbes--
 
