@@ -1,20 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <liubo2009@cn.fujitsu.com>) id 1N8kcl-0003Gn-QH
-	for ltp-list@lists.sourceforge.net; Fri, 13 Nov 2009 01:06:51 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1N5xuE-0001k0-A3
+	for ltp-list@lists.sourceforge.net; Thu, 05 Nov 2009 08:41:22 +0000
+Received: from mail-pz0-f188.google.com ([209.85.222.188])
 	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N8kcf-0007T7-Vb
-	for ltp-list@lists.sourceforge.net; Fri, 13 Nov 2009 01:06:51 +0000
-Message-ID: <4AFCB13D.9040203@cn.fujitsu.com>
-Date: Fri, 13 Nov 2009 09:07:09 +0800
-From: liubo <liubo2009@cn.fujitsu.com>
+	id 1N5xu7-0008K1-Uq
+	for ltp-list@lists.sourceforge.net; Thu, 05 Nov 2009 08:41:22 +0000
+Received: by pzk26 with SMTP id 26so5310139pzk.4
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 05 Nov 2009 00:41:10 -0800 (PST)
 MIME-Version: 1.0
-References: <4AF137E8.3090408@cn.fujitsu.com>
-In-Reply-To: <4AF137E8.3090408@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] mail: fix the bug of mail01
+In-Reply-To: <OF2EC662FD.A8CC841C-ON85257665.00084CCC-85257665.00097DBB@us.ibm.com>
+References: <mailman.103093.1257283106.5825.ltp-list@lists.sourceforge.net>
+	<OFB7192512.13ED74E7-ON85257664.001981A6-85257664.001F3BB6@us.ibm.com>
+	<364299f40911032158s4356a90bkf06686f7aea01b87@mail.gmail.com>
+	<OF2EC662FD.A8CC841C-ON85257665.00084CCC-85257665.00097DBB@us.ibm.com>
+Date: Thu, 5 Nov 2009 00:41:10 -0800
+Message-ID: <364299f40911050041u79d0fe11j17ed2e8e3c73adc9@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Build Fails on some archs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,153 +30,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
+To: Mark Ver <markver@us.ibm.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi, Subrata,
-
-On 11/04/2009 04:14 PM, liubo wrote:
-> In the testcase "mail01",
+On Wed, Nov 4, 2009 at 5:43 PM, Mark Ver <markver@us.ibm.com> wrote:
+>>> On SLES-10 SP3, the make attempt gets nowhere ...
+>>> h91distr02:~/ltp-full-20091031 # make all
+>>> make: *** No rule to make target `/$*', needed by `pan-all'. =A0Stop.
+>>> h91distr02:~/ltp-full-20091031 #
 >
-> when mail is send to nosuchuser@domain
-> and mail is send to user@nosuchdomain,
-> mail program may return either "Returnedmail:"
-> or "UndeliveredMailReturned", regardless of
-> the existence of /etc/redhat-release.
+>>> ...
+>>> On RHEL5.4 and SLES-11 am getting build problem with the controllers
+>>> subdirs, =A0ex:
+>>> ...
+>>
+>> =A0 =A0 Someone else reported similar recently. Can you please tell us
+>> what version of Gnu make you're using?
 >
-> So, we did a bit of changes to recongnize both of
-> returned values.
+> SLES-10 SP3: =A0make-3.80-202.2
+
+I just talked with SimonXu on #ltp, and he ran into the same issue, so
+I added some additional sections to describe the problem in the
+INSTALL file.
+
+> As for the ones failing on the controllers/cgroup stuff:
 >
-> This patch fixes the problem.
->
-> Signed-off-by: Liu Bo <liubo2009@cn.fujitsu.com>
->   
+> SLES-11: make-3.81-128.20
+> RHEL5.4: make-3.81-3.el5
 
-Is there any problem about this patch?
+I'll take a look at that.
+Thanks!
+-Garrett
 
-> ---
->  testcases/commands/mail/mail_tests.sh |   65 ++++++++++++++++-----------------
->  1 files changed, 31 insertions(+), 34 deletions(-)
->
-> diff --git a/testcases/commands/mail/mail_tests.sh b/testcases/commands/mail/mail_tests.sh
-> index 45bac93..024120f 100755
-> --- a/testcases/commands/mail/mail_tests.sh
-> +++ b/testcases/commands/mail/mail_tests.sh
-> @@ -172,28 +172,27 @@ else
->      echo "d" | mail -u root > $LTPTMP/tst_mail.res 2>&1
->      RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3, "Mailer-Daemon")}' \
->  	$LTPTMP/tst_mail.res)
-> -    RC2=$(awk '/^>N/ {print match($9 $10 $11, "Maildeliveryfailed:")}' \
-> -        $LTPTMP/tst_mail.res)
-> -#####
-> -# Some mailers (e.g., Red Hat's sendmail) print different messages 
-> -#####
-> -if [ -f /etc/redhat-release ] 
-> -then 
-> -  [ -z "$RC2" -o "X$RC2" = "X0" ] && \
-> +##################################################################
-> +# In this testcase, mail will get "Returnedmail:", while mailx will
-> +# get "UndeliveredMailReturned:".
-> +# Either of mail and mailx may be linked to another.
-> +# For example,
-> +# /bin/mail -> /bin/mailx
-> +# or
-> +# /bin/mailx -> /bin/mail
-> +##################################################################
->       RC2=$(awk '/^>N/ {print match($9 $10, "Returnedmail:")}' \
->               $LTPTMP/tst_mail.res)
-> -else 
-> -  [ -z "$RC2" -o "X$RC2" = "X0" ] && \
-> -     RC2=$(awk '/^>N/ {print match($9 $10 $11, "UndeliveredMailReturned")}' \
-> +     RC3=$(awk '/^>N/ {print match($9 $10, "UndeliveredMail")}' \
->               $LTPTMP/tst_mail.res)
->  fi 
-> -    if [ -z "$RC1" -a -z "$RC2" ]
-> +    if [ -z "$RC1" -a -z "$RC2" -a -z "$RC3" ]
->      then
->          $LTPBIN/tst_res TFAIL $LTPTMP/tst_mail.res \
->          "Test #2: No new mail for root. Reason:"
->          TFAILCNT=$(( $TFAILCNT+1 ))
->      else
-> -        if [ $RC1 -ne 0 -a $RC2 -ne 0 ]
-> +        if [ $RC1 -ne 0 -a $RC2 -ne 0 ] || [ $RC1 -ne 0 -a $RC3 -ne 0 ]
->          then
->              $LTPBIN/tst_resm TPASS \
->                  "Test #2: Mailer-Deamon reported delivery failure"
-> @@ -203,7 +202,6 @@ fi
->              TFAILCNT=$(( $TFAILCNT+1 ))
->          fi
->      fi
-> -fi
->  else
->      $LTPBIN/tst_resm TCONF "mail command not installed"
->  fi    
-> @@ -242,29 +240,28 @@ else
->      echo "d" | mail -u root > $LTPTMP/tst_mail.res 2>&1
->      RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3, "Mailer-Daemon")}' \
->  	$LTPTMP/tst_mail.res)
-> -    RC2=$(awk '/^>N/ {print match($9 $10 $11, "Maildeliveryfailed:")}' \
-> -        $LTPTMP/tst_mail.res)
-> -#####
-> -# Some mailers (e.g., Red Hat's sendmail) print different messages 
-> -#####
-> -if [ -f /etc/redhat-release ] 
-> -then 
-> -   [ -z "$RC2" -o "X$RC2" = "X0" ] && \
-> -      RC2=$(awk '/^>N/ {print match($9 $10, "Returnedmail:")}' \
-> -              $LTPTMP/tst_mail.res)
-> -else 
-> -    [ -z "$RC2" -o "X$RC2" = "X0" ] && \
-> -        RC2=$(awk '/^>N/ {print match($9 $10 $11, "UndeliveredMailReturned")}' \
-> -                $LTPTMP/tst_mail.res)
-> -fi 
-> -    if [ -z "$RC1" -a -z "$RC2" ]
-> +##################################################################
-> +# In this testcase, mail will get "Returnedmail:", while mailx will
-> +# get "UndeliveredMailReturned:".
-> +# Either of mail and mailx may be linked to another.
-> +# For example,
-> +# /bin/mail -> /bin/mailx
-> +# or
-> +# /bin/mailx -> /bin/mail
-> +##################################################################
-> +     RC2=$(awk '/^>N/ {print match($9 $10, "Returnedmail:")}' \
-> +             $LTPTMP/tst_mail.res)
-> +     RC3=$(awk '/^>N/ {print match($9 $10, "UndeliveredMail")}' \
-> +             $LTPTMP/tst_mail.res)
-> +fi
-> +    if [ -z "$RC1" -a -z "$RC2" -a -z "$RC3" ]
->      then
->          $LTPBIN/tst_res TFAIL $LTPTMP/tst_mail.res \
-> -        "Test #3: No new mail for root. Reason:"
-> +        "Test #2: No new mail for root. Reason:"
->          TFAILCNT=$(( $TFAILCNT+1 ))
->      else
-> -        if [ $RC1 -ne 0 -a $RC2 -ne 0 ]
-> -        then
-> +        if [ $RC1 -ne 0 -a $RC2 -ne 0 ] || [ $RC1 -ne 0 -a $RC3 -ne 0 ]
-> +	then
->              $LTPBIN/tst_resm TPASS \
->                  "Test #3: Mailer-Deamon reported delivery failure"
->          else
-> @@ -273,7 +270,7 @@ fi
->              TFAILCNT=$(( $TFAILCNT+1 ))
->          fi
->      fi
-> -fi
-> +
->  else
->      $LTPBIN/tst_resm TCONF "mail command not installed"
->  fi
->   
+---------------------------------------------------------------------------=
+---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
 
+trial. Simplify your report design, integration and deployment - and focus =
+on =
 
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
