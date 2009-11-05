@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1NDf6S-0004AS-3V
-	for ltp-list@lists.sourceforge.net; Thu, 26 Nov 2009 14:13:48 +0000
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
-	by mx2.suse.de (Postfix) with ESMTP id AF69F8655F
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1N6801-0004IF-M2
+	for ltp-list@lists.sourceforge.net; Thu, 05 Nov 2009 19:28:01 +0000
+Received: from relay1.suse.de (mail2.suse.de [195.135.221.8])
+	by mx2.suse.de (Postfix) with ESMTP id 5480C5FC9F
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 26 Nov 2009 15:13:31 +0100 (CET)
-Date: Thu, 26 Nov 2009 15:13:46 +0100
+	Thu,  5 Nov 2009 20:27:47 +0100 (CET)
+Date: Thu, 5 Nov 2009 20:27:46 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20091126141346.GA7306@saboteur.suse.cz>
-References: <20091116151656.GB16811@schrodinger.suse.cz>
-	<20091120125347.GA4858@schrodinger.suse.cz>
+Message-ID: <20091105192746.GA30521@schrodinger.suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20091120125347.GA4858@schrodinger.suse.cz>
-Subject: Re: [LTP] [RFC] utstest.h
+Subject: [LTP] rt_sigqueueinfo
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,36 +29,51 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
 Hi!
-> > I've been looking at sources for usctest.h again today (lib/parse_opts.c) and I
-> > still have the feeling that this is badly written/broken code and should be
-> > fixed but as there are thousands of tests that uses usctest interface we should
-> > be careful when touching these sources. So IMHO the best approach is to change
-> > one thing at the time and see if this was a good move.
-> > 
-> > So let's start with TEST_PAUSE macro. Accordingly to comment in the header,
-> > this expands to the code that waits for SIGUSR1 signal (and this is not
-> > generaly true).  This macro is expanded to the int usc_global_setup_hook()
-> > function. The function forks the program accordingly to STD_COPIES and
-> > accordingly STD_PAUSE it sleeps for a SIGUSR1 or not (all forked instances); it
-> > also changes program segment size with sbrk().
-> > 
-> > Looking into the test sources, this is called when the test starts in order to
-> > implement test parameters "-c n" (run n copies concurently) and "-p" (pause
-> > test) and system variable USC_TP_SBRK. Do we need these parameters or any of
-> > them? If you convice me that these parameters are usefull I would gladly clean
-> > up and document code that implements TEST_PAUSE, otherwise I would vote for
-> > removing them (or at least the useless ones).
-> > 
-> 
-> Okay, let me put it like this. Are parameters introduced by TEST_PAUSE really
-> used for anything? Would anybody cry if there where removed? Would be patch
-> removing them accepted and merged into CVS?
-> 
+While looking on compilation warnings I've discovered that test
+testcases/kernel/syscalls/rt_sigqueueinfo/rt_sigqeueuinfo.c has several
+issues.
 
-Anybody out there? I would really like to clean up and simplify the test interface.
+The most problematic ones are:
+
+* There is quite a number of meaningless comments.
+
+* There is tst_exit() in the middle of the for cycle, so option
+  -i is effectively disabled
+
+* The test is creating temporary directories, why do we need that
+  for testing kernel signal queues?
+
+* Why we are forking and doing nothing in the parent process?
+
+* We are sending signal 17 that could be SIGUSR2, SIGCHILD or SIGSTOP
+  and depends on hardware platform so symbolic name rather than number
+  should be used.
+
+* We are sending singnal but there is no checking that it
+  arrives.
+
+* There is no return, exit() or tst_exit() at the end of main()
+
+* Casting NULL to (char*) or (option_t*) is meaningless.
+
+...
+
+Also test uses usctest.h that is IMHO not really useful because it adds too
+much complexity and its code is broken too :(. It should be either fixed or
+thrown away.
+
+Looking into crackerjack tests it looks to me like crackerjack just tries to
+call syscalls to crash the kernel and don't care about the userspace too much
+(at least the tests I've seen). So using their code is IMHO questionable.
+
+And other rt_sig* tests have some of the issues written above.
+
+I would really like to fix these tests, but before I start rewriting them,
+I'm asking for opinions.
 
 -- 
-metan
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
