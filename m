@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1N5Q3o-0004GB-Mo
-	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 20:33:00 +0000
+	(envelope-from <vapier@gentoo.org>) id 1N6V1r-0005mF-5A
+	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 20:03:27 +0000
 Received: from smtp.gentoo.org ([140.211.166.183])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N5Q3g-0003ZX-01
-	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 20:32:59 +0000
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1N6V1m-0001WH-8o
+	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 20:03:27 +0000
 From: Mike Frysinger <vapier@gentoo.org>
-Date: Tue, 3 Nov 2009 16:33:53 -0400
-References: <b9d696240911031223h6734d911s57830e7d859813f9@mail.gmail.com>
-In-Reply-To: <b9d696240911031223h6734d911s57830e7d859813f9@mail.gmail.com>
+Date: Fri, 6 Nov 2009 16:04:46 -0400
+References: <20091106095745.GA25377@basil.fritz.box>
+	<200911061439.22257.vapier@gentoo.org>
+	<20091106195036.GG819@basil.fritz.box>
+In-Reply-To: <20091106195036.GG819@basil.fritz.box>
 MIME-Version: 1.0
-Message-Id: <200911031533.53910.vapier@gentoo.org>
-Subject: Re: [LTP] 20091031 won't run
+Message-Id: <200911061504.47432.vapier@gentoo.org>
+Subject: Re: [LTP] LTP 20091031 Makefiles totally broken?!?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,77 +26,74 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2345786884348632183=="
+Content-Type: multipart/mixed; boundary="===============0023777826329734822=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Andi Kleen <andi@firstfloor.org>
+Cc: ltp-list@lists.sourceforge.net
 
---===============2345786884348632183==
-Content-Type: multipart/signed; boundary="nextPart2464640.rCXOz4lvnt";
+--===============0023777826329734822==
+Content-Type: multipart/signed; boundary="nextPart1519214.FdvvRIdEak";
 	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
---nextPart2464640.rCXOz4lvnt
+--nextPart1519214.FdvvRIdEak
 Content-Type: Text/Plain;
-  charset="utf-8"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 
-On Tuesday 03 November 2009 15:23:47 K.D. Lucas wrote:
-> I downloaded the latest LTP, which is version 20091031. I ran ./configure,
-> make, and make install. I notice that now make tries to write file to
-> /opt/ltp/, so I needed to run make as root.
-
-ltp installs to wherever you configured and installed it to.  the default i=
-s=20
-merely /opt/ltp/.  so if you didnt change the default, then it's up to you =
-to=20
-make sure the install location is available.
-
-> When I go to run ltp, I get:
+On Friday 06 November 2009 14:50:36 Andi Kleen wrote:
+> On Fri, Nov 06, 2009 at 03:39:21PM -0400, Mike Frysinger wrote:
+> > going to happen.  especially considering you apparently have no
+> > signficant plans in helping maintain the huge code base that is LTP.
 >=20
-> FATAL: Test suite not installed correctly
-> INFO: as root user type 'make ; make install'
+> I submitted some tests and fixes in the past, but yes I'm primarily a use=
+r.
 
-what user did you run `ltp` as ?
+right -- you've certainly contributed useful pieces in the past which is wh=
+y i=20
+used the word "significant", but tackling the entire code base like Garrett=
+=20
+has isnt a semi-trivial task, as well as fielding follow up reports.  i=20
+imagine it's been pretty draining on him.
 =2Dmike
 
---nextPart2464640.rCXOz4lvnt
+--nextPart1519214.FdvvRIdEak
 Content-Type: application/pgp-signature; name=signature.asc 
 Content-Description: This is a digitally signed message part.
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.13 (GNU/Linux)
 
-iQIcBAABAgAGBQJK8JOxAAoJEEFjO5/oN/WBZBwP/RuhFnY2/T+B4289oaUbxMji
-LsSkNci9mmi5O4UXMYCg2q5uflCCUqcmCIn/uykM8vZ1GXgwaOOfXpN3WzfMQpPm
-STLfX8dMknu2GTj3aBkf0BO4oa+Fwg9VqEWPO1QevclBd2K9LvdvZGFGMDLhc6jb
-cNqtjBTY+9eem1h9TLIQRqqDIvuH+YZ8puMcGJdimipmscxf2wzCwDk0x+p22wM/
-4RyFh/Ft29CmuGCn8u6Afa4J2FO4V/OQruQvaiG8uD06mzya500qcv6LT+51UiUc
-To/bFRDugWxRivYhXK8GWynServPuye4vrxC8v3ucn2mlizPNqexSiyoqOPY6XlI
-276NBlXLtp9jZ5I8gRmaI/IeNy1Wbcp0va5/Zmj5lDjddVQvQPAhrRYbS+BbEaWs
-KP5R61hpUfMlaq7T55+GznUf8AAHc43ogpsH9+GJ5Ab20jlgICJzO2bbW31CiKpx
-n+wngGCgMcg9EWE/+CFvqvkCvkTS2AxbYbWLgSezF5xxbtDwHttnSURd9qL2oFER
-2YK6HozKgm+nqscrso/2rratqjwu7x2Q/2V6Yv5ZjvppcaGybq6Yh6jSYJ/bfbrD
-GBZFZIL+kBWc35ya1yRW6R0Rl/xgVs0uVgASvQzgYaQ6qTJkMQ6ktpgH5cCM5txZ
-ubuvMMk8Ekr8j/iWiF3P
-=UwEI
+iQIcBAABAgAGBQJK9IFfAAoJEEFjO5/oN/WBP88QAMHKL17xEKczCTaVmy1Pn5uh
+XJChYeLLJzdRI/h9tZLUtbXXVtL9GXfni5hngZwORTZLpfs1IIg/VQX0qIwibFYr
+DWOm5318mQuxblXFzfFH1NrNabfIIv7tw2CvEDfoidNBYMVwA23TWNkVIDV5ZZA9
+MBfeEdpNaWP1wgW7oXzZCKSICnfBpYDIgGhcFJrmvlC1TnUQh8tolClQvTe+3qsa
+8xUpQATApsbRfDgN/8N78ZxD210k3tTFNmdAwcLmnNYzMSsYJVF8AiZLfMmDjohw
++MTafwWLO78B4vqxxUGgcq/tEa8ooU70SkZ0yxkPCmQaA5JtWVy7s4mF/KZHPboy
+1ElqyqPH+cBPJUUfokGHVr/Pv2JsBxuqdFjMhbTz5rhJ/9rF2hTHhloConp7S3dt
++SDNTC3KDUeZ9uxTdH1fZQ+1TNF+iOZOkzl3XJ1F2V6zxjVUNL9uEJ5rl9IU7rqX
+cvLNW77nuyLONU5y3OuJSLZEpsQkJ5l4XjJm5JMb9JH9DPFKUHqmlsQlC59eFuVk
+06iPYzg7+eyQdkxELoxtaWuqyT1y5k76tiCjL8IIju8C6rFWU1yNb5ko/Pw9S2la
+fUkQgg/fMtNwVUutZao2hZ7G4VFAEqaoF/uRZH/Y+qXob/Jj2uY1VjhVpbxXKU+n
+MwWwUQDLc2K1cSloemev
+=0EqY
 -----END PGP SIGNATURE-----
 
---nextPart2464640.rCXOz4lvnt--
+--nextPart1519214.FdvvRIdEak--
 
 
---===============2345786884348632183==
+--===============0023777826329734822==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-http://p.sf.net/sfu/devconference
---===============2345786884348632183==
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============0023777826329734822==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -105,5 +104,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============2345786884348632183==--
+--===============0023777826329734822==--
 
