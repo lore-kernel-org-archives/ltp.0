@@ -1,26 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <nate@refried.org>) id 1N6V5l-00066J-C8
-	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 20:07:29 +0000
-Received: from smtp0.av-mx.com ([137.118.16.56])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N6V5f-00008q-BU
-	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 20:07:24 +0000
-Date: Fri, 6 Nov 2009 14:43:35 -0500
-From: Nate Straz <nate@refried.org>
-Message-ID: <20091106194335.GB32249@refried.org>
-References: <20091106095745.GA25377@basil.fritz.box>
-	<200911060616.40305.vapier@gentoo.org>
-	<20091106130906.GW31511@one.firstfloor.org>
-	<200911060821.40182.vapier@gentoo.org>
-	<364299f40911061004mbb02ed3lf02a33164890625a@mail.gmail.com>
-	<20091106191343.GC819@basil.fritz.box>
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <gomuthuk@linux.vnet.ibm.com>) id 1N6Nwv-0007SC-HJ
+	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 12:29:53 +0000
+Received: from e28smtp02.in.ibm.com ([59.145.155.2])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1N6Nwo-0000ue-Rz
+	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 12:29:53 +0000
+Received: from d28relay01.in.ibm.com (d28relay01.in.ibm.com [9.184.220.58])
+	by e28smtp02.in.ibm.com (8.14.3/8.13.1) with ESMTP id nA6CSevL007185
+	for <ltp-list@lists.sourceforge.net>; Fri, 6 Nov 2009 17:58:40 +0530
+Received: from d28av03.in.ibm.com (d28av03.in.ibm.com [9.184.220.65])
+	by d28relay01.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	nA6CSePf2465860
+	for <ltp-list@lists.sourceforge.net>; Fri, 6 Nov 2009 17:58:40 +0530
+Received: from d28av03.in.ibm.com (loopback [127.0.0.1])
+	by d28av03.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	nA6CSdLJ031016
+	for <ltp-list@lists.sourceforge.net>; Fri, 6 Nov 2009 23:28:40 +1100
+Message-ID: <4AF41677.8030408@linux.vnet.ibm.com>
+Date: Fri, 06 Nov 2009 17:58:39 +0530
+From: gowrishankar <gomuthuk@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20091106191343.GC819@basil.fritz.box>
-Subject: Re: [LTP] LTP 20091031 Makefiles totally broken?!?
+References: <4AF3D509.3060408@st.com>
+In-Reply-To: <4AF3D509.3060408@st.com>
+Subject: Re: [LTP] [PATCH] add iterations option in gtod_latency.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,27 +38,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Andi Kleen <andi@firstfloor.org>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
+To: Giuseppe CAVALLARO <peppe.cavallaro@st.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Nov  6 20:13, Andi Kleen wrote:
-> > So yes, there are known issues with using make versions <3.81. The
+Giuseppe CAVALLARO wrote:
+> Regards,
+> Peppe
 > 
-> For me it seems more the known issue is in the Makefile. 3.80
-> is a widely used Make version.
+
+Can you please add freeing resources at the end of main.
+
+         stats_container_free(&dat);
+         stats_container_free(&hist);
+         stats_quantiles_free(&quantiles);
+
+Also, you could set MIN_ITERATION to 10000 instead of hard coding inside main.
+Just a suggestion.
+
+Thanks,
+Gowri
+
 > 
-> > reason being that some macros and functions that I use to determine
-> > absolute path, etc were not available in make 3.80.
+> ------------------------------------------------------------------------
 > 
-> Most of my infrastructure in test systems is based on SUSE 10.0 
-> and it's impractical to upgrade make everywhere.
+> ------------------------------------------------------------------------------
+> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+> trial. Simplify your report design, integration and deployment - and focus on 
+> what you do best, core application coding. Discover what's new with
+> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> 
+> 
+> ------------------------------------------------------------------------
+> 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-openSUSE 10.3 does include make-3.81.  I hope upgrading to the latest
-point release won't disrupt your test systems.
-
-http://download.opensuse.org/distribution/10.3/repo/oss/suse/x86_64/make-3.81-66.x86_64.rpm
-
-Nate
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
