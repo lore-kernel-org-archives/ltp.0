@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1N7Z9F-0001I2-A0
-	for ltp-list@lists.sourceforge.net; Mon, 09 Nov 2009 18:39:29 +0000
-Received: from mail-px0-f177.google.com ([209.85.216.177])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N7Z98-00053f-UZ
-	for ltp-list@lists.sourceforge.net; Mon, 09 Nov 2009 18:39:29 +0000
+	(envelope-from <vapier@gentoo.org>) id 1N6Uvs-0005Hs-UL
+	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 19:57:16 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1N6Uvo-0006xZ-HN
+	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 19:57:16 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Fri, 6 Nov 2009 15:58:36 -0400
+References: <20091106095745.GA25377@basil.fritz.box>
+	<200911061439.22257.vapier@gentoo.org>
+	<20091106195036.GG819@basil.fritz.box>
+In-Reply-To: <20091106195036.GG819@basil.fritz.box>
 MIME-Version: 1.0
-In-Reply-To: <1257788381.7677.73.camel@subratamodak.linux.ibm.com>
-References: <1257788381.7677.73.camel@subratamodak.linux.ibm.com>
-Date: Mon, 9 Nov 2009 10:39:17 -0800
-Message-ID: <364299f40911091039q11529ec1m4583ac18d0ee4bf4@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] get_mempolicy01, mbind01,
-	move_pages01 & ptrace04 compile 	failures with latest CVS
+Message-Id: <200911061458.37702.vapier@gentoo.org>
+Subject: Re: [LTP] LTP 20091031 Makefiles totally broken?!?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,145 +26,106 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============7915407450684242212=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sf.net>, Mike Frysinger <vapier@gentoo.org>
+To: Andi Kleen <andi@firstfloor.org>
+Cc: ltp-list@lists.sourceforge.net
 
-On Mon, Nov 9, 2009 at 9:39 AM, Subrata Modak
-<subrata@linux.vnet.ibm.com> wrote:
-> Garret,
->
-> Can you please look into these errors occurring on my below system
-> configuration:
->
-> # uname -a
-> Linux 2.6.18-92.el5 #1 SMP Tue Apr 29 13:16:12 EDT 2008 i686 i686 i386
-> GNU/Linux
->
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
-> -I/home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009_=
-RELEASE/ltp-intermediate-20091109/testcases/kernel/include -I../../../../in=
-clude -I../../../../include =A0 -L../../../../lib =A0get_mempolicy01.c =A0 =
--lltp -o get_mempolicy01
-> get_mempolicy01.c:59:25: error: include_j_h.h: No such file or directory
-> get_mempolicy01.c:60:24: error: common_j_h.c: No such file or directory
-> get_mempolicy01.c: In function =91do_test=92:
-> get_mempolicy01.c:274: error: =91RESULT_OK=92 undeclared (first use in th=
-is
-> function)
-> get_mempolicy01.c:274: error: (Each undeclared identifier is reported
-> only once
-> get_mempolicy01.c:274: error: for each function it appears in.)
-> get_mempolicy01.c:276: error: =91nodemask_t=92 undeclared (first use in t=
-his
-> function)
-> get_mempolicy01.c:276: error: expected =91;=92 before =91nodemask=92
-> get_mempolicy01.c:277: error: =91NUMA_NUM_NODES=92 undeclared (first use =
-in
-> this function)
-> get_mempolicy01.c:282: warning: implicit declaration of function
-> =91nodemask_zero=92
-> get_mempolicy01.c:282: error: =91nodemask=92 undeclared (first use in this
-> function)
-> get_mempolicy01.c:283: warning: implicit declaration of function
-> =91nodemask_set=92
-> get_mempolicy01.c:284: error: =91getnodemask=92 undeclared (first use in
-> this function)
-> get_mempolicy01.c:338: warning: implicit declaration of function
-> =91nodemask_equal=92
-> get_mempolicy01.c:340: warning: implicit declaration of function
-> =91nodemask_dump=92
-> get_mempolicy01.c:349: warning: implicit declaration of function
-> =91PRINT_RESULT_CMP=92
-> make[4]: *** [get_mempolicy01] Error 1
+--===============7915407450684242212==
+Content-Type: multipart/signed; boundary="nextPart1608624.3kUslFsOnO";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Eh... not sure how that one happened. When did you pull from CVS?
+--nextPart1608624.3kUslFsOnO
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
-> -I/home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009_=
-RELEASE/ltp-intermediate-20091109/testcases/kernel/include -I/home/subratam=
-odak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009_RELEASE/ltp-interm=
-ediate-20091109/testcases/kernel/syscalls/mbind/../utils/ -I../../../../inc=
-lude -I../../../../include =A0 -L../../../../lib =A0mbind01.c =A0 -lltp -o =
-mbind01
-> In file included from mbind01.c:62:
-> /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009_RE=
-LEASE/ltp-intermediate-20091109/testcases/kernel/syscalls/mbind/../utils/nu=
-maif.h:40: error: conflicting types for =91nodemask_t=92
-> /usr/include/numa.h:39: note: previous declaration of =91nodemask_t=92 was
-> here
-> /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009_RE=
-LEASE/ltp-intermediate-20091109/testcases/kernel/syscalls/mbind/../utils/nu=
-maif.h:42: error: conflicting types for =91nodemask_zero=92
-> /usr/include/numa.h:61: note: previous definition of =91nodemask_zero=92 =
-was
-> here
-> /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009_RE=
-LEASE/ltp-intermediate-20091109/testcases/kernel/syscalls/mbind/../utils/nu=
-maif.h:69: error: conflicting types for =91nodemask_equal=92
-> /usr/include/numa.h:66: note: previous definition of =91nodemask_equal=92
-> was here
-> mbind01.c: In function =91main=92:
-> mbind01.c:368: warning: unused variable =91result=92
-> make[4]: *** [mbind01] Error 1
+On Friday 06 November 2009 14:50:36 Andi Kleen wrote:
+> On Fri, Nov 06, 2009 at 03:39:21PM -0400, Mike Frysinger wrote:
+> > On Friday 06 November 2009 14:13:43 Andi Kleen wrote:
+> > > > I've considered adding a configure check for the make version. I'm
+> > > > probably going to do it this weekend to avoid support issues like
+> > > > these.
+> > >
+> > > That's not a solution.
+> > >
+> > > Please just fix the makefiles or revert this misguided change
+> > > and give us working makefiles back.
+> > >
+> > > From a quick look at the mailing list archives that doesn't
+> > > even seem to be the only problem with this "improvement".
+> >
+> > again, please stop wasting our time with your "revert it" comments.  it
+> > isnt
+>=20
+> That's the standard strategy to fix regressions if the submitter
+> is unwilling to fix newly introduced bugs.
 
-Should be resolved now.
+your position on how to "fix" things is irrelevant here, nor is it helping =
+in=20
+any way.  drop it.
 
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
-> -I/home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009_=
-RELEASE/ltp-intermediate-20091109/testcases/kernel/include -I/home/subratam=
-odak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009_RELEASE/ltp-interm=
-ediate-20091109/testcases/kernel/syscalls/move_pages/../utils -I../../../..=
-/include -I../../../../include =A0-c -o move_pages01.o move_pages01.c
-> In file included from move_pages_support.h:22,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from move_pages01.c:63:
-> /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009_RE=
-LEASE/ltp-intermediate-20091109/testcases/kernel/syscalls/move_pages/../uti=
-ls/numaif.h:40: error: conflicting types for =91nodemask_t=92
-> /usr/include/numa.h:39: note: previous declaration of =91nodemask_t=92 was
-> here
-> /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009_RE=
-LEASE/ltp-intermediate-20091109/testcases/kernel/syscalls/move_pages/../uti=
-ls/numaif.h:42: error: conflicting types for =91nodemask_zero=92
-> /usr/include/numa.h:61: note: previous definition of =91nodemask_zero=92 =
-was
-> here
-> /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009_RE=
-LEASE/ltp-intermediate-20091109/testcases/kernel/syscalls/move_pages/../uti=
-ls/numaif.h:69: error: conflicting types for =91nodemask_equal=92
-> /usr/include/numa.h:66: note: previous definition of =91nodemask_equal=92
-> was here
-> make[4]: *** [move_pages01.o] Error 1
+> > we can look at working around bugs in make-3.80 if/since there are a
+> > number of people who would like this functionality.
+>=20
+> Are you saying that LTP as a project is not interested in fixing
+>  regressions?
 
-Should be resolved now.
+ive already made my position pretty clear in this statement.  support for o=
+ld=20
+versions of tools will continually be phased out over time.  the exact cut =
+off=20
+time will largely be dictated by the needs of the larger user base. =20
+"cleverly" defining behavior as "regressions" notwithstanding.
+=2Dmike
 
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
-> -I/home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009_=
-RELEASE/ltp-intermediate-20091109/testcases/kernel/include -I../../../../in=
-clude -I../../../../include =A0 -L../../../../lib =A0ptrace04.c =A0 -lltp -=
-o ptrace04
-> ptrace04.c: In function =91compare_registers=92:
-> ptrace04.c:51: error: storage size of =91pt_regs=92 isn=92t known
-> ptrace04.c:51: warning: unused variable =91pt_regs=92
-> make[4]: *** [ptrace04] Error 1
+--nextPart1608624.3kUslFsOnO
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-Fixed (I think). Please repull and retry.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.13 (GNU/Linux)
 
-Thanks,
--Garrett
+iQIcBAABAgAGBQJK9H/tAAoJEEFjO5/oN/WBwSEP/1k7Q9zWBCosnulQQ/e22U0n
+ekSrUQSoiaLwCSWwBeGdXi4aFAoOkMlnglgLVbME/mWfrPaCsAmJUF/1qUWaagAV
+3aLpRjRU8oTedc2TR7n5j2NYitLHk6mB1/uwBJ/xNDR/Pz+dNDHYr8sBNj09buuE
+DmMinMZ20WbxFReAYaY8+5g/ZIdLJwzLN3LWn/MS2jsO2ew/+R7VUtTGgXjrSSou
+vE/PpharfmSxBQW80n6T3+vdT8e0Y85EVeHadipKDQh/mzUC6TVMMfd4x/6dIaBd
+ah8NxQVYIK05+PZiNvnVPa6igdgJS9rUt/B2BALpDxo5Wq3veNSI6w5J6ENCB7yE
+haYBaNUVFwdY1/OIRrnjbzb3XbB+PC/Fhf2dE1tooAPj3rHt1SHwjuPxub6CkSSD
+VI1+6KVmy39L8u+lmtskDR6i5Hy7o3AwTM7WBaqJsEoIXtw6E/c4uhcZWiDhftDO
+rBXYnCWcAOQAIly/OsdwY2WBmT0ifIuei6qVo1siRW2aHL3E6m6n59t25BnsVlfs
+N2EjgMKjjfMoiz20OJgiEfHw1pGs6wpPN3K2qhW5WL3o9LAd3a7IVCm2iOILKOng
+Saft8Ly7YmfPcz4hOh7IG5NvaTZpZ/Ps9QAcPyH+hehQ/La2BIyx1iIvmfHesrr6
+rVEWNv0GHZbk9pna4jQ4
+=ABZg
+-----END PGP SIGNATURE-----
 
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+--nextPart1608624.3kUslFsOnO--
 
-trial. Simplify your report design, integration and deployment - and focus =
-on =
 
+--===============7915407450684242212==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============7915407450684242212==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============7915407450684242212==--
+
