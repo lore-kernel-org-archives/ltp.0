@@ -1,37 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <markver@us.ibm.com>) id 1N5rOE-0006Ap-HD
-	for ltp-list@lists.sourceforge.net; Thu, 05 Nov 2009 01:43:54 +0000
-Received: from e4.ny.us.ibm.com ([32.97.182.144])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N5rO7-0004xt-U2
-	for ltp-list@lists.sourceforge.net; Thu, 05 Nov 2009 01:43:54 +0000
-Received: from d01relay07.pok.ibm.com (d01relay07.pok.ibm.com [9.56.227.147])
-	by e4.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nA51ZbaP029570
-	for <ltp-list@lists.sourceforge.net>; Wed, 4 Nov 2009 20:35:37 -0500
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay07.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nA51hggI1351824
-	for <ltp-list@lists.sourceforge.net>; Wed, 4 Nov 2009 20:43:42 -0500
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	nA51hf8p031626
-	for <ltp-list@lists.sourceforge.net>; Wed, 4 Nov 2009 20:43:42 -0500
-Received: from d01mc096.pok.ibm.com (d01mc096.pok.ibm.com [9.63.9.231])
-	by d01av04.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVin) with ESMTP id
-	nA51hfgG031622
-	for <ltp-list@lists.sourceforge.net>; Wed, 4 Nov 2009 20:43:41 -0500
-In-Reply-To: <364299f40911032158s4356a90bkf06686f7aea01b87@mail.gmail.com>
-References: <mailman.103093.1257283106.5825.ltp-list@lists.sourceforge.net>	
-	<OFB7192512.13ED74E7-ON85257664.001981A6-85257664.001F3BB6@us.ibm.com>
-	<364299f40911032158s4356a90bkf06686f7aea01b87@mail.gmail.com>
-Message-ID: <OF2EC662FD.A8CC841C-ON85257665.00084CCC-85257665.00097DBB@us.ibm.com>
-From: Mark Ver <markver@us.ibm.com>
-Date: Wed, 4 Nov 2009 20:43:40 -0500
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1N6Ojo-0002TC-Qt
+	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 13:20:24 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1N6Oji-00063Z-9n
+	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 13:20:24 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Fri, 6 Nov 2009 09:21:39 -0400
+References: <20091106095745.GA25377@basil.fritz.box>
+	<200911060616.40305.vapier@gentoo.org>
+	<20091106130906.GW31511@one.firstfloor.org>
+In-Reply-To: <20091106130906.GW31511@one.firstfloor.org>
 MIME-Version: 1.0
-Subject: Re: [LTP] Build Fails on some archs
+Message-Id: <200911060821.40182.vapier@gentoo.org>
+Subject: Re: [LTP] LTP 20091031 Makefiles totally broken?!?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,78 +26,97 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5194831435454387534=="
+Content-Type: multipart/mixed; boundary="===============6659670031617139262=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
+To: Andi Kleen <andi@firstfloor.org>, Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
---===============5194831435454387534==
-Content-type: multipart/alternative; 
-	Boundary="0__=0ABBFCF6DF9BCA5C8f9e8a93df938690918c0ABBFCF6DF9BCA5C"
-Content-Disposition: inline
+--===============6659670031617139262==
+Content-Type: multipart/signed; boundary="nextPart4310020.fxbcaTqoLv";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
---0__=0ABBFCF6DF9BCA5C8f9e8a93df938690918c0ABBFCF6DF9BCA5C
-Content-type: text/plain; charset=US-ASCII
+--nextPart4310020.fxbcaTqoLv
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
->> On SLES-10 SP3, the make attempt gets nowhere ...
->> h91distr02:~/ltp-full-20091031 # make all
->> make: *** No rule to make target `/$*', needed by `pan-all'.  Stop.
->> h91distr02:~/ltp-full-20091031 #
->> ...
->> On RHEL5.4 and SLES-11 am getting build problem with the controllers
->> subdirs,  ex:
->> ...
->
->     Someone else reported similar recently. Can you please tell us
-> what version of Gnu make you're using?
+On Friday 06 November 2009 08:09:06 Andi Kleen wrote:
+> On Fri, Nov 06, 2009 at 07:16:39AM -0400, Mike Frysinger wrote:
+> > On Friday 06 November 2009 04:57:45 Andi Kleen wrote:
+> > > I ran configure, which seems to spend 99% of its time
+> > > checking for stuff that is always there on any Linux,
+> >
+> > not really.  most of the configure checks are there because people have
+> > complained about specific issues trying to run on older linux distros.=
+=20
+> > and we
+>=20
+> I always just deleted the tests that didn't build. That's far better
+> than not building at all like now.
 
-SLES-10 SP3:  make-3.80-202.2
+perhaps an acceptable workaround for you, but certainly not for most people
 
-As for the ones failing on the controllers/cgroup stuff:
+> > arent actively blocking using LTP on other *nix systems.
+>=20
+> yes you're just actively blocking running LTP on Linux now it seems.
 
-SLES-11:    make-3.81-128.20
-RHEL5.4:    make-3.81-3.el5
+please refrain from filling e-mails with unrelated BS
+
+> > > and after that I just get
+> > >
+> > > # make
+> > > make: `testcases/realtime/configure' is up to date.
+> > > #
+> >
+> > -ENEEDINFO
+> >
+> > are you using live cvs ?  latest release ?  what distro ?  what version
+> > of
+>=20
+> See Subject on SUSE 10.0
+>=20
+> > autoconf/make ?  what does `make -d` show ?
+>=20
+> autoconf doesn't matter because I didn't regenerate the script.
+>=20
+> GNU Make 3.80
+
+looks like a bug in make-3.80.  works fine with make-3.81.  care to take a=
+=20
+look Garrett ?
+
+usually i just install older versions on my system as `make-$VER` to make=20
+testing different ones easy.  since all the makefiles use $(MAKE), this=20
+shouldnt be a problem to execute `make-$VER` instead of `make`.
+=2Dmike
+
+--nextPart4310020.fxbcaTqoLv
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.13 (GNU/Linux)
+
+iQIcBAABAgAGBQJK9CLkAAoJEEFjO5/oN/WBNs8P/36EBDufzqc4vpoQpLEe9p0U
+RAq5fBA7IwQpMi4lthT9LF9pIOyfcHQTKilaHFeYHd4WYBBMeJnpZdsZapDlxwHs
+rWWb5jqC6a0z9BSwpKeKrneepRN4RaaFJRbTOmYFJLkKv1c7nYZH+U4vaznFHWK8
+9M0Q0FSsTD7yhRD3Tdptnr82xeG6eVs/iOLXiRmyN61A83Agr/7X+nPPaudTXeJf
+Vq6+25W7LyLoB+Ghd1EZttuhyWfVuXaBgHsISEyK8E9wLWzw+l1VlCCkGcn5K05y
+jhNgqJFWFCmYUKFs/rsrvXSjjE+Tall9NFd95S8NB67qyh3zZ/eRPZj/yHrSHIvI
+O7DNdiTG/xJcCdaqB32rRm3UolDVZc9TU/sQ53pB7NSqrZZhTPWhh+cBWT1gBuFb
+eVhL6M/XG4EpwLeulCff8AOtPlkSSz+NTIyd5Hpreyp75I7hgQSd8iHCIksgKfof
+9mL3763KUarGXrglKSLVBHUmZ3okkRoclJ12thMo7w0rFwXq0n99VjUnbkYJumpZ
+3UNyN7swYBHxGVn4iyab178wtYiwdeDwu3JoZciL6kkoS70RajAWl7rTplGqVrQE
+usG/uFKCr11rPuIHi2ppFyZk68T89398tBUbbyTXFbbPLAHPdyfBbUcgZEPflGuj
+Fa5fKKE/PtFyurvsqzqL
+=1Clp
+-----END PGP SIGNATURE-----
+
+--nextPart4310020.fxbcaTqoLv--
 
 
-- Mark Ver
-
-office:  Building 710 / Room 2-RF-10
-phone: (845) 435-7794  [tie 8 295-7794]
---0__=0ABBFCF6DF9BCA5C8f9e8a93df938690918c0ABBFCF6DF9BCA5C
-Content-type: text/html; charset=US-ASCII
-Content-Disposition: inline
-
-<html><body>
-<p><tt>&gt;&gt; On SLES-10 SP3, the make attempt gets nowhere ...<br>
-&gt;&gt; h91distr02:~/ltp-full-20091031 # make all<br>
-&gt;&gt; make: *** No rule to make target `/$*', needed by `pan-all'. &nbsp;Stop.<br>
-&gt;&gt; h91distr02:~/ltp-full-20091031 #</tt><br>
-<tt>&gt;&gt; ...</tt><br>
-<tt>&gt;&gt; On RHEL5.4 and SLES-11 am getting build problem with the controllers <br>
-&gt;&gt; subdirs, &nbsp;ex:</tt><br>
-<tt>&gt;&gt; ...</tt><br>
-<tt>&gt;</tt><br>
-<tt>&gt; &nbsp; &nbsp; Someone else reported similar recently. Can you please tell us<br>
-&gt; what version of Gnu make you're using?</tt><br>
-<br>
-<tt>SLES-10 SP3: &nbsp;make-3.80-202.2</tt><br>
-<br>
-<tt>As for the ones failing on the controllers/cgroup stuff:</tt><br>
-<br>
-<tt>SLES-11:	</tt><tt>make-3.81-128.20</tt><br>
-<tt>RHEL5.4:	</tt><tt>make-3.81-3.el5</tt><br>
-<br>
-<br>
-- Mark Ver<br>
-<br>
-office:  Building 710 / Room 2-RF-10<br>
-phone: (845) 435-7794  [tie 8 295-7794]<br>
-</body></html>
---0__=0ABBFCF6DF9BCA5C8f9e8a93df938690918c0ABBFCF6DF9BCA5C--
-
-
-
---===============5194831435454387534==
+--===============6659670031617139262==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -123,7 +127,7 @@ Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---===============5194831435454387534==
+--===============6659670031617139262==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -134,6 +138,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============5194831435454387534==--
-
+--===============6659670031617139262==--
 
