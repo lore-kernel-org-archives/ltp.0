@@ -1,24 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1N7DKT-0005Oo-Mn
-	for ltp-list@lists.sourceforge.net; Sun, 08 Nov 2009 19:21:37 +0000
-Received: from mail-pz0-f191.google.com ([209.85.222.191])
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1N6Weh-0004kH-JW
+	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 21:47:39 +0000
+Received: from mail-pz0-f188.google.com ([209.85.222.188])
 	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N7DKP-00043T-J8
-	for ltp-list@lists.sourceforge.net; Sun, 08 Nov 2009 19:21:37 +0000
+	id 1N6WeZ-0003Bv-Qr
+	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 21:47:39 +0000
+Received: by pzk26 with SMTP id 26so956782pzk.4
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 06 Nov 2009 13:47:26 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <364299f40911081117x47ddffbfl96eeec547b5c95e5@mail.gmail.com>
-References: <1257167821.4977.41.camel@subratamodak.linux.ibm.com>
-	<364299f40911061728g37c0cd6ble40974b0fe5b5597@mail.gmail.com>
-	<20091108095019.184998b2.rdunlap@xenotime.net>
-	<200911081313.25577.vapier@gentoo.org>
-	<364299f40911081117x47ddffbfl96eeec547b5c95e5@mail.gmail.com>
-Date: Sun, 8 Nov 2009 11:21:27 -0800
-Message-ID: <364299f40911081121lff917e5t5c994e1a135b376@mail.gmail.com>
+In-Reply-To: <20091106210225.GI819@basil.fritz.box>
+References: <20091106095745.GA25377@basil.fritz.box>
+	<200911060616.40305.vapier@gentoo.org>
+	<20091106130906.GW31511@one.firstfloor.org>
+	<200911060821.40182.vapier@gentoo.org>
+	<364299f40911061004mbb02ed3lf02a33164890625a@mail.gmail.com>
+	<20091106191343.GC819@basil.fritz.box>
+	<20091106194335.GB32249@refried.org>
+	<20091106195940.GH819@basil.fritz.box>
+	<364299f40911061225k2e359ae0w4466a571261e96e@mail.gmail.com>
+	<20091106210225.GI819@basil.fritz.box>
+Date: Fri, 6 Nov 2009 13:47:26 -0800
+Message-ID: <364299f40911061347h24237df0x23aea3be3dc78b7e@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [patch 2/2] INSTALL corrections & TODO
+Subject: Re: [LTP] LTP 20091031 Makefiles totally broken?!?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,87 +39,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net, Randy Dunlap <rdunlap@xenotime.net>, Andi Kleen <andi@firstfloor.org>, ltp-list <ltp-list@lists.sf.net>
+To: Andi Kleen <andi@firstfloor.org>
+Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>, Nate Straz <nate@refried.org>
 
-On Sun, Nov 8, 2009 at 11:17 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Sun, Nov 8, 2009 at 10:13 AM, Mike Frysinger <vapier@gentoo.org> wrote:
->> On Sunday 08 November 2009 12:50:19 Randy Dunlap wrote:
->>> On Fri, 6 Nov 2009 17:28:42 -0800 Garrett Cooper wrote:
->>> > On Fri, Nov 6, 2009 at 4:03 PM, Randy Dunlap wrote:
->>> > > "Configuration" section to match Makefile message.
->>> > > How to use DESTDIR and --prefix together.
->>> > >
->>> > > TODO:
->>> > > "Quick Start" does not work.
->>> > > "Not using autoconf:" does not work.
->>> > >
->>> > > ---
->>> > > =A0INSTALL | =A0 =A09 ++++++++-
->>> > > =A01 file changed, 8 insertions(+), 1 deletion(-)
->>> > >
->>> > > --- ltp-full-20091031-auto.orig/INSTALL
->>> > > +++ ltp-full-20091031-auto/INSTALL
->>> > > @@ -29,7 +29,7 @@ downloaded from:
->>> > > =A0- http://ftp.gnu.org/gnu/m4/m4-1.4.7.tar.bz2
->>> > > =A0- http://ftp.gnu.org/gnu/m4/m4-1.4.7.tar.gz
->>> > >
->>> > > -Configuring
->>> > > +Configuration
->>> > > =A0-------------------
->>> > > =A0Using autoconf:
->>> > > =A0 =A0 =A0 =A0 $ make autotools # This must be run from "$TOP_SRCD=
-IR!"
->>> > > @@ -74,6 +74,13 @@ in the same directory where the source f
->>> > > =A0 sysroot, as opposed to the host system's sysroot.
->>> > > =A0- Specify SKIP_IDCHECK=3D1 if and when you don't want to modify
->>> > > /etc/{group,passwd} on the target system's sysroot.
->>> > > +- If you want to build and install ltp inside its source tree (e.g=
-.,
->>> > > in + =A0$TOP_SRCDIR/ltpbin/), to support multiple versions of LTP o=
-n one
->>> > > system, + =A0then use
->>> > > +
->>> > > + =A0 =A0 =A0 $ cd $TOP_SRCDIR
->>> > > + =A0 =A0 =A0 $ mkdir ltpbin
->>> > > + =A0 =A0 =A0 $ ./configure DESTDIR=3D$PWD --prefix=3D$PWD/ltpbin
->>> > >
->>> > > =A0If you get a build error, please report it to ltp-list@lists.sf.=
-net
->>> > > with following information,
->>> >
->>> > My only question about this is this step above a frequently used usec=
-ase?
->>>
->>> I can't answer that. =A0It seems like a good idea to be able to have
->>> multiple versions of ltp installed and it took me a little while to
->>> figure out how to use both DESTDIR and --prefix, so I'd like a reference
->>> for it...
->>
->> --prefix and DESTDIR under LTP should work exactly the same as under any
->> autotooled package. =A0passing DESTDIR to configure doesnt make sense im=
-o, nor
->> does this example. =A0this example suggests a file tree of:
->> $PWD/$PWD/ltpbin/.....
+On Fri, Nov 6, 2009 at 1:02 PM, Andi Kleen <andi@firstfloor.org> wrote:
+> On Fri, Nov 06, 2009 at 12:25:23PM -0800, Garrett Cooper wrote:
+>> =A0 =A0 You can actually cross-compile, use out-of-build-tree and
+>> bootstrap the system so it can effectively netboot with LTP installed.
+>> This is something that we're doing in Cisco today, and it's something
+>> I highly recommend doing -- especially if you have higher quality
+>> hardware with newer OS'es doing the building for you.
 >
-> 1. DESTDIR doesn't get saved with configure today (and quite frankly
-> won't work).
+> The hardware I'm using for testing is perfectly capable of
+> building LTP itself.
+>
+>> =A0 =A0 Granted, it does require more work setting everything up from
+>> scratch, but once the work is done, it's a lot easier as far as
+>> long-term maintenance is concerned if you're developing regularly on a
+>> particular revisioned code-base.
+>
+> I would prefer to not get into any cross compiling mess. It would
+> require either static linking or maintenance of a separate build
+> tree with own libraries, both have many drawbacks.
+>
+>> =A0 =A0 I'm more than happy to provide solutions, but they need to be
+>> functional, stable, and easy-to-maintain longterm. Providing hacks for
+>> make 3.80 isn't necessarily a good thing for the project to support
+>
+> What hacks?
+>
+> make 3.80 has build whole distributions with millions of LOCs, it's uncle=
+ar
+> to me why it shouldn't be able to build LTP too.
+>
+> I'm pretty sure that not supporting older distributions is very
+> necessarily a bad thing.
 
-s/won't work/won't work as you have issued it above/.
+I agree. There are some feature gaps between 3.80 and 3.81 I'll need
+to address, which means I need to first off download SLES 10 and
+install it on another VM, and toy around with it (if you can provide
+me with those details, I'll give it a shot).
 
-Hence the suggestion to do:
+>> and it may not even solve your problem 100% (you may run into
+>> stability issues using $(shell readlink -f "") instead of $(abspath ).
+>
+> I did a quick test of readlink -f and it seems to work here.
+>
+>> Then it comes back to tools -- I'm basically going to have to write
+>> checks in autoconf to make sure that readlink does as planned (isn't
+>> broken), and it's going to be more painful for you performance wise to
+>> have this hack in place, as opposed to just having an upgraded version
+>> of make, which also has resolved several bugs between 3.80 and 3.81.
+>
+> I don't understand: the key is not to test for commands used
+> by makefiles, but simply only use features which are generally available.
+>
+> I'm also highly surprised that this doesn't work with autoconf -- I thoug=
+ht
+> the whole point of autoconf was to generate portable makefiles, but
+> in this case it seems to especially generate a non portable Makefile.
+>
+> I suspect it's actually not a autoconf problem by itself, but
+> something that's in the LTP templates.
 
-./configure --prefix [...]
-make all
-make install DESTDIR=3D[...]
-
-That will put all of the conforming Makefiles' contents in $(DESTDIR)/$(pre=
-fix).
-
-$(prefix) shouldn't be a subset of $(DESTDIR).
-
-> 2. --prefix alone will do the trick (unless you're exporting this via
-> NFS at $(DESTDIR) or chrooting the path).
+Agreed. The problem that everyone with <3.80 is running into is that I
+was stupid and was under the assumption that many distros wouldn't
+still use make 3.81 because it's been out for the past 4 years. My
+apologies -- I stand corrected.
 
 Thanks,
 -Garrett
