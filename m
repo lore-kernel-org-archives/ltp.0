@@ -1,29 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Poornima.Nayak@in.ibm.com>) id 1NDiMp-0004rt-GV
-	for ltp-list@lists.sourceforge.net; Thu, 26 Nov 2009 17:42:55 +0000
-Received: from e28smtp02.in.ibm.com ([122.248.162.2])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NDiMi-0006hI-Px
-	for ltp-list@lists.sourceforge.net; Thu, 26 Nov 2009 17:42:55 +0000
-Received: from d28relay01.in.ibm.com (d28relay01.in.ibm.com [9.184.220.58])
-	by e28smtp02.in.ibm.com (8.14.3/8.13.1) with ESMTP id nAQHgajA005664
-	for <ltp-list@lists.sourceforge.net>; Thu, 26 Nov 2009 23:12:36 +0530
-Received: from d28av01.in.ibm.com (d28av01.in.ibm.com [9.184.220.63])
-	by d28relay01.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nAQHgaNh2846878
-	for <ltp-list@lists.sourceforge.net>; Thu, 26 Nov 2009 23:12:36 +0530
-Received: from d28av01.in.ibm.com (loopback [127.0.0.1])
-	by d28av01.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	nAQHgZLG006354
-	for <ltp-list@lists.sourceforge.net>; Thu, 26 Nov 2009 23:12:35 +0530
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1N6XYb-00063B-Jg
+	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 22:45:25 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1N6XYO-0006sa-OC
+	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 22:45:20 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Fri, 6 Nov 2009 17:46:36 -0500
+References: <20091106095745.GA25377@basil.fritz.box>
+	<200911061612.11199.vapier@gentoo.org>
+	<20091106214558.GJ819@basil.fritz.box>
+In-Reply-To: <20091106214558.GJ819@basil.fritz.box>
 MIME-Version: 1.0
-Message-ID: <OFD2A634F2.AA55F33B-ON6525767A.0060D7CD-6525767A.00614813@in.ibm.com>
-From: Poornima Nayak <Poornima.Nayak@in.ibm.com>
-Date: Thu, 26 Nov 2009 23:14:01 +0530
-Subject: [LTP] utils directory is not getting copied in /opt/ltp
+Message-Id: <200911061746.37749.vapier@gentoo.org>
+Subject: Re: [LTP] LTP 20091031 Makefiles totally broken?!?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,51 +26,74 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2948725431922567256=="
+Content-Type: multipart/mixed; boundary="===============3377335124547309093=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Andi Kleen <andi@firstfloor.org>
+Cc: ltp-list@lists.sourceforge.net, Nate Straz <nate@refried.org>
 
-This is a multipart message in MIME format.
---===============2948725431922567256==
-Content-Type: multipart/alternative;
-	boundary="=_alternative 006148106525767A_="
+--===============3377335124547309093==
+Content-Type: multipart/signed; boundary="nextPart3328393.2hKesTCpeE";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-This is a multipart message in MIME format.
---=_alternative 006148106525767A_=
-Content-Type: text/plain; charset="US-ASCII"
+--nextPart3328393.2hKesTCpeE
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Garret
+On Friday 06 November 2009 16:45:58 Andi Kleen wrote:
+> On Fri, Nov 06, 2009 at 04:12:10PM -0500, Mike Frysinger wrote:
+> > On Friday 06 November 2009 16:02:25 Andi Kleen wrote:
+> > > I'm also highly surprised that this doesn't work with autoconf -- I
+> > > thought the whole point of autoconf was to generate portable makefile=
+s,
+> > > but in this case it seems to especially generate a non portable
+> > > Makefile.
+> >
+> > that is not the point of autoconf at all; it has nothing to do with
+> > makefiles. that is the point of automake -- which we specifically are n=
+ot
+> > using.  there are way too many Makefiles that would need to be generate=
+d.
+>=20
+> True. So you guys just managed to write a very non portable Makefile on
+>  your own.  Congratulations.
 
-Power Management functionality testcases are dependent on scirpts in utils 
-directoy. The October released LTP does not copy 'utils's directory to 
-/opt/ltp.
-I tried setting 'utils' in COMMON_TARGETS still utils directory does not 
-get copied to /opt/ltp. 
-If you could you give me a patch which I can apply to my test setup and 
-continue my testing would be great help.
+"portable" is not necessarily the same thing as "works around bugs in tools=
+". =20
+ignoring that, we are absolutely not "portable" -- GNU make is required.  t=
+he=20
+make feature set as defined by POSIX (and thus "portable") is too limited f=
+or=20
+our needs.
+=2Dmike
 
-Regards
-Poornima 
---=_alternative 006148106525767A_=
-Content-Type: text/html; charset="US-ASCII"
+--nextPart3328393.2hKesTCpeE
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-<font size=2 face="sans-serif">Hi Garret</font>
-<br>
-<br><font size=2 face="sans-serif">Power Management functionality testcases
-are dependent on scirpts in utils directoy. The October released LTP does
-not copy 'utils's directory to /opt/ltp.</font>
-<br><font size=2 face="sans-serif">I tried setting 'utils' in COMMON_TARGETS
-still utils directory does not get copied to /opt/ltp. </font>
-<br><font size=2 face="sans-serif">If you could you give me a patch which
-I can apply to my test setup and continue my testing would be great help.</font>
-<br>
-<br><font size=2 face="sans-serif">Regards</font>
-<br><font size=2 face="sans-serif">Poornima </font>
---=_alternative 006148106525767A_=--
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.13 (GNU/Linux)
+
+iQIcBAABAgAGBQJK9KdNAAoJEEFjO5/oN/WBMTMP/ijLMdygcA8f22OU73ZENHpN
+h7nYtEp1BzCdqNdhzsFwHLZAwWZC/68QbdSSy+GLOXUYfXKzRf6A6Y5TRQSVUog+
+e36mtHG1hB9zG0Jb8wSZjKqoJzWsSTpRnmhiVObGk9nuhhXG8qAd2UGTGkNIvHSH
+sZfEDf8cKaD728FhA12frOC8vWazhEZH3yyZSJF69MApZOwESw7cRujHHPdSWs5G
+RREe/PMtQoYd1i/SHM0quFQ/jp/vZaeHM6lr7ybLz7mxHodxMXKwjxXjy/QQKSJ8
+7Ewv9FLdfC/SyqXbyK53OnQzYVzHwig4KpV4N2b1TD0RvDhw9rbbW3dtPojxBmSL
+FCaSbu/N4JzTGD9oSevMeRALW2pxXXdZfocqlJbkh2q7nSHrHNmtnYAy3dp3Atb+
+qKm1Om5w1JHl/lhO7hLgcL9QNSQWUnRriQPOyTSrNqbw4jFTDoUmKZg+AzDl6/xC
+NS3N1h9XByDMOCwme1WCv3XpVxC4cjLSlo/5ehI/hxi3I9XrZw7BVXYJSJt4n4jx
+SlaBf2cqLv6+UB5YNSALNiMC1JXHvMIhlOUQLWnV0B0oxVXXcVqVvYFexNVPjELQ
+5UUDh2PQhjeAxJe1EXAm1BX5gLNkqgcuj2/HMdHh8XUDfelZgmuuubU05lNeeN01
+oc/cupzHhAQDwpJXZXIG
+=YWBU
+-----END PGP SIGNATURE-----
+
+--nextPart3328393.2hKesTCpeE--
 
 
---===============2948725431922567256==
+--===============3377335124547309093==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -88,7 +104,7 @@ Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---===============2948725431922567256==
+--===============3377335124547309093==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -99,5 +115,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============2948725431922567256==--
+--===============3377335124547309093==--
 
