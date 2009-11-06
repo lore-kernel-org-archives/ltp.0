@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1N5J0k-0001p7-PA
-	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 13:01:22 +0000
-Received: from mail-pz0-f191.google.com ([209.85.222.191])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N5J0c-0008NZ-VP
-	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 13:01:22 +0000
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1N6Vwy-0000eb-Pn
+	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 21:02:28 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1N6Vws-000644-Dj
+	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 21:02:28 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Fri, 6 Nov 2009 16:03:45 -0500
+References: <1257167821.4977.41.camel@subratamodak.linux.ibm.com>
+	<87iqdn76jg.fsf@basil.nowhere.org>
+In-Reply-To: <87iqdn76jg.fsf@basil.nowhere.org>
 MIME-Version: 1.0
-In-Reply-To: <1257238010.5162.12.camel@subratamodak.linux.ibm.com>
-References: <1257220567.10382.3.camel@munipradeep-laptop>
-	<1257221513.11048.1.camel@munipradeep-laptop>
-	<1257238010.5162.12.camel@subratamodak.linux.ibm.com>
-Date: Tue, 3 Nov 2009 05:01:08 -0800
-Message-ID: <364299f40911030501y1c16a694r4ef8bfbfc80cb9cf@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [Ltp-results] Got warning message on ltp-full-20091031
-	while running ./configure
+Message-Id: <200911061603.47785.vapier@gentoo.org>
+Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been Released for
+	OCTOBER 2009
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,90 +26,89 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============3508395160663150955=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: ltp-list@lists.sourceforge.net
+Cc: ltp-list <ltp-list@lists.sf.net>, Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel <linux-kernel@vger.kernel.org>, Andi Kleen <andi@firstfloor.org>, Andrew Morton <akpm@linux-foundation.org>
 
-On Tue, Nov 3, 2009 at 12:46 AM, Subrata Modak
-<subrata@linux.vnet.ibm.com> wrote:
-> Muni,
->
-> This should be reported to LTP Mailing list. Garret, can you just look
-> into this ?
->
-> Regards--
-> Subrata
->
-> On Tue, 2009-11-03 at 09:41 +0530, Munipradeep Beerakam wrote:
->> Hi,
->>
->> In addition to that I also got the below warning as well. Forgot to add
->> it before.
->>
->> configure: WARNING: linux/netlink.h: present but cannot be compiled
->> configure: WARNING: linux/netlink.h: =A0 =A0 check for missing prerequis=
-ite
->> headers?
->> configure: WARNING: linux/netlink.h: see the Autoconf documentation
->> configure: WARNING: linux/netlink.h: =A0 =A0 section "Present But Cannot=
- Be
->> Compiled"
->> configure: WARNING: linux/netlink.h: proceeding with the preprocessor's
->> result
->> configure: WARNING: linux/netlink.h: in the future, the compiler will
->> take precedence
->> configure: WARNING: =A0 =A0 ##
->> ------------------------------------------------ ##
->> configure: WARNING: =A0 =A0 ## Report this to
->> ltp-results@lists.sourceforge.net ##
->> configure: WARNING: =A0 =A0 ##
->> ------------------------------------------------ ##
->>
->> Thanks
->> Muni
->>
->> On Tue, 2009-11-03 at 09:26 +0530, Munipradeep Beerakam wrote:
->> > Hi,
->> >
->> > I got the following warning messages while running "./configure" on the
->> > ltp-full-20091031. However, make and make install worked fine.
->> >
->> > configure: WARNING: linux/genetlink.h: present but cannot be compiled
->> > configure: WARNING: linux/genetlink.h: =A0 =A0 check for missing
->> > prerequisite headers?
->> > configure: WARNING: linux/genetlink.h: see the Autoconf documentation
->> > configure: WARNING: linux/genetlink.h: =A0 =A0 section "Present But Ca=
-nnot
->> > Be Compiled"
->> > configure: WARNING: linux/genetlink.h: proceeding with the
->> > preprocessor's result
->> > configure: WARNING: linux/genetlink.h: in the future, the compiler will
->> > take precedence
->> > configure: WARNING: =A0 =A0 ##
->> > ------------------------------------------------ ##
->> > configure: WARNING: =A0 =A0 ## Report this to
->> > ltp-results@lists.sourceforge.net ##
->> > configure: WARNING: =A0 =A0 ##
->> > ------------------------------------------------ ##
+--===============3508395160663150955==
+Content-Type: multipart/signed; boundary="nextPart2309661.SqQ7l2ASyA";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-    Yeah -- I need to find the header that defines u32 (instead of
-uint32 or uint32_t). Does anyone know which one was that again? I
-thought it was a kernel specific datatype (and in that event it
-shouldn't be exported).
-Thanks,
--Garrett
+--nextPart2309661.SqQ7l2ASyA
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
----------------------------------------------------------------------------=
----
-Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay =
+On Friday 06 November 2009 15:16:35 Andi Kleen wrote:
+> Subrata Modak <subrata@linux.vnet.ibm.com> writes:
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > OCTOBER 2009 Highlights:
+>=20
+> s/High/Low/
+>=20
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >      1. LTP Makefiles rewrite:(Project started 1.2 years back)
+> >              I. To accommodate correct build/installation practices,
+> >             II. better integrate Autoconf/Automake with tests for safer
+> >                 builds,
+> >            III. better cross-compilation of LTP sources.
+>=20
+> Just as a warning for everyone: that change broke building on most old
+> distributions and there seems to be no interest in fixing that.
 
-ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-http://p.sf.net/sfu/devconference
+clearly as an active developer you should know better.  you dont get people=
+ to=20
+agree with and/or help you by pointlessly antagonizing them.
+=2Dmike
+
+--nextPart2309661.SqQ7l2ASyA
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.13 (GNU/Linux)
+
+iQIcBAABAgAGBQJK9I8zAAoJEEFjO5/oN/WB4EwQAKX83vQLxg2juYpSzTEZhqjq
+SgDGxGnz2hk0rcMOwsxUma+YIga7CnXwVXcn2qdkH8llnMPv0x89Rp4uair8QAg/
+XjaHW+MiAxTgJKp2XFV+MnzApi6eK9tsxEUojypJV9VBHIOHgWqKUWUER8Xq5l7x
+7rFS2EyRRW18dwworPTf8XQxiAmLQzZdlQ7tCiQEmqPcAygYUwmWNBBNtpRZB7rv
+YSXAisAlI7aqhIw4Qc1kb3S9Kh+LxPP8K02Lfh2/tFgqHn51eINOllLicAVr+Prp
+FzLUjOf52uIRWyl5M27oEFb5x5bt3ye24FWeGOL6R6VBHlHxZ6wu1VkcVi43Ynpu
+3zpWdl0kNjMsogYf1qf4oIfKp49m6I4RCHGnRotdKzHP4fQi8bM7uvko0U8XkKao
+5GRwL93zrRxHC+qBxUEE8Khhcerv7VIC/pjXUZBxZKJm3ic8CyZKCpORERVz6nPm
+9r/gMXXAHXVgU5pVwsnDgMmYwFWZ+yVIeAqbKBXJtjhxHp77I5qlvUZHF320Waai
+6zozcSPPJn3HUMNSesZkFqhFCP+Xc1SBLTpa+0aZ347r0LSbKY4o/2lT1nAB3G3W
+D5vgp9eS3F36mhKdhc2bAt3F3LuLsP5i7yVLb5JfpopC8beWTsQnikxNKmKpNATJ
+e4X+YwOgbK5ih38geUva
+=SH/k
+-----END PGP SIGNATURE-----
+
+--nextPart2309661.SqQ7l2ASyA--
+
+
+--===============3508395160663150955==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============3508395160663150955==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3508395160663150955==--
+
