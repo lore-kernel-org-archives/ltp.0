@@ -1,24 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1N9Sdn-0005NR-7X
-	for ltp-list@lists.sourceforge.net; Sun, 15 Nov 2009 00:06:51 +0000
-Received: from mail-pw0-f48.google.com ([209.85.160.48])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N9Sdf-0007GP-Ah
-	for ltp-list@lists.sourceforge.net; Sun, 15 Nov 2009 00:06:51 +0000
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <andi@firstfloor.org>) id 1N6VEu-0006dG-4M
+	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 20:16:56 +0000
+Received: from one.firstfloor.org ([213.235.205.2])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1N6VEh-0006jO-FM
+	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 20:16:50 +0000
+From: Andi Kleen <andi@firstfloor.org>
+References: <1257167821.4977.41.camel@subratamodak.linux.ibm.com>
+Date: Fri, 06 Nov 2009 21:16:35 +0100
+In-Reply-To: <1257167821.4977.41.camel@subratamodak.linux.ibm.com> (Subrata
+	Modak's message of "Mon, 02 Nov 2009 18:47:01 +0530")
+Message-ID: <87iqdn76jg.fsf@basil.nowhere.org>
 MIME-Version: 1.0
-In-Reply-To: <364299f40911130327y683631c4uefc9380e9a175432@mail.gmail.com>
-References: <1257765429.7677.23.camel@subratamodak.linux.ibm.com>
-	<1257788341.7677.62.camel@subratamodak.linux.ibm.com>
-	<364299f40911121243i2bf72ab5p258fa78989b3df5@mail.gmail.com>
-	<200911122247.42705.vapier@gentoo.org>
-	<364299f40911130327y683631c4uefc9380e9a175432@mail.gmail.com>
-Date: Sat, 14 Nov 2009 16:06:36 -0800
-Message-ID: <364299f40911141606n694efb9o246b6e027462febd@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Clone build fail with the latest CVS sanpshot
+Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been Released for
+	OCTOBER 2009
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,85 +26,41 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list <ltp-list@lists.sf.net>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel <linux-kernel@vger.kernel.org>
 
-T24gRnJpLCBOb3YgMTMsIDIwMDkgYXQgMzoyNyBBTSwgR2FycmV0dCBDb29wZXIgPHlhbmVnb21p
-QGdtYWlsLmNvbT4gd3JvdGU6Cj4gT24gVGh1LCBOb3YgMTIsIDIwMDkgYXQgNzo0NyBQTSwgTWlr
-ZSBGcnlzaW5nZXIgPHZhcGllckBnZW50b28ub3JnPiB3cm90ZToKPj4gT24gVGh1cnNkYXkgMTIg
-Tm92ZW1iZXIgMjAwOSAxNTo0MzoyMCBHYXJyZXR0IENvb3BlciB3cm90ZToKPj4+IE9uIE1vbiwg
-Tm92IDksIDIwMDkgYXQgOTozOSBBTSwgU3VicmF0YSBNb2RhayB3cm90ZToKPj4+ID4gT24gTW9u
-LCAyMDA5LTExLTA5IGF0IDA3OjQ5IC0wNTAwLCBNaWtlIEZyeXNpbmdlciB3cm90ZToKPj4+ID4+
-IE9uIE1vbmRheSAwOSBOb3ZlbWJlciAyMDA5IDA2OjE3OjA5IFN1YnJhdGEgTW9kYWsgd3JvdGU6
-Cj4+PiA+PiA+IEkgZ2V0IHRoZSBmb2xsb3dpbmcgZmFpbHVyZSB3aXRoIHRvZGF5xZsgQ1ZTLiAu
-L2NvbmZpZ3VyZSBoYXMgYmVlbiBkb25lCj4+PiA+PiA+IGJlZm9yZSBtYWtlOgo+Pj4gPj4gPgo+
-Pj4gPj4gPiBnY2MgLWcgLU8yIC1nIC1PMiAtZm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2Fs
-bAo+Pj4gPj4gPiAtSS9sdHAtaW50ZXJtZWRpYXRlLTIwMDkxMTA5L3Rlc3RjYXNlcy9rZXJuZWwv
-aW5jbHVkZQo+Pj4gPj4gPiAtSS9sdHAtaW50ZXJtZWRpYXRlLTIwMDkxMTA5L3Rlc3RjYXNlcy9r
-ZXJuZWwvY29udGFpbmVycy9tcW5zLy4uL2xpYmNsCj4+PiA+PiA+b25lIC1JLi4vLi4vLi4vLi4v
-aW5jbHVkZSAtSS4uLy4uLy4uLy4uL2luY2x1ZGUKPj4+ID4+ID4gwqAtTC9sdHAtaW50ZXJtZWRp
-YXRlLTIwMDkxMTA5L3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9tcW5zLy4uL2xpYmMKPj4+
-ID4+ID5sb25lIC1MLi4vLi4vLi4vLi4vbGliIMKgbXFuc18wMS5jIMKgIC1sbHRwIC1sY2xvbmUg
-LWxwdGhyZWFkIC1scnQgLW8KPj4+ID4+ID4gbXFuc18wMQo+Pj4gPj4gPiAvbHRwLWludGVybWVk
-aWF0ZS0yMDA5MTEwOS90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvbXFucy8uLi9saWJjbG9u
-Cj4+PiA+PiA+ZS9saSBiY2xvbmUuYShsaWJjbG9uZS5vKTogSW4gZnVuY3Rpb24gYGRvX2Nsb25l
-X3Rlc3RzJzoKPj4+ID4+ID4gwqAvbHRwLWludGVybWVkaWF0ZS0yMDA5MTEwOS90ZXN0Y2FzZXMv
-a2VybmVsL2NvbnRhaW5lcnMvbGliY2xvbmUvbGliY2wKPj4+ID4+ID5vbmUuYwo+Pj4gPj4gPgo+
-Pj4gPj4gPiA6MjU6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYGx0cF9jbG9uZV9xdWljaycgY29s
-bGVjdDI6IGxkIHJldHVybmVkIDEKPj4+ID4+ID4gOiBleGl0IHN0YXR1cwo+Pj4gPj4KPj4+ID4+
-IHNob3VsZCBiZSBmaXhlZCBub3cuIMKgc3RhdGljIGxpYiBsaW5raW5nIG9yZGVyIGlzIHBpY2t5
-Lgo+Pj4gPgo+Pj4gPiBUaGFua3MgTWlrZS4gYnVpbGRpbmcgZmluZSBub3cuCj4+Pgo+Pj4gV2hl
-biB5b3Ugc3dpdGNoIHRoYXQgYmFjayB0aG91Z2gsIGl0IGZhaWxzIHRvIGNvbXBpbGUgb24gR2Vu
-dG9vLiBIZW5jZQo+Pj4gdGhhdCdzIHdoeSBJIGRpZCBgLWxjbG9uZSAkKExETElCUykgLWxwdGhy
-ZWFkIC1scnQnLgo+Pgo+PiBodWggPyDCoGkgdGVzdCBldmVyeXRoaW5nIG9uIGdlbnRvbywgYW5k
-IHRoaXMgaGFzIGJlZW4gd29ya2luZyBmb3IgbWUuIMKgaWYgbHRwCj4+IHJlcXVpcmVzIHB0aHJl
-YWQvcnQsIHRoYXQgc2hvdWxkIGJlIGZpeGVkIGluIGNvbW1vbiBjb2RlLiDCoHRoZSBpc3N1ZSBo
-ZXJlIGlzCj4+IHRoYXQgbGliY2xvbmUgbmVlZHMgbGlibHRwIHN5bWJvbHMsIGFuZCB0aGF0J3Mg
-aXQuCj4+Cj4+PiBTb21lIGF1dG9jb25mIHRlc3RzIG5lZWQgdG8gYmUgY3JlYXRlZCB0byBkZXRl
-Y3QgYnJva2VuIGxpbmtlcnMgbGlrZQo+Pj4gdGhpcyBiZWNhdXNlIGl0J3MgcmVhbGx5IGFubm95
-aW5nIGRvaW5nIHRoaXMgdHVnLW9mLXdhciB3aXRoIHRoZQo+Pj4gbGlicmFyeSBvcmRlcmluZy4u
-Lgo+Pgo+PiBpIGRvbnQgdGhpbmsgc28gLi4uIHN0YXJ0IGJ5IHBvc3RpbmcgdGhlIGFjdHVhbCBl
-cnJvciBtZXNzYWdlcyB5b3UncmUgc2VlaW5nLgo+PiAtbWlrZQo+Pgo+Cj4gZ2Nvb3BlckBvcmFu
-Z2Vib3ggL3NjcmF0Y2gvbHRwLWRldjIvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycyAk
-IG1ha2UgYWxsCj4gbWFrZVsxXTogRW50ZXJpbmcgZGlyZWN0b3J5Cj4gYC9zY3JhdGNoL2x0cC1k
-ZXYyL2x0cC90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvbXFucycKPiBnY2MgLWcgLU8yIC1n
-IC1PMiAtZm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbAo+IC1JL3NjcmF0Y2gvbHRwLWRl
-djIvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZQo+IC1JL3NjcmF0Y2gvbHRwLWRldjIvbHRw
-L3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9tcW5zLy4uL2xpYmNsb25lCj4gLUkuLi8uLi8u
-Li8uLi9pbmNsdWRlIC1JLi4vLi4vLi4vLi4vaW5jbHVkZQo+IC1ML3NjcmF0Y2gvbHRwLWRldjIv
-bHRwL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9tcW5zLy4uL2xpYmNsb25lCj4gLUwuLi8u
-Li8uLi8uLi9saWIgwqBtcW5zXzAxLmMgwqAgLWxsdHAgLW8gbXFuc18wMQo+IC90bXAvY2NnSWph
-NnIubzogSW4gZnVuY3Rpb24gYG1xX29wZW4nOgo+IC91c3IvaW5jbHVkZS9iaXRzL21xdWV1ZTIu
-aDo0OTogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgbXFfb3BlbicKPiAvdG1wL2NjZ0lqYTZyLm86
-IEluIGZ1bmN0aW9uIGBtYWluJzoKPiAvc2NyYXRjaC9sdHAtZGV2Mi9sdHAvdGVzdGNhc2VzL2tl
-cm5lbC9jb250YWluZXJzL21xbnMvbXFuc18wMS5jOjk4Ogo+IHVuZGVmaW5lZCByZWZlcmVuY2Ug
-dG8gYGRvX2Nsb25lX3Vuc2hhcmVfdGVzdCcKPiAvc2NyYXRjaC9sdHAtZGV2Mi9sdHAvdGVzdGNh
-c2VzL2tlcm5lbC9jb250YWluZXJzL21xbnMvbXFuc18wMS5jOjEyMzoKPiB1bmRlZmluZWQgcmVm
-ZXJlbmNlIHRvIGBtcV9jbG9zZScKPiAvc2NyYXRjaC9sdHAtZGV2Mi9sdHAvdGVzdGNhc2VzL2tl
-cm5lbC9jb250YWluZXJzL21xbnMvbXFuc18wMS5jOjEyNDoKPiB1bmRlZmluZWQgcmVmZXJlbmNl
-IHRvIGBtcV91bmxpbmsnCj4gL3RtcC9jY2dJamE2ci5vOiBJbiBmdW5jdGlvbiBgbXFfb3Blbic6
-Cj4gL3Vzci9pbmNsdWRlL2JpdHMvbXF1ZXVlMi5oOjQ5OiB1bmRlZmluZWQgcmVmZXJlbmNlIHRv
-IGBtcV9vcGVuJwo+IC90bXAvY2NnSWphNnIubzogSW4gZnVuY3Rpb24gYGNoZWNrX21xdWV1ZSc6
-Cj4gL3NjcmF0Y2gvbHRwLWRldjIvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9tcW5z
-L21xbnNfMDEuYzo2NToKPiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBtcV9jbG9zZScKPiBjb2xs
-ZWN0MjogbGQgcmV0dXJuZWQgMSBleGl0IHN0YXR1cwo+IG1ha2VbMV06ICoqKiBbbXFuc18wMV0g
-RXJyb3IgMQo+IG1ha2VbMV06IExlYXZpbmcgZGlyZWN0b3J5Cj4gYC9zY3JhdGNoL2x0cC1kZXYy
-L2x0cC90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvbXFucycKPiBtYWtlOiAqKiogW2FsbF0g
-RXJyb3IgMgo+CgogICAgSSBmaW5hbGx5IHJlc29sdmVkIGl0LiBUaGVyZSdzIGRlZmluaXRlbHkg
-YSBkaWZmZXJlbmNlIGluIGJlaGF2aW9yCmJldHdlZW4gbGQgd2l0aCBiaW51dGlscyAxLjE4ICht
-eSBHZW50b28gZGVza3RvcCkgYW5kIDEuMTkgKEZlZG9yYQoxMSksIHdoZXJlIHRoZSBsaW5rZXIg
-b3JkZXJpbmcgaXNuJ3QgYmVpbmcgcmVzb2x2ZWQgcHJvcGVybHkgd2hlbgp0aGVyZSBhcmUgc2Vt
-aS1jb2RlcGVuZGVudCBjb2RlIGJsb2NrcyBpbiBsaWJyYXJpZXMgKHdoaWNoIEkgdGhpbmsgaXMK
-dGhlIGNhc2UgaGVyZSB3aXRoIGx0cF9jbG9uZV9xdWljay4uLikuClRoYW5rcywKLUdhcnJldHQK
-Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMZXQgQ3J5c3RhbCBSZXBvcnRzIGhhbmRsZSB0aGUgcmVw
-b3J0aW5nIC0gRnJlZSBDcnlzdGFsIFJlcG9ydHMgMjAwOCAzMC1EYXkgCnRyaWFsLiBTaW1wbGlm
-eSB5b3VyIHJlcG9ydCBkZXNpZ24sIGludGVncmF0aW9uIGFuZCBkZXBsb3ltZW50IC0gYW5kIGZv
-Y3VzIG9uIAp3aGF0IHlvdSBkbyBiZXN0LCBjb3JlIGFwcGxpY2F0aW9uIGNvZGluZy4gRGlzY292
-ZXIgd2hhdCdzIG5ldyB3aXRoCkNyeXN0YWwgUmVwb3J0cyBub3cuICBodHRwOi8vcC5zZi5uZXQv
-c2Z1L2JvYmotanVseQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0
-Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+Subrata Modak <subrata@linux.vnet.ibm.com> writes:
+>
+> ========================
+> OCTOBER 2009 Highlights:
+
+s/High/Low/
+
+> ======================== 
+>      1. LTP Makefiles rewrite:(Project started 1.2 years back) 
+>              I. To accommodate correct build/installation practices, 
+>             II. better integrate Autoconf/Automake with tests for safer
+>                 builds, 
+>            III. better cross-compilation of LTP sources. 
+
+Just as a warning for everyone: that change broke building on most old
+distributions and there seems to be no interest in fixing that.
+
+Unless you're running the latest and greatest better stay with older LTP
+versions.
+
+-Andi
+
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
