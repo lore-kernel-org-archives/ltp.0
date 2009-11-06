@@ -1,24 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <andi@firstfloor.org>) id 1N6UG8-000262-LI
-	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 19:14:08 +0000
-Received: from one.firstfloor.org ([213.235.205.2])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N6UFx-0007FU-Bn
-	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 19:14:03 +0000
-Date: Fri, 6 Nov 2009 20:13:43 +0100
-From: Andi Kleen <andi@firstfloor.org>
-Message-ID: <20091106191343.GC819@basil.fritz.box>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1N6VNI-0008Et-Sf
+	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 20:25:36 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N6VNB-0001PU-4F
+	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 20:25:36 +0000
+Received: by pwi18 with SMTP id 18so875594pwi.2
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 06 Nov 2009 12:25:23 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20091106195940.GH819@basil.fritz.box>
 References: <20091106095745.GA25377@basil.fritz.box>
 	<200911060616.40305.vapier@gentoo.org>
 	<20091106130906.GW31511@one.firstfloor.org>
 	<200911060821.40182.vapier@gentoo.org>
 	<364299f40911061004mbb02ed3lf02a33164890625a@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <364299f40911061004mbb02ed3lf02a33164890625a@mail.gmail.com>
+	<20091106191343.GC819@basil.fritz.box>
+	<20091106194335.GB32249@refried.org>
+	<20091106195940.GH819@basil.fritz.box>
+Date: Fri, 6 Nov 2009 12:25:23 -0800
+Message-ID: <364299f40911061225k2e359ae0w4466a571261e96e@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
 Subject: Re: [LTP] LTP 20091031 Makefiles totally broken?!?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -29,48 +34,62 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Andi Kleen <andi@firstfloor.org>, Mike Frysinger <vapier@gentoo.org>
+To: Andi Kleen <andi@firstfloor.org>
+Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>, Nate Straz <nate@refried.org>
 
-> So yes, there are known issues with using make versions <3.81. The
+On Fri, Nov 6, 2009 at 11:59 AM, Andi Kleen <andi@firstfloor.org> wrote:
+> On Fri, Nov 06, 2009 at 02:43:35PM -0500, Nate Straz wrote:
+>> On Nov =A06 20:13, Andi Kleen wrote:
+>> > > So yes, there are known issues with using make versions <3.81. The
+>> >
+>> > For me it seems more the known issue is in the Makefile. 3.80
+>> > is a widely used Make version.
+>> >
+>> > > reason being that some macros and functions that I use to determine
+>> > > absolute path, etc were not available in make 3.80.
+>> >
+>> > Most of my infrastructure in test systems is based on SUSE 10.0
+>> > and it's impractical to upgrade make everywhere.
+>>
+>> openSUSE 10.3 does include make-3.81. =A0I hope upgrading to the latest
+>> point release won't disrupt your test systems.
+>
+> It does; anything udev based has unacceptable boot time penalty
+> with nfsroot. That's why they are still on 10.0.
 
-For me it seems more the known issue is in the Makefile. 3.80
-is a widely used Make version.
+Andi,
+    You can actually cross-compile, use out-of-build-tree and
+bootstrap the system so it can effectively netboot with LTP installed.
+This is something that we're doing in Cisco today, and it's something
+I highly recommend doing -- especially if you have higher quality
+hardware with newer OS'es doing the building for you.
+    Granted, it does require more work setting everything up from
+scratch, but once the work is done, it's a lot easier as far as
+long-term maintenance is concerned if you're developing regularly on a
+particular revisioned code-base.
+    I'm more than happy to provide solutions, but they need to be
+functional, stable, and easy-to-maintain longterm. Providing hacks for
+make 3.80 isn't necessarily a good thing for the project to support
+and it may not even solve your problem 100% (you may run into
+stability issues using $(shell readlink -f "") instead of $(abspath ).
+Then it comes back to tools -- I'm basically going to have to write
+checks in autoconf to make sure that readlink does as planned (isn't
+broken), and it's going to be more painful for you performance wise to
+have this hack in place, as opposed to just having an upgraded version
+of make, which also has resolved several bugs between 3.80 and 3.81.
+HTH,
+-Garrett
 
-> reason being that some macros and functions that I use to determine
-> absolute path, etc were not available in make 3.80.
+---------------------------------------------------------------------------=
+---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
 
-Most of my infrastructure in test systems is based on SUSE 10.0 
-and it's impractical to upgrade make everywhere.
+trial. Simplify your report design, integration and deployment - and focus =
+on =
 
-I find it very sad that LTP now descended into "version hell"
-and abandoned old distributions.
- 
-> I've considered adding a configure check for the make version. I'm
-> probably going to do it this weekend to avoid support issues like
-> these.
-
-That's not a solution.
-
-Please just fix the makefiles or revert this misguided change
-and give us working makefiles back.
-
-From a quick look at the mailing list archives that doesn't
-even seem to be the only problem with this "improvement".
-
-Thanks.
-
--Andi
-
--- 
-ak@linux.intel.com -- Speaking for myself only.
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
