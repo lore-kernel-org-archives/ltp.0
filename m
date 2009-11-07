@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1N6WX3-0002eJ-2J
-	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 21:39:45 +0000
-Received: from mail-pw0-f48.google.com ([209.85.160.48])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N6WWw-0002UZ-KW
-	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 21:39:44 +0000
+	(envelope-from <rdunlap@xenotime.net>) id 1N6Y7c-0008GQ-0V
+	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 23:21:36 +0000
+Received: from xenotime.net ([72.52.64.118])
+	by 3b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1N6Y7V-0007an-UT
+	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 23:21:35 +0000
+Message-ID: <4AF4B955.2080308@xenotime.net>
+Date: Fri, 06 Nov 2009 16:03:33 -0800
+From: Randy Dunlap <rdunlap@xenotime.net>
 MIME-Version: 1.0
-In-Reply-To: <87iqdn76jg.fsf@basil.nowhere.org>
-References: <1257167821.4977.41.camel@subratamodak.linux.ibm.com>
-	<87iqdn76jg.fsf@basil.nowhere.org>
-Date: Fri, 6 Nov 2009 13:39:32 -0800
-Message-ID: <364299f40911061339x7b689d3cw705674bd9b332e5c@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been Released for
-	OCTOBER 2009
+References: <1257167821.4977.41.camel@subratamodak.linux.ibm.com>	<87iqdn76jg.fsf@basil.nowhere.org>
+	<364299f40911061339x7b689d3cw705674bd9b332e5c@mail.gmail.com>
+In-Reply-To: <364299f40911061339x7b689d3cw705674bd9b332e5c@mail.gmail.com>
+Subject: [LTP] [patch 2/2] INSTALL corrections & TODO
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,51 +25,53 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Andi Kleen <andi@firstfloor.org>
-Cc: ltp-list <ltp-list@lists.sf.net>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel <linux-kernel@vger.kernel.org>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list <ltp-list@lists.sf.net>, Andi Kleen <andi@firstfloor.org>
 
-On Fri, Nov 6, 2009 at 12:16 PM, Andi Kleen <andi@firstfloor.org> wrote:
-> Subrata Modak <subrata@linux.vnet.ibm.com> writes:
->>
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> OCTOBER 2009 Highlights:
->
-> s/High/Low/
->
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> =A0 =A0 =A01. LTP Makefiles rewrite:(Project started 1.2 years back)
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0I. To accommodate correct build/installation =
-practices,
->> =A0 =A0 =A0 =A0 =A0 =A0 II. better integrate Autoconf/Automake with test=
-s for safer
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 builds,
->> =A0 =A0 =A0 =A0 =A0 =A0III. better cross-compilation of LTP sources.
->
-> Just as a warning for everyone: that change broke building on most old
-> distributions and there seems to be no interest in fixing that.
->
-> Unless you're running the latest and greatest better stay with older LTP
-> versions.
 
-Andi,
-    Let's keep this discussion on track with the other thread that's
-open. We can probably come to an engineering solution that will allow
-your version of make (3.80) to function, but I think that a line needs
-to be drawn in the sand at that version because make 3.79 is too
-ancient (~7 years old) to work with.
-Thanks,
--Garrett
+"Configuration" section to match Makefile message.
+How to use DESTDIR and --prefix together.
 
----------------------------------------------------------------------------=
+TODO:
+"Quick Start" does not work.
+"Not using autoconf:" does not work.
+
 ---
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+ INSTALL |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-trial. Simplify your report design, integration and deployment - and focus =
-on =
+--- ltp-full-20091031-auto.orig/INSTALL
++++ ltp-full-20091031-auto/INSTALL
+@@ -29,7 +29,7 @@ downloaded from:
+ - http://ftp.gnu.org/gnu/m4/m4-1.4.7.tar.bz2
+ - http://ftp.gnu.org/gnu/m4/m4-1.4.7.tar.gz
+ 
+-Configuring
++Configuration
+ -------------------
+ Using autoconf:
+         $ make autotools # This must be run from "$TOP_SRCDIR!"
+@@ -74,6 +74,13 @@ in the same directory where the source f
+   sysroot, as opposed to the host system's sysroot.
+ - Specify SKIP_IDCHECK=1 if and when you don't want to modify /etc/{group,passwd}
+   on the target system's sysroot.
++- If you want to build and install ltp inside its source tree (e.g., in
++  $TOP_SRCDIR/ltpbin/), to support multiple versions of LTP on one system,
++  then use
++
++	$ cd $TOP_SRCDIR
++	$ mkdir ltpbin
++	$ ./configure DESTDIR=$PWD --prefix=$PWD/ltpbin
+ 
+ If you get a build error, please report it to ltp-list@lists.sf.net with
+ following information,
 
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
