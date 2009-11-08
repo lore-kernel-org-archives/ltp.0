@@ -1,28 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1N7cWW-0000f0-0n
-	for ltp-list@lists.sourceforge.net; Mon, 09 Nov 2009 22:15:44 +0000
-Received: from [206.112.117.47] (helo=gateway-1237.mvista.com)
-	by 1b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1N7cWO-0003XV-Bh
-	for ltp-list@lists.sourceforge.net; Mon, 09 Nov 2009 22:15:43 +0000
-Content-class: urn:content-classes:message
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1N6xDw-00013M-Mh
+	for ltp-list@lists.sourceforge.net; Sun, 08 Nov 2009 02:09:48 +0000
+Received: from mail-pz0-f188.google.com ([209.85.222.188])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N6xDq-0006dA-7x
+	for ltp-list@lists.sourceforge.net; Sun, 08 Nov 2009 02:09:48 +0000
+Received: by pzk26 with SMTP id 26so1435359pzk.4
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 07 Nov 2009 18:09:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01CA6189.C186B84C"
-Date: Mon, 9 Nov 2009 14:12:40 -0800
-Message-ID: <8368651DACC1964480F951191B94A078017CB194@svexch01.mvista.com>
-In-Reply-To: <1257788375.7677.72.camel@subratamodak.linux.ibm.com>
-References: <8368651DACC1964480F951191B94A078016A156A@svexch01.mvista.com>
-	<364299f40910271957g6fc5147bgfbf3fe4c08d73b7@mail.gmail.com>
-	<8368651DACC1964480F951191B94A078016A1648@svexch01.mvista.com>
-	<1257170357.4977.57.camel@subratamodak.linux.ibm.com>
-	<8368651DACC1964480F951191B94A078016A1ACE@svexch01.mvista.com>
-	<1257788375.7677.72.camel@subratamodak.linux.ibm.com>
-From: "Henry Yei" <hyei@mvista.com>
-Subject: Re: [LTP] [PATCH][ppoll01] fix testcase 1,
-	5: pass correct valuefor sigset_t for mips
+In-Reply-To: <364299f40911061654w221b10f9i10bcb2a3e3b35aee@mail.gmail.com>
+References: <20091106095745.GA25377@basil.fritz.box>
+	<200911061809.05115.vapier@gentoo.org>
+	<20091106233422.GB6619@count0.beaverton.ibm.com>
+	<200911061923.09848.vapier@gentoo.org>
+	<364299f40911061652l5cf3ac19h696152cdfebb547d@mail.gmail.com>
+	<364299f40911061654w221b10f9i10bcb2a3e3b35aee@mail.gmail.com>
+Date: Sat, 7 Nov 2009 18:09:36 -0800
+Message-ID: <364299f40911071809r2c47b9d4mfd6a60011fdcd9ce@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] LTP 20091031 Makefiles totally broken?!?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,507 +32,205 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
-
-------_=_NextPart_001_01CA6189.C186B84C
-Content-Type: text/plain;
-	charset="Windows-1252"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net, Andi Kleen <andi@firstfloor.org>
 
-> -----Original Message-----
-> From: Subrata Modak [mailto:subrata@linux.vnet.ibm.com]
-> Sent: Monday, November 09, 2009 9:40 AM
-> To: Henry Yei
-> Cc: Garrett Cooper; LTP Mailing List
-> Subject: RE: [LTP] [PATCH][ppoll01] fix testcase 1, 5: pass correct
-> valuefor sigset_t for mips
->=20
-> On Mon, 2009-11-02 at 14:09 -0800, Henry Yei wrote:
-> > Subrata,
-> >
-> > I've included Nicolas Joly's suggested removal of progdir to force
-> the test to create all test files in the temp directory in the =
-attached
-> patch.
-> >
-> > I'm not sure why tst_exit() is needed when calling cleanup(), as it
-> would be called by cleanup(). I can add it back, if needed. Any other
-> comments on the the appropriateness of "sizeof(sigmask)" would also be
-> welcomed. There are a few other tests with similar issues.
-> >
->=20
-> Henry,
->=20
-> Probably because of heavy changes recently, this patch is not applying
-> properly. Can you please rebase your changes:
->=20
-> patching file testcases/kernel/syscalls/ppoll/ppoll01.c
-> Hunk #3 FAILED at 98.
-> Hunk #4 FAILED at 127.
-> Hunk #5 FAILED at 185.
-> Hunk #6 FAILED at 252.
-> 4 out of 6 hunks FAILED -- saving rejects to file
-> testcases/kernel/syscalls/ppoll/ppoll01.c.rej
->=20
-> Regards--
-> Subrata
->=20
-> > > -----Original Message-----
-> > > From: Subrata Modak [mailto:subrata@linux.vnet.ibm.com]
-> > > Sent: Monday, November 02, 2009 5:59 AM
-> > > To: Henry Yei
-> > > Cc: Garrett Cooper; LTP Mailing List
-> > > Subject: Re: [LTP] [PATCH][ppoll01] fix testcase 1, 5: pass =
-correct
-> > > valuefor sigset_t for mips
-> > >
-> > > Any further work on this patch ?
-> > >
-> > > Regards--
-> > > Subrata
-> > >
-> > > On Wed, 2009-10-28 at 12:08 -0700, Henry Yei wrote:
-> > > > > -----Original Message-----
-> > > > > From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> > > > > Sent: Tuesday, October 27, 2009 7:57 PM
-> > > > > To: Henry Yei
-> > > > > Cc: LTP Mailing List
-> > > > > Subject: Re: [LTP] [PATCH][ppoll01] fix testcase 1, 5: pass
-> correct
-> > > > > value for sigset_t for mips
-> > > > >
-> > > > > On Tue, Oct 27, 2009 at 6:32 PM, Henry Yei <hyei@mvista.com>
-> wrote:
-> > > > > > All,
-> > > > > >
-> > > > > >
-> > > > > >
-> > > > > > The patch attached  for ppoll01:
-> > > > > >
-> > > > > > cleans up spacing and code style
-> > > > > >
-> > > > > > removes unneeded/broken debug option parsing
-> > > > > >
-> > > > > > if test fails, it prints out the last failed errno, rather
-> than
-> > > just
-> > > > > the
-> > > > > > last errno(which may have been successful)
-> > > > > >
-> > > > > > passes in correct size of sigset_t for mips
-> > > > > >
-> > > > > >
-> > > > > >
-> > > > > > Signed-off by: Henry Yei <hyei@mvista.com>
-> > > > > >
-> > > > > >
-> > > > > >
-> > > > > > This patch was tested/passed on x86, mips(little endian), =
-and
-> > > > > ppc_82xx .
-> > > > >
-> > > > > 1. Please keep tst_exit() at the bottom.
-> > > > > 2. Why can't we do sizeof(sigsetmask) ?
-> > > > >
-> > > > > Thanks,
-> > > > > -Garrett
-> > > >
-> > > > Garrett,
-> > > >
-> > > > You want me to put tst_exit() at the bottom, even though it is
-> called
-> > > within cleanup()?
-> > > > You mean sizeof(sigmask) ~ sizeof(sigset_t), right? That code =
-was
-> > > commented out since version 1.1 which I thought was odd too, so I
-> did
-> > > check sizeof(sigmask).
-> > > > However, sizeof(sigmask) on mips returns 128 which does not seem
-> > > correct. I haven't checked the other architectures, but I suspect
-> some
-> > > might have a similar mismatch. Apparently sigset_t may have
-> different
-> > > values when returned from glibc vs kernel space. More information
-> from
-> > > this post:
-> > > >
-> > > > =
-http://lists.uclibc.org/pipermail/uclibc/2009-January/041850.html
+On Fri, Nov 6, 2009 at 4:54 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Fri, Nov 6, 2009 at 4:52 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+>> On Fri, Nov 6, 2009 at 4:23 PM, Mike Frysinger <vapier@gentoo.org> wrote:
+>>> On Friday 06 November 2009 18:34:22 Matt Helsley wrote:
+>>>> On Fri, Nov 06, 2009 at 06:09:04PM -0500, Mike Frysinger wrote:
+>>>> > On Friday 06 November 2009 18:02:31 Matt Helsley wrote:
+>>>> > > On Fri, Nov 06, 2009 at 03:09:02PM -0400, Mike Frysinger wrote:
+>>>> > > > also, i thought we were going to rename the top level Makefile to
+>>>> > > > GNUmakefile and add a dummy Makefile that just spat out "sorry, =
+ltp
+>>>> > > > requires GNU make".
+>>>> > >
+>>>> > > Bleh. Can't we just check the output of $(MAKE) --version rather t=
+han
+>>>> > > assume other makes use "Makefile"?
+>>>> >
+>>>> > the assumption is that only GNU make parses "GNUmakefile". =A0i think
+>>>> > that's a pretty safe assumption.
+>>>>
+>>>> Right, but GNU Make also parses Makefile.
+>>>
+>>> not if a GNUmakefile exists in the same dir, or the user forces the iss=
+ue via
+>>> the -f flag
+>>>
+>>>> If some poor bastard runs:
+>>>>
+>>>> make -f Makefile
+>>>>
+>>>> where GNU Make is "make" they may be further confused. Seems like it's
+>>>> better to check what's actually running ($(MAKE)) or will run
+>>>> (like `which make` in configure) than rely on a filename hack like thi=
+s.
+>>>
+>>> said poor bastard should be smacked :p. =A0checking the value of $(MAKE=
+) wont
+>>> work as it could be an arbitrary number of things which could all be va=
+lid
+>>> values under GNU make. =A0configure checks wont matter because it's the=
+ user who
+>>> runs `make` or `gmake` or `make-some-noise`. =A0requiring `make` to be =
+GNU make
+>>> in configure when the user can easily run `gmake` at make time is point=
+less
+>>> user interference.
+>>>
+>>> using a different filename on the other hand is exactly what GNU make h=
+as
+>>> designed in from the get go specifically for this purpose -- when GNU m=
+ake is
+>>> required. =A0if you honestly think people are doing something pointless=
+ like
+>>> `make -f Makefile`, then it's trivial to add a check to it to (1) check
+>>> $(MAKE) --version and include GNUmakefile or (2) $(error out). =A0no po=
+int in
+>>> forcing the shell/etc... overhead in the default build for the majority=
+ of
+>>> users.
+>>
+>> No, but you can do something like:
+>>
+>> ifdef MAKE_SANITY_CHECK
+>> export MAKE_SANITY_CHECK =3D 1
+>> ifneq ($(lastword $(sort 3.80 $(MAKE_VERSION))),$(MAKE_VERSION))
+>> $(error Upgrade your junk..)
+>> endif
+>> endif
+>>
+>> that way it only executes this once.
+>
+> Ugh... $(lastword ) didn't exist in 3.80... I'll change it around to
+> $(firstword ).
 
+Crap. So here are some of the high notes for changes between make 3.80 and =
+3.81:
 
-Subrata,
+1. $(and ) and $(or ) didn't exist [we use $(or ) once]. This can be
+replaced by an `ifeq ($(strip)) else endif'.
+2. $(abspath ) // $(realpath ) didn't exist [we use $(abspath )
+extensively, but just in one spot -- fixed that, need to test].
+3. .DEFAULT_GOAL was originally .DEFAULT_TARGET, but DID NOT exist in
+make 3.81 (this is going to be a bloody pain to hack around with,
+maybe -- depends on where I put all:). It'll be like herding cats to
+make sure that other developers don't create targets before the first
+include.
+4. Secondary expansion was busted as all hell in <3.81 (now this is
+going to be a serious pain point in some areas because I'll have to
+hunt down wherever I used % and $* and adjust things to work with make
+3.80 -- this mostly affects the top-level Makefile).
+5. Secondary expansion did NOT exist in static nor implicit rules
+(another pain point -- mostly with the top-level Makefile).
+6. $(lastword ) didn't exist [can be replaced by $(firstword ) with
+inverse logic, maybe...].
+7. Some funkiness with how .PHONY was treated:
 
-I've included the ppoll01 patch which should apply cleanly to the latest =
-in CVS.
+2004-09-21  Boris Kolpackov  <boris@kolpackov.net>
 
-------_=_NextPart_001_01CA6189.C186B84C
-Content-Type: application/octet-stream;
-	name="ppoll01.patch"
-Content-Transfer-Encoding: base64
-Content-Description: ppoll01.patch
-Content-Disposition: attachment;
-	filename="ppoll01.patch"
+        * file.c (snap_deps): Mark .PHONY prerequisites as targets.
 
-LS0tIGx0cC90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3Bwb2xsL3Bwb2xsMDEuYwkyMDA5LTEw
-LTI2IDE3OjEzOjU1LjUwMzAwMDAwMCAtMDcwMAorKysgbHRwLXdkaXIvdGVzdGNhc2VzL2tlcm5l
-bC9zeXNjYWxscy9wcG9sbC9wcG9sbDAxLmMJMjAwOS0xMS0wOSAxMzo0MjoyMi43ODUxMDE4ODcg
-LTA4MDAKQEAgLTYxLDcgKzYxLDYgQEAKICNpbmNsdWRlIDxzaWduYWwuaD4KICNpbmNsdWRlICJh
-c20vcG9sbC5oIgogCi0KICNpbmNsdWRlICIuLi91dGlscy9pbmNsdWRlX2pfaC5oIgogI2luY2x1
-ZGUgIi4uL3V0aWxzL2NvbW1vbl9qX2guYyIKIApAQCAtNzEsMTMgKzcwLDE0IEBACiAjaW5jbHVk
-ZSAibGludXhfc3lzY2FsbF9udW1iZXJzLmgiCiAKIC8qIEV4dGVybiBHbG9iYWwgVmFyaWFibGVz
-ICovCi1leHRlcm4gaW50IFRzdF9jb3VudDsgICAgICAgICAgIC8qIGNvdW50ZXIgZm9yIHRzdF94
-eHggcm91dGluZXMuICAgICAgICAgKi8KLWV4dGVybiBjaGFyICpURVNURElSOyAgICAgICAgICAg
-LyogdGVtcG9yYXJ5IGRpciBjcmVhdGVkIGJ5IHRzdF90bXBkaXIoKSAqLworZXh0ZXJuIGludCBU
-c3RfY291bnQ7IC8qIGNvdW50ZXIgZm9yIHRzdF94eHggcm91dGluZXMuICAgICAgICAgKi8KK2V4
-dGVybiBjaGFyICpURVNURElSOyAvKiB0ZW1wb3JhcnkgZGlyIGNyZWF0ZWQgYnkgdHN0X3RtcGRp
-cigpICovCiAKIC8qIEdsb2JhbCBWYXJpYWJsZXMgKi8KLWNoYXIgKlRDSUQgPSAicHBvbGwwMSI7
-ICAvKiBUZXN0IHByb2dyYW0gaWRlbnRpZmllci4qLwotaW50ICB0ZXN0bm87Ci1pbnQgIFRTVF9U
-T1RBTCA9IDE7ICAgICAgICAgICAgICAgICAgIC8qIHRvdGFsIG51bWJlciBvZiB0ZXN0cyBpbiB0
-aGlzIGZpbGUuICAgKi8KK2NoYXIgKlRDSUQgPSAicHBvbGwwMSI7IC8qIFRlc3QgcHJvZ3JhbSBp
-ZGVudGlmaWVyLiovCitpbnQgdGVzdG5vOworaW50IFRTVF9UT1RBTCA9IDE7IC8qIHRvdGFsIG51
-bWJlciBvZiB0ZXN0cyBpbiB0aGlzIGZpbGUuICAgKi8KK2ludCBsYXN0X2ZhaWxlZF9lcnJubzsK
-IAogLyogRXh0ZXJuIEdsb2JhbCBGdW5jdGlvbnMgKi8KIC8qKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiov
-CkBAIC05OCwxNSArOTgsMTUgQEAgaW50ICBUU1RfVE9UQUwgPSAxOyAgICAgICAgICAgICAgICAg
-ICAvKgogLyogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KIC8qKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCiBl
-eHRlcm4gdm9pZCBjbGVhbnVwKCkgewotICAgICAgICAvKiBSZW1vdmUgdG1wIGRpciBhbmQgYWxs
-IGZpbGVzIGluIGl0ICovCi0gICAgICAgIFRFU1RfQ0xFQU5VUDsKLSAgICAgICAgdHN0X3JtZGly
-KCk7CisJLyogUmVtb3ZlIHRtcCBkaXIgYW5kIGFsbCBmaWxlcyBpbiBpdCAqLworCVRFU1RfQ0xF
-QU5VUDsKKwl0c3Rfcm1kaXIoKTsKIAotICAgICAgICAvKiBFeGl0IHdpdGggYXBwcm9wcmlhdGUg
-cmV0dXJuIGNvZGUuICovCi0gICAgICAgIHRzdF9leGl0KCk7CisJLyogRXhpdCB3aXRoIGFwcHJv
-cHJpYXRlIHJldHVybiBjb2RlLiAqLworCXRzdF9leGl0KCk7CiB9CiAKLXZvaWQgc2lnaGFuZGxl
-cihpbnQgc2lnKTsgICAgICAgLyogc2lnbmFscyBoYW5kbGVyIGZ1bmN0aW9uIGZvciB0aGUgdGVz
-dCAqLwordm9pZCBzaWdoYW5kbGVyKGludCBzaWcpOyAvKiBzaWduYWxzIGhhbmRsZXIgZnVuY3Rp
-b24gZm9yIHRoZSB0ZXN0ICovCiAKIC8qIExvY2FsICBGdW5jdGlvbnMgKi8KIC8qKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKiovCkBAIC0xMjcsNTggKzEyNyw1NyBAQCB2b2lkIHNpZ2hhbmRsZXIoaW50IHNp
-Zyk7ICAgICAgIC8qIHNpZ25hCiAvKiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAqLwogLyoqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKi8KIHZvaWQgc2V0dXAoKSB7Ci0gICAgICAgIC8qIENhcHR1cmUgc2lnbmFscyBp
-ZiBhbnkgKi8KKwkvKiBDYXB0dXJlIHNpZ25hbHMgaWYgYW55ICovCiAJc2lnbmFsKFNJR0lOVCwg
-JnNpZ2hhbmRsZXIpOwogCi0gICAgICAgIC8qIENyZWF0ZSB0ZW1wb3JhcnkgZGlyZWN0b3JpZXMg
-Ki8KLSAgICAgICAgVEVTVF9QQVVTRTsKLSAgICAgICAgdHN0X3RtcGRpcigpOworCS8qIENyZWF0
-ZSB0ZW1wb3JhcnkgZGlyZWN0b3JpZXMgKi8KKwlURVNUX1BBVVNFOworCXRzdF90bXBkaXIoKTsK
-IH0KIAotCiAvKgogICogTWFjcm9zCiAgKi8KICNkZWZpbmUgU1lTQ0FMTF9OQU1FICAgICJwcG9s
-bCIKIAogI2lmbmRlZiBQT0xMUkRIVVAKLSMgIGRlZmluZSBQT0xMUkRIVVAgICAgIDB4MjAwMAor
-I2RlZmluZSBQT0xMUkRIVVAgICAgIDB4MjAwMAogI2VuZGlmCiAKKyNpZiBkZWZpbmVkIChfX21p
-cHNfXykKKyNkZWZpbmUgU0lHU0VUU0laRSAxNgorI2Vsc2UKKyNkZWZpbmUgU0lHU0VUU0laRSA4
-CisjZW5kaWYKIAogLyoKICAqIEdsb2JhbCB2YXJpYWJsZXMKICAqLwotc3RhdGljIGludCBvcHRf
-ZGVidWc7Ci1zdGF0aWMgY2hhciAqcHJvZ25hbWU7Ci1zdGF0aWMgY2hhciAqcHJvZ2RpcjsKIAog
-ZW51bSB0ZXN0X3R5cGUgewogCU5PUk1BTCwKLSAgICAgICAgTUFTS19TSUdOQUwsCi0gICAgICAg
-IFRJTUVPVVQsCi0gICAgICAgIEZEX0FMUkVBRFlfQ0xPU0VELAotICAgICAgICBTRU5EX1NJR0lO
-VCwKLSAgICAgICAgU0VORF9TSUdJTlRfUkFDRV9URVNULAotICAgICAgICBJTlZBTElEX05GRFMs
-Ci0gICAgICAgIElOVkFMSURfRkRTLAotICAgICAgICBNSU5VU19OU0VDLAotICAgICAgICBUT09f
-TEFSR0VfTlNFQywKKwlNQVNLX1NJR05BTCwKKwlUSU1FT1VULAorCUZEX0FMUkVBRFlfQ0xPU0VE
-LAorCVNFTkRfU0lHSU5ULAorCVNFTkRfU0lHSU5UX1JBQ0VfVEVTVCwKKwlJTlZBTElEX05GRFMs
-CisJSU5WQUxJRF9GRFMsCisJTUlOVVNfTlNFQywKKwlUT09fTEFSR0VfTlNFQywKIAogfTsKIAot
-CiAvKgogICogRGF0YSBTdHJ1Y3R1cmUKICAqLwogc3RydWN0IHRlc3RfY2FzZSB7CiAJc2hvcnQg
-ZXhwZWN0X3JldmVudHM7Ci0gICAgICAgIGludCB0dHlwZTsKLSAgICAgICAgaW50IHJldDsKLSAg
-ICAgICAgaW50IGVycjsKKwlpbnQgdHR5cGU7CisJaW50IHJldDsKKwlpbnQgZXJyOwogfTsKIAot
-CiAvKiBUZXN0IGNhc2VzCiAgKgogICogICB0ZXN0IHN0YXR1cyBvZiBlcnJvcnMgb24gbWFuIHBh
-Z2UKQEAgLTE5Miw2NSArMTkxLDYyIEBAIHN0cnVjdCB0ZXN0X2Nhc2UgewogICogICBFTk9NRU0g
-ICAgICAgICAgICAgY2FuJ3QgY2hlY2sgYmVjYXVzZSBpdCdzIGRpZmZpY3VsdCB0byBjcmVhdGUg
-bm8tbWVtb3J5CiAgKi8KIAotCiBzdGF0aWMgc3RydWN0IHRlc3RfY2FzZSB0Y2FzZVtdID0gewot
-CXsgLy8gY2FzZTAwCi0gICAgICAgICAgICAgICAgLnR0eXBlICAgICAgICAgID0gTk9STUFMLAot
-ICAgICAgICAgICAgICAgIC5leHBlY3RfcmV2ZW50cyA9IFBPTExJTiB8IFBPTExPVVQsCi0gICAg
-ICAgICAgICAgICAgLnJldCAgICAgICAgICAgID0gMCwKLSAgICAgICAgICAgICAgICAuZXJyICAg
-ICAgICAgICAgPSAwLAotICAgICAgICB9LAotICAgICAgICB7IC8vIGNhc2UwMQotICAgICAgICAg
-ICAgICAgIC50dHlwZSAgICAgICAgICA9IE1BU0tfU0lHTkFMLAotICAgICAgICAgICAgICAgIC5l
-eHBlY3RfcmV2ZW50cyA9IDAsIC8vIGRvbid0IGNhcmUKLSAgICAgICAgICAgICAgICAucmV0ICAg
-ICAgICAgICAgPSAwLAotICAgICAgICAgICAgICAgIC5lcnIgICAgICAgICAgICA9IDAsCi0gICAg
-ICAgIH0sCi0gICAgICAgIHsgLy8gY2FzZTAyCi0gICAgICAgICAgICAgICAgLnR0eXBlICAgICAg
-ICAgID0gVElNRU9VVCwKLSAgICAgICAgICAgICAgICAuZXhwZWN0X3JldmVudHMgPSAwLCAvLyBk
-b24ndCBjYXJlCi0gICAgICAgICAgICAgICAgLnJldCAgICAgICAgICAgID0gMCwKLSAgICAgICAg
-ICAgICAgICAuZXJyICAgICAgICAgICAgPSAwLAotICAgICAgICB9LAotICAgICAgICB7IC8vIGNh
-c2UwMwotICAgICAgICAgICAgICAgIC50dHlwZSAgICAgICAgICA9IEZEX0FMUkVBRFlfQ0xPU0VE
-LAotICAgICAgICAgICAgICAgIC5leHBlY3RfcmV2ZW50cyA9IFBPTExOVkFMLAotICAgICAgICAg
-ICAgICAgIC5yZXQgICAgICAgICAgICA9IDAsCi0gICAgICAgICAgICAgICAgLmVyciAgICAgICAg
-ICAgID0gMCwKLSAgICAgICAgfSwKLSAgICAgICAgeyAvLyBjYXNlMDQKLSAgICAgICAgICAgICAg
-ICAudHR5cGUgICAgICAgICAgPSBTRU5EX1NJR0lOVCwKLSAgICAgICAgICAgICAgICAucmV0ICAg
-ICAgICAgICAgPSAtMSwKLSAgICAgICAgICAgICAgICAuZXJyICAgICAgICAgICAgPSBFSU5UUiwK
-LSAgICAgICAgfSwKLSAgICAgICAgeyAvLyBjYXNlMDUKLSAgICAgICAgICAgICAgICAudHR5cGUg
-ICAgICAgICAgPSBTRU5EX1NJR0lOVF9SQUNFX1RFU1QsCi0gICAgICAgICAgICAgICAgLnJldCAg
-ICAgICAgICAgID0gLTEsCi0gICAgICAgICAgICAgICAgLmVyciAgICAgICAgICAgID0gRUlOVFIs
-Ci0gICAgICAgIH0sCi0gICAgICAgIHsgLy8gY2FzZTA2Ci0gICAgICAgICAgICAgICAgLnR0eXBl
-ICAgICAgICAgID0gSU5WQUxJRF9ORkRTLAotICAgICAgICAgICAgICAgIC5yZXQgICAgICAgICAg
-ICA9IC0xLAotICAgICAgICAgICAgICAgIC5lcnIgICAgICAgICAgICA9IEVJTlZBTCwKLSAgICAg
-ICAgfSwKLSAgICAgICAgeyAvLyBjYXNlMDcKLSAgICAgICAgICAgICAgICAudHR5cGUgICAgICAg
-ICAgPSBJTlZBTElEX0ZEUywKLSAgICAgICAgICAgICAgICAucmV0ICAgICAgICAgICAgPSAtMSwK
-LSAgICAgICAgICAgICAgICAuZXJyICAgICAgICAgICAgPSBFRkFVTFQsCi0gICAgICAgIH0sCisJ
-CXsgLy8gY2FzZTAwCisJCQkudHR5cGUgPSBOT1JNQUwsCisJCQkuZXhwZWN0X3JldmVudHMgPSBQ
-T0xMSU4gfCBQT0xMT1VULAorCQkJLnJldCA9IDAsCisJCQkuZXJyID0gMCwKKwkJfSwKKwkJeyAv
-LyBjYXNlMDEKKwkJCS50dHlwZSA9IE1BU0tfU0lHTkFMLAorCQkJLmV4cGVjdF9yZXZlbnRzID0g
-MCwgLy8gZG9uJ3QgY2FyZQorCQkJLnJldCA9IDAsCisJCQkuZXJyID0gMCwKKwkJfSwKKwkJeyAv
-LyBjYXNlMDIKKwkJCS50dHlwZSA9IFRJTUVPVVQsCisJCQkuZXhwZWN0X3JldmVudHMgPSAwLCAv
-LyBkb24ndCBjYXJlCisJCQkucmV0ID0gMCwKKwkJCS5lcnIgPSAwLAorCQl9LAorCQl7IC8vIGNh
-c2UwMworCQkJLnR0eXBlID0gRkRfQUxSRUFEWV9DTE9TRUQsCisJCQkuZXhwZWN0X3JldmVudHMg
-PSBQT0xMTlZBTCwKKwkJCS5yZXQgPSAwLCAuZXJyID0gMCwKKwkJfSwKKwkJeyAvLyBjYXNlMDQK
-KwkJCS50dHlwZSA9IFNFTkRfU0lHSU5ULAorCQkJLnJldCA9IC0xLAorCQkJLmVyciA9IEVJTlRS
-LAorCQl9LAorCQl7IC8vIGNhc2UwNQorCQkJLnR0eXBlID0gU0VORF9TSUdJTlRfUkFDRV9URVNU
-LAorCQkJLnJldCA9IC0xLAorCQkJLmVyciA9IEVJTlRSLAorCQl9LAorCQl7IC8vIGNhc2UwNgor
-CQkJLnR0eXBlID0gSU5WQUxJRF9ORkRTLAorCQkJLnJldCA9IC0xLAorCQkJLmVyciA9IEVJTlZB
-TCwKKwkJfSwKKwkJeyAvLyBjYXNlMDcKKwkJCS50dHlwZSA9IElOVkFMSURfRkRTLAorCQkJLnJl
-dCA9IC0xLAorCQkJLmVyciA9IEVGQVVMVCwgfSwKICNpZiAwCi0gICAgICAgIHsgLy8gY2FzZTA4
-Ci0gICAgICAgICAgICAgICAgLnR0eXBlICAgICAgICAgID0gTUlOVVNfTlNFQywKLSAgICAgICAg
-ICAgICAgICAucmV0ICAgICAgICAgICAgPSAtMSwKLSAgICAgICAgICAgICAgICAuZXJyICAgICAg
-ICAgICAgPSBFSU5WQUwsIC8vIFJIRUw0VTEgKyAyLjYuMTggcmV0dXJucyBTVUNDRVNTCi0gICAg
-ICAgIH0sCi0gICAgICAgIHsgLy8gY2FzZTA5Ci0gICAgICAgICAgICAgICAgLnR0eXBlICAgICAg
-ICAgID0gVE9PX0xBUkdFX05TRUMsCi0gICAgICAgICAgICAgICAgLnJldCAgICAgICAgICAgID0g
-LTEsCi0gICAgICAgICAgICAgICAgLmVyciAgICAgICAgICAgID0gRUlOVkFMLCAvLyBSSEVMNFUx
-ICsgMi42LjE4IHJldHVybnMgU1VDQ0VTUwotICAgICAgICB9LAorCQl7IC8vIGNhc2UwOAorCQkJ
-LnR0eXBlID0gTUlOVVNfTlNFQywKKwkJCS5yZXQgPSAtMSwKKwkJCS5lcnIgPSBFSU5WQUwsIC8v
-IFJIRUw0VTEgKyAyLjYuMTggcmV0dXJucyBTVUNDRVNTCisJCX0sCisJCXsgLy8gY2FzZTA5CisJ
-CQkudHR5cGUgPSBUT09fTEFSR0VfTlNFQywKKwkJCS5yZXQgPSAtMSwKKwkJCS5lcnIgPSBFSU5W
-QUwsIC8vIFJIRUw0VTEgKyAyLjYuMTggcmV0dXJucyBTVUNDRVNTCisJCX0sCiAjZW5kaWYKLX07
-CisJCX07CiAKICNkZWZpbmUgTlVNX1RFU1RfRkRTICAgIDEKIApAQCAtMjYyLDI2NiArMjU4LDIw
-OCBAQCBzdGF0aWMgc3RydWN0IHRlc3RfY2FzZSB0Y2FzZVtdID0gewogICoKICAqLwogCi1zdGF0
-aWMgaW50IGRvX3Rlc3Qoc3RydWN0IHRlc3RfY2FzZSAqdGMpCi17Ci0gICAgICAgIGludCBzeXNf
-cmV0OwotICAgICAgICBpbnQgc3lzX2Vycm5vOwotICAgICAgICBpbnQgcmVzdWx0ID0gUkVTVUxU
-X09LOwotCWludCBmZCA9IC0xICwgY21wX29rID0gMTsKK3N0YXRpYyBpbnQgZG9fdGVzdChzdHJ1
-Y3QgdGVzdF9jYXNlICp0YykgeworCWludCBzeXNfcmV0OworCWludCBzeXNfZXJybm87CisJaW50
-IGZhaWxlZDsKKwlpbnQgcmVzdWx0ID0gUkVTVUxUX09LOworCWludCBmZCA9IC0xLCBjbXBfb2sg
-PSAxOwogCWNoYXIgZnBhdGhbUEFUSF9NQVhdOwogCXN0cnVjdCBwb2xsZmQgKnBfZmRzLCBmZHNb
-TlVNX1RFU1RfRkRTXTsKLSAgICAgICAgdW5zaWduZWQgaW50IG5mZHMgPSBOVU1fVEVTVF9GRFM7
-Ci0gICAgICAgIHN0cnVjdCB0aW1lc3BlYyAqcF90cywgdHM7Ci0gICAgICAgIHNpZ3NldF90ICpw
-X3NpZ21hc2ssIHNpZ21hc2s7Ci0gICAgICAgIHNpemVfdCBzaWdzZXRzaXplID0gMDsKLSAgICAg
-ICAgcGlkX3QgcGlkID0gMDsKLQotCVRFU1QoZmQgPSBzZXR1cF9maWxlKHByb2dkaXIsICJ0ZXN0
-LmZpbGUiLCBmcGF0aCkpOwotICAgICAgICBpZiAoZmQgPCAwKQotICAgICAgICAgICAgICAgIHJl
-dHVybiAxOwotICAgICAgICBmZHNbMF0uZmQgPSBmZDsKLSAgICAgICAgZmRzWzBdLmV2ZW50cyA9
-IFBPTExJTiB8IFBPTExQUkkgfCBQT0xMT1VUIHwgUE9MTFJESFVQOwotICAgICAgICBmZHNbMF0u
-cmV2ZW50cyA9IDA7Ci0gICAgICAgIHBfZmRzID0gZmRzOwotICAgICAgICBwX3RzID0gTlVMTDsK
-LSAgICAgICAgcF9zaWdtYXNrID0gTlVMTDsKKwl1bnNpZ25lZCBpbnQgbmZkcyA9IE5VTV9URVNU
-X0ZEUzsKKwlzdHJ1Y3QgdGltZXNwZWMgKnBfdHMsIHRzOworCXNpZ3NldF90ICpwX3NpZ21hc2ss
-IHNpZ21hc2s7CisJcGlkX3QgcGlkID0gMDsKKworCVRFU1QoZmQgPSBzZXR1cF9maWxlKCIuIiwg
-InRlc3QuZmlsZSIsIGZwYXRoKSk7CisJaWYgKGZkIDwgMCkKKwkJcmV0dXJuIDE7CisJZmRzWzBd
-LmZkID0gZmQ7CisJZmRzWzBdLmV2ZW50cyA9IFBPTExJTiB8IFBPTExQUkkgfCBQT0xMT1VUIHwg
-UE9MTFJESFVQOworCWZkc1swXS5yZXZlbnRzID0gMDsKKwlwX2ZkcyA9IGZkczsKKwlwX3RzID0g
-TlVMTDsKKwlwX3NpZ21hc2sgPSBOVUxMOwogCiAJc3dpdGNoICh0Yy0+dHR5cGUpIHsKLSAgICAg
-ICAgY2FzZSBUSU1FT1VUOgotICAgICAgICAgICAgICAgIG5mZHMgPSAwOwotICAgICAgICAgICAg
-ICAgIHRzLnR2X3NlYyA9IDA7Ci0gICAgICAgICAgICAgICAgdHMudHZfbnNlYyA9IDUwMDAwMDAw
-OyAgLy8gNTBtc2VjCi0gICAgICAgICAgICAgICAgcF90cyA9ICZ0czsKLSAgICAgICAgICAgICAg
-ICBicmVhazsKKwljYXNlIFRJTUVPVVQ6CisJCW5mZHMgPSAwOworCQl0cy50dl9zZWMgPSAwOwor
-CQl0cy50dl9uc2VjID0gNTAwMDAwMDA7IC8vIDUwbXNlYworCQlwX3RzID0gJnRzOworCQlicmVh
-azsKIAljYXNlIEZEX0FMUkVBRFlfQ0xPU0VEOgotICAgICAgICAgICAgICAgIFRFU1QoY2xvc2Uo
-ZmQpKTsKLSAgICAgICAgICAgICAgICBmZCA9IC0xOwotICAgICAgICAgICAgICAgIFRFU1QoY2xl
-YW51cF9maWxlKGZwYXRoKSk7Ci0gICAgICAgICAgICAgICAgYnJlYWs7Ci0gICAgICAgIGNhc2Ug
-TUFTS19TSUdOQUw6Ci0gICAgICAgICAgICAgICAgVEVTVChzaWdlbXB0eXNldCgmc2lnbWFzaykp
-OwotICAgICAgICAgICAgICAgIFRFU1Qoc2lnYWRkc2V0KCZzaWdtYXNrLCBTSUdJTlQpKTsKLSAg
-ICAgICAgICAgICAgICBwX3NpZ21hc2sgPSAmc2lnbWFzazsKLSAgICAgICAgICAgICAgICAvL3Np
-Z3NldHNpemUgPSBzaXplb2Yoc2lnbWFzayk7Ci0gICAgICAgICAgICAgICAgc2lnc2V0c2l6ZSA9
-IDg7Ci0gICAgICAgICAgICAgICAgbmZkcyA9IDA7Ci0gICAgICAgICAgICAgICAgdHMudHZfc2Vj
-ID0gMDsKLSAgICAgICAgICAgICAgICB0cy50dl9uc2VjID0gMzAwMDAwMDAwOyAvLyAzMDBtc2Vj
-ID0+IG5lZWQgdG8gYmUgZW5vdWdoIGZvcgotICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIC8vICAgd2FpdGluZyB0aGUgc2lnbmFsCi0gICAgICAgICAgICAgICAgcF90cyA9
-ICZ0czsKLSAgICAgICAgICAgICAgICAvLyBmYWxsdGhyb3VnaAorCQlURVNUKGNsb3NlKGZkKSk7
-CisJCWZkID0gLTE7CisJCVRFU1QoY2xlYW51cF9maWxlKGZwYXRoKSk7CisJCWJyZWFrOworCWNh
-c2UgTUFTS19TSUdOQUw6CisJCVRFU1Qoc2lnZW1wdHlzZXQoJnNpZ21hc2spKTsKKwkJVEVTVChz
-aWdhZGRzZXQoJnNpZ21hc2ssIFNJR0lOVCkpOworCQlwX3NpZ21hc2sgPSAmc2lnbWFzazsKKwkJ
-bmZkcyA9IDA7CisJCXRzLnR2X3NlYyA9IDA7CisJCXRzLnR2X25zZWMgPSAzMDAwMDAwMDA7IC8v
-IDMwMG1zZWMgPT4gbmVlZCB0byBiZSBlbm91Z2ggZm9yCisJCS8vICAgd2FpdGluZyB0aGUgc2ln
-bmFsCisJCXBfdHMgPSAmdHM7CisJCS8vIGZhbGx0aHJvdWdoCiAJY2FzZSBTRU5EX1NJR0lOVDoK
-LSAgICAgICAgICAgICAgICBuZmRzID0gMDsKLSAgICAgICAgICAgICAgICBwaWQgPSBjcmVhdGVf
-c2lnX3Byb2MoMTAwMDAwLCBTSUdJTlQsIFVJTlRfTUFYKTsgLy8gMTAwbXNlYwotICAgICAgICAg
-ICAgICAgIGlmIChwaWQgPCAwKQotICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIDE7Ci0g
-ICAgICAgICAgICAgICAgYnJlYWs7Ci0gIGNhc2UgU0VORF9TSUdJTlRfUkFDRV9URVNUOgotICAg
-IC8qIGJsb2NrIHRoZSBJTlQgc2lnbmFsICovCi0gICAgICAgICAgICAgICAgc2lnZW1wdHlzZXQo
-JnNpZ21hc2spOwotICAgICAgICAgICAgICAgIHNpZ2FkZHNldCgmc2lnbWFzaywgU0lHSU5UKTsK
-LSAgICAgICAgICAgICAgICBzaWdwcm9jbWFzayhTSUdfU0VUTUFTSywgJnNpZ21hc2ssIE5VTEwp
-OwotCi0gICAgICAgICAgICAgICAgLyogYW5kIGxldCBpdCBiZSB1bmJsb2NrZWQgd2hlbiB0aGUg
-c3lzY2FsbCBydW5zICovCi0gICAgICAgICAgICAgICAgc2lnZW1wdHlzZXQoJnNpZ21hc2spOwot
-ICAgICAgICAgICAgICAgIHBfc2lnbWFzayA9ICZzaWdtYXNrOwotICAgICAgICAgICAgICAgIC8v
-c2lnc2V0c2l6ZSA9IHNpemVvZihzaWdtYXNrKTsKLSAgICAgICAgICAgICAgICBzaWdzZXRzaXpl
-ID0gODsKLSAgICAgICAgICAgICAgICBuZmRzID0gMDsKLSAgICAgICAgICAgICAgICB0cy50dl9z
-ZWMgPSAwOwotICAgICAgICAgICAgICAgIHRzLnR2X25zZWMgPSAzMDAwMDAwMDA7IC8vIDMwMG1z
-ZWMgPT4gbmVlZCB0byBiZSBlbm91Z2ggZm9yCi0gICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgLy8gICB3YWl0aW5nIHRoZSBzaWduYWwKLSAgICAgICAgICAgICAgICBwX3Rz
-ID0gJnRzOwotICAgICAgICAgICAgICAgIG5mZHMgPSAwOwotICAgICAgICAgICAgICAgIHBpZCA9
-IGNyZWF0ZV9zaWdfcHJvYygwLCBTSUdJTlQsIDEpOwotICAgICAgICAgICAgICAgIGlmIChwaWQg
-PCAwKSB7Ci0gICAgICAgICAgICAgICAgICByZXN1bHQ9MTsKLSAgICAgICAgICAgICAgICAgIGdv
-dG8gY2xlYW51cDsKLSAgICAgICAgICAgICAgICB9Ci0gICAgICAgICAgICAgICAgYnJlYWs7Ci0g
-ICAgICAgIGNhc2UgSU5WQUxJRF9ORkRTOgotICAgICAgICAgICAgICAgIC8vbmZkcyA9IFJMSU1J
-VF9OT0ZJTEUgKyAxOyA9PT4gUkhFTDRVMSArIDIuNi4xOCByZXR1cm5zIFNVQ0NFU1MKLSAgICAg
-ICAgICAgICAgICBuZmRzID0gLTE7Ci0gICAgICAgICAgICAgICAgYnJlYWs7Ci0gICAgICAgIGNh
-c2UgSU5WQUxJRF9GRFM6Ci0gICAgICAgICAgICAgICAgcF9mZHMgPSAodm9pZCopMHhjMDAwMDAw
-MDsKLSAgICAgICAgICAgICAgICBicmVhazsKLSAgICAgICAgY2FzZSBNSU5VU19OU0VDOgotICAg
-ICAgICAgICAgICAgIHRzLnR2X3NlYyA9IDA7Ci0gICAgICAgICAgICAgICAgdHMudHZfbnNlYyA9
-IC0xOwotICAgICAgICAgICAgICAgIHBfdHMgPSAmdHM7Ci0gICAgICAgICAgICAgICAgYnJlYWs7
-CisJCW5mZHMgPSAwOworCQlwaWQgPSBjcmVhdGVfc2lnX3Byb2MoMTAwMDAwLCBTSUdJTlQsIFVJ
-TlRfTUFYKTsgLy8gMTAwbXNlYworCQlpZiAocGlkIDwgMCkKKwkJCXJldHVybiAxOworCQlicmVh
-azsKKwljYXNlIFNFTkRfU0lHSU5UX1JBQ0VfVEVTVDoKKwkJLyogYmxvY2sgdGhlIElOVCBzaWdu
-YWwgKi8KKwkJc2lnZW1wdHlzZXQoJnNpZ21hc2spOworCQlzaWdhZGRzZXQoJnNpZ21hc2ssIFNJ
-R0lOVCk7CisJCXNpZ3Byb2NtYXNrKFNJR19TRVRNQVNLLCAmc2lnbWFzaywgTlVMTCk7CisKKwkJ
-LyogYW5kIGxldCBpdCBiZSB1bmJsb2NrZWQgd2hlbiB0aGUgc3lzY2FsbCBydW5zICovCisJCXNp
-Z2VtcHR5c2V0KCZzaWdtYXNrKTsKKwkJcF9zaWdtYXNrID0gJnNpZ21hc2s7CisJCW5mZHMgPSAw
-OworCQl0cy50dl9zZWMgPSAwOworCQl0cy50dl9uc2VjID0gMzAwMDAwMDAwOyAvLyAzMDBtc2Vj
-ID0+IG5lZWQgdG8gYmUgZW5vdWdoIGZvcgorCQkvLyAgIHdhaXRpbmcgdGhlIHNpZ25hbAorCQlw
-X3RzID0gJnRzOworCQluZmRzID0gMDsKKwkJcGlkID0gY3JlYXRlX3NpZ19wcm9jKDAsIFNJR0lO
-VCwgMSk7CisJCWlmIChwaWQgPCAwKSB7CisJCQlyZXN1bHQgPSAxOworCQkJZ290byBjbGVhbnVw
-OworCQl9CisJCWJyZWFrOworCWNhc2UgSU5WQUxJRF9ORkRTOgorCQkvL25mZHMgPSBSTElNSVRf
-Tk9GSUxFICsgMTsgLy89PT4gUkhFTDRVMSArIDIuNi4xOCByZXR1cm5zIFNVQ0NFU1MKKwkJbmZk
-cyA9IC0xOworCQlicmVhazsKKwljYXNlIElOVkFMSURfRkRTOgorCQlwX2ZkcyA9ICh2b2lkKikg
-MHhjMDAwMDAwMDsKKwkJYnJlYWs7CisJY2FzZSBNSU5VU19OU0VDOgorCQl0cy50dl9zZWMgPSAw
-OworCQl0cy50dl9uc2VjID0gLTE7CisJCXBfdHMgPSAmdHM7CisJCWJyZWFrOwogCWNhc2UgVE9P
-X0xBUkdFX05TRUM6Ci0gICAgICAgICAgICAgICAgdHMudHZfc2VjID0gMDsKLSAgICAgICAgICAg
-ICAgICB0cy50dl9uc2VjID0gMTAwMDAwMDAwMDsKLSAgICAgICAgICAgICAgICBwX3RzID0gJnRz
-OwotICAgICAgICAgICAgICAgIGJyZWFrOwotICAgICAgICB9CisJCXRzLnR2X3NlYyA9IDA7CisJ
-CXRzLnR2X25zZWMgPSAxMDAwMDAwMDAwOworCQlwX3RzID0gJnRzOworCQlicmVhazsKKwl9CiAK
-IAkvKgotCSAgICogRXhlY3V0ZSBzeXN0ZW0gY2FsbAotICAgICAgICAgKi8KLSAgICAgICAgZXJy
-bm8gPSAwOwotICAgICAgICBURVNUKHN5c19yZXQgPSBzeXNjYWxsKF9fTlJfcHBvbGwsIHBfZmRz
-LCBuZmRzLCBwX3RzLCBwX3NpZ21hc2ssIHNpZ3NldHNpemUpKTsKLSAgICAgICAgc3lzX2Vycm5v
-ID0gZXJybm87Ci0gICAgICAgIGlmIChzeXNfcmV0IDw9IDAgfHwgdGMtPnJldCA8IDApCi0gICAg
-ICAgICAgICAgICAgZ290byBURVNUX0VORDsKLQotICAgICAgICBjbXBfb2sgPSBmZHNbMF0ucmV2
-ZW50cyA9PSB0Yy0+ZXhwZWN0X3JldmVudHM7Ci0gICAgICAgIGlmIChvcHRfZGVidWcpIHsKLSAg
-ICAgICAgICAgICAgICB0c3RfcmVzbShUSU5GTywiRVhQRUNUOiByZXZlbnRzPTB4JTA0eCIsIHRj
-LT5leHBlY3RfcmV2ZW50cyk7Ci0gICAgICAgICAgICAgICAgdHN0X3Jlc20oVElORk8sIlJFU1VM
-VDogcmV2ZW50cz0weCUwNHgiLCBmZHNbMF0ucmV2ZW50cyk7Ci0gICAgICAgIH0KLQotVEVTVF9F
-TkQ6Ci0gICAgICAgIC8qCi0gICAgICAgICAqIENoZWNrIHJlc3VsdHMKLSAgICAgICAgICovCi0g
-ICAgICAgIGlmKHRjLT50dHlwZSA9PSBTRU5EX1NJR0lOVF9SQUNFX1RFU1QpIHsKLSAgICAgICAg
-ICBpbnQgc2lnOwotICAgICAgICAgIHNpZ3Byb2NtYXNrKFNJR19TRVRNQVNLLCBOVUxMLCAmc2ln
-bWFzayk7Ci0gICAgICAgICAgZm9yKHNpZz0xOyBzaWcgPCBTSUdSVE1BWDsgc2lnKyspIHsKLSAg
-ICAgICAgICAgICAgVEVTVChzaWdpc21lbWJlcigmc2lnbWFzaywgc2lnKSk7Ci0gICAgICAgICAg
-ICAgIGlmKFRFU1RfUkVUVVJOIDwgMCAmJiBURVNUX0VSUk5PID09IEVJTlZBTCAmJiBzaWcgIT0g
-U0lHSU5UKQotICAgICAgICAgICAgICAgIGNvbnRpbnVlOyAvKiBsZXQncyBpZ25vcmUgZXJyb3Jz
-IGlmIHRoZXkgYXJlIGZvciBvdGhlciBzaWduYWwgdGhhbiBTSUdJTlQgdGhhdCB3ZSBzZXQgKi8K
-LSAgICAgICAgICAgICAgaWYoKHNpZz09U0lHSU5UKSAhPSAoVEVTVF9SRVRVUk4hPTApKSB7Ci0g
-ICAgICAgICAgICAgICAgdHN0X3Jlc20oVEZBSUwsICJCYWQgdmFsdWUgb2Ygc2lnbmFsIG1hc2ss
-IHNpZ25hbCAlZCBpcyAlcyIsIHNpZywgVEVTVF9SRVRVUk4gPyAib24iIDogIm9mZiIpOwotICAg
-ICAgICAgICAgICAgIGNtcF9vayB8PTE7Ci0gICAgICAgICAgICAgIH0KLSAgICAgICAgICAgIH0K
-LSAgICAgICAgfQotICAgICAgICByZXN1bHQgfD0gKHN5c19lcnJubyAhPSB0Yy0+ZXJyKSB8fCAh
-Y21wX29rOwotICAgICAgICBQUklOVF9SRVNVTFRfQ01QKHN5c19yZXQgPj0gMCwgdGMtPnJldCwg
-dGMtPmVyciwgc3lzX3JldCwgc3lzX2Vycm5vLAotICAgICAgICAgICAgICAgICAgICAgICAgIGNt
-cF9vayk7Ci0gY2xlYW51cDoKLSAgICAgICAgaWYgKGZkID49IDApCi0gICAgICAgICAgICAgICAg
-Y2xlYW51cF9maWxlKGZwYXRoKTsKLQotICAgICAgICBzaWdlbXB0eXNldCgmc2lnbWFzayk7Ci0g
-ICAgICAgIHNpZ3Byb2NtYXNrKFNJR19TRVRNQVNLLCAmc2lnbWFzaywgTlVMTCk7Ci0gICAgICAg
-IGlmIChwaWQgPiAwKSB7Ci0gICAgICAgICAgICAgICAgaW50IHN0OwotICAgICAgICAgICAgICAg
-IGtpbGwocGlkLCBTSUdURVJNKTsKLSAgICAgICAgICAgICAgICB3YWl0KCZzdCk7Ci0gICAgICAg
-IH0KKwkgKiBFeGVjdXRlIHN5c3RlbSBjYWxsCisJICovCisJZXJybm8gPSAwOworCVRFU1Qoc3lz
-X3JldAorCQkJPSBzeXNjYWxsKF9fTlJfcHBvbGwsIHBfZmRzLCBuZmRzLCBwX3RzLCBwX3NpZ21h
-c2ssIFNJR1NFVFNJWkUpKTsKKwlzeXNfZXJybm8gPSBlcnJubzsKKwlpZiAoc3lzX3JldCA8PSAw
-IHx8IHRjLT5yZXQgPCAwKQorCQlnb3RvIFRFU1RfRU5EOworCisJY21wX29rID0gZmRzWzBdLnJl
-dmVudHMgPT0gdGMtPmV4cGVjdF9yZXZlbnRzOworCXRzdF9yZXNtKFRJTkZPLCAiRVhQRUNUOiBy
-ZXZlbnRzPTB4JTA0eCIsIHRjLT5leHBlY3RfcmV2ZW50cyk7CisJdHN0X3Jlc20oVElORk8sICJS
-RVNVTFQ6IHJldmVudHM9MHglMDR4IiwgZmRzWzBdLnJldmVudHMpOworCisJVEVTVF9FTkQ6CisJ
-LyoKKwkgKiBDaGVjayByZXN1bHRzCisJICovCisJaWYgKHRjLT50dHlwZSA9PSBTRU5EX1NJR0lO
-VF9SQUNFX1RFU1QpIHsKKwkJaW50IHNpZzsKKwkJc2lncHJvY21hc2soU0lHX1NFVE1BU0ssIE5V
-TEwsICZzaWdtYXNrKTsKKwkJZm9yIChzaWcgPSAxOyBzaWcgPCBTSUdSVE1BWDsgc2lnKyspIHsK
-KwkJCVRFU1Qoc2lnaXNtZW1iZXIoJnNpZ21hc2ssIHNpZykpOworCQkJaWYgKFRFU1RfUkVUVVJO
-IDwgMCAmJiBURVNUX0VSUk5PID09IEVJTlZBTCAmJiBzaWcgIT0gU0lHSU5UKQorCQkJCWNvbnRp
-bnVlOyAvKiBsZXQncyBpZ25vcmUgZXJyb3JzIGlmIHRoZXkgYXJlIGZvciBvdGhlciBzaWduYWwg
-dGhhbiBTSUdJTlQgdGhhdCB3ZSBzZXQgKi8KKwkJCWlmICgoc2lnID09IFNJR0lOVCkgIT0gKFRF
-U1RfUkVUVVJOICE9IDApKSB7CisJCQkJdHN0X3Jlc20oVEZBSUwsICJCYWQgdmFsdWUgb2Ygc2ln
-bmFsIG1hc2ssIHNpZ25hbCAlZCBpcyAlcyIsCisJCQkJCQlzaWcsIFRFU1RfUkVUVVJOID8gIm9u
-IiA6ICJvZmYiKTsKKwkJCQljbXBfb2sgfD0gMTsKKwkJCX0KKwkJfQorCX0KKwlmYWlsZWQgPSBz
-eXNfZXJybm8gIT0gdGMtPmVycjsKKwlyZXN1bHQgfD0gZmFpbGVkIHx8ICFjbXBfb2s7CisJaWYg
-KGZhaWxlZCkKKwkJbGFzdF9mYWlsZWRfZXJybm8gPSBzeXNfZXJybm87CisJUFJJTlRfUkVTVUxU
-X0NNUChzeXNfcmV0ID49IDAsIHRjLT5yZXQsIHRjLT5lcnIsIHN5c19yZXQsIHN5c19lcnJubywg
-Y21wX29rKTsKKwljbGVhbnVwOiBpZiAoZmQgPj0gMCkKKwkJY2xlYW51cF9maWxlKGZwYXRoKTsK
-KworCXNpZ2VtcHR5c2V0KCZzaWdtYXNrKTsKKwlzaWdwcm9jbWFzayhTSUdfU0VUTUFTSywgJnNp
-Z21hc2ssIE5VTEwpOworCWlmIChwaWQgPiAwKSB7CisJCWludCBzdDsKKwkJa2lsbChwaWQsIFNJ
-R1RFUk0pOworCQl3YWl0KCZzdCk7CisJfQogCXJldHVybiByZXN1bHQ7CiB9CiAKLQogLyoKICAq
-IHNpZ2hhbmRsZXIoKQogICovCi12b2lkIHNpZ2hhbmRsZXIoaW50IHNpZykKLXsKLSAgICAgICAg
-aWYgKHNpZyA9PSBTSUdJTlQpCi0gICAgICAgICAgICAgICAgcmV0dXJuOwotICAgICAgICAvLyBO
-T1RSRUFDSEVECi0gICAgICAgIHJldHVybjsKK3ZvaWQgc2lnaGFuZGxlcihpbnQgc2lnKSB7CisJ
-aWYgKHNpZyA9PSBTSUdJTlQpCisJCXJldHVybjsKKwkvLyBOT1RSRUFDSEVECisJcmV0dXJuOwog
-fQogCi0KLS8qCi0gKiB1c2FnZSgpCi0gKi8KLQotc3RhdGljIHZvaWQgdXNhZ2UoY29uc3QgY2hh
-ciAqcHJvZ25hbWUpCi17Ci0gICAgICAgIHRzdF9yZXNtKFRJTkZPLCJ1c2FnZTogJXMgW29wdGlv
-bnNdIiwgcHJvZ25hbWUpOwotICAgICAgICB0c3RfcmVzbShUSU5GTywiVGhpcyBpcyBhIHJlZ3Jl
-c3Npb24gdGVzdCBwcm9ncmFtIG9mICVzIHN5c3RlbSBjYWxsLiIsU1lTQ0FMTF9OQU1FKTsKLSAg
-ICAgICAgdHN0X3Jlc20oVElORk8sIm9wdGlvbnM6Iik7Ci0gICAgICAgIHRzdF9yZXNtKFRJTkZP
-LCIgICAgLWQgLS1kZWJ1ZyAgICAgICAgICAgU2hvdyBkZWJ1ZyBtZXNzYWdlcyIpOwotICAgICAg
-ICB0c3RfcmVzbShUSU5GTywiICAgIC1oIC0taGVscCAgICAgICAgICAgIFNob3cgdGhpcyBtZXNz
-YWdlIik7Ci0gICAgICAgIHRzdF9yZXNtKFRJTkZPLCJORyIpOwotICAgICAgICBleGl0KDEpOwot
-fQotCi0KIC8qCiAgKiBtYWluKCkKICAqLwogCi0KLQogaW50IG1haW4oaW50IGFjLCBjaGFyICoq
-YXYpIHsKIAlpbnQgcmVzdWx0ID0gUkVTVUxUX09LOwotICAgICAgICBpbnQgYzsKLSAgICAgICAg
-aW50IGk7Ci0gICAgICAgIGludCBsYzsgICAgICAgICAgICAgICAgIC8qIGxvb3AgY291bnRlciAq
-LwotICAgICAgICBjaGFyICptc2c7ICAgICAgICAgICAgICAvKiBtZXNzYWdlIHJldHVybmVkIGZy
-b20gcGFyc2Vfb3B0cyAqLwotCi0Jc3RydWN0IG9wdGlvbiBsb25nX29wdGlvbnNbXSA9IHsKLSAg
-ICAgICAgICAgICAgICB7ICJkZWJ1ZyIsIG5vX2FyZ3VtZW50LCAwLCAnZCcgfSwKLSAgICAgICAg
-ICAgICAgICB7ICJoZWxwIiwgIG5vX2FyZ3VtZW50LCAwLCAnaCcgfSwKLSAgICAgICAgICAgICAg
-ICB7IE5VTEwsIDAsIE5VTEwsIDAgfQotICAgICAgICB9OwotCi0JcHJvZ25hbWUgPSBzdHJjaHIo
-YXZbMF0sICcvJyk7Ci0gICAgICAgIHByb2duYW1lID0gcHJvZ25hbWUgPyBwcm9nbmFtZSArIDEg
-OiBhdlswXTsJCi0KLQlwcm9nZGlyID0gc3RyZHVwKGF2WzBdKTsKLSAgICAgICAgcHJvZ2RpciA9
-IGRpcm5hbWUocHJvZ2Rpcik7Ci0JCi0gICAgICAgIC8qIHBhcnNlIHN0YW5kYXJkIG9wdGlvbnMg
-Ki8KLSAgICAgICAgaWYgKChtc2cgPSBwYXJzZV9vcHRzKGFjLCBhdiwgKG9wdGlvbl90ICopTlVM
-TCwgTlVMTCkpICE9IChjaGFyICopTlVMTCl7Ci0gICAgICAgICAgICAgdHN0X2Jya20oVEJST0ss
-IGNsZWFudXAsICJPUFRJT04gUEFSU0lORyBFUlJPUiAtICVzIiwgbXNnKTsKLSAgICAgICAgICAg
-ICB0c3RfZXhpdCgpOwotICAgICAgICAgICB9Ci0KLSAgICAgICAgc2V0dXAoKTsKLQotICAgICAg
-ICAvKiBDaGVjayBsb29waW5nIHN0YXRlIGlmIC1pIG9wdGlvbiBnaXZlbiAqLwotICAgICAgICBm
-b3IgKGxjID0gMDsgVEVTVF9MT09QSU5HKGxjKTsgKytsYykgewotICAgICAgICAgICAgICAgIFRz
-dF9jb3VudCA9IDA7Ci0gICAgICAgICAgICAgICAgZm9yICh0ZXN0bm8gPSAwOyB0ZXN0bm8gPCBU
-U1RfVE9UQUw7ICsrdGVzdG5vKSB7Ci0JCQkgVEVTVChjID0gZ2V0b3B0X2xvbmcoYWMsIGF2LCAi
-ZGgiLCBsb25nX29wdGlvbnMsIE5VTEwpKTsKLQkJCSB3aGlsZShURVNUX1JFVFVSTiAhPSAtMSkg
-ewotCQkgICAgICAgICAgICAgICAgc3dpdGNoIChjKSB7Ci0gICAgICAgICAgICAgICAgCQljYXNl
-ICdkJzoKLQkJICAgICAgICAgICAgICAgICAgICAgICAgb3B0X2RlYnVnID0gMTsKLSAgICAgICAg
-ICAgICAgICAJCSAgICAgICAgYnJlYWs7Ci0JCSAgICAgICAgICAgICAgICBkZWZhdWx0OgotICAg
-ICAgICAgICAgICAgIAkJICAgICAgICB1c2FnZShwcm9nbmFtZSk7Ci0gICAgICAgICAgICAgICAg
-ICAgICAgICAJCS8vIE5PVFJFQUNIRUQKLSAgICAgICAgICAgICAgICAJCX0KLQkJICAgICAgICB9
-Ci0KLQotCQlpZiAoYWMgIT0gb3B0aW5kKSB7Ci0gICAgICAgIAkgICAgICAgIHRzdF9yZXNtKFRJ
-TkZPLCJPcHRpb25zIGFyZSBub3QgbWF0Y2guIik7Ci0gICAgICAgICAgICAgICAgCXVzYWdlKHBy
-b2duYW1lKTsKLSAgICAgICAgICAgICAgICAJLy8gTk9UUkVBQ0hFRAotCSAgICAgICAgfQotCi0J
-CS8qCi0JCSogRXhlY3V0ZSB0ZXN0Ci0gICAgICAgICAJKi8KLQkgICAgICAgIGZvciAoaSA9IDA7
-IGkgPCAoaW50KShzaXplb2YodGNhc2UpIC8gc2l6ZW9mKHRjYXNlWzBdKSk7IGkrKykgewotICAg
-ICAgICAJICAgICAgICBpbnQgcmV0OwotCSAgICAgICAgICAgICAgICB0c3RfcmVzbShUSU5GTywi
-KGNhc2UlMDJkKSBTVEFSVCIsIGkpOwotCSAgICAgICAgICAgICAgICByZXQgPSBkb190ZXN0KCZ0
-Y2FzZVtpXSk7Ci0JICAgICAgICAgICAgICAgIHRzdF9yZXNtKFRJTkZPLCIoY2FzZSUwMmQpIEVO
-RCA9PiAlcyIsIGksIChyZXQgPT0gMCkgPyAiT0siIDogIk5HIik7Ci0JICAgICAgICAgICAgICAg
-IHJlc3VsdCB8PSByZXQ7Ci0gICAgICAgIAl9Ci0JCQotCQkvKgotICAgICAgICAJICogQ2hlY2sg
-cmVzdWx0cwotICAgICAgICAgCSovCi0gICAgICAgIAlzd2l0Y2gocmVzdWx0KSB7Ci0JICAgICAg
-ICBjYXNlIFJFU1VMVF9PSzoKLSAgICAgICAgCQkJdHN0X3Jlc20oVFBBU1MsICJwcG9sbDAxIGNh
-bGwgc3VjY2VlZGVkICIpOwotCQkgICAgICAgICAgICAgICAgYnJlYWs7Ci0KLQkgICAgICAgIGRl
-ZmF1bHQ6Ci0gICAgICAgICAgICAgICAgIAkgICAJdHN0X3Jlc20oVEZBSUwsICIlcyBmYWlsZWQg
-LSBlcnJubyA9ICVkIDogJXMiLCBUQ0lELCBURVNUX0VSUk5PLCBzdHJlcnJvcihURVNUX0VSUk5P
-KSk7Ci0gICAgICAgIAkJICAgICAgICBSUFJJTlRGKCJORyIpOworCWludCBpOworCWludCBsYzsg
-LyogbG9vcCBjb3VudGVyICovCisJY2hhciAqbXNnOyAvKiBtZXNzYWdlIHJldHVybmVkIGZyb20g
-cGFyc2Vfb3B0cyAqLworCisJLyogcGFyc2Ugc3RhbmRhcmQgb3B0aW9ucyAqLworCWlmICgobXNn
-ID0gcGFyc2Vfb3B0cyhhYywgYXYsIChvcHRpb25fdCAqKSBOVUxMLCBOVUxMKSkgIT0gKGNoYXIg
-KikgTlVMTCkgeworCQl0c3RfYnJrbShUQlJPSywgY2xlYW51cCwgIk9QVElPTiBQQVJTSU5HIEVS
-Uk9SIC0gJXMiLCBtc2cpOworCX0KKworCXNldHVwKCk7CisKKwkvKiBDaGVjayBsb29waW5nIHN0
-YXRlIGlmIC1pIG9wdGlvbiBnaXZlbiAqLworCWZvciAobGMgPSAwOyBURVNUX0xPT1BJTkcobGMp
-OyArK2xjKSB7CisJCVRzdF9jb3VudCA9IDA7CisJCWZvciAodGVzdG5vID0gMDsgdGVzdG5vIDwg
-VFNUX1RPVEFMOyArK3Rlc3RubykgeworCQkJLyoKKwkJCSAqIEV4ZWN1dGUgdGVzdAorCQkJICov
-CisJCQlmb3IgKGkgPSAwOyBpIDwgKGludCkgKHNpemVvZih0Y2FzZSkgLyBzaXplb2YodGNhc2Vb
-MF0pKTsgaSsrKSB7CisJCQkJaW50IHJldDsKKwkJCQl0c3RfcmVzbShUSU5GTywgIihjYXNlJTAy
-ZCkgU1RBUlQiLCBpKTsKKwkJCQlyZXQgPSBkb190ZXN0KCZ0Y2FzZVtpXSk7CisJCQkJdHN0X3Jl
-c20oVElORk8sICIoY2FzZSUwMmQpIEVORCA9PiAlcyIsIGksIChyZXQgPT0gMCkgPyAiT0siCisJ
-CQkJCQk6ICJORyIpOworCQkJCXJlc3VsdCB8PSByZXQ7CisJCQl9CisKKwkJCS8qCisJCQkgKiBD
-aGVjayByZXN1bHRzCisJCQkgKi8KKwkJCXN3aXRjaCAocmVzdWx0KSB7CisJCQljYXNlIFJFU1VM
-VF9PSzoKKwkJCQl0c3RfcmVzbShUUEFTUywgInBwb2xsMDEgY2FsbCBzdWNjZWVkZWQgIik7CisJ
-CQkJYnJlYWs7CisKKwkJCWRlZmF1bHQ6CisJCQkJdHN0X3Jlc20oVEZBSUwsICIlcyBmYWlsZWQg
-LSBlcnJubyA9ICVkIDogJXMiLCBUQ0lELAorCQkJCQkJbGFzdF9mYWlsZWRfZXJybm8sIHN0cmVy
-cm9yKGxhc3RfZmFpbGVkX2Vycm5vKSk7CisJCQkJUlBSSU5URigiTkciKTsKIAkJCQljbGVhbnVw
-KCk7Ci0JCQkJdHN0X2V4aXQoKTsKLQkJICAgICAgICAgICAgICAgIGJyZWFrOwotICAgICAgICAJ
-fQotCi0gICAgICAgICAgICAgICAgfQotICAgICAgICB9CQotICAgICAgICBjbGVhbnVwKCk7Ci0J
-dHN0X2V4aXQoKTsKKwkJCQlicmVhazsKKwkJCX0KKworCQl9CisJfQorCWNsZWFudXAoKTsKIH0K
-IAo=
+8. Variable expansion was partially broken [used underlying caller
+from $(subst ) instead of $(patsubst )].
+9. Now this one flat out spooks me:
 
-------_=_NextPart_001_01CA6189.C186B84C
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+2004-03-20  Paul D. Smith  <psmith@gnu.org>
 
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
+[...]
+
+        * rule.c (count_implicit_rule_limits): Don't delete patterns which
+        refer to absolute pathnames in directories that don't exist: some
+        portion of the makefile could create those directories before we
+        match the pattern.  Fixes bugs #775 and #108.
+
+  This makes me think that out-of-build-tree could be REALLY broken with 3.=
+80.
+
+10. Ouch -- this is a really f'ed up bug:
+
+2004-01-07  Paul D. Smith  <psmith@gnu.org>
+
+[...]
+
+        * job.c (construct_command_argv_internal): Add "!" to the list of
+        shell escape chars.  POSIX sh allows it to appear before a
+        command, to negate the exit code.  Fixes bug #6404.
+
+11. Yipes -- this scares me because we do use implicit and pattern rules:
+
+2003-04-19  Paul D. Smith  <psmith@gnu.org>
+
+        Fix bug #1405: allow a target to match multiple pattern-specific
+        variables.
+
+        * rule.c (create_pattern_var, lookup_pattern_var): Move these to
+        variable.c, where they've always belonged.
+        * rule.h: Move the prototypes and struct pattern_var as well.
+        * variable.c (initialize_file_variables): Invoke
+        lookup_pattern_var() in a loop, until no more matches are found.
+        If a match is found, create a new variable set for the target's
+        pattern variables.  Then merge the contents of each matching
+        pattern variable set into the target's pattern variable set.
+        (lookup_pattern_var): Change this function to be usable
+        in a loop.  It takes a starting position: if NULL, start at the
+        beginning; if non-NULL, start with the pattern variable after that
+        position, and return the next matching pattern.
+        (create_pattern_var): Create a unique instance of
+        pattern-specific variables for every definition in the makefile.
+        Don't combine the same pattern together.  This allows us to
+        process the variable handling properly even when the same pattern
+        is used multiple times.
+        (parse_variable_definition): New function: break out the parsing
+        of a variable definition line from try_variable_definition.
+        (try_variable_definition): Call parse_variable_definition to
+        parse.
+        (print_variable_data_base): Print out pattern-specific variables.
+        * variable.h (struct variable): Remember when a variable is
+        conditional.  Also remember its flavor.
+        (struct pattern_var): Instead of keeping a variable set, we just
+        keep a single variable for each pattern.
+        * read.c (record_target_var): Each pattern variable contains only a
+        single variable, not a set, so create it properly.
+        * doc/make.texi (Pattern-specific): Document the new behavior
+
+12. Hmmm -- this could get nasty:
+
+2003-01-22  Paul D. Smith  <psmith@gnu.org>
+
+        * function.c (func_call): Fix Bug #1744.  If we're inside a
+        recursive invocation of $(call ...), mask any of the outer
+        invocation's arguments that aren't used by this one, so that this
+        invocation doesn't "inherit" them accidentally.
+
+I'm concerned now that this is going to take 4 +/- 1 weekends to
+complete and will be semi-painful to validate... The funny thing is
+that our Makefiles were implementing some of this logic before (in a
+hodgepodge manner), so this maybe some items like these were failing
+in the past but not being caught, or were masked by all of the
+explicit target specifications which are a MFPiTA to maintain.
+
+Thoughts :\?
+
+Thanks,
+-Garrett
+
+---------------------------------------------------------------------------=
+---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+
+trial. Simplify your report design, integration and deployment - and focus =
+on =
+
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-------_=_NextPart_001_01CA6189.C186B84C
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------_=_NextPart_001_01CA6189.C186B84C--
-
