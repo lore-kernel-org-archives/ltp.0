@@ -2,21 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <andi@firstfloor.org>) id 1N6OZA-0001u3-Pf
-	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 13:09:24 +0000
-Received: from one.firstfloor.org ([213.235.205.2])
+	(envelope-from <vapier@gentoo.org>) id 1N7CEy-00025V-Sh
+	for ltp-list@lists.sourceforge.net; Sun, 08 Nov 2009 18:11:52 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
 	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N6OZ5-00047K-JK
-	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 13:09:24 +0000
-Date: Fri, 6 Nov 2009 14:09:06 +0100
-From: Andi Kleen <andi@firstfloor.org>
-Message-ID: <20091106130906.GW31511@one.firstfloor.org>
-References: <20091106095745.GA25377@basil.fritz.box>
-	<200911060616.40305.vapier@gentoo.org>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <200911060616.40305.vapier@gentoo.org>
-Subject: Re: [LTP] LTP 20091031 Makefiles totally broken?!?
+	(Exim 4.69) id 1N7CEr-0004e8-EQ
+	for ltp-list@lists.sourceforge.net; Sun, 08 Nov 2009 18:11:52 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sun, 8 Nov 2009 13:13:24 -0500
+References: <1257167821.4977.41.camel@subratamodak.linux.ibm.com>
+	<364299f40911061728g37c0cd6ble40974b0fe5b5597@mail.gmail.com>
+	<20091108095019.184998b2.rdunlap@xenotime.net>
+In-Reply-To: <20091108095019.184998b2.rdunlap@xenotime.net>
+MIME-Version: 1.0
+Message-Id: <200911081313.25577.vapier@gentoo.org>
+Subject: Re: [LTP] [patch 2/2] INSTALL corrections & TODO
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,129 +26,123 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0183615886905528290=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net, Andi Kleen <andi@firstfloor.org>
+To: ltp-list@lists.sourceforge.net
+Cc: ltp-list <ltp-list@lists.sf.net>, Randy Dunlap <rdunlap@xenotime.net>, Andi Kleen <andi@firstfloor.org>
 
-On Fri, Nov 06, 2009 at 07:16:39AM -0400, Mike Frysinger wrote:
-> On Friday 06 November 2009 04:57:45 Andi Kleen wrote:
-> > I ran configure, which seems to spend 99% of its time
-> > checking for stuff that is always there on any Linux,
-> 
-> not really.  most of the configure checks are there because people have 
-> complained about specific issues trying to run on older linux distros.  and we 
+--===============0183615886905528290==
+Content-Type: multipart/signed; boundary="nextPart1874078.zkbJ0Qhij4";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-I always just deleted the tests that didn't build. That's far better
-than not building at all like now.
+--nextPart1874078.zkbJ0Qhij4
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-> arent actively blocking using LTP on other *nix systems.
+On Sunday 08 November 2009 12:50:19 Randy Dunlap wrote:
+> On Fri, 6 Nov 2009 17:28:42 -0800 Garrett Cooper wrote:
+> > On Fri, Nov 6, 2009 at 4:03 PM, Randy Dunlap wrote:
+> > > "Configuration" section to match Makefile message.
+> > > How to use DESTDIR and --prefix together.
+> > >
+> > > TODO:
+> > > "Quick Start" does not work.
+> > > "Not using autoconf:" does not work.
+> > >
+> > > ---
+> > >  INSTALL |    9 ++++++++-
+> > >  1 file changed, 8 insertions(+), 1 deletion(-)
+> > >
+> > > --- ltp-full-20091031-auto.orig/INSTALL
+> > > +++ ltp-full-20091031-auto/INSTALL
+> > > @@ -29,7 +29,7 @@ downloaded from:
+> > >  - http://ftp.gnu.org/gnu/m4/m4-1.4.7.tar.bz2
+> > >  - http://ftp.gnu.org/gnu/m4/m4-1.4.7.tar.gz
+> > >
+> > > -Configuring
+> > > +Configuration
+> > >  -------------------
+> > >  Using autoconf:
+> > >         $ make autotools # This must be run from "$TOP_SRCDIR!"
+> > > @@ -74,6 +74,13 @@ in the same directory where the source f
+> > >   sysroot, as opposed to the host system's sysroot.
+> > >  - Specify SKIP_IDCHECK=3D1 if and when you don't want to modify
+> > > /etc/{group,passwd} on the target system's sysroot.
+> > > +- If you want to build and install ltp inside its source tree (e.g.,
+> > > in +  $TOP_SRCDIR/ltpbin/), to support multiple versions of LTP on one
+> > > system, +  then use
+> > > +
+> > > +       $ cd $TOP_SRCDIR
+> > > +       $ mkdir ltpbin
+> > > +       $ ./configure DESTDIR=3D$PWD --prefix=3D$PWD/ltpbin
+> > >
+> > >  If you get a build error, please report it to ltp-list@lists.sf.net
+> > > with following information,
+> >
+> > My only question about this is this step above a frequently used usecas=
+e?
+>=20
+> I can't answer that.  It seems like a good idea to be able to have
+> multiple versions of ltp installed and it took me a little while to
+> figure out how to use both DESTDIR and --prefix, so I'd like a reference
+> for it...
 
-yes you're just actively blocking running LTP on Linux now it seems.
+=2D-prefix and DESTDIR under LTP should work exactly the same as under any=
+=20
+autotooled package.  passing DESTDIR to configure doesnt make sense imo, no=
+r=20
+does this example.  this example suggests a file tree of:
+$PWD/$PWD/ltpbin/.....
+=2Dmike
 
-> 
-> > and after that I just get
-> > 
-> > # make
-> > make: `testcases/realtime/configure' is up to date.
-> > #
-> 
-> -ENEEDINFO
-> 
-> are you using live cvs ?  latest release ?  what distro ?  what version of 
+--nextPart1874078.zkbJ0Qhij4
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-See Subject on SUSE 10.0
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.13 (GNU/Linux)
 
-> autoconf/make ?  what does `make -d` show ?
+iQIcBAABAgAGBQJK9wpFAAoJEEFjO5/oN/WBrO4P/AtjRQDwPMRPn+G5qmLRVlXX
+7M1AtqTon0wva939qecQTTtVy8QNkKA8g7s97qOCNRlYLONpo8GikixqV0n4IjKW
+ez4jVzKEaLOtsTtRQu9cc8eg+MMe1MrgmcoqR3CraFPNIMs8qKzEyz812HY9zoC+
+e7ozYW0YG3Y5/ru5/kZPaavTl9UGMdPJFUBUcIKtjBeAIjkspZEliRFtepK5yBpH
+wJUP61YQ2Fag30kaq7w3EEH22uVLVPbKP+QY++qhpEfWU5P78cMljq2V7vjDI5CA
+bdk3yqC8u2ASwnesSLbnRxlk62OdkEa6qkLZqr0vhiv+hsu7eGekPgSxeH10npyZ
+r/rNqPxFiAdpuacBy8q7Hmowfm2vE6o1PSdaduyB9yyMb8z/6vjJux+eKnXRf2xh
+cjSgIgudiHYgmn6Ob1DIHRK8Z+KsXoXtq1qw78fM5oIzi9g/156Rx9DJm2BjmhNx
+bAH/GS53d2i8WQlKoerPntV/aGm2d/CrkOdbkpBiqw4oBKxTna+t/0cTZ3tIKrsu
+NziX/PpMHw/+IWxDh2soqMwSTzRVUTFJTuSj2YoV8Tp3g0SlOE2/d2ElyAG5O/vp
+/nkUYzukXpxL5dzs+iDsH+xcOb+hCJ77NXF+NnxLkvhnDihzKt5FofbvZtqgZbrh
+0m0a5AsETHxOGTKLM5s2
+=aFvt
+-----END PGP SIGNATURE-----
 
-autoconf doesn't matter because I didn't regenerate the script.
-
-GNU Make 3.80
-Copyright (C) 2002  Free Software Foundation, Inc.
-This is free software; see the source for copying conditions.
-There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE.
-Reading makefiles...
-Reading makefile `Makefile'...
-Reading makefile `/root/ltp-full-20091031/include/mk/env_pre.mk' (search path) (no ~ expansion)...
-Reading makefile `/root/ltp-full-20091031/include/mk/config.mk' (search path) (don't care) (no ~ expansion)...
-Reading makefile `/root/ltp-full-20091031/include/mk/automake.mk' (search path) (no ~ expansion)...
-Updating makefiles....
- Considering target file `/root/ltp-full-20091031/include/mk/automake.mk'.
-  Looking for an implicit rule for `/root/ltp-full-20091031/include/mk/automake.mk'.
-  Trying pattern rule with stem `automake.mk'.
-  Trying implicit prerequisite `/root/ltp-full-20091031/include/mk/automake.mk,v'.
-  Trying pattern rule with stem `automake.mk'.
-  Trying implicit prerequisite `/root/ltp-full-20091031/include/mk/RCS/automake.mk,v'.
-  Trying pattern rule with stem `automake.mk'.
-  Trying implicit prerequisite `/root/ltp-full-20091031/include/mk/RCS/automake.mk'.
-  Trying pattern rule with stem `automake.mk'.
-  Trying implicit prerequisite `/root/ltp-full-20091031/include/mk/s.automake.mk'.
-  Trying pattern rule with stem `automake.mk'.
-  Trying implicit prerequisite `/root/ltp-full-20091031/include/mk/SCCS/s.automake.mk'.
-  No implicit rule found for `/root/ltp-full-20091031/include/mk/automake.mk'.
-  Finished prerequisites of target file `/root/ltp-full-20091031/include/mk/automake.mk'.
- No need to remake target `/root/ltp-full-20091031/include/mk/automake.mk'.
- Considering target file `/root/ltp-full-20091031/include/mk/config.mk'.
-  Looking for an implicit rule for `/root/ltp-full-20091031/include/mk/config.mk'.
-  Trying pattern rule with stem `config.mk'.
-  Trying implicit prerequisite `/root/ltp-full-20091031/include/mk/config.mk,v'.
-  Trying pattern rule with stem `config.mk'.
-  Trying implicit prerequisite `/root/ltp-full-20091031/include/mk/RCS/config.mk,v'.
-  Trying pattern rule with stem `config.mk'.
-  Trying implicit prerequisite `/root/ltp-full-20091031/include/mk/RCS/config.mk'.
-  Trying pattern rule with stem `config.mk'.
-  Trying implicit prerequisite `/root/ltp-full-20091031/include/mk/s.config.mk'.
-  Trying pattern rule with stem `config.mk'.
-  Trying implicit prerequisite `/root/ltp-full-20091031/include/mk/SCCS/s.config.mk'.
-  No implicit rule found for `/root/ltp-full-20091031/include/mk/config.mk'.
-  Finished prerequisites of target file `/root/ltp-full-20091031/include/mk/config.mk'.
- No need to remake target `/root/ltp-full-20091031/include/mk/config.mk'.
- Considering target file `/root/ltp-full-20091031/include/mk/env_pre.mk'.
-  Looking for an implicit rule for `/root/ltp-full-20091031/include/mk/env_pre.mk'.
-  Trying pattern rule with stem `env_pre.mk'.
-  Trying implicit prerequisite `/root/ltp-full-20091031/include/mk/env_pre.mk,v'.
-  Trying pattern rule with stem `env_pre.mk'.
-  Trying implicit prerequisite `/root/ltp-full-20091031/include/mk/RCS/env_pre.mk,v'.
-  Trying pattern rule with stem `env_pre.mk'.
-  Trying implicit prerequisite `/root/ltp-full-20091031/include/mk/RCS/env_pre.mk'.
-  Trying pattern rule with stem `env_pre.mk'.
-  Trying implicit prerequisite `/root/ltp-full-20091031/include/mk/s.env_pre.mk'.
-  Trying pattern rule with stem `env_pre.mk'.
-  Trying implicit prerequisite `/root/ltp-full-20091031/include/mk/SCCS/s.env_pre.mk'.
-  No implicit rule found for `/root/ltp-full-20091031/include/mk/env_pre.mk'.
-  Finished prerequisites of target file `/root/ltp-full-20091031/include/mk/env_pre.mk'.
- No need to remake target `/root/ltp-full-20091031/include/mk/env_pre.mk'.
- Considering target file `Makefile'.
-  Looking for an implicit rule for `Makefile'.
-  Trying pattern rule with stem `Makefile'.
-  Trying implicit prerequisite `Makefile,v'.
-  Trying pattern rule with stem `Makefile'.
-  Trying implicit prerequisite `RCS/Makefile,v'.
-  Trying pattern rule with stem `Makefile'.
-  Trying implicit prerequisite `RCS/Makefile'.
-  Trying pattern rule with stem `Makefile'.
-  Trying implicit prerequisite `s.Makefile'.
-  Trying pattern rule with stem `Makefile'.
-  Trying implicit prerequisite `SCCS/s.Makefile'.
-  No implicit rule found for `Makefile'.
-  Finished prerequisites of target file `Makefile'.
- No need to remake target `Makefile'.
-Updating goal targets....
-Considering target file `testcases/realtime/configure'.
- Finished prerequisites of target file `testcases/realtime/configure'.
-No need to remake target `testcases/realtime/configure'.
-make: `testcases/realtime/configure' is up to date.
+--nextPart1874078.zkbJ0Qhij4--
 
 
+--===============0183615886905528290==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============0183615886905528290==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0183615886905528290==--
+
