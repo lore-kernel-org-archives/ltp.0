@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NA20d-0005wv-Hb
-	for ltp-list@lists.sourceforge.net; Mon, 16 Nov 2009 13:52:47 +0000
-Received: from e7.ny.us.ibm.com ([32.97.182.137])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NA20W-0001Up-B9
-	for ltp-list@lists.sourceforge.net; Mon, 16 Nov 2009 13:52:47 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <364299f40911160041n1f4578a3t8ca143f89fd86207@mail.gmail.com>
-References: <1258357633.5677.24.camel@subratamodak.linux.ibm.com>
-	<364299f40911160041n1f4578a3t8ca143f89fd86207@mail.gmail.com>
-Date: Mon, 16 Nov 2009 19:08:57 +0530
-Message-Id: <1258378737.5677.41.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] One 1 remaining Build Error with LTP CVS 2009-11-16
-Reply-To: subrata@linux.vnet.ibm.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1N7U65-00020p-El
+	for ltp-list@lists.sourceforge.net; Mon, 09 Nov 2009 13:15:53 +0000
+Date: Mon, 9 Nov 2009 14:15:35 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20091109131535.GA20252@schrodinger.suse.cz>
+References: <20091106095745.GA25377@basil.fritz.box>
+	<200911060821.40182.vapier@gentoo.org>
+	<364299f40911061004mbb02ed3lf02a33164890625a@mail.gmail.com>
+	<200911061409.03835.vapier@gentoo.org>
+	<20091106191742.GF819@basil.fritz.box>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20091106191742.GF819@basil.fritz.box>
+Subject: Re: [LTP] LTP 20091031 Makefiles totally broken?!?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,45 +25,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>, Mike Frysinger <vapier@gentoo.org>
+To: Andi Kleen <andi@firstfloor.org>
+Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
 
-T24gTW9uLCAyMDA5LTExLTE2IGF0IDAwOjQxIC0wODAwLCBHYXJyZXR0IENvb3BlciB3cm90ZTog
-Cj4gT24gU3VuLCBOb3YgMTUsIDIwMDkgYXQgMTE6NDcgUE0sIFN1YnJhdGEgTW9kYWsKPiA8c3Vi
-cmF0YUBsaW51eC52bmV0LmlibS5jb20+IHdyb3RlOgo+ID4gTWlrZS9HYXJyZXQsCj4gPgo+ID4g
-VGhlcmUgcmVtYWlucyBvbmx5IDEgYnVpbGQgZXJyb3Igbm93IHdpdGggdGhlIExUUCBDVlMuIFRo
-aXMgaGFwcGVucyB0byBiZSB0aGUgaXNzdWUgd2l0aCBsdHAvdGVzdGNhc2VzL2tlcm5lbC9jb250
-YWluZXJzL2xpYmNsb25lL01ha2VmaWxlLgo+ID4gSXQgaXMgbm90IGFibGUgdG8gdG8gaW5jbHVk
-ZSA8dGVzdC5oPiwgPHVzY3Rlc3QuaD4gYW5kIGxpbnV4X3N5c2NhbGxfbnVtYmVycy5oLiBIb3dl
-dmVyLCBpIGp1c3QgbWFkZSB0ZW1wb3JhcnkgY2hhbmdlcyBpbiBteSBsb2NhbCByZXBvIHRvIGZp
-eCB0aGlzOgo+ID4KPiA+ICMgaGVhZCAtMzQgdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL2xp
-YmNsb25lL2xpYmNsb25lLmggfCB0YWlsIC01Cj4gPiAjaW5jbHVkZSA8c2lnbmFsLmg+Cj4gPiAj
-aW5jbHVkZSAiLi4vLi4vaW5jbHVkZS9saW51eF9zeXNjYWxsX251bWJlcnMuaCIKPiA+ICNpbmNs
-dWRlICJ0ZXN0LmgiCj4gPiAjaW5jbHVkZSAidXNjdGVzdC5oIgo+ID4KPiA+IENhbiB5b3UgcGxl
-YXNlIGZpeCB0aGlzIHVwIGluIENWUyA/IEZvbGxvd2luZyBlcnJvciBpcyBnZW5lcmF0ZWQgb24g
-Y29tcGlsYXRpb246Cj4gPgo+ID4gbWFrZVs0XTogRW50ZXJpbmcgZGlyZWN0b3J5IGAvaG9tZS9z
-dWJyYXRhbW9kYWsvT0ZGSUNFX1dPUktTL0xUUF9QUk9KRUNUX0NPREUvTFRQX1RBUlMvT0NUT0JF
-Ul8yMDA5X1JFTEVBU0UvbHRwLWludGVybWVkaWF0ZS0yMDA5MTExNi90ZXN0Y2FzZXMva2VybmVs
-L2NvbnRhaW5lcnMvbGliY2xvbmUnCj4gPiBnY2MgLWcgLU8yIC1nIC1PMiAtZm5vLXN0cmljdC1h
-bGlhc2luZyAtcGlwZSAtV2FsbCAgLUkuLi8uLi8uLi8uLi9pbmNsdWRlIC1JLi4vLi4vLi4vLi4v
-aW5jbHVkZSAgLWMgLW8gbGliY2xvbmUubyBsaWJjbG9uZS5jCj4gPiBJbiBmaWxlIGluY2x1ZGVk
-IGZyb20gbGliY2xvbmUuYzoxNzoKPiA+IGxpYmNsb25lLmg6MzE6MzU6IGVycm9yOiBsaW51eF9z
-eXNjYWxsX251bWJlcnMuaDogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQo+ID4gbGliY2xvbmUu
-YzogSW4gZnVuY3Rpb24g4oCYZG9fY2xvbmVfdGVzdHPigJk6Cj4gPiBsaWJjbG9uZS5jOjI1OiB3
-YXJuaW5nOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiDigJhsdHBfY2xvbmVfcXVp
-Y2vigJkKPiA+IG1ha2VbNF06ICoqKiBbbGliY2xvbmUub10gRXJyb3IgMQo+IAo+IERvbmUuIFNv
-cnJ5IGZvciB0aGUgYWNjaWRlbnRhbCBsb2NhbCBpdGVtcyB0aGF0IEkgZm9yZ290IHRvIGNoZWNr
-aW4uLi4KClRoYW5rcyBHYXJyZXQuIFNlZW1zIGZpeGVkIG5vdy4KClJlZ2FyZHMtLQpTdWJyYXRh
-Cgo+IC1HYXJyZXR0CgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxldCBDcnlzdGFsIFJlcG9ydHMg
-aGFuZGxlIHRoZSByZXBvcnRpbmcgLSBGcmVlIENyeXN0YWwgUmVwb3J0cyAyMDA4IDMwLURheSAK
-dHJpYWwuIFNpbXBsaWZ5IHlvdXIgcmVwb3J0IGRlc2lnbiwgaW50ZWdyYXRpb24gYW5kIGRlcGxv
-eW1lbnQgLSBhbmQgZm9jdXMgb24gCndoYXQgeW91IGRvIGJlc3QsIGNvcmUgYXBwbGljYXRpb24g
-Y29kaW5nLiBEaXNjb3ZlciB3aGF0J3MgbmV3IHdpdGgKQ3J5c3RhbCBSZXBvcnRzIG5vdy4gIGh0
-dHA6Ly9wLnNmLm5ldC9zZnUvYm9iai1qdWx5Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5z
-b3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGlu
-Zm8vbHRwLWxpc3QK
+Hi!
+> > > As I just wrote in the INSTALL file after the release (I apologize for
+> > > not catching this beforehand, but all of the systems I use -- Fedora,
+> > > Gentoo, RHEL 4 update 6, Ubuntu -- have make 3.81):
+> > 
+> > hrm, it sucks to not support make 3.80.  while make 3.81 has been out for 
+> > three years now, make 3.80 support would increase the coverage to 8 years.  
+> > but if you've looked at the situation and found 3.80 support to be non 
+> > trivial, i wont whine too loud.
+> 
+> Well I do whine. I essentially means that I won't be able to use
+> newer LTP versions anymore in my standard test setup. And I know
+> it's pretty common with kernel hackers to use old user lands:
+> you're basically cutting yourself off from your customer base.
+>
+
+Me too please, that would definitively broke package building process as it's
+not that easy to hack the magick box called buildsystem to use different
+version of packages (even if they build properly on given distro version).
+Forcing user to use newer make is good workaround for some time but IMHO not
+propper solution.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
