@@ -1,19 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1N65gF-0002jA-IW
-	for ltp-list@lists.sourceforge.net; Thu, 05 Nov 2009 16:59:27 +0000
-Date: Thu, 5 Nov 2009 17:59:13 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20091105165913.GD19831@schrodinger.suse.cz>
-References: <20091105131852.GA13908@schrodinger.suse.cz>
-	<200911051129.18046.vapier@gentoo.org>
+	(envelope-from <liubo2009@cn.fujitsu.com>) id 1N7nB9-00057M-JP
+	for ltp-list@lists.sourceforge.net; Tue, 10 Nov 2009 09:38:23 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N7nB2-0002L4-NW
+	for ltp-list@lists.sourceforge.net; Tue, 10 Nov 2009 09:38:23 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id 3C84F170115
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 10 Nov 2009 17:38:05 +0800 (CST)
+Received: from fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id nAA9b9xR020196
+	for <ltp-list@lists.sourceforge.net>; Tue, 10 Nov 2009 17:37:09 +0800
+Received: from localhost.localdomain (unknown [10.167.141.167])
+	by fnst.cn.fujitsu.com (Postfix) with ESMTPA id 3B1A6D4033
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 10 Nov 2009 17:37:41 +0800 (CST)
+Message-ID: <4AF93496.3030408@cn.fujitsu.com>
+Date: Tue, 10 Nov 2009 17:38:30 +0800
+From: liubo <liubo2009@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="jq0ap7NbKX2Kqbes"
-Content-Disposition: inline
-In-Reply-To: <200911051129.18046.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] replacing -Wextra with -W
+Subject: [LTP] [PATCH] syscalls: fix some failure on arch X86_64
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,117 +33,134 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
-
-
---jq0ap7NbKX2Kqbes
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi!
-> > Lately gcc developers introduced -Wextra flag that does the same as -W but
-> >  is more descriptive. According to this using -W flag should be safe (as
-> >  gcc is backward compatlible) but using -Wextra is limited to newer gcc
-> >  releases.
-> > 
-> > Attached patch replaces all -Wextra occurences with -W and thus fixes
-> > compliation failures with older gcc (mine was gcc-3.3.3 on sles).
-> 
-> it'd be better if we had configure tests for -W flags, but that would take a 
-> bit more effort, and i dont think it should preclude applying your patch.  
-> however, please make this change first:
->  - integrated Makefiles shouldnt be setting flags at all, so just delete the 
-> whole line in testcases/kernel/controllers/{cpuctl,cgroup}_fj/Makefile
-> 
-
-Patch that should be applied over the previous one attached.
-
-Signed-off-by: Cyril Hrubis chrubis@suse.cz
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
---jq0ap7NbKX2Kqbes
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="remove_cppflags.patch"
-
-Index: delme/testcases/kernel/controllers/cpuctl_fj/Makefile
-===================================================================
---- delme.orig/testcases/kernel/controllers/cpuctl_fj/Makefile
-+++ delme/testcases/kernel/controllers/cpuctl_fj/Makefile
-@@ -25,8 +25,6 @@ top_srcdir		?= ../../../..
- include $(top_srcdir)/include/mk/testcases.mk
- include $(abs_srcdir)/../Makefile.inc
- 
--CPPFLAGS		+= -Wall -O2 -W
--
- INSTALL_TARGETS		:= *.sh
- 
- LDLIBS			+= -lm
-Index: delme/testcases/kernel/controllers/cgroup_fj/Makefile
-===================================================================
---- delme.orig/testcases/kernel/controllers/cgroup_fj/Makefile
-+++ delme/testcases/kernel/controllers/cgroup_fj/Makefile
-@@ -25,8 +25,6 @@ top_srcdir		?= ../../../..
- include $(top_srcdir)/include/mk/testcases.mk
- include $(abs_srcdir)/../Makefile.inc
- 
--CPPFLAGS		+= -Wall -O2 -W
--
- INSTALL_TARGETS		:= *.sh
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-Index: delme/testcases/kernel/controllers/cpuacct/Makefile
-===================================================================
---- delme.orig/testcases/kernel/controllers/cpuacct/Makefile
-+++ delme/testcases/kernel/controllers/cpuacct/Makefile
-@@ -25,8 +25,6 @@ top_srcdir		?= ../../../..
- include $(top_srcdir)/include/mk/testcases.mk
- include $(abs_srcdir)/../Makefile.inc
- 
--CPPFLAGS		+= -Wall
--
- INSTALL_TARGETS		:= *.sh
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-Index: delme/testcases/kernel/io/disktest/Makefile
-===================================================================
---- delme.orig/testcases/kernel/io/disktest/Makefile
-+++ delme/testcases/kernel/io/disktest/Makefile
-@@ -188,7 +188,7 @@ include $(top_srcdir)/include/mk/env_pre
- 
- VER		:= `grep VER_STR $(abs_srcdir)/main.h | awk -F\" '{print $$2}'`
- 
--CPPFLAGS	+= -g -Wall -O -DLINUX -D_THREAD_SAFE -D_GNU_SOURCE -D_LARGE_FILES -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 $(RPM_OPT_FLAGS)
-+CPPFLAGS	+= -g -O -DLINUX -D_THREAD_SAFE -D_GNU_SOURCE -D_LARGE_FILES -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 $(RPM_OPT_FLAGS)
- 
- DISTRO_FILES	:= Makefile* *.[ch] LICENSE README CHANGELOG
- 
-
---jq0ap7NbKX2Kqbes
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+1) rt_sigaction
+    "sigaction" has the structure:
+ 
+ struct sigaction {
+         __sighandler_t sa_handler;
+         unsigned long sa_flags;
+  #ifdef SA_RESTORER
+          __sigrestore_t sa_restorer;
+  #endif
+          sigset_t sa_mask;               /* mask last for extensibility */
+ };
+
+    However, on arch x86_64, if we directly get to call rt_sigaction,
+the argument "sa_restorer" will not be fulfilled, and this will lead
+ to segment fault.
+    on arch x86_64, if sa_restorer is not set, kernel will lead to segment fault. 
+In other arch, if sa_restorer is not set, kernel can do the correct work.
+    To avoid this segment fault, we use glibc function
+"int sigaction(...);" instead, which can fulfill the argument "sa_restorer".
+
+2) rt_sigprocmask
+    This failure contains two aspects,
+the first is the segment fault as described in 1),
+the second is that testcase uses a unknown signal 33 for test,
+and this will lead sigaction cannot bind signal 33 to the action.
+
+    So, we attempt to use a known signal instead, such as 34.
+
+This patch fixed these failures.
+
+Signed-off-by: Liu Bo <liubo2009@cn.fujitsu.com>
+
+---
+ .../kernel/syscalls/rt_sigaction/rt_sigaction01.c  |    4 ++++
+ .../syscalls/rt_sigprocmask/rt_sigprocmask01.c     |   12 ++++++++----
+ .../syscalls/rt_sigsuspend/rt_sigsuspend01.c       |    4 ++++
+ 3 files changed, 16 insertions(+), 4 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
+index 27af970..1522ac4 100644
+--- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
++++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
+@@ -154,7 +154,11 @@ set_handler(int sig, int sig_to_mask, int mask_flags)
+                 sa.sa_flags = mask_flags;
+                 sigemptyset(&sa.sa_mask);
+                 sigaddset(&sa.sa_mask, sig_to_mask);
++		#ifndef __x86_64__
+                 TEST(syscall(__NR_rt_sigaction,sig, &sa, &oldaction,SIGSETSIZE));
++		#else
++		TEST(sigaction(sig, &sa, &oldaction));
++		#endif
+         if (TEST_RETURN == 0) {
+                 return 0;
+         } else {
+diff --git a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
+index 6398a28..31258e9 100644
+--- a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
++++ b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
+@@ -154,7 +154,7 @@ int main(int ac, char **av) {
+                         	cleanup();
+ 				tst_exit();
+ 			}
+-			TEST(sigaddset(&set, 33));
++			TEST(sigaddset(&set, 34));
+ 			if(TEST_RETURN == -1){
+ 				tst_resm(TFAIL,"Call to sigaddset() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+                         	cleanup();
+@@ -163,7 +163,11 @@ int main(int ac, char **av) {
+ 			
+ 			/* call rt_sigaction() */
+ 			act.sa_handler = sig_handler;
+-                        TEST(syscall(__NR_rt_sigaction, 33, &act, &oact, 8));
++			#ifndef __x86_64__
++                        TEST(syscall(__NR_rt_sigaction, 34, &act, &oact, 8));
++			#else
++			TEST(sigaction(34, &act, &oact));
++			#endif
+ 			if(TEST_RETURN != 0){
+ 				tst_resm(TFAIL,"Call to rt_sigaction() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+                         	cleanup();
+@@ -178,7 +182,7 @@ int main(int ac, char **av) {
+ 			}
+ 			
+ 			else {
+-				TEST(kill(getpid(), 33));
++				TEST(kill(getpid(), 34));
+ 				if(TEST_RETURN != 0){
+ 					tst_resm(TFAIL,"Call to kill() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+                         		cleanup();
+@@ -198,7 +202,7 @@ int main(int ac, char **av) {
+                         			cleanup();
+ 						tst_exit();
+ 					}
+-					TEST(sigismember(&oset, 33));
++					TEST(sigismember(&oset, 34));
+ 					if(TEST_RETURN == 0 ){
+ 						tst_resm(TFAIL,"call sigismember() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+                         			cleanup();
+diff --git a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
+index 416a7c9..6132622 100644
+--- a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
++++ b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
+@@ -142,7 +142,11 @@ int main(int ac, char **av) {
+ 			struct sigaction act, oact;
+ 		        act.sa_handler = sig_handler;
+ 			
++			#ifndef __x86_64__
+ 			TEST(syscall(__NR_rt_sigaction, SIGALRM, &act, &oact, 8));
++			#else
++			TEST(sigaction(SIGALRM, &act, &oact));
++			#endif
+ 			if(TEST_RETURN == -1){
+ 		        	tst_resm(TFAIL,"rt_sigaction() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+ 				cleanup();
+-- 
+1.6.2.2
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---jq0ap7NbKX2Kqbes
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---jq0ap7NbKX2Kqbes--
-
