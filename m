@@ -1,20 +1,38 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1N7YE6-0008VE-RR
-	for ltp-list@lists.sourceforge.net; Mon, 09 Nov 2009 17:40:26 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N7YDy-0002sR-VM
-	for ltp-list@lists.sourceforge.net; Mon, 09 Nov 2009 17:40:26 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Mon, 09 Nov 2009 23:09:41 +0530
-Message-Id: <1257788381.7677.73.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: [LTP] get_mempolicy01, mbind01,
-	move_pages01 & ptrace04 compile failures	with latest CVS
-Reply-To: subrata@linux.vnet.ibm.com
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1N80ns-0004Ji-FW
+	for ltp-list@lists.sourceforge.net; Wed, 11 Nov 2009 00:11:16 +0000
+Received: from e9.ny.us.ibm.com ([32.97.182.139])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1N80nm-00064l-5L
+	for ltp-list@lists.sourceforge.net; Wed, 11 Nov 2009 00:11:16 +0000
+Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
+	by e9.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nAB0628M014694
+	for <ltp-list@lists.sourceforge.net>; Tue, 10 Nov 2009 19:06:02 -0500
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	nAB0B0Fo1310890
+	for <ltp-list@lists.sourceforge.net>; Tue, 10 Nov 2009 19:11:00 -0500
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	nAAE8ZsL004310
+	for <ltp-list@lists.sourceforge.net>; Tue, 10 Nov 2009 09:08:36 -0500
+Date: Tue, 10 Nov 2009 18:10:59 -0600
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20091111001059.GA30122@us.ibm.com>
+References: <4948C6E4.8080801@linux.vnet.ibm.com>
+	<49491512.9000905@linux.vnet.ibm.com>
+	<1229578051.5149.11.camel@subratamodak.linux.ibm.com>
+	<20090214203139.GA10969@us.ibm.com>
+	<1234762145.7791.13.camel@subratamodak.linux.ibm.com>
+	<1245768501.4860.56.camel@subratamodak.linux.ibm.com>
+	<4AF8F73E.10506@linux.vnet.ibm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <4AF8F73E.10506@linux.vnet.ibm.com>
+Subject: Re: [LTP] [PATCH] testcase pidns20, pidns21 on pid namespace
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,109 +42,83 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>, Mike Frysinger <vapier@gentoo.org>
+To: Rishikesh <risrajak@linux.vnet.ibm.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, Gowrishankar <gowrishankar.m@linux.vnet.ibm.com>, gowrishankar.muthukrishna@gmail.com, Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>, Nadia Derbey <Nadia.Derbey@bull.net>
 
-R2FycmV0LAoKQ2FuIHlvdSBwbGVhc2UgbG9vayBpbnRvIHRoZXNlIGVycm9ycyBvY2N1cnJpbmcg
-b24gbXkgYmVsb3cgc3lzdGVtCmNvbmZpZ3VyYXRpb246CgojIHVuYW1lIC1hCkxpbnV4IDIuNi4x
-OC05Mi5lbDUgIzEgU01QIFR1ZSBBcHIgMjkgMTM6MTY6MTIgRURUIDIwMDggaTY4NiBpNjg2IGkz
-ODYKR05VL0xpbnV4CgpnY2MgLWcgLU8yIC1nIC1PMiAtZm5vLXN0cmljdC1hbGlhc2luZyAtcGlw
-ZSAtV2FsbAotSS9ob21lL3N1YnJhdGFtb2Rhay9PRkZJQ0VfV09SS1MvTFRQX1BST0pFQ1RfQ09E
-RS9MVFBfVEFSUy9PQ1RPQkVSXzIwMDlfUkVMRUFTRS9sdHAtaW50ZXJtZWRpYXRlLTIwMDkxMTA5
-L3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZSAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgLUkuLi8uLi8u
-Li8uLi9pbmNsdWRlICAgLUwuLi8uLi8uLi8uLi9saWIgIGdldF9tZW1wb2xpY3kwMS5jICAgLWxs
-dHAgLW8gZ2V0X21lbXBvbGljeTAxCmdldF9tZW1wb2xpY3kwMS5jOjU5OjI1OiBlcnJvcjogaW5j
-bHVkZV9qX2guaDogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQpnZXRfbWVtcG9saWN5MDEuYzo2
-MDoyNDogZXJyb3I6IGNvbW1vbl9qX2guYzogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQpnZXRf
-bWVtcG9saWN5MDEuYzogSW4gZnVuY3Rpb24g4oCYZG9fdGVzdOKAmToKZ2V0X21lbXBvbGljeTAx
-LmM6Mjc0OiBlcnJvcjog4oCYUkVTVUxUX09L4oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0
-aGlzCmZ1bmN0aW9uKQpnZXRfbWVtcG9saWN5MDEuYzoyNzQ6IGVycm9yOiAoRWFjaCB1bmRlY2xh
-cmVkIGlkZW50aWZpZXIgaXMgcmVwb3J0ZWQKb25seSBvbmNlCmdldF9tZW1wb2xpY3kwMS5jOjI3
-NDogZXJyb3I6IGZvciBlYWNoIGZ1bmN0aW9uIGl0IGFwcGVhcnMgaW4uKQpnZXRfbWVtcG9saWN5
-MDEuYzoyNzY6IGVycm9yOiDigJhub2RlbWFza1904oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBp
-biB0aGlzCmZ1bmN0aW9uKQpnZXRfbWVtcG9saWN5MDEuYzoyNzY6IGVycm9yOiBleHBlY3RlZCDi
-gJg74oCZIGJlZm9yZSDigJhub2RlbWFza+KAmQpnZXRfbWVtcG9saWN5MDEuYzoyNzc6IGVycm9y
-OiDigJhOVU1BX05VTV9OT0RFU+KAmSB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4KdGhpcyBmdW5j
-dGlvbikKZ2V0X21lbXBvbGljeTAxLmM6MjgyOiB3YXJuaW5nOiBpbXBsaWNpdCBkZWNsYXJhdGlv
-biBvZiBmdW5jdGlvbgrigJhub2RlbWFza196ZXJv4oCZCmdldF9tZW1wb2xpY3kwMS5jOjI4Mjog
-ZXJyb3I6IOKAmG5vZGVtYXNr4oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0aGlzCmZ1bmN0
-aW9uKQpnZXRfbWVtcG9saWN5MDEuYzoyODM6IHdhcm5pbmc6IGltcGxpY2l0IGRlY2xhcmF0aW9u
-IG9mIGZ1bmN0aW9uCuKAmG5vZGVtYXNrX3NldOKAmQpnZXRfbWVtcG9saWN5MDEuYzoyODQ6IGVy
-cm9yOiDigJhnZXRub2RlbWFza+KAmSB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4KdGhpcyBmdW5j
-dGlvbikKZ2V0X21lbXBvbGljeTAxLmM6MzM4OiB3YXJuaW5nOiBpbXBsaWNpdCBkZWNsYXJhdGlv
-biBvZiBmdW5jdGlvbgrigJhub2RlbWFza19lcXVhbOKAmQpnZXRfbWVtcG9saWN5MDEuYzozNDA6
-IHdhcm5pbmc6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uCuKAmG5vZGVtYXNrX2R1
-bXDigJkKZ2V0X21lbXBvbGljeTAxLmM6MzQ5OiB3YXJuaW5nOiBpbXBsaWNpdCBkZWNsYXJhdGlv
-biBvZiBmdW5jdGlvbgrigJhQUklOVF9SRVNVTFRfQ01Q4oCZCm1ha2VbNF06ICoqKiBbZ2V0X21l
-bXBvbGljeTAxXSBFcnJvciAxCgoKZ2NjIC1nIC1PMiAtZyAtTzIgLWZuby1zdHJpY3QtYWxpYXNp
-bmcgLXBpcGUgLVdhbGwKLUkvaG9tZS9zdWJyYXRhbW9kYWsvT0ZGSUNFX1dPUktTL0xUUF9QUk9K
-RUNUX0NPREUvTFRQX1RBUlMvT0NUT0JFUl8yMDA5X1JFTEVBU0UvbHRwLWludGVybWVkaWF0ZS0y
-MDA5MTEwOS90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUgLUkvaG9tZS9zdWJyYXRhbW9kYWsvT0ZG
-SUNFX1dPUktTL0xUUF9QUk9KRUNUX0NPREUvTFRQX1RBUlMvT0NUT0JFUl8yMDA5X1JFTEVBU0Uv
-bHRwLWludGVybWVkaWF0ZS0yMDA5MTEwOS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21iaW5k
-Ly4uL3V0aWxzLyAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgLUkuLi8uLi8uLi8uLi9pbmNsdWRlICAg
-LUwuLi8uLi8uLi8uLi9saWIgIG1iaW5kMDEuYyAgIC1sbHRwIC1vIG1iaW5kMDEKSW4gZmlsZSBp
-bmNsdWRlZCBmcm9tIG1iaW5kMDEuYzo2MjoKL2hvbWUvc3VicmF0YW1vZGFrL09GRklDRV9XT1JL
-Uy9MVFBfUFJPSkVDVF9DT0RFL0xUUF9UQVJTL09DVE9CRVJfMjAwOV9SRUxFQVNFL2x0cC1pbnRl
-cm1lZGlhdGUtMjAwOTExMDkvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tYmluZC8uLi91dGls
-cy9udW1haWYuaDo0MDogZXJyb3I6IGNvbmZsaWN0aW5nIHR5cGVzIGZvciDigJhub2RlbWFza190
-4oCZCi91c3IvaW5jbHVkZS9udW1hLmg6Mzk6IG5vdGU6IHByZXZpb3VzIGRlY2xhcmF0aW9uIG9m
-IOKAmG5vZGVtYXNrX3TigJkgd2FzCmhlcmUKL2hvbWUvc3VicmF0YW1vZGFrL09GRklDRV9XT1JL
-Uy9MVFBfUFJPSkVDVF9DT0RFL0xUUF9UQVJTL09DVE9CRVJfMjAwOV9SRUxFQVNFL2x0cC1pbnRl
-cm1lZGlhdGUtMjAwOTExMDkvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tYmluZC8uLi91dGls
-cy9udW1haWYuaDo0MjogZXJyb3I6IGNvbmZsaWN0aW5nIHR5cGVzIGZvciDigJhub2RlbWFza196
-ZXJv4oCZCi91c3IvaW5jbHVkZS9udW1hLmg6NjE6IG5vdGU6IHByZXZpb3VzIGRlZmluaXRpb24g
-b2Yg4oCYbm9kZW1hc2tfemVyb+KAmSB3YXMKaGVyZQovaG9tZS9zdWJyYXRhbW9kYWsvT0ZGSUNF
-X1dPUktTL0xUUF9QUk9KRUNUX0NPREUvTFRQX1RBUlMvT0NUT0JFUl8yMDA5X1JFTEVBU0UvbHRw
-LWludGVybWVkaWF0ZS0yMDA5MTEwOS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21iaW5kLy4u
-L3V0aWxzL251bWFpZi5oOjY5OiBlcnJvcjogY29uZmxpY3RpbmcgdHlwZXMgZm9yIOKAmG5vZGVt
-YXNrX2VxdWFs4oCZCi91c3IvaW5jbHVkZS9udW1hLmg6NjY6IG5vdGU6IHByZXZpb3VzIGRlZmlu
-aXRpb24gb2Yg4oCYbm9kZW1hc2tfZXF1YWzigJkKd2FzIGhlcmUKbWJpbmQwMS5jOiBJbiBmdW5j
-dGlvbiDigJhtYWlu4oCZOgptYmluZDAxLmM6MzY4OiB3YXJuaW5nOiB1bnVzZWQgdmFyaWFibGUg
-4oCYcmVzdWx04oCZCm1ha2VbNF06ICoqKiBbbWJpbmQwMV0gRXJyb3IgMQoKCmdjYyAtZyAtTzIg
-LWcgLU8yIC1mbm8tc3RyaWN0LWFsaWFzaW5nIC1waXBlIC1XYWxsCi1JL2hvbWUvc3VicmF0YW1v
-ZGFrL09GRklDRV9XT1JLUy9MVFBfUFJPSkVDVF9DT0RFL0xUUF9UQVJTL09DVE9CRVJfMjAwOV9S
-RUxFQVNFL2x0cC1pbnRlcm1lZGlhdGUtMjAwOTExMDkvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRl
-IC1JL2hvbWUvc3VicmF0YW1vZGFrL09GRklDRV9XT1JLUy9MVFBfUFJPSkVDVF9DT0RFL0xUUF9U
-QVJTL09DVE9CRVJfMjAwOV9SRUxFQVNFL2x0cC1pbnRlcm1lZGlhdGUtMjAwOTExMDkvdGVzdGNh
-c2VzL2tlcm5lbC9zeXNjYWxscy9tb3ZlX3BhZ2VzLy4uL3V0aWxzIC1JLi4vLi4vLi4vLi4vaW5j
-bHVkZSAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgIC1jIC1vIG1vdmVfcGFnZXMwMS5vIG1vdmVfcGFn
-ZXMwMS5jCkluIGZpbGUgaW5jbHVkZWQgZnJvbSBtb3ZlX3BhZ2VzX3N1cHBvcnQuaDoyMiwKICAg
-ICAgICAgICAgICAgICBmcm9tIG1vdmVfcGFnZXMwMS5jOjYzOgovaG9tZS9zdWJyYXRhbW9kYWsv
-T0ZGSUNFX1dPUktTL0xUUF9QUk9KRUNUX0NPREUvTFRQX1RBUlMvT0NUT0JFUl8yMDA5X1JFTEVB
-U0UvbHRwLWludGVybWVkaWF0ZS0yMDA5MTEwOS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21v
-dmVfcGFnZXMvLi4vdXRpbHMvbnVtYWlmLmg6NDA6IGVycm9yOiBjb25mbGljdGluZyB0eXBlcyBm
-b3Ig4oCYbm9kZW1hc2tfdOKAmQovdXNyL2luY2x1ZGUvbnVtYS5oOjM5OiBub3RlOiBwcmV2aW91
-cyBkZWNsYXJhdGlvbiBvZiDigJhub2RlbWFza1904oCZIHdhcwpoZXJlCi9ob21lL3N1YnJhdGFt
-b2Rhay9PRkZJQ0VfV09SS1MvTFRQX1BST0pFQ1RfQ09ERS9MVFBfVEFSUy9PQ1RPQkVSXzIwMDlf
-UkVMRUFTRS9sdHAtaW50ZXJtZWRpYXRlLTIwMDkxMTA5L3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
-bHMvbW92ZV9wYWdlcy8uLi91dGlscy9udW1haWYuaDo0MjogZXJyb3I6IGNvbmZsaWN0aW5nIHR5
-cGVzIGZvciDigJhub2RlbWFza196ZXJv4oCZCi91c3IvaW5jbHVkZS9udW1hLmg6NjE6IG5vdGU6
-IHByZXZpb3VzIGRlZmluaXRpb24gb2Yg4oCYbm9kZW1hc2tfemVyb+KAmSB3YXMKaGVyZQovaG9t
-ZS9zdWJyYXRhbW9kYWsvT0ZGSUNFX1dPUktTL0xUUF9QUk9KRUNUX0NPREUvTFRQX1RBUlMvT0NU
-T0JFUl8yMDA5X1JFTEVBU0UvbHRwLWludGVybWVkaWF0ZS0yMDA5MTEwOS90ZXN0Y2FzZXMva2Vy
-bmVsL3N5c2NhbGxzL21vdmVfcGFnZXMvLi4vdXRpbHMvbnVtYWlmLmg6Njk6IGVycm9yOiBjb25m
-bGljdGluZyB0eXBlcyBmb3Ig4oCYbm9kZW1hc2tfZXF1YWzigJkKL3Vzci9pbmNsdWRlL251bWEu
-aDo2Njogbm90ZTogcHJldmlvdXMgZGVmaW5pdGlvbiBvZiDigJhub2RlbWFza19lcXVhbOKAmQp3
-YXMgaGVyZQptYWtlWzRdOiAqKiogW21vdmVfcGFnZXMwMS5vXSBFcnJvciAxCgoKZ2NjIC1nIC1P
-MiAtZyAtTzIgLWZuby1zdHJpY3QtYWxpYXNpbmcgLXBpcGUgLVdhbGwKLUkvaG9tZS9zdWJyYXRh
-bW9kYWsvT0ZGSUNFX1dPUktTL0xUUF9QUk9KRUNUX0NPREUvTFRQX1RBUlMvT0NUT0JFUl8yMDA5
-X1JFTEVBU0UvbHRwLWludGVybWVkaWF0ZS0yMDA5MTEwOS90ZXN0Y2FzZXMva2VybmVsL2luY2x1
-ZGUgLUkuLi8uLi8uLi8uLi9pbmNsdWRlIC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAgIC1MLi4vLi4v
-Li4vLi4vbGliICBwdHJhY2UwNC5jICAgLWxsdHAgLW8gcHRyYWNlMDQKcHRyYWNlMDQuYzogSW4g
-ZnVuY3Rpb24g4oCYY29tcGFyZV9yZWdpc3RlcnPigJk6CnB0cmFjZTA0LmM6NTE6IGVycm9yOiBz
-dG9yYWdlIHNpemUgb2Yg4oCYcHRfcmVnc+KAmSBpc27igJl0IGtub3duCnB0cmFjZTA0LmM6NTE6
-IHdhcm5pbmc6IHVudXNlZCB2YXJpYWJsZSDigJhwdF9yZWdz4oCZCm1ha2VbNF06ICoqKiBbcHRy
-YWNlMDRdIEVycm9yIDEKClJlZ2FyZHMtLQpTdWJyYXRhCgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LQpMZXQgQ3J5c3RhbCBSZXBvcnRzIGhhbmRsZSB0aGUgcmVwb3J0aW5nIC0gRnJlZSBDcnlzdGFs
-IFJlcG9ydHMgMjAwOCAzMC1EYXkgCnRyaWFsLiBTaW1wbGlmeSB5b3VyIHJlcG9ydCBkZXNpZ24s
-IGludGVncmF0aW9uIGFuZCBkZXBsb3ltZW50IC0gYW5kIGZvY3VzIG9uIAp3aGF0IHlvdSBkbyBi
-ZXN0LCBjb3JlIGFwcGxpY2F0aW9uIGNvZGluZy4gRGlzY292ZXIgd2hhdCdzIG5ldyB3aXRoCkNy
-eXN0YWwgUmVwb3J0cyBub3cuICBodHRwOi8vcC5zZi5uZXQvc2Z1L2JvYmotanVseQpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5n
-IGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNl
-Zm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+Quoting Rishikesh (risrajak@linux.vnet.ibm.com):
+> Subrata Modak wrote:
+> > On Mon, 2009-02-16 at 10:59 +0530, Subrata Modak wrote: 
+> >   
+> >> Thanks Suka,
+> >>
+> >> On Sat, 2009-02-14 at 12:31 -0800, Sukadev Bhattiprolu wrote:
+> >>     
+> >>> Subrata Modak [subrata@linux.vnet.ibm.com] wrote:
+> >>> | 
+> >>> | > > pidns21:
+> >>> | > >    The pidns21.c testcase verifies that container-init is terminated
+> >>> | > >    by SIGUSR1 when:
+> >>> | > >       - a handler is specified for SIGUSR1,
+> >>> | > >       - container-init blocks SIGUSR1,
+> >>> | > >       - parent queues SIGUSR1 and
+> >>> | > >       - handler for SIGUSR1 is set to system default before SIGUSR1 is 
+> >>> | > > unblocked.
+> >>>
+> >>> I know I had acked this test before, but back then the actual implementation
+> >>> of the signal semantics in the kernel were not complete.
+> >>>
+> >>> To simplify the implementation of the semantics, it was decided that
+> >>> SIGKILL/SIGSTOP would be the only reliable signals from a parent
+> >>> container. IOW, container-init would ignore SIGUSR1 or SIGINT, SIGQUIT
+> >>> etc even if sent from a parent container.
+> >>>
+> >>> See patchset/discussion:
+> >>>
+> >>> 	http://lkml.org/lkml/2009/1/17/131
+> >>>
+> >>> (which is not yet merged, but appears to be close to consensus)
+> >>>
+> >>> The  rationale for this simplification is that any serious
+> >>> 'container-init' would explicitly SIG_IGN all signals that it is
+> >>> not interested in. So the only signals that would be in SIG_DFL
+> >>> state would be SIGKILL/SIGSTOP.
+> >>>
+> >>> Effectively, testcase pidns21 will fail if/when the above patchset
+> >>> (specifically, patch 5/6) is merged.
+> >>>       
+> >> Gowri,
+> >>
+> >> Kindly update this test when the patch makes into next stable kernel
+> >> release.
+> >>     
+> >
+> > Suka/Gowri,
+> >
+> > Are we still looking into these tests ?
+> >   
+> 
+> 
+> Anyone still looking into it ? Still i am getting failure for pidns21 
+> with latest ltp release.
+
+The patch in question is upstream, so pidns21.c will always
+fail and should be removed from ltp.
+
+It's worth testing that the container init survives SIGUSR1
+from a child, but whether it survives or dies from a parent
+we don't particularly care.
+
+-serge
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
