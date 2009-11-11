@@ -2,19 +2,19 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1N7RQU-00079V-NU
-	for ltp-list@lists.sourceforge.net; Mon, 09 Nov 2009 10:24:46 +0000
-Date: Mon, 9 Nov 2009 11:24:31 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20091109102431.GE631@schrodinger.suse.cz>
-References: <20091105131852.GA13908@schrodinger.suse.cz>
-	<200911061511.57777.vapier@gentoo.org>
-	<364299f40911061405y5834100eua9a254f2abe0cdfe@mail.gmail.com>
-	<200911061748.35248.vapier@gentoo.org>
+	(envelope-from <liubo2009@cn.fujitsu.com>) id 1N820N-0007Ne-VK
+	for ltp-list@lists.sourceforge.net; Wed, 11 Nov 2009 01:28:15 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N820F-0004Pz-Nm
+	for ltp-list@lists.sourceforge.net; Wed, 11 Nov 2009 01:28:15 +0000
+Message-ID: <4AFA133F.3020808@cn.fujitsu.com>
+Date: Wed, 11 Nov 2009 09:28:31 +0800
+From: liubo <liubo2009@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <200911061748.35248.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] replacing -Wextra with -W
+References: <4AF93496.3030408@cn.fujitsu.com>
+In-Reply-To: <4AF93496.3030408@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] syscalls: fix some failure on arch X86_64
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,47 +27,132 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net, maknayak@in.ibm.com
 
-Hi!
-> > >> > > Lately gcc developers introduced -Wextra flag that does the same as
-> > >> > > -W but is more descriptive. According to this using -W flag should
-> > >> > > be safe (as gcc is backward compatlible) but using -Wextra is
-> > >> > > limited to newer gcc releases.
-> > >> > >
-> > >> > > Attached patch replaces all -Wextra occurences with -W and thus
-> > >> > > fixes compliation failures with older gcc (mine was gcc-3.3.3 on
-> > >> > > sles).
-> > >> >
-> > >> > it'd be better if we had configure tests for -W flags, but that would
-> > >> > take a bit more effort, and i dont think it should preclude applying
-> > >> > your patch. however, please make this change first:
-> > >> >  - integrated Makefiles shouldnt be setting flags at all, so just
-> > >> > delete the whole line in
-> > >> > testcases/kernel/controllers/{cpuctl,cgroup}_fj/Makefile
-> > >>
-> > >> Patch that should be applied over the previous one attached.
-> > >
-> > > thanks, ive merged the two and added to the tree.  hopefully i didnt
-> > > screw anything up in the (simple) process ;).
-> > 
-> >     It looks fine from my end :]. We should really restrict the -W*
-> > flag setting to include/mk/config.mk like you suggested though, so
-> > maybe we should clean up all of the Makefiles in one shot.
-> 
-> some of the Makefiles Cyril highlighted havent been converted to the common 
-> .mk framework.  we could cheat and just pull in config.mk fo some, but for 
-> others (ones that build kernel modules), i'm not sure that will work.  linux' 
-> kbuild gets pissy if you try to tweak build flags like CFLAGS/CPPFLAGS.  so we 
-> might have to create a new .mk target specifically for kernel modules that 
-> takes care of these details.
+Hi,
+On 11/10/2009 05:38 PM, liubo wrote:
+> 1) rt_sigaction
+>     "sigaction" has the structure:
+>  
+>  struct sigaction {
+>          __sighandler_t sa_handler;
+>          unsigned long sa_flags;
+>   #ifdef SA_RESTORER
+>           __sigrestore_t sa_restorer;
+>   #endif
+>           sigset_t sa_mask;               /* mask last for extensibility */
+>  };
+>
+>     However, on arch x86_64, if we directly get to call rt_sigaction,
+> the argument "sa_restorer" will not be fulfilled, and this will lead
+>  to segment fault.
+>     on arch x86_64, if sa_restorer is not set, kernel will lead to segment fault. 
+> In other arch, if sa_restorer is not set, kernel can do the correct work.
+>     To avoid this segment fault, we use glibc function
+> "int sigaction(...);" instead, which can fulfill the argument "sa_restorer".
+>
+> 2) rt_sigprocmask
+>     This failure contains two aspects,
+> the first is the segment fault as described in 1),
+> the second is that testcase uses a unknown signal 33 for test,
+> and this will lead sigaction cannot bind signal 33 to the action.
+>
+>     So, we attempt to use a known signal instead, such as 34.
+>
+>   
 
-In these I've only replaced -Wextra with -W. Is there any way this could broke them?
+  I am sure signal 32 and 33 cannot be used in rt_sigprocmask test
+  on arch x86_64, but I'm not sure which signal else should be used
+  here, Is there anyone can provide suggestions?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> This patch fixed these failures.
+>
+> Signed-off-by: Liu Bo <liubo2009@cn.fujitsu.com>
+>
+> ---
+>  .../kernel/syscalls/rt_sigaction/rt_sigaction01.c  |    4 ++++
+>  .../syscalls/rt_sigprocmask/rt_sigprocmask01.c     |   12 ++++++++----
+>  .../syscalls/rt_sigsuspend/rt_sigsuspend01.c       |    4 ++++
+>  3 files changed, 16 insertions(+), 4 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
+> index 27af970..1522ac4 100644
+> --- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
+> +++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
+> @@ -154,7 +154,11 @@ set_handler(int sig, int sig_to_mask, int mask_flags)
+>                  sa.sa_flags = mask_flags;
+>                  sigemptyset(&sa.sa_mask);
+>                  sigaddset(&sa.sa_mask, sig_to_mask);
+> +		#ifndef __x86_64__
+>                  TEST(syscall(__NR_rt_sigaction,sig, &sa, &oldaction,SIGSETSIZE));
+> +		#else
+> +		TEST(sigaction(sig, &sa, &oldaction));
+> +		#endif
+>          if (TEST_RETURN == 0) {
+>                  return 0;
+>          } else {
+> diff --git a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
+> index 6398a28..31258e9 100644
+> --- a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
+> +++ b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
+> @@ -154,7 +154,7 @@ int main(int ac, char **av) {
+>                          	cleanup();
+>  				tst_exit();
+>  			}
+> -			TEST(sigaddset(&set, 33));
+> +			TEST(sigaddset(&set, 34));
+>  			if(TEST_RETURN == -1){
+>  				tst_resm(TFAIL,"Call to sigaddset() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+>                          	cleanup();
+> @@ -163,7 +163,11 @@ int main(int ac, char **av) {
+>  			
+>  			/* call rt_sigaction() */
+>  			act.sa_handler = sig_handler;
+> -                        TEST(syscall(__NR_rt_sigaction, 33, &act, &oact, 8));
+> +			#ifndef __x86_64__
+> +                        TEST(syscall(__NR_rt_sigaction, 34, &act, &oact, 8));
+> +			#else
+> +			TEST(sigaction(34, &act, &oact));
+> +			#endif
+>  			if(TEST_RETURN != 0){
+>  				tst_resm(TFAIL,"Call to rt_sigaction() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+>                          	cleanup();
+> @@ -178,7 +182,7 @@ int main(int ac, char **av) {
+>  			}
+>  			
+>  			else {
+> -				TEST(kill(getpid(), 33));
+> +				TEST(kill(getpid(), 34));
+>  				if(TEST_RETURN != 0){
+>  					tst_resm(TFAIL,"Call to kill() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+>                          		cleanup();
+> @@ -198,7 +202,7 @@ int main(int ac, char **av) {
+>                          			cleanup();
+>  						tst_exit();
+>  					}
+> -					TEST(sigismember(&oset, 33));
+> +					TEST(sigismember(&oset, 34));
+>  					if(TEST_RETURN == 0 ){
+>  						tst_resm(TFAIL,"call sigismember() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+>                          			cleanup();
+> diff --git a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
+> index 416a7c9..6132622 100644
+> --- a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
+> +++ b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
+> @@ -142,7 +142,11 @@ int main(int ac, char **av) {
+>  			struct sigaction act, oact;
+>  		        act.sa_handler = sig_handler;
+>  			
+> +			#ifndef __x86_64__
+>  			TEST(syscall(__NR_rt_sigaction, SIGALRM, &act, &oact, 8));
+> +			#else
+> +			TEST(sigaction(SIGALRM, &act, &oact));
+> +			#endif
+>  			if(TEST_RETURN == -1){
+>  		        	tst_resm(TFAIL,"rt_sigaction() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+>  				cleanup();
+>   
+
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
