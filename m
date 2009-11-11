@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1N65Je-0007xj-8I
-	for ltp-list@lists.sourceforge.net; Thu, 05 Nov 2009 16:36:06 +0000
-Received: from relay2.suse.de (relay-ext.suse.de [195.135.221.8])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx1.suse.de (Postfix) with ESMTP id 666DE90847
-	for <ltp-list@lists.sourceforge.net>;
-	Thu,  5 Nov 2009 17:35:51 +0100 (CET)
-Date: Thu, 5 Nov 2009 17:35:50 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20091105163550.GC19831@schrodinger.suse.cz>
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1N8Gjc-0003Ri-Jf
+	for ltp-list@lists.sourceforge.net; Wed, 11 Nov 2009 17:11:56 +0000
+Received: from mail-px0-f184.google.com ([209.85.216.184])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N8GjS-0003hG-Ji
+	for ltp-list@lists.sourceforge.net; Wed, 11 Nov 2009 17:11:51 +0000
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="tKW2IUtsqtDRztdT"
-Content-Disposition: inline
-Subject: [LTP] [PATCH] fix overflow in growfiles.c
+In-Reply-To: <1257926367.27679.0.camel@subratamodak.linux.ibm.com>
+References: <1257788381.7677.73.camel@subratamodak.linux.ibm.com>
+	<364299f40911091039q11529ec1m4583ac18d0ee4bf4@mail.gmail.com>
+	<1257926367.27679.0.camel@subratamodak.linux.ibm.com>
+Date: Wed, 11 Nov 2009 09:11:40 -0800
+Message-ID: <364299f40911110911p6abfb290nddbfeb7be00f2de@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] get_mempolicy01, mbind01,
+	move_pages01 & ptrace04 compile 	failures with latest CVS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,62 +27,237 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list <ltp-list@lists.sf.net>, Mike Frysinger <vapier@gentoo.org>
 
+On Tue, Nov 10, 2009 at 11:59 PM, Subrata Modak
+<subrata@linux.vnet.ibm.com> wrote:
+> On Mon, 2009-11-09 at 10:39 -0800, Garrett Cooper wrote:
+>> On Mon, Nov 9, 2009 at 9:39 AM, Subrata Modak
+>> <subrata@linux.vnet.ibm.com> wrote:
+>> > Garret,
+>> >
+>> > Can you please look into these errors occurring on my below system
+>> > configuration:
+>> >
+>> > # uname -a
+>> > Linux 2.6.18-92.el5 #1 SMP Tue Apr 29 13:16:12 EDT 2008 i686 i686 i386
+>> > GNU/Linux
+>> >
+>> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+>> > -I/home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_20=
+09_RELEASE/ltp-intermediate-20091109/testcases/kernel/include -I../../../..=
+/include -I../../../../include =A0 -L../../../../lib =A0get_mempolicy01.c =
+=A0 -lltp -o get_mempolicy01
+>> > get_mempolicy01.c:59:25: error: include_j_h.h: No such file or directo=
+ry
+>> > get_mempolicy01.c:60:24: error: common_j_h.c: No such file or directory
+>> > get_mempolicy01.c: In function =91do_test=92:
+>> > get_mempolicy01.c:274: error: =91RESULT_OK=92 undeclared (first use in=
+ this
+>> > function)
+>> > get_mempolicy01.c:274: error: (Each undeclared identifier is reported
+>> > only once
+>> > get_mempolicy01.c:274: error: for each function it appears in.)
+>> > get_mempolicy01.c:276: error: =91nodemask_t=92 undeclared (first use i=
+n this
+>> > function)
+>> > get_mempolicy01.c:276: error: expected =91;=92 before =91nodemask=92
+>> > get_mempolicy01.c:277: error: =91NUMA_NUM_NODES=92 undeclared (first u=
+se in
+>> > this function)
+>> > get_mempolicy01.c:282: warning: implicit declaration of function
+>> > =91nodemask_zero=92
+>> > get_mempolicy01.c:282: error: =91nodemask=92 undeclared (first use in =
+this
+>> > function)
+>> > get_mempolicy01.c:283: warning: implicit declaration of function
+>> > =91nodemask_set=92
+>> > get_mempolicy01.c:284: error: =91getnodemask=92 undeclared (first use =
+in
+>> > this function)
+>> > get_mempolicy01.c:338: warning: implicit declaration of function
+>> > =91nodemask_equal=92
+>> > get_mempolicy01.c:340: warning: implicit declaration of function
+>> > =91nodemask_dump=92
+>> > get_mempolicy01.c:349: warning: implicit declaration of function
+>> > =91PRINT_RESULT_CMP=92
+>> > make[4]: *** [get_mempolicy01] Error 1
+>>
+>> Eh... not sure how that one happened. When did you pull from CVS?
+>>
+>> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+>> > -I/home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_20=
+09_RELEASE/ltp-intermediate-20091109/testcases/kernel/include -I/home/subra=
+tamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009_RELEASE/ltp-int=
+ermediate-20091109/testcases/kernel/syscalls/mbind/../utils/ -I../../../../=
+include -I../../../../include =A0 -L../../../../lib =A0mbind01.c =A0 -lltp =
+-o mbind01
+>> > In file included from mbind01.c:62:
+>> > /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009=
+_RELEASE/ltp-intermediate-20091109/testcases/kernel/syscalls/mbind/../utils=
+/numaif.h:40: error: conflicting types for =91nodemask_t=92
+>> > /usr/include/numa.h:39: note: previous declaration of =91nodemask_t=92=
+ was
+>> > here
+>> > /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009=
+_RELEASE/ltp-intermediate-20091109/testcases/kernel/syscalls/mbind/../utils=
+/numaif.h:42: error: conflicting types for =91nodemask_zero=92
+>> > /usr/include/numa.h:61: note: previous definition of =91nodemask_zero=
+=92 was
+>> > here
+>> > /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009=
+_RELEASE/ltp-intermediate-20091109/testcases/kernel/syscalls/mbind/../utils=
+/numaif.h:69: error: conflicting types for =91nodemask_equal=92
+>> > /usr/include/numa.h:66: note: previous definition of =91nodemask_equal=
+=92
+>> > was here
+>> > mbind01.c: In function =91main=92:
+>> > mbind01.c:368: warning: unused variable =91result=92
+>> > make[4]: *** [mbind01] Error 1
+>>
+>> Should be resolved now.
+>>
+>> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+>> > -I/home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_20=
+09_RELEASE/ltp-intermediate-20091109/testcases/kernel/include -I/home/subra=
+tamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009_RELEASE/ltp-int=
+ermediate-20091109/testcases/kernel/syscalls/move_pages/../utils -I../../..=
+/../include -I../../../../include =A0-c -o move_pages01.o move_pages01.c
+>> > In file included from move_pages_support.h:22,
+>> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from move_pages01.c:63:
+>> > /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009=
+_RELEASE/ltp-intermediate-20091109/testcases/kernel/syscalls/move_pages/../=
+utils/numaif.h:40: error: conflicting types for =91nodemask_t=92
+>> > /usr/include/numa.h:39: note: previous declaration of =91nodemask_t=92=
+ was
+>> > here
+>> > /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009=
+_RELEASE/ltp-intermediate-20091109/testcases/kernel/syscalls/move_pages/../=
+utils/numaif.h:42: error: conflicting types for =91nodemask_zero=92
+>> > /usr/include/numa.h:61: note: previous definition of =91nodemask_zero=
+=92 was
+>> > here
+>> > /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009=
+_RELEASE/ltp-intermediate-20091109/testcases/kernel/syscalls/move_pages/../=
+utils/numaif.h:69: error: conflicting types for =91nodemask_equal=92
+>> > /usr/include/numa.h:66: note: previous definition of =91nodemask_equal=
+=92
+>> > was here
+>> > make[4]: *** [move_pages01.o] Error 1
+>>
+>> Should be resolved now.
+>>
+>> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+>> > -I/home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_20=
+09_RELEASE/ltp-intermediate-20091109/testcases/kernel/include -I../../../..=
+/include -I../../../../include =A0 -L../../../../lib =A0ptrace04.c =A0 -llt=
+p -o ptrace04
+>> > ptrace04.c: In function =91compare_registers=92:
+>> > ptrace04.c:51: error: storage size of =91pt_regs=92 isn=92t known
+>> > ptrace04.c:51: warning: unused variable =91pt_regs=92
+>> > make[4]: *** [ptrace04] Error 1
+>>
+>> Fixed (I think). Please repull and retry.
+>
+> get_mempolicy01 and mbind01 is still failing:
+>
+> get_mempolicy01.c: In function =91do_test=92:
+> get_mempolicy01.c:282: warning: passing argument 1 of =91nodemask_zero=92
+> from incompatible pointer type
+> /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but argument
+> is of type =91struct nodemask_t *=92
+> get_mempolicy01.c:283: warning: implicit declaration of function
+> =91nodemask_set=92
+> get_mempolicy01.c:284: warning: passing argument 1 of =91nodemask_zero=92
+> from incompatible pointer type
+> /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but argument
+> is of type =91struct nodemask_t *=92
+> get_mempolicy01.c:337: warning: passing argument 1 of =91nodemask_zero=92
+> from incompatible pointer type
+> /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but argument
+> is of type =91struct nodemask_t *=92
+> get_mempolicy01.c:338: warning: passing argument 1 of =91nodemask_equal=
+=92
+> from incompatible pointer type
+> /usr/include/numa.h:66: note: expected =91struct bitmask *=92 but argument
+> is of type =91struct nodemask_t *=92
+> get_mempolicy01.c:338: warning: passing argument 2 of =91nodemask_equal=
+=92
+> from incompatible pointer type
+> /usr/include/numa.h:66: note: expected =91struct bitmask *=92 but argument
+> is of type =91struct nodemask_t *=92
+> /tmp/ccd0Utpg.o: In function `nodemask_zero':
+> /usr/include/numa.h:63: undefined reference to `numa_bitmask_clearall'
+> /tmp/ccd0Utpg.o: In function `do_test':
+> /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009_RE=
+LEASE/ltp-intermediate-20091110/testcases/kernel/syscalls/get_mempolicy/get=
+_mempolicy01.c:283: undefined reference to `nodemask_set'
+> /tmp/ccd0Utpg.o: In function `nodemask_zero':
+> /usr/include/numa.h:63: undefined reference to `numa_bitmask_clearall'
+> /usr/include/numa.h:63: undefined reference to `numa_bitmask_clearall'
+> /tmp/ccd0Utpg.o: In function `nodemask_equal':
+> /usr/include/numa.h:68: undefined reference to `numa_bitmask_equal'
+> collect2: ld returned 1 exit status
+> make[4]: *** [get_mempolicy01] Error 1
+>
+>
+> mbind01.c: In function =91do_test=92:
+> mbind01.c:271: warning: passing argument 1 of =91nodemask_zero=92 from
+> incompatible pointer type
+> /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but argument
+> is of type =91struct nodemask_t *=92
+> mbind01.c:272: warning: implicit declaration of function =91nodemask_set=
+=92
+> mbind01.c:273: warning: passing argument 1 of =91nodemask_zero=92 from
+> incompatible pointer type
+> /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but argument
+> is of type =91struct nodemask_t *=92
+> mbind01.c:315: warning: passing argument 1 of =91nodemask_zero=92 from
+> incompatible pointer type
+> /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but argument
+> is of type =91struct nodemask_t *=92
+> mbind01.c:319: warning: passing argument 1 of =91nodemask_equal=92 from
+> incompatible pointer type
+> /usr/include/numa.h:66: note: expected =91struct bitmask *=92 but argument
+> is of type =91struct nodemask_t *=92
+> mbind01.c:319: warning: passing argument 2 of =91nodemask_equal=92 from
+> incompatible pointer type
+> /usr/include/numa.h:66: note: expected =91struct bitmask *=92 but argument
+> is of type =91struct nodemask_t *=92
+> /tmp/ccCibXJV.o: In function `nodemask_zero':
+> /usr/include/numa.h:63: undefined reference to `numa_bitmask_clearall'
+> /tmp/ccCibXJV.o: In function `do_test':
+> /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009_RE=
+LEASE/ltp-intermediate-20091110/testcases/kernel/syscalls/mbind/mbind01.c:2=
+72: undefined reference to `nodemask_set'
+> /tmp/ccCibXJV.o: In function `nodemask_zero':
+> /usr/include/numa.h:63: undefined reference to `numa_bitmask_clearall'
+> /tmp/ccCibXJV.o: In function `nodemask_equal':
+> /usr/include/numa.h:68: undefined reference to `numa_bitmask_equal'
+> /tmp/ccCibXJV.o: In function `nodemask_zero':
+> /usr/include/numa.h:63: undefined reference to `numa_bitmask_clearall'
+> collect2: ld returned 1 exit status
+> make[4]: *** [mbind01] Error 1
 
---tKW2IUtsqtDRztdT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+More numa.h vs numa_if.h fun... what version of Linux are you running Subra=
+ta?
+Thanks,
+-Garrett
 
-Hi!
-Following patch fixes buffer overflow.c.
+---------------------------------------------------------------------------=
+---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
 
-Signed-off-by: Cyril Hrubis chrubis@suse.cz
+trial. Simplify your report design, integration and deployment - and focus =
+on =
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
---tKW2IUtsqtDRztdT
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="fix_growfiles_overflow.patch"
-
-Index: delme/testcases/kernel/fs/doio/growfiles.c
-===================================================================
---- delme.orig/testcases/kernel/fs/doio/growfiles.c
-+++ delme/testcases/kernel/fs/doio/growfiles.c
-@@ -390,7 +390,7 @@ int backgrnd = 1;		/* return control to 
- struct stat statbuf;
- int time_iterval = -1;
- time_t start_time;
--char reason[40];		/* reason for loop termination */
-+char reason[128];		/* reason for loop termination */
- int num_procs=1;
- int forker_mode=0;
- int reexec=REXEC_INIT;		/* reexec info */
-
---tKW2IUtsqtDRztdT
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---tKW2IUtsqtDRztdT
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---tKW2IUtsqtDRztdT--
-
