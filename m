@@ -1,30 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1N7kyI-00066k-Os
-	for ltp-list@lists.sourceforge.net; Tue, 10 Nov 2009 07:16:58 +0000
-Received: from mail-vw0-f198.google.com ([209.85.212.198])
+	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1N84bv-0007Nm-EE
+	for ltp-list@lists.sourceforge.net; Wed, 11 Nov 2009 04:15:11 +0000
+Received: from mail-px0-f189.google.com ([209.85.216.189])
 	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N7kyC-0003Ep-Hb
-	for ltp-list@lists.sourceforge.net; Tue, 10 Nov 2009 07:16:58 +0000
-Received: by vws36 with SMTP id 36so1193855vws.28
+	id 1N84bn-0004LU-Ke
+	for ltp-list@lists.sourceforge.net; Wed, 11 Nov 2009 04:15:11 +0000
+Received: by pxi27 with SMTP id 27so528688pxi.25
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 09 Nov 2009 23:16:46 -0800 (PST)
+	Tue, 10 Nov 2009 20:14:57 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <8368651DACC1964480F951191B94A078017CB194@svexch01.mvista.com>
-References: <8368651DACC1964480F951191B94A078016A156A@svexch01.mvista.com>
-	<364299f40910271957g6fc5147bgfbf3fe4c08d73b7@mail.gmail.com>
-	<8368651DACC1964480F951191B94A078016A1648@svexch01.mvista.com>
-	<1257170357.4977.57.camel@subratamodak.linux.ibm.com>
-	<8368651DACC1964480F951191B94A078016A1ACE@svexch01.mvista.com>
-	<1257788375.7677.72.camel@subratamodak.linux.ibm.com>
-	<8368651DACC1964480F951191B94A078017CB194@svexch01.mvista.com>
-Date: Mon, 9 Nov 2009 23:16:45 -0800
-Message-ID: <364299f40911092316q223d2073oc610dffc7474722b@mail.gmail.com>
+In-Reply-To: <4AFA133F.3020808@cn.fujitsu.com>
+References: <4AF93496.3030408@cn.fujitsu.com> <4AFA133F.3020808@cn.fujitsu.com>
+Date: Tue, 10 Nov 2009 20:14:57 -0800
+Message-ID: <364299f40911102014p1f2c28adr75700a126ef03d86@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH][ppoll01] fix testcase 1,
-	5: pass correct valuefor 	sigset_t for mips
+Subject: Re: [LTP] [PATCH] syscalls: fix some failure on arch X86_64
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,145 +30,96 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Henry Yei <hyei@mvista.com>
-Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
+To: liubo <liubo2009@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net, maknayak@in.ibm.com
 
-On Mon, Nov 9, 2009 at 2:12 PM, Henry Yei <hyei@mvista.com> wrote:
->> -----Original Message-----
->> From: Subrata Modak [mailto:subrata@linux.vnet.ibm.com]
->> Sent: Monday, November 09, 2009 9:40 AM
->> To: Henry Yei
->> Cc: Garrett Cooper; LTP Mailing List
->> Subject: RE: [LTP] [PATCH][ppoll01] fix testcase 1, 5: pass correct
->> valuefor sigset_t for mips
+On Tue, Nov 10, 2009 at 5:28 PM, liubo <liubo2009@cn.fujitsu.com> wrote:
+> Hi,
+> On 11/10/2009 05:38 PM, liubo wrote:
+>> 1) rt_sigaction
+>> =A0 =A0 "sigaction" has the structure:
 >>
->> On Mon, 2009-11-02 at 14:09 -0800, Henry Yei wrote:
->> > Subrata,
->> >
->> > I've included Nicolas Joly's suggested removal of progdir to force
->> the test to create all test files in the temp directory in the attached
->> patch.
->> >
->> > I'm not sure why tst_exit() is needed when calling cleanup(), as it
->> would be called by cleanup(). I can add it back, if needed. Any other
->> comments on the the appropriateness of "sizeof(sigmask)" would also be
->> welcomed. There are a few other tests with similar issues.
->> >
+>> =A0struct sigaction {
+>> =A0 =A0 =A0 =A0 =A0__sighandler_t sa_handler;
+>> =A0 =A0 =A0 =A0 =A0unsigned long sa_flags;
+>> =A0 #ifdef SA_RESTORER
+>> =A0 =A0 =A0 =A0 =A0 __sigrestore_t sa_restorer;
+>> =A0 #endif
+>> =A0 =A0 =A0 =A0 =A0 sigset_t sa_mask; =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* mas=
+k last for extensibility */
+>> =A0};
+
+Not true... from glibc 2.9 / gentoo-sources-2.6.30-r4:
+
+#ifdef __i386__
+/* Here we must cater to libcs that poke about in kernel headers.  */
+
+struct sigaction {
+        union {
+          __sighandler_t _sa_handler;
+          void (*_sa_sigaction)(int, struct siginfo *, void *);
+        } _u;
+        sigset_t sa_mask;
+        unsigned long sa_flags;
+        void (*sa_restorer)(void);
+};
+
+/* ... */
+
+#else
+
+struct sigaction {
+        __sighandler_t sa_handler;
+        unsigned long sa_flags;
+        __sigrestore_t sa_restorer;
+        sigset_t sa_mask;               /* mask last for extensibility */
+};
+
+#endif
+
+What do the manpages say is required for rt_sigaction to function on
+your machine? Mine just says:
+
+SYNOPSIS
+       #include <signal.h>
+
+       int sigaction(int signum, const struct sigaction *act,
+                     struct sigaction *oldact);
+
+   Feature Test Macro Requirements for glibc (see feature_test_macros(7)):
+
+       sigaction(): _POSIX_C_SOURCE >=3D 1 || _XOPEN_SOURCE || _POSIX_SOURCE
+
+>> =A0 =A0 However, on arch x86_64, if we directly get to call rt_sigaction,
+>> the argument "sa_restorer" will not be fulfilled, and this will lead
+>> =A0to segment fault.
+>> =A0 =A0 on arch x86_64, if sa_restorer is not set, kernel will lead to s=
+egment fault.
+>> In other arch, if sa_restorer is not set, kernel can do the correct work.
+>> =A0 =A0 To avoid this segment fault, we use glibc function
+>> "int sigaction(...);" instead, which can fulfill the argument "sa_restor=
+er".
 >>
->> Henry,
+>> 2) rt_sigprocmask
+>> =A0 =A0 This failure contains two aspects,
+>> the first is the segment fault as described in 1),
+>> the second is that testcase uses a unknown signal 33 for test,
+>> and this will lead sigaction cannot bind signal 33 to the action.
 >>
->> Probably because of heavy changes recently, this patch is not applying
->> properly. Can you please rebase your changes:
+>> =A0 =A0 So, we attempt to use a known signal instead, such as 34.
 >>
->> patching file testcases/kernel/syscalls/ppoll/ppoll01.c
->> Hunk #3 FAILED at 98.
->> Hunk #4 FAILED at 127.
->> Hunk #5 FAILED at 185.
->> Hunk #6 FAILED at 252.
->> 4 out of 6 hunks FAILED -- saving rejects to file
->> testcases/kernel/syscalls/ppoll/ppoll01.c.rej
 >>
->> Regards--
->> Subrata
->>
->> > > -----Original Message-----
->> > > From: Subrata Modak [mailto:subrata@linux.vnet.ibm.com]
->> > > Sent: Monday, November 02, 2009 5:59 AM
->> > > To: Henry Yei
->> > > Cc: Garrett Cooper; LTP Mailing List
->> > > Subject: Re: [LTP] [PATCH][ppoll01] fix testcase 1, 5: pass correct
->> > > valuefor sigset_t for mips
->> > >
->> > > Any further work on this patch ?
->> > >
->> > > Regards--
->> > > Subrata
->> > >
->> > > On Wed, 2009-10-28 at 12:08 -0700, Henry Yei wrote:
->> > > > > -----Original Message-----
->> > > > > From: Garrett Cooper [mailto:yanegomi@gmail.com]
->> > > > > Sent: Tuesday, October 27, 2009 7:57 PM
->> > > > > To: Henry Yei
->> > > > > Cc: LTP Mailing List
->> > > > > Subject: Re: [LTP] [PATCH][ppoll01] fix testcase 1, 5: pass
->> correct
->> > > > > value for sigset_t for mips
->> > > > >
->> > > > > On Tue, Oct 27, 2009 at 6:32 PM, Henry Yei <hyei@mvista.com>
->> wrote:
->> > > > > > All,
->> > > > > >
->> > > > > >
->> > > > > >
->> > > > > > The patch attached =A0for ppoll01:
->> > > > > >
->> > > > > > cleans up spacing and code style
->> > > > > >
->> > > > > > removes unneeded/broken debug option parsing
->> > > > > >
->> > > > > > if test fails, it prints out the last failed errno, rather
->> than
->> > > just
->> > > > > the
->> > > > > > last errno(which may have been successful)
->> > > > > >
->> > > > > > passes in correct size of sigset_t for mips
->> > > > > >
->> > > > > >
->> > > > > >
->> > > > > > Signed-off by: Henry Yei <hyei@mvista.com>
->> > > > > >
->> > > > > >
->> > > > > >
->> > > > > > This patch was tested/passed on x86, mips(little endian), and
->> > > > > ppc_82xx .
->> > > > >
->> > > > > 1. Please keep tst_exit() at the bottom.
->> > > > > 2. Why can't we do sizeof(sigsetmask) ?
->> > > > >
->> > > > > Thanks,
->> > > > > -Garrett
->> > > >
->> > > > Garrett,
->> > > >
->> > > > You want me to put tst_exit() at the bottom, even though it is
->> called
->> > > within cleanup()?
->> > > > You mean sizeof(sigmask) ~ sizeof(sigset_t), right? That code was
->> > > commented out since version 1.1 which I thought was odd too, so I
->> did
->> > > check sizeof(sigmask).
->> > > > However, sizeof(sigmask) on mips returns 128 which does not seem
->> > > correct. I haven't checked the other architectures, but I suspect
->> some
->> > > might have a similar mismatch. Apparently sigset_t may have
->> different
->> > > values when returned from glibc vs kernel space. More information
->> from
->> > > this post:
->> > > >
->> > > > http://lists.uclibc.org/pipermail/uclibc/2009-January/041850.html
 >
->
-> Subrata,
->
-> I've included the ppoll01 patch which should apply cleanly to the latest =
-in CVS.
->
+> =A0I am sure signal 32 and 33 cannot be used in rt_sigprocmask test
+> =A0on arch x86_64, but I'm not sure which signal else should be used
+> =A0here, Is there anyone can provide suggestions?
 
-Hi Henry,
-    Could you change this line:
+RT signals are all signals above SIGRTMIN (typically 32+, but not
+always), up to SIGRTMAX (usually 64, but on mips it's 128). So... why
+is setting the signal number to anywhere between SIGRTMIN and SIGRTMAX
+unacceptable?
 
-+				tst_resm(TFAIL, "%s failed - errno =3D %d : %s", TCID,
-+						last_failed_errno, strerror(last_failed_errno));
-
-    to this please?
-
-+				tst_resm(TFAIL | TTERRNO, "%s failed", TCID);
-
-    last_failed_errno should become TEST_ERRNO if this change is done, IIRC.
-
-Thanks!
+Thanks,
 -Garrett
 
 ---------------------------------------------------------------------------=
