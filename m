@@ -1,31 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1N4xRe-0004ze-06
-	for ltp-list@lists.sourceforge.net; Mon, 02 Nov 2009 13:59:42 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N4xRX-0000fJ-BT
-	for ltp-list@lists.sourceforge.net; Mon, 02 Nov 2009 13:59:41 +0000
-Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
-	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nA2DpGqO006821
-	for <ltp-list@lists.sourceforge.net>; Mon, 2 Nov 2009 08:51:16 -0500
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nA2DxT9Z1470682
-	for <ltp-list@lists.sourceforge.net>; Mon, 2 Nov 2009 08:59:29 -0500
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	nA23wsdN013273
-	for <ltp-list@lists.sourceforge.net>; Sun, 1 Nov 2009 22:58:54 -0500
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1N8Fbz-0000Un-24
+	for ltp-list@lists.sourceforge.net; Wed, 11 Nov 2009 15:59:59 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1N8Fbu-00021I-O2
+	for ltp-list@lists.sourceforge.net; Wed, 11 Nov 2009 15:59:58 +0000
+Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
+	by e1.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nABFvtxB006659
+	for <ltp-list@lists.sourceforge.net>; Wed, 11 Nov 2009 10:57:56 -0500
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	nABFxmFE095940
+	for <ltp-list@lists.sourceforge.net>; Wed, 11 Nov 2009 10:59:48 -0500
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	nABFxjCr024943
+	for <ltp-list@lists.sourceforge.net>; Wed, 11 Nov 2009 10:59:45 -0500
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200910302350.n9UNonlf017587@e2.ny.us.ibm.com>
-References: <200910302350.n9UNonlf017587@e2.ny.us.ibm.com>
-Date: Mon, 02 Nov 2009 19:29:22 +0530
-Message-Id: <1257170362.4977.59.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <4AFA18A6.50005@cn.fujitsu.com>
+References: <4AFA18A6.50005@cn.fujitsu.com>
+Date: Wed, 11 Nov 2009 21:29:40 +0530
+Message-Id: <1257955180.27679.13.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix expected output in ar01 testcase
+Subject: Re: [LTP] [PATCH] ext4: fix script error of
+	ext4_nsec_timestamps_test.sh
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -39,20 +40,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
-Cc: ltp-list@lists.sourceforge.net
+To: Wei Yongjun <yjwei@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net, Miao Xie <miaox@cn.fujitsu.com>
 
-On Wed, 2009-10-21 at 02:02 +0200, Jiri Palecek wrote: 
-> Hello,
+On Wed, 2009-11-11 at 09:51 +0800, Wei Yongjun wrote: 
+> Execute test case of ext4_nsec_timestamps_test.sh had some errors:
+> ./ext4_nsec_timestamps_test.sh: line 183: [0: command not found
+> ./ext4_nsec_timestamps_test.sh: line 189: [0: command not found
 > 
->  According to POSIX, the verbose output of "ar -tv" should not contain
->  the leading zero in day-of-month (its format should be equivalent to
->  %e specifier of date) [source: man(1posix)]
+> This patch fix them.
 > 
-> Regards
->     Jiri Palecek
-> 
-> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+> Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
 
 Thanks.
 
@@ -60,30 +58,36 @@ Regards--
 Subrata
 
 > ---
->  testcases/commands/ade/ar/ar01 |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
+>  .../ext4_nsec_timestamps_test.sh                   |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/testcases/commands/ade/ar/ar01 b/testcases/commands/ade/ar/ar01
-> index 926be1c..c8f85eb 100755
-> --- a/testcases/commands/ade/ar/ar01
-> +++ b/testcases/commands/ade/ar/ar01
-> @@ -573,7 +573,7 @@ rm -rf $TCtmp/lib.a;cd $TCdat $TCtmp/lib.a.exp *out
->  ar -cr $TCtmp/lib.a file1.in file2.in file3.in
->  crtest
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
+> index ad7729e..ced6576 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
+> @@ -180,13 +180,13 @@ ext4_setup
+>  RET=0
 > 
-> -ls -ln --time-style=+%b" "%d" "%H:%M file1.in file2.in file3.in |
-> +ls -ln --time-style=+%b" "%e" "%H:%M file1.in file2.in file3.in |
->  while
->  read permissions link uid gid size month day time file_name
->  do
+>  ext4_test_sec_timestamps
+> -if [$? -ne 0 ]; then
+> +if [ $? -ne 0 ]; then
+>  	RET=1
+>  fi
+>  : $((TST_COUNT++))
+> 
+>  ext4_test_nsec_timestamps
+> -if [$? -ne 0 ]; then
+> +if [ $? -ne 0 ]; then
+>  	RET=1
+>  fi
+>  : $((TST_COUNT++))
 
 
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-http://p.sf.net/sfu/devconference
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
