@@ -1,22 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1N7YD0-0004rn-EJ
-	for ltp-list@lists.sourceforge.net; Mon, 09 Nov 2009 17:39:18 +0000
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N7YCv-0005a9-2n
-	for ltp-list@lists.sourceforge.net; Mon, 09 Nov 2009 17:39:18 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200911090749.10428.vapier@gentoo.org>
-References: <1257765429.7677.23.camel@subratamodak.linux.ibm.com>
-	<200911090749.10428.vapier@gentoo.org>
-Date: Mon, 09 Nov 2009 23:09:01 +0530
-Message-Id: <1257788341.7677.62.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Clone build fail with the latest CVS sanpshot
-Reply-To: subrata@linux.vnet.ibm.com
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1N86Rz-0001LR-4K
+	for ltp-list@lists.sourceforge.net; Wed, 11 Nov 2009 06:13:03 +0000
+Received: from mail-px0-f189.google.com ([209.85.216.189])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N86Rt-0004M8-OU
+	for ltp-list@lists.sourceforge.net; Wed, 11 Nov 2009 06:13:03 +0000
+Received: by pxi27 with SMTP id 27so591446pxi.25
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 10 Nov 2009 22:12:51 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <8368651DACC1964480F951191B94A078017CB30A@svexch01.mvista.com>
+References: <8368651DACC1964480F951191B94A078016A156A@svexch01.mvista.com>
+	<364299f40910271957g6fc5147bgfbf3fe4c08d73b7@mail.gmail.com>
+	<8368651DACC1964480F951191B94A078016A1648@svexch01.mvista.com>
+	<1257170357.4977.57.camel@subratamodak.linux.ibm.com>
+	<8368651DACC1964480F951191B94A078016A1ACE@svexch01.mvista.com>
+	<1257788375.7677.72.camel@subratamodak.linux.ibm.com>
+	<8368651DACC1964480F951191B94A078017CB194@svexch01.mvista.com>
+	<364299f40911092316q223d2073oc610dffc7474722b@mail.gmail.com>
+	<8368651DACC1964480F951191B94A078017CB30A@svexch01.mvista.com>
+Date: Tue, 10 Nov 2009 22:12:51 -0800
+Message-ID: <364299f40911102212l2964e871r7477ae7959b566f6@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH][ppoll01] fix testcase 1,
+	5: pass correct valuefor 	sigset_t for mips
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,37 +36,195 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Henry Yei <hyei@mvista.com>
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
 
-T24gTW9uLCAyMDA5LTExLTA5IGF0IDA3OjQ5IC0wNTAwLCBNaWtlIEZyeXNpbmdlciB3cm90ZTog
-Cj4gT24gTW9uZGF5IDA5IE5vdmVtYmVyIDIwMDkgMDY6MTc6MDkgU3VicmF0YSBNb2RhayB3cm90
-ZToKPiA+IEkgZ2V0IHRoZSBmb2xsb3dpbmcgZmFpbHVyZSB3aXRoIHRvZGF5xZsgQ1ZTLiAuL2Nv
-bmZpZ3VyZSBoYXMgYmVlbiBkb25lCj4gPiBiZWZvcmUgbWFrZToKPiA+IAo+ID4gZ2NjIC1nIC1P
-MiAtZyAtTzIgLWZuby1zdHJpY3QtYWxpYXNpbmcgLXBpcGUgLVdhbGwKPiA+IC1JL2x0cC1pbnRl
-cm1lZGlhdGUtMjAwOTExMDkvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlCj4gPiAtSS9sdHAtaW50
-ZXJtZWRpYXRlLTIwMDkxMTA5L3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9tcW5zLy4uL2xp
-YmNsb25lCj4gPiAgLUkuLi8uLi8uLi8uLi9pbmNsdWRlIC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAg
-Cj4gPiAgLUwvbHRwLWludGVybWVkaWF0ZS0yMDA5MTEwOS90ZXN0Y2FzZXMva2VybmVsL2NvbnRh
-aW5lcnMvbXFucy8uLi9saWJjbG9uZQo+ID4gIC1MLi4vLi4vLi4vLi4vbGliICBtcW5zXzAxLmMg
-ICAtbGx0cCAtbGNsb25lIC1scHRocmVhZCAtbHJ0IC1vIG1xbnNfMDEKPiA+ICAvbHRwLWludGVy
-bWVkaWF0ZS0yMDA5MTEwOS90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvbXFucy8uLi9saWJj
-bG9uZS9saQo+ID4gYmNsb25lLmEobGliY2xvbmUubyk6IEluIGZ1bmN0aW9uIGBkb19jbG9uZV90
-ZXN0cyc6Cj4gPiAgL2x0cC1pbnRlcm1lZGlhdGUtMjAwOTExMDkvdGVzdGNhc2VzL2tlcm5lbC9j
-b250YWluZXJzL2xpYmNsb25lL2xpYmNsb25lLmMKPiA+IDoyNTogdW5kZWZpbmVkIHJlZmVyZW5j
-ZSB0byBgbHRwX2Nsb25lX3F1aWNrJyBjb2xsZWN0MjogbGQgcmV0dXJuZWQgMSBleGl0Cj4gPiAg
-c3RhdHVzCj4gCj4gc2hvdWxkIGJlIGZpeGVkIG5vdy4gIHN0YXRpYyBsaWIgbGlua2luZyBvcmRl
-ciBpcyBwaWNreS4KClRoYW5rcyBNaWtlLiBidWlsZGluZyBmaW5lIG5vdy4KClJlZ2FyZHMtLQpT
-dWJyYXRhCgo+IC1taWtlCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxldCBDcnlzdGFsIFJlcG9y
-dHMgaGFuZGxlIHRoZSByZXBvcnRpbmcgLSBGcmVlIENyeXN0YWwgUmVwb3J0cyAyMDA4IDMwLURh
-eSAKdHJpYWwuIFNpbXBsaWZ5IHlvdXIgcmVwb3J0IGRlc2lnbiwgaW50ZWdyYXRpb24gYW5kIGRl
-cGxveW1lbnQgLSBhbmQgZm9jdXMgb24gCndoYXQgeW91IGRvIGJlc3QsIGNvcmUgYXBwbGljYXRp
-b24gY29kaW5nLiBEaXNjb3ZlciB3aGF0J3MgbmV3IHdpdGgKQ3J5c3RhbCBSZXBvcnRzIG5vdy4g
-IGh0dHA6Ly9wLnNmLm5ldC9zZnUvYm9iai1qdWx5Cl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0
-cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlz
-dGluZm8vbHRwLWxpc3QK
+On Tue, Nov 10, 2009 at 5:14 PM, Henry Yei <hyei@mvista.com> wrote:
+>> -----Original Message-----
+>> From: Garrett Cooper [mailto:yanegomi@gmail.com]
+>> Sent: Monday, November 09, 2009 11:17 PM
+>> To: Henry Yei
+>> Cc: subrata@linux.vnet.ibm.com; LTP Mailing List
+>> Subject: Re: [LTP] [PATCH][ppoll01] fix testcase 1, 5: pass correct
+>> valuefor sigset_t for mips
+>>
+>> On Mon, Nov 9, 2009 at 2:12 PM, Henry Yei <hyei@mvista.com> wrote:
+>> >> -----Original Message-----
+>> >> From: Subrata Modak [mailto:subrata@linux.vnet.ibm.com]
+>> >> Sent: Monday, November 09, 2009 9:40 AM
+>> >> To: Henry Yei
+>> >> Cc: Garrett Cooper; LTP Mailing List
+>> >> Subject: RE: [LTP] [PATCH][ppoll01] fix testcase 1, 5: pass correct
+>> >> valuefor sigset_t for mips
+>> >>
+>> >> On Mon, 2009-11-02 at 14:09 -0800, Henry Yei wrote:
+>> >> > Subrata,
+>> >> >
+>> >> > I've included Nicolas Joly's suggested removal of progdir to force
+>> >> the test to create all test files in the temp directory in the
+>> attached
+>> >> patch.
+>> >> >
+>> >> > I'm not sure why tst_exit() is needed when calling cleanup(), as
+>> it
+>> >> would be called by cleanup(). I can add it back, if needed. Any
+>> other
+>> >> comments on the the appropriateness of "sizeof(sigmask)" would also
+>> be
+>> >> welcomed. There are a few other tests with similar issues.
+>> >> >
+>> >>
+>> >> Henry,
+>> >>
+>> >> Probably because of heavy changes recently, this patch is not
+>> applying
+>> >> properly. Can you please rebase your changes:
+>> >>
+>> >> patching file testcases/kernel/syscalls/ppoll/ppoll01.c
+>> >> Hunk #3 FAILED at 98.
+>> >> Hunk #4 FAILED at 127.
+>> >> Hunk #5 FAILED at 185.
+>> >> Hunk #6 FAILED at 252.
+>> >> 4 out of 6 hunks FAILED -- saving rejects to file
+>> >> testcases/kernel/syscalls/ppoll/ppoll01.c.rej
+>> >>
+>> >> Regards--
+>> >> Subrata
+>> >>
+>> >> > > -----Original Message-----
+>> >> > > From: Subrata Modak [mailto:subrata@linux.vnet.ibm.com]
+>> >> > > Sent: Monday, November 02, 2009 5:59 AM
+>> >> > > To: Henry Yei
+>> >> > > Cc: Garrett Cooper; LTP Mailing List
+>> >> > > Subject: Re: [LTP] [PATCH][ppoll01] fix testcase 1, 5: pass
+>> correct
+>> >> > > valuefor sigset_t for mips
+>> >> > >
+>> >> > > Any further work on this patch ?
+>> >> > >
+>> >> > > Regards--
+>> >> > > Subrata
+>> >> > >
+>> >> > > On Wed, 2009-10-28 at 12:08 -0700, Henry Yei wrote:
+>> >> > > > > -----Original Message-----
+>> >> > > > > From: Garrett Cooper [mailto:yanegomi@gmail.com]
+>> >> > > > > Sent: Tuesday, October 27, 2009 7:57 PM
+>> >> > > > > To: Henry Yei
+>> >> > > > > Cc: LTP Mailing List
+>> >> > > > > Subject: Re: [LTP] [PATCH][ppoll01] fix testcase 1, 5: pass
+>> >> correct
+>> >> > > > > value for sigset_t for mips
+>> >> > > > >
+>> >> > > > > On Tue, Oct 27, 2009 at 6:32 PM, Henry Yei <hyei@mvista.com>
+>> >> wrote:
+>> >> > > > > > All,
+>> >> > > > > >
+>> >> > > > > >
+>> >> > > > > >
+>> >> > > > > > The patch attached =A0for ppoll01:
+>> >> > > > > >
+>> >> > > > > > cleans up spacing and code style
+>> >> > > > > >
+>> >> > > > > > removes unneeded/broken debug option parsing
+>> >> > > > > >
+>> >> > > > > > if test fails, it prints out the last failed errno, rather
+>> >> than
+>> >> > > just
+>> >> > > > > the
+>> >> > > > > > last errno(which may have been successful)
+>> >> > > > > >
+>> >> > > > > > passes in correct size of sigset_t for mips
+>> >> > > > > >
+>> >> > > > > >
+>> >> > > > > >
+>> >> > > > > > Signed-off by: Henry Yei <hyei@mvista.com>
+>> >> > > > > >
+>> >> > > > > >
+>> >> > > > > >
+>> >> > > > > > This patch was tested/passed on x86, mips(little endian),
+>> and
+>> >> > > > > ppc_82xx .
+>> >> > > > >
+>> >> > > > > 1. Please keep tst_exit() at the bottom.
+>> >> > > > > 2. Why can't we do sizeof(sigsetmask) ?
+>> >> > > > >
+>> >> > > > > Thanks,
+>> >> > > > > -Garrett
+>> >> > > >
+>> >> > > > Garrett,
+>> >> > > >
+>> >> > > > You want me to put tst_exit() at the bottom, even though it is
+>> >> called
+>> >> > > within cleanup()?
+>> >> > > > You mean sizeof(sigmask) ~ sizeof(sigset_t), right? That code
+>> was
+>> >> > > commented out since version 1.1 which I thought was odd too, so
+>> I
+>> >> did
+>> >> > > check sizeof(sigmask).
+>> >> > > > However, sizeof(sigmask) on mips returns 128 which does not
+>> seem
+>> >> > > correct. I haven't checked the other architectures, but I
+>> suspect
+>> >> some
+>> >> > > might have a similar mismatch. Apparently sigset_t may have
+>> >> different
+>> >> > > values when returned from glibc vs kernel space. More
+>> information
+>> >> from
+>> >> > > this post:
+>> >> > > >
+>> >> > > > http://lists.uclibc.org/pipermail/uclibc/2009-
+>> January/041850.html
+>> >
+>> >
+>> > Subrata,
+>> >
+>> > I've included the ppoll01 patch which should apply cleanly to the
+>> latest in CVS.
+>> >
+>>
+>> Hi Henry,
+>> =A0 =A0 Could you change this line:
+>>
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TFAIL=
+, "%s failed - errno =3D %d : %s",
+>> TCID,
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 last_failed_errno,
+>> strerror(last_failed_errno));
+>>
+>> =A0 =A0 to this please?
+>>
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TFAIL=
+ | TTERRNO, "%s failed", TCID);
+>>
+>> =A0 =A0 last_failed_errno should become TEST_ERRNO if this change is don=
+e,
+>> IIRC.
+>>
+>
+> I've attached the ppoll01 patch with Garrett's suggested changes to use T=
+EST_ERRNO.
+
+You could just completely zap last_failed_errno and make it test_errno
+instead. That's what I was suggesting with the previous reply.
+Thanks!
+-Garrett
+
+---------------------------------------------------------------------------=
+---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+
+trial. Simplify your report design, integration and deployment - and focus =
+on =
+
+what you do best, core application coding. Discover what's new with
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
