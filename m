@@ -1,22 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1NEvkf-0007wd-Gj
-	for ltp-list@lists.sourceforge.net; Mon, 30 Nov 2009 02:12:33 +0000
-Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
-	by sfi-mx-2.v28.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1NEvkY-0007Dn-2L
-	for ltp-list@lists.sourceforge.net; Mon, 30 Nov 2009 02:12:33 +0000
-From: "Mitani" <mitani@ryobi.co.jp>
-References: <000001ca6f43$3ec6ac20$bc540460$@co.jp>
-	<364299f40911271455h792a91dudcedb1d29401b209@mail.gmail.com>
-In-Reply-To: <364299f40911271455h792a91dudcedb1d29401b209@mail.gmail.com>
-Date: Mon, 30 Nov 2009 11:12:13 +0900
-Message-ID: <000001ca7162$881c9a30$9855ce90$@co.jp>
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <hyei@mvista.com>) id 1N81nQ-0002qB-NG
+	for ltp-list@lists.sourceforge.net; Wed, 11 Nov 2009 01:14:52 +0000
+Received: from [206.112.117.47] (helo=gateway-1237.mvista.com)
+	by 1b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1N81nJ-0003A3-TR
+	for ltp-list@lists.sourceforge.net; Wed, 11 Nov 2009 01:14:52 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Language: ja
-Subject: Re: [LTP] build failure in ia64
+Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01CA626C.4F804881"
+Date: Tue, 10 Nov 2009 17:14:23 -0800
+Message-ID: <8368651DACC1964480F951191B94A078017CB30A@svexch01.mvista.com>
+In-Reply-To: <364299f40911092316q223d2073oc610dffc7474722b@mail.gmail.com>
+References: <8368651DACC1964480F951191B94A078016A156A@svexch01.mvista.com>
+	<364299f40910271957g6fc5147bgfbf3fe4c08d73b7@mail.gmail.com>
+	<8368651DACC1964480F951191B94A078016A1648@svexch01.mvista.com>
+	<1257170357.4977.57.camel@subratamodak.linux.ibm.com>
+	<8368651DACC1964480F951191B94A078016A1ACE@svexch01.mvista.com>
+	<1257788375.7677.72.camel@subratamodak.linux.ibm.com>
+	<8368651DACC1964480F951191B94A078017CB194@svexch01.mvista.com>
+	<364299f40911092316q223d2073oc610dffc7474722b@mail.gmail.com>
+From: "Henry Yei" <hyei@mvista.com>
+Subject: Re: [LTP] [PATCH][ppoll01] fix testcase 1,
+	5: pass correct valuefor sigset_t for mips
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,355 +34,550 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Garrett Cooper' <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
 
-Sorry too late.
+This is a multi-part message in MIME format.
 
+------_=_NextPart_001_01CA626C.4F804881
+Content-Type: text/plain;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
-I tried with "ltp-2009-11-30.tar.gz" version.
+> -----Original Message-----
+> From: Garrett Cooper [mailto:yanegomi@gmail.com]
+> Sent: Monday, November 09, 2009 11:17 PM
+> To: Henry Yei
+> Cc: subrata@linux.vnet.ibm.com; LTP Mailing List
+> Subject: Re: [LTP] [PATCH][ppoll01] fix testcase 1, 5: pass correct
+> valuefor sigset_t for mips
+>=20
+> On Mon, Nov 9, 2009 at 2:12 PM, Henry Yei <hyei@mvista.com> wrote:
+> >> -----Original Message-----
+> >> From: Subrata Modak [mailto:subrata@linux.vnet.ibm.com]
+> >> Sent: Monday, November 09, 2009 9:40 AM
+> >> To: Henry Yei
+> >> Cc: Garrett Cooper; LTP Mailing List
+> >> Subject: RE: [LTP] [PATCH][ppoll01] fix testcase 1, 5: pass correct
+> >> valuefor sigset_t for mips
+> >>
+> >> On Mon, 2009-11-02 at 14:09 -0800, Henry Yei wrote:
+> >> > Subrata,
+> >> >
+> >> > I've included Nicolas Joly's suggested removal of progdir to =
+force
+> >> the test to create all test files in the temp directory in the
+> attached
+> >> patch.
+> >> >
+> >> > I'm not sure why tst_exit() is needed when calling cleanup(), as
+> it
+> >> would be called by cleanup(). I can add it back, if needed. Any
+> other
+> >> comments on the the appropriateness of "sizeof(sigmask)" would also
+> be
+> >> welcomed. There are a few other tests with similar issues.
+> >> >
+> >>
+> >> Henry,
+> >>
+> >> Probably because of heavy changes recently, this patch is not
+> applying
+> >> properly. Can you please rebase your changes:
+> >>
+> >> patching file testcases/kernel/syscalls/ppoll/ppoll01.c
+> >> Hunk #3 FAILED at 98.
+> >> Hunk #4 FAILED at 127.
+> >> Hunk #5 FAILED at 185.
+> >> Hunk #6 FAILED at 252.
+> >> 4 out of 6 hunks FAILED -- saving rejects to file
+> >> testcases/kernel/syscalls/ppoll/ppoll01.c.rej
+> >>
+> >> Regards--
+> >> Subrata
+> >>
+> >> > > -----Original Message-----
+> >> > > From: Subrata Modak [mailto:subrata@linux.vnet.ibm.com]
+> >> > > Sent: Monday, November 02, 2009 5:59 AM
+> >> > > To: Henry Yei
+> >> > > Cc: Garrett Cooper; LTP Mailing List
+> >> > > Subject: Re: [LTP] [PATCH][ppoll01] fix testcase 1, 5: pass
+> correct
+> >> > > valuefor sigset_t for mips
+> >> > >
+> >> > > Any further work on this patch ?
+> >> > >
+> >> > > Regards--
+> >> > > Subrata
+> >> > >
+> >> > > On Wed, 2009-10-28 at 12:08 -0700, Henry Yei wrote:
+> >> > > > > -----Original Message-----
+> >> > > > > From: Garrett Cooper [mailto:yanegomi@gmail.com]
+> >> > > > > Sent: Tuesday, October 27, 2009 7:57 PM
+> >> > > > > To: Henry Yei
+> >> > > > > Cc: LTP Mailing List
+> >> > > > > Subject: Re: [LTP] [PATCH][ppoll01] fix testcase 1, 5: pass
+> >> correct
+> >> > > > > value for sigset_t for mips
+> >> > > > >
+> >> > > > > On Tue, Oct 27, 2009 at 6:32 PM, Henry Yei =
+<hyei@mvista.com>
+> >> wrote:
+> >> > > > > > All,
+> >> > > > > >
+> >> > > > > >
+> >> > > > > >
+> >> > > > > > The patch attached =A0for ppoll01:
+> >> > > > > >
+> >> > > > > > cleans up spacing and code style
+> >> > > > > >
+> >> > > > > > removes unneeded/broken debug option parsing
+> >> > > > > >
+> >> > > > > > if test fails, it prints out the last failed errno, =
+rather
+> >> than
+> >> > > just
+> >> > > > > the
+> >> > > > > > last errno(which may have been successful)
+> >> > > > > >
+> >> > > > > > passes in correct size of sigset_t for mips
+> >> > > > > >
+> >> > > > > >
+> >> > > > > >
+> >> > > > > > Signed-off by: Henry Yei <hyei@mvista.com>
+> >> > > > > >
+> >> > > > > >
+> >> > > > > >
+> >> > > > > > This patch was tested/passed on x86, mips(little endian),
+> and
+> >> > > > > ppc_82xx .
+> >> > > > >
+> >> > > > > 1. Please keep tst_exit() at the bottom.
+> >> > > > > 2. Why can't we do sizeof(sigsetmask) ?
+> >> > > > >
+> >> > > > > Thanks,
+> >> > > > > -Garrett
+> >> > > >
+> >> > > > Garrett,
+> >> > > >
+> >> > > > You want me to put tst_exit() at the bottom, even though it =
+is
+> >> called
+> >> > > within cleanup()?
+> >> > > > You mean sizeof(sigmask) ~ sizeof(sigset_t), right? That code
+> was
+> >> > > commented out since version 1.1 which I thought was odd too, so
+> I
+> >> did
+> >> > > check sizeof(sigmask).
+> >> > > > However, sizeof(sigmask) on mips returns 128 which does not
+> seem
+> >> > > correct. I haven't checked the other architectures, but I
+> suspect
+> >> some
+> >> > > might have a similar mismatch. Apparently sigset_t may have
+> >> different
+> >> > > values when returned from glibc vs kernel space. More
+> information
+> >> from
+> >> > > this post:
+> >> > > >
+> >> > > > http://lists.uclibc.org/pipermail/uclibc/2009-
+> January/041850.html
+> >
+> >
+> > Subrata,
+> >
+> > I've included the ppoll01 patch which should apply cleanly to the
+> latest in CVS.
+> >
+>=20
+> Hi Henry,
+>     Could you change this line:
+>=20
+> +				tst_resm(TFAIL, "%s failed - errno =3D %d : %s",
+> TCID,
+> +						last_failed_errno,
+> strerror(last_failed_errno));
+>=20
+>     to this please?
+>=20
+> +				tst_resm(TFAIL | TTERRNO, "%s failed", TCID);
+>=20
+>     last_failed_errno should become TEST_ERRNO if this change is done,
+> IIRC.
+>=20
 
-But it faild with following message:
-
-------------
-[...]
-make[4]: Entering directory
-`/home/mitani/LTP/ltp-2009-11-30/testcases/kernel/containers/p
-idns'
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
--I/home/mitani/LTP/ltp-2009-11-30/test
-cases/kernel/include
--I/home/mitani/LTP/ltp-2009-11-30/testcases/kernel/containers/pidns/.
-./libclone -I../../../../include -I../../../../include
--L/home/mitani/LTP/ltp-2009-11-30
-/testcases/kernel/containers/pidns/../libclone -L../../../../lib  pidns01.c
--lpthread -lr
-t -lclone -lltp -o pidns01
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
--I/home/mitani/LTP/ltp-2009-11-30/test
-cases/kernel/include
--I/home/mitani/LTP/ltp-2009-11-30/testcases/kernel/containers/pidns/.
-./libclone -I../../../../include -I../../../../include
--L/home/mitani/LTP/ltp-2009-11-30
-/testcases/kernel/containers/pidns/../libclone -L../../../../lib  pidns02.c
--lpthread -lr
-t -lclone -lltp -o pidns02
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
--I/home/mitani/LTP/ltp-2009-11-30/test
-cases/kernel/include
--I/home/mitani/LTP/ltp-2009-11-30/testcases/kernel/containers/pidns/.
-./libclone -I../../../../include -I../../../../include
--L/home/mitani/LTP/ltp-2009-11-30
-/testcases/kernel/containers/pidns/../libclone -L../../../../lib  pidns03.c
--lpthread -lr
-t -lclone -lltp -o pidns03
-pidns03.c:65: error: static declaration of 'cleanup' follows non-static
-declaration
-/home/mitani/LTP/ltp-2009-11-30/testcases/kernel/include/linux_syscall_numbe
-rs.h:24: error
-: previous declaration of 'cleanup' was here
-make[4]: *** [pidns03] Error 1
-make[4]: Leaving directory
-`/home/mitani/LTP/ltp-2009-11-30/testcases/kernel/containers/pi
-dns'
-make[3]: *** [all] Error 2
-make[3]: Leaving directory
-`/home/mitani/LTP/ltp-2009-11-30/testcases/kernel/containers'
-make[2]: *** [all] Error 2
-make[2]: Leaving directory
-`/home/mitani/LTP/ltp-2009-11-30/testcases/kernel'
-make[1]: *** [all] Error 2
-make[1]: Leaving directory `/home/mitani/LTP/ltp-2009-11-30/testcases'
-make: *** [testcases-all] Error 2
-------------
-
-This failure is in compiling of "${LTPROOT}/testcases/kernel/containers
-/pidns/pidns03.c". =
-
-This is compiled before compiling "${LTPROOT}/testcases/kernel
-/controllers/freezer/vfork.c" in which "ltp-2009-11-26.tar.gz"
-version's failure occurred.
-
-This occurred with "ltp-2009-11-27.tar.gz" version, too.
-
-
-For reference, Similar failure occurred in x86 system with =
-
-"ltp-2009-11-30.tar.gz" version, too.
-
-<x86 system>
-------------
-[...]
-make[4]: Entering directory
-`/home/LTP/ltp-2009-11-30/testcases/kernel/containers/pidns'
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
--I/home/LTP/ltp-2009-11-30/testcases/k
-ernel/include
--I/home/LTP/ltp-2009-11-30/testcases/kernel/containers/pidns/../libclone -I.
-./../../../include -I../../../../include
--L/home/LTP/ltp-2009-11-30/testcases/kernel/con
-tainers/pidns/../libclone -L../../../../lib  pidns01.c  -lpthread -lrt
--lclone -lltp -o pi
-dns01
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
--I/home/LTP/ltp-2009-11-30/testcases/k
-ernel/include
--I/home/LTP/ltp-2009-11-30/testcases/kernel/containers/pidns/../libclone -I.
-./../../../include -I../../../../include
--L/home/LTP/ltp-2009-11-30/testcases/kernel/con
-tainers/pidns/../libclone -L../../../../lib  pidns02.c  -lpthread -lrt
--lclone -lltp -o pi
-dns02
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
--I/home/LTP/ltp-2009-11-30/testcases/k
-ernel/include
--I/home/LTP/ltp-2009-11-30/testcases/kernel/containers/pidns/../libclone -I.
-./../../../include -I../../../../include
--L/home/LTP/ltp-2009-11-30/testcases/kernel/con
-tainers/pidns/../libclone -L../../../../lib  pidns03.c  -lpthread -lrt
--lclone -lltp -o pi
-dns03
-pidns03.c:65: error: static declaration of 'cleanup' follows non-static
-declaration
-/home/LTP/ltp-2009-11-30/testcases/kernel/include/linux_syscall_numbers.h:24
-: error: previ
-ous declaration of 'cleanup' was here
-make[4]: *** [pidns03] Error 1
-make[4]: Leaving directory
-`/home/LTP/ltp-2009-11-30/testcases/kernel/containers/pidns'
-make[3]: *** [all] Error 2
-make[3]: Leaving directory
-`/home/LTP/ltp-2009-11-30/testcases/kernel/containers'
-make[2]: *** [all] Error 2
-make[2]: Leaving directory `/home/LTP/ltp-2009-11-30/testcases/kernel'
-make[1]: *** [all] Error 2
-make[1]: Leaving directory `/home/LTP/ltp-2009-11-30/testcases'
-make: *** [testcases-all] Error 2
-------------
-
-
-
-Thank you--
-
--Tomonori Mitani
-
-
------Original Message-----
-From: Garrett Cooper [mailto:yanegomi@gmail.com] =
-
-Sent: Saturday, November 28, 2009 7:56 AM
-To: Mitani
-Cc: ltp-list@lists.sourceforge.net
-Subject: Re: [LTP] build failure in ia64
-
-On Fri, Nov 27, 2009 at 1:23 AM, Mitani <mitani@ryobi.co.jp> wrote:
-> Hi,
->
-> I ran "make" with ltp-2009-11-26.tar.gz.
-> Kernel release is 2.6.18-164.el5.
-> Architecture is ia64.
->
-> But it failed with following error message.
-> "make autotools" and "./configure" has been done before make.
-> I use "make 3.81", "autoconf 2.61", "automake 1.10.2", and "m4 1.4.7".
->
-> ------------
-> make[4]: Entering directory
-> `/home/mitani/LTP/ltp-2009-11-26/testcases/kernel/controllers/
-> freezer'
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
-> -I/home/mitani/LTP/ltp-2009-11-26/test
-> cases/kernel/include -I../../../../include -I../../../../include
-> -L../../../../lib =A0vfor
-> k.c =A0 -lltp -o vfork
-> In file included from ../../syscalls/ptrace/ptrace.h:14,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from vfork.c:44:
-> /usr/include/sys/ptrace.h:127: error: array type has incomplete element
-type
-> In file included from ../../syscalls/ptrace/ptrace.h:22,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from vfork.c:44:
-> /usr/include/asm/ptrace.h:208: error: redefinition of 'struct
-> FU_pt_all_user_regs'
-> make[4]: *** [vfork] Error 1
-> make[4]: Leaving directory
-> `/home/mitani/LTP/ltp-2009-11-26/testcases/kernel/controllers/f
-> reezer'
-> ------------
->
-> Similar failure continues from ltp-2009-11-17.tar.gz at the latest.
-> "ltp-2009-11-27.tar.gz" (today's version) seems to fail by another
-> new failure before these problems.
-> Perhaps, "ltp-2009-11-27.tar.gz" will fail by similar failure after
-> this "another new failure" solved, I think.
->
-> So I will report about "ltp-2009-11-26.tar.gz".
->
->
-> The problems are following two.
-> (1) Line 127 of "/usr/include/sys/ptrace.h" declares "array type has
-> =A0 =A0incomplete element type"
->
-> (2) Line 208 of "/usr/include/asm/ptrace.h" declares same structure as
-> =A0 =A0"/usr/include/sys/ptrace.h".
->
->
-> The files related to these problems are as follows:
->
-> =A0- ${LTPROOT}/testcases/kernel/controllers/freezer/vfork.c
-> =A0- ${LTPROOT}/testcases/kernel/syscalls/ptrace/ptrace.h
-> =A0 =A0It's added from ltp-2009-11-17.tar.gz at the latest.
-> =A0 =A0I call this file ".../ptrace/ptrace.h" afterward.
-> =A0- /usr/include/sys/ptrace.h
-> =A0 =A0I call this file ".../sys/ptrace.h" afterward.
-> =A0- /usr/include/asm/ptrace.h
-> =A0 =A0I call this file ".../asm/ptrace.h" afterward.
->
->
-> Follows show ".../ptrace/ptrace.h", ".../sys/ptrace.h" and
-> ".../asm/ptrace.h".
->
-> ".../ptrace/ptrace.h":
-> ------------
-> /* Ordering matters. Do not move this code block below the #include's */
-> #ifdef __ia64__ /* what a pos */
-> # define ia64_fpreg FU_ia64_fpreg
-> # define pt_all_user_regs FU_pt_all_user_regs
-> #endif
-> #ifdef HAVE_SYS_PTRACE_H
-> # include <sys/ptrace.h>
-> #elif defined(HAVE_LINUX_PTRACE_H)
-> # include <linux/ptrace.h>
-> #endif
-> #ifdef HAVE_SYS_REG_H
-> # include <sys/reg.h>
-> #endif
-> #ifdef HAVE_ASM_PTRACE_H
-> # include <asm/ptrace.h>
-> #endif
-> #undef FU_ia64_fpreg
-> #undef FU_pt_all_user_regs
-> ------------
->
-> ".../sys/ptrace.h":
-> ------------
-> struct pt_all_user_regs
-> =A0{
-> =A0 =A0unsigned long nat;
-> =A0 =A0unsigned long cr_iip;
-> =A0 =A0unsigned long cfm;
-> =A0 =A0unsigned long cr_ipsr;
-> =A0 =A0unsigned long pr;
->
-> =A0 =A0unsigned long gr[32];
-> =A0 =A0unsigned long br[8];
-> =A0 =A0unsigned long ar[128];
-> =A0 =A0struct ia64_fpreg fr[128]; =A0 =A0 =A0 =A0 =A0 =A0 =A0............=
- L.127
-> =A0};
-> ------------
->
-> ".../asm/ptrace.h":
-> ------------
-> struct pt_all_user_regs { =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ...........=
-. L.208
-> =A0 =A0 =A0 =A0unsigned long nat;
-> =A0 =A0 =A0 =A0unsigned long cr_iip;
-> =A0 =A0 =A0 =A0unsigned long cfm;
-> =A0 =A0 =A0 =A0unsigned long cr_ipsr;
-> =A0 =A0 =A0 =A0unsigned long pr;
->
-> =A0 =A0 =A0 =A0unsigned long gr[32];
-> =A0 =A0 =A0 =A0unsigned long br[8];
-> =A0 =A0 =A0 =A0unsigned long ar[128];
-> =A0 =A0 =A0 =A0struct ia64_fpreg fr[128];
-> };
-> ------------
->
->
->
-> I tried to avoid above "make" failure as follows:
->
-> Avoiding of (1) problem:
->
-> "# define ia64_fpreg FU_ia64_fpreg" definition of ".../ptrace/ptrace.h"
-> influences "struct ia64_fpreg fr[128];" of ".../sys/ptrace.h", I thought.
-> I searched "ia64_fpreg" for all LTP sources, but this structure name was
-> not found. I have no ideas why "FU_ia64_fpreg" was defined.
->
-> So I commented out "# define ia64_fpreg FU_ia64_fpreg". After that,
-> this problem did not occur.
->
->
-> Avoiding of (2) problem:
->
-> If ".../sys/ptrace.h" and ".../asm/ptrace.h" are included at the same
-> time in ".../ptrace/ptrace.h", this probrem occures.
-> Probably, "HAVE_SYS_PTRACE_H" and "HAVE_ASM_PTRACE_H" become effective
-> at the same time.
-> I referred to "${LTPROOT}/include/config.h" and "${LTPROOT}/config.log",
-> and found both defined "1".
-> In "ltp-full-20090930.tgz", "vfork.c" didn't include ".../asm/ptrace.h"
-> but ".../sys/ptrace.h".
->
-> So I commented out "# include <asm/ptrace.h>" from ".../ptrace/ptrace.h".
-> After that, this problem did not occur in "vfork.c".
->
-> But after this, "${LTPROOT}/testcases/kernel/syscalls/ptrace/ptrace04.c"
-> failed. In "ptrace04.c", struct "pt_regs" is used, and it's declared in
-> ".../asm/ptrace.h".
->
-> After examination, I understood that "vfork.c" and six source files
-> from "${LTPROOT}/testcases/kernel/syscalls/ptrace01.c" to ".../ptrace06.c"
-> include "../ptrace/ptrace.h", and they occur "redefinition" compile
-> failure without (2) revision of "../ptrace/ptrace.h".
->
->
->
->
-> May I have some questions?
->
-> (1) Why was "FU_ia64_fpreg" defined?
-> =A0 =A0I deleted this definition to let "make" succeed.
-> =A0 =A0But I'm worried whether this revision has a problem.
->
->
-> (2) I refer "${LTPROOT}/include/config.h" in my system. It was as follows:
->
-> ------------
-> [...]
-> /* Define to 1 if you have the <asm/ptrace.h> header file. */
-> #define HAVE_ASM_PTRACE_H 1
-> [...]
-> /* Define to 1 if you have the <sys/ptrace.h> header file. */
-> #define HAVE_SYS_PTRACE_H 1
-> [...]
-> ------------
->
-> =A0 =A0In this state, "redefinition" failure such as this time will
-> =A0 =A0happen, I think. But I don't know what kind of revision should I d=
-o.
-
-Mitani-san,
-    Would you please try downloading the sources from CVS again and
-let me know whether or not it functions for you?
-Thanks!
--Garrett
+I've attached the ppoll01 patch with Garrett's suggested changes to use =
+TEST_ERRNO.
 
 
 
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+------_=_NextPart_001_01CA626C.4F804881
+Content-Type: application/octet-stream;
+	name="ppoll01.patch"
+Content-Transfer-Encoding: base64
+Content-Description: ppoll01.patch
+Content-Disposition: attachment;
+	filename="ppoll01.patch"
 
-trial. Simplify your report design, integration and deployment - and focus =
-on =
+LS0tIGx0cC90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3Bwb2xsL3Bwb2xsMDEuYwkyMDA5LTEw
+LTE0IDEzOjIyOjQyLjAwMDAwMDAwMCAtMDcwMAorKysgbHRwLXdkaXIvdGVzdGNhc2VzL2tlcm5l
+bC9zeXNjYWxscy9wcG9sbC9wcG9sbDAxLmMJMjAwOS0xMS0xMCAxNzowNzo1NS44MDg3ODg5MjMg
+LTA4MDAKQEAgLTYxLDcgKzYxLDYgQEAKICNpbmNsdWRlIDxzaWduYWwuaD4KICNpbmNsdWRlICJh
+c20vcG9sbC5oIgogCi0KICNpbmNsdWRlICIuLi91dGlscy9pbmNsdWRlX2pfaC5oIgogI2luY2x1
+ZGUgIi4uL3V0aWxzL2NvbW1vbl9qX2guYyIKIApAQCAtNzEsMTMgKzcwLDE0IEBACiAjaW5jbHVk
+ZSAibGludXhfc3lzY2FsbF9udW1iZXJzLmgiCiAKIC8qIEV4dGVybiBHbG9iYWwgVmFyaWFibGVz
+ICovCi1leHRlcm4gaW50IFRzdF9jb3VudDsgICAgICAgICAgIC8qIGNvdW50ZXIgZm9yIHRzdF94
+eHggcm91dGluZXMuICAgICAgICAgKi8KLWV4dGVybiBjaGFyICpURVNURElSOyAgICAgICAgICAg
+LyogdGVtcG9yYXJ5IGRpciBjcmVhdGVkIGJ5IHRzdF90bXBkaXIoKSAqLworZXh0ZXJuIGludCBU
+c3RfY291bnQ7IC8qIGNvdW50ZXIgZm9yIHRzdF94eHggcm91dGluZXMuICAgICAgICAgKi8KK2V4
+dGVybiBjaGFyICpURVNURElSOyAvKiB0ZW1wb3JhcnkgZGlyIGNyZWF0ZWQgYnkgdHN0X3RtcGRp
+cigpICovCiAKIC8qIEdsb2JhbCBWYXJpYWJsZXMgKi8KLWNoYXIgKlRDSUQgPSAicHBvbGwwMSI7
+ICAvKiBUZXN0IHByb2dyYW0gaWRlbnRpZmllci4qLwotaW50ICB0ZXN0bm87Ci1pbnQgIFRTVF9U
+T1RBTCA9IDE7ICAgICAgICAgICAgICAgICAgIC8qIHRvdGFsIG51bWJlciBvZiB0ZXN0cyBpbiB0
+aGlzIGZpbGUuICAgKi8KK2NoYXIgKlRDSUQgPSAicHBvbGwwMSI7IC8qIFRlc3QgcHJvZ3JhbSBp
+ZGVudGlmaWVyLiovCitpbnQgdGVzdG5vOworaW50IFRTVF9UT1RBTCA9IDE7IC8qIHRvdGFsIG51
+bWJlciBvZiB0ZXN0cyBpbiB0aGlzIGZpbGUuICAgKi8KK2ludCBsYXN0X2ZhaWxlZF9lcnJubzsK
+IAogLyogRXh0ZXJuIEdsb2JhbCBGdW5jdGlvbnMgKi8KIC8qKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiov
+CkBAIC05OCwxNSArOTgsMTUgQEAgaW50ICBUU1RfVE9UQUwgPSAxOyAgICAgICAgICAgICAgICAg
+ICAvKgogLyogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KIC8qKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCiBl
+eHRlcm4gdm9pZCBjbGVhbnVwKCkgewotICAgICAgICAvKiBSZW1vdmUgdG1wIGRpciBhbmQgYWxs
+IGZpbGVzIGluIGl0ICovCi0gICAgICAgIFRFU1RfQ0xFQU5VUDsKLSAgICAgICAgdHN0X3JtZGly
+KCk7CisJLyogUmVtb3ZlIHRtcCBkaXIgYW5kIGFsbCBmaWxlcyBpbiBpdCAqLworCVRFU1RfQ0xF
+QU5VUDsKKwl0c3Rfcm1kaXIoKTsKIAotICAgICAgICAvKiBFeGl0IHdpdGggYXBwcm9wcmlhdGUg
+cmV0dXJuIGNvZGUuICovCi0gICAgICAgIHRzdF9leGl0KCk7CisJLyogRXhpdCB3aXRoIGFwcHJv
+cHJpYXRlIHJldHVybiBjb2RlLiAqLworCXRzdF9leGl0KCk7CiB9CiAKLXZvaWQgc2lnaGFuZGxl
+cihpbnQgc2lnKTsgICAgICAgLyogc2lnbmFscyBoYW5kbGVyIGZ1bmN0aW9uIGZvciB0aGUgdGVz
+dCAqLwordm9pZCBzaWdoYW5kbGVyKGludCBzaWcpOyAvKiBzaWduYWxzIGhhbmRsZXIgZnVuY3Rp
+b24gZm9yIHRoZSB0ZXN0ICovCiAKIC8qIExvY2FsICBGdW5jdGlvbnMgKi8KIC8qKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKiovCkBAIC0xMjcsNTggKzEyNyw1NyBAQCB2b2lkIHNpZ2hhbmRsZXIoaW50IHNp
+Zyk7ICAgICAgIC8qIHNpZ25hCiAvKiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAqLwogLyoqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKi8KIHZvaWQgc2V0dXAoKSB7Ci0gICAgICAgIC8qIENhcHR1cmUgc2lnbmFscyBp
+ZiBhbnkgKi8KKwkvKiBDYXB0dXJlIHNpZ25hbHMgaWYgYW55ICovCiAJc2lnbmFsKFNJR0lOVCwg
+JnNpZ2hhbmRsZXIpOwogCi0gICAgICAgIC8qIENyZWF0ZSB0ZW1wb3JhcnkgZGlyZWN0b3JpZXMg
+Ki8KLSAgICAgICAgVEVTVF9QQVVTRTsKLSAgICAgICAgdHN0X3RtcGRpcigpOworCS8qIENyZWF0
+ZSB0ZW1wb3JhcnkgZGlyZWN0b3JpZXMgKi8KKwlURVNUX1BBVVNFOworCXRzdF90bXBkaXIoKTsK
+IH0KIAotCiAvKgogICogTWFjcm9zCiAgKi8KICNkZWZpbmUgU1lTQ0FMTF9OQU1FICAgICJwcG9s
+bCIKIAogI2lmbmRlZiBQT0xMUkRIVVAKLSMgIGRlZmluZSBQT0xMUkRIVVAgICAgIDB4MjAwMAor
+I2RlZmluZSBQT0xMUkRIVVAgICAgIDB4MjAwMAogI2VuZGlmCiAKKyNpZiBkZWZpbmVkIChfX21p
+cHNfXykKKyNkZWZpbmUgU0lHU0VUU0laRSAxNgorI2Vsc2UKKyNkZWZpbmUgU0lHU0VUU0laRSA4
+CisjZW5kaWYKIAogLyoKICAqIEdsb2JhbCB2YXJpYWJsZXMKICAqLwotc3RhdGljIGludCBvcHRf
+ZGVidWc7Ci1zdGF0aWMgY2hhciAqcHJvZ25hbWU7Ci1zdGF0aWMgY2hhciAqcHJvZ2RpcjsKIAog
+ZW51bSB0ZXN0X3R5cGUgewogCU5PUk1BTCwKLSAgICAgICAgTUFTS19TSUdOQUwsCi0gICAgICAg
+IFRJTUVPVVQsCi0gICAgICAgIEZEX0FMUkVBRFlfQ0xPU0VELAotICAgICAgICBTRU5EX1NJR0lO
+VCwKLSAgICAgICAgU0VORF9TSUdJTlRfUkFDRV9URVNULAotICAgICAgICBJTlZBTElEX05GRFMs
+Ci0gICAgICAgIElOVkFMSURfRkRTLAotICAgICAgICBNSU5VU19OU0VDLAotICAgICAgICBUT09f
+TEFSR0VfTlNFQywKKwlNQVNLX1NJR05BTCwKKwlUSU1FT1VULAorCUZEX0FMUkVBRFlfQ0xPU0VE
+LAorCVNFTkRfU0lHSU5ULAorCVNFTkRfU0lHSU5UX1JBQ0VfVEVTVCwKKwlJTlZBTElEX05GRFMs
+CisJSU5WQUxJRF9GRFMsCisJTUlOVVNfTlNFQywKKwlUT09fTEFSR0VfTlNFQywKIAogfTsKIAot
+CiAvKgogICogRGF0YSBTdHJ1Y3R1cmUKICAqLwogc3RydWN0IHRlc3RfY2FzZSB7CiAJc2hvcnQg
+ZXhwZWN0X3JldmVudHM7Ci0gICAgICAgIGludCB0dHlwZTsKLSAgICAgICAgaW50IHJldDsKLSAg
+ICAgICAgaW50IGVycjsKKwlpbnQgdHR5cGU7CisJaW50IHJldDsKKwlpbnQgZXJyOwogfTsKIAot
+CiAvKiBUZXN0IGNhc2VzCiAgKgogICogICB0ZXN0IHN0YXR1cyBvZiBlcnJvcnMgb24gbWFuIHBh
+Z2UKQEAgLTE5Miw2NSArMTkxLDYyIEBAIHN0cnVjdCB0ZXN0X2Nhc2UgewogICogICBFTk9NRU0g
+ICAgICAgICAgICAgY2FuJ3QgY2hlY2sgYmVjYXVzZSBpdCdzIGRpZmZpY3VsdCB0byBjcmVhdGUg
+bm8tbWVtb3J5CiAgKi8KIAotCiBzdGF0aWMgc3RydWN0IHRlc3RfY2FzZSB0Y2FzZVtdID0gewot
+CXsgLy8gY2FzZTAwCi0gICAgICAgICAgICAgICAgLnR0eXBlICAgICAgICAgID0gTk9STUFMLAot
+ICAgICAgICAgICAgICAgIC5leHBlY3RfcmV2ZW50cyA9IFBPTExJTiB8IFBPTExPVVQsCi0gICAg
+ICAgICAgICAgICAgLnJldCAgICAgICAgICAgID0gMCwKLSAgICAgICAgICAgICAgICAuZXJyICAg
+ICAgICAgICAgPSAwLAotICAgICAgICB9LAotICAgICAgICB7IC8vIGNhc2UwMQotICAgICAgICAg
+ICAgICAgIC50dHlwZSAgICAgICAgICA9IE1BU0tfU0lHTkFMLAotICAgICAgICAgICAgICAgIC5l
+eHBlY3RfcmV2ZW50cyA9IDAsIC8vIGRvbid0IGNhcmUKLSAgICAgICAgICAgICAgICAucmV0ICAg
+ICAgICAgICAgPSAwLAotICAgICAgICAgICAgICAgIC5lcnIgICAgICAgICAgICA9IDAsCi0gICAg
+ICAgIH0sCi0gICAgICAgIHsgLy8gY2FzZTAyCi0gICAgICAgICAgICAgICAgLnR0eXBlICAgICAg
+ICAgID0gVElNRU9VVCwKLSAgICAgICAgICAgICAgICAuZXhwZWN0X3JldmVudHMgPSAwLCAvLyBk
+b24ndCBjYXJlCi0gICAgICAgICAgICAgICAgLnJldCAgICAgICAgICAgID0gMCwKLSAgICAgICAg
+ICAgICAgICAuZXJyICAgICAgICAgICAgPSAwLAotICAgICAgICB9LAotICAgICAgICB7IC8vIGNh
+c2UwMwotICAgICAgICAgICAgICAgIC50dHlwZSAgICAgICAgICA9IEZEX0FMUkVBRFlfQ0xPU0VE
+LAotICAgICAgICAgICAgICAgIC5leHBlY3RfcmV2ZW50cyA9IFBPTExOVkFMLAotICAgICAgICAg
+ICAgICAgIC5yZXQgICAgICAgICAgICA9IDAsCi0gICAgICAgICAgICAgICAgLmVyciAgICAgICAg
+ICAgID0gMCwKLSAgICAgICAgfSwKLSAgICAgICAgeyAvLyBjYXNlMDQKLSAgICAgICAgICAgICAg
+ICAudHR5cGUgICAgICAgICAgPSBTRU5EX1NJR0lOVCwKLSAgICAgICAgICAgICAgICAucmV0ICAg
+ICAgICAgICAgPSAtMSwKLSAgICAgICAgICAgICAgICAuZXJyICAgICAgICAgICAgPSBFSU5UUiwK
+LSAgICAgICAgfSwKLSAgICAgICAgeyAvLyBjYXNlMDUKLSAgICAgICAgICAgICAgICAudHR5cGUg
+ICAgICAgICAgPSBTRU5EX1NJR0lOVF9SQUNFX1RFU1QsCi0gICAgICAgICAgICAgICAgLnJldCAg
+ICAgICAgICAgID0gLTEsCi0gICAgICAgICAgICAgICAgLmVyciAgICAgICAgICAgID0gRUlOVFIs
+Ci0gICAgICAgIH0sCi0gICAgICAgIHsgLy8gY2FzZTA2Ci0gICAgICAgICAgICAgICAgLnR0eXBl
+ICAgICAgICAgID0gSU5WQUxJRF9ORkRTLAotICAgICAgICAgICAgICAgIC5yZXQgICAgICAgICAg
+ICA9IC0xLAotICAgICAgICAgICAgICAgIC5lcnIgICAgICAgICAgICA9IEVJTlZBTCwKLSAgICAg
+ICAgfSwKLSAgICAgICAgeyAvLyBjYXNlMDcKLSAgICAgICAgICAgICAgICAudHR5cGUgICAgICAg
+ICAgPSBJTlZBTElEX0ZEUywKLSAgICAgICAgICAgICAgICAucmV0ICAgICAgICAgICAgPSAtMSwK
+LSAgICAgICAgICAgICAgICAuZXJyICAgICAgICAgICAgPSBFRkFVTFQsCi0gICAgICAgIH0sCisJ
+CXsgLy8gY2FzZTAwCisJCQkudHR5cGUgPSBOT1JNQUwsCisJCQkuZXhwZWN0X3JldmVudHMgPSBQ
+T0xMSU4gfCBQT0xMT1VULAorCQkJLnJldCA9IDAsCisJCQkuZXJyID0gMCwKKwkJfSwKKwkJeyAv
+LyBjYXNlMDEKKwkJCS50dHlwZSA9IE1BU0tfU0lHTkFMLAorCQkJLmV4cGVjdF9yZXZlbnRzID0g
+MCwgLy8gZG9uJ3QgY2FyZQorCQkJLnJldCA9IDAsCisJCQkuZXJyID0gMCwKKwkJfSwKKwkJeyAv
+LyBjYXNlMDIKKwkJCS50dHlwZSA9IFRJTUVPVVQsCisJCQkuZXhwZWN0X3JldmVudHMgPSAwLCAv
+LyBkb24ndCBjYXJlCisJCQkucmV0ID0gMCwKKwkJCS5lcnIgPSAwLAorCQl9LAorCQl7IC8vIGNh
+c2UwMworCQkJLnR0eXBlID0gRkRfQUxSRUFEWV9DTE9TRUQsCisJCQkuZXhwZWN0X3JldmVudHMg
+PSBQT0xMTlZBTCwKKwkJCS5yZXQgPSAwLCAuZXJyID0gMCwKKwkJfSwKKwkJeyAvLyBjYXNlMDQK
+KwkJCS50dHlwZSA9IFNFTkRfU0lHSU5ULAorCQkJLnJldCA9IC0xLAorCQkJLmVyciA9IEVJTlRS
+LAorCQl9LAorCQl7IC8vIGNhc2UwNQorCQkJLnR0eXBlID0gU0VORF9TSUdJTlRfUkFDRV9URVNU
+LAorCQkJLnJldCA9IC0xLAorCQkJLmVyciA9IEVJTlRSLAorCQl9LAorCQl7IC8vIGNhc2UwNgor
+CQkJLnR0eXBlID0gSU5WQUxJRF9ORkRTLAorCQkJLnJldCA9IC0xLAorCQkJLmVyciA9IEVJTlZB
+TCwKKwkJfSwKKwkJeyAvLyBjYXNlMDcKKwkJCS50dHlwZSA9IElOVkFMSURfRkRTLAorCQkJLnJl
+dCA9IC0xLAorCQkJLmVyciA9IEVGQVVMVCwgfSwKICNpZiAwCi0gICAgICAgIHsgLy8gY2FzZTA4
+Ci0gICAgICAgICAgICAgICAgLnR0eXBlICAgICAgICAgID0gTUlOVVNfTlNFQywKLSAgICAgICAg
+ICAgICAgICAucmV0ICAgICAgICAgICAgPSAtMSwKLSAgICAgICAgICAgICAgICAuZXJyICAgICAg
+ICAgICAgPSBFSU5WQUwsIC8vIFJIRUw0VTEgKyAyLjYuMTggcmV0dXJucyBTVUNDRVNTCi0gICAg
+ICAgIH0sCi0gICAgICAgIHsgLy8gY2FzZTA5Ci0gICAgICAgICAgICAgICAgLnR0eXBlICAgICAg
+ICAgID0gVE9PX0xBUkdFX05TRUMsCi0gICAgICAgICAgICAgICAgLnJldCAgICAgICAgICAgID0g
+LTEsCi0gICAgICAgICAgICAgICAgLmVyciAgICAgICAgICAgID0gRUlOVkFMLCAvLyBSSEVMNFUx
+ICsgMi42LjE4IHJldHVybnMgU1VDQ0VTUwotICAgICAgICB9LAorCQl7IC8vIGNhc2UwOAorCQkJ
+LnR0eXBlID0gTUlOVVNfTlNFQywKKwkJCS5yZXQgPSAtMSwKKwkJCS5lcnIgPSBFSU5WQUwsIC8v
+IFJIRUw0VTEgKyAyLjYuMTggcmV0dXJucyBTVUNDRVNTCisJCX0sCisJCXsgLy8gY2FzZTA5CisJ
+CQkudHR5cGUgPSBUT09fTEFSR0VfTlNFQywKKwkJCS5yZXQgPSAtMSwKKwkJCS5lcnIgPSBFSU5W
+QUwsIC8vIFJIRUw0VTEgKyAyLjYuMTggcmV0dXJucyBTVUNDRVNTCisJCX0sCiAjZW5kaWYKLX07
+CisJCX07CiAKICNkZWZpbmUgTlVNX1RFU1RfRkRTICAgIDEKIApAQCAtMjYyLDI2NiArMjU4LDIw
+NyBAQCBzdGF0aWMgc3RydWN0IHRlc3RfY2FzZSB0Y2FzZVtdID0gewogICoKICAqLwogCi1zdGF0
+aWMgaW50IGRvX3Rlc3Qoc3RydWN0IHRlc3RfY2FzZSAqdGMpCi17Ci0gICAgICAgIGludCBzeXNf
+cmV0OwotICAgICAgICBpbnQgc3lzX2Vycm5vOwotICAgICAgICBpbnQgcmVzdWx0ID0gUkVTVUxU
+X09LOwotCWludCBmZCA9IC0xICwgY21wX29rID0gMTsKK3N0YXRpYyBpbnQgZG9fdGVzdChzdHJ1
+Y3QgdGVzdF9jYXNlICp0YykgeworCWludCBzeXNfcmV0LCBzeXNfZXJybm8sIGZhaWxlZDsKKwlp
+bnQgcmVzdWx0ID0gUkVTVUxUX09LOworCWludCBmZCA9IC0xLCBjbXBfb2sgPSAxOwogCWNoYXIg
+ZnBhdGhbUEFUSF9NQVhdOwogCXN0cnVjdCBwb2xsZmQgKnBfZmRzLCBmZHNbTlVNX1RFU1RfRkRT
+XTsKLSAgICAgICAgdW5zaWduZWQgaW50IG5mZHMgPSBOVU1fVEVTVF9GRFM7Ci0gICAgICAgIHN0
+cnVjdCB0aW1lc3BlYyAqcF90cywgdHM7Ci0gICAgICAgIHNpZ3NldF90ICpwX3NpZ21hc2ssIHNp
+Z21hc2s7Ci0gICAgICAgIHNpemVfdCBzaWdzZXRzaXplID0gMDsKLSAgICAgICAgcGlkX3QgcGlk
+ID0gMDsKLQotCVRFU1QoZmQgPSBzZXR1cF9maWxlKHByb2dkaXIsICJ0ZXN0LmZpbGUiLCBmcGF0
+aCkpOwotICAgICAgICBpZiAoZmQgPCAwKQotICAgICAgICAgICAgICAgIHJldHVybiAxOwotICAg
+ICAgICBmZHNbMF0uZmQgPSBmZDsKLSAgICAgICAgZmRzWzBdLmV2ZW50cyA9IFBPTExJTiB8IFBP
+TExQUkkgfCBQT0xMT1VUIHwgUE9MTFJESFVQOwotICAgICAgICBmZHNbMF0ucmV2ZW50cyA9IDA7
+Ci0gICAgICAgIHBfZmRzID0gZmRzOwotICAgICAgICBwX3RzID0gTlVMTDsKLSAgICAgICAgcF9z
+aWdtYXNrID0gTlVMTDsKKwl1bnNpZ25lZCBpbnQgbmZkcyA9IE5VTV9URVNUX0ZEUzsKKwlzdHJ1
+Y3QgdGltZXNwZWMgKnBfdHMsIHRzOworCXNpZ3NldF90ICpwX3NpZ21hc2ssIHNpZ21hc2s7CisJ
+cGlkX3QgcGlkID0gMDsKKworCVRFU1QoZmQgPSBzZXR1cF9maWxlKCIuIiwgInRlc3QuZmlsZSIs
+IGZwYXRoKSk7CisJaWYgKGZkIDwgMCkKKwkJcmV0dXJuIDE7CisJZmRzWzBdLmZkID0gZmQ7CisJ
+ZmRzWzBdLmV2ZW50cyA9IFBPTExJTiB8IFBPTExQUkkgfCBQT0xMT1VUIHwgUE9MTFJESFVQOwor
+CWZkc1swXS5yZXZlbnRzID0gMDsKKwlwX2ZkcyA9IGZkczsKKwlwX3RzID0gTlVMTDsKKwlwX3Np
+Z21hc2sgPSBOVUxMOwogCiAJc3dpdGNoICh0Yy0+dHR5cGUpIHsKLSAgICAgICAgY2FzZSBUSU1F
+T1VUOgotICAgICAgICAgICAgICAgIG5mZHMgPSAwOwotICAgICAgICAgICAgICAgIHRzLnR2X3Nl
+YyA9IDA7Ci0gICAgICAgICAgICAgICAgdHMudHZfbnNlYyA9IDUwMDAwMDAwOyAgLy8gNTBtc2Vj
+Ci0gICAgICAgICAgICAgICAgcF90cyA9ICZ0czsKLSAgICAgICAgICAgICAgICBicmVhazsKKwlj
+YXNlIFRJTUVPVVQ6CisJCW5mZHMgPSAwOworCQl0cy50dl9zZWMgPSAwOworCQl0cy50dl9uc2Vj
+ID0gNTAwMDAwMDA7IC8vIDUwbXNlYworCQlwX3RzID0gJnRzOworCQlicmVhazsKIAljYXNlIEZE
+X0FMUkVBRFlfQ0xPU0VEOgotICAgICAgICAgICAgICAgIFRFU1QoY2xvc2UoZmQpKTsKLSAgICAg
+ICAgICAgICAgICBmZCA9IC0xOwotICAgICAgICAgICAgICAgIFRFU1QoY2xlYW51cF9maWxlKGZw
+YXRoKSk7Ci0gICAgICAgICAgICAgICAgYnJlYWs7Ci0gICAgICAgIGNhc2UgTUFTS19TSUdOQUw6
+Ci0gICAgICAgICAgICAgICAgVEVTVChzaWdlbXB0eXNldCgmc2lnbWFzaykpOwotICAgICAgICAg
+ICAgICAgIFRFU1Qoc2lnYWRkc2V0KCZzaWdtYXNrLCBTSUdJTlQpKTsKLSAgICAgICAgICAgICAg
+ICBwX3NpZ21hc2sgPSAmc2lnbWFzazsKLSAgICAgICAgICAgICAgICAvL3NpZ3NldHNpemUgPSBz
+aXplb2Yoc2lnbWFzayk7Ci0gICAgICAgICAgICAgICAgc2lnc2V0c2l6ZSA9IDg7Ci0gICAgICAg
+ICAgICAgICAgbmZkcyA9IDA7Ci0gICAgICAgICAgICAgICAgdHMudHZfc2VjID0gMDsKLSAgICAg
+ICAgICAgICAgICB0cy50dl9uc2VjID0gMzAwMDAwMDAwOyAvLyAzMDBtc2VjID0+IG5lZWQgdG8g
+YmUgZW5vdWdoIGZvcgotICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8v
+ICAgd2FpdGluZyB0aGUgc2lnbmFsCi0gICAgICAgICAgICAgICAgcF90cyA9ICZ0czsKLSAgICAg
+ICAgICAgICAgICAvLyBmYWxsdGhyb3VnaAorCQlURVNUKGNsb3NlKGZkKSk7CisJCWZkID0gLTE7
+CisJCVRFU1QoY2xlYW51cF9maWxlKGZwYXRoKSk7CisJCWJyZWFrOworCWNhc2UgTUFTS19TSUdO
+QUw6CisJCVRFU1Qoc2lnZW1wdHlzZXQoJnNpZ21hc2spKTsKKwkJVEVTVChzaWdhZGRzZXQoJnNp
+Z21hc2ssIFNJR0lOVCkpOworCQlwX3NpZ21hc2sgPSAmc2lnbWFzazsKKwkJbmZkcyA9IDA7CisJ
+CXRzLnR2X3NlYyA9IDA7CisJCXRzLnR2X25zZWMgPSAzMDAwMDAwMDA7IC8vIDMwMG1zZWMgPT4g
+bmVlZCB0byBiZSBlbm91Z2ggZm9yCisJCS8vICAgd2FpdGluZyB0aGUgc2lnbmFsCisJCXBfdHMg
+PSAmdHM7CisJCS8vIGZhbGx0aHJvdWdoCiAJY2FzZSBTRU5EX1NJR0lOVDoKLSAgICAgICAgICAg
+ICAgICBuZmRzID0gMDsKLSAgICAgICAgICAgICAgICBwaWQgPSBjcmVhdGVfc2lnX3Byb2MoMTAw
+MDAwLCBTSUdJTlQsIFVJTlRfTUFYKTsgLy8gMTAwbXNlYwotICAgICAgICAgICAgICAgIGlmIChw
+aWQgPCAwKQotICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIDE7Ci0gICAgICAgICAgICAg
+ICAgYnJlYWs7Ci0gIGNhc2UgU0VORF9TSUdJTlRfUkFDRV9URVNUOgotICAgIC8qIGJsb2NrIHRo
+ZSBJTlQgc2lnbmFsICovCi0gICAgICAgICAgICAgICAgc2lnZW1wdHlzZXQoJnNpZ21hc2spOwot
+ICAgICAgICAgICAgICAgIHNpZ2FkZHNldCgmc2lnbWFzaywgU0lHSU5UKTsKLSAgICAgICAgICAg
+ICAgICBzaWdwcm9jbWFzayhTSUdfU0VUTUFTSywgJnNpZ21hc2ssIE5VTEwpOwotCi0gICAgICAg
+ICAgICAgICAgLyogYW5kIGxldCBpdCBiZSB1bmJsb2NrZWQgd2hlbiB0aGUgc3lzY2FsbCBydW5z
+ICovCi0gICAgICAgICAgICAgICAgc2lnZW1wdHlzZXQoJnNpZ21hc2spOwotICAgICAgICAgICAg
+ICAgIHBfc2lnbWFzayA9ICZzaWdtYXNrOwotICAgICAgICAgICAgICAgIC8vc2lnc2V0c2l6ZSA9
+IHNpemVvZihzaWdtYXNrKTsKLSAgICAgICAgICAgICAgICBzaWdzZXRzaXplID0gODsKLSAgICAg
+ICAgICAgICAgICBuZmRzID0gMDsKLSAgICAgICAgICAgICAgICB0cy50dl9zZWMgPSAwOwotICAg
+ICAgICAgICAgICAgIHRzLnR2X25zZWMgPSAzMDAwMDAwMDA7IC8vIDMwMG1zZWMgPT4gbmVlZCB0
+byBiZSBlbm91Z2ggZm9yCi0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+Ly8gICB3YWl0aW5nIHRoZSBzaWduYWwKLSAgICAgICAgICAgICAgICBwX3RzID0gJnRzOwotICAg
+ICAgICAgICAgICAgIG5mZHMgPSAwOwotICAgICAgICAgICAgICAgIHBpZCA9IGNyZWF0ZV9zaWdf
+cHJvYygwLCBTSUdJTlQsIDEpOwotICAgICAgICAgICAgICAgIGlmIChwaWQgPCAwKSB7Ci0gICAg
+ICAgICAgICAgICAgICByZXN1bHQ9MTsKLSAgICAgICAgICAgICAgICAgIGdvdG8gY2xlYW51cDsK
+LSAgICAgICAgICAgICAgICB9Ci0gICAgICAgICAgICAgICAgYnJlYWs7Ci0gICAgICAgIGNhc2Ug
+SU5WQUxJRF9ORkRTOgotICAgICAgICAgICAgICAgIC8vbmZkcyA9IFJMSU1JVF9OT0ZJTEUgKyAx
+OyA9PT4gUkhFTDRVMSArIDIuNi4xOCByZXR1cm5zIFNVQ0NFU1MKLSAgICAgICAgICAgICAgICBu
+ZmRzID0gLTE7Ci0gICAgICAgICAgICAgICAgYnJlYWs7Ci0gICAgICAgIGNhc2UgSU5WQUxJRF9G
+RFM6Ci0gICAgICAgICAgICAgICAgcF9mZHMgPSAodm9pZCopMHhjMDAwMDAwMDsKLSAgICAgICAg
+ICAgICAgICBicmVhazsKLSAgICAgICAgY2FzZSBNSU5VU19OU0VDOgotICAgICAgICAgICAgICAg
+IHRzLnR2X3NlYyA9IDA7Ci0gICAgICAgICAgICAgICAgdHMudHZfbnNlYyA9IC0xOwotICAgICAg
+ICAgICAgICAgIHBfdHMgPSAmdHM7Ci0gICAgICAgICAgICAgICAgYnJlYWs7CisJCW5mZHMgPSAw
+OworCQlwaWQgPSBjcmVhdGVfc2lnX3Byb2MoMTAwMDAwLCBTSUdJTlQsIFVJTlRfTUFYKTsgLy8g
+MTAwbXNlYworCQlpZiAocGlkIDwgMCkKKwkJCXJldHVybiAxOworCQlicmVhazsKKwljYXNlIFNF
+TkRfU0lHSU5UX1JBQ0VfVEVTVDoKKwkJLyogYmxvY2sgdGhlIElOVCBzaWduYWwgKi8KKwkJc2ln
+ZW1wdHlzZXQoJnNpZ21hc2spOworCQlzaWdhZGRzZXQoJnNpZ21hc2ssIFNJR0lOVCk7CisJCXNp
+Z3Byb2NtYXNrKFNJR19TRVRNQVNLLCAmc2lnbWFzaywgTlVMTCk7CisKKwkJLyogYW5kIGxldCBp
+dCBiZSB1bmJsb2NrZWQgd2hlbiB0aGUgc3lzY2FsbCBydW5zICovCisJCXNpZ2VtcHR5c2V0KCZz
+aWdtYXNrKTsKKwkJcF9zaWdtYXNrID0gJnNpZ21hc2s7CisJCW5mZHMgPSAwOworCQl0cy50dl9z
+ZWMgPSAwOworCQl0cy50dl9uc2VjID0gMzAwMDAwMDAwOyAvLyAzMDBtc2VjID0+IG5lZWQgdG8g
+YmUgZW5vdWdoIGZvcgorCQkvLyAgIHdhaXRpbmcgdGhlIHNpZ25hbAorCQlwX3RzID0gJnRzOwor
+CQluZmRzID0gMDsKKwkJcGlkID0gY3JlYXRlX3NpZ19wcm9jKDAsIFNJR0lOVCwgMSk7CisJCWlm
+IChwaWQgPCAwKSB7CisJCQlyZXN1bHQgPSAxOworCQkJZ290byBjbGVhbnVwOworCQl9CisJCWJy
+ZWFrOworCWNhc2UgSU5WQUxJRF9ORkRTOgorCQkvL25mZHMgPSBSTElNSVRfTk9GSUxFICsgMTsg
+Ly89PT4gUkhFTDRVMSArIDIuNi4xOCByZXR1cm5zIFNVQ0NFU1MKKwkJbmZkcyA9IC0xOworCQli
+cmVhazsKKwljYXNlIElOVkFMSURfRkRTOgorCQlwX2ZkcyA9ICh2b2lkKikgMHhjMDAwMDAwMDsK
+KwkJYnJlYWs7CisJY2FzZSBNSU5VU19OU0VDOgorCQl0cy50dl9zZWMgPSAwOworCQl0cy50dl9u
+c2VjID0gLTE7CisJCXBfdHMgPSAmdHM7CisJCWJyZWFrOwogCWNhc2UgVE9PX0xBUkdFX05TRUM6
+Ci0gICAgICAgICAgICAgICAgdHMudHZfc2VjID0gMDsKLSAgICAgICAgICAgICAgICB0cy50dl9u
+c2VjID0gMTAwMDAwMDAwMDsKLSAgICAgICAgICAgICAgICBwX3RzID0gJnRzOwotICAgICAgICAg
+ICAgICAgIGJyZWFrOwotICAgICAgICB9CisJCXRzLnR2X3NlYyA9IDA7CisJCXRzLnR2X25zZWMg
+PSAxMDAwMDAwMDAwOworCQlwX3RzID0gJnRzOworCQlicmVhazsKKwl9CiAKIAkvKgotCSAgICog
+RXhlY3V0ZSBzeXN0ZW0gY2FsbAotICAgICAgICAgKi8KLSAgICAgICAgZXJybm8gPSAwOwotICAg
+ICAgICBURVNUKHN5c19yZXQgPSBzeXNjYWxsKF9fTlJfcHBvbGwsIHBfZmRzLCBuZmRzLCBwX3Rz
+LCBwX3NpZ21hc2ssIHNpZ3NldHNpemUpKTsKLSAgICAgICAgc3lzX2Vycm5vID0gZXJybm87Ci0g
+ICAgICAgIGlmIChzeXNfcmV0IDw9IDAgfHwgdGMtPnJldCA8IDApCi0gICAgICAgICAgICAgICAg
+Z290byBURVNUX0VORDsKLQotICAgICAgICBjbXBfb2sgPSBmZHNbMF0ucmV2ZW50cyA9PSB0Yy0+
+ZXhwZWN0X3JldmVudHM7Ci0gICAgICAgIGlmIChvcHRfZGVidWcpIHsKLSAgICAgICAgICAgICAg
+ICB0c3RfcmVzbShUSU5GTywiRVhQRUNUOiByZXZlbnRzPTB4JTA0eCIsIHRjLT5leHBlY3RfcmV2
+ZW50cyk7Ci0gICAgICAgICAgICAgICAgdHN0X3Jlc20oVElORk8sIlJFU1VMVDogcmV2ZW50cz0w
+eCUwNHgiLCBmZHNbMF0ucmV2ZW50cyk7Ci0gICAgICAgIH0KLQotVEVTVF9FTkQ6Ci0gICAgICAg
+IC8qCi0gICAgICAgICAqIENoZWNrIHJlc3VsdHMKLSAgICAgICAgICovCi0gICAgICAgIGlmKHRj
+LT50dHlwZSA9PSBTRU5EX1NJR0lOVF9SQUNFX1RFU1QpIHsKLSAgICAgICAgICBpbnQgc2lnOwot
+ICAgICAgICAgIHNpZ3Byb2NtYXNrKFNJR19TRVRNQVNLLCBOVUxMLCAmc2lnbWFzayk7Ci0gICAg
+ICAgICAgZm9yKHNpZz0xOyBzaWcgPCBTSUdSVE1BWDsgc2lnKyspIHsKLSAgICAgICAgICAgICAg
+VEVTVChzaWdpc21lbWJlcigmc2lnbWFzaywgc2lnKSk7Ci0gICAgICAgICAgICAgIGlmKFRFU1Rf
+UkVUVVJOIDwgMCAmJiBURVNUX0VSUk5PID09IEVJTlZBTCAmJiBzaWcgIT0gU0lHSU5UKQotICAg
+ICAgICAgICAgICAgIGNvbnRpbnVlOyAvKiBsZXQncyBpZ25vcmUgZXJyb3JzIGlmIHRoZXkgYXJl
+IGZvciBvdGhlciBzaWduYWwgdGhhbiBTSUdJTlQgdGhhdCB3ZSBzZXQgKi8KLSAgICAgICAgICAg
+ICAgaWYoKHNpZz09U0lHSU5UKSAhPSAoVEVTVF9SRVRVUk4hPTApKSB7Ci0gICAgICAgICAgICAg
+ICAgdHN0X3Jlc20oVEZBSUwsICJCYWQgdmFsdWUgb2Ygc2lnbmFsIG1hc2ssIHNpZ25hbCAlZCBp
+cyAlcyIsIHNpZywgVEVTVF9SRVRVUk4gPyAib24iIDogIm9mZiIpOwotICAgICAgICAgICAgICAg
+IGNtcF9vayB8PTE7Ci0gICAgICAgICAgICAgIH0KLSAgICAgICAgICAgIH0KLSAgICAgICAgfQot
+ICAgICAgICByZXN1bHQgfD0gKHN5c19lcnJubyAhPSB0Yy0+ZXJyKSB8fCAhY21wX29rOwotICAg
+ICAgICBQUklOVF9SRVNVTFRfQ01QKHN5c19yZXQgPj0gMCwgdGMtPnJldCwgdGMtPmVyciwgc3lz
+X3JldCwgc3lzX2Vycm5vLAotICAgICAgICAgICAgICAgICAgICAgICAgIGNtcF9vayk7Ci0gY2xl
+YW51cDoKLSAgICAgICAgaWYgKGZkID49IDApCi0gICAgICAgICAgICAgICAgY2xlYW51cF9maWxl
+KGZwYXRoKTsKLQotICAgICAgICBzaWdlbXB0eXNldCgmc2lnbWFzayk7Ci0gICAgICAgIHNpZ3By
+b2NtYXNrKFNJR19TRVRNQVNLLCAmc2lnbWFzaywgTlVMTCk7Ci0gICAgICAgIGlmIChwaWQgPiAw
+KSB7Ci0gICAgICAgICAgICAgICAgaW50IHN0OwotICAgICAgICAgICAgICAgIGtpbGwocGlkLCBT
+SUdURVJNKTsKLSAgICAgICAgICAgICAgICB3YWl0KCZzdCk7Ci0gICAgICAgIH0KKwkgKiBFeGVj
+dXRlIHN5c3RlbSBjYWxsCisJICovCisJZXJybm8gPSAwOworCVRFU1Qoc3lzX3JldCA9IHN5c2Nh
+bGwoX19OUl9wcG9sbCwgcF9mZHMsIG5mZHMsIHBfdHMsIHBfc2lnbWFzaywgU0lHU0VUU0laRSkp
+OworCQlzeXNfZXJybm8gPSBlcnJubzsKKwlpZiAoc3lzX3JldCA8PSAwIHx8IHRjLT5yZXQgPCAw
+KQorCQlnb3RvIFRFU1RfRU5EOworCisJY21wX29rID0gZmRzWzBdLnJldmVudHMgPT0gdGMtPmV4
+cGVjdF9yZXZlbnRzOworCXRzdF9yZXNtKFRJTkZPLCAiRVhQRUNUOiByZXZlbnRzPTB4JTA0eCIs
+IHRjLT5leHBlY3RfcmV2ZW50cyk7CisJdHN0X3Jlc20oVElORk8sICJSRVNVTFQ6IHJldmVudHM9
+MHglMDR4IiwgZmRzWzBdLnJldmVudHMpOworCisJVEVTVF9FTkQ6CisJLyoKKwkgKiBDaGVjayBy
+ZXN1bHRzCisJICovCisJaWYgKHRjLT50dHlwZSA9PSBTRU5EX1NJR0lOVF9SQUNFX1RFU1QpIHsK
+KwkJaW50IHNpZzsKKwkJc2lncHJvY21hc2soU0lHX1NFVE1BU0ssIE5VTEwsICZzaWdtYXNrKTsK
+KwkJZm9yIChzaWcgPSAxOyBzaWcgPCBTSUdSVE1BWDsgc2lnKyspIHsKKwkJCVRFU1Qoc2lnaXNt
+ZW1iZXIoJnNpZ21hc2ssIHNpZykpOworCQkJaWYgKFRFU1RfUkVUVVJOIDwgMCAmJiBURVNUX0VS
+Uk5PID09IEVJTlZBTCAmJiBzaWcgIT0gU0lHSU5UKQorCQkJCWNvbnRpbnVlOyAvKiBsZXQncyBp
+Z25vcmUgZXJyb3JzIGlmIHRoZXkgYXJlIGZvciBvdGhlciBzaWduYWwgdGhhbiBTSUdJTlQgdGhh
+dCB3ZSBzZXQgKi8KKwkJCWlmICgoc2lnID09IFNJR0lOVCkgIT0gKFRFU1RfUkVUVVJOICE9IDAp
+KSB7CisJCQkJdHN0X3Jlc20oVEZBSUwsICJCYWQgdmFsdWUgb2Ygc2lnbmFsIG1hc2ssIHNpZ25h
+bCAlZCBpcyAlcyIsCisJCQkJCQlzaWcsIFRFU1RfUkVUVVJOID8gIm9uIiA6ICJvZmYiKTsKKwkJ
+CQljbXBfb2sgfD0gMTsKKwkJCX0KKwkJfQorCX0KKwlmYWlsZWQgPSBzeXNfZXJybm8gIT0gdGMt
+PmVycjsKKwlyZXN1bHQgfD0gZmFpbGVkIHx8ICFjbXBfb2s7CisJaWYgKGZhaWxlZCkKKwkJbGFz
+dF9mYWlsZWRfZXJybm8gPSBzeXNfZXJybm87CisJUFJJTlRfUkVTVUxUX0NNUChzeXNfcmV0ID49
+IDAsIHRjLT5yZXQsIHRjLT5lcnIsIHN5c19yZXQsIHN5c19lcnJubywgY21wX29rKTsKKwljbGVh
+bnVwOiBpZiAoZmQgPj0gMCkKKwkJY2xlYW51cF9maWxlKGZwYXRoKTsKKworCXNpZ2VtcHR5c2V0
+KCZzaWdtYXNrKTsKKwlzaWdwcm9jbWFzayhTSUdfU0VUTUFTSywgJnNpZ21hc2ssIE5VTEwpOwor
+CWlmIChwaWQgPiAwKSB7CisJCWludCBzdDsKKwkJa2lsbChwaWQsIFNJR1RFUk0pOworCQl3YWl0
+KCZzdCk7CisJfQogCXJldHVybiByZXN1bHQ7CiB9CiAKLQogLyoKICAqIHNpZ2hhbmRsZXIoKQog
+ICovCi12b2lkIHNpZ2hhbmRsZXIoaW50IHNpZykKLXsKLSAgICAgICAgaWYgKHNpZyA9PSBTSUdJ
+TlQpCi0gICAgICAgICAgICAgICAgcmV0dXJuOwotICAgICAgICAvLyBOT1RSRUFDSEVECi0gICAg
+ICAgIHJldHVybjsKK3ZvaWQgc2lnaGFuZGxlcihpbnQgc2lnKSB7CisJaWYgKHNpZyA9PSBTSUdJ
+TlQpCisJCXJldHVybjsKKwkvLyBOT1RSRUFDSEVECisJcmV0dXJuOwogfQogCi0KLS8qCi0gKiB1
+c2FnZSgpCi0gKi8KLQotc3RhdGljIHZvaWQgdXNhZ2UoY29uc3QgY2hhciAqcHJvZ25hbWUpCi17
+Ci0gICAgICAgIHRzdF9yZXNtKFRJTkZPLCJ1c2FnZTogJXMgW29wdGlvbnNdIiwgcHJvZ25hbWUp
+OwotICAgICAgICB0c3RfcmVzbShUSU5GTywiVGhpcyBpcyBhIHJlZ3Jlc3Npb24gdGVzdCBwcm9n
+cmFtIG9mICVzIHN5c3RlbSBjYWxsLiIsU1lTQ0FMTF9OQU1FKTsKLSAgICAgICAgdHN0X3Jlc20o
+VElORk8sIm9wdGlvbnM6Iik7Ci0gICAgICAgIHRzdF9yZXNtKFRJTkZPLCIgICAgLWQgLS1kZWJ1
+ZyAgICAgICAgICAgU2hvdyBkZWJ1ZyBtZXNzYWdlcyIpOwotICAgICAgICB0c3RfcmVzbShUSU5G
+TywiICAgIC1oIC0taGVscCAgICAgICAgICAgIFNob3cgdGhpcyBtZXNzYWdlIik7Ci0gICAgICAg
+IHRzdF9yZXNtKFRJTkZPLCJORyIpOwotICAgICAgICBleGl0KDEpOwotfQotCi0KIC8qCiAgKiBt
+YWluKCkKICAqLwogCi0KLQogaW50IG1haW4oaW50IGFjLCBjaGFyICoqYXYpIHsKIAlpbnQgcmVz
+dWx0ID0gUkVTVUxUX09LOwotICAgICAgICBpbnQgYzsKLSAgICAgICAgaW50IGk7Ci0gICAgICAg
+IGludCBsYzsgICAgICAgICAgICAgICAgIC8qIGxvb3AgY291bnRlciAqLwotICAgICAgICBjaGFy
+ICptc2c7ICAgICAgICAgICAgICAvKiBtZXNzYWdlIHJldHVybmVkIGZyb20gcGFyc2Vfb3B0cyAq
+LwotCi0Jc3RydWN0IG9wdGlvbiBsb25nX29wdGlvbnNbXSA9IHsKLSAgICAgICAgICAgICAgICB7
+ICJkZWJ1ZyIsIG5vX2FyZ3VtZW50LCAwLCAnZCcgfSwKLSAgICAgICAgICAgICAgICB7ICJoZWxw
+IiwgIG5vX2FyZ3VtZW50LCAwLCAnaCcgfSwKLSAgICAgICAgICAgICAgICB7IE5VTEwsIDAsIE5V
+TEwsIDAgfQotICAgICAgICB9OwotCi0JcHJvZ25hbWUgPSBzdHJjaHIoYXZbMF0sICcvJyk7Ci0g
+ICAgICAgIHByb2duYW1lID0gcHJvZ25hbWUgPyBwcm9nbmFtZSArIDEgOiBhdlswXTsJCi0KLQlw
+cm9nZGlyID0gc3RyZHVwKGF2WzBdKTsKLSAgICAgICAgcHJvZ2RpciA9IGRpcm5hbWUocHJvZ2Rp
+cik7Ci0JCi0gICAgICAgIC8qIHBhcnNlIHN0YW5kYXJkIG9wdGlvbnMgKi8KLSAgICAgICAgaWYg
+KChtc2cgPSBwYXJzZV9vcHRzKGFjLCBhdiwgKG9wdGlvbl90ICopTlVMTCwgTlVMTCkpICE9IChj
+aGFyICopTlVMTCl7Ci0gICAgICAgICAgICAgdHN0X2Jya20oVEJST0ssIGNsZWFudXAsICJPUFRJ
+T04gUEFSU0lORyBFUlJPUiAtICVzIiwgbXNnKTsKLSAgICAgICAgICAgICB0c3RfZXhpdCgpOwot
+ICAgICAgICAgICB9Ci0KLSAgICAgICAgc2V0dXAoKTsKLQotICAgICAgICAvKiBDaGVjayBsb29w
+aW5nIHN0YXRlIGlmIC1pIG9wdGlvbiBnaXZlbiAqLwotICAgICAgICBmb3IgKGxjID0gMDsgVEVT
+VF9MT09QSU5HKGxjKTsgKytsYykgewotICAgICAgICAgICAgICAgIFRzdF9jb3VudCA9IDA7Ci0g
+ICAgICAgICAgICAgICAgZm9yICh0ZXN0bm8gPSAwOyB0ZXN0bm8gPCBUU1RfVE9UQUw7ICsrdGVz
+dG5vKSB7Ci0JCQkgVEVTVChjID0gZ2V0b3B0X2xvbmcoYWMsIGF2LCAiZGgiLCBsb25nX29wdGlv
+bnMsIE5VTEwpKTsKLQkJCSB3aGlsZShURVNUX1JFVFVSTiAhPSAtMSkgewotCQkgICAgICAgICAg
+ICAgICAgc3dpdGNoIChjKSB7Ci0gICAgICAgICAgICAgICAgCQljYXNlICdkJzoKLQkJICAgICAg
+ICAgICAgICAgICAgICAgICAgb3B0X2RlYnVnID0gMTsKLSAgICAgICAgICAgICAgICAJCSAgICAg
+ICAgYnJlYWs7Ci0JCSAgICAgICAgICAgICAgICBkZWZhdWx0OgotICAgICAgICAgICAgICAgIAkJ
+ICAgICAgICB1c2FnZShwcm9nbmFtZSk7Ci0gICAgICAgICAgICAgICAgICAgICAgICAJCS8vIE5P
+VFJFQUNIRUQKLSAgICAgICAgICAgICAgICAJCX0KLQkJICAgICAgICB9Ci0KLQotCQlpZiAoYWMg
+IT0gb3B0aW5kKSB7Ci0gICAgICAgIAkgICAgICAgIHRzdF9yZXNtKFRJTkZPLCJPcHRpb25zIGFy
+ZSBub3QgbWF0Y2guIik7Ci0gICAgICAgICAgICAgICAgCXVzYWdlKHByb2duYW1lKTsKLSAgICAg
+ICAgICAgICAgICAJLy8gTk9UUkVBQ0hFRAotCSAgICAgICAgfQotCi0JCS8qCi0JCSogRXhlY3V0
+ZSB0ZXN0Ci0gICAgICAgICAJKi8KLQkgICAgICAgIGZvciAoaSA9IDA7IGkgPCAoaW50KShzaXpl
+b2YodGNhc2UpIC8gc2l6ZW9mKHRjYXNlWzBdKSk7IGkrKykgewotICAgICAgICAJICAgICAgICBp
+bnQgcmV0OwotCSAgICAgICAgICAgICAgICB0c3RfcmVzbShUSU5GTywiKGNhc2UlMDJkKSBTVEFS
+VCIsIGkpOwotCSAgICAgICAgICAgICAgICByZXQgPSBkb190ZXN0KCZ0Y2FzZVtpXSk7Ci0JICAg
+ICAgICAgICAgICAgIHRzdF9yZXNtKFRJTkZPLCIoY2FzZSUwMmQpIEVORCA9PiAlcyIsIGksIChy
+ZXQgPT0gMCkgPyAiT0siIDogIk5HIik7Ci0JICAgICAgICAgICAgICAgIHJlc3VsdCB8PSByZXQ7
+Ci0gICAgICAgIAl9Ci0JCQotCQkvKgotICAgICAgICAJICogQ2hlY2sgcmVzdWx0cwotICAgICAg
+ICAgCSovCi0gICAgICAgIAlzd2l0Y2gocmVzdWx0KSB7Ci0JICAgICAgICBjYXNlIFJFU1VMVF9P
+SzoKLSAgICAgICAgCQkJdHN0X3Jlc20oVFBBU1MsICJwcG9sbDAxIGNhbGwgc3VjY2VlZGVkICIp
+OwotCQkgICAgICAgICAgICAgICAgYnJlYWs7Ci0KLQkgICAgICAgIGRlZmF1bHQ6Ci0gICAgICAg
+ICAgICAgICAgIAkgICAJdHN0X3Jlc20oVEZBSUwsICIlcyBmYWlsZWQgLSBlcnJubyA9ICVkIDog
+JXMiLCBUQ0lELCBURVNUX0VSUk5PLCBzdHJlcnJvcihURVNUX0VSUk5PKSk7Ci0gICAgICAgIAkJ
+ICAgICAgICBSUFJJTlRGKCJORyIpOworCWludCBpOworCWludCBsYzsgLyogbG9vcCBjb3VudGVy
+ICovCisJY2hhciAqbXNnOyAvKiBtZXNzYWdlIHJldHVybmVkIGZyb20gcGFyc2Vfb3B0cyAqLwor
+CisJLyogcGFyc2Ugc3RhbmRhcmQgb3B0aW9ucyAqLworCWlmICgobXNnID0gcGFyc2Vfb3B0cyhh
+YywgYXYsIChvcHRpb25fdCAqKSBOVUxMLCBOVUxMKSkgIT0gKGNoYXIgKikgTlVMTCkgeworCQl0
+c3RfYnJrbShUQlJPSywgY2xlYW51cCwgIk9QVElPTiBQQVJTSU5HIEVSUk9SIC0gJXMiLCBtc2cp
+OworCX0KKworCXNldHVwKCk7CisKKwkvKiBDaGVjayBsb29waW5nIHN0YXRlIGlmIC1pIG9wdGlv
+biBnaXZlbiAqLworCWZvciAobGMgPSAwOyBURVNUX0xPT1BJTkcobGMpOyArK2xjKSB7CisJCVRz
+dF9jb3VudCA9IDA7CisJCWZvciAodGVzdG5vID0gMDsgdGVzdG5vIDwgVFNUX1RPVEFMOyArK3Rl
+c3RubykgeworCQkJLyoKKwkJCSAqIEV4ZWN1dGUgdGVzdAorCQkJICovCisJCQlmb3IgKGkgPSAw
+OyBpIDwgKGludCkgKHNpemVvZih0Y2FzZSkgLyBzaXplb2YodGNhc2VbMF0pKTsgaSsrKSB7CisJ
+CQkJaW50IHJldDsKKwkJCQl0c3RfcmVzbShUSU5GTywgIihjYXNlJTAyZCkgU1RBUlQiLCBpKTsK
+KwkJCQlyZXQgPSBkb190ZXN0KCZ0Y2FzZVtpXSk7CisJCQkJdHN0X3Jlc20oVElORk8sICIoY2Fz
+ZSUwMmQpIEVORCA9PiAlcyIsIGksIChyZXQgPT0gMCkgPyAiT0siCisJCQkJCQk6ICJORyIpOwor
+CQkJCVRFU1RfRVJST1JfTE9HKFRFU1RfRVJSTk8pOworCQkJCXJlc3VsdCB8PSByZXQ7CisJCQl9
+CisKKwkJCS8qCisJCQkgKiBDaGVjayByZXN1bHRzCisJCQkgKi8KKwkJCXN3aXRjaCAocmVzdWx0
+KSB7CisJCQljYXNlIFJFU1VMVF9PSzoKKwkJCQl0c3RfcmVzbShUUEFTUywgInBwb2xsMDEgY2Fs
+bCBzdWNjZWVkZWQgIik7CisJCQkJYnJlYWs7CisKKwkJCWRlZmF1bHQ6CisJCQkJVEVTVF9FUlJO
+TyA9IGxhc3RfZmFpbGVkX2Vycm5vOworCQkJCXRzdF9yZXNtKFRGQUlMIHwgVFRFUlJOTywgIiVz
+IGZhaWxlZCIsIFRDSUQpOworCQkJCVJQUklOVEYoIk5HIik7CiAJCQkJY2xlYW51cCgpOwotCQkJ
+CXRzdF9leGl0KCk7Ci0JCSAgICAgICAgICAgICAgICBicmVhazsKLSAgICAgICAgCX0KLQotICAg
+ICAgICAgICAgICAgIH0KLSAgICAgICAgfQkKLSAgICAgICAgY2xlYW51cCgpOwotCXRzdF9leGl0
+KCk7CisJCQkJYnJlYWs7CisJCQl9CisKKwkJfQorCX0KKwljbGVhbnVwKCk7CisJcmV0dXJuIDA7
+CiB9CiAK
 
+------_=_NextPart_001_01CA626C.4F804881
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+------_=_NextPart_001_01CA626C.4F804881
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------_=_NextPart_001_01CA626C.4F804881--
+
