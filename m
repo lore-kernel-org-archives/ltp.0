@@ -1,36 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NA27J-0001WR-5a
-	for ltp-list@lists.sourceforge.net; Mon, 16 Nov 2009 13:59:41 +0000
-Received: from e9.ny.us.ibm.com ([32.97.182.139])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NA27C-0000Us-FG
-	for ltp-list@lists.sourceforge.net; Mon, 16 Nov 2009 13:59:40 +0000
-Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
-	by e9.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nAGDXx5Q014662
-	for <ltp-list@lists.sourceforge.net>; Mon, 16 Nov 2009 08:33:59 -0500
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nAGDdCfJ117348
-	for <ltp-list@lists.sourceforge.net>; Mon, 16 Nov 2009 08:39:12 -0500
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	nAGDdBDb010199
-	for <ltp-list@lists.sourceforge.net>; Mon, 16 Nov 2009 08:39:12 -0500
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4B012F2A.9090404@st.com>
-References: <4AF1A24C.8020503@st.com>
-	<1257788356.7677.68.camel@subratamodak.linux.ibm.com>
-	<20091112141814.4599b83a@sripathi.in.ibm.com> <4AFD0D82.6050302@st.com>
-	<1258359220.5677.33.camel@subratamodak.linux.ibm.com>
-	<4B012F2A.9090404@st.com>
-Date: Mon, 16 Nov 2009 19:09:03 +0530
-Message-Id: <1258378743.5677.43.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] compiling realtime tests for SH.
-Reply-To: subrata@linux.vnet.ibm.com
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1N8uJv-0005uh-Kv
+	for ltp-list@lists.sourceforge.net; Fri, 13 Nov 2009 11:28:03 +0000
+Received: from mail-pw0-f48.google.com ([209.85.160.48])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N8uJn-0004GA-Rb
+	for ltp-list@lists.sourceforge.net; Fri, 13 Nov 2009 11:28:03 +0000
+MIME-Version: 1.0
+In-Reply-To: <200911122247.42705.vapier@gentoo.org>
+References: <1257765429.7677.23.camel@subratamodak.linux.ibm.com>
+	<1257788341.7677.62.camel@subratamodak.linux.ibm.com>
+	<364299f40911121243i2bf72ab5p258fa78989b3df5@mail.gmail.com>
+	<200911122247.42705.vapier@gentoo.org>
+Date: Fri, 13 Nov 2009 03:27:49 -0800
+Message-ID: <364299f40911130327y683631c4uefc9380e9a175432@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Clone build fail with the latest CVS sanpshot
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,59 +27,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Giuseppe CAVALLARO <peppe.cavallaro@st.com>
-Cc: ltp-list@lists.sourceforge.net, amrith <amrith@linux.ibm.com>, Gowrishankar <gowrishankar.m@linux.vnet.ibm.com>, Sripathi Kodi <sripathik@linux.vnet.ibm.com>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-On Mon, 2009-11-16 at 11:53 +0100, Giuseppe CAVALLARO wrote: 
-> -----BEGIN PGP SIGNED MESSAGE-----
-> Hash: SHA1
-> 
-> Subrata Modak wrote:
-> >>>> In my opinion this patch would have been better split into 2
-> >>>> parts: one that separates out TSC parts and the other that adds atomic
-> >>>> functions for SH. That would make changelogs easier to search through
-> >>>> in future.
-> > if you like I can resend the patch splitted into two parts.
-> > Let me know.
-> > 
-> >> Yah, Please do so. I will do separate check-ins with separate LOG
-> >> messages.
-> 
-> Hi Subrata,
-> in attachment the two patches.
-
-Thanks. Applied.
-
-Regards--
-Subrata
-
-> 
-> Regards
-> Peppe
-> 
-> > 
-> >> Regards--
-> >> Subrata
-> > 
-> -----BEGIN PGP SIGNATURE-----
-> Version: GnuPG v1.4.9 (GNU/Linux)
-> Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-> 
-> iEYEARECAAYFAksBLyoACgkQ2Xo3j31MSSIMfgCgn3qXNrOd/2mhyeri3loHGoBg
-> u1IAoIhbksE6wEIRWLYoIMGhQBZGF1dj
-> =QsPg
-> -----END PGP SIGNATURE-----
-
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gVGh1LCBOb3YgMTIsIDIwMDkgYXQgNzo0NyBQTSwgTWlrZSBGcnlzaW5nZXIgPHZhcGllckBn
+ZW50b28ub3JnPiB3cm90ZToKPiBPbiBUaHVyc2RheSAxMiBOb3ZlbWJlciAyMDA5IDE1OjQzOjIw
+IEdhcnJldHQgQ29vcGVyIHdyb3RlOgo+PiBPbiBNb24sIE5vdiA5LCAyMDA5IGF0IDk6MzkgQU0s
+IFN1YnJhdGEgTW9kYWsgd3JvdGU6Cj4+ID4gT24gTW9uLCAyMDA5LTExLTA5IGF0IDA3OjQ5IC0w
+NTAwLCBNaWtlIEZyeXNpbmdlciB3cm90ZToKPj4gPj4gT24gTW9uZGF5IDA5IE5vdmVtYmVyIDIw
+MDkgMDY6MTc6MDkgU3VicmF0YSBNb2RhayB3cm90ZToKPj4gPj4gPiBJIGdldCB0aGUgZm9sbG93
+aW5nIGZhaWx1cmUgd2l0aCB0b2RhecWbIENWUy4gLi9jb25maWd1cmUgaGFzIGJlZW4gZG9uZQo+
+PiA+PiA+IGJlZm9yZSBtYWtlOgo+PiA+PiA+Cj4+ID4+ID4gZ2NjIC1nIC1PMiAtZyAtTzIgLWZu
+by1zdHJpY3QtYWxpYXNpbmcgLXBpcGUgLVdhbGwKPj4gPj4gPiAtSS9sdHAtaW50ZXJtZWRpYXRl
+LTIwMDkxMTA5L3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZQo+PiA+PiA+IC1JL2x0cC1pbnRlcm1l
+ZGlhdGUtMjAwOTExMDkvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL21xbnMvLi4vbGliY2wK
+Pj4gPj4gPm9uZSAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgLUkuLi8uLi8uLi8uLi9pbmNsdWRlCj4+
+ID4+ID4gwqAtTC9sdHAtaW50ZXJtZWRpYXRlLTIwMDkxMTA5L3Rlc3RjYXNlcy9rZXJuZWwvY29u
+dGFpbmVycy9tcW5zLy4uL2xpYmMKPj4gPj4gPmxvbmUgLUwuLi8uLi8uLi8uLi9saWIgwqBtcW5z
+XzAxLmMgwqAgLWxsdHAgLWxjbG9uZSAtbHB0aHJlYWQgLWxydCAtbwo+PiA+PiA+IG1xbnNfMDEK
+Pj4gPj4gPiAvbHRwLWludGVybWVkaWF0ZS0yMDA5MTEwOS90ZXN0Y2FzZXMva2VybmVsL2NvbnRh
+aW5lcnMvbXFucy8uLi9saWJjbG9uCj4+ID4+ID5lL2xpIGJjbG9uZS5hKGxpYmNsb25lLm8pOiBJ
+biBmdW5jdGlvbiBgZG9fY2xvbmVfdGVzdHMnOgo+PiA+PiA+IMKgL2x0cC1pbnRlcm1lZGlhdGUt
+MjAwOTExMDkvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL2xpYmNsb25lL2xpYmNsCj4+ID4+
+ID5vbmUuYwo+PiA+PiA+Cj4+ID4+ID4gOjI1OiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBsdHBf
+Y2xvbmVfcXVpY2snIGNvbGxlY3QyOiBsZCByZXR1cm5lZCAxCj4+ID4+ID4gOiBleGl0IHN0YXR1
+cwo+PiA+Pgo+PiA+PiBzaG91bGQgYmUgZml4ZWQgbm93LiDCoHN0YXRpYyBsaWIgbGlua2luZyBv
+cmRlciBpcyBwaWNreS4KPj4gPgo+PiA+IFRoYW5rcyBNaWtlLiBidWlsZGluZyBmaW5lIG5vdy4K
+Pj4KPj4gV2hlbiB5b3Ugc3dpdGNoIHRoYXQgYmFjayB0aG91Z2gsIGl0IGZhaWxzIHRvIGNvbXBp
+bGUgb24gR2VudG9vLiBIZW5jZQo+PiB0aGF0J3Mgd2h5IEkgZGlkIGAtbGNsb25lICQoTERMSUJT
+KSAtbHB0aHJlYWQgLWxydCcuCj4KPiBodWggPyDCoGkgdGVzdCBldmVyeXRoaW5nIG9uIGdlbnRv
+bywgYW5kIHRoaXMgaGFzIGJlZW4gd29ya2luZyBmb3IgbWUuIMKgaWYgbHRwCj4gcmVxdWlyZXMg
+cHRocmVhZC9ydCwgdGhhdCBzaG91bGQgYmUgZml4ZWQgaW4gY29tbW9uIGNvZGUuIMKgdGhlIGlz
+c3VlIGhlcmUgaXMKPiB0aGF0IGxpYmNsb25lIG5lZWRzIGxpYmx0cCBzeW1ib2xzLCBhbmQgdGhh
+dCdzIGl0Lgo+Cj4+IFNvbWUgYXV0b2NvbmYgdGVzdHMgbmVlZCB0byBiZSBjcmVhdGVkIHRvIGRl
+dGVjdCBicm9rZW4gbGlua2VycyBsaWtlCj4+IHRoaXMgYmVjYXVzZSBpdCdzIHJlYWxseSBhbm5v
+eWluZyBkb2luZyB0aGlzIHR1Zy1vZi13YXIgd2l0aCB0aGUKPj4gbGlicmFyeSBvcmRlcmluZy4u
+Lgo+Cj4gaSBkb250IHRoaW5rIHNvIC4uLiBzdGFydCBieSBwb3N0aW5nIHRoZSBhY3R1YWwgZXJy
+b3IgbWVzc2FnZXMgeW91J3JlIHNlZWluZy4KPiAtbWlrZQo+CgpnY29vcGVyQG9yYW5nZWJveCAv
+c2NyYXRjaC9sdHAtZGV2Mi9sdHAvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzICQgbWFrZSBh
+bGwKbWFrZVsxXTogRW50ZXJpbmcgZGlyZWN0b3J5CmAvc2NyYXRjaC9sdHAtZGV2Mi9sdHAvdGVz
+dGNhc2VzL2tlcm5lbC9jb250YWluZXJzL21xbnMnCmdjYyAtZyAtTzIgLWcgLU8yIC1mbm8tc3Ry
+aWN0LWFsaWFzaW5nIC1waXBlIC1XYWxsCi1JL3NjcmF0Y2gvbHRwLWRldjIvbHRwL3Rlc3RjYXNl
+cy9rZXJuZWwvaW5jbHVkZQotSS9zY3JhdGNoL2x0cC1kZXYyL2x0cC90ZXN0Y2FzZXMva2VybmVs
+L2NvbnRhaW5lcnMvbXFucy8uLi9saWJjbG9uZQotSS4uLy4uLy4uLy4uL2luY2x1ZGUgLUkuLi8u
+Li8uLi8uLi9pbmNsdWRlCi1ML3NjcmF0Y2gvbHRwLWRldjIvbHRwL3Rlc3RjYXNlcy9rZXJuZWwv
+Y29udGFpbmVycy9tcW5zLy4uL2xpYmNsb25lCi1MLi4vLi4vLi4vLi4vbGliICBtcW5zXzAxLmMg
+ICAtbGx0cCAtbyBtcW5zXzAxCi90bXAvY2NnSWphNnIubzogSW4gZnVuY3Rpb24gYG1xX29wZW4n
+OgovdXNyL2luY2x1ZGUvYml0cy9tcXVldWUyLmg6NDk6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8g
+YG1xX29wZW4nCi90bXAvY2NnSWphNnIubzogSW4gZnVuY3Rpb24gYG1haW4nOgovc2NyYXRjaC9s
+dHAtZGV2Mi9sdHAvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL21xbnMvbXFuc18wMS5jOjk4
+Ogp1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBkb19jbG9uZV91bnNoYXJlX3Rlc3QnCi9zY3JhdGNo
+L2x0cC1kZXYyL2x0cC90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvbXFucy9tcW5zXzAxLmM6
+MTIzOgp1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBtcV9jbG9zZScKL3NjcmF0Y2gvbHRwLWRldjIv
+bHRwL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9tcW5zL21xbnNfMDEuYzoxMjQ6CnVuZGVm
+aW5lZCByZWZlcmVuY2UgdG8gYG1xX3VubGluaycKL3RtcC9jY2dJamE2ci5vOiBJbiBmdW5jdGlv
+biBgbXFfb3Blbic6Ci91c3IvaW5jbHVkZS9iaXRzL21xdWV1ZTIuaDo0OTogdW5kZWZpbmVkIHJl
+ZmVyZW5jZSB0byBgbXFfb3BlbicKL3RtcC9jY2dJamE2ci5vOiBJbiBmdW5jdGlvbiBgY2hlY2tf
+bXF1ZXVlJzoKL3NjcmF0Y2gvbHRwLWRldjIvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVy
+cy9tcW5zL21xbnNfMDEuYzo2NToKdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgbXFfY2xvc2UnCmNv
+bGxlY3QyOiBsZCByZXR1cm5lZCAxIGV4aXQgc3RhdHVzCm1ha2VbMV06ICoqKiBbbXFuc18wMV0g
+RXJyb3IgMQptYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9yeQpgL3NjcmF0Y2gvbHRwLWRldjIvbHRw
+L3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9tcW5zJwptYWtlOiAqKiogW2FsbF0gRXJyb3Ig
+MgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxldCBDcnlzdGFsIFJlcG9ydHMgaGFuZGxlIHRoZSBy
+ZXBvcnRpbmcgLSBGcmVlIENyeXN0YWwgUmVwb3J0cyAyMDA4IDMwLURheSAKdHJpYWwuIFNpbXBs
+aWZ5IHlvdXIgcmVwb3J0IGRlc2lnbiwgaW50ZWdyYXRpb24gYW5kIGRlcGxveW1lbnQgLSBhbmQg
+Zm9jdXMgb24gCndoYXQgeW91IGRvIGJlc3QsIGNvcmUgYXBwbGljYXRpb24gY29kaW5nLiBEaXNj
+b3ZlciB3aGF0J3MgbmV3IHdpdGgKQ3J5c3RhbCBSZXBvcnRzIG5vdy4gIGh0dHA6Ly9wLnNmLm5l
+dC9zZnUvYm9iai1qdWx5Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5u
+ZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
