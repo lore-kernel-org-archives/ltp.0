@@ -1,31 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sharyath@in.ibm.com>) id 1N5FWh-0006kM-T7
-	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 09:18:07 +0000
-Received: from e28smtp09.in.ibm.com ([59.145.155.9])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N5FWb-0002lO-4S
-	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 09:18:07 +0000
-Received: from d28relay03.in.ibm.com (d28relay03.in.ibm.com [9.184.220.60])
-	by e28smtp09.in.ibm.com (8.14.3/8.13.1) with ESMTP id nA392xS7014582
-	for <ltp-list@lists.sourceforge.net>; Tue, 3 Nov 2009 14:32:59 +0530
-Received: from d28av01.in.ibm.com (d28av01.in.ibm.com [9.184.220.63])
-	by d28relay03.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nA39Hpxc2838590
-	for <ltp-list@lists.sourceforge.net>; Tue, 3 Nov 2009 14:47:51 +0530
-Received: from d28av01.in.ibm.com (loopback [127.0.0.1])
-	by d28av01.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	nA39Hp2J000487
-	for <ltp-list@lists.sourceforge.net>; Tue, 3 Nov 2009 14:47:51 +0530
-Message-ID: <4AEFF53D.1010908@in.ibm.com>
-Date: Tue, 03 Nov 2009 14:47:49 +0530
-From: Sharyathi Nagesh <sharyath@in.ibm.com>
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1N8n6M-0000Z5-9w
+	for ltp-list@lists.sourceforge.net; Fri, 13 Nov 2009 03:45:34 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1N8n6F-0003Xt-SZ
+	for ltp-list@lists.sourceforge.net; Fri, 13 Nov 2009 03:45:34 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 12 Nov 2009 22:47:41 -0500
+References: <1257765429.7677.23.camel@subratamodak.linux.ibm.com>
+	<1257788341.7677.62.camel@subratamodak.linux.ibm.com>
+	<364299f40911121243i2bf72ab5p258fa78989b3df5@mail.gmail.com>
+In-Reply-To: <364299f40911121243i2bf72ab5p258fa78989b3df5@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------090506060005050801030808"
-Subject: [LTP] [PATCH][RFC]Testcases mbind01.c and get_mempolicy01 fails
-	with EINVAL
+Message-Id: <200911122247.42705.vapier@gentoo.org>
+Subject: Re: [LTP] Clone build fail with the latest CVS sanpshot
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,92 +26,106 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============7731364008581019469=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: "Rishikesh K. Rajak" <risrajak@in.ibm.com>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-This is a multi-part message in MIME format.
---------------090506060005050801030808
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+--===============7731364008581019469==
+Content-Type: multipart/signed; boundary="nextPart3571598.N7PF96c0YD";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
-Hi
-	We observed that LTP test cases are failing when run on some of the distros
+--nextPart3571598.N7PF96c0YD
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Problem Statement:
+On Thursday 12 November 2009 15:43:20 Garrett Cooper wrote:
+> On Mon, Nov 9, 2009 at 9:39 AM, Subrata Modak wrote:
+> > On Mon, 2009-11-09 at 07:49 -0500, Mike Frysinger wrote:
+> >> On Monday 09 November 2009 06:17:09 Subrata Modak wrote:
+> >> > I get the following failure with today=C5=9B CVS. ./configure has be=
+en done
+> >> > before make:
+> >> >
+> >> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> >> > -I/ltp-intermediate-20091109/testcases/kernel/include
+> >> > -I/ltp-intermediate-20091109/testcases/kernel/containers/mqns/../lib=
+cl
+> >> >one -I../../../../include -I../../../../include
+> >> >  -L/ltp-intermediate-20091109/testcases/kernel/containers/mqns/../li=
+bc
+> >> >lone -L../../../../lib  mqns_01.c   -lltp -lclone -lpthread -lrt -o
+> >> > mqns_01
+> >> > /ltp-intermediate-20091109/testcases/kernel/containers/mqns/../libcl=
+on
+> >> >e/li bclone.a(libclone.o): In function `do_clone_tests':
+> >> >  /ltp-intermediate-20091109/testcases/kernel/containers/libclone/lib=
+cl
+> >> >one.c
+> >> >
+> >> > :25: undefined reference to `ltp_clone_quick' collect2: ld returned 1
+> >> > : exit status
+> >>
+> >> should be fixed now.  static lib linking order is picky.
+> >
+> > Thanks Mike. building fine now.
+>=20
+> When you switch that back though, it fails to compile on Gentoo. Hence
+> that's why I did `-lclone $(LDLIBS) -lpthread -lrt'.
 
-	I observed that test cases mbind01.c and get_mempolicy01.c are failing during call to 
-get_mempolicy() with error -EINVAL.
-	In the kernel code the error comes from
-----------------------------------------------------------------
+huh ?  i test everything on gentoo, and this has been working for me.  if l=
+tp=20
+requires pthread/rt, that should be fixed in common code.  the issue here i=
+s=20
+that libclone needs libltp symbols, and that's it.
 
-SYSCALL_DEFINE5(get_mempolicy, int __user *, policy,
-                 unsigned long __user *, nmask, unsigned long, maxnode,
-                 unsigned long, addr, unsigned long, flags)
-{
-         int err;
-         int uninitialized_var(pval);
-         nodemask_t nodes;
+> Some autoconf tests need to be created to detect broken linkers like
+> this because it's really annoying doing this tug-of-war with the
+> library ordering...
 
-         if (nmask != NULL && maxnode < MAX_NUMNODES)
-                 return -EINVAL;
-                                                  <== in the kernel code,
-MAX_NUMNODES comes to 512
-----------------------------------------------------------------
-Analysis:
-	
-	When kernel config option 'configure maximum number of SMP processors and NUMA node'  is 
-set MAX_NUMNODES will be initialized to 512 and any call to get_mempolicy() with maxnode 
-value  less than that cause the test to fail.
-----------------------------------------------------------------
-Fix:
-	increase the default maxnode value in the test case to reflect this value. maxnode value 
-comes from numaif.h and this patch increase the value to 512 from earlier 128.
+i dont think so ... start by posting the actual error messages you're seein=
+g.
+=2Dmike
 
-Note:
-	I will submit it in the format, once the patch is accepted
+--nextPart3571598.N7PF96c0YD
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-Thanks
-Yeehaw
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.13 (GNU/Linux)
+
+iQIcBAABAgAGBQJK/NbeAAoJEEFjO5/oN/WBWgwP/32xf+N5HXdWwAa1/RN52xtV
++RvU3qfwmXO8MPAOprOgHIqVXSrzrZxKlqQlGSfyEspFFIVM2iQO3MohW1K++9ao
+P3l597RwCh7RYWOV/DVy/7PhP9eWqjjFpjpPQHcNhjTmlau1mlju/cKJIPwgZcOa
+wmttAYnGI2TnILv+w0kQVeUhN0Xss7cDgevC+ZOkY9EjrijlyQwXFJKK4PXgETme
+c9XA2tjJXh6eZ02ou/iwkvCyTO1iK8aezmG6Ap3wKqRQTYZBJGAjGQIeidkZsXV5
+USUjr/zZpAjV9Lu7I18vvc7wm5AvAuhRFA+DzmN027g07yNaTNDl+ucBafwezwT/
+xdhKqa0zYIMk7tadFxFFLjk8wdOGds6zlzL9dkEtcYMeOpD/j9n3pFCOtyccMKDt
+KLNOgUekn6F8Mkw1O0ZIV3+VSmr26652B1coGwdbuDnOOfvtwhZBBvXpV3tiTdR0
+c3/Srkw6yJd+topoPuryAG7DDm2K9QkxaNZgB5eeX2MK9zT7jSoJSRfoih2Xvsou
+SBK3EZIM6VjVe3p2AQgLeoZKO5GZE0F0hYQDkAeVLkyIWYZpTGfZuaW3OLlomVUB
+dY21wZM0vZ2BuUhkv6CARIrulOSnESODOs5U7fUUawdH3rMHiNTaaWCgkF7jUIJt
+/dElTooxuubmvPjUfOud
+=CcWJ
+-----END PGP SIGNATURE-----
+
+--nextPart3571598.N7PF96c0YD--
 
 
---------------090506060005050801030808
-Content-Type: text/x-patch; name="increase_maxnode_to_sync_with_kernel.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
-	filename="increase_maxnode_to_sync_with_kernel.patch"
-
-This patch fixes the issues noticed while running test case mbind01.c. The test case failed while making call to get_mempolicy system call. The system call fails with kernel returning -EINVAL. This issues is observed due to compatibiliy issue between kernel and ltp code. When kernel configure option 'configure maximum number of SMP processors and NUMA node' is enabled kernel will  initialize MAX_NUMNODES variable to 512. In the user space while calling get_mempolicy if user pass any value lesser than 512 for maxnode, the system calls fails with EINVAL. This patch addresses the issue by increasing the maxnode value to 512
-
-Signed-off-by: Sharyathi Nagesh <sharyath@in.ibm.com>
-
-Index: ltp/testcases/kernel/syscalls/utils/numaif.h
-===================================================================
---- ltp.orig/testcases/kernel/syscalls/utils/numaif.h	2009-06-23 19:51:32.000000000 +0530
-+++ ltp/testcases/kernel/syscalls/utils/numaif.h	2009-10-20 09:16:00.000000000 +0530
-@@ -29,7 +29,7 @@
- #include "./include_j_h.h"
- #include "linux_syscall_numbers.h"
- 
--#define NUMA_NUM_NODES 	128
-+#define NUMA_NUM_NODES 	512	
- typedef struct { 
- 	unsigned long n[NUMA_NUM_NODES/(sizeof(unsigned long)*8)];
- } nodemask_t;
-
---------------090506060005050801030808
+--===============7731364008581019469==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-http://p.sf.net/sfu/devconference
---------------090506060005050801030808
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============7731364008581019469==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -131,5 +136,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---------------090506060005050801030808--
+--===============7731364008581019469==--
 
