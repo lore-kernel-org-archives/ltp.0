@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NDmTa-0000v3-Fn
-	for ltp-list@lists.sourceforge.net; Thu, 26 Nov 2009 22:06:10 +0000
-Received: from mail-pw0-f43.google.com ([209.85.160.43])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NDmTU-0004Xc-9Z
-	for ltp-list@lists.sourceforge.net; Thu, 26 Nov 2009 22:06:10 +0000
-Received: by pwi12 with SMTP id 12so724515pwi.2
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 26 Nov 2009 14:05:58 -0800 (PST)
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <liubo2009@cn.fujitsu.com>) id 1N8sMf-0007Ot-PY
+	for ltp-list@lists.sourceforge.net; Fri, 13 Nov 2009 09:22:45 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N8sMX-0007AZ-RG
+	for ltp-list@lists.sourceforge.net; Fri, 13 Nov 2009 09:22:45 +0000
+Message-ID: <4AFD2579.6060107@cn.fujitsu.com>
+Date: Fri, 13 Nov 2009 17:23:05 +0800
+From: liubo <liubo2009@cn.fujitsu.com>
 MIME-Version: 1.0
-Date: Thu, 26 Nov 2009 14:05:58 -0800
-Message-ID: <364299f40911261405r4fa1d11du7d7e458c6761c3e8@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] Build breakage caused by changes in regen.sh
+Subject: [LTP] [PATCH] mem/hugetlb: fix failure of hugemmap04
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,14 +25,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-    It seems that the gcc / binutils WAS optimizing out a code branch
-w.r.t. the syscall macro. I'm aware of the problem and trudging
-through slowly working out compile time issues. I'll try to get it
-done sometime tonight...
-Thanks,
--Garrett
+Testcase hugemmap04 needs at least one hugepage to test,
+so there needs a judgement of "number of hugepages".
+
+This patch fixed the problems.
+
+Signed-off-by: Liu Bo <liubo2009@cn.fujitsu.com>
+
+---
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
+index 050a071..e67e43c 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
+@@ -72,6 +72,7 @@
+ 
+ #include "test.h"
+ #include "usctest.h"
++#include "system_specific_hugepages_info.h"
+ 
+ #define BUFFER_SIZE  256
+ 
+@@ -124,6 +125,11 @@ main(int ac, char **av)
+ 		tst_exit();
+ 	}
+ 
++	/* Check number of hugepages */
++	if (get_no_of_hugepages() <= 0 || hugepages_size() <= 0)
++		tst_brkm(TBROK, cleanup, "Test cannot be continued owning to \
++				sufficient availability of Hugepages on the system");
++
+ 	/* Perform global setup for test */
+ 	setup();
+ 
+-- 
+1.6.2.2
+
+
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
