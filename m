@@ -1,24 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <andi@firstfloor.org>) id 1N6UJt-0004cn-LF
-	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 19:18:01 +0000
-Received: from one.firstfloor.org ([213.235.205.2])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N6UJn-0007cD-3r
-	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 19:18:01 +0000
-Date: Fri, 6 Nov 2009 20:17:43 +0100
-From: Andi Kleen <andi@firstfloor.org>
-Message-ID: <20091106191742.GF819@basil.fritz.box>
-References: <20091106095745.GA25377@basil.fritz.box>
-	<200911060821.40182.vapier@gentoo.org>
-	<364299f40911061004mbb02ed3lf02a33164890625a@mail.gmail.com>
-	<200911061409.03835.vapier@gentoo.org>
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1N8mqI-0006Qi-0z
+	for ltp-list@lists.sourceforge.net; Fri, 13 Nov 2009 03:28:58 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1N8mqA-0004me-78
+	for ltp-list@lists.sourceforge.net; Fri, 13 Nov 2009 03:28:57 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 12 Nov 2009 22:31:04 -0500
+References: <7273615.240961258006837527.JavaMail.coremail@bj126app93.126.com>
+In-Reply-To: <7273615.240961258006837527.JavaMail.coremail@bj126app93.126.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <200911061409.03835.vapier@gentoo.org>
-Subject: Re: [LTP] LTP 20091031 Makefiles totally broken?!?
+Message-Id: <200911122231.05302.vapier@gentoo.org>
+Subject: Re: [LTP] make error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,39 +24,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5456770099503810364=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net, Andi Kleen <andi@firstfloor.org>
+To: ltp-list@lists.sourceforge.net
+Cc: yali_ning <yali_ning@126.com>
 
-On Fri, Nov 06, 2009 at 03:09:02PM -0400, Mike Frysinger wrote:
-> On Friday 06 November 2009 13:04:51 Garrett Cooper wrote:
-> > As I just wrote in the INSTALL file after the release (I apologize for
-> > not catching this beforehand, but all of the systems I use -- Fedora,
-> > Gentoo, RHEL 4 update 6, Ubuntu -- have make 3.81):
-> 
-> hrm, it sucks to not support make 3.80.  while make 3.81 has been out for 
-> three years now, make 3.80 support would increase the coverage to 8 years.  
-> but if you've looked at the situation and found 3.80 support to be non 
-> trivial, i wont whine too loud.
+--===============5456770099503810364==
+Content-Type: multipart/signed; boundary="nextPart1339569.0U9yy95nZE";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Well I do whine. I essentially means that I won't be able to use
-newer LTP versions anymore in my standard test setup. And I know
-it's pretty common with kernel hackers to use old user lands:
-you're basically cutting yourself off from your customer base.
+--nextPart1339569.0U9yy95nZE
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
--Andi
+On Thursday 12 November 2009 01:20:37 yali_ning wrote:
+>   I came across an error , when compiling the ltp-20091030. the step is :
+>=20
+> gcc -Wall -g -Os -g -O2 -fno-strict-aliasing -pipe -Wall=20
+>  -I/mnt/sdb1/nly1/ltp-1030/ltp-full-20091031/testcases/kernel/include
+>  -I../../../../include -I../../../../include   -L../../../../lib  vfork.c=
+ =20
+>  -lltp -o vfork In file included from /usr/include/asm/ptrace.h:58,
+>                  from /usr/include/linux/ptrace.h:49,
+>                  from vfork.c:45:
+> /usr/include/asm/fpu.h:57: error: redefinition of 'struct ia64_fpreg'
+> In file included from /usr/include/linux/ptrace.h:49,
+>                  from vfork.c:45:
+> /usr/include/asm/ptrace.h:208: error: redefinition of 'struct
+>  pt_all_user_regs'
 
--- 
-ak@linux.intel.com -- Speaking for myself only.
+this should be fixed already in latest cvs
+=2Dmike
+
+--nextPart1339569.0U9yy95nZE
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.13 (GNU/Linux)
+
+iQIcBAABAgAGBQJK/NL5AAoJEEFjO5/oN/WBU+kP/00qsHCxhd3CCi6KptiOV9hg
+7YqzDrovptRLzul5butikiDQz1A97V5X7ID912tX7o/Cdox2+zvmpS6oo/FPo1/c
+kAqSBel/CyF+kGCt2MwiaKmn35kvao+KI6xrW5PuAHAktrjR55MxsRkWtl44SmLf
+LlEay/hrF0x+7xrhSaWLllTfpDx+swP8Vk7qotGZKwmUmprBslsWaFkYmHlT3VMg
+uo2jst9q4IFo8gTD7064v1cjDCQyKou/wQzWLV8cK3cxMzLfRnoKf8xX5lK1x4y0
+woOHojrCGArgCnSrXOi+qUOEb8Ri807pIJINgsx/ySvcKPAw1oEytmg7EjMqKlwa
+CoW7vHBr7VzAo/Zo69wG4bzEXHPmDkhA2kWLBlX1bP0iYDpCDYrKAtPxBrFQuQ/B
+ZIlCvqhdmeROTlAHBv9w7QgARGhgOWy8EXpZ9zAval4Q5Pe/ApvQychP5DL48o2V
+F6+rRPvOZXP69WP6RC8OrW9/BfXrG5YHvLWZqZzzJJ2uvcobpd1TjYYh+YJYDdR9
+TqdrUF2CR5i/m7T/VkKWJe1XOiOPboOBmKssCX/08oVe2JKPfs9YwPlOu0qbf1uA
+maM3P0f2H1edtRlJlelo4BEmeS4DY2x6bD/wV0MNk0hP58IcsHGsU6Oik+00roj0
+mirvQUeb8QQVInsSCsHg
+=o13h
+-----END PGP SIGNATURE-----
+
+--nextPart1339569.0U9yy95nZE--
+
+
+--===============5456770099503810364==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============5456770099503810364==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============5456770099503810364==--
+
