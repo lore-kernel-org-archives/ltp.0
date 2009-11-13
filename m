@@ -1,24 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1N7l0O-0006FZ-DS
-	for ltp-list@lists.sourceforge.net; Tue, 10 Nov 2009 07:19:08 +0000
-Received: from mail-vw0-f171.google.com ([209.85.212.171])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N7l0I-0005dl-0z
-	for ltp-list@lists.sourceforge.net; Tue, 10 Nov 2009 07:19:08 +0000
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1N8xrN-0002Qa-P3
+	for ltp-list@lists.sourceforge.net; Fri, 13 Nov 2009 15:14:49 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1N8xrH-0006a0-De
+	for ltp-list@lists.sourceforge.net; Fri, 13 Nov 2009 15:14:49 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Fri, 13 Nov 2009 10:17:01 -0500
+References: <1258098740-22455-1-git-send-email-avagin@gmail.com>
+In-Reply-To: <1258098740-22455-1-git-send-email-avagin@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <200911091519.56866.vapier@gentoo.org>
-References: <1257220567.10382.3.camel@munipradeep-laptop>
-	<200911091422.07495.vapier@gentoo.org>
-	<364299f40911091155t15fbae6am766e5e0b7b53387c@mail.gmail.com>
-	<200911091519.56866.vapier@gentoo.org>
-Date: Mon, 9 Nov 2009 23:18:56 -0800
-Message-ID: <364299f40911092318s6a9dec01oe8c69fc925fe531f@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Got warning message on ltp-full-20091031 while running
-	./configure
+Message-Id: <200911131017.02467.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] clock_settime03: improve message about fail
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,41 +24,88 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============3192538720077808036=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: ltp-list@lists.sourceforge.net
 
-On Mon, Nov 9, 2009 at 12:19 PM, Mike Frysinger <vapier@gentoo.org> wrote:
-> On Monday 09 November 2009 14:55:54 Garrett Cooper wrote:
->> On Mon, Nov 9, 2009 at 11:22 AM, Mike Frysinger wrote:
->> > well, the configure script wasnt really broken before. =A0people just =
-cant
->> > handle any sort of warning message and reading the related log files c=
-an
->> > be too much.
->>
->> =A0 =A0 I think we're kind of at fault for not having AC_MSG_INFO instead
->> of AC_MSG_WARN, but oh well... AC_MSG_WARN is designed to be terse :].
->
-> not sure what you mean. =A0the warning pointed out originally did not come
-> directly from us, nor do/did we have any way of controlling it other than
-> using a newer version of autoconf ...
+--===============3192538720077808036==
+Content-Type: multipart/signed; boundary="nextPart1346489.BI1Tm8zuoX";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Oooooh... ok, Now it all makes sense.
--Garrett
+--nextPart1346489.BI1Tm8zuoX
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+On Friday 13 November 2009 02:52:20 Andrew Vagin wrote:
+> ---
+>  .../kernel/timers/clock_settime/clock_settime03.c  |    5 +++--
+>  1 files changed, 3 insertions(+), 2 deletions(-)
+>=20
+> --- a/testcases/kernel/timers/clock_settime/clock_settime03.c
+> +++ b/testcases/kernel/timers/clock_settime/clock_settime03.c
+> @@ -195,10 +195,11 @@ main(int ac, char **av)
+>  			} else {
+>  				tst_resm(TFAIL, "clock_settime(2) failed to"
+>  						" produce expected error; %d"
+> -						" , errno : %s and got %ld",
+> +						" , errno : %s and "
+> +						"got %ld errno %d",
+>  						testcase[i].exp_errno,
+>  						testcase[i].exp_errval,
+> -						TEST_RETURN);
+> +						TEST_RETURN, TEST_ERRNO);
 
-trial. Simplify your report design, integration and deployment - and focus =
-on =
+please convert it to TFAIL|TTERRNO instead
+=2Dmike
 
+--nextPart1346489.BI1Tm8zuoX
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.13 (GNU/Linux)
+
+iQIcBAABAgAGBQJK/XhuAAoJEEFjO5/oN/WBvTAQAKDC4t2OasRQ8MKGsglYm/VC
+phPcsfqq1JQJR2QTyMS00GrXvY0rvrjGG9YP5u47UdxEJRs8Gn+De1mwLpF9tEVs
+k/Lwj3i6LFya7oh4Tod5hR0XkytgQrO80CdCDFbBElpKy3mpfs2+hFH4x5XHo0B+
+jT1V1DRkLVmOsXFgMC3GiN746uT3aL/YcShaTy5D1SeTvIYSY94HzvPpgLUE9+Ph
+dHPrZL8zttFLYQFX2q+Doud3xRFMJ2bwHNx5YhllWtsxsITkX8Xugfos2GHlvc4I
+weHjoWYsH2k6FqMmoc7sd5wleWjz/wdEbqmAQXuuzynjFDPhnz9Wr0JnqxtrjM3y
+PYDq/9gMpkfMsEolr5Ln5zXCTsG/zvS1yOhp+7tJN2fS1F1+GGpm28b/WSdmDZ9A
+Fr94nnUTniattp9rj1wvxk0qEL+MND6o49dNcUiNJk3EfadqnIh8qt3mOykwzBxa
+sECq43iXNJ/yPhtJyGJUmU2kAZichbFZlFPzuQGemgLmV9PmjSLpU47EBdGAYXm0
+u9gw59NJIIHxzOhRKIfnYL5iGbuH+546scKD4I4YI7XgdItVxGyAe1Hx4FtE21LC
+WVh7Pwk4+zQe4nfyYxuh7iuOGI6zo/+0th056L7HWF4VcpCAytTp97Mq2OGrEVxE
+vvfwcx801GlORqyJHK84
+=Xhhq
+-----END PGP SIGNATURE-----
+
+--nextPart1346489.BI1Tm8zuoX--
+
+
+--===============3192538720077808036==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============3192538720077808036==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3192538720077808036==--
+
