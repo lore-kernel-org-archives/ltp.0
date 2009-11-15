@@ -1,37 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1N7YDw-00070x-BX
-	for ltp-list@lists.sourceforge.net; Mon, 09 Nov 2009 17:40:16 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N7YDq-0005gO-9D
-	for ltp-list@lists.sourceforge.net; Mon, 09 Nov 2009 17:40:14 +0000
-Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
-	by e8.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nA9DaH3L021561
-	for <ltp-list@lists.sourceforge.net>; Mon, 9 Nov 2009 08:36:17 -0500
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nA9He3qj1470504
-	for <ltp-list@lists.sourceforge.net>; Mon, 9 Nov 2009 12:40:03 -0500
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	nA97busq019450
-	for <ltp-list@lists.sourceforge.net>; Mon, 9 Nov 2009 02:37:56 -0500
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4AEF99CF.5080401@cn.fujitsu.com>
-References: <4AE54BCA.7060104@cn.fujitsu.com>
-	<1256563577.4929.35.camel@subratamodak.linux.ibm.com>
-	<C3A9583B-F6C5-4BCC-8D7E-876FA4D62D57@sun.com>
-	<1256650551.4957.33.camel@subratamodak.linux.ibm.com>
-	<1256841114.5210.25.camel@subratamodak.linux.ibm.com>
-	<4AEF99CF.5080401@cn.fujitsu.com>
-Date: Mon, 09 Nov 2009 23:09:24 +0530
-Message-Id: <1257788364.7677.71.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Add new testcases for ext4 new features - V3
-Reply-To: subrata@linux.vnet.ibm.com
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1N9Sdn-0005NR-7X
+	for ltp-list@lists.sourceforge.net; Sun, 15 Nov 2009 00:06:51 +0000
+Received: from mail-pw0-f48.google.com ([209.85.160.48])
+	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N9Sdf-0007GP-Ah
+	for ltp-list@lists.sourceforge.net; Sun, 15 Nov 2009 00:06:51 +0000
+MIME-Version: 1.0
+In-Reply-To: <364299f40911130327y683631c4uefc9380e9a175432@mail.gmail.com>
+References: <1257765429.7677.23.camel@subratamodak.linux.ibm.com>
+	<1257788341.7677.62.camel@subratamodak.linux.ibm.com>
+	<364299f40911121243i2bf72ab5p258fa78989b3df5@mail.gmail.com>
+	<200911122247.42705.vapier@gentoo.org>
+	<364299f40911130327y683631c4uefc9380e9a175432@mail.gmail.com>
+Date: Sat, 14 Nov 2009 16:06:36 -0800
+Message-ID: <364299f40911141606n694efb9o246b6e027462febd@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Clone build fail with the latest CVS sanpshot
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,199 +28,85 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Miao Xie <miaox@cn.fujitsu.com>
-Cc: LTP-ML <ltp-list@lists.sourceforge.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-On Tue, 2009-11-03 at 11:47 +0900, Miao Xie wrote: 
-> Hi,Subrata
-> 
-> Sorry for the late reply.
-> 
-> I have no time to do the following job recently.
-> But don't worry. I will do it before the next release.
-
-Thank you very much Miao. I would like to tell you that many people in
-my team are using your test cases rigorously. Thanks for the same.
-
-Regards--
-Subrata
-
-> 
-> >>> On 2009-10-26, at 07:26, Subrata Modak wrote:
-> >>>> We had recently added EXT4 testcases to LTP. As the author of these
-> >>>> tests mentioned, we saw 2 such failures in subdirectory limit test:
-> >>>>
-> >>>> Ext4 subdir limit test
-> >>>> ext4-subdir-limit    0  TINFO  :  Num of dirs to create: 65537, Dir  
-> >>>> name
-> >>>> len: short name                        Parent dir: mnt_point, Block
-> >>>> size: 1024
-> >>>> mke2fs 1.41.9 (22-Aug-2009)
-> >>>> tune2fs 1.41.9 (22-Aug-2009)
-> >>>> Setting test filesystem flag
-> >>>> /dev/VG1_EXT4/LV1_EXT4: The test_fs flag is set (and ext4 is  
-> >>>> available).
-> >>>> CLEARED.
-> >>> You don't need to set the test_fs flag for modern ext4.
-> >> Miao,
-> >>
-> >> Can we change this ?
-> 
-> Ok, no problem.
-> 
-> >>>> ext4-subdir-limit    0  TINFO  :  Num of dirs to create: 65537, Dir  
-> >>>> name
-> >>>> len: long name                         Parent dir: mnt_point, Block
-> >>>> size: 1024
-> >>>> mkdir: No space left on device
-> >>>> ext4-subdir-limit    2  TFAIL  :  failed to create directories - 19524
-> ...
-> >>>> ext4-subdir-limit    0  TINFO  :  Num of dirs to create: 65537, Dir  
-> >>>> name
-> >>>> len: long name                         Parent dir: mnt_point/sub,  
-> >>>> Block
-> >>>> size: 1024
-> >>>> mkdir: No space left on device
-> >>>> ext4-subdir-limit    4  TFAIL  :  failed to create directories - 19483
-> ...
-> >>>> Is this a known issue for EXT4 ?
-> >>> Creating many long filenames (255 bytes) in a 1kB block filesystem is a
-> >>> known issue that is not expected to be fixed (at least I'm not aware of
-> >>> any work being done in this area).  A vast majority of filesystems
-> >>> today are formatted with 4kB blocks (due to disk size) and the  
-> >>> overhead of
-> >>> managing 1kB block filesystems makes these only marginally used, and it
-> >>> is also very rare to have applications with such large filenames.
-> >> Ok.
-> 
-> I will remove these testcases.
-> 
-> >> However, it is also accompanied by the following failures in the online-defrag part:
-> >> ========================================================================================
-> >> ext4-online-defrag    0  TINFO  :  defrag type: 1, defrag obj: 3, block size: 1024
-> >> 71301958656 bytes (71 GB) copied, 2694.12 s, 26.5 MB/s
-> >> ext4-online-defrag    3  TFAIL  :  e4defrag returned failure
-> ...
-> >> ext4-online-defrag    0  TINFO  :  defrag type: 2, defrag obj: 3, block size: 1024
-> >> 71301958656 bytes (71 GB) copied, 2623.31 s, 27.2 MB/s
-> >> ext4-online-defrag    6  TFAIL  :  e4defrag returned failure
-> >> ext4-online-defrag    0  TINFO  :  defrag type: 3, defrag obj: 1, block size: 1024
-> >> ext4-online-defrag    7  TFAIL  :  e4defrag returned failure
-> >> ext4-online-defrag    0  TINFO  :  defrag type: 3, defrag obj: 2, block size: 1024
-> >> 41943040 bytes (42 MB) copied, 0.737014 s, 56.9 MB/s
-> >> ext4-online-defrag    8  TFAIL  :  e4defrag returned failure
-> >> ext4-online-defrag    0  TINFO  :  defrag type: 3, defrag obj: 3, block size: 1024
-> >> 71301958656 bytes (71 GB) copied, 2544.39 s, 28.0 MB/s
-> >> ext4-online-defrag    9  TFAIL  :  e4defrag returned failure
-> >> ...
-> >> ext4-online-defrag    0  TINFO  :  defrag type: 3, defrag obj: 2, block size: 4096
-> >> 41943040 bytes (42 MB) copied, 0.306366 s, 137 MB/s
-> >> ext4-online-defrag   17  TFAIL  :  e4defrag returned failure
-> >> ext4-online-defrag    0  TINFO  :  defrag type: 3, defrag obj: 3, block size: 4096
-> >> 71241666560 bytes (71 GB) copied, 1019.79 s, 69.9 MB/s
-> >> ext4-online-defrag   18  TFAIL  :  e4defrag returned failure
-> >> incrementing stop
-> >> ========================================================================================
-> >> Did you see these failure on your machine ?
-> 
-> I didn't find these failure on my box.
-> I need more information to analyse. so I'll make a patch to get
-> more information later.
-> 
-> >> Some more points are:
-> >>
-> >>      1. Can you please run these tests against the backdrop of the
-> >>         Makefile changes in LTP to see all the build/install/run are
-> >>         executing fine,
-> > 
-> > Could you please verify this before this release. Let me know a patch if
-> > you find any discrepancy :-)
-> 
-> Sorry for that I couldn't do it before the release.
-> I'll do it before the next release.
-> 
-> > 
-> >> 2. Can you also please put all the utilities version info at the
-> >>         beginning of the test rather than printing them again and
-> >>         again(like mke2fs 1.41.9 (22-Aug-2009),tune2fs 1.41.9
-> >>         (22-Aug-2009),dumpe2fs 1.41.9 (22-Aug-2009),dumpe2fs 1.41.9
-> >>         (22-Aug-2009))
-> > 
-> > This can go in the next month release as well, if you do not have time
-> > to fix now. Else, i have a bug mouth to eat this as well ;-)
-> 
-> I'll do it before the next release.
-> 
-> Regards.
-> Miao
-> 
-> > 
-> > Regards--
-> > Subrata
-> > 
-> >> Regards--
-> >> Subrata
-> >>
-> >>>> Following the various system information on which we ran the test:
-> >>>> 1) uname -a
-> >>>> Linux 2.6.31 #1 SMP Tue Oct 20 22:57:16 IST 2009 i686 i686 i386
-> >>>> GNU/Linux
-> >>>>
-> >>>> 2) grep -i ext4 .config
-> >>>> CONFIG_EXT4_FS=m
-> >>>> CONFIG_EXT4DEV_COMPAT=y
-> >>>> CONFIG_EXT4_FS_XATTR=y
-> >>>> CONFIG_EXT4_FS_POSIX_ACL=y
-> >>>> CONFIG_EXT4_FS_SECURITY=y
-> >>>>
-> >>>> 3) mkfs.ext4 -V
-> >>>> mke2fs 1.41.9 (22-Aug-2009)
-> >>>>        Using EXT2FS Library version 1.41.9
-> >>>> e2fsprogs-1.41.9
-> >>>> e2fsprogs-libs-1.41.9
-> >>>>
-> >>>> 4) LTP used:
-> >>>> Unreleased CVS repository. See the URL below to download:
-> >>>> http://ltp.sourceforge.net/documentation/how-to/ltp.php#_3.1,
-> >>>>
-> >>>> You can also also directly review the attached patch(which added this
-> >>>> test cases):
-> >>>> 26_10_2009-(Miao-Xie<miaox@cn.fujitsu.com>)- 
-> >>>> Add_new_testcases_for_ext4_new_features_V3.patch.regenerated,
-> >>>>
-> >>>> 5) I used a single 680GB LVM partition to test this.
-> >>>>
-> >>>> Kindly let us know your thoughts on this failures.
-> >>> Cheers, Andreas
-> >>> --
-> >>> Andreas Dilger
-> >>> Sr. Staff Engineer, Lustre Group
-> >>> Sun Microsystems of Canada, Inc.
-> >>>
-> >> ------------------------------------------------------------------------------
-> >> Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-> >> is the only developer event you need to attend this year. Jumpstart your
-> >> developing skills, take BlackBerry mobile applications to market and stay 
-> >> ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-> >> http://p.sf.net/sfu/devconference
-> >> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
-> > 
-> > 
-> > 
-> > 
-> 
-> 
-
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gRnJpLCBOb3YgMTMsIDIwMDkgYXQgMzoyNyBBTSwgR2FycmV0dCBDb29wZXIgPHlhbmVnb21p
+QGdtYWlsLmNvbT4gd3JvdGU6Cj4gT24gVGh1LCBOb3YgMTIsIDIwMDkgYXQgNzo0NyBQTSwgTWlr
+ZSBGcnlzaW5nZXIgPHZhcGllckBnZW50b28ub3JnPiB3cm90ZToKPj4gT24gVGh1cnNkYXkgMTIg
+Tm92ZW1iZXIgMjAwOSAxNTo0MzoyMCBHYXJyZXR0IENvb3BlciB3cm90ZToKPj4+IE9uIE1vbiwg
+Tm92IDksIDIwMDkgYXQgOTozOSBBTSwgU3VicmF0YSBNb2RhayB3cm90ZToKPj4+ID4gT24gTW9u
+LCAyMDA5LTExLTA5IGF0IDA3OjQ5IC0wNTAwLCBNaWtlIEZyeXNpbmdlciB3cm90ZToKPj4+ID4+
+IE9uIE1vbmRheSAwOSBOb3ZlbWJlciAyMDA5IDA2OjE3OjA5IFN1YnJhdGEgTW9kYWsgd3JvdGU6
+Cj4+PiA+PiA+IEkgZ2V0IHRoZSBmb2xsb3dpbmcgZmFpbHVyZSB3aXRoIHRvZGF5xZsgQ1ZTLiAu
+L2NvbmZpZ3VyZSBoYXMgYmVlbiBkb25lCj4+PiA+PiA+IGJlZm9yZSBtYWtlOgo+Pj4gPj4gPgo+
+Pj4gPj4gPiBnY2MgLWcgLU8yIC1nIC1PMiAtZm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2Fs
+bAo+Pj4gPj4gPiAtSS9sdHAtaW50ZXJtZWRpYXRlLTIwMDkxMTA5L3Rlc3RjYXNlcy9rZXJuZWwv
+aW5jbHVkZQo+Pj4gPj4gPiAtSS9sdHAtaW50ZXJtZWRpYXRlLTIwMDkxMTA5L3Rlc3RjYXNlcy9r
+ZXJuZWwvY29udGFpbmVycy9tcW5zLy4uL2xpYmNsCj4+PiA+PiA+b25lIC1JLi4vLi4vLi4vLi4v
+aW5jbHVkZSAtSS4uLy4uLy4uLy4uL2luY2x1ZGUKPj4+ID4+ID4gwqAtTC9sdHAtaW50ZXJtZWRp
+YXRlLTIwMDkxMTA5L3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9tcW5zLy4uL2xpYmMKPj4+
+ID4+ID5sb25lIC1MLi4vLi4vLi4vLi4vbGliIMKgbXFuc18wMS5jIMKgIC1sbHRwIC1sY2xvbmUg
+LWxwdGhyZWFkIC1scnQgLW8KPj4+ID4+ID4gbXFuc18wMQo+Pj4gPj4gPiAvbHRwLWludGVybWVk
+aWF0ZS0yMDA5MTEwOS90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvbXFucy8uLi9saWJjbG9u
+Cj4+PiA+PiA+ZS9saSBiY2xvbmUuYShsaWJjbG9uZS5vKTogSW4gZnVuY3Rpb24gYGRvX2Nsb25l
+X3Rlc3RzJzoKPj4+ID4+ID4gwqAvbHRwLWludGVybWVkaWF0ZS0yMDA5MTEwOS90ZXN0Y2FzZXMv
+a2VybmVsL2NvbnRhaW5lcnMvbGliY2xvbmUvbGliY2wKPj4+ID4+ID5vbmUuYwo+Pj4gPj4gPgo+
+Pj4gPj4gPiA6MjU6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYGx0cF9jbG9uZV9xdWljaycgY29s
+bGVjdDI6IGxkIHJldHVybmVkIDEKPj4+ID4+ID4gOiBleGl0IHN0YXR1cwo+Pj4gPj4KPj4+ID4+
+IHNob3VsZCBiZSBmaXhlZCBub3cuIMKgc3RhdGljIGxpYiBsaW5raW5nIG9yZGVyIGlzIHBpY2t5
+Lgo+Pj4gPgo+Pj4gPiBUaGFua3MgTWlrZS4gYnVpbGRpbmcgZmluZSBub3cuCj4+Pgo+Pj4gV2hl
+biB5b3Ugc3dpdGNoIHRoYXQgYmFjayB0aG91Z2gsIGl0IGZhaWxzIHRvIGNvbXBpbGUgb24gR2Vu
+dG9vLiBIZW5jZQo+Pj4gdGhhdCdzIHdoeSBJIGRpZCBgLWxjbG9uZSAkKExETElCUykgLWxwdGhy
+ZWFkIC1scnQnLgo+Pgo+PiBodWggPyDCoGkgdGVzdCBldmVyeXRoaW5nIG9uIGdlbnRvbywgYW5k
+IHRoaXMgaGFzIGJlZW4gd29ya2luZyBmb3IgbWUuIMKgaWYgbHRwCj4+IHJlcXVpcmVzIHB0aHJl
+YWQvcnQsIHRoYXQgc2hvdWxkIGJlIGZpeGVkIGluIGNvbW1vbiBjb2RlLiDCoHRoZSBpc3N1ZSBo
+ZXJlIGlzCj4+IHRoYXQgbGliY2xvbmUgbmVlZHMgbGlibHRwIHN5bWJvbHMsIGFuZCB0aGF0J3Mg
+aXQuCj4+Cj4+PiBTb21lIGF1dG9jb25mIHRlc3RzIG5lZWQgdG8gYmUgY3JlYXRlZCB0byBkZXRl
+Y3QgYnJva2VuIGxpbmtlcnMgbGlrZQo+Pj4gdGhpcyBiZWNhdXNlIGl0J3MgcmVhbGx5IGFubm95
+aW5nIGRvaW5nIHRoaXMgdHVnLW9mLXdhciB3aXRoIHRoZQo+Pj4gbGlicmFyeSBvcmRlcmluZy4u
+Lgo+Pgo+PiBpIGRvbnQgdGhpbmsgc28gLi4uIHN0YXJ0IGJ5IHBvc3RpbmcgdGhlIGFjdHVhbCBl
+cnJvciBtZXNzYWdlcyB5b3UncmUgc2VlaW5nLgo+PiAtbWlrZQo+Pgo+Cj4gZ2Nvb3BlckBvcmFu
+Z2Vib3ggL3NjcmF0Y2gvbHRwLWRldjIvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycyAk
+IG1ha2UgYWxsCj4gbWFrZVsxXTogRW50ZXJpbmcgZGlyZWN0b3J5Cj4gYC9zY3JhdGNoL2x0cC1k
+ZXYyL2x0cC90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvbXFucycKPiBnY2MgLWcgLU8yIC1n
+IC1PMiAtZm5vLXN0cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbAo+IC1JL3NjcmF0Y2gvbHRwLWRl
+djIvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZQo+IC1JL3NjcmF0Y2gvbHRwLWRldjIvbHRw
+L3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9tcW5zLy4uL2xpYmNsb25lCj4gLUkuLi8uLi8u
+Li8uLi9pbmNsdWRlIC1JLi4vLi4vLi4vLi4vaW5jbHVkZQo+IC1ML3NjcmF0Y2gvbHRwLWRldjIv
+bHRwL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9tcW5zLy4uL2xpYmNsb25lCj4gLUwuLi8u
+Li8uLi8uLi9saWIgwqBtcW5zXzAxLmMgwqAgLWxsdHAgLW8gbXFuc18wMQo+IC90bXAvY2NnSWph
+NnIubzogSW4gZnVuY3Rpb24gYG1xX29wZW4nOgo+IC91c3IvaW5jbHVkZS9iaXRzL21xdWV1ZTIu
+aDo0OTogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgbXFfb3BlbicKPiAvdG1wL2NjZ0lqYTZyLm86
+IEluIGZ1bmN0aW9uIGBtYWluJzoKPiAvc2NyYXRjaC9sdHAtZGV2Mi9sdHAvdGVzdGNhc2VzL2tl
+cm5lbC9jb250YWluZXJzL21xbnMvbXFuc18wMS5jOjk4Ogo+IHVuZGVmaW5lZCByZWZlcmVuY2Ug
+dG8gYGRvX2Nsb25lX3Vuc2hhcmVfdGVzdCcKPiAvc2NyYXRjaC9sdHAtZGV2Mi9sdHAvdGVzdGNh
+c2VzL2tlcm5lbC9jb250YWluZXJzL21xbnMvbXFuc18wMS5jOjEyMzoKPiB1bmRlZmluZWQgcmVm
+ZXJlbmNlIHRvIGBtcV9jbG9zZScKPiAvc2NyYXRjaC9sdHAtZGV2Mi9sdHAvdGVzdGNhc2VzL2tl
+cm5lbC9jb250YWluZXJzL21xbnMvbXFuc18wMS5jOjEyNDoKPiB1bmRlZmluZWQgcmVmZXJlbmNl
+IHRvIGBtcV91bmxpbmsnCj4gL3RtcC9jY2dJamE2ci5vOiBJbiBmdW5jdGlvbiBgbXFfb3Blbic6
+Cj4gL3Vzci9pbmNsdWRlL2JpdHMvbXF1ZXVlMi5oOjQ5OiB1bmRlZmluZWQgcmVmZXJlbmNlIHRv
+IGBtcV9vcGVuJwo+IC90bXAvY2NnSWphNnIubzogSW4gZnVuY3Rpb24gYGNoZWNrX21xdWV1ZSc6
+Cj4gL3NjcmF0Y2gvbHRwLWRldjIvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9tcW5z
+L21xbnNfMDEuYzo2NToKPiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBtcV9jbG9zZScKPiBjb2xs
+ZWN0MjogbGQgcmV0dXJuZWQgMSBleGl0IHN0YXR1cwo+IG1ha2VbMV06ICoqKiBbbXFuc18wMV0g
+RXJyb3IgMQo+IG1ha2VbMV06IExlYXZpbmcgZGlyZWN0b3J5Cj4gYC9zY3JhdGNoL2x0cC1kZXYy
+L2x0cC90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvbXFucycKPiBtYWtlOiAqKiogW2FsbF0g
+RXJyb3IgMgo+CgogICAgSSBmaW5hbGx5IHJlc29sdmVkIGl0LiBUaGVyZSdzIGRlZmluaXRlbHkg
+YSBkaWZmZXJlbmNlIGluIGJlaGF2aW9yCmJldHdlZW4gbGQgd2l0aCBiaW51dGlscyAxLjE4ICht
+eSBHZW50b28gZGVza3RvcCkgYW5kIDEuMTkgKEZlZG9yYQoxMSksIHdoZXJlIHRoZSBsaW5rZXIg
+b3JkZXJpbmcgaXNuJ3QgYmVpbmcgcmVzb2x2ZWQgcHJvcGVybHkgd2hlbgp0aGVyZSBhcmUgc2Vt
+aS1jb2RlcGVuZGVudCBjb2RlIGJsb2NrcyBpbiBsaWJyYXJpZXMgKHdoaWNoIEkgdGhpbmsgaXMK
+dGhlIGNhc2UgaGVyZSB3aXRoIGx0cF9jbG9uZV9xdWljay4uLikuClRoYW5rcywKLUdhcnJldHQK
+Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpMZXQgQ3J5c3RhbCBSZXBvcnRzIGhhbmRsZSB0aGUgcmVw
+b3J0aW5nIC0gRnJlZSBDcnlzdGFsIFJlcG9ydHMgMjAwOCAzMC1EYXkgCnRyaWFsLiBTaW1wbGlm
+eSB5b3VyIHJlcG9ydCBkZXNpZ24sIGludGVncmF0aW9uIGFuZCBkZXBsb3ltZW50IC0gYW5kIGZv
+Y3VzIG9uIAp3aGF0IHlvdSBkbyBiZXN0LCBjb3JlIGFwcGxpY2F0aW9uIGNvZGluZy4gRGlzY292
+ZXIgd2hhdCdzIG5ldyB3aXRoCkNyeXN0YWwgUmVwb3J0cyBub3cuICBodHRwOi8vcC5zZi5uZXQv
+c2Z1L2JvYmotanVseQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0
+Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
