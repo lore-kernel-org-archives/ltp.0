@@ -1,33 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1N8Y8D-0008JB-Kt
-	for ltp-list@lists.sourceforge.net; Thu, 12 Nov 2009 11:46:29 +0000
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N8Y86-00015s-7L
-	for ltp-list@lists.sourceforge.net; Thu, 12 Nov 2009 11:46:29 +0000
-Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
-	by e6.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nACBpnGD006327
-	for <ltp-list@lists.sourceforge.net>; Thu, 12 Nov 2009 06:51:49 -0500
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nACBkGcP098492
-	for <ltp-list@lists.sourceforge.net>; Thu, 12 Nov 2009 06:46:16 -0500
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	nACBkGY6017486
-	for <ltp-list@lists.sourceforge.net>; Thu, 12 Nov 2009 06:46:16 -0500
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <364299f40911120319w1701c177o90a18bf56b99a0ca@mail.gmail.com>
-References: <364299f40911120319w1701c177o90a18bf56b99a0ca@mail.gmail.com>
-Date: Thu, 12 Nov 2009 17:16:11 +0530
-Message-Id: <1258026371.4866.2.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [RFC] proc01 : add flag to read /proc/irq ;
-	skip by	default
-Reply-To: subrata@linux.vnet.ibm.com
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1N9TrQ-0007we-2T
+	for ltp-list@lists.sourceforge.net; Sun, 15 Nov 2009 01:25:00 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N9TrJ-0005lv-Mi
+	for ltp-list@lists.sourceforge.net; Sun, 15 Nov 2009 01:25:00 +0000
+Received: by pwi12 with SMTP id 12so2827239pwi.2
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 14 Nov 2009 17:24:48 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <364299f40911141619n544a879ci86383a90d6693890@mail.gmail.com>
+References: <8368651DACC1964480F951191B94A078016A156A@svexch01.mvista.com>
+	<1257788375.7677.72.camel@subratamodak.linux.ibm.com>
+	<8368651DACC1964480F951191B94A078017CB194@svexch01.mvista.com>
+	<364299f40911092316q223d2073oc610dffc7474722b@mail.gmail.com>
+	<8368651DACC1964480F951191B94A078017CB30A@svexch01.mvista.com>
+	<364299f40911102212l2964e871r7477ae7959b566f6@mail.gmail.com>
+	<8368651DACC1964480F951191B94A078017CB3C2@svexch01.mvista.com>
+	<364299f40911120142y1c598494ha4172200704d2e48@mail.gmail.com>
+	<8368651DACC1964480F951191B94A078017CB58B@svexch01.mvista.com>
+	<364299f40911141619n544a879ci86383a90d6693890@mail.gmail.com>
+Date: Sat, 14 Nov 2009 17:18:35 -0800
+Message-ID: <364299f40911141718l31c2c6fbpa4ee3293eb73b3ed@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH][ppoll01] fix testcase 1,
+	5: pass correct valuefor 	sigset_t for mips
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,39 +40,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Henry Yei <hyei@mvista.com>
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
 
-On Thu, 2009-11-12 at 03:19 -0800, Garrett Cooper wrote:
-> Hi all,
->     To provide some background, my group is working on several
-> evaluation boards and one of the boards we have unfortunately has
-> issues with its usb driver, where the proc01 testcase gets stuck
-> trying to poll the /proc/irq file with the corresponding device.
->     I was wondering whether or not this could be removed by default,
-> and /proc/irq reading could be enabled by a -i option (say, in the
-> crashme test suite) to ensure that systems with faulty hardware /
-> drivers don't hang indefinitely and this testcase can still be run on
+On Sat, Nov 14, 2009 at 4:19 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Thu, Nov 12, 2009 at 5:57 PM, Henry Yei <hyei@mvista.com> wrote:
+>>> -----Original Message-----
+>>> From: Garrett Cooper [mailto:yanegomi@gmail.com]
+>>> Sent: Thursday, November 12, 2009 1:43 AM
+>>> To: Henry Yei
+>>> Cc: subrata@linux.vnet.ibm.com; LTP Mailing List
+>>> Subject: Re: [LTP] [PATCH][ppoll01] fix testcase 1, 5: pass correct
+>>> valuefor sigset_t for mips
 
-Run without hanging.
+[...]
 
-Regards--
-Subrata
+>>
+>> Attached is the poll01 patch with last_failed_errno and associated code removed.
+>
+> AHA! I figured out why sigset is sized differently on mips32 for you,
+> compared to other architectures.
+>
+> Just like there's a compat_caddr_t datatype (which is explicitly set
+> to char *), there's also a compat_sigset_t as well.
+>
+> Let me see if I can figure out this mystery, but my guess is that
+> you're using n32 based mips, most likely on an Octeon model ;) ;)...
+> which would account for what you're seeing here and possibly account
+> for why the test consistently hangs on our Cavium boards at work (our
+> version of Linux has been hacked so bad though to take shortcuts in
+> the design process instead of following proper design procedure that
+> it makes me cry inside...).
 
-> those platforms.
-> Thanks!
-> -Garrett
-> 
-> ------------------------------------------------------------------------------
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-> trial. Simplify your report design, integration and deployment - and focus on 
-> what you do best, core application coding. Discover what's new with
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
+    Checked in the intermediate solution until we can figure out
+whether or not compat_sigset_t is required for mips32.
+Thanks!
+-Garrett
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
