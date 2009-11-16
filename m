@@ -1,18 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <shiwh@cn.fujitsu.com>) id 1N9r1u-00015D-6M
-	for ltp-list@lists.sourceforge.net; Mon, 16 Nov 2009 02:09:22 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N9r1n-0007Be-PF
-	for ltp-list@lists.sourceforge.net; Mon, 16 Nov 2009 02:09:22 +0000
-Message-ID: <4B00B3DB.7010803@cn.fujitsu.com>
-Date: Mon, 16 Nov 2009 10:07:23 +0800
-From: Shi Weihua <shiwh@cn.fujitsu.com>
+	(envelope-from <yanegomi@gmail.com>) id 1N9xA1-0007tI-Ev
+	for ltp-list@lists.sourceforge.net; Mon, 16 Nov 2009 08:42:09 +0000
+Received: from mail-pw0-f48.google.com ([209.85.160.48])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N9x9v-0008Bf-2v
+	for ltp-list@lists.sourceforge.net; Mon, 16 Nov 2009 08:42:09 +0000
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] cpuctl_fj: fix syntax error of awk
+In-Reply-To: <1258357633.5677.24.camel@subratamodak.linux.ibm.com>
+References: <1258357633.5677.24.camel@subratamodak.linux.ibm.com>
+Date: Mon, 16 Nov 2009 00:41:56 -0800
+Message-ID: <364299f40911160041n1f4578a3t8ca143f89fd86207@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] One 1 remaining Build Error with LTP CVS 2009-11-16
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,51 +24,53 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
-Cc: jpalecek@web.de
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list <ltp-list@lists.sf.net>, Mike Frysinger <vapier@gentoo.org>
 
-cpuctl_test_fj's case19-22 failed on my x86_64 box.
-----------------------------------------------
-awk: print $9
-awk: ^ syntax error
-pid 8077 cpu_usage
-cpuctl_test_fj    1  TFAIL  :  case19    FAIL
-awk: print $9
-awk: ^ syntax error
-pid 8104 cpu_usage
-cpuctl_test_fj    1  TFAIL  :  case20    FAIL
-awk: print $9
-awk: ^ syntax error
-pid 8131 cpu_usage
-cpuctl_test_fj    1  TFAIL  :  case21    FAIL
-awk: print $9
-awk: ^ syntax error
-pid 8193 cpu_usage
-cpuctl_test_fj    1  TFAIL  :  case22    FAIL
-----------------------------------------------
-I fixed the syntax error of awk in the following patch.
+On Sun, Nov 15, 2009 at 11:47 PM, Subrata Modak
+<subrata@linux.vnet.ibm.com> wrote:
+> Mike/Garret,
+>
+> There remains only 1 build error now with the LTP CVS. This happens to be=
+ the issue with ltp/testcases/kernel/containers/libclone/Makefile.
+> It is not able to to include <test.h>, <usctest.h> and linux_syscall_numb=
+ers.h. However, i just made temporary changes in my local repo to fix this:
+>
+> # head -34 testcases/kernel/containers/libclone/libclone.h | tail -5
+> #include <signal.h>
+> #include "../../include/linux_syscall_numbers.h"
+> #include "test.h"
+> #include "usctest.h"
+>
+> Can you please fix this up in CVS ? Following error is generated on compi=
+lation:
+>
+> make[4]: Entering directory `/home/subratamodak/OFFICE_WORKS/LTP_PROJECT_=
+CODE/LTP_TARS/OCTOBER_2009_RELEASE/ltp-intermediate-20091116/testcases/kern=
+el/containers/libclone'
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall =A0-I../../../../inclu=
+de -I../../../../include =A0-c -o libclone.o libclone.c
+> In file included from libclone.c:17:
+> libclone.h:31:35: error: linux_syscall_numbers.h: No such file or directo=
+ry
+> libclone.c: In function =91do_clone_tests=92:
+> libclone.c:25: warning: implicit declaration of function =91ltp_clone_qui=
+ck=92
+> make[4]: *** [libclone.o] Error 1
 
-Signed-off-by: Shi Weihua <shiwh@cn.fujitsu.com>
+Done. Sorry for the accidental local items that I forgot to checkin...
+-Garrett
+
+---------------------------------------------------------------------------=
 ---
---- ltp-full-20091031.orig/testcases/kernel/controllers/cpuctl_fj/run_cpuctl_test_fj.sh	2009-11-02 04:07:14.000000000 -0500
-+++ ltp-full-20091031/testcases/kernel/controllers/cpuctl_fj/run_cpuctl_test_fj.sh	2009-11-16 04:51:22.000000000 -0500
-@@ -85,7 +85,7 @@ creat_process()
- 
- get_cpu_usage()
- {
--	top -b -n 1 -p $1 | tail -2 | head -1 | awk 'print $9' | awk -F "." '{print $1}'
-+	top -b -n 1 -p $1 | tail -2 | head -1 | awk '{print $9}' | awk -F "." '{print $1}'
- }
- 
- kill_all_pid()
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
 
+trial. Simplify your report design, integration and deployment - and focus =
+on =
 
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
