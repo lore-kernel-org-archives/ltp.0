@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <liubo2009@cn.fujitsu.com>) id 1N8sMf-0007Ot-PY
-	for ltp-list@lists.sourceforge.net; Fri, 13 Nov 2009 09:22:45 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N8sMX-0007AZ-RG
-	for ltp-list@lists.sourceforge.net; Fri, 13 Nov 2009 09:22:45 +0000
-Message-ID: <4AFD2579.6060107@cn.fujitsu.com>
-Date: Fri, 13 Nov 2009 17:23:05 +0800
-From: liubo <liubo2009@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] mem/hugetlb: fix failure of hugemmap04
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1N9wJ9-0002fU-An
+	for ltp-list@lists.sourceforge.net; Mon, 16 Nov 2009 07:47:31 +0000
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1N9wJ2-0001PW-2o
+	for ltp-list@lists.sourceforge.net; Mon, 16 Nov 2009 07:47:31 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+Date: Mon, 16 Nov 2009 13:17:13 +0530
+Message-Id: <1258357633.5677.24.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: [LTP] One 1 remaining Build Error with LTP CVS 2009-11-16
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,57 +23,39 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>, Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-Testcase hugemmap04 needs at least one hugepage to test,
-so there needs a judgement of "number of hugepages".
-
-This patch fixed the problems.
-
-Signed-off-by: Liu Bo <liubo2009@cn.fujitsu.com>
-
----
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
-
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
-index 050a071..e67e43c 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
-@@ -72,6 +72,7 @@
- 
- #include "test.h"
- #include "usctest.h"
-+#include "system_specific_hugepages_info.h"
- 
- #define BUFFER_SIZE  256
- 
-@@ -124,6 +125,11 @@ main(int ac, char **av)
- 		tst_exit();
- 	}
- 
-+	/* Check number of hugepages */
-+	if (get_no_of_hugepages() <= 0 || hugepages_size() <= 0)
-+		tst_brkm(TBROK, cleanup, "Test cannot be continued owning to \
-+				sufficient availability of Hugepages on the system");
-+
- 	/* Perform global setup for test */
- 	setup();
- 
--- 
-1.6.2.2
-
-
-
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
-what you do best, core application coding. Discover what's new with
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+TWlrZS9HYXJyZXQsCgpUaGVyZSByZW1haW5zIG9ubHkgMSBidWlsZCBlcnJvciBub3cgd2l0aCB0
+aGUgTFRQIENWUy4gVGhpcyBoYXBwZW5zIHRvIGJlIHRoZSBpc3N1ZSB3aXRoIGx0cC90ZXN0Y2Fz
+ZXMva2VybmVsL2NvbnRhaW5lcnMvbGliY2xvbmUvTWFrZWZpbGUuCkl0IGlzIG5vdCBhYmxlIHRv
+IHRvIGluY2x1ZGUgPHRlc3QuaD4sIDx1c2N0ZXN0Lmg+IGFuZCBsaW51eF9zeXNjYWxsX251bWJl
+cnMuaC4gSG93ZXZlciwgaSBqdXN0IG1hZGUgdGVtcG9yYXJ5IGNoYW5nZXMgaW4gbXkgbG9jYWwg
+cmVwbyB0byBmaXggdGhpczoKCiMgaGVhZCAtMzQgdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJz
+L2xpYmNsb25lL2xpYmNsb25lLmggfCB0YWlsIC01CiNpbmNsdWRlIDxzaWduYWwuaD4KI2luY2x1
+ZGUgIi4uLy4uL2luY2x1ZGUvbGludXhfc3lzY2FsbF9udW1iZXJzLmgiCiNpbmNsdWRlICJ0ZXN0
+LmgiCiNpbmNsdWRlICJ1c2N0ZXN0LmgiCgpDYW4geW91IHBsZWFzZSBmaXggdGhpcyB1cCBpbiBD
+VlMgPyBGb2xsb3dpbmcgZXJyb3IgaXMgZ2VuZXJhdGVkIG9uIGNvbXBpbGF0aW9uOgoKbWFrZVs0
+XTogRW50ZXJpbmcgZGlyZWN0b3J5IGAvaG9tZS9zdWJyYXRhbW9kYWsvT0ZGSUNFX1dPUktTL0xU
+UF9QUk9KRUNUX0NPREUvTFRQX1RBUlMvT0NUT0JFUl8yMDA5X1JFTEVBU0UvbHRwLWludGVybWVk
+aWF0ZS0yMDA5MTExNi90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvbGliY2xvbmUnCmdjYyAt
+ZyAtTzIgLWcgLU8yIC1mbm8tc3RyaWN0LWFsaWFzaW5nIC1waXBlIC1XYWxsICAtSS4uLy4uLy4u
+Ly4uL2luY2x1ZGUgLUkuLi8uLi8uLi8uLi9pbmNsdWRlICAtYyAtbyBsaWJjbG9uZS5vIGxpYmNs
+b25lLmMKSW4gZmlsZSBpbmNsdWRlZCBmcm9tIGxpYmNsb25lLmM6MTc6CmxpYmNsb25lLmg6MzE6
+MzU6IGVycm9yOiBsaW51eF9zeXNjYWxsX251bWJlcnMuaDogTm8gc3VjaCBmaWxlIG9yIGRpcmVj
+dG9yeQpsaWJjbG9uZS5jOiBJbiBmdW5jdGlvbiDigJhkb19jbG9uZV90ZXN0c+KAmToKbGliY2xv
+bmUuYzoyNTogd2FybmluZzogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g4oCYbHRw
+X2Nsb25lX3F1aWNr4oCZCm1ha2VbNF06ICoqKiBbbGliY2xvbmUub10gRXJyb3IgMQoKUmVnYXJk
+cy0tClN1YnJhdGEKCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxldCBDcnlzdGFsIFJlcG9ydHMg
+aGFuZGxlIHRoZSByZXBvcnRpbmcgLSBGcmVlIENyeXN0YWwgUmVwb3J0cyAyMDA4IDMwLURheSAK
+dHJpYWwuIFNpbXBsaWZ5IHlvdXIgcmVwb3J0IGRlc2lnbiwgaW50ZWdyYXRpb24gYW5kIGRlcGxv
+eW1lbnQgLSBhbmQgZm9jdXMgb24gCndoYXQgeW91IGRvIGJlc3QsIGNvcmUgYXBwbGljYXRpb24g
+Y29kaW5nLiBEaXNjb3ZlciB3aGF0J3MgbmV3IHdpdGgKQ3J5c3RhbCBSZXBvcnRzIG5vdy4gIGh0
+dHA6Ly9wLnNmLm5ldC9zZnUvYm9iai1qdWx5Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5z
+b3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGlu
+Zm8vbHRwLWxpc3QK
