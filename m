@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1N4xbb-0005b9-1W
-	for ltp-list@lists.sourceforge.net; Mon, 02 Nov 2009 14:09:59 +0000
-Date: Mon, 2 Nov 2009 15:09:39 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20091102140939.GB16607@schrodinger.suse.cz>
-References: <1257168835.4977.46.camel@subratamodak.linux.ibm.com>
+	(envelope-from <liubo2009@cn.fujitsu.com>) id 1N9xMI-0007Ek-TD
+	for ltp-list@lists.sourceforge.net; Mon, 16 Nov 2009 08:54:50 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N9xMB-0001V5-Au
+	for ltp-list@lists.sourceforge.net; Mon, 16 Nov 2009 08:54:50 +0000
+Message-ID: <4B011376.1010006@cn.fujitsu.com>
+Date: Mon, 16 Nov 2009 16:55:18 +0800
+From: liubo <liubo2009@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1257168835.4977.46.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] Build Fails on some archs
+Subject: [LTP] [PATCH] mail: fix the bug of mail01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,53 +25,147 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> # uname -a
-> Linux 2.6.18-164.el5 #1 SMP Tue Aug 18 15:53:50 EDT 2009 s390x s390x
-> s390x GNU/Linux
-> # cat /etc/issue
-> Red Hat Enterprise Linux Server release 5.4 (Tikanga)
-> Kernel \r on an \m
->
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
-> -I/root/subrata/ltp/ltp-full-20091031/testcases/kernel/include
-> -I../../../../../include -I../../../../../include
-> -L/root/subrata/ltp/ltp-full-20091031/testcases/kernel/controllers/cpuset/cpuset_syscall_test/../cpuset_lib -L../../../../../lib  cpuset_syscall_test.c   -lltp -lcpu_set -o cpuset_syscall_test
-> cpuset_syscall_test.c: In function 'get_mempolicy':
-> cpuset_syscall_test.c:67: error: '__NR_get_mempolicy' undeclared (first
-> use in this function)
-> cpuset_syscall_test.c:67: error: (Each undeclared identifier is reported
-> only once
-> cpuset_syscall_test.c:67: error: for each function it appears in.)
-> cpuset_syscall_test.c: In function 'mbind':
-> cpuset_syscall_test.c:73: error: '__NR_mbind' undeclared (first use in
-> this function)
-> cpuset_syscall_test.c: In function 'set_mempolicy':
-> cpuset_syscall_test.c:78: error: '__NR_set_mempolicy' undeclared (first
-> use in this function)
-> cpuset_syscall_test.c: In function 'process_options':
-> cpuset_syscall_test.c:100: warning: unused variable 'file'
-> cpuset_syscall_test.c: In function 'test_mbind':
-> cpuset_syscall_test.c:177: warning: format '%lx' expects type 'long
-> unsigned int', but argument 2 has type 'void *'
-> make[5]: *** [cpuset_syscall_test] Error 1
+In the testcase "mail01",
 
-Looks like set_mempolicy get_mempolicy and mbind are missing in
-testcases/kernel/include/s390x.in.
+when mail is send to nosuchuser@domain
+and mail is send to user@nosuchdomain,
+mail program may return either "Returnedmail:"
+or "UndeliveredMailReturned", regardless of
+the existence of /etc/redhat-release.
 
+So, we did a bit of changes to recognize both of
+returned values.
+
+This patch fixes the problem.
+
+Signed-off-by: Liu Bo <liubo2009@cn.fujitsu.com>
+---
+ testcases/commands/mail/mail_tests.sh |   65 ++++++++++++++++-----------------
+ 1 files changed, 31 insertions(+), 34 deletions(-)
+
+diff --git a/testcases/commands/mail/mail_tests.sh b/testcases/commands/mail/mail_tests.sh
+index 45bac93..024120f 100755
+--- a/testcases/commands/mail/mail_tests.sh
++++ b/testcases/commands/mail/mail_tests.sh
+@@ -172,28 +172,27 @@ else
+     echo "d" | mail -u root > $LTPTMP/tst_mail.res 2>&1
+     RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3, "Mailer-Daemon")}' \
+ 	$LTPTMP/tst_mail.res)
+-    RC2=$(awk '/^>N/ {print match($9 $10 $11, "Maildeliveryfailed:")}' \
+-        $LTPTMP/tst_mail.res)
+-#####
+-# Some mailers (e.g., Red Hat's sendmail) print different messages 
+-#####
+-if [ -f /etc/redhat-release ] 
+-then 
+-  [ -z "$RC2" -o "X$RC2" = "X0" ] && \
++##################################################################
++# In this testcase, mail will get "Returnedmail:", while mailx will
++# get "UndeliveredMailReturned:".
++# Either of mail and mailx may be linked to another.
++# For example,
++# /bin/mail -> /bin/mailx
++# or
++# /bin/mailx -> /bin/mail
++##################################################################
+      RC2=$(awk '/^>N/ {print match($9 $10, "Returnedmail:")}' \
+              $LTPTMP/tst_mail.res)
+-else 
+-  [ -z "$RC2" -o "X$RC2" = "X0" ] && \
+-     RC2=$(awk '/^>N/ {print match($9 $10 $11, "UndeliveredMailReturned")}' \
++     RC3=$(awk '/^>N/ {print match($9 $10, "UndeliveredMail")}' \
+              $LTPTMP/tst_mail.res)
+ fi 
+-    if [ -z "$RC1" -a -z "$RC2" ]
++    if [ -z "$RC1" -a -z "$RC2" -a -z "$RC3" ]
+     then
+         $LTPBIN/tst_res TFAIL $LTPTMP/tst_mail.res \
+         "Test #2: No new mail for root. Reason:"
+         TFAILCNT=$(( $TFAILCNT+1 ))
+     else
+-        if [ $RC1 -ne 0 -a $RC2 -ne 0 ]
++        if [ $RC1 -ne 0 -a $RC2 -ne 0 ] || [ $RC1 -ne 0 -a $RC3 -ne 0 ]
+         then
+             $LTPBIN/tst_resm TPASS \
+                 "Test #2: Mailer-Deamon reported delivery failure"
+@@ -203,7 +202,6 @@ fi
+             TFAILCNT=$(( $TFAILCNT+1 ))
+         fi
+     fi
+-fi
+ else
+     $LTPBIN/tst_resm TCONF "mail command not installed"
+ fi    
+@@ -242,29 +240,28 @@ else
+     echo "d" | mail -u root > $LTPTMP/tst_mail.res 2>&1
+     RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3, "Mailer-Daemon")}' \
+ 	$LTPTMP/tst_mail.res)
+-    RC2=$(awk '/^>N/ {print match($9 $10 $11, "Maildeliveryfailed:")}' \
+-        $LTPTMP/tst_mail.res)
+-#####
+-# Some mailers (e.g., Red Hat's sendmail) print different messages 
+-#####
+-if [ -f /etc/redhat-release ] 
+-then 
+-   [ -z "$RC2" -o "X$RC2" = "X0" ] && \
+-      RC2=$(awk '/^>N/ {print match($9 $10, "Returnedmail:")}' \
+-              $LTPTMP/tst_mail.res)
+-else 
+-    [ -z "$RC2" -o "X$RC2" = "X0" ] && \
+-        RC2=$(awk '/^>N/ {print match($9 $10 $11, "UndeliveredMailReturned")}' \
+-                $LTPTMP/tst_mail.res)
+-fi 
+-    if [ -z "$RC1" -a -z "$RC2" ]
++##################################################################
++# In this testcase, mail will get "Returnedmail:", while mailx will
++# get "UndeliveredMailReturned:".
++# Either of mail and mailx may be linked to another.
++# For example,
++# /bin/mail -> /bin/mailx
++# or
++# /bin/mailx -> /bin/mail
++##################################################################
++     RC2=$(awk '/^>N/ {print match($9 $10, "Returnedmail:")}' \
++             $LTPTMP/tst_mail.res)
++     RC3=$(awk '/^>N/ {print match($9 $10, "UndeliveredMail")}' \
++             $LTPTMP/tst_mail.res)
++fi
++    if [ -z "$RC1" -a -z "$RC2" -a -z "$RC3" ]
+     then
+         $LTPBIN/tst_res TFAIL $LTPTMP/tst_mail.res \
+-        "Test #3: No new mail for root. Reason:"
++        "Test #2: No new mail for root. Reason:"
+         TFAILCNT=$(( $TFAILCNT+1 ))
+     else
+-        if [ $RC1 -ne 0 -a $RC2 -ne 0 ]
+-        then
++        if [ $RC1 -ne 0 -a $RC2 -ne 0 ] || [ $RC1 -ne 0 -a $RC3 -ne 0 ]
++	then
+             $LTPBIN/tst_resm TPASS \
+                 "Test #3: Mailer-Deamon reported delivery failure"
+         else
+@@ -273,7 +270,7 @@ fi
+             TFAILCNT=$(( $TFAILCNT+1 ))
+         fi
+     fi
+-fi
++
+ else
+     $LTPBIN/tst_resm TCONF "mail command not installed"
+ fi
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.6.2.2
+
+
+
 
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-http://p.sf.net/sfu/devconference
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
