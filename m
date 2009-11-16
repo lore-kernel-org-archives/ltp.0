@@ -1,24 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1NDUdQ-0002PB-4O
-	for ltp-list@lists.sourceforge.net; Thu, 26 Nov 2009 03:03:08 +0000
-Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
-	by sfi-mx-1.v28.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1NDUdJ-0004oZ-4E
-	for ltp-list@lists.sourceforge.net; Thu, 26 Nov 2009 03:03:08 +0000
-From: "Mitani" <mitani@ryobi.co.jp>
-References: <000001ca6d7c$63dc8890$2b9599b0$@co.jp>	
-	<364299f40911242117g6baf6281r1e7191a201d4203c@mail.gmail.com>	
-	<200911250033.23404.vapier@gentoo.org>
-	<364299f40911242226g68c37f59r1fcfd23ad87dd1e@mail.gmail.com>
-In-Reply-To: <364299f40911242226g68c37f59r1fcfd23ad87dd1e@mail.gmail.com>
-Date: Thu, 26 Nov 2009 12:02:48 +0900
-Message-ID: <002001ca6e44$ef7341a0$ce59c4e0$@co.jp>
-MIME-Version: 1.0
-Content-Language: ja
-Subject: Re: [LTP] mbind01 test failed with after ltp-2009-11-12.tar.gz
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NA27J-0001WR-5a
+	for ltp-list@lists.sourceforge.net; Mon, 16 Nov 2009 13:59:41 +0000
+Received: from e9.ny.us.ibm.com ([32.97.182.139])
+	by 72vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NA27C-0000Us-FG
+	for ltp-list@lists.sourceforge.net; Mon, 16 Nov 2009 13:59:40 +0000
+Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
+	by e9.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nAGDXx5Q014662
+	for <ltp-list@lists.sourceforge.net>; Mon, 16 Nov 2009 08:33:59 -0500
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	nAGDdCfJ117348
+	for <ltp-list@lists.sourceforge.net>; Mon, 16 Nov 2009 08:39:12 -0500
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	nAGDdBDb010199
+	for <ltp-list@lists.sourceforge.net>; Mon, 16 Nov 2009 08:39:12 -0500
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4B012F2A.9090404@st.com>
+References: <4AF1A24C.8020503@st.com>
+	<1257788356.7677.68.camel@subratamodak.linux.ibm.com>
+	<20091112141814.4599b83a@sripathi.in.ibm.com> <4AFD0D82.6050302@st.com>
+	<1258359220.5677.33.camel@subratamodak.linux.ibm.com>
+	<4B012F2A.9090404@st.com>
+Date: Mon, 16 Nov 2009 19:09:03 +0530
+Message-Id: <1258378743.5677.43.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] compiling realtime tests for SH.
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,265 +40,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Garrett Cooper' <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>, Nate Straz <nate@refried.org>
+To: Giuseppe CAVALLARO <peppe.cavallaro@st.com>
+Cc: ltp-list@lists.sourceforge.net, amrith <amrith@linux.ibm.com>, Gowrishankar <gowrishankar.m@linux.vnet.ibm.com>, Sripathi Kodi <sripathik@linux.vnet.ibm.com>
 
-Hi,
+On Mon, 2009-11-16 at 11:53 +0100, Giuseppe CAVALLARO wrote: 
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA1
+> 
+> Subrata Modak wrote:
+> >>>> In my opinion this patch would have been better split into 2
+> >>>> parts: one that separates out TSC parts and the other that adds atomic
+> >>>> functions for SH. That would make changelogs easier to search through
+> >>>> in future.
+> > if you like I can resend the patch splitted into two parts.
+> > Let me know.
+> > 
+> >> Yah, Please do so. I will do separate check-ins with separate LOG
+> >> messages.
+> 
+> Hi Subrata,
+> in attachment the two patches.
 
-Sorry I'm late.
+Thanks. Applied.
 
-I copied a patch part from ltp-list and apply it, but the patch failed.
-I didn't notice that tabs in the patch were changed to blanks,
-and I took time. Forgive me.
+Regards--
+Subrata
 
-But, I could make right patch by copying from your email, and I succeeded. =
-
-
-As a result, mbind01 became PASS by applying your last patch. =
-
-
-
-Thank you.
-
--Tomonori Mitani
-
------Original Message-----
-From: Garrett Cooper [mailto:yanegomi@gmail.com] =
-
-Sent: Wednesday, November 25, 2009 3:26 PM
-To: Mike Frysinger
-Cc: Mitani; ltp-list@lists.sourceforge.net; Nate Straz; Matt Helsley
-Subject: Re: [LTP] mbind01 test failed with after ltp-2009-11-12.tar.gz
-
-On Tue, Nov 24, 2009 at 9:33 PM, Mike Frysinger <vapier@gentoo.org> wrote:
-> On Wednesday 25 November 2009 00:17:16 Garrett Cooper wrote:
->> --- regen.sh =A019 Nov 2009 19:35:15 -0000 =A0 =A0 =A01.12
->> +++ regen.sh =A025 Nov 2009 05:12:13 -0000
->> @@ -32,8 +32,13 @@ static void cleanup(void);
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, cleanup, "syscall " #NR " no=
-t supported on
-your arch");
->> =A0\\ errno =3D ENOSYS; \\
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 __ret =3D -1; \\
->> - =A0 =A0 } else \\
->> + =A0 =A0 } else { \\
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 __ret =3D syscall(NR, ##__VA_ARGS__); \\
->> + =A0 =A0 =A0 =A0 =A0 =A0 if (__ret =3D=3D -1 && errno =3D=3D ENOSYS) { =
-\\
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, cleanup, "sysc=
-all " #NR " not
-supported on your arch");
->> =A0\\ + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 errno =3D ENOSYS; \\
->> + =A0 =A0 =A0 =A0 =A0 =A0 } \\
->> + =A0 =A0 } \\
->> =A0 =A0 =A0 __ret; \\
->> =A0})
->> =A0EOF
->
-> i'd prefer this change
-> --- testcases/kernel/include/regen.sh =A0 9 Oct 2009 17:55:48 -0000 =A0 =
-=A0 =A0
-1.11
-> +++ testcases/kernel/include/regen.sh =A0 25 Nov 2009 05:28:27 -0000
-> @@ -30,11 +30,12 @@ static void cleanup(void);
-> =A0#define syscall(NR, ...) ({ \\
-> =A0 =A0 =A0 =A0int __ret; \\
-> =A0 =A0 =A0 =A0if (NR =3D=3D 0) { \\
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, cleanup, "syscall " #NR " n=
-ot supported on
-your arch"); \\
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0errno =3D ENOSYS; \\
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0__ret =3D -1; \\
-> =A0 =A0 =A0 =A0} else \\
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0__ret =3D syscall(NR, ##__VA_ARGS__); \\
-> + =A0 =A0 =A0 if (__ret =3D=3D -1 && errno =3D=3D ENOSYS) \\
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, cleanup, "syscall " #NR " n=
-ot supported on
-your arch"); \\
-> =A0 =A0 =A0 =A0__ret; \\
-> =A0})
-> =A0EOF
-
-    Ok -- that makes more sense.. besides, I think gcc was optimizing
-out the first branch with -O2 if it always evaluated to false. Here's
-the new patch (I'm keeping the errno =3D ENOSYS part because I want to
-make sure that tst_brkm doesn't mess up the errno value if a write(2)
-fails or something).
-Thanks!
--Garrett
-
-EXAMPLE (Positive):
-
-gcooper@orangebox
-/scratch/ltp-dev2/ltp/testcases/kernel/syscalls/mbind $ ./mbind01
-mbind01     0  TINFO  :  (case00) START
-EXPECT: return value(ret)=3D0 errno=3D0 (Success)
-RESULT: return value(ret)=3D0 errno=3D0 (Success)
-mbind01     1  TPASS  :  (case00) END
-mbind01     0  TINFO  :  (case01) START
-EXPECT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
-RESULT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
-mbind01     2  TPASS  :  (case01) END
-mbind01     0  TINFO  :  (case02) START
-EXPECT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
-RESULT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
-mbind01     3  TPASS  :  (case02) END
-mbind01     0  TINFO  :  (case03) START
-EXPECT: return value(ret)=3D0 errno=3D0 (Success)
-RESULT: return value(ret)=3D0 errno=3D0 (Success)
-mbind01     4  TPASS  :  (case03) END
-mbind01     0  TINFO  :  (case04) START
-EXPECT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
-RESULT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
-mbind01     5  TPASS  :  (case04) END
-mbind01     0  TINFO  :  (case05) START
-EXPECT: return value(ret)=3D0 errno=3D0 (Success)
-RESULT: return value(ret)=3D0 errno=3D0 (Success)
-mbind01     6  TPASS  :  (case05) END
-mbind01     0  TINFO  :  (case06) START
-EXPECT: return value(ret)=3D0 errno=3D0 (Success)
-RESULT: return value(ret)=3D0 errno=3D0 (Success)
-mbind01     7  TPASS  :  (case06) END
-mbind01     0  TINFO  :  (case07) START
-EXPECT: return value(ret)=3D0 errno=3D0 (Success)
-RESULT: return value(ret)=3D0 errno=3D0 (Success)
-mbind01     8  TPASS  :  (case07) END
-mbind01     0  TINFO  :  (case08) START
-EXPECT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
-RESULT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
-mbind01     9  TPASS  :  (case08) END
-mbind01     0  TINFO  :  (case09) START
-EXPECT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
-RESULT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
-mbind01    10  TPASS  :  (case09) END
-mbind01     0  TINFO  :  (case10) START
-EXPECT: return value(ret)=3D-1 errno=3D14 (Bad address)
-RESULT: return value(ret)=3D-1 errno=3D14 (Bad address)
-mbind01    11  TPASS  :  (case10) END
-mbind01     0  TINFO  :  (case00) START
-EXPECT: return value(ret)=3D0 errno=3D0 (Success)
-RESULT: return value(ret)=3D0 errno=3D0 (Success)
-mbind01    12  TPASS  :  (case00) END
-mbind01     0  TINFO  :  (case01) START
-EXPECT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
-RESULT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
-mbind01    13  TPASS  :  (case01) END
-mbind01     0  TINFO  :  (case02) START
-EXPECT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
-RESULT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
-mbind01    14  TPASS  :  (case02) END
-mbind01     0  TINFO  :  (case03) START
-EXPECT: return value(ret)=3D0 errno=3D0 (Success)
-RESULT: return value(ret)=3D0 errno=3D0 (Success)
-mbind01    15  TPASS  :  (case03) END
-mbind01     0  TINFO  :  (case04) START
-EXPECT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
-RESULT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
-mbind01    16  TPASS  :  (case04) END
-mbind01     0  TINFO  :  (case05) START
-EXPECT: return value(ret)=3D0 errno=3D0 (Success)
-RESULT: return value(ret)=3D0 errno=3D0 (Success)
-mbind01    17  TPASS  :  (case05) END
-mbind01     0  TINFO  :  (case06) START
-EXPECT: return value(ret)=3D0 errno=3D0 (Success)
-RESULT: return value(ret)=3D0 errno=3D0 (Success)
-mbind01    18  TPASS  :  (case06) END
-mbind01     0  TINFO  :  (case07) START
-EXPECT: return value(ret)=3D0 errno=3D0 (Success)
-RESULT: return value(ret)=3D0 errno=3D0 (Success)
-mbind01    19  TPASS  :  (case07) END
-mbind01     0  TINFO  :  (case08) START
-EXPECT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
-RESULT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
-mbind01    20  TPASS  :  (case08) END
-mbind01     0  TINFO  :  (case09) START
-EXPECT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
-RESULT: return value(ret)=3D-1 errno=3D22 (Invalid argument)
-mbind01    21  TPASS  :  (case09) END
-mbind01     0  TINFO  :  (case10) START
-EXPECT: return value(ret)=3D-1 errno=3D14 (Bad address)
-RESULT: return value(ret)=3D-1 errno=3D14 (Bad address)
-mbind01    22  TPASS  :  (case10) END
-
-EXAMPLE (Negative):
-
-gcooper@orangebox /scratch/ltp-dev2/ltp/testcases/kernel/syscalls/foo $ make
-all
-make -C "/scratch/ltp-dev2/ltp/lib" -f "/scratch/ltp-dev2/ltp/lib/Makefile"
-all
-make[1]: Entering directory `/scratch/ltp-dev2/ltp/lib'
-make[1]: Nothing to be done for `all'.
-make[1]: Leaving directory `/scratch/ltp-dev2/ltp/lib'
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
--I/scratch/ltp-dev2/ltp/testcases/kernel/include -I../../../../include
--I../../../../include   -L../../../../lib  foo.c   -lltp -o foo
-gcooper@orangebox /scratch/ltp-dev2/ltp/testcases/kernel/syscalls/foo $
-./foo
-foo         1  TCONF  :  syscall __NR_foo not supported on your arch
-gcooper@orangebox /scratch/ltp-dev2/ltp/testcases/kernel/syscalls/foo
-$ cat foo.c
-#include "test.h"
-#include "linux_syscall_numbers.h"
-
-#define __NR_foo 19567
-
-int TST_TOTAL =3D 1;
-char *TCID =3D "foo";
-
-void cleanup(void) { }
-
-int
-main (void) {
-        return syscall(__NR_foo, "bar");
-}
-gcooper@orangebox /scratch/ltp-dev2/ltp/testcases/kernel/syscalls/foo $
-./foo
-foo         1  TCONF  :  syscall __NR_foo not supported on your arch
-
-PATCH:
-
-Index: regen.sh
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/include/regen.sh,v
-retrieving revision 1.12
-diff -u -p -r1.12 regen.sh
---- regen.sh	19 Nov 2009 19:35:15 -0000	1.12
-+++ regen.sh	25 Nov 2009 06:22:33 -0000
-@@ -29,11 +29,15 @@ static void cleanup(void);
- #define syscall(NR, ...) ({ \\
- 	int __ret; \\
- 	if (NR =3D=3D 0) { \\
--		tst_brkm(TCONF, cleanup, "syscall " #NR " not supported on
-your arch"); \\
- 		errno =3D ENOSYS; \\
- 		__ret =3D -1; \\
--	} else \\
-+	} else { \\
- 		__ret =3D syscall(NR, ##__VA_ARGS__); \\
-+	} \\
-+	if (__ret =3D=3D -1 && errno =3D=3D ENOSYS) { \\
-+		tst_brkm(TCONF, cleanup, "syscall " #NR " not supported on
-your arch"); \\
-+		errno =3D ENOSYS; \\
-+	} \\
- 	__ret; \\
- })
- EOF
+> 
+> Regards
+> Peppe
+> 
+> > 
+> >> Regards--
+> >> Subrata
+> > 
+> -----BEGIN PGP SIGNATURE-----
+> Version: GnuPG v1.4.9 (GNU/Linux)
+> Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+> 
+> iEYEARECAAYFAksBLyoACgkQ2Xo3j31MSSIMfgCgn3qXNrOd/2mhyeri3loHGoBg
+> u1IAoIhbksE6wEIRWLYoIMGhQBZGF1dj
+> =QsPg
+> -----END PGP SIGNATURE-----
 
 
-
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
-
-trial. Simplify your report design, integration and deployment - and focus =
-on =
-
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
