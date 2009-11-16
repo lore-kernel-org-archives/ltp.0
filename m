@@ -1,21 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NDwKF-0007qD-5s
-	for ltp-list@lists.sourceforge.net; Fri, 27 Nov 2009 08:37:11 +0000
-Received: from mail-pz0-f193.google.com ([209.85.222.193])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NDwK7-00005k-Tu
-	for ltp-list@lists.sourceforge.net; Fri, 27 Nov 2009 08:37:11 +0000
-Received: by pzk31 with SMTP id 31so912578pzk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 27 Nov 2009 00:36:58 -0800 (PST)
-MIME-Version: 1.0
-Date: Fri, 27 Nov 2009 00:36:58 -0800
-Message-ID: <364299f40911270036l3307d3ffg1d453b259bbe51e8@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] performance_counter* - make TCONF for <2.6.31
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NA20W-0000r1-9q
+	for ltp-list@lists.sourceforge.net; Mon, 16 Nov 2009 13:52:40 +0000
+Received: from e7.ny.us.ibm.com ([32.97.182.137])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NA20P-0001Up-Pw
+	for ltp-list@lists.sourceforge.net; Mon, 16 Nov 2009 13:52:40 +0000
+Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
+	by e7.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nAGDZ35A011705
+	for <ltp-list@lists.sourceforge.net>; Mon, 16 Nov 2009 08:35:03 -0500
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	nAGDd6w71491120
+	for <ltp-list@lists.sourceforge.net>; Mon, 16 Nov 2009 08:39:07 -0500
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	nAG9WtFm003510
+	for <ltp-list@lists.sourceforge.net>; Mon, 16 Nov 2009 04:32:55 -0500
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4B011376.1010006@cn.fujitsu.com>
+References: <4B011376.1010006@cn.fujitsu.com>
+Date: Mon, 16 Nov 2009 19:09:01 +0530
+Message-Id: <1258378741.5677.42.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] mail: fix the bug of mail01
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,132 +39,145 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: liubo <liubo2009@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi all,
-    I was trying to track down when and where the performance_counter
-syscalls were added to the Linux kernel, and it appears to have been
-2.6.31. The current testcases run and fail on all architectures,
-without returning -1 and setting errno == ENOSYS. So I'm proposing the
-following change, but of course wondering whether or not it makes
-sense:
+On Mon, 2009-11-16 at 16:55 +0800, liubo wrote: 
+> In the testcase "mail01",
+> 
+> when mail is send to nosuchuser@domain
+> and mail is send to user@nosuchdomain,
+> mail program may return either "Returnedmail:"
+> or "UndeliveredMailReturned", regardless of
+> the existence of /etc/redhat-release.
+> 
+> So, we did a bit of changes to recognize both of
+> returned values.
+> 
+> This patch fixes the problem.
+> 
+> Signed-off-by: Liu Bo <liubo2009@cn.fujitsu.com>
 
-1. Block off testcases for kernel versions <2.6.31.
-2. Make asserts into more graceful errors.
-3. Convert tst_resm + tst_exit into tst_brkm's.
-4. Convert hardcoded 8's into sizeof(unsigned long long)'s, or
-sizeof() for the equivalent variable under inspection.
+Thanks. Done.
 
-Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+Regards--
+Subrata
 
-Index: ./performance_counters/performance_counter01.c
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/performance_counters/performance_counter01.c,v
-retrieving revision 1.5
-diff -u -r1.5 performance_counter01.c
---- ./performance_counters/performance_counter01.c      27 Nov 2009
-08:15:35 -0000      1.5
-+++ ./performance_counters/performance_counter01.c      27 Nov 2009
-08:31:33 -0000
-@@ -62,32 +62,57 @@
+> ---
+>  testcases/commands/mail/mail_tests.sh |   65 ++++++++++++++++-----------------
+>  1 files changed, 31 insertions(+), 34 deletions(-)
+> 
+> diff --git a/testcases/commands/mail/mail_tests.sh b/testcases/commands/mail/mail_tests.sh
+> index 45bac93..024120f 100755
+> --- a/testcases/commands/mail/mail_tests.sh
+> +++ b/testcases/commands/mail/mail_tests.sh
+> @@ -172,28 +172,27 @@ else
+>      echo "d" | mail -u root > $LTPTMP/tst_mail.res 2>&1
+>      RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3, "Mailer-Daemon")}' \
+>  	$LTPTMP/tst_mail.res)
+> -    RC2=$(awk '/^>N/ {print match($9 $10 $11, "Maildeliveryfailed:")}' \
+> -        $LTPTMP/tst_mail.res)
+> -#####
+> -# Some mailers (e.g., Red Hat's sendmail) print different messages 
+> -#####
+> -if [ -f /etc/redhat-release ] 
+> -then 
+> -  [ -z "$RC2" -o "X$RC2" = "X0" ] && \
+> +##################################################################
+> +# In this testcase, mail will get "Returnedmail:", while mailx will
+> +# get "UndeliveredMailReturned:".
+> +# Either of mail and mailx may be linked to another.
+> +# For example,
+> +# /bin/mail -> /bin/mailx
+> +# or
+> +# /bin/mailx -> /bin/mail
+> +##################################################################
+>       RC2=$(awk '/^>N/ {print match($9 $10, "Returnedmail:")}' \
+>               $LTPTMP/tst_mail.res)
+> -else 
+> -  [ -z "$RC2" -o "X$RC2" = "X0" ] && \
+> -     RC2=$(awk '/^>N/ {print match($9 $10 $11, "UndeliveredMailReturned")}' \
+> +     RC3=$(awk '/^>N/ {print match($9 $10, "UndeliveredMail")}' \
+>               $LTPTMP/tst_mail.res)
+>  fi 
+> -    if [ -z "$RC1" -a -z "$RC2" ]
+> +    if [ -z "$RC1" -a -z "$RC2" -a -z "$RC3" ]
+>      then
+>          $LTPBIN/tst_res TFAIL $LTPTMP/tst_mail.res \
+>          "Test #2: No new mail for root. Reason:"
+>          TFAILCNT=$(( $TFAILCNT+1 ))
+>      else
+> -        if [ $RC1 -ne 0 -a $RC2 -ne 0 ]
+> +        if [ $RC1 -ne 0 -a $RC2 -ne 0 ] || [ $RC1 -ne 0 -a $RC3 -ne 0 ]
+>          then
+>              $LTPBIN/tst_resm TPASS \
+>                  "Test #2: Mailer-Deamon reported delivery failure"
+> @@ -203,7 +202,6 @@ fi
+>              TFAILCNT=$(( $TFAILCNT+1 ))
+>          fi
+>      fi
+> -fi
+>  else
+>      $LTPBIN/tst_resm TCONF "mail command not installed"
+>  fi    
+> @@ -242,29 +240,28 @@ else
+>      echo "d" | mail -u root > $LTPTMP/tst_mail.res 2>&1
+>      RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3, "Mailer-Daemon")}' \
+>  	$LTPTMP/tst_mail.res)
+> -    RC2=$(awk '/^>N/ {print match($9 $10 $11, "Maildeliveryfailed:")}' \
+> -        $LTPTMP/tst_mail.res)
+> -#####
+> -# Some mailers (e.g., Red Hat's sendmail) print different messages 
+> -#####
+> -if [ -f /etc/redhat-release ] 
+> -then 
+> -   [ -z "$RC2" -o "X$RC2" = "X0" ] && \
+> -      RC2=$(awk '/^>N/ {print match($9 $10, "Returnedmail:")}' \
+> -              $LTPTMP/tst_mail.res)
+> -else 
+> -    [ -z "$RC2" -o "X$RC2" = "X0" ] && \
+> -        RC2=$(awk '/^>N/ {print match($9 $10 $11, "UndeliveredMailReturned")}' \
+> -                $LTPTMP/tst_mail.res)
+> -fi 
+> -    if [ -z "$RC1" -a -z "$RC2" ]
+> +##################################################################
+> +# In this testcase, mail will get "Returnedmail:", while mailx will
+> +# get "UndeliveredMailReturned:".
+> +# Either of mail and mailx may be linked to another.
+> +# For example,
+> +# /bin/mail -> /bin/mailx
+> +# or
+> +# /bin/mailx -> /bin/mail
+> +##################################################################
+> +     RC2=$(awk '/^>N/ {print match($9 $10, "Returnedmail:")}' \
+> +             $LTPTMP/tst_mail.res)
+> +     RC3=$(awk '/^>N/ {print match($9 $10, "UndeliveredMail")}' \
+> +             $LTPTMP/tst_mail.res)
+> +fi
+> +    if [ -z "$RC1" -a -z "$RC2" -a -z "$RC3" ]
+>      then
+>          $LTPBIN/tst_res TFAIL $LTPTMP/tst_mail.res \
+> -        "Test #3: No new mail for root. Reason:"
+> +        "Test #2: No new mail for root. Reason:"
+>          TFAILCNT=$(( $TFAILCNT+1 ))
+>      else
+> -        if [ $RC1 -ne 0 -a $RC2 -ne 0 ]
+> -        then
+> +        if [ $RC1 -ne 0 -a $RC2 -ne 0 ] || [ $RC1 -ne 0 -a $RC3 -ne 0 ]
+> +	then
+>              $LTPBIN/tst_resm TPASS \
+>                  "Test #3: Mailer-Deamon reported delivery failure"
+>          else
+> @@ -273,7 +270,7 @@ fi
+>              TFAILCNT=$(( $TFAILCNT+1 ))
+>          fi
+>      fi
+> -fi
+> +
+>  else
+>      $LTPBIN/tst_resm TCONF "mail command not installed"
+>  fi
 
- int
- main(void) {
-+
-        unsigned long long count1, count2;
-        int fd1, fd2, ret;
-+
-+       /*
-+        * Kernel performance counters weren't available until 2.6.31 --
-+        * http://lwn.net/Articles/311850/
-+        *
-+        * The syscalls don't return -1 // errno == ENOSYS either. Weird.
-+        */
-+       if (tst_kvercmp(2, 6, 31) < 0) {
-+               tst_brkm(TCONF, cleanup,
-+                       "performance_counter support only available in "
-+                       "2.6.31+");
-+       }
-        fd1 = syscall(__NR_perf_counter_open,
-                        PERF_COUNT_INSTRUCTIONS, 0, 0, 0, -1);
-        if (fd1 < 0) {
--               tst_resm(TBROK | TERRNO,
-+               tst_brkm(TBROK | TERRNO, cleanup,
-                        "Failed to create PERF_COUNT_INSTRUCTIONS fd");
--               tst_exit();
-        }
-        fd2 = syscall(__NR_perf_counter_open,
-                        PERF_COUNT_CACHE_MISSES, 0, 0, 0, -1);
-        if (fd2 < 0) {
--               tst_resm(TBROK | TERRNO,
-+               tst_brkm(TBROK | TERRNO, cleanup,
-                        "Failed to create PERF_COUNT_CACHE_MISSES fd");
--               tst_exit();
-        }
-
--       for (;;) {
-+       do {
-+
-                ret = read(fd1, &count1, sizeof(count1));
--               assert(ret == 8);
--               ret = read(fd2, &count2, sizeof(count2));
--               assert(ret == 8);
--               printf("counter1 value: %Ld instructions\n", count1);
--               printf("counter2 value: %Ld cachemisses\n",  count2);
--               sleep(1);
--       }
--       return 0;
-+
-+               if (ret == sizeof(count1)) {
-+
-+                       ret = read(fd2, &count2, sizeof(count2));
-+
-+                       if (ret == sizeof(count2)) {
-+                               tst_resm(TINFO,
-+                                       "counter1 value: %Ld instructions",
-+                                       count1);
-+                               tst_resm(TINFO,
-+                                       "counter2 value: %Ld cachemisses",
-+                                       count2);
-+                               sleep(1);
-+                       }
-+
-+               }
-+
-+       } while (ret == sizeof(unsigned long long));
-+
-+       tst_exit();
-+
- }
-
-Index: ./performance_counters/performance_counter02.c
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/performance_counters/performance_counter02.c,v
-retrieving revision 1.4
-diff -u -r1.4 performance_counter02.c
---- ./performance_counters/performance_counter02.c      27 Nov 2009
-08:15:35 -0000      1.4
-+++ ./performance_counters/performance_counter02.c      27 Nov 2009
-08:31:33 -0000
-@@ -154,6 +154,18 @@
-        int verbose = 0;
-        double ratio;
-
-+       /*
-+        * Kernel performance counters weren't available until 2.6.31 --
-+        * http://lwn.net/Articles/311850/
-+        *
-+        * The syscalls don't return -1 // errno == ENOSYS either. Weird.
-+        */
-+       if (tst_kvercmp(2, 6, 31) < 0) {
-+               tst_brkm(TCONF, cleanup,
-+                       "performance_counter support only available in "
-+                       "2.6.31+");
-+       }
-+
-        nhw = 8;
-        while ((i = getopt(ac, av, "c:v")) != -1) {
-                switch (i) {
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
