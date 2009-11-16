@@ -1,26 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <rdunlap@xenotime.net>) id 1N7ErQ-0001Nt-EW
-	for ltp-list@lists.sourceforge.net; Sun, 08 Nov 2009 20:59:44 +0000
-Received: from xenotime.net ([72.52.64.118])
-	by 72vjzd1.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1N7ErL-000688-TQ
-	for ltp-list@lists.sourceforge.net; Sun, 08 Nov 2009 20:59:44 +0000
-Received: from chimera.site ([96.253.169.185]) by xenotime.net for
-	<ltp-list@lists.sourceforge.net>; Sun, 8 Nov 2009 11:49:21 -0800
-Date: Sun, 8 Nov 2009 11:49:20 -0800
-From: Randy Dunlap <rdunlap@xenotime.net>
-Message-Id: <20091108114920.68ede189.rdunlap@xenotime.net>
-In-Reply-To: <364299f40911081117x47ddffbfl96eeec547b5c95e5@mail.gmail.com>
-References: <1257167821.4977.41.camel@subratamodak.linux.ibm.com>
-	<364299f40911061728g37c0cd6ble40974b0fe5b5597@mail.gmail.com>
-	<20091108095019.184998b2.rdunlap@xenotime.net>
-	<200911081313.25577.vapier@gentoo.org>
-	<364299f40911081117x47ddffbfl96eeec547b5c95e5@mail.gmail.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [patch 2/2] INSTALL corrections & TODO
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <peppe.cavallaro@st.com>) id 1NA30w-0002XM-5s
+	for ltp-list@lists.sourceforge.net; Mon, 16 Nov 2009 14:57:10 +0000
+Received: from eu1sys200aog114.obsmtp.com ([207.126.144.137])
+	by 29vjzd1.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NA30p-0001Rr-LU
+	for ltp-list@lists.sourceforge.net; Mon, 16 Nov 2009 14:57:10 +0000
+Message-ID: <4B01682C.8040708@st.com>
+Date: Mon, 16 Nov 2009 15:56:44 +0100
+From: Giuseppe CAVALLARO <peppe.cavallaro@st.com>
+MIME-Version: 1.0
+References: <4AF3D509.3060408@st.com> <4AF41677.8030408@linux.vnet.ibm.com>	
+	<4AF41D01.207@st.com> <4AF42CBC.6000204@linux.vnet.ibm.com>
+	<1257788343.7677.63.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1257788343.7677.63.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [PATCH] add iterations option in gtod_latency.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,94 +26,133 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Andi Kleen <andi@firstfloor.org>, Mike Frysinger <vapier@gentoo.org>, ltp-list <ltp-list@lists.sf.net>
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net
 
-On Sun, 8 Nov 2009 11:17:44 -0800 Garrett Cooper wrote:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> On Sun, Nov 8, 2009 at 10:13 AM, Mike Frysinger <vapier@gentoo.org> wrote:
-> > On Sunday 08 November 2009 12:50:19 Randy Dunlap wrote:
-> >> On Fri, 6 Nov 2009 17:28:42 -0800 Garrett Cooper wrote:
-> >> > On Fri, Nov 6, 2009 at 4:03 PM, Randy Dunlap wrote:
-> >> > > "Configuration" section to match Makefile message.
-> >> > > How to use DESTDIR and --prefix together.
-> >> > >
-> >> > > TODO:
-> >> > > "Quick Start" does not work.
-> >> > > "Not using autoconf:" does not work.
-> >> > >
-> >> > > ---
-> >> > > =A0INSTALL | =A0 =A09 ++++++++-
-> >> > > =A01 file changed, 8 insertions(+), 1 deletion(-)
-> >> > >
-> >> > > --- ltp-full-20091031-auto.orig/INSTALL
-> >> > > +++ ltp-full-20091031-auto/INSTALL
-> >> > > @@ -29,7 +29,7 @@ downloaded from:
-> >> > > =A0- http://ftp.gnu.org/gnu/m4/m4-1.4.7.tar.bz2
-> >> > > =A0- http://ftp.gnu.org/gnu/m4/m4-1.4.7.tar.gz
-> >> > >
-> >> > > -Configuring
-> >> > > +Configuration
-> >> > > =A0-------------------
-> >> > > =A0Using autoconf:
-> >> > > =A0 =A0 =A0 =A0 $ make autotools # This must be run from "$TOP_SRC=
-DIR!"
-> >> > > @@ -74,6 +74,13 @@ in the same directory where the source f
-> >> > > =A0 sysroot, as opposed to the host system's sysroot.
-> >> > > =A0- Specify SKIP_IDCHECK=3D1 if and when you don't want to modify
-> >> > > /etc/{group,passwd} on the target system's sysroot.
-> >> > > +- If you want to build and install ltp inside its source tree (e.=
-g.,
-> >> > > in + =A0$TOP_SRCDIR/ltpbin/), to support multiple versions of LTP =
-on one
-> >> > > system, + =A0then use
-> >> > > +
-> >> > > + =A0 =A0 =A0 $ cd $TOP_SRCDIR
-> >> > > + =A0 =A0 =A0 $ mkdir ltpbin
-> >> > > + =A0 =A0 =A0 $ ./configure DESTDIR=3D$PWD --prefix=3D$PWD/ltpbin
-> >> > >
-> >> > > =A0If you get a build error, please report it to ltp-list@lists.sf=
-.net
-> >> > > with following information,
-> >> >
-> >> > My only question about this is this step above a frequently used use=
-case?
-> >>
-> >> I can't answer that. =A0It seems like a good idea to be able to have
-> >> multiple versions of ltp installed and it took me a little while to
-> >> figure out how to use both DESTDIR and --prefix, so I'd like a referen=
-ce
-> >> for it...
-> >
-> > --prefix and DESTDIR under LTP should work exactly the same as under any
-> > autotooled package. =A0passing DESTDIR to configure doesnt make sense i=
-mo, nor
-> > does this example. =A0this example suggests a file tree of:
-> > $PWD/$PWD/ltpbin/.....
-> =
+Hi Subrata,
 
-> 1. DESTDIR doesn't get saved with configure today (and quite frankly
-> won't work).
-> 2. --prefix alone will do the trick (unless you're exporting this via
-> NFS at $(DESTDIR) or chrooting the path).
+Subrata Modak wrote:
+> On Fri, 2009-11-06 at 19:33 +0530, gowrishankar wrote: 
+>> Giuseppe CAVALLARO wrote:
+>>> gowrishankar wrote:
+>>>> Giuseppe CAVALLARO wrote:
+>>>>> Regards,
+>>>>> Peppe
+>>>>>
+>>>> Can you please add freeing resources at the end of main.
+>>>>
+>>>>         stats_container_free(&dat);
+>>>>         stats_container_free(&hist);
+>>>>         stats_quantiles_free(&quantiles);
+>>>>
+>>>> Also, you could set MIN_ITERATION to 10000 instead of hard coding inside
+>>>> main.
+>>>> Just a suggestion.
+>>> patch reattached!
+> 
+> Thanks. But it fails to apply:
+> 
+> patching file testcases/realtime/func/gtod_latency/gtod_latency.c
+> Hunk #1 succeeded at 57 (offset 1 line).
+> Hunk #3 succeeded at 197 (offset 1 line).
+> Hunk #5 FAILED at 230.
+> Hunk #6 succeeded at 285 (offset 2 lines).
+> Hunk #8 succeeded at 303 with fuzz 2 (offset 2 lines).
+> Hunk #9 succeeded at 313 (offset 1 line).
+> Hunk #10 succeeded at 337 (offset 2 lines).
 
+you are right, the ltp-full-20090731-gtod_latency_iterations.patch has
+to be applied patch after the two patches below:
 
-whatever.  I sent a patch for what worked for me.
+- - ltp-full-20090731-SH-atomic_add.patch
+- - ltp-full-20090731-tsc_splitted.patch
 
-thanks.
----
-~Randy
+Peppe
 
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+>>> Peppe
+>>>
+>> Patch looks neat!
+>>
+>> I just recollected now that I had sent more or less same patch
+>> very long back, but maintainer missed it some how.
+>>
+>> http://www.opensource-archive.org/showthread.php?t=82487
+>>
+>> Subrata ?? :)
+> 
+> I apolozise to have missed to see your patches. It is rare that i miss
+> any patches. But, i can see that some other patch changing the same file
+> was ack-ed by you. You could have reminded me during that time that it
+> does not include changes sent by you:
+> 
+> http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/realtime/func/gtod_latency/gtod_latency.c?view=log,
+> 
+> Revision 1.10 - (view) (download) (annotate) - [select for diffs] 
+> Mon Aug 3 10:37:50 2009 UTC (3 months ago) by subrata_modak 
+> Branch: MAIN 
+> Changes since 1.9: +4 -2 lines 
+> Diff to previous 1.9 
+> This set of 3 patches adds a new API stats_container_append to libstats. This function adds new stats_record_t to the record list in stats_container_t. It also replaces the occurrences of data->size with data->index and modifies the test-cases to call the append function. Changelog
+> ---------
+> - Added index to stats_container_t struct
+> - Added Append function to add new stats_record_t to records list of stats_container_t
+> - Replaced the occurrences of data->size by data->index in libstats.c
+> - Modified the realtime testcases to include call to the append function.
+> [PATCH 3/3] libstats: Modify testcases to call the append function: This patch modifies the testcases to call the stats_container_append function.
+> Signed-off-by: Kiran Prakash <kiran@linux.vnet.ibm.com>,
+> Acked-by: Gowrishankar <gowrishankar.m@in.ibm.com>,
+> Acked-by: Darren Hart <dvhltc@us.ibm.com>,
+> Acked-by: Sripathi Kodi <sripathik@in.ibm.com>,
+> 
+> Regards--
+> Subrata
+> 
+>> Thanks,
+>> Gowri
+>>
+>>
+>>
+>>>> Thanks,
+>>>> Gowri
+>>>>
+>>>>> ------------------------------------------------------------------------
+>>>>>
+>>>>> ------------------------------------------------------------------------------
+>>>>>
+>>>>> Let Crystal Reports handle the reporting - Free Crystal Reports 2008
+>>>>> 30-Day trial. Simplify your report design, integration and deployment
+>>>>> - and focus on what you do best, core application coding. Discover
+>>>>> what's new with
+>>>>> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+>>>>>
+>>>>>
+>>>>> ------------------------------------------------------------------------
+>>>>>
+>>>>> _______________________________________________
+>>>>> Ltp-list mailing list
+>>>>> Ltp-list@lists.sourceforge.net
+>>>>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+> 
 
-trial. Simplify your report design, integration and deployment - and focus =
-on =
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
+iEYEARECAAYFAksBaCwACgkQ2Xo3j31MSSLMswCff+LA4xYE/h9b37cMRCcjz1J2
+J2wAnjwGwpggk4+H58l3/XZ5e0gQRvb4
+=ZOT0
+-----END PGP SIGNATURE-----
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
