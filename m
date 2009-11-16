@@ -1,26 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1N6ZXU-0003gT-Bb
-	for ltp-list@lists.sourceforge.net; Sat, 07 Nov 2009 00:52:24 +0000
-Received: from mail-pz0-f188.google.com ([209.85.222.188])
-	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N6ZXS-0007bK-5p
-	for ltp-list@lists.sourceforge.net; Sat, 07 Nov 2009 00:52:24 +0000
-Received: by pzk26 with SMTP id 26so1028580pzk.4
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 06 Nov 2009 16:52:16 -0800 (PST)
+	(envelope-from <liubo2009@cn.fujitsu.com>) id 1N9yKE-00038F-Oe
+	for ltp-list@lists.sourceforge.net; Mon, 16 Nov 2009 09:56:46 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1N9yK5-0004TA-LQ
+	for ltp-list@lists.sourceforge.net; Mon, 16 Nov 2009 09:56:44 +0000
+Message-ID: <4B0112EC.9020202@cn.fujitsu.com>
+Date: Mon, 16 Nov 2009 16:53:00 +0800
+From: liubo <liubo2009@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <200911061923.09848.vapier@gentoo.org>
-References: <20091106095745.GA25377@basil.fritz.box>
-	<200911061809.05115.vapier@gentoo.org>
-	<20091106233422.GB6619@count0.beaverton.ibm.com>
-	<200911061923.09848.vapier@gentoo.org>
-Date: Fri, 6 Nov 2009 16:52:16 -0800
-Message-ID: <364299f40911061652l5cf3ac19h696152cdfebb547d@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] LTP 20091031 Makefiles totally broken?!?
+References: <4AF93496.3030408@cn.fujitsu.com>	
+	<200911102333.55526.vapier@gentoo.org>
+	<4AFA45B0.7070608@cn.fujitsu.com>
+	<1258359225.5677.35.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1258359225.5677.35.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [PATCH] syscalls: fix some failure on arch X86_64
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,86 +27,276 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============7052523628282262022=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list <ltp-list@lists.sf.net>, Mike Frysinger <vapier@gentoo.org>
 
-On Fri, Nov 6, 2009 at 4:23 PM, Mike Frysinger <vapier@gentoo.org> wrote:
-> On Friday 06 November 2009 18:34:22 Matt Helsley wrote:
->> On Fri, Nov 06, 2009 at 06:09:04PM -0500, Mike Frysinger wrote:
->> > On Friday 06 November 2009 18:02:31 Matt Helsley wrote:
->> > > On Fri, Nov 06, 2009 at 03:09:02PM -0400, Mike Frysinger wrote:
->> > > > also, i thought we were going to rename the top level Makefile to
->> > > > GNUmakefile and add a dummy Makefile that just spat out "sorry, ltp
->> > > > requires GNU make".
->> > >
->> > > Bleh. Can't we just check the output of $(MAKE) --version rather than
->> > > assume other makes use "Makefile"?
->> >
->> > the assumption is that only GNU make parses "GNUmakefile". =A0i think
->> > that's a pretty safe assumption.
+This is a multi-part message in MIME format.
+--===============7052523628282262022==
+Content-Type: multipart/alternative;
+	boundary="------------030806030209040307070500"
+
+This is a multi-part message in MIME format.
+--------------030806030209040307070500
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+Hi, Subrata,
+On 11/16/2009 04:13 PM, Subrata Modak wrote:
+> Liubo,
+>
+> Are you sending an updated patch post this discussion ?
+>
+>   
+Yes, I'll resend a updated patch about these rt_sigs.
+
+Regards--
+Liubo
+
+> Regards--
+> Subrata
+>
+> On Wed, 2009-11-11 at 13:03 +0800, Wei Yongjun wrote: 
+>   
+>> Mike Frysinger wrote:
+>>     
+>>> On Tuesday 10 November 2009 04:38:30 liubo wrote:
+>>>   
+>>>       
+>>>> 1) rt_sigaction
+>>>>     "sigaction" has the structure:
+>>>>
+>>>>  struct sigaction {
+>>>>          __sighandler_t sa_handler;
+>>>>          unsigned long sa_flags;
+>>>>   #ifdef SA_RESTORER
+>>>>           __sigrestore_t sa_restorer;
+>>>>   #endif
+>>>>           sigset_t sa_mask;               /* mask last for extensibility */
+>>>>  };
+>>>>
+>>>>     However, on arch x86_64, if we directly get to call rt_sigaction,
+>>>> the argument "sa_restorer" will not be fulfilled, and this will lead
+>>>>  to segment fault.
+>>>>     on arch x86_64, if sa_restorer is not set, kernel will lead to segment
+>>>>  fault. In other arch, if sa_restorer is not set, kernel can do the correct
+>>>>  work. To avoid this segment fault, we use glibc function
+>>>> "int sigaction(...);" instead, which can fulfill the argument
+>>>>  "sa_restorer".
+>>>>     
+>>>>         
+>>> which defeats the purpose of the test.  there is no guarantee that the C 
+>>> library sigaction function is implemented via the __NR_rt_sigaction syscall.
+>>>   
+>>>       
+>> In x86_64, it do this. And If we want to use __NR_rt_sigaction syscall
+>> directly, we must fill the sa_restorer and set the RESTORER flag to
+>> sa_mask. If we do not set the sa_restorer, kill will always cause
+>> segment fault.
 >>
->> Right, but GNU Make also parses Makefile.
+>>     
+>>>   
+>>>       
+>>>> 2) rt_sigprocmask
+>>>>     This failure contains two aspects,
+>>>> the first is the segment fault as described in 1),
+>>>> the second is that testcase uses a unknown signal 33 for test,
+>>>> and this will lead sigaction cannot bind signal 33 to the action.
+>>>>
+>>>>     So, we attempt to use a known signal instead, such as 34.
+>>>>     
+>>>>         
+>>> which is just as bogus and unportable.  if the test needs a real time signal, 
+>>> it should leverage the sigrtmin...sigrtmax defines.
+>>> -mike
+>>>   
+>>> ------------------------------------------------------------------------
+>>>
+>>> ------------------------------------------------------------------------------
+>>> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+>>> trial. Simplify your report design, integration and deployment - and focus on 
+>>> what you do best, core application coding. Discover what's new with
+>>> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+>>> ------------------------------------------------------------------------
+>>>
+>>> _______________________________________________
+>>> Ltp-list mailing list
+>>> Ltp-list@lists.sourceforge.net
+>>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>>   
+>>>       
+>> ------------------------------------------------------------------------------
+>> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+>> trial. Simplify your report design, integration and deployment - and focus on 
+>> what you do best, core application coding. Discover what's new with
+>> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+>> _______________________________________________
+>> Ltp-list mailing list
+>> Ltp-list@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>     
 >
-> not if a GNUmakefile exists in the same dir, or the user forces the issue=
- via
-> the -f flag
 >
->> If some poor bastard runs:
->>
->> make -f Makefile
->>
->> where GNU Make is "make" they may be further confused. Seems like it's
->> better to check what's actually running ($(MAKE)) or will run
->> (like `which make` in configure) than rely on a filename hack like this.
 >
-> said poor bastard should be smacked :p. =A0checking the value of $(MAKE) =
-wont
-> work as it could be an arbitrary number of things which could all be valid
-> values under GNU make. =A0configure checks wont matter because it's the u=
-ser who
-> runs `make` or `gmake` or `make-some-noise`. =A0requiring `make` to be GN=
-U make
-> in configure when the user can easily run `gmake` at make time is pointle=
-ss
-> user interference.
->
-> using a different filename on the other hand is exactly what GNU make has
-> designed in from the get go specifically for this purpose -- when GNU mak=
-e is
-> required. =A0if you honestly think people are doing something pointless l=
-ike
-> `make -f Makefile`, then it's trivial to add a check to it to (1) check
-> $(MAKE) --version and include GNUmakefile or (2) $(error out). =A0no poin=
-t in
-> forcing the shell/etc... overhead in the default build for the majority of
-> users.
+>   
 
-No, but you can do something like:
 
-ifdef MAKE_SANITY_CHECK
-export MAKE_SANITY_CHECK =3D 1
-ifneq ($(lastword $(sort 3.80 $(MAKE_VERSION))),$(MAKE_VERSION))
-$(error Upgrade your junk..)
-endif
-endif
+--------------030806030209040307070500
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-that way it only executes this once.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="Content-Type">
+</head>
+<body bgcolor="#ffffff" text="#000000">
+Hi, Subrata,<br>
+On 11/16/2009 04:13 PM, Subrata Modak wrote:
+<blockquote
+ cite="mid:1258359225.5677.35.camel@subratamodak.linux.ibm.com"
+ type="cite">
+  <pre wrap="">Liubo,
 
--Garrett
+Are you sending an updated patch post this discussion ?
 
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+  </pre>
+</blockquote>
+Yes, I'll resend a updated patch about these rt_sigs.<br>
+<br>
+Regards--<br>
+Liubo<br>
+<br>
+<blockquote
+ cite="mid:1258359225.5677.35.camel@subratamodak.linux.ibm.com"
+ type="cite">
+  <pre wrap="">Regards--
+Subrata
 
-trial. Simplify your report design, integration and deployment - and focus =
-on =
+On Wed, 2009-11-11 at 13:03 +0800, Wei Yongjun wrote: 
+  </pre>
+  <blockquote type="cite">
+    <pre wrap="">Mike Frysinger wrote:
+    </pre>
+    <blockquote type="cite">
+      <pre wrap="">On Tuesday 10 November 2009 04:38:30 liubo wrote:
+  
+      </pre>
+      <blockquote type="cite">
+        <pre wrap="">1) rt_sigaction
+    "sigaction" has the structure:
 
+ struct sigaction {
+         __sighandler_t sa_handler;
+         unsigned long sa_flags;
+  #ifdef SA_RESTORER
+          __sigrestore_t sa_restorer;
+  #endif
+          sigset_t sa_mask;               /* mask last for extensibility */
+ };
+
+    However, on arch x86_64, if we directly get to call rt_sigaction,
+the argument "sa_restorer" will not be fulfilled, and this will lead
+ to segment fault.
+    on arch x86_64, if sa_restorer is not set, kernel will lead to segment
+ fault. In other arch, if sa_restorer is not set, kernel can do the correct
+ work. To avoid this segment fault, we use glibc function
+"int sigaction(...);" instead, which can fulfill the argument
+ "sa_restorer".
+    
+        </pre>
+      </blockquote>
+      <pre wrap="">which defeats the purpose of the test.  there is no guarantee that the C 
+library sigaction function is implemented via the __NR_rt_sigaction syscall.
+  
+      </pre>
+    </blockquote>
+    <pre wrap="">In x86_64, it do this. And If we want to use __NR_rt_sigaction syscall
+directly, we must fill the sa_restorer and set the RESTORER flag to
+sa_mask. If we do not set the sa_restorer, kill will always cause
+segment fault.
+
+    </pre>
+    <blockquote type="cite">
+      <pre wrap="">  
+      </pre>
+      <blockquote type="cite">
+        <pre wrap="">2) rt_sigprocmask
+    This failure contains two aspects,
+the first is the segment fault as described in 1),
+the second is that testcase uses a unknown signal 33 for test,
+and this will lead sigaction cannot bind signal 33 to the action.
+
+    So, we attempt to use a known signal instead, such as 34.
+    
+        </pre>
+      </blockquote>
+      <pre wrap="">which is just as bogus and unportable.  if the test needs a real time signal, 
+it should leverage the sigrtmin...sigrtmax defines.
+-mike
+  
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with
+Crystal Reports now.  <a class="moz-txt-link-freetext" href="http://p.sf.net/sfu/bobj-july">http://p.sf.net/sfu/bobj-july</a>
+------------------------------------------------------------------------
+
+_______________________________________________
+Ltp-list mailing list
+<a class="moz-txt-link-abbreviated" href="mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.net</a>
+<a class="moz-txt-link-freetext" href="https://lists.sourceforge.net/lists/listinfo/ltp-list">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
+  
+      </pre>
+    </blockquote>
+    <pre wrap="">------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with
+Crystal Reports now.  <a class="moz-txt-link-freetext" href="http://p.sf.net/sfu/bobj-july">http://p.sf.net/sfu/bobj-july</a>
+_______________________________________________
+Ltp-list mailing list
+<a class="moz-txt-link-abbreviated" href="mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.net</a>
+<a class="moz-txt-link-freetext" href="https://lists.sourceforge.net/lists/listinfo/ltp-list">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
+    </pre>
+  </blockquote>
+  <pre wrap=""><!---->
+
+
+  </pre>
+</blockquote>
+<br>
+</body>
+</html>
+
+--------------030806030209040307070500--
+
+
+--===============7052523628282262022==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============7052523628282262022==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============7052523628282262022==--
+
