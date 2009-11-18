@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1N8uJv-0005uh-Kv
-	for ltp-list@lists.sourceforge.net; Fri, 13 Nov 2009 11:28:03 +0000
-Received: from mail-pw0-f48.google.com ([209.85.160.48])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N8uJn-0004GA-Rb
-	for ltp-list@lists.sourceforge.net; Fri, 13 Nov 2009 11:28:03 +0000
-MIME-Version: 1.0
-In-Reply-To: <200911122247.42705.vapier@gentoo.org>
-References: <1257765429.7677.23.camel@subratamodak.linux.ibm.com>
-	<1257788341.7677.62.camel@subratamodak.linux.ibm.com>
-	<364299f40911121243i2bf72ab5p258fa78989b3df5@mail.gmail.com>
-	<200911122247.42705.vapier@gentoo.org>
-Date: Fri, 13 Nov 2009 03:27:49 -0800
-Message-ID: <364299f40911130327y683631c4uefc9380e9a175432@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Clone build fail with the latest CVS sanpshot
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <radoslav.kolev@rnd.bg>) id 1NAhOI-0002vd-Fa
+	for ltp-list@lists.sourceforge.net; Wed, 18 Nov 2009 10:03:58 +0000
+Received: from delta.superhosting.bg ([91.196.124.9])
+	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NAhOC-0003hj-74
+	for ltp-list@lists.sourceforge.net; Wed, 18 Nov 2009 10:03:58 +0000
+Received: from 87-126-155-98.btc-net.bg ([87.126.155.98] helo=[192.168.51.137])
+	by delta.superhosting.bg with esmtpsa (SSLv3:AES256-SHA:256)
+	(Exim 4.69) (envelope-from <radoslav.kolev@rnd.bg>)
+	id 1NAhO1-00045m-W5
+	for ltp-list@lists.sourceforge.net; Wed, 18 Nov 2009 12:03:43 +0200
+From: Radoslav Kolev <radoslav.kolev@rnd.bg>
+Date: Wed, 18 Nov 2009 12:04:20 +0200
+Message-Id: <1258538660.7556.213.camel@rado-desktop>
+Mime-Version: 1.0
+Subject: [LTP] [PATCH] Network stress tests patches
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,76 +27,73 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-T24gVGh1LCBOb3YgMTIsIDIwMDkgYXQgNzo0NyBQTSwgTWlrZSBGcnlzaW5nZXIgPHZhcGllckBn
-ZW50b28ub3JnPiB3cm90ZToKPiBPbiBUaHVyc2RheSAxMiBOb3ZlbWJlciAyMDA5IDE1OjQzOjIw
-IEdhcnJldHQgQ29vcGVyIHdyb3RlOgo+PiBPbiBNb24sIE5vdiA5LCAyMDA5IGF0IDk6MzkgQU0s
-IFN1YnJhdGEgTW9kYWsgd3JvdGU6Cj4+ID4gT24gTW9uLCAyMDA5LTExLTA5IGF0IDA3OjQ5IC0w
-NTAwLCBNaWtlIEZyeXNpbmdlciB3cm90ZToKPj4gPj4gT24gTW9uZGF5IDA5IE5vdmVtYmVyIDIw
-MDkgMDY6MTc6MDkgU3VicmF0YSBNb2RhayB3cm90ZToKPj4gPj4gPiBJIGdldCB0aGUgZm9sbG93
-aW5nIGZhaWx1cmUgd2l0aCB0b2RhecWbIENWUy4gLi9jb25maWd1cmUgaGFzIGJlZW4gZG9uZQo+
-PiA+PiA+IGJlZm9yZSBtYWtlOgo+PiA+PiA+Cj4+ID4+ID4gZ2NjIC1nIC1PMiAtZyAtTzIgLWZu
-by1zdHJpY3QtYWxpYXNpbmcgLXBpcGUgLVdhbGwKPj4gPj4gPiAtSS9sdHAtaW50ZXJtZWRpYXRl
-LTIwMDkxMTA5L3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZQo+PiA+PiA+IC1JL2x0cC1pbnRlcm1l
-ZGlhdGUtMjAwOTExMDkvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL21xbnMvLi4vbGliY2wK
-Pj4gPj4gPm9uZSAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgLUkuLi8uLi8uLi8uLi9pbmNsdWRlCj4+
-ID4+ID4gwqAtTC9sdHAtaW50ZXJtZWRpYXRlLTIwMDkxMTA5L3Rlc3RjYXNlcy9rZXJuZWwvY29u
-dGFpbmVycy9tcW5zLy4uL2xpYmMKPj4gPj4gPmxvbmUgLUwuLi8uLi8uLi8uLi9saWIgwqBtcW5z
-XzAxLmMgwqAgLWxsdHAgLWxjbG9uZSAtbHB0aHJlYWQgLWxydCAtbwo+PiA+PiA+IG1xbnNfMDEK
-Pj4gPj4gPiAvbHRwLWludGVybWVkaWF0ZS0yMDA5MTEwOS90ZXN0Y2FzZXMva2VybmVsL2NvbnRh
-aW5lcnMvbXFucy8uLi9saWJjbG9uCj4+ID4+ID5lL2xpIGJjbG9uZS5hKGxpYmNsb25lLm8pOiBJ
-biBmdW5jdGlvbiBgZG9fY2xvbmVfdGVzdHMnOgo+PiA+PiA+IMKgL2x0cC1pbnRlcm1lZGlhdGUt
-MjAwOTExMDkvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL2xpYmNsb25lL2xpYmNsCj4+ID4+
-ID5vbmUuYwo+PiA+PiA+Cj4+ID4+ID4gOjI1OiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBsdHBf
-Y2xvbmVfcXVpY2snIGNvbGxlY3QyOiBsZCByZXR1cm5lZCAxCj4+ID4+ID4gOiBleGl0IHN0YXR1
-cwo+PiA+Pgo+PiA+PiBzaG91bGQgYmUgZml4ZWQgbm93LiDCoHN0YXRpYyBsaWIgbGlua2luZyBv
-cmRlciBpcyBwaWNreS4KPj4gPgo+PiA+IFRoYW5rcyBNaWtlLiBidWlsZGluZyBmaW5lIG5vdy4K
-Pj4KPj4gV2hlbiB5b3Ugc3dpdGNoIHRoYXQgYmFjayB0aG91Z2gsIGl0IGZhaWxzIHRvIGNvbXBp
-bGUgb24gR2VudG9vLiBIZW5jZQo+PiB0aGF0J3Mgd2h5IEkgZGlkIGAtbGNsb25lICQoTERMSUJT
-KSAtbHB0aHJlYWQgLWxydCcuCj4KPiBodWggPyDCoGkgdGVzdCBldmVyeXRoaW5nIG9uIGdlbnRv
-bywgYW5kIHRoaXMgaGFzIGJlZW4gd29ya2luZyBmb3IgbWUuIMKgaWYgbHRwCj4gcmVxdWlyZXMg
-cHRocmVhZC9ydCwgdGhhdCBzaG91bGQgYmUgZml4ZWQgaW4gY29tbW9uIGNvZGUuIMKgdGhlIGlz
-c3VlIGhlcmUgaXMKPiB0aGF0IGxpYmNsb25lIG5lZWRzIGxpYmx0cCBzeW1ib2xzLCBhbmQgdGhh
-dCdzIGl0Lgo+Cj4+IFNvbWUgYXV0b2NvbmYgdGVzdHMgbmVlZCB0byBiZSBjcmVhdGVkIHRvIGRl
-dGVjdCBicm9rZW4gbGlua2VycyBsaWtlCj4+IHRoaXMgYmVjYXVzZSBpdCdzIHJlYWxseSBhbm5v
-eWluZyBkb2luZyB0aGlzIHR1Zy1vZi13YXIgd2l0aCB0aGUKPj4gbGlicmFyeSBvcmRlcmluZy4u
-Lgo+Cj4gaSBkb250IHRoaW5rIHNvIC4uLiBzdGFydCBieSBwb3N0aW5nIHRoZSBhY3R1YWwgZXJy
-b3IgbWVzc2FnZXMgeW91J3JlIHNlZWluZy4KPiAtbWlrZQo+CgpnY29vcGVyQG9yYW5nZWJveCAv
-c2NyYXRjaC9sdHAtZGV2Mi9sdHAvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzICQgbWFrZSBh
-bGwKbWFrZVsxXTogRW50ZXJpbmcgZGlyZWN0b3J5CmAvc2NyYXRjaC9sdHAtZGV2Mi9sdHAvdGVz
-dGNhc2VzL2tlcm5lbC9jb250YWluZXJzL21xbnMnCmdjYyAtZyAtTzIgLWcgLU8yIC1mbm8tc3Ry
-aWN0LWFsaWFzaW5nIC1waXBlIC1XYWxsCi1JL3NjcmF0Y2gvbHRwLWRldjIvbHRwL3Rlc3RjYXNl
-cy9rZXJuZWwvaW5jbHVkZQotSS9zY3JhdGNoL2x0cC1kZXYyL2x0cC90ZXN0Y2FzZXMva2VybmVs
-L2NvbnRhaW5lcnMvbXFucy8uLi9saWJjbG9uZQotSS4uLy4uLy4uLy4uL2luY2x1ZGUgLUkuLi8u
-Li8uLi8uLi9pbmNsdWRlCi1ML3NjcmF0Y2gvbHRwLWRldjIvbHRwL3Rlc3RjYXNlcy9rZXJuZWwv
-Y29udGFpbmVycy9tcW5zLy4uL2xpYmNsb25lCi1MLi4vLi4vLi4vLi4vbGliICBtcW5zXzAxLmMg
-ICAtbGx0cCAtbyBtcW5zXzAxCi90bXAvY2NnSWphNnIubzogSW4gZnVuY3Rpb24gYG1xX29wZW4n
-OgovdXNyL2luY2x1ZGUvYml0cy9tcXVldWUyLmg6NDk6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8g
-YG1xX29wZW4nCi90bXAvY2NnSWphNnIubzogSW4gZnVuY3Rpb24gYG1haW4nOgovc2NyYXRjaC9s
-dHAtZGV2Mi9sdHAvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL21xbnMvbXFuc18wMS5jOjk4
-Ogp1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBkb19jbG9uZV91bnNoYXJlX3Rlc3QnCi9zY3JhdGNo
-L2x0cC1kZXYyL2x0cC90ZXN0Y2FzZXMva2VybmVsL2NvbnRhaW5lcnMvbXFucy9tcW5zXzAxLmM6
-MTIzOgp1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBtcV9jbG9zZScKL3NjcmF0Y2gvbHRwLWRldjIv
-bHRwL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9tcW5zL21xbnNfMDEuYzoxMjQ6CnVuZGVm
-aW5lZCByZWZlcmVuY2UgdG8gYG1xX3VubGluaycKL3RtcC9jY2dJamE2ci5vOiBJbiBmdW5jdGlv
-biBgbXFfb3Blbic6Ci91c3IvaW5jbHVkZS9iaXRzL21xdWV1ZTIuaDo0OTogdW5kZWZpbmVkIHJl
-ZmVyZW5jZSB0byBgbXFfb3BlbicKL3RtcC9jY2dJamE2ci5vOiBJbiBmdW5jdGlvbiBgY2hlY2tf
-bXF1ZXVlJzoKL3NjcmF0Y2gvbHRwLWRldjIvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVy
-cy9tcW5zL21xbnNfMDEuYzo2NToKdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgbXFfY2xvc2UnCmNv
-bGxlY3QyOiBsZCByZXR1cm5lZCAxIGV4aXQgc3RhdHVzCm1ha2VbMV06ICoqKiBbbXFuc18wMV0g
-RXJyb3IgMQptYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9yeQpgL3NjcmF0Y2gvbHRwLWRldjIvbHRw
-L3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy9tcW5zJwptYWtlOiAqKiogW2FsbF0gRXJyb3Ig
-MgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxldCBDcnlzdGFsIFJlcG9ydHMgaGFuZGxlIHRoZSBy
-ZXBvcnRpbmcgLSBGcmVlIENyeXN0YWwgUmVwb3J0cyAyMDA4IDMwLURheSAKdHJpYWwuIFNpbXBs
-aWZ5IHlvdXIgcmVwb3J0IGRlc2lnbiwgaW50ZWdyYXRpb24gYW5kIGRlcGxveW1lbnQgLSBhbmQg
-Zm9jdXMgb24gCndoYXQgeW91IGRvIGJlc3QsIGNvcmUgYXBwbGljYXRpb24gY29kaW5nLiBEaXNj
-b3ZlciB3aGF0J3MgbmV3IHdpdGgKQ3J5c3RhbCBSZXBvcnRzIG5vdy4gIGh0dHA6Ly9wLnNmLm5l
-dC9zZnUvYm9iai1qdWx5Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5u
-ZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+Hello guys,
+
+I have run into some problems with the network stress tests. I submitted
+a bug through the sourceforge bug tracker, but after subscribing to the
+mailing list I can see that it's here where all the action is. If this
+is not the right place, then please tell me what is the preferred way to
+submit bug reports and patches.
+
+I am using ltp-full-20091031. 
+
+A lot of the TCP tests involving packet loss fail with this error:
+
+./tcp4-uni-basic01: line 394: netem_param: unbound variable
+
+The reason is that strict checking for undefined variables is enabled
+with "set -u", but the variable netem_param is not always defined before
+testing its contents.
+
+The fix I have applied is to initialize the netem_param variable with an
+empty string. 
+
+Also if4-addr-change always fails with this error:
+
+TBROK  :  Failed to set an IPv4 address at the remote host
+
+I have found the reason to be a missing semicolon. 
+
+Best regards,
+Radoslav Kolev
+
+--- ltp-full-20091031.orig/testcases/network/stress/tcp/uni-basic/tcp4-uni-basic01	2009-11-18 11:41:02.000000000 +0200
++++ ltp-full-20091031/testcases/network/stress/tcp/uni-basic/tcp4-uni-basic01	2009-11-18 11:44:37.000000000 +0200
+@@ -379,6 +379,7 @@
+     esac
+ 
+     # Make the network delay
++    netem_param=""
+     if $DO_NET_DELAY ; then
+ 	netem_param="delay ${NET_DELAY}ms ${NET_DELAY_DEFL}ms distribution normal"
+ 	ret=`$LTP_RSH $RHOST 'PATH=/sbin:/usr/sbin:$PATH tc' qdisc add dev $rhost_ifname root netem $netem_param' ; echo $?'`
+
+
+--- ltp-full-20091031.orig/testcases/network/stress/interface/if4-addr-change	2009-11-18 11:41:02.000000000 +0200
++++ ltp-full-20091031/testcases/network/stress/interface/if4-addr-change	2009-11-18 11:56:23.000000000 +0200
+@@ -70,7 +70,7 @@
+ LINK_NUM=0
+ 
+ # Network portion of the IPv4 address
+-IPV4_NETWORK=${IPV4_NETWORK-"10.0.0"}
++IPV4_NETWORK=${IPV4_NETWORK:-"10.0.0"}
+ 
+ # Netmask of for the tested network
+ IPV4_NETMASK="255.255.255.0"
+
+
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
