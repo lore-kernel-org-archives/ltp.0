@@ -1,30 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1N6VNI-0008Et-Sf
-	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 20:25:36 +0000
-Received: from mail-pw0-f43.google.com ([209.85.160.43])
-	by 1b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N6VNB-0001PU-4F
-	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 20:25:36 +0000
-Received: by pwi18 with SMTP id 18so875594pwi.2
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 06 Nov 2009 12:25:23 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20091106195940.GH819@basil.fritz.box>
-References: <20091106095745.GA25377@basil.fritz.box>
-	<200911060616.40305.vapier@gentoo.org>
-	<20091106130906.GW31511@one.firstfloor.org>
-	<200911060821.40182.vapier@gentoo.org>
-	<364299f40911061004mbb02ed3lf02a33164890625a@mail.gmail.com>
-	<20091106191343.GC819@basil.fritz.box>
-	<20091106194335.GB32249@refried.org>
-	<20091106195940.GH819@basil.fritz.box>
-Date: Fri, 6 Nov 2009 12:25:23 -0800
-Message-ID: <364299f40911061225k2e359ae0w4466a571261e96e@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] LTP 20091031 Makefiles totally broken?!?
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NBASo-0005pb-4G
+	for ltp-list@lists.sourceforge.net; Thu, 19 Nov 2009 17:06:34 +0000
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
+	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NBASg-00006P-SS
+	for ltp-list@lists.sourceforge.net; Thu, 19 Nov 2009 17:06:34 +0000
+Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
+	by e4.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nAJGvuLm018327
+	for <ltp-list@lists.sourceforge.net>; Thu, 19 Nov 2009 11:57:56 -0500
+Received: from d03av05.boulder.ibm.com (d03av05.boulder.ibm.com [9.17.195.85])
+	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	nAJH6K4I121350
+	for <ltp-list@lists.sourceforge.net>; Thu, 19 Nov 2009 12:06:20 -0500
+Received: from d03av05.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av05.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id nAJH6FH6007636
+	for <ltp-list@lists.sourceforge.net>; Thu, 19 Nov 2009 10:06:16 -0700
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4B02107B.10604@cn.fujitsu.com>
+References: <4B02107B.10604@cn.fujitsu.com>
+Date: Thu, 19 Nov 2009 22:36:11 +0530
+Message-Id: <1258650371.4904.3.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] mem/hugeshmget: fix failure of hugeshmget01
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,62 +36,73 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Andi Kleen <andi@firstfloor.org>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>, Nate Straz <nate@refried.org>
+To: liubo <liubo2009@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Fri, Nov 6, 2009 at 11:59 AM, Andi Kleen <andi@firstfloor.org> wrote:
-> On Fri, Nov 06, 2009 at 02:43:35PM -0500, Nate Straz wrote:
->> On Nov =A06 20:13, Andi Kleen wrote:
->> > > So yes, there are known issues with using make versions <3.81. The
->> >
->> > For me it seems more the known issue is in the Makefile. 3.80
->> > is a widely used Make version.
->> >
->> > > reason being that some macros and functions that I use to determine
->> > > absolute path, etc were not available in make 3.80.
->> >
->> > Most of my infrastructure in test systems is based on SUSE 10.0
->> > and it's impractical to upgrade make everywhere.
->>
->> openSUSE 10.3 does include make-3.81. =A0I hope upgrading to the latest
->> point release won't disrupt your test systems.
->
-> It does; anything udev based has unacceptable boot time penalty
-> with nfsroot. That's why they are still on 10.0.
+On Tue, 2009-11-17 at 10:54 +0800, liubo wrote: 
+> During hugeshmget01 testcase, we got the following:
+> hugeshmget01    1  TFAIL  :  seqment size is not correct
+> hugeshmget01    1  TFAIL  :  hugeshmget01 call failed - errno = 17 :
+> File exists
+>                 ......
+> 
+> In shmget call,
+> "buf.shm_segsz" had been set to "huge_pages_shm_to_be_allocated", 
+> but the code still used old macro "HUGE_SHM_SIZE", and this 
+> leaded to error "seqment size is not correct".
+> 
+> So do the following change:
+> 1) s/HUGE_SHM_SIZE/huge_pages_shm_to_be_allocated
+> 2) Delete unused macro "HUGE_SHM_SIZE" defination
+> 
+> This patch fixed the failure.
+> 
+> 
+> Signed-off-by: Liu Bo <liubo2009@cn.fujitsu.com>
 
-Andi,
-    You can actually cross-compile, use out-of-build-tree and
-bootstrap the system so it can effectively netboot with LTP installed.
-This is something that we're doing in Cisco today, and it's something
-I highly recommend doing -- especially if you have higher quality
-hardware with newer OS'es doing the building for you.
-    Granted, it does require more work setting everything up from
-scratch, but once the work is done, it's a lot easier as far as
-long-term maintenance is concerned if you're developing regularly on a
-particular revisioned code-base.
-    I'm more than happy to provide solutions, but they need to be
-functional, stable, and easy-to-maintain longterm. Providing hacks for
-make 3.80 isn't necessarily a good thing for the project to support
-and it may not even solve your problem 100% (you may run into
-stability issues using $(shell readlink -f "") instead of $(abspath ).
-Then it comes back to tools -- I'm basically going to have to write
-checks in autoconf to make sure that readlink does as planned (isn't
-broken), and it's going to be more painful for you performance wise to
-have this hack in place, as opposed to just having an upgraded version
-of make, which also has resolved several bugs between 3.80 and 3.81.
-HTH,
--Garrett
+Thanks.
 
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+Regards--
+Subrata
 
-trial. Simplify your report design, integration and deployment - and focus =
-on =
+> ---
+>  .../kernel/mem/hugetlb/hugeshmget/hugeshmget01.c   |    2 +-
+>  testcases/kernel/mem/hugetlb/lib/ipcshm.h          |    1 -
+>  2 files changed, 1 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+> index 0486dc3..10f29d3 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+> @@ -109,7 +109,7 @@ int main(int ac, char **av)
+>  					continue;
+>  				}
+>  				/* check the seqment size */
+> -				if (buf.shm_segsz != HUGE_SHM_SIZE) {
+> +				if (buf.shm_segsz != huge_pages_shm_to_be_allocated) {
+>  					tst_resm(TFAIL, "seqment size is not "
+>  						 "correct");
+>  					continue;
+> diff --git a/testcases/kernel/mem/hugetlb/lib/ipcshm.h b/testcases/kernel/mem/hugetlb/lib/ipcshm.h
+> index 5b92530..caac9af 100644
+> --- a/testcases/kernel/mem/hugetlb/lib/ipcshm.h
+> +++ b/testcases/kernel/mem/hugetlb/lib/ipcshm.h
+> @@ -42,7 +42,6 @@ void setup(void);
+>  #define SHM_HUGETLB   04000    /* segment is mapped via hugetlb */
+>  #endif
+> 
+> -#define HUGE_SHM_SIZE	(256UL*1024UL*1024UL)	/* a resonable size for a large page segment */
+> 
+>  #define MODE_MASK	0x01FF			/* to get the lower nine permission bits */
+>  						/* from shmid_ds.ipc_perm.mode		 */
 
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
