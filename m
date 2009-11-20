@@ -1,37 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1N7YDz-00071d-Ad
-	for ltp-list@lists.sourceforge.net; Mon, 09 Nov 2009 17:40:19 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N7YDt-0004lY-Sr
-	for ltp-list@lists.sourceforge.net; Mon, 09 Nov 2009 17:40:19 +0000
-Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
-	by e8.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nA9DaK3W021619
-	for <ltp-list@lists.sourceforge.net>; Mon, 9 Nov 2009 08:36:20 -0500
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nA9He8kA096662
-	for <ltp-list@lists.sourceforge.net>; Mon, 9 Nov 2009 12:40:08 -0500
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	nA9DZSaH014556
-	for <ltp-list@lists.sourceforge.net>; Mon, 9 Nov 2009 08:35:28 -0500
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <8368651DACC1964480F951191B94A078016A1ACE@svexch01.mvista.com>
-References: <8368651DACC1964480F951191B94A078016A156A@svexch01.mvista.com>
-	<364299f40910271957g6fc5147bgfbf3fe4c08d73b7@mail.gmail.com>
-	<8368651DACC1964480F951191B94A078016A1648@svexch01.mvista.com>
-	<1257170357.4977.57.camel@subratamodak.linux.ibm.com>
-	<8368651DACC1964480F951191B94A078016A1ACE@svexch01.mvista.com>
-Date: Mon, 09 Nov 2009 23:09:35 +0530
-Message-Id: <1257788375.7677.72.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH][ppoll01] fix testcase 1,
-	5: pass correct value	for sigset_t for mips
-Reply-To: subrata@linux.vnet.ibm.com
+	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1NBMYd-0002w7-8I
+	for ltp-list@lists.sourceforge.net; Fri, 20 Nov 2009 06:01:23 +0000
+Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
+	by 1b2kzd1.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1NBMYW-0000Us-Np
+	for ltp-list@lists.sourceforge.net; Fri, 20 Nov 2009 06:01:23 +0000
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Fri, 20 Nov 2009 15:00:59 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Fri, 20 Nov 2009 15:00:58 +0900
+Message-ID: <000001ca69a6$d6ad7520$84085f60$@co.jp>
+MIME-Version: 1.0
+Content-Language: ja
+Subject: [LTP] move_pages test failed in ltp-2009-11-19.tar.gz
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -44,123 +30,150 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Henry Yei <hyei@mvista.com>
-Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-On Mon, 2009-11-02 at 14:09 -0800, Henry Yei wrote: 
-> Subrata, 
-> 
-> I've included Nicolas Joly's suggested removal of progdir to force the test to create all test files in the temp directory in the attached patch.
-> 
-> I'm not sure why tst_exit() is needed when calling cleanup(), as it would be called by cleanup(). I can add it back, if needed. Any other comments on the the appropriateness of "sizeof(sigmask)" would also be welcomed. There are a few other tests with similar issues.
-> 
+Hi,
 
-Henry,
+When I ran LTP in RHEL5.4 using ltp-2009-11-19.tar.gz, 
+"move_pages03" and "move_pages11" were failed in each of "syscalls" and 
+"numa" tests like that:
 
-Probably because of heavy changes recently, this patch is not applying
-properly. Can you please rebase your changes:
+------------
+move_pages01    1  TCONF  :  NUMA support not provided
+move_pages02    1  TCONF  :  NUMA support not provided
+chown: cannot access `move_pages03': No such file or directory
+move_pages04    1  TCONF  :  NUMA support not provided
+move_pages05    1  TCONF  :  NUMA support not provided
+move_pages06    1  TCONF  :  NUMA support not provided
+move_pages07    1  TCONF  :  NUMA support not provided
+move_pages08    1  TCONF  :  NUMA support not provided
+move_pages09    1  TCONF  :  NUMA support not provided
+move_pages10    1  TCONF  :  NUMA support not provided
+chown: cannot access `move_pages11': No such file or directory
+------------
 
-patching file testcases/kernel/syscalls/ppoll/ppoll01.c
-Hunk #3 FAILED at 98.
-Hunk #4 FAILED at 127.
-Hunk #5 FAILED at 185.
-Hunk #6 FAILED at 252.
-4 out of 6 hunks FAILED -- saving rejects to file
-testcases/kernel/syscalls/ppoll/ppoll01.c.rej
 
-Regards--
-Subrata
+These fails didn't occured with ltp-full-20090930.tgz, but they occured
+with ltp-full-20091031.tgz.
+With ltp-full-20090930.tgz, all of move_pagesXX (XX:01-11) were passed
+(NUMA support not provided) in my system.
 
-> > -----Original Message-----
-> > From: Subrata Modak [mailto:subrata@linux.vnet.ibm.com]
-> > Sent: Monday, November 02, 2009 5:59 AM
-> > To: Henry Yei
-> > Cc: Garrett Cooper; LTP Mailing List
-> > Subject: Re: [LTP] [PATCH][ppoll01] fix testcase 1, 5: pass correct
-> > valuefor sigset_t for mips
-> > 
-> > Any further work on this patch ?
-> > 
-> > Regards--
-> > Subrata
-> > 
-> > On Wed, 2009-10-28 at 12:08 -0700, Henry Yei wrote:
-> > > > -----Original Message-----
-> > > > From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> > > > Sent: Tuesday, October 27, 2009 7:57 PM
-> > > > To: Henry Yei
-> > > > Cc: LTP Mailing List
-> > > > Subject: Re: [LTP] [PATCH][ppoll01] fix testcase 1, 5: pass correct
-> > > > value for sigset_t for mips
-> > > >
-> > > > On Tue, Oct 27, 2009 at 6:32 PM, Henry Yei <hyei@mvista.com> wrote:
-> > > > > All,
-> > > > >
-> > > > >
-> > > > >
-> > > > > The patch attached  for ppoll01:
-> > > > >
-> > > > > cleans up spacing and code style
-> > > > >
-> > > > > removes unneeded/broken debug option parsing
-> > > > >
-> > > > > if test fails, it prints out the last failed errno, rather than
-> > just
-> > > > the
-> > > > > last errno(which may have been successful)
-> > > > >
-> > > > > passes in correct size of sigset_t for mips
-> > > > >
-> > > > >
-> > > > >
-> > > > > Signed-off by: Henry Yei <hyei@mvista.com>
-> > > > >
-> > > > >
-> > > > >
-> > > > > This patch was tested/passed on x86, mips(little endian), and
-> > > > ppc_82xx .
-> > > >
-> > > > 1. Please keep tst_exit() at the bottom.
-> > > > 2. Why can't we do sizeof(sigsetmask) ?
-> > > >
-> > > > Thanks,
-> > > > -Garrett
-> > >
-> > > Garrett,
-> > >
-> > > You want me to put tst_exit() at the bottom, even though it is called
-> > within cleanup()?
-> > > You mean sizeof(sigmask) ~ sizeof(sigset_t), right? That code was
-> > commented out since version 1.1 which I thought was odd too, so I did
-> > check sizeof(sigmask).
-> > > However, sizeof(sigmask) on mips returns 128 which does not seem
-> > correct. I haven't checked the other architectures, but I suspect some
-> > might have a similar mismatch. Apparently sigset_t may have different
-> > values when returned from glibc vs kernel space. More information from
-> > this post:
-> > >
-> > > http://lists.uclibc.org/pipermail/uclibc/2009-January/041850.html
-> > >
-> > >
-> > >
-> > >
-> > >
-> > >
-> > >
-> > > ---------------------------------------------------------------------
-> > ---------
-> > > Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-> > > is the only developer event you need to attend this year. Jumpstart
-> > your
-> > > developing skills, take BlackBerry mobile applications to market and
-> > stay
-> > > ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-> > > http://p.sf.net/sfu/devconference
-> > > _______________________________________________
-> > > Ltp-list mailing list
-> > > Ltp-list@lists.sourceforge.net
-> > > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+
+I compared these version and found out following scenarios changed.
+  - ${LTPROOT}/runtest/numa
+  - ${LTPROOT}/runtest/syscalls
+
+
+These scenarios are as follows, and "move_pages03" and "move_pages01" 
+are revised.
+
+------------
+# cat ./runtest/numa
+Numa-testcases numa01.sh
+move_pages01 move_pages.sh 01
+move_pages02 move_pages.sh 02
+move_pages03 cd $LTPROOT/bin && chown root move_pages03 && chmod 04755 &&
+move_pages.sh 03
+move_pages04 move_pages.sh 04
+move_pages05 move_pages.sh 05
+move_pages06 move_pages.sh 06
+move_pages07 move_pages.sh 07
+move_pages08 move_pages.sh 08
+move_pages09 move_pages.sh 09
+move_pages10 move_pages.sh 10
+move_pages11 cd $LTPROOT/bin && chown root move_pages11 && chmod 04755 &&
+move_pages.sh 11
+# cat ./runtest/syscalls | grep move_page
+move_pages01 move_pages.sh 01
+move_pages02 move_pages.sh 02
+move_pages03 cd $LTPROOT/bin && chown root move_pages03 && chmod 04755 &&
+move_pages.sh 03
+move_pages04 move_pages.sh 04
+move_pages05 move_pages.sh 05
+move_pages06 move_pages.sh 06
+move_pages07 move_pages.sh 07
+move_pages08 move_pages.sh 08
+move_pages09 move_pages.sh 09
+move_pages10 move_pages.sh 10
+move_pages11 cd $LTPROOT/bin && chown root move_pages11 && chmod 04755 &&
+move_pages.sh 11
+#------------
+
+
+I think there are two problems in each changes:
+
+  - "move_pagesXX" files are in "$LTPROOT/testcases/bin" direcotory, 
+    not in "$LTPROOT/bin" directory.
+  - "chmod" commands don't have target file.
+
+
+I don't know why these revisions are done. But if these revisions should 
+be validated, they will come to work in the change like following, I think.
+I wish I can get opinion whether my revision is right or not.
+
+============
+
+--- syscalls	2009-11-18 13:24:34.000000000 +0900
++++ syscalls.new	2009-11-19 16:15:13.000000000 +0900
+@@ -571,7 +571,7 @@
+ 
+ move_pages01 move_pages.sh 01
+ move_pages02 move_pages.sh 02
+-move_pages03 cd $LTPROOT/bin && chown root move_pages03 && chmod 04755 &&
+move_pages.sh 03
++move_pages03 cd $LTPROOT/testcases/bin && chown root move_pages03 && chmod
+04755 move_pages.sh && move_pages.sh 03
+ move_pages04 move_pages.sh 04
+ move_pages05 move_pages.sh 05
+ move_pages06 move_pages.sh 06
+@@ -579,7 +579,7 @@
+ move_pages08 move_pages.sh 08
+ move_pages09 move_pages.sh 09
+ move_pages10 move_pages.sh 10
+-move_pages11 cd $LTPROOT/bin && chown root move_pages11 && chmod 04755 &&
+move_pages.sh 11
++move_pages11 cd $LTPROOT/testcases/bin && chown root move_pages11 && chmod
+04755 move_pages.sh && move_pages.sh 11
+ 
+ mprotect01 mprotect01
+ mprotect02 mprotect02
+
+--- numa	2009-11-18 13:24:34.000000000 +0900
++++ numa.new	2009-11-19 16:15:33.000000000 +0900
+@@ -1,7 +1,7 @@
+ Numa-testcases numa01.sh
+ move_pages01 move_pages.sh 01
+ move_pages02 move_pages.sh 02
+-move_pages03 cd $LTPROOT/bin && chown root move_pages03 && chmod 04755 &&
+move_pages.sh 03
++move_pages03 cd $LTPROOT/testcases/bin && chown root move_pages03 && chmod
+04755 move_pages.sh && move_pages.sh 03
+ move_pages04 move_pages.sh 04
+ move_pages05 move_pages.sh 05
+ move_pages06 move_pages.sh 06
+@@ -9,4 +9,4 @@
+ move_pages08 move_pages.sh 08
+ move_pages09 move_pages.sh 09
+ move_pages10 move_pages.sh 10
+-move_pages11 cd $LTPROOT/bin && chown root move_pages11 && chmod 04755 &&
+move_pages.sh 11
++move_pages11 cd $LTPROOT/testcases/bin && chown root move_pages11 && chmod
+04755 move_pages.sh && move_pages.sh 11
+
+============
+
+
+In addition, please teach why this revision was performed, if all right.
+  - Why do only "move_pages03" and "move_pages11" appoint another directory
+    not a current directory?
+  - Why "chmod" is needed?
+
+
+
+Thank you--
+
+-Tomonori Mitani
+
 
 
 ------------------------------------------------------------------------------
