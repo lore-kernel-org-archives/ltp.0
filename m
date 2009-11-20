@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1N5PhU-00075t-H5
-	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 20:09:56 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N5PhP-0004za-NQ
-	for ltp-list@lists.sourceforge.net; Tue, 03 Nov 2009 20:09:56 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Tue, 3 Nov 2009 16:10:52 -0400
-References: <1257168835.4977.46.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1257168835.4977.46.camel@subratamodak.linux.ibm.com>
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1NBSzw-0005PJ-HA
+	for ltp-list@lists.sourceforge.net; Fri, 20 Nov 2009 12:54:00 +0000
+Received: from relay1.suse.de (relay-ext.suse.de [195.135.221.8])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mx1.suse.de (Postfix) with ESMTP id 9BB8A90975
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 20 Nov 2009 13:53:47 +0100 (CET)
+Date: Fri, 20 Nov 2009 13:53:47 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20091120125347.GA4858@schrodinger.suse.cz>
+References: <20091116151656.GB16811@schrodinger.suse.cz>
 MIME-Version: 1.0
-Message-Id: <200911031510.52895.vapier@gentoo.org>
-Subject: Re: [LTP] Build Fails on some archs
+Content-Disposition: inline
+In-Reply-To: <20091116151656.GB16811@schrodinger.suse.cz>
+Subject: Re: [LTP] [RFC] utstest.h
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,76 +27,47 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5985972013934566045=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, subrata@linux.vnet.ibm.com
-
---===============5985972013934566045==
-Content-Type: multipart/signed; boundary="nextPart1628294.dOhLyfiWCb";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1628294.dOhLyfiWCb
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Monday 02 November 2009 08:33:55 Subrata Modak wrote:
-> There are some build failures of LTP on some archs. Probably, autoconf
-> files needs to be written for them:
-
-ive committed fixes for the clone/ptrace failures, but havent tested them o=
-n=20
-your specific arch, so if you could give it a whirl ...
-=2Dmike
-
---nextPart1628294.dOhLyfiWCb
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.13 (GNU/Linux)
-
-iQIcBAABAgAGBQJK8I5MAAoJEEFjO5/oN/WB0awQAM/lsD2C2aANq7G8PCt50FL+
-WiXh8LRHLjcBTFGmMVcUTzXrqyO635WkgrxPSV9VBSaEGo4Qj2lH+fzqKbKvDXGV
-I9giKxkgYop8rVFyt4PmQRj/14drVcoMqz+aTlc0hur7xyHNRjn0s08LcsXslT8o
-I/xE8madJyWK4yyW9Dubr7E2M76mAuO741bxjwwrDILIrYHjIYMFWYX6jKSdVJPD
-4xVLPeOkZ1EFOTD2bt6v0wwD+cL8NWK/wfuRWO1GMyDeb//8gEdBTG9CGyN5XXpm
-KVDfOvth2xaVQsmAEziMHJH9ADOSWUzpp4XyHJefSKem+CPyLnIRRqT/z99AIGx7
-ci4BDK0+7gb7dAcoRm1K0P/J7V8NrFkIAGngC2CpnqMmh5Jk1zyJzzJQ1FktCIqi
-SweflhXs0huq9RxD44AhzqhGJLPH5q8Inz2MOiiF9o/+lqd4/8yIzi/RxY93Jegi
-sWQJ9dQg7Ai/ldnwkKnpYREG+6irlTqQPl6PvCRi0FQl3FoqpA+pH7nIHn81QTvU
-I07zNfZUsTf8CVLepSjGzb3CGWLPGMMN9XYSVMVPwDMJch0sv11xYpIBAJBuG8X1
-csIPqX/HA2Sgz673soCj75psf3zxkZsxzphVVwFB0UqLyPzGeSu5r0XkXcWOLrpm
-1PY99M8IwRl4D8l1CTmI
-=g309
------END PGP SIGNATURE-----
-
---nextPart1628294.dOhLyfiWCb--
-
-
---===============5985972013934566045==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+Hi!
+> I've been looking at sources for usctest.h again today (lib/parse_opts.c) and I
+> still have the feeling that this is badly written/broken code and should be
+> fixed but as there are thousands of tests that uses usctest interface we should
+> be careful when touching these sources. So IMHO the best approach is to change
+> one thing at the time and see if this was a good move.
+> 
+> So let's start with TEST_PAUSE macro. Accordingly to comment in the header,
+> this expands to the code that waits for SIGUSR1 signal (and this is not
+> generaly true).  This macro is expanded to the int usc_global_setup_hook()
+> function. The function forks the program accordingly to STD_COPIES and
+> accordingly STD_PAUSE it sleeps for a SIGUSR1 or not (all forked instances); it
+> also changes program segment size with sbrk().
+> 
+> Looking into the test sources, this is called when the test starts in order to
+> implement test parameters "-c n" (run n copies concurently) and "-p" (pause
+> test) and system variable USC_TP_SBRK. Do we need these parameters or any of
+> them? If you convice me that these parameters are usefull I would gladly clean
+> up and document code that implements TEST_PAUSE, otherwise I would vote for
+> removing them (or at least the useless ones).
+> 
+
+Okay, let me put it like this. Are parameters introduced by TEST_PAUSE really
+used for anything? Would anybody cry if there where removed? Would be patch
+removing them accepted and merged into CVS?
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-http://p.sf.net/sfu/devconference
---===============5985972013934566045==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5985972013934566045==--
-
