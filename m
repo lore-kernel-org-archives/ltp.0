@@ -1,23 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1N8Gjc-0003Ri-Jf
-	for ltp-list@lists.sourceforge.net; Wed, 11 Nov 2009 17:11:56 +0000
-Received: from mail-px0-f184.google.com ([209.85.216.184])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N8GjS-0003hG-Ji
-	for ltp-list@lists.sourceforge.net; Wed, 11 Nov 2009 17:11:51 +0000
-MIME-Version: 1.0
-In-Reply-To: <1257926367.27679.0.camel@subratamodak.linux.ibm.com>
-References: <1257788381.7677.73.camel@subratamodak.linux.ibm.com>
-	<364299f40911091039q11529ec1m4583ac18d0ee4bf4@mail.gmail.com>
-	<1257926367.27679.0.camel@subratamodak.linux.ibm.com>
-Date: Wed, 11 Nov 2009 09:11:40 -0800
-Message-ID: <364299f40911110911p6abfb290nddbfeb7be00f2de@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] get_mempolicy01, mbind01,
-	move_pages01 & ptrace04 compile 	failures with latest CVS
+	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NBRpb-0000n5-KK
+	for ltp-list@lists.sourceforge.net; Fri, 20 Nov 2009 11:39:15 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NBRpX-0003xP-Er
+	for ltp-list@lists.sourceforge.net; Fri, 20 Nov 2009 11:39:15 +0000
+Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
+	by e1.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nAKBb2O8004255
+	for <ltp-list@lists.sourceforge.net>; Fri, 20 Nov 2009 06:37:02 -0500
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	nAKBd5851331418
+	for <ltp-list@lists.sourceforge.net>; Fri, 20 Nov 2009 06:39:05 -0500
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	nAKBd5br012690
+	for <ltp-list@lists.sourceforge.net>; Fri, 20 Nov 2009 06:39:05 -0500
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <364299f40911192054t4468c150v662836173a53876@mail.gmail.com>
+References: <mailman.132487.1258104166.5845.ltp-list@lists.sourceforge.net>
+	<OF316379BD.F75980D7-ON85257674.000F56B9-85257674.0010FC8C@us.ibm.com>
+	<364299f40911192054t4468c150v662836173a53876@mail.gmail.com>
+Date: Fri, 20 Nov 2009 17:09:01 +0530
+Message-Id: <1258717141.4986.12.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] minimal ltp test set
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,237 +38,91 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sf.net>, Mike Frysinger <vapier@gentoo.org>
+To: Mark Ver <markver@us.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Tue, Nov 10, 2009 at 11:59 PM, Subrata Modak
-<subrata@linux.vnet.ibm.com> wrote:
-> On Mon, 2009-11-09 at 10:39 -0800, Garrett Cooper wrote:
->> On Mon, Nov 9, 2009 at 9:39 AM, Subrata Modak
->> <subrata@linux.vnet.ibm.com> wrote:
->> > Garret,
->> >
->> > Can you please look into these errors occurring on my below system
->> > configuration:
->> >
->> > # uname -a
->> > Linux 2.6.18-92.el5 #1 SMP Tue Apr 29 13:16:12 EDT 2008 i686 i686 i386
->> > GNU/Linux
->> >
->> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
->> > -I/home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_20=
-09_RELEASE/ltp-intermediate-20091109/testcases/kernel/include -I../../../..=
-/include -I../../../../include =A0 -L../../../../lib =A0get_mempolicy01.c =
-=A0 -lltp -o get_mempolicy01
->> > get_mempolicy01.c:59:25: error: include_j_h.h: No such file or directo=
-ry
->> > get_mempolicy01.c:60:24: error: common_j_h.c: No such file or directory
->> > get_mempolicy01.c: In function =91do_test=92:
->> > get_mempolicy01.c:274: error: =91RESULT_OK=92 undeclared (first use in=
- this
->> > function)
->> > get_mempolicy01.c:274: error: (Each undeclared identifier is reported
->> > only once
->> > get_mempolicy01.c:274: error: for each function it appears in.)
->> > get_mempolicy01.c:276: error: =91nodemask_t=92 undeclared (first use i=
-n this
->> > function)
->> > get_mempolicy01.c:276: error: expected =91;=92 before =91nodemask=92
->> > get_mempolicy01.c:277: error: =91NUMA_NUM_NODES=92 undeclared (first u=
-se in
->> > this function)
->> > get_mempolicy01.c:282: warning: implicit declaration of function
->> > =91nodemask_zero=92
->> > get_mempolicy01.c:282: error: =91nodemask=92 undeclared (first use in =
-this
->> > function)
->> > get_mempolicy01.c:283: warning: implicit declaration of function
->> > =91nodemask_set=92
->> > get_mempolicy01.c:284: error: =91getnodemask=92 undeclared (first use =
-in
->> > this function)
->> > get_mempolicy01.c:338: warning: implicit declaration of function
->> > =91nodemask_equal=92
->> > get_mempolicy01.c:340: warning: implicit declaration of function
->> > =91nodemask_dump=92
->> > get_mempolicy01.c:349: warning: implicit declaration of function
->> > =91PRINT_RESULT_CMP=92
->> > make[4]: *** [get_mempolicy01] Error 1
->>
->> Eh... not sure how that one happened. When did you pull from CVS?
->>
->> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
->> > -I/home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_20=
-09_RELEASE/ltp-intermediate-20091109/testcases/kernel/include -I/home/subra=
-tamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009_RELEASE/ltp-int=
-ermediate-20091109/testcases/kernel/syscalls/mbind/../utils/ -I../../../../=
-include -I../../../../include =A0 -L../../../../lib =A0mbind01.c =A0 -lltp =
--o mbind01
->> > In file included from mbind01.c:62:
->> > /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009=
-_RELEASE/ltp-intermediate-20091109/testcases/kernel/syscalls/mbind/../utils=
-/numaif.h:40: error: conflicting types for =91nodemask_t=92
->> > /usr/include/numa.h:39: note: previous declaration of =91nodemask_t=92=
- was
->> > here
->> > /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009=
-_RELEASE/ltp-intermediate-20091109/testcases/kernel/syscalls/mbind/../utils=
-/numaif.h:42: error: conflicting types for =91nodemask_zero=92
->> > /usr/include/numa.h:61: note: previous definition of =91nodemask_zero=
-=92 was
->> > here
->> > /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009=
-_RELEASE/ltp-intermediate-20091109/testcases/kernel/syscalls/mbind/../utils=
-/numaif.h:69: error: conflicting types for =91nodemask_equal=92
->> > /usr/include/numa.h:66: note: previous definition of =91nodemask_equal=
-=92
->> > was here
->> > mbind01.c: In function =91main=92:
->> > mbind01.c:368: warning: unused variable =91result=92
->> > make[4]: *** [mbind01] Error 1
->>
->> Should be resolved now.
->>
->> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
->> > -I/home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_20=
-09_RELEASE/ltp-intermediate-20091109/testcases/kernel/include -I/home/subra=
-tamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009_RELEASE/ltp-int=
-ermediate-20091109/testcases/kernel/syscalls/move_pages/../utils -I../../..=
-/../include -I../../../../include =A0-c -o move_pages01.o move_pages01.c
->> > In file included from move_pages_support.h:22,
->> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from move_pages01.c:63:
->> > /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009=
-_RELEASE/ltp-intermediate-20091109/testcases/kernel/syscalls/move_pages/../=
-utils/numaif.h:40: error: conflicting types for =91nodemask_t=92
->> > /usr/include/numa.h:39: note: previous declaration of =91nodemask_t=92=
- was
->> > here
->> > /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009=
-_RELEASE/ltp-intermediate-20091109/testcases/kernel/syscalls/move_pages/../=
-utils/numaif.h:42: error: conflicting types for =91nodemask_zero=92
->> > /usr/include/numa.h:61: note: previous definition of =91nodemask_zero=
-=92 was
->> > here
->> > /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009=
-_RELEASE/ltp-intermediate-20091109/testcases/kernel/syscalls/move_pages/../=
-utils/numaif.h:69: error: conflicting types for =91nodemask_equal=92
->> > /usr/include/numa.h:66: note: previous definition of =91nodemask_equal=
-=92
->> > was here
->> > make[4]: *** [move_pages01.o] Error 1
->>
->> Should be resolved now.
->>
->> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
->> > -I/home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_20=
-09_RELEASE/ltp-intermediate-20091109/testcases/kernel/include -I../../../..=
-/include -I../../../../include =A0 -L../../../../lib =A0ptrace04.c =A0 -llt=
-p -o ptrace04
->> > ptrace04.c: In function =91compare_registers=92:
->> > ptrace04.c:51: error: storage size of =91pt_regs=92 isn=92t known
->> > ptrace04.c:51: warning: unused variable =91pt_regs=92
->> > make[4]: *** [ptrace04] Error 1
->>
->> Fixed (I think). Please repull and retry.
->
-> get_mempolicy01 and mbind01 is still failing:
->
-> get_mempolicy01.c: In function =91do_test=92:
-> get_mempolicy01.c:282: warning: passing argument 1 of =91nodemask_zero=92
-> from incompatible pointer type
-> /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but argument
-> is of type =91struct nodemask_t *=92
-> get_mempolicy01.c:283: warning: implicit declaration of function
-> =91nodemask_set=92
-> get_mempolicy01.c:284: warning: passing argument 1 of =91nodemask_zero=92
-> from incompatible pointer type
-> /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but argument
-> is of type =91struct nodemask_t *=92
-> get_mempolicy01.c:337: warning: passing argument 1 of =91nodemask_zero=92
-> from incompatible pointer type
-> /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but argument
-> is of type =91struct nodemask_t *=92
-> get_mempolicy01.c:338: warning: passing argument 1 of =91nodemask_equal=
-=92
-> from incompatible pointer type
-> /usr/include/numa.h:66: note: expected =91struct bitmask *=92 but argument
-> is of type =91struct nodemask_t *=92
-> get_mempolicy01.c:338: warning: passing argument 2 of =91nodemask_equal=
-=92
-> from incompatible pointer type
-> /usr/include/numa.h:66: note: expected =91struct bitmask *=92 but argument
-> is of type =91struct nodemask_t *=92
-> /tmp/ccd0Utpg.o: In function `nodemask_zero':
-> /usr/include/numa.h:63: undefined reference to `numa_bitmask_clearall'
-> /tmp/ccd0Utpg.o: In function `do_test':
-> /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009_RE=
-LEASE/ltp-intermediate-20091110/testcases/kernel/syscalls/get_mempolicy/get=
-_mempolicy01.c:283: undefined reference to `nodemask_set'
-> /tmp/ccd0Utpg.o: In function `nodemask_zero':
-> /usr/include/numa.h:63: undefined reference to `numa_bitmask_clearall'
-> /usr/include/numa.h:63: undefined reference to `numa_bitmask_clearall'
-> /tmp/ccd0Utpg.o: In function `nodemask_equal':
-> /usr/include/numa.h:68: undefined reference to `numa_bitmask_equal'
-> collect2: ld returned 1 exit status
-> make[4]: *** [get_mempolicy01] Error 1
->
->
-> mbind01.c: In function =91do_test=92:
-> mbind01.c:271: warning: passing argument 1 of =91nodemask_zero=92 from
-> incompatible pointer type
-> /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but argument
-> is of type =91struct nodemask_t *=92
-> mbind01.c:272: warning: implicit declaration of function =91nodemask_set=
-=92
-> mbind01.c:273: warning: passing argument 1 of =91nodemask_zero=92 from
-> incompatible pointer type
-> /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but argument
-> is of type =91struct nodemask_t *=92
-> mbind01.c:315: warning: passing argument 1 of =91nodemask_zero=92 from
-> incompatible pointer type
-> /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but argument
-> is of type =91struct nodemask_t *=92
-> mbind01.c:319: warning: passing argument 1 of =91nodemask_equal=92 from
-> incompatible pointer type
-> /usr/include/numa.h:66: note: expected =91struct bitmask *=92 but argument
-> is of type =91struct nodemask_t *=92
-> mbind01.c:319: warning: passing argument 2 of =91nodemask_equal=92 from
-> incompatible pointer type
-> /usr/include/numa.h:66: note: expected =91struct bitmask *=92 but argument
-> is of type =91struct nodemask_t *=92
-> /tmp/ccCibXJV.o: In function `nodemask_zero':
-> /usr/include/numa.h:63: undefined reference to `numa_bitmask_clearall'
-> /tmp/ccCibXJV.o: In function `do_test':
-> /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_TARS/OCTOBER_2009_RE=
-LEASE/ltp-intermediate-20091110/testcases/kernel/syscalls/mbind/mbind01.c:2=
-72: undefined reference to `nodemask_set'
-> /tmp/ccCibXJV.o: In function `nodemask_zero':
-> /usr/include/numa.h:63: undefined reference to `numa_bitmask_clearall'
-> /tmp/ccCibXJV.o: In function `nodemask_equal':
-> /usr/include/numa.h:68: undefined reference to `numa_bitmask_equal'
-> /tmp/ccCibXJV.o: In function `nodemask_zero':
-> /usr/include/numa.h:63: undefined reference to `numa_bitmask_clearall'
-> collect2: ld returned 1 exit status
-> make[4]: *** [mbind01] Error 1
-
-More numa.h vs numa_if.h fun... what version of Linux are you running Subra=
-ta?
-Thanks,
--Garrett
-
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
-
-trial. Simplify your report design, integration and deployment - and focus =
-on =
-
-what you do best, core application coding. Discover what's new with
-Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+SGkgTWFyaywKCk9uIFRodSwgMjAwOS0xMS0xOSBhdCAyMDo1NCAtMDgwMCwgR2FycmV0dCBDb29w
+ZXIgd3JvdGU6Cj4gT24gVGh1LCBOb3YgMTksIDIwMDkgYXQgNzowNSBQTSwgTWFyayBWZXIgPG1h
+cmt2ZXJAdXMuaWJtLmNvbT4gd3JvdGU6Cj4gPiBUaGUgbnVtYmVyIG9mIHRlc3RjYXNlcyBvdmVy
+IHRoZSBwYXN0IHllYXIgaGFkIGluY3JlYXNlZCBmYXN0ZXIgdGhhbiBjb3VsZAo+ID4gYmUgcHJv
+cGVybHkgZGVidWdnZWQgYnkgb3VyIHNrZWxldG9uIHRlYW0gZm9yIHRoZSBzMzkweCBwbGF0Zm9y
+bS4gTWFueSBvZgo+ID4gdGhlIHRlc3RjYXNlcyBzZWVtZWQgdG8gYmUgZGVzaWduZWQgZm9yIGZl
+YXR1cmVzIG9uIGxhdGVyIGtlcm5lbCB2ZXJzaW9ucwo+ID4gd2l0aCB3ZXJlIG5vdCB5ZXQgZnVs
+bHkgaW50ZWdyYXRlZCBieSBvdXIgc3VwcG9ydGVkIGRpc3RyaWJ1dGlvbnMuCj4gPgo+ID4gU2lu
+Y2Ugd2UgbW9zdGx5IHVzZWQgTFRQIGZvciBhIHF1aWNrIHJlZ3Jlc3Npb24gdGVzdCwgSSB3YXMg
+ZGlzY3Vzc2luZyB3aXRoCj4gPiBTdWJyYXRhIGFib3V0IGNyZWF0aW5nIGEgbWluaW1hbCB0ZXN0
+IHNldCB0aGF0IHdlIGV4cGVjdGVkIHdvdWxkIHJ1bgo+ID4gcHJvcGVybHkgb24gYSBtYWpvcml0
+eSBvZiB0aGUgZGlzdHJpYnV0aW9ucyB3aXRoIGtlcm5lbCAyLjYgYW5kIG5vdCBqdXN0IHRoZQo+
+ID4gbW9yZSByZWNlbnQgdmVyc2lvbnMgb2YgdGhlIGtlcm5lbC4KPiA+Cj4gPiBUaGlzIGlzIG15
+IGZpcnN0IHBhc3MgYXQgdGhlIHRlc3Qgc2V0Ogo+ID4gKFNlZSBhdHRhY2hlZCBmaWxlOiBzMzkw
+eF9sdHBjb3JlX3RhcmdldHMpCgpXZSBjYW4gZGVmaW5pdGVseSBtYWtlIHRoaXMgcGFydCBvZiBs
+dHAvcnVudGVzdCBmb3IgeW91ciBjb252ZW5pZW5jZS4KCkdhcnJldCwKCkNhbiB5b3UgcGxlYXNl
+IGNoZWNrIHRoaXMgaW4uIEkgc2VlbWVkIHRvIGhhdmUgbm90IHJlY2VpdmVkIE1hcmvCtHMKb3Jp
+Z2luYWwgbWFpbCBpbiB0aGlzIElELgoKUmVnYXJkcy0tClN1YnJhdGEKCj4gPgo+ID4gSXQgaXMg
+YmFzaWNhbGx5IGEgc3Vic2V0IG9mIHRoZSBkZWZhdWx0IFNDRU5GSUxFUyBmcm9tIHRoZSBsdHAt
+ZnVsbC0yMDA5MDczMQo+ID4gY29uY2F0ZW5hdGVkIGludG8gb25lIGZpbGUuCj4gPgo+ID4gQmFz
+aWMgcnVuZG93biBvZiB0aGUgY29udGVudHMgLi4uCj4gPiAqIEluY2x1ZGVkIHRlc3RzOgo+ID4g
+c3lzY2FsbHMKPiA+IGZzCj4gPiBmc3gKPiA+IGRpbwo+ID4gbW0KPiA+IGlwYwo+ID4gc2NoZWQK
+PiA+IG1hdGgKPiA+IG5wdGwKPiA+IHB0eQo+ID4gY29udGFpbmVycwo+ID4gZnNfYmluZAo+ID4g
+ZmlsZWNhcHMKPiA+IGZjbnRsLWxvY2t0ZXN0cwo+ID4gLS0tLS0KPiA+ICogRXhjbHVkZWQgdGVz
+dHMgLSBuZXcgaW4gMjAwOSAobWF5YmUgbGF0ZSAyMDA4KSB2ZXJzaW9ucyAoYXBwZWFyIHRvIGhh
+dmUKPiA+IGJ1aWxkLCBydW4sIG9yIHN1cHBvcnQgaXNzdWVzIGRlcGVuZGluZyBvbiBkaXN0cmli
+dXRpb24gcmVsZWFzZSkKPiA+IGlvCj4gPiBjYXBfYm91bmRzCj4gPiBjb25uZWN0b3JzCj4gPiBh
+ZG1pbl90b29scwo+ID4gdGltZXJzCj4gPiBwb3dlcl9tYW5hZ2VtZW50X3Rlc3RzCj4gPiBudW1h
+Cj4gPiBodWdldGxiCj4gPiBjb21tYW5kcwo+ID4gaHlwZXJ0aHJlYWRpbmcKPiA+IC0tLS0tCj4g
+PiAqIEV4Y2x1ZGVkIGZyb20gb3JpZ2luYWwgc2V0Ogo+ID4gY29udHJvbGxlcnMKPiA+IC0gbm90
+ZXM6IHRoaXMgZmVhdHVyZSB3YXMgY3VycmVudGx5IGF2YWlsYWJsZSBvbmx5IG9uIFNMRVMtMTEg
+YW5kIHRoZSBidWlsZAo+ID4gYW5kIGV4ZWN1dGlvbiBvZiB0aGUgdGVzdGNhc2UgYXBwZWFyZWQg
+dG8gbmVlZCBtb3JlIHdvcmsgZm9yIHMzOTB4Cj4gPiAtLS0tLQo+ID4KPiA+IElkZWFsbHkgSSB3
+YXMgaG9waW5nIHRvIGNvbWUgdXAgd2l0aCBhIHNldCBvZiB0ZXN0cyB0aGF0IHdlcmUgc28gYmFz
+aWMsIHRoZXkKPiA+IHNob3VsZCBiZSBzdXBwb3J0ZWQgYnkgcHJhY3RpY2FsbHkgZXZlcnkgcmVs
+ZWFzZSBhbmQgd291bGQgYmUgZXhwZWN0ZWQgdG8KPiA+IHJ1biBjb3JyZWN0bHkgZXZlcnl3aGVy
+ZS4gVGhleSB3b3VsZCBvbmx5IGZhaWwgaWYgbWFqb3IgaXNzdWVzIGhhZCBiZWVuCj4gPiBpbnRy
+b2R1Y2VkIGludG8gdGhlIHN5c3RlbSBidWlsZC4KPiAKPiBNYXJrLAo+ICAgICBBbiBpZGVhbCBz
+b2x1dGlvbiB0byB0aGlzIHByb2JsZW0gaXMgYSB0d28tdGllcmVkIHNvbHV0aW9uOgo+ICAgICAx
+LiBGZWF0dXJlIGJhc2VkIGNvbmRpdGlvbmFsIGNvbXBpbGF0aW9uLgo+ICAgICAyLiBUb29sIGJh
+c2VkIGNvbmRpdGlvbmFsIGNvbXBpbGF0aW9uIChzb21lIHRlc3RzIHJlcXVpcmUgY2VydGFpbgo+
+IHRvb2xzLCBzdWNoIGFzIHBlcmwsIHB5dGhvbiwgYW5kIHZhcmlvdXMgVW5peCB1dGlsaXRpZXMg
+dGhhdCBhcmVuJ3QgYQo+IHBhcnQgb2YgdGhlIG1pbmltYWwgc2V0IG9mIHRvb2xzLCBlLmcuIHVz
+ZXJhZGQsIHVzZXJkZWwsIGV0YykuCj4gICAgIFRoZSB0b29sIGJhc2VkIGNvbmRpdGlvbiBjb21w
+aWxhdGlvbiBpcyBzb21ld2hhdCBzaW1wbGUgYXQgYSAxMGsKPiBmdCBsZXZlbCAoSSBoYXZlIHBl
+cmwsIHB5dGhvbiwgcnVieSwgZXRjIC0tIGFkZCAvIHJlbW92ZSB0aGVzZSB0ZXN0cyAvCj4gZmVh
+dHVyZXMpIC0tIHRoZSBmZWF0dXJlIGJhc2VkIGNvbmRpdGlvbmFsIGNvbXBpbGF0aW9uIGlzc3Vl
+IGlzIGEgYml0Cj4gbW9yZSBkaWZmaWN1bHQgdG8gZGVhbCB3aXRoIGFzIGl0IHJlcXVpcmVzIGEg
+bW9yZSBpbi1kZXB0aAo+IHVuZGVyc3RhbmRpbmcgb2Ygd2hhdCBjb2RlIGV4aXN0cyBpbiB0aGUg
+c291cmNlYmFzZSwgYW5kIHdoYXQKPiBmdW5jdGlvbmFsIHRlc3RzIG1hcCB0byB3aGF0IGZ1bmN0
+aW9uYWwgYmxvY2tzIHVuZGVyIHRlc3QuIFRoaXMgaXMKPiBpZGVhbCwgYnV0IG5vdCB0cml2aWFs
+IHRvIHBlcmZvcm0uCj4gICAgIE15IGZpcnN0IGdvYWwgaXMgdG8gZGVhbCB3aXRoIGFueSBmYWxs
+b3V0IGZyb20gdGhlIG1ha2UKPiBpbmZyYXN0cnVjdHVyZSBjb21taXQocyksIGRlYWxpbmcgd2l0
+aCB0aGUgbWFrZSAzLjgwIGluY29tcGF0aWJpbGl0eQo+IGFuZCBvdGhlciB1bmZvcmVzZWVuIHVz
+ZWNhc2VzIGxpa2UgeW91IGhhdmUgd2l0aCBidWlsZGluZyBhbmQKPiBleGVjdXRpbmcgb3V0IG9m
+IHRoZSBzYW1lIHNvdXJjZSB0cmVlLiBOZXh0LCBJIHdhbnQgdG8gY2xlYW4gdXAgYW55Cj4gYW5k
+IGFsbCBDIHdhcm5pbmdzIHNvIHRoZSB0ZXN0cyBhcmUgbW9yZSByb2J1c3QgKE1pa2UsIEN5cmls
+LCBhbmQgSQo+IGhhdmUgZG9uZSBhIHByZXR0eSBnb29kIGpvYiBidXQgdGhlcmUncyBhIHdheXMg
+dG8gZ28uLi4pLiBUaGVuIEknbGwKPiB1bmRlcnRha2UgY29tcGxldGluZyB0aGUgYmFsbGlzdGEg
+Y2xlYW51cCwgd2hpY2ggd2lsbCBhbHNvIGludm9sdmUKPiBhZGRpbmcgdGhlIHNoaW1zIGZvciBw
+ZXJsIGFuZCBweXRob24gYWNyb3NzIHRoZSBlbnRpcmUgc291cmNlYmFzZS4KPiBXZSdsbCBuZWVk
+IHRvIHJldmlzaXQgdGhlIGZlYXR1cmUgYmFzZWQgZW5hYmxpbmcgYSBsaXR0bGUgbGF0ZXIuCj4g
+ICAgIEhvdyBkb2VzIHRoYXQgc291bmQ/Cj4gVGhhbmtzLAo+IC1HYXJyZXR0Cj4gCj4gLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tCj4gTGV0IENyeXN0YWwgUmVwb3J0cyBoYW5kbGUgdGhlIHJlcG9ydGlu
+ZyAtIEZyZWUgQ3J5c3RhbCBSZXBvcnRzIDIwMDggMzAtRGF5IAo+IHRyaWFsLiBTaW1wbGlmeSB5
+b3VyIHJlcG9ydCBkZXNpZ24sIGludGVncmF0aW9uIGFuZCBkZXBsb3ltZW50IC0gYW5kIGZvY3Vz
+IG9uIAo+IHdoYXQgeW91IGRvIGJlc3QsIGNvcmUgYXBwbGljYXRpb24gY29kaW5nLiBEaXNjb3Zl
+ciB3aGF0J3MgbmV3IHdpdGgKPiBDcnlzdGFsIFJlcG9ydHMgbm93LiAgaHR0cDovL3Auc2YubmV0
+L3NmdS9ib2JqLWp1bHkKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwo+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZv
+cmdlLm5ldAo+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0
+cC1saXN0CgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkxldCBDcnlzdGFsIFJlcG9ydHMgaGFuZGxl
+IHRoZSByZXBvcnRpbmcgLSBGcmVlIENyeXN0YWwgUmVwb3J0cyAyMDA4IDMwLURheSAKdHJpYWwu
+IFNpbXBsaWZ5IHlvdXIgcmVwb3J0IGRlc2lnbiwgaW50ZWdyYXRpb24gYW5kIGRlcGxveW1lbnQg
+LSBhbmQgZm9jdXMgb24gCndoYXQgeW91IGRvIGJlc3QsIGNvcmUgYXBwbGljYXRpb24gY29kaW5n
+LiBEaXNjb3ZlciB3aGF0J3MgbmV3IHdpdGgKQ3J5c3RhbCBSZXBvcnRzIG5vdy4gIGh0dHA6Ly9w
+LnNmLm5ldC9zZnUvYm9iai1qdWx5Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vm
+b3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRw
+LWxpc3QK
