@@ -1,33 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1N9TrQ-0007we-2T
-	for ltp-list@lists.sourceforge.net; Sun, 15 Nov 2009 01:25:00 +0000
+	by 335xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NBMvB-0002f1-7C
+	for ltp-list@lists.sourceforge.net; Fri, 20 Nov 2009 06:24:41 +0000
 Received: from mail-pw0-f43.google.com ([209.85.160.43])
 	by 3b2kzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N9TrJ-0005lv-Mi
-	for ltp-list@lists.sourceforge.net; Sun, 15 Nov 2009 01:25:00 +0000
-Received: by pwi12 with SMTP id 12so2827239pwi.2
+	id 1NBMv5-0005rg-An
+	for ltp-list@lists.sourceforge.net; Fri, 20 Nov 2009 06:24:41 +0000
+Received: by pwi12 with SMTP id 12so2057147pwi.2
 	for <ltp-list@lists.sourceforge.net>;
-	Sat, 14 Nov 2009 17:24:48 -0800 (PST)
+	Thu, 19 Nov 2009 22:24:29 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <364299f40911141619n544a879ci86383a90d6693890@mail.gmail.com>
-References: <8368651DACC1964480F951191B94A078016A156A@svexch01.mvista.com>
-	<1257788375.7677.72.camel@subratamodak.linux.ibm.com>
-	<8368651DACC1964480F951191B94A078017CB194@svexch01.mvista.com>
-	<364299f40911092316q223d2073oc610dffc7474722b@mail.gmail.com>
-	<8368651DACC1964480F951191B94A078017CB30A@svexch01.mvista.com>
-	<364299f40911102212l2964e871r7477ae7959b566f6@mail.gmail.com>
-	<8368651DACC1964480F951191B94A078017CB3C2@svexch01.mvista.com>
-	<364299f40911120142y1c598494ha4172200704d2e48@mail.gmail.com>
-	<8368651DACC1964480F951191B94A078017CB58B@svexch01.mvista.com>
-	<364299f40911141619n544a879ci86383a90d6693890@mail.gmail.com>
-Date: Sat, 14 Nov 2009 17:18:35 -0800
-Message-ID: <364299f40911141718l31c2c6fbpa4ee3293eb73b3ed@mail.gmail.com>
+In-Reply-To: <000001ca69a6$d6ad7520$84085f60$@co.jp>
+References: <000001ca69a6$d6ad7520$84085f60$@co.jp>
+Date: Thu, 19 Nov 2009 22:24:29 -0800
+Message-ID: <364299f40911192224i127c4b87qf0f7777ae0a8377d@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH][ppoll01] fix testcase 1,
-	5: pass correct valuefor 	sigset_t for mips
+Subject: Re: [LTP] move_pages test failed in ltp-2009-11-19.tar.gz
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,49 +27,177 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Henry Yei <hyei@mvista.com>
-Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net
 
-On Sat, Nov 14, 2009 at 4:19 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Thu, Nov 12, 2009 at 5:57 PM, Henry Yei <hyei@mvista.com> wrote:
->>> -----Original Message-----
->>> From: Garrett Cooper [mailto:yanegomi@gmail.com]
->>> Sent: Thursday, November 12, 2009 1:43 AM
->>> To: Henry Yei
->>> Cc: subrata@linux.vnet.ibm.com; LTP Mailing List
->>> Subject: Re: [LTP] [PATCH][ppoll01] fix testcase 1, 5: pass correct
->>> valuefor sigset_t for mips
-
-[...]
-
->>
->> Attached is the poll01 patch with last_failed_errno and associated code removed.
+On Thu, Nov 19, 2009 at 10:00 PM, Mitani <mitani@ryobi.co.jp> wrote:
+> Hi,
 >
-> AHA! I figured out why sigset is sized differently on mips32 for you,
-> compared to other architectures.
+> When I ran LTP in RHEL5.4 using ltp-2009-11-19.tar.gz,
+> "move_pages03" and "move_pages11" were failed in each of "syscalls" and
+> "numa" tests like that:
 >
-> Just like there's a compat_caddr_t datatype (which is explicitly set
-> to char *), there's also a compat_sigset_t as well.
+> ------------
+> move_pages01 =A0 =A01 =A0TCONF =A0: =A0NUMA support not provided
+> move_pages02 =A0 =A01 =A0TCONF =A0: =A0NUMA support not provided
+> chown: cannot access `move_pages03': No such file or directory
+> move_pages04 =A0 =A01 =A0TCONF =A0: =A0NUMA support not provided
+> move_pages05 =A0 =A01 =A0TCONF =A0: =A0NUMA support not provided
+> move_pages06 =A0 =A01 =A0TCONF =A0: =A0NUMA support not provided
+> move_pages07 =A0 =A01 =A0TCONF =A0: =A0NUMA support not provided
+> move_pages08 =A0 =A01 =A0TCONF =A0: =A0NUMA support not provided
+> move_pages09 =A0 =A01 =A0TCONF =A0: =A0NUMA support not provided
+> move_pages10 =A0 =A01 =A0TCONF =A0: =A0NUMA support not provided
+> chown: cannot access `move_pages11': No such file or directory
+> ------------
 >
-> Let me see if I can figure out this mystery, but my guess is that
-> you're using n32 based mips, most likely on an Octeon model ;) ;)...
-> which would account for what you're seeing here and possibly account
-> for why the test consistently hangs on our Cavium boards at work (our
-> version of Linux has been hacked so bad though to take shortcuts in
-> the design process instead of following proper design procedure that
-> it makes me cry inside...).
+>
+> These fails didn't occured with ltp-full-20090930.tgz, but they occured
+> with ltp-full-20091031.tgz.
+> With ltp-full-20090930.tgz, all of move_pagesXX (XX:01-11) were passed
+> (NUMA support not provided) in my system.
+>
+>
+> I compared these version and found out following scenarios changed.
+> =A0- ${LTPROOT}/runtest/numa
+> =A0- ${LTPROOT}/runtest/syscalls
+>
+>
+> These scenarios are as follows, and "move_pages03" and "move_pages01"
+> are revised.
+>
+> ------------
+> # cat ./runtest/numa
+> Numa-testcases numa01.sh
+> move_pages01 move_pages.sh 01
+> move_pages02 move_pages.sh 02
+> move_pages03 cd $LTPROOT/bin && chown root move_pages03 && chmod 04755 &&
+> move_pages.sh 03
+> move_pages04 move_pages.sh 04
+> move_pages05 move_pages.sh 05
+> move_pages06 move_pages.sh 06
+> move_pages07 move_pages.sh 07
+> move_pages08 move_pages.sh 08
+> move_pages09 move_pages.sh 09
+> move_pages10 move_pages.sh 10
+> move_pages11 cd $LTPROOT/bin && chown root move_pages11 && chmod 04755 &&
+> move_pages.sh 11
+> # cat ./runtest/syscalls | grep move_page
+> move_pages01 move_pages.sh 01
+> move_pages02 move_pages.sh 02
+> move_pages03 cd $LTPROOT/bin && chown root move_pages03 && chmod 04755 &&
+> move_pages.sh 03
+> move_pages04 move_pages.sh 04
+> move_pages05 move_pages.sh 05
+> move_pages06 move_pages.sh 06
+> move_pages07 move_pages.sh 07
+> move_pages08 move_pages.sh 08
+> move_pages09 move_pages.sh 09
+> move_pages10 move_pages.sh 10
+> move_pages11 cd $LTPROOT/bin && chown root move_pages11 && chmod 04755 &&
+> move_pages.sh 11
+> #------------
+>
+>
+> I think there are two problems in each changes:
+>
+> =A0- "move_pagesXX" files are in "$LTPROOT/testcases/bin" direcotory,
+> =A0 =A0not in "$LTPROOT/bin" directory.
+> =A0- "chmod" commands don't have target file.
+>
+>
+> I don't know why these revisions are done. But if these revisions should
+> be validated, they will come to work in the change like following, I thin=
+k.
+> I wish I can get opinion whether my revision is right or not.
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> --- syscalls =A0 =A02009-11-18 13:24:34.000000000 +0900
+> +++ syscalls.new =A0 =A0 =A0 =A02009-11-19 16:15:13.000000000 +0900
+> @@ -571,7 +571,7 @@
+>
+> =A0move_pages01 move_pages.sh 01
+> =A0move_pages02 move_pages.sh 02
+> -move_pages03 cd $LTPROOT/bin && chown root move_pages03 && chmod 04755 &&
+> move_pages.sh 03
+> +move_pages03 cd $LTPROOT/testcases/bin && chown root move_pages03 && chm=
+od
+> 04755 move_pages.sh && move_pages.sh 03
+> =A0move_pages04 move_pages.sh 04
+> =A0move_pages05 move_pages.sh 05
+> =A0move_pages06 move_pages.sh 06
+> @@ -579,7 +579,7 @@
+> =A0move_pages08 move_pages.sh 08
+> =A0move_pages09 move_pages.sh 09
+> =A0move_pages10 move_pages.sh 10
+> -move_pages11 cd $LTPROOT/bin && chown root move_pages11 && chmod 04755 &&
+> move_pages.sh 11
+> +move_pages11 cd $LTPROOT/testcases/bin && chown root move_pages11 && chm=
+od
+> 04755 move_pages.sh && move_pages.sh 11
+>
+> =A0mprotect01 mprotect01
+> =A0mprotect02 mprotect02
+>
+> --- numa =A0 =A0 =A0 =A02009-11-18 13:24:34.000000000 +0900
+> +++ numa.new =A0 =A02009-11-19 16:15:33.000000000 +0900
+> @@ -1,7 +1,7 @@
+> =A0Numa-testcases numa01.sh
+> =A0move_pages01 move_pages.sh 01
+> =A0move_pages02 move_pages.sh 02
+> -move_pages03 cd $LTPROOT/bin && chown root move_pages03 && chmod 04755 &&
+> move_pages.sh 03
+> +move_pages03 cd $LTPROOT/testcases/bin && chown root move_pages03 && chm=
+od
+> 04755 move_pages.sh && move_pages.sh 03
+> =A0move_pages04 move_pages.sh 04
+> =A0move_pages05 move_pages.sh 05
+> =A0move_pages06 move_pages.sh 06
+> @@ -9,4 +9,4 @@
+> =A0move_pages08 move_pages.sh 08
+> =A0move_pages09 move_pages.sh 09
+> =A0move_pages10 move_pages.sh 10
+> -move_pages11 cd $LTPROOT/bin && chown root move_pages11 && chmod 04755 &&
+> move_pages.sh 11
+> +move_pages11 cd $LTPROOT/testcases/bin && chown root move_pages11 && chm=
+od
+> 04755 move_pages.sh && move_pages.sh 11
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+>
+> In addition, please teach why this revision was performed, if all right.
+> =A0- Why do only "move_pages03" and "move_pages11" appoint another direct=
+ory
+> =A0 =A0not a current directory?
+> =A0- Why "chmod" is needed?
 
-    Checked in the intermediate solution until we can figure out
-whether or not compat_sigset_t is required for mips32.
-Thanks!
+Mitani-san,
+    Good catch ><... I made some really silly clerical errors in my
+commits for these runtest files.
+    To answer your questions though:
+    1. I did the cd to ensure that pan is in a consistent location
+when it does the chmod and to avoid having to do
+"$LTPROOT/testcases/bin/move_pages{03,11}".
+    2. The chmod and chown to fix the ownership and to enable the
+sticky bit are being done because the test does seteuid, IIRC. What I
+did was moved the logic from a `build time fix' to a `run time fix',
+especially because the build user may not be root, and thus couldn't
+set the sticky bit for the binary.
+HTH,
 -Garrett
 
-------------------------------------------------------------------------------
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
-trial. Simplify your report design, integration and deployment - and focus on 
+---------------------------------------------------------------------------=
+---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+
+trial. Simplify your report design, integration and deployment - and focus =
+on =
+
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
