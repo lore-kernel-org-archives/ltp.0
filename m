@@ -1,32 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1N4xRo-0004KB-6B
-	for ltp-list@lists.sourceforge.net; Mon, 02 Nov 2009 13:59:52 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N4xRg-0005hu-J5
-	for ltp-list@lists.sourceforge.net; Mon, 02 Nov 2009 13:59:51 +0000
-Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
-	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nA2DpP5w007070
-	for <ltp-list@lists.sourceforge.net>; Mon, 2 Nov 2009 08:51:25 -0500
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nA2Dxc2N1122466
-	for <ltp-list@lists.sourceforge.net>; Mon, 2 Nov 2009 08:59:38 -0500
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	nA2Dxc9o032245
-	for <ltp-list@lists.sourceforge.net>; Mon, 2 Nov 2009 08:59:38 -0500
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200910301649.n9UGnbHJ001240@e34.co.us.ibm.com>
-References: <200910301649.n9UGnbHJ001240@e34.co.us.ibm.com>
-Date: Mon, 02 Nov 2009 19:29:28 +0530
-Message-Id: <1257170368.4977.61.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Other compiler warning fixes
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NCLm6-0005ye-8n
+	for ltp-list@lists.sourceforge.net; Sun, 22 Nov 2009 23:23:22 +0000
+Received: from mail-pz0-f184.google.com ([209.85.222.184])
+	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NCLlz-00072e-QY
+	for ltp-list@lists.sourceforge.net; Sun, 22 Nov 2009 23:23:22 +0000
+MIME-Version: 1.0
+In-Reply-To: <1258906137.5955.14.camel@subratamodak.linux.ibm.com>
+References: <1258906137.5955.14.camel@subratamodak.linux.ibm.com>
+Date: Sun, 22 Nov 2009 15:22:52 -0800
+Message-ID: <364299f40911221522w77d91d50jc12f8325dac40d48@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [ANNOUNCE] LTP Intermediate Release for NOVEMBER 2009
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,55 +27,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
-Cc: ltp-list@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list <ltp-list@lists.sf.net>, Andi Kleen <andi@firstfloor.org>
 
-Thanks. Just a small correction below:
+On Sun, Nov 22, 2009 at 8:08 AM, Subrata Modak
+<subrata@linux.vnet.ibm.com> wrote:
+> Hi,
+>
+> LTP Intermediate release for NOVEMBER 09 (ltp-intermediate-20091122.tgz)
+> is through. You can pick your copy directly from:
+>
+> http://ltp.sourceforge.net/ home page.
+>
+> LTP build/install process has undergone changes. Please see ltp/INSTALL
+> file for more details.
+>
+> Happy Testing--
+> Subrata
 
-On Wed, 2009-10-21 at 21:37 +0200, Jiri Palecek wrote: 
-> Hello,
-> 
-> this is another chunk of compiler warning fixes in LTP tests, related to printf format strings. They have multiple causes:
-> 
->  - most of them are caused by %d used for the TEST_RETURN variable (as in a previous patch)
-> 
->  - off_t are cast to (int64_t) and PRId64 output specifier is used for them
-> 
->  - other types are cast to (intmax_t) or (uintmax_t) and use the %jd or %ju (C99) output specifier. I've used this solution because it's generally correct, easy to use solution that is portable and (IMHO) more readable than using PRId64/PRIu64 and a cast (which you generally can't avoid). This way, there's only a cast.
-> 
->  - in ioperm test, address should be declared as unsigned long (according to ioperm(2))
-> 
->  - other little fixes (foo vs. *foo, %S vs. %s, %0 vs. %o)
-> 
-> Regards
->     Jiri Palecek
-> 
-> diff --git a/testcases/kernel/syscalls/socketcall/socketcall03.c b/testcases/kernel/syscalls/socketcall/socketcall03.c
-> index 9cc2de4..de63784 100644
-> --- a/testcases/kernel/syscalls/socketcall/socketcall03.c
-> +++ b/testcases/kernel/syscalls/socketcall/socketcall03.c
-> @@ -127,12 +127,12 @@ int main(int ac, char **av)
->  		/* check return code */
-> 
->  		if (TEST_RETURN == -1) {
-> -			tst_resm(TFAIL, "socketcall() Failed "
-> -				 " with return=%d,errno=%d: %s",
-> -				 TEST_RETURN, TEST_ERRNO, strerror(TEST_ERRNO));
-> +			tst_resm(TFAIL|TTERNO, "socketcall() Failed "
-
-+ tst_resm(TFAIL|TERRNO, "socketcall() Failed "
-
-Regards--
-Subrata
-
-
+    FYI -- make 3.80 support still isn't in. I'm trying to resolve it
+by the end of the month but people I'm working with at my $JOB are
+partially blocking me from making progress on this.
+Sorry for the delay...
+-Garrett
 
 ------------------------------------------------------------------------------
-Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-http://p.sf.net/sfu/devconference
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
+what you do best, core application coding. Discover what's new with
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
