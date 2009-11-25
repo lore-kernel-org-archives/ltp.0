@@ -1,29 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <liubo2009@cn.fujitsu.com>) id 1N5b0r-0000UQ-4C
-	for ltp-list@lists.sourceforge.net; Wed, 04 Nov 2009 08:14:41 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N5b0k-0001nK-K3
-	for ltp-list@lists.sourceforge.net; Wed, 04 Nov 2009 08:14:40 +0000
-Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
-	by song.cn.fujitsu.com (Postfix) with ESMTP id 7014717010C
-	for <ltp-list@lists.sourceforge.net>;
-	Wed,  4 Nov 2009 16:14:23 +0800 (CST)
-Received: from fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id nA48DWeb020771
-	for <ltp-list@lists.sourceforge.net>; Wed, 4 Nov 2009 16:13:32 +0800
-Received: from localhost.localdomain (unknown [10.167.141.167])
-	by fnst.cn.fujitsu.com (Postfix) with ESMTPA id 2477DD43BB
-	for <ltp-list@lists.sourceforge.net>;
-	Wed,  4 Nov 2009 16:13:52 +0800 (CST)
-Message-ID: <4AF137E8.3090408@cn.fujitsu.com>
-Date: Wed, 04 Nov 2009 16:14:32 +0800
-From: liubo <liubo2009@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] mail: fix the bug of mail01
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <avagin@gmail.com>) id 1NDHit-0000Go-Mn
+	for ltp-list@lists.sourceforge.net; Wed, 25 Nov 2009 13:15:55 +0000
+Received: from mailhub.sw.ru ([195.214.232.25] helo=relay.sw.ru)
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NDHil-0001Ua-KR
+	for ltp-list@lists.sourceforge.net; Wed, 25 Nov 2009 13:15:55 +0000
+From: Andrew Vagin <avagin@gmail.com>
+Date: Wed, 25 Nov 2009 16:15:27 +0300
+Message-Id: <1259154927-12569-1-git-send-email-avagin@gmail.com>
+Subject: [LTP] [PATCH] clock_settime03: improve message about fail
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,143 +21,33 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sf.net, vapier@gentoo.org
 
-In the testcase "mail01",
-
-when mail is send to nosuchuser@domain
-and mail is send to user@nosuchdomain,
-mail program may return either "Returnedmail:"
-or "UndeliveredMailReturned", regardless of
-the existence of /etc/redhat-release.
-
-So, we did a bit of changes to recongnize both of
-returned values.
-
-This patch fixes the problem.
-
-Signed-off-by: Liu Bo <liubo2009@cn.fujitsu.com>
 ---
- testcases/commands/mail/mail_tests.sh |   65 ++++++++++++++++-----------------
- 1 files changed, 31 insertions(+), 34 deletions(-)
+ .../kernel/timers/clock_settime/clock_settime03.c  |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-diff --git a/testcases/commands/mail/mail_tests.sh b/testcases/commands/mail/mail_tests.sh
-index 45bac93..024120f 100755
---- a/testcases/commands/mail/mail_tests.sh
-+++ b/testcases/commands/mail/mail_tests.sh
-@@ -172,28 +172,27 @@ else
-     echo "d" | mail -u root > $LTPTMP/tst_mail.res 2>&1
-     RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3, "Mailer-Daemon")}' \
- 	$LTPTMP/tst_mail.res)
--    RC2=$(awk '/^>N/ {print match($9 $10 $11, "Maildeliveryfailed:")}' \
--        $LTPTMP/tst_mail.res)
--#####
--# Some mailers (e.g., Red Hat's sendmail) print different messages 
--#####
--if [ -f /etc/redhat-release ] 
--then 
--  [ -z "$RC2" -o "X$RC2" = "X0" ] && \
-+##################################################################
-+# In this testcase, mail will get "Returnedmail:", while mailx will
-+# get "UndeliveredMailReturned:".
-+# Either of mail and mailx may be linked to another.
-+# For example,
-+# /bin/mail -> /bin/mailx
-+# or
-+# /bin/mailx -> /bin/mail
-+##################################################################
-      RC2=$(awk '/^>N/ {print match($9 $10, "Returnedmail:")}' \
-              $LTPTMP/tst_mail.res)
--else 
--  [ -z "$RC2" -o "X$RC2" = "X0" ] && \
--     RC2=$(awk '/^>N/ {print match($9 $10 $11, "UndeliveredMailReturned")}' \
-+     RC3=$(awk '/^>N/ {print match($9 $10, "UndeliveredMail")}' \
-              $LTPTMP/tst_mail.res)
- fi 
--    if [ -z "$RC1" -a -z "$RC2" ]
-+    if [ -z "$RC1" -a -z "$RC2" -a -z "$RC3" ]
-     then
-         $LTPBIN/tst_res TFAIL $LTPTMP/tst_mail.res \
-         "Test #2: No new mail for root. Reason:"
-         TFAILCNT=$(( $TFAILCNT+1 ))
-     else
--        if [ $RC1 -ne 0 -a $RC2 -ne 0 ]
-+        if [ $RC1 -ne 0 -a $RC2 -ne 0 ] || [ $RC1 -ne 0 -a $RC3 -ne 0 ]
-         then
-             $LTPBIN/tst_resm TPASS \
-                 "Test #2: Mailer-Deamon reported delivery failure"
-@@ -203,7 +202,6 @@ fi
-             TFAILCNT=$(( $TFAILCNT+1 ))
-         fi
-     fi
--fi
- else
-     $LTPBIN/tst_resm TCONF "mail command not installed"
- fi    
-@@ -242,29 +240,28 @@ else
-     echo "d" | mail -u root > $LTPTMP/tst_mail.res 2>&1
-     RC1=$(awk '/^>N/ {IGNORECASE=1; print match($3, "Mailer-Daemon")}' \
- 	$LTPTMP/tst_mail.res)
--    RC2=$(awk '/^>N/ {print match($9 $10 $11, "Maildeliveryfailed:")}' \
--        $LTPTMP/tst_mail.res)
--#####
--# Some mailers (e.g., Red Hat's sendmail) print different messages 
--#####
--if [ -f /etc/redhat-release ] 
--then 
--   [ -z "$RC2" -o "X$RC2" = "X0" ] && \
--      RC2=$(awk '/^>N/ {print match($9 $10, "Returnedmail:")}' \
--              $LTPTMP/tst_mail.res)
--else 
--    [ -z "$RC2" -o "X$RC2" = "X0" ] && \
--        RC2=$(awk '/^>N/ {print match($9 $10 $11, "UndeliveredMailReturned")}' \
--                $LTPTMP/tst_mail.res)
--fi 
--    if [ -z "$RC1" -a -z "$RC2" ]
-+##################################################################
-+# In this testcase, mail will get "Returnedmail:", while mailx will
-+# get "UndeliveredMailReturned:".
-+# Either of mail and mailx may be linked to another.
-+# For example,
-+# /bin/mail -> /bin/mailx
-+# or
-+# /bin/mailx -> /bin/mail
-+##################################################################
-+     RC2=$(awk '/^>N/ {print match($9 $10, "Returnedmail:")}' \
-+             $LTPTMP/tst_mail.res)
-+     RC3=$(awk '/^>N/ {print match($9 $10, "UndeliveredMail")}' \
-+             $LTPTMP/tst_mail.res)
-+fi
-+    if [ -z "$RC1" -a -z "$RC2" -a -z "$RC3" ]
-     then
-         $LTPBIN/tst_res TFAIL $LTPTMP/tst_mail.res \
--        "Test #3: No new mail for root. Reason:"
-+        "Test #2: No new mail for root. Reason:"
-         TFAILCNT=$(( $TFAILCNT+1 ))
-     else
--        if [ $RC1 -ne 0 -a $RC2 -ne 0 ]
--        then
-+        if [ $RC1 -ne 0 -a $RC2 -ne 0 ] || [ $RC1 -ne 0 -a $RC3 -ne 0 ]
-+	then
-             $LTPBIN/tst_resm TPASS \
-                 "Test #3: Mailer-Deamon reported delivery failure"
-         else
-@@ -273,7 +270,7 @@ fi
-             TFAILCNT=$(( $TFAILCNT+1 ))
-         fi
-     fi
--fi
-+
- else
-     $LTPBIN/tst_resm TCONF "mail command not installed"
- fi
+diff --git a/testcases/kernel/timers/clock_settime/clock_settime03.c b/testcases/kernel/timers/clock_settime/clock_settime03.c
+index 7638abd..5026242 100755
+--- a/testcases/kernel/timers/clock_settime/clock_settime03.c
++++ b/testcases/kernel/timers/clock_settime/clock_settime03.c
+@@ -193,7 +193,8 @@ main(int ac, char **av)
+ 						, testcase[i].exp_errval,
+ 						testcase[i].err_desc);
+ 			} else {
+-				tst_resm(TFAIL, "clock_settime(2) failed to"
++				tst_resm(TFAIL | TTERRNO,
++						"clock_settime(2) failed to"
+ 						" produce expected error; %d"
+ 						" , errno : %s and got %ld",
+ 						testcase[i].exp_errno,
 -- 
-1.6.2.2
-
-
+1.6.2.5
 
 
 ------------------------------------------------------------------------------
