@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1N8n6M-0000Z5-9w
-	for ltp-list@lists.sourceforge.net; Fri, 13 Nov 2009 03:45:34 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by 1b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N8n6F-0003Xt-SZ
-	for ltp-list@lists.sourceforge.net; Fri, 13 Nov 2009 03:45:34 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Thu, 12 Nov 2009 22:47:41 -0500
-References: <1257765429.7677.23.camel@subratamodak.linux.ibm.com>
-	<1257788341.7677.62.camel@subratamodak.linux.ibm.com>
-	<364299f40911121243i2bf72ab5p258fa78989b3df5@mail.gmail.com>
-In-Reply-To: <364299f40911121243i2bf72ab5p258fa78989b3df5@mail.gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <liubo2009@cn.fujitsu.com>) id 1ND86K-0000Es-0u
+	for ltp-list@lists.sourceforge.net; Wed, 25 Nov 2009 02:59:28 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1ND86C-000443-VT
+	for ltp-list@lists.sourceforge.net; Wed, 25 Nov 2009 02:59:27 +0000
+Message-ID: <4B0C8C98.9050007@cn.fujitsu.com>
+Date: Wed, 25 Nov 2009 09:47:04 +0800
+From: liubo <liubo2009@cn.fujitsu.com>
 MIME-Version: 1.0
-Message-Id: <200911122247.42705.vapier@gentoo.org>
-Subject: Re: [LTP] Clone build fail with the latest CVS sanpshot
+References: <000001ca6d65$076cb650$164622f0$@co.jp>
+In-Reply-To: <000001ca6d65$076cb650$164622f0$@co.jp>
+Subject: Re: [LTP] build failure with 2009-11-24 cvs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,115 +24,192 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7731364008581019469=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
-
---===============7731364008581019469==
-Content-Type: multipart/signed; boundary="nextPart3571598.N7PF96c0YD";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart3571598.N7PF96c0YD
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Thursday 12 November 2009 15:43:20 Garrett Cooper wrote:
-> On Mon, Nov 9, 2009 at 9:39 AM, Subrata Modak wrote:
-> > On Mon, 2009-11-09 at 07:49 -0500, Mike Frysinger wrote:
-> >> On Monday 09 November 2009 06:17:09 Subrata Modak wrote:
-> >> > I get the following failure with today=C5=9B CVS. ./configure has be=
-en done
-> >> > before make:
-> >> >
-> >> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
-> >> > -I/ltp-intermediate-20091109/testcases/kernel/include
-> >> > -I/ltp-intermediate-20091109/testcases/kernel/containers/mqns/../lib=
-cl
-> >> >one -I../../../../include -I../../../../include
-> >> >  -L/ltp-intermediate-20091109/testcases/kernel/containers/mqns/../li=
-bc
-> >> >lone -L../../../../lib  mqns_01.c   -lltp -lclone -lpthread -lrt -o
-> >> > mqns_01
-> >> > /ltp-intermediate-20091109/testcases/kernel/containers/mqns/../libcl=
-on
-> >> >e/li bclone.a(libclone.o): In function `do_clone_tests':
-> >> >  /ltp-intermediate-20091109/testcases/kernel/containers/libclone/lib=
-cl
-> >> >one.c
-> >> >
-> >> > :25: undefined reference to `ltp_clone_quick' collect2: ld returned 1
-> >> > : exit status
-> >>
-> >> should be fixed now.  static lib linking order is picky.
-> >
-> > Thanks Mike. building fine now.
->=20
-> When you switch that back though, it fails to compile on Gentoo. Hence
-> that's why I did `-lclone $(LDLIBS) -lpthread -lrt'.
-
-huh ?  i test everything on gentoo, and this has been working for me.  if l=
-tp=20
-requires pthread/rt, that should be fixed in common code.  the issue here i=
-s=20
-that libclone needs libltp symbols, and that's it.
-
-> Some autoconf tests need to be created to detect broken linkers like
-> this because it's really annoying doing this tug-of-war with the
-> library ordering...
-
-i dont think so ... start by posting the actual error messages you're seein=
-g.
-=2Dmike
-
---nextPart3571598.N7PF96c0YD
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.13 (GNU/Linux)
-
-iQIcBAABAgAGBQJK/NbeAAoJEEFjO5/oN/WBWgwP/32xf+N5HXdWwAa1/RN52xtV
-+RvU3qfwmXO8MPAOprOgHIqVXSrzrZxKlqQlGSfyEspFFIVM2iQO3MohW1K++9ao
-P3l597RwCh7RYWOV/DVy/7PhP9eWqjjFpjpPQHcNhjTmlau1mlju/cKJIPwgZcOa
-wmttAYnGI2TnILv+w0kQVeUhN0Xss7cDgevC+ZOkY9EjrijlyQwXFJKK4PXgETme
-c9XA2tjJXh6eZ02ou/iwkvCyTO1iK8aezmG6Ap3wKqRQTYZBJGAjGQIeidkZsXV5
-USUjr/zZpAjV9Lu7I18vvc7wm5AvAuhRFA+DzmN027g07yNaTNDl+ucBafwezwT/
-xdhKqa0zYIMk7tadFxFFLjk8wdOGds6zlzL9dkEtcYMeOpD/j9n3pFCOtyccMKDt
-KLNOgUekn6F8Mkw1O0ZIV3+VSmr26652B1coGwdbuDnOOfvtwhZBBvXpV3tiTdR0
-c3/Srkw6yJd+topoPuryAG7DDm2K9QkxaNZgB5eeX2MK9zT7jSoJSRfoih2Xvsou
-SBK3EZIM6VjVe3p2AQgLeoZKO5GZE0F0hYQDkAeVLkyIWYZpTGfZuaW3OLlomVUB
-dY21wZM0vZ2BuUhkv6CARIrulOSnESODOs5U7fUUawdH3rMHiNTaaWCgkF7jUIJt
-/dElTooxuubmvPjUfOud
-=CcWJ
------END PGP SIGNATURE-----
-
---nextPart3571598.N7PF96c0YD--
-
-
---===============7731364008581019469==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi,
+On 11/25/2009 08:19 AM, Mitani wrote:
+> Hi,
+>
+> I ran "make" in RHEL5.4 (Kernel release : 2.6.18-164.el5) with
+> ltp-2009-11-24.tar.gz.
+> But it failed with following error message.
+> ./configure has been done before make.
+> I use "make 3.81", "autoconf 2.61", "automake 1.10.2", and "m4 1.4.7".
+>
+> ------------
+> make[3]: Entering directory
+> `/home/LTP/ltp-2009-11-24/testcases/kernel/syscalls'
+> make[3]: *** No rule to make target
+> `/home/LTP/ltp-2009-11-24/testcases/kernel/syscalls/li
+> bevent/test/Makefile', needed by `libevent-all'.  Stop.
+> make[3]: Leaving directory
+> `/home/LTP/ltp-2009-11-24/testcases/kernel/syscalls'
+> make[2]: *** [all] Error 2
+> make[2]: Leaving directory `/home/LTP/ltp-2009-11-24/testcases/kernel'
+> make[1]: *** [all] Error 2
+> make[1]: Leaving directory `/home/LTP/ltp-2009-11-24/testcases'
+> make: *** [testcases-all] Error 2
+> ------------
+>
+> Similar failure occurred in RHEL5.4 and ltp-2009-11-20.tar.gz too.
+>
+>
+> I confirmed in "${LTPROOT}/testcases/kernel/syscalls/libevent/test"
+> directory.
+> As a result, there wasn't "Makefile" in this directory.
+> I think that the following command in
+> "${LTPROOT}/testcases/kernel/syscalls/Makefile"
+> failed by this reason.
+>
+> ------------
+> libevent-all: $(abs_srcdir)/libevent/test/Makefile libevent/test
+>         $(MAKE) -C libevent/test -f "$(firstword $^)" $(LIBEVENT_APPS)
+> ------------
+>
+> I judged that "${LTPROOT}/testcases/kernel/syscalls/libevent/configure"
+> made "${LTPROOT}/testcases/kernel/syscalls/libevent/test/Makefile".
+> After execute this configure,
+> "${LTPROOT}/testcases/kernel/syscalls/libevent/test/Makefile"
+> was made.
+>
+>
+> I executed "make" command in "${LTPROOT}" directory again.
+> Then, this time, it failed in the following error message.
+>
+> ------------
+> make[3]: Entering directory
+> `/home/LTP/ltp-2009-11-24/testcases/kernel/syscalls'
+> make -C libevent/test -f
+> "/home/LTP/ltp-2009-11-24/testcases/kernel/syscalls/libevent/test/Makefile"
+> regress test-eof test-init test-time test-weof
+> make[4]: Entering directory
+> `/home/LTP/ltp-2009-11-24/testcases/kernel/syscalls/libevent/test'
+> gcc -DHAVE_CONFIG_H -I. -I. -I..     -I../compat -Wall -g -O2 -c regress.c
+> make[4]: *** No rule to make target `../libevent.a', needed by `regress'.
+> Stop.
+> make[4]: Leaving directory
+> `/home/LTP/ltp-2009-11-24/testcases/kernel/syscalls/libevent/test'
+> make[3]: *** [libevent-all] Error 2
+> make[3]: Leaving directory
+> `/home/LTP/ltp-2009-11-24/testcases/kernel/syscalls'
+> make[2]: *** [all] Error 2
+> make[2]: Leaving directory `/home/LTP/ltp-2009-11-24/testcases/kernel'
+> make[1]: *** [all] Error 2
+> make[1]: Leaving directory `/home/LTP/ltp-2009-11-24/testcases'
+> make: *** [testcases-all] Error 2
+> ------------
+>
+>
+> This time's failure seems to be caused by the fact that there is not
+> "${LTPROOT}/testcases/kernel/syscalls/libevent/libevent.a", I think.
+>
+>
+> "libevent.a" file was made after I executed "make" command in 
+> "${LTPROOT}/testcases/kernel/syscalls/libevent" directory.
+> But, following failure occurred when I executed this "make" command.
+>
+> ------------
+> Making all in test
+> make[2]: Entering directory
+> `/home/LTP/ltp-2009-11-24/testcases/kernel/syscalls/libevent/test'
+> gcc -DHAVE_CONFIG_H -I. -I. -I..     -I../compat -Wall -g -O2 -c test-init.c
+> gcc  -I../compat -Wall -g -O2  -o test-init  test-init.o -L.. -levent
+> gcc -DHAVE_CONFIG_H -I. -I. -I..     -I../compat -Wall -g -O2 -c test-eof.c
+> gcc  -I../compat -Wall -g -O2  -o test-eof  test-eof.o -L.. -levent
+> gcc -DHAVE_CONFIG_H -I. -I. -I..     -I../compat -Wall -g -O2 -c test-weof.c
+> gcc  -I../compat -Wall -g -O2  -o test-weof  test-weof.o -L.. -levent
+> gcc -DHAVE_CONFIG_H -I. -I. -I..     -I../compat -Wall -g -O2 -c test-time.c
+> gcc  -I../compat -Wall -g -O2  -o test-time  test-time.o -L.. -levent
+> gcc  -I../compat -Wall -g -O2  -o regress  regress.o -L.. -levent
+> gcc -DHAVE_CONFIG_H -I. -I. -I..     -I../compat -Wall -g -O2 -c bench.c
+> gcc  -I../compat -Wall -g -O2  -o bench  bench.o -L.. -levent
+> make[2]: ./test.sh: Command not found
+> make[2]: *** [test] Error 127
+> make[2]: Leaving directory
+> `/home/LTP/ltp-2009-11-24/testcases/kernel/syscalls/libevent/test'
+> make[1]: *** [all-recursive] Error 1
+> make[1]: Leaving directory
+> `/home/LTP/ltp-2009-11-24/testcases/kernel/syscalls/libevent'
+> make: *** [all-recursive-am] Error 2
+> ------------
+>
+>
+> This failure depends on there not being "$ LTPROOT
+> /testcases/kernel/syscalls/libevent/test.sh".
+> I cannot make "test.sh", because I don't know what this "test.sh" do.
+> But, "${LTPROOT}/testcases/kernel/syscalls/libevent/libevent.a", was made, 
+> then, first of all, I executed "make" command in "${LTPROOT}" directory 
+> once again.
+> Then "make" succeeded.
+> After that, "make install" succeeded too.
+>
+>
+> >From the above, I think that there may be three following problems.
+>
+> (1) "${LTPROOT}/testcases/kernel/syscalls/libevent/test/Makefile" does not
+> exist.
+>     For this measure, this "Makefile" should be made when
+> "${LTPROOT}/configure"
+>     executed or this is offered as standard equipment, I think.
+>
+> (2) "${LTPROOT}/testcases/kernel/syscalls/libevent/libevent.a" does not
+> exist.
+>     For this measure, this "libevent.a" may be necessary to be made when
+>     "make" executed in "${LTPROOT}" directory.
+>
+> (3) "${LTPROOT}/testcases/kernel/syscalls/libevent/test/test.sh" does not
+> exist.
+>     For this measure, this "test.sh" may be necessary to be offered as
+> standard
+>     equipment.
+>
+>
+> Can I get some advice whether my thought above is right?
+>
+>   
+    By using ltp-intermediate-20091122,
+    Same problems occured in my machine and same solutions to pass
+"make" step.
+   
+    About test.sh, I think the author might forget to add test.sh to
+    "${LTPROOT}/testcases/kernel/syscalls/libevent/test/",
+    for in "${LTPROOT}/testcases/kernel/syscalls/libevent/Makefile",
+there does exist
+    "EXTRA_DIST = test/test.sh".
+
+    Regards,
+    Liu Bo
+> Regards--
+>
+> -Tomonori Mitani
+>
+>
+>
+>
+> ------------------------------------------------------------------------------
+> Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+> trial. Simplify your report design, integration and deployment - and focus on 
+> what you do best, core application coding. Discover what's new with
+> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>
+>
+>   
+
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
 trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
---===============7731364008581019469==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============7731364008581019469==--
-
