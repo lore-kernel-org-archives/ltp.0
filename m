@@ -1,19 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 3yr0jf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1N4xJU-0002Iz-NV
-	for ltp-list@lists.sourceforge.net; Mon, 02 Nov 2009 13:51:16 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
-	by 3b2kzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N4xJO-0007oU-2m
-	for ltp-list@lists.sourceforge.net; Mon, 02 Nov 2009 13:51:16 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Mon, 02 Nov 2009 19:03:55 +0530
-Message-Id: <1257168835.4977.46.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: [LTP] Build Fails on some archs
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NDCWf-0006Tx-5B
+	for ltp-list@lists.sourceforge.net; Wed, 25 Nov 2009 07:42:57 +0000
+Received: from mail-pz0-f193.google.com ([209.85.222.193])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NDCWY-00031m-RM
+	for ltp-list@lists.sourceforge.net; Wed, 25 Nov 2009 07:42:57 +0000
+Received: by pzk31 with SMTP id 31so5088699pzk.28
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 24 Nov 2009 23:42:45 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <200911250236.22440.vapier@gentoo.org>
+References: <000001ca6d7c$63dc8890$2b9599b0$@co.jp>
+	<200911250033.23404.vapier@gentoo.org>
+	<364299f40911242226g68c37f59r1fcfd23ad87dd1e@mail.gmail.com>
+	<200911250236.22440.vapier@gentoo.org>
+Date: Tue, 24 Nov 2009 23:42:25 -0800
+Message-ID: <364299f40911242342v795a0fe3pe217e982d614b9c0@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] mbind01 test failed with after ltp-2009-11-12.tar.gz
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,155 +30,95 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sf.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net, Nate Straz <nate@refried.org>, Mitani <mitani@ryobi.co.jp>
 
-R2FycmV0LAoKVGhlcmUgYXJlIHNvbWUgYnVpbGQgZmFpbHVyZXMgb2YgTFRQIG9uIHNvbWUgYXJj
-aHMuIFByb2JhYmx5LCBhdXRvY29uZgpmaWxlcyBuZWVkcyB0byBiZSB3cml0dGVuIGZvciB0aGVt
-OgoKPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PQojIHVuYW1lIC1hCkxpbnV4IDIuNi4yNy4xOS01LWRlZmF1bHQgIzEg
-U01QIDIwMDktMDItMjggMDQ6NDA6MjEgKzAxMDAgczM5MHggczM5MHgKczM5MHggR05VL0xpbnV4
-CiMgY2F0IC9ldGMvaXNzdWUKV2VsY29tZSB0byBTVVNFIExpbnV4IEVudGVycHJpc2UgU2VydmVy
-IDExIChzMzkweCkgLSBLZXJuZWwgXHIgKFxsKS4KCmFuZAoKIyB1bmFtZSAtYQpMaW51eCAyLjYu
-MTgtMTY0LmVsNSAjMSBTTVAgVHVlIEF1ZyAxOCAxNTo1Mzo1MCBFRFQgMjAwOSBzMzkweCBzMzkw
-eApzMzkweCBHTlUvTGludXgKIyBjYXQgL2V0Yy9pc3N1ZQpSZWQgSGF0IEVudGVycHJpc2UgTGlu
-dXggU2VydmVyIHJlbGVhc2UgNS40IChUaWthbmdhKQpLZXJuZWwgXHIgb24gYW4gXG0KCmdjYyAt
-ZyAtTzIgLWcgLU8yIC1mbm8tc3RyaWN0LWFsaWFzaW5nIC1waXBlIC1XYWxsCi1JL3Jvb3Qvc3Vi
-cmF0YS9sdHAvbHRwLWZ1bGwtMjAwOTEwMzEvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlCi1JLi4v
-Li4vLi4vLi4vaW5jbHVkZSAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgICAtTC4uLy4uLy4uLy4uL2xp
-YgpwdHJhY2UwNC5jICAgLWxsdHAgLW8gcHRyYWNlMDQKcHRyYWNlMDMuYzogSW4gZnVuY3Rpb24g
-J21haW4nOgpwdHJhY2UwMy5jOjE4Mjogd2FybmluZzogZm9ybWF0ICclZCcgZXhwZWN0cyB0eXBl
-ICdpbnQnLCBidXQgYXJndW1lbnQgMwpoYXMgdHlwZSAnbG9uZyBpbnQnCnB0cmFjZTA0LmM6IElu
-IGZ1bmN0aW9uICdjb21wYXJlX3JlZ2lzdGVycyc6CnB0cmFjZTA0LmM6NTA6IGVycm9yOiBzdG9y
-YWdlIHNpemUgb2YgJ3B0X3JlZ3MnIGlzbid0IGtub3duCnB0cmFjZTA0LmM6NTA6IHdhcm5pbmc6
-IHVudXNlZCB2YXJpYWJsZSAncHRfcmVncycKbWFrZVs0XTogKioqIFtwdHJhY2UwNF0gRXJyb3Ig
-MQoKZ2NjIC1nIC1PMiAtZyAtTzIgLWZuby1zdHJpY3QtYWxpYXNpbmcgLXBpcGUgLVdhbGwKLUkv
-cm9vdC9zdWJyYXRhL2x0cC9sdHAtZnVsbC0yMDA5MTAzMS90ZXN0Y2FzZXMva2VybmVsL2luY2x1
-ZGUKLUkuLi8uLi8uLi8uLi8uLi9pbmNsdWRlIC1JLi4vLi4vLi4vLi4vLi4vaW5jbHVkZQotTC9y
-b290L3N1YnJhdGEvbHRwL2x0cC1mdWxsLTIwMDkxMDMxL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJv
-bGxlcnMvY3B1c2V0L2NwdXNldF9zeXNjYWxsX3Rlc3QvLi4vY3B1c2V0X2xpYiAtTC4uLy4uLy4u
-Ly4uLy4uL2xpYiAgY3B1c2V0X3N5c2NhbGxfdGVzdC5jICAgLWxsdHAgLWxjcHVfc2V0IC1vIGNw
-dXNldF9zeXNjYWxsX3Rlc3QKY3B1c2V0X3N5c2NhbGxfdGVzdC5jOiBJbiBmdW5jdGlvbiAnZ2V0
-X21lbXBvbGljeSc6CmNwdXNldF9zeXNjYWxsX3Rlc3QuYzo2NzogZXJyb3I6ICdfX05SX2dldF9t
-ZW1wb2xpY3knIHVuZGVjbGFyZWQgKGZpcnN0CnVzZSBpbiB0aGlzIGZ1bmN0aW9uKQpjcHVzZXRf
-c3lzY2FsbF90ZXN0LmM6Njc6IGVycm9yOiAoRWFjaCB1bmRlY2xhcmVkIGlkZW50aWZpZXIgaXMg
-cmVwb3J0ZWQKb25seSBvbmNlCmNwdXNldF9zeXNjYWxsX3Rlc3QuYzo2NzogZXJyb3I6IGZvciBl
-YWNoIGZ1bmN0aW9uIGl0IGFwcGVhcnMgaW4uKQpjcHVzZXRfc3lzY2FsbF90ZXN0LmM6IEluIGZ1
-bmN0aW9uICdtYmluZCc6CmNwdXNldF9zeXNjYWxsX3Rlc3QuYzo3MzogZXJyb3I6ICdfX05SX21i
-aW5kJyB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4KdGhpcyBmdW5jdGlvbikKY3B1c2V0X3N5c2Nh
-bGxfdGVzdC5jOiBJbiBmdW5jdGlvbiAnc2V0X21lbXBvbGljeSc6CmNwdXNldF9zeXNjYWxsX3Rl
-c3QuYzo3ODogZXJyb3I6ICdfX05SX3NldF9tZW1wb2xpY3knIHVuZGVjbGFyZWQgKGZpcnN0CnVz
-ZSBpbiB0aGlzIGZ1bmN0aW9uKQpjcHVzZXRfc3lzY2FsbF90ZXN0LmM6IEluIGZ1bmN0aW9uICdw
-cm9jZXNzX29wdGlvbnMnOgpjcHVzZXRfc3lzY2FsbF90ZXN0LmM6MTAwOiB3YXJuaW5nOiB1bnVz
-ZWQgdmFyaWFibGUgJ2ZpbGUnCmNwdXNldF9zeXNjYWxsX3Rlc3QuYzogSW4gZnVuY3Rpb24gJ3Rl
-c3RfbWJpbmQnOgpjcHVzZXRfc3lzY2FsbF90ZXN0LmM6MTc3OiB3YXJuaW5nOiBmb3JtYXQgJyVs
-eCcgZXhwZWN0cyB0eXBlICdsb25nCnVuc2lnbmVkIGludCcsIGJ1dCBhcmd1bWVudCAyIGhhcyB0
-eXBlICd2b2lkIConCm1ha2VbNV06ICoqKiBbY3B1c2V0X3N5c2NhbGxfdGVzdF0gRXJyb3IgMQo9
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09CiMgdW5hbWUgLWEKTGludXggMi42LjE4LTE2NC5lbDUgIzEgU01QIFR1ZSBB
-dWcgMTggMTU6NTg6MDkgRURUIDIwMDkgcHBjNjQgcHBjNjQKcHBjNjQgR05VL0xpbnV4CiMgY2F0
-IC9ldGMvaXNzdWUKUmVkIEhhdCBFbnRlcnByaXNlIExpbnV4IFNlcnZlciByZWxlYXNlIDUuNCAo
-VGlrYW5nYSkKS2VybmVsIFxyIG9uIGFuIFxtCgpnY2MgLWcgLU8yIC1nIC1PMiAtZm5vLXN0cmlj
-dC1hbGlhc2luZyAtcGlwZSAtV2FsbAotSS9yb290L3N1YnJhdGEvbHRwL2x0cC1mdWxsLTIwMDkx
-MDMxL3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZQotSS4uLy4uLy4uLy4uL2luY2x1ZGUgLUkuLi8u
-Li8uLi8uLi9pbmNsdWRlICAgLUwuLi8uLi8uLi8uLi9saWIKcHRyYWNlMDQuYyAgIC1sbHRwIC1v
-IHB0cmFjZTA0CnB0cmFjZTAzLmM6IEluIGZ1bmN0aW9uIOKAmG1haW7igJk6CnB0cmFjZTAzLmM6
-MTgyOiB3YXJuaW5nOiBmb3JtYXQg4oCYJWTigJkgZXhwZWN0cyB0eXBlIOKAmGludOKAmSwgYnV0
-IGFyZ3VtZW50IDMKaGFzIHR5cGUg4oCYbG9uZyBpbnTigJkKcHRyYWNlMDQuYzogSW4gZnVuY3Rp
-b24g4oCYY29tcGFyZV9yZWdpc3RlcnPigJk6CnB0cmFjZTA0LmM6NTc6IGVycm9yOiDigJhQVFJB
-Q0VfR0VUUkVHU+KAmSB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhpcwpmdW5jdGlvbikKcHRy
-YWNlMDQuYzo1NzogZXJyb3I6IChFYWNoIHVuZGVjbGFyZWQgaWRlbnRpZmllciBpcyByZXBvcnRl
-ZCBvbmx5IG9uY2UKcHRyYWNlMDQuYzo1NzogZXJyb3I6IGZvciBlYWNoIGZ1bmN0aW9uIGl0IGFw
-cGVhcnMgaW4uKQptYWtlWzRdOiAqKiogW3B0cmFjZTA0XSBFcnJvciAxCm1ha2VbNF06ICoqKiBX
-YWl0aW5nIGZvciB1bmZpbmlzaGVkIGpvYnMuLi4uCj09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KZ2NjIC1nIC1PMiAt
-ZyAtTzIgLWZuby1zdHJpY3QtYWxpYXNpbmcgLXBpcGUgLVdhbGwKLUkvcm9vdC9zdWJyYXRhL2x0
-cC9sdHAtZnVsbC0yMDA5MTAzMS90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUKLUkvcm9vdC9zdWJy
-YXRhL2x0cC9sdHAtZnVsbC0yMDA5MTAzMS90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2Nn
-cm91cC8uLi9saWJjb250cm9sbGVycyAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgLUkuLi8uLi8uLi8u
-Li9pbmNsdWRlICAgLUwvcm9vdC9zdWJyYXRhL2x0cC9sdHAtZnVsbC0yMDA5MTAzMS90ZXN0Y2Fz
-ZXMva2VybmVsL2NvbnRyb2xsZXJzL2Nncm91cC8uLi9saWJjb250cm9sbGVycyAtTC4uLy4uLy4u
-Ly4uL2xpYiAgZ2V0ZGVsYXlzLmMgICAtbGx0cCAtbGNvbnRyb2xsZXJzIC1vIGdldGRlbGF5cwpt
-YWtlWzVdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC9yb290L3N1YnJhdGEvbHRwL2x0cC1mdWxsLTIw
-MDkxMDMxL2xpYicKbWFrZVs1XTogTm90aGluZyB0byBiZSBkb25lIGZvciBgYWxsJy4KbWFrZVs1
-XTogTGVhdmluZyBkaXJlY3RvcnkgYC9yb290L3N1YnJhdGEvbHRwL2x0cC1mdWxsLTIwMDkxMDMx
-L2xpYicKZ2V0ZGVsYXlzLmM6IEluIGZ1bmN0aW9uICdzZW5kX2NtZCc6CmdldGRlbGF5cy5jOjE0
-NzogZXJyb3I6IGRlcmVmZXJlbmNpbmcgcG9pbnRlciB0byBpbmNvbXBsZXRlIHR5cGUKZ2V0ZGVs
-YXlzLmM6MTQ4OiBlcnJvcjogZGVyZWZlcmVuY2luZyBwb2ludGVyIHRvIGluY29tcGxldGUgdHlw
-ZQpnZXRkZWxheXMuYzoxNDg6IGVycm9yOiAnTkxBX0hEUkxFTicgdW5kZWNsYXJlZCAoZmlyc3Qg
-dXNlIGluIHRoaXMKZnVuY3Rpb24pCmdldGRlbGF5cy5jOjE0ODogZXJyb3I6IChFYWNoIHVuZGVj
-bGFyZWQgaWRlbnRpZmllciBpcyByZXBvcnRlZCBvbmx5Cm9uY2UKZ2V0ZGVsYXlzLmM6MTQ4OiBl
-cnJvcjogZm9yIGVhY2ggZnVuY3Rpb24gaXQgYXBwZWFycyBpbi4pCmdldGRlbGF5cy5jOjE1MDog
-ZXJyb3I6IGRlcmVmZXJlbmNpbmcgcG9pbnRlciB0byBpbmNvbXBsZXRlIHR5cGUKZ2V0ZGVsYXlz
-LmM6IEluIGZ1bmN0aW9uICdnZXRfZmFtaWx5X2lkJzoKZ2V0ZGVsYXlzLmM6MTk0OiB3YXJuaW5n
-OiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiAnTkxBX0FMSUdOJwpnZXRkZWxheXMu
-YzoxOTQ6IGVycm9yOiBkZXJlZmVyZW5jaW5nIHBvaW50ZXIgdG8gaW5jb21wbGV0ZSB0eXBlCmdl
-dGRlbGF5cy5jOjE5NTogZXJyb3I6IGRlcmVmZXJlbmNpbmcgcG9pbnRlciB0byBpbmNvbXBsZXRl
-IHR5cGUKZ2V0ZGVsYXlzLmM6MTk2OiBlcnJvcjogJ05MQV9IRFJMRU4nIHVuZGVjbGFyZWQgKGZp
-cnN0IHVzZSBpbiB0aGlzCmZ1bmN0aW9uKQpnZXRkZWxheXMuYzogSW4gZnVuY3Rpb24gJ21haW4n
-OgpnZXRkZWxheXMuYzo0NTI6IGVycm9yOiBkZXJlZmVyZW5jaW5nIHBvaW50ZXIgdG8gaW5jb21w
-bGV0ZSB0eXBlCmdldGRlbGF5cy5jOjQ1MzogZXJyb3I6IGRlcmVmZXJlbmNpbmcgcG9pbnRlciB0
-byBpbmNvbXBsZXRlIHR5cGUKZ2V0ZGVsYXlzLmM6NDU3OiBlcnJvcjogZGVyZWZlcmVuY2luZyBw
-b2ludGVyIHRvIGluY29tcGxldGUgdHlwZQpnZXRkZWxheXMuYzo0NTc6IGVycm9yOiAnTkxBX0hE
-UkxFTicgdW5kZWNsYXJlZCAoZmlyc3QgdXNlIGluIHRoaXMKZnVuY3Rpb24pCmdldGRlbGF5cy5j
-OjQ2MzogZXJyb3I6IGRlcmVmZXJlbmNpbmcgcG9pbnRlciB0byBpbmNvbXBsZXRlIHR5cGUKZ2V0
-ZGVsYXlzLmM6NDgzOiBlcnJvcjogZGVyZWZlcmVuY2luZyBwb2ludGVyIHRvIGluY29tcGxldGUg
-dHlwZQpnZXRkZWxheXMuYzo0OTM6IGVycm9yOiBkZXJlZmVyZW5jaW5nIHBvaW50ZXIgdG8gaW5j
-b21wbGV0ZSB0eXBlCmdldGRlbGF5cy5jOjQ5NjogZXJyb3I6IGRlcmVmZXJlbmNpbmcgcG9pbnRl
-ciB0byBpbmNvbXBsZXRlIHR5cGUKZ2V0ZGVsYXlzLmM6NTA3OiBlcnJvcjogZGVyZWZlcmVuY2lu
-ZyBwb2ludGVyIHRvIGluY29tcGxldGUgdHlwZQptYWtlWzRdOiAqKiogW2dldGRlbGF5c10gRXJy
-b3IgMQoKZ2NjIC1nIC1PMiAtZyAtTzIgLWZuby1zdHJpY3QtYWxpYXNpbmcgLXBpcGUgLVdhbGwK
-LUkuLi8uLi8uLi8uLi9pbmNsdWRlIC1JLi4vLi4vLi4vLi4vaW5jbHVkZSAgIC1MLi4vLi4vLi4v
-Li4vbGliCnRvbW95b19maWxlX3Rlc3QuYyAgIC1vIHRvbW95b19maWxlX3Rlc3QKL3RtcC9jY3Z6
-ZHNOZC5vOiBJbiBmdW5jdGlvbiBgbWFpbic6Ci9yb290L3N1YnJhdGEvbHRwL2x0cC1mdWxsLTIw
-MDkxMDMxL3Rlc3RjYXNlcy9rZXJuZWwvc2VjdXJpdHkvdG9tb3lvL25ld25zLmM6NDM6IHVuZGVm
-aW5lZCByZWZlcmVuY2UgdG8gYGNsb25lJwpjb2xsZWN0MjogbGQgcmV0dXJuZWQgMSBleGl0IHN0
-YXR1cwptYWtlWzRdOiAqKiogW25ld25zXSBFcnJvciAxCm1ha2VbNF06ICoqKiBXYWl0aW5nIGZv
-ciB1bmZpbmlzaGVkIGpvYnMuLi4uCm1ha2VbNF06IExlYXZpbmcgZGlyZWN0b3J5CmAvcm9vdC9z
-dWJyYXRhL2x0cC9sdHAtZnVsbC0yMDA5MTAzMS90ZXN0Y2FzZXMva2VybmVsL3NlY3VyaXR5L3Rv
-bW95bycKbWFrZVszXTogKioqIFthbGxdIEVycm9yIDIKbWFrZVszXTogTGVhdmluZyBkaXJlY3Rv
-cnkKYC9yb290L3N1YnJhdGEvbHRwL2x0cC1mdWxsLTIwMDkxMDMxL3Rlc3RjYXNlcy9rZXJuZWwv
-c2VjdXJpdHknCm1ha2VbMl06ICoqKiBbYWxsXSBFcnJvciAyCm1ha2VbMl06IExlYXZpbmcgZGly
-ZWN0b3J5CmAvcm9vdC9zdWJyYXRhL2x0cC9sdHAtZnVsbC0yMDA5MTAzMS90ZXN0Y2FzZXMva2Vy
-bmVsJwptYWtlWzFdOiAqKiogW2FsbF0gRXJyb3IgMgptYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9y
-eQpgL3Jvb3Qvc3VicmF0YS9sdHAvbHRwLWZ1bGwtMjAwOTEwMzEvdGVzdGNhc2VzJwptYWtlOiAq
-KiogW3Rlc3RjYXNlcy1hbGxdIEVycm9yIDIKCmdjYyAtZyAtTzIgLWcgLU8yIC1mbm8tc3RyaWN0
-LWFsaWFzaW5nIC1waXBlIC1XYWxsCi1JLi4vLi4vLi4vLi4vaW5jbHVkZSAtSS4uLy4uLy4uLy4u
-L2luY2x1ZGUgICAtTC4uLy4uLy4uLy4uL2xpYiAgbmV3bnMuYwotbyBuZXducwovdG1wL2NjQzE4
-bUtiLm86IEluIGZ1bmN0aW9uIGBtYWluJzoKL3Jvb3Qvc3VicmF0YS9sdHAvbHRwLWZ1bGwtMjAw
-OTEwMzEvdGVzdGNhc2VzL2tlcm5lbC9zZWN1cml0eS90b21veW8vbmV3bnMuYzo0MzogdW5kZWZp
-bmVkIHJlZmVyZW5jZSB0byBgY2xvbmUnCmNvbGxlY3QyOiBsZCByZXR1cm5lZCAxIGV4aXQgc3Rh
-dHVzCm1ha2VbNF06ICoqKiBbbmV3bnNdIEVycm9yIDEKbWFrZVs0XTogTGVhdmluZyBkaXJlY3Rv
-cnkKYC9yb290L3N1YnJhdGEvbHRwL2x0cC1mdWxsLTIwMDkxMDMxL3Rlc3RjYXNlcy9rZXJuZWwv
-c2VjdXJpdHkvdG9tb3lvJwptYWtlWzNdOiAqKiogW2FsbF0gRXJyb3IgMgptYWtlWzNdOiBMZWF2
-aW5nIGRpcmVjdG9yeQpgL3Jvb3Qvc3VicmF0YS9sdHAvbHRwLWZ1bGwtMjAwOTEwMzEvdGVzdGNh
-c2VzL2tlcm5lbC9zZWN1cml0eScKbWFrZVsyXTogKioqIFthbGxdIEVycm9yIDIKbWFrZVsyXTog
-TGVhdmluZyBkaXJlY3RvcnkKYC9yb290L3N1YnJhdGEvbHRwL2x0cC1mdWxsLTIwMDkxMDMxL3Rl
-c3RjYXNlcy9rZXJuZWwnCm1ha2VbMV06ICoqKiBbYWxsXSBFcnJvciAyCm1ha2VbMV06IExlYXZp
-bmcgZGlyZWN0b3J5CmAvcm9vdC9zdWJyYXRhL2x0cC9sdHAtZnVsbC0yMDA5MTAzMS90ZXN0Y2Fz
-ZXMnCm1ha2U6ICoqKiBbdGVzdGNhc2VzLWFsbF0gRXJyb3IgMgoKcHRyYWNlMDMuYzogSW4gZnVu
-Y3Rpb24gJ21haW4nOgpwdHJhY2UwMy5jOjE4Mjogd2FybmluZzogZm9ybWF0ICclZCcgZXhwZWN0
-cyB0eXBlICdpbnQnLCBidXQgYXJndW1lbnQgMwpoYXMgdHlwZSAnbG9uZyBpbnQnCmdjYyAtZyAt
-TzIgLWcgLU8yIC1mbm8tc3RyaWN0LWFsaWFzaW5nIC1waXBlIC1XYWxsCi1JL3Jvb3Qvc3VicmF0
-YS9sdHAvbHRwLWZ1bGwtMjAwOTEwMzEvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlCi1JLi4vLi4v
-Li4vLi4vaW5jbHVkZSAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgICAtTC4uLy4uLy4uLy4uL2xpYgpw
-dHJhY2UwNC5jICAgLWxsdHAgLW8gcHRyYWNlMDQKSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC91c3Iv
-aW5jbHVkZS9hc20vcHRyYWNlLmg6NTgsCiAgICAgICAgICAgICAgICAgZnJvbSBwdHJhY2UwNC5j
-OjE3OgovdXNyL2luY2x1ZGUvYXNtL2ZwdS5oOjU3OiBlcnJvcjogcmVkZWZpbml0aW9uIG9mICdz
-dHJ1Y3QgaWE2NF9mcHJlZycKSW4gZmlsZSBpbmNsdWRlZCBmcm9tIHB0cmFjZTA0LmM6MTc6Ci91
-c3IvaW5jbHVkZS9hc20vcHRyYWNlLmg6MzA2OiBlcnJvcjogcmVkZWZpbml0aW9uIG9mICdzdHJ1
-Y3QKcHRfYWxsX3VzZXJfcmVncycKbWFrZVs0XTogKioqIFtwdHJhY2UwNF0gRXJyb3IgMQo9PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09CgpSZWdhcmRzLS0KU3VicmF0YQoKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ29t
-ZSBidWlsZCB3aXRoIHVzISBUaGUgQmxhY2tCZXJyeShSKSBEZXZlbG9wZXIgQ29uZmVyZW5jZSBp
-biBTRiwgQ0EKaXMgdGhlIG9ubHkgZGV2ZWxvcGVyIGV2ZW50IHlvdSBuZWVkIHRvIGF0dGVuZCB0
-aGlzIHllYXIuIEp1bXBzdGFydCB5b3VyCmRldmVsb3Bpbmcgc2tpbGxzLCB0YWtlIEJsYWNrQmVy
-cnkgbW9iaWxlIGFwcGxpY2F0aW9ucyB0byBtYXJrZXQgYW5kIHN0YXkgCmFoZWFkIG9mIHRoZSBj
-dXJ2ZS4gSm9pbiB1cyBmcm9tIE5vdmVtYmVyIDkgLSAxMiwgMjAwOS4gUmVnaXN0ZXIgbm93IQpo
-dHRwOi8vcC5zZi5uZXQvc2Z1L2RldmNvbmZlcmVuY2UKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxp
-c3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9s
-aXN0aW5mby9sdHAtbGlzdAo=
+On Tue, Nov 24, 2009 at 11:36 PM, Mike Frysinger <vapier@gentoo.org> wrote:
+> On Wednesday 25 November 2009 01:26:20 Garrett Cooper wrote:
+>> On Tue, Nov 24, 2009 at 9:33 PM, Mike Frysinger <vapier@gentoo.org> wrot=
+e:
+>> > On Wednesday 25 November 2009 00:17:16 Garrett Cooper wrote:
+>> >> --- regen.sh =A019 Nov 2009 19:35:15 -0000 =A0 =A0 =A01.12
+>> >> +++ regen.sh =A025 Nov 2009 05:12:13 -0000
+>> >> @@ -32,8 +32,13 @@ static void cleanup(void);
+>> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, cleanup, "syscall " #NR "=
+ not supported on
+>> >> your arch"); \\ errno =3D ENOSYS; \\
+>> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 __ret =3D -1; \\
+>> >> - =A0 =A0 } else \\
+>> >> + =A0 =A0 } else { \\
+>> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 __ret =3D syscall(NR, ##__VA_ARGS__); \\
+>> >> + =A0 =A0 =A0 =A0 =A0 =A0 if (__ret =3D=3D -1 && errno =3D=3D ENOSYS)=
+ { \\
+>> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, cleanup, "s=
+yscall " #NR " not
+>> >> supported on your arch"); \\ + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 errno =
+=3D ENOSYS; \\
+>> >> + =A0 =A0 =A0 =A0 =A0 =A0 } \\
+>> >> + =A0 =A0 } \\
+>> >> =A0 =A0 =A0 __ret; \\
+>> >> =A0})
+>> >> =A0EOF
+>> >
+>> > i'd prefer this change
+>> > --- testcases/kernel/include/regen.sh =A0 9 Oct 2009 17:55:48 -0000
+>> > 1.11 +++ testcases/kernel/include/regen.sh =A0 25 Nov 2009 05:28:27 -0=
+000
+>> > @@ -30,11 +30,12 @@ static void cleanup(void);
+>> > =A0#define syscall(NR, ...) ({ \\
+>> > =A0 =A0 =A0 =A0int __ret; \\
+>> > =A0 =A0 =A0 =A0if (NR =3D=3D 0) { \\
+>> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, cleanup, "syscall " #NR =
+" not supported
+>> > on your arch"); \\ errno =3D ENOSYS; \\
+>> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0__ret =3D -1; \\
+>> > =A0 =A0 =A0 =A0} else \\
+>> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0__ret =3D syscall(NR, ##__VA_ARGS__); \\
+>> > + =A0 =A0 =A0 if (__ret =3D=3D -1 && errno =3D=3D ENOSYS) \\
+>> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TCONF, cleanup, "syscall " #NR =
+" not supported
+>> > on your arch"); \\ __ret; \\
+>> > =A0})
+>> > =A0EOF
+>>
+>> =A0 =A0 Ok -- that makes more sense.. besides, I think gcc was optimizing
+>> out the first branch with -O2 if it always evaluated to false. Here's
+>> the new patch (I'm keeping the errno =3D ENOSYS part because I want to
+>> make sure that tst_brkm doesn't mess up the errno value if a write(2)
+>> fails or something).
+>
+> i thought tst_brkm exited when called with a cleanup func like we do here
+
+    tst_brkm exits when cleanup is non-NULL:
+
+        /*
+         * If no cleanup function was specified, just return to the caller.
+         * Otherwise call the specified function.  If specified function
+         * returns, call tst_exit().
+         */
+        if (func !=3D NULL) {
+                (*func)();
+                tst_exit();
+        }
+
+    It's always defined for us in linux_syscall_numbers.h, thus it
+always exits...
+Cheers,
+-Garrett
+
+---------------------------------------------------------------------------=
+---
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+
+trial. Simplify your report design, integration and deployment - and focus =
+on =
+
+what you do best, core application coding. Discover what's new with
+Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
