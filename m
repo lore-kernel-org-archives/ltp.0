@@ -1,32 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by h25xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1N6Weh-0004kH-JW
-	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 21:47:39 +0000
-Received: from mail-pz0-f188.google.com ([209.85.222.188])
-	by 72vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N6WeZ-0003Bv-Qr
-	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 21:47:39 +0000
-Received: by pzk26 with SMTP id 26so956782pzk.4
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 06 Nov 2009 13:47:26 -0800 (PST)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1NDARg-0006QK-1t
+	for ltp-list@lists.sourceforge.net; Wed, 25 Nov 2009 05:29:40 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NDARY-0006Ot-QS
+	for ltp-list@lists.sourceforge.net; Wed, 25 Nov 2009 05:29:39 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Wed, 25 Nov 2009 00:33:22 -0500
+References: <000001ca6d7c$63dc8890$2b9599b0$@co.jp>
+	<364299f40911242117g6baf6281r1e7191a201d4203c@mail.gmail.com>
+In-Reply-To: <364299f40911242117g6baf6281r1e7191a201d4203c@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20091106210225.GI819@basil.fritz.box>
-References: <20091106095745.GA25377@basil.fritz.box>
-	<200911060616.40305.vapier@gentoo.org>
-	<20091106130906.GW31511@one.firstfloor.org>
-	<200911060821.40182.vapier@gentoo.org>
-	<364299f40911061004mbb02ed3lf02a33164890625a@mail.gmail.com>
-	<20091106191343.GC819@basil.fritz.box>
-	<20091106194335.GB32249@refried.org>
-	<20091106195940.GH819@basil.fritz.box>
-	<364299f40911061225k2e359ae0w4466a571261e96e@mail.gmail.com>
-	<20091106210225.GI819@basil.fritz.box>
-Date: Fri, 6 Nov 2009 13:47:26 -0800
-Message-ID: <364299f40911061347h24237df0x23aea3be3dc78b7e@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] LTP 20091031 Makefiles totally broken?!?
+Message-Id: <200911250033.23404.vapier@gentoo.org>
+Subject: Re: [LTP] mbind01 test failed with after ltp-2009-11-12.tar.gz
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,90 +25,106 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============5075084736777917558=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Andi Kleen <andi@firstfloor.org>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>, Nate Straz <nate@refried.org>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Nate Straz <nate@refried.org>, Mitani <mitani@ryobi.co.jp>
 
-On Fri, Nov 6, 2009 at 1:02 PM, Andi Kleen <andi@firstfloor.org> wrote:
-> On Fri, Nov 06, 2009 at 12:25:23PM -0800, Garrett Cooper wrote:
->> =A0 =A0 You can actually cross-compile, use out-of-build-tree and
->> bootstrap the system so it can effectively netboot with LTP installed.
->> This is something that we're doing in Cisco today, and it's something
->> I highly recommend doing -- especially if you have higher quality
->> hardware with newer OS'es doing the building for you.
->
-> The hardware I'm using for testing is perfectly capable of
-> building LTP itself.
->
->> =A0 =A0 Granted, it does require more work setting everything up from
->> scratch, but once the work is done, it's a lot easier as far as
->> long-term maintenance is concerned if you're developing regularly on a
->> particular revisioned code-base.
->
-> I would prefer to not get into any cross compiling mess. It would
-> require either static linking or maintenance of a separate build
-> tree with own libraries, both have many drawbacks.
->
->> =A0 =A0 I'm more than happy to provide solutions, but they need to be
->> functional, stable, and easy-to-maintain longterm. Providing hacks for
->> make 3.80 isn't necessarily a good thing for the project to support
->
-> What hacks?
->
-> make 3.80 has build whole distributions with millions of LOCs, it's uncle=
-ar
-> to me why it shouldn't be able to build LTP too.
->
-> I'm pretty sure that not supporting older distributions is very
-> necessarily a bad thing.
+--===============5075084736777917558==
+Content-Type: multipart/signed; boundary="nextPart2661601.91sxTtq3aY";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-I agree. There are some feature gaps between 3.80 and 3.81 I'll need
-to address, which means I need to first off download SLES 10 and
-install it on another VM, and toy around with it (if you can provide
-me with those details, I'll give it a shot).
+--nextPart2661601.91sxTtq3aY
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
->> and it may not even solve your problem 100% (you may run into
->> stability issues using $(shell readlink -f "") instead of $(abspath ).
->
-> I did a quick test of readlink -f and it seems to work here.
->
->> Then it comes back to tools -- I'm basically going to have to write
->> checks in autoconf to make sure that readlink does as planned (isn't
->> broken), and it's going to be more painful for you performance wise to
->> have this hack in place, as opposed to just having an upgraded version
->> of make, which also has resolved several bugs between 3.80 and 3.81.
->
-> I don't understand: the key is not to test for commands used
-> by makefiles, but simply only use features which are generally available.
->
-> I'm also highly surprised that this doesn't work with autoconf -- I thoug=
-ht
-> the whole point of autoconf was to generate portable makefiles, but
-> in this case it seems to especially generate a non portable Makefile.
->
-> I suspect it's actually not a autoconf problem by itself, but
-> something that's in the LTP templates.
+On Wednesday 25 November 2009 00:17:16 Garrett Cooper wrote:
+> --- regen.sh	19 Nov 2009 19:35:15 -0000	1.12
+> +++ regen.sh	25 Nov 2009 05:12:13 -0000
+> @@ -32,8 +32,13 @@ static void cleanup(void);
+>  		tst_brkm(TCONF, cleanup, "syscall " #NR " not supported on your arch");
+>  \\ errno = ENOSYS; \\
+>  		__ret = -1; \\
+> -	} else \\
+> +	} else { \\
+>  		__ret = syscall(NR, ##__VA_ARGS__); \\
+> +		if (__ret == -1 && errno == ENOSYS) { \\
+> +			tst_brkm(TCONF, cleanup, "syscall " #NR " not supported on your arch");
+>  \\ +			errno = ENOSYS; \\
+> +		} \\
+> +	} \\
+>  	__ret; \\
+>  })
+>  EOF
 
-Agreed. The problem that everyone with <3.80 is running into is that I
-was stupid and was under the assumption that many distros wouldn't
-still use make 3.81 because it's been out for the past 4 years. My
-apologies -- I stand corrected.
+i'd prefer this change
+--- testcases/kernel/include/regen.sh	9 Oct 2009 17:55:48 -0000	1.11
++++ testcases/kernel/include/regen.sh	25 Nov 2009 05:28:27 -0000
+@@ -30,11 +30,12 @@ static void cleanup(void);
+ #define syscall(NR, ...) ({ \\
+ 	int __ret; \\
+ 	if (NR == 0) { \\
+-		tst_brkm(TCONF, cleanup, "syscall " #NR " not supported on your arch"); \\
+ 		errno = ENOSYS; \\
+ 		__ret = -1; \\
+ 	} else \\
+ 		__ret = syscall(NR, ##__VA_ARGS__); \\
++	if (__ret == -1 && errno == ENOSYS) \\
++		tst_brkm(TCONF, cleanup, "syscall " #NR " not supported on your arch"); \\
+ 	__ret; \\
+ })
+ EOF
 
-Thanks,
--Garrett
+-mike
 
----------------------------------------------------------------------------=
----
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+--nextPart2661601.91sxTtq3aY
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-trial. Simplify your report design, integration and deployment - and focus =
-on =
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.13 (GNU/Linux)
 
+iQIcBAABAgAGBQJLDMGjAAoJEEFjO5/oN/WBcC4QAKDWBvPhiQWsWEfvWg9ZMwHO
+iJMtj5dQYgPbNz6bmfYr2iRp8Xw/jy5ZNeV25ay56Cb4rkqJg6+6tvHQNMXl+cih
+FxC6FA2IvuLksg0rY8cgS2abHRlBZ+CR447DkmDIDNpiw3vrwDirwj2q7nyfHWGD
+ApUHp+oqgisLW2r0J1qu1yaYbdYNTdTDMuxrGtYdJM0eWevaRmgrWqvMyPuZf45I
+QXwBA68S2gX41qNHz4QrT3Fxdjvxm0DfkqzqS3sL4t6wifNzm3To7MdOrxqLU28k
+xFWG2xRPTRSpHG+MV+Pkg/swIlWqAbt2YiU8AAasEieJQ4No44ipLIBo4487C1wT
+/qEfQl9i4225ROyI7RC8mykTfC/KTNP3nmuf0FxUjFfU2CCrKba9Dr2JbQ0bjN+C
+2YwbKF4015hxqKiXk2Dw1VCgugSynWZRSTUxawUUJGiS+DiXld+uzRdemNge2mEG
+ZlBG6QObsZXsfJ+ltWNi+VWwZWlxeIQKj7vzGmj7FHY4gVGchOG79dIhMs449NMo
+A7d49KiETf9Cnilo9iz2FeDtlSpuYCHHHMYcrIUWJxKQBRpmiIRGMBf/jePRhUr2
+e5CDexd8DRPo5eNiPwF7DQmD6XHaUsDtRR3/N6yR4m/Su7tvPRtyeq7mCOOAD9JV
+U+zSj3aYZbYzLVD2B7/4
+=QXVR
+-----END PGP SIGNATURE-----
+
+--nextPart2661601.91sxTtq3aY--
+
+
+--===============5075084736777917558==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
+--===============5075084736777917558==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============5075084736777917558==--
+
