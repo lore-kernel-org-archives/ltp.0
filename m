@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <andi@firstfloor.org>) id 1N6VEu-0006dG-4M
-	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 20:16:56 +0000
-Received: from one.firstfloor.org ([213.235.205.2])
-	by 29vjzd1.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1N6VEh-0006jO-FM
-	for ltp-list@lists.sourceforge.net; Fri, 06 Nov 2009 20:16:50 +0000
-From: Andi Kleen <andi@firstfloor.org>
-References: <1257167821.4977.41.camel@subratamodak.linux.ibm.com>
-Date: Fri, 06 Nov 2009 21:16:35 +0100
-In-Reply-To: <1257167821.4977.41.camel@subratamodak.linux.ibm.com> (Subrata
-	Modak's message of "Mon, 02 Nov 2009 18:47:01 +0530")
-Message-ID: <87iqdn76jg.fsf@basil.nowhere.org>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1NDf6S-0004AS-3V
+	for ltp-list@lists.sourceforge.net; Thu, 26 Nov 2009 14:13:48 +0000
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
+	by mx2.suse.de (Postfix) with ESMTP id AF69F8655F
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 26 Nov 2009 15:13:31 +0100 (CET)
+Date: Thu, 26 Nov 2009 15:13:46 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20091126141346.GA7306@saboteur.suse.cz>
+References: <20091116151656.GB16811@schrodinger.suse.cz>
+	<20091120125347.GA4858@schrodinger.suse.cz>
 MIME-Version: 1.0
-Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been Released for
-	OCTOBER 2009
+Content-Disposition: inline
+In-Reply-To: <20091120125347.GA4858@schrodinger.suse.cz>
+Subject: Re: [LTP] [RFC] utstest.h
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,31 +29,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sf.net>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel <linux-kernel@vger.kernel.org>
+To: ltp-list@lists.sourceforge.net
 
-Subrata Modak <subrata@linux.vnet.ibm.com> writes:
->
-> ========================
-> OCTOBER 2009 Highlights:
+Hi!
+> > I've been looking at sources for usctest.h again today (lib/parse_opts.c) and I
+> > still have the feeling that this is badly written/broken code and should be
+> > fixed but as there are thousands of tests that uses usctest interface we should
+> > be careful when touching these sources. So IMHO the best approach is to change
+> > one thing at the time and see if this was a good move.
+> > 
+> > So let's start with TEST_PAUSE macro. Accordingly to comment in the header,
+> > this expands to the code that waits for SIGUSR1 signal (and this is not
+> > generaly true).  This macro is expanded to the int usc_global_setup_hook()
+> > function. The function forks the program accordingly to STD_COPIES and
+> > accordingly STD_PAUSE it sleeps for a SIGUSR1 or not (all forked instances); it
+> > also changes program segment size with sbrk().
+> > 
+> > Looking into the test sources, this is called when the test starts in order to
+> > implement test parameters "-c n" (run n copies concurently) and "-p" (pause
+> > test) and system variable USC_TP_SBRK. Do we need these parameters or any of
+> > them? If you convice me that these parameters are usefull I would gladly clean
+> > up and document code that implements TEST_PAUSE, otherwise I would vote for
+> > removing them (or at least the useless ones).
+> > 
+> 
+> Okay, let me put it like this. Are parameters introduced by TEST_PAUSE really
+> used for anything? Would anybody cry if there where removed? Would be patch
+> removing them accepted and merged into CVS?
+> 
 
-s/High/Low/
+Anybody out there? I would really like to clean up and simplify the test interface.
 
-> ======================== 
->      1. LTP Makefiles rewrite:(Project started 1.2 years back) 
->              I. To accommodate correct build/installation practices, 
->             II. better integrate Autoconf/Automake with tests for safer
->                 builds, 
->            III. better cross-compilation of LTP sources. 
-
-Just as a warning for everyone: that change broke building on most old
-distributions and there seems to be no interest in fixing that.
-
-Unless you're running the latest and greatest better stay with older LTP
-versions.
-
--Andi
-
+-- 
+metan
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
