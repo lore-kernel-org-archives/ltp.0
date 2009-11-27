@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Eddy@quicksall.com>) id 1N8aj7-0005MO-DJ
-	for ltp-list@lists.sourceforge.net; Thu, 12 Nov 2009 14:32:45 +0000
-Received: from fmailhost04.isp.att.net ([204.127.217.104])
-	by 29vjzd1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1N8aiz-0002GV-J5
-	for ltp-list@lists.sourceforge.net; Thu, 12 Nov 2009 14:32:45 +0000
-From: "Eddy Quicksall" <Eddy@Quicksall.com>
-References: <4AFBCBBC.9090207@linux.vnet.ibm.com>
-	<1258026859.4866.8.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1258026859.4866.8.camel@subratamodak.linux.ibm.com>
-Date: Thu, 12 Nov 2009 09:32:23 -0500
-Message-ID: <002001ca63a4$f3c54aa0$db4fdfe0$@com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1NDx38-0001FE-31
+	for ltp-list@lists.sourceforge.net; Fri, 27 Nov 2009 09:23:34 +0000
+Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
+	by sfi-mx-3.v28.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1NDx2y-0000ii-2f
+	for ltp-list@lists.sourceforge.net; Fri, 27 Nov 2009 09:23:34 +0000
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Fri, 27 Nov 2009 18:23:11 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Fri, 27 Nov 2009 18:23:11 +0900
+Message-ID: <000001ca6f43$3ec6ac20$bc540460$@co.jp>
 MIME-Version: 1.0
-Content-Language: en-us
-Subject: Re: [LTP] installing ltp-devel-2.0-0.0.i386.rpm
+Content-Language: ja
+Subject: [LTP] build failure in ia64
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,90 +30,196 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net, 'Peter Oberparleiter' <oberpar@linux.vnet.ibm.com>
+To: ltp-list@lists.sourceforge.net
 
-Quick question before I start off on the wrong track. What I need is a
-program that will allow me to test my SCSI target. I will need to have
-control over the CDBs and TMFs. Will LTP Tools allow me to do that?
+Hi,
 
-Eddy
+I ran "make" with ltp-2009-11-26.tar.gz.
+Kernel release is 2.6.18-164.el5.
+Architecture is ia64.
 
------Original Message-----
-From: Subrata Modak [mailto:subrata@linux.vnet.ibm.com] 
-Sent: Thursday, November 12, 2009 6:54 AM
-To: Eddy Quicksall
-Cc: ltp-list@lists.sourceforge.net; Peter Oberparleiter
-Subject: Re: installing ltp-devel-2.0-0.0.i386.rpm
+But it failed with following error message.
+"make autotools" and "./configure" has been done before make.
+I use "make 3.81", "autoconf 2.61", "automake 1.10.2", and "m4 1.4.7".
 
-Hi Eddy,
+------------
+make[4]: Entering directory
+`/home/mitani/LTP/ltp-2009-11-26/testcases/kernel/controllers/
+freezer'
+gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+-I/home/mitani/LTP/ltp-2009-11-26/test
+cases/kernel/include -I../../../../include -I../../../../include
+-L../../../../lib  vfor
+k.c   -lltp -o vfork
+In file included from ../../syscalls/ptrace/ptrace.h:14,
+                 from vfork.c:44:
+/usr/include/sys/ptrace.h:127: error: array type has incomplete element type
+In file included from ../../syscalls/ptrace/ptrace.h:22,
+                 from vfork.c:44:
+/usr/include/asm/ptrace.h:208: error: redefinition of 'struct
+FU_pt_all_user_regs'
+make[4]: *** [vfork] Error 1
+make[4]: Leaving directory
+`/home/mitani/LTP/ltp-2009-11-26/testcases/kernel/controllers/f
+reezer'
+------------
 
-On Thu, 2009-11-12 at 09:47 +0100, Peter Oberparleiter wrote:
-> Forwarding this to the ltp-list which is better suited to discuss ltp 
-> related questions.
-> 
-> -------- Original Message --------
-> Subject: [Ltp-coverage] installing ltp-devel-2.0-0.0.i386.rpm
-> Date: Wed, 11 Nov 2009 15:07:09 -0500
-> From: Eddy Quicksall <Eddy@Quicksall.com>
-> To: <ltp-coverage@lists.sourceforge.net>
-> 
-> I am new to Linux. I want to use the LTP tools to test my SCSI target. I
-> have installed ltp-devel-2.0-0.0.i386.rpm by right clicking on the RPM. It
-> said it installed it but I can't figure out where it installed it. Can
-> someone give me some help?
+Similar failure continues from ltp-2009-11-17.tar.gz at the latest.
+"ltp-2009-11-27.tar.gz" (today's version) seems to fail by another
+new failure before these problems.
+Perhaps, "ltp-2009-11-27.tar.gz" will fail by similar failure after
+this "another new failure" solved, I think.
 
-As the name suggests, ltp-devel-2.0-0.0.i386.rpm is meant for
-development of LTP test cases from any directory of the system. This
-RPM :
-     1. Installs some header and libraries for the discretely developed
-        test cases to compile,
-     2. Installs some Man pages for easy LTP test cases development,
-     3. And all go inside /opt/ltp/ by default,
+So I will report about "ltp-2009-11-26.tar.gz".
 
-I i can understand correctly, you need to test your hardware. For that
-you need to download the stable and existing test suite and the latest
-from ltp.sf.net, untar it, read the instructions inside the
-README/INSTALL carefully, build, install and then run it. Please let us
-know for any further clarification.
+
+The problems are following two.
+(1) Line 127 of "/usr/include/sys/ptrace.h" declares "array type has
+    incomplete element type"
+
+(2) Line 208 of "/usr/include/asm/ptrace.h" declares same structure as
+    "/usr/include/sys/ptrace.h".
+
+
+The files related to these problems are as follows:
+
+ - ${LTPROOT}/testcases/kernel/controllers/freezer/vfork.c
+ - ${LTPROOT}/testcases/kernel/syscalls/ptrace/ptrace.h
+    It's added from ltp-2009-11-17.tar.gz at the latest.
+    I call this file ".../ptrace/ptrace.h" afterward.
+ - /usr/include/sys/ptrace.h
+    I call this file ".../sys/ptrace.h" afterward.
+ - /usr/include/asm/ptrace.h
+    I call this file ".../asm/ptrace.h" afterward.
+
+
+Follows show ".../ptrace/ptrace.h", ".../sys/ptrace.h" and
+".../asm/ptrace.h".
+
+".../ptrace/ptrace.h":
+------------
+/* Ordering matters. Do not move this code block below the #include's */
+#ifdef __ia64__ /* what a pos */
+# define ia64_fpreg FU_ia64_fpreg
+# define pt_all_user_regs FU_pt_all_user_regs
+#endif
+#ifdef HAVE_SYS_PTRACE_H
+# include <sys/ptrace.h>
+#elif defined(HAVE_LINUX_PTRACE_H)
+# include <linux/ptrace.h>
+#endif
+#ifdef HAVE_SYS_REG_H
+# include <sys/reg.h>
+#endif
+#ifdef HAVE_ASM_PTRACE_H
+# include <asm/ptrace.h>
+#endif
+#undef FU_ia64_fpreg
+#undef FU_pt_all_user_regs
+------------
+
+".../sys/ptrace.h":
+------------
+struct pt_all_user_regs
+  {
+    unsigned long nat;
+    unsigned long cr_iip;
+    unsigned long cfm;
+    unsigned long cr_ipsr;
+    unsigned long pr;
+
+    unsigned long gr[32];
+    unsigned long br[8];
+    unsigned long ar[128];
+    struct ia64_fpreg fr[128];              ............ L.127
+  };
+------------
+
+".../asm/ptrace.h":
+------------
+struct pt_all_user_regs {                   ............ L.208
+        unsigned long nat;
+        unsigned long cr_iip;
+        unsigned long cfm;
+        unsigned long cr_ipsr;
+        unsigned long pr;
+
+        unsigned long gr[32];
+        unsigned long br[8];
+        unsigned long ar[128];
+        struct ia64_fpreg fr[128];
+};
+------------
+
+
+
+I tried to avoid above "make" failure as follows:
+
+Avoiding of (1) problem:
+
+"# define ia64_fpreg FU_ia64_fpreg" definition of ".../ptrace/ptrace.h"
+influences "struct ia64_fpreg fr[128];" of ".../sys/ptrace.h", I thought.
+I searched "ia64_fpreg" for all LTP sources, but this structure name was
+not found. I have no ideas why "FU_ia64_fpreg" was defined.
+
+So I commented out "# define ia64_fpreg FU_ia64_fpreg". After that, 
+this problem did not occur.
+
+
+Avoiding of (2) problem:
+
+If ".../sys/ptrace.h" and ".../asm/ptrace.h" are included at the same
+time in ".../ptrace/ptrace.h", this probrem occures.
+Probably, "HAVE_SYS_PTRACE_H" and "HAVE_ASM_PTRACE_H" become effective
+at the same time.
+I referred to "${LTPROOT}/include/config.h" and "${LTPROOT}/config.log",
+and found both defined "1".
+In "ltp-full-20090930.tgz", "vfork.c" didn't include ".../asm/ptrace.h"
+but ".../sys/ptrace.h".
+
+So I commented out "# include <asm/ptrace.h>" from ".../ptrace/ptrace.h".
+After that, this problem did not occur in "vfork.c".
+
+But after this, "${LTPROOT}/testcases/kernel/syscalls/ptrace/ptrace04.c"
+failed. In "ptrace04.c", struct "pt_regs" is used, and it's declared in
+".../asm/ptrace.h".
+
+After examination, I understood that "vfork.c" and six source files
+from "${LTPROOT}/testcases/kernel/syscalls/ptrace01.c" to ".../ptrace06.c"
+include "../ptrace/ptrace.h", and they occur "redefinition" compile
+failure without (2) revision of "../ptrace/ptrace.h".
+
+
+
+
+May I have some questions?
+
+(1) Why was "FU_ia64_fpreg" defined?
+    I deleted this definition to let "make" succeed.
+    But I'm worried whether this revision has a problem.
+
+
+(2) I refer "${LTPROOT}/include/config.h" in my system. It was as follows:
+
+------------
+[...]
+/* Define to 1 if you have the <asm/ptrace.h> header file. */
+#define HAVE_ASM_PTRACE_H 1
+[...]
+/* Define to 1 if you have the <sys/ptrace.h> header file. */
+#define HAVE_SYS_PTRACE_H 1
+[...]
+------------
+
+    In this state, "redefinition" failure such as this time will 
+    happen, I think. But I don't know what kind of revision should I do.
+
+
 
 Regards--
-Subrata
 
-> 
-> 
-> 
-> Eddy
-> 
-> 
-> plain text document attachment (Attached Message Part)
->
-----------------------------------------------------------------------------
---
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008
-30-Day 
-> trial. Simplify your report design, integration and deployment - and focus
-on 
-> what you do best, core application coding. Discover what's new with
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> plain text document attachment (Attached Message Part)
-> _______________________________________________
-> Ltp-coverage mailing list
-> Ltp-coverage@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-coverage
-> 
->
-----------------------------------------------------------------------------
---
-> Let Crystal Reports handle the reporting - Free Crystal Reports 2008
-30-Day 
-> trial. Simplify your report design, integration and deployment - and focus
-on 
-> what you do best, core application coding. Discover what's new with
-> Crystal Reports now.  http://p.sf.net/sfu/bobj-july
-> _______________________________________________ Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+-Tomonori Mitani
 
 
 
