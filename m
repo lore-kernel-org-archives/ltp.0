@@ -1,26 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NDueb-0001vk-1t
-	for ltp-list@lists.sourceforge.net; Fri, 27 Nov 2009 06:50:05 +0000
-Received: from mail-px0-f185.google.com ([209.85.216.185])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NDueW-00005f-B3
-	for ltp-list@lists.sourceforge.net; Fri, 27 Nov 2009 06:50:04 +0000
+	(envelope-from <miaox@cn.fujitsu.com>) id 1NEws3-0006cd-Qg
+	for ltp-list@lists.sourceforge.net; Mon, 30 Nov 2009 03:24:15 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NEwrs-0001OM-9L
+	for ltp-list@lists.sourceforge.net; Mon, 30 Nov 2009 03:24:15 +0000
+Message-ID: <4B133BC1.5020109@cn.fujitsu.com>
+Date: Mon, 30 Nov 2009 11:28:01 +0800
+From: Miao Xie <miaox@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <4B0F64B7.6060507@cn.fujitsu.com>
-References: <4AF93496.3030408@cn.fujitsu.com>
-	<200911102333.55526.vapier@gentoo.org>
-	<4AFA45B0.7070608@cn.fujitsu.com>
-	<1258359225.5677.35.camel@subratamodak.linux.ibm.com>
-	<4B0112EC.9020202@cn.fujitsu.com>
-	<364299f40911260311m6d157453s47f57d1ba47ef643@mail.gmail.com>
-	<4B0F64B7.6060507@cn.fujitsu.com>
-Date: Thu, 26 Nov 2009 22:49:54 -0800
-Message-ID: <364299f40911262249x1d48a61fh7528216fd18bcf57@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] syscalls: fix some failure on arch X86_64
+References: <4AE54BCA.7060104@cn.fujitsu.com>	
+	<1256563577.4929.35.camel@subratamodak.linux.ibm.com>	
+	<C3A9583B-F6C5-4BCC-8D7E-876FA4D62D57@sun.com>	
+	<1256650551.4957.33.camel@subratamodak.linux.ibm.com>	
+	<1256841114.5210.25.camel@subratamodak.linux.ibm.com>
+	<1257170360.4977.58.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1257170360.4977.58.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [PATCH] Add new testcases for ext4 new features - V3
+Reply-To: miaox@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,370 +30,554 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: liubo <liubo2009@cn.fujitsu.com>
-Cc: Mike Frysinger <vapier@gentoo.org>, ltp-list <ltp-list@lists.sf.net>
+To: subrata@linux.vnet.ibm.com
+Cc: LTP-ML <ltp-list@lists.sourceforge.net>, Miao Xie <miaox@cn.fujitsu.com>
 
-On Thu, Nov 26, 2009 at 9:33 PM, liubo <liubo2009@cn.fujitsu.com> wrote:
-> Hi, Garrett
-> On 11/26/2009 07:11 PM, Garrett Cooper wrote:
->
-> On Mon, Nov 16, 2009 at 12:53 AM, liubo <liubo2009@cn.fujitsu.com> wrote:
->
->
-> Hi, Subrata,
-> On 11/16/2009 04:13 PM, Subrata Modak wrote:
->
-> Liubo,
->
-> Are you sending an updated patch post this discussion ?
->
->
->
-> Yes, I'll resend a updated patch about these rt_sigs.
->
-> Regards--
-> Liubo
->
-> Regards--
-> Subrata
->
-> On Wed, 2009-11-11 at 13:03 +0800, Wei Yongjun wrote:
->
->
-> Mike Frysinger wrote:
->
->
-> On Tuesday 10 November 2009 04:38:30 liubo wrote:
->
->
->
-> 1) rt_sigaction
->     "sigaction" has the structure:
->
->  struct sigaction {
->          __sighandler_t sa_handler;
->          unsigned long sa_flags;
->   #ifdef SA_RESTORER
->           __sigrestore_t sa_restorer;
->   #endif
->           sigset_t sa_mask;               /* mask last for extensibility =
-*/
->  };
->
->     However, on arch x86_64, if we directly get to call rt_sigaction,
-> the argument "sa_restorer" will not be fulfilled, and this will lead
->  to segment fault.
->     on arch x86_64, if sa_restorer is not set, kernel will lead to segment
->  fault. In other arch, if sa_restorer is not set, kernel can do the corre=
-ct
->  work. To avoid this segment fault, we use glibc function
-> "int sigaction(...);" instead, which can fulfill the argument
->  "sa_restorer".
->
->
->
-> which defeats the purpose of the test.  there is no guarantee that the C
-> library sigaction function is implemented via the __NR_rt_sigaction sysca=
-ll.
->
->
->
-> In x86_64, it do this. And If we want to use __NR_rt_sigaction syscall
-> directly, we must fill the sa_restorer and set the RESTORER flag to
-> sa_mask. If we do not set the sa_restorer, kill will always cause
-> segment fault.
->
->
->
->
->
->
-> 2) rt_sigprocmask
->     This failure contains two aspects,
-> the first is the segment fault as described in 1),
-> the second is that testcase uses a unknown signal 33 for test,
-> and this will lead sigaction cannot bind signal 33 to the action.
->
->     So, we attempt to use a known signal instead, such as 34.
->
->
->
-> which is just as bogus and unportable.  if the test needs a real time
-> signal,
-> it should leverage the sigrtmin...sigrtmax defines.
-> -mike
->
->
-> I see what you mean about this testcase segfaulting now.
->
-> I've done some exploring, and while sigaction does map to rt_sigaction
-> on ia64 and x86_64, it won't on arm, mips, s390*, sh, or x86.
->
-> Furthermore, the problem is actually being caused by the fact that
-> we're not even calling sigaddset properly!
->
-> gcooper@orangebox
-> /scratch/ltp-dev2/ltp/testcases/kernel/syscalls/rt_sigaction $ gdb
-> ./rt_sigaction01
-> GNU gdb 6.8
-> Copyright (C) 2008 Free Software Foundation, Inc.
-> License GPLv3+: GNU GPL version 3 or later
-> <http://gnu.org/licenses/gpl.html>
-> This is free software: you are free to change and redistribute it.
-> There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
-> and "show warranty" for details.
-> This GDB was configured as "x86_64-pc-linux-gnu"...
-> (gdb) c
-> The program is not being run.
-> (gdb) r
-> Starting program:
-> /scratch/ltp-dev2/ltp/testcases/kernel/syscalls/rt_sigaction/rt_sigaction=
-01
-> thread:20
-> [Thread debugging using libthread_db enabled]
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01    1  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01    2  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01    3  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01    4  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01    5  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01    6  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01    7  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01    8  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01    9  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01   10  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01   11  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01   12  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01   13  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01   14  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01   15  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01   16  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01   17  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01   18  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01   19  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01   20  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01   21  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01   22  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01   23  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01   24  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01   25  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01   26  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01   27  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01   28  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01   29  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
-> rt_sigaction01    0  TINFO  :  sigaddset(..) failed
-> rt_sigaction01   30  TFAIL  :  rt_sigaction01 failed:
-> TEST_ERRNO=3DEINVAL(22): Invalid argument
->
-> So, the test needs fixing, anyhow. After I fixed it, the test still
-> segfaulted >:( --
->
-> gcooper@orangebox
-> /scratch/ltp-dev2/ltp/testcases/kernel/syscalls/rt_sigaction $ gdb
-> ./rt_sigaction01
-> GNU gdb 6.8
-> Copyright (C) 2008 Free Software Foundation, Inc.
-> License GPLv3+: GNU GPL version 3 or later
-> <http://gnu.org/licenses/gpl.html>
-> This is free software: you are free to change and redistribute it.
-> There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
-> and "show warranty" for details.
-> This GDB was configured as "x86_64-pc-linux-gnu"...
-> (gdb) r
-> Starting program:
-> /scratch/ltp-dev2/ltp/testcases/kernel/syscalls/rt_sigaction/rt_sigaction=
-01
-> thread:20
-> [Thread debugging using libthread_db enabled]
-> rt_sigaction01    0  TINFO  :  signal: 34
-> rt_sigaction01    0  TINFO  :  sa.sa_flags =3D SA_RESETHAND|SA_SIGINFO
-> [New Thread 0x7fdd451d66f0 (LWP 31927)]
->
-> Program received signal SIG34, Real-time event 34.
-> [Switching to Thread 0x7fdd451d66f0 (LWP 31927)]
-> 0x00007fdd448944f7 in kill () from /lib/libc.so.6
-> (gdb) c
-> Continuing.
->
-> Program received signal SIGSEGV, Segmentation fault.
-> 0x00007fdd448944f7 in kill () from /lib/libc.so.6
->
-> So I tried to do some digging. glibc 2.8-20080602 does the following
-> for alpha, i386, and sysv:
->
->       result =3D INLINE_SYSCALL (rt_sigaction, 4,
->                                sig, act ? __ptrvalue (&kact) : NULL,
->                                oact ? __ptrvalue (&koact) : NULL, _NSIG /
-> 8);
->
-> The kernel code for rt_sigaction in kernel/signal.c is as follows:
->
-> #ifdef __ARCH_WANT_SYS_RT_SIGACTION
-> SYSCALL_DEFINE4(rt_sigaction, int, sig,
->                 const struct sigaction __user *, act,
->                 struct sigaction __user *, oact,
->                 size_t, sigsetsize)
-> {
->         struct k_sigaction new_sa, old_sa;
->         int ret =3D -EINVAL;
->
->         /* XXX: Don't preclude handling different sized sigset_t's.  */
->         if (sigsetsize !=3D sizeof(sigset_t))
->                 goto out;
->
->         if (act) {
->                 if (copy_from_user(&new_sa.sa, act, sizeof(new_sa.sa)))
->                         return -EFAULT;
->         }
->
->         ret =3D do_sigaction(sig, act ? &new_sa : NULL, oact ? &old_sa :
-> NULL);
->
->         if (!ret && oact) {
->                 if (copy_to_user(oact, &old_sa.sa, sizeof(old_sa.sa)))
->                         return -EFAULT;
->         }
-> out:
->         return ret;
-> }
->
-> This just blows my mind because rt_sigaction is just calling
-> do_sigaction, which is the same code as sigaction AFAICT, apart from
-> the fact that rt_sigaction completely disregards sa_restorer on some
-> architectures because it's obsolete, and requires the end-user to
-> specify a signal mask set (here's mips' version, which wasn't the same
-> as i386's version -- i386 had the old sa_restorer code):
->
-> SYSCALL_DEFINE3(sigaction, int, sig, const struct sigaction __user *, act,
->         struct sigaction __user *, oact)
-> {
->         struct k_sigaction new_ka, old_ka;
->         int ret;
->         int err =3D 0;
->
->         if (act) {
->                 old_sigset_t mask;
->
->                 if (!access_ok(VERIFY_READ, act, sizeof(*act)))
->                         return -EFAULT;
->                 err |=3D __get_user(new_ka.sa.sa_handler, &act->sa_handle=
-r);
->                 err |=3D __get_user(new_ka.sa.sa_flags, &act->sa_flags);
->                 err |=3D __get_user(mask, &act->sa_mask.sig[0]);
->                 if (err)
->                         return -EFAULT;
->
->                 siginitset(&new_ka.sa.sa_mask, mask);
->         }
->
->         ret =3D do_sigaction(sig, act ? &new_ka : NULL, oact ? &old_ka :
-> NULL);
->
->         if (!ret && oact) {
->                 if (!access_ok(VERIFY_WRITE, oact, sizeof(*oact)))
->                         return -EFAULT;
->                 err |=3D __put_user(old_ka.sa.sa_flags, &oact->sa_flags);
->                 err |=3D __put_user(old_ka.sa.sa_handler, &oact->sa_handl=
-er);
->                 err |=3D __put_user(old_ka.sa.sa_mask.sig[0],
-> oact->sa_mask.sig);
->                 err |=3D __put_user(0, &oact->sa_mask.sig[1]);
->                 err |=3D __put_user(0, &oact->sa_mask.sig[2]);
->                 err |=3D __put_user(0, &oact->sa_mask.sig[3]);
->                 if (err)
->                         return -EFAULT;
->         }
->
->         return ret;
-> }
->
-> I dunno -- maybe someone else can read the kernel code better than me,
-> but it looks like there's zero real value to the rt_sigaction
-> testcases, because it can be covered by sigaction...
->
->
->
-> =A0=A0=A0 We just tell guys who use these testcases on arch x86_64 that
-> =A0=A0=A0 "Syscall rt_sigaction cannot be called directly on arch x86_64.=
-",
-> =A0=A0=A0 can we?
+Hi, Subrata
 
-    It's not just x86_64 -- it's also ia64, and this may change
-depending on the version of glibc and linux sources, so... this really
-isn't a viable solution IMO.
-    Does anyone have any better suggestions, apart from just using a
-preprocessor macro that would execute rt_sig* via their non-rt
-equivalents in ltp_signal.h?
-Thanks,
--Garrett
+I'm sorry. There is something wrong in the patch that I sent on 2009-11-26. So
+I made a new patch to instead of it.
 
----------------------------------------------------------------------------=
+And Subrata, I didn't find these failure about online defrag on my box.
+The attached patch opens the verbose mode of e4defrag to get more information later, it is
+useful to find the problem of online defrag. So, Could you test it again and send the output
+info to me?
+
+This patch can fix the following problem:
+-- delete the code of setting the test_fs flag
+-- open the verbose mode of e4defrag, it is useful to find the problem of online defrag
+-- fix some bug of the Makefile
+-- throw the utilities version info away
+-- delete two unnecessary testcases about ext4 subdir limit test
+
+Signed-off-by: Miao Xie <miaox@cn.fujitsu.com>
 ---
-Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day =
+  testcases/kernel/fs/ext4-new-features/Makefile     |   20 ++++++++++----
+  testcases/kernel/fs/ext4-new-features/README       |    7 +----
+  .../ext4-delalloc-mballoc/ext4-alloc-test.sh       |   15 ++++------
+  .../ext4-inode-version/ext4_get_inode_version.sh   |    2 +-
+  .../ext4-inode-version/ext4_inode_version_test.sh  |   10 +++----
+  .../ext4-journal-checksum/ext4_journal_checksum.sh |   12 ++++----
+  .../ext4_nsec_timestamps_test.sh                   |    8 ++---
+  .../ext4-online-defrag/ext4_online_defrag_test.sh  |   28 ++++++++++++-------
+  .../ext4_persist_prealloc_test.sh                  |    4 +-
+  .../ext4-subdir-limit/ext4_subdir_limit_test.sh    |   17 +++++++-----
+  .../ext4-uninit-groups/ext4_uninit_groups_test.sh  |   22 +++++++++------
+  11 files changed, 78 insertions(+), 67 deletions(-)
 
-trial. Simplify your report design, integration and deployment - and focus =
-on =
+diff --git a/testcases/kernel/fs/ext4-new-features/Makefile b/testcases/kernel/fs/ext4-new-features/Makefile
+index 0e09dd6..208b8a6 100644
+--- a/testcases/kernel/fs/ext4-new-features/Makefile
++++ b/testcases/kernel/fs/ext4-new-features/Makefile
+@@ -22,17 +22,25 @@ top_srcdir              ?= ../../../..
 
+  include $(top_srcdir)/include/mk/env_pre.mk
+
+-INSTALL_TARGETS		:= *.sh
+-INSTALL_TARGETS		:= ext4-test-config
+-INSTALL_TARGETS		:= ffsb-6.0-rc2/ffsb
++INSTALL_TARGETS		+= ffsb
++INSTALL_TARGETS		+= run_ext4_test.sh
++INSTALL_TARGETS		+= ext4_funcs.sh
++INSTALL_TARGETS		+= ext4-test-config
+
+-FILTER_OUT_DIRS		:= ffsb-6.0-rc2
++FFSBDIR			:= ffsb-6.0-rc2
++FILTER_OUT_DIRS		:= $(FFSBDIR)
++FFSB			:= $(FFSBDIR)/ffsb
+
+-trunk-all: ffsb-6.0-rc2
++$(FFSB): $(FFSBDIR)
++	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
++	cp $(FFSBDIR)/ffsb ffsb
++
++trunk-all: $(FFSB)
+
+  trunk-clean:: | ffsb-clean
+
+-ffsb-clean:: ffsb-6.0-rc2
++ffsb-clean:: $(FFSBDIR)
+  	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
++	rm -rf ffsb
+
+  include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/fs/ext4-new-features/README b/testcases/kernel/fs/ext4-new-features/README
+index 0ea0460..bda16e5 100644
+--- a/testcases/kernel/fs/ext4-new-features/README
++++ b/testcases/kernel/fs/ext4-new-features/README
+@@ -9,7 +9,7 @@ with increasing disk capacities and state-of-the-art feature requirements. More
+  extensive information of ext4 can be found at the ext4 wiki site at the URL:
+  http://ext4.wiki.kernel.org
+
+-There are total 119 testcases for ext4 new features test that have been added.
++There are total 117 testcases for ext4 new features test that have been added.
+  Now, these testcases can test multi-block alloc/delayed alloc, inode version
+  field on disk, journal checksumming, nanosec timestamps, online defrag, persist
+  prealloc, subdirectory limit and uninit groups of ext4.
+@@ -111,11 +111,6 @@ Directory containing the shell script which is used to test subdirectory limit
+  of ext4. According to the kernel documentation, we create more than 32000
+  subdirectorys on the ext4 filesystem.
+
+-But, when then block size is small, such as 1024, and the name of every
+-subdirectory is very long, such as every name is 255 bytes, we can just create
+-less than 20000 subdirectory. In this test suite, there is two FAIL cases by
+-reason of it.
+-
+  ext4-uninit-groups
+  ------------------
+  Directory containing the shell script which is used to test uninitialized groups
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh b/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
+index ec2f389..be7b074 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
+@@ -37,14 +37,12 @@ read_config $1
+  # Case 17: mount ext4 partition to ext3
+  ext4_test_remount()
+  {
+-	mkfs.ext3 -I 256 -b 1024 $EXT4_DEV > /dev/null
++	mkfs.ext3 -I 256 -b 1024 $EXT4_DEV &> /dev/null
+  	if [ $? -ne 0 ]; then
+  		tst_resm TFAIL "failed to create ext4 filesystem"
+  		return 1
+  	fi
+
+-	tune2fs -E test_fs $EXT4_DEV
+-
+  	mount -t ext4 -o delalloc,auto_da_alloc $EXT4_DEV mnt_point
+  	if [ $? -ne 0 ]; then
+  		tst_resm TFAIL "failed to mount ext4 filesystem"
+@@ -71,7 +69,7 @@ ext4_test_remount()
+  	fi
+  	umount mnt_point
+
+-	fsck -p $EXT4_DEV
++	fsck -p $EXT4_DEV &> /dev/null
+  	if [ $? -ne 0 ]; then
+  		tst_resm TFAIL "fsck returned failure"
+  		return 1
+@@ -87,16 +85,15 @@ ext4_test_remount()
+  # $4: auto_da_alloc
+  ext4_test_delalloc_mballoc()
+  {
+-	tst_resm TINFO "isDelalloc: $1, isDirectIO: $2, Blocksize: $3, \
+-		isAuto_da_alloc: $4"
++	tst_resm TINFO "isDelalloc: $1, isDirectIO: $2, Blocksize: $3, isAuto_da_alloc: $4"
+
+-	mkfs.ext4 -I 256 -b $3 /$EXT4_DEV > /dev/null
++	mkfs.ext4 -I 256 -b $3 /$EXT4_DEV &> /dev/null
+  	if [ $? -ne 0 ]; then
+  		tst_resm TFAIL "failed to create ext4 filesystem"
+  		return 1
+  	fi
+
+-	tune2fs -E test_fs -O extents $EXT4_DEV
++	tune2fs -O extents $EXT4_DEV &> /dev/null
+
+  	mount -t ext4 -o $1,$4 $EXT4_DEV mnt_point
+  	if [ $? -ne 0 ]; then
+@@ -117,7 +114,7 @@ ext4_test_delalloc_mballoc()
+  		return 1
+  	fi
+
+-	fsck -p $EXT4_DEV
++	fsck -p $EXT4_DEV &> /dev/null
+  	if [ $? -ne 0 ]; then
+  		tst_resm TFAIL "fsck returned failure"
+  		return 1
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh
+index 8f5c907..0e7a8b6 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh
+@@ -24,7 +24,7 @@
+  #$2: 1  - return inode version by return value
+  #    !1 - writting inode version to stddev
+
+-inode_version=`debugfs -R "stat $1" $EXT4_DEV | grep 'Version' | awk '{
++inode_version=`debugfs -R "stat $1" $EXT4_DEV 2> /dev/null | grep 'Version' | awk '{
+  print $NF }'`
+
+  # The inode_version's format: '0x0000000a' or '0x00000000:0000000a',
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
+index f27248b..4a58b36 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
+@@ -41,13 +41,13 @@ ext4_test_128_inode_version()
+  {
+  	tst_resm TINFO "Test inode version is 32 bits with 128 inode size"
+
+-	mkfs.ext4 -I 128 $EXT4_DEV > /dev/null
++	mkfs.ext4 -I 128 $EXT4_DEV &> /dev/null
+  	if [ $? -ne 0 ]; then
+  		tst_resm TFAIL "failed to create ext4 filesystem"
+  		return 1
+  	fi
+
+-	tune2fs -E test_fs -O extents $EXT4_DEV
++	tune2fs -O extents $EXT4_DEV &> /dev/null
+
+  	mount -t ext4 -o i_version $EXT4_DEV mnt_point
+  	if [ $? -ne 0 ]; then
+@@ -67,7 +67,7 @@ ext4_test_128_inode_version()
+  	fi
+
+  	# inode version is 32 bits: 0x00000000
+-	version=`debugfs $EXT4_DEV -R "stat tmp_file" | grep 'Version'`
++	version=`debugfs $EXT4_DEV -R "stat tmp_file" 2> /dev/null | grep 'Version'`
+  	version=`echo $version | awk '{ print $NF }'`
+  	version=`echo $version | sed 's/^0x//'`
+  	len=${#version}
+@@ -91,14 +91,12 @@ ext4_test_128_inode_version()
+  # $1: file operation
+  test_inode_version()
+  {
+-	mkfs.ext3 -I 256 $EXT4_DEV > /dev/null
++	mkfs.ext3 -I 256 $EXT4_DEV &> /dev/null
+  	if [ $? -ne 0 ]; then
+  		tst_resm TFAIL "failed to create ext4 filesystem"
+  		return 1
+  	fi
+
+-	tune2fs -E test_fs $EXT4_DEV > /dev/null
+-
+  	mount -t ext4 -o i_version $EXT4_DEV mnt_point
+  	if [ $? -ne 0 ]; then
+  		tst_resm TFAIL "failed to mount ext4 filesystem"
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
+index 550afa1..eb72b5d 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
+@@ -59,17 +59,17 @@ ext4_test_journal_checksum()
+  		async_commit="Used"
+  	fi
+
+-	tst_resm TINFO "journal mode: $1, commit interval: $2, \
+-		journal_checksum: $checksum, \
+-		journal_async_commit: $async_commit, barrier: $5"
++	tst_resm TINFO "journal mode: $1, commit interval: $2, " \
++		"journal_checksum: $checksum, " \
++		"journal_async_commit: $async_commit, barrier: $5"
+
+-	mkfs.ext4 -I 256 $EXT4_DEV > /dev/null
++	mkfs.ext4 -I 256 $EXT4_DEV &> /dev/null
+  	if [ $? -ne 0 ]; then
+  		tst_resm TFAIL "failed to create ext4 filesystem"
+  		return 1
+  	fi
+
+-	tune2fs -E test_fs -O extents $EXT4_DEV
++	tune2fs -O extents $EXT4_DEV &> /dev/null
+
+  	mount -t ext4 -o data=$1,commit=$2,$3,$4,barrier=$5 $EXT4_DEV mnt_point
+  	if [ $? -ne 0 ]; then
+@@ -90,7 +90,7 @@ ext4_test_journal_checksum()
+  		return 1
+  	fi
+
+-	e2fsck -p $EXT4_DEV
++	e2fsck -p $EXT4_DEV &> /dev/null
+  	if [ $? -ne 0 ]; then
+  		tst_resm TFAIL "fsck returned failure"
+  		return 1
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
+index ced6576..cc00507 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
+@@ -41,13 +41,13 @@ ext4_test_sec_timestamps()
+  {
+  	tst_resm TINFO "Test timestamps with 128 inode size"
+
+-	mkfs.ext4 -I 128 $EXT4_DEV > /dev/null
++	mkfs.ext4 -I 128 $EXT4_DEV &> /dev/null
+  	if [ $? -ne 0 ]; then
+  		tst_resm TFAIL "failed to create ext4 filesystem"
+  		return 1
+  	fi
+
+-	tune2fs -E test_fs -O extents $EXT4_DEV
++	tune2fs -O extents $EXT4_DEV &> /dev/null
+
+  	mount -t ext4 $EXT4_DEV mnt_point
+  	if [ $? -ne 0 ]; then
+@@ -82,14 +82,12 @@ ext4_test_nsec_timestamps()
+  {
+  	tst_resm TINFO "Test timestamps with 256 inode size"
+
+-	mkfs.ext3 -I 256 $EXT4_DEV > /dev/null
++	mkfs.ext3 -I 256 $EXT4_DEV &> /dev/null
+  	if [ $? -ne 0 ]; then
+  		tst_resm TFAIL "failed to create ext4 filesystem"
+  		return 1
+  	fi
+
+-	tune2fs -E test_fs $EXT4_DEV
+-
+  	mount -t ext4 $EXT4_DEV mnt_point
+  	if [ $? -ne 0 ]; then
+  		tst_resm TFAIL "failed to mount ext4 filesystem"
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
+index 84613c8..7b4dda3 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
+@@ -94,23 +94,23 @@ my_e4defrag()
+  {
+  	if [ $1 -eq $FILE ]; then
+  		if [ $2 -eq $SMALL ]; then
+-			./e4defrag mnt_point/data0/
++			./e4defrag -v mnt_point/data0/
+  			return $?
+  		# EMPTY or LARGE
+  		else
+-			./e4defrag mnt_point/tmp_file
++			./e4defrag -v mnt_point/tmp_file
+  			return $?
+  		fi
+  	elif [ $1 -eq $DIR ]; then
+  		if [ $2 -eq $SMALL ]; then
+-			./e4defrag mnt_point/data0/
++			./e4defrag -v mnt_point/data0/
+  			return $?
+  		else
+-			./e4defrag mnt_point/tmp_dir
++			./e4defrag -v mnt_point/tmp_dir
+  			return $?
+  		fi
+  	else
+-		./e4defrag $EXT4_DEV
++		./e4defrag -v $EXT4_DEV
+  		return $?
+  	fi
+  }
+@@ -121,15 +121,20 @@ my_e4defrag()
+  # $3: block size
+  ext4_test_online_defrag()
+  {
++	echo Test $TST_COUNT start >> \
++		 $LTPROOT/output/ext4_online_defrag_result.txt
++
+  	tst_resm TINFO "defrag type: $1, defrag obj: $2, block size: $3"
+
+-	mkfs.ext4 -m 0 -b $3 -O ^flex_bg $EXT4_DEV > /dev/null
++	mkfs.ext4 -m 0 -b $3 -O ^flex_bg $EXT4_DEV >> \
++		$LTPROOT/output/ext4_online_defrag_result.txt 2>&1
+  	if [ $? -ne 0 ]; then
+  		tst_resm TFAIL "failed to create ext4 filesystem"
+  		return 1
+  	fi
+
+-	tune2fs -E test_fs -O extents $EXT4_DEV
++	tune2fs -O extents $EXT4_DEV >> \
++		 $LTPROOT/output/ext4_online_defrag_result.txt 2>&1
+
+  	mount -t ext4 -o nodelalloc $EXT4_DEV mnt_point
+  	if [ $? -ne 0 ]; then
+@@ -137,7 +142,7 @@ ext4_test_online_defrag()
+  		return 1
+  	fi
+
+-	age_filesystem $2 $1
++	age_filesystem $2 $1 >> $LTPROOT/output/ext4_online_defrag_result.txt 2>&1
+
+  	my_e4defrag $1 $2 >> $LTPROOT/output/ext4_online_defrag_result.txt
+  	if [ $? -ne 0 ]; then
+@@ -152,18 +157,21 @@ ext4_test_online_defrag()
+  		return 1
+  	fi
+
+-	e2fsck -p $EXT4_DEV
++	e2fsck -p $EXT4_DEV >> \
++		 $LTPROOT/output/ext4_online_defrag_result.txt 2>&1
+  	if [ $? -ne 0 ]; then
+  		tst_resm TFAIL "fsck returned failure"
+  		return 1
+  	fi
+
+-	tst_resm TPASS "ext4 online defrag test pass(defrag type: $1, Aging: $2, block size: $3)"
++	tst_resm TPASS "ext4 online defrag test pass"
+  }
+
+  # main
+  ext4_setup
+
++rm -f $LTPROOT/output/ext4_online_defrag_result.txt
++
+  DEFRAG=( $FILE $DIR $FILESYSTEM )
+  AGING=( $EMPTY $SMALL $LARGE )
+  BLOCK_SIZE=( 1024 4096 )
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
+index 0d293e8..e895d25 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
+@@ -43,7 +43,7 @@ export TDIRECTORY=$PWD/mnt_point/
+  # $1: 1024 or 4096
+  ext4_test_persist_prealloc()
+  {
+-	mkfs.ext4 -I 256 -b $1 $EXT4_DEV > /dev/null
++	mkfs.ext4 -I 256 -b $1 $EXT4_DEV &> /dev/null
+  	if [ $? -ne 0 ]; then
+  		tst_resm TFAIL "failed to create ext4 filesystem"
+  		return 1
+@@ -81,7 +81,7 @@ ext4_test_persist_prealloc()
+  		return 1
+  	fi
+
+-	e2fsck -p $EXT4_DEV
++	e2fsck -p $EXT4_DEV &> /dev/null
+  	if [ $? -ne 0 ]; then
+  		tst_resm TFAIL "fsck returned failure"
+  		return 1
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
+index 42c4336..5631fe5 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
+@@ -28,7 +28,7 @@ cd $LTPROOT/testcases/bin
+  . ./ext4_funcs.sh
+
+  export TCID="ext4-subdir-limit"
+-export TST_TOTAL=12
++export TST_TOTAL=10
+  export TST_COUNT=1
+
+  # $1: the test config
+@@ -59,20 +59,20 @@ ext4_run_case()
+  		dir_name_len="long name"
+  	fi
+
+-	tst_resm TINFO "Num of dirs to create: $1, Dir name len: $dir_name_len \
+-			Parent dir: $3, Block size: $4"
++	tst_resm TINFO "Num of dirs to create: $1, Dir name len: $dir_name_len, " \
++			"Parent dir: $3, Block size: $4"
+
+  	# only mkfs if block size has been changed,
+  	# or previous case failed
+  	if [ $prev_result -ne $PASS -o $4 -ne $prev_block_size ]; then
+-		mkfs.ext4 -b $4 -I 256 $EXT4_DEV > /dev/null
++		mkfs.ext4 -b $4 -I 256 $EXT4_DEV &> /dev/null
+  		if [ $? -ne 0 ]; then
+  			tst_resm TFAIL "failed to create ext4 filesystem"
+  			return 1
+  		fi
+  		prev_block_size=$4
+
+-		tune2fs -E test_fs -O extents $EXT4_DEV
++		tune2fs -O extents $EXT4_DEV &> /dev/null
+  	fi
+
+  	prev_result=$FAIL
+@@ -120,14 +120,14 @@ ext4_run_case()
+  	fi
+
+  	# run fsck to make sure the filesystem has no errors
+-	e2fsck -p $EXT4_DEV
++	e2fsck -p $EXT4_DEV &> /dev/null
+  	if [ $? -ne 0 ]; then
+  		tst_resm TFAIL "fsck: the filesystem has errors"
+  		return 1
+  	fi
+
+  	# check dir_nlink is set
+-	dumpe2fs $EXT4_DEV | grep '^Filesystem features' | grep -q dir_nlink
++	dumpe2fs $EXT4_DEV 2> /dev/null | grep '^Filesystem features' | grep -q dir_nlink
+  	if [ $? -ne 0 ]; then
+  		tst_resm TFAIL "feature dir_nlink is not set"
+  		return 1
+@@ -152,6 +152,9 @@ for ((i = 0; i < 3; i++))
+  	{
+  		for ((k = 0; k < 2; k++))
+  		{
++			if [ $i -eq $LONG_DIR -a $k -eq 1024 ]; then
++				continue
++			fi
+  			ext4_run_case 65537 ${DIR_LEN[$k]} ${PARENT_DIR[$j]} \
+  					${BLOCK_SIZE[$i]}
+  			if [ $? -ne 0 ]; then
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
+index 27cbb5f..b479c8f 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
+@@ -40,8 +40,8 @@ LARGE=3
+  # filesystem free size in bytes: blocks_size * free_blocks
+  filesystem_free_size()
+  {
+-	bsize=`dumpe2fs -h $EXT4_DEV | grep 'Block size' | awk '{ print $2 }'`
+-	blocks=`dumpe2fs -h $EXT4_DEV | grep 'Free blocks'| awk '{ print $2 }'`
++	bsize=`dumpe2fs -h $EXT4_DEV 2> /dev/null | grep 'Block size' | awk '{ print $2 }'`
++	blocks=`dumpe2fs -h $EXT4_DEV 2> /dev/null | grep 'Free blocks'| awk '{ print $2 }'`
+
+  	echo $bsize * $blocks
+  }
+@@ -61,9 +61,9 @@ age_filesystem()
+  		}
+  	elif [ $1 -eq $LARGE ]; then
+  		rm -rf mnt_point/*
+-		bsize=`dumpe2fs -h $EXT4_DEV | grep 'Block size'`
++		bsize=`dumpe2fs -h $EXT4_DEV 2> /dev/null | grep 'Block size'`
+  		bsize=`echo $bsize | awk '{ print $3 }'`
+-		bcount=`dumpe2fs -h $EXT4_DEV | grep 'Free blocks'`
++		bcount=`dumpe2fs -h $EXT4_DEV 2> /dev/null | grep 'Free blocks'`
+  		bcount=`echo $bcount | awk '{ print $3 }'`
+  		dd if=/dev/zero of=mnt_point/tmp_dir bs=$bsize count=$bcount
+  	else
+@@ -80,7 +80,9 @@ age_filesystem()
+  # $4: age filesystem: $EMPTY, $SMALL, $LARGE
+  ext4_test_uninit_groups()
+  {
+-	mkfs.ext4 -I 256 -m 0 $EXT4_DEV > /dev/null
++	echo "Test $TST_COUNT" >> $LTPROOT/output/ext4_uninit_groups_result.txt
++
++	mkfs.ext4 -I 256 -m 0 $EXT4_DEV &> /dev/null
+  	if [ $? -ne 0 ]; then
+  		tst_resm TFAIL "failed to create ext4 filesystem"
+  		return 1
+@@ -92,10 +94,10 @@ ext4_test_uninit_groups()
+  		flag=$3
+  	fi
+
+-	tune2fs -E test_fs -O extents,uninit_groups,$flag $EXT4_DEV
++	tune2fs -O extents,uninit_groups,$flag $EXT4_DEV &> /dev/null
+
+  	# Must run fsck after setting uninit_groups
+-	fsck -p $EXT4_DEV > /dev/null
++	fsck -p $EXT4_DEV &> /dev/null
+
+  	mount -t ext4 -o $1,$2 $EXT4_DEV mnt_point
+  	if [ $? -ne 0 ]; then
+@@ -103,7 +105,7 @@ ext4_test_uninit_groups()
+  		return 1
+  	fi
+
+-	age_filesystem $4
++	age_filesystem $4 >> $LTPROOT/output/ext4_uninit_groups_result.txt 2>&1
+  	if [ $? -ne 0 ]; then
+  		tst_resm TFAIL "age filesystem failed"
+  		umount mnt_point
+@@ -116,7 +118,7 @@ ext4_test_uninit_groups()
+  		return 1
+  	fi
+
+-	fsck -p $EXT4_DEV
++	fsck -p $EXT4_DEV &> /dev/null
+  	if [ $? -ne 0 ]; then
+  		tst_resm TFAIL "fsck returned failure"
+  		return 1
+@@ -135,6 +137,8 @@ AGING=( $EMPTY $SMALL $LARGE )
+
+  RET=0
+
++rm -f $LTPROOT/output/ext4_uninit_groups_result.txt
++
+  for ((i = 0; i < 2; i++))
+  {
+  	for ((j = 0; j < 2; j++))
+-- 
+1.6.5.2
+
+
+------------------------------------------------------------------------------
+Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
+trial. Simplify your report design, integration and deployment - and focus on 
 what you do best, core application coding. Discover what's new with
 Crystal Reports now.  http://p.sf.net/sfu/bobj-july
 _______________________________________________
