@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by 235xhf1.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1NA3KM-0000Sx-7B
-	for ltp-list@lists.sourceforge.net; Mon, 16 Nov 2009 15:17:14 +0000
-Received: from relay2.suse.de (relay-ext.suse.de [195.135.221.8])
-	by mx2.suse.de (Postfix) with ESMTP id D3F8F8655F
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 16 Nov 2009 16:16:56 +0100 (CET)
-Date: Mon, 16 Nov 2009 16:16:56 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20091116151656.GB16811@schrodinger.suse.cz>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <sujatha.angadi@sasken.com>) id 1NF2rl-0008Am-Je
+	for ltp-list@lists.sourceforge.net; Mon, 30 Nov 2009 09:48:21 +0000
+Received: from mta-blr1.sasken.com ([203.200.200.72])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.69) id 1NF2re-0008K1-Nc
+	for ltp-list@lists.sourceforge.net; Mon, 30 Nov 2009 09:48:21 +0000
+From: Sujatha Angadi <sujatha.angadi@sasken.com>
+Date: Mon, 30 Nov 2009 15:18:02 +0530
+Message-ID: <653A85C7F32C4741880F71219266EA02031803EA59@EXGMBX01.sasken.com>
+Content-Language: en-US
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] [RFC] utstest.h
+Subject: [LTP] Running LTP on Android
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,32 +26,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi!
-I've been looking at sources for usctest.h again today (lib/parse_opts.c) and I
-still have the feeling that this is badly written/broken code and should be
-fixed but as there are thousands of tests that uses usctest interface we should
-be careful when touching these sources. So IMHO the best approach is to change
-one thing at the time and see if this was a good move.
+Hi,
+I read a post regarding "running ltp on android" some days back by Mr. Greger and Mr.Garrett, by changing the test suits for the embeded environment.
+Did anybody tried and archived running ltp on android emulator? I have been trying on the same, 
+I am new to ltp as well as android :( Can anybody help me on this?
+To start with, I have changed the environment variable and cross compiling for arm tool chain of Linux,
+I was not able to cross compile by the android arm tool chain available in android source code.
 
-So let's start with TEST_PAUSE macro. Accordingly to comment in the header,
-this expands to the code that waits for SIGUSR1 signal (and this is not
-generaly true).  This macro is expanded to the int usc_global_setup_hook()
-function. The function forks the program accordingly to STD_COPIES and
-accordingly STD_PAUSE it sleeps for a SIGUSR1 or not (all forked instances); it
-also changes program segment size with sbrk().
+It will be greatly appreciated if any one of you could throw some light on this and how to run ltp on android emulator or device.
 
-Looking into the test sources, this is called when the test starts in order to
-implement test parameters "-c n" (run n copies concurently) and "-p" (pause
-test) and system variable USC_TP_SBRK. Do we need these parameters or any of
-them? If you convice me that these parameters are usefull I would gladly clean
-up and document code that implements TEST_PAUSE, otherwise I would vote for
-removing them (or at least the useless ones).
+Regards,
+Sujatha
+SASKEN BUSINESS DISCLAIMER
+-------------------------
+This message may contain confidential, proprietary or legally privileged information. In 
+case you are not the original intended Recipient of the message, you must not, directly or 
+indirectly, use, Disclose, distribute, print, or copy any part of this message and you are 
+requested to delete it and inform the sender. Any views expressed in this message are 
+those of the individual sender unless otherwise stated. Nothing contained in this message 
+shall be construed as an offer or acceptance of any offer by Sasken Communication 
+Technologies Limited ("Sasken") unless sent with that express intent and with due 
+authority of Sasken. Sasken has taken enough precautions to prevent the spread of 
+viruses. However the company accepts no liability for any damage caused by any virus 
+transmitted by this email
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Let Crystal Reports handle the reporting - Free Crystal Reports 2008 30-Day 
