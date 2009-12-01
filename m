@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1NJBiu-0006eS-Uk
-	for ltp-list@lists.sourceforge.net; Fri, 11 Dec 2009 20:04:20 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NJBin-0001xM-5T
-	for ltp-list@lists.sourceforge.net; Fri, 11 Dec 2009 20:04:20 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Fri, 11 Dec 2009 15:04:50 -0500
-References: <1114676463.211401260531001515.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1114676463.211401260531001515.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	(envelope-from <mitani@ryobi.co.jp>) id 1NFL8S-0007AG-70
+	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 05:18:48 +0000
+Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
+	by sfi-mx-3.v28.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1NFL8L-0005Pd-NV
+	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 05:18:48 +0000
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Tue, 1 Dec 2009 14:18:27 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Tue, 1 Dec 2009 14:18:26 +0900
+Message-ID: <000001ca7245$b829af90$287d0eb0$@co.jp>
 MIME-Version: 1.0
-Message-Id: <200912111504.50858.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] fix compiling error on ia64 platform
-	(ltp-full-20091130)
+Content-Language: ja
+Subject: [LTP] build failure with ltp-2009-12-01 cvs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,82 +27,90 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2256503577300329977=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
---===============2256503577300329977==
-Content-Type: multipart/signed; boundary="nextPart1435338.gvPKonyVNS";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Hi,
 
---nextPart1435338.gvPKonyVNS
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+I tried to "make" with "ltp-2009-12-01.tar.gz" version.
+I tried it in systems as follows:
+ (1) kernel 2.6.18-164.el5 - architecture x86 
+ (2) kernel 2.6.18-164.el5 - architecture x86_64
 
-On Friday 11 December 2009 06:30:01 Caspar Zhang wrote:
->   Here are two patches to fix compiling error in ia64,
-> I tested only in version ltp-full-20091130, please check
-> your own version. They are for work well on my system.
-> See the attachment.
+But both failed with following message:
 
-the ia64 change is incorrect.  there's ia64 ifdef hacks in there already wh=
-ich=20
-are to be used.
-
-the ppc64 issue is not ppc64 or ptrace specific.  garrett has a different f=
-ix=20
-in the pipeline for that.
-=2Dmike
-
---nextPart1435338.gvPKonyVNS
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.13 (GNU/Linux)
-
-iQIcBAABAgAGBQJLIqXiAAoJEEFjO5/oN/WB2nkP/iXmLNu9sqYHk5+XVLLhihM9
-MJZbhvFdT8XDtOwC8hj5Y72ukR+VHJlEqKvxMVCMW7nPnOMbOsz4BogkAZHyBW+u
-SZVkpBDu1Hcxkhtv3TUxERJv2j56WSDW9zbrh95y8nB0veGqylnBHFADMnnX6M6z
-VvzEDe1dwbO+MrlGpkRGj4mmp3T3xdFV2L95z7bpKswk0AqF+sXID7ZMRaPb68mu
-vXlz7EEH+sIsx1kg/UTGr0LTEgri5T8SYnUO7UC2+KkQF3/Thh8KD3/77X7vtyp5
-/Ch228pUrTJKlu9WcsZQeOGXX9U4feT1HCx2tuQ3KGnrlKlDIQxWbYjyHGWE8GqW
-jRkttTpJ+HUretSVTxWkWAbajObsM4QiCZ1ij7xC+3ooraTn/UgNmlVTjw06F47+
-/ewmL2q6DmhYeauX7elSlj33F7s41h0KBZuJv7SNodFkkXJYG2tmY5eX/T7zJsAb
-e93Jxwiys8aANdIdG9Mef8aqBC4++PNEMHO8KsfSZwC6tXgverNrSs1DEhLUbN+N
-rzGlGi/8HD2EKIuvWpFnVLD3pQOc0k3WSuR0UcuItdEryqLH+i9nyrk6yRagyIv7
-HJjlE4PBNw51hMS/8+BxCACyuTdhIU3wKwvcsOv5I/7IAYborKUGafMwkiWBXbDe
-eAgj0iAS5Lxfuk/8PbBy
-=MwI8
------END PGP SIGNATURE-----
-
---nextPart1435338.gvPKonyVNS--
+------------
+[...]
+make[3]: Entering directory
+`/home/LTP/ltp-2009-12-01/testcases/kernel/containers'
+make -C libclone -f
+"/home/LTP/ltp-2009-12-01/testcases/kernel/containers/libclone/Makefil
+e" all
+make[4]: Entering directory
+`/home/LTP/ltp-2009-12-01/testcases/kernel/containers/libclone
+'
+gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+-I/home/LTP/ltp-2009-12-01/testcases/k
+ernel/include -I../../../../include -I../../../../include  -c -o libclone.o
+libclone.c
+In file included from libclone.h:31,
+                 from libclone.c:17:
+/home/LTP/ltp-2009-12-01/testcases/kernel/include/linux_syscall_numbers.h:24
+: error: weak
+declaration of 'syscall_cleanup_stub' must be public
+make[4]: *** [libclone.o] Error 1
+make[4]: Leaving directory
+`/home/LTP/ltp-2009-12-01/testcases/kernel/containers/libclone'
+make[3]: *** [libclone/libclone.a] Error 2
+make[3]: Leaving directory
+`/home/LTP/ltp-2009-12-01/testcases/kernel/containers'
+make[2]: *** [all] Error 2
+make[2]: Leaving directory `/home/LTP/ltp-2009-12-01/testcases/kernel'
+make[1]: *** [all] Error 2
+make[1]: Leaving directory `/home/LTP/ltp-2009-12-01/testcases'
+make: *** [testcases-all] Error 2
+------------
 
 
---===============2256503577300329977==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I tried to avoid this failure by revising "${LTPROOT}/testcases
+/kernel/include/linux_syscall_numbers.h".
+
+============
+--- linux_syscall_numbers.h.org 2009-12-01 09:52:25.000000000 +0900
++++ linux_syscall_numbers.h     2009-12-01 11:37:10.000000000 +0900
+@@ -21,7 +21,7 @@
+  * result in compile-time errors and folks get the granularity they desire
+  * when writing testcases.
+  */
+-static void syscall_cleanup_stub(void) __attribute__ ((weakref
+("cleanup")));
++void syscall_cleanup_stub(void) __attribute__ ((weakref ("cleanup")));
+
+ static void cleanup(void);
+
+============
+
+After applying this patch, "make" and "make install" succeeded in
+both (1) and (2) systems.
+
+
+Can I get some advice whether my revise above is right?
+
+
+Thank you--
+
+-Tomonori Mitani
+
+
 
 ------------------------------------------------------------------------------
-Return on Information:
-Google Enterprise Search pays you back
-Get the facts.
-http://p.sf.net/sfu/google-dev2dev
-
---===============2256503577300329977==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Join us December 9, 2009 for the Red Hat Virtual Experience,
+a free event focused on virtualization and cloud computing. 
+Attend in-depth sessions from your desk. Your couch. Anywhere.
+http://p.sf.net/sfu/redhat-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============2256503577300329977==--
-
