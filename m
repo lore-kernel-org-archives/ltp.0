@@ -1,23 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NHx5n-0004Cx-3f
-	for ltp-list@lists.sourceforge.net; Tue, 08 Dec 2009 10:14:51 +0000
-Received: from mail-gx0-f223.google.com ([209.85.217.223])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NHx5f-0008HR-M9
-	for ltp-list@lists.sourceforge.net; Tue, 08 Dec 2009 10:14:51 +0000
-Received: by gxk23 with SMTP id 23so2789566gxk.2
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 08 Dec 2009 02:14:38 -0800 (PST)
-Mime-Version: 1.0 (Apple Message framework v1077)
-From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <1260241019.1107.17.camel@plars-t500>
-Date: Tue, 8 Dec 2009 02:14:25 -0800
-Message-Id: <FDC655C5-24D7-4C87-9C9A-824A9FE4B40B@gmail.com>
-References: <1260241019.1107.17.camel@plars-t500>
-Subject: Re: [LTP] make install... doesn't
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1NFbwt-0001P4-GT
+	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 23:15:59 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NFbwl-0001kZ-Lh
+	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 23:15:59 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Tue, 1 Dec 2009 18:20:36 -0500
+References: <4b159f21.8713f30a.416d.423cSMTPIN_ADDED@mx.google.com>
+In-Reply-To: <4b159f21.8713f30a.416d.423cSMTPIN_ADDED@mx.google.com>
+MIME-Version: 1.0
+Message-Id: <200912011820.37533.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] Small fixes (some bashisms and probable typos)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,42 +24,72 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3660855038110217623=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Paul Larson <paul.larson@canonical.com>
-Cc: LTP-ML <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: Jiri Palecek <jpalecek@web.de>
 
-On Dec 7, 2009, at 6:56 PM, Paul Larson wrote:
+--===============3660855038110217623==
+Content-Type: multipart/signed; boundary="nextPart2591046.4Kl5CrcSgD";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-> Was trying to build ltp today, which sadly, seems to be a bit more
-> complicated than it once was.  The make install completed without
-> errors, but noticed at the end that I didn't even have a testcases/bin
-> directory!  As I watched the make install output I noticed that
-> everything in testcases was getting built with the 'all' target, but
-> never install.
-> 
-> My make-foo is quite rusty, but I'm guessing that this change from
-> changeset b2e46ed73e9601ecad1044d37a85c97ba0ca42ce (if you are following
-> git, It was from around Nov 30 if not) seems to be a likely culprit:
-> -.SECONDEXPANSION:
-> -$(INSTALL_TARGETS) include-install lib-install: %-install:
-> $(abs_top_builddir)/$$*
-> -       $(MAKE) -C $* -f "$(abs_top_srcdir)/$*/Makefile" install 
-> +$(INSTALL_TARGETS) include-install lib-install:
-> +       $(MAKE) -C "$(subst -install,,$@)" \
-> +               -f "$(abs_top_srcdir)/$(subst -install,,$@)/Makefile"
-> all
+--nextPart2591046.4Kl5CrcSgD
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Yes... s/all/install/ was a stupid typo :(.
--Garrett
+other than the minor things i mentioned specifically, the rest of your chan=
+ges=20
+look fine to me.  thanks!
+=2Dmike
+
+--nextPart2591046.4Kl5CrcSgD
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.13 (GNU/Linux)
+
+iQIcBAABAgAGBQJLFaTFAAoJEEFjO5/oN/WBwGEP/0f3f2QalwxfVH3YMyAzUuUY
+01VVreab8nBWLGnJV6gQTeTj6UDsuFNipBW5m0UV8L49Ppbd78hhvrBuKTqhKufO
+a9YP4y50jfoIM7xEdiwjghw47QScM5Yk4VbgMB05Fw5Uc+cJ7cxs/3n+Qt3jFZMZ
+Dgubq6lku0oglNBKnl5lxolUqwhN0rhWccYSZ1MPGkf/hLFghT34YhQm39TDE4/3
+RaMLF1TuOamYtViJsfo3YbChQJBwqERK5Ii5mQfm8ktQ9rqDFb8uvMFso1COGgdE
+/Ljy1vsM49EI4mVcovO0VgRqwUajU65oqu129YwOFy+YQAdTO4MnPxaDVOBN3uUW
+yEB0pOq7xZH9GYGa41VMESxJqtu8eWusXk+Uykytb3mnfELNKgfOUVwDquOa4+tu
+tF/f6AOKqWuOSTdZXGyxMUEV7feS13bByjR3aiAFoGpDuucTyNn7sO79xaG016UJ
+Uu0jB8INVQWuQZzn9j7JANpSM2qdDAQdPQAYrKymOx+P6xjswsdTYFiug5x4h89+
+nXHAwljkIldLFnqzlRQIrbLgYJcgmHfvqUG8LDpztyKppj9Wfq6BATPWXPhtBUU9
+vrUi0Zif7bEhD+AqikflggBOdi3X2T8nWuaSY8g32s0pWctpL3aHutR7UesNx8nS
+cCGMwPeGFi5TCwkrbsZb
+=u7we
+-----END PGP SIGNATURE-----
+
+--nextPart2591046.4Kl5CrcSgD--
+
+
+--===============3660855038110217623==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Return on Information:
-Google Enterprise Search pays you back
-Get the facts.
-http://p.sf.net/sfu/google-dev2dev
+Join us December 9, 2009 for the Red Hat Virtual Experience,
+a free event focused on virtualization and cloud computing. 
+Attend in-depth sessions from your desk. Your couch. Anywhere.
+http://p.sf.net/sfu/redhat-sfdev2dev
+--===============3660855038110217623==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3660855038110217623==--
+
