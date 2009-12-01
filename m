@@ -2,22 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1NLoh7-0003eC-C5
-	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 02:05:21 +0000
-Received: from fmmailgate02.web.de ([217.72.192.227])
+	(envelope-from <yanegomi@gmail.com>) id 1NFPhy-0004Z8-Nv
+	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 10:11:46 +0000
+Received: from mail-pz0-f184.google.com ([209.85.222.184])
 	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NLogz-00052q-L1
-	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 02:05:21 +0000
-Date: Sat, 19 Dec 2009 03:05:45 +0100
-From: =?iso-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
+	id 1NFPht-00034U-QE
+	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 10:11:46 +0000
 MIME-Version: 1.0
-References: <4b1944a0.8713f30a.3b2f.4a0fSMTPIN_ADDED@mx.google.com>
-	<200912041413.11781.vapier@gentoo.org>
-	<op.u4fuf0b9u2flwt@marcela-gaxm89c>
-	<364299f40912050001k12c39c45sa5b870851ca915ad@mail.gmail.com>
-Message-ID: <op.u45xfvwou2flwt@debian>
-In-Reply-To: <364299f40912050001k12c39c45sa5b870851ca915ad@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] Support for parallel compilation
+In-Reply-To: <200911251309.22834.vapier@gentoo.org>
+References: <1259156195-13056-1-git-send-email-avagin@gmail.com>
+	<200911251309.22834.vapier@gentoo.org>
+Date: Tue, 1 Dec 2009 02:11:35 -0800
+Message-ID: <364299f40912010211y71d5a426w91ded155c78fb5db@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] tst_res: save errno at the begin,
+	otherwise it may 	be rewritten
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,99 +26,26 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sf.net
 
-Hello,
-
-On Sat, 05 Dec 2009 09:01:52 +0100, Garrett Cooper <yanegomi@gmail.com>  =
-
-wrote:
-
-> On Fri, Dec 4, 2009 at 4:03 PM, Ji=F8=ED Pale=E8ek <jpalecek@web.de> wrot=
-e:
->> On Fri, 04 Dec 2009 20:13:11 +0100, Mike Frysinger <vapier@gentoo.org>
->> wrote:
->>
->>> On Friday 04 December 2009 12:04:06 Jiri Palecek wrote:
->>>> -.PHONY: $(RECURSIVE_TARGETS) $(addprefix trunk-,$(RECURSIVE_TARGETS))
->>>> +.PHONY: $(RECURSIVE_TARGETS) $(addprefix trunk-,$(RECURSIVE_TARGETS))
->>>> =A0$(foreach tgt,$(RECURSIVE_TARGETS),$(addprefix
->>>> =A0trunk-subdir-$(tgt)--,$(SUBDIRS)))
->>>
->>> these foreach look like an overly complicated form of $(patsubst):
->>> =A0 =A0 =A0 $(patsubst %,moo_%,$(DIRS))
->>
->> It may look like it, but they aren't. What you've written is a simple
->> addprefix, while the foreach does some for of cartesian product
->> ($(TARGETS)x$(DIRS)).
+On Wed, Nov 25, 2009 at 10:09 AM, Mike Frysinger <vapier@gentoo.org> wrote:
+> On Wednesday 25 November 2009 08:36:35 Andrew Vagin wrote:
+>> it may do fprinf for example.
 >
-> 1. I checked in the fixes for the autotools targets after verifying
-> them (thank you btw!).
-> 2. Inline mkdirs are bad, because mkdir's can fail or cause failures
-> over NFS due to excessive I/O, which is why I quickly removed the test
-> -d || mkdir -p logic in the 2nd major draft of the makefile
-> infrastructure.
+> it seems a little paranoid, but i dont see any harm in the change
 
-OK.
+Committed -- thanks!
+-Garrett
 
-> 3. Although your idea for fixing the lack of recursive make'ing is
-> good, what about this instead?
->
-> #
-> # A canned set of operations for leaf makes. This creates a series of
-> targets, like:
-> #
-> # $(subdir)-all $(subdir)-clean $(subdir)-install:
-> #
-> # 1 - Recursive targets to act upon.
-> # 2 - the subdirectory to do the leaf_make on.
-> #
-> define generate_dir_dep
-> ifndef __$(1)_dir_dep__
-> __$(1)_dir_dep__ =3D 1
-> $(1):
->         mkdir -p "$$@"
-> endif
-> endif
->
-> define leaf_make
-> $$(foreach recursive_target,$(1),$$(addprefix
-> $(2)-$$(recursive_target))): $(1)-%: $(2)
->       $(MAKE) -C $* -f ""$(abs_srcdir)/$$*/Makefile" $$(patsubst  =
-
-> $(1)-%,%,$$@)
-> endef
-> $(foreach subdir $(SUBDIRS),$(eval $(call generate_dir_dep,$(subdir))))
-> $(foreach subdir,$(SUBDIRS),$(eval $(call leaf_make
-> $(RECURSIVE_TARGETS),$(subdir))
->
-> Ultimately I suppose, it's another means to a similar end. It's just a
-> bit more discrete as to what's going on in the operation... if this is
-> a good idea, I'll modify functions.mk to match this. $(abspath) //
-> $(realpath) junk is already a PITA, so it might be a good idea just to
-> remove it in favor of keeping things as-is.
-
-Well, I can't say I got used to your generated rules and double dollars  =
-
-(you've got $* instead of $$* in the above IMHO). But if you deem it  =
-
-better, fine by me.
-
-Regards
-     Jiri Palecek
-
----------------------------------------------------------------------------=
----
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev =
-
+------------------------------------------------------------------------------
+Join us December 9, 2009 for the Red Hat Virtual Experience,
+a free event focused on virtualization and cloud computing. 
+Attend in-depth sessions from your desk. Your couch. Anywhere.
+http://p.sf.net/sfu/redhat-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
