@@ -1,23 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1NLAYM-0003wO-NT
-	for ltp-list@lists.sourceforge.net; Thu, 17 Dec 2009 07:13:38 +0000
-Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
-	by sfi-mx-2.v28.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1NLAYF-0008DF-Py
-	for ltp-list@lists.sourceforge.net; Thu, 17 Dec 2009 07:13:38 +0000
-Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Thu, 17 Dec 2009 16:13:20 +0900
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Thu, 17 Dec 2009 16:13:19 +0900
-Message-ID: <000001ca7ee8$698114a0$3c833de0$@co.jp>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1NFcQT-0007g5-1s
+	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 23:46:33 +0000
+Received: from fmmailgate03.web.de ([217.72.192.234])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NFcQL-000422-H6
+	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 23:46:33 +0000
+Received: from smtp05.web.de (fmsmtp05.dlan.cinetic.de [172.20.4.166])
+	by fmmailgate03.web.de (Postfix) with ESMTP id EA0B3136AC263
+	for <ltp-list@lists.sourceforge.net>;
+	Wed,  2 Dec 2009 00:46:19 +0100 (CET)
+Received: from [90.180.172.144] (helo=debian)
+	by smtp05.web.de with asmtp (WEB.DE 4.110 #314) id 1NFcQF-0002Z6-00
+	for ltp-list@lists.sourceforge.net; Wed, 02 Dec 2009 00:46:19 +0100
+Date: Wed, 02 Dec 2009 00:43:09 +0100
+From: "Jiri Palecek" <jpalecek@web.de>
 MIME-Version: 1.0
-Content-Language: ja
-Subject: [LTP] About "make3.80" support
+Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Resent-Message-ID: <op.u399nqrscfnueu@debian>
+Subject: [LTP] [PATCH][resend] Fix a wrong (reversed) success condition in
+	echo01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,33 +33,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Sender: ltp-list-bounces@lists.sourceforge.net
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+Cc: ltp-list@lists.sourceforge.net
+Message-ID: <20091201234309.P1PAlr8mtVbL2ievqF8-oW1KKxTh5Hl5OnfQRLj2KEk@z>
 
-Hi, 
+Hello,
 
-The "make3.80" support for "make" isn't included in recent cvs yet.
+This patch reverses the success check in echo01, obviously the checksums being equal is the right outcome.
 
-http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg08840.html
+This is the version with the changes Mike Frysinger requested.
 
-I want to make a Makefile working with make 3.80.
-Would you teach when "make3.80" support is realized?
+Regards
+    Jiri Palecek
 
-Sorry for selfish request.
+Signed-off-by: Jiri Palecek <jpalecek@web.de>
+---
+ testcases/network/tcp_cmds/echo/echo01 |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
+diff --git a/testcases/network/tcp_cmds/echo/echo01 b/testcases/network/tcp_cmds/echo/echo01
+index eb798ae..2bc4621 100755
+--- a/testcases/network/tcp_cmds/echo/echo01
++++ b/testcases/network/tcp_cmds/echo/echo01
+@@ -95,7 +95,7 @@ do_test()
+         while [ $NUM -lt $NUMPROCESSES ]
+         do
+             csum2=$(sum "$TCtmp/${ECHOFILE}${NUM}" | awk '{print $1}')
+-            if [ "$csum1" = "$csum2" ]; then
++            if [ "$csum1" != "$csum2" ]; then
+                 end_testcase "Checksums differ in loop $TST_COUNT"
+             fi
+             NUM=$(( $NUM + 1 ))
+-- 
+1.6.4.3
 
-Thank you--
-
--Tomonori Mitani
 
 
 
 ------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+Join us December 9, 2009 for the Red Hat Virtual Experience,
+a free event focused on virtualization and cloud computing. 
+Attend in-depth sessions from your desk. Your couch. Anywhere.
+http://p.sf.net/sfu/redhat-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
