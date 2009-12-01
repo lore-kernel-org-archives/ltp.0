@@ -1,18 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1NGZXg-0000AY-GH
-	for ltp-list@lists.sourceforge.net; Fri, 04 Dec 2009 14:53:56 +0000
-Date: Fri, 4 Dec 2009 15:54:39 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20091204145439.GA8628@saboteur.suse.cz>
-References: <20091116151656.GB16811@schrodinger.suse.cz>
-	<20091203152731.GA10251@refried.org>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NFPsK-0006Z7-5C
+	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 10:22:28 +0000
+Received: from mail-px0-f172.google.com ([209.85.216.172])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NFPsC-00066D-BW
+	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 10:22:28 +0000
+Received: by pxi2 with SMTP id 2so3541560pxi.11
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 01 Dec 2009 02:22:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20091203152731.GA10251@refried.org>
-Subject: Re: [LTP] [RFC] utstest.h
+In-Reply-To: <8D86EEFC18AF0D43A2B8E0ABFA8B88A103144129BD@EXGMBX01.sasken.com>
+References: <8D86EEFC18AF0D43A2B8E0ABFA8B88A103144129BD@EXGMBX01.sasken.com>
+Date: Tue, 1 Dec 2009 02:22:14 -0800
+Message-ID: <364299f40912010222x6f233993o2a2314c6d5c8c358@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Running LTP on Android Emulator
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,26 +30,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Nate Straz <nate-ltp@refried.org>
-Cc: ltp-list@lists.sourceforge.net
+To: Biswajit Mohanty <biswajit.mohanty@sasken.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi!
-> This is one of the many features that were included in the original
-> libraries which no one in the community really explored.  The purpose of
-> TEST_PAUSE is to allow multiple tests to complete their setup steps
-> before being released at the same time.  This allows tests to hammer
-> syscalls at relatively the same time and test race conditions.
+On Sun, Nov 29, 2009 at 10:39 PM, Biswajit Mohanty
+<biswajit.mohanty@sasken.com> wrote:
+> Hi
+> Can anyone help me on running the LTP on android amulator.
+> If any pointer to any site or document, please share.
 
-Yes, but the question here is if this must be done this way. And if anybody
-uses this.
-
-And also this interface is not used in all tests. Quick greping shows that it's
-used moslty in testcases/kernel/ (there are 12 test outside this directory) and
-in about 56% of tests there.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+    Please, go read a recent copy of the archives; you'll find your
+answer there.
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
 Join us December 9, 2009 for the Red Hat Virtual Experience,
