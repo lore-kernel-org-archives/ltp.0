@@ -1,33 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NPYwL-00044I-6O
-	for ltp-list@lists.sourceforge.net; Tue, 29 Dec 2009 10:04:33 +0000
-Received: from e23smtp01.au.ibm.com ([202.81.31.143])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NPYwF-0008FT-80
-	for ltp-list@lists.sourceforge.net; Tue, 29 Dec 2009 10:04:32 +0000
-Received: from d23relay04.au.ibm.com (d23relay04.au.ibm.com [202.81.31.246])
-	by e23smtp01.au.ibm.com (8.14.3/8.13.1) with ESMTP id nBTA2SkS030022
-	for <ltp-list@lists.sourceforge.net>; Tue, 29 Dec 2009 21:02:28 +1100
-Received: from d23av01.au.ibm.com (d23av01.au.ibm.com [9.190.234.96])
-	by d23relay04.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nBTA03XM348226
-	for <ltp-list@lists.sourceforge.net>; Tue, 29 Dec 2009 21:00:03 +1100
-Received: from d23av01.au.ibm.com (loopback [127.0.0.1])
-	by d23av01.au.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	nBTA4D50014780
-	for <ltp-list@lists.sourceforge.net>; Tue, 29 Dec 2009 21:04:14 +1100
-Message-ID: <4B39D3E9.3010605@linux.vnet.ibm.com>
-Date: Tue, 29 Dec 2009 15:33:21 +0530
-From: Rishikesh <risrajak@linux.vnet.ibm.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1NFbAG-00034Q-Oe
+	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 22:25:44 +0000
+Received: from fmmailgate02.web.de ([217.72.192.227])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NFbAA-0005zN-0R
+	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 22:25:44 +0000
+Received: from smtp06.web.de (fmsmtp06.dlan.cinetic.de [172.20.5.172])
+	by fmmailgate02.web.de (Postfix) with ESMTP id 92D9A1460599B
+	for <ltp-list@lists.sourceforge.net>;
+	Tue,  1 Dec 2009 23:25:31 +0100 (CET)
+Received: from [90.180.172.144] (helo=debian)
+	by smtp06.web.de with asmtp (WEB.DE 4.110 #314) id 1NFbA3-0005sj-00
+	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 23:25:31 +0100
+Date: Tue, 01 Dec 2009 23:22:08 +0100
+From: "Jiri Palecek" <jpalecek@web.de>
 MIME-Version: 1.0
-References: <4B388C81.80903@linux.vnet.ibm.com>
-	<4B39C9F4.1030708@cn.fujitsu.com>
-In-Reply-To: <4B39C9F4.1030708@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 2/2] Added check for memory controller (
- functional, regression & stress )
+Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Resent-Message-ID: <op.u395w1xxcfnueu@debian>
+Subject: [LTP] [PATCH] Don't fail the ssh tests if the home directory we are
+ creating already exists (eg. when it was created by adduser)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,115 +33,75 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Sender: ltp-list-bounces@lists.sourceforge.net
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Li Zefan <lizf@cn.fujitsu.com>
-Cc: risrajak@in.ibm.com, LTP <ltp-list@lists.sourceforge.net>, iranna.ankad@in.ibm.com
+Cc: ltp-list@lists.sourceforge.net
+Message-ID: <20091201222208.dIQQNufxr9SmtH0nf2hjkf84t4OrrZe7OeO5WokQSKY@z>
 
-On 12/29/2009 02:50 PM, Li Zefan wrote:
->> commit fe4599d210be37a7d1bb2d6a5523b9e29bbd87e1
->> Author: Rishikesh K Rajak<rishikesh@rishikesh.in.ibm.com>
->> Date:   Mon Dec 28 15:11:54 2009 +0530
->>
->>      Added check for regression and funcitonal memcg test
->>
->>      
-> You should add your Signed-off-by.
->    
-Hi Li,
-Thanks for your review comment. Will definitely incorporate your review 
-comment and resend the patch again.
+Hello,
 
--Rishi
+this patch silences the error message "mkdir: directory already exists" in ssh tests, caused by the code that handles home directory creation in case adduser didn't do it. Unfortunately, the same code failed when adduser did create the directory.
 
->    
->> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
->> index 003af1c..303661c 100755
->> --- a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
->> +++ b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
->> @@ -28,8 +28,8 @@ export TCID="memcg_function_test"
->>   export TST_TOTAL=38
->>   export TST_COUNT=0
->>
->> -grep -w memory /proc/cgroups 2>&1>  /dev/null
->> -if [ $? -ne 0 ]; then
->> +if [ `grep -w memory /proc/cgroups | cut -f4` == 0 ]
->>      
-> What if memory cgroup is not compiled? So the correct check should be:
->
-> if [ ! "grep -w memory /proc/cgroups | cut -f4" == "1" ]
-> then
-> 	...
-> fi
->
->    
->> +then
->>   	echo "WARNING:";
->>   	echo "Kernel does not support for memory resource controller";
->>   	echo "Skipping all memcgroup testcases....";
->> diff --git a/testcases/kernel/controllers/memcg/regression/memcg_regression_test.sh b/testcases/kernel/controllers/memcg/regression/memcg_regression_test.sh
->> index 6bf7c88..0bc3d75 100755
->> --- a/testcases/kernel/controllers/memcg/regression/memcg_regression_test.sh
->> +++ b/testcases/kernel/controllers/memcg/regression/memcg_regression_test.sh
->> @@ -33,6 +33,15 @@ if [ "$USER" != root ]; then
->>   	exit 0
->>   fi
->>
->> +if [ `grep -w memory /proc/cgroups | cut -f4` == 0 ]
->> +then
->> +        echo "WARNING:";
->> +        echo "Kernel does not support for memory resource controller";
->> +        echo "Skipping all memcgroup testcases....";
->> +        exit 0
->> +fi
->>      
-> ditto
->
->    
->> +
->> +
->>   tst_kvercmp 2 6 30
->>   if [ $? -eq 0 ]; then
->>   	tst_brkm TBROK ignored "Test should be run with kernel 2.6.30 or newer"
->> diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
->> index 7244a16..c155bf1 100755
->> --- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
->> +++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
->> @@ -28,14 +28,15 @@ export TCID="memcg_stress_test"
->>   export TST_TOTAL=2
->>   export TST_COUNT=0
->>
->> -grep -w memory /proc/cgroups 2>&1>  /dev/null
->> -if [ $? -ne 0 ]; then
->> -	echo "WARNING:";
->> -	echo "Kernel does not support for memory resource controller";
->> -	echo "Skipping all memcgroup testcases....";
->> -	exit 0
->> +if [ `grep -w memory /proc/cgroups | cut -f4` == 0 ]
->> +then
->> +        echo "WARNING:";
->> +        echo "Kernel does not support for memory resource controller";
->> +        echo "Skipping all memcgroup testcases....";
->> +        exit 0
->>   fi
->>      
-> ditto
->
->    
->>
->> +
->>   RUN_TIME=$(( 60 * 60 ))
->>
->>   cleanup()
->>      
->    
+Regards
+    Jiri Palecek
+
+Signed-off-by: Jiri Palecek <jpalecek@web.de>
+---
+ testcases/network/tcp_cmds/ssh/ssh01 |    2 +-
+ testcases/network/tcp_cmds/ssh/ssh02 |    2 +-
+ testcases/network/tcp_cmds/ssh/ssh03 |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/testcases/network/tcp_cmds/ssh/ssh01 b/testcases/network/tcp_cmds/ssh/ssh01
+index 657449a..718f198 100755
+--- a/testcases/network/tcp_cmds/ssh/ssh01
++++ b/testcases/network/tcp_cmds/ssh/ssh01
+@@ -57,7 +57,7 @@ do_setup()
+     # in adduser)
+     USER_UID=$(id -u $TEST_USER)
+     USER_GID=$(id -g $TEST_USER)
+-    if ! mkdir "$TEST_USER_HOMEDIR"; then
++    if ! mkdir -p "$TEST_USER_HOMEDIR"; then
+         end_testcase "Failed to create $TEST_USER_HOMEDIR"
+     fi
+     chown -Rf $USER_UID.$USER_GID "$TEST_USER_HOMEDIR"
+diff --git a/testcases/network/tcp_cmds/ssh/ssh02 b/testcases/network/tcp_cmds/ssh/ssh02
+index 84c3637..a9974a0 100755
+--- a/testcases/network/tcp_cmds/ssh/ssh02
++++ b/testcases/network/tcp_cmds/ssh/ssh02
+@@ -59,7 +59,7 @@ do_setup()
+     # in adduser)
+     USER_UID=$(id -u $TEST_USER)
+     USER_GID=$(id -g $TEST_USER)
+-    if ! mkdir "$TEST_USER_HOMEDIR"; then
++    if ! mkdir -p "$TEST_USER_HOMEDIR"; then
+         end_testcase "Failed to create $TEST_USER_HOMEDIR"
+     fi
+     chown -R $USER_UID.$USER_GID "$TEST_USER_HOMEDIR"
+diff --git a/testcases/network/tcp_cmds/ssh/ssh03 b/testcases/network/tcp_cmds/ssh/ssh03
+index 5c7305e..927db76 100755
+--- a/testcases/network/tcp_cmds/ssh/ssh03
++++ b/testcases/network/tcp_cmds/ssh/ssh03
+@@ -58,7 +58,7 @@ do_setup()
+     # in adduser)
+     USER_UID=$(id -u $TEST_USER)
+     USER_GID=$(id -g $TEST_USER)
+-    if ! mkdir "$TEST_USER_HOMEDIR"; then
++    if ! mkdir -p "$TEST_USER_HOMEDIR"; then
+         end_testcase "Failed to create $TEST_USER_HOMEDIR"
+     fi
+     chown -R $USER_UID.$USER_GID "$TEST_USER_HOMEDIR"
+-- 
+1.6.4.3
+
+
 
 
 ------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+Join us December 9, 2009 for the Red Hat Virtual Experience,
+a free event focused on virtualization and cloud computing. 
+Attend in-depth sessions from your desk. Your couch. Anywhere.
+http://p.sf.net/sfu/redhat-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
