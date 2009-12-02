@@ -1,33 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NGDNe-0008Rk-2X
-	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:14:06 +0000
-Received: from e7.ny.us.ibm.com ([32.97.182.137])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NGDNX-00058P-27
-	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:14:06 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e7.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nB3F9COf013065
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 10:09:12 -0500
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nB3FDr7q037030
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 10:13:53 -0500
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	nB355val006872
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 00:05:57 -0500
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200912012258.nB1MwOQe029539@e5.ny.us.ibm.com>
-References: <200912012258.nB1MwOQe029539@e5.ny.us.ibm.com>
-Date: Thu, 03 Dec 2009 20:42:33 +0530
-Message-Id: <1259853158.5085.42.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Remove the use of bash arrays
-	from	memcg_stress_test
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1NFkZ5-0002xv-Eo
+	for ltp-list@lists.sourceforge.net; Wed, 02 Dec 2009 08:27:59 +0000
+Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
+	by sfi-mx-1.v28.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1NFkYy-0000fP-DI
+	for ltp-list@lists.sourceforge.net; Wed, 02 Dec 2009 08:27:59 +0000
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Wed, 2 Dec 2009 17:27:41 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Wed, 2 Dec 2009 17:27:41 +0900
+Message-ID: <000001ca7329$50744150$f15cc3f0$@co.jp>
+MIME-Version: 1.0
+Content-Language: ja
+Subject: [LTP] iogen01 test failed with after ltp-2009-11-24.tar.gz
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,60 +30,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Tue, 2009-12-01 at 23:35 +0100, Jiri Palecek wrote: 
-> Hello,
-> 
-> this patch removes the use of bash arrays from memcg_stress_test.sh, thus making the script more POSIX friendly. I changed the array into a series of variables, read and written using eval.
-> 
-> Regards
->     Jiri Palecek
-> 
-> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+Hi,
 
-Thanks.
+Following failure occurred in "iogen01" when I execute "runltp" using 
+ltp-2009-11-24.tar.gz. (Kernel : 2.6.18-164.el5)
+like that:
+-----------------------------
+sh: rwtest.sh: command not found
+-----------------------------
 
-Regards--
-Subrata
+Similer failure occured since for ltp-2009-11-24.tar.gz, and now too.
 
-> ---
->  .../controllers/memcg/stress/memcg_stress_test.sh  |   10 +++++-----
->  1 files changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-> index 6c9cd75..7244a16 100755
-> --- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-> +++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-> @@ -70,22 +70,22 @@ run_stress()
->  	do
->  		mkdir /dev/memcg/$i 2> /dev/null
->  		./memcg_process_stress $2 $3 &
-> -		pid[$i]=$!
-> +		eval pid$i=$!
-> 
-> -		echo ${pid[$i]} > /dev/memcg/$i/tasks
-> +		eval echo \$pid$i > /dev/memcg/$i/tasks
->  	done
-> 
->  	for i in $(seq 0 $(($1-1)))
->  	do
-> -		/bin/kill -s SIGUSR1 ${pid[$i]} 2> /dev/null
-> +		eval /bin/kill -s SIGUSR1 \$pid$i 2> /dev/null
->  	done
-> 
->  	sleep $4
-> 
->  	for i in $(seq 0 $(($1-1)))
->  	do
-> -		/bin/kill -s SIGINT ${pid[$i]} 2> /dev/null
-> -		wait ${pid[$i]}
-> +		eval /bin/kill -s SIGINT \$pid$i 2> /dev/null
-> +		eval wait \$pid$i
-> 
->  		rmdir /dev/memcg/$i 2> /dev/null
->  	done
+There isn't "rwtest.sh" that cause this error.
+
+So, It may be correct that the scenario for iogen01 in
+"${LTPROOT}/runtest/fs"
+is "rwtest", I think.
+Because, "rwtest" is a shell script that is a wrapper of iogen and doio.
+
+Following shows my revise draft.
+====================================
+--- fs	2009-10-19 03:01:18.000000000 +0900
++++ fs.new	2009-12-02 16:28:59.000000000 +0900
+@@ -37,7 +37,7 @@
+ 
+ #must be run as root
+ #iogen01 iogen -i 120s -s read,write 500b:doio.f1.$$ 1000b:doio.f2.$$ |
+doio -akv -n 2
+-iogen01 export LTPROOT; rwtest.sh -N iogen01 -i 120s -s read,write -Da -Dv
+-n 2 500b:doio.f1.$$ 1000b:doio.f2.$$
++iogen01 export LTPROOT; rwtest -N iogen01 -i 120s -s read,write -Da -Dv -n
+2 500b:doio.f1.$$ 1000b:doio.f2.$$
+ 
+ fs_inod01 fs_inod $TMP 10 10 10
+ linker01 linktest.sh 1000 1000
+====================================
+
+Can I get opinion that my revision is right or not?
+
+
+Thank you--
+
+-Tomonori Mitani
+
 
 
 ------------------------------------------------------------------------------
