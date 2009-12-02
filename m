@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1NLhbt-000778-Bd
-	for ltp-list@lists.sourceforge.net; Fri, 18 Dec 2009 18:31:29 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NLhbl-0006SV-GJ
-	for ltp-list@lists.sourceforge.net; Fri, 18 Dec 2009 18:31:29 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Fri, 18 Dec 2009 13:31:35 -0500
-References: <000001ca7d4d$e2a9e7e0$a7fdb7a0$@co.jp>
-	<364299f40912151139s38bd457eg88c6908d805f6ab4@mail.gmail.com>
-In-Reply-To: <364299f40912151139s38bd457eg88c6908d805f6ab4@mail.gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NFxLz-0002Qe-6C
+	for ltp-list@lists.sourceforge.net; Wed, 02 Dec 2009 22:07:19 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NFxLq-0003X0-Sq
+	for ltp-list@lists.sourceforge.net; Wed, 02 Dec 2009 22:07:19 +0000
+Received: by pwi12 with SMTP id 12so522463pwi.2
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 02 Dec 2009 14:07:04 -0800 (PST)
 MIME-Version: 1.0
-Message-Id: <200912181331.36093.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] fix compiling error on ia64 platform
-	(ltp-full-20091130)
+In-Reply-To: <000001ca7320$90365cf0$b0a316d0$@co.jp>
+References: <000001ca7245$b829af90$287d0eb0$@co.jp>
+	<364299f40912010218h39e6f89eo36e49bfe9e083a23@mail.gmail.com>
+	<000001ca7320$90365cf0$b0a316d0$@co.jp>
+Date: Wed, 2 Dec 2009 14:07:04 -0800
+Message-ID: <364299f40912021407l6f79feb8gd1d374c845e704f9@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] build failure with ltp-2009-12-01 cvs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,89 +29,166 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2544585718207183435=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============2544585718207183435==
-Content-Type: multipart/signed; boundary="nextPart1655598.yek2zWuJEq";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1655598.yek2zWuJEq
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net
 
-On Tuesday 15 December 2009 14:39:24 Garrett Cooper wrote:
-> Until this issue is resolved (I ran into problems trying to use
-> crossdev, so I'll have to manually inspect headers after I track down
-> which versions are used in the Redhat distros specified), please
-> remember that you _can_ always comment out the line which says:
->=20
-> /* Define to 1 if you have the <asm/ptrace.h> header file. */
-> #define HAVE_ASM_PTRACE_H 1
->=20
-> Actually, I think I'll just remove that header check if the build
-> passes unless Mike objects, because we really shouldn't be
-> #include'ing asm/* headers without having a good reason to do so
-> because it results in pain of this magnitude...
+On Tue, Dec 1, 2009 at 11:25 PM, Mitani <mitani@ryobi.co.jp> wrote:
+> I ran "runltp" with =A0"ltp-2009-12-02.tar.gz" version in system as follo=
+ws.
+>
+> =A0(1) kernel 2.6.18-164.el5 - architecture x86
+> =A0(2) kernel 2.6.18-164.el5 - architecture x86_64
+>
+> But same failure occured again:
+>
+> ------------
+> make[4]: Entering directory
+> `/home/LTP/ltp-2009-12-02/testcases/kernel/containers/libclone'
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> -I/home/LTP/ltp-2009-12-02/testcases/k
+> ernel/include -I../../../../include -I../../../../include =A0-c -o libclo=
+ne.o
+> libclone.c
+> In file included from libclone.h:31,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from libclone.c:17:
+> /home/LTP/ltp-2009-12-02/testcases/kernel/include/linux_syscall_numbers.h=
+:24
+> : error: weak
+> declaration of 'syscall_cleanup_stub' must be public
+> make[4]: *** [libclone.o] Error 1
+> make[4]: Leaving directory
+> `/home/LTP/ltp-2009-12-02/testcases/kernel/containers/libclone'
+> ------------
+>
+>
+> Regars--
+>
+> -Tomonori Mitani
+>
+>
+> -----Original Message-----
+> From: Garrett Cooper [mailto:yanegomi@gmail.com]
+> Sent: Tuesday, December 01, 2009 7:18 PM
+> To: Mitani
+> Cc: ltp-list@lists.sourceforge.net
+> Subject: Re: [LTP] build failure with ltp-2009-12-01 cvs
+>
+> On Mon, Nov 30, 2009 at 9:18 PM, Mitani <mitani@ryobi.co.jp> wrote:
+>> Hi,
+>>
+>> I tried to "make" with "ltp-2009-12-01.tar.gz" version.
+>> I tried it in systems as follows:
+>> =A0(1) kernel 2.6.18-164.el5 - architecture x86
+>> =A0(2) kernel 2.6.18-164.el5 - architecture x86_64
+>>
+>> But both failed with following message:
+>>
+>> ------------
+>> [...]
+>> make[3]: Entering directory
+>> `/home/LTP/ltp-2009-12-01/testcases/kernel/containers'
+>> make -C libclone -f
+>> "/home/LTP/ltp-2009-12-01/testcases/kernel/containers/libclone/Makefil
+>> e" all
+>> make[4]: Entering directory
+>> `/home/LTP/ltp-2009-12-01/testcases/kernel/containers/libclone
+>> '
+>> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+>> -I/home/LTP/ltp-2009-12-01/testcases/k
+>> ernel/include -I../../../../include -I../../../../include =A0-c -o
+> libclone.o
+>> libclone.c
+>> In file included from libclone.h:31,
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from libclone.c:17:
+>>
+> /home/LTP/ltp-2009-12-01/testcases/kernel/include/linux_syscall_numbers.h=
+:24
+>> : error: weak
+>> declaration of 'syscall_cleanup_stub' must be public
+>> make[4]: *** [libclone.o] Error 1
+>> make[4]: Leaving directory
+>> `/home/LTP/ltp-2009-12-01/testcases/kernel/containers/libclone'
+>> make[3]: *** [libclone/libclone.a] Error 2
+>> make[3]: Leaving directory
+>> `/home/LTP/ltp-2009-12-01/testcases/kernel/containers'
+>> make[2]: *** [all] Error 2
+>> make[2]: Leaving directory `/home/LTP/ltp-2009-12-01/testcases/kernel'
+>> make[1]: *** [all] Error 2
+>> make[1]: Leaving directory `/home/LTP/ltp-2009-12-01/testcases'
+>> make: *** [testcases-all] Error 2
+>> ------------
+>>
+>>
+>> I tried to avoid this failure by revising "${LTPROOT}/testcases
+>> /kernel/include/linux_syscall_numbers.h".
+>>
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> --- linux_syscall_numbers.h.org 2009-12-01 09:52:25.000000000 +0900
+>> +++ linux_syscall_numbers.h =A0 =A0 2009-12-01 11:37:10.000000000 +0900
+>> @@ -21,7 +21,7 @@
+>> =A0* result in compile-time errors and folks get the granularity they de=
+sire
+>> =A0* when writing testcases.
+>> =A0*/
+>> -static void syscall_cleanup_stub(void) __attribute__ ((weakref
+>> ("cleanup")));
+>> +void syscall_cleanup_stub(void) __attribute__ ((weakref ("cleanup")));
+>>
+>> =A0static void cleanup(void);
+>>
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>
+>> After applying this patch, "make" and "make install" succeeded in
+>> both (1) and (2) systems.
+>>
+>>
+>> Can I get some advice whether my revise above is right?
+>
+> It may work for your version of binutils, but it doesn't work for mine:
+>
+> make -C libclone -f
+> "/scratch/ltp-dev2/ltp/testcases/kernel/containers/libclone/Makefile"
+> all
+> make[4]: Entering directory
+> `/scratch/ltp-dev2/ltp/testcases/kernel/containers/libclone'
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> -I/scratch/ltp-dev2/ltp/testcases/kernel/include -I../../../../include
+> -I../../../../include =A0-c -o libclone.o libclone.c
+> In file included from libclone.h:31,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from libclone.c:17:
+> /scratch/ltp-dev2/ltp/testcases/kernel/include/linux_syscall_numbers.h:24:
+> error: weakref 'syscall_cleanup_stub' must have static linkage
+> make[4]: *** [libclone.o] Error 1
+> make[4]: Leaving directory
+> `/scratch/ltp-dev2/ltp/testcases/kernel/containers/libclone'
+> make[3]: *** [libclone/libclone.a] Error 2
+> make[3]: Leaving directory
+> `/scratch/ltp-dev2/ltp/testcases/kernel/containers'
+> make[2]: *** [all] Error 2
+> make[2]: Leaving directory `/scratch/ltp-dev2/ltp/testcases/kernel'
+> make[1]: *** [all] Error 2
+> make[1]: Leaving directory `/scratch/ltp-dev2/ltp/testcases'
+> make: *** [testcases-all] Error 2
+>
+> Please try the latest from CVS to see whether or not the new hidden
+> refs fixes your issue.
 
-i guess i dont know why you've made changes to the ptrace.h header at all. =
-=20
-the original one i committed still works for me on bfin/ia64/x86/x86_64.  i=
-=20
-dont recall any questions being posted to the list about the logic, just=20
-random shuffling to try and "fix" errors that i have yet to see.
-=2Dmike
+    I grabbed Fedora Core 3 so I'll try validating and fixing this
+issue on both newer and older versions of binutils by tonight.
+Thanks,
+-Garrett
 
---nextPart1655598.yek2zWuJEq
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+---------------------------------------------------------------------------=
+---
+Join us December 9, 2009 for the Red Hat Virtual Experience,
+a free event focused on virtualization and cloud computing. =
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.13 (GNU/Linux)
-
-iQIcBAABAgAGBQJLK8qIAAoJEEFjO5/oN/WBYp4QANhuoztCul/Hs9nzZxvWRbcF
-MhoswPPtMbyPvHPYawuSl0XseAeFCQgpiVm1aMrHNfbZPoOHblHZ/ZdVs7iKhkNj
-PaA+CrQoMnvkeRYScntJrq+A04iTHcqaO/whTIzvJA4/H+LL6XZm/5mVYKz4sZG/
-F8YmmcoA6I63x4DCRR43QZ0wgutOdRNkwH070j08+5Gz0q1RIYloWGDz4eQQQI3f
-fhbDIz9M2Oz5+Ozh1AWRcjo3MeTvSP8CRNMvJcidkGU8ajixWeFWUkoyiKeWtXSK
-Hg2/B051CQmfdYsymLibcbSusAbWHEeraIGBXL/FfVH5wvwn6RV1j6RvFdCgZfKm
-/6yeKX0O6+VZEqqSLvxeRuQ6U5/sBahMNB1ej5AnPU48SZhCGfpweM61jLDP2UJu
-wofikjyIzQ4mEheZkZ/oOJfi3er6tYTW+rVWciLnFDA24EFCuJj5kzkgAfRsahXj
-mRzzzHektW/fCjysvYqOwUZqYJOw54bPlu5+p93cxBjW9+yjDd55nFBfoJrKX8t8
-qqlz+yjSpx3whI5E8rYqpjpQ489b6OYDkp+DLpwvlHORPN6p3n8cpCHDrMQmlT9R
-TofUeI72n+eolNyqGwOwBbHPjAHx4SauzRTXikR3OywGmJcoRfQYw5H7XBP6uYXJ
-uaRz9xwKZP6bgK2hX24k
-=8Y2s
------END PGP SIGNATURE-----
-
---nextPart1655598.yek2zWuJEq--
-
-
---===============2544585718207183435==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
---===============2544585718207183435==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Attend in-depth sessions from your desk. Your couch. Anywhere.
+http://p.sf.net/sfu/redhat-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============2544585718207183435==--
-
