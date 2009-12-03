@@ -1,22 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <michal.simek@petalogix.com>) id 1NPIw3-00060t-73
-	for ltp-list@lists.sourceforge.net; Mon, 28 Dec 2009 16:59:11 +0000
-Received: from mail-bw0-f212.google.com ([209.85.218.212])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NPIvy-0006Yr-Te
-	for ltp-list@lists.sourceforge.net; Mon, 28 Dec 2009 16:59:11 +0000
-Received: by bwz4 with SMTP id 4so6712891bwz.2
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 28 Dec 2009 08:58:58 -0800 (PST)
-Message-ID: <4B38DCFA.9000502@petalogix.com>
-Date: Mon, 28 Dec 2009 17:29:46 +0100
-From: Michal Simek <michal.simek@petalogix.com>
-MIME-Version: 1.0
-Subject: [LTP] Autotools
-Reply-To: michal.simek@petalogix.com
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NGDMj-0003Hj-B3
+	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:13:09 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NGDMd-0002nY-Bf
+	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:13:09 +0000
+Received: from d01relay05.pok.ibm.com (d01relay05.pok.ibm.com [9.56.227.237])
+	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nB3F41a8012775
+	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 10:04:01 -0500
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d01relay05.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	nB3FCuRm047894
+	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 10:12:56 -0500
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id nB382k8I024266
+	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 01:02:46 -0700
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <200912012218.nB1MIb4f003732@e2.ny.us.ibm.com>
+References: <200912012218.nB1MIb4f003732@e2.ny.us.ibm.com>
+Date: Thu, 03 Dec 2009 20:41:59 +0530
+Message-Id: <1259853124.5085.39.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Don't fail the ssh tests if the home directory	we
+	are creating already exists (eg. when it was created by adduser)
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,96 +40,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: yanegomi@gmail.com, ltp-list@lists.sourceforge.net
+To: Jiri Palecek <jpalecek@web.de>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi Garret,
+On Tue, 2009-12-01 at 23:22 +0100, Jiri Palecek wrote: 
+> Hello,
+> 
+> this patch silences the error message "mkdir: directory already exists" in ssh tests, caused by the code that handles home directory creation in case adduser didn't do it. Unfortunately, the same code failed when adduser did create the directory.
+> 
+> Regards
+>     Jiri Palecek
+> 
+> Signed-off-by: Jiri Palecek <jpalecek@web.de>
 
-I am trying to configure LTP properly.
-First thing which seems to me weird is that in INSTALL is for "Using 
-autoconf" command make autotools
+Thanks.
 
-autoreconf --install
+Regards--
+Subrata
 
-There are some warnings which could be fixed.
+> ---
+>  testcases/network/tcp_cmds/ssh/ssh01 |    2 +-
+>  testcases/network/tcp_cmds/ssh/ssh02 |    2 +-
+>  testcases/network/tcp_cmds/ssh/ssh03 |    2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/testcases/network/tcp_cmds/ssh/ssh01 b/testcases/network/tcp_cmds/ssh/ssh01
+> index 657449a..718f198 100755
+> --- a/testcases/network/tcp_cmds/ssh/ssh01
+> +++ b/testcases/network/tcp_cmds/ssh/ssh01
+> @@ -57,7 +57,7 @@ do_setup()
+>      # in adduser)
+>      USER_UID=$(id -u $TEST_USER)
+>      USER_GID=$(id -g $TEST_USER)
+> -    if ! mkdir "$TEST_USER_HOMEDIR"; then
+> +    if ! mkdir -p "$TEST_USER_HOMEDIR"; then
+>          end_testcase "Failed to create $TEST_USER_HOMEDIR"
+>      fi
+>      chown -Rf $USER_UID.$USER_GID "$TEST_USER_HOMEDIR"
+> diff --git a/testcases/network/tcp_cmds/ssh/ssh02 b/testcases/network/tcp_cmds/ssh/ssh02
+> index 84c3637..a9974a0 100755
+> --- a/testcases/network/tcp_cmds/ssh/ssh02
+> +++ b/testcases/network/tcp_cmds/ssh/ssh02
+> @@ -59,7 +59,7 @@ do_setup()
+>      # in adduser)
+>      USER_UID=$(id -u $TEST_USER)
+>      USER_GID=$(id -g $TEST_USER)
+> -    if ! mkdir "$TEST_USER_HOMEDIR"; then
+> +    if ! mkdir -p "$TEST_USER_HOMEDIR"; then
+>          end_testcase "Failed to create $TEST_USER_HOMEDIR"
+>      fi
+>      chown -R $USER_UID.$USER_GID "$TEST_USER_HOMEDIR"
+> diff --git a/testcases/network/tcp_cmds/ssh/ssh03 b/testcases/network/tcp_cmds/ssh/ssh03
+> index 5c7305e..927db76 100755
+> --- a/testcases/network/tcp_cmds/ssh/ssh03
+> +++ b/testcases/network/tcp_cmds/ssh/ssh03
+> @@ -58,7 +58,7 @@ do_setup()
+>      # in adduser)
+>      USER_UID=$(id -u $TEST_USER)
+>      USER_GID=$(id -g $TEST_USER)
+> -    if ! mkdir "$TEST_USER_HOMEDIR"; then
+> +    if ! mkdir -p "$TEST_USER_HOMEDIR"; then
+>          end_testcase "Failed to create $TEST_USER_HOMEDIR"
+>      fi
+>      chown -R $USER_UID.$USER_GID "$TEST_USER_HOMEDIR"
 
-then I am running
-
-./configure --prefix=/tmp/
-
-and I see there
-
-./configure: line 4566: LTP_CHECK_CAPABILITY_SUPPORT: command not found
-./configure: line 4567: LTP_CHECK_CRYPTO: command not found
-./configure: line 4568: LTP_CHECK_LINUX_PTRACE: command not found
-./configure: line 4569: LTP_CHECK_SELINUX: command not found
-./configure: line 4570: LTP_CHECK_SIGNAL: command not found
-./configure: line 4571: LTP_CHECK_SYSCALL_EVENTFD: command not found
-./configure: line 4572: LTP_CHECK_SYSCALL_MODIFY_LDT: command not found
-./configure: line 4573: LTP_CHECK_SYSCALL_NUMA: command not found
-./configure: line 4574: LTP_CHECK_SYSCALL_QUOTACTL: command not found
-./configure: line 4575: LTP_CHECK_SYSCALL_SIGNALFD: command not found
-./configure: line 4576: LTP_CHECK_SYSCALL_UNSHARE: command not found
-./configure: line 4577: LTP_CHECK_TASKSTATS: command not found
-
-./configure: line 4759: REALTIME_CHECK_PRIO_INHERIT: command not found
-./configure: line 4760: REALTIME_CHECK_ROBUST_APIS: command not found
-
-+ there are some missing dependency in configure.ac file. This patch 
-should add them. I just grep whole LTP source - maybe some are not 
-important.
-
-diff --git a/configure.ac b/configure.ac
-index 52f3381..7a72b36 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -39,11 +39,26 @@ AC_CHECK_HEADERS([ \
-      linux/mempolicy.h \
-      linux/module.h \
-      linux/netlink.h \
-+    linux/ptrace.h \
-+    linux/cgroupstats.h \
-+    linux/taskstats.h \
-+    linux/types.h \
-      sys/acl.h \
-      sys/epoll.h \
-      sys/inotify.h \
-+    sys/ptrace.h \
-+    sys/reg.h \
-+    asm/ldt.h \
-+    asm/ptrace.h \
-      sys/jfsdmapi.h \
-      sys/prctl.h \
-+    sys/epoll.h \
-+    sys/ptrace.h \
-+    sys/reg.h \
-+    sys/stat.h \
-+    sys/time.h \
-+    sys/types.h \
-+    sys/vfs.h \
-  ])
-
-
-and then run make - there previous fault in configure caused that there 
-are wrong symbols in Makefiles - for example for my case.
-
-microblaze-unknown-linux-gnu-gcc: @SELINUX_LIBS@: No such file or directory
-
-which is caused by problems in configure.
-
-Thanks for fixing,
-Michal
-
--- 
-Michal Simek, Ing. (M.Eng)
-PetaLogix - Linux Solutions for a Reconfigurable World
-w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
 
 ------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+Join us December 9, 2009 for the Red Hat Virtual Experience,
+a free event focused on virtualization and cloud computing. 
+Attend in-depth sessions from your desk. Your couch. Anywhere.
+http://p.sf.net/sfu/redhat-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
