@@ -1,24 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NMuqI-0006RT-OU
-	for ltp-list@lists.sourceforge.net; Tue, 22 Dec 2009 02:51:22 +0000
-Received: from mail-pz0-f193.google.com ([209.85.222.193])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NMuqB-00007z-Pu
-	for ltp-list@lists.sourceforge.net; Tue, 22 Dec 2009 02:51:22 +0000
-Received: by pzk31 with SMTP id 31so3886215pzk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 21 Dec 2009 18:51:10 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1261152185.8993.23.camel@subratamodak.linux.ibm.com>
-References: <4B1F52FD.4010305@cn.fujitsu.com>
-	<1261152185.8993.23.camel@subratamodak.linux.ibm.com>
-Date: Mon, 21 Dec 2009 18:51:09 -0800
-Message-ID: <364299f40912211851w3aaf2ab4t9ea3342dcf6b12f7@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] syscalls: fix some failure on arch X86_64
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NGDNb-0005QR-IP
+	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:14:03 +0000
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NGDNW-0005u6-Rl
+	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:14:03 +0000
+Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
+	by e8.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nB3F9C7K028628
+	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 10:09:12 -0500
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	nB3FDqFY063372
+	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 10:13:52 -0500
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	nB3FDVFr017958
+	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 10:13:31 -0500
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <200912012304.nB1N4Q0m004817@e1.ny.us.ibm.com>
+References: <200912012304.nB1N4Q0m004817@e1.ny.us.ibm.com>
+Date: Thu, 03 Dec 2009 20:42:48 +0530
+Message-Id: <1259853173.5085.44.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Refer to checkforlibcap.sh by its real name
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,74 +39,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
+To: Jiri Palecek <jpalecek@web.de>
 Cc: ltp-list@lists.sourceforge.net
 
-On Fri, Dec 18, 2009 at 8:03 AM, Subrata Modak
-<subrata@linux.vnet.ibm.com> wrote:
-> Garret,
->
-> Not sure if you applied this :-(
->
-> Regards--
-> Subrata
->
-> On Wed, 2009-12-09 at 15:34 +0800, liubo wrote:
->> Here is the patch, which contains lots of adjustments
->> on style, so it might be a bit huge.
->>
->> Testcase 1. rt_sigaction01
->> On arch x86_64, if we directly get to call syscall
->> rt_sigaction, there will be "segment fault".
->> 1) One reason is that we must supply the flag of
->> "SA_RESTORER" and the correct pointer to the fuction
->> "restorer", according to the kernel code.
->> 2) The other reason is that default syscall rt_sigaction
->> use kernel "sigaction" structure, which is different
->> with normal "sigaction" structure.
->>
->> So,
->> 1) We manage to find the address of the function
->> "restorer" by using glibc function "sigaction",
->> which might be something tricky. Then we add these
->> arguments to make test run correctly.
->> 2) We also use kernel "sigaction" structure to fit
->> realtime syscall __NR_rt_sigaction.
->>
->> Testcase 2. rt_sigprocmask01
->> First, there exsits the same problem as rt_sigaction01.
->> Second, this testcase uses a unchanged signal number 33,
->> which may diff among different archs and lead to error
->> "unknown signal".
->>
->> So, we use a macro TEST_SIG which refers to SIGRTMIN
->> to replace 33.
->>
->> Testcase 3. rt_sigsuspend01
->> There exists the same problem as rt_sigaction01.
->>
->> This patch fixed these failure.
+On Wed, 2009-12-02 at 00:01 +0100, Jiri Palecek wrote: 
+> Hello,
+> 
+> checkforlibcap doesn't exist, the script's proper name is checkforlibcap.sh.
+> 
+> Regards
+>     Jiri Palecek
+> 
+> Signed-off-by: Jiri Palecek <jpalecek@web.de>
 
-    No, I didn't commit this because it's long, and I'm not sure if
-it's doing the right thing as per my research over the past couple of
-weeks. These tests are tricky because it requires a particular formula
-of preset variables and structures in order to properly use
-rt_sigaction, and that's where we're running into issues with them on
-x86_64 -- because the syscall implementers decided to remain sort of
-backwards compatible with x86, and that's why it's such a mess to deal
-with.
-    I will look at the diff and pick out which parts are of value, but
-a lot of this diff's contents are basically reverting the changes that
-I made this month.
-Thanks,
--Garrett
+Thanks.
+
+Regards--
+Subrata
+
+> ---
+>  testcases/kernel/security/filecaps/filecapstest.sh |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/testcases/kernel/security/filecaps/filecapstest.sh b/testcases/kernel/security/filecaps/filecapstest.sh
+> index c95291a..149cbc1 100755
+> --- a/testcases/kernel/security/filecaps/filecapstest.sh
+> +++ b/testcases/kernel/security/filecaps/filecapstest.sh
+> @@ -19,7 +19,7 @@
+>  ##                                                                            ##
+>  ################################################################################
+> 
+> -checkforlibcap
+> +checkforlibcap.sh
+>  ret=$?
+>  if [ $ret -ne 0 ]; then
+>  	echo "Filecaps 0 CONF : System doesn't support execution of the test"
+
 
 ------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+Join us December 9, 2009 for the Red Hat Virtual Experience,
+a free event focused on virtualization and cloud computing. 
+Attend in-depth sessions from your desk. Your couch. Anywhere.
+http://p.sf.net/sfu/redhat-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
