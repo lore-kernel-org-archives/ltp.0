@@ -2,22 +2,32 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1NIssr-0007j0-P0
-	for ltp-list@lists.sourceforge.net; Thu, 10 Dec 2009 23:57:21 +0000
-Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
-	by sfi-mx-2.v28.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1NIssl-0001UP-Ei
-	for ltp-list@lists.sourceforge.net; Thu, 10 Dec 2009 23:57:21 +0000
-Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Fri, 11 Dec 2009 08:57:04 +0900
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Fri, 11 Dec 2009 08:57:02 +0900
-Message-ID: <000101ca79f4$7af702b0$70e50810$@co.jp>
-MIME-Version: 1.0
-Content-Language: ja
-Subject: [LTP] Tests of "iogen01" et al. fail with ltp-2009-12-10 cvs
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NGDMu-0003Is-2T
+	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:13:20 +0000
+Received: from e32.co.us.ibm.com ([32.97.110.150])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NGDMn-00075I-Rh
+	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:13:20 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e32.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id nB3F7dnB006270
+	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 08:07:39 -0700
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	nB3FCwhr215990
+	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 08:13:00 -0700
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id nB3FCmkm015149
+	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 08:12:49 -0700
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <200912012346.nB1Nk9Sv015715@e34.co.us.ibm.com>
+References: <200912012346.nB1Nk9Sv015715@e34.co.us.ibm.com>
+Date: Thu, 03 Dec 2009 20:42:21 +0530
+Message-Id: <1259853141.5085.40.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Fixes of some errors discovered by "set -u"
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,78 +40,131 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jiri Palecek <jpalecek@web.de>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,
+On Tue, 2009-12-01 at 23:30 +0100, Jiri Palecek wrote: 
+> Hello,
+> 
+> this patch fixes the following problems:
+> 
+>  - read of $TEST_USER before it's set in ftp03
+> 
+>  - remnants of the $COMMAND variable which isn't really there anymore
+>    in netstat01
+> 
+>  - probably a typo in rsh01 ($COUNT vs. $TST_COUNT)
+> 
+>  - $2 has to be escaped twice in rwho01, to appear in the awk script
+> 
+>  - when no interface is found tcpdump01, $IF is unset. Don't spit out
+>    an error in that case
+> 
+> This is a version with changes reflecting Mike's comments.
+> 
+> Regards
+>     Jiri Palecek
+> 
+> Signed-off-by: Jiri Palecek <jpalecek@web.de>
 
-In the following thread, "rwtest has been renamed to rwtest.sh" is written.
-http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg08896.html
+Thanks.
 
-But, I got following message when I ran tests of "rwtest{01...05}" and
-"iogen01" in my system with "ltp-2009-12-10" cvs.
+Regards--
+Subrata
 
-------------
-sh: rwtest.sh: command not found
-------------
-
-I think that "rwtest.sh" has been renamed to "rwtest" at about 2009/11/14.
-
-Here is a patch that reverts the previous patch applied to runtest/fs.
-After applied this patch, "rwtest{01...05}" and "iogen01" passed in my
-system.
-
-============
---- fs	2009-12-10 10:23:21.000000000 +0900
-+++ fs.new	2009-12-10 11:23:53.000000000 +0900
-@@ -29,15 +29,15 @@
- gf28 growfiles -W gf28 -b -D 0 -w -g 16b -C 1 -b -i 1000 -u gfsparse-2-$$
--d $TMPDIR
- gf29 growfiles -W gf29 -b -D 0 -r 1-4096 -R 0-33554432 -i 0 -L 60 -C 1 -u
-gfsparse-3-$$ -d $TMPDIR
- gf30 growfiles -W gf30 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -o
-O_RDWR,O_CREAT,O_SYNC -g 20480 -T 10 -t 20480 gf-sync-$$ -d $TMPDIR
--rwtest01 export LTPROOT; rwtest.sh -N rwtest01 -c -q -i 60s  -f sync
-10%25000:$TMPDIR/rw-sync-$$
--rwtest02 export LTPROOT; rwtest.sh -N rwtest02 -c -q -i 60s  -f buffered
-10%25000:$TMPDIR/rw-buffered-$$
--rwtest03 export LTPROOT; rwtest.sh -N rwtest03 -c -q -i 60s -n 2  -f
-buffered -s mmread,mmwrite -m random -Dv 10%25000:$TMPDIR/mm-buff-$$
--rwtest04 export LTPROOT; rwtest.sh -N rwtest04 -c -q -i 60s -n 2  -f sync
--s mmread,mmwrite -m random -Dv 10%25000:$TMPDIR/mm-sync-$$
--rwtest05 export LTPROOT; rwtest.sh -N rwtest05 -c -q -i 50 -T 64b
-500b:$TMPDIR/rwtest01%f
-+rwtest01 export LTPROOT; rwtest -N rwtest01 -c -q -i 60s  -f sync
-10%25000:$TMPDIR/rw-sync-$$
-+rwtest02 export LTPROOT; rwtest -N rwtest02 -c -q -i 60s  -f buffered
-10%25000:$TMPDIR/rw-buffered-$$
-+rwtest03 export LTPROOT; rwtest -N rwtest03 -c -q -i 60s -n 2  -f buffered
--s mmread,mmwrite -m random -Dv 10%25000:$TMPDIR/mm-buff-$$
-+rwtest04 export LTPROOT; rwtest -N rwtest04 -c -q -i 60s -n 2  -f sync -s
-mmread,mmwrite -m random -Dv 10%25000:$TMPDIR/mm-sync-$$
-+rwtest05 export LTPROOT; rwtest -N rwtest05 -c -q -i 50 -T 64b
-500b:$TMPDIR/rwtest01%f
- 
- #must be run as root
- #iogen01 iogen -i 120s -s read,write 500b:doio.f1.$$ 1000b:doio.f2.$$ |
-doio -akv -n 2
--iogen01 export LTPROOT; rwtest.sh -N iogen01 -i 120s -s read,write -Da -Dv
--n 2 500b:doio.f1.$$ 1000b:doio.f2.$$
-+iogen01 export LTPROOT; rwtest -N iogen01 -i 120s -s read,write -Da -Dv -n
-2 500b:doio.f1.$$ 1000b:doio.f2.$$
- 
- fs_inod01 fs_inod $TMP 10 10 10
- linker01 linktest.sh 1000 1000
-
-============
-
-
+> ---
+>  testcases/network/tcp_cmds/ftp/ftp03         |    2 +-
+>  testcases/network/tcp_cmds/netstat/netstat01 |    2 +-
+>  testcases/network/tcp_cmds/rsh/rsh01         |    2 +-
+>  testcases/network/tcp_cmds/rwho/rwho01       |    8 ++++----
+>  testcases/network/tcp_cmds/tcpdump/tcpdump01 |    2 +-
+>  5 files changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/testcases/network/tcp_cmds/ftp/ftp03 b/testcases/network/tcp_cmds/ftp/ftp03
+> index 24e30e9..e85a985 100755
+> --- a/testcases/network/tcp_cmds/ftp/ftp03
+> +++ b/testcases/network/tcp_cmds/ftp/ftp03
+> @@ -39,8 +39,8 @@ do_setup()
+>  {
+>  	
+>      RHOST="localhost"
+> -    TCtmp=/home/$TEST_USER
+>      TEST_USER="ftpuser1"
+> +    TCtmp=/home/$TEST_USER
+>      TEST_USER_PASSWD="eal"
+>      TEST_USER_ENCRYPTED_PASSWD="42VmxaOByKwlA"
+>      TEST_USER_HOMEDIR="/home/$TEST_USER"
+> diff --git a/testcases/network/tcp_cmds/netstat/netstat01 b/testcases/network/tcp_cmds/netstat/netstat01
+> index 365c142..45238dc 100755
+> --- a/testcases/network/tcp_cmds/netstat/netstat01
+> +++ b/testcases/network/tcp_cmds/netstat/netstat01
+> @@ -59,7 +59,7 @@ do_test() {
+> 
+>          for flag in "-s" "-rn" "-i" "-gn" "-apn"; do
+>              if ! netstat $flag 1>/dev/null 2>&1; then
+> -                end_testcase "$COMMAND failed"
+> +                end_testcase "netstat $flag failed"
+>              fi
+>          done
+> 
+> diff --git a/testcases/network/tcp_cmds/rsh/rsh01 b/testcases/network/tcp_cmds/rsh/rsh01
+> index 0a2b58f..1409cbf 100755
+> --- a/testcases/network/tcp_cmds/rsh/rsh01
+> +++ b/testcases/network/tcp_cmds/rsh/rsh01
+> @@ -87,7 +87,7 @@ do_test()
+>              tst_resm TFAIL "rsh to $RHOST failed"
+>              # If the first rsh failed, the likelihood that the rest will
+>              # succeed is low.
+> -            if [ "$FAIL_IMMEDIATELY" = "1" ] && [ $COUNT -eq 1 ]; then
+> +            if [ "$FAIL_IMMEDIATELY" = "1" ] && [ $TST_COUNT -eq 1 ]; then
+>                  exit 2
+>              fi
+>          fi
+> diff --git a/testcases/network/tcp_cmds/rwho/rwho01 b/testcases/network/tcp_cmds/rwho/rwho01
+> index 9967967..72fb569 100755
+> --- a/testcases/network/tcp_cmds/rwho/rwho01
+> +++ b/testcases/network/tcp_cmds/rwho/rwho01
+> @@ -106,15 +106,15 @@ do_test()
+> 
+>      while [ $TST_COUNT -le $NUMLOOPS ]; do
+>          rwho -a > $OUTFILE
+> -        HOST=`awk "\$2 ~ /$LHOST>/" $OUTFILE | cut -f1 -d: | sort -u`
+> +        HOST=`awk "\\$2 ~ /$LHOST>/" $OUTFILE | cut -f1 -d: | sort -u`
+>          [ "$HOST" = "$LHOST" ] || end_testcase "$LHOST is not in rwho outfile"
+> -        HOST=`awk "\$2 ~ /$RHOSTNAME>/" $OUTFILE | cut -f1 -d: | sort -u`
+> +        HOST=`awk "\\$2 ~ /$RHOSTNAME>/" $OUTFILE | cut -f1 -d: | sort -u`
+>          [ "$HOST" = "$RHOSTNAME" ] || end_testcase "$RHOSTNAME is not in rwho outfile"
+> 
+>          ruptime -a > $OUTFILE
+> -        HOST=`awk "\$1 ~ /$LHOST>/" $OUTFILE | sort -u`
+> +        HOST=`awk "\\$1 ~ /$LHOST>/" $OUTFILE | sort -u`
+>          [ "$HOST" = "$LHOST" ] || end_testcase "$LHOST is not in ruptime outfile"
+> -        HOST=`awk "\$1 ~ /$RHOSTNAME>/" $OUTFILE | sort -u`
+> +        HOST=`awk "\\$1 ~ /$RHOSTNAME>/" $OUTFILE | sort -u`
+>          [ "$HOST" = "$RHOSTNAME" ] || end_testcase "$RHOSTNAME is not in ruptime outfile"
+> 
+>          tst_resm TINFO "Test $COUNT of $NUMLOOPS complete"
+> diff --git a/testcases/network/tcp_cmds/tcpdump/tcpdump01 b/testcases/network/tcp_cmds/tcpdump/tcpdump01
+> index 650e97e..0f4aba7 100755
+> --- a/testcases/network/tcp_cmds/tcpdump/tcpdump01
+> +++ b/testcases/network/tcp_cmds/tcpdump/tcpdump01
+> @@ -59,7 +59,8 @@ do_setup()
+>              break
+>          fi
+>      done
+> -    if [ -z "${IF}" ]; then
+> +    # Default to empty string if unset, to avoid errors caused by set -u, which we use (see cmdlib.sh)
+> +    if [ -z "${IF:-}" ]; then
+>          end_testcase "Could not identify interface"
+>          exit 1
+>      fi
 
 
 ------------------------------------------------------------------------------
-Return on Information:
-Google Enterprise Search pays you back
-Get the facts.
-http://p.sf.net/sfu/google-dev2dev
+Join us December 9, 2009 for the Red Hat Virtual Experience,
+a free event focused on virtualization and cloud computing. 
+Attend in-depth sessions from your desk. Your couch. Anywhere.
+http://p.sf.net/sfu/redhat-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
