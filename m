@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NLrn4-0000P5-7G
-	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 05:23:42 +0000
-Received: from mail-px0-f189.google.com ([209.85.216.189])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NLrmw-0007ZD-F1
-	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 05:23:42 +0000
-Received: by pxi27 with SMTP id 27so848839pxi.4
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 18 Dec 2009 21:23:28 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <op.u45xgah3u2flwt@debian>
-References: <op.u45xgah3u2flwt@debian>
-Date: Fri, 18 Dec 2009 21:23:28 -0800
-Message-ID: <364299f40912182123u7eb00ebdif815806f5efff129@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Patch from 4.11.
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NGDMQ-0005Lc-Ah
+	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:12:50 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NGDMK-00051T-Ci
+	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:12:50 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <7A6C57348F763B4BB9E81202BA4D632B0B120DE819@ap1rdcrdc1wx029.exi.nxp.com>
+References: <7A6C57348F763B4BB9E81202BA4D632B0B120DE819@ap1rdcrdc1wx029.exi.nxp.com>
+Date: Thu, 03 Dec 2009 20:41:29 +0530
+Message-Id: <1259853094.5085.35.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] FW: How to set up and run test cases on ARM Cortex
+	processor
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,55 +26,50 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: =?ISO-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Narasimha Rao <narasimha.rao@nxp.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-2009/12/18 Ji=F8=ED Pale=E8ek <jpalecek@web.de>:
-> Hello,
->
-> in your patch from 4.11., "1. Use linux_syscall_numbers.h. 2. Fix a format
-> string (use inttypes.h)....", there is:
->
->
-> @@ -174,7 +177,7 @@ void test_mbind(void)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ret =3D 1;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return;
-> =A0 =A0 =A0 =A0}
-> - =A0 =A0 =A0 printf("%lx\n", addr);
-> + =A0 =A0 =A0 printf("%" __PRI64_PREFIX "x\n", (long) addr);
-> =A0 =A0 =A0 =A0ret =3D mbind(addr, len, MPOL_BIND, &mask, 8 * sizeof(mask=
-), 0);
-> =A0}
->
-> I am not happy with that, particularly:
->
-> 1. You use a 64-bit format specifier, but pass a long. A long may not be
-> 64-bit, in which case the code is buggy.
->
-> 2. You use __PRI64_PREFIX, which, as all underscore-prefixed names is an
-> implementation detail of the library.
->
-> 3. Why didn't use just printf("%p\n", addr), when addr is a void* and "p"=
- is
-> a format specifier for pointers.
+Hi Narasimha,
 
-    I just accidentally committed the -> "%p" change a second ago.
-Thanks for the keen eye on the style and functional points Jiri!
-Learned something new today :].
-Thanks,
--Garrett
+I do not use ARM, but people on this mailing list do. Somebody will help
+you out.
 
----------------------------------------------------------------------------=
----
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev =
+Regards--
+Subrata
 
+On Mon, 2009-11-30 at 21:02 +0800, Narasimha Rao wrote: 
+>  
+> 
+>  
+> 
+> Hi subrata,
+> 
+>                              Can you please tell is there any changes
+> are required while running LTP on ARM processor instead of Desk top
+> linux system.
+> 
+>  
+> 
+> I mean can you please tell what modifications we need to do before
+> compile and run test caeses for ARM processor.
+> 
+>  
+> 
+> Thanks and Regards,
+> 
+> Narasimha.K
+> 
+> 
+
+
+------------------------------------------------------------------------------
+Join us December 9, 2009 for the Red Hat Virtual Experience,
+a free event focused on virtualization and cloud computing. 
+Attend in-depth sessions from your desk. Your couch. Anywhere.
+http://p.sf.net/sfu/redhat-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
