@@ -1,33 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NGDMj-0003Hj-B3
-	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:13:09 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NGDMd-0002nY-Bf
-	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:13:09 +0000
-Received: from d01relay05.pok.ibm.com (d01relay05.pok.ibm.com [9.56.227.237])
-	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nB3F41a8012775
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 10:04:01 -0500
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d01relay05.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nB3FCuRm047894
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 10:12:56 -0500
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id nB382k8I024266
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 01:02:46 -0700
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200912012218.nB1MIb4f003732@e2.ny.us.ibm.com>
-References: <200912012218.nB1MIb4f003732@e2.ny.us.ibm.com>
-Date: Thu, 03 Dec 2009 20:41:59 +0530
-Message-Id: <1259853124.5085.39.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Don't fail the ssh tests if the home directory	we
-	are creating already exists (eg. when it was created by adduser)
-Reply-To: subrata@linux.vnet.ibm.com
+	(envelope-from <jpalecek@web.de>) id 1NGboF-0002QY-Ow
+	for ltp-list@lists.sourceforge.net; Fri, 04 Dec 2009 17:19:11 +0000
+Received: from fmmailgate03.web.de ([217.72.192.234])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NGboA-0003ya-Fr
+	for ltp-list@lists.sourceforge.net; Fri, 04 Dec 2009 17:19:11 +0000
+Received: from smtp06.web.de (fmsmtp06.dlan.cinetic.de [172.20.5.172])
+	by fmmailgate03.web.de (Postfix) with ESMTP id 3EB961373C347
+	for <ltp-list@lists.sourceforge.net>;
+	Fri,  4 Dec 2009 18:18:52 +0100 (CET)
+Received: from [90.180.172.144] (helo=debian)
+	by smtp06.web.de with asmtp (WEB.DE 4.110 #314) id 1NGbnv-0007QT-00
+	for ltp-list@lists.sourceforge.net; Fri, 04 Dec 2009 18:18:51 +0100
+Date: Fri, 04 Dec 2009 18:04:06 +0100
+From: "Jiri Palecek" <jpalecek@web.de>
+MIME-Version: 1.0
+Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Resent-Message-ID: <op.u4fbpwhxcfnueu@debian>
+Subject: [LTP] [PATCH] Support for parallel compilation
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,70 +32,137 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Sender: ltp-list-bounces@lists.sourceforge.net
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
 Cc: ltp-list@lists.sourceforge.net
+Message-ID: <20091204170406.XJsHkqVIBXkwi3irP5vYWFb2FGOPd3F9tNc_TEoD_hg@z>
 
-On Tue, 2009-12-01 at 23:22 +0100, Jiri Palecek wrote: 
-> Hello,
-> 
-> this patch silences the error message "mkdir: directory already exists" in ssh tests, caused by the code that handles home directory creation in case adduser didn't do it. Unfortunately, the same code failed when adduser did create the directory.
-> 
-> Regards
->     Jiri Palecek
-> 
-> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+Hello,
 
-Thanks.
+I tried to make ltp with the -j switch and found the following problems:
 
-Regards--
-Subrata
+ - the autotools target fail because of missing dependency on aclocal.m4 (almost all autotools targets depend on it)
 
-> ---
->  testcases/network/tcp_cmds/ssh/ssh01 |    2 +-
->  testcases/network/tcp_cmds/ssh/ssh02 |    2 +-
->  testcases/network/tcp_cmds/ssh/ssh03 |    2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/testcases/network/tcp_cmds/ssh/ssh01 b/testcases/network/tcp_cmds/ssh/ssh01
-> index 657449a..718f198 100755
-> --- a/testcases/network/tcp_cmds/ssh/ssh01
-> +++ b/testcases/network/tcp_cmds/ssh/ssh01
-> @@ -57,7 +57,7 @@ do_setup()
->      # in adduser)
->      USER_UID=$(id -u $TEST_USER)
->      USER_GID=$(id -g $TEST_USER)
-> -    if ! mkdir "$TEST_USER_HOMEDIR"; then
-> +    if ! mkdir -p "$TEST_USER_HOMEDIR"; then
->          end_testcase "Failed to create $TEST_USER_HOMEDIR"
->      fi
->      chown -Rf $USER_UID.$USER_GID "$TEST_USER_HOMEDIR"
-> diff --git a/testcases/network/tcp_cmds/ssh/ssh02 b/testcases/network/tcp_cmds/ssh/ssh02
-> index 84c3637..a9974a0 100755
-> --- a/testcases/network/tcp_cmds/ssh/ssh02
-> +++ b/testcases/network/tcp_cmds/ssh/ssh02
-> @@ -59,7 +59,7 @@ do_setup()
->      # in adduser)
->      USER_UID=$(id -u $TEST_USER)
->      USER_GID=$(id -g $TEST_USER)
-> -    if ! mkdir "$TEST_USER_HOMEDIR"; then
-> +    if ! mkdir -p "$TEST_USER_HOMEDIR"; then
->          end_testcase "Failed to create $TEST_USER_HOMEDIR"
->      fi
->      chown -R $USER_UID.$USER_GID "$TEST_USER_HOMEDIR"
-> diff --git a/testcases/network/tcp_cmds/ssh/ssh03 b/testcases/network/tcp_cmds/ssh/ssh03
-> index 5c7305e..927db76 100755
-> --- a/testcases/network/tcp_cmds/ssh/ssh03
-> +++ b/testcases/network/tcp_cmds/ssh/ssh03
-> @@ -58,7 +58,7 @@ do_setup()
->      # in adduser)
->      USER_UID=$(id -u $TEST_USER)
->      USER_GID=$(id -g $TEST_USER)
-> -    if ! mkdir "$TEST_USER_HOMEDIR"; then
-> +    if ! mkdir -p "$TEST_USER_HOMEDIR"; then
->          end_testcase "Failed to create $TEST_USER_HOMEDIR"
->      fi
->      chown -R $USER_UID.$USER_GID "$TEST_USER_HOMEDIR"
+ - the shell loop in generic_trunk_target makes the "all" rules of the subdirectories run strictly sequentially
+
+This patch fixes these issues by adding dependencies to the autotools targets (it also deletes some of the duplicated targets from the realtime Makefile), and by making one target for each subdirectory in generic_trunk_target.
+
+Note that I really don't know if this works on an arbitrary make version.
+
+Regards
+    Jiri Palcek
+
+Signed-off-by: Jiri Palecek <jpalecek@web.de>
+---
+ include/mk/automake.mk              |    4 ++--
+ include/mk/generic_trunk_target.inc |   15 ++++++++++-----
+ testcases/realtime/Makefile         |   16 ++++++----------
+ 3 files changed, 18 insertions(+), 17 deletions(-)
+
+diff --git a/include/mk/automake.mk b/include/mk/automake.mk
+index 81d77c9..ba75f94 100644
+--- a/include/mk/automake.mk
++++ b/include/mk/automake.mk
+@@ -54,7 +54,7 @@ autoheader: include/config.h.in
+ include:
+ 	mkdir -p "$@"
+ 
+-include/config.h.in: configure.ac $(wildcard m4/*.m4) m4/ltp-version.m4
++include/config.h.in: configure.ac $(wildcard m4/*.m4) m4/ltp-version.m4 aclocal.m4
+ 	$(AUTOHEADER)
+ 	touch $@
+ 
+@@ -65,7 +65,7 @@ m4/ltp-version.m4: ChangeLog
+ AUTOMAKE_FILES := config.guess config.sub install-sh missing stamp-h1
+ automake: aclocal $(AUTOMAKE_FILES)
+ $(AUTOMAKE_FILES): m4/Makefile.in
+-m4/Makefile.in: m4/Makefile.am
++m4/Makefile.in: m4/Makefile.am aclocal.m4
+ 	$(AUTOMAKE) -c -a
+ 
+ .PHONY: ac-clean ac-distclean ac-maintainer-clean
+diff --git a/include/mk/generic_trunk_target.inc b/include/mk/generic_trunk_target.inc
+index 7ffb9e9..deaddcc 100644
+--- a/include/mk/generic_trunk_target.inc
++++ b/include/mk/generic_trunk_target.inc
+@@ -52,15 +52,23 @@ RECURSIVE_TARGETS		?= all install
+ 
+ $(eval $(get_make_dirs))
+ 
+-.PHONY: $(RECURSIVE_TARGETS) $(addprefix trunk-,$(RECURSIVE_TARGETS))
++.PHONY: $(RECURSIVE_TARGETS) $(addprefix trunk-,$(RECURSIVE_TARGETS)) $(foreach tgt,$(RECURSIVE_TARGETS),$(addprefix trunk-subdir-$(tgt)--,$(SUBDIRS)))
+ 
+ $(SUBDIRS): %:
+ 	mkdir -m 00755 -p "$@"
+ 
++get_trunk_target = $(firstword $(subst --, ,$(patsubst trunk-subdir-%,%,$(1))))
++get_trunk_subdir = $(patsubst trunk-subdir-$(call get_trunk_target,$(1))--%,%,$(1))
++
++$(foreach tgt,$(RECURSIVE_TARGETS),$(addprefix trunk-subdir-$(tgt)--,$(SUBDIRS))): %:
++	mkdir -m 00755 -p "$(call get_trunk_subdir,$@)"
++	$(MAKE) -C $(call get_trunk_subdir,$@) -f "$(abs_srcdir)/$(call get_trunk_subdir,$@)/Makefile" $(call get_trunk_target,$@)
++
+ $(MAKE_TARGETS): | $(MAKE_DEPS)
+ 
+ trunk-all: $(MAKE_TARGETS)
+ 
++
+ trunk-clean:: | $(SUBDIRS)
+ 	$(if $(strip $(CLEAN_TARGETS)),$(RM) -f $(CLEAN_TARGETS))
+ 
+@@ -89,10 +97,7 @@ ifeq ($(strip $(SUBDIRS)),)
+ 	$(warning CURDIR is: $(CURDIR))
+ 	$(error SUBDIRS empty -- did you want generic_leaf_target instead?)
+ else
+-$(RECURSIVE_TARGETS): %: | $(SUBDIRS)
+-	@set -e; for dir in $(SUBDIRS); do \
+-	    $(MAKE) -C $$dir -f "$(abs_srcdir)/$$dir/Makefile" $@; \
+-	done
++$(RECURSIVE_TARGETS): %: $(addprefix trunk-subdir-%--,$(SUBDIRS))
+ endif
+ 
+ # vim: syntax=make
+diff --git a/testcases/realtime/Makefile b/testcases/realtime/Makefile
+index 9527b55..3aff429 100644
+--- a/testcases/realtime/Makefile
++++ b/testcases/realtime/Makefile
+@@ -54,26 +54,22 @@ ac-distclean:: ac-clean
+ ac-maintainer-clean:: ac-distclean
+ 	$(RM) -f aclocal.m4 configure $(AUTOMAKE_FILES) m4/Makefile.in
+ 
+-aclocal:
+-	$(ACLOCAL) -I $(abs_srcdir)/m4
+-
+-autoconf:
+-	$(AUTOCONF)
++aclocal: aclocal.m4
+ 
+-autoheader:
+-	$(AUTOHEADER)
++aclocal.m4:
++	$(ACLOCAL) -I $(abs_srcdir)/m4
+ 
+ autoconf: configure
+ 
+-include/realtime_config.h.in: configure.in $(wildcard m4/*.m4)
++include/realtime_config.h.in: configure.in $(wildcard m4/*.m4)  aclocal.m4
+ 	$(AUTOHEADER)
+ 	touch $@
+ 
+ configure: configure.in aclocal.m4
+ 	$(AUTOCONF)
+-automake: aclocal $(AUTOMAKE_FILES)
++automake: $(AUTOMAKE_FILES)
+ $(AUTOMAKE_FILES): m4/Makefile.in
+-m4/Makefile.in: m4/Makefile.am
++m4/Makefile.in: m4/Makefile.am aclocal.m4
+ 	$(AUTOMAKE) -c -a
+ 
+ .PHONY: autoheader
+-- 
+1.6.4.3
+
+
 
 
 ------------------------------------------------------------------------------
