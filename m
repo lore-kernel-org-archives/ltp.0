@@ -1,26 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NLrFT-0001wD-0a
-	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 04:48:59 +0000
-Received: from mail-pz0-f193.google.com ([209.85.222.193])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1NGcSA-0002NC-O8
+	for ltp-list@lists.sourceforge.net; Fri, 04 Dec 2009 18:00:26 +0000
+Received: from fmmailgate02.web.de ([217.72.192.227])
 	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NLrFM-0003FS-Gl
-	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 04:48:58 +0000
-Received: by pzk31 with SMTP id 31so2476535pzk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 18 Dec 2009 20:48:46 -0800 (PST)
+	id 1NGcS3-0005Jw-4z
+	for ltp-list@lists.sourceforge.net; Fri, 04 Dec 2009 18:00:26 +0000
+From: Jiri Palecek <jpalecek@web.de>
+Date: Fri, 4 Dec 2009 19:00:14 +0100
+References: <000001ca69a6$d6ad7520$84085f60$@co.jp>
+	<364299f40911192224i127c4b87qf0f7777ae0a8377d@mail.gmail.com>
+In-Reply-To: <364299f40911192224i127c4b87qf0f7777ae0a8377d@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <op.u45xf7bsu2flwt@debian>
-References: <4b1940f3.8413f30a.2877.6a27SMTPIN_ADDED@mx.google.com>
-	<200912041406.40770.vapier@gentoo.org>
-	<op.u4fxyb2ou2flwt@marcela-gaxm89c>
-	<200912042358.59830.vapier@gentoo.org> <op.u45xf7bsu2flwt@debian>
-Date: Fri, 18 Dec 2009 20:48:46 -0800
-Message-ID: <364299f40912182048g28dbdc8ata19243d36d471aa9@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Don't install datafiles with executable mode
+Message-Id: <200912041900.14388.jpalecek@web.de>
+Subject: Re: [LTP] move_pages test failed in ltp-2009-11-19.tar.gz
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,110 +25,179 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: =?ISO-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Mitani <mitani@ryobi.co.jp>
 
-2009/12/18 Ji=F8=ED Pale=E8ek <jpalecek@web.de>:
-> On Sat, 05 Dec 2009 05:58:59 +0100, Mike Frysinger <vapier@gentoo.org>
-> wrote:
->
->> On Friday 04 December 2009 20:19:13 Ji=F8=ED Pale=E8ek wrote:
->>> On Fri, 04 Dec 2009 20:06:40 +0100, Mike Frysinger <vapier@gentoo.org>
->>>
->>> wrote:
->>> > On Friday 04 December 2009 11:58:13 Jiri Palecek wrote:
->>> >> the makefiles install all files with executable mode by default. This
->>> >> patch
->>> >> =A0changes it for some of the Makefiles, that install data files, wh=
-ich
->>> >> =A0should IMHO not be executable. The change makes INSTALL_MODE deci=
-de
->>> the
->>> >> =A0actual mode when it is expanded inside the install rule (depending
->>> on
->>> >> $@,
->>> >> =A0which is the install target name).
->>> >
->>> > that's pretty fugly way to go about it. =A0let's go the more natural
->>> route
->>> > and
->>> > have the common code default to $(INSTALL_MODE_$@) and if that's
->>> unset,
->>> > use
->>> > the default $(INSTALL_MODE).
->>>
->>> Sorry, but I don't agree with that. This is a function-like approach
->>> which
->>> is not any less "natural" than what you propose - and it makes no
->>> demands
->>> on anyone who doesn't need it, and gives great power to those who need
->>> it.
->>
->> your solution requires non-obvious delayed evaluation that isnt
->> straightforward. =A0mine is explicit, unambiguous, and already in use by
->> many
->> other projects that ltp is related to.
->
-> ... and weak.
->
->>> The main reason I don't like the INSTALL_MODE_$@ thing, is that eg.
->>> INSTALL_TARGETS can contain wildcards (eg. dir/*.ext), and there cannot
->>> be
->>> any such thing as $(INSTALL_MODE_dir/*.ext). You would have to enumerate
->>> all data files - or all program files - which would be a chore esp. if
->>> any
->>> of these isn't known in the makefile until "make all" is ran.
->>
->> so fix install targets to expand the globs at make time and not shell
->> time.
->> i.e. something like INSTALL_TARGETS :=3D $(wildcard $(INSTALL_TARGETS))
->
-> We do that currently, but this doesn't change the problem in any way. The
-> problem is that if I am able to write
->
-> INSTALL_TARGETS :=3D 1* 2*
->
-> I want to be able to specify that the files in 1* are executables and
-> files in 2* are not, without having to enumerate them all. This is
-> impossible with your "explicit" solution.
->
-> I would be happy with something like
->
-> EXECUTABLES :=3D 1*
+On Friday 20 November 2009 07:24:29 Garrett Cooper wrote:
+> On Thu, Nov 19, 2009 at 10:00 PM, Mitani <mitani@ryobi.co.jp> wrote:
+> > Hi,
+> >
+> > When I ran LTP in RHEL5.4 using ltp-2009-11-19.tar.gz,
+> > "move_pages03" and "move_pages11" were failed in each of "syscalls" and
+> > "numa" tests like that:
+> >
+> > ------------
+> > move_pages01    1  TCONF  :  NUMA support not provided
+> > move_pages02    1  TCONF  :  NUMA support not provided
+> > chown: cannot access `move_pages03': No such file or directory
+> > move_pages04    1  TCONF  :  NUMA support not provided
+> > move_pages05    1  TCONF  :  NUMA support not provided
+> > move_pages06    1  TCONF  :  NUMA support not provided
+> > move_pages07    1  TCONF  :  NUMA support not provided
+> > move_pages08    1  TCONF  :  NUMA support not provided
+> > move_pages09    1  TCONF  :  NUMA support not provided
+> > move_pages10    1  TCONF  :  NUMA support not provided
+> > chown: cannot access `move_pages11': No such file or directory
+> > ------------
+> >
+> >
+> > These fails didn't occured with ltp-full-20090930.tgz, but they occured
+> > with ltp-full-20091031.tgz.
+> > With ltp-full-20090930.tgz, all of move_pagesXX (XX:01-11) were passed
+> > (NUMA support not provided) in my system.
+> >
+> >
+> > I compared these version and found out following scenarios changed.
+> >  - ${LTPROOT}/runtest/numa
+> >  - ${LTPROOT}/runtest/syscalls
+> >
+> >
+> > These scenarios are as follows, and "move_pages03" and "move_pages01"
+> > are revised.
+> >
+> > ------------
+> > # cat ./runtest/numa
+> > Numa-testcases numa01.sh
+> > move_pages01 move_pages.sh 01
+> > move_pages02 move_pages.sh 02
+> > move_pages03 cd $LTPROOT/bin && chown root move_pages03 && chmod 04755 &&
+> > move_pages.sh 03
+> > move_pages04 move_pages.sh 04
+> > move_pages05 move_pages.sh 05
+> > move_pages06 move_pages.sh 06
+> > move_pages07 move_pages.sh 07
+> > move_pages08 move_pages.sh 08
+> > move_pages09 move_pages.sh 09
+> > move_pages10 move_pages.sh 10
+> > move_pages11 cd $LTPROOT/bin && chown root move_pages11 && chmod 04755 &&
+> > move_pages.sh 11
+> > # cat ./runtest/syscalls | grep move_page
+> > move_pages01 move_pages.sh 01
+> > move_pages02 move_pages.sh 02
+> > move_pages03 cd $LTPROOT/bin && chown root move_pages03 && chmod 04755 &&
+> > move_pages.sh 03
+> > move_pages04 move_pages.sh 04
+> > move_pages05 move_pages.sh 05
+> > move_pages06 move_pages.sh 06
+> > move_pages07 move_pages.sh 07
+> > move_pages08 move_pages.sh 08
+> > move_pages09 move_pages.sh 09
+> > move_pages10 move_pages.sh 10
+> > move_pages11 cd $LTPROOT/bin && chown root move_pages11 && chmod 04755 &&
+> > move_pages.sh 11
+> > #------------
+> >
+> >
+> > I think there are two problems in each changes:
+> >
+> >  - "move_pagesXX" files are in "$LTPROOT/testcases/bin" direcotory,
+> >    not in "$LTPROOT/bin" directory.
+> >  - "chmod" commands don't have target file.
+> >
+> >
+> > I don't know why these revisions are done. But if these revisions should
+> > be validated, they will come to work in the change like following, I think.
+> > I wish I can get opinion whether my revision is right or not.
+> >
+> > ============
+> >
+> > --- syscalls    2009-11-18 13:24:34.000000000 +0900
+> > +++ syscalls.new        2009-11-19 16:15:13.000000000 +0900
+> > @@ -571,7 +571,7 @@
+> >
+> >  move_pages01 move_pages.sh 01
+> >  move_pages02 move_pages.sh 02
+> > -move_pages03 cd $LTPROOT/bin && chown root move_pages03 && chmod 04755 &&
+> > move_pages.sh 03
+> > +move_pages03 cd $LTPROOT/testcases/bin && chown root move_pages03 && chmod
+> > 04755 move_pages.sh && move_pages.sh 03
+> >  move_pages04 move_pages.sh 04
+> >  move_pages05 move_pages.sh 05
+> >  move_pages06 move_pages.sh 06
+> > @@ -579,7 +579,7 @@
+> >  move_pages08 move_pages.sh 08
+> >  move_pages09 move_pages.sh 09
+> >  move_pages10 move_pages.sh 10
+> > -move_pages11 cd $LTPROOT/bin && chown root move_pages11 && chmod 04755 &&
+> > move_pages.sh 11
+> > +move_pages11 cd $LTPROOT/testcases/bin && chown root move_pages11 && chmod
+> > 04755 move_pages.sh && move_pages.sh 11
+> >
+> >  mprotect01 mprotect01
+> >  mprotect02 mprotect02
+> >
+> > --- numa        2009-11-18 13:24:34.000000000 +0900
+> > +++ numa.new    2009-11-19 16:15:33.000000000 +0900
+> > @@ -1,7 +1,7 @@
+> >  Numa-testcases numa01.sh
+> >  move_pages01 move_pages.sh 01
+> >  move_pages02 move_pages.sh 02
+> > -move_pages03 cd $LTPROOT/bin && chown root move_pages03 && chmod 04755 &&
+> > move_pages.sh 03
+> > +move_pages03 cd $LTPROOT/testcases/bin && chown root move_pages03 && chmod
+> > 04755 move_pages.sh && move_pages.sh 03
+> >  move_pages04 move_pages.sh 04
+> >  move_pages05 move_pages.sh 05
+> >  move_pages06 move_pages.sh 06
+> > @@ -9,4 +9,4 @@
+> >  move_pages08 move_pages.sh 08
+> >  move_pages09 move_pages.sh 09
+> >  move_pages10 move_pages.sh 10
+> > -move_pages11 cd $LTPROOT/bin && chown root move_pages11 && chmod 04755 &&
+> > move_pages.sh 11
+> > +move_pages11 cd $LTPROOT/testcases/bin && chown root move_pages11 && chmod
+> > 04755 move_pages.sh && move_pages.sh 11
+> >
+> > ============
+> >
+> >
+> > In addition, please teach why this revision was performed, if all right.
+> >  - Why do only "move_pages03" and "move_pages11" appoint another directory
+> >    not a current directory?
+> >  - Why "chmod" is needed?
+> 
+> Mitani-san,
+>     Good catch ><... I made some really silly clerical errors in my
+> commits for these runtest files.
+>     To answer your questions though:
+>     1. I did the cd to ensure that pan is in a consistent location
+> when it does the chmod and to avoid having to do
+> "$LTPROOT/testcases/bin/move_pages{03,11}".
+>     2. The chmod and chown to fix the ownership and to enable the
+> sticky bit are being done because the test does seteuid, IIRC. What I
+> did was moved the logic from a `build time fix' to a `run time fix',
+> especially because the build user may not be root, and thus couldn't
+> set the sticky bit for the binary.
 
-    I like that proposal a lot :). Maybe have an extension to the
-install define that defaults to 00644 by default, but can be
-overridden by an optional argument added to the define, e.g.
+Garrett,
 
-define generate_install_rule
+can you please point me to a specific reason why this is needed, because I can't see anything that would need it in the test. Note that calling seteuid() [I can't find this in the code] doesn't mean the file has to be setuid-root. The only case where it would matter, would be when the code would drop root and then exec() move_pages{03,11}.
 
-$(1)INSTALL_MODE ?=3D 00664
+I think it would be good to drop the chown altogether, if there isn't a compelling reason against it. For one thing, you cannot do chown if you install the tests to a read-only filesystem and run them from there, for another, making any file suid-root is a tricky thing security-wise.
 
-ifneq ($(4),)
-$(1)INSTALL_MODE :=3D $(4)
-endef
+I haven't got any NUMA machine, so I cannot properly test these, anybody who can, please check if removing the cd, chmod and chown commands from the runtest file doesn't break anything. Post the results if possible.
 
-#...
+Regards
+    Jiri Palecek
 
-endef
-
-Some of the testcases that require CAP_CHOWN for seteuid need
-different install bits than the rest. Or maybe a different method of
-installation should be used here?
-Thanks,
--Garrett
-
----------------------------------------------------------------------------=
----
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev =
-
+------------------------------------------------------------------------------
+Join us December 9, 2009 for the Red Hat Virtual Experience,
+a free event focused on virtualization and cloud computing. 
+Attend in-depth sessions from your desk. Your couch. Anywhere.
+http://p.sf.net/sfu/redhat-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
