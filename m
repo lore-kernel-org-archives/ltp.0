@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1NGi7g-0005jV-6X
-	for ltp-list@lists.sourceforge.net; Sat, 05 Dec 2009 00:03:40 +0000
-Received: from fmmailgate02.web.de ([217.72.192.227])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NGi7a-0002wU-N3
-	for ltp-list@lists.sourceforge.net; Sat, 05 Dec 2009 00:03:40 +0000
-References: <4b1944a0.8713f30a.3b2f.4a0fSMTPIN_ADDED@mx.google.com>
-	<200912041413.11781.vapier@gentoo.org>
-Date: Sat, 05 Dec 2009 01:03:26 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1NGdS6-0002ka-3T
+	for ltp-list@lists.sourceforge.net; Fri, 04 Dec 2009 19:04:26 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NGdRz-000381-NN
+	for ltp-list@lists.sourceforge.net; Fri, 04 Dec 2009 19:04:26 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Fri, 4 Dec 2009 14:09:27 -0500
+References: <4b193c6d.9113f30a.0553.186fSMTPIN_ADDED@mx.google.com>
+In-Reply-To: <4b193c6d.9113f30a.0553.186fSMTPIN_ADDED@mx.google.com>
 MIME-Version: 1.0
-From: =?iso-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
-Message-ID: <op.u4fuf0b9u2flwt@marcela-gaxm89c>
-In-Reply-To: <200912041413.11781.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] Support for parallel compilation
+Message-Id: <200912041409.27672.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] Fix overreaching clean targets in Makefiles that
+	cleaned the readme files
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,35 +25,77 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2647749469722386517=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: Jiri Palecek <jpalecek@web.de>
 
-On Fri, 04 Dec 2009 20:13:11 +0100, Mike Frysinger <vapier@gentoo.org>  
-wrote:
+--===============2647749469722386517==
+Content-Type: multipart/signed; boundary="nextPart1385906.fyvk2YK8mK";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-> On Friday 04 December 2009 12:04:06 Jiri Palecek wrote:
->> -.PHONY: $(RECURSIVE_TARGETS) $(addprefix trunk-,$(RECURSIVE_TARGETS))
->> +.PHONY: $(RECURSIVE_TARGETS) $(addprefix trunk-,$(RECURSIVE_TARGETS))
->>  $(foreach tgt,$(RECURSIVE_TARGETS),$(addprefix
->>  trunk-subdir-$(tgt)--,$(SUBDIRS)))
->
-> these foreach look like an overly complicated form of $(patsubst):
-> 	$(patsubst %,moo_%,$(DIRS))
+--nextPart1385906.fyvk2YK8mK
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-It may look like it, but they aren't. What you've written is a simple  
-addprefix, while the foreach does some for of cartesian product  
-($(TARGETS)x$(DIRS)).
+On Friday 04 December 2009 11:31:55 Jiri Palecek wrote:
+> the makefiles in some of the float tests contain the glob "[dr]*" in their
+>  clean targets. Unfortunately, this deletes not only the generated
+>  reference files, but also the readme files shipped in those directories.
+>  This patch fixes it by changing CLEAN_TARGETS to more specific patterns
+>  (that capture all generated files in all float tests, however).
 
-   Jiri Palecek
+easier to rename the file to README (which i've done now)
+-mike
+
+--nextPart1385906.fyvk2YK8mK
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.13 (GNU/Linux)
+
+iQIcBAABAgAGBQJLGV5nAAoJEEFjO5/oN/WBS6wP/2guYWlxbJ80Spg+63QWjUuH
+CBajH0rSkDRiTZIekH97A9G3v/frPW09GB5jHbWEI6FWL7NZLM5duMTvR441YMd1
+lG0heJmDuNCW8vB88D3O7Ot3x9FtEybr5POLcCIM8pbJI84ljBhmHlqSIUprYV6S
+MNpL/L5diEthNrBjF1IIHMJy3SkAYuDolQRKGqdqgOL9ff7BqFjb9AucKqozjBfT
+fbH7lyJzEYyLDtuREPSdqrS9p5e79c1Pg4q6sr/mc53zvGqtQbcdttnPosjzXv9T
+5z0MUKXC3Pq7PYjHsq/NwV+Nh34Ps+xaixivdHvRTRhbQDkXOuh39wvkkrXZ/7Xo
+33XuH6cX9PfxKGEEgbGVyswR2badg5ip2KEmZQMEFFBgU4yaF/WPWdAnABY/3pdp
+NXRCU1fCciGiBFawdeT5tCEiBleKZDhv6Z1g2FcpDzxTcXF/e3Nnz3S4xK6YcPCd
+rX2P8giCOi09khXWM9hrEp/Mkivu0gZpJaB7a6ucuBrqkMVNri6pSzT7Vh3WL4lL
+WmQ3vJkwUADrlLvMXrqAiZffuwYGRHKbHoQxg2FkmF8eli+xNpPlc5uYL4nw8zti
+GsgkjmAmSNuG9jkLAKl1msQ8qyRE/t4+bhBrXBFYGKE+4ADV/CpMSjRM+QlxuYZ8
+M/l5ZVWl+0IemBj+2MzD
+=BrLF
+-----END PGP SIGNATURE-----
+
+--nextPart1385906.fyvk2YK8mK--
+
+
+--===============2647749469722386517==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Join us December 9, 2009 for the Red Hat Virtual Experience,
 a free event focused on virtualization and cloud computing. 
 Attend in-depth sessions from your desk. Your couch. Anywhere.
 http://p.sf.net/sfu/redhat-sfdev2dev
+--===============2647749469722386517==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2647749469722386517==--
+
