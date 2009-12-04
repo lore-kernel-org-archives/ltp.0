@@ -1,26 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1NFbIl-0000t0-3i
-	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 22:34:31 +0000
-Received: from fmmailgate03.web.de ([217.72.192.234])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NFbId-0007ct-GA
-	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 22:34:31 +0000
-Received: from smtp05.web.de (fmsmtp05.dlan.cinetic.de [172.20.4.166])
-	by fmmailgate03.web.de (Postfix) with ESMTP id 35311136ABE96
-	for <ltp-list@lists.sourceforge.net>;
-	Tue,  1 Dec 2009 23:34:17 +0100 (CET)
-Received: from [90.180.172.144] (helo=debian)
-	by smtp05.web.de with asmtp (WEB.DE 4.110 #314) id 1NFbIW-0004t0-00
-	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 23:34:17 +0100
-Date: Tue, 01 Dec 2009 23:32:22 +0100
-From: "Jiri Palecek" <jpalecek@web.de>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <chrubis@suse.de>) id 1NGZXg-0000AY-GH
+	for ltp-list@lists.sourceforge.net; Fri, 04 Dec 2009 14:53:56 +0000
+Date: Fri, 4 Dec 2009 15:54:39 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20091204145439.GA8628@saboteur.suse.cz>
+References: <20091116151656.GB16811@schrodinger.suse.cz>
+	<20091203152731.GA10251@refried.org>
 MIME-Version: 1.0
-Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-Resent-Message-ID: <op.u396bnsucfnueu@debian>
-Subject: [LTP] [PATCH] Fix a bug in awk code in rsh01
+Content-Disposition: inline
+In-Reply-To: <20091203152731.GA10251@refried.org>
+Subject: Re: [LTP] [RFC] utstest.h
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,50 +24,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: ltp-list-bounces@lists.sourceforge.net
 Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Nate Straz <nate-ltp@refried.org>
 Cc: ltp-list@lists.sourceforge.net
-Message-ID: <20091201223222.vhSQTwM0QZuo2HAVP0y9qcjxdCEJg6eFPncVuopqlIw@z>
 
-Hello,
+Hi!
+> This is one of the many features that were included in the original
+> libraries which no one in the community really explored.  The purpose of
+> TEST_PAUSE is to allow multiple tests to complete their setup steps
+> before being released at the same time.  This allows tests to hammer
+> syscalls at relatively the same time and test race conditions.
 
-this patch fixes the following problem with awk code in rsh01. It caused the test to fail.
+Yes, but the question here is if this must be done this way. And if anybody
+uses this.
 
- The END label is executed always, even in the event of
- exit. Therefore, the "exit 1" statement was executed even when the
- line matched (as a consequence of "exit 0") and awk always returned
- 1 (ie. failure).
+And also this interface is not used in all tests. Quick greping shows that it's
+used moslty in testcases/kernel/ (there are 12 test outside this directory) and
+in about 56% of tests there.
 
-Regards
-    Jiri Palecek
-
-Signed-off-by: Jiri Palecek <jpalecek@web.de>
----
- testcases/network/tcp_cmds/rsh/rsh01 |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/network/tcp_cmds/rsh/rsh01 b/testcases/network/tcp_cmds/rsh/rsh01
-index e87a6a0..0a2b58f 100755
---- a/testcases/network/tcp_cmds/rsh/rsh01
-+++ b/testcases/network/tcp_cmds/rsh/rsh01
-@@ -72,9 +72,9 @@ do_test()
-             # gcooper@orangebox ~ $ ls -l /etc/hosts         
-             # -rw-r--r-- 1 root root 463 Jul  5 09:26 /etc/hosts
-             #
--            echo "$OUT" | \
--                awk 'NF == 9 && $NF == "/etc/hosts" { exit 0 } END { exit 1 }' \
--                >& /dev/null
-+            echo "$OUT" |
-+                awk 'BEGIN { RET=1 } NF == 9 && $NF == "/etc/hosts" { RET=0 } END { exit RET }' \
-+                > /dev/null 2>&1
- 
-             if [ $? -eq 0 ] ; then
-                 tst_resm TPASS "rsh to $RHOST test succeeded"
 -- 
-1.6.4.3
-
-
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Join us December 9, 2009 for the Red Hat Virtual Experience,
