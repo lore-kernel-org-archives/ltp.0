@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NJ6R9-0005p1-1v
-	for ltp-list@lists.sourceforge.net; Fri, 11 Dec 2009 14:25:39 +0000
-Received: from mail-yw0-f175.google.com ([209.85.211.175])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NJ6R3-0002LC-LU
-	for ltp-list@lists.sourceforge.net; Fri, 11 Dec 2009 14:25:39 +0000
-Received: by ywh5 with SMTP id 5so1761026ywh.11
+	(envelope-from <yanegomi@gmail.com>) id 1NGoIc-0007no-Ih
+	for ltp-list@lists.sourceforge.net; Sat, 05 Dec 2009 06:39:22 +0000
+Received: from mail-px0-f174.google.com ([209.85.216.174])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NGoIW-0008T4-CI
+	for ltp-list@lists.sourceforge.net; Sat, 05 Dec 2009 06:39:22 +0000
+Received: by pxi4 with SMTP id 4so870458pxi.4
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 11 Dec 2009 06:25:28 -0800 (PST)
-Mime-Version: 1.0 (Apple Message framework v1077)
+	Fri, 04 Dec 2009 22:39:10 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <op.u4fxyb2ou2flwt@marcela-gaxm89c>
+References: <4b1940f3.8413f30a.2877.6a27SMTPIN_ADDED@mx.google.com>
+	<200912041406.40770.vapier@gentoo.org>
+	<op.u4fxyb2ou2flwt@marcela-gaxm89c>
+Date: Fri, 4 Dec 2009 22:39:10 -0800
+Message-ID: <364299f40912042239w56b6d771ic32ba98907162d34@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <1429667615.6061260277679532.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-Date: Fri, 11 Dec 2009 06:25:24 -0800
-Message-Id: <CECC7627-B7D9-4402-8BFC-5CEB883F916B@gmail.com>
-References: <1429667615.6061260277679532.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-Subject: Re: [LTP] make error
+Subject: Re: [LTP] [PATCH] Don't install datafiles with executable mode
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,53 +29,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: yali_ning <yali_ning@126.com>, Mike Frysinger <vapier@gentoo.org>, ltp-list@lists.sourceforge.net
+To: =?UTF-8?B?SmnFmcOtIFBhbGXEjWVr?= <jpalecek@web.de>
+Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
 
-On Dec 8, 2009, at 5:07 AM, Caspar Zhang wrote:
-
-> 
-> ----- "Mike Frysinger" <vapier@gentoo.org> wrote:
-> 
->> On Thursday 12 November 2009 01:20:37 yali_ning wrote:
->>>  I came across an error , when compiling the ltp-20091030. the step
->> is :
->>> 
->>> gcc -Wall -g -Os -g -O2 -fno-strict-aliasing -pipe -Wall 
->>> 
->> -I/mnt/sdb1/nly1/ltp-1030/ltp-full-20091031/testcases/kernel/include
->>> -I../../../../include -I../../../../include   -L../../../../lib 
->> vfork.c  
->>> -lltp -o vfork In file included from /usr/include/asm/ptrace.h:58,
->>>                 from /usr/include/linux/ptrace.h:49,
->>>                 from vfork.c:45:
->>> /usr/include/asm/fpu.h:57: error: redefinition of 'struct
->> ia64_fpreg'
->>> In file included from /usr/include/linux/ptrace.h:49,
->>>                 from vfork.c:45:
->>> /usr/include/asm/ptrace.h:208: error: redefinition of 'struct
->>> pt_all_user_regs'
->> 
->> this should be fixed already in latest cvs
->> -mike
-> No, I tried to install latest cvs version under RHEL5.4 on a ia64
-> machine but the same error still existed.
-> 
-> What puzzled me is, it said it was the redefinition-error, but I 
-> couldn't even find the originally defined structs.
-
-    The definition exists in /usr/include/asm*/ptrace.h, or maybe your build is fubared and you're referencing legitimate kernel source headers instead of system headers. We'd need more details in order to determine what's going on here...
-Thanks,
--Garrett
-------------------------------------------------------------------------------
-Return on Information:
-Google Enterprise Search pays you back
-Get the facts.
-http://p.sf.net/sfu/google-dev2dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gRnJpLCBEZWMgNCwgMjAwOSBhdCA1OjE5IFBNLCBKacWZw60gUGFsZcSNZWsgPGpwYWxlY2Vr
+QHdlYi5kZT4gd3JvdGU6Cj4gT24gRnJpLCAwNCBEZWMgMjAwOSAyMDowNjo0MCArMDEwMCwgTWlr
+ZSBGcnlzaW5nZXIgPHZhcGllckBnZW50b28ub3JnPgo+IHdyb3RlOgo+Cj4+IE9uIEZyaWRheSAw
+NCBEZWNlbWJlciAyMDA5IDExOjU4OjEzIEppcmkgUGFsZWNlayB3cm90ZToKPj4+IHRoZSBtYWtl
+ZmlsZXMgaW5zdGFsbCBhbGwgZmlsZXMgd2l0aCBleGVjdXRhYmxlIG1vZGUgYnkgZGVmYXVsdC4g
+VGhpcwo+Pj4gcGF0Y2gKPj4+IMKgY2hhbmdlcyBpdCBmb3Igc29tZSBvZiB0aGUgTWFrZWZpbGVz
+LCB0aGF0IGluc3RhbGwgZGF0YSBmaWxlcywgd2hpY2gKPj4+IMKgc2hvdWxkIElNSE8gbm90IGJl
+IGV4ZWN1dGFibGUuIFRoZSBjaGFuZ2UgbWFrZXMgSU5TVEFMTF9NT0RFIGRlY2lkZSB0aGUKPj4+
+IMKgYWN0dWFsIG1vZGUgd2hlbiBpdCBpcyBleHBhbmRlZCBpbnNpZGUgdGhlIGluc3RhbGwgcnVs
+ZSAoZGVwZW5kaW5nIG9uCj4+PiAkQCwKPj4+IMKgd2hpY2ggaXMgdGhlIGluc3RhbGwgdGFyZ2V0
+IG5hbWUpLgo+Pgo+PiB0aGF0J3MgcHJldHR5IGZ1Z2x5IHdheSB0byBnbyBhYm91dCBpdC4gwqBs
+ZXQncyBnbyB0aGUgbW9yZSBuYXR1cmFsIHJvdXRlCj4+IGFuZAo+PiBoYXZlIHRoZSBjb21tb24g
+Y29kZSBkZWZhdWx0IHRvICQoSU5TVEFMTF9NT0RFXyRAKSBhbmQgaWYgdGhhdCdzIHVuc2V0LAo+
+PiB1c2UKPj4gdGhlIGRlZmF1bHQgJChJTlNUQUxMX01PREUpLgo+Cj4gU29ycnksIGJ1dCBJIGRv
+bid0IGFncmVlIHdpdGggdGhhdC4gVGhpcyBpcyBhIGZ1bmN0aW9uLWxpa2UgYXBwcm9hY2ggd2hp
+Y2gKPiBpcyBub3QgYW55IGxlc3MgIm5hdHVyYWwiIHRoYW4gd2hhdCB5b3UgcHJvcG9zZSAtIGFu
+ZCBpdCBtYWtlcyBubyBkZW1hbmRzCj4gb24gYW55b25lIHdobyBkb2Vzbid0IG5lZWQgaXQsIGFu
+ZCBnaXZlcyBncmVhdCBwb3dlciB0byB0aG9zZSB3aG8gbmVlZCBpdC4KPgo+IFRoZSBtYWluIHJl
+YXNvbiBJIGRvbid0IGxpa2UgdGhlIElOU1RBTExfTU9ERV8kQCB0aGluZywgaXMgdGhhdCBlZy4K
+PiBJTlNUQUxMX1RBUkdFVFMgY2FuIGNvbnRhaW4gd2lsZGNhcmRzIChlZy4gZGlyLyouZXh0KSwg
+YW5kIHRoZXJlIGNhbm5vdCBiZQo+IGFueSBzdWNoIHRoaW5nIGFzICQoSU5TVEFMTF9NT0RFX2Rp
+ci8qLmV4dCkuIFlvdSB3b3VsZCBoYXZlIHRvIGVudW1lcmF0ZQo+IGFsbCBkYXRhIGZpbGVzIC0g
+b3IgYWxsIHByb2dyYW0gZmlsZXMgLSB3aGljaCB3b3VsZCBiZSBhIGNob3JlIGVzcC4gaWYgYW55
+Cj4gb2YgdGhlc2UgaXNuJ3Qga25vd24gaW4gdGhlIG1ha2VmaWxlIHVudGlsICJtYWtlIGFsbCIg
+aXMgcmFuLgo+Cj4gT1RPSCBJIHdvdWxkIGFncmVlIG9uIHNvbWUgbWV0aG9kIHRvIGF1dG9tYWdp
+Y2FsbHkgZGV0ZXJtaW5lIHRoZSBjb3JyZWN0Cj4gbW9kZS4KCiAgICBXZSBjYW4gZG8gaXQgb25l
+IG9mIGEgZmV3IHdheXMuLi4KICAgIDEuIEFueXRoaW5nIG5vdCBnb2luZyBpbnRvICQoZGF0YXJv
+b3RkaXIpLCAkKGxpYmRpciksICQobWFuZGlyKSwKZXRjIChlLmcuIGJpbiwgdGVzdGNhc2VzL2Jp
+biwgZXRjKSBzaG91bGQgYmUgMDA2NjQuCiAgICAyLiBXZSBjYW4gZmlsdGVyIGJ5IGV4dGVuc2lv
+biwgZS5nLiBJTlNUQUxMX1RBUkdFVFMgd2l0aApleHRlbnNpb25zIGxpa2UgLnB5LCAuc2gsIGV0
+YyBjYW4gaGF2ZSAwMDc1NS4KVGhhbmtzLAotR2FycmV0dAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+CkpvaW4gdXMgRGVjZW1iZXIgOSwgMjAwOSBmb3IgdGhlIFJlZCBIYXQgVmlydHVhbCBFeHBlcmll
+bmNlLAphIGZyZWUgZXZlbnQgZm9jdXNlZCBvbiB2aXJ0dWFsaXphdGlvbiBhbmQgY2xvdWQgY29t
+cHV0aW5nLiAKQXR0ZW5kIGluLWRlcHRoIHNlc3Npb25zIGZyb20geW91ciBkZXNrLiBZb3VyIGNv
+dWNoLiBBbnl3aGVyZS4KaHR0cDovL3Auc2YubmV0L3NmdS9yZWRoYXQtc2ZkZXYyZGV2Cl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxp
+bmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3Vy
+Y2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
