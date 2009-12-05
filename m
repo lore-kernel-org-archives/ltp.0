@@ -1,26 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1NGbJ4-0000M1-GS
-	for ltp-list@lists.sourceforge.net; Fri, 04 Dec 2009 16:46:58 +0000
-Received: from fmmailgate02.web.de ([217.72.192.227])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NGbJ0-0007bJ-HM
-	for ltp-list@lists.sourceforge.net; Fri, 04 Dec 2009 16:46:58 +0000
-Received: from smtp05.web.de (fmsmtp05.dlan.cinetic.de [172.20.4.166])
-	by fmmailgate02.web.de (Postfix) with ESMTP id 69244146A7F34
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NGpad-0000xp-K4
+	for ltp-list@lists.sourceforge.net; Sat, 05 Dec 2009 08:02:03 +0000
+Received: from mail-pz0-f193.google.com ([209.85.222.193])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NGpaZ-0005Iq-4d
+	for ltp-list@lists.sourceforge.net; Sat, 05 Dec 2009 08:02:03 +0000
+Received: by pzk31 with SMTP id 31so2898803pzk.28
 	for <ltp-list@lists.sourceforge.net>;
-	Fri,  4 Dec 2009 17:46:17 +0100 (CET)
-Received: from [90.180.172.144] (helo=debian)
-	by smtp05.web.de with asmtp (WEB.DE 4.110 #314) id 1NGbIP-0005lK-00
-	for ltp-list@lists.sourceforge.net; Fri, 04 Dec 2009 17:46:17 +0100
-Date: Fri, 04 Dec 2009 17:42:22 +0100
-From: "Jiri Palecek" <jpalecek@web.de>
+	Sat, 05 Dec 2009 00:01:53 -0800 (PST)
 MIME-Version: 1.0
-Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-Resent-Message-ID: <op.u4e97mtdcfnueu@debian>
-Subject: [LTP] [PATCH] Fix the objdump test's makefile (and reenable it)
+In-Reply-To: <op.u4fuf0b9u2flwt@marcela-gaxm89c>
+References: <4b1944a0.8713f30a.3b2f.4a0fSMTPIN_ADDED@mx.google.com>
+	<200912041413.11781.vapier@gentoo.org>
+	<op.u4fuf0b9u2flwt@marcela-gaxm89c>
+Date: Sat, 5 Dec 2009 00:01:52 -0800
+Message-ID: <364299f40912050001k12c39c45sa5b870851ca915ad@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Support for parallel compilation
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,71 +29,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: ltp-list-bounces@lists.sourceforge.net
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-Cc: ltp-list@lists.sourceforge.net
-Message-ID: <20091204164222.v4ECQ8H3OivKV0fy0lvsh3_Sykpf18a68d0Ljku_LWc@z>
+To: =?UTF-8?B?SmnFmcOtIFBhbGXEjWVr?= <jpalecek@web.de>
+Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
 
-Hello,
-
-the objdump tests' Makefile is disabled in the current LTP. This patch reenables it, and makes it work (at least for me).
-
-Regards
-    Jiri Palecek
-
-Signed-off-by: Jiri Palecek <jpalecek@web.de>
----
- testcases/commands/ade/Makefile         |    3 ---
- testcases/commands/ade/objdump/Makefile |    6 +++---
- 2 files changed, 3 insertions(+), 6 deletions(-)
-
-diff --git a/testcases/commands/ade/Makefile b/testcases/commands/ade/Makefile
-index cf7a487..9f57629 100644
---- a/testcases/commands/ade/Makefile
-+++ b/testcases/commands/ade/Makefile
-@@ -24,7 +24,4 @@ top_srcdir		?= ../../..
- 
- include $(top_srcdir)/include/mk/env_pre.mk
- 
--# XXX (garrcoop): objdump's Makefile needs fixing.
--FILTER_OUT_DIRS		:= objdump
--
- include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/commands/ade/objdump/Makefile b/testcases/commands/ade/objdump/Makefile
-index 862438c..ed3ad26 100644
---- a/testcases/commands/ade/objdump/Makefile
-+++ b/testcases/commands/ade/objdump/Makefile
-@@ -27,13 +27,13 @@ include $(top_srcdir)/include/mk/env_pre.mk
- test: CPPFLAGS += -O
- 
- test_arch.obj: test.o
--	mv $< "$@"
-+	cp $< "$@"
- 
- test_D: test.o
--	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) $(OUTPUT_OPTION) $@
-+	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) $(OUTPUT_OPTION)
- 
- INSTALL_TARGETS		:= objdump01
-- 
-+
- MAKE_TARGETS		:= test test_arch.obj test_D
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
--- 
-1.6.4.3
-
-
-
-
-------------------------------------------------------------------------------
-Join us December 9, 2009 for the Red Hat Virtual Experience,
-a free event focused on virtualization and cloud computing. 
-Attend in-depth sessions from your desk. Your couch. Anywhere.
-http://p.sf.net/sfu/redhat-sfdev2dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gRnJpLCBEZWMgNCwgMjAwOSBhdCA0OjAzIFBNLCBKacWZw60gUGFsZcSNZWsgPGpwYWxlY2Vr
+QHdlYi5kZT4gd3JvdGU6Cj4gT24gRnJpLCAwNCBEZWMgMjAwOSAyMDoxMzoxMSArMDEwMCwgTWlr
+ZSBGcnlzaW5nZXIgPHZhcGllckBnZW50b28ub3JnPgo+IHdyb3RlOgo+Cj4+IE9uIEZyaWRheSAw
+NCBEZWNlbWJlciAyMDA5IDEyOjA0OjA2IEppcmkgUGFsZWNlayB3cm90ZToKPj4+IC0uUEhPTlk6
+ICQoUkVDVVJTSVZFX1RBUkdFVFMpICQoYWRkcHJlZml4IHRydW5rLSwkKFJFQ1VSU0lWRV9UQVJH
+RVRTKSkKPj4+ICsuUEhPTlk6ICQoUkVDVVJTSVZFX1RBUkdFVFMpICQoYWRkcHJlZml4IHRydW5r
+LSwkKFJFQ1VSU0lWRV9UQVJHRVRTKSkKPj4+IMKgJChmb3JlYWNoIHRndCwkKFJFQ1VSU0lWRV9U
+QVJHRVRTKSwkKGFkZHByZWZpeAo+Pj4gwqB0cnVuay1zdWJkaXItJCh0Z3QpLS0sJChTVUJESVJT
+KSkpCj4+Cj4+IHRoZXNlIGZvcmVhY2ggbG9vayBsaWtlIGFuIG92ZXJseSBjb21wbGljYXRlZCBm
+b3JtIG9mICQocGF0c3Vic3QpOgo+PiDCoCDCoCDCoCAkKHBhdHN1YnN0ICUsbW9vXyUsJChESVJT
+KSkKPgo+IEl0IG1heSBsb29rIGxpa2UgaXQsIGJ1dCB0aGV5IGFyZW4ndC4gV2hhdCB5b3UndmUg
+d3JpdHRlbiBpcyBhIHNpbXBsZQo+IGFkZHByZWZpeCwgd2hpbGUgdGhlIGZvcmVhY2ggZG9lcyBz
+b21lIGZvciBvZiBjYXJ0ZXNpYW4gcHJvZHVjdAo+ICgkKFRBUkdFVFMpeCQoRElSUykpLgoKMS4g
+SSBjaGVja2VkIGluIHRoZSBmaXhlcyBmb3IgdGhlIGF1dG90b29scyB0YXJnZXRzIGFmdGVyIHZl
+cmlmeWluZwp0aGVtICh0aGFuayB5b3UgYnR3ISkuCjIuIElubGluZSBta2RpcnMgYXJlIGJhZCwg
+YmVjYXVzZSBta2RpcidzIGNhbiBmYWlsIG9yIGNhdXNlIGZhaWx1cmVzCm92ZXIgTkZTIGR1ZSB0
+byBleGNlc3NpdmUgSS9PLCB3aGljaCBpcyB3aHkgSSBxdWlja2x5IHJlbW92ZWQgdGhlIHRlc3QK
+LWQgfHwgbWtkaXIgLXAgbG9naWMgaW4gdGhlIDJuZCBtYWpvciBkcmFmdCBvZiB0aGUgbWFrZWZp
+bGUKaW5mcmFzdHJ1Y3R1cmUuCjMuIEFsdGhvdWdoIHlvdXIgaWRlYSBmb3IgZml4aW5nIHRoZSBs
+YWNrIG9mIHJlY3Vyc2l2ZSBtYWtlJ2luZyBpcwpnb29kLCB3aGF0IGFib3V0IHRoaXMgaW5zdGVh
+ZD8KCiMKIyBBIGNhbm5lZCBzZXQgb2Ygb3BlcmF0aW9ucyBmb3IgbGVhZiBtYWtlcy4gVGhpcyBj
+cmVhdGVzIGEgc2VyaWVzIG9mCnRhcmdldHMsIGxpa2U6CiMKIyAkKHN1YmRpciktYWxsICQoc3Vi
+ZGlyKS1jbGVhbiAkKHN1YmRpciktaW5zdGFsbDoKIwojIDEgLSBSZWN1cnNpdmUgdGFyZ2V0cyB0
+byBhY3QgdXBvbi4KIyAyIC0gdGhlIHN1YmRpcmVjdG9yeSB0byBkbyB0aGUgbGVhZl9tYWtlIG9u
+LgojCmRlZmluZSBnZW5lcmF0ZV9kaXJfZGVwCmlmbmRlZiBfXyQoMSlfZGlyX2RlcF9fCl9fJCgx
+KV9kaXJfZGVwX18gPSAxCiQoMSk6CiAgICAgICAgbWtkaXIgLXAgIiQkQCIKZW5kaWYKZW5kaWYK
+CmRlZmluZSBsZWFmX21ha2UKJCQoZm9yZWFjaCByZWN1cnNpdmVfdGFyZ2V0LCQoMSksJCQoYWRk
+cHJlZml4CiQoMiktJCQocmVjdXJzaXZlX3RhcmdldCkpKTogJCgxKS0lOiAkKDIpCiAgICAgICQo
+TUFLRSkgLUMgJCogLWYgIiIkKGFic19zcmNkaXIpLyQkKi9NYWtlZmlsZSIgJCQocGF0c3Vic3Qg
+JCgxKS0lLCUsJCRAKQplbmRlZgokKGZvcmVhY2ggc3ViZGlyICQoU1VCRElSUyksJChldmFsICQo
+Y2FsbCBnZW5lcmF0ZV9kaXJfZGVwLCQoc3ViZGlyKSkpKQokKGZvcmVhY2ggc3ViZGlyLCQoU1VC
+RElSUyksJChldmFsICQoY2FsbCBsZWFmX21ha2UKJChSRUNVUlNJVkVfVEFSR0VUUyksJChzdWJk
+aXIpKQoKVWx0aW1hdGVseSBJIHN1cHBvc2UsIGl0J3MgYW5vdGhlciBtZWFucyB0byBhIHNpbWls
+YXIgZW5kLiBJdCdzIGp1c3QgYQpiaXQgbW9yZSBkaXNjcmV0ZSBhcyB0byB3aGF0J3MgZ29pbmcg
+b24gaW4gdGhlIG9wZXJhdGlvbi4uLiBpZiB0aGlzIGlzCmEgZ29vZCBpZGVhLCBJJ2xsIG1vZGlm
+eSBmdW5jdGlvbnMubWsgdG8gbWF0Y2ggdGhpcy4gJChhYnNwYXRoKSAvLwokKHJlYWxwYXRoKSBq
+dW5rIGlzIGFscmVhZHkgYSBQSVRBLCBzbyBpdCBtaWdodCBiZSBhIGdvb2QgaWRlYSBqdXN0IHRv
+CnJlbW92ZSBpdCBpbiBmYXZvciBvZiBrZWVwaW5nIHRoaW5ncyBhcy1pcy4KClRoYW5rcywKLUdh
+cnJldHQKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpKb2luIHVzIERlY2VtYmVyIDksIDIwMDkgZm9y
+IHRoZSBSZWQgSGF0IFZpcnR1YWwgRXhwZXJpZW5jZSwKYSBmcmVlIGV2ZW50IGZvY3VzZWQgb24g
+dmlydHVhbGl6YXRpb24gYW5kIGNsb3VkIGNvbXB1dGluZy4gCkF0dGVuZCBpbi1kZXB0aCBzZXNz
+aW9ucyBmcm9tIHlvdXIgZGVzay4gWW91ciBjb3VjaC4gQW55d2hlcmUuCmh0dHA6Ly9wLnNmLm5l
+dC9zZnUvcmVkaGF0LXNmZGV2MmRldgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNl
+Zm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0
+cC1saXN0Cg==
