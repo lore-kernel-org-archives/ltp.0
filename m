@@ -2,25 +2,22 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <radoslav.kolev@rnd.bg>) id 1NHbig-0001tl-0b
-	for ltp-list@lists.sourceforge.net; Mon, 07 Dec 2009 11:25:34 +0000
-Received: from delta.superhosting.bg ([91.196.124.9])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NHbiY-0002Z7-96
-	for ltp-list@lists.sourceforge.net; Mon, 07 Dec 2009 11:25:33 +0000
-Received: from [83.228.52.239] (helo=[192.168.1.14])
-	by delta.superhosting.bg with esmtpsa (SSLv3:AES256-SHA:256)
-	(Exim 4.69) (envelope-from <radoslav.kolev@rnd.bg>)
-	id 1NHbiQ-0007Wi-Kx
-	for ltp-list@lists.sourceforge.net; Mon, 07 Dec 2009 13:25:18 +0200
-From: Radoslav Kolev <radoslav.kolev@rnd.bg>
-In-Reply-To: <7A6C57348F763B4BB9E81202BA4D632B0B123D76F1@ap1rdcrdc1wx029.exi.nxp.com>
-References: <7A6C57348F763B4BB9E81202BA4D632B0B123D76F1@ap1rdcrdc1wx029.exi.nxp.com>
-Date: Mon, 07 Dec 2009 13:26:33 +0200
-Message-Id: <1260185193.7556.499.camel@rado-desktop>
-Mime-Version: 1.0
-Subject: Re: [LTP] FW: FW: How to set up and run test cases on ARM
-	Cortex	processor
+	(envelope-from <yanegomi@gmail.com>) id 1NH5Vc-0004ia-Aq
+	for ltp-list@lists.sourceforge.net; Sun, 06 Dec 2009 01:01:56 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NH54m-0002qC-Bb
+	for ltp-list@lists.sourceforge.net; Sun, 06 Dec 2009 00:34:19 +0000
+Received: by pwi12 with SMTP id 12so3064555pwi.2
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 05 Dec 2009 16:32:51 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <4b193d10.4744f10a.7383.ffffd215SMTPIN_ADDED@mx.google.com>
+References: <4b193d10.4744f10a.7383.ffffd215SMTPIN_ADDED@mx.google.com>
+Date: Sat, 5 Dec 2009 16:32:51 -0800
+Message-ID: <364299f40912051632w51afa950ubc51d6f3ebac0e7c@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Fix the objdump test's makefile (and reenable it)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,32 +27,96 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jiri Palecek <jpalecek@web.de>
+Cc: ltp-list@lists.sourceforge.net
 
-T24g0L/QvSwgMjAwOS0xMi0wNyBhdCAxNjo1NyArMDgwMCwgTmFyYXNpbWhhIFJhbyB3cm90ZToK
-PiBQbGVhc2UgcHJvdmlkZSBpbmZvcm1hdGlvbiBvbiB0aGlzIGlmIGFueWJvZHkga25vd3MuCgpI
-aSBOYXJhc2ltaGEsCgp0aGVyZSBpcyBub3RoaW5nIHNwZWNpYWwgd2l0aCBydW5uaW5nIHRoZSB0
-ZXN0cyB1bmRlciBBUk0uIE9ubHkgeW91IG5lZWQKdG8gY3Jvc3MgY29tcGlsZSBvciBjb21waWxl
-IG5hdGl2ZWx5IG9uIHRoZSBib2FyZCBpZiBpdCBoYXMgZW5vdWdoCnJlc291cmNlcyBhbmQgdGhh
-dCdzIGVhc2llciBmb3IgeW91LgoKV2hhdCBraW5kIG9mIGRpc3RyaWJ1dGlvbi9lbnZpcm9ubWVu
-dCBhcmUgeW91IHVzaW5nPyBUaGVyZSBpcyBhY3R1YWxseSBhCkRlYmlhbiBwYWNrYWdlIGZvciBM
-VFAgaW4gRGViaWFuIEFSTSBhbmQgYWxzbyBhIGJpdGJha2UgcmVjaXBlIGluCk9wZW5lbWJlZGRl
-ZCBidXQgdGhleSBhcmUgbm90IHRoZSBuZXdlc3QgcmVsZWFzZXMuCgpJIGhhdmUgcmVjZW50bHkg
-c2V0dXAgTFRQIGZvciBhbiBBUk0gQ29ydGV4IGFuZCBiYXNpY2FsbHkgd2hhdCBJIGRpZAp3YXM6
-CgoxLiBJbnN0YWxsIERlYmlhbiBBUk0gb24gdGhlIGJvYXJkCjIuIEluc3RhbGwgYWxsIHBhY2th
-Z2VzIG5lZWRlZCBmb3IgdGhlIGJ1aWxkIGxpa2UgYnVpbGQtZXNzZW50aWFsLCBmbGV4LApiaXNv
-biBldGMuCjMuIERvd25sb2FkIExUUCBzb3VyY2UgcmVsZWFzZSBhbmQgYnVpbGQgbmF0aXZlbHkg
-b24gdGhlIGJvYXJkLgo0LiBSdW4gdGVzdHMuCgpJIGRpZG4ndCBlbmNvdW50ZXIgYW55IHNlcmlv
-dXMgcHJvYmxlbXMuIElmIHlvdSBoYXZlIGFueSBzcGVjaWZpYyBpc3N1ZQpJIGNhbiB0cnkgdG8g
-aGVscC4KCkJlc3QgcmVnYXJkcywKUmFkb3NsYXYgS29sZXYKCgotLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0KSm9pbiB1cyBEZWNlbWJlciA5LCAyMDA5IGZvciB0aGUgUmVkIEhhdCBWaXJ0dWFsIEV4cGVy
-aWVuY2UsCmEgZnJlZSBldmVudCBmb2N1c2VkIG9uIHZpcnR1YWxpemF0aW9uIGFuZCBjbG91ZCBj
-b21wdXRpbmcuIApBdHRlbmQgaW4tZGVwdGggc2Vzc2lvbnMgZnJvbSB5b3VyIGRlc2suIFlvdXIg
-Y291Y2guIEFueXdoZXJlLgpodHRwOi8vcC5zZi5uZXQvc2Z1L3JlZGhhdC1zZmRldjJkZXYKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFp
-bGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNv
-dXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+On Fri, Dec 4, 2009 at 8:42 AM, Jiri Palecek <jpalecek@web.de> wrote:
+> Hello,
+>
+> the objdump tests' Makefile is disabled in the current LTP. This patch re=
+enables it, and makes it work (at least for me).
+>
+> Regards
+> =A0 =A0Jiri Palecek
+>
+> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+> ---
+> =A0testcases/commands/ade/Makefile =A0 =A0 =A0 =A0 | =A0 =A03 ---
+> =A0testcases/commands/ade/objdump/Makefile | =A0 =A06 +++---
+> =A02 files changed, 3 insertions(+), 6 deletions(-)
+>
+> diff --git a/testcases/commands/ade/Makefile b/testcases/commands/ade/Mak=
+efile
+> index cf7a487..9f57629 100644
+> --- a/testcases/commands/ade/Makefile
+> +++ b/testcases/commands/ade/Makefile
+> @@ -24,7 +24,4 @@ top_srcdir =A0 =A0 =A0 =A0 =A0 =A0?=3D ../../..
+>
+> =A0include $(top_srcdir)/include/mk/env_pre.mk
+>
+> -# XXX (garrcoop): objdump's Makefile needs fixing.
+> -FILTER_OUT_DIRS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D objdump
+> -
+> =A0include $(top_srcdir)/include/mk/generic_trunk_target.mk
+> diff --git a/testcases/commands/ade/objdump/Makefile b/testcases/commands=
+/ade/objdump/Makefile
+> index 862438c..ed3ad26 100644
+> --- a/testcases/commands/ade/objdump/Makefile
+> +++ b/testcases/commands/ade/objdump/Makefile
+> @@ -27,13 +27,13 @@ include $(top_srcdir)/include/mk/env_pre.mk
+> =A0test: CPPFLAGS +=3D -O
+>
+> =A0test_arch.obj: test.o
+> - =A0 =A0 =A0 mv $< "$@"
+> + =A0 =A0 =A0 cp $< "$@"
+>
+> =A0test_D: test.o
+> - =A0 =A0 =A0 $(LINK.o) $^ $(LOADLIBES) $(LDLIBS) $(OUTPUT_OPTION) $@
+> + =A0 =A0 =A0 $(LINK.o) $^ $(LOADLIBES) $(LDLIBS) $(OUTPUT_OPTION)
+>
+> =A0INSTALL_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D objdump01
+> -
+> +
+> =A0MAKE_TARGETS =A0 =A0 =A0 =A0 =A0 :=3D test test_arch.obj test_D
+>
+> =A0include $(top_srcdir)/include/mk/generic_leaf_target.mk
+
+Just committed a similar set of fixes to what you proposed above, as
+the test itself wasn't clear...
+
+As noted by Jiri, the objdump tests were disabled in the
+infrastructure upgrade because they didn't fit exactly into the new
+infrastructure.
+
+1. Makefile: Reenable the test.
+2. objdump/Makefile: Fix compilation so that it deterministically
+compiles with -g (needed for the test, even though it currently fails
+because objdump expects DWARF and that's currently unsupported with
+ld(1) from what I've been reading).
+3. objdump/test.c -> objdump/test_arch.c: for the sake of clarity and
+to ensure that the command doesn't conflict with test(1), rename
+test.c to test_arch.c.
+4. objdump/objdump01: Clarify the purpose and error check --debugging
+in the test.
+
+Props go to Jiri for the original observations and suggestions.
+
+Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+
+Thanks!
+-Garrett
+
+---------------------------------------------------------------------------=
+---
+Join us December 9, 2009 for the Red Hat Virtual Experience,
+a free event focused on virtualization and cloud computing. =
+
+Attend in-depth sessions from your desk. Your couch. Anywhere.
+http://p.sf.net/sfu/redhat-sfdev2dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
