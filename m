@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1NHznf-0006IC-Rm
-	for ltp-list@lists.sourceforge.net; Tue, 08 Dec 2009 13:08:19 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NHznZ-0008BN-Eo
-	for ltp-list@lists.sourceforge.net; Tue, 08 Dec 2009 13:08:19 +0000
-Date: Tue, 8 Dec 2009 08:07:59 -0500 (EST)
-From: Caspar Zhang <czhang@redhat.com>
-Message-ID: <1429667615.6061260277679532.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <862970112.6041260277607150.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] make error
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <radoslav.kolev@rnd.bg>) id 1NHdG7-0000n9-V4
+	for ltp-list@lists.sourceforge.net; Mon, 07 Dec 2009 13:04:11 +0000
+Received: from delta.superhosting.bg ([91.196.124.9])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NHdG1-0007Zs-Ao
+	for ltp-list@lists.sourceforge.net; Mon, 07 Dec 2009 13:04:11 +0000
+From: Radoslav Kolev <radoslav.kolev@rnd.bg>
+In-Reply-To: <7A6C57348F763B4BB9E81202BA4D632B0B123D76F1@ap1rdcrdc1wx029.exi.nxp.com>
+References: <7A6C57348F763B4BB9E81202BA4D632B0B123D76F1@ap1rdcrdc1wx029.exi.nxp.com>
+Date: Mon, 07 Dec 2009 12:50:39 +0200
+Message-Id: <1260183039.7556.497.camel@rado-desktop>
+Mime-Version: 1.0
+Subject: Re: [LTP] FW: FW: How to set up and run test cases on ARM
+	Cortex	processor
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,51 +25,33 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: yali_ning <yali_ning@126.com>, ltp-list@lists.sourceforge.net
+To: Narasimha Rao <narasimha.rao@nxp.com>
+Cc: ltp-list@lists.sf.net
 
-
------ "Mike Frysinger" <vapier@gentoo.org> wrote:
-
-> On Thursday 12 November 2009 01:20:37 yali_ning wrote:
-> >   I came across an error , when compiling the ltp-20091030. the step
-> is :
-> > 
-> > gcc -Wall -g -Os -g -O2 -fno-strict-aliasing -pipe -Wall 
-> > 
-> -I/mnt/sdb1/nly1/ltp-1030/ltp-full-20091031/testcases/kernel/include
-> >  -I../../../../include -I../../../../include   -L../../../../lib 
-> vfork.c  
-> >  -lltp -o vfork In file included from /usr/include/asm/ptrace.h:58,
-> >                  from /usr/include/linux/ptrace.h:49,
-> >                  from vfork.c:45:
-> > /usr/include/asm/fpu.h:57: error: redefinition of 'struct
-> ia64_fpreg'
-> > In file included from /usr/include/linux/ptrace.h:49,
-> >                  from vfork.c:45:
-> > /usr/include/asm/ptrace.h:208: error: redefinition of 'struct
-> >  pt_all_user_regs'
-> 
-> this should be fixed already in latest cvs
-> -mike
-No, I tried to install latest cvs version under RHEL5.4 on a ia64
-machine but the same error still existed.
-
-What puzzled me is, it said it was the redefinition-error, but I 
-couldn't even find the originally defined structs.
-
-Thanks,
-Caspar
-
-------------------------------------------------------------------------------
-Return on Information:
-Google Enterprise Search pays you back
-Get the facts.
-http://p.sf.net/sfu/google-dev2dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24g0L/QvSwgMjAwOS0xMi0wNyBhdCAxNjo1NyArMDgwMCwgTmFyYXNpbWhhIFJhbyB3cm90ZToK
+PiBQbGVhc2UgcHJvdmlkZSBpbmZvcm1hdGlvbiBvbiB0aGlzIGlmIGFueWJvZHkga25vd3MuCgpI
+aSBOYXJhc2ltaGEsCgp0aGVyZSBpcyBub3RoaW5nIHNwZWNpYWwgd2l0aCBydW5uaW5nIHRoZSB0
+ZXN0cyB1bmRlciBBUk0uIE9ubHkgeW91IG5lZWQKdG8gY3Jvc3MgY29tcGlsZSBvciBjb21waWxl
+IG5hdGl2ZWx5IG9uIHRoZSBib2FyZCBpZiBpdCBoYXMgZW5vdWdoCnJlc291cmNlcyBhbmQgdGhh
+dCdzIGVhc2llciBmb3IgeW91LgoKV2hhdCBraW5kIG9mIGRpc3RyaWJ1dGlvbi9lbnZpcm9ubWVu
+dCBhcmUgeW91IHVzaW5nPyBUaGVyZSBpcyBhY3R1YWxseSBhCkRlYmlhbiBwYWNrYWdlIGZvciBM
+VFAgaW4gRGViaWFuIEFSTSBhbmQgYWxzbyBhIGJpdGJha2UgcmVjaXBlIGluCk9wZW5lbWJlZGRl
+ZCBidXQgdGhleSBhcmUgbm90IHRoZSBuZXdlc3QgcmVsZWFzZXMuCgpJIGhhdmUgcmVjZW50bHkg
+c2V0dXAgTFRQIGZvciBhbiBBUk0gQ29ydGV4IGFuZCBiYXNpY2FsbHkgd2hhdCBJIGRpZAp3YXM6
+CgoxLiBJbnN0YWxsIERlYmlhbiBBUk0gb24gdGhlIGJvYXJkCjIuIEluc3RhbGwgYWxsIHBhY2th
+Z2VzIG5lZWRlZCBmb3IgdGhlIGJ1aWxkIGxpa2UgYnVpbGQtZXNzZW50aWFsLCBmbGV4LApiaXNv
+biBldGMuCjMuIERvd25sb2FkIExUUCBzb3VyY2UgcmVsZWFzZSBhbmQgYnVpbGQgbmF0aXZlbHkg
+b24gdGhlIGJvYXJkLgo0LiBSdW4gdGVzdHMuCgpJIGRpZG4ndCBlbmNvdW50ZXIgYW55IHNlcmlv
+dXMgcHJvYmxlbXMuIElmIHlvdSBoYXZlIGFueSBzcGVjaWZpYyBpc3N1ZQpJIGNhbiB0cnkgdG8g
+aGVscC4KCkJlc3QgcmVnYXJkcywKUmFkb3NsYXYgS29sZXYKCgotLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0KSm9pbiB1cyBEZWNlbWJlciA5LCAyMDA5IGZvciB0aGUgUmVkIEhhdCBWaXJ0dWFsIEV4cGVy
+aWVuY2UsCmEgZnJlZSBldmVudCBmb2N1c2VkIG9uIHZpcnR1YWxpemF0aW9uIGFuZCBjbG91ZCBj
+b21wdXRpbmcuIApBdHRlbmQgaW4tZGVwdGggc2Vzc2lvbnMgZnJvbSB5b3VyIGRlc2suIFlvdXIg
+Y291Y2guIEFueXdoZXJlLgpodHRwOi8vcC5zZi5uZXQvc2Z1L3JlZGhhdC1zZmRldjJkZXYKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFp
+bGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNv
+dXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
