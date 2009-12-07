@@ -1,21 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1NLJWv-0000oV-M9
-	for ltp-list@lists.sourceforge.net; Thu, 17 Dec 2009 16:48:45 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NHcAj-0002jq-6L
+	for ltp-list@lists.sourceforge.net; Mon, 07 Dec 2009 11:54:33 +0000
+Received: from e36.co.us.ibm.com ([32.97.110.154])
 	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NLJWu-0003yH-Ok
-	for ltp-list@lists.sourceforge.net; Thu, 17 Dec 2009 16:48:45 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Thu, 17 Dec 2009 11:48:41 -0500
-References: <1261057201.11550.21.camel@munipradeep-laptop>
-In-Reply-To: <1261057201.11550.21.camel@munipradeep-laptop>
-MIME-Version: 1.0
-Message-Id: <200912171148.41996.vapier@gentoo.org>
-Subject: Re: [LTP] Configuration error while installing
-	ltp-intermediate-20091209
+	(Exim 4.69) id 1NHcAb-00086Y-VX
+	for ltp-list@lists.sourceforge.net; Mon, 07 Dec 2009 11:54:33 +0000
+Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
+	[9.17.195.228])
+	by e36.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id nB7Bptvk007850
+	for <ltp-list@lists.sourceforge.net>; Mon, 7 Dec 2009 04:51:55 -0700
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	nB7BsFlj114390
+	for <ltp-list@lists.sourceforge.net>; Mon, 7 Dec 2009 04:54:15 -0700
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id nB7BsFHR015303
+	for <ltp-list@lists.sourceforge.net>; Mon, 7 Dec 2009 04:54:15 -0700
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <1260121579.7556.487.camel@rado-desktop>
+References: <1260121579.7556.487.camel@rado-desktop>
+Date: Mon, 07 Dec 2009 17:24:04 +0530
+Message-Id: <1260186844.6866.21.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] if4-alias-addlarge - default values
+	for	IPV4_NETWORK and	IPV4_HOST
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,83 +38,66 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2717294341077020191=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============2717294341077020191==
-Content-Type: multipart/signed; boundary="nextPart1780036.kISW1kKFE4";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1780036.kISW1kKFE4
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-On Thursday 17 December 2009 08:40:01 Munipradeep Beerakam wrote:
-> I faced the following error while running ./configure in the latest LTP.
-> After changing the system date to some random future date, issue is
-> resolved.
->
-> [root@xxx ltp-intermediate-20091209.orig]# ./configure
-> checking for a BSD-compatible install... /usr/bin/install -c
-> checking whether build environment is sane... configure: error: newly
-> created file is older than distributed files!
-> Check your system clock
-
-sounds like a local problem.  the sanity code here isnt from ltp, it's the=
-=20
-same stuff that exists in all autoconf packages.
-=2Dmike
-
---nextPart1780036.kISW1kKFE4
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.13 (GNU/Linux)
-
-iQIcBAABAgAGBQJLKmDpAAoJEEFjO5/oN/WBhuwP/i0j0aGKtDy0pwrXlqEls5Ob
-KqMX1e278H8UzJvqMFyLvOTFYcZMzsU0rdtlxwoAxYqRufMxK04wCcK0CVpfj8Mi
-6+zny6F5foT4+7vxaF3eMF8vDG1JW/Xh1JufX5tyyQqVDaXYLtzEREnXyFmzJlK3
-QpQRGt5FACo5o8YGXQKDzXIXd8i+RaDl66Emb4u5Q0KbYj6cTBmgqO7oC5U0pnFz
-8nvTvP8BxudJZ0MLEId14QmebSdoaHl6eHg8eLkA5ejDmSqQ7xaVEnz0WFejvTfu
-NpuFMif/0dALU6enbBrLonIYCZYFXMmKjzRyr0qy6+Yc9qpP+HuPoAGZzZ9DmZ8m
-bTHIfUnk/ZWJAZCuFB4oJ6NmVUW7qU5J4XosBkCTw+NEFGNr9SrTbV6d2d2sYZbi
-ceKWb/I7YVveaItZ7esv7DDFDBVAFrszM0H+g2U0G2UymJIURl4TyBbkAq0luOFw
-mx38tb8gMyvSAqj0VEJoKFwFL5NdbTVZAim3rfnvVMqHqUjAD4rslzhFpwzafcf0
-P62rm+0EYv9SjJu9kKVgJOocqn2wka4eX2HRZvg66i03RH6j81uxc5eGeGodI9F8
-HPXNpWBjU69PZxl5T5e4ZTj6bLYRbZhvbq8UYuuYPVtvwp5JjJulnBo1d/r0ZQfJ
-HX0lRMYzLJLxKCtqzlDL
-=5I+G
------END PGP SIGNATURE-----
-
---nextPart1780036.kISW1kKFE4--
-
-
---===============2717294341077020191==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Radoslav Kolev <radoslav.kolev@rnd.bg>
+Cc: ltp-list@lists.sourceforge.net
+
+On Sun, 2009-12-06 at 19:46 +0200, Radoslav Kolev wrote: 
+> The testcase code expects class A (or /8 ) network addresses to be
+> assigned to the tested interfaces and fails with the default values of
+> class C (or /24).
+> 
+> Signed-off-by: Radoslav Kolev <radoslav.kolev@rnd.bg>
+
+Thanks.
+
+Regards--
+Subrata
+
+> 
+> --- ltp-full-20091031.orig/testcases/network/stress/interface/if4-alias-addlarge	2009-11-18 11:41:02.000000000 +0200
+> +++ ltp-full-20091031/testcases/network/stress/interface/if4-alias-addlarge	2009-12-06 19:31:34.000000000 +0200
+> @@ -72,7 +72,7 @@
+>  LINK_NUM=0
+> 
+>  # Network portion of the IPv4 address
+> -IPV4_NETWORK=${IPV4_NETWORK:-"10.0.0"}
+> +IPV4_NETWORK=${IPV4_NETWORK:-"10"}
+> 
+>  # Netmask of for the tested network
+>  IPV4_NETMASK="255.0.0.0"
+> @@ -82,8 +82,8 @@
+>  IPV4_BROADCAST=${IPV4_NETWORK}.255.255.255
+> 
+>  # Host portion of the IPv4 address
+> -LHOST_IPV4_HOST=${LHOST_IPV4_HOST:-"2"}
+> -RHOST_IPV4_HOST=${RHOST_IPV4_HOST:-"1"}
+> +LHOST_IPV4_HOST=${LHOST_IPV4_HOST:-"0.0.2"}
+> +RHOST_IPV4_HOST=${RHOST_IPV4_HOST:-"0.0.1"}
+> 
+> 
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Join us December 9, 2009 for the Red Hat Virtual Experience,
+> a free event focused on virtualization and cloud computing. 
+> Attend in-depth sessions from your desk. Your couch. Anywhere.
+> http://p.sf.net/sfu/redhat-sfdev2dev
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 
 ------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
---===============2717294341077020191==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Join us December 9, 2009 for the Red Hat Virtual Experience,
+a free event focused on virtualization and cloud computing. 
+Attend in-depth sessions from your desk. Your couch. Anywhere.
+http://p.sf.net/sfu/redhat-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============2717294341077020191==--
-
