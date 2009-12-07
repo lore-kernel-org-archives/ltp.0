@@ -1,23 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1NJ1hB-0006Pi-IY
-	for ltp-list@lists.sourceforge.net; Fri, 11 Dec 2009 09:21:53 +0000
-Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
-	by sfi-mx-4.v28.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1NJ1h5-0001st-24
-	for ltp-list@lists.sourceforge.net; Fri, 11 Dec 2009 09:21:53 +0000
-Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Fri, 11 Dec 2009 18:21:37 +0900
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Fri, 11 Dec 2009 18:21:37 +0900
-Message-ID: <000001ca7a43$574a3900$05deab00$@co.jp>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <narasimha.rao@nxp.com>) id 1NHZvH-0007YC-UI
+	for ltp-list@lists.sourceforge.net; Mon, 07 Dec 2009 09:30:27 +0000
+Received: from sg1ssnxpe4.nxp.com ([57.73.25.198])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NHZvA-0000p4-4m
+	for ltp-list@lists.sourceforge.net; Mon, 07 Dec 2009 09:30:27 +0000
+From: "Narasimha  Rao" <narasimha.rao@nxp.com>
+Date: Mon, 7 Dec 2009 16:57:28 +0800
+Message-ID: <7A6C57348F763B4BB9E81202BA4D632B0B123D76F1@ap1rdcrdc1wx029.exi.nxp.com>
+Content-Language: en-US
 MIME-Version: 1.0
-Content-Language: ja
-Subject: [LTP] "cgroup_fj" and "cgroup" have problems?
+Subject: [LTP] FW: FW: How to set up and run test cases on ARM Cortex
+	processor
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,92 +27,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sf.net>
 
-Hi,
+Please provide information on this if anybody knows.
 
-Sorry for my many many mails today.
+Rgds,
+Narasimha.K
 
+-----Original Message-----
+From: Subrata Modak [mailto:subrata@linux.vnet.ibm.com] 
+Sent: Thursday, December 03, 2009 8:41 PM
+To: Narasimha Rao
+Cc: ltp-list
+Subject: Re: FW: How to set up and run test cases on ARM Cortex processor
 
-I ran tests with "ltp-2009-12-10" cvs.
+Hi Narasimha,
 
-In my system (kernel 2.6.18-164.el5), kernel does not support 
-control groups.
-So, when I ran test of "cgroup_fj", I got following message and the
-test faild by "FAIL 253".
-
-------------
-***error***:you must enable cgroup config in kernel
-------------
-
-In the investigation for above error message, I found that there may be
-two problems,.
-
-  (a) "cgroup_fj" test failed in the system not support "control groups".
-  (b) "cgroup" test may passed by user-ID which isn't "root".
-
-
-(a) "cgroup_fj" test
-  Above message is correct message, but exiting by "FAIL" is not
-  correct, I think.
-  Referring to the example of other tests, I think that the tests
-  for non-supported functions must be finished in "PASS 0" basically.
-  (For example, "move_pages{01...11}" tests exit in "PASS 0" and with 
-  "NUMA support not provided" messages.)
-
-  I suggest following patch to resolve this problem.
-
-============
---- run_cgroup_test_fj.sh	2009-10-26 23:49:23.000000000 +0900
-+++ run_cgroup_test_fj.sh.new	2009-12-11 16:10:39.000000000 +0900
-@@ -40,7 +40,7 @@
- 
- if ! [ -f /proc/cgroups ]; then
- 	echo "***error***:you must enable cgroup config in kernel";
--	exit -3;
-+	exit 0;
- fi
- 
- if [ ! -x $TESTROOT/cgroup_fj_proc ]; then
-
-============
-
-
-(b) "cgroup" test
-  I watched "cgroup" test source for hints for (a), and found another
-  problem.
-  If this test run by user-ID non-"root", it will exit in "PASS", I think.
-  But I think that it must exit in "FAIL".
-  Because this test cannot be tested only by "root" user.
-
-=========
---- cgroup_regression_test.sh	2009-11-30 17:41:37.000000000 +0900
-+++ cgroup_regression_test.sh.new	2009-12-11 16:22:14.000000000 +0900
-@@ -37,7 +37,7 @@
- 
- if [ "$USER" != root ]; then
- 	tst_brkm TBROK ignored "Test must be run as root"
--	exit 0
-+	exit -1
- fi
- 
- tst_kvercmp 2 6 29
-
-=========
-
+I do not use ARM, but people on this mailing list do. Somebody will help
+you out.
 
 Regards--
+Subrata
 
-
--Tomonori Mitani
-
+On Mon, 2009-11-30 at 21:02 +0800, Narasimha Rao wrote: 
+>  
+> 
+>  
+> 
+> Hi subrata,
+> 
+>                              Can you please tell is there any changes
+> are required while running LTP on ARM processor instead of Desk top
+> linux system.
+> 
+>  
+> 
+> I mean can you please tell what modifications we need to do before
+> compile and run test caeses for ARM processor.
+> 
+>  
+> 
+> Thanks and Regards,
+> 
+> Narasimha.K
+> 
+> 
 
 
 ------------------------------------------------------------------------------
-Return on Information:
-Google Enterprise Search pays you back
-Get the facts.
-http://p.sf.net/sfu/google-dev2dev
+Join us December 9, 2009 for the Red Hat Virtual Experience,
+a free event focused on virtualization and cloud computing. 
+Attend in-depth sessions from your desk. Your couch. Anywhere.
+http://p.sf.net/sfu/redhat-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
