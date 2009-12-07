@@ -1,23 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naufal11@gmail.com>) id 1NO6NC-0005jJ-Sj
-	for ltp-list@lists.sourceforge.net; Fri, 25 Dec 2009 09:22:14 +0000
-Received: from mail-pz0-f193.google.com ([209.85.222.193])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NO6N8-0006se-Hm
-	for ltp-list@lists.sourceforge.net; Fri, 25 Dec 2009 09:22:14 +0000
-Received: by pzk31 with SMTP id 31so5864686pzk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 25 Dec 2009 01:22:04 -0800 (PST)
-MIME-Version: 1.0
-Date: Fri, 25 Dec 2009 14:52:04 +0530
-Message-ID: <d270b4400912250122y371c4d4dq6fa729b60e03f8a5@mail.gmail.com>
-From: Mohamed Naufal <naufal11@gmail.com>
-Content-Type: multipart/mixed; boundary=0016368e270cc73e4f047b8a167b
-Subject: [LTP] Testcase to validate the memory usage limit imposed by the
-	topmost memory cgroup
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NHcAe-0005PO-OV
+	for ltp-list@lists.sourceforge.net; Mon, 07 Dec 2009 11:54:28 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NHcAX-0007ZO-Kr
+	for ltp-list@lists.sourceforge.net; Mon, 07 Dec 2009 11:54:28 +0000
+Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
+	[9.17.195.228])
+	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id nB7Br0dv000845
+	for <ltp-list@lists.sourceforge.net>; Mon, 7 Dec 2009 04:53:00 -0700
+Received: from d03av06.boulder.ibm.com (d03av06.boulder.ibm.com [9.17.195.245])
+	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	nB7BsBIF146012
+	for <ltp-list@lists.sourceforge.net>; Mon, 7 Dec 2009 04:54:11 -0700
+Received: from d03av06.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av06.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id nB7BtxTP013768
+	for <ltp-list@lists.sourceforge.net>; Mon, 7 Dec 2009 04:55:59 -0700
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <200912041649.nB4GnQbj014719@e35.co.us.ibm.com>
+References: <200912041649.nB4GnQbj014719@e35.co.us.ibm.com>
+Date: Mon, 07 Dec 2009 17:24:01 +0530
+Message-Id: <1260186841.6866.20.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] New sigwaitinfo test
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,139 +37,642 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---0016368e270cc73e4f047b8a167b
-Content-Type: multipart/alternative; boundary=0016368e270cc73e44047b8a1679
-
---0016368e270cc73e44047b8a1679
-Content-Type: text/plain; charset=ISO-8859-1
-
-Hi
-
-I am a student who attended the FOSS.IN LTP workout (Bangalore, India). I
-have attached one of the testcases we were working on. Thought I would get
-it reviewed before making a patch. More testcases to follow.
-
-Comments appreciated.
-
-Naufal
-
---0016368e270cc73e44047b8a1679
-Content-Type: text/html; charset=ISO-8859-1
-
-Hi<br><br>I am a student who attended the <a href="http://FOSS.IN">FOSS.IN</a> LTP workout (Bangalore, India). I have attached one of the testcases we were working on. Thought I would get it reviewed before making a patch. More testcases to follow.<br>
-<br>Comments appreciated.<br><br>Naufal<br>
-
---0016368e270cc73e44047b8a1679--
-
---0016368e270cc73e4f047b8a167b
-Content-Type: text/x-csrc; charset=US-ASCII; name="mem_process.c"
-Content-Disposition: attachment; filename="mem_process.c"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g3mr53810
-
-I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KI2luY2x1ZGUgPHNpZ25hbC5o
-PgojaW5jbHVkZSA8dW5pc3RkLmg+CiNpbmNsdWRlIDxzeXMvbW1hbi5oPgoKaW50IGZsYWdfZXhp
-dDsKaW50IGZsYWdfYWxsb2NhdGVkOwp1bnNpZ25lZCBpbnQgbWVtc2l6ZTsKCi8qCnByb2Nlc3Nf
-b3B0aW9uczogcHJvY2VzcyB1c2VyIHNwZWNpZmllZCBvcHRpb25zCiovCnZvaWQgcHJvY2Vzc19v
-cHRpb25zKGludCBhcmdjLCBjaGFyICoqYXJndikgewogIGludCBjOwoKICBvcHRlcnIgPSAwOwog
-IHdoaWxlICgoYyA9IGdldG9wdChhcmdjLCBhcmd2LCAibToiKSkgIT0gLTEpIHsKICAgIHN3aXRj
-aChjKSB7CiAgICBjYXNlICdtJzoKICAgICAgbWVtc2l6ZSA9IGF0b2kob3B0YXJnKSAqIDEwMjQg
-KiAxMDI0OwogICAgICBicmVhazsKICAgIGRlZmF1bHQ6CiAgICAgIGVycngoMSwgIkludmFsaWQg
-b3B0aW9uIHNwZWNpZmVkIik7CiAgICB9CiAgfQoKICBpZighbWVtc2l6ZSkKICAgIGVycngoMSwg
-Ik1lbW9yeSBzaXplIG5vdCBzcGVjaWZpZWQiKTsKfQoKLyoKdG91Y2hfbWVtb3J5OiBmb3JjZSBw
-aHlzaWNhbCBtZW1vcnkgYWxsb2NhdGlvbgoqLwp2b2lkIHRvdWNoX21lbW9yeShjaGFyICpwLCBp
-bnQgc2l6ZSkgewogIGludCBpOwogIGludCBwYWdlc2l6ZSA9IGdldHBhZ2VzaXplKCk7CgogIGZv
-ciAoaSA9IDA7IGkgPCBzaXplOyBpICs9IHBhZ2VzaXplKSB7CiAgICBwW2ldID0gMHhlZjsKICB9
-Cn0KCnZvaWQgbWVtX21hcCgpIHsKICBzdGF0aWMgY2hhciAqcDsKCiAgaWYgKCFmbGFnX2FsbG9j
-YXRlZCkgewogICAgaWYgKChwID0gbW1hcChOVUxMLCBtZW1zaXplLCBQUk9UX1JFQUQgfCBQUk9U
-X1dSSVRFLCBNQVBfU0hBUkVEIHwgTUFQX0FOT05ZTU9VUywgMCwgMCkpID09IE1BUF9GQUlMRUQp
-CiAgICAgIGVycngoMSwgIm1tYXAgZmFpbGVkIik7CiAgICB0b3VjaF9tZW1vcnkocCwgbWVtc2l6
-ZSk7CiAgfQogIGVsc2UgezsKICAgIGlmIChtdW5tYXAocCwgbWVtc2l6ZSkgPT0gLTEpCiAgICAg
-IGVycngoMSwgIm11bm1hcCBmYWlsZWQiKTsKICB9Cn0KCi8qCnNpZ2ludDogc2V0IHRoZSBleGl0
-IGZsYWcgb24gcmVjZWl2aW5nIFNJR0lOVAoqLwp2b2lkIHNpZ2ludChpbnQgbnVtKSB7CiAgZmxh
-Z19leGl0ID0gMTsKfQoKLyoKc2lndXNyMTogYWxsb2NhdGUvZnJlZSBtZW1vcnkgb24gcmVjZXZp
-bmcgU0lHVVNSMQoqLwp2b2lkIHNpZ3VzcjEoaW50IG51bSkgewogIG1lbV9tYXAoKTsKICBmbGFn
-X2FsbG9jYXRlZCA9ICFmbGFnX2FsbG9jYXRlZDsKfQoKCmludCBtYWluKGludCBhcmdjLCBjaGFy
-ICoqYXJndikgewogIHNpZ25hbChTSUdJTlQsIHNpZ2ludCk7CiAgc2lnbmFsKFNJR1VTUjEsIHNp
-Z3VzcjEpOwoKICBwcm9jZXNzX29wdGlvbnMoYXJnYywgYXJndik7CgogIHdoaWxlKCFmbGFnX2V4
-aXQpCiAgICBzbGVlcCgxKTsKCiAgcmV0dXJuIDA7Cn0K
---0016368e270cc73e4f047b8a167b
-Content-Type: application/x-sh; name="test_mem_fun.sh"
-Content-Disposition: attachment; filename="test_mem_fun.sh"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g3mr5k851
-
-IyEvYmluL2Jhc2gKCmNkICRMVFBST09UL3Rlc3RjYXNlcy9iaW4KCmdyZXAgLXcgbWVtb3J5IC9w
-cm9jL2Nncm91cHMgMj4gL2Rldi9udWxsID4gL2Rldi9udWxsCmlmIFsgJD8gLW5lIDAgXTsgdGhl
-bgogICAgdHN0X2Jya20gVEJST0sgTlVMTCAiTWVtb3J5IFJlc291cmNlIENvbnRyb2xsZXIgbm90
-IHN1cHBvcnRlZC4gU2tpcHBpbmcgYWxsIHRlc3RzIgogICAgZXhpdCAwCmZpCgpleHBvcnQgVENJ
-RD0iY2dyb3VwX21lbV90ZXN0cyIKZXhwb3J0IFRTVF9UT1RBTD0xCmV4cG9ydCBUU1RfQ09VTlQ9
-MAoKVE9UX01FTV9MSU1JVD0kMQpBQ1RJVkVfTUVNX0xJTUlUPSQyClBST0NfTUVNPSQzCgpUU1Rf
-UEFUSD0kUFdECgpQQVNTPTAKRkFJTD0xCgojIENoZWNrIGlmIHRoZSB0ZXN0IHByb2Nlc3MgaXMg
-a2lsbGVkIG9uIGNyb3NzaW5nIGJvdW5kYXJ5CnRlc3RfcHJvY19raWxsKCkgewogICAgJFRTVF9Q
-QVRIL21lbV9wcm9jZXNzIC1tICRQUk9DX01FTSA+IC9kZXYvbnVsbCAmCiAgICBzbGVlcCAxCiAg
-ICBlY2hvICQhID4gdGFza3MKIAogICAgI1NpZ25hbCB0aGUgdGVzdCBwcm9jZXNzIHRvIHN0YXJ0
-IGFjcXVpcmluZyBtZW1vcnkKICAgIGtpbGwgLXMgU0lHVVNSMSAkISAyPiAvZGV2L251bGwKICAg
-IHNsZWVwIDEKCiAgICAjQ2hlY2sgaWYga2lsbGVkCiAgICBwcyAtcCAkISA+IC9kZXYvbnVsbCAy
-PiAvZGV2L251bGwKICAgIGlmIFsgJD8gLWVxIDAgXTsgdGhlbgoJL2Jpbi9raWxsIC1zICJTSUdJ
-TlQiICQhIDI+IC9kZXYvbnVsbAogICAgZWxzZQoJS0lMTEVEX0NOVD0kKCgkS0lMTEVEX0NOVCAr
-IDEpKQogICAgZmkKfQogICAgCiMgVmFsaWRhdGUgdGhlIG1lbW9yeSB1c2FnZSBsaW1pdCBpbXBv
-c2VkIGJ5IHRoZSBoaWVyYXJjaGljYWxseSB0b3Btb3N0IGdyb3VwCnRlc3RjYXNlXzEoKSB7CiAg
-ICBUU1RfQ09VTlQ9MQogICAgdHN0X3Jlc20gVElORk8gIlRlc3QgIzE6IENoZWNraW5nIGlmIHRo
-ZSBtZW1vcnkgdXNhZ2UgbGltaXQgaW1wb3NlZCBieSB0aGUgdG9wbW9zdCBncm91cCBpcyBlbmZv
-cmNlZCIKCiAgICBlY2hvICIkQUNUSVZFX01FTV9MSU1JVCJtID4gJFRTVF9QQVRIL21udC8kaS9t
-ZW1vcnkubGltaXRfaW5fYnl0ZXMKICAgIGVjaG8gIiRUT1RfTUVNX0xJTUlUIm0gPiAkVFNUX1BB
-VEgvbW50LyRpL21lbW9yeS5tZW1zdy5saW1pdF9pbl9ieXRlcwoKICAgIG1rZGlyIHN1YiAyPiAv
-ZGV2L251bGwKICAgIHB1c2hkIHN1YiA+IC9kZXYvbnVsbAoKICAgIEtJTExFRF9DTlQ9MAogICAg
-dGVzdF9wcm9jX2tpbGw7CgogICAgaWYgWyAkUFJPQ19NRU0gLWd0ICRUT1RfTUVNX0xJTUlUIF0g
-JiYgWyAkS0lMTEVEX0NOVCAtZXEgMCBdOyB0aGVuCglyZXN1bHQgJEZBSUwgIlRlc3QgIzE6IGZh
-aWxlZCIKICAgIGVsc2UKCXJlc3VsdCAkUEFTUyAiVGVzdCAjMTogcGFzc2VkIgogICAgZmkKCiAg
-ICBwb3BkID4gL2Rldi9udWxsCiAgICBybWRpciBzdWIgMj4gL2Rldi9udWxsCn0KCgojIFJlY29y
-ZCB0aGUgdGVzdCByZXN1bHRzCiMKIyAkMTogUmVzdWx0IG9mIHRoZSB0ZXN0IGNhc2UsICRQQVNT
-IG9yICRGQUlMCiMgJDI6IE91dHB1dCBpbmZvcm1hdGlvbgpyZXN1bHQoKSB7CiAgICBSRVM9JDEK
-ICAgIElORk89JDIKCiAgICBpZiBbICRSRVMgLWVxICRQQVNTIF07IHRoZW4KCXRzdF9yZXNtIFRQ
-QVNTICIkSU5GTyIKICAgIGVsc2UKCUZBSUxFRF9DTlQ9JCgoJEZBSUxFRF9DTlQgKyAxKSkKCXRz
-dF9yZXNtIFRGQUlMICIkSU5GTyIKICAgIGZpCn0JCiAgICAKCmNsZWFudXAoKSB7CiAgICBpZiBb
-IC1lIG1udCBdOyB0aGVuCgl1bW91bnQgJFRTVF9QQVRIL21udCAyPiAvZGV2L251bGwKCXJtIC1y
-ZiBtbnQgMj4gL2Rldi9udWxsCiAgICBmaQp9Cgpkb19tb3VudCgpIHsKICAgIGNsZWFudXA7Cgog
-ICAgbWtkaXIgJFRTVF9QQVRIL21udCAyPiAvZGV2L251bGwKICAgIG1vdW50IC10IGNncm91cCAt
-byBtZW1vcnkgY2dyb3VwICRUU1RfUEFUSC9tbnQgMj4gL2Rldi9udWxsCiAgICBpZiBbICQ/IC1u
-ZSAwIF07IHRoZW4KCXRzdF9icmttIFRCUk9LIE5VTEwgIk1vdW50aW5nIGNncm91cCB0byB0ZW1w
-IGRpciBmYWlsZWQiCglybWRpciAkVFNUX1BBVEgvbW50IDI+IC9kZXYvbnVsbAoJZXhpdCAxCiAg
-ICBmaQp9Cgpkb19tb3VudDsKCmVjaG8gMSA+IG1udC9tZW1vcnkudXNlX2hpZXJhcmNoeSAyPiAv
-ZGV2L251bGwKCkZBSUxFRF9DTlQ9MAoKZm9yIGkgaW4gJChzZXEgMSAkVFNUX1RPVEFMKQpkbwog
-ICAgcHVzaGQgJFRTVF9QQVRIL21udCA+IC9kZXYvbnVsbAogICAgbWtkaXIgJFRTVF9QQVRIL21u
-dC8kaSAyPiAvZGV2L251bGwKICAgIHB1c2hkICRpID4gL2Rldi9udWxsCgogICAgdGVzdGNhc2Vf
-JGk7CgogICAgcG9wZCA+IC9kZXYvbnVsbAogICAgcm1kaXIgJGkgMj4gL2Rldi9udWxsCiAgICBw
-b3BkID4gL2Rldi9udWxsCmRvbmUKCmNsZWFudXA7CgppZiBbICIkRkFJTEVEX0NOVCIgLW5lIDAg
-XTsgdGhlbgogICAgdHN0X3Jlc20gVEZBSUwgImNncm91cF9tZW1fdGVzdHM6IGZhaWxlZCIKICAg
-IGV4aXQgMQplbHNlCiAgICB0c3RfcmVzbSBUUEFTUyAiY2dyb3VwX21lbV90ZXN0czogcGFzc2Vk
-IgogICAgZXhpdCAwCmZpCg==
---0016368e270cc73e4f047b8a167b
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Jiri Palecek <jpalecek@web.de>
+Cc: ltp-list@lists.sourceforge.net
+
+On Fri, 2009-12-04 at 17:46 +0100, Jiri Palecek wrote: 
+> Hello,
+> 
+> this is the test for the rt_sigtimedwait et al. functions I promised earlier. The code is unchanged since I sent it for the first time, but the Makefiles are adapted to the new build system, with the help of Garret Cooper.
+> 
+> Regards
+>     Jiri Palecek
+> 
+> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+
+Thanks Jiri. Would you also take the trouble to make entries in the
+runtest/syscalls file for these tests to run ?
+
+Regards--
+Subrata
+
+> ---
+>  testcases/kernel/syscalls/rt_sigtimedwait/Makefile |   31 ++
+>  testcases/kernel/syscalls/sigtimedwait/Makefile    |   30 ++
+>  testcases/kernel/syscalls/sigwait/Makefile         |   30 ++
+>  testcases/kernel/syscalls/sigwaitinfo/Makefile     |   25 ++
+>  .../kernel/syscalls/sigwaitinfo/sigwaitinfo01.c    |  432 ++++++++++++++++++++
+>  5 files changed, 548 insertions(+), 0 deletions(-)
+>  create mode 100644 testcases/kernel/syscalls/rt_sigtimedwait/Makefile
+>  create mode 100644 testcases/kernel/syscalls/sigtimedwait/Makefile
+>  create mode 100644 testcases/kernel/syscalls/sigwait/Makefile
+>  create mode 100644 testcases/kernel/syscalls/sigwaitinfo/Makefile
+>  create mode 100644 testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
+> 
+> diff --git a/testcases/kernel/syscalls/rt_sigtimedwait/Makefile b/testcases/kernel/syscalls/rt_sigtimedwait/Makefile
+> new file mode 100644
+> index 0000000..27a9e9e
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/rt_sigtimedwait/Makefile
+> @@ -0,0 +1,31 @@
+> +#
+> +#  Copyright (c) International Business Machines  Corp., 2009
+> +#
+> +#  This program is free software;  you can redistribute it and/or modify
+> +#  it under the terms of the GNU General Public License as published by
+> +#  the Free Software Foundation; either version 2 of the License, or
+> +#  (at your option) any later version.
+> +#
+> +#  This program is distributed in the hope that it will be useful,
+> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> +#  the GNU General Public License for more details.
+> +#
+> +#  You should have received a copy of the GNU General Public License
+> +#  along with this program;  if not, write to the Free Software
+> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> +#
+> +
+> +top_srcdir ?= ../../../..
+> +
+> +include $(top_srcdir)/include/mk/testcases.mk 
+> +
+> +CPPFLAGS += -DTEST_RT_SIGTIMEDWAIT
+> +
+> +rt_sigtimedwait01: $(abs_srcdir)/../sigwaitinfo/sigwaitinfo01.c
+> +	$(LINK.c) $^ $(LOADLIBES) $(LDLIBS) $(OUTPUT_OPTION)
+> +
+> +MAKE_TARGETS := rt_sigtimedwait01
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk 
+> +
+> diff --git a/testcases/kernel/syscalls/sigtimedwait/Makefile b/testcases/kernel/syscalls/sigtimedwait/Makefile
+> new file mode 100644
+> index 0000000..ce1096e
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/sigtimedwait/Makefile
+> @@ -0,0 +1,30 @@
+> +#
+> +#  Copyright (c) International Business Machines  Corp., 2009
+> +#
+> +#  This program is free software;  you can redistribute it and/or modify
+> +#  it under the terms of the GNU General Public License as published by
+> +#  the Free Software Foundation; either version 2 of the License, or
+> +#  (at your option) any later version.
+> +#
+> +#  This program is distributed in the hope that it will be useful,
+> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> +#  the GNU General Public License for more details.
+> +#
+> +#  You should have received a copy of the GNU General Public License
+> +#  along with this program;  if not, write to the Free Software
+> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> +#
+> +
+> +top_srcdir ?= ../../../..
+> +
+> +include $(top_srcdir)/include/mk/testcases.mk
+> +
+> +CPPFLAGS += -DTEST_SIGTIMEDWAIT
+> +
+> +sigtimedwait01: $(abs_srcdir)/../sigwaitinfo/sigwaitinfo01.c
+> +	$(LINK.c) $^ $(LOADLIBES) $(LDLIBS) $(OUTPUT_OPTION)
+> +
+> +MAKE_TARGETS := sigtimedwait01
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/syscalls/sigwait/Makefile b/testcases/kernel/syscalls/sigwait/Makefile
+> new file mode 100644
+> index 0000000..8725b0a
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/sigwait/Makefile
+> @@ -0,0 +1,30 @@
+> +#
+> +#  Copyright (c) International Business Machines  Corp., 2009
+> +#
+> +#  This program is free software;  you can redistribute it and/or modify
+> +#  it under the terms of the GNU General Public License as published by
+> +#  the Free Software Foundation; either version 2 of the License, or
+> +#  (at your option) any later version.
+> +#
+> +#  This program is distributed in the hope that it will be useful,
+> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> +#  the GNU General Public License for more details.
+> +#
+> +#  You should have received a copy of the GNU General Public License
+> +#  along with this program;  if not, write to the Free Software
+> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> +#
+> +
+> +top_srcdir ?= ../../../..
+> +
+> +include $(top_srcdir)/include/mk/testcases.mk
+> +
+> +CPPFLAGS += -DTEST_SIGWAIT
+> +
+> +sigwait01: $(abs_srcdir)/../sigwaitinfo/sigwaitinfo01.c
+> +	$(LINK.c) $^ $(LOADLIBES) $(LDLIBS) $(OUTPUT_OPTION)
+> +
+> +MAKE_TARGETS := sigwait01
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/syscalls/sigwaitinfo/Makefile b/testcases/kernel/syscalls/sigwaitinfo/Makefile
+> new file mode 100644
+> index 0000000..1246e5e
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/sigwaitinfo/Makefile
+> @@ -0,0 +1,25 @@
+> +#
+> +#  Copyright (c) International Business Machines  Corp., 2009
+> +#
+> +#  This program is free software;  you can redistribute it and/or modify
+> +#  it under the terms of the GNU General Public License as published by
+> +#  the Free Software Foundation; either version 2 of the License, or
+> +#  (at your option) any later version.
+> +#
+> +#  This program is distributed in the hope that it will be useful,
+> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> +#  the GNU General Public License for more details.
+> +#
+> +#  You should have received a copy of the GNU General Public License
+> +#  along with this program;  if not, write to the Free Software
+> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> +#
+> +
+> +top_srcdir ?= ../../../..
+> +
+> +include $(top_srcdir)/include/mk/testcases.mk
+> +
+> +CPPFLAGS += -DTEST_SIGWAITINFO
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
+> new file mode 100644
+> index 0000000..ff9ca8f
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
+> @@ -0,0 +1,432 @@
+> +/*
+> + * Copyright (c) Jiri Palecek<jpalecek@web.de>, 2009
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of version 2 of the GNU General Public License as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * Further, this software is distributed without any warranty that it is
+> + * free of the rightful claim of any third person regarding infringement
+> + * or the like.  Any license provided herein, whether implied or
+> + * otherwise, applies only to this software file.  Patent licenses, if
+> + * any, provided herein do not apply to combinations of this program with
+> + * other software, or any other product whatsoever.
+> + *
+> + * You should have received a copy of the GNU General Public License along
+> + * with this program; if not, write the Free Software Foundation, Inc., 59
+> + * Temple Place - Suite 330, Boston MA 02111-1307, USA.
+> + */
+> +#include "test.h"
+> +#include "usctest.h"
+> +#include <errno.h>
+> +#include <signal.h>
+> +#include "../utils/include_j_h.h"
+> +#include "../utils/common_j_h.c"
+> +#include <limits.h>
+> +#include "linux_syscall_numbers.h"
+> +
+> +#define SUCCEED_OR_DIE(syscall, message, ...)														\
+> +	(errno = 0,																														\
+> +		({int ret=syscall(__VA_ARGS__);																			\
+> +			if(ret==-1)																												\
+> +				tst_brkm(TBROK|TERRNO, cleanup, message);												\
+> +			ret;}))
+> +
+> +/* Report success iff TEST_RETURN and TEST_ERRNO are equal to
+> +	 exp_return and exp_errno, resp., and cond is true. If cond is not
+> +	 true, report condition_errmsg
+> +*/
+> +static void report_success_cond(const char *func, const char* file, int line,
+> +													 long exp_return, int exp_errno, int condition, char* condition_errmsg)
+> +{
+> +	if (exp_return == TEST_RETURN && (exp_return != -1 || exp_errno == TEST_ERRNO))
+> +		if(condition)
+> +			tst_resm(TPASS, "Test passed");
+> +		else
+> +			tst_resm(TFAIL, "%s (%s: %d): %s", func, file, line, condition_errmsg);
+> +	else if(TEST_RETURN != -1)
+> +		tst_resm(TFAIL, "%s (%s: %d): Unexpected return value; expected %ld, got %ld",
+> +						 func, file, line, exp_return, TEST_RETURN);
+> +	else
+> +		tst_resm(TFAIL|TTERRNO, "%s (%s: %d): Unexpected failure", func, file, line);
+> +}
+> +
+> +#define REPORT_SUCCESS_COND(exp_return, exp_errno, condition, condition_errmsg)	\
+> +	report_success_cond(__FUNCTION__, __FILE__, __LINE__, exp_return, exp_errno, condition, condition_errmsg);
+> +
+> +/* Report success iff TEST_RETURN and TEST_ERRNO are equal to
+> +	 exp_return and exp_errno, resp.
+> +*/
+> +#define REPORT_SUCCESS(exp_return, exp_errno)					\
+> +	REPORT_SUCCESS_COND(exp_return, exp_errno, 1, "");
+> +
+> +static void cleanup(void) LTP_ATTRIBUTE_NORETURN;
+> +
+> +static void empty_handler(int sig)
+> +{
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	tst_sig(FORK, DEF_HANDLER, cleanup);
+> +	signal(SIGUSR1, empty_handler);
+> +	signal(SIGALRM, empty_handler);
+> +	signal(SIGUSR2, SIG_IGN);
+> +
+> +	TEST_PAUSE;
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	TEST_CLEANUP;
+> +
+> +	tst_exit();
+> +}
+> +
+> +typedef int (*swi_func)(const sigset_t* set, siginfo_t* info, struct timespec* timeout);
+> +typedef void (*test_func)(swi_func, int);
+> +
+> +static int my_sigwait(const sigset_t* set, siginfo_t* info, struct timespec* timeout)
+> +{
+> +	int ret;
+> +	int err=sigwait(set, &ret);
+> +
+> +	if(err == 0)
+> +		return ret;
+> +	errno = err;
+> +	return -1;
+> +}
+> +
+> +static int my_sigwaitinfo(const sigset_t* set, siginfo_t* info, struct timespec* timeout)
+> +{
+> +	return sigwaitinfo(set, info);
+> +}
+> +
+> +static int my_sigtimedwait(const sigset_t* set, siginfo_t* info, struct timespec* timeout)
+> +{
+> +	return sigtimedwait(set, info, timeout);
+> +}
+> +
+> +static int my_rt_sigtimedwait(const sigset_t* set, siginfo_t* info, struct timespec* timeout)
+> +{
+> +	/* The last argument is (number_of_signals)/(bits_per_byte), which are 64 and 8, resp. */
+> +	return syscall(__NR_rt_sigtimedwait, set, info, timeout, 8);
+> +}
+> +
+> +void test_empty_set(swi_func sigwaitinfo, int signo)
+> +{
+> +	sigset_t sigs;
+> +	siginfo_t si;
+> +	pid_t child;
+> +
+> +	SUCCEED_OR_DIE(sigemptyset, "sigemptyset failed", &sigs);
+> +	/* Run a child that will wake us up */
+> +	child=create_sig_proc(100000, signo, UINT_MAX);
+> +
+> +	TEST(sigwaitinfo(&sigs, &si, NULL));
+> +	REPORT_SUCCESS(-1, EINTR);
+> +
+> +	kill(child, SIGTERM);
+> +}
+> +
+> +void test_timeout(swi_func sigwaitinfo, int signo)
+> +{
+> +	sigset_t sigs;
+> +	siginfo_t si;
+> +	pid_t child;
+> +	struct timespec ts = { .tv_sec = 1 };
+> +
+> +	SUCCEED_OR_DIE(sigemptyset, "sigemptyset failed", &sigs);
+> +
+> +	/* Run a child that will wake us up */
+> +	child=create_sig_proc(100000, signo, UINT_MAX);
+> +
+> +	TEST(sigwaitinfo(&sigs, &si, &ts));
+> +	REPORT_SUCCESS(-1, EAGAIN);
+> +
+> +	kill(child, SIGTERM);
+> +}
+> +
+> +/* Note: sigwait-ing for a signal that is not blocked is unspecified
+> + * by POSIX; but works for non-ignored signals under Linux
+> + */
+> +void test_unmasked_matching(swi_func sigwaitinfo, int signo)
+> +{
+> +	sigset_t sigs;
+> +	siginfo_t si;
+> +	pid_t child;
+> +
+> +	SUCCEED_OR_DIE(sigemptyset, "sigemptyset failed", &sigs);
+> +	SUCCEED_OR_DIE(sigaddset, "sigaddset failed", &sigs, signo);
+> +
+> +	/* Run a child that will wake us up */
+> +	child=create_sig_proc(100000, signo, UINT_MAX);
+> +
+> +	TEST(sigwaitinfo(&sigs, &si, NULL));
+> +	REPORT_SUCCESS_COND(signo, 0, si.si_pid==child && si.si_code==SI_USER && si.si_signo==signo, "Struct siginfo mismatch");
+> +
+> +	kill(child, SIGTERM);
+> +}
+> +
+> +void test_unmasked_matching_noinfo(swi_func sigwaitinfo, int signo)
+> +{
+> +	sigset_t sigs;
+> +	pid_t child;
+> +
+> +	SUCCEED_OR_DIE(sigemptyset, "sigemptyset failed", &sigs);
+> +	SUCCEED_OR_DIE(sigaddset, "sigaddset failed", &sigs, signo);
+> +	/* Run a child that will wake us up */
+> +	child=create_sig_proc(100000, signo, UINT_MAX);
+> +
+> +	TEST(sigwaitinfo(&sigs, NULL, NULL));
+> +	REPORT_SUCCESS(signo, 0);
+> +
+> +	kill(child, SIGTERM);
+> +}
+> +
+> +void test_masked_matching(swi_func sigwaitinfo, int signo)
+> +{
+> +	sigset_t sigs, oldmask;
+> +	siginfo_t si;
+> +	pid_t child;
+> +
+> +	SUCCEED_OR_DIE(sigemptyset, "sigemptyset failed", &sigs);
+> +	SUCCEED_OR_DIE(sigaddset, "sigaddset failed", &sigs, signo);
+> +	/* let's not get interrupted by our dying child */
+> +	SUCCEED_OR_DIE(sigaddset, "sigaddset failed", &sigs, SIGCHLD);
+> +
+> +	SUCCEED_OR_DIE(sigprocmask, "sigprocmask failed", SIG_SETMASK, &sigs, &oldmask);
+> +
+> +	/* don't wait on a SIGCHLD */
+> +	SUCCEED_OR_DIE(sigdelset, "sigaddset failed", &sigs, SIGCHLD);
+> +
+> +	/* Run a child that will wake us up */
+> +	child=create_sig_proc(0, signo, 1);
+> +
+> +	TEST(sigwaitinfo(&sigs, &si, NULL));
+> +	REPORT_SUCCESS_COND(signo, 0, si.si_pid==child && si.si_code==SI_USER && si.si_signo==signo, "Struct siginfo mismatch");
+> +
+> +	SUCCEED_OR_DIE(sigprocmask, "restoring original signal mask failed", SIG_SETMASK, &oldmask, &oldmask);
+> +
+> +	Tst_count--;
+> +
+> +	if(sigismember(&oldmask, signo))
+> +		tst_resm(TPASS, "sigwaitinfo restored the original mask");
+> +	else
+> +		tst_resm(TFAIL, "sigwaitinfo failed to restore the original mask");
+> +}
+> +
+> +void test_masked_matching_rt(swi_func sigwaitinfo, int signo)
+> +{
+> +	sigset_t sigs, oldmask;
+> +	siginfo_t si;
+> +	pid_t child[2];
+> +
+> +	signo = SIGRTMIN+1;
+> +
+> +	SUCCEED_OR_DIE(sigemptyset, "sigemptyset failed", &sigs);
+> +	SUCCEED_OR_DIE(sigaddset, "sigaddset failed", &sigs, signo);
+> +	SUCCEED_OR_DIE(sigaddset, "sigaddset failed", &sigs, signo+1);
+> +	/* let's not get interrupted by our dying child */
+> +	SUCCEED_OR_DIE(sigaddset, "sigaddset failed", &sigs, SIGCHLD);
+> +
+> +	SUCCEED_OR_DIE(sigprocmask, "sigprocmask failed", SIG_SETMASK, &sigs, &oldmask);
+> +
+> +	/* don't wait on a SIGCHLD */
+> +	SUCCEED_OR_DIE(sigdelset, "sigdelset failed", &sigs, SIGCHLD);
+> +
+> +	/* Run a child that will wake us up */
+> +	child[0]=create_sig_proc(0, signo, 1);
+> +	child[1]=create_sig_proc(0, signo+1, 1);
+> +
+> +	TEST(sigwaitinfo(&sigs, &si, NULL));
+> +	REPORT_SUCCESS_COND(signo, 0, si.si_pid==child[0] && si.si_code==SI_USER && si.si_signo==signo, "Struct siginfo mismatch");
+> +
+> +	/* eat the other signal */
+> +	Tst_count--;
+> +	TEST(sigwaitinfo(&sigs, &si, NULL));
+> +	REPORT_SUCCESS_COND(signo+1, 0, si.si_pid==child[1] && si.si_code==SI_USER && si.si_signo==signo+1, "Struct siginfo mismatch");
+> +
+> +	SUCCEED_OR_DIE(sigprocmask, "restoring original signal mask failed", SIG_SETMASK, &oldmask, &oldmask);
+> +
+> +	Tst_count--;
+> +
+> +	if(sigismember(&oldmask, signo))
+> +		tst_resm(TPASS, "sigwaitinfo restored the original mask");
+> +	else
+> +		tst_resm(TFAIL, "sigwaitinfo failed to restore the original mask");
+> +}
+> +
+> +void test_masked_matching_noinfo(swi_func sigwaitinfo, int signo)
+> +{
+> +	sigset_t sigs, oldmask;
+> +	pid_t child;
+> +
+> +	SUCCEED_OR_DIE(sigemptyset, "sigemptyset failed", &sigs);
+> +	SUCCEED_OR_DIE(sigaddset, "sigaddset failed", &sigs, signo);
+> +	/* let's not get interrupted by our dying child */
+> +	SUCCEED_OR_DIE(sigaddset, "sigaddset failed", &sigs, SIGCHLD);
+> +
+> +	SUCCEED_OR_DIE(sigprocmask, "sigprocmask failed", SIG_SETMASK, &sigs, &oldmask);
+> +
+> +	/* don't wait on a SIGCHLD */
+> +	SUCCEED_OR_DIE(sigdelset, "sigaddset failed", &sigs, SIGCHLD);
+> +
+> +	/* Run a child that will wake us up */
+> +	child=create_sig_proc(0, signo, 1);
+> +
+> +	TEST(sigwaitinfo(&sigs, NULL, NULL));
+> +	REPORT_SUCCESS(signo, 0);
+> +
+> +	SUCCEED_OR_DIE(sigprocmask, "restoring original signal mask failed", SIG_SETMASK, &oldmask, &oldmask);
+> +
+> +	Tst_count--;
+> +
+> +	if(sigismember(&oldmask, signo))
+> +		tst_resm(TPASS, "sigwaitinfo restored the original mask");
+> +	else
+> +		tst_resm(TFAIL, "sigwaitinfo failed to restore the original mask");
+> +
+> +}
+> +
+> +void test_bad_address(swi_func sigwaitinfo, int signo)
+> +{
+> +	sigset_t sigs, oldmask;
+> +	pid_t child;
+> +
+> +	SUCCEED_OR_DIE(sigemptyset, "sigemptyset failed", &sigs);
+> +	SUCCEED_OR_DIE(sigaddset, "sigaddset failed", &sigs, signo);
+> +	/* let's not get interrupted by our dying child */
+> +	SUCCEED_OR_DIE(sigaddset, "sigaddset failed", &sigs, SIGCHLD);
+> +
+> +	SUCCEED_OR_DIE(sigprocmask, "sigprocmask failed", SIG_SETMASK, &sigs, &oldmask);
+> +
+> +	/* don't wait on a SIGCHLD */
+> +	SUCCEED_OR_DIE(sigdelset, "sigaddset failed", &sigs, SIGCHLD);
+> +
+> +	/* Run a child that will wake us up */
+> +	child=create_sig_proc(0, signo, 1);
+> +
+> +	TEST(sigwaitinfo(&sigs, (void*)1, NULL));
+> +	REPORT_SUCCESS(-1, EFAULT);
+> +
+> +	SUCCEED_OR_DIE(sigprocmask, "sigprocmask failed", SIG_SETMASK, &oldmask, &oldmask);
+> +
+> +	kill(child, SIGTERM);
+> +}
+> +
+> +void test_bad_address2(swi_func sigwaitinfo, int signo)
+> +{
+> +	TEST(sigwaitinfo((void*)1, NULL, NULL));
+> +	REPORT_SUCCESS(-1, EFAULT);
+> +}
+> +
+> +void test_bad_address3(swi_func sigwaitinfo, int signo)
+> +{
+> +	sigset_t sigs;
+> +	SUCCEED_OR_DIE(sigemptyset, "sigemptyset failed", &sigs);
+> +
+> +	TEST(sigwaitinfo(&sigs, NULL, (void*)1));
+> +	REPORT_SUCCESS(-1, EFAULT);
+> +}
+> +
+> +struct test_desc {
+> +	test_func tf;
+> +	swi_func swi;
+> +	int signo;
+> +} tests[]={
+> +#if defined TEST_RT_SIGTIMEDWAIT
+> +	test_empty_set, my_rt_sigtimedwait, SIGUSR1,
+> +	test_unmasked_matching, my_rt_sigtimedwait, SIGUSR1,
+> +	test_masked_matching, my_rt_sigtimedwait, SIGUSR1,
+> +	test_unmasked_matching_noinfo, my_rt_sigtimedwait, SIGUSR1,
+> +	test_masked_matching_noinfo, my_rt_sigtimedwait, SIGUSR1,
+> +	test_bad_address, my_rt_sigtimedwait, SIGUSR1,
+> +	test_bad_address2, my_rt_sigtimedwait, SIGUSR1,
+> +	test_bad_address3, my_rt_sigtimedwait, SIGUSR1,
+> +	test_timeout, my_rt_sigtimedwait, 0,
+> +
+> +	/* Special cases */
+> +	/* 1: sigwaitinfo does respond to ignored signal */
+> +	test_masked_matching, my_rt_sigtimedwait, SIGUSR2,
+> +
+> +	/* 2: An ignored signal doesn't cause sigwaitinfo to return EINTR */
+> +	test_timeout, my_rt_sigtimedwait, SIGUSR2,
+> +
+> +	/* 3: The handler is not called when the signal is waited for by sigwaitinfo */
+> +	test_masked_matching, my_rt_sigtimedwait, SIGTERM,
+> +
+> +	/* 4: Simultaneous realtime signals are delivered in the order of increasing signal number */
+> +	test_masked_matching_rt, my_rt_sigtimedwait, -1,
+> +#endif
+> +#if defined TEST_SIGWAIT
+> +	test_unmasked_matching_noinfo, my_sigwait, SIGUSR1,
+> +	test_masked_matching_noinfo, my_sigwait, SIGUSR1,
+> +#endif
+> +#if defined TEST_SIGWAITINFO
+> +	test_empty_set, my_sigwaitinfo, SIGUSR1,
+> +	test_unmasked_matching, my_sigwaitinfo, SIGUSR1,
+> +	test_masked_matching, my_sigwaitinfo, SIGUSR1,
+> +	test_unmasked_matching_noinfo, my_sigwaitinfo, SIGUSR1,
+> +	test_masked_matching_noinfo, my_sigwaitinfo, SIGUSR1,
+> +	test_bad_address, my_sigwaitinfo, SIGUSR1,
+> +	test_bad_address2, my_sigwaitinfo, SIGUSR1,
+> +#endif
+> +#if defined TEST_SIGTIMEDWAIT
+> +	test_empty_set, my_sigtimedwait, SIGUSR1,
+> +	test_unmasked_matching, my_sigtimedwait, SIGUSR1,
+> +	test_masked_matching, my_sigtimedwait, SIGUSR1,
+> +	test_unmasked_matching_noinfo, my_sigtimedwait, SIGUSR1,
+> +	test_masked_matching_noinfo, my_sigtimedwait, SIGUSR1,
+> +	test_bad_address, my_sigtimedwait, SIGUSR1,
+> +	test_bad_address2, my_sigtimedwait, SIGUSR1,
+> +	test_bad_address3, my_sigtimedwait, SIGUSR1,
+> +	test_timeout, my_sigtimedwait, 0,
+> +#endif
+> +};
+> +
+> +#if defined TEST_SIGWAITINFO
+> +const char* TCID="sigwaitinfo01";
+> +#elif defined TEST_RT_SIGTIMEDWAIT
+> +const char* TCID="rt_sigtimedwait01";
+> +#elif defined TEST_SIGTIMEDWAIT
+> +const char* TCID="sigtimedwait01";
+> +#elif defined TEST_SIGWAIT
+> +const char* TCID="sigwait01";
+> +#endif
+> +
+> +extern int Tst_count;
+> +
+> +int TST_TOTAL = sizeof(tests)/sizeof(*tests);
+> +
+> +int main(int argc, char** argv)
+> +{
+> +	unsigned i;
+> +	int lc;
+> +	char* msg;
+> +
+> +	/* parse standard options */
+> +	if ((msg = parse_opts(argc, argv, (option_t *) NULL, NULL)) !=
+> +			(char *)NULL) {
+> +		tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
+> +		/*NOT REACHED */
+> +	}
+> +
+> +	setup();
+> +
+> +	for(lc = 0; TEST_LOOPING(lc); ++lc) {
+> +		Tst_count = 0;
+> +
+> +		for(i=0; i<sizeof(tests)/sizeof(*tests); i++) {
+> +			alarm(10); /* arrange a 10 second timeout */
+> +			tests[i].tf(tests[i].swi, tests[i].signo);
+> +		}
+> +		alarm(0);
+> +	}
+> +
+> +	cleanup();
+> +}
+> -- 
+> 1.6.4.3
+> 
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Join us December 9, 2009 for the Red Hat Virtual Experience,
+> a free event focused on virtualization and cloud computing. 
+> Attend in-depth sessions from your desk. Your couch. Anywhere.
+> http://p.sf.net/sfu/redhat-sfdev2dev
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 
 ------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
---0016368e270cc73e4f047b8a167b
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Join us December 9, 2009 for the Red Hat Virtual Experience,
+a free event focused on virtualization and cloud computing. 
+Attend in-depth sessions from your desk. Your couch. Anywhere.
+http://p.sf.net/sfu/redhat-sfdev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---0016368e270cc73e4f047b8a167b--
-
