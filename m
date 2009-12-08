@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NNtvf-0003In-RI
-	for ltp-list@lists.sourceforge.net; Thu, 24 Dec 2009 20:04:59 +0000
-Received: from mail-pz0-f193.google.com ([209.85.222.193])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <czhang@redhat.com>) id 1NHxG8-0004lN-Hy
+	for ltp-list@lists.sourceforge.net; Tue, 08 Dec 2009 10:25:32 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
 	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NNtvX-0004pB-9K
-	for ltp-list@lists.sourceforge.net; Thu, 24 Dec 2009 20:04:59 +0000
-Received: by pzk31 with SMTP id 31so5642614pzk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 24 Dec 2009 12:04:44 -0800 (PST)
-References: <20091224181532.12571.74576.sendpatchset@localhost.localdomain>
-	<20091224181601.12571.78565.sendpatchset@localhost.localdomain>
-Message-Id: <AD1061EF-C689-4456-A892-B7B828754850@gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <20091224181601.12571.78565.sendpatchset@localhost.localdomain>
-Mime-Version: 1.0 (iPhone Mail 7D11)
-Date: Thu, 24 Dec 2009 12:04:25 -0800
-Subject: Re: [LTP] [Patch 4/4]Readme modified based on review comments
+	id 1NHxG0-0002nD-Nv
+	for ltp-list@lists.sourceforge.net; Tue, 08 Dec 2009 10:25:32 +0000
+Date: Tue, 8 Dec 2009 05:25:17 -0500 (EST)
+From: Caspar Zhang <czhang@redhat.com>
+Message-ID: <113043686.2301260267917617.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1397443934.2251260267853449.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH]fix make install problem for ltp-full-20091130
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,86 +26,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, "svaidy@linux.vnet.ibm.com" <svaidy@linux.vnet.ibm.com>, "ego@in.ibm.com" <ego@in.ibm.com>, "arun@linux.vnet.ibm.com" <arun@linux.vnet.ibm.com>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Dec 24, 2009, at 10:16 AM, Poornima Nayak  
-<mpnayak@linux.vnet.ibm.com> wrote:
 
-> Patch to update readme with information on how to use Power  
-> management testcases
-> to test consolidation testcases.
->
-> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
->
-> diff -uprN ltp-intermediate-20091209.orig/testcases/kernel/ 
-> power_management/README ltp-intermediate-20091209.fixes/testcases/ 
-> kernel/power_management/README
-> --- ltp-intermediate-20091209.orig/testcases/kernel/power_management/ 
-> README    2009-12-09 13:18:25.000000000 +0530
-> +++ ltp-intermediate-20091209.fixes/testcases/kernel/ 
-> power_management/README    2009-12-24 23:12:55.293026448 +0530
-> @@ -77,6 +77,8 @@ Power Management    1  FAIL  :  Required
->
-> Then either configuration is not set or the system won't support.
->
-> +Command to test CPU consolidation & ILB testcases on any system  
-> syntax is 'runltp -f power_management_tests_exclusive'. CPU  
-> consolidation testcases has to be triggered on a system which is  
-> totally idle i.e do not execute exclusive testcases on KVM/xen test  
-> setup.
-> +
-> For CPU consolidation verification ebizzy is included in utils  
-> directory of LTP.
-> To run cpu consolidation test user has to provide -w <workload> -l  
-> <sched_mc_level>.
-> Refer to README in LTPROOT/utils/benchmark/ebizzy-0.2 directory for  
-> details of ebizzy.
+----- "Garrett Cooper" <yanegomi@gmail.com> wrote:
 
-This is 0.3 now.
+> On Dec 8, 2009, at 2:18 AM, Caspar Zhang wrote:
+> 
+> > Hello, After I executed make all; make install, I want to 
+> > execute runltp but it always fails. The error message is:
+> > 
+> > FATAL: Test suite not installed correctly
+> > INFO: as root user type 'make ; make install'
+> > 
+> > I searched in Makefile and found the following code:
+> > 
+> > $(INSTALL_TARGETS) include-install lib-install:
+> > 	$(MAKE) -C "$(subst -install,,$@)" \
+> > 		-f "$(abs_top_srcdir)/$(subst -install,,$@)/Makefile" all
+> > 
+> > I think the last word maybe "install".
+> > 
+> > I modified it to install and ltp ran well. the patch could be 
+> > found in the attachment.
+> 
+> Thanks, but the typo was just fixed moments ago.
+> Cheers!
+> -Garrett
 
-> @@ -84,4 +86,6 @@ Refer to README in LTPROOT/utils/benchma
-> To test CPU consolidation for sched_mc 2 kernbench has to run.  
-> Kernbench needs linux kernel source as input in /root directory .  
-> For example download from http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.29.4.tar.bz2 
-> . If Linux kernel source not found kernbench wiil  not execute.
-> CPU consolidation testcases will not execute if number of CPU's in  
-> package is less then 2. If system is hyper threaded but number of  
-> CPU is 1 only sched_smt testcases will be excuted. For better  
-> coverage of testcases select a system which is atleast quad core and  
-> then hyper threaded so that you will observe 8 CPU's in each package.
->
-> -Timer migration interface test will execute on kernel versions  
-> 2.6.31 and above. Timer migration functionality verification  
-> testcases will be executed only on suitable architecture like quad  
-> core or the number of CPU's in each package should be atleast 4 and  
-> above
-> +Timer migration interface test will execute on kernel versions  
-> 2.6.31 and above.
-> +
-> +On Power platform sched_smt & cpu_idle testcases will be executed.
->
-> --- 
-> --- 
-> --- 
-> ---------------------------------------------------------------------
-> This SF.Net email is sponsored by the Verizon Developer Community
-> Take advantage of Verizon's best-in-class app development support
-> A streamlined, 14 day to market process makes app distribution fast  
-> and easy
-> Join now and get one step closer to millions of Verizon customers
-> http://p.sf.net/sfu/verizon-dev2dev
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+That's great! I should have read the codes a bit earlier :-)
+
+Caspar
 
 ------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+Return on Information:
+Google Enterprise Search pays you back
+Get the facts.
+http://p.sf.net/sfu/google-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
