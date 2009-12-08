@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1NIH86-0001DR-1e
-	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2009 07:38:34 +0000
-Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
-	by sfi-mx-3.v28.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1NIH80-000251-RR
-	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2009 07:38:34 +0000
-Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Wed, 9 Dec 2009 16:38:16 +0900
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Wed, 9 Dec 2009 16:38:16 +0900
-Message-ID: <000001ca78a2$93fd5a50$bbf80ef0$@co.jp>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <czhang@redhat.com>) id 1NHznf-0006IC-Rm
+	for ltp-list@lists.sourceforge.net; Tue, 08 Dec 2009 13:08:19 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NHznZ-0008BN-Eo
+	for ltp-list@lists.sourceforge.net; Tue, 08 Dec 2009 13:08:19 +0000
+Date: Tue, 8 Dec 2009 08:07:59 -0500 (EST)
+From: Caspar Zhang <czhang@redhat.com>
+Message-ID: <1429667615.6061260277679532.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <862970112.6041260277607150.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Content-Language: ja
 Subject: Re: [LTP] make error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -30,82 +26,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-Hi,
-
-Sorry, I don't know how to response to following thread:
-"http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg08965.html"
-but I want to comment it:
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: yali_ning <yali_ning@126.com>, ltp-list@lists.sourceforge.net
 
 
-> > On Thursday 12 November 2009 01:20:37 yali_ning wrote:
-> > > I came across an error , when compiling the ltp-20091030. the step
-> > is :
-> > > 
-> > > gcc -Wall -g -Os -g -O2 -fno-strict-aliasing -pipe -Wall 
-> > > 
-> > -I/mnt/sdb1/nly1/ltp-1030/ltp-full-20091031/testcases/kernel/include
-> > > -I../../../../include -I../../../../include -L../../../../lib 
-> > vfork.c 
-> > > -lltp -o vfork In file included from /usr/include/asm/ptrace.h:58,
-> > > from /usr/include/linux/ptrace.h:49,
-> > > from vfork.c:45:
-> > > /usr/include/asm/fpu.h:57: error: redefinition of 'struct
-> > ia64_fpreg'
-> > > In file included from /usr/include/linux/ptrace.h:49,
-> > > from vfork.c:45:
-> > > /usr/include/asm/ptrace.h:208: error: redefinition of 'struct
-> > > pt_all_user_regs'
+----- "Mike Frysinger" <vapier@gentoo.org> wrote:
+
+> On Thursday 12 November 2009 01:20:37 yali_ning wrote:
+> >   I came across an error , when compiling the ltp-20091030. the step
+> is :
 > > 
-> > this should be fixed already in latest cvs
-> > -mike
-> No, I tried to install latest cvs version under RHEL5.4 on a ia64
-> machine but the same error still existed.
+> > gcc -Wall -g -Os -g -O2 -fno-strict-aliasing -pipe -Wall 
+> > 
+> -I/mnt/sdb1/nly1/ltp-1030/ltp-full-20091031/testcases/kernel/include
+> >  -I../../../../include -I../../../../include   -L../../../../lib 
+> vfork.c  
+> >  -lltp -o vfork In file included from /usr/include/asm/ptrace.h:58,
+> >                  from /usr/include/linux/ptrace.h:49,
+> >                  from vfork.c:45:
+> > /usr/include/asm/fpu.h:57: error: redefinition of 'struct
+> ia64_fpreg'
+> > In file included from /usr/include/linux/ptrace.h:49,
+> >                  from vfork.c:45:
+> > /usr/include/asm/ptrace.h:208: error: redefinition of 'struct
+> >  pt_all_user_regs'
 > 
-> What puzzled me is, it said it was the redefinition-error, but I 
-> couldn't even find the originally defined structs.
-> 
-> Thanks,
-> Caspar 
+> this should be fixed already in latest cvs
+> -mike
+No, I tried to install latest cvs version under RHEL5.4 on a ia64
+machine but the same error still existed.
 
+What puzzled me is, it said it was the redefinition-error, but I 
+couldn't even find the originally defined structs.
 
-============
-
-
-Well, I think that the report that Caspar says is right.
-
-I tried to "make" with "ltp-2009-12-08" version 
-in RHEL5.4 (kernel 2.6.18-164.el5) and ia64 architecture, too.
-But it output the error message same as Caspar's report
-and ended in failure.
-
-And same failure occurred in "ltp-full-20091031.tgz" version, too.
-
-I tried various versions until now.
-
-       LTP version       ---  error occurred in...
----------------------------------------------------------------------
-  (1)  ltp-full-20091031 ---  "vfork.c" (This failure)
-  (2)  ltp-2009-11-17    ---  "vfork.c" (Resembles this failure)
-  (3)  ltp-2009-11-19    ---  "vfork.c" (Resembles this failure)
-  (4)  ltp-2009-11-24    ---  "vfork.c" (Resembles this failure)
-  (5)  ltp-2009-11-26    ---  "vfork.c" (Resembles this failure)
-  (6)  ltp-2009-11-27    ---  "pidns03.c" (Before than this failure)
-  (7)  ltp-2009-11-30    ---  "pidns03.c" (Before than this failure)
-  (8)  ltp-2009-12-01    ---  "libclone.c" (Before than this failure)
-  (9)  ltp-2009-12-02    ---  "libclone.c" (Before than this failure)
-  (10) ltp-full-20091130 ---  "libclone.c" (Before than this failure)
-  (11) ltp-2009-12-07    ---  "vfork.c" (This failure)
-  (12) ltp-2009-12-08    ---  "vfork.c" (This failure)
-
-
-
-Thank you--
-
--Tomonori Mitani
-
-
+Thanks,
+Caspar
 
 ------------------------------------------------------------------------------
 Return on Information:
