@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <liubo2009@cn.fujitsu.com>) id 1NLayu-0004DL-Nu
-	for ltp-list@lists.sourceforge.net; Fri, 18 Dec 2009 11:26:48 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NLayp-0005EP-0t
-	for ltp-list@lists.sourceforge.net; Fri, 18 Dec 2009 11:26:48 +0000
-Message-ID: <4B2B6723.3030107@cn.fujitsu.com>
-Date: Fri, 18 Dec 2009 19:27:31 +0800
-From: liubo <liubo2009@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <hyei@mvista.com>) id 1NI6DG-00024h-Ux
+	for ltp-list@lists.sourceforge.net; Tue, 08 Dec 2009 19:59:10 +0000
+Received: from [206.112.117.47] (helo=gateway-1237.mvista.com)
+	by sfi-mx-2.v28.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1NI6DA-0002aK-EU
+	for ltp-list@lists.sourceforge.net; Tue, 08 Dec 2009 19:59:10 +0000
+Received: from svexch01.mvista.com (svexch01.mvista.com [10.0.0.82])
+	by hermes.mvista.com (Postfix) with ESMTP id 09ECC1D5AD
+	for <ltp-list@lists.sourceforge.net>;
+	Tue,  8 Dec 2009 11:57:58 -0800 (PST)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-References: <4B28C68C.1080304@cn.fujitsu.com>	
-	<1173683636.495591261014366483.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-	<364299f40912161857k15592002ibfefe99111d51d71@mail.gmail.com>
-In-Reply-To: <364299f40912161857k15592002ibfefe99111d51d71@mail.gmail.com>
-Subject: Re: [LTP] [PATCH 2/3] ade: fix the bug of ar01
+Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01CA7840.BD0FF748"
+Date: Tue, 8 Dec 2009 11:57:58 -0800
+Message-ID: <8368651DACC1964480F951191B94A07801926FEF@svexch01.mvista.com>
+From: "Henry Yei" <hyei@mvista.com>
+Subject: [LTP] [PATCH] math/float/thread_code.c,
+	revert previous patch which added check for NaN
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,265 +29,172 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2407104511570013659=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP Mailing List <ltp-list@lists.sourceforge.net>
 
 This is a multi-part message in MIME format.
---===============2407104511570013659==
+
+------_=_NextPart_001_01CA7840.BD0FF748
 Content-Type: multipart/alternative;
-	boundary="------------030604070606000708070700"
-
-This is a multi-part message in MIME format.
---------------030604070606000708070700
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-On 12/17/2009 10:57 AM, Garrett Cooper wrote:
-> On Wed, Dec 16, 2009 at 5:46 PM, Caspar Zhang <czhang@redhat.com> wrote:
->   
->> ----- "liubo" <liubo2009@cn.fujitsu.com> wrote:
->>
->>     
->>> Command "ar -tv" 's output doesn't match with "ls -ln" 's output on
->>> item
->>> "permission".
->>>
->>> s/-$permissions/-$permissions./
->>>       
->> This strange dot only appears in RHEL6, I don't see this dot in other
->> distros or releases.
->>     
->
-> Is this perhaps because of a version upgrade?
-> Thanks,
-> -Garrett
->
->   
-
-Yes, this problem does occur because of the version...
-In binutils-2.19.51.0.2, the strange dot appears.
-In binutils-2.17.50.0.18, the strange dot does not appear.
-And these cause the dismatch.
-
-Thanks,
-Liu Bo
-
->>> This patch fixed the bug.
->>>
->>> Signed-off-by: Liu Bo <liubo2009@cn.fujitsu.com>
->>>
->>> ---
->>>  testcases/commands/ade/ar/ar01 |    2 +-
->>>  1 files changed, 1 insertions(+), 1 deletions(-)
->>>
->>> diff --git a/testcases/commands/ade/ar/ar01
->>> b/testcases/commands/ade/ar/ar01
->>> index c8f85eb..c393959 100755
->>> --- a/testcases/commands/ade/ar/ar01
->>> +++ b/testcases/commands/ade/ar/ar01
->>> @@ -584,7 +584,7 @@ ar -tv $TCtmp/lib.a |
->>>  while
->>>  read permissions uid size month day time year file_name
->>>  do
->>> -echo "-$permissions;$uid;$size;$month;$day;$time;$file_name"
->>> +echo "-$permissions.;$uid;$size;$month;$day;$time;$file_name"
->>>  done >> $TCtmp/lib.a.stdout
->>>  ttest
->>>
->>> --
->>> 1.6.2.2
->>>
->>>
->>>
->>>
->>>
->>>
->>> ------------------------------------------------------------------------------
->>> This SF.Net email is sponsored by the Verizon Developer Community
->>> Take advantage of Verizon's best-in-class app development support
->>> A streamlined, 14 day to market process makes app distribution fast
->>> and easy
->>> Join now and get one step closer to millions of Verizon customers
->>> http://p.sf.net/sfu/verizon-dev2dev
->>> _______________________________________________
->>> Ltp-list mailing list
->>> Ltp-list@lists.sourceforge.net
->>> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>>       
->> --
->> /-------------------------------------------\
->> | Name: Caspar Zhang                        |
->> | Position: Kernel Qualification Engineer   |
->> | IRC: czhang on #kernel-qe, #eng-china     |
->> | Phone: +86-10-6260-8150                   |
->> | Cellphone: +86-1381-073-0090              |
->> \-------------------------------------------/
->>
->>
->> ------------------------------------------------------------------------------
->> This SF.Net email is sponsored by the Verizon Developer Community
->> Take advantage of Verizon's best-in-class app development support
->> A streamlined, 14 day to market process makes app distribution fast and easy
->> Join now and get one step closer to millions of Verizon customers
->> http://p.sf.net/sfu/verizon-dev2dev
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>
->>     
->
->
->   
+	boundary="----_=_NextPart_002_01CA7840.BD0FF748"
 
 
---------------030604070606000708070700
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+------_=_NextPart_002_01CA7840.BD0FF748
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+Here is a patch that reverts the previous patch applied to thread_cod.c. =
+Some of the float tests were reporting a failure where it detected the =
+difference between the result and expected result was NaN(not a number). =
+ As some of the results and expected results resolved to inf(infinity), =
+the difference calculation would result in NaN.
+
+=20
+
+With the previous patch, float_power and float_bessel tests were =
+consistently failing on all architectures tried=20
+
+=20
+
+Signed-off by: Henry Yei <hyei@mvista.com>
+
+=20
+
+
+------_=_NextPart_002_01CA7840.BD0FF748
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
+xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
 <head>
-  <meta content="text/html; charset=ISO-8859-1"
- http-equiv="Content-Type">
+<meta http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<meta name=3DGenerator content=3D"Microsoft Word 12 (filtered medium)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-priority:99;
+	color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:"Calibri","sans-serif";
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:10.0pt;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext=3D"edit">
+  <o:idmap v:ext=3D"edit" data=3D"1" />
+ </o:shapelayout></xml><![endif]-->
 </head>
-<body bgcolor="#ffffff" text="#000000">
-On 12/17/2009 10:57 AM, Garrett Cooper wrote:
-<blockquote
- cite="mid:364299f40912161857k15592002ibfefe99111d51d71@mail.gmail.com"
- type="cite">
-  <pre wrap="">On Wed, Dec 16, 2009 at 5:46 PM, Caspar Zhang <a class="moz-txt-link-rfc2396E" href="mailto:czhang@redhat.com">&lt;czhang@redhat.com&gt;</a> wrote:
-  </pre>
-  <blockquote type="cite">
-    <pre wrap="">----- "liubo" <a class="moz-txt-link-rfc2396E" href="mailto:liubo2009@cn.fujitsu.com">&lt;liubo2009@cn.fujitsu.com&gt;</a> wrote:
 
-    </pre>
-    <blockquote type="cite">
-      <pre wrap="">Command "ar -tv" 's output doesn't match with "ls -ln" 's output on
-item
-"permission".
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
 
-s/-$permissions/-$permissions./
-      </pre>
-    </blockquote>
-    <pre wrap="">This strange dot only appears in RHEL6, I don't see this dot in other
-distros or releases.
-    </pre>
-  </blockquote>
-  <pre wrap=""><!---->
-Is this perhaps because of a version upgrade?
-Thanks,
--Garrett
+<div class=3DSection1>
 
-  </pre>
-</blockquote>
-<br>
-Yes, this problem does occur because of the version...<br>
-In binutils-2.19.51.0.2, the strange dot appears.<br>
-In binutils-2.17.50.0.18, the strange dot does not appear.<br>
-And these cause the dismatch.<br>
-<br>
-Thanks,<br>
-Liu Bo<br>
-<br>
-<blockquote
- cite="mid:364299f40912161857k15592002ibfefe99111d51d71@mail.gmail.com"
- type="cite">
-  <pre wrap=""></pre>
-  <blockquote type="cite">
-    <blockquote type="cite">
-      <pre wrap="">This patch fixed the bug.
+<p class=3DMsoNormal>Here is a patch that reverts the previous patch =
+applied to
+thread_cod.c. Some of the float tests were reporting a failure where it
+detected the difference between the result and expected result was =
+NaN(not a
+number).=A0 As some of the results and expected results resolved to =
+inf(infinity),
+the difference calculation would result in NaN.<o:p></o:p></p>
 
-Signed-off-by: Liu Bo <a class="moz-txt-link-rfc2396E" href="mailto:liubo2009@cn.fujitsu.com">&lt;liubo2009@cn.fujitsu.com&gt;</a>
+<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
 
----
-&nbsp;testcases/commands/ade/ar/ar01 | &nbsp; &nbsp;2 +-
-&nbsp;1 files changed, 1 insertions(+), 1 deletions(-)
+<p class=3DMsoNormal>With the previous patch, float_power and =
+float_bessel tests
+were consistently failing on all architectures tried <o:p></o:p></p>
 
-diff --git a/testcases/commands/ade/ar/ar01
-b/testcases/commands/ade/ar/ar01
-index c8f85eb..c393959 100755
---- a/testcases/commands/ade/ar/ar01
-+++ b/testcases/commands/ade/ar/ar01
-@@ -584,7 +584,7 @@ ar -tv $TCtmp/lib.a |
-&nbsp;while
-&nbsp;read permissions uid size month day time year file_name
-&nbsp;do
--echo "-$permissions;$uid;$size;$month;$day;$time;$file_name"
-+echo "-$permissions.;$uid;$size;$month;$day;$time;$file_name"
-&nbsp;done &gt;&gt; $TCtmp/lib.a.stdout
-&nbsp;ttest
+<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
 
---
-1.6.2.2
+<div>
 
+<p class=3DMsoNormal>Signed-off by: Henry Yei =
+&lt;hyei@mvista.com&gt;<o:p></o:p></p>
 
+</div>
 
+<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
 
+</div>
 
-
-------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast
-and easy
-Join now and get one step closer to millions of Verizon customers
-<a class="moz-txt-link-freetext" href="http://p.sf.net/sfu/verizon-dev2dev">http://p.sf.net/sfu/verizon-dev2dev</a>
-_______________________________________________
-Ltp-list mailing list
-<a class="moz-txt-link-abbreviated" href="mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.net</a>
-<a class="moz-txt-link-freetext" href="https://lists.sourceforge.net/lists/listinfo/ltp-list">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
-      </pre>
-    </blockquote>
-    <pre wrap="">--
-/-------------------------------------------\
-| Name: Caspar Zhang &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|
-| Position: Kernel Qualification Engineer &nbsp; |
-| IRC: czhang on #kernel-qe, #eng-china &nbsp; &nbsp; |
-| Phone: +86-10-6260-8150 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
-| Cellphone: +86-1381-073-0090 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;|
-\-------------------------------------------/
-
-
-------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-<a class="moz-txt-link-freetext" href="http://p.sf.net/sfu/verizon-dev2dev">http://p.sf.net/sfu/verizon-dev2dev</a>
-_______________________________________________
-Ltp-list mailing list
-<a class="moz-txt-link-abbreviated" href="mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.net</a>
-<a class="moz-txt-link-freetext" href="https://lists.sourceforge.net/lists/listinfo/ltp-list">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
-
-    </pre>
-  </blockquote>
-  <pre wrap=""><!---->
-
-  </pre>
-</blockquote>
-<br>
 </body>
+
 </html>
 
---------------030604070606000708070700--
+------_=_NextPart_002_01CA7840.BD0FF748--
 
+------_=_NextPart_001_01CA7840.BD0FF748
+Content-Type: application/octet-stream;
+	name="thread_code.patch"
+Content-Transfer-Encoding: base64
+Content-Description: thread_code.patch
+Content-Disposition: attachment;
+	filename="thread_code.patch"
 
---===============2407104511570013659==
+LS0tIGx0cC90ZXN0Y2FzZXMvbWlzYy9tYXRoL2Zsb2F0L3RocmVhZF9jb2RlLmMJMjAwOS0xMC0x
+MyAwNDoyMzozNC4wMDAwMDAwMDAgLTA3MDAKKysrIGx0cC13ZGlyL3Rlc3RjYXNlcy9taXNjL21h
+dGgvZmxvYXQvdGhyZWFkX2NvZGUuYwkyMDA5LTEyLTA4IDExOjAyOjEzLjkzNTcxMTc4OCAtMDgw
+MApAQCAtMTI0LDcgKzEyNCw3IEBAIHN0YXRpYyB2b2lkIGNoZWNrX2Vycm9yKFRIX0RBVEEgKnRo
+X2RhdGEKIAogCXggPSBmYWJzKHIgLSBlKTsgLyogZGlmZiBleHBlY3RlZC9jb21wdXRlZCAqLwog
+Ci0JaWYgKCh4ID4gRVBTKSB8fCAoeCAhPSB4KSkgeyAvKiBlcnJvciA/ICovCisJaWYgKHggPiBF
+UFMpIHsgLyogZXJyb3IgPyAqLwogCQkvKiBjb21wdXRlIGV4cG9uZW50IHBhcnRzICovCiAJCSh2
+b2lkKWZyZXhwKHIsICZwcik7IC8qIGZvciBjb21wdXRlZCAqLwogCQkodm9pZClmcmV4cCh4LCAm
+cHgpOyAvKiBmb3IgZGlmZmVyZW5jZSAqLwpAQCAtMzY1LDcgKzM2NSw3IEBAIGZpbGVfc2l6ZV9l
+cnJvcjoKIAogCWltYXggPSBmc2l6ZSAvIHNpemVvZihkb3VibGUpOwogCi0Jd2hpbGUodGhfZGF0
+YS0+dGhfbmxvb3AgPD0gbnVtX2xvb3BzKSB7ICAgCisJd2hpbGUodGhfZGF0YS0+dGhfbmxvb3Ag
+PD0gbnVtX2xvb3BzKSB7CiAJLyogbG9vcCBzdG9wcGVkIGJ5IHB0aHJlYWRfY2FuY2VsICovCiAK
+IAkJZm9yKGluZGV4ID0gdGhfZGF0YS0+dGhfbnVtOwo=
+
+------_=_NextPart_001_01CA7840.BD0FF748
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
---===============2407104511570013659==
+Return on Information:
+Google Enterprise Search pays you back
+Get the facts.
+http://p.sf.net/sfu/google-dev2dev
+
+------_=_NextPart_001_01CA7840.BD0FF748
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -295,5 +205,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============2407104511570013659==--
+------_=_NextPart_001_01CA7840.BD0FF748--
 
