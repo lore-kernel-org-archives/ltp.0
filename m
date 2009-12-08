@@ -1,19 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1NL5da-0006ZU-4b
-	for ltp-list@lists.sourceforge.net; Thu, 17 Dec 2009 01:58:42 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NL5dV-0003u5-71
-	for ltp-list@lists.sourceforge.net; Thu, 17 Dec 2009 01:58:42 +0000
-Date: Wed, 16 Dec 2009 20:46:06 -0500 (EST)
-From: Caspar Zhang <czhang@redhat.com>
-Message-ID: <1173683636.495591261014366483.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <4B28C68C.1080304@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1NHx7Q-0007Fd-V2
+	for ltp-list@lists.sourceforge.net; Tue, 08 Dec 2009 10:16:32 +0000
+Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
+	by sfi-mx-1.v28.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1NHx7I-00027p-AC
+	for ltp-list@lists.sourceforge.net; Tue, 08 Dec 2009 10:16:32 +0000
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Tue, 8 Dec 2009 19:16:11 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Tue, 8 Dec 2009 19:16:10 +0900
+Message-ID: <000001ca77ef$78ed7f00$6ac87d00$@co.jp>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 2/3] ade: fix the bug of ar01
+Content-Language: ja
+Subject: [LTP] Build failure with ltp-2009-12-08 cvs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,83 +30,137 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: liubo <liubo2009@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+Hi,
 
 
------ "liubo" <liubo2009@cn.fujitsu.com> wrote:
+I tried to "make" with "ltp-2009-12-08.tar.gz" version 
+in RHEL4.8 (kernel 2.6.9-89.ELsmp) and x86 architecture.
 
-> Command "ar -tv" 's output doesn't match with "ls -ln" 's output on
-> item
-> "permission".
-> 
-> s/-$permissions/-$permissions./
+But it failed by following message:
 
-This strange dot only appears in RHEL6, I don't see this dot in other
-distros or releases.
+------------
+make[4]: Entering directory
+`/home/LTP/ltp-2009-12-08/testcases/kernel/syscalls/get_mempolicy'
+gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+-I/home/LTP/ltp-2009-12-08/testcases/kernel/include
+-I/home/LTP/ltp-2009-12-08/testcases/kernel/syscalls/get_mempolicy/../utils
+-I../../../../include -I../../../../include   -L../../../../lib
+get_mempolicy01.c   -lltp -lnuma -o get_mempolicy01
+In file included from get_mempolicy01.c:58:
+/home/LTP/ltp-2009-12-08/testcases/kernel/syscalls/get_mempolicy/../utils/nu
+maif.h:88: error: redefinition of 'nodemask_set'
+/usr/include/numa.h:45: error: previous definition of 'nodemask_set' was
+here
+make[4]: *** [get_mempolicy01] Error 1
+make[4]: Leaving directory
+`/home/LTP/ltp-2009-12-08/testcases/kernel/syscalls/get_mempolicy'
+make[3]: *** [all] Error 2
+------------
 
-Thanks,
-Caspar
+For reference, "make" succeeded in my following systems:
+  - RHEL5.4 (kernel 2.6.18-164.el5) and x86 architecture
+  - RHEL5.4 (kernel 2.6.18-164.el5) and x86_64 architecture
 
-> 
-> This patch fixed the bug.
-> 
-> Signed-off-by: Liu Bo <liubo2009@cn.fujitsu.com>
-> 
-> ---
->  testcases/commands/ade/ar/ar01 |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/testcases/commands/ade/ar/ar01
-> b/testcases/commands/ade/ar/ar01
-> index c8f85eb..c393959 100755
-> --- a/testcases/commands/ade/ar/ar01
-> +++ b/testcases/commands/ade/ar/ar01
-> @@ -584,7 +584,7 @@ ar -tv $TCtmp/lib.a |
->  while
->  read permissions uid size month day time year file_name
->  do
-> -echo "-$permissions;$uid;$size;$month;$day;$time;$file_name"
-> +echo "-$permissions.;$uid;$size;$month;$day;$time;$file_name"
->  done >> $TCtmp/lib.a.stdout
->  ttest
->  
-> -- 
-> 1.6.2.2
-> 
-> 
-> 
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> This SF.Net email is sponsored by the Verizon Developer Community
-> Take advantage of Verizon's best-in-class app development support
-> A streamlined, 14 day to market process makes app distribution fast
-> and easy
-> Join now and get one step closer to millions of Verizon customers
-> http://p.sf.net/sfu/verizon-dev2dev 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
--- 
-/-------------------------------------------\
-| Name: Caspar Zhang                        |
-| Position: Kernel Qualification Engineer   |
-| IRC: czhang on #kernel-qe, #eng-china     |
-| Phone: +86-10-6260-8150                   |
-| Cellphone: +86-1381-073-0090              |
-\-------------------------------------------/
+"nodemask_set" is the structure whitch defined in following two header
+files:
+  (a) "${LTPROOT}/testcases/kernel/syscalls/utils/numaif.h"
+  (b) "/usr/include/numa.h"
+
+In "numaif.h" file, definition is as follows:
+
+------------
+#if HAVE_NUMA_H
+#include <numa.h>
+#else /* The following symbols clash with the numa.h ones. */
+
+typedef struct {
+        unsigned long n[NUMA_NUM_NODES/(sizeof(unsigned long)*8)];
+} nodemask_t;
+
+[...]
+
+#endif
+
+static inline void nodemask_dump(const char *header, const nodemask_t *mask)
+{
+        int i;
+        EPRINTF("%s", header);
+        for (i = 0; i < NUMA_NUM_NODES/(sizeof(unsigned long)*8); i++)
+                EPRINTF(" 0x%08lx", mask->n[i]);
+        EPRINTF("\n");
+}
+
+static inline void nodemask_set(nodemask_t *mask, int node)
+{
+        mask->n[node / (8*sizeof(unsigned long))] |=
+                (1UL << (node % (8*sizeof(unsigned long))));
+}
+------------
+
+
+In above definition, "nodemask_set" structure is always defined 
+whether "HAVE_NUMA_H" is defined.
+If "HAVE_NUMA_H" was defined, <numa.h> which defines "nodemask_set"
+structure is included.
+Therefore, "nodemask_set" is defined twice when "HAVE_NUMA_H" is defined.
+
+
+I think that "nodemask_set" definition of "numaif.h" must be in 
+"#if HAVE_NUMA_H" block.
+
+
+I applied following patch, and succeeded to "make".
+
+============
+--- numaif.h.org        2009-11-13 05:30:36.000000000 +0900
++++ numaif.h    2009-12-08 10:25:09.000000000 +0900
+@@ -73,6 +73,12 @@
+                        return 0;
+        return 1;
+ }
++
++static inline void nodemask_set(nodemask_t *mask, int node)
++{
++       mask->n[node / (8*sizeof(unsigned long))] |=
++               (1UL << (node % (8*sizeof(unsigned long))));
++}
+ #endif
+
+ static inline void nodemask_dump(const char *header, const nodemask_t
+*mask)
+@@ -84,12 +90,6 @@
+        EPRINTF("\n");
+ }
+
+-static inline void nodemask_set(nodemask_t *mask, int node)
+-{
+-       mask->n[node / (8*sizeof(unsigned long))] |=
+-               (1UL << (node % (8*sizeof(unsigned long))));
+-}
+-
+ #ifndef MPOL_DEFAULT
+    // Policies
+ #  define MPOL_DEFAULT                 0
+============
+
+
+I'm glad if I can get opinion that my revision is right or not.
+
+
+Thank you--
+
+-Tomonori Mitani
+
 
 
 ------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+Return on Information:
+Google Enterprise Search pays you back
+Get the facts.
+http://p.sf.net/sfu/google-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
