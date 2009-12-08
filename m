@@ -1,34 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NHcAj-0002jq-6L
-	for ltp-list@lists.sourceforge.net; Mon, 07 Dec 2009 11:54:33 +0000
-Received: from e36.co.us.ibm.com ([32.97.110.154])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NHcAb-00086Y-VX
-	for ltp-list@lists.sourceforge.net; Mon, 07 Dec 2009 11:54:33 +0000
-Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
-	[9.17.195.228])
-	by e36.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id nB7Bptvk007850
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Dec 2009 04:51:55 -0700
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nB7BsFlj114390
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Dec 2009 04:54:15 -0700
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id nB7BsFHR015303
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Dec 2009 04:54:15 -0700
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1260121579.7556.487.camel@rado-desktop>
-References: <1260121579.7556.487.camel@rado-desktop>
-Date: Mon, 07 Dec 2009 17:24:04 +0530
-Message-Id: <1260186844.6866.21.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] if4-alias-addlarge - default values
-	for	IPV4_NETWORK and	IPV4_HOST
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <czhang@redhat.com>) id 1NHx9F-00009A-Ob
+	for ltp-list@lists.sourceforge.net; Tue, 08 Dec 2009 10:18:25 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NHx9A-0000lm-RX
+	for ltp-list@lists.sourceforge.net; Tue, 08 Dec 2009 10:18:25 +0000
+Received: from int-mx01.intmail.prod.int.phx2.redhat.com
+	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+	by mx1.redhat.com (8.13.8/8.13.8) with ESMTP id nB8AIEQH032393
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 8 Dec 2009 05:18:14 -0500
+Received: from mail04.corp.redhat.com (zmail04.collab.prod.int.phx2.redhat.com
+	[10.5.5.44])
+	by int-mx01.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
+	id nB8AIEYu022147
+	for <ltp-list@lists.sourceforge.net>; Tue, 8 Dec 2009 05:18:14 -0500
+Date: Tue, 8 Dec 2009 05:18:14 -0500 (EST)
+From: Caspar Zhang <czhang@redhat.com>
+Message-ID: <1248829539.2041260267494377.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <2094231667.2021260267473745.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_70_670116801.1260267494376"
+Subject: [LTP] [PATCH]fix make install problem for ltp-full-20091130
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,66 +35,71 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Radoslav Kolev <radoslav.kolev@rnd.bg>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Sun, 2009-12-06 at 19:46 +0200, Radoslav Kolev wrote: 
-> The testcase code expects class A (or /8 ) network addresses to be
-> assigned to the tested interfaces and fails with the default values of
-> class C (or /24).
-> 
-> Signed-off-by: Radoslav Kolev <radoslav.kolev@rnd.bg>
+------=_Part_70_670116801.1260267494376
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Thanks.
+Hello, After I executed make all; make install, I want to 
+execute runltp but it always fails. The error message is:
 
-Regards--
-Subrata
+FATAL: Test suite not installed correctly
+INFO: as root user type 'make ; make install'
 
-> 
-> --- ltp-full-20091031.orig/testcases/network/stress/interface/if4-alias-addlarge	2009-11-18 11:41:02.000000000 +0200
-> +++ ltp-full-20091031/testcases/network/stress/interface/if4-alias-addlarge	2009-12-06 19:31:34.000000000 +0200
-> @@ -72,7 +72,7 @@
->  LINK_NUM=0
-> 
->  # Network portion of the IPv4 address
-> -IPV4_NETWORK=${IPV4_NETWORK:-"10.0.0"}
-> +IPV4_NETWORK=${IPV4_NETWORK:-"10"}
-> 
->  # Netmask of for the tested network
->  IPV4_NETMASK="255.0.0.0"
-> @@ -82,8 +82,8 @@
->  IPV4_BROADCAST=${IPV4_NETWORK}.255.255.255
-> 
->  # Host portion of the IPv4 address
-> -LHOST_IPV4_HOST=${LHOST_IPV4_HOST:-"2"}
-> -RHOST_IPV4_HOST=${RHOST_IPV4_HOST:-"1"}
-> +LHOST_IPV4_HOST=${LHOST_IPV4_HOST:-"0.0.2"}
-> +RHOST_IPV4_HOST=${RHOST_IPV4_HOST:-"0.0.1"}
-> 
-> 
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Join us December 9, 2009 for the Red Hat Virtual Experience,
-> a free event focused on virtualization and cloud computing. 
-> Attend in-depth sessions from your desk. Your couch. Anywhere.
-> http://p.sf.net/sfu/redhat-sfdev2dev
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+I searched in Makefile and found the following code:
 
+$(INSTALL_TARGETS) include-install lib-install:
+	$(MAKE) -C "$(subst -install,,$@)" \
+		-f "$(abs_top_srcdir)/$(subst -install,,$@)/Makefile" all
+
+I think the last word maybe "install".
+
+I modified it to install and ltp ran well. the patch could be 
+found in the attachment.
+
+Thanks,
+Caspar
+------=_Part_70_670116801.1260267494376
+Content-Type: application/octet-stream; name=make-install-err.patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=make-install-err.patch
+
+--- ltp-full-20091130/Makefile.orig	2009-12-08 03:55:12.000000000 -0500
++++ ltp-full-20091130/Makefile	2009-12-08 03:55:22.000000000 -0500
+@@ -144,7 +144,7 @@
+ # the install target.
+ $(INSTALL_TARGETS) include-install lib-install:
+ 	$(MAKE) -C "$(subst -install,,$@)" \
+-		-f "$(abs_top_srcdir)/$(subst -install,,$@)/Makefile" all
++		-f "$(abs_top_srcdir)/$(subst -install,,$@)/Makefile" install 
+ 
+ # Just in case configure hasn't been run yet, let's not overambitiously remove
+ # the $(INSTALL_DIR).
+
+------=_Part_70_670116801.1260267494376
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Join us December 9, 2009 for the Red Hat Virtual Experience,
-a free event focused on virtualization and cloud computing. 
-Attend in-depth sessions from your desk. Your couch. Anywhere.
-http://p.sf.net/sfu/redhat-sfdev2dev
+Return on Information:
+Google Enterprise Search pays you back
+Get the facts.
+http://p.sf.net/sfu/google-dev2dev
+
+------=_Part_70_670116801.1260267494376
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------=_Part_70_670116801.1260267494376--
+
