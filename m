@@ -1,32 +1,42 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NHcAe-0005PO-OV
-	for ltp-list@lists.sourceforge.net; Mon, 07 Dec 2009 11:54:28 +0000
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NILlP-0007Id-A3
+	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2009 12:35:27 +0000
 Received: from e37.co.us.ibm.com ([32.97.110.158])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NHcAX-0007ZO-Kr
-	for ltp-list@lists.sourceforge.net; Mon, 07 Dec 2009 11:54:28 +0000
-Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
-	[9.17.195.228])
-	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id nB7Br0dv000845
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Dec 2009 04:53:00 -0700
-Received: from d03av06.boulder.ibm.com (d03av06.boulder.ibm.com [9.17.195.245])
-	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nB7BsBIF146012
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Dec 2009 04:54:11 -0700
-Received: from d03av06.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av06.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id nB7BtxTP013768
-	for <ltp-list@lists.sourceforge.net>; Mon, 7 Dec 2009 04:55:59 -0700
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NILlI-0002eh-59
+	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2009 12:35:27 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id nB9CCxB8007262
+	for <ltp-list@lists.sourceforge.net>; Wed, 9 Dec 2009 05:12:59 -0700
+Received: from d03av05.boulder.ibm.com (d03av05.boulder.ibm.com [9.17.195.85])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP
+	id nB9CE4HX160782
+	for <ltp-list@lists.sourceforge.net>; Wed, 9 Dec 2009 05:14:05 -0700
+Received: from d03av05.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av05.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id nB9CE39m025021
+	for <ltp-list@lists.sourceforge.net>; Wed, 9 Dec 2009 05:14:04 -0700
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200912041649.nB4GnQbj014719@e35.co.us.ibm.com>
-References: <200912041649.nB4GnQbj014719@e35.co.us.ibm.com>
-Date: Mon, 07 Dec 2009 17:24:01 +0530
-Message-Id: <1260186841.6866.20.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <4B1DEB2F.9060708@cn.fujitsu.com>
+References: <4AE54BCA.7060104@cn.fujitsu.com>
+	<1256563577.4929.35.camel@subratamodak.linux.ibm.com>
+	<C3A9583B-F6C5-4BCC-8D7E-876FA4D62D57@sun.com>
+	<1256650551.4957.33.camel@subratamodak.linux.ibm.com>
+	<1256841114.5210.25.camel@subratamodak.linux.ibm.com>
+	<1257170360.4977.58.camel@subratamodak.linux.ibm.com>
+	<4B0E6E6D.1070700@cn.fujitsu.com>
+	<1259853087.5085.34.camel@subratamodak.linux.ibm.com>
+	<4B18DEAF.7010601@cn.fujitsu.com>
+	<1260186833.6866.17.camel@subratamodak.linux.ibm.com>
+	<4B1DEB2F.9060708@cn.fujitsu.com>
+Date: Wed, 09 Dec 2009 17:43:59 +0530
+Message-Id: <1260360839.6958.35.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] New sigwaitinfo test
+Subject: Re: [LTP] [PATCH] Add new testcases for ext4 new features - V3
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -40,638 +50,585 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
-Cc: ltp-list@lists.sourceforge.net
+To: miaox@cn.fujitsu.com
+Cc: LTP-ML <ltp-list@lists.sourceforge.net>
 
-On Fri, 2009-12-04 at 17:46 +0100, Jiri Palecek wrote: 
-> Hello,
+On Tue, 2009-12-08 at 13:59 +0800, Miao Xie wrote: 
+> Hi, Subrata
 > 
-> this is the test for the rt_sigtimedwait et al. functions I promised earlier. The code is unchanged since I sent it for the first time, but the Makefiles are adapted to the new build system, with the help of Garret Cooper.
-> 
-> Regards
->     Jiri Palecek
-> 
-> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+> on 2009-12-7 19:53, Subrata Modak wrote:
+> >>>>>>>>> /dev/VG1_EXT4/LV1_EXT4: The test_fs flag is set (and ext4 is  
+> >>>>>>>>> available).
+> >>>>>>>>> CLEARED.
+> >>>>>>>> You don't need to set the test_fs flag for modern ext4.
+> >>>>>>> Can we change this ?
+> >>>> The attached patch can fix this problem.
+> >>> I had already checked in your earlier patch long back. So, you would
+> >>> please need to resend over the latest code.
+> >> I'm sorry that I didn't bring the new patch(was sent on 2009-11-30) to your attention,
+> >> so I resend that new patch now. I have tried to apply the patch to the latest code
+> >> in the cvs repository and everything is ok.
+> >>
+> >> Subrata, I didn't find these failure about online defrag on my box.
+> >> The attached patch opens the verbose mode of e4defrag to get more information later, it is
+> >> useful to find the problem of online defrag. So, Could you test it again and send the output
+> >> info to me?
+> >>
+> >> The following is changelog.
+> >> =========================
+> >> This patch can fix the following problem:
+> >> -- delete the code of setting the test_fs flag
+> >> -- open the verbose mode of e4defrag, it is useful to find the problem of online defrag
+> >> -- fix some bug of the Makefile
+> >> -- throw the utilities version info away
+> >> -- delete two unnecessary testcases about ext4 subdir limit test
+> >>
+> >> Signed-off-by: Miao Xie <miaox@cn.fujitsu.com>
 
-Thanks Jiri. Would you also take the trouble to make entries in the
-runtest/syscalls file for these tests to run ?
+Thanks Miao. The changes are checked in now.
 
 Regards--
 Subrata
 
+> > 
+> > I still find some issues:
+> 
+> I'm so sorry for my mistake and resend the patch.
+> 
+> The following is changelog.
+> =========================
+> This patch can fix the following problem:
+> -- delete the code of setting the test_fs flag
+> -- open the verbose mode of e4defrag, it is useful to find the problem of online defrag
+> -- fix some bug of the Makefile
+> -- throw the utilities version info away
+> -- delete two unnecessary testcases about ext4 subdir limit test
+> 
+> Signed-off-by: Miao Xie <miaox@cn.fujitsu.com>
 > ---
->  testcases/kernel/syscalls/rt_sigtimedwait/Makefile |   31 ++
->  testcases/kernel/syscalls/sigtimedwait/Makefile    |   30 ++
->  testcases/kernel/syscalls/sigwait/Makefile         |   30 ++
->  testcases/kernel/syscalls/sigwaitinfo/Makefile     |   25 ++
->  .../kernel/syscalls/sigwaitinfo/sigwaitinfo01.c    |  432 ++++++++++++++++++++
->  5 files changed, 548 insertions(+), 0 deletions(-)
->  create mode 100644 testcases/kernel/syscalls/rt_sigtimedwait/Makefile
->  create mode 100644 testcases/kernel/syscalls/sigtimedwait/Makefile
->  create mode 100644 testcases/kernel/syscalls/sigwait/Makefile
->  create mode 100644 testcases/kernel/syscalls/sigwaitinfo/Makefile
->  create mode 100644 testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
+>  testcases/kernel/fs/ext4-new-features/Makefile     |   20 ++++++++++----
+>  testcases/kernel/fs/ext4-new-features/README       |    7 +----
+>  .../ext4-delalloc-mballoc/ext4-alloc-test.sh       |   15 ++++------
+>  .../ext4-inode-version/ext4_get_inode_version.sh   |    2 +-
+>  .../ext4-inode-version/ext4_inode_version_test.sh  |   10 +++----
+>  .../ext4-journal-checksum/ext4_journal_checksum.sh |   12 ++++----
+>  .../ext4_nsec_timestamps_test.sh                   |    8 ++---
+>  .../ext4-online-defrag/ext4_online_defrag_test.sh  |   28 ++++++++++++-------
+>  .../ext4_persist_prealloc_test.sh                  |    4 +-
+>  .../ext4-subdir-limit/ext4_subdir_limit_test.sh    |   17 +++++++-----
+>  .../ext4-uninit-groups/ext4_uninit_groups_test.sh  |   22 +++++++++------
+>  11 files changed, 78 insertions(+), 67 deletions(-)
 > 
-> diff --git a/testcases/kernel/syscalls/rt_sigtimedwait/Makefile b/testcases/kernel/syscalls/rt_sigtimedwait/Makefile
-> new file mode 100644
-> index 0000000..27a9e9e
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/rt_sigtimedwait/Makefile
-> @@ -0,0 +1,31 @@
-> +#
-> +#  Copyright (c) International Business Machines  Corp., 2009
-> +#
-> +#  This program is free software;  you can redistribute it and/or modify
-> +#  it under the terms of the GNU General Public License as published by
-> +#  the Free Software Foundation; either version 2 of the License, or
-> +#  (at your option) any later version.
-> +#
-> +#  This program is distributed in the hope that it will be useful,
-> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> +#  the GNU General Public License for more details.
-> +#
-> +#  You should have received a copy of the GNU General Public License
-> +#  along with this program;  if not, write to the Free Software
-> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> +#
-> +
-> +top_srcdir ?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk 
-> +
-> +CPPFLAGS += -DTEST_RT_SIGTIMEDWAIT
-> +
-> +rt_sigtimedwait01: $(abs_srcdir)/../sigwaitinfo/sigwaitinfo01.c
-> +	$(LINK.c) $^ $(LOADLIBES) $(LDLIBS) $(OUTPUT_OPTION)
-> +
-> +MAKE_TARGETS := rt_sigtimedwait01
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk 
-> +
-> diff --git a/testcases/kernel/syscalls/sigtimedwait/Makefile b/testcases/kernel/syscalls/sigtimedwait/Makefile
-> new file mode 100644
-> index 0000000..ce1096e
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/sigtimedwait/Makefile
-> @@ -0,0 +1,30 @@
-> +#
-> +#  Copyright (c) International Business Machines  Corp., 2009
-> +#
-> +#  This program is free software;  you can redistribute it and/or modify
-> +#  it under the terms of the GNU General Public License as published by
-> +#  the Free Software Foundation; either version 2 of the License, or
-> +#  (at your option) any later version.
-> +#
-> +#  This program is distributed in the hope that it will be useful,
-> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> +#  the GNU General Public License for more details.
-> +#
-> +#  You should have received a copy of the GNU General Public License
-> +#  along with this program;  if not, write to the Free Software
-> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> +#
-> +
-> +top_srcdir ?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +
-> +CPPFLAGS += -DTEST_SIGTIMEDWAIT
-> +
-> +sigtimedwait01: $(abs_srcdir)/../sigwaitinfo/sigwaitinfo01.c
-> +	$(LINK.c) $^ $(LOADLIBES) $(LDLIBS) $(OUTPUT_OPTION)
-> +
-> +MAKE_TARGETS := sigtimedwait01
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/sigwait/Makefile b/testcases/kernel/syscalls/sigwait/Makefile
-> new file mode 100644
-> index 0000000..8725b0a
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/sigwait/Makefile
-> @@ -0,0 +1,30 @@
-> +#
-> +#  Copyright (c) International Business Machines  Corp., 2009
-> +#
-> +#  This program is free software;  you can redistribute it and/or modify
-> +#  it under the terms of the GNU General Public License as published by
-> +#  the Free Software Foundation; either version 2 of the License, or
-> +#  (at your option) any later version.
-> +#
-> +#  This program is distributed in the hope that it will be useful,
-> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> +#  the GNU General Public License for more details.
-> +#
-> +#  You should have received a copy of the GNU General Public License
-> +#  along with this program;  if not, write to the Free Software
-> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> +#
-> +
-> +top_srcdir ?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +
-> +CPPFLAGS += -DTEST_SIGWAIT
-> +
-> +sigwait01: $(abs_srcdir)/../sigwaitinfo/sigwaitinfo01.c
-> +	$(LINK.c) $^ $(LOADLIBES) $(LDLIBS) $(OUTPUT_OPTION)
-> +
-> +MAKE_TARGETS := sigwait01
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/sigwaitinfo/Makefile b/testcases/kernel/syscalls/sigwaitinfo/Makefile
-> new file mode 100644
-> index 0000000..1246e5e
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/sigwaitinfo/Makefile
-> @@ -0,0 +1,25 @@
-> +#
-> +#  Copyright (c) International Business Machines  Corp., 2009
-> +#
-> +#  This program is free software;  you can redistribute it and/or modify
-> +#  it under the terms of the GNU General Public License as published by
-> +#  the Free Software Foundation; either version 2 of the License, or
-> +#  (at your option) any later version.
-> +#
-> +#  This program is distributed in the hope that it will be useful,
-> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> +#  the GNU General Public License for more details.
-> +#
-> +#  You should have received a copy of the GNU General Public License
-> +#  along with this program;  if not, write to the Free Software
-> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> +#
-> +
-> +top_srcdir ?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +
-> +CPPFLAGS += -DTEST_SIGWAITINFO
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-> new file mode 100644
-> index 0000000..ff9ca8f
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c
-> @@ -0,0 +1,432 @@
-> +/*
-> + * Copyright (c) Jiri Palecek<jpalecek@web.de>, 2009
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of version 2 of the GNU General Public License as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * Further, this software is distributed without any warranty that it is
-> + * free of the rightful claim of any third person regarding infringement
-> + * or the like.  Any license provided herein, whether implied or
-> + * otherwise, applies only to this software file.  Patent licenses, if
-> + * any, provided herein do not apply to combinations of this program with
-> + * other software, or any other product whatsoever.
-> + *
-> + * You should have received a copy of the GNU General Public License along
-> + * with this program; if not, write the Free Software Foundation, Inc., 59
-> + * Temple Place - Suite 330, Boston MA 02111-1307, USA.
-> + */
-> +#include "test.h"
-> +#include "usctest.h"
-> +#include <errno.h>
-> +#include <signal.h>
-> +#include "../utils/include_j_h.h"
-> +#include "../utils/common_j_h.c"
-> +#include <limits.h>
-> +#include "linux_syscall_numbers.h"
-> +
-> +#define SUCCEED_OR_DIE(syscall, message, ...)														\
-> +	(errno = 0,																														\
-> +		({int ret=syscall(__VA_ARGS__);																			\
-> +			if(ret==-1)																												\
-> +				tst_brkm(TBROK|TERRNO, cleanup, message);												\
-> +			ret;}))
-> +
-> +/* Report success iff TEST_RETURN and TEST_ERRNO are equal to
-> +	 exp_return and exp_errno, resp., and cond is true. If cond is not
-> +	 true, report condition_errmsg
-> +*/
-> +static void report_success_cond(const char *func, const char* file, int line,
-> +													 long exp_return, int exp_errno, int condition, char* condition_errmsg)
-> +{
-> +	if (exp_return == TEST_RETURN && (exp_return != -1 || exp_errno == TEST_ERRNO))
-> +		if(condition)
-> +			tst_resm(TPASS, "Test passed");
-> +		else
-> +			tst_resm(TFAIL, "%s (%s: %d): %s", func, file, line, condition_errmsg);
-> +	else if(TEST_RETURN != -1)
-> +		tst_resm(TFAIL, "%s (%s: %d): Unexpected return value; expected %ld, got %ld",
-> +						 func, file, line, exp_return, TEST_RETURN);
-> +	else
-> +		tst_resm(TFAIL|TTERRNO, "%s (%s: %d): Unexpected failure", func, file, line);
-> +}
-> +
-> +#define REPORT_SUCCESS_COND(exp_return, exp_errno, condition, condition_errmsg)	\
-> +	report_success_cond(__FUNCTION__, __FILE__, __LINE__, exp_return, exp_errno, condition, condition_errmsg);
-> +
-> +/* Report success iff TEST_RETURN and TEST_ERRNO are equal to
-> +	 exp_return and exp_errno, resp.
-> +*/
-> +#define REPORT_SUCCESS(exp_return, exp_errno)					\
-> +	REPORT_SUCCESS_COND(exp_return, exp_errno, 1, "");
-> +
-> +static void cleanup(void) LTP_ATTRIBUTE_NORETURN;
-> +
-> +static void empty_handler(int sig)
-> +{
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	tst_sig(FORK, DEF_HANDLER, cleanup);
-> +	signal(SIGUSR1, empty_handler);
-> +	signal(SIGALRM, empty_handler);
-> +	signal(SIGUSR2, SIG_IGN);
-> +
-> +	TEST_PAUSE;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	TEST_CLEANUP;
-> +
-> +	tst_exit();
-> +}
-> +
-> +typedef int (*swi_func)(const sigset_t* set, siginfo_t* info, struct timespec* timeout);
-> +typedef void (*test_func)(swi_func, int);
-> +
-> +static int my_sigwait(const sigset_t* set, siginfo_t* info, struct timespec* timeout)
-> +{
-> +	int ret;
-> +	int err=sigwait(set, &ret);
-> +
-> +	if(err == 0)
-> +		return ret;
-> +	errno = err;
-> +	return -1;
-> +}
-> +
-> +static int my_sigwaitinfo(const sigset_t* set, siginfo_t* info, struct timespec* timeout)
-> +{
-> +	return sigwaitinfo(set, info);
-> +}
-> +
-> +static int my_sigtimedwait(const sigset_t* set, siginfo_t* info, struct timespec* timeout)
-> +{
-> +	return sigtimedwait(set, info, timeout);
-> +}
-> +
-> +static int my_rt_sigtimedwait(const sigset_t* set, siginfo_t* info, struct timespec* timeout)
-> +{
-> +	/* The last argument is (number_of_signals)/(bits_per_byte), which are 64 and 8, resp. */
-> +	return syscall(__NR_rt_sigtimedwait, set, info, timeout, 8);
-> +}
-> +
-> +void test_empty_set(swi_func sigwaitinfo, int signo)
-> +{
-> +	sigset_t sigs;
-> +	siginfo_t si;
-> +	pid_t child;
-> +
-> +	SUCCEED_OR_DIE(sigemptyset, "sigemptyset failed", &sigs);
-> +	/* Run a child that will wake us up */
-> +	child=create_sig_proc(100000, signo, UINT_MAX);
-> +
-> +	TEST(sigwaitinfo(&sigs, &si, NULL));
-> +	REPORT_SUCCESS(-1, EINTR);
-> +
-> +	kill(child, SIGTERM);
-> +}
-> +
-> +void test_timeout(swi_func sigwaitinfo, int signo)
-> +{
-> +	sigset_t sigs;
-> +	siginfo_t si;
-> +	pid_t child;
-> +	struct timespec ts = { .tv_sec = 1 };
-> +
-> +	SUCCEED_OR_DIE(sigemptyset, "sigemptyset failed", &sigs);
-> +
-> +	/* Run a child that will wake us up */
-> +	child=create_sig_proc(100000, signo, UINT_MAX);
-> +
-> +	TEST(sigwaitinfo(&sigs, &si, &ts));
-> +	REPORT_SUCCESS(-1, EAGAIN);
-> +
-> +	kill(child, SIGTERM);
-> +}
-> +
-> +/* Note: sigwait-ing for a signal that is not blocked is unspecified
-> + * by POSIX; but works for non-ignored signals under Linux
-> + */
-> +void test_unmasked_matching(swi_func sigwaitinfo, int signo)
-> +{
-> +	sigset_t sigs;
-> +	siginfo_t si;
-> +	pid_t child;
-> +
-> +	SUCCEED_OR_DIE(sigemptyset, "sigemptyset failed", &sigs);
-> +	SUCCEED_OR_DIE(sigaddset, "sigaddset failed", &sigs, signo);
-> +
-> +	/* Run a child that will wake us up */
-> +	child=create_sig_proc(100000, signo, UINT_MAX);
-> +
-> +	TEST(sigwaitinfo(&sigs, &si, NULL));
-> +	REPORT_SUCCESS_COND(signo, 0, si.si_pid==child && si.si_code==SI_USER && si.si_signo==signo, "Struct siginfo mismatch");
-> +
-> +	kill(child, SIGTERM);
-> +}
-> +
-> +void test_unmasked_matching_noinfo(swi_func sigwaitinfo, int signo)
-> +{
-> +	sigset_t sigs;
-> +	pid_t child;
-> +
-> +	SUCCEED_OR_DIE(sigemptyset, "sigemptyset failed", &sigs);
-> +	SUCCEED_OR_DIE(sigaddset, "sigaddset failed", &sigs, signo);
-> +	/* Run a child that will wake us up */
-> +	child=create_sig_proc(100000, signo, UINT_MAX);
-> +
-> +	TEST(sigwaitinfo(&sigs, NULL, NULL));
-> +	REPORT_SUCCESS(signo, 0);
-> +
-> +	kill(child, SIGTERM);
-> +}
-> +
-> +void test_masked_matching(swi_func sigwaitinfo, int signo)
-> +{
-> +	sigset_t sigs, oldmask;
-> +	siginfo_t si;
-> +	pid_t child;
-> +
-> +	SUCCEED_OR_DIE(sigemptyset, "sigemptyset failed", &sigs);
-> +	SUCCEED_OR_DIE(sigaddset, "sigaddset failed", &sigs, signo);
-> +	/* let's not get interrupted by our dying child */
-> +	SUCCEED_OR_DIE(sigaddset, "sigaddset failed", &sigs, SIGCHLD);
-> +
-> +	SUCCEED_OR_DIE(sigprocmask, "sigprocmask failed", SIG_SETMASK, &sigs, &oldmask);
-> +
-> +	/* don't wait on a SIGCHLD */
-> +	SUCCEED_OR_DIE(sigdelset, "sigaddset failed", &sigs, SIGCHLD);
-> +
-> +	/* Run a child that will wake us up */
-> +	child=create_sig_proc(0, signo, 1);
-> +
-> +	TEST(sigwaitinfo(&sigs, &si, NULL));
-> +	REPORT_SUCCESS_COND(signo, 0, si.si_pid==child && si.si_code==SI_USER && si.si_signo==signo, "Struct siginfo mismatch");
-> +
-> +	SUCCEED_OR_DIE(sigprocmask, "restoring original signal mask failed", SIG_SETMASK, &oldmask, &oldmask);
-> +
-> +	Tst_count--;
-> +
-> +	if(sigismember(&oldmask, signo))
-> +		tst_resm(TPASS, "sigwaitinfo restored the original mask");
-> +	else
-> +		tst_resm(TFAIL, "sigwaitinfo failed to restore the original mask");
-> +}
-> +
-> +void test_masked_matching_rt(swi_func sigwaitinfo, int signo)
-> +{
-> +	sigset_t sigs, oldmask;
-> +	siginfo_t si;
-> +	pid_t child[2];
-> +
-> +	signo = SIGRTMIN+1;
-> +
-> +	SUCCEED_OR_DIE(sigemptyset, "sigemptyset failed", &sigs);
-> +	SUCCEED_OR_DIE(sigaddset, "sigaddset failed", &sigs, signo);
-> +	SUCCEED_OR_DIE(sigaddset, "sigaddset failed", &sigs, signo+1);
-> +	/* let's not get interrupted by our dying child */
-> +	SUCCEED_OR_DIE(sigaddset, "sigaddset failed", &sigs, SIGCHLD);
-> +
-> +	SUCCEED_OR_DIE(sigprocmask, "sigprocmask failed", SIG_SETMASK, &sigs, &oldmask);
-> +
-> +	/* don't wait on a SIGCHLD */
-> +	SUCCEED_OR_DIE(sigdelset, "sigdelset failed", &sigs, SIGCHLD);
-> +
-> +	/* Run a child that will wake us up */
-> +	child[0]=create_sig_proc(0, signo, 1);
-> +	child[1]=create_sig_proc(0, signo+1, 1);
-> +
-> +	TEST(sigwaitinfo(&sigs, &si, NULL));
-> +	REPORT_SUCCESS_COND(signo, 0, si.si_pid==child[0] && si.si_code==SI_USER && si.si_signo==signo, "Struct siginfo mismatch");
-> +
-> +	/* eat the other signal */
-> +	Tst_count--;
-> +	TEST(sigwaitinfo(&sigs, &si, NULL));
-> +	REPORT_SUCCESS_COND(signo+1, 0, si.si_pid==child[1] && si.si_code==SI_USER && si.si_signo==signo+1, "Struct siginfo mismatch");
-> +
-> +	SUCCEED_OR_DIE(sigprocmask, "restoring original signal mask failed", SIG_SETMASK, &oldmask, &oldmask);
-> +
-> +	Tst_count--;
-> +
-> +	if(sigismember(&oldmask, signo))
-> +		tst_resm(TPASS, "sigwaitinfo restored the original mask");
-> +	else
-> +		tst_resm(TFAIL, "sigwaitinfo failed to restore the original mask");
-> +}
-> +
-> +void test_masked_matching_noinfo(swi_func sigwaitinfo, int signo)
-> +{
-> +	sigset_t sigs, oldmask;
-> +	pid_t child;
-> +
-> +	SUCCEED_OR_DIE(sigemptyset, "sigemptyset failed", &sigs);
-> +	SUCCEED_OR_DIE(sigaddset, "sigaddset failed", &sigs, signo);
-> +	/* let's not get interrupted by our dying child */
-> +	SUCCEED_OR_DIE(sigaddset, "sigaddset failed", &sigs, SIGCHLD);
-> +
-> +	SUCCEED_OR_DIE(sigprocmask, "sigprocmask failed", SIG_SETMASK, &sigs, &oldmask);
-> +
-> +	/* don't wait on a SIGCHLD */
-> +	SUCCEED_OR_DIE(sigdelset, "sigaddset failed", &sigs, SIGCHLD);
-> +
-> +	/* Run a child that will wake us up */
-> +	child=create_sig_proc(0, signo, 1);
-> +
-> +	TEST(sigwaitinfo(&sigs, NULL, NULL));
-> +	REPORT_SUCCESS(signo, 0);
-> +
-> +	SUCCEED_OR_DIE(sigprocmask, "restoring original signal mask failed", SIG_SETMASK, &oldmask, &oldmask);
-> +
-> +	Tst_count--;
-> +
-> +	if(sigismember(&oldmask, signo))
-> +		tst_resm(TPASS, "sigwaitinfo restored the original mask");
-> +	else
-> +		tst_resm(TFAIL, "sigwaitinfo failed to restore the original mask");
-> +
-> +}
-> +
-> +void test_bad_address(swi_func sigwaitinfo, int signo)
-> +{
-> +	sigset_t sigs, oldmask;
-> +	pid_t child;
-> +
-> +	SUCCEED_OR_DIE(sigemptyset, "sigemptyset failed", &sigs);
-> +	SUCCEED_OR_DIE(sigaddset, "sigaddset failed", &sigs, signo);
-> +	/* let's not get interrupted by our dying child */
-> +	SUCCEED_OR_DIE(sigaddset, "sigaddset failed", &sigs, SIGCHLD);
-> +
-> +	SUCCEED_OR_DIE(sigprocmask, "sigprocmask failed", SIG_SETMASK, &sigs, &oldmask);
-> +
-> +	/* don't wait on a SIGCHLD */
-> +	SUCCEED_OR_DIE(sigdelset, "sigaddset failed", &sigs, SIGCHLD);
-> +
-> +	/* Run a child that will wake us up */
-> +	child=create_sig_proc(0, signo, 1);
-> +
-> +	TEST(sigwaitinfo(&sigs, (void*)1, NULL));
-> +	REPORT_SUCCESS(-1, EFAULT);
-> +
-> +	SUCCEED_OR_DIE(sigprocmask, "sigprocmask failed", SIG_SETMASK, &oldmask, &oldmask);
-> +
-> +	kill(child, SIGTERM);
-> +}
-> +
-> +void test_bad_address2(swi_func sigwaitinfo, int signo)
-> +{
-> +	TEST(sigwaitinfo((void*)1, NULL, NULL));
-> +	REPORT_SUCCESS(-1, EFAULT);
-> +}
-> +
-> +void test_bad_address3(swi_func sigwaitinfo, int signo)
-> +{
-> +	sigset_t sigs;
-> +	SUCCEED_OR_DIE(sigemptyset, "sigemptyset failed", &sigs);
-> +
-> +	TEST(sigwaitinfo(&sigs, NULL, (void*)1));
-> +	REPORT_SUCCESS(-1, EFAULT);
-> +}
-> +
-> +struct test_desc {
-> +	test_func tf;
-> +	swi_func swi;
-> +	int signo;
-> +} tests[]={
-> +#if defined TEST_RT_SIGTIMEDWAIT
-> +	test_empty_set, my_rt_sigtimedwait, SIGUSR1,
-> +	test_unmasked_matching, my_rt_sigtimedwait, SIGUSR1,
-> +	test_masked_matching, my_rt_sigtimedwait, SIGUSR1,
-> +	test_unmasked_matching_noinfo, my_rt_sigtimedwait, SIGUSR1,
-> +	test_masked_matching_noinfo, my_rt_sigtimedwait, SIGUSR1,
-> +	test_bad_address, my_rt_sigtimedwait, SIGUSR1,
-> +	test_bad_address2, my_rt_sigtimedwait, SIGUSR1,
-> +	test_bad_address3, my_rt_sigtimedwait, SIGUSR1,
-> +	test_timeout, my_rt_sigtimedwait, 0,
-> +
-> +	/* Special cases */
-> +	/* 1: sigwaitinfo does respond to ignored signal */
-> +	test_masked_matching, my_rt_sigtimedwait, SIGUSR2,
-> +
-> +	/* 2: An ignored signal doesn't cause sigwaitinfo to return EINTR */
-> +	test_timeout, my_rt_sigtimedwait, SIGUSR2,
-> +
-> +	/* 3: The handler is not called when the signal is waited for by sigwaitinfo */
-> +	test_masked_matching, my_rt_sigtimedwait, SIGTERM,
-> +
-> +	/* 4: Simultaneous realtime signals are delivered in the order of increasing signal number */
-> +	test_masked_matching_rt, my_rt_sigtimedwait, -1,
-> +#endif
-> +#if defined TEST_SIGWAIT
-> +	test_unmasked_matching_noinfo, my_sigwait, SIGUSR1,
-> +	test_masked_matching_noinfo, my_sigwait, SIGUSR1,
-> +#endif
-> +#if defined TEST_SIGWAITINFO
-> +	test_empty_set, my_sigwaitinfo, SIGUSR1,
-> +	test_unmasked_matching, my_sigwaitinfo, SIGUSR1,
-> +	test_masked_matching, my_sigwaitinfo, SIGUSR1,
-> +	test_unmasked_matching_noinfo, my_sigwaitinfo, SIGUSR1,
-> +	test_masked_matching_noinfo, my_sigwaitinfo, SIGUSR1,
-> +	test_bad_address, my_sigwaitinfo, SIGUSR1,
-> +	test_bad_address2, my_sigwaitinfo, SIGUSR1,
-> +#endif
-> +#if defined TEST_SIGTIMEDWAIT
-> +	test_empty_set, my_sigtimedwait, SIGUSR1,
-> +	test_unmasked_matching, my_sigtimedwait, SIGUSR1,
-> +	test_masked_matching, my_sigtimedwait, SIGUSR1,
-> +	test_unmasked_matching_noinfo, my_sigtimedwait, SIGUSR1,
-> +	test_masked_matching_noinfo, my_sigtimedwait, SIGUSR1,
-> +	test_bad_address, my_sigtimedwait, SIGUSR1,
-> +	test_bad_address2, my_sigtimedwait, SIGUSR1,
-> +	test_bad_address3, my_sigtimedwait, SIGUSR1,
-> +	test_timeout, my_sigtimedwait, 0,
-> +#endif
-> +};
-> +
-> +#if defined TEST_SIGWAITINFO
-> +const char* TCID="sigwaitinfo01";
-> +#elif defined TEST_RT_SIGTIMEDWAIT
-> +const char* TCID="rt_sigtimedwait01";
-> +#elif defined TEST_SIGTIMEDWAIT
-> +const char* TCID="sigtimedwait01";
-> +#elif defined TEST_SIGWAIT
-> +const char* TCID="sigwait01";
-> +#endif
-> +
-> +extern int Tst_count;
-> +
-> +int TST_TOTAL = sizeof(tests)/sizeof(*tests);
-> +
-> +int main(int argc, char** argv)
-> +{
-> +	unsigned i;
-> +	int lc;
-> +	char* msg;
-> +
-> +	/* parse standard options */
-> +	if ((msg = parse_opts(argc, argv, (option_t *) NULL, NULL)) !=
-> +			(char *)NULL) {
-> +		tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
-> +		/*NOT REACHED */
-> +	}
-> +
-> +	setup();
-> +
-> +	for(lc = 0; TEST_LOOPING(lc); ++lc) {
-> +		Tst_count = 0;
-> +
-> +		for(i=0; i<sizeof(tests)/sizeof(*tests); i++) {
-> +			alarm(10); /* arrange a 10 second timeout */
-> +			tests[i].tf(tests[i].swi, tests[i].signo);
-> +		}
-> +		alarm(0);
-> +	}
-> +
-> +	cleanup();
-> +}
-> -- 
-> 1.6.4.3
+> diff --git a/testcases/kernel/fs/ext4-new-features/Makefile b/testcases/kernel/fs/ext4-new-features/Makefile
+> index 0e09dd6..208b8a6 100644
+> --- a/testcases/kernel/fs/ext4-new-features/Makefile
+> +++ b/testcases/kernel/fs/ext4-new-features/Makefile
+> @@ -22,17 +22,25 @@ top_srcdir              ?= ../../../..
 > 
+>  include $(top_srcdir)/include/mk/env_pre.mk
 > 
+> -INSTALL_TARGETS		:= *.sh
+> -INSTALL_TARGETS		:= ext4-test-config
+> -INSTALL_TARGETS		:= ffsb-6.0-rc2/ffsb
+> +INSTALL_TARGETS		+= ffsb
+> +INSTALL_TARGETS		+= run_ext4_test.sh
+> +INSTALL_TARGETS		+= ext4_funcs.sh
+> +INSTALL_TARGETS		+= ext4-test-config
 > 
+> -FILTER_OUT_DIRS		:= ffsb-6.0-rc2
+> +FFSBDIR			:= ffsb-6.0-rc2
+> +FILTER_OUT_DIRS		:= $(FFSBDIR)
+> +FFSB			:= $(FFSBDIR)/ffsb
 > 
-> ------------------------------------------------------------------------------
-> Join us December 9, 2009 for the Red Hat Virtual Experience,
-> a free event focused on virtualization and cloud computing. 
-> Attend in-depth sessions from your desk. Your couch. Anywhere.
-> http://p.sf.net/sfu/redhat-sfdev2dev
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> -trunk-all: ffsb-6.0-rc2
+> +$(FFSB): $(FFSBDIR)
+> +	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
+> +	cp $(FFSBDIR)/ffsb ffsb
+> +
+> +trunk-all: $(FFSB)
+> 
+>  trunk-clean:: | ffsb-clean
+> 
+> -ffsb-clean:: ffsb-6.0-rc2
+> +ffsb-clean:: $(FFSBDIR)
+>  	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
+> +	rm -rf ffsb
+> 
+>  include $(top_srcdir)/include/mk/generic_trunk_target.mk
+> diff --git a/testcases/kernel/fs/ext4-new-features/README b/testcases/kernel/fs/ext4-new-features/README
+> index 0ea0460..bda16e5 100644
+> --- a/testcases/kernel/fs/ext4-new-features/README
+> +++ b/testcases/kernel/fs/ext4-new-features/README
+> @@ -9,7 +9,7 @@ with increasing disk capacities and state-of-the-art feature requirements. More
+>  extensive information of ext4 can be found at the ext4 wiki site at the URL:
+>  http://ext4.wiki.kernel.org
+> 
+> -There are total 119 testcases for ext4 new features test that have been added.
+> +There are total 117 testcases for ext4 new features test that have been added.
+>  Now, these testcases can test multi-block alloc/delayed alloc, inode version
+>  field on disk, journal checksumming, nanosec timestamps, online defrag, persist
+>  prealloc, subdirectory limit and uninit groups of ext4.
+> @@ -111,11 +111,6 @@ Directory containing the shell script which is used to test subdirectory limit
+>  of ext4. According to the kernel documentation, we create more than 32000
+>  subdirectorys on the ext4 filesystem.
+> 
+> -But, when then block size is small, such as 1024, and the name of every
+> -subdirectory is very long, such as every name is 255 bytes, we can just create
+> -less than 20000 subdirectory. In this test suite, there is two FAIL cases by
+> -reason of it.
+> -
+>  ext4-uninit-groups
+>  ------------------
+>  Directory containing the shell script which is used to test uninitialized groups
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh b/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
+> index ec2f389..be7b074 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
+> @@ -37,14 +37,12 @@ read_config $1
+>  # Case 17: mount ext4 partition to ext3
+>  ext4_test_remount()
+>  {
+> -	mkfs.ext3 -I 256 -b 1024 $EXT4_DEV > /dev/null
+> +	mkfs.ext3 -I 256 -b 1024 $EXT4_DEV &> /dev/null
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "failed to create ext4 filesystem"
+>  		return 1
+>  	fi
+> 
+> -	tune2fs -E test_fs $EXT4_DEV
+> -
+>  	mount -t ext4 -o delalloc,auto_da_alloc $EXT4_DEV mnt_point
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "failed to mount ext4 filesystem"
+> @@ -71,7 +69,7 @@ ext4_test_remount()
+>  	fi
+>  	umount mnt_point
+> 
+> -	fsck -p $EXT4_DEV
+> +	fsck -p $EXT4_DEV &> /dev/null
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "fsck returned failure"
+>  		return 1
+> @@ -87,16 +85,15 @@ ext4_test_remount()
+>  # $4: auto_da_alloc
+>  ext4_test_delalloc_mballoc()
+>  {
+> -	tst_resm TINFO "isDelalloc: $1, isDirectIO: $2, Blocksize: $3, \
+> -		isAuto_da_alloc: $4"
+> +	tst_resm TINFO "isDelalloc: $1, isDirectIO: $2, Blocksize: $3, isAuto_da_alloc: $4"
+> 
+> -	mkfs.ext4 -I 256 -b $3 /$EXT4_DEV > /dev/null
+> +	mkfs.ext4 -I 256 -b $3 /$EXT4_DEV &> /dev/null
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "failed to create ext4 filesystem"
+>  		return 1
+>  	fi
+> 
+> -	tune2fs -E test_fs -O extents $EXT4_DEV
+> +	tune2fs -O extents $EXT4_DEV &> /dev/null
+> 
+>  	mount -t ext4 -o $1,$4 $EXT4_DEV mnt_point
+>  	if [ $? -ne 0 ]; then
+> @@ -117,7 +114,7 @@ ext4_test_delalloc_mballoc()
+>  		return 1
+>  	fi
+> 
+> -	fsck -p $EXT4_DEV
+> +	fsck -p $EXT4_DEV &> /dev/null
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "fsck returned failure"
+>  		return 1
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh
+> index 8f5c907..0e7a8b6 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh
+> @@ -24,7 +24,7 @@
+>  #$2: 1  - return inode version by return value
+>  #    !1 - writting inode version to stddev
+> 
+> -inode_version=`debugfs -R "stat $1" $EXT4_DEV | grep 'Version' | awk '{
+> +inode_version=`debugfs -R "stat $1" $EXT4_DEV 2> /dev/null | grep 'Version' | awk '{
+>  print $NF }'`
+> 
+>  # The inode_version's format: '0x0000000a' or '0x00000000:0000000a',
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
+> index f27248b..4a58b36 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
+> @@ -41,13 +41,13 @@ ext4_test_128_inode_version()
+>  {
+>  	tst_resm TINFO "Test inode version is 32 bits with 128 inode size"
+> 
+> -	mkfs.ext4 -I 128 $EXT4_DEV > /dev/null
+> +	mkfs.ext4 -I 128 $EXT4_DEV &> /dev/null
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "failed to create ext4 filesystem"
+>  		return 1
+>  	fi
+> 
+> -	tune2fs -E test_fs -O extents $EXT4_DEV
+> +	tune2fs -O extents $EXT4_DEV &> /dev/null
+> 
+>  	mount -t ext4 -o i_version $EXT4_DEV mnt_point
+>  	if [ $? -ne 0 ]; then
+> @@ -67,7 +67,7 @@ ext4_test_128_inode_version()
+>  	fi
+> 
+>  	# inode version is 32 bits: 0x00000000
+> -	version=`debugfs $EXT4_DEV -R "stat tmp_file" | grep 'Version'`
+> +	version=`debugfs $EXT4_DEV -R "stat tmp_file" 2> /dev/null | grep 'Version'`
+>  	version=`echo $version | awk '{ print $NF }'`
+>  	version=`echo $version | sed 's/^0x//'`
+>  	len=${#version}
+> @@ -91,14 +91,12 @@ ext4_test_128_inode_version()
+>  # $1: file operation
+>  test_inode_version()
+>  {
+> -	mkfs.ext3 -I 256 $EXT4_DEV > /dev/null
+> +	mkfs.ext3 -I 256 $EXT4_DEV &> /dev/null
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "failed to create ext4 filesystem"
+>  		return 1
+>  	fi
+> 
+> -	tune2fs -E test_fs $EXT4_DEV > /dev/null
+> -
+>  	mount -t ext4 -o i_version $EXT4_DEV mnt_point
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "failed to mount ext4 filesystem"
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
+> index 550afa1..eb72b5d 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
+> @@ -59,17 +59,17 @@ ext4_test_journal_checksum()
+>  		async_commit="Used"
+>  	fi
+> 
+> -	tst_resm TINFO "journal mode: $1, commit interval: $2, \
+> -		journal_checksum: $checksum, \
+> -		journal_async_commit: $async_commit, barrier: $5"
+> +	tst_resm TINFO "journal mode: $1, commit interval: $2, " \
+> +		"journal_checksum: $checksum, " \
+> +		"journal_async_commit: $async_commit, barrier: $5"
+> 
+> -	mkfs.ext4 -I 256 $EXT4_DEV > /dev/null
+> +	mkfs.ext4 -I 256 $EXT4_DEV &> /dev/null
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "failed to create ext4 filesystem"
+>  		return 1
+>  	fi
+> 
+> -	tune2fs -E test_fs -O extents $EXT4_DEV
+> +	tune2fs -O extents $EXT4_DEV &> /dev/null
+> 
+>  	mount -t ext4 -o data=$1,commit=$2,$3,$4,barrier=$5 $EXT4_DEV mnt_point
+>  	if [ $? -ne 0 ]; then
+> @@ -90,7 +90,7 @@ ext4_test_journal_checksum()
+>  		return 1
+>  	fi
+> 
+> -	e2fsck -p $EXT4_DEV
+> +	e2fsck -p $EXT4_DEV &> /dev/null
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "fsck returned failure"
+>  		return 1
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
+> index ced6576..cc00507 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
+> @@ -41,13 +41,13 @@ ext4_test_sec_timestamps()
+>  {
+>  	tst_resm TINFO "Test timestamps with 128 inode size"
+> 
+> -	mkfs.ext4 -I 128 $EXT4_DEV > /dev/null
+> +	mkfs.ext4 -I 128 $EXT4_DEV &> /dev/null
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "failed to create ext4 filesystem"
+>  		return 1
+>  	fi
+> 
+> -	tune2fs -E test_fs -O extents $EXT4_DEV
+> +	tune2fs -O extents $EXT4_DEV &> /dev/null
+> 
+>  	mount -t ext4 $EXT4_DEV mnt_point
+>  	if [ $? -ne 0 ]; then
+> @@ -82,14 +82,12 @@ ext4_test_nsec_timestamps()
+>  {
+>  	tst_resm TINFO "Test timestamps with 256 inode size"
+> 
+> -	mkfs.ext3 -I 256 $EXT4_DEV > /dev/null
+> +	mkfs.ext3 -I 256 $EXT4_DEV &> /dev/null
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "failed to create ext4 filesystem"
+>  		return 1
+>  	fi
+> 
+> -	tune2fs -E test_fs $EXT4_DEV
+> -
+>  	mount -t ext4 $EXT4_DEV mnt_point
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "failed to mount ext4 filesystem"
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
+> index 84613c8..7b4dda3 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
+> @@ -94,23 +94,23 @@ my_e4defrag()
+>  {
+>  	if [ $1 -eq $FILE ]; then
+>  		if [ $2 -eq $SMALL ]; then
+> -			./e4defrag mnt_point/data0/
+> +			./e4defrag -v mnt_point/data0/
+>  			return $?
+>  		# EMPTY or LARGE
+>  		else
+> -			./e4defrag mnt_point/tmp_file
+> +			./e4defrag -v mnt_point/tmp_file
+>  			return $?
+>  		fi
+>  	elif [ $1 -eq $DIR ]; then
+>  		if [ $2 -eq $SMALL ]; then
+> -			./e4defrag mnt_point/data0/
+> +			./e4defrag -v mnt_point/data0/
+>  			return $?
+>  		else
+> -			./e4defrag mnt_point/tmp_dir
+> +			./e4defrag -v mnt_point/tmp_dir
+>  			return $?
+>  		fi
+>  	else
+> -		./e4defrag $EXT4_DEV
+> +		./e4defrag -v $EXT4_DEV
+>  		return $?
+>  	fi
+>  }
+> @@ -121,15 +121,20 @@ my_e4defrag()
+>  # $3: block size
+>  ext4_test_online_defrag()
+>  {
+> +	echo Test $TST_COUNT start >> \
+> +		 $LTPROOT/output/ext4_online_defrag_result.txt
+> +
+>  	tst_resm TINFO "defrag type: $1, defrag obj: $2, block size: $3"
+> 
+> -	mkfs.ext4 -m 0 -b $3 -O ^flex_bg $EXT4_DEV > /dev/null
+> +	mkfs.ext4 -m 0 -b $3 -O ^flex_bg $EXT4_DEV >> \
+> +		$LTPROOT/output/ext4_online_defrag_result.txt 2>&1
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "failed to create ext4 filesystem"
+>  		return 1
+>  	fi
+> 
+> -	tune2fs -E test_fs -O extents $EXT4_DEV
+> +	tune2fs -O extents $EXT4_DEV >> \
+> +		 $LTPROOT/output/ext4_online_defrag_result.txt 2>&1
+> 
+>  	mount -t ext4 -o nodelalloc $EXT4_DEV mnt_point
+>  	if [ $? -ne 0 ]; then
+> @@ -137,7 +142,7 @@ ext4_test_online_defrag()
+>  		return 1
+>  	fi
+> 
+> -	age_filesystem $2 $1
+> +	age_filesystem $2 $1 >> $LTPROOT/output/ext4_online_defrag_result.txt 2>&1
+> 
+>  	my_e4defrag $1 $2 >> $LTPROOT/output/ext4_online_defrag_result.txt
+>  	if [ $? -ne 0 ]; then
+> @@ -152,18 +157,21 @@ ext4_test_online_defrag()
+>  		return 1
+>  	fi
+> 
+> -	e2fsck -p $EXT4_DEV
+> +	e2fsck -p $EXT4_DEV >> \
+> +		 $LTPROOT/output/ext4_online_defrag_result.txt 2>&1
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "fsck returned failure"
+>  		return 1
+>  	fi
+> 
+> -	tst_resm TPASS "ext4 online defrag test pass(defrag type: $1, Aging: $2, block size: $3)"
+> +	tst_resm TPASS "ext4 online defrag test pass"
+>  }
+> 
+>  # main
+>  ext4_setup
+> 
+> +rm -f $LTPROOT/output/ext4_online_defrag_result.txt
+> +
+>  DEFRAG=( $FILE $DIR $FILESYSTEM )
+>  AGING=( $EMPTY $SMALL $LARGE )
+>  BLOCK_SIZE=( 1024 4096 )
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
+> index 0d293e8..e895d25 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
+> @@ -43,7 +43,7 @@ export TDIRECTORY=$PWD/mnt_point/
+>  # $1: 1024 or 4096
+>  ext4_test_persist_prealloc()
+>  {
+> -	mkfs.ext4 -I 256 -b $1 $EXT4_DEV > /dev/null
+> +	mkfs.ext4 -I 256 -b $1 $EXT4_DEV &> /dev/null
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "failed to create ext4 filesystem"
+>  		return 1
+> @@ -81,7 +81,7 @@ ext4_test_persist_prealloc()
+>  		return 1
+>  	fi
+> 
+> -	e2fsck -p $EXT4_DEV
+> +	e2fsck -p $EXT4_DEV &> /dev/null
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "fsck returned failure"
+>  		return 1
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
+> index 42c4336..5631fe5 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
+> @@ -28,7 +28,7 @@ cd $LTPROOT/testcases/bin
+>  . ./ext4_funcs.sh
+> 
+>  export TCID="ext4-subdir-limit"
+> -export TST_TOTAL=12
+> +export TST_TOTAL=10
+>  export TST_COUNT=1
+> 
+>  # $1: the test config
+> @@ -59,20 +59,20 @@ ext4_run_case()
+>  		dir_name_len="long name"
+>  	fi
+> 
+> -	tst_resm TINFO "Num of dirs to create: $1, Dir name len: $dir_name_len \
+> -			Parent dir: $3, Block size: $4"
+> +	tst_resm TINFO "Num of dirs to create: $1, Dir name len: $dir_name_len, " \
+> +			"Parent dir: $3, Block size: $4"
+> 
+>  	# only mkfs if block size has been changed,
+>  	# or previous case failed
+>  	if [ $prev_result -ne $PASS -o $4 -ne $prev_block_size ]; then
+> -		mkfs.ext4 -b $4 -I 256 $EXT4_DEV > /dev/null
+> +		mkfs.ext4 -b $4 -I 256 $EXT4_DEV &> /dev/null
+>  		if [ $? -ne 0 ]; then
+>  			tst_resm TFAIL "failed to create ext4 filesystem"
+>  			return 1
+>  		fi
+>  		prev_block_size=$4
+> 
+> -		tune2fs -E test_fs -O extents $EXT4_DEV
+> +		tune2fs -O extents $EXT4_DEV &> /dev/null
+>  	fi
+> 
+>  	prev_result=$FAIL
+> @@ -120,14 +120,14 @@ ext4_run_case()
+>  	fi
+> 
+>  	# run fsck to make sure the filesystem has no errors
+> -	e2fsck -p $EXT4_DEV
+> +	e2fsck -p $EXT4_DEV &> /dev/null
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "fsck: the filesystem has errors"
+>  		return 1
+>  	fi
+> 
+>  	# check dir_nlink is set
+> -	dumpe2fs $EXT4_DEV | grep '^Filesystem features' | grep -q dir_nlink
+> +	dumpe2fs $EXT4_DEV 2> /dev/null | grep '^Filesystem features' | grep -q dir_nlink
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "feature dir_nlink is not set"
+>  		return 1
+> @@ -152,6 +152,9 @@ for ((i = 0; i < 3; i++))
+>  	{
+>  		for ((k = 0; k < 2; k++))
+>  		{
+> +			if [ $i -eq $LONG_DIR -a $k -eq 1024 ]; then
+> +				continue
+> +			fi
+>  			ext4_run_case 65537 ${DIR_LEN[$k]} ${PARENT_DIR[$j]} \
+>  					${BLOCK_SIZE[$i]}
+>  			if [ $? -ne 0 ]; then
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
+> index 27cbb5f..b479c8f 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
+> @@ -40,8 +40,8 @@ LARGE=3
+>  # filesystem free size in bytes: blocks_size * free_blocks
+>  filesystem_free_size()
+>  {
+> -	bsize=`dumpe2fs -h $EXT4_DEV | grep 'Block size' | awk '{ print $2 }'`
+> -	blocks=`dumpe2fs -h $EXT4_DEV | grep 'Free blocks'| awk '{ print $2 }'`
+> +	bsize=`dumpe2fs -h $EXT4_DEV 2> /dev/null | grep 'Block size' | awk '{ print $2 }'`
+> +	blocks=`dumpe2fs -h $EXT4_DEV 2> /dev/null | grep 'Free blocks'| awk '{ print $2 }'`
+> 
+>  	echo $bsize * $blocks
+>  }
+> @@ -61,9 +61,9 @@ age_filesystem()
+>  		}
+>  	elif [ $1 -eq $LARGE ]; then
+>  		rm -rf mnt_point/*
+> -		bsize=`dumpe2fs -h $EXT4_DEV | grep 'Block size'`
+> +		bsize=`dumpe2fs -h $EXT4_DEV 2> /dev/null | grep 'Block size'`
+>  		bsize=`echo $bsize | awk '{ print $3 }'`
+> -		bcount=`dumpe2fs -h $EXT4_DEV | grep 'Free blocks'`
+> +		bcount=`dumpe2fs -h $EXT4_DEV 2> /dev/null | grep 'Free blocks'`
+>  		bcount=`echo $bcount | awk '{ print $3 }'`
+>  		dd if=/dev/zero of=mnt_point/tmp_dir bs=$bsize count=$bcount
+>  	else
+> @@ -80,7 +80,9 @@ age_filesystem()
+>  # $4: age filesystem: $EMPTY, $SMALL, $LARGE
+>  ext4_test_uninit_groups()
+>  {
+> -	mkfs.ext4 -I 256 -m 0 $EXT4_DEV > /dev/null
+> +	echo "Test $TST_COUNT" >> $LTPROOT/output/ext4_uninit_groups_result.txt
+> +
+> +	mkfs.ext4 -I 256 -m 0 $EXT4_DEV &> /dev/null
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "failed to create ext4 filesystem"
+>  		return 1
+> @@ -92,10 +94,10 @@ ext4_test_uninit_groups()
+>  		flag=$3
+>  	fi
+> 
+> -	tune2fs -E test_fs -O extents,uninit_groups,$flag $EXT4_DEV
+> +	tune2fs -O extents,uninit_groups,$flag $EXT4_DEV &> /dev/null
+> 
+>  	# Must run fsck after setting uninit_groups
+> -	fsck -p $EXT4_DEV > /dev/null
+> +	fsck -p $EXT4_DEV &> /dev/null
+> 
+>  	mount -t ext4 -o $1,$2 $EXT4_DEV mnt_point
+>  	if [ $? -ne 0 ]; then
+> @@ -103,7 +105,7 @@ ext4_test_uninit_groups()
+>  		return 1
+>  	fi
+> 
+> -	age_filesystem $4
+> +	age_filesystem $4 >> $LTPROOT/output/ext4_uninit_groups_result.txt 2>&1
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "age filesystem failed"
+>  		umount mnt_point
+> @@ -116,7 +118,7 @@ ext4_test_uninit_groups()
+>  		return 1
+>  	fi
+> 
+> -	fsck -p $EXT4_DEV
+> +	fsck -p $EXT4_DEV &> /dev/null
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "fsck returned failure"
+>  		return 1
+> @@ -135,6 +137,8 @@ AGING=( $EMPTY $SMALL $LARGE )
+> 
+>  RET=0
+> 
+> +rm -f $LTPROOT/output/ext4_uninit_groups_result.txt
+> +
+>  for ((i = 0; i < 2; i++))
+>  {
+>  	for ((j = 0; j < 2; j++))
 
 
 ------------------------------------------------------------------------------
-Join us December 9, 2009 for the Red Hat Virtual Experience,
-a free event focused on virtualization and cloud computing. 
-Attend in-depth sessions from your desk. Your couch. Anywhere.
-http://p.sf.net/sfu/redhat-sfdev2dev
+Return on Information:
+Google Enterprise Search pays you back
+Get the facts.
+http://p.sf.net/sfu/google-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
