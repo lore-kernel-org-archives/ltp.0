@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1NFkZ5-0002xv-Eo
-	for ltp-list@lists.sourceforge.net; Wed, 02 Dec 2009 08:27:59 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1NIH86-0001DR-1e
+	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2009 07:38:34 +0000
 Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
-	by sfi-mx-1.v28.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1NFkYy-0000fP-DI
-	for ltp-list@lists.sourceforge.net; Wed, 02 Dec 2009 08:27:59 +0000
+	by sfi-mx-3.v28.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1NIH80-000251-RR
+	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2009 07:38:34 +0000
 Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
 	(Post.Office MTA v4.1.1 release 20090730
 	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Wed, 2 Dec 2009 17:27:41 +0900
+	for <ltp-list@lists.sourceforge.net>; Wed, 9 Dec 2009 16:38:16 +0900
 From: "Mitani" <mitani@ryobi.co.jp>
-Date: Wed, 2 Dec 2009 17:27:41 +0900
-Message-ID: <000001ca7329$50744150$f15cc3f0$@co.jp>
+Date: Wed, 9 Dec 2009 16:38:16 +0900
+Message-ID: <000001ca78a2$93fd5a50$bbf80ef0$@co.jp>
 MIME-Version: 1.0
 Content-Language: ja
-Subject: [LTP] iogen01 test failed with after ltp-2009-11-24.tar.gz
+Subject: Re: [LTP] make error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,41 +34,71 @@ To: ltp-list@lists.sourceforge.net
 
 Hi,
 
-Following failure occurred in "iogen01" when I execute "runltp" using 
-ltp-2009-11-24.tar.gz. (Kernel : 2.6.18-164.el5)
-like that:
------------------------------
-sh: rwtest.sh: command not found
------------------------------
+Sorry, I don't know how to response to following thread:
+"http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg08965.html"
+but I want to comment it:
 
-Similer failure occured since for ltp-2009-11-24.tar.gz, and now too.
 
-There isn't "rwtest.sh" that cause this error.
+> > On Thursday 12 November 2009 01:20:37 yali_ning wrote:
+> > > I came across an error , when compiling the ltp-20091030. the step
+> > is :
+> > > 
+> > > gcc -Wall -g -Os -g -O2 -fno-strict-aliasing -pipe -Wall 
+> > > 
+> > -I/mnt/sdb1/nly1/ltp-1030/ltp-full-20091031/testcases/kernel/include
+> > > -I../../../../include -I../../../../include -L../../../../lib 
+> > vfork.c 
+> > > -lltp -o vfork In file included from /usr/include/asm/ptrace.h:58,
+> > > from /usr/include/linux/ptrace.h:49,
+> > > from vfork.c:45:
+> > > /usr/include/asm/fpu.h:57: error: redefinition of 'struct
+> > ia64_fpreg'
+> > > In file included from /usr/include/linux/ptrace.h:49,
+> > > from vfork.c:45:
+> > > /usr/include/asm/ptrace.h:208: error: redefinition of 'struct
+> > > pt_all_user_regs'
+> > 
+> > this should be fixed already in latest cvs
+> > -mike
+> No, I tried to install latest cvs version under RHEL5.4 on a ia64
+> machine but the same error still existed.
+> 
+> What puzzled me is, it said it was the redefinition-error, but I 
+> couldn't even find the originally defined structs.
+> 
+> Thanks,
+> Caspar 
 
-So, It may be correct that the scenario for iogen01 in
-"${LTPROOT}/runtest/fs"
-is "rwtest", I think.
-Because, "rwtest" is a shell script that is a wrapper of iogen and doio.
 
-Following shows my revise draft.
-====================================
---- fs	2009-10-19 03:01:18.000000000 +0900
-+++ fs.new	2009-12-02 16:28:59.000000000 +0900
-@@ -37,7 +37,7 @@
- 
- #must be run as root
- #iogen01 iogen -i 120s -s read,write 500b:doio.f1.$$ 1000b:doio.f2.$$ |
-doio -akv -n 2
--iogen01 export LTPROOT; rwtest.sh -N iogen01 -i 120s -s read,write -Da -Dv
--n 2 500b:doio.f1.$$ 1000b:doio.f2.$$
-+iogen01 export LTPROOT; rwtest -N iogen01 -i 120s -s read,write -Da -Dv -n
-2 500b:doio.f1.$$ 1000b:doio.f2.$$
- 
- fs_inod01 fs_inod $TMP 10 10 10
- linker01 linktest.sh 1000 1000
-====================================
+============
 
-Can I get opinion that my revision is right or not?
+
+Well, I think that the report that Caspar says is right.
+
+I tried to "make" with "ltp-2009-12-08" version 
+in RHEL5.4 (kernel 2.6.18-164.el5) and ia64 architecture, too.
+But it output the error message same as Caspar's report
+and ended in failure.
+
+And same failure occurred in "ltp-full-20091031.tgz" version, too.
+
+I tried various versions until now.
+
+       LTP version       ---  error occurred in...
+---------------------------------------------------------------------
+  (1)  ltp-full-20091031 ---  "vfork.c" (This failure)
+  (2)  ltp-2009-11-17    ---  "vfork.c" (Resembles this failure)
+  (3)  ltp-2009-11-19    ---  "vfork.c" (Resembles this failure)
+  (4)  ltp-2009-11-24    ---  "vfork.c" (Resembles this failure)
+  (5)  ltp-2009-11-26    ---  "vfork.c" (Resembles this failure)
+  (6)  ltp-2009-11-27    ---  "pidns03.c" (Before than this failure)
+  (7)  ltp-2009-11-30    ---  "pidns03.c" (Before than this failure)
+  (8)  ltp-2009-12-01    ---  "libclone.c" (Before than this failure)
+  (9)  ltp-2009-12-02    ---  "libclone.c" (Before than this failure)
+  (10) ltp-full-20091130 ---  "libclone.c" (Before than this failure)
+  (11) ltp-2009-12-07    ---  "vfork.c" (This failure)
+  (12) ltp-2009-12-08    ---  "vfork.c" (This failure)
+
 
 
 Thank you--
@@ -78,10 +108,10 @@ Thank you--
 
 
 ------------------------------------------------------------------------------
-Join us December 9, 2009 for the Red Hat Virtual Experience,
-a free event focused on virtualization and cloud computing. 
-Attend in-depth sessions from your desk. Your couch. Anywhere.
-http://p.sf.net/sfu/redhat-sfdev2dev
+Return on Information:
+Google Enterprise Search pays you back
+Get the facts.
+http://p.sf.net/sfu/google-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
