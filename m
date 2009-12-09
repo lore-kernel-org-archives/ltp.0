@@ -1,22 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1NK5yw-0006ZK-0t
-	for ltp-list@lists.sourceforge.net; Mon, 14 Dec 2009 08:08:38 +0000
-Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
-	by sfi-mx-3.v28.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1NK5yq-0007pj-V5
-	for ltp-list@lists.sourceforge.net; Mon, 14 Dec 2009 08:08:37 +0000
-From: "Mitani" <mitani@ryobi.co.jp>
-References: <000001ca7a43$574a3900$05deab00$@co.jp>
-	<43E7FEEB-166F-4F94-9820-1AD5B924D71B@gmail.com>
-In-Reply-To: <43E7FEEB-166F-4F94-9820-1AD5B924D71B@gmail.com>
-Date: Mon, 14 Dec 2009 17:08:20 +0900
-Message-ID: <000001ca7c94$99d4bae0$cd7e30a0$@co.jp>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NIEjX-0006PS-Qe
+	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2009 05:05:03 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NIEjQ-0002gD-0y
+	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2009 05:05:03 +0000
+Received: by pwi13 with SMTP id 13so1139555pwi.2
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 08 Dec 2009 21:04:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Language: ja
-Subject: Re: [LTP] "cgroup_fj" and "cgroup" have problems?
+In-Reply-To: <b9d696240912081359p57e3bfdck6b76d88cfe7e2852@mail.gmail.com>
+References: <1260241019.1107.17.camel@plars-t500>
+	<b9d696240912081359p57e3bfdck6b76d88cfe7e2852@mail.gmail.com>
+Date: Tue, 8 Dec 2009 21:04:49 -0800
+Message-ID: <364299f40912082104i18451b1amd36a95f45754505@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] make install... doesn't
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,201 +28,59 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Garrett Cooper' <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: "K.D. Lucas" <kdlucas@gmail.com>
+Cc: LTP-ML <ltp-list@lists.sourceforge.net>
 
-I took your indication and changed the patch as follows.
+On Tue, Dec 8, 2009 at 1:59 PM, K.D. Lucas <kdlucas@gmail.com> wrote:
+> I've noticed the same. It used to be that I could easily build and run LT=
+P,
+> but now I build fine, but running has become an issue. I've typically ran
+> the LTP suite against every kernel that our [my company] various project
+> teams create; however, with the last few releases I've tended not to use =
+it.
+>
+> It used to be that when I built LTP, I could run it from the same directo=
+ry,
+> but that is no longer true. With November's release I can't run it period.
+>
+> kdl
+>
+> On Mon, Dec 7, 2009 at 6:56 PM, Paul Larson <paul.larson@canonical.com>
+> wrote:
+>>
+>> Was trying to build ltp today, which sadly, seems to be a bit more
+>> complicated than it once was. =A0The make install completed without
+>> errors, but noticed at the end that I didn't even have a testcases/bin
+>> directory! =A0As I watched the make install output I noticed that
+>> everything in testcases was getting built with the 'all' target, but
+>> never install.
+>>
+>> My make-foo is quite rusty, but I'm guessing that this change from
+>> changeset b2e46ed73e9601ecad1044d37a85c97ba0ca42ce (if you are following
+>> git, It was from around Nov 30 if not) seems to be a likely culprit:
+>> -.SECONDEXPANSION:
+>> -$(INSTALL_TARGETS) include-install lib-install: %-install:
+>> $(abs_top_builddir)/$$*
+>> - =A0 =A0 =A0 $(MAKE) -C $* -f "$(abs_top_srcdir)/$*/Makefile" install
+>> +$(INSTALL_TARGETS) include-install lib-install:
+>> + =A0 =A0 =A0 $(MAKE) -C "$(subst -install,,$@)" \
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 -f "$(abs_top_srcdir)/$(subst -install,,$@=
+)/Makefile"
+>> all
 
-Case 1:
-I revised "[ -f /proc/cgroups ]" case to use "tst_resm TCONF"
-instead of "echo".
-But this revision is unbalanced with the other exit messages,
-so I revised other cases too.
-I don't know how to use exit code, so I use 0 or 1.
-I might mistake those code.
+KD,
+    Please provide your development usecase requirements that the
+current make system doesn't allow so I can either 1) suggest an
+alternative method to solve your problem, and/or 2) add needed support
+to enable you to do what you need to do in LTP.
+Thanks!
+-Garrett
 
-============
---- run_cgroup_test_fj.sh	2009-10-26 23:49:23.000000000 +0900
-+++ run_cgroup_test_fj.sh.new	2009-12-14 14:21:53.000000000 +0900
-@@ -34,19 +34,19 @@
- export CASENO2=0
- 
- if [ "$(id -ru)" -ne 0 ]; then
--	echo "***error***:you must use root to test"
--	exit -1
-+	tst_brkm TBROK ignored "***error***:you must use root to test"
-+	exit 1
- fi
- 
- if ! [ -f /proc/cgroups ]; then
--	echo "***error***:you must enable cgroup config in kernel";
--	exit -3;
-+	tst_resm TCONF "***error***:you must enable cgroup config in
-kernel";
-+	exit 0;
- fi
- 
- if [ ! -x $TESTROOT/cgroup_fj_proc ]; then
--	echo "***warning***:file \"cgroup_fj_proc\" is not exist or not
-executable";
--	echo "please do make and check execution permission"
--	exit -4;
-+	tst_brkm TBROK ignored "***warning***:file \"cgroup_fj_proc\" is not
-exist or not executable";
-+	tst_brkm TBROK ignored "please do make and check execution
-permission"
-+	exit 1;
- fi
- 
- CPUSET=`grep -w cpuset /proc/cgroups | cut -f1`;
-@@ -83,10 +83,10 @@
-         SYBSYSCOMPILED="$SYBSYSCOMPILED devices,"
- fi
- if [ "$SYBSYSCOMPILED" = "" ];then	# Warning and exit if all cgroup
-subsystem are not compiled
--	echo "CONTROLLERS TESTCASES: WARNING";
--	echo "Kernel does not support for any cgroup subsystem";
--	echo "Skipping all controllers testcases....";
--	exit -2;
-+	tst_resm TCONF "CONTROLLERS TESTCASES: WARNING";
-+	tst_resm TCONF "Kernel does not support for any cgroup subsystem";
-+	tst_resm TCONF "Skipping all controllers testcases....";
-+	exit 0;
- fi
- 
- echo "Now, we start the test for cgroup...";
-============
-
-
-Case 2:
-I revised "[ "$USER" != root ]" case, and revised 
-"[ ! -f /proc/cgroups ]" case to use "tst_resm" instead of "echocase"
- for balance.
-
-============
---- cgroup_regression_test.sh	2009-11-30 17:41:37.000000000 +0900
-+++ cgroup_regression_test.sh.new	2009-12-14 11:42:58.000000000 +0900
-@@ -29,15 +29,15 @@
- export TST_COUNT=1
- 
- if [ ! -f /proc/cgroups ]; then
--        echo "CONTROLLERS TESTCASES: WARNING"
--        echo "Kernel does not support for control groups";
--        echo "Skipping all controllers testcases....";
-+	tst_resm TCONF "CONTROLLERS TESTCASES: WARNING"
-+	tst_resm TCONF "Kernel does not support for control groups"
-+	tst_resm TCONF "Skipping all controllers testcases...."
- 	exit 0
- fi
- 
- if [ "$USER" != root ]; then
- 	tst_brkm TBROK ignored "Test must be run as root"
--	exit 0
-+	exit 1
- fi
- 
- tst_kvercmp 2 6 29
-============
-
-
-Regards--
-
-
--Tomonori Mitani
-
-
------Original Message-----
-From: Garrett Cooper [mailto:yanegomi@gmail.com] 
-Sent: Friday, December 11, 2009 6:45 PM
-To: Mitani
-Cc: ltp-list@lists.sourceforge.net
-Subject: Re: [LTP] "cgroup_fj" and "cgroup" have problems?
-
-On Dec 11, 2009, at 1:21 AM, Mitani wrote:
-
-> Hi,
-> 
-> Sorry for my many many mails today.
-> 
-> 
-> I ran tests with "ltp-2009-12-10" cvs.
-> 
-> In my system (kernel 2.6.18-164.el5), kernel does not support 
-> control groups.
-> So, when I ran test of "cgroup_fj", I got following message and the
-> test faild by "FAIL 253".
-> 
-> ------------
-> ***error***:you must enable cgroup config in kernel
-> ------------
-> 
-> In the investigation for above error message, I found that there may be
-> two problems,.
-> 
->  (a) "cgroup_fj" test failed in the system not support "control groups".
->  (b) "cgroup" test may passed by user-ID which isn't "root".
-> 
-> 
-> (a) "cgroup_fj" test
->  Above message is correct message, but exiting by "FAIL" is not
->  correct, I think.
->  Referring to the example of other tests, I think that the tests
->  for non-supported functions must be finished in "PASS 0" basically.
->  (For example, "move_pages{01...11}" tests exit in "PASS 0" and with 
->  "NUMA support not provided" messages.)
-> 
->  I suggest following patch to resolve this problem.
-> 
-> ============
-> --- run_cgroup_test_fj.sh	2009-10-26 23:49:23.000000000 +0900
-> +++ run_cgroup_test_fj.sh.new	2009-12-11 16:10:39.000000000 +0900
-> @@ -40,7 +40,7 @@
-> 
-> if ! [ -f /proc/cgroups ]; then
-> 	echo "***error***:you must enable cgroup config in kernel";
-> -	exit -3;
-> +	exit 0;
-> fi
-> 
-> if [ ! -x $TESTROOT/cgroup_fj_proc ]; then
-> 
-> ============
-> 
-> 
-> (b) "cgroup" test
->  I watched "cgroup" test source for hints for (a), and found another
->  problem.
->  If this test run by user-ID non-"root", it will exit in "PASS", I think.
->  But I think that it must exit in "FAIL".
->  Because this test cannot be tested only by "root" user.
-> 
-> =========
-> --- cgroup_regression_test.sh	2009-11-30 17:41:37.000000000 +0900
-> +++ cgroup_regression_test.sh.new	2009-12-11 16:22:14.000000000 +0900
-> @@ -37,7 +37,7 @@
-> 
-> if [ "$USER" != root ]; then
-> 	tst_brkm TBROK ignored "Test must be run as root"
-> -	exit 0
-> +	exit -1
-> fi
-> 
-> tst_kvercmp 2 6 29
-
-1. Case 1 should be tst_brkm TCONF and should have exit 0 (like you
-suggested).
-2. Case 2 should have the equivalent exit code for TBROK (it's in
-include/test.h). $? -> -1 is undefined via POSIX and while it passes on
-bash, it doesn't pass on ash, and thus would fail with busybox.
-Thanks,
--Garrett=
-
-
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Return on Information:
 Google Enterprise Search pays you back
 Get the facts.
