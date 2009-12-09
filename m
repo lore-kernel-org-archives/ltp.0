@@ -1,19 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1NIukA-0003rx-PJ
-	for ltp-list@lists.sourceforge.net; Fri, 11 Dec 2009 01:56:30 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NIuk2-0004xM-V0
-	for ltp-list@lists.sourceforge.net; Fri, 11 Dec 2009 01:56:30 +0000
-Date: Thu, 10 Dec 2009 20:56:06 -0500 (EST)
-From: Caspar Zhang <czhang@redhat.com>
-Message-ID: <1808828661.200561260496566142.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1260446771.7501.8.camel@subratamodak.linux.ibm.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH]fix compile error on ppc64 in RHEL5
+	(envelope-from <yanegomi@gmail.com>) id 1NIHIB-0001h5-MZ
+	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2009 07:48:59 +0000
+Received: from mail-yx0-f202.google.com ([209.85.210.202])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NIHI5-0005oc-AV
+	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2009 07:48:59 +0000
+Received: by yxe40 with SMTP id 40so2608305yxe.28
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 08 Dec 2009 23:48:48 -0800 (PST)
+Mime-Version: 1.0 (Apple Message framework v1077)
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <000001ca78a2$93fd5a50$bbf80ef0$@co.jp>
+Date: Tue, 8 Dec 2009 23:48:45 -0800
+Message-Id: <7F8A730D-2350-4FB1-8A5A-F37B8CFABFE9@gmail.com>
+References: <000001ca78a2$93fd5a50$bbf80ef0$@co.jp>
+Subject: Re: [LTP] make error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,59 +27,93 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
+To: Mitani <mitani@ryobi.co.jp>
 Cc: ltp-list@lists.sourceforge.net
 
-Ci0tLS0tICJTdWJyYXRhIE1vZGFrIiA8c3VicmF0YUBsaW51eC52bmV0LmlibS5jb20+IHdyb3Rl
-OgoKPiBIaSBDYXNwYXIsCj4gCj4gSSBqdXN0IGhhdmUgMSBxdWVzdGlvbiBiZWxvdzoKPiAKPiBP
-biBXZWQsIDIwMDktMTItMDkgYXQgMjE6MTIgLTA1MDAsIENhc3BhciBaaGFuZyB3cm90ZToKPiA+
-IEhpIGFsbCwKPiA+ICAKPiA+IFdoZW4gSSBjb21waWxlIGx0cC1mdWxsLTIwMDkxMTMwIG9uIHBw
-YzY0IG1hY2hpbmUgd2hpY2ggc3lzdGVtIGlzCj4gPiBSSEVMNShrZXJuZWwgMi42LjE4KSwgSSBt
-ZXQgY29tcGlsZSBlcnJvciBhcyBmb2xsb3dzOgo+ID4gCj4gPiBbLi4uXQo+ID4gcHRyYWNlMDQu
-YzogSW4gZnVuY3Rpb24g4oCYY29tcGFyZV9yZWdpc3RlcnPigJk6Cj4gPiBwdHJhY2UwNC5jOjU5
-OiBlcnJvcjog4oCYUFRSQUNFX0dFVFJFR1PigJkgdW5kZWNsYXJlZCAoZmlyc3QgdXNlIGluCj4g
-dGhpcwo+ID4gZnVuY3Rpb24pCj4gPiBwdHJhY2UwNC5jOjU5OiBlcnJvcjogKEVhY2ggdW5kZWNs
-YXJlZCBpZGVudGlmaWVyIGlzIHJlcG9ydGVkIG9ubHkKPiA+IG9uY2UKPiA+IHB0cmFjZTA0LmM6
-NTk6IGVycm9yOiBmb3IgZWFjaCBmdW5jdGlvbiBpdCBhcHBlYXJzIGluLikKPiA+IG1ha2VbNV06
-ICoqKiBbcHRyYWNlMDRdIEVycm9yIDEKPiA+IFsuLi5dCj4gPiAKPiA+IEl0IHNlZW1zIGxpa2Ug
-dGhlcmUncyBubyBQVFJBQ0VfR0VUUkVHUyBpbgo+IC91c3IvaW5jbHVkZS9hc20vcHRyYWNlLmgK
-PiA+IGluIG9sZCBrZXJuZWxzLCBzbyBJIGNvcHkgdGhlIGRlZmluaXRpb25zIGZyb20gbmV3IHZl
-cnNpb24gb2YgdGhlCj4gPiBoZWFkIGZpbGUgYW5kIG15IGx0cCBvbiBwcGM2NCwgUkhFTDUgd29y
-a3MuCj4gCj4gQXJlIHRoZXNlIG5vcy4gc2ltaWxhciBhY3Jvc3MgYWxsIGFyY2hzID8gSWYgdGhl
-eSBhcmUgc3BlY2lmaWMgb25seQo+IHRvCj4gUFBDLCB5b3UgY2FuIHRoZW4gYWRkIHRoZSBmb2xs
-b3dpbmcgMiBtb3JlIGxpbmVzIHRvIHlvdXIgcGF0Y2g6Cj4gCj4gPiAKPiA+IFRoYW5rcywKPiA+
-IENhc3BhciAKPiA+IAo+ID4gCj4gPiAKPiA+IAo+ID4gCj4gPiAKPiA+IGRpZmZlcmVuY2VzCj4g
-PiBiZXR3ZWVuIGZpbGVzCj4gPiBhdHRhY2htZW50Cj4gPiAocmhlbDUtcHBjLVBUUkFDRV9HRVRS
-RUdTLWNvbXBpbGUtZXJyLnBhdGNoKQo+ID4gCj4gPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tl
-cm5lbC9zeXNjYWxscy9wdHJhY2UvcHRyYWNlLmgKPiA+IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
-YWxscy9wdHJhY2UvcHRyYWNlLmgKPiA+IGluZGV4IGEwZDI3MDguLmUzZmNiYjIgMTAwNjQ0Cj4g
-PiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3B0cmFjZS9wdHJhY2UuaAo+ID4gKysr
-IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9wdHJhY2UvcHRyYWNlLmgKPiA+IEBAIC0zNyw0
-ICszNywyNyBAQCB0eXBlZGVmIHN0cnVjdCB1c2VyX3JlZ3Nfc3RydWN0IHB0cmFjZV9yZWdzOwo+
-ID4gICN1bmRlZiBIQVZFX1NUUlVDVF9QVFJBQ0VfUkVHUwo+ID4gICNlbmRpZgo+ID4gCj4gPiAr
-Lyogb2xkIGtlcm5lbCBkb2Vzbid0IGhhdmUgUFRSQUNFX0dFVFJFR1Mgb24gcHBjNjQgKi8KPiA+
-ICsvKiAobmV3KSBQVFJBQ0UgcmVxdWVzdHMgdXNpbmcgdGhlIHNhbWUgbnVtYmVycyBhcyB4ODYg
-YW5kIHRoZQo+IHNhbWUKPiA+ICsgKiBhcmd1bWVudCBvcmRlcmluZy4gQWRkaXRpb25hbGx5LCB0
-aGV5IHN1cHBvcnQgbW9yZSByZWdpc3RlcnMKPiB0b28KPiA+ICsgKi8KPiAKPiAjaWYgZGVmaW5l
-ZChwb3dlcnBjKSB8fCBkZWZpbmVkKF9fcG93ZXJwY19fKSB8fCBkZWZpbmVkKF9fcHBjX18pIHx8
-Cj4gZGVmaW5lZCAoX19QUENfXykKCkFoLCB5ZXMuIFRoYXQgc291bmRzIHJlYXNvbmFibGUsIHRo
-YW50IHlvdSEKCkNhc3BhcgoKCj4gPiArI2lmbmRlZiBQVFJBQ0VfR0VUUkVHUwo+ID4gKyMgZGVm
-aW5lIFBUUkFDRV9HRVRSRUdTICAgICAgICAgICAgMTIKPiA+ICsjZW5kaWYKPiA+ICsjaWZuZGVm
-IFBUUkFDRV9TRVRSRUdTCj4gPiArIyBkZWZpbmUgUFRSQUNFX1NFVFJFR1MgICAgICAgICAgICAx
-Mwo+ID4gKyNlbmRpZgo+ID4gKyNpZm5kZWYgUFRSQUNFX0dFVEZQUkVHUwo+ID4gKyMgZGVmaW5l
-IFBUUkFDRV9HRVRGUFJFR1MgICAgICAgICAgMTQKPiA+ICsjZW5kaWYKPiA+ICsjaWZuZGVmIFBU
-UkFDRV9TRVRGUFJFR1MKPiA+ICsjIGRlZmluZSBQVFJBQ0VfU0VURlBSRUdTICAgICAgICAgIDE1
-Cj4gPiArI2VuZGlmCj4gPiArI2lmbmRlZiBQVFJBQ0VfR0VUUkVHUzY0Cj4gPiArIyBkZWZpbmUg
-UFRSQUNFX0dFVFJFR1M2NCAgICAgICAgICAyMgo+ID4gKyNlbmRpZgo+ID4gKyNpZm5kZWYgUFRS
-QUNFX1NFVFJFR1M2NAo+ID4gKyMgZGVmaW5lIFBUUkFDRV9TRVRSRUdTNjQgICAgICAgICAgMjMK
-PiA+ICsjZW5kaWYKPiA+ICsKPiA+ICAjZW5kaWYKPiAKPiAjZW5kaWYKPiAKPiBSZWdhcmRzLS0K
-PiBTdWJyYXRhCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KUmV0dXJuIG9uIEluZm9ybWF0aW9uOgpH
-b29nbGUgRW50ZXJwcmlzZSBTZWFyY2ggcGF5cyB5b3UgYmFjawpHZXQgdGhlIGZhY3RzLgpodHRw
-Oi8vcC5zZi5uZXQvc2Z1L2dvb2dsZS1kZXYyZGV2Cl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0
-cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlz
-dGluZm8vbHRwLWxpc3QK
+On Dec 8, 2009, at 11:38 PM, Mitani wrote:
+
+> Hi,
+> 
+> Sorry, I don't know how to response to following thread:
+> "http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg08965.html"
+> but I want to comment it:
+> 
+> 
+>>> On Thursday 12 November 2009 01:20:37 yali_ning wrote:
+>>>> I came across an error , when compiling the ltp-20091030. the step
+>>> is :
+>>>> 
+>>>> gcc -Wall -g -Os -g -O2 -fno-strict-aliasing -pipe -Wall 
+>>>> 
+>>> -I/mnt/sdb1/nly1/ltp-1030/ltp-full-20091031/testcases/kernel/include
+>>>> -I../../../../include -I../../../../include -L../../../../lib 
+>>> vfork.c 
+>>>> -lltp -o vfork In file included from /usr/include/asm/ptrace.h:58,
+>>>> from /usr/include/linux/ptrace.h:49,
+>>>> from vfork.c:45:
+>>>> /usr/include/asm/fpu.h:57: error: redefinition of 'struct
+>>> ia64_fpreg'
+>>>> In file included from /usr/include/linux/ptrace.h:49,
+>>>> from vfork.c:45:
+>>>> /usr/include/asm/ptrace.h:208: error: redefinition of 'struct
+>>>> pt_all_user_regs'
+>>> 
+>>> this should be fixed already in latest cvs
+>>> -mike
+>> No, I tried to install latest cvs version under RHEL5.4 on a ia64
+>> machine but the same error still existed.
+>> 
+>> What puzzled me is, it said it was the redefinition-error, but I 
+>> couldn't even find the originally defined structs.
+>> 
+>> Thanks,
+>> Caspar 
+> 
+> 
+> ============
+> 
+> 
+> Well, I think that the report that Caspar says is right.
+> 
+> I tried to "make" with "ltp-2009-12-08" version 
+> in RHEL5.4 (kernel 2.6.18-164.el5) and ia64 architecture, too.
+> But it output the error message same as Caspar's report
+> and ended in failure.
+> 
+> And same failure occurred in "ltp-full-20091031.tgz" version, too.
+> 
+> I tried various versions until now.
+> 
+>       LTP version       ---  error occurred in...
+> ---------------------------------------------------------------------
+>  (1)  ltp-full-20091031 ---  "vfork.c" (This failure)
+>  (2)  ltp-2009-11-17    ---  "vfork.c" (Resembles this failure)
+>  (3)  ltp-2009-11-19    ---  "vfork.c" (Resembles this failure)
+>  (4)  ltp-2009-11-24    ---  "vfork.c" (Resembles this failure)
+>  (5)  ltp-2009-11-26    ---  "vfork.c" (Resembles this failure)
+>  (6)  ltp-2009-11-27    ---  "pidns03.c" (Before than this failure)
+>  (7)  ltp-2009-11-30    ---  "pidns03.c" (Before than this failure)
+>  (8)  ltp-2009-12-01    ---  "libclone.c" (Before than this failure)
+>  (9)  ltp-2009-12-02    ---  "libclone.c" (Before than this failure)
+>  (10) ltp-full-20091130 ---  "libclone.c" (Before than this failure)
+>  (11) ltp-2009-12-07    ---  "vfork.c" (This failure)
+>  (12) ltp-2009-12-08    ---  "vfork.c" (This failure)
+
+I'm making multiple versioned copies of Fedora based toolchains and sysroots to work around these issues, as I don't have a toolchain setup for ia64, nor do I have real hardware to compile on. Really counterproductive when trying to resolve these issues :(...
+
+I'll try and get them all panned out by the weekend.
+
+Thanks,
+-Garrett
+------------------------------------------------------------------------------
+Return on Information:
+Google Enterprise Search pays you back
+Get the facts.
+http://p.sf.net/sfu/google-dev2dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
