@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1NGdS6-0002ka-3T
-	for ltp-list@lists.sourceforge.net; Fri, 04 Dec 2009 19:04:26 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1NIKPk-0003CM-Sy
+	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2009 11:09:00 +0000
 Received: from smtp.gentoo.org ([140.211.166.183])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NGdRz-000381-NN
-	for ltp-list@lists.sourceforge.net; Fri, 04 Dec 2009 19:04:26 +0000
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NIKPe-00050K-GF
+	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2009 11:09:00 +0000
 From: Mike Frysinger <vapier@gentoo.org>
-Date: Fri, 4 Dec 2009 14:09:27 -0500
-References: <4b193c6d.9113f30a.0553.186fSMTPIN_ADDED@mx.google.com>
-In-Reply-To: <4b193c6d.9113f30a.0553.186fSMTPIN_ADDED@mx.google.com>
+Date: Wed, 9 Dec 2009 06:09:07 -0500
+References: <000001ca78a2$93fd5a50$bbf80ef0$@co.jp>
+	<7F8A730D-2350-4FB1-8A5A-F37B8CFABFE9@gmail.com>
+In-Reply-To: <7F8A730D-2350-4FB1-8A5A-F37B8CFABFE9@gmail.com>
 MIME-Version: 1.0
-Message-Id: <200912041409.27672.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] Fix overreaching clean targets in Makefiles that
-	cleaned the readme files
+Message-Id: <200912090609.08566.vapier@gentoo.org>
+Subject: Re: [LTP] make error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,68 +25,72 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2647749469722386517=="
+Content-Type: multipart/mixed; boundary="===============5937074230871138282=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: Jiri Palecek <jpalecek@web.de>
+Cc: Mitani <mitani@ryobi.co.jp>
 
---===============2647749469722386517==
-Content-Type: multipart/signed; boundary="nextPart1385906.fyvk2YK8mK";
+--===============5937074230871138282==
+Content-Type: multipart/signed; boundary="nextPart7462174.GfL9DHOP8r";
 	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 
---nextPart1385906.fyvk2YK8mK
+--nextPart7462174.GfL9DHOP8r
 Content-Type: Text/Plain;
   charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-On Friday 04 December 2009 11:31:55 Jiri Palecek wrote:
-> the makefiles in some of the float tests contain the glob "[dr]*" in their
->  clean targets. Unfortunately, this deletes not only the generated
->  reference files, but also the readme files shipped in those directories.
->  This patch fixes it by changing CLEAN_TARGETS to more specific patterns
->  (that capture all generated files in all float tests, however).
+On Wednesday 09 December 2009 02:48:45 Garrett Cooper wrote:
+> I'm making multiple versioned copies of Fedora based toolchains and
+>  sysroots to work around these issues, as I don't have a toolchain setup
+>  for ia64, nor do I have real hardware to compile on. Really
+>  counterproductive when trying to resolve these issues :(...
 
-easier to rename the file to README (which i've done now)
--mike
+Gentoo has ia64 hardware you could get an account on, and `crossdev` should=
+ be=20
+able to produce ia64 cross-compilers.  due to the libunwind funkiness, ia64=
+=20
+tends to be one of the harder ones to make cross-toolchains for.
+=2Dmike
 
---nextPart1385906.fyvk2YK8mK
+--nextPart7462174.GfL9DHOP8r
 Content-Type: application/pgp-signature; name=signature.asc 
 Content-Description: This is a digitally signed message part.
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.13 (GNU/Linux)
 
-iQIcBAABAgAGBQJLGV5nAAoJEEFjO5/oN/WBS6wP/2guYWlxbJ80Spg+63QWjUuH
-CBajH0rSkDRiTZIekH97A9G3v/frPW09GB5jHbWEI6FWL7NZLM5duMTvR441YMd1
-lG0heJmDuNCW8vB88D3O7Ot3x9FtEybr5POLcCIM8pbJI84ljBhmHlqSIUprYV6S
-MNpL/L5diEthNrBjF1IIHMJy3SkAYuDolQRKGqdqgOL9ff7BqFjb9AucKqozjBfT
-fbH7lyJzEYyLDtuREPSdqrS9p5e79c1Pg4q6sr/mc53zvGqtQbcdttnPosjzXv9T
-5z0MUKXC3Pq7PYjHsq/NwV+Nh34Ps+xaixivdHvRTRhbQDkXOuh39wvkkrXZ/7Xo
-33XuH6cX9PfxKGEEgbGVyswR2badg5ip2KEmZQMEFFBgU4yaF/WPWdAnABY/3pdp
-NXRCU1fCciGiBFawdeT5tCEiBleKZDhv6Z1g2FcpDzxTcXF/e3Nnz3S4xK6YcPCd
-rX2P8giCOi09khXWM9hrEp/Mkivu0gZpJaB7a6ucuBrqkMVNri6pSzT7Vh3WL4lL
-WmQ3vJkwUADrlLvMXrqAiZffuwYGRHKbHoQxg2FkmF8eli+xNpPlc5uYL4nw8zti
-GsgkjmAmSNuG9jkLAKl1msQ8qyRE/t4+bhBrXBFYGKE+4ADV/CpMSjRM+QlxuYZ8
-M/l5ZVWl+0IemBj+2MzD
-=BrLF
+iQIcBAABAgAGBQJLH4VUAAoJEEFjO5/oN/WBaKYP/A/HFlTo1rR66gt7YRSwbQZm
+bBGLUgg6+2mrVtF12R4pSGccdJuRz1UVJn73jE4f07uNEeampiBsWzMuT2ODHjiU
+udX1UvtmPislcpd01CM1v+OU3YAji1G+x9FcrE4fK2/E2B8pxXssVpn2hxwwIEpc
+Dj4oKHFfef2TwQJAhj98lL10Iz1srxeUGxVlnNBiukX8/e5uAlfCldd0jGsm1Gzv
+IU36sRURGJAY0TjbtgadvWDaQxqypzjoEh7Rz5kAyAxp4Ebkv7Cz0lWAag3IQYpS
+d5pFlSR7Ab4V0EbW3Idb5qlLMUnZwYAfM/mwSviH9o4DzjVQbnSn9ndv4H7hvUBO
+sro3tcBpRc6D+ck6CaOhr3vodVMu3Iy/ASpF+bGyUqxwvmKCUFBY1WeRuY5MGql6
+LLZ/tpAPP6HoJg/K2x82B/0vR9tl+q3uPUCg6EHxgSm6UhRPInc/6C4rdwuHOMSb
+diiBt1ybvTrC6ZBmZzy/laikZ8hm96gyut6TDS78odjBCVeETafcGIyBr/MnsWiT
+FTYFUFbeOKEiD3FwAuHXBIum6rjYmmfcbrDoMYLNO1L0tk2V7/VaExVRGCtByQZC
+vleN6Hofcaz6VyfeVFLntlVpgA0tVoyRxobL6QV/awolnPLyL+xqbb7brtEry61o
+SJ4CvCD16XCQgC07Ffud
+=H560
 -----END PGP SIGNATURE-----
 
---nextPart1385906.fyvk2YK8mK--
+--nextPart7462174.GfL9DHOP8r--
 
 
---===============2647749469722386517==
+--===============5937074230871138282==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Join us December 9, 2009 for the Red Hat Virtual Experience,
-a free event focused on virtualization and cloud computing. 
-Attend in-depth sessions from your desk. Your couch. Anywhere.
-http://p.sf.net/sfu/redhat-sfdev2dev
---===============2647749469722386517==
+Return on Information:
+Google Enterprise Search pays you back
+Get the facts.
+http://p.sf.net/sfu/google-dev2dev
+
+--===============5937074230871138282==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -97,5 +101,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============2647749469722386517==--
+--===============5937074230871138282==--
 
