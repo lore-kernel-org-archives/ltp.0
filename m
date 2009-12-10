@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1NLypz-00052Q-UL
-	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 12:55:11 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NLypv-0000Pa-L5
-	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 12:55:11 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sat, 19 Dec 2009 07:55:26 -0500
-References: <000001ca7d4d$e2a9e7e0$a7fdb7a0$@co.jp>
-	<200912181331.36093.vapier@gentoo.org>
-	<364299f40912182110w7e5591f1k4f1c59b292b642ad@mail.gmail.com>
-In-Reply-To: <364299f40912182110w7e5591f1k4f1c59b292b642ad@mail.gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1NIssr-0007j0-P0
+	for ltp-list@lists.sourceforge.net; Thu, 10 Dec 2009 23:57:21 +0000
+Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
+	by sfi-mx-2.v28.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1NIssl-0001UP-Ei
+	for ltp-list@lists.sourceforge.net; Thu, 10 Dec 2009 23:57:21 +0000
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Fri, 11 Dec 2009 08:57:04 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Fri, 11 Dec 2009 08:57:02 +0900
+Message-ID: <000101ca79f4$7af702b0$70e50810$@co.jp>
 MIME-Version: 1.0
-Message-Id: <200912190755.26999.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] fix compiling error on ia64 platform
-	(ltp-full-20091130)
+Content-Language: ja
+Subject: [LTP] Tests of "iogen01" et al. fail with ltp-2009-12-10 cvs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,103 +27,82 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5092932086861521971=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
-
---===============5092932086861521971==
-Content-Type: multipart/signed; boundary="nextPart2259773.hq7K47gMZ3";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart2259773.hq7K47gMZ3
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-On Saturday 19 December 2009 00:10:58 Garrett Cooper wrote:
-> On Fri, Dec 18, 2009 at 10:31 AM, Mike Frysinger <vapier@gentoo.org> wrot=
-e:
-> > On Tuesday 15 December 2009 14:39:24 Garrett Cooper wrote:
-> >> Until this issue is resolved (I ran into problems trying to use
-> >> crossdev, so I'll have to manually inspect headers after I track down
-> >> which versions are used in the Redhat distros specified), please
-> >> remember that you _can_ always comment out the line which says:
-> >>
-> >> /* Define to 1 if you have the <asm/ptrace.h> header file. */
-> >> #define HAVE_ASM_PTRACE_H 1
-> >>
-> >> Actually, I think I'll just remove that header check if the build
-> >> passes unless Mike objects, because we really shouldn't be
-> >> #include'ing asm/* headers without having a good reason to do so
-> >> because it results in pain of this magnitude...
-> >
-> > i guess i dont know why you've made changes to the ptrace.h header at
-> > all. the original one i committed still works for me on
-> > bfin/ia64/x86/x86_64.  i dont recall any questions being posted to the
-> > list about the logic, just random shuffling to try and "fix" errors that
-> > i have yet to see.
->=20
->     You're right. I've reverted to your original copy and everything
-> just works on my Gentoo box. I need to determine if our headers are
-> f'ed up at work -- I wouldn't be surprised if that's the case.
->     If others need for this to be fixed on their toolchains /
-> platforms, we'll definitely need access to the tools and/or maybe the
-> hardware in order to verify that the changes are sane.
-
-feel free to post the error you're seeing at work with this version so we c=
-an=20
-take a look.
-=2Dmike
-
---nextPart2259773.hq7K47gMZ3
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.13 (GNU/Linux)
-
-iQIcBAABAgAGBQJLLM0+AAoJEEFjO5/oN/WBytMQALDnJEnYRhADAId2mXBfsNoG
-1ZygV1E4HiIPqvn8itybXrdd6yuNNPu7/DgQsFIP6FJsWsbF7M8pJsC3xRddZBKP
-H9YC/fv2aVSKBT19QWLcDCOCandau/qSsT2YDA5FnW2ShpFjmGBHhxJZ0+QE39OH
-6r9rMpQ5gGAn+MkTlIkbgCKpfr9UL7K5ZvQjzdb4fjfvlztGLpGJKgoz0F3b7juM
-u6BYHLGSypHUNvHQxj1lgyQgywOzV9S2oKX9BV4QoC7xI8t2/y+0K6mTphQ/5F+G
-F3mdj4Uexs0whqVhnU1oQeV2gx/tYgraZYDB+YD+ciuNt+8Ad9oocnfeUrsar2K5
-vVXDWoRntqjnNDafsPnyIFeaX33I7G7IIZaeWsse8xS6kOV9EdOFqyhWv79xsu7J
-iUGyVhYDvDJI8iiaIgh0t5IKBZNpX6hi3JIjA3ou1EVYJlJN8YWg6Gq+AjS7lfkg
-A4s+Tqlr+/zJUZ4zWcwhT2unRvmn9G5h+C7DJaAet13oNqVZpaa9PffQLi5OPeE/
-wn3Vu7rHf+MSIXESOy6CPgATNNV7/0RuWcnGHi7TT6IJEvqWXmYC7oh+ZWd53/1t
-peBxG3WD1HPYcaCsTuqihYz3AW1ScZbIxO+RjOWy48TobqBnVgB+bwwxNymqdNOi
-lPVph0RjdsfaLUP7entT
-=7K3O
------END PGP SIGNATURE-----
-
---nextPart2259773.hq7K47gMZ3--
-
-
---===============5092932086861521971==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+Hi,
+
+In the following thread, "rwtest has been renamed to rwtest.sh" is written.
+http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg08896.html
+
+But, I got following message when I ran tests of "rwtest{01...05}" and
+"iogen01" in my system with "ltp-2009-12-10" cvs.
+
+------------
+sh: rwtest.sh: command not found
+------------
+
+I think that "rwtest.sh" has been renamed to "rwtest" at about 2009/11/14.
+
+Here is a patch that reverts the previous patch applied to runtest/fs.
+After applied this patch, "rwtest{01...05}" and "iogen01" passed in my
+system.
+
+============
+--- fs	2009-12-10 10:23:21.000000000 +0900
++++ fs.new	2009-12-10 11:23:53.000000000 +0900
+@@ -29,15 +29,15 @@
+ gf28 growfiles -W gf28 -b -D 0 -w -g 16b -C 1 -b -i 1000 -u gfsparse-2-$$
+-d $TMPDIR
+ gf29 growfiles -W gf29 -b -D 0 -r 1-4096 -R 0-33554432 -i 0 -L 60 -C 1 -u
+gfsparse-3-$$ -d $TMPDIR
+ gf30 growfiles -W gf30 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -o
+O_RDWR,O_CREAT,O_SYNC -g 20480 -T 10 -t 20480 gf-sync-$$ -d $TMPDIR
+-rwtest01 export LTPROOT; rwtest.sh -N rwtest01 -c -q -i 60s  -f sync
+10%25000:$TMPDIR/rw-sync-$$
+-rwtest02 export LTPROOT; rwtest.sh -N rwtest02 -c -q -i 60s  -f buffered
+10%25000:$TMPDIR/rw-buffered-$$
+-rwtest03 export LTPROOT; rwtest.sh -N rwtest03 -c -q -i 60s -n 2  -f
+buffered -s mmread,mmwrite -m random -Dv 10%25000:$TMPDIR/mm-buff-$$
+-rwtest04 export LTPROOT; rwtest.sh -N rwtest04 -c -q -i 60s -n 2  -f sync
+-s mmread,mmwrite -m random -Dv 10%25000:$TMPDIR/mm-sync-$$
+-rwtest05 export LTPROOT; rwtest.sh -N rwtest05 -c -q -i 50 -T 64b
+500b:$TMPDIR/rwtest01%f
++rwtest01 export LTPROOT; rwtest -N rwtest01 -c -q -i 60s  -f sync
+10%25000:$TMPDIR/rw-sync-$$
++rwtest02 export LTPROOT; rwtest -N rwtest02 -c -q -i 60s  -f buffered
+10%25000:$TMPDIR/rw-buffered-$$
++rwtest03 export LTPROOT; rwtest -N rwtest03 -c -q -i 60s -n 2  -f buffered
+-s mmread,mmwrite -m random -Dv 10%25000:$TMPDIR/mm-buff-$$
++rwtest04 export LTPROOT; rwtest -N rwtest04 -c -q -i 60s -n 2  -f sync -s
+mmread,mmwrite -m random -Dv 10%25000:$TMPDIR/mm-sync-$$
++rwtest05 export LTPROOT; rwtest -N rwtest05 -c -q -i 50 -T 64b
+500b:$TMPDIR/rwtest01%f
+ 
+ #must be run as root
+ #iogen01 iogen -i 120s -s read,write 500b:doio.f1.$$ 1000b:doio.f2.$$ |
+doio -akv -n 2
+-iogen01 export LTPROOT; rwtest.sh -N iogen01 -i 120s -s read,write -Da -Dv
+-n 2 500b:doio.f1.$$ 1000b:doio.f2.$$
++iogen01 export LTPROOT; rwtest -N iogen01 -i 120s -s read,write -Da -Dv -n
+2 500b:doio.f1.$$ 1000b:doio.f2.$$
+ 
+ fs_inod01 fs_inod $TMP 10 10 10
+ linker01 linktest.sh 1000 1000
+
+============
+
+
+
 
 ------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
---===============5092932086861521971==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Return on Information:
+Google Enterprise Search pays you back
+Get the facts.
+http://p.sf.net/sfu/google-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5092932086861521971==--
-
