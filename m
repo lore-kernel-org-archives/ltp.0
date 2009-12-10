@@ -1,22 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1NFjaX-0002aS-To
-	for ltp-list@lists.sourceforge.net; Wed, 02 Dec 2009 07:25:25 +0000
-Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
-	by sfi-mx-2.v28.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1NFjaP-0002eM-1y
-	for ltp-list@lists.sourceforge.net; Wed, 02 Dec 2009 07:25:25 +0000
-From: "Mitani" <mitani@ryobi.co.jp>
-References: <000001ca7245$b829af90$287d0eb0$@co.jp>
-	<364299f40912010218h39e6f89eo36e49bfe9e083a23@mail.gmail.com>
-In-Reply-To: <364299f40912010218h39e6f89eo36e49bfe9e083a23@mail.gmail.com>
-Date: Wed, 2 Dec 2009 16:25:02 +0900
-Message-ID: <000001ca7320$90365cf0$b0a316d0$@co.jp>
+	(envelope-from <czhang@redhat.com>) id 1NIYVy-000256-F7
+	for ltp-list@lists.sourceforge.net; Thu, 10 Dec 2009 02:12:22 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NIYVq-0004LZ-HN
+	for ltp-list@lists.sourceforge.net; Thu, 10 Dec 2009 02:12:22 +0000
+Received: from int-mx03.intmail.prod.int.phx2.redhat.com
+	(int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+	by mx1.redhat.com (8.13.8/8.13.8) with ESMTP id nBA2C8gp022442
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 9 Dec 2009 21:12:08 -0500
+Received: from mail04.corp.redhat.com (zmail04.collab.prod.int.phx2.redhat.com
+	[10.5.5.44])
+	by int-mx03.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
+	id nBA2C8mJ017262
+	for <ltp-list@lists.sourceforge.net>; Wed, 9 Dec 2009 21:12:08 -0500
+Date: Wed, 9 Dec 2009 21:12:07 -0500 (EST)
+From: Caspar Zhang <czhang@redhat.com>
+Message-ID: <1515718228.139261260411127991.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1035224881.139201260410991274.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Content-Language: ja
-Subject: Re: [LTP] build failure with ltp-2009-12-01 cvs
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_5639_1217896255.1260411127990"
+Subject: [LTP] [PATCH]fix compile error on ppc64 in RHEL5
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,163 +35,95 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Garrett Cooper' <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-I ran "runltp" with  "ltp-2009-12-02.tar.gz" version in system as follows.
+------=_Part_5639_1217896255.1260411127990
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-  (1) kernel 2.6.18-164.el5 - architecture x86 =
+Hi all,
+=20
+When I compile ltp-full-20091130 on ppc64 machine which system is
+RHEL5(kernel 2.6.18), I met compile error as follows:
 
-  (2) kernel 2.6.18-164.el5 - architecture x86_64
+[...]
+ptrace04.c: In function =E2=80=98compare_registers=E2=80=99:
+ptrace04.c:59: error: =E2=80=98PTRACE_GETREGS=E2=80=99 undeclared (first us=
+e in this function)
+ptrace04.c:59: error: (Each undeclared identifier is reported only once
+ptrace04.c:59: error: for each function it appears in.)
+make[5]: *** [ptrace04] Error 1
+[...]
 
-But same failure occured again:
-
-------------
-make[4]: Entering directory
-`/home/LTP/ltp-2009-12-02/testcases/kernel/containers/libclone'
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
--I/home/LTP/ltp-2009-12-02/testcases/k
-ernel/include -I../../../../include -I../../../../include  -c -o libclone.o
-libclone.c
-In file included from libclone.h:31,
-                 from libclone.c:17:
-/home/LTP/ltp-2009-12-02/testcases/kernel/include/linux_syscall_numbers.h:24
-: error: weak
-declaration of 'syscall_cleanup_stub' must be public
-make[4]: *** [libclone.o] Error 1
-make[4]: Leaving directory
-`/home/LTP/ltp-2009-12-02/testcases/kernel/containers/libclone'
-------------
-
-
-Regars--
-
--Tomonori Mitani
-
-
------Original Message-----
-From: Garrett Cooper [mailto:yanegomi@gmail.com] =
-
-Sent: Tuesday, December 01, 2009 7:18 PM
-To: Mitani
-Cc: ltp-list@lists.sourceforge.net
-Subject: Re: [LTP] build failure with ltp-2009-12-01 cvs
-
-On Mon, Nov 30, 2009 at 9:18 PM, Mitani <mitani@ryobi.co.jp> wrote:
-> Hi,
->
-> I tried to "make" with "ltp-2009-12-01.tar.gz" version.
-> I tried it in systems as follows:
-> =A0(1) kernel 2.6.18-164.el5 - architecture x86
-> =A0(2) kernel 2.6.18-164.el5 - architecture x86_64
->
-> But both failed with following message:
->
-> ------------
-> [...]
-> make[3]: Entering directory
-> `/home/LTP/ltp-2009-12-01/testcases/kernel/containers'
-> make -C libclone -f
-> "/home/LTP/ltp-2009-12-01/testcases/kernel/containers/libclone/Makefil
-> e" all
-> make[4]: Entering directory
-> `/home/LTP/ltp-2009-12-01/testcases/kernel/containers/libclone
-> '
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
-> -I/home/LTP/ltp-2009-12-01/testcases/k
-> ernel/include -I../../../../include -I../../../../include =A0-c -o
-libclone.o
-> libclone.c
-> In file included from libclone.h:31,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from libclone.c:17:
->
-/home/LTP/ltp-2009-12-01/testcases/kernel/include/linux_syscall_numbers.h:24
-> : error: weak
-> declaration of 'syscall_cleanup_stub' must be public
-> make[4]: *** [libclone.o] Error 1
-> make[4]: Leaving directory
-> `/home/LTP/ltp-2009-12-01/testcases/kernel/containers/libclone'
-> make[3]: *** [libclone/libclone.a] Error 2
-> make[3]: Leaving directory
-> `/home/LTP/ltp-2009-12-01/testcases/kernel/containers'
-> make[2]: *** [all] Error 2
-> make[2]: Leaving directory `/home/LTP/ltp-2009-12-01/testcases/kernel'
-> make[1]: *** [all] Error 2
-> make[1]: Leaving directory `/home/LTP/ltp-2009-12-01/testcases'
-> make: *** [testcases-all] Error 2
-> ------------
->
->
-> I tried to avoid this failure by revising "${LTPROOT}/testcases
-> /kernel/include/linux_syscall_numbers.h".
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux_syscall_numbers.h.org 2009-12-01 09:52:25.000000000 +0900
-> +++ linux_syscall_numbers.h =A0 =A0 2009-12-01 11:37:10.000000000 +0900
-> @@ -21,7 +21,7 @@
-> =A0* result in compile-time errors and folks get the granularity they des=
-ire
-> =A0* when writing testcases.
-> =A0*/
-> -static void syscall_cleanup_stub(void) __attribute__ ((weakref
-> ("cleanup")));
-> +void syscall_cleanup_stub(void) __attribute__ ((weakref ("cleanup")));
->
-> =A0static void cleanup(void);
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> After applying this patch, "make" and "make install" succeeded in
-> both (1) and (2) systems.
->
->
-> Can I get some advice whether my revise above is right?
-
-It may work for your version of binutils, but it doesn't work for mine:
-
-make -C libclone -f
-"/scratch/ltp-dev2/ltp/testcases/kernel/containers/libclone/Makefile"
-all
-make[4]: Entering directory
-`/scratch/ltp-dev2/ltp/testcases/kernel/containers/libclone'
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
--I/scratch/ltp-dev2/ltp/testcases/kernel/include -I../../../../include
--I../../../../include  -c -o libclone.o libclone.c
-In file included from libclone.h:31,
-                 from libclone.c:17:
-/scratch/ltp-dev2/ltp/testcases/kernel/include/linux_syscall_numbers.h:24:
-error: weakref 'syscall_cleanup_stub' must have static linkage
-make[4]: *** [libclone.o] Error 1
-make[4]: Leaving directory
-`/scratch/ltp-dev2/ltp/testcases/kernel/containers/libclone'
-make[3]: *** [libclone/libclone.a] Error 2
-make[3]: Leaving directory
-`/scratch/ltp-dev2/ltp/testcases/kernel/containers'
-make[2]: *** [all] Error 2
-make[2]: Leaving directory `/scratch/ltp-dev2/ltp/testcases/kernel'
-make[1]: *** [all] Error 2
-make[1]: Leaving directory `/scratch/ltp-dev2/ltp/testcases'
-make: *** [testcases-all] Error 2
-
-Please try the latest from CVS to see whether or not the new hidden
-refs fixes your issue.
+It seems like there's no PTRACE_GETREGS in /usr/include/asm/ptrace.h
+in old kernels, so I copy the definitions from new version of the
+head file and my ltp on ppc64, RHEL5 works.
 
 Thanks,
--Garrett
+Caspar
+------=_Part_5639_1217896255.1260411127990
+Content-Type: application/octet-stream;
+	name=rhel5-ppc-PTRACE_GETREGS-compile-err.patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=rhel5-ppc-PTRACE_GETREGS-compile-err.patch
 
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace.h b/testcases/kernel/syscalls/ptrace/ptrace.h
+index a0d2708..e3fcbb2 100644
+--- a/testcases/kernel/syscalls/ptrace/ptrace.h
++++ b/testcases/kernel/syscalls/ptrace/ptrace.h
+@@ -37,4 +37,27 @@ typedef struct user_regs_struct ptrace_regs;
+ #undef HAVE_STRUCT_PTRACE_REGS
+ #endif
+ 
++/* old kernel doesn't have PTRACE_GETREGS on ppc64 */
++/* (new) PTRACE requests using the same numbers as x86 and the same
++ * argument ordering. Additionally, they support more registers too
++ */
++#ifndef PTRACE_GETREGS
++# define PTRACE_GETREGS            12
++#endif
++#ifndef PTRACE_SETREGS
++# define PTRACE_SETREGS            13
++#endif
++#ifndef PTRACE_GETFPREGS
++# define PTRACE_GETFPREGS          14
++#endif
++#ifndef PTRACE_SETFPREGS
++# define PTRACE_SETFPREGS          15
++#endif
++#ifndef PTRACE_GETREGS64
++# define PTRACE_GETREGS64          22
++#endif
++#ifndef PTRACE_SETREGS64
++# define PTRACE_SETREGS64          23
++#endif
++
+ #endif
 
+------=_Part_5639_1217896255.1260411127990
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
----------------------------------------------------------------------------=
----
-Join us December 9, 2009 for the Red Hat Virtual Experience,
-a free event focused on virtualization and cloud computing. =
+------------------------------------------------------------------------------
+Return on Information:
+Google Enterprise Search pays you back
+Get the facts.
+http://p.sf.net/sfu/google-dev2dev
 
-Attend in-depth sessions from your desk. Your couch. Anywhere.
-http://p.sf.net/sfu/redhat-sfdev2dev
+------=_Part_5639_1217896255.1260411127990
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------=_Part_5639_1217896255.1260411127990--
+
