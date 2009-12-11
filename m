@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NPJg8-0000pu-DU
-	for ltp-list@lists.sourceforge.net; Mon, 28 Dec 2009 17:46:48 +0000
-Received: from mail-pz0-f193.google.com ([209.85.222.193])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NPJg2-00050y-FO
-	for ltp-list@lists.sourceforge.net; Mon, 28 Dec 2009 17:46:48 +0000
-Received: by pzk31 with SMTP id 31so7137499pzk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 28 Dec 2009 09:46:36 -0800 (PST)
-References: <4B38DCFA.9000502@petalogix.com>
-Message-Id: <9E3BA855-8CA7-414D-9622-2949FAD0416A@gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <4B38DCFA.9000502@petalogix.com>
-Mime-Version: 1.0 (iPhone Mail 7D11)
-Date: Mon, 28 Dec 2009 09:46:18 -0800
-Subject: Re: [LTP] Autotools
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1NJBiu-0006eS-Uk
+	for ltp-list@lists.sourceforge.net; Fri, 11 Dec 2009 20:04:20 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NJBin-0001xM-5T
+	for ltp-list@lists.sourceforge.net; Fri, 11 Dec 2009 20:04:20 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Fri, 11 Dec 2009 15:04:50 -0500
+References: <1114676463.211401260531001515.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1114676463.211401260531001515.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+MIME-Version: 1.0
+Message-Id: <200912111504.50858.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] fix compiling error on ia64 platform
+	(ltp-full-20091130)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,119 +25,82 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2256503577300329977=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "michal.simek@petalogix.com" <michal.simek@petalogix.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Michal,
-     Just invoke autoreconf -I m4 and you'll get your desired result.  
-No commit required (except maybe another 'recipe' in INSTALL -- which  
-I'd be more than happy to do after the 5th when I have real Internet  
-access ;]...). The problem with your proposed method is that it was  
-skipping a large number of autoconf portability tests in the .m4  
-files, thus the configuration was pretty minimal...
-Cheers!
--Garrett
+--===============2256503577300329977==
+Content-Type: multipart/signed; boundary="nextPart1435338.gvPKonyVNS";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Sent from my iPhone
+--nextPart1435338.gvPKonyVNS
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Dec 28, 2009, at 8:29 AM, Michal Simek <michal.simek@petalogix.com>  
-wrote:
+On Friday 11 December 2009 06:30:01 Caspar Zhang wrote:
+>   Here are two patches to fix compiling error in ia64,
+> I tested only in version ltp-full-20091130, please check
+> your own version. They are for work well on my system.
+> See the attachment.
 
-> Hi Garret,
->
-> I am trying to configure LTP properly.
-> First thing which seems to me weird is that in INSTALL is for "Using  
-> autoconf" command make autotools
->
-> autoreconf --install
->
-> There are some warnings which could be fixed.
->
-> then I am running
->
-> ./configure --prefix=/tmp/
->
-> and I see there
->
-> ./configure: line 4566: LTP_CHECK_CAPABILITY_SUPPORT: command not  
-> found
-> ./configure: line 4567: LTP_CHECK_CRYPTO: command not found
-> ./configure: line 4568: LTP_CHECK_LINUX_PTRACE: command not found
-> ./configure: line 4569: LTP_CHECK_SELINUX: command not found
-> ./configure: line 4570: LTP_CHECK_SIGNAL: command not found
-> ./configure: line 4571: LTP_CHECK_SYSCALL_EVENTFD: command not found
-> ./configure: line 4572: LTP_CHECK_SYSCALL_MODIFY_LDT: command not  
-> found
-> ./configure: line 4573: LTP_CHECK_SYSCALL_NUMA: command not found
-> ./configure: line 4574: LTP_CHECK_SYSCALL_QUOTACTL: command not found
-> ./configure: line 4575: LTP_CHECK_SYSCALL_SIGNALFD: command not found
-> ./configure: line 4576: LTP_CHECK_SYSCALL_UNSHARE: command not found
-> ./configure: line 4577: LTP_CHECK_TASKSTATS: command not found
->
-> ./configure: line 4759: REALTIME_CHECK_PRIO_INHERIT: command not found
-> ./configure: line 4760: REALTIME_CHECK_ROBUST_APIS: command not found
->
-> + there are some missing dependency in configure.ac file. This patch  
-> should add them. I just grep whole LTP source - maybe some are not  
-> important.
->
-> diff --git a/configure.ac b/configure.ac
-> index 52f3381..7a72b36 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -39,11 +39,26 @@ AC_CHECK_HEADERS([ \
->     linux/mempolicy.h \
->     linux/module.h \
->     linux/netlink.h \
-> +    linux/ptrace.h \
-> +    linux/cgroupstats.h \
-> +    linux/taskstats.h \
-> +    linux/types.h \
->     sys/acl.h \
->     sys/epoll.h \
->     sys/inotify.h \
-> +    sys/ptrace.h \
-> +    sys/reg.h \
-> +    asm/ldt.h \
-> +    asm/ptrace.h \
->     sys/jfsdmapi.h \
->     sys/prctl.h \
-> +    sys/epoll.h \
-> +    sys/ptrace.h \
-> +    sys/reg.h \
-> +    sys/stat.h \
-> +    sys/time.h \
-> +    sys/types.h \
-> +    sys/vfs.h \
-> ])
->
->
-> and then run make - there previous fault in configure caused that  
-> there are wrong symbols in Makefiles - for example for my case.
->
-> microblaze-unknown-linux-gnu-gcc: @SELINUX_LIBS@: No such file or  
-> directory
->
-> which is caused by problems in configure.
->
-> Thanks for fixing,
-> Michal
->
-> -- 
-> Michal Simek, Ing. (M.Eng)
-> PetaLogix - Linux Solutions for a Reconfigurable World
-> w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+the ia64 change is incorrect.  there's ia64 ifdef hacks in there already wh=
+ich=20
+are to be used.
+
+the ppc64 issue is not ppc64 or ptrace specific.  garrett has a different f=
+ix=20
+in the pipeline for that.
+=2Dmike
+
+--nextPart1435338.gvPKonyVNS
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.13 (GNU/Linux)
+
+iQIcBAABAgAGBQJLIqXiAAoJEEFjO5/oN/WB2nkP/iXmLNu9sqYHk5+XVLLhihM9
+MJZbhvFdT8XDtOwC8hj5Y72ukR+VHJlEqKvxMVCMW7nPnOMbOsz4BogkAZHyBW+u
+SZVkpBDu1Hcxkhtv3TUxERJv2j56WSDW9zbrh95y8nB0veGqylnBHFADMnnX6M6z
+VvzEDe1dwbO+MrlGpkRGj4mmp3T3xdFV2L95z7bpKswk0AqF+sXID7ZMRaPb68mu
+vXlz7EEH+sIsx1kg/UTGr0LTEgri5T8SYnUO7UC2+KkQF3/Thh8KD3/77X7vtyp5
+/Ch228pUrTJKlu9WcsZQeOGXX9U4feT1HCx2tuQ3KGnrlKlDIQxWbYjyHGWE8GqW
+jRkttTpJ+HUretSVTxWkWAbajObsM4QiCZ1ij7xC+3ooraTn/UgNmlVTjw06F47+
+/ewmL2q6DmhYeauX7elSlj33F7s41h0KBZuJv7SNodFkkXJYG2tmY5eX/T7zJsAb
+e93Jxwiys8aANdIdG9Mef8aqBC4++PNEMHO8KsfSZwC6tXgverNrSs1DEhLUbN+N
+rzGlGi/8HD2EKIuvWpFnVLD3pQOc0k3WSuR0UcuItdEryqLH+i9nyrk6yRagyIv7
+HJjlE4PBNw51hMS/8+BxCACyuTdhIU3wKwvcsOv5I/7IAYborKUGafMwkiWBXbDe
+eAgj0iAS5Lxfuk/8PbBy
+=MwI8
+-----END PGP SIGNATURE-----
+
+--nextPart1435338.gvPKonyVNS--
+
+
+--===============2256503577300329977==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+Return on Information:
+Google Enterprise Search pays you back
+Get the facts.
+http://p.sf.net/sfu/google-dev2dev
+
+--===============2256503577300329977==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2256503577300329977==--
+
