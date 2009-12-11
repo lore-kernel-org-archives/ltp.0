@@ -1,35 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1NNUuI-0003Gk-DK
-	for ltp-list@lists.sourceforge.net; Wed, 23 Dec 2009 17:21:54 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NNUuC-0004xx-TG
-	for ltp-list@lists.sourceforge.net; Wed, 23 Dec 2009 17:21:54 +0000
-Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
-	[9.17.195.228])
-	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id nBNHEsTI001243
-	for <ltp-list@lists.sourceforge.net>; Wed, 23 Dec 2009 10:14:54 -0700
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nBNHLP7r184410
-	for <ltp-list@lists.sourceforge.net>; Wed, 23 Dec 2009 10:21:25 -0700
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id nBNHLO1U002652
-	for <ltp-list@lists.sourceforge.net>; Wed, 23 Dec 2009 10:21:25 -0700
-Date: Wed, 23 Dec 2009 11:21:22 -0600
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20091223172122.GA17627@us.ibm.com>
-References: <20091222171103.GA9810@us.ibm.com>
-	<364299f40912221657q3e94e322h4936e57b4298c054@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <364299f40912221657q3e94e322h4936e57b4298c054@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] containers: mqns: use libc's mq_open,
- not syscall(__NR_mq_open
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NJ5Q4-0004Qj-HJ
+	for ltp-list@lists.sourceforge.net; Fri, 11 Dec 2009 13:20:28 +0000
+Received: from mail-gx0-f224.google.com ([209.85.217.224])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NJ5Pz-0003as-2a
+	for ltp-list@lists.sourceforge.net; Fri, 11 Dec 2009 13:20:28 +0000
+Received: by gxk24 with SMTP id 24so976987gxk.6
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 11 Dec 2009 05:20:17 -0800 (PST)
+Mime-Version: 1.0 (Apple Message framework v1077)
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <000401ca78a3$56963f50$03c2bdf0$@co.jp>
+Date: Fri, 11 Dec 2009 05:20:14 -0800
+Message-Id: <B84CCDD1-BBED-4243-9A6B-16BAD25D61FC@gmail.com>
+References: <000001ca77ef$78ed7f00$6ac87d00$@co.jp>
+	<364299f40912082106x43632a8ble8bc334070510932@mail.gmail.com>
+	<000401ca78a3$56963f50$03c2bdf0$@co.jp>
+Subject: Re: [LTP] Build failure with ltp-2009-12-08 cvs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,187 +29,93 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net
 
-Quoting Garrett Cooper (yanegomi@gmail.com):
-> On Tue, Dec 22, 2009 at 9:11 AM, Serge E. Hallyn <serue@us.ibm.com> wrote:
-> > The glibc version removes the leading '/' from the message queue name.
-> > Not doing so makes the system call fail. =A0We could just remove the
-> > '/' from SLASH_MQ1, if for some reason that were preferred, but using
-> > glibc functions when possible seems cleaner to me.
-> >
-> > Signed-off-by: Serge Hallyn <serue@us.ibm.com>
-> > ---
-> > =A0testcases/kernel/containers/mqns/mqns_01.c | =A0 =A09 ++++-----
-> > =A0testcases/kernel/containers/mqns/mqns_02.c | =A0 =A08 +++-----
-> > =A0testcases/kernel/containers/mqns/mqns_03.c | =A0 =A03 +--
-> > =A0testcases/kernel/containers/mqns/mqns_04.c | =A0 =A02 +-
-> > =A04 files changed, 9 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/testcases/kernel/containers/mqns/mqns_01.c b/testcases/ker=
-nel/containers/mqns/mqns_01.c
-> > index 7f41b2d..2f3bf8e 100644
-> > --- a/testcases/kernel/containers/mqns/mqns_01.c
-> > +++ b/testcases/kernel/containers/mqns/mqns_01.c
-> > @@ -55,7 +55,7 @@ int check_mqueue(void *vtest)
-> >
-> > =A0 =A0 =A0 =A0if (read(p1[0], buf, strlen("go") + 1) < 0)
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(TBROK | TERRNO, "read(p1[0], ..=
-.) failed");
-> > - =A0 =A0 =A0 mqd =3D syscall(__NR_mq_open, SLASH_MQ1, O_RDONLY);
-> > + =A0 =A0 =A0 mqd =3D mq_open(SLASH_MQ1, O_RDONLY);
-> > =A0 =A0 =A0 =A0if (mqd =3D=3D -1) {
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (write(p2[1], "notfnd", strlen("notfn=
-d") + 1) < 0)
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(TBROK | TERRNO,=
- "write(p2[1], ...) failed");
-> > @@ -86,8 +86,7 @@ main(int argc, char *argv[])
-> > =A0 =A0 =A0 =A0if (pipe(p1) =3D=3D -1) { perror("pipe"); exit(EXIT_FAIL=
-URE); }
-> > =A0 =A0 =A0 =A0if (pipe(p2) =3D=3D -1) { perror("pipe"); exit(EXIT_FAIL=
-URE); }
-> >
-> > - =A0 =A0 =A0 mqd =3D syscall(__NR_mq_open, SLASH_MQ1, O_RDWR|O_CREAT|O=
-_EXCL, 0777,
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 NULL);
-> > + =A0 =A0 =A0 mqd =3D mq_open(SLASH_MQ1, O_RDWR|O_CREAT|O_EXCL, 0777, N=
-ULL);
-> > =A0 =A0 =A0 =A0if (mqd =3D=3D -1) {
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0perror("mq_open");
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(TFAIL, "mq_open failed\n");
-> > @@ -100,7 +99,7 @@ main(int argc, char *argv[])
-> > =A0 =A0 =A0 =A0if (r < 0) {
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(TFAIL, "failed clone/unshare\n"=
-);
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0mq_close(mqd);
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 syscall(__NR_mq_unlink, SLASH_MQ1);
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 mq_unlink(SLASH_MQ1);
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_exit();
-> > =A0 =A0 =A0 =A0}
-> >
-> > @@ -122,7 +121,7 @@ main(int argc, char *argv[])
-> >
-> > =A0 =A0 =A0 =A0/* destroy the mqueue */
-> > =A0 =A0 =A0 =A0mq_close(mqd);
-> > - =A0 =A0 =A0 syscall(__NR_mq_unlink, SLASH_MQ1);
-> > + =A0 =A0 =A0 mq_unlink(SLASH_MQ1);
-> >
-> > =A0 =A0 =A0 =A0tst_exit();
-> > =A0}
-> > diff --git a/testcases/kernel/containers/mqns/mqns_02.c b/testcases/ker=
-nel/containers/mqns/mqns_02.c
-> > index aa78f65..5343d5b 100644
-> > --- a/testcases/kernel/containers/mqns/mqns_02.c
-> > +++ b/testcases/kernel/containers/mqns/mqns_02.c
-> > @@ -60,8 +60,7 @@ int check_mqueue(void *vtest)
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(TBROK | TERRNO, "read(p1[0], ..=
-) failed");
-> > =A0 =A0 =A0 =A0else {
-> >
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 mqd =3D syscall(__NR_mq_open, SLASH_MQ1, =
-O_RDWR|O_CREAT|O_EXCL,
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 0777, NUL=
-L);
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 mqd =3D mq_open(SLASH_MQ1, O_RDWR|O_CREAT=
-|O_EXCL, 0777, NULL);
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (mqd =3D=3D -1) {
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (write(p2[1], "mqfail=
-", strlen("mqfail") + 1) < 0) {
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm=
-(TBROK | TERRNO,
-> > @@ -85,8 +84,7 @@ int check_mqueue(void *vtest)
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0if (mq_close(mqd) < 0) {
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 =A0tst_resm(TBROK | TERRNO,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"mq_close(mqd) failed");
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 } else if (syscall(__NR_mq_unlink,
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SLASH_MQ1) < 0) {
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 } else if (mq_unlink(SLASH_MQ1) < 0) {
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 =A0tst_resm(TBROK | TERRNO,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"mq_unlink(" SLASH_MQ1
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0") failed");
-> > @@ -153,7 +151,7 @@ int main(int argc, char *argv[])
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_exit();
-> > =A0 =A0 =A0 =A0} else {
-> >
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 mqd =3D syscall(__NR_mq_open, SLASH_MQ1, =
-O_RDONLY);
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 mqd =3D mq_open(SLASH_MQ1, O_RDONLY);
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (mqd =3D=3D -1) {
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(TPASS, "Parent =
-process can't see the mqueue\n");
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
-> > diff --git a/testcases/kernel/containers/mqns/mqns_03.c b/testcases/ker=
-nel/containers/mqns/mqns_03.c
-> > index 3c9e83e..6a841b8 100644
-> > --- a/testcases/kernel/containers/mqns/mqns_03.c
-> > +++ b/testcases/kernel/containers/mqns/mqns_03.c
-> > @@ -63,8 +63,7 @@ int check_mqueue(void *vtest)
-> >
-> > =A0 =A0 =A0 =A0read(p1[0], buf, 3); /* go */
-> >
-> > - =A0 =A0 =A0 mqd =3D syscall(__NR_mq_open, SLASH_MQ1, O_RDWR|O_CREAT|O=
-_EXCL, 0755,
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 NULL);
-> > + =A0 =A0 =A0 mqd =3D mq_open(SLASH_MQ1, O_RDWR|O_CREAT|O_EXCL, 0755, N=
-ULL);
-> > =A0 =A0 =A0 =A0if (mqd =3D=3D -1) {
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0write(p2[1], "mqfail", 7);
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_exit();
-> > diff --git a/testcases/kernel/containers/mqns/mqns_04.c b/testcases/ker=
-nel/containers/mqns/mqns_04.c
-> > index 8a4a9c2..6ce9e34 100644
-> > --- a/testcases/kernel/containers/mqns/mqns_04.c
-> > +++ b/testcases/kernel/containers/mqns/mqns_04.c
-> > @@ -59,7 +59,7 @@ int check_mqueue(void *vtest)
-> >
-> > =A0 =A0 =A0 =A0read(p1[0], buf, 3); /* go */
-> >
-> > - =A0 =A0 =A0 mqd =3D syscall(__NR_mq_open, SLASH_MQ1, O_RDWR|O_CREAT|O=
-_EXCL, 0755,
-> > + =A0 =A0 =A0 mqd =3D mq_open(SLASH_MQ1, O_RDWR|O_CREAT|O_EXCL, 0755,
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0NULL);
-> > =A0 =A0 =A0 =A0if (mqd =3D=3D -1) {
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0write(p2[1], "mqfail", 7);
-> =
 
->     The problem with this is that we're instead testing indirectly via
-> libc instead of directly via syscall(2). Why not just have two
+On Dec 8, 2009, at 11:43 PM, Mitani wrote:
 
-Yup - we're testing the namespaces here, not the mq_open syscall itself,
-so I wasn't sure whether we minded inadvertently testing libc as well.
-(The mq_open() also is cleaner to read)
+> RHEL4.8's kernel version is 2.6.9-89.ELsmp.
+> Fedora 3 has kernel 2.6.9-1.667.
+> 
+> But Fedora3 and RHEL4.8 diverged halfway, and now they seem to be
+> different each other.
+> 
+> If you want some other informations, I offer them.
+> 
+> 
+> 
+> I heard that CentOS4.8 had kernel of the version same as RHEL4.8.
+> 
+> Thank you--
+> 
+> -Tomonori Mitani
+> 
+> -----Original Message-----
+> From: Garrett Cooper [mailto:yanegomi@gmail.com] 
+> Sent: Wednesday, December 09, 2009 2:07 PM
+> To: Mitani
+> Cc: ltp-list@lists.sourceforge.net
+> Subject: Re: [LTP] Build failure with ltp-2009-12-08 cvs
+> 
+> On Tue, Dec 8, 2009 at 2:16 AM, Mitani <mitani@ryobi.co.jp> wrote:
+>> Hi,
+>> 
+>> 
+>> I tried to "make" with "ltp-2009-12-08.tar.gz" version
+>> in RHEL4.8 (kernel 2.6.9-89.ELsmp) and x86 architecture.
+>> 
+>> But it failed by following message:
+>> 
+>> ------------
+>> make[4]: Entering directory
+>> `/home/LTP/ltp-2009-12-08/testcases/kernel/syscalls/get_mempolicy'
+>> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+>> -I/home/LTP/ltp-2009-12-08/testcases/kernel/include
+>> 
+> -I/home/LTP/ltp-2009-12-08/testcases/kernel/syscalls/get_mempolicy/../utils
+>> -I../../../../include -I../../../../include   -L../../../../lib
+>> get_mempolicy01.c   -lltp -lnuma -o get_mempolicy01
+>> In file included from get_mempolicy01.c:58:
+>> 
+> /home/LTP/ltp-2009-12-08/testcases/kernel/syscalls/get_mempolicy/../utils/nu
+>> maif.h:88: error: redefinition of 'nodemask_set'
+>> /usr/include/numa.h:45: error: previous definition of 'nodemask_set' was
+>> here
+>> make[4]: *** [get_mempolicy01] Error 1
+>> make[4]: Leaving directory
+>> `/home/LTP/ltp-2009-12-08/testcases/kernel/syscalls/get_mempolicy'
+>> make[3]: *** [all] Error 2
+>> ------------
+>> 
+>> For reference, "make" succeeded in my following systems:
+>>  - RHEL5.4 (kernel 2.6.18-164.el5) and x86 architecture
+>>  - RHEL5.4 (kernel 2.6.18-164.el5) and x86_64 architecture
+>> 
+>> 
+>> "nodemask_set" is the structure whitch defined in following two header
+>> files:
+>>  (a) "${LTPROOT}/testcases/kernel/syscalls/utils/numaif.h"
+>>  (b) "/usr/include/numa.h"
+>> 
+>> In "numaif.h" file, definition is as follows:
+> 
+> Mitani-san,
+>    This issue keeps on coming back to haunt us. Can you tell me what
+> the Fedora Core equivalent of RHEL 4.8 is so I can isolate and resolve
+> the issue?
 
-> constants -- one that has a slash and one that doesn't? Seems like
-> it'd be simple to implement...
-
-<shrug>  yup, that's why I made sure to make that clear, that's the
-other way, and will work just fine.
-
-(I'm actually out for the rest of this week, back monday)
-
--serge
-
----------------------------------------------------------------------------=
----
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev =
-
+    Ok, finally fixed. The problem was that you have a version 1 copy of numa.h, and the newer headers don't have that that definition out of the box.
+Thanks,
+-Garrett
+------------------------------------------------------------------------------
+Return on Information:
+Google Enterprise Search pays you back
+Get the facts.
+http://p.sf.net/sfu/google-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
