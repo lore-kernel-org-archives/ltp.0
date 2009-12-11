@@ -1,38 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NGDLZ-0008DA-LW
-	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:11:57 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NGDLS-0002eN-Ps
-	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:11:57 +0000
-Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
-	by e8.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nB3F73IR025895
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 10:07:03 -0500
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nB3FBhEI033146
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 10:11:43 -0500
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	nB3FBhJQ009047
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 10:11:43 -0500
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4B0E6E6D.1070700@cn.fujitsu.com>
-References: <4AE54BCA.7060104@cn.fujitsu.com>
-	<1256563577.4929.35.camel@subratamodak.linux.ibm.com>
-	<C3A9583B-F6C5-4BCC-8D7E-876FA4D62D57@sun.com>
-	<1256650551.4957.33.camel@subratamodak.linux.ibm.com>
-	<1256841114.5210.25.camel@subratamodak.linux.ibm.com>
-	<1257170360.4977.58.camel@subratamodak.linux.ibm.com>
-	<4B0E6E6D.1070700@cn.fujitsu.com>
-Date: Thu, 03 Dec 2009 20:41:22 +0530
-Message-Id: <1259853087.5085.34.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Add new testcases for ext4 new features - V3
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <czhang@redhat.com>) id 1NIukA-0003rx-PJ
+	for ltp-list@lists.sourceforge.net; Fri, 11 Dec 2009 01:56:30 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NIuk2-0004xM-V0
+	for ltp-list@lists.sourceforge.net; Fri, 11 Dec 2009 01:56:30 +0000
+Date: Thu, 10 Dec 2009 20:56:06 -0500 (EST)
+From: Caspar Zhang <czhang@redhat.com>
+Message-ID: <1808828661.200561260496566142.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1260446771.7501.8.camel@subratamodak.linux.ibm.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH]fix compile error on ppc64 in RHEL5
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,301 +23,59 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: miaox@cn.fujitsu.com
-Cc: LTP-ML <ltp-list@lists.sourceforge.net>
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net
 
-Hi Miao,
-
-On Thu, 2009-11-26 at 20:02 +0800, Miao Xie wrote: 
-> Hi, Subrata
-> 
-> on 2009-11-2 21:59, Subrata Modak wrote:
-> >>>>> /dev/VG1_EXT4/LV1_EXT4: The test_fs flag is set (and ext4 is  
-> >>>>> available).
-> >>>>> CLEARED.
-> >>>> You don't need to set the test_fs flag for modern ext4.
-> >>> Can we change this ?
-> 
-> The attached patch can fix this problem.
-
-I had already checked in your earlier patch long back. So, you would
-please need to resend over the latest code.
-
-Regards--
-Subrata
-
-> 
-> >>> However, it is also accompanied by the following failures in the online-defrag part:
-> >>> ========================================================================================
-> >>> ext4-online-defrag    0  TINFO  :  defrag type: 1, defrag obj: 3, block size: 1024
-> [snip]
-> >>> ext4-online-defrag    3  TFAIL  :  e4defrag returned failure
-> [snip]
-> >>> ext4-online-defrag    0  TINFO  :  defrag type: 2, defrag obj: 3, block size: 1024
-> [snip]
-> >>> ext4-online-defrag    6  TFAIL  :  e4defrag returned failure
-> >>> ext4-online-defrag    0  TINFO  :  defrag type: 3, defrag obj: 1, block size: 1024
-> [snip]
-> >>> ext4-online-defrag    7  TFAIL  :  e4defrag returned failure
-> >>> ext4-online-defrag    0  TINFO  :  defrag type: 3, defrag obj: 2, block size: 1024
-> [snip]
-> >>> File is not regular file
-> >>>  "/dev/VG1_EXT4/LV1_EXT4"
-> >>> ext4-online-defrag    8  TFAIL  :  e4defrag returned failure
-> >>> ext4-online-defrag    0  TINFO  :  defrag type: 3, defrag obj: 3, block size: 1024
-> [snip]
-> >>> ext4-online-defrag    9  TFAIL  :  e4defrag returned failure
-> >>> ...
-> >>> ext4-online-defrag    0  TINFO  :  defrag type: 3, defrag obj: 2, block size: 4096
-> [snip]
-> >>> File is not regular file
-> >>>  "/dev/VG1_EXT4/LV1_EXT4"
-> >>> ext4-online-defrag   17  TFAIL  :  e4defrag returned failure
-> >>> ext4-online-defrag    0  TINFO  :  defrag type: 3, defrag obj: 3, block size: 4096
-> [snip]
-> >>> File is not regular file
-> >>>  "/dev/VG1_EXT4/LV1_EXT4"
-> >>> ext4-online-defrag   18  TFAIL  :  e4defrag returned failure
-> >>> incrementing stop
-> >>> ========================================================================================
-> >>> Did you see these failure on your machine ?
-> >> Your take on this ?
-> 
-> I didn't find these failure on my box.
-> The attached patch opens the verbose mode of e4defrag to get more information later, it is
-> useful to find the problem of online defrag.
-> So, Could you test it again and send the output info to me?
-> 
-> >>
-> >>> Some more points are:
-> >>>
-> >>>      1. Can you please run these tests against the backdrop of the
-> >>>         Makefile changes in LTP to see all the build/install/run are
-> >>>         executing fine,
-> >> Could you please verify this before this release. Let me know a patch if
-> >> you find any discrepancy :-)
-> 
-> The attached patch can fix this problem.
-> 
-> >>
-> >>> 2. Can you also please put all the utilities version info at the
-> >>>         beginning of the test rather than printing them again and
-> >>>         again(like mke2fs 1.41.9 (22-Aug-2009),tune2fs 1.41.9
-> >>>         (22-Aug-2009),dumpe2fs 1.41.9 (22-Aug-2009),dumpe2fs 1.41.9
-> >>>         (22-Aug-2009))
-> >> This can go in the next month release as well, if you do not have time
-> >> to fix now. Else, i have a bug mouth to eat this as well ;-)
-> 
-> The attached patch can fix this problem.
-> 
-> 
-> This patch can fix the following problem:
-> -- delete the code of setting the test_fs flag
-> -- open the verbose mode of e4defrag, it is useful to find the problem of online defrag
-> -- fix some bug of the Makefile
-> -- throw the utilities version info away
-> 
-> Signed-off-by: Miao Xie <miaox@cn.fujitsu.com>
-> ---
-> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh b/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
-> index 63c614c..be7b074 100755
-> --- a/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
-> +++ b/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
-> @@ -85,8 +85,7 @@ ext4_test_remount()
->   # $4: auto_da_alloc
->   ext4_test_delalloc_mballoc()
->   {
-> -	tst_resm TINFO "isDelalloc: $1, isDirectIO: $2, Blocksize: $3, \
-> -		isAuto_da_alloc: $4"
-> +	tst_resm TINFO "isDelalloc: $1, isDirectIO: $2, Blocksize: $3, isAuto_da_alloc: $4"
-> 
->   	mkfs.ext4 -I 256 -b $3 /$EXT4_DEV &> /dev/null
->   	if [ $? -ne 0 ]; then
-> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh
-> index 8f5c907..0e7a8b6 100755
-> --- a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh
-> +++ b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh
-> @@ -24,7 +24,7 @@
->   #$2: 1  - return inode version by return value
->   #    !1 - writting inode version to stddev
-> 
-> -inode_version=`debugfs -R "stat $1" $EXT4_DEV | grep 'Version' | awk '{
-> +inode_version=`debugfs -R "stat $1" $EXT4_DEV 2> /dev/null | grep 'Version' | awk '{
->   print $NF }'`
-> 
->   # The inode_version's format: '0x0000000a' or '0x00000000:0000000a',
-> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
-> index 4798e99..4a58b36 100755
-> --- a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
-> +++ b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
-> @@ -67,7 +67,7 @@ ext4_test_128_inode_version()
->   	fi
-> 
->   	# inode version is 32 bits: 0x00000000
-> -	version=`debugfs $EXT4_DEV -R "stat tmp_file" | grep 'Version'`
-> +	version=`debugfs $EXT4_DEV -R "stat tmp_file" 2> /dev/null | grep 'Version'`
->   	version=`echo $version | awk '{ print $NF }'`
->   	version=`echo $version | sed 's/^0x//'`
->   	len=${#version}
-> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
-> index 310eaa0..eb72b5d 100755
-> --- a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
-> +++ b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
-> @@ -59,9 +59,9 @@ ext4_test_journal_checksum()
->   		async_commit="Used"
->   	fi
-> 
-> -	tst_resm TINFO "journal mode: $1, commit interval: $2, \
-> -		journal_checksum: $checksum, \
-> -		journal_async_commit: $async_commit, barrier: $5"
-> +	tst_resm TINFO "journal mode: $1, commit interval: $2, " \
-> +		"journal_checksum: $checksum, " \
-> +		"journal_async_commit: $async_commit, barrier: $5"
-> 
->   	mkfs.ext4 -I 256 $EXT4_DEV &> /dev/null
->   	if [ $? -ne 0 ]; then
-> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
-> index 3747783..c901758 100755
-> --- a/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
-> +++ b/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
-> @@ -126,13 +126,15 @@ ext4_test_online_defrag()
-> 
->   	tst_resm TINFO "defrag type: $1, defrag obj: $2, block size: $3"
-> 
-> -	mkfs.ext4 -m 0 -b $3 -O ^flex_bg $EXT4_DEV &> /dev/null
-> +	mkfs.ext4 -m 0 -b $3 -O ^flex_bg $EXT4_DEV &>> \
-> +		$LTPROOT/output/ext4_online_defrag_result.txt
->   	if [ $? -ne 0 ]; then
->   		tst_resm TFAIL "failed to create ext4 filesystem"
->   		return 1
->   	fi
-> 
-> -	tune2fs -O extents $EXT4_DEV &> /dev/null
-> +	tune2fs -O extents $EXT4_DEV &>> \
-> +		 $LTPROOT/output/ext4_online_defrag_result.txt
-> 
->   	mount -t ext4 -o nodelalloc $EXT4_DEV mnt_point
->   	if [ $? -ne 0 ]; then
-> @@ -140,9 +142,9 @@ ext4_test_online_defrag()
->   		return 1
->   	fi
-> 
-> -	age_filesystem $2 $1 >> $LTPROOT/output/ext4_online_defrag_result.txt
-> +	age_filesystem $2 $1 &>> $LTPROOT/output/ext4_online_defrag_result.txt
-> 
-> -	my_e4defrag $1 $2 >> $LTPROOT/output/ext4_online_defrag_result.txt
-> +	my_e4defrag $1 $2 &>> $LTPROOT/output/ext4_online_defrag_result.txt
->   	if [ $? -ne 0 ]; then
->   		tst_resm TFAIL "e4defrag returned failure"
->   		umount mnt_point
-> @@ -155,13 +157,14 @@ ext4_test_online_defrag()
->   		return 1
->   	fi
-> 
-> -	e2fsck -p $EXT4_DEV &> /dev/null
-> +	e2fsck -p $EXT4_DEV &>> \
-> +		 $LTPROOT/output/ext4_online_defrag_result.txt
->   	if [ $? -ne 0 ]; then
->   		tst_resm TFAIL "fsck returned failure"
->   		return 1
->   	fi
-> 
-> -	tst_resm TPASS "ext4 online defrag test pass(defrag type: $1, Aging: $2, block size: $3)"
-> +	tst_resm TPASS "ext4 online defrag test pass"
->   }
-> 
->   # main
-> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
-> index 1483191..97b11ab 100755
-> --- a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
-> +++ b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
-> @@ -59,8 +59,8 @@ ext4_run_case()
->   		dir_name_len="long name"
->   	fi
-> 
-> -	tst_resm TINFO "Num of dirs to create: $1, Dir name len: $dir_name_len \
-> -			Parent dir: $3, Block size: $4"
-> +	tst_resm TINFO "Num of dirs to create: $1, Dir name len: $dir_name_len, " \
-> +			"Parent dir: $3, Block size: $4"
-> 
->   	# only mkfs if block size has been changed,
->   	# or previous case failed
-> @@ -127,7 +127,7 @@ ext4_run_case()
->   	fi
-> 
->   	# check dir_nlink is set
-> -	dumpe2fs $EXT4_DEV | grep '^Filesystem features' | grep -q dir_nlink
-> +	dumpe2fs $EXT4_DEV 2> /dev/null | grep '^Filesystem features' | grep -q dir_nlink
->   	if [ $? -ne 0 ]; then
->   		tst_resm TFAIL "feature dir_nlink is not set"
->   		return 1
-> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
-> index 88fbfa9..c3fe386 100755
-> --- a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
-> +++ b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
-> @@ -40,8 +40,8 @@ LARGE=3
->   # filesystem free size in bytes: blocks_size * free_blocks
->   filesystem_free_size()
->   {
-> -	bsize=`dumpe2fs -h $EXT4_DEV | grep 'Block size' | awk '{ print $2 }'`
-> -	blocks=`dumpe2fs -h $EXT4_DEV | grep 'Free blocks'| awk '{ print $2 }'`
-> +	bsize=`dumpe2fs -h $EXT4_DEV 2> /dev/null | grep 'Block size' | awk '{ print $2 }'`
-> +	blocks=`dumpe2fs -h $EXT4_DEV 2> /dev/null | grep 'Free blocks'| awk '{ print $2 }'`
-> 
->   	echo $bsize * $blocks
->   }
-> @@ -61,9 +61,9 @@ age_filesystem()
->   		}
->   	elif [ $1 -eq $LARGE ]; then
->   		rm -rf mnt_point/*
-> -		bsize=`dumpe2fs -h $EXT4_DEV | grep 'Block size'`
-> +		bsize=`dumpe2fs -h $EXT4_DEV 2> /dev/null | grep 'Block size'`
->   		bsize=`echo $bsize | awk '{ print $3 }'`
-> -		bcount=`dumpe2fs -h $EXT4_DEV | grep 'Free blocks'`
-> +		bcount=`dumpe2fs -h $EXT4_DEV 2> /dev/null | grep 'Free blocks'`
->   		bcount=`echo $bcount | awk '{ print $3 }'`
->   		dd if=/dev/zero of=mnt_point/tmp_dir bs=$bsize count=$bcount
->   	else
-> @@ -80,6 +80,8 @@ age_filesystem()
->   # $4: age filesystem: $EMPTY, $SMALL, $LARGE
->   ext4_test_uninit_groups()
->   {
-> +	echo "Test $TST_COUNT" >> $LTPROOT/output/ext4_uninit_groups_result.txt
-> +
->   	mkfs.ext4 -I 256 -m 0 $EXT4_DEV &> /dev/null
->   	if [ $? -ne 0 ]; then
->   		tst_resm TFAIL "failed to create ext4 filesystem"
-> @@ -103,7 +105,7 @@ ext4_test_uninit_groups()
->   		return 1
->   	fi
-> 
-> -	age_filesystem $4
-> +	age_filesystem $4 &>> $LTPROOT/output/ext4_uninit_groups_result.txt
->   	if [ $? -ne 0 ]; then
->   		tst_resm TFAIL "age filesystem failed"
->   		umount mnt_point
-> @@ -135,6 +137,8 @@ AGING=( $EMPTY $SMALL $LARGE )
-> 
->   RET=0
-> 
-> +rm -f $LTPROOT/output/ext4_uninit_groups_result.txt
-> +
->   for ((i = 0; i < 2; i++))
->   {
->   	for ((j = 0; j < 2; j++))
-> --
-> 
-
-
-------------------------------------------------------------------------------
-Join us December 9, 2009 for the Red Hat Virtual Experience,
-a free event focused on virtualization and cloud computing. 
-Attend in-depth sessions from your desk. Your couch. Anywhere.
-http://p.sf.net/sfu/redhat-sfdev2dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+Ci0tLS0tICJTdWJyYXRhIE1vZGFrIiA8c3VicmF0YUBsaW51eC52bmV0LmlibS5jb20+IHdyb3Rl
+OgoKPiBIaSBDYXNwYXIsCj4gCj4gSSBqdXN0IGhhdmUgMSBxdWVzdGlvbiBiZWxvdzoKPiAKPiBP
+biBXZWQsIDIwMDktMTItMDkgYXQgMjE6MTIgLTA1MDAsIENhc3BhciBaaGFuZyB3cm90ZToKPiA+
+IEhpIGFsbCwKPiA+ICAKPiA+IFdoZW4gSSBjb21waWxlIGx0cC1mdWxsLTIwMDkxMTMwIG9uIHBw
+YzY0IG1hY2hpbmUgd2hpY2ggc3lzdGVtIGlzCj4gPiBSSEVMNShrZXJuZWwgMi42LjE4KSwgSSBt
+ZXQgY29tcGlsZSBlcnJvciBhcyBmb2xsb3dzOgo+ID4gCj4gPiBbLi4uXQo+ID4gcHRyYWNlMDQu
+YzogSW4gZnVuY3Rpb24g4oCYY29tcGFyZV9yZWdpc3RlcnPigJk6Cj4gPiBwdHJhY2UwNC5jOjU5
+OiBlcnJvcjog4oCYUFRSQUNFX0dFVFJFR1PigJkgdW5kZWNsYXJlZCAoZmlyc3QgdXNlIGluCj4g
+dGhpcwo+ID4gZnVuY3Rpb24pCj4gPiBwdHJhY2UwNC5jOjU5OiBlcnJvcjogKEVhY2ggdW5kZWNs
+YXJlZCBpZGVudGlmaWVyIGlzIHJlcG9ydGVkIG9ubHkKPiA+IG9uY2UKPiA+IHB0cmFjZTA0LmM6
+NTk6IGVycm9yOiBmb3IgZWFjaCBmdW5jdGlvbiBpdCBhcHBlYXJzIGluLikKPiA+IG1ha2VbNV06
+ICoqKiBbcHRyYWNlMDRdIEVycm9yIDEKPiA+IFsuLi5dCj4gPiAKPiA+IEl0IHNlZW1zIGxpa2Ug
+dGhlcmUncyBubyBQVFJBQ0VfR0VUUkVHUyBpbgo+IC91c3IvaW5jbHVkZS9hc20vcHRyYWNlLmgK
+PiA+IGluIG9sZCBrZXJuZWxzLCBzbyBJIGNvcHkgdGhlIGRlZmluaXRpb25zIGZyb20gbmV3IHZl
+cnNpb24gb2YgdGhlCj4gPiBoZWFkIGZpbGUgYW5kIG15IGx0cCBvbiBwcGM2NCwgUkhFTDUgd29y
+a3MuCj4gCj4gQXJlIHRoZXNlIG5vcy4gc2ltaWxhciBhY3Jvc3MgYWxsIGFyY2hzID8gSWYgdGhl
+eSBhcmUgc3BlY2lmaWMgb25seQo+IHRvCj4gUFBDLCB5b3UgY2FuIHRoZW4gYWRkIHRoZSBmb2xs
+b3dpbmcgMiBtb3JlIGxpbmVzIHRvIHlvdXIgcGF0Y2g6Cj4gCj4gPiAKPiA+IFRoYW5rcywKPiA+
+IENhc3BhciAKPiA+IAo+ID4gCj4gPiAKPiA+IAo+ID4gCj4gPiAKPiA+IGRpZmZlcmVuY2VzCj4g
+PiBiZXR3ZWVuIGZpbGVzCj4gPiBhdHRhY2htZW50Cj4gPiAocmhlbDUtcHBjLVBUUkFDRV9HRVRS
+RUdTLWNvbXBpbGUtZXJyLnBhdGNoKQo+ID4gCj4gPiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tl
+cm5lbC9zeXNjYWxscy9wdHJhY2UvcHRyYWNlLmgKPiA+IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNj
+YWxscy9wdHJhY2UvcHRyYWNlLmgKPiA+IGluZGV4IGEwZDI3MDguLmUzZmNiYjIgMTAwNjQ0Cj4g
+PiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3B0cmFjZS9wdHJhY2UuaAo+ID4gKysr
+IGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9wdHJhY2UvcHRyYWNlLmgKPiA+IEBAIC0zNyw0
+ICszNywyNyBAQCB0eXBlZGVmIHN0cnVjdCB1c2VyX3JlZ3Nfc3RydWN0IHB0cmFjZV9yZWdzOwo+
+ID4gICN1bmRlZiBIQVZFX1NUUlVDVF9QVFJBQ0VfUkVHUwo+ID4gICNlbmRpZgo+ID4gCj4gPiAr
+Lyogb2xkIGtlcm5lbCBkb2Vzbid0IGhhdmUgUFRSQUNFX0dFVFJFR1Mgb24gcHBjNjQgKi8KPiA+
+ICsvKiAobmV3KSBQVFJBQ0UgcmVxdWVzdHMgdXNpbmcgdGhlIHNhbWUgbnVtYmVycyBhcyB4ODYg
+YW5kIHRoZQo+IHNhbWUKPiA+ICsgKiBhcmd1bWVudCBvcmRlcmluZy4gQWRkaXRpb25hbGx5LCB0
+aGV5IHN1cHBvcnQgbW9yZSByZWdpc3RlcnMKPiB0b28KPiA+ICsgKi8KPiAKPiAjaWYgZGVmaW5l
+ZChwb3dlcnBjKSB8fCBkZWZpbmVkKF9fcG93ZXJwY19fKSB8fCBkZWZpbmVkKF9fcHBjX18pIHx8
+Cj4gZGVmaW5lZCAoX19QUENfXykKCkFoLCB5ZXMuIFRoYXQgc291bmRzIHJlYXNvbmFibGUsIHRo
+YW50IHlvdSEKCkNhc3BhcgoKCj4gPiArI2lmbmRlZiBQVFJBQ0VfR0VUUkVHUwo+ID4gKyMgZGVm
+aW5lIFBUUkFDRV9HRVRSRUdTICAgICAgICAgICAgMTIKPiA+ICsjZW5kaWYKPiA+ICsjaWZuZGVm
+IFBUUkFDRV9TRVRSRUdTCj4gPiArIyBkZWZpbmUgUFRSQUNFX1NFVFJFR1MgICAgICAgICAgICAx
+Mwo+ID4gKyNlbmRpZgo+ID4gKyNpZm5kZWYgUFRSQUNFX0dFVEZQUkVHUwo+ID4gKyMgZGVmaW5l
+IFBUUkFDRV9HRVRGUFJFR1MgICAgICAgICAgMTQKPiA+ICsjZW5kaWYKPiA+ICsjaWZuZGVmIFBU
+UkFDRV9TRVRGUFJFR1MKPiA+ICsjIGRlZmluZSBQVFJBQ0VfU0VURlBSRUdTICAgICAgICAgIDE1
+Cj4gPiArI2VuZGlmCj4gPiArI2lmbmRlZiBQVFJBQ0VfR0VUUkVHUzY0Cj4gPiArIyBkZWZpbmUg
+UFRSQUNFX0dFVFJFR1M2NCAgICAgICAgICAyMgo+ID4gKyNlbmRpZgo+ID4gKyNpZm5kZWYgUFRS
+QUNFX1NFVFJFR1M2NAo+ID4gKyMgZGVmaW5lIFBUUkFDRV9TRVRSRUdTNjQgICAgICAgICAgMjMK
+PiA+ICsjZW5kaWYKPiA+ICsKPiA+ICAjZW5kaWYKPiAKPiAjZW5kaWYKPiAKPiBSZWdhcmRzLS0K
+PiBTdWJyYXRhCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KUmV0dXJuIG9uIEluZm9ybWF0aW9uOgpH
+b29nbGUgRW50ZXJwcmlzZSBTZWFyY2ggcGF5cyB5b3UgYmFjawpHZXQgdGhlIGZhY3RzLgpodHRw
+Oi8vcC5zZi5uZXQvc2Z1L2dvb2dsZS1kZXYyZGV2Cl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0
+cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlz
+dGluZm8vbHRwLWxpc3QK
