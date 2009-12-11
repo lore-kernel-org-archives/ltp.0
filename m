@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NMadQ-0001dE-IQ
-	for ltp-list@lists.sourceforge.net; Mon, 21 Dec 2009 05:16:44 +0000
-Received: from mail-pw0-f43.google.com ([209.85.160.43])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NMadP-0004Cc-KY
-	for ltp-list@lists.sourceforge.net; Mon, 21 Dec 2009 05:16:44 +0000
-Received: by pwj11 with SMTP id 11so3254802pwj.2
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 20 Dec 2009 21:16:37 -0800 (PST)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1NJ1hB-0006Pi-IY
+	for ltp-list@lists.sourceforge.net; Fri, 11 Dec 2009 09:21:53 +0000
+Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
+	by sfi-mx-4.v28.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1NJ1h5-0001st-24
+	for ltp-list@lists.sourceforge.net; Fri, 11 Dec 2009 09:21:53 +0000
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Fri, 11 Dec 2009 18:21:37 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Fri, 11 Dec 2009 18:21:37 +0900
+Message-ID: <000001ca7a43$574a3900$05deab00$@co.jp>
 MIME-Version: 1.0
-In-Reply-To: <000001ca81f5$53bbaee0$fb330ca0$@co.jp>
-References: <000001ca81f5$53bbaee0$fb330ca0$@co.jp>
-Date: Sun, 20 Dec 2009 21:16:37 -0800
-Message-ID: <364299f40912202116m4505241cg90a33cac08556652@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] "unzip01" testcase failed.
+Content-Language: ja
+Subject: [LTP] "cgroup_fj" and "cgroup" have problems?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,100 +27,95 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Sun, Dec 20, 2009 at 8:23 PM, Mitani <mitani@ryobi.co.jp> wrote:
-> Hi,
->
-> I found that "unzip01" testcase failed as follows.
-> ----------
-> unzip01 =A0 =A0 1 =A0TFAIL =A0: =A0Test #1: unzip output differs from exp=
-ected output.
-> Details
-> ----------
->
-> The above error's "expected output" and "output" are :
-> =A0- "tst_unzip.out.exp" file ("expected output") :
-> =A0 =A0 =A0In "${LTPROOT}/testcases/bin/unzip_tests.sh", the contents of =
-the
-> =A0 =A0 =A0"tst_unzip.dir" directory are expected to output into this fil=
-e.
-> =A0- "tst_unzip.out" file (actual "output") :
-> =A0 =A0 =A0A all contents of the "/opt/LTP/testcases/bin" directory are
-> =A0 =A0 =A0logged to this file.
->
-> This problem occurs because "tst_unzip.dir" directory is not created.
->
-> Why does "DIR" become "/opt/ltp/testcases/bin" set
-> though "DIR :=3D tst_unzip.dir" is defined
-> in "${LTPROOT}/testcases/commands/unzip/Makefile"?
->
-> To solve this problem, it is necessary to apply the following patche
-> to "${LTPROOT}/testcases/commands/unzip/Makefile" for creating
-> "tst_unzip.dir" directory, I think.
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- Makefile =A0 =A02009-12-18 17:48:40.000000000 +0900
-> +++ Makefile.new =A0 =A0 =A0 =A02009-12-18 17:38:00.000000000 +0900
-> @@ -27,8 +27,6 @@
-> =A0# Only build and install if we have the zip command.
-> =A0HAVE_ZIPTOOLS =A0 =A0 =A0 =A0 =A0:=3D $(shell if which zip >/dev/null;=
- then echo yes;
-> else echo no; fi)
->
-> -DIR =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D tst_unzip.dir
-> -
-> =A0RM =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 +=3D -r
->
-> =A0TESTCASES_DATA_DIR =A0 =A0 :=3D $(DESTDIR)/$(prefix)/testcases/data
-> @@ -36,7 +34,7 @@
-> =A0ZIPFILE =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D $(TESTCASE=
-S_DATA_DIR)/tst_unzip_file.zip
->
-> =A0ifeq ($(HAVE_ZIPTOOLS),yes)
-> -CLEAN_TARGETS =A0 =A0 =A0 =A0 =A0:=3D $(DIR) $(ZIPFILE)
-> +CLEAN_TARGETS =A0 =A0 =A0 =A0 =A0:=3D tst_unzip.dir $(ZIPFILE)
-> =A0INSTALL_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D unzip_tests.sh
-> =A0endif
->
-> @@ -45,13 +43,14 @@
-> =A0$(TESTCASES_DATA_DIR):
-> =A0 =A0 =A0 =A0mkdir -p "$@"
->
-> -$(ZIPFILE): | $(TESTCASES_DATA_DIR) $(DIR)
-> - =A0 =A0 =A0 zip -r "$@" $(DIR)
-> +$(ZIPFILE): | $(TESTCASES_DATA_DIR) tst_unzip.dir
-> + =A0 =A0 =A0 zip -r "$@" tst_unzip.dir
-> =A0 =A0 =A0 =A0chmod 00666 "$@"
->
-> =A0# This target should be auto-removed by Make
-> -$(DIR): $(abs_srcdir)/unzip_genfile.sh
-> - =A0 =A0 =A0 $(SHELL) "$^" $(DIR)
-> +.INTERMEDIATE: tst_unzip.dir
-> +tst_unzip.dir: $(abs_srcdir)/unzip_genfile.sh
-> + =A0 =A0 =A0 $(SHELL) "$^" tst_unzip.dir
->
-> =A0include $(top_srcdir)/include/mk/generic_leaf_target.mk
+Hi,
 
-I'm not convinced that this is the right solution because most of
-what's done here just replaced $(DIR)'s value with the bareword value.
-.INTERMEDIATE may be the only piece of value here, but I was avoiding
-it because it's a 3.81-ism I thought...
+Sorry for my many many mails today.
 
-Thanks,
--Garrett
 
----------------------------------------------------------------------------=
----
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev =
+I ran tests with "ltp-2009-12-10" cvs.
 
+In my system (kernel 2.6.18-164.el5), kernel does not support 
+control groups.
+So, when I ran test of "cgroup_fj", I got following message and the
+test faild by "FAIL 253".
+
+------------
+***error***:you must enable cgroup config in kernel
+------------
+
+In the investigation for above error message, I found that there may be
+two problems,.
+
+  (a) "cgroup_fj" test failed in the system not support "control groups".
+  (b) "cgroup" test may passed by user-ID which isn't "root".
+
+
+(a) "cgroup_fj" test
+  Above message is correct message, but exiting by "FAIL" is not
+  correct, I think.
+  Referring to the example of other tests, I think that the tests
+  for non-supported functions must be finished in "PASS 0" basically.
+  (For example, "move_pages{01...11}" tests exit in "PASS 0" and with 
+  "NUMA support not provided" messages.)
+
+  I suggest following patch to resolve this problem.
+
+============
+--- run_cgroup_test_fj.sh	2009-10-26 23:49:23.000000000 +0900
++++ run_cgroup_test_fj.sh.new	2009-12-11 16:10:39.000000000 +0900
+@@ -40,7 +40,7 @@
+ 
+ if ! [ -f /proc/cgroups ]; then
+ 	echo "***error***:you must enable cgroup config in kernel";
+-	exit -3;
++	exit 0;
+ fi
+ 
+ if [ ! -x $TESTROOT/cgroup_fj_proc ]; then
+
+============
+
+
+(b) "cgroup" test
+  I watched "cgroup" test source for hints for (a), and found another
+  problem.
+  If this test run by user-ID non-"root", it will exit in "PASS", I think.
+  But I think that it must exit in "FAIL".
+  Because this test cannot be tested only by "root" user.
+
+=========
+--- cgroup_regression_test.sh	2009-11-30 17:41:37.000000000 +0900
++++ cgroup_regression_test.sh.new	2009-12-11 16:22:14.000000000 +0900
+@@ -37,7 +37,7 @@
+ 
+ if [ "$USER" != root ]; then
+ 	tst_brkm TBROK ignored "Test must be run as root"
+-	exit 0
++	exit -1
+ fi
+ 
+ tst_kvercmp 2 6 29
+
+=========
+
+
+Regards--
+
+
+-Tomonori Mitani
+
+
+
+------------------------------------------------------------------------------
+Return on Information:
+Google Enterprise Search pays you back
+Get the facts.
+http://p.sf.net/sfu/google-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
