@@ -1,25 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NFxLz-0002Qe-6C
-	for ltp-list@lists.sourceforge.net; Wed, 02 Dec 2009 22:07:19 +0000
-Received: from mail-pw0-f43.google.com ([209.85.160.43])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NFxLq-0003X0-Sq
-	for ltp-list@lists.sourceforge.net; Wed, 02 Dec 2009 22:07:19 +0000
-Received: by pwi12 with SMTP id 12so522463pwi.2
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 02 Dec 2009 14:07:04 -0800 (PST)
+	(envelope-from <nobuhiro@andestech.com>) id 1NKSZP-0007lr-SK
+	for ltp-list@lists.sourceforge.net; Tue, 15 Dec 2009 08:15:47 +0000
+Received: from 59-124-160-117.hinet-ip.hinet.net ([59.124.160.117]
+	helo=ATCPCS06.andestech.com)
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NKSZH-0003mK-L3
+	for ltp-list@lists.sourceforge.net; Tue, 15 Dec 2009 08:15:47 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-In-Reply-To: <000001ca7320$90365cf0$b0a316d0$@co.jp>
-References: <000001ca7245$b829af90$287d0eb0$@co.jp>
-	<364299f40912010218h39e6f89eo36e49bfe9e083a23@mail.gmail.com>
-	<000001ca7320$90365cf0$b0a316d0$@co.jp>
-Date: Wed, 2 Dec 2009 14:07:04 -0800
-Message-ID: <364299f40912021407l6f79feb8gd1d374c845e704f9@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] build failure with ltp-2009-12-01 cvs
+Date: Tue, 15 Dec 2009 16:02:58 +0800
+Message-ID: <50FD90C65C53FB45BADEEBCD84FF07F201E9A299@ATCPCS06.andestech.com>
+From: <nobuhiro@andestech.com>
+Subject: [LTP] SHMLBA alignment issue on shmat01 and shmat02
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,166 +24,117 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============0890534133716499202=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Tue, Dec 1, 2009 at 11:25 PM, Mitani <mitani@ryobi.co.jp> wrote:
-> I ran "runltp" with =A0"ltp-2009-12-02.tar.gz" version in system as follo=
-ws.
->
-> =A0(1) kernel 2.6.18-164.el5 - architecture x86
-> =A0(2) kernel 2.6.18-164.el5 - architecture x86_64
->
-> But same failure occured again:
->
-> ------------
-> make[4]: Entering directory
-> `/home/LTP/ltp-2009-12-02/testcases/kernel/containers/libclone'
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
-> -I/home/LTP/ltp-2009-12-02/testcases/k
-> ernel/include -I../../../../include -I../../../../include =A0-c -o libclo=
-ne.o
-> libclone.c
-> In file included from libclone.h:31,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from libclone.c:17:
-> /home/LTP/ltp-2009-12-02/testcases/kernel/include/linux_syscall_numbers.h=
-:24
-> : error: weak
-> declaration of 'syscall_cleanup_stub' must be public
-> make[4]: *** [libclone.o] Error 1
-> make[4]: Leaving directory
-> `/home/LTP/ltp-2009-12-02/testcases/kernel/containers/libclone'
-> ------------
->
->
-> Regars--
->
-> -Tomonori Mitani
->
->
-> -----Original Message-----
-> From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> Sent: Tuesday, December 01, 2009 7:18 PM
-> To: Mitani
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] build failure with ltp-2009-12-01 cvs
->
-> On Mon, Nov 30, 2009 at 9:18 PM, Mitani <mitani@ryobi.co.jp> wrote:
->> Hi,
->>
->> I tried to "make" with "ltp-2009-12-01.tar.gz" version.
->> I tried it in systems as follows:
->> =A0(1) kernel 2.6.18-164.el5 - architecture x86
->> =A0(2) kernel 2.6.18-164.el5 - architecture x86_64
->>
->> But both failed with following message:
->>
->> ------------
->> [...]
->> make[3]: Entering directory
->> `/home/LTP/ltp-2009-12-01/testcases/kernel/containers'
->> make -C libclone -f
->> "/home/LTP/ltp-2009-12-01/testcases/kernel/containers/libclone/Makefil
->> e" all
->> make[4]: Entering directory
->> `/home/LTP/ltp-2009-12-01/testcases/kernel/containers/libclone
->> '
->> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
->> -I/home/LTP/ltp-2009-12-01/testcases/k
->> ernel/include -I../../../../include -I../../../../include =A0-c -o
-> libclone.o
->> libclone.c
->> In file included from libclone.h:31,
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from libclone.c:17:
->>
-> /home/LTP/ltp-2009-12-01/testcases/kernel/include/linux_syscall_numbers.h=
-:24
->> : error: weak
->> declaration of 'syscall_cleanup_stub' must be public
->> make[4]: *** [libclone.o] Error 1
->> make[4]: Leaving directory
->> `/home/LTP/ltp-2009-12-01/testcases/kernel/containers/libclone'
->> make[3]: *** [libclone/libclone.a] Error 2
->> make[3]: Leaving directory
->> `/home/LTP/ltp-2009-12-01/testcases/kernel/containers'
->> make[2]: *** [all] Error 2
->> make[2]: Leaving directory `/home/LTP/ltp-2009-12-01/testcases/kernel'
->> make[1]: *** [all] Error 2
->> make[1]: Leaving directory `/home/LTP/ltp-2009-12-01/testcases'
->> make: *** [testcases-all] Error 2
->> ------------
->>
->>
->> I tried to avoid this failure by revising "${LTPROOT}/testcases
->> /kernel/include/linux_syscall_numbers.h".
->>
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> --- linux_syscall_numbers.h.org 2009-12-01 09:52:25.000000000 +0900
->> +++ linux_syscall_numbers.h =A0 =A0 2009-12-01 11:37:10.000000000 +0900
->> @@ -21,7 +21,7 @@
->> =A0* result in compile-time errors and folks get the granularity they de=
-sire
->> =A0* when writing testcases.
->> =A0*/
->> -static void syscall_cleanup_stub(void) __attribute__ ((weakref
->> ("cleanup")));
->> +void syscall_cleanup_stub(void) __attribute__ ((weakref ("cleanup")));
->>
->> =A0static void cleanup(void);
->>
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>
->> After applying this patch, "make" and "make install" succeeded in
->> both (1) and (2) systems.
->>
->>
->> Can I get some advice whether my revise above is right?
->
-> It may work for your version of binutils, but it doesn't work for mine:
->
-> make -C libclone -f
-> "/scratch/ltp-dev2/ltp/testcases/kernel/containers/libclone/Makefile"
-> all
-> make[4]: Entering directory
-> `/scratch/ltp-dev2/ltp/testcases/kernel/containers/libclone'
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
-> -I/scratch/ltp-dev2/ltp/testcases/kernel/include -I../../../../include
-> -I../../../../include =A0-c -o libclone.o libclone.c
-> In file included from libclone.h:31,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from libclone.c:17:
-> /scratch/ltp-dev2/ltp/testcases/kernel/include/linux_syscall_numbers.h:24:
-> error: weakref 'syscall_cleanup_stub' must have static linkage
-> make[4]: *** [libclone.o] Error 1
-> make[4]: Leaving directory
-> `/scratch/ltp-dev2/ltp/testcases/kernel/containers/libclone'
-> make[3]: *** [libclone/libclone.a] Error 2
-> make[3]: Leaving directory
-> `/scratch/ltp-dev2/ltp/testcases/kernel/containers'
-> make[2]: *** [all] Error 2
-> make[2]: Leaving directory `/scratch/ltp-dev2/ltp/testcases/kernel'
-> make[1]: *** [all] Error 2
-> make[1]: Leaving directory `/scratch/ltp-dev2/ltp/testcases'
-> make: *** [testcases-all] Error 2
->
-> Please try the latest from CVS to see whether or not the new hidden
-> refs fixes your issue.
+This is a multi-part message in MIME format.
 
-    I grabbed Fedora Core 3 so I'll try validating and fixing this
-issue on both newer and older versions of binutils by tonight.
-Thanks,
--Garrett
+--===============0890534133716499202==
+Content-class: urn:content-classes:message
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01CA7D5C.FA2CACE9"
 
----------------------------------------------------------------------------=
----
-Join us December 9, 2009 for the Red Hat Virtual Experience,
-a free event focused on virtualization and cloud computing. =
+This is a multi-part message in MIME format.
 
-Attend in-depth sessions from your desk. Your couch. Anywhere.
-http://p.sf.net/sfu/redhat-sfdev2dev
+------_=_NextPart_001_01CA7D5C.FA2CACE9
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
+
+I have a question about the SHMLBA alignment on shmat01 and shmat02.
+At the end of setup():
+        /* some architectures (e.g. parisc) are strange, so better =
+always align to
+         * next SHMLBA address. */
+        base_addr =3D
+            (void *)(((unsigned long)(base_addr) + (SHMLBA - 1)) &
+                     ~(SHMLBA - 1));
+
+This is what I think, please correct if I'm wrong.
+Since shmget() creates the region of a multiple of PAGE_SIZE, the =
+base_addr after SHMLBA alignment does not guarantee to be available.
+Furthermore, it should be kernel architecture code to take care of the =
+D-cache aliasing issue, just like SPARC, ARM, MIPS do.
+=20
+Thanks.
+Nobuhiro
+
+------_=_NextPart_001_01CA7D5C.FA2CACE9
+Content-Type: text/html;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dbig5">
+<META content=3D"MSHTML 6.00.6000.16945" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><SPAN class=3D804080207-15122009><FONT face=3DArial>I have a =
+question about the=20
+SHMLBA alignment on shmat01 and shmat02.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D804080207-15122009><FONT face=3DArial>At the end of=20
+setup():</FONT></SPAN></DIV>
+<DIV><SPAN class=3D804080207-15122009><FONT=20
+face=3DArial>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* some =
+architectures=20
+(e.g. parisc) are strange, so better always align=20
+to<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * next SHMLBA =
+address.=20
+*/<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base_addr=20
+=3D<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+ (void=20
+*)(((unsigned long)(base_addr) + (SHMLBA - 1))=20
+&amp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+~(SHMLBA - 1));<BR></FONT></SPAN></DIV>
+<DIV><SPAN class=3D804080207-15122009><FONT face=3DArial>This is what I =
+think,=20
+please correct if I'm wrong.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D804080207-15122009><FONT face=3DArial>Since =
+shmget()&nbsp;creates=20
+the region of a multiple of PAGE_SIZE, </FONT></SPAN><SPAN=20
+class=3D804080207-15122009><FONT face=3DArial>t</FONT></SPAN><SPAN=20
+class=3D804080207-15122009><FONT face=3DArial>he base_addr after SHMLBA =
+alignment=20
+does not guarantee to be available.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D804080207-15122009><FONT face=3DArial>Furthermore, it =
+should be=20
+kernel architecture code to take care of the D-cache aliasing issue, =
+just like=20
+SPARC, ARM, MIPS do.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D804080207-15122009><FONT =
+face=3DArial></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=3D804080207-15122009><FONT =
+face=3DArial>Thanks.</FONT></SPAN></DIV>
+<DIV><SPAN class=3D804080207-15122009><FONT=20
+face=3DArial>Nobuhiro</DIV></FONT></SPAN></BODY></HTML>
+
+------_=_NextPart_001_01CA7D5C.FA2CACE9--
+
+
+--===============0890534133716499202==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Return on Information:
+Google Enterprise Search pays you back
+Get the facts.
+http://p.sf.net/sfu/google-dev2dev
+
+--===============0890534133716499202==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0890534133716499202==--
+
