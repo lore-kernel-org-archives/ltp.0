@@ -1,32 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NIhn4-0005aN-4j
-	for ltp-list@lists.sourceforge.net; Thu, 10 Dec 2009 12:06:38 +0000
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NIhmx-0001uV-H0
-	for ltp-list@lists.sourceforge.net; Thu, 10 Dec 2009 12:06:38 +0000
-Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
-	by e1.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nBAC3lgK032138
-	for <ltp-list@lists.sourceforge.net>; Thu, 10 Dec 2009 07:03:47 -0500
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nBAC6FSW130734
-	for <ltp-list@lists.sourceforge.net>; Thu, 10 Dec 2009 07:06:15 -0500
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	nBAC6Fec027188
-	for <ltp-list@lists.sourceforge.net>; Thu, 10 Dec 2009 07:06:15 -0500
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1515718228.139261260411127991.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-References: <1515718228.139261260411127991.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-Date: Thu, 10 Dec 2009 17:36:11 +0530
-Message-Id: <1260446771.7501.8.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH]fix compile error on ppc64 in RHEL5
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <czhang@redhat.com>) id 1NKUiK-0002k1-Ue
+	for ltp-list@lists.sourceforge.net; Tue, 15 Dec 2009 10:33:08 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NKUiK-0002xd-14
+	for ltp-list@lists.sourceforge.net; Tue, 15 Dec 2009 10:33:08 +0000
+Received: from int-mx02.intmail.prod.int.phx2.redhat.com
+	(int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+	by mx1.redhat.com (8.13.8/8.13.8) with ESMTP id nBFAX1SY004896
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 15 Dec 2009 05:33:01 -0500
+Received: from mail04.corp.redhat.com (zmail04.collab.prod.int.phx2.redhat.com
+	[10.5.5.44])
+	by int-mx02.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
+	id nBFAX1SZ032269
+	for <ltp-list@lists.sourceforge.net>; Tue, 15 Dec 2009 05:33:01 -0500
+Date: Tue, 15 Dec 2009 05:33:01 -0500 (EST)
+From: Caspar Zhang <czhang@redhat.com>
+Message-ID: <1906840727.360001260873181371.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <88580605.359961260873174827.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_14923_607291553.1260873181371"
+Subject: [LTP] [PATCH] fix libevent01 testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,54 +35,148 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-SGkgQ2FzcGFyLAoKSSBqdXN0IGhhdmUgMSBxdWVzdGlvbiBiZWxvdzoKCk9uIFdlZCwgMjAwOS0x
-Mi0wOSBhdCAyMToxMiAtMDUwMCwgQ2FzcGFyIFpoYW5nIHdyb3RlOgo+IEhpIGFsbCwKPiAgCj4g
-V2hlbiBJIGNvbXBpbGUgbHRwLWZ1bGwtMjAwOTExMzAgb24gcHBjNjQgbWFjaGluZSB3aGljaCBz
-eXN0ZW0gaXMKPiBSSEVMNShrZXJuZWwgMi42LjE4KSwgSSBtZXQgY29tcGlsZSBlcnJvciBhcyBm
-b2xsb3dzOgo+IAo+IFsuLi5dCj4gcHRyYWNlMDQuYzogSW4gZnVuY3Rpb24g4oCYY29tcGFyZV9y
-ZWdpc3RlcnPigJk6Cj4gcHRyYWNlMDQuYzo1OTogZXJyb3I6IOKAmFBUUkFDRV9HRVRSRUdT4oCZ
-IHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0aGlzCj4gZnVuY3Rpb24pCj4gcHRyYWNlMDQuYzo1
-OTogZXJyb3I6IChFYWNoIHVuZGVjbGFyZWQgaWRlbnRpZmllciBpcyByZXBvcnRlZCBvbmx5Cj4g
-b25jZQo+IHB0cmFjZTA0LmM6NTk6IGVycm9yOiBmb3IgZWFjaCBmdW5jdGlvbiBpdCBhcHBlYXJz
-IGluLikKPiBtYWtlWzVdOiAqKiogW3B0cmFjZTA0XSBFcnJvciAxCj4gWy4uLl0KPiAKPiBJdCBz
-ZWVtcyBsaWtlIHRoZXJlJ3Mgbm8gUFRSQUNFX0dFVFJFR1MgaW4gL3Vzci9pbmNsdWRlL2FzbS9w
-dHJhY2UuaAo+IGluIG9sZCBrZXJuZWxzLCBzbyBJIGNvcHkgdGhlIGRlZmluaXRpb25zIGZyb20g
-bmV3IHZlcnNpb24gb2YgdGhlCj4gaGVhZCBmaWxlIGFuZCBteSBsdHAgb24gcHBjNjQsIFJIRUw1
-IHdvcmtzLgoKQXJlIHRoZXNlIG5vcy4gc2ltaWxhciBhY3Jvc3MgYWxsIGFyY2hzID8gSWYgdGhl
-eSBhcmUgc3BlY2lmaWMgb25seSB0bwpQUEMsIHlvdSBjYW4gdGhlbiBhZGQgdGhlIGZvbGxvd2lu
-ZyAyIG1vcmUgbGluZXMgdG8geW91ciBwYXRjaDoKCj4gCj4gVGhhbmtzLAo+IENhc3BhciAKPiAK
-PiAKPiAKPiAKPiAKPiAKPiBkaWZmZXJlbmNlcwo+IGJldHdlZW4gZmlsZXMKPiBhdHRhY2htZW50
-Cj4gKHJoZWw1LXBwYy1QVFJBQ0VfR0VUUkVHUy1jb21waWxlLWVyci5wYXRjaCkKPiAKPiBkaWZm
-IC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9wdHJhY2UvcHRyYWNlLmgKPiBiL3Rl
-c3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcHRyYWNlL3B0cmFjZS5oCj4gaW5kZXggYTBkMjcwOC4u
-ZTNmY2JiMiAxMDA2NDQKPiAtLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3B0cmFjZS9w
-dHJhY2UuaAo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvcHRyYWNlL3B0cmFjZS5o
-Cj4gQEAgLTM3LDQgKzM3LDI3IEBAIHR5cGVkZWYgc3RydWN0IHVzZXJfcmVnc19zdHJ1Y3QgcHRy
-YWNlX3JlZ3M7Cj4gICN1bmRlZiBIQVZFX1NUUlVDVF9QVFJBQ0VfUkVHUwo+ICAjZW5kaWYKPiAK
-PiArLyogb2xkIGtlcm5lbCBkb2Vzbid0IGhhdmUgUFRSQUNFX0dFVFJFR1Mgb24gcHBjNjQgKi8K
-PiArLyogKG5ldykgUFRSQUNFIHJlcXVlc3RzIHVzaW5nIHRoZSBzYW1lIG51bWJlcnMgYXMgeDg2
-IGFuZCB0aGUgc2FtZQo+ICsgKiBhcmd1bWVudCBvcmRlcmluZy4gQWRkaXRpb25hbGx5LCB0aGV5
-IHN1cHBvcnQgbW9yZSByZWdpc3RlcnMgdG9vCj4gKyAqLwoKI2lmIGRlZmluZWQocG93ZXJwYykg
-fHwgZGVmaW5lZChfX3Bvd2VycGNfXykgfHwgZGVmaW5lZChfX3BwY19fKSB8fApkZWZpbmVkIChf
-X1BQQ19fKQo+ICsjaWZuZGVmIFBUUkFDRV9HRVRSRUdTCj4gKyMgZGVmaW5lIFBUUkFDRV9HRVRS
-RUdTICAgICAgICAgICAgMTIKPiArI2VuZGlmCj4gKyNpZm5kZWYgUFRSQUNFX1NFVFJFR1MKPiAr
-IyBkZWZpbmUgUFRSQUNFX1NFVFJFR1MgICAgICAgICAgICAxMwo+ICsjZW5kaWYKPiArI2lmbmRl
-ZiBQVFJBQ0VfR0VURlBSRUdTCj4gKyMgZGVmaW5lIFBUUkFDRV9HRVRGUFJFR1MgICAgICAgICAg
-MTQKPiArI2VuZGlmCj4gKyNpZm5kZWYgUFRSQUNFX1NFVEZQUkVHUwo+ICsjIGRlZmluZSBQVFJB
-Q0VfU0VURlBSRUdTICAgICAgICAgIDE1Cj4gKyNlbmRpZgo+ICsjaWZuZGVmIFBUUkFDRV9HRVRS
-RUdTNjQKPiArIyBkZWZpbmUgUFRSQUNFX0dFVFJFR1M2NCAgICAgICAgICAyMgo+ICsjZW5kaWYK
-PiArI2lmbmRlZiBQVFJBQ0VfU0VUUkVHUzY0Cj4gKyMgZGVmaW5lIFBUUkFDRV9TRVRSRUdTNjQg
-ICAgICAgICAgMjMKPiArI2VuZGlmCj4gKwo+ICAjZW5kaWYKCiNlbmRpZgoKUmVnYXJkcy0tClN1
-YnJhdGEKCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tClJldHVybiBvbiBJbmZvcm1hdGlvbjoKR29v
-Z2xlIEVudGVycHJpc2UgU2VhcmNoIHBheXMgeW91IGJhY2sKR2V0IHRoZSBmYWN0cy4KaHR0cDov
-L3Auc2YubmV0L3NmdS9nb29nbGUtZGV2MmRldgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMu
-c291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3Rp
-bmZvL2x0cC1saXN0Cg==
+------=_Part_14923_607291553.1260873181371
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+Hi,
+
+I found libevent01 testcase is disabled in testcase/kernel/syscalls/Makefile,
+the testscript can't be installed, I got a "FAIL" in testing. Here's the Patch
+to fix this problem.
+
+Thanks,
+Caspar
+------=_Part_14923_607291553.1260873181371
+Content-Type: text/x-patch; name=syscalls-libevent01.patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=syscalls-libevent01.patch
+
+Hi,
+
+	I found libevent01 testcase is disabled in testcase/kernel/syscalls/Makefile,
+	the testscript can't be installed, I got a "FAIL" in testing. Here's the Patch
+	to fix this problem.
+
+	Signed-off-by: Caspar Zhang <czhang@redhat.com>
+
+diff -Naur a/runtest/syscalls b/runtest/syscalls
+--- a/runtest/syscalls	2009-11-20 15:07:04.000000000 +0800
++++ b/runtest/syscalls	2009-12-15 16:55:33.517261473 +0800
+@@ -465,7 +465,7 @@
+ lchown02 prep_create_link; lchown02
+ lchown02_16 prep_create_link; lchown02_16
+ 
+-libevent01 export LTPROOT; run_libevent.sh
++libevent01 export LTPROOT; libevent/run_libevent.sh
+ 
+ link01 symlink01 -T link01
+ link02 link02
+diff -Naur a/testcases/kernel/syscalls/libevent/run_libevent.sh b/testcases/kernel/syscalls/libevent/run_libevent.sh
+--- a/testcases/kernel/syscalls/libevent/run_libevent.sh	2009-11-20 03:08:36.000000000 +0800
++++ b/testcases/kernel/syscalls/libevent/run_libevent.sh	2009-12-15 16:55:12.750261436 +0800
+@@ -31,7 +31,7 @@
+ 	tst_resm TCONF "You need to be root to run these tests"
+ 	TST_EXIT=0
+ else
+-	"$LTPROOT/testcases/bin/tests/test-libevent.sh"
++	"$LTPROOT/testcases/bin/libevent/test/test-libevent.sh"
+ 	TST_EXIT=$?
+ fi
+ tst_cleanup
+diff -Naur a/testcases/kernel/syscalls/Makefile b/testcases/kernel/syscalls/Makefile
+--- a/testcases/kernel/syscalls/Makefile	2009-12-01 17:57:15.000000000 +0800
++++ b/testcases/kernel/syscalls/Makefile	2009-12-15 16:54:46.271261315 +0800
+@@ -24,52 +24,42 @@
+ 
+ include	$(top_srcdir)/include/mk/env_pre.mk
+ 
+-# libevent requires some massaging to get this to work.
+-FILTER_OUT_DIRS		:= libevent
+ # pcllib is busted as all heck because of libtool
+-FILTER_OUT_DIRS		+= pcllib
++FILTER_OUT_DIRS		:= pcllib
+ 
+-# libevent doesn't compile right now... I have no bloody clue what breaks it
+-# when doing make clean...
+-ifdef DO_NO_COMPILE_ME
++## libevent doesn't compile right now... I have no bloody clue what breaks it
++## when doing make clean...
++# libevent enabled by Caspar Zhang <czhang#redhat.com>
+ ifeq ($(wildcard $(abs_srcdir)/libevent/test/Makefile),)
+ $(warning libevent/test/Makefile does not exist; skipping to avoid compile errors)
+ $(warning Please run "make autotools" and "configure" at the top-level LTP)
+ $(warning directory if you want to run this test)
+ else
+ 
+-LIBEVENT		:= libevent/lib/libevent.a
+-
+-LIBEVENT_LINK		:= libevent/libevent.a
++LIBEVENT		:= libevent/libevent.a
+ 
+ CLEAN_DEPS		:= libevent-clean
+ 
+-CLEAN_TARGETS		:= $(LIBEVENT) $(LIBEVENT_LINK)
++CLEAN_TARGETS		:= $(LIBEVENT) 
+ 
+ INSTALL_DEPS		:= libevent-install
+ 
+-INSTALL_TARGETS		:= libevent/run-libevent.sh libevent/test/test-libevent.sh
+-
+ LIBEVENT_APPS		:= regress test-eof test-init test-time test-weof
+ 
+-MAKE_DEPS		:= libevent-all
++INSTALL_TARGETS		:= libevent/run_libevent.sh libevent/test/test-libevent.sh $(addprefix libevent/test/,$(LIBEVENT_APPS))
+ 
+-MAKE_TARGETS		:= $(addprefix libevent/test/,$(LIBEVENT_APPS))
++MAKE_DEPS		:= $(LIBEVENT) libevent-all
+ 
+-libevent libevent/test: %:
+-	mkdir -p "$@"
+-
+-$(LIBEVENT): $(abs_srcdir)/libevent/Makefile libevent
++$(LIBEVENT): $(abs_srcdir)/libevent/Makefile 
+ 	$(MAKE) -C libevent -f "$(firstword $^)" libevent.a
+ 
+-libevent-all: $(abs_srcdir)/libevent/test/Makefile | $(LIBEVENT) libevent/test
++libevent-all: $(abs_srcdir)/libevent/test/Makefile 
+ 	$(MAKE) -C libevent/test -f "$(firstword $^)" $(LIBEVENT_APPS)
+ 
+-libevent-clean libevent-install: libevent-%: $(abs_srcdir)/libevent/test/Makefile | libevent/test
++libevent-clean libevent-install: libevent-%: $(abs_srcdir)/libevent/test/Makefile 
+ 	$(MAKE) -C libevent/test -f "$(firstword $^)" $*
+ 
+ endif
+-endif
+ 
+ ifeq ($(UCLINUX),1)
+ FILTER_OUT_DIRS	+= capget capset chmod chown clone fork getcontext llseek \
+
+------=_Part_14923_607291553.1260873181371
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Return on Information:
+Google Enterprise Search pays you back
+Get the facts.
+http://p.sf.net/sfu/google-dev2dev
+
+------=_Part_14923_607291553.1260873181371
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------=_Part_14923_607291553.1260873181371--
+
