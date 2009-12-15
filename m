@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NGDLR-0006YE-PC
-	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:11:49 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NGDLK-0006wj-Gk
-	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:11:49 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <653A85C7F32C4741880F71219266EA020315E35C98@EXGMBX01.sasken.com>
-References: <653A85C7F32C4741880F71219266EA020315E35C98@EXGMBX01.sasken.com>
-Date: Thu, 03 Dec 2009 20:41:18 +0530
-Message-Id: <1259853078.5085.33.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] Regarding LTP for Device drivers.
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NKd4s-0002z4-7J
+	for ltp-list@lists.sourceforge.net; Tue, 15 Dec 2009 19:28:58 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NKd4q-0003Zc-1B
+	for ltp-list@lists.sourceforge.net; Tue, 15 Dec 2009 19:28:58 +0000
+Received: by pwj11 with SMTP id 11so145338pwj.2
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 15 Dec 2009 11:28:50 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1906840727.360001260873181371.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+References: <88580605.359961260873174827.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	<1906840727.360001260873181371.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+Date: Tue, 15 Dec 2009 11:28:49 -0800
+Message-ID: <364299f40912151128v356feae4t6405598a00ae09ca@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] fix libevent01 testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,48 +31,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sujatha Angadi <sujatha.angadi@sasken.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: Caspar Zhang <czhang@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,
+On Tue, Dec 15, 2009 at 2:33 AM, Caspar Zhang <czhang@redhat.com> wrote:
+> Hi,
+>
+> I found libevent01 testcase is disabled in testcase/kernel/syscalls/Makefile,
+> the testscript can't be installed, I got a "FAIL" in testing. Here's the Patch
+> to fix this problem.
 
-On Mon, 2009-11-23 at 13:08 +0530, Sujatha Angadi wrote: 
-> Hi Sir,
-> This is Sujatha from Sasken Communications. 
-> I need a small help.
-> I am new to device driver testing and LTP . 
-> I wanted to know where are the test cases for character devices like keypad, mouse on on LTP source code.
-> If you are busy, please help me getting some pointer or links to know about the same.
-
-Please look inside ltp-full-20091130/testcases/kernel/device-drivers/.
-
-Regards--
-Subrata
-
-> 
-> Sorry if I have bothered and wasted your precious time.
-> Thanking you,
-> Sujatha
-> SASKEN BUSINESS DISCLAIMER
-> -------------------------
-> This message may contain confidential, proprietary or legally privileged information. In 
-> case you are not the original intended Recipient of the message, you must not, directly or 
-> indirectly, use, Disclose, distribute, print, or copy any part of this message and you are 
-> requested to delete it and inform the sender. Any views expressed in this message are 
-> those of the individual sender unless otherwise stated. Nothing contained in this message 
-> shall be construed as an offer or acceptance of any offer by Sasken Communication 
-> Technologies Limited ("Sasken") unless sent with that express intent and with due 
-> authority of Sasken. Sasken has taken enough precautions to prevent the spread of 
-> viruses. However the company accepts no liability for any damage caused by any virus 
-> transmitted by this email
-> 
-
+I took a look at the Makefile again, and yes, I screwed up... I fixed
+the Makefile by using a proper set of LDFLAGS and LDLIBS for just
+libevent, so now it compiles and installs properly off cvs HEAD.
+Thanks for spotting the run-libevent.sh -> run_libevent.sh typo :).
+Cheers,
+-Garrett
 
 ------------------------------------------------------------------------------
-Join us December 9, 2009 for the Red Hat Virtual Experience,
-a free event focused on virtualization and cloud computing. 
-Attend in-depth sessions from your desk. Your couch. Anywhere.
-http://p.sf.net/sfu/redhat-sfdev2dev
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
