@@ -1,26 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1NLotE-0004XK-GL
-	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 02:17:52 +0000
-Received: from fmmailgate02.web.de ([217.72.192.227])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NLot7-00041f-Qj
-	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 02:17:52 +0000
-Received: from smtp08.web.de (fmsmtp08.dlan.cinetic.de [172.20.5.216])
-	by fmmailgate02.web.de (Postfix) with ESMTP id 6035C1496FF17
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <liubo2009@cn.fujitsu.com>) id 1NKsBs-0000m0-GL
+	for ltp-list@lists.sourceforge.net; Wed, 16 Dec 2009 11:37:12 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NKsBn-0001T7-FY
+	for ltp-list@lists.sourceforge.net; Wed, 16 Dec 2009 11:37:12 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id 4EA3217013E
 	for <ltp-list@lists.sourceforge.net>;
-	Sat, 19 Dec 2009 03:17:40 +0100 (CET)
-Received: from [90.180.172.144] (helo=debian)
-	by smtp08.web.de with asmtp (WEB.DE 4.110 #314) id 1NLot2-0006WE-00
-	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 03:17:40 +0100
-Date: Sat, 19 Dec 2009 03:16:05 +0100
-From: "Jiri Palecek" <jpalecek@web.de>
+	Wed, 16 Dec 2009 19:36:58 +0800 (CST)
+Received: from fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id nBGBau7U026789
+	for <ltp-list@lists.sourceforge.net>; Wed, 16 Dec 2009 19:36:56 +0800
+Received: from localhost.localdomain (unknown [10.167.141.167])
+	by fnst.cn.fujitsu.com (Postfix) with ESMTPA id 3B9CFD45B6
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 16 Dec 2009 19:37:18 +0800 (CST)
+Message-ID: <4B28C68C.1080304@cn.fujitsu.com>
+Date: Wed, 16 Dec 2009 19:37:48 +0800
+From: liubo <liubo2009@cn.fujitsu.com>
 MIME-Version: 1.0
-Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-Resent-Message-ID: <op.u45x0uc4cfnueu@debian>
-Subject: [LTP] [PATCH] Fixes of the sendfile01 test
+Subject: [LTP] [PATCH 2/3] ade: fix the bug of ar01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,117 +35,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: ltp-list-bounces@lists.sourceforge.net
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-Cc: ltp-list@lists.sourceforge.net
-Message-ID: <20091219021605.YHYtDZZHPDiABWudzPdqOk9VganSNpt1NsOEMLN9nK0@z>
+To: ltp-list@lists.sourceforge.net
 
-Hello,
+Command "ar -tv" 's output doesn't match with "ls -ln" 's output on item
+"permission".
 
-I've found some problems with the sendfile01 testcase (the one under network/tcp_cmds). This patch fixes them:
+s/-$permissions/-$permissions./
 
- Pass the -6 parameter to gethost if we are to use ipv6 and run the
- ipv6 server in that case. Also, fix the awk code for getting the PID:
- The PID is the second column, which is $2, not $1.
+This patch fixed the bug.
 
-Also:
+Signed-off-by: Liu Bo <liubo2009@cn.fujitsu.com>
 
- - initialize addrlen for accept syscall in the server (=> avoid EINVAL)
-
- - use tst_resm in the client instead of tst_res, to avoid an error message interpreted as a filename
-
-Regards
-    Jiri Palecek
-
-Signed-off-by: Jiri Palecek <jpalecek@web.de>
 ---
- testcases/network/tcp_cmds/sendfile/SF_Server  |    2 +-
- testcases/network/tcp_cmds/sendfile/sendfile01 |   10 +++++-----
- testcases/network/tcp_cmds/sendfile/testsf_c.c |    2 +-
- testcases/network/tcp_cmds/sendfile/testsf_s.c |    2 +-
- 4 files changed, 8 insertions(+), 8 deletions(-)
+ testcases/commands/ade/ar/ar01 |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/testcases/network/tcp_cmds/sendfile/SF_Server b/testcases/network/tcp_cmds/sendfile/SF_Server
-index 2383ce4..9933db4 100755
---- a/testcases/network/tcp_cmds/sendfile/SF_Server
-+++ b/testcases/network/tcp_cmds/sendfile/SF_Server
-@@ -3,4 +3,4 @@
- cd $3
- exec 1< /dev/null       # open descriptor 1
- exec 2< /dev/null       # open descriptor 1
--nohup ./testsf_s $1 $2 &
-+nohup ./$4 $1 $2 &
-diff --git a/testcases/network/tcp_cmds/sendfile/sendfile01 b/testcases/network/tcp_cmds/sendfile/sendfile01
-index 4e93447..7dd4fee 100755
---- a/testcases/network/tcp_cmds/sendfile/sendfile01
-+++ b/testcases/network/tcp_cmds/sendfile/sendfile01
-@@ -61,7 +61,7 @@ do_setup()
+diff --git a/testcases/commands/ade/ar/ar01 b/testcases/commands/ade/ar/ar01
+index c8f85eb..c393959 100755
+--- a/testcases/commands/ade/ar/ar01
++++ b/testcases/commands/ade/ar/ar01
+@@ -584,7 +584,7 @@ ar -tv $TCtmp/lib.a |
+ while
+ read permissions uid size month day time year file_name
+ do
+-echo "-$permissions;$uid;$size;$month;$day;$time;$file_name"
++echo "-$permissions.;$uid;$size;$month;$day;$time;$file_name"
+ done >> $TCtmp/lib.a.stdout
+ ttest
  
-     exists awk diff gethost grep rsh stat
- 
--    IPADDR=$(gethost $RHOST | awk '/addresses:/ {print $2}')
-+    IPADDR=$(gethost ${EXEC_SUFFIX:+-6} $RHOST | awk '/addresses:/ {print $2}')
- 
- }
- 
-@@ -81,17 +81,17 @@ do_test()
-   
-     mkdir -p $TCtmp
-     PORT=$$ 
--    if ! rsh -l root $IPADDR "$LTPROOT/testcases/bin/SF_Server $IPADDR $PORT $LTPROOT/testcases/bin"; then
-+    if ! rsh -l root $IPADDR "$LTPROOT/testcases/bin/SF_Server $IPADDR $PORT $LTPROOT/testcases/bin $SERVER"; then
-         end_testcase "rsh failed to $IPADDR as root failed"
-     fi
-     sleep 10
--    PID=$(rsh -l root $IPADDR "ps -ef" | awk "\$0 !~ /awk/ && /$SERVER/ && /$PORT/ {print \$1}")
-+    PID=$(rsh -l root $IPADDR "ps -ef" | awk "\$0 !~ /awk/ && /$SERVER/ && /$PORT/ {print \$2}")
-     [ -n "$PID" ] || end_testcase "Could not start server"
- 
-     for clnt_fname in $FILES; do
-         serv_fname=$TCdat/$clnt_fname
-         SIZE=`stat -c '%s' $serv_fname`
--        tst_resm TINFO "Starting $SERVER $IPADDR Client_filename Server_filename Size "
-+        tst_resm TINFO "Starting $CLIENT $IPADDR Client_filename Server_filename Size "
-   
-         $CLIENT $IPADDR $PORT "$TCtmp/$clnt_fname" $serv_fname $SIZE 
-         RetVal=$?
-@@ -118,7 +118,7 @@ do_test()
- 
- do_cleanup()
- {
--      PID=$(rsh -n -l root $RHOST "ps -ef" | awk "\$0 !~ /awk/ && /$SERVER/ && /$PORT/ {print \$1}")
-+      PID=$(rsh -n -l root $RHOST "ps -ef" | awk "\$0 !~ /awk/ && /$SERVER/ && /$PORT/ {print \$2}")
-       [ -n "$PID" ] && rsh -n -l root $RHOST kill -9 $PID
-       tst_cleanup
- }
-diff --git a/testcases/network/tcp_cmds/sendfile/testsf_c.c b/testcases/network/tcp_cmds/sendfile/testsf_c.c
-index 52b9ecf..7683927 100644
---- a/testcases/network/tcp_cmds/sendfile/testsf_c.c
-+++ b/testcases/network/tcp_cmds/sendfile/testsf_c.c
-@@ -120,7 +120,7 @@ main (int argc, char *argv[])
- 		}
- 	}
- 
--	tst_res(TINFO, "Asking for remote file: %s", serv_fname);
-+	tst_resm(TINFO, "Asking for remote file: %s", serv_fname);
- 
- 	tst_resm(TINFO, "File %s received\n", argv[4]);
- 
-diff --git a/testcases/network/tcp_cmds/sendfile/testsf_s.c b/testcases/network/tcp_cmds/sendfile/testsf_s.c
-index bc77712..38baf8c 100644
---- a/testcases/network/tcp_cmds/sendfile/testsf_s.c
-+++ b/testcases/network/tcp_cmds/sendfile/testsf_s.c
-@@ -92,7 +92,7 @@ main(int argc, char *argv[])
- 		tst_exit();
- 	}
- 
--	socklen_t fromlen;
-+	socklen_t fromlen = sizeof(from);
- 
- 	/* process connections */
- 	while (1) {
 -- 
-1.6.4.3
+1.6.2.2
+
+
+
 
 
 
