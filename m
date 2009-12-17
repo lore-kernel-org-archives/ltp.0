@@ -1,26 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1NFb6q-0003Mx-Gc
-	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 22:22:12 +0000
-Received: from fmmailgate01.web.de ([217.72.192.221])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NFb6i-0005th-0d
-	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 22:22:12 +0000
-Received: from smtp05.web.de (fmsmtp05.dlan.cinetic.de [172.20.4.166])
-	by fmmailgate01.web.de (Postfix) with ESMTP id 9230913EF1C25
-	for <ltp-list@lists.sourceforge.net>;
-	Tue,  1 Dec 2009 23:21:54 +0100 (CET)
-Received: from [90.180.172.144] (helo=debian)
-	by smtp05.web.de with asmtp (WEB.DE 4.110 #314) id 1NFb6Y-0002WU-00
-	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 23:21:54 +0100
-Date: Tue, 01 Dec 2009 23:16:45 +0100
-From: "Jiri Palecek" <jpalecek@web.de>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <czhang@redhat.com>) id 1NL5da-0006ZU-4b
+	for ltp-list@lists.sourceforge.net; Thu, 17 Dec 2009 01:58:42 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NL5dV-0003u5-71
+	for ltp-list@lists.sourceforge.net; Thu, 17 Dec 2009 01:58:42 +0000
+Date: Wed, 16 Dec 2009 20:46:06 -0500 (EST)
+From: Caspar Zhang <czhang@redhat.com>
+Message-ID: <1173683636.495591261014366483.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <4B28C68C.1080304@cn.fujitsu.com>
 MIME-Version: 1.0
-Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-Resent-Message-ID: <op.u395q0uhcfnueu@debian>
-Subject: [LTP] [PATCH] Fix a wrong (reversed) success condition in echo01
+Subject: Re: [LTP] [PATCH 2/3] ade: fix the bug of ar01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,49 +25,84 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: ltp-list-bounces@lists.sourceforge.net
 Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: liubo <liubo2009@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
-Message-ID: <20091201221645.M1H1HV_T2WjoaeqGROmdil02LKo1dekB-MPAGcVCbhA@z>
 
-Hello,
 
-this is the first of another series of small ltp fixes. I'm sorry I wasn't able to send them earlier.
+----- "liubo" <liubo2009@cn.fujitsu.com> wrote:
 
-This patch reverses the success check in echo01, obviously the checksums being equal is the right outcome.
+> Command "ar -tv" 's output doesn't match with "ls -ln" 's output on
+> item
+> "permission".
+> 
+> s/-$permissions/-$permissions./
 
-Regards
-    Jiri Palecek
+This strange dot only appears in RHEL6, I don't see this dot in other
+distros or releases.
 
-Signed-off-by: Jiri Palecek <jpalecek@web.de>
----
- testcases/network/tcp_cmds/echo/echo01 |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Thanks,
+Caspar
 
-diff --git a/testcases/network/tcp_cmds/echo/echo01 b/testcases/network/tcp_cmds/echo/echo01
-index eb798ae..2bc4621 100755
---- a/testcases/network/tcp_cmds/echo/echo01
-+++ b/testcases/network/tcp_cmds/echo/echo01
-@@ -95,7 +95,7 @@ do_test()
-         while [ $NUM -lt $NUMPROCESSES ]
-         do
-             csum2=$(sum "$TCtmp/${ECHOFILE}${NUM}" | awk '{print $1}')
--            if [ "$csum1" = "$csum2" ]; then
-+            if ! [ "$csum1" = "$csum2" ]; then
-                 end_testcase "Checksums differ in loop $TST_COUNT"
-             fi
-             NUM=$(( $NUM + 1 ))
+> 
+> This patch fixed the bug.
+> 
+> Signed-off-by: Liu Bo <liubo2009@cn.fujitsu.com>
+> 
+> ---
+>  testcases/commands/ade/ar/ar01 |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/testcases/commands/ade/ar/ar01
+> b/testcases/commands/ade/ar/ar01
+> index c8f85eb..c393959 100755
+> --- a/testcases/commands/ade/ar/ar01
+> +++ b/testcases/commands/ade/ar/ar01
+> @@ -584,7 +584,7 @@ ar -tv $TCtmp/lib.a |
+>  while
+>  read permissions uid size month day time year file_name
+>  do
+> -echo "-$permissions;$uid;$size;$month;$day;$time;$file_name"
+> +echo "-$permissions.;$uid;$size;$month;$day;$time;$file_name"
+>  done >> $TCtmp/lib.a.stdout
+>  ttest
+>  
+> -- 
+> 1.6.2.2
+> 
+> 
+> 
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> This SF.Net email is sponsored by the Verizon Developer Community
+> Take advantage of Verizon's best-in-class app development support
+> A streamlined, 14 day to market process makes app distribution fast
+> and easy
+> Join now and get one step closer to millions of Verizon customers
+> http://p.sf.net/sfu/verizon-dev2dev 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 -- 
-1.6.4.3
-
-
+/-------------------------------------------\
+| Name: Caspar Zhang                        |
+| Position: Kernel Qualification Engineer   |
+| IRC: czhang on #kernel-qe, #eng-china     |
+| Phone: +86-10-6260-8150                   |
+| Cellphone: +86-1381-073-0090              |
+\-------------------------------------------/
 
 
 ------------------------------------------------------------------------------
-Join us December 9, 2009 for the Red Hat Virtual Experience,
-a free event focused on virtualization and cloud computing. 
-Attend in-depth sessions from your desk. Your couch. Anywhere.
-http://p.sf.net/sfu/redhat-sfdev2dev
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
