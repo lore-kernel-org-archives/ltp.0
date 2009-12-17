@@ -1,23 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1NGZb8-0000PY-5d
-	for ltp-list@lists.sourceforge.net; Fri, 04 Dec 2009 14:57:30 +0000
-Date: Fri, 4 Dec 2009 15:58:16 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20091204145816.GB8628@saboteur.suse.cz>
-References: <20091116151656.GB16811@schrodinger.suse.cz>
-	<20091120125347.GA4858@schrodinger.suse.cz>
-	<20091126141346.GA7306@saboteur.suse.cz>
-	<364299f40911260622s4e5ae3c5j555b922a7b85f4b0@mail.gmail.com>
-	<20091130135024.GA4304@saboteur.suse.cz>
-	<1259853101.5085.36.camel@subratamodak.linux.ibm.com>
-	<alpine.DEB.2.00.0912031014590.4647@sleepy>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.00.0912031014590.4647@sleepy>
-Subject: Re: [LTP] [RFC] utstest.h
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mpradeep@linux.vnet.ibm.com>) id 1NLGos-00015c-EB
+	for ltp-list@lists.sourceforge.net; Thu, 17 Dec 2009 13:55:06 +0000
+Received: from e28smtp04.in.ibm.com ([122.248.162.4])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NLGon-0000U9-8a
+	for ltp-list@lists.sourceforge.net; Thu, 17 Dec 2009 13:55:06 +0000
+Received: from d28relay05.in.ibm.com (d28relay05.in.ibm.com [9.184.220.62])
+	by e28smtp04.in.ibm.com (8.14.3/8.13.1) with ESMTP id nBHDe4wA012156
+	for <ltp-list@lists.sourceforge.net>; Thu, 17 Dec 2009 19:10:04 +0530
+Received: from d28av01.in.ibm.com (d28av01.in.ibm.com [9.184.220.63])
+	by d28relay05.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	nBHDe4WF2674786
+	for <ltp-list@lists.sourceforge.net>; Thu, 17 Dec 2009 19:10:04 +0530
+Received: from d28av01.in.ibm.com (loopback [127.0.0.1])
+	by d28av01.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	nBHDe3Cv009227
+	for <ltp-list@lists.sourceforge.net>; Thu, 17 Dec 2009 19:10:04 +0530
+From: Munipradeep Beerakam <mpradeep@linux.vnet.ibm.com>
+Date: Thu, 17 Dec 2009 19:10:01 +0530
+Message-ID: <1261057201.11550.21.camel@munipradeep-laptop>
+Mime-Version: 1.0
+Subject: [LTP] Configuration error while installing ltp-intermediate-20091209
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,28 +36,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: manoj.iyer@canonical.com
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>, Michael Reed <mreed10@us.ibm.com>, Nate Straz <nate@refried.org>, "paul.larson" <paul.larson@ubuntu.com>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Its been a while since I looke at that code, but as a general
-> comment, any clean up effort is good, but please make sure you test
-> it and release a beta version for people to try so that you dont
-> break existing users. I am more interested in seeing a modified
-> version and trying that out, rather than reading a proposal.
+Hi,
 
-Well, before I start cleaning up the code I need to know which parts of the
-interface are really usefull and should be keept in ltp.
+I faced the following error while running ./configure in the latest LTP.
+After changing the system date to some random future date, issue is
+resolved.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+[root@xxx ltp-intermediate-20091209.orig]# ./configure 
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... configure: error: newly
+created file is older than distributed files!
+Check your system clock
+
+[root@xxx ]# date --set="Thu Dec 19 2009 18:54:00"
+[root@xxx ltp-intermediate-20091209.orig]# ./configure 
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking for a thread-safe mkdir -p... /bin/mkdir -p
+...
+...
+
+
+
+Thanks
+Muni
+
 
 ------------------------------------------------------------------------------
-Join us December 9, 2009 for the Red Hat Virtual Experience,
-a free event focused on virtualization and cloud computing. 
-Attend in-depth sessions from your desk. Your couch. Anywhere.
-http://p.sf.net/sfu/redhat-sfdev2dev
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
