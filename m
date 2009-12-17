@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1NGjJ7-000052-D5
-	for ltp-list@lists.sourceforge.net; Sat, 05 Dec 2009 01:19:33 +0000
-Received: from fmmailgate01.web.de ([217.72.192.221])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NGjIz-0006Xq-5r
-	for ltp-list@lists.sourceforge.net; Sat, 05 Dec 2009 01:19:33 +0000
-References: <4b1940f3.8413f30a.2877.6a27SMTPIN_ADDED@mx.google.com>
-	<200912041406.40770.vapier@gentoo.org>
-Date: Sat, 05 Dec 2009 02:19:13 +0100
+	(envelope-from <mitani@ryobi.co.jp>) id 1NLAYM-0003wO-NT
+	for ltp-list@lists.sourceforge.net; Thu, 17 Dec 2009 07:13:38 +0000
+Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
+	by sfi-mx-2.v28.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1NLAYF-0008DF-Py
+	for ltp-list@lists.sourceforge.net; Thu, 17 Dec 2009 07:13:38 +0000
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Thu, 17 Dec 2009 16:13:20 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Thu, 17 Dec 2009 16:13:19 +0900
+Message-ID: <000001ca7ee8$698114a0$3c833de0$@co.jp>
 MIME-Version: 1.0
-From: =?iso-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
-Message-ID: <op.u4fxyb2ou2flwt@marcela-gaxm89c>
-In-Reply-To: <200912041406.40770.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] Don't install datafiles with executable mode
+Content-Language: ja
+Subject: [LTP] About "make3.80" support
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,46 +30,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Fri, 04 Dec 2009 20:06:40 +0100, Mike Frysinger <vapier@gentoo.org>  
-wrote:
+Hi, 
 
-> On Friday 04 December 2009 11:58:13 Jiri Palecek wrote:
->> the makefiles install all files with executable mode by default. This  
->> patch
->>  changes it for some of the Makefiles, that install data files, which
->>  should IMHO not be executable. The change makes INSTALL_MODE decide the
->>  actual mode when it is expanded inside the install rule (depending on  
->> $@,
->>  which is the install target name).
->
-> that's pretty fugly way to go about it.  let's go the more natural route  
-> and
-> have the common code default to $(INSTALL_MODE_$@) and if that's unset,  
-> use
-> the default $(INSTALL_MODE).
+The "make3.80" support for "make" isn't included in recent cvs yet.
 
-Sorry, but I don't agree with that. This is a function-like approach which  
-is not any less "natural" than what you propose - and it makes no demands  
-on anyone who doesn't need it, and gives great power to those who need it.
+http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg08840.html
 
-The main reason I don't like the INSTALL_MODE_$@ thing, is that eg.  
-INSTALL_TARGETS can contain wildcards (eg. dir/*.ext), and there cannot be  
-any such thing as $(INSTALL_MODE_dir/*.ext). You would have to enumerate  
-all data files - or all program files - which would be a chore esp. if any  
-of these isn't known in the makefile until "make all" is ran.
+I want to make a Makefile working with make 3.80.
+Would you teach when "make3.80" support is realized?
 
-OTOH I would agree on some method to automagically determine the correct  
-mode.
+Sorry for selfish request.
 
-   Jiri Palecek
+
+Thank you--
+
+-Tomonori Mitani
+
+
 
 ------------------------------------------------------------------------------
-Join us December 9, 2009 for the Red Hat Virtual Experience,
-a free event focused on virtualization and cloud computing. 
-Attend in-depth sessions from your desk. Your couch. Anywhere.
-http://p.sf.net/sfu/redhat-sfdev2dev
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
