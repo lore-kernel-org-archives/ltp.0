@@ -1,19 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1NHxG8-0004lN-Hy
-	for ltp-list@lists.sourceforge.net; Tue, 08 Dec 2009 10:25:32 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NHxG0-0002nD-Nv
-	for ltp-list@lists.sourceforge.net; Tue, 08 Dec 2009 10:25:32 +0000
-Date: Tue, 8 Dec 2009 05:25:17 -0500 (EST)
-From: Caspar Zhang <czhang@redhat.com>
-Message-ID: <113043686.2301260267917617.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1397443934.2251260267853449.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1NL9Xh-0008Ia-00
+	for ltp-list@lists.sourceforge.net; Thu, 17 Dec 2009 06:08:53 +0000
+Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
+	by sfi-mx-1.v28.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1NL9XY-00062H-W2
+	for ltp-list@lists.sourceforge.net; Thu, 17 Dec 2009 06:08:52 +0000
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Thu, 17 Dec 2009 15:08:30 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Thu, 17 Dec 2009 15:08:30 +0900
+Message-ID: <002701ca7edf$5b1e2730$115a7590$@co.jp>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH]fix make install problem for ltp-full-20091130
+Content-Language: ja
+Subject: [LTP] "BindMounts" test failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,44 +30,81 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+Hi,
+
+I ran "runltp" with "ltp-2009-12-16" cvs.
+And I found the following failure in "BindMounts" testcase:
+
+------------
+sh: /opt/ltp/testscripts/test_fs_bind.sh: Permission denied
+------------
+
+When I added execution permission and tested this testcase, the 
+following errors occurred.
+
+------------
+ls: /opt/ltp/testcases/kernel/fs/fs_bind/move/test*: No such file or
+directory
+ls: /opt/ltp/testcases/kernel/fs/fs_bind/bind/test*: No such file or
+directory
+ls: /opt/ltp/testcases/kernel/fs/fs_bind/rbind/test*: No such file or
+directory
+ls: /opt/ltp/testcases/kernel/fs/fs_bind/regression/test*: No such file or
+directory
+------------
+
+This error is caused by following:
+ (1) Execution files haven't permissions.
+ (2) "${LTPROOT}" directory isn't the current directory in which
+     "make install" executed. 
+     By default, "${LTPROOT}" directory is "/opt/ltp".
+ (3) ".../ltp-2009-12-16/testcases/kernel/fs/fs_bind/" directory does exist,
+     but "/opt/ltp/testcases/kernel/fs/fs_bind/" directory doesn't exist.
+      (I want to suggest using "/opt/ltp/testcases/bin/fs_bind/"
+      instead of "/opt/ltp/testcases/kernel/fs/fs_bind/".)
+
+Then, I think that it requires following three modifications to run
+"BindMounts" test exactly:
+
+ (1) Add the execution permissions to "${LTPROOT}/testscripts" directory
+     when installation.
+ (2) Deploy following four directories under the "${LTPROOT}/testcases/bin"
+     directory when installation.
+     "./fs_bind/move/"
+     "./fs_bind/bind/"
+     "./fs_bind/rbind/"
+     "./fs_bind/regression/"
+ (3) Apply the following patch:
+============
+--- test_fs_bind.sh	2008-06-29 04:30:19.000000000 +0900
++++ test_fs_bind.sh.new	2009-12-17 11:32:27.000000000 +0900
+@@ -60,7 +60,7 @@
+ 		LTPROOT="${PWD}"
+ 	fi
+ 	
+-	FS_BIND_ROOT="${LTPROOT}/testcases/kernel/fs/fs_bind"
++	FS_BIND_ROOT="${LTPROOT}/testcases/bin/fs_bind"
+ 
+ 	total=0 # total number of tests
+ 	for dir in "${test_dirs[@]}" ; do
+============
 
 
------ "Garrett Cooper" <yanegomi@gmail.com> wrote:
+Regards--
 
-> On Dec 8, 2009, at 2:18 AM, Caspar Zhang wrote:
-> 
-> > Hello, After I executed make all; make install, I want to 
-> > execute runltp but it always fails. The error message is:
-> > 
-> > FATAL: Test suite not installed correctly
-> > INFO: as root user type 'make ; make install'
-> > 
-> > I searched in Makefile and found the following code:
-> > 
-> > $(INSTALL_TARGETS) include-install lib-install:
-> > 	$(MAKE) -C "$(subst -install,,$@)" \
-> > 		-f "$(abs_top_srcdir)/$(subst -install,,$@)/Makefile" all
-> > 
-> > I think the last word maybe "install".
-> > 
-> > I modified it to install and ltp ran well. the patch could be 
-> > found in the attachment.
-> 
-> Thanks, but the typo was just fixed moments ago.
-> Cheers!
-> -Garrett
 
-That's great! I should have read the codes a bit earlier :-)
+-Tomonori Mitani
 
-Caspar
+
 
 ------------------------------------------------------------------------------
-Return on Information:
-Google Enterprise Search pays you back
-Get the facts.
-http://p.sf.net/sfu/google-dev2dev
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
