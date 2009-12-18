@@ -1,23 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NIHIB-0001h5-MZ
-	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2009 07:48:59 +0000
-Received: from mail-yx0-f202.google.com ([209.85.210.202])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NIHI5-0005oc-AV
-	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2009 07:48:59 +0000
-Received: by yxe40 with SMTP id 40so2608305yxe.28
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 08 Dec 2009 23:48:48 -0800 (PST)
-Mime-Version: 1.0 (Apple Message framework v1077)
-From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <000001ca78a2$93fd5a50$bbf80ef0$@co.jp>
-Date: Tue, 8 Dec 2009 23:48:45 -0800
-Message-Id: <7F8A730D-2350-4FB1-8A5A-F37B8CFABFE9@gmail.com>
-References: <000001ca78a2$93fd5a50$bbf80ef0$@co.jp>
-Subject: Re: [LTP] make error
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <liubo2009@cn.fujitsu.com>) id 1NLdSD-0005Ap-Re
+	for ltp-list@lists.sourceforge.net; Fri, 18 Dec 2009 14:05:13 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NLdS3-0006Xp-EV
+	for ltp-list@lists.sourceforge.net; Fri, 18 Dec 2009 14:05:13 +0000
+Message-ID: <4B2B7704.8000003@cn.fujitsu.com>
+Date: Fri, 18 Dec 2009 20:35:16 +0800
+From: liubo <liubo2009@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <1187453091.565781261137697221.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1187453091.565781261137697221.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+Subject: Re: [LTP] [PATCH 2/3] ade: fix the bug of ar01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,93 +24,146 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8859943494303139585=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
+To: Caspar Zhang <czhang@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Dec 8, 2009, at 11:38 PM, Mitani wrote:
+This is a multi-part message in MIME format.
+--===============8859943494303139585==
+Content-Type: multipart/alternative;
+	boundary="------------010505000004050907050602"
 
-> Hi,
-> 
-> Sorry, I don't know how to response to following thread:
-> "http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg08965.html"
-> but I want to comment it:
-> 
-> 
->>> On Thursday 12 November 2009 01:20:37 yali_ning wrote:
->>>> I came across an error , when compiling the ltp-20091030. the step
->>> is :
->>>> 
->>>> gcc -Wall -g -Os -g -O2 -fno-strict-aliasing -pipe -Wall 
->>>> 
->>> -I/mnt/sdb1/nly1/ltp-1030/ltp-full-20091031/testcases/kernel/include
->>>> -I../../../../include -I../../../../include -L../../../../lib 
->>> vfork.c 
->>>> -lltp -o vfork In file included from /usr/include/asm/ptrace.h:58,
->>>> from /usr/include/linux/ptrace.h:49,
->>>> from vfork.c:45:
->>>> /usr/include/asm/fpu.h:57: error: redefinition of 'struct
->>> ia64_fpreg'
->>>> In file included from /usr/include/linux/ptrace.h:49,
->>>> from vfork.c:45:
->>>> /usr/include/asm/ptrace.h:208: error: redefinition of 'struct
->>>> pt_all_user_regs'
->>> 
->>> this should be fixed already in latest cvs
->>> -mike
->> No, I tried to install latest cvs version under RHEL5.4 on a ia64
->> machine but the same error still existed.
->> 
->> What puzzled me is, it said it was the redefinition-error, but I 
->> couldn't even find the originally defined structs.
->> 
->> Thanks,
->> Caspar 
-> 
-> 
-> ============
-> 
-> 
-> Well, I think that the report that Caspar says is right.
-> 
-> I tried to "make" with "ltp-2009-12-08" version 
-> in RHEL5.4 (kernel 2.6.18-164.el5) and ia64 architecture, too.
-> But it output the error message same as Caspar's report
-> and ended in failure.
-> 
-> And same failure occurred in "ltp-full-20091031.tgz" version, too.
-> 
-> I tried various versions until now.
-> 
->       LTP version       ---  error occurred in...
-> ---------------------------------------------------------------------
->  (1)  ltp-full-20091031 ---  "vfork.c" (This failure)
->  (2)  ltp-2009-11-17    ---  "vfork.c" (Resembles this failure)
->  (3)  ltp-2009-11-19    ---  "vfork.c" (Resembles this failure)
->  (4)  ltp-2009-11-24    ---  "vfork.c" (Resembles this failure)
->  (5)  ltp-2009-11-26    ---  "vfork.c" (Resembles this failure)
->  (6)  ltp-2009-11-27    ---  "pidns03.c" (Before than this failure)
->  (7)  ltp-2009-11-30    ---  "pidns03.c" (Before than this failure)
->  (8)  ltp-2009-12-01    ---  "libclone.c" (Before than this failure)
->  (9)  ltp-2009-12-02    ---  "libclone.c" (Before than this failure)
->  (10) ltp-full-20091130 ---  "libclone.c" (Before than this failure)
->  (11) ltp-2009-12-07    ---  "vfork.c" (This failure)
->  (12) ltp-2009-12-08    ---  "vfork.c" (This failure)
+This is a multi-part message in MIME format.
+--------------010505000004050907050602
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-I'm making multiple versioned copies of Fedora based toolchains and sysroots to work around these issues, as I don't have a toolchain setup for ia64, nor do I have real hardware to compile on. Really counterproductive when trying to resolve these issues :(...
+On 12/18/2009 08:01 PM, Caspar Zhang wrote:
+> ----- "Caspar Zhang" <czhang@redhat.com> wrote:
+>
+>   
+>> ----- "liubo" <liubo2009@cn.fujitsu.com> wrote: 
+>>
+>>     
+>>> Yes, this problem does occur because of the version... 
+>>> In binutils-2.19.51.0.2, the strange dot appears. 
+>>> In binutils-2.17.50.0.18, the strange dot does not appear. 
+>>> And these cause the dismatch. 
+>>>
+>>> Thanks, 
+>>> Liu Bo 
+>>>
+>>>       
+>> My Fedora12 has binutils-2.19.51.0.14-34, I can't see this dot
+>> either.
+>>
+>>     
+> Tested in binutils-2.19.51.0.2-17.fc11, don't see this dot either 
+> :-(
+>
+> -Caspar
+>
+>
+>   
 
-I'll try and get them all panned out by the weekend.
+  Are you using a 32bit box or not?
+  I tested on a few 32bit boxes(Ubuntu Fedora), and I think it is the point.
 
-Thanks,
--Garrett
+  Thanks.
+  Liu Bo
+
+
+--------------010505000004050907050602
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content=3D"text/html; charset=3DUTF-8" http-equiv=3D"Content-Type=
+">
+</head>
+<body bgcolor=3D"#ffffff" text=3D"#000000">
+On 12/18/2009 08:01 PM, Caspar Zhang wrote:
+<blockquote
+ cite=3D"mid:1187453091.565781261137697221.JavaMail.root@zmail04.collab.p=
+rod.int.phx2.redhat.com"
+ type=3D"cite">
+  <pre wrap=3D"">----- "Caspar Zhang" <a class=3D"moz-txt-link-rfc2396E" =
+href=3D"mailto:czhang@redhat.com">&lt;czhang@redhat.com&gt;</a> wrote:
+
+  </pre>
+  <blockquote type=3D"cite">
+    <pre wrap=3D"">----- "liubo" <a class=3D"moz-txt-link-rfc2396E" href=3D=
+"mailto:liubo2009@cn.fujitsu.com">&lt;liubo2009@cn.fujitsu.com&gt;</a> wr=
+ote:=20
+
+    </pre>
+    <blockquote type=3D"cite">
+      <pre wrap=3D"">Yes, this problem does occur because of the version.=
+..=20
+In binutils-2.19.51.0.2, the strange dot appears.=20
+In binutils-2.17.50.0.18, the strange dot does not appear.=20
+And these cause the dismatch.=20
+
+Thanks,=20
+Liu Bo=20
+
+      </pre>
+    </blockquote>
+    <pre wrap=3D"">My Fedora12 has binutils-2.19.51.0.14-34, I can't see =
+this dot
+either.
+
+    </pre>
+  </blockquote>
+  <pre wrap=3D""><!---->Tested in binutils-2.19.51.0.2-17.fc11, don't see=
+ this dot either=20
+:-(
+
+-Caspar
+
+
+  </pre>
+</blockquote>
+<br>
+=C2=A0 Are you using a 32bit box or not?<br>
+=C2=A0 I tested on a few 32bit boxes(Ubuntu Fedora), and I think it is th=
+e
+point.<br>
+<br>
+=C2=A0 Thanks.<br>
+=C2=A0 Liu Bo<br>
+<br>
+</body>
+</html>
+
+--------------010505000004050907050602--
+
+
+--===============8859943494303139585==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 ------------------------------------------------------------------------------
-Return on Information:
-Google Enterprise Search pays you back
-Get the facts.
-http://p.sf.net/sfu/google-dev2dev
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
+--===============8859943494303139585==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============8859943494303139585==--
+
