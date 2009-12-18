@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1NLohI-0003fI-PW
-	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 02:05:32 +0000
-Received: from fmmailgate03.web.de ([217.72.192.234])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NLohB-0001d3-Cc
-	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 02:05:32 +0000
-Date: Sat, 19 Dec 2009 03:06:00 +0100
-From: =?iso-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
+	(envelope-from <czhang@redhat.com>) id 1NLbEE-00051o-Am
+	for ltp-list@lists.sourceforge.net; Fri, 18 Dec 2009 11:42:38 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NLbE8-0005Y4-2b
+	for ltp-list@lists.sourceforge.net; Fri, 18 Dec 2009 11:42:38 +0000
+Date: Fri, 18 Dec 2009 06:42:20 -0500 (EST)
+From: Caspar Zhang <czhang@redhat.com>
+Message-ID: <2124228587.565321261136540799.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1212262284.565301261136526909.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
 MIME-Version: 1.0
-Message-ID: <op.u45xgah3u2flwt@debian>
-Subject: [LTP] Patch from 4.11.
+Subject: Re: [LTP] [PATCH 2/3] ade: fix the bug of ar01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,40 +26,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-
-Hello,
-
-in your patch from 4.11., "1. Use linux_syscall_numbers.h. 2. Fix a format  
-string (use inttypes.h)....", there is:
+To: liubo <liubo2009@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 
-@@ -174,7 +177,7 @@ void test_mbind(void)
-  		ret = 1;
-  		return;
-  	}
--	printf("%lx\n", addr);
-+	printf("%" __PRI64_PREFIX "x\n", (long) addr);
-  	ret = mbind(addr, len, MPOL_BIND, &mask, 8 * sizeof(mask), 0);
-  }
+----- "liubo" <liubo2009@cn.fujitsu.com> wrote: 
 
-I am not happy with that, particularly:
+> Yes, this problem does occur because of the version... 
+> In binutils-2.19.51.0.2, the strange dot appears. 
+> In binutils-2.17.50.0.18, the strange dot does not appear. 
+> And these cause the dismatch. 
+> 
+> Thanks, 
+> Liu Bo 
+> 
 
-1. You use a 64-bit format specifier, but pass a long. A long may not be  
-64-bit, in which case the code is buggy.
+My Fedora12 has binutils-2.19.51.0.14-34, I can't see this dot either.
 
-2. You use __PRI64_PREFIX, which, as all underscore-prefixed names is an  
-implementation detail of the library.
-
-3. Why didn't use just printf("%p\n", addr), when addr is a void* and "p"  
-is a format specifier for pointers.
-
-Regards
-     Jiri Palecek
-
--- 
-Using Opera's revolutionary e-mail client: http://www.opera.com/mail/
+-Caspar
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
