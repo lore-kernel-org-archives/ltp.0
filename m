@@ -1,26 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1NILIb-0007ln-W7
-	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2009 12:05:41 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NILIV-0007Ai-N7
-	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2009 12:05:41 +0000
-Received: from vapier.localnet (localhost [127.0.0.1])
-	by smtp.gentoo.org (Postfix) with ESMTP id E490A67F0A
-	for <ltp-list@lists.sourceforge.net>;
-	Wed,  9 Dec 2009 12:05:28 +0000 (UTC)
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Wed, 9 Dec 2009 07:05:49 -0500
-References: <000001ca78a2$93fd5a50$bbf80ef0$@co.jp>
-	<7F8A730D-2350-4FB1-8A5A-F37B8CFABFE9@gmail.com>
-	<200912090609.08566.vapier@gentoo.org>
-In-Reply-To: <200912090609.08566.vapier@gentoo.org>
+	(envelope-from <mitani@ryobi.co.jp>) id 1NLZG5-0001r8-By
+	for ltp-list@lists.sourceforge.net; Fri, 18 Dec 2009 09:36:25 +0000
+Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
+	by sfi-mx-2.v28.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1NLZFy-0002Gk-Ho
+	for ltp-list@lists.sourceforge.net; Fri, 18 Dec 2009 09:36:25 +0000
+From: "Mitani" <mitani@ryobi.co.jp>
+References: <451745090.560321261122821966.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>	
+	<1512172575.560341261122853904.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	<364299f40912180050v4515ffa1s36c79dde6d417f4e@mail.gmail.com>
+In-Reply-To: <364299f40912180050v4515ffa1s36c79dde6d417f4e@mail.gmail.com>
+Date: Fri, 18 Dec 2009 18:35:44 +0900
+Message-ID: <000401ca7fc5$78fafd00$6af0f700$@co.jp>
 MIME-Version: 1.0
-Message-Id: <200912090705.49786.vapier@gentoo.org>
-Subject: Re: [LTP] make error
+Content-Language: ja
+Subject: Re: [LTP] Build error of "regress.c"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,97 +27,177 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3253596540771837601=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============3253596540771837601==
-Content-Type: multipart/signed; boundary="nextPart1819653.sRLzcsLJEn";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1819653.sRLzcsLJEn
-Content-Type: Text/Plain;
-  charset="utf-8"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: 'Garrett Cooper' <yanegomi@gmail.com>, Caspar Zhang <czhang@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Wednesday 09 December 2009 06:09:07 Mike Frysinger wrote:
-> On Wednesday 09 December 2009 02:48:45 Garrett Cooper wrote:
-> > I'm making multiple versioned copies of Fedora based toolchains and
-> >  sysroots to work around these issues, as I don't have a toolchain setup
-> >  for ia64, nor do I have real hardware to compile on. Really
-> >  counterproductive when trying to resolve these issues :(...
->=20
-> Gentoo has ia64 hardware you could get an account on, and `crossdev` shou=
-ld
->  be able to produce ia64 cross-compilers.  due to the libunwind funkiness,
->  ia64 tends to be one of the harder ones to make cross-toolchains for.
+Caspar,
+Garrett,
 
-looks like things are still peachy.  i love when things just work ;).
+Thank you for useful information.
 
-# crossdev ia64
-=2E.. wait a bit ...
+I arranged the patch to match the latest file, and applied it.
 
-# qlist -I -v cross-ia64
-cross-ia64-unknown-linux-gnu/binutils-2.20
-cross-ia64-unknown-linux-gnu/gcc-4.4.2
-cross-ia64-unknown-linux-gnu/glibc-2.11-r1
-cross-ia64-unknown-linux-gnu/linux-headers-2.6.30-r1
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+--- ./Makefile.org      2009-12-16 04:27:42.000000000 +0900
++++ ./Makefile  2009-12-18 17:47:42.000000000 +0900
+@@ -35,7 +35,7 @@
+ $(warning directory if you want to run this test)
+ else
 
-$ echo 'main(){}' | ia64-unknown-linux-gnu-gcc -x c -
-$ file a.out
-a.out: ELF 64-bit LSB executable, IA-64, version 1 (SYSV), dynamically link=
-ed=20
-(uses shared libs), for GNU/Linux 2.6.9, not stripped
-=2Dmike
+-LIBEVENT               :=3D libevent/lib/libevent.a
++LIBEVENT               :=3D libevent/libevent.a
 
---nextPart1819653.sRLzcsLJEn
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+ CLEAN_DEPS             :=3D libevent-clean
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.13 (GNU/Linux)
+@@ -56,8 +56,9 @@
+ libevent libevent/test: %:
+        mkdir -p "$@"
 
-iQIcBAABAgAGBQJLH5KdAAoJEEFjO5/oN/WBnSkQALotJMJi7DJ19U7nHgsg1sD6
-qvRYOtLc3LphC1eb3ry2ZKR4OpFOkdeJBCFcOQWo6PJtEvTmZo4PbhfgQFI9ZRQI
-HijcNghktCBEyuzL5QnXWDBowmxnj/9B09/R9yvvyz9v76dCGr83ljP4rRyIBpTY
-ehxQrQA6mZk1JfkAcoi7KrXLrzVhIPriS5DPePNpFCzTuP4h7TxSI6hsDBicvqUt
-mPStpEK/hY56un/EfHM/PlLCBRuYs2xtrxauTXVbDh6c7Qulm+5kSoiTgepA/OkM
-FukIxXYjwdMb2JTqm1QHhVHoNVdQOEkK+Rn40K9OjAfQoa/FeBk3OvQtGuCV8fV6
-2OC/9C1Ugt3rfgK1tpeIDIW5nZbcg3QEAdn1lmFkZLLJdkNKK08+4UVCD7eYXrib
-LEXTfyTjxN/StT4CPtUSCCo3AMrrkuKPz4gchBGq6KMfDxJjo6CBy62iJkjXez2J
-dpmT04WuR0OLcdS8Hp6IG7FeuUBfBRzifO5IfylPBrcWDVNHocWDuOp0rHUFvWsY
-psbjLV5OsRSZa2q1V55KHBaldvJVBXU82u9cY9zcMfaxO044TQFUuCOdYT1yQo1W
-UhB9tF01PplylLDvEhyUvgncPwdM6qhYqV1XDpi5jN5wkE9DOF6+ZXPYFyzv6v1W
-U900fvFYru7LaT9NST6t
-=cEQf
------END PGP SIGNATURE-----
+-$(TEST_APPS): LDFLAGS +=3D -L$(abs_builddir)/libevent/lib
++$(TEST_APPS): LDFLAGS +=3D -L$(abs_builddir)/libevent
+ $(TEST_APPS): LDLIBS +=3D -levent
++$(TEST_APPS): CPPFLAGS +=3D -I$(abs_builddir)/libevent
 
---nextPart1819653.sRLzcsLJEn--
+ $(LIBEVENT): $(abs_srcdir)/libevent/Makefile libevent
+        $(MAKE) -C libevent -f "$(firstword $^)" libevent.a
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+After that, "make" succeeded!
 
 
---===============3253596540771837601==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Thank you--
 
-------------------------------------------------------------------------------
-Return on Information:
-Google Enterprise Search pays you back
-Get the facts.
-http://p.sf.net/sfu/google-dev2dev
+-Tomonori Mitani
 
---===============3253596540771837601==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+
+-----Original Message-----
+From: Garrett Cooper [mailto:yanegomi@gmail.com] =
+
+Sent: Friday, December 18, 2009 5:50 PM
+To: Caspar Zhang
+Cc: Mitani; ltp-list@lists.sourceforge.net
+Subject: Re: [LTP] Build error of "regress.c"
+
+On Thu, Dec 17, 2009 at 11:54 PM, Caspar Zhang <czhang@redhat.com> wrote:
+>
+>
+> ----- "Mitani" <mitani@ryobi.co.jp> wrote:
+>
+>> Hi,
+>>
+>> I ran "make" with "ltp-2009-12-16" and "ltp-2009-12-18" cvs,
+>> but it failed:
+>
+>
+> I met same problem. try this patch.
+>
+> Thanks,
+> Caspar
+>
+>> ------------
+>> [...]
+>> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+>> -I../../../include
+>> -I../../../include
+>> =A0 -L../../../lib
+>> -L/home/mitani/LTP/ltp-2009-12-18/testcases/kernel/syscalls/libevent/lib
+>> =A0libevent/test/regress.c =A0-levent -o libevent/test/regress
+>> libevent/test/regress.c:44:19: error: event.h: No such file or
+>> directory
+>> libevent/test/regress.c: In function 'simple_read_cb':
+>> libevent/test/regress.c:69: warning: implicit declaration of function
+>> 'event_add'
+>> libevent/test/regress.c: In function 'multiple_write_cb':
+>> libevent/test/regress.c:100: warning: implicit declaration of
+>> function
+>> 'event_del'
+>> libevent/test/regress.c: In function 'signal_cb':
+>> libevent/test/regress.c:159: warning: implicit declaration of
+>> function
+>> 'signal_del'
+>> libevent/test/regress.c: At top level:
+>> libevent/test/regress.c:164: error: field 'ev' has incomplete type
+>> [...]
+>> libevent/test/regress.c:455: warning: implicit declaration of
+>> function
+>> 'bufferevent_write'
+>> libevent/test/regress.c:459: warning: implicit declaration of
+>> function
+>> 'bufferevent_free'
+>> libevent/test/regress.c: In function 'main':
+>> libevent/test/regress.c:473: warning: implicit declaration of
+>> function
+>> 'event_init'
+>> make[3]: *** [libevent/test/regress] Error 1
+>> make[3]: Leaving directory
+>> `/home/mitani/LTP/ltp-2009-12-18/testcases/kernel/syscalls'
+>> make[2]: *** [all] Error 2
+>> [...]
+>> ------------
+>>
+>> "regress.c" was not compiled before "ltp-2009-12-15" cvs.
+>> It seems to have been compiled after "ltp-2009-12-16" cvs
+>> for the first time.
+>>
+>>
+>> The results of "make" are various by environment as follows:
+>>
+>> =A0 (1) RHEL5.4(2.6.18-164.el5) x86 =A0 =A0: succeeded
+>> =A0 (2) RHEL5.4(2.6.18-164.el5) x86_64 : failed
+>> =A0 (3) RHEL5.4(2.6.18-164.el5) ia64 =A0 : failed
+>> =A0 (4) RHEL4.8(2.6.9-89.ELsmp) x86 =A0 =A0: succeeded
+>>
+>> There is "/usr/local/include/event.h" file in the successful system.
+>> There is not "/usr/local/include/event.h" file in the failed system.
+>>
+>> "/usr/local/include/event.h" file completely accords with
+>> "${LTPROOT}/testcases/kernel/syscalls/libevent/event.h" file.
+>> I think that "${LTPROOT}/testcases/kernel/syscalls/libevent/event.h"
+>> copied to "/usr/local/include/event.h" when installed.
+>>
+>> However, depending on system, there seems to be the case that
+>> this file isn't copied.
+>>
+>>
+>> ---
+>>
+>> Instead of "/usr/local/include/event.h", I installed "libevent-devel"
+>> (libevent-devel-1.1a-3.2.1.x86_64.rpm) to above (2) system.
+>> Then "/usr/include/event.h" file was installed.
+>> This "/usr/include/event.h" file does not completely accord with
+>> "/usr/local/include/event.h".
+>> But after that, "make" succeeded.
+>>
+>> I don't think that this measure is right. This is the wrong way, I
+>> think.
+>> Because, I judge that LTP is going to copy a
+>> "/usr/local/include/event.h"
+>> file by oneself.
+>>
+>>
+>>
+>> Thank you--
+>>
+>> -Tomonori Mitani
+
+    Please try again off cvs Mitani-san.
+Thanks,
+-Garrett
+
+
+
+---------------------------------------------------------------------------=
+---
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev =
 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============3253596540771837601==--
-
