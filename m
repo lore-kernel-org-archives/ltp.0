@@ -1,31 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NGDN9-0005OU-VW
-	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:13:35 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NLfIt-0005u5-Ig
+	for ltp-list@lists.sourceforge.net; Fri, 18 Dec 2009 16:03:43 +0000
+Received: from e6.ny.us.ibm.com ([32.97.182.146])
 	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NGDN2-0005qw-WD
-	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:13:35 +0000
-Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
-	by e2.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nB3F53dh008652
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 10:05:03 -0500
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nB3FDI6A075524
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 10:13:19 -0500
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	nB3B3IHp028690
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 06:03:18 -0500
+	(Exim 4.69) id 1NLfIo-0002ZT-47
+	for ltp-list@lists.sourceforge.net; Fri, 18 Dec 2009 16:03:43 +0000
+Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
+	by e6.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nBIFww4E009533
+	for <ltp-list@lists.sourceforge.net>; Fri, 18 Dec 2009 10:58:58 -0500
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	nBIG3JXk085952
+	for <ltp-list@lists.sourceforge.net>; Fri, 18 Dec 2009 11:03:19 -0500
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	nBIG39FC029006
+	for <ltp-list@lists.sourceforge.net>; Fri, 18 Dec 2009 14:03:09 -0200
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200912012300.nB1N08rZ029752@e1.ny.us.ibm.com>
-References: <200912012300.nB1N08rZ029752@e1.ny.us.ibm.com>
-Date: Thu, 03 Dec 2009 20:42:40 +0530
-Message-Id: <1259853166.5085.43.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <76281794.565171261136353220.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+References: <76281794.565171261136353220.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+Date: Fri, 18 Dec 2009 21:33:02 +0530
+Message-Id: <1261152182.8993.22.camel@subratamodak.linux.ibm.com>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix small errors in the runtest files
+Subject: Re: [LTP] [PATCH] fix lib-not-found error when compile for
+	the	second time
 Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -36,72 +37,95 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
+To: Caspar Zhang <czhang@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Tue, 2009-12-01 at 23:55 +0100, Jiri Palecek wrote: 
-> Hello,
-> 
-> this patch fixes the following problems in the runtest files:
-> 
->  - rwtest has been renamed to rwtest.sh
-> 
->  - there is no ipv6 variant of rlogin test
-> 
-> Regards
->     Jiri Palecek
-> 
-> Signed-off-by: Jiri Palecek <jpalecek@web.de>
-
-Thanks.
-
-Regards--
-Subrata
-
-> ---
->  runtest/fs          |   10 +++++-----
->  runtest/ipv6_expect |    1 -
->  2 files changed, 5 insertions(+), 6 deletions(-)
-> 
-> diff --git a/runtest/fs b/runtest/fs
-> index 717336a..9042c87 100644
-> --- a/runtest/fs
-> +++ b/runtest/fs
-> @@ -29,11 +29,11 @@ gf27 growfiles -W gf27 -b -D 0 -w -g 8b -C 1 -b -i 1000 -u gfsparse-1-$$ -d $TMP
->  gf28 growfiles -W gf28 -b -D 0 -w -g 16b -C 1 -b -i 1000 -u gfsparse-2-$$ -d $TMPDIR
->  gf29 growfiles -W gf29 -b -D 0 -r 1-4096 -R 0-33554432 -i 0 -L 60 -C 1 -u gfsparse-3-$$ -d $TMPDIR
->  gf30 growfiles -W gf30 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -o O_RDWR,O_CREAT,O_SYNC -g 20480 -T 10 -t 20480 gf-sync-$$ -d $TMPDIR
-> -rwtest01 export LTPROOT; rwtest -N rwtest01 -c -q -i 60s  -f sync 10%25000:$TMPDIR/rw-sync-$$
-> -rwtest02 export LTPROOT; rwtest -N rwtest02 -c -q -i 60s  -f buffered 10%25000:$TMPDIR/rw-buffered-$$
-> -rwtest03 export LTPROOT; rwtest -N rwtest03 -c -q -i 60s -n 2  -f buffered -s mmread,mmwrite -m random -Dv 10%25000:$TMPDIR/mm-buff-$$
-> -rwtest04 export LTPROOT; rwtest -N rwtest04 -c -q -i 60s -n 2  -f sync -s mmread,mmwrite -m random -Dv 10%25000:$TMPDIR/mm-sync-$$
-> -rwtest05 export LTPROOT; rwtest -N rwtest05 -c -q -i 50 -T 64b 500b:$TMPDIR/rwtest01%f
-> +rwtest01 export LTPROOT; rwtest.sh -N rwtest01 -c -q -i 60s  -f sync 10%25000:$TMPDIR/rw-sync-$$
-> +rwtest02 export LTPROOT; rwtest.sh -N rwtest02 -c -q -i 60s  -f buffered 10%25000:$TMPDIR/rw-buffered-$$
-> +rwtest03 export LTPROOT; rwtest.sh -N rwtest03 -c -q -i 60s -n 2  -f buffered -s mmread,mmwrite -m random -Dv 10%25000:$TMPDIR/mm-buff-$$
-> +rwtest04 export LTPROOT; rwtest.sh -N rwtest04 -c -q -i 60s -n 2  -f sync -s mmread,mmwrite -m random -Dv 10%25000:$TMPDIR/mm-sync-$$
-> +rwtest05 export LTPROOT; rwtest.sh -N rwtest05 -c -q -i 50 -T 64b 500b:$TMPDIR/rwtest01%f
-> 
->  #must be run as root
->  #iogen01 iogen -i 120s -s read,write 500b:doio.f1.$$ 1000b:doio.f2.$$ | doio -akv -n 2
-> diff --git a/runtest/ipv6_expect b/runtest/ipv6_expect
-> index 522082e..fbed53d 100644
-> --- a/runtest/ipv6_expect
-> +++ b/runtest/ipv6_expect
-> @@ -1,2 +1 @@
->  #DESCRIPTION:IPV6 related tests which require expect
-> -rlogin6 rlogin01 -6
-
-
-------------------------------------------------------------------------------
-Join us December 9, 2009 for the Red Hat Virtual Experience,
-a free event focused on virtualization and cloud computing. 
-Attend in-depth sessions from your desk. Your couch. Anywhere.
-http://p.sf.net/sfu/redhat-sfdev2dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gRnJpLCAyMDA5LTEyLTE4IGF0IDA2OjM5IC0wNTAwLCBDYXNwYXIgWmhhbmcgd3JvdGU6IAo+
+IEhpIGFsbCwgSSBtZWV0IGEgcHJvYmxlbSwgaWYgSSBjb21waWxlIGFuZCBpbnN0YWxsIGx0cCBm
+b3IgdGhlIGZpcnN0IHRpbWUsCj4gbHRwIGNhbiBwYXNzIHRoZSBjb21waWxhdGlvbiwgYnV0IGlm
+IEkgZG9uJ3QgZGVsZXRlIGluc3RhbGxhdGlvbiBkaXJlY290cnkKPiAob3JpZ2luYWxseSBiZWVu
+IC9vcHQvbHRwKSBhbmQgdHJ5IHRvIGJ1aWxkIGx0cCBmb3IgdGhlIHNlY29uZCB0aW1lIGluIAo+
+IGFub3RoZXIgbHRwIHNvdXJjZSBmb2xkZXIsIGx0cCBmYWlsZXMgaW4gY29tcGlsaW5nOgo+IAo+
+IH5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
+fn5+fn5+fn5+fn5+fn5+fgo+IGdjYyAtZyAtTzIgLWcgLU8yIC1mbm8tc3RyaWN0LWFsaWFzaW5n
+IC1waXBlIC1XYWxsCj4gLUkvbW50L3Rlc3RzL2tlcm5lbC9kaXN0cmlidXRpb24vbHRwLzIwMDkx
+MTMwL2x0cC1mdWxsLTIwMDkxMTMwL3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZQo+IC1JL21udC90
+ZXN0cy9rZXJuZWwvZGlzdHJpYnV0aW9uL2x0cC8yMDA5MTEzMC9sdHAtZnVsbC0yMDA5MTEzMC90
+ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2NwdWN0bC8uLi9saWJjb250cm9sbGVycwo+IC1J
+Li4vLi4vLi4vLi4vaW5jbHVkZSAtSS4uLy4uLy4uLy4uL2luY2x1ZGUKPiAtTC9tbnQvdGVzdHMv
+a2VybmVsL2Rpc3RyaWJ1dGlvbi9sdHAvMjAwOTExMzAvbHRwLWZ1bGwtMjAwOTExMzAvdGVzdGNh
+c2VzL2tlcm5lbC9jb250cm9sbGVycy9jcHVjdGwvLi4vbGliY29udHJvbGxlcnMKPiAtTC4uLy4u
+Ly4uLy4uL2xpYiAgY3B1Y3RsX2RlZl90YXNrMDEuYyAgIC1sbHRwIC1sbSAtbGNvbnRyb2xsZXJz
+IC1vCj4gY3B1Y3RsX2RlZl90YXNrMDEKPiBjcHVjdGxfZGVmX3Rhc2swMS5jOiBJbiBmdW5jdGlv
+biDigJhtYWlu4oCZOgo+IGNwdWN0bF9kZWZfdGFzazAxLmM6OTA6IHdhcm5pbmc6IOKAmG51bV9j
+cHVz4oCZIG1heSBiZSB1c2VkIHVuaW5pdGlhbGl6ZWQgaW4KPiB0aGlzIGZ1bmN0aW9uCj4gY3B1
+Y3RsX2RlZl90YXNrMDEuYzo5MDogd2FybmluZzog4oCYdGVzdF9udW3igJkgbWF5IGJlIHVzZWQg
+dW5pbml0aWFsaXplZCBpbgo+IHRoaXMgZnVuY3Rpb24KPiBjcHVjdGxfZGVmX3Rhc2swMS5jOjk0
+OiB3YXJuaW5nOiDigJhteV9ncm91cF9udW3igJkgbWF5IGJlIHVzZWQKPiB1bmluaXRpYWxpemVk
+IGluIHRoaXMgZnVuY3Rpb24KPiAvdXNyL2Jpbi9sZDogY2Fubm90IGZpbmQgLWxjb250cm9sbGVy
+cwo+IGNvbGxlY3QyOiBsZCByZXR1cm5lZCAxIGV4aXQgc3RhdHVzCj4gbWFrZVs1XTogKioqIFtj
+cHVjdGxfZGVmX3Rhc2swMV0gRXJyb3IgMQo+IG1ha2VbNV06IExlYXZpbmcgZGlyZWN0b3J5Cj4g
+YC9tbnQvdGVzdHMva2VybmVsL2Rpc3RyaWJ1dGlvbi9sdHAvMjAwOTExMzAvbHRwLWZ1bGwtMjAw
+OTExMzAvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9jcHVjdGwnCj4gbWFrZVs0XTogKioq
+IFthbGxdIEVycm9yIDIKPiBtYWtlWzRdOiBMZWF2aW5nIGRpcmVjdG9yeQo+IGAvbW50L3Rlc3Rz
+L2tlcm5lbC9kaXN0cmlidXRpb24vbHRwLzIwMDkxMTMwL2x0cC1mdWxsLTIwMDkxMTMwL3Rlc3Rj
+YXNlcy9rZXJuZWwvY29udHJvbGxlcnMnCj4gbWFrZVszXTogKioqIFthbGxdIEVycm9yIDIKPiBt
+YWtlWzNdOiBMZWF2aW5nIGRpcmVjdG9yeQo+IGAvbW50L3Rlc3RzL2tlcm5lbC9kaXN0cmlidXRp
+b24vbHRwLzIwMDkxMTMwL2x0cC1mdWxsLTIwMDkxMTMwL3Rlc3RjYXNlcy9rZXJuZWwnCj4gbWFr
+ZVsyXTogKioqIFthbGxdIEVycm9yIDIKPiBtYWtlWzJdOiBMZWF2aW5nIGRpcmVjdG9yeQo+IGAv
+bW50L3Rlc3RzL2tlcm5lbC9kaXN0cmlidXRpb24vbHRwLzIwMDkxMTMwL2x0cC1mdWxsLTIwMDkx
+MTMwL3Rlc3RjYXNlcycKPiBtYWtlWzFdOiAqKiogW3Rlc3RjYXNlcy1hbGxdIEVycm9yIDIKPiBt
+YWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9yeQo+IGAvbW50L3Rlc3RzL2tlcm5lbC9kaXN0cmlidXRp
+b24vbHRwLzIwMDkxMTMwL2x0cC1mdWxsLTIwMDkxMTMwJwo+IG1ha2U6ICoqKiBbYnVpbGRdIEVy
+cm9yIDIKPiB+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4KPiAKPiBBZnRlciBpbnZlc3RpZ2F0aW5nLCBJIGZpbmQg
+dGhlIGtleSB0byBzb2x2ZSB0aGUgcHJvYmxlbToKPiAKPiBTdXBwb3NlIHdlIGJ1aWxkIGx0cCB0
+byAvb3B0L2x0cC4KPiAKPiBJbiB0ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL01ha2VmaWxl
+WzFdIGFuZCB0ZXN0Y2FzZXMvbmV0d29yay9zY3RwL01ha2VmaWxlWzJdLCAKPiBsaWJyYXJ5IGZp
+bGVzIHdoaWNoIG5lZWQgdG8gYmUgYnVpbHQgYXJlIGRlZmluZWQgaW4gL29wdC9sdHAvbGliOgo+
+IAo+IExJQgkJCTo9ICQoREVTVERJUikvJChsaWJkaXIpL2xpYmNvbnRyb2xsZXJzLmEKPiAKPiB3
+aGVuIGNvbXBpbGluZyZsaW5raW5nIG9iamVjdHMgaW4gY29udHJvbGxlcnMvIHN1YmRpcnMsIHRo
+ZSBMREZMQUdTIHBhdGhzIGFyZToKPiAKPiAtTCQodG9wYnVpbGRkaXIpL3Rlc3RjYXNlcy9rZXJu
+ZWwvY29udHJvbGxlcnMvbGliY29udHJvbGxlcnMKPiAtTC4uLy4uLy4uLy4uL2xpYiAoc2VlIHRo
+ZSBlcnJvciBtZXNzYWdlcyBhYm92ZSkKPiAKPiAvb3B0L2x0cC9saWIgaXNuJ3QgaW5jbHVkZWQg
+aW4gTERGTEFHUyBwYXRocyBoZXJlLgo+IAo+IFRoZSBmaXJzdCB0aW1lIHdoZW4geW91IGNvbXBp
+bGUgbHRwLCBhIGxpYmNvbnRyb2xsZXJzLmEgd2lsbCBiZSBnZW5lcmF0ZWQKPiB1bmRlciAkKHRv
+cGJ1aWxkZGlyKS90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2xpYmNvbnRyb2xsZXJzLCBz
+byB3ZSBjYW4KPiBmaW5kIGxpYmNvbnRyb2xsZXJzLmEgaW4gTERGTEFHUyBwYXRocyBhbmQgdGhl
+IGNvbXBpbGF0aW9uIGNvdWxkIHN0aWxsIHBhc3MuCj4gQnV0IGlmIHlvdSBkb24ndCBkZWxldGUg
+L29wdC9sdHAgYW5kIHRyeSB0byBidWlsZCBsdHAgaW4gYW5vdGhlciBzb3VyY2UgCj4gZGlyZWN0
+b3J5LCBlcnJvciB3aWxsIG9jY3VyLiBTaW5jZSAkKExJQikgaW4gTWFrZWZpbGVbMV0gYW5kIE1h
+a2VmaWxlWzJdIAo+IGFyZSBhbHJlYWR5IHVwLXRvLWRhdGUsIG5vIGxpYmNvbnRyb2xsZXJzLmEg
+d2lsbCBiZSBnZW5lcmF0ZWQgaW4gCj4gJCh0b3BidWlsZGRpcikvdGVzdGNhc2VzL2tlcm5lbC9j
+b250cm9sbGVycy9saWJjb250cm9sbGVycyBkdWUgdG8gbWFrZWZpbGUKPiBwb2xpY3kuIFRodXMs
+IGx0cCBjYW4ndCBmaW5kIGxpYmNvbnRyb2xsZXJzLmEgaW4gTERGTEFHUyBwYXRocy4KPiAKPiBT
+byB3ZSBjYW4gZml4IHRoaXMgcHJvYmxlbSBpbiB0d28gd2F5czogYWRkICQoREVTVERJUikvJChs
+aWJkaXIpL2xpYiB0byAKPiBMREZMQUdTIG9yIGNoYW5nZSAkKExJQikgcGF0aHMgaW4gTWFrZWZp
+bGVbMV0gYW5kIE1ha2VmaWxlWzJdLiBGaW5kIGRldGFpbHMKPiBpbiBteSBhdHRhY2htZW50cy4K
+ClRoYW5rcy4gSSB0b28gZmFjZWQgdGhlIHNhbWUgdGhpbmcgc29tZXRpbWUgYmFjay4gR2FycmV0
+LCBwbGVhc2UgYXBwbHkKdGhlIHNvbHV0aW9uIHlvdSB3b3VsZCBsaWtlIHRoZSBtb3N0LgoKQ2Fz
+cGFyLAoKVGhlcmUgd2FzIGFsc28gYSBwcm9ibGVtIHdpdGggdGhlIHNjdHAgbGlicmFyeS4gRGlk
+IHlvdSBjaGVjayB0aGF0IG91dCA/CgpSZWdhcmRzLS0KU3VicmF0YQoKPiAKPiBUaGFua3MsCj4g
+Q2FzcGFyCj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gVGhpcyBTRi5OZXQgZW1haWwgaXMgc3Bv
+bnNvcmVkIGJ5IHRoZSBWZXJpem9uIERldmVsb3BlciBDb21tdW5pdHkKPiBUYWtlIGFkdmFudGFn
+ZSBvZiBWZXJpem9uJ3MgYmVzdC1pbi1jbGFzcyBhcHAgZGV2ZWxvcG1lbnQgc3VwcG9ydAo+IEEg
+c3RyZWFtbGluZWQsIDE0IGRheSB0byBtYXJrZXQgcHJvY2VzcyBtYWtlcyBhcHAgZGlzdHJpYnV0
+aW9uIGZhc3QgYW5kIGVhc3kKPiBKb2luIG5vdyBhbmQgZ2V0IG9uZSBzdGVwIGNsb3NlciB0byBt
+aWxsaW9ucyBvZiBWZXJpem9uIGN1c3RvbWVycwo+IGh0dHA6Ly9wLnNmLm5ldC9zZnUvdmVyaXpv
+bi1kZXYyZGV2IAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fIEx0cC1saXN0IG1haWxpbmcgbGlzdCBMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQg
+aHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QKCgot
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhpcyBTRi5OZXQgZW1haWwgaXMgc3BvbnNvcmVkIGJ5IHRo
+ZSBWZXJpem9uIERldmVsb3BlciBDb21tdW5pdHkKVGFrZSBhZHZhbnRhZ2Ugb2YgVmVyaXpvbidz
+IGJlc3QtaW4tY2xhc3MgYXBwIGRldmVsb3BtZW50IHN1cHBvcnQKQSBzdHJlYW1saW5lZCwgMTQg
+ZGF5IHRvIG1hcmtldCBwcm9jZXNzIG1ha2VzIGFwcCBkaXN0cmlidXRpb24gZmFzdCBhbmQgZWFz
+eQpKb2luIG5vdyBhbmQgZ2V0IG9uZSBzdGVwIGNsb3NlciB0byBtaWxsaW9ucyBvZiBWZXJpem9u
+IGN1c3RvbWVycwpodHRwOi8vcC5zZi5uZXQvc2Z1L3Zlcml6b24tZGV2MmRldiAKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBs
+aXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZv
+cmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
