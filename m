@@ -1,24 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NMukg-0006DH-9R
-	for ltp-list@lists.sourceforge.net; Tue, 22 Dec 2009 02:45:34 +0000
-Received: from mail-pw0-f43.google.com ([209.85.160.43])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NMukY-0005v3-T3
-	for ltp-list@lists.sourceforge.net; Tue, 22 Dec 2009 02:45:34 +0000
-Received: by pwj11 with SMTP id 11so3848129pwj.2
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 21 Dec 2009 18:45:21 -0800 (PST)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1NLX8C-0000wI-ER
+	for ltp-list@lists.sourceforge.net; Fri, 18 Dec 2009 07:20:08 +0000
+Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
+	by sfi-mx-3.v28.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1NLX87-0007Q5-03
+	for ltp-list@lists.sourceforge.net; Fri, 18 Dec 2009 07:20:08 +0000
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Fri, 18 Dec 2009 16:19:52 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Fri, 18 Dec 2009 16:19:52 +0900
+Message-ID: <000001ca7fb2$7e069fb0$7a13df10$@co.jp>
 MIME-Version: 1.0
-In-Reply-To: <000301ca820d$cc428e20$64c7aa60$@co.jp>
-References: <000301ca820d$cc428e20$64c7aa60$@co.jp>
-Date: Mon, 21 Dec 2009 18:45:21 -0800
-Message-ID: <364299f40912211845u5b20d868ucaaa0a397a3658f1@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP]
-	=?utf-8?b?Im5hbm9zbGVlcHswMu+9njA0fSIgdGVzdGNhc2UgZmFpbGVk?=
+Content-Language: ja
+Subject: [LTP] Build error of "regress.c"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,91 +27,102 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-MjAwOS8xMi8yMCBNaXRhbmkgPG1pdGFuaUByeW9iaS5jby5qcD46Cj4gSGksCj4KPiBJIGZvdW5k
-IHRoYXQgIm5hbm9zbGVlcHswMu+9njA0fSIgdGVzdGNhc2UgZmFpbGVkIGxpa2UgZm9sbG93IGV4
-YW1wbGUuCj4gLS0tLS0tLS0tLQo+IG5hbm9zbGVlcDAyIMKgIMKgMSDCoFRGQUlMIMKgOiDCoGNo
-aWxkIHByb2Nlc3MgZXhpdGVkIGFibm9ybWFsbHkKPiAtLS0tLS0tLS0tCj4KPiBJbiAke0xUUFJP
-T1R9L3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbmFub3NsZWVwL25hbm9zbGVlcHswMu+9njA0
-fS5jLAo+IFdFWElUU1RBVFVTKHN0YXR1cykgaXMgdXNlZCB0byBqdWRnZSB3aGV0aGVyIGNoaWxk
-IHByb2Nlc3MgZGlkIGV4aXQKPiBub3JtYWxseS4KPiBCdXQgV0VYSVRTVEFUVVMgbWFjcm8gaXMg
-dXNlZCBvbmx5IHdoZW4gV0lGRVhJVEVEIG1hY3JvIHJldHVybmVkICJ0cnVlIi4KPiBTbywgaXQg
-Y2Fubm90IGdldCB0aGUgY29ycmVjdCByZXN1bHRzIGFuZCBpdCB0ZXJtaW5hdGVkIHdpdGggdGhl
-IGFib3ZlCj4gZXJyb3IuCj4KPiBUbyBzb2x2ZSB0aGlzIHByb2JsZW0sIEkgdGhvdWdodCB0aGF0
-IHdlIGhhZCBiZXR0ZXIgdXNlIFdJRkVYSVRFRCBtYWNybwo+IGluc3RlYWQgb2YgdGhlIFdFWElU
-U1RBVFVTIG1hY3JvLgo+IEhlcmUgYXJlIHBhdGNoZXMgdG8gZml4IHRoZXNlIHByb2JsZW06Cj4g
-PT09PT09PT09PT09Cj4gLS0tIG5hbm9zbGVlcDAyLmMgwqAgwqAgwqAgMjAwOS0xMS0wMiAyMjo1
-NzoxNy4wMDAwMDAwMDAgKzA5MDAKPiArKysgbmFub3NsZWVwMDIuYy5uZXcgwqAgMjAwOS0xMi0y
-MSAxNDoxNToxOS4wMDAwMDAwMDAgKzA5MDAKPiBAQCAtMTYyLDEwICsxNjIsMTAgQEAKPgo+IMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgLyogV2FpdCBmb3IgY2hpbGQgdG8gZXhlY3V0ZSAqLwo+IMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgd2FpdCgmc3RhdHVzKTsKPiAtIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIGlmIChXRVhJVFNUQVRVUyhzdGF0dXMpID09IDApIHsKPiArIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIGlmIChXSUZFWElURUQoc3RhdHVzKSkgewo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgdHN0X3Jlc20oVFBBU1MsICJGdW5jdGlvbmFsaXR5IG9mIG5hbm9zbGVlcCgpICIK
-PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAiaXMgY29y
-cmVjdCIpOwo+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgfSBlbHNlIGlmIChXRVhJVFNUQVRVUyhz
-dGF0dXMpID09IDEpIHsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIH0gZWxzZSBpZiAoIVdJRkVY
-SVRFRChzdGF0dXMpKSB7Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB0c3Rf
-cmVzbShURkFJTCwgImNoaWxkIHByb2Nlc3MgZXhpdGVkIGFibm9ybWFsbHkiKTsKPiDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoH0KPiDCoCDCoCDCoCDCoH0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgLyogRW5kIGZvciBURVNUX0xPT1BJTkcgKi8KPgo+ID09PT09PT09PT09PQo+Cj4g
-PT09PT09PT09PT09Cj4gLS0tIG5hbm9zbGVlcDAzLmMgwqAgwqAgwqAgMjAwOS0xMS0wMiAyMjo1
-NzoxNy4wMDAwMDAwMDAgKzA5MDAKPiArKysgbmFub3NsZWVwMDMuYy5uZXcgwqAgMjAwOS0xMi0y
-MSAxNTowMzo1Mi4wMDAwMDAwMDAgKzA5MDAKPiBAQCAtMTQzLDEwICsxNDMsMTAgQEAKPgo+IMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgLyogV2FpdCBmb3IgY2hpbGQgdG8gZXhlY3V0ZSAqLwo+IMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgd2FpdCgmc3RhdHVzKTsKPiAtIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIGlmIChXRVhJVFNUQVRVUyhzdGF0dXMpID09IDApIHsKPiArIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIGlmIChXSUZFWElURUQoc3RhdHVzKSkgewo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgdHN0X3Jlc20oVFBBU1MsICJuYW5vc2xlZXAoKSBmYWlscywgaW50ZXJydXB0ZWQi
-Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgIiBieSBz
-aWduYWwsIGVycm9yOiVkIiwgRUlOVFIpOwo+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgfSBlbHNl
-IGlmIChXRVhJVFNUQVRVUyhzdGF0dXMpID09IDEpIHsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IH0gZWxzZSBpZiAoIVdJRkVYSVRFRChzdGF0dXMpKSB7Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqB0c3RfcmVzbShURkFJTCwgImNoaWxkIHByb2Nlc3MgZXhpdGVkIGFibm9y
-bWFsbHkiKTsKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoH0KPiDCoCDCoCDCoCDCoH0gwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgLyogRW5kIGZvciBURVNUX0xPT1BJTkcgKi8KPgo+
-ID09PT09PT09PT09PQo+Cj4gPT09PT09PT09PT09Cj4gLS0tIG5hbm9zbGVlcDA0LmMgwqAgwqAg
-wqAgMjAwOS0xMS0wMiAyMjo1NzoxNy4wMDAwMDAwMDAgKzA5MDAKPiArKysgbmFub3NsZWVwMDQu
-Yy5uZXcgwqAgMjAwOS0xMi0yMSAxNTowNDoyNC4wMDAwMDAwMDAgKzA5MDAKPiBAQCAtMTQ3LDEw
-ICsxNDcsMTAgQEAKPgo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgLyogV2FpdCBmb3IgY2hpbGQg
-dG8gZXhlY3V0ZSAqLwo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgd2FpdCgmc3RhdHVzKTsKPiAt
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIGlmIChXRVhJVFNUQVRVUyhzdGF0dXMpID09IDApIHsKPiAr
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIGlmIChXSUZFWElURUQoc3RhdHVzKSkgewo+IMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgdHN0X3Jlc20oVFBBU1MsICJuYW5vc2xlZXAoKSBm
-YWlscywgaW52YWxpZCBwYXVzZSAiCj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgInRpbWUsIGVycm9yOiVkIiwgRUlOVkFMKTsKPiAtIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIH0gZWxzZSBpZiAoV0VYSVRTVEFUVVMoc3RhdHVzKSA9PSAxKSB7Cj4gKyDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCB9IGVsc2UgaWYgKCFXSUZFWElURUQoc3RhdHVzKSkgewo+IMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgdHN0X3Jlc20oVEZBSUwsICJjaGlsZCBwcm9j
-ZXNzIGV4aXRlZCBhYm5vcm1hbGx5Iik7Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB9Cj4gwqAg
-wqAgwqAgwqB9IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIC8qIEVuZCBmb3IgVEVT
-VF9MT09QSU5HICovCj4gPT09PT09PT09PT09CgpJIGFncmVlIHRoYXQgdGhlIHRlc3QncyB2YWxp
-ZGF0aW9uIHN0ZXAgaXMgd3JpdHRlbiBpbmNvcnJlY3RseSwgYXMgcGVyCnRoZSB3YWl0KDIpIG1h
-bnBhZ2U6CgoKICAgICAgIFdJRkVYSVRFRChzdGF0dXMpCiAgICAgICAgICAgICAgcmV0dXJucyB0
-cnVlIGlmIHRoZSBjaGlsZCB0ZXJtaW5hdGVkIG5vcm1hbGx5LCB0aGF0IGlzLCBieSBjYWxsLQog
-ICAgICAgICAgICAgIGluZyBleGl0KDMpIG9yIF9leGl0KDIpLCBvciBieSByZXR1cm5pbmcgZnJv
-bSBtYWluKCkuCgogICAgICAgV0VYSVRTVEFUVVMoc3RhdHVzKQogICAgICAgICAgICAgIHJldHVy
-bnMgdGhlIGV4aXQgc3RhdHVzIG9mIHRoZSAgY2hpbGQuICAgVGhpcyAgY29uc2lzdHMgIG9mICB0
-aGUKICAgICAgICAgICAgICBsZWFzdCAgc2lnbmlmaWNhbnQgIDggYml0cyBvZiB0aGUgc3RhdHVz
-IGFyZ3VtZW50IHRoYXQgdGhlIGNoaWxkCiAgICAgICAgICAgICAgc3BlY2lmaWVkIGluIGEgY2Fs
-bCB0byBleGl0KDMpIG9yIF9leGl0KDIpIG9yICBhcyAgdGhlICBhcmd1bWVudAogICAgICAgICAg
-ICAgIGZvciAgYSAgcmV0dXJuICBzdGF0ZW1lbnQgIGluIG1haW4oKS4gIFRoaXMgbWFjcm8gc2hv
-dWxkIG9ubHkgYmUKICAgICAgICAgICAgICBlbXBsb3llZCBpZiBXSUZFWElURUQgcmV0dXJuZWQg
-dHJ1ZS4KCiAgICBpbiBwYXJ0aWN1bGFyIHRoZSBwcmVjb25kaXRpb24gZm9yIGNhbGxpbmcgV0VY
-SVRTVEFUVVMsIGJ1dCBzaG91bGQKaXQgYmUgV0lGRVhJVEVEKHN0YXR1cykgJiYgV0VYSVRTVEFU
-VVMoc3RhdHVzKSA9PSAwID0+IFBBU1MsIGVsc2UKRkFJTD8KClRoYW5rcywKLUdhcnJldHQKLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tClRoaXMgU0YuTmV0IGVtYWlsIGlzIHNwb25zb3JlZCBieSB0aGUg
-VmVyaXpvbiBEZXZlbG9wZXIgQ29tbXVuaXR5ClRha2UgYWR2YW50YWdlIG9mIFZlcml6b24ncyBi
-ZXN0LWluLWNsYXNzIGFwcCBkZXZlbG9wbWVudCBzdXBwb3J0CkEgc3RyZWFtbGluZWQsIDE0IGRh
-eSB0byBtYXJrZXQgcHJvY2VzcyBtYWtlcyBhcHAgZGlzdHJpYnV0aW9uIGZhc3QgYW5kIGVhc3kK
-Sm9pbiBub3cgYW5kIGdldCBvbmUgc3RlcCBjbG9zZXIgdG8gbWlsbGlvbnMgb2YgVmVyaXpvbiBj
-dXN0b21lcnMKaHR0cDovL3Auc2YubmV0L3NmdS92ZXJpem9uLWRldjJkZXYgCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlz
-dApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
-ZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+Hi,
+
+I ran "make" with "ltp-2009-12-16" and "ltp-2009-12-18" cvs, 
+but it failed:
+------------
+[...]
+gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I../../../include
+-I../../../include
+  -L../../../lib
+-L/home/mitani/LTP/ltp-2009-12-18/testcases/kernel/syscalls/libevent/lib
+ libevent/test/regress.c  -levent -o libevent/test/regress
+libevent/test/regress.c:44:19: error: event.h: No such file or directory
+libevent/test/regress.c: In function 'simple_read_cb':
+libevent/test/regress.c:69: warning: implicit declaration of function
+'event_add'
+libevent/test/regress.c: In function 'multiple_write_cb':
+libevent/test/regress.c:100: warning: implicit declaration of function
+'event_del'
+libevent/test/regress.c: In function 'signal_cb':
+libevent/test/regress.c:159: warning: implicit declaration of function
+'signal_del'
+libevent/test/regress.c: At top level:
+libevent/test/regress.c:164: error: field 'ev' has incomplete type
+[...]
+libevent/test/regress.c:455: warning: implicit declaration of function
+'bufferevent_write'
+libevent/test/regress.c:459: warning: implicit declaration of function
+'bufferevent_free'
+libevent/test/regress.c: In function 'main':
+libevent/test/regress.c:473: warning: implicit declaration of function
+'event_init'
+make[3]: *** [libevent/test/regress] Error 1
+make[3]: Leaving directory
+`/home/mitani/LTP/ltp-2009-12-18/testcases/kernel/syscalls'
+make[2]: *** [all] Error 2
+[...]
+------------
+
+"regress.c" was not compiled before "ltp-2009-12-15" cvs.
+It seems to have been compiled after "ltp-2009-12-16" cvs 
+for the first time.
+
+
+The results of "make" are various by environment as follows:
+
+  (1) RHEL5.4(2.6.18-164.el5) x86    : succeeded
+  (2) RHEL5.4(2.6.18-164.el5) x86_64 : failed
+  (3) RHEL5.4(2.6.18-164.el5) ia64   : failed
+  (4) RHEL4.8(2.6.9-89.ELsmp) x86    : succeeded
+
+There is "/usr/local/include/event.h" file in the successful system.
+There is not "/usr/local/include/event.h" file in the failed system.
+
+"/usr/local/include/event.h" file completely accords with 
+"${LTPROOT}/testcases/kernel/syscalls/libevent/event.h" file.
+I think that "${LTPROOT}/testcases/kernel/syscalls/libevent/event.h"
+copied to "/usr/local/include/event.h" when installed.
+
+However, depending on system, there seems to be the case that 
+this file isn't copied.
+
+
+---
+
+Instead of "/usr/local/include/event.h", I installed "libevent-devel"
+(libevent-devel-1.1a-3.2.1.x86_64.rpm) to above (2) system.
+Then "/usr/include/event.h" file was installed.
+This "/usr/include/event.h" file does not completely accord with
+"/usr/local/include/event.h".
+But after that, "make" succeeded.
+
+I don't think that this measure is right. This is the wrong way, I think.
+Because, I judge that LTP is going to copy a "/usr/local/include/event.h"
+file by oneself.
+
+
+
+Thank you--
+
+-Tomonori Mitani
+
+
+
+
+------------------------------------------------------------------------------
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
