@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NLBo7-0007Tu-4R
-	for ltp-list@lists.sourceforge.net; Thu, 17 Dec 2009 08:33:59 +0000
-Received: from mail-px0-f200.google.com ([209.85.216.200])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NLBo2-0001Uz-8k
-	for ltp-list@lists.sourceforge.net; Thu, 17 Dec 2009 08:33:59 +0000
-Received: by pxi38 with SMTP id 38so1265513pxi.28
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 17 Dec 2009 00:33:48 -0800 (PST)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1NLohI-0003fI-PW
+	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 02:05:32 +0000
+Received: from fmmailgate03.web.de ([217.72.192.234])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NLohB-0001d3-Cc
+	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 02:05:32 +0000
+Date: Sat, 19 Dec 2009 03:06:00 +0100
+From: =?iso-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
 MIME-Version: 1.0
-In-Reply-To: <000001ca7ee8$698114a0$3c833de0$@co.jp>
-References: <000001ca7ee8$698114a0$3c833de0$@co.jp>
-Date: Thu, 17 Dec 2009 00:33:48 -0800
-Message-ID: <364299f40912170033p723a05eew1bcc96f3a9bc3f0a@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] About "make3.80" support
+Message-ID: <op.u45xgah3u2flwt@debian>
+Subject: [LTP] Patch from 4.11.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,27 +25,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On Wed, Dec 16, 2009 at 11:13 PM, Mitani <mitani@ryobi.co.jp> wrote:
-> Hi,
->
-> The "make3.80" support for "make" isn't included in recent cvs yet.
->
-> http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg08840.html
->
-> I want to make a Makefile working with make 3.80.
-> Would you teach when "make3.80" support is realized?
->
-> Sorry for selfish request.
+Hello,
 
-Tomonori-san,
-    This is support missing from LTP that I'll resume working on when
-I get a breather this Monday and Tuesday, and possibly throughout the
-holiday until Jan 5th.
-Thanks!
--Garrett
+in your patch from 4.11., "1. Use linux_syscall_numbers.h. 2. Fix a format  
+string (use inttypes.h)....", there is:
+
+
+@@ -174,7 +177,7 @@ void test_mbind(void)
+  		ret = 1;
+  		return;
+  	}
+-	printf("%lx\n", addr);
++	printf("%" __PRI64_PREFIX "x\n", (long) addr);
+  	ret = mbind(addr, len, MPOL_BIND, &mask, 8 * sizeof(mask), 0);
+  }
+
+I am not happy with that, particularly:
+
+1. You use a 64-bit format specifier, but pass a long. A long may not be  
+64-bit, in which case the code is buggy.
+
+2. You use __PRI64_PREFIX, which, as all underscore-prefixed names is an  
+implementation detail of the library.
+
+3. Why didn't use just printf("%p\n", addr), when addr is a void* and "p"  
+is a format specifier for pointers.
+
+Regards
+     Jiri Palecek
+
+-- 
+Using Opera's revolutionary e-mail client: http://www.opera.com/mail/
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
