@@ -1,32 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NGDNb-0005QR-IP
-	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:14:03 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NGDNW-0005u6-Rl
-	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:14:03 +0000
-Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
-	by e8.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nB3F9C7K028628
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 10:09:12 -0500
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nB3FDqFY063372
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 10:13:52 -0500
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	nB3FDVFr017958
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 10:13:31 -0500
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200912012304.nB1N4Q0m004817@e1.ny.us.ibm.com>
-References: <200912012304.nB1N4Q0m004817@e1.ny.us.ibm.com>
-Date: Thu, 03 Dec 2009 20:42:48 +0530
-Message-Id: <1259853173.5085.44.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Refer to checkforlibcap.sh by its real name
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <tyrlik@us.ibm.com>) id 1NLxAC-0005jD-Qp
+	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 11:07:56 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NLxA8-0006BY-7T
+	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 11:07:56 +0000
+Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
+	[9.17.195.226])
+	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id nBJB11K9017214
+	for <ltp-list@lists.sourceforge.net>; Sat, 19 Dec 2009 04:01:01 -0700
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	nBJB7fgq157304
+	for <ltp-list@lists.sourceforge.net>; Sat, 19 Dec 2009 04:07:41 -0700
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id nBJB7fqQ031011
+	for <ltp-list@lists.sourceforge.net>; Sat, 19 Dec 2009 04:07:41 -0700
+Received: from d03nm126.boulder.ibm.com (d03nm126.boulder.ibm.com
+	[9.17.195.152])
+	by d03av02.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVin) with ESMTP id
+	nBJB7f8q031003
+	for <ltp-list@lists.sourceforge.net>; Sat, 19 Dec 2009 04:07:41 -0700
+From: Matt Tyrlik <tyrlik@us.ibm.com>
+Message-ID: <OF65BE1C9F.B950660D-ON87257691.003D20AB-87257691.003D20AB@us.ibm.com>
+Date: Sat, 19 Dec 2009 04:07:40 -0700
+MIME-Version: 1.0
+Subject: [LTP] AUTO: Matt Tyrlik/Raleigh/IBM is out of the office until
+ 07/29/2002. (returning 12/30/2009)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,52 +40,85 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4811525199905405848=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Wed, 2009-12-02 at 00:01 +0100, Jiri Palecek wrote: 
-> Hello,
-> 
-> checkforlibcap doesn't exist, the script's proper name is checkforlibcap.sh.
-> 
-> Regards
->     Jiri Palecek
-> 
-> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+--===============4811525199905405848==
+Content-type: multipart/alternative; 
+	Boundary="0__=08BBFC02DFAEA63B8f9e8a93df938690918c08BBFC02DFAEA63B"
+Content-Disposition: inline
 
-Thanks.
+--0__=08BBFC02DFAEA63B8f9e8a93df938690918c08BBFC02DFAEA63B
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: quoted-printable
 
-Regards--
-Subrata
 
-> ---
->  testcases/kernel/security/filecaps/filecapstest.sh |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/testcases/kernel/security/filecaps/filecapstest.sh b/testcases/kernel/security/filecaps/filecapstest.sh
-> index c95291a..149cbc1 100755
-> --- a/testcases/kernel/security/filecaps/filecapstest.sh
-> +++ b/testcases/kernel/security/filecaps/filecapstest.sh
-> @@ -19,7 +19,7 @@
->  ##                                                                            ##
->  ################################################################################
-> 
-> -checkforlibcap
-> +checkforlibcap.sh
->  ret=$?
->  if [ $ret -ne 0 ]; then
->  	echo "Filecaps 0 CONF : System doesn't support execution of the test"
 
+I am out of the office until 12/30/2009.
+
+I am going to be out on vacation until 12/30/2009.  I will not have reg=
+ular
+e-mail access until my return.  Please contact ppcsupp@us.ibm.com for
+urgent issues.
+
+
+Note: This is an automated response to your message  "Ltp-list Digest, =
+Vol
+43, Issue 31" sent on 12/18/09 21:10:35.
+
+This is the only notification you will receive while this person is awa=
+y.=
+
+--0__=08BBFC02DFAEA63B8f9e8a93df938690918c08BBFC02DFAEA63B
+Content-type: text/html; charset=US-ASCII
+Content-Disposition: inline
+Content-transfer-encoding: quoted-printable
+
+<html><body>
+<p><font size=3D"2">I am out of the office until 12/30/2009.<br>
+</font><font size=3D"2"><br>
+</font><font size=3D"2">I am going to be out on vacation until 12/30/20=
+09.  I will not have regular e-mail access until my return.  Please con=
+tact ppcsupp@us.ibm.com for urgent issues.<br>
+</font><font size=3D"2"><br>
+</font><font size=3D"2"><br>
+</font><font size=3D"2" color=3D"#808080">Note: This is an automated re=
+sponse to your message  &quot;</font><b><font size=3D"2">Ltp-list Diges=
+t, Vol 43, Issue 31&quot;</font></b><font size=3D"2" color=3D"#808080">=
+ sent on </font><b><font size=3D"2">12/18/09 21:10:35</font></b><font s=
+ize=3D"2" color=3D"#808080">. <br>
+</font><font size=3D"2" color=3D"#808080"><br>
+</font><font size=3D"2" color=3D"#808080">This is the only notification=
+ you will receive while this person is away.</font></body></html>=
+
+--0__=08BBFC02DFAEA63B8f9e8a93df938690918c08BBFC02DFAEA63B--
+
+
+
+--===============4811525199905405848==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Join us December 9, 2009 for the Red Hat Virtual Experience,
-a free event focused on virtualization and cloud computing. 
-Attend in-depth sessions from your desk. Your couch. Anywhere.
-http://p.sf.net/sfu/redhat-sfdev2dev
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
+--===============4811525199905405848==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============4811525199905405848==--
+
+
