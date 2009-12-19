@@ -1,22 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1NLohE-0004Ql-S3
-	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 02:05:28 +0000
-Received: from fmmailgate02.web.de ([217.72.192.227])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NLoh6-000541-JB
-	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 02:05:28 +0000
-Date: Sat, 19 Dec 2009 03:05:50 +0100
-From: =?iso-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1NLolW-0002Bm-IA
+	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 02:09:54 +0000
+Received: from fmmailgate03.web.de ([217.72.192.234])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NLolQ-0007Xa-4G
+	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 02:09:54 +0000
+Received: from smtp07.web.de (fmsmtp07.dlan.cinetic.de [172.20.5.215])
+	by fmmailgate03.web.de (Postfix) with ESMTP id 9A44C139B01D8
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 19 Dec 2009 03:09:41 +0100 (CET)
+Received: from [90.180.172.144] (helo=debian)
+	by smtp07.web.de with asmtp (WEB.DE 4.110 #314) id 1NLolJ-0001mM-00
+	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 03:09:41 +0100
+Date: Sat, 19 Dec 2009 03:06:23 +0100
+From: "Jiri Palecek" <jpalecek@web.de>
 MIME-Version: 1.0
-References: <200912041649.nB4GnQbj014719@e35.co.us.ibm.com>
-	<1260186841.6866.20.camel@subratamodak.linux.ibm.com>
-	<364299f40912071042o50d0ac40le913ac35b6003dda@mail.gmail.com>
-Message-ID: <op.u45xf011u2flwt@debian>
-In-Reply-To: <364299f40912071042o50d0ac40le913ac35b6003dda@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] New sigwaitinfo test
+Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Resent-Message-ID: <op.u45xnju2cfnueu@debian>
+Subject: [LTP] [PATCH] Add (mandatory) parameters to linktest.sh in the
+	runtest file
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,58 +31,50 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: ltp-list-bounces@lists.sourceforge.net
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>, subrata@linux.vnet.ibm.com
 Cc: ltp-list@lists.sourceforge.net
+Message-ID: <20091219020623.xB0VWE9sAsEmDicXGcSNmE2aIyLwB8Q_W6s6bwkiwqI@z>
 
-On Mon, 07 Dec 2009 19:42:13 +0100, Garrett Cooper <yanegomi@gmail.com>  =
+Hello,
 
-wrote:
+linktest.sh is failing when ran using the stress.part1 file, because it lacks command line arguments. This patch just adds them (taken from the fs runtest file).
 
-> On Mon, Dec 7, 2009 at 3:54 AM, Subrata Modak
-> <subrata@linux.vnet.ibm.com> wrote:
->> On Fri, 2009-12-04 at 17:46 +0100, Jiri Palecek wrote:
->>> Hello,
->>>
->>> this is the test for the rt_sigtimedwait et al. functions I promised  =
+Regards
+  Jiri Palecek
 
->>> earlier. The code is unchanged since I sent it for the first time, but  =
-
->>> the Makefiles are adapted to the new build system, with the help of  =
-
->>> Garret Cooper.
->>>
->>> Regards
->>> =A0 =A0 Jiri Palecek
->>>
->>> Signed-off-by: Jiri Palecek <jpalecek@web.de>
->>
->> Thanks Jiri. Would you also take the trouble to make entries in the
->> runtest/syscalls file for these tests to run ?
->
-> Someone needs to verify whether or not the rt_* test is functional on
-> x86_64 as well, because these tests require additional setup for
-> x86_64; unfortunately my desktop is disconnected (and will remain so
-> for the next week while I move), so I can't verify this.
-
-Could you, please? IMHO there shouldn't be a problem with SA_RESTORER  =
-
-(because the test doesn't use rt_sigaction), but there may be problems  =
-
-with SIGSETSIZE.
-
-   Jiri Palecek
-
----------------------------------------------------------------------------=
+Signed-off-by: Jiri Palecek <jpalecek@web.de>
 ---
+ runtest/stress.part1 |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/runtest/stress.part1 b/runtest/stress.part1
+index 236c471..b75d504 100644
+--- a/runtest/stress.part1
++++ b/runtest/stress.part1
+@@ -156,7 +156,7 @@ rwtest05 export LTPROOT; rwtest.sh -N rwtest05 -c -q -i 50 -T 64b 500b:/tmp/rwte
+ iogen01 export LTPROOT; rwtest.sh -N iogen01 -i 120s -s read,write -c -Da -Dv -n 2 500b:doio.f1.$$ 1000b:doio.f2.$$
+ 
+ fs_inod01 fs_inod $TMP 10 10 1
+-linker01 linktest.sh
++linker01 linktest.sh 1000 1000
+ openfile01 openfile -f10 -t10
+ inode01 inode01
+ inode02 inode02
+-- 
+1.6.4.3
+
+
+
+
+------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
 Take advantage of Verizon's best-in-class app development support
 A streamlined, 14 day to market process makes app distribution fast and easy
 Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev =
-
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
