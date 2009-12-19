@@ -1,29 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <liubo2009@cn.fujitsu.com>) id 1NKsBs-0000m0-GL
-	for ltp-list@lists.sourceforge.net; Wed, 16 Dec 2009 11:37:12 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NKsBn-0001T7-FY
-	for ltp-list@lists.sourceforge.net; Wed, 16 Dec 2009 11:37:12 +0000
-Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
-	by song.cn.fujitsu.com (Postfix) with ESMTP id 4EA3217013E
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NLrcI-0002ub-0R
+	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 05:12:34 +0000
+Received: from mail-pz0-f193.google.com ([209.85.222.193])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NLrcC-0000cN-OR
+	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 05:12:33 +0000
+Received: by pzk31 with SMTP id 31so2483596pzk.28
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 16 Dec 2009 19:36:58 +0800 (CST)
-Received: from fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id nBGBau7U026789
-	for <ltp-list@lists.sourceforge.net>; Wed, 16 Dec 2009 19:36:56 +0800
-Received: from localhost.localdomain (unknown [10.167.141.167])
-	by fnst.cn.fujitsu.com (Postfix) with ESMTPA id 3B9CFD45B6
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 16 Dec 2009 19:37:18 +0800 (CST)
-Message-ID: <4B28C68C.1080304@cn.fujitsu.com>
-Date: Wed, 16 Dec 2009 19:37:48 +0800
-From: liubo <liubo2009@cn.fujitsu.com>
+	Fri, 18 Dec 2009 21:12:23 -0800 (PST)
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 2/3] ade: fix the bug of ar01
+In-Reply-To: <4b2c35f8.4e44f10a.27a8.ffffd834SMTPIN_ADDED@mx.google.com>
+References: <4b2c35f8.4e44f10a.27a8.ffffd834SMTPIN_ADDED@mx.google.com>
+Date: Fri, 18 Dec 2009 21:12:22 -0800
+Message-ID: <364299f40912182112w26648ebftdc99b13b1638d980@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Add (mandatory) parameters to linktest.sh in the
+	runtest file
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,51 +28,54 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jiri Palecek <jpalecek@web.de>
+Cc: ltp-list@lists.sourceforge.net
 
-Command "ar -tv" 's output doesn't match with "ls -ln" 's output on item
-"permission".
+On Fri, Dec 18, 2009 at 6:06 PM, Jiri Palecek <jpalecek@web.de> wrote:
+> Hello,
+>
+> linktest.sh is failing when ran using the stress.part1 file, because it l=
+acks command line arguments. This patch just adds them (taken from the fs r=
+untest file).
+>
+> Regards
+> =A0Jiri Palecek
+>
+> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+> ---
+> =A0runtest/stress.part1 | =A0 =A02 +-
+> =A01 files changed, 1 insertions(+), 1 deletions(-)
+>
+> diff --git a/runtest/stress.part1 b/runtest/stress.part1
+> index 236c471..b75d504 100644
+> --- a/runtest/stress.part1
+> +++ b/runtest/stress.part1
+> @@ -156,7 +156,7 @@ rwtest05 export LTPROOT; rwtest.sh -N rwtest05 -c -q =
+-i 50 -T 64b 500b:/tmp/rwte
+> =A0iogen01 export LTPROOT; rwtest.sh -N iogen01 -i 120s -s read,write -c =
+-Da -Dv -n 2 500b:doio.f1.$$ 1000b:doio.f2.$$
+>
+> =A0fs_inod01 fs_inod $TMP 10 10 1
+> -linker01 linktest.sh
+> +linker01 linktest.sh 1000 1000
+> =A0openfile01 openfile -f10 -t10
+> =A0inode01 inode01
+> =A0inode02 inode02
 
-s/-$permissions/-$permissions./
+Done -- thanks!
+-Garrett
 
-This patch fixed the bug.
-
-Signed-off-by: Liu Bo <liubo2009@cn.fujitsu.com>
-
+---------------------------------------------------------------------------=
 ---
- testcases/commands/ade/ar/ar01 |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/testcases/commands/ade/ar/ar01 b/testcases/commands/ade/ar/ar01
-index c8f85eb..c393959 100755
---- a/testcases/commands/ade/ar/ar01
-+++ b/testcases/commands/ade/ar/ar01
-@@ -584,7 +584,7 @@ ar -tv $TCtmp/lib.a |
- while
- read permissions uid size month day time year file_name
- do
--echo "-$permissions;$uid;$size;$month;$day;$time;$file_name"
-+echo "-$permissions.;$uid;$size;$month;$day;$time;$file_name"
- done >> $TCtmp/lib.a.stdout
- ttest
- 
--- 
-1.6.2.2
-
-
-
-
-
-
-------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
 Take advantage of Verizon's best-in-class app development support
 A streamlined, 14 day to market process makes app distribution fast and easy
 Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+http://p.sf.net/sfu/verizon-dev2dev =
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
