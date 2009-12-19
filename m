@@ -1,19 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1NK1g7-0000NQ-3w
-	for ltp-list@lists.sourceforge.net; Mon, 14 Dec 2009 03:32:55 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NK1g2-0000Ik-8k
-	for ltp-list@lists.sourceforge.net; Mon, 14 Dec 2009 03:32:55 +0000
-Date: Sun, 13 Dec 2009 22:32:29 -0500 (EST)
-From: Caspar Zhang <czhang@redhat.com>
-Message-ID: <1371765689.267861260761549881.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <754596231.267801260761514383.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1NLouZ-0004Qa-8t
+	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 02:19:15 +0000
+Received: from fmmailgate03.web.de ([217.72.192.234])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NLouR-00049l-O2
+	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 02:19:15 +0000
+Received: from smtp08.web.de (fmsmtp08.dlan.cinetic.de [172.20.5.216])
+	by fmmailgate03.web.de (Postfix) with ESMTP id B5141139B082D
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 19 Dec 2009 03:18:33 +0100 (CET)
+Received: from [90.180.172.144] (helo=debian)
+	by smtp08.web.de with asmtp (WEB.DE 4.110 #314) id 1NLott-0006cj-00
+	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 03:18:33 +0100
+Date: Sat, 19 Dec 2009 03:18:25 +0100
+From: "Jiri Palecek" <jpalecek@web.de>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH]fix compile error on ppc64 in RHEL5
+Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Resent-Message-ID: <op.u45x2cdkcfnueu@debian>
+Subject: [LTP] [PATCH] Fix the nfs runtest file
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,51 +32,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Sender: ltp-list-bounces@lists.sourceforge.net
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
+Message-ID: <20091219021825.ZfeO2oPWJ6YkJYyfb_jpmCN99NRDKEHNVdQ9PTVvSlo@z>
+
+Hello,
+
+ The command "export X=Y cmd" means export variable X (valued Y) and
+ variable cmd; it does not run cmd. To do the latter, you can write
+ "X=Y cmd" (as in this patch) or "export X=Y; cmd"
+
+Regards
+    Jiri Palecek
+
+Signed-off-by: Jiri Palecek <jpalecek@web.de>
+---
+ runtest/nfs |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/runtest/nfs b/runtest/nfs
+index 4f5d876..1cddcd6 100644
+--- a/runtest/nfs
++++ b/runtest/nfs
+@@ -2,10 +2,10 @@
+ #
+ # PLEASE READ THE README FILE IN /nfs BEFORE RUNNING THESE.
+ #
+-nfs01 export VERSION SOCKET_TYPE; export TCbin=$LTPROOT/testcases/bin nfs01
+-nfs02 export VERSION SOCKET_TYPE; export TCbin=$LTPROOT/testcases/bin nfs02
+-nfs03 export VERSION SOCKET_TYPE; export TCbin=$LTPROOT/testcases/bin nfs03
+-nfs04 export VERSION SOCKET_TYPE; export TCbin=$LTPROOT/testcases/bin nfs04
++nfs01 export VERSION SOCKET_TYPE; TCbin=$LTPROOT/testcases/bin nfs01
++nfs02 export VERSION SOCKET_TYPE; TCbin=$LTPROOT/testcases/bin nfs02
++nfs03 export VERSION SOCKET_TYPE; TCbin=$LTPROOT/testcases/bin nfs03
++nfs04 export VERSION SOCKET_TYPE; TCbin=$LTPROOT/testcases/bin nfs04
+ nfslock01 export VERSION; nfslock01
+ 
+ # This will run 1 thread on 20 directories with 50 files in each.
+-- 
+1.6.4.3
 
 
------ "Garrett Cooper" <yanegomi@gmail.com> wrote:
-
-> 
->     If the new version from CVS doesn't compile, your build tree or
-> compile options are most likely not properly setup:
-> 
-> [garrcoop@sjc-lds-265 /nobackup/garrcoop/main]$ file
-> contrib/ltp/obj-ppc64/testcases/kernel/syscalls/ptrace/ptrace0*
-> contrib/ltp/obj-ppc64/testcases/kernel/syscalls/ptrace/ptrace01: ELF
-> 64-bit MSB executable, cisco 7500, version 1 (SYSV), for GNU/Linux
-> 2.6.4, dynamically linked (uses shared libs), not stripped
-> contrib/ltp/obj-ppc64/testcases/kernel/syscalls/ptrace/ptrace02: ELF
-> 64-bit MSB executable, cisco 7500, version 1 (SYSV), for GNU/Linux
-> 2.6.4, dynamically linked (uses shared libs), not stripped
-> contrib/ltp/obj-ppc64/testcases/kernel/syscalls/ptrace/ptrace03: ELF
-> 64-bit MSB executable, cisco 7500, version 1 (SYSV), for GNU/Linux
-> 2.6.4, dynamically linked (uses shared libs), not stripped
-> contrib/ltp/obj-ppc64/testcases/kernel/syscalls/ptrace/ptrace04: ELF
-> 64-bit MSB executable, cisco 7500, version 1 (SYSV), for GNU/Linux
-> 2.6.4, dynamically linked (uses shared libs), not stripped
-> contrib/ltp/obj-ppc64/testcases/kernel/syscalls/ptrace/ptrace05: ELF
-> 64-bit MSB executable, cisco 7500, version 1 (SYSV), for GNU/Linux
-> 2.6.4, dynamically linked (uses shared libs), not stripped
-> 
->     This is glibc 2.3.4 with kernel version 2.6.24. This was done
-> with
-> a cross-compile toolchain from work.
-
-The latest CVS version can't finish compiling either. The kernel version
-on RHEL5 is 2.6.18, I think that's the problem. 
-
-Thanks,
-Caspar
 
 
 ------------------------------------------------------------------------------
-Return on Information:
-Google Enterprise Search pays you back
-Get the facts.
-http://p.sf.net/sfu/google-dev2dev
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
