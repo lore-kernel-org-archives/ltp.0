@@ -1,25 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NGpad-0000xp-K4
-	for ltp-list@lists.sourceforge.net; Sat, 05 Dec 2009 08:02:03 +0000
-Received: from mail-pz0-f193.google.com ([209.85.222.193])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NGpaZ-0005Iq-4d
-	for ltp-list@lists.sourceforge.net; Sat, 05 Dec 2009 08:02:03 +0000
-Received: by pzk31 with SMTP id 31so2898803pzk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Sat, 05 Dec 2009 00:01:53 -0800 (PST)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1NLohH-0001pC-3x
+	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 02:05:31 +0000
+Received: from fmmailgate02.web.de ([217.72.192.227])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NLohA-0001cu-Pr
+	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 02:05:31 +0000
+Date: Sat, 19 Dec 2009 03:05:57 +0100
+From: =?iso-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
 MIME-Version: 1.0
-In-Reply-To: <op.u4fuf0b9u2flwt@marcela-gaxm89c>
-References: <4b1944a0.8713f30a.3b2f.4a0fSMTPIN_ADDED@mx.google.com>
-	<200912041413.11781.vapier@gentoo.org>
-	<op.u4fuf0b9u2flwt@marcela-gaxm89c>
-Date: Sat, 5 Dec 2009 00:01:52 -0800
-Message-ID: <364299f40912050001k12c39c45sa5b870851ca915ad@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Support for parallel compilation
+References: <4b1940f3.8413f30a.2877.6a27SMTPIN_ADDED@mx.google.com>
+	<200912041406.40770.vapier@gentoo.org>
+	<op.u4fxyb2ou2flwt@marcela-gaxm89c>
+	<200912042358.59830.vapier@gentoo.org>
+Message-ID: <op.u45xf7bsu2flwt@debian>
+In-Reply-To: <200912042358.59830.vapier@gentoo.org>
+Subject: Re: [LTP] [PATCH] Don't install datafiles with executable mode
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,56 +27,103 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: =?UTF-8?B?SmnFmcOtIFBhbGXEjWVr?= <jpalecek@web.de>
-Cc: ltp-list@lists.sourceforge.net, Mike Frysinger <vapier@gentoo.org>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-T24gRnJpLCBEZWMgNCwgMjAwOSBhdCA0OjAzIFBNLCBKacWZw60gUGFsZcSNZWsgPGpwYWxlY2Vr
-QHdlYi5kZT4gd3JvdGU6Cj4gT24gRnJpLCAwNCBEZWMgMjAwOSAyMDoxMzoxMSArMDEwMCwgTWlr
-ZSBGcnlzaW5nZXIgPHZhcGllckBnZW50b28ub3JnPgo+IHdyb3RlOgo+Cj4+IE9uIEZyaWRheSAw
-NCBEZWNlbWJlciAyMDA5IDEyOjA0OjA2IEppcmkgUGFsZWNlayB3cm90ZToKPj4+IC0uUEhPTlk6
-ICQoUkVDVVJTSVZFX1RBUkdFVFMpICQoYWRkcHJlZml4IHRydW5rLSwkKFJFQ1VSU0lWRV9UQVJH
-RVRTKSkKPj4+ICsuUEhPTlk6ICQoUkVDVVJTSVZFX1RBUkdFVFMpICQoYWRkcHJlZml4IHRydW5r
-LSwkKFJFQ1VSU0lWRV9UQVJHRVRTKSkKPj4+IMKgJChmb3JlYWNoIHRndCwkKFJFQ1VSU0lWRV9U
-QVJHRVRTKSwkKGFkZHByZWZpeAo+Pj4gwqB0cnVuay1zdWJkaXItJCh0Z3QpLS0sJChTVUJESVJT
-KSkpCj4+Cj4+IHRoZXNlIGZvcmVhY2ggbG9vayBsaWtlIGFuIG92ZXJseSBjb21wbGljYXRlZCBm
-b3JtIG9mICQocGF0c3Vic3QpOgo+PiDCoCDCoCDCoCAkKHBhdHN1YnN0ICUsbW9vXyUsJChESVJT
-KSkKPgo+IEl0IG1heSBsb29rIGxpa2UgaXQsIGJ1dCB0aGV5IGFyZW4ndC4gV2hhdCB5b3UndmUg
-d3JpdHRlbiBpcyBhIHNpbXBsZQo+IGFkZHByZWZpeCwgd2hpbGUgdGhlIGZvcmVhY2ggZG9lcyBz
-b21lIGZvciBvZiBjYXJ0ZXNpYW4gcHJvZHVjdAo+ICgkKFRBUkdFVFMpeCQoRElSUykpLgoKMS4g
-SSBjaGVja2VkIGluIHRoZSBmaXhlcyBmb3IgdGhlIGF1dG90b29scyB0YXJnZXRzIGFmdGVyIHZl
-cmlmeWluZwp0aGVtICh0aGFuayB5b3UgYnR3ISkuCjIuIElubGluZSBta2RpcnMgYXJlIGJhZCwg
-YmVjYXVzZSBta2RpcidzIGNhbiBmYWlsIG9yIGNhdXNlIGZhaWx1cmVzCm92ZXIgTkZTIGR1ZSB0
-byBleGNlc3NpdmUgSS9PLCB3aGljaCBpcyB3aHkgSSBxdWlja2x5IHJlbW92ZWQgdGhlIHRlc3QK
-LWQgfHwgbWtkaXIgLXAgbG9naWMgaW4gdGhlIDJuZCBtYWpvciBkcmFmdCBvZiB0aGUgbWFrZWZp
-bGUKaW5mcmFzdHJ1Y3R1cmUuCjMuIEFsdGhvdWdoIHlvdXIgaWRlYSBmb3IgZml4aW5nIHRoZSBs
-YWNrIG9mIHJlY3Vyc2l2ZSBtYWtlJ2luZyBpcwpnb29kLCB3aGF0IGFib3V0IHRoaXMgaW5zdGVh
-ZD8KCiMKIyBBIGNhbm5lZCBzZXQgb2Ygb3BlcmF0aW9ucyBmb3IgbGVhZiBtYWtlcy4gVGhpcyBj
-cmVhdGVzIGEgc2VyaWVzIG9mCnRhcmdldHMsIGxpa2U6CiMKIyAkKHN1YmRpciktYWxsICQoc3Vi
-ZGlyKS1jbGVhbiAkKHN1YmRpciktaW5zdGFsbDoKIwojIDEgLSBSZWN1cnNpdmUgdGFyZ2V0cyB0
-byBhY3QgdXBvbi4KIyAyIC0gdGhlIHN1YmRpcmVjdG9yeSB0byBkbyB0aGUgbGVhZl9tYWtlIG9u
-LgojCmRlZmluZSBnZW5lcmF0ZV9kaXJfZGVwCmlmbmRlZiBfXyQoMSlfZGlyX2RlcF9fCl9fJCgx
-KV9kaXJfZGVwX18gPSAxCiQoMSk6CiAgICAgICAgbWtkaXIgLXAgIiQkQCIKZW5kaWYKZW5kaWYK
-CmRlZmluZSBsZWFmX21ha2UKJCQoZm9yZWFjaCByZWN1cnNpdmVfdGFyZ2V0LCQoMSksJCQoYWRk
-cHJlZml4CiQoMiktJCQocmVjdXJzaXZlX3RhcmdldCkpKTogJCgxKS0lOiAkKDIpCiAgICAgICQo
-TUFLRSkgLUMgJCogLWYgIiIkKGFic19zcmNkaXIpLyQkKi9NYWtlZmlsZSIgJCQocGF0c3Vic3Qg
-JCgxKS0lLCUsJCRAKQplbmRlZgokKGZvcmVhY2ggc3ViZGlyICQoU1VCRElSUyksJChldmFsICQo
-Y2FsbCBnZW5lcmF0ZV9kaXJfZGVwLCQoc3ViZGlyKSkpKQokKGZvcmVhY2ggc3ViZGlyLCQoU1VC
-RElSUyksJChldmFsICQoY2FsbCBsZWFmX21ha2UKJChSRUNVUlNJVkVfVEFSR0VUUyksJChzdWJk
-aXIpKQoKVWx0aW1hdGVseSBJIHN1cHBvc2UsIGl0J3MgYW5vdGhlciBtZWFucyB0byBhIHNpbWls
-YXIgZW5kLiBJdCdzIGp1c3QgYQpiaXQgbW9yZSBkaXNjcmV0ZSBhcyB0byB3aGF0J3MgZ29pbmcg
-b24gaW4gdGhlIG9wZXJhdGlvbi4uLiBpZiB0aGlzIGlzCmEgZ29vZCBpZGVhLCBJJ2xsIG1vZGlm
-eSBmdW5jdGlvbnMubWsgdG8gbWF0Y2ggdGhpcy4gJChhYnNwYXRoKSAvLwokKHJlYWxwYXRoKSBq
-dW5rIGlzIGFscmVhZHkgYSBQSVRBLCBzbyBpdCBtaWdodCBiZSBhIGdvb2QgaWRlYSBqdXN0IHRv
-CnJlbW92ZSBpdCBpbiBmYXZvciBvZiBrZWVwaW5nIHRoaW5ncyBhcy1pcy4KClRoYW5rcywKLUdh
-cnJldHQKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpKb2luIHVzIERlY2VtYmVyIDksIDIwMDkgZm9y
-IHRoZSBSZWQgSGF0IFZpcnR1YWwgRXhwZXJpZW5jZSwKYSBmcmVlIGV2ZW50IGZvY3VzZWQgb24g
-dmlydHVhbGl6YXRpb24gYW5kIGNsb3VkIGNvbXB1dGluZy4gCkF0dGVuZCBpbi1kZXB0aCBzZXNz
-aW9ucyBmcm9tIHlvdXIgZGVzay4gWW91ciBjb3VjaC4gQW55d2hlcmUuCmh0dHA6Ly9wLnNmLm5l
-dC9zZnUvcmVkaGF0LXNmZGV2MmRldgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNl
-Zm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0
-cC1saXN0Cg==
+On Sat, 05 Dec 2009 05:58:59 +0100, Mike Frysinger <vapier@gentoo.org>  =
+
+wrote:
+
+> On Friday 04 December 2009 20:19:13 Ji=F8=ED Pale=E8ek wrote:
+>> On Fri, 04 Dec 2009 20:06:40 +0100, Mike Frysinger <vapier@gentoo.org>
+>>
+>> wrote:
+>> > On Friday 04 December 2009 11:58:13 Jiri Palecek wrote:
+>> >> the makefiles install all files with executable mode by default. This
+>> >> patch
+>> >>  changes it for some of the Makefiles, that install data files, which
+>> >>  should IMHO not be executable. The change makes INSTALL_MODE decide  =
+
+>> the
+>> >>  actual mode when it is expanded inside the install rule (depending  =
+
+>> on
+>> >> $@,
+>> >>  which is the install target name).
+>> >
+>> > that's pretty fugly way to go about it.  let's go the more natural  =
+
+>> route
+>> > and
+>> > have the common code default to $(INSTALL_MODE_$@) and if that's  =
+
+>> unset,
+>> > use
+>> > the default $(INSTALL_MODE).
+>>
+>> Sorry, but I don't agree with that. This is a function-like approach  =
+
+>> which
+>> is not any less "natural" than what you propose - and it makes no  =
+
+>> demands
+>> on anyone who doesn't need it, and gives great power to those who need  =
+
+>> it.
+>
+> your solution requires non-obvious delayed evaluation that isnt
+> straightforward.  mine is explicit, unambiguous, and already in use by  =
+
+> many
+> other projects that ltp is related to.
+
+... and weak.
+
+>> The main reason I don't like the INSTALL_MODE_$@ thing, is that eg.
+>> INSTALL_TARGETS can contain wildcards (eg. dir/*.ext), and there cannot  =
+
+>> be
+>> any such thing as $(INSTALL_MODE_dir/*.ext). You would have to enumerate
+>> all data files - or all program files - which would be a chore esp. if  =
+
+>> any
+>> of these isn't known in the makefile until "make all" is ran.
+>
+> so fix install targets to expand the globs at make time and not shell  =
+
+> time.
+> i.e. something like INSTALL_TARGETS :=3D $(wildcard $(INSTALL_TARGETS))
+
+We do that currently, but this doesn't change the problem in any way. The  =
+
+problem is that if I am able to write
+
+INSTALL_TARGETS :=3D 1* 2*
+
+I want to be able to specify that the files in 1* are executables and  =
+
+files in 2* are not, without having to enumerate them all. This is  =
+
+impossible with your "explicit" solution.
+
+I would be happy with something like
+
+EXECUTABLES :=3D 1*
+
+   Jiri Palecek
+
+---------------------------------------------------------------------------=
+---
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev =
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
