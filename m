@@ -1,32 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NGDMx-0008O3-9S
-	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:13:23 +0000
-Received: from e9.ny.us.ibm.com ([32.97.182.139])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NGDMp-0002oT-EY
-	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:13:23 +0000
-Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
-	by e9.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id nB3F797w026628
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 10:07:09 -0500
-Received: from d03av05.boulder.ibm.com (d03av05.boulder.ibm.com [9.17.195.85])
-	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nB3FD9rY041304
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 10:13:09 -0500
-Received: from d03av05.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av05.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id nB3FD1Us003454
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 08:13:01 -0700
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200912012241.nB1MfUOA010285@e6.ny.us.ibm.com>
-References: <200912012241.nB1MfUOA010285@e6.ny.us.ibm.com>
-Date: Thu, 03 Dec 2009 20:42:24 +0530
-Message-Id: <1259853149.5085.41.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fix a bug in awk code in rsh01
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1NLohE-0004Ql-S3
+	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 02:05:28 +0000
+Received: from fmmailgate02.web.de ([217.72.192.227])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NLoh6-000541-JB
+	for ltp-list@lists.sourceforge.net; Sat, 19 Dec 2009 02:05:28 +0000
+Date: Sat, 19 Dec 2009 03:05:50 +0100
+From: =?iso-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
+MIME-Version: 1.0
+References: <200912041649.nB4GnQbj014719@e35.co.us.ibm.com>
+	<1260186841.6866.20.camel@subratamodak.linux.ibm.com>
+	<364299f40912071042o50d0ac40le913ac35b6003dda@mail.gmail.com>
+Message-ID: <op.u45xf011u2flwt@debian>
+In-Reply-To: <364299f40912071042o50d0ac40le913ac35b6003dda@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] New sigwaitinfo test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,60 +26,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
+To: Garrett Cooper <yanegomi@gmail.com>, subrata@linux.vnet.ibm.com
 Cc: ltp-list@lists.sourceforge.net
 
-On Tue, 2009-12-01 at 23:32 +0100, Jiri Palecek wrote: 
-> Hello,
-> 
-> this patch fixes the following problem with awk code in rsh01. It caused the test to fail.
-> 
->  The END label is executed always, even in the event of
->  exit. Therefore, the "exit 1" statement was executed even when the
->  line matched (as a consequence of "exit 0") and awk always returned
->  1 (ie. failure).
-> 
-> Regards
->     Jiri Palecek
-> 
-> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+On Mon, 07 Dec 2009 19:42:13 +0100, Garrett Cooper <yanegomi@gmail.com>  =
 
-Thanks.
+wrote:
 
-Regards--
-Subrata
+> On Mon, Dec 7, 2009 at 3:54 AM, Subrata Modak
+> <subrata@linux.vnet.ibm.com> wrote:
+>> On Fri, 2009-12-04 at 17:46 +0100, Jiri Palecek wrote:
+>>> Hello,
+>>>
+>>> this is the test for the rt_sigtimedwait et al. functions I promised  =
 
-> ---
->  testcases/network/tcp_cmds/rsh/rsh01 |    6 +++---
->  1 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/testcases/network/tcp_cmds/rsh/rsh01 b/testcases/network/tcp_cmds/rsh/rsh01
-> index e87a6a0..0a2b58f 100755
-> --- a/testcases/network/tcp_cmds/rsh/rsh01
-> +++ b/testcases/network/tcp_cmds/rsh/rsh01
-> @@ -72,9 +72,9 @@ do_test()
->              # gcooper@orangebox ~ $ ls -l /etc/hosts         
->              # -rw-r--r-- 1 root root 463 Jul  5 09:26 /etc/hosts
->              #
-> -            echo "$OUT" | \
-> -                awk 'NF == 9 && $NF == "/etc/hosts" { exit 0 } END { exit 1 }' \
-> -                >& /dev/null
-> +            echo "$OUT" |
-> +                awk 'BEGIN { RET=1 } NF == 9 && $NF == "/etc/hosts" { RET=0 } END { exit RET }' \
-> +                > /dev/null 2>&1
-> 
->              if [ $? -eq 0 ] ; then
->                  tst_resm TPASS "rsh to $RHOST test succeeded"
+>>> earlier. The code is unchanged since I sent it for the first time, but  =
 
+>>> the Makefiles are adapted to the new build system, with the help of  =
 
-------------------------------------------------------------------------------
-Join us December 9, 2009 for the Red Hat Virtual Experience,
-a free event focused on virtualization and cloud computing. 
-Attend in-depth sessions from your desk. Your couch. Anywhere.
-http://p.sf.net/sfu/redhat-sfdev2dev
+>>> Garret Cooper.
+>>>
+>>> Regards
+>>> =A0 =A0 Jiri Palecek
+>>>
+>>> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+>>
+>> Thanks Jiri. Would you also take the trouble to make entries in the
+>> runtest/syscalls file for these tests to run ?
+>
+> Someone needs to verify whether or not the rt_* test is functional on
+> x86_64 as well, because these tests require additional setup for
+> x86_64; unfortunately my desktop is disconnected (and will remain so
+> for the next week while I move), so I can't verify this.
+
+Could you, please? IMHO there shouldn't be a problem with SA_RESTORER  =
+
+(because the test doesn't use rt_sigaction), but there may be problems  =
+
+with SIGSETSIZE.
+
+   Jiri Palecek
+
+---------------------------------------------------------------------------=
+---
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev =
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
