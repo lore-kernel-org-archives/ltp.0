@@ -1,33 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NGDMu-0003Is-2T
-	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:13:20 +0000
-Received: from e32.co.us.ibm.com ([32.97.110.150])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NGDMn-00075I-Rh
-	for ltp-list@lists.sourceforge.net; Thu, 03 Dec 2009 15:13:20 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e32.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id nB3F7dnB006270
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 08:07:39 -0700
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nB3FCwhr215990
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 08:13:00 -0700
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id nB3FCmkm015149
-	for <ltp-list@lists.sourceforge.net>; Thu, 3 Dec 2009 08:12:49 -0700
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <200912012346.nB1Nk9Sv015715@e34.co.us.ibm.com>
-References: <200912012346.nB1Nk9Sv015715@e34.co.us.ibm.com>
-Date: Thu, 03 Dec 2009 20:42:21 +0530
-Message-Id: <1259853141.5085.40.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Fixes of some errors discovered by "set -u"
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <czhang@redhat.com>) id 1NMb5T-0007qx-O6
+	for ltp-list@lists.sourceforge.net; Mon, 21 Dec 2009 05:45:43 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NMb5N-0007QQ-CH
+	for ltp-list@lists.sourceforge.net; Mon, 21 Dec 2009 05:45:43 +0000
+Date: Mon, 21 Dec 2009 00:45:29 -0500 (EST)
+From: Caspar Zhang <czhang@redhat.com>
+Message-ID: <1964681948.618501261374329418.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+In-Reply-To: <1713808934.618481261374276809.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_24971_1010644075.1261374329417"
+Subject: Re: [LTP] "unzip01" testcase failed.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,135 +25,104 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Mitani <mitani@ryobi.co.jp>
 
-On Tue, 2009-12-01 at 23:30 +0100, Jiri Palecek wrote: 
-> Hello,
-> 
-> this patch fixes the following problems:
-> 
->  - read of $TEST_USER before it's set in ftp03
-> 
->  - remnants of the $COMMAND variable which isn't really there anymore
->    in netstat01
-> 
->  - probably a typo in rsh01 ($COUNT vs. $TST_COUNT)
-> 
->  - $2 has to be escaped twice in rwho01, to appear in the awk script
-> 
->  - when no interface is found tcpdump01, $IF is unset. Don't spit out
->    an error in that case
-> 
-> This is a version with changes reflecting Mike's comments.
-> 
-> Regards
->     Jiri Palecek
-> 
-> Signed-off-by: Jiri Palecek <jpalecek@web.de>
+------=_Part_24971_1010644075.1261374329417
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Thanks.
 
-Regards--
-Subrata
+----- "Garrett Cooper" <yanegomi@gmail.com> wrote:
+> 
+> I'm not convinced that this is the right solution because most of
+> what's done here just replaced $(DIR)'s value with the bareword
+> value.
+> .INTERMEDIATE may be the only piece of value here, but I was avoiding
+> it because it's a 3.81-ism I thought...
 
-> ---
->  testcases/network/tcp_cmds/ftp/ftp03         |    2 +-
->  testcases/network/tcp_cmds/netstat/netstat01 |    2 +-
->  testcases/network/tcp_cmds/rsh/rsh01         |    2 +-
->  testcases/network/tcp_cmds/rwho/rwho01       |    8 ++++----
->  testcases/network/tcp_cmds/tcpdump/tcpdump01 |    2 +-
->  5 files changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/testcases/network/tcp_cmds/ftp/ftp03 b/testcases/network/tcp_cmds/ftp/ftp03
-> index 24e30e9..e85a985 100755
-> --- a/testcases/network/tcp_cmds/ftp/ftp03
-> +++ b/testcases/network/tcp_cmds/ftp/ftp03
-> @@ -39,8 +39,8 @@ do_setup()
->  {
->  	
->      RHOST="localhost"
-> -    TCtmp=/home/$TEST_USER
->      TEST_USER="ftpuser1"
-> +    TCtmp=/home/$TEST_USER
->      TEST_USER_PASSWD="eal"
->      TEST_USER_ENCRYPTED_PASSWD="42VmxaOByKwlA"
->      TEST_USER_HOMEDIR="/home/$TEST_USER"
-> diff --git a/testcases/network/tcp_cmds/netstat/netstat01 b/testcases/network/tcp_cmds/netstat/netstat01
-> index 365c142..45238dc 100755
-> --- a/testcases/network/tcp_cmds/netstat/netstat01
-> +++ b/testcases/network/tcp_cmds/netstat/netstat01
-> @@ -59,7 +59,7 @@ do_test() {
-> 
->          for flag in "-s" "-rn" "-i" "-gn" "-apn"; do
->              if ! netstat $flag 1>/dev/null 2>&1; then
-> -                end_testcase "$COMMAND failed"
-> +                end_testcase "netstat $flag failed"
->              fi
->          done
-> 
-> diff --git a/testcases/network/tcp_cmds/rsh/rsh01 b/testcases/network/tcp_cmds/rsh/rsh01
-> index 0a2b58f..1409cbf 100755
-> --- a/testcases/network/tcp_cmds/rsh/rsh01
-> +++ b/testcases/network/tcp_cmds/rsh/rsh01
-> @@ -87,7 +87,7 @@ do_test()
->              tst_resm TFAIL "rsh to $RHOST failed"
->              # If the first rsh failed, the likelihood that the rest will
->              # succeed is low.
-> -            if [ "$FAIL_IMMEDIATELY" = "1" ] && [ $COUNT -eq 1 ]; then
-> +            if [ "$FAIL_IMMEDIATELY" = "1" ] && [ $TST_COUNT -eq 1 ]; then
->                  exit 2
->              fi
->          fi
-> diff --git a/testcases/network/tcp_cmds/rwho/rwho01 b/testcases/network/tcp_cmds/rwho/rwho01
-> index 9967967..72fb569 100755
-> --- a/testcases/network/tcp_cmds/rwho/rwho01
-> +++ b/testcases/network/tcp_cmds/rwho/rwho01
-> @@ -106,15 +106,15 @@ do_test()
-> 
->      while [ $TST_COUNT -le $NUMLOOPS ]; do
->          rwho -a > $OUTFILE
-> -        HOST=`awk "\$2 ~ /$LHOST>/" $OUTFILE | cut -f1 -d: | sort -u`
-> +        HOST=`awk "\\$2 ~ /$LHOST>/" $OUTFILE | cut -f1 -d: | sort -u`
->          [ "$HOST" = "$LHOST" ] || end_testcase "$LHOST is not in rwho outfile"
-> -        HOST=`awk "\$2 ~ /$RHOSTNAME>/" $OUTFILE | cut -f1 -d: | sort -u`
-> +        HOST=`awk "\\$2 ~ /$RHOSTNAME>/" $OUTFILE | cut -f1 -d: | sort -u`
->          [ "$HOST" = "$RHOSTNAME" ] || end_testcase "$RHOSTNAME is not in rwho outfile"
-> 
->          ruptime -a > $OUTFILE
-> -        HOST=`awk "\$1 ~ /$LHOST>/" $OUTFILE | sort -u`
-> +        HOST=`awk "\\$1 ~ /$LHOST>/" $OUTFILE | sort -u`
->          [ "$HOST" = "$LHOST" ] || end_testcase "$LHOST is not in ruptime outfile"
-> -        HOST=`awk "\$1 ~ /$RHOSTNAME>/" $OUTFILE | sort -u`
-> +        HOST=`awk "\\$1 ~ /$RHOSTNAME>/" $OUTFILE | sort -u`
->          [ "$HOST" = "$RHOSTNAME" ] || end_testcase "$RHOSTNAME is not in ruptime outfile"
-> 
->          tst_resm TINFO "Test $COUNT of $NUMLOOPS complete"
-> diff --git a/testcases/network/tcp_cmds/tcpdump/tcpdump01 b/testcases/network/tcp_cmds/tcpdump/tcpdump01
-> index 650e97e..0f4aba7 100755
-> --- a/testcases/network/tcp_cmds/tcpdump/tcpdump01
-> +++ b/testcases/network/tcp_cmds/tcpdump/tcpdump01
-> @@ -59,7 +59,8 @@ do_setup()
->              break
->          fi
->      done
-> -    if [ -z "${IF}" ]; then
-> +    # Default to empty string if unset, to avoid errors caused by set -u, which we use (see cmdlib.sh)
-> +    if [ -z "${IF:-}" ]; then
->          end_testcase "Could not identify interface"
->          exit 1
->      fi
+How about this one (see the attachment)?
 
+Thanks,
+Caspar
+> 
+> Thanks,
+> -Garrett
+
+------=_Part_24971_1010644075.1261374329417
+Content-Type: application/octet-stream; name=commands-unzip01.patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=commands-unzip01.patch
+
+diff -Naur a/include/mk/generic_leaf_target.inc b/include/mk/generic_leaf_target.inc
+--- a/include/mk/generic_leaf_target.inc	2009-12-01 17:57:15.000000000 +0800
++++ b/include/mk/generic_leaf_target.inc	2009-12-11 12:33:01.716202544 +0800
+@@ -97,7 +97,7 @@
+ all: $(MAKE_TARGETS)
+ 
+ clean:: $(CLEAN_DEPS)
+-	-$(RM) -f $(CLEAN_TARGETS)
++	-$(RM) -rf $(CLEAN_TARGETS)
+ 
+ $(INSTALL_FILES): | $(INSTALL_DEPS)
+ 
+diff -Naur a/runtest/commands b/runtest/commands
+--- a/runtest/commands	2009-02-26 21:10:54.000000000 +0800
++++ b/runtest/commands	2009-12-11 12:55:07.386077960 +0800
+@@ -10,7 +10,7 @@
+ logrotate export TCdat=$LTPROOT/testcases/bin; logrotate_tests.sh
+ mail export TCdat=$LTPROOT/testcases/bin; mail_tests.sh
+ cpio export TCdat=$LTPROOT/testcases/bin; cpio_tests.sh
+-unzip01 unzip_tests.sh $LTPROOT/testcases/commands/unzip/tst_unzip_file.zip
++unzip01 unzip_tests.sh $LTPROOT/testcases/bin/tst_unzip_file.zip
+ gzip01 gzip_tests.sh
+ cp_tests01 cp_tests.sh
+ ln_tests01 ln_tests.sh
+diff -Naur a/testcases/commands/unzip/Makefile b/testcases/commands/unzip/Makefile
+--- a/testcases/commands/unzip/Makefile	2009-10-10 01:55:45.000000000 +0800
++++ b/testcases/commands/unzip/Makefile	2009-12-11 12:37:12.397202792 +0800
+@@ -27,13 +27,13 @@
+ # Only build and install if we have the zip command.
+ HAVE_ZIPTOOLS		:= $(shell if which zip >/dev/null; then echo yes; else echo no; fi)
+ 
++ZIP			:= zip
+ DIR			:= tst_unzip.dir
+-
+-MAKE_TARGETS		:=
++ZIPFILE			:= tst_unzip_file.zip
++MAKE_TARGETS		:= $(ZIPFILE)
+ 
+ ifeq ($(HAVE_ZIPTOOLS),yes)
+-INSTALL_TARGETS		:= unzip_tests.sh
+-$(INSTALL_TARGETS): $(ZIPFILE)
++INSTALL_TARGETS		:= unzip_tests.sh $(ZIPFILE)
+ endif
+ 
+ $(ZIPFILE): $(DIR)
+
+------=_Part_24971_1010644075.1261374329417
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Join us December 9, 2009 for the Red Hat Virtual Experience,
-a free event focused on virtualization and cloud computing. 
-Attend in-depth sessions from your desk. Your couch. Anywhere.
-http://p.sf.net/sfu/redhat-sfdev2dev
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
+------=_Part_24971_1010644075.1261374329417
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------=_Part_24971_1010644075.1261374329417--
+
