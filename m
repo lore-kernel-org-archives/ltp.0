@@ -1,24 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <radoslav.kolev@rnd.bg>) id 1NHLAp-0002qo-2J
-	for ltp-list@lists.sourceforge.net; Sun, 06 Dec 2009 17:45:31 +0000
-Received: from delta.superhosting.bg ([91.196.124.9])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NHLAg-0004pT-Hc
-	for ltp-list@lists.sourceforge.net; Sun, 06 Dec 2009 17:45:30 +0000
-Received: from [83.228.52.239] (helo=[192.168.1.14])
-	by delta.superhosting.bg with esmtpsa (SSLv3:AES256-SHA:256)
-	(Exim 4.69) (envelope-from <radoslav.kolev@rnd.bg>)
-	id 1NHLAT-0006KQ-5v
-	for ltp-list@lists.sourceforge.net; Sun, 06 Dec 2009 19:45:09 +0200
-From: Radoslav Kolev <radoslav.kolev@rnd.bg>
-Date: Sun, 06 Dec 2009 19:46:19 +0200
-Message-Id: <1260121579.7556.487.camel@rado-desktop>
-Mime-Version: 1.0
-Subject: [LTP] [PATCH] if4-alias-addlarge - default values for IPV4_NETWORK
-	and	IPV4_HOST
+	(envelope-from <yanegomi@gmail.com>) id 1NMueM-0005xM-Le
+	for ltp-list@lists.sourceforge.net; Tue, 22 Dec 2009 02:39:02 +0000
+Received: from mail-px0-f189.google.com ([209.85.216.189])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NMueE-00053q-SH
+	for ltp-list@lists.sourceforge.net; Tue, 22 Dec 2009 02:39:02 +0000
+Received: by pxi27 with SMTP id 27so2313626pxi.4
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 21 Dec 2009 18:38:49 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <364299f40912210110m27ba4276g8cbce963d077e4a0@mail.gmail.com>
+References: <1713808934.618481261374276809.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	<1964681948.618501261374329418.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	<364299f40912210110m27ba4276g8cbce963d077e4a0@mail.gmail.com>
+Date: Mon, 21 Dec 2009 18:38:48 -0800
+Message-ID: <364299f40912211838w7ab92a76u50223c29588b6f1a@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] "unzip01" testcase failed.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,43 +32,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Caspar Zhang <czhang@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, Mitani <mitani@ryobi.co.jp>
 
-The testcase code expects class A (or /8 ) network addresses to be
-assigned to the tested interfaces and fails with the default values of
-class C (or /24).
+On Mon, Dec 21, 2009 at 1:10 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Sun, Dec 20, 2009 at 9:45 PM, Caspar Zhang <czhang@redhat.com> wrote:
+>>
+>> ----- "Garrett Cooper" <yanegomi@gmail.com> wrote:
+>>>
+>>> I'm not convinced that this is the right solution because most of
+>>> what's done here just replaced $(DIR)'s value with the bareword
+>>> value.
+>>> .INTERMEDIATE may be the only piece of value here, but I was avoiding
+>>> it because it's a 3.81-ism I thought...
+>>
+>> How about this one (see the attachment)?
+>
+> AH... -[Rr] was missing.
+>
+> RM += -[Rr]
+>
+> will do that. The rest just seems spurious.
 
-Signed-off-by: Radoslav Kolev <radoslav.kolev@rnd.bg>
+    Uh, this was already committed on HEAD:
 
---- ltp-full-20091031.orig/testcases/network/stress/interface/if4-alias-addlarge	2009-11-18 11:41:02.000000000 +0200
-+++ ltp-full-20091031/testcases/network/stress/interface/if4-alias-addlarge	2009-12-06 19:31:34.000000000 +0200
-@@ -72,7 +72,7 @@
- LINK_NUM=0
- 
- # Network portion of the IPv4 address
--IPV4_NETWORK=${IPV4_NETWORK:-"10.0.0"}
-+IPV4_NETWORK=${IPV4_NETWORK:-"10"}
- 
- # Netmask of for the tested network
- IPV4_NETMASK="255.0.0.0"
-@@ -82,8 +82,8 @@
- IPV4_BROADCAST=${IPV4_NETWORK}.255.255.255
- 
- # Host portion of the IPv4 address
--LHOST_IPV4_HOST=${LHOST_IPV4_HOST:-"2"}
--RHOST_IPV4_HOST=${RHOST_IPV4_HOST:-"1"}
-+LHOST_IPV4_HOST=${LHOST_IPV4_HOST:-"0.0.2"}
-+RHOST_IPV4_HOST=${RHOST_IPV4_HOST:-"0.0.1"}
- 
- 
+http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/commands/unzip/Makefile?r1=1.9&r2=1.8
 
-
+    What version are you working with?
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
-Join us December 9, 2009 for the Red Hat Virtual Experience,
-a free event focused on virtualization and cloud computing. 
-Attend in-depth sessions from your desk. Your couch. Anywhere.
-http://p.sf.net/sfu/redhat-sfdev2dev
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
