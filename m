@@ -1,25 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NHiTT-0004m8-EU
-	for ltp-list@lists.sourceforge.net; Mon, 07 Dec 2009 18:38:19 +0000
-Received: from mail-pw0-f43.google.com ([209.85.160.43])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NHiTM-0005bF-Ej
-	for ltp-list@lists.sourceforge.net; Mon, 07 Dec 2009 18:38:19 +0000
-Received: by pwi13 with SMTP id 13so21757pwi.2
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NN8e5-00019W-Ly
+	for ltp-list@lists.sourceforge.net; Tue, 22 Dec 2009 17:35:41 +0000
+Received: from mail-pz0-f193.google.com ([209.85.222.193])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NN8e0-00046G-P9
+	for ltp-list@lists.sourceforge.net; Tue, 22 Dec 2009 17:35:41 +0000
+Received: by pzk31 with SMTP id 31so4300886pzk.28
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 07 Dec 2009 10:38:06 -0800 (PST)
+	Tue, 22 Dec 2009 09:35:31 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1260186839.6866.19.camel@subratamodak.linux.ibm.com>
-References: <200912041643.nB4GhMmX007322@e1.ny.us.ibm.com>
-	<1260186839.6866.19.camel@subratamodak.linux.ibm.com>
-Date: Mon, 7 Dec 2009 10:38:06 -0800
-Message-ID: <364299f40912071038n5bea3c26uec9cd418abbf08fd@mail.gmail.com>
+In-Reply-To: <000001ca82c6$09f0ec40$1dd2c4c0$@co.jp>
+References: <000301ca820d$cc428e20$64c7aa60$@co.jp>
+	<364299f40912211845u5b20d868ucaaa0a397a3658f1@mail.gmail.com>
+	<000001ca82c6$09f0ec40$1dd2c4c0$@co.jp>
+Date: Tue, 22 Dec 2009 09:35:31 -0800
+Message-ID: <364299f40912220935h6b0a53cbi3c9acfe81cc48561@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Fix overreaching clean targets in Makefiles that
-	cleaned the readme files
+Subject: Re: [LTP]
+	=?utf-8?b?Im5hbm9zbGVlcHswMu+9njA0fSIgdGVzdGNhc2UgZmFpbGVk?=
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,81 +30,103 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: Jiri Palecek <jpalecek@web.de>, ltp-list@lists.sourceforge.net
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net
 
-On Mon, Dec 7, 2009 at 3:53 AM, Subrata Modak
-<subrata@linux.vnet.ibm.com> wrote:
-> On Fri, 2009-12-04 at 17:31 +0100, Jiri Palecek wrote:
->> Hello,
->>
->> the makefiles in some of the float tests contain the glob "[dr]*" in the=
-ir clean targets. Unfortunately, this deletes not only the generated refere=
-nce files, but also the readme files shipped in those directories. This pat=
-ch fixes it by changing CLEAN_TARGETS to more specific patterns (that captu=
-re all generated files in all float tests, however).
->>
->> Regards
->> =A0 =A0 Jiri Palecek
->>
->> Signed-off-by: Jiri Palecek <jpalecek@web.de>
->
-> Thanks.
->
-> Regards--
-> Subrata
->
->> ---
->> =A0testcases/misc/math/float/iperb/Makefile | =A0 =A03 ++-
->> =A0testcases/misc/math/float/trigo/Makefile | =A0 =A03 ++-
->> =A02 files changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/testcases/misc/math/float/iperb/Makefile b/testcases/misc/m=
-ath/float/iperb/Makefile
->> index e7a6774..6b538d1 100644
->> --- a/testcases/misc/math/float/iperb/Makefile
->> +++ b/testcases/misc/math/float/iperb/Makefile
->> @@ -24,7 +24,8 @@ top_srcdir =A0 =A0 =A0 =A0 =A0?=3D ../../../../..
->>
->> =A0include $(top_srcdir)/include/mk/env_pre.mk
->>
->> -CLEAN_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D [dr]* *.ref*
->> +CLEAN_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D [rd]*sin [rd]sinh [rd=
-]*cos [rd]cosh [rd]*tan [rd]*tan2 =A0 =A0 =A0 =A0 =A0 =A0 =A0 \
->> +[rd]tanh *.ref*
->>
->> =A0LDLIBS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 +=3D -lm
->>
->> diff --git a/testcases/misc/math/float/trigo/Makefile b/testcases/misc/m=
-ath/float/trigo/Makefile
->> index c7390ff..4abf9f9 100644
->> --- a/testcases/misc/math/float/trigo/Makefile
->> +++ b/testcases/misc/math/float/trigo/Makefile
->> @@ -24,7 +24,8 @@ top_srcdir =A0 =A0 =A0 =A0 =A0?=3D ../../../../..
->>
->> =A0include $(top_srcdir)/include/mk/env_pre.mk
->>
->> -CLEAN_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D [dr]*
->> +CLEAN_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D [rd]*sin [rd]sinh [rd=
-]*cos [rd]cosh [rd]*tan [rd]*tan2 =A0 =A0 =A0 =A0 =A0 =A0 =A0 \
->> +[rd]tanh
->>
->> =A0LDLIBS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 +=3D -lm
-
-Mike actually fixed this issue by renaming readme to README.
--Garrett
-
----------------------------------------------------------------------------=
----
-Join us December 9, 2009 for the Red Hat Virtual Experience,
-a free event focused on virtualization and cloud computing. =
-
-Attend in-depth sessions from your desk. Your couch. Anywhere.
-http://p.sf.net/sfu/redhat-sfdev2dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gTW9uLCBEZWMgMjEsIDIwMDkgYXQgOToxNyBQTSwgTWl0YW5pIDxtaXRhbmlAcnlvYmkuY28u
+anA+IHdyb3RlOgo+Cj4gSSByZXZpc2VkIHBhdGNoIGludG8gIldJRkVYSVRFRChzdGF0dXMpICYm
+IFdFWElUU1RBVFVTKHN0YXR1cykgPT0gMCIsIGFuZCB0cmllZCB0byB0ZXN0Lgo+IEFmdGVyIHRo
+YXQsICJuYW5vc2xlZXAiIGNvdWxkIHdvcmsgY29ycmVjdGx5Lgo+IEkgYWdyZWUgd2l0aCB5b3Vy
+IHByb3Bvc2FsLgo+Cj4gVGhhbmsgeW91IGZvciB5b3VyIGhlbHAhCj4KPiAtVG9tb25vcmkgTWl0
+YW5pCj4KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+IEZyb206IEdhcnJldHQgQ29vcGVy
+IFttYWlsdG86eWFuZWdvbWlAZ21haWwuY29tXQo+IFNlbnQ6IFR1ZXNkYXksIERlY2VtYmVyIDIy
+LCAyMDA5IDExOjQ1IEFNCj4gVG86IE1pdGFuaQo+IENjOiBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vm
+b3JnZS5uZXQKPiBTdWJqZWN0OiBSZTogW0xUUF0gIm5hbm9zbGVlcHswMu+9njA0fSIgdGVzdGNh
+c2UgZmFpbGVkCj4KPiAyMDA5LzEyLzIwIE1pdGFuaSA8bWl0YW5pQHJ5b2JpLmNvLmpwPjoKPj4g
+SGksCj4+Cj4+IEkgZm91bmQgdGhhdCAibmFub3NsZWVwezAy772eMDR9IiB0ZXN0Y2FzZSBmYWls
+ZWQgbGlrZSBmb2xsb3cgZXhhbXBsZS4KPj4gLS0tLS0tLS0tLQo+PiBuYW5vc2xlZXAwMiDCoCDC
+oDEgwqBURkFJTCDCoDogwqBjaGlsZCBwcm9jZXNzIGV4aXRlZCBhYm5vcm1hbGx5Cj4+IC0tLS0t
+LS0tLS0KPj4KPj4gSW4gJHtMVFBST09UfS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL25hbm9z
+bGVlcC9uYW5vc2xlZXB7MDLvvZ4wNH0uYywKPj4gV0VYSVRTVEFUVVMoc3RhdHVzKSBpcyB1c2Vk
+IHRvIGp1ZGdlIHdoZXRoZXIgY2hpbGQgcHJvY2VzcyBkaWQgZXhpdAo+PiBub3JtYWxseS4KPj4g
+QnV0IFdFWElUU1RBVFVTIG1hY3JvIGlzIHVzZWQgb25seSB3aGVuIFdJRkVYSVRFRCBtYWNybyBy
+ZXR1cm5lZCAidHJ1ZSIuCj4+IFNvLCBpdCBjYW5ub3QgZ2V0IHRoZSBjb3JyZWN0IHJlc3VsdHMg
+YW5kIGl0IHRlcm1pbmF0ZWQgd2l0aCB0aGUgYWJvdmUKPj4gZXJyb3IuCj4+Cj4+IFRvIHNvbHZl
+IHRoaXMgcHJvYmxlbSwgSSB0aG91Z2h0IHRoYXQgd2UgaGFkIGJldHRlciB1c2UgV0lGRVhJVEVE
+IG1hY3JvCj4+IGluc3RlYWQgb2YgdGhlIFdFWElUU1RBVFVTIG1hY3JvLgo+PiBIZXJlIGFyZSBw
+YXRjaGVzIHRvIGZpeCB0aGVzZSBwcm9ibGVtOgo+PiA9PT09PT09PT09PT0KPj4gLS0tIG5hbm9z
+bGVlcDAyLmMgwqAgwqAgwqAgMjAwOS0xMS0wMiAyMjo1NzoxNy4wMDAwMDAwMDAgKzA5MDAKPj4g
+KysrIG5hbm9zbGVlcDAyLmMubmV3IMKgIDIwMDktMTItMjEgMTQ6MTU6MTkuMDAwMDAwMDAwICsw
+OTAwCj4+IEBAIC0xNjIsMTAgKzE2MiwxMCBAQAo+Pgo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oC8qIFdhaXQgZm9yIGNoaWxkIHRvIGV4ZWN1dGUgKi8KPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqB3YWl0KCZzdGF0dXMpOwo+PiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGlmIChXRVhJVFNUQVRV
+UyhzdGF0dXMpID09IDApIHsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAoV0lGRVhJVEVE
+KHN0YXR1cykpIHsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB0c3RfcmVz
+bShUUEFTUywgIkZ1bmN0aW9uYWxpdHkgb2YgbmFub3NsZWVwKCkgIgo+PiDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAiaXMgY29ycmVjdCIpOwo+PiAtIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIH0gZWxzZSBpZiAoV0VYSVRTVEFUVVMoc3RhdHVzKSA9PSAxKSB7
+Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgfSBlbHNlIGlmICghV0lGRVhJVEVEKHN0YXR1cykp
+IHsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB0c3RfcmVzbShURkFJTCwg
+ImNoaWxkIHByb2Nlc3MgZXhpdGVkIGFibm9ybWFsbHkiKTsKPj4gwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqB9Cj4+IMKgIMKgIMKgIMKgfSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAv
+KiBFbmQgZm9yIFRFU1RfTE9PUElORyAqLwo+Pgo+PiA9PT09PT09PT09PT0KPj4KPj4gPT09PT09
+PT09PT09Cj4+IC0tLSBuYW5vc2xlZXAwMy5jIMKgIMKgIMKgIDIwMDktMTEtMDIgMjI6NTc6MTcu
+MDAwMDAwMDAwICswOTAwCj4+ICsrKyBuYW5vc2xlZXAwMy5jLm5ldyDCoCAyMDA5LTEyLTIxIDE1
+OjAzOjUyLjAwMDAwMDAwMCArMDkwMAo+PiBAQCAtMTQzLDEwICsxNDMsMTAgQEAKPj4KPj4gwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAvKiBXYWl0IGZvciBjaGlsZCB0byBleGVjdXRlICovCj4+IMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgd2FpdCgmc3RhdHVzKTsKPj4gLSDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCBpZiAoV0VYSVRTVEFUVVMoc3RhdHVzKSA9PSAwKSB7Cj4+ICsgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgaWYgKFdJRkVYSVRFRChzdGF0dXMpKSB7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgdHN0X3Jlc20oVFBBU1MsICJuYW5vc2xlZXAoKSBmYWlscywgaW50ZXJydXB0
+ZWQiCj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICIg
+Ynkgc2lnbmFsLCBlcnJvcjolZCIsIEVJTlRSKTsKPj4gLSDCoCDCoCDCoCDCoCDCoCDCoCDCoCB9
+IGVsc2UgaWYgKFdFWElUU1RBVFVTKHN0YXR1cykgPT0gMSkgewo+PiArIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIH0gZWxzZSBpZiAoIVdJRkVYSVRFRChzdGF0dXMpKSB7Cj4+IMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgdHN0X3Jlc20oVEZBSUwsICJjaGlsZCBwcm9jZXNzIGV4aXRl
+ZCBhYm5vcm1hbGx5Iik7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgfQo+PiDCoCDCoCDCoCDC
+oH0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgLyogRW5kIGZvciBURVNUX0xPT1BJ
+TkcgKi8KPj4KPj4gPT09PT09PT09PT09Cj4+Cj4+ID09PT09PT09PT09PQo+PiAtLS0gbmFub3Ns
+ZWVwMDQuYyDCoCDCoCDCoCAyMDA5LTExLTAyIDIyOjU3OjE3LjAwMDAwMDAwMCArMDkwMAo+PiAr
+KysgbmFub3NsZWVwMDQuYy5uZXcgwqAgMjAwOS0xMi0yMSAxNTowNDoyNC4wMDAwMDAwMDAgKzA5
+MDAKPj4gQEAgLTE0NywxMCArMTQ3LDEwIEBACj4+Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+LyogV2FpdCBmb3IgY2hpbGQgdG8gZXhlY3V0ZSAqLwo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oHdhaXQoJnN0YXR1cyk7Cj4+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgaWYgKFdFWElUU1RBVFVT
+KHN0YXR1cykgPT0gMCkgewo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGlmIChXSUZFWElURUQo
+c3RhdHVzKSkgewo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHRzdF9yZXNt
+KFRQQVNTLCAibmFub3NsZWVwKCkgZmFpbHMsIGludmFsaWQgcGF1c2UgIgo+PiDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAidGltZSwgZXJyb3I6JWQiLCBF
+SU5WQUwpOwo+PiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIH0gZWxzZSBpZiAoV0VYSVRTVEFUVVMo
+c3RhdHVzKSA9PSAxKSB7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgfSBlbHNlIGlmICghV0lG
+RVhJVEVEKHN0YXR1cykpIHsKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB0
+c3RfcmVzbShURkFJTCwgImNoaWxkIHByb2Nlc3MgZXhpdGVkIGFibm9ybWFsbHkiKTsKPj4gwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqB9Cj4+IMKgIMKgIMKgIMKgfSDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCAvKiBFbmQgZm9yIFRFU1RfTE9PUElORyAqLwo+PiA9PT09PT09PT09PT0K
+Pgo+IEkgYWdyZWUgdGhhdCB0aGUgdGVzdCdzIHZhbGlkYXRpb24gc3RlcCBpcyB3cml0dGVuIGlu
+Y29ycmVjdGx5LCBhcyBwZXIKPiB0aGUgd2FpdCgyKSBtYW5wYWdlOgo+Cj4KPiDCoCDCoCDCoCBX
+SUZFWElURUQoc3RhdHVzKQo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgcmV0dXJucyB0cnVlIGlmIHRo
+ZSBjaGlsZCB0ZXJtaW5hdGVkIG5vcm1hbGx5LCB0aGF0IGlzLCBieSBjYWxsLQo+IMKgIMKgIMKg
+IMKgIMKgIMKgIMKgaW5nIGV4aXQoMykgb3IgX2V4aXQoMiksIG9yIGJ5IHJldHVybmluZyBmcm9t
+IG1haW4oKS4KPgo+IMKgIMKgIMKgIFdFWElUU1RBVFVTKHN0YXR1cykKPiDCoCDCoCDCoCDCoCDC
+oCDCoCDCoHJldHVybnMgdGhlIGV4aXQgc3RhdHVzIG9mIHRoZSDCoGNoaWxkLiDCoCBUaGlzIMKg
+Y29uc2lzdHMgwqBvZiDCoHRoZQo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgbGVhc3QgwqBzaWduaWZp
+Y2FudCDCoDggYml0cyBvZiB0aGUgc3RhdHVzIGFyZ3VtZW50IHRoYXQgdGhlIGNoaWxkCj4gwqAg
+wqAgwqAgwqAgwqAgwqAgwqBzcGVjaWZpZWQgaW4gYSBjYWxsIHRvIGV4aXQoMykgb3IgX2V4aXQo
+Mikgb3IgwqBhcyDCoHRoZSDCoGFyZ3VtZW50Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqBmb3IgwqBh
+IMKgcmV0dXJuIMKgc3RhdGVtZW50IMKgaW4gbWFpbigpLiDCoFRoaXMgbWFjcm8gc2hvdWxkIG9u
+bHkgYmUKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoGVtcGxveWVkIGlmIFdJRkVYSVRFRCByZXR1cm5l
+ZCB0cnVlLgo+Cj4gwqAgwqBpbiBwYXJ0aWN1bGFyIHRoZSBwcmVjb25kaXRpb24gZm9yIGNhbGxp
+bmcgV0VYSVRTVEFUVVMsIGJ1dCBzaG91bGQKPiBpdCBiZSBXSUZFWElURUQoc3RhdHVzKSAmJiBX
+RVhJVFNUQVRVUyhzdGF0dXMpID09IDAgPT4gUEFTUywgZWxzZQo+IEZBSUw/CgpDb21taXR0ZWQg
+LS0gdGhhbmtzIQotR2FycmV0dAotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVGhpcyBTRi5OZXQgZW1h
+aWwgaXMgc3BvbnNvcmVkIGJ5IHRoZSBWZXJpem9uIERldmVsb3BlciBDb21tdW5pdHkKVGFrZSBh
+ZHZhbnRhZ2Ugb2YgVmVyaXpvbidzIGJlc3QtaW4tY2xhc3MgYXBwIGRldmVsb3BtZW50IHN1cHBv
+cnQKQSBzdHJlYW1saW5lZCwgMTQgZGF5IHRvIG1hcmtldCBwcm9jZXNzIG1ha2VzIGFwcCBkaXN0
+cmlidXRpb24gZmFzdCBhbmQgZWFzeQpKb2luIG5vdyBhbmQgZ2V0IG9uZSBzdGVwIGNsb3NlciB0
+byBtaWxsaW9ucyBvZiBWZXJpem9uIGN1c3RvbWVycwpodHRwOi8vcC5zZi5uZXQvc2Z1L3Zlcml6
+b24tZGV2MmRldiAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApo
+dHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
