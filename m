@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1NFbwt-0001P4-GT
-	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 23:15:59 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NFbwl-0001kZ-Lh
-	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 23:15:59 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Tue, 1 Dec 2009 18:20:36 -0500
-References: <4b159f21.8713f30a.416d.423cSMTPIN_ADDED@mx.google.com>
-In-Reply-To: <4b159f21.8713f30a.416d.423cSMTPIN_ADDED@mx.google.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1NMvvE-0000RB-AM
+	for ltp-list@lists.sourceforge.net; Tue, 22 Dec 2009 04:00:32 +0000
+Received: from smtp-gate3.ryobi.co.jp ([210.163.224.134])
+	by sfi-mx-4.v28.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1NMvv6-0004hd-Ig
+	for ltp-list@lists.sourceforge.net; Tue, 22 Dec 2009 04:00:32 +0000
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Tue, 22 Dec 2009 13:00:16 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Tue, 22 Dec 2009 13:00:15 +0900
+Message-ID: <000001ca82bb$44f78d90$cee6a8b0$@co.jp>
 MIME-Version: 1.0
-Message-Id: <200912011820.37533.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] Small fixes (some bashisms and probable typos)
+Content-Language: ja
+Subject: [LTP] "nm" testcase failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,72 +27,60 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3660855038110217623=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: Jiri Palecek <jpalecek@web.de>
 
---===============3660855038110217623==
-Content-Type: multipart/signed; boundary="nextPart2591046.4Kl5CrcSgD";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Hi,
 
---nextPart2591046.4Kl5CrcSgD
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I found that "nm" testcase failed as follows:
+------------
+gcc: /opt/ltp/testcases/bin/nmfile1.c: No such file or directory
+gcc: no input files
+gcc: /opt/ltp/testcases/bin/nmfile2.c: No such file or directory
+gcc: no input files
+gcc: /opt/ltp/testcases/bin/nmfile3.c: No such file or directory
+gcc: no input files
+------------
 
-other than the minor things i mentioned specifically, the rest of your chan=
-ges=20
-look fine to me.  thanks!
-=2Dmike
+This problem occurs because "nmfile1.c", "nmfile2.c" and "nmfile3.c" 
+are not installed to execute directory (/opt/ltp/testcases/bin).
 
---nextPart2591046.4Kl5CrcSgD
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+To solve this problem, I suggest to apply this patch to Makefile
+("${LTPROOT}/testcases/commands/ade/nm/Makefile).
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.13 (GNU/Linux)
-
-iQIcBAABAgAGBQJLFaTFAAoJEEFjO5/oN/WBwGEP/0f3f2QalwxfVH3YMyAzUuUY
-01VVreab8nBWLGnJV6gQTeTj6UDsuFNipBW5m0UV8L49Ppbd78hhvrBuKTqhKufO
-a9YP4y50jfoIM7xEdiwjghw47QScM5Yk4VbgMB05Fw5Uc+cJ7cxs/3n+Qt3jFZMZ
-Dgubq6lku0oglNBKnl5lxolUqwhN0rhWccYSZ1MPGkf/hLFghT34YhQm39TDE4/3
-RaMLF1TuOamYtViJsfo3YbChQJBwqERK5Ii5mQfm8ktQ9rqDFb8uvMFso1COGgdE
-/Ljy1vsM49EI4mVcovO0VgRqwUajU65oqu129YwOFy+YQAdTO4MnPxaDVOBN3uUW
-yEB0pOq7xZH9GYGa41VMESxJqtu8eWusXk+Uykytb3mnfELNKgfOUVwDquOa4+tu
-tF/f6AOKqWuOSTdZXGyxMUEV7feS13bByjR3aiAFoGpDuucTyNn7sO79xaG016UJ
-Uu0jB8INVQWuQZzn9j7JANpSM2qdDAQdPQAYrKymOx+P6xjswsdTYFiug5x4h89+
-nXHAwljkIldLFnqzlRQIrbLgYJcgmHfvqUG8LDpztyKppj9Wfq6BATPWXPhtBUU9
-vrUi0Zif7bEhD+AqikflggBOdi3X2T8nWuaSY8g32s0pWctpL3aHutR7UesNx8nS
-cCGMwPeGFi5TCwkrbsZb
-=u7we
------END PGP SIGNATURE-----
-
---nextPart2591046.4Kl5CrcSgD--
+============
+--- Makefile	2009-10-10 02:55:44.000000000 +0900
++++ Makefile.new	2009-12-22 10:22:31.000000000 +0900
+@@ -24,7 +24,7 @@
+ 
+ include $(top_srcdir)/include/mk/env_pre.mk
+ 
+-INSTALL_TARGETS		:= nm01 nmfile.c
++INSTALL_TARGETS		:= nm01 nmfile.c nmfile1.c nmfile2.c
+nmfile3.c
+ 
+ MAKE_TARGETS		:= $(patsubst $(abs_srcdir)/%.c,%.obj,$(wildcard
+$(abs_srcdir)/*.c))
+ 
+============
 
 
---===============3660855038110217623==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Thank you--
+
+
+-Tomonori MItani
+
+
 
 ------------------------------------------------------------------------------
-Join us December 9, 2009 for the Red Hat Virtual Experience,
-a free event focused on virtualization and cloud computing. 
-Attend in-depth sessions from your desk. Your couch. Anywhere.
-http://p.sf.net/sfu/redhat-sfdev2dev
---===============3660855038110217623==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============3660855038110217623==--
-
