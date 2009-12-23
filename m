@@ -1,27 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NNFPU-0006XD-5s
-	for ltp-list@lists.sourceforge.net; Wed, 23 Dec 2009 00:49:04 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NNFTa-0001ts-7A
+	for ltp-list@lists.sourceforge.net; Wed, 23 Dec 2009 00:53:18 +0000
 Received: from mail-pz0-f193.google.com ([209.85.222.193])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NNFPM-0001Ty-A5
-	for ltp-list@lists.sourceforge.net; Wed, 23 Dec 2009 00:49:04 +0000
-Received: by pzk31 with SMTP id 31so4500761pzk.28
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NNFTU-0006hs-Qu
+	for ltp-list@lists.sourceforge.net; Wed, 23 Dec 2009 00:53:18 +0000
+Received: by pzk31 with SMTP id 31so4502426pzk.28
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 22 Dec 2009 16:48:50 -0800 (PST)
+	Tue, 22 Dec 2009 16:53:06 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <364299f40912221618m46d9976ekcb2f902549aeb79d@mail.gmail.com>
-References: <1261387627.4928.1.camel@subratamodak.linux.ibm.com>
-	<1261388501.4928.3.camel@subratamodak.linux.ibm.com>
-	<1261396599.4928.7.camel@subratamodak.linux.ibm.com>
-	<364299f40912211847n5e4977an641f48a1ef4976ef@mail.gmail.com>
-	<364299f40912221618m46d9976ekcb2f902549aeb79d@mail.gmail.com>
-Date: Tue, 22 Dec 2009 16:18:51 -0800
-Message-ID: <364299f40912221618m1f582566kd5fcb2d3042bc861@mail.gmail.com>
+In-Reply-To: <000001ca7c94$99d4bae0$cd7e30a0$@co.jp>
+References: <000001ca7a43$574a3900$05deab00$@co.jp>
+	<43E7FEEB-166F-4F94-9820-1AD5B924D71B@gmail.com>
+	<000001ca7c94$99d4bae0$cd7e30a0$@co.jp>
+Date: Tue, 22 Dec 2009 16:53:05 -0800
+Message-ID: <364299f40912221653ub6ed378sab394dd54b5077c9@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] Fwd: get_mempolicy01 build failure in CVS
+Subject: Re: [LTP] "cgroup_fj" and "cgroup" have problems?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,151 +29,209 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net
 
-FYI...
-
----------- Forwarded message ----------
-From: Garrett Cooper <yanegomi@gmail.com>
-Date: Tue, Dec 22, 2009 at 4:18 PM
-Subject: Re: get_mempolicy01 build failure in CVS
-To: subrata@linux.vnet.ibm.com
-
-
-On Mon, Dec 21, 2009 at 6:47 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Mon, Dec 21, 2009 at 3:56 AM, Subrata Modak
-> <subrata@linux.vnet.ibm.com> wrote:
->> However, apart from this, the other issues of build error when trying to
->> compile LTP from 2 different locations in the same machine seems fixed
->> w.r.t the libcontrollers and linsctp.
->>
->> Can you just look into the below 2 build errors ?
->>
->> Regards--
->> Subrata
->>
->> On Mon, 2009-12-21 at 15:11 +0530, Subrata Modak wrote:
->>> This as well:
->>>
->>> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
->>> -I/home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_NIGHTLY_SNAPSHOT=
-S/21_DECEMBER_2009/ltp-intermediate-20091221/testcases/kernel/include -I/ho=
-me/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_NIGHTLY_SNAPSHOTS/21_DECE=
-MBER_2009/ltp-intermediate-20091221/testcases/kernel/syscalls/mbind/../util=
-s/ -I../../../../include -I../../../../include =A0 -L../../../../lib =A0mbi=
-nd01.c =A0 -lltp -lnuma -o mbind01
->>> mbind01.c: In function =91do_test=92:
->>> mbind01.c:271: warning: passing argument 1 of =91nodemask_zero=92 from
->>> incompatible pointer type
->>> /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but argum=
-ent
->>> is of type =91struct nodemask_t *=92
->>> mbind01.c:272: warning: implicit declaration of function =91nodemask_se=
-t=92
->>> mbind01.c:273: warning: passing argument 1 of =91nodemask_zero=92 from
->>> incompatible pointer type
->>> /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but argum=
-ent
->>> is of type =91struct nodemask_t *=92
->>> mbind01.c:315: warning: passing argument 1 of =91nodemask_zero=92 from
->>> incompatible pointer type
->>> /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but argum=
-ent
->>> is of type =91struct nodemask_t *=92
->>> mbind01.c:319: warning: passing argument 1 of =91nodemask_equal=92 from
->>> incompatible pointer type
->>> /usr/include/numa.h:66: note: expected =91struct bitmask *=92 but argum=
-ent
->>> is of type =91struct nodemask_t *=92
->>> mbind01.c:319: warning: passing argument 2 of =91nodemask_equal=92 from
->>> incompatible pointer type
->>> /usr/include/numa.h:66: note: expected =91struct bitmask *=92 but argum=
-ent
->>> is of type =91struct nodemask_t *=92
->>> /tmp/ccIMfEh8.o: In function `do_test':
->>> /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_NIGHTLY_SNAPSHOTS/=
-21_DECEMBER_2009/ltp-intermediate-20091221/testcases/kernel/syscalls/mbind/=
-mbind01.c:272: undefined reference to `nodemask_set'
->>> collect2: ld returned 1 exit status
->>> make[4]: *** [mbind01] Error 1
->>>
->>> Regards--
->>> Subrata
->>>
->>> On Mon, 2009-12-21 at 14:57 +0530, Subrata Modak wrote:
->>> > Garret,
->>> >
->>> > This still exists:
->>> >
->>> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
->>> > -I/home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_NIGHTLY_SNAPSH=
-OTS/21_DECEMBER_2009/ltp-intermediate-20091221/testcases/kernel/include -I/=
-home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_NIGHTLY_SNAPSHOTS/21_DE=
-CEMBER_2009/ltp-intermediate-20091221/testcases/kernel/syscalls/get_mempoli=
-cy/../utils -I../../../../include -I../../../../include =A0 -L../../../../l=
-ib =A0get_mempolicy01.c =A0 -lltp -lnuma -o get_mempolicy01
->>> > get_mempolicy01.c: In function =91do_test=92:
->>> > get_mempolicy01.c:282: warning: passing argument 1 of =91nodemask_zer=
-o=92
->>> > from incompatible pointer type
->>> > /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but arg=
-ument
->>> > is of type =91struct nodemask_t *=92
->>> > get_mempolicy01.c:283: warning: implicit declaration of function
->>> > =91nodemask_set=92
->>> > get_mempolicy01.c:284: warning: passing argument 1 of =91nodemask_zer=
-o=92
->>> > from incompatible pointer type
->>> > /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but arg=
-ument
->>> > is of type =91struct nodemask_t *=92
->>> > get_mempolicy01.c:337: warning: passing argument 1 of =91nodemask_zer=
-o=92
->>> > from incompatible pointer type
->>> > /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but arg=
-ument
->>> > is of type =91struct nodemask_t *=92
->>> > get_mempolicy01.c:338: warning: passing argument 1 of =91nodemask_equ=
-al=92
->>> > from incompatible pointer type
->>> > /usr/include/numa.h:66: note: expected =91struct bitmask *=92 but arg=
-ument
->>> > is of type =91struct nodemask_t *=92
->>> > get_mempolicy01.c:338: warning: passing argument 2 of =91nodemask_equ=
-al=92
->>> > from incompatible pointer type
->>> > /usr/include/numa.h:66: note: expected =91struct bitmask *=92 but arg=
-ument
->>> > is of type =91struct nodemask_t *=92
->>> > /tmp/ccGgUpUU.o: In function `do_test':
->>> > /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_NIGHTLY_SNAPSHOT=
-S/21_DECEMBER_2009/ltp-intermediate-20091221/testcases/kernel/syscalls/get_=
-mempolicy/get_mempolicy01.c:283: undefined reference to `nodemask_set'
->>> > collect2: ld returned 1 exit status
->>> > make[4]: *** [get_mempolicy01] Error 1
->>> >
->>> > # uname -a
->>> > Linux 2.6.18-92.el5 #1 SMP Tue Apr 29 13:16:12 EDT 2008 i686 i686 i386
->>> > GNU/Linux
->>> > # cat /etc/issue
->>> > Red Hat Enterprise Linux Client release 5.2 (Tikanga)
->>> > Kernel \r on an \m
+On Mon, Dec 14, 2009 at 12:08 AM, Mitani <mitani@ryobi.co.jp> wrote:
+> I took your indication and changed the patch as follows.
 >
-> =A0 =A0I'll do that tonight because I grabbed the source for the package.
-> Whoever created / ported the test basically took numa.h and numaif.h
-> and jammed them into a separate header file instead of using the
-> system ones, so that's where the issue you're seeing is coming from
-> now.
+> Case 1:
+> I revised "[ -f /proc/cgroups ]" case to use "tst_resm TCONF"
+> instead of "echo".
+> But this revision is unbalanced with the other exit messages,
+> so I revised other cases too.
+> I don't know how to use exit code, so I use 0 or 1.
+> I might mistake those code.
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- run_cgroup_test_fj.sh =A0 =A0 =A0 2009-10-26 23:49:23.000000000 +0900
+> +++ run_cgroup_test_fj.sh.new =A0 2009-12-14 14:21:53.000000000 +0900
+> @@ -34,19 +34,19 @@
+> =A0export CASENO2=3D0
+>
+> =A0if [ "$(id -ru)" -ne 0 ]; then
+> - =A0 =A0 =A0 echo "***error***:you must use root to test"
+> - =A0 =A0 =A0 exit -1
+> + =A0 =A0 =A0 tst_brkm TBROK ignored "***error***:you must use root to te=
+st"
+> + =A0 =A0 =A0 exit 1
+> =A0fi
+>
+> =A0if ! [ -f /proc/cgroups ]; then
+> - =A0 =A0 =A0 echo "***error***:you must enable cgroup config in kernel";
+> - =A0 =A0 =A0 exit -3;
+> + =A0 =A0 =A0 tst_resm TCONF "***error***:you must enable cgroup config in
+> kernel";
+> + =A0 =A0 =A0 exit 0;
+> =A0fi
+>
+> =A0if [ ! -x $TESTROOT/cgroup_fj_proc ]; then
+> - =A0 =A0 =A0 echo "***warning***:file \"cgroup_fj_proc\" is not exist or=
+ not
+> executable";
+> - =A0 =A0 =A0 echo "please do make and check execution permission"
+> - =A0 =A0 =A0 exit -4;
+> + =A0 =A0 =A0 tst_brkm TBROK ignored "***warning***:file \"cgroup_fj_proc=
+\" is not
+> exist or not executable";
+> + =A0 =A0 =A0 tst_brkm TBROK ignored "please do make and check execution
+> permission"
+> + =A0 =A0 =A0 exit 1;
+> =A0fi
+>
+> =A0CPUSET=3D`grep -w cpuset /proc/cgroups | cut -f1`;
+> @@ -83,10 +83,10 @@
+> =A0 =A0 =A0 =A0 SYBSYSCOMPILED=3D"$SYBSYSCOMPILED devices,"
+> =A0fi
+> =A0if [ "$SYBSYSCOMPILED" =3D "" ];then =A0 =A0 # Warning and exit if all=
+ cgroup
+> subsystem are not compiled
+> - =A0 =A0 =A0 echo "CONTROLLERS TESTCASES: WARNING";
+> - =A0 =A0 =A0 echo "Kernel does not support for any cgroup subsystem";
+> - =A0 =A0 =A0 echo "Skipping all controllers testcases....";
+> - =A0 =A0 =A0 exit -2;
+> + =A0 =A0 =A0 tst_resm TCONF "CONTROLLERS TESTCASES: WARNING";
+> + =A0 =A0 =A0 tst_resm TCONF "Kernel does not support for any cgroup subs=
+ystem";
+> + =A0 =A0 =A0 tst_resm TCONF "Skipping all controllers testcases....";
+> + =A0 =A0 =A0 exit 0;
+> =A0fi
+>
+> =A0echo "Now, we start the test for cgroup...";
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+>
+> Case 2:
+> I revised "[ "$USER" !=3D root ]" case, and revised
+> "[ ! -f /proc/cgroups ]" case to use "tst_resm" instead of "echocase"
+> =A0for balance.
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- cgroup_regression_test.sh =A0 2009-11-30 17:41:37.000000000 +0900
+> +++ cgroup_regression_test.sh.new =A0 =A0 =A0 2009-12-14 11:42:58.0000000=
+00 +0900
+> @@ -29,15 +29,15 @@
+> =A0export TST_COUNT=3D1
+>
+> =A0if [ ! -f /proc/cgroups ]; then
+> - =A0 =A0 =A0 =A0echo "CONTROLLERS TESTCASES: WARNING"
+> - =A0 =A0 =A0 =A0echo "Kernel does not support for control groups";
+> - =A0 =A0 =A0 =A0echo "Skipping all controllers testcases....";
+> + =A0 =A0 =A0 tst_resm TCONF "CONTROLLERS TESTCASES: WARNING"
+> + =A0 =A0 =A0 tst_resm TCONF "Kernel does not support for control groups"
+> + =A0 =A0 =A0 tst_resm TCONF "Skipping all controllers testcases...."
+> =A0 =A0 =A0 =A0exit 0
+> =A0fi
+>
+> =A0if [ "$USER" !=3D root ]; then
+> =A0 =A0 =A0 =A0tst_brkm TBROK ignored "Test must be run as root"
+> - =A0 =A0 =A0 exit 0
+> + =A0 =A0 =A0 exit 1
+> =A0fi
+>
+> =A0tst_kvercmp 2 6 29
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+>
+> Regards--
+>
+>
+> -Tomonori Mitani
+>
+>
+> -----Original Message-----
+> From: Garrett Cooper [mailto:yanegomi@gmail.com]
+> Sent: Friday, December 11, 2009 6:45 PM
+> To: Mitani
+> Cc: ltp-list@lists.sourceforge.net
+> Subject: Re: [LTP] "cgroup_fj" and "cgroup" have problems?
+>
+> On Dec 11, 2009, at 1:21 AM, Mitani wrote:
+>
+>> Hi,
+>>
+>> Sorry for my many many mails today.
+>>
+>>
+>> I ran tests with "ltp-2009-12-10" cvs.
+>>
+>> In my system (kernel 2.6.18-164.el5), kernel does not support
+>> control groups.
+>> So, when I ran test of "cgroup_fj", I got following message and the
+>> test faild by "FAIL 253".
+>>
+>> ------------
+>> ***error***:you must enable cgroup config in kernel
+>> ------------
+>>
+>> In the investigation for above error message, I found that there may be
+>> two problems,.
+>>
+>> =A0(a) "cgroup_fj" test failed in the system not support "control groups=
+".
+>> =A0(b) "cgroup" test may passed by user-ID which isn't "root".
+>>
+>>
+>> (a) "cgroup_fj" test
+>> =A0Above message is correct message, but exiting by "FAIL" is not
+>> =A0correct, I think.
+>> =A0Referring to the example of other tests, I think that the tests
+>> =A0for non-supported functions must be finished in "PASS 0" basically.
+>> =A0(For example, "move_pages{01...11}" tests exit in "PASS 0" and with
+>> =A0"NUMA support not provided" messages.)
+>>
+>> =A0I suggest following patch to resolve this problem.
+>>
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> --- run_cgroup_test_fj.sh =A0 =A0 2009-10-26 23:49:23.000000000 +0900
+>> +++ run_cgroup_test_fj.sh.new 2009-12-11 16:10:39.000000000 +0900
+>> @@ -40,7 +40,7 @@
+>>
+>> if ! [ -f /proc/cgroups ]; then
+>> =A0 =A0 =A0 echo "***error***:you must enable cgroup config in kernel";
+>> - =A0 =A0 exit -3;
+>> + =A0 =A0 exit 0;
+>> fi
+>>
+>> if [ ! -x $TESTROOT/cgroup_fj_proc ]; then
+>>
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>
+>>
+>> (b) "cgroup" test
+>> =A0I watched "cgroup" test source for hints for (a), and found another
+>> =A0problem.
+>> =A0If this test run by user-ID non-"root", it will exit in "PASS", I thi=
+nk.
+>> =A0But I think that it must exit in "FAIL".
+>> =A0Because this test cannot be tested only by "root" user.
+>>
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> --- cgroup_regression_test.sh 2009-11-30 17:41:37.000000000 +0900
+>> +++ cgroup_regression_test.sh.new =A0 =A0 2009-12-11 16:22:14.000000000 =
++0900
+>> @@ -37,7 +37,7 @@
+>>
+>> if [ "$USER" !=3D root ]; then
+>> =A0 =A0 =A0 tst_brkm TBROK ignored "Test must be run as root"
+>> - =A0 =A0 exit 0
+>> + =A0 =A0 exit -1
+>> fi
+>>
+>> tst_kvercmp 2 6 29
+>
+> 1. Case 1 should be tst_brkm TCONF and should have exit 0 (like you
+> suggested).
+> 2. Case 2 should have the equivalent exit code for TBROK (it's in
+> include/test.h). $? -> -1 is undefined via POSIX and while it passes on
+> bash, it doesn't pass on ash, and thus would fail with busybox.
+> Thanks,
+> -Garrett
 
-=A0 =A0The compile issues should now be resolved as it's pulling from the
-appropriate installed headers instead of the ad hoc ones, but the
-problem is that the tests need to be rewritten for libnuma v2, as the
-current ones are geared towards libnuma 0.9x (which I assume means
-that it covers libnuma 1.x).
-Thanks,
+Committed -- thanks!
 -Garrett
 
 ---------------------------------------------------------------------------=
