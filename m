@@ -1,21 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NIKbn-0002Tb-2G
-	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2009 11:21:27 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NIKbi-0005z7-Aa
-	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2009 11:21:27 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <1259849059.5085.17.camel@subratamodak.linux.ibm.com>
-References: <1259849059.5085.17.camel@subratamodak.linux.ibm.com>
-Date: Wed, 09 Dec 2009 16:51:10 +0530
-Message-Id: <1260357670.6958.25.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: [LTP] [ANNOUNCE] Intermediate release for DEC 09
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NNFPU-0006XD-5s
+	for ltp-list@lists.sourceforge.net; Wed, 23 Dec 2009 00:49:04 +0000
+Received: from mail-pz0-f193.google.com ([209.85.222.193])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NNFPM-0001Ty-A5
+	for ltp-list@lists.sourceforge.net; Wed, 23 Dec 2009 00:49:04 +0000
+Received: by pzk31 with SMTP id 31so4500761pzk.28
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 22 Dec 2009 16:48:50 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <364299f40912221618m46d9976ekcb2f902549aeb79d@mail.gmail.com>
+References: <1261387627.4928.1.camel@subratamodak.linux.ibm.com>
+	<1261388501.4928.3.camel@subratamodak.linux.ibm.com>
+	<1261396599.4928.7.camel@subratamodak.linux.ibm.com>
+	<364299f40912211847n5e4977an641f48a1ef4976ef@mail.gmail.com>
+	<364299f40912221618m46d9976ekcb2f902549aeb79d@mail.gmail.com>
+Date: Tue, 22 Dec 2009 16:18:51 -0800
+Message-ID: <364299f40912221618m1f582566kd5fcb2d3042bc861@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: [LTP] Fwd: get_mempolicy01 build failure in CVS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,85 +31,162 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sf.net>
-Cc: Mike Frysinger <vapier@gentoo.org>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-RHVlIHRvIHNvbWUgaXNzdWVzIGluIHRoZSBidWlsZCBzeXN0ZW0sIHRoZSBOT1ZFTUJFUiAyMDA5
-IG1vbnRoIGVuZApyZWxlYXNlIHdhcyBub3QgYmVoYXZpbmcgZXhwZWN0YW50bHkuIE5vdywgd2l0
-aCBtb3N0IG9mIHRoZSBpc3N1ZXMgZ29uZSwKeW91IHNob3VsZCBiZSBhYmxlIHRvOgoKICAgICAx
-LiBCdWlsZCBlcnJvciBmcmVlLAogICAgIDIuIC9vcHQvbHRwL3Rlc3RjYXNlcyBpcyBiYWNrIGFm
-dGVyIG1ha2UgaW5zdGFsbCwgYW5kIGkgY2FuIHJ1biB0aGUKICAgICAgICB0ZXN0cyBvbiBteSBz
-eXN0ZW0gd2VsbCAoTGludXggMi42LjE4LTkyLmVsNSAjMSBTTVAgVHVlIEFwciAyOQogICAgICAg
-IDEzOjE2OjEyIEVEVCAyMDA4IGk2ODYgaTY4NiBpMzg2IEdOVS9MaW51eCksCgpBIG5ldyB0YXIg
-bHRwLWludGVybWVkaWF0ZS0yMDA5MTIwOS50Z3ogaXMgYXZhaWxhYmxlIGF0Cmh0dHA6Ly9sdHAu
-c291cmNlZm9yZ2UubmV0LyBmb3IgZG93bmxvYWQuIEp1c3QgYSBmZXcgd29yZHMuIEV2ZXJ5IG5l
-dwpmZWF0dXJlKHMpIHRha2VzIHRpbWUgdG8gc3RhYmlsaXplLiBBbmQsIHdlIGFyZSBhbHJlYWR5
-IHRoYW5rZnVsIHRvCkdhcnJldHQvTWlrZSBmb3IgdHJ5aW5nIHRvIGFkZHJlc3MgaXNzdWVzIGZv
-ciBzbyBtYW55IGRpdmVyZ2VudAphcmNocy9kaXN0cm9zL2tlcm5lbC12ZXJzaW9ucy4KCkV2ZW4g
-dGhlIExpbnV4IGtlcm5lbCBpcyBub3QgZXJyb3IgZnJlZSBvbiBhbGwgYXJjaGl0ZWN0dXJlcyBh
-Z2FpbnN0IGFsbAp0aGUgY29uZmlnIG9wdGlvbnMuIEp1c3QgZG8gYSByYW5kY29uZmlnIGJ1aWxk
-LCBhbmQsIHlvdSB3aWxsIHNlZSBob3cKbWFueSBidWlsZCBlcnJvcnMgaXQgdGhyb3dzLiBQbGVh
-c2UgYmUgYSBsaXR0bGUgcGF0aWVudCB0byBnZXQgdGhpcyBuZXcKYnVpbGQgc3lzdGVtIHRvIHN0
-YWJpbGl6ZS4KClJlZ2FyZHMtLQpTdWJyYXRhCgpPbiBUaHUsIDIwMDktMTItMDMgYXQgMTk6MzQg
-KzA1MzAsIFN1YnJhdGEgTW9kYWsgd3JvdGU6Cj4gSGksCj4gCj4gVGhlIExpbnV4IFRlc3QgUHJv
-amVjdCB0ZXN0IHN1aXRlIGhhcyBiZWVuIHJlbGVhc2VkIGZvciB0aGUgbW9udGggb2YKPiBOT1ZF
-TUJFUiAyMDA5LiBQbGVhc2Ugc2VlIGx0cC9JTlNUQUxMIGZpbGUgY2FyZWZ1bGx5LCBhcywgdGhl
-cmUgaGFzCj4gYmVlbiBtdWx0aXBsZSBjaGFuZ2VzIGZvciBidWlsZGluZy9pbnN0YWxsaW5nIHRo
-ZSB0ZXN0IHN1aXRlIGFmdGVyIHRoZQo+IHJlY2VudCBjaGFuZ2VzIGluIE1ha2VmaWxlIGluZnJh
-c3RydWN0dXJlLgo+IAo+IFRoZSBsYXRlc3QgdmVyc2lvbiBvZiB0aGUgdGVzdC1zdWl0ZSBjb250
-YWlucyAzMDAwKyB0ZXN0cyBmb3IgdGhlIExpbnV4Cj4gT1MgYW5kIGNhbiBiZSBmb3VuZCBhdDoK
-PiBodHRwOi8vbHRwLnNvdXJjZWZvcmdlLm5ldC8sCj4gTGF0ZXN0IGhhcHBlbmluZ3MgaW4gTFRQ
-IGNhbiBhbHNvIGJlIGZvdW5kIGF0Ogo+IGh0dHA6Ly9sdHAuc291cmNlZm9yZ2UubmV0L3dpa2kv
-LAo+IGh0dHA6Ly9sdHAuc291cmNlZm9yZ2UubmV0L3dpa2lBcmNoaXZlcy5waHAsIGFuZCwKPiBJ
-UkM6IGlyYy5mcmVlbm9kZS5vcmcgI2x0cC4KPiAKPiA9PT09PT09PT09PT09PT09PT09PT09PT0K
-PiBOT1ZFTUJFUiAyMDA5IEhpZ2hsaWdodHM6Cj4gPT09PT09PT09PT09PT09PT09PT09PT09IAo+
-ICAgICAgMS4gQ2xlYW51cCBhbmQgc3RhYmlsaXphdGlvbiBvZiBuZXcgYnVpbGQgc3lzdGVtIGZv
-ciBkaXN0cm9zIHdpdGgKPiAgICAgICAgIG9sZGVyIGtlcm5lbHMsIAo+ICAgICAgMi4gQWRkaXRp
-b24gb2YgRVhFQ0xUUCAtIEEgUHl0aG9uIHNjcmlwdCB0aGF0IGlzIG1vcmUgdXNlcgo+ICAgICAg
-ICAgZnJpZW5kbHksCj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gCj4gPT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09Cj4gTk9WRU1CRVIgMjAwOSBMVFAgQ29udHJpYnV0b3Jz
-Ogo+ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PSAKPiAgICAgIDEuIEdhcnJldHQgQ29v
-cGVyLCAKPiAgICAgIDIuIE1pa2UgRnJ5c2luZ2VyLCAKPiAgICAgIDMuIEppcmkgUGFsZWNlaywg
-Cj4gICAgICA0LiBSYW5keSBEdW5sYXAsIAo+ICAgICAgNS4gU2VyZ2UgRS4gSGFsbHluLCAKPiAg
-ICAgIDYuIEN5cmlsIEhydWJpcywgCj4gICAgICA3LiBTaGkgV2VpaHVhLCAKPiAgICAgIDguIFdl
-aSBZb25nanVuLCAKPiAgICAgIDkuIEhlbnJ5IFllaSwgCj4gICAgIDEwLiBMaXUgQm8sIAo+ICAg
-ICAxMS4gR2l1c2VwcGUgQ2F2YWxsYXJvLCAKPiAgICAgMTIuIFRvbW9ub3JpIE1pdGFuaSwgCj4g
-ICAgIDEzLiBBbmRyZXcgVmFnaW4sCj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4g
-Cj4gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cj4gTm90ZShzKSBmcm9tIHRoZSBNYWlu
-dGFpbmVyOgo+ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQo+IEdhcnJldHQgY29udGlu
-dWVkIHdpdGggaGlzIGVmZm9ydCB0byBzdGFiaWxpemUgdGhlIG5ldyBidWlsZCBzeXN0ZW0gYW5k
-IHRyaWVkIHRvIGFjY29tbW9kYXRlIGV2ZXJ5Ym9kecK0cyBwcm9ibGVtcy4gTW9yZSB0aGFuIDgw
-JSBvZiB0aGUgY2hhbmdlcyB0aGlzIG1vbnRoIGFyZSBkdWUgdG8gZml4ZXMgYnkgR2FycmV0LiBU
-aGFua3MgZm9yIHN1Y2ggaHVnZSBlZmZvcnQuIFJlY2VudGx5LCBob3ZlcmluZyBvdmVyIHNvbWUg
-c3RhdGlzdGljcyBpIGZvdW5kIHRoYXQgYXJvdW5kIDMwIGluc3RpdHV0aW9ucyBjb250cmlidXRl
-IHRvIExUUC4gVGhpcyBpcyBhIGdyZWF0IG5ld3MgZm9yIHVzIHRvIGNoZWVyLiBXZSB3b3VsZCBo
-b3BlIHRoYXQgdGhpcyBjb3VudCB3aWxsIGtlZXAgaW5jcmVhc2luZyBpbiBmdXR1cmUuCj4gCj4g
-T3VyIHdlYiBzaXRlIGFsc28gY29udGFpbnMgb3RoZXIgaW5mb3JtYXRpb24gc3VjaCBhczoKPiAt
-IEEgTGludXggdGVzdCB0b29scyBtYXRyaXgKPiAtIFRlY2huaWNhbCBwYXBlcnMKPiAtIEhvdyBU
-bydzIG9uIExpbnV4IHRlc3RpbmcKPiAtIENvZGUgY292ZXJhZ2UgYW5hbHlzaXMgdG9vbC4KPiAK
-PiBXZSB3b3VsZCBlbmNvdXJhZ2UgdGhlIGNvbW11bml0eSB0byBwb3N0IHJlc3VsdHMgdG8KPiBs
-dHAtcmVzdWx0c0BsaXN0cy5zZi5uZXQsCj4gcGF0Y2hlcywgbmV3IHRlc3RzLCBidWdzIG9yIGNv
-bW1lbnRzL3F1ZXN0aW9ucyB0byBsdHAtbGlzdEBsaXN0cy5zZi5uZXQsCj4gaHR0cDovL3NvdXJj
-ZWZvcmdlLm5ldC90cmFja2VyLz9mdW5jPWFkZCZncm91cF9pZD0zMzgyJmF0aWQ9MTAzMzgyIChm
-b3IKPiBOZXcgQnVnKHMpKSwKPiBodHRwOi8vc291cmNlZm9yZ2UubmV0L3RyYWNrZXIvP2Z1bmM9
-YWRkJmdyb3VwX2lkPTMzODImYXRpZD0zMDMzODIgKGZvcgo+IE5ldyBQYXRjaChzKSksCj4gaHR0
-cDovL3NvdXJjZWZvcmdlLm5ldC90cmFja2VyLz9mdW5jPWFkZCZncm91cF9pZD0zMzgyJmF0aWQ9
-MzUzMzgyIChmb3IKPiBOZXcgRmVhdHVyZSBSZXF1ZXN0KHMpKQo+IAo+IEhhcHB5IHRlc3Rpbmcs
-IAo+IFJlZ2FyZHMtLSAKPiBTdWJyYXRhLAo+IAo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+IEpv
-aW4gdXMgRGVjZW1iZXIgOSwgMjAwOSBmb3IgdGhlIFJlZCBIYXQgVmlydHVhbCBFeHBlcmllbmNl
-LAo+IGEgZnJlZSBldmVudCBmb2N1c2VkIG9uIHZpcnR1YWxpemF0aW9uIGFuZCBjbG91ZCBjb21w
-dXRpbmcuIAo+IEF0dGVuZCBpbi1kZXB0aCBzZXNzaW9ucyBmcm9tIHlvdXIgZGVzay4gWW91ciBj
-b3VjaC4gQW55d2hlcmUuCj4gaHR0cDovL3Auc2YubmV0L3NmdS9yZWRoYXQtc2ZkZXYyZGV2Cj4g
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18gTHRwLWxpc3Qg
-bWFpbGluZyBsaXN0IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldCBodHRwczovL2xpc3Rz
-LnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAoKCi0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLQpSZXR1cm4gb24gSW5mb3JtYXRpb246Ckdvb2dsZSBFbnRlcnByaXNlIFNlYXJjaCBw
-YXlzIHlvdSBiYWNrCkdldCB0aGUgZmFjdHMuCmh0dHA6Ly9wLnNmLm5ldC9zZnUvZ29vZ2xlLWRl
-djJkZXYKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRw
-LWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczov
-L2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+FYI...
+
+---------- Forwarded message ----------
+From: Garrett Cooper <yanegomi@gmail.com>
+Date: Tue, Dec 22, 2009 at 4:18 PM
+Subject: Re: get_mempolicy01 build failure in CVS
+To: subrata@linux.vnet.ibm.com
+
+
+On Mon, Dec 21, 2009 at 6:47 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Mon, Dec 21, 2009 at 3:56 AM, Subrata Modak
+> <subrata@linux.vnet.ibm.com> wrote:
+>> However, apart from this, the other issues of build error when trying to
+>> compile LTP from 2 different locations in the same machine seems fixed
+>> w.r.t the libcontrollers and linsctp.
+>>
+>> Can you just look into the below 2 build errors ?
+>>
+>> Regards--
+>> Subrata
+>>
+>> On Mon, 2009-12-21 at 15:11 +0530, Subrata Modak wrote:
+>>> This as well:
+>>>
+>>> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+>>> -I/home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_NIGHTLY_SNAPSHOT=
+S/21_DECEMBER_2009/ltp-intermediate-20091221/testcases/kernel/include -I/ho=
+me/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_NIGHTLY_SNAPSHOTS/21_DECE=
+MBER_2009/ltp-intermediate-20091221/testcases/kernel/syscalls/mbind/../util=
+s/ -I../../../../include -I../../../../include =A0 -L../../../../lib =A0mbi=
+nd01.c =A0 -lltp -lnuma -o mbind01
+>>> mbind01.c: In function =91do_test=92:
+>>> mbind01.c:271: warning: passing argument 1 of =91nodemask_zero=92 from
+>>> incompatible pointer type
+>>> /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but argum=
+ent
+>>> is of type =91struct nodemask_t *=92
+>>> mbind01.c:272: warning: implicit declaration of function =91nodemask_se=
+t=92
+>>> mbind01.c:273: warning: passing argument 1 of =91nodemask_zero=92 from
+>>> incompatible pointer type
+>>> /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but argum=
+ent
+>>> is of type =91struct nodemask_t *=92
+>>> mbind01.c:315: warning: passing argument 1 of =91nodemask_zero=92 from
+>>> incompatible pointer type
+>>> /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but argum=
+ent
+>>> is of type =91struct nodemask_t *=92
+>>> mbind01.c:319: warning: passing argument 1 of =91nodemask_equal=92 from
+>>> incompatible pointer type
+>>> /usr/include/numa.h:66: note: expected =91struct bitmask *=92 but argum=
+ent
+>>> is of type =91struct nodemask_t *=92
+>>> mbind01.c:319: warning: passing argument 2 of =91nodemask_equal=92 from
+>>> incompatible pointer type
+>>> /usr/include/numa.h:66: note: expected =91struct bitmask *=92 but argum=
+ent
+>>> is of type =91struct nodemask_t *=92
+>>> /tmp/ccIMfEh8.o: In function `do_test':
+>>> /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_NIGHTLY_SNAPSHOTS/=
+21_DECEMBER_2009/ltp-intermediate-20091221/testcases/kernel/syscalls/mbind/=
+mbind01.c:272: undefined reference to `nodemask_set'
+>>> collect2: ld returned 1 exit status
+>>> make[4]: *** [mbind01] Error 1
+>>>
+>>> Regards--
+>>> Subrata
+>>>
+>>> On Mon, 2009-12-21 at 14:57 +0530, Subrata Modak wrote:
+>>> > Garret,
+>>> >
+>>> > This still exists:
+>>> >
+>>> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+>>> > -I/home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_NIGHTLY_SNAPSH=
+OTS/21_DECEMBER_2009/ltp-intermediate-20091221/testcases/kernel/include -I/=
+home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_NIGHTLY_SNAPSHOTS/21_DE=
+CEMBER_2009/ltp-intermediate-20091221/testcases/kernel/syscalls/get_mempoli=
+cy/../utils -I../../../../include -I../../../../include =A0 -L../../../../l=
+ib =A0get_mempolicy01.c =A0 -lltp -lnuma -o get_mempolicy01
+>>> > get_mempolicy01.c: In function =91do_test=92:
+>>> > get_mempolicy01.c:282: warning: passing argument 1 of =91nodemask_zer=
+o=92
+>>> > from incompatible pointer type
+>>> > /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but arg=
+ument
+>>> > is of type =91struct nodemask_t *=92
+>>> > get_mempolicy01.c:283: warning: implicit declaration of function
+>>> > =91nodemask_set=92
+>>> > get_mempolicy01.c:284: warning: passing argument 1 of =91nodemask_zer=
+o=92
+>>> > from incompatible pointer type
+>>> > /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but arg=
+ument
+>>> > is of type =91struct nodemask_t *=92
+>>> > get_mempolicy01.c:337: warning: passing argument 1 of =91nodemask_zer=
+o=92
+>>> > from incompatible pointer type
+>>> > /usr/include/numa.h:61: note: expected =91struct bitmask *=92 but arg=
+ument
+>>> > is of type =91struct nodemask_t *=92
+>>> > get_mempolicy01.c:338: warning: passing argument 1 of =91nodemask_equ=
+al=92
+>>> > from incompatible pointer type
+>>> > /usr/include/numa.h:66: note: expected =91struct bitmask *=92 but arg=
+ument
+>>> > is of type =91struct nodemask_t *=92
+>>> > get_mempolicy01.c:338: warning: passing argument 2 of =91nodemask_equ=
+al=92
+>>> > from incompatible pointer type
+>>> > /usr/include/numa.h:66: note: expected =91struct bitmask *=92 but arg=
+ument
+>>> > is of type =91struct nodemask_t *=92
+>>> > /tmp/ccGgUpUU.o: In function `do_test':
+>>> > /home/subratamodak/OFFICE_WORKS/LTP_PROJECT_CODE/LTP_NIGHTLY_SNAPSHOT=
+S/21_DECEMBER_2009/ltp-intermediate-20091221/testcases/kernel/syscalls/get_=
+mempolicy/get_mempolicy01.c:283: undefined reference to `nodemask_set'
+>>> > collect2: ld returned 1 exit status
+>>> > make[4]: *** [get_mempolicy01] Error 1
+>>> >
+>>> > # uname -a
+>>> > Linux 2.6.18-92.el5 #1 SMP Tue Apr 29 13:16:12 EDT 2008 i686 i686 i386
+>>> > GNU/Linux
+>>> > # cat /etc/issue
+>>> > Red Hat Enterprise Linux Client release 5.2 (Tikanga)
+>>> > Kernel \r on an \m
+>
+> =A0 =A0I'll do that tonight because I grabbed the source for the package.
+> Whoever created / ported the test basically took numa.h and numaif.h
+> and jammed them into a separate header file instead of using the
+> system ones, so that's where the issue you're seeing is coming from
+> now.
+
+=A0 =A0The compile issues should now be resolved as it's pulling from the
+appropriate installed headers instead of the ad hoc ones, but the
+problem is that the tests need to be rewritten for libnuma v2, as the
+current ones are geared towards libnuma 0.9x (which I assume means
+that it covers libnuma 1.x).
+Thanks,
+-Garrett
+
+---------------------------------------------------------------------------=
+---
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev =
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
