@@ -1,26 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1NFbpe-0000rO-8S
-	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 23:08:30 +0000
-Received: from fmmailgate01.web.de ([217.72.192.221])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NFbpY-0000MM-1E
-	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 23:08:30 +0000
-Received: from smtp07.web.de (fmsmtp07.dlan.cinetic.de [172.20.5.215])
-	by fmmailgate01.web.de (Postfix) with ESMTP id 9267213EE3622
+	(envelope-from <yanegomi@gmail.com>) id 1NNtvf-0003In-RI
+	for ltp-list@lists.sourceforge.net; Thu, 24 Dec 2009 20:04:59 +0000
+Received: from mail-pz0-f193.google.com ([209.85.222.193])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NNtvX-0004pB-9K
+	for ltp-list@lists.sourceforge.net; Thu, 24 Dec 2009 20:04:59 +0000
+Received: by pzk31 with SMTP id 31so5642614pzk.28
 	for <ltp-list@lists.sourceforge.net>;
-	Wed,  2 Dec 2009 00:08:18 +0100 (CET)
-Received: from [90.180.172.144] (helo=debian)
-	by smtp07.web.de with asmtp (WEB.DE 4.110 #314) id 1NFbMv-0005V0-00
-	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 23:38:50 +0100
-Date: Tue, 01 Dec 2009 23:35:26 +0100
-From: "Jiri Palecek" <jpalecek@web.de>
-MIME-Version: 1.0
-Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-Resent-Message-ID: <op.u396i80jcfnueu@debian>
-Subject: [LTP] [PATCH] Remove the use of bash arrays from memcg_stress_test
+	Thu, 24 Dec 2009 12:04:44 -0800 (PST)
+References: <20091224181532.12571.74576.sendpatchset@localhost.localdomain>
+	<20091224181601.12571.78565.sendpatchset@localhost.localdomain>
+Message-Id: <AD1061EF-C689-4456-A892-B7B828754850@gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <20091224181601.12571.78565.sendpatchset@localhost.localdomain>
+Mime-Version: 1.0 (iPhone Mail 7D11)
+Date: Thu, 24 Dec 2009 12:04:25 -0800
+Subject: Re: [LTP] [Patch 4/4]Readme modified based on review comments
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,66 +30,87 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Sender: ltp-list-bounces@lists.sourceforge.net
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-Cc: ltp-list@lists.sourceforge.net
-Message-ID: <20091201223526.6MRi7yi9oWziIFJPDHUTTYSt_dxx48955tDo1LeAc1w@z>
+To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, "svaidy@linux.vnet.ibm.com" <svaidy@linux.vnet.ibm.com>, "ego@in.ibm.com" <ego@in.ibm.com>, "arun@linux.vnet.ibm.com" <arun@linux.vnet.ibm.com>
 
-Hello,
+On Dec 24, 2009, at 10:16 AM, Poornima Nayak  
+<mpnayak@linux.vnet.ibm.com> wrote:
 
-this patch removes the use of bash arrays from memcg_stress_test.sh, thus making the script more POSIX friendly. I changed the array into a series of variables, read and written using eval.
+> Patch to update readme with information on how to use Power  
+> management testcases
+> to test consolidation testcases.
+>
+> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+>
+> diff -uprN ltp-intermediate-20091209.orig/testcases/kernel/ 
+> power_management/README ltp-intermediate-20091209.fixes/testcases/ 
+> kernel/power_management/README
+> --- ltp-intermediate-20091209.orig/testcases/kernel/power_management/ 
+> README    2009-12-09 13:18:25.000000000 +0530
+> +++ ltp-intermediate-20091209.fixes/testcases/kernel/ 
+> power_management/README    2009-12-24 23:12:55.293026448 +0530
+> @@ -77,6 +77,8 @@ Power Management    1  FAIL  :  Required
+>
+> Then either configuration is not set or the system won't support.
+>
+> +Command to test CPU consolidation & ILB testcases on any system  
+> syntax is 'runltp -f power_management_tests_exclusive'. CPU  
+> consolidation testcases has to be triggered on a system which is  
+> totally idle i.e do not execute exclusive testcases on KVM/xen test  
+> setup.
+> +
+> For CPU consolidation verification ebizzy is included in utils  
+> directory of LTP.
+> To run cpu consolidation test user has to provide -w <workload> -l  
+> <sched_mc_level>.
+> Refer to README in LTPROOT/utils/benchmark/ebizzy-0.2 directory for  
+> details of ebizzy.
 
-Regards
-    Jiri Palecek
+This is 0.3 now.
 
-Signed-off-by: Jiri Palecek <jpalecek@web.de>
----
- .../controllers/memcg/stress/memcg_stress_test.sh  |   10 +++++-----
- 1 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-index 6c9cd75..7244a16 100755
---- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-+++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-@@ -70,22 +70,22 @@ run_stress()
- 	do
- 		mkdir /dev/memcg/$i 2> /dev/null
- 		./memcg_process_stress $2 $3 &
--		pid[$i]=$!
-+		eval pid$i=$!
- 
--		echo ${pid[$i]} > /dev/memcg/$i/tasks
-+		eval echo \$pid$i > /dev/memcg/$i/tasks
- 	done
- 
- 	for i in $(seq 0 $(($1-1)))
- 	do
--		/bin/kill -s SIGUSR1 ${pid[$i]} 2> /dev/null
-+		eval /bin/kill -s SIGUSR1 \$pid$i 2> /dev/null
- 	done
- 
- 	sleep $4
- 
- 	for i in $(seq 0 $(($1-1)))
- 	do
--		/bin/kill -s SIGINT ${pid[$i]} 2> /dev/null
--		wait ${pid[$i]}
-+		eval /bin/kill -s SIGINT \$pid$i 2> /dev/null
-+		eval wait \$pid$i
- 
- 		rmdir /dev/memcg/$i 2> /dev/null
- 	done
--- 
-1.6.4.3
-
-
-
+> @@ -84,4 +86,6 @@ Refer to README in LTPROOT/utils/benchma
+> To test CPU consolidation for sched_mc 2 kernbench has to run.  
+> Kernbench needs linux kernel source as input in /root directory .  
+> For example download from http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.29.4.tar.bz2 
+> . If Linux kernel source not found kernbench wiil  not execute.
+> CPU consolidation testcases will not execute if number of CPU's in  
+> package is less then 2. If system is hyper threaded but number of  
+> CPU is 1 only sched_smt testcases will be excuted. For better  
+> coverage of testcases select a system which is atleast quad core and  
+> then hyper threaded so that you will observe 8 CPU's in each package.
+>
+> -Timer migration interface test will execute on kernel versions  
+> 2.6.31 and above. Timer migration functionality verification  
+> testcases will be executed only on suitable architecture like quad  
+> core or the number of CPU's in each package should be atleast 4 and  
+> above
+> +Timer migration interface test will execute on kernel versions  
+> 2.6.31 and above.
+> +
+> +On Power platform sched_smt & cpu_idle testcases will be executed.
+>
+> --- 
+> --- 
+> --- 
+> ---------------------------------------------------------------------
+> This SF.Net email is sponsored by the Verizon Developer Community
+> Take advantage of Verizon's best-in-class app development support
+> A streamlined, 14 day to market process makes app distribution fast  
+> and easy
+> Join now and get one step closer to millions of Verizon customers
+> http://p.sf.net/sfu/verizon-dev2dev
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 ------------------------------------------------------------------------------
-Join us December 9, 2009 for the Red Hat Virtual Experience,
-a free event focused on virtualization and cloud computing. 
-Attend in-depth sessions from your desk. Your couch. Anywhere.
-http://p.sf.net/sfu/redhat-sfdev2dev
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
