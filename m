@@ -1,25 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1NI6DG-00024h-Ux
-	for ltp-list@lists.sourceforge.net; Tue, 08 Dec 2009 19:59:10 +0000
-Received: from [206.112.117.47] (helo=gateway-1237.mvista.com)
-	by sfi-mx-2.v28.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1NI6DA-0002aK-EU
-	for ltp-list@lists.sourceforge.net; Tue, 08 Dec 2009 19:59:10 +0000
-Received: from svexch01.mvista.com (svexch01.mvista.com [10.0.0.82])
-	by hermes.mvista.com (Postfix) with ESMTP id 09ECC1D5AD
-	for <ltp-list@lists.sourceforge.net>;
-	Tue,  8 Dec 2009 11:57:58 -0800 (PST)
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01CA7840.BD0FF748"
-Date: Tue, 8 Dec 2009 11:57:58 -0800
-Message-ID: <8368651DACC1964480F951191B94A07801926FEF@svexch01.mvista.com>
-From: "Henry Yei" <hyei@mvista.com>
-Subject: [LTP] [PATCH] math/float/thread_code.c,
-	revert previous patch which added check for NaN
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NNrJ0-0004bW-S5
+	for ltp-list@lists.sourceforge.net; Thu, 24 Dec 2009 17:16:54 +0000
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NNrIu-0007zv-E3
+	for ltp-list@lists.sourceforge.net; Thu, 24 Dec 2009 17:16:54 +0000
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+Date: Thu, 24 Dec 2009 22:46:32 +0530
+Message-Id: <1261674992.7183.15.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] get_mempolicy01 build failure in CVS]
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,181 +23,132 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP Mailing List <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
-
-------_=_NextPart_001_01CA7840.BD0FF748
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_002_01CA7840.BD0FF748"
-
-
-------_=_NextPart_002_01CA7840.BD0FF748
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-Here is a patch that reverts the previous patch applied to thread_cod.c. =
-Some of the float tests were reporting a failure where it detected the =
-difference between the result and expected result was NaN(not a number). =
- As some of the results and expected results resolved to inf(infinity), =
-the difference calculation would result in NaN.
-
-=20
-
-With the previous patch, float_power and float_bessel tests were =
-consistently failing on all architectures tried=20
-
-=20
-
-Signed-off by: Henry Yei <hyei@mvista.com>
-
-=20
-
-
-------_=_NextPart_002_01CA7840.BD0FF748
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
-xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
-
-<head>
-<meta http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<meta name=3DGenerator content=3D"Microsoft Word 12 (filtered medium)">
-<style>
-<!--
- /* Font Definitions */
- @font-face
-	{font-family:"Cambria Math";
-	panose-1:2 4 5 3 5 4 6 3 2 4;}
-@font-face
-	{font-family:Calibri;
-	panose-1:2 15 5 2 2 2 4 3 2 4;}
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:11.0pt;
-	font-family:"Calibri","sans-serif";}
-a:link, span.MsoHyperlink
-	{mso-style-priority:99;
-	color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{mso-style-priority:99;
-	color:purple;
-	text-decoration:underline;}
-span.EmailStyle17
-	{mso-style-type:personal-compose;
-	font-family:"Calibri","sans-serif";
-	color:windowtext;}
-.MsoChpDefault
-	{mso-style-type:export-only;
-	font-size:10.0pt;}
-@page Section1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.0in 1.0in 1.0in;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-<!--[if gte mso 9]><xml>
- <o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
-</xml><![endif]--><!--[if gte mso 9]><xml>
- <o:shapelayout v:ext=3D"edit">
-  <o:idmap v:ext=3D"edit" data=3D"1" />
- </o:shapelayout></xml><![endif]-->
-</head>
-
-<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
-
-<div class=3DSection1>
-
-<p class=3DMsoNormal>Here is a patch that reverts the previous patch =
-applied to
-thread_cod.c. Some of the float tests were reporting a failure where it
-detected the difference between the result and expected result was =
-NaN(not a
-number).=A0 As some of the results and expected results resolved to =
-inf(infinity),
-the difference calculation would result in NaN.<o:p></o:p></p>
-
-<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
-
-<p class=3DMsoNormal>With the previous patch, float_power and =
-float_bessel tests
-were consistently failing on all architectures tried <o:p></o:p></p>
-
-<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
-
-<div>
-
-<p class=3DMsoNormal>Signed-off by: Henry Yei =
-&lt;hyei@mvista.com&gt;<o:p></o:p></p>
-
-</div>
-
-<p class=3DMsoNormal><o:p>&nbsp;</o:p></p>
-
-</div>
-
-</body>
-
-</html>
-
-------_=_NextPart_002_01CA7840.BD0FF748--
-
-------_=_NextPart_001_01CA7840.BD0FF748
-Content-Type: application/octet-stream;
-	name="thread_code.patch"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Content-Description: thread_code.patch
-Content-Disposition: attachment;
-	filename="thread_code.patch"
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sf.net>
 
-LS0tIGx0cC90ZXN0Y2FzZXMvbWlzYy9tYXRoL2Zsb2F0L3RocmVhZF9jb2RlLmMJMjAwOS0xMC0x
-MyAwNDoyMzozNC4wMDAwMDAwMDAgLTA3MDAKKysrIGx0cC13ZGlyL3Rlc3RjYXNlcy9taXNjL21h
-dGgvZmxvYXQvdGhyZWFkX2NvZGUuYwkyMDA5LTEyLTA4IDExOjAyOjEzLjkzNTcxMTc4OCAtMDgw
-MApAQCAtMTI0LDcgKzEyNCw3IEBAIHN0YXRpYyB2b2lkIGNoZWNrX2Vycm9yKFRIX0RBVEEgKnRo
-X2RhdGEKIAogCXggPSBmYWJzKHIgLSBlKTsgLyogZGlmZiBleHBlY3RlZC9jb21wdXRlZCAqLwog
-Ci0JaWYgKCh4ID4gRVBTKSB8fCAoeCAhPSB4KSkgeyAvKiBlcnJvciA/ICovCisJaWYgKHggPiBF
-UFMpIHsgLyogZXJyb3IgPyAqLwogCQkvKiBjb21wdXRlIGV4cG9uZW50IHBhcnRzICovCiAJCSh2
-b2lkKWZyZXhwKHIsICZwcik7IC8qIGZvciBjb21wdXRlZCAqLwogCQkodm9pZClmcmV4cCh4LCAm
-cHgpOyAvKiBmb3IgZGlmZmVyZW5jZSAqLwpAQCAtMzY1LDcgKzM2NSw3IEBAIGZpbGVfc2l6ZV9l
-cnJvcjoKIAogCWltYXggPSBmc2l6ZSAvIHNpemVvZihkb3VibGUpOwogCi0Jd2hpbGUodGhfZGF0
-YS0+dGhfbmxvb3AgPD0gbnVtX2xvb3BzKSB7ICAgCisJd2hpbGUodGhfZGF0YS0+dGhfbmxvb3Ag
-PD0gbnVtX2xvb3BzKSB7CiAJLyogbG9vcCBzdG9wcGVkIGJ5IHB0aHJlYWRfY2FuY2VsICovCiAK
-IAkJZm9yKGluZGV4ID0gdGhfZGF0YS0+dGhfbnVtOwo=
-
-------_=_NextPart_001_01CA7840.BD0FF748
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Return on Information:
-Google Enterprise Search pays you back
-Get the facts.
-http://p.sf.net/sfu/google-dev2dev
-
-------_=_NextPart_001_01CA7840.BD0FF748
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------_=_NextPart_001_01CA7840.BD0FF748--
-
+RllJLgoKUmVnYXJkcy0tClN1YnJhdGEKCi0tLS0tLS0tIEZvcndhcmRlZCBNZXNzYWdlIC0tLS0t
+LS0tCkZyb206IFN1YnJhdGEgTW9kYWsgPHN1YnJhdGFAbGludXgudm5ldC5pYm0uY29tPgpSZXBs
+eS1Ubzogc3VicmF0YUBsaW51eC52bmV0LmlibS5jb20KVG86IEdhcnJldHQgQ29vcGVyIDx5YW5l
+Z29taUBnbWFpbC5jb20+ClN1YmplY3Q6IFJlOiBnZXRfbWVtcG9saWN5MDEgYnVpbGQgZmFpbHVy
+ZSBpbiBDVlMKRGF0ZTogVGh1LCAyNCBEZWMgMjAwOSAyMTo0MTo0NiArMDUzMAoKT24gVHVlLCAy
+MDA5LTEyLTIyIGF0IDE2OjE4IC0wODAwLCBHYXJyZXR0IENvb3BlciB3cm90ZTogCj4gT24gTW9u
+LCBEZWMgMjEsIDIwMDkgYXQgNjo0NyBQTSwgR2FycmV0dCBDb29wZXIgPHlhbmVnb21pQGdtYWls
+LmNvbT4gd3JvdGU6Cj4gPiBPbiBNb24sIERlYyAyMSwgMjAwOSBhdCAzOjU2IEFNLCBTdWJyYXRh
+IE1vZGFrCj4gPiA8c3VicmF0YUBsaW51eC52bmV0LmlibS5jb20+IHdyb3RlOgo+ID4+IEhvd2V2
+ZXIsIGFwYXJ0IGZyb20gdGhpcywgdGhlIG90aGVyIGlzc3VlcyBvZiBidWlsZCBlcnJvciB3aGVu
+IHRyeWluZyB0bwo+ID4+IGNvbXBpbGUgTFRQIGZyb20gMiBkaWZmZXJlbnQgbG9jYXRpb25zIGlu
+IHRoZSBzYW1lIG1hY2hpbmUgc2VlbXMgZml4ZWQKPiA+PiB3LnIudCB0aGUgbGliY29udHJvbGxl
+cnMgYW5kIGxpbnNjdHAuCj4gPj4KPiA+PiBDYW4geW91IGp1c3QgbG9vayBpbnRvIHRoZSBiZWxv
+dyAyIGJ1aWxkIGVycm9ycyA/Cj4gPj4KPiA+PiBSZWdhcmRzLS0KPiA+PiBTdWJyYXRhCj4gPj4K
+PiA+PiBPbiBNb24sIDIwMDktMTItMjEgYXQgMTU6MTEgKzA1MzAsIFN1YnJhdGEgTW9kYWsgd3Jv
+dGU6Cj4gPj4+IFRoaXMgYXMgd2VsbDoKPiA+Pj4KPiA+Pj4gZ2NjIC1nIC1PMiAtZyAtTzIgLWZu
+by1zdHJpY3QtYWxpYXNpbmcgLXBpcGUgLVdhbGwKPiA+Pj4gLUkvaG9tZS9zdWJyYXRhbW9kYWsv
+T0ZGSUNFX1dPUktTL0xUUF9QUk9KRUNUX0NPREUvTFRQX05JR0hUTFlfU05BUFNIT1RTLzIxX0RF
+Q0VNQkVSXzIwMDkvbHRwLWludGVybWVkaWF0ZS0yMDA5MTIyMS90ZXN0Y2FzZXMva2VybmVsL2lu
+Y2x1ZGUgLUkvaG9tZS9zdWJyYXRhbW9kYWsvT0ZGSUNFX1dPUktTL0xUUF9QUk9KRUNUX0NPREUv
+TFRQX05JR0hUTFlfU05BUFNIT1RTLzIxX0RFQ0VNQkVSXzIwMDkvbHRwLWludGVybWVkaWF0ZS0y
+MDA5MTIyMS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21iaW5kLy4uL3V0aWxzLyAtSS4uLy4u
+Ly4uLy4uL2luY2x1ZGUgLUkuLi8uLi8uLi8uLi9pbmNsdWRlICAgLUwuLi8uLi8uLi8uLi9saWIg
+IG1iaW5kMDEuYyAgIC1sbHRwIC1sbnVtYSAtbyBtYmluZDAxCj4gPj4+IG1iaW5kMDEuYzogSW4g
+ZnVuY3Rpb24g4oCYZG9fdGVzdOKAmToKPiA+Pj4gbWJpbmQwMS5jOjI3MTogd2FybmluZzogcGFz
+c2luZyBhcmd1bWVudCAxIG9mIOKAmG5vZGVtYXNrX3plcm/igJkgZnJvbQo+ID4+PiBpbmNvbXBh
+dGlibGUgcG9pbnRlciB0eXBlCj4gPj4+IC91c3IvaW5jbHVkZS9udW1hLmg6NjE6IG5vdGU6IGV4
+cGVjdGVkIOKAmHN0cnVjdCBiaXRtYXNrICrigJkgYnV0IGFyZ3VtZW50Cj4gPj4+IGlzIG9mIHR5
+cGUg4oCYc3RydWN0IG5vZGVtYXNrX3QgKuKAmQo+ID4+PiBtYmluZDAxLmM6MjcyOiB3YXJuaW5n
+OiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiDigJhub2RlbWFza19zZXTigJkKPiA+
+Pj4gbWJpbmQwMS5jOjI3Mzogd2FybmluZzogcGFzc2luZyBhcmd1bWVudCAxIG9mIOKAmG5vZGVt
+YXNrX3plcm/igJkgZnJvbQo+ID4+PiBpbmNvbXBhdGlibGUgcG9pbnRlciB0eXBlCj4gPj4+IC91
+c3IvaW5jbHVkZS9udW1hLmg6NjE6IG5vdGU6IGV4cGVjdGVkIOKAmHN0cnVjdCBiaXRtYXNrICri
+gJkgYnV0IGFyZ3VtZW50Cj4gPj4+IGlzIG9mIHR5cGUg4oCYc3RydWN0IG5vZGVtYXNrX3QgKuKA
+mQo+ID4+PiBtYmluZDAxLmM6MzE1OiB3YXJuaW5nOiBwYXNzaW5nIGFyZ3VtZW50IDEgb2Yg4oCY
+bm9kZW1hc2tfemVyb+KAmSBmcm9tCj4gPj4+IGluY29tcGF0aWJsZSBwb2ludGVyIHR5cGUKPiA+
+Pj4gL3Vzci9pbmNsdWRlL251bWEuaDo2MTogbm90ZTogZXhwZWN0ZWQg4oCYc3RydWN0IGJpdG1h
+c2sgKuKAmSBidXQgYXJndW1lbnQKPiA+Pj4gaXMgb2YgdHlwZSDigJhzdHJ1Y3Qgbm9kZW1hc2tf
+dCAq4oCZCj4gPj4+IG1iaW5kMDEuYzozMTk6IHdhcm5pbmc6IHBhc3NpbmcgYXJndW1lbnQgMSBv
+ZiDigJhub2RlbWFza19lcXVhbOKAmSBmcm9tCj4gPj4+IGluY29tcGF0aWJsZSBwb2ludGVyIHR5
+cGUKPiA+Pj4gL3Vzci9pbmNsdWRlL251bWEuaDo2Njogbm90ZTogZXhwZWN0ZWQg4oCYc3RydWN0
+IGJpdG1hc2sgKuKAmSBidXQgYXJndW1lbnQKPiA+Pj4gaXMgb2YgdHlwZSDigJhzdHJ1Y3Qgbm9k
+ZW1hc2tfdCAq4oCZCj4gPj4+IG1iaW5kMDEuYzozMTk6IHdhcm5pbmc6IHBhc3NpbmcgYXJndW1l
+bnQgMiBvZiDigJhub2RlbWFza19lcXVhbOKAmSBmcm9tCj4gPj4+IGluY29tcGF0aWJsZSBwb2lu
+dGVyIHR5cGUKPiA+Pj4gL3Vzci9pbmNsdWRlL251bWEuaDo2Njogbm90ZTogZXhwZWN0ZWQg4oCY
+c3RydWN0IGJpdG1hc2sgKuKAmSBidXQgYXJndW1lbnQKPiA+Pj4gaXMgb2YgdHlwZSDigJhzdHJ1
+Y3Qgbm9kZW1hc2tfdCAq4oCZCj4gPj4+IC90bXAvY2NJTWZFaDgubzogSW4gZnVuY3Rpb24gYGRv
+X3Rlc3QnOgo+ID4+PiAvaG9tZS9zdWJyYXRhbW9kYWsvT0ZGSUNFX1dPUktTL0xUUF9QUk9KRUNU
+X0NPREUvTFRQX05JR0hUTFlfU05BUFNIT1RTLzIxX0RFQ0VNQkVSXzIwMDkvbHRwLWludGVybWVk
+aWF0ZS0yMDA5MTIyMS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21iaW5kL21iaW5kMDEuYzoy
+NzI6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYG5vZGVtYXNrX3NldCcKPiA+Pj4gY29sbGVjdDI6
+IGxkIHJldHVybmVkIDEgZXhpdCBzdGF0dXMKPiA+Pj4gbWFrZVs0XTogKioqIFttYmluZDAxXSBF
+cnJvciAxCj4gPj4+Cj4gPj4+IFJlZ2FyZHMtLQo+ID4+PiBTdWJyYXRhCj4gPj4+Cj4gPj4+IE9u
+IE1vbiwgMjAwOS0xMi0yMSBhdCAxNDo1NyArMDUzMCwgU3VicmF0YSBNb2RhayB3cm90ZToKPiA+
+Pj4gPiBHYXJyZXQsCj4gPj4+ID4KPiA+Pj4gPiBUaGlzIHN0aWxsIGV4aXN0czoKPiA+Pj4gPgo+
+ID4+PiA+IGdjYyAtZyAtTzIgLWcgLU8yIC1mbm8tc3RyaWN0LWFsaWFzaW5nIC1waXBlIC1XYWxs
+Cj4gPj4+ID4gLUkvaG9tZS9zdWJyYXRhbW9kYWsvT0ZGSUNFX1dPUktTL0xUUF9QUk9KRUNUX0NP
+REUvTFRQX05JR0hUTFlfU05BUFNIT1RTLzIxX0RFQ0VNQkVSXzIwMDkvbHRwLWludGVybWVkaWF0
+ZS0yMDA5MTIyMS90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUgLUkvaG9tZS9zdWJyYXRhbW9kYWsv
+T0ZGSUNFX1dPUktTL0xUUF9QUk9KRUNUX0NPREUvTFRQX05JR0hUTFlfU05BUFNIT1RTLzIxX0RF
+Q0VNQkVSXzIwMDkvbHRwLWludGVybWVkaWF0ZS0yMDA5MTIyMS90ZXN0Y2FzZXMva2VybmVsL3N5
+c2NhbGxzL2dldF9tZW1wb2xpY3kvLi4vdXRpbHMgLUkuLi8uLi8uLi8uLi9pbmNsdWRlIC1JLi4v
+Li4vLi4vLi4vaW5jbHVkZSAgIC1MLi4vLi4vLi4vLi4vbGliICBnZXRfbWVtcG9saWN5MDEuYyAg
+IC1sbHRwIC1sbnVtYSAtbyBnZXRfbWVtcG9saWN5MDEKPiA+Pj4gPiBnZXRfbWVtcG9saWN5MDEu
+YzogSW4gZnVuY3Rpb24g4oCYZG9fdGVzdOKAmToKPiA+Pj4gPiBnZXRfbWVtcG9saWN5MDEuYzoy
+ODI6IHdhcm5pbmc6IHBhc3NpbmcgYXJndW1lbnQgMSBvZiDigJhub2RlbWFza196ZXJv4oCZCj4g
+Pj4+ID4gZnJvbSBpbmNvbXBhdGlibGUgcG9pbnRlciB0eXBlCj4gPj4+ID4gL3Vzci9pbmNsdWRl
+L251bWEuaDo2MTogbm90ZTogZXhwZWN0ZWQg4oCYc3RydWN0IGJpdG1hc2sgKuKAmSBidXQgYXJn
+dW1lbnQKPiA+Pj4gPiBpcyBvZiB0eXBlIOKAmHN0cnVjdCBub2RlbWFza190ICrigJkKPiA+Pj4g
+PiBnZXRfbWVtcG9saWN5MDEuYzoyODM6IHdhcm5pbmc6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9m
+IGZ1bmN0aW9uCj4gPj4+ID4g4oCYbm9kZW1hc2tfc2V04oCZCj4gPj4+ID4gZ2V0X21lbXBvbGlj
+eTAxLmM6Mjg0OiB3YXJuaW5nOiBwYXNzaW5nIGFyZ3VtZW50IDEgb2Yg4oCYbm9kZW1hc2tfemVy
+b+KAmQo+ID4+PiA+IGZyb20gaW5jb21wYXRpYmxlIHBvaW50ZXIgdHlwZQo+ID4+PiA+IC91c3Iv
+aW5jbHVkZS9udW1hLmg6NjE6IG5vdGU6IGV4cGVjdGVkIOKAmHN0cnVjdCBiaXRtYXNrICrigJkg
+YnV0IGFyZ3VtZW50Cj4gPj4+ID4gaXMgb2YgdHlwZSDigJhzdHJ1Y3Qgbm9kZW1hc2tfdCAq4oCZ
+Cj4gPj4+ID4gZ2V0X21lbXBvbGljeTAxLmM6MzM3OiB3YXJuaW5nOiBwYXNzaW5nIGFyZ3VtZW50
+IDEgb2Yg4oCYbm9kZW1hc2tfemVyb+KAmQo+ID4+PiA+IGZyb20gaW5jb21wYXRpYmxlIHBvaW50
+ZXIgdHlwZQo+ID4+PiA+IC91c3IvaW5jbHVkZS9udW1hLmg6NjE6IG5vdGU6IGV4cGVjdGVkIOKA
+mHN0cnVjdCBiaXRtYXNrICrigJkgYnV0IGFyZ3VtZW50Cj4gPj4+ID4gaXMgb2YgdHlwZSDigJhz
+dHJ1Y3Qgbm9kZW1hc2tfdCAq4oCZCj4gPj4+ID4gZ2V0X21lbXBvbGljeTAxLmM6MzM4OiB3YXJu
+aW5nOiBwYXNzaW5nIGFyZ3VtZW50IDEgb2Yg4oCYbm9kZW1hc2tfZXF1YWzigJkKPiA+Pj4gPiBm
+cm9tIGluY29tcGF0aWJsZSBwb2ludGVyIHR5cGUKPiA+Pj4gPiAvdXNyL2luY2x1ZGUvbnVtYS5o
+OjY2OiBub3RlOiBleHBlY3RlZCDigJhzdHJ1Y3QgYml0bWFzayAq4oCZIGJ1dCBhcmd1bWVudAo+
+ID4+PiA+IGlzIG9mIHR5cGUg4oCYc3RydWN0IG5vZGVtYXNrX3QgKuKAmQo+ID4+PiA+IGdldF9t
+ZW1wb2xpY3kwMS5jOjMzODogd2FybmluZzogcGFzc2luZyBhcmd1bWVudCAyIG9mIOKAmG5vZGVt
+YXNrX2VxdWFs4oCZCj4gPj4+ID4gZnJvbSBpbmNvbXBhdGlibGUgcG9pbnRlciB0eXBlCj4gPj4+
+ID4gL3Vzci9pbmNsdWRlL251bWEuaDo2Njogbm90ZTogZXhwZWN0ZWQg4oCYc3RydWN0IGJpdG1h
+c2sgKuKAmSBidXQgYXJndW1lbnQKPiA+Pj4gPiBpcyBvZiB0eXBlIOKAmHN0cnVjdCBub2RlbWFz
+a190ICrigJkKPiA+Pj4gPiAvdG1wL2NjR2dVcFVVLm86IEluIGZ1bmN0aW9uIGBkb190ZXN0JzoK
+PiA+Pj4gPiAvaG9tZS9zdWJyYXRhbW9kYWsvT0ZGSUNFX1dPUktTL0xUUF9QUk9KRUNUX0NPREUv
+TFRQX05JR0hUTFlfU05BUFNIT1RTLzIxX0RFQ0VNQkVSXzIwMDkvbHRwLWludGVybWVkaWF0ZS0y
+MDA5MTIyMS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2dldF9tZW1wb2xpY3kvZ2V0X21lbXBv
+bGljeTAxLmM6MjgzOiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGBub2RlbWFza19zZXQnCj4gPj4+
+ID4gY29sbGVjdDI6IGxkIHJldHVybmVkIDEgZXhpdCBzdGF0dXMKPiA+Pj4gPiBtYWtlWzRdOiAq
+KiogW2dldF9tZW1wb2xpY3kwMV0gRXJyb3IgMQo+ID4+PiA+Cj4gPj4+ID4gIyB1bmFtZSAtYQo+
+ID4+PiA+IExpbnV4IDIuNi4xOC05Mi5lbDUgIzEgU01QIFR1ZSBBcHIgMjkgMTM6MTY6MTIgRURU
+IDIwMDggaTY4NiBpNjg2IGkzODYKPiA+Pj4gPiBHTlUvTGludXgKPiA+Pj4gPiAjIGNhdCAvZXRj
+L2lzc3VlCj4gPj4+ID4gUmVkIEhhdCBFbnRlcnByaXNlIExpbnV4IENsaWVudCByZWxlYXNlIDUu
+MiAoVGlrYW5nYSkKPiA+Pj4gPiBLZXJuZWwgXHIgb24gYW4gXG0KPiA+Cj4gPiAgICBJJ2xsIGRv
+IHRoYXQgdG9uaWdodCBiZWNhdXNlIEkgZ3JhYmJlZCB0aGUgc291cmNlIGZvciB0aGUgcGFja2Fn
+ZS4KPiA+IFdob2V2ZXIgY3JlYXRlZCAvIHBvcnRlZCB0aGUgdGVzdCBiYXNpY2FsbHkgdG9vayBu
+dW1hLmggYW5kIG51bWFpZi5oCj4gPiBhbmQgamFtbWVkIHRoZW0gaW50byBhIHNlcGFyYXRlIGhl
+YWRlciBmaWxlIGluc3RlYWQgb2YgdXNpbmcgdGhlCj4gPiBzeXN0ZW0gb25lcywgc28gdGhhdCdz
+IHdoZXJlIHRoZSBpc3N1ZSB5b3UncmUgc2VlaW5nIGlzIGNvbWluZyBmcm9tCj4gPiBub3cuCj4g
+Cj4gICAgIFRoZSBjb21waWxlIGlzc3VlcyBzaG91bGQgbm93IGJlIHJlc29sdmVkIGFzIGl0J3Mg
+cHVsbGluZyBmcm9tIHRoZQo+IGFwcHJvcHJpYXRlIGluc3RhbGxlZCBoZWFkZXJzIGluc3RlYWQg
+b2YgdGhlIGFkIGhvYyBvbmVzLCBidXQgdGhlCj4gcHJvYmxlbSBpcyB0aGF0IHRoZSB0ZXN0cyBu
+ZWVkIHRvIGJlIHJld3JpdHRlbiBmb3IgbGlibnVtYSB2MiwgYXMgdGhlCj4gY3VycmVudCBvbmVz
+IGFyZSBnZWFyZWQgdG93YXJkcyBsaWJudW1hIDAuOXggKHdoaWNoIEkgYXNzdW1lIG1lYW5zCj4g
+dGhhdCBpdCBjb3ZlcnMgbGlibnVtYSAxLngpLgoKSSB3b3VsZCBwcmVmZXIgdG8gcGxheSBzYWZl
+IGluIHRoYXQgY2FzZSwgYnkgcmVtb3ZpbmcgdGhlc2UgMiBzb3VyY2UKZmlsZXMgYW5kIHRoZWly
+IHJlZmVyZW5jZXMgZnJvbSB0aGUgcmVsZWFzZSB0YXJiYWxsIG9ubHkuIFRoZSBzYW1lIHdpbGwK
+YmUgaW4gQ1ZTIGFuZCB3aWxsIGJlIHN1YmplY3RlZCB0byBGSVhFUy4KClJlZ2FyZHMtLQpTdWJy
+YXRhCgo+IFRoYW5rcywKPiAtR2FycmV0dAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGlzIFNG
+Lk5ldCBlbWFpbCBpcyBzcG9uc29yZWQgYnkgdGhlIFZlcml6b24gRGV2ZWxvcGVyIENvbW11bml0
+eQpUYWtlIGFkdmFudGFnZSBvZiBWZXJpem9uJ3MgYmVzdC1pbi1jbGFzcyBhcHAgZGV2ZWxvcG1l
+bnQgc3VwcG9ydApBIHN0cmVhbWxpbmVkLCAxNCBkYXkgdG8gbWFya2V0IHByb2Nlc3MgbWFrZXMg
+YXBwIGRpc3RyaWJ1dGlvbiBmYXN0IGFuZCBlYXN5CkpvaW4gbm93IGFuZCBnZXQgb25lIHN0ZXAg
+Y2xvc2VyIHRvIG1pbGxpb25zIG9mIFZlcml6b24gY3VzdG9tZXJzCmh0dHA6Ly9wLnNmLm5ldC9z
+ZnUvdmVyaXpvbi1kZXYyZGV2IApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9y
+Z2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1s
+aXN0Cg==
