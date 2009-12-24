@@ -1,21 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1NGcSA-0002NC-O8
-	for ltp-list@lists.sourceforge.net; Fri, 04 Dec 2009 18:00:26 +0000
-Received: from fmmailgate02.web.de ([217.72.192.227])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NGcS3-0005Jw-4z
-	for ltp-list@lists.sourceforge.net; Fri, 04 Dec 2009 18:00:26 +0000
-From: Jiri Palecek <jpalecek@web.de>
-Date: Fri, 4 Dec 2009 19:00:14 +0100
-References: <000001ca69a6$d6ad7520$84085f60$@co.jp>
-	<364299f40911192224i127c4b87qf0f7777ae0a8377d@mail.gmail.com>
-In-Reply-To: <364299f40911192224i127c4b87qf0f7777ae0a8377d@mail.gmail.com>
-MIME-Version: 1.0
-Message-Id: <200912041900.14388.jpalecek@web.de>
-Subject: Re: [LTP] move_pages test failed in ltp-2009-11-19.tar.gz
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mpnayak@linux.vnet.ibm.com>) id 1NNsEd-00010C-64
+	for ltp-list@lists.sourceforge.net; Thu, 24 Dec 2009 18:16:27 +0000
+Received: from e33.co.us.ibm.com ([32.97.110.151])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NNsEX-0006mY-Td
+	for ltp-list@lists.sourceforge.net; Thu, 24 Dec 2009 18:16:27 +0000
+Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
+	[9.17.195.226])
+	by e33.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id nBOIDHiC030708
+	for <ltp-list@lists.sourceforge.net>; Thu, 24 Dec 2009 11:13:17 -0700
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	nBOIG9C5127348
+	for <ltp-list@lists.sourceforge.net>; Thu, 24 Dec 2009 11:16:09 -0700
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id nBOIG5dO016471
+	for <ltp-list@lists.sourceforge.net>; Thu, 24 Dec 2009 11:16:05 -0700
+From: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+Date: Thu, 24 Dec 2009 23:46:01 +0530
+Message-Id: <20091224181601.12571.78565.sendpatchset@localhost.localdomain>
+In-Reply-To: <20091224181532.12571.74576.sendpatchset@localhost.localdomain>
+References: <20091224181532.12571.74576.sendpatchset@localhost.localdomain>
+Subject: [LTP] [Patch 4/4]Readme modified based on review comments
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,179 +35,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Mitani <mitani@ryobi.co.jp>
+To: ltp-list@lists.sourceforge.net, arun@linux.vnet.ibm.com, svaidy@linux.vnet.ibm.com, ego@in.ibm.com
 
-On Friday 20 November 2009 07:24:29 Garrett Cooper wrote:
-> On Thu, Nov 19, 2009 at 10:00 PM, Mitani <mitani@ryobi.co.jp> wrote:
-> > Hi,
-> >
-> > When I ran LTP in RHEL5.4 using ltp-2009-11-19.tar.gz,
-> > "move_pages03" and "move_pages11" were failed in each of "syscalls" and
-> > "numa" tests like that:
-> >
-> > ------------
-> > move_pages01    1  TCONF  :  NUMA support not provided
-> > move_pages02    1  TCONF  :  NUMA support not provided
-> > chown: cannot access `move_pages03': No such file or directory
-> > move_pages04    1  TCONF  :  NUMA support not provided
-> > move_pages05    1  TCONF  :  NUMA support not provided
-> > move_pages06    1  TCONF  :  NUMA support not provided
-> > move_pages07    1  TCONF  :  NUMA support not provided
-> > move_pages08    1  TCONF  :  NUMA support not provided
-> > move_pages09    1  TCONF  :  NUMA support not provided
-> > move_pages10    1  TCONF  :  NUMA support not provided
-> > chown: cannot access `move_pages11': No such file or directory
-> > ------------
-> >
-> >
-> > These fails didn't occured with ltp-full-20090930.tgz, but they occured
-> > with ltp-full-20091031.tgz.
-> > With ltp-full-20090930.tgz, all of move_pagesXX (XX:01-11) were passed
-> > (NUMA support not provided) in my system.
-> >
-> >
-> > I compared these version and found out following scenarios changed.
-> >  - ${LTPROOT}/runtest/numa
-> >  - ${LTPROOT}/runtest/syscalls
-> >
-> >
-> > These scenarios are as follows, and "move_pages03" and "move_pages01"
-> > are revised.
-> >
-> > ------------
-> > # cat ./runtest/numa
-> > Numa-testcases numa01.sh
-> > move_pages01 move_pages.sh 01
-> > move_pages02 move_pages.sh 02
-> > move_pages03 cd $LTPROOT/bin && chown root move_pages03 && chmod 04755 &&
-> > move_pages.sh 03
-> > move_pages04 move_pages.sh 04
-> > move_pages05 move_pages.sh 05
-> > move_pages06 move_pages.sh 06
-> > move_pages07 move_pages.sh 07
-> > move_pages08 move_pages.sh 08
-> > move_pages09 move_pages.sh 09
-> > move_pages10 move_pages.sh 10
-> > move_pages11 cd $LTPROOT/bin && chown root move_pages11 && chmod 04755 &&
-> > move_pages.sh 11
-> > # cat ./runtest/syscalls | grep move_page
-> > move_pages01 move_pages.sh 01
-> > move_pages02 move_pages.sh 02
-> > move_pages03 cd $LTPROOT/bin && chown root move_pages03 && chmod 04755 &&
-> > move_pages.sh 03
-> > move_pages04 move_pages.sh 04
-> > move_pages05 move_pages.sh 05
-> > move_pages06 move_pages.sh 06
-> > move_pages07 move_pages.sh 07
-> > move_pages08 move_pages.sh 08
-> > move_pages09 move_pages.sh 09
-> > move_pages10 move_pages.sh 10
-> > move_pages11 cd $LTPROOT/bin && chown root move_pages11 && chmod 04755 &&
-> > move_pages.sh 11
-> > #------------
-> >
-> >
-> > I think there are two problems in each changes:
-> >
-> >  - "move_pagesXX" files are in "$LTPROOT/testcases/bin" direcotory,
-> >    not in "$LTPROOT/bin" directory.
-> >  - "chmod" commands don't have target file.
-> >
-> >
-> > I don't know why these revisions are done. But if these revisions should
-> > be validated, they will come to work in the change like following, I think.
-> > I wish I can get opinion whether my revision is right or not.
-> >
-> > ============
-> >
-> > --- syscalls    2009-11-18 13:24:34.000000000 +0900
-> > +++ syscalls.new        2009-11-19 16:15:13.000000000 +0900
-> > @@ -571,7 +571,7 @@
-> >
-> >  move_pages01 move_pages.sh 01
-> >  move_pages02 move_pages.sh 02
-> > -move_pages03 cd $LTPROOT/bin && chown root move_pages03 && chmod 04755 &&
-> > move_pages.sh 03
-> > +move_pages03 cd $LTPROOT/testcases/bin && chown root move_pages03 && chmod
-> > 04755 move_pages.sh && move_pages.sh 03
-> >  move_pages04 move_pages.sh 04
-> >  move_pages05 move_pages.sh 05
-> >  move_pages06 move_pages.sh 06
-> > @@ -579,7 +579,7 @@
-> >  move_pages08 move_pages.sh 08
-> >  move_pages09 move_pages.sh 09
-> >  move_pages10 move_pages.sh 10
-> > -move_pages11 cd $LTPROOT/bin && chown root move_pages11 && chmod 04755 &&
-> > move_pages.sh 11
-> > +move_pages11 cd $LTPROOT/testcases/bin && chown root move_pages11 && chmod
-> > 04755 move_pages.sh && move_pages.sh 11
-> >
-> >  mprotect01 mprotect01
-> >  mprotect02 mprotect02
-> >
-> > --- numa        2009-11-18 13:24:34.000000000 +0900
-> > +++ numa.new    2009-11-19 16:15:33.000000000 +0900
-> > @@ -1,7 +1,7 @@
-> >  Numa-testcases numa01.sh
-> >  move_pages01 move_pages.sh 01
-> >  move_pages02 move_pages.sh 02
-> > -move_pages03 cd $LTPROOT/bin && chown root move_pages03 && chmod 04755 &&
-> > move_pages.sh 03
-> > +move_pages03 cd $LTPROOT/testcases/bin && chown root move_pages03 && chmod
-> > 04755 move_pages.sh && move_pages.sh 03
-> >  move_pages04 move_pages.sh 04
-> >  move_pages05 move_pages.sh 05
-> >  move_pages06 move_pages.sh 06
-> > @@ -9,4 +9,4 @@
-> >  move_pages08 move_pages.sh 08
-> >  move_pages09 move_pages.sh 09
-> >  move_pages10 move_pages.sh 10
-> > -move_pages11 cd $LTPROOT/bin && chown root move_pages11 && chmod 04755 &&
-> > move_pages.sh 11
-> > +move_pages11 cd $LTPROOT/testcases/bin && chown root move_pages11 && chmod
-> > 04755 move_pages.sh && move_pages.sh 11
-> >
-> > ============
-> >
-> >
-> > In addition, please teach why this revision was performed, if all right.
-> >  - Why do only "move_pages03" and "move_pages11" appoint another directory
-> >    not a current directory?
-> >  - Why "chmod" is needed?
-> 
-> Mitani-san,
->     Good catch ><... I made some really silly clerical errors in my
-> commits for these runtest files.
->     To answer your questions though:
->     1. I did the cd to ensure that pan is in a consistent location
-> when it does the chmod and to avoid having to do
-> "$LTPROOT/testcases/bin/move_pages{03,11}".
->     2. The chmod and chown to fix the ownership and to enable the
-> sticky bit are being done because the test does seteuid, IIRC. What I
-> did was moved the logic from a `build time fix' to a `run time fix',
-> especially because the build user may not be root, and thus couldn't
-> set the sticky bit for the binary.
+Patch to update readme with information on how to use Power management testcases
+to test consolidation testcases.
 
-Garrett,
+Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
 
-can you please point me to a specific reason why this is needed, because I can't see anything that would need it in the test. Note that calling seteuid() [I can't find this in the code] doesn't mean the file has to be setuid-root. The only case where it would matter, would be when the code would drop root and then exec() move_pages{03,11}.
-
-I think it would be good to drop the chown altogether, if there isn't a compelling reason against it. For one thing, you cannot do chown if you install the tests to a read-only filesystem and run them from there, for another, making any file suid-root is a tricky thing security-wise.
-
-I haven't got any NUMA machine, so I cannot properly test these, anybody who can, please check if removing the cd, chmod and chown commands from the runtest file doesn't break anything. Post the results if possible.
-
-Regards
-    Jiri Palecek
+diff -uprN ltp-intermediate-20091209.orig/testcases/kernel/power_management/README ltp-intermediate-20091209.fixes/testcases/kernel/power_management/README
+--- ltp-intermediate-20091209.orig/testcases/kernel/power_management/README	2009-12-09 13:18:25.000000000 +0530
++++ ltp-intermediate-20091209.fixes/testcases/kernel/power_management/README	2009-12-24 23:12:55.293026448 +0530
+@@ -77,6 +77,8 @@ Power Management    1  FAIL  :  Required
+ 
+ Then either configuration is not set or the system won't support.
+ 
++Command to test CPU consolidation & ILB testcases on any system syntax is 'runltp -f power_management_tests_exclusive'. CPU consolidation testcases has to be triggered on a system which is totally idle i.e do not execute exclusive testcases on KVM/xen test setup. 
++
+ For CPU consolidation verification ebizzy is included in utils directory of LTP.
+ To run cpu consolidation test user has to provide -w <workload> -l <sched_mc_level>.
+ Refer to README in LTPROOT/utils/benchmark/ebizzy-0.2 directory for details of ebizzy.
+@@ -84,4 +86,6 @@ Refer to README in LTPROOT/utils/benchma
+ To test CPU consolidation for sched_mc 2 kernbench has to run. Kernbench needs linux kernel source as input in /root directory . For example download from http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.29.4.tar.bz2. If Linux kernel source not found kernbench wiil  not execute.
+ CPU consolidation testcases will not execute if number of CPU's in package is less then 2. If system is hyper threaded but number of CPU is 1 only sched_smt testcases will be excuted. For better coverage of testcases select a system which is atleast quad core and then hyper threaded so that you will observe 8 CPU's in each package.
+ 
+-Timer migration interface test will execute on kernel versions 2.6.31 and above. Timer migration functionality verification testcases will be executed only on suitable architecture like quad core or the number of CPU's in each package should be atleast 4 and above
++Timer migration interface test will execute on kernel versions 2.6.31 and above. 
++
++On Power platform sched_smt & cpu_idle testcases will be executed.
 
 ------------------------------------------------------------------------------
-Join us December 9, 2009 for the Red Hat Virtual Experience,
-a free event focused on virtualization and cloud computing. 
-Attend in-depth sessions from your desk. Your couch. Anywhere.
-http://p.sf.net/sfu/redhat-sfdev2dev
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
