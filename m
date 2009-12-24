@@ -1,43 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NILlP-0007Id-A3
-	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2009 12:35:27 +0000
-Received: from e37.co.us.ibm.com ([32.97.110.158])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NILlI-0002eh-59
-	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2009 12:35:27 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id nB9CCxB8007262
-	for <ltp-list@lists.sourceforge.net>; Wed, 9 Dec 2009 05:12:59 -0700
-Received: from d03av05.boulder.ibm.com (d03av05.boulder.ibm.com [9.17.195.85])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP
-	id nB9CE4HX160782
-	for <ltp-list@lists.sourceforge.net>; Wed, 9 Dec 2009 05:14:05 -0700
-Received: from d03av05.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av05.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id nB9CE39m025021
-	for <ltp-list@lists.sourceforge.net>; Wed, 9 Dec 2009 05:14:04 -0700
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4B1DEB2F.9060708@cn.fujitsu.com>
-References: <4AE54BCA.7060104@cn.fujitsu.com>
-	<1256563577.4929.35.camel@subratamodak.linux.ibm.com>
-	<C3A9583B-F6C5-4BCC-8D7E-876FA4D62D57@sun.com>
-	<1256650551.4957.33.camel@subratamodak.linux.ibm.com>
-	<1256841114.5210.25.camel@subratamodak.linux.ibm.com>
-	<1257170360.4977.58.camel@subratamodak.linux.ibm.com>
-	<4B0E6E6D.1070700@cn.fujitsu.com>
-	<1259853087.5085.34.camel@subratamodak.linux.ibm.com>
-	<4B18DEAF.7010601@cn.fujitsu.com>
-	<1260186833.6866.17.camel@subratamodak.linux.ibm.com>
-	<4B1DEB2F.9060708@cn.fujitsu.com>
-Date: Wed, 09 Dec 2009 17:43:59 +0530
-Message-Id: <1260360839.6958.35.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] Add new testcases for ext4 new features - V3
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NNuCI-0005x2-BF
+	for ltp-list@lists.sourceforge.net; Thu, 24 Dec 2009 20:22:10 +0000
+Received: from mail-px0-f189.google.com ([209.85.216.189])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NNuCD-0008K2-GE
+	for ltp-list@lists.sourceforge.net; Thu, 24 Dec 2009 20:22:10 +0000
+Received: by pxi27 with SMTP id 27so4121373pxi.4
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 24 Dec 2009 12:21:59 -0800 (PST)
+References: <20091224181532.12571.74576.sendpatchset@localhost.localdomain>
+Message-Id: <53627539-D088-46F6-886F-E4C075C96724@gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <20091224181532.12571.74576.sendpatchset@localhost.localdomain>
+Mime-Version: 1.0 (iPhone Mail 7D11)
+Date: Thu, 24 Dec 2009 12:21:39 -0800
+Subject: Re: [LTP] [Patch 1/4]Master script modified to enable testcases to
+	run on Power
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -50,585 +31,251 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: miaox@cn.fujitsu.com
-Cc: LTP-ML <ltp-list@lists.sourceforge.net>
+To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, "arun@linux.vnet.ibm.com" <arun@linux.vnet.ibm.com>, "svaidy@linux.vnet.ibm.com" <svaidy@linux.vnet.ibm.com>, "ego@in.ibm.com" <ego@in.ibm.com>
 
-On Tue, 2009-12-08 at 13:59 +0800, Miao Xie wrote: 
-> Hi, Subrata
-> 
-> on 2009-12-7 19:53, Subrata Modak wrote:
-> >>>>>>>>> /dev/VG1_EXT4/LV1_EXT4: The test_fs flag is set (and ext4 is  
-> >>>>>>>>> available).
-> >>>>>>>>> CLEARED.
-> >>>>>>>> You don't need to set the test_fs flag for modern ext4.
-> >>>>>>> Can we change this ?
-> >>>> The attached patch can fix this problem.
-> >>> I had already checked in your earlier patch long back. So, you would
-> >>> please need to resend over the latest code.
-> >> I'm sorry that I didn't bring the new patch(was sent on 2009-11-30) to your attention,
-> >> so I resend that new patch now. I have tried to apply the patch to the latest code
-> >> in the cvs repository and everything is ok.
-> >>
-> >> Subrata, I didn't find these failure about online defrag on my box.
-> >> The attached patch opens the verbose mode of e4defrag to get more information later, it is
-> >> useful to find the problem of online defrag. So, Could you test it again and send the output
-> >> info to me?
-> >>
-> >> The following is changelog.
-> >> =========================
-> >> This patch can fix the following problem:
-> >> -- delete the code of setting the test_fs flag
-> >> -- open the verbose mode of e4defrag, it is useful to find the problem of online defrag
-> >> -- fix some bug of the Makefile
-> >> -- throw the utilities version info away
-> >> -- delete two unnecessary testcases about ext4 subdir limit test
-> >>
-> >> Signed-off-by: Miao Xie <miaox@cn.fujitsu.com>
+On Dec 24, 2009, at 10:15 AM, Poornima Nayak  
+<mpnayak@linux.vnet.ibm.com> wrote:
 
-Thanks Miao. The changes are checked in now.
-
-Regards--
-Subrata
-
-> > 
-> > I still find some issues:
-> 
-> I'm so sorry for my mistake and resend the patch.
-> 
-> The following is changelog.
-> =========================
-> This patch can fix the following problem:
-> -- delete the code of setting the test_fs flag
-> -- open the verbose mode of e4defrag, it is useful to find the problem of online defrag
-> -- fix some bug of the Makefile
-> -- throw the utilities version info away
-> -- delete two unnecessary testcases about ext4 subdir limit test
-> 
-> Signed-off-by: Miao Xie <miaox@cn.fujitsu.com>
-> ---
->  testcases/kernel/fs/ext4-new-features/Makefile     |   20 ++++++++++----
->  testcases/kernel/fs/ext4-new-features/README       |    7 +----
->  .../ext4-delalloc-mballoc/ext4-alloc-test.sh       |   15 ++++------
->  .../ext4-inode-version/ext4_get_inode_version.sh   |    2 +-
->  .../ext4-inode-version/ext4_inode_version_test.sh  |   10 +++----
->  .../ext4-journal-checksum/ext4_journal_checksum.sh |   12 ++++----
->  .../ext4_nsec_timestamps_test.sh                   |    8 ++---
->  .../ext4-online-defrag/ext4_online_defrag_test.sh  |   28 ++++++++++++-------
->  .../ext4_persist_prealloc_test.sh                  |    4 +-
->  .../ext4-subdir-limit/ext4_subdir_limit_test.sh    |   17 +++++++-----
->  .../ext4-uninit-groups/ext4_uninit_groups_test.sh  |   22 +++++++++------
->  11 files changed, 78 insertions(+), 67 deletions(-)
-> 
-> diff --git a/testcases/kernel/fs/ext4-new-features/Makefile b/testcases/kernel/fs/ext4-new-features/Makefile
-> index 0e09dd6..208b8a6 100644
-> --- a/testcases/kernel/fs/ext4-new-features/Makefile
-> +++ b/testcases/kernel/fs/ext4-new-features/Makefile
-> @@ -22,17 +22,25 @@ top_srcdir              ?= ../../../..
-> 
->  include $(top_srcdir)/include/mk/env_pre.mk
-> 
-> -INSTALL_TARGETS		:= *.sh
-> -INSTALL_TARGETS		:= ext4-test-config
-> -INSTALL_TARGETS		:= ffsb-6.0-rc2/ffsb
-> +INSTALL_TARGETS		+= ffsb
-> +INSTALL_TARGETS		+= run_ext4_test.sh
-> +INSTALL_TARGETS		+= ext4_funcs.sh
-> +INSTALL_TARGETS		+= ext4-test-config
-> 
-> -FILTER_OUT_DIRS		:= ffsb-6.0-rc2
-> +FFSBDIR			:= ffsb-6.0-rc2
-> +FILTER_OUT_DIRS		:= $(FFSBDIR)
-> +FFSB			:= $(FFSBDIR)/ffsb
-> 
-> -trunk-all: ffsb-6.0-rc2
-> +$(FFSB): $(FFSBDIR)
-> +	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
-> +	cp $(FFSBDIR)/ffsb ffsb
+> Patch to enable Power management testcases in LTP to run on Power  
+> platform
+>
+> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
+>
+> diff -uprN ltp-intermediate-20091209.orig/testcases/kernel/ 
+> power_management/runpwtests.sh ltp-intermediate-20091209.fixes/ 
+> testcases/kernel/power_management/runpwtests.sh
+> --- ltp-intermediate-20091209.orig/testcases/kernel/power_management/ 
+> runpwtests.sh    2009-12-09 13:18:25.000000000 +0530
+> +++ ltp-intermediate-20091209.fixes/testcases/kernel/ 
+> power_management/runpwtests.sh    2009-12-24 23:16:39.859044825 +0530
+> @@ -28,10 +28,21 @@
+> # History:      26 Aug 2008 - Created this file
+> # 03 Nov 2008 - Added CPUIDLE sysfs testcase
+> #
+> +# Function:     main
+> +#
+> +# Description:  - Execute all tests, exit with test status.
+> +#
+> +# Exit:         - zero on success
+> +#               - non-zero on failure.
+> +#
 > +
-> +trunk-all: $(FFSB)
-> 
->  trunk-clean:: | ffsb-clean
-> 
-> -ffsb-clean:: ffsb-6.0-rc2
-> +ffsb-clean:: $(FFSBDIR)
->  	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
-> +	rm -rf ffsb
-> 
->  include $(top_srcdir)/include/mk/generic_trunk_target.mk
-> diff --git a/testcases/kernel/fs/ext4-new-features/README b/testcases/kernel/fs/ext4-new-features/README
-> index 0ea0460..bda16e5 100644
-> --- a/testcases/kernel/fs/ext4-new-features/README
-> +++ b/testcases/kernel/fs/ext4-new-features/README
-> @@ -9,7 +9,7 @@ with increasing disk capacities and state-of-the-art feature requirements. More
->  extensive information of ext4 can be found at the ext4 wiki site at the URL:
->  http://ext4.wiki.kernel.org
-> 
-> -There are total 119 testcases for ext4 new features test that have been added.
-> +There are total 117 testcases for ext4 new features test that have been added.
->  Now, these testcases can test multi-block alloc/delayed alloc, inode version
->  field on disk, journal checksumming, nanosec timestamps, online defrag, persist
->  prealloc, subdirectory limit and uninit groups of ext4.
-> @@ -111,11 +111,6 @@ Directory containing the shell script which is used to test subdirectory limit
->  of ext4. According to the kernel documentation, we create more than 32000
->  subdirectorys on the ext4 filesystem.
-> 
-> -But, when then block size is small, such as 1024, and the name of every
-> -subdirectory is very long, such as every name is 255 bytes, we can just create
-> -less than 20000 subdirectory. In this test suite, there is two FAIL cases by
-> -reason of it.
+> +#List of reusable functions defined in pm_include.sh
+> +. ./pm_include.sh
+> +
+> +RC=0            #Return status
+>
+> # Exporting Required variables
+> export TST_TOTAL=1
+> -#LTPTMP=${TMP}
+> export PATH=${PATH}:.
+> export TCID="Power_Management"
+> export TST_COUNT=0
+> @@ -40,48 +51,39 @@ export analysis="/proctstat"
+>
+> YES=0
+> NO=1
+> -#List of reusable functions defined in pm_include.sh
+> -. ./pm_include.sh
 > -
->  ext4-uninit-groups
->  ------------------
->  Directory containing the shell script which is used to test uninitialized groups
-> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh b/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
-> index ec2f389..be7b074 100755
-> --- a/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
-> +++ b/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
-> @@ -37,14 +37,12 @@ read_config $1
->  # Case 17: mount ext4 partition to ext3
->  ext4_test_remount()
->  {
-> -	mkfs.ext3 -I 256 -b 1024 $EXT4_DEV > /dev/null
-> +	mkfs.ext3 -I 256 -b 1024 $EXT4_DEV &> /dev/null
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "failed to create ext4 filesystem"
->  		return 1
->  	fi
-> 
-> -	tune2fs -E test_fs $EXT4_DEV
-> -
->  	mount -t ext4 -o delalloc,auto_da_alloc $EXT4_DEV mnt_point
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "failed to mount ext4 filesystem"
-> @@ -71,7 +69,7 @@ ext4_test_remount()
->  	fi
->  	umount mnt_point
-> 
-> -	fsck -p $EXT4_DEV
-> +	fsck -p $EXT4_DEV &> /dev/null
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "fsck returned failure"
->  		return 1
-> @@ -87,16 +85,15 @@ ext4_test_remount()
->  # $4: auto_da_alloc
->  ext4_test_delalloc_mballoc()
->  {
-> -	tst_resm TINFO "isDelalloc: $1, isDirectIO: $2, Blocksize: $3, \
-> -		isAuto_da_alloc: $4"
-> +	tst_resm TINFO "isDelalloc: $1, isDirectIO: $2, Blocksize: $3, isAuto_da_alloc: $4"
-> 
-> -	mkfs.ext4 -I 256 -b $3 /$EXT4_DEV > /dev/null
-> +	mkfs.ext4 -I 256 -b $3 /$EXT4_DEV &> /dev/null
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "failed to create ext4 filesystem"
->  		return 1
->  	fi
-> 
-> -	tune2fs -E test_fs -O extents $EXT4_DEV
-> +	tune2fs -O extents $EXT4_DEV &> /dev/null
-> 
->  	mount -t ext4 -o $1,$4 $EXT4_DEV mnt_point
->  	if [ $? -ne 0 ]; then
-> @@ -117,7 +114,7 @@ ext4_test_delalloc_mballoc()
->  		return 1
->  	fi
-> 
-> -	fsck -p $EXT4_DEV
-> +	fsck -p $EXT4_DEV &> /dev/null
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "fsck returned failure"
->  		return 1
-> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh
-> index 8f5c907..0e7a8b6 100755
-> --- a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh
-> +++ b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh
-> @@ -24,7 +24,7 @@
->  #$2: 1  - return inode version by return value
->  #    !1 - writting inode version to stddev
-> 
-> -inode_version=`debugfs -R "stat $1" $EXT4_DEV | grep 'Version' | awk '{
-> +inode_version=`debugfs -R "stat $1" $EXT4_DEV 2> /dev/null | grep 'Version' | awk '{
->  print $NF }'`
-> 
->  # The inode_version's format: '0x0000000a' or '0x00000000:0000000a',
-> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
-> index f27248b..4a58b36 100755
-> --- a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
-> +++ b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
-> @@ -41,13 +41,13 @@ ext4_test_128_inode_version()
->  {
->  	tst_resm TINFO "Test inode version is 32 bits with 128 inode size"
-> 
-> -	mkfs.ext4 -I 128 $EXT4_DEV > /dev/null
-> +	mkfs.ext4 -I 128 $EXT4_DEV &> /dev/null
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "failed to create ext4 filesystem"
->  		return 1
->  	fi
-> 
-> -	tune2fs -E test_fs -O extents $EXT4_DEV
-> +	tune2fs -O extents $EXT4_DEV &> /dev/null
-> 
->  	mount -t ext4 -o i_version $EXT4_DEV mnt_point
->  	if [ $? -ne 0 ]; then
-> @@ -67,7 +67,7 @@ ext4_test_128_inode_version()
->  	fi
-> 
->  	# inode version is 32 bits: 0x00000000
-> -	version=`debugfs $EXT4_DEV -R "stat tmp_file" | grep 'Version'`
-> +	version=`debugfs $EXT4_DEV -R "stat tmp_file" 2> /dev/null | grep 'Version'`
->  	version=`echo $version | awk '{ print $NF }'`
->  	version=`echo $version | sed 's/^0x//'`
->  	len=${#version}
-> @@ -91,14 +91,12 @@ ext4_test_128_inode_version()
->  # $1: file operation
->  test_inode_version()
->  {
-> -	mkfs.ext3 -I 256 $EXT4_DEV > /dev/null
-> +	mkfs.ext3 -I 256 $EXT4_DEV &> /dev/null
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "failed to create ext4 filesystem"
->  		return 1
->  	fi
-> 
-> -	tune2fs -E test_fs $EXT4_DEV > /dev/null
-> -
->  	mount -t ext4 -o i_version $EXT4_DEV mnt_point
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "failed to mount ext4 filesystem"
-> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
-> index 550afa1..eb72b5d 100755
-> --- a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
-> +++ b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
-> @@ -59,17 +59,17 @@ ext4_test_journal_checksum()
->  		async_commit="Used"
->  	fi
-> 
-> -	tst_resm TINFO "journal mode: $1, commit interval: $2, \
-> -		journal_checksum: $checksum, \
-> -		journal_async_commit: $async_commit, barrier: $5"
-> +	tst_resm TINFO "journal mode: $1, commit interval: $2, " \
-> +		"journal_checksum: $checksum, " \
-> +		"journal_async_commit: $async_commit, barrier: $5"
-> 
-> -	mkfs.ext4 -I 256 $EXT4_DEV > /dev/null
-> +	mkfs.ext4 -I 256 $EXT4_DEV &> /dev/null
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "failed to create ext4 filesystem"
->  		return 1
->  	fi
-> 
-> -	tune2fs -E test_fs -O extents $EXT4_DEV
-> +	tune2fs -O extents $EXT4_DEV &> /dev/null
-> 
->  	mount -t ext4 -o data=$1,commit=$2,$3,$4,barrier=$5 $EXT4_DEV mnt_point
->  	if [ $? -ne 0 ]; then
-> @@ -90,7 +90,7 @@ ext4_test_journal_checksum()
->  		return 1
->  	fi
-> 
-> -	e2fsck -p $EXT4_DEV
-> +	e2fsck -p $EXT4_DEV &> /dev/null
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "fsck returned failure"
->  		return 1
-> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
-> index ced6576..cc00507 100755
-> --- a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
-> +++ b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
-> @@ -41,13 +41,13 @@ ext4_test_sec_timestamps()
->  {
->  	tst_resm TINFO "Test timestamps with 128 inode size"
-> 
-> -	mkfs.ext4 -I 128 $EXT4_DEV > /dev/null
-> +	mkfs.ext4 -I 128 $EXT4_DEV &> /dev/null
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "failed to create ext4 filesystem"
->  		return 1
->  	fi
-> 
-> -	tune2fs -E test_fs -O extents $EXT4_DEV
-> +	tune2fs -O extents $EXT4_DEV &> /dev/null
-> 
->  	mount -t ext4 $EXT4_DEV mnt_point
->  	if [ $? -ne 0 ]; then
-> @@ -82,14 +82,12 @@ ext4_test_nsec_timestamps()
->  {
->  	tst_resm TINFO "Test timestamps with 256 inode size"
-> 
-> -	mkfs.ext3 -I 256 $EXT4_DEV > /dev/null
-> +	mkfs.ext3 -I 256 $EXT4_DEV &> /dev/null
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "failed to create ext4 filesystem"
->  		return 1
->  	fi
-> 
-> -	tune2fs -E test_fs $EXT4_DEV
-> -
->  	mount -t ext4 $EXT4_DEV mnt_point
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "failed to mount ext4 filesystem"
-> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
-> index 84613c8..7b4dda3 100755
-> --- a/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
-> +++ b/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
-> @@ -94,23 +94,23 @@ my_e4defrag()
->  {
->  	if [ $1 -eq $FILE ]; then
->  		if [ $2 -eq $SMALL ]; then
-> -			./e4defrag mnt_point/data0/
-> +			./e4defrag -v mnt_point/data0/
->  			return $?
->  		# EMPTY or LARGE
->  		else
-> -			./e4defrag mnt_point/tmp_file
-> +			./e4defrag -v mnt_point/tmp_file
->  			return $?
->  		fi
->  	elif [ $1 -eq $DIR ]; then
->  		if [ $2 -eq $SMALL ]; then
-> -			./e4defrag mnt_point/data0/
-> +			./e4defrag -v mnt_point/data0/
->  			return $?
->  		else
-> -			./e4defrag mnt_point/tmp_dir
-> +			./e4defrag -v mnt_point/tmp_dir
->  			return $?
->  		fi
->  	else
-> -		./e4defrag $EXT4_DEV
-> +		./e4defrag -v $EXT4_DEV
->  		return $?
->  	fi
->  }
-> @@ -121,15 +121,20 @@ my_e4defrag()
->  # $3: block size
->  ext4_test_online_defrag()
->  {
-> +	echo Test $TST_COUNT start >> \
-> +		 $LTPROOT/output/ext4_online_defrag_result.txt
-> +
->  	tst_resm TINFO "defrag type: $1, defrag obj: $2, block size: $3"
-> 
-> -	mkfs.ext4 -m 0 -b $3 -O ^flex_bg $EXT4_DEV > /dev/null
-> +	mkfs.ext4 -m 0 -b $3 -O ^flex_bg $EXT4_DEV >> \
-> +		$LTPROOT/output/ext4_online_defrag_result.txt 2>&1
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "failed to create ext4 filesystem"
->  		return 1
->  	fi
-> 
-> -	tune2fs -E test_fs -O extents $EXT4_DEV
-> +	tune2fs -O extents $EXT4_DEV >> \
-> +		 $LTPROOT/output/ext4_online_defrag_result.txt 2>&1
-> 
->  	mount -t ext4 -o nodelalloc $EXT4_DEV mnt_point
->  	if [ $? -ne 0 ]; then
-> @@ -137,7 +142,7 @@ ext4_test_online_defrag()
->  		return 1
->  	fi
-> 
-> -	age_filesystem $2 $1
-> +	age_filesystem $2 $1 >> $LTPROOT/output/ext4_online_defrag_result.txt 2>&1
-> 
->  	my_e4defrag $1 $2 >> $LTPROOT/output/ext4_online_defrag_result.txt
->  	if [ $? -ne 0 ]; then
-> @@ -152,18 +157,21 @@ ext4_test_online_defrag()
->  		return 1
->  	fi
-> 
-> -	e2fsck -p $EXT4_DEV
-> +	e2fsck -p $EXT4_DEV >> \
-> +		 $LTPROOT/output/ext4_online_defrag_result.txt 2>&1
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "fsck returned failure"
->  		return 1
->  	fi
-> 
-> -	tst_resm TPASS "ext4 online defrag test pass(defrag type: $1, Aging: $2, block size: $3)"
-> +	tst_resm TPASS "ext4 online defrag test pass"
->  }
-> 
->  # main
->  ext4_setup
-> 
-> +rm -f $LTPROOT/output/ext4_online_defrag_result.txt
-> +
->  DEFRAG=( $FILE $DIR $FILESYSTEM )
->  AGING=( $EMPTY $SMALL $LARGE )
->  BLOCK_SIZE=( 1024 4096 )
-> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
-> index 0d293e8..e895d25 100755
-> --- a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
-> +++ b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
-> @@ -43,7 +43,7 @@ export TDIRECTORY=$PWD/mnt_point/
->  # $1: 1024 or 4096
->  ext4_test_persist_prealloc()
->  {
-> -	mkfs.ext4 -I 256 -b $1 $EXT4_DEV > /dev/null
-> +	mkfs.ext4 -I 256 -b $1 $EXT4_DEV &> /dev/null
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "failed to create ext4 filesystem"
->  		return 1
-> @@ -81,7 +81,7 @@ ext4_test_persist_prealloc()
->  		return 1
->  	fi
-> 
-> -	e2fsck -p $EXT4_DEV
-> +	e2fsck -p $EXT4_DEV &> /dev/null
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "fsck returned failure"
->  		return 1
-> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
-> index 42c4336..5631fe5 100755
-> --- a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
-> +++ b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
-> @@ -28,7 +28,7 @@ cd $LTPROOT/testcases/bin
->  . ./ext4_funcs.sh
-> 
->  export TCID="ext4-subdir-limit"
-> -export TST_TOTAL=12
-> +export TST_TOTAL=10
->  export TST_COUNT=1
-> 
->  # $1: the test config
-> @@ -59,20 +59,20 @@ ext4_run_case()
->  		dir_name_len="long name"
->  	fi
-> 
-> -	tst_resm TINFO "Num of dirs to create: $1, Dir name len: $dir_name_len \
-> -			Parent dir: $3, Block size: $4"
-> +	tst_resm TINFO "Num of dirs to create: $1, Dir name len: $dir_name_len, " \
-> +			"Parent dir: $3, Block size: $4"
-> 
->  	# only mkfs if block size has been changed,
->  	# or previous case failed
->  	if [ $prev_result -ne $PASS -o $4 -ne $prev_block_size ]; then
-> -		mkfs.ext4 -b $4 -I 256 $EXT4_DEV > /dev/null
-> +		mkfs.ext4 -b $4 -I 256 $EXT4_DEV &> /dev/null
->  		if [ $? -ne 0 ]; then
->  			tst_resm TFAIL "failed to create ext4 filesystem"
->  			return 1
->  		fi
->  		prev_block_size=$4
-> 
-> -		tune2fs -E test_fs -O extents $EXT4_DEV
-> +		tune2fs -O extents $EXT4_DEV &> /dev/null
->  	fi
-> 
->  	prev_result=$FAIL
-> @@ -120,14 +120,14 @@ ext4_run_case()
->  	fi
-> 
->  	# run fsck to make sure the filesystem has no errors
-> -	e2fsck -p $EXT4_DEV
-> +	e2fsck -p $EXT4_DEV &> /dev/null
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "fsck: the filesystem has errors"
->  		return 1
->  	fi
-> 
->  	# check dir_nlink is set
-> -	dumpe2fs $EXT4_DEV | grep '^Filesystem features' | grep -q dir_nlink
-> +	dumpe2fs $EXT4_DEV 2> /dev/null | grep '^Filesystem features' | grep -q dir_nlink
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "feature dir_nlink is not set"
->  		return 1
-> @@ -152,6 +152,9 @@ for ((i = 0; i < 3; i++))
->  	{
->  		for ((k = 0; k < 2; k++))
->  		{
-> +			if [ $i -eq $LONG_DIR -a $k -eq 1024 ]; then
-> +				continue
-> +			fi
->  			ext4_run_case 65537 ${DIR_LEN[$k]} ${PARENT_DIR[$j]} \
->  					${BLOCK_SIZE[$i]}
->  			if [ $? -ne 0 ]; then
-> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
-> index 27cbb5f..b479c8f 100755
-> --- a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
-> +++ b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
-> @@ -40,8 +40,8 @@ LARGE=3
->  # filesystem free size in bytes: blocks_size * free_blocks
->  filesystem_free_size()
->  {
-> -	bsize=`dumpe2fs -h $EXT4_DEV | grep 'Block size' | awk '{ print $2 }'`
-> -	blocks=`dumpe2fs -h $EXT4_DEV | grep 'Free blocks'| awk '{ print $2 }'`
-> +	bsize=`dumpe2fs -h $EXT4_DEV 2> /dev/null | grep 'Block size' | awk '{ print $2 }'`
-> +	blocks=`dumpe2fs -h $EXT4_DEV 2> /dev/null | grep 'Free blocks'| awk '{ print $2 }'`
-> 
->  	echo $bsize * $blocks
->  }
-> @@ -61,9 +61,9 @@ age_filesystem()
->  		}
->  	elif [ $1 -eq $LARGE ]; then
->  		rm -rf mnt_point/*
-> -		bsize=`dumpe2fs -h $EXT4_DEV | grep 'Block size'`
-> +		bsize=`dumpe2fs -h $EXT4_DEV 2> /dev/null | grep 'Block size'`
->  		bsize=`echo $bsize | awk '{ print $3 }'`
-> -		bcount=`dumpe2fs -h $EXT4_DEV | grep 'Free blocks'`
-> +		bcount=`dumpe2fs -h $EXT4_DEV 2> /dev/null | grep 'Free blocks'`
->  		bcount=`echo $bcount | awk '{ print $3 }'`
->  		dd if=/dev/zero of=mnt_point/tmp_dir bs=$bsize count=$bcount
->  	else
-> @@ -80,7 +80,9 @@ age_filesystem()
->  # $4: age filesystem: $EMPTY, $SMALL, $LARGE
->  ext4_test_uninit_groups()
->  {
-> -	mkfs.ext4 -I 256 -m 0 $EXT4_DEV > /dev/null
-> +	echo "Test $TST_COUNT" >> $LTPROOT/output/ext4_uninit_groups_result.txt
-> +
-> +	mkfs.ext4 -I 256 -m 0 $EXT4_DEV &> /dev/null
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "failed to create ext4 filesystem"
->  		return 1
-> @@ -92,10 +94,10 @@ ext4_test_uninit_groups()
->  		flag=$3
->  	fi
-> 
-> -	tune2fs -E test_fs -O extents,uninit_groups,$flag $EXT4_DEV
-> +	tune2fs -O extents,uninit_groups,$flag $EXT4_DEV &> /dev/null
-> 
->  	# Must run fsck after setting uninit_groups
-> -	fsck -p $EXT4_DEV > /dev/null
-> +	fsck -p $EXT4_DEV &> /dev/null
-> 
->  	mount -t ext4 -o $1,$2 $EXT4_DEV mnt_point
->  	if [ $? -ne 0 ]; then
-> @@ -103,7 +105,7 @@ ext4_test_uninit_groups()
->  		return 1
->  	fi
-> 
-> -	age_filesystem $4
-> +	age_filesystem $4 >> $LTPROOT/output/ext4_uninit_groups_result.txt 2>&1
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "age filesystem failed"
->  		umount mnt_point
-> @@ -116,7 +118,7 @@ ext4_test_uninit_groups()
->  		return 1
->  	fi
-> 
-> -	fsck -p $EXT4_DEV
-> +	fsck -p $EXT4_DEV &> /dev/null
->  	if [ $? -ne 0 ]; then
->  		tst_resm TFAIL "fsck returned failure"
->  		return 1
-> @@ -135,6 +137,8 @@ AGING=( $EMPTY $SMALL $LARGE )
-> 
->  RET=0
-> 
-> +rm -f $LTPROOT/output/ext4_uninit_groups_result.txt
-> +
->  for ((i = 0; i < 2; i++))
->  {
->  	for ((j = 0; j < 2; j++))
+> -# Function:     main
+> -#
+> -# Description:  - Execute all tests, exit with test status.
+> -#
+> -# Exit:         - zero on success
+> -#               - non-zero on failure.
+> -#
+> -RC=0        #Return status
+>
+> # Checking required kernel version and architecture
+> tst_kvercmp 2 6 21; rc=$?
+> if [ $rc -ne 1 -a $rc -ne 2 ] ; then
+> -    tst_resm TCONF "Kernel version not supported; not running  
+> testcases"
+> -    exit 0
+> +        tst_resm TCONF "Kernel version not supported; not running  
+> testcases"
+> +        exit 0
+> else
+> -    case "$(uname -m)" in
+> -    i[4-6]86|x86_64)
+> +        case "$(uname -m)" in
+> +        i[4-6]86|x86_64)
+> +                ;;
+> +        powerpc|ppc|powerpc64|ppc64)
+>        ;;
+> -    *)
+> -        tst_resm TCONF "Arch not supported; not running testcases"
+> -        exit 0
+> -        ;;
+> -    esac
+> +        *)
+> +                tst_resm TCONF "Arch not supported; not running  
+> testcases"
+> +                exit 0
+> +                ;;
+> +        esac
+> fi
+>
+> tst_kvercmp 2 6 29; rc=$?
+> if [ $rc -eq 2 ] ; then
+> -    max_sched_mc=2
+> -    max_sched_smt=2
+> +        max_sched_mc=2
+> +        max_sched_smt=2
+> else
+> -    max_sched_mc=1
+> -    max_sched_smt=1
+> +        max_sched_mc=1
+> +        max_sched_smt=1
+> fi
+>
+> tst_kvercmp 2 6 31; rc=$?
+> if [ $rc -eq 1 -o $rc -eq 2 ] ; then
+> -    timer_migr_support_compatible=1
+> +        timer_migr_support_compatible=0
+> else
+> -    timer_migr_support_compatible=0
+> +        timer_migr_support_compatible=1
+> fi
 
+Why did you invert the logic here? $? => 0 says the kernel version is  
+less, 1 that it's equal, and 2 that it's greater than the version  
+specified.
+
+> is_hyper_threaded; hyper_threaded=$?
+> @@ -90,7 +92,6 @@ is_multi_core; multi_core=$?
+> is_dual_core; dual_core=$?
+>
+> #Checking sched_mc sysfs interface
+> -#check_config.sh config_sched_mc || RC=$?
+> TST_COUNT=1
+> if [ $multi_socket -eq $YES -a $multi_core -eq $YES ] ; then
+>    if [ -f /sys/devices/system/cpu/sched_mc_power_savings ] ; then
+> @@ -103,6 +104,25 @@ if [ $multi_socket -eq $YES -a $multi_co
+>    else
+>         tst_resm TCONF "Required kernel configuration for SCHED_MC  
+> NOT set"
+>    fi
+> +
+> +    : $(( TST_COUNT+=1))
+> +    if [ -f /proc/sys/kernel/timer_migration ]; then
+> +        if [ $timer_migr_support_compatible -eq $YES ]; then
+> +            if test_timer_migration.sh; then
+> +                tst_resm TPASS "Timer Migration interface test"
+> +            else
+> +                RC=$?
+> +                tst_resm TFAIL "Timer migration interface test"
+> +            fi
+> +        fi
+> +    else
+> +        if [ $supp -eq $YES ]; then
+> +            RC=$?
+> +            tst_resm TFAIL "Timer migration interface missing"
+> +        else
+> +            tst_resm TCONF "Kernel version does not support Timer  
+> migration"
+> +        fi
+> +    fi
+> else
+>    if [ -f /sys/devices/system/cpu/sched_mc_power_savings ] ; then
+>        tst_resm TFAIL "sched_mc_power_savings interface in system  
+> which is not a multi socket &(/) multi core"
+> @@ -135,7 +155,6 @@ else
+> fi
+>
+> # Checking cpufreq sysfs interface files
+> -#check_config.sh config_cpu_freq || RC=$?
+> : $(( TST_COUNT += 1 ))
+> if [ -d /sys/devices/system/cpu/cpu0/cpufreq ] ; then
+>     if check_cpufreq_sysfs_files.sh; then
+> @@ -187,12 +206,13 @@ else
+> fi
+>
+> # sched_domain test
+> -if ! type python > /dev/null ; then
+> +which python > /dev/null
+> +if [ $? -ne 0 ] ; then
+
+type is a bourne shell builtin whereas which is a command.  
+Furthermore, you  can inline shell true / false checks in branch  
+conditionals. So why did you revert this?
+
+>    tst_resm TCONF "Python is not installed, CPU Consoldation\
+> test cannot run"
+> else
+>    if [ -f /sys/devices/system/cpu/sched_mc_power_savings ] ; then
+> -            echo "max sched mc $max_sched_mc"
+> +        get_sched_values sched_mc; max_sched_mc=$?
+>        for sched_mc in `seq 0 $max_sched_mc`; do
+>            : $(( TST_COUNT+=1))
+>            sched_domain.py -c $sched_mc; RC=$?
+> @@ -210,25 +230,6 @@ else
+>    fi
+> fi
+>
+> -: $(( TST_COUNT+=1))
+> -if [ -f /proc/sys/kernel/timer_migration ]; then
+> -    if [ $timer_migr_support_compatible -eq $YES ]; then
+> -        if test_timer_migration.sh; then
+> -            tst_resm TPASS "Timer Migration interface test"
+> -        else
+> -            RC=$?
+> -            tst_resm TFAIL "Timer migration interface test"
+> -        fi
+> -    fi
+> -else
+> -    if [ $timer_migr_support_compatible -eq $YES ]; then
+> -        RC=$?
+> -        tst_resm TFAIL "Timer migration interface missing"
+> -    else
+> -        tst_resm TCONF "Kernel version does not support Timer  
+> migration"
+> -    fi
+> -fi
+> -
+> if [ $# -gt 0 -a "$1" = "-exclusive" ]; then
+
+Sorry for not noticing this sooner. $1 and -exclusive should be  
+prefixed by a character, e.g. x or this will be reported as a [(1)  
+syntax error.
+
+>
+>    # Test CPU consolidation
+>    if [ $multi_socket -eq $YES -a $multi_core -eq $YES ]; then
+> @@ -266,7 +267,7 @@ if [ $# -gt 0 -a "$1" = "-exclusive" ];
+>
+>    fi
+>
+> -    if [ $hyper_threaded -eq $YES -a $multi_socket -eq $YES -a  
+> $multi_core -eq $NO ]; then
+> +    if [ $hyper_threaded -eq $YES ]; then
+>            #Testcase to validate consolidation at core level
+>            for sched_smt in `seq 0 $max_sched_smt`; do
+>                if [ $sched_smt -eq 2 ]; then
+> @@ -319,7 +320,7 @@ if [ $# -gt 0 -a "$1" = "-exclusive" ];
+>    fi
+>
+>     # Verify threads consolidation stops when sched_smt is disabled  
+> in HT systems
+> -    if [ $hyper_threaded -eq $YES -a $multi_socket -eq $YES ]; then
+> +    if [ $hyper_threaded -eq $YES ]; then
+>        # Vary only sched_smt from 1 to 0 when workload is running  
+> and ensure that
+>        # tasks do not consolidate to single core when sched_smt is  
+> set to 0
+>        : $(( TST_COUNT += 1 ))
+
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
-Return on Information:
-Google Enterprise Search pays you back
-Get the facts.
-http://p.sf.net/sfu/google-dev2dev
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
