@@ -1,19 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <swamy.tota@sasken.com>) id 1NKWi2-0000Kf-ML
-	for ltp-list@lists.sourceforge.net; Tue, 15 Dec 2009 12:40:58 +0000
-Received: from mta-blr1.sasken.com ([203.200.200.72])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.69) id 1NKWhw-000205-I0
-	for ltp-list@lists.sourceforge.net; Tue, 15 Dec 2009 12:40:57 +0000
-From: Swamy Tota <swamy.tota@sasken.com>
-Date: Tue, 15 Dec 2009 18:10:15 +0530
-Message-ID: <2232D399F8A83941B65D6392638870D7030B4B7C73@EXGMBX01.sasken.com>
-Content-Language: en-US
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naufal11@gmail.com>) id 1NO6NC-0005jJ-Sj
+	for ltp-list@lists.sourceforge.net; Fri, 25 Dec 2009 09:22:14 +0000
+Received: from mail-pz0-f193.google.com ([209.85.222.193])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NO6N8-0006se-Hm
+	for ltp-list@lists.sourceforge.net; Fri, 25 Dec 2009 09:22:14 +0000
+Received: by pzk31 with SMTP id 31so5864686pzk.28
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 25 Dec 2009 01:22:04 -0800 (PST)
 MIME-Version: 1.0
-Subject: [LTP] Core Components of LTP
+Date: Fri, 25 Dec 2009 14:52:04 +0530
+Message-ID: <d270b4400912250122y371c4d4dq6fa729b60e03f8a5@mail.gmail.com>
+From: Mohamed Naufal <naufal11@gmail.com>
+Content-Type: multipart/mixed; boundary=0016368e270cc73e4f047b8a167b
+Subject: [LTP] Testcase to validate the memory usage limit imposed by the
+	topmost memory cgroup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,140 +27,130 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5889769289631044361=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
---===============5889769289631044361==
-Content-Language: en-US
-Content-Type: multipart/alternative;
-	boundary="_000_2232D399F8A83941B65D6392638870D7030B4B7C73EXGMBX01saske_"
+--0016368e270cc73e4f047b8a167b
+Content-Type: multipart/alternative; boundary=0016368e270cc73e44047b8a1679
 
---_000_2232D399F8A83941B65D6392638870D7030B4B7C73EXGMBX01saske_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+--0016368e270cc73e44047b8a1679
+Content-Type: text/plain; charset=ISO-8859-1
 
-Hi,
+Hi
 
-Any pointer to the Core components of LTP and architecture of LTP.
+I am a student who attended the FOSS.IN LTP workout (Bangalore, India). I
+have attached one of the testcases we were working on. Thought I would get
+it reviewed before making a patch. More testcases to follow.
 
-Thanks in advance.
+Comments appreciated.
 
-Regards
-Swamy Tota
-Senior Software Engineer -- SEMC,
-Sasken Communication Technologies Ltd
-Unit No 702,7th Floor
-Campus 3B, RMZ Millenia Business Park, 143
-Dr M G R Road, Kandanchavady
-Chennai 600 096
-Tel: +91  44 39818188
-Fax: +91 44 39818029
+Naufal
 
-SASKEN BUSINESS DISCLAIMER
--------------------------
-This message may contain confidential, proprietary or legally privileged in=
-formation. In=20
-case you are not the original intended Recipient of the message, you must n=
-ot, directly or=20
-indirectly, use, Disclose, distribute, print, or copy any part of this mess=
-age and you are=20
-requested to delete it and inform the sender. Any views expressed in this m=
-essage are=20
-those of the individual sender unless otherwise stated. Nothing contained i=
-n this message=20
-shall be construed as an offer or acceptance of any offer by Sasken Communi=
-cation=20
-Technologies Limited ("Sasken") unless sent with that express intent and wi=
-th due=20
-authority of Sasken. Sasken has taken enough precautions to prevent the spr=
-ead of=20
-viruses. However the company accepts no liability for any damage caused by =
-any virus=20
-transmitted by this email
+--0016368e270cc73e44047b8a1679
+Content-Type: text/html; charset=ISO-8859-1
 
---_000_2232D399F8A83941B65D6392638870D7030B4B7C73EXGMBX01saske_
-Content-Type: text/html; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Hi<br><br>I am a student who attended the <a href="http://FOSS.IN">FOSS.IN</a> LTP workout (Bangalore, India). I have attached one of the testcases we were working on. Thought I would get it reviewed before making a patch. More testcases to follow.<br>
+<br>Comments appreciated.<br><br>Naufal<br>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML XMLNS:O><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2900.5803" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D382554407-14122009>Hi,</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D382554407-14122009></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D382554407-14122009>Any point=
-er to the=20
-Core components&nbsp;of LTP and architecture of LTP.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D382554407-14122009></SPAN></=
-FONT><FONT=20
-face=3DArial size=3D2><SPAN class=3D382554407-14122009></SPAN></FONT>&nbsp;=
-</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D382554407-14122009>Thanks in=20
-advance.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D382554407-14122009></SPAN></FONT>&nbsp;</DIV>
-<DIV><SPAN class=3D382554407-14122009></SPAN><SPAN=20
-class=3D382554407-14122009></SPAN><SPAN class=3D382554407-14122009></SPAN><=
-FONT=20
-face=3DArial size=3D2><SPAN class=3D382554407-14122009>Regards</SPAN></FONT=
-></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D382554407-14122009>Swamy=20
-Tota</SPAN></FONT></DIV>
-<DIV align=3Dleft>
-<DIV align=3Dleft><FONT face=3DGeorgia color=3D#008080 size=3D2><EM>Senior =
-Software=20
-Engineer -- SEMC,</EM></FONT></DIV>
-<DIV align=3Dleft><FONT size=3D2><FONT face=3DGeorgia><FONT color=3D#008080=
-><EM>Sasken=20
-Communication Technologies Ltd<BR>Unit No 702,7th Floor<BR>Campus 3B, RMZ=20
-Millenia Business Park, 143<BR>Dr M G R Road, Kandanchavady<BR>Chennai 600=20
-096<BR>Tel: +91&nbsp; 44 39818188<BR>Fax: +91 44 39818029<SPAN lang=3Dfr=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: 'Trebuchet MS'"=20
-xml:lang=3D"fr"><O:P></O:P></SPAN></EM></FONT></FONT></FONT></DIV></DIV>
-<DIV>&nbsp;</DIV><pre>SASKEN BUSINESS DISCLAIMER
--------------------------
-This message may contain confidential, proprietary or legally privileged in=
-formation. In=20
-case you are not the original intended Recipient of the message, you must n=
-ot, directly or=20
-indirectly, use, Disclose, distribute, print, or copy any part of this mess=
-age and you are=20
-requested to delete it and inform the sender. Any views expressed in this m=
-essage are=20
-those of the individual sender unless otherwise stated. Nothing contained i=
-n this message=20
-shall be construed as an offer or acceptance of any offer by Sasken Communi=
-cation=20
-Technologies Limited ("Sasken") unless sent with that express intent and wi=
-th due=20
-authority of Sasken. Sasken has taken enough precautions to prevent the spr=
-ead of=20
-viruses. However the company accepts no liability for any damage caused by =
-any virus=20
-transmitted by this email
-</pre></BODY></HTML>
+--0016368e270cc73e44047b8a1679--
 
---_000_2232D399F8A83941B65D6392638870D7030B4B7C73EXGMBX01saske_--
+--0016368e270cc73e4f047b8a167b
+Content-Type: text/x-csrc; charset=US-ASCII; name="mem_process.c"
+Content-Disposition: attachment; filename="mem_process.c"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g3mr53810
 
+I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KI2luY2x1ZGUgPHNpZ25hbC5o
+PgojaW5jbHVkZSA8dW5pc3RkLmg+CiNpbmNsdWRlIDxzeXMvbW1hbi5oPgoKaW50IGZsYWdfZXhp
+dDsKaW50IGZsYWdfYWxsb2NhdGVkOwp1bnNpZ25lZCBpbnQgbWVtc2l6ZTsKCi8qCnByb2Nlc3Nf
+b3B0aW9uczogcHJvY2VzcyB1c2VyIHNwZWNpZmllZCBvcHRpb25zCiovCnZvaWQgcHJvY2Vzc19v
+cHRpb25zKGludCBhcmdjLCBjaGFyICoqYXJndikgewogIGludCBjOwoKICBvcHRlcnIgPSAwOwog
+IHdoaWxlICgoYyA9IGdldG9wdChhcmdjLCBhcmd2LCAibToiKSkgIT0gLTEpIHsKICAgIHN3aXRj
+aChjKSB7CiAgICBjYXNlICdtJzoKICAgICAgbWVtc2l6ZSA9IGF0b2kob3B0YXJnKSAqIDEwMjQg
+KiAxMDI0OwogICAgICBicmVhazsKICAgIGRlZmF1bHQ6CiAgICAgIGVycngoMSwgIkludmFsaWQg
+b3B0aW9uIHNwZWNpZmVkIik7CiAgICB9CiAgfQoKICBpZighbWVtc2l6ZSkKICAgIGVycngoMSwg
+Ik1lbW9yeSBzaXplIG5vdCBzcGVjaWZpZWQiKTsKfQoKLyoKdG91Y2hfbWVtb3J5OiBmb3JjZSBw
+aHlzaWNhbCBtZW1vcnkgYWxsb2NhdGlvbgoqLwp2b2lkIHRvdWNoX21lbW9yeShjaGFyICpwLCBp
+bnQgc2l6ZSkgewogIGludCBpOwogIGludCBwYWdlc2l6ZSA9IGdldHBhZ2VzaXplKCk7CgogIGZv
+ciAoaSA9IDA7IGkgPCBzaXplOyBpICs9IHBhZ2VzaXplKSB7CiAgICBwW2ldID0gMHhlZjsKICB9
+Cn0KCnZvaWQgbWVtX21hcCgpIHsKICBzdGF0aWMgY2hhciAqcDsKCiAgaWYgKCFmbGFnX2FsbG9j
+YXRlZCkgewogICAgaWYgKChwID0gbW1hcChOVUxMLCBtZW1zaXplLCBQUk9UX1JFQUQgfCBQUk9U
+X1dSSVRFLCBNQVBfU0hBUkVEIHwgTUFQX0FOT05ZTU9VUywgMCwgMCkpID09IE1BUF9GQUlMRUQp
+CiAgICAgIGVycngoMSwgIm1tYXAgZmFpbGVkIik7CiAgICB0b3VjaF9tZW1vcnkocCwgbWVtc2l6
+ZSk7CiAgfQogIGVsc2UgezsKICAgIGlmIChtdW5tYXAocCwgbWVtc2l6ZSkgPT0gLTEpCiAgICAg
+IGVycngoMSwgIm11bm1hcCBmYWlsZWQiKTsKICB9Cn0KCi8qCnNpZ2ludDogc2V0IHRoZSBleGl0
+IGZsYWcgb24gcmVjZWl2aW5nIFNJR0lOVAoqLwp2b2lkIHNpZ2ludChpbnQgbnVtKSB7CiAgZmxh
+Z19leGl0ID0gMTsKfQoKLyoKc2lndXNyMTogYWxsb2NhdGUvZnJlZSBtZW1vcnkgb24gcmVjZXZp
+bmcgU0lHVVNSMQoqLwp2b2lkIHNpZ3VzcjEoaW50IG51bSkgewogIG1lbV9tYXAoKTsKICBmbGFn
+X2FsbG9jYXRlZCA9ICFmbGFnX2FsbG9jYXRlZDsKfQoKCmludCBtYWluKGludCBhcmdjLCBjaGFy
+ICoqYXJndikgewogIHNpZ25hbChTSUdJTlQsIHNpZ2ludCk7CiAgc2lnbmFsKFNJR1VTUjEsIHNp
+Z3VzcjEpOwoKICBwcm9jZXNzX29wdGlvbnMoYXJnYywgYXJndik7CgogIHdoaWxlKCFmbGFnX2V4
+aXQpCiAgICBzbGVlcCgxKTsKCiAgcmV0dXJuIDA7Cn0K
+--0016368e270cc73e4f047b8a167b
+Content-Type: application/x-sh; name="test_mem_fun.sh"
+Content-Disposition: attachment; filename="test_mem_fun.sh"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g3mr5k851
 
-
---===============5889769289631044361==
+IyEvYmluL2Jhc2gKCmNkICRMVFBST09UL3Rlc3RjYXNlcy9iaW4KCmdyZXAgLXcgbWVtb3J5IC9w
+cm9jL2Nncm91cHMgMj4gL2Rldi9udWxsID4gL2Rldi9udWxsCmlmIFsgJD8gLW5lIDAgXTsgdGhl
+bgogICAgdHN0X2Jya20gVEJST0sgTlVMTCAiTWVtb3J5IFJlc291cmNlIENvbnRyb2xsZXIgbm90
+IHN1cHBvcnRlZC4gU2tpcHBpbmcgYWxsIHRlc3RzIgogICAgZXhpdCAwCmZpCgpleHBvcnQgVENJ
+RD0iY2dyb3VwX21lbV90ZXN0cyIKZXhwb3J0IFRTVF9UT1RBTD0xCmV4cG9ydCBUU1RfQ09VTlQ9
+MAoKVE9UX01FTV9MSU1JVD0kMQpBQ1RJVkVfTUVNX0xJTUlUPSQyClBST0NfTUVNPSQzCgpUU1Rf
+UEFUSD0kUFdECgpQQVNTPTAKRkFJTD0xCgojIENoZWNrIGlmIHRoZSB0ZXN0IHByb2Nlc3MgaXMg
+a2lsbGVkIG9uIGNyb3NzaW5nIGJvdW5kYXJ5CnRlc3RfcHJvY19raWxsKCkgewogICAgJFRTVF9Q
+QVRIL21lbV9wcm9jZXNzIC1tICRQUk9DX01FTSA+IC9kZXYvbnVsbCAmCiAgICBzbGVlcCAxCiAg
+ICBlY2hvICQhID4gdGFza3MKIAogICAgI1NpZ25hbCB0aGUgdGVzdCBwcm9jZXNzIHRvIHN0YXJ0
+IGFjcXVpcmluZyBtZW1vcnkKICAgIGtpbGwgLXMgU0lHVVNSMSAkISAyPiAvZGV2L251bGwKICAg
+IHNsZWVwIDEKCiAgICAjQ2hlY2sgaWYga2lsbGVkCiAgICBwcyAtcCAkISA+IC9kZXYvbnVsbCAy
+PiAvZGV2L251bGwKICAgIGlmIFsgJD8gLWVxIDAgXTsgdGhlbgoJL2Jpbi9raWxsIC1zICJTSUdJ
+TlQiICQhIDI+IC9kZXYvbnVsbAogICAgZWxzZQoJS0lMTEVEX0NOVD0kKCgkS0lMTEVEX0NOVCAr
+IDEpKQogICAgZmkKfQogICAgCiMgVmFsaWRhdGUgdGhlIG1lbW9yeSB1c2FnZSBsaW1pdCBpbXBv
+c2VkIGJ5IHRoZSBoaWVyYXJjaGljYWxseSB0b3Btb3N0IGdyb3VwCnRlc3RjYXNlXzEoKSB7CiAg
+ICBUU1RfQ09VTlQ9MQogICAgdHN0X3Jlc20gVElORk8gIlRlc3QgIzE6IENoZWNraW5nIGlmIHRo
+ZSBtZW1vcnkgdXNhZ2UgbGltaXQgaW1wb3NlZCBieSB0aGUgdG9wbW9zdCBncm91cCBpcyBlbmZv
+cmNlZCIKCiAgICBlY2hvICIkQUNUSVZFX01FTV9MSU1JVCJtID4gJFRTVF9QQVRIL21udC8kaS9t
+ZW1vcnkubGltaXRfaW5fYnl0ZXMKICAgIGVjaG8gIiRUT1RfTUVNX0xJTUlUIm0gPiAkVFNUX1BB
+VEgvbW50LyRpL21lbW9yeS5tZW1zdy5saW1pdF9pbl9ieXRlcwoKICAgIG1rZGlyIHN1YiAyPiAv
+ZGV2L251bGwKICAgIHB1c2hkIHN1YiA+IC9kZXYvbnVsbAoKICAgIEtJTExFRF9DTlQ9MAogICAg
+dGVzdF9wcm9jX2tpbGw7CgogICAgaWYgWyAkUFJPQ19NRU0gLWd0ICRUT1RfTUVNX0xJTUlUIF0g
+JiYgWyAkS0lMTEVEX0NOVCAtZXEgMCBdOyB0aGVuCglyZXN1bHQgJEZBSUwgIlRlc3QgIzE6IGZh
+aWxlZCIKICAgIGVsc2UKCXJlc3VsdCAkUEFTUyAiVGVzdCAjMTogcGFzc2VkIgogICAgZmkKCiAg
+ICBwb3BkID4gL2Rldi9udWxsCiAgICBybWRpciBzdWIgMj4gL2Rldi9udWxsCn0KCgojIFJlY29y
+ZCB0aGUgdGVzdCByZXN1bHRzCiMKIyAkMTogUmVzdWx0IG9mIHRoZSB0ZXN0IGNhc2UsICRQQVNT
+IG9yICRGQUlMCiMgJDI6IE91dHB1dCBpbmZvcm1hdGlvbgpyZXN1bHQoKSB7CiAgICBSRVM9JDEK
+ICAgIElORk89JDIKCiAgICBpZiBbICRSRVMgLWVxICRQQVNTIF07IHRoZW4KCXRzdF9yZXNtIFRQ
+QVNTICIkSU5GTyIKICAgIGVsc2UKCUZBSUxFRF9DTlQ9JCgoJEZBSUxFRF9DTlQgKyAxKSkKCXRz
+dF9yZXNtIFRGQUlMICIkSU5GTyIKICAgIGZpCn0JCiAgICAKCmNsZWFudXAoKSB7CiAgICBpZiBb
+IC1lIG1udCBdOyB0aGVuCgl1bW91bnQgJFRTVF9QQVRIL21udCAyPiAvZGV2L251bGwKCXJtIC1y
+ZiBtbnQgMj4gL2Rldi9udWxsCiAgICBmaQp9Cgpkb19tb3VudCgpIHsKICAgIGNsZWFudXA7Cgog
+ICAgbWtkaXIgJFRTVF9QQVRIL21udCAyPiAvZGV2L251bGwKICAgIG1vdW50IC10IGNncm91cCAt
+byBtZW1vcnkgY2dyb3VwICRUU1RfUEFUSC9tbnQgMj4gL2Rldi9udWxsCiAgICBpZiBbICQ/IC1u
+ZSAwIF07IHRoZW4KCXRzdF9icmttIFRCUk9LIE5VTEwgIk1vdW50aW5nIGNncm91cCB0byB0ZW1w
+IGRpciBmYWlsZWQiCglybWRpciAkVFNUX1BBVEgvbW50IDI+IC9kZXYvbnVsbAoJZXhpdCAxCiAg
+ICBmaQp9Cgpkb19tb3VudDsKCmVjaG8gMSA+IG1udC9tZW1vcnkudXNlX2hpZXJhcmNoeSAyPiAv
+ZGV2L251bGwKCkZBSUxFRF9DTlQ9MAoKZm9yIGkgaW4gJChzZXEgMSAkVFNUX1RPVEFMKQpkbwog
+ICAgcHVzaGQgJFRTVF9QQVRIL21udCA+IC9kZXYvbnVsbAogICAgbWtkaXIgJFRTVF9QQVRIL21u
+dC8kaSAyPiAvZGV2L251bGwKICAgIHB1c2hkICRpID4gL2Rldi9udWxsCgogICAgdGVzdGNhc2Vf
+JGk7CgogICAgcG9wZCA+IC9kZXYvbnVsbAogICAgcm1kaXIgJGkgMj4gL2Rldi9udWxsCiAgICBw
+b3BkID4gL2Rldi9udWxsCmRvbmUKCmNsZWFudXA7CgppZiBbICIkRkFJTEVEX0NOVCIgLW5lIDAg
+XTsgdGhlbgogICAgdHN0X3Jlc20gVEZBSUwgImNncm91cF9tZW1fdGVzdHM6IGZhaWxlZCIKICAg
+IGV4aXQgMQplbHNlCiAgICB0c3RfcmVzbSBUUEFTUyAiY2dyb3VwX21lbV90ZXN0czogcGFzc2Vk
+IgogICAgZXhpdCAwCmZpCg==
+--0016368e270cc73e4f047b8a167b
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Return on Information:
-Google Enterprise Search pays you back
-Get the facts.
-http://p.sf.net/sfu/google-dev2dev
-
---===============5889769289631044361==
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
+--0016368e270cc73e4f047b8a167b
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -167,6 +161,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============5889769289631044361==--
-
+--0016368e270cc73e4f047b8a167b--
 
