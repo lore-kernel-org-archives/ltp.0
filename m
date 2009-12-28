@@ -1,31 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <czhang@redhat.com>) id 1NIYVy-000256-F7
-	for ltp-list@lists.sourceforge.net; Thu, 10 Dec 2009 02:12:22 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NIYVq-0004LZ-HN
-	for ltp-list@lists.sourceforge.net; Thu, 10 Dec 2009 02:12:22 +0000
-Received: from int-mx03.intmail.prod.int.phx2.redhat.com
-	(int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-	by mx1.redhat.com (8.13.8/8.13.8) with ESMTP id nBA2C8gp022442
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 9 Dec 2009 21:12:08 -0500
-Received: from mail04.corp.redhat.com (zmail04.collab.prod.int.phx2.redhat.com
-	[10.5.5.44])
-	by int-mx03.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
-	id nBA2C8mJ017262
-	for <ltp-list@lists.sourceforge.net>; Wed, 9 Dec 2009 21:12:08 -0500
-Date: Wed, 9 Dec 2009 21:12:07 -0500 (EST)
-From: Caspar Zhang <czhang@redhat.com>
-Message-ID: <1515718228.139261260411127991.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-In-Reply-To: <1035224881.139201260410991274.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NPD7a-0007yl-8F
+	for ltp-list@lists.sourceforge.net; Mon, 28 Dec 2009 10:46:42 +0000
+Received: from e23smtp04.au.ibm.com ([202.81.31.146])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NPD7V-0003vV-AD
+	for ltp-list@lists.sourceforge.net; Mon, 28 Dec 2009 10:46:42 +0000
+Received: from d23relay03.au.ibm.com (d23relay03.au.ibm.com [202.81.31.245])
+	by e23smtp04.au.ibm.com (8.14.3/8.13.1) with ESMTP id nBSAguh0029239
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Dec 2009 21:42:56 +1100
+Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
+	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	nBSAkI681773686
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Dec 2009 21:46:18 +1100
+Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
+	by d23av03.au.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	nBSAkIH9020693
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Dec 2009 21:46:18 +1100
+Message-ID: <4B388C75.3040104@linux.vnet.ibm.com>
+Date: Mon, 28 Dec 2009 16:16:13 +0530
+From: Rishikesh <risrajak@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; 
-	boundary="----=_Part_5639_1217896255.1260411127990"
-Subject: [LTP] [PATCH]fix compile error on ppc64 in RHEL5
+Content-Type: multipart/mixed; boundary="------------080607000603050706040301"
+Subject: [LTP] [PATCH 1/2]: Added check to test_controller.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,85 +35,142 @@ List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP <ltp-list@lists.sourceforge.net>
+Cc: iranna.ankad@in.ibm.com
 
-------=_Part_5639_1217896255.1260411127990
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+This is a multi-part message in MIME format.
+--------------080607000603050706040301
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi all,
-=20
-When I compile ltp-full-20091130 on ppc64 machine which system is
-RHEL5(kernel 2.6.18), I met compile error as follows:
 
-[...]
-ptrace04.c: In function =E2=80=98compare_registers=E2=80=99:
-ptrace04.c:59: error: =E2=80=98PTRACE_GETREGS=E2=80=99 undeclared (first us=
-e in this function)
-ptrace04.c:59: error: (Each undeclared identifier is reported only once
-ptrace04.c:59: error: for each function it appears in.)
-make[5]: *** [ptrace04] Error 1
-[...]
 
-It seems like there's no PTRACE_GETREGS in /usr/include/asm/ptrace.h
-in old kernels, so I copy the definitions from new version of the
-head file and my ltp on ppc64, RHEL5 works.
-
-Thanks,
-Caspar
-------=_Part_5639_1217896255.1260411127990
-Content-Type: application/octet-stream;
-	name=rhel5-ppc-PTRACE_GETREGS-compile-err.patch
+--------------080607000603050706040301
+Content-Type: text/plain;
+ name="ltp-mem-enable.patch"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
-	filename=rhel5-ppc-PTRACE_GETREGS-compile-err.patch
+ filename="ltp-mem-enable.patch"
 
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace.h b/testcases/kernel/syscalls/ptrace/ptrace.h
-index a0d2708..e3fcbb2 100644
---- a/testcases/kernel/syscalls/ptrace/ptrace.h
-+++ b/testcases/kernel/syscalls/ptrace/ptrace.h
-@@ -37,4 +37,27 @@ typedef struct user_regs_struct ptrace_regs;
- #undef HAVE_STRUCT_PTRACE_REGS
- #endif
+commit 0509a4c119d10b8d3e713cb1deaa9299f308c95a
+Author: Rishikesh K Rajak <rishikesh@rishikesh.in.ibm.com>
+Date:   Mon Dec 28 14:30:41 2009 +0530
+
+    Added check for enablement of controller
+
+diff --git a/testcases/kernel/controllers/test_controllers.sh b/testcases/kernel/controllers/test_controllers.sh
+index f3a1daa..0ad5f53 100755
+--- a/testcases/kernel/controllers/test_controllers.sh
++++ b/testcases/kernel/controllers/test_controllers.sh
+@@ -39,13 +39,19 @@
+ if [ -f /proc/cgroups ]
+ then
+ 	CPU_CONTROLLER=`grep -w cpu /proc/cgroups | cut -f1`;
++	CPU_CONTROLLER_VALUE=`grep -w cpu /proc/cgroups | cut -f4`;
+ 	MEM_CONTROLLER=`grep -w memory /proc/cgroups | cut -f1`;
++	MEM_CONTROLLER_VALUE=`grep -w memory /proc/cgroups | cut -f4`;
+ 	IOTHROTTLE_CONTROLLER=`grep -w blockio /proc/cgroups | cut -f1`;
++	IOTHROTTLE_CONTROLLER_VALUE=`grep -w blockio /proc/cgroups | cut -f4`;
+ 	FREEZER=`grep -w freezer /proc/cgroups | cut -f1`;
++	FREEZER_VALUE=`grep -w freezer /proc/cgroups | cut -f4`;
+ 	CPUSET_CONTROLLER=`grep -w cpuset /proc/cgroups | cut -f1`
++	CPUSET_CONTROLLER_VALUE=`grep -w cpuset /proc/cgroups | cut -f4`
+ 	CPUACCOUNT_CONTROLLER=`grep -w cpuacct /proc/cgroups | cut -f1`
++	CPUACCOUNT_CONTROLLER_VALUE=`grep -w cpuacct /proc/cgroups | cut -f4`
  
-+/* old kernel doesn't have PTRACE_GETREGS on ppc64 */
-+/* (new) PTRACE requests using the same numbers as x86 and the same
-+ * argument ordering. Additionally, they support more registers too
-+ */
-+#ifndef PTRACE_GETREGS
-+# define PTRACE_GETREGS            12
-+#endif
-+#ifndef PTRACE_SETREGS
-+# define PTRACE_SETREGS            13
-+#endif
-+#ifndef PTRACE_GETFPREGS
-+# define PTRACE_GETFPREGS          14
-+#endif
-+#ifndef PTRACE_SETFPREGS
-+# define PTRACE_SETFPREGS          15
-+#endif
-+#ifndef PTRACE_GETREGS64
-+# define PTRACE_GETREGS64          22
-+#endif
-+#ifndef PTRACE_SETREGS64
-+# define PTRACE_SETREGS64          23
-+#endif
-+
- #endif
+-	if [ "$CPU_CONTROLLER" = "cpu" ]
++	if [ "$CPU_CONTROLLER" = "cpu" ] && [ "$CPU_CONTROLLER_VALUE" = "1" ]
+ 	then
+ 		$LTPROOT/testcases/bin/run_cpuctl_test.sh 1;
+ 		$LTPROOT/testcases/bin/run_cpuctl_test.sh 3;
+@@ -63,11 +69,11 @@ then
+ 		$LTPROOT/testcases/bin/run_cpuctl_test_fj.sh
+ 	else
+ 		echo "CONTROLLERS TESTCASES: WARNING";
+-		echo "Kernel does not support for cpu controller";
++		echo "Either Kernel does not support for cpu controller or functionality is not enabled";
+ 		echo "Skipping all cpu controller testcases....";
+ 	fi;
+ 
+-	if [ "$MEM_CONTROLLER" = "memory" ]
++	if [ "$MEM_CONTROLLER" = "memory" ] && [ "$MEM_CONTROLLER_VALUE" = "1" ]
+ 	then
+ 		$LTPROOT/testcases/bin/run_memctl_test.sh 1;
+ 		$LTPROOT/testcases/bin/run_memctl_test.sh 2;
+@@ -75,28 +81,29 @@ then
+ 		$LTPROOT/testcases/bin/run_memctl_test.sh 4;
+ 	else
+ 		echo "CONTROLLERS TESTCASES: WARNING";
+-		echo "Kernel does not support for memory controller";
++		echo "Either Kernel does not support for memory controller or functionality is not enabled";
+ 		echo "Skipping all memory controller testcases....";
+ 	fi
+ 
+-	if [ "$IOTHROTTLE_CONTROLLER" = "blockio" ]
++	if [ "$IOTHROTTLE_CONTROLLER" = "blockio" ] && [ "$IOTHROTTLE_CONTROLLER_VALUE" = "1" ]
+ 	then
+ 		$LTPROOT/testcases/bin/run_io_throttle_test.sh;
+ 	else
+ 		echo "CONTROLLERS TESTCASES: WARNING";
+-		echo "Kernel does not support blockio controller";
++		echo "Either Kernel does not support for io controller or functionality is not enabled";
+ 		echo "Skipping all block device I/O throttling testcases....";
+ 	fi
+ 
+-	if [ "$FREEZER" = "freezer" ]
++	if [ "$FREEZER" = "freezer" ] && [ "$FREEZER_VALUE" = "1" ]
+ 	then
+ 		"$LTPROOT/testcases/bin/run_freezer.sh"
+ 	else
+ 		echo "CONTROLLERS TESTCASES: WARNING";
++		echo "Either Kernel does not support for freezer or functionality is not enabled";
+ 		echo "Kernel does not support freezer controller";
+ 		echo "Skipping all freezer testcases....";
+ 	fi
+-	if [ "$CPUSET_CONTROLLER" = "cpuset" ]
++	if [ "$CPUSET_CONTROLLER" = "cpuset" ] && [ "$CPUSET_CONTROLLER_VALUE" = "1" ]
+ 	then
+ 		$LTPROOT/testcases/bin/run_cpuset_test.sh 1;
+ 		$LTPROOT/testcases/bin/run_cpuset_test.sh 2;
+@@ -111,21 +118,22 @@ then
+ 		$LTPROOT/testcases/bin/run_cpuset_test.sh 11;
+ 	else
+ 		echo "CONTROLLERS TESTCASES: WARNING";
+-		echo "Kernel does not support cpuset controller";
++		echo "Either Kernel does not support for cpuset controller or functionality is not enabled";
+ 		echo "Skipping all cpuset controller testcases....";
+ 	fi
+-	if [ "$CPUACCOUNT_CONTROLLER" = "cpuacct" ]
++	if [ "$CPUACCOUNT_CONTROLLER" = "cpuacct" ] && [ "$CPUACCOUNT_CONTROLLER_VALUE" = "1" ]
+         then
+                 $LTPROOT/testcases/bin/run_cpuacct_test.sh 1;
+                 $LTPROOT/testcases/bin/run_cpuacct_test.sh 2;
+         else
+                 echo "Could not start cpu accounting controller test";
++		echo "Either Kernel does not support for cpu accounting controller or functionality is not enabled";
+                 echo "usage: run_cpuacct_test.sh $TEST_NUM ";
+                 echo "Skipping the cpu accounting controller test...";
+         fi
+ else
+ 	echo "CONTROLLERS TESTCASES: WARNING"
+-	echo "Kernel does not support for control groups";
++	echo "Kernel does not support any controller";
+ 	echo "Skipping all controllers testcases....";
+ fi
 
-------=_Part_5639_1217896255.1260411127990
+--------------080607000603050706040301
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Return on Information:
-Google Enterprise Search pays you back
-Get the facts.
-http://p.sf.net/sfu/google-dev2dev
-
-------=_Part_5639_1217896255.1260411127990
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
+--------------080607000603050706040301
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -125,5 +181,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-------=_Part_5639_1217896255.1260411127990--
+--------------080607000603050706040301--
 
