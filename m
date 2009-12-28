@@ -1,30 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <liubo2009@cn.fujitsu.com>) id 1NIGys-0002QS-79
-	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2009 07:29:02 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NIGyk-0004FG-72
-	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2009 07:29:02 +0000
-Message-ID: <4B1F51CA.6030906@cn.fujitsu.com>
-Date: Wed, 09 Dec 2009 15:29:14 +0800
-From: liubo <liubo2009@cn.fujitsu.com>
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NPD7F-0007SF-Qn
+	for ltp-list@lists.sourceforge.net; Mon, 28 Dec 2009 10:46:21 +0000
+Received: from e23smtp04.au.ibm.com ([202.81.31.146])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NPD7B-000775-Na
+	for ltp-list@lists.sourceforge.net; Mon, 28 Dec 2009 10:46:21 +0000
+Received: from d23relay05.au.ibm.com (d23relay05.au.ibm.com [202.81.31.247])
+	by e23smtp04.au.ibm.com (8.14.3/8.13.1) with ESMTP id nBSAghdq029115
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Dec 2009 21:42:43 +1100
+Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
+	by d23relay05.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	nBSAfql21462408
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Dec 2009 21:41:52 +1100
+Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
+	by d23av03.au.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	nBSAk5Il020557
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Dec 2009 21:46:05 +1100
+Message-ID: <4B388C68.9000304@linux.vnet.ibm.com>
+Date: Mon, 28 Dec 2009 16:16:00 +0530
+From: Rishikesh <risrajak@linux.vnet.ibm.com>
 MIME-Version: 1.0
-References: <4AF93496.3030408@cn.fujitsu.com>	
-	<1258359225.5677.35.camel@subratamodak.linux.ibm.com>	
-	<4B0112EC.9020202@cn.fujitsu.com>	
-	<364299f40911260311m6d157453s47f57d1ba47ef643@mail.gmail.com>	
-	<4B0F64B7.6060507@cn.fujitsu.com>	
-	<364299f40911262249x1d48a61fh7528216fd18bcf57@mail.gmail.com>	
-	<364299f40911270050q53743fbdte8b98170e135b4ae@mail.gmail.com>	
-	<4B0FA4E9.1070206@cn.fujitsu.com>	
-	<364299f40911271418y58264d77w3849d83f8deaa441@mail.gmail.com>	
-	<4B11CCC9.5020608@cn.fujitsu.com>
-	<364299f40911301600t1993f27do55101ea022d15ca0@mail.gmail.com>
-In-Reply-To: <364299f40911301600t1993f27do55101ea022d15ca0@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] syscalls: fix some failure on arch X86_64
+Subject: [LTP] [PATCH 0/2 ] LTP Memory controller smarter check for
+ enable/disable functionality
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,71 +37,139 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: Mike Frysinger <vapier@gentoo.org>, ltp-list <ltp-list@lists.sf.net>
+To: LTP <ltp-list@lists.sourceforge.net>
+Cc: iranna.ankad@in.ibm.com, svishuku@in.ibm.com
 
-Hi,
-> Yes. I [mostly] fixed the rt_sigaction01 test a few hours ago. A
-> summary of the issues with the old version:
->
-> 1. The test as it was written before verified functionality by
-> ensuring that coredumps and crashes didn't occur. The new version
-> either catches the appropriate rt signal and increments, or catches
-> SIGSEGV and continues. Eventually once all of the issues are worked
-> out with SIGRTMIN, the known issue TINFO printout needs to be removed
-> from include/ltp_signal.h
-> 2. If the sa_flags field of a struct sigaction `object' specifies
-> SA_SIGINFO, you should and must use sa_sigaction instead of
-> sa_handler, as stated in the manpage, because sa_handler and
-> sa_sigaction are a union structure on many architectures, or not
-> present when rt_* not implemented.
-> 3. An autoconf test was added to look for sa_sigaction in struct
-> sigaction, as it isn't present on all architectures.
->
-> So, while this does fix rt_sigaction01, by and large, the following
-> issues still exist with the rt_sig* syscalls:
-> 1. SIGRTMIN always SIGSEGV's because signal_fault is being called in
-> arch/x86/kernel/signal.c . I need to put some printk's in the code to
-> understand why -EFAULT is being thrown, and thus why signal_fault is
-> being tossed.
-> 2. rt_sigprocmask01 and rt_sigsuspend01 still segfault for the same
-> reason, as noted in 1.
->
->     Someone in the kernel.org team should generate some kind of
-> documentation to clarify several points (including architectural
-> quirks) with the rt_sig* syscalls. This trial and error problem
-> solving isn't very helpful and there are a fair number of gotchas
-> involved with implementing a functional set of sigaction-like calls
-> using rt_sig*.
->
-> Thanks,
-> -Garrett
->
->
->   
-I've made a patch to fix this rt_sig problem, but I encounted a trouble.
+Hi All,
 
-I figured out that syscall __NR_rt_sigaction doesn't use struct
-sigaction, and glibc defines a
-struct called kernel_sigaction to fit __NR_rt_sigaction so that glibc
-function can pass it.
-And the struct sigaction may change in the future.
+Current memory controller implelementation in LTP does not check if 
+memory controller is enabled or not. It only check for memory contorller 
+kernel support. It may happen that some distro would have disabled 
+functionality. e.g:
 
-My trouble is if we define a struct to fit this syscall just as what
-glibc does, after the struct
-sigaction change, we'll define another struct as well.
-
-Looking forward to any advice about this trouble...
+mhs21a:/opt/ltp # cat /proc/cgroups  | grep -e num_ -e memory -e freezer
+#subsys_name    hierarchy    num_cgroups    enabled
+memory    0    1    0
+freezer    0    1    1
+mhs21a:/opt/ltp #
 
 
-Thanks,
-Liubo 
+Here 4th parameter shows the exact support for functionality as 
+enabled/disabled. As here clearly it shows that memory controller is 
+disabled and freezer is enabled.
+
+My patch supports for this functionality.
+
+[PATCH 1/2 ] : Added check for all controller to LTP.
+[PATCH 2/2 ] : Added check to memory controller functiona,regression & 
+stress testcase scripts.
+
+Comments are welcome.
+
+It has been tested and here are the result.
+
+Without applying patch:
+
+===========================================
+
+<<snip>>
+<<<execution_status>>>
+initiation_status="ok"
+duration=124 termination_type=exited termination_id=0 corefile=no
+cutime=2046 cstime=4111
+<<<test_end>>>
+<<<test_start>>>
+tag=memcg_regression stime=1261991350
+cmdline="memcg_regression_test.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+mount: wrong fs type, bad option, bad superblock on xxx,
+        missing codepage or helper program, or other error
+        (for several filesystems (e.g. nfs, cifs) you might
+        need a /sbin/mount.<type> helper program)
+        In some cases useful info is found in syslog - try
+        dmesg | tail  or so
+
+memcg_regression_test    1  TFAIL  :  failed to mount memory subsytem
+mount: wrong fs type, bad option, bad superblock on xxx,
+        missing codepage or helper program, or other error
+        (for several filesystems (e.g. nfs, cifs) you might
+        need a /sbin/mount.<type> helper program)
+        In some cases useful info is found in syslog - try
+        dmesg | tail  or so
+<<snip>>
+
+==============================================
+
+
+
+
+And with patch:
+
+
+===========================================
+<<snip>>
+
+Running tests.......
+<<<test_start>>>
+tag=memcg_regression stime=1261996253
+cmdline="memcg_regression_test.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+WARNING:
+Kernel does not support for memory resource controller
+Skipping all memcgroup testcases....
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=memcg_function stime=1261996253
+cmdline="    memcg_function_test.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+WARNING:
+Kernel does not support for memory resource controller
+Skipping all memcgroup testcases....
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=memcg_stress stime=1261996253
+cmdline="    memcg_stress_test.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+incrementing stop
+WARNING:
+Kernel does not support for memory resource controller
+Skipping all memcgroup testcases....
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+INFO: ltp-pan reported all tests PASS
+LTP Version: LTP-20091130
+<<snip>>
+=============================================
+
+Thanks
+Rishi
+
 
 ------------------------------------------------------------------------------
-Return on Information:
-Google Enterprise Search pays you back
-Get the facts.
-http://p.sf.net/sfu/google-dev2dev
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
