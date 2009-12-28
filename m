@@ -1,36 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1NN8Gn-00089Y-NF
-	for ltp-list@lists.sourceforge.net; Tue, 22 Dec 2009 17:11:37 +0000
-Received: from e37.co.us.ibm.com ([32.97.110.158])
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NPD7b-0007Tm-VF
+	for ltp-list@lists.sourceforge.net; Mon, 28 Dec 2009 10:46:43 +0000
+Received: from e23smtp08.au.ibm.com ([202.81.31.141])
 	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NN8Gj-00078K-0x
-	for ltp-list@lists.sourceforge.net; Tue, 22 Dec 2009 17:11:37 +0000
-Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
-	[9.17.195.226])
-	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id nBMHA4PE026710
-	for <ltp-list@lists.sourceforge.net>; Tue, 22 Dec 2009 10:10:04 -0700
-Received: from d03av06.boulder.ibm.com (d03av06.boulder.ibm.com [9.17.195.245])
-	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	nBMHB8dl073098
-	for <ltp-list@lists.sourceforge.net>; Tue, 22 Dec 2009 10:11:09 -0700
-Received: from d03av06.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av06.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id nBMHCxtV004623
-	for <ltp-list@lists.sourceforge.net>; Tue, 22 Dec 2009 10:12:59 -0700
-Received: from sergelap.hallyn.com (sig-9-76-13-122.mts.ibm.com [9.76.13.122])
-	by d03av06.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVin) with ESMTP
-	id nBMHCxC9004588
-	for <ltp-list@lists.sourceforge.net>; Tue, 22 Dec 2009 10:12:59 -0700
-Date: Tue, 22 Dec 2009 11:11:04 -0600
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20091222171103.GA9810@us.ibm.com>
+	(Exim 4.69) id 1NPD7V-0007Cn-Rc
+	for ltp-list@lists.sourceforge.net; Mon, 28 Dec 2009 10:46:43 +0000
+Received: from d23relay05.au.ibm.com (d23relay05.au.ibm.com [202.81.31.247])
+	by e23smtp08.au.ibm.com (8.14.3/8.13.1) with ESMTP id nBSAkUU2008623
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Dec 2009 21:46:30 +1100
+Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
+	by d23relay05.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	nBSAgHRp1462432
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Dec 2009 21:42:17 +1100
+Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
+	by d23av03.au.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	nBSAkTLl020793
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Dec 2009 21:46:30 +1100
+Message-ID: <4B388C81.80903@linux.vnet.ibm.com>
+Date: Mon, 28 Dec 2009 16:16:25 +0530
+From: Rishikesh <risrajak@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] [PATCH] containers: mqns: use libc's mq_open,
- not syscall(__NR_mq_open
+Content-Type: multipart/mixed; boundary="------------010806010901010000020004"
+Subject: [LTP] [PATCH 2/2] Added check for memory controller ( functional,
+ regression & stress )
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,128 +35,97 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: LTP <ltp-list@lists.sourceforge.net>
+Cc: risrajak@in.ibm.com, iranna.ankad@in.ibm.com
 
-The glibc version removes the leading '/' from the message queue name.
-Not doing so makes the system call fail.  We could just remove the
-'/' from SLASH_MQ1, if for some reason that were preferred, but using
-glibc functions when possible seems cleaner to me.
+This is a multi-part message in MIME format.
+--------------010806010901010000020004
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Serge Hallyn <serue@us.ibm.com>
----
- testcases/kernel/containers/mqns/mqns_01.c |    9 ++++-----
- testcases/kernel/containers/mqns/mqns_02.c |    8 +++-----
- testcases/kernel/containers/mqns/mqns_03.c |    3 +--
- testcases/kernel/containers/mqns/mqns_04.c |    2 +-
- 4 files changed, 9 insertions(+), 13 deletions(-)
 
-diff --git a/testcases/kernel/containers/mqns/mqns_01.c b/testcases/kernel/containers/mqns/mqns_01.c
-index 7f41b2d..2f3bf8e 100644
---- a/testcases/kernel/containers/mqns/mqns_01.c
-+++ b/testcases/kernel/containers/mqns/mqns_01.c
-@@ -55,7 +55,7 @@ int check_mqueue(void *vtest)
- 
- 	if (read(p1[0], buf, strlen("go") + 1) < 0)
- 		tst_resm(TBROK | TERRNO, "read(p1[0], ...) failed");
--	mqd = syscall(__NR_mq_open, SLASH_MQ1, O_RDONLY);
-+	mqd = mq_open(SLASH_MQ1, O_RDONLY);
- 	if (mqd == -1) {
- 		if (write(p2[1], "notfnd", strlen("notfnd") + 1) < 0)
- 			tst_resm(TBROK | TERRNO, "write(p2[1], ...) failed");
-@@ -86,8 +86,7 @@ main(int argc, char *argv[])
- 	if (pipe(p1) == -1) { perror("pipe"); exit(EXIT_FAILURE); }
- 	if (pipe(p2) == -1) { perror("pipe"); exit(EXIT_FAILURE); }
- 
--	mqd = syscall(__NR_mq_open, SLASH_MQ1, O_RDWR|O_CREAT|O_EXCL, 0777,
--			NULL);
-+	mqd = mq_open(SLASH_MQ1, O_RDWR|O_CREAT|O_EXCL, 0777, NULL);
- 	if (mqd == -1) {
- 		perror("mq_open");
- 		tst_resm(TFAIL, "mq_open failed\n");
-@@ -100,7 +99,7 @@ main(int argc, char *argv[])
- 	if (r < 0) {
- 		tst_resm(TFAIL, "failed clone/unshare\n");
- 		mq_close(mqd);
--		syscall(__NR_mq_unlink, SLASH_MQ1);
-+		mq_unlink(SLASH_MQ1);
- 		tst_exit();
- 	}
- 
-@@ -122,7 +121,7 @@ main(int argc, char *argv[])
- 
- 	/* destroy the mqueue */
- 	mq_close(mqd);
--	syscall(__NR_mq_unlink, SLASH_MQ1);
-+	mq_unlink(SLASH_MQ1);
- 
- 	tst_exit();
- }
-diff --git a/testcases/kernel/containers/mqns/mqns_02.c b/testcases/kernel/containers/mqns/mqns_02.c
-index aa78f65..5343d5b 100644
---- a/testcases/kernel/containers/mqns/mqns_02.c
-+++ b/testcases/kernel/containers/mqns/mqns_02.c
-@@ -60,8 +60,7 @@ int check_mqueue(void *vtest)
- 		tst_resm(TBROK | TERRNO, "read(p1[0], ..) failed");
- 	else {
- 
--		mqd = syscall(__NR_mq_open, SLASH_MQ1, O_RDWR|O_CREAT|O_EXCL,
--				0777, NULL);
-+		mqd = mq_open(SLASH_MQ1, O_RDWR|O_CREAT|O_EXCL, 0777, NULL);
- 		if (mqd == -1) {
- 			if (write(p2[1], "mqfail", strlen("mqfail") + 1) < 0) {
- 				tst_resm(TBROK | TERRNO,
-@@ -85,8 +84,7 @@ int check_mqueue(void *vtest)
- 					if (mq_close(mqd) < 0) {
- 						tst_resm(TBROK | TERRNO,
- 							"mq_close(mqd) failed");
--					} else if (syscall(__NR_mq_unlink,
--							SLASH_MQ1) < 0) {
-+					} else if (mq_unlink(SLASH_MQ1) < 0) {
- 						tst_resm(TBROK | TERRNO,
- 							"mq_unlink(" SLASH_MQ1
- 							") failed");
-@@ -153,7 +151,7 @@ int main(int argc, char *argv[])
- 		tst_exit();
- 	} else {
- 
--		mqd = syscall(__NR_mq_open, SLASH_MQ1, O_RDONLY);
-+		mqd = mq_open(SLASH_MQ1, O_RDONLY);
- 		if (mqd == -1) {
- 			tst_resm(TPASS, "Parent process can't see the mqueue\n");
- 		} else {
-diff --git a/testcases/kernel/containers/mqns/mqns_03.c b/testcases/kernel/containers/mqns/mqns_03.c
-index 3c9e83e..6a841b8 100644
---- a/testcases/kernel/containers/mqns/mqns_03.c
-+++ b/testcases/kernel/containers/mqns/mqns_03.c
-@@ -63,8 +63,7 @@ int check_mqueue(void *vtest)
- 
- 	read(p1[0], buf, 3); /* go */
- 
--	mqd = syscall(__NR_mq_open, SLASH_MQ1, O_RDWR|O_CREAT|O_EXCL, 0755,
--			NULL);
-+	mqd = mq_open(SLASH_MQ1, O_RDWR|O_CREAT|O_EXCL, 0755, NULL);
- 	if (mqd == -1) {
- 		write(p2[1], "mqfail", 7);
- 		tst_exit();
-diff --git a/testcases/kernel/containers/mqns/mqns_04.c b/testcases/kernel/containers/mqns/mqns_04.c
-index 8a4a9c2..6ce9e34 100644
---- a/testcases/kernel/containers/mqns/mqns_04.c
-+++ b/testcases/kernel/containers/mqns/mqns_04.c
-@@ -59,7 +59,7 @@ int check_mqueue(void *vtest)
- 
- 	read(p1[0], buf, 3); /* go */
- 
--	mqd = syscall(__NR_mq_open, SLASH_MQ1, O_RDWR|O_CREAT|O_EXCL, 0755,
-+	mqd = mq_open(SLASH_MQ1, O_RDWR|O_CREAT|O_EXCL, 0755,
- 			NULL);
- 	if (mqd == -1) {
- 		write(p2[1], "mqfail", 7);
--- 
-1.6.5.7
 
+--------------010806010901010000020004
+Content-Type: text/plain;
+ name="ltp-mem-enable2.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="ltp-mem-enable2.patch"
+
+commit fe4599d210be37a7d1bb2d6a5523b9e29bbd87e1
+Author: Rishikesh K Rajak <rishikesh@rishikesh.in.ibm.com>
+Date:   Mon Dec 28 15:11:54 2009 +0530
+
+    Added check for regression and funcitonal memcg test
+
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+index 003af1c..303661c 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+@@ -28,8 +28,8 @@ export TCID="memcg_function_test"
+ export TST_TOTAL=38
+ export TST_COUNT=0
+ 
+-grep -w memory /proc/cgroups 2>&1 > /dev/null
+-if [ $? -ne 0 ]; then
++if [ `grep -w memory /proc/cgroups | cut -f4` == 0 ]
++then
+ 	echo "WARNING:";
+ 	echo "Kernel does not support for memory resource controller";
+ 	echo "Skipping all memcgroup testcases....";
+diff --git a/testcases/kernel/controllers/memcg/regression/memcg_regression_test.sh b/testcases/kernel/controllers/memcg/regression/memcg_regression_test.sh
+index 6bf7c88..0bc3d75 100755
+--- a/testcases/kernel/controllers/memcg/regression/memcg_regression_test.sh
++++ b/testcases/kernel/controllers/memcg/regression/memcg_regression_test.sh
+@@ -33,6 +33,15 @@ if [ "$USER" != root ]; then
+ 	exit 0
+ fi
+ 
++if [ `grep -w memory /proc/cgroups | cut -f4` == 0 ]
++then
++        echo "WARNING:";
++        echo "Kernel does not support for memory resource controller";
++        echo "Skipping all memcgroup testcases....";
++        exit 0
++fi
++
++
+ tst_kvercmp 2 6 30
+ if [ $? -eq 0 ]; then
+ 	tst_brkm TBROK ignored "Test should be run with kernel 2.6.30 or newer"
+diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+index 7244a16..c155bf1 100755
+--- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
++++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+@@ -28,14 +28,15 @@ export TCID="memcg_stress_test"
+ export TST_TOTAL=2
+ export TST_COUNT=0
+ 
+-grep -w memory /proc/cgroups 2>&1 > /dev/null
+-if [ $? -ne 0 ]; then
+-	echo "WARNING:";
+-	echo "Kernel does not support for memory resource controller";
+-	echo "Skipping all memcgroup testcases....";
+-	exit 0
++if [ `grep -w memory /proc/cgroups | cut -f4` == 0 ]
++then
++        echo "WARNING:";
++        echo "Kernel does not support for memory resource controller";
++        echo "Skipping all memcgroup testcases....";
++        exit 0
+ fi
+ 
++
+ RUN_TIME=$(( 60 * 60 ))
+ 
+ cleanup()
+
+--------------010806010901010000020004
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
@@ -169,7 +133,16 @@ Take advantage of Verizon's best-in-class app development support
 A streamlined, 14 day to market process makes app distribution fast and easy
 Join now and get one step closer to millions of Verizon customers
 http://p.sf.net/sfu/verizon-dev2dev 
+--------------010806010901010000020004
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------010806010901010000020004--
+
