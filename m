@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1NFbrg-0005v5-C4
-	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 23:10:36 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NFbrW-0001LQ-Gc
-	for ltp-list@lists.sourceforge.net; Tue, 01 Dec 2009 23:10:34 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Tue, 1 Dec 2009 18:15:11 -0500
-References: <4b159725.8d13f30a.7a77.1f9bSMTPIN_ADDED@mx.google.com>
-In-Reply-To: <4b159725.8d13f30a.7a77.1f9bSMTPIN_ADDED@mx.google.com>
-MIME-Version: 1.0
-Message-Id: <200912011815.12315.vapier@gentoo.org>
-Subject: Re: [LTP] [PATCH] Fix a wrong (reversed) success condition in echo01
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NPJg8-0000pu-DU
+	for ltp-list@lists.sourceforge.net; Mon, 28 Dec 2009 17:46:48 +0000
+Received: from mail-pz0-f193.google.com ([209.85.222.193])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NPJg2-00050y-FO
+	for ltp-list@lists.sourceforge.net; Mon, 28 Dec 2009 17:46:48 +0000
+Received: by pzk31 with SMTP id 31so7137499pzk.28
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 28 Dec 2009 09:46:36 -0800 (PST)
+References: <4B38DCFA.9000502@petalogix.com>
+Message-Id: <9E3BA855-8CA7-414D-9622-2949FAD0416A@gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <4B38DCFA.9000502@petalogix.com>
+Mime-Version: 1.0 (iPhone Mail 7D11)
+Date: Mon, 28 Dec 2009 09:46:18 -0800
+Subject: Re: [LTP] Autotools
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,74 +27,119 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4395402509481894463=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Jiri Palecek <jpalecek@web.de>
-
---===============4395402509481894463==
-Content-Type: multipart/signed; boundary="nextPart1414320.fmPvgkduF9";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1414320.fmPvgkduF9
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-
-On Tuesday 01 December 2009 17:16:45 Jiri Palecek wrote:
-> -            if [ "$csum1" = "$csum2" ]; then
-> +            if ! [ "$csum1" = "$csum2" ]; then
-
-please use [ x != z ] rather than ! [ x = z ]
--mike
-
---nextPart1414320.fmPvgkduF9
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.13 (GNU/Linux)
-
-iQIcBAABAgAGBQJLFaOAAAoJEEFjO5/oN/WBpusP/RGGvakqZegEHAs7XMCL7jFE
-AmHcBpH2bESieIVrk8p7eHr3olm0U5N2V7QTzNU91xyzkUXRsUCryYPOljB3Xx0P
-kvALS+0odiE7fJlsh0w6/mgh62fMnouI/VIuQfZrbcGiHFWFFkXLjC4avC9qeBtH
-+w/f2oBa7TCx8jNYC1+PyVDPfcsh7SfZc1Rcgoo/1yJ8cPtW30WDCimtvLT90dkS
-TLvuO+KDyc3sUAtH9LikQl+vNbCiDv0vFH+Uzws7JPVcqLNPOyW5dcDc8QJLiMRp
-CrcREPzFGv4n6D6ilLQWBCTK+QB6qyTa5S3gF2BFMf2C4oBWn/x88Q9PsIXyYP12
-ANUrF2sO8UsMDu2g/mQ/oRlc42zFu9RE0n9kBBn/5EpQYYybfhk4hzQNRqOJNtBB
-cz1Ja/nZ9nrQd3KtKLUacRrddUtomCJTBihGIRTOAs7QFGBHN+VM6JpC01r+4MPj
-Q86o4boZbFB9Q4OAH1/6DFf0iTJFizmypJTg5z44ngzTYlqVQKF689/mMCRFJK0O
-/Mqdb/eDXMZGBMgWcGcmUpUIJmI33rwPoQYhLSTWJDBUDSKHOwK0gMEEtxMM+/nm
-v6hfLx7LsoOKZrqSGZrmEDGTu5CsWPVJv93ZaqUyxyg4Ka9wDGh1TyjBreCMLkD2
-uI+ERsD82DJJn51eS7MR
-=LTbh
------END PGP SIGNATURE-----
-
---nextPart1414320.fmPvgkduF9--
-
-
---===============4395402509481894463==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: "michal.simek@petalogix.com" <michal.simek@petalogix.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+
+Michal,
+     Just invoke autoreconf -I m4 and you'll get your desired result.  
+No commit required (except maybe another 'recipe' in INSTALL -- which  
+I'd be more than happy to do after the 5th when I have real Internet  
+access ;]...). The problem with your proposed method is that it was  
+skipping a large number of autoconf portability tests in the .m4  
+files, thus the configuration was pretty minimal...
+Cheers!
+-Garrett
+
+Sent from my iPhone
+
+On Dec 28, 2009, at 8:29 AM, Michal Simek <michal.simek@petalogix.com>  
+wrote:
+
+> Hi Garret,
+>
+> I am trying to configure LTP properly.
+> First thing which seems to me weird is that in INSTALL is for "Using  
+> autoconf" command make autotools
+>
+> autoreconf --install
+>
+> There are some warnings which could be fixed.
+>
+> then I am running
+>
+> ./configure --prefix=/tmp/
+>
+> and I see there
+>
+> ./configure: line 4566: LTP_CHECK_CAPABILITY_SUPPORT: command not  
+> found
+> ./configure: line 4567: LTP_CHECK_CRYPTO: command not found
+> ./configure: line 4568: LTP_CHECK_LINUX_PTRACE: command not found
+> ./configure: line 4569: LTP_CHECK_SELINUX: command not found
+> ./configure: line 4570: LTP_CHECK_SIGNAL: command not found
+> ./configure: line 4571: LTP_CHECK_SYSCALL_EVENTFD: command not found
+> ./configure: line 4572: LTP_CHECK_SYSCALL_MODIFY_LDT: command not  
+> found
+> ./configure: line 4573: LTP_CHECK_SYSCALL_NUMA: command not found
+> ./configure: line 4574: LTP_CHECK_SYSCALL_QUOTACTL: command not found
+> ./configure: line 4575: LTP_CHECK_SYSCALL_SIGNALFD: command not found
+> ./configure: line 4576: LTP_CHECK_SYSCALL_UNSHARE: command not found
+> ./configure: line 4577: LTP_CHECK_TASKSTATS: command not found
+>
+> ./configure: line 4759: REALTIME_CHECK_PRIO_INHERIT: command not found
+> ./configure: line 4760: REALTIME_CHECK_ROBUST_APIS: command not found
+>
+> + there are some missing dependency in configure.ac file. This patch  
+> should add them. I just grep whole LTP source - maybe some are not  
+> important.
+>
+> diff --git a/configure.ac b/configure.ac
+> index 52f3381..7a72b36 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -39,11 +39,26 @@ AC_CHECK_HEADERS([ \
+>     linux/mempolicy.h \
+>     linux/module.h \
+>     linux/netlink.h \
+> +    linux/ptrace.h \
+> +    linux/cgroupstats.h \
+> +    linux/taskstats.h \
+> +    linux/types.h \
+>     sys/acl.h \
+>     sys/epoll.h \
+>     sys/inotify.h \
+> +    sys/ptrace.h \
+> +    sys/reg.h \
+> +    asm/ldt.h \
+> +    asm/ptrace.h \
+>     sys/jfsdmapi.h \
+>     sys/prctl.h \
+> +    sys/epoll.h \
+> +    sys/ptrace.h \
+> +    sys/reg.h \
+> +    sys/stat.h \
+> +    sys/time.h \
+> +    sys/types.h \
+> +    sys/vfs.h \
+> ])
+>
+>
+> and then run make - there previous fault in configure caused that  
+> there are wrong symbols in Makefiles - for example for my case.
+>
+> microblaze-unknown-linux-gnu-gcc: @SELINUX_LIBS@: No such file or  
+> directory
+>
+> which is caused by problems in configure.
+>
+> Thanks for fixing,
+> Michal
+>
+> -- 
+> Michal Simek, Ing. (M.Eng)
+> PetaLogix - Linux Solutions for a Reconfigurable World
+> w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
 
 ------------------------------------------------------------------------------
-Join us December 9, 2009 for the Red Hat Virtual Experience,
-a free event focused on virtualization and cloud computing. 
-Attend in-depth sessions from your desk. Your couch. Anywhere.
-http://p.sf.net/sfu/redhat-sfdev2dev
---===============4395402509481894463==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4395402509481894463==--
-
