@@ -1,20 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <nobuhiro@andestech.com>) id 1NKSZP-0007lr-SK
-	for ltp-list@lists.sourceforge.net; Tue, 15 Dec 2009 08:15:47 +0000
-Received: from 59-124-160-117.hinet-ip.hinet.net ([59.124.160.117]
-	helo=ATCPCS06.andestech.com)
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NKSZH-0003mK-L3
-	for ltp-list@lists.sourceforge.net; Tue, 15 Dec 2009 08:15:47 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Date: Tue, 15 Dec 2009 16:02:58 +0800
-Message-ID: <50FD90C65C53FB45BADEEBCD84FF07F201E9A299@ATCPCS06.andestech.com>
-From: <nobuhiro@andestech.com>
-Subject: [LTP] SHMLBA alignment issue on shmat01 and shmat02
+	(envelope-from <yanegomi@gmail.com>) id 1NPcQl-0007L1-HB
+	for ltp-list@lists.sourceforge.net; Tue, 29 Dec 2009 13:48:11 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NPcQg-0008SN-UL
+	for ltp-list@lists.sourceforge.net; Tue, 29 Dec 2009 13:48:11 +0000
+Received: by pwj11 with SMTP id 11so7348373pwj.2
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 29 Dec 2009 05:48:00 -0800 (PST)
+References: <4B38DCFA.9000502@petalogix.com>
+	<9E3BA855-8CA7-414D-9622-2949FAD0416A@gmail.com>
+	<4B39C071.2010100@petalogix.com>
+Message-Id: <563FBE44-4156-44F0-BA0C-BE46488AD847@gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <4B39C071.2010100@petalogix.com>
+Mime-Version: 1.0 (iPhone Mail 7D11)
+Date: Tue, 29 Dec 2009 05:47:50 -0800
+Subject: Re: [LTP] Autotools
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,117 +29,159 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0890534133716499202=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-This is a multi-part message in MIME format.
-
---===============0890534133716499202==
-Content-class: urn:content-classes:message
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01CA7D5C.FA2CACE9"
-
-This is a multi-part message in MIME format.
-
-------_=_NextPart_001_01CA7D5C.FA2CACE9
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
-
-I have a question about the SHMLBA alignment on shmat01 and shmat02.
-At the end of setup():
-        /* some architectures (e.g. parisc) are strange, so better =
-always align to
-         * next SHMLBA address. */
-        base_addr =3D
-            (void *)(((unsigned long)(base_addr) + (SHMLBA - 1)) &
-                     ~(SHMLBA - 1));
-
-This is what I think, please correct if I'm wrong.
-Since shmget() creates the region of a multiple of PAGE_SIZE, the =
-base_addr after SHMLBA alignment does not guarantee to be available.
-Furthermore, it should be kernel architecture code to take care of the =
-D-cache aliasing issue, just like SPARC, ARM, MIPS do.
-=20
-Thanks.
-Nobuhiro
-
-------_=_NextPart_001_01CA7D5C.FA2CACE9
-Content-Type: text/html;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dbig5">
-<META content=3D"MSHTML 6.00.6000.16945" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><SPAN class=3D804080207-15122009><FONT face=3DArial>I have a =
-question about the=20
-SHMLBA alignment on shmat01 and shmat02.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D804080207-15122009><FONT face=3DArial>At the end of=20
-setup():</FONT></SPAN></DIV>
-<DIV><SPAN class=3D804080207-15122009><FONT=20
-face=3DArial>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /* some =
-architectures=20
-(e.g. parisc) are strange, so better always align=20
-to<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * next SHMLBA =
-address.=20
-*/<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base_addr=20
-=3D<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
- (void=20
-*)(((unsigned long)(base_addr) + (SHMLBA - 1))=20
-&amp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
-~(SHMLBA - 1));<BR></FONT></SPAN></DIV>
-<DIV><SPAN class=3D804080207-15122009><FONT face=3DArial>This is what I =
-think,=20
-please correct if I'm wrong.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D804080207-15122009><FONT face=3DArial>Since =
-shmget()&nbsp;creates=20
-the region of a multiple of PAGE_SIZE, </FONT></SPAN><SPAN=20
-class=3D804080207-15122009><FONT face=3DArial>t</FONT></SPAN><SPAN=20
-class=3D804080207-15122009><FONT face=3DArial>he base_addr after SHMLBA =
-alignment=20
-does not guarantee to be available.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D804080207-15122009><FONT face=3DArial>Furthermore, it =
-should be=20
-kernel architecture code to take care of the D-cache aliasing issue, =
-just like=20
-SPARC, ARM, MIPS do.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D804080207-15122009><FONT =
-face=3DArial></FONT></SPAN>&nbsp;</DIV>
-<DIV><SPAN class=3D804080207-15122009><FONT =
-face=3DArial>Thanks.</FONT></SPAN></DIV>
-<DIV><SPAN class=3D804080207-15122009><FONT=20
-face=3DArial>Nobuhiro</DIV></FONT></SPAN></BODY></HTML>
-
-------_=_NextPart_001_01CA7D5C.FA2CACE9--
-
-
---===============0890534133716499202==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: "michal.simek@petalogix.com" <michal.simek@petalogix.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+
+Yeah, I usually don't top-post, but emailing via smartphones is fun,  
+so... :)
+
+It sounds like your sources are incomplete -- 1) do you have an m4  
+directory at the top of the source tree and 2) is it populated with m4  
+files?
+
+Thanks,
+-Garrett
+
+PS your tools' versions look ok.
+
+On Dec 29, 2009, at 12:40 AM, Michal Simek  
+<michal.simek@petalogix.com> wrote:
+
+> Hi,
+> sorry for head quoting but it is better for your phone.:-)
+> I have interesting fault.
+> aclocal -I m4     works
+> but
+> autoreconf -I m4
+> aclocal: couldn't open directory `m4': No such file or directory
+> autoreconf: aclocal failed with exit status: 1
+>
+> Which versions do you use?
+> autoconf - 2.65
+> automake - 1.11
+> m4 - 1.4.13
+>
+> Thanks,
+> Michal
+>
+> Garrett Cooper wrote:
+>> Michal,
+>>    Just invoke autoreconf -I m4 and you'll get your desired result.  
+>> No commit required (except maybe another 'recipe' in INSTALL --  
+>> which I'd be more than happy to do after the 5th when I have real  
+>> Internet access ;]...). The problem with your proposed method is  
+>> that it was skipping a large number of autoconf portability tests  
+>> in the .m4 files, thus the configuration was pretty minimal...
+>> Cheers!
+>> -Garrett
+>> Sent from my iPhone
+>> On Dec 28, 2009, at 8:29 AM, Michal Simek  
+>> <michal.simek@petalogix.com> wrote:
+>>> Hi Garret,
+>>>
+>>> I am trying to configure LTP properly.
+>>> First thing which seems to me weird is that in INSTALL is for  
+>>> "Using autoconf" command make autotools
+>>>
+>>> autoreconf --install
+>>>
+>>> There are some warnings which could be fixed.
+>>>
+>>> then I am running
+>>>
+>>> ./configure --prefix=/tmp/
+>>>
+>>> and I see there
+>>>
+>>> ./configure: line 4566: LTP_CHECK_CAPABILITY_SUPPORT: command not  
+>>> found
+>>> ./configure: line 4567: LTP_CHECK_CRYPTO: command not found
+>>> ./configure: line 4568: LTP_CHECK_LINUX_PTRACE: command not found
+>>> ./configure: line 4569: LTP_CHECK_SELINUX: command not found
+>>> ./configure: line 4570: LTP_CHECK_SIGNAL: command not found
+>>> ./configure: line 4571: LTP_CHECK_SYSCALL_EVENTFD: command not found
+>>> ./configure: line 4572: LTP_CHECK_SYSCALL_MODIFY_LDT: command not  
+>>> found
+>>> ./configure: line 4573: LTP_CHECK_SYSCALL_NUMA: command not found
+>>> ./configure: line 4574: LTP_CHECK_SYSCALL_QUOTACTL: command not  
+>>> found
+>>> ./configure: line 4575: LTP_CHECK_SYSCALL_SIGNALFD: command not  
+>>> found
+>>> ./configure: line 4576: LTP_CHECK_SYSCALL_UNSHARE: command not found
+>>> ./configure: line 4577: LTP_CHECK_TASKSTATS: command not found
+>>>
+>>> ./configure: line 4759: REALTIME_CHECK_PRIO_INHERIT: command not  
+>>> found
+>>> ./configure: line 4760: REALTIME_CHECK_ROBUST_APIS: command not  
+>>> found
+>>>
+>>> + there are some missing dependency in configure.ac file. This  
+>>> patch should add them. I just grep whole LTP source - maybe some  
+>>> are not important.
+>>>
+>>> diff --git a/configure.ac b/configure.ac
+>>> index 52f3381..7a72b36 100644
+>>> --- a/configure.ac
+>>> +++ b/configure.ac
+>>> @@ -39,11 +39,26 @@ AC_CHECK_HEADERS([ \
+>>>    linux/mempolicy.h \
+>>>    linux/module.h \
+>>>    linux/netlink.h \
+>>> +    linux/ptrace.h \
+>>> +    linux/cgroupstats.h \
+>>> +    linux/taskstats.h \
+>>> +    linux/types.h \
+>>>    sys/acl.h \
+>>>    sys/epoll.h \
+>>>    sys/inotify.h \
+>>> +    sys/ptrace.h \
+>>> +    sys/reg.h \
+>>> +    asm/ldt.h \
+>>> +    asm/ptrace.h \
+>>>    sys/jfsdmapi.h \
+>>>    sys/prctl.h \
+>>> +    sys/epoll.h \
+>>> +    sys/ptrace.h \
+>>> +    sys/reg.h \
+>>> +    sys/stat.h \
+>>> +    sys/time.h \
+>>> +    sys/types.h \
+>>> +    sys/vfs.h \
+>>> ])
+>>>
+>>>
+>>> and then run make - there previous fault in configure caused that  
+>>> there are wrong symbols in Makefiles - for example for my case.
+>>>
+>>> microblaze-unknown-linux-gnu-gcc: @SELINUX_LIBS@: No such file or  
+>>> directory
+>>>
+>>> which is caused by problems in configure.
+>>>
+>>> Thanks for fixing,
+>>> Michal
+>>>
+>>> -- 
+>>> Michal Simek, Ing. (M.Eng)
+>>> PetaLogix - Linux Solutions for a Reconfigurable World
+>>> w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+>
+>
+> -- 
+> Michal Simek, Ing. (M.Eng)
+> PetaLogix - Linux Solutions for a Reconfigurable World
+> w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
 
 ------------------------------------------------------------------------------
-Return on Information:
-Google Enterprise Search pays you back
-Get the facts.
-http://p.sf.net/sfu/google-dev2dev
-
---===============0890534133716499202==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============0890534133716499202==--
-
