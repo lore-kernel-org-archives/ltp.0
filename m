@@ -1,24 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NJFHF-0001ne-Kv
-	for ltp-list@lists.sourceforge.net; Fri, 11 Dec 2009 23:52:01 +0000
-Received: from mail-pw0-f43.google.com ([209.85.160.43])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NJFH9-00082W-5c
-	for ltp-list@lists.sourceforge.net; Fri, 11 Dec 2009 23:52:01 +0000
-Received: by pwj11 with SMTP id 11so505682pwj.2
+	(envelope-from <michal.simek@petalogix.com>) id 1NPY3a-00081G-NO
+	for ltp-list@lists.sourceforge.net; Tue, 29 Dec 2009 09:07:58 +0000
+Received: from fg-out-1718.google.com ([72.14.220.154])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NPY3T-0003qG-4j
+	for ltp-list@lists.sourceforge.net; Tue, 29 Dec 2009 09:07:58 +0000
+Received: by fg-out-1718.google.com with SMTP id 19so238417fgg.10
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 11 Dec 2009 15:51:49 -0800 (PST)
+	Tue, 29 Dec 2009 01:07:44 -0800 (PST)
+Message-ID: <4B39C071.2010100@petalogix.com>
+Date: Tue, 29 Dec 2009 09:40:17 +0100
+From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-In-Reply-To: <EC76AAFC-5188-437C-BC62-9CCAFD521BA7@gmail.com>
-References: <1808828661.200561260496566142.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-	<EC76AAFC-5188-437C-BC62-9CCAFD521BA7@gmail.com>
-Date: Fri, 11 Dec 2009 15:51:49 -0800
-Message-ID: <364299f40912111551x4959d4e7y2beef5cfbc1d27b5@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH]fix compile error on ppc64 in RHEL5
+References: <4B38DCFA.9000502@petalogix.com>
+	<9E3BA855-8CA7-414D-9622-2949FAD0416A@gmail.com>
+In-Reply-To: <9E3BA855-8CA7-414D-9622-2949FAD0416A@gmail.com>
+Subject: Re: [LTP] Autotools
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,150 +29,140 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Caspar Zhang <czhang@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On Fri, Dec 11, 2009 at 6:22 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Dec 10, 2009, at 5:56 PM, Caspar Zhang wrote:
->
->>
->> ----- "Subrata Modak" <subrata@linux.vnet.ibm.com> wrote:
->>
->>> Hi Caspar,
->>>
->>> I just have 1 question below:
->>>
->>> On Wed, 2009-12-09 at 21:12 -0500, Caspar Zhang wrote:
->>>> Hi all,
->>>>
->>>> When I compile ltp-full-20091130 on ppc64 machine which system is
->>>> RHEL5(kernel 2.6.18), I met compile error as follows:
->>>>
->>>> [...]
->>>> ptrace04.c: In function =91compare_registers=92:
->>>> ptrace04.c:59: error: =91PTRACE_GETREGS=92 undeclared (first use in
->>> this
->>>> function)
->>>> ptrace04.c:59: error: (Each undeclared identifier is reported only
->>>> once
->>>> ptrace04.c:59: error: for each function it appears in.)
->>>> make[5]: *** [ptrace04] Error 1
->>>> [...]
->>>>
->>>> It seems like there's no PTRACE_GETREGS in
->>> /usr/include/asm/ptrace.h
->>>> in old kernels, so I copy the definitions from new version of the
->>>> head file and my ltp on ppc64, RHEL5 works.
->>>
->>> Are these nos. similar across all archs ? If they are specific only
->>> to
->>> PPC, you can then add the following 2 more lines to your patch:
->>>
->>>>
->>>> Thanks,
->>>> Caspar
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>> differences
->>>> between files
->>>> attachment
->>>> (rhel5-ppc-PTRACE_GETREGS-compile-err.patch)
->>>>
->>>> diff --git a/testcases/kernel/syscalls/ptrace/ptrace.h
->>>> b/testcases/kernel/syscalls/ptrace/ptrace.h
->>>> index a0d2708..e3fcbb2 100644
->>>> --- a/testcases/kernel/syscalls/ptrace/ptrace.h
->>>> +++ b/testcases/kernel/syscalls/ptrace/ptrace.h
->>>> @@ -37,4 +37,27 @@ typedef struct user_regs_struct ptrace_regs;
->>>> #undef HAVE_STRUCT_PTRACE_REGS
->>>> #endif
->>>>
->>>> +/* old kernel doesn't have PTRACE_GETREGS on ppc64 */
->>>> +/* (new) PTRACE requests using the same numbers as x86 and the
->>> same
->>>> + * argument ordering. Additionally, they support more registers
->>> too
->>>> + */
->>>
->>> #if defined(powerpc) || defined(__powerpc__) || defined(__ppc__) ||
->>> defined (__PPC__)
->>
->> Ah, yes. That sounds reasonable, thant you!
->
-> For whatever reason someone decided to be special on ppc64.. not sure why=
- (maybe because ppc and ppc64 diverged in older kernels and converged in la=
-ter ones?):
->
-> [root@localhost /]# egrep 'PTRACE_[GS]ETREGS' /scratch/fc4/kernel/include=
-/asm-ppc64/ptrace.h
-> #define PPC_PTRACE_GETREGS =A0 =A0 =A0 =A0 =A0 =A00x99 =A0/* Get GPRs 0 -=
- 31 */
-> #define PPC_PTRACE_SETREGS =A0 =A0 =A0 =A0 =A0 =A00x98 =A0/* Set GPRs 0 -=
- 31 */
->
-> [root@localhost /]# egrep 'PTRACE_[GS]ETREGS' /scratch/fc7/kernel/include=
-/asm-powerpc/ptrace.h
-> #define PPC_PTRACE_GETREGS =A0 =A0 =A00x99 =A0 =A0/* Get GPRs 0 - 31 */
-> #define PPC_PTRACE_SETREGS =A0 =A0 =A00x98 =A0 =A0/* Set GPRs 0 - 31 */
->
-> A similar issue may exist for sparc64, but I doubt it:
->
-> [root@localhost /]# egrep 'PTRACE_[GS]ETREGS' /scratch/fc4/kernel/include=
-/asm-sparc*/ptrace.h
-> /scratch/fc4/kernel/include/asm-sparc64/ptrace.h:#define PTRACE_GETREGS =
-=A0 =A0 =A0 =A0 =A0 =A012
-> /scratch/fc4/kernel/include/asm-sparc64/ptrace.h:#define PTRACE_SETREGS =
-=A0 =A0 =A0 =A0 =A0 =A013
-> /scratch/fc4/kernel/include/asm-sparc64/ptrace.h:#define PTRACE_GETREGS64=
- =A0 =A0 =A0 =A0 22
-> /scratch/fc4/kernel/include/asm-sparc64/ptrace.h:#define PTRACE_SETREGS64=
- =A0 =A0 =A0 =A0 23
-> /scratch/fc4/kernel/include/asm-sparc/ptrace.h:#define PTRACE_GETREGS =A0=
- =A0 =A0 =A0 =A0 =A012
-> /scratch/fc4/kernel/include/asm-sparc/ptrace.h:#define PTRACE_SETREGS =A0=
- =A0 =A0 =A0 =A0 =A013
->
-> What kernel version are you using again?
+Hi,
+sorry for head quoting but it is better for your phone.:-)
+I have interesting fault.
+  aclocal -I m4     works
+but
+  autoreconf -I m4
+  aclocal: couldn't open directory `m4': No such file or directory
+  autoreconf: aclocal failed with exit status: 1
 
-    If the new version from CVS doesn't compile, your build tree or
-compile options are most likely not properly setup:
+Which versions do you use?
+autoconf - 2.65
+automake - 1.11
+m4 - 1.4.13
 
-[garrcoop@sjc-lds-265 /nobackup/garrcoop/main]$ file
-contrib/ltp/obj-ppc64/testcases/kernel/syscalls/ptrace/ptrace0*
-contrib/ltp/obj-ppc64/testcases/kernel/syscalls/ptrace/ptrace01: ELF
-64-bit MSB executable, cisco 7500, version 1 (SYSV), for GNU/Linux
-2.6.4, dynamically linked (uses shared libs), not stripped
-contrib/ltp/obj-ppc64/testcases/kernel/syscalls/ptrace/ptrace02: ELF
-64-bit MSB executable, cisco 7500, version 1 (SYSV), for GNU/Linux
-2.6.4, dynamically linked (uses shared libs), not stripped
-contrib/ltp/obj-ppc64/testcases/kernel/syscalls/ptrace/ptrace03: ELF
-64-bit MSB executable, cisco 7500, version 1 (SYSV), for GNU/Linux
-2.6.4, dynamically linked (uses shared libs), not stripped
-contrib/ltp/obj-ppc64/testcases/kernel/syscalls/ptrace/ptrace04: ELF
-64-bit MSB executable, cisco 7500, version 1 (SYSV), for GNU/Linux
-2.6.4, dynamically linked (uses shared libs), not stripped
-contrib/ltp/obj-ppc64/testcases/kernel/syscalls/ptrace/ptrace05: ELF
-64-bit MSB executable, cisco 7500, version 1 (SYSV), for GNU/Linux
-2.6.4, dynamically linked (uses shared libs), not stripped
-
-    This is glibc 2.3.4 with kernel version 2.6.24. This was done with
-a cross-compile toolchain from work.
 Thanks,
--Garrett
+Michal
 
----------------------------------------------------------------------------=
----
-Return on Information:
-Google Enterprise Search pays you back
-Get the facts.
-http://p.sf.net/sfu/google-dev2dev
+Garrett Cooper wrote:
+> Michal,
+>     Just invoke autoreconf -I m4 and you'll get your desired result. No 
+> commit required (except maybe another 'recipe' in INSTALL -- which I'd 
+> be more than happy to do after the 5th when I have real Internet access 
+> ;]...). The problem with your proposed method is that it was skipping a 
+> large number of autoconf portability tests in the .m4 files, thus the 
+> configuration was pretty minimal...
+> Cheers!
+> -Garrett
+> 
+> Sent from my iPhone
+> 
+> On Dec 28, 2009, at 8:29 AM, Michal Simek <michal.simek@petalogix.com> 
+> wrote:
+> 
+>> Hi Garret,
+>>
+>> I am trying to configure LTP properly.
+>> First thing which seems to me weird is that in INSTALL is for "Using 
+>> autoconf" command make autotools
+>>
+>> autoreconf --install
+>>
+>> There are some warnings which could be fixed.
+>>
+>> then I am running
+>>
+>> ./configure --prefix=/tmp/
+>>
+>> and I see there
+>>
+>> ./configure: line 4566: LTP_CHECK_CAPABILITY_SUPPORT: command not found
+>> ./configure: line 4567: LTP_CHECK_CRYPTO: command not found
+>> ./configure: line 4568: LTP_CHECK_LINUX_PTRACE: command not found
+>> ./configure: line 4569: LTP_CHECK_SELINUX: command not found
+>> ./configure: line 4570: LTP_CHECK_SIGNAL: command not found
+>> ./configure: line 4571: LTP_CHECK_SYSCALL_EVENTFD: command not found
+>> ./configure: line 4572: LTP_CHECK_SYSCALL_MODIFY_LDT: command not found
+>> ./configure: line 4573: LTP_CHECK_SYSCALL_NUMA: command not found
+>> ./configure: line 4574: LTP_CHECK_SYSCALL_QUOTACTL: command not found
+>> ./configure: line 4575: LTP_CHECK_SYSCALL_SIGNALFD: command not found
+>> ./configure: line 4576: LTP_CHECK_SYSCALL_UNSHARE: command not found
+>> ./configure: line 4577: LTP_CHECK_TASKSTATS: command not found
+>>
+>> ./configure: line 4759: REALTIME_CHECK_PRIO_INHERIT: command not found
+>> ./configure: line 4760: REALTIME_CHECK_ROBUST_APIS: command not found
+>>
+>> + there are some missing dependency in configure.ac file. This patch 
+>> should add them. I just grep whole LTP source - maybe some are not 
+>> important.
+>>
+>> diff --git a/configure.ac b/configure.ac
+>> index 52f3381..7a72b36 100644
+>> --- a/configure.ac
+>> +++ b/configure.ac
+>> @@ -39,11 +39,26 @@ AC_CHECK_HEADERS([ \
+>>     linux/mempolicy.h \
+>>     linux/module.h \
+>>     linux/netlink.h \
+>> +    linux/ptrace.h \
+>> +    linux/cgroupstats.h \
+>> +    linux/taskstats.h \
+>> +    linux/types.h \
+>>     sys/acl.h \
+>>     sys/epoll.h \
+>>     sys/inotify.h \
+>> +    sys/ptrace.h \
+>> +    sys/reg.h \
+>> +    asm/ldt.h \
+>> +    asm/ptrace.h \
+>>     sys/jfsdmapi.h \
+>>     sys/prctl.h \
+>> +    sys/epoll.h \
+>> +    sys/ptrace.h \
+>> +    sys/reg.h \
+>> +    sys/stat.h \
+>> +    sys/time.h \
+>> +    sys/types.h \
+>> +    sys/vfs.h \
+>> ])
+>>
+>>
+>> and then run make - there previous fault in configure caused that 
+>> there are wrong symbols in Makefiles - for example for my case.
+>>
+>> microblaze-unknown-linux-gnu-gcc: @SELINUX_LIBS@: No such file or 
+>> directory
+>>
+>> which is caused by problems in configure.
+>>
+>> Thanks for fixing,
+>> Michal
+>>
+>> -- 
+>> Michal Simek, Ing. (M.Eng)
+>> PetaLogix - Linux Solutions for a Reconfigurable World
+>> w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+
+
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+
+------------------------------------------------------------------------------
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
