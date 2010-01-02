@@ -1,28 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NWgz8-00085Q-9m
-	for ltp-list@lists.sourceforge.net; Mon, 18 Jan 2010 02:04:54 +0000
-Received: from mail-pz0-f190.google.com ([209.85.222.190])
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1NR3lQ-0001Ao-K4
+	for ltp-list@lists.sourceforge.net; Sat, 02 Jan 2010 13:11:28 +0000
+Received: from mail-fx0-f222.google.com ([209.85.220.222])
 	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NWgz6-0008La-T9
-	for ltp-list@lists.sourceforge.net; Mon, 18 Jan 2010 02:04:54 +0000
-Received: by pzk28 with SMTP id 28so1286712pzk.4
+	id 1NR3lP-0002eq-7X
+	for ltp-list@lists.sourceforge.net; Sat, 02 Jan 2010 13:11:28 +0000
+Received: by fxm22 with SMTP id 22so16800051fxm.2
 	for <ltp-list@lists.sourceforge.net>;
-	Sun, 17 Jan 2010 18:04:47 -0800 (PST)
+	Sat, 02 Jan 2010 05:11:19 -0800 (PST)
+Message-ID: <4B3F45AE.2080808@petalogix.com>
+Date: Sat, 02 Jan 2010 14:10:06 +0100
+From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-In-Reply-To: <364299f41001171716k21411e25mc49f57c906d240d8@mail.gmail.com>
-References: <364299f41001151349i4e7067fbu68994eaf719b46de@mail.gmail.com>
-	<364299f41001151407s3e486c68rc8bd90db9898e20d@mail.gmail.com>
-	<201001151727.40629.vapier@gentoo.org>
-	<364299f41001162234k3ff212e9wb130a9b2b7a99e5b@mail.gmail.com>
-	<364299f41001171716k21411e25mc49f57c906d240d8@mail.gmail.com>
-Date: Sun, 17 Jan 2010 17:41:11 -0800
-Message-ID: <364299f41001171741w3625baa0xe3dd6041cb1d3f31@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Add make 3.80 $(abspath ) and $(realpath )
-	emulation scripts
+References: <4B38DCFA.9000502@petalogix.com>
+	<9E3BA855-8CA7-414D-9622-2949FAD0416A@gmail.com>
+	<4B39C071.2010100@petalogix.com>
+	<563FBE44-4156-44F0-BA0C-BE46488AD847@gmail.com>
+	<4B3CA234.7060402@petalogix.com>
+	<B74A2872-FFB1-49B5-B734-71B9A2CB9BC5@gmail.com>
+In-Reply-To: <B74A2872-FFB1-49B5-B734-71B9A2CB9BC5@gmail.com>
+Subject: Re: [LTP] Autotools
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,1054 +33,208 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: LTP list <ltp-list@lists.sourceforge.net>, Jiri Palecek <jirka@debian.org>, Andi Kleen <andi@firstfloor.org>, =?ISO-2022-JP?B?GyRCP0BDK0p+SE8bKEI=?= <mitani@ryobi.co.jp>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-2010/1/17 Garrett Cooper <yanegomi@gmail.com>:
-> 2010/1/16 Garrett Cooper <yanegomi@gmail.com>:
->> 2010/1/15 Mike Frysinger <vapier@gentoo.org>:
->>> On Friday 15 January 2010 17:07:48 Garrett Cooper wrote:
->>>> Shortly after I sent out this email, I received some helpful replies
->>>> as to why my code wasn't working. It turns out that the curly bracket
->>>> regexp quantifier operators available in many other popular
->>>> implementations of regexps (perl, python, tcl) isn't supported in awk.
->>>> Here's the new patch with less bloat.
->>>
->>> the patch itself is word wrapped in the e-mail though :(
->>>
->>>> +_abspath() {
->>>> + =A0 =A0 echo "$@" | awk '{ sub(/\/$/, ""); while (gsub(/\/\//, "/"))=
- { };
->>>> while (gsub(/\/[^\/]+\/\.\.\/?/, "/")) { }; while (gsub(/\/\.\//,
->>>> "/")) { } print }'
->>>> +}
->>>
->>> it's easy to line wrap awk scripts, and this sucker really needs it
->>>
->>> btw, this doesnt quite handle:
->>> /a/b/c/.././
->>>
->>> how about this (largely untested) sed:
->>> sed -r -e 's:/+[.]/+:/:g' -e 's:(^|/+[^/]*)/+[.][.]/+:/:g' -e 's:/+$::'
->>>
->>>> --- /dev/null 1 Jan 1970 00:00:00 -0000
->>>> +++ tests/test_abspath.sh =A0 =A0 15 Jan 2010 22:04:59 -0000
->>>> +# NOTE (garrcoop): I usually don't use bashisms, but it was just easi=
-er to
->>>> +# express these values as an array of values instead of one whacky lo=
-ng
->>>> +# string.
->>>> +test_strings=3D( =A0 =A0 foo/bar /foo/bar /foo/../bar /foo/bar/../baz
->>>> /foo/bar/../baz/ /foo/../bar/ /foo/../bar/.. /foo/../bar/../
->>>> /foo/bar/../baz /foo/./bar /./foo/./bar /foo//bar //foo/bar
->>>> //////foo/bar /foo/////bar )
->>>> +expected_strings=3D( foo/bar /foo/bar /bar =A0 =A0 =A0 =A0/foo/baz
->>>> /foo/baz =A0 =A0 =A0 =A0 /bar =A0 =A0 =A0 =A0 / =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0/ =A0 =A0 =A0 =A0 =A0 =A0 =A0 /foo/baz
->>>> =A0 =A0 =A0 /foo/bar =A0 /foo/bar =A0 =A0 /foo/bar =A0/foo/bar =A0/foo=
-/bar
->>>> /foo/bar )
->>>
->>> probably be good if the source were better wrapped
->>>
->>> however, two parallel arrays makes it hard to correlate the input/expec=
-ted
->>> values. =A0how about something like:
->>> set -- \
->>> =A0 =A0 =A0 =A0foo/bar:foo/bar \
->>> =A0 =A0 =A0 =A0/foo/bar:/foo/bar \
->>> =A0 =A0 =A0 =A0/foo/../bar:/bar \
->>> =A0 =A0 =A0 =A0...........
->>>
->>> then you can easily do:
->>> for test in "$@" ; do
->>> =A0 =A0 =A0 =A0input=3D${test%:*}
->>> =A0 =A0 =A0 =A0expect=3D${test#*:}
->>> =A0 =A0 =A0 =A0...
->>> done
->>>
->>> this should be POSIX and avoid /bin/bash
+>> [monstr@monstr ltp]$ autoreconf -I m4 --install --verbose
+>> autoreconf: Entering directory `.'
+>> autoreconf: configure.ac: not using Gettext
+>> autoreconf: running: aclocal -I m4
+>> autoreconf: configure.ac: tracing
+>> autoreconf: configure.ac: adding subdirectory 
+>> testcases/kernel/syscalls/libevent to autoreconf
+>> autoreconf: Entering directory `testcases/kernel/syscalls/libevent'
+>> autoreconf: configure.in: not using Gettext
+>> aclocal: couldn't open directory `m4': No such file or directory
+>> autoreconf: aclocal failed with exit status: 1
 >>
->> Version 2:
->>
->> 1. Incorporate comments from Mike F.
->> 2. Resolve a negative testcase failure.
->>
->> gcooper@orangebox /scratch/ltp $ scripts/tests/test_abspath.sh
->> test_abspath =A0 =A01 =A0TPASS =A0: =A0Test string matches expected stri=
-ng
->> _abspath(foo/bar) =3D> foo/bar =3D=3D foo/bar)
->> test_abspath =A0 =A02 =A0TPASS =A0: =A0Test string matches expected stri=
-ng
->> _abspath(/foo/bar) =3D> /foo/bar =3D=3D /foo/bar)
->> test_abspath =A0 =A03 =A0TPASS =A0: =A0Test string matches expected stri=
-ng
->> _abspath(/foo/../bar) =3D> /bar =3D=3D /bar)
->> test_abspath =A0 =A04 =A0TPASS =A0: =A0Test string matches expected stri=
-ng
->> _abspath(/foo/bar/../baz) =3D> /foo/baz =3D=3D /foo/baz)
->> test_abspath =A0 =A05 =A0TPASS =A0: =A0Test string matches expected stri=
-ng
->> _abspath(/foo/bar/../baz/) =3D> /foo/baz =3D=3D /foo/baz)
->> test_abspath =A0 =A06 =A0TPASS =A0: =A0Test string matches expected stri=
-ng
->> _abspath(/foo/../bar/) =3D> /bar =3D=3D /bar)
->> test_abspath =A0 =A07 =A0TPASS =A0: =A0Test string matches expected stri=
-ng
->> _abspath(/foo/../bar/..) =3D> / =3D=3D /)
->> test_abspath =A0 =A08 =A0TPASS =A0: =A0Test string matches expected stri=
-ng
->> _abspath(/foo/../bar/../) =3D> / =3D=3D /)
->> test_abspath =A0 =A09 =A0TPASS =A0: =A0Test string matches expected stri=
-ng
->> _abspath(/foo/bar/../baz) =3D> /foo/baz =3D=3D /foo/baz)
->> test_abspath =A0 10 =A0TPASS =A0: =A0Test string matches expected string
->> _abspath(/foo/./bar) =3D> /foo/bar =3D=3D /foo/bar)
->> test_abspath =A0 11 =A0TPASS =A0: =A0Test string matches expected string
->> _abspath(/./foo/./bar) =3D> /foo/bar =3D=3D /foo/bar)
->> test_abspath =A0 12 =A0TPASS =A0: =A0Test string matches expected string
->> _abspath(/foo//bar) =3D> /foo/bar =3D=3D /foo/bar)
->> test_abspath =A0 13 =A0TPASS =A0: =A0Test string matches expected string
->> _abspath(//foo/bar) =3D> /foo/bar =3D=3D /foo/bar)
->> test_abspath =A0 14 =A0TPASS =A0: =A0Test string matches expected string
->> _abspath(//////foo/bar) =3D> /foo/bar =3D=3D /foo/bar)
->> test_abspath =A0 15 =A0TPASS =A0: =A0Test string matches expected string
->> _abspath(/foo/////bar) =3D> /foo/bar =3D=3D /foo/bar)
->> test_abspath =A0 16 =A0TPASS =A0: =A0Test string matches expected string
->> _abspath(/a/b/c/.././) =3D> /a/b =3D=3D /a/b)
->> test_abspath =A0 17 =A0TPASS =A0: =A0Test string matches expected string
->> _abspath(/.foo) =3D> /.foo =3D=3D /.foo)
->> test_abspath =A0 18 =A0TPASS =A0: =A0Test string matches expected string
->> _abspath(./.foo) =3D> /.foo =3D=3D /.foo)
->> test_abspath =A0 19 =A0TPASS =A0: =A0Test string matches expected string
->> _abspath(/.foo/.bar) =3D> /.foo/.bar =3D=3D /.foo/.bar)
->> test_abspath =A0 20 =A0TPASS =A0: =A0Test string matches expected string
->> _abspath(./.foo/.bar) =3D> /.foo/.bar =3D=3D /.foo/.bar)
->>
->> Index: scripts/lib/file_functions.sh
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> RCS file: scripts/lib/file_functions.sh
->> diff -N scripts/lib/file_functions.sh
->> --- /dev/null =A0 1 Jan 1970 00:00:00 -0000
->> +++ scripts/lib/file_functions.sh =A0 =A0 =A0 17 Jan 2010 06:18:33 -0000
->> @@ -0,0 +1,50 @@
->> +#!/bin/sh
->> +#
->> +# File functions utilized as part of abspath.sh, realpath.sh, etc.
->> +#
->> +# =A0 =A0Copyright (C) 2010, Cisco Systems Inc.
->> +#
->> +# =A0 =A0This program is free software; you can redistribute it and/or =
-modify
->> +# =A0 =A0it under the terms of the GNU General Public License as publis=
-hed by
->> +# =A0 =A0the Free Software Foundation; either version 2 of the License,=
- or
->> +# =A0 =A0(at your option) any later version.
->> +#
->> +# =A0 =A0This program is distributed in the hope that it will be useful,
->> +# =A0 =A0but WITHOUT ANY WARRANTY; without even the implied warranty of
->> +# =A0 =A0MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. =A0See the
->> +# =A0 =A0GNU General Public License for more details.
->> +#
->> +# =A0 =A0You should have received a copy of the GNU General Public Lice=
-nse along
->> +# =A0 =A0with this program; if not, write to the Free Software Foundati=
-on, Inc.,
->> +# =A0 =A051 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
->> +#
->> +# Garrett Cooper, January 2010
->> +#
->> +# POSIX compliant bourne shell functions for performing make 3.81
->> +# compliancy in 3.80 with a minimal set of external commands
->> +# [awk(1) // readlink(1) only required].
->> +#
->> +
->> +# 1. Replace /+ with /.
->> +# 2. Replace a/b/../c with a/c
->> +# 3. Replace /./ with /
->> +# 4. Replace trailing /. with /
->> +# 5. Replace heading ./ with /
->> +_abspath() {
->> + =A0 =A0 =A0 echo "$@" | awk '{
->> + =A0 =A0 =A0 while (gsub(/\/\//, "/")) { };
->> + =A0 =A0 =A0 while (gsub(/\/[^\/]+\/\.\.\/?/, "/")) { };
->> + =A0 =A0 =A0 while (gsub(/\/\.\//, "/")) { };
->> + =A0 =A0 =A0 sub(/(\/\.)?\/$/, "");
->> + =A0 =A0 =A0 sub(/^\.\//, "/") ;
->> + =A0 =A0 =A0 if ($0 =3D=3D "") {
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 print "/";
->> + =A0 =A0 =A0 } else {
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 print;
->> + =A0 =A0 =A0 }
->> +}'
->> +}
->> +
->> +_realpath() {
->> + =A0 =A0 =A0 readlink -f "$@"
->> +}
->> Index: scripts/tests/test_abspath.sh
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> RCS file: scripts/tests/test_abspath.sh
->> diff -N scripts/tests/test_abspath.sh
->> --- /dev/null =A0 1 Jan 1970 00:00:00 -0000
->> +++ scripts/tests/test_abspath.sh =A0 =A0 =A0 17 Jan 2010 06:18:33 -0000
->> @@ -0,0 +1,73 @@
->> +#!/bin/sh
->> +#
->> +# Test the _abspath function, utilized as part of abspath.sh
->> +#
->> +# =A0 =A0Copyright (C) 2010, Cisco Systems Inc.
->> +#
->> +# =A0 =A0This program is free software; you can redistribute it and/or =
-modify
->> +# =A0 =A0it under the terms of the GNU General Public License as publis=
-hed by
->> +# =A0 =A0the Free Software Foundation; either version 2 of the License,=
- or
->> +# =A0 =A0(at your option) any later version.
->> +#
->> +# =A0 =A0This program is distributed in the hope that it will be useful,
->> +# =A0 =A0but WITHOUT ANY WARRANTY; without even the implied warranty of
->> +# =A0 =A0MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. =A0See the
->> +# =A0 =A0GNU General Public License for more details.
->> +#
->> +# =A0 =A0You should have received a copy of the GNU General Public Lice=
-nse along
->> +# =A0 =A0with this program; if not, write to the Free Software Foundati=
-on, Inc.,
->> +# =A0 =A051 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
->> +#
->> +# Garrett Cooper, January 2010
->> +#
->> +
->> +set -- foo/bar:foo/bar =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 \
->> + =A0 =A0 =A0 /foo/bar:/foo/bar =A0 =A0 =A0 =A0 =A0 =A0 =A0 \
->> + =A0 =A0 =A0 /foo/../bar:/bar =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0\
->> + =A0 =A0 =A0 /foo/bar/../baz:/foo/baz =A0 =A0 =A0 =A0\
->> + =A0 =A0 =A0 /foo/bar/../baz/:/foo/baz =A0 =A0 =A0 \
->> + =A0 =A0 =A0 /foo/../bar/:/bar =A0 =A0 =A0 =A0 =A0 =A0 =A0 \
->> + =A0 =A0 =A0 /foo/../bar/..:/ =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0\
->> + =A0 =A0 =A0 /foo/../bar/../:/ =A0 =A0 =A0 =A0 =A0 =A0 =A0 \
->> + =A0 =A0 =A0 /foo/bar/../baz:/foo/baz =A0 =A0 =A0 =A0\
->> + =A0 =A0 =A0 /foo/./bar:/foo/bar =A0 =A0 =A0 =A0 =A0 =A0 \
->> + =A0 =A0 =A0 /./foo/./bar:/foo/bar =A0 =A0 =A0 =A0 =A0 \
->> + =A0 =A0 =A0 /foo//bar:/foo/bar =A0 =A0 =A0 =A0 =A0 =A0 =A0\
->> + =A0 =A0 =A0 //foo/bar:/foo/bar =A0 =A0 =A0 =A0 =A0 =A0 =A0\
->> + =A0 =A0 =A0 //////foo/bar:/foo/bar =A0 =A0 =A0 =A0 =A0\
->> + =A0 =A0 =A0 /foo/////bar:/foo/bar =A0 =A0 =A0 =A0 =A0 \
->> + =A0 =A0 =A0 /a/b/c/.././:/a/b =A0 =A0 =A0 =A0 =A0 =A0 =A0 \
->> + =A0 =A0 =A0 /.foo:/.foo =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 \
->> + =A0 =A0 =A0 ./.foo:/.foo =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0\
->> + =A0 =A0 =A0 /.foo/.bar:/.foo/.bar =A0 =A0 =A0 =A0 =A0 \
->> + =A0 =A0 =A0 ./.foo/.bar:/.foo/.bar
->> +
->> +export TCID=3Dtest_abspath
->> +export TST_TOTAL=3D$#
->> +export TST_COUNT=3D1
->> +
->> +. "${0%/*}/../lib/file_functions.sh"
->> +
->> +for i in "$@"; do
->> +
->> + =A0 =A0 =A0 test_string=3D${i%:*}
->> + =A0 =A0 =A0 expected_string=3D${i#*:}
->> +
->> + =A0 =A0 =A0 result=3D$(_abspath "$test_string")
->> +
->> + =A0 =A0 =A0 if [ "$result" =3D "$expected_string" ]; then
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 result_s=3D"matches expected string _abspa=
-th(${test_string}) =3D>
->> $result =3D=3D $expected_string)"
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 result_v=3DTPASS
->> + =A0 =A0 =A0 else
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 result_s=3D"doesn't match expected string =
-_abspath(${test_string}) =3D>
->> $result !=3D $expected_string)"
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 result_v=3DTFAIL
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAILED=3D1
->> + =A0 =A0 =A0 fi
->> +
->> + =A0 =A0 =A0 tst_resm $result_v "Test string $result_s"
->> +
->> + =A0 =A0 =A0 : $(( TST_COUNT +=3D 1 ))
->> +
->> +done
->> +
->> +exit ${FAILED:=3D0}
->> Index: scripts/abspath.sh
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> RCS file: scripts/abspath.sh
->> diff -N scripts/abspath.sh
->> --- /dev/null =A0 1 Jan 1970 00:00:00 -0000
->> +++ scripts/abspath.sh =A017 Jan 2010 06:18:33 -0000
->> @@ -0,0 +1,29 @@
->> +#!/bin/sh
->> +#
->> +# =A0 =A0make 3.81 $(abspath .. ) emulation layer
->> +#
->> +# =A0 =A0Copyright (C) 2010, Cisco Systems Inc.
->> +#
->> +# =A0 =A0This program is free software; you can redistribute it and/or =
-modify
->> +# =A0 =A0it under the terms of the GNU General Public License as publis=
-hed by
->> +# =A0 =A0the Free Software Foundation; either version 2 of the License,=
- or
->> +# =A0 =A0(at your option) any later version.
->> +#
->> +# =A0 =A0This program is distributed in the hope that it will be useful,
->> +# =A0 =A0but WITHOUT ANY WARRANTY; without even the implied warranty of
->> +# =A0 =A0MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. =A0See the
->> +# =A0 =A0GNU General Public License for more details.
->> +#
->> +# =A0 =A0You should have received a copy of the GNU General Public Lice=
-nse along
->> +# =A0 =A0with this program; if not, write to the Free Software Foundati=
-on, Inc.,
->> +# =A0 =A051 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
->> +#
->> +# Garrett Cooper, January 2010
->> +#
->> +
->> +. "${0%/*}/lib/file_functions.sh"
->> +
->> +while [ $# -gt 0 ] ; do
->> + =A0 =A0 =A0 _abspath "$1"
->> + =A0 =A0 =A0 shift
->> +done
->> Index: scripts/realpath.sh
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> RCS file: scripts/realpath.sh
->> diff -N scripts/realpath.sh
->> --- /dev/null =A0 1 Jan 1970 00:00:00 -0000
->> +++ scripts/realpath.sh 17 Jan 2010 06:18:33 -0000
->> @@ -0,0 +1,29 @@
->> +#!/bin/sh
->> +#
->> +# =A0 =A0make 3.81 $(realpath .. ) emulation layer
->> +#
->> +# =A0 =A0Copyright (C) 2010, Cisco Systems Inc.
->> +#
->> +# =A0 =A0This program is free software; you can redistribute it and/or =
-modify
->> +# =A0 =A0it under the terms of the GNU General Public License as publis=
-hed by
->> +# =A0 =A0the Free Software Foundation; either version 2 of the License,=
- or
->> +# =A0 =A0(at your option) any later version.
->> +#
->> +# =A0 =A0This program is distributed in the hope that it will be useful,
->> +# =A0 =A0but WITHOUT ANY WARRANTY; without even the implied warranty of
->> +# =A0 =A0MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. =A0See the
->> +# =A0 =A0GNU General Public License for more details.
->> +#
->> +# =A0 =A0You should have received a copy of the GNU General Public Lice=
-nse along
->> +# =A0 =A0with this program; if not, write to the Free Software Foundati=
-on, Inc.,
->> +# =A0 =A051 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
->> +#
->> +# Garrett Cooper, January 2010
->> +#
->> +
->> +. "${0%/*}/lib/file_functions.sh"
->> +
->> +while [ $# -gt 0 ] ; do
->> + =A0 =A0 =A0 _realpath "$1"
->> + =A0 =A0 =A0 shift
->> +done
->>
->
-> It appears that GNU make 3.81 makes some interesting assumptions about
-> some corner cases (`', `.', relative paths), where it does the
-> following:
->
-> 1. relative paths automatically are prefixed with $PWD.
-> 2. `' and '.' automatically translate to $PWD.
->
-> This diff takes that behavior into account and adds appropriate
-> testcases to match the behavior:
->
-> gcooper@optimus /scratch/ltp $ scripts/tests/test_abspath.sh
-> test_abspath =A0 =A01 =A0TPASS =A0: =A0Test string matches expected string
-> _abspath() =3D> /scratch/ltp =3D=3D /scratch/ltp)
-> test_abspath =A0 =A02 =A0TPASS =A0: =A0Test string matches expected string
-> _abspath(.) =3D> /scratch/ltp =3D=3D /scratch/ltp)
-> test_abspath =A0 =A03 =A0TPASS =A0: =A0Test string matches expected string
-> _abspath(foo/bar) =3D> /scratch/ltp/foo/bar =3D=3D /scratch/ltp/foo/bar)
-> test_abspath =A0 =A04 =A0TPASS =A0: =A0Test string matches expected string
-> _abspath(/foo/bar) =3D> /foo/bar =3D=3D /foo/bar)
-> test_abspath =A0 =A05 =A0TPASS =A0: =A0Test string matches expected string
-> _abspath(/foo/../bar) =3D> /bar =3D=3D /bar)
-> test_abspath =A0 =A06 =A0TPASS =A0: =A0Test string matches expected string
-> _abspath(/foo/bar/../baz) =3D> /foo/baz =3D=3D /foo/baz)
-> test_abspath =A0 =A07 =A0TPASS =A0: =A0Test string matches expected string
-> _abspath(/foo/bar/../baz/) =3D> /foo/baz =3D=3D /foo/baz)
-> test_abspath =A0 =A08 =A0TPASS =A0: =A0Test string matches expected string
-> _abspath(/foo/../bar/) =3D> /bar =3D=3D /bar)
-> test_abspath =A0 =A09 =A0TPASS =A0: =A0Test string matches expected string
-> _abspath(/foo/../bar/..) =3D> / =3D=3D /)
-> test_abspath =A0 10 =A0TPASS =A0: =A0Test string matches expected string
-> _abspath(/foo/../bar/../) =3D> / =3D=3D /)
-> test_abspath =A0 11 =A0TPASS =A0: =A0Test string matches expected string
-> _abspath(/foo/bar/../baz) =3D> /foo/baz =3D=3D /foo/baz)
-> test_abspath =A0 12 =A0TPASS =A0: =A0Test string matches expected string
-> _abspath(/foo/./bar) =3D> /foo/bar =3D=3D /foo/bar)
-> test_abspath =A0 13 =A0TPASS =A0: =A0Test string matches expected string
-> _abspath(/./foo/./bar) =3D> /foo/bar =3D=3D /foo/bar)
-> test_abspath =A0 14 =A0TPASS =A0: =A0Test string matches expected string
-> _abspath(/foo//bar) =3D> /foo/bar =3D=3D /foo/bar)
-> test_abspath =A0 15 =A0TPASS =A0: =A0Test string matches expected string
-> _abspath(//foo/bar) =3D> /foo/bar =3D=3D /foo/bar)
-> test_abspath =A0 16 =A0TPASS =A0: =A0Test string matches expected string
-> _abspath(//////foo/bar) =3D> /foo/bar =3D=3D /foo/bar)
-> test_abspath =A0 17 =A0TPASS =A0: =A0Test string matches expected string
-> _abspath(/foo/////bar) =3D> /foo/bar =3D=3D /foo/bar)
-> test_abspath =A0 18 =A0TPASS =A0: =A0Test string matches expected string
-> _abspath(/a/b/c/.././) =3D> /a/b =3D=3D /a/b)
-> test_abspath =A0 19 =A0TPASS =A0: =A0Test string matches expected string
-> _abspath(/.foo) =3D> /.foo =3D=3D /.foo)
-> test_abspath =A0 20 =A0TPASS =A0: =A0Test string matches expected string
-> _abspath(./.foo) =3D> /.foo =3D=3D /.foo)
-> test_abspath =A0 21 =A0TPASS =A0: =A0Test string matches expected string
-> _abspath(/.foo/.bar) =3D> /.foo/.bar =3D=3D /.foo/.bar)
-> test_abspath =A0 22 =A0TPASS =A0: =A0Test string matches expected string
-> _abspath(./.foo/.bar) =3D> /.foo/.bar =3D=3D /.foo/.bar)
->
-> Unless there are some style or implementation issues with the code
-> here, I'd say it's ready for commit.
->
-> Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
->
-> Index: scripts/lib/file_functions.sh
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> RCS file: scripts/lib/file_functions.sh
-> diff -N scripts/lib/file_functions.sh
-> --- /dev/null =A0 1 Jan 1970 00:00:00 -0000
-> +++ scripts/lib/file_functions.sh =A0 =A0 =A0 18 Jan 2010 01:15:32 -0000
-> @@ -0,0 +1,64 @@
-> +#!/bin/sh
-> +#
-> +# File functions utilized as part of abspath.sh, realpath.sh, etc.
-> +#
-> +# =A0 =A0Copyright (C) 2010, Cisco Systems Inc.
-> +#
-> +# =A0 =A0This program is free software; you can redistribute it and/or m=
-odify
-> +# =A0 =A0it under the terms of the GNU General Public License as publish=
-ed by
-> +# =A0 =A0the Free Software Foundation; either version 2 of the License, =
-or
-> +# =A0 =A0(at your option) any later version.
-> +#
-> +# =A0 =A0This program is distributed in the hope that it will be useful,
-> +# =A0 =A0but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +# =A0 =A0MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. =A0See the
-> +# =A0 =A0GNU General Public License for more details.
-> +#
-> +# =A0 =A0You should have received a copy of the GNU General Public Licen=
-se along
-> +# =A0 =A0with this program; if not, write to the Free Software Foundatio=
-n, Inc.,
-> +# =A0 =A051 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> +#
-> +# Garrett Cooper, January 2010
-> +#
-> +# POSIX compliant bourne shell functions for performing make 3.81
-> +# compliancy in 3.80 with a minimal set of external commands
-> +# [awk(1) // readlink(1) only required].
-> +#
-> +
-> +# 1. Strip all heading and leading space.
-> +# 1. Replace /+ with /.
-> +# 2. Replace a/b/../c with a/c
-> +# 3. Replace /./ with /
-> +# 4. Replace trailing /. with /
-> +# 5. Replace heading ./ with /
-> +_abspath() {
-> + =A0 =A0 =A0 echo "$@" | awk -v PWD=3D$(pwd) '{
-> + =A0 =A0 =A0 sub(/^[[:space:]]+/, ""); sub(/[[:space:]]+$/, "")
-> + =A0 =A0 =A0 if ($0 =3D=3D "") {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 print PWD
-> + =A0 =A0 =A0 } else {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 while (gsub(/\/\//, "/")) { };
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 while (gsub(/\/[^\/]+\/\.\.\/?/, "/")) { };
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 while (gsub(/\/\.\//, "/")) { };
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sub(/(\/\.)?\/$/, "");
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sub(/^\.\//, "/") ;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if ($0 =3D=3D "") {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 print "/"
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 } else {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if ($0 =3D=3D ".") {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 print PWD
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 } else {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (!($0 ~ =
-/^\//)) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 print PWD "/" $0
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 } else {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 print
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
-> + =A0 =A0 =A0 }
-> +}'
-> +}
-> +
-> +_realpath() {
-> + =A0 =A0 =A0 readlink -f "$@"
-> +}
-> Index: scripts/tests/test_abspath.sh
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> RCS file: scripts/tests/test_abspath.sh
-> diff -N scripts/tests/test_abspath.sh
-> --- /dev/null =A0 1 Jan 1970 00:00:00 -0000
-> +++ scripts/tests/test_abspath.sh =A0 =A0 =A0 18 Jan 2010 01:15:32 -0000
-> @@ -0,0 +1,76 @@
-> +#!/bin/sh
-> +#
-> +# Test the _abspath function, utilized as part of abspath.sh
-> +#
-> +# =A0 =A0Copyright (C) 2010, Cisco Systems Inc.
-> +#
-> +# =A0 =A0This program is free software; you can redistribute it and/or m=
-odify
-> +# =A0 =A0it under the terms of the GNU General Public License as publish=
-ed by
-> +# =A0 =A0the Free Software Foundation; either version 2 of the License, =
-or
-> +# =A0 =A0(at your option) any later version.
-> +#
-> +# =A0 =A0This program is distributed in the hope that it will be useful,
-> +# =A0 =A0but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +# =A0 =A0MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. =A0See the
-> +# =A0 =A0GNU General Public License for more details.
-> +#
-> +# =A0 =A0You should have received a copy of the GNU General Public Licen=
-se along
-> +# =A0 =A0with this program; if not, write to the Free Software Foundatio=
-n, Inc.,
-> +# =A0 =A051 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> +#
-> +# Garrett Cooper, January 2010
-> +#
-> +
-> +set -- \
-> + =A0 =A0 =A0 :$PWD =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 \
-> + =A0 =A0 =A0 .:$PWD =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0\
-> + =A0 =A0 =A0 foo/bar:$PWD/foo/bar =A0 =A0 =A0 =A0 =A0 =A0\
-> + =A0 =A0 =A0 /foo/bar:/foo/bar =A0 =A0 =A0 =A0 =A0 =A0 =A0 \
-> + =A0 =A0 =A0 /foo/../bar:/bar =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0\
-> + =A0 =A0 =A0 /foo/bar/../baz:/foo/baz =A0 =A0 =A0 =A0\
-> + =A0 =A0 =A0 /foo/bar/../baz/:/foo/baz =A0 =A0 =A0 \
-> + =A0 =A0 =A0 /foo/../bar/:/bar =A0 =A0 =A0 =A0 =A0 =A0 =A0 \
-> + =A0 =A0 =A0 /foo/../bar/..:/ =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0\
-> + =A0 =A0 =A0 /foo/../bar/../:/ =A0 =A0 =A0 =A0 =A0 =A0 =A0 \
-> + =A0 =A0 =A0 /foo/bar/../baz:/foo/baz =A0 =A0 =A0 =A0\
-> + =A0 =A0 =A0 /foo/./bar:/foo/bar =A0 =A0 =A0 =A0 =A0 =A0 \
-> + =A0 =A0 =A0 /./foo/./bar:/foo/bar =A0 =A0 =A0 =A0 =A0 \
-> + =A0 =A0 =A0 /foo//bar:/foo/bar =A0 =A0 =A0 =A0 =A0 =A0 =A0\
-> + =A0 =A0 =A0 //foo/bar:/foo/bar =A0 =A0 =A0 =A0 =A0 =A0 =A0\
-> + =A0 =A0 =A0 //////foo/bar:/foo/bar =A0 =A0 =A0 =A0 =A0\
-> + =A0 =A0 =A0 /foo/////bar:/foo/bar =A0 =A0 =A0 =A0 =A0 \
-> + =A0 =A0 =A0 /a/b/c/.././:/a/b =A0 =A0 =A0 =A0 =A0 =A0 =A0 \
-> + =A0 =A0 =A0 /.foo:/.foo =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 \
-> + =A0 =A0 =A0 ./.foo:/.foo =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0\
-> + =A0 =A0 =A0 /.foo/.bar:/.foo/.bar =A0 =A0 =A0 =A0 =A0 \
-> + =A0 =A0 =A0 ./.foo/.bar:/.foo/.bar
-> +
-> +export TCID=3Dtest_abspath
-> +export TST_TOTAL=3D$#
-> +export TST_COUNT=3D1
-> +
-> +. "${0%/*}/../lib/file_functions.sh"
-> +
-> +for i in "$@"; do
-> +
-> + =A0 =A0 =A0 test_string=3D${i%:*}
-> + =A0 =A0 =A0 expected_string=3D${i#*:}
-> +
-> + =A0 =A0 =A0 result=3D$(_abspath "$test_string")
-> +
-> + =A0 =A0 =A0 if [ "$result" =3D "$expected_string" ]; then
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 result_s=3D"matches expected string _abspat=
-h(${test_string}) =3D>
-> $result =3D=3D $expected_string)"
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 result_v=3DTPASS
-> + =A0 =A0 =A0 else
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 result_s=3D"doesn't match expected string _=
-abspath(${test_string}) =3D>
-> $result !=3D $expected_string)"
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 result_v=3DTFAIL
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 FAILED=3D1
-> + =A0 =A0 =A0 fi
-> +
-> + =A0 =A0 =A0 tst_resm $result_v "Test string $result_s"
-> +
-> + =A0 =A0 =A0 : $(( TST_COUNT +=3D 1 ))
-> +
-> +done
-> +
-> +exit ${FAILED:=3D0}
-> Index: scripts/abspath.sh
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> RCS file: scripts/abspath.sh
-> diff -N scripts/abspath.sh
-> --- /dev/null =A0 1 Jan 1970 00:00:00 -0000
-> +++ scripts/abspath.sh =A018 Jan 2010 01:15:32 -0000
-> @@ -0,0 +1,29 @@
-> +#!/bin/sh
-> +#
-> +# =A0 =A0make 3.81 $(abspath .. ) emulation layer
-> +#
-> +# =A0 =A0Copyright (C) 2010, Cisco Systems Inc.
-> +#
-> +# =A0 =A0This program is free software; you can redistribute it and/or m=
-odify
-> +# =A0 =A0it under the terms of the GNU General Public License as publish=
-ed by
-> +# =A0 =A0the Free Software Foundation; either version 2 of the License, =
-or
-> +# =A0 =A0(at your option) any later version.
-> +#
-> +# =A0 =A0This program is distributed in the hope that it will be useful,
-> +# =A0 =A0but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +# =A0 =A0MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. =A0See the
-> +# =A0 =A0GNU General Public License for more details.
-> +#
-> +# =A0 =A0You should have received a copy of the GNU General Public Licen=
-se along
-> +# =A0 =A0with this program; if not, write to the Free Software Foundatio=
-n, Inc.,
-> +# =A0 =A051 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> +#
-> +# Garrett Cooper, January 2010
-> +#
-> +
-> +. "${0%/*}/lib/file_functions.sh"
-> +
-> +while [ $# -gt 0 ] ; do
-> + =A0 =A0 =A0 _abspath "$1"
-> + =A0 =A0 =A0 shift
-> +done
-> Index: scripts/realpath.sh
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> RCS file: scripts/realpath.sh
-> diff -N scripts/realpath.sh
-> --- /dev/null =A0 1 Jan 1970 00:00:00 -0000
-> +++ scripts/realpath.sh 18 Jan 2010 01:15:32 -0000
-> @@ -0,0 +1,29 @@
-> +#!/bin/sh
-> +#
-> +# =A0 =A0make 3.81 $(realpath .. ) emulation layer
-> +#
-> +# =A0 =A0Copyright (C) 2010, Cisco Systems Inc.
-> +#
-> +# =A0 =A0This program is free software; you can redistribute it and/or m=
-odify
-> +# =A0 =A0it under the terms of the GNU General Public License as publish=
-ed by
-> +# =A0 =A0the Free Software Foundation; either version 2 of the License, =
-or
-> +# =A0 =A0(at your option) any later version.
-> +#
-> +# =A0 =A0This program is distributed in the hope that it will be useful,
-> +# =A0 =A0but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +# =A0 =A0MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. =A0See the
-> +# =A0 =A0GNU General Public License for more details.
-> +#
-> +# =A0 =A0You should have received a copy of the GNU General Public Licen=
-se along
-> +# =A0 =A0with this program; if not, write to the Free Software Foundatio=
-n, Inc.,
-> +# =A0 =A051 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> +#
-> +# Garrett Cooper, January 2010
-> +#
-> +
-> +. "${0%/*}/lib/file_functions.sh"
-> +
-> +while [ $# -gt 0 ] ; do
-> + =A0 =A0 =A0 _realpath "$1"
-> + =A0 =A0 =A0 shift
-> +done
->
+>> seems to me that is problem with tools versions. :-(
+> 
+> This is different though -- it's cd'ing to 
+> testcases/kernel/syscalls/libevent, looking for m4 and failing... Which 
+> is weird because it doesn't match the behavior that I have with my 
+> version...
 
-Of course me being conservative and curious, I discovered a coverage
-gap (the .sh files themselves). This fixes that behavior because the
-output from abspath.sh // realpath.sh had newlines in it before. make
-3.81 calls to $(abspath ) // $(realpath ) don't have newlines in them
-and while make does a pretty good job at mashing newlines in
-variables, I'd rather take the conservative route and ensure that the
-end-behavior in the emulation scripts matches the behavior in make
-verbatim:
+If you want to know any other version which I use let me know.
 
-gcooper@optimus /scratch/ltp $ scripts/tests/test_abspath.sh
-test_abspath    1  TPASS  :  Test string matches expected string
-_abspath() =3D> /scratch/ltp =3D=3D /scratch/ltp)
-test_abspath    2  TPASS  :  Test string matches expected string
-_abspath(.) =3D> /scratch/ltp =3D=3D /scratch/ltp)
-test_abspath    3  TPASS  :  Test string matches expected string
-_abspath(foo/bar) =3D> /scratch/ltp/foo/bar =3D=3D /scratch/ltp/foo/bar)
-test_abspath    4  TPASS  :  Test string matches expected string
-_abspath(/foo/bar) =3D> /foo/bar =3D=3D /foo/bar)
-test_abspath    5  TPASS  :  Test string matches expected string
-_abspath(/foo/../bar) =3D> /bar =3D=3D /bar)
-test_abspath    6  TPASS  :  Test string matches expected string
-_abspath(/foo/bar/../baz) =3D> /foo/baz =3D=3D /foo/baz)
-test_abspath    7  TPASS  :  Test string matches expected string
-_abspath(/foo/bar/../baz/) =3D> /foo/baz =3D=3D /foo/baz)
-test_abspath    8  TPASS  :  Test string matches expected string
-_abspath(/foo/../bar/) =3D> /bar =3D=3D /bar)
-test_abspath    9  TPASS  :  Test string matches expected string
-_abspath(/foo/../bar/..) =3D> / =3D=3D /)
-test_abspath   10  TPASS  :  Test string matches expected string
-_abspath(/foo/../bar/../) =3D> / =3D=3D /)
-test_abspath   11  TPASS  :  Test string matches expected string
-_abspath(/foo/bar/../baz) =3D> /foo/baz =3D=3D /foo/baz)
-test_abspath   12  TPASS  :  Test string matches expected string
-_abspath(/foo/./bar) =3D> /foo/bar =3D=3D /foo/bar)
-test_abspath   13  TPASS  :  Test string matches expected string
-_abspath(/./foo/./bar) =3D> /foo/bar =3D=3D /foo/bar)
-test_abspath   14  TPASS  :  Test string matches expected string
-_abspath(/foo//bar) =3D> /foo/bar =3D=3D /foo/bar)
-test_abspath   15  TPASS  :  Test string matches expected string
-_abspath(//foo/bar) =3D> /foo/bar =3D=3D /foo/bar)
-test_abspath   16  TPASS  :  Test string matches expected string
-_abspath(//////foo/bar) =3D> /foo/bar =3D=3D /foo/bar)
-test_abspath   17  TPASS  :  Test string matches expected string
-_abspath(/foo/////bar) =3D> /foo/bar =3D=3D /foo/bar)
-test_abspath   18  TPASS  :  Test string matches expected string
-_abspath(/a/b/c/.././) =3D> /a/b =3D=3D /a/b)
-test_abspath   19  TPASS  :  Test string matches expected string
-_abspath(/.foo) =3D> /.foo =3D=3D /.foo)
-test_abspath   20  TPASS  :  Test string matches expected string
-_abspath(./.foo) =3D> /.foo =3D=3D /.foo)
-test_abspath   21  TPASS  :  Test string matches expected string
-_abspath(/.foo/.bar) =3D> /.foo/.bar =3D=3D /.foo/.bar)
-test_abspath   22  TPASS  :  Test string matches expected string
-_abspath(./.foo/.bar) =3D> /.foo/.bar =3D=3D /.foo/.bar)
-test_abspath   23  TPASS  :  Test string matches expected string
-_abspath() =3D> /scratch/ltp =3D=3D /scratch/ltp)
-test_abspath   24  TPASS  :  Test string matches expected string
-_abspath("" .) =3D> /scratch/ltp /scratch/ltp =3D=3D /scratch/ltp
-/scratch/ltp)
+> 
+> If you do -I $PWD/m4, I'll almost guarantee that it'll work.
 
-Index: scripts/lib/file_functions.sh
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: scripts/lib/file_functions.sh
-diff -N scripts/lib/file_functions.sh
---- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ scripts/lib/file_functions.sh	18 Jan 2010 01:40:35 -0000
-@@ -0,0 +1,64 @@
-+#!/bin/sh
-+#
-+# File functions utilized as part of abspath.sh, realpath.sh, etc.
-+#
-+#    Copyright (C) 2010, Cisco Systems Inc.
-+#
-+#    This program is free software; you can redistribute it and/or modify
-+#    it under the terms of the GNU General Public License as published by
-+#    the Free Software Foundation; either version 2 of the License, or
-+#    (at your option) any later version.
-+#
-+#    This program is distributed in the hope that it will be useful,
-+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+#    GNU General Public License for more details.
-+#
-+#    You should have received a copy of the GNU General Public License alo=
-ng
-+#    with this program; if not, write to the Free Software Foundation, Inc=
-.,
-+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+#
-+# Garrett Cooper, January 2010
-+#
-+# POSIX compliant bourne shell functions for performing make 3.81
-+# compliancy in 3.80 with a minimal set of external commands
-+# [awk(1) // readlink(1) only required].
-+#
-+
-+# 1. Strip all heading and leading space.
-+# 1. Replace /+ with /.
-+# 2. Replace a/b/../c with a/c
-+# 3. Replace /./ with /
-+# 4. Replace trailing /. with /
-+# 5. Replace heading ./ with /
-+_abspath() {
-+	echo "$@" | awk -v PWD=3D$(pwd) '{
-+	sub(/^[[:space:]]+/, ""); sub(/[[:space:]]+$/, "")
-+	if ($0 =3D=3D "") {
-+		print PWD
-+	} else {
-+		while (gsub(/\/\//, "/")) { };
-+		while (gsub(/\/[^\/]+\/\.\.\/?/, "/")) { };
-+		while (gsub(/\/\.\//, "/")) { };
-+		sub(/(\/\.)?\/$/, "");
-+		sub(/^\.\//, "/") ;
-+		if ($0 =3D=3D "") {
-+			print "/"
-+		} else {
-+			if ($0 =3D=3D ".") {
-+				print PWD
-+			} else {
-+				if (!($0 ~ /^\//)) {
-+					print PWD "/" $0
-+				} else {
-+					print
-+				}
-+			}
-+		}
-+	}
-+}'
-+}
-+
-+_realpath() {
-+	readlink -f "$@"
-+}
-Index: scripts/tests/test_abspath.sh
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: scripts/tests/test_abspath.sh
-diff -N scripts/tests/test_abspath.sh
---- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ scripts/tests/test_abspath.sh	18 Jan 2010 01:40:35 -0000
-@@ -0,0 +1,110 @@
-+#!/bin/sh
-+#
-+# Test the _abspath function, utilized as part of abspath.sh
-+#
-+#    Copyright (C) 2010, Cisco Systems Inc.
-+#
-+#    This program is free software; you can redistribute it and/or modify
-+#    it under the terms of the GNU General Public License as published by
-+#    the Free Software Foundation; either version 2 of the License, or
-+#    (at your option) any later version.
-+#
-+#    This program is distributed in the hope that it will be useful,
-+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+#    GNU General Public License for more details.
-+#
-+#    You should have received a copy of the GNU General Public License alo=
-ng
-+#    with this program; if not, write to the Free Software Foundation, Inc=
-.,
-+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+#
-+# Garrett Cooper, January 2010
-+#
-+
-+set --	\
-+	:$PWD				\
-+	.:$PWD				\
-+	foo/bar:$PWD/foo/bar		\
-+	/foo/bar:/foo/bar		\
-+	/foo/../bar:/bar 		\
-+	/foo/bar/../baz:/foo/baz 	\
-+	/foo/bar/../baz/:/foo/baz 	\
-+	/foo/../bar/:/bar 		\
-+	/foo/../bar/..:/ 		\
-+	/foo/../bar/../:/ 		\
-+	/foo/bar/../baz:/foo/baz 	\
-+	/foo/./bar:/foo/bar 		\
-+	/./foo/./bar:/foo/bar		\
-+	/foo//bar:/foo/bar		\
-+	//foo/bar:/foo/bar		\
-+	//////foo/bar:/foo/bar		\
-+	/foo/////bar:/foo/bar		\
-+	/a/b/c/.././:/a/b		\
-+	/.foo:/.foo			\
-+	./.foo:/.foo			\
-+	/.foo/.bar:/.foo/.bar		\
-+	./.foo/.bar:/.foo/.bar
-+
-+export TCID=3Dtest_abspath
-+export TST_TOTAL=3D$#
-+export TST_COUNT=3D1
-+
-+SCRIPTS_DIR=3D"${0%/*}/.."
-+
-+. "$SCRIPTS_DIR/lib/file_functions.sh"
-+
-+for i in "$@"; do
-+
-+	test_string=3D${i%:*}
-+	expected_string=3D${i#*:}
-+
-+	result=3D$(_abspath "$test_string")
-+
-+	if [ "$result" =3D "$expected_string" ] ; then
-+		result_s=3D"matches expected string _abspath(${test_string}) =3D>
-$result =3D=3D $expected_string)"
-+		result_v=3DTPASS
-+	else
-+		result_s=3D"doesn't match expected string _abspath(${test_string}) =3D>
-$result !=3D $expected_string)"
-+		result_v=3DTFAIL
-+		FAILED=3D1
-+	fi
-+
-+	tst_resm $result_v "Test string $result_s"
-+
-+	: $(( TST_COUNT +=3D 1 ))
-+
-+done
-+
-+expected_string=3D"$PWD"
-+test_string=3D''
-+result=3D$("$SCRIPTS_DIR/abspath.sh" "$test_string")
-+
-+if [ "$result" =3D "$expected_string" ] ; then
-+	result_s=3D"matches expected string _abspath(${test_string}) =3D>
-$result =3D=3D $expected_string)"
-+else
-+	result_s=3D"doesn't match expected string _abspath(${test_string}) =3D>
-$result !=3D $expected_string)"
-+	result_v=3DTFAIL
-+	FAILED=3D1
-+fi
-+
-+tst_resm $result_v "Test string $result_s"
-+
-+: $(( TST_COUNT +=3D 1 ))
-+
-+expected_string=3D"$PWD $PWD"
-+test_string=3D"\"\" ."
-+result=3D$("$SCRIPTS_DIR/abspath.sh" "" .)
-+
-+if [ "$result" =3D "$expected_string" ] ; then
-+	result_s=3D"matches expected string _abspath(${test_string}) =3D>
-$result =3D=3D $expected_string)"
-+else
-+	result_s=3D"doesn't match expected string _abspath(${test_string}) =3D>
-$result !=3D $expected_string)"
-+	result_v=3DTFAIL
-+	FAILED=3D1
-+fi
-+
-+tst_resm $result_v "Test string $result_s"
-+
-+: $(( TST_COUNT +=3D 1 ))
-+
-+exit ${FAILED:=3D0}
-Index: scripts/abspath.sh
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: scripts/abspath.sh
-diff -N scripts/abspath.sh
---- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ scripts/abspath.sh	18 Jan 2010 01:40:35 -0000
-@@ -0,0 +1,30 @@
-+#!/bin/sh
-+#
-+#    make 3.81 $(abspath .. ) emulation layer
-+#
-+#    Copyright (C) 2010, Cisco Systems Inc.
-+#
-+#    This program is free software; you can redistribute it and/or modify
-+#    it under the terms of the GNU General Public License as published by
-+#    the Free Software Foundation; either version 2 of the License, or
-+#    (at your option) any later version.
-+#
-+#    This program is distributed in the hope that it will be useful,
-+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+#    GNU General Public License for more details.
-+#
-+#    You should have received a copy of the GNU General Public License alo=
-ng
-+#    with this program; if not, write to the Free Software Foundation, Inc=
-.,
-+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+#
-+# Garrett Cooper, January 2010
-+#
-+
-+. "${0%/*}/lib/file_functions.sh"
-+
-+while [ $# -gt 0 ] ; do
-+	echo -n $(_abspath "$1")
-+	[ $# -gt 1 ] && echo -n " "
-+	shift
-+done
-Index: scripts/realpath.sh
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: scripts/realpath.sh
-diff -N scripts/realpath.sh
---- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ scripts/realpath.sh	18 Jan 2010 01:40:35 -0000
-@@ -0,0 +1,30 @@
-+#!/bin/sh
-+#
-+#    make 3.81 $(realpath .. ) emulation layer
-+#
-+#    Copyright (C) 2010, Cisco Systems Inc.
-+#
-+#    This program is free software; you can redistribute it and/or modify
-+#    it under the terms of the GNU General Public License as published by
-+#    the Free Software Foundation; either version 2 of the License, or
-+#    (at your option) any later version.
-+#
-+#    This program is distributed in the hope that it will be useful,
-+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+#    GNU General Public License for more details.
-+#
-+#    You should have received a copy of the GNU General Public License alo=
-ng
-+#    with this program; if not, write to the Free Software Foundation, Inc=
-.,
-+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+#
-+# Garrett Cooper, January 2010
-+#
-+
-+. "${0%/*}/lib/file_functions.sh"
-+
-+while [ $# -gt 0 ] ; do
-+	echo -n $(_realpath "$1")
-+	[ $# -gt 1 ] && echo -n " "
-+	shift
-+done
+yes it is working. It is good to add realtime/m4 too.
 
----------------------------------------------------------------------------=
----
-Throughout its 18-year history, RSA Conference consistently attracts the
-world's best and brightest in the field, creating opportunities for Confere=
-nce
-attendees to learn about information security's most important issues throu=
-gh
-interactions with peers, luminaries and emerging and established companies.
-http://p.sf.net/sfu/rsaconf-dev2dev
+autoreconf -I $PWD/m4 -I $PWD/testcases/realtime/m4/ --install --verbose 
+--force
+./configure --prefix=/tmp/ CC=microblaze-unknown-linux-gnu-gcc 
+--host=microblaze
+
+Can you run make distclean and then reconfigure setting?
+
+Thanks,
+Michal
+
+
+
+> 
+> Hth,
+> -Garrett
+> 
+> 
+>> Garrett Cooper wrote:
+>>> Yeah, I usually don't top-post, but emailing via smartphones is fun, 
+>>> so... :)
+>>> It sounds like your sources are incomplete -- 1) do you have an m4 
+>>> directory at the top of the source tree and 2) is it populated with 
+>>> m4 files?
+>>> Thanks,
+>>> -Garrett
+>>> PS your tools' versions look ok.
+>>> On Dec 29, 2009, at 12:40 AM, Michal Simek 
+>>> <michal.simek@petalogix.com> wrote:
+>>>> Hi,
+>>>> sorry for head quoting but it is better for your phone.:-)
+>>>> I have interesting fault.
+>>>> aclocal -I m4     works
+>>>> but
+>>>> autoreconf -I m4
+>>>> aclocal: couldn't open directory `m4': No such file or directory
+>>>> autoreconf: aclocal failed with exit status: 1
+>>>>
+>>>> Which versions do you use?
+>>>> autoconf - 2.65
+>>>> automake - 1.11
+>>>> m4 - 1.4.13
+>>>>
+>>>> Thanks,
+>>>> Michal
+>>>>
+>>>> Garrett Cooper wrote:
+>>>>> Michal,
+>>>>>   Just invoke autoreconf -I m4 and you'll get your desired result. 
+>>>>> No commit required (except maybe another 'recipe' in INSTALL -- 
+>>>>> which I'd be more than happy to do after the 5th when I have real 
+>>>>> Internet access ;]...). The problem with your proposed method is 
+>>>>> that it was skipping a large number of autoconf portability tests 
+>>>>> in the .m4 files, thus the configuration was pretty minimal...
+>>>>> Cheers!
+>>>>> -Garrett
+>>>>> Sent from my iPhone
+>>>>> On Dec 28, 2009, at 8:29 AM, Michal Simek 
+>>>>> <michal.simek@petalogix.com> wrote:
+>>>>>> Hi Garret,
+>>>>>>
+>>>>>> I am trying to configure LTP properly.
+>>>>>> First thing which seems to me weird is that in INSTALL is for 
+>>>>>> "Using autoconf" command make autotools
+>>>>>>
+>>>>>> autoreconf --install
+>>>>>>
+>>>>>> There are some warnings which could be fixed.
+>>>>>>
+>>>>>> then I am running
+>>>>>>
+>>>>>> ./configure --prefix=/tmp/
+>>>>>>
+>>>>>> and I see there
+>>>>>>
+>>>>>> ./configure: line 4566: LTP_CHECK_CAPABILITY_SUPPORT: command not 
+>>>>>> found
+>>>>>> ./configure: line 4567: LTP_CHECK_CRYPTO: command not found
+>>>>>> ./configure: line 4568: LTP_CHECK_LINUX_PTRACE: command not found
+>>>>>> ./configure: line 4569: LTP_CHECK_SELINUX: command not found
+>>>>>> ./configure: line 4570: LTP_CHECK_SIGNAL: command not found
+>>>>>> ./configure: line 4571: LTP_CHECK_SYSCALL_EVENTFD: command not found
+>>>>>> ./configure: line 4572: LTP_CHECK_SYSCALL_MODIFY_LDT: command not 
+>>>>>> found
+>>>>>> ./configure: line 4573: LTP_CHECK_SYSCALL_NUMA: command not found
+>>>>>> ./configure: line 4574: LTP_CHECK_SYSCALL_QUOTACTL: command not found
+>>>>>> ./configure: line 4575: LTP_CHECK_SYSCALL_SIGNALFD: command not found
+>>>>>> ./configure: line 4576: LTP_CHECK_SYSCALL_UNSHARE: command not found
+>>>>>> ./configure: line 4577: LTP_CHECK_TASKSTATS: command not found
+>>>>>>
+>>>>>> ./configure: line 4759: REALTIME_CHECK_PRIO_INHERIT: command not 
+>>>>>> found
+>>>>>> ./configure: line 4760: REALTIME_CHECK_ROBUST_APIS: command not found
+>>>>>>
+>>>>>> + there are some missing dependency in configure.ac file. This 
+>>>>>> patch should add them. I just grep whole LTP source - maybe some 
+>>>>>> are not important.
+>>>>>>
+>>>>>> diff --git a/configure.ac b/configure.ac
+>>>>>> index 52f3381..7a72b36 100644
+>>>>>> --- a/configure.ac
+>>>>>> +++ b/configure.ac
+>>>>>> @@ -39,11 +39,26 @@ AC_CHECK_HEADERS([ \
+>>>>>>   linux/mempolicy.h \
+>>>>>>   linux/module.h \
+>>>>>>   linux/netlink.h \
+>>>>>> +    linux/ptrace.h \
+>>>>>> +    linux/cgroupstats.h \
+>>>>>> +    linux/taskstats.h \
+>>>>>> +    linux/types.h \
+>>>>>>   sys/acl.h \
+>>>>>>   sys/epoll.h \
+>>>>>>   sys/inotify.h \
+>>>>>> +    sys/ptrace.h \
+>>>>>> +    sys/reg.h \
+>>>>>> +    asm/ldt.h \
+>>>>>> +    asm/ptrace.h \
+>>>>>>   sys/jfsdmapi.h \
+>>>>>>   sys/prctl.h \
+>>>>>> +    sys/epoll.h \
+>>>>>> +    sys/ptrace.h \
+>>>>>> +    sys/reg.h \
+>>>>>> +    sys/stat.h \
+>>>>>> +    sys/time.h \
+>>>>>> +    sys/types.h \
+>>>>>> +    sys/vfs.h \
+>>>>>> ])
+>>>>>>
+>>>>>>
+>>>>>> and then run make - there previous fault in configure caused that 
+>>>>>> there are wrong symbols in Makefiles - for example for my case.
+>>>>>>
+>>>>>> microblaze-unknown-linux-gnu-gcc: @SELINUX_LIBS@: No such file or 
+>>>>>> directory
+>>>>>>
+>>>>>> which is caused by problems in configure.
+>>>>>>
+>>>>>> Thanks for fixing,
+>>>>>> Michal
+>>>>>>
+>>>>>> -- 
+>>>>>> Michal Simek, Ing. (M.Eng)
+>>>>>> PetaLogix - Linux Solutions for a Reconfigurable World
+>>>>>> w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: 
+>>>>>> +61-7-30090663
+>>>>
+>>>>
+>>>> -- 
+>>>> Michal Simek, Ing. (M.Eng)
+>>>> PetaLogix - Linux Solutions for a Reconfigurable World
+>>>> w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: 
+>>>> +61-7-30090663
+>>
+>>
+>> -- 
+>> Michal Simek, Ing. (M.Eng)
+>> PetaLogix - Linux Solutions for a Reconfigurable World
+>> w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+
+
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+
+------------------------------------------------------------------------------
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
