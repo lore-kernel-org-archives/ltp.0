@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <njoly@pasteur.fr>) id 1NTDYg-0007fj-Vq
-	for ltp-list@lists.sourceforge.net; Fri, 08 Jan 2010 12:03:14 +0000
-Received: from maroilles.sis.pasteur.fr ([157.99.64.223]
-	helo=mail-interne3.pasteur.fr)
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NTDYe-0004N9-CX
-	for ltp-list@lists.sourceforge.net; Fri, 08 Jan 2010 12:03:13 +0000
-Date: Fri, 8 Jan 2010 12:25:34 +0100
-From: Nicolas Joly <njoly@pasteur.fr>
-Message-ID: <20100108112534.GA333981@medusa.sis.pasteur.fr>
-References: <4B46D5F0.3090801@teldevice.co.jp>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4B46D5F0.3090801@teldevice.co.jp>
-Subject: Re: [LTP] LTP installation  configure Error
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1NRqrS-0007cI-V1
+	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 17:36:58 +0000
+Received: from fg-out-1718.google.com ([72.14.220.157])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NRqrR-0002Lt-GS
+	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 17:36:58 +0000
+Received: by fg-out-1718.google.com with SMTP id e12so146420fga.10
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 04 Jan 2010 09:36:51 -0800 (PST)
+Message-ID: <4B4226E9.6000309@petalogix.com>
+Date: Mon, 04 Jan 2010 18:35:37 +0100
+From: Michal Simek <michal.simek@petalogix.com>
+MIME-Version: 1.0
+References: <4B421480.1040400@petalogix.com>
+	<20100104164954.GB26962@us.ibm.com>
+In-Reply-To: <20100104164954.GB26962@us.ibm.com>
+Subject: Re: [LTP] clone tests fails
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,50 +32,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: TED ITC Agarwal Ashish <ashish.g@teldevice.co.jp>
-Cc: ltp-list@lists.sourceforge.net
+To: "Serge E. Hallyn" <serue@us.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, vapier@gentoo.org
 
-On Fri, Jan 08, 2010 at 03:51:28PM +0900, TED ITC Agarwal Ashish wrote:
-> Hello All
+Serge E. Hallyn wrote:
+> Quoting Michal Simek (michal.simek@petalogix.com):
+>> Hi Mike,
+>>
+>> I have one question about one your big patch
+>>
+>> http://git.kernel.org/?p=linux/kernel/git/galak/ltp.git;a=commitdiff;h=391dc18fe3271fbf2ca1864a5299f091c31e0018
+>>
+>> My question is why you add -1 in lib/cloner.c:65
+>>
+>> +       ret = clone(fn, (stack ? stack + stack_size - 1 : NULL),
+>> +                       clone_flags, arg);
+>>
+>> In previous code in clone testcases was nothing like this.
+>> What reason have you had to add it?
 > 
-> I am novice for the LTP, just last week i heard something LTP
-> and feel curious about it so started searching and installations.
+> Because the same thing was done in lots of places all over the
+> testsuite (and done wrong).  This consolidates them all.
+
+
+I don't have anything against consolidation. I just want to know why 
+there is that -1 which weren't in any clone testcases. Nothing more 
+nothing less.
+
+Michal
+
 > 
-> "./configure " generates Error to me as written below.
+>> Of course the reason is that on Microblaze some tests failed.
 > 
-> configure: error: Couldn't find functional copy of quota v2 - are you running 2.4.x?
+> How do they fail?  Does clone on Microblaze take the top of
+> stack?
+> 
+> -serge
 
-Hi,
-
-I do see the same with an old 2006.0 Gentoo base (actually in a
-chroot) ... I worked around it by making it a warning instead of an
-error.
-
-IMHO, lacking some features should not prevent building/running LTP.
-
-
-Index: m4/ltp-quota.m4
-===================================================================
-RCS file: /cvsroot/ltp/ltp/m4/ltp-quota.m4,v
-retrieving revision 1.4
-diff -u -p -r1.4 ltp-quota.m4
---- m4/ltp-quota.m4	20 Dec 2009 00:36:35 -0000	1.4
-+++ m4/ltp-quota.m4	8 Jan 2010 11:24:14 -0000
-@@ -37,7 +37,7 @@ dnl}],[has_24_quotactl="yes"],
- #include <unistd.h>],[
- int main(void) {
- 	return quotactl(Q_GETINFO, (const char *)NULL, geteuid(), (caddr_t)NULL);
--}],[has_quotav2="yes"],[AC_MSG_ERROR([Couldn't find functional copy of quota v2 - are you running 2.4.x?])])
-+}],[has_quotav2="yes"],[AC_MSG_WARN([Couldn't find functional copy of quota v2 - are you running 2.4.x?])])
- dnl if test "x$has_24_quotactl" = "xyes"; then
- dnl	AC_DEFINE(HAS_24_QUOTACTL,1,[Define to 1 if you have the 2.4.x version of quotactl, e.g. require linux/quota.h instead of sys/quota.h])
- dnl elif test "x$has_new_26_quotactl" = "xyes"; then
 
 -- 
-Nicolas Joly
-
-Biological Software and Databanks.
-Institut Pasteur, Paris.
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
