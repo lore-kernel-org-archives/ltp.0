@@ -1,24 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NSLlq-0005dI-CE
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 02:37:14 +0000
-Received: from mail-pw0-f43.google.com ([209.85.160.43])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NSLlk-0001Fm-UE
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 02:37:14 +0000
-Received: by pwj11 with SMTP id 11so11663427pwj.2
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 05 Jan 2010 18:37:03 -0800 (PST)
+	(envelope-from <serge@us.ibm.com>) id 1NRwTV-0001hc-3Q
+	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 23:36:37 +0000
+Received: from e31.co.us.ibm.com ([32.97.110.149])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NRwTR-00033c-3M
+	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 23:36:37 +0000
+Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
+	[9.17.195.226])
+	by e31.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o04NSY8L017875
+	for <ltp-list@lists.sourceforge.net>; Mon, 4 Jan 2010 16:28:35 -0700
+Received: from d03av06.boulder.ibm.com (d03av06.boulder.ibm.com [9.17.195.245])
+	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o04NaOYP154738
+	for <ltp-list@lists.sourceforge.net>; Mon, 4 Jan 2010 16:36:24 -0700
+Received: from d03av06.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av06.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o04NcOVO005857
+	for <ltp-list@lists.sourceforge.net>; Mon, 4 Jan 2010 16:38:24 -0700
+Date: Mon, 4 Jan 2010 17:36:22 -0600
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20100104233622.GA9018@us.ibm.com>
+References: <20100104171643.GA545@us.ibm.com>
+	<D107C512-245B-4187-9A8D-7FDC28234A0D@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <OFBE2FC11C.E215D8EA-ON852576A2.007E66E5-852576A2.008144FB@us.ibm.com>
-References: <mailman.274940.1262712842.5825.ltp-list@lists.sourceforge.net>
-	<OFBE2FC11C.E215D8EA-ON852576A2.007E66E5-852576A2.008144FB@us.ibm.com>
-Date: Tue, 5 Jan 2010 18:37:03 -0800
-Message-ID: <364299f41001051837l4e62569em36054556b63d7bca@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] install instructions
+Content-Disposition: inline
+In-Reply-To: <D107C512-245B-4187-9A8D-7FDC28234A0D@gmail.com>
+Subject: Re: [LTP] [PATCH 1/1] say FAIL not PASS when we failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,103 +38,51 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mark Ver <markver@us.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On Tue, Jan 5, 2010 at 3:31 PM, Mark Ver <markver@us.ibm.com> wrote:
-> Hi,
->
-> Can we patch the install instructions with something like:
-> --
->
-> --- INSTALL.orig =A0 =A0 =A0 =A02010-01-05 17:40:32.000000000 -0500
-> +++ INSTALL =A0 =A0 2010-01-05 17:40:43.000000000 -0500
-> @@ -127,12 +127,19 @@
-> =A03> ./configure
-> =A04> make all
-> =A05> make install
-> -6> ./runalltests.sh
-> +6> cd /opt/ltp
-> +7> ./runalltests.sh
->
-> -*NOTE: The LTP assumes the existence of the nobody, bin, and daemon users
-> and
-> +*NOTE:
-> +- The LTP assumes the existence of the nobody, bin, and daemon users and
-> =A0their groups. =A0If these IDs do not exist, certain tests will fail. T=
-he
-> users
-> =A0and groups IDs should be the same, i.e. if user "nobody" is 99, then i=
-t's
-> =A0group should also be "99". The names of the groups are irrelevant.
-> +- The execution directory where binaries are "installed" is now separate
-> from
-> +the build and source directories. =A0The default execution directory
-> is /opt/ltp
-> +and may be modified by setting a value for prefix, ex:
-> + =A0 =A0make prefix=3D/tmp/ltptest all
-> + =A0 =A0make prefix=3D/tmp/ltptest install
+Quoting Garrett Cooper (yanegomi@gmail.com):
+> On Jan 4, 2010, at 9:16 AM, "Serge E. Hallyn" <serue@us.ibm.com> wrote:
+> 
+> >Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
+> >---
+> >testcases/kernel/security/p9auth/p9priv.sh |    2 +-
+> >1 files changed, 1 insertions(+), 1 deletions(-)
+> >
+> >diff --git a/testcases/kernel/security/p9auth/p9priv.sh
+> >b/testcases/kernel/security/p9auth/p9priv.sh
+> >index ad2eead..c1a14d0 100755
+> >--- a/testcases/kernel/security/p9auth/p9priv.sh
+> >+++ b/testcases/kernel/security/p9auth/p9priv.sh
+> >@@ -101,7 +101,7 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
+> >touch $LTPTMP/childgo
+> >while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do
+> >:; done;
+> >if [ -f $LTPTMP/d/childpass ]; then
+> >-    echo "PASS: child could setuid from wrong source uid"
+> >+    echo "FAIL: child could setuid from wrong source uid"
+> >   exit 1
+> >fi
+> >echo "PASS: child couldn't setuid from wrong source uid"
+> >-- 
+> >1.6.1.1
+> 
+> Is there a reason why this isn't using tst_resm?
 
-Hi Mark,
+No good reason
 
-I agree with the suggestion -- I just don't agree with the method of
-going about solving the problem. Here's what I have:
+thanks,
+-serge
 
-Index: INSTALL
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: /cvsroot/ltp/ltp/INSTALL,v
-retrieving revision 1.34
-diff -u -r1.34 INSTALL
---- INSTALL     12 Nov 2009 12:08:09 -0000      1.34
-+++ INSTALL     6 Jan 2010 02:35:43 -0000
-@@ -127,13 +127,15 @@
- 3> ./configure
- 4> make all
- 5> make install
--6> ./runalltests.sh
--
--*NOTE: The LTP assumes the existence of the nobody, bin, and daemon users =
-and
--their groups.  If these IDs do not exist, certain tests will fail. The use=
-rs
--and groups IDs should be the same, i.e. if user "nobody" is 99, then it's
--group should also be "99". The names of the groups are irrelevant.
-+6> cd /opt/ltp
-+7> ./runalltests.sh
-
-+*NOTE:
-+- LTP assumes the existence of the nobody, bin, and daemon users and their
-+groups.  If these IDs do not exist, certain tests will fail. The users and
-+groups IDs should be the same, i.e. if user "nobody" is 99, then it's group
-+should also be "99". The names of the groups are irrelevant.
-+- The installation directory is /opt/ltp by default. Please see "Using aut=
-oconf
-" above and specify the appropriate path via --prefix. DESTDIR=3D is also h=
-onored
-for install and will install into $DESTDIR/$prefix, if you want to install =
-into
-a chroot or a rootfs for instance.
-
- Detailed Installation
- --------------------
-
-Look good?
-Thanks!
--Garrett
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
 Take advantage of Verizon's best-in-class app development support
 A streamlined, 14 day to market process makes app distribution fast and easy
 Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev =
-
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
