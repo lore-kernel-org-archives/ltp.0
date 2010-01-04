@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NSLgg-0005SA-5e
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 02:31:54 +0000
-Received: from mail-px0-f200.google.com ([209.85.216.200])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NSLga-0001Dl-NB
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 02:31:54 +0000
-Received: by pxi38 with SMTP id 38so6070742pxi.28
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1NRoMJ-0004RI-Iq
+	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 14:56:39 +0000
+Received: from mail-bw0-f212.google.com ([209.85.218.212])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NRoMH-0002bR-RV
+	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 14:56:39 +0000
+Received: by mail-bw0-f212.google.com with SMTP id 4so9452726bwz.2
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 05 Jan 2010 18:31:43 -0800 (PST)
+	Mon, 04 Jan 2010 06:56:36 -0800 (PST)
+Message-ID: <4B420158.4060504@petalogix.com>
+Date: Mon, 04 Jan 2010 15:55:20 +0100
+From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-In-Reply-To: <364299f41001051741v7a2bb1d0p91d28aa25967b93e@mail.gmail.com>
-References: <4B4204D2.70204@petalogix.com> <4B43E6FD.3020906@web.de>
-	<364299f41001051741v7a2bb1d0p91d28aa25967b93e@mail.gmail.com>
-Date: Tue, 5 Jan 2010 18:31:42 -0800
-Message-ID: <364299f41001051831r6a0f4930t6ba61e4273c797e3@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] lchown test case
+References: <000001ca8cfb$e04fb340$a0ef19c0$@co.jp>
+In-Reply-To: <000001ca8cfb$e04fb340$a0ef19c0$@co.jp>
+Subject: Re: [LTP] nanosleep testcase problem
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,54 +31,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net
 
-On Tue, Jan 5, 2010 at 5:41 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Tue, Jan 5, 2010 at 5:27 PM, Jiri Palecek <jpalecek@web.de> wrote:
->> Michal Simek napsal(a):
->>>
->>> Hi,
->>
->> Hi,
->>>
->>> I have some problems with lchown02 test which is caused with this patch.
->>> What is prep_create_link?
->>>
->>> Thanks,
->>> Michal
->>>
->>>
->>> http://git.kernel.org/?p=linux/kernel/git/galak/ltp.git;a=commitdiff;h=ee1a022fc76076d7fc1b6b1797c195244414c038
->>>
->>>
->>>
->>> diff --git a/runtest/syscalls b/runtest/syscalls
->>> index fbe8641..34631ed 100644 (file)
->>> --- a/runtest/syscalls
->>> +++ b/runtest/syscalls
->>> @@ -462,10 +462,10 @@ kill12 kill12
->>>
->>> lchown01 lchown01
->>> lchown01_16 lchown01_16
->>> -lchown02 cp -p $LTPROOT/testcases/bin/create_link $TMP; lchown02
->>> -lchown02_16 cp -p $LTPROOT/testcases/bin/create_link $TMP; lchown02_16
->>> +lchown02 prep_create_link; lchown02
->>> +lchown02_16 prep_create_link; lchown02_16
->>
->> IMHO it should do the same as the line above. But I think the whole thing
->> could be deleted without causing any grief:
->>
->> http://repo.or.cz/w/ltp-debian.git?a=commit;h=a5499edcf368fa88df924f94ffcbe63c22b46e82
->
-> The test needs create_link in $TMP; that's why I scripted it as a
-> one-liner (but stupid me probably forgot to add the script to CVS
-> -_-).
-> Let me look and I'll get back to you shortly.
+Mitani wrote:
+> Hi,
+> 
+> I want to wish you happy new year.
+> 
+> 
+> ------
+> 
+> By the way, I found a new problem with the "nanosleep02" testcase.
+> 
+> "main()" function executes fork(), and child process calls "do_child()"
+> function.
+> "do_child()" function must be ended by "exit()". But in "nanosleep02"
+> testcase, there is a case in which "exit()" isn't executed.
+> Therefore, the child process lives after "do_child()" function, 
+> and it executes "wait()" function which must be executed in parent
+> process only.
 
-Fixed. The executable needed CAP_CHOWN capability and that's part of
-the point behind that script...
--Garrett
+On Microblaze this test failed too. The patch fix it.
+
+Michal
+
+> 
+> Here is the patch fixes these problem:
+> 
+> ============
+> --- nanosleep02.c	2009-12-23 02:35:13.000000000 +0900
+> +++ nanosleep02.c.new	2010-01-04 10:15:08.000000000 +0900
+> @@ -277,6 +277,9 @@
+>  		tst_resm(TPASS, "call succeeded");
+>  		exit(0);
+>  	}
+> +	
+> +	/* Everything is fine, exit normally */
+> +	exit(0);
+>  }
+>  
+>  /*
+> ============
+> 
+> 
+> Regards--
+> 
+> 
+> -Tomonori Mitani
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> This SF.Net email is sponsored by the Verizon Developer Community
+> Take advantage of Verizon's best-in-class app development support
+> A streamlined, 14 day to market process makes app distribution fast and easy
+> Join now and get one step closer to millions of Verizon customers
+> http://p.sf.net/sfu/verizon-dev2dev 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
