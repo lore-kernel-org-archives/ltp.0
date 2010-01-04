@@ -2,31 +2,35 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NUc7l-0000Rl-IA
-	for ltp-list@lists.sourceforge.net; Tue, 12 Jan 2010 08:29:13 +0000
-Received: from mail-pz0-f193.google.com ([209.85.222.193])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NUc7k-0000A6-Lb
-	for ltp-list@lists.sourceforge.net; Tue, 12 Jan 2010 08:29:13 +0000
-Received: by pzk31 with SMTP id 31so908085pzk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 12 Jan 2010 00:29:06 -0800 (PST)
+	(envelope-from <serge@us.ibm.com>) id 1NRb39-00045C-HF
+	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 00:43:59 +0000
+Received: from e33.co.us.ibm.com ([32.97.110.151])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NRb38-0002ZK-O0
+	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 00:43:59 +0000
+Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
+	[9.17.195.226])
+	by e33.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o040epTL012423
+	for <ltp-list@lists.sourceforge.net>; Sun, 3 Jan 2010 17:40:51 -0700
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o040hqpZ171002
+	for <ltp-list@lists.sourceforge.net>; Sun, 3 Jan 2010 17:43:52 -0700
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o040hqvm029647
+	for <ltp-list@lists.sourceforge.net>; Sun, 3 Jan 2010 17:43:52 -0700
+Received: from sergelap.hallyn.com (sig-9-77-140-243.mts.ibm.com
+	[9.77.140.243])
+	by d03av03.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVin) with ESMTP id
+	o040hqmE029640
+	for <ltp-list@lists.sourceforge.net>; Sun, 3 Jan 2010 17:43:52 -0700
+Date: Sun, 3 Jan 2010 18:43:55 -0600
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20100104004355.GA760@us.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20100111210006.GA26554@us.ibm.com>
-References: <1262976627.20881.6.camel@moss-pluto.epoch.ncsc.mil>
-	<1262988051.20881.42.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001081408sf9d740ew55dad7b542463416@mail.gmail.com>
-	<364299f41001082327o31bbe79eh849ea1651cf12632@mail.gmail.com>
-	<1263237132.5091.1.camel@moss-pluto.epoch.ncsc.mil>
-	<20100111195043.GA23360@us.ibm.com>
-	<1263239706.5091.11.camel@moss-pluto.epoch.ncsc.mil>
-	<20100111201936.GA24711@us.ibm.com>
-	<20100111205858.GA26412@us.ibm.com>
-	<20100111210006.GA26554@us.ibm.com>
-Date: Tue, 12 Jan 2010 00:29:06 -0800
-Message-ID: <364299f41001120029x15b2e7adwe30d925717a1dc89@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] regression: selinux testsuite broken since October
+Content-Disposition: inline
+Subject: [LTP] [PATCH ltp] p9auth: add missing checkp9auth.sh script
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,70 +40,106 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serue@us.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, Stephen Smalley <sds@tycho.nsa.gov>, James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-On Mon, Jan 11, 2010 at 1:00 PM, Serge E. Hallyn <serue@us.ibm.com> wrote:
-> Quoting Serge E. Hallyn (serue@us.ibm.com):
->> Quoting Serge E. Hallyn (serue@us.ibm.com):
->> > Quoting Stephen Smalley (sds@tycho.nsa.gov):
->> > > On Mon, 2010-01-11 at 13:50 -0600, Serge E. Hallyn wrote:
->> > > > > Fails with:
->> > > > > cp: cannot stat
->> > > > > `/home/sds/ltp/testcases/kernel/security/selinux-testsuite/refpo=
-licy/policy_files/generic/test_policy.*': No such file or directory
->> > > >
->> > > > You ran /home/sds/ltp/testscripts/test_selinux.sh, right?
->> > > >
->> > > > I think we are supposed to actually be running
->> > > > /opt/ltp/testscripts/test_selinux.sh. =A0So then the first questio=
-n for
->> > > > Garrett is how should we deduce /home/sds/ltp as $LTP_SRCDIR from a
->> > > > testscript? =A0Or should the policy sources be copied into /opt?
->> > >
->> > > Ok, but regardless: =A0the refpolicy Makefile is still broken.
->> >
->> > Yup.
->>
->> All right, baby-steps.
->>
->> The attached test_selinux.diff is not to be applied, but something
->> like it is needed. =A0Should we have the ltp 'make install' fill in
->> TOP_SRCDIR in /opt/ltp/testscripts/test_selinux.sh? =A0BTW, Garrett,
->> that is the issue I was saying is shared between test_selinux.sh
->> and some others including test_robind.sh. =A0That's why I'm not just
->> sending a patch to make it work, bc i think we need more general
->> guidance.
->>
->> The second match makes the 'make load' part of test_selinux.sh
->> succeed on rhel5.4. =A0Stephen, how does it do on fedora?
->>
->> After loading policy it fails to execute ltp-pan, but I figure let's
->> get policy loading working first.
->>
->> -serge
->
-> gah, attaching the actual patches this time.
->
-> -serge
+This was in my original patch submission but somehow didn't make its way into
+the ltp tree.
 
-1. I'm rejecting the test_selinux.diff solely because it has /root/ltp
-hardcoded as LTPROOT. 2. Why is the redhat stuff support to work
-agnostic to the major and minor version?
-Thanks,
--Garrett
-
----------------------------------------------------------------------------=
+Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
 ---
+ testcases/kernel/security/p9auth/checkp9auth.sh |   70 +++++++++++++++++++++++
+ 1 files changed, 70 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/security/p9auth/checkp9auth.sh
+
+diff --git a/testcases/kernel/security/p9auth/checkp9auth.sh b/testcases/kernel/security/p9auth/checkp9auth.sh
+new file mode 100644
+index 0000000..f917ce6
+--- /dev/null
++++ b/testcases/kernel/security/p9auth/checkp9auth.sh
+@@ -0,0 +1,70 @@
++#!/bin/sh
++################################################################################
++##                                                                            ##
++## Copyright (c) International Business Machines  Corp., 2009                 ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and#or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software               ##
++## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
++##                                                                            ##
++################################################################################
++
++yesno=0
++if [ "$1" = "yesno" ]; then
++	yesno=1
++fi
++
++# check for openssl
++rm -f /tmp/ab
++echo ab > /tmp/ab
++openssl sha1 -hmac "ab" /tmp/ab > /dev/null
++ret=$?
++if [ $ret -ne 0 ]; then
++	if [ $yesno -eq 1 ]; then echo
++		"no"
++	else
++		echo "openssl not installed, skipping p9auth tests."
++	fi
++	exit 1
++fi
++
++majfile=/sys/module/p9auth/parameters/cap_major
++minfile=/sys/module/p9auth/parameters/cap_minor
++if [ ! -f "$majfile" ]; then
++	if [ $yesno -eq 1 ]; then echo
++		"no"
++	else
++		echo "p9auth not detected.  Skipping p9auth tests."
++	fi
++	exit 1
++fi
++
++if [ ! -c "/dev/caphash" ]; then
++	rm -f /dev/caphash
++	maj=`cat $majfile`
++	mknod /dev/caphash c $maj 0
++fi
++
++if [ ! -c "/dev/capuse" ]; then
++	rm -f /dev/capuse
++	min=`cat $minfile`
++	mknod /dev/capuse c $maj 1
++fi
++chmod ugo+w /dev/capuse
++
++if [ $yesno -eq 1 ]; then
++	echo "yes"
++else
++	echo "p9auth ready for testing"
++fi
++exit 0
+-- 
+1.6.1.1
+
+
+------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
 Take advantage of Verizon's best-in-class app development support
 A streamlined, 14 day to market process makes app distribution fast and easy
 Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev =
-
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
