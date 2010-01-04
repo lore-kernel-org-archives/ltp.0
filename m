@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1NShmk-0007wC-6L
-	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 02:07:38 +0000
-Received: from fmmailgate03.web.de ([217.72.192.234])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NShmi-0007by-Sy
-	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 02:07:38 +0000
-Message-ID: <4B453A02.90903@web.de>
-Date: Thu, 07 Jan 2010 02:33:54 +0100
-From: Jiri Palecek <jpalecek@web.de>
-MIME-Version: 1.0
-References: <4B4204D2.70204@petalogix.com> <4B43E6FD.3020906@web.de>	
-	<364299f41001051741v7a2bb1d0p91d28aa25967b93e@mail.gmail.com>
-	<364299f41001051831r6a0f4930t6ba61e4273c797e3@mail.gmail.com>
-In-Reply-To: <364299f41001051831r6a0f4930t6ba61e4273c797e3@mail.gmail.com>
-Subject: Re: [LTP] lchown test case
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NRvtm-0000DO-OV
+	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 22:59:42 +0000
+Received: from mail-gx0-f223.google.com ([209.85.217.223])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NRvtl-0000I5-R9
+	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 22:59:42 +0000
+Received: by gxk23 with SMTP id 23so17190773gxk.2
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 04 Jan 2010 14:59:36 -0800 (PST)
+References: <20100104171643.GA545@us.ibm.com>
+Message-Id: <D107C512-245B-4187-9A8D-7FDC28234A0D@gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <20100104171643.GA545@us.ibm.com>
+Mime-Version: 1.0 (iPhone Mail 7D11)
+Date: Mon, 4 Jan 2010 14:59:22 -0800
+Subject: Re: [LTP] [PATCH 1/1] say FAIL not PASS when we failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,64 +30,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: "Serge E. Hallyn" <serue@us.ibm.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-Garrett Cooper napsal(a):
-> On Tue, Jan 5, 2010 at 5:41 PM, Garrett Cooper<yanegomi@gmail.com>  wrote:
->> On Tue, Jan 5, 2010 at 5:27 PM, Jiri Palecek<jpalecek@web.de>  wrote:
->>> Michal Simek napsal(a):
->>>>
->>>> Hi,
->>>
->>> Hi,
->>>>
->>>> I have some problems with lchown02 test which is caused with this patch.
->>>> What is prep_create_link?
->>>>
->>>> Thanks,
->>>> Michal
->>>>
->>>>
->>>> http://git.kernel.org/?p=linux/kernel/git/galak/ltp.git;a=commitdiff;h=ee1a022fc76076d7fc1b6b1797c195244414c038
->>>>
->>>>
->>>>
->>>> diff --git a/runtest/syscalls b/runtest/syscalls
->>>> index fbe8641..34631ed 100644 (file)
->>>> --- a/runtest/syscalls
->>>> +++ b/runtest/syscalls
->>>> @@ -462,10 +462,10 @@ kill12 kill12
->>>>
->>>> lchown01 lchown01
->>>> lchown01_16 lchown01_16
->>>> -lchown02 cp -p $LTPROOT/testcases/bin/create_link $TMP; lchown02
->>>> -lchown02_16 cp -p $LTPROOT/testcases/bin/create_link $TMP; lchown02_16
->>>> +lchown02 prep_create_link; lchown02
->>>> +lchown02_16 prep_create_link; lchown02_16
->>>
->>> IMHO it should do the same as the line above. But I think the whole thing
->>> could be deleted without causing any grief:
->>>
->>> http://repo.or.cz/w/ltp-debian.git?a=commit;h=a5499edcf368fa88df924f94ffcbe63c22b46e82
->>
->> The test needs create_link in $TMP; that's why I scripted it as a
->> one-liner (but stupid me probably forgot to add the script to CVS
->> -_-).
->> Let me look and I'll get back to you shortly.
+On Jan 4, 2010, at 9:16 AM, "Serge E. Hallyn" <serue@us.ibm.com> wrote:
+
+> Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
+> ---
+> testcases/kernel/security/p9auth/p9priv.sh |    2 +-
+> 1 files changed, 1 insertions(+), 1 deletions(-)
 >
-> Fixed. The executable needed CAP_CHOWN capability and that's part of
-> the point behind that script...
+> diff --git a/testcases/kernel/security/p9auth/p9priv.sh b/testcases/ 
+> kernel/security/p9auth/p9priv.sh
+> index ad2eead..c1a14d0 100755
+> --- a/testcases/kernel/security/p9auth/p9priv.sh
+> +++ b/testcases/kernel/security/p9auth/p9priv.sh
+> @@ -101,7 +101,7 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
+> touch $LTPTMP/childgo
+> while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ];  
+> do :; done;
+> if [ -f $LTPTMP/d/childpass ]; then
+> -    echo "PASS: child could setuid from wrong source uid"
+> +    echo "FAIL: child could setuid from wrong source uid"
+>    exit 1
+> fi
+> echo "PASS: child couldn't setuid from wrong source uid"
+> -- 
+> 1.6.1.1
 
-Couldn't the executable just get CAP_CHOWN with cap_set_proc in case it is 
-running under root with restricted capabilities?
-
-I'm not sure it wouldn't fail even with the suid-root executable under such 
-condition - are you really sure it doesn't (esp. in the face of lchown01, which 
-would fail almost surely and doesn't have this hack)?
-
-Regards
-     Jiri Palecek
+Is there a reason why this isn't using tst_resm?
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
