@@ -1,19 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <shanmuga.jayabalan@sasken.com>) id 1NX9nT-0000M0-7f
-	for ltp-list@lists.sourceforge.net; Tue, 19 Jan 2010 08:50:47 +0000
-Received: from mta-blr1.sasken.com ([203.200.200.72])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.69) id 1NX9nQ-0001Z5-Ci
-	for ltp-list@lists.sourceforge.net; Tue, 19 Jan 2010 08:50:46 +0000
-From: Shanmuga Jayabalan <shanmuga.jayabalan@sasken.com>
-Date: Tue, 19 Jan 2010 14:20:24 +0530
-Message-ID: <653A85C7F32C4741880F71219266EA02031A02FFB1@EXGMBX01.sasken.com>
-Content-Language: en-US
-MIME-Version: 1.0
-Subject: Re: [LTP] LTP installation configure Error
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NSDU8-00022u-Rj
+	for ltp-list@lists.sourceforge.net; Tue, 05 Jan 2010 17:46:24 +0000
+Received: from mail-yx0-f188.google.com ([209.85.210.188])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NSDU6-0000rS-KN
+	for ltp-list@lists.sourceforge.net; Tue, 05 Jan 2010 17:46:24 +0000
+Received: by yxe26 with SMTP id 26so15824015yxe.4
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 05 Jan 2010 09:46:17 -0800 (PST)
+References: <20100104171643.GA545@us.ibm.com>
+	<D107C512-245B-4187-9A8D-7FDC28234A0D@gmail.com>
+	<20100104233622.GA9018@us.ibm.com>
+	<AA968A69-C9C7-4FC1-B4B5-849719CCB8E8@gmail.com>
+	<20100105153021.GA11873@us.ibm.com>
+	<948507EC-6E01-4C79-A497-0425B44863CA@gmail.com>
+	<20100105173325.GA5204@us.ibm.com>
+Message-Id: <0921C697-823F-42DE-98CB-D99C9903323A@gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <20100105173325.GA5204@us.ibm.com>
+Mime-Version: 1.0 (iPhone Mail 7D11)
+Date: Tue, 5 Jan 2010 10:46:04 -0700
+Subject: Re: [LTP] [PATCH 1/1] say FAIL not PASS when we failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,153 +33,347 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2403083064447644782=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "'ltp-list@lists.sourceforge.net'" <ltp-list@lists.sourceforge.net>
-
---===============2403083064447644782==
-Content-Language: en-US
-Content-Type: multipart/alternative;
-	boundary="_000_653A85C7F32C4741880F71219266EA02031A02FFB1EXGMBX01saske_"
-
---_000_653A85C7F32C4741880F71219266EA02031A02FFB1EXGMBX01saske_
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-
-Hi,
-
-I am doing cross compilation of LTP with ARM.
-
-When I do ./configure, I'm also getting the same error message in ltp-full-=
-20091231 release.
-
-        configure: error: Couldn't find functional copy of quota v2 - are y=
-ou > running 2.4.x ?
-As per your suggestion I have tried to do `man 2 quotactl', I'm getting the=
- following message.
-        No manual entry for quotactl in section 2
-I have ubuntu in my system. I'm able to cross compile with the previous rel=
-ease "ltp-full-20091130".
-Is there any setup is missing in my system for this release?
-Help me to resolve this issue.
-
-Regards,
-J.Shanmuga Sundari
-
-
-
-
-  ________________________________
-SASKEN BUSINESS DISCLAIMER: This message may contain confidential, propriet=
-ary or legally privileged information. In case you are not the original int=
-ended Recipient of the message, you must not, directly or indirectly, use, =
-disclose, distribute, print, or copy any part of this message and you are r=
-equested to delete it and inform the sender. Any views expressed in this me=
-ssage are those of the individual sender unless otherwise stated. Nothing c=
-ontained in this message shall be construed as an offer or acceptance of an=
-y offer by Sasken Communication Technologies Limited ("Sasken") unless sent=
- with that express intent and with due authority of Sasken. Sasken has take=
-n enough precautions to prevent the spread of viruses. However the company =
-accepts no liability for any damage caused by any virus transmitted by this=
- email.
-
---_000_653A85C7F32C4741880F71219266EA02031A02FFB1EXGMBX01saske_
-Content-Type: text/html; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<html>
-<head>
-<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
->
-<meta name=3D"Generator" content=3D"Microsoft Exchange Server">
-<!-- converted from rtf -->
-<style><!-- .EmailQuote { margin-left: 1pt; padding-left: 4pt; border-left:=
- #800000 2px solid; } --></style>
-</head>
-<body>
-<font face=3D"Arial, sans-serif" size=3D"3">
-<div>&nbsp;</div>
-<div><font size=3D"2">Hi,</font></div>
-<div><font size=3D"2">&nbsp;</font></div>
-<div><font size=3D"2">I am doing cross compilation of LTP with ARM.</font><=
-/div>
-<div><font size=3D"2">&nbsp;</font></div>
-<div><font size=3D"2">When I do ./configure, I'm also getting the same erro=
-r message in ltp-full-20091231 release.</font></div>
-<div style=3D"margin-top: 5pt; margin-bottom: 5pt; "><font size=3D"2">&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font face=3D"Arial, sans-serif">conf=
-igure: error: Couldn't find functional copy of quota v2 - are you &gt; runn=
-ing 2.4.x ? </font></font></div>
-<div style=3D"margin-top: 5pt; margin-bottom: 5pt; "><font size=3D"2">As pe=
-r your suggestion I have tried to do <font face=3D"Arial, sans-serif">`man =
-2 quotactl', I'm getting the following message.</font></font></div>
-<div style=3D"margin-top: 5pt; margin-bottom: 5pt; "><font face=3D"Arial, s=
-ans-serif" size=3D"2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; No manual =
-entry for quotactl in section 2</font></div>
-<div style=3D"margin-top: 5pt; margin-bottom: 5pt; "><font face=3D"Arial, s=
-ans-serif" size=3D"2">I have ubuntu in my system. I'm able to cross compile=
- with the previous release &quot;ltp-full-20091130&quot;.</font></div>
-<div style=3D"margin-top: 5pt; margin-bottom: 5pt; "><font face=3D"Arial, s=
-ans-serif" size=3D"2">Is there any setup is missing in my system for this r=
-elease?</font></div>
-<div style=3D"margin-top: 5pt; margin-bottom: 5pt; "><font face=3D"Arial, s=
-ans-serif" size=3D"2">Help me to resolve this issue.</font></div>
-<div><font face=3D"Arial, sans-serif" size=3D"2">&nbsp;</font></div>
-<div><font size=3D"2">Regards,</font></div>
-<div><font size=3D"2">J.Shanmuga Sundari</font></div>
-<div><font size=3D"2">&nbsp;</font></div>
-<div><font size=3D"2">&nbsp;</font></div>
-<div><br>
-
-</div>
-<div><font color=3D"#C0C0C0"><u>&nbsp; ________________________________ &nb=
-sp;</u></font></div>
-<div><font face=3D"Arial, sans-serif" size=3D"2">SASKEN BUSINESS DISCLAIMER=
-: This message may contain confidential, proprietary or legally privileged =
-information. In case you are not the original intended Recipient of the mes=
-sage, you must not, directly or indirectly,
-use, disclose, distribute, print, or copy any part of this message and you =
-are requested to delete it and inform the sender. Any views expressed in th=
-is message are those of the individual sender unless otherwise stated. Noth=
-ing contained in this message shall
-be construed as an offer or acceptance of any offer by Sasken Communication=
- Technologies Limited (&quot;Sasken&quot;) unless sent with that express in=
-tent and with due authority of Sasken. Sasken has taken enough precautions =
-to prevent the spread of viruses. However
-the company accepts no liability for any damage caused by any virus transmi=
-tted by this email.<br>
-
-</font></div>
-</font>
-</body>
-</html>
-
---_000_653A85C7F32C4741880F71219266EA02031A02FFB1EXGMBX01saske_--
-
-
---===============2403083064447644782==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: "Serge E. Hallyn" <serue@us.ibm.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
+
+Sent from my iPhone
+
+On Jan 5, 2010, at 10:33 AM, "Serge E. Hallyn" <serue@us.ibm.com> wrote:
+
+> Quoting Garrett Cooper (yanegomi@gmail.com):
+>> Sent from my iPhone
+>>
+>> On Jan 5, 2010, at 8:30 AM, "Serge E. Hallyn" <serue@us.ibm.com>  
+>> wrote:
+>>
+>>> Quoting Garrett Cooper (yanegomi@gmail.com):
+>>>> On Jan 4, 2010, at 3:36 PM, "Serge E. Hallyn" <serue@us.ibm.com>
+>>>> wrote:
+>>>>
+>>>>> Quoting Garrett Cooper (yanegomi@gmail.com):
+>>>>>> On Jan 4, 2010, at 9:16 AM, "Serge E. Hallyn" <serue@us.ibm.com>
+>>>>>> wrote:
+>>>>>>
+>>>>>>> Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
+>>>>>>> ---
+>>>>>>> testcases/kernel/security/p9auth/p9priv.sh |    2 +-
+>>>>>>> 1 files changed, 1 insertions(+), 1 deletions(-)
+>>>>>>>
+>>>>>>> diff --git a/testcases/kernel/security/p9auth/p9priv.sh
+>>>>>>> b/testcases/kernel/security/p9auth/p9priv.sh
+>>>>>>> index ad2eead..c1a14d0 100755
+>>>>>>> --- a/testcases/kernel/security/p9auth/p9priv.sh
+>>>>>>> +++ b/testcases/kernel/security/p9auth/p9priv.sh
+>>>>>>> @@ -101,7 +101,7 @@ while [ ! -f $LTPTMP/d/childready ];
+>>>>>>> do :; done
+>>>>>>> touch $LTPTMP/childgo
+>>>>>>> while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/ 
+>>>>>>> childpass ]; do
+>>>>>>> :; done;
+>>>>>>> if [ -f $LTPTMP/d/childpass ]; then
+>>>>>>> -    echo "PASS: child could setuid from wrong source uid"
+>>>>>>> +    echo "FAIL: child could setuid from wrong source uid"
+>>>>>>> exit 1
+>>>>>>> fi
+>>>>>>> echo "PASS: child couldn't setuid from wrong source uid"
+>>>>>>> -- 
+>>>>>>> 1.6.1.1
+>>>>>>
+>>>>>> Is there a reason why this isn't using tst_resm?
+>>>>>
+>>>>> No good reason
+>>>>
+>>>> Could this be converted then :)?
+>>>
+>>> This appears to work.
+>>>
+>>> thanks,
+>>> -serge
+>>>
+>>> From 05713db9e0db910fa2fdfa85c452f0be8d820e8c Mon Sep 17 00:00:00  
+>>> 2001
+>>> From: Serge E. Hallyn <serue@us.ibm.com>
+>>> Date: Tue, 5 Jan 2010 10:30:11 -0500
+>>> Subject: [PATCH 1/1] p9auth: use tst_resm
+>>>
+>>> Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
+>>> ---
+>>> testcases/kernel/security/p9auth/p9priv.sh   |   25
+>>> ++++++++++++++++---------
+>>> testcases/kernel/security/p9auth/p9unpriv.sh |    2 +-
+>>> 2 files changed, 17 insertions(+), 10 deletions(-)
+>>>
+>>> diff --git a/testcases/kernel/security/p9auth/p9priv.sh
+>>> b/testcases/kernel/security/p9auth/p9priv.sh
+>>> index c1a14d0..0f3ea7e 100755
+>>> --- a/testcases/kernel/security/p9auth/p9priv.sh
+>>> +++ b/testcases/kernel/security/p9auth/p9priv.sh
+>>> @@ -19,7 +19,12 @@
+>>> ##
+>>> ##
+>>> ############
+>>> ####################################################################
+>>>
+>>> -LTPTMP=/tmp/p9auth_ltp
+>>> +export LTPTMP=/tmp/p9auth_ltp
+>>> +export TST_TOTAL=3
+>>> +export TCID="p9auth"
+>>> +
+>>> +export TST_COUNT=1
+>>> +
+>>> rm -rf $LTPTMP
+>>> mkdir $LTPTMP
+>>> chmod 755 $LTPTMP
+>>> @@ -37,14 +42,14 @@ cleanup() {
+>>> }
+>>>
+>>> if [ `id -u` -ne 0 ]; then
+>>> -    echo "Must start p9auth tests as root"
+>>> +    tst_resm TBROK "Must start p9auth tests as root"
+>>>  exit 1
+>>> fi
+>>>
+>>> ltpuid=`grep ltp /etc/passwd | head -1 | awk -F: '{ print $3 '}`
+>>> ret=$?
+>>> if [ $? -ne 0 ]; then
+>>> -    echo "Failed to find ltp userid"
+>>> +    tst_resm TCONF "Failed to find ltp userid"
+>>>  exit 1
+>>> fi
+>>>
+>>> @@ -57,12 +62,13 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
+>>> touch $LTPTMP/childgo
+>>> while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do
+>>> :; done;
+>>> if [ -f $LTPTMP/d/childpass ]; then
+>>> -    echo "FAIL: child could setuid with bad hash"
+>>> +    tst_resm TFAIL "FAIL: child could setuid with bad hash"
+>>>  exit 1
+>>> fi
+>>> -echo "PASS: child couldn't setuid with bad hash"
+>>> +tst_resm TPASS "PASS: child couldn't setuid with bad hash"
+>>>
+>>> # TEST 2: ltp setuids to 0 with valid hash
+>>> +export TST_COUNT=2
+>>>
+>>> # create the hash.  randstr doesn't have to be int, but it's ok
+>>> cleanup
+>>> @@ -80,12 +86,13 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
+>>> touch $LTPTMP/childgo
+>>> while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do
+>>> :; done;
+>>> if [ -f $LTPTMP/d/childfail ]; then
+>>> -    echo "FAIL: child couldn't setuid with good hash"
+>>> +    tst_resm TFAIL "FAIL: child couldn't setuid with good hash"
+>>>  exit 1
+>>> fi
+>>> -echo "PASS: child could setuid with good hash"
+>>> +tst_resm TPASS "PASS: child could setuid with good hash"
+>>>
+>>> # TEST 3: 0 setuids to 0 with hash valid for ltp user
+>>> +export TST_COUNT=3
+>>> cleanup
+>>> randstr=$RANDOM
+>>> txt="0@0"
+>>> @@ -101,10 +108,10 @@ while [ ! -f $LTPTMP/d/childready ]; do :;  
+>>> done
+>>> touch $LTPTMP/childgo
+>>> while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do
+>>> :; done;
+>>> if [ -f $LTPTMP/d/childpass ]; then
+>>> -    echo "FAIL: child could setuid from wrong source uid"
+>>> +    tst_resm TFAIL "FAIL: child could setuid from wrong source uid"
+>>>  exit 1
+>>> fi
+>>> -echo "PASS: child couldn't setuid from wrong source uid"
+>>> +tst_resm TPASS "PASS: child couldn't setuid from wrong source uid"
+>>>
+>>> touch $LTPTMP/childexit
+>>>
+>>> diff --git a/testcases/kernel/security/p9auth/p9unpriv.sh b/
+>>> testcases/kernel/security/p9auth/p9unpriv.sh
+>>> index 077b8ac..894b3c4 100755
+>>> --- a/testcases/kernel/security/p9auth/p9unpriv.sh
+>>> +++ b/testcases/kernel/security/p9auth/p9unpriv.sh
+>>> @@ -27,7 +27,7 @@ echo ltptmp is $LTPTMP
+>>>
+>>> myuid=`id -u`
+>>> if [ "$myuid" -eq 0 ]; then
+>>> -    echo "Unprivileged child was started as root!"
+>>> +    tst_resm TBROK "Unprivileged child was started as root!"
+>>>  exit 1
+>>> fi
+>>>
+>>> -- 
+>>> 1.6.1.1
+>>
+>> The patch is very close. /tmp -> TMPDIR=${TMPDIR:-/tmp} will do the
+>> trick.
+>> Also, eith the new changes PASS: / FAIL: shouldn't be required
+>> because the result is inline with the printout.
+>> Thanks!
+>> -Garrett
+>
+> New version.  (Hope I understood what you meant with tmpdir
+> correctly - and you don't mind me using a subdir of it)
+>
+> thanks,
+> -serge
+>
+> From 85401ac7279276eb46852ba828dc9f0ef2d62873 Mon Sep 17 00:00:00 2001
+> From: Serge E. Hallyn <serue@us.ibm.com>
+> Date: Tue, 5 Jan 2010 10:30:11 -0500
+> Subject: [PATCH 1/1] p9auth: use tst_resm
+>
+> Changelog:
+>    Jan 5: Use ltp's TMPDIR, and don't print redundant 'PASS/FAIL'
+>
+> Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
+> ---
+> testcases/kernel/security/p9auth/p9priv.sh   |   26 ++++++++++++++++ 
+> +---------
+> testcases/kernel/security/p9auth/p9unpriv.sh |    5 +++--
+> 2 files changed, 20 insertions(+), 11 deletions(-)
+>
+> diff --git a/testcases/kernel/security/p9auth/p9priv.sh b/testcases/ 
+> kernel/security/p9auth/p9priv.sh
+> index c1a14d0..6738600 100755
+> --- a/testcases/kernel/security/p9auth/p9priv.sh
+> +++ b/testcases/kernel/security/p9auth/p9priv.sh
+> @@ -19,7 +19,13 @@
+> ##  
+>     
+>     
+>                                                                       
+> ##
+> ### 
+> ### 
+> ### 
+> ### 
+> ####################################################################
+>
+> -LTPTMP=/tmp/p9auth_ltp
+> +export TMPDIR=${TMPDIR:-/tmp}
+> +export LTPTMP=${TMPDIR}/p9auth_ltp
+> +export TST_TOTAL=3
+> +export TCID="p9auth"
+> +
+> +export TST_COUNT=1
+> +
+> rm -rf $LTPTMP
+> mkdir $LTPTMP
+> chmod 755 $LTPTMP
+> @@ -37,14 +43,14 @@ cleanup() {
+> }
+>
+> if [ `id -u` -ne 0 ]; then
+> -    echo "Must start p9auth tests as root"
+> +    tst_resm TBROK "Must start p9auth tests as root"
+>    exit 1
+> fi
+>
+> ltpuid=`grep ltp /etc/passwd | head -1 | awk -F: '{ print $3 '}`
+> ret=$?
+> if [ $? -ne 0 ]; then
+> -    echo "Failed to find ltp userid"
+> +    tst_resm TCONF "Failed to find ltp userid"
+>    exit 1
+> fi
+>
+> @@ -57,12 +63,13 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
+> touch $LTPTMP/childgo
+> while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ];  
+> do :; done;
+> if [ -f $LTPTMP/d/childpass ]; then
+> -    echo "FAIL: child could setuid with bad hash"
+> +    tst_resm TFAIL "child could setuid with bad hash"
+>    exit 1
+> fi
+> -echo "PASS: child couldn't setuid with bad hash"
+> +tst_resm TPASS "child couldn't setuid with bad hash"
+>
+> # TEST 2: ltp setuids to 0 with valid hash
+> +export TST_COUNT=2
+>
+> # create the hash.  randstr doesn't have to be int, but it's ok
+> cleanup
+> @@ -80,12 +87,13 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
+> touch $LTPTMP/childgo
+> while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ];  
+> do :; done;
+> if [ -f $LTPTMP/d/childfail ]; then
+> -    echo "FAIL: child couldn't setuid with good hash"
+> +    tst_resm TFAIL "child couldn't setuid with good hash"
+>    exit 1
+> fi
+> -echo "PASS: child could setuid with good hash"
+> +tst_resm TPASS "child could setuid with good hash"
+>
+> # TEST 3: 0 setuids to 0 with hash valid for ltp user
+> +export TST_COUNT=3
+> cleanup
+> randstr=$RANDOM
+> txt="0@0"
+> @@ -101,10 +109,10 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
+> touch $LTPTMP/childgo
+> while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ];  
+> do :; done;
+> if [ -f $LTPTMP/d/childpass ]; then
+> -    echo "FAIL: child could setuid from wrong source uid"
+> +    tst_resm TFAIL "child could setuid from wrong source uid"
+>    exit 1
+> fi
+> -echo "PASS: child couldn't setuid from wrong source uid"
+> +tst_resm TPASS "child couldn't setuid from wrong source uid"
+>
+> touch $LTPTMP/childexit
+>
+> diff --git a/testcases/kernel/security/p9auth/p9unpriv.sh b/ 
+> testcases/kernel/security/p9auth/p9unpriv.sh
+> index 077b8ac..d42ee8e 100755
+> --- a/testcases/kernel/security/p9auth/p9unpriv.sh
+> +++ b/testcases/kernel/security/p9auth/p9unpriv.sh
+> @@ -19,7 +19,8 @@
+> ##  
+>     
+>     
+>                                                                       
+> ##
+> ### 
+> ### 
+> ### 
+> ### 
+> ####################################################################
+>
+> -LTPTMP=/tmp/p9auth_ltp
+> +export TMPDIR=${TMPDIR:-/tmp}
+> +export LTPTMP=${TMPDIR}/p9auth_ltp
+>
+> TOUCH=`which touch`
+> ID=`which id`
+> @@ -27,7 +28,7 @@ echo ltptmp is $LTPTMP
+>
+> myuid=`id -u`
+> if [ "$myuid" -eq 0 ]; then
+> -    echo "Unprivileged child was started as root!"
+> +    tst_resm TBROK "Unprivileged child was started as root!"
+>    exit 1
+> fi
+
+Perfect -- I'll commit this once I get back home in a few hours!
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
-Throughout its 18-year history, RSA Conference consistently attracts the
-world's best and brightest in the field, creating opportunities for Conference
-attendees to learn about information security's most important issues through
-interactions with peers, luminaries and emerging and established companies.
-http://p.sf.net/sfu/rsaconf-dev2dev
---===============2403083064447644782==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============2403083064447644782==--
-
