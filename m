@@ -1,42 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1NURMA-0001f1-5v
-	for ltp-list@lists.sourceforge.net; Mon, 11 Jan 2010 20:59:22 +0000
-Received: from e34.co.us.ibm.com ([32.97.110.152])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NURM7-00035l-UK
-	for ltp-list@lists.sourceforge.net; Mon, 11 Jan 2010 20:59:22 +0000
-Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
-	[9.17.195.226])
-	by e34.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o0BKrITr008751
-	for <ltp-list@lists.sourceforge.net>; Mon, 11 Jan 2010 13:53:18 -0700
-Received: from d03av06.boulder.ibm.com (d03av06.boulder.ibm.com [9.17.195.245])
-	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o0BKx2pL128386
-	for <ltp-list@lists.sourceforge.net>; Mon, 11 Jan 2010 13:59:03 -0700
-Received: from d03av06.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av06.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o0BL11Lb027965
-	for <ltp-list@lists.sourceforge.net>; Mon, 11 Jan 2010 14:01:01 -0700
-Date: Mon, 11 Jan 2010 14:58:58 -0600
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20100111205858.GA26412@us.ibm.com>
-References: <1262976343.20881.4.camel@moss-pluto.epoch.ncsc.mil>
-	<1262976627.20881.6.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001081338u37e77cd3q3d9535f3dec71331@mail.gmail.com>
-	<1262988051.20881.42.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001081408sf9d740ew55dad7b542463416@mail.gmail.com>
-	<364299f41001082327o31bbe79eh849ea1651cf12632@mail.gmail.com>
-	<1263237132.5091.1.camel@moss-pluto.epoch.ncsc.mil>
-	<20100111195043.GA23360@us.ibm.com>
-	<1263239706.5091.11.camel@moss-pluto.epoch.ncsc.mil>
-	<20100111201936.GA24711@us.ibm.com>
+	(envelope-from <mitani@ryobi.co.jp>) id 1NS4ok-0004FZ-9k
+	for ltp-list@lists.sourceforge.net; Tue, 05 Jan 2010 08:31:06 +0000
+Received: from out02.sjc.mx.trendmicro.com ([216.99.131.6])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NS4oi-000762-SL
+	for ltp-list@lists.sourceforge.net; Tue, 05 Jan 2010 08:31:06 +0000
+Received: from relay04.sjc.mx.trendmicro.com (unknown [10.30.239.5])
+	by out02.sjc.mx.trendmicro.com (Postfix) with ESMTP id 9F59958C52A
+	for <ltp-list@lists.sourceforge.net>;
+	Tue,  5 Jan 2010 08:30:55 +0000 (UTC)
+Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
+	by relay04.sjc.mx.trendmicro.com (Postfix) with ESMTP id F11241D7834
+	for <ltp-list@lists.sourceforge.net>;
+	Tue,  5 Jan 2010 08:30:54 +0000 (UTC)
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Tue, 5 Jan 2010 17:30:53 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Tue, 5 Jan 2010 17:30:52 +0900
+Message-ID: <000601ca8de1$64d04810$2e70d830$@co.jp>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20100111201936.GA24711@us.ibm.com>
-Subject: Re: [LTP] regression: selinux testsuite broken since October
+Content-Language: ja
+Subject: [LTP] quotactl01 testcases problem
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -49,44 +38,103 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stephen Smalley <sds@tycho.nsa.gov>
-Cc: ltp-list@lists.sourceforge.net, James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>
+To: ltp-list@lists.sourceforge.net
 
-Quoting Serge E. Hallyn (serue@us.ibm.com):
-> Quoting Stephen Smalley (sds@tycho.nsa.gov):
-> > On Mon, 2010-01-11 at 13:50 -0600, Serge E. Hallyn wrote:
-> > > > Fails with:
-> > > > cp: cannot stat
-> > > > `/home/sds/ltp/testcases/kernel/security/selinux-testsuite/refpolicy/policy_files/generic/test_policy.*': No such file or directory
-> > > 
-> > > You ran /home/sds/ltp/testscripts/test_selinux.sh, right?
-> > > 
-> > > I think we are supposed to actually be running
-> > > /opt/ltp/testscripts/test_selinux.sh.  So then the first question for
-> > > Garrett is how should we deduce /home/sds/ltp as $LTP_SRCDIR from a
-> > > testscript?  Or should the policy sources be copied into /opt?
-> > 
-> > Ok, but regardless:  the refpolicy Makefile is still broken.
-> 
-> Yup.
+Hi,
 
-All right, baby-steps.
+I tried "quotactl01" testcases, and found two problems.
+Second one occurred after first one's revise.
 
-The attached test_selinux.diff is not to be applied, but something
-like it is needed.  Should we have the ltp 'make install' fill in
-TOP_SRCDIR in /opt/ltp/testscripts/test_selinux.sh?  BTW, Garrett,
-that is the issue I was saying is shared between test_selinux.sh
-and some others including test_robind.sh.  That's why I'm not just
-sending a patch to make it work, bc i think we need more general
-guidance.
+1) In the result of "quotactl01", "Success" are displayed in spite of
+   failing in the test:
 
-The second match makes the 'make load' part of test_selinux.sh
-succeed on rhel5.4.  Stephen, how does it do on fedora?
+------------
+quotactl01    1  TFAIL  :  cmd=0x800002: TEST_ERRNO=???(0): Success
+quotactl01    2  TFAIL  :  cmd=0x800003: TEST_ERRNO=???(0): Success
+quotactl01    3  TFAIL  :  cmd=0x800007: TEST_ERRNO=???(0): Success
+quotactl01    4  TFAIL  :  cmd=0x800008: TEST_ERRNO=???(0): Success
+quotactl01    5  TFAIL  :  cmd=0x800005: TEST_ERRNO=???(0): Success
+quotactl01    6  TFAIL  :  cmd=0x800006: TEST_ERRNO=???(0): Success
+quotactl01    7  TFAIL  :  cmd=0x800004: TEST_ERRNO=???(0): Success
+quotactl01    8  TFAIL  :  cmd=0x800001: TEST_ERRNO=???(0): Success
+------------
 
-After loading policy it fails to execute ltp-pan, but I figure let's
-get policy loading working first.
+This problem occurred because the return value of system-call 
+"(syscall(__NR_quotactl, cmd[i], ...))" is not judged correctly 
+in "${LTPROOT}/testcases/kernel/syscalls/quotactl/quotactl01.c".
+Above errors are caused by TFAIL and messages are printed by TTERRNO.
+And there is only one place (Line 206) which uses TFAIL in "quotactl01.c"
 
--serge
+The following patch can fix this problem:
+
+============
+--- quotactl01.c	2009-12-20 09:36:35.000000000 +0900
++++ quotactl01.c.new	2010-01-04 17:11:17.000000000 +0900
+@@ -177,7 +177,6 @@
+ 	int id = getuid();
+ 	int newtid = -1;
+ 	int result;
+-	int ret;
+ 	int i;
+ 	int lc;				 /* loop counter */
+ 	char *msg;			  /* message returned from
+parse_opts */
+@@ -199,10 +198,10 @@
+ 
+ 			for (i = 0; i <= 7; i++){
+ 
+-				ret = syscall(__NR_quotactl, cmd[i],
++				TEST(syscall(__NR_quotactl, cmd[i],
+ 						(const char *)NULL, id,
+-						(caddr_t)NULL);
+-				if (ret != 0) {
++						(caddr_t)NULL));
++				if (TEST_RETURN != 0) {
+ 					tst_resm(TFAIL|TTERRNO, "cmd=0x%x",
+cmd[i]);
+ 				} else {
+ 					tst_resm(TPASS, "quotactl call
+succeeded");
+============
+
+
+However, new problem occurred after applying above patch.
+
+2) The test failed with the following error in my system:
+
+------------
+quotactl01    1  TFAIL  :  cmd=0x800002: TEST_ERRNO=EFAULT(14): Bad address
+quotactl01    2  TFAIL  :  cmd=0x800003: TEST_ERRNO=EFAULT(14): Bad address
+quotactl01    3  TFAIL  :  cmd=0x800007: TEST_ERRNO=EFAULT(14): Bad address
+quotactl01    4  TFAIL  :  cmd=0x800008: TEST_ERRNO=EFAULT(14): Bad address
+quotactl01    5  TFAIL  :  cmd=0x800005: TEST_ERRNO=EFAULT(14): Bad address
+quotactl01    6  TFAIL  :  cmd=0x800006: TEST_ERRNO=EFAULT(14): Bad address
+quotactl01    7  TFAIL  :  cmd=0x800004: TEST_ERRNO=EFAULT(14): Bad address
+quotactl01    8  TFAIL  :  cmd=0x800001: TEST_ERRNO=EFAULT(14): Bad address
+------------
+
+"EFAULT" means that there is an error in "addr".
+The format of "quotactl" is following:
+------------
+int quotactl(int cmd, const char *special, int id, caddr_t addr);
+------------
+
+Therefore, "EFAULT" means that 4th argument of "quotactl()" has problem.
+
+In "${LTPROOT}/testcases/kernel/syscalls/quotactl/quotactl01.c", 4th 
+argument of "quotactl()" is "NULL":
+Is it right?
+
+
+I'm glad if I get your help.
+
+
+Regards--
+
+
+-Tomonori Mitani
+
+
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
