@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Kiran.Girmaji@emerson.com>) id 1NZNBo-0003sc-K0
-	for ltp-list@lists.sourceforge.net; Mon, 25 Jan 2010 11:33:04 +0000
-Received: from usstlz-psecap05.emerson.com ([144.191.128.17]
-	helo=USSTLZ-PSECAP06.EMERSON.COM)
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NZNBn-0003ET-DM
-	for ltp-list@lists.sourceforge.net; Mon, 25 Jan 2010 11:33:04 +0000
-Content-Class: urn:content-classes:message
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <brianzhang2007@gmail.com>) id 1NSD8J-0006n1-E0
+	for ltp-list@lists.sourceforge.net; Tue, 05 Jan 2010 17:23:51 +0000
+Received: from mail-qy0-f190.google.com ([209.85.221.190])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NSD8I-0000US-II
+	for ltp-list@lists.sourceforge.net; Tue, 05 Jan 2010 17:23:51 +0000
+Received: by qyk28 with SMTP id 28so7634132qyk.28
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 05 Jan 2010 09:23:44 -0800 (PST)
+Message-ID: <2FB9CEFCF4B24FC7AE1D718C54B63F55@jacksimba>
+From: "Yongjian Zhang" <brianzhang2007@gmail.com>
+Date: Tue, 5 Jan 2010 10:23:40 -0700
 MIME-Version: 1.0
-Date: Mon, 25 Jan 2010 19:32:45 +0800
-Message-ID: <89D32649C0790143AB985A5BF77A104F02C6ACB0@etsmsg-hkexm05.etsmsg.org>
-From: <Kiran.Girmaji@Emerson.com>
-Subject: [LTP] LTP configure error
+Subject: [LTP] disktest question
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,139 +25,66 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============9126879267721172284=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
---===============9126879267721172284==
-Content-Class: urn:content-classes:message
-Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01CA9DB2.219B845C"
+Hi all,
 
-------_=_NextPart_001_01CA9DB2.219B845C
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+I'm trying to use disktest to measure the performance of an iSCSI device but 
+get extremely low throughput...
 
-Hi,=20
-=20
-I am getting this configure error while compiling LTP
-(ltp-full-20091231) for PPC arch.
-=20
-configure: error: Couldn't find functional copy of quota v2 - are you
-running 2.4.x?
-=20
-It works fine when I do CC for x86. I never before faced this with
-ltp-full-20091031 release. I was able to CC for all archs. =20
-=20
-Below is my kernel and gcc versions -=20
-=20
-[root@g LTP]# uname -a
-Linux kirang 2.6.18-8.el5 #1 SMP Fri Jan 26 14:15:21 EST 2007 i686 i686
-i386 GNU/Linux
-[root@g LTP]# gcc -v
-Using built-in specs.
-Target: i386-redhat-linux
-Configured with: ../configure --prefix=3D/usr --mandir=3D/usr/share/man
---infodir=3D/usr/share/info --enable-shared --enable-threads=3Dposix
---enable-checking=3Drelease --with-system-zlib --enable-__cxa_atexit
---disable-libunwind-exceptions --enable-libgcj-multifile
---enable-languages=3Dc,c++,objc,obj-c++,java,fortran,ada
---enable-java-awt=3Dgtk --disable-dssi --enable-plugin
---with-java-home=3D/usr/lib/jvm/java-1.4.2-gcj-1.4.2.0/jre
---with-cpu=3Dgeneric --host=3Di386-redhat-linux
-Thread model: posix
-gcc version 4.1.1 20070105 (Red Hat 4.1.1-52)
-[root@g LTP]#
-=20
+For example, I did
 
-------_=_NextPart_001_01CA9DB2.219B845C
-Content-Type: text/html; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+disktest -w -S0:1k -B 1024 /dev/sdb (/dev/sdb is the iSCSI device file, no 
+partition or file system on it)
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.6000.16939" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D040262511-25012010>Hi,=20
-</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D040262511-25012010></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D040262511-25012010>I am =
-getting this=20
-configure error while compiling LTP (ltp-full-20091231)&nbsp;for PPC=20
-arch.</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D040262511-25012010></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D040262511-25012010><SPAN=20
-class=3D040262511-25012010><EM>configure: error: Couldn't find =
-functional copy of=20
-quota v2 - are you running 2.4.x?</EM></SPAN></SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D040262511-25012010></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D040262511-25012010>It =
-works fine when I=20
-do CC for x86. </SPAN></FONT><FONT face=3DArial size=3D2><SPAN=20
-class=3D040262511-25012010>I&nbsp;never before faced this with =
-ltp-full-20091031=20
-release.&nbsp;I&nbsp;was able to&nbsp;CC for all=20
-archs.&nbsp;&nbsp;</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D040262511-25012010></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN class=3D040262511-25012010>Below =
-is my kernel=20
-and gcc versions - </SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D040262511-25012010></SPAN></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN =
-class=3D040262511-25012010>[root@g LTP]# uname=20
--a<BR>Linux kirang 2.6.18-8.el5 #1 SMP Fri Jan 26 14:15:21 EST 2007 i686 =
-i686=20
-i386 GNU/Linux<BR>[root@g LTP]# gcc -v<BR>Using built-in =
-specs.<BR>Target:=20
-i386-redhat-linux<BR>Configured with: ../configure --prefix=3D/usr=20
---mandir=3D/usr/share/man --infodir=3D/usr/share/info --enable-shared=20
---enable-threads=3Dposix --enable-checking=3Drelease --with-system-zlib=20
---enable-__cxa_atexit --disable-libunwind-exceptions =
---enable-libgcj-multifile=20
---enable-languages=3Dc,c++,objc,obj-c++,java,fortran,ada =
---enable-java-awt=3Dgtk=20
---disable-dssi --enable-plugin=20
---with-java-home=3D/usr/lib/jvm/java-1.4.2-gcj-1.4.2.0/jre =
---with-cpu=3Dgeneric=20
---host=3Di386-redhat-linux<BR>Thread model: posix<BR>gcc version 4.1.1 =
-20070105=20
-(Red Hat 4.1.1-52)<BR>[root@g LTP]#</SPAN></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D040262511-25012010><EM></EM></SPAN></FONT>&nbsp;</DIV></BODY></HT=
-ML>
+And the result was:
+| 2010/01/05-02:58:26 | START | 27293 | v1.4.2 | /dev/sdb | Start
+args: -w -S0:1024k -B 1024 -PA (-I b) (-N 8385867) (-K 4) (-c) (-p R)
+(-L 1048577) (-D 0:100) (-t 0:2m) (-o 0)
+| 2010/01/05-02:58:26 | INFO  | 27293 | v1.4.2 | /dev/sdb | Starting
+pass
+^C| 2010/01/05-03:00:58 | STAT  | 27293 | v1.4.2 | /dev/sdb | Total
+bytes written in 85578 transfers: 87631872
+| 2010/01/05-03:00:58 | STAT  | 27293 | v1.4.2 | /dev/sdb | Total
+write throughput: 701055.0B/s (0.67MB/s), IOPS 684.6/s.
+| 2010/01/05-03:00:58 | STAT  | 27293 | v1.4.2 | /dev/sdb | Total
+Write Time: 125 seconds (0d0h2m5s)
+| 2010/01/05-03:00:58 | STAT  | 27293 | v1.4.2 | /dev/sdb | Total
+overall runtime: 152 seconds (0d0h2m32s)
+| 2010/01/05-03:00:58 | END   | 27293 | v1.4.2 | /dev/sdb | User
+Interrupt: Test Done (Passed)
 
-------_=_NextPart_001_01CA9DB2.219B845C--
+As you can see, the throughput was only 0.67MB/s and only 85578
+written in 87631872 transfers...
+I also tweaked the options with "-p l" and/or "-I bd" (change seek
+pattern to linear and/or speficy IO type as block and direct IO) but
+no improvement happened...
 
+I thought this low throughput could be caused by the link rate or disk 
+problem, but dd ruled it out..
 
---===============9126879267721172284==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+$ dd if=/dev/zero of=/dev/sdb bs=1024 count=1048576
+
+The throughput is 7.2 MB/s.
+
+There must be something I've done wrong with disktest... Could anyone maybe 
+help me out here?
+
+Thanks a lot!
+
+jack 
+
 
 ------------------------------------------------------------------------------
-Throughout its 18-year history, RSA Conference consistently attracts the
-world's best and brightest in the field, creating opportunities for Conference
-attendees to learn about information security's most important issues through
-interactions with peers, luminaries and emerging and established companies.
-http://p.sf.net/sfu/rsaconf-dev2dev
---===============9126879267721172284==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============9126879267721172284==--
-
