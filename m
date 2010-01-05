@@ -1,37 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1NSDI9-0004OE-Po
-	for ltp-list@lists.sourceforge.net; Tue, 05 Jan 2010 17:34:01 +0000
-Received: from e38.co.us.ibm.com ([32.97.110.159])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NSDI7-0005L6-Dq
-	for ltp-list@lists.sourceforge.net; Tue, 05 Jan 2010 17:34:01 +0000
-Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
-	[9.17.195.107])
-	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o05HSjMt010352
-	for <ltp-list@lists.sourceforge.net>; Tue, 5 Jan 2010 10:28:45 -0700
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o05HXSt1102676
-	for <ltp-list@lists.sourceforge.net>; Tue, 5 Jan 2010 10:33:33 -0700
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o05HXSc4029118
-	for <ltp-list@lists.sourceforge.net>; Tue, 5 Jan 2010 10:33:28 -0700
-Date: Tue, 5 Jan 2010 11:33:25 -0600
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1NSBN1-0005aR-B5
+	for ltp-list@lists.sourceforge.net; Tue, 05 Jan 2010 15:30:55 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NSBN0-000204-7V
+	for ltp-list@lists.sourceforge.net; Tue, 05 Jan 2010 15:30:55 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o05FNmh9011768
+	for <ltp-list@lists.sourceforge.net>; Tue, 5 Jan 2010 08:23:48 -0700
+Received: from d03av06.boulder.ibm.com (d03av06.boulder.ibm.com [9.17.195.245])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o05FUS6a178466
+	for <ltp-list@lists.sourceforge.net>; Tue, 5 Jan 2010 08:30:29 -0700
+Received: from d03av06.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av06.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o05FWRou021226
+	for <ltp-list@lists.sourceforge.net>; Tue, 5 Jan 2010 08:32:27 -0700
+Date: Tue, 5 Jan 2010 09:30:21 -0600
 From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20100105173325.GA5204@us.ibm.com>
+Message-ID: <20100105153021.GA11873@us.ibm.com>
 References: <20100104171643.GA545@us.ibm.com>
 	<D107C512-245B-4187-9A8D-7FDC28234A0D@gmail.com>
 	<20100104233622.GA9018@us.ibm.com>
 	<AA968A69-C9C7-4FC1-B4B5-849719CCB8E8@gmail.com>
-	<20100105153021.GA11873@us.ibm.com>
-	<948507EC-6E01-4C79-A497-0425B44863CA@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <948507EC-6E01-4C79-A497-0425B44863CA@gmail.com>
+In-Reply-To: <AA968A69-C9C7-4FC1-B4B5-849719CCB8E8@gmail.com>
 Subject: Re: [LTP] [PATCH 1/1] say FAIL not PASS when we failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -49,206 +47,67 @@ To: Garrett Cooper <yanegomi@gmail.com>
 Cc: LTP list <ltp-list@lists.sourceforge.net>
 
 Quoting Garrett Cooper (yanegomi@gmail.com):
-> Sent from my iPhone
-> 
-> On Jan 5, 2010, at 8:30 AM, "Serge E. Hallyn" <serue@us.ibm.com> wrote:
+> On Jan 4, 2010, at 3:36 PM, "Serge E. Hallyn" <serue@us.ibm.com> wrote:
 > 
 > >Quoting Garrett Cooper (yanegomi@gmail.com):
-> >>On Jan 4, 2010, at 3:36 PM, "Serge E. Hallyn" <serue@us.ibm.com>
+> >>On Jan 4, 2010, at 9:16 AM, "Serge E. Hallyn" <serue@us.ibm.com>
 > >>wrote:
 > >>
-> >>>Quoting Garrett Cooper (yanegomi@gmail.com):
-> >>>>On Jan 4, 2010, at 9:16 AM, "Serge E. Hallyn" <serue@us.ibm.com>
-> >>>>wrote:
-> >>>>
-> >>>>>Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
-> >>>>>---
-> >>>>>testcases/kernel/security/p9auth/p9priv.sh |    2 +-
-> >>>>>1 files changed, 1 insertions(+), 1 deletions(-)
-> >>>>>
-> >>>>>diff --git a/testcases/kernel/security/p9auth/p9priv.sh
-> >>>>>b/testcases/kernel/security/p9auth/p9priv.sh
-> >>>>>index ad2eead..c1a14d0 100755
-> >>>>>--- a/testcases/kernel/security/p9auth/p9priv.sh
-> >>>>>+++ b/testcases/kernel/security/p9auth/p9priv.sh
-> >>>>>@@ -101,7 +101,7 @@ while [ ! -f $LTPTMP/d/childready ];
-> >>>>>do :; done
-> >>>>>touch $LTPTMP/childgo
-> >>>>>while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do
-> >>>>>:; done;
-> >>>>>if [ -f $LTPTMP/d/childpass ]; then
-> >>>>>-    echo "PASS: child could setuid from wrong source uid"
-> >>>>>+    echo "FAIL: child could setuid from wrong source uid"
-> >>>>>exit 1
-> >>>>>fi
-> >>>>>echo "PASS: child couldn't setuid from wrong source uid"
-> >>>>>-- 
-> >>>>>1.6.1.1
-> >>>>
-> >>>>Is there a reason why this isn't using tst_resm?
+> >>>Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
+> >>>---
+> >>>testcases/kernel/security/p9auth/p9priv.sh |    2 +-
+> >>>1 files changed, 1 insertions(+), 1 deletions(-)
 > >>>
-> >>>No good reason
+> >>>diff --git a/testcases/kernel/security/p9auth/p9priv.sh
+> >>>b/testcases/kernel/security/p9auth/p9priv.sh
+> >>>index ad2eead..c1a14d0 100755
+> >>>--- a/testcases/kernel/security/p9auth/p9priv.sh
+> >>>+++ b/testcases/kernel/security/p9auth/p9priv.sh
+> >>>@@ -101,7 +101,7 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
+> >>>touch $LTPTMP/childgo
+> >>>while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do
+> >>>:; done;
+> >>>if [ -f $LTPTMP/d/childpass ]; then
+> >>>-    echo "PASS: child could setuid from wrong source uid"
+> >>>+    echo "FAIL: child could setuid from wrong source uid"
+> >>> exit 1
+> >>>fi
+> >>>echo "PASS: child couldn't setuid from wrong source uid"
+> >>>-- 
+> >>>1.6.1.1
 > >>
-> >>Could this be converted then :)?
+> >>Is there a reason why this isn't using tst_resm?
 > >
-> >This appears to work.
-> >
-> >thanks,
-> >-serge
-> >
-> >From 05713db9e0db910fa2fdfa85c452f0be8d820e8c Mon Sep 17 00:00:00 2001
-> >From: Serge E. Hallyn <serue@us.ibm.com>
-> >Date: Tue, 5 Jan 2010 10:30:11 -0500
-> >Subject: [PATCH 1/1] p9auth: use tst_resm
-> >
-> >Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
-> >---
-> >testcases/kernel/security/p9auth/p9priv.sh   |   25
-> >++++++++++++++++---------
-> >testcases/kernel/security/p9auth/p9unpriv.sh |    2 +-
-> >2 files changed, 17 insertions(+), 10 deletions(-)
-> >
-> >diff --git a/testcases/kernel/security/p9auth/p9priv.sh
-> >b/testcases/kernel/security/p9auth/p9priv.sh
-> >index c1a14d0..0f3ea7e 100755
-> >--- a/testcases/kernel/security/p9auth/p9priv.sh
-> >+++ b/testcases/kernel/security/p9auth/p9priv.sh
-> >@@ -19,7 +19,12 @@
-> >##
-> >##
-> >############
-> >####################################################################
-> >
-> >-LTPTMP=/tmp/p9auth_ltp
-> >+export LTPTMP=/tmp/p9auth_ltp
-> >+export TST_TOTAL=3
-> >+export TCID="p9auth"
-> >+
-> >+export TST_COUNT=1
-> >+
-> >rm -rf $LTPTMP
-> >mkdir $LTPTMP
-> >chmod 755 $LTPTMP
-> >@@ -37,14 +42,14 @@ cleanup() {
-> >}
-> >
-> >if [ `id -u` -ne 0 ]; then
-> >-    echo "Must start p9auth tests as root"
-> >+    tst_resm TBROK "Must start p9auth tests as root"
-> >   exit 1
-> >fi
-> >
-> >ltpuid=`grep ltp /etc/passwd | head -1 | awk -F: '{ print $3 '}`
-> >ret=$?
-> >if [ $? -ne 0 ]; then
-> >-    echo "Failed to find ltp userid"
-> >+    tst_resm TCONF "Failed to find ltp userid"
-> >   exit 1
-> >fi
-> >
-> >@@ -57,12 +62,13 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
-> >touch $LTPTMP/childgo
-> >while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do
-> >:; done;
-> >if [ -f $LTPTMP/d/childpass ]; then
-> >-    echo "FAIL: child could setuid with bad hash"
-> >+    tst_resm TFAIL "FAIL: child could setuid with bad hash"
-> >   exit 1
-> >fi
-> >-echo "PASS: child couldn't setuid with bad hash"
-> >+tst_resm TPASS "PASS: child couldn't setuid with bad hash"
-> >
-> ># TEST 2: ltp setuids to 0 with valid hash
-> >+export TST_COUNT=2
-> >
-> ># create the hash.  randstr doesn't have to be int, but it's ok
-> >cleanup
-> >@@ -80,12 +86,13 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
-> >touch $LTPTMP/childgo
-> >while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do
-> >:; done;
-> >if [ -f $LTPTMP/d/childfail ]; then
-> >-    echo "FAIL: child couldn't setuid with good hash"
-> >+    tst_resm TFAIL "FAIL: child couldn't setuid with good hash"
-> >   exit 1
-> >fi
-> >-echo "PASS: child could setuid with good hash"
-> >+tst_resm TPASS "PASS: child could setuid with good hash"
-> >
-> ># TEST 3: 0 setuids to 0 with hash valid for ltp user
-> >+export TST_COUNT=3
-> >cleanup
-> >randstr=$RANDOM
-> >txt="0@0"
-> >@@ -101,10 +108,10 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
-> >touch $LTPTMP/childgo
-> >while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do
-> >:; done;
-> >if [ -f $LTPTMP/d/childpass ]; then
-> >-    echo "FAIL: child could setuid from wrong source uid"
-> >+    tst_resm TFAIL "FAIL: child could setuid from wrong source uid"
-> >   exit 1
-> >fi
-> >-echo "PASS: child couldn't setuid from wrong source uid"
-> >+tst_resm TPASS "PASS: child couldn't setuid from wrong source uid"
-> >
-> >touch $LTPTMP/childexit
-> >
-> >diff --git a/testcases/kernel/security/p9auth/p9unpriv.sh b/
-> >testcases/kernel/security/p9auth/p9unpriv.sh
-> >index 077b8ac..894b3c4 100755
-> >--- a/testcases/kernel/security/p9auth/p9unpriv.sh
-> >+++ b/testcases/kernel/security/p9auth/p9unpriv.sh
-> >@@ -27,7 +27,7 @@ echo ltptmp is $LTPTMP
-> >
-> >myuid=`id -u`
-> >if [ "$myuid" -eq 0 ]; then
-> >-    echo "Unprivileged child was started as root!"
-> >+    tst_resm TBROK "Unprivileged child was started as root!"
-> >   exit 1
-> >fi
-> >
-> >-- 
-> >1.6.1.1
+> >No good reason
 > 
-> The patch is very close. /tmp -> TMPDIR=${TMPDIR:-/tmp} will do the
-> trick.
-> Also, eith the new changes PASS: / FAIL: shouldn't be required
-> because the result is inline with the printout.
-> Thanks!
-> -Garrett
+> Could this be converted then :)?
 
-New version.  (Hope I understood what you meant with tmpdir
-correctly - and you don't mind me using a subdir of it)
+This appears to work.
 
 thanks,
 -serge
 
-From 85401ac7279276eb46852ba828dc9f0ef2d62873 Mon Sep 17 00:00:00 2001
+From 05713db9e0db910fa2fdfa85c452f0be8d820e8c Mon Sep 17 00:00:00 2001
 From: Serge E. Hallyn <serue@us.ibm.com>
 Date: Tue, 5 Jan 2010 10:30:11 -0500
 Subject: [PATCH 1/1] p9auth: use tst_resm
 
-Changelog:
-	Jan 5: Use ltp's TMPDIR, and don't print redundant 'PASS/FAIL'
-
 Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
 ---
- testcases/kernel/security/p9auth/p9priv.sh   |   26 +++++++++++++++++---------
- testcases/kernel/security/p9auth/p9unpriv.sh |    5 +++--
- 2 files changed, 20 insertions(+), 11 deletions(-)
+ testcases/kernel/security/p9auth/p9priv.sh   |   25 ++++++++++++++++---------
+ testcases/kernel/security/p9auth/p9unpriv.sh |    2 +-
+ 2 files changed, 17 insertions(+), 10 deletions(-)
 
 diff --git a/testcases/kernel/security/p9auth/p9priv.sh b/testcases/kernel/security/p9auth/p9priv.sh
-index c1a14d0..6738600 100755
+index c1a14d0..0f3ea7e 100755
 --- a/testcases/kernel/security/p9auth/p9priv.sh
 +++ b/testcases/kernel/security/p9auth/p9priv.sh
-@@ -19,7 +19,13 @@
+@@ -19,7 +19,12 @@
  ##                                                                            ##
  ################################################################################
  
 -LTPTMP=/tmp/p9auth_ltp
-+export TMPDIR=${TMPDIR:-/tmp}
-+export LTPTMP=${TMPDIR}/p9auth_ltp
++export LTPTMP=/tmp/p9auth_ltp
 +export TST_TOTAL=3
 +export TCID="p9auth"
 +
@@ -257,7 +116,7 @@ index c1a14d0..6738600 100755
  rm -rf $LTPTMP
  mkdir $LTPTMP
  chmod 755 $LTPTMP
-@@ -37,14 +43,14 @@ cleanup() {
+@@ -37,14 +42,14 @@ cleanup() {
  }
  
  if [ `id -u` -ne 0 ]; then
@@ -274,66 +133,56 @@ index c1a14d0..6738600 100755
  	exit 1
  fi
  
-@@ -57,12 +63,13 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
+@@ -57,12 +62,13 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
  touch $LTPTMP/childgo
  while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do :; done;
  if [ -f $LTPTMP/d/childpass ]; then
 -	echo "FAIL: child could setuid with bad hash"
-+	tst_resm TFAIL "child could setuid with bad hash"
++	tst_resm TFAIL "FAIL: child could setuid with bad hash"
  	exit 1
  fi
 -echo "PASS: child couldn't setuid with bad hash"
-+tst_resm TPASS "child couldn't setuid with bad hash"
++tst_resm TPASS "PASS: child couldn't setuid with bad hash"
  
  # TEST 2: ltp setuids to 0 with valid hash
 +export TST_COUNT=2
  
  # create the hash.  randstr doesn't have to be int, but it's ok
  cleanup
-@@ -80,12 +87,13 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
+@@ -80,12 +86,13 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
  touch $LTPTMP/childgo
  while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do :; done;
  if [ -f $LTPTMP/d/childfail ]; then
 -	echo "FAIL: child couldn't setuid with good hash"
-+	tst_resm TFAIL "child couldn't setuid with good hash"
++	tst_resm TFAIL "FAIL: child couldn't setuid with good hash"
  	exit 1
  fi
 -echo "PASS: child could setuid with good hash"
-+tst_resm TPASS "child could setuid with good hash"
++tst_resm TPASS "PASS: child could setuid with good hash"
  
  # TEST 3: 0 setuids to 0 with hash valid for ltp user
 +export TST_COUNT=3
  cleanup
  randstr=$RANDOM
  txt="0@0"
-@@ -101,10 +109,10 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
+@@ -101,10 +108,10 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
  touch $LTPTMP/childgo
  while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do :; done;
  if [ -f $LTPTMP/d/childpass ]; then
 -	echo "FAIL: child could setuid from wrong source uid"
-+	tst_resm TFAIL "child could setuid from wrong source uid"
++	tst_resm TFAIL "FAIL: child could setuid from wrong source uid"
  	exit 1
  fi
 -echo "PASS: child couldn't setuid from wrong source uid"
-+tst_resm TPASS "child couldn't setuid from wrong source uid"
++tst_resm TPASS "PASS: child couldn't setuid from wrong source uid"
  
  touch $LTPTMP/childexit
  
 diff --git a/testcases/kernel/security/p9auth/p9unpriv.sh b/testcases/kernel/security/p9auth/p9unpriv.sh
-index 077b8ac..d42ee8e 100755
+index 077b8ac..894b3c4 100755
 --- a/testcases/kernel/security/p9auth/p9unpriv.sh
 +++ b/testcases/kernel/security/p9auth/p9unpriv.sh
-@@ -19,7 +19,8 @@
- ##                                                                            ##
- ################################################################################
- 
--LTPTMP=/tmp/p9auth_ltp
-+export TMPDIR=${TMPDIR:-/tmp}
-+export LTPTMP=${TMPDIR}/p9auth_ltp
- 
- TOUCH=`which touch`
- ID=`which id`
-@@ -27,7 +28,7 @@ echo ltptmp is $LTPTMP
+@@ -27,7 +27,7 @@ echo ltptmp is $LTPTMP
  
  myuid=`id -u`
  if [ "$myuid" -eq 0 ]; then
