@@ -1,29 +1,38 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sds@tycho.nsa.gov>) id 1NZmSS-000720-4r
-	for ltp-list@lists.sourceforge.net; Tue, 26 Jan 2010 14:31:56 +0000
-Received: from msux-gh1-uea02.nsa.gov ([63.239.67.2])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NZmSQ-0001S9-TR
-	for ltp-list@lists.sourceforge.net; Tue, 26 Jan 2010 14:31:56 +0000
-From: Stephen Smalley <sds@tycho.nsa.gov>
-In-Reply-To: <364299f41001260031h2529b9b0j1bbbacd9d3d85eae@mail.gmail.com>
-References: <1262988051.20881.42.camel@moss-pluto.epoch.ncsc.mil>
-	<1263237132.5091.1.camel@moss-pluto.epoch.ncsc.mil>
-	<20100111195043.GA23360@us.ibm.com>
-	<1263239706.5091.11.camel@moss-pluto.epoch.ncsc.mil>
-	<20100111201936.GA24711@us.ibm.com> <20100111205858.GA26412@us.ibm.com>
-	<20100111210006.GA26554@us.ibm.com>
-	<364299f41001120029x15b2e7adwe30d925717a1dc89@mail.gmail.com>
-	<20100112153827.GB7975@us.ibm.com>
-	<364299f41001150948u4df35c36g3d4b07b16af49f90@mail.gmail.com>
-	<364299f41001260031h2529b9b0j1bbbacd9d3d85eae@mail.gmail.com>
-Date: Tue, 26 Jan 2010 09:30:45 -0500
-Message-Id: <1264516245.19890.22.camel@moss-pluto.epoch.ncsc.mil>
-Mime-Version: 1.0
-Subject: Re: [LTP] regression: selinux testsuite broken since October
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1NSDI9-0004OE-Po
+	for ltp-list@lists.sourceforge.net; Tue, 05 Jan 2010 17:34:01 +0000
+Received: from e38.co.us.ibm.com ([32.97.110.159])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NSDI7-0005L6-Dq
+	for ltp-list@lists.sourceforge.net; Tue, 05 Jan 2010 17:34:01 +0000
+Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
+	[9.17.195.107])
+	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o05HSjMt010352
+	for <ltp-list@lists.sourceforge.net>; Tue, 5 Jan 2010 10:28:45 -0700
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o05HXSt1102676
+	for <ltp-list@lists.sourceforge.net>; Tue, 5 Jan 2010 10:33:33 -0700
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o05HXSc4029118
+	for <ltp-list@lists.sourceforge.net>; Tue, 5 Jan 2010 10:33:28 -0700
+Date: Tue, 5 Jan 2010 11:33:25 -0600
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20100105173325.GA5204@us.ibm.com>
+References: <20100104171643.GA545@us.ibm.com>
+	<D107C512-245B-4187-9A8D-7FDC28234A0D@gmail.com>
+	<20100104233622.GA9018@us.ibm.com>
+	<AA968A69-C9C7-4FC1-B4B5-849719CCB8E8@gmail.com>
+	<20100105153021.GA11873@us.ibm.com>
+	<948507EC-6E01-4C79-A497-0425B44863CA@gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <948507EC-6E01-4C79-A497-0425B44863CA@gmail.com>
+Subject: Re: [LTP] [PATCH 1/1] say FAIL not PASS when we failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,258 +46,312 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>, ltp-list@lists.sourceforge.net
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On Tue, 2010-01-26 at 00:31 -0800, Garrett Cooper wrote:
-> On Fri, Jan 15, 2010 at 9:48 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> > On Tue, Jan 12, 2010 at 7:38 AM, Serge E. Hallyn <serue@us.ibm.com> wrote:
-> >> Quoting Garrett Cooper (yanegomi@gmail.com):
-> >>> On Mon, Jan 11, 2010 at 1:00 PM, Serge E. Hallyn <serue@us.ibm.com> wrote:
-> >>> > Quoting Serge E. Hallyn (serue@us.ibm.com):
-> >>> >> Quoting Serge E. Hallyn (serue@us.ibm.com):
-> >>> >> > Quoting Stephen Smalley (sds@tycho.nsa.gov):
-> >>> >> > > On Mon, 2010-01-11 at 13:50 -0600, Serge E. Hallyn wrote:
-> >>> >> > > > > Fails with:
-> >>> >> > > > > cp: cannot stat
-> >>> >> > > > > `/home/sds/ltp/testcases/kernel/security/selinux-testsuite/refpolicy/policy_files/generic/test_policy.*': No such file or directory
-> >>> >> > > >
-> >>> >> > > > You ran /home/sds/ltp/testscripts/test_selinux.sh, right?
-> >>> >> > > >
-> >>> >> > > > I think we are supposed to actually be running
-> >>> >> > > > /opt/ltp/testscripts/test_selinux.sh.  So then the first question for
-> >>> >> > > > Garrett is how should we deduce /home/sds/ltp as $LTP_SRCDIR from a
-> >>> >> > > > testscript?  Or should the policy sources be copied into /opt?
-> >>> >> > >
-> >>> >> > > Ok, but regardless:  the refpolicy Makefile is still broken.
-> >>> >> >
-> >>> >> > Yup.
-> >>> >>
-> >>> >> All right, baby-steps.
-> >>> >>
-> >>> >> The attached test_selinux.diff is not to be applied, but something
-> >>> >> like it is needed.  Should we have the ltp 'make install' fill in
-> >>> >> TOP_SRCDIR in /opt/ltp/testscripts/test_selinux.sh?  BTW, Garrett,
-> >>> >> that is the issue I was saying is shared between test_selinux.sh
-> >>> >> and some others including test_robind.sh.  That's why I'm not just
-> >>> >> sending a patch to make it work, bc i think we need more general
-> >>> >> guidance.
-> >>> >>
-> >>> >> The second match makes the 'make load' part of test_selinux.sh
-> >>> >> succeed on rhel5.4.  Stephen, how does it do on fedora?
-> >>> >>
-> >>> >> After loading policy it fails to execute ltp-pan, but I figure let's
-> >>> >> get policy loading working first.
-> >>> >>
-> >>> >> -serge
-> >>> >
-> >>> > gah, attaching the actual patches this time.
-> >>> >
-> >>> > -serge
-> >>>
-> >>> 1. I'm rejecting the test_selinux.diff solely because it has /root/ltp
-> >>> hardcoded as LTPROOT.
-> >>
-> >> I said 'not to be applied'.  You're not rejecting.
-> >>
-> >>> 2. Why is the redhat stuff support to work
-> >>> agnostic to the major and minor version?
-> >>
-> >> It's not agnostic to the major version.  Only the minor version.
-> >>
-> >> And since you've made ltp not compile on rhel4 (requiring make-3.81.  feh)
-> >> i suppose we can just get rid of rhel4 support selinux-testsuite.
-> >
-> > No. 1. Compiling make 3.81 today and installing it is trivial, so it
-> > shouldn't be removed today. 2. I've finally decided that I'm going to
-> > look outside of the box into providing equivalent functionality via
-> > shell functions using purely built-in commands [and test(1)] to fill
-> > in the feature gaps for make 3.80. I've gotten to the point where I
-> > just gave up trying to ride out what I possibly can in make 3.80, so
-> > it's time to pull in some external pieces to get the job done.
+Quoting Garrett Cooper (yanegomi@gmail.com):
+> Sent from my iPhone
 > 
->     All of the install junk works now, but the modes need fixing, or
-> some such fun. Please analyze the test_selinux.sh script and tell me
-> what to commit next to fix everything.
+> On Jan 5, 2010, at 8:30 AM, "Serge E. Hallyn" <serue@us.ibm.com> wrote:
+> 
+> >Quoting Garrett Cooper (yanegomi@gmail.com):
+> >>On Jan 4, 2010, at 3:36 PM, "Serge E. Hallyn" <serue@us.ibm.com>
+> >>wrote:
+> >>
+> >>>Quoting Garrett Cooper (yanegomi@gmail.com):
+> >>>>On Jan 4, 2010, at 9:16 AM, "Serge E. Hallyn" <serue@us.ibm.com>
+> >>>>wrote:
+> >>>>
+> >>>>>Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
+> >>>>>---
+> >>>>>testcases/kernel/security/p9auth/p9priv.sh |    2 +-
+> >>>>>1 files changed, 1 insertions(+), 1 deletions(-)
+> >>>>>
+> >>>>>diff --git a/testcases/kernel/security/p9auth/p9priv.sh
+> >>>>>b/testcases/kernel/security/p9auth/p9priv.sh
+> >>>>>index ad2eead..c1a14d0 100755
+> >>>>>--- a/testcases/kernel/security/p9auth/p9priv.sh
+> >>>>>+++ b/testcases/kernel/security/p9auth/p9priv.sh
+> >>>>>@@ -101,7 +101,7 @@ while [ ! -f $LTPTMP/d/childready ];
+> >>>>>do :; done
+> >>>>>touch $LTPTMP/childgo
+> >>>>>while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do
+> >>>>>:; done;
+> >>>>>if [ -f $LTPTMP/d/childpass ]; then
+> >>>>>-    echo "PASS: child could setuid from wrong source uid"
+> >>>>>+    echo "FAIL: child could setuid from wrong source uid"
+> >>>>>exit 1
+> >>>>>fi
+> >>>>>echo "PASS: child couldn't setuid from wrong source uid"
+> >>>>>-- 
+> >>>>>1.6.1.1
+> >>>>
+> >>>>Is there a reason why this isn't using tst_resm?
+> >>>
+> >>>No good reason
+> >>
+> >>Could this be converted then :)?
+> >
+> >This appears to work.
+> >
+> >thanks,
+> >-serge
+> >
+> >From 05713db9e0db910fa2fdfa85c452f0be8d820e8c Mon Sep 17 00:00:00 2001
+> >From: Serge E. Hallyn <serue@us.ibm.com>
+> >Date: Tue, 5 Jan 2010 10:30:11 -0500
+> >Subject: [PATCH 1/1] p9auth: use tst_resm
+> >
+> >Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
+> >---
+> >testcases/kernel/security/p9auth/p9priv.sh   |   25
+> >++++++++++++++++---------
+> >testcases/kernel/security/p9auth/p9unpriv.sh |    2 +-
+> >2 files changed, 17 insertions(+), 10 deletions(-)
+> >
+> >diff --git a/testcases/kernel/security/p9auth/p9priv.sh
+> >b/testcases/kernel/security/p9auth/p9priv.sh
+> >index c1a14d0..0f3ea7e 100755
+> >--- a/testcases/kernel/security/p9auth/p9priv.sh
+> >+++ b/testcases/kernel/security/p9auth/p9priv.sh
+> >@@ -19,7 +19,12 @@
+> >##
+> >##
+> >############
+> >####################################################################
+> >
+> >-LTPTMP=/tmp/p9auth_ltp
+> >+export LTPTMP=/tmp/p9auth_ltp
+> >+export TST_TOTAL=3
+> >+export TCID="p9auth"
+> >+
+> >+export TST_COUNT=1
+> >+
+> >rm -rf $LTPTMP
+> >mkdir $LTPTMP
+> >chmod 755 $LTPTMP
+> >@@ -37,14 +42,14 @@ cleanup() {
+> >}
+> >
+> >if [ `id -u` -ne 0 ]; then
+> >-    echo "Must start p9auth tests as root"
+> >+    tst_resm TBROK "Must start p9auth tests as root"
+> >   exit 1
+> >fi
+> >
+> >ltpuid=`grep ltp /etc/passwd | head -1 | awk -F: '{ print $3 '}`
+> >ret=$?
+> >if [ $? -ne 0 ]; then
+> >-    echo "Failed to find ltp userid"
+> >+    tst_resm TCONF "Failed to find ltp userid"
+> >   exit 1
+> >fi
+> >
+> >@@ -57,12 +62,13 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
+> >touch $LTPTMP/childgo
+> >while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do
+> >:; done;
+> >if [ -f $LTPTMP/d/childpass ]; then
+> >-    echo "FAIL: child could setuid with bad hash"
+> >+    tst_resm TFAIL "FAIL: child could setuid with bad hash"
+> >   exit 1
+> >fi
+> >-echo "PASS: child couldn't setuid with bad hash"
+> >+tst_resm TPASS "PASS: child couldn't setuid with bad hash"
+> >
+> ># TEST 2: ltp setuids to 0 with valid hash
+> >+export TST_COUNT=2
+> >
+> ># create the hash.  randstr doesn't have to be int, but it's ok
+> >cleanup
+> >@@ -80,12 +86,13 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
+> >touch $LTPTMP/childgo
+> >while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do
+> >:; done;
+> >if [ -f $LTPTMP/d/childfail ]; then
+> >-    echo "FAIL: child couldn't setuid with good hash"
+> >+    tst_resm TFAIL "FAIL: child couldn't setuid with good hash"
+> >   exit 1
+> >fi
+> >-echo "PASS: child could setuid with good hash"
+> >+tst_resm TPASS "PASS: child could setuid with good hash"
+> >
+> ># TEST 3: 0 setuids to 0 with hash valid for ltp user
+> >+export TST_COUNT=3
+> >cleanup
+> >randstr=$RANDOM
+> >txt="0@0"
+> >@@ -101,10 +108,10 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
+> >touch $LTPTMP/childgo
+> >while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do
+> >:; done;
+> >if [ -f $LTPTMP/d/childpass ]; then
+> >-    echo "FAIL: child could setuid from wrong source uid"
+> >+    tst_resm TFAIL "FAIL: child could setuid from wrong source uid"
+> >   exit 1
+> >fi
+> >-echo "PASS: child couldn't setuid from wrong source uid"
+> >+tst_resm TPASS "PASS: child couldn't setuid from wrong source uid"
+> >
+> >touch $LTPTMP/childexit
+> >
+> >diff --git a/testcases/kernel/security/p9auth/p9unpriv.sh b/
+> >testcases/kernel/security/p9auth/p9unpriv.sh
+> >index 077b8ac..894b3c4 100755
+> >--- a/testcases/kernel/security/p9auth/p9unpriv.sh
+> >+++ b/testcases/kernel/security/p9auth/p9unpriv.sh
+> >@@ -27,7 +27,7 @@ echo ltptmp is $LTPTMP
+> >
+> >myuid=`id -u`
+> >if [ "$myuid" -eq 0 ]; then
+> >-    echo "Unprivileged child was started as root!"
+> >+    tst_resm TBROK "Unprivileged child was started as root!"
+> >   exit 1
+> >fi
+> >
+> >-- 
+> >1.6.1.1
+> 
+> The patch is very close. /tmp -> TMPDIR=${TMPDIR:-/tmp} will do the
+> trick.
+> Also, eith the new changes PASS: / FAIL: shouldn't be required
+> because the result is inline with the printout.
+> Thanks!
+> -Garrett
 
-Hi Garrett,
+New version.  (Hope I understood what you meant with tmpdir
+correctly - and you don't mind me using a subdir of it)
 
-I needed to apply the patch below to make test_selinux.sh run
-successfully on Fedora 12.  The problems were:
-- The setting of LTPROOT in test_selinux.sh was incorrect, leading to
-problems with invoking everything else.  Note that I invoke it by doing:
-cd /opt/ltp && ./testscripts/test_selinux.sh
-and thus $0 is a relative path, whereas we want an absolute one.
-- You don't need to cd to $POLICYDIR at all since you specify
-$POLICYDIR/test_policy.pp to semodule -i and semodule -r is acting on
-the installed policy module.
-- The attempt to extract paths from runtest/selinux and invoke chcon on
-them wasn't working as $LTPROOT wasn't being expanded; easier to just do
-a chcon -R there as before.
-- runtest/selinux had the wrong paths to the test programs (or
-alternatively, they aren't being installed to the right location - they
-all get installed directly to $LTPROOT/testcases/bin.
+thanks,
+-serge
 
-Index: testscripts/test_selinux.sh
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testscripts/test_selinux.sh,v
-retrieving revision 1.20
-diff -u -r1.20 test_selinux.sh
---- testscripts/test_selinux.sh	26 Jan 2010 07:05:02 -0000	1.20
-+++ testscripts/test_selinux.sh	26 Jan 2010 14:20:40 -0000
-@@ -37,15 +37,14 @@
- fi
+From 85401ac7279276eb46852ba828dc9f0ef2d62873 Mon Sep 17 00:00:00 2001
+From: Serge E. Hallyn <serue@us.ibm.com>
+Date: Tue, 5 Jan 2010 10:30:11 -0500
+Subject: [PATCH 1/1] p9auth: use tst_resm
+
+Changelog:
+	Jan 5: Use ltp's TMPDIR, and don't print redundant 'PASS/FAIL'
+
+Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
+---
+ testcases/kernel/security/p9auth/p9priv.sh   |   26 +++++++++++++++++---------
+ testcases/kernel/security/p9auth/p9unpriv.sh |    5 +++--
+ 2 files changed, 20 insertions(+), 11 deletions(-)
+
+diff --git a/testcases/kernel/security/p9auth/p9priv.sh b/testcases/kernel/security/p9auth/p9priv.sh
+index c1a14d0..6738600 100755
+--- a/testcases/kernel/security/p9auth/p9priv.sh
++++ b/testcases/kernel/security/p9auth/p9priv.sh
+@@ -19,7 +19,13 @@
+ ##                                                                            ##
+ ################################################################################
  
- # set the LTPROOT directory
--LTPROOT=${LTPROOT:=${0%/*}}
--cd "$LTPROOT"
-+LTPROOT=`pwd`
- export TMP=${TMP:-/tmp}
--# If we're in the testscripts directory, go down a dir..
-+# If we're in the testscripts directory, go up a dir..
- LTPROOT_TMP=${LTPROOT%/testscripts}
- if [ "x${LTPROOT_TMP}" != "x${LTPROOT}" ]
- then
- 	cd ..
--	LTPROOT=$LTPROOT_TMP
-+	LTPROOT=`pwd`
- fi
- export LTPROOT
- unset LTPROOT_TMP
-@@ -89,7 +88,6 @@
+-LTPTMP=/tmp/p9auth_ltp
++export TMPDIR=${TMPDIR:-/tmp}
++export LTPTMP=${TMPDIR}/p9auth_ltp
++export TST_TOTAL=3
++export TCID="p9auth"
++
++export TST_COUNT=1
++
+ rm -rf $LTPTMP
+ mkdir $LTPTMP
+ chmod 755 $LTPTMP
+@@ -37,14 +43,14 @@ cleanup() {
+ }
  
- # install the test policy...
- echo "Installing test_policy module..."
--cd $POLICYDIR
- if ! semodule -i $POLICYDIR/test_policy.pp; then
- 	echo "Failed to install test_policy module, aborting test run."
- 	config_unset_expandcheck
-@@ -100,9 +98,6 @@
- 
- config_unset_expandcheck
- 
--# go back to test's root directory
--cd $LTPROOT
--
- echo "Running the SELinux testsuite..."
- 
- mkdir $TMP/selinux > /dev/null 2>&1
-@@ -112,8 +107,7 @@
- # The ../testcases/bin directory needs to have the test_file_t type.
- # Save and restore later.
- SAVEBINTYPE=`ls -Zd $LTPROOT/testcases/bin | awk '{ print $4 }' | awk -F: '{ print $3 }'`
--/usr/bin/chcon -t test_file_t	$LTPROOT/testcases/bin \
--				$(awk '$1 !~ /^#/ { print $2 }' "$LTPROOT/runtest/selinux")
-+/usr/bin/chcon -R -t test_file_t	$LTPROOT/testcases/bin
- 
- $LTPROOT/bin/ltp-pan -S -a $LTPROOT/results/selinux -n ltp-selinux \
- 	-l $LTPROOT/results/selinux.logfile \
-@@ -127,7 +121,6 @@
- /usr/bin/chcon -R -t $SAVEBINTYPE $LTPROOT/testcases/bin
- 
- echo "Removing test_policy module..."
--cd $POLICYDIR
- if ! semodule -r test_policy; then
- 	echo "Failed to remove test_policy module."
+ if [ `id -u` -ne 0 ]; then
+-	echo "Must start p9auth tests as root"
++	tst_resm TBROK "Must start p9auth tests as root"
  	exit 1
-Index: runtest/selinux
-===================================================================
-RCS file: /cvsroot/ltp/ltp/runtest/selinux,v
-retrieving revision 1.4
-diff -u -r1.4 selinux
---- runtest/selinux	25 Jan 2010 12:44:59 -0000	1.4
-+++ runtest/selinux	26 Jan 2010 14:20:40 -0000
-@@ -1,40 +1,40 @@
- #DESCRIPTION:Security-Enhanced Linux
--SELinux01	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_capable_file.sh
--SELinux02	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_capable_net.sh
--SELinux03	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_capable_sys.sh
--SELinux04	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_domain_trans.sh
--SELinux05	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_entrypoint.sh
--SELinux06	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_execshare.sh
--SELinux07	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_exectrace.sh
--SELinux08	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_execute_no_trans.sh
--SELinux09	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_fdreceive.sh
--SELinux10	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_file.sh
--SELinux11	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_inherit.sh
--SELinux12	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_ioctl.sh
--SELinux13	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_link.sh
--SELinux14	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_mkdir.sh
--SELinux15	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_msg.sh
--SELinux16	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_open.sh
--SELinux17	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_ptrace.sh
--SELinux18	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_readlink.sh
--SELinux19	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_relabel.sh
--SELinux20	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_rename.sh
--SELinux21	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_rxdir.sh
--SELinux22	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_sem.sh
--SELinux23	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_setattr.sh
--SELinux24	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_setnice.sh
--SELinux25	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_shm.sh
--SELinux26	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_sigkill.sh
--SELinux27	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_stat.sh
--SELinux28	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_sysctl.sh
--SELinux29	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_task_create.sh
--SELinux30	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_task_getpgid.sh
--SELinux31	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_task_getscheduler.sh
--SELinux32	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_task_getsid.sh
--SELinux33	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_task_setnice.sh
--SELinux34	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_task_setpgid.sh
--SELinux35	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_task_setscheduler.sh
--SELinux36	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_wait.sh
--SELinux37	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_dyntrace.sh
--SELinux38	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_dyntrans.sh
--SELinux39	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_bounds.sh
-+SELinux01	$LTPROOT/testcases/bin/selinux_capable_file.sh
-+SELinux02	$LTPROOT/testcases/bin/selinux_capable_net.sh
-+SELinux03	$LTPROOT/testcases/bin/selinux_capable_sys.sh
-+SELinux04	$LTPROOT/testcases/bin/selinux_domain_trans.sh
-+SELinux05	$LTPROOT/testcases/bin/selinux_entrypoint.sh
-+SELinux06	$LTPROOT/testcases/bin/selinux_execshare.sh
-+SELinux07	$LTPROOT/testcases/bin/selinux_exectrace.sh
-+SELinux08	$LTPROOT/testcases/bin/selinux_execute_no_trans.sh
-+SELinux09	$LTPROOT/testcases/bin/selinux_fdreceive.sh
-+SELinux10	$LTPROOT/testcases/bin/selinux_file.sh
-+SELinux11	$LTPROOT/testcases/bin/selinux_inherit.sh
-+SELinux12	$LTPROOT/testcases/bin/selinux_ioctl.sh
-+SELinux13	$LTPROOT/testcases/bin/selinux_link.sh
-+SELinux14	$LTPROOT/testcases/bin/selinux_mkdir.sh
-+SELinux15	$LTPROOT/testcases/bin/selinux_msg.sh
-+SELinux16	$LTPROOT/testcases/bin/selinux_open.sh
-+SELinux17	$LTPROOT/testcases/bin/selinux_ptrace.sh
-+SELinux18	$LTPROOT/testcases/bin/selinux_readlink.sh
-+SELinux19	$LTPROOT/testcases/bin/selinux_relabel.sh
-+SELinux20	$LTPROOT/testcases/bin/selinux_rename.sh
-+SELinux21	$LTPROOT/testcases/bin/selinux_rxdir.sh
-+SELinux22	$LTPROOT/testcases/bin/selinux_sem.sh
-+SELinux23	$LTPROOT/testcases/bin/selinux_setattr.sh
-+SELinux24	$LTPROOT/testcases/bin/selinux_setnice.sh
-+SELinux25	$LTPROOT/testcases/bin/selinux_shm.sh
-+SELinux26	$LTPROOT/testcases/bin/selinux_sigkill.sh
-+SELinux27	$LTPROOT/testcases/bin/selinux_stat.sh
-+SELinux28	$LTPROOT/testcases/bin/selinux_sysctl.sh
-+SELinux29	$LTPROOT/testcases/bin/selinux_task_create.sh
-+SELinux30	$LTPROOT/testcases/bin/selinux_task_getpgid.sh
-+SELinux31	$LTPROOT/testcases/bin/selinux_task_getscheduler.sh
-+SELinux32	$LTPROOT/testcases/bin/selinux_task_getsid.sh
-+SELinux33	$LTPROOT/testcases/bin/selinux_task_setnice.sh
-+SELinux34	$LTPROOT/testcases/bin/selinux_task_setpgid.sh
-+SELinux35	$LTPROOT/testcases/bin/selinux_task_setscheduler.sh
-+SELinux36	$LTPROOT/testcases/bin/selinux_wait.sh
-+SELinux37	$LTPROOT/testcases/bin/selinux_dyntrace.sh
-+SELinux38	$LTPROOT/testcases/bin/selinux_dyntrans.sh
-+SELinux39	$LTPROOT/testcases/bin/selinux_bounds.sh
-
+ fi
+ 
+ ltpuid=`grep ltp /etc/passwd | head -1 | awk -F: '{ print $3 '}`
+ ret=$?
+ if [ $? -ne 0 ]; then
+-	echo "Failed to find ltp userid"
++	tst_resm TCONF "Failed to find ltp userid"
+ 	exit 1
+ fi
+ 
+@@ -57,12 +63,13 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
+ touch $LTPTMP/childgo
+ while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do :; done;
+ if [ -f $LTPTMP/d/childpass ]; then
+-	echo "FAIL: child could setuid with bad hash"
++	tst_resm TFAIL "child could setuid with bad hash"
+ 	exit 1
+ fi
+-echo "PASS: child couldn't setuid with bad hash"
++tst_resm TPASS "child couldn't setuid with bad hash"
+ 
+ # TEST 2: ltp setuids to 0 with valid hash
++export TST_COUNT=2
+ 
+ # create the hash.  randstr doesn't have to be int, but it's ok
+ cleanup
+@@ -80,12 +87,13 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
+ touch $LTPTMP/childgo
+ while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do :; done;
+ if [ -f $LTPTMP/d/childfail ]; then
+-	echo "FAIL: child couldn't setuid with good hash"
++	tst_resm TFAIL "child couldn't setuid with good hash"
+ 	exit 1
+ fi
+-echo "PASS: child could setuid with good hash"
++tst_resm TPASS "child could setuid with good hash"
+ 
+ # TEST 3: 0 setuids to 0 with hash valid for ltp user
++export TST_COUNT=3
+ cleanup
+ randstr=$RANDOM
+ txt="0@0"
+@@ -101,10 +109,10 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
+ touch $LTPTMP/childgo
+ while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do :; done;
+ if [ -f $LTPTMP/d/childpass ]; then
+-	echo "FAIL: child could setuid from wrong source uid"
++	tst_resm TFAIL "child could setuid from wrong source uid"
+ 	exit 1
+ fi
+-echo "PASS: child couldn't setuid from wrong source uid"
++tst_resm TPASS "child couldn't setuid from wrong source uid"
+ 
+ touch $LTPTMP/childexit
+ 
+diff --git a/testcases/kernel/security/p9auth/p9unpriv.sh b/testcases/kernel/security/p9auth/p9unpriv.sh
+index 077b8ac..d42ee8e 100755
+--- a/testcases/kernel/security/p9auth/p9unpriv.sh
++++ b/testcases/kernel/security/p9auth/p9unpriv.sh
+@@ -19,7 +19,8 @@
+ ##                                                                            ##
+ ################################################################################
+ 
+-LTPTMP=/tmp/p9auth_ltp
++export TMPDIR=${TMPDIR:-/tmp}
++export LTPTMP=${TMPDIR}/p9auth_ltp
+ 
+ TOUCH=`which touch`
+ ID=`which id`
+@@ -27,7 +28,7 @@ echo ltptmp is $LTPTMP
+ 
+ myuid=`id -u`
+ if [ "$myuid" -eq 0 ]; then
+-	echo "Unprivileged child was started as root!"
++	tst_resm TBROK "Unprivileged child was started as root!"
+ 	exit 1
+ fi
+ 
 -- 
-Stephen Smalley
-National Security Agency
+1.6.1.1
 
 
 ------------------------------------------------------------------------------
-The Planet: dedicated and managed hosting, cloud storage, colocation
-Stay online with enterprise data centers and the best network in the business
-Choose flexible plans and management services without long-term contracts
-Personal 24x7 support from experience hosting pros just a phone call away.
-http://p.sf.net/sfu/theplanet-com
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
