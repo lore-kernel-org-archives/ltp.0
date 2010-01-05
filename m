@@ -1,24 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sds@tycho.nsa.gov>) id 1NTJwf-0006Wn-Kx
-	for ltp-list@lists.sourceforge.net; Fri, 08 Jan 2010 18:52:25 +0000
-Received: from msux-gh1-uea02.nsa.gov ([63.239.67.2])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NTJwc-0001X7-Px
-	for ltp-list@lists.sourceforge.net; Fri, 08 Jan 2010 18:52:23 +0000
-From: Stephen Smalley <sds@tycho.nsa.gov>
-In-Reply-To: <1262976343.20881.4.camel@moss-pluto.epoch.ncsc.mil>
-References: <1262791548.15424.31.camel@moss-pluto.epoch.ncsc.mil>
-	<20100106185019.GA19647@us.ibm.com>
-	<1262893258.2821.50.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001081020r7ee941f4w1b91bcb79849b406@mail.gmail.com>
-	<1262976343.20881.4.camel@moss-pluto.epoch.ncsc.mil>
-Date: Fri, 08 Jan 2010 13:50:27 -0500
-Message-Id: <1262976627.20881.6.camel@moss-pluto.epoch.ncsc.mil>
-Mime-Version: 1.0
-Subject: Re: [LTP] regression: selinux testsuite broken since October
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NRyuP-0007GC-Tt
+	for ltp-list@lists.sourceforge.net; Tue, 05 Jan 2010 02:12:33 +0000
+Received: from mail-yx0-f188.google.com ([209.85.210.188])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NRyuP-0003P0-46
+	for ltp-list@lists.sourceforge.net; Tue, 05 Jan 2010 02:12:33 +0000
+Received: by yxe26 with SMTP id 26so15188889yxe.4
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 04 Jan 2010 18:12:27 -0800 (PST)
+References: <20100104171643.GA545@us.ibm.com>
+	<D107C512-245B-4187-9A8D-7FDC28234A0D@gmail.com>
+	<20100104233622.GA9018@us.ibm.com>
+Message-Id: <AA968A69-C9C7-4FC1-B4B5-849719CCB8E8@gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <20100104233622.GA9018@us.ibm.com>
+Mime-Version: 1.0 (iPhone Mail 7D11)
+Date: Mon, 4 Jan 2010 18:12:02 -0800
+Subject: Re: [LTP] [PATCH 1/1] say FAIL not PASS when we failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,31 +32,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>, ltp-list@lists.sourceforge.net
+To: "Serge E. Hallyn" <serue@us.ibm.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On Fri, 2010-01-08 at 13:47 -0500, Stephen Smalley wrote:
-> On Fri, 2010-01-08 at 10:20 -0800, Garrett Cooper wrote:
-> >     Thanks for the feedback and details Stephen.
-> >     Would you be kind enough to try out the version from CVS to see
-> > whether or not it resolves your issue? You'll also need to update
-> > $LTPROOT/scripts in order to use the new version as I added a distro
-> > detection script which opens up /etc/redhat-release (for redhat) as
-> > opposed to using rpm to query the release.
-> > Thanks,
-> > -Garrett
-> 
-> The attempt to make the test policy immediately dies with:
-> detect_distro.sh: ERROR: Bad release file: /etc/redhat-release
+On Jan 4, 2010, at 3:36 PM, "Serge E. Hallyn" <serue@us.ibm.com> wrote:
 
-I should note that I'm running it on Fedora, so I wouldn't expect that
-file to exist.  But the script needs to handle it gracefully; we just
-use the generic test policy files in that situation.
+> Quoting Garrett Cooper (yanegomi@gmail.com):
+>> On Jan 4, 2010, at 9:16 AM, "Serge E. Hallyn" <serue@us.ibm.com>  
+>> wrote:
+>>
+>>> Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
+>>> ---
+>>> testcases/kernel/security/p9auth/p9priv.sh |    2 +-
+>>> 1 files changed, 1 insertions(+), 1 deletions(-)
+>>>
+>>> diff --git a/testcases/kernel/security/p9auth/p9priv.sh
+>>> b/testcases/kernel/security/p9auth/p9priv.sh
+>>> index ad2eead..c1a14d0 100755
+>>> --- a/testcases/kernel/security/p9auth/p9priv.sh
+>>> +++ b/testcases/kernel/security/p9auth/p9priv.sh
+>>> @@ -101,7 +101,7 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
+>>> touch $LTPTMP/childgo
+>>> while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do
+>>> :; done;
+>>> if [ -f $LTPTMP/d/childpass ]; then
+>>> -    echo "PASS: child could setuid from wrong source uid"
+>>> +    echo "FAIL: child could setuid from wrong source uid"
+>>>  exit 1
+>>> fi
+>>> echo "PASS: child couldn't setuid from wrong source uid"
+>>> -- 
+>>> 1.6.1.1
+>>
+>> Is there a reason why this isn't using tst_resm?
+>
+> No good reason
 
--- 
-Stephen Smalley
-National Security Agency
-
+Could this be converted then :)?
+-Garrett
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
