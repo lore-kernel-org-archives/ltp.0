@@ -1,35 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <ego@linux.vnet.ibm.com>) id 1NUCEu-0003Gx-SR
-	for ltp-list@lists.sourceforge.net; Mon, 11 Jan 2010 04:50:52 +0000
-Received: from e23smtp07.au.ibm.com ([202.81.31.140])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NUCEt-0004kj-71
-	for ltp-list@lists.sourceforge.net; Mon, 11 Jan 2010 04:50:52 +0000
-Received: from d23relay05.au.ibm.com (d23relay05.au.ibm.com [202.81.31.247])
-	by e23smtp07.au.ibm.com (8.14.3/8.13.1) with ESMTP id o0B4oXa7001452
-	for <ltp-list@lists.sourceforge.net>; Mon, 11 Jan 2010 15:50:33 +1100
-Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
-	by d23relay05.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o0B4k1jr1597596
-	for <ltp-list@lists.sourceforge.net>; Mon, 11 Jan 2010 15:46:01 +1100
-Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
-	by d23av03.au.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o0B4oWpt028433
-	for <ltp-list@lists.sourceforge.net>; Mon, 11 Jan 2010 15:50:32 +1100
-Date: Mon, 11 Jan 2010 10:20:31 +0530
-From: Gautham R Shenoy <ego@in.ibm.com>
-Message-ID: <20100111045031.GB1428@in.ibm.com>
-References: <20091224181532.12571.74576.sendpatchset@localhost.localdomain>
-	<20091224181551.12571.4910.sendpatchset@localhost.localdomain>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <brianzhang2007@gmail.com>) id 1NS561-00055D-NR
+	for ltp-list@lists.sourceforge.net; Tue, 05 Jan 2010 08:48:57 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NS560-0002wL-C7
+	for ltp-list@lists.sourceforge.net; Tue, 05 Jan 2010 08:48:57 +0000
+Received: by pwj11 with SMTP id 11so10858594pwj.2
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 05 Jan 2010 00:48:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20091224181551.12571.4910.sendpatchset@localhost.localdomain>
-Subject: Re: [LTP] [Patch 3/4]Python functions modified to run on Power
-	platform
-Reply-To: ego@in.ibm.com
+Date: Tue, 5 Jan 2010 01:48:48 -0700
+Message-ID: <7d5af59c1001050048q23e24f5fu18955c7884378d9e@mail.gmail.com>
+From: Yongjian Zhang <brianzhang2007@gmail.com>
+Subject: [LTP] err msg: FATAL: Test suite not installed correctly
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,82 +25,47 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Poornima Nayak <mpnayak@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, svaidy@linux.vnet.ibm.com, arun@linux.vnet.ibm.com
+To: ltp-list@lists.sourceforge.net
 
-On Thu, Dec 24, 2009 at 11:45:51PM +0530, Poornima Nayak wrote:
-> +def get_hyper_thread_count():
-> +    ''' Return number of threads in cpu0
-> +    '''
-> +    try:
-> +        file_cpuinfo = open("/sys/devices/system/cpu/cpu0/topology/thread_siblings", 'r')
-> +        threads_count = 0
-> +        for line in file_cpuinfo:
-> +            core_grps = line.split(",")
-> +            for i in range(0, len(core_grps)):
-> +                cpumask=int(core_grps[i])
-> +                while cpumask > 0:
-> +                    threads_count = threads_count + 1
-> +                    cpumask = cpumask >> 1
-> +        return threads_count
-> +    except Exception, details:
-> +        print "INFO: Failed to get threaded siblings count", details
-> +        sys.exit(1)
-> +
-> +def get_core_sibling_count():
-> +    ''' Return number of threads in cpu0
-> +    '''
-> +    try:
-> +        file_cpuinfo = open("/sys/devices/system/cpu/cpu0/topology/core_siblings", 'r')
-> +        cores_count = 0
-> +        for line in file_cpuinfo:
-> +            core_grps = line.split(",")
-> +            for i in range(0, len(core_grps)):
-> +                cpumask=int(core_grps[i])
-> +                while cpumask > 0:
-> +                    cores_count = cores_count + 1
-> +                    cpumask = cpumask >> 1
-> +        return cores_count
-> +    except Exception, details:
-> +        print "INFO: Failed to get core siblings count", details
-> +        sys.exit(1)
-> +
+Hi all,
+I have just downloaded the latest source code=A0ltp-full-20091130.tgz
+and compiled and installed using:
 
-We could avoid the code repetition above.
+./configure
+sudo make all
+sudo make install
 
-def get_entity_count(entity):
-	try:
-		file_cpuinfo =
-		open("/sys/devices/system/cpu/cpu0/topology/" + entity + "siblings", 'r)
-		.
-		.
-		.
-	except
-		.
-		.
-		.
+No error was spotted.
 
-def get_hyper_thread_count():
-	return get_entity_count("thread")
+But I don't see many files under the /opt/ltp folder and the following
+error messages appear whenever I run "runltp".
 
-def get_core_sibling_count():
-	return get_entity_count("core")
+FATAL: Test suite not installed correctly
+INFO: as root user type 'make ; make install'
 
+I have tried "make clean" and installed again but it still did not work.
 
+My OS is ubuntu 9.04 desktop. I had installed an older version of ltp
+using the software source of ubuntu but had it removed successfully
+before I installed the new one.
 
--- 
-Thanks and Regards
-gautham
+Could anyone tell me how I can get ltp to run?
 
-------------------------------------------------------------------------------
+Thanks a lot!
+
+Jack
+
+---------------------------------------------------------------------------=
+---
 This SF.Net email is sponsored by the Verizon Developer Community
 Take advantage of Verizon's best-in-class app development support
 A streamlined, 14 day to market process makes app distribution fast and easy
 Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+http://p.sf.net/sfu/verizon-dev2dev =
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
