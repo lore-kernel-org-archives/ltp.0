@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1NSOO7-0005Dm-A0
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 05:24:55 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NSOO6-0004NI-HD
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 05:24:55 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Wed, 6 Jan 2010 00:25:09 -0500
-References: <4B421480.1040400@petalogix.com> <4B43E1CD.2050609@web.de>
-	<20100106032644.GB8157@us.ibm.com>
-In-Reply-To: <20100106032644.GB8157@us.ibm.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NSONx-0006Mq-5w
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 05:24:45 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NSONw-0004Lv-9Z
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 05:24:45 +0000
+Received: by pwj11 with SMTP id 11so11785728pwj.2
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 05 Jan 2010 21:24:38 -0800 (PST)
 MIME-Version: 1.0
-Message-Id: <201001060025.11076.vapier@gentoo.org>
-Subject: Re: [LTP] clone tests fails
+In-Reply-To: <4B44187D.5030702@cn.fujitsu.com>
+References: <4B44187D.5030702@cn.fujitsu.com>
+Date: Tue, 5 Jan 2010 21:24:38 -0800
+Message-ID: <364299f41001052124ga613fbag6adf7a7460a87ccc@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] cpuctl_fj: replace ps by top to fix cpu usage's
+	computation error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,86 +28,93 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5313869615329297778=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serue@us.ibm.com>
-Cc: Jiri Palecek <jpalecek@web.de>, Nathan T Lynch <natlynch@us.ibm.com>, ltp-list@lists.sourceforge.net
-
---===============5313869615329297778==
-Content-Type: multipart/signed; boundary="nextPart1823248.8V5bJNJI9W";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1823248.8V5bJNJI9W
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Shi Weihua <shiwh@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-On Tuesday 05 January 2010 22:26:44 Serge E. Hallyn wrote:
-> Quoting Jiri Palecek (jpalecek@web.de):
-> > Michal, I suspect the failures you see are somehow related to
-> > alignment (that your architecture doesn't like odd addresses). Is
-> > that right? Under x86, the address gets aligned (so some of the
-> > space is unused).
-> >
-> > Perhaps both of these behaviors should be tested by LTP?
->=20
-> Gah, yes, Nathan had mentioned arches where this matters (including
-> some power?).  Nathan, did you have a generic fix for this in
-> userspace?  Should always be safe to do
-> 	(stack + stack_size - 1) & ~0xf
-> ?
+On Tue, Jan 5, 2010 at 8:58 PM, Shi Weihua <shiwh@cn.fujitsu.com> wrote:
+> Some abnormal messages outputted in my x86_64.
+> -------------------
+> pid 4622 cpu_usage 0
+> cpuctl_test_fj =A0 =A01 =A0TFAIL =A0: =A0case19 =A0 =A0FAIL
+> pid 4646 cpu_usage 0
+> cpuctl_test_fj =A0 =A01 =A0TFAIL =A0: =A0case20 =A0 =A0FAIL
+> pid 4670 cpu_usage 63
+> cpuctl_test_fj =A0 =A01 =A0TFAIL =A0: =A0case21 =A0 =A0FAIL
+> -------------------
+> I think cpu usage's computation error occured.
+> So I tried to use the oldest arithmetic of cpu usage, fortunately it work=
+s.
+> Maybe we should replace 'ps' by 'top' in =A0get_cpu_usage().
+> By the way, I increased the admissible range of cpu usage in case21()
+> because it jumps out range of 44-56 sometimes.
+>
+> My patch works now:
+> -------------------
+> pid 20277 cpu_usage 97
+> cpuctl_test_fj =A0 =A01 =A0TPASS =A0: =A0case19 =A0 =A0PASS
+> pid 20307 cpu_usage 99
+> cpuctl_test_fj =A0 =A01 =A0TPASS =A0: =A0case20 =A0 =A0PASS
+> pid 20336 cpu_usage 55
+> pid 20336 cpu_usage 53
+> pid 20336 cpu_usage 55
+> pid 20336 cpu_usage 57
+> pid 20336 cpu_usage 55
+> pid 20336 cpu_usage 55
+> pid 20336 cpu_usage 55
+> pid 20336 cpu_usage 55
+> pid 20336 cpu_usage 57
+> pid 20336 cpu_usage 53
+> cpuctl_test_fj =A0 =A01 =A0TPASS =A0: =A0case21 =A0 =A0PASS
+> -------------------
+>
+> Signed-off-by: Shi Weihua <shiwh@cn.fujitsu.com>
+> ---
+> --- ltp-full-20091231/testcases/kernel/controllers/cpuctl_fj/run_cpuctl_t=
+est_fj.sh =A0 =A0 =A02009-11-16 15:40:40.000000000 +0800
+> +++ ltp-full-20091231.new/testcases/kernel/controllers/cpuctl_fj/run_cpuc=
+tl_test_fj.sh =A02010-01-06 12:36:32.000000000 +0800
+> @@ -85,7 +85,10 @@ creat_process()
+>
+> =A0get_cpu_usage()
+> =A0{
+> - =A0 =A0 =A0 ps -eo 'pid,pcpu' | awk '$1 =3D=3D "'$1'" { sub(/(\.[[:digi=
+t:]])*$/, "", $2); print $2 }'
+> + =A0 =A0 =A0 top=3D($(top -b -n 1 -p $1 | tail -2 | head -1))
+> + =A0 =A0 =A0 top=3D${top[8]}
+> + =A0 =A0 =A0 top=3D`echo $top | awk -F "." '{print $1}'`
+> + =A0 =A0 =A0 echo "$top"
+> =A0}
+>
+> =A0kill_all_pid()
+> @@ -627,7 +630,7 @@ case21()
+> =A0 =A0 =A0 =A0do
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0cpu_usage=3D$(get_cpu_usage $pid)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0echo "pid $pid cpu_usage $cpu_usage"
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 expr 44 \< "$cpu_usage" \& "$cpu_usage" \< =
+56 > /dev/null 2>&1
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 expr 40 \< "$cpu_usage" \& "$cpu_usage" \< =
+60 > /dev/null 2>&1
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ret=3D$?
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0: $(( top_times+=3D1 ))
+> =A0 =A0 =A0 =A0done
 
-(sizeof(long double)-1) would probably be better than 0xf
-=2Dmike
+    Could you add a set -x to the top of the script so we can see the
+output please? ps --version would be helpful too..
+Thanks,
+-Garrett
 
---nextPart1823248.8V5bJNJI9W
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.14 (GNU/Linux)
-
-iQIcBAABAgAGBQJLRB63AAoJEEFjO5/oN/WBt64P/2MNI9tWuadLs9yWxEnmpQVN
-Z/RQwgBDeQ45fvLA8MW8KLfPYhCv+uLTanPPmL7I03cmxFk69aefOJxjGsgX3+is
-bDAYrdBLQSdEMOpvl+Lp/XFuRjEH6mUkEVynmgJCy8ZVnihgVR4jnSS9EGIu68ZV
-4vAt7hLdofWho6DEec53qY1i6PbZGBAhuRH18ViStuSmbieTLNjFSmLxLCKbZP4X
-7EbgSTDMtYDrrH54YKyPqbwy4VBKKHt1eEdfHlLMAH0Bpio+jxGsPq3sZkZelTkH
-amnlIJv4Qrxua+/gcTwa6HKbCMc3eIOvlpOa7iVIuWz2B2XqmXHYzIq90BNgwiZ6
-DCSrP7SyT0EWpcLA2bkcznMnX9ZiUMyfno66nql2ElsUhObxC00AKFvIpPlKbVif
-tIEXyoE4BxFbA0Qzvl5dSbakygMaxsDKYbDc8B2xLp5Jbx3zejbpy8J0VaFXk1T2
-gnWpUNZyyuSRaQ6x8uywyApRLfdFD6ZHv68tiMGEcNDmVQPZaofbEZ54SXFqhFO9
-ZNNdktLdOMzf9BSijV1GthfweTmA38m6BMWFY11aWYb4UlxKJfi5ukOzlVQG0kX3
-1H677m71h/kPX+p6WB8EY2P5pKxI2lcBX8MoOjP/cKZ/vW4Ylzb5HHiLgxJc+m81
-RqYQuHiYu/1k2/ECfPoZ
-=EeZT
------END PGP SIGNATURE-----
-
---nextPart1823248.8V5bJNJI9W--
-
-
---===============5313869615329297778==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 This SF.Net email is sponsored by the Verizon Developer Community
 Take advantage of Verizon's best-in-class app development support
 A streamlined, 14 day to market process makes app distribution fast and easy
 Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
---===============5313869615329297778==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+http://p.sf.net/sfu/verizon-dev2dev =
 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5313869615329297778==--
-
