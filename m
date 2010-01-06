@@ -1,30 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sds@tycho.nsa.gov>) id 1NVWOk-0005Cx-P4
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 20:34:30 +0000
-Received: from msux-gh1-uea02.nsa.gov ([63.239.67.2])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NVWOi-00029j-C3
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 20:34:30 +0000
-From: Stephen Smalley <sds@tycho.nsa.gov>
-In-Reply-To: <364299f41001141210o49c97980yc703601e7340362f@mail.gmail.com>
-References: <364299f41001120855r653842d3x630cdaa6ec4129b6@mail.gmail.com>
-	<1263390194.31509.4.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001131052s27019ebl53f4e3f76bb4598e@mail.gmail.com>
-	<1263410323.901.5.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001131137j36d1c665r45cb8b6163263428@mail.gmail.com>
-	<1263412198.901.11.camel@moss-pluto.epoch.ncsc.mil>
-	<20100113220021.GA838@us.ibm.com>
-	<1263420212.901.64.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001131449w751889b8r98aca16ea1e8957a@mail.gmail.com>
-	<1263478021.8548.3.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001141210o49c97980yc703601e7340362f@mail.gmail.com>
-Date: Thu, 14 Jan 2010 15:35:50 -0500
-Message-Id: <1263501350.8548.60.camel@moss-pluto.epoch.ncsc.mil>
-Mime-Version: 1.0
-Subject: Re: [LTP] regression: selinux testsuite broken since October
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1NSZWZ-00080W-6c
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 17:18:23 +0000
+Received: from e5.ny.us.ibm.com ([32.97.182.145])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NSZWV-00067A-V3
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 17:18:22 +0000
+Received: from d01relay07.pok.ibm.com (d01relay07.pok.ibm.com [9.56.227.147])
+	by e5.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o06H61L0021501
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Jan 2010 12:06:01 -0500
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay07.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o06HICsY1925288
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Jan 2010 12:18:12 -0500
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o06HICaJ002026
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Jan 2010 15:18:12 -0200
+Date: Wed, 6 Jan 2010 11:18:12 -0600
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20100106171812.GA15444@us.ibm.com>
+References: <1262791548.15424.31.camel@moss-pluto.epoch.ncsc.mil>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1262791548.15424.31.camel@moss-pluto.epoch.ncsc.mil>
+Subject: Re: [LTP] regression:  selinux testsuite broken since October
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,131 +39,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: Eric Paris <eparis@parisplace.org>, James Morris <jmorris@namei.org>, ltp-list@lists.sourceforge.net
+To: Stephen Smalley <sds@tycho.nsa.gov>
+Cc: ltp-list@lists.sourceforge.net, James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>
 
-On Thu, 2010-01-14 at 12:10 -0800, Garrett Cooper wrote:
-> On Thu, Jan 14, 2010 at 6:07 AM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
-> > On Wed, 2010-01-13 at 14:49 -0800, Garrett Cooper wrote:
-> >> Which is what it's doing now, but the original author of the test
-> >> wrote the load logic and unload logic so that it used make instead of
-> >> using a bourne shell script, etc.
-> >
-> > To clarify, there are two things happening under that load target
-> > presently, one of which is properly handled at build time and one of
-> > which is properly handled at test execution time.  The first part is
-> > building test_policy.pp.  The latter is running semodule -i
-> > test_policy.pp.  So we could split up the Makefile so that the first
-> > part is done by the make all/install, and test_selinux.sh merely runs
-> > semodule -i test_policy.pp before the test and semodule -r test_policy
-> > after the test.  One other item I notice is that the current logic
-> > copies test_policy* to $POLICY_DEVEL_DIR and runs make there, which
-> > isn't necessary - you could just leave them in the refpolicy directory
-> > and run make -f $POLICY_DEVEL_DIR/Makefile test_policy.pp.
+Quoting Stephen Smalley (sds@tycho.nsa.gov):
+> It seems the Makefile rewrite last October broke the selinux testsuite.
+> Is it unreasonable to expect that someone who rewrote the Makefile would
+> actually try running the testsuite?
 > 
-> Ok, this is interesting. So -- is there any particular reason why
-> clean (which in this case just called cleanup) should be called before
-> load?
+> Please, revert the changes or fix them.
 > 
-> So at the end of the day, all of the junk done as part of `load' could
-> in fact be done in test_selinux.sh // runtests.sh (I assume the only
-> step that couldn't be done is semodule -i? I don't have any hard
-> feelings for not putting that logic in those scripts...
+> See testcases/kernel/security/selinux-testsuite/README for the
+> instructions.
 
-I guess I'm not being clear.  Most of the work presently done by 'load'
-can be done during make all/install.  In particular, everything except
-for running semodule -i can be done during make all, and then make
-install should just copy test_policy.pp (the output of make all) to
-the /opt/ltp tree.  Then test_selinux.sh only needs to run semodule
--i /path/to/test_policy.pp before the tests and semodule -r test_policy
-afterward.  We can also avoid copying test_policy.te to the system
-policy devel directory altogether.  Something like this patch (and
-Makefile.selinux can then be removed altogether):
+Seems I have a part in breakage as well.  Here are patches to get the
+execshare_parent to compile.
 
-Index: testscripts/test_selinux.sh
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testscripts/test_selinux.sh,v
-retrieving revision 1.15
-diff -u -r1.15 test_selinux.sh
---- testscripts/test_selinux.sh	13 Jan 2010 18:50:53 -0000	1.15
-+++ testscripts/test_selinux.sh	14 Jan 2010 20:32:35 -0000
-@@ -89,11 +89,10 @@
- config_allow_domain_fd_use 0
+Now to get the policy to compile...
+
+--- ltp-full-20091231.orig/testcases/kernel/security/selinux-testsuite/tests/execshare/selinux_execshare_parent.c	2009-11-03 15:07:35.000000000 -0500
++++ ltp-full-20091231/testcases/kernel/security/selinux-testsuite/tests/execshare/selinux_execshare_parent.c	2010-01-06 11:58:47.000000000 -0500
+@@ -18,9 +18,12 @@
+ #include <selinux/selinux.h>
+ #include <selinux/context.h>
+ #include <sched.h>
++#include <test.h>
  
- # build and install the test policy...
--echo "building and installing test_policy module..."
--cd $POLICYDIR
--make load
-+echo "installing test_policy module..."
-+$(SEMODULE) -i $POLICYDIR/test_policy.pp
- if [ $? != 0 ]; then
--	echo "Failed to build and load test_policy module, aborting test run."
-+	echo "Failed to install load test_policy module, aborting test run."
- 	config_unset_expandcheck
- 	exit 1
- else
-@@ -126,8 +125,7 @@
- /usr/bin/chcon -t $SAVEBINTYPE $LTPROOT/testcases/bin
- 
- echo "Removing test_policy module..."
--cd $POLICYDIR
--make cleanup 2>&1
-+$(SEMODULE) -r test_policy
- if [ $? != 0 ]; then
- 	echo "Failed to remove test_policy module."
- 	exit 1
-Index: testcases/kernel/security/selinux-testsuite/refpolicy/Makefile
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/selinux-testsuite/refpolicy/Makefile,v
-retrieving revision 1.17
-diff -u -r1.17 Makefile
---- testcases/kernel/security/selinux-testsuite/refpolicy/Makefile	14 Jan 2010 12:40:58 -0000	1.17
-+++ testcases/kernel/security/selinux-testsuite/refpolicy/Makefile	14 Jan 2010 20:32:35 -0000
-@@ -39,10 +39,11 @@
- 
- CHECKPOLICY		?= $(DESTDIR)/usr/bin/checkpolicy
- CHECKPOLICY_VERS	?= $(shell $(CHECKPOLICY) -V |cut -f 1 -d ' ')
-+POLICY_DEVEL_DIR	?= $(DESTDIR)/usr/share/selinux/devel
- 
- INSTALL_DIR		:= testcases/kernel/security/selinux-testsuite/refpolicy
- 
--INSTALL_TARGETS		:= Makefile.selinux
-+INSTALL_TARGETS		:= test_policy.pp
- 
- TEST_POLICY_DIR		:= $(abs_srcdir)/policy_files
- 
-@@ -63,8 +64,17 @@
- POLICY_FILES		:= test_global.te \
- 			   $(filter-out test_global.te,$(notdir $(wildcard $(TEST_POLICY_DIR)/*.te)))
- 
-+all: test_policy.pp
+-int clone_fn(char **argv)
++int clone_fn(void *in)
+ {
++	char **argv = (char **) in;
 +
-+test_policy.pp: test_policy.te
-+	@set -e; if [ -d "$(POLICY_DEVEL_DIR)" ]; then \
-+	    $(MAKE) -f $(POLICY_DEVEL_DIR)/Makefile test_policy.pp; \
-+	else \
-+            echo "ERROR: You must have selinux-policy?-devel? installed."; \
-+	    false; \
-+	fi
-+
- test_policy.te: $(addprefix $(TEST_POLICY_DIR)/,$(POLICY_FILES))
- 	(cd "$(TEST_POLICY_DIR)" && cat $(POLICY_FILES)) > $@
+ 	execv(argv[3], argv+3);
+ 	perror(argv[3]);
+ 	return -1;
+@@ -73,7 +76,7 @@ int main(int argc, char **argv)
+ 		fprintf(stderr, "%s:  unable to set exec context to %s\n", argv[0], context_s);
+ 		exit(-1);
+ 	}
+-	pid = ltp_clone_quick(cloneflags | SIGCHLD, child_fn, argv);
++	pid = ltp_clone_quick(cloneflags | SIGCHLD, clone_fn, argv);
+ 	if (pid < 0) {
+ 		perror("clone");
+ 		exit(-1);
+
+--- ltp-full-20091231.orig/testcases/kernel/security/selinux-testsuite/tests/execshare/Makefile	2009-10-09 13:55:51.000000000 -0400
++++ ltp-full-20091231/testcases/kernel/security/selinux-testsuite/tests/execshare/Makefile	2010-01-06 11:53:53.000000000 -0500
+@@ -25,6 +25,6 @@ top_srcdir              ?= ../../../../.
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(abs_srcdir)/../Makefile.inc
+ 
+-LDLIBS			+= -lselinux
++LDLIBS			+= -lselinux -lltp
  
  include $(top_srcdir)/include/mk/generic_leaf_target.mk
--include $(abs_srcdir)/Makefile.selinux
-
-
--- 
-Stephen Smalley
-National Security Agency
-
 
 ------------------------------------------------------------------------------
-Throughout its 18-year history, RSA Conference consistently attracts the
-world's best and brightest in the field, creating opportunities for Conference
-attendees to learn about information security's most important issues through
-interactions with peers, luminaries and emerging and established companies.
-http://p.sf.net/sfu/rsaconf-dev2dev
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
