@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1NVKAU-0005Lq-PA
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 07:30:58 +0000
-Received: from out03.sjc.mx.trendmicro.com ([216.99.131.7])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NVKAS-0002yo-9s
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 07:30:58 +0000
-From: "Mitani" <mitani@ryobi.co.jp>
-References: <1713808934.618481261374276809.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>	
-	<1964681948.618501261374329418.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>	
-	<364299f40912210110m27ba4276g8cbce963d077e4a0@mail.gmail.com>
-	<364299f40912211838w7ab92a76u50223c29588b6f1a@mail.gmail.com>
-In-Reply-To: <364299f40912211838w7ab92a76u50223c29588b6f1a@mail.gmail.com>
-Date: Thu, 14 Jan 2010 16:30:40 +0900
-Message-ID: <000901ca94eb$792f5150$6b8df3f0$@co.jp>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <hyei@mvista.com>) id 1NSKhY-0004gM-LF
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 01:28:44 +0000
+Received: from [206.112.117.47] (helo=gateway-1237.mvista.com)
+	by sfi-mx-2.v28.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1NSKhQ-0003Or-PN
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 01:28:44 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Language: ja
-Subject: Re: [LTP] "unzip01" testcase failed.
+Date: Tue, 5 Jan 2010 17:28:47 -0800
+Message-ID: <8368651DACC1964480F951191B94A07801A20EF7@svexch01.mvista.com>
+In-Reply-To: <4B43E52E.4000205@web.de>
+References: <4B41E55D.2020801@st.com> <4B43E52E.4000205@web.de>
+From: "Henry Yei" <hyei@mvista.com>
+Subject: Re: [LTP] mtest01: free memory allocated
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,139 +28,90 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 'Garrett Cooper' <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Jiri Palecek <jpalecek@web.de>, Francesco RUNDO <francesco.rundo@st.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-Hi,
+> -----Original Message-----
+> From: Jiri Palecek [mailto:jpalecek@web.de]
+> Sent: Tuesday, January 05, 2010 5:20 PM
+> To: Francesco RUNDO
+> Cc: LTP
+> Subject: Re: [LTP] mtest01: free memory allocated
+> 
+> Francesco RUNDO napsal(a):
+> > Hi All,
+> >
+> > I'm running LTP (I'm using ltp-full-20090731....but asap I will
+> upgrade
+> > to latest) on SH based platforms.
+> > Now, during a test-session. I've noted that the test "mtest01"
+> reduced
+> > drastically the system memory and after its execution this memory
+> wasn't
+> > de-allocated.
+> >
+> > I've analysed the mtest01.c code and I've noted that no "free()"
+> > istruction was associated to the related malloc:
+> 
+> Does this mean the kernel doesn't free processes' allocated memory on
+> exit? Is
+> this intentional (and documented somewhere)?
+> 
+> > ......
+> > if((mem = (char*)malloc(chunksize)) == NULL) {
+> > ......
+> >
+> > I've simply added a "free(mem)" of the allocated memory and the issue
+> > was addressed successfully.
+> 
+> This isn't complete by far. You don't free all the allocations, and
+> there are
+> code paths which don't pass your line before exit.
+> 
+> Regards
+>      Jiri Palecek
+> 
 
-I tried to test "unzip01".
-But I get still the same fail at 2010-01-14 cvs.
+We've documented this behavior internally as a low priority issue for a while now. 
+This is the root cause one of our developers came back with, which might clarify what Francesco is seeing:
 
-I think that this failure occurs because "DIR" can't be defined 
-correctly in "${LTPROOT}/testcases/commands/unzip/Makefile" and 
-all files of "/opt/ltp/testcases/bin" directory was compressed.
+Issue:
 
-There is the definition "DIR := tst_unzip.dir" in "${LTPROOT}/testcases
-/commands/unzip/Makefile". But there is the definition "DIR := /opt/ltp
-/testcases/bin" in two include files ("${LTPROOT}/include/mk/env_pre.mk"
-and "${LTPROOT}/include/mk/generic_leaf_target.mk") which are included 
-in "${LTPROOT}/testcases/commands/unzip/Makefile".
+Across architectures, mtest tests sometimes report a fail because they won't
+run unless less than 80% of memory is used. This is because the test attempts
+to fill up the memory to the 80% limit specified by the -p option.
 
-Perhaps, "DIR := tst_unzip.dir" is replaced by "DIR := /opt/ltp
-/testcases/bin" when the two files were included, I think.
+Some previous test in the LTP suite is taking up memory it should not have, as
+this happens even on machines with 1GB of memory.
 
-This test requires "tst_unzip.dir" and if the variable name "DIR" is
-changed to another name, this problem will not occur.
-
-
-> .INTERMEDIATE may be the only piece of value here, but I was avoiding
-> it because it's a 3.81-ism I thought...
-
-So, I don't try use .INTERMEDIATE target.
-
-However, the compress target directory ("tst_unzip.dir") is created
-under "$LTPROOT/testcases/commands/unzip" directory.
-But I think that it does not affect for the test because the compressed
-file which is for the test ("tst_unzip_file.zip") is create under 
-the run directory ("/opy/ltp"). "tst_unzip.dir" is the file which isn't
-related directly to the practice of the test, I think.
-
-How about this patch:
-============
---- Makefile.org	2009-12-11 21:50:29.000000000 +0900
-+++ Makefile	2010-01-14 11:44:30.000000000 +0900
-@@ -27,7 +27,7 @@
- # Only build and install if we have the zip command.
- HAVE_ZIPTOOLS		:= $(shell if which zip >/dev/null; then echo yes;
-else echo no; fi)
- 
--DIR			:= tst_unzip.dir
-+COMPRESS_DIR		:= tst_unzip.dir
- 
- RM			+= -r
- 
-@@ -36,7 +36,7 @@
- ZIPFILE			:= $(TESTCASES_DATA_DIR)/tst_unzip_file.zip
- 
- ifeq ($(HAVE_ZIPTOOLS),yes)
--CLEAN_TARGETS		:= $(DIR) $(ZIPFILE)
-+CLEAN_TARGETS		:= $(COMPRESS_DIR) $(ZIPFILE)
- INSTALL_TARGETS		:= unzip_tests.sh
- endif
- 
-@@ -45,13 +45,13 @@
- $(TESTCASES_DATA_DIR):
- 	mkdir -p "$@"
- 
--$(ZIPFILE): | $(TESTCASES_DATA_DIR) $(DIR)
--	zip -r "$@" $(DIR)
-+$(ZIPFILE): | $(TESTCASES_DATA_DIR) $(COMPRESS_DIR)
-+	zip -r "$@" $(COMPRESS_DIR)
- 	chmod 00666 "$@"
- 
- # This target should be auto-removed by Make
--$(DIR): $(abs_srcdir)/unzip_genfile.sh
--	$(SHELL) "$^" $(DIR)
-+$(COMPRESS_DIR): $(abs_srcdir)/unzip_genfile.sh
-+	$(SHELL) "$^" $(COMPRESS_DIR)
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
- 
-============
+mtest01 runs "mtest01 -p80" which mallocs chunks of memory until 80% of memory
+is used.
+mtest01w runs "mtest01 -p80 -w" which mallocs and writes chunks of memory until
+80% of memory is used.
 
 
-I'm glad if I can get opinion that my revision is right or not.
+Response:
 
+mtest01 -p80 -w; mtest01 -p80 -w; free; free; free... ; mtest01 -p80 -w
 
-Regards--
+on the same command line. the second mtest01 always returns with a failure.
+while the mtest01 after enough free(usually 4 or 5) always passes.
 
-
--Tomonori Mitani
-
-
------Original Message-----
-From: Garrett Cooper [mailto:yanegomi@gmail.com] 
-Sent: Tuesday, December 22, 2009 11:39 AM
-To: Caspar Zhang
-Cc: ltp-list@lists.sourceforge.net; Mitani
-Subject: Re: [LTP] "unzip01" testcase failed.
-
-On Mon, Dec 21, 2009 at 1:10 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Sun, Dec 20, 2009 at 9:45 PM, Caspar Zhang <czhang@redhat.com> wrote:
->>
->> ----- "Garrett Cooper" <yanegomi@gmail.com> wrote:
->>>
->>> I'm not convinced that this is the right solution because most of
->>> what's done here just replaced $(DIR)'s value with the bareword
->>> value.
->>> .INTERMEDIATE may be the only piece of value here, but I was avoiding
->>> it because it's a 3.81-ism I thought...
->>
->> How about this one (see the attachment)?
->
-> AH... -[Rr] was missing.
->
-> RM += -[Rr]
->
-> will do that. The rest just seems spurious.
-
-    Uh, this was already committed on HEAD:
-
-http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/commands/unzip/Makef
-ile?r1=1.9&r2=1.8
-
-    What version are you working with?
-Thanks,
--Garrett
-
-
+Looks like it is because of the aging of the caches, which are not freed yet
+when the second mtest01 is executed and are dropped due to aging by the time
+last mtest01 is executed.
+The information (sysinfo()) mtest is using to determine the amount of memory
+allocated does not include the memory in caches(free). mtest01 sees that 80% of
+the memory is already in use and thus do not go for malloc-ing and returns with
+a failure, however if it had tried, the malloc would have succeeded because of
+the reuse of the free slab caches.
 
 ------------------------------------------------------------------------------
-Throughout its 18-year history, RSA Conference consistently attracts the
-world's best and brightest in the field, creating opportunities for Conference
-attendees to learn about information security's most important issues through
-interactions with peers, luminaries and emerging and established companies.
-http://p.sf.net/sfu/rsaconf-dev2dev
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
