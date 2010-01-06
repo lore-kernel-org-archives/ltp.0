@@ -1,30 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NTN0q-0007BL-IB
-	for ltp-list@lists.sourceforge.net; Fri, 08 Jan 2010 22:08:56 +0000
-Received: from mail-px0-f200.google.com ([209.85.216.200])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1NSKLB-0005US-O0
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 01:05:37 +0000
+Received: from fmmailgate02.web.de ([217.72.192.227])
 	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NTN0p-0000rP-LX
-	for ltp-list@lists.sourceforge.net; Fri, 08 Jan 2010 22:08:56 +0000
-Received: by pxi38 with SMTP id 38so8468436pxi.28
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 08 Jan 2010 14:08:49 -0800 (PST)
+	id 1NSKLA-0005Jr-4R
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 01:05:37 +0000
+Message-ID: <4B43E1CD.2050609@web.de>
+Date: Wed, 06 Jan 2010 02:05:17 +0100
+From: Jiri Palecek <jpalecek@web.de>
 MIME-Version: 1.0
-In-Reply-To: <1262988051.20881.42.camel@moss-pluto.epoch.ncsc.mil>
-References: <1262791548.15424.31.camel@moss-pluto.epoch.ncsc.mil>
-	<20100106185019.GA19647@us.ibm.com>
-	<1262893258.2821.50.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001081020r7ee941f4w1b91bcb79849b406@mail.gmail.com>
-	<1262976343.20881.4.camel@moss-pluto.epoch.ncsc.mil>
-	<1262976627.20881.6.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001081338u37e77cd3q3d9535f3dec71331@mail.gmail.com>
-	<1262988051.20881.42.camel@moss-pluto.epoch.ncsc.mil>
-Date: Fri, 8 Jan 2010 14:08:49 -0800
-Message-ID: <364299f41001081408sf9d740ew55dad7b542463416@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] regression: selinux testsuite broken since October
+References: <4B421480.1040400@petalogix.com>	<20100104164954.GB26962@us.ibm.com>	<4B4226E9.6000309@petalogix.com>
+	<20100104174925.GA1208@us.ibm.com>
+In-Reply-To: <20100104174925.GA1208@us.ibm.com>
+Subject: Re: [LTP] clone tests fails
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,61 +25,59 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stephen Smalley <sds@tycho.nsa.gov>
-Cc: James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>, ltp-list@lists.sourceforge.net
+To: "Serge E. Hallyn" <serue@us.ibm.com>
+Cc: vapier@gentoo.org, ltp-list@lists.sourceforge.net
 
-On Fri, Jan 8, 2010 at 2:00 PM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
-> On Fri, 2010-01-08 at 13:38 -0800, Garrett Cooper wrote:
->> On Fri, Jan 8, 2010 at 10:50 AM, Stephen Smalley <sds@tycho.nsa.gov> wro=
-te:
->> > On Fri, 2010-01-08 at 13:47 -0500, Stephen Smalley wrote:
->> >> On Fri, 2010-01-08 at 10:20 -0800, Garrett Cooper wrote:
->> >> > =A0 =A0 Thanks for the feedback and details Stephen.
->> >> > =A0 =A0 Would you be kind enough to try out the version from CVS to=
- see
->> >> > whether or not it resolves your issue? You'll also need to update
->> >> > $LTPROOT/scripts in order to use the new version as I added a distro
->> >> > detection script which opens up /etc/redhat-release (for redhat) as
->> >> > opposed to using rpm to query the release.
->> >> > Thanks,
->> >> > -Garrett
->> >>
->> >> The attempt to make the test policy immediately dies with:
->> >> detect_distro.sh: ERROR: Bad release file: /etc/redhat-release
->> >
->> > I should note that I'm running it on Fedora, so I wouldn't expect that
->> > file to exist. =A0But the script needs to handle it gracefully; we just
->> > use the generic test policy files in that situation.
+Serge E. Hallyn napsal(a):
+> Quoting Michal Simek (michal.simek@petalogix.com):
+>> Serge E. Hallyn wrote:
+>>> Quoting Michal Simek (michal.simek@petalogix.com):
+>>>> Hi Mike,
+>>>>
+>>>> I have one question about one your big patch
+>>>>
+>>>> http://git.kernel.org/?p=linux/kernel/git/galak/ltp.git;a=commitdiff;h=391dc18fe3271fbf2ca1864a5299f091c31e0018
+>>>>
+>>>> My question is why you add -1 in lib/cloner.c:65
+>>>>
+>>>> +       ret = clone(fn, (stack ? stack + stack_size - 1 : NULL),
+>>>> +                       clone_flags, arg);
+>>>>
+>>>> In previous code in clone testcases was nothing like this.
+>>>> What reason have you had to add it?
+>>>
+>>> Because the same thing was done in lots of places all over the
+>>> testsuite (and done wrong).  This consolidates them all.
 >>
->> =A0 =A0 What does /etc/redhat-release look like (feel free to reply to m=
-e off-list)?
+>>
+>> I don't have anything against consolidation. I just want to know why
+>> there is that -1 which weren't in any clone testcases. Nothing more
+>> nothing less.
 >
-> On RHEL5, it can look like one of the following:
-> Red Hat Enterprise Linux Server release 5 (Tikanga)
-> Red Hat Enterprise Linux Server release 5.x (Tikanga)
-> Red Hat Enterprise Linux Client release 5 (Tikanga)
-> Red Hat Enterprise Linux Client release 5.x (Tikanga)
+> ooooh.  Because if we've done stack = malloc(stack_size), then
+> stack+stack_size is 1 above the the top of stack.
 
-Interesting. They switched over to more of the Fedora-style branding, maybe=
-?.
+If the value of the parameter is the stack pointer of the created thread, it 
+shouldn't matter - the address should never be used (read or written).
 
-[garrcoop@halflife ~]$ cat /etc/redhat-release
-Red Hat Enterprise Linux AS release 4 (Nahant Update 6)
+Michal, I suspect the failures you see are somehow related to alignment (that 
+your architecture doesn't like odd addresses). Is that right? Under x86, the 
+address gets aligned (so some of the space is unused).
 
-Thanks,
--Garrett
+Perhaps both of these behaviors should be tested by LTP?
 
----------------------------------------------------------------------------=
----
+Regards
+     Jiri Palecek
+
+------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
 Take advantage of Verizon's best-in-class app development support
 A streamlined, 14 day to market process makes app distribution fast and easy
 Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev =
-
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
