@@ -1,36 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1NRb39-00045C-HF
-	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 00:43:59 +0000
-Received: from e33.co.us.ibm.com ([32.97.110.151])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NRb38-0002ZK-O0
-	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 00:43:59 +0000
-Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
-	[9.17.195.226])
-	by e33.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o040epTL012423
-	for <ltp-list@lists.sourceforge.net>; Sun, 3 Jan 2010 17:40:51 -0700
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o040hqpZ171002
-	for <ltp-list@lists.sourceforge.net>; Sun, 3 Jan 2010 17:43:52 -0700
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o040hqvm029647
-	for <ltp-list@lists.sourceforge.net>; Sun, 3 Jan 2010 17:43:52 -0700
-Received: from sergelap.hallyn.com (sig-9-77-140-243.mts.ibm.com
-	[9.77.140.243])
-	by d03av03.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVin) with ESMTP id
-	o040hqmE029640
-	for <ltp-list@lists.sourceforge.net>; Sun, 3 Jan 2010 17:43:52 -0700
-Date: Sun, 3 Jan 2010 18:43:55 -0600
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20100104004355.GA760@us.ibm.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <miaox@cn.fujitsu.com>) id 1NSMdT-0008R6-Gl
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 03:32:39 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NSMdP-0000mp-Np
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 03:32:39 +0000
+Message-ID: <4B4403EA.7020600@cn.fujitsu.com>
+Date: Wed, 06 Jan 2010 11:30:50 +0800
+From: Miao Xie <miaox@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] [PATCH ltp] p9auth: add missing checkp9auth.sh script
+Subject: [LTP] [PATCH] fix the bug of the smaller cpu_set_t's length in
+	getcpu01
+Reply-To: miaox@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -43,95 +27,132 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: LTP-ML <ltp-list@lists.sourceforge.net>
 
-This was in my original patch submission but somehow didn't make its way into
-the ltp tree.
+getcpu01 test failed because the len of cpu_set_t in the glibc is smaller than
+the length of the cpumask in the kernel. So we must use the dynamically sized CPU sets instead
+of the standard cpu_set_t.
 
-Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
+This patch fix this problem.
+Before using this patch, the test result is following:
+getcpu01    1  TFAIL  :  sched_getaffinity:errno:22
+
+After using this patch, the test result is following:
+getcpu01    1  TPASS  :  getcpu() returned proper cpuid:3, node id:0
+
+Signed-off-by: Miao Xie <miaox@cn.fujitsu.com>
 ---
- testcases/kernel/security/p9auth/checkp9auth.sh |   70 +++++++++++++++++++++++
- 1 files changed, 70 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/security/p9auth/checkp9auth.sh
+ testcases/kernel/syscalls/getcpu/getcpu01.c |   66 +++++++++++++++++++++++----
+ 1 files changed, 56 insertions(+), 10 deletions(-)
 
-diff --git a/testcases/kernel/security/p9auth/checkp9auth.sh b/testcases/kernel/security/p9auth/checkp9auth.sh
-new file mode 100644
-index 0000000..f917ce6
---- /dev/null
-+++ b/testcases/kernel/security/p9auth/checkp9auth.sh
-@@ -0,0 +1,70 @@
-+#!/bin/sh
-+################################################################################
-+##                                                                            ##
-+## Copyright (c) International Business Machines  Corp., 2009                 ##
-+##                                                                            ##
-+## This program is free software;  you can redistribute it and#or modify      ##
-+## it under the terms of the GNU General Public License as published by       ##
-+## the Free Software Foundation; either version 2 of the License, or          ##
-+## (at your option) any later version.                                        ##
-+##                                                                            ##
-+## This program is distributed in the hope that it will be useful, but        ##
-+## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
-+## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
-+## for more details.                                                          ##
-+##                                                                            ##
-+## You should have received a copy of the GNU General Public License          ##
-+## along with this program;  if not, write to the Free Software               ##
-+## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    ##
-+##                                                                            ##
-+################################################################################
+diff --git a/testcases/kernel/syscalls/getcpu/getcpu01.c b/testcases/kernel/syscalls/getcpu/getcpu01.c
+index 9b4e52e..c13e0e7 100644
+--- a/testcases/kernel/syscalls/getcpu/getcpu01.c
++++ b/testcases/kernel/syscalls/getcpu/getcpu01.c
+@@ -77,12 +77,16 @@ int sys_support = 0;
+ int sys_support = 0;
+ #endif
+ 
++#if !(__GLIBC_PREREQ(2, 7))
++#define CPU_FREE(ptr) free(ptr)
++#endif
 +
-+yesno=0
-+if [ "$1" = "yesno" ]; then
-+	yesno=1
-+fi
+ void cleanup(void);
+ void setup(void);
+ static inline int getcpu(unsigned int *, unsigned int *, void *);
+ unsigned int set_cpu_affinity();
+ unsigned int get_nodeid(unsigned int);
+-unsigned int max_cpuid(cpu_set_t *);
++unsigned int max_cpuid(size_t, cpu_set_t *);
+ 
+ char *TCID = "getcpu01";
+ int TST_TOTAL = 1;
+@@ -189,18 +193,56 @@ void setup(void)
+ unsigned int set_cpu_affinity()
+ {
+ 	unsigned cpu_max;
+-	cpu_set_t set;
+-	if (sched_getaffinity(0, sizeof(cpu_set_t), &set) < 0) {
+-		tst_resm(TFAIL, "sched_getaffinity:errno:%d", errno);
++	cpu_set_t *set;
++	size_t size;
++	int nrcpus = 1024;
++#if __GLIBC_PREREQ(2, 7)
++realloc:
++	set = CPU_ALLOC(nrcpus);
++#else
++	set = malloc(sizeof(cpu_set_t));
++#endif
++	if (set == NULL) {
++		tst_resm(TFAIL, "CPU_ALLOC:errno:%d", errno);
++		tst_exit();
++	}
 +
-+# check for openssl
-+rm -f /tmp/ab
-+echo ab > /tmp/ab
-+openssl sha1 -hmac "ab" /tmp/ab > /dev/null
-+ret=$?
-+if [ $ret -ne 0 ]; then
-+	if [ $yesno -eq 1 ]; then echo
-+		"no"
-+	else
-+		echo "openssl not installed, skipping p9auth tests."
-+	fi
-+	exit 1
-+fi
-+
-+majfile=/sys/module/p9auth/parameters/cap_major
-+minfile=/sys/module/p9auth/parameters/cap_minor
-+if [ ! -f "$majfile" ]; then
-+	if [ $yesno -eq 1 ]; then echo
-+		"no"
-+	else
-+		echo "p9auth not detected.  Skipping p9auth tests."
-+	fi
-+	exit 1
-+fi
-+
-+if [ ! -c "/dev/caphash" ]; then
-+	rm -f /dev/caphash
-+	maj=`cat $majfile`
-+	mknod /dev/caphash c $maj 0
-+fi
-+
-+if [ ! -c "/dev/capuse" ]; then
-+	rm -f /dev/capuse
-+	min=`cat $minfile`
-+	mknod /dev/capuse c $maj 1
-+fi
-+chmod ugo+w /dev/capuse
-+
-+if [ $yesno -eq 1 ]; then
-+	echo "yes"
-+else
-+	echo "p9auth ready for testing"
-+fi
-+exit 0
++#if __GLIBC_PREREQ(2, 7)
++	size = CPU_ALLOC_SIZE(nrcpus);
++	CPU_ZERO_S(size, set);
++#else
++	size = sizeof(cpu_set_t);
++	CPU_ZERO(set);
++#endif
++	if (sched_getaffinity(0, size, set) < 0) {
++		CPU_FREE(set);
++#if __GLIBC_PREREQ(2, 7)
++		if (errno == EINVAL && nrcpus < (1024 << 8)) {
++			nrcpus = nrcpus << 2;
++			goto realloc;
++		}
++#else
++		if (errno == EINVAL)
++			tst_resm(TFAIL, "NR_CPUS of the kernel is more than 1024, so we'd better use a newer glibc(>= 2.7)");
++		else
++#endif
++			tst_resm(TFAIL, "sched_getaffinity:errno:%d", errno);
+ 		tst_exit();
+ 	}
+-	cpu_max = max_cpuid(&set);
+-	CPU_ZERO(&set);
+-	CPU_SET(cpu_max, &set);
+-	if (sched_setaffinity(0, sizeof(cpu_set_t), &set) < 0) {
++	cpu_max = max_cpuid(size, set);
++#if __GLIBC_PREREQ(2, 7)
++	CPU_ZERO_S(size, set);
++	CPU_SET_S(cpu_max, size, set);
++#else
++	CPU_ZERO(set);
++	CPU_SET(cpu_max, set);
++#endif
++	if (sched_setaffinity(0, size, set) < 0) {
++		CPU_FREE(set);
+ 		tst_resm(TFAIL, "sched_setaffinity:errno:%d", errno);
+ 		tst_exit();
+ 	}
++	CPU_FREE(set);
+ 	return cpu_max;
+ }
+ 
+@@ -208,11 +250,15 @@ unsigned int set_cpu_affinity()
+  * Return the maximum cpu id
+  */
+ #define BITS_PER_BYTE 8
+-unsigned int max_cpuid(cpu_set_t * set)
++unsigned int max_cpuid(size_t size, cpu_set_t * set)
+ {
+ 	unsigned int index, max = 0;
+-	for (index = 0; index < sizeof(cpu_set_t) * BITS_PER_BYTE; index++)
++	for (index = 0; index < size * BITS_PER_BYTE; index++)
++#if __GLIBC_PREREQ(2, 7)
++		if (CPU_ISSET_S(index, size, set))
++#else
+ 		if (CPU_ISSET(index, set))
++#endif
+ 			max = index;
+ 	return max;
+ }
 -- 
-1.6.1.1
+1.6.5.2
+
 
 
 ------------------------------------------------------------------------------
