@@ -1,25 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NUdwx-0006v6-S6
-	for ltp-list@lists.sourceforge.net; Tue, 12 Jan 2010 10:26:11 +0000
-Received: from mail-pw0-f43.google.com ([209.85.160.43])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NUdww-0000kR-SM
-	for ltp-list@lists.sourceforge.net; Tue, 12 Jan 2010 10:26:11 +0000
-Received: by pwj11 with SMTP id 11so2466967pwj.2
+	(envelope-from <michal.simek@petalogix.com>) id 1NSSx9-000384-Go
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 10:17:23 +0000
+Received: from mail-fx0-f222.google.com ([209.85.220.222])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NSSx8-00056b-AV
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 10:17:23 +0000
+Received: by fxm22 with SMTP id 22so19715252fxm.2
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 12 Jan 2010 02:26:05 -0800 (PST)
+	Wed, 06 Jan 2010 02:17:15 -0800 (PST)
+Message-ID: <4B4462DD.8010807@petalogix.com>
+Date: Wed, 06 Jan 2010 11:15:57 +0100
+From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-In-Reply-To: <1263234549.18451.1.camel@lucio-t400>
-References: <000101ca79f4$7af702b0$70e50810$@co.jp>
-	<2937C931-7CC9-4FCF-8B9F-7D67BDF055EA@gmail.com>
-	<1263234549.18451.1.camel@lucio-t400>
-Date: Tue, 12 Jan 2010 02:26:04 -0800
-Message-ID: <364299f41001120226y2c7c51ecu7ef222b1ce2ca0ee@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Tests of "iogen01" et al. fail with ltp-2009-12-10 cvs
+References: <4B421480.1040400@petalogix.com>	<20100104164954.GB26962@us.ibm.com>	<4B4226E9.6000309@petalogix.com>
+	<20100104174925.GA1208@us.ibm.com> <4B43E1CD.2050609@web.de>
+In-Reply-To: <4B43E1CD.2050609@web.de>
+Subject: Re: [LTP] clone tests fails
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,134 +29,91 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ljhc@br.ibm.com
-Cc: ltp-list@lists.sourceforge.net
+To: Jiri Palecek <jpalecek@web.de>
+Cc: vapier@gentoo.org, ltp-list@lists.sourceforge.net
 
-On Mon, Jan 11, 2010 at 10:29 AM, Lucio Correia <ljhc@br.ibm.com> wrote:
-> Hi Garrett,
->
-> I'm still seeing this issue with LTP-20091231.
+Jiri Palecek wrote:
+> Serge E. Hallyn napsal(a):
+>> Quoting Michal Simek (michal.simek@petalogix.com):
+>>> Serge E. Hallyn wrote:
+>>>> Quoting Michal Simek (michal.simek@petalogix.com):
+>>>>> Hi Mike,
+>>>>>
+>>>>> I have one question about one your big patch
+>>>>>
+>>>>> http://git.kernel.org/?p=linux/kernel/git/galak/ltp.git;a=commitdiff;h=391dc18fe3271fbf2ca1864a5299f091c31e0018 
+>>>>>
+>>>>>
+>>>>> My question is why you add -1 in lib/cloner.c:65
+>>>>>
+>>>>> +       ret = clone(fn, (stack ? stack + stack_size - 1 : NULL),
+>>>>> +                       clone_flags, arg);
+>>>>>
+>>>>> In previous code in clone testcases was nothing like this.
+>>>>> What reason have you had to add it?
+>>>>
+>>>> Because the same thing was done in lots of places all over the
+>>>> testsuite (and done wrong).  This consolidates them all.
+>>>
+>>>
+>>> I don't have anything against consolidation. I just want to know why
+>>> there is that -1 which weren't in any clone testcases. Nothing more
+>>> nothing less.
+>>
+>> ooooh.  Because if we've done stack = malloc(stack_size), then
+>> stack+stack_size is 1 above the the top of stack.
+> 
+> If the value of the parameter is the stack pointer of the created 
+> thread, it shouldn't matter - the address should never be used (read or 
+> written).
+> 
+> Michal, I suspect the failures you see are somehow related to alignment 
+> (that your architecture doesn't like odd addresses). Is that right? 
+> Under x86, the address gets aligned (so some of the space is unused).
 
-Hi Lucio,
-What's the error message and how are you trying to run the test (the
-files checked in are correct as well as the runtest file itself which
-was out of sync before)?
-Thanks,
--Garrett
+yes, alignment is problem. I need to subtract at least -4.
 
-> On Fri, 2009-12-11 at 01:52 -0800, Garrett Cooper wrote:
->> On Dec 10, 2009, at 3:57 PM, Mitani wrote:
->>
->> > Hi,
->> >
->> > In the following thread, "rwtest has been renamed to rwtest.sh" is
->> > written.
->> > http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg08896.ht=
-ml
->> >
->> > But, I got following message when I ran tests of "rwtest{01...05}"
->> > and
->> > "iogen01" in my system with "ltp-2009-12-10" cvs.
->> >
->> > ------------
->> > sh: rwtest.sh: command not found
->> > ------------
->> >
->> > I think that "rwtest.sh" has been renamed to "rwtest" at about
->> > 2009/11/14.
->> >
->> > Here is a patch that reverts the previous patch applied to
->> > runtest/fs.
->> > After applied this patch, "rwtest{01...05}" and "iogen01" passed in
->> > my
->> > system.
->> >
->> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> > --- fs 2009-12-10 10:23:21.000000000 +0900
->> > +++ fs.new 2009-12-10 11:23:53.000000000 +0900
->> > @@ -29,15 +29,15 @@
->> > gf28 growfiles -W gf28 -b -D 0 -w -g 16b -C 1 -b -i 1000 -u
->> > gfsparse-2-$$
->> > -d $TMPDIR
->> > gf29 growfiles -W gf29 -b -D 0 -r 1-4096 -R 0-33554432 -i 0 -L 60 -C
->> > 1 -u
->> > gfsparse-3-$$ -d $TMPDIR
->> > gf30 growfiles -W gf30 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -o
->> > O_RDWR,O_CREAT,O_SYNC -g 20480 -T 10 -t 20480 gf-sync-$$ -d $TMPDIR
->> > -rwtest01 export LTPROOT; rwtest.sh -N rwtest01 -c -q -i 60s =A0-f
->> > sync
->> > 10%25000:$TMPDIR/rw-sync-$$
->> > -rwtest02 export LTPROOT; rwtest.sh -N rwtest02 -c -q -i 60s =A0-f
->> > buffered
->> > 10%25000:$TMPDIR/rw-buffered-$$
->> > -rwtest03 export LTPROOT; rwtest.sh -N rwtest03 -c -q -i 60s -n 2
->> > =A0-f
->> > buffered -s mmread,mmwrite -m random -Dv 10%25000:$TMPDIR/mm-buff-$$
->> > -rwtest04 export LTPROOT; rwtest.sh -N rwtest04 -c -q -i 60s -n 2
->> > =A0-f sync
->> > -s mmread,mmwrite -m random -Dv 10%25000:$TMPDIR/mm-sync-$$
->> > -rwtest05 export LTPROOT; rwtest.sh -N rwtest05 -c -q -i 50 -T 64b
->> > 500b:$TMPDIR/rwtest01%f
->> > +rwtest01 export LTPROOT; rwtest -N rwtest01 -c -q -i 60s =A0-f sync
->> > 10%25000:$TMPDIR/rw-sync-$$
->> > +rwtest02 export LTPROOT; rwtest -N rwtest02 -c -q -i 60s =A0-f
->> > buffered
->> > 10%25000:$TMPDIR/rw-buffered-$$
->> > +rwtest03 export LTPROOT; rwtest -N rwtest03 -c -q -i 60s -n 2 =A0-f
->> > buffered
->> > -s mmread,mmwrite -m random -Dv 10%25000:$TMPDIR/mm-buff-$$
->> > +rwtest04 export LTPROOT; rwtest -N rwtest04 -c -q -i 60s -n 2 =A0-f
->> > sync -s
->> > mmread,mmwrite -m random -Dv 10%25000:$TMPDIR/mm-sync-$$
->> > +rwtest05 export LTPROOT; rwtest -N rwtest05 -c -q -i 50 -T 64b
->> > 500b:$TMPDIR/rwtest01%f
->> >
->> > #must be run as root
->> > #iogen01 iogen -i 120s -s read,write 500b:doio.f1.$$
->> > 1000b:doio.f2.$$ |
->> > doio -akv -n 2
->> > -iogen01 export LTPROOT; rwtest.sh -N iogen01 -i 120s -s read,write
->> > -Da -Dv
->> > -n 2 500b:doio.f1.$$ 1000b:doio.f2.$$
->> > +iogen01 export LTPROOT; rwtest -N iogen01 -i 120s -s read,write -Da
->> > -Dv -n
->> > 2 500b:doio.f1.$$ 1000b:doio.f2.$$
->> >
->> > fs_inod01 fs_inod $TMP 10 10 10
->> > linker01 linktest.sh 1000 1000
->> >
->>
->>
->> Done -- thanks!
->> -Garrett
->>
->>
->>
->>
->> ------------------------------------------------------------------------=
-------
->> Return on Information:
->> Google Enterprise Search pays you back
->> Get the facts.
->> http://p.sf.net/sfu/google-dev2dev
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
->
->
+As you can see below I am getting fault in kernel about task_size exceed.
 
----------------------------------------------------------------------------=
----
+# ./clone01
+kernel task_size exceed, 0xffffffff, 0xc0000000
+Oops: Exception in kernel mode, sig: 11
+  Registers dump: mode=1
+  r1=CDC3FF50, r2=00000000, r3=000008A1, r4=FFFFFFFF
+  r5=00000000, r6=00000800, r7=CDC3FF68, r8=00000028
+  r9=481804AC, r10=00000000, r11=000045AA, r12=C00011C4
+  r13=00000000, r14=6B6B6B6B, r15=C00083F8, r16=6B6B6B6B
+  r17=6B6B6B6B, r18=00000000, r19=FFFFFFFF, r20=100074C8
+  r21=00000000, r22=100073CC, r23=00000000, r24=00000000
+  r25=1000C050, r26=00000001, r27=10005310, r28=10001060
+  r29=00000000, r30=00000000, r31=CDD4C358, rPC=C00011DC
+  msr=000045AA, ear=FFFFFFFF, esr=000000B2, fsr=10005310
+clone01     1  TPASS  :  clone() returned 66
+
+Michal
+
+
+> 
+> Perhaps both of these behaviors should be tested by LTP?
+> 
+> Regards
+>     Jiri Palecek
+
+
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+
+------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
 Take advantage of Verizon's best-in-class app development support
 A streamlined, 14 day to market process makes app distribution fast and easy
 Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev =
-
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
