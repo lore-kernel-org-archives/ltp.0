@@ -1,36 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1NSMXw-0003zZ-1P
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 03:26:56 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NSMXv-0003no-3g
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 03:26:56 +0000
-Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
-	[9.17.195.228])
-	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o063Jn12026564
-	for <ltp-list@lists.sourceforge.net>; Tue, 5 Jan 2010 20:19:49 -0700
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o063QjST108132
-	for <ltp-list@lists.sourceforge.net>; Tue, 5 Jan 2010 20:26:45 -0700
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o063Qif3027605
-	for <ltp-list@lists.sourceforge.net>; Tue, 5 Jan 2010 20:26:45 -0700
-Date: Tue, 5 Jan 2010 21:26:44 -0600
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20100106032644.GB8157@us.ibm.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1NST0b-0004VQ-H6
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 10:20:57 +0000
+Received: from fg-out-1718.google.com ([72.14.220.153])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NST0Y-0007sY-S9
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 10:20:57 +0000
+Received: by fg-out-1718.google.com with SMTP id e12so606812fga.10
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 06 Jan 2010 02:20:44 -0800 (PST)
+Message-ID: <4B4463AD.8050806@petalogix.com>
+Date: Wed, 06 Jan 2010 11:19:25 +0100
+From: Michal Simek <michal.simek@petalogix.com>
+MIME-Version: 1.0
 References: <4B421480.1040400@petalogix.com>
 	<20100104164954.GB26962@us.ibm.com>
-	<4B4226E9.6000309@petalogix.com> <20100104174925.GA1208@us.ibm.com>
-	<4B43E1CD.2050609@web.de>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4B43E1CD.2050609@web.de>
+	<4B4226E9.6000309@petalogix.com>
+	<20100104174925.GA1208@us.ibm.com> <4B43E1CD.2050609@web.de>
+	<20100106032644.GB8157@us.ibm.com>
+In-Reply-To: <20100106032644.GB8157@us.ibm.com>
 Subject: Re: [LTP] clone tests fails
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -43,57 +35,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
-Cc: Nathan T Lynch <natlynch@us.ibm.com>, vapier@gentoo.org, ltp-list@lists.sourceforge.net
+To: "Serge E. Hallyn" <serue@us.ibm.com>
+Cc: Jiri Palecek <jpalecek@web.de>, Nathan T Lynch <natlynch@us.ibm.com>, vapier@gentoo.org, ltp-list@lists.sourceforge.net
 
-Quoting Jiri Palecek (jpalecek@web.de):
-> Serge E. Hallyn napsal(a):
-> >Quoting Michal Simek (michal.simek@petalogix.com):
-> >>Serge E. Hallyn wrote:
-> >>>Quoting Michal Simek (michal.simek@petalogix.com):
-> >>>>Hi Mike,
-> >>>>
-> >>>>I have one question about one your big patch
-> >>>>
-> >>>>http://git.kernel.org/?p=linux/kernel/git/galak/ltp.git;a=commitdiff;h=391dc18fe3271fbf2ca1864a5299f091c31e0018
-> >>>>
-> >>>>My question is why you add -1 in lib/cloner.c:65
-> >>>>
-> >>>>+       ret = clone(fn, (stack ? stack + stack_size - 1 : NULL),
-> >>>>+                       clone_flags, arg);
-> >>>>
-> >>>>In previous code in clone testcases was nothing like this.
-> >>>>What reason have you had to add it?
-> >>>
-> >>>Because the same thing was done in lots of places all over the
-> >>>testsuite (and done wrong).  This consolidates them all.
-> >>
-> >>
-> >>I don't have anything against consolidation. I just want to know why
-> >>there is that -1 which weren't in any clone testcases. Nothing more
-> >>nothing less.
-> >
-> >ooooh.  Because if we've done stack = malloc(stack_size), then
-> >stack+stack_size is 1 above the the top of stack.
+Serge E. Hallyn wrote:
+> Quoting Jiri Palecek (jpalecek@web.de):
+>> Serge E. Hallyn napsal(a):
+>>> Quoting Michal Simek (michal.simek@petalogix.com):
+>>>> Serge E. Hallyn wrote:
+>>>>> Quoting Michal Simek (michal.simek@petalogix.com):
+>>>>>> Hi Mike,
+>>>>>>
+>>>>>> I have one question about one your big patch
+>>>>>>
+>>>>>> http://git.kernel.org/?p=linux/kernel/git/galak/ltp.git;a=commitdiff;h=391dc18fe3271fbf2ca1864a5299f091c31e0018
+>>>>>>
+>>>>>> My question is why you add -1 in lib/cloner.c:65
+>>>>>>
+>>>>>> +       ret = clone(fn, (stack ? stack + stack_size - 1 : NULL),
+>>>>>> +                       clone_flags, arg);
+>>>>>>
+>>>>>> In previous code in clone testcases was nothing like this.
+>>>>>> What reason have you had to add it?
+>>>>> Because the same thing was done in lots of places all over the
+>>>>> testsuite (and done wrong).  This consolidates them all.
+>>>>
+>>>> I don't have anything against consolidation. I just want to know why
+>>>> there is that -1 which weren't in any clone testcases. Nothing more
+>>>> nothing less.
+>>> ooooh.  Because if we've done stack = malloc(stack_size), then
+>>> stack+stack_size is 1 above the the top of stack.
+>> If the value of the parameter is the stack pointer of the created
+>> thread, it shouldn't matter - the address should never be used (read
+>> or written).
+>>
+>> Michal, I suspect the failures you see are somehow related to
+>> alignment (that your architecture doesn't like odd addresses). Is
+>> that right? Under x86, the address gets aligned (so some of the
+>> space is unused).
+>>
+>> Perhaps both of these behaviors should be tested by LTP?
 > 
-> If the value of the parameter is the stack pointer of the created
-> thread, it shouldn't matter - the address should never be used (read
-> or written).
-> 
-> Michal, I suspect the failures you see are somehow related to
-> alignment (that your architecture doesn't like odd addresses). Is
-> that right? Under x86, the address gets aligned (so some of the
-> space is unused).
-> 
-> Perhaps both of these behaviors should be tested by LTP?
+> Gah, yes, Nathan had mentioned arches where this matters (including
+> some power?).  Nathan, did you have a generic fix for this in
+> userspace?  Should always be safe to do
+> 	(stack + stack_size - 1) & ~0xf
+> ?
 
-Gah, yes, Nathan had mentioned arches where this matters (including
-some power?).  Nathan, did you have a generic fix for this in
-userspace?  Should always be safe to do
-	(stack + stack_size - 1) & ~0xf
-?
+(long)(stack + stack_size - 1) & ~0x3
 
--serge
+0x3 is enough - just clear last 2 bits.
+I am not sure about long type - maybe need long long or long double.
+
+Mike's solution not work for me.
+
+Thanks,
+Michal
+
+
+
+
+
+
+> 
+> -serge
+
+
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
