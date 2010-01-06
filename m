@@ -1,21 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1NShmq-0004EU-H7
-	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 02:07:44 +0000
-Received: from fmmailgate03.web.de ([217.72.192.234])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NShmp-0002vY-FN
-	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 02:07:44 +0000
-Message-ID: <4B453D1C.3050108@web.de>
-Date: Thu, 07 Jan 2010 02:47:08 +0100
-From: Jiri Palecek <jpalecek@web.de>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <michal.simek@petalogix.com>) id 1NSVAv-0001lK-6n
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 12:39:45 +0000
+Received: from mail-bw0-f212.google.com ([209.85.218.212])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NSVAs-0006zQ-NK
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 12:39:45 +0000
+Received: by mail-bw0-f212.google.com with SMTP id 4so10780200bwz.2
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 06 Jan 2010 04:39:28 -0800 (PST)
+Message-ID: <4B447E4E.5040203@petalogix.com>
+Date: Wed, 06 Jan 2010 13:13:02 +0100
+From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-References: <4B41E55D.2020801@st.com> <4B43E52E.4000205@web.de>
-	<8368651DACC1964480F951191B94A07801A20EF7@svexch01.mvista.com>
-In-Reply-To: <8368651DACC1964480F951191B94A07801A20EF7@svexch01.mvista.com>
-Subject: Re: [LTP] mtest01: free memory allocated
+References: <4B4204D2.70204@petalogix.com> <4B43E6FD.3020906@web.de>	
+	<364299f41001051741v7a2bb1d0p91d28aa25967b93e@mail.gmail.com>
+	<364299f41001051831r6a0f4930t6ba61e4273c797e3@mail.gmail.com>
+In-Reply-To: <364299f41001051831r6a0f4930t6ba61e4273c797e3@mail.gmail.com>
+Subject: Re: [LTP] lchown test case
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,97 +33,168 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Henry Yei <hyei@mvista.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: Jiri Palecek <jpalecek@web.de>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Henry Yei napsal(a):
->> -----Original Message-----
->> From: Jiri Palecek [mailto:jpalecek@web.de]
->> Sent: Tuesday, January 05, 2010 5:20 PM
->> To: Francesco RUNDO
->> Cc: LTP
->> Subject: Re: [LTP] mtest01: free memory allocated
->>
->> Francesco RUNDO napsal(a):
->>> Hi All,
+Garrett Cooper wrote:
+> On Tue, Jan 5, 2010 at 5:41 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+>> On Tue, Jan 5, 2010 at 5:27 PM, Jiri Palecek <jpalecek@web.de> wrote:
+>>> Michal Simek napsal(a):
+>>>> Hi,
+>>> Hi,
+>>>> I have some problems with lchown02 test which is caused with this patch.
+>>>> What is prep_create_link?
+>>>>
+>>>> Thanks,
+>>>> Michal
+>>>>
+>>>>
+>>>> http://git.kernel.org/?p=linux/kernel/git/galak/ltp.git;a=commitdiff;h=ee1a022fc76076d7fc1b6b1797c195244414c038
+>>>>
+>>>>
+>>>>
+>>>> diff --git a/runtest/syscalls b/runtest/syscalls
+>>>> index fbe8641..34631ed 100644 (file)
+>>>> --- a/runtest/syscalls
+>>>> +++ b/runtest/syscalls
+>>>> @@ -462,10 +462,10 @@ kill12 kill12
+>>>>
+>>>> lchown01 lchown01
+>>>> lchown01_16 lchown01_16
+>>>> -lchown02 cp -p $LTPROOT/testcases/bin/create_link $TMP; lchown02
+>>>> -lchown02_16 cp -p $LTPROOT/testcases/bin/create_link $TMP; lchown02_16
+>>>> +lchown02 prep_create_link; lchown02
+>>>> +lchown02_16 prep_create_link; lchown02_16
+>>> IMHO it should do the same as the line above. But I think the whole thing
+>>> could be deleted without causing any grief:
 >>>
->>> I'm running LTP (I'm using ltp-full-20090731....but asap I will
->> upgrade
->>> to latest) on SH based platforms.
->>> Now, during a test-session. I've noted that the test "mtest01"
->> reduced
->>> drastically the system memory and after its execution this memory
->> wasn't
->>> de-allocated.
->>>
->>> I've analysed the mtest01.c code and I've noted that no "free()"
->>> istruction was associated to the related malloc:
->>
->> Does this mean the kernel doesn't free processes' allocated memory on
->> exit? Is
->> this intentional (and documented somewhere)?
->>
->>> ......
->>> if((mem = (char*)malloc(chunksize)) == NULL) {
->>> ......
->>>
->>> I've simply added a "free(mem)" of the allocated memory and the issue
->>> was addressed successfully.
->>
->> This isn't complete by far. You don't free all the allocations, and
->> there are
->> code paths which don't pass your line before exit.
->>
->> Regards
->>       Jiri Palecek
->>
->
-> We've documented this behavior internally as a low priority issue for a while now.
-> This is the root cause one of our developers came back with, which might clarify what Francesco is seeing:
->
-> Issue:
->
-> Across architectures, mtest tests sometimes report a fail because they won't
-> run unless less than 80% of memory is used. This is because the test attempts
-> to fill up the memory to the 80% limit specified by the -p option.
->
-> Some previous test in the LTP suite is taking up memory it should not have, as
-> this happens even on machines with 1GB of memory.
->
-> mtest01 runs "mtest01 -p80" which mallocs chunks of memory until 80% of memory
-> is used.
-> mtest01w runs "mtest01 -p80 -w" which mallocs and writes chunks of memory until
-> 80% of memory is used.
->
->
-> Response:
->
-> mtest01 -p80 -w; mtest01 -p80 -w; free; free; free... ; mtest01 -p80 -w
->
-> on the same command line. the second mtest01 always returns with a failure.
-> while the mtest01 after enough free(usually 4 or 5) always passes.
+>>> http://repo.or.cz/w/ltp-debian.git?a=commit;h=a5499edcf368fa88df924f94ffcbe63c22b46e82
+>> The test needs create_link in $TMP; that's why I scripted it as a
+>> one-liner (but stupid me probably forgot to add the script to CVS
+>> -_-).
+>> Let me look and I'll get back to you shortly.
+> 
+> Fixed. The executable needed CAP_CHOWN capability and that's part of
+> the point behind that script...
 
-Indeed, I reproduced it on a machine without swap (is this reproducible with 
-swap?), although the second mtest didn't fail, but just allocated ridiculously 
-small amount of memory. However, I'm curious if this is what Francesco is seeing 
-(eg. if the memory is eventually freed on his machine).
+ok. I rerun the latest code and lchown02 testcases still failing.
+I added two printf messages (path:Path_name -  and buffer:Cmd_buffer) 
+which you can see below. And remove tst_rmdir to see if file exist or not.
 
-> Looks like it is because of the aging of the caches, which are not freed yet
-> when the second mtest01 is executed and are dropped due to aging by the time
-> last mtest01 is executed.
-> The information (sysinfo()) mtest is using to determine the amount of memory
-> allocated does not include the memory in caches(free). mtest01 sees that 80% of
-> the memory is already in use and thus do not go for malloc-ing and returns with
-> a failure, however if it had tried, the malloc would have succeeded because of
-> the reuse of the free slab caches.
 
-I'm afraid this isn't related to slab caches, as slabinfo between the two tests 
-doesn't show anything suspicious (it's logical, too - if the test just before 
-consumed 80% of memory in user pages, it's unlikely the memory would be 
-allocated to slab after that).
+path /tmp/ltp-XXXX1ZaUjj/lch6m6mr0
+buffer /mnt/4/ltp/build/testcases/bin/create_link 
+/tmp/ltp-XXXX1ZaUjj/lch6m6mr0/tfile_1
+change_owner: chown() of /tmp/ltp-XXXX1ZaUjj/lch6m6mr0/tfile_1 failed, 
+error 1
+lchown02    1  TBROK  :  Fail to modify tfile_1 ownership(s)!
+lchown02    2  TBROK  :  Remaining cases broken
+lchown02    3  TBROK  :  Remaining cases broken
+lchown02    4  TBROK  :  Remaining cases broken
+lchown02    5  TBROK  :  Remaining cases broken
+lchown02    6  TBROK  :  Remaining cases broken
+lchown02    7  TBROK  :  Remaining cases broken
+path /tmp/ltp-XXXX1ZaUjj/lchouwHqq
+buffer /mnt/4/ltp/build/testcases/bin/create_link 
+/tmp/ltp-XXXX1ZaUjj/lchouwHqq/tfile_1
+change_owner: chown() of /tmp/ltp-XXXX1ZaUjj/lchouwHqq/tfile_1 failed, 
+error 1
+lchown02    1  TBROK  :  Fail to modify tfile_1 ownership(s)!
+lchown02    2  TBROK  :  Remaining cases broken
+lchown02    3  TBROK  :  Remaining cases broken
+lchown02    4  TBROK  :  Remaining cases broken
+lchown02    5  TBROK  :  Remaining cases broken
+lchown02    6  TBROK  :  Remaining cases broken
+lchown02    7  TBROK  :  Remaining cases broken
 
-Regards
-     Jiri Palecek
+
+The problem is at first with create_link because there is used 
+/mnt/4/ltp/build/testcases/bin/create_link instead of 
+/tmp/ltp-XXXX1ZaUjj/create_link which is setup by prep_create_link
+
+Please test the patch below which run correct version on my system
+
+Then I tried to run lchown02 test under user and I think that this line 
+in prep_create_link is addtional
+#chown root:root "$TMP/create_link"
+
+lchown test must be run under root that's why create_link will have root 
+rights and under user test reports that must be run as root.
+
+lchown02    1  TBROK  :  Test must be run as root
+lchown02    2  TBROK  :  Remaining cases broken
+lchown02    3  TBROK  :  Remaining cases broken
+lchown02    4  TBROK  :  Remaining cases broken
+lchown02    5  TBROK  :  Remaining cases broken
+lchown02    6  TBROK  :  Remaining cases broken
+lchown02    7  TBROK  :  Remaining cases broken
+lchown02    1  TBROK  :  Test must be run as root
+lchown02    2  TBROK  :  Remaining cases broken
+lchown02    3  TBROK  :  Remaining cases broken
+lchown02    4  TBROK  :  Remaining cases broken
+lchown02    5  TBROK  :  Remaining cases broken
+lchown02    6  TBROK  :  Remaining cases broken
+lchown02    7  TBROK  :  Remaining cases broken
+
+
+Thanks for testing,
+Michal
+
+
+--- lchown02-old.c      2010-01-06 12:59:32.000000000 +0100
++++ lchown02.c  2010-01-06 13:00:49.000000000 +0100
+@@ -112,7 +112,6 @@
+  char Longpathname[PATH_MAX + 2];
+  char High_address_node[64];
+  char EXEC_DIR[PATH_MAX];
+-char main_test_dir[PATH_MAX + 2];
+
+  struct test_case_t {           /* test case struct. to hold ref. test 
+cond's */
+         char *pathname;
+@@ -265,12 +264,6 @@
+         /* Pause if that option was specified */
+         TEST_PAUSE;
+
+-       /* remember current dir, because create_link has been copied here */
+-       if (getcwd(main_test_dir, sizeof(main_test_dir)) == NULL) {
+-               tst_brkm(TBROK | TERRNO, cleanup,
+-                        "failed to get the current working directory.");
+-       }
+-
+         /* Make a temp dir and cd to it */
+         tst_tmpdir();
+
+@@ -339,12 +332,13 @@
+
+         strcpy(Path2_name, Path_name);
+
++       /* Get the command name to be executed as setuid to root */
++       strcat((char *)Cmd_buffer, Path_name);
++       strcat((char *)Cmd_buffer, (const char *)"/../create_link ");
++
+         /* Get the path of test file created under temporary directory */
+         strcat(Path_name, "/" TEST_FILE1);
+
+-       /* Get the command name to be executed as setuid to root */
+-       strcat((char *)Cmd_buffer, main_test_dir);
+-       strcat((char *)Cmd_buffer, (const char *)"/create_link ");
+         strcat((char *)Cmd_buffer, Path_name);
+
+         if (system((const char *)Cmd_buffer) != 0) {
+
+
+
+
+
+
+> -Garrett
+
+
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
