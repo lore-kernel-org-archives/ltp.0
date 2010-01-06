@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sds@tycho.nsa.gov>) id 1NTJsB-0004LS-Et
-	for ltp-list@lists.sourceforge.net; Fri, 08 Jan 2010 18:47:47 +0000
-Received: from msux-gh1-uea01.nsa.gov ([63.239.67.1])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NTJsA-0001Pd-Gv
-	for ltp-list@lists.sourceforge.net; Fri, 08 Jan 2010 18:47:47 +0000
-From: Stephen Smalley <sds@tycho.nsa.gov>
-In-Reply-To: <364299f41001081020r7ee941f4w1b91bcb79849b406@mail.gmail.com>
-References: <1262791548.15424.31.camel@moss-pluto.epoch.ncsc.mil>
-	<20100106185019.GA19647@us.ibm.com>
-	<1262893258.2821.50.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001081020r7ee941f4w1b91bcb79849b406@mail.gmail.com>
-Date: Fri, 08 Jan 2010 13:45:43 -0500
-Message-Id: <1262976343.20881.4.camel@moss-pluto.epoch.ncsc.mil>
-Mime-Version: 1.0
-Subject: Re: [LTP] regression: selinux testsuite broken since October
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NSLgg-0005SA-5e
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 02:31:54 +0000
+Received: from mail-px0-f200.google.com ([209.85.216.200])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NSLga-0001Dl-NB
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 02:31:54 +0000
+Received: by pxi38 with SMTP id 38so6070742pxi.28
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 05 Jan 2010 18:31:43 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <364299f41001051741v7a2bb1d0p91d28aa25967b93e@mail.gmail.com>
+References: <4B4204D2.70204@petalogix.com> <4B43E6FD.3020906@web.de>
+	<364299f41001051741v7a2bb1d0p91d28aa25967b93e@mail.gmail.com>
+Date: Tue, 5 Jan 2010 18:31:42 -0800
+Message-ID: <364299f41001051831r6a0f4930t6ba61e4273c797e3@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] lchown test case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,26 +31,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>, ltp-list@lists.sourceforge.net
+To: Jiri Palecek <jpalecek@web.de>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On Fri, 2010-01-08 at 10:20 -0800, Garrett Cooper wrote:
->     Thanks for the feedback and details Stephen.
->     Would you be kind enough to try out the version from CVS to see
-> whether or not it resolves your issue? You'll also need to update
-> $LTPROOT/scripts in order to use the new version as I added a distro
-> detection script which opens up /etc/redhat-release (for redhat) as
-> opposed to using rpm to query the release.
-> Thanks,
-> -Garrett
+On Tue, Jan 5, 2010 at 5:41 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Tue, Jan 5, 2010 at 5:27 PM, Jiri Palecek <jpalecek@web.de> wrote:
+>> Michal Simek napsal(a):
+>>>
+>>> Hi,
+>>
+>> Hi,
+>>>
+>>> I have some problems with lchown02 test which is caused with this patch.
+>>> What is prep_create_link?
+>>>
+>>> Thanks,
+>>> Michal
+>>>
+>>>
+>>> http://git.kernel.org/?p=linux/kernel/git/galak/ltp.git;a=commitdiff;h=ee1a022fc76076d7fc1b6b1797c195244414c038
+>>>
+>>>
+>>>
+>>> diff --git a/runtest/syscalls b/runtest/syscalls
+>>> index fbe8641..34631ed 100644 (file)
+>>> --- a/runtest/syscalls
+>>> +++ b/runtest/syscalls
+>>> @@ -462,10 +462,10 @@ kill12 kill12
+>>>
+>>> lchown01 lchown01
+>>> lchown01_16 lchown01_16
+>>> -lchown02 cp -p $LTPROOT/testcases/bin/create_link $TMP; lchown02
+>>> -lchown02_16 cp -p $LTPROOT/testcases/bin/create_link $TMP; lchown02_16
+>>> +lchown02 prep_create_link; lchown02
+>>> +lchown02_16 prep_create_link; lchown02_16
+>>
+>> IMHO it should do the same as the line above. But I think the whole thing
+>> could be deleted without causing any grief:
+>>
+>> http://repo.or.cz/w/ltp-debian.git?a=commit;h=a5499edcf368fa88df924f94ffcbe63c22b46e82
+>
+> The test needs create_link in $TMP; that's why I scripted it as a
+> one-liner (but stupid me probably forgot to add the script to CVS
+> -_-).
+> Let me look and I'll get back to you shortly.
 
-The attempt to make the test policy immediately dies with:
-detect_distro.sh: ERROR: Bad release file: /etc/redhat-release
-
--- 
-Stephen Smalley
-National Security Agency
-
+Fixed. The executable needed CAP_CHOWN capability and that's part of
+the point behind that script...
+-Garrett
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
