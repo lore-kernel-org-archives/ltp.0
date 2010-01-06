@@ -1,26 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <michal.simek@petalogix.com>) id 1NSVAv-0001lK-6n
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 12:39:45 +0000
-Received: from mail-bw0-f212.google.com ([209.85.218.212])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NSVAs-0006zQ-NK
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 12:39:45 +0000
-Received: by mail-bw0-f212.google.com with SMTP id 4so10780200bwz.2
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 06 Jan 2010 04:39:28 -0800 (PST)
-Message-ID: <4B447E4E.5040203@petalogix.com>
-Date: Wed, 06 Jan 2010 13:13:02 +0100
-From: Michal Simek <michal.simek@petalogix.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1NSay2-00064i-VR
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 18:50:50 +0000
+Received: from e34.co.us.ibm.com ([32.97.110.152])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NSay1-0004YO-Sp
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 18:50:50 +0000
+Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
+	[9.17.195.107])
+	by e34.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o06Iiolh009972
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Jan 2010 11:44:50 -0700
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o06IoLDm151758
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Jan 2010 11:50:22 -0700
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o06IoKsh013120
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Jan 2010 11:50:20 -0700
+Date: Wed, 6 Jan 2010 12:50:19 -0600
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20100106185019.GA19647@us.ibm.com>
+References: <1262791548.15424.31.camel@moss-pluto.epoch.ncsc.mil>
 MIME-Version: 1.0
-References: <4B4204D2.70204@petalogix.com> <4B43E6FD.3020906@web.de>	
-	<364299f41001051741v7a2bb1d0p91d28aa25967b93e@mail.gmail.com>
-	<364299f41001051831r6a0f4930t6ba61e4273c797e3@mail.gmail.com>
-In-Reply-To: <364299f41001051831r6a0f4930t6ba61e4273c797e3@mail.gmail.com>
-Subject: Re: [LTP] lchown test case
-Reply-To: michal.simek@petalogix.com
+Content-Disposition: inline
+In-Reply-To: <1262791548.15424.31.camel@moss-pluto.epoch.ncsc.mil>
+Subject: Re: [LTP] regression:  selinux testsuite broken since October
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,168 +40,80 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: Jiri Palecek <jpalecek@web.de>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Stephen Smalley <sds@tycho.nsa.gov>
+Cc: ltp-list@lists.sourceforge.net, James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>
 
-Garrett Cooper wrote:
-> On Tue, Jan 5, 2010 at 5:41 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
->> On Tue, Jan 5, 2010 at 5:27 PM, Jiri Palecek <jpalecek@web.de> wrote:
->>> Michal Simek napsal(a):
->>>> Hi,
->>> Hi,
->>>> I have some problems with lchown02 test which is caused with this patch.
->>>> What is prep_create_link?
->>>>
->>>> Thanks,
->>>> Michal
->>>>
->>>>
->>>> http://git.kernel.org/?p=linux/kernel/git/galak/ltp.git;a=commitdiff;h=ee1a022fc76076d7fc1b6b1797c195244414c038
->>>>
->>>>
->>>>
->>>> diff --git a/runtest/syscalls b/runtest/syscalls
->>>> index fbe8641..34631ed 100644 (file)
->>>> --- a/runtest/syscalls
->>>> +++ b/runtest/syscalls
->>>> @@ -462,10 +462,10 @@ kill12 kill12
->>>>
->>>> lchown01 lchown01
->>>> lchown01_16 lchown01_16
->>>> -lchown02 cp -p $LTPROOT/testcases/bin/create_link $TMP; lchown02
->>>> -lchown02_16 cp -p $LTPROOT/testcases/bin/create_link $TMP; lchown02_16
->>>> +lchown02 prep_create_link; lchown02
->>>> +lchown02_16 prep_create_link; lchown02_16
->>> IMHO it should do the same as the line above. But I think the whole thing
->>> could be deleted without causing any grief:
->>>
->>> http://repo.or.cz/w/ltp-debian.git?a=commit;h=a5499edcf368fa88df924f94ffcbe63c22b46e82
->> The test needs create_link in $TMP; that's why I scripted it as a
->> one-liner (but stupid me probably forgot to add the script to CVS
->> -_-).
->> Let me look and I'll get back to you shortly.
+Quoting Stephen Smalley (sds@tycho.nsa.gov):
+> It seems the Makefile rewrite last October broke the selinux testsuite.
+> Is it unreasonable to expect that someone who rewrote the Makefile would
+> actually try running the testsuite?
 > 
-> Fixed. The executable needed CAP_CHOWN capability and that's part of
-> the point behind that script...
+> Please, revert the changes or fix them.
+> 
+> See testcases/kernel/security/selinux-testsuite/README for the
+> instructions.
 
-ok. I rerun the latest code and lchown02 testcases still failing.
-I added two printf messages (path:Path_name -  and buffer:Cmd_buffer) 
-which you can see below. And remove tst_rmdir to see if file exist or not.
+Frankly I think reverting the Makefiles is best since it doesn't get
+auto-compiled anyway.  The new Makefile is much longer and more complicated
+for no apparent gain.
 
+The following patch makes policy compilation work on rhel 5, but I doubt
+it'll work anywhere else.
 
-path /tmp/ltp-XXXX1ZaUjj/lch6m6mr0
-buffer /mnt/4/ltp/build/testcases/bin/create_link 
-/tmp/ltp-XXXX1ZaUjj/lch6m6mr0/tfile_1
-change_owner: chown() of /tmp/ltp-XXXX1ZaUjj/lch6m6mr0/tfile_1 failed, 
-error 1
-lchown02    1  TBROK  :  Fail to modify tfile_1 ownership(s)!
-lchown02    2  TBROK  :  Remaining cases broken
-lchown02    3  TBROK  :  Remaining cases broken
-lchown02    4  TBROK  :  Remaining cases broken
-lchown02    5  TBROK  :  Remaining cases broken
-lchown02    6  TBROK  :  Remaining cases broken
-lchown02    7  TBROK  :  Remaining cases broken
-path /tmp/ltp-XXXX1ZaUjj/lchouwHqq
-buffer /mnt/4/ltp/build/testcases/bin/create_link 
-/tmp/ltp-XXXX1ZaUjj/lchouwHqq/tfile_1
-change_owner: chown() of /tmp/ltp-XXXX1ZaUjj/lchouwHqq/tfile_1 failed, 
-error 1
-lchown02    1  TBROK  :  Fail to modify tfile_1 ownership(s)!
-lchown02    2  TBROK  :  Remaining cases broken
-lchown02    3  TBROK  :  Remaining cases broken
-lchown02    4  TBROK  :  Remaining cases broken
-lchown02    5  TBROK  :  Remaining cases broken
-lchown02    6  TBROK  :  Remaining cases broken
-lchown02    7  TBROK  :  Remaining cases broken
+Running the testsuite still fails due to the change to running ltp from
+a different dir (i.e.
+/usr/bin/chcon: /root/ltp-full-20091231/testcases/bin: No such file or directory
+).
 
+-serge
 
-The problem is at first with create_link because there is used 
-/mnt/4/ltp/build/testcases/bin/create_link instead of 
-/tmp/ltp-XXXX1ZaUjj/create_link which is setup by prep_create_link
-
-Please test the patch below which run correct version on my system
-
-Then I tried to run lchown02 test under user and I think that this line 
-in prep_create_link is addtional
-#chown root:root "$TMP/create_link"
-
-lchown test must be run under root that's why create_link will have root 
-rights and under user test reports that must be run as root.
-
-lchown02    1  TBROK  :  Test must be run as root
-lchown02    2  TBROK  :  Remaining cases broken
-lchown02    3  TBROK  :  Remaining cases broken
-lchown02    4  TBROK  :  Remaining cases broken
-lchown02    5  TBROK  :  Remaining cases broken
-lchown02    6  TBROK  :  Remaining cases broken
-lchown02    7  TBROK  :  Remaining cases broken
-lchown02    1  TBROK  :  Test must be run as root
-lchown02    2  TBROK  :  Remaining cases broken
-lchown02    3  TBROK  :  Remaining cases broken
-lchown02    4  TBROK  :  Remaining cases broken
-lchown02    5  TBROK  :  Remaining cases broken
-lchown02    6  TBROK  :  Remaining cases broken
-lchown02    7  TBROK  :  Remaining cases broken
-
-
-Thanks for testing,
-Michal
-
-
---- lchown02-old.c      2010-01-06 12:59:32.000000000 +0100
-+++ lchown02.c  2010-01-06 13:00:49.000000000 +0100
-@@ -112,7 +112,6 @@
-  char Longpathname[PATH_MAX + 2];
-  char High_address_node[64];
-  char EXEC_DIR[PATH_MAX];
--char main_test_dir[PATH_MAX + 2];
-
-  struct test_case_t {           /* test case struct. to hold ref. test 
-cond's */
-         char *pathname;
-@@ -265,12 +264,6 @@
-         /* Pause if that option was specified */
-         TEST_PAUSE;
-
--       /* remember current dir, because create_link has been copied here */
--       if (getcwd(main_test_dir, sizeof(main_test_dir)) == NULL) {
--               tst_brkm(TBROK | TERRNO, cleanup,
--                        "failed to get the current working directory.");
--       }
--
-         /* Make a temp dir and cd to it */
-         tst_tmpdir();
-
-@@ -339,12 +332,13 @@
-
-         strcpy(Path2_name, Path_name);
-
-+       /* Get the command name to be executed as setuid to root */
-+       strcat((char *)Cmd_buffer, Path_name);
-+       strcat((char *)Cmd_buffer, (const char *)"/../create_link ");
-+
-         /* Get the path of test file created under temporary directory */
-         strcat(Path_name, "/" TEST_FILE1);
-
--       /* Get the command name to be executed as setuid to root */
--       strcat((char *)Cmd_buffer, main_test_dir);
--       strcat((char *)Cmd_buffer, (const char *)"/create_link ");
-         strcat((char *)Cmd_buffer, Path_name);
-
-         if (system((const char *)Cmd_buffer) != 0) {
-
-
-
-
-
-
-> -Garrett
-
-
--- 
-Michal Simek, Ing. (M.Eng)
-PetaLogix - Linux Solutions for a Reconfigurable World
-w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+diff -Nrup ltp-full-20091231.orig/testcases/kernel/security/selinux-testsuite/refpolicy/Makefile ltp-full-20091231/testcases/kernel/security/selinux-testsuite/refpolicy/Makefile
+--- ltp-full-20091231.orig/testcases/kernel/security/selinux-testsuite/refpolicy/Makefile	2009-10-10 19:53:29.000000000 -0400
++++ ltp-full-20091231/testcases/kernel/security/selinux-testsuite/refpolicy/Makefile	2010-01-06 13:43:19.000000000 -0500
+@@ -33,19 +33,16 @@ CHECKPOLICY_VERS	?= $(shell $(CHECKPOLIC
+ 
+ CLEAN_TARGETS		:= test_policy.te
+ 
+-INSTALL_TARGETS		:= *.te
++INSTALL_TARGETS		:= $(REDHAT_VERS)/*.te
++INSTALL_TARGETS_FULL	:= $(builddir)/redhat/$(REDHAT_VERS)/*.te
+ 
+ ifeq ($(CHECKPOLICY_VERS),24)
+ INSTALL_TARGETS		:= $(filter-out %/test_bounds.te,$(INSTALL_TARGETS))
++INSTALL_TARGES_FULL		:= $(filter-out %/test_bounds.te,$(INSTALL_TARGES_FULL))
+ endif
+ 
+ TE_SRCDIR		:= $(abs_srcdir)
+ 
+-ifeq (redhat-release-, $(findstring redhat-release-, $(REDHAT_RELEASE)))
+-ifneq ($(wildcard $(abs_srcdir)/redhat/$(REDHAT_VER)),)
+-TE_SRCDIR		:= $(abs_srcdir)/redhat/$(REDHAT_VER)
+-endif
+-endif
+ 
+ .PHONY: all clean cleanup install load
+ 
+@@ -60,14 +57,18 @@ cleanup:
+ install: all
+ 
+ # load remains for backwards compatibility...
+-load: $(builddir)/test_policy.te
++load:
++ifeq (redhat-release-, $(findstring redhat-release-, $(REDHAT_RELEASE)))
++	$(MAKE) -C redhat/$(REDHAT_VERS)
++else
+ 	@if [ -d "$(POLICYDEVEL)" ]; then \
+-	    cp -p $(builddir)/test_policy.* $(INSTALL_TARGETS) $(POLICY_DEVEL); \
++	    cp -p $(builddir)/test_policy.* $(INSTALL_TARGETS_FULL) $(POLICYDEVEL); \
+ 	    $(MAKE) -C $(POLICYDEVEL) clean test_policy.pp; \
+ 	    $(SEMODULE) -i $(POLICYDEVEL)/test_policy.pp; \
+ 	else \
+             echo "ERROR: You must have selinux-policy-devel installed."; \
+ 	fi
++endif
+ 
+ $(builddir)/test_policy.te:
+ 	(cd "$(TE_SRCDIR)" && cat $(INSTALL_TARGETS)) > "$@";
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
