@@ -1,35 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1NRfe5-0006Md-LX
-	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 05:38:25 +0000
-Received: from out05.sjc.mx.trendmicro.com ([216.99.131.18])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NRfe4-00011Y-A1
-	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 05:38:25 +0000
-Received: from out04.sjc.mx.trendmicro.com (unknown [216.99.131.8])
-	by out05.sjc.mx.trendmicro.com (Postfix) with ESMTP id BEF7A330228
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  4 Jan 2010 05:08:04 +0000 (UTC)
-Received: from relay04.sjc.mx.trendmicro.com (unknown [10.30.239.23])
-	by out04.sjc.mx.trendmicro.com (Postfix) with ESMTP id 802C958C43E
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  4 Jan 2010 05:07:58 +0000 (UTC)
-Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay04.sjc.mx.trendmicro.com (Postfix) with ESMTP id D163C1D7810
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  4 Jan 2010 05:07:57 +0000 (UTC)
-Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Mon, 4 Jan 2010 14:07:56 +0900
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Mon, 4 Jan 2010 14:07:55 +0900
-Message-ID: <000001ca8cfb$e04fb340$a0ef19c0$@co.jp>
+	(envelope-from <miaox@cn.fujitsu.com>) id 1NSMcX-0003q9-QC
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 03:31:41 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NSMcR-0001I4-AS
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 03:31:41 +0000
+Message-ID: <4B4403A8.2040502@cn.fujitsu.com>
+Date: Wed, 06 Jan 2010 11:29:44 +0800
+From: Miao Xie <miaox@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Language: ja
-Subject: [LTP] nanosleep testcase problem
+Subject: [LTP] [PATCH] fix the bug of the smaller cpu_set_t's length in
+	sched_getaffinity01
+Reply-To: miaox@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,48 +27,151 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: LTP-ML <ltp-list@lists.sourceforge.net>
 
-Hi,
+sched_getaffinity01 test failed because the len of cpu_set_t in the glibc is smaller than
+the length of the cpumask in the kernel. So we must use the dynamically sized CPU sets instead
+of the standard cpu_set_t.
 
-I want to wish you happy new year.
+This patch fix this problem.
+Before using this patch, the test result is following:
+sched_getaffinity01    0  TINFO  :  system has 4 processor(s).
+sched_getaffinity01    1  TPASS  :  sched_getaffinity(0, len, (cpu_set_t *)-1): TEST_ERRNO=EINVAL(22): Invalid argument
+sched_getaffinity01    2  TPASS  :  sched_getaffinity(0, 0, &mask): TEST_ERRNO=EINVAL(22): Invalid argument
+sched_getaffinity01    3  TPASS  :  sched_getaffinity(getpid() + 1, len, &mask): TEST_ERRNO=EINVAL(22): Invalid argument
+sched_getaffinity01    4  TFAIL  :  could not get cpu affinity: TEST_ERRNO=EINVAL(22): Invalid argument
 
+The subcases1-3 of this test also failed though they were successful according to the log.
+Becuase the errnos returned were wrong.
 
-------
+After using this patch, the test result is following:
+sched_getaffinity01    0  TINFO  :  system has 4 processor(s).
+sched_getaffinity01    0  TINFO  :  cpusetsize is 512
+sched_getaffinity01    0  TINFO  :  mask.__bits[0] = 15 
+sched_getaffinity01    1  TPASS  :  sched_getaffinity() succeed ,this process 2239 is running processor: 0
+sched_getaffinity01    2  TPASS  :  sched_getaffinity() succeed ,this process 2239 is running processor: 1
+sched_getaffinity01    3  TPASS  :  sched_getaffinity() succeed ,this process 2239 is running processor: 2
+sched_getaffinity01    4  TPASS  :  sched_getaffinity() succeed ,this process 2239 is running processor: 3
+sched_getaffinity01    5  TPASS  :  sched_getaffinity(0, len, (cpu_set_t *)-1): TEST_ERRNO=EFAULT(14): Bad address
+sched_getaffinity01    6  TPASS  :  sched_getaffinity(0, 0, mask): TEST_ERRNO=EINVAL(22): Invalid argument
+sched_getaffinity01    7  TPASS  :  sched_getaffinity(getpid() + 1, len, mask): TEST_ERRNO=ESRCH(3): No such process
 
-By the way, I found a new problem with the "nanosleep02" testcase.
+Signed-off-by: Miao Xie <miaox@cn.fujitsu.com>
+---
+ .../sched_getaffinity/sched_getaffinity01.c        |   81 +++++++++++++++-----
+ 1 files changed, 61 insertions(+), 20 deletions(-)
 
-"main()" function executes fork(), and child process calls "do_child()"
-function.
-"do_child()" function must be ended by "exit()". But in "nanosleep02"
-testcase, there is a case in which "exit()" isn't executed.
-Therefore, the child process lives after "do_child()" function, 
-and it executes "wait()" function which must be executed in parent
-process only.
-
-Here is the patch fixes these problem:
-
-============
---- nanosleep02.c	2009-12-23 02:35:13.000000000 +0900
-+++ nanosleep02.c.new	2010-01-04 10:15:08.000000000 +0900
-@@ -277,6 +277,9 @@
- 		tst_resm(TPASS, "call succeeded");
- 		exit(0);
- 	}
-+	
-+	/* Everything is fine, exit normally */
-+	exit(0);
- }
+diff --git a/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c b/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c
+index 7c4a254..7dfb0ec 100644
+--- a/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c
++++ b/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c
+@@ -119,11 +119,15 @@ do { \
+ 	tst_resm((TEST_RETURN == -1 ? TPASS : TFAIL) | TTERRNO, #t); \
+ } while (0)
  
- /*
-============
-
-
-Regards--
-
-
--Tomonori Mitani
-
++#if !(__GLIBC_PREREQ(2,7))
++#define CPU_FREE(ptr)	free(ptr)
++#endif
+ int main(int ac, char **av) {
+         int lc,num,i;                 /* loop counter */
+         char *msg;              /* message returned from parse_opts */
+-	cpu_set_t mask;
+-	unsigned int len = sizeof(cpu_set_t);
++	cpu_set_t *mask;
++	int nrcpus = 1024;
++	unsigned int len;
+ 
+         /* parse standard options */
+         if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
+@@ -140,30 +144,67 @@ int main(int ac, char **av) {
+         for (lc = 0; TEST_LOOPING(lc); ++lc) {
+                 Tst_count = 0;
+                 for (testno = 0; testno < TST_TOTAL; ++testno) {
+-                     QUICK_TEST(sched_getaffinity(0, len, (cpu_set_t *)-1));
+-                     QUICK_TEST(sched_getaffinity(0, 0, &mask));
+-                     QUICK_TEST(sched_getaffinity(getpid() + 1, len, &mask));
+-
+-		     CPU_ZERO(&mask); //clear
+-                     TEST(sched_getaffinity(0,len,&mask));     //call sched_getaffinity()
++#if __GLIBC_PREREQ(2,7)
++realloc:
++		     mask = CPU_ALLOC(nrcpus);
++# else
++		     mask = malloc(sizeof(cpu_set_t));
++#endif
++		     if (mask == NULL) {
++		           tst_resm(TFAIL|TTERRNO, "cann't get enough memory");
++		           cleanup();
++		           tst_exit();
++		     }
++
++#if __GLIBC_PREREQ(2,7)
++		     len = CPU_ALLOC_SIZE(nrcpus);
++		     CPU_ZERO_S(len, mask); //clear
++#else
++		     len = sizeof(cpu_set_t);
++		     CPU_ZERO(mask); //clear
++#endif
++                     TEST(sched_getaffinity(0, len, mask));     //call sched_getaffinity()
+ 		     if(TEST_RETURN == -1) {
+-                 	   tst_resm(TFAIL|TTERRNO, "could not get cpu affinity");
+-			cleanup();
+-			tst_exit();
++			   CPU_FREE(mask);
++#if __GLIBC_PREREQ(2,7)
++			   if (errno == EINVAL && nrcpus < (1024 << 8)) {
++				nrcpus = nrcpus << 2;
++				goto realloc;
++			   }
++#else
++			   if (errno == EINVAL)
++				tst_resm(TFAIL, "NR_CPUS of the kernel is more than 1024, so we'd better use a newer glibc(>= 2.7)");
++			   else
++#endif
++                 		tst_resm(TFAIL|TTERRNO, "could not get cpu affinity");
++			   cleanup();
++			   tst_exit();
+                      } else {
+ 				tst_resm(TINFO,"cpusetsize is %d", len);
+-				tst_resm(TINFO,"mask.__bits[0] = %lu ",mask.__bits[0]);
++				tst_resm(TINFO,"mask.__bits[0] = %lu ",mask->__bits[0]);
+ 				for(i=0;i<num;i++){    // check the processor
+-	                        	TEST(CPU_ISSET(i,&mask));
++#if __GLIBC_PREREQ(2,7)
++	                        	TEST(CPU_ISSET_S(i, len, mask));
++#else
++					TEST(CPU_ISSET(i, mask));
++#endif
+ 					if (TEST_RETURN != -1 ){
+                                 	tst_resm(TPASS,"sched_getaffinity() succeed ,this process %d is running processor: %d",getpid(), i);
+-					}
+-			        }
+-	                    }
+-
+-
+-                     }
+-		}
++				}
++			    }
++	             }
++
++#if __GLIBC_PREREQ(2,7)
++		     CPU_ZERO_S(len, mask); //clear
++#else
++		     CPU_ZERO(mask);	//clear
++#endif
++                     QUICK_TEST(sched_getaffinity(0, len, (cpu_set_t *)-1));
++                     QUICK_TEST(sched_getaffinity(0, 0, mask));
++                     QUICK_TEST(sched_getaffinity(getpid() + 1, len, mask));
++		     CPU_FREE(mask);
++                }
++	}
+         cleanup();
+ 	tst_exit();
+ }
+-- 
+1.6.5.2
 
 
 ------------------------------------------------------------------------------
