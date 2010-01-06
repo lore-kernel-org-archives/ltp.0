@@ -1,27 +1,37 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NVL5e-0003fS-A1
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 08:30:02 +0000
-Received: from mail-pz0-f188.google.com ([209.85.222.188])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NVL5a-0007xg-6F
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 08:30:01 +0000
-Received: by pzk26 with SMTP id 26so14522238pzk.4
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 14 Jan 2010 00:29:50 -0800 (PST)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <markver@us.ibm.com>) id 1NSaBk-0003Pb-EH
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 18:00:56 +0000
+Received: from e6.ny.us.ibm.com ([32.97.182.146])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NSaBj-0003zD-H8
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 18:00:56 +0000
+Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
+	by e6.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o06Hugq3017412
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Jan 2010 12:56:42 -0500
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o06I0bsR1032442
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Jan 2010 13:00:38 -0500
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o06I0b24032409
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Jan 2010 16:00:37 -0200
+Received: from d01ml096.pok.ibm.com (d01ml096.pok.ibm.com [9.63.10.19])
+	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVin) with ESMTP id
+	o06I0ahC032306
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Jan 2010 16:00:37 -0200
+In-Reply-To: <364299f41001051837l4e62569em36054556b63d7bca@mail.gmail.com>
+References: <mailman.274940.1262712842.5825.ltp-list@lists.sourceforge.net>	
+	<OFBE2FC11C.E215D8EA-ON852576A2.007E66E5-852576A2.008144FB@us.ibm.com>
+	<364299f41001051837l4e62569em36054556b63d7bca@mail.gmail.com>
+Message-ID: <OFAC2AE37B.32CE19B3-ON852576A3.0061CD7E-852576A3.0062ED0F@us.ibm.com>
+From: Mark Ver <markver@us.ibm.com>
+Date: Wed, 6 Jan 2010 13:00:31 -0500
 MIME-Version: 1.0
-In-Reply-To: <000901ca94eb$792f5150$6b8df3f0$@co.jp>
-References: <1713808934.618481261374276809.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-	<1964681948.618501261374329418.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
-	<364299f40912210110m27ba4276g8cbce963d077e4a0@mail.gmail.com>
-	<364299f40912211838w7ab92a76u50223c29588b6f1a@mail.gmail.com>
-	<000901ca94eb$792f5150$6b8df3f0$@co.jp>
-Date: Thu, 14 Jan 2010 00:29:49 -0800
-Message-ID: <364299f41001140029m64f5b903sae6c8d007f4f7822@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] "unzip01" testcase failed.
+Subject: Re: [LTP] install instructions
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,170 +41,28 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Wed, Jan 13, 2010 at 11:30 PM, Mitani <mitani@ryobi.co.jp> wrote:
-> Hi,
->
-> I tried to test "unzip01".
-> But I get still the same fail at 2010-01-14 cvs.
->
-> I think that this failure occurs because "DIR" can't be defined
-> correctly in "${LTPROOT}/testcases/commands/unzip/Makefile" and
-> all files of "/opt/ltp/testcases/bin" directory was compressed.
->
-> There is the definition "DIR :=3D tst_unzip.dir" in "${LTPROOT}/testcases
-> /commands/unzip/Makefile". But there is the definition "DIR :=3D /opt/ltp
-> /testcases/bin" in two include files ("${LTPROOT}/include/mk/env_pre.mk"
-> and "${LTPROOT}/include/mk/generic_leaf_target.mk") which are included
-> in "${LTPROOT}/testcases/commands/unzip/Makefile".
->
-> Perhaps, "DIR :=3D tst_unzip.dir" is replaced by "DIR :=3D /opt/ltp
-> /testcases/bin" when the two files were included, I think.
->
-> This test requires "tst_unzip.dir" and if the variable name "DIR" is
-> changed to another name, this problem will not occur.
->
->
->> .INTERMEDIATE may be the only piece of value here, but I was avoiding
->> it because it's a 3.81-ism I thought...
->
-> So, I don't try use .INTERMEDIATE target.
->
-> However, the compress target directory ("tst_unzip.dir") is created
-> under "$LTPROOT/testcases/commands/unzip" directory.
-> But I think that it does not affect for the test because the compressed
-> file which is for the test ("tst_unzip_file.zip") is create under
-> the run directory ("/opy/ltp"). "tst_unzip.dir" is the file which isn't
-> related directly to the practice of the test, I think.
->
-> How about this patch:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- Makefile.org =A0 =A0 =A0 =A02009-12-11 21:50:29.000000000 +0900
-> +++ Makefile =A0 =A02010-01-14 11:44:30.000000000 +0900
-> @@ -27,7 +27,7 @@
-> =A0# Only build and install if we have the zip command.
-> =A0HAVE_ZIPTOOLS =A0 =A0 =A0 =A0 =A0:=3D $(shell if which zip >/dev/null;=
- then echo yes;
-> else echo no; fi)
->
-> -DIR =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D tst_unzip.dir
-> +COMPRESS_DIR =A0 =A0 =A0 =A0 =A0 :=3D tst_unzip.dir
->
-> =A0RM =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 +=3D -r
->
-> @@ -36,7 +36,7 @@
-> =A0ZIPFILE =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D $(TESTCASE=
-S_DATA_DIR)/tst_unzip_file.zip
->
-> =A0ifeq ($(HAVE_ZIPTOOLS),yes)
-> -CLEAN_TARGETS =A0 =A0 =A0 =A0 =A0:=3D $(DIR) $(ZIPFILE)
-> +CLEAN_TARGETS =A0 =A0 =A0 =A0 =A0:=3D $(COMPRESS_DIR) $(ZIPFILE)
-> =A0INSTALL_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D unzip_tests.sh
-> =A0endif
->
-> @@ -45,13 +45,13 @@
-> =A0$(TESTCASES_DATA_DIR):
-> =A0 =A0 =A0 =A0mkdir -p "$@"
->
-> -$(ZIPFILE): | $(TESTCASES_DATA_DIR) $(DIR)
-> - =A0 =A0 =A0 zip -r "$@" $(DIR)
-> +$(ZIPFILE): | $(TESTCASES_DATA_DIR) $(COMPRESS_DIR)
-> + =A0 =A0 =A0 zip -r "$@" $(COMPRESS_DIR)
-> =A0 =A0 =A0 =A0chmod 00666 "$@"
->
-> =A0# This target should be auto-removed by Make
-> -$(DIR): $(abs_srcdir)/unzip_genfile.sh
-> - =A0 =A0 =A0 $(SHELL) "$^" $(DIR)
-> +$(COMPRESS_DIR): $(abs_srcdir)/unzip_genfile.sh
-> + =A0 =A0 =A0 $(SHELL) "$^" $(COMPRESS_DIR)
->
-> =A0include $(top_srcdir)/include/mk/generic_leaf_target.mk
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
->
-> I'm glad if I can get opinion that my revision is right or not.
->
->
-> Regards--
->
->
-> -Tomonori Mitani
+Looks good to me.  Just wanted to clarify for our new folks that they
+needed to go to /opt/ltp/ to run the stuff by default.
 
-Crap, you spotted the problem, but it was just in the wrong spot (from
-functions.mk):
+Thanks,
+- Mark Ver
 
-#
-# Generate the directory install dependency separate from generate_install_=
-rule
-# to avoid noise from Make about redefining existing targets, for good reas=
-on.
-#
-# 1 -> The base install directory, based off $(prefix), or another
-#      $(prefix)-like variable. Automatically gets $(DESTDIR) tacked on it.
-# 2 -> The install target. This can be relative to $(srcdir), but will most
-#      likely be `empty'.
-#
-define generate_install_rule_dir_dep
-ifdef MAKE_3_80_COMPAT
-DIR     :=3D $$(call MAKE_3_80_abspath,$(DESTDIR)/$(1)/$(2))
-else
-DIR     :=3D $$(abspath $(DESTDIR)/$(1)/$(2))
-endif
-$$(DIR):
-        mkdir -p "$$@"
-endef
+office:  Building 710 / Room 2-RF-10
+phone: (845) 435-7794  [tie 8 295-7794]
 
->_>... I'm trying out something to get rid of this item... I'll get back to=
- you in a few.
 
-> -----Original Message-----
-> From: Garrett Cooper [mailto:yanegomi@gmail.com]
-> Sent: Tuesday, December 22, 2009 11:39 AM
-> To: Caspar Zhang
-> Cc: ltp-list@lists.sourceforge.net; Mitani
-> Subject: Re: [LTP] "unzip01" testcase failed.
->
-> On Mon, Dec 21, 2009 at 1:10 AM, Garrett Cooper <yanegomi@gmail.com> wrot=
-e:
->> On Sun, Dec 20, 2009 at 9:45 PM, Caspar Zhang <czhang@redhat.com> wrote:
->>>
->>> ----- "Garrett Cooper" <yanegomi@gmail.com> wrote:
->>>>
->>>> I'm not convinced that this is the right solution because most of
->>>> what's done here just replaced $(DIR)'s value with the bareword
->>>> value.
->>>> .INTERMEDIATE may be the only piece of value here, but I was avoiding
->>>> it because it's a 3.81-ism I thought...
->>>
->>> How about this one (see the attachment)?
->>
->> AH... -[Rr] was missing.
->>
->> RM +=3D -[Rr]
->>
->> will do that. The rest just seems spurious.
->
-> =A0 =A0Uh, this was already committed on HEAD:
->
-> http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/commands/unzip/Ma=
-kef
-> ile?r1=3D1.9&r2=3D1.8
-
----------------------------------------------------------------------------=
----
-Throughout its 18-year history, RSA Conference consistently attracts the
-world's best and brightest in the field, creating opportunities for Confere=
-nce
-attendees to learn about information security's most important issues throu=
-gh
-interactions with peers, luminaries and emerging and established companies.
-http://p.sf.net/sfu/rsaconf-dev2dev
+------------------------------------------------------------------------------
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
