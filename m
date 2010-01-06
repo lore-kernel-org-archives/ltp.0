@@ -1,28 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <michal.simek@petalogix.com>) id 1NST0b-0004VQ-H6
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 10:20:57 +0000
-Received: from fg-out-1718.google.com ([72.14.220.153])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NST0Y-0007sY-S9
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 10:20:57 +0000
-Received: by fg-out-1718.google.com with SMTP id e12so606812fga.10
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 06 Jan 2010 02:20:44 -0800 (PST)
-Message-ID: <4B4463AD.8050806@petalogix.com>
-Date: Wed, 06 Jan 2010 11:19:25 +0100
-From: Michal Simek <michal.simek@petalogix.com>
+	(envelope-from <serge@us.ibm.com>) id 1NSb5x-0005yD-Oe
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 18:59:01 +0000
+Received: from e36.co.us.ibm.com ([32.97.110.154])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NSb5w-0002UN-ND
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 18:59:01 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e36.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o06IuFc9032255
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Jan 2010 11:56:15 -0700
+Received: from d03av05.boulder.ibm.com (d03av05.boulder.ibm.com [9.17.195.85])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP
+	id o06IwhZQ158916
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Jan 2010 11:58:44 -0700
+Received: from d03av05.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av05.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o06Iwg37023673
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 Jan 2010 11:58:43 -0700
+Date: Wed, 6 Jan 2010 12:58:37 -0600
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20100106185837.GA20097@us.ibm.com>
+References: <1262791548.15424.31.camel@moss-pluto.epoch.ncsc.mil>
 MIME-Version: 1.0
-References: <4B421480.1040400@petalogix.com>
-	<20100104164954.GB26962@us.ibm.com>
-	<4B4226E9.6000309@petalogix.com>
-	<20100104174925.GA1208@us.ibm.com> <4B43E1CD.2050609@web.de>
-	<20100106032644.GB8157@us.ibm.com>
-In-Reply-To: <20100106032644.GB8157@us.ibm.com>
-Subject: Re: [LTP] clone tests fails
-Reply-To: michal.simek@petalogix.com
+Content-Disposition: inline
+In-Reply-To: <1262791548.15424.31.camel@moss-pluto.epoch.ncsc.mil>
+Subject: Re: [LTP] regression:  selinux testsuite broken since October
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,76 +40,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serue@us.ibm.com>
-Cc: Jiri Palecek <jpalecek@web.de>, Nathan T Lynch <natlynch@us.ibm.com>, vapier@gentoo.org, ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>, Stephen Smalley <sds@tycho.nsa.gov>
+Cc: ltp-list@lists.sourceforge.net, James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>
 
-Serge E. Hallyn wrote:
-> Quoting Jiri Palecek (jpalecek@web.de):
->> Serge E. Hallyn napsal(a):
->>> Quoting Michal Simek (michal.simek@petalogix.com):
->>>> Serge E. Hallyn wrote:
->>>>> Quoting Michal Simek (michal.simek@petalogix.com):
->>>>>> Hi Mike,
->>>>>>
->>>>>> I have one question about one your big patch
->>>>>>
->>>>>> http://git.kernel.org/?p=linux/kernel/git/galak/ltp.git;a=commitdiff;h=391dc18fe3271fbf2ca1864a5299f091c31e0018
->>>>>>
->>>>>> My question is why you add -1 in lib/cloner.c:65
->>>>>>
->>>>>> +       ret = clone(fn, (stack ? stack + stack_size - 1 : NULL),
->>>>>> +                       clone_flags, arg);
->>>>>>
->>>>>> In previous code in clone testcases was nothing like this.
->>>>>> What reason have you had to add it?
->>>>> Because the same thing was done in lots of places all over the
->>>>> testsuite (and done wrong).  This consolidates them all.
->>>>
->>>> I don't have anything against consolidation. I just want to know why
->>>> there is that -1 which weren't in any clone testcases. Nothing more
->>>> nothing less.
->>> ooooh.  Because if we've done stack = malloc(stack_size), then
->>> stack+stack_size is 1 above the the top of stack.
->> If the value of the parameter is the stack pointer of the created
->> thread, it shouldn't matter - the address should never be used (read
->> or written).
->>
->> Michal, I suspect the failures you see are somehow related to
->> alignment (that your architecture doesn't like odd addresses). Is
->> that right? Under x86, the address gets aligned (so some of the
->> space is unused).
->>
->> Perhaps both of these behaviors should be tested by LTP?
+Quoting Stephen Smalley (sds@tycho.nsa.gov):
+> It seems the Makefile rewrite last October broke the selinux testsuite.
+> Is it unreasonable to expect that someone who rewrote the Makefile would
+> actually try running the testsuite?
 > 
-> Gah, yes, Nathan had mentioned arches where this matters (including
-> some power?).  Nathan, did you have a generic fix for this in
-> userspace?  Should always be safe to do
-> 	(stack + stack_size - 1) & ~0xf
-> ?
-
-(long)(stack + stack_size - 1) & ~0x3
-
-0x3 is enough - just clear last 2 bits.
-I am not sure about long type - maybe need long long or long double.
-
-Mike's solution not work for me.
-
-Thanks,
-Michal
-
-
-
-
-
-
+> Please, revert the changes or fix them.
 > 
-> -serge
+> See testcases/kernel/security/selinux-testsuite/README for the
+> instructions.
 
+Ok, Garrett, two particular scripts that are broken since the move
+to running out of /opt/ltp are
+	test_robind.sh
+	test_selinux.sh
 
--- 
-Michal Simek, Ing. (M.Eng)
-PetaLogix - Linux Solutions for a Reconfigurable World
-w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+Guidance?
+
+thanks,
+-serge
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
