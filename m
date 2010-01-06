@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Nb6VZ-0002FZ-Nr
-	for ltp-list@lists.sourceforge.net; Sat, 30 Jan 2010 06:08:37 +0000
-Received: from mail-gx0-f211.google.com ([209.85.217.211])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Nb6VX-0001Mx-Ar
-	for ltp-list@lists.sourceforge.net; Sat, 30 Jan 2010 06:08:37 +0000
-Received: by gxk3 with SMTP id 3so2779602gxk.6
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NSOAr-0005tH-P1
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 05:11:13 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NSOAq-00086q-Q9
+	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 05:11:13 +0000
+Received: by pwj11 with SMTP id 11so11776329pwj.2
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 29 Jan 2010 22:08:29 -0800 (PST)
-References: <000001caa0a0$61792020$246b6060$@co.jp>
-Message-Id: <DDA5465C-8033-450C-8826-F17173E034EB@gmail.com>
+	Tue, 05 Jan 2010 21:11:07 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <4B4403EA.7020600@cn.fujitsu.com>
+References: <4B4403EA.7020600@cn.fujitsu.com>
+Date: Tue, 5 Jan 2010 21:11:06 -0800
+Message-ID: <364299f41001052111v40edbb44tdce22dd0355968f4@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <000001caa0a0$61792020$246b6060$@co.jp>
-Mime-Version: 1.0 (iPhone Mail 7D11)
-Date: Fri, 29 Jan 2010 22:08:22 -0800
-Subject: Re: [LTP] 2010-01-29 cvs build problem
+Subject: Re: [LTP] [PATCH] fix the bug of the smaller cpu_set_t's length in
+	getcpu01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,88 +28,158 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: "<ltp-list@lists.sourceforge.net>" <ltp-list@lists.sourceforge.net>
+To: miaox@cn.fujitsu.com
+Cc: LTP-ML <ltp-list@lists.sourceforge.net>
 
-On Jan 28, 2010, at 9:03 PM, "Mitani" <mitani@ryobi.co.jp> wrote:
+On Tue, Jan 5, 2010 at 7:30 PM, Miao Xie <miaox@cn.fujitsu.com> wrote:
+> getcpu01 test failed because the len of cpu_set_t in the glibc is smaller=
+ than
+> the length of the cpumask in the kernel. So we must use the dynamically s=
+ized CPU sets instead
+> of the standard cpu_set_t.
+>
+> This patch fix this problem.
+> Before using this patch, the test result is following:
+> getcpu01 =A0 =A01 =A0TFAIL =A0: =A0sched_getaffinity:errno:22
+>
+> After using this patch, the test result is following:
+> getcpu01 =A0 =A01 =A0TPASS =A0: =A0getcpu() returned proper cpuid:3, node=
+ id:0
+>
+> Signed-off-by: Miao Xie <miaox@cn.fujitsu.com>
+> ---
+> =A0testcases/kernel/syscalls/getcpu/getcpu01.c | =A0 66 +++++++++++++++++=
+++++++----
+> =A01 files changed, 56 insertions(+), 10 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/getcpu/getcpu01.c b/testcases/kern=
+el/syscalls/getcpu/getcpu01.c
+> index 9b4e52e..c13e0e7 100644
+> --- a/testcases/kernel/syscalls/getcpu/getcpu01.c
+> +++ b/testcases/kernel/syscalls/getcpu/getcpu01.c
+> @@ -77,12 +77,16 @@ int sys_support =3D 0;
+> =A0int sys_support =3D 0;
+> =A0#endif
+>
+> +#if !(__GLIBC_PREREQ(2, 7))
+> +#define CPU_FREE(ptr) free(ptr)
+> +#endif
+> +
+> =A0void cleanup(void);
+> =A0void setup(void);
+> =A0static inline int getcpu(unsigned int *, unsigned int *, void *);
+> =A0unsigned int set_cpu_affinity();
+> =A0unsigned int get_nodeid(unsigned int);
+> -unsigned int max_cpuid(cpu_set_t *);
+> +unsigned int max_cpuid(size_t, cpu_set_t *);
+>
+> =A0char *TCID =3D "getcpu01";
+> =A0int TST_TOTAL =3D 1;
+> @@ -189,18 +193,56 @@ void setup(void)
+> =A0unsigned int set_cpu_affinity()
+> =A0{
+> =A0 =A0 =A0 =A0unsigned cpu_max;
+> - =A0 =A0 =A0 cpu_set_t set;
+> - =A0 =A0 =A0 if (sched_getaffinity(0, sizeof(cpu_set_t), &set) < 0) {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TFAIL, "sched_getaffinity:errno:%d=
+", errno);
+> + =A0 =A0 =A0 cpu_set_t *set;
+> + =A0 =A0 =A0 size_t size;
+> + =A0 =A0 =A0 int nrcpus =3D 1024;
+> +#if __GLIBC_PREREQ(2, 7)
+> +realloc:
+> + =A0 =A0 =A0 set =3D CPU_ALLOC(nrcpus);
+> +#else
+> + =A0 =A0 =A0 set =3D malloc(sizeof(cpu_set_t));
+> +#endif
+> + =A0 =A0 =A0 if (set =3D=3D NULL) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TFAIL, "CPU_ALLOC:errno:%d", errno=
+);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_exit();
+> + =A0 =A0 =A0 }
+> +
+> +#if __GLIBC_PREREQ(2, 7)
+> + =A0 =A0 =A0 size =3D CPU_ALLOC_SIZE(nrcpus);
+> + =A0 =A0 =A0 CPU_ZERO_S(size, set);
+> +#else
+> + =A0 =A0 =A0 size =3D sizeof(cpu_set_t);
+> + =A0 =A0 =A0 CPU_ZERO(set);
+> +#endif
+> + =A0 =A0 =A0 if (sched_getaffinity(0, size, set) < 0) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 CPU_FREE(set);
+> +#if __GLIBC_PREREQ(2, 7)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (errno =3D=3D EINVAL && nrcpus < (1024 <=
+< 8)) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 nrcpus =3D nrcpus << 2;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto realloc;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+> +#else
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (errno =3D=3D EINVAL)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TFAIL, "NR_CPUS of=
+ the kernel is more than 1024, so we'd better use a newer glibc(>=3D 2.7)");
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 else
+> +#endif
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TFAIL, "sched_geta=
+ffinity:errno:%d", errno);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_exit();
+> =A0 =A0 =A0 =A0}
+> - =A0 =A0 =A0 cpu_max =3D max_cpuid(&set);
+> - =A0 =A0 =A0 CPU_ZERO(&set);
+> - =A0 =A0 =A0 CPU_SET(cpu_max, &set);
+> - =A0 =A0 =A0 if (sched_setaffinity(0, sizeof(cpu_set_t), &set) < 0) {
+> + =A0 =A0 =A0 cpu_max =3D max_cpuid(size, set);
+> +#if __GLIBC_PREREQ(2, 7)
+> + =A0 =A0 =A0 CPU_ZERO_S(size, set);
+> + =A0 =A0 =A0 CPU_SET_S(cpu_max, size, set);
+> +#else
+> + =A0 =A0 =A0 CPU_ZERO(set);
+> + =A0 =A0 =A0 CPU_SET(cpu_max, set);
+> +#endif
+> + =A0 =A0 =A0 if (sched_setaffinity(0, size, set) < 0) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 CPU_FREE(set);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(TFAIL, "sched_setaffinity:errno:%=
+d", errno);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_exit();
+> =A0 =A0 =A0 =A0}
+> + =A0 =A0 =A0 CPU_FREE(set);
+> =A0 =A0 =A0 =A0return cpu_max;
+> =A0}
+>
+> @@ -208,11 +250,15 @@ unsigned int set_cpu_affinity()
+> =A0* Return the maximum cpu id
+> =A0*/
+> =A0#define BITS_PER_BYTE 8
+> -unsigned int max_cpuid(cpu_set_t * set)
+> +unsigned int max_cpuid(size_t size, cpu_set_t * set)
+> =A0{
+> =A0 =A0 =A0 =A0unsigned int index, max =3D 0;
+> - =A0 =A0 =A0 for (index =3D 0; index < sizeof(cpu_set_t) * BITS_PER_BYTE=
+; index++)
+> + =A0 =A0 =A0 for (index =3D 0; index < size * BITS_PER_BYTE; index++)
+> +#if __GLIBC_PREREQ(2, 7)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (CPU_ISSET_S(index, size, set))
+> +#else
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (CPU_ISSET(index, set))
+> +#endif
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0max =3D index;
+> =A0 =A0 =A0 =A0return max;
+> =A0}
 
-> Hi,
->
-> I tried to build 2010-01-29 cvs in RHEL4.8 system.
->
-> "make" and "make install" succeeded, but in "/opt/ltp" directory,  
-> there
-> were not "runltp". There were "bin", "share", "testcases" directories
-> only.
->
-> With 2010-01-28 cvs, "make install" installed necessary files such as
-> "runltp" to "/opt/ltp" directory as follows:
->
-> ------------
-> [...]
-> install -m 00775 "/home/LTP/ltp-2010-01-28/tools/genload/stress"
-> "/opt/ltp/testcases/bin/stress"
-> make[2]: Leaving directory `/home/LTP/ltp-2010-01-28/tools/genload'
-> make[1]: Leaving directory `/home/LTP/ltp-2010-01-28/tools'
-> make -C "runtest" \
->    -f "/home/LTP/ltp-2010-01-28/runtest/Makefile" install
-> make[1]: Entering directory `/home/LTP/ltp-2010-01-28/runtest'
-> test -d "/opt/ltp/runtest" || mkdir -p "/opt/ltp/runtest"
-> install -m 00644 "/home/LTP/ltp-2010-01-28/runtest/admin_tools"
-> "/opt/ltp/runtest/admin_tools"
-> test -d "/opt/ltp/runtest" || mkdir -p "/opt/ltp/runtest"
-> install -m 00644 "/home/LTP/ltp-2010-01-28/runtest/ballista"
-> "/opt/ltp/runtest/ballista"
-> test -d "/opt/ltp/runtest" || mkdir -p "/opt/ltp/runtest"
-> install -m 00644 "/home/LTP/ltp-2010-01-28/runtest/can"
-> "/opt/ltp/runtest/can"
-> test -d "/opt/ltp/runtest" || mkdir -p "/opt/ltp/runtest"
-> install -m 00644 "/home/LTP/ltp-2010-01-28/runtest/cap_bounds"
-> "/opt/ltp/runtest/cap_bounds"
-> [...]
-> install -m 00755 "/home/LTP/ltp-2010-01-28/runltplite.sh"
-> "//opt/ltp/runltplite.sh"
-> install -m 00755 "/home/LTP/ltp-2010-01-28/ver_linux" "//opt/ltp/ 
-> ver_linux"
-> head -n 1 "/home/LTP/ltp-2010-01-28/ChangeLog" > "Version"
-> install -m 00644 "/home/LTP/ltp-2010-01-28/Version" "//opt/ltp/ 
-> Version"
-> install -m 00755 "/home/LTP/ltp-2010-01-28/execltp" "//opt/ltp/bin/ 
-> execltp"
-> Checking for required user/group ids
->
-> 'nobody' user id and group found.
-> 'bin' user id and group found.
-> 'daemon' user id and group found.
-> Users group found.
-> Sys group found.
-> Required users/groups exist.
-> ------------
->
-> Just a quick note to tell you that.
-
-Shortly after you reported the issue I fixed the root cause. Turns out  
-the was a bug as far as how one of the variables was being set so I  
-better defined the build tree "states" to accomodate that gap. I also  
-wrote some test scripts to test those three sane build states by  
-pulling a fresh copy from cvs each time, building, then testing in a  
-mostly automated manner (analysis is manual and you have to press  
-enter once it tries to login to cvs).
-
-That should prevent really silly build issues in the future...
-
-Cheers,
+    Is this documented in your distro's manpage?
+Thanks,
 -Garrett
 
-------------------------------------------------------------------------------
-The Planet: dedicated and managed hosting, cloud storage, colocation
-Stay online with enterprise data centers and the best network in the business
-Choose flexible plans and management services without long-term contracts
-Personal 24x7 support from experience hosting pros just a phone call away.
-http://p.sf.net/sfu/theplanet-com
+---------------------------------------------------------------------------=
+---
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev =
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
