@@ -1,15 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <noreply@sourceforge.net>) id 1NYFWT-00029G-Un
-	for ltp-list@lists.sourceforge.net; Fri, 22 Jan 2010 09:09:45 +0000
-From: "SourceForge.net" <noreply@sourceforge.net>
-Mime-Version: 1.0
-Message-Id: <E1NYFWT-00005L-Ie@g45xhf1.ch3.sourceforge.com>
-Date: Fri, 22 Jan 2010 09:09:45 +0000
-Subject: [LTP] [ ltp-Bugs-2936354 ] Problem with --base-directory option for
-	folder overview
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NSoJa-0003qj-KG
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 09:05:58 +0000
+Received: from mail-px0-f200.google.com ([209.85.216.200])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NSoJZ-0005ph-QG
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 09:05:58 +0000
+Received: by pxi38 with SMTP id 38so7272483pxi.28
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 07 Jan 2010 01:05:52 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20100106185837.GA20097@us.ibm.com>
+References: <1262791548.15424.31.camel@moss-pluto.epoch.ncsc.mil>
+	<20100106185837.GA20097@us.ibm.com>
+Date: Thu, 7 Jan 2010 01:05:51 -0800
+Message-ID: <364299f41001070105p3bf32bbdwff0edf9315c333da@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] regression: selinux testsuite broken since October
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -19,59 +28,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: noreply@sourceforge.net
+To: "Serge E. Hallyn" <serue@us.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, Stephen Smalley <sds@tycho.nsa.gov>, James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>
 
-Bugs item #2936354, was opened at 2010-01-21 15:14
-Message generated for change (Comment added) made by oberpapr
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=103382&aid=2936354&group_id=3382
+On Wed, Jan 6, 2010 at 10:58 AM, Serge E. Hallyn <serue@us.ibm.com> wrote:
+> Quoting Stephen Smalley (sds@tycho.nsa.gov):
+>> It seems the Makefile rewrite last October broke the selinux testsuite.
+>> Is it unreasonable to expect that someone who rewrote the Makefile would
+>> actually try running the testsuite?
+>>
+>> Please, revert the changes or fix them.
+>>
+>> See testcases/kernel/security/selinux-testsuite/README for the
+>> instructions.
+>
+> Ok, Garrett, two particular scripts that are broken since the move
+> to running out of /opt/ltp are
+> =A0 =A0 =A0 =A0test_robind.sh
+> =A0 =A0 =A0 =A0test_selinux.sh
+>
+> Guidance?
 
-Please note that this message will contain a full copy of the comment thread,
-including the initial issue submission, for this request,
-not just the latest update.
-Category: Tools
-Group: None
-Status: Open
-Resolution: None
-Priority: 5
-Private: No
-Submitted By: Karl Heinz Marbaise (khmarbaise)
-Assigned to: Nobody/Anonymous (nobody)
-Summary: Problem with --base-directory option for folder overview
+    I need output in order to judge what needs to be fixed. Gentoo
+doesn't have a selinux policy package (at least not in portage), thus
+I cannot run the tests as they're Redhat centric.
+Thanks,
+-Garrett
 
-Initial Comment:
-I have modified the example which is part of the delivery to produce all reports etc. into a separate folder (target)...
-But now i have the problem that the HTML report where the unmodified report show simply "example" now i have a folder as part of it.
-The link is working well, but it's not look good....
-It seemed to be that the --base-directory is not removed from folders.
+---------------------------------------------------------------------------=
+---
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev =
 
-
-----------------------------------------------------------------------
-
-Comment By: Peter Oberparleiter (oberpapr)
-Date: 2010-01-22 10:09
-
-Message:
-I'm assuming that you're talking about lcov.
-
-It's difficult to comment on your modification without knowing what
-exactly it does. If you post a patch to ltp-coverage@lists.sourceforge.net,
-I can have a look.
-
-----------------------------------------------------------------------
-
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=103382&aid=2936354&group_id=3382
-
-------------------------------------------------------------------------------
-Throughout its 18-year history, RSA Conference consistently attracts the
-world's best and brightest in the field, creating opportunities for Conference
-attendees to learn about information security's most important issues through
-interactions with peers, luminaries and emerging and established companies.
-http://p.sf.net/sfu/rsaconf-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
