@@ -1,25 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <michal.simek@petalogix.com>) id 1NRqrS-0007cI-V1
-	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 17:36:58 +0000
-Received: from fg-out-1718.google.com ([72.14.220.157])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NRqrR-0002Lt-GS
-	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 17:36:58 +0000
-Received: by fg-out-1718.google.com with SMTP id e12so146420fga.10
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <md.zafar.ziya@gmail.com>) id 1NSp1P-0004zI-O3
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 09:51:15 +0000
+Received: from mail-pz0-f233.google.com ([209.85.222.233])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NSp1O-00044w-Q3
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 09:51:15 +0000
+Received: by pzk22 with SMTP id 22so2034275pzk.7
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 04 Jan 2010 09:36:51 -0800 (PST)
-Message-ID: <4B4226E9.6000309@petalogix.com>
-Date: Mon, 04 Jan 2010 18:35:37 +0100
-From: Michal Simek <michal.simek@petalogix.com>
+	Thu, 07 Jan 2010 01:51:08 -0800 (PST)
 MIME-Version: 1.0
-References: <4B421480.1040400@petalogix.com>
-	<20100104164954.GB26962@us.ibm.com>
-In-Reply-To: <20100104164954.GB26962@us.ibm.com>
-Subject: Re: [LTP] clone tests fails
-Reply-To: michal.simek@petalogix.com
+Message-ID: <00504502e114aa0527047c900214@google.com>
+Date: Thu, 07 Jan 2010 09:51:08 +0000
+From: md.zafar.ziya@gmail.com
+Subject: [LTP] Cross compiling ltp for android platfrom error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,51 +25,53 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2607320451763377195=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serue@us.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, vapier@gentoo.org
+To: ltp-list@lists.sourceforge.net
 
-Serge E. Hallyn wrote:
-> Quoting Michal Simek (michal.simek@petalogix.com):
->> Hi Mike,
->>
->> I have one question about one your big patch
->>
->> http://git.kernel.org/?p=linux/kernel/git/galak/ltp.git;a=commitdiff;h=391dc18fe3271fbf2ca1864a5299f091c31e0018
->>
->> My question is why you add -1 in lib/cloner.c:65
->>
->> +       ret = clone(fn, (stack ? stack + stack_size - 1 : NULL),
->> +                       clone_flags, arg);
->>
->> In previous code in clone testcases was nothing like this.
->> What reason have you had to add it?
-> 
-> Because the same thing was done in lots of places all over the
-> testsuite (and done wrong).  This consolidates them all.
+--===============2607320451763377195==
+Content-Type: multipart/alternative; boundary=00504502e114aa0518047c900211
+
+--00504502e114aa0518047c900211
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed; delsp=yes
+
+hi,
+
+While cross compiling ltp for android platform i am getting absurd error.
 
 
-I don't have anything against consolidation. I just want to know why 
-there is that -1 which weren't in any clone testcases. Nothing more 
-nothing less.
+bionic/libc/include/sys/types.h:122: error: expected '=', ',', ';', 'asm'  
+or '__attribute__' before 'u_int64_t'
+this error is coming form android header file.
 
-Michal
-
-> 
->> Of course the reason is that on Microblaze some tests failed.
-> 
-> How do they fail?  Does clone on Microblaze take the top of
-> stack?
-> 
-> -serge
+Some sites are telling that compiler picking C++ header ,so because of that  
+error is comming
 
 
--- 
-Michal Simek, Ing. (M.Eng)
-PetaLogix - Linux Solutions for a Reconfigurable World
-w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+Any help
+
+Regards
+zafar ziya
+
+--00504502e114aa0518047c900211
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+hi,<br /><br />While cross compiling ltp for android platform i am getting =
+absurd error.<br /><br /><br />bionic/libc/include/sys/types.h:122: error: =
+expected &#39;=3D&#39;, &#39;,&#39;, &#39;;&#39;, &#39;asm&#39; or &#39;__a=
+ttribute__&#39; before &#39;u_int64_t&#39;<br /> this error is coming form =
+android header file.<br /><br />Some sites are telling that compiler pickin=
+g C++ header ,so because of that error  is comming <br /><br /><br />Any he=
+lp<br /><br />Regards<br />zafar ziya
+--00504502e114aa0518047c900211--
+
+
+--===============2607320451763377195==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
@@ -81,7 +79,16 @@ Take advantage of Verizon's best-in-class app development support
 A streamlined, 14 day to market process makes app distribution fast and easy
 Join now and get one step closer to millions of Verizon customers
 http://p.sf.net/sfu/verizon-dev2dev 
+--===============2607320451763377195==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2607320451763377195==--
+
