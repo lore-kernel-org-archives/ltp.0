@@ -1,24 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NZgkC-0000mX-GA
-	for ltp-list@lists.sourceforge.net; Tue, 26 Jan 2010 08:25:52 +0000
-Received: from mail-pz0-f179.google.com ([209.85.222.179])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NZgkA-0005cn-Kq
-	for ltp-list@lists.sourceforge.net; Tue, 26 Jan 2010 08:25:51 +0000
-Received: by pzk9 with SMTP id 9so1806360pzk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 26 Jan 2010 00:25:45 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <364299f41001252354m16d21845h6c1bd0b53cd5c98@mail.gmail.com>
-References: <4B5E8192.80909@cn.fujitsu.com>
-	<364299f41001252354m16d21845h6c1bd0b53cd5c98@mail.gmail.com>
-Date: Tue, 26 Jan 2010 00:25:44 -0800
-Message-ID: <364299f41001260025v527adde4u44ff82c647d18b4e@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PROBLEM?] rt_sigaction01 still failed on x86_64
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NSqCD-0004VZ-G5
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 11:06:29 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NSqCB-0000Jn-Pe
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 11:06:28 +0000
+Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
+	[9.17.195.228])
+	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o07AxI9S004972
+	for <ltp-list@lists.sourceforge.net>; Thu, 7 Jan 2010 03:59:18 -0700
+Received: from d03av05.boulder.ibm.com (d03av05.boulder.ibm.com [9.17.195.85])
+	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP
+	id o07B6FgC118138
+	for <ltp-list@lists.sourceforge.net>; Thu, 7 Jan 2010 04:06:15 -0700
+Received: from d03av05.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av05.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o07B6Ejh011269
+	for <ltp-list@lists.sourceforge.net>; Thu, 7 Jan 2010 04:06:15 -0700
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <1261678498.12037.15.camel@localhost.localdomain>
+References: <1261678498.12037.15.camel@localhost.localdomain>
+Date: Thu, 07 Jan 2010 16:36:10 +0530
+Message-Id: <1262862370.12213.19.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [Patch 0/4]Patches to enable Power Management
+	testcases	to run on Power Platform
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,60 +38,55 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shi Weihua <shiwh@cn.fujitsu.com>, liubo <liubo2009@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: poornima nayak <mpnayak@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, ssant@in.ibm.com, gautham <ego@in.ibm.com>, vaidy <svaidy@linux.vnet.ibm.com>, Arun <arun@linux.vnet.ibm.com>
 
-On Mon, Jan 25, 2010 at 11:54 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Mon, Jan 25, 2010 at 9:45 PM, Shi Weihua <shiwh@cn.fujitsu.com> wrote:
->> Hi, Cooper
->>
->> I noticed that you added a check of platform which not defined
->> sa_sigaction in struct sigaction.
->> http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/syscalls/=
-rt_sigaction/rt_sigaction01.c?r1=3D1.6&r2=3D1.7
->>
->> As your expectted, the following message will output on x86_64.
->> ------------
->> Your architecture doesn't support this test (no sa_sigaction field in st=
-ruct sigaction).
->> ------------
->> But unfortunately, it still failed on my x86_64.
->>
->> On my x86_64, signal.h like this:
->> ------------
->> #ifndef __ASSEMBLY__
->>
->> #ifdef __i386__
->> =A0 =A0 =A0 =A0(sa_sigaction defined here) =A0<--
->> #else /* __i386__ */
->> =A0 =A0 =A0 =A0(no sa_sigaction defined) =A0 =A0<--
->> #endif /* !__i386__ */
->>
->> #endif /* __ASSEMBLY__ */
->> ------------
->> your check still work ? Sorry, I don't know the check process in
->> LTP configure clearly. Could you give me some explanation.
->
-> Shi,
-> =A0 =A0I'm just going to test out the other proposed rt_sigaction, and
-> revert this change if it doesn't work back to a semi-functioning state
-> (which means that x86_64 will once again be broken).
+Hi Poornima,
 
-    Files reverted because liubo's patch didn't stick.
-Thanks,
--Garrett
+On Thu, 2009-12-24 at 23:44 +0530, poornima nayak wrote: 
+> The existing Power Management testcases in LTP would run only on X
+> machines. Subset of existing testcases in LTP can run on Power platform
+> also. So modified some of the functions which is to learn topology of
+> system from proc/cpuinfo to sysfs.
+> Only runltp -f power_management_tests command has to be used for testing
+> Power management features on Power platform. This command will only test
+> interfaces
+> 
+> Signed-off-by: poornima nayak <mpnayak@linux.vnet.ibm.com>
 
----------------------------------------------------------------------------=
----
-The Planet: dedicated and managed hosting, cloud storage, colocation
-Stay online with enterprise data centers and the best network in the busine=
-ss
-Choose flexible plans and management services without long-term contracts
-Personal 24x7 support from experience hosting pros just a phone call away.
-http://p.sf.net/sfu/theplanet-com
+Would you be resending the patches addressing the comments ?
+
+Regards--
+Subrata
+
+> 
+> Regards
+> Poornima
+> 
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> This SF.Net email is sponsored by the Verizon Developer Community
+> Take advantage of Verizon's best-in-class app development support
+> A streamlined, 14 day to market process makes app distribution fast and easy
+> Join now and get one step closer to millions of Verizon customers
+> http://p.sf.net/sfu/verizon-dev2dev 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
+------------------------------------------------------------------------------
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
