@@ -1,25 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NRwRT-0006mo-O8
-	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 23:34:31 +0000
-Received: from mail-yw0-f176.google.com ([209.85.211.176])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NRwRO-0007cw-8X
-	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 23:34:31 +0000
-Received: by ywh6 with SMTP id 6so15848988ywh.4
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NSwVm-0000hE-Nw
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 17:51:06 +0000
+Received: from fg-out-1718.google.com ([72.14.220.156])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NSwVl-0002m6-Mi
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 17:51:06 +0000
+Received: by fg-out-1718.google.com with SMTP id e12so1120872fga.10
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 04 Jan 2010 15:34:20 -0800 (PST)
-References: <20100104004355.GA760@us.ibm.com>
-	<51111C51-DD4E-44E6-B093-3B3FC0DEE8C5@gmail.com>
-	<20100104153843.GA25671@us.ibm.com>
-Message-Id: <F8523418-52E0-4EEE-BEF3-FE159EAF6D56@gmail.com>
+	Thu, 07 Jan 2010 09:50:59 -0800 (PST)
+Mime-Version: 1.0 (Apple Message framework v1077)
 From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <20100104153843.GA25671@us.ibm.com>
-Mime-Version: 1.0 (iPhone Mail 7D11)
-Date: Mon, 4 Jan 2010 15:34:07 -0800
-Subject: Re: [LTP] [PATCH ltp] p9auth: add missing checkp9auth.sh script
+In-Reply-To: <1262864216.12213.37.camel@subratamodak.linux.ibm.com>
+Date: Thu, 7 Jan 2010 09:50:22 -0800
+Message-Id: <D3CEC972-F0D0-4FF8-AD6D-589E96FBA686@gmail.com>
+References: <4B41E55D.2020801@st.com>
+	<ECC1F2A4-FC8C-4626-904B-F29FB9CB209E@gmail.com>
+	<1262864216.12213.37.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] mtest01: free memory allocated
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,48 +32,75 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serue@us.ibm.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: subrata@linux.vnet.ibm.com
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-Sent from my iPhone
+On Jan 7, 2010, at 3:36 AM, Subrata Modak wrote:
 
-On Jan 4, 2010, at 7:38 AM, "Serge E. Hallyn" <serue@us.ibm.com> wrote:
+> Garrett,
+> 
+> On Mon, 2010-01-04 at 18:10 -0800, Garrett Cooper wrote: 
+>> On Jan 4, 2010, at 4:55 AM, Francesco RUNDO <francesco.rundo@st.com>  
+>> wrote:
+>> 
+>>> Hi All,
+>>> 
+>>> I'm running LTP (I'm using ltp-full-20090731....but asap I will  
+>>> upgrade to latest)  on SH based platforms.
+>>> Now, during a test-session. I've noted that the test "mtest01"  
+>>> reduced drastically the system memory and after its execution this  
+>>> memory wasn't de-allocated.
+>>> 
+>>> I've analysed the mtest01.c code and I've noted that no "free()"  
+>>> istruction was associated to the related malloc:
+>>> 
+>>> ......
+>>> if((mem = (char*)malloc(chunksize)) == NULL) {
+>>> ......
+>>> 
+>>> I've simply added a "free(mem)" of the allocated memory and the  
+>>> issue was addressed successfully.
+>>> 
+>>> I've attached the trivial patch I've developed.
+>>> 
+>>> Best Regards,
+>>> --
+>>> Francesco
+>>> Added missed "free" istruction to release memory previosuly allocated.
+>>> Signed-off-by: Francesco Rundo <francesco.rundo@st.com>
+>>> --- ltp-full-20090731/testcases/kernel/mem/mtest01/ 
+>>> mtest01.c.origin    2009-02-26 13:02:27.000000000 +0100
+>>> +++ ltp-full-20090731/testcases/kernel/mem/mtest01/mtest01.c     
+>>> 2009-12-15 14:03:28.779240000 +0100
+>>> @@ -258,5 +258,8 @@
+>>>    else
+>>>      tst_resm(TPASS, "%llu kbytes allocated only.",  
+>>> original_maxbytes/1024);
+>>>  }
+>>> +
+>>> +  free(mem);
+>>> +
+>>>  exit(0);
+>>> }
+>> 
+>> 1. Does the version off cvs still have this issue?
+>> 2. Unless the test exits the code block immediately, I'd definitely do:
+>> 
+>> if (mem)
+>>     free (mem);
+>> 
+>> to avoid making a bad free call.
+> 
+> Have you made any changes to this ? I do not see any commits.
+> 
+> Regards--
+> Subrata
 
-> Quoting Garrett Cooper (yanegomi@gmail.com):
->> Hi Serge,
->>    When do this script need to be run? Before compiling or before /
->> while running?
->> -Garrett
->
-> Hi,
->
-> Either could do, but there's reason to do it at both.  It doesn't  
-> need to be
-> run before each test, but has to load the module and set up devices  
-> after each
-> boot.  So I originally had it both in the makefile, as a condition  
-> for doing
-> the compilation (and especially installation), as well as before the  
-> test, in
-> case the system was rebooted after compilation and before running.
->
-> -serge
-
-Ok, that's why I yanked it. Here's what we should do then:
-
-1. Take code required for compile and put it in an autoconf test.
-2. Take code required for execution (loading modules, etc) and move it  
-into a separate script.
-3. Take all sourceable code and move it into a separate script that  
-gets sourced in both places.
-
-I'll add it back into the repo when I get back tomorrow, but we need  
-to get a proper plan as far as how we are going to enable / disable  
-features and tests that require interpreters, special system configs,  
-etc.
-
-Thanks!
+Nope. I've left it untouched because of the discussion that was being made in the thread.
+Thanks,
 -Garrett
+> 
+
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
