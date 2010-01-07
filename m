@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1NSh4F-0006MG-In
-	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 01:21:39 +0000
+	(envelope-from <jpalecek@web.de>) id 1NSgvN-0005Vn-K1
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 01:12:29 +0000
 Received: from fmmailgate02.web.de ([217.72.192.227])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NSh4E-0005i3-Ek
-	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 01:21:39 +0000
-Message-ID: <4B45371A.4030100@web.de>
-Date: Thu, 07 Jan 2010 02:21:30 +0100
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NSgvH-0001e0-Ez
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 01:12:29 +0000
+Message-ID: <4B4534EB.5020306@web.de>
+Date: Thu, 07 Jan 2010 02:12:11 +0100
 From: Jiri Palecek <jpalecek@web.de>
 MIME-Version: 1.0
-References: <4B421480.1040400@petalogix.com>
+References: <4B421480.1040400@petalogix.com>	<20100104164954.GB26962@us.ibm.com>	<4B4226E9.6000309@petalogix.com>
 	<20100104174925.GA1208@us.ibm.com> <4B43E1CD.2050609@web.de>
-	<201001060025.45552.vapier@gentoo.org>
-In-Reply-To: <201001060025.45552.vapier@gentoo.org>
+	<4B4462DD.8010807@petalogix.com>
+In-Reply-To: <4B4462DD.8010807@petalogix.com>
 Subject: Re: [LTP] clone tests fails
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -29,25 +29,74 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: ltp-list@lists.sourceforge.net
+To: michal.simek@petalogix.com
+Cc: vapier@gentoo.org, ltp-list@lists.sourceforge.net
 
-Mike Frysinger napsal(a):
-> On Tuesday 05 January 2010 20:05:17 Jiri Palecek wrote:
->> Michal, I suspect the failures you see are somehow related to alignment
->>   (that your architecture doesn't like odd addresses). Is that right? Under
->>   x86, the address gets aligned (so some of the space is unused).
+Michal Simek napsal(a):
+> Jiri Palecek wrote:
+>> Serge E. Hallyn napsal(a):
+>>> Quoting Michal Simek (michal.simek@petalogix.com):
+>>>> Serge E. Hallyn wrote:
+>>>>> Quoting Michal Simek (michal.simek@petalogix.com):
+>>>>>> Hi Mike,
+>>>>>>
+>>>>>> I have one question about one your big patch
+>>>>>>
+>>>>>> http://git.kernel.org/?p=linux/kernel/git/galak/ltp.git;a=commitdiff;h=391dc18fe3271fbf2ca1864a5299f091c31e0018
+>>>>>>
+>>>>>>
+>>>>>> My question is why you add -1 in lib/cloner.c:65
+>>>>>>
+>>>>>> + ret = clone(fn, (stack ? stack + stack_size - 1 : NULL),
+>>>>>> + clone_flags, arg);
+>>>>>>
+>>>>>> In previous code in clone testcases was nothing like this.
+>>>>>> What reason have you had to add it?
+>>>>>
+>>>>> Because the same thing was done in lots of places all over the
+>>>>> testsuite (and done wrong). This consolidates them all.
+>>>>
+>>>>
+>>>> I don't have anything against consolidation. I just want to know why
+>>>> there is that -1 which weren't in any clone testcases. Nothing more
+>>>> nothing less.
+>>>
+>>> ooooh. Because if we've done stack = malloc(stack_size), then
+>>> stack+stack_size is 1 above the the top of stack.
 >>
->> Perhaps both of these behaviors should be tested by LTP?
+>> If the value of the parameter is the stack pointer of the created
+>> thread, it shouldn't matter - the address should never be used (read
+>> or written).
+>>
+>> Michal, I suspect the failures you see are somehow related to
+>> alignment (that your architecture doesn't like odd addresses). Is that
+>> right? Under x86, the address gets aligned (so some of the space is
+>> unused).
 >
-> i dont think such tests would be reliable or useful ?
+> yes, alignment is problem. I need to subtract at least -4.
+>
+> As you can see below I am getting fault in kernel about task_size exceed.
+>
+> # ./clone01
+> kernel task_size exceed, 0xffffffff, 0xc0000000
+> Oops: Exception in kernel mode, sig: 11
+> Registers dump: mode=1
+> r1=CDC3FF50, r2=00000000, r3=000008A1, r4=FFFFFFFF
+> r5=00000000, r6=00000800, r7=CDC3FF68, r8=00000028
+> r9=481804AC, r10=00000000, r11=000045AA, r12=C00011C4
+> r13=00000000, r14=6B6B6B6B, r15=C00083F8, r16=6B6B6B6B
+> r17=6B6B6B6B, r18=00000000, r19=FFFFFFFF, r20=100074C8
+> r21=00000000, r22=100073CC, r23=00000000, r24=00000000
+> r25=1000C050, r26=00000001, r27=10005310, r28=10001060
+> r29=00000000, r30=00000000, r31=CDD4C358, rPC=C00011DC
+> msr=000045AA, ear=FFFFFFFF, esr=000000B2, fsr=10005310
+> clone01 1 TPASS : clone() returned 66
 
-I don't think so. The set of addresses that can be successfully passed to 
-clone() and the actual space the stack will occupy with the given parameters are 
-definitely part of the interface (because the user cannot use the interface 
-correctly without knowing these), therefore testing them is useful, and they 
-should be quite easily testable, although the test would be 
-architecture-dependent, but oh well, so is the whole clone() syscall.
+I do not understand this dump fully, but couldn't it be just that your arch 
+needs the 4 bytes of memory above what you pass as stack top (task_size exceeded 
+should mean you accessed some address outside userspace)? Could you please test 
+this by trying to run the tests with stack_size%4 != 0 (eg. pass PAGE_SIZE+1 to 
+ltp_clone, subtract 1 in ltp_clone and so on).
 
 Regards
      Jiri Palecek
