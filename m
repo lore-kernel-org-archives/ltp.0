@@ -1,30 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sds@tycho.nsa.gov>) id 1NaUsF-0003G1-5W
-	for ltp-list@lists.sourceforge.net; Thu, 28 Jan 2010 13:57:31 +0000
-Received: from msux-gh1-uea01.nsa.gov ([63.239.67.1])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NaUsC-00049c-IE
-	for ltp-list@lists.sourceforge.net; Thu, 28 Jan 2010 13:57:31 +0000
-From: Stephen Smalley <sds@tycho.nsa.gov>
-In-Reply-To: <364299f41001272156p5f12bc94p4eba45d9df61fbc0@mail.gmail.com>
-References: <1262988051.20881.42.camel@moss-pluto.epoch.ncsc.mil>
-	<20100111210006.GA26554@us.ibm.com>
-	<364299f41001120029x15b2e7adwe30d925717a1dc89@mail.gmail.com>
-	<20100112153827.GB7975@us.ibm.com>
-	<364299f41001150948u4df35c36g3d4b07b16af49f90@mail.gmail.com>
-	<364299f41001260031h2529b9b0j1bbbacd9d3d85eae@mail.gmail.com>
-	<1264516245.19890.22.camel@moss-pluto.epoch.ncsc.mil>
-	<23804BFE-0FC7-45F8-939D-3729E39DB431@gmail.com>
-	<1264619548.17372.27.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001271437k3f9bde57t64845d8d0054ba22@mail.gmail.com>
-	<364299f41001272156p5f12bc94p4eba45d9df61fbc0@mail.gmail.com>
-Date: Thu, 28 Jan 2010 09:02:27 -0500
-Message-Id: <1264687347.6232.48.camel@moss-pluto.epoch.ncsc.mil>
-Mime-Version: 1.0
-Subject: Re: [LTP] regression: selinux testsuite broken since October
+	(envelope-from <jpalecek@web.de>) id 1NShmq-0004EU-H7
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 02:07:44 +0000
+Received: from fmmailgate03.web.de ([217.72.192.234])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NShmp-0002vY-FN
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 02:07:44 +0000
+Message-ID: <4B453D1C.3050108@web.de>
+Date: Thu, 07 Jan 2010 02:47:08 +0100
+From: Jiri Palecek <jpalecek@web.de>
+MIME-Version: 1.0
+References: <4B41E55D.2020801@st.com> <4B43E52E.4000205@web.de>
+	<8368651DACC1964480F951191B94A07801A20EF7@svexch01.mvista.com>
+In-Reply-To: <8368651DACC1964480F951191B94A07801A20EF7@svexch01.mvista.com>
+Subject: Re: [LTP] mtest01: free memory allocated
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,66 +28,104 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>, ltp-list@lists.sourceforge.net
+To: Henry Yei <hyei@mvista.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-On Wed, 2010-01-27 at 21:56 -0800, Garrett Cooper wrote:
-> On Wed, Jan 27, 2010 at 2:37 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> > Ok. Send me a patch that does a readlink -f of the LTPPATH and set
-> > your PATH to include $LTPROOT/testcases/bin, and you'll be good to go
-> 
->     Nevermind. I just committed the change... please retest and
-> hopefully all goes well for you this time around.
+Henry Yei napsal(a):
+>> -----Original Message-----
+>> From: Jiri Palecek [mailto:jpalecek@web.de]
+>> Sent: Tuesday, January 05, 2010 5:20 PM
+>> To: Francesco RUNDO
+>> Cc: LTP
+>> Subject: Re: [LTP] mtest01: free memory allocated
+>>
+>> Francesco RUNDO napsal(a):
+>>> Hi All,
+>>>
+>>> I'm running LTP (I'm using ltp-full-20090731....but asap I will
+>> upgrade
+>>> to latest) on SH based platforms.
+>>> Now, during a test-session. I've noted that the test "mtest01"
+>> reduced
+>>> drastically the system memory and after its execution this memory
+>> wasn't
+>>> de-allocated.
+>>>
+>>> I've analysed the mtest01.c code and I've noted that no "free()"
+>>> istruction was associated to the related malloc:
+>>
+>> Does this mean the kernel doesn't free processes' allocated memory on
+>> exit? Is
+>> this intentional (and documented somewhere)?
+>>
+>>> ......
+>>> if((mem = (char*)malloc(chunksize)) == NULL) {
+>>> ......
+>>>
+>>> I've simply added a "free(mem)" of the allocated memory and the issue
+>>> was addressed successfully.
+>>
+>> This isn't complete by far. You don't free all the allocations, and
+>> there are
+>> code paths which don't pass your line before exit.
+>>
+>> Regards
+>>       Jiri Palecek
+>>
+>
+> We've documented this behavior internally as a low priority issue for a while now.
+> This is the root cause one of our developers came back with, which might clarify what Francesco is seeing:
+>
+> Issue:
+>
+> Across architectures, mtest tests sometimes report a fail because they won't
+> run unless less than 80% of memory is used. This is because the test attempts
+> to fill up the memory to the 80% limit specified by the -p option.
+>
+> Some previous test in the LTP suite is taking up memory it should not have, as
+> this happens even on machines with 1GB of memory.
+>
+> mtest01 runs "mtest01 -p80" which mallocs chunks of memory until 80% of memory
+> is used.
+> mtest01w runs "mtest01 -p80 -w" which mallocs and writes chunks of memory until
+> 80% of memory is used.
+>
+>
+> Response:
+>
+> mtest01 -p80 -w; mtest01 -p80 -w; free; free; free... ; mtest01 -p80 -w
+>
+> on the same command line. the second mtest01 always returns with a failure.
+> while the mtest01 after enough free(usually 4 or 5) always passes.
 
-Looks good.  Patch below fixes two bugs in the selinux tests, noticed by
-examining the selinux.outfile carefully for errors (No such file or
-directory, Segmentation fault).  
+Indeed, I reproduced it on a machine without swap (is this reproducible with 
+swap?), although the second mtest didn't fail, but just allocated ridiculously 
+small amount of memory. However, I'm curious if this is what Francesco is seeing 
+(eg. if the memory is eventually freed on his machine).
 
-Index: testcases/kernel/security/selinux-testsuite/tests/file/selinux_file.sh
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/selinux-testsuite/tests/file/selinux_file.sh,v
-retrieving revision 1.10
-diff -u -r1.10 selinux_file.sh
---- testcases/kernel/security/selinux-testsuite/tests/file/selinux_file.sh	26 Jan 2010 07:05:02 -0000	1.10
-+++ testcases/kernel/security/selinux-testsuite/tests/file/selinux_file.sh	28 Jan 2010 13:50:31 -0000
-@@ -47,7 +47,8 @@
- 	# 
- 	# Change the context of the test executable
- 	#
--	chcon -t fileop_exec_t selinux_wait_io 2>&1 > /dev/null
-+	LTPBIN=${LTPBIN:-$LTPROOT/testcases/bin}
-+	chcon -t fileop_exec_t $LTPBIN/selinux_wait_io 2>&1 > /dev/null
- 
- 	#
- 	# Get the SID of the good file.
-Index: testcases/kernel/security/selinux-testsuite/tests/shm/selinux_shmat.c
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/selinux-testsuite/tests/shm/selinux_shmat.c,v
-retrieving revision 1.4
-diff -u -r1.4 selinux_shmat.c
---- testcases/kernel/security/selinux-testsuite/tests/shm/selinux_shmat.c	13 Jan 2010 08:16:57 -0000	1.4
-+++ testcases/kernel/security/selinux-testsuite/tests/shm/selinux_shmat.c	28 Jan 2010 13:50:31 -0000
-@@ -40,7 +40,7 @@
- 		return 1;
- 
- 	buf = shmat(id, 0, 0);
--	error = (*buf == -1) ? -1 : 0;
-+	error = (buf == (void*)-1) ? -1 : 0;
- 	printf("shmat: buf=%p, returned %d\n", buf, error);
- 	return error;
- }
+> Looks like it is because of the aging of the caches, which are not freed yet
+> when the second mtest01 is executed and are dropped due to aging by the time
+> last mtest01 is executed.
+> The information (sysinfo()) mtest is using to determine the amount of memory
+> allocated does not include the memory in caches(free). mtest01 sees that 80% of
+> the memory is already in use and thus do not go for malloc-ing and returns with
+> a failure, however if it had tried, the malloc would have succeeded because of
+> the reuse of the free slab caches.
 
--- 
-Stephen Smalley
-National Security Agency
+I'm afraid this isn't related to slab caches, as slabinfo between the two tests 
+doesn't show anything suspicious (it's logical, too - if the test just before 
+consumed 80% of memory in user pages, it's unlikely the memory would be 
+allocated to slab after that).
 
+Regards
+     Jiri Palecek
 
 ------------------------------------------------------------------------------
-The Planet: dedicated and managed hosting, cloud storage, colocation
-Stay online with enterprise data centers and the best network in the business
-Choose flexible plans and management services without long-term contracts
-Personal 24x7 support from experience hosting pros just a phone call away.
-http://p.sf.net/sfu/theplanet-com
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
