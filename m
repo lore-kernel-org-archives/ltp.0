@@ -1,18 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <ashish.g@teldevice.co.jp>) id 1NT8vp-0001Io-3G
-	for ltp-list@lists.sourceforge.net; Fri, 08 Jan 2010 07:06:49 +0000
-Received: from mail-gw.teldevice.co.jp ([124.215.243.245] helo=teldevice.co.jp)
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NT8vn-00011H-BR
-	for ltp-list@lists.sourceforge.net; Fri, 08 Jan 2010 07:06:48 +0000
-Message-ID: <4B46D5F0.3090801@teldevice.co.jp>
-Date: Fri, 08 Jan 2010 15:51:28 +0900
-From: TED ITC Agarwal Ashish <ashish.g@teldevice.co.jp>
-MIME-Version: 1.0
-Subject: [LTP] LTP installation  configure Error
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NSo5F-0000FT-Ie
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 08:51:09 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NSo5E-0001uF-I8
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 08:51:09 +0000
+Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
+	[9.17.195.107])
+	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o078ngRU031457
+	for <ltp-list@lists.sourceforge.net>; Thu, 7 Jan 2010 01:49:42 -0700
+Received: from d03av05.boulder.ibm.com (d03av05.boulder.ibm.com [9.17.195.85])
+	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP
+	id o078oxbO169740
+	for <ltp-list@lists.sourceforge.net>; Thu, 7 Jan 2010 01:50:59 -0700
+Received: from d03av05.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av05.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o078owKc031387
+	for <ltp-list@lists.sourceforge.net>; Thu, 7 Jan 2010 01:50:59 -0700
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <d270b4400912250122y371c4d4dq6fa729b60e03f8a5@mail.gmail.com>
+References: <d270b4400912250122y371c4d4dq6fa729b60e03f8a5@mail.gmail.com>
+Date: Thu, 07 Jan 2010 14:20:54 +0530
+Message-Id: <1262854254.12213.9.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] Testcase to validate the memory usage limit imposed
+	by	the topmost memory cgroup
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,49 +38,40 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-2022-jp"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: TED ITC Ashish Agarwal <ashish.g@teldevice.co.jp>
+To: Mohamed Naufal <naufal11@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hello All
+On Fri, 2009-12-25 at 14:52 +0530, Mohamed Naufal wrote:
+> Hi
+> 
+> I am a student who attended the FOSS.IN LTP workout (Bangalore,
+> India). I have attached one of the testcases we were working on.
+> Thought I would get it reviewed before making a patch. More testcases
+> to follow.
+> 
+> Comments appreciated.
 
-I am novice for the LTP, just last week i heard something LTP
-and feel curious about it so started searching and installations.
+Seems that the Script is trying to test some Memory Controllers.
+However, i am not sure about the C program. Can you please try to
+improve the documentation and see if you can fit you controller test
+somewhere inside ltp/testcases/kernel/controllers/ ?
 
-"./configure " generates Error to me as written below.
+Regards--
+Subrata
 
-configure: error: Couldn't find functional copy of quota v2 - are you running 2.4.x?
+> 
+> Naufal 
+> ------------------------------------------------------------------------------
+> This SF.Net email is sponsored by the Verizon Developer Community
+> Take advantage of Verizon's best-in-class app development support
+> A streamlined, 14 day to market process makes app distribution fast and easy
+> Join now and get one step closer to millions of Verizon customers
+> http://p.sf.net/sfu/verizon-dev2dev 
+> _______________________________________________ Ltp-list mailing list Ltp-list@lists.sourceforge.net https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-
---
-i searched over net about quota but i were not lucky this time. :(
-
-I am writing down my environment conditions:
-    System : Fedora 3 (kernel 2.6.9-1.667)
-
-Updated the make, bison/yacc, flex, automake, autoconfig, m4 etc as written over INSTALL. (LTP 20091231)
-
-Process i followed till is (./configure -> make -> make install) for the list written above as requirement (make 3.81+ etc)
-
-Then i tried to
- [root LTP-full-20091231] # ./configure
-
-It lands into Error as above "configure: error: Couldn't find functional copy of quota v2 - are you running 2.4.x?"
-
-The quota version i am using is
-"
-$ rpm -q quota
-quota-3.12-5
-"
-Is there is any such limitation like we cannot install LTP over some machine or lower then that kernel version etc. please guide me.
-
-What i want to do is learn LTP and want to check an Embedded Linux (customized for ARM processor) kernel 2.6.19.2.
-
---
-Agarwal Ashish
-アガルワル　アシッシュ
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
