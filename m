@@ -1,26 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NWOiR-00048A-6B
-	for ltp-list@lists.sourceforge.net; Sun, 17 Jan 2010 06:34:27 +0000
-Received: from mail-pw0-f43.google.com ([209.85.160.43])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NWOiO-0002dj-Rm
-	for ltp-list@lists.sourceforge.net; Sun, 17 Jan 2010 06:34:27 +0000
-Received: by pwj11 with SMTP id 11so1256288pwj.2
-	for <ltp-list@lists.sourceforge.net>;
-	Sat, 16 Jan 2010 22:34:19 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <201001151727.40629.vapier@gentoo.org>
-References: <364299f41001151349i4e7067fbu68994eaf719b46de@mail.gmail.com>
-	<364299f41001151407s3e486c68rc8bd90db9898e20d@mail.gmail.com>
-	<201001151727.40629.vapier@gentoo.org>
-Date: Sat, 16 Jan 2010 22:34:18 -0800
-Message-ID: <364299f41001162234k3ff212e9wb130a9b2b7a99e5b@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Add make 3.80 $(abspath ) and $(realpath )
-	emulation scripts
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NSqCI-0002rv-DY
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 11:06:34 +0000
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NSqCH-0000Ma-1n
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 11:06:34 +0000
+Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
+	by e2.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o07AvIaG014484
+	for <ltp-list@lists.sourceforge.net>; Thu, 7 Jan 2010 05:57:18 -0500
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o07B6PVQ130472
+	for <ltp-list@lists.sourceforge.net>; Thu, 7 Jan 2010 06:06:25 -0500
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o07B6Ptr032088
+	for <ltp-list@lists.sourceforge.net>; Thu, 7 Jan 2010 09:06:25 -0200
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <EB27E34D-BEAD-4BC3-AA0C-15AA4BA148B7@gmail.com>
+References: <4B41F7FD.9040904@in.ibm.com>
+	<EB27E34D-BEAD-4BC3-AA0C-15AA4BA148B7@gmail.com>
+Date: Thu, 07 Jan 2010 16:36:16 +0530
+Message-Id: <1262862376.12213.21.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] Fix ld01 test
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,357 +37,190 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: LTP list <ltp-list@lists.sourceforge.net>, Jiri Palecek <jirka@debian.org>, Andi Kleen <andi@firstfloor.org>, =?ISO-2022-JP?B?GyRCP0BDK0p+SE8bKEI=?= <mitani@ryobi.co.jp>
+To: Suzuki Poulose <suzuki@in.ibm.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-2010/1/15 Mike Frysinger <vapier@gentoo.org>:
-> On Friday 15 January 2010 17:07:48 Garrett Cooper wrote:
->> Shortly after I sent out this email, I received some helpful replies
->> as to why my code wasn't working. It turns out that the curly bracket
->> regexp quantifier operators available in many other popular
->> implementations of regexps (perl, python, tcl) isn't supported in awk.
->> Here's the new patch with less bloat.
->
-> the patch itself is word wrapped in the e-mail though :(
->
->> +_abspath() {
->> + =A0 =A0 echo "$@" | awk '{ sub(/\/$/, ""); while (gsub(/\/\//, "/")) {=
- };
->> while (gsub(/\/[^\/]+\/\.\.\/?/, "/")) { }; while (gsub(/\/\.\//,
->> "/")) { } print }'
->> +}
->
-> it's easy to line wrap awk scripts, and this sucker really needs it
->
-> btw, this doesnt quite handle:
-> /a/b/c/.././
->
-> how about this (largely untested) sed:
-> sed -r -e 's:/+[.]/+:/:g' -e 's:(^|/+[^/]*)/+[.][.]/+:/:g' -e 's:/+$::'
->
->> --- /dev/null 1 Jan 1970 00:00:00 -0000
->> +++ tests/test_abspath.sh =A0 =A0 15 Jan 2010 22:04:59 -0000
->> +# NOTE (garrcoop): I usually don't use bashisms, but it was just easier=
- to
->> +# express these values as an array of values instead of one whacky long
->> +# string.
->> +test_strings=3D( =A0 =A0 foo/bar /foo/bar /foo/../bar /foo/bar/../baz
->> /foo/bar/../baz/ /foo/../bar/ /foo/../bar/.. /foo/../bar/../
->> /foo/bar/../baz /foo/./bar /./foo/./bar /foo//bar //foo/bar
->> //////foo/bar /foo/////bar )
->> +expected_strings=3D( foo/bar /foo/bar /bar =A0 =A0 =A0 =A0/foo/baz
->> /foo/baz =A0 =A0 =A0 =A0 /bar =A0 =A0 =A0 =A0 / =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0/ =A0 =A0 =A0 =A0 =A0 =A0 =A0 /foo/baz
->> =A0 =A0 =A0 /foo/bar =A0 /foo/bar =A0 =A0 /foo/bar =A0/foo/bar =A0/foo/b=
-ar
->> /foo/bar )
->
-> probably be good if the source were better wrapped
->
-> however, two parallel arrays makes it hard to correlate the input/expected
-> values. =A0how about something like:
-> set -- \
-> =A0 =A0 =A0 =A0foo/bar:foo/bar \
-> =A0 =A0 =A0 =A0/foo/bar:/foo/bar \
-> =A0 =A0 =A0 =A0/foo/../bar:/bar \
-> =A0 =A0 =A0 =A0...........
->
-> then you can easily do:
-> for test in "$@" ; do
-> =A0 =A0 =A0 =A0input=3D${test%:*}
-> =A0 =A0 =A0 =A0expect=3D${test#*:}
-> =A0 =A0 =A0 =A0...
-> done
->
-> this should be POSIX and avoid /bin/bash
+Suzuki,
 
-Version 2:
+Please see this:
+http://ltp.cvs.sf.net/viewvc/ltp/ltp/testcases/commands/ade/ld/ld01?view=log,
 
-1. Incorporate comments from Mike F.
-2. Resolve a negative testcase failure.
+Regards--
+Subrata
 
-gcooper@orangebox /scratch/ltp $ scripts/tests/test_abspath.sh
-test_abspath    1  TPASS  :  Test string matches expected string
-_abspath(foo/bar) =3D> foo/bar =3D=3D foo/bar)
-test_abspath    2  TPASS  :  Test string matches expected string
-_abspath(/foo/bar) =3D> /foo/bar =3D=3D /foo/bar)
-test_abspath    3  TPASS  :  Test string matches expected string
-_abspath(/foo/../bar) =3D> /bar =3D=3D /bar)
-test_abspath    4  TPASS  :  Test string matches expected string
-_abspath(/foo/bar/../baz) =3D> /foo/baz =3D=3D /foo/baz)
-test_abspath    5  TPASS  :  Test string matches expected string
-_abspath(/foo/bar/../baz/) =3D> /foo/baz =3D=3D /foo/baz)
-test_abspath    6  TPASS  :  Test string matches expected string
-_abspath(/foo/../bar/) =3D> /bar =3D=3D /bar)
-test_abspath    7  TPASS  :  Test string matches expected string
-_abspath(/foo/../bar/..) =3D> / =3D=3D /)
-test_abspath    8  TPASS  :  Test string matches expected string
-_abspath(/foo/../bar/../) =3D> / =3D=3D /)
-test_abspath    9  TPASS  :  Test string matches expected string
-_abspath(/foo/bar/../baz) =3D> /foo/baz =3D=3D /foo/baz)
-test_abspath   10  TPASS  :  Test string matches expected string
-_abspath(/foo/./bar) =3D> /foo/bar =3D=3D /foo/bar)
-test_abspath   11  TPASS  :  Test string matches expected string
-_abspath(/./foo/./bar) =3D> /foo/bar =3D=3D /foo/bar)
-test_abspath   12  TPASS  :  Test string matches expected string
-_abspath(/foo//bar) =3D> /foo/bar =3D=3D /foo/bar)
-test_abspath   13  TPASS  :  Test string matches expected string
-_abspath(//foo/bar) =3D> /foo/bar =3D=3D /foo/bar)
-test_abspath   14  TPASS  :  Test string matches expected string
-_abspath(//////foo/bar) =3D> /foo/bar =3D=3D /foo/bar)
-test_abspath   15  TPASS  :  Test string matches expected string
-_abspath(/foo/////bar) =3D> /foo/bar =3D=3D /foo/bar)
-test_abspath   16  TPASS  :  Test string matches expected string
-_abspath(/a/b/c/.././) =3D> /a/b =3D=3D /a/b)
-test_abspath   17  TPASS  :  Test string matches expected string
-_abspath(/.foo) =3D> /.foo =3D=3D /.foo)
-test_abspath   18  TPASS  :  Test string matches expected string
-_abspath(./.foo) =3D> /.foo =3D=3D /.foo)
-test_abspath   19  TPASS  :  Test string matches expected string
-_abspath(/.foo/.bar) =3D> /.foo/.bar =3D=3D /.foo/.bar)
-test_abspath   20  TPASS  :  Test string matches expected string
-_abspath(./.foo/.bar) =3D> /.foo/.bar =3D=3D /.foo/.bar)
+On Mon, 2010-01-04 at 18:04 -0800, Garrett Cooper wrote: 
+> On Jan 4, 2010, at 6:15 AM, Suzuki Poulose <suzuki@in.ibm.com> wrote:
+> 
+> > Hi,
+> >
+> > Please find the patch to fix the "ld" test.  I wonder these tests  
+> > were ever tested before committing to the suite !
+> >
+> > On SLES 11 SP1, I get :
+> >
+> > plm66:/ltp-full-20091130/testcases/commands/ade/ld # make
+> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -fPIC - 
+> > I../../../../include -I../../../../include  -c -o d1.o d1.c
+> > mv d1.o d1.obj
+> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -fPIC - 
+> > I../../../../include -I../../../../include  -c -o f1.o f1.c
+> > mv f1.o f1.obj
+> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -fPIC - 
+> > I../../../../include -I../../../../include  -c -o ldmain.o ldmain.c
+> > mv ldmain.o ldmain.obj
+> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -fPIC - 
+> > I../../../../include -I../../../../include  -c -o rd1.o rd1.c
+> > mv rd1.o rd1.obj
+> > gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -fPIC - 
+> > I../../../../include -I../../../../include  -c -o rf1.o rf1.c
+> > mv rf1.o rf1.obj
+> > plm66:/ltp-full-20091130/testcases/commands/ade/ld # ./ld01
+> > Assertion 1 ..................
+> > -)
+> > Assertion 2 ..................
+> > -)
+> > Assertion 3 ..................
+> > -)
+> > Assertion 4 ..................
+> > -)
+> > Assertion 5 ..................
+> > ld: /ltp-full-20091130/testcases/commands/ade/ld/f1.o: No such file:  
+> > No such file or directory
+> > FAIL - ld failed to build a shared object
+> >
+> >
+> > The names used for the object files are not consistent across the  
+> > Makefile and the script.
+> >
+> > Also the method of detecting the ld version is bogus. It will not  
+> > work for *all* distros.
+> >
+> > ./ld01: line 184: [: Public: integer expression expected
+> > -)
+> >
+> >
+> > Please find the attached patch which fixes the issue.
+> >
+> > Thanks
+> > Suzuki
+> > Signed-Off-by: Suzuki K P <suzuki@in.ibm.com>
+> >
+> > Issues fixed:
+> >
+> >    1) Consistency with the names used for object files in Makefile  
+> > vs. script
+> >    2) Better method for finding the version of "ld"
+> >
+> > --- ld01    2006-04-10 23:09:50.000000000 +0530
+> > +++ ld01.new    2010-01-05 01:01:03.000000000 +0530
+> > @@ -140,11 +140,11 @@ fi
+> > ##
+> > echo "Assertion 5 .................."
+> >  # Check for ppc64 architecture
+> > - file f1.o | grep PowerPC | grep 64-bit >/dev/null 2>&1
+> > + file f1.obj | grep PowerPC | grep 64-bit >/dev/null 2>&1
+> >  if [ $? -eq 0 ]; then
+> > -    ld -m elf64ppc -shared $TCdat/f1.o $TCdat/d1.o -o $TCtmp/test.lib
+> > +    ld -m elf64ppc -shared $TCdat/f1.obj $TCdat/d1.obj -o $TCtmp/ 
+> > test.lib
+> >  else
+> > -    ld -shared $TCdat/f1.o $TCdat/d1.o -o $TCtmp/test.lib
+> > +    ld -shared $TCdat/f1.obj $TCdat/d1.obj -o $TCtmp/test.lib
+> >  fi
+> > file $TCtmp/test.lib | grep -q shared
+> > if [ $? -eq 0 ]
+> > @@ -164,23 +164,29 @@ fi
+> > echo "Assertion 6 .................."
+> >
+> > # Check for ppc64 architecture
+> > - file f1.o | grep PowerPC | grep 64-bit >/dev/null 2>&1
+> > + file f1.obj | grep PowerPC | grep 64-bit >/dev/null 2>&1
+> >  if [ $? -eq 0 ]; then
+> > -    ld -m elf64ppc -Bdynamic -shared $TCdat/f1.o $TCdat/d1.o -o  
+> > $TCtmp/lola 2>$TCtmp/errmsg.out
+> > -    ld -m elf64ppc -Bstatic  -L. $TCdat/ldmain.o $TCdat/rd1.o  
+> > $TCtmp/lola -o $TCtmp/a.out 2> $TCtmp/errmsg.out
+> > +    ld -m elf64ppc -Bdynamic -shared $TCdat/f1.obj $TCdat/d1.obj -o  
+> > $TCtmp/lola 2>$TCtmp/errmsg.out
+> > +    ld -m elf64ppc -Bstatic  -L. $TCdat/ldmain.obj $TCdat/rd1.obj  
+> > $TCtmp/lola -o $TCtmp/a.out 2> $TCtmp/errmsg.out
+> >  else
+> > -    ld -Bdynamic -shared $TCdat/f1.o $TCdat/d1.o -o $TCtmp/lola 2> 
+> > $TCtmp/errmsg.out
+> > -    ld -Bstatic  -L. $TCdat/ldmain.o $TCdat/rd1.o $TCtmp/lola -o  
+> > $TCtmp/a.out 2> $TCtmp/errmsg.out
+> > +    ld -Bdynamic -shared $TCdat/f1.obj $TCdat/d1.obj -o $TCtmp/lola  
+> > 2>$TCtmp/errmsg.out
+> > +
+> > +    ld -Bstatic  -L. $TCdat/ldmain.obj $TCdat/rd1.obj $TCtmp/lola - 
+> > o $TCtmp/a.out 2> $TCtmp/errmsg.out
+> >  fi
+> > #nm $TCtmp/a.out | grep -q DYNAMIC
+> > rc_code=$?
+> >
+> > -    version_num=`ld --version | grep version | \
+> > -     awk -F ' ' '{ print $4 }' | cut -d '.' -f 1`
+> > -
+> > -    version_num_level2=`ld --version | grep version |\
+> > -     awk -F ' ' '{ print $4 }' | cut -d '.' -f 2`
+> > -
+> > +#    This method doesn't work on all distro.
+> > +#    version_num=`ld --version | grep version | \
+> > +#     awk -F ' ' '{ print $4 }' | cut -d '.' -f 1`
+> > +#
+> > +#    version_num_level2=`ld --version | grep version |\
+> > +#     awk -F ' ' '{ print $4 }' | cut -d '.' -f 2`
+> > +#
+> > +# Better way to get the version of ld
+> > +# Search for a pattern that starts with <SPACE><DIGITS><DOT><DIGITS>
+> > +version_num=`ld -v | sed "s/.*\ \([0-9]\+\)\.\([0-9]\+\).*/\1/"`
+> > +version_num_level2=`ld -v | sed "s/.*\ \([0-9]\+\)\.\([0-9]\+\).*/ 
+> > \2/"`
+> > if [ "$version_num" -le "2"  -a "$version_num_level2" -le "15" ]; then
+> >    if [ $rc_code -eq 0 ]
+> >    then
+> > @@ -214,8 +220,8 @@ if [ "$version_num" -le "2"  -a "$versio
+> >
+> >
+> > echo "Assertion 7 .................."
+> > -ld -Bdynamic -shared $TCdat/ldmain.o $TCdat/f1.o $TCdat/rf1.o -o  
+> > $TCtmp/lola -L/usr/lib/
+> > -ld -Bstatic -r  $TCdat/ldmain.o $TCdat/f1.o $TCdat/rf1.o $TCtmp/ 
+> > lola -L/usr/lib/ 2> $TCtmp/errmsg.out
+> > +ld -Bdynamic -shared $TCdat/ldmain.obj $TCdat/f1.obj $TCdat/rf1.obj  
+> > -o $TCtmp/lola -L/usr/lib/
+> > +ld -Bstatic -r  $TCdat/ldmain.obj $TCdat/f1.obj $TCdat/rf1.obj  
+> > $TCtmp/lola -L/usr/lib/ 2> $TCtmp/errmsg.out
+> > cat <<EOF > $TCtmp/errmsg.exp
+> > $TCtmp/lola: could not read symbols: Invalid operation
+> > EOF
+> 
+>      This was actually fixed a few weeks ago.. Please try again with  
+> the version off cvs.
+> Thanks!
+> -Garrett
+> 
+> ------------------------------------------------------------------------------
+> This SF.Net email is sponsored by the Verizon Developer Community
+> Take advantage of Verizon's best-in-class app development support
+> A streamlined, 14 day to market process makes app distribution fast and easy
+> Join now and get one step closer to millions of Verizon customers
+> http://p.sf.net/sfu/verizon-dev2dev 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-Index: scripts/lib/file_functions.sh
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: scripts/lib/file_functions.sh
-diff -N scripts/lib/file_functions.sh
---- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ scripts/lib/file_functions.sh	17 Jan 2010 06:18:33 -0000
-@@ -0,0 +1,50 @@
-+#!/bin/sh
-+#
-+# File functions utilized as part of abspath.sh, realpath.sh, etc.
-+#
-+#    Copyright (C) 2010, Cisco Systems Inc.
-+#
-+#    This program is free software; you can redistribute it and/or modify
-+#    it under the terms of the GNU General Public License as published by
-+#    the Free Software Foundation; either version 2 of the License, or
-+#    (at your option) any later version.
-+#
-+#    This program is distributed in the hope that it will be useful,
-+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+#    GNU General Public License for more details.
-+#
-+#    You should have received a copy of the GNU General Public License alo=
-ng
-+#    with this program; if not, write to the Free Software Foundation, Inc=
-.,
-+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+#
-+# Garrett Cooper, January 2010
-+#
-+# POSIX compliant bourne shell functions for performing make 3.81
-+# compliancy in 3.80 with a minimal set of external commands
-+# [awk(1) // readlink(1) only required].
-+#
-+
-+# 1. Replace /+ with /.
-+# 2. Replace a/b/../c with a/c
-+# 3. Replace /./ with /
-+# 4. Replace trailing /. with /
-+# 5. Replace heading ./ with /
-+_abspath() {
-+	echo "$@" | awk '{
-+	while (gsub(/\/\//, "/")) { };
-+	while (gsub(/\/[^\/]+\/\.\.\/?/, "/")) { };
-+	while (gsub(/\/\.\//, "/")) { };
-+	sub(/(\/\.)?\/$/, "");
-+	sub(/^\.\//, "/") ;
-+	if ($0 =3D=3D "") {
-+		print "/";
-+	} else {
-+		print;
-+	}
-+}'
-+}
-+
-+_realpath() {
-+	readlink -f "$@"
-+}
-Index: scripts/tests/test_abspath.sh
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: scripts/tests/test_abspath.sh
-diff -N scripts/tests/test_abspath.sh
---- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ scripts/tests/test_abspath.sh	17 Jan 2010 06:18:33 -0000
-@@ -0,0 +1,73 @@
-+#!/bin/sh
-+#
-+# Test the _abspath function, utilized as part of abspath.sh
-+#
-+#    Copyright (C) 2010, Cisco Systems Inc.
-+#
-+#    This program is free software; you can redistribute it and/or modify
-+#    it under the terms of the GNU General Public License as published by
-+#    the Free Software Foundation; either version 2 of the License, or
-+#    (at your option) any later version.
-+#
-+#    This program is distributed in the hope that it will be useful,
-+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+#    GNU General Public License for more details.
-+#
-+#    You should have received a copy of the GNU General Public License alo=
-ng
-+#    with this program; if not, write to the Free Software Foundation, Inc=
-.,
-+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+#
-+# Garrett Cooper, January 2010
-+#
-+
-+set --	foo/bar:foo/bar			\
-+	/foo/bar:/foo/bar		\
-+	/foo/../bar:/bar 		\
-+	/foo/bar/../baz:/foo/baz 	\
-+	/foo/bar/../baz/:/foo/baz 	\
-+	/foo/../bar/:/bar 		\
-+	/foo/../bar/..:/ 		\
-+	/foo/../bar/../:/ 		\
-+	/foo/bar/../baz:/foo/baz 	\
-+	/foo/./bar:/foo/bar 		\
-+	/./foo/./bar:/foo/bar		\
-+	/foo//bar:/foo/bar		\
-+	//foo/bar:/foo/bar		\
-+	//////foo/bar:/foo/bar		\
-+	/foo/////bar:/foo/bar		\
-+	/a/b/c/.././:/a/b		\
-+	/.foo:/.foo			\
-+	./.foo:/.foo			\
-+	/.foo/.bar:/.foo/.bar		\
-+	./.foo/.bar:/.foo/.bar
-+
-+export TCID=3Dtest_abspath
-+export TST_TOTAL=3D$#
-+export TST_COUNT=3D1
-+
-+. "${0%/*}/../lib/file_functions.sh"
-+
-+for i in "$@"; do
-+
-+	test_string=3D${i%:*}
-+	expected_string=3D${i#*:}
-+
-+	result=3D$(_abspath "$test_string")
-+
-+	if [ "$result" =3D "$expected_string" ]; then
-+		result_s=3D"matches expected string _abspath(${test_string}) =3D>
-$result =3D=3D $expected_string)"
-+		result_v=3DTPASS
-+	else
-+		result_s=3D"doesn't match expected string _abspath(${test_string}) =3D>
-$result !=3D $expected_string)"
-+		result_v=3DTFAIL
-+		FAILED=3D1
-+	fi
-+
-+	tst_resm $result_v "Test string $result_s"
-+
-+	: $(( TST_COUNT +=3D 1 ))
-+
-+done
-+
-+exit ${FAILED:=3D0}
-Index: scripts/abspath.sh
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: scripts/abspath.sh
-diff -N scripts/abspath.sh
---- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ scripts/abspath.sh	17 Jan 2010 06:18:33 -0000
-@@ -0,0 +1,29 @@
-+#!/bin/sh
-+#
-+#    make 3.81 $(abspath .. ) emulation layer
-+#
-+#    Copyright (C) 2010, Cisco Systems Inc.
-+#
-+#    This program is free software; you can redistribute it and/or modify
-+#    it under the terms of the GNU General Public License as published by
-+#    the Free Software Foundation; either version 2 of the License, or
-+#    (at your option) any later version.
-+#
-+#    This program is distributed in the hope that it will be useful,
-+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+#    GNU General Public License for more details.
-+#
-+#    You should have received a copy of the GNU General Public License alo=
-ng
-+#    with this program; if not, write to the Free Software Foundation, Inc=
-.,
-+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+#
-+# Garrett Cooper, January 2010
-+#
-+
-+. "${0%/*}/lib/file_functions.sh"
-+
-+while [ $# -gt 0 ] ; do
-+	_abspath "$1"
-+	shift
-+done
-Index: scripts/realpath.sh
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: scripts/realpath.sh
-diff -N scripts/realpath.sh
---- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ scripts/realpath.sh	17 Jan 2010 06:18:33 -0000
-@@ -0,0 +1,29 @@
-+#!/bin/sh
-+#
-+#    make 3.81 $(realpath .. ) emulation layer
-+#
-+#    Copyright (C) 2010, Cisco Systems Inc.
-+#
-+#    This program is free software; you can redistribute it and/or modify
-+#    it under the terms of the GNU General Public License as published by
-+#    the Free Software Foundation; either version 2 of the License, or
-+#    (at your option) any later version.
-+#
-+#    This program is distributed in the hope that it will be useful,
-+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+#    GNU General Public License for more details.
-+#
-+#    You should have received a copy of the GNU General Public License alo=
-ng
-+#    with this program; if not, write to the Free Software Foundation, Inc=
-.,
-+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+#
-+# Garrett Cooper, January 2010
-+#
-+
-+. "${0%/*}/lib/file_functions.sh"
-+
-+while [ $# -gt 0 ] ; do
-+	_realpath "$1"
-+	shift
-+done
 
----------------------------------------------------------------------------=
----
-Throughout its 18-year history, RSA Conference consistently attracts the
-world's best and brightest in the field, creating opportunities for Confere=
-nce
-attendees to learn about information security's most important issues throu=
-gh
-interactions with peers, luminaries and emerging and established companies.
-http://p.sf.net/sfu/rsaconf-dev2dev
+------------------------------------------------------------------------------
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
