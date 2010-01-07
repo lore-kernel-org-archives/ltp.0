@@ -1,34 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <veeren@linux.vnet.ibm.com>) id 1NSmev-0000fp-3V
-	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 07:19:53 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NSmer-0004bB-6K
-	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 07:19:53 +0000
-Received: from d01relay05.pok.ibm.com (d01relay05.pok.ibm.com [9.56.227.237])
-	by e2.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o077AaAD031374
-	for <ltp-list@lists.sourceforge.net>; Thu, 7 Jan 2010 02:10:36 -0500
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay05.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o077Jheh036346
-	for <ltp-list@lists.sourceforge.net>; Thu, 7 Jan 2010 02:19:43 -0500
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o077JgWp011517
-	for <ltp-list@lists.sourceforge.net>; Thu, 7 Jan 2010 05:19:42 -0200
-Received: from [127.0.0.1] ([9.124.33.55])
-	by d01av03.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVin) with ESMTP id
-	o077JdAb011480
-	for <ltp-list@lists.sourceforge.net>; Thu, 7 Jan 2010 05:19:41 -0200
-Message-ID: <4B458B0A.9040304@linux.vnet.ibm.com>
-Date: Thu, 07 Jan 2010 12:49:38 +0530
-From: Veerendra C <veeren@linux.vnet.ibm.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------070804050306050509020005"
-Subject: [LTP] capset01 patch
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <njoly@pasteur.fr>) id 1NSqNb-0008EZ-PZ
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 11:18:15 +0000
+Received: from maroilles.sis.pasteur.fr ([157.99.64.223]
+	helo=mail-interne3.pasteur.fr)
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NSqNZ-0004P1-BJ
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 11:18:15 +0000
+Date: Thu, 7 Jan 2010 11:58:51 +0100
+From: Nicolas Joly <njoly@pasteur.fr>
+Message-ID: <20100107105850.GA323602@medusa.sis.pasteur.fr>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="ew6BAiZeqk4r7MaW"
+Content-Disposition: inline
+Subject: [LTP] kill unneeded chmod calls on created tmp directory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,68 +26,119 @@ List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
-
-This is a multi-part message in MIME format.
---------------070804050306050509020005
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Hi
- Here is a patch/attachment to fix the  error number and error message , 
-when the capset() syscall fails.
+To: LTP list <ltp-list@lists.sf.net>
 
 
-*After applying patch:*
-capset01    1    TBROK    capget() failed: errno=???(38): Function not 
-implemented
-
-*Before applying patch:*
-capset01    1    TBROK    capget() failed: TEST_ERRNO=???(0): Success
+--ew6BAiZeqk4r7MaW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
 
-Note: This is in the custom built linux kernel where the capset/capget 
-syscall is not implemented. In normal linux kernel this testcase would 
-just work fine without any errors.
-*
-Normal kernel:*
-capset01    1  TPASS  :  capset() returned 0
+Hi,
 
+The following patch kills some unneeded chmod(2) calls on newly
+created temporary directory; the tst_tmpdir() function do already set
+the correct permissions.
 
-Regards
-Veerendra C
+Signed-off-by: Nicolas Joly <njoly@pasteur.fr>
 
+-- 
+Nicolas Joly
 
---------------070804050306050509020005
-Content-Type: text/plain;
- name="capset01.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="capset01.patch"
+Biological Software and Databanks.
+Institut Pasteur, Paris.
 
---- testcases/kernel/syscalls/capset.orig/capset01.c	2010-01-06 13:29:07.000000000 +0530
-+++ testcases/kernel/syscalls/capset/capset01.c	2010-01-06 13:50:12.000000000 +0530
-@@ -89,6 +89,7 @@ static void cleanup();
- char *TCID = "capset01";	/* Test program identifier.    */
- int TST_TOTAL = 1;		/* Total number of test cases. */
- extern int Tst_count;		/* Test Case counter for tst_* routines */
-+static int exp_enos[] = { EFAULT, EINVAL, EPERM, 0 };
+--ew6BAiZeqk4r7MaW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="ltp-tmpdirchmod.diff"
+
+Index: testcases/kernel/syscalls/mkdir/mkdir02.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/mkdir/mkdir02.c,v
+retrieving revision 1.8
+diff -u -p -r1.8 mkdir02.c
+--- testcases/kernel/syscalls/mkdir/mkdir02.c	23 Mar 2009 13:35:54 -0000	1.8
++++ testcases/kernel/syscalls/mkdir/mkdir02.c	7 Jan 2010 10:52:49 -0000
+@@ -329,9 +329,6 @@ void setup()
+ 	/* Create a temporary directory and make it current. */
+ 	tst_tmpdir();
  
- static struct __user_cap_header_struct header;	/* cap_user_header_t is a pointer
- 						   to __user_cap_header_struct */
-@@ -143,6 +144,9 @@ void setup()
- 	/* capture signals */
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-	/* make it writeable */
+-	chmod(".", 0777);
+-
+ 	umask(0);
+ }
  
-+        /* Set up the expected error numbers for -e option */
-+        TEST_EXP_ENOS(exp_enos);
-+
- 	/* Pause if that option was specified */
- 	TEST_PAUSE;
+Index: testcases/kernel/syscalls/mkdir/mkdir04.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/mkdir/mkdir04.c,v
+retrieving revision 1.9
+diff -u -p -r1.9 mkdir04.c
+--- testcases/kernel/syscalls/mkdir/mkdir04.c	23 Mar 2009 13:35:54 -0000	1.9
++++ testcases/kernel/syscalls/mkdir/mkdir04.c	7 Jan 2010 10:52:49 -0000
+@@ -235,9 +235,6 @@ void setup()
+ 	/* Create a temporary directory and make it current. */
+ 	tst_tmpdir();
  
+-	/* give the write rights to all user */
+-	chmod(".", 0777);
+-
+ 	umask(0);
+ }
+ 
+Index: testcases/kernel/syscalls/rename/rename09.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/rename/rename09.c,v
+retrieving revision 1.10
+diff -u -p -r1.10 rename09.c
+--- testcases/kernel/syscalls/rename/rename09.c	23 Mar 2009 13:36:01 -0000	1.10
++++ testcases/kernel/syscalls/rename/rename09.c	7 Jan 2010 10:52:49 -0000
+@@ -264,9 +264,6 @@ void setup()
+ 	/* Create a temporary directory and make it current. */
+ 	tst_tmpdir();
+ 
+-	/* give write permission to all users */
+-	chmod(".", 0777);
+-
+ 	umask(0);
+ 
+ 	sprintf(fdir, "tdir_%d", getpid());
+Index: testcases/kernel/syscalls/rename/rename12.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/rename/rename12.c,v
+retrieving revision 1.10
+diff -u -p -r1.10 rename12.c
+--- testcases/kernel/syscalls/rename/rename12.c	23 Mar 2009 13:36:01 -0000	1.10
++++ testcases/kernel/syscalls/rename/rename12.c	7 Jan 2010 10:52:49 -0000
+@@ -207,9 +207,6 @@ void setup()
+ 	/* Create a temporary directory and make it current. */
+ 	tst_tmpdir();
+ 
+-	/* give the write rights to all user */
+-	chmod(".", 0777);
+-
+ 	umask(0);
+ 
+ 	sprintf(fdir, "./tdir_%d", getpid());
+Index: testcases/kernel/syscalls/rmdir/rmdir03.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/rmdir/rmdir03.c,v
+retrieving revision 1.11
+diff -u -p -r1.11 rmdir03.c
+--- testcases/kernel/syscalls/rmdir/rmdir03.c	23 Mar 2009 13:36:01 -0000	1.11
++++ testcases/kernel/syscalls/rmdir/rmdir03.c	7 Jan 2010 10:52:49 -0000
+@@ -338,9 +338,6 @@ void setup()
+ 	/* Create a temporary directory and make it current. */
+ 	tst_tmpdir();
+ 
+-	/* give write permission to all users */
+-	chmod(".", 0777);
+-
+ 	umask(0);
+ 
+ 	sprintf(tstdir1, "./tstdir1_%d", getpid());
 
-
---------------070804050306050509020005
+--ew6BAiZeqk4r7MaW
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -112,7 +150,7 @@ Take advantage of Verizon's best-in-class app development support
 A streamlined, 14 day to market process makes app distribution fast and easy
 Join now and get one step closer to millions of Verizon customers
 http://p.sf.net/sfu/verizon-dev2dev 
---------------070804050306050509020005
+--ew6BAiZeqk4r7MaW
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -123,6 +161,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---------------070804050306050509020005--
-
+--ew6BAiZeqk4r7MaW--
 
