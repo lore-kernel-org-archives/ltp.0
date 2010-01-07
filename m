@@ -1,28 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NYocR-00051Q-G9
-	for ltp-list@lists.sourceforge.net; Sat, 23 Jan 2010 22:38:15 +0000
-Received: from mail-pw0-f43.google.com ([209.85.160.43])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NYocQ-0005m9-Cy
-	for ltp-list@lists.sourceforge.net; Sat, 23 Jan 2010 22:38:15 +0000
-Received: by pwj11 with SMTP id 11so1672457pwj.2
-	for <ltp-list@lists.sourceforge.net>;
-	Sat, 23 Jan 2010 14:38:08 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <op.u6xlzxecu2flwt@debian>
-References: <4B44187D.5030702@cn.fujitsu.com>
-	<364299f41001052124ga613fbag6adf7a7460a87ccc@mail.gmail.com>
-	<4B445C36.6040505@cn.fujitsu.com> <201001200130.30897.jpalecek@web.de>
-	<364299f41001191852s5a13235bh31e8e5feb68978b9@mail.gmail.com>
-	<op.u6xlzxecu2flwt@debian>
-Date: Sat, 23 Jan 2010 14:38:08 -0800
-Message-ID: <364299f41001231438u2422c16n2c8b0838812e3237@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] cpuctl_fj: replace ps by top to fix cpu usage's
-	computation error
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NSqCX-0002tS-5K
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 11:06:49 +0000
+Received: from e38.co.us.ibm.com ([32.97.110.159])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NSqCU-0005Dd-VA
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 11:06:49 +0000
+Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
+	[9.17.195.228])
+	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o07B1VdY024540
+	for <ltp-list@lists.sourceforge.net>; Thu, 7 Jan 2010 04:01:31 -0700
+Received: from d03av06.boulder.ibm.com (d03av06.boulder.ibm.com [9.17.195.245])
+	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o07B6b5t110916
+	for <ltp-list@lists.sourceforge.net>; Thu, 7 Jan 2010 04:06:37 -0700
+Received: from d03av06.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av06.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o07B8bvB001951
+	for <ltp-list@lists.sourceforge.net>; Thu, 7 Jan 2010 04:08:38 -0700
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+In-Reply-To: <4B4403EA.7020600@cn.fujitsu.com>
+References: <4B4403EA.7020600@cn.fujitsu.com>
+Date: Thu, 07 Jan 2010 16:36:23 +0530
+Message-Id: <1262862383.12213.24.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] fix the bug of the smaller cpu_set_t's length
+	in	getcpu01
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,167 +38,147 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: =?ISO-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: miaox@cn.fujitsu.com
+Cc: LTP-ML <ltp-list@lists.sourceforge.net>
 
-2010/1/22 Ji=F8=ED Pale=E8ek <jpalecek@web.de>:
-> On Wed, 20 Jan 2010 03:52:48 +0100, Garrett Cooper <yanegomi@gmail.com>
-> wrote:
->
->> On Tue, Jan 19, 2010 at 4:30 PM, Jiri Palecek <jpalecek@web.de> wrote:
->>>
->>> On Wednesday 06 January 2010 10:47:34 Shi Weihua wrote:
->>>>
->>>> at 2010-1-6 13:24, Garrett Cooper wrote:
->>>> > On Tue, Jan 5, 2010 at 8:58 PM, Shi Weihua <shiwh@cn.fujitsu.com>
->>>> > wrote:
->>>> >> Some abnormal messages outputted in my x86_64.
->>>> >> -------------------
->>>> >> pid 4622 cpu_usage 0
->>>> >> cpuctl_test_fj =A0 =A01 =A0TFAIL =A0: =A0case19 =A0 =A0FAIL
->>>> >> pid 4646 cpu_usage 0
->>>> >> cpuctl_test_fj =A0 =A01 =A0TFAIL =A0: =A0case20 =A0 =A0FAIL
->>>> >> pid 4670 cpu_usage 63
->>>> >> cpuctl_test_fj =A0 =A01 =A0TFAIL =A0: =A0case21 =A0 =A0FAIL
->>>> >> -------------------
->>>> >> I think cpu usage's computation error occured.
->>>> >> So I tried to use the oldest arithmetic of cpu usage, fortunately it
->>>> >> works.
->>>> >> Maybe we should replace 'ps' by 'top' in =A0get_cpu_usage().
->>>> >> By the way, I increased the admissible range of cpu usage in case21=
-()
->>>> >> because it jumps out range of 44-56 sometimes.
->>>> >>
->>>> >> My patch works now:
->>>> >> -------------------
->>>> >> pid 20277 cpu_usage 97
->>>> >> cpuctl_test_fj =A0 =A01 =A0TPASS =A0: =A0case19 =A0 =A0PASS
->>>> >> pid 20307 cpu_usage 99
->>>> >> cpuctl_test_fj =A0 =A01 =A0TPASS =A0: =A0case20 =A0 =A0PASS
->>>> >> pid 20336 cpu_usage 55
->>>> >> pid 20336 cpu_usage 53
->>>> >> pid 20336 cpu_usage 55
->>>> >> pid 20336 cpu_usage 57
->>>> >> pid 20336 cpu_usage 55
->>>> >> pid 20336 cpu_usage 55
->>>> >> pid 20336 cpu_usage 55
->>>> >> pid 20336 cpu_usage 55
->>>> >> pid 20336 cpu_usage 57
->>>> >> pid 20336 cpu_usage 53
->>>> >> cpuctl_test_fj =A0 =A01 =A0TPASS =A0: =A0case21 =A0 =A0PASS
->>>> >> -------------------
->>>> >>
->>>> >> Signed-off-by: Shi Weihua <shiwh@cn.fujitsu.com>
->>>> >> ---
->>>> >> ---
->>>> >> ltp-full-20091231/testcases/kernel/controllers/cpuctl_fj/run_cpuctl=
-_test_fj.sh
->>>> >> =A0 =A0 =A02009-11-16 15:40:40.000000000 +0800
->>>> >> +++
->>>> >> ltp-full-20091231.new/testcases/kernel/controllers/cpuctl_fj/run_cp=
-uctl_test_fj.sh
->>>> >> =A02010-01-06 12:36:32.000000000 +0800
->>>> >> @@ -85,7 +85,10 @@ creat_process()
->>>> >>
->>>> >> =A0get_cpu_usage()
->>>> >> =A0{
->>>> >> - =A0 =A0 =A0 ps -eo 'pid,pcpu' | awk '$1 =3D=3D "'$1'" {
->>>> >> sub(/(\.[[:digit:]])*$/, "", $2); print $2 }'
->>>> >> + =A0 =A0 =A0 top=3D($(top -b -n 1 -p $1 | tail -2 | head -1))
->>>> >> + =A0 =A0 =A0 top=3D${top[8]}
->>>> >> + =A0 =A0 =A0 top=3D`echo $top | awk -F "." '{print $1}'`
->>>> >> + =A0 =A0 =A0 echo "$top"
->>>> >> =A0}
->>>> >>
->>>> >> =A0kill_all_pid()
->>>> >> @@ -627,7 +630,7 @@ case21()
->>>> >> =A0 =A0 =A0 =A0do
->>>> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0cpu_usage=3D$(get_cpu_usage $pid)
->>>> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0echo "pid $pid cpu_usage $cpu_usage"
->>>> >> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 expr 44 \< "$cpu_usage" \& "$cpu_usag=
-e" \< 56 >
->>>> >> /dev/null 2>&1
->>>> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 expr 40 \< "$cpu_usage" \& "$cpu_usag=
-e" \< 60 >
->>>> >> /dev/null 2>&1
->>>> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ret=3D$?
->>>> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0: $(( top_times+=3D1 ))
->>>> >> =A0 =A0 =A0 =A0done
->>>> >
->>>> > =A0 =A0 Could you add a set -x to the top of the script so we can se=
-e the
->>>> > output please? ps --version would be helpful too..
->>>>
->>>> I wish it can help you.
->>>> --------------------- sh -x -----------------------------
->>>> + for i in '$(seq 1 $TST_TOTAL)'
->>>> + setup
->>>
->>> [ ... snip ... ]
->>>
->>> I believe Garrett Cooper meant to send the trace output of the original
->>> script (the one with ps).
->>>
->>> However, I'm not sure about the awk program there - particularly:
->>>
->>> sub(/(\.[[:digit:]])*$/, "", $2)
->>>
->>> should probably be
->>>
->>> sub(/\.[[:digit:]]*$/, "", $2)
->>>
->>> (without the group). Not sure if this can actually cause what you see.
->>>
->>> Also, I think we could simplify it a bit further, to something like thi=
-s:
->>>
->>> get_cpu_usage()
->>> {
->>> =A0ps -p $1 -o pcpu=3D | awk -F "." '{print $1}'
->>> }
->>>
->>> Please, tell me what do you think about it.
->>
->> =A0 =A0Actually he gave me what I needed (forgot to reply because I
->
-> Yes, but it doesn't cast much light on the problem that it didn't work for
-> Shi Weihua in the first place.
->
->> didn't star the email); I'm pretty sure that your observation is
->> correct: we shouldn't be extracting \. unless we're actually going to
->> use it, so the ellipses [\(\)] can be removed.
->> =A0 =A0Are we using just the `major' number, or are we using the `minor'
->> number in the cpu usage?
->
-> You mean integral and fractional part? I guess the integral part only.
+On Wed, 2010-01-06 at 11:30 +0800, Miao Xie wrote: 
+> getcpu01 test failed because the len of cpu_set_t in the glibc is smaller than
+> the length of the cpumask in the kernel. So we must use the dynamically sized CPU sets instead
+> of the standard cpu_set_t.
+> 
+> This patch fix this problem.
+> Before using this patch, the test result is following:
+> getcpu01    1  TFAIL  :  sched_getaffinity:errno:22
+> 
+> After using this patch, the test result is following:
+> getcpu01    1  TPASS  :  getcpu() returned proper cpuid:3, node id:0
+> 
+> Signed-off-by: Miao Xie <miaox@cn.fujitsu.com>
 
-Does expr(1) do float point comparisons (this is where the issue was
-coming from I think...)?
+Ok. Thanks.
 
-gcooper@optimus ~ $ expr 0 \< 42.0 \& 42.0 \< 100
-0
-gcooper@optimus ~ $ expr 0.0 \< 42.0 \& 42.0 \< 100.0
-0
+Regards--
+Subrata
 
-I checked in a copy based on your suggestion Jiri so folks would hit
-this issue, but I'm curious as to why integers are the only things
-supported by expr(1) when comparing ranges.
+> ---
+>  testcases/kernel/syscalls/getcpu/getcpu01.c |   66 +++++++++++++++++++++++----
+>  1 files changed, 56 insertions(+), 10 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/getcpu/getcpu01.c b/testcases/kernel/syscalls/getcpu/getcpu01.c
+> index 9b4e52e..c13e0e7 100644
+> --- a/testcases/kernel/syscalls/getcpu/getcpu01.c
+> +++ b/testcases/kernel/syscalls/getcpu/getcpu01.c
+> @@ -77,12 +77,16 @@ int sys_support = 0;
+>  int sys_support = 0;
+>  #endif
+> 
+> +#if !(__GLIBC_PREREQ(2, 7))
+> +#define CPU_FREE(ptr) free(ptr)
+> +#endif
+> +
+>  void cleanup(void);
+>  void setup(void);
+>  static inline int getcpu(unsigned int *, unsigned int *, void *);
+>  unsigned int set_cpu_affinity();
+>  unsigned int get_nodeid(unsigned int);
+> -unsigned int max_cpuid(cpu_set_t *);
+> +unsigned int max_cpuid(size_t, cpu_set_t *);
+> 
+>  char *TCID = "getcpu01";
+>  int TST_TOTAL = 1;
+> @@ -189,18 +193,56 @@ void setup(void)
+>  unsigned int set_cpu_affinity()
+>  {
+>  	unsigned cpu_max;
+> -	cpu_set_t set;
+> -	if (sched_getaffinity(0, sizeof(cpu_set_t), &set) < 0) {
+> -		tst_resm(TFAIL, "sched_getaffinity:errno:%d", errno);
+> +	cpu_set_t *set;
+> +	size_t size;
+> +	int nrcpus = 1024;
+> +#if __GLIBC_PREREQ(2, 7)
+> +realloc:
+> +	set = CPU_ALLOC(nrcpus);
+> +#else
+> +	set = malloc(sizeof(cpu_set_t));
+> +#endif
+> +	if (set == NULL) {
+> +		tst_resm(TFAIL, "CPU_ALLOC:errno:%d", errno);
+> +		tst_exit();
+> +	}
+> +
+> +#if __GLIBC_PREREQ(2, 7)
+> +	size = CPU_ALLOC_SIZE(nrcpus);
+> +	CPU_ZERO_S(size, set);
+> +#else
+> +	size = sizeof(cpu_set_t);
+> +	CPU_ZERO(set);
+> +#endif
+> +	if (sched_getaffinity(0, size, set) < 0) {
+> +		CPU_FREE(set);
+> +#if __GLIBC_PREREQ(2, 7)
+> +		if (errno == EINVAL && nrcpus < (1024 << 8)) {
+> +			nrcpus = nrcpus << 2;
+> +			goto realloc;
+> +		}
+> +#else
+> +		if (errno == EINVAL)
+> +			tst_resm(TFAIL, "NR_CPUS of the kernel is more than 1024, so we'd better use a newer glibc(>= 2.7)");
+> +		else
+> +#endif
+> +			tst_resm(TFAIL, "sched_getaffinity:errno:%d", errno);
+>  		tst_exit();
+>  	}
+> -	cpu_max = max_cpuid(&set);
+> -	CPU_ZERO(&set);
+> -	CPU_SET(cpu_max, &set);
+> -	if (sched_setaffinity(0, sizeof(cpu_set_t), &set) < 0) {
+> +	cpu_max = max_cpuid(size, set);
+> +#if __GLIBC_PREREQ(2, 7)
+> +	CPU_ZERO_S(size, set);
+> +	CPU_SET_S(cpu_max, size, set);
+> +#else
+> +	CPU_ZERO(set);
+> +	CPU_SET(cpu_max, set);
+> +#endif
+> +	if (sched_setaffinity(0, size, set) < 0) {
+> +		CPU_FREE(set);
+>  		tst_resm(TFAIL, "sched_setaffinity:errno:%d", errno);
+>  		tst_exit();
+>  	}
+> +	CPU_FREE(set);
+>  	return cpu_max;
+>  }
+> 
+> @@ -208,11 +250,15 @@ unsigned int set_cpu_affinity()
+>   * Return the maximum cpu id
+>   */
+>  #define BITS_PER_BYTE 8
+> -unsigned int max_cpuid(cpu_set_t * set)
+> +unsigned int max_cpuid(size_t size, cpu_set_t * set)
+>  {
+>  	unsigned int index, max = 0;
+> -	for (index = 0; index < sizeof(cpu_set_t) * BITS_PER_BYTE; index++)
+> +	for (index = 0; index < size * BITS_PER_BYTE; index++)
+> +#if __GLIBC_PREREQ(2, 7)
+> +		if (CPU_ISSET_S(index, size, set))
+> +#else
+>  		if (CPU_ISSET(index, set))
+> +#endif
+>  			max = index;
+>  	return max;
+>  }
 
-Thanks,
--Garrett
 
----------------------------------------------------------------------------=
----
-Throughout its 18-year history, RSA Conference consistently attracts the
-world's best and brightest in the field, creating opportunities for Confere=
-nce
-attendees to learn about information security's most important issues throu=
-gh
-interactions with peers, luminaries and emerging and established companies.
-http://p.sf.net/sfu/rsaconf-dev2dev
+------------------------------------------------------------------------------
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
