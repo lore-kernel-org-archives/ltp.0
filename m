@@ -1,26 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NVXKd-0008MO-1c
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 21:34:19 +0000
-Received: from mail-pz0-f193.google.com ([209.85.222.193])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NVXKc-0004dx-20
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 21:34:18 +0000
-Received: by mail-pz0-f193.google.com with SMTP id 31so85611pzk.28
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NSlMz-0002zZ-Gx
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 05:57:17 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NSlMy-0001pL-7V
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 05:57:17 +0000
+Received: by pwj11 with SMTP id 11so12821488pwj.2
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 14 Jan 2010 13:34:17 -0800 (PST)
+	Wed, 06 Jan 2010 21:57:10 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <364299f41001141333v714a43ecv9d3e90c0ef6b2cba@mail.gmail.com>
-References: <5e088bd91001140916n6b6d9979m3847be14d86c7920@mail.gmail.com>
-	<364299f41001141125v56ef5ac0sfa58acd70b6e7775@mail.gmail.com>
-	<5e088bd91001141302l291261a7p366ac54659534a9c@mail.gmail.com>
-	<364299f41001141333v714a43ecv9d3e90c0ef6b2cba@mail.gmail.com>
-Date: Thu, 14 Jan 2010 13:34:17 -0800
-Message-ID: <364299f41001141334q50820482id4c12aa8a3759634@mail.gmail.com>
+In-Reply-To: <4B453A02.90903@web.de>
+References: <4B4204D2.70204@petalogix.com> <4B43E6FD.3020906@web.de>
+	<364299f41001051741v7a2bb1d0p91d28aa25967b93e@mail.gmail.com>
+	<364299f41001051831r6a0f4930t6ba61e4273c797e3@mail.gmail.com>
+	<4B453A02.90903@web.de>
+Date: Wed, 6 Jan 2010 21:57:10 -0800
+Message-ID: <364299f41001062157u3de38423u6a7dc43a2ffb1852@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] ltp on OMAP3 embedded linux systems
+Subject: Re: [LTP] lchown test case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,54 +33,108 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Steve Sakoman <sakoman@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Jiri Palecek <jpalecek@web.de>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On Thu, Jan 14, 2010 at 1:33 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Thu, Jan 14, 2010 at 1:02 PM, Steve Sakoman <sakoman@gmail.com> wrote:
->> On Thu, Jan 14, 2010 at 11:25 AM, Garrett Cooper <yanegomi@gmail.com> wr=
+On Wed, Jan 6, 2010 at 5:33 PM, Jiri Palecek <jpalecek@web.de> wrote:
+> Garrett Cooper napsal(a):
+>>
+>> On Tue, Jan 5, 2010 at 5:41 PM, Garrett Cooper<yanegomi@gmail.com> =A0wr=
 ote:
->>
->>>> There was really only one glitch in the build process (looking for
->>>> libraries in an odd location) and I am now in the process of running
->>>> the test.
 >>>
->>> Please -- if you find bugs CC the list so I can resolve them as soon
->>> as possible -- thanks :).
->>
->> I redid the build and everything worked perfectly, so that initial
->> glitch was probably my fault!
->
-> Well, you never know... it always does help to learn where things went
-> wrong so processes and methods can be improved...
->
->>> x86* is still the primary target architecture. I'd like to see the
->>> failures, but yes my Fedora 12 VM is LTP `result clean', whereas the
->>> MIPS and PPC 2.6.24* embedded devices at work have issues with some
->>> tests due to architectural bugs, kernel bugs, and some test bugs.
+>>> On Tue, Jan 5, 2010 at 5:27 PM, Jiri Palecek<jpalecek@web.de> =A0wrote:
+>>>>
+>>>> Michal Simek napsal(a):
+>>>>>
+>>>>> Hi,
+>>>>
+>>>> Hi,
+>>>>>
+>>>>> I have some problems with lchown02 test which is caused with this
+>>>>> patch.
+>>>>> What is prep_create_link?
+>>>>>
+>>>>> Thanks,
+>>>>> Michal
+>>>>>
+>>>>>
+>>>>>
+>>>>> http://git.kernel.org/?p=3Dlinux/kernel/git/galak/ltp.git;a=3Dcommitd=
+iff;h=3Dee1a022fc76076d7fc1b6b1797c195244414c038
+>>>>>
+>>>>>
+>>>>>
+>>>>> diff --git a/runtest/syscalls b/runtest/syscalls
+>>>>> index fbe8641..34631ed 100644 (file)
+>>>>> --- a/runtest/syscalls
+>>>>> +++ b/runtest/syscalls
+>>>>> @@ -462,10 +462,10 @@ kill12 kill12
+>>>>>
+>>>>> lchown01 lchown01
+>>>>> lchown01_16 lchown01_16
+>>>>> -lchown02 cp -p $LTPROOT/testcases/bin/create_link $TMP; lchown02
+>>>>> -lchown02_16 cp -p $LTPROOT/testcases/bin/create_link $TMP; lchown02_=
+16
+>>>>> +lchown02 prep_create_link; lchown02
+>>>>> +lchown02_16 prep_create_link; lchown02_16
+>>>>
+>>>> IMHO it should do the same as the line above. But I think the whole
+>>>> thing
+>>>> could be deleted without causing any grief:
+>>>>
+>>>>
+>>>> http://repo.or.cz/w/ltp-debian.git?a=3Dcommit;h=3Da5499edcf368fa88df92=
+4f94ffcbe63c22b46e82
 >>>
->>> Please let us know how it goes though so we can try and work out the
->>> issues with your ARM embedded DUT.
+>>> The test needs create_link in $TMP; that's why I scripted it as a
+>>> one-liner (but stupid me probably forgot to add the script to CVS
+>>> -_-).
+>>> Let me look and I'll get back to you shortly.
 >>
->> I've got the results of the 1st run. =A0What is the normal way to share
->> the results?
+>> Fixed. The executable needed CAP_CHOWN capability and that's part of
+>> the point behind that script...
 >
-> Pastebin?
+> Couldn't the executable just get CAP_CHOWN with cap_set_proc in case it is
+> running under root with restricted capabilities?
+>
+> I'm not sure it wouldn't fail even with the suid-root executable under su=
+ch
+> condition - are you really sure it doesn't (esp. in the face of lchown01,
+> which would fail almost surely and doesn't have this hack)?
 
-Actually there's an ltp-results mailing list. Please feel free to use
-that, but definitely CC me because I don't subscribe to the list.
-Cheers!
+    This requires libcap though, which means that any system under
+test without it would fail the test:
+
+NAME
+       cap_get_proc,  cap_set_proc,  capgetp - capability manipulation on p=
+ro-
+       cesses
+
+SYNOPSIS
+       #include <sys/capability.h>
+
+       cap_t cap_get_proc(void);
+
+       int cap_set_proc(cap_t cap_p);
+
+       #include <sys/types.h>
+
+       cap_t cap_get_pid(pid_t pid);
+
+       Link with -lcap.
+
+    I agree though, this is the best / cleanest solution...
+Thanks,
 -Garrett
 
 ---------------------------------------------------------------------------=
 ---
-Throughout its 18-year history, RSA Conference consistently attracts the
-world's best and brightest in the field, creating opportunities for Confere=
-nce
-attendees to learn about information security's most important issues throu=
-gh
-interactions with peers, luminaries and emerging and established companies.
-http://p.sf.net/sfu/rsaconf-dev2dev
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev =
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
