@@ -1,34 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NV44S-0001ul-V4
-	for ltp-list@lists.sourceforge.net; Wed, 13 Jan 2010 14:19:40 +0000
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NV44S-0006oN-0S
-	for ltp-list@lists.sourceforge.net; Wed, 13 Jan 2010 14:19:40 +0000
-Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
-	by e5.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o0DE79aN003659
-	for <ltp-list@lists.sourceforge.net>; Wed, 13 Jan 2010 09:07:09 -0500
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o0DEJXrt109240
-	for <ltp-list@lists.sourceforge.net>; Wed, 13 Jan 2010 09:19:33 -0500
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o0DEJX8N016652
-	for <ltp-list@lists.sourceforge.net>; Wed, 13 Jan 2010 12:19:33 -0200
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4B471F8D.7010907@teldevice.co.jp>
-References: <4B46D5F0.3090801@teldevice.co.jp>
-	<20100108112534.GA333981@medusa.sis.pasteur.fr>
-	<4B471F8D.7010907@teldevice.co.jp>
-Date: Wed, 13 Jan 2010 19:49:22 +0530
-Message-Id: <1263392362.5591.27.camel@subratamodak.linux.ibm.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <sds@tycho.nsa.gov>) id 1NSxxe-00057R-HT
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 19:23:58 +0000
+Received: from msux-gh1-uea02.nsa.gov ([63.239.67.2])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NSxxd-0006SY-Cd
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 19:23:58 +0000
+From: Stephen Smalley <sds@tycho.nsa.gov>
+In-Reply-To: <364299f41001070105p3bf32bbdwff0edf9315c333da@mail.gmail.com>
+References: <1262791548.15424.31.camel@moss-pluto.epoch.ncsc.mil>
+	<20100106185837.GA20097@us.ibm.com>
+	<364299f41001070105p3bf32bbdwff0edf9315c333da@mail.gmail.com>
+Date: Thu, 07 Jan 2010 14:23:29 -0500
+Message-Id: <1262892209.2821.28.camel@moss-pluto.epoch.ncsc.mil>
 Mime-Version: 1.0
-Subject: Re: [LTP] LTP installation  configure Error
-Reply-To: subrata@linux.vnet.ibm.com
+Subject: Re: [LTP] regression: selinux testsuite broken since October
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,117 +30,71 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, TED ITC Agarwal Ashish <ashish.g@teldevice.co.jp>
+Cc: James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>, ltp-list@lists.sourceforge.net
 
-Garrett,
-
-On Fri, 2010-01-08 at 21:05 +0900, TED ITC Agarwal Ashish wrote: 
-> Hello Nicholas,
-> 
-> Cc: All
-> 
-> Thanks a lot Dear,
-> 
-> Yes it seems to me too pretty good to tackle this as Warning not the Error condition.
-> but after that too it didn't work the system Fedora Core 3(i checked quickly, not debug at my level).
-> but i didn't go well, it is as as before.
-> Also tried after "$make clean" & "$./configure".
-> 
-> Because in the mean while i updated my Fedora3 to Fedora5 (kernel 2.6.15-1.2054-FC5).
-> 
-> For this new configuration i were able to complete the "$./configure" & "$make all" part.
-> but when i tried to "make install" i had an another compiler error as below:
-> 
-> """""
-> internal compiler error: in merge_alias_info, at tree-ssa-copy.c:235
-> Please submit a full bug report,
-> """""
-> 
-> So i hang around gOOgliNg and found that it is a GCC compiler problem.
-> The compiler over FC5 were 4.1.0.
-> I thought it were again challenging to update the compiler so for the very first time i just updated this to Fc7 system, where i had GCC 4.1.2.
-> The flow went great and i were able to do the test primarily.
-> 
-> ============================
-> FYI: the LTP-Full-20091231 installs the LTP over /opt/LTP location.
-> Don't try to run it over the directory we make install this.
-> * (i had 15 minutes fight for this conclusion,
->     because there were no msg of it over installations time)
-> ============================
-> 
-> 
-> ????????????????????????????????????????
-> 
-> Now 2 more question added to this queue is: The requirement specification of LTP.
-> 
-> Q2. Gcc -> ? (which version)
-> Kernel -> ?
-> 
-> Q3. I will search further now on, but i want to ask is the same LTP is valid for the other CPU's as well.
-> My AIM to check for the i.MX17 device (ARM Core) Embedded Linux. (kernel 2.6.19.2-xx)
-> 
-> ????????????????????????????????????????
-> 
-> --
-> Ashish Agarwal
-> '? =?'
-> When others working for an Impossible task, It is better to be quite though.
-> Let the others proceed  ...... !!
-> 
-> Nicolas Joly ????????:
-> > On Fri, Jan 08, 2010 at 03:51:28PM +0900, TED ITC Agarwal Ashish wrote:
-> >> Hello All
+On Thu, 2010-01-07 at 01:05 -0800, Garrett Cooper wrote:
+> On Wed, Jan 6, 2010 at 10:58 AM, Serge E. Hallyn <serue@us.ibm.com> wrote:
+> > Quoting Stephen Smalley (sds@tycho.nsa.gov):
+> >> It seems the Makefile rewrite last October broke the selinux testsuite.
+> >> Is it unreasonable to expect that someone who rewrote the Makefile would
+> >> actually try running the testsuite?
 > >>
-> >> I am novice for the LTP, just last week i heard something LTP
-> >> and feel curious about it so started searching and installations.
+> >> Please, revert the changes or fix them.
 > >>
-> >> "./configure " generates Error to me as written below.
-> >>
-> >> configure: error: Couldn't find functional copy of quota v2 - are you running 2.4.x?
-> > 
-> > Hi,
-> > 
-> > I do see the same with an old 2006.0 Gentoo base (actually in a
-> > chroot) ... I worked around it by making it a warning instead of an
-> > error.
-> > 
-> > IMHO, lacking some features should not prevent building/running LTP.
-> > 
-> > 
-> > Index: m4/ltp-quota.m4
-> > ===================================================================
-> > RCS file: /cvsroot/ltp/ltp/m4/ltp-quota.m4,v
-> > retrieving revision 1.4
-> > diff -u -p -r1.4 ltp-quota.m4
-> > --- m4/ltp-quota.m4	20 Dec 2009 00:36:35 -0000	1.4
-> > +++ m4/ltp-quota.m4	8 Jan 2010 11:24:14 -0000
-> > @@ -37,7 +37,7 @@ dnl}],[has_24_quotactl="yes"],
-> >  #include <unistd.h>],[
-> >  int main(void) {
-> >  	return quotactl(Q_GETINFO, (const char *)NULL, geteuid(), (caddr_t)NULL);
-> > -}],[has_quotav2="yes"],[AC_MSG_ERROR([Couldn't find functional copy of quota v2 - are you running 2.4.x?])])
-> > +}],[has_quotav2="yes"],[AC_MSG_WARN([Couldn't find functional copy of quota v2 - are you running 2.4.x?])])
-> >  dnl if test "x$has_24_quotactl" = "xyes"; then
-> >  dnl	AC_DEFINE(HAS_24_QUOTACTL,1,[Define to 1 if you have the 2.4.x version of quotactl, e.g. require linux/quota.h instead of sys/quota.h])
-> >  dnl elif test "x$has_new_26_quotactl" = "xyes"; then
-
-Please see this patch and kindly make changes accordingly.
-
-Regards--
-Subrata
-
-> > 
+> >> See testcases/kernel/security/selinux-testsuite/README for the
+> >> instructions.
+> >
+> > Ok, Garrett, two particular scripts that are broken since the move
+> > to running out of /opt/ltp are
+> >        test_robind.sh
+> >        test_selinux.sh
+> >
+> > Guidance?
 > 
-> ------------------------------------------------------------------------------
-> This SF.Net email is sponsored by the Verizon Developer Community
-> Take advantage of Verizon's best-in-class app development support
-> A streamlined, 14 day to market process makes app distribution fast and easy
-> Join now and get one step closer to millions of Verizon customers
-> http://p.sf.net/sfu/verizon-dev2dev 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>     I need output in order to judge what needs to be fixed. Gentoo
+> doesn't have a selinux policy package (at least not in portage), thus
+> I cannot run the tests as they're Redhat centric.
+
+To start, we need to get the test policy to build again.
+
+Bad:
+$ cd testcases/kernel/security/selinux-testsuite/refpolicy/
+$ make
+(cd "/home/sds/ltp/testcases/kernel/security/selinux-testsuite/refpolicy" && cat *.te) > "test_policy.te";
+cat: test_policy.te: input file is output file
+make: *** [test_policy.te] Error 1
+
+Good:
+$ cvs update -r1.7 Makefile 
+P Makefile
+# make
+make[1]: Entering directory `/usr/share/selinux/devel'
+rm -fR tmp
+rm -f *.pp
+Compiling targeted test_policy module
+/usr/bin/checkmodule:  loading policy configuration from tmp/test_policy.tmp
+/usr/bin/checkmodule:  policy configuration loaded
+/usr/bin/checkmodule:  writing binary representation (version 10) to tmp/test_policy.mod
+Creating targeted test_policy.pp policy package
+rm tmp/test_policy.mod tmp/test_policy.mod.fc
+make[1]: Leaving directory `/usr/share/selinux/devel'
+
+I tried tweaking your Makefile to no avail.  Some obvious errors in the
+new Makefile:
+- It has mixed use of REDHAT_VERS and REDHAT_VER, POLICY_DEVEL and
+POLICYDEVEL.
+- test_bounds.te is only to be included if checkpolicy supports version
+24, not filtered out in that case.
+- Only test_policy.* is to be copied to $POLICYDEVEL, not the
+individual .te files that are concatenated into it.
+- test_policy.te should be regenerated every time or made conditional on
+all of the individual .te files _and_ the directory (in case a .te file
+is removed or added).  Less likely to miss if we just always regenerate
+it as in the original makefile.
+
+-- 
+Stephen Smalley
+National Security Agency
 
 
 ------------------------------------------------------------------------------
