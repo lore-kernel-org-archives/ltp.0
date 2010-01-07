@@ -1,14 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <noreply@sourceforge.net>) id 1NWnpP-0005yI-1T
-	for ltp-list@lists.sourceforge.net; Mon, 18 Jan 2010 09:23:19 +0000
-From: "SourceForge.net" <noreply@sourceforge.net>
-Mime-Version: 1.0
-Message-Id: <E1NWnpN-00011R-RT@g45xhf1.ch3.sourceforge.com>
-Date: Mon, 18 Jan 2010 09:23:17 +0000
-Subject: [LTP] [ ltp-Bugs-2931756 ] Mangled C++ names in LCOV functions
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <md.zafar.ziya@gmail.com>) id 1NSsAB-0005iG-Gc
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 13:12:31 +0000
+Received: from mail-px0-f233.google.com ([209.85.216.233])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NSsAA-0003ax-NQ
+	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 13:12:31 +0000
+Received: by pxi22 with SMTP id 22so52371pxi.2
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 07 Jan 2010 05:12:23 -0800 (PST)
+MIME-Version: 1.0
+Message-ID: <00504502e739a88c15047c9244b1@google.com>
+Date: Thu, 07 Jan 2010 12:32:45 +0000
+From: md.zafar.ziya@gmail.com
+Subject: [LTP] CAN LTP BE CROSS COMPILED FOR ANDROID PLATFORM
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -18,75 +25,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5087847359642177260=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: noreply@sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Bugs item #2931756, was opened at 2010-01-14 02:20
-Message generated for change (Comment added) made by oberpapr
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=103382&aid=2931756&group_id=3382
+--===============5087847359642177260==
+Content-Type: multipart/alternative; boundary=00504502e739a88c04047c9244ae
 
-Please note that this message will contain a full copy of the comment thread,
-including the initial issue submission, for this request,
-not just the latest update.
-Category: None
-Group: None
-Status: Open
-Resolution: None
-Priority: 5
-Private: No
-Submitted By: Marc Alff (crispydev)
-Assigned to: Nobody/Anonymous (nobody)
-Summary: Mangled C++ names in LCOV functions
+--00504502e739a88c04047c9244ae
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed; delsp=yes
 
-Initial Comment:
-Hi.
+Hi,
 
-I just looked at a LCOV report for some code using C++, generated with LCOV 1.7.
-
-First, thanks a lot for the new function coverage feature.
-
-A minor bug:
-In the report showing the function_name / hit count table,
-names for C++ methods are using the C++ encoded name (_ZN13MYSQL_BIN_LOG25set_purge_index_file_nameEPKc),
-where the demangled name (MYSQL_BIN_LOG::set_purge_index_file_name(char const*)) would be much nicer.
-
-malff@linux-su11:~> c++filt --version
-GNU c++filt (GNU Binutils; openSUSE 11.1) 2.19
-
-malff@linux-su11:~> c++filt
-"_ZN13MYSQL_BIN_LOG25set_purge_index_file_nameEPKc"
-MYSQL_BIN_LOG::set_purge_index_file_name(char const*)
-
-Regards,
--- Marc Alff
+Any one compiled LTP for android?????????????
 
 
-----------------------------------------------------------------------
+thank you
 
-Comment By: Peter Oberparleiter (oberpapr)
-Date: 2010-01-18 10:23
+regards
 
-Message:
-The CVS version of LCOV already handles this problem: genhtml has a new
-switch --demangle-cpp which, when called, will use c++filt to convert all
-function names. There will be a new LCOV release soon containing this new
-switch.
+zafar ziya
 
-----------------------------------------------------------------------
+--00504502e739a88c04047c9244ae
+Content-Type: text/html; charset=ISO-8859-1
 
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=103382&aid=2931756&group_id=3382
+Hi,<br /><br />Any one compiled LTP for android?????????????<br /><br /><br />thank you<br /><br />regards<br /><br />zafar ziya
+--00504502e739a88c04047c9244ae--
+
+
+--===============5087847359642177260==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Throughout its 18-year history, RSA Conference consistently attracts the
-world's best and brightest in the field, creating opportunities for Conference
-attendees to learn about information security's most important issues through
-interactions with peers, luminaries and emerging and established companies.
-http://p.sf.net/sfu/rsaconf-dev2dev
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
+--===============5087847359642177260==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============5087847359642177260==--
+
