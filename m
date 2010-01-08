@@ -2,20 +2,25 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <ashish.g@teldevice.co.jp>) id 1NTDbB-0001XY-1I
-	for ltp-list@lists.sourceforge.net; Fri, 08 Jan 2010 12:05:49 +0000
-Received: from mail-gw.teldevice.co.jp ([124.215.243.245] helo=teldevice.co.jp)
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NTDb9-0005HA-BS
-	for ltp-list@lists.sourceforge.net; Fri, 08 Jan 2010 12:05:48 +0000
-Message-ID: <4B471F8D.7010907@teldevice.co.jp>
-Date: Fri, 08 Jan 2010 21:05:33 +0900
-From: TED ITC Agarwal Ashish <ashish.g@teldevice.co.jp>
+	(envelope-from <jpalecek@web.de>) id 1NTGWV-0008R1-Qj
+	for ltp-list@lists.sourceforge.net; Fri, 08 Jan 2010 15:13:11 +0000
+Received: from fmmailgate02.web.de ([217.72.192.227])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NTGWS-0007Oz-G8
+	for ltp-list@lists.sourceforge.net; Fri, 08 Jan 2010 15:13:10 +0000
+Date: Fri, 08 Jan 2010 16:40:03 +0100
+From: =?iso-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
+Content-Type: multipart/mixed; boundary=----------SOH9LG1KI8ppOv1yATUGGN
 MIME-Version: 1.0
-References: <4B46D5F0.3090801@teldevice.co.jp>
-	<20100108112534.GA333981@medusa.sis.pasteur.fr>
-In-Reply-To: <20100108112534.GA333981@medusa.sis.pasteur.fr>
-Subject: Re: [LTP] LTP installation  configure Error
+References: <4B4204D2.70204@petalogix.com> <4B43E6FD.3020906@web.de>
+	<364299f41001051741v7a2bb1d0p91d28aa25967b93e@mail.gmail.com>
+	<364299f41001051831r6a0f4930t6ba61e4273c797e3@mail.gmail.com>
+	<4B453A02.90903@web.de>
+	<364299f41001062157u3de38423u6a7dc43a2ffb1852@mail.gmail.com>
+	<4B45E989.2000903@petalogix.com>
+Message-ID: <op.u570gsxru2flwt@debian>
+In-Reply-To: <4B45E989.2000903@petalogix.com>
+Subject: Re: [LTP] lchown test case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,101 +30,374 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Nicolas Joly <njoly@pasteur.fr>
-Cc: ltp-list@lists.sourceforge.net
+To: michal.simek@petalogix.com, Garrett Cooper <yanegomi@gmail.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hello Nicholas,
+------------SOH9LG1KI8ppOv1yATUGGN
+Content-Type: text/plain; format=flowed; delsp=yes; charset=iso-8859-2
+Content-Transfer-Encoding: 7bit
 
-Cc: All
+On Thu, 07 Jan 2010 15:02:49 +0100, Michal Simek  
+<michal.simek@petalogix.com> wrote:
 
-Thanks a lot Dear,
+> Garrett Cooper wrote:
+>> On Wed, Jan 6, 2010 at 5:33 PM, Jiri Palecek <jpalecek@web.de> wrote:
+>>> Garrett Cooper napsal(a):
+>>>> On Tue, Jan 5, 2010 at 5:41 PM, Garrett Cooper<yanegomi@gmail.com>   
+>>>> wrote:
+>>>>> On Tue, Jan 5, 2010 at 5:27 PM, Jiri Palecek<jpalecek@web.de>  wrote:
+>>>>>> Michal Simek napsal(a):
+>>>>>>> Hi,
+>>>>>> Hi,
+>>>>>>> I have some problems with lchown02 test which is caused with this
+>>>>>>> patch.
+>>>>>>> What is prep_create_link?
+>>>>>>>
+>>>>>>> Thanks,
+>>>>>>> Michal
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>> http://git.kernel.org/?p=linux/kernel/git/galak/ltp.git;a=commitdiff;h=ee1a022fc76076d7fc1b6b1797c195244414c038
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>> diff --git a/runtest/syscalls b/runtest/syscalls
+>>>>>>> index fbe8641..34631ed 100644 (file)
+>>>>>>> --- a/runtest/syscalls
+>>>>>>> +++ b/runtest/syscalls
+>>>>>>> @@ -462,10 +462,10 @@ kill12 kill12
+>>>>>>>
+>>>>>>> lchown01 lchown01
+>>>>>>> lchown01_16 lchown01_16
+>>>>>>> -lchown02 cp -p $LTPROOT/testcases/bin/create_link $TMP; lchown02
+>>>>>>> -lchown02_16 cp -p $LTPROOT/testcases/bin/create_link $TMP;  
+>>>>>>> lchown02_16
+>>>>>>> +lchown02 prep_create_link; lchown02
+>>>>>>> +lchown02_16 prep_create_link; lchown02_16
+>>>>>> IMHO it should do the same as the line above. But I think the whole
+>>>>>> thing
+>>>>>> could be deleted without causing any grief:
+>>>>>>
+>>>>>>
+>>>>>> http://repo.or.cz/w/ltp-debian.git?a=commit;h=a5499edcf368fa88df924f94ffcbe63c22b46e82
+>>>>> The test needs create_link in $TMP; that's why I scripted it as a
+>>>>> one-liner (but stupid me probably forgot to add the script to CVS
+>>>>> -_-).
+>>>>> Let me look and I'll get back to you shortly.
+>>>> Fixed. The executable needed CAP_CHOWN capability and that's part of
+>>>> the point behind that script...
+>>> Couldn't the executable just get CAP_CHOWN with cap_set_proc in case  
+>>> it is
+>>> running under root with restricted capabilities?
+>>>
+>>> I'm not sure it wouldn't fail even with the suid-root executable under  
+>>> such
+>>> condition - are you really sure it doesn't (esp. in the face of  
+>>> lchown01,
+>>> which would fail almost surely and doesn't have this hack)?
+>>      This requires libcap though, which means that any system under
+>> test without it would fail the test:
+>>  NAME
+>>        cap_get_proc,  cap_set_proc,  capgetp - capability manipulation  
+>> on pro-
+>>        cesses
+>>  SYNOPSIS
+>>        #include <sys/capability.h>
+>>         cap_t cap_get_proc(void);
+>>         int cap_set_proc(cap_t cap_p);
+>>         #include <sys/types.h>
+>>         cap_t cap_get_pid(pid_t pid);
+>>         Link with -lcap.
+>>      I agree though, this is the best / cleanest solution...
+>
+>
+> Please keep in your mind that not everybody has capability.h in  
+> toolchain. For example we don't have it. I can imagine that this could
 
-Yes it seems to me too pretty good to tackle this as Warning not the Error condition.
-but after that too it didn't work the system Fedora Core 3(i checked quickly, not debug at my level).
-but i didn't go well, it is as as before.
-Also tried after "$make clean" & "$./configure".
+True, but do you have a capability restricted root and NOT have  
+capability.h.
 
-Because in the mean while i updated my Fedora3 to Fedora5 (kernel 2.6.15-1.2054-FC5).
+> be one option. You can check if is capability.h and then use it. But if  
+> is not there still should be able to run that tests.
 
-For this new configuration i were able to complete the "$./configure" & "$make all" part.
-but when i tried to "make install" i had an another compiler error as below:
+Yet I'm still unconviced about the motivation behind this. I tried running  
+the *chown* tests under root with CAP_CHOWN dropped. As you can see in the  
+attachment, all the tests failed (except for chown01, which is because  
+this test doesn't actually test the functionality of chown). But, only  
+lchown02 has this prep_create_link hack (and I'm actually unsure it would  
+help in this case). So I don't know if these tests are actually meant to  
+be working under these conditions, and if not, I can't see the reason of  
+this prep_create_link script.
 
-"""""
-internal compiler error: in merge_alias_info, at tree-ssa-copy.c:235
-Please submit a full bug report,
-"""""
+Regards
+    Jiri Palecek
+------------SOH9LG1KI8ppOv1yATUGGN
+Content-Disposition: attachment; filename=output
+Content-Type: application/octet-stream; name=output
+Content-Transfer-Encoding: Base64
 
-So i hang around gOOgliNg and found that it is a GCC compiler problem.
-The compiler over FC5 were 4.1.0.
-I thought it were again challenging to update the compiler so for the very first time i just updated this to Fc7 system, where i had GCC 4.1.2.
-The flow went great and i were able to do the test primarily.
+PDw8dGVzdF9zdGFydD4+Pgp0YWc9Y2hvd24wMSBzdGltZT0xMjYyOTU4NzAxCmNt
+ZGxpbmU9ImNob3duMDEiCmNvbnRhY3RzPSIiCmFuYWx5c2lzPWV4aXQKPDw8dGVz
+dF9vdXRwdXQ+Pj4KY2hvd24wMSAgICAgMSAgVFBBU1MgIDogIGNob3duKHRfMTAy
+MzMsIDAsMCkgcmV0dXJuZWQgMAo8PDxleGVjdXRpb25fc3RhdHVzPj4+CmluaXRp
+YXRpb25fc3RhdHVzPSJvayIKZHVyYXRpb249MCB0ZXJtaW5hdGlvbl90eXBlPWV4
+aXRlZCB0ZXJtaW5hdGlvbl9pZD0wIGNvcmVmaWxlPW5vCmN1dGltZT0wIGNzdGlt
+ZT0wCjw8PHRlc3RfZW5kPj4+Cjw8PHRlc3Rfc3RhcnQ+Pj4KdGFnPWNob3duMDIg
+c3RpbWU9MTI2Mjk1ODcwMQpjbWRsaW5lPSJjaG93bjAyIgpjb250YWN0cz0iIgph
+bmFseXNpcz1leGl0Cjw8PHRlc3Rfb3V0cHV0Pj4+CmNob3duMDIgICAgIDEgIFRG
+QUlMICA6ICBjaG93bigpIEZhaWxzIG9uIHRlc3RmaWxlMSwgZXJybm89MQpjaG93
+bjAyICAgICAyICBURkFJTCAgOiAgY2hvd24oKSBGYWlscyBvbiB0ZXN0ZmlsZTIs
+IGVycm5vPTEKPDw8ZXhlY3V0aW9uX3N0YXR1cz4+Pgppbml0aWF0aW9uX3N0YXR1
+cz0ib2siCmR1cmF0aW9uPTAgdGVybWluYXRpb25fdHlwZT1leGl0ZWQgdGVybWlu
+YXRpb25faWQ9MSBjb3JlZmlsZT1ubwpjdXRpbWU9MCBjc3RpbWU9MAo8PDx0ZXN0
+X2VuZD4+Pgo8PDx0ZXN0X3N0YXJ0Pj4+CnRhZz1jaG93bjAzIHN0aW1lPTEyNjI5
+NTg3MDEKY21kbGluZT0iY2hvd24wMyIKY29udGFjdHM9IiIKYW5hbHlzaXM9ZXhp
+dAo8PDx0ZXN0X291dHB1dD4+PgpjaG93bjAzICAgICAxICBUQlJPSyAgOiAgZmNo
+b3duKHRlc3RmaWxlKSBmYWlsZWQ6IGVycm5vPUVQRVJNKDEpOiBPcGVyYXRpb24g
+bm90IHBlcm1pdHRlZAo8PDxleGVjdXRpb25fc3RhdHVzPj4+CmluaXRpYXRpb25f
+c3RhdHVzPSJvayIKZHVyYXRpb249MCB0ZXJtaW5hdGlvbl90eXBlPWV4aXRlZCB0
+ZXJtaW5hdGlvbl9pZD0yIGNvcmVmaWxlPW5vCmN1dGltZT0wIGNzdGltZT0xCjw8
+PHRlc3RfZW5kPj4+Cjw8PHRlc3Rfc3RhcnQ+Pj4KdGFnPWNob3duMDQgc3RpbWU9
+MTI2Mjk1ODcwMQpjbWRsaW5lPSJjaG93bjA0Igpjb250YWN0cz0iIgphbmFseXNp
+cz1leGl0Cjw8PHRlc3Rfb3V0cHV0Pj4+CmNob3duMDQgICAgIDEgIFRCUk9LICA6
+ICBGYWlsIHRvIG1vZGlmeSB0ZmlsZV8xIG93bmVyc2hpcChzKSE6IGVycm5vPUVQ
+RVJNKDEpOiBPcGVyYXRpb24gbm90IHBlcm1pdHRlZApjaG93bjA0ICAgICAyICBU
+QlJPSyAgOiAgUmVtYWluaW5nIGNhc2VzIGJyb2tlbgpjaG93bjA0ICAgICAzICBU
+QlJPSyAgOiAgUmVtYWluaW5nIGNhc2VzIGJyb2tlbgpjaG93bjA0ICAgICA0ICBU
+QlJPSyAgOiAgUmVtYWluaW5nIGNhc2VzIGJyb2tlbgpjaG93bjA0ICAgICA1ICBU
+QlJPSyAgOiAgUmVtYWluaW5nIGNhc2VzIGJyb2tlbgpjaG93bjA0ICAgICA2ICBU
+QlJPSyAgOiAgUmVtYWluaW5nIGNhc2VzIGJyb2tlbgpjaG93bjA0ICAgICA3ICBU
+QlJPSyAgOiAgUmVtYWluaW5nIGNhc2VzIGJyb2tlbgpjaG93bjA0ICAgICA4ICBU
+QlJPSyAgOiAgY2htb2QodGVzdGRpcl8xKSBmYWlsZWQ6IGVycm5vPUVOT0VOVCgy
+KTogTm8gc3VjaCBmaWxlIG9yIGRpcmVjdG9yeQo8PDxleGVjdXRpb25fc3RhdHVz
+Pj4+CmluaXRpYXRpb25fc3RhdHVzPSJvayIKZHVyYXRpb249MCB0ZXJtaW5hdGlv
+bl90eXBlPWV4aXRlZCB0ZXJtaW5hdGlvbl9pZD0yIGNvcmVmaWxlPW5vCmN1dGlt
+ZT0wIGNzdGltZT0wCjw8PHRlc3RfZW5kPj4+Cjw8PHRlc3Rfc3RhcnQ+Pj4KdGFn
+PWNob3duMDUgc3RpbWU9MTI2Mjk1ODcwMQpjbWRsaW5lPSJjaG93bjA1Igpjb250
+YWN0cz0iIgphbmFseXNpcz1leGl0Cjw8PHRlc3Rfb3V0cHV0Pj4+CmNob3duMDUg
+ICAgIDEgIFRGQUlMICA6ICBjaG93bigpIEZhaWxzIHRvIENoYW5nZSBPd25lci9H
+cm91cCBpZHMsIGVycm5vPTEKY2hvd24wNSAgICAgMiAgVEZBSUwgIDogIGNob3du
+KCkgRmFpbHMgdG8gQ2hhbmdlIE93bmVyIGlkIG9ubHksIGVycm5vPTEKY2hvd24w
+NSAgICAgMyAgVEZBSUwgIDogIGNob3duKCkgRmFpbHMgdG8gQ2hhbmdlIE93bmVy
+IGlkIG9ubHksIGVycm5vPTEKY2hvd24wNSAgICAgNCAgVEZBSUwgIDogIGNob3du
+KCkgRmFpbHMgdG8gQ2hhbmdlIEdyb3VwIGlkIG9ubHksIGVycm5vPTEKY2hvd24w
+NSAgICAgNSAgVEZBSUwgIDogIGNob3duKCkgRmFpbHMgdG8gQ2hhbmdlIEdyb3Vw
+IGlkIG9ubHksIGVycm5vPTEKPDw8ZXhlY3V0aW9uX3N0YXR1cz4+Pgppbml0aWF0
+aW9uX3N0YXR1cz0ib2siCmR1cmF0aW9uPTAgdGVybWluYXRpb25fdHlwZT1leGl0
+ZWQgdGVybWluYXRpb25faWQ9MSBjb3JlZmlsZT1ubwpjdXRpbWU9MCBjc3RpbWU9
+MAo8PDx0ZXN0X2VuZD4+Pgo8PDx0ZXN0X3N0YXJ0Pj4+CnRhZz1mY2hvd24wMSBz
+dGltZT0xMjYyOTU4NzAxCmNtZGxpbmU9ImZjaG93bjAxIgpjb250YWN0cz0iIgph
+bmFseXNpcz1leGl0Cjw8PHRlc3Rfb3V0cHV0Pj4+CmZjaG93bjAxICAgIDEgIFRQ
+QVNTICA6ICBmY2hvd24oRmQsIGdldGV1aWQoKSwgZ2V0ZWdpZCgpKSByZXR1cm5l
+ZCAwCjw8PGV4ZWN1dGlvbl9zdGF0dXM+Pj4KaW5pdGlhdGlvbl9zdGF0dXM9Im9r
+IgpkdXJhdGlvbj0wIHRlcm1pbmF0aW9uX3R5cGU9ZXhpdGVkIHRlcm1pbmF0aW9u
+X2lkPTAgY29yZWZpbGU9bm8KY3V0aW1lPTAgY3N0aW1lPTAKPDw8dGVzdF9lbmQ+
+Pj4KPDw8dGVzdF9zdGFydD4+Pgp0YWc9ZmNob3duMDIgc3RpbWU9MTI2Mjk1ODcw
+MQpjbWRsaW5lPSJmY2hvd24wMiIKY29udGFjdHM9IiIKYW5hbHlzaXM9ZXhpdAo8
+PDx0ZXN0X291dHB1dD4+PgpmY2hvd24wMiAgICAxICBURkFJTCAgOiAgZmNob3du
+KCkgRmFpbHMgb24gdGVzdGZpbGUxLCBlcnJubz0xCmZjaG93bjAyICAgIDIgIFRG
+QUlMICA6ICBmY2hvd24oKSBGYWlscyBvbiB0ZXN0ZmlsZTIsIGVycm5vPTEKPDw8
+ZXhlY3V0aW9uX3N0YXR1cz4+Pgppbml0aWF0aW9uX3N0YXR1cz0ib2siCmR1cmF0
+aW9uPTAgdGVybWluYXRpb25fdHlwZT1leGl0ZWQgdGVybWluYXRpb25faWQ9MSBj
+b3JlZmlsZT1ubwpjdXRpbWU9MCBjc3RpbWU9MAo8PDx0ZXN0X2VuZD4+Pgo8PDx0
+ZXN0X3N0YXJ0Pj4+CnRhZz1mY2hvd24wMyBzdGltZT0xMjYyOTU4NzAxCmNtZGxp
+bmU9ImZjaG93bjAzIgpjb250YWN0cz0iIgphbmFseXNpcz1leGl0Cjw8PHRlc3Rf
+b3V0cHV0Pj4+CmZjaG93bjAzICAgIDEgIFRCUk9LICA6ICBGYWlsIHRvIG1vZGlm
+eSBPd25lcnNoaXAgb2YgdGVzdGZpbGU6IE9wZXJhdGlvbiBub3QgcGVybWl0dGVk
+Cjw8PGV4ZWN1dGlvbl9zdGF0dXM+Pj4KaW5pdGlhdGlvbl9zdGF0dXM9Im9rIgpk
+dXJhdGlvbj0xIHRlcm1pbmF0aW9uX3R5cGU9ZXhpdGVkIHRlcm1pbmF0aW9uX2lk
+PTIgY29yZWZpbGU9bm8KY3V0aW1lPTAgY3N0aW1lPTEKPDw8dGVzdF9lbmQ+Pj4K
+PDw8dGVzdF9zdGFydD4+Pgp0YWc9ZmNob3duMDQgc3RpbWU9MTI2Mjk1ODcwMgpj
+bWRsaW5lPSJmY2hvd24wNCIKY29udGFjdHM9IiIKYW5hbHlzaXM9ZXhpdAo8PDx0
+ZXN0X291dHB1dD4+PgpmY2hvd24wNCAgICAxICBUQlJPSyAgOiAgRmFpbCB0byBt
+b2RpZnkgdGZpbGVfMSBvd25lcnNoaXAocykhIE9wZXJhdGlvbiBub3QgcGVybWl0
+dGVkCmZjaG93bjA0ICAgIDIgIFRCUk9LICA6ICBSZW1haW5pbmcgY2FzZXMgYnJv
+a2VuCjw8PGV4ZWN1dGlvbl9zdGF0dXM+Pj4KaW5pdGlhdGlvbl9zdGF0dXM9Im9r
+IgpkdXJhdGlvbj0wIHRlcm1pbmF0aW9uX3R5cGU9ZXhpdGVkIHRlcm1pbmF0aW9u
+X2lkPTIgY29yZWZpbGU9bm8KY3V0aW1lPTAgY3N0aW1lPTAKPDw8dGVzdF9lbmQ+
+Pj4KPDw8dGVzdF9zdGFydD4+Pgp0YWc9ZmNob3duMDUgc3RpbWU9MTI2Mjk1ODcw
+MgpjbWRsaW5lPSJmY2hvd24wNSIKY29udGFjdHM9IiIKYW5hbHlzaXM9ZXhpdAo8
+PDx0ZXN0X291dHB1dD4+PgpmY2hvd24wNSAgICAxICBURkFJTCAgOiAgZmNob3du
+KCkgRmFpbHMgdG8gQ2hhbmdlIE93bmVyL0dyb3VwIGlkcywgZXJybm89MQpmY2hv
+d24wNSAgICAyICBURkFJTCAgOiAgZmNob3duKCkgRmFpbHMgdG8gQ2hhbmdlIE93
+bmVyIGlkIG9ubHksIGVycm5vPTEKZmNob3duMDUgICAgMyAgVEZBSUwgIDogIGZj
+aG93bigpIEZhaWxzIHRvIENoYW5nZSBPd25lciBpZCBvbmx5LCBlcnJubz0xCmZj
+aG93bjA1ICAgIDQgIFRGQUlMICA6ICBmY2hvd24oKSBGYWlscyB0byBDaGFuZ2Ug
+R3JvdXAgaWQgb25seSwgZXJybm89MQpmY2hvd24wNSAgICA1ICBURkFJTCAgOiAg
+ZmNob3duKCkgRmFpbHMgdG8gQ2hhbmdlIEdyb3VwIGlkIG9ubHksIGVycm5vPTEK
+PDw8ZXhlY3V0aW9uX3N0YXR1cz4+Pgppbml0aWF0aW9uX3N0YXR1cz0ib2siCmR1
+cmF0aW9uPTAgdGVybWluYXRpb25fdHlwZT1leGl0ZWQgdGVybWluYXRpb25faWQ9
+MSBjb3JlZmlsZT1ubwpjdXRpbWU9MCBjc3RpbWU9MAo8PDx0ZXN0X2VuZD4+Pgo8
+PDx0ZXN0X3N0YXJ0Pj4+CnRhZz1sY2hvd24wMSBzdGltZT0xMjYyOTU4NzAyCmNt
+ZGxpbmU9ImxjaG93bjAxIgpjb250YWN0cz0iIgphbmFseXNpcz1leGl0Cjw8PHRl
+c3Rfb3V0cHV0Pj4+CmxjaG93bjAxICAgIDEgIFRGQUlMICA6ICBsY2hvd24oKSBG
+YWlscyB0byBDaGFuZ2UgT3duZXIvR3JvdXAgaWRzLCBlcnJubz0xCmxjaG93bjAx
+ICAgIDIgIFRGQUlMICA6ICBsY2hvd24oKSBGYWlscyB0byBDaGFuZ2UgT3duZXIg
+aWQgb25seSwgZXJybm89MQpsY2hvd24wMSAgICAzICBURkFJTCAgOiAgbGNob3du
+KCkgRmFpbHMgdG8gQ2hhbmdlIE93bmVyIGlkIG9ubHksIGVycm5vPTEKbGNob3du
+MDEgICAgNCAgVEZBSUwgIDogIGxjaG93bigpIEZhaWxzIHRvIENoYW5nZSBHcm91
+cCBpZCBvbmx5LCBlcnJubz0xCmxjaG93bjAxICAgIDUgIFRGQUlMICA6ICBsY2hv
+d24oKSBGYWlscyB0byBDaGFuZ2UgR3JvdXAgaWQgb25seSwgZXJybm89MQo8PDxl
+eGVjdXRpb25fc3RhdHVzPj4+CmluaXRpYXRpb25fc3RhdHVzPSJvayIKZHVyYXRp
+b249MCB0ZXJtaW5hdGlvbl90eXBlPWV4aXRlZCB0ZXJtaW5hdGlvbl9pZD0xIGNv
+cmVmaWxlPW5vCmN1dGltZT0wIGNzdGltZT0xCjw8PHRlc3RfZW5kPj4+Cjw8PHRl
+c3Rfc3RhcnQ+Pj4KdGFnPWxjaG93bjAyIHN0aW1lPTEyNjI5NTg3MDIKY21kbGlu
+ZT0ibGNob3duMDIiCmNvbnRhY3RzPSIiCmFuYWx5c2lzPWV4aXQKPDw8dGVzdF9v
+dXRwdXQ+Pj4KbGNob3duMDIgICAgMSAgVEJST0sgIDogIGNob3duKCkgb2YgdGZp
+bGVfMSBmYWlsZWQsIGVycm9yIDE6IE9wZXJhdGlvbiBub3QgcGVybWl0dGVkCgps
+Y2hvd24wMiAgICAyICBUQlJPSyAgOiAgUmVtYWluaW5nIGNhc2VzIGJyb2tlbgps
+Y2hvd24wMiAgICAzICBUQlJPSyAgOiAgUmVtYWluaW5nIGNhc2VzIGJyb2tlbgps
+Y2hvd24wMiAgICA0ICBUQlJPSyAgOiAgUmVtYWluaW5nIGNhc2VzIGJyb2tlbgps
+Y2hvd24wMiAgICA1ICBUQlJPSyAgOiAgUmVtYWluaW5nIGNhc2VzIGJyb2tlbgps
+Y2hvd24wMiAgICA2ICBUQlJPSyAgOiAgUmVtYWluaW5nIGNhc2VzIGJyb2tlbgps
+Y2hvd24wMiAgICA3ICBUQlJPSyAgOiAgUmVtYWluaW5nIGNhc2VzIGJyb2tlbgo8
+PDxleGVjdXRpb25fc3RhdHVzPj4+CmluaXRpYXRpb25fc3RhdHVzPSJvayIKZHVy
+YXRpb249MCB0ZXJtaW5hdGlvbl90eXBlPWV4aXRlZCB0ZXJtaW5hdGlvbl9pZD0y
+IGNvcmVmaWxlPW5vCmN1dGltZT0wIGNzdGltZT0wCjw8PHRlc3RfZW5kPj4+Cjw8
+PHRlc3Rfc3RhcnQ+Pj4KdGFnPWNob3duMDFfMTYgc3RpbWU9MTI2Mjk1ODcwMgpj
+bWRsaW5lPSJjaG93bjAxXzE2Igpjb250YWN0cz0iIgphbmFseXNpcz1leGl0Cjw8
+PHRlc3Rfb3V0cHV0Pj4+CmNob3duMDEgICAgIDEgIFRQQVNTICA6ICBjaG93bih0
+XzEwMjQ1LCAwLDApIHJldHVybmVkIDAKPDw8ZXhlY3V0aW9uX3N0YXR1cz4+Pgpp
+bml0aWF0aW9uX3N0YXR1cz0ib2siCmR1cmF0aW9uPTAgdGVybWluYXRpb25fdHlw
+ZT1leGl0ZWQgdGVybWluYXRpb25faWQ9MCBjb3JlZmlsZT1ubwpjdXRpbWU9MCBj
+c3RpbWU9MAo8PDx0ZXN0X2VuZD4+Pgo8PDx0ZXN0X3N0YXJ0Pj4+CnRhZz1jaG93
+bjAyXzE2IHN0aW1lPTEyNjI5NTg3MDIKY21kbGluZT0iY2hvd24wMl8xNiIKY29u
+dGFjdHM9IiIKYW5hbHlzaXM9ZXhpdAo8PDx0ZXN0X291dHB1dD4+PgpjaG93bjAy
+ICAgICAxICBURkFJTCAgOiAgY2hvd24oKSBGYWlscyBvbiB0ZXN0ZmlsZTEsIGVy
+cm5vPTEKY2hvd24wMiAgICAgMiAgVEZBSUwgIDogIGNob3duKCkgRmFpbHMgb24g
+dGVzdGZpbGUyLCBlcnJubz0xCjw8PGV4ZWN1dGlvbl9zdGF0dXM+Pj4KaW5pdGlh
+dGlvbl9zdGF0dXM9Im9rIgpkdXJhdGlvbj0wIHRlcm1pbmF0aW9uX3R5cGU9ZXhp
+dGVkIHRlcm1pbmF0aW9uX2lkPTEgY29yZWZpbGU9bm8KY3V0aW1lPTAgY3N0aW1l
+PTAKPDw8dGVzdF9lbmQ+Pj4KPDw8dGVzdF9zdGFydD4+Pgp0YWc9Y2hvd24wM18x
+NiBzdGltZT0xMjYyOTU4NzAyCmNtZGxpbmU9ImNob3duMDNfMTYiCmNvbnRhY3Rz
+PSIiCmFuYWx5c2lzPWV4aXQKPDw8dGVzdF9vdXRwdXQ+Pj4KY2hvd24wMyAgICAg
+MSAgVEJST0sgIDogIGZjaG93bih0ZXN0ZmlsZSkgZmFpbGVkOiBlcnJubz1FUEVS
+TSgxKTogT3BlcmF0aW9uIG5vdCBwZXJtaXR0ZWQKPDw8ZXhlY3V0aW9uX3N0YXR1
+cz4+Pgppbml0aWF0aW9uX3N0YXR1cz0ib2siCmR1cmF0aW9uPTAgdGVybWluYXRp
+b25fdHlwZT1leGl0ZWQgdGVybWluYXRpb25faWQ9MiBjb3JlZmlsZT1ubwpjdXRp
+bWU9MCBjc3RpbWU9MQo8PDx0ZXN0X2VuZD4+Pgo8PDx0ZXN0X3N0YXJ0Pj4+CnRh
+Zz1jaG93bjA0XzE2IHN0aW1lPTEyNjI5NTg3MDIKY21kbGluZT0iY2hvd24wNF8x
+NiIKY29udGFjdHM9IiIKYW5hbHlzaXM9ZXhpdAo8PDx0ZXN0X291dHB1dD4+Pgpj
+aG93bjA0ICAgICAxICBUQlJPSyAgOiAgRmFpbCB0byBtb2RpZnkgdGZpbGVfMSBv
+d25lcnNoaXAocykhOiBlcnJubz1FUEVSTSgxKTogT3BlcmF0aW9uIG5vdCBwZXJt
+aXR0ZWQKY2hvd24wNCAgICAgMiAgVEJST0sgIDogIFJlbWFpbmluZyBjYXNlcyBi
+cm9rZW4KY2hvd24wNCAgICAgMyAgVEJST0sgIDogIFJlbWFpbmluZyBjYXNlcyBi
+cm9rZW4KY2hvd24wNCAgICAgNCAgVEJST0sgIDogIFJlbWFpbmluZyBjYXNlcyBi
+cm9rZW4KY2hvd24wNCAgICAgNSAgVEJST0sgIDogIFJlbWFpbmluZyBjYXNlcyBi
+cm9rZW4KY2hvd24wNCAgICAgNiAgVEJST0sgIDogIFJlbWFpbmluZyBjYXNlcyBi
+cm9rZW4KY2hvd24wNCAgICAgNyAgVEJST0sgIDogIFJlbWFpbmluZyBjYXNlcyBi
+cm9rZW4KY2hvd24wNCAgICAgOCAgVEJST0sgIDogIGNobW9kKHRlc3RkaXJfMSkg
+ZmFpbGVkOiBlcnJubz1FTk9FTlQoMik6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3Rv
+cnkKPDw8ZXhlY3V0aW9uX3N0YXR1cz4+Pgppbml0aWF0aW9uX3N0YXR1cz0ib2si
+CmR1cmF0aW9uPTAgdGVybWluYXRpb25fdHlwZT1leGl0ZWQgdGVybWluYXRpb25f
+aWQ9MiBjb3JlZmlsZT1ubwpjdXRpbWU9MCBjc3RpbWU9MAo8PDx0ZXN0X2VuZD4+
+Pgo8PDx0ZXN0X3N0YXJ0Pj4+CnRhZz1jaG93bjA1XzE2IHN0aW1lPTEyNjI5NTg3
+MDIKY21kbGluZT0iY2hvd24wNV8xNiIKY29udGFjdHM9IiIKYW5hbHlzaXM9ZXhp
+dAo8PDx0ZXN0X291dHB1dD4+PgpjaG93bjA1ICAgICAxICBURkFJTCAgOiAgY2hv
+d24oKSBGYWlscyB0byBDaGFuZ2UgT3duZXIvR3JvdXAgaWRzLCBlcnJubz0xCmNo
+b3duMDUgICAgIDIgIFRGQUlMICA6ICBjaG93bigpIEZhaWxzIHRvIENoYW5nZSBP
+d25lciBpZCBvbmx5LCBlcnJubz0xCmNob3duMDUgICAgIDMgIFRGQUlMICA6ICBj
+aG93bigpIEZhaWxzIHRvIENoYW5nZSBPd25lciBpZCBvbmx5LCBlcnJubz0xCmNo
+b3duMDUgICAgIDQgIFRGQUlMICA6ICBjaG93bigpIEZhaWxzIHRvIENoYW5nZSBH
+cm91cCBpZCBvbmx5LCBlcnJubz0xCmNob3duMDUgICAgIDUgIFRGQUlMICA6ICBj
+aG93bigpIEZhaWxzIHRvIENoYW5nZSBHcm91cCBpZCBvbmx5LCBlcnJubz0xCjw8
+PGV4ZWN1dGlvbl9zdGF0dXM+Pj4KaW5pdGlhdGlvbl9zdGF0dXM9Im9rIgpkdXJh
+dGlvbj0wIHRlcm1pbmF0aW9uX3R5cGU9ZXhpdGVkIHRlcm1pbmF0aW9uX2lkPTEg
+Y29yZWZpbGU9bm8KY3V0aW1lPTAgY3N0aW1lPTAKPDw8dGVzdF9lbmQ+Pj4KPDw8
+dGVzdF9zdGFydD4+Pgp0YWc9ZmNob3duMDFfMTYgc3RpbWU9MTI2Mjk1ODcwMgpj
+bWRsaW5lPSJmY2hvd24wMV8xNiIKY29udGFjdHM9IiIKYW5hbHlzaXM9ZXhpdAo8
+PDx0ZXN0X291dHB1dD4+PgpmY2hvd24wMSAgICAxICBUUEFTUyAgOiAgZmNob3du
+KEZkLCBnZXRldWlkKCksIGdldGVnaWQoKSkgcmV0dXJuZWQgMAo8PDxleGVjdXRp
+b25fc3RhdHVzPj4+CmluaXRpYXRpb25fc3RhdHVzPSJvayIKZHVyYXRpb249MCB0
+ZXJtaW5hdGlvbl90eXBlPWV4aXRlZCB0ZXJtaW5hdGlvbl9pZD0wIGNvcmVmaWxl
+PW5vCmN1dGltZT0xIGNzdGltZT0wCjw8PHRlc3RfZW5kPj4+Cjw8PHRlc3Rfc3Rh
+cnQ+Pj4KdGFnPWZjaG93bjAyXzE2IHN0aW1lPTEyNjI5NTg3MDIKY21kbGluZT0i
+ZmNob3duMDJfMTYiCmNvbnRhY3RzPSIiCmFuYWx5c2lzPWV4aXQKPDw8dGVzdF9v
+dXRwdXQ+Pj4KZmNob3duMDIgICAgMSAgVEZBSUwgIDogIGZjaG93bigpIEZhaWxz
+IG9uIHRlc3RmaWxlMSwgZXJybm89MQpmY2hvd24wMiAgICAyICBURkFJTCAgOiAg
+ZmNob3duKCkgRmFpbHMgb24gdGVzdGZpbGUyLCBlcnJubz0xCjw8PGV4ZWN1dGlv
+bl9zdGF0dXM+Pj4KaW5pdGlhdGlvbl9zdGF0dXM9Im9rIgpkdXJhdGlvbj0wIHRl
+cm1pbmF0aW9uX3R5cGU9ZXhpdGVkIHRlcm1pbmF0aW9uX2lkPTEgY29yZWZpbGU9
+bm8KY3V0aW1lPTAgY3N0aW1lPTEKPDw8dGVzdF9lbmQ+Pj4KPDw8dGVzdF9zdGFy
+dD4+Pgp0YWc9ZmNob3duMDNfMTYgc3RpbWU9MTI2Mjk1ODcwMgpjbWRsaW5lPSJm
+Y2hvd24wM18xNiIKY29udGFjdHM9IiIKYW5hbHlzaXM9ZXhpdAo8PDx0ZXN0X291
+dHB1dD4+PgpmY2hvd24wMyAgICAxICBUQlJPSyAgOiAgRmFpbCB0byBtb2RpZnkg
+T3duZXJzaGlwIG9mIHRlc3RmaWxlOiBPcGVyYXRpb24gbm90IHBlcm1pdHRlZAo8
+PDxleGVjdXRpb25fc3RhdHVzPj4+CmluaXRpYXRpb25fc3RhdHVzPSJvayIKZHVy
+YXRpb249MCB0ZXJtaW5hdGlvbl90eXBlPWV4aXRlZCB0ZXJtaW5hdGlvbl9pZD0y
+IGNvcmVmaWxlPW5vCmN1dGltZT0wIGNzdGltZT0wCjw8PHRlc3RfZW5kPj4+Cjw8
+PHRlc3Rfc3RhcnQ+Pj4KdGFnPWZjaG93bjA0XzE2IHN0aW1lPTEyNjI5NTg3MDIK
+Y21kbGluZT0iZmNob3duMDRfMTYiCmNvbnRhY3RzPSIiCmFuYWx5c2lzPWV4aXQK
+PDw8dGVzdF9vdXRwdXQ+Pj4KZmNob3duMDQgICAgMSAgVEJST0sgIDogIEZhaWwg
+dG8gbW9kaWZ5IHRmaWxlXzEgb3duZXJzaGlwKHMpISBPcGVyYXRpb24gbm90IHBl
+cm1pdHRlZApmY2hvd24wNCAgICAyICBUQlJPSyAgOiAgUmVtYWluaW5nIGNhc2Vz
+IGJyb2tlbgo8PDxleGVjdXRpb25fc3RhdHVzPj4+CmluaXRpYXRpb25fc3RhdHVz
+PSJvayIKZHVyYXRpb249MCB0ZXJtaW5hdGlvbl90eXBlPWV4aXRlZCB0ZXJtaW5h
+dGlvbl9pZD0yIGNvcmVmaWxlPW5vCmN1dGltZT0wIGNzdGltZT0xCjw8PHRlc3Rf
+ZW5kPj4+Cjw8PHRlc3Rfc3RhcnQ+Pj4KdGFnPWZjaG93bjA1XzE2IHN0aW1lPTEy
+NjI5NTg3MDIKY21kbGluZT0iZmNob3duMDVfMTYiCmNvbnRhY3RzPSIiCmFuYWx5
+c2lzPWV4aXQKPDw8dGVzdF9vdXRwdXQ+Pj4KZmNob3duMDUgICAgMSAgVEZBSUwg
+IDogIGZjaG93bigpIEZhaWxzIHRvIENoYW5nZSBPd25lci9Hcm91cCBpZHMsIGVy
+cm5vPTEKZmNob3duMDUgICAgMiAgVEZBSUwgIDogIGZjaG93bigpIEZhaWxzIHRv
+IENoYW5nZSBPd25lciBpZCBvbmx5LCBlcnJubz0xCmZjaG93bjA1ICAgIDMgIFRG
+QUlMICA6ICBmY2hvd24oKSBGYWlscyB0byBDaGFuZ2UgT3duZXIgaWQgb25seSwg
+ZXJybm89MQpmY2hvd24wNSAgICA0ICBURkFJTCAgOiAgZmNob3duKCkgRmFpbHMg
+dG8gQ2hhbmdlIEdyb3VwIGlkIG9ubHksIGVycm5vPTEKZmNob3duMDUgICAgNSAg
+VEZBSUwgIDogIGZjaG93bigpIEZhaWxzIHRvIENoYW5nZSBHcm91cCBpZCBvbmx5
+LCBlcnJubz0xCjw8PGV4ZWN1dGlvbl9zdGF0dXM+Pj4KaW5pdGlhdGlvbl9zdGF0
+dXM9Im9rIgpkdXJhdGlvbj0wIHRlcm1pbmF0aW9uX3R5cGU9ZXhpdGVkIHRlcm1p
+bmF0aW9uX2lkPTEgY29yZWZpbGU9bm8KY3V0aW1lPTAgY3N0aW1lPTAKPDw8dGVz
+dF9lbmQ+Pj4KPDw8dGVzdF9zdGFydD4+Pgp0YWc9ZmNob3duYXQwMSBzdGltZT0x
+MjYyOTU4NzAyCmNtZGxpbmU9ImZjaG93bmF0MDEiCmNvbnRhY3RzPSIiCmFuYWx5
+c2lzPWV4aXQKPDw8dGVzdF9vdXRwdXQ+Pj4KZmNob3duYXQwMSAgICAxICBUUEFT
+UyAgOiAgZmNob3duYXQoKSByZXR1cm5lZCB0aGUgZXhwZWN0ZWQgIGVycm5vIDA6
+IFN1Y2Nlc3MKZmNob3duYXQwMSAgICAyICBUUEFTUyAgOiAgZmNob3duYXQoKSBy
+ZXR1cm5lZCB0aGUgZXhwZWN0ZWQgIGVycm5vIDA6IFN1Y2Nlc3MKZmNob3duYXQw
+MSAgICAzICBUUEFTUyAgOiAgZmNob3duYXQoKSByZXR1cm5lZCB0aGUgZXhwZWN0
+ZWQgIGVycm5vIDIwOiBOb3QgYSBkaXJlY3RvcnkKZmNob3duYXQwMSAgICA0ICBU
+UEFTUyAgOiAgZmNob3duYXQoKSByZXR1cm5lZCB0aGUgZXhwZWN0ZWQgIGVycm5v
+IDk6IEJhZCBmaWxlIGRlc2NyaXB0b3IKZmNob3duYXQwMSAgICA1ICBUUEFTUyAg
+OiAgZmNob3duYXQoKSByZXR1cm5lZCB0aGUgZXhwZWN0ZWQgIGVycm5vIDIyOiBJ
+bnZhbGlkIGFyZ3VtZW50CmZjaG93bmF0MDEgICAgNiAgVFBBU1MgIDogIGZjaG93
+bmF0KCkgcmV0dXJuZWQgdGhlIGV4cGVjdGVkICBlcnJubyAwOiBTdWNjZXNzCjw8
+PGV4ZWN1dGlvbl9zdGF0dXM+Pj4KaW5pdGlhdGlvbl9zdGF0dXM9Im9rIgpkdXJh
+dGlvbj0wIHRlcm1pbmF0aW9uX3R5cGU9ZXhpdGVkIHRlcm1pbmF0aW9uX2lkPTAg
+Y29yZWZpbGU9bm8KY3V0aW1lPTAgY3N0aW1lPTAKPDw8dGVzdF9lbmQ+Pj4KPDw8
+dGVzdF9zdGFydD4+Pgp0YWc9bGNob3duMDFfMTYgc3RpbWU9MTI2Mjk1ODcwMgpj
+bWRsaW5lPSJsY2hvd24wMV8xNiIKY29udGFjdHM9IiIKYW5hbHlzaXM9ZXhpdAo8
+PDx0ZXN0X291dHB1dD4+PgpsY2hvd24wMSAgICAxICBURkFJTCAgOiAgbGNob3du
+KCkgRmFpbHMgdG8gQ2hhbmdlIE93bmVyL0dyb3VwIGlkcywgZXJybm89MQpsY2hv
+d24wMSAgICAyICBURkFJTCAgOiAgbGNob3duKCkgRmFpbHMgdG8gQ2hhbmdlIE93
+bmVyIGlkIG9ubHksIGVycm5vPTEKbGNob3duMDEgICAgMyAgVEZBSUwgIDogIGxj
+aG93bigpIEZhaWxzIHRvIENoYW5nZSBPd25lciBpZCBvbmx5LCBlcnJubz0xCmxj
+aG93bjAxICAgIDQgIFRGQUlMICA6ICBsY2hvd24oKSBGYWlscyB0byBDaGFuZ2Ug
+R3JvdXAgaWQgb25seSwgZXJybm89MQpsY2hvd24wMSAgICA1ICBURkFJTCAgOiAg
+bGNob3duKCkgRmFpbHMgdG8gQ2hhbmdlIEdyb3VwIGlkIG9ubHksIGVycm5vPTEK
+PDw8ZXhlY3V0aW9uX3N0YXR1cz4+Pgppbml0aWF0aW9uX3N0YXR1cz0ib2siCmR1
+cmF0aW9uPTAgdGVybWluYXRpb25fdHlwZT1leGl0ZWQgdGVybWluYXRpb25faWQ9
+MSBjb3JlZmlsZT1ubwpjdXRpbWU9MCBjc3RpbWU9MAo8PDx0ZXN0X2VuZD4+Pgo8
+PDx0ZXN0X3N0YXJ0Pj4+CnRhZz1sY2hvd24wMl8xNiBzdGltZT0xMjYyOTU4NzAy
+CmNtZGxpbmU9ImxjaG93bjAyXzE2Igpjb250YWN0cz0iIgphbmFseXNpcz1leGl0
+Cjw8PHRlc3Rfb3V0cHV0Pj4+CmxjaG93bjAyICAgIDEgIFRCUk9LICA6ICBjaG93
+bigpIG9mIHRmaWxlXzEgZmFpbGVkLCBlcnJvciAxOiBPcGVyYXRpb24gbm90IHBl
+cm1pdHRlZAoKbGNob3duMDIgICAgMiAgVEJST0sgIDogIFJlbWFpbmluZyBjYXNl
+cyBicm9rZW4KbGNob3duMDIgICAgMyAgVEJST0sgIDogIFJlbWFpbmluZyBjYXNl
+cyBicm9rZW4KbGNob3duMDIgICAgNCAgVEJST0sgIDogIFJlbWFpbmluZyBjYXNl
+cyBicm9rZW4KbGNob3duMDIgICAgNSAgVEJST0sgIDogIFJlbWFpbmluZyBjYXNl
+cyBicm9rZW4KbGNob3duMDIgICAgNiAgVEJST0sgIDogIFJlbWFpbmluZyBjYXNl
+cyBicm9rZW4KbGNob3duMDIgICAgNyAgVEJST0sgIDogIFJlbWFpbmluZyBjYXNl
+cyBicm9rZW4KaW5jcmVtZW50aW5nIHN0b3AKPDw8ZXhlY3V0aW9uX3N0YXR1cz4+
+Pgppbml0aWF0aW9uX3N0YXR1cz0ib2siCmR1cmF0aW9uPTAgdGVybWluYXRpb25f
+dHlwZT1leGl0ZWQgdGVybWluYXRpb25faWQ9MiBjb3JlZmlsZT1ubwpjdXRpbWU9
+MCBjc3RpbWU9MQo8PDx0ZXN0X2VuZD4+Pgo=
 
-============================
-FYI: the LTP-Full-20091231 installs the LTP over /opt/LTP location.
-Don't try to run it over the directory we make install this.
-* (i had 15 minutes fight for this conclusion,
-    because there were no msg of it over installations time)
-============================
-
-
-????????????????????????????????????????
-
-Now 2 more question added to this queue is: The requirement specification of LTP.
-
-Q2. Gcc -> ? (which version)
-Kernel -> ?
-
-Q3. I will search further now on, but i want to ask is the same LTP is valid for the other CPU's as well.
-My AIM to check for the i.MX17 device (ARM Core) Embedded Linux. (kernel 2.6.19.2-xx)
-
-????????????????????????????????????????
-
---
-Ashish Agarwal
-'? =?'
-When others working for an Impossible task, It is better to be quite though.
-Let the others proceed  ...... !!
-
-Nicolas Joly ????????:
-> On Fri, Jan 08, 2010 at 03:51:28PM +0900, TED ITC Agarwal Ashish wrote:
->> Hello All
->>
->> I am novice for the LTP, just last week i heard something LTP
->> and feel curious about it so started searching and installations.
->>
->> "./configure " generates Error to me as written below.
->>
->> configure: error: Couldn't find functional copy of quota v2 - are you running 2.4.x?
-> 
-> Hi,
-> 
-> I do see the same with an old 2006.0 Gentoo base (actually in a
-> chroot) ... I worked around it by making it a warning instead of an
-> error.
-> 
-> IMHO, lacking some features should not prevent building/running LTP.
-> 
-> 
-> Index: m4/ltp-quota.m4
-> ===================================================================
-> RCS file: /cvsroot/ltp/ltp/m4/ltp-quota.m4,v
-> retrieving revision 1.4
-> diff -u -p -r1.4 ltp-quota.m4
-> --- m4/ltp-quota.m4	20 Dec 2009 00:36:35 -0000	1.4
-> +++ m4/ltp-quota.m4	8 Jan 2010 11:24:14 -0000
-> @@ -37,7 +37,7 @@ dnl}],[has_24_quotactl="yes"],
->  #include <unistd.h>],[
->  int main(void) {
->  	return quotactl(Q_GETINFO, (const char *)NULL, geteuid(), (caddr_t)NULL);
-> -}],[has_quotav2="yes"],[AC_MSG_ERROR([Couldn't find functional copy of quota v2 - are you running 2.4.x?])])
-> +}],[has_quotav2="yes"],[AC_MSG_WARN([Couldn't find functional copy of quota v2 - are you running 2.4.x?])])
->  dnl if test "x$has_24_quotactl" = "xyes"; then
->  dnl	AC_DEFINE(HAS_24_QUOTACTL,1,[Define to 1 if you have the 2.4.x version of quotactl, e.g. require linux/quota.h instead of sys/quota.h])
->  dnl elif test "x$has_new_26_quotactl" = "xyes"; then
-> 
+------------SOH9LG1KI8ppOv1yATUGGN
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
@@ -127,7 +405,17 @@ Take advantage of Verizon's best-in-class app development support
 A streamlined, 14 day to market process makes app distribution fast and easy
 Join now and get one step closer to millions of Verizon customers
 http://p.sf.net/sfu/verizon-dev2dev 
+------------SOH9LG1KI8ppOv1yATUGGN
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+------------SOH9LG1KI8ppOv1yATUGGN--
+
+
