@@ -1,36 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1NSBN1-0005aR-B5
-	for ltp-list@lists.sourceforge.net; Tue, 05 Jan 2010 15:30:55 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NSBN0-000204-7V
-	for ltp-list@lists.sourceforge.net; Tue, 05 Jan 2010 15:30:55 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o05FNmh9011768
-	for <ltp-list@lists.sourceforge.net>; Tue, 5 Jan 2010 08:23:48 -0700
-Received: from d03av06.boulder.ibm.com (d03av06.boulder.ibm.com [9.17.195.245])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o05FUS6a178466
-	for <ltp-list@lists.sourceforge.net>; Tue, 5 Jan 2010 08:30:29 -0700
-Received: from d03av06.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av06.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o05FWRou021226
-	for <ltp-list@lists.sourceforge.net>; Tue, 5 Jan 2010 08:32:27 -0700
-Date: Tue, 5 Jan 2010 09:30:21 -0600
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20100105153021.GA11873@us.ibm.com>
-References: <20100104171643.GA545@us.ibm.com>
-	<D107C512-245B-4187-9A8D-7FDC28234A0D@gmail.com>
-	<20100104233622.GA9018@us.ibm.com>
-	<AA968A69-C9C7-4FC1-B4B5-849719CCB8E8@gmail.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NTJS0-0000Km-W7
+	for ltp-list@lists.sourceforge.net; Fri, 08 Jan 2010 18:20:44 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NTJRz-0000y7-Vn
+	for ltp-list@lists.sourceforge.net; Fri, 08 Jan 2010 18:20:44 +0000
+Received: by pwj11 with SMTP id 11so198662pwj.2
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 08 Jan 2010 10:20:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <AA968A69-C9C7-4FC1-B4B5-849719CCB8E8@gmail.com>
-Subject: Re: [LTP] [PATCH 1/1] say FAIL not PASS when we failed
+In-Reply-To: <1262893258.2821.50.camel@moss-pluto.epoch.ncsc.mil>
+References: <1262791548.15424.31.camel@moss-pluto.epoch.ncsc.mil>
+	<20100106185019.GA19647@us.ibm.com>
+	<1262893258.2821.50.camel@moss-pluto.epoch.ncsc.mil>
+Date: Fri, 8 Jan 2010 10:20:38 -0800
+Message-ID: <364299f41001081020r7ee941f4w1b91bcb79849b406@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] regression: selinux testsuite broken since October
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,167 +29,136 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Stephen Smalley <sds@tycho.nsa.gov>
+Cc: James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>, ltp-list@lists.sourceforge.net
 
-Quoting Garrett Cooper (yanegomi@gmail.com):
-> On Jan 4, 2010, at 3:36 PM, "Serge E. Hallyn" <serue@us.ibm.com> wrote:
-> 
-> >Quoting Garrett Cooper (yanegomi@gmail.com):
-> >>On Jan 4, 2010, at 9:16 AM, "Serge E. Hallyn" <serue@us.ibm.com>
-> >>wrote:
-> >>
-> >>>Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
-> >>>---
-> >>>testcases/kernel/security/p9auth/p9priv.sh |    2 +-
-> >>>1 files changed, 1 insertions(+), 1 deletions(-)
-> >>>
-> >>>diff --git a/testcases/kernel/security/p9auth/p9priv.sh
-> >>>b/testcases/kernel/security/p9auth/p9priv.sh
-> >>>index ad2eead..c1a14d0 100755
-> >>>--- a/testcases/kernel/security/p9auth/p9priv.sh
-> >>>+++ b/testcases/kernel/security/p9auth/p9priv.sh
-> >>>@@ -101,7 +101,7 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
-> >>>touch $LTPTMP/childgo
-> >>>while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do
-> >>>:; done;
-> >>>if [ -f $LTPTMP/d/childpass ]; then
-> >>>-    echo "PASS: child could setuid from wrong source uid"
-> >>>+    echo "FAIL: child could setuid from wrong source uid"
-> >>> exit 1
-> >>>fi
-> >>>echo "PASS: child couldn't setuid from wrong source uid"
-> >>>-- 
-> >>>1.6.1.1
-> >>
-> >>Is there a reason why this isn't using tst_resm?
-> >
-> >No good reason
-> 
-> Could this be converted then :)?
+On Thu, Jan 7, 2010 at 11:40 AM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
+> On Wed, 2010-01-06 at 12:50 -0600, Serge E. Hallyn wrote:
+>> Quoting Stephen Smalley (sds@tycho.nsa.gov):
+>> > It seems the Makefile rewrite last October broke the selinux testsuite.
+>> > Is it unreasonable to expect that someone who rewrote the Makefile wou=
+ld
+>> > actually try running the testsuite?
+>> >
+>> > Please, revert the changes or fix them.
+>> >
+>> > See testcases/kernel/security/selinux-testsuite/README for the
+>> > instructions.
+>>
+>> Frankly I think reverting the Makefiles is best since it doesn't get
+>> auto-compiled anyway. =A0The new Makefile is much longer and more compli=
+cated
+>> for no apparent gain.
+>>
+>> The following patch makes policy compilation work on rhel 5, but I doubt
+>> it'll work anywhere else.
+>
+> Right, this won't work for Fedora.
+>
+>> Running the testsuite still fails due to the change to running ltp from
+>> a different dir (i.e.
+>> /usr/bin/chcon: /root/ltp-full-20091231/testcases/bin: No such file or d=
+irectory
+>> ).
+>>
+>> -serge
+>>
+>> diff -Nrup ltp-full-20091231.orig/testcases/kernel/security/selinux-test=
+suite/refpolicy/Makefile ltp-full-20091231/testcases/kernel/security/selinu=
+x-testsuite/refpolicy/Makefile
+>> --- ltp-full-20091231.orig/testcases/kernel/security/selinux-testsuite/r=
+efpolicy/Makefile =A0 =A0 2009-10-10 19:53:29.000000000 -0400
+>> +++ ltp-full-20091231/testcases/kernel/security/selinux-testsuite/refpol=
+icy/Makefile =A02010-01-06 13:43:19.000000000 -0500
+>> @@ -33,19 +33,16 @@ CHECKPOLICY_VERS =A0?=3D $(shell $(CHECKPOLIC
+>>
+>> =A0CLEAN_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D test_policy.te
+>>
+>> -INSTALL_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D *.te
+>> +INSTALL_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D $(REDHAT_VERS)/*.te
+>> +INSTALL_TARGETS_FULL :=3D $(builddir)/redhat/$(REDHAT_VERS)/*.te
+>
+> Using the .te files under redhat/$(REDHAT_VERS) needs to be conditional
+> on actually running on rhel. =A0 There was logic for that down below but
+> it looks like it has a typo.
+>
+>> =A0ifeq ($(CHECKPOLICY_VERS),24)
+>> =A0INSTALL_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D $(filter-out %/test_b=
+ounds.te,$(INSTALL_TARGETS))
+>> +INSTALL_TARGES_FULL =A0 =A0 =A0 =A0 =A0:=3D $(filter-out %/test_bounds.=
+te,$(INSTALL_TARGES_FULL))
+>
+> Typo: =A0TARGES vs TARGETS
+>
+>> =A0endif
+>>
+>> =A0TE_SRCDIR =A0 =A0 =A0 =A0 =A0 =A0:=3D $(abs_srcdir)
+>>
+>> -ifeq (redhat-release-, $(findstring redhat-release-, $(REDHAT_RELEASE)))
+>> -ifneq ($(wildcard $(abs_srcdir)/redhat/$(REDHAT_VER)),)
+>> -TE_SRCDIR =A0 =A0 =A0 =A0 =A0 =A0:=3D $(abs_srcdir)/redhat/$(REDHAT_VER)
+>> -endif
+>> -endif
+>
+> This is what should have pulled in the redhat/5 .te files, but it seems
+> buggy - there is a typo (VER vs VERS) and I'm not sure why there is the
+> inner ifneq block - that didn't exist in the original Makefile.
+>
+>> =A0.PHONY: all clean cleanup install load
+>>
+>> @@ -60,14 +57,18 @@ cleanup:
+>> =A0install: all
+>>
+>> =A0# load remains for backwards compatibility...
+>> -load: $(builddir)/test_policy.te
+>> +load:
+>> +ifeq (redhat-release-, $(findstring redhat-release-, $(REDHAT_RELEASE)))
+>> + =A0 =A0 $(MAKE) -C redhat/$(REDHAT_VERS)
+>> +else
+>
+> This reverts to what was in the original Makefile, which takes us back
+> to just using the makefile down in redhat/5, which wasn't updated.
+>
+>> =A0 =A0 =A0 @if [ -d "$(POLICYDEVEL)" ]; then \
+>> - =A0 =A0 =A0 =A0 cp -p $(builddir)/test_policy.* $(INSTALL_TARGETS) $(P=
+OLICY_DEVEL); \
+>> + =A0 =A0 =A0 =A0 cp -p $(builddir)/test_policy.* $(INSTALL_TARGETS_FULL=
+) $(POLICYDEVEL); \
+>
+> Only test_policy.* should be copied to $POLICYDEVEL, not the
+> individual .te files.
+>
+>> =A0 =A0 =A0 =A0 =A0 $(MAKE) -C $(POLICYDEVEL) clean test_policy.pp; \
+>> =A0 =A0 =A0 =A0 =A0 $(SEMODULE) -i $(POLICYDEVEL)/test_policy.pp; \
+>> =A0 =A0 =A0 else \
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0echo "ERROR: You must have selinux-policy-dev=
+el installed."; \
+>> =A0 =A0 =A0 fi
+>> +endif
+>>
+>> =A0$(builddir)/test_policy.te:
+>> =A0 =A0 =A0 (cd "$(TE_SRCDIR)" && cat $(INSTALL_TARGETS)) > "$@";
 
-This appears to work.
+    Thanks for the feedback and details Stephen.
+    Would you be kind enough to try out the version from CVS to see
+whether or not it resolves your issue? You'll also need to update
+$LTPROOT/scripts in order to use the new version as I added a distro
+detection script which opens up /etc/redhat-release (for redhat) as
+opposed to using rpm to query the release.
+Thanks,
+-Garrett
 
-thanks,
--serge
-
-From 05713db9e0db910fa2fdfa85c452f0be8d820e8c Mon Sep 17 00:00:00 2001
-From: Serge E. Hallyn <serue@us.ibm.com>
-Date: Tue, 5 Jan 2010 10:30:11 -0500
-Subject: [PATCH 1/1] p9auth: use tst_resm
-
-Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
+---------------------------------------------------------------------------=
 ---
- testcases/kernel/security/p9auth/p9priv.sh   |   25 ++++++++++++++++---------
- testcases/kernel/security/p9auth/p9unpriv.sh |    2 +-
- 2 files changed, 17 insertions(+), 10 deletions(-)
-
-diff --git a/testcases/kernel/security/p9auth/p9priv.sh b/testcases/kernel/security/p9auth/p9priv.sh
-index c1a14d0..0f3ea7e 100755
---- a/testcases/kernel/security/p9auth/p9priv.sh
-+++ b/testcases/kernel/security/p9auth/p9priv.sh
-@@ -19,7 +19,12 @@
- ##                                                                            ##
- ################################################################################
- 
--LTPTMP=/tmp/p9auth_ltp
-+export LTPTMP=/tmp/p9auth_ltp
-+export TST_TOTAL=3
-+export TCID="p9auth"
-+
-+export TST_COUNT=1
-+
- rm -rf $LTPTMP
- mkdir $LTPTMP
- chmod 755 $LTPTMP
-@@ -37,14 +42,14 @@ cleanup() {
- }
- 
- if [ `id -u` -ne 0 ]; then
--	echo "Must start p9auth tests as root"
-+	tst_resm TBROK "Must start p9auth tests as root"
- 	exit 1
- fi
- 
- ltpuid=`grep ltp /etc/passwd | head -1 | awk -F: '{ print $3 '}`
- ret=$?
- if [ $? -ne 0 ]; then
--	echo "Failed to find ltp userid"
-+	tst_resm TCONF "Failed to find ltp userid"
- 	exit 1
- fi
- 
-@@ -57,12 +62,13 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
- touch $LTPTMP/childgo
- while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do :; done;
- if [ -f $LTPTMP/d/childpass ]; then
--	echo "FAIL: child could setuid with bad hash"
-+	tst_resm TFAIL "FAIL: child could setuid with bad hash"
- 	exit 1
- fi
--echo "PASS: child couldn't setuid with bad hash"
-+tst_resm TPASS "PASS: child couldn't setuid with bad hash"
- 
- # TEST 2: ltp setuids to 0 with valid hash
-+export TST_COUNT=2
- 
- # create the hash.  randstr doesn't have to be int, but it's ok
- cleanup
-@@ -80,12 +86,13 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
- touch $LTPTMP/childgo
- while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do :; done;
- if [ -f $LTPTMP/d/childfail ]; then
--	echo "FAIL: child couldn't setuid with good hash"
-+	tst_resm TFAIL "FAIL: child couldn't setuid with good hash"
- 	exit 1
- fi
--echo "PASS: child could setuid with good hash"
-+tst_resm TPASS "PASS: child could setuid with good hash"
- 
- # TEST 3: 0 setuids to 0 with hash valid for ltp user
-+export TST_COUNT=3
- cleanup
- randstr=$RANDOM
- txt="0@0"
-@@ -101,10 +108,10 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
- touch $LTPTMP/childgo
- while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do :; done;
- if [ -f $LTPTMP/d/childpass ]; then
--	echo "FAIL: child could setuid from wrong source uid"
-+	tst_resm TFAIL "FAIL: child could setuid from wrong source uid"
- 	exit 1
- fi
--echo "PASS: child couldn't setuid from wrong source uid"
-+tst_resm TPASS "PASS: child couldn't setuid from wrong source uid"
- 
- touch $LTPTMP/childexit
- 
-diff --git a/testcases/kernel/security/p9auth/p9unpriv.sh b/testcases/kernel/security/p9auth/p9unpriv.sh
-index 077b8ac..894b3c4 100755
---- a/testcases/kernel/security/p9auth/p9unpriv.sh
-+++ b/testcases/kernel/security/p9auth/p9unpriv.sh
-@@ -27,7 +27,7 @@ echo ltptmp is $LTPTMP
- 
- myuid=`id -u`
- if [ "$myuid" -eq 0 ]; then
--	echo "Unprivileged child was started as root!"
-+	tst_resm TBROK "Unprivileged child was started as root!"
- 	exit 1
- fi
- 
--- 
-1.6.1.1
-
-
-------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
 Take advantage of Verizon's best-in-class app development support
 A streamlined, 14 day to market process makes app distribution fast and easy
 Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+http://p.sf.net/sfu/verizon-dev2dev =
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
