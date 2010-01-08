@@ -1,33 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NSqft-0006Ay-Jw
-	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 11:37:09 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NSqfs-0007y5-PI
-	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 11:37:09 +0000
-Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
-	by e2.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o07BRs52001050
-	for <ltp-list@lists.sourceforge.net>; Thu, 7 Jan 2010 06:27:54 -0500
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o07Bb2Ms1593442
-	for <ltp-list@lists.sourceforge.net>; Thu, 7 Jan 2010 06:37:02 -0500
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o07Bb15L013041
-	for <ltp-list@lists.sourceforge.net>; Thu, 7 Jan 2010 09:37:01 -0200
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <ECC1F2A4-FC8C-4626-904B-F29FB9CB209E@gmail.com>
-References: <4B41E55D.2020801@st.com>
-	<ECC1F2A4-FC8C-4626-904B-F29FB9CB209E@gmail.com>
-Date: Thu, 07 Jan 2010 17:06:56 +0530
-Message-Id: <1262864216.12213.37.camel@subratamodak.linux.ibm.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <sds@tycho.nsa.gov>) id 1NTMvh-0002Jz-1z
+	for ltp-list@lists.sourceforge.net; Fri, 08 Jan 2010 22:03:37 +0000
+Received: from msux-gh1-uea01.nsa.gov ([63.239.67.1])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NTMvg-00087h-0Q
+	for ltp-list@lists.sourceforge.net; Fri, 08 Jan 2010 22:03:37 +0000
+From: Stephen Smalley <sds@tycho.nsa.gov>
+In-Reply-To: <364299f41001081338u37e77cd3q3d9535f3dec71331@mail.gmail.com>
+References: <1262791548.15424.31.camel@moss-pluto.epoch.ncsc.mil>
+	<20100106185019.GA19647@us.ibm.com>
+	<1262893258.2821.50.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001081020r7ee941f4w1b91bcb79849b406@mail.gmail.com>
+	<1262976343.20881.4.camel@moss-pluto.epoch.ncsc.mil>
+	<1262976627.20881.6.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001081338u37e77cd3q3d9535f3dec71331@mail.gmail.com>
+Date: Fri, 08 Jan 2010 17:00:51 -0500
+Message-Id: <1262988051.20881.42.camel@moss-pluto.epoch.ncsc.mil>
 Mime-Version: 1.0
-Subject: Re: [LTP] mtest01: free memory allocated
-Reply-To: subrata@linux.vnet.ibm.com
+Subject: Re: [LTP] regression: selinux testsuite broken since October
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,81 +34,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+Cc: James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>, ltp-list@lists.sourceforge.net
 
-Garrett,
+On Fri, 2010-01-08 at 13:38 -0800, Garrett Cooper wrote:
+> On Fri, Jan 8, 2010 at 10:50 AM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
+> > On Fri, 2010-01-08 at 13:47 -0500, Stephen Smalley wrote:
+> >> On Fri, 2010-01-08 at 10:20 -0800, Garrett Cooper wrote:
+> >> >     Thanks for the feedback and details Stephen.
+> >> >     Would you be kind enough to try out the version from CVS to see
+> >> > whether or not it resolves your issue? You'll also need to update
+> >> > $LTPROOT/scripts in order to use the new version as I added a distro
+> >> > detection script which opens up /etc/redhat-release (for redhat) as
+> >> > opposed to using rpm to query the release.
+> >> > Thanks,
+> >> > -Garrett
+> >>
+> >> The attempt to make the test policy immediately dies with:
+> >> detect_distro.sh: ERROR: Bad release file: /etc/redhat-release
+> >
+> > I should note that I'm running it on Fedora, so I wouldn't expect that
+> > file to exist.  But the script needs to handle it gracefully; we just
+> > use the generic test policy files in that situation.
+> 
+>     What does /etc/redhat-release look like (feel free to reply to me off-list)?
 
-On Mon, 2010-01-04 at 18:10 -0800, Garrett Cooper wrote: 
-> On Jan 4, 2010, at 4:55 AM, Francesco RUNDO <francesco.rundo@st.com>  
-> wrote:
-> 
-> > Hi All,
-> >
-> > I'm running LTP (I'm using ltp-full-20090731....but asap I will  
-> > upgrade to latest)  on SH based platforms.
-> > Now, during a test-session. I've noted that the test "mtest01"  
-> > reduced drastically the system memory and after its execution this  
-> > memory wasn't de-allocated.
-> >
-> > I've analysed the mtest01.c code and I've noted that no "free()"  
-> > istruction was associated to the related malloc:
-> >
-> > ......
-> > if((mem = (char*)malloc(chunksize)) == NULL) {
-> > ......
-> >
-> > I've simply added a "free(mem)" of the allocated memory and the  
-> > issue was addressed successfully.
-> >
-> > I've attached the trivial patch I've developed.
-> >
-> > Best Regards,
-> > --
-> > Francesco
-> > Added missed "free" istruction to release memory previosuly allocated.
-> > Signed-off-by: Francesco Rundo <francesco.rundo@st.com>
-> > --- ltp-full-20090731/testcases/kernel/mem/mtest01/ 
-> > mtest01.c.origin    2009-02-26 13:02:27.000000000 +0100
-> > +++ ltp-full-20090731/testcases/kernel/mem/mtest01/mtest01.c     
-> > 2009-12-15 14:03:28.779240000 +0100
-> > @@ -258,5 +258,8 @@
-> >     else
-> >       tst_resm(TPASS, "%llu kbytes allocated only.",  
-> > original_maxbytes/1024);
-> >   }
-> > +
-> > +  free(mem);
-> > +
-> >   exit(0);
-> > }
-> 
-> 1. Does the version off cvs still have this issue?
-> 2. Unless the test exits the code block immediately, I'd definitely do:
-> 
-> if (mem)
->      free (mem);
-> 
-> to avoid making a bad free call.
+On RHEL5, it can look like one of the following:
+Red Hat Enterprise Linux Server release 5 (Tikanga)
+Red Hat Enterprise Linux Server release 5.x (Tikanga)
+Red Hat Enterprise Linux Client release 5 (Tikanga)
+Red Hat Enterprise Linux Client release 5.x (Tikanga)
 
-Have you made any changes to this ? I do not see any commits.
-
-Regards--
-Subrata
-
-> 
-> Thanks,
-> -Garrett
-> 
-> ------------------------------------------------------------------------------
-> This SF.Net email is sponsored by the Verizon Developer Community
-> Take advantage of Verizon's best-in-class app development support
-> A streamlined, 14 day to market process makes app distribution fast and easy
-> Join now and get one step closer to millions of Verizon customers
-> http://p.sf.net/sfu/verizon-dev2dev 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+-- 
+Stephen Smalley
+National Security Agency
 
 
 ------------------------------------------------------------------------------
