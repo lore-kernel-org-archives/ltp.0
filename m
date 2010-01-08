@@ -1,27 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NSCXo-00018Z-3B
-	for ltp-list@lists.sourceforge.net; Tue, 05 Jan 2010 16:46:08 +0000
-Received: from mail-yw0-f176.google.com ([209.85.211.176])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NSCXn-0001It-4L
-	for ltp-list@lists.sourceforge.net; Tue, 05 Jan 2010 16:46:08 +0000
-Received: by ywh6 with SMTP id 6so16545889ywh.4
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 05 Jan 2010 08:46:01 -0800 (PST)
-References: <20100104171643.GA545@us.ibm.com>
-	<D107C512-245B-4187-9A8D-7FDC28234A0D@gmail.com>
-	<20100104233622.GA9018@us.ibm.com>
-	<AA968A69-C9C7-4FC1-B4B5-849719CCB8E8@gmail.com>
-	<20100105153021.GA11873@us.ibm.com>
-Message-Id: <948507EC-6E01-4C79-A497-0425B44863CA@gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <20100105153021.GA11873@us.ibm.com>
-Mime-Version: 1.0 (iPhone Mail 7D11)
-Date: Tue, 5 Jan 2010 09:45:36 -0700
-Subject: Re: [LTP] [PATCH 1/1] say FAIL not PASS when we failed
+	(envelope-from <ashish.g@teldevice.co.jp>) id 1NTDbB-0001XY-1I
+	for ltp-list@lists.sourceforge.net; Fri, 08 Jan 2010 12:05:49 +0000
+Received: from mail-gw.teldevice.co.jp ([124.215.243.245] helo=teldevice.co.jp)
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NTDb9-0005HA-BS
+	for ltp-list@lists.sourceforge.net; Fri, 08 Jan 2010 12:05:48 +0000
+Message-ID: <4B471F8D.7010907@teldevice.co.jp>
+Date: Fri, 08 Jan 2010 21:05:33 +0900
+From: TED ITC Agarwal Ashish <ashish.g@teldevice.co.jp>
+MIME-Version: 1.0
+References: <4B46D5F0.3090801@teldevice.co.jp>
+	<20100108112534.GA333981@medusa.sis.pasteur.fr>
+In-Reply-To: <20100108112534.GA333981@medusa.sis.pasteur.fr>
+Subject: Re: [LTP] LTP installation  configure Error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,183 +28,98 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serue@us.ibm.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Nicolas Joly <njoly@pasteur.fr>
+Cc: ltp-list@lists.sourceforge.net
 
-Sent from my iPhone
+Hello Nicholas,
 
-On Jan 5, 2010, at 8:30 AM, "Serge E. Hallyn" <serue@us.ibm.com> wrote:
+Cc: All
 
-> Quoting Garrett Cooper (yanegomi@gmail.com):
->> On Jan 4, 2010, at 3:36 PM, "Serge E. Hallyn" <serue@us.ibm.com>  
->> wrote:
+Thanks a lot Dear,
+
+Yes it seems to me too pretty good to tackle this as Warning not the Error condition.
+but after that too it didn't work the system Fedora Core 3(i checked quickly, not debug at my level).
+but i didn't go well, it is as as before.
+Also tried after "$make clean" & "$./configure".
+
+Because in the mean while i updated my Fedora3 to Fedora5 (kernel 2.6.15-1.2054-FC5).
+
+For this new configuration i were able to complete the "$./configure" & "$make all" part.
+but when i tried to "make install" i had an another compiler error as below:
+
+"""""
+internal compiler error: in merge_alias_info, at tree-ssa-copy.c:235
+Please submit a full bug report,
+"""""
+
+So i hang around gOOgliNg and found that it is a GCC compiler problem.
+The compiler over FC5 were 4.1.0.
+I thought it were again challenging to update the compiler so for the very first time i just updated this to Fc7 system, where i had GCC 4.1.2.
+The flow went great and i were able to do the test primarily.
+
+============================
+FYI: the LTP-Full-20091231 installs the LTP over /opt/LTP location.
+Don't try to run it over the directory we make install this.
+* (i had 15 minutes fight for this conclusion,
+    because there were no msg of it over installations time)
+============================
+
+
+????????????????????????????????????????
+
+Now 2 more question added to this queue is: The requirement specification of LTP.
+
+Q2. Gcc -> ? (which version)
+Kernel -> ?
+
+Q3. I will search further now on, but i want to ask is the same LTP is valid for the other CPU's as well.
+My AIM to check for the i.MX17 device (ARM Core) Embedded Linux. (kernel 2.6.19.2-xx)
+
+????????????????????????????????????????
+
+--
+Ashish Agarwal
+'? =?'
+When others working for an Impossible task, It is better to be quite though.
+Let the others proceed  ...... !!
+
+Nicolas Joly ????????:
+> On Fri, Jan 08, 2010 at 03:51:28PM +0900, TED ITC Agarwal Ashish wrote:
+>> Hello All
 >>
->>> Quoting Garrett Cooper (yanegomi@gmail.com):
->>>> On Jan 4, 2010, at 9:16 AM, "Serge E. Hallyn" <serue@us.ibm.com>
->>>> wrote:
->>>>
->>>>> Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
->>>>> ---
->>>>> testcases/kernel/security/p9auth/p9priv.sh |    2 +-
->>>>> 1 files changed, 1 insertions(+), 1 deletions(-)
->>>>>
->>>>> diff --git a/testcases/kernel/security/p9auth/p9priv.sh
->>>>> b/testcases/kernel/security/p9auth/p9priv.sh
->>>>> index ad2eead..c1a14d0 100755
->>>>> --- a/testcases/kernel/security/p9auth/p9priv.sh
->>>>> +++ b/testcases/kernel/security/p9auth/p9priv.sh
->>>>> @@ -101,7 +101,7 @@ while [ ! -f $LTPTMP/d/childready ]; do :;  
->>>>> done
->>>>> touch $LTPTMP/childgo
->>>>> while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do
->>>>> :; done;
->>>>> if [ -f $LTPTMP/d/childpass ]; then
->>>>> -    echo "PASS: child could setuid from wrong source uid"
->>>>> +    echo "FAIL: child could setuid from wrong source uid"
->>>>> exit 1
->>>>> fi
->>>>> echo "PASS: child couldn't setuid from wrong source uid"
->>>>> -- 
->>>>> 1.6.1.1
->>>>
->>>> Is there a reason why this isn't using tst_resm?
->>>
->>> No good reason
+>> I am novice for the LTP, just last week i heard something LTP
+>> and feel curious about it so started searching and installations.
 >>
->> Could this be converted then :)?
->
-> This appears to work.
->
-> thanks,
-> -serge
->
-> From 05713db9e0db910fa2fdfa85c452f0be8d820e8c Mon Sep 17 00:00:00 2001
-> From: Serge E. Hallyn <serue@us.ibm.com>
-> Date: Tue, 5 Jan 2010 10:30:11 -0500
-> Subject: [PATCH 1/1] p9auth: use tst_resm
->
-> Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
-> ---
-> testcases/kernel/security/p9auth/p9priv.sh   |   25 +++++++++++++++ 
-> +---------
-> testcases/kernel/security/p9auth/p9unpriv.sh |    2 +-
-> 2 files changed, 17 insertions(+), 10 deletions(-)
->
-> diff --git a/testcases/kernel/security/p9auth/p9priv.sh b/testcases/ 
-> kernel/security/p9auth/p9priv.sh
-> index c1a14d0..0f3ea7e 100755
-> --- a/testcases/kernel/security/p9auth/p9priv.sh
-> +++ b/testcases/kernel/security/p9auth/p9priv.sh
-> @@ -19,7 +19,12 @@
-> ##  
->     
->     
->                                                                       
-> ##
-> ### 
-> ### 
-> ### 
-> ### 
-> ####################################################################
->
-> -LTPTMP=/tmp/p9auth_ltp
-> +export LTPTMP=/tmp/p9auth_ltp
-> +export TST_TOTAL=3
-> +export TCID="p9auth"
-> +
-> +export TST_COUNT=1
-> +
-> rm -rf $LTPTMP
-> mkdir $LTPTMP
-> chmod 755 $LTPTMP
-> @@ -37,14 +42,14 @@ cleanup() {
-> }
->
-> if [ `id -u` -ne 0 ]; then
-> -    echo "Must start p9auth tests as root"
-> +    tst_resm TBROK "Must start p9auth tests as root"
->    exit 1
-> fi
->
-> ltpuid=`grep ltp /etc/passwd | head -1 | awk -F: '{ print $3 '}`
-> ret=$?
-> if [ $? -ne 0 ]; then
-> -    echo "Failed to find ltp userid"
-> +    tst_resm TCONF "Failed to find ltp userid"
->    exit 1
-> fi
->
-> @@ -57,12 +62,13 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
-> touch $LTPTMP/childgo
-> while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ];  
-> do :; done;
-> if [ -f $LTPTMP/d/childpass ]; then
-> -    echo "FAIL: child could setuid with bad hash"
-> +    tst_resm TFAIL "FAIL: child could setuid with bad hash"
->    exit 1
-> fi
-> -echo "PASS: child couldn't setuid with bad hash"
-> +tst_resm TPASS "PASS: child couldn't setuid with bad hash"
->
-> # TEST 2: ltp setuids to 0 with valid hash
-> +export TST_COUNT=2
->
-> # create the hash.  randstr doesn't have to be int, but it's ok
-> cleanup
-> @@ -80,12 +86,13 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
-> touch $LTPTMP/childgo
-> while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ];  
-> do :; done;
-> if [ -f $LTPTMP/d/childfail ]; then
-> -    echo "FAIL: child couldn't setuid with good hash"
-> +    tst_resm TFAIL "FAIL: child couldn't setuid with good hash"
->    exit 1
-> fi
-> -echo "PASS: child could setuid with good hash"
-> +tst_resm TPASS "PASS: child could setuid with good hash"
->
-> # TEST 3: 0 setuids to 0 with hash valid for ltp user
-> +export TST_COUNT=3
-> cleanup
-> randstr=$RANDOM
-> txt="0@0"
-> @@ -101,10 +108,10 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
-> touch $LTPTMP/childgo
-> while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ];  
-> do :; done;
-> if [ -f $LTPTMP/d/childpass ]; then
-> -    echo "FAIL: child could setuid from wrong source uid"
-> +    tst_resm TFAIL "FAIL: child could setuid from wrong source uid"
->    exit 1
-> fi
-> -echo "PASS: child couldn't setuid from wrong source uid"
-> +tst_resm TPASS "PASS: child couldn't setuid from wrong source uid"
->
-> touch $LTPTMP/childexit
->
-> diff --git a/testcases/kernel/security/p9auth/p9unpriv.sh b/ 
-> testcases/kernel/security/p9auth/p9unpriv.sh
-> index 077b8ac..894b3c4 100755
-> --- a/testcases/kernel/security/p9auth/p9unpriv.sh
-> +++ b/testcases/kernel/security/p9auth/p9unpriv.sh
-> @@ -27,7 +27,7 @@ echo ltptmp is $LTPTMP
->
-> myuid=`id -u`
-> if [ "$myuid" -eq 0 ]; then
-> -    echo "Unprivileged child was started as root!"
-> +    tst_resm TBROK "Unprivileged child was started as root!"
->    exit 1
-> fi
->
-> -- 
-> 1.6.1.1
-
-The patch is very close. /tmp -> TMPDIR=${TMPDIR:-/tmp} will do the  
-trick.
-Also, eith the new changes PASS: / FAIL: shouldn't be required because  
-the result is inline with the printout.
-Thanks!
--Garrett
+>> "./configure " generates Error to me as written below.
+>>
+>> configure: error: Couldn't find functional copy of quota v2 - are you running 2.4.x?
+> 
+> Hi,
+> 
+> I do see the same with an old 2006.0 Gentoo base (actually in a
+> chroot) ... I worked around it by making it a warning instead of an
+> error.
+> 
+> IMHO, lacking some features should not prevent building/running LTP.
+> 
+> 
+> Index: m4/ltp-quota.m4
+> ===================================================================
+> RCS file: /cvsroot/ltp/ltp/m4/ltp-quota.m4,v
+> retrieving revision 1.4
+> diff -u -p -r1.4 ltp-quota.m4
+> --- m4/ltp-quota.m4	20 Dec 2009 00:36:35 -0000	1.4
+> +++ m4/ltp-quota.m4	8 Jan 2010 11:24:14 -0000
+> @@ -37,7 +37,7 @@ dnl}],[has_24_quotactl="yes"],
+>  #include <unistd.h>],[
+>  int main(void) {
+>  	return quotactl(Q_GETINFO, (const char *)NULL, geteuid(), (caddr_t)NULL);
+> -}],[has_quotav2="yes"],[AC_MSG_ERROR([Couldn't find functional copy of quota v2 - are you running 2.4.x?])])
+> +}],[has_quotav2="yes"],[AC_MSG_WARN([Couldn't find functional copy of quota v2 - are you running 2.4.x?])])
+>  dnl if test "x$has_24_quotactl" = "xyes"; then
+>  dnl	AC_DEFINE(HAS_24_QUOTACTL,1,[Define to 1 if you have the 2.4.x version of quotactl, e.g. require linux/quota.h instead of sys/quota.h])
+>  dnl elif test "x$has_new_26_quotactl" = "xyes"; then
+> 
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
