@@ -1,21 +1,41 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <paul.larson@canonical.com>) id 1NV9Pb-0002yl-UX
-	for Ltp-list@lists.sourceforge.net; Wed, 13 Jan 2010 20:01:51 +0000
-Received: from adelie.canonical.com ([91.189.90.139])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NV9PY-0005QF-8j
-	for Ltp-list@lists.sourceforge.net; Wed, 13 Jan 2010 20:01:51 +0000
-From: Paul Larson <paul.larson@canonical.com>
-In-Reply-To: <364299f41001110943q4c476dc7n6dbf1fcf8b05c57d@mail.gmail.com>
-References: <1263226258.2410.24.camel@plars-t500>
-	<364299f41001110943q4c476dc7n6dbf1fcf8b05c57d@mail.gmail.com>
-Date: Wed, 13 Jan 2010 14:01:28 -0600
-Message-ID: <1263412888.2410.30.camel@plars-t500>
-Mime-Version: 1.0
-Subject: Re: [LTP] Fix for make autotools
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1NUQk2-0006L4-MP
+	for ltp-list@lists.sourceforge.net; Mon, 11 Jan 2010 20:19:58 +0000
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NUQk1-0008Ef-Rf
+	for ltp-list@lists.sourceforge.net; Mon, 11 Jan 2010 20:19:58 +0000
+Received: from d01relay05.pok.ibm.com (d01relay05.pok.ibm.com [9.56.227.237])
+	by e2.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o0BKAOLF003522
+	for <ltp-list@lists.sourceforge.net>; Mon, 11 Jan 2010 15:10:24 -0500
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay05.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o0BKJbVO130620
+	for <ltp-list@lists.sourceforge.net>; Mon, 11 Jan 2010 15:19:37 -0500
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o0BKJbl9007115
+	for <ltp-list@lists.sourceforge.net>; Mon, 11 Jan 2010 18:19:37 -0200
+Date: Mon, 11 Jan 2010 14:19:36 -0600
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20100111201936.GA24711@us.ibm.com>
+References: <364299f41001081020r7ee941f4w1b91bcb79849b406@mail.gmail.com>
+	<1262976343.20881.4.camel@moss-pluto.epoch.ncsc.mil>
+	<1262976627.20881.6.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001081338u37e77cd3q3d9535f3dec71331@mail.gmail.com>
+	<1262988051.20881.42.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001081408sf9d740ew55dad7b542463416@mail.gmail.com>
+	<364299f41001082327o31bbe79eh849ea1651cf12632@mail.gmail.com>
+	<1263237132.5091.1.camel@moss-pluto.epoch.ncsc.mil>
+	<20100111195043.GA23360@us.ibm.com>
+	<1263239706.5091.11.camel@moss-pluto.epoch.ncsc.mil>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1263239706.5091.11.camel@moss-pluto.epoch.ncsc.mil>
+Subject: Re: [LTP] regression: selinux testsuite broken since October
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,80 +45,28 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4925391309082332147=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: Linux Test Project <Ltp-list@lists.sourceforge.net>
-
-
---===============4925391309082332147==
-Content-Type: multipart/signed; micalg="pgp-sha1";
-	protocol="application/pgp-signature";
-	boundary="=-7rayS0ZkEnoAu33CqGRy"
-
-
---=-7rayS0ZkEnoAu33CqGRy
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Can we go ahead and push this in, or is there a problem you see with it?
-I also tested with older automake in karmic (automake 1.11) and it had
-no problems there.
-
-Thanks,
-Paul Larson
-
-On Mon, 2010-01-11 at 09:43 -0800, Garrett Cooper wrote:
-> On Mon, Jan 11, 2010 at 8:10 AM, Paul Larson <paul.larson@canonical.com> =
-wrote:
-> > Make autotools seems to break on more recent versions without this.
-> >
-> > Signed-off-by: Paul Larson <paul.larson@canonical.com>
-> > ---
-> > diff --git a/include/mk/automake.mk b/include/mk/automake.mk
-> > index e23d5d4..889e6cf 100644
-> > --- a/include/mk/automake.mk
-> > +++ b/include/mk/automake.mk
-> > @@ -59,7 +59,7 @@ include:
-> >        mkdir -p "$@"
-> >
-> >  m4/ltp-version.m4: ChangeLog
-> > -       sed -n '1{s:LTP-:AC_DEFUN([LTP_VERSION],[:;s:$$:]):;p;q}' $< > =
-$@
-> > +       sed -n '1{s:LTP-:m4_define([LTP_VERSION],[:;s:$$:]):;p;q}' $< >=
- $@
-> >
-> >  .PHONY: automake
-> >  AUTOMAKE_FILES :=3D config.guess config.sub install-sh missing stamp-h=
-1
->=20
-> Hi Paul,
->     What version of automake and m4 are you using?
-> Thanks,
-> -Garrett
-
-
---=-7rayS0ZkEnoAu33CqGRy
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEABECAAYFAktOJpQACgkQ3UR7ubYtCO7MYgCgj6VAX59V8aRpSP7X036utHFY
-KAwAn0J0paocMrUM33A3Jk25H+PMthif
-=FP6n
------END PGP SIGNATURE-----
-
---=-7rayS0ZkEnoAu33CqGRy--
-
-
-
---===============4925391309082332147==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Stephen Smalley <sds@tycho.nsa.gov>
+Cc: ltp-list@lists.sourceforge.net, James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>
+
+Quoting Stephen Smalley (sds@tycho.nsa.gov):
+> On Mon, 2010-01-11 at 13:50 -0600, Serge E. Hallyn wrote:
+> > > Fails with:
+> > > cp: cannot stat
+> > > `/home/sds/ltp/testcases/kernel/security/selinux-testsuite/refpolicy/policy_files/generic/test_policy.*': No such file or directory
+> > 
+> > You ran /home/sds/ltp/testscripts/test_selinux.sh, right?
+> > 
+> > I think we are supposed to actually be running
+> > /opt/ltp/testscripts/test_selinux.sh.  So then the first question for
+> > Garrett is how should we deduce /home/sds/ltp as $LTP_SRCDIR from a
+> > testscript?  Or should the policy sources be copied into /opt?
+> 
+> Ok, but regardless:  the refpolicy Makefile is still broken.
+
+Yup.
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
@@ -106,17 +74,7 @@ Take advantage of Verizon's best-in-class app development support
 A streamlined, 14 day to market process makes app distribution fast and easy
 Join now and get one step closer to millions of Verizon customers
 http://p.sf.net/sfu/verizon-dev2dev 
---===============4925391309082332147==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4925391309082332147==--
-
-
