@@ -1,38 +1,41 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <isimatu.yasuaki@jp.fujitsu.com>) id 1Na0Gv-0007mV-NK
-	for ltp-list@lists.sourceforge.net; Wed, 27 Jan 2010 05:16:57 +0000
-Received: from fgwmail5.fujitsu.co.jp ([192.51.44.35])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Na0Gt-00050U-6c
-	for ltp-list@lists.sourceforge.net; Wed, 27 Jan 2010 05:16:57 +0000
-Received: from m6.gw.fujitsu.co.jp ([10.0.50.76])
-	by fgwmail5.fujitsu.co.jp (Fujitsu Gateway) with ESMTP id
-	o0R5Gl43018811 for <ltp-list@lists.sourceforge.net> (envelope-from
-	isimatu.yasuaki@jp.fujitsu.com); Wed, 27 Jan 2010 14:16:47 +0900
-Received: from smail (m6 [127.0.0.1])
-	by outgoing.m6.gw.fujitsu.co.jp (Postfix) with ESMTP id 3DA7445DE50
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 27 Jan 2010 14:16:47 +0900 (JST)
-Received: from s6.gw.fujitsu.co.jp (s6.gw.fujitsu.co.jp [10.0.50.96])
-	by m6.gw.fujitsu.co.jp (Postfix) with ESMTP id 0993F45DE4C
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 27 Jan 2010 14:16:47 +0900 (JST)
-Received: from s6.gw.fujitsu.co.jp (localhost.localdomain [127.0.0.1])
-	by s6.gw.fujitsu.co.jp (Postfix) with ESMTP id E47701DB803F
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 27 Jan 2010 14:16:46 +0900 (JST)
-Received: from m108.s.css.fujitsu.com (m108.s.css.fujitsu.com [10.249.87.108])
-	by s6.gw.fujitsu.co.jp (Postfix) with ESMTP id A0DC71DB8037
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 27 Jan 2010 14:16:46 +0900 (JST)
-Message-ID: <4B5FCC2D.7070304@jp.fujitsu.com>
-Date: Wed, 27 Jan 2010 14:16:29 +0900
-From: Yasuaki Ishimatsu <isimatu.yasuaki@jp.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <serge@us.ibm.com>) id 1NURr6-0006cq-62
+	for ltp-list@lists.sourceforge.net; Mon, 11 Jan 2010 21:31:20 +0000
+Received: from e5.ny.us.ibm.com ([32.97.182.145])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NURr5-00035Z-15
+	for ltp-list@lists.sourceforge.net; Mon, 11 Jan 2010 21:31:20 +0000
+Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
+	by e5.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o0BLIdg1010769
+	for <ltp-list@lists.sourceforge.net>; Mon, 11 Jan 2010 16:18:39 -0500
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o0BLV0KX141790
+	for <ltp-list@lists.sourceforge.net>; Mon, 11 Jan 2010 16:31:00 -0500
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o0BLV089018473
+	for <ltp-list@lists.sourceforge.net>; Mon, 11 Jan 2010 19:31:00 -0200
+Date: Mon, 11 Jan 2010 15:31:00 -0600
+From: "Serge E. Hallyn" <serue@us.ibm.com>
+Message-ID: <20100111213100.GA28138@us.ibm.com>
+References: <364299f41001081338u37e77cd3q3d9535f3dec71331@mail.gmail.com>
+	<1262988051.20881.42.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001081408sf9d740ew55dad7b542463416@mail.gmail.com>
+	<364299f41001082327o31bbe79eh849ea1651cf12632@mail.gmail.com>
+	<1263237132.5091.1.camel@moss-pluto.epoch.ncsc.mil>
+	<20100111195043.GA23360@us.ibm.com>
+	<1263239706.5091.11.camel@moss-pluto.epoch.ncsc.mil>
+	<20100111201936.GA24711@us.ibm.com>
+	<20100111205858.GA26412@us.ibm.com>
+	<20100111210006.GA26554@us.ibm.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] fix aio_suspend/3-1
+Content-Disposition: inline
+In-Reply-To: <20100111210006.GA26554@us.ibm.com>
+Subject: Re: [LTP] regression: selinux testsuite broken since October
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -45,68 +48,72 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: isimatu.yasuaki@jp.fujitsu.com
+To: Stephen Smalley <sds@tycho.nsa.gov>
+Cc: ltp-list@lists.sourceforge.net, James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>
 
-Hi all
+Quoting Serge E. Hallyn (serue@us.ibm.com):
+> Quoting Serge E. Hallyn (serue@us.ibm.com):
+> > Quoting Serge E. Hallyn (serue@us.ibm.com):
+> > > Quoting Stephen Smalley (sds@tycho.nsa.gov):
+> > > > On Mon, 2010-01-11 at 13:50 -0600, Serge E. Hallyn wrote:
+> > > > > > Fails with:
+> > > > > > cp: cannot stat
+> > > > > > `/home/sds/ltp/testcases/kernel/security/selinux-testsuite/refpolicy/policy_files/generic/test_policy.*': No such file or directory
+> > > > > 
+> > > > > You ran /home/sds/ltp/testscripts/test_selinux.sh, right?
+> > > > > 
+> > > > > I think we are supposed to actually be running
+> > > > > /opt/ltp/testscripts/test_selinux.sh.  So then the first question for
+> > > > > Garrett is how should we deduce /home/sds/ltp as $LTP_SRCDIR from a
+> > > > > testscript?  Or should the policy sources be copied into /opt?
+> > > > 
+> > > > Ok, but regardless:  the refpolicy Makefile is still broken.
+> > > 
+> > > Yup.
+> > 
+> > All right, baby-steps.
+> > 
+> > The attached test_selinux.diff is not to be applied, but something
+> > like it is needed.  Should we have the ltp 'make install' fill in
+> > TOP_SRCDIR in /opt/ltp/testscripts/test_selinux.sh?  BTW, Garrett,
+> > that is the issue I was saying is shared between test_selinux.sh
+> > and some others including test_robind.sh.  That's why I'm not just
+> > sending a patch to make it work, bc i think we need more general
+> > guidance.
+> > 
+> > The second match makes the 'make load' part of test_selinux.sh
+> > succeed on rhel5.4.  Stephen, how does it do on fedora?
+> > 
+> > After loading policy it fails to execute ltp-pan, but I figure let's
+> > get policy loading working first.
 
-When the aio_suspend/3-1.test ran, SIGSEGV occured with following message
-on my x86_64 box.
+All right well just doing
 
----
-/bin/sh: line 38: 10675 Segmentation fault      ./t0 240 conformance/interfaces/aio_suspend/3-1.test
-> $COMPLOG 2>&1
----
+--- /root/ltp_cvs_orig/ltp/testscripts/test_selinux.sh	2009-05-19 05:39:11.000000000 -0400
++++ /opt/ltp/testscripts/test_selinux.sh	2010-01-11 16:26:12.000000000 -0500
+@@ -115,7 +117,7 @@
+ SAVEBINTYPE=`ls -Zd $LTPROOT/testcases/bin | awk '{ print $4 }' | awk -F: '{ print $3 }'`
+ /usr/bin/chcon -t test_file_t $LTPROOT/testcases/bin
+ 
+-$LTPROOT/pan/ltp-pan -S -a $LTPROOT/results/selinux -n ltp-selinux -l $LTPROOT/results/selinux.logfile -o $LTPROOT/results/selinux.outfile -p -f $LTPROOT/runtest/selinux  
++$LTPROOT/bin/ltp-pan -S -a $LTPROOT/results/selinux -n ltp-selinux -l $LTPROOT/results/selinux.logfile -o $LTPROOT/results/selinux.outfile -p -f $LTPROOT/runtest/selinux  
+ 
+ # cleanup before exiting    
+ 
+================================================================
+in test_selinux.sh makes the testsuite mostly pass (test 39 fails, all
+up to then pass)
 
-This test does not initialize a list[1] array as follows.
+Again this is on RHEL5.4.
 
----
- 40 int main()
-...
- 88         list[0] = NULL;
- 89         list[2] = &aiocb[0];
- 90         list[3] = NULL;
- 91         list[4] = NULL;
- 92         list[5] = &aiocb[1];
- 93         list[6] = &aiocb[2];
- 94         list[7] = NULL;
-...
----
-
-So, list[1] holds a strange value. Since aio_suspend() uses this value as address,
-SIGSEGV occurred.
-
-When applying this patch, this test succeeds as follows.
-
----
-conformance/interfaces/aio_suspend/3-1: execution: PASS
----
-
-Signed-off-by: Yasuaki Ishimatsu <isimatu.yasuaki@jp.fujitsu.com>
-
-Index: ltp-2010-01-27/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c
-===================================================================
---- ltp-2010-01-27.orig/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c
-2010-01-27 11:44:30.000000000 +0900
-+++ ltp-2010-01-27/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c
-2010-01-27 11:45:23.000000000 +0900
-@@ -82,6 +82,7 @@ int main()
- 	}
-
- 	list[0] = NULL;
-+	list[1] = NULL;
- 	list[2] = &aiocb[0];
- 	list[3] = NULL;
- 	list[4] = NULL;
-
-
+-serge
 
 ------------------------------------------------------------------------------
-The Planet: dedicated and managed hosting, cloud storage, colocation
-Stay online with enterprise data centers and the best network in the business
-Choose flexible plans and management services without long-term contracts
-Personal 24x7 support from experience hosting pros just a phone call away.
-http://p.sf.net/sfu/theplanet-com
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
