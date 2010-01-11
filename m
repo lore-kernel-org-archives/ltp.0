@@ -1,22 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1NSh8T-0006V0-W7
-	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 01:26:01 +0000
-Received: from fmmailgate02.web.de ([217.72.192.227])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NSh8S-0000MC-Dn
-	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 01:26:01 +0000
-Message-ID: <4B453820.6020505@web.de>
-Date: Thu, 07 Jan 2010 02:25:52 +0100
-From: Jiri Palecek <jpalecek@web.de>
-MIME-Version: 1.0
-References: <4B421480.1040400@petalogix.com> <4B43E1CD.2050609@web.de>
-	<20100106032644.GB8157@us.ibm.com>
-	<201001060025.11076.vapier@gentoo.org>
-In-Reply-To: <201001060025.11076.vapier@gentoo.org>
-Subject: Re: [LTP] clone tests fails
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <paul.larson@canonical.com>) id 1NUMrN-0008K7-Fi
+	for Ltp-list@lists.sourceforge.net; Mon, 11 Jan 2010 16:11:17 +0000
+Received: from adelie.canonical.com ([91.189.90.139])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NUMrM-0001Ia-AV
+	for Ltp-list@lists.sourceforge.net; Mon, 11 Jan 2010 16:11:17 +0000
+Received: from hutte.canonical.com ([91.189.90.181])
+	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
+	id 1NUMr8-0002e6-9v
+	for <Ltp-list@lists.sourceforge.net>; Mon, 11 Jan 2010 16:11:03 +0000
+Received: from 75-27-138-126.lightspeed.austtx.sbcglobal.net ([75.27.138.126]
+	helo=[192.168.1.70]) by hutte.canonical.com with esmtpsa
+	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
+	(envelope-from <paul.larson@canonical.com>) id 1NUMr7-000441-UY
+	for Ltp-list@lists.sourceforge.net; Mon, 11 Jan 2010 16:11:02 +0000
+From: Paul Larson <paul.larson@canonical.com>
+Date: Mon, 11 Jan 2010 10:10:58 -0600
+Message-ID: <1263226258.2410.24.camel@plars-t500>
+Mime-Version: 1.0
+Subject: [LTP] Fix for make autotools
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,35 +31,61 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1637827735527405705=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: Nathan T Lynch <natlynch@us.ibm.com>, ltp-list@lists.sourceforge.net
+To: Linux Test Project <Ltp-list@lists.sourceforge.net>
 
-Mike Frysinger napsal(a):
-> On Tuesday 05 January 2010 22:26:44 Serge E. Hallyn wrote:
->> Quoting Jiri Palecek (jpalecek@web.de):
->>> Michal, I suspect the failures you see are somehow related to
->>> alignment (that your architecture doesn't like odd addresses). Is
->>> that right? Under x86, the address gets aligned (so some of the
->>> space is unused).
->>>
->>> Perhaps both of these behaviors should be tested by LTP?
->>
->> Gah, yes, Nathan had mentioned arches where this matters (including
->> some power?).  Nathan, did you have a generic fix for this in
->> userspace?  Should always be safe to do
->> 	(stack + stack_size - 1)&  ~0xf
->> ?
->
-> (sizeof(long double)-1) would probably be better than 0xf
 
-sizeof(long double) is not a power of 2 (at least on 386), so this wouldn't 
-probably work. glibc hardcodes the alignment (to 16 on most arches).
+--===============1637827735527405705==
+Content-Type: multipart/signed; micalg="pgp-sha1";
+	protocol="application/pgp-signature";
+	boundary="=-K+936vS2Rb6HGJRYEh6P"
 
-   Jiri Palecek
 
+--=-K+936vS2Rb6HGJRYEh6P
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Make autotools seems to break on more recent versions without this.
+
+Signed-off-by: Paul Larson <paul.larson@canonical.com>
+---
+diff --git a/include/mk/automake.mk b/include/mk/automake.mk
+index e23d5d4..889e6cf 100644
+--- a/include/mk/automake.mk
++++ b/include/mk/automake.mk
+@@ -59,7 +59,7 @@ include:
+ 	mkdir -p "$@"
+=20
+ m4/ltp-version.m4: ChangeLog
+-	sed -n '1{s:LTP-:AC_DEFUN([LTP_VERSION],[:;s:$$:]):;p;q}' $< > $@
++	sed -n '1{s:LTP-:m4_define([LTP_VERSION],[:;s:$$:]):;p;q}' $< > $@
+=20
+ .PHONY: automake
+ AUTOMAKE_FILES :=3D config.guess config.sub install-sh missing stamp-h1
+
+
+--=-K+936vS2Rb6HGJRYEh6P
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEABECAAYFAktLTY4ACgkQ3UR7ubYtCO65DQCfWavETJvlIYr78s09rYpQXPC2
+qc4AoKFOJU6b3fPa6Pq/JDWDV7ykwKC+
+=CWel
+-----END PGP SIGNATURE-----
+
+--=-K+936vS2Rb6HGJRYEh6P--
+
+
+
+--===============1637827735527405705==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
@@ -62,7 +93,17 @@ Take advantage of Verizon's best-in-class app development support
 A streamlined, 14 day to market process makes app distribution fast and easy
 Join now and get one step closer to millions of Verizon customers
 http://p.sf.net/sfu/verizon-dev2dev 
+--===============1637827735527405705==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1637827735527405705==--
+
+
