@@ -1,22 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1NUshH-00072F-0w
-	for ltp-list@lists.sourceforge.net; Wed, 13 Jan 2010 02:10:59 +0000
-Received: from out01.sjc.mx.trendmicro.com ([216.99.131.5])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NUshF-0002Zn-GO
-	for ltp-list@lists.sourceforge.net; Wed, 13 Jan 2010 02:10:58 +0000
-From: "Mitani" <mitani@ryobi.co.jp>
-References: <000601ca8de1$64d04810$2e70d830$@co.jp>
-	<1262862378.12213.22.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1262862378.12213.22.camel@subratamodak.linux.ibm.com>
-Date: Wed, 13 Jan 2010 11:10:47 +0900
-Message-ID: <000001ca93f5$9edf5ef0$dc9e1cd0$@co.jp>
-MIME-Version: 1.0
-Content-Language: ja
-Subject: Re: [LTP] quotactl01 testcases problem
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <sds@tycho.nsa.gov>) id 1NUlpE-00011n-MF
+	for ltp-list@lists.sourceforge.net; Tue, 12 Jan 2010 18:50:44 +0000
+Received: from msux-gh1-uea01.nsa.gov ([63.239.67.1])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NUlpC-0005Fk-Ts
+	for ltp-list@lists.sourceforge.net; Tue, 12 Jan 2010 18:50:43 +0000
+From: Stephen Smalley <sds@tycho.nsa.gov>
+In-Reply-To: <20100112153827.GB7975@us.ibm.com>
+References: <1262988051.20881.42.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001081408sf9d740ew55dad7b542463416@mail.gmail.com>
+	<364299f41001082327o31bbe79eh849ea1651cf12632@mail.gmail.com>
+	<1263237132.5091.1.camel@moss-pluto.epoch.ncsc.mil>
+	<20100111195043.GA23360@us.ibm.com>
+	<1263239706.5091.11.camel@moss-pluto.epoch.ncsc.mil>
+	<20100111201936.GA24711@us.ibm.com> <20100111205858.GA26412@us.ibm.com>
+	<20100111210006.GA26554@us.ibm.com>
+	<364299f41001120029x15b2e7adwe30d925717a1dc89@mail.gmail.com>
+	<20100112153827.GB7975@us.ibm.com>
+Date: Tue, 12 Jan 2010 13:51:25 -0500
+Message-Id: <1263322285.16277.2.camel@moss-pluto.epoch.ncsc.mil>
+Mime-Version: 1.0
+Subject: Re: [LTP] regression: selinux testsuite broken since October
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,152 +36,74 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com, Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: "Serge E. Hallyn" <serue@us.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>
 
-Garrett, Subrata,
+On Tue, 2010-01-12 at 09:38 -0600, Serge E. Hallyn wrote:
+> Quoting Garrett Cooper (yanegomi@gmail.com):
+> > On Mon, Jan 11, 2010 at 1:00 PM, Serge E. Hallyn <serue@us.ibm.com> wrote:
+> > > Quoting Serge E. Hallyn (serue@us.ibm.com):
+> > >> Quoting Serge E. Hallyn (serue@us.ibm.com):
+> > >> > Quoting Stephen Smalley (sds@tycho.nsa.gov):
+> > >> > > On Mon, 2010-01-11 at 13:50 -0600, Serge E. Hallyn wrote:
+> > >> > > > > Fails with:
+> > >> > > > > cp: cannot stat
+> > >> > > > > `/home/sds/ltp/testcases/kernel/security/selinux-testsuite/refpolicy/policy_files/generic/test_policy.*': No such file or directory
+> > >> > > >
+> > >> > > > You ran /home/sds/ltp/testscripts/test_selinux.sh, right?
+> > >> > > >
+> > >> > > > I think we are supposed to actually be running
+> > >> > > > /opt/ltp/testscripts/test_selinux.sh.  So then the first question for
+> > >> > > > Garrett is how should we deduce /home/sds/ltp as $LTP_SRCDIR from a
+> > >> > > > testscript?  Or should the policy sources be copied into /opt?
+> > >> > >
+> > >> > > Ok, but regardless:  the refpolicy Makefile is still broken.
+> > >> >
+> > >> > Yup.
+> > >>
+> > >> All right, baby-steps.
+> > >>
+> > >> The attached test_selinux.diff is not to be applied, but something
+> > >> like it is needed.  Should we have the ltp 'make install' fill in
+> > >> TOP_SRCDIR in /opt/ltp/testscripts/test_selinux.sh?  BTW, Garrett,
+> > >> that is the issue I was saying is shared between test_selinux.sh
+> > >> and some others including test_robind.sh.  That's why I'm not just
+> > >> sending a patch to make it work, bc i think we need more general
+> > >> guidance.
+> > >>
+> > >> The second match makes the 'make load' part of test_selinux.sh
+> > >> succeed on rhel5.4.  Stephen, how does it do on fedora?
+> > >>
+> > >> After loading policy it fails to execute ltp-pan, but I figure let's
+> > >> get policy loading working first.
+> > >>
+> > >> -serge
+> > >
+> > > gah, attaching the actual patches this time.
+> > >
+> > > -serge
+> > 
+> > 1. I'm rejecting the test_selinux.diff solely because it has /root/ltp
+> > hardcoded as LTPROOT.
+> 
+> I said 'not to be applied'.  You're not rejecting.
+> 
+> > 2. Why is the redhat stuff support to work
+> > agnostic to the major and minor version?
+> 
+> It's not agnostic to the major version.  Only the minor version.
+> 
+> And since you've made ltp not compile on rhel4 (requiring make-3.81.  feh)
+> i suppose we can just get rid of rhel4 support selinux-testsuite.
+> 
+> Or pull it out altogether.
 
-I confirmed that "quotactl01" test is finished in "PASS" (TCONF) 
-in my system.
+Hmm...doesn't Red Hat still use ltp (both main and selinux-testsuite)
+for regression testing of RHEL4.x releases?
 
-Thank you for your revision.
-
-
--Tomonori Mitani
-
------Original Message-----
-From: Subrata Modak [mailto:subrata@linux.vnet.ibm.com] 
-Sent: Thursday, January 07, 2010 8:06 PM
-To: Mitani
-Cc: ltp-list@lists.sourceforge.net
-Subject: Re: [LTP] quotactl01 testcases problem
-
-Hello Mitani-San,
-
-Did this get resolved for you ?
-
-Regards--
-Subrata
-
-On Tue, 2010-01-05 at 17:30 +0900, Mitani wrote: 
-> Hi,
-> 
-> I tried "quotactl01" testcases, and found two problems.
-> Second one occurred after first one's revise.
-> 
-> 1) In the result of "quotactl01", "Success" are displayed in spite of
->    failing in the test:
-> 
-> ------------
-> quotactl01    1  TFAIL  :  cmd=0x800002: TEST_ERRNO=???(0): Success
-> quotactl01    2  TFAIL  :  cmd=0x800003: TEST_ERRNO=???(0): Success
-> quotactl01    3  TFAIL  :  cmd=0x800007: TEST_ERRNO=???(0): Success
-> quotactl01    4  TFAIL  :  cmd=0x800008: TEST_ERRNO=???(0): Success
-> quotactl01    5  TFAIL  :  cmd=0x800005: TEST_ERRNO=???(0): Success
-> quotactl01    6  TFAIL  :  cmd=0x800006: TEST_ERRNO=???(0): Success
-> quotactl01    7  TFAIL  :  cmd=0x800004: TEST_ERRNO=???(0): Success
-> quotactl01    8  TFAIL  :  cmd=0x800001: TEST_ERRNO=???(0): Success
-> ------------
-> 
-> This problem occurred because the return value of system-call 
-> "(syscall(__NR_quotactl, cmd[i], ...))" is not judged correctly 
-> in "${LTPROOT}/testcases/kernel/syscalls/quotactl/quotactl01.c".
-> Above errors are caused by TFAIL and messages are printed by TTERRNO.
-> And there is only one place (Line 206) which uses TFAIL in "quotactl01.c"
-> 
-> The following patch can fix this problem:
-> 
-> ============
-> --- quotactl01.c	2009-12-20 09:36:35.000000000 +0900
-> +++ quotactl01.c.new	2010-01-04 17:11:17.000000000 +0900
-> @@ -177,7 +177,6 @@
->  	int id = getuid();
->  	int newtid = -1;
->  	int result;
-> -	int ret;
->  	int i;
->  	int lc;				 /* loop counter */
->  	char *msg;			  /* message returned from
-> parse_opts */
-> @@ -199,10 +198,10 @@
-> 
->  			for (i = 0; i <= 7; i++){
-> 
-> -				ret = syscall(__NR_quotactl, cmd[i],
-> +				TEST(syscall(__NR_quotactl, cmd[i],
->  						(const char *)NULL, id,
-> -						(caddr_t)NULL);
-> -				if (ret != 0) {
-> +						(caddr_t)NULL));
-> +				if (TEST_RETURN != 0) {
->  					tst_resm(TFAIL|TTERRNO, "cmd=0x%x",
-> cmd[i]);
->  				} else {
->  					tst_resm(TPASS, "quotactl call
-> succeeded");
-> ============
-> 
-> 
-> However, new problem occurred after applying above patch.
-> 
-> 2) The test failed with the following error in my system:
-> 
-> ------------
-> quotactl01    1  TFAIL  :  cmd=0x800002: TEST_ERRNO=EFAULT(14): Bad
-address
-> quotactl01    2  TFAIL  :  cmd=0x800003: TEST_ERRNO=EFAULT(14): Bad
-address
-> quotactl01    3  TFAIL  :  cmd=0x800007: TEST_ERRNO=EFAULT(14): Bad
-address
-> quotactl01    4  TFAIL  :  cmd=0x800008: TEST_ERRNO=EFAULT(14): Bad
-address
-> quotactl01    5  TFAIL  :  cmd=0x800005: TEST_ERRNO=EFAULT(14): Bad
-address
-> quotactl01    6  TFAIL  :  cmd=0x800006: TEST_ERRNO=EFAULT(14): Bad
-address
-> quotactl01    7  TFAIL  :  cmd=0x800004: TEST_ERRNO=EFAULT(14): Bad
-address
-> quotactl01    8  TFAIL  :  cmd=0x800001: TEST_ERRNO=EFAULT(14): Bad
-address
-> ------------
-> 
-> "EFAULT" means that there is an error in "addr".
-> The format of "quotactl" is following:
-> ------------
-> int quotactl(int cmd, const char *special, int id, caddr_t addr);
-> ------------
-> 
-> Therefore, "EFAULT" means that 4th argument of "quotactl()" has problem.
-> 
-> In "${LTPROOT}/testcases/kernel/syscalls/quotactl/quotactl01.c", 4th 
-> argument of "quotactl()" is "NULL":
-> Is it right?
-> 
-> 
-> I'm glad if I get your help.
-> 
-> 
-> Regards--
-> 
-> 
-> -Tomonori Mitani
-> 
-> 
-> 
->
-----------------------------------------------------------------------------
---
-> This SF.Net email is sponsored by the Verizon Developer Community
-> Take advantage of Verizon's best-in-class app development support
-> A streamlined, 14 day to market process makes app distribution fast and
-easy
-> Join now and get one step closer to millions of Verizon customers
-> http://p.sf.net/sfu/verizon-dev2dev 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
+-- 
+Stephen Smalley
+National Security Agency
 
 
 ------------------------------------------------------------------------------
