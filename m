@@ -1,21 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <njoly@pasteur.fr>) id 1NSqNb-0008EZ-PZ
-	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 11:18:15 +0000
-Received: from maroilles.sis.pasteur.fr ([157.99.64.223]
-	helo=mail-interne3.pasteur.fr)
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NSqNZ-0004P1-BJ
-	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 11:18:15 +0000
-Date: Thu, 7 Jan 2010 11:58:51 +0100
-From: Nicolas Joly <njoly@pasteur.fr>
-Message-ID: <20100107105850.GA323602@medusa.sis.pasteur.fr>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="ew6BAiZeqk4r7MaW"
-Content-Disposition: inline
-Subject: [LTP] kill unneeded chmod calls on created tmp directory
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NUc7l-0000Rl-IA
+	for ltp-list@lists.sourceforge.net; Tue, 12 Jan 2010 08:29:13 +0000
+Received: from mail-pz0-f193.google.com ([209.85.222.193])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NUc7k-0000A6-Lb
+	for ltp-list@lists.sourceforge.net; Tue, 12 Jan 2010 08:29:13 +0000
+Received: by pzk31 with SMTP id 31so908085pzk.28
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 12 Jan 2010 00:29:06 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20100111210006.GA26554@us.ibm.com>
+References: <1262976627.20881.6.camel@moss-pluto.epoch.ncsc.mil>
+	<1262988051.20881.42.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001081408sf9d740ew55dad7b542463416@mail.gmail.com>
+	<364299f41001082327o31bbe79eh849ea1651cf12632@mail.gmail.com>
+	<1263237132.5091.1.camel@moss-pluto.epoch.ncsc.mil>
+	<20100111195043.GA23360@us.ibm.com>
+	<1263239706.5091.11.camel@moss-pluto.epoch.ncsc.mil>
+	<20100111201936.GA24711@us.ibm.com>
+	<20100111205858.GA26412@us.ibm.com>
+	<20100111210006.GA26554@us.ibm.com>
+Date: Tue, 12 Jan 2010 00:29:06 -0800
+Message-ID: <364299f41001120029x15b2e7adwe30d925717a1dc89@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] regression: selinux testsuite broken since October
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,141 +36,71 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sf.net>
+To: "Serge E. Hallyn" <serue@us.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, Stephen Smalley <sds@tycho.nsa.gov>, James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>
 
+On Mon, Jan 11, 2010 at 1:00 PM, Serge E. Hallyn <serue@us.ibm.com> wrote:
+> Quoting Serge E. Hallyn (serue@us.ibm.com):
+>> Quoting Serge E. Hallyn (serue@us.ibm.com):
+>> > Quoting Stephen Smalley (sds@tycho.nsa.gov):
+>> > > On Mon, 2010-01-11 at 13:50 -0600, Serge E. Hallyn wrote:
+>> > > > > Fails with:
+>> > > > > cp: cannot stat
+>> > > > > `/home/sds/ltp/testcases/kernel/security/selinux-testsuite/refpo=
+licy/policy_files/generic/test_policy.*': No such file or directory
+>> > > >
+>> > > > You ran /home/sds/ltp/testscripts/test_selinux.sh, right?
+>> > > >
+>> > > > I think we are supposed to actually be running
+>> > > > /opt/ltp/testscripts/test_selinux.sh. =A0So then the first questio=
+n for
+>> > > > Garrett is how should we deduce /home/sds/ltp as $LTP_SRCDIR from a
+>> > > > testscript? =A0Or should the policy sources be copied into /opt?
+>> > >
+>> > > Ok, but regardless: =A0the refpolicy Makefile is still broken.
+>> >
+>> > Yup.
+>>
+>> All right, baby-steps.
+>>
+>> The attached test_selinux.diff is not to be applied, but something
+>> like it is needed. =A0Should we have the ltp 'make install' fill in
+>> TOP_SRCDIR in /opt/ltp/testscripts/test_selinux.sh? =A0BTW, Garrett,
+>> that is the issue I was saying is shared between test_selinux.sh
+>> and some others including test_robind.sh. =A0That's why I'm not just
+>> sending a patch to make it work, bc i think we need more general
+>> guidance.
+>>
+>> The second match makes the 'make load' part of test_selinux.sh
+>> succeed on rhel5.4. =A0Stephen, how does it do on fedora?
+>>
+>> After loading policy it fails to execute ltp-pan, but I figure let's
+>> get policy loading working first.
+>>
+>> -serge
+>
+> gah, attaching the actual patches this time.
+>
+> -serge
 
---ew6BAiZeqk4r7MaW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+1. I'm rejecting the test_selinux.diff solely because it has /root/ltp
+hardcoded as LTPROOT. 2. Why is the redhat stuff support to work
+agnostic to the major and minor version?
+Thanks,
+-Garrett
 
-
-Hi,
-
-The following patch kills some unneeded chmod(2) calls on newly
-created temporary directory; the tst_tmpdir() function do already set
-the correct permissions.
-
-Signed-off-by: Nicolas Joly <njoly@pasteur.fr>
-
--- 
-Nicolas Joly
-
-Biological Software and Databanks.
-Institut Pasteur, Paris.
-
---ew6BAiZeqk4r7MaW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="ltp-tmpdirchmod.diff"
-
-Index: testcases/kernel/syscalls/mkdir/mkdir02.c
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/mkdir/mkdir02.c,v
-retrieving revision 1.8
-diff -u -p -r1.8 mkdir02.c
---- testcases/kernel/syscalls/mkdir/mkdir02.c	23 Mar 2009 13:35:54 -0000	1.8
-+++ testcases/kernel/syscalls/mkdir/mkdir02.c	7 Jan 2010 10:52:49 -0000
-@@ -329,9 +329,6 @@ void setup()
- 	/* Create a temporary directory and make it current. */
- 	tst_tmpdir();
- 
--	/* make it writeable */
--	chmod(".", 0777);
--
- 	umask(0);
- }
- 
-Index: testcases/kernel/syscalls/mkdir/mkdir04.c
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/mkdir/mkdir04.c,v
-retrieving revision 1.9
-diff -u -p -r1.9 mkdir04.c
---- testcases/kernel/syscalls/mkdir/mkdir04.c	23 Mar 2009 13:35:54 -0000	1.9
-+++ testcases/kernel/syscalls/mkdir/mkdir04.c	7 Jan 2010 10:52:49 -0000
-@@ -235,9 +235,6 @@ void setup()
- 	/* Create a temporary directory and make it current. */
- 	tst_tmpdir();
- 
--	/* give the write rights to all user */
--	chmod(".", 0777);
--
- 	umask(0);
- }
- 
-Index: testcases/kernel/syscalls/rename/rename09.c
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/rename/rename09.c,v
-retrieving revision 1.10
-diff -u -p -r1.10 rename09.c
---- testcases/kernel/syscalls/rename/rename09.c	23 Mar 2009 13:36:01 -0000	1.10
-+++ testcases/kernel/syscalls/rename/rename09.c	7 Jan 2010 10:52:49 -0000
-@@ -264,9 +264,6 @@ void setup()
- 	/* Create a temporary directory and make it current. */
- 	tst_tmpdir();
- 
--	/* give write permission to all users */
--	chmod(".", 0777);
--
- 	umask(0);
- 
- 	sprintf(fdir, "tdir_%d", getpid());
-Index: testcases/kernel/syscalls/rename/rename12.c
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/rename/rename12.c,v
-retrieving revision 1.10
-diff -u -p -r1.10 rename12.c
---- testcases/kernel/syscalls/rename/rename12.c	23 Mar 2009 13:36:01 -0000	1.10
-+++ testcases/kernel/syscalls/rename/rename12.c	7 Jan 2010 10:52:49 -0000
-@@ -207,9 +207,6 @@ void setup()
- 	/* Create a temporary directory and make it current. */
- 	tst_tmpdir();
- 
--	/* give the write rights to all user */
--	chmod(".", 0777);
--
- 	umask(0);
- 
- 	sprintf(fdir, "./tdir_%d", getpid());
-Index: testcases/kernel/syscalls/rmdir/rmdir03.c
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/syscalls/rmdir/rmdir03.c,v
-retrieving revision 1.11
-diff -u -p -r1.11 rmdir03.c
---- testcases/kernel/syscalls/rmdir/rmdir03.c	23 Mar 2009 13:36:01 -0000	1.11
-+++ testcases/kernel/syscalls/rmdir/rmdir03.c	7 Jan 2010 10:52:49 -0000
-@@ -338,9 +338,6 @@ void setup()
- 	/* Create a temporary directory and make it current. */
- 	tst_tmpdir();
- 
--	/* give write permission to all users */
--	chmod(".", 0777);
--
- 	umask(0);
- 
- 	sprintf(tstdir1, "./tstdir1_%d", getpid());
-
---ew6BAiZeqk4r7MaW
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 This SF.Net email is sponsored by the Verizon Developer Community
 Take advantage of Verizon's best-in-class app development support
 A streamlined, 14 day to market process makes app distribution fast and easy
 Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
---ew6BAiZeqk4r7MaW
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+http://p.sf.net/sfu/verizon-dev2dev =
 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---ew6BAiZeqk4r7MaW--
-
