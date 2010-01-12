@@ -1,33 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1NSay2-00064i-VR
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 18:50:50 +0000
-Received: from e34.co.us.ibm.com ([32.97.110.152])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NSay1-0004YO-Sp
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 18:50:50 +0000
-Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
-	[9.17.195.107])
-	by e34.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o06Iiolh009972
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 Jan 2010 11:44:50 -0700
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o06IoLDm151758
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 Jan 2010 11:50:22 -0700
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o06IoKsh013120
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 Jan 2010 11:50:20 -0700
-Date: Wed, 6 Jan 2010 12:50:19 -0600
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20100106185019.GA19647@us.ibm.com>
-References: <1262791548.15424.31.camel@moss-pluto.epoch.ncsc.mil>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1NUWB3-0001ZW-10
+	for ltp-list@lists.sourceforge.net; Tue, 12 Jan 2010 02:08:13 +0000
+Received: from out04.sjc.mx.trendmicro.com ([216.99.131.8])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NUWB1-0002PP-Kw
+	for ltp-list@lists.sourceforge.net; Tue, 12 Jan 2010 02:08:12 +0000
+Received: from relay02.sjc.mx.trendmicro.com (unknown [10.30.239.6])
+	by out04.sjc.mx.trendmicro.com (Postfix) with ESMTP id 1E8D258C5CB
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 12 Jan 2010 02:08:04 +0000 (UTC)
+Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
+	by relay02.sjc.mx.trendmicro.com (Postfix) with ESMTP id 5D11195835
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 12 Jan 2010 02:08:03 +0000 (UTC)
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Tue, 12 Jan 2010 11:08:00 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Tue, 12 Jan 2010 11:08:00 +0900
+Message-ID: <000301ca932c$10f42400$32dc6c00$@co.jp>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1262791548.15424.31.camel@moss-pluto.epoch.ncsc.mil>
-Subject: Re: [LTP] regression:  selinux testsuite broken since October
+Content-Language: ja
+Subject: [LTP] "make clean" has problem?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,80 +38,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stephen Smalley <sds@tycho.nsa.gov>
-Cc: ltp-list@lists.sourceforge.net, James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>
+To: ltp-list@lists.sourceforge.net
 
-Quoting Stephen Smalley (sds@tycho.nsa.gov):
-> It seems the Makefile rewrite last October broke the selinux testsuite.
-> Is it unreasonable to expect that someone who rewrote the Makefile would
-> actually try running the testsuite?
-> 
-> Please, revert the changes or fix them.
-> 
-> See testcases/kernel/security/selinux-testsuite/README for the
-> instructions.
+Hi,
 
-Frankly I think reverting the Makefiles is best since it doesn't get
-auto-compiled anyway.  The new Makefile is much longer and more complicated
-for no apparent gain.
+There is a problem about "make clean"(./Makefile), I think.
+Before the following fix added at 12/11/2009, "/opt/ltp/" directory 
+was deleted by "make clean":
+http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/Makefile?r1=1.53&r2=1.54
+But after this fix, "make clean" could not remove "/opt/ltp/" directory.
 
-The following patch makes policy compilation work on rhel 5, but I doubt
-it'll work anywhere else.
+If we test new release cvs and there are fixes about permissions 
+in new cvs, we can't do the test correctly.
+Because, if "/opt/ltp/" directory remained and new cvs's file
+has same time-stamp and different permissions from old cvs's file,
+the install ended with "make: Nothing to be done for `install'." 
+message and this new file can't be installed.
+Then test cases that fixed about permissions ended in "FAIL".
+In recent cvs, To test correctly, we must remove "/opt/ltp/" directory
+by manual operation before trying "make install".
 
-Running the testsuite still fails due to the change to running ltp from
-a different dir (i.e.
-/usr/bin/chcon: /root/ltp-full-20091231/testcases/bin: No such file or directory
-).
+I think that it is right specification to remove "/opt/ltp/" directory
+when "make clean" is executed.
 
--serge
 
-diff -Nrup ltp-full-20091231.orig/testcases/kernel/security/selinux-testsuite/refpolicy/Makefile ltp-full-20091231/testcases/kernel/security/selinux-testsuite/refpolicy/Makefile
---- ltp-full-20091231.orig/testcases/kernel/security/selinux-testsuite/refpolicy/Makefile	2009-10-10 19:53:29.000000000 -0400
-+++ ltp-full-20091231/testcases/kernel/security/selinux-testsuite/refpolicy/Makefile	2010-01-06 13:43:19.000000000 -0500
-@@ -33,19 +33,16 @@ CHECKPOLICY_VERS	?= $(shell $(CHECKPOLIC
+This problem occurred because "INSTALL_IN_BUILD_TREE := 1" is defined
+in "./include/mk/env_pre.mk" included in "${LTPROOT}/Makefile", I think.
+"$(prefix)" of a judgment of "ifeq ($(strip $(DESTDIR)$(prefix)),)"
+doesn't have value, therefor the result of the judgment becomes "true",
+and "INSTALL_IN_BUILD_TREE := 1" was defined.
+
+So, it is neccessary to define "$(prefix)" by including "./include/mk/
+config.mk" before including "./include/mk/env_pre.mk", isn't it?
+
+
+The following patch can fix this problem:
+============
+--- Makefile.orig	2010-01-09 17:37:04.000000000 +0900
++++ Makefile	2010-01-12 09:49:29.000000000 +0900
+@@ -27,6 +27,7 @@
  
- CLEAN_TARGETS		:= test_policy.te
+ top_srcdir		?= $(CURDIR)
  
--INSTALL_TARGETS		:= *.te
-+INSTALL_TARGETS		:= $(REDHAT_VERS)/*.te
-+INSTALL_TARGETS_FULL	:= $(builddir)/redhat/$(REDHAT_VERS)/*.te
++include $(top_srcdir)/include/mk/config.mk
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(top_srcdir)/include/mk/automake.mk
  
- ifeq ($(CHECKPOLICY_VERS),24)
- INSTALL_TARGETS		:= $(filter-out %/test_bounds.te,$(INSTALL_TARGETS))
-+INSTALL_TARGES_FULL		:= $(filter-out %/test_bounds.te,$(INSTALL_TARGES_FULL))
- endif
- 
- TE_SRCDIR		:= $(abs_srcdir)
- 
--ifeq (redhat-release-, $(findstring redhat-release-, $(REDHAT_RELEASE)))
--ifneq ($(wildcard $(abs_srcdir)/redhat/$(REDHAT_VER)),)
--TE_SRCDIR		:= $(abs_srcdir)/redhat/$(REDHAT_VER)
--endif
--endif
- 
- .PHONY: all clean cleanup install load
- 
-@@ -60,14 +57,18 @@ cleanup:
- install: all
- 
- # load remains for backwards compatibility...
--load: $(builddir)/test_policy.te
-+load:
-+ifeq (redhat-release-, $(findstring redhat-release-, $(REDHAT_RELEASE)))
-+	$(MAKE) -C redhat/$(REDHAT_VERS)
-+else
- 	@if [ -d "$(POLICYDEVEL)" ]; then \
--	    cp -p $(builddir)/test_policy.* $(INSTALL_TARGETS) $(POLICY_DEVEL); \
-+	    cp -p $(builddir)/test_policy.* $(INSTALL_TARGETS_FULL) $(POLICYDEVEL); \
- 	    $(MAKE) -C $(POLICYDEVEL) clean test_policy.pp; \
- 	    $(SEMODULE) -i $(POLICYDEVEL)/test_policy.pp; \
- 	else \
-             echo "ERROR: You must have selinux-policy-devel installed."; \
- 	fi
-+endif
- 
- $(builddir)/test_policy.te:
- 	(cd "$(TE_SRCDIR)" && cat $(INSTALL_TARGETS)) > "$@";
+============
+
+
+Thank you--
+
+
+-Tomonori Mitani
+
+
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
