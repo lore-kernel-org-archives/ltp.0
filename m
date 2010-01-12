@@ -2,19 +2,27 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <miaox@cn.fujitsu.com>) id 1NVKXi-0006SP-Fi
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 07:54:58 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	(envelope-from <sds@tycho.nsa.gov>) id 1NUm9Z-0002gP-HV
+	for ltp-list@lists.sourceforge.net; Tue, 12 Jan 2010 19:11:45 +0000
+Received: from msux-gh1-uea01.nsa.gov ([63.239.67.1])
 	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NVKXh-0000P6-2e
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 07:54:58 +0000
-Message-ID: <4B4ECD70.8000102@cn.fujitsu.com>
-Date: Thu, 14 Jan 2010 15:53:20 +0800
-From: Miao Xie <miaox@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] fix the bug of sched_getaffinity in
-	cpuset_syscall_test
-Reply-To: miaox@cn.fujitsu.com
+	id 1NUm9X-0003Wl-2O
+	for ltp-list@lists.sourceforge.net; Tue, 12 Jan 2010 19:11:45 +0000
+From: Stephen Smalley <sds@tycho.nsa.gov>
+In-Reply-To: <364299f41001120926s45ab6b24i485a0fd0ba499f41@mail.gmail.com>
+References: <364299f41001081338u37e77cd3q3d9535f3dec71331@mail.gmail.com>
+	<20100111195043.GA23360@us.ibm.com>
+	<1263239706.5091.11.camel@moss-pluto.epoch.ncsc.mil>
+	<20100111201936.GA24711@us.ibm.com> <20100111205858.GA26412@us.ibm.com>
+	<20100111210006.GA26554@us.ibm.com> <20100111213100.GA28138@us.ibm.com>
+	<1263302168.14187.13.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001120855r653842d3x630cdaa6ec4129b6@mail.gmail.com>
+	<364299f41001120919w3b56bfefoc5b7a1e6a4e96f1@mail.gmail.com>
+	<364299f41001120926s45ab6b24i485a0fd0ba499f41@mail.gmail.com>
+Date: Tue, 12 Jan 2010 14:12:35 -0500
+Message-Id: <1263323555.16277.11.camel@moss-pluto.epoch.ncsc.mil>
+Mime-Version: 1.0
+Subject: Re: [LTP] regression: selinux testsuite broken since October
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,116 +35,169 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>
-Cc: LTP-ML <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>, ltp-list@lists.sourceforge.net
 
-The 5th and 6th testcases of cpuset05 test failed because the len of cpu_set_t in the glibc is
-smaller than the length of the cpumask in the kernel. So we must use the dynamically sized CPU
-sets instead of the standard cpu_set_t.
+On Tue, 2010-01-12 at 09:26 -0800, Garrett Cooper wrote:
+> > Also, if you guys can try out this patch for refpolicy/Makefile, I'd
+> > prefer to check it in (it unifies the RHEL 4.x and `generic' refpolicy
+> > Make logic):
+> >
+> > Index: refpolicy/Makefile
+> > ===================================================================
+> > RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/selinux-testsuite/refpolicy/Makefile,v
+> > retrieving revision 1.12
+> > diff -u -r1.12 Makefile
+> > --- refpolicy/Makefile  8 Jan 2010 09:39:20 -0000       1.12
+> > +++ refpolicy/Makefile  12 Jan 2010 17:17:27 -0000
+> > @@ -17,7 +17,7 @@
+> >  #    with this program; if not, write to the Free Software Foundation, Inc.,
+> >  #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> >  #
+> > -# Garrett Cooper, August 2009
+> > +# Garrett Cooper, January 2010
+> >  #
+> >
+> >  top_srcdir             ?= ../../../../..
+> > @@ -32,6 +32,7 @@
+> >
+> >  DISTRO_VER             := $(shell $(top_srcdir)/scripts/detect_distro.sh $(ARGS))
+> >
+> > +# Avoid empty strings.
+> >  ifeq ($(strip $(DISTRO_VER)),)
+> >  DISTRO_VER             := generic
+> >  endif
+> > @@ -41,10 +42,17 @@
+> >  POLICY_DEVEL_DIR       ?= $(DESTDIR)/usr/share/selinux/devel
+> >  SEMODULE               ?= $(DESTDIR)/usr/sbin/semodule
+> >
+> > -INSTALL_DIR            := testcases/kernel/security/selinux-testsuite
+> > +INSTALL_DIR            := testcases/selinux-testsuite/refpolicy
+> >
+> >  TEST_POLICY_DIR                := $(abs_srcdir)/policy_files
+> >
+> > +# Do we have a special set of policies in the SCM to install?
+> > +ifneq ($(wildcard $(TEST_POLICY_DIR)/$(DISTRO_VER)/),)
+> > +TEST_POLICY_DIR                := $(TEST_POLICY_DIR)/$(DISTRO_VER)
+> > +else
+> > +TEST_POLICY_DIR                := $(TEST_POLICY_DIR)/generic
+> > +endif
+> > +
+> >  .PHONY: all clean cleanup install load
+> >
+> >  CLEAN_DEPS             := cleanup
+> > @@ -55,34 +63,24 @@
+> >        -$(SEMODULE) -r test_policy
+> >        $(RM) -f $(POLICY_DEVEL_DIR)/test_policy.* test_policy.te
+> >
+> > -ifneq ($(wildcard $(TEST_POLICY_DIR)/$(DISTRO_VER)/Makefile),)
+> > -MAKE_TARGETS           :=
+> > -
+> > -TEST_POLICY_DIR                := $(TEST_POLICY_DIR)/$(DISTRO_VER)
+> > -
+> > -# load remains for backwards compatibility...
+> > -load:
+> > -       $(MAKE) -C $(TEST_POLICY_DIR)
+> > -else
+> > -
+> >  MAKE_TARGETS           := test_policy.te
+> >
+> > -TEST_POLICY_DIR                := $(TEST_POLICY_DIR)/generic
+> > -
+> > -POLICY_FILES           := test_global.te $(filter-out test_global.te,$(notdir
+> > $(wildcard $(TEST_POLICY_DIR)/*.te)))
+> > -
+> >  ifneq ($(CHECKPOLICY_VERS),24)
+> >  POLICY_FILES           := $(filter-out test_bounds.te,$(POLICY_FILES))
+> >  endif
+> >
+> > +# This is being done to preserve precedence; test_global.te must come first.
+> > +POLICY_FILES           := test_global.te \
+> > +                          $(filter-out test_global.te,$(notdir $(wildcard
+> > $(TEST_POLICY_DIR)/*.te)))
+> > +
+> >  load:
+> > -       @if [ -d "$(POLICY_DEVEL_DIR)" ]; then \
+> > -           cp -p $(TEST_POLICY_DIR)/test_policy.* $(POLICY_DEVEL_DIR); \
+> > +       @set -e; if [ -d "$(POLICY_DEVEL_DIR)" ]; then \
+> > +           cp -p test_policy.* $(POLICY_DEVEL_DIR); \
+> >            $(MAKE) -C $(POLICY_DEVEL_DIR) clean; \
+> >            $(MAKE) -C $(POLICY_DEVEL_DIR) test_policy.pp; \
+> >            $(SEMODULE) -i $(POLICY_DEVEL_DIR)/test_policy.pp; \
+> >        else \
+> > -            echo "ERROR: You must have selinux-policy-devel installed."; \
+> > +            echo "ERROR: You must have selinux-policy?-devel? installed."; \
+> >            false; \
+> >        fi
+> 
+> There's a stray endif on line 90 of refpolicy/Makefile that needs to
+> be deleted as well, FYI...
 
-This patch fix this problem.
-Before using this patch, the test result is following:
-cpuset05    5  TFAIL  :  Test task exited abnormally.(expect return value is 0)
-cpuset05    6  TFAIL  :  Test task exited abnormally.(expect return value is 0)
+Ok.  test policy appears to build (on Fedora) when running make by hand
+from the refpolicy directory, but you still can't run the tests, either
+from /opt/ltp or from the source tree.
 
-After using this patch, the test result is following:
-cpuset05    5  TPASS  :  Cpuset vs systemcall test succeeded.
-cpuset05    6  TPASS  :  Cpuset vs systemcall test succeeded.
+# cd /opt/ltp/testscripts && ./test_selinux.sh 
+Running with security context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+/etc/selinux /opt/ltp
+/opt/ltp
+allow_domain_fd_use --> off
+allow_domain_fd_use exists setting
+building and installing test_policy module...
+./test_selinux.sh: line 92: cd: /opt/ltp/testcases/kernel/security/selinux-testsuite/refpolicy: No such file or directory
+make: *** No rule to make target `load'.  Stop.
+Failed to build and load test_policy module, aborting test run.
+/etc/selinux /opt/ltp
+/opt/ltp
 
-Signed-off-by: Miao Xie <miaox@cn.fujitsu.com>
----
- .../cpuset_syscall_test/cpuset_syscall_test.c      |   58 ++++++++++++++++++--
- 1 files changed, 52 insertions(+), 6 deletions(-)
+# cd LTP_SRCDIR/testscripts && ./test_selinux.sh
+Running with security context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+/etc/selinux /home/sds/ltp
+/home/sds/ltp
+allow_domain_fd_use --> off
+allow_domain_fd_use exists setting
+building and installing test_policy module...
+make[1]: Entering directory `/usr/share/selinux/devel'
+rm -fR tmp
+rm -f *.pp
+make[1]: Leaving directory `/usr/share/selinux/devel'
+make[1]: Entering directory `/usr/share/selinux/devel'
+Compiling targeted test_policy module
+/usr/bin/checkmodule:  loading policy configuration from tmp/test_policy.tmp
+/usr/bin/checkmodule:  policy configuration loaded
+/usr/bin/checkmodule:  writing binary representation (version 10) to tmp/test_policy.mod
+Creating targeted test_policy.pp policy package
+rm tmp/test_policy.mod tmp/test_policy.mod.fc
+make[1]: Leaving directory `/usr/share/selinux/devel'
+Successfully built and loaded test_policy module.
+/etc/selinux /home/sds/ltp/testcases/kernel/security/selinux-testsuite/refpolicy
+/home/sds/ltp/testcases/kernel/security/selinux-testsuite/refpolicy
+Running the SELinux testsuite...
+ls: cannot access /home/sds/ltp/testcases/bin: No such file or directory
+/usr/bin/chcon: cannot access `/home/sds/ltp/testcases/bin': No such file or directory
+./test_selinux.sh: line 119: /home/sds/ltp/bin/ltp-pan: No such file or directory
+/usr/bin/chcon: missing operand
+Try `/usr/bin/chcon --help' for more information.
+Removing test_policy module...
+/usr/sbin/semodule -r test_policy
+rm -f -f /usr/share/selinux/devel/test_policy.* test_policy.te
+allow_domain_fd_use --> off
+allow_domain_fd_use exists setting
+Done.
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
-index 77bb7d7..c0aada7 100644
---- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
-+++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
-@@ -57,6 +57,10 @@ int test = -1;
- int flag_exit;
- int ret;
- 
-+#if !(__GLIBC_PREREQ(2, 7))
-+#define CPU_FREE(ptr) free(ptr)
-+#endif
-+
- /* Policies for set_mempolicy() */
- #define MPOL_DEFAULT     0
- #define MPOL_PREFERRED   1
-@@ -161,14 +165,56 @@ void test_setaffinity(void)
- 
- void test_getaffinity(void)
- {
--	cpu_set_t tmask;
--	int i;
--	CPU_ZERO(&tmask);
--	ret = sched_getaffinity(0, sizeof(tmask), &tmask);
--	for (i = 0; i < 8 * sizeof(mask); i++) {
--		if (CPU_ISSET(i, &tmask))
-+	cpu_set_t *tmask;
-+	int i, nrcpus = 1024;
-+	size_t size;
-+
-+#if __GLIBC_PREREQ(2, 7)
-+realloc:
-+	tmask = CPU_ALLOC(nrcpus);
-+#else
-+	tmask = malloc(sizeof(cpu_set_t));
-+#endif
-+	if (tmask == NULL) {
-+		warn("CPU_ALLOC:errno:%d", errno);
-+		ret = -1;
-+		return;
-+	}
-+
-+#if __GLIBC_PREREQ(2, 7)
-+	size = CPU_ALLOC_SIZE(nrcpus);
-+	CPU_ZERO_S(size, tmask);
-+#else
-+	size = sizeof(cpu_set_t);
-+	CPU_ZERO(tmask);
-+#endif
-+
-+	ret = sched_getaffinity(0, size, tmask);
-+	if (ret < 0) {
-+		CPU_FREE(tmask);
-+#if __GLIBC_PREREQ(2, 7)
-+		if (errno == EINVAL && nrcpus < (1024 << 8)) {
-+			nrcpus = nrcpus << 2;
-+			ret = 0;
-+			goto realloc;
-+		}
-+#else
-+		if (errno == EINVAL)
-+			warn("NR_CPUS of the kernel is more than 1024, so we'd better use a newer glibc(>= 2.7)");
-+		else
-+#endif
-+			warn("sched_getaffinity:errno:%d", errno);
-+		return;
-+	}
-+	for (i = 0; i < 8 * size; i++) {
-+#if __GLIBC_PREREQ(2, 7)
-+		if (CPU_ISSET_S(i, size, tmask))
-+#else
-+		if (CPU_ISSET(i, tmask))
-+#endif
- 			printf("%d,", i);
- 	}
-+	CPU_FREE(tmask);
- }
- 
- void test_mbind(void)
+Both test_selinux.sh and tests/runtest.sh need to be updated.
+
 -- 
-1.6.5.2
-
+Stephen Smalley
+National Security Agency
 
 
 ------------------------------------------------------------------------------
-Throughout its 18-year history, RSA Conference consistently attracts the
-world's best and brightest in the field, creating opportunities for Conference
-attendees to learn about information security's most important issues through
-interactions with peers, luminaries and emerging and established companies.
-http://p.sf.net/sfu/rsaconf-dev2dev
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
