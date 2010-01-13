@@ -1,22 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sds@tycho.nsa.gov>) id 1NSxxe-00057R-HT
-	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 19:23:58 +0000
-Received: from msux-gh1-uea02.nsa.gov ([63.239.67.2])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NSxxd-0006SY-Cd
-	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 19:23:58 +0000
-From: Stephen Smalley <sds@tycho.nsa.gov>
-In-Reply-To: <364299f41001070105p3bf32bbdwff0edf9315c333da@mail.gmail.com>
-References: <1262791548.15424.31.camel@moss-pluto.epoch.ncsc.mil>
-	<20100106185837.GA20097@us.ibm.com>
-	<364299f41001070105p3bf32bbdwff0edf9315c333da@mail.gmail.com>
-Date: Thu, 07 Jan 2010 14:23:29 -0500
-Message-Id: <1262892209.2821.28.camel@moss-pluto.epoch.ncsc.mil>
-Mime-Version: 1.0
-Subject: Re: [LTP] regression: selinux testsuite broken since October
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NV8BN-0002tC-AL
+	for ltp-list@lists.sourceforge.net; Wed, 13 Jan 2010 18:43:05 +0000
+Received: from mail-px0-f171.google.com ([209.85.216.171])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NV8BL-0008RU-Sa
+	for ltp-list@lists.sourceforge.net; Wed, 13 Jan 2010 18:43:05 +0000
+Received: by pxi1 with SMTP id 1so7109884pxi.25
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 13 Jan 2010 10:42:57 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20100113183344.GA361348@medusa.sis.pasteur.fr>
+References: <4B46D5F0.3090801@teldevice.co.jp>
+	<20100108112534.GA333981@medusa.sis.pasteur.fr>
+	<4B471F8D.7010907@teldevice.co.jp>
+	<1263392362.5591.27.camel@subratamodak.linux.ibm.com>
+	<364299f41001130952o6a57acd1m1544399fab0cb7f1@mail.gmail.com>
+	<20100113183344.GA361348@medusa.sis.pasteur.fr>
+Date: Wed, 13 Jan 2010 10:42:56 -0800
+Message-ID: <364299f41001131042l1c5b6b15qb6cdc9c4aa0b2483@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] LTP installation configure Error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,83 +32,109 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>, ltp-list@lists.sourceforge.net
+To: Nicolas Joly <njoly@pasteur.fr>
+Cc: TED ITC Agarwal Ashish <ashish.g@teldevice.co.jp>, ltp-list@lists.sourceforge.net
 
-On Thu, 2010-01-07 at 01:05 -0800, Garrett Cooper wrote:
-> On Wed, Jan 6, 2010 at 10:58 AM, Serge E. Hallyn <serue@us.ibm.com> wrote:
-> > Quoting Stephen Smalley (sds@tycho.nsa.gov):
-> >> It seems the Makefile rewrite last October broke the selinux testsuite.
-> >> Is it unreasonable to expect that someone who rewrote the Makefile would
-> >> actually try running the testsuite?
-> >>
-> >> Please, revert the changes or fix them.
-> >>
-> >> See testcases/kernel/security/selinux-testsuite/README for the
-> >> instructions.
-> >
-> > Ok, Garrett, two particular scripts that are broken since the move
-> > to running out of /opt/ltp are
-> >        test_robind.sh
-> >        test_selinux.sh
-> >
-> > Guidance?
-> 
->     I need output in order to judge what needs to be fixed. Gentoo
-> doesn't have a selinux policy package (at least not in portage), thus
-> I cannot run the tests as they're Redhat centric.
+On Wed, Jan 13, 2010 at 10:33 AM, Nicolas Joly <njoly@pasteur.fr> wrote:
+> On Wed, Jan 13, 2010 at 09:52:37AM -0800, Garrett Cooper wrote:
+> [...]
+>> > Please see this patch and kindly make changes accordingly.
+>>
+>> I don't know what you want to do about the compiler optimization bug,
+>> but I made the AC_MSG_WARN AC_MSG_ERROR on purpose because I _wanted_
+>> to catch cases that the autoconf test didn't cover so the test itself
+>> could be improved. Would you please:
+>>
+>> 1. Provide your config.log.
+>
+> Here follow the relevant parts.
+>
+> njoly@lanfeust [linux:ltp] $ ./configure
+> [...]
+> checking numaif.h usability... no
+> checking numaif.h presence... no
+> checking for numaif.h... no
+> configure: error: Couldn't find functional copy of quota v2 - are you run=
+ning 2.4.x?
+>
+> config.log:
+>
+> configure:8448: gcc -c -g -O2 =A0conftest.c >&5
+> conftest.c: In function `main':
+> conftest.c:51: error: `Q_GETINFO' undeclared (first use in this function)
+> conftest.c:51: error: (Each undeclared identifier is reported only once
+> conftest.c:51: error: for each function it appears in.)
+> configure:8455: $? =3D 1
+> configure: failed program was:
+> | /* confdefs.h. =A0*/
+> | #define PACKAGE_NAME "ltp"
+> | #define PACKAGE_TARNAME "ltp"
+> [...]
+> | #define HAVE_ASM_LDT_H 1
+> | #define HAVE_STRUCT_USER_DESC 1
+> | /* end confdefs.h. =A0*/
+> |
+> | #define _LINUX_QUOTA_VERSION 2
+> | #include <sys/types.h>
+> | #include <sys/quota.h>
+> | #include <unistd.h>
+> | int
+> | main ()
+> | {
+> |
+> | int main(void) {
+> | =A0 =A0 =A0 struct dqblk dq;
+> | =A0 =A0 =A0 return quotactl(Q_GETINFO, (const char *) "/dev/null", gete=
+uid(),
+> | =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (caddr_t) &dq);
+> | }
+> | =A0 ;
+> | =A0 return 0;
+> | }
+> configure:8465: error: Couldn't find functional copy of quota v2 - are yo=
+u running 2.4.x ?
+>
+>> 2. Do `man 2 quotactl' and provide a description of what the function
+>> #include requirements are?
+>
+> QUOTACTL(2) =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0Linux Programmer's Manual =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0 QUOTACTL(2)
+>
+> NAME
+> =A0 =A0 =A0 quotactl - manipulate disk quota
+>
+> SYNOPSIS
+> =A0 =A0 =A0 #include <sys/types.h>
+> =A0 =A0 =A0 #include <sys/quota.h>
+>
+> =A0 =A0 =A0 int quotactl(int cmd, const char *special, int id, caddr_t ad=
+dr);
+>
+> =A0 =A0 =A0 #include <linux/unistd.h>
+>
+> =A0 =A0 =A0 #include <errno.h>
+>
+> =A0 =A0 =A0 _syscall4(int, =A0quotactl, =A0int, =A0cmd, =A0const char *, =
+special , int, id,
+> =A0 =A0 =A0 caddr_t, addr)
 
-To start, we need to get the test policy to build again.
+    Ok. Could you please attach your copies of
+/usr/include/linux/quota.h and /usr/include/sys/quota.h in a private
+email?
+Thanks,
+-Garrett
 
-Bad:
-$ cd testcases/kernel/security/selinux-testsuite/refpolicy/
-$ make
-(cd "/home/sds/ltp/testcases/kernel/security/selinux-testsuite/refpolicy" && cat *.te) > "test_policy.te";
-cat: test_policy.te: input file is output file
-make: *** [test_policy.te] Error 1
-
-Good:
-$ cvs update -r1.7 Makefile 
-P Makefile
-# make
-make[1]: Entering directory `/usr/share/selinux/devel'
-rm -fR tmp
-rm -f *.pp
-Compiling targeted test_policy module
-/usr/bin/checkmodule:  loading policy configuration from tmp/test_policy.tmp
-/usr/bin/checkmodule:  policy configuration loaded
-/usr/bin/checkmodule:  writing binary representation (version 10) to tmp/test_policy.mod
-Creating targeted test_policy.pp policy package
-rm tmp/test_policy.mod tmp/test_policy.mod.fc
-make[1]: Leaving directory `/usr/share/selinux/devel'
-
-I tried tweaking your Makefile to no avail.  Some obvious errors in the
-new Makefile:
-- It has mixed use of REDHAT_VERS and REDHAT_VER, POLICY_DEVEL and
-POLICYDEVEL.
-- test_bounds.te is only to be included if checkpolicy supports version
-24, not filtered out in that case.
-- Only test_policy.* is to be copied to $POLICYDEVEL, not the
-individual .te files that are concatenated into it.
-- test_policy.te should be regenerated every time or made conditional on
-all of the individual .te files _and_ the directory (in case a .te file
-is removed or added).  Less likely to miss if we just always regenerate
-it as in the original makefile.
-
--- 
-Stephen Smalley
-National Security Agency
-
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 This SF.Net email is sponsored by the Verizon Developer Community
 Take advantage of Verizon's best-in-class app development support
 A streamlined, 14 day to market process makes app distribution fast and easy
 Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+http://p.sf.net/sfu/verizon-dev2dev =
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
