@@ -1,23 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NVVKV-0002Tg-BN
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 19:26:03 +0000
-Received: from mail-px0-f200.google.com ([209.85.216.200])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NVVKU-0007dg-3f
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 19:26:03 +0000
-Received: by pxi38 with SMTP id 38so625101pxi.28
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 14 Jan 2010 11:25:50 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <5e088bd91001140916n6b6d9979m3847be14d86c7920@mail.gmail.com>
-References: <5e088bd91001140916n6b6d9979m3847be14d86c7920@mail.gmail.com>
-Date: Thu, 14 Jan 2010 11:25:50 -0800
-Message-ID: <364299f41001141125v56ef5ac0sfa58acd70b6e7775@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] ltp on OMAP3 embedded linux systems
+	(envelope-from <sds@tycho.nsa.gov>) id 1NVBIG-0006XF-Tj
+	for ltp-list@lists.sourceforge.net; Wed, 13 Jan 2010 22:02:24 +0000
+Received: from msux-gh1-uea01.nsa.gov ([63.239.67.1])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NVBIE-0003W1-Me
+	for ltp-list@lists.sourceforge.net; Wed, 13 Jan 2010 22:02:24 +0000
+From: Stephen Smalley <sds@tycho.nsa.gov>
+In-Reply-To: <20100113220021.GA838@us.ibm.com>
+References: <364299f41001120855r653842d3x630cdaa6ec4129b6@mail.gmail.com>
+	<364299f41001120919w3b56bfefoc5b7a1e6a4e96f1@mail.gmail.com>
+	<364299f41001120926s45ab6b24i485a0fd0ba499f41@mail.gmail.com>
+	<1263323555.16277.11.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001122251v49ec2743j6c57ada7bd6eaf3f@mail.gmail.com>
+	<1263390194.31509.4.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001131052s27019ebl53f4e3f76bb4598e@mail.gmail.com>
+	<1263410323.901.5.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001131137j36d1c665r45cb8b6163263428@mail.gmail.com>
+	<1263412198.901.11.camel@moss-pluto.epoch.ncsc.mil>
+	<20100113220021.GA838@us.ibm.com>
+Date: Wed, 13 Jan 2010 17:03:32 -0500
+Message-Id: <1263420212.901.64.camel@moss-pluto.epoch.ncsc.mil>
+Mime-Version: 1.0
+Subject: Re: [LTP] regression: selinux testsuite broken since October
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,62 +34,62 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Steve Sakoman <sakoman@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: "Serge E. Hallyn" <serue@us.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>
 
-Hi Steve!
+On Wed, 2010-01-13 at 16:00 -0600, Serge E. Hallyn wrote:
+> Quoting Stephen Smalley (sds@tycho.nsa.gov):
+> > On Wed, 2010-01-13 at 11:37 -0800, Garrett Cooper wrote:
+> > > Yeah, you're right. I was trying to beat around this bush by not
+> > > copying these over, but it's better to have the test running and be
+> > > improperly designed than it is for regressions to leak by today, until
+> > > the day comes where these items are fixed.
+> > > 
+> > > 1. So, Makefile is now copied over by default.
+> > > 2. load is no longer done as part of all / install (test_selinux.sh
+> > > was performing that function).
+> > > 
+> > > So once the tests have been written to make and install independent of
+> > > selinux-devel, etc... we'll be in good shape and I will switch these
+> > > back to all / install dependent targets. I was trying to do it that
+> > > way to avoid requiring make on the target under test, but I need to
+> > > better understand the subject matter under test before we get to that
+> > > point.
+> > 
+> > Unfortunately, as the Makefile now includes other .mk files and those
+> > are not copied over, it still doesn't work.
+> > 
+> > Makefile:25: ../../../../../include/mk/env_pre.mk: No such file or directory
+> > make: ../../../../../scripts/detect_distro.sh: Command not found
+> > Makefile:90: ../../../../../include/mk/generic_leaf_target.mk: No such file or directory
+> > make: *** No rule to make target `../../../../../include/mk/generic_leaf_target.mk'.  Stop.
+> > Failed to build and load test_policy module, aborting test run.
+> > /etc/selinux /opt/ltp/testcases/kernel/security/selinux-testsuite/refpolicy
+> > /opt/ltp/testcases/kernel/security/selinux-testsuite/refpolicy
+> > 
+> > I suppose you could perform the make load as part of all/install
+> > (preferably install as we really shouldn't need to be root to run make
+> > all - although that no longer seems to be the case for the main ltp
+> > either), and drop it from test_selinux.sh.  But then they will need to
+> > know/remember to remove the test policy when finished testing.
+> 
+> But really the compile stage should just create test_policy.pp,
+> which the testsuite can load and unload, right?
 
-On Thu, Jan 14, 2010 at 9:16 AM, Steve Sakoman <sakoman@gmail.com> wrote:
-> I've just begun working with ltp on an embedded linux platform
-> (OMAP3530, 256MB RAM, 8GB flash rootfs, ethernet, linux 2.6.32)
->
-> I'm using the December 2009 Stable version of ltp.
->
-> There was really only one glitch in the build process (looking for
-> libraries in an odd location) and I am now in the process of running
-> the test.
+Yes, that should work.
 
-Please -- if you find bugs CC the list so I can resolve them as soon
-as possible -- thanks :).
+-- 
+Stephen Smalley
+National Security Agency
 
-> I've found it necessary to disable a few tests because of hangs or
-> running out of memory (all of the clone syscall tests, msgctl10 and
-> 11, pipeio_5 and hackbench01)
 
-hackbench has issues running on resource limited architectures.
-msgctl10 also pounds the living stuffing out of the OS because it
-allocates so many processes. The clone tests? Maybe...
-
-> Is this typical for limited resource machines?
-
-Yes, but we may be able to fine tune these points to be more
-respecting for platforms with a lower amount of resources.
-
-> The test is still running. =A0Most tests are passing but there are more
-> failures than I would like to see. =A0Should I expect all of the tests
-> to pass on a machine like this?
-
-x86* is still the primary target architecture. I'd like to see the
-failures, but yes my Fedora 12 VM is LTP `result clean', whereas the
-MIPS and PPC 2.6.24* embedded devices at work have issues with some
-tests due to architectural bugs, kernel bugs, and some test bugs.
-
-Please let us know how it goes though so we can try and work out the
-issues with your ARM embedded DUT.
-
-Thanks!
--Garrett
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 Throughout its 18-year history, RSA Conference consistently attracts the
-world's best and brightest in the field, creating opportunities for Confere=
-nce
-attendees to learn about information security's most important issues throu=
-gh
+world's best and brightest in the field, creating opportunities for Conference
+attendees to learn about information security's most important issues through
 interactions with peers, luminaries and emerging and established companies.
 http://p.sf.net/sfu/rsaconf-dev2dev
 _______________________________________________
