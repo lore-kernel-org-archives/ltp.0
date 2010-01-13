@@ -1,32 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NVXGW-00086h-7g
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 21:30:04 +0000
-Received: from mail-pw0-f43.google.com ([209.85.160.43])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NVXGT-0008O1-Ln
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 21:30:03 +0000
-Received: by pwj11 with SMTP id 11so4693719pwj.2
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NV7Y6-0007LJ-KQ
+	for ltp-list@lists.sourceforge.net; Wed, 13 Jan 2010 18:02:30 +0000
+Received: from mail-px0-f171.google.com ([209.85.216.171])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NV7Y5-0004Pc-KI
+	for ltp-list@lists.sourceforge.net; Wed, 13 Jan 2010 18:02:30 +0000
+Received: by pxi1 with SMTP id 1so7073620pxi.25
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 14 Jan 2010 13:29:51 -0800 (PST)
+	Wed, 13 Jan 2010 10:02:24 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1263501847.8548.65.camel@moss-pluto.epoch.ncsc.mil>
-References: <364299f41001120855r653842d3x630cdaa6ec4129b6@mail.gmail.com>
-	<364299f41001131137j36d1c665r45cb8b6163263428@mail.gmail.com>
-	<1263412198.901.11.camel@moss-pluto.epoch.ncsc.mil>
-	<20100113220021.GA838@us.ibm.com>
-	<1263420212.901.64.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001131449w751889b8r98aca16ea1e8957a@mail.gmail.com>
-	<1263478021.8548.3.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001141210o49c97980yc703601e7340362f@mail.gmail.com>
-	<1263501350.8548.60.camel@moss-pluto.epoch.ncsc.mil>
-	<1263501847.8548.65.camel@moss-pluto.epoch.ncsc.mil>
-Date: Thu, 14 Jan 2010 13:29:51 -0800
-Message-ID: <364299f41001141329j25c85101u37f2eda55faf04b9@mail.gmail.com>
+In-Reply-To: <1263401574.7900.12.camel@lucio-t400>
+References: <000001ca79f4$7869a110$693ce330$@co.jp>
+	<135282C4-83A6-43D5-9D26-D711482A88A1@gmail.com>
+	<1263235304.18451.3.camel@lucio-t400>
+	<364299f41001120221g65e8a98dy9360c1d35238b469@mail.gmail.com>
+	<1263401574.7900.12.camel@lucio-t400>
+Date: Wed, 13 Jan 2010 10:02:23 -0800
+Message-ID: <364299f41001131002w26512687m373fbe63aadcb0fa@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] regression: selinux testsuite broken since October
+Subject: Re: [LTP] "libevent01" test failure with ltp-2009-12-10 cvs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,134 +34,121 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stephen Smalley <sds@tycho.nsa.gov>
-Cc: Eric Paris <eparis@parisplace.org>, James Morris <jmorris@namei.org>, ltp-list@lists.sourceforge.net
+To: ljhc@br.ibm.com
+Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Jan 14, 2010 at 12:44 PM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
-> On Thu, 2010-01-14 at 15:35 -0500, Stephen Smalley wrote:
->> I guess I'm not being clear. =A0Most of the work presently done by 'load'
->> can be done during make all/install. =A0In particular, everything except
->> for running semodule -i can be done during make all, and then make
->> install should just copy test_policy.pp (the output of make all) to
->> the /opt/ltp tree. =A0Then test_selinux.sh only needs to run semodule
->> -i /path/to/test_policy.pp before the tests and semodule -r test_policy
->> afterward. =A0We can also avoid copying test_policy.te to the system
->> policy devel directory altogether. =A0Something like this patch (and
->> Makefile.selinux can then be removed altogether):
+On Wed, Jan 13, 2010 at 8:52 AM, Lucio Correia <ljhc@br.ibm.com> wrote:
+> Hi Garrett,
 >
-> Oops, wrong variable expansion syntax in test_selinux.sh. =A0Corrected
-> patch is below. =A0This one actually runs ;)
+> I'm running on a ppc64 machine.
 >
-> Index: testscripts/test_selinux.sh
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> RCS file: /cvsroot/ltp/ltp/testscripts/test_selinux.sh,v
-> retrieving revision 1.15
-> diff -u -r1.15 test_selinux.sh
-> --- testscripts/test_selinux.sh 13 Jan 2010 18:50:53 -0000 =A0 =A0 =A01.15
-> +++ testscripts/test_selinux.sh 14 Jan 2010 20:41:22 -0000
-> @@ -89,11 +89,10 @@
-> =A0config_allow_domain_fd_use 0
+> >From ltp all tests run .log file:
 >
-> =A0# build and install the test policy...
-> -echo "building and installing test_policy module..."
-> -cd $POLICYDIR
-> -make load
-> +echo "installing test_policy module..."
-> +$SEMODULE -i $POLICYDIR/test_policy.pp
-> =A0if [ $? !=3D 0 ]; then
-> - =A0 =A0 =A0 echo "Failed to build and load test_policy module, aborting=
- test run."
-> + =A0 =A0 =A0 echo "Failed to install load test_policy module, aborting t=
-est run."
-> =A0 =A0 =A0 =A0config_unset_expandcheck
-> =A0 =A0 =A0 =A0exit 1
-> =A0else
-> @@ -126,8 +125,7 @@
-> =A0/usr/bin/chcon -t $SAVEBINTYPE $LTPROOT/testcases/bin
+> lchown02 =A0 =A07 =A0TPASS =A0: =A0lchown() fails, Path contains regular =
+file,
+> errno:20
+> sh: run_libevent.sh: command not found
+> link01 =A0 =A0 =A01 =A0TPASS =A0: =A0link(2) to a symbolic link, which is=
+ pointing
+> to an existing object file worked - file created and link count adjusted
 >
-> =A0echo "Removing test_policy module..."
-> -cd $POLICYDIR
-> -make cleanup 2>&1
-> +$SEMODULE -r test_policy
-> =A0if [ $? !=3D 0 ]; then
-> =A0 =A0 =A0 =A0echo "Failed to remove test_policy module."
-> =A0 =A0 =A0 =A0exit 1
-> Index: testcases/kernel/security/selinux-testsuite/refpolicy/Makefile
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/selinux-testsuite/re=
-fpolicy/Makefile,v
-> retrieving revision 1.17
-> diff -u -r1.17 Makefile
-> --- testcases/kernel/security/selinux-testsuite/refpolicy/Makefile =A0 =
-=A0 =A014 Jan 2010 12:40:58 -0000 =A0 =A0 =A01.17
-> +++ testcases/kernel/security/selinux-testsuite/refpolicy/Makefile =A0 =
-=A0 =A014 Jan 2010 20:41:22 -0000
-> @@ -39,10 +39,11 @@
+> I searched for run_libevent.sh and found it
+> at /opt/ltp/testcases/bin/libevent dir.
 >
-> =A0CHECKPOLICY =A0 =A0 =A0 =A0 =A0 =A0?=3D $(DESTDIR)/usr/bin/checkpolicy
-> =A0CHECKPOLICY_VERS =A0 =A0 =A0 ?=3D $(shell $(CHECKPOLICY) -V |cut -f 1 =
--d ' ')
-> +POLICY_DEVEL_DIR =A0 =A0 =A0 ?=3D $(DESTDIR)/usr/share/selinux/devel
+> I'm running it manually by (same commands .failcmdfile gives):
 >
-> =A0INSTALL_DIR =A0 =A0 =A0 =A0 =A0 =A0:=3D testcases/kernel/security/seli=
-nux-testsuite/refpolicy
+> # export LTPROOT; run_libevent.sh
+> bash: run_libevent.sh: command not found
+> # export LTPROOT; ./testcases/bin/libevent/run_libevent.sh
+> Running tests:
+> KQUEUE
+> Skipping test
+> POLL
+> Skipping test
+> SELECT
+> Skipping test
+> RTSIG
+> Skipping test
+> EPOLL
+> Skipping test
+> libevent01 =A0 =A00 =A0TINFO =A0: =A0Cleaning up.
 >
-> -INSTALL_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D Makefile.selinux
-> +INSTALL_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D test_policy.pp
->
-> =A0TEST_POLICY_DIR =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D $(abs_srcdir)/poli=
-cy_files
->
-> @@ -63,8 +64,17 @@
-> =A0POLICY_FILES =A0 =A0 =A0 =A0 =A0 :=3D test_global.te \
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 $(filter-out test_glo=
-bal.te,$(notdir $(wildcard $(TEST_POLICY_DIR)/*.te)))
->
-> +all: test_policy.pp
-> +
-> +test_policy.pp: test_policy.te
-> + =A0 =A0 =A0 @set -e; if [ -d "$(POLICY_DEVEL_DIR)" ]; then \
-> + =A0 =A0 =A0 =A0 =A0 $(MAKE) -f $(POLICY_DEVEL_DIR)/Makefile test_policy=
-.pp; \
-> + =A0 =A0 =A0 else \
-> + =A0 =A0 =A0 =A0 =A0 =A0echo "ERROR: You must have selinux-policy?-devel=
-? installed."; \
-> + =A0 =A0 =A0 =A0 =A0 false; \
-> + =A0 =A0 =A0 fi
-> +
-> =A0test_policy.te: $(addprefix $(TEST_POLICY_DIR)/,$(POLICY_FILES))
-> =A0 =A0 =A0 =A0(cd "$(TEST_POLICY_DIR)" && cat $(POLICY_FILES)) > $@
->
-> =A0include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> -include $(abs_srcdir)/Makefile.selinux
+> Thanks,
 
-Cool! This is a lot easier than I originally thought it would be.
+What's your $PATH, and where do you expect it to be? I ask because the
+runtest file is doing the right thing today:
 
-Everything specified with all should be specified instead with the
-MAKE_TARGETS variable. This is because it adds everything in
-MAKE_TARGETS to variables (CLEAN_TARGETS, INSTALL_TARGETS), which then
-handle it appropriately via clean and install.
+optimus ltp # grep -r run_libevent.sh runtest/
+runtest/syscalls:libevent01 export LTPROOT;
+$LTPROOT/testcases/bin/libevent/run_libevent.sh
 
-All I have to do after this is resolve the (semodule?) security bit
-enabling for the tests, and we'll be in good shape for all build,
-install, and test scenarios with selinux.
-
-Thanks!
+Thanks,
 -Garrett
+
+> On Tue, 2010-01-12 at 02:21 -0800, Garrett Cooper wrote:
+>> On Mon, Jan 11, 2010 at 10:41 AM, Lucio Correia <ljhc@br.ibm.com> wrote:
+>> > Hi Garrett,
+>> >
+>> > I'm still running into this issue with LTP-20091231
+>>
+>> Hi Lucio,
+>> What's the error message and how are you trying to run the test?
+>> Thanks,
+>> -Garrett
+>>
+>> > On Fri, 2009-12-11 at 01:56 -0800, Garrett Cooper wrote:
+>> >> On Dec 10, 2009, at 3:57 PM, Mitani wrote:
+>> >>
+>> >> > Hi,
+>> >> >
+>> >> > I got following message when I ran test of "libevent01" with
+>> >> > ltp-2009-12-10 cvs.
+>> >> >
+>> >> > ------------
+>> >> > sh: run_libevent.sh: command not found
+>> >> > ------------
+>> >> >
+>> >> > This occured because "run_libevent.sh" was not installed under the
+>> >> > "/opt/ltp" directory, I think.
+>> >> >
+>> >> > Certainly, this test successed when I copied
+>> >> > "${LTPROOT}/testcases/kernel/syscalls/libevent/run_libevent.sh" file
+>> >> > to the "/opt/ltp/testcases/bin" directory.
+>> >> >
+>> >> > So, I want to suggest the following revision:
+>> >> >
+>> >> > 1. Install "run_libevent.sh" to under the "/opt/ltp/testcases/bin"
+>> >> > =A0 directory by default.
+>> >> > =A0(I don't know how to revise Makefile etc.)
+>> >> >
+>> >> > 2. Apply the following patch to "run_libevent.sh".
+>> >> >
+>> >> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> >> > --- run_libevent.sh 2009-11-20 04:08:36.000000000 +0900
+>> >> > +++ run_libevent.sh.new =A0 =A0 2009-12-10 16:44:02.000000000 +0900
+>> >> > @@ -31,7 +31,7 @@
+>> >> > =A0 =A0 tst_resm TCONF "You need to be root to run these tests"
+>> >> > =A0 =A0 TST_EXIT=3D0
+>> >> > else
+>> >> > - =A0 "$LTPROOT/testcases/bin/tests/test-libevent.sh"
+>> >> > + =A0 "$LTPROOT/testcases/bin/libevent/test/test-libevent.sh"
+>> >> > =A0 =A0 TST_EXIT=3D$?
+>> >> > fi
+>> >> > tst_cleanup
+>> >> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> >>
+>> >> Done -- thanks!
+>
+>
 
 ---------------------------------------------------------------------------=
 ---
-Throughout its 18-year history, RSA Conference consistently attracts the
-world's best and brightest in the field, creating opportunities for Confere=
-nce
-attendees to learn about information security's most important issues throu=
-gh
-interactions with peers, luminaries and emerging and established companies.
-http://p.sf.net/sfu/rsaconf-dev2dev
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev =
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
