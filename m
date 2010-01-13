@@ -1,30 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sds@tycho.nsa.gov>) id 1NaDEu-0007de-40
-	for ltp-list@lists.sourceforge.net; Wed, 27 Jan 2010 19:07:44 +0000
-Received: from msux-gh1-uea01.nsa.gov ([63.239.67.1])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NaDEr-0007rT-M5
-	for ltp-list@lists.sourceforge.net; Wed, 27 Jan 2010 19:07:44 +0000
-From: Stephen Smalley <sds@tycho.nsa.gov>
-In-Reply-To: <23804BFE-0FC7-45F8-939D-3729E39DB431@gmail.com>
-References: <1262988051.20881.42.camel@moss-pluto.epoch.ncsc.mil>
-	<1263237132.5091.1.camel@moss-pluto.epoch.ncsc.mil>
-	<20100111195043.GA23360@us.ibm.com>
-	<1263239706.5091.11.camel@moss-pluto.epoch.ncsc.mil>
-	<20100111201936.GA24711@us.ibm.com> <20100111205858.GA26412@us.ibm.com>
-	<20100111210006.GA26554@us.ibm.com>
-	<364299f41001120029x15b2e7adwe30d925717a1dc89@mail.gmail.com>
-	<20100112153827.GB7975@us.ibm.com>
-	<364299f41001150948u4df35c36g3d4b07b16af49f90@mail.gmail.com>
-	<364299f41001260031h2529b9b0j1bbbacd9d3d85eae@mail.gmail.com>
-	<1264516245.19890.22.camel@moss-pluto.epoch.ncsc.mil>
-	<23804BFE-0FC7-45F8-939D-3729E39DB431@gmail.com>
-Date: Wed, 27 Jan 2010 14:12:28 -0500
-Message-Id: <1264619548.17372.27.camel@moss-pluto.epoch.ncsc.mil>
-Mime-Version: 1.0
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NV92B-0004P1-1P
+	for ltp-list@lists.sourceforge.net; Wed, 13 Jan 2010 19:37:39 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NV928-0005d3-5h
+	for ltp-list@lists.sourceforge.net; Wed, 13 Jan 2010 19:37:38 +0000
+Received: by pwj11 with SMTP id 11so3699272pwj.2
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 13 Jan 2010 11:37:28 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1263410323.901.5.camel@moss-pluto.epoch.ncsc.mil>
+References: <364299f41001081338u37e77cd3q3d9535f3dec71331@mail.gmail.com>
+	<1263302168.14187.13.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001120855r653842d3x630cdaa6ec4129b6@mail.gmail.com>
+	<364299f41001120919w3b56bfefoc5b7a1e6a4e96f1@mail.gmail.com>
+	<364299f41001120926s45ab6b24i485a0fd0ba499f41@mail.gmail.com>
+	<1263323555.16277.11.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001122251v49ec2743j6c57ada7bd6eaf3f@mail.gmail.com>
+	<1263390194.31509.4.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001131052s27019ebl53f4e3f76bb4598e@mail.gmail.com>
+	<1263410323.901.5.camel@moss-pluto.epoch.ncsc.mil>
+Date: Wed, 13 Jan 2010 11:37:27 -0800
+Message-ID: <364299f41001131137j36d1c665r45cb8b6163263428@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
 Subject: Re: [LTP] regression: selinux testsuite broken since October
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -35,312 +36,283 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
+To: Stephen Smalley <sds@tycho.nsa.gov>
 Cc: James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>, ltp-list@lists.sourceforge.net
 
-On Tue, 2010-01-26 at 22:34 -0800, Garrett Cooper wrote:
-> On Jan 26, 2010, at 6:30 AM, Stephen Smalley wrote:
-> 
-> > On Tue, 2010-01-26 at 00:31 -0800, Garrett Cooper wrote:
-> >> On Fri, Jan 15, 2010 at 9:48 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> >>> On Tue, Jan 12, 2010 at 7:38 AM, Serge E. Hallyn <serue@us.ibm.com> wrote:
-> >>>> Quoting Garrett Cooper (yanegomi@gmail.com):
-> >>>>> On Mon, Jan 11, 2010 at 1:00 PM, Serge E. Hallyn <serue@us.ibm.com> wrote:
-> >>>>>> Quoting Serge E. Hallyn (serue@us.ibm.com):
-> >>>>>>> Quoting Serge E. Hallyn (serue@us.ibm.com):
-> >>>>>>>> Quoting Stephen Smalley (sds@tycho.nsa.gov):
-> >>>>>>>>> On Mon, 2010-01-11 at 13:50 -0600, Serge E. Hallyn wrote:
-> >>>>>>>>>>> Fails with:
-> >>>>>>>>>>> cp: cannot stat
-> >>>>>>>>>>> `/home/sds/ltp/testcases/kernel/security/selinux-testsuite/refpolicy/policy_files/generic/test_policy.*': No such file or directory
-> >>>>>>>>>> 
-> >>>>>>>>>> You ran /home/sds/ltp/testscripts/test_selinux.sh, right?
-> >>>>>>>>>> 
-> >>>>>>>>>> I think we are supposed to actually be running
-> >>>>>>>>>> /opt/ltp/testscripts/test_selinux.sh.  So then the first question for
-> >>>>>>>>>> Garrett is how should we deduce /home/sds/ltp as $LTP_SRCDIR from a
-> >>>>>>>>>> testscript?  Or should the policy sources be copied into /opt?
-> >>>>>>>>> 
-> >>>>>>>>> Ok, but regardless:  the refpolicy Makefile is still broken.
-> >>>>>>>> 
-> >>>>>>>> Yup.
-> >>>>>>> 
-> >>>>>>> All right, baby-steps.
-> >>>>>>> 
-> >>>>>>> The attached test_selinux.diff is not to be applied, but something
-> >>>>>>> like it is needed.  Should we have the ltp 'make install' fill in
-> >>>>>>> TOP_SRCDIR in /opt/ltp/testscripts/test_selinux.sh?  BTW, Garrett,
-> >>>>>>> that is the issue I was saying is shared between test_selinux.sh
-> >>>>>>> and some others including test_robind.sh.  That's why I'm not just
-> >>>>>>> sending a patch to make it work, bc i think we need more general
-> >>>>>>> guidance.
-> >>>>>>> 
-> >>>>>>> The second match makes the 'make load' part of test_selinux.sh
-> >>>>>>> succeed on rhel5.4.  Stephen, how does it do on fedora?
-> >>>>>>> 
-> >>>>>>> After loading policy it fails to execute ltp-pan, but I figure let's
-> >>>>>>> get policy loading working first.
-> >>>>>>> 
-> >>>>>>> -serge
-> >>>>>> 
-> >>>>>> gah, attaching the actual patches this time.
-> >>>>>> 
-> >>>>>> -serge
-> >>>>> 
-> >>>>> 1. I'm rejecting the test_selinux.diff solely because it has /root/ltp
-> >>>>> hardcoded as LTPROOT.
-> >>>> 
-> >>>> I said 'not to be applied'.  You're not rejecting.
-> >>>> 
-> >>>>> 2. Why is the redhat stuff support to work
-> >>>>> agnostic to the major and minor version?
-> >>>> 
-> >>>> It's not agnostic to the major version.  Only the minor version.
-> >>>> 
-> >>>> And since you've made ltp not compile on rhel4 (requiring make-3.81.  feh)
-> >>>> i suppose we can just get rid of rhel4 support selinux-testsuite.
-> >>> 
-> >>> No. 1. Compiling make 3.81 today and installing it is trivial, so it
-> >>> shouldn't be removed today. 2. I've finally decided that I'm going to
-> >>> look outside of the box into providing equivalent functionality via
-> >>> shell functions using purely built-in commands [and test(1)] to fill
-> >>> in the feature gaps for make 3.80. I've gotten to the point where I
-> >>> just gave up trying to ride out what I possibly can in make 3.80, so
-> >>> it's time to pull in some external pieces to get the job done.
-> >> 
-> >>    All of the install junk works now, but the modes need fixing, or
-> >> some such fun. Please analyze the test_selinux.sh script and tell me
-> >> what to commit next to fix everything.
-> > 
-> > Hi Garrett,
-> > 
-> > I needed to apply the patch below to make test_selinux.sh run
-> > successfully on Fedora 12.  The problems were:
-> > - The setting of LTPROOT in test_selinux.sh was incorrect, leading to
-> > problems with invoking everything else.  Note that I invoke it by doing:
-> > cd /opt/ltp && ./testscripts/test_selinux.sh
-> > and thus $0 is a relative path, whereas we want an absolute one.
-> > - You don't need to cd to $POLICYDIR at all since you specify
-> > $POLICYDIR/test_policy.pp to semodule -i and semodule -r is acting on
-> > the installed policy module.
-> > - The attempt to extract paths from runtest/selinux and invoke chcon on
-> > them wasn't working as $LTPROOT wasn't being expanded; easier to just do
-> > a chcon -R there as before.
-> > - runtest/selinux had the wrong paths to the test programs (or
-> > alternatively, they aren't being installed to the right location - they
-> > all get installed directly to $LTPROOT/testcases/bin.
-> > 
-> > Index: testscripts/test_selinux.sh
-> > ===================================================================
-> > RCS file: /cvsroot/ltp/ltp/testscripts/test_selinux.sh,v
-> > retrieving revision 1.20
-> > diff -u -r1.20 test_selinux.sh
-> > --- testscripts/test_selinux.sh	26 Jan 2010 07:05:02 -0000	1.20
-> > +++ testscripts/test_selinux.sh	26 Jan 2010 14:20:40 -0000
-> > @@ -37,15 +37,14 @@
-> > fi
-> > 
-> > # set the LTPROOT directory
-> > -LTPROOT=${LTPROOT:=${0%/*}}
-> > -cd "$LTPROOT"
-> > +LTPROOT=`pwd`
-> > export TMP=${TMP:-/tmp}
-> > -# If we're in the testscripts directory, go down a dir..
-> > +# If we're in the testscripts directory, go up a dir..
-> > LTPROOT_TMP=${LTPROOT%/testscripts}
-> > if [ "x${LTPROOT_TMP}" != "x${LTPROOT}" ]
-> > then
-> > 	cd ..
-> > -	LTPROOT=$LTPROOT_TMP
-> > +	LTPROOT=`pwd`
-> > fi
-> > export LTPROOT
-> > unset LTPROOT_TMP
-> > @@ -89,7 +88,6 @@
-> > 
-> > # install the test policy...
-> > echo "Installing test_policy module..."
-> > -cd $POLICYDIR
-> > if ! semodule -i $POLICYDIR/test_policy.pp; then
-> > 	echo "Failed to install test_policy module, aborting test run."
-> > 	config_unset_expandcheck
-> > @@ -100,9 +98,6 @@
-> > 
-> > config_unset_expandcheck
-> > 
-> > -# go back to test's root directory
-> > -cd $LTPROOT
-> > -
-> > echo "Running the SELinux testsuite..."
-> > 
-> > mkdir $TMP/selinux > /dev/null 2>&1
-> > @@ -112,8 +107,7 @@
-> > # The ../testcases/bin directory needs to have the test_file_t type.
-> > # Save and restore later.
-> > SAVEBINTYPE=`ls -Zd $LTPROOT/testcases/bin | awk '{ print $4 }' | awk -F: '{ print $3 }'`
-> > -/usr/bin/chcon -t test_file_t	$LTPROOT/testcases/bin \
-> > -				$(awk '$1 !~ /^#/ { print $2 }' "$LTPROOT/runtest/selinux")
-> > +/usr/bin/chcon -R -t test_file_t	$LTPROOT/testcases/bin
-> > 
-> > $LTPROOT/bin/ltp-pan -S -a $LTPROOT/results/selinux -n ltp-selinux \
-> > 	-l $LTPROOT/results/selinux.logfile \
-> > @@ -127,7 +121,6 @@
-> > /usr/bin/chcon -R -t $SAVEBINTYPE $LTPROOT/testcases/bin
-> > 
-> > echo "Removing test_policy module..."
-> > -cd $POLICYDIR
-> > if ! semodule -r test_policy; then
-> > 	echo "Failed to remove test_policy module."
-> > 	exit 1
-> > Index: runtest/selinux
-> > ===================================================================
-> > RCS file: /cvsroot/ltp/ltp/runtest/selinux,v
-> > retrieving revision 1.4
-> > diff -u -r1.4 selinux
-> > --- runtest/selinux	25 Jan 2010 12:44:59 -0000	1.4
-> > +++ runtest/selinux	26 Jan 2010 14:20:40 -0000
-> > @@ -1,40 +1,40 @@
-> > #DESCRIPTION:Security-Enhanced Linux
-> > -SELinux01	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_capable_file.sh
-> > -SELinux02	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_capable_net.sh
-> > -SELinux03	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_capable_sys.sh
-> > -SELinux04	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_domain_trans.sh
-> > -SELinux05	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_entrypoint.sh
-> > -SELinux06	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_execshare.sh
-> > -SELinux07	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_exectrace.sh
-> > -SELinux08	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_execute_no_trans.sh
-> > -SELinux09	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_fdreceive.sh
-> > -SELinux10	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_file.sh
-> > -SELinux11	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_inherit.sh
-> > -SELinux12	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_ioctl.sh
-> > -SELinux13	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_link.sh
-> > -SELinux14	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_mkdir.sh
-> > -SELinux15	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_msg.sh
-> > -SELinux16	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_open.sh
-> > -SELinux17	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_ptrace.sh
-> > -SELinux18	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_readlink.sh
-> > -SELinux19	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_relabel.sh
-> > -SELinux20	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_rename.sh
-> > -SELinux21	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_rxdir.sh
-> > -SELinux22	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_sem.sh
-> > -SELinux23	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_setattr.sh
-> > -SELinux24	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_setnice.sh
-> > -SELinux25	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_shm.sh
-> > -SELinux26	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_sigkill.sh
-> > -SELinux27	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_stat.sh
-> > -SELinux28	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_sysctl.sh
-> > -SELinux29	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_task_create.sh
-> > -SELinux30	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_task_getpgid.sh
-> > -SELinux31	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_task_getscheduler.sh
-> > -SELinux32	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_task_getsid.sh
-> > -SELinux33	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_task_setnice.sh
-> > -SELinux34	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_task_setpgid.sh
-> > -SELinux35	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_task_setscheduler.sh
-> > -SELinux36	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_wait.sh
-> > -SELinux37	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_dyntrace.sh
-> > -SELinux38	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_dyntrans.sh
-> > -SELinux39	$LTPROOT/testcases/bin/kernel/security/selinux-testsuite/tests/selinux_bounds.sh
-> > +SELinux01	$LTPROOT/testcases/bin/selinux_capable_file.sh
-> > +SELinux02	$LTPROOT/testcases/bin/selinux_capable_net.sh
-> > +SELinux03	$LTPROOT/testcases/bin/selinux_capable_sys.sh
-> > +SELinux04	$LTPROOT/testcases/bin/selinux_domain_trans.sh
-> > +SELinux05	$LTPROOT/testcases/bin/selinux_entrypoint.sh
-> > +SELinux06	$LTPROOT/testcases/bin/selinux_execshare.sh
-> > +SELinux07	$LTPROOT/testcases/bin/selinux_exectrace.sh
-> > +SELinux08	$LTPROOT/testcases/bin/selinux_execute_no_trans.sh
-> > +SELinux09	$LTPROOT/testcases/bin/selinux_fdreceive.sh
-> > +SELinux10	$LTPROOT/testcases/bin/selinux_file.sh
-> > +SELinux11	$LTPROOT/testcases/bin/selinux_inherit.sh
-> > +SELinux12	$LTPROOT/testcases/bin/selinux_ioctl.sh
-> > +SELinux13	$LTPROOT/testcases/bin/selinux_link.sh
-> > +SELinux14	$LTPROOT/testcases/bin/selinux_mkdir.sh
-> > +SELinux15	$LTPROOT/testcases/bin/selinux_msg.sh
-> > +SELinux16	$LTPROOT/testcases/bin/selinux_open.sh
-> > +SELinux17	$LTPROOT/testcases/bin/selinux_ptrace.sh
-> > +SELinux18	$LTPROOT/testcases/bin/selinux_readlink.sh
-> > +SELinux19	$LTPROOT/testcases/bin/selinux_relabel.sh
-> > +SELinux20	$LTPROOT/testcases/bin/selinux_rename.sh
-> > +SELinux21	$LTPROOT/testcases/bin/selinux_rxdir.sh
-> > +SELinux22	$LTPROOT/testcases/bin/selinux_sem.sh
-> > +SELinux23	$LTPROOT/testcases/bin/selinux_setattr.sh
-> > +SELinux24	$LTPROOT/testcases/bin/selinux_setnice.sh
-> > +SELinux25	$LTPROOT/testcases/bin/selinux_shm.sh
-> > +SELinux26	$LTPROOT/testcases/bin/selinux_sigkill.sh
-> > +SELinux27	$LTPROOT/testcases/bin/selinux_stat.sh
-> > +SELinux28	$LTPROOT/testcases/bin/selinux_sysctl.sh
-> > +SELinux29	$LTPROOT/testcases/bin/selinux_task_create.sh
-> > +SELinux30	$LTPROOT/testcases/bin/selinux_task_getpgid.sh
-> > +SELinux31	$LTPROOT/testcases/bin/selinux_task_getscheduler.sh
-> > +SELinux32	$LTPROOT/testcases/bin/selinux_task_getsid.sh
-> > +SELinux33	$LTPROOT/testcases/bin/selinux_task_setnice.sh
-> > +SELinux34	$LTPROOT/testcases/bin/selinux_task_setpgid.sh
-> > +SELinux35	$LTPROOT/testcases/bin/selinux_task_setscheduler.sh
-> > +SELinux36	$LTPROOT/testcases/bin/selinux_wait.sh
-> > +SELinux37	$LTPROOT/testcases/bin/selinux_dyntrace.sh
-> > +SELinux38	$LTPROOT/testcases/bin/selinux_dyntrans.sh
-> > +SELinux39	$LTPROOT/testcases/bin/selinux_bounds.sh
-> 
-> Ok -- I think that we just resolved the last of the selinux test suite saga by properly 
-> 
-> The difference between your suggested patch above and what I committed
-> was the line were it determined LTPROOT. Assuming that LTPROOT is the
-> directory where the script was run isn't a smart idea, and I'm pretty
-> sure that you were doing this purely because test_selinux.sh was in
-> your path.
+On Wed, Jan 13, 2010 at 11:18 AM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
+> On Wed, 2010-01-13 at 10:52 -0800, Garrett Cooper wrote:
+>> On Wed, Jan 13, 2010 at 5:43 AM, Stephen Smalley <sds@tycho.nsa.gov> wro=
+te:
+>> > On Tue, 2010-01-12 at 22:51 -0800, Garrett Cooper wrote:
+>> >> On Tue, Jan 12, 2010 at 11:12 AM, Stephen Smalley <sds@tycho.nsa.gov>=
+ wrote:
+>> >> > On Tue, 2010-01-12 at 09:26 -0800, Garrett Cooper wrote:
+>> >> >> > Also, if you guys can try out this patch for refpolicy/Makefile,=
+ I'd
+>> >> >> > prefer to check it in (it unifies the RHEL 4.x and `generic' ref=
+policy
+>> >> >> > Make logic):
+>> >> >> >
+>> >> >> > Index: refpolicy/Makefile
+>> >> >> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> >> >> > RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/selinux-tes=
+tsuite/refpolicy/Makefile,v
+>> >> >> > retrieving revision 1.12
+>> >> >> > diff -u -r1.12 Makefile
+>> >> >> > --- refpolicy/Makefile =A08 Jan 2010 09:39:20 -0000 =A0 =A0 =A0 =
+1.12
+>> >> >> > +++ refpolicy/Makefile =A012 Jan 2010 17:17:27 -0000
+>> >> >> > @@ -17,7 +17,7 @@
+>> >> >> > =A0# =A0 =A0with this program; if not, write to the Free Softwar=
+e Foundation, Inc.,
+>> >> >> > =A0# =A0 =A051 Franklin Street, Fifth Floor, Boston, MA 02110-13=
+01 USA.
+>> >> >> > =A0#
+>> >> >> > -# Garrett Cooper, August 2009
+>> >> >> > +# Garrett Cooper, January 2010
+>> >> >> > =A0#
+>> >> >> >
+>> >> >> > =A0top_srcdir =A0 =A0 =A0 =A0 =A0 =A0 ?=3D ../../../../..
+>> >> >> > @@ -32,6 +32,7 @@
+>> >> >> >
+>> >> >> > =A0DISTRO_VER =A0 =A0 =A0 =A0 =A0 =A0 :=3D $(shell $(top_srcdir)=
+/scripts/detect_distro.sh $(ARGS))
+>> >> >> >
+>> >> >> > +# Avoid empty strings.
+>> >> >> > =A0ifeq ($(strip $(DISTRO_VER)),)
+>> >> >> > =A0DISTRO_VER =A0 =A0 =A0 =A0 =A0 =A0 :=3D generic
+>> >> >> > =A0endif
+>> >> >> > @@ -41,10 +42,17 @@
+>> >> >> > =A0POLICY_DEVEL_DIR =A0 =A0 =A0 ?=3D $(DESTDIR)/usr/share/selinu=
+x/devel
+>> >> >> > =A0SEMODULE =A0 =A0 =A0 =A0 =A0 =A0 =A0 ?=3D $(DESTDIR)/usr/sbin=
+/semodule
+>> >> >> >
+>> >> >> > -INSTALL_DIR =A0 =A0 =A0 =A0 =A0 =A0:=3D testcases/kernel/securi=
+ty/selinux-testsuite
+>> >> >> > +INSTALL_DIR =A0 =A0 =A0 =A0 =A0 =A0:=3D testcases/selinux-tests=
+uite/refpolicy
+>> >> >> >
+>> >> >> > =A0TEST_POLICY_DIR =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D $(abs_src=
+dir)/policy_files
+>> >> >> >
+>> >> >> > +# Do we have a special set of policies in the SCM to install?
+>> >> >> > +ifneq ($(wildcard $(TEST_POLICY_DIR)/$(DISTRO_VER)/),)
+>> >> >> > +TEST_POLICY_DIR =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D $(TEST_POLI=
+CY_DIR)/$(DISTRO_VER)
+>> >> >> > +else
+>> >> >> > +TEST_POLICY_DIR =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D $(TEST_POLI=
+CY_DIR)/generic
+>> >> >> > +endif
+>> >> >> > +
+>> >> >> > =A0.PHONY: all clean cleanup install load
+>> >> >> >
+>> >> >> > =A0CLEAN_DEPS =A0 =A0 =A0 =A0 =A0 =A0 :=3D cleanup
+>> >> >> > @@ -55,34 +63,24 @@
+>> >> >> > =A0 =A0 =A0 =A0-$(SEMODULE) -r test_policy
+>> >> >> > =A0 =A0 =A0 =A0$(RM) -f $(POLICY_DEVEL_DIR)/test_policy.* test_p=
+olicy.te
+>> >> >> >
+>> >> >> > -ifneq ($(wildcard $(TEST_POLICY_DIR)/$(DISTRO_VER)/Makefile),)
+>> >> >> > -MAKE_TARGETS =A0 =A0 =A0 =A0 =A0 :=3D
+>> >> >> > -
+>> >> >> > -TEST_POLICY_DIR =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D $(TEST_POLI=
+CY_DIR)/$(DISTRO_VER)
+>> >> >> > -
+>> >> >> > -# load remains for backwards compatibility...
+>> >> >> > -load:
+>> >> >> > - =A0 =A0 =A0 $(MAKE) -C $(TEST_POLICY_DIR)
+>> >> >> > -else
+>> >> >> > -
+>> >> >> > =A0MAKE_TARGETS =A0 =A0 =A0 =A0 =A0 :=3D test_policy.te
+>> >> >> >
+>> >> >> > -TEST_POLICY_DIR =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D $(TEST_POLI=
+CY_DIR)/generic
+>> >> >> > -
+>> >> >> > -POLICY_FILES =A0 =A0 =A0 =A0 =A0 :=3D test_global.te $(filter-o=
+ut test_global.te,$(notdir
+>> >> >> > $(wildcard $(TEST_POLICY_DIR)/*.te)))
+>> >> >> > -
+>> >> >> > =A0ifneq ($(CHECKPOLICY_VERS),24)
+>> >> >> > =A0POLICY_FILES =A0 =A0 =A0 =A0 =A0 :=3D $(filter-out test_bound=
+s.te,$(POLICY_FILES))
+>> >> >> > =A0endif
+>> >> >> >
+>> >> >> > +# This is being done to preserve precedence; test_global.te mus=
+t come first.
+>> >> >> > +POLICY_FILES =A0 =A0 =A0 =A0 =A0 :=3D test_global.te \
+>> >> >> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0$(filter-ou=
+t test_global.te,$(notdir $(wildcard
+>> >> >> > $(TEST_POLICY_DIR)/*.te)))
+>> >> >> > +
+>> >> >> > =A0load:
+>> >> >> > - =A0 =A0 =A0 @if [ -d "$(POLICY_DEVEL_DIR)" ]; then \
+>> >> >> > - =A0 =A0 =A0 =A0 =A0 cp -p $(TEST_POLICY_DIR)/test_policy.* $(P=
+OLICY_DEVEL_DIR); \
+>> >> >> > + =A0 =A0 =A0 @set -e; if [ -d "$(POLICY_DEVEL_DIR)" ]; then \
+>> >> >> > + =A0 =A0 =A0 =A0 =A0 cp -p test_policy.* $(POLICY_DEVEL_DIR); \
+>> >> >> > =A0 =A0 =A0 =A0 =A0 =A0$(MAKE) -C $(POLICY_DEVEL_DIR) clean; \
+>> >> >> > =A0 =A0 =A0 =A0 =A0 =A0$(MAKE) -C $(POLICY_DEVEL_DIR) test_polic=
+y.pp; \
+>> >> >> > =A0 =A0 =A0 =A0 =A0 =A0$(SEMODULE) -i $(POLICY_DEVEL_DIR)/test_p=
+olicy.pp; \
+>> >> >> > =A0 =A0 =A0 =A0else \
+>> >> >> > - =A0 =A0 =A0 =A0 =A0 =A0echo "ERROR: You must have selinux-poli=
+cy-devel installed."; \
+>> >> >> > + =A0 =A0 =A0 =A0 =A0 =A0echo "ERROR: You must have selinux-poli=
+cy?-devel? installed."; \
+>> >> >> > =A0 =A0 =A0 =A0 =A0 =A0false; \
+>> >> >> > =A0 =A0 =A0 =A0fi
+>> >> >>
+>> >> >> There's a stray endif on line 90 of refpolicy/Makefile that needs =
+to
+>> >> >> be deleted as well, FYI...
+>> >> >
+>> >> > Ok. =A0test policy appears to build (on Fedora) when running make b=
+y hand
+>> >> > from the refpolicy directory, but you still can't run the tests, ei=
+ther
+>> >> > from /opt/ltp or from the source tree.
+>> >> >
+>> >> > # cd /opt/ltp/testscripts && ./test_selinux.sh
+>> >> > Running with security context=3Dunconfined_u:unconfined_r:unconfine=
+d_t:s0-s0:c0.c1023
+>> >> > /etc/selinux /opt/ltp
+>> >> > /opt/ltp
+>> >> > allow_domain_fd_use --> off
+>> >> > allow_domain_fd_use exists setting
+>> >> > building and installing test_policy module...
+>> >> > ./test_selinux.sh: line 92: cd: /opt/ltp/testcases/kernel/security/=
+selinux-testsuite/refpolicy: No such file or directory
+>> >> > make: *** No rule to make target `load'. =A0Stop.
+>> >> > Failed to build and load test_policy module, aborting test run.
+>> >> > /etc/selinux /opt/ltp
+>> >> > /opt/ltp
+>> >> >
+>> >> > # cd LTP_SRCDIR/testscripts && ./test_selinux.sh
+>> >> > Running with security context=3Dunconfined_u:unconfined_r:unconfine=
+d_t:s0-s0:c0.c1023
+>> >> > /etc/selinux /home/sds/ltp
+>> >> > /home/sds/ltp
+>> >> > allow_domain_fd_use --> off
+>> >> > allow_domain_fd_use exists setting
+>> >> > building and installing test_policy module...
+>> >> > make[1]: Entering directory `/usr/share/selinux/devel'
+>> >> > rm -fR tmp
+>> >> > rm -f *.pp
+>> >> > make[1]: Leaving directory `/usr/share/selinux/devel'
+>> >> > make[1]: Entering directory `/usr/share/selinux/devel'
+>> >> > Compiling targeted test_policy module
+>> >> > /usr/bin/checkmodule: =A0loading policy configuration from tmp/test=
+_policy.tmp
+>> >> > /usr/bin/checkmodule: =A0policy configuration loaded
+>> >> > /usr/bin/checkmodule: =A0writing binary representation (version 10)=
+ to tmp/test_policy.mod
+>> >> > Creating targeted test_policy.pp policy package
+>> >> > rm tmp/test_policy.mod tmp/test_policy.mod.fc
+>> >> > make[1]: Leaving directory `/usr/share/selinux/devel'
+>> >> > Successfully built and loaded test_policy module.
+>> >> > /etc/selinux /home/sds/ltp/testcases/kernel/security/selinux-testsu=
+ite/refpolicy
+>> >> > /home/sds/ltp/testcases/kernel/security/selinux-testsuite/refpolicy
+>> >> > Running the SELinux testsuite...
+>> >> > ls: cannot access /home/sds/ltp/testcases/bin: No such file or dire=
+ctory
+>> >> > /usr/bin/chcon: cannot access `/home/sds/ltp/testcases/bin': No suc=
+h file or directory
+>> >> > ./test_selinux.sh: line 119: /home/sds/ltp/bin/ltp-pan: No such fil=
+e or directory
+>> >> > /usr/bin/chcon: missing operand
+>> >> > Try `/usr/bin/chcon --help' for more information.
+>> >> > Removing test_policy module...
+>> >> > /usr/sbin/semodule -r test_policy
+>> >> > rm -f -f /usr/share/selinux/devel/test_policy.* test_policy.te
+>> >> > allow_domain_fd_use --> off
+>> >> > allow_domain_fd_use exists setting
+>> >> > Done.
+>> >> >
+>> >> > Both test_selinux.sh and tests/runtest.sh need to be updated.
+>> >> >
+>> >> > --
+>> >> > Stephen Smalley
+>> >> > National Security Agency
+>> >>
+>> >> =A0 =A0 Ok, next patch then... Let me know how this goes (I took a qu=
+ick
+>> >> look and I didn't see anything suspicious in the test scripts
+>> >> themselves..).
+>> >> Thanks,
+>> >> -Garrett
+>> >
+>> > patching file ../../../../testscripts/test_selinux.sh
+>> > Hunk #2 FAILED at 23.
+>> > Hunk #3 FAILED at 57.
+>> > 2 out of 5 hunks FAILED -- saving rejects to file ../../../../testscri=
+pts/test_selinux.sh.rej
+>> >
+>> > I think it would work better if you just committed all of the patches
+>> > thus far and I can just re-test cvs head.
+>> >
+>> > If you do post any further patches, please make them relative to the t=
+op
+>> > of the tree.
+>>
+>> =A0 =A0 Ugh, I hate CVS diffs too (so I understand)... I was trying to
+>> avoid committing intermediate work, but as long as this gets fixed
+>> before the next snapshot, I guess that's fine. Committed the next step
+>> to CVS.
+>
+> # cd /opt/ltp
+> # ./testscripts/test_selinux.sh
+> Running with security context=3Dunconfined_u:unconfined_r:unconfined_t:s0=
+-s0:c0.c1023
+> /etc/selinux /opt/ltp
+> /opt/ltp
+> allow_domain_fd_use --> off
+> allow_domain_fd_use exists setting
+> building and installing test_policy module...
+> make: *** No rule to make target `load'. =A0Stop.
+> Failed to build and load test_policy module, aborting test run.
+> /etc/selinux /opt/ltp/testcases/kernel/security/selinux-testsuite/refpoli=
+cy
+> /opt/ltp/testcases/kernel/security/selinux-testsuite/refpolicy
+>
+> There is no Makefile
+> under /opt/ltp/testcases/kernel/security/selinux-testsuite/refpolicy,
+> only in the source tree.
 
-So you require that the test script be invoked by absolute path, ala:
-$ /opt/ltp/testscripts/test_selinux.sh
+Yeah, you're right. I was trying to beat around this bush by not
+copying these over, but it's better to have the test running and be
+improperly designed than it is for regressions to leak by today, until
+the day comes where these items are fixed.
 
-I was invoking the tests via:
-$ cd /opt/ltp
-$ ./testscripts/test_selinux.sh
+1. So, Makefile is now copied over by default.
+2. load is no longer done as part of all / install (test_selinux.sh
+was performing that function).
 
-The latter won't work with your current LTPROOT definition; it will end
-up with a LTPROOT=. and LTPBIN=./testcases/bin, which then won't work
-when it gets referenced by the individual test scripts particularly when
-they change to a subdirectory for a particular test.  This yields a
-couple of failures in the .log and 'No such file or directory' errors in
-the .outfile.
+So once the tests have been written to make and install independent of
+selinux-devel, etc... we'll be in good shape and I will switch these
+back to all / install dependent targets. I was trying to do it that
+way to avoid requiring make on the target under test, but I need to
+better understand the subject matter under test before we get to that
+point.
 
-> After the above items were committed, this is the end result:
-> 
-> Total Tests: 39
-> Total Failures: 0
-> Kernel Version: 2.6.31.9-174.fc12.i686.PAE
-> Machine Architecture: i686
-> Hostname: localhost.localdomain
-> 
-> I highly encourage others to test this out as well -- maybe we can enable it in the default build after I can get some RHEL4 folks to test the port...?
+Thanks,
+-Garrett
 
-When invoked via cd /opt/ltp && ./testscripts/test_selinux.sh I get the
-following errors in the .outfile:
+---------------------------------------------------------------------------=
+---
+This SF.Net email is sponsored by the Verizon Developer Community
+Take advantage of Verizon's best-in-class app development support
+A streamlined, 14 day to market process makes app distribution fast and easy
+Join now and get one step closer to millions of Verizon customers
+http://p.sf.net/sfu/verizon-dev2dev =
 
-chcon: cannot access `selinux_wait_io': No such file or directory
-./testcases/bin/selinux_file.sh: line 188: tst_resm: command not found
-runcon: selinux_wait_parent: No such file or directory
-./testcases/bin/selinux_wait.sh: line 35: tst_resm: command not found
-runcon: selinux_wait_parent: No such file or directory
-./testcases/bin/selinux_wait.sh: line 51: tst_resm: command not found
-
-The first message actually shows up even when invoked
-via /opt/ltp/testscripts/test_selinux.sh, although it doesn't appear to
-cause any FAIL in that case.  The test_resm messages are odd - is that
-not getting defined anywhere?
-
--- 
-Stephen Smalley
-National Security Agency
-
-
-------------------------------------------------------------------------------
-The Planet: dedicated and managed hosting, cloud storage, colocation
-Stay online with enterprise data centers and the best network in the business
-Choose flexible plans and management services without long-term contracts
-Personal 24x7 support from experience hosting pros just a phone call away.
-http://p.sf.net/sfu/theplanet-com
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
