@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <francesco.rundo@st.com>) id 1NUKfg-00012Z-Vt
-	for ltp-list@lists.sourceforge.net; Mon, 11 Jan 2010 13:51:04 +0000
-Received: from eu1sys200aog117.obsmtp.com ([207.126.144.143])
-	by sfi-mx-3.v28.ch3.sourceforge.com with smtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NUKfe-000067-BM
-	for ltp-list@lists.sourceforge.net; Mon, 11 Jan 2010 13:51:04 +0000
-Message-ID: <4B4B2CA8.1000401@st.com>
-Date: Mon, 11 Jan 2010 14:50:32 +0100
-From: Francesco RUNDO <francesco.rundo@st.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mitani@ryobi.co.jp>) id 1NUshH-00072F-0w
+	for ltp-list@lists.sourceforge.net; Wed, 13 Jan 2010 02:10:59 +0000
+Received: from out01.sjc.mx.trendmicro.com ([216.99.131.5])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NUshF-0002Zn-GO
+	for ltp-list@lists.sourceforge.net; Wed, 13 Jan 2010 02:10:58 +0000
+From: "Mitani" <mitani@ryobi.co.jp>
+References: <000601ca8de1$64d04810$2e70d830$@co.jp>
+	<1262862378.12213.22.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1262862378.12213.22.camel@subratamodak.linux.ibm.com>
+Date: Wed, 13 Jan 2010 11:10:47 +0900
+Message-ID: <000001ca93f5$9edf5ef0$dc9e1cd0$@co.jp>
 MIME-Version: 1.0
-References: <4B41E55D.2020801@st.com>	
-	<ECC1F2A4-FC8C-4626-904B-F29FB9CB209E@gmail.com>
-	<1262864216.12213.37.camel@subratamodak.linux.ibm.com>
-In-Reply-To: <1262864216.12213.37.camel@subratamodak.linux.ibm.com>
-Subject: Re: [LTP] mtest01: free memory allocated
+Content-Language: ja
+Subject: Re: [LTP] quotactl01 testcases problem
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,300 +26,156 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5495523264035710797=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP <ltp-list@lists.sourceforge.net>
+To: subrata@linux.vnet.ibm.com, Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---===============5495523264035710797==
-Content-Type: multipart/alternative;
-	boundary="------------040204000702070207040009"
+Garrett, Subrata,
 
-This is a multi-part message in MIME format.
---------------040204000702070207040009
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+I confirmed that "quotactl01" test is finished in "PASS" (TCONF) 
+in my system.
 
-Dear All,
-
-Ok, likely a sort of flag has to be added in the "mtest01.c" 
-code.....something like that:
-
-mem_flag=0;
-....................
-
-if((mem = (char*)malloc(chunksize)) == NULL) {
-
-.......
-
-exit(1)
-}
-
-mem_flag=1:
-
-.......
+Thank you for your revision.
 
 
-in order to understand if the malloc() has been executed or not.....and 
-then the patch will be:
+-Tomonori Mitani
 
-if ((mem_flag==1)&&(mem != NULL))
-{
-         free(mem);
-         mem_flag=0;
-}
+-----Original Message-----
+From: Subrata Modak [mailto:subrata@linux.vnet.ibm.com] 
+Sent: Thursday, January 07, 2010 8:06 PM
+To: Mitani
+Cc: ltp-list@lists.sourceforge.net
+Subject: Re: [LTP] quotactl01 testcases problem
 
-Without a patch as above (or like that), in the code of  "mtest01" we 
-got scenarios (mainly in the cross architectures like embedded systems) 
-in which the LTP run a "malloc()" without "free()".
-This is always wrong even though the system resource is enough to cover 
-this memory consumption.
+Hello Mitani-San,
 
-Regards
---
-FR
-
-
-Subrata Modak wrote:
-
->Garrett,
->
->On Mon, 2010-01-04 at 18:10 -0800, Garrett Cooper wrote: 
->  
->
->>On Jan 4, 2010, at 4:55 AM, Francesco RUNDO <francesco.rundo@st.com>  
->>wrote:
->>
->>    
->>
->>>Hi All,
->>>
->>>I'm running LTP (I'm using ltp-full-20090731....but asap I will  
->>>upgrade to latest)  on SH based platforms.
->>>Now, during a test-session. I've noted that the test "mtest01"  
->>>reduced drastically the system memory and after its execution this  
->>>memory wasn't de-allocated.
->>>
->>>I've analysed the mtest01.c code and I've noted that no "free()"  
->>>istruction was associated to the related malloc:
->>>
->>>......
->>>if((mem = (char*)malloc(chunksize)) == NULL) {
->>>......
->>>
->>>I've simply added a "free(mem)" of the allocated memory and the  
->>>issue was addressed successfully.
->>>
->>>I've attached the trivial patch I've developed.
->>>
->>>Best Regards,
->>>--
->>>Francesco
->>>Added missed "free" istruction to release memory previosuly allocated.
->>>Signed-off-by: Francesco Rundo <francesco.rundo@st.com>
->>>--- ltp-full-20090731/testcases/kernel/mem/mtest01/ 
->>>mtest01.c.origin    2009-02-26 13:02:27.000000000 +0100
->>>+++ ltp-full-20090731/testcases/kernel/mem/mtest01/mtest01.c     
->>>2009-12-15 14:03:28.779240000 +0100
->>>@@ -258,5 +258,8 @@
->>>    else
->>>      tst_resm(TPASS, "%llu kbytes allocated only.",  
->>>original_maxbytes/1024);
->>>  }
->>>+
->>>+  free(mem);
->>>+
->>>  exit(0);
->>>}
->>>      
->>>
->>1. Does the version off cvs still have this issue?
->>2. Unless the test exits the code block immediately, I'd definitely do:
->>
->>if (mem)
->>     free (mem);
->>
->>to avoid making a bad free call.
->>    
->>
->
->Have you made any changes to this ? I do not see any commits.
->
->Regards--
->Subrata
->
->  
->
->>Thanks,
->>-Garrett
->>
->>------------------------------------------------------------------------------
->>This SF.Net email is sponsored by the Verizon Developer Community
->>Take advantage of Verizon's best-in-class app development support
->>A streamlined, 14 day to market process makes app distribution fast and easy
->>Join now and get one step closer to millions of Verizon customers
->>http://p.sf.net/sfu/verizon-dev2dev 
->>_______________________________________________
->>Ltp-list mailing list
->>Ltp-list@lists.sourceforge.net
->>https://lists.sourceforge.net/lists/listinfo/ltp-list
->>    
->>
->
->
->  
->
-
---------------040204000702070207040009
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
-  <title></title>
-</head>
-<body text="#000000" bgcolor="#ffffff">
-Dear All,<br>
-<br>
-Ok, likely a sort of flag has to be added in the "mtest01.c"
-code.....something like that:<br>
-<br>
-mem_flag=0;<br>
-....................<br>
-<pre wrap="">if((mem = (char*)malloc(chunksize)) == NULL) {
-
-.......
-</pre>
-exit(1)<br>
-}<br>
-<pre wrap="">mem_flag=1:</pre>
-.......<br>
-<br>
-<br>
-in order to understand if the malloc() has been executed or not.....and
-then the patch will be:<br>
-<br>
-if ((mem_flag==1)&amp;&amp;(mem != NULL))<br>
-{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; free(mem);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mem_flag=0;<br>
-}<br>
-<br>
-Without a patch as above (or like that), in the code of&nbsp; "mtest01" we
-got scenarios (mainly in the cross architectures like embedded systems)
-in which the LTP run a "malloc()" without "free()". <br>
-This is always wrong even though the system resource is enough to cover
-this memory consumption.<br>
-<br>
-Regards<br>
---<br>
-FR<br>
-<br>
-<br>
-Subrata Modak wrote:<br>
-<blockquote type="cite"
- cite="mid1262864216.12213.37.camel@subratamodak.linux.ibm.com">
-  <pre wrap="">Garrett,
-
-On Mon, 2010-01-04 at 18:10 -0800, Garrett Cooper wrote: 
-  </pre>
-  <blockquote type="cite">
-    <pre wrap="">On Jan 4, 2010, at 4:55 AM, Francesco RUNDO <a class="moz-txt-link-rfc2396E" href="mailto:francesco.rundo@st.com">&lt;francesco.rundo@st.com&gt;</a>  
-wrote:
-
-    </pre>
-    <blockquote type="cite">
-      <pre wrap="">Hi All,
-
-I'm running LTP (I'm using ltp-full-20090731....but asap I will  
-upgrade to latest)  on SH based platforms.
-Now, during a test-session. I've noted that the test "mtest01"  
-reduced drastically the system memory and after its execution this  
-memory wasn't de-allocated.
-
-I've analysed the mtest01.c code and I've noted that no "free()"  
-istruction was associated to the related malloc:
-
-......
-if((mem = (char*)malloc(chunksize)) == NULL) {
-......
-
-I've simply added a "free(mem)" of the allocated memory and the  
-issue was addressed successfully.
-
-I've attached the trivial patch I've developed.
-
-Best Regards,
---
-Francesco
-Added missed "free" istruction to release memory previosuly allocated.
-Signed-off-by: Francesco Rundo <a class="moz-txt-link-rfc2396E" href="mailto:francesco.rundo@st.com">&lt;francesco.rundo@st.com&gt;</a>
---- ltp-full-20090731/testcases/kernel/mem/mtest01/ 
-mtest01.c.origin    2009-02-26 13:02:27.000000000 +0100
-+++ ltp-full-20090731/testcases/kernel/mem/mtest01/mtest01.c     
-2009-12-15 14:03:28.779240000 +0100
-@@ -258,5 +258,8 @@
-    else
-      tst_resm(TPASS, "%llu kbytes allocated only.",  
-original_maxbytes/1024);
-  }
-+
-+  free(mem);
-+
-  exit(0);
-}
-      </pre>
-    </blockquote>
-    <pre wrap="">1. Does the version off cvs still have this issue?
-2. Unless the test exits the code block immediately, I'd definitely do:
-
-if (mem)
-     free (mem);
-
-to avoid making a bad free call.
-    </pre>
-  </blockquote>
-  <pre wrap=""><!---->
-Have you made any changes to this ? I do not see any commits.
+Did this get resolved for you ?
 
 Regards--
 Subrata
 
-  </pre>
-  <blockquote type="cite">
-    <pre wrap="">Thanks,
--Garrett
+On Tue, 2010-01-05 at 17:30 +0900, Mitani wrote: 
+> Hi,
+> 
+> I tried "quotactl01" testcases, and found two problems.
+> Second one occurred after first one's revise.
+> 
+> 1) In the result of "quotactl01", "Success" are displayed in spite of
+>    failing in the test:
+> 
+> ------------
+> quotactl01    1  TFAIL  :  cmd=0x800002: TEST_ERRNO=???(0): Success
+> quotactl01    2  TFAIL  :  cmd=0x800003: TEST_ERRNO=???(0): Success
+> quotactl01    3  TFAIL  :  cmd=0x800007: TEST_ERRNO=???(0): Success
+> quotactl01    4  TFAIL  :  cmd=0x800008: TEST_ERRNO=???(0): Success
+> quotactl01    5  TFAIL  :  cmd=0x800005: TEST_ERRNO=???(0): Success
+> quotactl01    6  TFAIL  :  cmd=0x800006: TEST_ERRNO=???(0): Success
+> quotactl01    7  TFAIL  :  cmd=0x800004: TEST_ERRNO=???(0): Success
+> quotactl01    8  TFAIL  :  cmd=0x800001: TEST_ERRNO=???(0): Success
+> ------------
+> 
+> This problem occurred because the return value of system-call 
+> "(syscall(__NR_quotactl, cmd[i], ...))" is not judged correctly 
+> in "${LTPROOT}/testcases/kernel/syscalls/quotactl/quotactl01.c".
+> Above errors are caused by TFAIL and messages are printed by TTERRNO.
+> And there is only one place (Line 206) which uses TFAIL in "quotactl01.c"
+> 
+> The following patch can fix this problem:
+> 
+> ============
+> --- quotactl01.c	2009-12-20 09:36:35.000000000 +0900
+> +++ quotactl01.c.new	2010-01-04 17:11:17.000000000 +0900
+> @@ -177,7 +177,6 @@
+>  	int id = getuid();
+>  	int newtid = -1;
+>  	int result;
+> -	int ret;
+>  	int i;
+>  	int lc;				 /* loop counter */
+>  	char *msg;			  /* message returned from
+> parse_opts */
+> @@ -199,10 +198,10 @@
+> 
+>  			for (i = 0; i <= 7; i++){
+> 
+> -				ret = syscall(__NR_quotactl, cmd[i],
+> +				TEST(syscall(__NR_quotactl, cmd[i],
+>  						(const char *)NULL, id,
+> -						(caddr_t)NULL);
+> -				if (ret != 0) {
+> +						(caddr_t)NULL));
+> +				if (TEST_RETURN != 0) {
+>  					tst_resm(TFAIL|TTERRNO, "cmd=0x%x",
+> cmd[i]);
+>  				} else {
+>  					tst_resm(TPASS, "quotactl call
+> succeeded");
+> ============
+> 
+> 
+> However, new problem occurred after applying above patch.
+> 
+> 2) The test failed with the following error in my system:
+> 
+> ------------
+> quotactl01    1  TFAIL  :  cmd=0x800002: TEST_ERRNO=EFAULT(14): Bad
+address
+> quotactl01    2  TFAIL  :  cmd=0x800003: TEST_ERRNO=EFAULT(14): Bad
+address
+> quotactl01    3  TFAIL  :  cmd=0x800007: TEST_ERRNO=EFAULT(14): Bad
+address
+> quotactl01    4  TFAIL  :  cmd=0x800008: TEST_ERRNO=EFAULT(14): Bad
+address
+> quotactl01    5  TFAIL  :  cmd=0x800005: TEST_ERRNO=EFAULT(14): Bad
+address
+> quotactl01    6  TFAIL  :  cmd=0x800006: TEST_ERRNO=EFAULT(14): Bad
+address
+> quotactl01    7  TFAIL  :  cmd=0x800004: TEST_ERRNO=EFAULT(14): Bad
+address
+> quotactl01    8  TFAIL  :  cmd=0x800001: TEST_ERRNO=EFAULT(14): Bad
+address
+> ------------
+> 
+> "EFAULT" means that there is an error in "addr".
+> The format of "quotactl" is following:
+> ------------
+> int quotactl(int cmd, const char *special, int id, caddr_t addr);
+> ------------
+> 
+> Therefore, "EFAULT" means that 4th argument of "quotactl()" has problem.
+> 
+> In "${LTPROOT}/testcases/kernel/syscalls/quotactl/quotactl01.c", 4th 
+> argument of "quotactl()" is "NULL":
+> Is it right?
+> 
+> 
+> I'm glad if I get your help.
+> 
+> 
+> Regards--
+> 
+> 
+> -Tomonori Mitani
+> 
+> 
+> 
+>
+----------------------------------------------------------------------------
+--
+> This SF.Net email is sponsored by the Verizon Developer Community
+> Take advantage of Verizon's best-in-class app development support
+> A streamlined, 14 day to market process makes app distribution fast and
+easy
+> Join now and get one step closer to millions of Verizon customers
+> http://p.sf.net/sfu/verizon-dev2dev 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-<a class="moz-txt-link-freetext" href="http://p.sf.net/sfu/verizon-dev2dev">http://p.sf.net/sfu/verizon-dev2dev</a> 
-_______________________________________________
-Ltp-list mailing list
-<a class="moz-txt-link-abbreviated" href="mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.net</a>
-<a class="moz-txt-link-freetext" href="https://lists.sourceforge.net/lists/listinfo/ltp-list">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
-    </pre>
-  </blockquote>
-  <pre wrap=""><!---->
 
-  </pre>
-</blockquote>
-</body>
-</html>
-
---------------040204000702070207040009--
-
-
-
---===============5495523264035710797==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 This SF.Net email is sponsored by the Verizon Developer Community
@@ -327,17 +183,7 @@ Take advantage of Verizon's best-in-class app development support
 A streamlined, 14 day to market process makes app distribution fast and easy
 Join now and get one step closer to millions of Verizon customers
 http://p.sf.net/sfu/verizon-dev2dev 
---===============5495523264035710797==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5495523264035710797==--
-
-
