@@ -1,21 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <hyei@mvista.com>) id 1NSbKD-000866-Oi
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 19:13:45 +0000
-Received: from [206.112.117.47] (helo=gateway-1237.mvista.com)
-	by sfi-mx-2.v28.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1NSbK9-0007mu-Ml
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 19:13:45 +0000
-Content-class: urn:content-classes:message
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NVXKd-0008MO-1c
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 21:34:19 +0000
+Received: from mail-pz0-f193.google.com ([209.85.222.193])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NVXKc-0004dx-20
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 21:34:18 +0000
+Received: by mail-pz0-f193.google.com with SMTP id 31so85611pzk.28
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 14 Jan 2010 13:34:17 -0800 (PST)
 MIME-Version: 1.0
-Date: Wed, 6 Jan 2010 11:13:44 -0800
-Message-ID: <8368651DACC1964480F951191B94A07801A20FA3@svexch01.mvista.com>
-In-Reply-To: <BA3B15F55552CA46B604A1E50E9FEE7F032CFFD8@ba-exch3.ds.amrdec.army.mil>
-References: <BA3B15F55552CA46B604A1E50E9FEE7F032CFFD8@ba-exch3.ds.amrdec.army.mil>
-From: "Henry Yei" <hyei@mvista.com>
-Subject: Re: [LTP] Question about LTP (UNCLASSIFIED)
+In-Reply-To: <364299f41001141333v714a43ecv9d3e90c0ef6b2cba@mail.gmail.com>
+References: <5e088bd91001140916n6b6d9979m3847be14d86c7920@mail.gmail.com>
+	<364299f41001141125v56ef5ac0sfa58acd70b6e7775@mail.gmail.com>
+	<5e088bd91001141302l291261a7p366ac54659534a9c@mail.gmail.com>
+	<364299f41001141333v714a43ecv9d3e90c0ef6b2cba@mail.gmail.com>
+Date: Thu, 14 Jan 2010 13:34:17 -0800
+Message-ID: <364299f41001141334q50820482id4c12aa8a3759634@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] ltp on OMAP3 embedded linux systems
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,46 +30,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Fowler, Michael (AMRDEC)" <michael.a.fowler@us.army.mil>, ltp-list@lists.sourceforge.net
+To: Steve Sakoman <sakoman@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-> -----Original Message-----
-> From: Fowler, Michael (AMRDEC) [mailto:michael.a.fowler@us.army.mil]
-> Sent: Tuesday, January 05, 2010 12:48 PM
-> To: ltp-list@lists.sourceforge.net
-> Subject: [LTP] Question about LTP (UNCLASSIFIED)
-> 
-> Classification:  UNCLASSIFIED
-> Caveats: NONE
-> 
-> Can LTP be applied to embedded real time Linux?
-> 
-> Thanks,
-> -Mike
-> 
-> 
-> --------------------------------------------
-> Mike Fowler
-> Computer engineer
-> CompTIA A+ 2007 certified
-> USARMY - AMRDEC
-> Software Engineering Directorate
-> Building 6264 - Room 2048
-> (256)876-0434
-> michael.a.fowler@us.army.mil
-> --------------------------------------------
+On Thu, Jan 14, 2010 at 1:33 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Thu, Jan 14, 2010 at 1:02 PM, Steve Sakoman <sakoman@gmail.com> wrote:
+>> On Thu, Jan 14, 2010 at 11:25 AM, Garrett Cooper <yanegomi@gmail.com> wr=
+ote:
+>>
+>>>> There was really only one glitch in the build process (looking for
+>>>> libraries in an odd location) and I am now in the process of running
+>>>> the test.
+>>>
+>>> Please -- if you find bugs CC the list so I can resolve them as soon
+>>> as possible -- thanks :).
+>>
+>> I redid the build and everything worked perfectly, so that initial
+>> glitch was probably my fault!
+>
+> Well, you never know... it always does help to learn where things went
+> wrong so processes and methods can be improved...
+>
+>>> x86* is still the primary target architecture. I'd like to see the
+>>> failures, but yes my Fedora 12 VM is LTP `result clean', whereas the
+>>> MIPS and PPC 2.6.24* embedded devices at work have issues with some
+>>> tests due to architectural bugs, kernel bugs, and some test bugs.
+>>>
+>>> Please let us know how it goes though so we can try and work out the
+>>> issues with your ARM embedded DUT.
+>>
+>> I've got the results of the 1st run. =A0What is the normal way to share
+>> the results?
+>
+> Pastebin?
 
-There are many individual test suites within LTP, but yes, most of it can be applied to an embedded real time linux system.
-At the minimum, we've validated  the LTP file systems tests and all tests within the default test scenario on our own embedded linux offerings in real time and other modes  there has not been any major "real time" test problems.
+Actually there's an ltp-results mailing list. Please feel free to use
+that, but definitely CC me because I don't subscribe to the list.
+Cheers!
+-Garrett
 
-------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+---------------------------------------------------------------------------=
+---
+Throughout its 18-year history, RSA Conference consistently attracts the
+world's best and brightest in the field, creating opportunities for Confere=
+nce
+attendees to learn about information security's most important issues throu=
+gh
+interactions with peers, luminaries and emerging and established companies.
+http://p.sf.net/sfu/rsaconf-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
