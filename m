@@ -1,31 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1Naj13-0005s5-Hp
-	for ltp-list@lists.sourceforge.net; Fri, 29 Jan 2010 05:03:33 +0000
-Received: from out01.sjc.mx.trendmicro.com ([216.99.131.5])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Naj12-0000NE-6A
-	for ltp-list@lists.sourceforge.net; Fri, 29 Jan 2010 05:03:33 +0000
-Received: from relay02.sjc.mx.trendmicro.com (unknown [10.30.239.23])
-	by out01.sjc.mx.trendmicro.com (Postfix) with ESMTP id 3CC6123944F
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 29 Jan 2010 05:03:25 +0000 (UTC)
-Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay02.sjc.mx.trendmicro.com (Postfix) with ESMTP id 73B2C95836
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 29 Jan 2010 05:03:24 +0000 (UTC)
-Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Fri, 29 Jan 2010 14:03:22 +0900
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Fri, 29 Jan 2010 14:03:22 +0900
-Message-ID: <000001caa0a0$61792020$246b6060$@co.jp>
-MIME-Version: 1.0
-Content-Language: ja
-Subject: [LTP] 2010-01-29 cvs build problem
+	(envelope-from <sds@tycho.nsa.gov>) id 1NVXhc-0001sP-U0
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 21:58:04 +0000
+Received: from msux-gh1-uea01.nsa.gov ([63.239.67.1])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NVXhZ-0003HE-QN
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 21:58:04 +0000
+From: Stephen Smalley <sds@tycho.nsa.gov>
+In-Reply-To: <364299f41001141332y62d5cb5pd4202c1baad5b78c@mail.gmail.com>
+References: <364299f41001120855r653842d3x630cdaa6ec4129b6@mail.gmail.com>
+	<1263412198.901.11.camel@moss-pluto.epoch.ncsc.mil>
+	<20100113220021.GA838@us.ibm.com>
+	<1263420212.901.64.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001131449w751889b8r98aca16ea1e8957a@mail.gmail.com>
+	<1263478021.8548.3.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001141210o49c97980yc703601e7340362f@mail.gmail.com>
+	<1263501350.8548.60.camel@moss-pluto.epoch.ncsc.mil>
+	<1263501847.8548.65.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001141329j25c85101u37f2eda55faf04b9@mail.gmail.com>
+	<364299f41001141332y62d5cb5pd4202c1baad5b78c@mail.gmail.com>
+Date: Thu, 14 Jan 2010 16:59:24 -0500
+Message-Id: <1263506364.8548.74.camel@moss-pluto.epoch.ncsc.mil>
+Mime-Version: 1.0
+Subject: Re: [LTP] regression: selinux testsuite broken since October
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,73 +37,205 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: Eric Paris <eparis@parisplace.org>, James Morris <jmorris@namei.org>, ltp-list@lists.sourceforge.net
 
-Hi,
+On Thu, 2010-01-14 at 13:32 -0800, Garrett Cooper wrote:
+> On Thu, Jan 14, 2010 at 1:29 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> > On Thu, Jan 14, 2010 at 12:44 PM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
+> >> On Thu, 2010-01-14 at 15:35 -0500, Stephen Smalley wrote:
+> >>> I guess I'm not being clear.  Most of the work presently done by 'load'
+> >>> can be done during make all/install.  In particular, everything except
+> >>> for running semodule -i can be done during make all, and then make
+> >>> install should just copy test_policy.pp (the output of make all) to
+> >>> the /opt/ltp tree.  Then test_selinux.sh only needs to run semodule
+> >>> -i /path/to/test_policy.pp before the tests and semodule -r test_policy
+> >>> afterward.  We can also avoid copying test_policy.te to the system
+> >>> policy devel directory altogether.  Something like this patch (and
+> >>> Makefile.selinux can then be removed altogether):
+> >>
+> >> Oops, wrong variable expansion syntax in test_selinux.sh.  Corrected
+> >> patch is below.  This one actually runs ;)
+> >>
+> >> Index: testscripts/test_selinux.sh
+> >> ===================================================================
+> >> RCS file: /cvsroot/ltp/ltp/testscripts/test_selinux.sh,v
+> >> retrieving revision 1.15
+> >> diff -u -r1.15 test_selinux.sh
+> >> --- testscripts/test_selinux.sh 13 Jan 2010 18:50:53 -0000      1.15
+> >> +++ testscripts/test_selinux.sh 14 Jan 2010 20:41:22 -0000
+> >> @@ -89,11 +89,10 @@
+> >>  config_allow_domain_fd_use 0
+> >>
+> >>  # build and install the test policy...
+> >> -echo "building and installing test_policy module..."
+> >> -cd $POLICYDIR
+> >> -make load
+> >> +echo "installing test_policy module..."
+> >> +$SEMODULE -i $POLICYDIR/test_policy.pp
+> >>  if [ $? != 0 ]; then
+> >> -       echo "Failed to build and load test_policy module, aborting test run."
+> >> +       echo "Failed to install load test_policy module, aborting test run."
+> >>        config_unset_expandcheck
+> >>        exit 1
+> >>  else
+> >> @@ -126,8 +125,7 @@
+> >>  /usr/bin/chcon -t $SAVEBINTYPE $LTPROOT/testcases/bin
+> >>
+> >>  echo "Removing test_policy module..."
+> >> -cd $POLICYDIR
+> >> -make cleanup 2>&1
+> >> +$SEMODULE -r test_policy
+> >>  if [ $? != 0 ]; then
+> >>        echo "Failed to remove test_policy module."
+> >>        exit 1
+> >> Index: testcases/kernel/security/selinux-testsuite/refpolicy/Makefile
+> >> ===================================================================
+> >> RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/selinux-testsuite/refpolicy/Makefile,v
+> >> retrieving revision 1.17
+> >> diff -u -r1.17 Makefile
+> >> --- testcases/kernel/security/selinux-testsuite/refpolicy/Makefile      14 Jan 2010 12:40:58 -0000      1.17
+> >> +++ testcases/kernel/security/selinux-testsuite/refpolicy/Makefile      14 Jan 2010 20:41:22 -0000
+> >> @@ -39,10 +39,11 @@
+> >>
+> >>  CHECKPOLICY            ?= $(DESTDIR)/usr/bin/checkpolicy
+> >>  CHECKPOLICY_VERS       ?= $(shell $(CHECKPOLICY) -V |cut -f 1 -d ' ')
+> >> +POLICY_DEVEL_DIR       ?= $(DESTDIR)/usr/share/selinux/devel
+> >>
+> >>  INSTALL_DIR            := testcases/kernel/security/selinux-testsuite/refpolicy
+> >>
+> >> -INSTALL_TARGETS                := Makefile.selinux
+> >> +INSTALL_TARGETS                := test_policy.pp
+> >>
+> >>  TEST_POLICY_DIR                := $(abs_srcdir)/policy_files
+> >>
+> >> @@ -63,8 +64,17 @@
+> >>  POLICY_FILES           := test_global.te \
+> >>                           $(filter-out test_global.te,$(notdir $(wildcard $(TEST_POLICY_DIR)/*.te)))
+> >>
+> >> +all: test_policy.pp
+> >> +
+> >> +test_policy.pp: test_policy.te
+> >> +       @set -e; if [ -d "$(POLICY_DEVEL_DIR)" ]; then \
+> >> +           $(MAKE) -f $(POLICY_DEVEL_DIR)/Makefile test_policy.pp; \
+> >> +       else \
+> >> +            echo "ERROR: You must have selinux-policy?-devel? installed."; \
+> >> +           false; \
+> >> +       fi
+> >> +
+> >>  test_policy.te: $(addprefix $(TEST_POLICY_DIR)/,$(POLICY_FILES))
+> >>        (cd "$(TEST_POLICY_DIR)" && cat $(POLICY_FILES)) > $@
+> >>
+> >>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> >> -include $(abs_srcdir)/Makefile.selinux
+> >
+> > Cool! This is a lot easier than I originally thought it would be.
+> >
+> > Everything specified with all should be specified instead with the
+> 
+> s/Everything specified with all/All dependencies of all/
+> 
+> MAKE_TARGETS variable. This is because it adds everything in
+> > MAKE_TARGETS to variables (CLEAN_TARGETS, INSTALL_TARGETS), which then
+> > handle it appropriately via clean and install.
+> >
+> > All I have to do after this is resolve the (semodule?) security bit
+> > enabling for the tests, and we'll be in good shape for all build,
+> > install, and test scenarios with selinux.
 
-I tried to build 2010-01-29 cvs in RHEL4.8 system.
+Further diff on top of the prior one to resolve a few remaining issues
+in getting the tests to pass.  With these two patches, all tests appear
+to pass on Fedora 12.
 
-"make" and "make install" succeeded, but in "/opt/ltp" directory, there
-were not "runltp". There were "bin", "share", "testcases" directories 
-only.
+Things that remain unresolved:
+- RHEL4 support.  Is RHEL4 to be supported still by ltp, given
+dependencies?  RHEL4 has been using the test policy under policy/ and
+has a different build/load process.
+- Running individual tests manually.  As described in the
+selinux-testsuite README, it used to be possible to run individual tests
+via tests/runtest.sh in order to more easily hunt down specific failures
+and get more verbose output than we get from any of the results/* files.
 
-With 2010-01-28 cvs, "make install" installed necessary files such as 
-"runltp" to "/opt/ltp" directory as follows:
+diff -u testscripts/test_selinux.sh testscripts/test_selinux.sh
+--- testscripts/test_selinux.sh	14 Jan 2010 20:41:22 -0000
++++ testscripts/test_selinux.sh	14 Jan 2010 21:48:15 -0000
+@@ -113,7 +113,7 @@
+ # The ../testcases/bin directory needs to have the test_file_t type.
+ # Save and restore later.
+ SAVEBINTYPE=`ls -Zd $LTPROOT/testcases/bin | awk '{ print $4 }' | awk -F: '{ print $3 }'`
+-/usr/bin/chcon -t test_file_t $LTPROOT/testcases/bin
++/usr/bin/chcon -R -t test_file_t $LTPROOT/testcases/bin
+ 
+ $LTPROOT/bin/ltp-pan -S -a $LTPROOT/results/selinux -n ltp-selinux -l $LTPROOT/results/selinux.logfile -o $LTPROOT/results/selinux.outfile -p -f $LTPROOT/runtest/selinux  
+ 
+@@ -122,7 +122,7 @@
+ rm -rf $TMP/selinux
+ 
+ # Restore type of .../testcases/bin directory
+-/usr/bin/chcon -t $SAVEBINTYPE $LTPROOT/testcases/bin
++/usr/bin/chcon -R -t $SAVEBINTYPE $LTPROOT/testcases/bin
+ 
+ echo "Removing test_policy module..."
+ $SEMODULE -r test_policy
+only in patch2:
+unchanged:
+--- testcases/kernel/security/selinux-testsuite/tests/file/selinux_file.sh	11 May 2009 06:39:46 -0000	1.7
++++ testcases/kernel/security/selinux-testsuite/tests/file/selinux_file.sh	14 Jan 2010 21:48:15 -0000
+@@ -193,7 +193,7 @@
+ 	fi
+ 	
+ 	# return to $LTPROOT directory
+-	cd ${PWD}
++	cd ${SAVEPWD}
+ 
+ 	return $RC
+ }
+only in patch2:
+unchanged:
+--- testcases/kernel/security/selinux-testsuite/tests/inherit/Makefile	9 Oct 2009 17:55:51 -0000	1.2
++++ testcases/kernel/security/selinux-testsuite/tests/inherit/Makefile	14 Jan 2010 21:48:15 -0000
+@@ -25,8 +25,6 @@
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(abs_srcdir)/../Makefile.inc
+ 
+-LDFLAGS			+= -static
+-
+ LDLIBS			+= -lselinux
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+only in patch2:
+unchanged:
+--- testcases/kernel/security/selinux-testsuite/tests/inherit/selinux_inherit.sh	21 Apr 2009 09:39:58 -0000	1.4
++++ testcases/kernel/security/selinux-testsuite/tests/inherit/selinux_inherit.sh	14 Jan 2010 21:48:15 -0000
+@@ -25,6 +25,7 @@
+ 
+ 	# run tests in $LTPROOT/testcases/bin directory
+ 	SAVEPWD=${PWD}
++	LTPBIN=${LTPBIN:-$LTPROOT/testcases/bin}
+ 	cd ${LTPBIN}
+ 	CURRENTDIR="."
+ }
+@@ -39,7 +40,7 @@
+ 	# the test_file from test_inherit_parent_t.
+ 	# Should fail on fd use permission.
+ 
+-	runcon -t test_inherit_parent_t -- selinux_inherit_parent test_inherit_nouse_t $SELINUXTMPDIR/test_file selinux_inherit_child 2>&1
++	runcon -t test_inherit_parent_t -- $CURRENTDIR/selinux_inherit_parent test_inherit_nouse_t $SELINUXTMPDIR/test_file $CURRENTDIR/selinux_inherit_child 2>&1
+ 	RC=$?
+ 	if [ $RC -ne 0 ]
+ 	then
 
-------------
-[...]
-install -m 00775 "/home/LTP/ltp-2010-01-28/tools/genload/stress"
-"/opt/ltp/testcases/bin/stress"
-make[2]: Leaving directory `/home/LTP/ltp-2010-01-28/tools/genload'
-make[1]: Leaving directory `/home/LTP/ltp-2010-01-28/tools'
-make -C "runtest" \
-	-f "/home/LTP/ltp-2010-01-28/runtest/Makefile" install
-make[1]: Entering directory `/home/LTP/ltp-2010-01-28/runtest'
-test -d "/opt/ltp/runtest" || mkdir -p "/opt/ltp/runtest"
-install -m 00644 "/home/LTP/ltp-2010-01-28/runtest/admin_tools"
-"/opt/ltp/runtest/admin_tools"
-test -d "/opt/ltp/runtest" || mkdir -p "/opt/ltp/runtest"
-install -m 00644 "/home/LTP/ltp-2010-01-28/runtest/ballista"
-"/opt/ltp/runtest/ballista"
-test -d "/opt/ltp/runtest" || mkdir -p "/opt/ltp/runtest"
-install -m 00644 "/home/LTP/ltp-2010-01-28/runtest/can"
-"/opt/ltp/runtest/can"
-test -d "/opt/ltp/runtest" || mkdir -p "/opt/ltp/runtest"
-install -m 00644 "/home/LTP/ltp-2010-01-28/runtest/cap_bounds"
-"/opt/ltp/runtest/cap_bounds"
-[...]
-install -m 00755 "/home/LTP/ltp-2010-01-28/runltplite.sh"
-"//opt/ltp/runltplite.sh"
-install -m 00755 "/home/LTP/ltp-2010-01-28/ver_linux" "//opt/ltp/ver_linux"
-head -n 1 "/home/LTP/ltp-2010-01-28/ChangeLog" > "Version"
-install -m 00644 "/home/LTP/ltp-2010-01-28/Version" "//opt/ltp/Version"
-install -m 00755 "/home/LTP/ltp-2010-01-28/execltp" "//opt/ltp/bin/execltp"
-Checking for required user/group ids
-
-'nobody' user id and group found.
-'bin' user id and group found.
-'daemon' user id and group found.
-Users group found.
-Sys group found.
-Required users/groups exist.
-------------
-
-Just a quick note to tell you that.
-
-
-Thank you--
-
-
--Tomonori Mitani
-
+-- 
+Stephen Smalley
+National Security Agency
 
 
 ------------------------------------------------------------------------------
-The Planet: dedicated and managed hosting, cloud storage, colocation
-Stay online with enterprise data centers and the best network in the business
-Choose flexible plans and management services without long-term contracts
-Personal 24x7 support from experience hosting pros just a phone call away.
-http://p.sf.net/sfu/theplanet-com
+Throughout its 18-year history, RSA Conference consistently attracts the
+world's best and brightest in the field, creating opportunities for Conference
+attendees to learn about information security's most important issues through
+interactions with peers, luminaries and emerging and established companies.
+http://p.sf.net/sfu/rsaconf-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
