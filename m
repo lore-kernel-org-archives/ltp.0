@@ -1,31 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sds@tycho.nsa.gov>) id 1NVYCQ-0000q5-VN
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 22:29:54 +0000
-Received: from msux-gh1-uea02.nsa.gov ([63.239.67.2])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NVYCP-00031F-SK
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 22:29:54 +0000
-From: Stephen Smalley <sds@tycho.nsa.gov>
-In-Reply-To: <1263506364.8548.74.camel@moss-pluto.epoch.ncsc.mil>
-References: <364299f41001120855r653842d3x630cdaa6ec4129b6@mail.gmail.com>
-	<1263412198.901.11.camel@moss-pluto.epoch.ncsc.mil>
-	<20100113220021.GA838@us.ibm.com>
-	<1263420212.901.64.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001131449w751889b8r98aca16ea1e8957a@mail.gmail.com>
-	<1263478021.8548.3.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001141210o49c97980yc703601e7340362f@mail.gmail.com>
-	<1263501350.8548.60.camel@moss-pluto.epoch.ncsc.mil>
-	<1263501847.8548.65.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001141329j25c85101u37f2eda55faf04b9@mail.gmail.com>
-	<364299f41001141332y62d5cb5pd4202c1baad5b78c@mail.gmail.com>
-	<1263506364.8548.74.camel@moss-pluto.epoch.ncsc.mil>
-Date: Thu, 14 Jan 2010 17:31:20 -0500
-Message-Id: <1263508280.8548.82.camel@moss-pluto.epoch.ncsc.mil>
-Mime-Version: 1.0
-Subject: Re: [LTP] regression: selinux testsuite broken since October
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <miaox@cn.fujitsu.com>) id 1NVKXi-0006SP-Fi
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 07:54:58 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NVKXh-0000P6-2e
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 07:54:58 +0000
+Message-ID: <4B4ECD70.8000102@cn.fujitsu.com>
+Date: Thu, 14 Jan 2010 15:53:20 +0800
+From: Miao Xie <miaox@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] fix the bug of sched_getaffinity in
+	cpuset_syscall_test
+Reply-To: miaox@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,135 +27,108 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: Eric Paris <eparis@parisplace.org>, James Morris <jmorris@namei.org>, ltp-list@lists.sourceforge.net
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: LTP-ML <ltp-list@lists.sourceforge.net>
 
-On Thu, 2010-01-14 at 16:59 -0500, Stephen Smalley wrote:
-> On Thu, 2010-01-14 at 13:32 -0800, Garrett Cooper wrote:
-> > On Thu, Jan 14, 2010 at 1:29 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> > > On Thu, Jan 14, 2010 at 12:44 PM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
-> > >> On Thu, 2010-01-14 at 15:35 -0500, Stephen Smalley wrote:
-> > >>> I guess I'm not being clear.  Most of the work presently done by 'load'
-> > >>> can be done during make all/install.  In particular, everything except
-> > >>> for running semodule -i can be done during make all, and then make
-> > >>> install should just copy test_policy.pp (the output of make all) to
-> > >>> the /opt/ltp tree.  Then test_selinux.sh only needs to run semodule
-> > >>> -i /path/to/test_policy.pp before the tests and semodule -r test_policy
-> > >>> afterward.  We can also avoid copying test_policy.te to the system
-> > >>> policy devel directory altogether.  Something like this patch (and
-> > >>> Makefile.selinux can then be removed altogether):
-> > >>
-> > >> Oops, wrong variable expansion syntax in test_selinux.sh.  Corrected
-> > >> patch is below.  This one actually runs ;)
-> > >>
-> > >> Index: testscripts/test_selinux.sh
-> > >> ===================================================================
-> > >> RCS file: /cvsroot/ltp/ltp/testscripts/test_selinux.sh,v
-> > >> retrieving revision 1.15
-> > >> diff -u -r1.15 test_selinux.sh
-> > >> --- testscripts/test_selinux.sh 13 Jan 2010 18:50:53 -0000      1.15
-> > >> +++ testscripts/test_selinux.sh 14 Jan 2010 20:41:22 -0000
-> > >> @@ -89,11 +89,10 @@
-> > >>  config_allow_domain_fd_use 0
-> > >>
-> > >>  # build and install the test policy...
-> > >> -echo "building and installing test_policy module..."
-> > >> -cd $POLICYDIR
-> > >> -make load
-> > >> +echo "installing test_policy module..."
-> > >> +$SEMODULE -i $POLICYDIR/test_policy.pp
-> > >>  if [ $? != 0 ]; then
-> > >> -       echo "Failed to build and load test_policy module, aborting test run."
-> > >> +       echo "Failed to install load test_policy module, aborting test run."
-> > >>        config_unset_expandcheck
-> > >>        exit 1
-> > >>  else
-> > >> @@ -126,8 +125,7 @@
-> > >>  /usr/bin/chcon -t $SAVEBINTYPE $LTPROOT/testcases/bin
-> > >>
-> > >>  echo "Removing test_policy module..."
-> > >> -cd $POLICYDIR
-> > >> -make cleanup 2>&1
-> > >> +$SEMODULE -r test_policy
-> > >>  if [ $? != 0 ]; then
-> > >>        echo "Failed to remove test_policy module."
-> > >>        exit 1
-> > >> Index: testcases/kernel/security/selinux-testsuite/refpolicy/Makefile
-> > >> ===================================================================
-> > >> RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/selinux-testsuite/refpolicy/Makefile,v
-> > >> retrieving revision 1.17
-> > >> diff -u -r1.17 Makefile
-> > >> --- testcases/kernel/security/selinux-testsuite/refpolicy/Makefile      14 Jan 2010 12:40:58 -0000      1.17
-> > >> +++ testcases/kernel/security/selinux-testsuite/refpolicy/Makefile      14 Jan 2010 20:41:22 -0000
-> > >> @@ -39,10 +39,11 @@
-> > >>
-> > >>  CHECKPOLICY            ?= $(DESTDIR)/usr/bin/checkpolicy
-> > >>  CHECKPOLICY_VERS       ?= $(shell $(CHECKPOLICY) -V |cut -f 1 -d ' ')
-> > >> +POLICY_DEVEL_DIR       ?= $(DESTDIR)/usr/share/selinux/devel
-> > >>
-> > >>  INSTALL_DIR            := testcases/kernel/security/selinux-testsuite/refpolicy
-> > >>
-> > >> -INSTALL_TARGETS                := Makefile.selinux
-> > >> +INSTALL_TARGETS                := test_policy.pp
-> > >>
-> > >>  TEST_POLICY_DIR                := $(abs_srcdir)/policy_files
-> > >>
-> > >> @@ -63,8 +64,17 @@
-> > >>  POLICY_FILES           := test_global.te \
-> > >>                           $(filter-out test_global.te,$(notdir $(wildcard $(TEST_POLICY_DIR)/*.te)))
-> > >>
-> > >> +all: test_policy.pp
-> > >> +
-> > >> +test_policy.pp: test_policy.te
-> > >> +       @set -e; if [ -d "$(POLICY_DEVEL_DIR)" ]; then \
-> > >> +           $(MAKE) -f $(POLICY_DEVEL_DIR)/Makefile test_policy.pp; \
-> > >> +       else \
-> > >> +            echo "ERROR: You must have selinux-policy?-devel? installed."; \
-> > >> +           false; \
-> > >> +       fi
-> > >> +
-> > >>  test_policy.te: $(addprefix $(TEST_POLICY_DIR)/,$(POLICY_FILES))
-> > >>        (cd "$(TEST_POLICY_DIR)" && cat $(POLICY_FILES)) > $@
-> > >>
-> > >>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> > >> -include $(abs_srcdir)/Makefile.selinux
-> > >
-> > > Cool! This is a lot easier than I originally thought it would be.
-> > >
-> > > Everything specified with all should be specified instead with the
-> > 
-> > s/Everything specified with all/All dependencies of all/
-> > 
-> > MAKE_TARGETS variable. This is because it adds everything in
-> > > MAKE_TARGETS to variables (CLEAN_TARGETS, INSTALL_TARGETS), which then
-> > > handle it appropriately via clean and install.
-> > >
-> > > All I have to do after this is resolve the (semodule?) security bit
-> > > enabling for the tests, and we'll be in good shape for all build,
-> > > install, and test scenarios with selinux.
-> 
-> Further diff on top of the prior one to resolve a few remaining issues
-> in getting the tests to pass.  With these two patches, all tests appear
-> to pass on Fedora 12.
-> 
-> Things that remain unresolved:
-> - RHEL4 support.  Is RHEL4 to be supported still by ltp, given
-> dependencies?  RHEL4 has been using the test policy under policy/ and
-> has a different build/load process.
-> - Running individual tests manually.  As described in the
-> selinux-testsuite README, it used to be possible to run individual tests
-> via tests/runtest.sh in order to more easily hunt down specific failures
-> and get more verbose output than we get from any of the results/* files.
+The 5th and 6th testcases of cpuset05 test failed because the len of cpu_set_t in the glibc is
+smaller than the length of the cpumask in the kernel. So we must use the dynamically sized CPU
+sets instead of the standard cpu_set_t.
 
-Possibly we should just extend test_selinux.sh to handle the individual
-test execution case as well, since it already has the setup and cleanup
-logic.  If the caller passes a specific test on the command line to it,
-it can just execute that one outside of pan.  That would avoid
-duplication with runtest.sh.
+This patch fix this problem.
+Before using this patch, the test result is following:
+cpuset05    5  TFAIL  :  Test task exited abnormally.(expect return value is 0)
+cpuset05    6  TFAIL  :  Test task exited abnormally.(expect return value is 0)
 
+After using this patch, the test result is following:
+cpuset05    5  TPASS  :  Cpuset vs systemcall test succeeded.
+cpuset05    6  TPASS  :  Cpuset vs systemcall test succeeded.
+
+Signed-off-by: Miao Xie <miaox@cn.fujitsu.com>
+---
+ .../cpuset_syscall_test/cpuset_syscall_test.c      |   58 ++++++++++++++++++--
+ 1 files changed, 52 insertions(+), 6 deletions(-)
+
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
+index 77bb7d7..c0aada7 100644
+--- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
++++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
+@@ -57,6 +57,10 @@ int test = -1;
+ int flag_exit;
+ int ret;
+ 
++#if !(__GLIBC_PREREQ(2, 7))
++#define CPU_FREE(ptr) free(ptr)
++#endif
++
+ /* Policies for set_mempolicy() */
+ #define MPOL_DEFAULT     0
+ #define MPOL_PREFERRED   1
+@@ -161,14 +165,56 @@ void test_setaffinity(void)
+ 
+ void test_getaffinity(void)
+ {
+-	cpu_set_t tmask;
+-	int i;
+-	CPU_ZERO(&tmask);
+-	ret = sched_getaffinity(0, sizeof(tmask), &tmask);
+-	for (i = 0; i < 8 * sizeof(mask); i++) {
+-		if (CPU_ISSET(i, &tmask))
++	cpu_set_t *tmask;
++	int i, nrcpus = 1024;
++	size_t size;
++
++#if __GLIBC_PREREQ(2, 7)
++realloc:
++	tmask = CPU_ALLOC(nrcpus);
++#else
++	tmask = malloc(sizeof(cpu_set_t));
++#endif
++	if (tmask == NULL) {
++		warn("CPU_ALLOC:errno:%d", errno);
++		ret = -1;
++		return;
++	}
++
++#if __GLIBC_PREREQ(2, 7)
++	size = CPU_ALLOC_SIZE(nrcpus);
++	CPU_ZERO_S(size, tmask);
++#else
++	size = sizeof(cpu_set_t);
++	CPU_ZERO(tmask);
++#endif
++
++	ret = sched_getaffinity(0, size, tmask);
++	if (ret < 0) {
++		CPU_FREE(tmask);
++#if __GLIBC_PREREQ(2, 7)
++		if (errno == EINVAL && nrcpus < (1024 << 8)) {
++			nrcpus = nrcpus << 2;
++			ret = 0;
++			goto realloc;
++		}
++#else
++		if (errno == EINVAL)
++			warn("NR_CPUS of the kernel is more than 1024, so we'd better use a newer glibc(>= 2.7)");
++		else
++#endif
++			warn("sched_getaffinity:errno:%d", errno);
++		return;
++	}
++	for (i = 0; i < 8 * size; i++) {
++#if __GLIBC_PREREQ(2, 7)
++		if (CPU_ISSET_S(i, size, tmask))
++#else
++		if (CPU_ISSET(i, tmask))
++#endif
+ 			printf("%d,", i);
+ 	}
++	CPU_FREE(tmask);
+ }
+ 
+ void test_mbind(void)
 -- 
-Stephen Smalley
-National Security Agency
+1.6.5.2
+
 
 
 ------------------------------------------------------------------------------
