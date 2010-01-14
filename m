@@ -1,29 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sds@tycho.nsa.gov>) id 1NUPfs-0001Cd-JD
-	for ltp-list@lists.sourceforge.net; Mon, 11 Jan 2010 19:11:36 +0000
-Received: from msux-gh1-uea02.nsa.gov ([63.239.67.2])
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <sakoman@gmail.com>) id 1NVY4K-00048s-Ta
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 22:21:32 +0000
+Received: from qw-out-1920.google.com ([74.125.92.147])
 	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NUPfr-0004o6-GF
-	for ltp-list@lists.sourceforge.net; Mon, 11 Jan 2010 19:11:36 +0000
-From: Stephen Smalley <sds@tycho.nsa.gov>
-In-Reply-To: <364299f41001082327o31bbe79eh849ea1651cf12632@mail.gmail.com>
-References: <1262791548.15424.31.camel@moss-pluto.epoch.ncsc.mil>
-	<20100106185019.GA19647@us.ibm.com>
-	<1262893258.2821.50.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001081020r7ee941f4w1b91bcb79849b406@mail.gmail.com>
-	<1262976343.20881.4.camel@moss-pluto.epoch.ncsc.mil>
-	<1262976627.20881.6.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001081338u37e77cd3q3d9535f3dec71331@mail.gmail.com>
-	<1262988051.20881.42.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001081408sf9d740ew55dad7b542463416@mail.gmail.com>
-	<364299f41001082327o31bbe79eh849ea1651cf12632@mail.gmail.com>
-Date: Mon, 11 Jan 2010 14:12:12 -0500
-Message-Id: <1263237132.5091.1.camel@moss-pluto.epoch.ncsc.mil>
-Mime-Version: 1.0
-Subject: Re: [LTP] regression: selinux testsuite broken since October
+	id 1NVY4H-0004x5-Vp
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 22:21:32 +0000
+Received: by qw-out-1920.google.com with SMTP id 14so59383qwa.4
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 14 Jan 2010 14:21:24 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <5e088bd91001141356s5703c677uc55d32b5fd5d8df7@mail.gmail.com>
+References: <5e088bd91001140916n6b6d9979m3847be14d86c7920@mail.gmail.com>
+	<364299f41001141125v56ef5ac0sfa58acd70b6e7775@mail.gmail.com>
+	<5e088bd91001141302l291261a7p366ac54659534a9c@mail.gmail.com>
+	<364299f41001141333v714a43ecv9d3e90c0ef6b2cba@mail.gmail.com>
+	<5e088bd91001141356s5703c677uc55d32b5fd5d8df7@mail.gmail.com>
+Date: Thu, 14 Jan 2010 14:20:59 -0800
+Message-ID: <5e088bd91001141420k3fb02aealadde94c4d2352bba@mail.gmail.com>
+From: Steve Sakoman <sakoman@gmail.com>
+Subject: Re: [LTP] ltp on OMAP3 embedded linux systems
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,65 +31,60 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>, ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>, ltp-list@lists.sourceforge.net
 
-On Fri, 2010-01-08 at 23:27 -0800, Garrett Cooper wrote:
-> On Fri, Jan 8, 2010 at 2:08 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> > On Fri, Jan 8, 2010 at 2:00 PM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
-> >> On Fri, 2010-01-08 at 13:38 -0800, Garrett Cooper wrote:
-> >>> On Fri, Jan 8, 2010 at 10:50 AM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
-> >>> > On Fri, 2010-01-08 at 13:47 -0500, Stephen Smalley wrote:
-> >>> >> On Fri, 2010-01-08 at 10:20 -0800, Garrett Cooper wrote:
-> >>> >> >     Thanks for the feedback and details Stephen.
-> >>> >> >     Would you be kind enough to try out the version from CVS to see
-> >>> >> > whether or not it resolves your issue? You'll also need to update
-> >>> >> > $LTPROOT/scripts in order to use the new version as I added a distro
-> >>> >> > detection script which opens up /etc/redhat-release (for redhat) as
-> >>> >> > opposed to using rpm to query the release.
-> >>> >> > Thanks,
-> >>> >> > -Garrett
-> >>> >>
-> >>> >> The attempt to make the test policy immediately dies with:
-> >>> >> detect_distro.sh: ERROR: Bad release file: /etc/redhat-release
-> >>> >
-> >>> > I should note that I'm running it on Fedora, so I wouldn't expect that
-> >>> > file to exist.  But the script needs to handle it gracefully; we just
-> >>> > use the generic test policy files in that situation.
-> >>>
-> >>>     What does /etc/redhat-release look like (feel free to reply to me off-list)?
-> >>
-> >> On RHEL5, it can look like one of the following:
-> >> Red Hat Enterprise Linux Server release 5 (Tikanga)
-> >> Red Hat Enterprise Linux Server release 5.x (Tikanga)
-> >> Red Hat Enterprise Linux Client release 5 (Tikanga)
-> >> Red Hat Enterprise Linux Client release 5.x (Tikanga)
-> >
-> > Interesting. They switched over to more of the Fedora-style branding, maybe?.
-> >
-> > [garrcoop@halflife ~]$ cat /etc/redhat-release
-> > Red Hat Enterprise Linux AS release 4 (Nahant Update 6)
-> 
-> Could you try again please :)?
+On Thu, Jan 14, 2010 at 1:56 PM, Steve Sakoman <sakoman@gmail.com> wrote:
 
-Fails with:
-cp: cannot stat
-`/home/sds/ltp/testcases/kernel/security/selinux-testsuite/refpolicy/policy_files/generic/test_policy.*': No such file or directory
+>>> I've got the results of the 1st run. =A0What is the normal way to share
+>>> the results?
+>>
+>> Pastebin?
+>
+> Here you go:
+>
+> http://pastebin.com/m483f4087
 
--- 
-Stephen Smalley
-National Security Agency
+That seems to have truncated most of the results :-)
+
+Let's try again:
+
+http://www.sakoman.com/testresults/LTP_RUN_ON-2010_Jan_13-09h_31m_03s.log
+
+Steve
 
 
-------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+>
+> I ran the test with:
+>
+> ./runltp -d /opt/ltp
+>
+> And disabled the tests that gave me hang/oom errors:
+>
+> cloneXX (all)
+> msgctl10
+> msgctl11
+> pipio_5
+> hackbench01
+>
+> Let me know what you think! =A0I noticed that some of the final tests
+> failed because the cron package was missing. =A0I'll fix that on the
+> next run.
+>
+> Steve
+>
+
+---------------------------------------------------------------------------=
+---
+Throughout its 18-year history, RSA Conference consistently attracts the
+world's best and brightest in the field, creating opportunities for Confere=
+nce
+attendees to learn about information security's most important issues throu=
+gh
+interactions with peers, luminaries and emerging and established companies.
+http://p.sf.net/sfu/rsaconf-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
