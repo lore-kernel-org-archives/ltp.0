@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NRiaf-0002Rt-2I
-	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 08:47:05 +0000
-Received: from mail-yx0-f188.google.com ([209.85.210.188])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NRiac-0002ju-SP
-	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 08:47:05 +0000
-Received: by yxe26 with SMTP id 26so14360171yxe.4
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NVKvL-0007C3-Gr
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 08:19:23 +0000
+Received: from mail-px0-f195.google.com ([209.85.216.195])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NVKvJ-00055I-HS
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 08:19:22 +0000
+Received: by pxi33 with SMTP id 33so176158pxi.10
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 04 Jan 2010 00:46:57 -0800 (PST)
-References: <20100104004355.GA760@us.ibm.com>
-Message-Id: <51111C51-DD4E-44E6-B093-3B3FC0DEE8C5@gmail.com>
+	Thu, 14 Jan 2010 00:19:15 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <000901ca94d5$83797340$8a6c59c0$@co.jp>
+References: <000901ca94d5$83797340$8a6c59c0$@co.jp>
+Date: Thu, 14 Jan 2010 00:19:15 -0800
+Message-ID: <364299f41001140019k5aa41267x5add5f7bfed1ee3c@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-In-Reply-To: <20100104004355.GA760@us.ibm.com>
-Mime-Version: 1.0 (iPhone Mail 7D11)
-Date: Mon, 4 Jan 2010 00:46:35 -0800
-Subject: Re: [LTP] [PATCH ltp] p9auth: add missing checkp9auth.sh script
+Subject: Re: [LTP] cvs version 2010-01-14 make failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,158 +27,138 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serue@us.ibm.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net
 
-Sent from my iPhone
-
-On Jan 3, 2010, at 4:43 PM, "Serge E. Hallyn" <serue@us.ibm.com> wrote:
-
-> This was in my original patch submission but somehow didn't make its  
-> way into
-> the ltp tree.
+On Wed, Jan 13, 2010 at 8:53 PM, Mitani <mitani@ryobi.co.jp> wrote:
+> Hi,
 >
-> Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
-> ---
-> testcases/kernel/security/p9auth/checkp9auth.sh |   70 ++++++++++++++ 
-> +++++++++
-> 1 files changed, 70 insertions(+), 0 deletions(-)
-> create mode 100644 testcases/kernel/security/p9auth/checkp9auth.sh
+> I tried to make with 2010-01-14's cvs in RHEL4.8 (2.6.9-89.ELsmp).
+> But It failed in "mbind01.c" by following message.
 >
-> diff --git a/testcases/kernel/security/p9auth/checkp9auth.sh b/ 
-> testcases/kernel/security/p9auth/checkp9auth.sh
-> new file mode 100644
-> index 0000000..f917ce6
-> --- /dev/null
-> +++ b/testcases/kernel/security/p9auth/checkp9auth.sh
-> @@ -0,0 +1,70 @@
-> +#!/bin/sh
-> +## 
-> ### 
-> ### 
-> ### 
-> #####################################################################
-> +## 
->     
->     
->     
->                                                                    ##
-> +## Copyright (c) International Business Machines  Corp.,  
-> 2009                 ##
-> +## 
->     
->     
->     
->                                                                    ##
-> +## This program is free software;  you can redistribute it and#or  
-> modify      ##
-> +## it under the terms of the GNU General Public License as  
-> published by       ##
-> +## the Free Software Foundation; either version 2 of the License,  
-> or          ##
-> +## (at your option) any later  
-> version.                                        ##
-> +## 
->     
->     
->     
->                                                                    ##
-> +## This program is distributed in the hope that it will be useful,  
-> but        ##
-> +## WITHOUT ANY WARRANTY; without even the implied warranty of  
-> MERCHANTABILITY ##
-> +## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public  
-> License   ##
-> +## for more  
-> details.                                                          ##
-> +## 
->     
->     
->     
->                                                                    ##
-> +## You should have received a copy of the GNU General Public  
-> License          ##
-> +## along with this program;  if not, write to the Free  
-> Software               ##
-> +## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  
-> 02111-1307 USA    ##
-> +## 
->     
->     
->     
->                                                                    ##
-> +## 
-> ### 
-> ### 
-> ### 
-> #####################################################################
-> +
-> +yesno=0
-> +if [ "$1" = "yesno" ]; then
-> +    yesno=1
-> +fi
-> +
-> +# check for openssl
-> +rm -f /tmp/ab
-> +echo ab > /tmp/ab
-> +openssl sha1 -hmac "ab" /tmp/ab > /dev/null
-> +ret=$?
-> +if [ $ret -ne 0 ]; then
-> +    if [ $yesno -eq 1 ]; then echo
-> +        "no"
-> +    else
-> +        echo "openssl not installed, skipping p9auth tests."
-> +    fi
-> +    exit 1
-> +fi
-> +
-> +majfile=/sys/module/p9auth/parameters/cap_major
-> +minfile=/sys/module/p9auth/parameters/cap_minor
-> +if [ ! -f "$majfile" ]; then
-> +    if [ $yesno -eq 1 ]; then echo
-> +        "no"
-> +    else
-> +        echo "p9auth not detected.  Skipping p9auth tests."
-> +    fi
-> +    exit 1
-> +fi
-> +
-> +if [ ! -c "/dev/caphash" ]; then
-> +    rm -f /dev/caphash
-> +    maj=`cat $majfile`
-> +    mknod /dev/caphash c $maj 0
-> +fi
-> +
-> +if [ ! -c "/dev/capuse" ]; then
-> +    rm -f /dev/capuse
-> +    min=`cat $minfile`
-> +    mknod /dev/capuse c $maj 1
-> +fi
-> +chmod ugo+w /dev/capuse
-> +
-> +if [ $yesno -eq 1 ]; then
-> +    echo "yes"
-> +else
-> +    echo "p9auth ready for testing"
-> +fi
-> +exit 0
-> -- 
-> 1.6.1.1
+> ------------
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> -I/home/LTP/ltp-2010-01-12/testcases/kernel/include
+> -I/home/LTP/ltp-2010-01-12/testcases/kernel/syscalls/mbind/../utils/
+> -I../../../../include -I../../../../include =A0 -L../../../../lib =A0mbin=
+d01.c
+> -lltp -lnuma -o mbind01
+> mbind01.c:184: error: `MPOL_DEFAULT' undeclared here (not in a function)
+> mbind01.c:184: error: initializer element is not constant
+> mbind01.c:184: error: (near initialization for `tcase[0].policy')
+> mbind01.c:188: error: initializer element is not constant
+> mbind01.c:188: error: (near initialization for `tcase[0]')
+> mbind01.c:190: error: initializer element is not constant
+> mbind01.c:190: error: (near initialization for `tcase[1].policy')
+> mbind01.c:194: error: initializer element is not constant
+> mbind01.c:194: error: (near initialization for `tcase[1]')
+> mbind01.c:196: error: `MPOL_BIND' undeclared here (not in a function)
+> mbind01.c:196: error: initializer element is not constant
+> mbind01.c:196: error: (near initialization for `tcase[2].policy')
+> mbind01.c:200: error: initializer element is not constant
+> mbind01.c:200: error: (near initialization for `tcase[2]')
+> mbind01.c:202: error: initializer element is not constant
+> mbind01.c:202: error: (near initialization for `tcase[3].policy')
+> mbind01.c:206: error: initializer element is not constant
+> mbind01.c:206: error: (near initialization for `tcase[3]')
+> mbind01.c:208: error: `MPOL_INTERLEAVE' undeclared here (not in a functio=
+n)
+> mbind01.c:208: error: initializer element is not constant
+> mbind01.c:208: error: (near initialization for `tcase[4].policy')
+> mbind01.c:212: error: initializer element is not constant
+> mbind01.c:212: error: (near initialization for `tcase[4]')
+> mbind01.c:214: error: initializer element is not constant
+> mbind01.c:214: error: (near initialization for `tcase[5].policy')
+> mbind01.c:218: error: initializer element is not constant
+> mbind01.c:218: error: (near initialization for `tcase[5]')
+> mbind01.c:220: error: `MPOL_PREFERRED' undeclared here (not in a function)
+> mbind01.c:220: error: initializer element is not constant
+> mbind01.c:220: error: (near initialization for `tcase[6].policy')
+> mbind01.c:224: error: initializer element is not constant
+> mbind01.c:224: error: (near initialization for `tcase[6]')
+> mbind01.c:226: error: initializer element is not constant
+> mbind01.c:226: error: (near initialization for `tcase[7].policy')
+> mbind01.c:230: error: initializer element is not constant
+> mbind01.c:230: error: (near initialization for `tcase[7]')
+> mbind01.c:236: error: initializer element is not constant
+> mbind01.c:236: error: (near initialization for `tcase[8]')
+> mbind01.c:238: error: initializer element is not constant
+> mbind01.c:238: error: (near initialization for `tcase[9].policy')
+> mbind01.c:243: error: initializer element is not constant
+> mbind01.c:243: error: (near initialization for `tcase[9]')
+> mbind01.c:246: error: initializer element is not constant
+> mbind01.c:246: error: (near initialization for `tcase[10].policy')
+> mbind01.c:250: error: initializer element is not constant
+> mbind01.c:250: error: (near initialization for `tcase[10]')
+> mbind01.c: In function `do_test':
+> mbind01.c:309: error: `MPOL_F_ADDR' undeclared (first use in this functio=
+n)
+> mbind01.c:309: error: (Each undeclared identifier is reported only once
+> mbind01.c:309: error: for each function it appears in.)
+> make[4]: *** [mbind01] Error 1
+> ------------
+>
+> Following version's cvs's bring same results.
+> =A0- 2010-01-08
+> =A0- 2010-01-12
+> =A0- 2010-01-13
+>
+>
+> With 2009-12-21's cvs, I succeeded to make.
+> I took a difference of "mbind01.c" between "2009-12-21's cvs and
+> 2010-01-12's cvs.
+> In "mbind01.c", "#include "numaif.h" changed to #include "numa_helpers.h"
+>
+> But the definition of "MPOL_DEFAULT" which was in "numaif.h" wasn't
+> described in "numa_helpers.h". There isn't this definition anywhere.
+>
+> I think that it may be necessary to copy the definitions of
+> "MPOL_DEFAULT", "MPOL_BIND", etc... from "numaif.h".
+> I tried to apply following patch and succeeded to make:
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- numa_helpers.h.org =A02010-01-13 14:15:35.000000000 +0900
+> +++ numa_helpers.h =A0 =A0 =A02010-01-13 16:04:04.000000000 +0900
+> @@ -104,5 +104,18 @@
+> =A0}
+>
+> =A0#endif
+> -
+> +#ifndef MPOL_DEFAULT
+> + =A0 // Policies
+> +# =A0define MPOL_DEFAULT =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A00
+> +# =A0define MPOL_PREFERRED =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A01
+> +# =A0define MPOL_BIND =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 2
+> +# =A0define MPOL_INTERLEAVE =A0 =A0 =A0 =A0 =A0 =A0 =A0 3
+> + =A0 // Flags for get_mem_policy
+> +# =A0define MPOL_F_NODE =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (1<<0)
+> +# =A0define MPOL_F_ADDR =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (1<<1)
+> + =A0 // Flags for mbind
+> +# =A0define MPOL_MF_STRICT =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0(1<<0)
+> +# =A0define MPOL_MF_MOVE =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0(1<<1)
+> +# =A0define MPOL_MF_MOVE_ALL =A0 =A0 =A0 =A0 =A0 =A0 =A0(1<<2)
+> +#endif
+> =A0#endif
 
-Hi Serge,
-     When do this script need to be run? Before compiling or before /  
-while running?
+    Please try from cvs again. I added extra checks for the constants
+needed for mempolicy, so the tests and functionality will be
+appropriately skipped. I also yanked the ad hoc #defines as they were
+spread throughout the tree...
+Thanks!
 -Garrett
 
-------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+---------------------------------------------------------------------------=
+---
+Throughout its 18-year history, RSA Conference consistently attracts the
+world's best and brightest in the field, creating opportunities for Confere=
+nce
+attendees to learn about information security's most important issues throu=
+gh
+interactions with peers, luminaries and emerging and established companies.
+http://p.sf.net/sfu/rsaconf-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
