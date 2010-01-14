@@ -1,26 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NVJfZ-0002MP-Uo
-	for Ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 06:59:01 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NVXGW-00086h-7g
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 21:30:04 +0000
 Received: from mail-pw0-f43.google.com ([209.85.160.43])
 	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NVJfY-00030v-Vw
-	for Ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 06:59:01 +0000
-Received: by pwj11 with SMTP id 11so4126778pwj.2
-	for <Ltp-list@lists.sourceforge.net>;
-	Wed, 13 Jan 2010 22:58:55 -0800 (PST)
+	id 1NVXGT-0008O1-Ln
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 21:30:03 +0000
+Received: by pwj11 with SMTP id 11so4693719pwj.2
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 14 Jan 2010 13:29:51 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <364299f41001131400u700c490dgd95dc24302b95484@mail.gmail.com>
-References: <1263226258.2410.24.camel@plars-t500>
-	<364299f41001110943q4c476dc7n6dbf1fcf8b05c57d@mail.gmail.com>
-	<1263412888.2410.30.camel@plars-t500>
-	<364299f41001131400u700c490dgd95dc24302b95484@mail.gmail.com>
-Date: Wed, 13 Jan 2010 22:58:55 -0800
-Message-ID: <364299f41001132258s2cd6cb53o67393beda677c90f@mail.gmail.com>
+In-Reply-To: <1263501847.8548.65.camel@moss-pluto.epoch.ncsc.mil>
+References: <364299f41001120855r653842d3x630cdaa6ec4129b6@mail.gmail.com>
+	<364299f41001131137j36d1c665r45cb8b6163263428@mail.gmail.com>
+	<1263412198.901.11.camel@moss-pluto.epoch.ncsc.mil>
+	<20100113220021.GA838@us.ibm.com>
+	<1263420212.901.64.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001131449w751889b8r98aca16ea1e8957a@mail.gmail.com>
+	<1263478021.8548.3.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001141210o49c97980yc703601e7340362f@mail.gmail.com>
+	<1263501350.8548.60.camel@moss-pluto.epoch.ncsc.mil>
+	<1263501847.8548.65.camel@moss-pluto.epoch.ncsc.mil>
+Date: Thu, 14 Jan 2010 13:29:51 -0800
+Message-ID: <364299f41001141329j25c85101u37f2eda55faf04b9@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Fix for make autotools
+Subject: Re: [LTP] regression: selinux testsuite broken since October
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,51 +39,123 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Paul Larson <paul.larson@canonical.com>
-Cc: Linux Test Project <Ltp-list@lists.sourceforge.net>
+To: Stephen Smalley <sds@tycho.nsa.gov>
+Cc: Eric Paris <eparis@parisplace.org>, James Morris <jmorris@namei.org>, ltp-list@lists.sourceforge.net
 
-On Wed, Jan 13, 2010 at 2:00 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Wed, Jan 13, 2010 at 12:01 PM, Paul Larson <paul.larson@canonical.com>=
- wrote:
->> Can we go ahead and push this in, or is there a problem you see with it?
->> I also tested with older automake in karmic (automake 1.11) and it had
->> no problems there.
->>
->> Thanks,
->> Paul Larson
->>
->> On Mon, 2010-01-11 at 09:43 -0800, Garrett Cooper wrote:
->>> On Mon, Jan 11, 2010 at 8:10 AM, Paul Larson <paul.larson@canonical.com=
-> wrote:
->>> > Make autotools seems to break on more recent versions without this.
->>> >
->>> > Signed-off-by: Paul Larson <paul.larson@canonical.com>
->>> > ---
->>> > diff --git a/include/mk/automake.mk b/include/mk/automake.mk
->>> > index e23d5d4..889e6cf 100644
->>> > --- a/include/mk/automake.mk
->>> > +++ b/include/mk/automake.mk
->>> > @@ -59,7 +59,7 @@ include:
->>> > =A0 =A0 =A0 =A0mkdir -p "$@"
->>> >
->>> > =A0m4/ltp-version.m4: ChangeLog
->>> > - =A0 =A0 =A0 sed -n '1{s:LTP-:AC_DEFUN([LTP_VERSION],[:;s:$$:]):;p;q=
-}' $< > $@
->>> > + =A0 =A0 =A0 sed -n '1{s:LTP-:m4_define([LTP_VERSION],[:;s:$$:]):;p;=
-q}' $< > $@
->>> >
->>> > =A0.PHONY: automake
->>> > =A0AUTOMAKE_FILES :=3D config.guess config.sub install-sh missing sta=
-mp-h1
->>>
->>> Hi Paul,
->>> =A0 =A0 What version of automake and m4 are you using?
->>> Thanks,
->>> -Garrett
+On Thu, Jan 14, 2010 at 12:44 PM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
+> On Thu, 2010-01-14 at 15:35 -0500, Stephen Smalley wrote:
+>> I guess I'm not being clear. =A0Most of the work presently done by 'load'
+>> can be done during make all/install. =A0In particular, everything except
+>> for running semodule -i can be done during make all, and then make
+>> install should just copy test_policy.pp (the output of make all) to
+>> the /opt/ltp tree. =A0Then test_selinux.sh only needs to run semodule
+>> -i /path/to/test_policy.pp before the tests and semodule -r test_policy
+>> afterward. =A0We can also avoid copying test_policy.te to the system
+>> policy devel directory altogether. =A0Something like this patch (and
+>> Makefile.selinux can then be removed altogether):
 >
-> =A0 =A0Thanks for the reminder :] -- I'll commit it later on tonight!
+> Oops, wrong variable expansion syntax in test_selinux.sh. =A0Corrected
+> patch is below. =A0This one actually runs ;)
+>
+> Index: testscripts/test_selinux.sh
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> RCS file: /cvsroot/ltp/ltp/testscripts/test_selinux.sh,v
+> retrieving revision 1.15
+> diff -u -r1.15 test_selinux.sh
+> --- testscripts/test_selinux.sh 13 Jan 2010 18:50:53 -0000 =A0 =A0 =A01.15
+> +++ testscripts/test_selinux.sh 14 Jan 2010 20:41:22 -0000
+> @@ -89,11 +89,10 @@
+> =A0config_allow_domain_fd_use 0
+>
+> =A0# build and install the test policy...
+> -echo "building and installing test_policy module..."
+> -cd $POLICYDIR
+> -make load
+> +echo "installing test_policy module..."
+> +$SEMODULE -i $POLICYDIR/test_policy.pp
+> =A0if [ $? !=3D 0 ]; then
+> - =A0 =A0 =A0 echo "Failed to build and load test_policy module, aborting=
+ test run."
+> + =A0 =A0 =A0 echo "Failed to install load test_policy module, aborting t=
+est run."
+> =A0 =A0 =A0 =A0config_unset_expandcheck
+> =A0 =A0 =A0 =A0exit 1
+> =A0else
+> @@ -126,8 +125,7 @@
+> =A0/usr/bin/chcon -t $SAVEBINTYPE $LTPROOT/testcases/bin
+>
+> =A0echo "Removing test_policy module..."
+> -cd $POLICYDIR
+> -make cleanup 2>&1
+> +$SEMODULE -r test_policy
+> =A0if [ $? !=3D 0 ]; then
+> =A0 =A0 =A0 =A0echo "Failed to remove test_policy module."
+> =A0 =A0 =A0 =A0exit 1
+> Index: testcases/kernel/security/selinux-testsuite/refpolicy/Makefile
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/selinux-testsuite/re=
+fpolicy/Makefile,v
+> retrieving revision 1.17
+> diff -u -r1.17 Makefile
+> --- testcases/kernel/security/selinux-testsuite/refpolicy/Makefile =A0 =
+=A0 =A014 Jan 2010 12:40:58 -0000 =A0 =A0 =A01.17
+> +++ testcases/kernel/security/selinux-testsuite/refpolicy/Makefile =A0 =
+=A0 =A014 Jan 2010 20:41:22 -0000
+> @@ -39,10 +39,11 @@
+>
+> =A0CHECKPOLICY =A0 =A0 =A0 =A0 =A0 =A0?=3D $(DESTDIR)/usr/bin/checkpolicy
+> =A0CHECKPOLICY_VERS =A0 =A0 =A0 ?=3D $(shell $(CHECKPOLICY) -V |cut -f 1 =
+-d ' ')
+> +POLICY_DEVEL_DIR =A0 =A0 =A0 ?=3D $(DESTDIR)/usr/share/selinux/devel
+>
+> =A0INSTALL_DIR =A0 =A0 =A0 =A0 =A0 =A0:=3D testcases/kernel/security/seli=
+nux-testsuite/refpolicy
+>
+> -INSTALL_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D Makefile.selinux
+> +INSTALL_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D test_policy.pp
+>
+> =A0TEST_POLICY_DIR =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D $(abs_srcdir)/poli=
+cy_files
+>
+> @@ -63,8 +64,17 @@
+> =A0POLICY_FILES =A0 =A0 =A0 =A0 =A0 :=3D test_global.te \
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 $(filter-out test_glo=
+bal.te,$(notdir $(wildcard $(TEST_POLICY_DIR)/*.te)))
+>
+> +all: test_policy.pp
+> +
+> +test_policy.pp: test_policy.te
+> + =A0 =A0 =A0 @set -e; if [ -d "$(POLICY_DEVEL_DIR)" ]; then \
+> + =A0 =A0 =A0 =A0 =A0 $(MAKE) -f $(POLICY_DEVEL_DIR)/Makefile test_policy=
+.pp; \
+> + =A0 =A0 =A0 else \
+> + =A0 =A0 =A0 =A0 =A0 =A0echo "ERROR: You must have selinux-policy?-devel=
+? installed."; \
+> + =A0 =A0 =A0 =A0 =A0 false; \
+> + =A0 =A0 =A0 fi
+> +
+> =A0test_policy.te: $(addprefix $(TEST_POLICY_DIR)/,$(POLICY_FILES))
+> =A0 =A0 =A0 =A0(cd "$(TEST_POLICY_DIR)" && cat $(POLICY_FILES)) > $@
+>
+> =A0include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> -include $(abs_srcdir)/Makefile.selinux
 
-Committed -- thanks!
+Cool! This is a lot easier than I originally thought it would be.
+
+Everything specified with all should be specified instead with the
+MAKE_TARGETS variable. This is because it adds everything in
+MAKE_TARGETS to variables (CLEAN_TARGETS, INSTALL_TARGETS), which then
+handle it appropriately via clean and install.
+
+All I have to do after this is resolve the (semodule?) security bit
+enabling for the tests, and we'll be in good shape for all build,
+install, and test scenarios with selinux.
+
+Thanks!
 -Garrett
 
 ---------------------------------------------------------------------------=
