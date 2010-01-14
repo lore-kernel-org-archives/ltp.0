@@ -1,32 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NVW1b-0005JX-HT
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 20:10:35 +0000
-Received: from mail-px0-f200.google.com ([209.85.216.200])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <sakoman@gmail.com>) id 1NVWpe-0007Fo-Ci
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 21:02:18 +0000
+Received: from qw-out-1920.google.com ([74.125.92.149])
 	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NVW1a-00078b-L3
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 20:10:35 +0000
-Received: by pxi38 with SMTP id 38so659214pxi.28
+	id 1NVWpd-0006Yu-IT
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 21:02:18 +0000
+Received: by qw-out-1920.google.com with SMTP id 14so29296qwa.4
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 14 Jan 2010 12:10:28 -0800 (PST)
+	Thu, 14 Jan 2010 13:02:07 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1263478021.8548.3.camel@moss-pluto.epoch.ncsc.mil>
-References: <364299f41001120855r653842d3x630cdaa6ec4129b6@mail.gmail.com>
-	<1263390194.31509.4.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001131052s27019ebl53f4e3f76bb4598e@mail.gmail.com>
-	<1263410323.901.5.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001131137j36d1c665r45cb8b6163263428@mail.gmail.com>
-	<1263412198.901.11.camel@moss-pluto.epoch.ncsc.mil>
-	<20100113220021.GA838@us.ibm.com>
-	<1263420212.901.64.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001131449w751889b8r98aca16ea1e8957a@mail.gmail.com>
-	<1263478021.8548.3.camel@moss-pluto.epoch.ncsc.mil>
-Date: Thu, 14 Jan 2010 12:10:28 -0800
-Message-ID: <364299f41001141210o49c97980yc703601e7340362f@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] regression: selinux testsuite broken since October
+In-Reply-To: <364299f41001141125v56ef5ac0sfa58acd70b6e7775@mail.gmail.com>
+References: <5e088bd91001140916n6b6d9979m3847be14d86c7920@mail.gmail.com>
+	<364299f41001141125v56ef5ac0sfa58acd70b6e7775@mail.gmail.com>
+Date: Thu, 14 Jan 2010 13:02:04 -0800
+Message-ID: <5e088bd91001141302l291261a7p366ac54659534a9c@mail.gmail.com>
+From: Steve Sakoman <sakoman@gmail.com>
+Subject: Re: [LTP] ltp on OMAP3 embedded linux systems
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,55 +28,40 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stephen Smalley <sds@tycho.nsa.gov>
-Cc: Eric Paris <eparis@parisplace.org>, James Morris <jmorris@namei.org>, ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>, ltp-list@lists.sourceforge.net
 
-On Thu, Jan 14, 2010 at 6:07 AM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
-> On Wed, 2010-01-13 at 14:49 -0800, Garrett Cooper wrote:
->> Which is what it's doing now, but the original author of the test
->> wrote the load logic and unload logic so that it used make instead of
->> using a bourne shell script, etc.
+On Thu, Jan 14, 2010 at 11:25 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
+
+>> There was really only one glitch in the build process (looking for
+>> libraries in an odd location) and I am now in the process of running
+>> the test.
 >
-> To clarify, there are two things happening under that load target
-> presently, one of which is properly handled at build time and one of
-> which is properly handled at test execution time. =A0The first part is
-> building test_policy.pp. =A0The latter is running semodule -i
-> test_policy.pp. =A0So we could split up the Makefile so that the first
-> part is done by the make all/install, and test_selinux.sh merely runs
-> semodule -i test_policy.pp before the test and semodule -r test_policy
-> after the test. =A0One other item I notice is that the current logic
-> copies test_policy* to $POLICY_DEVEL_DIR and runs make there, which
-> isn't necessary - you could just leave them in the refpolicy directory
-> and run make -f $POLICY_DEVEL_DIR/Makefile test_policy.pp.
+> Please -- if you find bugs CC the list so I can resolve them as soon
+> as possible -- thanks :).
 
-Ok, this is interesting. So -- is there any particular reason why
-clean (which in this case just called cleanup) should be called before
-load?
+I redid the build and everything worked perfectly, so that initial
+glitch was probably my fault!
 
-So at the end of the day, all of the junk done as part of `load' could
-in fact be done in test_selinux.sh // runtests.sh (I assume the only
-step that couldn't be done is semodule -i? I don't have any hard
-feelings for not putting that logic in those scripts...
+> x86* is still the primary target architecture. I'd like to see the
+> failures, but yes my Fedora 12 VM is LTP `result clean', whereas the
+> MIPS and PPC 2.6.24* embedded devices at work have issues with some
+> tests due to architectural bugs, kernel bugs, and some test bugs.
+>
+> Please let us know how it goes though so we can try and work out the
+> issues with your ARM embedded DUT.
 
->> The other thing that's kind of amusing is that its setup / teardown
->> isn't very robust -- I could send a signal, or the process could get
->> terminated leaving the test policy files hanging around the system
->> under test. That's a side issue but it's also another good reason to
->> migrate away from this make paradigm for setup / teardown -_-...
+I've got the results of the 1st run.  What is the normal way to share
+the results?
 
-Thanks!
--Garrett
+Steve
 
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 Throughout its 18-year history, RSA Conference consistently attracts the
-world's best and brightest in the field, creating opportunities for Confere=
-nce
-attendees to learn about information security's most important issues throu=
-gh
+world's best and brightest in the field, creating opportunities for Conference
+attendees to learn about information security's most important issues through
 interactions with peers, luminaries and emerging and established companies.
 http://p.sf.net/sfu/rsaconf-dev2dev
 _______________________________________________
