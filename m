@@ -1,31 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NZgpR-0001Ri-Bw
-	for ltp-list@lists.sourceforge.net; Tue, 26 Jan 2010 08:31:17 +0000
-Received: from mail-px0-f200.google.com ([209.85.216.200])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NZgpQ-0006oe-HJ
-	for ltp-list@lists.sourceforge.net; Tue, 26 Jan 2010 08:31:17 +0000
-Received: by pxi38 with SMTP id 38so539064pxi.28
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 26 Jan 2010 00:31:10 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <364299f41001150948u4df35c36g3d4b07b16af49f90@mail.gmail.com>
-References: <1262988051.20881.42.camel@moss-pluto.epoch.ncsc.mil>
-	<1263237132.5091.1.camel@moss-pluto.epoch.ncsc.mil>
-	<20100111195043.GA23360@us.ibm.com>
-	<1263239706.5091.11.camel@moss-pluto.epoch.ncsc.mil>
-	<20100111201936.GA24711@us.ibm.com>
-	<20100111205858.GA26412@us.ibm.com>
-	<20100111210006.GA26554@us.ibm.com>
-	<364299f41001120029x15b2e7adwe30d925717a1dc89@mail.gmail.com>
-	<20100112153827.GB7975@us.ibm.com>
-	<364299f41001150948u4df35c36g3d4b07b16af49f90@mail.gmail.com>
-Date: Tue, 26 Jan 2010 00:31:10 -0800
-Message-ID: <364299f41001260031h2529b9b0j1bbbacd9d3d85eae@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <sds@tycho.nsa.gov>) id 1NVQZx-0002RD-KM
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 14:21:41 +0000
+Received: from msux-gh1-uea01.nsa.gov ([63.239.67.1])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NVQZw-0007ig-KP
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 14:21:41 +0000
+From: Stephen Smalley <sds@tycho.nsa.gov>
+In-Reply-To: <364299f41001131449w751889b8r98aca16ea1e8957a@mail.gmail.com>
+References: <364299f41001120855r653842d3x630cdaa6ec4129b6@mail.gmail.com>
+	<1263323555.16277.11.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001122251v49ec2743j6c57ada7bd6eaf3f@mail.gmail.com>
+	<1263390194.31509.4.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001131052s27019ebl53f4e3f76bb4598e@mail.gmail.com>
+	<1263410323.901.5.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001131137j36d1c665r45cb8b6163263428@mail.gmail.com>
+	<1263412198.901.11.camel@moss-pluto.epoch.ncsc.mil>
+	<20100113220021.GA838@us.ibm.com>
+	<1263420212.901.64.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001131449w751889b8r98aca16ea1e8957a@mail.gmail.com>
+Date: Thu, 14 Jan 2010 09:07:01 -0500
+Message-Id: <1263478021.8548.3.camel@moss-pluto.epoch.ncsc.mil>
+Mime-Version: 1.0
 Subject: Re: [LTP] regression: selinux testsuite broken since October
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -36,98 +34,88 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Serge E. Hallyn" <serue@us.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, Stephen Smalley <sds@tycho.nsa.gov>, James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: Eric Paris <eparis@parisplace.org>, James Morris <jmorris@namei.org>, ltp-list@lists.sourceforge.net
 
-On Fri, Jan 15, 2010 at 9:48 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Tue, Jan 12, 2010 at 7:38 AM, Serge E. Hallyn <serue@us.ibm.com> wrote:
->> Quoting Garrett Cooper (yanegomi@gmail.com):
->>> On Mon, Jan 11, 2010 at 1:00 PM, Serge E. Hallyn <serue@us.ibm.com> wro=
-te:
->>> > Quoting Serge E. Hallyn (serue@us.ibm.com):
->>> >> Quoting Serge E. Hallyn (serue@us.ibm.com):
->>> >> > Quoting Stephen Smalley (sds@tycho.nsa.gov):
->>> >> > > On Mon, 2010-01-11 at 13:50 -0600, Serge E. Hallyn wrote:
->>> >> > > > > Fails with:
->>> >> > > > > cp: cannot stat
->>> >> > > > > `/home/sds/ltp/testcases/kernel/security/selinux-testsuite/r=
-efpolicy/policy_files/generic/test_policy.*': No such file or directory
->>> >> > > >
->>> >> > > > You ran /home/sds/ltp/testscripts/test_selinux.sh, right?
->>> >> > > >
->>> >> > > > I think we are supposed to actually be running
->>> >> > > > /opt/ltp/testscripts/test_selinux.sh. =A0So then the first que=
-stion for
->>> >> > > > Garrett is how should we deduce /home/sds/ltp as $LTP_SRCDIR f=
-rom a
->>> >> > > > testscript? =A0Or should the policy sources be copied into /op=
-t?
->>> >> > >
->>> >> > > Ok, but regardless: =A0the refpolicy Makefile is still broken.
->>> >> >
->>> >> > Yup.
->>> >>
->>> >> All right, baby-steps.
->>> >>
->>> >> The attached test_selinux.diff is not to be applied, but something
->>> >> like it is needed. =A0Should we have the ltp 'make install' fill in
->>> >> TOP_SRCDIR in /opt/ltp/testscripts/test_selinux.sh? =A0BTW, Garrett,
->>> >> that is the issue I was saying is shared between test_selinux.sh
->>> >> and some others including test_robind.sh. =A0That's why I'm not just
->>> >> sending a patch to make it work, bc i think we need more general
->>> >> guidance.
->>> >>
->>> >> The second match makes the 'make load' part of test_selinux.sh
->>> >> succeed on rhel5.4. =A0Stephen, how does it do on fedora?
->>> >>
->>> >> After loading policy it fails to execute ltp-pan, but I figure let's
->>> >> get policy loading working first.
->>> >>
->>> >> -serge
->>> >
->>> > gah, attaching the actual patches this time.
->>> >
->>> > -serge
->>>
->>> 1. I'm rejecting the test_selinux.diff solely because it has /root/ltp
->>> hardcoded as LTPROOT.
->>
->> I said 'not to be applied'. =A0You're not rejecting.
->>
->>> 2. Why is the redhat stuff support to work
->>> agnostic to the major and minor version?
->>
->> It's not agnostic to the major version. =A0Only the minor version.
->>
->> And since you've made ltp not compile on rhel4 (requiring make-3.81. =A0=
-feh)
->> i suppose we can just get rid of rhel4 support selinux-testsuite.
->
-> No. 1. Compiling make 3.81 today and installing it is trivial, so it
-> shouldn't be removed today. 2. I've finally decided that I'm going to
-> look outside of the box into providing equivalent functionality via
-> shell functions using purely built-in commands [and test(1)] to fill
-> in the feature gaps for make 3.80. I've gotten to the point where I
-> just gave up trying to ride out what I possibly can in make 3.80, so
-> it's time to pull in some external pieces to get the job done.
+On Wed, 2010-01-13 at 14:49 -0800, Garrett Cooper wrote:
+> On Wed, Jan 13, 2010 at 2:03 PM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
+> > On Wed, 2010-01-13 at 16:00 -0600, Serge E. Hallyn wrote:
+> >> Quoting Stephen Smalley (sds@tycho.nsa.gov):
+> >> > On Wed, 2010-01-13 at 11:37 -0800, Garrett Cooper wrote:
+> >> > > Yeah, you're right. I was trying to beat around this bush by not
+> >> > > copying these over, but it's better to have the test running and be
+> >> > > improperly designed than it is for regressions to leak by today, until
+> >> > > the day comes where these items are fixed.
+> >> > >
+> >> > > 1. So, Makefile is now copied over by default.
+> >> > > 2. load is no longer done as part of all / install (test_selinux.sh
+> >> > > was performing that function).
+> >> > >
+> >> > > So once the tests have been written to make and install independent of
+> >> > > selinux-devel, etc... we'll be in good shape and I will switch these
+> >> > > back to all / install dependent targets. I was trying to do it that
+> >> > > way to avoid requiring make on the target under test, but I need to
+> >> > > better understand the subject matter under test before we get to that
+> >> > > point.
+> >> >
+> >> > Unfortunately, as the Makefile now includes other .mk files and those
+> >> > are not copied over, it still doesn't work.
+> >> >
+> >> > Makefile:25: ../../../../../include/mk/env_pre.mk: No such file or directory
+> >> > make: ../../../../../scripts/detect_distro.sh: Command not found
+> >> > Makefile:90: ../../../../../include/mk/generic_leaf_target.mk: No such file or directory
+> >> > make: *** No rule to make target `../../../../../include/mk/generic_leaf_target.mk'.  Stop.
+> >> > Failed to build and load test_policy module, aborting test run.
+> >> > /etc/selinux /opt/ltp/testcases/kernel/security/selinux-testsuite/refpolicy
+> >> > /opt/ltp/testcases/kernel/security/selinux-testsuite/refpolicy
+> >> >
+> >> > I suppose you could perform the make load as part of all/install
+> >> > (preferably install as we really shouldn't need to be root to run make
+> >> > all - although that no longer seems to be the case for the main ltp
+> >> > either), and drop it from test_selinux.sh.  But then they will need to
+> >> > know/remember to remove the test policy when finished testing.
+> >>
+> >> But really the compile stage should just create test_policy.pp,
+> >> which the testsuite can load and unload, right?
+> >
+> > Yes, that should work.
+> 
+> Which is what it's doing now, but the original author of the test
+> wrote the load logic and unload logic so that it used make instead of
+> using a bourne shell script, etc.
 
-    All of the install junk works now, but the modes need fixing, or
-some such fun. Please analyze the test_selinux.sh script and tell me
-what to commit next to fix everything.
-Thanks,
--Garrett
+To clarify, there are two things happening under that load target
+presently, one of which is properly handled at build time and one of
+which is properly handled at test execution time.  The first part is
+building test_policy.pp.  The latter is running semodule -i
+test_policy.pp.  So we could split up the Makefile so that the first
+part is done by the make all/install, and test_selinux.sh merely runs
+semodule -i test_policy.pp before the test and semodule -r test_policy
+after the test.  One other item I notice is that the current logic
+copies test_policy* to $POLICY_DEVEL_DIR and runs make there, which
+isn't necessary - you could just leave them in the refpolicy directory
+and run make -f $POLICY_DEVEL_DIR/Makefile test_policy.pp.
 
----------------------------------------------------------------------------=
----
-The Planet: dedicated and managed hosting, cloud storage, colocation
-Stay online with enterprise data centers and the best network in the busine=
-ss
-Choose flexible plans and management services without long-term contracts
-Personal 24x7 support from experience hosting pros just a phone call away.
-http://p.sf.net/sfu/theplanet-com
+> The other thing that's kind of amusing is that its setup / teardown
+> isn't very robust -- I could send a signal, or the process could get
+> terminated leaving the test policy files hanging around the system
+> under test. That's a side issue but it's also another good reason to
+> migrate away from this make paradigm for setup / teardown -_-...
+
+-- 
+Stephen Smalley
+National Security Agency
+
+
+------------------------------------------------------------------------------
+Throughout its 18-year history, RSA Conference consistently attracts the
+world's best and brightest in the field, creating opportunities for Conference
+attendees to learn about information security's most important issues through
+interactions with peers, luminaries and emerging and established companies.
+http://p.sf.net/sfu/rsaconf-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
