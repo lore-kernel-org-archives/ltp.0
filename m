@@ -1,24 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <michal.simek@petalogix.com>) id 1NRoMJ-0004RI-Iq
-	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 14:56:39 +0000
-Received: from mail-bw0-f212.google.com ([209.85.218.212])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NVJfZ-0002MP-Uo
+	for Ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 06:59:01 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
 	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NRoMH-0002bR-RV
-	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 14:56:39 +0000
-Received: by mail-bw0-f212.google.com with SMTP id 4so9452726bwz.2
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 04 Jan 2010 06:56:36 -0800 (PST)
-Message-ID: <4B420158.4060504@petalogix.com>
-Date: Mon, 04 Jan 2010 15:55:20 +0100
-From: Michal Simek <michal.simek@petalogix.com>
+	id 1NVJfY-00030v-Vw
+	for Ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 06:59:01 +0000
+Received: by pwj11 with SMTP id 11so4126778pwj.2
+	for <Ltp-list@lists.sourceforge.net>;
+	Wed, 13 Jan 2010 22:58:55 -0800 (PST)
 MIME-Version: 1.0
-References: <000001ca8cfb$e04fb340$a0ef19c0$@co.jp>
-In-Reply-To: <000001ca8cfb$e04fb340$a0ef19c0$@co.jp>
-Subject: Re: [LTP] nanosleep testcase problem
-Reply-To: michal.simek@petalogix.com
+In-Reply-To: <364299f41001131400u700c490dgd95dc24302b95484@mail.gmail.com>
+References: <1263226258.2410.24.camel@plars-t500>
+	<364299f41001110943q4c476dc7n6dbf1fcf8b05c57d@mail.gmail.com>
+	<1263412888.2410.30.camel@plars-t500>
+	<364299f41001131400u700c490dgd95dc24302b95484@mail.gmail.com>
+Date: Wed, 13 Jan 2010 22:58:55 -0800
+Message-ID: <364299f41001132258s2cd6cb53o67393beda677c90f@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Fix for make autotools
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,83 +30,65 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net
+To: Paul Larson <paul.larson@canonical.com>
+Cc: Linux Test Project <Ltp-list@lists.sourceforge.net>
 
-Mitani wrote:
-> Hi,
-> 
-> I want to wish you happy new year.
-> 
-> 
-> ------
-> 
-> By the way, I found a new problem with the "nanosleep02" testcase.
-> 
-> "main()" function executes fork(), and child process calls "do_child()"
-> function.
-> "do_child()" function must be ended by "exit()". But in "nanosleep02"
-> testcase, there is a case in which "exit()" isn't executed.
-> Therefore, the child process lives after "do_child()" function, 
-> and it executes "wait()" function which must be executed in parent
-> process only.
+On Wed, Jan 13, 2010 at 2:00 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Wed, Jan 13, 2010 at 12:01 PM, Paul Larson <paul.larson@canonical.com>=
+ wrote:
+>> Can we go ahead and push this in, or is there a problem you see with it?
+>> I also tested with older automake in karmic (automake 1.11) and it had
+>> no problems there.
+>>
+>> Thanks,
+>> Paul Larson
+>>
+>> On Mon, 2010-01-11 at 09:43 -0800, Garrett Cooper wrote:
+>>> On Mon, Jan 11, 2010 at 8:10 AM, Paul Larson <paul.larson@canonical.com=
+> wrote:
+>>> > Make autotools seems to break on more recent versions without this.
+>>> >
+>>> > Signed-off-by: Paul Larson <paul.larson@canonical.com>
+>>> > ---
+>>> > diff --git a/include/mk/automake.mk b/include/mk/automake.mk
+>>> > index e23d5d4..889e6cf 100644
+>>> > --- a/include/mk/automake.mk
+>>> > +++ b/include/mk/automake.mk
+>>> > @@ -59,7 +59,7 @@ include:
+>>> > =A0 =A0 =A0 =A0mkdir -p "$@"
+>>> >
+>>> > =A0m4/ltp-version.m4: ChangeLog
+>>> > - =A0 =A0 =A0 sed -n '1{s:LTP-:AC_DEFUN([LTP_VERSION],[:;s:$$:]):;p;q=
+}' $< > $@
+>>> > + =A0 =A0 =A0 sed -n '1{s:LTP-:m4_define([LTP_VERSION],[:;s:$$:]):;p;=
+q}' $< > $@
+>>> >
+>>> > =A0.PHONY: automake
+>>> > =A0AUTOMAKE_FILES :=3D config.guess config.sub install-sh missing sta=
+mp-h1
+>>>
+>>> Hi Paul,
+>>> =A0 =A0 What version of automake and m4 are you using?
+>>> Thanks,
+>>> -Garrett
+>
+> =A0 =A0Thanks for the reminder :] -- I'll commit it later on tonight!
 
-On Microblaze this test failed too. The patch fix it.
+Committed -- thanks!
+-Garrett
 
-Michal
-
-> 
-> Here is the patch fixes these problem:
-> 
-> ============
-> --- nanosleep02.c	2009-12-23 02:35:13.000000000 +0900
-> +++ nanosleep02.c.new	2010-01-04 10:15:08.000000000 +0900
-> @@ -277,6 +277,9 @@
->  		tst_resm(TPASS, "call succeeded");
->  		exit(0);
->  	}
-> +	
-> +	/* Everything is fine, exit normally */
-> +	exit(0);
->  }
->  
->  /*
-> ============
-> 
-> 
-> Regards--
-> 
-> 
-> -Tomonori Mitani
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> This SF.Net email is sponsored by the Verizon Developer Community
-> Take advantage of Verizon's best-in-class app development support
-> A streamlined, 14 day to market process makes app distribution fast and easy
-> Join now and get one step closer to millions of Verizon customers
-> http://p.sf.net/sfu/verizon-dev2dev 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
--- 
-Michal Simek, Ing. (M.Eng)
-PetaLogix - Linux Solutions for a Reconfigurable World
-w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
-
-------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+---------------------------------------------------------------------------=
+---
+Throughout its 18-year history, RSA Conference consistently attracts the
+world's best and brightest in the field, creating opportunities for Confere=
+nce
+attendees to learn about information security's most important issues throu=
+gh
+interactions with peers, luminaries and emerging and established companies.
+http://p.sf.net/sfu/rsaconf-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
