@@ -1,19 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <shiwh@cn.fujitsu.com>) id 1NSNyy-0004kD-5e
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 04:58:56 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NSNyt-0000sz-Pi
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 04:58:56 +0000
-Message-ID: <4B44187D.5030702@cn.fujitsu.com>
-Date: Wed, 06 Jan 2010 12:58:37 +0800
-From: Shi Weihua <shiwh@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NVL5e-0003fS-A1
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 08:30:02 +0000
+Received: from mail-pz0-f188.google.com ([209.85.222.188])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NVL5a-0007xg-6F
+	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 08:30:01 +0000
+Received: by pzk26 with SMTP id 26so14522238pzk.4
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 14 Jan 2010 00:29:50 -0800 (PST)
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] cpuctl_fj: replace ps by top to fix cpu usage's
- computation error
+In-Reply-To: <000901ca94eb$792f5150$6b8df3f0$@co.jp>
+References: <1713808934.618481261374276809.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	<1964681948.618501261374329418.JavaMail.root@zmail04.collab.prod.int.phx2.redhat.com>
+	<364299f40912210110m27ba4276g8cbce963d077e4a0@mail.gmail.com>
+	<364299f40912211838w7ab92a76u50223c29588b6f1a@mail.gmail.com>
+	<000901ca94eb$792f5150$6b8df3f0$@co.jp>
+Date: Thu, 14 Jan 2010 00:29:49 -0800
+Message-ID: <364299f41001140029m64f5b903sae6c8d007f4f7822@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] "unzip01" testcase failed.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,77 +31,170 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net
 
-Some abnormal messages outputted in my x86_64.
--------------------
-pid 4622 cpu_usage 0
-cpuctl_test_fj    1  TFAIL  :  case19    FAIL
-pid 4646 cpu_usage 0
-cpuctl_test_fj    1  TFAIL  :  case20    FAIL
-pid 4670 cpu_usage 63
-cpuctl_test_fj    1  TFAIL  :  case21    FAIL
--------------------
-I think cpu usage's computation error occured.
-So I tried to use the oldest arithmetic of cpu usage, fortunately it works.
-Maybe we should replace 'ps' by 'top' in  get_cpu_usage().
-By the way, I increased the admissible range of cpu usage in case21() 
-because it jumps out range of 44-56 sometimes.
+On Wed, Jan 13, 2010 at 11:30 PM, Mitani <mitani@ryobi.co.jp> wrote:
+> Hi,
+>
+> I tried to test "unzip01".
+> But I get still the same fail at 2010-01-14 cvs.
+>
+> I think that this failure occurs because "DIR" can't be defined
+> correctly in "${LTPROOT}/testcases/commands/unzip/Makefile" and
+> all files of "/opt/ltp/testcases/bin" directory was compressed.
+>
+> There is the definition "DIR :=3D tst_unzip.dir" in "${LTPROOT}/testcases
+> /commands/unzip/Makefile". But there is the definition "DIR :=3D /opt/ltp
+> /testcases/bin" in two include files ("${LTPROOT}/include/mk/env_pre.mk"
+> and "${LTPROOT}/include/mk/generic_leaf_target.mk") which are included
+> in "${LTPROOT}/testcases/commands/unzip/Makefile".
+>
+> Perhaps, "DIR :=3D tst_unzip.dir" is replaced by "DIR :=3D /opt/ltp
+> /testcases/bin" when the two files were included, I think.
+>
+> This test requires "tst_unzip.dir" and if the variable name "DIR" is
+> changed to another name, this problem will not occur.
+>
+>
+>> .INTERMEDIATE may be the only piece of value here, but I was avoiding
+>> it because it's a 3.81-ism I thought...
+>
+> So, I don't try use .INTERMEDIATE target.
+>
+> However, the compress target directory ("tst_unzip.dir") is created
+> under "$LTPROOT/testcases/commands/unzip" directory.
+> But I think that it does not affect for the test because the compressed
+> file which is for the test ("tst_unzip_file.zip") is create under
+> the run directory ("/opy/ltp"). "tst_unzip.dir" is the file which isn't
+> related directly to the practice of the test, I think.
+>
+> How about this patch:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- Makefile.org =A0 =A0 =A0 =A02009-12-11 21:50:29.000000000 +0900
+> +++ Makefile =A0 =A02010-01-14 11:44:30.000000000 +0900
+> @@ -27,7 +27,7 @@
+> =A0# Only build and install if we have the zip command.
+> =A0HAVE_ZIPTOOLS =A0 =A0 =A0 =A0 =A0:=3D $(shell if which zip >/dev/null;=
+ then echo yes;
+> else echo no; fi)
+>
+> -DIR =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D tst_unzip.dir
+> +COMPRESS_DIR =A0 =A0 =A0 =A0 =A0 :=3D tst_unzip.dir
+>
+> =A0RM =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 +=3D -r
+>
+> @@ -36,7 +36,7 @@
+> =A0ZIPFILE =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D $(TESTCASE=
+S_DATA_DIR)/tst_unzip_file.zip
+>
+> =A0ifeq ($(HAVE_ZIPTOOLS),yes)
+> -CLEAN_TARGETS =A0 =A0 =A0 =A0 =A0:=3D $(DIR) $(ZIPFILE)
+> +CLEAN_TARGETS =A0 =A0 =A0 =A0 =A0:=3D $(COMPRESS_DIR) $(ZIPFILE)
+> =A0INSTALL_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D unzip_tests.sh
+> =A0endif
+>
+> @@ -45,13 +45,13 @@
+> =A0$(TESTCASES_DATA_DIR):
+> =A0 =A0 =A0 =A0mkdir -p "$@"
+>
+> -$(ZIPFILE): | $(TESTCASES_DATA_DIR) $(DIR)
+> - =A0 =A0 =A0 zip -r "$@" $(DIR)
+> +$(ZIPFILE): | $(TESTCASES_DATA_DIR) $(COMPRESS_DIR)
+> + =A0 =A0 =A0 zip -r "$@" $(COMPRESS_DIR)
+> =A0 =A0 =A0 =A0chmod 00666 "$@"
+>
+> =A0# This target should be auto-removed by Make
+> -$(DIR): $(abs_srcdir)/unzip_genfile.sh
+> - =A0 =A0 =A0 $(SHELL) "$^" $(DIR)
+> +$(COMPRESS_DIR): $(abs_srcdir)/unzip_genfile.sh
+> + =A0 =A0 =A0 $(SHELL) "$^" $(COMPRESS_DIR)
+>
+> =A0include $(top_srcdir)/include/mk/generic_leaf_target.mk
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+>
+> I'm glad if I can get opinion that my revision is right or not.
+>
+>
+> Regards--
+>
+>
+> -Tomonori Mitani
 
-My patch works now:
--------------------
-pid 20277 cpu_usage 97
-cpuctl_test_fj    1  TPASS  :  case19    PASS
-pid 20307 cpu_usage 99
-cpuctl_test_fj    1  TPASS  :  case20    PASS
-pid 20336 cpu_usage 55
-pid 20336 cpu_usage 53
-pid 20336 cpu_usage 55
-pid 20336 cpu_usage 57
-pid 20336 cpu_usage 55
-pid 20336 cpu_usage 55
-pid 20336 cpu_usage 55
-pid 20336 cpu_usage 55
-pid 20336 cpu_usage 57
-pid 20336 cpu_usage 53
-cpuctl_test_fj    1  TPASS  :  case21    PASS
--------------------
+Crap, you spotted the problem, but it was just in the wrong spot (from
+functions.mk):
 
-Signed-off-by: Shi Weihua <shiwh@cn.fujitsu.com>
+#
+# Generate the directory install dependency separate from generate_install_=
+rule
+# to avoid noise from Make about redefining existing targets, for good reas=
+on.
+#
+# 1 -> The base install directory, based off $(prefix), or another
+#      $(prefix)-like variable. Automatically gets $(DESTDIR) tacked on it.
+# 2 -> The install target. This can be relative to $(srcdir), but will most
+#      likely be `empty'.
+#
+define generate_install_rule_dir_dep
+ifdef MAKE_3_80_COMPAT
+DIR     :=3D $$(call MAKE_3_80_abspath,$(DESTDIR)/$(1)/$(2))
+else
+DIR     :=3D $$(abspath $(DESTDIR)/$(1)/$(2))
+endif
+$$(DIR):
+        mkdir -p "$$@"
+endef
+
+>_>... I'm trying out something to get rid of this item... I'll get back to=
+ you in a few.
+
+> -----Original Message-----
+> From: Garrett Cooper [mailto:yanegomi@gmail.com]
+> Sent: Tuesday, December 22, 2009 11:39 AM
+> To: Caspar Zhang
+> Cc: ltp-list@lists.sourceforge.net; Mitani
+> Subject: Re: [LTP] "unzip01" testcase failed.
+>
+> On Mon, Dec 21, 2009 at 1:10 AM, Garrett Cooper <yanegomi@gmail.com> wrot=
+e:
+>> On Sun, Dec 20, 2009 at 9:45 PM, Caspar Zhang <czhang@redhat.com> wrote:
+>>>
+>>> ----- "Garrett Cooper" <yanegomi@gmail.com> wrote:
+>>>>
+>>>> I'm not convinced that this is the right solution because most of
+>>>> what's done here just replaced $(DIR)'s value with the bareword
+>>>> value.
+>>>> .INTERMEDIATE may be the only piece of value here, but I was avoiding
+>>>> it because it's a 3.81-ism I thought...
+>>>
+>>> How about this one (see the attachment)?
+>>
+>> AH... -[Rr] was missing.
+>>
+>> RM +=3D -[Rr]
+>>
+>> will do that. The rest just seems spurious.
+>
+> =A0 =A0Uh, this was already committed on HEAD:
+>
+> http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/commands/unzip/Ma=
+kef
+> ile?r1=3D1.9&r2=3D1.8
+
+---------------------------------------------------------------------------=
 ---
---- ltp-full-20091231/testcases/kernel/controllers/cpuctl_fj/run_cpuctl_test_fj.sh	2009-11-16 15:40:40.000000000 +0800
-+++ ltp-full-20091231.new/testcases/kernel/controllers/cpuctl_fj/run_cpuctl_test_fj.sh	2010-01-06 12:36:32.000000000 +0800
-@@ -85,7 +85,10 @@ creat_process()
- 
- get_cpu_usage()
- {
--	ps -eo 'pid,pcpu' | awk '$1 == "'$1'" { sub(/(\.[[:digit:]])*$/, "", $2); print $2 }'
-+	top=($(top -b -n 1 -p $1 | tail -2 | head -1))
-+	top=${top[8]}
-+	top=`echo $top | awk -F "." '{print $1}'`
-+	echo "$top"
- }
- 
- kill_all_pid()
-@@ -627,7 +630,7 @@ case21()
- 	do
- 		cpu_usage=$(get_cpu_usage $pid)
- 		echo "pid $pid cpu_usage $cpu_usage"
--		expr 44 \< "$cpu_usage" \& "$cpu_usage" \< 56 > /dev/null 2>&1
-+		expr 40 \< "$cpu_usage" \& "$cpu_usage" \< 60 > /dev/null 2>&1
- 		ret=$?
- 		: $(( top_times+=1 ))
- 	done
-
-------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+Throughout its 18-year history, RSA Conference consistently attracts the
+world's best and brightest in the field, creating opportunities for Confere=
+nce
+attendees to learn about information security's most important issues throu=
+gh
+interactions with peers, luminaries and emerging and established companies.
+http://p.sf.net/sfu/rsaconf-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
