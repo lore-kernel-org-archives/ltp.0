@@ -1,29 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NYod9-0006wz-S8
-	for ltp-list@lists.sourceforge.net; Sat, 23 Jan 2010 22:38:59 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NVdi0-0006XF-R7
+	for ltp-list@lists.sourceforge.net; Fri, 15 Jan 2010 04:22:52 +0000
 Received: from mail-pw0-f43.google.com ([209.85.160.43])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NYod8-0003EW-Vq
-	for ltp-list@lists.sourceforge.net; Sat, 23 Jan 2010 22:38:59 +0000
-Received: by pwj11 with SMTP id 11so1672658pwj.2
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NVdhz-0007OL-OU
+	for ltp-list@lists.sourceforge.net; Fri, 15 Jan 2010 04:22:52 +0000
+Received: by pwj11 with SMTP id 11so51193pwj.2
 	for <ltp-list@lists.sourceforge.net>;
-	Sat, 23 Jan 2010 14:38:52 -0800 (PST)
+	Thu, 14 Jan 2010 20:22:44 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <364299f41001231438u2422c16n2c8b0838812e3237@mail.gmail.com>
-References: <4B44187D.5030702@cn.fujitsu.com>
-	<364299f41001052124ga613fbag6adf7a7460a87ccc@mail.gmail.com>
-	<4B445C36.6040505@cn.fujitsu.com> <201001200130.30897.jpalecek@web.de>
-	<364299f41001191852s5a13235bh31e8e5feb68978b9@mail.gmail.com>
-	<op.u6xlzxecu2flwt@debian>
-	<364299f41001231438u2422c16n2c8b0838812e3237@mail.gmail.com>
-Date: Sat, 23 Jan 2010 14:38:46 -0800
-Message-ID: <364299f41001231438p5ad886b0rd8a70b3145102abd@mail.gmail.com>
+In-Reply-To: <1263506364.8548.74.camel@moss-pluto.epoch.ncsc.mil>
+References: <364299f41001120855r653842d3x630cdaa6ec4129b6@mail.gmail.com>
+	<1263420212.901.64.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001131449w751889b8r98aca16ea1e8957a@mail.gmail.com>
+	<1263478021.8548.3.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001141210o49c97980yc703601e7340362f@mail.gmail.com>
+	<1263501350.8548.60.camel@moss-pluto.epoch.ncsc.mil>
+	<1263501847.8548.65.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001141329j25c85101u37f2eda55faf04b9@mail.gmail.com>
+	<364299f41001141332y62d5cb5pd4202c1baad5b78c@mail.gmail.com>
+	<1263506364.8548.74.camel@moss-pluto.epoch.ncsc.mil>
+Date: Thu, 14 Jan 2010 20:22:42 -0800
+Message-ID: <364299f41001142022r6cfed8det72ba8a2c038ffcdf@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] cpuctl_fj: replace ps by top to fix cpu usage's
-	computation error
+Subject: Re: [LTP] regression: selinux testsuite broken since October
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,160 +36,234 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-2"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: =?ISO-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Stephen Smalley <sds@tycho.nsa.gov>
+Cc: Eric Paris <eparis@parisplace.org>, James Morris <jmorris@namei.org>, ltp-list@lists.sourceforge.net
 
-2010/1/23 Garrett Cooper <yanegomi@gmail.com>:
-> 2010/1/22 Ji=F8=ED Pale=E8ek <jpalecek@web.de>:
->> On Wed, 20 Jan 2010 03:52:48 +0100, Garrett Cooper <yanegomi@gmail.com>
->> wrote:
+On Thu, Jan 14, 2010 at 1:59 PM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
+> On Thu, 2010-01-14 at 13:32 -0800, Garrett Cooper wrote:
+>> On Thu, Jan 14, 2010 at 1:29 PM, Garrett Cooper <yanegomi@gmail.com> wro=
+te:
+>> > On Thu, Jan 14, 2010 at 12:44 PM, Stephen Smalley <sds@tycho.nsa.gov> =
+wrote:
+>> >> On Thu, 2010-01-14 at 15:35 -0500, Stephen Smalley wrote:
+>> >>> I guess I'm not being clear. =A0Most of the work presently done by '=
+load'
+>> >>> can be done during make all/install. =A0In particular, everything ex=
+cept
+>> >>> for running semodule -i can be done during make all, and then make
+>> >>> install should just copy test_policy.pp (the output of make all) to
+>> >>> the /opt/ltp tree. =A0Then test_selinux.sh only needs to run semodule
+>> >>> -i /path/to/test_policy.pp before the tests and semodule -r test_pol=
+icy
+>> >>> afterward. =A0We can also avoid copying test_policy.te to the system
+>> >>> policy devel directory altogether. =A0Something like this patch (and
+>> >>> Makefile.selinux can then be removed altogether):
+>> >>
+>> >> Oops, wrong variable expansion syntax in test_selinux.sh. =A0Corrected
+>> >> patch is below. =A0This one actually runs ;)
+>> >>
+>> >> Index: testscripts/test_selinux.sh
+>> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> >> RCS file: /cvsroot/ltp/ltp/testscripts/test_selinux.sh,v
+>> >> retrieving revision 1.15
+>> >> diff -u -r1.15 test_selinux.sh
+>> >> --- testscripts/test_selinux.sh 13 Jan 2010 18:50:53 -0000 =A0 =A0 =
+=A01.15
+>> >> +++ testscripts/test_selinux.sh 14 Jan 2010 20:41:22 -0000
+>> >> @@ -89,11 +89,10 @@
+>> >> =A0config_allow_domain_fd_use 0
+>> >>
+>> >> =A0# build and install the test policy...
+>> >> -echo "building and installing test_policy module..."
+>> >> -cd $POLICYDIR
+>> >> -make load
+>> >> +echo "installing test_policy module..."
+>> >> +$SEMODULE -i $POLICYDIR/test_policy.pp
+>> >> =A0if [ $? !=3D 0 ]; then
+>> >> - =A0 =A0 =A0 echo "Failed to build and load test_policy module, abor=
+ting test run."
+>> >> + =A0 =A0 =A0 echo "Failed to install load test_policy module, aborti=
+ng test run."
+>> >> =A0 =A0 =A0 =A0config_unset_expandcheck
+>> >> =A0 =A0 =A0 =A0exit 1
+>> >> =A0else
+>> >> @@ -126,8 +125,7 @@
+>> >> =A0/usr/bin/chcon -t $SAVEBINTYPE $LTPROOT/testcases/bin
+>> >>
+>> >> =A0echo "Removing test_policy module..."
+>> >> -cd $POLICYDIR
+>> >> -make cleanup 2>&1
+>> >> +$SEMODULE -r test_policy
+>> >> =A0if [ $? !=3D 0 ]; then
+>> >> =A0 =A0 =A0 =A0echo "Failed to remove test_policy module."
+>> >> =A0 =A0 =A0 =A0exit 1
+>> >> Index: testcases/kernel/security/selinux-testsuite/refpolicy/Makefile
+>> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> >> RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/selinux-testsuit=
+e/refpolicy/Makefile,v
+>> >> retrieving revision 1.17
+>> >> diff -u -r1.17 Makefile
+>> >> --- testcases/kernel/security/selinux-testsuite/refpolicy/Makefile =
+=A0 =A0 =A014 Jan 2010 12:40:58 -0000 =A0 =A0 =A01.17
+>> >> +++ testcases/kernel/security/selinux-testsuite/refpolicy/Makefile =
+=A0 =A0 =A014 Jan 2010 20:41:22 -0000
+>> >> @@ -39,10 +39,11 @@
+>> >>
+>> >> =A0CHECKPOLICY =A0 =A0 =A0 =A0 =A0 =A0?=3D $(DESTDIR)/usr/bin/checkpo=
+licy
+>> >> =A0CHECKPOLICY_VERS =A0 =A0 =A0 ?=3D $(shell $(CHECKPOLICY) -V |cut -=
+f 1 -d ' ')
+>> >> +POLICY_DEVEL_DIR =A0 =A0 =A0 ?=3D $(DESTDIR)/usr/share/selinux/devel
+>> >>
+>> >> =A0INSTALL_DIR =A0 =A0 =A0 =A0 =A0 =A0:=3D testcases/kernel/security/=
+selinux-testsuite/refpolicy
+>> >>
+>> >> -INSTALL_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D Makefile.selinux
+>> >> +INSTALL_TARGETS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D test_policy.pp
+>> >>
+>> >> =A0TEST_POLICY_DIR =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D $(abs_srcdir)/=
+policy_files
+>> >>
+>> >> @@ -63,8 +64,17 @@
+>> >> =A0POLICY_FILES =A0 =A0 =A0 =A0 =A0 :=3D test_global.te \
+>> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 $(filter-out test=
+_global.te,$(notdir $(wildcard $(TEST_POLICY_DIR)/*.te)))
+>> >>
+>> >> +all: test_policy.pp
+>> >> +
+>> >> +test_policy.pp: test_policy.te
+>> >> + =A0 =A0 =A0 @set -e; if [ -d "$(POLICY_DEVEL_DIR)" ]; then \
+>> >> + =A0 =A0 =A0 =A0 =A0 $(MAKE) -f $(POLICY_DEVEL_DIR)/Makefile test_po=
+licy.pp; \
+>> >> + =A0 =A0 =A0 else \
+>> >> + =A0 =A0 =A0 =A0 =A0 =A0echo "ERROR: You must have selinux-policy?-d=
+evel? installed."; \
+>> >> + =A0 =A0 =A0 =A0 =A0 false; \
+>> >> + =A0 =A0 =A0 fi
+>> >> +
+>> >> =A0test_policy.te: $(addprefix $(TEST_POLICY_DIR)/,$(POLICY_FILES))
+>> >> =A0 =A0 =A0 =A0(cd "$(TEST_POLICY_DIR)" && cat $(POLICY_FILES)) > $@
+>> >>
+>> >> =A0include $(top_srcdir)/include/mk/generic_leaf_target.mk
+>> >> -include $(abs_srcdir)/Makefile.selinux
+>> >
+>> > Cool! This is a lot easier than I originally thought it would be.
+>> >
+>> > Everything specified with all should be specified instead with the
 >>
->>> On Tue, Jan 19, 2010 at 4:30 PM, Jiri Palecek <jpalecek@web.de> wrote:
->>>>
->>>> On Wednesday 06 January 2010 10:47:34 Shi Weihua wrote:
->>>>>
->>>>> at 2010-1-6 13:24, Garrett Cooper wrote:
->>>>> > On Tue, Jan 5, 2010 at 8:58 PM, Shi Weihua <shiwh@cn.fujitsu.com>
->>>>> > wrote:
->>>>> >> Some abnormal messages outputted in my x86_64.
->>>>> >> -------------------
->>>>> >> pid 4622 cpu_usage 0
->>>>> >> cpuctl_test_fj =A0 =A01 =A0TFAIL =A0: =A0case19 =A0 =A0FAIL
->>>>> >> pid 4646 cpu_usage 0
->>>>> >> cpuctl_test_fj =A0 =A01 =A0TFAIL =A0: =A0case20 =A0 =A0FAIL
->>>>> >> pid 4670 cpu_usage 63
->>>>> >> cpuctl_test_fj =A0 =A01 =A0TFAIL =A0: =A0case21 =A0 =A0FAIL
->>>>> >> -------------------
->>>>> >> I think cpu usage's computation error occured.
->>>>> >> So I tried to use the oldest arithmetic of cpu usage, fortunately =
-it
->>>>> >> works.
->>>>> >> Maybe we should replace 'ps' by 'top' in =A0get_cpu_usage().
->>>>> >> By the way, I increased the admissible range of cpu usage in case2=
-1()
->>>>> >> because it jumps out range of 44-56 sometimes.
->>>>> >>
->>>>> >> My patch works now:
->>>>> >> -------------------
->>>>> >> pid 20277 cpu_usage 97
->>>>> >> cpuctl_test_fj =A0 =A01 =A0TPASS =A0: =A0case19 =A0 =A0PASS
->>>>> >> pid 20307 cpu_usage 99
->>>>> >> cpuctl_test_fj =A0 =A01 =A0TPASS =A0: =A0case20 =A0 =A0PASS
->>>>> >> pid 20336 cpu_usage 55
->>>>> >> pid 20336 cpu_usage 53
->>>>> >> pid 20336 cpu_usage 55
->>>>> >> pid 20336 cpu_usage 57
->>>>> >> pid 20336 cpu_usage 55
->>>>> >> pid 20336 cpu_usage 55
->>>>> >> pid 20336 cpu_usage 55
->>>>> >> pid 20336 cpu_usage 55
->>>>> >> pid 20336 cpu_usage 57
->>>>> >> pid 20336 cpu_usage 53
->>>>> >> cpuctl_test_fj =A0 =A01 =A0TPASS =A0: =A0case21 =A0 =A0PASS
->>>>> >> -------------------
->>>>> >>
->>>>> >> Signed-off-by: Shi Weihua <shiwh@cn.fujitsu.com>
->>>>> >> ---
->>>>> >> ---
->>>>> >> ltp-full-20091231/testcases/kernel/controllers/cpuctl_fj/run_cpuct=
-l_test_fj.sh
->>>>> >> =A0 =A0 =A02009-11-16 15:40:40.000000000 +0800
->>>>> >> +++
->>>>> >> ltp-full-20091231.new/testcases/kernel/controllers/cpuctl_fj/run_c=
-puctl_test_fj.sh
->>>>> >> =A02010-01-06 12:36:32.000000000 +0800
->>>>> >> @@ -85,7 +85,10 @@ creat_process()
->>>>> >>
->>>>> >> =A0get_cpu_usage()
->>>>> >> =A0{
->>>>> >> - =A0 =A0 =A0 ps -eo 'pid,pcpu' | awk '$1 =3D=3D "'$1'" {
->>>>> >> sub(/(\.[[:digit:]])*$/, "", $2); print $2 }'
->>>>> >> + =A0 =A0 =A0 top=3D($(top -b -n 1 -p $1 | tail -2 | head -1))
->>>>> >> + =A0 =A0 =A0 top=3D${top[8]}
->>>>> >> + =A0 =A0 =A0 top=3D`echo $top | awk -F "." '{print $1}'`
->>>>> >> + =A0 =A0 =A0 echo "$top"
->>>>> >> =A0}
->>>>> >>
->>>>> >> =A0kill_all_pid()
->>>>> >> @@ -627,7 +630,7 @@ case21()
->>>>> >> =A0 =A0 =A0 =A0do
->>>>> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0cpu_usage=3D$(get_cpu_usage $pid)
->>>>> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0echo "pid $pid cpu_usage $cpu_usage"
->>>>> >> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 expr 44 \< "$cpu_usage" \& "$cpu_usa=
-ge" \< 56 >
->>>>> >> /dev/null 2>&1
->>>>> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 expr 40 \< "$cpu_usage" \& "$cpu_usa=
-ge" \< 60 >
->>>>> >> /dev/null 2>&1
->>>>> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ret=3D$?
->>>>> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0: $(( top_times+=3D1 ))
->>>>> >> =A0 =A0 =A0 =A0done
->>>>> >
->>>>> > =A0 =A0 Could you add a set -x to the top of the script so we can s=
-ee the
->>>>> > output please? ps --version would be helpful too..
->>>>>
->>>>> I wish it can help you.
->>>>> --------------------- sh -x -----------------------------
->>>>> + for i in '$(seq 1 $TST_TOTAL)'
->>>>> + setup
->>>>
->>>> [ ... snip ... ]
->>>>
->>>> I believe Garrett Cooper meant to send the trace output of the original
->>>> script (the one with ps).
->>>>
->>>> However, I'm not sure about the awk program there - particularly:
->>>>
->>>> sub(/(\.[[:digit:]])*$/, "", $2)
->>>>
->>>> should probably be
->>>>
->>>> sub(/\.[[:digit:]]*$/, "", $2)
->>>>
->>>> (without the group). Not sure if this can actually cause what you see.
->>>>
->>>> Also, I think we could simplify it a bit further, to something like th=
-is:
->>>>
->>>> get_cpu_usage()
->>>> {
->>>> =A0ps -p $1 -o pcpu=3D | awk -F "." '{print $1}'
->>>> }
->>>>
->>>> Please, tell me what do you think about it.
->>>
->>> =A0 =A0Actually he gave me what I needed (forgot to reply because I
+>> s/Everything specified with all/All dependencies of all/
 >>
->> Yes, but it doesn't cast much light on the problem that it didn't work f=
-or
->> Shi Weihua in the first place.
->>
->>> didn't star the email); I'm pretty sure that your observation is
->>> correct: we shouldn't be extracting \. unless we're actually going to
->>> use it, so the ellipses [\(\)] can be removed.
->>> =A0 =A0Are we using just the `major' number, or are we using the `minor'
->>> number in the cpu usage?
->>
->> You mean integral and fractional part? I guess the integral part only.
+>> MAKE_TARGETS variable. This is because it adds everything in
+>> > MAKE_TARGETS to variables (CLEAN_TARGETS, INSTALL_TARGETS), which then
+>> > handle it appropriately via clean and install.
+>> >
+>> > All I have to do after this is resolve the (semodule?) security bit
+>> > enabling for the tests, and we'll be in good shape for all build,
+>> > install, and test scenarios with selinux.
 >
-> Does expr(1) do float point comparisons (this is where the issue was
-> coming from I think...)?
+> Further diff on top of the prior one to resolve a few remaining issues
+> in getting the tests to pass. =A0With these two patches, all tests appear
+> to pass on Fedora 12.
 >
-> gcooper@optimus ~ $ expr 0 \< 42.0 \& 42.0 \< 100
-> 0
-> gcooper@optimus ~ $ expr 0.0 \< 42.0 \& 42.0 \< 100.0
-> 0
+> Things that remain unresolved:
+> - RHEL4 support. =A0Is RHEL4 to be supported still by ltp, given
+> dependencies? =A0RHEL4 has been using the test policy under policy/ and
+> has a different build/load process.
+> - Running individual tests manually. =A0As described in the
+> selinux-testsuite README, it used to be possible to run individual tests
+> via tests/runtest.sh in order to more easily hunt down specific failures
+> and get more verbose output than we get from any of the results/* files.
 >
-> I checked in a copy based on your suggestion Jiri so folks would hit
+> diff -u testscripts/test_selinux.sh testscripts/test_selinux.sh
+> --- testscripts/test_selinux.sh 14 Jan 2010 20:41:22 -0000
+> +++ testscripts/test_selinux.sh 14 Jan 2010 21:48:15 -0000
+> @@ -113,7 +113,7 @@
+> =A0# The ../testcases/bin directory needs to have the test_file_t type.
+> =A0# Save and restore later.
+> =A0SAVEBINTYPE=3D`ls -Zd $LTPROOT/testcases/bin | awk '{ print $4 }' | aw=
+k -F: '{ print $3 }'`
+> -/usr/bin/chcon -t test_file_t $LTPROOT/testcases/bin
+> +/usr/bin/chcon -R -t test_file_t $LTPROOT/testcases/bin
+>
+> =A0$LTPROOT/bin/ltp-pan -S -a $LTPROOT/results/selinux -n ltp-selinux -l =
+$LTPROOT/results/selinux.logfile -o $LTPROOT/results/selinux.outfile -p -f =
+$LTPROOT/runtest/selinux
+>
+> @@ -122,7 +122,7 @@
+> =A0rm -rf $TMP/selinux
+>
+> =A0# Restore type of .../testcases/bin directory
+> -/usr/bin/chcon -t $SAVEBINTYPE $LTPROOT/testcases/bin
+> +/usr/bin/chcon -R -t $SAVEBINTYPE $LTPROOT/testcases/bin
+>
+> =A0echo "Removing test_policy module..."
+> =A0$SEMODULE -r test_policy
+> only in patch2:
+> unchanged:
+> --- testcases/kernel/security/selinux-testsuite/tests/file/selinux_file.s=
+h =A0 =A0 =A011 May 2009 06:39:46 -0000 =A0 =A0 =A01.7
+> +++ testcases/kernel/security/selinux-testsuite/tests/file/selinux_file.s=
+h =A0 =A0 =A014 Jan 2010 21:48:15 -0000
+> @@ -193,7 +193,7 @@
+> =A0 =A0 =A0 =A0fi
+>
+> =A0 =A0 =A0 =A0# return to $LTPROOT directory
+> - =A0 =A0 =A0 cd ${PWD}
+> + =A0 =A0 =A0 cd ${SAVEPWD}
+>
+> =A0 =A0 =A0 =A0return $RC
+> =A0}
+> only in patch2:
+> unchanged:
+> --- testcases/kernel/security/selinux-testsuite/tests/inherit/Makefile =
+=A09 Oct 2009 17:55:51 -0000 =A0 =A0 =A0 1.2
+> +++ testcases/kernel/security/selinux-testsuite/tests/inherit/Makefile =
+=A014 Jan 2010 21:48:15 -0000
+> @@ -25,8 +25,6 @@
+> =A0include $(top_srcdir)/include/mk/env_pre.mk
+> =A0include $(abs_srcdir)/../Makefile.inc
+>
+> -LDFLAGS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0+=3D -static
+> -
+> =A0LDLIBS =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 +=3D -lselinux
+>
+> =A0include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> only in patch2:
+> unchanged:
+> --- testcases/kernel/security/selinux-testsuite/tests/inherit/selinux_inh=
+erit.sh =A0 =A0 =A0 =A021 Apr 2009 09:39:58 -0000 =A0 =A0 =A01.4
+> +++ testcases/kernel/security/selinux-testsuite/tests/inherit/selinux_inh=
+erit.sh =A0 =A0 =A0 =A014 Jan 2010 21:48:15 -0000
+> @@ -25,6 +25,7 @@
+>
+> =A0 =A0 =A0 =A0# run tests in $LTPROOT/testcases/bin directory
+> =A0 =A0 =A0 =A0SAVEPWD=3D${PWD}
+> + =A0 =A0 =A0 LTPBIN=3D${LTPBIN:-$LTPROOT/testcases/bin}
+> =A0 =A0 =A0 =A0cd ${LTPBIN}
+> =A0 =A0 =A0 =A0CURRENTDIR=3D"."
+> =A0}
+> @@ -39,7 +40,7 @@
+> =A0 =A0 =A0 =A0# the test_file from test_inherit_parent_t.
+> =A0 =A0 =A0 =A0# Should fail on fd use permission.
+>
+> - =A0 =A0 =A0 runcon -t test_inherit_parent_t -- selinux_inherit_parent t=
+est_inherit_nouse_t $SELINUXTMPDIR/test_file selinux_inherit_child 2>&1
+> + =A0 =A0 =A0 runcon -t test_inherit_parent_t -- $CURRENTDIR/selinux_inhe=
+rit_parent test_inherit_nouse_t $SELINUXTMPDIR/test_file $CURRENTDIR/selinu=
+x_inherit_child 2>&1
+> =A0 =A0 =A0 =A0RC=3D$?
+> =A0 =A0 =A0 =A0if [ $RC -ne 0 ]
+> =A0 =A0 =A0 =A0then
 
-s/would/wouldn't/
-
-> this issue, but I'm curious as to why integers are the only things
-> supported by expr(1) when comparing ranges.
+Thanks -- committed.
+-Garrett
 
 ---------------------------------------------------------------------------=
 ---
