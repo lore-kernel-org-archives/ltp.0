@@ -1,24 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1NYGh7-0007fm-MF
-	for ltp-list@lists.sourceforge.net; Fri, 22 Jan 2010 10:24:49 +0000
-Received: from fmmailgate01.web.de ([217.72.192.221])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NYGh5-000714-HZ
-	for ltp-list@lists.sourceforge.net; Fri, 22 Jan 2010 10:24:49 +0000
-Date: Fri, 22 Jan 2010 12:25:03 +0100
-From: =?iso-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NWIVN-000817-Nw
+	for ltp-list@lists.sourceforge.net; Sat, 16 Jan 2010 23:56:33 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NWIVM-0001H5-Tb
+	for ltp-list@lists.sourceforge.net; Sat, 16 Jan 2010 23:56:33 +0000
+Received: by pwj11 with SMTP id 11so1139992pwj.2
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 16 Jan 2010 15:56:26 -0800 (PST)
 MIME-Version: 1.0
-References: <4B44187D.5030702@cn.fujitsu.com>
-	<364299f41001052124ga613fbag6adf7a7460a87ccc@mail.gmail.com>
-	<4B445C36.6040505@cn.fujitsu.com> <201001200130.30897.jpalecek@web.de>
-	<364299f41001191852s5a13235bh31e8e5feb68978b9@mail.gmail.com>
-Message-ID: <op.u6xlzxecu2flwt@debian>
-In-Reply-To: <364299f41001191852s5a13235bh31e8e5feb68978b9@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] cpuctl_fj: replace ps by top to fix cpu usage's
- computation error
+In-Reply-To: <200912190755.26999.vapier@gentoo.org>
+References: <000001ca7d4d$e2a9e7e0$a7fdb7a0$@co.jp>
+	<200912181331.36093.vapier@gentoo.org>
+	<364299f40912182110w7e5591f1k4f1c59b292b642ad@mail.gmail.com>
+	<200912190755.26999.vapier@gentoo.org>
+Date: Sat, 16 Jan 2010 15:56:26 -0800
+Message-ID: <364299f41001161556h9eb1dd4h5fa955044cd3b19b@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] fix compiling error on ia64 platform
+	(ltp-full-20091130)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,156 +31,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-2"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: ltp-list@lists.sourceforge.net
 
-On Wed, 20 Jan 2010 03:52:48 +0100, Garrett Cooper <yanegomi@gmail.com>  =
-
-wrote:
-
-> On Tue, Jan 19, 2010 at 4:30 PM, Jiri Palecek <jpalecek@web.de> wrote:
->> On Wednesday 06 January 2010 10:47:34 Shi Weihua wrote:
->>> at 2010-1-6 13:24, Garrett Cooper wrote:
->>> > On Tue, Jan 5, 2010 at 8:58 PM, Shi Weihua <shiwh@cn.fujitsu.com>  =
-
->>> wrote:
->>> >> Some abnormal messages outputted in my x86_64.
->>> >> -------------------
->>> >> pid 4622 cpu_usage 0
->>> >> cpuctl_test_fj =A0 =A01 =A0TFAIL =A0: =A0case19 =A0 =A0FAIL
->>> >> pid 4646 cpu_usage 0
->>> >> cpuctl_test_fj =A0 =A01 =A0TFAIL =A0: =A0case20 =A0 =A0FAIL
->>> >> pid 4670 cpu_usage 63
->>> >> cpuctl_test_fj =A0 =A01 =A0TFAIL =A0: =A0case21 =A0 =A0FAIL
->>> >> -------------------
->>> >> I think cpu usage's computation error occured.
->>> >> So I tried to use the oldest arithmetic of cpu usage, fortunately  =
-
->>> it works.
->>> >> Maybe we should replace 'ps' by 'top' in =A0get_cpu_usage().
->>> >> By the way, I increased the admissible range of cpu usage in  =
-
->>> case21()
->>> >> because it jumps out range of 44-56 sometimes.
->>> >>
->>> >> My patch works now:
->>> >> -------------------
->>> >> pid 20277 cpu_usage 97
->>> >> cpuctl_test_fj =A0 =A01 =A0TPASS =A0: =A0case19 =A0 =A0PASS
->>> >> pid 20307 cpu_usage 99
->>> >> cpuctl_test_fj =A0 =A01 =A0TPASS =A0: =A0case20 =A0 =A0PASS
->>> >> pid 20336 cpu_usage 55
->>> >> pid 20336 cpu_usage 53
->>> >> pid 20336 cpu_usage 55
->>> >> pid 20336 cpu_usage 57
->>> >> pid 20336 cpu_usage 55
->>> >> pid 20336 cpu_usage 55
->>> >> pid 20336 cpu_usage 55
->>> >> pid 20336 cpu_usage 55
->>> >> pid 20336 cpu_usage 57
->>> >> pid 20336 cpu_usage 53
->>> >> cpuctl_test_fj =A0 =A01 =A0TPASS =A0: =A0case21 =A0 =A0PASS
->>> >> -------------------
->>> >>
->>> >> Signed-off-by: Shi Weihua <shiwh@cn.fujitsu.com>
->>> >> ---
->>> >> ---  =
-
->>> ltp-full-20091231/testcases/kernel/controllers/cpuctl_fj/run_cpuctl_tes=
-t_fj.sh  =
-
->>> =A0 =A0 =A02009-11-16 15:40:40.000000000 +0800
->>> >> +++  =
-
->>> ltp-full-20091231.new/testcases/kernel/controllers/cpuctl_fj/run_cpuctl=
-_test_fj.sh  =
-
->>> =A02010-01-06 12:36:32.000000000 +0800
->>> >> @@ -85,7 +85,10 @@ creat_process()
->>> >>
->>> >> =A0get_cpu_usage()
->>> >> =A0{
->>> >> - =A0 =A0 =A0 ps -eo 'pid,pcpu' | awk '$1 =3D=3D "'$1'" {  =
-
->>> sub(/(\.[[:digit:]])*$/, "", $2); print $2 }'
->>> >> + =A0 =A0 =A0 top=3D($(top -b -n 1 -p $1 | tail -2 | head -1))
->>> >> + =A0 =A0 =A0 top=3D${top[8]}
->>> >> + =A0 =A0 =A0 top=3D`echo $top | awk -F "." '{print $1}'`
->>> >> + =A0 =A0 =A0 echo "$top"
->>> >> =A0}
->>> >>
->>> >> =A0kill_all_pid()
->>> >> @@ -627,7 +630,7 @@ case21()
->>> >> =A0 =A0 =A0 =A0do
->>> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0cpu_usage=3D$(get_cpu_usage $pid)
->>> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0echo "pid $pid cpu_usage $cpu_usage"
->>> >> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 expr 44 \< "$cpu_usage" \& "$cpu_usage=
-" \< 56 >  =
-
->>> /dev/null 2>&1
->>> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 expr 40 \< "$cpu_usage" \& "$cpu_usage=
-" \< 60 >  =
-
->>> /dev/null 2>&1
->>> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ret=3D$?
->>> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0: $(( top_times+=3D1 ))
->>> >> =A0 =A0 =A0 =A0done
->>> >
->>> > =A0 =A0 Could you add a set -x to the top of the script so we can see=
- the
->>> > output please? ps --version would be helpful too..
->>>
->>> I wish it can help you.
->>> --------------------- sh -x -----------------------------
->>> + for i in '$(seq 1 $TST_TOTAL)'
->>> + setup
+On Sat, Dec 19, 2009 at 4:55 AM, Mike Frysinger <vapier@gentoo.org> wrote:
+> On Saturday 19 December 2009 00:10:58 Garrett Cooper wrote:
+>> On Fri, Dec 18, 2009 at 10:31 AM, Mike Frysinger <vapier@gentoo.org> wro=
+te:
+>> > On Tuesday 15 December 2009 14:39:24 Garrett Cooper wrote:
+>> >> Until this issue is resolved (I ran into problems trying to use
+>> >> crossdev, so I'll have to manually inspect headers after I track down
+>> >> which versions are used in the Redhat distros specified), please
+>> >> remember that you _can_ always comment out the line which says:
+>> >>
+>> >> /* Define to 1 if you have the <asm/ptrace.h> header file. */
+>> >> #define HAVE_ASM_PTRACE_H 1
+>> >>
+>> >> Actually, I think I'll just remove that header check if the build
+>> >> passes unless Mike objects, because we really shouldn't be
+>> >> #include'ing asm/* headers without having a good reason to do so
+>> >> because it results in pain of this magnitude...
+>> >
+>> > i guess i dont know why you've made changes to the ptrace.h header at
+>> > all. the original one i committed still works for me on
+>> > bfin/ia64/x86/x86_64. =A0i dont recall any questions being posted to t=
+he
+>> > list about the logic, just random shuffling to try and "fix" errors th=
+at
+>> > i have yet to see.
 >>
->> [ ... snip ... ]
->>
->> I believe Garrett Cooper meant to send the trace output of the original  =
-
->> script (the one with ps).
->>
->> However, I'm not sure about the awk program there - particularly:
->>
->> sub(/(\.[[:digit:]])*$/, "", $2)
->>
->> should probably be
->>
->> sub(/\.[[:digit:]]*$/, "", $2)
->>
->> (without the group). Not sure if this can actually cause what you see.
->>
->> Also, I think we could simplify it a bit further, to something like  =
-
->> this:
->>
->> get_cpu_usage()
->> {
->> =A0ps -p $1 -o pcpu=3D | awk -F "." '{print $1}'
->> }
->>
->> Please, tell me what do you think about it.
+>> =A0 =A0 You're right. I've reverted to your original copy and everything
+>> just works on my Gentoo box. I need to determine if our headers are
+>> f'ed up at work -- I wouldn't be surprised if that's the case.
+>> =A0 =A0 If others need for this to be fixed on their toolchains /
+>> platforms, we'll definitely need access to the tools and/or maybe the
+>> hardware in order to verify that the changes are sane.
 >
->     Actually he gave me what I needed (forgot to reply because I
+> feel free to post the error you're seeing at work with this version so we=
+ can
+> take a look.
 
-Yes, but it doesn't cast much light on the problem that it didn't work for  =
-
-Shi Weihua in the first place.
-
-> didn't star the email); I'm pretty sure that your observation is
-> correct: we shouldn't be extracting \. unless we're actually going to
-> use it, so the ellipses [\(\)] can be removed.
->     Are we using just the `major' number, or are we using the `minor'
-> number in the cpu usage?
-
-You mean integral and fractional part? I guess the integral part only.
-
-Regards
-     Jiri Palecek
+    I'm not going to sweat it because it's most likely because the
+build infrastructure and how they're cross-compiling junk and the
+versioned packages used in my current group is fubar (paths are out of
+whack and the sources are really feature incompatible). I'm leaving
+the group in a week, so by the time they have to resolve this it may
+or may not matter for them... thus, ultimately I don't care :}...
+Thanks,
+-Garrett
 
 ---------------------------------------------------------------------------=
 ---
