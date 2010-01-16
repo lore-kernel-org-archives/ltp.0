@@ -1,24 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NSP3M-0002Iy-5t
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 06:07:32 +0000
-Received: from mail-px0-f200.google.com ([209.85.216.200])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NSP3L-00009t-Ba
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 06:07:32 +0000
-Received: by pxi38 with SMTP id 38so6221467pxi.28
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 05 Jan 2010 22:07:25 -0800 (PST)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <andi@firstfloor.org>) id 1NW6VY-0002Wk-1m
+	for ltp-list@lists.sourceforge.net; Sat, 16 Jan 2010 11:07:56 +0000
+Received: from one.firstfloor.org ([213.235.205.2])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NW6VU-0001W3-A1
+	for ltp-list@lists.sourceforge.net; Sat, 16 Jan 2010 11:07:55 +0000
+Date: Sat, 16 Jan 2010 12:07:38 +0100
+From: Andi Kleen <andi@firstfloor.org>
+Message-ID: <20100116110738.GB12881@basil.fritz.box>
+References: <364299f41001151349i4e7067fbu68994eaf719b46de@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <4B420158.4060504@petalogix.com>
-References: <000001ca8cfb$e04fb340$a0ef19c0$@co.jp>
-	<4B420158.4060504@petalogix.com>
-Date: Tue, 5 Jan 2010 22:07:25 -0800
-Message-ID: <364299f41001052207j4e7f2e1dve2efbc30e4fc15d4@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] nanosleep testcase problem
+Content-Disposition: inline
+In-Reply-To: <364299f41001151349i4e7067fbu68994eaf719b46de@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] Add make 3.80 $(abspath ) and $(realpath )
+	emulation	scripts
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,66 +26,26 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: michal.simek@petalogix.com
-Cc: ltp-list@lists.sourceforge.net, Mitani <mitani@ryobi.co.jp>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>, Jiri Palecek <jirka@debian.org>, Andi Kleen <andi@firstfloor.org>, Mike Frysinger <vapier@gentoo.org>, =?utf-8?B?56We6LC35pyL56+E?= <mitani@ryobi.co.jp>
 
-On Mon, Jan 4, 2010 at 6:55 AM, Michal Simek <michal.simek@petalogix.com> w=
-rote:
-> Mitani wrote:
->> Hi,
->>
->> I want to wish you happy new year.
->>
->>
->> ------
->>
->> By the way, I found a new problem with the "nanosleep02" testcase.
->>
->> "main()" function executes fork(), and child process calls "do_child()"
->> function.
->> "do_child()" function must be ended by "exit()". But in "nanosleep02"
->> testcase, there is a case in which "exit()" isn't executed.
->> Therefore, the child process lives after "do_child()" function,
->> and it executes "wait()" function which must be executed in parent
->> process only.
->
-> On Microblaze this test failed too. The patch fix it.
->
-> Michal
->
->>
->> Here is the patch fixes these problem:
->>
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> --- nanosleep02.c =A0 =A0 2009-12-23 02:35:13.000000000 +0900
->> +++ nanosleep02.c.new 2010-01-04 10:15:08.000000000 +0900
->> @@ -277,6 +277,9 @@
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TPASS, "call succeeded");
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 exit(0);
->> =A0 =A0 =A0 }
->> +
->> + =A0 =A0 /* Everything is fine, exit normally */
->> + =A0 =A0 exit(0);
->> =A0}
->>
->> =A0/*
 
-    Committed a change on CVS which forces the child to exit at the
-end of do_child, like it should with tst_exit().
-Thanks!
--Garrett
+Thanks for fixing that!
 
----------------------------------------------------------------------------=
----
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev =
+-Andi
 
+-- 
+ak@linux.intel.com -- Speaking for myself only.
+
+------------------------------------------------------------------------------
+Throughout its 18-year history, RSA Conference consistently attracts the
+world's best and brightest in the field, creating opportunities for Conference
+attendees to learn about information security's most important issues through
+interactions with peers, luminaries and emerging and established companies.
+http://p.sf.net/sfu/rsaconf-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
