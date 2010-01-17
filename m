@@ -1,32 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1NSZWZ-00080W-6c
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 17:18:23 +0000
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NSZWV-00067A-V3
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 17:18:22 +0000
-Received: from d01relay07.pok.ibm.com (d01relay07.pok.ibm.com [9.56.227.147])
-	by e5.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o06H61L0021501
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 Jan 2010 12:06:01 -0500
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay07.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o06HICsY1925288
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 Jan 2010 12:18:12 -0500
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o06HICaJ002026
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 Jan 2010 15:18:12 -0200
-Date: Wed, 6 Jan 2010 11:18:12 -0600
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20100106171812.GA15444@us.ibm.com>
-References: <1262791548.15424.31.camel@moss-pluto.epoch.ncsc.mil>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NWOiR-00048A-6B
+	for ltp-list@lists.sourceforge.net; Sun, 17 Jan 2010 06:34:27 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NWOiO-0002dj-Rm
+	for ltp-list@lists.sourceforge.net; Sun, 17 Jan 2010 06:34:27 +0000
+Received: by pwj11 with SMTP id 11so1256288pwj.2
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 16 Jan 2010 22:34:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1262791548.15424.31.camel@moss-pluto.epoch.ncsc.mil>
-Subject: Re: [LTP] regression:  selinux testsuite broken since October
+In-Reply-To: <201001151727.40629.vapier@gentoo.org>
+References: <364299f41001151349i4e7067fbu68994eaf719b46de@mail.gmail.com>
+	<364299f41001151407s3e486c68rc8bd90db9898e20d@mail.gmail.com>
+	<201001151727.40629.vapier@gentoo.org>
+Date: Sat, 16 Jan 2010 22:34:18 -0800
+Message-ID: <364299f41001162234k3ff212e9wb130a9b2b7a99e5b@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] Add make 3.80 $(abspath ) and $(realpath )
+	emulation scripts
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,70 +30,357 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stephen Smalley <sds@tycho.nsa.gov>
-Cc: ltp-list@lists.sourceforge.net, James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: LTP list <ltp-list@lists.sourceforge.net>, Jiri Palecek <jirka@debian.org>, Andi Kleen <andi@firstfloor.org>, =?ISO-2022-JP?B?GyRCP0BDK0p+SE8bKEI=?= <mitani@ryobi.co.jp>
 
-Quoting Stephen Smalley (sds@tycho.nsa.gov):
-> It seems the Makefile rewrite last October broke the selinux testsuite.
-> Is it unreasonable to expect that someone who rewrote the Makefile would
-> actually try running the testsuite?
-> 
-> Please, revert the changes or fix them.
-> 
-> See testcases/kernel/security/selinux-testsuite/README for the
-> instructions.
+2010/1/15 Mike Frysinger <vapier@gentoo.org>:
+> On Friday 15 January 2010 17:07:48 Garrett Cooper wrote:
+>> Shortly after I sent out this email, I received some helpful replies
+>> as to why my code wasn't working. It turns out that the curly bracket
+>> regexp quantifier operators available in many other popular
+>> implementations of regexps (perl, python, tcl) isn't supported in awk.
+>> Here's the new patch with less bloat.
+>
+> the patch itself is word wrapped in the e-mail though :(
+>
+>> +_abspath() {
+>> + =A0 =A0 echo "$@" | awk '{ sub(/\/$/, ""); while (gsub(/\/\//, "/")) {=
+ };
+>> while (gsub(/\/[^\/]+\/\.\.\/?/, "/")) { }; while (gsub(/\/\.\//,
+>> "/")) { } print }'
+>> +}
+>
+> it's easy to line wrap awk scripts, and this sucker really needs it
+>
+> btw, this doesnt quite handle:
+> /a/b/c/.././
+>
+> how about this (largely untested) sed:
+> sed -r -e 's:/+[.]/+:/:g' -e 's:(^|/+[^/]*)/+[.][.]/+:/:g' -e 's:/+$::'
+>
+>> --- /dev/null 1 Jan 1970 00:00:00 -0000
+>> +++ tests/test_abspath.sh =A0 =A0 15 Jan 2010 22:04:59 -0000
+>> +# NOTE (garrcoop): I usually don't use bashisms, but it was just easier=
+ to
+>> +# express these values as an array of values instead of one whacky long
+>> +# string.
+>> +test_strings=3D( =A0 =A0 foo/bar /foo/bar /foo/../bar /foo/bar/../baz
+>> /foo/bar/../baz/ /foo/../bar/ /foo/../bar/.. /foo/../bar/../
+>> /foo/bar/../baz /foo/./bar /./foo/./bar /foo//bar //foo/bar
+>> //////foo/bar /foo/////bar )
+>> +expected_strings=3D( foo/bar /foo/bar /bar =A0 =A0 =A0 =A0/foo/baz
+>> /foo/baz =A0 =A0 =A0 =A0 /bar =A0 =A0 =A0 =A0 / =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0/ =A0 =A0 =A0 =A0 =A0 =A0 =A0 /foo/baz
+>> =A0 =A0 =A0 /foo/bar =A0 /foo/bar =A0 =A0 /foo/bar =A0/foo/bar =A0/foo/b=
+ar
+>> /foo/bar )
+>
+> probably be good if the source were better wrapped
+>
+> however, two parallel arrays makes it hard to correlate the input/expected
+> values. =A0how about something like:
+> set -- \
+> =A0 =A0 =A0 =A0foo/bar:foo/bar \
+> =A0 =A0 =A0 =A0/foo/bar:/foo/bar \
+> =A0 =A0 =A0 =A0/foo/../bar:/bar \
+> =A0 =A0 =A0 =A0...........
+>
+> then you can easily do:
+> for test in "$@" ; do
+> =A0 =A0 =A0 =A0input=3D${test%:*}
+> =A0 =A0 =A0 =A0expect=3D${test#*:}
+> =A0 =A0 =A0 =A0...
+> done
+>
+> this should be POSIX and avoid /bin/bash
 
-Seems I have a part in breakage as well.  Here are patches to get the
-execshare_parent to compile.
+Version 2:
 
-Now to get the policy to compile...
+1. Incorporate comments from Mike F.
+2. Resolve a negative testcase failure.
 
---- ltp-full-20091231.orig/testcases/kernel/security/selinux-testsuite/tests/execshare/selinux_execshare_parent.c	2009-11-03 15:07:35.000000000 -0500
-+++ ltp-full-20091231/testcases/kernel/security/selinux-testsuite/tests/execshare/selinux_execshare_parent.c	2010-01-06 11:58:47.000000000 -0500
-@@ -18,9 +18,12 @@
- #include <selinux/selinux.h>
- #include <selinux/context.h>
- #include <sched.h>
-+#include <test.h>
- 
--int clone_fn(char **argv)
-+int clone_fn(void *in)
- {
-+	char **argv = (char **) in;
+gcooper@orangebox /scratch/ltp $ scripts/tests/test_abspath.sh
+test_abspath    1  TPASS  :  Test string matches expected string
+_abspath(foo/bar) =3D> foo/bar =3D=3D foo/bar)
+test_abspath    2  TPASS  :  Test string matches expected string
+_abspath(/foo/bar) =3D> /foo/bar =3D=3D /foo/bar)
+test_abspath    3  TPASS  :  Test string matches expected string
+_abspath(/foo/../bar) =3D> /bar =3D=3D /bar)
+test_abspath    4  TPASS  :  Test string matches expected string
+_abspath(/foo/bar/../baz) =3D> /foo/baz =3D=3D /foo/baz)
+test_abspath    5  TPASS  :  Test string matches expected string
+_abspath(/foo/bar/../baz/) =3D> /foo/baz =3D=3D /foo/baz)
+test_abspath    6  TPASS  :  Test string matches expected string
+_abspath(/foo/../bar/) =3D> /bar =3D=3D /bar)
+test_abspath    7  TPASS  :  Test string matches expected string
+_abspath(/foo/../bar/..) =3D> / =3D=3D /)
+test_abspath    8  TPASS  :  Test string matches expected string
+_abspath(/foo/../bar/../) =3D> / =3D=3D /)
+test_abspath    9  TPASS  :  Test string matches expected string
+_abspath(/foo/bar/../baz) =3D> /foo/baz =3D=3D /foo/baz)
+test_abspath   10  TPASS  :  Test string matches expected string
+_abspath(/foo/./bar) =3D> /foo/bar =3D=3D /foo/bar)
+test_abspath   11  TPASS  :  Test string matches expected string
+_abspath(/./foo/./bar) =3D> /foo/bar =3D=3D /foo/bar)
+test_abspath   12  TPASS  :  Test string matches expected string
+_abspath(/foo//bar) =3D> /foo/bar =3D=3D /foo/bar)
+test_abspath   13  TPASS  :  Test string matches expected string
+_abspath(//foo/bar) =3D> /foo/bar =3D=3D /foo/bar)
+test_abspath   14  TPASS  :  Test string matches expected string
+_abspath(//////foo/bar) =3D> /foo/bar =3D=3D /foo/bar)
+test_abspath   15  TPASS  :  Test string matches expected string
+_abspath(/foo/////bar) =3D> /foo/bar =3D=3D /foo/bar)
+test_abspath   16  TPASS  :  Test string matches expected string
+_abspath(/a/b/c/.././) =3D> /a/b =3D=3D /a/b)
+test_abspath   17  TPASS  :  Test string matches expected string
+_abspath(/.foo) =3D> /.foo =3D=3D /.foo)
+test_abspath   18  TPASS  :  Test string matches expected string
+_abspath(./.foo) =3D> /.foo =3D=3D /.foo)
+test_abspath   19  TPASS  :  Test string matches expected string
+_abspath(/.foo/.bar) =3D> /.foo/.bar =3D=3D /.foo/.bar)
+test_abspath   20  TPASS  :  Test string matches expected string
+_abspath(./.foo/.bar) =3D> /.foo/.bar =3D=3D /.foo/.bar)
+
+Index: scripts/lib/file_functions.sh
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: scripts/lib/file_functions.sh
+diff -N scripts/lib/file_functions.sh
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ scripts/lib/file_functions.sh	17 Jan 2010 06:18:33 -0000
+@@ -0,0 +1,50 @@
++#!/bin/sh
++#
++# File functions utilized as part of abspath.sh, realpath.sh, etc.
++#
++#    Copyright (C) 2010, Cisco Systems Inc.
++#
++#    This program is free software; you can redistribute it and/or modify
++#    it under the terms of the GNU General Public License as published by
++#    the Free Software Foundation; either version 2 of the License, or
++#    (at your option) any later version.
++#
++#    This program is distributed in the hope that it will be useful,
++#    but WITHOUT ANY WARRANTY; without even the implied warranty of
++#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#    GNU General Public License for more details.
++#
++#    You should have received a copy of the GNU General Public License alo=
+ng
++#    with this program; if not, write to the Free Software Foundation, Inc=
+.,
++#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++#
++# Garrett Cooper, January 2010
++#
++# POSIX compliant bourne shell functions for performing make 3.81
++# compliancy in 3.80 with a minimal set of external commands
++# [awk(1) // readlink(1) only required].
++#
 +
- 	execv(argv[3], argv+3);
- 	perror(argv[3]);
- 	return -1;
-@@ -73,7 +76,7 @@ int main(int argc, char **argv)
- 		fprintf(stderr, "%s:  unable to set exec context to %s\n", argv[0], context_s);
- 		exit(-1);
- 	}
--	pid = ltp_clone_quick(cloneflags | SIGCHLD, child_fn, argv);
-+	pid = ltp_clone_quick(cloneflags | SIGCHLD, clone_fn, argv);
- 	if (pid < 0) {
- 		perror("clone");
- 		exit(-1);
++# 1. Replace /+ with /.
++# 2. Replace a/b/../c with a/c
++# 3. Replace /./ with /
++# 4. Replace trailing /. with /
++# 5. Replace heading ./ with /
++_abspath() {
++	echo "$@" | awk '{
++	while (gsub(/\/\//, "/")) { };
++	while (gsub(/\/[^\/]+\/\.\.\/?/, "/")) { };
++	while (gsub(/\/\.\//, "/")) { };
++	sub(/(\/\.)?\/$/, "");
++	sub(/^\.\//, "/") ;
++	if ($0 =3D=3D "") {
++		print "/";
++	} else {
++		print;
++	}
++}'
++}
++
++_realpath() {
++	readlink -f "$@"
++}
+Index: scripts/tests/test_abspath.sh
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: scripts/tests/test_abspath.sh
+diff -N scripts/tests/test_abspath.sh
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ scripts/tests/test_abspath.sh	17 Jan 2010 06:18:33 -0000
+@@ -0,0 +1,73 @@
++#!/bin/sh
++#
++# Test the _abspath function, utilized as part of abspath.sh
++#
++#    Copyright (C) 2010, Cisco Systems Inc.
++#
++#    This program is free software; you can redistribute it and/or modify
++#    it under the terms of the GNU General Public License as published by
++#    the Free Software Foundation; either version 2 of the License, or
++#    (at your option) any later version.
++#
++#    This program is distributed in the hope that it will be useful,
++#    but WITHOUT ANY WARRANTY; without even the implied warranty of
++#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#    GNU General Public License for more details.
++#
++#    You should have received a copy of the GNU General Public License alo=
+ng
++#    with this program; if not, write to the Free Software Foundation, Inc=
+.,
++#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++#
++# Garrett Cooper, January 2010
++#
++
++set --	foo/bar:foo/bar			\
++	/foo/bar:/foo/bar		\
++	/foo/../bar:/bar 		\
++	/foo/bar/../baz:/foo/baz 	\
++	/foo/bar/../baz/:/foo/baz 	\
++	/foo/../bar/:/bar 		\
++	/foo/../bar/..:/ 		\
++	/foo/../bar/../:/ 		\
++	/foo/bar/../baz:/foo/baz 	\
++	/foo/./bar:/foo/bar 		\
++	/./foo/./bar:/foo/bar		\
++	/foo//bar:/foo/bar		\
++	//foo/bar:/foo/bar		\
++	//////foo/bar:/foo/bar		\
++	/foo/////bar:/foo/bar		\
++	/a/b/c/.././:/a/b		\
++	/.foo:/.foo			\
++	./.foo:/.foo			\
++	/.foo/.bar:/.foo/.bar		\
++	./.foo/.bar:/.foo/.bar
++
++export TCID=3Dtest_abspath
++export TST_TOTAL=3D$#
++export TST_COUNT=3D1
++
++. "${0%/*}/../lib/file_functions.sh"
++
++for i in "$@"; do
++
++	test_string=3D${i%:*}
++	expected_string=3D${i#*:}
++
++	result=3D$(_abspath "$test_string")
++
++	if [ "$result" =3D "$expected_string" ]; then
++		result_s=3D"matches expected string _abspath(${test_string}) =3D>
+$result =3D=3D $expected_string)"
++		result_v=3DTPASS
++	else
++		result_s=3D"doesn't match expected string _abspath(${test_string}) =3D>
+$result !=3D $expected_string)"
++		result_v=3DTFAIL
++		FAILED=3D1
++	fi
++
++	tst_resm $result_v "Test string $result_s"
++
++	: $(( TST_COUNT +=3D 1 ))
++
++done
++
++exit ${FAILED:=3D0}
+Index: scripts/abspath.sh
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: scripts/abspath.sh
+diff -N scripts/abspath.sh
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ scripts/abspath.sh	17 Jan 2010 06:18:33 -0000
+@@ -0,0 +1,29 @@
++#!/bin/sh
++#
++#    make 3.81 $(abspath .. ) emulation layer
++#
++#    Copyright (C) 2010, Cisco Systems Inc.
++#
++#    This program is free software; you can redistribute it and/or modify
++#    it under the terms of the GNU General Public License as published by
++#    the Free Software Foundation; either version 2 of the License, or
++#    (at your option) any later version.
++#
++#    This program is distributed in the hope that it will be useful,
++#    but WITHOUT ANY WARRANTY; without even the implied warranty of
++#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#    GNU General Public License for more details.
++#
++#    You should have received a copy of the GNU General Public License alo=
+ng
++#    with this program; if not, write to the Free Software Foundation, Inc=
+.,
++#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++#
++# Garrett Cooper, January 2010
++#
++
++. "${0%/*}/lib/file_functions.sh"
++
++while [ $# -gt 0 ] ; do
++	_abspath "$1"
++	shift
++done
+Index: scripts/realpath.sh
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: scripts/realpath.sh
+diff -N scripts/realpath.sh
+--- /dev/null	1 Jan 1970 00:00:00 -0000
++++ scripts/realpath.sh	17 Jan 2010 06:18:33 -0000
+@@ -0,0 +1,29 @@
++#!/bin/sh
++#
++#    make 3.81 $(realpath .. ) emulation layer
++#
++#    Copyright (C) 2010, Cisco Systems Inc.
++#
++#    This program is free software; you can redistribute it and/or modify
++#    it under the terms of the GNU General Public License as published by
++#    the Free Software Foundation; either version 2 of the License, or
++#    (at your option) any later version.
++#
++#    This program is distributed in the hope that it will be useful,
++#    but WITHOUT ANY WARRANTY; without even the implied warranty of
++#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#    GNU General Public License for more details.
++#
++#    You should have received a copy of the GNU General Public License alo=
+ng
++#    with this program; if not, write to the Free Software Foundation, Inc=
+.,
++#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++#
++# Garrett Cooper, January 2010
++#
++
++. "${0%/*}/lib/file_functions.sh"
++
++while [ $# -gt 0 ] ; do
++	_realpath "$1"
++	shift
++done
 
---- ltp-full-20091231.orig/testcases/kernel/security/selinux-testsuite/tests/execshare/Makefile	2009-10-09 13:55:51.000000000 -0400
-+++ ltp-full-20091231/testcases/kernel/security/selinux-testsuite/tests/execshare/Makefile	2010-01-06 11:53:53.000000000 -0500
-@@ -25,6 +25,6 @@ top_srcdir              ?= ../../../../.
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../Makefile.inc
- 
--LDLIBS			+= -lselinux
-+LDLIBS			+= -lselinux -lltp
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-
-------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+---------------------------------------------------------------------------=
+---
+Throughout its 18-year history, RSA Conference consistently attracts the
+world's best and brightest in the field, creating opportunities for Confere=
+nce
+attendees to learn about information security's most important issues throu=
+gh
+interactions with peers, luminaries and emerging and established companies.
+http://p.sf.net/sfu/rsaconf-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
