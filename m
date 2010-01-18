@@ -1,34 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1NRwTV-0001hc-3Q
-	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 23:36:37 +0000
-Received: from e31.co.us.ibm.com ([32.97.110.149])
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <ashish.g@teldevice.co.jp>) id 1NWpAy-0000Rc-63
+	for ltp-list@lists.sourceforge.net; Mon, 18 Jan 2010 10:49:40 +0000
+Received: from mail-gw.teldevice.co.jp ([124.215.243.245] helo=teldevice.co.jp)
 	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NRwTR-00033c-3M
-	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 23:36:37 +0000
-Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
-	[9.17.195.226])
-	by e31.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o04NSY8L017875
-	for <ltp-list@lists.sourceforge.net>; Mon, 4 Jan 2010 16:28:35 -0700
-Received: from d03av06.boulder.ibm.com (d03av06.boulder.ibm.com [9.17.195.245])
-	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o04NaOYP154738
-	for <ltp-list@lists.sourceforge.net>; Mon, 4 Jan 2010 16:36:24 -0700
-Received: from d03av06.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av06.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o04NcOVO005857
-	for <ltp-list@lists.sourceforge.net>; Mon, 4 Jan 2010 16:38:24 -0700
-Date: Mon, 4 Jan 2010 17:36:22 -0600
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20100104233622.GA9018@us.ibm.com>
-References: <20100104171643.GA545@us.ibm.com>
-	<D107C512-245B-4187-9A8D-7FDC28234A0D@gmail.com>
+	(Exim 4.69) id 1NWpAw-0002aI-4E
+	for ltp-list@lists.sourceforge.net; Mon, 18 Jan 2010 10:49:39 +0000
+Received: from victory.ykc.teldevice.co.jp (victory.ykc.teldevice.co.jp
+	[127.0.0.1])
+	by victory.ykc.teldevice.co.jp (Postfix) with ESMTP id 747C01988001
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 18 Jan 2010 19:49:20 +0900 (JST)
+Received: from victory.ykc.teldevice.co.jp (victory.ykc.teldevice.co.jp
+	[127.0.0.1]) by postfix.imss70 (Postfix) with ESMTP id 4EF711988002
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 18 Jan 2010 19:49:20 +0900 (JST)
+Received: from [172.29.112.161] (unknown [172.29.112.161])
+	by victory.ykc.teldevice.co.jp (Postfix) with ESMTP id 3FF0E1988001
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 18 Jan 2010 19:49:20 +0900 (JST)
+Message-ID: <4B543CB0.8090801@teldevice.co.jp>
+Date: Mon, 18 Jan 2010 19:49:20 +0900
+From: TED ITC Agarwal Ashish <ashish.g@teldevice.co.jp>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <D107C512-245B-4187-9A8D-7FDC28234A0D@gmail.com>
-Subject: Re: [LTP] [PATCH 1/1] say FAIL not PASS when we failed
+Subject: [LTP] i.MX31 Platform Embedded Linux LTP Test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,48 +38,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Quoting Garrett Cooper (yanegomi@gmail.com):
-> On Jan 4, 2010, at 9:16 AM, "Serge E. Hallyn" <serue@us.ibm.com> wrote:
-> 
-> >Signed-off-by: Serge E. Hallyn <serue@us.ibm.com>
-> >---
-> >testcases/kernel/security/p9auth/p9priv.sh |    2 +-
-> >1 files changed, 1 insertions(+), 1 deletions(-)
-> >
-> >diff --git a/testcases/kernel/security/p9auth/p9priv.sh
-> >b/testcases/kernel/security/p9auth/p9priv.sh
-> >index ad2eead..c1a14d0 100755
-> >--- a/testcases/kernel/security/p9auth/p9priv.sh
-> >+++ b/testcases/kernel/security/p9auth/p9priv.sh
-> >@@ -101,7 +101,7 @@ while [ ! -f $LTPTMP/d/childready ]; do :; done
-> >touch $LTPTMP/childgo
-> >while [ ! -f $LTPTMP/d/childfail -a ! -f $LTPTMP/d/childpass ]; do
-> >:; done;
-> >if [ -f $LTPTMP/d/childpass ]; then
-> >-    echo "PASS: child could setuid from wrong source uid"
-> >+    echo "FAIL: child could setuid from wrong source uid"
-> >   exit 1
-> >fi
-> >echo "PASS: child couldn't setuid from wrong source uid"
-> >-- 
-> >1.6.1.1
-> 
-> Is there a reason why this isn't using tst_resm?
+Hello All,
 
-No good reason
+This is Ashish Agarwal, I am new to LTP.
 
-thanks,
--serge
+Last day i was succeeded to install the LTP over Fedora 7 system. and run test as well.
+
+As my main motive of LTP learn is to Test a customized Embedded Linux system for Freescale i.Mx31 CPU.
+
+My Project specs are as below:
+
+Kernel: 2.6.19.2
+CPU: i.MX31
+Rootfs mounted over : Flash (jffs2 file system, 256MB)
+
+So my motive is to install the LTP and run the test.
+
+Because my system is mounted over Flash, so it can be seen as the memory is remained is not so much as we can use in general projects (PC's).
+and i had not include any "make" and "gcc" components to my customized kernel. (because of memory)
+
+So how can i install the LTP over the system.  (i have USB ports, and mass storage driver support).
+
+--
+
+Ashish Agarwal
 
 ------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+Throughout its 18-year history, RSA Conference consistently attracts the
+world's best and brightest in the field, creating opportunities for Conference
+attendees to learn about information security's most important issues through
+interactions with peers, luminaries and emerging and established companies.
+http://p.sf.net/sfu/rsaconf-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
