@@ -1,35 +1,14 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NSqCC-0007Kd-Ea
-	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 11:06:28 +0000
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NSqCB-00056C-A1
-	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 11:06:28 +0000
-Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
-	by e5.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o07As8X0006609
-	for <ltp-list@lists.sourceforge.net>; Thu, 7 Jan 2010 05:54:08 -0500
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o07B6L1N1888484
-	for <ltp-list@lists.sourceforge.net>; Thu, 7 Jan 2010 06:06:21 -0500
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o07B6Kbh025569
-	for <ltp-list@lists.sourceforge.net>; Thu, 7 Jan 2010 09:06:21 -0200
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4B3AE366.9020300@cn.fujitsu.com>
-References: <4B388C81.80903@linux.vnet.ibm.com>
-	<4B39C9F4.1030708@cn.fujitsu.com> <4B3AD054.5090608@linux.vnet.ibm.com>
-	<4B3AE366.9020300@cn.fujitsu.com>
-Date: Thu, 07 Jan 2010 16:36:13 +0530
-Message-Id: <1262862373.12213.20.camel@subratamodak.linux.ibm.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <noreply@sourceforge.net>) id 1NWnpP-0005yI-1T
+	for ltp-list@lists.sourceforge.net; Mon, 18 Jan 2010 09:23:19 +0000
+From: "SourceForge.net" <noreply@sourceforge.net>
 Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH 2/2] Added check for memory controller (
-	functional, regression & stress )
-Reply-To: subrata@linux.vnet.ibm.com
+Message-Id: <E1NWnpN-00011R-RT@g45xhf1.ch3.sourceforge.com>
+Date: Mon, 18 Jan 2010 09:23:17 +0000
+Subject: [LTP] [ ltp-Bugs-2931756 ] Mangled C++ names in LCOV functions
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,41 +21,71 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Rishikesh <risrajak@linux.vnet.ibm.com>
-Cc: risrajak@in.ibm.com, LTP <ltp-list@lists.sourceforge.net>, iranna.ankad@in.ibm.com
+To: noreply@sourceforge.net
 
-On Wed, 2009-12-30 at 13:21 +0800, Li Zefan wrote: 
-> Rishikesh wrote:
-> > On 12/29/2009 02:50 PM, Li Zefan wrote:
-> >>> commit fe4599d210be37a7d1bb2d6a5523b9e29bbd87e1
-> >>> Author: Rishikesh K Rajak<rishikesh@rishikesh.in.ibm.com>
-> >>> Date:   Mon Dec 28 15:11:54 2009 +0530
-> >>>
-> >>>      Added check for regression and funcitonal memcg test
-> >>>
-> >>>      
-> >> You should add your Signed-off-by.
-> >>    
-> > 
-> > Sending a fresh patch with signed-off added. Also combined both the
-> > patches in one & ported to latest intermediate ltp release.
-> > 
-> 
-> Acked-by: Li Zefan <lizf@cn.fujitsu.com>
+Bugs item #2931756, was opened at 2010-01-14 02:20
+Message generated for change (Comment added) made by oberpapr
+You can respond by visiting: 
+https://sourceforge.net/tracker/?func=detail&atid=103382&aid=2931756&group_id=3382
 
-Thanks to both of you.
+Please note that this message will contain a full copy of the comment thread,
+including the initial issue submission, for this request,
+not just the latest update.
+Category: None
+Group: None
+Status: Open
+Resolution: None
+Priority: 5
+Private: No
+Submitted By: Marc Alff (crispydev)
+Assigned to: Nobody/Anonymous (nobody)
+Summary: Mangled C++ names in LCOV functions
 
-Regards--
-Subrata
+Initial Comment:
+Hi.
+
+I just looked at a LCOV report for some code using C++, generated with LCOV 1.7.
+
+First, thanks a lot for the new function coverage feature.
+
+A minor bug:
+In the report showing the function_name / hit count table,
+names for C++ methods are using the C++ encoded name (_ZN13MYSQL_BIN_LOG25set_purge_index_file_nameEPKc),
+where the demangled name (MYSQL_BIN_LOG::set_purge_index_file_name(char const*)) would be much nicer.
+
+malff@linux-su11:~> c++filt --version
+GNU c++filt (GNU Binutils; openSUSE 11.1) 2.19
+
+malff@linux-su11:~> c++filt
+"_ZN13MYSQL_BIN_LOG25set_purge_index_file_nameEPKc"
+MYSQL_BIN_LOG::set_purge_index_file_name(char const*)
+
+Regards,
+-- Marc Alff
 
 
+----------------------------------------------------------------------
+
+Comment By: Peter Oberparleiter (oberpapr)
+Date: 2010-01-18 10:23
+
+Message:
+The CVS version of LCOV already handles this problem: genhtml has a new
+switch --demangle-cpp which, when called, will use c++filt to convert all
+function names. There will be a new LCOV release soon containing this new
+switch.
+
+----------------------------------------------------------------------
+
+You can respond by visiting: 
+https://sourceforge.net/tracker/?func=detail&atid=103382&aid=2931756&group_id=3382
 
 ------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+Throughout its 18-year history, RSA Conference consistently attracts the
+world's best and brightest in the field, creating opportunities for Conference
+attendees to learn about information security's most important issues through
+interactions with peers, luminaries and emerging and established companies.
+http://p.sf.net/sfu/rsaconf-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
