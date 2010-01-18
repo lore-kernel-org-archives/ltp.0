@@ -2,23 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sakoman@gmail.com>) id 1NVWpe-0007Fo-Ci
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 21:02:18 +0000
-Received: from qw-out-1920.google.com ([74.125.92.149])
+	(envelope-from <yanegomi@gmail.com>) id 1NX1Jy-00009b-Dc
+	for ltp-list@lists.sourceforge.net; Mon, 18 Jan 2010 23:47:46 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
 	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NVWpd-0006Yu-IT
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 21:02:18 +0000
-Received: by qw-out-1920.google.com with SMTP id 14so29296qwa.4
+	id 1NX1Jx-0000f5-KN
+	for ltp-list@lists.sourceforge.net; Mon, 18 Jan 2010 23:47:46 +0000
+Received: by pwj11 with SMTP id 11so2261975pwj.2
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 14 Jan 2010 13:02:07 -0800 (PST)
+	Mon, 18 Jan 2010 15:47:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <364299f41001141125v56ef5ac0sfa58acd70b6e7775@mail.gmail.com>
-References: <5e088bd91001140916n6b6d9979m3847be14d86c7920@mail.gmail.com>
-	<364299f41001141125v56ef5ac0sfa58acd70b6e7775@mail.gmail.com>
-Date: Thu, 14 Jan 2010 13:02:04 -0800
-Message-ID: <5e088bd91001141302l291261a7p366ac54659534a9c@mail.gmail.com>
-From: Steve Sakoman <sakoman@gmail.com>
-Subject: Re: [LTP] ltp on OMAP3 embedded linux systems
+Date: Mon, 18 Jan 2010 15:47:39 -0800
+Message-ID: <364299f41001181547y3ab0c634xf95002f4606d48a1@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: [LTP] pan build now independent of bison/flex [was Re: [PATCH] Add
+	make 3.80 $(abspath ) and $(realpath ) emulation scripts]
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,40 +26,59 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>, ltp-list@lists.sourceforge.net
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: =?ISO-2022-JP?B?GyRCP0BDK0p+SE8bKEI=?= <mitani@ryobi.co.jp>, Jiri Palecek <jirka@debian.org>, Andi Kleen <andi@firstfloor.org>, LTP list <ltp-list@lists.sourceforge.net>
 
-On Thu, Jan 14, 2010 at 11:25 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
-
->> There was really only one glitch in the build process (looking for
->> libraries in an odd location) and I am now in the process of running
->> the test.
+2010/1/18 Garrett Cooper <yanegomi@gmail.com>:
+> On Mon, Jan 18, 2010 at 2:08 PM, Mike Frysinger <vapier@gentoo.org> wrote:
+>> On Monday 18 January 2010 16:58:58 K.D. Lucas wrote:
+>>> Is there a bug when trying to make with version 3.81?
+>>>
+>>> I just tried compiling LTP 2009.1231 today, and I get:
+>>>
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>> configure: WARNING: linux/genetlink.h: present but cannot be compiled
+>>> configure: WARNING: linux/genetlink.h: =A0 =A0 check for missing prereq=
+uisite
+>>> headers?
+>>> configure: WARNING: linux/genetlink.h: see the Autoconf documentation
+>>> configure: WARNING: linux/genetlink.h: =A0 =A0 section "Present But Can=
+not Be
+>>> Compiled"
+>>> configure: WARNING: linux/genetlink.h: proceeding with the compiler's
+>>
+>> no output emitted by configure would be related to make. =A0these partic=
+ular
+>> errors are because your distro installs broken kernel headers.
 >
-> Please -- if you find bugs CC the list so I can resolve them as soon
-> as possible -- thanks :).
+> Kelly,
+> =A0 =A0You're most likely missing flex + bison on the build host (I say
+> that primarily because I don't see -lfl in the linker line). It's
+> noted in INSTALL as a requirement, but isn't strictly enforced for pan
+> today. I'll add a specific check for that in configure sometime in the
+> next week or so, but the problem is that several tests need to be
+> skipped if pan isn't available / built because they depend upon it
+> (runltp invocation, selinux-testsuite, etc).
+> Thanks,
 
-I redid the build and everything worked perfectly, so that initial
-glitch was probably my fault!
+    I just removed the dependency on bison/flex in pan/Makefile on CVS
+head, as it was only required by ltp-scanner, an optional non-critical
+utility.
+Thanks,
+-Garrett
 
-> x86* is still the primary target architecture. I'd like to see the
-> failures, but yes my Fedora 12 VM is LTP `result clean', whereas the
-> MIPS and PPC 2.6.24* embedded devices at work have issues with some
-> tests due to architectural bugs, kernel bugs, and some test bugs.
->
-> Please let us know how it goes though so we can try and work out the
-> issues with your ARM embedded DUT.
-
-I've got the results of the 1st run.  What is the normal way to share
-the results?
-
-Steve
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Throughout its 18-year history, RSA Conference consistently attracts the
-world's best and brightest in the field, creating opportunities for Conference
-attendees to learn about information security's most important issues through
+world's best and brightest in the field, creating opportunities for Confere=
+nce
+attendees to learn about information security's most important issues throu=
+gh
 interactions with peers, luminaries and emerging and established companies.
 http://p.sf.net/sfu/rsaconf-dev2dev
 _______________________________________________
