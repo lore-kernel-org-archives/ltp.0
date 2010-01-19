@@ -1,15 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <noreply@sourceforge.net>) id 1NXttr-0005kY-9W
-	for ltp-list@lists.sourceforge.net; Thu, 21 Jan 2010 10:04:27 +0000
-From: "SourceForge.net" <noreply@sourceforge.net>
-Mime-Version: 1.0
-Message-Id: <E1NXttq-0004LT-2Z@h45xhf1.ch3.sourceforge.com>
-Date: Thu, 21 Jan 2010 10:04:26 +0000
-Subject: [LTP] [ ltp-Feature Requests-2927507 ] lcov: branch coverage in
-	reports
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NXC5x-0001XP-Mw
+	for ltp-list@lists.sourceforge.net; Tue, 19 Jan 2010 11:18:01 +0000
+Received: from mail-pz0-f190.google.com ([209.85.222.190])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NXC5w-0007bb-O3
+	for ltp-list@lists.sourceforge.net; Tue, 19 Jan 2010 11:18:01 +0000
+Received: by pzk28 with SMTP id 28so2264253pzk.4
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 19 Jan 2010 03:17:54 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <653A85C7F32C4741880F71219266EA02031A02FFB1@EXGMBX01.sasken.com>
+References: <653A85C7F32C4741880F71219266EA02031A02FFB1@EXGMBX01.sasken.com>
+Date: Tue, 19 Jan 2010 03:17:54 -0800
+Message-ID: <364299f41001190317i6dde56d1m643d78cb1e19729@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] LTP installation configure Error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -19,55 +27,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: noreply@sourceforge.net
+To: Shanmuga Jayabalan <shanmuga.jayabalan@sasken.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Feature Requests item #2927507, was opened at 2010-01-07 14:08
-Message generated for change (Comment added) made by oberpapr
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=353382&aid=2927507&group_id=3382
+On Tue, Jan 19, 2010 at 12:50 AM, Shanmuga Jayabalan
+<shanmuga.jayabalan@sasken.com> wrote:
+>
+> Hi,
+>
+> I am doing cross compilation of LTP with ARM.
+>
+> When I do ./configure, I'm also getting the same error message in
+> ltp-full-20091231 release.
+> =A0=A0=A0=A0=A0=A0=A0 configure: error: Couldn't find functional copy of =
+quota v2 - are
+> you > running 2.4.x ?
+> As per your suggestion I have tried to do `man 2 quotactl', I'm getting t=
+he
+> following message.
+> =A0=A0=A0=A0=A0=A0=A0 No manual entry for quotactl in section 2
+> I have ubuntu in my system. I'm able to cross compile with the previous
+> release "ltp-full-20091130".
+> Is there any setup is missing in my system for this release?
+> Help me to resolve this issue.
 
-Please note that this message will contain a full copy of the comment thread,
-including the initial issue submission, for this request,
-not just the latest update.
-Category: Tools
-Group: None
-Status: Open
-Resolution: None
-Priority: 5
-Private: No
-Submitted By: Stefan Kost (ensonic)
-Assigned to: Nobody/Anonymous (nobody)
-Summary: lcov: branch coverage in reports
+Sorry for not getting back to you sooner. I'll look into your issue
+ASAP tomorrow.
+Thanks,
+-Garrett
 
-Initial Comment:
-gcov -b can report branch coverage
-(http://gcc.gnu.org/onlinedocs/gcc/Invoking-Gcov.html#Invoking-Gcov)
-
-There is a feature request for this featue also in
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=413834
-
-
-----------------------------------------------------------------------
-
-Comment By: Peter Oberparleiter (oberpapr)
-Date: 2010-01-21 11:04
-
-Message:
-Assuming that branch coverage support would be implemented in lcov, could
-you test it?
-
-----------------------------------------------------------------------
-
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=353382&aid=2927507&group_id=3382
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Throughout its 18-year history, RSA Conference consistently attracts the
-world's best and brightest in the field, creating opportunities for Conference
-attendees to learn about information security's most important issues through
+world's best and brightest in the field, creating opportunities for Confere=
+nce
+attendees to learn about information security's most important issues throu=
+gh
 interactions with peers, luminaries and emerging and established companies.
 http://p.sf.net/sfu/rsaconf-dev2dev
 _______________________________________________
