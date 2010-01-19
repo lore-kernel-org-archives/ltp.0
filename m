@@ -1,41 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1NURr6-0006cq-62
-	for ltp-list@lists.sourceforge.net; Mon, 11 Jan 2010 21:31:20 +0000
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NURr5-00035Z-15
-	for ltp-list@lists.sourceforge.net; Mon, 11 Jan 2010 21:31:20 +0000
-Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
-	by e5.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o0BLIdg1010769
-	for <ltp-list@lists.sourceforge.net>; Mon, 11 Jan 2010 16:18:39 -0500
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o0BLV0KX141790
-	for <ltp-list@lists.sourceforge.net>; Mon, 11 Jan 2010 16:31:00 -0500
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o0BLV089018473
-	for <ltp-list@lists.sourceforge.net>; Mon, 11 Jan 2010 19:31:00 -0200
-Date: Mon, 11 Jan 2010 15:31:00 -0600
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20100111213100.GA28138@us.ibm.com>
-References: <364299f41001081338u37e77cd3q3d9535f3dec71331@mail.gmail.com>
-	<1262988051.20881.42.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001081408sf9d740ew55dad7b542463416@mail.gmail.com>
-	<364299f41001082327o31bbe79eh849ea1651cf12632@mail.gmail.com>
-	<1263237132.5091.1.camel@moss-pluto.epoch.ncsc.mil>
-	<20100111195043.GA23360@us.ibm.com>
-	<1263239706.5091.11.camel@moss-pluto.epoch.ncsc.mil>
-	<20100111201936.GA24711@us.ibm.com>
-	<20100111205858.GA26412@us.ibm.com>
-	<20100111210006.GA26554@us.ibm.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NX97t-0005cD-Np
+	for ltp-list@lists.sourceforge.net; Tue, 19 Jan 2010 08:07:49 +0000
+Received: from mail-px0-f200.google.com ([209.85.216.200])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NX97s-00044C-5x
+	for ltp-list@lists.sourceforge.net; Tue, 19 Jan 2010 08:07:49 +0000
+Received: by pxi38 with SMTP id 38so729529pxi.28
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 19 Jan 2010 00:07:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20100111210006.GA26554@us.ibm.com>
-Subject: Re: [LTP] regression: selinux testsuite broken since October
+In-Reply-To: <000701ca98d4$c214c430$463e4c90$@co.jp>
+References: <000901ca94d5$83797340$8a6c59c0$@co.jp>
+	<364299f41001140019k5aa41267x5add5f7bfed1ee3c@mail.gmail.com>
+	<000701ca98d4$c214c430$463e4c90$@co.jp>
+Date: Tue, 19 Jan 2010 00:07:41 -0800
+Message-ID: <364299f41001190007k138757dct5255c6f7033d0015@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] cvs version 2010-01-14 make failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -45,75 +29,209 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stephen Smalley <sds@tycho.nsa.gov>
-Cc: ltp-list@lists.sourceforge.net, James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net
 
-Quoting Serge E. Hallyn (serue@us.ibm.com):
-> Quoting Serge E. Hallyn (serue@us.ibm.com):
-> > Quoting Serge E. Hallyn (serue@us.ibm.com):
-> > > Quoting Stephen Smalley (sds@tycho.nsa.gov):
-> > > > On Mon, 2010-01-11 at 13:50 -0600, Serge E. Hallyn wrote:
-> > > > > > Fails with:
-> > > > > > cp: cannot stat
-> > > > > > `/home/sds/ltp/testcases/kernel/security/selinux-testsuite/refpolicy/policy_files/generic/test_policy.*': No such file or directory
-> > > > > 
-> > > > > You ran /home/sds/ltp/testscripts/test_selinux.sh, right?
-> > > > > 
-> > > > > I think we are supposed to actually be running
-> > > > > /opt/ltp/testscripts/test_selinux.sh.  So then the first question for
-> > > > > Garrett is how should we deduce /home/sds/ltp as $LTP_SRCDIR from a
-> > > > > testscript?  Or should the policy sources be copied into /opt?
-> > > > 
-> > > > Ok, but regardless:  the refpolicy Makefile is still broken.
-> > > 
-> > > Yup.
-> > 
-> > All right, baby-steps.
-> > 
-> > The attached test_selinux.diff is not to be applied, but something
-> > like it is needed.  Should we have the ltp 'make install' fill in
-> > TOP_SRCDIR in /opt/ltp/testscripts/test_selinux.sh?  BTW, Garrett,
-> > that is the issue I was saying is shared between test_selinux.sh
-> > and some others including test_robind.sh.  That's why I'm not just
-> > sending a patch to make it work, bc i think we need more general
-> > guidance.
-> > 
-> > The second match makes the 'make load' part of test_selinux.sh
-> > succeed on rhel5.4.  Stephen, how does it do on fedora?
-> > 
-> > After loading policy it fails to execute ltp-pan, but I figure let's
-> > get policy loading working first.
+On Mon, Jan 18, 2010 at 10:58 PM, Mitani <mitani@ryobi.co.jp> wrote:
+> I am sorry for the delay in my response.
+>
+>
+> I tried to make with 2010-01-15 cvs in my system..
+> But it failed at "libcpuset.c" which is before "mbind.c" execution order
+> of "make".
+>
+> ------------
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall =A0-I/home/LTP/ltp-201=
+0-01-15/testcases/kernel/include -I../../../../../include -I../../../../../=
+include =A0-c -o libcpuset.o libcpuset.c
+> libcpuset.c: In function `cpuset_membind':
+> libcpuset.c:3440: error: `MPOL_BIND' undeclared (first use in this functi=
+on)
+> libcpuset.c:3440: error: (Each undeclared identifier is reported only once
+> libcpuset.c:3440: error: for each function it appears in.)
+> libcpuset.c: In function `cpuset_addr2node':
+> libcpuset.c:3456: error: `MPOL_F_NODE' undeclared (first use in this func=
+tion)
+> libcpuset.c:3456: error: `MPOL_F_ADDR' undeclared (first use in this func=
+tion)
+> libcpuset.c: In function `cpuset_unpin':
+> libcpuset.c:3753: error: `MPOL_DEFAULT' undeclared (first use in this fun=
+ction)
+> make[5]: *** [libcpuset.o] Error 1
+> ------------
+>
+> "libcpuset.c" could be successfully built with 2010-01-14 cvs.
+>
+> In "libcpuset.c", following was changed.
+>
+> ---(added)------
+> #if HAVE_LINUX_MEMPOLICY_H
+> #include <linux/mempolicy.h>
+> #endif
+> ----------------
+>
+> ---(deleted)----
+> =A0/* Policies for set_mempolicy() */
+> #define MPOL_DEFAULT =A0 =A0 0
+> #define MPOL_PREFERRED =A0 1
+> #define MPOL_BIND =A0 =A0 =A0 =A02
+> #define MPOL_INTERLEAVE =A03
+>
+> /* Flags for get_mempolicy() */
+> #define MPOL_F_NODE (1<<0) /* return next interleave node or node of addr=
+ */
+> #define MPOL_F_ADDR (1<<1) /* look up vma using address */
+> ----------------
+>
+> But, in my system, HAVE_LINUX_MEMPOLICY_H was not defined.
+> Therefor, "<linux/mempolicy.h>" was not effective.
+>
+>
+> Regards--
+>
+>
+> -Tomonori Mitani
+>
+> -----Original Message-----
+> From: Garrett Cooper [mailto:yanegomi@gmail.com]
+> Sent: Thursday, January 14, 2010 5:19 PM
+> To: Mitani
+> Cc: ltp-list@lists.sourceforge.net
+> Subject: Re: [LTP] cvs version 2010-01-14 make failed
+>
+> On Wed, Jan 13, 2010 at 8:53 PM, Mitani <mitani@ryobi.co.jp> wrote:
+>> Hi,
+>>
+>> I tried to make with 2010-01-14's cvs in RHEL4.8 (2.6.9-89.ELsmp).
+>> But It failed in "mbind01.c" by following message.
+>>
+>> ------------
+>> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+>> -I/home/LTP/ltp-2010-01-12/testcases/kernel/include
+>> -I/home/LTP/ltp-2010-01-12/testcases/kernel/syscalls/mbind/../utils/
+>> -I../../../../include -I../../../../include =A0 -L../../../../lib =A0mbi=
+nd01.c
+>> -lltp -lnuma -o mbind01
+>> mbind01.c:184: error: `MPOL_DEFAULT' undeclared here (not in a function)
+>> mbind01.c:184: error: initializer element is not constant
+>> mbind01.c:184: error: (near initialization for `tcase[0].policy')
+>> mbind01.c:188: error: initializer element is not constant
+>> mbind01.c:188: error: (near initialization for `tcase[0]')
+>> mbind01.c:190: error: initializer element is not constant
+>> mbind01.c:190: error: (near initialization for `tcase[1].policy')
+>> mbind01.c:194: error: initializer element is not constant
+>> mbind01.c:194: error: (near initialization for `tcase[1]')
+>> mbind01.c:196: error: `MPOL_BIND' undeclared here (not in a function)
+>> mbind01.c:196: error: initializer element is not constant
+>> mbind01.c:196: error: (near initialization for `tcase[2].policy')
+>> mbind01.c:200: error: initializer element is not constant
+>> mbind01.c:200: error: (near initialization for `tcase[2]')
+>> mbind01.c:202: error: initializer element is not constant
+>> mbind01.c:202: error: (near initialization for `tcase[3].policy')
+>> mbind01.c:206: error: initializer element is not constant
+>> mbind01.c:206: error: (near initialization for `tcase[3]')
+>> mbind01.c:208: error: `MPOL_INTERLEAVE' undeclared here (not in a functi=
+on)
+>> mbind01.c:208: error: initializer element is not constant
+>> mbind01.c:208: error: (near initialization for `tcase[4].policy')
+>> mbind01.c:212: error: initializer element is not constant
+>> mbind01.c:212: error: (near initialization for `tcase[4]')
+>> mbind01.c:214: error: initializer element is not constant
+>> mbind01.c:214: error: (near initialization for `tcase[5].policy')
+>> mbind01.c:218: error: initializer element is not constant
+>> mbind01.c:218: error: (near initialization for `tcase[5]')
+>> mbind01.c:220: error: `MPOL_PREFERRED' undeclared here (not in a functio=
+n)
+>> mbind01.c:220: error: initializer element is not constant
+>> mbind01.c:220: error: (near initialization for `tcase[6].policy')
+>> mbind01.c:224: error: initializer element is not constant
+>> mbind01.c:224: error: (near initialization for `tcase[6]')
+>> mbind01.c:226: error: initializer element is not constant
+>> mbind01.c:226: error: (near initialization for `tcase[7].policy')
+>> mbind01.c:230: error: initializer element is not constant
+>> mbind01.c:230: error: (near initialization for `tcase[7]')
+>> mbind01.c:236: error: initializer element is not constant
+>> mbind01.c:236: error: (near initialization for `tcase[8]')
+>> mbind01.c:238: error: initializer element is not constant
+>> mbind01.c:238: error: (near initialization for `tcase[9].policy')
+>> mbind01.c:243: error: initializer element is not constant
+>> mbind01.c:243: error: (near initialization for `tcase[9]')
+>> mbind01.c:246: error: initializer element is not constant
+>> mbind01.c:246: error: (near initialization for `tcase[10].policy')
+>> mbind01.c:250: error: initializer element is not constant
+>> mbind01.c:250: error: (near initialization for `tcase[10]')
+>> mbind01.c: In function `do_test':
+>> mbind01.c:309: error: `MPOL_F_ADDR' undeclared (first use in this functi=
+on)
+>> mbind01.c:309: error: (Each undeclared identifier is reported only once
+>> mbind01.c:309: error: for each function it appears in.)
+>> make[4]: *** [mbind01] Error 1
+>> ------------
+>>
+>> Following version's cvs's bring same results.
+>> =A0- 2010-01-08
+>> =A0- 2010-01-12
+>> =A0- 2010-01-13
+>>
+>>
+>> With 2009-12-21's cvs, I succeeded to make.
+>> I took a difference of "mbind01.c" between "2009-12-21's cvs and
+>> 2010-01-12's cvs.
+>> In "mbind01.c", "#include "numaif.h" changed to #include "numa_helpers.h"
+>>
+>> But the definition of "MPOL_DEFAULT" which was in "numaif.h" wasn't
+>> described in "numa_helpers.h". There isn't this definition anywhere.
+>>
+>> I think that it may be necessary to copy the definitions of
+>> "MPOL_DEFAULT", "MPOL_BIND", etc... from "numaif.h".
+>> I tried to apply following patch and succeeded to make:
+>>
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> --- numa_helpers.h.org =A02010-01-13 14:15:35.000000000 +0900
+>> +++ numa_helpers.h =A0 =A0 =A02010-01-13 16:04:04.000000000 +0900
+>> @@ -104,5 +104,18 @@
+>> =A0}
+>>
+>> =A0#endif
+>> -
+>> +#ifndef MPOL_DEFAULT
+>> + =A0 // Policies
+>> +# =A0define MPOL_DEFAULT =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A00
+>> +# =A0define MPOL_PREFERRED =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A01
+>> +# =A0define MPOL_BIND =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 2
+>> +# =A0define MPOL_INTERLEAVE =A0 =A0 =A0 =A0 =A0 =A0 =A0 3
+>> + =A0 // Flags for get_mem_policy
+>> +# =A0define MPOL_F_NODE =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (1<<0)
+>> +# =A0define MPOL_F_ADDR =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (1<<1)
+>> + =A0 // Flags for mbind
+>> +# =A0define MPOL_MF_STRICT =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0(1<<0)
+>> +# =A0define MPOL_MF_MOVE =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0(1<<1)
+>> +# =A0define MPOL_MF_MOVE_ALL =A0 =A0 =A0 =A0 =A0 =A0 =A0(1<<2)
+>> +#endif
+>> =A0#endif
+>
+> =A0 =A0Please try from cvs again. I added extra checks for the constants
+> needed for mempolicy, so the tests and functionality will be
+> appropriately skipped. I also yanked the ad hoc #defines as they were
+> spread throughout the tree...
 
-All right well just doing
+Subrata reported a similar issue. Please try again as I've disabled
+all tests that require these constants (later versions of libnuma have
+them inline, but older ones don't; cute...).
+-Garrett
 
---- /root/ltp_cvs_orig/ltp/testscripts/test_selinux.sh	2009-05-19 05:39:11.000000000 -0400
-+++ /opt/ltp/testscripts/test_selinux.sh	2010-01-11 16:26:12.000000000 -0500
-@@ -115,7 +117,7 @@
- SAVEBINTYPE=`ls -Zd $LTPROOT/testcases/bin | awk '{ print $4 }' | awk -F: '{ print $3 }'`
- /usr/bin/chcon -t test_file_t $LTPROOT/testcases/bin
- 
--$LTPROOT/pan/ltp-pan -S -a $LTPROOT/results/selinux -n ltp-selinux -l $LTPROOT/results/selinux.logfile -o $LTPROOT/results/selinux.outfile -p -f $LTPROOT/runtest/selinux  
-+$LTPROOT/bin/ltp-pan -S -a $LTPROOT/results/selinux -n ltp-selinux -l $LTPROOT/results/selinux.logfile -o $LTPROOT/results/selinux.outfile -p -f $LTPROOT/runtest/selinux  
- 
- # cleanup before exiting    
- 
-================================================================
-in test_selinux.sh makes the testsuite mostly pass (test 39 fails, all
-up to then pass)
-
-Again this is on RHEL5.4.
-
--serge
-
-------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+---------------------------------------------------------------------------=
+---
+Throughout its 18-year history, RSA Conference consistently attracts the
+world's best and brightest in the field, creating opportunities for Confere=
+nce
+attendees to learn about information security's most important issues throu=
+gh
+interactions with peers, luminaries and emerging and established companies.
+http://p.sf.net/sfu/rsaconf-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
