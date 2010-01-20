@@ -1,33 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1NRq89-0007VA-TJ
-	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 16:50:09 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NRq88-0004xa-U5
-	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 16:50:09 +0000
-Received: from d03relay03.boulder.ibm.com (d03relay03.boulder.ibm.com
-	[9.17.195.228])
-	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o04Gh7OJ027359
-	for <ltp-list@lists.sourceforge.net>; Mon, 4 Jan 2010 09:43:07 -0700
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay03.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o04GnqvG054626
-	for <ltp-list@lists.sourceforge.net>; Mon, 4 Jan 2010 09:49:54 -0700
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o04GnogE012789
-	for <ltp-list@lists.sourceforge.net>; Mon, 4 Jan 2010 09:49:51 -0700
-Date: Mon, 4 Jan 2010 10:49:54 -0600
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20100104164954.GB26962@us.ibm.com>
-References: <4B421480.1040400@petalogix.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1NXNX0-0002Q4-KE
+	for ltp-list@lists.sourceforge.net; Tue, 19 Jan 2010 23:30:42 +0000
+Received: from fmmailgate02.web.de ([217.72.192.227])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NXNWz-0000jM-1n
+	for ltp-list@lists.sourceforge.net; Tue, 19 Jan 2010 23:30:42 +0000
+From: Jiri Palecek <jpalecek@web.de>
+Date: Wed, 20 Jan 2010 01:30:30 +0100
+References: <4B44187D.5030702@cn.fujitsu.com>
+	<364299f41001052124ga613fbag6adf7a7460a87ccc@mail.gmail.com>
+	<4B445C36.6040505@cn.fujitsu.com>
+In-Reply-To: <4B445C36.6040505@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <4B421480.1040400@petalogix.com>
-Subject: Re: [LTP] clone tests fails
+Message-Id: <201001200130.30897.jpalecek@web.de>
+Subject: Re: [LTP] [PATCH] cpuctl_fj: replace ps by top to fix cpu usage's
+	computation error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,40 +30,112 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Michal Simek <michal.simek@petalogix.com>
-Cc: ltp-list@lists.sourceforge.net, vapier@gentoo.org
+To: Shi Weihua <shiwh@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Quoting Michal Simek (michal.simek@petalogix.com):
-> Hi Mike,
+On Wednesday 06 January 2010 10:47:34 Shi Weihua wrote:
+> at 2010-1-6 13:24, Garrett Cooper wrote:
+> > On Tue, Jan 5, 2010 at 8:58 PM, Shi Weihua <shiwh@cn.fujitsu.com> wrote:
+> >> Some abnormal messages outputted in my x86_64.
+> >> -------------------
+> >> pid 4622 cpu_usage 0
+> >> cpuctl_test_fj    1  TFAIL  :  case19    FAIL
+> >> pid 4646 cpu_usage 0
+> >> cpuctl_test_fj    1  TFAIL  :  case20    FAIL
+> >> pid 4670 cpu_usage 63
+> >> cpuctl_test_fj    1  TFAIL  :  case21    FAIL
+> >> -------------------
+> >> I think cpu usage's computation error occured.
+> >> So I tried to use the oldest arithmetic of cpu usage, fortunately it works.
+> >> Maybe we should replace 'ps' by 'top' in  get_cpu_usage().
+> >> By the way, I increased the admissible range of cpu usage in case21()
+> >> because it jumps out range of 44-56 sometimes.
+> >>
+> >> My patch works now:
+> >> -------------------
+> >> pid 20277 cpu_usage 97
+> >> cpuctl_test_fj    1  TPASS  :  case19    PASS
+> >> pid 20307 cpu_usage 99
+> >> cpuctl_test_fj    1  TPASS  :  case20    PASS
+> >> pid 20336 cpu_usage 55
+> >> pid 20336 cpu_usage 53
+> >> pid 20336 cpu_usage 55
+> >> pid 20336 cpu_usage 57
+> >> pid 20336 cpu_usage 55
+> >> pid 20336 cpu_usage 55
+> >> pid 20336 cpu_usage 55
+> >> pid 20336 cpu_usage 55
+> >> pid 20336 cpu_usage 57
+> >> pid 20336 cpu_usage 53
+> >> cpuctl_test_fj    1  TPASS  :  case21    PASS
+> >> -------------------
+> >>
+> >> Signed-off-by: Shi Weihua <shiwh@cn.fujitsu.com>
+> >> ---
+> >> --- ltp-full-20091231/testcases/kernel/controllers/cpuctl_fj/run_cpuctl_test_fj.sh      2009-11-16 15:40:40.000000000 +0800
+> >> +++ ltp-full-20091231.new/testcases/kernel/controllers/cpuctl_fj/run_cpuctl_test_fj.sh  2010-01-06 12:36:32.000000000 +0800
+> >> @@ -85,7 +85,10 @@ creat_process()
+> >>
+> >>  get_cpu_usage()
+> >>  {
+> >> -       ps -eo 'pid,pcpu' | awk '$1 == "'$1'" { sub(/(\.[[:digit:]])*$/, "", $2); print $2 }'
+> >> +       top=($(top -b -n 1 -p $1 | tail -2 | head -1))
+> >> +       top=${top[8]}
+> >> +       top=`echo $top | awk -F "." '{print $1}'`
+> >> +       echo "$top"
+> >>  }
+> >>
+> >>  kill_all_pid()
+> >> @@ -627,7 +630,7 @@ case21()
+> >>        do
+> >>                cpu_usage=$(get_cpu_usage $pid)
+> >>                echo "pid $pid cpu_usage $cpu_usage"
+> >> -               expr 44 \< "$cpu_usage" \& "$cpu_usage" \< 56 > /dev/null 2>&1
+> >> +               expr 40 \< "$cpu_usage" \& "$cpu_usage" \< 60 > /dev/null 2>&1
+> >>                ret=$?
+> >>                : $(( top_times+=1 ))
+> >>        done
+> > 
+> >     Could you add a set -x to the top of the script so we can see the
+> > output please? ps --version would be helpful too..
 > 
-> I have one question about one your big patch
-> 
-> http://git.kernel.org/?p=linux/kernel/git/galak/ltp.git;a=commitdiff;h=391dc18fe3271fbf2ca1864a5299f091c31e0018
-> 
-> My question is why you add -1 in lib/cloner.c:65
-> 
-> +       ret = clone(fn, (stack ? stack + stack_size - 1 : NULL),
-> +                       clone_flags, arg);
-> 
-> In previous code in clone testcases was nothing like this.
-> What reason have you had to add it?
+> I wish it can help you.
+> --------------------- sh -x -----------------------------
+> + for i in '$(seq 1 $TST_TOTAL)'
+> + setup
 
-Because the same thing was done in lots of places all over the
-testsuite (and done wrong).  This consolidates them all.
+[ ... snip ... ]
 
-> Of course the reason is that on Microblaze some tests failed.
+I believe Garrett Cooper meant to send the trace output of the original script (the one with ps).
 
-How do they fail?  Does clone on Microblaze take the top of
-stack?
+However, I'm not sure about the awk program there - particularly:
 
--serge
+sub(/(\.[[:digit:]])*$/, "", $2)
+
+should probably be
+
+sub(/\.[[:digit:]]*$/, "", $2) 
+
+(without the group). Not sure if this can actually cause what you see.
+
+Also, I think we could simplify it a bit further, to something like this:
+
+get_cpu_usage()
+{
+  ps -p $1 -o pcpu= | awk -F "." '{print $1}'
+}
+
+Please, tell me what do you think about it.
+
+Regards
+    Jiri Palecek
 
 ------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+Throughout its 18-year history, RSA Conference consistently attracts the
+world's best and brightest in the field, creating opportunities for Conference
+attendees to learn about information security's most important issues through
+interactions with peers, luminaries and emerging and established companies.
+http://p.sf.net/sfu/rsaconf-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
