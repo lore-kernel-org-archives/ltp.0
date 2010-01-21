@@ -1,26 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sakoman@gmail.com>) id 1NVXg8-000580-4H
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 21:56:32 +0000
-Received: from mail-qy0-f194.google.com ([209.85.221.194])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NVXg5-0006k2-M9
-	for ltp-list@lists.sourceforge.net; Thu, 14 Jan 2010 21:56:32 +0000
-Received: by qyk32 with SMTP id 32so18776qyk.4
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 14 Jan 2010 13:56:24 -0800 (PST)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vapier@gentoo.org>) id 1NXpDY-0007tz-AK
+	for ltp-list@lists.sourceforge.net; Thu, 21 Jan 2010 05:04:28 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NXpDX-00073J-IQ
+	for ltp-list@lists.sourceforge.net; Thu, 21 Jan 2010 05:04:28 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 21 Jan 2010 00:04:15 -0500
+References: <000701ca998a$51aed7b0$f50c8710$@co.jp>
+	<364299f41001200525v31721544t521c73aceaa4b515@mail.gmail.com>
+In-Reply-To: <364299f41001200525v31721544t521c73aceaa4b515@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <364299f41001141333v714a43ecv9d3e90c0ef6b2cba@mail.gmail.com>
-References: <5e088bd91001140916n6b6d9979m3847be14d86c7920@mail.gmail.com>
-	<364299f41001141125v56ef5ac0sfa58acd70b6e7775@mail.gmail.com>
-	<5e088bd91001141302l291261a7p366ac54659534a9c@mail.gmail.com>
-	<364299f41001141333v714a43ecv9d3e90c0ef6b2cba@mail.gmail.com>
-Date: Thu, 14 Jan 2010 13:56:24 -0800
-Message-ID: <5e088bd91001141356s5703c677uc55d32b5fd5d8df7@mail.gmail.com>
-From: Steve Sakoman <sakoman@gmail.com>
-Subject: Re: [LTP] ltp on OMAP3 embedded linux systems
+Message-Id: <201001210004.23038.vapier@gentoo.org>
+Subject: Re: [LTP] 2010-01-20 cvs build failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,60 +25,81 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============1149006173301260842=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: Mitani <mitani@ryobi.co.jp>
 
-On Thu, Jan 14, 2010 at 1:33 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+--===============1149006173301260842==
+Content-Type: multipart/signed; boundary="nextPart1358521.C51tlIMhCM";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
->> I redid the build and everything worked perfectly, so that initial
->> glitch was probably my fault!
->
-> Well, you never know... it always does help to learn where things went
-> wrong so processes and methods can be improved...
+--nextPart1358521.C51tlIMhCM
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-The second time was on a new clean system build and it "just worked",
-so I have no idea what wrong the first time.
+On Wednesday 20 January 2010 08:25:35 Garrett Cooper wrote:
+> On Tue, Jan 19, 2010 at 8:37 PM, Mitani <mitani@ryobi.co.jp> wrote:
+> > 6) <RHEL4.8 x86> (using make3.80)
+> > Strangely, the "make" command returned immediately.
+> > "echo $?" was 0. But log was only several lines as follows:
+>=20
+> You have to use make all when compiling `all' with make instead of
+> just specifying `make' with 3.81 because make 3.80 doesn't have a
+> concept of default goals/targets.
 
->> I've got the results of the 1st run. =A0What is the normal way to share
->> the results?
->
-> Pastebin?
+printf "all %:\n\t$(MAKE) -f Makefile $@\n" > GNUmakefile
+=2Dmike
 
-Here you go:
+--nextPart1358521.C51tlIMhCM
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-http://pastebin.com/m483f4087
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.14 (GNU/Linux)
 
-I ran the test with:
+iQIcBAABAgAGBQJLV+BWAAoJEEFjO5/oN/WBLHMQAM6jp64dZXh3Hl5iZmrUNaZa
+0ltkqYDQ36YSdOT047/ukP0pweOyyhVMPaSPhVTZR8onhCnPeMN8cxFmNgaFEqQi
+lzj1zNkAZ7Svl4mP7Poo1knV8bIf5gtSg9kRAJQ5Fk0sZq6ySqwMbFSktUt4qdJ1
+GdIaBWjIdPF2W2C+ZdAQWsZUJERjtqZFcO14xZsNOc5fTDZzRDk8rOrbUI2j1R8i
+kxS/LfrKR69NFntTwSjk9XY55UzsHpFVuMSMABo4VwVcoIy53Uh+puZA/QjuNliJ
+vAHUfhcixO0msqBqD5UMIXUPFRbzx8p/zF5paB2XGTVNcoQh4D3dg3XEm5JQtjB+
+ISl/wt7Et6CJIhRzdBcd+fBcVZduF6gyOnnGQQJr85MsUYuL+EaDwvlEIjpM5xgu
+WE2tMO5X3rQpuiwFNpxxiHsFXvX5SUrFCG/NmGIesq015FIqGyJeFS1Xerj4+I5U
+c0tdjNbSLoNKkk2AHLMQL1QULjaZNoAWwc7JXhZ5rRElRo5A4hhmeYu4SiMtno7c
+nQFqb78N4bvUIgnq/CmoytgFJpe5v5knKFKw2yIax6tgNXCPHmuJygG4EG+dNxtI
+0oRm2RqJtNgnJd4A0CKs2mb1lQy2SlOYAqIlzmXEXpw6iIDKf9I+u+bnVE67vQCZ
+nKvi1tbjVRX3DhsqfuUO
+=ccXg
+-----END PGP SIGNATURE-----
 
-./runltp -d /opt/ltp
+--nextPart1358521.C51tlIMhCM--
 
-And disabled the tests that gave me hang/oom errors:
 
-cloneXX (all)
-msgctl10
-msgctl11
-pipio_5
-hackbench01
+--===============1149006173301260842==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Let me know what you think!  I noticed that some of the final tests
-failed because the cron package was missing.  I'll fix that on the
-next run.
-
-Steve
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 Throughout its 18-year history, RSA Conference consistently attracts the
-world's best and brightest in the field, creating opportunities for Confere=
-nce
-attendees to learn about information security's most important issues throu=
-gh
+world's best and brightest in the field, creating opportunities for Conference
+attendees to learn about information security's most important issues through
 interactions with peers, luminaries and emerging and established companies.
 http://p.sf.net/sfu/rsaconf-dev2dev
+--===============1149006173301260842==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1149006173301260842==--
+
