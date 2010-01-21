@@ -1,32 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NUk8r-00024w-Dq
-	for ltp-list@lists.sourceforge.net; Tue, 12 Jan 2010 17:02:53 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <crosslonelyover@gmail.com>) id 1NXlJu-0007tq-Ps
+	for ltp-list@lists.sourceforge.net; Thu, 21 Jan 2010 00:54:46 +0000
 Received: from mail-px0-f200.google.com ([209.85.216.200])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NUk8o-00056n-Vv
-	for ltp-list@lists.sourceforge.net; Tue, 12 Jan 2010 17:02:53 +0000
-Received: by pxi38 with SMTP id 38so10620442pxi.28
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NXlJt-00032Z-RG
+	for ltp-list@lists.sourceforge.net; Thu, 21 Jan 2010 00:54:46 +0000
+Received: by pxi38 with SMTP id 38so2137524pxi.28
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 12 Jan 2010 09:02:36 -0800 (PST)
+	Wed, 20 Jan 2010 16:54:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1263302168.14187.13.camel@moss-pluto.epoch.ncsc.mil>
-References: <364299f41001081338u37e77cd3q3d9535f3dec71331@mail.gmail.com>
-	<364299f41001082327o31bbe79eh849ea1651cf12632@mail.gmail.com>
-	<1263237132.5091.1.camel@moss-pluto.epoch.ncsc.mil>
-	<20100111195043.GA23360@us.ibm.com>
-	<1263239706.5091.11.camel@moss-pluto.epoch.ncsc.mil>
-	<20100111201936.GA24711@us.ibm.com>
-	<20100111205858.GA26412@us.ibm.com>
-	<20100111210006.GA26554@us.ibm.com>
-	<20100111213100.GA28138@us.ibm.com>
-	<1263302168.14187.13.camel@moss-pluto.epoch.ncsc.mil>
-Date: Tue, 12 Jan 2010 08:55:38 -0800
-Message-ID: <364299f41001120855r653842d3x630cdaa6ec4129b6@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] regression: selinux testsuite broken since October
+Date: Thu, 21 Jan 2010 08:26:50 +0800
+Message-ID: <5a774f4c1001201626g53dae882o50b5aa70b23d929e@mail.gmail.com>
+From: Crossover Lonely <crosslonelyover@gmail.com>
+Subject: [LTP]
+	[patch]ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,148 +26,171 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============0086868031408804562=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stephen Smalley <sds@tycho.nsa.gov>
-Cc: James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Tue, Jan 12, 2010 at 5:16 AM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
-> On Mon, 2010-01-11 at 15:31 -0600, Serge E. Hallyn wrote:
->> Quoting Serge E. Hallyn (serue@us.ibm.com):
->> > Quoting Serge E. Hallyn (serue@us.ibm.com):
->> > > Quoting Serge E. Hallyn (serue@us.ibm.com):
->> > > > Quoting Stephen Smalley (sds@tycho.nsa.gov):
->> > > > > On Mon, 2010-01-11 at 13:50 -0600, Serge E. Hallyn wrote:
->> > > > > > > Fails with:
->> > > > > > > cp: cannot stat
->> > > > > > > `/home/sds/ltp/testcases/kernel/security/selinux-testsuite/r=
-efpolicy/policy_files/generic/test_policy.*': No such file or directory
->> > > > > >
->> > > > > > You ran /home/sds/ltp/testscripts/test_selinux.sh, right?
->> > > > > >
->> > > > > > I think we are supposed to actually be running
->> > > > > > /opt/ltp/testscripts/test_selinux.sh. =A0So then the first que=
-stion for
->> > > > > > Garrett is how should we deduce /home/sds/ltp as $LTP_SRCDIR f=
-rom a
->> > > > > > testscript? =A0Or should the policy sources be copied into /op=
-t?
->> > > > >
->> > > > > Ok, but regardless: =A0the refpolicy Makefile is still broken.
->> > > >
->> > > > Yup.
->> > >
->> > > All right, baby-steps.
->> > >
->> > > The attached test_selinux.diff is not to be applied, but something
->> > > like it is needed. =A0Should we have the ltp 'make install' fill in
->> > > TOP_SRCDIR in /opt/ltp/testscripts/test_selinux.sh? =A0BTW, Garrett,
->> > > that is the issue I was saying is shared between test_selinux.sh
->> > > and some others including test_robind.sh. =A0That's why I'm not just
->> > > sending a patch to make it work, bc i think we need more general
->> > > guidance.
->> > >
->> > > The second match makes the 'make load' part of test_selinux.sh
->> > > succeed on rhel5.4. =A0Stephen, how does it do on fedora?
->> > >
->> > > After loading policy it fails to execute ltp-pan, but I figure let's
->> > > get policy loading working first.
->>
->> All right well just doing
->>
->> --- /root/ltp_cvs_orig/ltp/testscripts/test_selinux.sh =A0 =A0 =A0 =A020=
-09-05-19 05:39:11.000000000 -0400
->> +++ /opt/ltp/testscripts/test_selinux.sh =A0 =A0 =A02010-01-11 16:26:12.=
-000000000 -0500
->> @@ -115,7 +117,7 @@
->> =A0SAVEBINTYPE=3D`ls -Zd $LTPROOT/testcases/bin | awk '{ print $4 }' | a=
-wk -F: '{ print $3 }'`
->> =A0/usr/bin/chcon -t test_file_t $LTPROOT/testcases/bin
->>
->> -$LTPROOT/pan/ltp-pan -S -a $LTPROOT/results/selinux -n ltp-selinux -l $=
-LTPROOT/results/selinux.logfile -o $LTPROOT/results/selinux.outfile -p -f $=
-LTPROOT/runtest/selinux
->> +$LTPROOT/bin/ltp-pan -S -a $LTPROOT/results/selinux -n ltp-selinux -l $=
-LTPROOT/results/selinux.logfile -o $LTPROOT/results/selinux.outfile -p -f $=
-LTPROOT/runtest/selinux
->>
->> =A0# cleanup before exiting
->>
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> in test_selinux.sh makes the testsuite mostly pass (test 39 fails, all
->> up to then pass)
->>
->> Again this is on RHEL5.4.
->
-> test39 isn't supposed to be run on RHEL5.4.
-> The old tests/Makefile had conditional logic to exclude certain tests on
-> RHEL4 and on RHEL5, as their kernels wouldn't support newer tests.
+--===============0086868031408804562==
+Content-Type: multipart/alternative; boundary=0016e64dbbd0595fc5047da1c2d2
 
+--0016e64dbbd0595fc5047da1c2d2
+Content-Type: text/plain; charset=ISO-8859-1
 
-Something that fell through the cracks because I didn't take the time
-to actually determine _what_ the requirements were for the tests so
-they would report configuration failure instead of failure. Please try
-this (I properly pasted it this time instead of using my xterm window
-and paste):
+Hi all,
 
-Index: tests/Makefile
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/selinux-testsuite/test=
-s/Makefile,v
-retrieving revision 1.7
-diff -u -r1.7 Makefile
---- tests/Makefile	9 Oct 2009 17:55:51 -0000	1.7
-+++ tests/Makefile	12 Jan 2010 16:53:57 -0000
-@@ -24,11 +24,26 @@
+     When the hugeshmget01 runs, it gets unexpected signal SIGCHLD/SIGCLD,
+and thus stops immediately.
+     I found two ways to resolve this problem. Please refer to the following
+for two kinds of patch.
+     Well, according to other code structures of hugeshmget0*.c, solution 1
+is preferred. But for get_no_of_hugepages
+will call popen(), so I think the second solution is the right one.
+     Will you please choose the right one to apply to
+ltp-intermediate-20100119 package?
+     Looking forward to your confirmation!
 
- include	$(top_srcdir)/include/mk/env_pre.mk
+Thanks and Best Regards,
+shenghui
 
--RECURSIVE_TARGETS	:=3D install
-+ARGS			=3D -m
-+# Don't want to pass the -d option unless DESTDIR is a non-zero length str=
-ing.
-+ifneq ($(strip $(DESTDIR)),)
-+ARGS			+=3D -d $(DESTDIR)
-+endif
+Solution 1===============================================================
 
--include $(top_srcdir)/include/mk/generic_trunk_target.mk
-+DISTRO_VER		:=3D $(shell $(top_srcdir)/scripts/detect_distro.sh $(ARGS))
-+
-+#
-+# Certain tests should be excluded on RHEL [45].x as their kernels don't
-+# support the tests.
-+#
-+# XXX (garrcoop): actually complete the work to add proper checks to the t=
-ests
-+# to report TCONF on configuration failure.
-+#
-+ifneq ($(findstring $(DISTRO_VER),redhat-4 redhat-5),)
-+FILTER_OUT_DIRS		+=3D dyntrace dyntrans
-+endif
-+ifeq (redhat-4,$(DISTRO_VER))
-+FILTER_OUT_DIRS		+=3D bounds
-+endif
-
--all:
--	@set -e; for i in $(SUBDIRS); do \
--	    $(MAKE) -C $$i $@; \
--	done
-+include $(top_srcdir)/include/mk/generic_trunk_target.mk
-
----------------------------------------------------------------------------=
+diff -Nur
+ltp-intermediate-20100119-origin/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
 ---
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev =
+ltp-intermediate-20100119-origin/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+2010-01-21 07:51:55.926035076 +0800
++++
+ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+2010-01-21 08:14:05.470032624 +0800
+@@ -78,14 +78,14 @@
+         tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
+     }
+
+-    setup();            /* global setup */
+-
+     /* The following loop checks looping state if -i option given */
+         if ( get_no_of_hugepages() <= 0 || hugepages_size() <= 0 )
+              tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
+sufficient availability of Hugepages on the system");
+         else
+-              huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
+hugepages_size() * 1024) / 2 ;
+-
++              huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
+hugepages_size() * 1024) / 2 ;
++
++    setup();            /* global setup */
++
+         for (lc = 0; TEST_LOOPING(lc); lc++) {
+         /* reset Tst_count in case we are looping */
+         Tst_count = 0;
+
+
+Solution
+2=========================================================================================
+diff -Nur
+ltp-intermediate-20100119-origin/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+---
+ltp-intermediate-20100119-origin/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+2010-01-21 07:51:55.926035076 +0800
++++
+ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+2010-01-21 08:16:46.122032889 +0800
+@@ -160,7 +160,7 @@
+ setup(void)
+ {
+     /* capture signals */
+-    tst_sig(NOFORK, DEF_HANDLER, cleanup);
++    tst_sig(FORK, DEF_HANDLER, cleanup);
+
+     /* Pause if that option was specified */
+     TEST_PAUSE;
+
+--0016e64dbbd0595fc5047da1c2d2
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,<br><br>=A0=A0=A0=A0 When the hugeshmget01 runs, it gets unexpected =
+signal SIGCHLD/SIGCLD, and thus stops immediately.<br>=A0 =A0=A0 I found tw=
+o ways to resolve this problem. Please refer to the following for two kinds=
+ of patch. <br>
+=A0=A0=A0=A0 Well, according to other code structures of hugeshmget0*.c, so=
+lution 1 is preferred. But for get_no_of_hugepages<br>will call popen(), so=
+ I think the second solution is the right one.<br>=A0=A0=A0=A0 Will you ple=
+ase choose the right one to apply to ltp-intermediate-20100119 package?<br>
+=A0=A0=A0=A0 Looking forward to your confirmation!<br><br>Thanks and Best R=
+egards,<br>shenghui<br><br>Solution 1=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D<br><br>diff -Nur ltp-intermediate-20100119-origin/testcases/kernel/mem/=
+hugetlb/hugeshmget/hugeshmget01.c ltp-intermediate-20100119/testcases/kerne=
+l/mem/hugetlb/hugeshmget/hugeshmget01.c<br>
+--- ltp-intermediate-20100119-origin/testcases/kernel/mem/hugetlb/hugeshmge=
+t/hugeshmget01.c=A0=A0=A0 2010-01-21 07:51:55.926035076 +0800<br>+++ ltp-in=
+termediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c=
+=A0=A0=A0 2010-01-21 08:14:05.470032624 +0800<br>
+@@ -78,14 +78,14 @@<br>=A0=A0=A0=A0 =A0=A0=A0 tst_brkm(TBROK, cleanup, &quo=
+t;OPTION PARSING ERROR - %s&quot;, msg);<br>=A0=A0=A0=A0 }<br>=A0<br>-=A0=
+=A0=A0 setup();=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 /* global setup */<br>-<br>=A0=
+=A0=A0=A0 /* The following loop checks looping state if -i option given */<=
+br>
+=A0=A0=A0=A0=A0=A0=A0=A0 if ( get_no_of_hugepages() &lt;=3D 0 || hugepages_=
+size() &lt;=3D 0 )<br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 tst_brkm(TBRO=
+K, cleanup, &quot;Test cannot be continued owning to sufficient availabilit=
+y of Hugepages on the system&quot;);<br>=A0=A0=A0=A0=A0=A0=A0=A0 else=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 <br>
+-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 huge_pages_shm_to_be_allocated =3D=
+ ( get_no_of_hugepages() * hugepages_size() * 1024) / 2 ;<br>-=A0=A0=A0=A0=
+=A0=A0=A0 <br>+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 huge_pages_shm_to_be=
+_allocated =3D ( get_no_of_hugepages() * hugepages_size() * 1024) / 2 ; <br=
+>
++<br>+=A0=A0=A0 setup();=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 /* global setup */<br=
+>+<br>=A0=A0=A0=A0=A0=A0=A0=A0 for (lc =3D 0; TEST_LOOPING(lc); lc++) {<br>=
+=A0=A0=A0=A0 =A0=A0=A0 /* reset Tst_count in case we are looping */<br>=A0=
+=A0=A0=A0 =A0=A0=A0 Tst_count =3D 0;<br><br><br>Solution 2=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D<br>
+diff -Nur ltp-intermediate-20100119-origin/testcases/kernel/mem/hugetlb/hug=
+eshmget/hugeshmget01.c ltp-intermediate-20100119/testcases/kernel/mem/huget=
+lb/hugeshmget/hugeshmget01.c<br>--- ltp-intermediate-20100119-origin/testca=
+ses/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c=A0=A0=A0 2010-01-21 07:51:=
+55.926035076 +0800<br>
++++ ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/huges=
+hmget01.c=A0=A0=A0 2010-01-21 08:16:46.122032889 +0800<br>@@ -160,7 +160,7 =
+@@<br>=A0setup(void)<br>=A0{<br>=A0=A0=A0=A0 /* capture signals */<br>-=A0=
+=A0=A0 tst_sig(NOFORK, DEF_HANDLER, cleanup);<br>
++=A0=A0=A0 tst_sig(FORK, DEF_HANDLER, cleanup);<br>=A0<br>=A0=A0=A0=A0 /* P=
+ause if that option was specified */<br>=A0=A0=A0=A0 TEST_PAUSE;<br>
+
+--0016e64dbbd0595fc5047da1c2d2--
+
+
+--===============0086868031408804562==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Throughout its 18-year history, RSA Conference consistently attracts the
+world's best and brightest in the field, creating opportunities for Conference
+attendees to learn about information security's most important issues through
+interactions with peers, luminaries and emerging and established companies.
+http://p.sf.net/sfu/rsaconf-dev2dev
+--===============0086868031408804562==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0086868031408804562==--
+
