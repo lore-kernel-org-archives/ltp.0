@@ -1,26 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NSbV3-0007kx-H8
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 19:24:57 +0000
-Received: from mail-pw0-f43.google.com ([209.85.160.43])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NSbV2-0004cM-Do
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 19:24:57 +0000
-Received: by pwj11 with SMTP id 11so12458217pwj.2
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 06 Jan 2010 11:24:49 -0800 (PST)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <liubo2009@cn.fujitsu.com>) id 1NXlrF-0001K9-BK
+	for ltp-list@lists.sourceforge.net; Thu, 21 Jan 2010 01:29:13 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NXlrC-0000l1-Ag
+	for ltp-list@lists.sourceforge.net; Thu, 21 Jan 2010 01:29:13 +0000
+Message-ID: <4B57AE50.4020801@cn.fujitsu.com>
+Date: Thu, 21 Jan 2010 09:30:56 +0800
+From: liubo <liubo2009@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <4B447E4E.5040203@petalogix.com>
-References: <4B4204D2.70204@petalogix.com> <4B43E6FD.3020906@web.de>
-	<364299f41001051741v7a2bb1d0p91d28aa25967b93e@mail.gmail.com>
-	<364299f41001051831r6a0f4930t6ba61e4273c797e3@mail.gmail.com>
-	<4B447E4E.5040203@petalogix.com>
-Date: Wed, 6 Jan 2010 11:24:36 -0800
-Message-ID: <364299f41001061124o492a8e82i2867efe685b1684e@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] lchown test case
+References: <5a774f4c1001201626g53dae882o50b5aa70b23d929e@mail.gmail.com>
+	<5a774f4c1001201650l600b5540x8a91143aff2385ad@mail.gmail.com>
+In-Reply-To: <5a774f4c1001201650l600b5540x8a91143aff2385ad@mail.gmail.com>
+Subject: Re: [LTP]
+	[patch]ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,201 +26,356 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============7241834833839700146=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: michal.simek@petalogix.com
-Cc: Jiri Palecek <jpalecek@web.de>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Crossover Lonely <crosslonelyover@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Wed, Jan 6, 2010 at 4:13 AM, Michal Simek <michal.simek@petalogix.com> w=
-rote:
-> Garrett Cooper wrote:
->>
->> On Tue, Jan 5, 2010 at 5:41 PM, Garrett Cooper <yanegomi@gmail.com> wrot=
-e:
->>>
->>> On Tue, Jan 5, 2010 at 5:27 PM, Jiri Palecek <jpalecek@web.de> wrote:
->>>>
->>>> Michal Simek napsal(a):
->>>>>
->>>>> Hi,
->>>>
->>>> Hi,
->>>>>
->>>>> I have some problems with lchown02 test which is caused with this
->>>>> patch.
->>>>> What is prep_create_link?
->>>>>
->>>>> Thanks,
->>>>> Michal
->>>>>
->>>>>
->>>>>
->>>>> http://git.kernel.org/?p=3Dlinux/kernel/git/galak/ltp.git;a=3Dcommitd=
-iff;h=3Dee1a022fc76076d7fc1b6b1797c195244414c038
->>>>>
->>>>>
->>>>>
->>>>> diff --git a/runtest/syscalls b/runtest/syscalls
->>>>> index fbe8641..34631ed 100644 (file)
->>>>> --- a/runtest/syscalls
->>>>> +++ b/runtest/syscalls
->>>>> @@ -462,10 +462,10 @@ kill12 kill12
->>>>>
->>>>> lchown01 lchown01
->>>>> lchown01_16 lchown01_16
->>>>> -lchown02 cp -p $LTPROOT/testcases/bin/create_link $TMP; lchown02
->>>>> -lchown02_16 cp -p $LTPROOT/testcases/bin/create_link $TMP; lchown02_=
-16
->>>>> +lchown02 prep_create_link; lchown02
->>>>> +lchown02_16 prep_create_link; lchown02_16
->>>>
->>>> IMHO it should do the same as the line above. But I think the whole
->>>> thing
->>>> could be deleted without causing any grief:
->>>>
->>>>
->>>> http://repo.or.cz/w/ltp-debian.git?a=3Dcommit;h=3Da5499edcf368fa88df92=
-4f94ffcbe63c22b46e82
->>>
->>> The test needs create_link in $TMP; that's why I scripted it as a
->>> one-liner (but stupid me probably forgot to add the script to CVS
->>> -_-).
->>> Let me look and I'll get back to you shortly.
->>
->> Fixed. The executable needed CAP_CHOWN capability and that's part of
->> the point behind that script...
->
-> ok. I rerun the latest code and lchown02 testcases still failing.
-> I added two printf messages (path:Path_name - =A0and buffer:Cmd_buffer) w=
-hich
-> you can see below. And remove tst_rmdir to see if file exist or not.
->
->
-> path /tmp/ltp-XXXX1ZaUjj/lch6m6mr0
-> buffer /mnt/4/ltp/build/testcases/bin/create_link
-> /tmp/ltp-XXXX1ZaUjj/lch6m6mr0/tfile_1
-> change_owner: chown() of /tmp/ltp-XXXX1ZaUjj/lch6m6mr0/tfile_1 failed, er=
-ror
-> 1
-> lchown02 =A0 =A01 =A0TBROK =A0: =A0Fail to modify tfile_1 ownership(s)!
-> lchown02 =A0 =A02 =A0TBROK =A0: =A0Remaining cases broken
-> lchown02 =A0 =A03 =A0TBROK =A0: =A0Remaining cases broken
-> lchown02 =A0 =A04 =A0TBROK =A0: =A0Remaining cases broken
-> lchown02 =A0 =A05 =A0TBROK =A0: =A0Remaining cases broken
-> lchown02 =A0 =A06 =A0TBROK =A0: =A0Remaining cases broken
-> lchown02 =A0 =A07 =A0TBROK =A0: =A0Remaining cases broken
-> path /tmp/ltp-XXXX1ZaUjj/lchouwHqq
-> buffer /mnt/4/ltp/build/testcases/bin/create_link
-> /tmp/ltp-XXXX1ZaUjj/lchouwHqq/tfile_1
-> change_owner: chown() of /tmp/ltp-XXXX1ZaUjj/lchouwHqq/tfile_1 failed, er=
-ror
-> 1
-> lchown02 =A0 =A01 =A0TBROK =A0: =A0Fail to modify tfile_1 ownership(s)!
-> lchown02 =A0 =A02 =A0TBROK =A0: =A0Remaining cases broken
-> lchown02 =A0 =A03 =A0TBROK =A0: =A0Remaining cases broken
-> lchown02 =A0 =A04 =A0TBROK =A0: =A0Remaining cases broken
-> lchown02 =A0 =A05 =A0TBROK =A0: =A0Remaining cases broken
-> lchown02 =A0 =A06 =A0TBROK =A0: =A0Remaining cases broken
-> lchown02 =A0 =A07 =A0TBROK =A0: =A0Remaining cases broken
->
->
-> The problem is at first with create_link because there is used
-> /mnt/4/ltp/build/testcases/bin/create_link instead of
-> /tmp/ltp-XXXX1ZaUjj/create_link which is setup by prep_create_link
->
-> Please test the patch below which run correct version on my system
->
-> Then I tried to run lchown02 test under user and I think that this line in
-> prep_create_link is addtional
-> #chown root:root "$TMP/create_link"
->
-> lchown test must be run under root that's why create_link will have root
-> rights and under user test reports that must be run as root.
->
-> lchown02 =A0 =A01 =A0TBROK =A0: =A0Test must be run as root
-> lchown02 =A0 =A02 =A0TBROK =A0: =A0Remaining cases broken
-> lchown02 =A0 =A03 =A0TBROK =A0: =A0Remaining cases broken
-> lchown02 =A0 =A04 =A0TBROK =A0: =A0Remaining cases broken
-> lchown02 =A0 =A05 =A0TBROK =A0: =A0Remaining cases broken
-> lchown02 =A0 =A06 =A0TBROK =A0: =A0Remaining cases broken
-> lchown02 =A0 =A07 =A0TBROK =A0: =A0Remaining cases broken
-> lchown02 =A0 =A01 =A0TBROK =A0: =A0Test must be run as root
-> lchown02 =A0 =A02 =A0TBROK =A0: =A0Remaining cases broken
-> lchown02 =A0 =A03 =A0TBROK =A0: =A0Remaining cases broken
-> lchown02 =A0 =A04 =A0TBROK =A0: =A0Remaining cases broken
-> lchown02 =A0 =A05 =A0TBROK =A0: =A0Remaining cases broken
-> lchown02 =A0 =A06 =A0TBROK =A0: =A0Remaining cases broken
-> lchown02 =A0 =A07 =A0TBROK =A0: =A0Remaining cases broken
->
->
-> Thanks for testing,
-> Michal
->
->
-> --- lchown02-old.c =A0 =A0 =A02010-01-06 12:59:32.000000000 +0100
-> +++ lchown02.c =A02010-01-06 13:00:49.000000000 +0100
-> @@ -112,7 +112,6 @@
-> =A0char Longpathname[PATH_MAX + 2];
-> =A0char High_address_node[64];
-> =A0char EXEC_DIR[PATH_MAX];
-> -char main_test_dir[PATH_MAX + 2];
->
-> =A0struct test_case_t { =A0 =A0 =A0 =A0 =A0 /* test case struct. to hold =
-ref. test
-> cond's */
-> =A0 =A0 =A0 =A0char *pathname;
-> @@ -265,12 +264,6 @@
-> =A0 =A0 =A0 =A0/* Pause if that option was specified */
-> =A0 =A0 =A0 =A0TEST_PAUSE;
->
-> - =A0 =A0 =A0 /* remember current dir, because create_link has been copie=
-d here */
-> - =A0 =A0 =A0 if (getcwd(main_test_dir, sizeof(main_test_dir)) =3D=3D NUL=
-L) {
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_brkm(TBROK | TERRNO, cleanup,
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"failed to get the curre=
-nt working directory.");
-> - =A0 =A0 =A0 }
-> -
-> =A0 =A0 =A0 =A0/* Make a temp dir and cd to it */
-> =A0 =A0 =A0 =A0tst_tmpdir();
->
-> @@ -339,12 +332,13 @@
->
-> =A0 =A0 =A0 =A0strcpy(Path2_name, Path_name);
->
-> + =A0 =A0 =A0 /* Get the command name to be executed as setuid to root */
-> + =A0 =A0 =A0 strcat((char *)Cmd_buffer, Path_name);
-> + =A0 =A0 =A0 strcat((char *)Cmd_buffer, (const char *)"/../create_link "=
-);
-> +
-> =A0 =A0 =A0 =A0/* Get the path of test file created under temporary direc=
-tory */
-> =A0 =A0 =A0 =A0strcat(Path_name, "/" TEST_FILE1);
->
-> - =A0 =A0 =A0 /* Get the command name to be executed as setuid to root */
-> - =A0 =A0 =A0 strcat((char *)Cmd_buffer, main_test_dir);
-> - =A0 =A0 =A0 strcat((char *)Cmd_buffer, (const char *)"/create_link ");
-> =A0 =A0 =A0 =A0strcat((char *)Cmd_buffer, Path_name);
->
-> =A0 =A0 =A0 =A0if (system((const char *)Cmd_buffer) !=3D 0) {
+This is a multi-part message in MIME format.
+--===============7241834833839700146==
+Content-Type: multipart/alternative;
+	boundary="------------090806000406060307060501"
 
-    I'll look at this and resolve it tonight, but I think your
-solution is correct... I just need to look at the source a bit
-better...
+This is a multi-part message in MIME format.
+--------------090806000406060307060501
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+Hi,
+
+    In my box, I can add -c Xnumber to avoid the unexpect signal,
+for example, ./hugeshmget -c 10. Maybe you can try this as well.
+
 Thanks,
--Garrett
+Liu Bo
 
----------------------------------------------------------------------------=
+On 01/21/2010 08:50 AM, Crossover Lonely wrote:
+> For your convenience, I just made to patches against the signle file, not
+> the whole directory.
+>
+> solution 1=======================
+> --- hugeshmget01.c    2009-11-20 00:05:21.000000000 +0800
+> +++ hugeshmget01_2.c    2010-01-21 08:43:11.790533086 +0800
+> @@ -78,14 +78,14 @@
+>          tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
+>      }
+>
+> -    setup();            /* global setup */
+> -
+>      /* The following loop checks looping state if -i option given */
+>          if ( get_no_of_hugepages() <= 0 || hugepages_size() <= 0 )
+>               tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
+> sufficient availability of Hugepages on the system");
+>          else
+>                huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
+> hugepages_size() * 1024) / 2 ;
+>
+> +    setup();            /* global setup */
+> +
+>          for (lc = 0; TEST_LOOPING(lc); lc++) {
+>          /* reset Tst_count in case we are looping */
+>          Tst_count = 0;
+>
+>
+> solution 2==============================
+> --- hugeshmget01.c    2009-11-20 00:05:21.000000000 +0800
+> +++ hugeshmget01_1.c    2010-01-21 08:41:56.350057513 +0800
+> @@ -160,7 +160,7 @@
+>  setup(void)
+>  {
+>      /* capture signals */
+> -    tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> +    tst_sig(FORK, DEF_HANDLER, cleanup);
+>
+>      /* Pause if that option was specified */
+>      TEST_PAUSE;
+>
+>
+> 2010/1/21 Crossover Lonely <crosslonelyover@gmail.com>
+>
+>   
+>> Hi all,
+>>
+>>      When the hugeshmget01 runs, it gets unexpected signal SIGCHLD/SIGCLD,
+>> and thus stops immediately.
+>>      I found two ways to resolve this problem. Please refer to the
+>> following for two kinds of patch.
+>>      Well, according to other code structures of hugeshmget0*.c, solution 1
+>> is preferred. But for get_no_of_hugepages
+>> will call popen(), so I think the second solution is the right one.
+>>      Will you please choose the right one to apply to
+>> ltp-intermediate-20100119 package?
+>>      Looking forward to your confirmation!
+>>
+>> Thanks and Best Regards,
+>> shenghui
+>>
+>> Solution 1===============================================================
+>>
+>> diff -Nur
+>> ltp-intermediate-20100119-origin/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+>> ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+>> ---
+>> ltp-intermediate-20100119-origin/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+>> 2010-01-21 07:51:55.926035076 +0800
+>> +++
+>> ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+>> 2010-01-21 08:14:05.470032624 +0800
+>> @@ -78,14 +78,14 @@
+>>          tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
+>>      }
+>>
+>> -    setup();            /* global setup */
+>> -
+>>      /* The following loop checks looping state if -i option given */
+>>          if ( get_no_of_hugepages() <= 0 || hugepages_size() <= 0 )
+>>               tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
+>> sufficient availability of Hugepages on the system");
+>>          else
+>> -              huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
+>> hugepages_size() * 1024) / 2 ;
+>> -
+>> +              huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
+>> hugepages_size() * 1024) / 2 ;
+>> +
+>> +    setup();            /* global setup */
+>> +
+>>          for (lc = 0; TEST_LOOPING(lc); lc++) {
+>>          /* reset Tst_count in case we are looping */
+>>          Tst_count = 0;
+>>
+>>
+>> Solution
+>> 2=========================================================================================
+>> diff -Nur
+>> ltp-intermediate-20100119-origin/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+>> ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+>> ---
+>> ltp-intermediate-20100119-origin/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+>> 2010-01-21 07:51:55.926035076 +0800
+>> +++
+>> ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+>> 2010-01-21 08:16:46.122032889 +0800
+>> @@ -160,7 +160,7 @@
+>>  setup(void)
+>>  {
+>>      /* capture signals */
+>> -    tst_sig(NOFORK, DEF_HANDLER, cleanup);
+>> +    tst_sig(FORK, DEF_HANDLER, cleanup);
+>>
+>>      /* Pause if that option was specified */
+>>      TEST_PAUSE;
+>>
+>>     
+>
+>   
+> ------------------------------------------------------------------------
+>
+> ------------------------------------------------------------------------------
+> Throughout its 18-year history, RSA Conference consistently attracts the
+> world's best and brightest in the field, creating opportunities for Conference
+> attendees to learn about information security's most important issues through
+> interactions with peers, luminaries and emerging and established companies.
+> http://p.sf.net/sfu/rsaconf-dev2dev
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>   
+
+
+--------------090806000406060307060501
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="Content-Type">
+  <title></title>
+</head>
+<body bgcolor="#ffffff" text="#000000">
+Hi, <br>
+<br>
+&nbsp;&nbsp;&nbsp; In my box, I can add -c Xnumber to avoid the unexpect signal, <br>
+for example, ./hugeshmget -c 10. Maybe you can try this as well.<br>
+<br>
+Thanks,<br>
+Liu Bo<br>
+<br>
+On 01/21/2010 08:50 AM, Crossover Lonely wrote:
+<blockquote
+ cite="mid:5a774f4c1001201650l600b5540x8a91143aff2385ad@mail.gmail.com"
+ type="cite">
+  <pre wrap="">For your convenience, I just made to patches against the signle file, not
+the whole directory.
+
+solution 1=======================
+--- hugeshmget01.c    2009-11-20 00:05:21.000000000 +0800
++++ hugeshmget01_2.c    2010-01-21 08:43:11.790533086 +0800
+@@ -78,14 +78,14 @@
+         tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
+     }
+
+-    setup();            /* global setup */
+-
+     /* The following loop checks looping state if -i option given */
+         if ( get_no_of_hugepages() &lt;= 0 || hugepages_size() &lt;= 0 )
+              tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
+sufficient availability of Hugepages on the system");
+         else
+               huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
+hugepages_size() * 1024) / 2 ;
+
++    setup();            /* global setup */
++
+         for (lc = 0; TEST_LOOPING(lc); lc++) {
+         /* reset Tst_count in case we are looping */
+         Tst_count = 0;
+
+
+solution 2==============================
+--- hugeshmget01.c    2009-11-20 00:05:21.000000000 +0800
++++ hugeshmget01_1.c    2010-01-21 08:41:56.350057513 +0800
+@@ -160,7 +160,7 @@
+ setup(void)
+ {
+     /* capture signals */
+-    tst_sig(NOFORK, DEF_HANDLER, cleanup);
++    tst_sig(FORK, DEF_HANDLER, cleanup);
+
+     /* Pause if that option was specified */
+     TEST_PAUSE;
+
+
+2010/1/21 Crossover Lonely <a class="moz-txt-link-rfc2396E" href="mailto:crosslonelyover@gmail.com">&lt;crosslonelyover@gmail.com&gt;</a>
+
+  </pre>
+  <blockquote type="cite">
+    <pre wrap="">Hi all,
+
+     When the hugeshmget01 runs, it gets unexpected signal SIGCHLD/SIGCLD,
+and thus stops immediately.
+     I found two ways to resolve this problem. Please refer to the
+following for two kinds of patch.
+     Well, according to other code structures of hugeshmget0*.c, solution 1
+is preferred. But for get_no_of_hugepages
+will call popen(), so I think the second solution is the right one.
+     Will you please choose the right one to apply to
+ltp-intermediate-20100119 package?
+     Looking forward to your confirmation!
+
+Thanks and Best Regards,
+shenghui
+
+Solution 1===============================================================
+
+diff -Nur
+ltp-intermediate-20100119-origin/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
 ---
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev =
+ltp-intermediate-20100119-origin/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+2010-01-21 07:51:55.926035076 +0800
++++
+ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+2010-01-21 08:14:05.470032624 +0800
+@@ -78,14 +78,14 @@
+         tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
+     }
+
+-    setup();            /* global setup */
+-
+     /* The following loop checks looping state if -i option given */
+         if ( get_no_of_hugepages() &lt;= 0 || hugepages_size() &lt;= 0 )
+              tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
+sufficient availability of Hugepages on the system");
+         else
+-              huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
+hugepages_size() * 1024) / 2 ;
+-
++              huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
+hugepages_size() * 1024) / 2 ;
++
++    setup();            /* global setup */
++
+         for (lc = 0; TEST_LOOPING(lc); lc++) {
+         /* reset Tst_count in case we are looping */
+         Tst_count = 0;
+
+
+Solution
+2=========================================================================================
+diff -Nur
+ltp-intermediate-20100119-origin/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+---
+ltp-intermediate-20100119-origin/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+2010-01-21 07:51:55.926035076 +0800
++++
+ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+2010-01-21 08:16:46.122032889 +0800
+@@ -160,7 +160,7 @@
+ setup(void)
+ {
+     /* capture signals */
+-    tst_sig(NOFORK, DEF_HANDLER, cleanup);
++    tst_sig(FORK, DEF_HANDLER, cleanup);
+
+     /* Pause if that option was specified */
+     TEST_PAUSE;
+
+    </pre>
+  </blockquote>
+  <pre wrap=""><!---->
+  </pre>
+  <pre wrap="">
+<hr size="4" width="90%">
+------------------------------------------------------------------------------
+Throughout its 18-year history, RSA Conference consistently attracts the
+world's best and brightest in the field, creating opportunities for Conference
+attendees to learn about information security's most important issues through
+interactions with peers, luminaries and emerging and established companies.
+<a class="moz-txt-link-freetext" href="http://p.sf.net/sfu/rsaconf-dev2dev">http://p.sf.net/sfu/rsaconf-dev2dev</a></pre>
+  <pre wrap="">
+<hr size="4" width="90%">
+_______________________________________________
+Ltp-list mailing list
+<a class="moz-txt-link-abbreviated" href="mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.net</a>
+<a class="moz-txt-link-freetext" href="https://lists.sourceforge.net/lists/listinfo/ltp-list">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
+  </pre>
+</blockquote>
+<br>
+</body>
+</html>
+
+--------------090806000406060307060501--
+
+
+--===============7241834833839700146==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Throughout its 18-year history, RSA Conference consistently attracts the
+world's best and brightest in the field, creating opportunities for Conference
+attendees to learn about information security's most important issues through
+interactions with peers, luminaries and emerging and established companies.
+http://p.sf.net/sfu/rsaconf-dev2dev
+--===============7241834833839700146==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============7241834833839700146==--
+
