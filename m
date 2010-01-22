@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <crosslonelyover@gmail.com>) id 1NXlJu-0007tq-Ps
-	for ltp-list@lists.sourceforge.net; Thu, 21 Jan 2010 00:54:46 +0000
-Received: from mail-px0-f200.google.com ([209.85.216.200])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NXlJt-00032Z-RG
-	for ltp-list@lists.sourceforge.net; Thu, 21 Jan 2010 00:54:46 +0000
-Received: by pxi38 with SMTP id 38so2137524pxi.28
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 20 Jan 2010 16:54:30 -0800 (PST)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <ashish.g@teldevice.co.jp>) id 1NYB2I-00044d-8d
+	for ltp-list@lists.sourceforge.net; Fri, 22 Jan 2010 04:22:18 +0000
+Received: from mail-gw.teldevice.co.jp ([124.215.243.245] helo=teldevice.co.jp)
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NYB2G-00064Z-LV
+	for ltp-list@lists.sourceforge.net; Fri, 22 Jan 2010 04:22:18 +0000
+Message-ID: <4B5927E6.7060808@teldevice.co.jp>
+Date: Fri, 22 Jan 2010 13:21:58 +0900
+From: TED ITC Agarwal Ashish <ashish.g@teldevice.co.jp>
 MIME-Version: 1.0
-Date: Thu, 21 Jan 2010 08:26:50 +0800
-Message-ID: <5a774f4c1001201626g53dae882o50b5aa70b23d929e@mail.gmail.com>
-From: Crossover Lonely <crosslonelyover@gmail.com>
-Subject: [LTP]
-	[patch]ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+References: <0016e649c930347566047d6e6c5b@google.com>
+	<4B591601.701@teldevice.co.jp>
+	<364299f41001212017l4f4f4f26sc316ad193b7bbf8e@mail.gmail.com>
+In-Reply-To: <364299f41001212017l4f4f4f26sc316ad193b7bbf8e@mail.gmail.com>
+Subject: Re: [LTP] i.MX31 Platform Embedded Linux LTP Test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,154 +26,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0086868031408804562=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============0086868031408804562==
-Content-Type: multipart/alternative; boundary=0016e64dbbd0595fc5047da1c2d2
-
---0016e64dbbd0595fc5047da1c2d2
-Content-Type: text/plain; charset=ISO-8859-1
-
-Hi all,
-
-     When the hugeshmget01 runs, it gets unexpected signal SIGCHLD/SIGCLD,
-and thus stops immediately.
-     I found two ways to resolve this problem. Please refer to the following
-for two kinds of patch.
-     Well, according to other code structures of hugeshmget0*.c, solution 1
-is preferred. But for get_no_of_hugepages
-will call popen(), so I think the second solution is the right one.
-     Will you please choose the right one to apply to
-ltp-intermediate-20100119 package?
-     Looking forward to your confirmation!
-
-Thanks and Best Regards,
-shenghui
-
-Solution 1===============================================================
-
-diff -Nur
-ltp-intermediate-20100119-origin/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
-ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
----
-ltp-intermediate-20100119-origin/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
-2010-01-21 07:51:55.926035076 +0800
-+++
-ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
-2010-01-21 08:14:05.470032624 +0800
-@@ -78,14 +78,14 @@
-         tst_brkm(TBROK, cleanup, "OPTION PARSING ERROR - %s", msg);
-     }
-
--    setup();            /* global setup */
--
-     /* The following loop checks looping state if -i option given */
-         if ( get_no_of_hugepages() <= 0 || hugepages_size() <= 0 )
-              tst_brkm(TBROK, cleanup, "Test cannot be continued owning to
-sufficient availability of Hugepages on the system");
-         else
--              huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
-hugepages_size() * 1024) / 2 ;
--
-+              huge_pages_shm_to_be_allocated = ( get_no_of_hugepages() *
-hugepages_size() * 1024) / 2 ;
-+
-+    setup();            /* global setup */
-+
-         for (lc = 0; TEST_LOOPING(lc); lc++) {
-         /* reset Tst_count in case we are looping */
-         Tst_count = 0;
-
-
-Solution
-2=========================================================================================
-diff -Nur
-ltp-intermediate-20100119-origin/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
-ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
----
-ltp-intermediate-20100119-origin/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
-2010-01-21 07:51:55.926035076 +0800
-+++
-ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
-2010-01-21 08:16:46.122032889 +0800
-@@ -160,7 +160,7 @@
- setup(void)
- {
-     /* capture signals */
--    tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+    tst_sig(FORK, DEF_HANDLER, cleanup);
-
-     /* Pause if that option was specified */
-     TEST_PAUSE;
-
---0016e64dbbd0595fc5047da1c2d2
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,<br><br>=A0=A0=A0=A0 When the hugeshmget01 runs, it gets unexpected =
-signal SIGCHLD/SIGCLD, and thus stops immediately.<br>=A0 =A0=A0 I found tw=
-o ways to resolve this problem. Please refer to the following for two kinds=
- of patch. <br>
-=A0=A0=A0=A0 Well, according to other code structures of hugeshmget0*.c, so=
-lution 1 is preferred. But for get_no_of_hugepages<br>will call popen(), so=
- I think the second solution is the right one.<br>=A0=A0=A0=A0 Will you ple=
-ase choose the right one to apply to ltp-intermediate-20100119 package?<br>
-=A0=A0=A0=A0 Looking forward to your confirmation!<br><br>Thanks and Best R=
-egards,<br>shenghui<br><br>Solution 1=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D<br><br>diff -Nur ltp-intermediate-20100119-origin/testcases/kernel/mem/=
-hugetlb/hugeshmget/hugeshmget01.c ltp-intermediate-20100119/testcases/kerne=
-l/mem/hugetlb/hugeshmget/hugeshmget01.c<br>
---- ltp-intermediate-20100119-origin/testcases/kernel/mem/hugetlb/hugeshmge=
-t/hugeshmget01.c=A0=A0=A0 2010-01-21 07:51:55.926035076 +0800<br>+++ ltp-in=
-termediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c=
-=A0=A0=A0 2010-01-21 08:14:05.470032624 +0800<br>
-@@ -78,14 +78,14 @@<br>=A0=A0=A0=A0 =A0=A0=A0 tst_brkm(TBROK, cleanup, &quo=
-t;OPTION PARSING ERROR - %s&quot;, msg);<br>=A0=A0=A0=A0 }<br>=A0<br>-=A0=
-=A0=A0 setup();=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 /* global setup */<br>-<br>=A0=
-=A0=A0=A0 /* The following loop checks looping state if -i option given */<=
-br>
-=A0=A0=A0=A0=A0=A0=A0=A0 if ( get_no_of_hugepages() &lt;=3D 0 || hugepages_=
-size() &lt;=3D 0 )<br>=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 tst_brkm(TBRO=
-K, cleanup, &quot;Test cannot be continued owning to sufficient availabilit=
-y of Hugepages on the system&quot;);<br>=A0=A0=A0=A0=A0=A0=A0=A0 else=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 <br>
--=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 huge_pages_shm_to_be_allocated =3D=
- ( get_no_of_hugepages() * hugepages_size() * 1024) / 2 ;<br>-=A0=A0=A0=A0=
-=A0=A0=A0 <br>+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 huge_pages_shm_to_be=
-_allocated =3D ( get_no_of_hugepages() * hugepages_size() * 1024) / 2 ; <br=
->
-+<br>+=A0=A0=A0 setup();=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 /* global setup */<br=
->+<br>=A0=A0=A0=A0=A0=A0=A0=A0 for (lc =3D 0; TEST_LOOPING(lc); lc++) {<br>=
-=A0=A0=A0=A0 =A0=A0=A0 /* reset Tst_count in case we are looping */<br>=A0=
-=A0=A0=A0 =A0=A0=A0 Tst_count =3D 0;<br><br><br>Solution 2=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D<br>
-diff -Nur ltp-intermediate-20100119-origin/testcases/kernel/mem/hugetlb/hug=
-eshmget/hugeshmget01.c ltp-intermediate-20100119/testcases/kernel/mem/huget=
-lb/hugeshmget/hugeshmget01.c<br>--- ltp-intermediate-20100119-origin/testca=
-ses/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c=A0=A0=A0 2010-01-21 07:51:=
-55.926035076 +0800<br>
-+++ ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget/huges=
-hmget01.c=A0=A0=A0 2010-01-21 08:16:46.122032889 +0800<br>@@ -160,7 +160,7 =
-@@<br>=A0setup(void)<br>=A0{<br>=A0=A0=A0=A0 /* capture signals */<br>-=A0=
-=A0=A0 tst_sig(NOFORK, DEF_HANDLER, cleanup);<br>
-+=A0=A0=A0 tst_sig(FORK, DEF_HANDLER, cleanup);<br>=A0<br>=A0=A0=A0=A0 /* P=
-ause if that option was specified */<br>=A0=A0=A0=A0 TEST_PAUSE;<br>
-
---0016e64dbbd0595fc5047da1c2d2--
-
-
---===============0086868031408804562==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
+
+
+Hi
+
+It is 20091231
+
+{ltp-full-20091231.tgz}.
+
+--
+Thanks
+Ashish
+
+Garrett Cooper ????????:
+> On Thu, Jan 21, 2010 at 7:05 PM, TED ITC Agarwal Ashish
+> <ashish.g@teldevice.co.jp> wrote:
+>> Hi All
+>>
+>> As i am novice to LTP. thanks for your help.
+>>
+>>
+>>>    Please read the INSTALL file for more details on how to configure,
+>>> compile, and install LTP. The out-of-build-tree method may be suitable
+>>> for your needs.
+>>> HTH,
+>>> -Garrett
+>>
+>>> cross compile LTP for the target board and port only binary for the
+>>> required test cases and the required scripts.
+>>> --
+>>> md.zafar.ziya
+>>
+>> yes it is true that Cross compile option will help me out.
+>> but the main target for now is to how to cross compile LTP.
+>>
+>> i did goo' for the cross compile steps or hints but not got any specific
+>> help from whr i have to start
+>> or wch way i will proceed.
+>>
+>> like some questions mention that there were some settings to the makefile
+>>
+>> ------------------------------------
+>>
+>> CROSS_COMPILER=/opt/ppc64/powerpc64-linux/bin/powerpc64-linux-
+>> CROSS_CFLAGS= -mpowerpc64
+>> LDFLAGS=-static
+>> LOADLIBES=-lpthread -lc -lresolv -lnss_dns -lnss_files -lm -lc
+>> LIB_DIR=/lib64
+>> export LOADLIBES LIB_DIR
+>> ---------------------------------------
+>>
+>> i had no idea about what to do where to do :(
+>>
+>> really it feels you terrible ...
+>>
+>> but i had no other choice .. i tried to search lot but not succeeded
+>> :-(
+>>
+>> Please suggest me any link that can help me or the starting point manual
+>>
+>> any language material will be a gre8 help :)
+>>
+>> --
+>> Ashish
+>>
+>>
+>>
+>> md.zafar.ziya@gmail.com ????????:
+>>> Hi,
+>>>
+>>> cross compile LTP for the target board and port only binary for the
+>>> required test cases and the required scripts.
+> 
+> What versions of LTP are you gentlemen using?
+> Thanks,
+> -Garrett
 
 ------------------------------------------------------------------------------
 Throughout its 18-year history, RSA Conference consistently attracts the
@@ -181,16 +113,7 @@ world's best and brightest in the field, creating opportunities for Conference
 attendees to learn about information security's most important issues through
 interactions with peers, luminaries and emerging and established companies.
 http://p.sf.net/sfu/rsaconf-dev2dev
---===============0086868031408804562==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============0086868031408804562==--
-
