@@ -1,15 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <noreply@sourceforge.net>) id 1NSs61-0005Qw-9g
-	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 13:08:13 +0000
-From: "SourceForge.net" <noreply@sourceforge.net>
-Mime-Version: 1.0
-Message-Id: <E1NSs60-0003ky-RI@d45xhf1.ch3.sourceforge.com>
-Date: Thu, 07 Jan 2010 13:08:12 +0000
-Subject: [LTP] [ ltp-Feature Requests-2927507 ] lcov: branch coverage in
-	reports
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <jpalecek@web.de>) id 1NYHfW-00066I-1Q
+	for ltp-list@lists.sourceforge.net; Fri, 22 Jan 2010 11:27:14 +0000
+Received: from fmmailgate03.web.de ([217.72.192.234])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NYHfU-0006Pa-FJ
+	for ltp-list@lists.sourceforge.net; Fri, 22 Jan 2010 11:27:13 +0000
+Received: from smtp05.web.de (fmsmtp05.dlan.cinetic.de [172.20.4.166])
+	by fmmailgate03.web.de (Postfix) with ESMTP id E92C513C71396
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 22 Jan 2010 12:27:04 +0100 (CET)
+Received: from [90.180.172.144] (helo=debian)
+	by smtp05.web.de with asmtp (WEB.DE 4.110 #314) id 1NYHfM-0003q5-00
+	for ltp-list@lists.sourceforge.net; Fri, 22 Jan 2010 12:27:04 +0100
+Date: Fri, 22 Jan 2010 13:26:17 +0100
+From: "Jiri Palecek" <jpalecek@web.de>
+MIME-Version: 1.0
+Resent-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Resent-Message-ID: <op.u6xov5u7cfnueu@debian>
+Subject: [LTP] [PATCH] Don't read errno unless the syscall failed in
+ mq_notify01 test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,46 +33,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Sender: ltp-list-bounces@lists.sourceforge.net
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: noreply@sourceforge.net
+Cc: ltp-list@lists.sourceforge.net
+Message-ID: <20100122122617.bF8FycUj4BkDcWcznyuF6hto6F7_i8PJvwjLmpWoC20@z>
 
-Feature Requests item #2927507, was opened at 2010-01-07 14:08
-Message generated for change (Tracker Item Submitted) made by ensonic
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=353382&aid=2927507&group_id=3382
+Hello,
 
-Please note that this message will contain a full copy of the comment thread,
-including the initial issue submission, for this request,
-not just the latest update.
-Category: Tools
-Group: None
-Status: Open
-Resolution: None
-Priority: 5
-Private: No
-Submitted By: Stefan Kost (ensonic)
-Assigned to: Nobody/Anonymous (nobody)
-Summary: lcov: branch coverage in reports
+ I've seen failures reporting "return value=0, errno=EACCESS" in the
+mq_notify01 test. This is because the syscall actually succeeded (as
+expected by the test), but, as it is implemented by a library
+function, some of the (more) syscalls it invoked failed. The POSIX
+specification of errno says it should only be read when the call in
+question failed - therefore, this patch hardcodes errno 0 when return
+value is 0.
 
-Initial Comment:
-gcov -b can report branch coverage
-(http://gcc.gnu.org/onlinedocs/gcc/Invoking-Gcov.html#Invoking-Gcov)
+ Also, this patch removes a useless TEST macro usage in a place the
+TEST_RETURN nor TEST_ERRNO variables are never checked.
 
-There is a feature request for this featue also in
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=413834
+Regards
+    Jiri Palecek
+
+Signed-off-by: Jiri Palecek <jpalecek@web.de>
+---
+ testcases/kernel/syscalls/mq_notify/mq_notify01.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/mq_notify/mq_notify01.c b/testcases/kernel/syscalls/mq_notify/mq_notify01.c
+index 6004373..b796bc3 100644
+--- a/testcases/kernel/syscalls/mq_notify/mq_notify01.c
++++ b/testcases/kernel/syscalls/mq_notify/mq_notify01.c
+@@ -270,7 +270,7 @@ static int do_test(struct test_case *tc)
+          * When test ended with SIGTERM etc, mq discriptor is left remains.
+          * So we delete it first.
+          */
+-        TEST(mq_unlink(QUEUE_NAME));
++        mq_unlink(QUEUE_NAME);
+ 
+         switch (tc->ttype) {
+         case FD_NOT_EXIST:
+@@ -336,7 +336,7 @@ static int do_test(struct test_case *tc)
+          */
+         errno = 0;
+         sys_ret = mq_notify(fd, &ev);
+-        sys_errno = errno;
++        sys_errno = sys_ret != 0 ? errno : 0;
+         if (sys_ret < 0)
+                 goto TEST_END;
+ 
+-- 
+1.6.4.3
 
 
-----------------------------------------------------------------------
 
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=353382&aid=2927507&group_id=3382
 
 ------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+Throughout its 18-year history, RSA Conference consistently attracts the
+world's best and brightest in the field, creating opportunities for Conference
+attendees to learn about information security's most important issues through
+interactions with peers, luminaries and emerging and established companies.
+http://p.sf.net/sfu/rsaconf-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
