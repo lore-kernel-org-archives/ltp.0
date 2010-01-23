@@ -1,32 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NV44b-0003BX-Ab
-	for ltp-list@lists.sourceforge.net; Wed, 13 Jan 2010 14:19:49 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NV44Z-0005gS-0o
-	for ltp-list@lists.sourceforge.net; Wed, 13 Jan 2010 14:19:49 +0000
-Received: from d01relay07.pok.ibm.com (d01relay07.pok.ibm.com [9.56.227.147])
-	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o0DE9l1S004681
-	for <ltp-list@lists.sourceforge.net>; Wed, 13 Jan 2010 09:09:47 -0500
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay07.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o0DEJfx02125954
-	for <ltp-list@lists.sourceforge.net>; Wed, 13 Jan 2010 09:19:41 -0500
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o0DEJeV8012435
-	for <ltp-list@lists.sourceforge.net>; Wed, 13 Jan 2010 09:19:40 -0500
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-In-Reply-To: <4B4B0575.1090501@cn.fujitsu.com>
-References: <4B4B0575.1090501@cn.fujitsu.com>
-Date: Wed, 13 Jan 2010 19:49:27 +0530
-Message-Id: <1263392367.5591.29.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] cpuset_syscall_test: delete '0x' from hex string
-Reply-To: subrata@linux.vnet.ibm.com
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NYocR-00051Q-G9
+	for ltp-list@lists.sourceforge.net; Sat, 23 Jan 2010 22:38:15 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NYocQ-0005m9-Cy
+	for ltp-list@lists.sourceforge.net; Sat, 23 Jan 2010 22:38:15 +0000
+Received: by pwj11 with SMTP id 11so1672457pwj.2
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 23 Jan 2010 14:38:08 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <op.u6xlzxecu2flwt@debian>
+References: <4B44187D.5030702@cn.fujitsu.com>
+	<364299f41001052124ga613fbag6adf7a7460a87ccc@mail.gmail.com>
+	<4B445C36.6040505@cn.fujitsu.com> <201001200130.30897.jpalecek@web.de>
+	<364299f41001191852s5a13235bh31e8e5feb68978b9@mail.gmail.com>
+	<op.u6xlzxecu2flwt@debian>
+Date: Sat, 23 Jan 2010 14:38:08 -0800
+Message-ID: <364299f41001231438u2422c16n2c8b0838812e3237@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] cpuctl_fj: replace ps by top to fix cpu usage's
+	computation error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,106 +32,167 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shi Weihua <shiwh@cn.fujitsu.com>
+To: =?ISO-8859-2?B?Smn47SBQYWxl6GVr?= <jpalecek@web.de>
 Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-On Mon, 2010-01-11 at 19:03 +0800, Shi Weihua wrote: 
-> By the latest ltp version, the following fail message outputted on my x86_64 box.
-> ------------
-> TEST 5: CPUSET CONTROLLER TESTING
-> TEST STARTED: Please avoid using system while this test executes
-> ...
-> cpuset05    8  TFAIL  :  Result(/proc/<pid>/status) = "", expect = "0")
-> cpuset05    9  TFAIL  :  Result(/proc/<pid>/status) = "", expect = "1")
-> cpuset05   10  TFAIL  :  Result(/proc/<pid>/status) = "", expect = "default")
-> ------------
-> 
-> The reason is:
-> 1, '0x' wasn't deleted from a hex string's head.
->    e.g. 7f343c900000 is expected ,but 0x7f343c900000 outputted.
-> 2, a wrong '\b' was used in a grep command.
-> 
-> This patch fix the upper problem. Now the message is:
-> ------------
-> cpuset05    7  TPASS  :  Cpuset vs systemcall test succeeded.
-> cpuset05    8  TPASS  :  Cpuset vs systemcall test succeeded.
-> cpuset05    9  TPASS  :  Cpuset vs systemcall test succeeded.
-> cpuset05   10  TPASS  :  Cpuset vs systemcall test succeeded.
-> ------------
-> 
-> Signed-off-by: Shi Weihua <shiwh@cn.fujitsu.com>
+2010/1/22 Ji=F8=ED Pale=E8ek <jpalecek@web.de>:
+> On Wed, 20 Jan 2010 03:52:48 +0100, Garrett Cooper <yanegomi@gmail.com>
+> wrote:
+>
+>> On Tue, Jan 19, 2010 at 4:30 PM, Jiri Palecek <jpalecek@web.de> wrote:
+>>>
+>>> On Wednesday 06 January 2010 10:47:34 Shi Weihua wrote:
+>>>>
+>>>> at 2010-1-6 13:24, Garrett Cooper wrote:
+>>>> > On Tue, Jan 5, 2010 at 8:58 PM, Shi Weihua <shiwh@cn.fujitsu.com>
+>>>> > wrote:
+>>>> >> Some abnormal messages outputted in my x86_64.
+>>>> >> -------------------
+>>>> >> pid 4622 cpu_usage 0
+>>>> >> cpuctl_test_fj =A0 =A01 =A0TFAIL =A0: =A0case19 =A0 =A0FAIL
+>>>> >> pid 4646 cpu_usage 0
+>>>> >> cpuctl_test_fj =A0 =A01 =A0TFAIL =A0: =A0case20 =A0 =A0FAIL
+>>>> >> pid 4670 cpu_usage 63
+>>>> >> cpuctl_test_fj =A0 =A01 =A0TFAIL =A0: =A0case21 =A0 =A0FAIL
+>>>> >> -------------------
+>>>> >> I think cpu usage's computation error occured.
+>>>> >> So I tried to use the oldest arithmetic of cpu usage, fortunately it
+>>>> >> works.
+>>>> >> Maybe we should replace 'ps' by 'top' in =A0get_cpu_usage().
+>>>> >> By the way, I increased the admissible range of cpu usage in case21=
+()
+>>>> >> because it jumps out range of 44-56 sometimes.
+>>>> >>
+>>>> >> My patch works now:
+>>>> >> -------------------
+>>>> >> pid 20277 cpu_usage 97
+>>>> >> cpuctl_test_fj =A0 =A01 =A0TPASS =A0: =A0case19 =A0 =A0PASS
+>>>> >> pid 20307 cpu_usage 99
+>>>> >> cpuctl_test_fj =A0 =A01 =A0TPASS =A0: =A0case20 =A0 =A0PASS
+>>>> >> pid 20336 cpu_usage 55
+>>>> >> pid 20336 cpu_usage 53
+>>>> >> pid 20336 cpu_usage 55
+>>>> >> pid 20336 cpu_usage 57
+>>>> >> pid 20336 cpu_usage 55
+>>>> >> pid 20336 cpu_usage 55
+>>>> >> pid 20336 cpu_usage 55
+>>>> >> pid 20336 cpu_usage 55
+>>>> >> pid 20336 cpu_usage 57
+>>>> >> pid 20336 cpu_usage 53
+>>>> >> cpuctl_test_fj =A0 =A01 =A0TPASS =A0: =A0case21 =A0 =A0PASS
+>>>> >> -------------------
+>>>> >>
+>>>> >> Signed-off-by: Shi Weihua <shiwh@cn.fujitsu.com>
+>>>> >> ---
+>>>> >> ---
+>>>> >> ltp-full-20091231/testcases/kernel/controllers/cpuctl_fj/run_cpuctl=
+_test_fj.sh
+>>>> >> =A0 =A0 =A02009-11-16 15:40:40.000000000 +0800
+>>>> >> +++
+>>>> >> ltp-full-20091231.new/testcases/kernel/controllers/cpuctl_fj/run_cp=
+uctl_test_fj.sh
+>>>> >> =A02010-01-06 12:36:32.000000000 +0800
+>>>> >> @@ -85,7 +85,10 @@ creat_process()
+>>>> >>
+>>>> >> =A0get_cpu_usage()
+>>>> >> =A0{
+>>>> >> - =A0 =A0 =A0 ps -eo 'pid,pcpu' | awk '$1 =3D=3D "'$1'" {
+>>>> >> sub(/(\.[[:digit:]])*$/, "", $2); print $2 }'
+>>>> >> + =A0 =A0 =A0 top=3D($(top -b -n 1 -p $1 | tail -2 | head -1))
+>>>> >> + =A0 =A0 =A0 top=3D${top[8]}
+>>>> >> + =A0 =A0 =A0 top=3D`echo $top | awk -F "." '{print $1}'`
+>>>> >> + =A0 =A0 =A0 echo "$top"
+>>>> >> =A0}
+>>>> >>
+>>>> >> =A0kill_all_pid()
+>>>> >> @@ -627,7 +630,7 @@ case21()
+>>>> >> =A0 =A0 =A0 =A0do
+>>>> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0cpu_usage=3D$(get_cpu_usage $pid)
+>>>> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0echo "pid $pid cpu_usage $cpu_usage"
+>>>> >> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 expr 44 \< "$cpu_usage" \& "$cpu_usag=
+e" \< 56 >
+>>>> >> /dev/null 2>&1
+>>>> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 expr 40 \< "$cpu_usage" \& "$cpu_usag=
+e" \< 60 >
+>>>> >> /dev/null 2>&1
+>>>> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ret=3D$?
+>>>> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0: $(( top_times+=3D1 ))
+>>>> >> =A0 =A0 =A0 =A0done
+>>>> >
+>>>> > =A0 =A0 Could you add a set -x to the top of the script so we can se=
+e the
+>>>> > output please? ps --version would be helpful too..
+>>>>
+>>>> I wish it can help you.
+>>>> --------------------- sh -x -----------------------------
+>>>> + for i in '$(seq 1 $TST_TOTAL)'
+>>>> + setup
+>>>
+>>> [ ... snip ... ]
+>>>
+>>> I believe Garrett Cooper meant to send the trace output of the original
+>>> script (the one with ps).
+>>>
+>>> However, I'm not sure about the awk program there - particularly:
+>>>
+>>> sub(/(\.[[:digit:]])*$/, "", $2)
+>>>
+>>> should probably be
+>>>
+>>> sub(/\.[[:digit:]]*$/, "", $2)
+>>>
+>>> (without the group). Not sure if this can actually cause what you see.
+>>>
+>>> Also, I think we could simplify it a bit further, to something like thi=
+s:
+>>>
+>>> get_cpu_usage()
+>>> {
+>>> =A0ps -p $1 -o pcpu=3D | awk -F "." '{print $1}'
+>>> }
+>>>
+>>> Please, tell me what do you think about it.
+>>
+>> =A0 =A0Actually he gave me what I needed (forgot to reply because I
+>
+> Yes, but it doesn't cast much light on the problem that it didn't work for
+> Shi Weihua in the first place.
+>
+>> didn't star the email); I'm pretty sure that your observation is
+>> correct: we shouldn't be extracting \. unless we're actually going to
+>> use it, so the ellipses [\(\)] can be removed.
+>> =A0 =A0Are we using just the `major' number, or are we using the `minor'
+>> number in the cpu usage?
+>
+> You mean integral and fractional part? I guess the integral part only.
 
-Thanks.
+Does expr(1) do float point comparisons (this is where the issue was
+coming from I think...)?
 
-Regards--
-Subrata
+gcooper@optimus ~ $ expr 0 \< 42.0 \& 42.0 \< 100
+0
+gcooper@optimus ~ $ expr 0.0 \< 42.0 \& 42.0 \< 100.0
+0
 
-> ---
-> diff -urpN ltp-full-20091231.orig/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh ltp-full-20091231/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
-> --- ltp-full-20091231.orig/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh	2009-06-23 10:09:11.000000000 -0400
-> +++ ltp-full-20091231/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh	2010-01-11 18:42:59.000000000 -0500
-> @@ -178,7 +178,8 @@ test7()
->  {
->  	do_syscall_test 0 0 --mbind=1 0 || return 1
->  	memory_addr="$(cat $TEST_OUTPUT)"
-> -	allowed_list=$(cat $TEST_PROCNUMA | grep "\b$memory_addr" | \
-> +	memory_addr=${memory_addr##*0x}
-> +	allowed_list=$(cat $TEST_PROCNUMA | grep "$memory_addr" | \
->  			awk '{print $2}')
->  	allowed_list="$(echo $allowed_list | sed -e s/bind://)"
->  	test "$allowed_list" = "0" || return 1
-> @@ -193,7 +194,8 @@ test8()
->  {
->  	do_syscall_test 0 0-1 --mbind=1 0 || return 1
->  	memory_addr="$(cat $TEST_OUTPUT)"
-> -	allowed_list=$(cat $TEST_PROCNUMA | grep "\b$memory_addr" | \
-> +	memory_addr=${memory_addr##*0x}
-> +	allowed_list=$(cat $TEST_PROCNUMA | grep "$memory_addr" | \
->  			awk '{print $2}')
->  	allowed_list="$(echo $allowed_list | sed -e s/bind://)"
->  	test "$allowed_list" = "0"
-> @@ -208,7 +210,8 @@ test9()
->  {
->  	do_syscall_test 0 0-1 --mbind=6 0 || return 1
->  	memory_addr="$(cat $TEST_OUTPUT)"
-> -	allowed_list=$(cat $TEST_PROCNUMA | grep "\b$memory_addr" | \
-> +	memory_addr=${memory_addr##*0x}
-> +	allowed_list=$(cat $TEST_PROCNUMA | grep "$memory_addr" | \
->  			awk '{print $2}')
->  	allowed_list="$(echo $allowed_list | sed -e s/bind://)"
->  	test "$allowed_list" = "1"
-> @@ -223,7 +226,8 @@ test10()
->  {
->  	do_syscall_test 0 0 --mbind=6 1 || return 1
->  	memory_addr="$(cat $TEST_OUTPUT)"
-> -	allowed_list=$(cat $TEST_PROCNUMA | grep "\b$memory_addr" | \
-> +	memory_addr=${memory_addr##*0x}
-> +	allowed_list=$(cat $TEST_PROCNUMA | grep "$memory_addr" | \
->  			awk '{print $2}')
->  	allowed_list="$(echo $allowed_list | sed -e s/bind://)"
->  	test "$allowed_list" = "default"
-> 
-> ------------------------------------------------------------------------------
-> This SF.Net email is sponsored by the Verizon Developer Community
-> Take advantage of Verizon's best-in-class app development support
-> A streamlined, 14 day to market process makes app distribution fast and easy
-> Join now and get one step closer to millions of Verizon customers
-> http://p.sf.net/sfu/verizon-dev2dev 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+I checked in a copy based on your suggestion Jiri so folks would hit
+this issue, but I'm curious as to why integers are the only things
+supported by expr(1) when comparing ranges.
 
+Thanks,
+-Garrett
 
-------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+---------------------------------------------------------------------------=
+---
+Throughout its 18-year history, RSA Conference consistently attracts the
+world's best and brightest in the field, creating opportunities for Confere=
+nce
+attendees to learn about information security's most important issues throu=
+gh
+interactions with peers, luminaries and emerging and established companies.
+http://p.sf.net/sfu/rsaconf-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
