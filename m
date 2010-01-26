@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NSLKF-00043y-Bs
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 02:08:43 +0000
-Received: from mail-pw0-f43.google.com ([209.85.160.43])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NSLKE-0006EK-8R
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 02:08:43 +0000
-Received: by pwj11 with SMTP id 11so11641484pwj.2
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 05 Jan 2010 18:08:36 -0800 (PST)
+	(envelope-from <shiwh@cn.fujitsu.com>) id 1NZhoy-0005lS-Dx
+	for ltp-list@lists.sourceforge.net; Tue, 26 Jan 2010 09:34:52 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NZhow-0000kY-LP
+	for ltp-list@lists.sourceforge.net; Tue, 26 Jan 2010 09:34:52 +0000
+Message-ID: <4B5EB72B.7010909@cn.fujitsu.com>
+Date: Tue, 26 Jan 2010 17:34:35 +0800
+From: Shi Weihua <shiwh@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <4B43E6FD.3020906@web.de>
-References: <4B4204D2.70204@petalogix.com> <4B43E6FD.3020906@web.de>
-Date: Tue, 5 Jan 2010 17:41:39 -0800
-Message-ID: <364299f41001051741v7a2bb1d0p91d28aa25967b93e@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] lchown test case
+References: <4B5E8192.80909@cn.fujitsu.com>	
+	<364299f41001252354m16d21845h6c1bd0b53cd5c98@mail.gmail.com>
+	<364299f41001260025v527adde4u44ff82c647d18b4e@mail.gmail.com>
+In-Reply-To: <364299f41001260025v527adde4u44ff82c647d18b4e@mail.gmail.com>
+Subject: Re: [LTP] [PROBLEM?] rt_sigaction01 still failed on x86_64
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,57 +29,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-On Tue, Jan 5, 2010 at 5:27 PM, Jiri Palecek <jpalecek@web.de> wrote:
-> Michal Simek napsal(a):
+at 2010-1-26 16:25, Garrett Cooper wrote:
+> On Mon, Jan 25, 2010 at 11:54 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+>> On Mon, Jan 25, 2010 at 9:45 PM, Shi Weihua <shiwh@cn.fujitsu.com> wrote:
+>>> Hi, Cooper
+>>>
+>>> I noticed that you added a check of platform which not defined
+>>> sa_sigaction in struct sigaction.
+>>> http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c?r1=1.6&r2=1.7
+>>>
+>>> As your expectted, the following message will output on x86_64.
+>>> ------------
+>>> Your architecture doesn't support this test (no sa_sigaction field in struct sigaction).
+>>> ------------
+>>> But unfortunately, it still failed on my x86_64.
+>>>
+>>> On my x86_64, signal.h like this:
+>>> ------------
+>>> #ifndef __ASSEMBLY__
+>>>
+>>> #ifdef __i386__
+>>>        (sa_sigaction defined here)  <--
+>>> #else /* __i386__ */
+>>>        (no sa_sigaction defined)    <--
+>>> #endif /* !__i386__ */
+>>>
+>>> #endif /* __ASSEMBLY__ */
+>>> ------------
+>>> your check still work ? Sorry, I don't know the check process in
+>>> LTP configure clearly. Could you give me some explanation.
 >>
->> Hi,
->
-> Hi,
->>
->> I have some problems with lchown02 test which is caused with this patch.
->> What is prep_create_link?
->>
->> Thanks,
->> Michal
->>
->>
->> http://git.kernel.org/?p=linux/kernel/git/galak/ltp.git;a=commitdiff;h=ee1a022fc76076d7fc1b6b1797c195244414c038
->>
->>
->>
->> diff --git a/runtest/syscalls b/runtest/syscalls
->> index fbe8641..34631ed 100644 (file)
->> --- a/runtest/syscalls
->> +++ b/runtest/syscalls
->> @@ -462,10 +462,10 @@ kill12 kill12
->>
->> lchown01 lchown01
->> lchown01_16 lchown01_16
->> -lchown02 cp -p $LTPROOT/testcases/bin/create_link $TMP; lchown02
->> -lchown02_16 cp -p $LTPROOT/testcases/bin/create_link $TMP; lchown02_16
->> +lchown02 prep_create_link; lchown02
->> +lchown02_16 prep_create_link; lchown02_16
->
-> IMHO it should do the same as the line above. But I think the whole thing
-> could be deleted without causing any grief:
->
-> http://repo.or.cz/w/ltp-debian.git?a=commit;h=a5499edcf368fa88df924f94ffcbe63c22b46e82
+>> Shi,
+>>    I'm just going to test out the other proposed rt_sigaction, and
+>> revert this change if it doesn't work back to a semi-functioning state
+>> (which means that x86_64 will once again be broken).
+> 
+>     Files reverted because liubo's patch didn't stick.
 
-The test needs create_link in $TMP; that's why I scripted it as a
-one-liner (but stupid me probably forgot to add the script to CVS
--_-).
-Let me look and I'll get back to you shortly.
--Garrett
+Do you will pick out some useful code from liubo's patch ?
+Previously, you said you would do that. (2009-12-22) ;-)
+
+> Thanks,
+> -Garrett
+> 
+> 
+
 
 ------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the business
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
