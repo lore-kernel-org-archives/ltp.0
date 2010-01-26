@@ -1,22 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NX1Jy-00009b-Dc
-	for ltp-list@lists.sourceforge.net; Mon, 18 Jan 2010 23:47:46 +0000
-Received: from mail-pw0-f43.google.com ([209.85.160.43])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NX1Jx-0000f5-KN
-	for ltp-list@lists.sourceforge.net; Mon, 18 Jan 2010 23:47:46 +0000
-Received: by pwj11 with SMTP id 11so2261975pwj.2
+	(envelope-from <yanegomi@gmail.com>) id 1NZoWP-0002es-V0
+	for ltp-list@lists.sourceforge.net; Tue, 26 Jan 2010 16:44:09 +0000
+Received: from mail-pz0-f179.google.com ([209.85.222.179])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NZoWO-0000f5-JU
+	for ltp-list@lists.sourceforge.net; Tue, 26 Jan 2010 16:44:09 +0000
+Received: by pzk9 with SMTP id 9so2058020pzk.28
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 18 Jan 2010 15:47:40 -0800 (PST)
+	Tue, 26 Jan 2010 08:44:00 -0800 (PST)
 MIME-Version: 1.0
-Date: Mon, 18 Jan 2010 15:47:39 -0800
-Message-ID: <364299f41001181547y3ab0c634xf95002f4606d48a1@mail.gmail.com>
+In-Reply-To: <4B5EB72B.7010909@cn.fujitsu.com>
+References: <4B5E8192.80909@cn.fujitsu.com>
+	<364299f41001252354m16d21845h6c1bd0b53cd5c98@mail.gmail.com>
+	<364299f41001260025v527adde4u44ff82c647d18b4e@mail.gmail.com>
+	<4B5EB72B.7010909@cn.fujitsu.com>
+Date: Tue, 26 Jan 2010 08:43:59 -0800
+Message-ID: <364299f41001260843y72e9ac28nbe2cabee41b2055c@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] pan build now independent of bison/flex [was Re: [PATCH] Add
-	make 3.80 $(abspath ) and $(realpath ) emulation scripts]
+Subject: Re: [LTP] [PROBLEM?] rt_sigaction01 still failed on x86_64
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,58 +33,70 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: =?ISO-2022-JP?B?GyRCP0BDK0p+SE8bKEI=?= <mitani@ryobi.co.jp>, Jiri Palecek <jirka@debian.org>, Andi Kleen <andi@firstfloor.org>, LTP list <ltp-list@lists.sourceforge.net>
+To: Shi Weihua <shiwh@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-2010/1/18 Garrett Cooper <yanegomi@gmail.com>:
-> On Mon, Jan 18, 2010 at 2:08 PM, Mike Frysinger <vapier@gentoo.org> wrote:
->> On Monday 18 January 2010 16:58:58 K.D. Lucas wrote:
->>> Is there a bug when trying to make with version 3.81?
+On Tue, Jan 26, 2010 at 1:34 AM, Shi Weihua <shiwh@cn.fujitsu.com> wrote:
+> at 2010-1-26 16:25, Garrett Cooper wrote:
+>> On Mon, Jan 25, 2010 at 11:54 PM, Garrett Cooper <yanegomi@gmail.com> wr=
+ote:
+>>> On Mon, Jan 25, 2010 at 9:45 PM, Shi Weihua <shiwh@cn.fujitsu.com> wrot=
+e:
+>>>> Hi, Cooper
+>>>>
+>>>> I noticed that you added a check of platform which not defined
+>>>> sa_sigaction in struct sigaction.
+>>>> http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/kernel/syscall=
+s/rt_sigaction/rt_sigaction01.c?r1=3D1.6&r2=3D1.7
+>>>>
+>>>> As your expectted, the following message will output on x86_64.
+>>>> ------------
+>>>> Your architecture doesn't support this test (no sa_sigaction field in =
+struct sigaction).
+>>>> ------------
+>>>> But unfortunately, it still failed on my x86_64.
+>>>>
+>>>> On my x86_64, signal.h like this:
+>>>> ------------
+>>>> #ifndef __ASSEMBLY__
+>>>>
+>>>> #ifdef __i386__
+>>>> =A0 =A0 =A0 =A0(sa_sigaction defined here) =A0<--
+>>>> #else /* __i386__ */
+>>>> =A0 =A0 =A0 =A0(no sa_sigaction defined) =A0 =A0<--
+>>>> #endif /* !__i386__ */
+>>>>
+>>>> #endif /* __ASSEMBLY__ */
+>>>> ------------
+>>>> your check still work ? Sorry, I don't know the check process in
+>>>> LTP configure clearly. Could you give me some explanation.
 >>>
->>> I just tried compiling LTP 2009.1231 today, and I get:
->>>
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>> configure: WARNING: linux/genetlink.h: present but cannot be compiled
->>> configure: WARNING: linux/genetlink.h: =A0 =A0 check for missing prereq=
-uisite
->>> headers?
->>> configure: WARNING: linux/genetlink.h: see the Autoconf documentation
->>> configure: WARNING: linux/genetlink.h: =A0 =A0 section "Present But Can=
-not Be
->>> Compiled"
->>> configure: WARNING: linux/genetlink.h: proceeding with the compiler's
+>>> Shi,
+>>> =A0 =A0I'm just going to test out the other proposed rt_sigaction, and
+>>> revert this change if it doesn't work back to a semi-functioning state
+>>> (which means that x86_64 will once again be broken).
 >>
->> no output emitted by configure would be related to make. =A0these partic=
-ular
->> errors are because your distro installs broken kernel headers.
+>> =A0 =A0 Files reverted because liubo's patch didn't stick.
 >
-> Kelly,
-> =A0 =A0You're most likely missing flex + bison on the build host (I say
-> that primarily because I don't see -lfl in the linker line). It's
-> noted in INSTALL as a requirement, but isn't strictly enforced for pan
-> today. I'll add a specific check for that in configure sometime in the
-> next week or so, but the problem is that several tests need to be
-> skipped if pan isn't available / built because they depend upon it
-> (runltp invocation, selinux-testsuite, etc).
-> Thanks,
+> Do you will pick out some useful code from liubo's patch ?
+> Previously, you said you would do that. (2009-12-22) ;-)
 
-    I just removed the dependency on bison/flex in pan/Makefile on CVS
-head, as it was only required by ltp-scanner, an optional non-critical
-utility.
+    Yes, I did; I tried to apply the patch, almost all of the hunks
+failed to apply.
+
+Liubo,
+    Please generate a new patch and attach it someone can apply it and test.
 Thanks,
 -Garrett
 
 ---------------------------------------------------------------------------=
 ---
-Throughout its 18-year history, RSA Conference consistently attracts the
-world's best and brightest in the field, creating opportunities for Confere=
-nce
-attendees to learn about information security's most important issues throu=
-gh
-interactions with peers, luminaries and emerging and established companies.
-http://p.sf.net/sfu/rsaconf-dev2dev
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the busine=
+ss
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
