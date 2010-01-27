@@ -2,33 +2,34 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1NRp1O-0007Pv-Pm
-	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 15:39:06 +0000
-Received: from e34.co.us.ibm.com ([32.97.110.152])
+	(envelope-from <oberpar@linux.vnet.ibm.com>) id 1Na4L6-00019e-5k
+	for ltp-list@lists.sourceforge.net; Wed, 27 Jan 2010 09:37:32 +0000
+Received: from mtagate4.de.ibm.com ([195.212.17.164])
 	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NRp1N-0007mP-S0
-	for ltp-list@lists.sourceforge.net; Mon, 04 Jan 2010 15:39:06 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e34.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o04FXEk0023982
-	for <ltp-list@lists.sourceforge.net>; Mon, 4 Jan 2010 08:33:14 -0700
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id
-	o04Fcs2j155246
-	for <ltp-list@lists.sourceforge.net>; Mon, 4 Jan 2010 08:38:56 -0700
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o04FcfSU014813
-	for <ltp-list@lists.sourceforge.net>; Mon, 4 Jan 2010 08:38:42 -0700
-Date: Mon, 4 Jan 2010 09:38:44 -0600
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20100104153843.GA25671@us.ibm.com>
-References: <20100104004355.GA760@us.ibm.com>
-	<51111C51-DD4E-44E6-B093-3B3FC0DEE8C5@gmail.com>
+	(Exim 4.69) id 1Na4L2-0001Nr-MF
+	for ltp-list@lists.sourceforge.net; Wed, 27 Jan 2010 09:37:32 +0000
+Received: from d12nrmr1607.megacenter.de.ibm.com
+	(d12nrmr1607.megacenter.de.ibm.com [9.149.167.49])
+	by mtagate4.de.ibm.com (8.13.1/8.13.1) with ESMTP id o0R9bM0d004759
+	for <ltp-list@lists.sourceforge.net>; Wed, 27 Jan 2010 09:37:22 GMT
+Received: from d12av03.megacenter.de.ibm.com (d12av03.megacenter.de.ibm.com
+	[9.149.165.213])
+	by d12nrmr1607.megacenter.de.ibm.com (8.13.8/8.13.8/NCO v10.0) with
+	ESMTP id o0R9bLsX979122
+	for <ltp-list@lists.sourceforge.net>; Wed, 27 Jan 2010 10:37:21 +0100
+Received: from d12av03.megacenter.de.ibm.com (loopback [127.0.0.1])
+	by d12av03.megacenter.de.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
+	id o0R9bLPY016797
+	for <ltp-list@lists.sourceforge.net>; Wed, 27 Jan 2010 10:37:21 +0100
+Message-ID: <4B60092D.70904@linux.vnet.ibm.com>
+Date: Wed, 27 Jan 2010 10:36:45 +0100
+From: Peter Oberparleiter <oberpar@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <51111C51-DD4E-44E6-B093-3B3FC0DEE8C5@gmail.com>
-Subject: Re: [LTP] [PATCH ltp] p9auth: add missing checkp9auth.sh script
+References: <E1NXttq-0004LT-2Z@h45xhf1.ch3.sourceforge.com>
+	<27331504.post@talk.nabble.com>
+In-Reply-To: <27331504.post@talk.nabble.com>
+Subject: Re: [LTP] [ ltp-Feature Requests-2927507 ] lcov: branch coverage in
+ reports
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,31 +42,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: drberlin <drberlin@aol.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Quoting Garrett Cooper (yanegomi@gmail.com):
-> Hi Serge,
->     When do this script need to be run? Before compiling or before /
-> while running?
-> -Garrett
+On 27.01.2010 00:16, drberlin wrote:
+> If branch coverage is implemented in lcov, I will be able test it (and
+> indeed MUSTbefore using for our safety critical application). When might it
+> be available?
 
-Hi,
+It is implemented now in the CVS version of lcov [*].
 
-Either could do, but there's reason to do it at both.  It doesn't need to be
-run before each test, but has to load the module and set up devices after each
-boot.  So I originally had it both in the makefile, as a condition for doing
-the compilation (and especially installation), as well as before the test, in
-case the system was rebooted after compilation and before running.
 
--serge
+Regards,
+   Peter Oberparleiter
+
+
+[*] see http://ltp.sourceforge.net/coverage/lcov.php for instructions on 
+how to get the CVS version
+
 
 ------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the business
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
