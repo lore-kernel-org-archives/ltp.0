@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vapier@gentoo.org>) id 1NXpDY-0007tz-AK
-	for ltp-list@lists.sourceforge.net; Thu, 21 Jan 2010 05:04:28 +0000
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NXpDX-00073J-IQ
-	for ltp-list@lists.sourceforge.net; Thu, 21 Jan 2010 05:04:28 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Thu, 21 Jan 2010 00:04:15 -0500
-References: <000701ca998a$51aed7b0$f50c8710$@co.jp>
-	<364299f41001200525v31721544t521c73aceaa4b515@mail.gmail.com>
-In-Reply-To: <364299f41001200525v31721544t521c73aceaa4b515@mail.gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Na3mD-0005FL-Rc
+	for ltp-list@lists.sourceforge.net; Wed, 27 Jan 2010 09:01:29 +0000
+Received: from mail-px0-f200.google.com ([209.85.216.200])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Na3mC-0002Kk-PO
+	for ltp-list@lists.sourceforge.net; Wed, 27 Jan 2010 09:01:29 +0000
+Received: by pxi38 with SMTP id 38so3907pxi.28
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 27 Jan 2010 01:01:22 -0800 (PST)
 MIME-Version: 1.0
-Message-Id: <201001210004.23038.vapier@gentoo.org>
-Subject: Re: [LTP] 2010-01-20 cvs build failed
+In-Reply-To: <4B5FCC2D.7070304@jp.fujitsu.com>
+References: <4B5FCC2D.7070304@jp.fujitsu.com>
+Date: Wed, 27 Jan 2010 01:01:21 -0800
+Message-ID: <364299f41001270101s6821a3a3l64bf928e599073cc@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] fix aio_suspend/3-1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,81 +27,87 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1149006173301260842=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Mitani <mitani@ryobi.co.jp>
-
---===============1149006173301260842==
-Content-Type: multipart/signed; boundary="nextPart1358521.C51tlIMhCM";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-
---nextPart1358521.C51tlIMhCM
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Yasuaki Ishimatsu <isimatu.yasuaki@jp.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Wednesday 20 January 2010 08:25:35 Garrett Cooper wrote:
-> On Tue, Jan 19, 2010 at 8:37 PM, Mitani <mitani@ryobi.co.jp> wrote:
-> > 6) <RHEL4.8 x86> (using make3.80)
-> > Strangely, the "make" command returned immediately.
-> > "echo $?" was 0. But log was only several lines as follows:
->=20
-> You have to use make all when compiling `all' with make instead of
-> just specifying `make' with 3.81 because make 3.80 doesn't have a
-> concept of default goals/targets.
+On Tue, Jan 26, 2010 at 9:16 PM, Yasuaki Ishimatsu
+<isimatu.yasuaki@jp.fujitsu.com> wrote:
+> Hi all
+>
+> When the aio_suspend/3-1.test ran, SIGSEGV occured with following message
+> on my x86_64 box.
+>
+> ---
+> /bin/sh: line 38: 10675 Segmentation fault =A0 =A0 =A0./t0 240 conformanc=
+e/interfaces/aio_suspend/3-1.test
+>> $COMPLOG 2>&1
+> ---
+>
+> This test does not initialize a list[1] array as follows.
+>
+> ---
+> =A040 int main()
+> ...
+> =A088 =A0 =A0 =A0 =A0 list[0] =3D NULL;
+> =A089 =A0 =A0 =A0 =A0 list[2] =3D &aiocb[0];
+> =A090 =A0 =A0 =A0 =A0 list[3] =3D NULL;
+> =A091 =A0 =A0 =A0 =A0 list[4] =3D NULL;
+> =A092 =A0 =A0 =A0 =A0 list[5] =3D &aiocb[1];
+> =A093 =A0 =A0 =A0 =A0 list[6] =3D &aiocb[2];
+> =A094 =A0 =A0 =A0 =A0 list[7] =3D NULL;
+> ...
+> ---
+>
+> So, list[1] holds a strange value. Since aio_suspend() uses this value as=
+ address,
+> SIGSEGV occurred.
+>
+> When applying this patch, this test succeeds as follows.
+>
+> ---
+> conformance/interfaces/aio_suspend/3-1: execution: PASS
+> ---
+>
+> Signed-off-by: Yasuaki Ishimatsu <isimatu.yasuaki@jp.fujitsu.com>
+>
+> Index: ltp-2010-01-27/testcases/open_posix_testsuite/conformance/interfac=
+es/aio_suspend/3-1.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- ltp-2010-01-27.orig/testcases/open_posix_testsuite/conformance/interf=
+aces/aio_suspend/3-1.c
+> 2010-01-27 11:44:30.000000000 +0900
+> +++ ltp-2010-01-27/testcases/open_posix_testsuite/conformance/interfaces/=
+aio_suspend/3-1.c
+> 2010-01-27 11:45:23.000000000 +0900
+> @@ -82,6 +82,7 @@ int main()
+> =A0 =A0 =A0 =A0}
+>
+> =A0 =A0 =A0 =A0list[0] =3D NULL;
+> + =A0 =A0 =A0 list[1] =3D NULL;
+> =A0 =A0 =A0 =A0list[2] =3D &aiocb[0];
+> =A0 =A0 =A0 =A0list[3] =3D NULL;
+> =A0 =A0 =A0 =A0list[4] =3D NULL;
 
-printf "all %:\n\t$(MAKE) -f Makefile $@\n" > GNUmakefile
-=2Dmike
+    Wouldn't it just be better to memset(&list, 0, sizeof(list)) the
+array and just set that one array value to &aiocb[0]? Seems like a
+much better idea...
+Thanks,
+-Garrett
 
---nextPart1358521.C51tlIMhCM
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.14 (GNU/Linux)
-
-iQIcBAABAgAGBQJLV+BWAAoJEEFjO5/oN/WBLHMQAM6jp64dZXh3Hl5iZmrUNaZa
-0ltkqYDQ36YSdOT047/ukP0pweOyyhVMPaSPhVTZR8onhCnPeMN8cxFmNgaFEqQi
-lzj1zNkAZ7Svl4mP7Poo1knV8bIf5gtSg9kRAJQ5Fk0sZq6ySqwMbFSktUt4qdJ1
-GdIaBWjIdPF2W2C+ZdAQWsZUJERjtqZFcO14xZsNOc5fTDZzRDk8rOrbUI2j1R8i
-kxS/LfrKR69NFntTwSjk9XY55UzsHpFVuMSMABo4VwVcoIy53Uh+puZA/QjuNliJ
-vAHUfhcixO0msqBqD5UMIXUPFRbzx8p/zF5paB2XGTVNcoQh4D3dg3XEm5JQtjB+
-ISl/wt7Et6CJIhRzdBcd+fBcVZduF6gyOnnGQQJr85MsUYuL+EaDwvlEIjpM5xgu
-WE2tMO5X3rQpuiwFNpxxiHsFXvX5SUrFCG/NmGIesq015FIqGyJeFS1Xerj4+I5U
-c0tdjNbSLoNKkk2AHLMQL1QULjaZNoAWwc7JXhZ5rRElRo5A4hhmeYu4SiMtno7c
-nQFqb78N4bvUIgnq/CmoytgFJpe5v5knKFKw2yIax6tgNXCPHmuJygG4EG+dNxtI
-0oRm2RqJtNgnJd4A0CKs2mb1lQy2SlOYAqIlzmXEXpw6iIDKf9I+u+bnVE67vQCZ
-nKvi1tbjVRX3DhsqfuUO
-=ccXg
------END PGP SIGNATURE-----
-
---nextPart1358521.C51tlIMhCM--
-
-
---===============1149006173301260842==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-Throughout its 18-year history, RSA Conference consistently attracts the
-world's best and brightest in the field, creating opportunities for Conference
-attendees to learn about information security's most important issues through
-interactions with peers, luminaries and emerging and established companies.
-http://p.sf.net/sfu/rsaconf-dev2dev
---===============1149006173301260842==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+---------------------------------------------------------------------------=
+---
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the busine=
+ss
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============1149006173301260842==--
-
