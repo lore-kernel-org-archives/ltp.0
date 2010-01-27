@@ -1,24 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NUcUa-0006TS-VX
-	for ltp-list@lists.sourceforge.net; Tue, 12 Jan 2010 08:52:48 +0000
-Received: from mail-pz0-f193.google.com ([209.85.222.193])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NUcUY-0003XY-Pg
-	for ltp-list@lists.sourceforge.net; Tue, 12 Jan 2010 08:52:48 +0000
-Received: by pzk31 with SMTP id 31so918362pzk.28
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Na4VZ-0001uO-9O
+	for ltp-list@lists.sourceforge.net; Wed, 27 Jan 2010 09:48:21 +0000
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Na4VY-00065D-FF
+	for ltp-list@lists.sourceforge.net; Wed, 27 Jan 2010 09:48:21 +0000
+Received: by pwj11 with SMTP id 11so3961446pwj.2
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 12 Jan 2010 00:52:41 -0800 (PST)
+	Wed, 27 Jan 2010 01:48:15 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <364299f41001112249x64cbafabrc63704828f624ef8@mail.gmail.com>
-References: <000301ca932c$10f42400$32dc6c00$@co.jp>
-	<364299f41001112249x64cbafabrc63704828f624ef8@mail.gmail.com>
-Date: Tue, 12 Jan 2010 00:52:40 -0800
-Message-ID: <364299f41001120052v759b972bj58492b1bdbd646b1@mail.gmail.com>
+In-Reply-To: <4B593DD8.2080207@teldevice.co.jp>
+References: <4B593DD8.2080207@teldevice.co.jp>
+Date: Wed, 27 Jan 2010 01:48:14 -0800
+Message-ID: <364299f41001270148g4a9b14f2ua4ceb75e4df9403c@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] "make clean" has problem?
+Subject: Re: [LTP] LTP installation configure Error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,114 +30,84 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net
+To: TED ITC Agarwal Ashish <ashish.g@teldevice.co.jp>
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
 
-On Mon, Jan 11, 2010 at 10:49 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Mon, Jan 11, 2010 at 6:08 PM, Mitani <mitani@ryobi.co.jp> wrote:
->> Hi,
->>
->> There is a problem about "make clean"(./Makefile), I think.
->> Before the following fix added at 12/11/2009, "/opt/ltp/" directory
->> was deleted by "make clean":
->> http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/Makefile?r1=3D1.53&r2=3D1.=
-54
->> But after this fix, "make clean" could not remove "/opt/ltp/" directory.
->>
->> If we test new release cvs and there are fixes about permissions
->> in new cvs, we can't do the test correctly.
->> Because, if "/opt/ltp/" directory remained and new cvs's file
->> has same time-stamp and different permissions from old cvs's file,
->> the install ended with "make: Nothing to be done for `install'."
->> message and this new file can't be installed.
->> Then test cases that fixed about permissions ended in "FAIL".
->> In recent cvs, To test correctly, we must remove "/opt/ltp/" directory
->> by manual operation before trying "make install".
->>
->> I think that it is right specification to remove "/opt/ltp/" directory
->> when "make clean" is executed.
->>
->>
->> This problem occurred because "INSTALL_IN_BUILD_TREE :=3D 1" is defined
->> in "./include/mk/env_pre.mk" included in "${LTPROOT}/Makefile", I think.
->> "$(prefix)" of a judgment of "ifeq ($(strip $(DESTDIR)$(prefix)),)"
->> doesn't have value, therefor the result of the judgment becomes "true",
->> and "INSTALL_IN_BUILD_TREE :=3D 1" was defined.
->>
->> So, it is neccessary to define "$(prefix)" by including "./include/mk/
->> config.mk" before including "./include/mk/env_pre.mk", isn't it?
->>
->>
->> The following patch can fix this problem:
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> --- Makefile.orig =A0 =A0 =A0 2010-01-09 17:37:04.000000000 +0900
->> +++ Makefile =A0 =A02010-01-12 09:49:29.000000000 +0900
->> @@ -27,6 +27,7 @@
->>
->> =A0top_srcdir =A0 =A0 =A0 =A0 =A0 =A0 ?=3D $(CURDIR)
->>
->> +include $(top_srcdir)/include/mk/config.mk
->> =A0include $(top_srcdir)/include/mk/env_pre.mk
->> =A0include $(top_srcdir)/include/mk/automake.mk
->>
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>
->>
->> Thank you--
->>
->>
->> -Tomonori Mitani
->>
->>
->>
->> ------------------------------------------------------------------------=
-------
->> This SF.Net email is sponsored by the Verizon Developer Community
->> Take advantage of Verizon's best-in-class app development support
->> A streamlined, 14 day to market process makes app distribution fast and =
-easy
->> Join now and get one step closer to millions of Verizon customers
->> http://p.sf.net/sfu/verizon-dev2dev
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.so
+2010/1/21 TED ITC Agarwal Ashish <ashish.g@teldevice.co.jp>:
+> Hello Shanmuga
 >
-> Ugh... good point, wrong file (env_pre.mk):
+> This is Ashish Agarwal.
 >
-> =A0 94 ifneq ($(abs_builddir),$(abs_srcdir))
-> =A0 95 OUT_OF_BUILD_TREE =A0 =A0 =A0 =A0 :=3D 1
-> =A0 96 else
-> =A0 97 # Stub support for installing directly in the build tree; the
-> support is not
-> =A0 98 # there yet, but the variable itself has its own uses...
-> =A0 99 ifeq ($(strip $(DESTDIR)$(prefix)),)
-> =A0100 INSTALL_IN_BUILD_TREE =A0 =A0 =A0 =A0 =A0 =A0 :=3D 1
-> =A0101 endif
-> =A0102 endif
-> =A0103
-> =A0104 # We can piece together where we're located in the source and
-> object trees with
-> =A0105 # just these two vars and $(CURDIR).
-> =A0106 export abs_top_srcdir abs_top_builddir
-> =A0107
-> =A0108 -include $(top_builddir)/include/mk/config.mk
-> =A0109
-> =A0110 .DEFAULT_GOAL =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 :=3D all
+> I also had the same problem as you fight with Quota ....
 >
-> I'll fix this in <1 hour.
-> Thanks,
+> what i got at end is it may be something related to the tools and sw inst=
+alled over my system.
+>
+> i also had fight with the issue last week.
+>
+>>I am doing cross compilation of LTP with ARM.
+>
+>>When I do ./configure, I'm also getting the same error message in
+>>ltp-full-20091231 release.
+>
+>> =A0 =A0 =A0 configure: error: Couldn't find functional copy of quota v2 =
+- are you >
+>>running 2.4.x ?
+>>As per your suggestion I have tried to do `man 2 quotactl', I'm getting t=
+he
+>>following message.
+>> =A0 =A0 =A0 =A0No manual entry for quotactl in section 2
+>>I have ubuntu in my system. I'm able to cross compile with the previous r=
+elease
+>>"ltp-full-20091130".
+>>Is there any setup is missing in my system for this release?
+>>Help me to resolve this issue.
+>
+>
+>
+> i had some info mail list achieve can be found at
+>
+> http://tinyurl.com/yzntwqt
+> [converted to tiny URL]
 
-Fixed -- thanks!
+This was `fixed' on CVS HEAD in the past two weeks after someone was
+kind enough to help me out by providing the details I needed for quota
+v1.
+
+> i was able to do it for the installed kernel over x86 PC. (Fedora 7, kern=
+el 2.6.23.17-88 )
+>
+> but now what i want is to CROSS compile this, if you have any source of i=
+nfo about CROSS_COMPILE Issue plz let me know :)
+>
+> I didn't find any steps how to start with cross compile. :(
+>
+> i greped the source ltp-full-20091231 for CROSS_COMPILER but it is not pr=
+esent to how to start with cross compile is still :x for me
+>
+> i know it is tricky to ask info from you this way,
+> but
+
+    CROSS_COMPILE, etc isn't needed as of 10/31/2009; it may be what
+kernel.org does for compiling kernel sources, but it doesn't match
+what autoconf enabled packages do, and isn't very flexible if you need
+to specify multiple tools with differing prefixes. If you use
+appropriate values for AR, CC, CFLAGS, CPPFLAGS, LD, LDFLAGS, and
+LDLIBS when calling configure for your environment, you'll achieve
+what you need to cross-compile LTP.
+    Please see INSTALL as a relevant example on how to use ./configure
+appropriately.
+HTH,
 -Garrett
 
 ---------------------------------------------------------------------------=
 ---
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev =
-
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the busine=
+ss
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
