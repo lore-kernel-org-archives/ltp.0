@@ -1,23 +1,45 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NXaZ5-0000Yr-GR
-	for ltp-list@lists.sourceforge.net; Wed, 20 Jan 2010 13:25:43 +0000
-Received: from mail-px0-f200.google.com ([209.85.216.200])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NXaZ3-0000Xc-8m
-	for ltp-list@lists.sourceforge.net; Wed, 20 Jan 2010 13:25:43 +0000
-Received: by pxi38 with SMTP id 38so1694691pxi.28
+	(envelope-from <isimatu.yasuaki@jp.fujitsu.com>) id 1NaImQ-0006GU-Ga
+	for ltp-list@lists.sourceforge.net; Thu, 28 Jan 2010 01:02:42 +0000
+Received: from fgwmail9.fujitsu.co.jp ([192.51.44.39])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NaImM-0000OX-Ri
+	for ltp-list@lists.sourceforge.net; Thu, 28 Jan 2010 01:02:41 +0000
+Received: from fgwmail5.fujitsu.co.jp (fgwmail5.fujitsu.co.jp [192.51.44.35])
+	by fgwmail9.fujitsu.co.jp (Fujitsu Gateway) with ESMTP id
+	o0S0mdW7019430 for <ltp-list@lists.sourceforge.net> (envelope-from
+	isimatu.yasuaki@jp.fujitsu.com); Thu, 28 Jan 2010 09:48:39 +0900
+Received: from m4.gw.fujitsu.co.jp ([10.0.50.74])
+	by fgwmail5.fujitsu.co.jp (Fujitsu Gateway) with ESMTP id
+	o0S0mctq010686 for <ltp-list@lists.sourceforge.net> (envelope-from
+	isimatu.yasuaki@jp.fujitsu.com); Thu, 28 Jan 2010 09:48:39 +0900
+Received: from smail (m4 [127.0.0.1])
+	by outgoing.m4.gw.fujitsu.co.jp (Postfix) with ESMTP id ABA4C45DE60
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 20 Jan 2010 05:25:35 -0800 (PST)
+	Thu, 28 Jan 2010 09:48:38 +0900 (JST)
+Received: from s4.gw.fujitsu.co.jp (s4.gw.fujitsu.co.jp [10.0.50.94])
+	by m4.gw.fujitsu.co.jp (Postfix) with ESMTP id 6980445DE70
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 28 Jan 2010 09:48:38 +0900 (JST)
+Received: from s4.gw.fujitsu.co.jp (localhost.localdomain [127.0.0.1])
+	by s4.gw.fujitsu.co.jp (Postfix) with ESMTP id D9DDF1DB803A
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 28 Jan 2010 09:48:37 +0900 (JST)
+Received: from m106.s.css.fujitsu.com (m106.s.css.fujitsu.com [10.249.87.106])
+	by s4.gw.fujitsu.co.jp (Postfix) with ESMTP id 03ED11DB8041
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 28 Jan 2010 09:48:37 +0900 (JST)
+Message-ID: <4B60DED0.70508@jp.fujitsu.com>
+Date: Thu, 28 Jan 2010 09:48:16 +0900
+From: Yasuaki Ishimatsu <isimatu.yasuaki@jp.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <000701ca998a$51aed7b0$f50c8710$@co.jp>
-References: <000701ca998a$51aed7b0$f50c8710$@co.jp>
-Date: Wed, 20 Jan 2010 05:25:35 -0800
-Message-ID: <364299f41001200525v31721544t521c73aceaa4b515@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] 2010-01-20 cvs build failed
+References: <4B5FCC2D.7070304@jp.fujitsu.com>
+	<364299f41001270101s6821a3a3l64bf928e599073cc@mail.gmail.com>
+In-Reply-To: <364299f41001270101s6821a3a3l64bf928e599073cc@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] fix aio_suspend/3-1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,107 +49,89 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mitani <mitani@ryobi.co.jp>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>, ltp-list@lists.sourceforge.net
+Cc: isimatu.yasuaki@jp.fujitsu.com
 
-On Tue, Jan 19, 2010 at 8:37 PM, Mitani <mitani@ryobi.co.jp> wrote:
-> Thank you for your great effort for "make3.80" supporting.
->
-> But in my system, there are several problems.
->
-> Because it is necessary to report about them hastily, I report them
-> without investigation first of all.
->
-> I tried to make with 2010-01-20 version cvs in my several systems.
-> =A0- RHEL5.4 x86
-> =A0- RHEL5.4 x86_64
-> =A0- RHEL5.4 ia64
-> =A0- RHEL4.8 x86 (using make3.80/3.81)
-> =A0- RHEL4.8 x86_64 (using make3.80/3.81)
->
-> I show below the results.
->
->
-> 1) <RHEL5.4 x86>
-> "make" succeeded, but "make install" failed as follows:
-> ------------
-> mkdir -m 00755 -p "//opt/ltp"
-> mkdir -m 00755 -p "//opt/ltp/bin"
-> make -C "doc" \
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0-f "/home/LTP/ltp-2010-01-20/doc/Makefile"=
- install
-> make[1]: Entering directory `/home/LTP/ltp-2010-01-20/doc'
-> make[2]: Entering directory `/home/LTP/ltp-2010-01-20/doc/man1'
-> make[2]: *** No rule to make target `/opt/ltp/share/man/man1', needed by
-> `/opt/ltp/share/man/man1/doio.1'. =A0Stop.
-> make[2]: Leaving directory `/home/LTP/ltp-2010-01-20/doc/man1'
-> make[1]: *** [install] Error 2
-> make[1]: Leaving directory `/home/LTP/ltp-2010-01-20/doc'
-> make: *** [doc-install] Error 2
-> ------------
+Hi Garrett
 
-Solved. Typo that I didn't pick up earlier..
+ >     Wouldn't it just be better to memset(&list, 0, sizeof(list)) the
+ > array and just set that one array value to &aiocb[0]? Seems like a
+ > much better idea...
 
-> 2) <RHEL5.4 x86_64>
-> 3) <RHEL5.4 ia64>
-> 4) <RHEL4.8 x86> (using make3.81)
-> 5) <RHEL4.8 x86_64> (using make3.81)
-> In above systems, results were same as <RHEL5.4 x86>.
->
->
-> 6) <RHEL4.8 x86> (using make3.80)
-> Strangely, the "make" command returned immediately.
-> "echo $?" was 0. But log was only several lines as follows:
+Thank you for your good idea.
+I applied it.
 
-You have to use make all when compiling `all' with make instead of
-just specifying `make' with 3.81 because make 3.80 doesn't have a
-concept of default goals/targets.
+Regards,
+Yasuaki Ishimatsu
 
-> ------------
-> make -C testcases/realtime autotools
-> make[1]: Entering directory `/home/LTP/ltp-2010-01-20/testcases/realtime'
-> autoheader
-> make[1]: Leaving directory `/home/LTP/ltp-2010-01-20/testcases/realtime'
-> ------------
->
-> Is this message same as what is written in the "INSTALL" file?
->
-> Just in case, I tried "make install".
-> But the result was as follows:
->
-> ------------
-> make -C "pan" \
-> =A0 =A0 =A0 =A0-f "/home/LTP/ltp-2010-01-20/pan/Makefile" install
-> make[1]: Entering directory `/home/LTP/ltp-2010-01-20/pan'
-> test -d "/opt/ltp/bin" || mkdir -p "/opt/ltp/bin"
-> install -m 00775 "/home/LTP/ltp-2010-01-20/pan/ltp-bump"
-> "/opt/ltp/bin/ltp-bump"
-> install: cannot stat `/home/LTP/ltp-2010-01-20/pan/ltp-bump': No such file
-> or directory
-> make[1]: *** [/opt/ltp/bin/ltp-bump] Error 1
-> make[1]: Leaving directory `/home/LTP/ltp-2010-01-20/pan'
-> make: *** [pan-install] Error 2
-> ------------
->
->
-> 7) <RHEL4.8 x86_64> (using make3.80)
-> Results were same as <RHEL4.8 x86> (using make3.80).
+--------------------------------------------------------------------------
+When the aio_suspend/3-1.test ran, SIGSEGV occured with following message
+on my x86_64 box.
 
-HTH,
--Garrett
-
----------------------------------------------------------------------------=
 ---
-Throughout its 18-year history, RSA Conference consistently attracts the
-world's best and brightest in the field, creating opportunities for Confere=
-nce
-attendees to learn about information security's most important issues throu=
-gh
-interactions with peers, luminaries and emerging and established companies.
-http://p.sf.net/sfu/rsaconf-dev2dev
+/bin/sh: line 38: 10675 Segmentation fault      ./t0 240 conformance/interfaces/aio_suspend/3-1.test
+  $COMPLOG 2>&1
+---
+
+This test does not initialize a list[1] array as follows.
+
+---
+  40 int main()
+...
+  88         list[0] = NULL;
+  89         list[2] = &aiocb[0];
+  90         list[3] = NULL;
+  91         list[4] = NULL;
+  92         list[5] = &aiocb[1];
+  93         list[6] = &aiocb[2];
+  94         list[7] = NULL;
+...
+---
+
+So, list[1] holds a strange value. Since aio_suspend() uses this value as address,
+SIGSEGV occurred.
+
+When applying this patch, this test succeeds as follows.
+
+---
+conformance/interfaces/aio_suspend/3-1: execution: PASS
+---
+
+Signed-off-by: Yasuaki Ishimatsu <isimatu.yasuaki@jp.fujitsu.com>
+
+Index: ltp-2010-01-28/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c
+===================================================================
+--- ltp-2010-01-28.orig/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c 
+2010-01-28 09:10:48.000000000 +0900
++++ ltp-2010-01-28/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c 
+2010-01-28 09:11:16.000000000 +0900
+@@ -81,13 +81,11 @@ int main()
+  		}
+  	}
+
+-	list[0] = NULL;
++	memset(&list, 0, sizeof(list));
++
+  	list[2] = &aiocb[0];
+-	list[3] = NULL;
+-	list[4] = NULL;
+  	list[5] = &aiocb[1];
+  	list[6] = &aiocb[2];
+-	list[7] = NULL;
+
+  	if (aio_suspend(list, NENT, NULL) != 0)
+  	{
+
+
+------------------------------------------------------------------------------
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the business
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
