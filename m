@@ -2,44 +2,28 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <isimatu.yasuaki@jp.fujitsu.com>) id 1NaImQ-0006GU-Ga
-	for ltp-list@lists.sourceforge.net; Thu, 28 Jan 2010 01:02:42 +0000
-Received: from fgwmail9.fujitsu.co.jp ([192.51.44.39])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NaImM-0000OX-Ri
-	for ltp-list@lists.sourceforge.net; Thu, 28 Jan 2010 01:02:41 +0000
-Received: from fgwmail5.fujitsu.co.jp (fgwmail5.fujitsu.co.jp [192.51.44.35])
-	by fgwmail9.fujitsu.co.jp (Fujitsu Gateway) with ESMTP id
-	o0S0mdW7019430 for <ltp-list@lists.sourceforge.net> (envelope-from
-	isimatu.yasuaki@jp.fujitsu.com); Thu, 28 Jan 2010 09:48:39 +0900
-Received: from m4.gw.fujitsu.co.jp ([10.0.50.74])
-	by fgwmail5.fujitsu.co.jp (Fujitsu Gateway) with ESMTP id
-	o0S0mctq010686 for <ltp-list@lists.sourceforge.net> (envelope-from
-	isimatu.yasuaki@jp.fujitsu.com); Thu, 28 Jan 2010 09:48:39 +0900
-Received: from smail (m4 [127.0.0.1])
-	by outgoing.m4.gw.fujitsu.co.jp (Postfix) with ESMTP id ABA4C45DE60
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 28 Jan 2010 09:48:38 +0900 (JST)
-Received: from s4.gw.fujitsu.co.jp (s4.gw.fujitsu.co.jp [10.0.50.94])
-	by m4.gw.fujitsu.co.jp (Postfix) with ESMTP id 6980445DE70
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 28 Jan 2010 09:48:38 +0900 (JST)
-Received: from s4.gw.fujitsu.co.jp (localhost.localdomain [127.0.0.1])
-	by s4.gw.fujitsu.co.jp (Postfix) with ESMTP id D9DDF1DB803A
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 28 Jan 2010 09:48:37 +0900 (JST)
-Received: from m106.s.css.fujitsu.com (m106.s.css.fujitsu.com [10.249.87.106])
-	by s4.gw.fujitsu.co.jp (Postfix) with ESMTP id 03ED11DB8041
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 28 Jan 2010 09:48:37 +0900 (JST)
-Message-ID: <4B60DED0.70508@jp.fujitsu.com>
-Date: Thu, 28 Jan 2010 09:48:16 +0900
-From: Yasuaki Ishimatsu <isimatu.yasuaki@jp.fujitsu.com>
+	(envelope-from <dvhltc@us.ibm.com>) id 1NaaDR-0000sX-4Z
+	for ltp-list@lists.sourceforge.net; Thu, 28 Jan 2010 19:39:45 +0000
+Received: from e7.ny.us.ibm.com ([32.97.182.137])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NaaDQ-0005yn-A5
+	for ltp-list@lists.sourceforge.net; Thu, 28 Jan 2010 19:39:45 +0000
+Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
+	by e7.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o0SJWwno030986
+	for <ltp-list@lists.sourceforge.net>; Thu, 28 Jan 2010 14:32:58 -0500
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o0SJdbxd1659134
+	for <ltp-list@lists.sourceforge.net>; Thu, 28 Jan 2010 14:39:37 -0500
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o0SJdbli022528
+	for <ltp-list@lists.sourceforge.net>; Thu, 28 Jan 2010 14:39:37 -0500
+Message-ID: <4B61E7F7.3000502@us.ibm.com>
+Date: Thu, 28 Jan 2010 11:39:35 -0800
+From: Darren Hart <dvhltc@us.ibm.com>
 MIME-Version: 1.0
-References: <4B5FCC2D.7070304@jp.fujitsu.com>
-	<364299f41001270101s6821a3a3l64bf928e599073cc@mail.gmail.com>
-In-Reply-To: <364299f41001270101s6821a3a3l64bf928e599073cc@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] fix aio_suspend/3-1
+Subject: [LTP] [PATCH] prio-wake: avoid glibc to kernel sleep race
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -52,79 +36,69 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>, ltp-list@lists.sourceforge.net
-Cc: isimatu.yasuaki@jp.fujitsu.com
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hi Garrett
+prio-wake: avoid glibc to kernel sleep race
 
- >     Wouldn't it just be better to memset(&list, 0, sizeof(list)) the
- > array and just set that one array value to &aiocb[0]? Seems like a
- > much better idea...
+In the unlocked broadcast scenario, there exists a race between when the
+running_threads variable reaches rt_threads and when the last worker_thread
+blocks in the kernel after a cond_wait(). It is possible for a thread to miss
+the broadcast if it fails to sleep before the broadcast is issued.  
 
-Thank you for your good idea.
-I applied it.
+The previous code did not guarantee a small window of time to allow the threads
+to get to sleep.  It also used an unreasonably large sleep time which
+unnecessarily extended the length of the test run time.  This patch ensures some
+time is given to the threads to get to sleep and at the same time uses a much
+shorter (1000x) sleep period which results in a 50-100x reduction in test run
+time. Lastly, two unecessary loops waiting for the threads to complete were
+removed, relying on pthread_join() instead to wait for the threads to complete.
 
-Regards,
-Yasuaki Ishimatsu
-
---------------------------------------------------------------------------
-When the aio_suspend/3-1.test ran, SIGSEGV occured with following message
-on my x86_64 box.
-
----
-/bin/sh: line 38: 10675 Segmentation fault      ./t0 240 conformance/interfaces/aio_suspend/3-1.test
-  $COMPLOG 2>&1
----
-
-This test does not initialize a list[1] array as follows.
+Signed-off-by: Darren Hart <dvhltc@us.ibm.com>
+Acked-by: Will Schmidt <will_schmidt@vnet.ibm.com>
 
 ---
-  40 int main()
-...
-  88         list[0] = NULL;
-  89         list[2] = &aiocb[0];
-  90         list[3] = NULL;
-  91         list[4] = NULL;
-  92         list[5] = &aiocb[1];
-  93         list[6] = &aiocb[2];
-  94         list[7] = NULL;
-...
----
+ func/prio-wake/prio-wake.c |   10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-So, list[1] holds a strange value. Since aio_suspend() uses this value as address,
-SIGSEGV occurred.
-
-When applying this patch, this test succeeds as follows.
-
----
-conformance/interfaces/aio_suspend/3-1: execution: PASS
----
-
-Signed-off-by: Yasuaki Ishimatsu <isimatu.yasuaki@jp.fujitsu.com>
-
-Index: ltp-2010-01-28/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c
+Index: realtime/func/prio-wake/prio-wake.c
 ===================================================================
---- ltp-2010-01-28.orig/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c 
-2010-01-28 09:10:48.000000000 +0900
-+++ ltp-2010-01-28/testcases/open_posix_testsuite/conformance/interfaces/aio_suspend/3-1.c 
-2010-01-28 09:11:16.000000000 +0900
-@@ -81,13 +81,11 @@ int main()
-  		}
-  	}
-
--	list[0] = NULL;
-+	memset(&list, 0, sizeof(list));
-+
-  	list[2] = &aiocb[0];
--	list[3] = NULL;
--	list[4] = NULL;
-  	list[5] = &aiocb[1];
-  	list[6] = &aiocb[2];
--	list[7] = NULL;
-
-  	if (aio_suspend(list, NENT, NULL) != 0)
-  	{
-
+--- realtime.orig/func/prio-wake/prio-wake.c
++++ realtime/func/prio-wake/prio-wake.c
+@@ -108,7 +108,10 @@ void *master_thread(void* arg)
+ 
+ 	/* make sure children are started */
+ 	while (running_threads < rt_threads)
+-		sleep(1);
++		usleep(1000);
++	/* give the worker threads a chance to get to sleep in the kernel
++	 * in the unlocked broadcast case. */
++	usleep(1000);
+ 
+ 	start = rt_gettime() - beginrun;
+ 
+@@ -120,8 +123,6 @@ void *master_thread(void* arg)
+ 	if (locked_broadcast)
+ 		rc = pthread_mutex_unlock(&mutex);
+ 
+-	while (running_threads > 0)
+-		sleep(1);
+ 	return NULL;
+ }
+ 
+@@ -157,9 +158,6 @@ void *worker_thread(void* arg)
+ 
+ 	rc = pthread_mutex_unlock(&mutex);
+ 
+-	/* wait for all threads to quit */
+-	while (running_threads > 0)
+-		sleep(1);
+ 	return NULL;
+ }
+ 
+-- 
+Darren Hart
+IBM Linux Technology Center
+Real-Time Linux Team
 
 ------------------------------------------------------------------------------
 The Planet: dedicated and managed hosting, cloud storage, colocation
