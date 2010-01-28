@@ -1,40 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1NUQHr-0002Tt-HN
-	for ltp-list@lists.sourceforge.net; Mon, 11 Jan 2010 19:50:51 +0000
-Received: from e4.ny.us.ibm.com ([32.97.182.144])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NUQHq-00073I-Ne
-	for ltp-list@lists.sourceforge.net; Mon, 11 Jan 2010 19:50:51 +0000
-Received: from d01relay05.pok.ibm.com (d01relay05.pok.ibm.com [9.56.227.237])
-	by e4.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o0BJf6Bv026204
-	for <ltp-list@lists.sourceforge.net>; Mon, 11 Jan 2010 14:41:07 -0500
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay05.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o0BJoiMZ130752
-	for <ltp-list@lists.sourceforge.net>; Mon, 11 Jan 2010 14:50:44 -0500
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o0BJoi6b016421
-	for <ltp-list@lists.sourceforge.net>; Mon, 11 Jan 2010 17:50:44 -0200
-Date: Mon, 11 Jan 2010 13:50:44 -0600
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20100111195043.GA23360@us.ibm.com>
-References: <20100106185019.GA19647@us.ibm.com>
-	<1262893258.2821.50.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001081020r7ee941f4w1b91bcb79849b406@mail.gmail.com>
-	<1262976343.20881.4.camel@moss-pluto.epoch.ncsc.mil>
-	<1262976627.20881.6.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001081338u37e77cd3q3d9535f3dec71331@mail.gmail.com>
-	<1262988051.20881.42.camel@moss-pluto.epoch.ncsc.mil>
-	<364299f41001081408sf9d740ew55dad7b542463416@mail.gmail.com>
-	<364299f41001082327o31bbe79eh849ea1651cf12632@mail.gmail.com>
-	<1263237132.5091.1.camel@moss-pluto.epoch.ncsc.mil>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1263237132.5091.1.camel@moss-pluto.epoch.ncsc.mil>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <sds@tycho.nsa.gov>) id 1NaUsF-0003G1-5W
+	for ltp-list@lists.sourceforge.net; Thu, 28 Jan 2010 13:57:31 +0000
+Received: from msux-gh1-uea01.nsa.gov ([63.239.67.1])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NaUsC-00049c-IE
+	for ltp-list@lists.sourceforge.net; Thu, 28 Jan 2010 13:57:31 +0000
+From: Stephen Smalley <sds@tycho.nsa.gov>
+In-Reply-To: <364299f41001272156p5f12bc94p4eba45d9df61fbc0@mail.gmail.com>
+References: <1262988051.20881.42.camel@moss-pluto.epoch.ncsc.mil>
+	<20100111210006.GA26554@us.ibm.com>
+	<364299f41001120029x15b2e7adwe30d925717a1dc89@mail.gmail.com>
+	<20100112153827.GB7975@us.ibm.com>
+	<364299f41001150948u4df35c36g3d4b07b16af49f90@mail.gmail.com>
+	<364299f41001260031h2529b9b0j1bbbacd9d3d85eae@mail.gmail.com>
+	<1264516245.19890.22.camel@moss-pluto.epoch.ncsc.mil>
+	<23804BFE-0FC7-45F8-939D-3729E39DB431@gmail.com>
+	<1264619548.17372.27.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41001271437k3f9bde57t64845d8d0054ba22@mail.gmail.com>
+	<364299f41001272156p5f12bc94p4eba45d9df61fbc0@mail.gmail.com>
+Date: Thu, 28 Jan 2010 09:02:27 -0500
+Message-Id: <1264687347.6232.48.camel@moss-pluto.epoch.ncsc.mil>
+Mime-Version: 1.0
 Subject: Re: [LTP] regression: selinux testsuite broken since October
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -48,67 +37,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stephen Smalley <sds@tycho.nsa.gov>
-Cc: ltp-list@lists.sourceforge.net, James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: James Morris <jmorris@namei.org>, Eric Paris <eparis@parisplace.org>, ltp-list@lists.sourceforge.net
 
-Quoting Stephen Smalley (sds@tycho.nsa.gov):
-> On Fri, 2010-01-08 at 23:27 -0800, Garrett Cooper wrote:
-> > On Fri, Jan 8, 2010 at 2:08 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> > > On Fri, Jan 8, 2010 at 2:00 PM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
-> > >> On Fri, 2010-01-08 at 13:38 -0800, Garrett Cooper wrote:
-> > >>> On Fri, Jan 8, 2010 at 10:50 AM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
-> > >>> > On Fri, 2010-01-08 at 13:47 -0500, Stephen Smalley wrote:
-> > >>> >> On Fri, 2010-01-08 at 10:20 -0800, Garrett Cooper wrote:
-> > >>> >> >     Thanks for the feedback and details Stephen.
-> > >>> >> >     Would you be kind enough to try out the version from CVS to see
-> > >>> >> > whether or not it resolves your issue? You'll also need to update
-> > >>> >> > $LTPROOT/scripts in order to use the new version as I added a distro
-> > >>> >> > detection script which opens up /etc/redhat-release (for redhat) as
-> > >>> >> > opposed to using rpm to query the release.
-> > >>> >> > Thanks,
-> > >>> >> > -Garrett
-> > >>> >>
-> > >>> >> The attempt to make the test policy immediately dies with:
-> > >>> >> detect_distro.sh: ERROR: Bad release file: /etc/redhat-release
-> > >>> >
-> > >>> > I should note that I'm running it on Fedora, so I wouldn't expect that
-> > >>> > file to exist.  But the script needs to handle it gracefully; we just
-> > >>> > use the generic test policy files in that situation.
-> > >>>
-> > >>>     What does /etc/redhat-release look like (feel free to reply to me off-list)?
-> > >>
-> > >> On RHEL5, it can look like one of the following:
-> > >> Red Hat Enterprise Linux Server release 5 (Tikanga)
-> > >> Red Hat Enterprise Linux Server release 5.x (Tikanga)
-> > >> Red Hat Enterprise Linux Client release 5 (Tikanga)
-> > >> Red Hat Enterprise Linux Client release 5.x (Tikanga)
-> > >
-> > > Interesting. They switched over to more of the Fedora-style branding, maybe?.
-> > >
-> > > [garrcoop@halflife ~]$ cat /etc/redhat-release
-> > > Red Hat Enterprise Linux AS release 4 (Nahant Update 6)
-> > 
-> > Could you try again please :)?
+On Wed, 2010-01-27 at 21:56 -0800, Garrett Cooper wrote:
+> On Wed, Jan 27, 2010 at 2:37 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> > Ok. Send me a patch that does a readlink -f of the LTPPATH and set
+> > your PATH to include $LTPROOT/testcases/bin, and you'll be good to go
 > 
-> Fails with:
-> cp: cannot stat
-> `/home/sds/ltp/testcases/kernel/security/selinux-testsuite/refpolicy/policy_files/generic/test_policy.*': No such file or directory
+>     Nevermind. I just committed the change... please retest and
+> hopefully all goes well for you this time around.
 
-You ran /home/sds/ltp/testscripts/test_selinux.sh, right?
+Looks good.  Patch below fixes two bugs in the selinux tests, noticed by
+examining the selinux.outfile carefully for errors (No such file or
+directory, Segmentation fault).  
 
-I think we are supposed to actually be running
-/opt/ltp/testscripts/test_selinux.sh.  So then the first question for
-Garrett is how should we deduce /home/sds/ltp as $LTP_SRCDIR from a
-testscript?  Or should the policy sources be copied into /opt?
+Index: testcases/kernel/security/selinux-testsuite/tests/file/selinux_file.sh
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/selinux-testsuite/tests/file/selinux_file.sh,v
+retrieving revision 1.10
+diff -u -r1.10 selinux_file.sh
+--- testcases/kernel/security/selinux-testsuite/tests/file/selinux_file.sh	26 Jan 2010 07:05:02 -0000	1.10
++++ testcases/kernel/security/selinux-testsuite/tests/file/selinux_file.sh	28 Jan 2010 13:50:31 -0000
+@@ -47,7 +47,8 @@
+ 	# 
+ 	# Change the context of the test executable
+ 	#
+-	chcon -t fileop_exec_t selinux_wait_io 2>&1 > /dev/null
++	LTPBIN=${LTPBIN:-$LTPROOT/testcases/bin}
++	chcon -t fileop_exec_t $LTPBIN/selinux_wait_io 2>&1 > /dev/null
+ 
+ 	#
+ 	# Get the SID of the good file.
+Index: testcases/kernel/security/selinux-testsuite/tests/shm/selinux_shmat.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/security/selinux-testsuite/tests/shm/selinux_shmat.c,v
+retrieving revision 1.4
+diff -u -r1.4 selinux_shmat.c
+--- testcases/kernel/security/selinux-testsuite/tests/shm/selinux_shmat.c	13 Jan 2010 08:16:57 -0000	1.4
++++ testcases/kernel/security/selinux-testsuite/tests/shm/selinux_shmat.c	28 Jan 2010 13:50:31 -0000
+@@ -40,7 +40,7 @@
+ 		return 1;
+ 
+ 	buf = shmat(id, 0, 0);
+-	error = (*buf == -1) ? -1 : 0;
++	error = (buf == (void*)-1) ? -1 : 0;
+ 	printf("shmat: buf=%p, returned %d\n", buf, error);
+ 	return error;
+ }
 
--serge
+-- 
+Stephen Smalley
+National Security Agency
+
 
 ------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the business
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
