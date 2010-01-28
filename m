@@ -1,21 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NbUhJ-0007eN-Ks
-	for ltp-list@lists.sourceforge.net; Sun, 31 Jan 2010 07:58:21 +0000
-Received: from mail-px0-f200.google.com ([209.85.216.200])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NbUhI-0004NA-Mw
-	for ltp-list@lists.sourceforge.net; Sun, 31 Jan 2010 07:58:21 +0000
-Received: by pxi38 with SMTP id 38so3028527pxi.28
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NaLIh-0008Nr-Af
+	for ltp-list@lists.sourceforge.net; Thu, 28 Jan 2010 03:44:11 +0000
+Received: from mail-pz0-f190.google.com ([209.85.222.190])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NaLIg-0006pG-EZ
+	for ltp-list@lists.sourceforge.net; Thu, 28 Jan 2010 03:44:11 +0000
+Received: by pzk28 with SMTP id 28so207225pzk.4
 	for <ltp-list@lists.sourceforge.net>;
-	Sat, 30 Jan 2010 23:58:14 -0800 (PST)
+	Wed, 27 Jan 2010 19:44:04 -0800 (PST)
 MIME-Version: 1.0
-Date: Sat, 30 Jan 2010 23:58:14 -0800
-Message-ID: <364299f41001302358m15143b1flc2f64ba5ea0d620a@mail.gmail.com>
+In-Reply-To: <4B60DED0.70508@jp.fujitsu.com>
+References: <4B5FCC2D.7070304@jp.fujitsu.com>
+	<364299f41001270101s6821a3a3l64bf928e599073cc@mail.gmail.com>
+	<4B60DED0.70508@jp.fujitsu.com>
+Date: Wed, 27 Jan 2010 19:44:02 -0800
+Message-ID: <364299f41001271944j7dcc647ch2c409f6ff763907e@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] LTP build test scripts now available
+Subject: Re: [LTP] [PATCH] fix aio_suspend/3-1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,47 +29,31 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Subrata Modak <subrata@linux.vnet.ibm.com>, =?ISO-2022-JP?B?GyRCP0BDK0p+SE8bKEI=?= <mitani@ryobi.co.jp>
-Cc: LTP list <ltp-list@lists.sourceforge.net>
+To: Yasuaki Ishimatsu <isimatu.yasuaki@jp.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi folks,
-    I'm asking that anyone who is interested in helping out LTP please
-contribute by testing with the testscripts/build scripts on a
-semi-regular basis:
+On Wed, Jan 27, 2010 at 4:48 PM, Yasuaki Ishimatsu
+<isimatu.yasuaki@jp.fujitsu.com> wrote:
+> Hi Garrett
+>
+>> =A0 =A0 Wouldn't it just be better to memset(&list, 0, sizeof(list)) the
+>> array and just set that one array value to &aiocb[0]? Seems like a
+>> much better idea...
+>
+> Thank you for your good idea.
+> I applied it.
 
-.../testscripts/build/test_install_in_build_tree.sh
-.../testscripts/build/test_install_out_of_build_tree.sh
-.../testscripts/build/test_out_of_build_tree.sh
-
-    I've added these scripts for three identified common fetch ->
-build -> test scenarios:
-
-    1. Install in source tree.
-    2. Install out of build tree, but build in source tree.
-    3. Install out of build tree, build in source tree.
-
-    They all assume that the end-user has access to CVS today, but
-that can be tailored to meet other needs [in the future].
-    What I'm requesting:
-    1. I would appreciate the feedback.
-    2. In order to ensure build integrity and compatibility obtaining
-a profile of common distro configurations (kernel configs, build
-tools, etc) so I can better tailor the tests to find known build and
-configuration issues before other folks do by accident would be
-helpful. If I could obtain access to distro ISOs that aren't mirrored
-anymore (with binary packages to install the tools from), that would
-make my life a lot easier.
-    Please CC me the results so I can analyze this and improve the
-overall end-to-end process.
-Thanks,
+Committed -- thanks!
 -Garrett
 
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 The Planet: dedicated and managed hosting, cloud storage, colocation
-Stay online with enterprise data centers and the best network in the business
+Stay online with enterprise data centers and the best network in the busine=
+ss
 Choose flexible plans and management services without long-term contracts
 Personal 24x7 support from experience hosting pros just a phone call away.
 http://p.sf.net/sfu/theplanet-com
