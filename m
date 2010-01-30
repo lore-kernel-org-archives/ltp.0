@@ -1,27 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NV7dP-0007wM-JG
-	for ltp-list@lists.sourceforge.net; Wed, 13 Jan 2010 18:07:59 +0000
-Received: from mail-px0-f171.google.com ([209.85.216.171])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NV7dO-0006CQ-Ei
-	for ltp-list@lists.sourceforge.net; Wed, 13 Jan 2010 18:07:59 +0000
-Received: by pxi1 with SMTP id 1so7078573pxi.25
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Nb5th-0007ex-3d
+	for ltp-list@lists.sourceforge.net; Sat, 30 Jan 2010 05:29:29 +0000
+Received: from mail-px0-f200.google.com ([209.85.216.200])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Nb5tg-0005tp-0R
+	for ltp-list@lists.sourceforge.net; Sat, 30 Jan 2010 05:29:29 +0000
+Received: by pxi38 with SMTP id 38so2259764pxi.28
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 13 Jan 2010 10:07:52 -0800 (PST)
+	Fri, 29 Jan 2010 21:29:22 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1263401044.7900.4.camel@lucio-t400>
-References: <000101ca79f4$7af702b0$70e50810$@co.jp>
-	<2937C931-7CC9-4FCF-8B9F-7D67BDF055EA@gmail.com>
-	<1263234549.18451.1.camel@lucio-t400>
-	<364299f41001120226y2c7c51ecu7ef222b1ce2ca0ee@mail.gmail.com>
-	<1263401044.7900.4.camel@lucio-t400>
-Date: Wed, 13 Jan 2010 10:07:51 -0800
-Message-ID: <364299f41001131007k4d7a8eesc69d6c6af1da3f57@mail.gmail.com>
+Date: Fri, 29 Jan 2010 21:29:22 -0800
+Message-ID: <364299f41001292129odcec445t1514787fb65d69f1@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] Tests of "iogen01" et al. fail with ltp-2009-12-10 cvs
+Subject: [LTP] `buffer overflow detected' from ftest0[37] with glibc 2.10
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,209 +25,214 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ljhc@br.ibm.com
-Cc: ltp-list@lists.sourceforge.net
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-On Wed, Jan 13, 2010 at 8:44 AM, Lucio Correia <ljhc@br.ibm.com> wrote:
-> Hi Garret,
->
-> I'm running on a ppc64 machine.
->
-> I noticed it by running ./runltp (all tests). I found these messages in
-> the .log file:
-> gf30 =A0 =A0 =A0 =A01 =A0TPASS =A0: =A0Test passed
-> sh: rwtest.sh: command not found
-> sh: rwtest.sh: command not found
-> sh: rwtest.sh: command not found
-> sh: rwtest.sh: command not found
-> sh: rwtest.sh: command not found
-> sh: rwtest.sh: command not found
-> FS_INODE: File system stress - inode allocation/deallocation
->
-> Then I looked for rwtest.sh and didn't find. But I found rwtest
->
-> Now I'm running it manually:
->
-> # export LTPROOT; rwtest.sh -N iogen01 -i 120s -s read,write -Da -Dv -n
-> 2 500b:doio.f1.$$ 1000b:doio.f2.$$
-> bash: rwtest.sh: command not found
->
-> # export LTPROOT; rwtest -N iogen01 -i 120s -s read,write -Da -Dv -n 2
-> 500b:doio.f1.$$ 1000b:doio.f2.$$
-> /opt/ltp/testcases/bin/iogen -N iogen01 -i 120s -s read,write
-> 500b:doio.f1.29698 1000b:doio.f2.29698 | /opt/ltp/testcases/bin/doio -N
-> iogen01 -a -v -n 2 -k
->
-> iogen(iogen01) starting up with the following:
->
-> Out-pipe: =A0 =A0 =A0 =A0 =A0 =A0 =A0stdout
-> Iterations: =A0 =A0 =A0 =A0 =A0 =A0120 seconds
-> Seed: =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A029976
-> Offset-Mode: =A0 =A0 =A0 =A0 =A0 sequential
-> Overlap Flag: =A0 =A0 =A0 =A0 =A0off
-> Mintrans: =A0 =A0 =A0 =A0 =A0 =A0 =A01 =A0 =A0 =A0 =A0 =A0 (1 blocks)
-> Maxtrans: =A0 =A0 =A0 =A0 =A0 =A0 =A0131072 =A0 =A0 =A0(256 blocks)
-> O_RAW/O_SSD Multiple: =A0(Determined by device)
-> Syscalls: =A0 =A0 =A0 =A0 =A0 =A0 =A0read write
-> Aio completion types: =A0none
-> Flags: =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 buffered sync
->
-> Test Files:
->
-> Path =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0Length =A0 =A0iou =A0 raw iou
-> file
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0(bytes) (bytes) (bytes)
-> type
-> -------------------------------------------------------------------------=
-----
-> /opt/ltp/doio.f1.29698 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 25=
-6000 =A0 =A0 =A0 1 =A0 =A0 512
-> regular
-> /opt/ltp/doio.f2.29698 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 51=
-2000 =A0 =A0 =A0 1 =A0 =A0 512
-> regular
-> iogen01 =A0 =A0 1 =A0TPASS =A0: =A0Test passed
-> Test passed
+Hi,
+    I've been seeing the following messages when ftest03 and ftest07
+are executed on a regular basis as of late (may be due to a recent
+glibc upgrade):
 
-Everything's fine on CVS with this item:
+*** buffer overflow detected ***: ftest03 terminated
+======= Backtrace: =========
+/lib/libc.so.6(__fortify_fail+0x37)[0x7f100b0c3867]
+/lib/libc.so.6[0x7f100b0c1680]
+/lib/libc.so.6[0x7f100b0c0979]
+/lib/libc.so.6(_IO_default_xsputn+0x85)[0x7f100b04ef25]
+/lib/libc.so.6(_IO_vfprintf+0x1fed)[0x7f100b0216dd]
+/lib/libc.so.6(__vsprintf_chk+0x9d)[0x7f100b0c0a1d]
+/lib/libc.so.6(__sprintf_chk+0x80)[0x7f100b0c0960]
+ftest03[0x401f05]
+ftest03[0x402a76]
+/lib/libc.so.6(__libc_start_main+0xe6)[0x7f100affba26]
+ftest03[0x401d59]
+======= Memory map: ========
+00400000-00408000 r-xp 00000000 fd:03 74957
+  /tmp/tmp.9O93FRsMhN/ltp/testcases/bin/ftest03
+00608000-00609000 r--p 00008000 fd:03 74957
+  /tmp/tmp.9O93FRsMhN/ltp/testcases/bin/ftest03
+00609000-0060a000 rw-p 00009000 fd:03 74957
+  /tmp/tmp.9O93FRsMhN/ltp/testcases/bin/ftest03
+0060a000-0060f000 rw-p 00000000 00:00 0
+01f91000-01fb2000 rw-p 00000000 00:00 0                                  [heap]
+7f100adc6000-7f100addc000 r-xp 00000000 fd:03 6454
+  /lib64/libgcc_s.so.1
+7f100addc000-7f100afdb000 ---p 00016000 fd:03 6454
+  /lib64/libgcc_s.so.1
+7f100afdb000-7f100afdc000 r--p 00015000 fd:03 6454
+  /lib64/libgcc_s.so.1
+7f100afdc000-7f100afdd000 rw-p 00016000 fd:03 6454
+  /lib64/libgcc_s.so.1
+7f100afdd000-7f100b12c000 r-xp 00000000 fd:03 5882
+  /lib64/libc-2.10.1.so
+7f100b12c000-7f100b32c000 ---p 0014f000 fd:03 5882
+  /lib64/libc-2.10.1.so
+7f100b32c000-7f100b330000 r--p 0014f000 fd:03 5882
+  /lib64/libc-2.10.1.so
+7f100b330000-7f100b331000 rw-p 00153000 fd:03 5882
+  /lib64/libc-2.10.1.so
+7f100b331000-7f100b336000 rw-p 00000000 00:00 0
+7f100b336000-7f100b353000 r-xp 00000000 fd:03 5871
+  /lib64/ld-2.10.1.so
+7f100b536000-7f100b538000 rw-p 00000000 00:00 0
+7f100b550000-7f100b552000 rw-p 00000000 00:00 0
+7f100b552000-7f100b553000 r--p 0001c000 fd:03 5871
+  /lib64/ld-2.10.1.so
+7f100b553000-7f100b554000 rw-p 0001d000 fd:03 5871
+  /lib64/ld-2.10.1.so
+7fffe07b0000-7fffe07c5000 rw-p 00000000 00:00 0                          [stack]
+7fffe07ff000-7fffe0800000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0
+  [vsyscall]
+*** buffer overflow detected ***: ftest07 terminated
+======= Backtrace: =========
+/lib/libc.so.6(__fortify_fail+0x37)[0x7f8678b10867]
+/lib/libc.so.6[0x7f8678b0e680]
+/lib/libc.so.6[0x7f8678b0d979]
+/lib/libc.so.6(_IO_default_xsputn+0x85)[0x7f8678a9bf25]
+/lib/libc.so.6(_IO_vfprintf+0x1fed)[0x7f8678a6e6dd]
+/lib/libc.so.6(__vsprintf_chk+0x9d)[0x7f8678b0da1d]
+/lib/libc.so.6(__sprintf_chk+0x80)[0x7f8678b0d960]
+ftest07[0x401ec5]
+ftest07[0x402a76]
+/lib/libc.so.6(__libc_start_main+0xe6)[0x7f8678a48a26]
+ftest07[0x401d19]
+======= Memory map: ========
+00400000-00408000 r-xp 00000000 fd:03 74961
+  /tmp/tmp.9O93FRsMhN/ltp/testcases/bin/ftest07
+00608000-00609000 r--p 00008000 fd:03 74961
+  /tmp/tmp.9O93FRsMhN/ltp/testcases/bin/ftest07
+00609000-0060a000 rw-p 00009000 fd:03 74961
+  /tmp/tmp.9O93FRsMhN/ltp/testcases/bin/ftest07
+0060a000-0060f000 rw-p 00000000 00:00 0
+01f3f000-01f60000 rw-p 00000000 00:00 0                                  [heap]
+7f8678813000-7f8678829000 r-xp 00000000 fd:03 6454
+  /lib64/libgcc_s.so.1
+7f8678829000-7f8678a28000 ---p 00016000 fd:03 6454
+  /lib64/libgcc_s.so.1
+7f8678a28000-7f8678a29000 r--p 00015000 fd:03 6454
+  /lib64/libgcc_s.so.1
+7f8678a29000-7f8678a2a000 rw-p 00016000 fd:03 6454
+  /lib64/libgcc_s.so.1
+7f8678a2a000-7f8678b79000 r-xp 00000000 fd:03 5882
+  /lib64/libc-2.10.1.so
+7f8678b79000-7f8678d79000 ---p 0014f000 fd:03 5882
+  /lib64/libc-2.10.1.so
+7f8678d79000-7f8678d7d000 r--p 0014f000 fd:03 5882
+  /lib64/libc-2.10.1.so
+7f8678d7d000-7f8678d7e000 rw-p 00153000 fd:03 5882
+  /lib64/libc-2.10.1.so
+7f8678d7e000-7f8678d83000 rw-p 00000000 00:00 0
+7f8678d83000-7f8678da0000 r-xp 00000000 fd:03 5871
+  /lib64/ld-2.10.1.so
+7f8678f83000-7f8678f85000 rw-p 00000000 00:00 0
+7f8678f9d000-7f8678f9f000 rw-p 00000000 00:00 0
+7f8678f9f000-7f8678fa0000 r--p 0001c000 fd:03 5871
+  /lib64/ld-2.10.1.so
+7f8678fa0000-7f8678fa1000 rw-p 0001d000 fd:03 5871
+  /lib64/ld-2.10.1.so
+7fffeffa2000-7fffeffb7000 rw-p 00000000 00:00 0                          [stack]
+7fffeffff000-7ffff0000000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0
+  [vsyscall]
 
-optimus ltp # grep -r 'rwtest.sh' runtest/ | grep -v rwtest.sh
-optimus ltp # find testcases -name 'rwtest*'
-testcases/kernel/fs/doio/rwtest
-optimus ltp # cvs diff runtest/
-cvs diff: Diffing runtest
-optimus ltp #
+    gcooper@orangebox /scratch/ltp $ emerge --info
+Portage 2.1.6.13 (default/linux/amd64/10.0, gcc-4.3.4,
+glibc-2.10.1-r1, 2.6.31-gentoo-r6 x86_64)
+=================================================================
+System uname: Linux-2.6.31-gentoo-r6-x86_64-Intel-R-_Core-TM-2_Quad_CPU_Q9400_@_2.66GHz-with-gentoo-1.12.13
+Timestamp of tree: Sun, 24 Jan 2010 07:00:21 +0000
+app-shells/bash:     4.0_p35
+dev-java/java-config: 2.1.9-r2
+dev-lang/python:     2.6.4
+sys-apps/baselayout: 1.12.13
+sys-apps/sandbox:    1.6-r2
+sys-devel/autoconf:  2.13, 2.63-r1
+sys-devel/automake:  1.9.6-r2, 1.10.2
+sys-devel/binutils:  2.18-r3
+sys-devel/gcc-config: 1.4.1
+sys-devel/libtool:   2.2.6b
+virtual/os-headers:  2.6.27-r2
 
-> On Tue, 2010-01-12 at 02:26 -0800, Garrett Cooper wrote:
->> On Mon, Jan 11, 2010 at 10:29 AM, Lucio Correia <ljhc@br.ibm.com> wrote:
->> > Hi Garrett,
->> >
->> > I'm still seeing this issue with LTP-20091231.
->>
->> Hi Lucio,
->> What's the error message and how are you trying to run the test (the
->> files checked in are correct as well as the runtest file itself which
->> was out of sync before)?
->> Thanks,
->> -Garrett
->>
->> > On Fri, 2009-12-11 at 01:52 -0800, Garrett Cooper wrote:
->> >> On Dec 10, 2009, at 3:57 PM, Mitani wrote:
->> >>
->> >> > Hi,
->> >> >
->> >> > In the following thread, "rwtest has been renamed to rwtest.sh" is
->> >> > written.
->> >> > http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg08896=
-.html
->> >> >
->> >> > But, I got following message when I ran tests of "rwtest{01...05}"
->> >> > and
->> >> > "iogen01" in my system with "ltp-2009-12-10" cvs.
->> >> >
->> >> > ------------
->> >> > sh: rwtest.sh: command not found
->> >> > ------------
->> >> >
->> >> > I think that "rwtest.sh" has been renamed to "rwtest" at about
->> >> > 2009/11/14.
->> >> >
->> >> > Here is a patch that reverts the previous patch applied to
->> >> > runtest/fs.
->> >> > After applied this patch, "rwtest{01...05}" and "iogen01" passed in
->> >> > my
->> >> > system.
->> >> >
->> >> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> >> > --- fs 2009-12-10 10:23:21.000000000 +0900
->> >> > +++ fs.new 2009-12-10 11:23:53.000000000 +0900
->> >> > @@ -29,15 +29,15 @@
->> >> > gf28 growfiles -W gf28 -b -D 0 -w -g 16b -C 1 -b -i 1000 -u
->> >> > gfsparse-2-$$
->> >> > -d $TMPDIR
->> >> > gf29 growfiles -W gf29 -b -D 0 -r 1-4096 -R 0-33554432 -i 0 -L 60 -C
->> >> > 1 -u
->> >> > gfsparse-3-$$ -d $TMPDIR
->> >> > gf30 growfiles -W gf30 -D 0 -b -i 0 -L 60 -u -B 1000b -e 1 -o
->> >> > O_RDWR,O_CREAT,O_SYNC -g 20480 -T 10 -t 20480 gf-sync-$$ -d $TMPDIR
->> >> > -rwtest01 export LTPROOT; rwtest.sh -N rwtest01 -c -q -i 60s =A0-f
->> >> > sync
->> >> > 10%25000:$TMPDIR/rw-sync-$$
->> >> > -rwtest02 export LTPROOT; rwtest.sh -N rwtest02 -c -q -i 60s =A0-f
->> >> > buffered
->> >> > 10%25000:$TMPDIR/rw-buffered-$$
->> >> > -rwtest03 export LTPROOT; rwtest.sh -N rwtest03 -c -q -i 60s -n 2
->> >> > =A0-f
->> >> > buffered -s mmread,mmwrite -m random -Dv 10%25000:$TMPDIR/mm-buff-$$
->> >> > -rwtest04 export LTPROOT; rwtest.sh -N rwtest04 -c -q -i 60s -n 2
->> >> > =A0-f sync
->> >> > -s mmread,mmwrite -m random -Dv 10%25000:$TMPDIR/mm-sync-$$
->> >> > -rwtest05 export LTPROOT; rwtest.sh -N rwtest05 -c -q -i 50 -T 64b
->> >> > 500b:$TMPDIR/rwtest01%f
->> >> > +rwtest01 export LTPROOT; rwtest -N rwtest01 -c -q -i 60s =A0-f sync
->> >> > 10%25000:$TMPDIR/rw-sync-$$
->> >> > +rwtest02 export LTPROOT; rwtest -N rwtest02 -c -q -i 60s =A0-f
->> >> > buffered
->> >> > 10%25000:$TMPDIR/rw-buffered-$$
->> >> > +rwtest03 export LTPROOT; rwtest -N rwtest03 -c -q -i 60s -n 2 =A0-f
->> >> > buffered
->> >> > -s mmread,mmwrite -m random -Dv 10%25000:$TMPDIR/mm-buff-$$
->> >> > +rwtest04 export LTPROOT; rwtest -N rwtest04 -c -q -i 60s -n 2 =A0-f
->> >> > sync -s
->> >> > mmread,mmwrite -m random -Dv 10%25000:$TMPDIR/mm-sync-$$
->> >> > +rwtest05 export LTPROOT; rwtest -N rwtest05 -c -q -i 50 -T 64b
->> >> > 500b:$TMPDIR/rwtest01%f
->> >> >
->> >> > #must be run as root
->> >> > #iogen01 iogen -i 120s -s read,write 500b:doio.f1.$$
->> >> > 1000b:doio.f2.$$ |
->> >> > doio -akv -n 2
->> >> > -iogen01 export LTPROOT; rwtest.sh -N iogen01 -i 120s -s read,write
->> >> > -Da -Dv
->> >> > -n 2 500b:doio.f1.$$ 1000b:doio.f2.$$
->> >> > +iogen01 export LTPROOT; rwtest -N iogen01 -i 120s -s read,write -Da
->> >> > -Dv -n
->> >> > 2 500b:doio.f1.$$ 1000b:doio.f2.$$
->> >> >
->> >> > fs_inod01 fs_inod $TMP 10 10 10
->> >> > linker01 linktest.sh 1000 1000
->> >> >
->> >>
->> >>
->> >> Done -- thanks!
->> >> -Garrett
->> >>
->> >>
->> >>
->> >>
->> >> ---------------------------------------------------------------------=
----------
->> >> Return on Information:
->> >> Google Enterprise Search pays you back
->> >> Get the facts.
->> >> http://p.sf.net/sfu/google-dev2dev
->> >> _______________________________________________
->> >> Ltp-list mailing list
->> >> Ltp-list@lists.sourceforge.net
->> >> https://lists.sourceforge.net/lists/listinfo/ltp-list
->> >
->> >
->
->
+    Figuring that ftest07.c compiled (mostly) without warnings, I
+thought it might be an issue common to both tests. Here's what I did
+and it didn't crash when I ran them, but I was wondering if others
+could verify whether or not they run into similar issues as well, and
+if so, tell me whether or not this patch functionality a) makes sense
+and b) resolves the issue:
 
----------------------------------------------------------------------------=
----
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev =
+Index: testcases/kernel/fs/ftest/libftest.c
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/fs/ftest/libftest.c,v
+retrieving revision 1.1
+diff -u -r1.1 libftest.c
+--- testcases/kernel/fs/ftest/libftest.c        18 Sep 2009 17:44:08
+-0000      1.1
++++ testcases/kernel/fs/ftest/libftest.c        30 Jan 2010 05:24:42 -0000
+@@ -17,6 +17,7 @@
+  */
 
+ #include <sys/uio.h>
++#include <assert.h>
+ #include "test.h"
+ #include "libftest.h"
+
+@@ -61,16 +62,18 @@
+ /*
+  * Dump bits string.
+  */
+-void ft_dumpbits(char *bits, int size)
++void ft_dumpbits(void *bits, size_t size)
+ {
+-       char *buf;
++       void *buf;
+
+        tst_resm(TINFO, "\tBits array:");
+
+        for (buf = bits; size > 0; --size, ++buf) {
+-               if ((buf-bits) % 16 == 0)
+-                       tst_resm(TINFO, "\t%04x:\t", 8*(buf-bits));
+-               tst_resm(TINFO, "\t%02x ", *buf & 0xff);
++               if ((buf-bits) % 16 == 0) {
++                       assert (0 < (buf-bits));
++                       tst_resm(TINFO, "\t%lu:\t", 8*(buf-bits));
++               }
++               tst_resm(TINFO, "\t%02x ", *((char*) buf) & 0xff);
+        }
+
+        tst_resm(TINFO, "\t");
+Index: testcases/kernel/fs/ftest/libftest.h
+===================================================================
+RCS file: /cvsroot/ltp/ltp/testcases/kernel/fs/ftest/libftest.h,v
+retrieving revision 1.1
+diff -u -r1.1 libftest.h
+--- testcases/kernel/fs/ftest/libftest.h        18 Sep 2009 17:44:08
+-0000      1.1
++++ testcases/kernel/fs/ftest/libftest.h        30 Jan 2010 05:24:42 -0000
+@@ -34,7 +34,7 @@
+ /*
+  * Dump bits string.
+  */
+-void ft_dumpbits(char *bits, int size);
++void ft_dumpbits(void *bits, size_t size);
+
+ /*
+  * Do logical or of hold and bits (of size)
+
+    I did what I did above because it's doing pointer arithmetic of
+virtual memory addresses, which means that that could be wreaking
+havoc if the value is truly rolling over / overflowing.
+Thanks,
+-Garrett
+
+------------------------------------------------------------------------------
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the business
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
