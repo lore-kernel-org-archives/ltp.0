@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <jpalecek@web.de>) id 1NSKZl-0006gf-Lc
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 01:20:41 +0000
-Received: from fmmailgate01.web.de ([217.72.192.221])
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NbMDS-00042K-1u
+	for ltp-list@lists.sourceforge.net; Sat, 30 Jan 2010 22:54:58 +0000
+Received: from mail-pz0-f199.google.com ([209.85.222.199])
 	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NSKZf-0007KI-Gp
-	for ltp-list@lists.sourceforge.net; Wed, 06 Jan 2010 01:20:41 +0000
-Message-ID: <4B43E52E.4000205@web.de>
-Date: Wed, 06 Jan 2010 02:19:42 +0100
-From: Jiri Palecek <jpalecek@web.de>
+	id 1NbMDR-0002MV-64
+	for ltp-list@lists.sourceforge.net; Sat, 30 Jan 2010 22:54:57 +0000
+Received: by pzk37 with SMTP id 37so2716051pzk.10
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 30 Jan 2010 14:54:51 -0800 (PST)
 MIME-Version: 1.0
-References: <4B41E55D.2020801@st.com>
-In-Reply-To: <4B41E55D.2020801@st.com>
-Subject: Re: [LTP] mtest01: free memory allocated
+Date: Sat, 30 Jan 2010 14:54:51 -0800
+Message-ID: <364299f41001301454l58c05f9en874521cb14829f66@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: [LTP] Noise from `parameters.sh'
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,43 +28,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Francesco RUNDO <francesco.rundo@st.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: LTP list <ltp-list@lists.sourceforge.net>
 
-Francesco RUNDO napsal(a):
-> Hi All,
->
-> I'm running LTP (I'm using ltp-full-20090731....but asap I will upgrade
-> to latest) on SH based platforms.
-> Now, during a test-session. I've noted that the test "mtest01" reduced
-> drastically the system memory and after its execution this memory wasn't
-> de-allocated.
->
-> I've analysed the mtest01.c code and I've noted that no "free()"
-> istruction was associated to the related malloc:
+    Please fix the typos and the permission denied item in the testcase.
+Thanks,
+-Garrett
 
-Does this mean the kernel doesn't free processes' allocated memory on exit? Is 
-this intentional (and documented somewhere)?
+gcooper@orangebox /scratch/ltp $ tail -f
+/tmp/tmp.BvZJxbLPl2/tmp/tmp.qOm2VoKTOg/output/controllers-output.log
 
-> ......
-> if((mem = (char*)malloc(chunksize)) == NULL) {
-> ......
->
-> I've simply added a "free(mem)" of the allocated memory and the issue
-> was addressed successfully.
+[...]
 
-This isn't complete by far. You don't free all the allocations, and there are 
-code paths which don't pass your line before exit.
-
-Regards
-     Jiri Palecek
+TEST 7: CPU CONTROLLER STRESS TESTING
+RUNNING SETUP.....
+TEST STARTED: Please avoid using system while this test executes
+/tmp/tmp.BvZJxbLPl2/tmp/tmp.qOm2VoKTOg/testcases/bin/parameters.sh:
+line 56: /dev/cpuctl/group_def/cpu.rt_runtime_us: Permission denied
+Succesfully launched def task 30410 too
+TASKS FIRED
+^C
+gcooper@orangebox /scratch/ltp $ ls/dev/cpuctl/group_def/cpu.rt_runtime_us^Cl
+gcooper@orangebox /scratch/ltp $ ls -l /dev/cpuctl/group_def/cpu.rt_runtime_us
+ls: cannot access /dev/cpuctl/group_def/cpu.rt_runtime_us: No such
+file or directory
+gcooper@orangebox /scratch/ltp $ ls -l /dev/cpuctl/group_def/
+total 0
+-rw-r--r-- 1 root root 0 Jan 30 14:50 cpu.shares
+-rw-r--r-- 1 root root 0 Jan 30 14:50 notify_on_release
+-rw-r--r-- 1 root root 0 Jan 30 14:50 tasks
 
 ------------------------------------------------------------------------------
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev 
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the business
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
