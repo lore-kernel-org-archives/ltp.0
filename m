@@ -1,30 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <saileshcv@gmail.com>) id 1NkqXJ-0003c4-Hf
-	for ltp-list@lists.sourceforge.net; Fri, 26 Feb 2010 03:06:41 +0000
-Received: from mail-iw0-f176.google.com ([209.85.223.176])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NkqXI-0000mB-3f
-	for ltp-list@lists.sourceforge.net; Fri, 26 Feb 2010 03:06:41 +0000
-Received: by iwn6 with SMTP id 6so5840353iwn.10
+	(envelope-from <yanegomi@gmail.com>) id 1Nbru2-0001zg-AN
+	for ltp-list@lists.sourceforge.net; Mon, 01 Feb 2010 08:45:02 +0000
+Received: from mail-pz0-f199.google.com ([209.85.222.199])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Nbrtz-00071K-RE
+	for ltp-list@lists.sourceforge.net; Mon, 01 Feb 2010 08:45:02 +0000
+Received: by pzk37 with SMTP id 37so3779360pzk.10
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 25 Feb 2010 19:06:31 -0800 (PST)
+	Mon, 01 Feb 2010 00:44:54 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <364299f41002250148q42f2d468y5c21919eeed3ce51@mail.gmail.com>
-References: <41c7690d1002240410y3f132792he5460c69891a0976@mail.gmail.com>
-	<364299f41002241314u28cec7e9h7334685f6f82a8a@mail.gmail.com>
-	<41c7690d1002242240m787a1e8bj4640341ec09ff61c@mail.gmail.com>
-	<364299f41002242307i6256a0f1v9fbc4a2197049270@mail.gmail.com>
-	<364299f41002242311j2c97cf8fm2894f00b3640d1ef@mail.gmail.com>
-	<41c7690d1002250109r5e35b35cw2b10c0e270bc273a@mail.gmail.com>
-	<20100225093304.GA23984@linux.vnet.ibm.com>
-	<364299f41002250148q42f2d468y5c21919eeed3ce51@mail.gmail.com>
-Date: Fri, 26 Feb 2010 08:36:31 +0530
-Message-ID: <41c7690d1002251906w7b54d7a8w13fa60dcea22a4b3@mail.gmail.com>
-From: Silesh C V <saileshcv@gmail.com>
-Subject: Re: [LTP] [PATCH][RESEND] RTC Device Driver Tests
+In-Reply-To: <001201caa315$d351baf0$79f530d0$@co.jp>
+References: <001201caa315$d351baf0$79f530d0$@co.jp>
+Date: Mon, 1 Feb 2010 00:44:53 -0800
+Message-ID: <364299f41002010044j269258fep9cfd31c8c0f897ac@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] 2010-02-01 cvs make problem
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,88 +27,169 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Arun.sudhilal@lntinfotech.com, Mohamed.Rasheed@lntinfotech.com
+To: Mitani <mitani@ryobi.co.jp>
+Cc: LTP list <ltp-list@lists.sourceforge.net>, Stephen Smalley <sds@tycho.nsa.gov>
 
-On 2/25/10, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Thu, Feb 25, 2010 at 1:33 AM, Rishikesh K Rajak
-> <risrajak@linux.vnet.ibm.com> wrote:
->> On Thu, Feb 25, 2010 at 02:39:37PM +0530, Silesh C V wrote:
->>> >>
->>> >>    The end goal is to have these tests fit directly into LTP without
->>> >> having to fudge around writing a secondary driver, thus maintaining
->>> >> two pieces of dependent code [which is of course more complicated than
->>> >> one piece of code], and thus is more of a pain to maintain longterm.
->>> >> There's a lot of code in the repository like this that was ported and
->>> >> subsequently not properly adapted to the existing infrastructure, thus
->>> >> creating additional headache for maintainers and end-users.
->>> >
->>> > Ok -- I take that back. I have no idea wtf is going on in this
->>> > directory nor the ultimate intent of the tests in here, apart from
->>> > being a lot of ad hoc pain in the arse-ness.
->>>
->>> The README in testcases/kernel/device-drivers/ says that these tests
->>> should not be run with the other tests, and they have to be built
->>> separately. I agree that this is because they have a kernel space part
->>> also. But this prevents us from  building  device_driver tests that
->>> have only user space part (as in RTC tests), along with the overall
->>> build. And these tests does not belong in any other directory other
->>> than kernel/device-drivers. So as long as other tests are there we
->>> will have to live with building new device driver tests separately.I
->>> can re-send  the patch with Garrett's suggestions  incorporated.
->>>
->>> Subrata, suggestions ?
->>
->> Hi Silesh,
->>
->> How about porting this on new makefile infrastructure ? I think this is
->> time where we can look back and can make one piece of code as garret
->> said is correct. Please see your fesibility. Let me know if you still
->> want this to be integrated. Before that can you please little more
->> descriptive with your patch e,g: what it is doing.
->>
->> And also it is always good if you include more documentation for each
->> function as coding style suggests.
+On Mon, Feb 1, 2010 at 12:09 AM, Mitani <mitani@ryobi.co.jp> wrote:
+> Hi,
 >
-> Regardless of whether or not this can fit within the new makefile
-> infrastructure -- please at least consider adding in the bits to use
-> tst_res(3).
+> I tried to build 2010-02-01 cvs in RHEL5.4 system.
+> (Archecture : x86 and x86_64)
+>
+>
+> "make" failed with following message:
+> ------------
+> [...]
+> make[5]: Entering directory
+> `/home/LTP/ltp-2010-02-01/testcases/kernel/security/selinux-testsuite/ref=
+pol
+> icy'
+> (cd
+> "/home/LTP/ltp-2010-02-01/testcases/kernel/security/selinux-testsuite/ref=
+pol
+> icy/policy_files/generic" && cat test_global.te test_bounds.te
+> test_capable_file.te test_capable_net.te test_capable_sys.te
+> test_dyntrace.te test_dyntrans.te test_entrypoint.te test_execshare.te
+> test_exectrace.te test_execute_no_trans.te test_fdreceive.te test_file.te
+> test_inherit.te test_ioctl.te test_ipc.te test_link.te test_mkdir.te
+> test_open.te test_ptrace.te test_readlink.te test_relabel.te test_rename.=
+te
+> test_rxdir.te test_setattr.te test_setnice.te test_sigkill.te test_stat.te
+> test_sysctl.te test_task_create.te test_task_getpgid.te
+> test_task_getsched.te test_task_getsid.te test_task_setpgid.te
+> test_task_setsched.te test_transition.te test_wait.te) > test_policy.te
+> cat: /selinux/mls: No such file or directory
+> make[6]: Entering directory
+> `/home/LTP/ltp-2010-02-01/testcases/kernel/security/selinux-testsuite/ref=
+pol
+> icy'
+> Compiling targeted test_policy module
+> test_policy.te:129:ERROR 'syntax error' at token 'typebounds' on line 939=
+91:
+> # Definition of boundary relationship
+> typebounds test_bounds_parent_t test_bounds_child_t;
+> /usr/bin/checkmodule: =A0error(s) encountered while parsing configuration
+> /usr/bin/checkmodule: =A0loading policy configuration from tmp/test_polic=
+y.tmp
+> make[6]: *** [tmp/test_policy.mod] Error 1
+> make[6]: Leaving directory
+> `/home/LTP/ltp-2010-02-01/testcases/kernel/security/selinux-testsuite/ref=
+pol
+> icy'
+> make[5]: *** [test_policy.pp] Error 2
+> [...]
+> ------------
+>
+> Similar failure occurred in 2010-01-29 cvs "make".
+>
+>
+> I got "strace" of "make" command. I think that "${LTPROOT}/testcases/
+> kernel/security/selinux-testsuite/refpolicy/tmptest_policy.tmp" may be
+> related to this failure:
+> ------------
+> [...]
+> 20659 open("tmp/test_policy.tmp", O_RDONLY) =3D 3
+> 20659 ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbf972518) =3D -1 ENOTTY
+> (Inappropriate ioctl
+> =A0for device)
+> 20659 fstat64(3, {st_mode=3DS_IFREG|0644, st_size=3D2564625, ...}) =3D 0
+> 20659 mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, =
+-1,
+> 0) =3D 0xb7f400
+> 00
+> 20659 read(3, "#line 1 \"/usr/share/selinux/deve"..., 8192) =3D 8192
+> 20659 read(3, "\n\n\n\n\n\n\n\n\n#\n# Block device nodes "..., 8192) =3D =
+8192
+> 20659 read(3, "################################"..., 8192) =3D 8192
+> 20659 read(3, "der configuration file.\n## </sum"..., 8192) =3D 8192
+> [...]
+> 20659 read(3, "1\n#line 52\n \t\n#line 52\n\t\n#line 5"..., 8192) =3D 8192
+> 20659 read(3, "\n\tallow testdomain security_t:se"..., 8192) =3D 8192
+> 20659 read(3, "optional\n#line 104\n\t\n#line 104\n\n"..., 8192) =3D 8192
+> 20659 read(3, "_t testdomain;\n\nallow test_bound"..., 8192) =3D 8192
+> 20659 write(2, "test_policy.te:129:", 19) =3D 19
+> 20659 write(2, "ERROR 'syntax error' at token 't"..., 149) =3D 149
+> 20659 write(2, "/usr/bin/checkmodule: =A0error(s) "..., 72) =3D 72
+> [...]
+> ------------
+>
+>
+> "${LTPROOT}/testcases/kernel/security/selinux-testsuite/refpolicy/
+> test_policy.te" is follows:
+> ------------
+> [...]
+> allow test_bounds_unbound_t test_bounds_file_t : file { rw_file_perms };
+>
+> # Definition of boundary relationship
+> typebounds test_bounds_parent_t test_bounds_child_t; =A0 =A0 =A0 =A0 =A0 =
+=A0...Line129
+> typebounds test_bounds_file_t test_bounds_file_red_t,
+> test_bounds_file_blue_t;
+>
+> # Allow the test_bounds_parent_t to dyntrans
+> allow test_bounds_parent_t test_bounds_child_t =A0 : process { dyntransit=
+ion
+> };
+> allow test_bounds_parent_t test_bounds_unbound_t : process { dyntransition
+> };
+> [...]
+> ------------
+>
+>
+> "${LTPROOT}/testcases/kernel/security/selinux-testsuite/refpolicy/tmp
+> test_policy.tmp" is follows:
+> ------------
+> [...]
+> allow test_bounds_unbound_t test_bounds_file_t : file { { getattr read wr=
+ite
+> append ioctl
+> lock } };
+> ...Line93988
+>
+> # Definition of boundary relationship
+> typebounds test_bounds_parent_t test_bounds_child_t; =A0 =A0 =A0 =A0 =A0 =
+=A0...Line93991
+> typebounds test_bounds_file_t test_bounds_file_red_t,
+> test_bounds_file_blue_t;
+>
+> # Allow the test_bounds_parent_t to dyntrans
+> allow test_bounds_parent_t test_bounds_child_t =A0 : process { dyntransit=
+ion
+> };
+> allow test_bounds_parent_t test_bounds_unbound_t : process { dyntransition
+> };
+> [...]
+> ------------
+>
+> In "test_policy.te", Line129's syntax is right, I think.
+>
+> In "test_policy.tmp", Line93991 is same as "test_policy.te".
+> But Line93988 is different.
+>
+>
+> I investigated like above, but I couldn't specify a cause after all.
+> Do you have any good idea?
 
-OK.Coming in the next patch.
+I'll just yank selinux-testsuite from the default build because
+apparently the default selinux policies don't work on RHEL.
 
-It will make maintenance considerably easier in the long
-> run. I can port a Makefile over in < 30 mins -- it's the C code that
-> I'd have to fumble around with as I'm not the original developer, I
-> may not understand all the nuances of what's trying to be tested, etc.
->
-> More documentation would be extremely helpful, in particular pointers
-> to additional reference material so that someone who has _zero_
-> understanding in how the rtc driver typically works in Linux can at
-> least look up additional materials to develop a better understanding
-> of what's going on...
-
-OK. Coming in the next patch.
->
->>> >
->>> > I've learned enough to keep my hands off this because it looks like a
->>> > mess.
->
-> Thanks,
-> -Garrett
->
+Please work with Stephen to resolve the issue as I have no idea what
+the issue is that these these messages are trying to convey...
 
 Thanks,
-Silesh
+-Garrett
 
-------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
+---------------------------------------------------------------------------=
+---
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the busine=
+ss
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
