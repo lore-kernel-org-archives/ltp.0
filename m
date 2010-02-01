@@ -1,30 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NiSTj-00050g-KM
-	for ltp-list@lists.sourceforge.net; Fri, 19 Feb 2010 13:01:07 +0000
-Received: from e32.co.us.ibm.com ([32.97.110.150])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NiSTh-0005NR-C2
-	for ltp-list@lists.sourceforge.net; Fri, 19 Feb 2010 13:01:07 +0000
-Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
-	[9.17.195.107])
-	by e32.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1JCT0wm023634
-	for <ltp-list@lists.sourceforge.net>; Fri, 19 Feb 2010 05:29:00 -0700
-Received: from d03av06.boulder.ibm.com (d03av06.boulder.ibm.com [9.17.195.245])
-	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o1JCZ42l126204
-	for <ltp-list@lists.sourceforge.net>; Fri, 19 Feb 2010 05:35:04 -0700
-Received: from d03av06.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av06.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o1JCbLeS000930
-	for <ltp-list@lists.sourceforge.net>; Fri, 19 Feb 2010 05:37:22 -0700
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Nbu72-0001vf-4k
+	for ltp-list@lists.sourceforge.net; Mon, 01 Feb 2010 11:06:36 +0000
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Nbu71-0005ey-0C
+	for ltp-list@lists.sourceforge.net; Mon, 01 Feb 2010 11:06:36 +0000
 From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Fri, 19 Feb 2010 18:05:01 +0530
-Message-Id: <20100219123501.19085.64668.sendpatchset@subratamodak.linux.ibm.com>
-Subject: [LTP] [PATCH] Fix MSGCTL10() to avoid un-necessary cluttering of
-	whole system with all PIDs
+Date: Mon, 01 Feb 2010 16:36:22 +0530
+Message-Id: <1265022382.5234.30.camel@subratamodak.linux.ibm.com>
+Mime-Version: 1.0
+Subject: [LTP] [MAINTAINERSHIP] Change in Responsibility
+Reply-To: subrata@linux.vnet.ibm.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,50 +23,61 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP Mailing List <ltp-list@lists.sourceforge.net>
+To: ltp-list <ltp-list@lists.sf.net>
+Cc: Nathan Straz <nstraz@redhat.com>, Mike Frysinger <vapier@gentoo.org>, Michael Reed <mreed10@us.ibm.com>, Sudarshan Rao <rsudarsh@in.ibm.com>, "manoj.iyer" <manoj.iyer@canonical.com>, "paul.larson" <paul.larson@ubuntu.com>
 
-Hi,
-
-msgctl10() un-necessarily eats up all the PIDs of the system leading to
-system becoming un-responsive. The changed no.s would better do the job.
-
-Signed-off-by: Subrata Modak<subrata@linux.vnet.ibm.com>
----
-
---- ltp-full-20100131/testcases/kernel/syscalls/ipc/msgctl/msgctl10.c.orig	2010-02-19 17:59:23.000000000 +0530
-+++ ltp-full-20100131/testcases/kernel/syscalls/ipc/msgctl/msgctl10.c	2010-02-19 18:01:13.000000000 +0530
-@@ -65,12 +65,8 @@ extern int Tst_count;		/* Test Case coun
- 
- int exp_enos[] = { 0 };		/* List must end with 0 */
- 
--#ifndef CONFIG_COLDFIRE
--#define MAXNPROCS	1000000	/* This value is set to an arbitrary high limit. */
--#else
--#define MAXNPROCS	 100000	/* Coldfire can't deal with 1000000 */
--#endif
--#define MAXNREPS	100000
-+#define MAXNPROCS	10000 	/*These should be sufficient*/
-+#define MAXNREPS	10000	/*Else they srewup the system un-necessarily*/
- #define FAIL		1
- #define PASS		0
- 
-
----
-Regards--
-Subrata
-
-
-------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+SGVsbG8gRXZlcnlib2R5LAoKQWZ0ZXIgYWxtb3N0IDMgeWVhcnMgb2Ygd29ya2luZyB3aXRoIHRo
+ZSBMVFAgY29tbXVuaXR5LCBpIGhhdmUgZmluYWxseQpkZWNpZGVkIHRvIGhhbmQgb3ZlciB0aGUg
+cmVzcG9uc2liaWxpdHkgb2YgTWFpbnRhaW5lcnNoaXAgdG8gUmlzaGlrZXNoLgpIZSB3aWxsIHRh
+a2Ugb3ZlciBhbGwgdGhlIGZ1dHVyZSBPZmZpY2lhbCByZWxlYXNlcyBhbmQgd29yayB3aXRoIHRo
+ZQpjb21tdW5pdHkgdG8gZnVydGhlciBMVFDFmyBBZ2VuZGEuCgpIYXZpbmcgc2FpZCB0aGF0LCBp
+IGNvbmZpcm0gdG8gcmVtYWluIGFjdGl2ZSBhbmQga2VlcCBkZXZlbG9waW5nIExUUCBmb3IKYmV0
+dGVybWVudCBvZiBMaW51eCB0ZXN0aW5nLiBJIHdvdWxkIGhlbHAgdG8gcmVzb2x2ZSBhbGwgaXNz
+dWVzIGFzIHdlbGwKYW5kIHdpbGwgc3RpbGwgYmUgc2VlbiBvbiB0aGUgTWFpbGluZyBMaXN0LgoK
+SSB3b3VsZCByZXF1ZXN0IHlvdSB0byBleHRlbmQgeW91ciBzdXBwb3J0IHRvIFJpc2hpa2VzaCBh
+cyB5b3UgaGF2ZSBiZWVuCmRvaW5nIHVucXVlc3Rpb25hYmx5IHRvIG1lIGFsbCB0aGVzZSB5ZWFy
+cy4gVGhhbmtzIGZvciBhbGwgeW91ciBzdXBwb3J0LgoKUmVnYXJkcy0tClN1YnJhdGEKCi0tLS0t
+LS0tIEZvcndhcmRlZCBNZXNzYWdlIC0tLS0tLS0tCkZyb206IFN1YnJhdGEgTW9kYWsgPHN1YnJh
+dGFAbGludXgudm5ldC5pYm0uY29tPgpSZXBseS1Ubzogc3VicmF0YUBsaW51eC52bmV0LmlibS5j
+b20KVG86IGx0cC1saXN0IDxsdHAtbGlzdEBsaXN0cy5zZi5uZXQ+LCBsaW51eC1rZXJuZWwKPGxp
+bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+CkNjOiBHYXJyZXR0IENvb3BlciA8eWFuZWdvbWlA
+Z21haWwuY29tPiwgTWlrZSBGcnlzaW5nZXIKPHZhcGllckBnZW50b28ub3JnPiwgTGludXMgVG9y
+dmFsZHMgPHRvcnZhbGRzQGxpbnV4LWZvdW5kYXRpb24ub3JnPiwKQW5kcmV3IE1vcnRvbiA8YWtw
+bUBsaW51eC1mb3VuZGF0aW9uLm9yZz4sIFJpc2hpa2VzaCBLIFJhamFrCjxyaXNyYWpha0BsaW51
+eC52bmV0LmlibS5jb20+ClN1YmplY3Q6IFtBTk5PVU5DRV0gVGhlIExpbnV4IFRlc3QgUHJvamVj
+dCBoYXMgYmVlbiByZWxlYXNlZCBmb3IgSkFOVUFSWQoyMDEwCkRhdGU6IE1vbiwgMDEgRmViIDIw
+MTAgMTY6Mjc6MjMgKzA1MzAKCkhpLAoKVGhlIExpbnV4IFRlc3QgUHJvamVjdCB0ZXN0IHN1aXRl
+IGhhcyBiZWVuIHJlbGVhc2VkIGZvciB0aGUgbW9udGggb2YKSkFOVUFSWSAyMDEwLiBQbGVhc2Ug
+c2VlIGx0cC9JTlNUQUxMIGZpbGUgY2FyZWZ1bGx5LCBhcywgdGhlcmUgaGFzCmJlZW4gbXVsdGlw
+bGUgY2hhbmdlcyBmb3IgYnVpbGRpbmcvaW5zdGFsbGluZyB0aGUgdGVzdCBzdWl0ZSBhZnRlciB0
+aGUKcmVjZW50IGNoYW5nZXMgaW4gTWFrZWZpbGUgaW5mcmFzdHJ1Y3R1cmUuCgpUaGUgbGF0ZXN0
+IHZlcnNpb24gb2YgdGhlIHRlc3Qtc3VpdGUgY29udGFpbnMgMzAwMCsgdGVzdHMgZm9yIHRoZSBM
+aW51eApPUyBhbmQgY2FuIGJlIGZvdW5kIGF0OgpodHRwOi8vbHRwLnNvdXJjZWZvcmdlLm5ldC8s
+CkxhdGVzdCBoYXBwZW5pbmdzIGluIExUUCBjYW4gYWxzbyBiZSBmb3VuZCBhdDoKaHR0cDovL2x0
+cC5zb3VyY2Vmb3JnZS5uZXQvd2lraS8sCmh0dHA6Ly9sdHAuc291cmNlZm9yZ2UubmV0L3dpa2lB
+cmNoaXZlcy5waHAsIGFuZCwKSVJDOiBpcmMuZnJlZW5vZGUub3JnICNsdHAuCgpPdXIgd2ViIHNp
+dGUgYWxzbyBjb250YWlucyBvdGhlciBpbmZvcm1hdGlvbiBzdWNoIGFzOgotIEEgTGludXggdGVz
+dCB0b29scyBtYXRyaXgKLSBUZWNobmljYWwgcGFwZXJzCi0gSG93IFRvJ3Mgb24gTGludXggdGVz
+dGluZwotIENvZGUgY292ZXJhZ2UgYW5hbHlzaXMgdG9vbC4KCldlIHdvdWxkIGVuY291cmFnZSB0
+aGUgY29tbXVuaXR5IHRvIHBvc3QgcmVzdWx0cyB0bwpsdHAtcmVzdWx0c0BsaXN0cy5zZi5uZXQs
+CnBhdGNoZXMsIG5ldyB0ZXN0cywgYnVncyBvciBjb21tZW50cy9xdWVzdGlvbnMgdG8gbHRwLWxp
+c3RAbGlzdHMuc2YubmV0LApodHRwOi8vc291cmNlZm9yZ2UubmV0L3RyYWNrZXIvP2Z1bmM9YWRk
+Jmdyb3VwX2lkPTMzODImYXRpZD0xMDMzODIgKGZvcgpOZXcgQnVnKHMpKSwKaHR0cDovL3NvdXJj
+ZWZvcmdlLm5ldC90cmFja2VyLz9mdW5jPWFkZCZncm91cF9pZD0zMzgyJmF0aWQ9MzAzMzgyIChm
+b3IKTmV3IFBhdGNoKHMpKSwKaHR0cDovL3NvdXJjZWZvcmdlLm5ldC90cmFja2VyLz9mdW5jPWFk
+ZCZncm91cF9pZD0zMzgyJmF0aWQ9MzUzMzgyIChmb3IKTmV3IEZlYXR1cmUgUmVxdWVzdChzKSkK
+CioqTm90ZTogU29tZSBwZW5kaW5nIHBhdGNoZXMgd2lsbCBiZSBjaGVja2VkIGluIGZvciBuZXh0
+IG1vbnRoxZsgcmVsZWFzZS4KCkhhcHB5IHRlc3RpbmcsIApSZWdhcmRzLS0gClN1YnJhdGEsCgoK
+Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGUgUGxhbmV0OiBkZWRpY2F0ZWQgYW5kIG1hbmFnZWQg
+aG9zdGluZywgY2xvdWQgc3RvcmFnZSwgY29sb2NhdGlvbgpTdGF5IG9ubGluZSB3aXRoIGVudGVy
+cHJpc2UgZGF0YSBjZW50ZXJzIGFuZCB0aGUgYmVzdCBuZXR3b3JrIGluIHRoZSBidXNpbmVzcwpD
+aG9vc2UgZmxleGlibGUgcGxhbnMgYW5kIG1hbmFnZW1lbnQgc2VydmljZXMgd2l0aG91dCBsb25n
+LXRlcm0gY29udHJhY3RzClBlcnNvbmFsIDI0eDcgc3VwcG9ydCBmcm9tIGV4cGVyaWVuY2UgaG9z
+dGluZyBwcm9zIGp1c3QgYSBwaG9uZSBjYWxsIGF3YXkuCmh0dHA6Ly9wLnNmLm5ldC9zZnUvdGhl
+cGxhbmV0LWNvbQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0
+dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
