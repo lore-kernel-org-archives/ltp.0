@@ -1,21 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NdQsC-0000IW-AM
-	for ltp-list@lists.sourceforge.net; Fri, 05 Feb 2010 16:17:36 +0000
-Received: from mail-pz0-f173.google.com ([209.85.222.173])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NdQs9-0003uw-UM
-	for ltp-list@lists.sourceforge.net; Fri, 05 Feb 2010 16:17:36 +0000
-Received: by pzk3 with SMTP id 3so1065400pzk.5
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <shiwh@cn.fujitsu.com>) id 1NbuPD-0001M7-N4
+	for ltp-list@lists.sourceforge.net; Mon, 01 Feb 2010 11:25:23 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NbuPA-000886-HU
+	for ltp-list@lists.sourceforge.net; Mon, 01 Feb 2010 11:25:23 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id 3CCEC170028
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 05 Feb 2010 08:17:28 -0800 (PST)
+	Mon,  1 Feb 2010 19:25:09 +0800 (CST)
+Received: from fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id o11BOVjT020462
+	for <ltp-list@lists.sourceforge.net>; Mon, 1 Feb 2010 19:24:31 +0800
+Received: from [10.167.141.106] (unknown [10.167.141.106])
+	by fnst.cn.fujitsu.com (Postfix) with ESMTPA id 1E277D47AE
+	for <ltp-list@lists.sourceforge.net>;
+	Mon,  1 Feb 2010 19:26:30 +0800 (CST)
+Message-ID: <4B66BA12.1050707@cn.fujitsu.com>
+Date: Mon, 01 Feb 2010 19:25:06 +0800
+From: Shi Weihua <shiwh@cn.fujitsu.com>
 MIME-Version: 1.0
-Date: Fri, 5 Feb 2010 08:17:26 -0800
-Message-ID: <364299f41002050817x475bdfd7l8bed6440d8582f6f@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] [PATCH] acl_test01 cleanup
+Subject: [LTP] [PATCH] sysctl03: sysctl returns EACCES after 2.6.33-rc1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,310 +36,121 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-acl_test01 today...
-1. Should use $TMP.
-2. Should use tst_resm today.
-3. Should exit 0 on setup failure.
-4. Doesn't cleanup in the event of a test failure.
-5. Has a hardcoded loopback device instead of looking for the next
-available one via losetup -f.
-6. Other stylistic nits:
-    a. [ $? != 0 ] -> [ $? -ne 0 ]
-    b. Incorrect whitespace conventions / indentation issues.
-    c. Etc...
+The syscall of sysctl has been changed function call process on 2.6.33-rc1.
+So we should change some code about sysctl.
 
-This test will need to be enhanced [still] to support non-ext2 //
--ext3 filesystems (my kernel only supports ext4 fs's for instance...).
+Before 2.6.33-rc1:
+do_sysctl
+	->parse_table
+		->sysctl_perm		(will return EPERM sometime)
+		->do_sysctl_strategy
+			->sysctl_perm	(will return EPERM sometime)
+...
 
-Signed-off-by: Garrett Cooper <yanegomi@gmail.com>
+After 2.6.33-rc1:
+do_sysctl
+	->binary_sysctl
+		check enable to access or not	(will return EACCES some time)
+...
 
-Index: acls/acl_test01
-===================================================================
-RCS file: /cvsroot/ltp/ltp/testcases/kernel/fs/acls/acl_test01,v
-retrieving revision 1.7
-diff -u -r1.7 acl_test01
---- acls/acl_test01	26 Oct 2009 14:49:23 -0000	1.7
-+++ acls/acl_test01	5 Feb 2010 16:14:20 -0000
-@@ -37,79 +37,21 @@
- #
- ################################################################
+I fixed sysctl03, other cases of sysctl are OK.
+This patch works on 2.6.31.5-127.fc12.x86_64, 2.6.32, 2.6.33-rc1, 
+and 2.6.33-rc6.
 
-+export TCID=acltest01
-+export TST_TOTAL=5
-+export TST_COUNT=1
+Signed-off-by: Shi Weihua <shiwh@cn.fujitsu.com>
+---
+--- testcases/kernel/syscalls/sysctl/sysctl03.c.orig	2010-02-02 18:15:56.000000000 +0800
++++ testcases/kernel/syscalls/sysctl/sysctl03.c	2010-02-02 18:49:40.000000000 +0800
+@@ -22,15 +22,18 @@
+  *	sysctl03.c
+  *
+  * DESCRIPTION
+- *	Testcase to check that sysctl(2) sets errno to EPERM correctly.
++ *	Testcase to check that sysctl(2) sets errno to EPERM or EACCES 
++ *	correctly. But it will return EACCES on kernels that are 2.6.33-rc1 
++ *	and higher.  
+  *
+  * ALGORITHM
+  *	a.	Call sysctl(2) as a root user, and attempt to write data
+  *		to the kernel_table[]. Since the table does not have write
+- *		permissions even for the root, it should fail EPERM.
++ *		permissions even for the root, it should fail EPERM or EACCES.
+  *	b.	Call sysctl(2) as a non-root user, and attempt to write data
+  *		to the kernel_table[]. Since the table does not have write
+- *		permission for the regular user, it should fail with EPERM.
++ *		permission for the regular user, it should fail with EPERM 
++ *		or EACCES.
+  *
+  * USAGE:  <for command-line>
+  *  sysctl03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+@@ -43,6 +46,7 @@
+  *
+  * HISTORY
+  *	07/2001 Ported by Wayne Boyer
++ *	02/2010 Updated by shiwh@cn.fujitsu.com
+  *
+  * RESTRICTIONS
+  *	Test must be run as root.
+@@ -82,6 +86,7 @@ int main(int ac, char **av)
+ {
+ 	int lc;
+ 	char *msg;
++	int exp_eno;
+ 
+ 	char osname[OSNAMESZ];
+ 	int osnamelth, status;
+@@ -96,6 +101,13 @@ int main(int ac, char **av)
+ 
+ 	setup();
+ 
++	if ((tst_kvercmp(2, 6, 32)) <= 0){
++		exp_eno = EPERM;
++	} else {
++		exp_eno = EACCES;
++		exp_enos[0] = EACCES;
++	}
 +
-+TMP=${TMP:=/tmp}
-+
- TEST_USER1="acltest1"
- TEST_USER1_GROUP="users"
- TEST_USER1_PASSWD="ltp_test_pass1"
--TEST_USER1_HOMEDIR="tacl/mount-ext3/$TEST_USER1"
-+TEST_USER1_HOMEDIR="$TMP/tacl/mount-ext3/$TEST_USER1"
-
--FILE_ACL="tacl/mount-ext3/test_file"
--FILE_ACL_LINK="tacl/mount-ext3/test_file_link"
-+FILE_ACL="$TMP/tacl/mount-ext3/test_file"
-+FILE_ACL_LINK="$TMP/tacl/mount-ext3/test_file_link"
- TCbin=`pwd`
-
--iam=`whoami`
--if [ "z$iam" = "z$TEST_USER1" ]
--then
--	echo ""
--else
--if [ $(id -ru) != 0 ]
--then
--        echo "FAILED: Must have root access to execute this script"
--        exit 1
--fi
--
--if [ ! -e tacl ]
--then
--        mkdir -m 777 tacl
--else
--        echo "FAILED: Directory tacl are exist"
--        exit 1
--fi
--
--#       The  following  commands  can  be  used as an example of using the loop
--#       device.
--
--dd if=/dev/zero of=tacl/blkext3 bs=1k count=10240
--chmod 777 tacl/blkext3
--#
--losetup /dev/loop0 tacl/blkext3 2>&1 > /dev/null
--if [ $? != 0 ]
--then
--        echo ""
--        echo "FAILED:  [ losetup ] Must have loop device support by kernel"
--        printf "\t to execute this script\n"
--        exit 1
--fi
--
--mount | grep ext2
--if [ $? != 0 ]
--then
--        mkfs -t ext3 /dev/loop0 #> /dev/null 2>&1
--        mkdir  -m 777 tacl/mount-ext3
--        mount -t ext3 -o defaults,acl,user_xattr /dev/loop0 tacl/mount-ext3
--        if [ $? != 0 ]
--        then
--                echo ""
--                echo "FAILED: [ mount ] Make sure that ACL (Access
-Control List)"
--                printf "\t and Extended Attribute are built into the kernel\n"
--                printf "\t Can not mount ext3 file system with acl
-and user_xattr options\n"
--                exit 1
--        fi
--else
--        mkfs -t ext2 /dev/loop0
--        mkdir  -m 777 tacl/mount-ext3
--        mount -t ext2 -o defaults,acl,user_xattr /dev/loop0 tacl/mount-ext3
--        if [ $? != 0 ]
--        then
--                echo ""
--                echo "FAILED: [ mount ] Make sure that ACL (Access
-Control List)"
--                printf "\t and Extended Attribute are built into the kernel\n"
--                printf "\t Can not mount ext2 file system with acl
-and user_xattr options\n"
--                exit 1
--        fi
--fi
--fi
--
--
- #-----------------------------------------------------------------------
- # FUNCTION:  do_setup
- #-----------------------------------------------------------------------
-@@ -119,23 +61,20 @@
- 	rm -f $FILE_ACL
- 	rm -f $FILE_ACL_LINK
-
--	if [ "$TEST_USER1_HOMEDIR" = "" ]
--	then {
--                echo "Could not find user $TEST_USER1's home directory."
--                exit 1
--        }
--        fi
-+	if [ "x$TEST_USER1_HOMEDIR" = "x" ]; then
-+		echo "Could not find user $TEST_USER1's home directory."
-+		exit 1
-+	fi
-
-+	# XXX (garrcoop): why is cleanup junk being done in setup??? Bad test!!!
- 	rm -rf $TEST_USER1_HOMEDIR
- 	userdel $TEST_USER1 > /dev/null 2>&1
- 	sleep 1
- 	useradd -d `pwd`/$TEST_USER1_HOMEDIR -m -g $TEST_USER1_GROUP
-$TEST_USER1 -s /bin/sh
-
--	if [ $? != 0 ]
--	then {
-+	if [ $? -ne 0 ]; then
- 		echo "Could not add test user $TEST_USER1."
- 		exit 1
--	}
- 	fi
-
- }
-@@ -145,19 +84,13 @@
- #-----------------------------------------------------------------------
-
- do_cleanup() {
--	if [ "$TEST_USER1_HOMEDIR" = "" ]
--	then {
--                echo "Could not remove home directory of the user $TEST_USER1."
--                exit 1
--        }
--        fi
--        rm -rf $TEST_USER1_HOMEDIR
--	userdel $TEST_USER1
-+	rm -rf $TEST_USER1_HOMEDIR
-+	userdel $TEST_USER1 > /dev/null 2>&1
- 	rm -f $FILE_ACL > /dev/null 2>&1
- 	rm -f $FILE_ACL_LINK > /dev/null 2>&1
--	umount -d tacl/mount-ext3
--	rm -rf tacl
--
-+	mount | grep "$TMP/tacl/mount-ext3" && umount -d $TMP/tacl/mount-ext3
-+	[ "x$LOOP_DEV" != x ] && losetup -d $LOOP_DEV
-+	rm -rf $TMP/tacl
- }
-
- #-----------------------------------------------------------------------
-@@ -165,7 +98,75 @@
- #-----------------------------------------------------------------------
-
- iam=`whoami`
--EXIT_CODE=0
-+if [ "z$iam" = "z$TEST_USER1" ]
-+then
-+	echo ""
-+else
-+	if [ $(id -ru) != 0 ]; then
-+		tst_resm TCONF "must be root to execute this script"
-+		exit 0
-+	fi
-+
-+	if ! ( test -d $TMP/tacl || mkdir -m 777 $TMP/tacl) ; then
-+		tst_resm TCONF "failed to create $TMP/tacl directory."
-+		exit 1
-+	fi
-+
-+	trap do_cleanup EXIT
-+
-+	#	The  following  commands  can  be  used as an example of using
-+	#	a loopback device.
-+
-+	dd if=/dev/zero of=$TMP/tacl/blkext3 bs=1k count=10240 && chmod 777
-$TMP/tacl/blkext3
-+	if [ $? -ne 0 ] ; then
-+		tst_resm TCONF "Failed to create $TMP/tacl/blkext3"
-+		exit 0
-+	fi
-+
-+	# Avoid hardcoded loopback device values (-f tries to find the first
-+	# available loopback device name)!
-+	if ! (LOOP_DEV=$(loop_dev -f) && [ "x$LOOP_DEV" = x ]); then
-+		tst_resm TCONF "[ losetup.1 ] Failed to find an available loopback
-device -- is the required support compiled in your kernel?"
-+		exit 0
-+	fi
-+
-+	if ! losetup $LOOP_DEV $TMP/tacl/blkext3 2>&1 > /dev/null; then
-+		echo ""
-+		tst_resm TCONF "[ losetup.2 ] Failed to setup the device."
-+		exit 0
-+	fi
-+
-+	mount | grep ext2
-+	if [ $? -ne 0 ]; then
-+		mkfs -t ext3 $LOOP_DEV #> /dev/null 2>&1
-+		mkdir  -m 777 $TMP/tacl/mount-ext3
-+		mount -t ext3 -o defaults,acl,user_xattr $LOOP_DEV $TMP/tacl/mount-ext3
-+		if [ $? -ne 0 ]
-+		then
-+			echo ""
-+			tst_resm TCONF "[ mount ] Make sure that ACL (Access Control List)"
-+			printf "\t and Extended Attribute are built into the kernel\n"
-+			printf "\t Can not mount ext3 file system with acl and user_xattr options\n"
-+			exit 1
-+		fi
-+	else
-+
-+		mkfs -t ext2 $LOOP_DEV
-+		mkdir  -m 777 $TMP/tacl/mount-ext3
-+		mount -t ext2 -o defaults,acl,user_xattr $LOOP_DEV $TMP/tacl/mount-ext3
-+		if [ $? -ne 0 ]
-+		then
-+			echo ""
-+			tst_resm TCONF "FAILED: [ mount ] Make sure that ACL (Access Control List)"
-+			printf "\t and Extended Attribute are built into the kernel\n"
-+			printf "\t Can not mount ext2 file system with acl and user_xattr options\n"
-+			exit 1
-+		fi
-+
-+	fi
-+
-+fi
-+
- if [ "z$iam" = "z$TEST_USER1" ]
- then
- 	echo ""
-@@ -177,7 +178,7 @@
-
- 	echo "Trying extended acls for files"
- 	${TCbin}/acl_file_test $FILE_ACL
--	if [ $? != 0 ]
-+	if [ $? -ne 0 ]
- 	then
- 		EXIT_CODE=1
- 		echo "Extended acls for files (FAILED)"
-@@ -187,13 +188,13 @@
-
- 	echo "Trying extended acls for file links"
- 	${TCbin}/acl_link_test $FILE_ACL_LINK
--	if [ $? != 0 ]
--        then
--                EXIT_CODE=1
-+	if [ $? -ne 0 ]
-+	then
-+		EXIT_CODE=1
- 		echo "Extended acls for links (FAILED)"
- 	else
- 		echo "Extended acls for links (PASSED)"	
--        fi
-+	fi
- else
- 	do_setup
- 	echo ""
-@@ -208,17 +209,17 @@
- 	
- 	echo "Trying extended acls for files"
- 	${TCbin}/acl_file_test $FILE_ACL
--	if [ $? != 0 ]
--    	then
--      	 	EXIT_CODE=1
-+	if [ $? -ne 0 ]
-+	then
-+		EXIT_CODE=1
- 		echo "Extended acls for files (FAILED)"
- 	else
- 		echo "Extended acls for files (PASSED)"
--    	fi
-+	fi
-
- 	echo "Trying extended acls for file links"	
- 	${TCbin}/acl_link_test $FILE_ACL_LINK
--	if [ $? != 0 ]
-+	if [ $? -ne 0 ]
- 	then
- 		EXIT_CODE=1
- 		echo "Extended acls for links (FAILED)"
+ 	TEST_EXP_ENOS(exp_enos);
+ 
+ 	/* check looping state if -i option is given */
+@@ -114,13 +126,13 @@ int main(int ac, char **av)
+ 		} else {
+ 			TEST_ERROR_LOG(TEST_ERRNO);
+ 
+-			if (TEST_ERRNO != EPERM) {
++			if (TEST_ERRNO != exp_eno) {
+ 				tst_resm(TFAIL,
+-					 "Expected EPERM (%d), got %d: %s",
+-					 EPERM, TEST_ERRNO,
++					 "Expected %s (%d), got %d: %s",
++					 strerror(exp_eno), exp_eno, TEST_ERRNO,
+ 					 strerror(TEST_ERRNO));
+ 			} else {
+-				tst_resm(TPASS, "Got expected EPERM error");
++				tst_resm(TPASS, "Got expected %s error", strerror(exp_eno));
+ 			}
+ 		}
+ 
+@@ -147,12 +159,12 @@ int main(int ac, char **av)
+ 			} else {
+ 				TEST_ERROR_LOG(TEST_ERRNO);
+ 
+-				if (TEST_ERRNO != EPERM) {
+-					tst_resm(TFAIL, "Expected EPERM, got "
+-						 "%d", TEST_ERRNO);
++				if (TEST_ERRNO != exp_eno) {
++					tst_resm(TFAIL, "Expected %s, got "
++						 "%d", strerror(exp_eno), TEST_ERRNO);
+ 				} else {
+-					tst_resm(TPASS, "Got expected EPERM "
+-						 "error");
++					tst_resm(TPASS, "Got expected %s "
++						 "error", strerror(exp_eno));
+ 				}
+ 			}
+ 
 
 ------------------------------------------------------------------------------
 The Planet: dedicated and managed hosting, cloud storage, colocation
