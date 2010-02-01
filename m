@@ -1,23 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NkSE2-0001j0-Fs
-	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 01:09:10 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NkSE1-0001fW-KE
-	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 01:09:10 +0000
-Received: by pwi5 with SMTP id 5so4600805pwi.34
+	(envelope-from <mitani@ryobi.co.jp>) id 1NbrhY-00019v-NY
+	for ltp-list@lists.sourceforge.net; Mon, 01 Feb 2010 08:32:08 +0000
+Received: from out03.sjc.mx.trendmicro.com ([216.99.131.7])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NbrhW-0008N5-HI
+	for ltp-list@lists.sourceforge.net; Mon, 01 Feb 2010 08:32:08 +0000
+Received: from relay04.sjc.mx.trendmicro.com (unknown [10.30.239.27])
+	by out03.sjc.mx.trendmicro.com (Postfix) with ESMTP id 87F852112F0
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 24 Feb 2010 17:08:56 -0800 (PST)
+	Mon,  1 Feb 2010 08:31:59 +0000 (UTC)
+Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
+	by relay04.sjc.mx.trendmicro.com (Postfix) with ESMTP id DB2E61D7837
+	for <ltp-list@lists.sourceforge.net>;
+	Mon,  1 Feb 2010 08:31:58 +0000 (UTC)
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Mon, 1 Feb 2010 17:31:56 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Mon, 1 Feb 2010 17:31:55 +0900
+Message-ID: <000001caa319$039c8660$0ad59320$@co.jp>
 MIME-Version: 1.0
-In-Reply-To: <4B8558A6020000E80005EF62@sinclair.provo.novell.com>
-References: <4B8558A6020000E80005EF62@sinclair.provo.novell.com>
-Date: Wed, 24 Feb 2010 17:08:56 -0800
-Message-ID: <364299f41002241708g1cd33c48k5f1e0e4553c02bec@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [patch] swapon03 cleanup v2
+Content-Language: ja
+Subject: [LTP] rt_sigaction{02-03} tests validation
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,28 +35,73 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Murlin Wenzel <mwenzel@novell.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Wed, Feb 24, 2010 at 3:49 PM, Murlin Wenzel <mwenzel@novell.com> wrote:
-> Added clean_swap() to cleanup routine. =A0This makes sure all leftover sw=
-ap files are removed.
->
-> Signed-off-By: =A0Murlin Ray Wenzel mwenzel@novell.com
+Hi,
 
-Committed -- thanks!
--Garrett
+I understood that rt_sigaction01, rt_sigprocmask01 and rt_sigsuspend01 
+tests failure is architecture(x86_64) specific issues. 
+Sorry, I don't know how do I fix it, yet.
 
----------------------------------------------------------------------------=
----
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
+But when I examined these issues, I noticed that rt_sigaction's test
+also has rt_sigaction{02-03} tests.
+Currently, rt_sigaction{02-03} are not run.
+I think that it's also necessary to run rt_sigaction{02-03} tests 
+because rt_sigaction01 test well running at x86 architecture. 
+How about add rt_sigaction{02-03} to the test case?
+
+If "./runtest/syscalls" is fixed, these tests succeed as follows:
+
+------------
+
+Test Start Time: Mon Feb  1 16:38:37 2010
+-----------------------------------------
+Testcase                       Result     Exit Value
+--------                       ------     ----------
+rt_sigaction01                 PASS       0
+rt_sigaction02                 PASS       0
+rt_sigaction03                 PASS       0
+-----------------------------------------------
+Total Tests: 3
+Total Failures: 0
+Kernel Version: 2.6.18-164.el5
+Machine Architecture: i686
+Hostname: 5-4.localdomain
+
+------------
+
+Index: 
+./runtest/syscalls
+============
+--- runtest/syscalls.org        2009-12-16 04:32:18.000000000 +0900
++++ runtest/syscalls    2010-02-01 16:48:43.000000000 +0900
+@@ -801,6 +801,8 @@
+ rmdir05 rmdir05
+
+ rt_sigaction01 rt_sigaction01
++rt_sigaction02 rt_sigaction02
++rt_sigaction03 rt_sigaction03
+ rt_sigprocmask01 rt_sigprocmask01
+ rt_sigprocmask02 rt_sigprocmask02
+ rt_sigqueueinfo01 rt_sigqueueinfo01
+============
+
+
+Regards--
+
+-Tomonori Mitani
+
+
+
+------------------------------------------------------------------------------
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the business
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
