@@ -1,15 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <noreply@sourceforge.net>) id 1NeXJZ-00032b-Q5
-	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 17:22:25 +0000
-From: "SourceForge.net" <noreply@sourceforge.net>
-Mime-Version: 1.0
-Message-Id: <E1NeXJZ-0004Xu-G0@sfs-web-1.v29.ch3.sourceforge.com>
-Date: Mon, 08 Feb 2010 17:22:25 +0000
-Subject: [LTP] [ ltp-Bugs-2936354 ] Problem with --base-directory option for
-	folder overview
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NcE9W-0008Sp-M9
+	for ltp-list@lists.sourceforge.net; Tue, 02 Feb 2010 08:30:30 +0000
+Received: from mail-pz0-f192.google.com ([209.85.222.192])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NcE9V-0004J5-JD
+	for ltp-list@lists.sourceforge.net; Tue, 02 Feb 2010 08:30:30 +0000
+MIME-Version: 1.0
+Date: Tue, 2 Feb 2010 00:30:23 -0800
+Message-ID: <364299f41002020030u527224adsb87f33ba4119551c@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: [LTP] [IMPORTANT] Clean target regression [was Re: [ANNOUNCE] The
+	Linux Test Project has been released for JANUARY 2010]
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -19,71 +23,68 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: noreply@sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list <ltp-list@lists.sf.net>, Mike Frysinger <vapier@gentoo.org>, linux-kernel <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>
 
-Bugs item #2936354, was opened at 2010-01-21 15:14
-Message generated for change (Comment added) made by khmarbaise
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=103382&aid=2936354&group_id=3382
-
-Please note that this message will contain a full copy of the comment thread,
-including the initial issue submission, for this request,
-not just the latest update.
-Category: Tools
-Group: None
->Status: Closed
-Resolution: None
-Priority: 5
-Private: No
-Submitted By: Karl Heinz Marbaise (khmarbaise)
-Assigned to: Nobody/Anonymous (nobody)
-Summary: Problem with --base-directory option for folder overview
-
-Initial Comment:
-I have modified the example which is part of the delivery to produce all reports etc. into a separate folder (target)...
-But now i have the problem that the HTML report where the unmodified report show simply "example" now i have a folder as part of it.
-The link is working well, but it's not look good....
-It seemed to be that the --base-directory is not removed from folders.
-
-
-----------------------------------------------------------------------
-
->Comment By: Karl Heinz Marbaise (khmarbaise)
-Date: 2010-02-08 18:22
-
-Message:
-Sorry for the late answer. Your asumtion is correct. And mine was
-wrong...cause after investigating the problem i found out the problem was
-on my side...
-So i close that issue.
-
-----------------------------------------------------------------------
-
-Comment By: Peter Oberparleiter (oberpapr)
-Date: 2010-01-22 10:09
-
-Message:
-I'm assuming that you're talking about lcov.
-
-It's difficult to comment on your modification without knowing what
-exactly it does. If you post a patch to ltp-coverage@lists.sourceforge.net,
-I can have a look.
-
-----------------------------------------------------------------------
-
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=103382&aid=2936354&group_id=3382
-
-------------------------------------------------------------------------------
-The Planet: dedicated and managed hosting, cloud storage, colocation
-Stay online with enterprise data centers and the best network in the business
-Choose flexible plans and management services without long-term contracts
-Personal 24x7 support from experience hosting pros just a phone call away.
-http://p.sf.net/sfu/theplanet-com
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gTW9uLCBGZWIgMSwgMjAxMCBhdCA4OjAxIEFNLCBHYXJyZXR0IENvb3BlciA8eWFuZWdvbWlA
+Z21haWwuY29tPiB3cm90ZToKPiBPbiBNb24sIEZlYiAxLCAyMDEwIGF0IDI6NTcgQU0sIFN1YnJh
+dGEgTW9kYWsKPiA8c3VicmF0YUBsaW51eC52bmV0LmlibS5jb20+IHdyb3RlOgo+PiBIaSwKPj4K
+Pj4gVGhlIExpbnV4IFRlc3QgUHJvamVjdCB0ZXN0IHN1aXRlIGhhcyBiZWVuIHJlbGVhc2VkIGZv
+ciB0aGUgbW9udGggb2YKPj4gSkFOVUFSWSAyMDEwLiBQbGVhc2Ugc2VlIGx0cC9JTlNUQUxMIGZp
+bGUgY2FyZWZ1bGx5LCBhcywgdGhlcmUgaGFzCj4+IGJlZW4gbXVsdGlwbGUgY2hhbmdlcyBmb3Ig
+YnVpbGRpbmcvaW5zdGFsbGluZyB0aGUgdGVzdCBzdWl0ZSBhZnRlciB0aGUKPj4gcmVjZW50IGNo
+YW5nZXMgaW4gTWFrZWZpbGUgaW5mcmFzdHJ1Y3R1cmUuCj4+Cj4+IFRoZSBsYXRlc3QgdmVyc2lv
+biBvZiB0aGUgdGVzdC1zdWl0ZSBjb250YWlucyAzMDAwKyB0ZXN0cyBmb3IgdGhlIExpbnV4Cj4+
+IE9TIGFuZCBjYW4gYmUgZm91bmQgYXQ6Cj4+IGh0dHA6Ly9sdHAuc291cmNlZm9yZ2UubmV0LywK
+Pj4gTGF0ZXN0IGhhcHBlbmluZ3MgaW4gTFRQIGNhbiBhbHNvIGJlIGZvdW5kIGF0Ogo+PiBodHRw
+Oi8vbHRwLnNvdXJjZWZvcmdlLm5ldC93aWtpLywKPj4gaHR0cDovL2x0cC5zb3VyY2Vmb3JnZS5u
+ZXQvd2lraUFyY2hpdmVzLnBocCwgYW5kLAo+PiBJUkM6IGlyYy5mcmVlbm9kZS5vcmcgI2x0cC4K
+Pj4KPj4gT3VyIHdlYiBzaXRlIGFsc28gY29udGFpbnMgb3RoZXIgaW5mb3JtYXRpb24gc3VjaCBh
+czoKPj4gLSBBIExpbnV4IHRlc3QgdG9vbHMgbWF0cml4Cj4+IC0gVGVjaG5pY2FsIHBhcGVycwo+
+PiAtIEhvdyBUbydzIG9uIExpbnV4IHRlc3RpbmcKPj4gLSBDb2RlIGNvdmVyYWdlIGFuYWx5c2lz
+IHRvb2wuCj4+Cj4+IFdlIHdvdWxkIGVuY291cmFnZSB0aGUgY29tbXVuaXR5IHRvIHBvc3QgcmVz
+dWx0cyB0bwo+PiBsdHAtcmVzdWx0c0BsaXN0cy5zZi5uZXQsCj4+IHBhdGNoZXMsIG5ldyB0ZXN0
+cywgYnVncyBvciBjb21tZW50cy9xdWVzdGlvbnMgdG8gbHRwLWxpc3RAbGlzdHMuc2YubmV0LAo+
+PiBodHRwOi8vc291cmNlZm9yZ2UubmV0L3RyYWNrZXIvP2Z1bmM9YWRkJmdyb3VwX2lkPTMzODIm
+YXRpZD0xMDMzODIgKGZvcgo+PiBOZXcgQnVnKHMpKSwKPj4gaHR0cDovL3NvdXJjZWZvcmdlLm5l
+dC90cmFja2VyLz9mdW5jPWFkZCZncm91cF9pZD0zMzgyJmF0aWQ9MzAzMzgyIChmb3IKPj4gTmV3
+IFBhdGNoKHMpKSwKPj4gaHR0cDovL3NvdXJjZWZvcmdlLm5ldC90cmFja2VyLz9mdW5jPWFkZCZn
+cm91cF9pZD0zMzgyJmF0aWQ9MzUzMzgyIChmb3IKPj4gTmV3IEZlYXR1cmUgUmVxdWVzdChzKSkK
+Pj4KPj4gKipOb3RlOiBTb21lIHBlbmRpbmcgcGF0Y2hlcyB3aWxsIGJlIGNoZWNrZWQgaW4gZm9y
+IG5leHQgbW9udGjFmyByZWxlYXNlLgo+Cj4gwqAgwqBGb3IgdGhvc2Ugd2hvIGhhdmUgYmVlbiBo
+b2xkaW5nIG9mZiBvbiB1cGdyYWRpbmcgc2luY2UgdGhlIE1ha2UKPiBpbmZyYXN0cnVjdHVyZSBy
+ZXZpc2lvbiB3YXMgZG9uZSBiYWNrIGluIE9jdG9iZXIsIEkgaGlnaGx5IHN1Z2dlc3QKPiB0aGF0
+IHRoZXkgZXZhbHVhdGUgdGhpcyByZWxlYXNlIGFzIGEgc2V2ZXJhbCBpc3N1ZXMgaGF2ZSBiZWVu
+Cj4gcmVzb2x2ZWQsIGkuZS4gc2VsaW51eC10ZXN0c3VpdGUgYmVpbmcgZml4ZWQgdG8gbWVldCB0
+aGUgbWFrZQo+IGluZnJhc3RydWN0dXJlIGNoYW5nZXMgKHRoZXJlJ3MganVzdCBhIG1pbm9yIGlz
+c3VlIHRoYXQncyBiZWVuCj4gcmVwb3J0ZWQgb24gUkhFTCA1LjQgd2l0aCB0aGUgcG9saWN5IGZp
+bGVzIC0tIFN0ZXBoZW4gc2hvdWxkIGJlCj4gd29ya2luZyB3aXRoIE1pdGFuaS1zYW4gdG8gcmVz
+b2x2ZSB0aGUgaXNzdWUpLCBhbmQgYSBmZXcgYXV0b2NvbmYKPiByZWxhdGVkIGl0ZW1zIGhhdmUg
+YmVlbiByZXNvbHZlZC4gRnVydGhlcm1vcmUsIG1ha2UgMy44MCBzdXBwb3J0IGhhcwo+IGJlZW4g
+aW50ZWdyYXRlZCBpbnRvIHRoZSBwcm9qZWN0IHNvIGZvbGtzIGNhbiBvbmNlIGFnYWluIHVzZSBt
+YWtlIDMuODAKPiB3aGVuIGJ1aWxkaW5nIExUUC4KPiBBbGwgdGhlIGJlc3QsCgogICAgTk9URSAt
+LSBwbGVhc2UgY29tbWVudCBvdXQgdGhlIGZvbGxvd2luZyB0aHJlZSBsaW5lcyBpbiB0aGUKdG9w
+LWxldmVsIE1ha2VmaWxlIC0tIG5vdCBkb2luZyBzbyB3aWxsIHJlc3VsdCBpbiB5b3UgcG90ZW50
+aWFsbHkKb2JsaXRlcmF0aW5nIGFsbCBvZiB0aGUgd3JpdGFibGUgZmlsZXMgb24geW91ciBidWls
+ZCB0YXJnZXQsIGFzIHRoaXMKd2lsbCBlZmZlY3RpdmVseSBwZXJmb3JtIGFuIHJtIC1SZiAvIHVu
+ZGVyIGNlcnRhaW4gY29uZGl0aW9ucy4KCmlmZXEgKCQoZmlsdGVyICQoQlVJTERfVFJFRV9TVEFU
+RSksJChCVUlMRF9UUkVFX1NSQ0RJUl9JTlNUQUxMKQokKEJVSUxEX1RSRUVfVU5DT05GSUdVUkVE
+KSksKQpDTEVBTl9UQVJHRVRTICAgICAgICArPSBjbGVhbl9pbnN0YWxsX2RpcgplbmRpZgoKICAg
+IEkgZGVlcGx5IGFwb2xvZ2l6ZSBmb3IgdGhlIGluY29udmVuaWVuY2U7IEknbSB3b3JraW5nIG9u
+CnJlY3RpZnlpbmcgdGhlIGlzc3VlIEFTQVAgYW5kIHdpbGwgZW1haWwgYWdhaW4gb25jZSBpdCdz
+IHJlc29sdmVkOyBJCndpbGwgYWRkIGEgcmVncmVzc2lvbiB0ZXN0IGZvciB0aGlzIEFTQVAgaW4g
+dGhlIGJ1aWxkIHRlc3Qgc2NyaXB0cwpJJ3ZlIHJlY2VudGx5IGF1dGhvcmVkIHNvIHRoaXMgZG9l
+c24ndCBoYXBwZW4gYWdhaW4uClRoYW5rcywKLUdhcnJldHQKCi0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LQpUaGUgUGxhbmV0OiBkZWRpY2F0ZWQgYW5kIG1hbmFnZWQgaG9zdGluZywgY2xvdWQgc3RvcmFn
+ZSwgY29sb2NhdGlvbgpTdGF5IG9ubGluZSB3aXRoIGVudGVycHJpc2UgZGF0YSBjZW50ZXJzIGFu
+ZCB0aGUgYmVzdCBuZXR3b3JrIGluIHRoZSBidXNpbmVzcwpDaG9vc2UgZmxleGlibGUgcGxhbnMg
+YW5kIG1hbmFnZW1lbnQgc2VydmljZXMgd2l0aG91dCBsb25nLXRlcm0gY29udHJhY3RzClBlcnNv
+bmFsIDI0eDcgc3VwcG9ydCBmcm9tIGV4cGVyaWVuY2UgaG9zdGluZyBwcm9zIGp1c3QgYSBwaG9u
+ZSBjYWxsIGF3YXkuCmh0dHA6Ly9wLnNmLm5ldC9zZnUvdGhlcGxhbmV0LWNvbQpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxp
+c3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9y
+Z2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
