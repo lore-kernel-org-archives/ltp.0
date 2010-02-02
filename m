@@ -1,25 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NgvFr-00040a-UF
-	for ltp-list@lists.sourceforge.net; Mon, 15 Feb 2010 07:20:27 +0000
-Received: from mail-pz0-f179.google.com ([209.85.222.179])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <sds@tycho.nsa.gov>) id 1NcLXH-0003uf-EL
+	for ltp-list@lists.sourceforge.net; Tue, 02 Feb 2010 16:23:31 +0000
+Received: from msux-gh1-uea02.nsa.gov ([63.239.67.2])
 	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NgvFr-0005B8-2L
-	for ltp-list@lists.sourceforge.net; Mon, 15 Feb 2010 07:20:27 +0000
-Received: by pzk9 with SMTP id 9so2923969pzk.28
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 14 Feb 2010 23:20:21 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <4b9fdcd01002142309p2bc18e0yfaa0876694cc4f57@mail.gmail.com>
-References: <4b9fdcd01002142251l2cb9036fvde4fbc60bbae85a4@mail.gmail.com>
-	<364299f41002142303t19a2dd85ve9d87245084ff4ff@mail.gmail.com>
-	<4b9fdcd01002142309p2bc18e0yfaa0876694cc4f57@mail.gmail.com>
-Date: Sun, 14 Feb 2010 23:20:20 -0800
-Message-ID: <364299f41002142320p24b3e50fj8b56bb15dad2a524@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] facing issue "TBROK : nobody not in /etc/passwd"
+	id 1NcLXG-00005a-5Y
+	for ltp-list@lists.sourceforge.net; Tue, 02 Feb 2010 16:23:31 +0000
+From: Stephen Smalley <sds@tycho.nsa.gov>
+In-Reply-To: <364299f41002011635m8985236k3b2e75c7278ae5e3@mail.gmail.com>
+References: <001201caa315$d351baf0$79f530d0$@co.jp>
+	<364299f41002010044j269258fep9cfd31c8c0f897ac@mail.gmail.com>
+	<1265034017.12435.7.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41002011202o5771b118k917f899b44e36bec@mail.gmail.com>
+	<1265057573.12435.301.camel@moss-pluto.epoch.ncsc.mil>
+	<364299f41002011635m8985236k3b2e75c7278ae5e3@mail.gmail.com>
+Date: Tue, 02 Feb 2010 11:29:46 -0500
+Message-Id: <1265128186.3114.7.camel@moss-pluto.epoch.ncsc.mil>
+Mime-Version: 1.0
+Subject: Re: [LTP] 2010-02-01 cvs make problem
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,97 +29,107 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: vishwanath govind <vishwa.hochihally@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>, Mitani <mitani@ryobi.co.jp>
 
-On Sun, Feb 14, 2010 at 11:09 PM, vishwanath govind
-<vishwa.hochihally@gmail.com> wrote:
-> Garrett,
-> =A0Thanks for your quick reply. I am using "ltp-full-20091231".
-> Regards
-> Vishwa
->
-> On Mon, Feb 15, 2010 at 12:33 PM, Garrett Cooper <yanegomi@gmail.com> wro=
-te:
->>
->> On Sun, Feb 14, 2010 at 10:51 PM, vishwanath govind
->> <vishwa.hochihally@gmail.com> wrote:
->> >
->> > Hi,
->> > I am facing common issue which causing many of the LTP syscalls test
->> > cases
->> > to fail. I have taken mknod02 test to show this issue here. Definitely=
- I
->> > am
->> > missing something out here, could you guys please point me to right
->> > direction?=A0 Please let me know if you need some more info/log
->> >
->> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3Dlog=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
->> > # ls /etc
->> > group=A0=A0 passwd
->> >
->> > # ./IDcheck.sh
->> > Checking for required user/group ids
->> > 'nobody' user id and group found.
->> > 'bin' user id and group found.
->> > 'daemon' user id and group found.
->> > Users group found.
->> > Sys group found.
->> > Required users/groups exist.
->> >
->> > # cat /etc/passwd
->> > root:x:0:0:root::
->> > nobody:x:99:99:nobody::
->> > bin:x:1:1:bin::
->> > daemon:x:2:2:daemon::
->> >
->> > #uname -a
->> > Linux (none) 2.6.29 #4 PREEMPT Thu Feb 11 23:37:46 PST 2010 armv6l
->> > GNU/Linux
->> >
->> > # ./mknod02
->> > mknod02=A0=A0=A0=A0 1=A0 TBROK=A0 :=A0 nobody not in /etc/passwd
->>
->> What version of LTP is this?
+On Mon, 2010-02-01 at 16:35 -0800, Garrett Cooper wrote:
+> On Mon, Feb 1, 2010 at 12:52 PM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
+> > On Mon, 2010-02-01 at 12:02 -0800, Garrett Cooper wrote:
+> >> On Mon, Feb 1, 2010 at 6:20 AM, Stephen Smalley <sds@tycho.nsa.gov> wrote:
+> >> > On Mon, 2010-02-01 at 00:44 -0800, Garrett Cooper wrote:
+> >> >> On Mon, Feb 1, 2010 at 12:09 AM, Mitani <mitani@ryobi.co.jp> wrote:
+> >> >> > Hi,
+> >> >> >
+> >> >> > I tried to build 2010-02-01 cvs in RHEL5.4 system.
+> >> >> > (Archecture : x86 and x86_64)
+> >> >> >
+> >> >> >
+> >> >> > "make" failed with following message:
+> >> >> > ------------
+> >> >> > [...]
+> >> >> > make[5]: Entering directory
+> >> >> > `/home/LTP/ltp-2010-02-01/testcases/kernel/security/selinux-testsuite/refpol
+> >> >> > icy'
+> >> >> > (cd
+> >> >> > "/home/LTP/ltp-2010-02-01/testcases/kernel/security/selinux-testsuite/refpol
+> >> >> > icy/policy_files/generic" && cat test_global.te test_bounds.te
+> >> >
+> >> > Hmm...this indicates that your Makefile rewrite still isn't working
+> >> > properly on RHEL5, where it is supposed to use the files under
+> >> > refpolicy/policy_files/redhat-5 instead of generic.
+> >> >
+> >> >> > test_capable_file.te test_capable_net.te test_capable_sys.te
+> >> >> > test_dyntrace.te test_dyntrans.te test_entrypoint.te test_execshare.te
+> >> >> > test_exectrace.te test_execute_no_trans.te test_fdreceive.te test_file.te
+> >> >> > test_inherit.te test_ioctl.te test_ipc.te test_link.te test_mkdir.te
+> >> >> > test_open.te test_ptrace.te test_readlink.te test_relabel.te test_rename.te
+> >> >> > test_rxdir.te test_setattr.te test_setnice.te test_sigkill.te test_stat.te
+> >> >> > test_sysctl.te test_task_create.te test_task_getpgid.te
+> >> >> > test_task_getsched.te test_task_getsid.te test_task_setpgid.te
+> >> >> > test_task_setsched.te test_transition.te test_wait.te) > test_policy.te
+> >> >> > cat: /selinux/mls: No such file or directory
+> >> >
+> >> > And this suggests that the tester does not have SELinux enabled in his
+> >> > kernel.  You shouldn't enable the SELinux testsuite unless SELinux is
+> >> > enabled in the kernel.  You can test with something akin to:
+> >> > if [ -x /usr/sbin/selinuxenabled ] && selinuxenabled; then
+> >> >        <run selinux testsuite>
+> >> > fi
+> >> >
+> >> >
+> >> >> > make[6]: Entering directory
+> >> >> > `/home/LTP/ltp-2010-02-01/testcases/kernel/security/selinux-testsuite/refpol
+> >> >> > icy'
+> >> >> > Compiling targeted test_policy module
+> >> >> > test_policy.te:129:ERROR 'syntax error' at token 'typebounds' on line 93991:
+> >> >> > # Definition of boundary relationship
+> >> >> > typebounds test_bounds_parent_t test_bounds_child_t;
+> >> >> > /usr/bin/checkmodule:  error(s) encountered while parsing configuration
+> >> >> > /usr/bin/checkmodule:  loading policy configuration from tmp/test_policy.tmp
+> >> >
+> >> > And apparently your Makefile logic to exclude test_bounds.te if
+> >> > CHECKPOLICYVERS is not 24 isn't working either, although it wouldn't try
+> >> > if it was using the right subdirectory.
+> >>
+> >> Mitani-san -- could you do the following please?
+> >>
+> >> 1. cat out your /etc/issue file.
+> >> 2. Provide the output for $srcdir/scripts/detect_distro.sh
+> >
+> > Doesn't seem to be stripping the minor version.
+> > $ ./scripts/detect_distro.sh
+> > redhat-5.4
+> > $ ./scripts/detect_distro.sh  -m
+> > redhat-5.4
+> 
+> Ok -- what's the input (/etc/issue)?
 
-That's a lousy diagnostic, as any one of the following errors could be
-the culprit:
+Do you mean /etc/redhat-release?
+Red Hat Enterprise Linux Client release 5.4 (Tikanga)
 
-ERRORS
-       0 or ENOENT or ESRCH or EBADF or EPERM or ...
-              The given name or uid was not found.
+Maybe it would be more portable to use lsb_release(1)
 
-       EINTR  A signal was caught.
+# lsb_release -i
+Distributor ID:	RedHatEnterpriseClient
+# lsb_release -d
+Description:	Red Hat Enterprise Linux Client release 5.4 (Tikanga)
+# lsb_release -r
+Release:	5.4
 
-       EIO    I/O error.
+-- 
+Stephen Smalley
+National Security Agency
 
-       EMFILE The maximum number (OPEN_MAX) of files was open already
-in the calling process.
 
-       ENFILE The maximum number of files was open already in the system.
-
-       ENOMEM Insufficient memory to allocate passwd structure.
-
-       ERANGE Insufficient buffer space supplied.
-
-What are the permissions on the file and is there any way where you
-could grab the latest copy of the file from git and try that out (the
-patch is available at:
-<http://ltp.git.sourceforge.net/git/gitweb.cgi?p=3Dltp/ltp-dev.git;a=3Dpatc=
-h;h=3DHEAD;hp=3D8686ad72fbe76a7de8fe8e93ef68a71fff8a049d>)?
-Thanks!
--Garrett
-
----------------------------------------------------------------------------=
----
-SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
-Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
-http://p.sf.net/sfu/solaris-dev2dev
+------------------------------------------------------------------------------
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the business
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
