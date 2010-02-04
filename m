@@ -1,18 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <official95@megamail.pt>) id 1NiIcQ-00022Y-OV
-	for ltp-list@lists.sourceforge.net; Fri, 19 Feb 2010 02:29:26 +0000
-Received: from mms23.megamail.pt ([193.136.2.35])
-	by sfi-mx-3.v28.ch3.sourceforge.com with smtp (Exim 4.69)
-	id 1NiIcP-0008Og-PS
-	for ltp-list@lists.sourceforge.net; Fri, 19 Feb 2010 02:29:26 +0000
-Message-ID: <6437.41.210.7.176.1266543390.megamail@megamail.pt>
-Date: Fri, 19 Feb 2010 01:36:30 -0000 (WET)
-From: "manager" <official95@megamail.pt>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NcvJZ-0003A9-55
+	for ltp-list@lists.sourceforge.net; Thu, 04 Feb 2010 06:35:45 +0000
+Received: from e23smtp02.au.ibm.com ([202.81.31.144])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NcvJX-00006r-OR
+	for ltp-list@lists.sourceforge.net; Thu, 04 Feb 2010 06:35:45 +0000
+Message-ID: <4B6A64FE.8070303@linux.vnet.ibm.com>
+Date: Thu, 04 Feb 2010 11:41:10 +0530
+From: Rishikesh <risrajak@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Subject: [LTP] [SPAM] REQUEST FOR YOUR  ASSISTANCE
+References: <1265022382.5234.30.camel@subratamodak.linux.ibm.com>
+In-Reply-To: <1265022382.5234.30.camel@subratamodak.linux.ibm.com>
+Subject: Re: [LTP] [MAINTAINERSHIP] Change in Responsibility
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,68 +24,68 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: 
+To: subrata@linux.vnet.ibm.com
+Cc: ltp-list <ltp-list@lists.sf.net>, Nathan Straz <nstraz@redhat.com>, Mike Frysinger <vapier@gentoo.org>, Sudarshan Rao <rsudarsh@in.ibm.com>, Michael Reed <mreed10@us.ibm.com>, "manoj.iyer" <manoj.iyer@canonical.com>, "paul.larson" <paul.larson@ubuntu.com>
 
-
-
-
-DEAR FRIEND,
-
-I AM THE MANAGER OF BILL AND EXCHANGE AT THE FOREIGN REMITTANCE DEPARTMENT OF
-THE AFRICAN BANK.IN MY DEPARTMENT WE DISCOVERED AN ABANDONED SUM OF U.S$3.5 M
-DOLLARS (THREE POINT FIVE MILLION USD) IN AN ACCOUNT THAT BELONGS TO ONE OF
-OUR FOREIGN CUSTOMER WHO DIED WITH HIS ENTIRE FAMILY DURING THE IRAQ WAR IN
-2006.
-
-SINCE WE GOT INFORMATION ABOUT HIS DEATH, WE HAVE BEEN EXPECTING HIS NEXT OF
-KIN TO COME OVER AND CLAIM HIS MONEY BECAUSE WE CANNOT RELEASE IT UNLESS SOME
-BODY APPLIES FOR IT AS NEXT OF KIN OR RELATION TO THE DECEASED AS INDICATED IN
-OUR BANKING GUIDELINES AND LAWS, BUT UNFORTUNATELY WE LEARNED THAT ALL HIS
-SUPPOSED NEXT OF KIN OR RELATION DIED ALONGSIDE WITH HIM AT THE IRAQ WAR
-LEAVING NOBODY BEHIND FOR THE CLAIM.
-
-IT IS THEREFORE UPON THIS DISCOVERY, I NOW DECIDED TO MAKE THIS BUSINESS
-PROPOSAL TO YOU AND RELEASE THE MONEY TO YOU AS THE NEXT OF KIN OR RELATION TO
-THE DECEASED FOR SAFETY AND SUBSEQUENT DISBURSEMENT SINCE NOBODY IS COMING FOR
-IT AND I DON'T WANT THIS MONEY TO GO INTO THE BANK TREASURY AS UNCLAIMED BILL
-THE BANKING LAW AND GUIDINE HERE STIPULATES THAT IF SUCH MONEY REMAINED
-UNCLAIMED AFTER FOUR YEARS, THE MONEY WILL BE TRANSFERRED INTO THE BANK
-ASUNCLAIMED BILL .
-
-THEREFORE AGREE THAT 40% OF THIS MONEY WILL BE FOR YOU AS FOREIGNER PARTNER,IN
-RESPECT TO THE PROVISION OF A FOREIGN ACCOUNT, 10% WILL BE SET ASIDE FOR
-EXPENSES INCURED DURING THE BUSINESS AND 50% WOULD BE FOR ME. THERE AFTER I
-WILL VISIT YOUR COUNTRY FOR DISBURSEMENT ACCORDING TO THE PERCENTAGES
-INDICATED. THEREFORE, TO ENABLE THE IMMEDIATE TRANSFER OF THIS FUND TO YOU AS
-ARRANGED, YOU MUST APPLY FIRST TO THE BANK AS RELATION OR NEXT OF KIN OF THE
-DECEASED INDICATING YOUR BANK NAME, YOUR BANK ACCOUNT NUMBER, YOUR PRIVATE
-TELEPHONE AND FAX NUMBER FOR EASY AND EFFECTIVE COMMUNICATION AND LOCATION
-WHERE IN THE MONEY WILL BE REMITTED.
-
-I WILL NOT FAIL TO BRING TO YOUR NOTICE THAT THIS TRANSACTION IS HITCH-FREE
-AND THAT YOU SHOULD NOT ENTERTAIN ANY ATOM OF FEAR AS ALL REQUIRED
-ARRANGEMENTS HAVE BEEN MADE FOR THE TRANSFER.
-
-PLS IF YOU ARE NOT INTERESTED IN THIS TRANSACTION JUST DELETE MY MESSAGE FROM
-BOX AND DO NOT REPLY BACK OK.IF YOU ARE WILLING KINDLY EMAILS ME VIA THIS
-EMAIL BELOW:mrsanijimes3@gmail.com.
-TRUSTING TO HEAR FROM YOU IMMEDIATELY.
-
-YOURS FAITHFULLY,
-MR SANI JIMES.
-
-
-
-------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMDIvMDEvMjAxMCAwNDozNiBQTSwgU3VicmF0YSBNb2RhayB3cm90ZToKPiBIZWxsbyBFdmVy
+eWJvZHksCj4KPiBBZnRlciBhbG1vc3QgMyB5ZWFycyBvZiB3b3JraW5nIHdpdGggdGhlIExUUCBj
+b21tdW5pdHksIGkgaGF2ZSBmaW5hbGx5Cj4gZGVjaWRlZCB0byBoYW5kIG92ZXIgdGhlIHJlc3Bv
+bnNpYmlsaXR5IG9mIE1haW50YWluZXJzaGlwIHRvIFJpc2hpa2VzaC4KPiAgICAKSGkgU3VicmF0
+YSwKClRoYW5rcyBmb3IgeW91ciBodWdlIGNvbnRyaWJ1dGlvbiB0byBsdHAuIFllcywgeW91ciBj
+b250cmlidXRpb24gb2YgMyAKeWVhcnMgaXMgcmVtYXJrYWJsZS4KCj4gSGUgd2lsbCB0YWtlIG92
+ZXIgYWxsIHRoZSBmdXR1cmUgT2ZmaWNpYWwgcmVsZWFzZXMgYW5kIHdvcmsgd2l0aCB0aGUKPiBj
+b21tdW5pdHkgdG8gZnVydGhlciBMVFDFmyBBZ2VuZGEuCj4KPiBIYXZpbmcgc2FpZCB0aGF0LCBp
+IGNvbmZpcm0gdG8gcmVtYWluIGFjdGl2ZSBhbmQga2VlcCBkZXZlbG9waW5nIExUUCBmb3IKPiBi
+ZXR0ZXJtZW50IG9mIExpbnV4IHRlc3RpbmcuIEkgd291bGQgaGVscCB0byByZXNvbHZlIGFsbCBp
+c3N1ZXMgYXMgd2VsbAo+IGFuZCB3aWxsIHN0aWxsIGJlIHNlZW4gb24gdGhlIE1haWxpbmcgTGlz
+dC4KPgo+IEkgd291bGQgcmVxdWVzdCB5b3UgdG8gZXh0ZW5kIHlvdXIgc3VwcG9ydCB0byBSaXNo
+aWtlc2ggYXMgeW91IGhhdmUgYmVlbgo+IGRvaW5nIHVucXVlc3Rpb25hYmx5IHRvIG1lIGFsbCB0
+aGVzZSB5ZWFycy4gVGhhbmtzIGZvciBhbGwgeW91ciBzdXBwb3J0Lgo+ICAgIAoKWWVzIGkgZGVm
+aW5pdGVseSBuZWVkIHRoaXMgdG8gcnVuIHRoaXMgcHJvamVjdCBzbW9vdGhlciBmb3IgZnV0dXJl
+IHJlbGVhc2VzLgoKVGhhbmtzClJpc2hpCj4gUmVnYXJkcy0tCj4gU3VicmF0YQo+Cj4gLS0tLS0t
+LS0gRm9yd2FyZGVkIE1lc3NhZ2UgLS0tLS0tLS0KPiBGcm9tOiBTdWJyYXRhIE1vZGFrPHN1YnJh
+dGFAbGludXgudm5ldC5pYm0uY29tPgo+IFJlcGx5LVRvOiBzdWJyYXRhQGxpbnV4LnZuZXQuaWJt
+LmNvbQo+IFRvOiBsdHAtbGlzdDxsdHAtbGlzdEBsaXN0cy5zZi5uZXQ+LCBsaW51eC1rZXJuZWwK
+PiA8bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz4KPiBDYzogR2FycmV0dCBDb29wZXI8eWFu
+ZWdvbWlAZ21haWwuY29tPiwgTWlrZSBGcnlzaW5nZXIKPiA8dmFwaWVyQGdlbnRvby5vcmc+LCBM
+aW51cyBUb3J2YWxkczx0b3J2YWxkc0BsaW51eC1mb3VuZGF0aW9uLm9yZz4sCj4gQW5kcmV3IE1v
+cnRvbjxha3BtQGxpbnV4LWZvdW5kYXRpb24ub3JnPiwgUmlzaGlrZXNoIEsgUmFqYWsKPiA8cmlz
+cmFqYWtAbGludXgudm5ldC5pYm0uY29tPgo+IFN1YmplY3Q6IFtBTk5PVU5DRV0gVGhlIExpbnV4
+IFRlc3QgUHJvamVjdCBoYXMgYmVlbiByZWxlYXNlZCBmb3IgSkFOVUFSWQo+IDIwMTAKPiBEYXRl
+OiBNb24sIDAxIEZlYiAyMDEwIDE2OjI3OjIzICswNTMwCj4KPiBIaSwKPgo+IFRoZSBMaW51eCBU
+ZXN0IFByb2plY3QgdGVzdCBzdWl0ZSBoYXMgYmVlbiByZWxlYXNlZCBmb3IgdGhlIG1vbnRoIG9m
+Cj4gSkFOVUFSWSAyMDEwLiBQbGVhc2Ugc2VlIGx0cC9JTlNUQUxMIGZpbGUgY2FyZWZ1bGx5LCBh
+cywgdGhlcmUgaGFzCj4gYmVlbiBtdWx0aXBsZSBjaGFuZ2VzIGZvciBidWlsZGluZy9pbnN0YWxs
+aW5nIHRoZSB0ZXN0IHN1aXRlIGFmdGVyIHRoZQo+IHJlY2VudCBjaGFuZ2VzIGluIE1ha2VmaWxl
+IGluZnJhc3RydWN0dXJlLgo+Cj4gVGhlIGxhdGVzdCB2ZXJzaW9uIG9mIHRoZSB0ZXN0LXN1aXRl
+IGNvbnRhaW5zIDMwMDArIHRlc3RzIGZvciB0aGUgTGludXgKPiBPUyBhbmQgY2FuIGJlIGZvdW5k
+IGF0Ogo+IGh0dHA6Ly9sdHAuc291cmNlZm9yZ2UubmV0LywKPiBMYXRlc3QgaGFwcGVuaW5ncyBp
+biBMVFAgY2FuIGFsc28gYmUgZm91bmQgYXQ6Cj4gaHR0cDovL2x0cC5zb3VyY2Vmb3JnZS5uZXQv
+d2lraS8sCj4gaHR0cDovL2x0cC5zb3VyY2Vmb3JnZS5uZXQvd2lraUFyY2hpdmVzLnBocCwgYW5k
+LAo+IElSQzogaXJjLmZyZWVub2RlLm9yZyAjbHRwLgo+Cj4gT3VyIHdlYiBzaXRlIGFsc28gY29u
+dGFpbnMgb3RoZXIgaW5mb3JtYXRpb24gc3VjaCBhczoKPiAtIEEgTGludXggdGVzdCB0b29scyBt
+YXRyaXgKPiAtIFRlY2huaWNhbCBwYXBlcnMKPiAtIEhvdyBUbydzIG9uIExpbnV4IHRlc3RpbmcK
+PiAtIENvZGUgY292ZXJhZ2UgYW5hbHlzaXMgdG9vbC4KPgo+IFdlIHdvdWxkIGVuY291cmFnZSB0
+aGUgY29tbXVuaXR5IHRvIHBvc3QgcmVzdWx0cyB0bwo+IGx0cC1yZXN1bHRzQGxpc3RzLnNmLm5l
+dCwKPiBwYXRjaGVzLCBuZXcgdGVzdHMsIGJ1Z3Mgb3IgY29tbWVudHMvcXVlc3Rpb25zIHRvIGx0
+cC1saXN0QGxpc3RzLnNmLm5ldCwKPiBodHRwOi8vc291cmNlZm9yZ2UubmV0L3RyYWNrZXIvP2Z1
+bmM9YWRkJmdyb3VwX2lkPTMzODImYXRpZD0xMDMzODIgKGZvcgo+IE5ldyBCdWcocykpLAo+IGh0
+dHA6Ly9zb3VyY2Vmb3JnZS5uZXQvdHJhY2tlci8/ZnVuYz1hZGQmZ3JvdXBfaWQ9MzM4MiZhdGlk
+PTMwMzM4MiAoZm9yCj4gTmV3IFBhdGNoKHMpKSwKPiBodHRwOi8vc291cmNlZm9yZ2UubmV0L3Ry
+YWNrZXIvP2Z1bmM9YWRkJmdyb3VwX2lkPTMzODImYXRpZD0zNTMzODIgKGZvcgo+IE5ldyBGZWF0
+dXJlIFJlcXVlc3QocykpCj4KPiAqKk5vdGU6IFNvbWUgcGVuZGluZyBwYXRjaGVzIHdpbGwgYmUg
+Y2hlY2tlZCBpbiBmb3IgbmV4dCBtb250aMWbIHJlbGVhc2UuCj4KPiBIYXBweSB0ZXN0aW5nLAo+
+IFJlZ2FyZHMtLQo+IFN1YnJhdGEsCj4KPgo+ICAgIAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpU
+aGUgUGxhbmV0OiBkZWRpY2F0ZWQgYW5kIG1hbmFnZWQgaG9zdGluZywgY2xvdWQgc3RvcmFnZSwg
+Y29sb2NhdGlvbgpTdGF5IG9ubGluZSB3aXRoIGVudGVycHJpc2UgZGF0YSBjZW50ZXJzIGFuZCB0
+aGUgYmVzdCBuZXR3b3JrIGluIHRoZSBidXNpbmVzcwpDaG9vc2UgZmxleGlibGUgcGxhbnMgYW5k
+IG1hbmFnZW1lbnQgc2VydmljZXMgd2l0aG91dCBsb25nLXRlcm0gY29udHJhY3RzClBlcnNvbmFs
+IDI0eDcgc3VwcG9ydCBmcm9tIGV4cGVyaWVuY2UgaG9zdGluZyBwcm9zIGp1c3QgYSBwaG9uZSBj
+YWxsIGF3YXkuCmh0dHA6Ly9wLnNmLm5ldC9zZnUvdGhlcGxhbmV0LWNvbQpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QK
+THRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
