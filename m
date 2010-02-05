@@ -1,34 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NkXBJ-0007To-4M
-	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 06:26:41 +0000
-Received: from e37.co.us.ibm.com ([32.97.110.158])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NkXBI-0005ss-45
-	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 06:26:41 +0000
-Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
-	[9.17.195.226])
-	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1P6OswU017499
-	for <ltp-list@lists.sourceforge.net>; Wed, 24 Feb 2010 23:24:54 -0700
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o1P6QJSP174890
-	for <ltp-list@lists.sourceforge.net>; Wed, 24 Feb 2010 23:26:19 -0700
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o1P6QJV0012007
-	for <ltp-list@lists.sourceforge.net>; Wed, 24 Feb 2010 23:26:19 -0700
-Date: Thu, 25 Feb 2010 11:56:15 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100225062615.GB3377@linux.vnet.ibm.com>
-References: <4B8558A6020000E80005EF62@sinclair.provo.novell.com>
-	<364299f41002241708g1cd33c48k5f1e0e4553c02bec@mail.gmail.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NdQwq-0006sK-LQ
+	for ltp-list@lists.sourceforge.net; Fri, 05 Feb 2010 16:22:24 +0000
+Received: from mail-px0-f200.google.com ([209.85.216.200])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NdQwp-00026v-JN
+	for ltp-list@lists.sourceforge.net; Fri, 05 Feb 2010 16:22:24 +0000
+Received: by pxi38 with SMTP id 38so4195891pxi.28
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 05 Feb 2010 08:22:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <364299f41002241708g1cd33c48k5f1e0e4553c02bec@mail.gmail.com>
-Subject: Re: [LTP] [patch] swapon03 cleanup v2
+In-Reply-To: <364299f41002050819q7676973k47867cbf9ecf488a@mail.gmail.com>
+References: <000701caa62c$4971b140$dc5513c0$@co.jp>
+	<364299f41002050819q7676973k47867cbf9ecf488a@mail.gmail.com>
+Date: Fri, 5 Feb 2010 08:22:17 -0800
+Message-ID: <364299f41002050822u19c38db1xe898805fb80582ea@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] "stime01" problem
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,52 +31,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
+To: Mitani <mitani@ryobi.co.jp>
 Cc: ltp-list@lists.sourceforge.net
 
-On Wed, Feb 24, 2010 at 05:08:56PM -0800, Garrett Cooper wrote:
-> On Wed, Feb 24, 2010 at 3:49 PM, Murlin Wenzel <mwenzel@novell.com> wrote:
-> > Added clean_swap() to cleanup routine. =A0This makes sure all leftover =
-swap files are removed.
-> >
-> > Signed-off-By: =A0Murlin Ray Wenzel mwenzel@novell.com
-> =
+On Fri, Feb 5, 2010 at 8:19 AM, Garrett Cooper <yanegomi@gmail.com> wrote:
+> On Thu, Feb 4, 2010 at 10:27 PM, Mitani <mitani@ryobi.co.jp> wrote:
+>> Hi,
+>>
+>> I noticed that "stime01" test let system-clock be faster than right time.
+>>
+>> "stime01.c" is going to set system-clock by calling "stime()" function
+>> with "new_time" variable.
+>> It gets "curr_time" by "time()" function, and sets "curr_time + 10sec"
+>> in "new_time".
+>> But after the test, It doesn't restore system-clock.
+>>
+>> Therefore, system-clock is set faster than right time about 10 seconds
+>> after "stime01" test.
+>> If this test is repeated many times, the system-clock advances for the
+>> number of test times.
+>> And, if system is rebooted, hardware-clock will be wrong.
+>>
+>> How about following patch?
+>
+> =A0 =A0The patch looks good, but I assume (and hope) that cleanup gets
+> executed every time before the program exits?
 
-> Committed -- thanks!
-> -Garrett
+Err... two other problems with the above code now that I look at it a
+bit closer...
 
-Thanks Garret & Murlin.
+1. tst_brkm in cleanup shouldn't have cleanup as the second arg; I'm
+not sure whether or not tst_brkm handles infinite recursion properly;
+NULL should be the second arg (if you don't want to exit) or tst_exit
+(if you do want to exit).
+2. What happens if you try to restore the time and it failed to get
+the original time (shouldn't happen, but it can happen if the RTC
+driver is busted, like it was on the cavium image that I was using at
+my previous job)?
 
--Rishi
-> =
-
-> -------------------------------------------------------------------------=
------
-> Download Intel&#174; Parallel Studio Eval
-> Try the new software tools for yourself. Speed compiling, find bugs
-> proactively, and fine-tune applications for parallel performance.
-> See why Intel Parallel Studio got high marks during beta.
-> http://p.sf.net/sfu/intel-sw-dev
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
--- =
-
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
+Thanks,
+-Garrett
 
 ---------------------------------------------------------------------------=
 ---
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the busine=
+ss
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
