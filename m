@@ -1,26 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mwenzel@novell.com>) id 1NkQ6C-0005GK-QX
-	for ltp-list@lists.sourceforge.net; Wed, 24 Feb 2010 22:52:56 +0000
-Received: from sinclair.provo.novell.com ([137.65.248.137])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NkQ6B-0004LV-Q3
-	for ltp-list@lists.sourceforge.net; Wed, 24 Feb 2010 22:52:56 +0000
-Message-Id: <4B854698020000E80005EF39@sinclair.provo.novell.com>
-Date: Wed, 24 Feb 2010 15:32:40 -0700
-From: "Murlin Wenzel" <mwenzel@novell.com>
-References: <4B8502D7020000E80005EEE6@sinclair.provo.novell.com>
-	<364299f41002241316h549d84c6j366b7fff764e9b71@mail.gmail.com>
-	<4B85364D020000E80005EF28@sinclair.provo.novell.com>
-	<364299f41002241325g6a18ea10s60fea894ab2d7302@mail.gmail.com>
-	<4B853B55020000E80005EF2F@sinclair.provo.novell.com>
-	<364299f41002241422h5a2b76b6t681015c0c7cb1197@mail.gmail.com>
-In-Reply-To: <364299f41002241422h5a2b76b6t681015c0c7cb1197@mail.gmail.com>
-Mime-Version: 1.0
+	(envelope-from <chrubis@suse.de>) id 1NdRum-0005OD-Cn
+	for ltp-list@lists.sourceforge.net; Fri, 05 Feb 2010 17:24:20 +0000
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mx1.suse.de (Postfix) with ESMTP id 88F3C74609
+	for <ltp-list@lists.sourceforge.net>;
+	Fri,  5 Feb 2010 18:24:11 +0100 (CET)
+Date: Fri, 5 Feb 2010 18:24:38 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20100205172438.GA2333@saboteur.suse.cz>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="17pEHd4RhPHOinZp"
 Content-Disposition: inline
-Subject: Re: [LTP] [PATCH] swapon03 cleanup
+Subject: [LTP] [PATCH] fix buffer overflow in sem_getvalue tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,62 +26,395 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
->>> On 2/24/2010 at 03:22 PM, in message
-<364299f41002241422h5a2b76b6t681015c0c7cb1197@mail.gmail.com>, Garrett Cooper
-<yanegomi@gmail.com> wrote: 
-> On Wed, Feb 24, 2010 at 1:44 PM, Murlin Wenzel <mwenzel@novell.com> wrote:
->>>>> On 2/24/2010 at 02:25 PM, in message
->> <364299f41002241325g6a18ea10s60fea894ab2d7302@mail.gmail.com>, Garrett Cooper
->> <yanegomi@gmail.com> wrote:
->>> On Wed, Feb 24, 2010 at 1:23 PM, Murlin Wenzel <mwenzel@novell.com> wrote:
->>>>>>> On 2/24/2010 at 02:16 PM, in message
->>>> <364299f41002241316h549d84c6j366b7fff764e9b71@mail.gmail.com>, Garrett Cooper
->>>> <yanegomi@gmail.com> wrote:
->>>>> On Wed, Feb 24, 2010 at 9:43 AM, Murlin Wenzel <mwenzel@novell.com> wrote:
->>>>>> This cleans up existing swap files in swapon03 test in failing test case.
->>>>> Otherwise, deleted swap files would still exist in /proc/swaps.
->>>>>>
->>>>>> Signed-off-by: Murlin Ray Wenzel mwenzel@novell.com
->>>>>
->>>>> Why not implement this as part of cleanup?
->>>>> Thanks,
->>>>> -Garrett
->>>>
->>>> I can look at doing that.  I just grabbed the closest place that worked for
->>> me.  BTW I'm still looking at a possible kernel bug where you can't allocate
->>> the maximum number of swap files.
->>>
->>> What kernel version are you working with?
->>> -Garrett
->>
->> I'm testing on 2.6.32.7, but I've been told that the same problem doesn't 
-> happen on 2.6.33 and it shouldn't happen on some as yet unknown previous 
-> versions.
-> 
->     If they changed the maximum number of swap files, then this would
-> be the cause for the problem as it's set to 30 since 2.6.18. See
-> include/swaponoff.h .
-> HTH,
-> -Garrett
 
-The problem is MAX_SWAPFILES reports 30 but you only get 29.
+--17pEHd4RhPHOinZp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Murlin
+Hi!
+Attached patch fixes possible buffer oveflow in sem_getvalue tests (the buffer
+overflow happens when getpid() returns number that couldn't fit into buffer)
+and also cleans coding style.
 
+Signed-off-by: Cyril Hrubis chrubis@suse.cz
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+--17pEHd4RhPHOinZp
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="sem_getvalue_buffer_overflow.patch"
+
+Index: ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/5-1.c
+===================================================================
+--- ltp-full-20090930.orig/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/5-1.c
++++ ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/5-1.c
+@@ -9,8 +9,7 @@
+ /*
+  * This test case verifies that calling sem_getvalue doesn't change the 
+  * state of the semaphore.
+-*/
+-
++ */
+ 
+ #include <stdio.h>
+ #include <errno.h>
+@@ -24,34 +23,33 @@
+ #define FUNCTION "sem_getvalue"
+ #define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
+ 
+-
+-int main() {
+-
+-	char semname[20];
++int main(void)
++{
++	char semname[64];
+ 	sem_t *mysemp;
+ 	int val;
+ 
+-	sprintf(semname, "/" FUNCTION "_" TEST "_%d", getpid());
++	snprintf(semname, 64, "/" FUNCTION "_" TEST "_%d", getpid());
+ 
+ 	mysemp = sem_open(semname, O_CREAT, 0777, 4);
+ 
+-	if( mysemp == SEM_FAILED || mysemp == NULL ) {
++	if (mysemp == SEM_FAILED || mysemp == NULL) {
+ 		perror(ERROR_PREFIX "sem_open");
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+ 
+-	if( sem_getvalue(mysemp, &val) == -1 ) {
++	if (sem_getvalue(mysemp, &val) == -1) {
+ 		perror(ERROR_PREFIX "sem_getvalue");
+ 		return PTS_UNRESOLVED; 
+ 	}
+ 
+-	if ( sem_trywait(mysemp) == -1 ) {
++	if (sem_trywait(mysemp) == -1) {
+ 		perror(ERROR_PREFIX "sem_trywait");
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-	if( sem_getvalue(mysemp, &val) == -1 ) {
++	if (sem_getvalue(mysemp, &val) == -1) {
+ 		perror(ERROR_PREFIX "sem_getvalue");
+ 		return PTS_UNRESOLVED; 
+ 	}
+@@ -60,7 +58,7 @@ int main() {
+ 	printf("Current value is: %d\n", val);
+ 	*/
+ 
+-	if (val == 3 ) {
++	if (val == 3) {
+ 		puts("TEST PASSED");
+ 		sem_close(mysemp);
+ 		sem_unlink(semname);
+Index: ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/1-1.c
+===================================================================
+--- ltp-full-20090930.orig/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/1-1.c
++++ ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/1-1.c
+@@ -10,9 +10,7 @@
+  * This test case will call sem_getvalue to update the location referenced
+  * by the semaphpre without effecting the state of the semaphore.  The 
+  * updated value represents the actual semaphore value when it was called.
+-*/
+-
+-
++ */
+ 
+ #include <stdio.h>
+ #include <errno.h>
+@@ -26,23 +24,22 @@
+ #define FUNCTION "sem_getvalue"
+ #define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
+ 
+-
+-int main() {
+-
+-	char semname[28];
++int main(void)
++{
++	char semname[64];
+ 	sem_t *mysemp;
+ 	int val;
+ 
+-	sprintf(semname, "/" FUNCTION "_" TEST "_%d", getpid());
++	snprintf(semname, 64, "/" FUNCTION "_" TEST "_%d", getpid());
+ 
+ 	mysemp = sem_open(semname, O_CREAT, 0777, 1);
+ 
+-	if( mysemp == SEM_FAILED || mysemp == NULL ) {
++	if (mysemp == SEM_FAILED || mysemp == NULL) {
+ 		perror(ERROR_PREFIX "sem_open");
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-	if( sem_getvalue(mysemp, &val) == -1 ) {
++	if (sem_getvalue(mysemp, &val) == -1) {
+ 		perror(ERROR_PREFIX "sem_getvalue");
+ 		return PTS_UNRESOLVED; 
+ 	}
+@@ -50,7 +47,8 @@ int main() {
+ 	/*
+ 	printf("Current value is: %d\n", val);
+ 	*/
+-	if (val == 1 ) {
++
++	if (val == 1) {
+ 		puts("TEST PASSED");
+ 		sem_close(mysemp);
+ 		sem_unlink(semname);
+Index: ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/2-1.c
+===================================================================
+--- ltp-full-20090930.orig/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/2-1.c
++++ ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/2-1.c
+@@ -8,8 +8,7 @@
+ 
+ /*
+  * When semaphore is locked, then the value returned by sem_getvalue is zero.
+-*/
+-
++ */
+ 
+ #include <stdio.h>
+ #include <errno.h>
+@@ -23,29 +22,28 @@
+ #define FUNCTION "sem_getvalue"
+ #define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
+ 
+-
+-int main() {
+-
+-	char semname[28];
++int main(void)
++{
++	char semname[64];
+ 	sem_t *mysemp;
+ 	int val;
+ 
+-	sprintf(semname, "/" FUNCTION "_" TEST "_%d", getpid());
++	snprintf(semname, 64, "/" FUNCTION "_" TEST "_%d", getpid());
+ 
+ 	mysemp = sem_open(semname, O_CREAT, 0777, 1);
+ 
+-	if( mysemp == SEM_FAILED || mysemp == NULL ) {
++	if (mysemp == SEM_FAILED || mysemp == NULL) {
+ 		perror(ERROR_PREFIX "sem_open");
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+ 	/* Lock Semaphore */
+-	if (sem_trywait(mysemp) == -1 ) {
++	if (sem_trywait(mysemp) == -1) {
+ 		perror(ERROR_PREFIX "trywait");
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-	if( sem_getvalue(mysemp, &val) < 0 ) {
++	if (sem_getvalue(mysemp, &val) < 0) {
+ 		perror(ERROR_PREFIX "sem_getvalue");
+ 		return PTS_UNRESOLVED; 
+ 	}
+Index: ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/2-2.c
+===================================================================
+--- ltp-full-20090930.orig/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/2-2.c
++++ ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/2-2.c
+@@ -83,18 +83,15 @@
+ /***************************    Test case   ***********************************/
+ /******************************************************************************/
+ 
+-void * threaded ( void * arg )
++void *threaded(void * arg)
+ {
+ 	int ret;
+ 
+-	do
+-	{
++	do {
+ 		ret = sem_wait( arg );
+-	}
+-	while ( ( ret != 0 ) && ( errno == EINTR ) );
++	} while (( ret != 0 ) && (errno == EINTR));
+ 
+-	if ( ret != 0 )
+-	{
++	if (ret != 0) {
+ 		UNRESOLVED( errno, "Failed to wait for the semaphore" );
+ 	}
+ 
+@@ -103,7 +100,7 @@ void * threaded ( void * arg )
+ 
+ 
+ /* The main test function. */
+-int main( int argc, char * argv[] )
++int main(int argc, char *argv[])
+ {
+ 	int ret, val;
+ 	sem_t sem;
+@@ -113,71 +110,61 @@ int main( int argc, char * argv[] )
+ 	output_init();
+ 
+ 	/* Initialize semaphore */
+-	ret = sem_init( &sem, 0, 0 );
++	ret = sem_init(&sem, 0, 0);
+ 
+-	if ( ret != 0 )
+-	{
++	if (ret != 0) {
+ 		UNRESOLVED( errno, "Failed to init semaphore" );
+ 	}
+ 
+ 	/* Create the thread */
+-	ret = pthread_create( &th, NULL, threaded, &sem );
++	ret = pthread_create(&th, NULL, threaded, &sem);
+ 
+-	if ( ret != 0 )
+-	{
++	if (ret != 0) {
+ 		UNRESOLVED( ret, "Failed to create the thread" );
+ 	}
+ 
+ 	/* Sleep 1 sec so the thread enters the sem_wait call */
+-	sleep( 1 );
++	sleep(1);
+ 
+ 	/* Check value */
+-	ret = sem_getvalue( &sem, &val );
++	ret = sem_getvalue(&sem, &val);
+ 
+-	if ( ret != 0 )
+-	{
++	if (ret != 0) {
+ 		UNRESOLVED( errno, "Failed to get semaphore value" );
+ 	}
+ 
+-	if ( ( val != 0 ) && ( val != -1 ) )
+-	{
+-		output( "Val: %d\n", val );
+-		FAILED( "Semaphore count is neither 0 nor # of waiting processes" );
++	if ((val != 0) && (val != -1)) {
++		output("Val: %d\n", val );
++		FAILED("Semaphore count is neither 0 nor # of waiting processes");
+ 	}
+ 
+ 	/* Post the semaphore */
+-	ret = sem_post( &sem );
++	ret = sem_post(&sem);
+ 
+-	if ( ret != 0 )
+-	{
+-		UNRESOLVED( errno, "Failed to post the semaphore" );
++	if (ret != 0) {
++		UNRESOLVED(errno, "Failed to post the semaphore");
+ 	}
+ 
+ 	/* Join the thread */
+-	ret = pthread_join( th, NULL );
++	ret = pthread_join(th, NULL);
+ 
+-	if ( ret != 0 )
+-	{
++	if (ret != 0) {
+ 		UNRESOLVED( ret, "Failed to join the thread" );
+ 	}
+ 
+-
+ 	/* Destroy the semaphore */
+-	ret = sem_destroy( &sem );
++	ret = sem_destroy(&sem);
+ 
+-	if ( ret != 0 )
+-	{
++	if (ret != 0) {
+ 		UNRESOLVED( errno, "Failed to sem_destroy" );
+ 	}
+ 
+ 	/* Test passed */
+ #if VERBOSE > 0
+ 
+-	output( "Test passed\n" );
++	output("Test passed\n");
+ 
+ #endif
+ 
+ 	PASSED;
+ }
+-
+-
+Index: ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/4-1.c
+===================================================================
+--- ltp-full-20090930.orig/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/4-1.c
++++ ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/4-1.c
+@@ -9,9 +9,7 @@
+ /*
+  * Upon successful completion of calling sem_getvalue, it shall return a value
+  * of zero.
+-*/
+-
+-
++ */
+ 
+ #include <stdio.h>
+ #include <errno.h>
+@@ -25,23 +23,22 @@
+ #define FUNCTION "sem_getvalue"
+ #define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
+ 
+-
+-int main() {
+-
+-	char semname[28];
++int main(void)
++{
++	char semname[64];
+ 	sem_t *mysemp;
+ 	int val;
+ 
+-	sprintf(semname, "/" FUNCTION "_" TEST "_%d", getpid());
++	snprintf(semname, 64, "/" FUNCTION "_" TEST "_%d", getpid());
+ 
+ 	mysemp = sem_open(semname, O_CREAT, 0777, 1);
+ 
+-	if( mysemp == SEM_FAILED || mysemp == NULL ) {
++	if (mysemp == SEM_FAILED || mysemp == NULL) {
+ 		perror(ERROR_PREFIX "sem_open");
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-	if( sem_getvalue(mysemp, &val) != 0 ) {
++	if (sem_getvalue(mysemp, &val) != 0) {
+ 		puts("TEST FAILED");
+ 		return PTS_FAIL;
+ 	} else {
+
+--17pEHd4RhPHOinZp
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the business
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
+--17pEHd4RhPHOinZp
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--17pEHd4RhPHOinZp--
+
