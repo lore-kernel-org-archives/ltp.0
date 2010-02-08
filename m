@@ -1,31 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NjmzN-0000GG-MW
-	for ltp-list@lists.sourceforge.net; Tue, 23 Feb 2010 05:07:17 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NjmzM-0005bN-Dq
-	for ltp-list@lists.sourceforge.net; Tue, 23 Feb 2010 05:07:17 +0000
-Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
-	[9.17.195.226])
-	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1N4xVgJ010281
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Feb 2010 21:59:31 -0700
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o1N575AB121034
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Feb 2010 22:07:05 -0700
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o1N574bZ017702
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Feb 2010 22:07:04 -0700
-Date: Tue, 23 Feb 2010 10:37:01 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100223050701.GB11102@linux.vnet.ibm.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <crosslonelyover@gmail.com>) id 1NePPW-0006op-6O
+	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 08:56:02 +0000
+Received: from mail-pz0-f199.google.com ([209.85.222.199])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NePPU-0005G8-SF
+	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 08:56:02 +0000
+Received: by pzk37 with SMTP id 37so3932803pzk.10
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 08 Feb 2010 00:55:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] Container Test should not run on older distro kernel
+In-Reply-To: <4B6FBD49.6050605@linux.vnet.ibm.com>
+References: <5a774f4c1002060734v174f790ah976977edf6aa50a4@mail.gmail.com>
+	<4B6FA757.2010309@linux.vnet.ibm.com>
+	<5a774f4c1002072302n4eaf5c6fycbabbbe4524a483d@mail.gmail.com>
+	<4B6FBD49.6050605@linux.vnet.ibm.com>
+Date: Mon, 8 Feb 2010 16:55:55 +0800
+Message-ID: <5a774f4c1002080055o36ee92f5te92a1c67f26856d@mail.gmail.com>
+From: shenghui <crosslonelyover@gmail.com>
+Subject: Re: [LTP] about "hugetlbshmget03"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,118 +30,407 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2258817057536793696=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP <ltp-list@lists.sourceforge.net>
+To: Rishikesh <risrajak@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi All,
+--===============2258817057536793696==
+Content-Type: multipart/alternative; boundary=0016e6461288167275047f12f80f
 
-I ran feb'10 intermediate release on RHEL5.4. And found that it is
-running pidns testcase which is not at all require.
+--0016e6461288167275047f12f80f
+Content-Type: text/plain; charset=ISO-8859-1
 
-Garret is it require to disable check_pidns_enabled.c which has been
-masked for now ? I think we will need this file as it does more than
-kernel version comparison.
+2010/2/8 Rishikesh <risrajak@linux.vnet.ibm.com>
 
-can someone look into it please ?
-
-Here are the failures which i am getting:
-
-=====================================================================
-...
-COMMAND:    /opt/ltp/bin/ltp-pan  -e -S   -a 31429     -n 31429  -p  -f
-/tmp/ltp-wcBkk31437/alltests -l
-/opt/ltp/results/LTP_RUN_ON-2010_Feb_23-04h_51m_27s.log  -C
-/opt/ltp/output/LTP_RUN_ON-2010_Feb_23-04h_51m_27s.failed
-LOG File: /opt/ltp/results/LTP_RUN_ON-2010_Feb_23-04h_51m_27s.log
-FAILED COMMAND File:
-/opt/ltp/output/LTP_RUN_ON-2010_Feb_23-04h_51m_27s.failed
-Running tests.......
-<<<test_start>>>
-tag=Containers stime=1266918687
-cmdline="container_test.sh"
-contacts=""
-analysis=exit
-<<<test_output>>>
-incrementing stop
-/opt/ltp/testcases/bin/container_test.sh: line 13: check_for_unshare:
-command not found
-Uts namespaces not enabled in kernel.  Not running utsns tests.
-ipc namespaces not enabled in kernel.  Not running ipcns tests.
-Running pidns tests.
-pid_namespace1    0  TINFO  :  PIDNS test is running inside container
-
-pid_namespace1    1  TFAIL  :  FAIL: Got unexpected result of cpid=31542
-ppid=31541
-
-pid_namespace2    0  TINFO  :  Checking session id & group id inside
-container
-
-pid_namespace2    1  TFAIL  :  Got unexpected result ofGroup ID = 31544
-& Session ID = 31544
-
-pid_namespace3    0  TINFO  :   Checking pid for parent ns and
-container-init
-		Parent namespace pid = 31545,container parent pid =
-31545,and container pid = 31546
-pid_namespace3    1  TFAIL  :  mount failed : 
-
-pid_namespace3    2  TPASS  :  Got the proc file directory created by
-parent ns 31545
-pid_namespace4    1  TFAIL  :  got unexpected result of cpid=31548
-ppid=31547
-pid_namespace4    1  TFAIL  :  Container init is killed by SIGKILL !!!
-pidns05     1  TFAIL  :  FAIL: Got unexpected result of cpid=31551
-ppid=31550
-
-pidns05     1  TFAIL  :  Unable to create 5 containers
-
-pidns06     0  TINFO  :  Parent: Passing the pid of the process 31552
-pidns06     1  TFAIL  :  Unexpected result for Container:  init
-pid=31553 parent pid=31552
-
-pidns30     1  TBROK  :  parent: mq_open() failed (Permission denied)
-pidns31     1  TBROK  :  parent: mq_open() failed (Permission denied)
-pidns10     1  TBROK  :  cinit: pidns is not created.
-pidns10     1  TBROK  :  parent: container was terminated by Unknown
-signal 0
-pidns12     0  TINFO  :  parent: PID is 31558
-pidns12     1  TBROK  :  cinit: pidns is not created.
-pidns12     1  TBROK  :  parent: container did not respond!
-pidns13     1  TBROK  :  cinit1: pidns is not created.
-pidns13     1  TBROK  :  cinit2: pidns is not created.
-pidns16     1  TBROK  :  pidns is not created.
-pidns16     0  TINFO  :  sig_handler is signalled from pid  31563
-pidns16     0  TINFO  :  Container: Resumed after receiving SIGUSR1 from
-parentNS 
-pidns16     2  TBROK  :  Unexpected value for Sending-ProcessID when
-signal handler called 31564
-
-pidns16     0  TINFO  :  Container: Resumed after sending SIGUSR1 from
-container itself
-pidns16     1  TPASS  :  container init continued successfuly, after
-handling signal -USR1
-
-pidns17     1  TBROK  :  cinit: pidns is not created.
-
-<----- stuck here, i never get the shell back here :(.
-============================================================
+>  On 02/08/2010 12:32 PM, shenghui wrote:
+>
+>
+>
+> 2010/2/8 Rishikesh <risrajak@linux.vnet.ibm.com>
+>
+>>  On 02/06/2010 09:04 PM, shenghui wrote:
+>>
+>> Hi all,
+>>
+>>        I want to know how to run hugetlbshmget03? Does it need some
+>> arguments?
+>> For I have run it several times, always got error "NOMEM" for cannot get
+>> hugetlb
+>> page. But "cat /proc/meminfo" shows that free hugetlb pages are enough for
+>> its
+>> request.
+>>        Does anyone know how to handle this problem?
+>>
+>>  Hi Shenghui,
+>>
+>> Have you run this testcase after setting up nr_hugepages ? You need to set
+>> the pages accordingly and then you need to run the testcase.
+>>
+>> e.g:
+>>
+>> echo 10 > /proc/sys/vm/nr_hugepages
+>>
+>> Please post your result if you still finding issue.
+>>
+>> Thanks
+>> Rishi
+>>
+>>
+>> --
+>>
+>>
+>> Thanks and Best Regards,
+>> shenghui
+>>
+>>
+>> ------------------------------------------------------------------------------
+>> The Planet: dedicated and managed hosting, cloud storage, colocation
+>> Stay online with enterprise data centers and the best network in the business
+>> Choose flexible plans and management services without long-term contracts
+>> Personal 24x7 support from experience hosting pros just a phone call away.
+>> http://p.sf.net/sfu/theplanet-com
+>>
+>>
+>> _______________________________________________
+>> Ltp-list mailing listLtp-list@lists.sourceforge.nethttps://lists.sourceforge.net/lists/listinfo/ltp-list
+>>
+>>
+>>
+> Hi Rishi,
+>
+>        Please refer to the following for my error info. And will you please
+> try it on your workstation and send me
+> your result?
+>
+> Hi Shengui,
+>
+> Yes i am also facing this different issue on my TP. Let me investigate more
+> on that. Meanwhile if you know the solution can you please post your thought
+> on this problem ?
+>
+> Thanks
+> Rishi
+>
+>
+>
+>        Thanks!
+>
+>
+> ===============================================================================
+>
+> root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
+> ls
+> hugeshmget01    hugeshmget02    hugeshmget03    hugeshmget05    Makefile
+> hugeshmget01.c  hugeshmget02.c  hugeshmget03.c  hugeshmget05.c
+>
+> root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
+> echo 10 > /proc/sys/vm/nr_hugepages
+>
+> root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
+> cat /proc/meminfo
+> MemTotal:        4048440 kB
+> MemFree:         1576656 kB
+> Buffers:          122652 kB
+> Cached:          1487772 kB
+> SwapCached:            0 kB
+> Active:          1225860 kB
+> Inactive:        1043268 kB
+> Active(anon):     684228 kB
+> Inactive(anon):       16 kB
+> Active(file):     541632 kB
+> Inactive(file):  1043252 kB
+> Unevictable:           0 kB
+> Mlocked:               0 kB
+> HighTotal:       3211696 kB
+> HighFree:        1044060 kB
+> LowTotal:         836744 kB
+> LowFree:          532596 kB
+> SwapTotal:       3903752 kB
+> SwapFree:        3903752 kB
+> Dirty:               204 kB
+> Writeback:             0 kB
+> AnonPages:        658692 kB
+> Mapped:           239928 kB
+> Slab:             109460 kB
+> SReclaimable:      93676 kB
+> SUnreclaim:        15784 kB
+> PageTables:         8332 kB
+> NFS_Unstable:          0 kB
+> Bounce:                0 kB
+> WritebackTmp:          0 kB
+> CommitLimit:     5917732 kB
+> Committed_AS:    1389392 kB
+> VmallocTotal:     122880 kB
+> VmallocUsed:       44644 kB
+> VmallocChunk:      75956 kB
+> HugePages_Total:      10
+> HugePages_Free:       10
+> HugePages_Rsvd:        0
+> HugePages_Surp:        0
+> Hugepagesize:       2048 kB
+> DirectMap4k:        8184 kB
+> DirectMap2M:      903168 kB
+>
+> root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
+> ./hugeshmget03
+> hugeshmget03    0  TINFO  :  errno = 12 : Cannot allocate memory
+> hugeshmget03    1  TBROK  :  Didn't get ENOSPC in test setup
+>
+> root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
+> echo 32 > /proc/sys/vm/nr_hugepages
+>
+> root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
+> ./hugeshmget03
+> hugeshmget03    0  TINFO  :  errno = 12 : Cannot allocate memory
+> hugeshmget03    1  TBROK  :  Didn't get ENOSPC in test setup
+>
+>
+> --
+>
+>
+> Thanks and Best Regards,
+> shenghui
+>
+>
+>
+Sure.  : )
 
 -- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
+
+
+Thanks and Best Regards,
+shenghui
+
+--0016e6461288167275047f12f80f
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<br><br><div class=3D"gmail_quote">2010/2/8 Rishikesh <span dir=3D"ltr">&lt=
+;<a href=3D"mailto:risrajak@linux.vnet.ibm.com">risrajak@linux.vnet.ibm.com=
+</a>&gt;</span><br><blockquote class=3D"gmail_quote" style=3D"border-left: =
+1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;=
+">
+
+
+
+ =20
+
+<div text=3D"#000000" bgcolor=3D"#ffffff"><div><div></div><div class=3D"h5"=
+>
+On 02/08/2010 12:32 PM, shenghui wrote:
+<blockquote type=3D"cite"><br>
+  <br>
+  <div class=3D"gmail_quote">2010/2/8 Rishikesh <span dir=3D"ltr">&lt;<a hr=
+ef=3D"mailto:risrajak@linux.vnet.ibm.com" target=3D"_blank">risrajak@linux.=
+vnet.ibm.com</a>&gt;</span><br>
+  <blockquote class=3D"gmail_quote" style=3D"border-left: 1px solid rgb(204=
+, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
+    <div text=3D"#000000" bgcolor=3D"#ffffff">
+    <div>On 02/06/2010 09:04 PM, shenghui wrote:
+    <blockquote type=3D"cite">Hi all,<br>
+=A0<br>
+=A0=A0=A0=A0=A0=A0 I want to know how to run hugetlbshmget03? Does it need =
+some
+arguments?<br>
+For I have run it several times, always got error &quot;NOMEM&quot; for can=
+not
+get hugetlb<br>
+page. But &quot;cat /proc/meminfo&quot; shows that free hugetlb pages are e=
+nough
+for its<br>
+request.<br>
+=A0=A0=A0=A0=A0=A0 Does anyone know how to handle this problem?<br clear=3D=
+"all">
+    </blockquote>
+    </div>
+Hi Shenghui,<br>
+    <br>
+Have you run this testcase after setting up nr_hugepages ? You need to
+set the pages accordingly and then you need to run the testcase.<br>
+    <br>
+e.g:<br>
+    <br>
+echo 10 &gt; /proc/sys/vm/nr_hugepages<br>
+    <br>
+Please post your result if you still finding issue.<br>
+    <br>
+Thanks<br>
+Rishi<br>
+    <br>
+    <blockquote type=3D"cite">
+      <div><br>
+-- <br>
+      <br>
+      <br>
+Thanks and Best Regards,<br>
+shenghui<br>
+      </div>
+      <pre><fieldset></fieldset>
+---------------------------------------------------------------------------=
+---
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the busine=
+ss
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+<div><a href=3D"http://p.sf.net/sfu/theplanet-com" target=3D"_blank">http:/=
+/p.sf.net/sfu/theplanet-com</a></div></pre>
+      <div>
+      <pre><fieldset></fieldset>
+_______________________________________________
+Ltp-list mailing list
+<a href=3D"mailto:Ltp-list@lists.sourceforge.net" target=3D"_blank">Ltp-lis=
+t@lists.sourceforge.net</a>
+<a href=3D"https://lists.sourceforge.net/lists/listinfo/ltp-list" target=3D=
+"_blank">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
+  </pre>
+      </div>
+    </blockquote>
+    <br>
+    </div>
+  </blockquote>
+  </div>
+  <br>
+Hi Rishi,<br>
+  <br>
+=A0=A0=A0=A0=A0=A0 Please refer to the following for my error info. And wil=
+l you
+please try it on your workstation and send me <br>
+your result?<br>
+</blockquote></div></div>
+Hi Shengui,<br>
+<br>
+Yes i am also facing this different issue on my TP. Let me investigate
+more on that. Meanwhile if you know the solution can you please post
+your thought on this problem ?<br>
+<br>
+Thanks<br>
+Rishi<div><div></div><div class=3D"h5"><br>
+<br>
+<br>
+<blockquote type=3D"cite">=A0=A0=A0=A0=A0=A0 Thanks!<br>
+  <br>
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D<br>
+  <br>
+root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/=
+testcases/kernel/mem/hugetlb/hugeshmget#
+ls<br>
+hugeshmget01=A0=A0=A0 hugeshmget02=A0=A0=A0 hugeshmget03=A0=A0=A0 hugeshmge=
+t05=A0=A0=A0 Makefile<br>
+hugeshmget01.c=A0 hugeshmget02.c=A0 hugeshmget03.c=A0 hugeshmget05.c<br>
+  <br>
+root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/=
+testcases/kernel/mem/hugetlb/hugeshmget#
+echo 10 &gt; /proc/sys/vm/nr_hugepages<br>
+  <br>
+root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/=
+testcases/kernel/mem/hugetlb/hugeshmget#
+cat /proc/meminfo <br>
+MemTotal:=A0=A0=A0=A0=A0=A0=A0 4048440 kB<br>
+MemFree:=A0=A0=A0=A0=A0=A0=A0=A0 1576656 kB<br>
+Buffers:=A0=A0=A0=A0=A0=A0=A0=A0=A0 122652 kB<br>
+Cached:=A0=A0=A0=A0=A0=A0=A0=A0=A0 1487772 kB<br>
+SwapCached:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0 kB<br>
+Active:=A0=A0=A0=A0=A0=A0=A0=A0=A0 1225860 kB<br>
+Inactive:=A0=A0=A0=A0=A0=A0=A0 1043268 kB<br>
+Active(anon):=A0=A0=A0=A0 684228 kB<br>
+Inactive(anon):=A0=A0=A0=A0=A0=A0 16 kB<br>
+Active(file):=A0=A0=A0=A0 541632 kB<br>
+Inactive(file):=A0 1043252 kB<br>
+Unevictable:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0 kB<br>
+Mlocked:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0 kB<br>
+HighTotal:=A0=A0=A0=A0=A0=A0 3211696 kB<br>
+HighFree:=A0=A0=A0=A0=A0=A0=A0 1044060 kB<br>
+LowTotal:=A0=A0=A0=A0=A0=A0=A0=A0 836744 kB<br>
+LowFree:=A0=A0=A0=A0=A0=A0=A0=A0=A0 532596 kB<br>
+SwapTotal:=A0=A0=A0=A0=A0=A0 3903752 kB<br>
+SwapFree:=A0=A0=A0=A0=A0=A0=A0 3903752 kB<br>
+Dirty:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 204 kB<br>
+Writeback:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0 kB<br>
+AnonPages:=A0=A0=A0=A0=A0=A0=A0 658692 kB<br>
+Mapped:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 239928 kB<br>
+Slab:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 109460 kB<br>
+SReclaimable:=A0=A0=A0=A0=A0 93676 kB<br>
+SUnreclaim:=A0=A0=A0=A0=A0=A0=A0 15784 kB<br>
+PageTables:=A0=A0=A0=A0=A0=A0=A0=A0 8332 kB<br>
+NFS_Unstable:=A0=A0=A0=A0=A0=A0=A0=A0=A0 0 kB<br>
+Bounce:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0 kB<br>
+WritebackTmp:=A0=A0=A0=A0=A0=A0=A0=A0=A0 0 kB<br>
+CommitLimit:=A0=A0=A0=A0 5917732 kB<br>
+Committed_AS:=A0=A0=A0 1389392 kB<br>
+VmallocTotal:=A0=A0=A0=A0 122880 kB<br>
+VmallocUsed:=A0=A0=A0=A0=A0=A0 44644 kB<br>
+VmallocChunk:=A0=A0=A0=A0=A0 75956 kB<br>
+HugePages_Total:=A0=A0=A0=A0=A0 10<br>
+HugePages_Free:=A0=A0=A0=A0=A0=A0 10<br>
+HugePages_Rsvd:=A0=A0=A0=A0=A0=A0=A0 0<br>
+HugePages_Surp:=A0=A0=A0=A0=A0=A0=A0 0<br>
+Hugepagesize:=A0=A0=A0=A0=A0=A0 2048 kB<br>
+DirectMap4k:=A0=A0=A0=A0=A0=A0=A0 8184 kB<br>
+DirectMap2M:=A0=A0=A0=A0=A0 903168 kB<br>
+  <br>
+root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/=
+testcases/kernel/mem/hugetlb/hugeshmget#
+./hugeshmget03<br>
+hugeshmget03=A0=A0=A0 0=A0 TINFO=A0 :=A0 errno =3D 12 : Cannot allocate mem=
+ory<br>
+hugeshmget03=A0=A0=A0 1=A0 TBROK=A0 :=A0 Didn&#39;t get ENOSPC in test setu=
+p<br>
+  <br>
+root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/=
+testcases/kernel/mem/hugetlb/hugeshmget#
+echo 32 &gt; /proc/sys/vm/nr_hugepages<br>
+  <br>
+root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/=
+testcases/kernel/mem/hugetlb/hugeshmget#
+./hugeshmget03<br>
+hugeshmget03=A0=A0=A0 0=A0 TINFO=A0 :=A0 errno =3D 12 : Cannot allocate mem=
+ory<br>
+hugeshmget03=A0=A0=A0 1=A0 TBROK=A0 :=A0 Didn&#39;t get ENOSPC in test setu=
+p<br>
+  <br clear=3D"all">
+  <br>
+-- <br>
+  <br>
+  <br>
+Thanks and Best Regards,<br>
+shenghui<br>
+</blockquote>
+<br>
+</div></div></div>
+
+</blockquote></div><br>Sure.=A0 : )<br clear=3D"all"><br>-- <br><br><br>Tha=
+nks and Best Regards,<br>shenghui<br>
+
+--0016e6461288167275047f12f80f--
+
+
+--===============2258817057536793696==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the business
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
+--===============2258817057536793696==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2258817057536793696==--
+
