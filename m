@@ -1,29 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mpradeep@linux.vnet.ibm.com>) id 1NfYdA-0001WT-R1
-	for ltp-list@lists.sourceforge.net; Thu, 11 Feb 2010 12:58:52 +0000
-Received: from e23smtp09.au.ibm.com ([202.81.31.142])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NfYd9-0001Ro-50
-	for ltp-list@lists.sourceforge.net; Thu, 11 Feb 2010 12:58:52 +0000
-Received: from d23relay04.au.ibm.com (d23relay04.au.ibm.com [202.81.31.246])
-	by e23smtp09.au.ibm.com (8.14.3/8.13.1) with ESMTP id o1BCU8mu029250
-	for <ltp-list@lists.sourceforge.net>; Thu, 11 Feb 2010 23:30:08 +1100
-Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
-	by d23relay04.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o1BCOx0o1638466
-	for <ltp-list@lists.sourceforge.net>; Thu, 11 Feb 2010 23:24:59 +1100
-Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
-	by d23av03.au.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o1BCU7ie007138
-	for <ltp-list@lists.sourceforge.net>; Thu, 11 Feb 2010 23:30:08 +1100
-From: Munipradeep Beerakam <mpradeep@linux.vnet.ibm.com>
-Date: Thu, 11 Feb 2010 18:00:06 +0530
-Message-ID: <1265891406.10768.10.camel@munipradeep-laptop>
-Mime-Version: 1.0
-Subject: [LTP] memory_hotplug tests are not compiling properly
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vivian4u_100@yahoo.com>) id 1NeZ1s-0000EQ-QP
+	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 19:12:16 +0000
+Received: from web45806.mail.sp1.yahoo.com ([68.180.199.51])
+	by sfi-mx-1.v28.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1NeZ1r-0001Xe-PG
+	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 19:12:16 +0000
+Message-ID: <3000.31340.qm@web45806.mail.sp1.yahoo.com>
+Date: Mon, 8 Feb 2010 11:12:09 -0800 (PST)
+From: marina kulo <vivian4u_100@yahoo.com>
+MIME-Version: 1.0
+Subject: [LTP] Hello.
+Reply-To: marinakulo1@yahoo.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,29 +23,59 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============0081610797096153612=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: risrajak@linux.vnet.ibm.com
-Cc: ltp-list@lists.sourceforge.net
+To: 
 
-SGkgUmlzaGksCgpJIGFtIHVuYWJsZSB0byBjb21waWxlIHRoZSBtZW1vcnlfaG90cGx1ZyB0ZXN0
-cyBpbiBMVFAgU2VwIDIwMDkgcmVsZWFzZS4KSSBhbSBnZXR0aW5nIHRoZSBiZWxvdyBlcnJvci4K
-CiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIwpjYyAtc3Rk
-PWdudTk5IC1PMiAgLURfR05VX1NPVVJDRSAtRF9ORUVEX01JR1JBVEVfUEFHRVMgICAgIC1jIC1v
-Cm1lbXRveS5vIG1lbXRveS5jCmNjIC1zdGQ9Z251OTkgLU8yICAtRF9HTlVfU09VUkNFIC1EX05F
-RURfTUlHUkFURV9QQUdFUyAgICAgLWMgLW8KY29tbWFuZHMubyBjb21tYW5kcy5jCkluIGZpbGUg
-aW5jbHVkZWQgZnJvbSBjb21tYW5kcy5jOjQ1OgptaWdyYXRlX3BhZ2VzLmg6MTA6IGVycm9yOiBj
-b25mbGljdGluZyB0eXBlcyBmb3Ig4oCYbWlncmF0ZV9wYWdlc+KAmQovdXNyL2luY2x1ZGUvbnVt
-YWlmLmg6MTc6IGVycm9yOiBwcmV2aW91cyBkZWNsYXJhdGlvbiBvZiDigJhtaWdyYXRlX3BhZ2Vz
-4oCZCndhcyBoZXJlCm1ha2U6ICoqKiBbY29tbWFuZHMub10gRXJyb3IgMQojIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKCkV2ZW4gdGhlIHBhdGNoIGlzIG5v
-dCBhcHBseWluZyBwcm9wZXJseS4gCgpAQWxsLCBBbnkgaGVscCBpcyBhcHByZWNpYXRlZC4KClRo
-YW5rcwpNdW5pCgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpTT0xBUklTIDEwIGlzIHRoZSBPUyBm
-b3IgRGF0YSBDZW50ZXJzIC0gcHJvdmlkZXMgZmVhdHVyZXMgc3VjaCBhcyBEVHJhY2UsClByZWRp
-Y3RpdmUgU2VsZiBIZWFsaW5nIGFuZCBBd2FyZCBXaW5uaW5nIFpGUy4gR2V0IFNvbGFyaXMgMTAg
-Tk9XCmh0dHA6Ly9wLnNmLm5ldC9zZnUvc29sYXJpcy1kZXYyZGV2Cl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAt
-bGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQv
-bGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+--===============0081610797096153612==
+Content-Type: multipart/alternative; boundary="0-2073842922-1265656329=:31340"
+
+--0-2073842922-1265656329=:31340
+Content-Type: text/plain; charset=us-ascii
+
+Hello.
+My Name is marina I was impressed when i saw your profile and i will
+like you to email me back to my inbox so that i can send you my picture for you to know who i am.i believe we can establish a long lasting relationship with you.
+In addition,i will like you to reply me through my
+private e mail box (marinakulo1@yahoo.com).
+This is because i dont know the possibilities of
+remaining in forum for a long time.
+Thanks,waiting to hear from you soonest.
+marina
+
+
+      
+--0-2073842922-1265656329=:31340
+Content-Type: text/html; charset=us-ascii
+
+<table cellspacing="0" cellpadding="0" border="0" ><tr><td valign="top" style="font: inherit;">Hello.<BR>My Name is marina I was impressed when i saw your profile and i will<BR>like you to email me back to my inbox so that i can send you my picture for you to know who i am.i believe we can establish a long lasting relationship with you.<BR>In addition,i will like you to reply me through my<BR>private e mail box (<A href="mailto:marinakulo1@yahoo.com">marinakulo1@yahoo.com</A>).<BR>This is because i dont know the possibilities of<BR>remaining in forum for a long time.<BR>Thanks,waiting to hear from you soonest.<BR>marina</td></tr></table><br>
+
+      
+--0-2073842922-1265656329=:31340--
+
+
+--===============0081610797096153612==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the business
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
+--===============0081610797096153612==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0081610797096153612==--
+
