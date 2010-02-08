@@ -1,31 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Njqs2-0007oT-Bc
-	for ltp-list@lists.sourceforge.net; Tue, 23 Feb 2010 09:15:58 +0000
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <y_yao@ryobi.co.jp>) id 1NeJtg-0000Qz-9Y
+	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 03:02:48 +0000
+Received: from out01.sjc.mx.trendmicro.com ([216.99.131.5])
 	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Njqs0-0007IA-2Y
-	for ltp-list@lists.sourceforge.net; Tue, 23 Feb 2010 09:15:58 +0000
-Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
-	by e1.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1N9BpLp018296
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Feb 2010 04:11:51 -0500
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o1N9Fmcn1581086
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Feb 2010 04:15:48 -0500
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o1N9FlED019916
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Feb 2010 04:15:48 -0500
-Message-ID: <4B839CBB.8090500@linux.vnet.ibm.com>
-Date: Tue, 23 Feb 2010 14:45:39 +0530
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
+	(Exim 4.69) id 1NeJtf-0002oF-03
+	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 03:02:48 +0000
+Received: from relay04.sjc.mx.trendmicro.com (unknown [10.30.239.6])
+	by out01.sjc.mx.trendmicro.com (Postfix) with ESMTP id E78E1239C40
+	for <ltp-list@lists.sourceforge.net>;
+	Mon,  8 Feb 2010 03:02:35 +0000 (UTC)
+Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
+	by relay04.sjc.mx.trendmicro.com (Postfix) with ESMTP id 480ED1D7837
+	for <ltp-list@lists.sourceforge.net>;
+	Mon,  8 Feb 2010 03:02:35 +0000 (UTC)
+Received: from 5108637 ([10.113.10.201]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Mon, 8 Feb 2010 12:02:33 +0900
+From: "Yuki Yao" <y_yao@ryobi.co.jp>
+References: <000501caa869$41be6670$c53b3350$@co.jp>
+In-Reply-To: <000501caa869$41be6670$c53b3350$@co.jp>
+Date: Mon, 8 Feb 2010 12:02:33 +0900
+Message-ID: <001801caa86b$290aef70$7b20ce50$@co.jp>
 MIME-Version: 1.0
-References: <EB1A7C66AD0C92419BFFC785A947865A09EA8C4BD6@BLRINMSMBX01.bglrodc.lntinfotech.com>
-In-Reply-To: <EB1A7C66AD0C92419BFFC785A947865A09EA8C4BD6@BLRINMSMBX01.bglrodc.lntinfotech.com>
-Subject: Re: [LTP] Device Driver Test cases for LTP
+Content-Language: ja
+Subject: Re: [LTP] [PATCH]logrotate: /var/log/messages* disappeared
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,38 +40,94 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Silesh Vellattu <Silesh.Vellattu@lntinfotech.com>
-Cc: ltp-list@lists.sourceforge.net, Arun Sudhilal <Arun.Sudhilal@lntinfotech.com>, Mohamed Rasheed <Mohamed.Rasheed@lntinfotech.com>
+To: ltp-list@lists.sourceforge.net
 
-Silesh Vellattu wrote:
-> Hi Subrata ,
->
->      We have been using LTP to test our kernel releases.Thanks for integrating such a test suite.But we can see that there are only limited number of interfaces (usb and V4L2) covered in the device driver test cases. We have  some test cases covering Audio  and RTC  which we have been using along with LTP and  we would like to contribute them to the LTP community.We have already integrated them to the LTP framework in a very generic  way. We also have plans to work on some other interfaces to make our testing process better.We would like to contribute those tests also as and when they are ready. Suggestions on how these test cases have to be written/ organised and how they can be integrated with LTP?
->   
+Sorry, line breaks is mistake; resend.
+----------------------------------------------------
+Hi,
 
-That's great. Just go ahead and submit a patch along with the test 
-results. Make the documentation clear of how to build/install and run 
-those tests. Rishi will help you in integrating the same to LTP.
+I found a problem on LTP when I execute ./runltp.
+After execute ./runltp, all log files such as /var/log/messages*
+disappeared, 
+and there is only new log files that were created after the test...
 
-Regards--
-Subrata
+This seems a problem that occurs after the "logrotate01" test. 
+I found that the past log files disappeared by forcing a rotate (logrotate
+-fv $LTPTMP/tst_logrotate.conf).
 
-> Thanks and Warm Regards,
-> Silesh.
->
-> This Email may contain confidential or privileged information for the intended recipient (s) If you are not the intended recipient, please do not use or disseminate the information, notify the sender and delete it from your system.
->
-> ______________________________________________________________________
->   
+Besides, "logrotate"'s shell script
+./testcases/commands/logrotate/logrotate_tests.sh creats 
+logrotate configuration file ($LTPTMP/tst_logrotate.conf) for the test, and
+this config file includes 
+/etc/logrotate.d as follows:
+[ ./testcases/commands/logrotate/logrotate_tests.sh line:156~ ]
+----------
+# create config file.
+	cat >$LTPTMP/tst_logrotate.conf <<-EOF
+	#****** Begin Config file *******
+	# create new (empty) log files after rotating old ones
+	create
+
+	# compress the log files
+	compress
+
+	# RPM packages drop log rotation information into this directory
+	include /etc/logrotate.d
+
+	/var/log/tst_logfile {
+		rotate 5
+		weekly
+	}
+	#****** End Config file *******
+	EOF
+----------
+
+By this, not only a log file for the test (/var/log/tst_logfile), but also
+30 fies in my system 
+such as /var/log/messages* become "logrotate" command target.
+Therefore, only a log file for this test must be made a target of the forced
+execution of "logrotate".
+
+To resolve this problem, we have to change this not to include
+/etc/logrotate.d, I think.
+
+Index: testcases/commands/logrotate/logrotate_tests.sh
+==============================
+--- logrotate_tests.sh	2008-10-21 15:54:15.000000000 +0900
++++ logrotate_tests.sh.new	2010-02-05 18:56:14.000000000 +0900
+@@ -163,7 +163,7 @@
+ 	compress
+ 
+ 	# RPM packages drop log rotation information into this directory
+-	include /etc/logrotate.d
++	# include /etc/logrotate.d
+ 
+ 	/var/log/tst_logfile {
+ 		rotate 5
+@@ -200,7 +200,7 @@
+ 		# check if  /etc/logrotate.d is included/
+ 		# check if 5 rotations are forced.
+         # check if compression is done.
+-		grep "including /etc/logrotate.d" $LTPTMP/tst_logrotate.out
+\
++		# grep "including /etc/logrotate.d"
+$LTPTMP/tst_logrotate.out \
+ 			> $LTPTMP/tst_logrotate.err 2>&1 || RC=$?
+ 		grep "reading config file $LTPTMP/tst_logrotate.conf" \
+ 			$LTPTMP/tst_logrotate.out   >
+$LTPTMP/tst_logrotate.err 2>&1 || RC=$?
+
+Thank you,
+  --Yuki Yao
 
 
 
 ------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the business
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
