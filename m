@@ -1,24 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Nhnp8-0006M1-HI
-	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 17:36:30 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Nhnp7-0000IK-Ns
-	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 17:36:30 +0000
-Received: by pwi5 with SMTP id 5so1026398pwi.34
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <y_yao@ryobi.co.jp>) id 1NeJgQ-0008AB-Dc
+	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 02:49:06 +0000
+Received: from out07.sjc.mx.trendmicro.com ([216.99.131.23])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NeJgO-0007Iv-J5
+	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 02:49:06 +0000
+Received: from relay04.sjc.mx.trendmicro.com (unknown [10.30.239.10])
+	by out07.sjc.mx.trendmicro.com (Postfix) with ESMTP id C9552B7A459
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 17 Feb 2010 09:36:23 -0800 (PST)
+	Mon,  8 Feb 2010 02:48:58 +0000 (UTC)
+Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
+	by relay04.sjc.mx.trendmicro.com (Postfix) with ESMTP id C753A1D7834
+	for <ltp-list@lists.sourceforge.net>;
+	Mon,  8 Feb 2010 02:48:57 +0000 (UTC)
+Received: from 5108637 ([10.113.10.201]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Mon, 8 Feb 2010 11:48:55 +0900
+From: "Yuki Yao" <y_yao@ryobi.co.jp>
+Date: Mon, 8 Feb 2010 11:48:55 +0900
+Message-ID: <000501caa869$41be6670$c53b3350$@co.jp>
 MIME-Version: 1.0
-In-Reply-To: <20100217150214.GB9825@rishikesh.in.ibm.com>
-References: <000f01caae08$ce91e640$6bb5b2c0$@co.jp>
-	<20100217150214.GB9825@rishikesh.in.ibm.com>
-Date: Wed, 17 Feb 2010 09:36:23 -0800
-Message-ID: <364299f41002170936q1f0c4723qd7ad7f10df6745af@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] "logrotate01" has problem
+Content-Language: ja
+Subject: [LTP] [PATCH]logrotate: /var/log/messages* disappeared
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,119 +35,582 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============7623760960522566627=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Wed, Feb 17, 2010 at 7:02 AM, Rishikesh K Rajak
-<risrajak@linux.vnet.ibm.com> wrote:
-> On Mon, Feb 15, 2010 at 03:33:37PM +0900, Yuki Yao wrote:
->> Hi,
->>
->> I contributed following problem previously, but it's not yet revised.
->> So, I contribute this again.
->>
->> After "./runltp" execution, all log files such as "/var/log/messages*"
->> disappeared, and there is only new log file created after the test.
->>
->> This seems a problem that occurs after the "logrotate01" test.
->> I found that the past log files were deleted by forcing a "logrotate"
->> (logrotate -fv $LTPTMP/tst_logrotate.conf).
->>
->> Besides, logrotate01's shell script "./testcases/commands/logrotate
->> /logrotate_tests.sh" creats logrotate configuration file ($LTPTMP
->> /tst_logrotate.conf) for the test, and this configration file includes
->> "/etc/logrotate.d" as follows:
->>
->> [ ./testcases/commands/logrotate/logrotate_tests.sh line:156~ ]
->> ----------
->> # create config file.
->> =A0 =A0 =A0 cat >$LTPTMP/tst_logrotate.conf <<-EOF
->> =A0 =A0 =A0 #****** Begin Config file *******
->> =A0 =A0 =A0 # create new (empty) log files after rotating old ones
->> =A0 =A0 =A0 create
->>
->> =A0 =A0 =A0 # compress the log files
->> =A0 =A0 =A0 compress
->>
->> =A0 =A0 =A0 # RPM packages drop log rotation information into this direc=
-tory
->> =A0 =A0 =A0 include /etc/logrotate.d
->>
->> =A0 =A0 =A0 /var/log/tst_logfile {
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 rotate 5
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 weekly
->> =A0 =A0 =A0 }
->> =A0 =A0 =A0 #****** End Config file *******
->> =A0 =A0 =A0 EOF
->> ----------
->>
->> By This, not only a log file for the test (/var/log/tst_logfile)
->> but also 30 fies such as "/var/log/messages*" become "logrotate"
->> command target.
->> Only a log file for this test must become a target of the forced
->> execution of "logrotate".
->>
->> To resolve this problem, we must change "/logrotate_tests.sh" not to
->> include "/etc/logrotate.d", I think.
->>
->> Signed-off-by: Yuki Yao<y_yao@ryobi.co.jp>
->
-> Hello Garret,
->
-> Any input for this patch ?
->
-> Thanks
-> -Rishi
->>
->> Index: ./testcases/commands/logrotate/logrotate_tests.sh
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> --- ./testcases/commands/logrotate/logrotate_tests.sh.orig =A0 =A02008-1=
-0-21
->> 15:54:15.000000000 +0900
->> +++ ./testcases/commands/logrotate/logrotate_tests.sh 2010-02-15
->> 13:32:02.000000000 +0900
->> @@ -163,7 +163,7 @@
->> =A0 =A0 =A0 compress
->>
->> =A0 =A0 =A0 # RPM packages drop log rotation information into this direc=
-tory
->> - =A0 =A0 include /etc/logrotate.d
->> + =A0 =A0 # include /etc/logrotate.d
->>
->> =A0 =A0 =A0 /var/log/tst_logfile {
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 rotate 5
->> @@ -200,7 +200,7 @@
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 # check if =A0/etc/logrotate.d is included/
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 # check if 5 rotations are forced.
->> =A0 =A0 =A0 =A0 =A0# check if compression is done.
->> - =A0 =A0 =A0 =A0 =A0 =A0 grep "including /etc/logrotate.d" $LTPTMP/tst_=
-logrotate.out
->> \
->> + =A0 =A0 =A0 =A0 =A0 =A0 # grep "including /etc/logrotate.d"
->> $LTPTMP/tst_logrotate.out \
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 > $LTPTMP/tst_logrotate.err =
-2>&1 || RC=3D$?
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 grep "reading config file $LTPTMP/tst_logrot=
-ate.conf" \
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 $LTPTMP/tst_logrotate.out =
-=A0 >
->> $LTPTMP/tst_logrotate.err 2>&1 || RC=3D$?
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+This is a multi-part message in MIME format.
 
-The problem statement isn't clearly worded, thus I'm confused whether
-or not the patch is fixing a symptom or the root cause itself.
-Thanks,
--Garrett
+--===============7623760960522566627==
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0006_01CAA8B4.B1A60E70"
+Content-Language: ja
 
----------------------------------------------------------------------------=
----
-SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
-Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
-http://p.sf.net/sfu/solaris-dev2dev
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0006_01CAA8B4.B1A60E70
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+Hi,
+
+ 
+
+I found a problem on LTP when I execute ./runltp.
+
+After execute ./runltp, all log files such as /var/log/messages*
+disappeared, 
+
+and there is only new log files that were created after the test...
+
+ 
+
+This seems a problem that occurs after the "logrotate01" test. 
+
+I found that the past log files disappeared by forcing a rotate (logrotate
+-fv $LTPTMP/tst_logrotate.conf).
+
+ 
+
+Besides, "logrotate"'s shell script
+./testcases/commands/logrotate/logrotate_tests.sh creats 
+
+logrotate configuration file ($LTPTMP/tst_logrotate.conf) for the test, and
+this config file includes 
+
+/etc/logrotate.d as follows:
+
+[ ./testcases/commands/logrotate/logrotate_tests.sh line:156~ ]
+
+----------
+
+# create config file.
+
+              cat >$LTPTMP/tst_logrotate.conf <<-EOF
+
+              #****** Begin Config file *******
+
+              # create new (empty) log files after rotating old ones
+
+              create
+
+ 
+
+              # compress the log files
+
+              compress
+
+ 
+
+              # RPM packages drop log rotation information into this
+directory
+
+              include /etc/logrotate.d
+
+ 
+
+              /var/log/tst_logfile {
+
+                            rotate 5
+
+                            weekly
+
+              }
+
+              #****** End Config file *******
+
+              EOF
+
+----------
+
+ 
+
+By this, not only a log file for the test (/var/log/tst_logfile), but also
+30 fies in my system 
+
+such as /var/log/messages* become "logrotate" command target.
+
+Therefore, only a log file for this test must be made a target of the forced
+execution of "logrotate".
+
+ 
+
+To resolve this problem, we have to change this not to include
+/etc/logrotate.d, I think.
+
+ 
+
+Index: testcases/commands/logrotate/logrotate_tests.sh
+
+==============================
+
+--- logrotate_tests.sh           2008-10-21 15:54:15.000000000 +0900
+
++++ logrotate_tests.sh.new  2010-02-05 18:56:14.000000000 +0900
+
+@@ -163,7 +163,7 @@
+
+             compress
+
+ 
+
+             # RPM packages drop log rotation information into this
+directory
+
+-             include /etc/logrotate.d
+
++            # include /etc/logrotate.d
+
+ 
+
+             /var/log/tst_logfile {
+
+                           rotate 5
+
+@@ -200,7 +200,7 @@
+
+                           # check if  /etc/logrotate.d is included/
+
+                           # check if 5 rotations are forced.
+
+         # check if compression is done.
+
+-                           grep "including /etc/logrotate.d"
+$LTPTMP/tst_logrotate.out \
+
++                          # grep "including /etc/logrotate.d"
+$LTPTMP/tst_logrotate.out \
+
+                                         > $LTPTMP/tst_logrotate.err 2>&1 ||
+RC=$?
+
+                           grep "reading config file
+$LTPTMP/tst_logrotate.conf" \
+
+                                         $LTPTMP/tst_logrotate.out   >
+$LTPTMP/tst_logrotate.err 2>&1 || RC=$?
+
+ 
+
+Thank you,
+
+  --Yuki Yao
+
+ 
+
+
+------=_NextPart_000_0006_01CAA8B4.B1A60E70
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
+xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
+
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 12 (filtered medium)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"\FF2D\FF33 \30B4\30B7\30C3\30AF";
+	panose-1:2 11 6 9 7 2 5 8 2 4;}
+@font-face
+	{font-family:"\FF2D\FF33 \30B4\30B7\30C3\30AF";
+	panose-1:2 11 6 9 7 2 5 8 2 4;}
+@font-face
+	{font-family:"\@\FF2D\FF33 \30B4\30B7\30C3\30AF";
+	panose-1:2 11 6 9 7 2 5 8 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0mm;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-justify:inter-ideograph;
+	font-size:10.5pt;
+	font-family:"Arial","sans-serif";}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-priority:99;
+	color:purple;
+	text-decoration:underline;}
+span.17
+	{mso-style-type:personal-compose;
+	font-family:"Arial","sans-serif";
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;}
+ /* Page Definitions */
+ @page Section1
+	{size:612.0pt 792.0pt;
+	margin:99.25pt 30.0mm 30.0mm 30.0mm;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext=3D"edit" spidmax=3D"1026">
+  <v:textbox inset=3D"5.85pt,.7pt,5.85pt,.7pt" />
+ </o:shapedefaults></xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext=3D"edit">
+  <o:idmap v:ext=3D"edit" data=3D"1" />
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body lang=3DJA link=3Dblue vlink=3Dpurple =
+style=3D'text-justify-trim:punctuation'>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>Hi,<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>I =
+found a problem
+on LTP when I execute ./runltp.<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>After =
+execute
+./runltp, all log files such as /var/log/messages* disappeared, =
+<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>and =
+there is only
+new log files that were created after the test...<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>This =
+seems a
+problem that occurs after the &quot;logrotate01&quot; test. =
+<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>I =
+found that the
+past log files disappeared by forcing a rotate (logrotate -fv
+$LTPTMP/tst_logrotate.conf).<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>Besides,
+&quot;logrotate&quot;'s shell script
+./testcases/commands/logrotate/logrotate_tests.sh creats =
+<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>logrotate
+configuration file ($LTPTMP/tst_logrotate.conf) for the test, and this =
+config
+file includes <o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>/etc/logrotate.d
+as follows:<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>[
+./testcases/commands/logrotate/logrotate_tests.sh line:156~ =
+]<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>----------<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'># =
+create config
+file.<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cat &gt;$LTPTMP/tst_logrotate.conf &lt;&lt;-EOF<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+#****** Begin Config file *******<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+# create new (empty) log files after rotating old =
+ones<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+create<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+# compress the log files<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+compress<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+# RPM packages drop log rotation information into this =
+directory<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+include /etc/logrotate.d<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+/var/log/tst_logfile {<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+rotate 5<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+weekly<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+#****** End Config file *******<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+EOF<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>----------<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>By =
+this, not only
+a log file for the test (/var/log/tst_logfile), but also 30 fies in my =
+system <o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>such =
+as
+/var/log/messages* become &quot;logrotate&quot; command =
+target.<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>Therefore, only a
+log file for this test must be made a target of the forced execution of
+&quot;logrotate&quot;.<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>To =
+resolve this
+problem, we have to change this not to include /etc/logrotate.d, I =
+think.<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>Index:
+testcases/commands/logrotate/logrotate_tests.sh<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>---
+logrotate_tests.sh&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;
+2008-10-21 15:54:15.000000000 +0900<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>+++
+logrotate_tests.sh.new&nbsp; 2010-02-05 18:56:14.000000000 =
++0900<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>@@ =
+-163,7 +163,7
+@@<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;
+compress<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;
+# RPM packages drop log rotation information into this =
+directory<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;
+include /etc/logrotate.d<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;
+# include /etc/logrotate.d<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;
+/var/log/tst_logfile {<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+rotate 5<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>@@ =
+-200,7 +200,7
+@@<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+# check if&nbsp; /etc/logrotate.d is included/<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+# check if 5 rotations are forced.<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;# check if compression is done.<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+grep &quot;including /etc/logrotate.d&quot; $LTPTMP/tst_logrotate.out =
+\<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+# grep &quot;including /etc/logrotate.d&quot; $LTPTMP/tst_logrotate.out =
+\<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&gt; $LTPTMP/tst_logrotate.err 2&gt;&amp;1 || =
+RC=3D$?<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+grep &quot;reading config file $LTPTMP/tst_logrotate.conf&quot; =
+\<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+$LTPTMP/tst_logrotate.out&nbsp;&nbsp; &gt; $LTPTMP/tst_logrotate.err
+2&gt;&amp;1 || RC=3D$?<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>Thank =
+you,<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'>&nbsp; --Yuki Yao<o:p></o:p></span></p>
+
+<p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+</body>
+
+</html>
+
+------=_NextPart_000_0006_01CAA8B4.B1A60E70--
+
+
+
+
+--===============7623760960522566627==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the business
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
+--===============7623760960522566627==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============7623760960522566627==--
+
+
+
