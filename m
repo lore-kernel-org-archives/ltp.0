@@ -1,25 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NhnUN-0005zd-PJ
-	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 17:15:03 +0000
-Received: from mail-px0-f196.google.com ([209.85.216.196])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NhnUM-00036d-UE
-	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 17:15:03 +0000
-Received: by pxi34 with SMTP id 34so1503521pxi.6
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NeQZJ-0001od-9I
+	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 10:10:13 +0000
+Received: from mail-pz0-f183.google.com ([209.85.222.183])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NeQZI-0006bk-As
+	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 10:10:13 +0000
+Received: by pzk13 with SMTP id 13so4022210pzk.24
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 17 Feb 2010 09:14:57 -0800 (PST)
+	Mon, 08 Feb 2010 02:10:06 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <4B7B9EC2.1010004@linux.vnet.ibm.com>
-References: <4B728073.3070209@cn.fujitsu.com>
-	<4B7B9EC2.1010004@linux.vnet.ibm.com>
-Date: Wed, 17 Feb 2010 09:14:56 -0800
-Message-ID: <364299f41002170914u3a0d0b02o936a81d1ee601ecc@mail.gmail.com>
+In-Reply-To: <4B6FAA76.6000505@linux.vnet.ibm.com>
+References: <4B6FA8F0.6050504@cn.fujitsu.com>
+	<4B6FAA76.6000505@linux.vnet.ibm.com>
+Date: Mon, 8 Feb 2010 02:10:05 -0800
+Message-ID: <364299f41002080210l5c2f80dvab5b860d7cb6ecc4@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] timers: support clockid of
-	CLOCK_REALTIME_COARSE/CLOCK_MONOTONIC_COARSE
+Subject: Re: [LTP] [PATCH] cap_bound: should to TBROK if f != CAP_SET in
+	exec_without_inh.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,53 +35,74 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Rishikesh <risrajak@linux.vnet.ibm.com>
 Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-On Tue, Feb 16, 2010 at 11:46 PM, Rishikesh <risrajak@linux.vnet.ibm.com> w=
-rote:
-> On 02/10/2010 03:16 PM, Shi Weihua wrote:
->> mainline commit da15cfdae03351c689736f8d142618592e3cebc3
->> =A0 (subject: time: Introduce CLOCK_REALTIME_COARSE)
->> added two clocks (CLOCK_REALTIME_COARSE/CLOCK_MONOTONIC_COARSE) in
->> 2.6.32-rc1, but it has not been responded in ltp. then, the following
->> error message occured.
->> -----
->> clock_gettime03 =A0 =A03 =A0TFAIL =A0: =A0failed to produce expected err=
-or [expected errno =3D 22 (Invalid argument), TEST_RETURN =3D 0]: TEST_ERRN=
-O=3D???(0): Success
->> clock_gettime03 =A0 =A04 =A0TFAIL =A0: =A0failed to produce expected err=
-or [expected errno =3D 22 (Invalid argument), TEST_RETURN =3D 0]: TEST_ERRN=
-O=3D???(0): Success
->> timer_create04 =A0 =A01 =A0TFAIL =A0: =A0didn't fail as expected [expect=
-ed errno =3D 22 (Invalid argument)]: TEST_ERRNO=3D???(95): Operation not su=
-pported
->> timer_create04 =A0 =A02 =A0TFAIL =A0: =A0didn't fail as expected [expect=
-ed errno =3D 22 (Invalid argument)]: TEST_ERRNO=3D???(95): Operation not su=
-pported
->> -----
+On Sun, Feb 7, 2010 at 10:08 PM, Rishikesh <risrajak@linux.vnet.ibm.com> wr=
+ote:
+> On 02/08/2010 11:32 AM, Shi Weihua wrote:
+>> An error occured on my i386 box.
+>> =A0 (OS: Fedora8, Kernel: 2.6.33-rc6, libcap: libcap-2.16)
+>> -------------
+>> exec_without_inh =A0 =A01 =A0TFAIL =A0: =A0Failed to drop CAP_SYS_ADMIN =
+from bounding set.
+>> exec_without_inh =A0 =A00 =A0TINFO =A0: =A0(ret=3D-1, errno 38)
+>> -------------
+>> If the macro HAVE_DECL_CAP_BSET_DROP is 0, this error will occurs.
+>> But the program should to be broken when f !=3D CAP_SET, like the simila=
+r code
+>> "if (ret || f !=3D CAP_SET) {" in exec_with_inh.c.
 >>
->> Following patch fixed this bug. and, passed on 2.6.32-rc1, 2.6.33-rc6, 2=
-.6.23.1-42.fc8.
+>> The TBROK message will be outputted if my patch merged.
+>> -------------
+>> exec_without_inh =A0 =A01 =A0TBROK =A0: =A0Failed to add CAP_SYS_ADMIN t=
+o pI
 >>
+> Looks good. I will include if others are not having any comment.
 >
-> Can anyone provide their review & Acked ?
+> Acked-by: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
 >
-> Thanks "Shi Weihua" for patch.
+> Thanks
+> Rishi
+>
+>> -------------
+>>
+>> Signed-off-by: Shi Weihua<shiwh@cn.fujitsu.com>
+>> ---
+>> --- testcases/kernel/security/cap_bound/exec_without_inh.c.orig =A0 =A0 =
+=A0 2010-02-08 11:54:22.000000000 -0500
+>> +++ testcases/kernel/security/cap_bound/exec_without_inh.c =A0 =A02010-0=
+2-08 11:55:00.000000000 -0500
+>> @@ -80,6 +80,11 @@ int main(int argc, char *argv[])
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_exit();
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+>> =A0 =A0 =A0 }
+>> + =A0 =A0 else if (ret) {
+>> + =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TBROK, "Failed to add CAP_SYS_ADMIN t=
+o pI\n");
+>> + =A0 =A0 =A0 =A0 =A0 =A0 tst_exit();
+>> + =A0 =A0 }
+>> +
+>> =A0 #if HAVE_DECL_CAP_FREE
+>> =A0 =A0 =A0 cap_free(cur);
+>> =A0 #endif
 
-1. Please provide before and after (once the items were fixed) output.
-2. *sigh* These constants should be autoconf conditionalized --
-otherwise when Linux devs decide to change their minds about the
-values of the constants or the values are different on different
-architectures you'll run into red-herring errors. The test should be
-resistant to this behavior, but currently isn't. This would also
-prevent `ENOSYS'-like errors from showing up on kernels < 2.6.32-rc1.
+Wow -- I really made a mess of that test a few months back... please do...
 
-Thanks,
+       else if (ret) {
+               tst_brkm(TBROK | TERRNO, tst_exit, "Failed to add
+CAP_SYS_ADMIN to pI");
+       }
+
+... instead.
+Thanks for catching that one failure point ;)...!
 -Garrett
 
 ---------------------------------------------------------------------------=
 ---
-SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
-Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
-http://p.sf.net/sfu/solaris-dev2dev
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the busine=
+ss
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
