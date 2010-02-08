@@ -1,37 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nka5r-0006qq-26
-	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 09:33:15 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Nka5q-0004fw-3G
-	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 09:33:15 +0000
-Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
-	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1P9MBME027441
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Feb 2010 04:22:11 -0500
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o1P9X7DZ1847514
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Feb 2010 04:33:07 -0500
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o1P9X7cV023578
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Feb 2010 04:33:07 -0500
-Date: Thu, 25 Feb 2010 15:03:04 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100225093304.GA23984@linux.vnet.ibm.com>
-References: <41c7690d1002240410y3f132792he5460c69891a0976@mail.gmail.com>
-	<364299f41002241314u28cec7e9h7334685f6f82a8a@mail.gmail.com>
-	<41c7690d1002242240m787a1e8bj4640341ec09ff61c@mail.gmail.com>
-	<364299f41002242307i6256a0f1v9fbc4a2197049270@mail.gmail.com>
-	<364299f41002242311j2c97cf8fm2894f00b3640d1ef@mail.gmail.com>
-	<41c7690d1002250109r5e35b35cw2b10c0e270bc273a@mail.gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <vivian4u_12@yahoo.com>) id 1NeZ1w-0000F4-QB
+	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 19:12:20 +0000
+Received: from web46402.mail.sp1.yahoo.com ([68.180.199.191])
+	by sfi-mx-1.v28.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1NeZ1v-0001Yp-N9
+	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 19:12:20 +0000
+Message-ID: <107886.9632.qm@web46402.mail.sp1.yahoo.com>
+Date: Mon, 8 Feb 2010 11:12:14 -0800 (PST)
+From: marina kulo <vivian4u_12@yahoo.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <41c7690d1002250109r5e35b35cw2b10c0e270bc273a@mail.gmail.com>
-Subject: Re: [LTP] [PATCH][RESEND] RTC Device Driver Tests
+Subject: [LTP] Hello.
+Reply-To: marinakulo1@yahoo.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,76 +23,61 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============9193394077700040381=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Silesh C V <saileshcv@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Arun.sudhilal@lntinfotech.com, Mohamed.Rasheed@lntinfotech.com
+To: 
 
-On Thu, Feb 25, 2010 at 02:39:37PM +0530, Silesh C V wrote:
-> >>
-> >>    The end goal is to have these tests fit directly into LTP without
-> >> having to fudge around writing a secondary driver, thus maintaining
-> >> two pieces of dependent code [which is of course more complicated than
-> >> one piece of code], and thus is more of a pain to maintain longterm.
-> >> There's a lot of code in the repository like this that was ported and
-> >> subsequently not properly adapted to the existing infrastructure, thus
-> >> creating additional headache for maintainers and end-users.
-> >
-> > Ok -- I take that back. I have no idea wtf is going on in this
-> > directory nor the ultimate intent of the tests in here, apart from
-> > being a lot of ad hoc pain in the arse-ness.
-> 
-> The README in testcases/kernel/device-drivers/ says that these tests
-> should not be run with the other tests, and they have to be built
-> separately. I agree that this is because they have a kernel space part
-> also. But this prevents us from  building  device_driver tests that
-> have only user space part (as in RTC tests), along with the overall
-> build. And these tests does not belong in any other directory other
-> than kernel/device-drivers. So as long as other tests are there we
-> will have to live with building new device driver tests separately.I
-> can re-send  the patch with Garrett's suggestions  incorporated.
-> 
-> Subrata, suggestions ?
+--===============9193394077700040381==
+Content-Type: multipart/alternative; boundary="0-2019285920-1265656334=:9632"
 
-Hi Silesh,
+--0-2019285920-1265656334=:9632
+Content-Type: text/plain; charset=us-ascii
 
-How about porting this on new makefile infrastructure ? I think this is
-time where we can look back and can make one piece of code as garret
-said is correct. Please see your fesibility. Let me know if you still
-want this to be integrated. Before that can you please little more
-descriptive with your patch e,g: what it is doing. 
+Hello.
+My Name is marina I was impressed when i saw your profile and i will
+like you to email me back to my inbox so that i can send you my picture for you to know who i am.i believe we can establish a long lasting relationship with you.
+In addition,i will like you to reply me through my
+private e mail box (marinakulo1@yahoo.com).
+This is because i dont know the possibilities of
+remaining in forum for a long time.
+Thanks,waiting to hear from you soonest.
+marina
 
-And also it is always good if you include more documentation for each 
-function as coding style suggests.
 
-Thanks
-Rishi
-> 
-> 
-> Thanks,
-> Silesh
-> >
-> > I've learned enough to keep my hands off this because it looks like a mess.
-> >
-> > Thanks,
-> > -Garrett
-> >
+      
+--0-2019285920-1265656334=:9632
+Content-Type: text/html; charset=us-ascii
 
--- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
+<table cellspacing="0" cellpadding="0" border="0" ><tr><td valign="top" style="font: inherit;">Hello.<br>My Name is marina I was impressed when i saw your profile and i will<br>like you to email me back to my inbox so that i can send you my picture for you to know who i am.i believe we can establish a long lasting relationship with you.<br>In addition,i will like you to reply me through my<br>private e mail box (marinakulo1@yahoo.com).<br>This is because i dont know the possibilities of<br>remaining in forum for a long time.<br>Thanks,waiting to hear from you soonest.<br>marina</td></tr></table><br>
+
+
+
+      
+--0-2019285920-1265656334=:9632--
+
+
+--===============9193394077700040381==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the business
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
+--===============9193394077700040381==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============9193394077700040381==--
+
