@@ -1,29 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NhHtH-00033E-37
-	for ltp-list@lists.sourceforge.net; Tue, 16 Feb 2010 07:30:39 +0000
-Received: from mail-px0-f191.google.com ([209.85.216.191])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NhHtG-0004V2-3b
-	for ltp-list@lists.sourceforge.net; Tue, 16 Feb 2010 07:30:39 +0000
-Received: by pxi29 with SMTP id 29so1605803pxi.1
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 15 Feb 2010 23:30:32 -0800 (PST)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NeMje-0002EO-50
+	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 06:04:38 +0000
+Received: from e28smtp07.in.ibm.com ([122.248.162.7])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NeMjc-0004lp-Mc
+	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 06:04:38 +0000
+Received: from d28relay05.in.ibm.com (d28relay05.in.ibm.com [9.184.220.62])
+	by e28smtp07.in.ibm.com (8.14.3/8.13.1) with ESMTP id o1864LsT000470
+	for <ltp-list@lists.sourceforge.net>; Mon, 8 Feb 2010 11:34:21 +0530
+Received: from d28av05.in.ibm.com (d28av05.in.ibm.com [9.184.220.67])
+	by d28relay05.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o1864Lv93002530
+	for <ltp-list@lists.sourceforge.net>; Mon, 8 Feb 2010 11:34:21 +0530
+Received: from d28av05.in.ibm.com (loopback [127.0.0.1])
+	by d28av05.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o1864KEZ001510
+	for <ltp-list@lists.sourceforge.net>; Mon, 8 Feb 2010 17:04:21 +1100
+Message-ID: <4B6FA964.8010806@linux.vnet.ibm.com>
+Date: Mon, 08 Feb 2010 11:34:20 +0530
+From: Rishikesh <risrajak@linux.vnet.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <4b9fdcd01002152325w6bee8349t173c6f0afd935070@mail.gmail.com>
-References: <4b9fdcd01002142251l2cb9036fvde4fbc60bbae85a4@mail.gmail.com>
-	<364299f41002142303t19a2dd85ve9d87245084ff4ff@mail.gmail.com>
-	<4b9fdcd01002142309p2bc18e0yfaa0876694cc4f57@mail.gmail.com>
-	<364299f41002142320p24b3e50fj8b56bb15dad2a524@mail.gmail.com>
-	<4b9fdcd01002142359w4b275c73s91ea258eee1de146@mail.gmail.com>
-	<364299f41002150018p1a6888b6r4cb95731deffcd0b@mail.gmail.com>
-	<4b9fdcd01002152325w6bee8349t173c6f0afd935070@mail.gmail.com>
-Date: Mon, 15 Feb 2010 23:30:31 -0800
-Message-ID: <364299f41002152330r15274a12p4630be799f88b9d4@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] facing issue "TBROK : nobody not in /etc/passwd"
+References: <000501caa869$41be6670$c53b3350$@co.jp>
+	<001801caa86b$290aef70$7b20ce50$@co.jp>
+In-Reply-To: <001801caa86b$290aef70$7b20ce50$@co.jp>
+Subject: Re: [LTP] [PATCH]logrotate: /var/log/messages* disappeared
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,179 +36,126 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: vishwanath govind <vishwa.hochihally@gmail.com>
+To: Yuki Yao <y_yao@ryobi.co.jp>
 Cc: ltp-list@lists.sourceforge.net
 
-On Mon, Feb 15, 2010 at 11:25 PM, vishwanath govind
-<vishwa.hochihally@gmail.com> wrote:
-> I have initramfs file system built using Busybox-1.16.0 and didn't setup =
-the
-> ldap/nis. I have few files in /etc like passwd,group and syslogd conf
-> files.But getpwnam() should search local repository(/etc/passwd file) and
-> returns a pointer to a struct passwd, correct?. Do i really need to setup
-> ldap/NIS to make it work getpwnam() funtion? The device i am using has
-> memory restriction to add more stuff to filesystem and its very minimal. =
-So
-> please guide me what are the minimal things need to setup to get getpwnam=
-()
-> function working? Please correct me if i am wrong here.
->
-> Regards
-> Vishwa
->
-> On Mon, Feb 15, 2010 at 1:48 PM, Garrett Cooper <yanegomi@gmail.com> wrot=
-e:
->>
->> On Sun, Feb 14, 2010 at 11:59 PM, vishwanath govind
->> <vishwa.hochihally@gmail.com> wrote:
->> > Yes, I checked this before, It return errorno "0". Somehow mknod02 won=
-'t
->> > display the errorno when it=A0exit with "tst_brkm(TBROK, cleanup, "%s =
-not
->> > in
->> > /etc/passwd", LTPUSER)"=A0but I have similar tests return errorno 0. I=
- see
->> > "nobody" user=A0and uid/gid -99=A0is present in /etc/passwd file. Do=
-=A0I need
->> > to
->> > enable anything in KERNEL config or /etc?
->> >
->> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3Dlog=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> > <<<test_start>>>
->> > tag=3Dnftw01 stime=3D1170483127
->> > cmdline=3D"nftw01"
->> > contacts=3D""
->> > analysis=3Dexit
->> > <<<test_output>>>
->> > nobody not found in /etc/passwd: No such file or directory
->> > <<<execution_status>>>
->> > initiation_status=3D"ok"
->> > duration=3D0 termination_type=3Dexited termination_id=3D1 corefile=3Dno
->> > cutime=3D1 cstime=3D2
->> > <<<test_end>>>
->> > <<<test_start>>>
->> > tag=3Dnftw6401 stime=3D1170483127
->> > cmdline=3D"nftw6401"
->> > contacts=3D""
->> > analysis=3Dexit
->> > <<<test_output>>>
->> > change_owner: nobody not found in /etc/passwd: No such file or directo=
-ry
->> > <<<execution_status>>>
->> > initiation_status=3D"ok"
->> > duration=3D0 termination_type=3Dexited termination_id=3D1 corefile=3Dno
->> > cutime=3D2 cstime=3D1
->> > <<<test_end>>>
->> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3Dend=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> > Regards
->> > Vishwa
->> >
->> > On Mon, Feb 15, 2010 at 12:50 PM, Garrett Cooper <yanegomi@gmail.com>
->> > wrote:
->> >>
->> >> On Sun, Feb 14, 2010 at 11:09 PM, vishwanath govind
->> >> <vishwa.hochihally@gmail.com> wrote:
->> >> > Garrett,
->> >> > =A0Thanks for your quick reply. I am using "ltp-full-20091231".
->> >> > Regards
->> >> > Vishwa
->> >> >
->> >> > On Mon, Feb 15, 2010 at 12:33 PM, Garrett Cooper <yanegomi@gmail.co=
-m>
->> >> > wrote:
->> >> >>
->> >> >> On Sun, Feb 14, 2010 at 10:51 PM, vishwanath govind
->> >> >> <vishwa.hochihally@gmail.com> wrote:
->> >> >> >
->> >> >> > Hi,
->> >> >> > I am facing common issue which causing many of the LTP syscalls
->> >> >> > test
->> >> >> > cases
->> >> >> > to fail. I have taken mknod02 test to show this issue here.
->> >> >> > Definitely I
->> >> >> > am
->> >> >> > missing something out here, could you guys please point me to
->> >> >> > right
->> >> >> > direction?=A0 Please let me know if you need some more info/log
->> >> >> >
->> >> >> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3Dlog=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> >> >> > # ls /etc
->> >> >> > group=A0=A0 passwd
->> >> >> >
->> >> >> > # ./IDcheck.sh
->> >> >> > Checking for required user/group ids
->> >> >> > 'nobody' user id and group found.
->> >> >> > 'bin' user id and group found.
->> >> >> > 'daemon' user id and group found.
->> >> >> > Users group found.
->> >> >> > Sys group found.
->> >> >> > Required users/groups exist.
->> >> >> >
->> >> >> > # cat /etc/passwd
->> >> >> > root:x:0:0:root::
->> >> >> > nobody:x:99:99:nobody::
->> >> >> > bin:x:1:1:bin::
->> >> >> > daemon:x:2:2:daemon::
->> >> >> >
->> >> >> > #uname -a
->> >> >> > Linux (none) 2.6.29 #4 PREEMPT Thu Feb 11 23:37:46 PST 2010 armv=
-6l
->> >> >> > GNU/Linux
->> >> >> >
->> >> >> > # ./mknod02
->> >> >> > mknod02=A0=A0=A0=A0 1=A0 TBROK=A0 :=A0 nobody not in /etc/passwd
->> >> >>
->> >> >> What version of LTP is this?
->> >>
->> >> That's a lousy diagnostic, as any one of the following errors could be
->> >> the culprit:
->> >>
->> >> ERRORS
->> >> =A0 =A0 =A0 0 or ENOENT or ESRCH or EBADF or EPERM or ...
->> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0The given name or uid was not found.
->> >>
->> >> =A0 =A0 =A0 EINTR =A0A signal was caught.
->> >>
->> >> =A0 =A0 =A0 EIO =A0 =A0I/O error.
->> >>
->> >> =A0 =A0 =A0 EMFILE The maximum number (OPEN_MAX) of files was open al=
-ready
->> >> in the calling process.
->> >>
->> >> =A0 =A0 =A0 ENFILE The maximum number of files was open already in the
->> >> system.
->> >>
->> >> =A0 =A0 =A0 ENOMEM Insufficient memory to allocate passwd structure.
->> >>
->> >> =A0 =A0 =A0 ERANGE Insufficient buffer space supplied.
->> >>
->> >> What are the permissions on the file and is there any way where you
->> >> could grab the latest copy of the file from git and try that out (the
->> >> patch is available at:
->>
->> Nope... you sure your ldap / nis isn't busted?
+On 02/08/2010 08:32 AM, Yuki Yao wrote:
+> Sorry, line breaks is mistake; resend.
+>    
+Hi Yuki Yao,
 
-    No.. heh. I was just wondering if you had it partially setup but
-it was broken somehow.
-    Do you have an alternative means of checking, like with perl,
-python, etc? Do you need to update your shadow password db setup?
-Thanks,
--Garrett
+Few nits:
 
----------------------------------------------------------------------------=
----
-SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
-Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
-http://p.sf.net/sfu/solaris-dev2dev
+I would appreciate if you append your Signed-off and resend once again.
+
+Then i will provide my review comment. And in future please create your 
+patch against LTPROOT/ dir.
+
+Thanks
+Rishi
+
+
+> ----------------------------------------------------
+> Hi,
+>
+> I found a problem on LTP when I execute ./runltp.
+> After execute ./runltp, all log files such as /var/log/messages*
+> disappeared,
+> and there is only new log files that were created after the test...
+>
+> This seems a problem that occurs after the "logrotate01" test.
+> I found that the past log files disappeared by forcing a rotate (logrotate
+> -fv $LTPTMP/tst_logrotate.conf).
+>
+> Besides, "logrotate"'s shell script
+> ./testcases/commands/logrotate/logrotate_tests.sh creats
+> logrotate configuration file ($LTPTMP/tst_logrotate.conf) for the test, and
+> this config file includes
+> /etc/logrotate.d as follows:
+> [ ./testcases/commands/logrotate/logrotate_tests.sh line:156~ ]
+> ----------
+> # create config file.
+> 	cat>$LTPTMP/tst_logrotate.conf<<-EOF
+> 	#****** Begin Config file *******
+> 	# create new (empty) log files after rotating old ones
+> 	create
+>
+> 	# compress the log files
+> 	compress
+>
+> 	# RPM packages drop log rotation information into this directory
+> 	include /etc/logrotate.d
+>
+> 	/var/log/tst_logfile {
+> 		rotate 5
+> 		weekly
+> 	}
+> 	#****** End Config file *******
+> 	EOF
+> ----------
+>
+> By this, not only a log file for the test (/var/log/tst_logfile), but also
+> 30 fies in my system
+> such as /var/log/messages* become "logrotate" command target.
+> Therefore, only a log file for this test must be made a target of the forced
+> execution of "logrotate".
+>
+> To resolve this problem, we have to change this not to include
+> /etc/logrotate.d, I think.
+>
+> Index: testcases/commands/logrotate/logrotate_tests.sh
+> ==============================
+> --- logrotate_tests.sh	2008-10-21 15:54:15.000000000 +0900
+> +++ logrotate_tests.sh.new	2010-02-05 18:56:14.000000000 +0900
+> @@ -163,7 +163,7 @@
+>   	compress
+>
+>   	# RPM packages drop log rotation information into this directory
+> -	include /etc/logrotate.d
+> +	# include /etc/logrotate.d
+>
+>   	/var/log/tst_logfile {
+>   		rotate 5
+> @@ -200,7 +200,7 @@
+>   		# check if  /etc/logrotate.d is included/
+>   		# check if 5 rotations are forced.
+>           # check if compression is done.
+> -		grep "including /etc/logrotate.d" $LTPTMP/tst_logrotate.out
+> \
+> +		# grep "including /etc/logrotate.d"
+> $LTPTMP/tst_logrotate.out \
+>   			>  $LTPTMP/tst_logrotate.err 2>&1 || RC=$?
+>   		grep "reading config file $LTPTMP/tst_logrotate.conf" \
+>   			$LTPTMP/tst_logrotate.out>
+> $LTPTMP/tst_logrotate.err 2>&1 || RC=$?
+>
+> Thank you,
+>    --Yuki Yao
+>
+>
+>
+> ------------------------------------------------------------------------------
+> The Planet: dedicated and managed hosting, cloud storage, colocation
+> Stay online with enterprise data centers and the best network in the business
+> Choose flexible plans and management services without long-term contracts
+> Personal 24x7 support from experience hosting pros just a phone call away.
+> http://p.sf.net/sfu/theplanet-com
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>    
+
+
+------------------------------------------------------------------------------
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the business
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
