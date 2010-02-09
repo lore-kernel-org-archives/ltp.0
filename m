@@ -1,28 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NkSMm-0003hT-9p
-	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 01:18:12 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NkSMl-0001um-6M
-	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 01:18:12 +0000
-Received: by pwi5 with SMTP id 5so4605591pwi.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 24 Feb 2010 17:18:05 -0800 (PST)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NemSv-0000ey-F6
+	for ltp-list@lists.sourceforge.net; Tue, 09 Feb 2010 09:33:05 +0000
+Received: from e28smtp03.in.ibm.com ([122.248.162.3])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NemSt-0003zS-U8
+	for ltp-list@lists.sourceforge.net; Tue, 09 Feb 2010 09:33:05 +0000
+Received: from d28relay03.in.ibm.com (d28relay03.in.ibm.com [9.184.220.60])
+	by e28smtp03.in.ibm.com (8.14.3/8.13.1) with ESMTP id o199WlZr026367
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Feb 2010 15:02:47 +0530
+Received: from d28av05.in.ibm.com (d28av05.in.ibm.com [9.184.220.67])
+	by d28relay03.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o199WlYK2777102
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Feb 2010 15:02:47 +0530
+Received: from d28av05.in.ibm.com (loopback [127.0.0.1])
+	by d28av05.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o199WlBN000901
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Feb 2010 20:32:47 +1100
+Message-ID: <4B712BBF.3060704@linux.vnet.ibm.com>
+Date: Tue, 09 Feb 2010 15:02:47 +0530
+From: Rishikesh <risrajak@linux.vnet.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <4B8333ED.5080709@cn.fujitsu.com>
-References: <4B7BA24F.2010705@linux.vnet.ibm.com>
-	<364299f41002170910i336abf6eh72acbcbec9b72e7b@mail.gmail.com>
-	<20100218042532.GC13013@rishikesh.in.ibm.com>
-	<4B822F2E.9030609@cn.fujitsu.com>
-	<364299f41002212344v4873843ej986f1b39ec3494df@mail.gmail.com>
-	<4B8333ED.5080709@cn.fujitsu.com>
-Date: Wed, 24 Feb 2010 17:18:05 -0800
-Message-ID: <364299f41002241718g4be216d1pbec918821b7027b0@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] sysctl03: sysctl returns EACCES after 2.6.33-rc1
+Subject: [LTP] container_test.sh failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,329 +33,59 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shi Weihua <shiwh@cn.fujitsu.com>
+To: Garrett Cooper <yanegomi@gmail.com>
 Cc: LTP <ltp-list@lists.sourceforge.net>
 
-On Mon, Feb 22, 2010 at 5:48 PM, Shi Weihua <shiwh@cn.fujitsu.com> wrote:
-> at 2010-2-22 15:44, Garrett Cooper wrote:
->> Ok.. one last thing.
->>
->> On Sun, Feb 21, 2010 at 11:15 PM, Shi Weihua <shiwh@cn.fujitsu.com> wrot=
-e:
->>> at 2010-2-18 12:25, Rishikesh K Rajak wrote:
->>>> On Wed, Feb 17, 2010 at 09:10:48AM -0800, Garrett Cooper wrote:
->>>>> On Wed, Feb 17, 2010 at 12:01 AM, Rishikesh <risrajak@linux.vnet.ibm.=
-com> wrote:
->>>>>> Hi Shi,
->>>>>>
->>>>>> Thanks for your patch, still i am finding time to look into your pat=
-ch.
->>>>>> Will reply you soon.
->>>>>>
->>>>>> http://marc.info/?l=3Dltp-list&m=3D126502355614857&w=3D2
->>>>>
->>>>> I looked at the patch finally.
->>>>
->>>> Thanks garret.
->>>>>
->>>>> Please use TTERRNO instead of strerror(...) for the reported value.
->>>>> There's no reason why you should use strerror(...) there as that's
->>>>> already done with tst_res(3).
->>>>
->>>> Shi, can you please incorporate changes which garret has suggested and
->>>> resend the patch again to ltp-list@ .
->>>
->>> =A0Ok, i recreated the patch based on garret's suggestion.
->>>
->>> Signed-off-by: Shi Weihua <shiwh@cn.fujitsu.com>
->>> ---
->>> --- testcases/kernel/syscalls/sysctl/sysctl03.c.orig =A0 =A02010-02-22 =
-14:38:26.000000000 -0500
->>> +++ testcases/kernel/syscalls/sysctl/sysctl03.c 2010-02-22 15:08:03.000=
-000000 -0500
->>> @@ -22,15 +22,18 @@
->>> =A0* =A0 =A0 sysctl03.c
->>> =A0*
->>> =A0* DESCRIPTION
->>> - * =A0 =A0 Testcase to check that sysctl(2) sets errno to EPERM correc=
-tly.
->>> + * =A0 =A0 Testcase to check that sysctl(2) sets errno to EPERM or EAC=
-CES
->>> + * =A0 =A0 correctly. But it will return EACCES on kernels that are 2.=
-6.33-rc1
->>> + * =A0 =A0 and higher.
->>> =A0*
->>> =A0* ALGORITHM
->>> =A0* =A0 =A0 a. =A0 =A0 =A0Call sysctl(2) as a root user, and attempt t=
-o write data
->>> =A0* =A0 =A0 =A0 =A0 =A0 =A0 to the kernel_table[]. Since the table doe=
-s not have write
->>> - * =A0 =A0 =A0 =A0 =A0 =A0 permissions even for the root, it should fa=
-il EPERM.
->>> + * =A0 =A0 =A0 =A0 =A0 =A0 permissions even for the root, it should fa=
-il EPERM or EACCES.
->>> =A0* =A0 =A0 b. =A0 =A0 =A0Call sysctl(2) as a non-root user, and attem=
-pt to write data
->>> =A0* =A0 =A0 =A0 =A0 =A0 =A0 to the kernel_table[]. Since the table doe=
-s not have write
->>> - * =A0 =A0 =A0 =A0 =A0 =A0 permission for the regular user, it should =
-fail with EPERM.
->>> + * =A0 =A0 =A0 =A0 =A0 =A0 permission for the regular user, it should =
-fail with EPERM
->>> + * =A0 =A0 =A0 =A0 =A0 =A0 or EACCES.
->>> =A0*
->>> =A0* USAGE: =A0<for command-line>
->>> =A0* =A0sysctl03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
->>> @@ -43,6 +46,7 @@
->>> =A0*
->>> =A0* HISTORY
->>> =A0* =A0 =A0 07/2001 Ported by Wayne Boyer
->>> + * =A0 =A0 02/2010 Updated by shiwh@cn.fujitsu.com
->>> =A0*
->>> =A0* RESTRICTIONS
->>> =A0* =A0 =A0 Test must be run as root.
->>> @@ -82,6 +86,7 @@ int main(int ac, char **av)
->>> =A0{
->>> =A0 =A0 =A0 =A0int lc;
->>> =A0 =A0 =A0 =A0char *msg;
->>> + =A0 =A0 =A0 int exp_eno;
->>>
->>> =A0 =A0 =A0 =A0char osname[OSNAMESZ];
->>> =A0 =A0 =A0 =A0int osnamelth, status;
->>> @@ -96,6 +101,13 @@ int main(int ac, char **av)
->>>
->>> =A0 =A0 =A0 =A0setup();
->>>
->>> + =A0 =A0 =A0 if ((tst_kvercmp(2, 6, 32)) <=3D 0){
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 exp_eno =3D EPERM;
->>> + =A0 =A0 =A0 } else {
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 exp_eno =3D EACCES;
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 exp_enos[0] =3D EACCES;
->>> + =A0 =A0 =A0 }
->>> +
->>> =A0 =A0 =A0 =A0TEST_EXP_ENOS(exp_enos);
->>>
->>> =A0 =A0 =A0 =A0/* check looping state if -i option is given */
->>> @@ -114,13 +126,10 @@ int main(int ac, char **av)
->>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
->>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0TEST_ERROR_LOG(TEST_ERRN=
-O);
->>>
->>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TEST_ERRNO !=3D EPERM=
-) {
->>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(=
-TFAIL,
->>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0"Expected EPERM (%d), got %d: %s",
->>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0EPERM, TEST_ERRNO,
->>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0strerror(TEST_ERRNO));
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TEST_ERRNO !=3D exp_e=
-no) {
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(=
-TFAIL|TTERRNO, "Got unxpected error");
->>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
->>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(=
-TPASS, "Got expected EPERM error");
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(=
-TPASS|TTERRNO, "Got expected error");
->>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
->>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
->>>
->>> @@ -147,12 +156,10 @@ int main(int ac, char **av)
->>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
->>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0TEST_ERR=
-OR_LOG(TEST_ERRNO);
->>>
->>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TEST_=
-ERRNO !=3D EPERM) {
->>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 tst_resm(TFAIL, "Expected EPERM, got "
->>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0"%d", TEST_ERRNO);
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TEST_=
-ERRNO !=3D exp_eno) {
->>
->> Why can't this be exp_enos[0] ?
->
-> Using exp_enos[0] is ok. pls check the latest patch in this mail.
->
->>
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 tst_resm(TFAIL|TTERRNO, "Got unxpected error");
->>
->> Typo.
->>
->>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
->>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 tst_resm(TPASS, "Got expected EPERM "
->>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0"error");
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 tst_resm(TPASS|TTERRNO, "Got expected error");
->>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
->>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
->>>
->>>
->>> Thank you.
->>> - Shi Weihua
->>
->> =A0 =A0 It always helps to understand what's expected vs unexpected
->> without having to look at the source code. Could you please revise the
->> tst_resm format strings to be something like the following?
->>
->> tst_resm (TPASS | TERRNO, "Got expected error (errno =3D %d, ret_code =
-=3D
->> %d", exp_errno_blah, exp_ret_code_blah);
->>
->> OR:
->>
->> tst_resm (TPASS | TERRNO, "Got unexpected error (expected errno =3D %d,
->> ret_code =3D %d - got errno =3D %d, ret_code =3D %d", exp_errno_blah,
->> exp_ret_code_blah, errno_blah, ret_code_blah);
->
-> ret_code has not been defined in sysctl03.c, i think it's unnecessarily to
-> import a new parameter. maybe, we can use your macro when it created. ;-)
->
-> --- testcases/kernel/syscalls/sysctl/sysctl03.c.orig =A0 =A02010-02-22 14=
-:38:26.000000000 -0500
-> +++ testcases/kernel/syscalls/sysctl/sysctl03.c 2010-02-23 09:35:20.00000=
-0000 -0500
-> @@ -22,15 +22,18 @@
-> =A0* =A0 =A0 sysctl03.c
-> =A0*
-> =A0* DESCRIPTION
-> - * =A0 =A0 Testcase to check that sysctl(2) sets errno to EPERM correctl=
-y.
-> + * =A0 =A0 Testcase to check that sysctl(2) sets errno to EPERM or EACCES
-> + * =A0 =A0 correctly. But it will return EACCES on kernels that are 2.6.=
-33-rc1
-> + * =A0 =A0 and higher.
-> =A0*
-> =A0* ALGORITHM
-> =A0* =A0 =A0 a. =A0 =A0 =A0Call sysctl(2) as a root user, and attempt to =
-write data
-> =A0* =A0 =A0 =A0 =A0 =A0 =A0 to the kernel_table[]. Since the table does =
-not have write
-> - * =A0 =A0 =A0 =A0 =A0 =A0 permissions even for the root, it should fail=
- EPERM.
-> + * =A0 =A0 =A0 =A0 =A0 =A0 permissions even for the root, it should fail=
- EPERM or EACCES.
-> =A0* =A0 =A0 b. =A0 =A0 =A0Call sysctl(2) as a non-root user, and attempt=
- to write data
-> =A0* =A0 =A0 =A0 =A0 =A0 =A0 to the kernel_table[]. Since the table does =
-not have write
-> - * =A0 =A0 =A0 =A0 =A0 =A0 permission for the regular user, it should fa=
-il with EPERM.
-> + * =A0 =A0 =A0 =A0 =A0 =A0 permission for the regular user, it should fa=
-il with EPERM
-> + * =A0 =A0 =A0 =A0 =A0 =A0 or EACCES.
-> =A0*
-> =A0* USAGE: =A0<for command-line>
-> =A0* =A0sysctl03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-> @@ -43,6 +46,7 @@
-> =A0*
-> =A0* HISTORY
-> =A0* =A0 =A0 07/2001 Ported by Wayne Boyer
-> + * =A0 =A0 02/2010 Updated by shiwh@cn.fujitsu.com
-> =A0*
-> =A0* RESTRICTIONS
-> =A0* =A0 =A0 Test must be run as root.
-> @@ -96,6 +100,12 @@ int main(int ac, char **av)
->
-> =A0 =A0 =A0 =A0setup();
->
-> + =A0 =A0 =A0 if ((tst_kvercmp(2, 6, 32)) <=3D 0){
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 exp_enos[0] =3D EPERM;
-> + =A0 =A0 =A0 } else {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 exp_enos[0] =3D EACCES;
-> + =A0 =A0 =A0 }
-> +
-> =A0 =A0 =A0 =A0TEST_EXP_ENOS(exp_enos);
->
-> =A0 =A0 =A0 =A0/* check looping state if -i option is given */
-> @@ -114,13 +124,12 @@ int main(int ac, char **av)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0TEST_ERROR_LOG(TEST_ERRNO);
->
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TEST_ERRNO !=3D EPERM) {
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TF=
-AIL,
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0"Expected EPERM (%d), got %d: %s",
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0EPERM, TEST_ERRNO,
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0strerror(TEST_ERRNO));
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TEST_ERRNO !=3D exp_eno=
-s[0]) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TF=
-AIL|TTERRNO, "Got unxpected error "
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 "(expected error =3D %d)", exp_enos[0]);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TP=
-ASS, "Got expected EPERM error");
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tst_resm(TP=
-ASS|TTERRNO, "Got expected error "
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 "(errno =3D %d)", exp_enos[0]);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
->
-> @@ -147,12 +156,12 @@ int main(int ac, char **av)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0TEST_ERROR=
-_LOG(TEST_ERRNO);
->
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TEST_ER=
-RNO !=3D EPERM) {
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 tst_resm(TFAIL, "Expected EPERM, got "
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 =A0"%d", TEST_ERRNO);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (TEST_ER=
-RNO !=3D exp_enos[0]) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 tst_resm(TFAIL|TTERRNO, "Got unxpected error "
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 "(expected error =3D %d)", exp_enos[0]);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0} else {
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 tst_resm(TPASS, "Got expected EPERM "
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 =A0"error");
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 tst_resm(TPASS|TTERRNO, "Got expected error "
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 =A0"(errno =3D %d)", =A0exp_enos[0]);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+Hi Garret,
 
-Ok, before I go and commit this, there are two things I need to know
-(because trusty Google didn't turn up any results for this behavioral
-change):
+With today's cvs getting following error while running the container 
+testcases.
 
-1. The change is legitimate.
-2. The documentation is up to date, or a bug has been filed for the
-documentation change.
+...
+/opt/ltp/testcases/bin/container_test.sh: line 52: check_mqns_enabled: 
+command not found
+Posix message queues or ipc namespaces not enabled in kernel.
+Not running mqns tests.
+/opt/ltp/testcases/bin/container_test.sh: line 61: check_netns_enabled: 
+command not found
+Network namespaces not enabled in kernel.  Not running netns tests.
+<<<execution_status>>>
+initiation_status="ok"
+duration=10 termination_type=exited termination_id=0 corefile=no
+cutime=7 cstime=22
+<<<test_end>>>
+INFO: ltp-pan reported all tests PASS
+LTP Version: LTP-20100131
 
-If you can provide these two things, I'll commit the change.
+        ###############################################################"
 
-Thanks,
--Garrett
+             Done executing testcases."
+             LTP Version:  LTP-20100131
+        ###############################################################"
 
----------------------------------------------------------------------------=
----
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
+x440:/opt/ltp #
+
+Do you think we need to just do the fix as you did for pidns ? I feel 
+check_*_enabled.c does more a lot than just checking kernel version. So 
+keeping that file will be a good idea. Please let me know your thought.
+
+-- 
+Thanks&  Regards
+Rishi Kesh K Rajak
+IBM LTC, Bangalore
+LTP Maintainer
+Please join IRC: #ltp @ freenode.net
+
+
+------------------------------------------------------------------------------
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the business
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
