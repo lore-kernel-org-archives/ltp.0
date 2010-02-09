@@ -1,29 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <bounces@nabble.com>) id 1NeppJ-0002zt-Gk
-	for ltp-list@lists.sourceforge.net; Tue, 09 Feb 2010 13:08:25 +0000
-Received: from kuber.nabble.com ([216.139.236.158])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NeppI-0007ra-2u
-	for ltp-list@lists.sourceforge.net; Tue, 09 Feb 2010 13:08:25 +0000
-Received: from isper.nabble.com ([192.168.236.156])
-	by kuber.nabble.com with esmtp (Exim 4.63)
-	(envelope-from <bounces@nabble.com>) id 1NeppC-0002lN-NQ
-	for ltp-list@lists.sourceforge.net; Tue, 09 Feb 2010 05:08:18 -0800
-Message-ID: <27514892.post@talk.nabble.com>
-Date: Tue, 9 Feb 2010 05:08:18 -0800 (PST)
-From: shachin <er_sachin@rediffmail.com>
-In-Reply-To: <f5a7b3811002090253u412c926ds3f0ef9895631e4f6@mail.gmail.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naresh.kernel@gmail.com>) id 1Nenig-0006AD-8g
+	for ltp-list@lists.sourceforge.net; Tue, 09 Feb 2010 10:53:26 +0000
+Received: from mail-pz0-f198.google.com ([209.85.222.198])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Nenif-000498-F2
+	for ltp-list@lists.sourceforge.net; Tue, 09 Feb 2010 10:53:26 +0000
+Received: by pzk36 with SMTP id 36so8123386pzk.23
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 09 Feb 2010 02:53:19 -0800 (PST)
 MIME-Version: 1.0
-References: <cc0b83a21002041616i7cf66f4apbfa1628c69d20dfe@mail.gmail.com>
-	<27498190.post@talk.nabble.com>
-	<f5a7b3811002090253u412c926ds3f0ef9895631e4f6@mail.gmail.com>
+Date: Tue, 9 Feb 2010 16:23:19 +0530
+Message-ID: <f5a7b3811002090253u412c926ds3f0ef9895631e4f6@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
 Subject: Re: [LTP] Got warning message "FATAL: Test suite not installed
- correctly INFO: as root user type 'make ;
- make install'" on ltp-full-20100131 while running ./runltp even i have
- installed correctly
+	correctly INFO: as root user type 'make ;
+	make install'" on ltp-full-20100131 while running ./runltp even i
+	have installed correctly
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,358 +31,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: shachin <er_sachin@rediffmail.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
+
+Hi Shachin,
+
+>Hi shachin here,
+
+>Even i am unable to use  ltp-full-20100131 build i also got warning message
+>"FATAL: Test suite not installed correctly
+>INFO: as root user type 'make ; make install'
+>[root@mwg5 ltp-full-20100131]#'
+>even i have installed it correctly.
+
+>is anybody can help out on this?
+
+when we do "make install" the binaries will copied in to
+/opt/ltp/testcase/bin/ as default path.
+please check the what are the files available under the /opt/ltp
+#cd /opt/ltp/
+# tree
+
+and please run the runltp command from
+#cd /opt/ltp/
+#./runltp
+
+Hope it works
+please let me knw if u find any issues again.
 
 
-hi ,
-pls find below the system details:
+>thanks
+>shachin
 
-Package automake-1.9.6-2.1.noarch 
-
-Package autoconf-2.59-1.mlos1.noarch
-
-[root@mwg5 ~]# cat /proc/cpuinfo
-processor       : 0
-vendor_id       : GenuineIntel
-cpu family      : 6
-model           : 26
-model name      : Intel(R) Xeon(R) CPU           E5540  @ 2.53GHz
-stepping        : 5
-cpu MHz         : 2526.996
-cache size      : 8192 KB
-physical id     : 1
-siblings        : 8
-core id         : 0
-cpu cores       : 4
-apicid          : 16
-initial apicid  : 16
-fpu             : yes
-fpu_exception   : yes
-cpuid level     : 11
-wp              : yes
-flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca
-cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx
-rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl pni monitor
-ds_cpl vmx est tm2 ssse3 cx16 xtpr dca sse4_1 sse4_2 popcnt lahf_lm ida
-bogomips        : 5053.99
-clflush size    : 64
-cache_alignment : 64
-address sizes   : 40 bits physical, 48 bits virtual
-power management:
-
-processor       : 1
-vendor_id       : GenuineIntel
-cpu family      : 6
-model           : 26
-model name      : Intel(R) Xeon(R) CPU           E5540  @ 2.53GHz
-stepping        : 5
-cpu MHz         : 2526.996
-cache size      : 8192 KB
-physical id     : 1
-siblings        : 8
-core id         : 1
-cpu cores       : 4
-apicid          : 18
-initial apicid  : 18
-fpu             : yes
-fpu_exception   : yes
-cpuid level     : 11
-wp              : yes
-flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca
-cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx
-rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl pni monitor
-ds_cpl vmx est tm2 ssse3 cx16 xtpr dca sse4_1 sse4_2 popcnt lahf_lm ida
-bogomips        : 5053.93
-clflush size    : 64
-cache_alignment : 64
-address sizes   : 40 bits physical, 48 bits virtual
-power management:
-
-processor       : 2
-vendor_id       : GenuineIntel
-cpu family      : 6
-model           : 26
-model name      : Intel(R) Xeon(R) CPU           E5540  @ 2.53GHz
-stepping        : 5
-cpu MHz         : 2526.996
-cache size      : 8192 KB
-physical id     : 1
-siblings        : 8
-core id         : 2
-cpu cores       : 4
-apicid          : 20
-initial apicid  : 20
-fpu             : yes
-fpu_exception   : yes
-cpuid level     : 11
-wp              : yes
-flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca
-cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx
-rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl pni monitor
-ds_cpl vmx est tm2 ssse3 cx16 xtpr dca sse4_1 sse4_2 popcnt lahf_lm ida
-bogomips        : 5053.94
-clflush size    : 64
-cache_alignment : 64
-address sizes   : 40 bits physical, 48 bits virtual
-power management:
-
-processor       : 3
-vendor_id       : GenuineIntel
-cpu family      : 6
-model           : 26
-model name      : Intel(R) Xeon(R) CPU           E5540  @ 2.53GHz
-stepping        : 5
-cpu MHz         : 2526.996
-cache size      : 8192 KB
-physical id     : 1
-siblings        : 8
-core id         : 3
-cpu cores       : 4
-apicid          : 22
-initial apicid  : 22
-fpu             : yes
-fpu_exception   : yes
-cpuid level     : 11
-wp              : yes
-flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca
-cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx
-rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl pni monitor
-ds_cpl vmx est tm2 ssse3 cx16 xtpr dca sse4_1 sse4_2 popcnt lahf_lm ida
-bogomips        : 5053.94
-clflush size    : 64
-cache_alignment : 64
-address sizes   : 40 bits physical, 48 bits virtual
-power management:
-
-processor       : 4
-vendor_id       : GenuineIntel
-cpu family      : 6
-model           : 26
-model name      : Intel(R) Xeon(R) CPU           E5540  @ 2.53GHz
-stepping        : 5
-cpu MHz         : 2526.996
-cache size      : 8192 KB
-physical id     : 1
-siblings        : 8
-core id         : 0
-cpu cores       : 4
-apicid          : 17
-initial apicid  : 17
-fpu             : yes
-fpu_exception   : yes
-cpuid level     : 11
-wp              : yes
-flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca
-cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx
-rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl pni monitor
-ds_cpl vmx est tm2 ssse3 cx16 xtpr dca sse4_1 sse4_2 popcnt lahf_lm ida
-bogomips        : 5053.93
-clflush size    : 64
-cache_alignment : 64
-address sizes   : 40 bits physical, 48 bits virtual
-power management:
-
-processor       : 5
-vendor_id       : GenuineIntel
-cpu family      : 6
-model           : 26
-model name      : Intel(R) Xeon(R) CPU           E5540  @ 2.53GHz
-stepping        : 5
-cpu MHz         : 2526.996
-cache size      : 8192 KB
-physical id     : 1
-siblings        : 8
-core id         : 1
-cpu cores       : 4
-apicid          : 19
-initial apicid  : 19
-fpu             : yes
-fpu_exception   : yes
-cpuid level     : 11
-wp              : yes
-flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca
-cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx
-rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl pni monitor
-ds_cpl vmx est tm2 ssse3 cx16 xtpr dca sse4_1 sse4_2 popcnt lahf_lm ida
-bogomips        : 5053.94
-clflush size    : 64
-cache_alignment : 64
-address sizes   : 40 bits physical, 48 bits virtual
-power management:
-
-processor       : 6
-vendor_id       : GenuineIntel
-cpu family      : 6
-model           : 26
-model name      : Intel(R) Xeon(R) CPU           E5540  @ 2.53GHz
-stepping        : 5
-cpu MHz         : 2526.996
-cache size      : 8192 KB
-physical id     : 1
-siblings        : 8
-core id         : 2
-cpu cores       : 4
-apicid          : 21
-initial apicid  : 21
-fpu             : yes
-fpu_exception   : yes
-cpuid level     : 11
-wp              : yes
-flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca
-cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx
-rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl pni monitor
-ds_cpl vmx est tm2 ssse3 cx16 xtpr dca sse4_1 sse4_2 popcnt lahf_lm ida
-bogomips        : 5053.93
-clflush size    : 64
-cache_alignment : 64
-address sizes   : 40 bits physical, 48 bits virtual
-power management:
-
-processor       : 7
-vendor_id       : GenuineIntel
-cpu family      : 6
-model           : 26
-model name      : Intel(R) Xeon(R) CPU           E5540  @ 2.53GHz
-stepping        : 5
-cpu MHz         : 2526.996
-cache size      : 8192 KB
-physical id     : 1
-siblings        : 8
-core id         : 3
-cpu cores       : 4
-apicid          : 23
-initial apicid  : 23
-fpu             : yes
-fpu_exception   : yes
-cpuid level     : 11
-wp              : yes
-flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca
-cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx
-rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl pni monitor
-ds_cpl vmx est tm2 ssse3 cx16 xtpr dca sse4_1 sse4_2 popcnt lahf_lm ida
-bogomips        : 5053.92
-clflush size    : 64
-cache_alignment : 64
-address sizes   : 40 bits physical, 48 bits virtual
-power management:
-
-[root@mwg5 ~]#
-
-[root@mwg5 ~]# uname -a
-Linux mwg5 2.6.27-19.mlos1-x86_64-smp #1 SMP Thu Jan 21 16:57:58 CET 2010
-x86_64 x86_64 x86_64 GNU/Linux
-[root@mwg5 ~]# uname -r
-2.6.27-19.mlos1-x86_64-smp
-
-now after untar the build i run the command
-./configure
-
-its run successfully but when i run the command
-./make
-
-following error occurs:
-
-make[4]: Leaving directory
-`/opt/stress/ltp-full-20100131/testcases/kernel/syscalls/signal'
-make[4]: Entering directory
-`/opt/stress/ltp-full-20100131/testcases/kernel/syscalls/signalfd'
-make -C "/opt/stress/ltp-full-20100131/testcases/kernel/include" -f
-"/opt/stress/ltp-full-20100131/testcases/kernel/include/Makefile" all
-make[5]: Entering directory
-`/opt/stress/ltp-full-20100131/testcases/kernel/include'
-make[5]: Nothing to be done for `all'.
-make[5]: Leaving directory
-`/opt/stress/ltp-full-20100131/testcases/kernel/include'
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall 
--I/opt/stress/ltp-full-20100131/testcases/kernel/include
--I../../../../include -I../../../../include   -L../../../../lib 
-signalfd01.c   -lltp -o signalfd01
-In file included from /usr/include/asm/fcntl.h:1,
-                 from /usr/include/linux/fcntl.h:4,
-                 from /usr/include/linux/signalfd.h:12,
-                 from signalfd01.c:64:
-/usr/include/asm-generic/fcntl.h:117: error: redefinition of 'struct flock'
-/usr/include/asm-generic/fcntl.h:140: error: redefinition of 'struct
-flock64'
-make[4]: *** [signalfd01] Error 1
-make[4]: Leaving directory
-`/opt/stress/ltp-full-20100131/testcases/kernel/syscalls/signalfd'
-make[3]: *** [all] Error 2
-make[3]: Leaving directory
-`/opt/stress/ltp-full-20100131/testcases/kernel/syscalls'
-make[2]: *** [all] Error 2
-make[2]: Leaving directory `/opt/stress/ltp-full-20100131/testcases/kernel'
-make[1]: *** [all] Error 2
-make[1]: Leaving directory `/opt/stress/ltp-full-20100131/testcases'
-make: *** [testcases-all] Error 2
-[root@mwg5 ltp-full-20100131]#
-
-
-please let me know how i will solve this issue 
-
-thanks in advance for help
-
-thanks
-shachin
-
-
-
-
-
-
-naresh kamboju wrote:
-> 
-> Hi Shachin,
-> 
->>Hi shachin here,
-> 
->>Even i am unable to use  ltp-full-20100131 build i also got warning
-message
->>"FATAL: Test suite not installed correctly
->>INFO: as root user type 'make ; make install'
->>[root@mwg5 ltp-full-20100131]#'
->>even i have installed it correctly.
-> 
->>is anybody can help out on this?
-> 
-> when we do "make install" the binaries will copied in to
-> /opt/ltp/testcase/bin/ as default path.
-> please check the what are the files available under the /opt/ltp
-> #cd /opt/ltp/
-> # tree
-> 
-> and please run the runltp command from
-> #cd /opt/ltp/
-> #./runltp
-> 
-> Hope it works
-> please let me knw if u find any issues again.
-> 
-> 
->>thanks
->>shachin
-> 
-> Best regards
-> Naresh Kamboju
-> 
-> ------------------------------------------------------------------------------
-> The Planet: dedicated and managed hosting, cloud storage, colocation
-> Stay online with enterprise data centers and the best network in the
-> business
-> Choose flexible plans and management services without long-term contracts
-> Personal 24x7 support from experience hosting pros just a phone call away.
-> http://p.sf.net/sfu/theplanet-com
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-> 
-
--- 
-View this message in context: http://old.nabble.com/Got-warning-message-on-ltp-full-20100131-while-running-.-configure-tp27463931p27514892.html
-Sent from the ltp-list mailing list archive at Nabble.com.
-
+Best regards
+Naresh Kamboju
 
 ------------------------------------------------------------------------------
 The Planet: dedicated and managed hosting, cloud storage, colocation
