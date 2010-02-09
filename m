@@ -1,24 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <crosslonelyover@gmail.com>) id 1NeNdp-0001sV-Da
-	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 07:02:41 +0000
-Received: from mail-pz0-f199.google.com ([209.85.222.199])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NeNdo-0004JC-BY
-	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 07:02:41 +0000
-Received: by pzk37 with SMTP id 37so3829833pzk.10
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 07 Feb 2010 23:02:34 -0800 (PST)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <apache@ecammworld.com>) id 1NevYe-0006Ss-0T
+	for ltp-list@lists.sourceforge.net; Tue, 09 Feb 2010 19:15:36 +0000
+Received: from [66.197.163.7] (helo=ecammworld.com)
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NevYd-0004IS-0m
+	for ltp-list@lists.sourceforge.net; Tue, 09 Feb 2010 19:15:35 +0000
+Received: from ecammworld.com (localhost.localdomain [127.0.0.1])
+	by ecammworld.com (8.14.2/8.14.2) with ESMTP id o19JFOmm018301
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Feb 2010 21:15:24 +0200
+Date: Tue, 9 Feb 2010 21:15:24 +0200
+From: Marc Schneider <marcshneider@mplw.net>
+Message-ID: <03495c8c5c7ca0d9fa7db13911b32988@www.ecammworld.com>
 MIME-Version: 1.0
-In-Reply-To: <4B6FA757.2010309@linux.vnet.ibm.com>
-References: <5a774f4c1002060734v174f790ah976977edf6aa50a4@mail.gmail.com>
-	<4B6FA757.2010309@linux.vnet.ibm.com>
-Date: Mon, 8 Feb 2010 15:02:28 +0800
-Message-ID: <5a774f4c1002072302n4eaf5c6fycbabbbe4524a483d@mail.gmail.com>
-From: shenghui <crosslonelyover@gmail.com>
-Subject: Re: [LTP] about "hugetlbshmget03"
+Subject: [LTP] http://ltp.sourceforge.net. - Did you receive this email sent
+	to you last week ?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,297 +26,145 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1333933364006380861=="
+Content-Type: multipart/mixed; boundary="===============5517979031950304113=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Rishikesh <risrajak@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
-
---===============1333933364006380861==
-Content-Type: multipart/alternative; boundary=0016e64ea79e5af359047f116297
-
---0016e64ea79e5af359047f116297
-Content-Type: text/plain; charset=ISO-8859-1
-
-2010/2/8 Rishikesh <risrajak@linux.vnet.ibm.com>
-
->  On 02/06/2010 09:04 PM, shenghui wrote:
->
-> Hi all,
->
->        I want to know how to run hugetlbshmget03? Does it need some
-> arguments?
-> For I have run it several times, always got error "NOMEM" for cannot get
-> hugetlb
-> page. But "cat /proc/meminfo" shows that free hugetlb pages are enough for
-> its
-> request.
->        Does anyone know how to handle this problem?
->
-> Hi Shenghui,
->
-> Have you run this testcase after setting up nr_hugepages ? You need to set
-> the pages accordingly and then you need to run the testcase.
->
-> e.g:
->
-> echo 10 > /proc/sys/vm/nr_hugepages
->
-> Please post your result if you still finding issue.
->
-> Thanks
-> Rishi
->
->
-> --
->
->
-> Thanks and Best Regards,
-> shenghui
->
->
-> ------------------------------------------------------------------------------
-> The Planet: dedicated and managed hosting, cloud storage, colocation
-> Stay online with enterprise data centers and the best network in the business
-> Choose flexible plans and management services without long-term contracts
-> Personal 24x7 support from experience hosting pros just a phone call away.
-> http://p.sf.net/sfu/theplanet-com
->
->
-> _______________________________________________
-> Ltp-list mailing listLtp-list@lists.sourceforge.nethttps://lists.sourceforge.net/lists/listinfo/ltp-list
->
->
->
-Hi Rishi,
-
-       Please refer to the following for my error info. And will you please
-try it on your workstation and send me
-your result?
-       Thanks!
-
-===============================================================================
-
-root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
-ls
-hugeshmget01    hugeshmget02    hugeshmget03    hugeshmget05    Makefile
-hugeshmget01.c  hugeshmget02.c  hugeshmget03.c  hugeshmget05.c
-
-root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
-echo 10 > /proc/sys/vm/nr_hugepages
-
-root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
-cat /proc/meminfo
-MemTotal:        4048440 kB
-MemFree:         1576656 kB
-Buffers:          122652 kB
-Cached:          1487772 kB
-SwapCached:            0 kB
-Active:          1225860 kB
-Inactive:        1043268 kB
-Active(anon):     684228 kB
-Inactive(anon):       16 kB
-Active(file):     541632 kB
-Inactive(file):  1043252 kB
-Unevictable:           0 kB
-Mlocked:               0 kB
-HighTotal:       3211696 kB
-HighFree:        1044060 kB
-LowTotal:         836744 kB
-LowFree:          532596 kB
-SwapTotal:       3903752 kB
-SwapFree:        3903752 kB
-Dirty:               204 kB
-Writeback:             0 kB
-AnonPages:        658692 kB
-Mapped:           239928 kB
-Slab:             109460 kB
-SReclaimable:      93676 kB
-SUnreclaim:        15784 kB
-PageTables:         8332 kB
-NFS_Unstable:          0 kB
-Bounce:                0 kB
-WritebackTmp:          0 kB
-CommitLimit:     5917732 kB
-Committed_AS:    1389392 kB
-VmallocTotal:     122880 kB
-VmallocUsed:       44644 kB
-VmallocChunk:      75956 kB
-HugePages_Total:      10
-HugePages_Free:       10
-HugePages_Rsvd:        0
-HugePages_Surp:        0
-Hugepagesize:       2048 kB
-DirectMap4k:        8184 kB
-DirectMap2M:      903168 kB
-
-root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
-./hugeshmget03
-hugeshmget03    0  TINFO  :  errno = 12 : Cannot allocate memory
-hugeshmget03    1  TBROK  :  Didn't get ENOSPC in test setup
-
-root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
-echo 32 > /proc/sys/vm/nr_hugepages
-
-root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
-./hugeshmget03
-hugeshmget03    0  TINFO  :  errno = 12 : Cannot allocate memory
-hugeshmget03    1  TBROK  :  Didn't get ENOSPC in test setup
+To: ltp-list@lists.sourceforge.net
 
 
--- 
+--===============5517979031950304113==
+Content-Type: multipart/alternative;
+	boundary="b1_03495c8c5c7ca0d9fa7db13911b32988"
 
 
-Thanks and Best Regards,
-shenghui
+--b1_03495c8c5c7ca0d9fa7db13911b32988
+Content-Type: text/plain; charset = "UTF-8"
+Content-Transfer-Encoding: 8bit
 
---0016e64ea79e5af359047f116297
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Did you receive the e-mail which I sent to you recently (copied
+here-below)?
 
-<br><br><div class=3D"gmail_quote">2010/2/8 Rishikesh <span dir=3D"ltr">&lt=
-;<a href=3D"mailto:risrajak@linux.vnet.ibm.com">risrajak@linux.vnet.ibm.com=
-</a>&gt;</span><br><blockquote class=3D"gmail_quote" style=3D"border-left: =
-1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;=
-">
+Please confirm since I have had problems lately with emails
+intercepted by spam-filters set too high.
+
+Cordially, 
+
+Marc Shneider, Ph.D. 
+
+marcshneider@mplw.net <mailto:marcshneider@mplw.net>
+
+I am Dr. Marc Schneider and I work for Multilingual Search Engine
+Optimization Inc. in Washington DC ( Tel: 1 202 250-3645) - I would
+like to speak with the person in charge of your international
+clientele. Who is my contact? Who should I speak to??
+
+In fact, after visiting http://ltp.sourceforge.net. , I have noticed that
+your website
+cannot be found on foreign search engines (I tested it on Hispanic
+search engines, German search engines, Asian search engines, etc.) Our
+company is specialized in multilingual search engine promotions in 28
+languages . From the Japanese Google to the German Yahoo, from the AOL
+in Spanish to the MSN in Chinese, we can show you how to develop a
+true international online presence by promoting your website on
+foreign search engines.
+
+Let us show you how to develop a presence on the multilingual web
+without having to translate your website: It is not necessary to
+translate your website in order to submit to foreign search engines,
+however, you need to have at least 1 page in Japanese optimized with
+Japanese keywords and meta tags in order to submit to Japanese search
+engines, at least 1 page in Spanish optimized with Spanish keywords in
+order to submit to Hispanic search engines and so on...
+
+I strongly suggest that you watch our online presentation which will
+explains clearly how to get top rankings on foreign search engines
+with only 1 entry page per language (click on the following link or
+copy-paste it into your web browser): http://www.mplw.net/demo
+
+From the Japanese Google to the German Yahoo, from the AOL in Spanish
+to the MSN in Chinese, get users to find your website when searching
+with YOUR KEYWORDS in their Native language.
+
+Please call me at +1 (202) 250-3645 or email me and let's work on
+giving your website the true international exposure which it deserves
+to have with foreign native online users!!
+
+Regards, 
+
+Marc Shneider, Ph.D. 
+
+marcshneider@mplw.net <mailto:marcshneider@mplw.net>
+
+Multilingual Search Engine Optimization Inc.
+
+1250 Connecticut Ave N.W. Suite 200
+
+Washington, DC 20036 USA
+
+TEL: +1 (202) 250-3645 - FAX: 1 (202)-318-4779
+
+http://www.mplw.net
+
+Multilingual Search Engine Promotion Services since 1999. 
 
 
 
- =20
-
-<div text=3D"#000000" bgcolor=3D"#ffffff"><div class=3D"im">
-On 02/06/2010 09:04 PM, shenghui wrote:
-<blockquote type=3D"cite">Hi all,<br>
-=A0<br>
-=A0=A0=A0=A0=A0=A0 I want to know how to run hugetlbshmget03? Does it need =
-some
-arguments?<br>
-For I have run it several times, always got error &quot;NOMEM&quot; for can=
-not
-get hugetlb<br>
-page. But &quot;cat /proc/meminfo&quot; shows that free hugetlb pages are e=
-nough
-for its<br>
-request.<br>
-=A0=A0=A0=A0=A0=A0 Does anyone know how to handle this problem?<br clear=3D=
-"all">
-</blockquote></div>
-Hi Shenghui,<br>
-<br>
-Have you run this testcase after setting up nr_hugepages ? You need to
-set the pages accordingly and then you need to run the testcase.<br>
-<br>
-e.g:<br>
-<br>
-echo 10 &gt; /proc/sys/vm/nr_hugepages<br>
-<br>
-Please post your result if you still finding issue.<br>
-<br>
-Thanks<br>
-Rishi<br>
-<br>
-<blockquote type=3D"cite"><div class=3D"im"><br>
--- <br>
-  <br>
-  <br>
-Thanks and Best Regards,<br>
-shenghui<br>
-  </div><pre><fieldset></fieldset>
----------------------------------------------------------------------------=
----
-The Planet: dedicated and managed hosting, cloud storage, colocation
-Stay online with enterprise data centers and the best network in the busine=
-ss
-Choose flexible plans and management services without long-term contracts
-Personal 24x7 support from experience hosting pros just a phone call away.
-<div class=3D"im"><a href=3D"http://p.sf.net/sfu/theplanet-com" target=3D"_=
-blank">http://p.sf.net/sfu/theplanet-com</a></div></pre><div class=3D"im">
-  <pre><fieldset></fieldset>
-_______________________________________________
-Ltp-list mailing list
-<a href=3D"mailto:Ltp-list@lists.sourceforge.net" target=3D"_blank">Ltp-lis=
-t@lists.sourceforge.net</a>
-<a href=3D"https://lists.sourceforge.net/lists/listinfo/ltp-list" target=3D=
-"_blank">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
-  </pre>
-</div></blockquote>
-<br>
-</div>
-
-</blockquote></div><br>Hi Rishi,<br><br>=A0=A0=A0=A0=A0=A0 Please refer to =
-the following for my error info. And will you please try it on your worksta=
-tion and send me <br>your result?<br>=A0=A0=A0=A0=A0=A0 Thanks!<br><br>=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D<br>
-<br>root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100=
-119/testcases/kernel/mem/hugetlb/hugeshmget# ls<br>hugeshmget01=A0=A0=A0 hu=
-geshmget02=A0=A0=A0 hugeshmget03=A0=A0=A0 hugeshmget05=A0=A0=A0 Makefile<br=
->hugeshmget01.c=A0 hugeshmget02.c=A0 hugeshmget03.c=A0 hugeshmget05.c<br>
-<br>root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100=
-119/testcases/kernel/mem/hugetlb/hugeshmget# echo 10 &gt; /proc/sys/vm/nr_h=
-ugepages<br><br>root@crossover-laptop:/home/crossover/repository/ltp-interm=
-ediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget# cat /proc/meminfo =
-<br>
-MemTotal:=A0=A0=A0=A0=A0=A0=A0 4048440 kB<br>MemFree:=A0=A0=A0=A0=A0=A0=A0=
-=A0 1576656 kB<br>Buffers:=A0=A0=A0=A0=A0=A0=A0=A0=A0 122652 kB<br>Cached:=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0 1487772 kB<br>SwapCached:=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0 0 kB<br>Active:=A0=A0=A0=A0=A0=A0=A0=A0=A0 1225860 kB<br>Inact=
-ive:=A0=A0=A0=A0=A0=A0=A0 1043268 kB<br>Active(anon):=A0=A0=A0=A0 684228 kB=
-<br>
-Inactive(anon):=A0=A0=A0=A0=A0=A0 16 kB<br>Active(file):=A0=A0=A0=A0 541632=
- kB<br>Inactive(file):=A0 1043252 kB<br>Unevictable:=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0 0 kB<br>Mlocked:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0 kB<b=
-r>HighTotal:=A0=A0=A0=A0=A0=A0 3211696 kB<br>HighFree:=A0=A0=A0=A0=A0=A0=A0=
- 1044060 kB<br>LowTotal:=A0=A0=A0=A0=A0=A0=A0=A0 836744 kB<br>
-LowFree:=A0=A0=A0=A0=A0=A0=A0=A0=A0 532596 kB<br>SwapTotal:=A0=A0=A0=A0=A0=
-=A0 3903752 kB<br>SwapFree:=A0=A0=A0=A0=A0=A0=A0 3903752 kB<br>Dirty:=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 204 kB<br>Writeback:=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 0 kB<br>AnonPages:=A0=A0=A0=A0=A0=A0=A0 658692 kB<br>Map=
-ped:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 239928 kB<br>Slab:=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0 109460 kB<br>
-SReclaimable:=A0=A0=A0=A0=A0 93676 kB<br>SUnreclaim:=A0=A0=A0=A0=A0=A0=A0 1=
-5784 kB<br>PageTables:=A0=A0=A0=A0=A0=A0=A0=A0 8332 kB<br>NFS_Unstable:=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0 0 kB<br>Bounce:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0 0 kB<br>WritebackTmp:=A0=A0=A0=A0=A0=A0=A0=A0=A0 0 kB<br>Commi=
-tLimit:=A0=A0=A0=A0 5917732 kB<br>Committed_AS:=A0=A0=A0 1389392 kB<br>
-VmallocTotal:=A0=A0=A0=A0 122880 kB<br>VmallocUsed:=A0=A0=A0=A0=A0=A0 44644=
- kB<br>VmallocChunk:=A0=A0=A0=A0=A0 75956 kB<br>HugePages_Total:=A0=A0=A0=
-=A0=A0 10<br>HugePages_Free:=A0=A0=A0=A0=A0=A0 10<br>HugePages_Rsvd:=A0=A0=
-=A0=A0=A0=A0=A0 0<br>HugePages_Surp:=A0=A0=A0=A0=A0=A0=A0 0<br>Hugepagesize=
-:=A0=A0=A0=A0=A0=A0 2048 kB<br>
-DirectMap4k:=A0=A0=A0=A0=A0=A0=A0 8184 kB<br>DirectMap2M:=A0=A0=A0=A0=A0 90=
-3168 kB<br><br>root@crossover-laptop:/home/crossover/repository/ltp-interme=
-diate-20100119/testcases/kernel/mem/hugetlb/hugeshmget# ./hugeshmget03<br>h=
-ugeshmget03=A0=A0=A0 0=A0 TINFO=A0 :=A0 errno =3D 12 : Cannot allocate memo=
-ry<br>
-hugeshmget03=A0=A0=A0 1=A0 TBROK=A0 :=A0 Didn&#39;t get ENOSPC in test setu=
-p<br><br>root@crossover-laptop:/home/crossover/repository/ltp-intermediate-=
-20100119/testcases/kernel/mem/hugetlb/hugeshmget# echo 32 &gt; /proc/sys/vm=
-/nr_hugepages<br>
-<br>root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100=
-119/testcases/kernel/mem/hugetlb/hugeshmget# ./hugeshmget03<br>hugeshmget03=
-=A0=A0=A0 0=A0 TINFO=A0 :=A0 errno =3D 12 : Cannot allocate memory<br>huges=
-hmget03=A0=A0=A0 1=A0 TBROK=A0 :=A0 Didn&#39;t get ENOSPC in test setup<br>
-<br clear=3D"all"><br>-- <br><br><br>Thanks and Best Regards,<br>shenghui<b=
-r>
-
---0016e64ea79e5af359047f116297--
+ 
 
 
---===============1333933364006380861==
+--b1_03495c8c5c7ca0d9fa7db13911b32988
+Content-Type: text/html; charset = "UTF-8"
+Content-Transfer-Encoding: 8bit
+
+<html><head>
+        <meta content="text/html;charset=UTF-8" http-equiv="Content-Type">
+        <title></title></head><body><p><font face="Verdana" size="2">Did you receive the e-mail which I sent to you recently (copied here-below)?<br />
+Please confirm since I have had problems lately with emails intercepted by spam-filters set too high.<br />
+<br />
+Cordially, <br />
+<br />
+Marc Shneider, Ph.D. <br />
+<a href="mailto:marcshneider@mplw.net">marcshneider@mplw.net</a> </font></p>
+<p><font face="Verdana" size="2">I am Dr. Marc Schneider and I work for Multilingual Search Engine Optimization Inc. in Washington DC &nbsp;( Tel: 1 202 250-3645) - I would like to speak with the person in charge of your international clientele. Who is my contact? Who should I speak to??<br />
+<br />
+In fact, after visiting http://ltp.sourceforge.net. , I have noticed that your website cannot be found on foreign search engines (I tested it on Hispanic search engines, German search engines, Asian search engines, etc.) Our company is specialized in multilingual search engine promotions in 28 languages . From the Japanese Google to the German Yahoo, from the AOL &nbsp;in Spanish to the MSN in Chinese, we can show you how to develop a true international online presence by promoting your website on foreign search engines.<br />
+<br />
+Let us show &nbsp;you how to develop a presence on the multilingual web without having to &nbsp;translate your website: It is not necessary to translate your website in &nbsp;order to submit to foreign search engines, however, you need to have at least &nbsp;1 page in Japanese optimized with Japanese keywords and meta tags in order to &nbsp;submit to Japanese search engines, at least 1 page in Spanish optimized with &nbsp;Spanish keywords in order to submit to Hispanic search engines and so &nbsp;on...<br />
+<br />
+I strongly suggest that you watch our online presentation which &nbsp;will explains clearly how to get top rankings on foreign search engines with &nbsp;only 1 entry page per language (click on the following link or copy-paste it &nbsp;into your web browser): <u><a href="http://www.mplw.net/demo">http://www.mplw.net/demo</a><br />
+<br />
+</u>From the Japanese Google to the German Yahoo, from the AOL &nbsp;in Spanish to the MSN in Chinese, get users to find your website when &nbsp;searching with YOUR KEYWORDS in their Native language.<br />
+<br />
+Please call me at +1 (202) 250-3645 or email me and let's work on giving your website the true &nbsp;international exposure which it deserves to have with foreign native online &nbsp;users!!<br />
+<br />
+Regards, <br />
+<br />
+Marc Shneider, Ph.D. <br />
+<u><a href="mailto:marcshneider@mplw.net">marcshneider@mplw.net</a></u><br />
+<br />
+Multilingual Search Engine Optimization Inc.<br />
+1250 Connecticut Ave N.W. Suite &nbsp;200<br />
+Washington, DC 20036 USA<br />
+TEL: +1 (202) 250-3645 - FAX: 1 (202)-318-4779<br />
+<a href="http://www.mplw.net">http://www.mplw.net</a><br />
+Multilingual Search Engine Promotion Services since 1999. </font></p><br /><br /> </body></html>
+
+
+
+--b1_03495c8c5c7ca0d9fa7db13911b32988--
+
+
+
+--===============5517979031950304113==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-The Planet: dedicated and managed hosting, cloud storage, colocation
-Stay online with enterprise data centers and the best network in the business
-Choose flexible plans and management services without long-term contracts
-Personal 24x7 support from experience hosting pros just a phone call away.
-http://p.sf.net/sfu/theplanet-com
---===============1333933364006380861==
+SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
+Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
+http://p.sf.net/sfu/solaris-dev2dev
+--===============5517979031950304113==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -329,5 +175,6 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============1333933364006380861==--
+--===============5517979031950304113==--
+
 
