@@ -1,26 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NSlMz-0002zZ-Gx
-	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 05:57:17 +0000
-Received: from mail-pw0-f43.google.com ([209.85.160.43])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NSlMy-0001pL-7V
-	for ltp-list@lists.sourceforge.net; Thu, 07 Jan 2010 05:57:17 +0000
-Received: by pwj11 with SMTP id 11so12821488pwj.2
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NerMo-0000al-En
+	for ltp-list@lists.sourceforge.net; Tue, 09 Feb 2010 14:47:06 +0000
+Received: from mail-px0-f195.google.com ([209.85.216.195])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NerMn-0003fo-Hg
+	for ltp-list@lists.sourceforge.net; Tue, 09 Feb 2010 14:47:06 +0000
+Received: by pxi33 with SMTP id 33so243260pxi.10
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 06 Jan 2010 21:57:10 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <4B453A02.90903@web.de>
-References: <4B4204D2.70204@petalogix.com> <4B43E6FD.3020906@web.de>
-	<364299f41001051741v7a2bb1d0p91d28aa25967b93e@mail.gmail.com>
-	<364299f41001051831r6a0f4930t6ba61e4273c797e3@mail.gmail.com>
-	<4B453A02.90903@web.de>
-Date: Wed, 6 Jan 2010 21:57:10 -0800
-Message-ID: <364299f41001062157u3de38423u6a7dc43a2ffb1852@mail.gmail.com>
+	Tue, 09 Feb 2010 06:46:59 -0800 (PST)
+Mime-Version: 1.0 (Apple Message framework v1077)
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] lchown test case
+In-Reply-To: <4B712BBF.3060704@linux.vnet.ibm.com>
+Date: Tue, 9 Feb 2010 06:46:27 -0800
+Message-Id: <E374CB37-8AF0-4C79-8B2A-9E51F9861275@gmail.com>
+References: <4B712BBF.3060704@linux.vnet.ibm.com>
+Subject: Re: [LTP] container_test.sh failure
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,111 +27,51 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Palecek <jpalecek@web.de>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Rishikesh <risrajak@linux.vnet.ibm.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-On Wed, Jan 6, 2010 at 5:33 PM, Jiri Palecek <jpalecek@web.de> wrote:
-> Garrett Cooper napsal(a):
->>
->> On Tue, Jan 5, 2010 at 5:41 PM, Garrett Cooper<yanegomi@gmail.com> =A0wr=
-ote:
->>>
->>> On Tue, Jan 5, 2010 at 5:27 PM, Jiri Palecek<jpalecek@web.de> =A0wrote:
->>>>
->>>> Michal Simek napsal(a):
->>>>>
->>>>> Hi,
->>>>
->>>> Hi,
->>>>>
->>>>> I have some problems with lchown02 test which is caused with this
->>>>> patch.
->>>>> What is prep_create_link?
->>>>>
->>>>> Thanks,
->>>>> Michal
->>>>>
->>>>>
->>>>>
->>>>> http://git.kernel.org/?p=3Dlinux/kernel/git/galak/ltp.git;a=3Dcommitd=
-iff;h=3Dee1a022fc76076d7fc1b6b1797c195244414c038
->>>>>
->>>>>
->>>>>
->>>>> diff --git a/runtest/syscalls b/runtest/syscalls
->>>>> index fbe8641..34631ed 100644 (file)
->>>>> --- a/runtest/syscalls
->>>>> +++ b/runtest/syscalls
->>>>> @@ -462,10 +462,10 @@ kill12 kill12
->>>>>
->>>>> lchown01 lchown01
->>>>> lchown01_16 lchown01_16
->>>>> -lchown02 cp -p $LTPROOT/testcases/bin/create_link $TMP; lchown02
->>>>> -lchown02_16 cp -p $LTPROOT/testcases/bin/create_link $TMP; lchown02_=
-16
->>>>> +lchown02 prep_create_link; lchown02
->>>>> +lchown02_16 prep_create_link; lchown02_16
->>>>
->>>> IMHO it should do the same as the line above. But I think the whole
->>>> thing
->>>> could be deleted without causing any grief:
->>>>
->>>>
->>>> http://repo.or.cz/w/ltp-debian.git?a=3Dcommit;h=3Da5499edcf368fa88df92=
-4f94ffcbe63c22b46e82
->>>
->>> The test needs create_link in $TMP; that's why I scripted it as a
->>> one-liner (but stupid me probably forgot to add the script to CVS
->>> -_-).
->>> Let me look and I'll get back to you shortly.
->>
->> Fixed. The executable needed CAP_CHOWN capability and that's part of
->> the point behind that script...
->
-> Couldn't the executable just get CAP_CHOWN with cap_set_proc in case it is
-> running under root with restricted capabilities?
->
-> I'm not sure it wouldn't fail even with the suid-root executable under su=
-ch
-> condition - are you really sure it doesn't (esp. in the face of lchown01,
-> which would fail almost surely and doesn't have this hack)?
+On Feb 9, 2010, at 1:32 AM, Rishikesh wrote:
 
-    This requires libcap though, which means that any system under
-test without it would fail the test:
+> Hi Garret,
+> 
+> With today's cvs getting following error while running the container testcases.
+> 
+> ...
+> /opt/ltp/testcases/bin/container_test.sh: line 52: check_mqns_enabled: command not found
+> Posix message queues or ipc namespaces not enabled in kernel.
+> Not running mqns tests.
+> /opt/ltp/testcases/bin/container_test.sh: line 61: check_netns_enabled: command not found
+> Network namespaces not enabled in kernel.  Not running netns tests.
+> <<<execution_status>>>
+> initiation_status="ok"
+> duration=10 termination_type=exited termination_id=0 corefile=no
+> cutime=7 cstime=22
+> <<<test_end>>>
+> INFO: ltp-pan reported all tests PASS
+> LTP Version: LTP-20100131
+> 
+>       ###############################################################"
+> 
+>            Done executing testcases."
+>            LTP Version:  LTP-20100131
+>       ###############################################################"
+> 
+> x440:/opt/ltp #
+> 
+> Do you think we need to just do the fix as you did for pidns ? I feel check_*_enabled.c does more a lot than just checking kernel version. So keeping that file will be a good idea. Please let me know your thought.
 
-NAME
-       cap_get_proc,  cap_set_proc,  capgetp - capability manipulation on p=
-ro-
-       cesses
-
-SYNOPSIS
-       #include <sys/capability.h>
-
-       cap_t cap_get_proc(void);
-
-       int cap_set_proc(cap_t cap_p);
-
-       #include <sys/types.h>
-
-       cap_t cap_get_pid(pid_t pid);
-
-       Link with -lcap.
-
-    I agree though, this is the best / cleanest solution...
-Thanks,
+	The issue should be resolved now (check_netns_enabled wasn't being compiled and check_mqns_enabled was no longer in the repo).
+Thanks!
 -Garrett
-
----------------------------------------------------------------------------=
----
-This SF.Net email is sponsored by the Verizon Developer Community
-Take advantage of Verizon's best-in-class app development support
-A streamlined, 14 day to market process makes app distribution fast and easy
-Join now and get one step closer to millions of Verizon customers
-http://p.sf.net/sfu/verizon-dev2dev =
-
+------------------------------------------------------------------------------
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the business
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
