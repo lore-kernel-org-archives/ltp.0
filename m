@@ -1,40 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nkab4-00022r-Gp
-	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 10:05:30 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Nkab3-00013r-CU
-	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 10:05:30 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1P9vdWx007032
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Feb 2010 02:57:39 -0700
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id
-	o1PA5C0m176342
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Feb 2010 03:05:13 -0700
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o1PA5AMH020103
-	for <ltp-list@lists.sourceforge.net>; Thu, 25 Feb 2010 03:05:10 -0700
-Date: Thu, 25 Feb 2010 15:35:07 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100225100507.GB23984@linux.vnet.ibm.com>
-References: <4B728073.3070209@cn.fujitsu.com>
-	<4B7B9EC2.1010004@linux.vnet.ibm.com>
-	<364299f41002170914u3a0d0b02o936a81d1ee601ecc@mail.gmail.com>
-	<4B823884.4000100@cn.fujitsu.com>
-	<364299f41002241922h31f32a1em6f12a2999fd931f8@mail.gmail.com>
-	<20100225090027.GC3377@linux.vnet.ibm.com>
-	<364299f41002250152u78dfacc3mab2d355b1f50baa9@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <364299f41002250152u78dfacc3mab2d355b1f50baa9@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] timers: support clockid of
- CLOCK_REALTIME_COARSE/CLOCK_MONOTONIC_COARSE
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NfLvw-00084b-QQ
+	for ltp-list@lists.sourceforge.net; Wed, 10 Feb 2010 23:25:24 +0000
+Received: from mail-yw0-f186.google.com ([209.85.211.186])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NfLvw-0003IV-12
+	for ltp-list@lists.sourceforge.net; Wed, 10 Feb 2010 23:25:24 +0000
+Received: by ywh16 with SMTP id 16so660978ywh.25
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 10 Feb 2010 15:25:18 -0800 (PST)
+Mime-Version: 1.0 (Apple Message framework v1077)
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <000101caaa19$f3feb220$dbfc1660$@co.jp>
+Date: Wed, 10 Feb 2010 15:25:14 -0800
+Message-Id: <D9EDA073-FF89-414B-B633-ADF2A5DE5A20@gmail.com>
+References: <000101caaa19$f3feb220$dbfc1660$@co.jp>
+Subject: Re: [LTP] "check_netns_enabled.c" build failed with "2010-02-10" cvs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -47,46 +30,68 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Mitani <mitani@ryobi.co.jp>
+Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Feb 25, 2010 at 01:52:23AM -0800, Garrett Cooper wrote:
+On Feb 9, 2010, at 10:26 PM, Mitani wrote:
+
+> Hi,
 > 
->     What version of Linux is this? I specifically took out the #ifndef
-> ... #define ... #endif blocks because I'm trying to avoid these ad hoc
-> #define's scattered around the tree.
-
-The kernel version: 2.6.9-89.ELsmp , which RHEL4.8GA.
-
--Rishi
-
-> Thanks,
-> -Garrett
+> I tried to build with "2010-02-10" cvs in my systems.
+> I tried in RHEL5.4 (2.6.18-164.el5) and RHEL4.8 (2.6.9-89.ELsmp).
+> But "make" failed in "check_netns_enabled.c" as follows in RHEL4.8:
+> ------------
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> -I/home/LTP/ltp-2010-02-10/testcases/kernel/include
+> -I/home/LTP/ltp-2010-02-10/testcases/kernel/containers/netns/../libclone
+> -I../../../../include -I../../../../include
+> -L/home/LTP/ltp-2010-02-10/testcases/kernel/containers/netns/../libclone
+> -L../../../../lib  check_netns_enabled.c   -lltp -o check_netns_enabled
+> check_netns_enabled.c: In function `main':
+> check_netns_enabled.c:40: warning: implicit declaration of function
+> `unshare'
+> /tmp/cciXlXlf.o(.text+0x2c): In function `main':
+> /home/LTP/ltp-2010-02-10/testcases/kernel/containers/netns/check_netns_enabl
+> ed.c:40: undefined reference to `unshare'
+> collect2: ld returned 1 exit status
+> make[4]: *** [check_netns_enabled] Error 1
+> make[4]: Leaving directory
+> `/home/LTP/ltp-2010-02-10/testcases/kernel/containers/netns'
+> ------------
 > 
-> ------------------------------------------------------------------------------
-> Download Intel&#174; Parallel Studio Eval
-> Try the new software tools for yourself. Speed compiling, find bugs
-> proactively, and fine-tune applications for parallel performance.
-> See why Intel Parallel Studio got high marks during beta.
-> http://p.sf.net/sfu/intel-sw-dev
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> "unshare()" function was supported after kernel 2.6.16.
+> Therefore, "make" of "check_netns_enabled.c" failed in RHEL4.8, I think.
+> 
+> I made patch and "make" succeeded:
+> ============
+> --- ./testcases/kernel/containers/netns/check_netns_enabled.c   2008-09-19
+> 21:17:10.000000000 +0900
+> +++ ./testcases/kernel/containers/netns/check_netns_enabled.c.new
+> 2010-02-10 14:59:53.000000000 +0900
+> @@ -37,10 +37,12 @@
+>        if (tst_kvercmp(2,6,24) < 0)
+>                return 1;
+> 
+> +#ifdef HAVE_UNSHARE
+>         ret = unshare(flags);
+>        if ( ret < 0 ) {
+>                printf ("Error:Unshare syscall failed for network
+> namespace\n");
+>                return 3;
+>        }
+> +#endif
+>        return 0;
+> }
+> ============
+> 
+> I'm glad if I could get some opinions.
 
--- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
-
+	Should be fixed now.
+-Garrett
 ------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
+SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
+Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
+http://p.sf.net/sfu/solaris-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
