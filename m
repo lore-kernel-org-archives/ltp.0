@@ -1,33 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nhntf-0006d2-7z
-	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 17:41:11 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Nhnte-0004BV-4U
-	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 17:41:11 +0000
-Received: from d01relay07.pok.ibm.com (d01relay07.pok.ibm.com [9.56.227.147])
-	by e8.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1HHXiVk008665
-	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 12:33:44 -0500
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay07.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o1HHf33s1618080
-	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 12:41:03 -0500
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o1HHf3pv019676
-	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 15:41:03 -0200
-Date: Wed, 17 Feb 2010 23:10:59 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100217174059.GC11743@rishikesh.in.ibm.com>
-References: <20100217161452.GB10848@rishikesh.in.ibm.com>
-	<364299f41002170933v25a0160ev7b7021007511ca30@mail.gmail.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <shiwh@cn.fujitsu.com>) id 1Nf99j-00031d-Vc
+	for ltp-list@lists.sourceforge.net; Wed, 10 Feb 2010 09:46:47 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Nf99i-0005Pg-96
+	for ltp-list@lists.sourceforge.net; Wed, 10 Feb 2010 09:46:47 +0000
+Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
+	by song.cn.fujitsu.com (Postfix) with ESMTP id 1BECE1700BD
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 10 Feb 2010 17:46:35 +0800 (CST)
+Received: from fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
+	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id o1A9jnuB024555
+	for <ltp-list@lists.sourceforge.net>; Wed, 10 Feb 2010 17:45:49 +0800
+Received: from [10.167.141.106] (unknown [10.167.141.106])
+	by fnst.cn.fujitsu.com (Postfix) with ESMTPA id 22399D47CB
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 10 Feb 2010 17:48:07 +0800 (CST)
+Message-ID: <4B728073.3070209@cn.fujitsu.com>
+Date: Wed, 10 Feb 2010 17:46:27 +0800
+From: Shi Weihua <shiwh@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <364299f41002170933v25a0160ev7b7021007511ca30@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] acl_test01 cleanup
+Subject: [LTP] [PATCH] timers: support clockid of
+	CLOCK_REALTIME_COARSE/CLOCK_MONOTONIC_COARSE
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,23 +37,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-On Wed, Feb 17, 2010 at 09:33:10AM -0800, Garrett Cooper wrote:
-> On Wed, Feb 17, 2010 at 8:14 AM, Rishikesh K Rajak
-> <risrajak@linux.vnet.ibm.com> wrote:
-> > Hi Garret,
-> >
-> > I am not finding this patch (
-> > http://marc.info/?l=ltp-list&m=126538672221964&w=2 ) as committed to
-> > repo.
-> 
-> Done.
+mainline commit da15cfdae03351c689736f8d142618592e3cebc3
+ (subject: time: Introduce CLOCK_REALTIME_COARSE)
+added two clocks (CLOCK_REALTIME_COARSE/CLOCK_MONOTONIC_COARSE) in
+2.6.32-rc1, but it has not been responded in ltp. then, the following
+error message occured.
+-----
+clock_gettime03    3  TFAIL  :  failed to produce expected error [expected errno = 22 (Invalid argument), TEST_RETURN = 0]: TEST_ERRNO=???(0): Success
+clock_gettime03    4  TFAIL  :  failed to produce expected error [expected errno = 22 (Invalid argument), TEST_RETURN = 0]: TEST_ERRNO=???(0): Success
+timer_create04    1  TFAIL  :  didn't fail as expected [expected errno = 22 (Invalid argument)]: TEST_ERRNO=???(95): Operation not supported
+timer_create04    2  TFAIL  :  didn't fail as expected [expected errno = 22 (Invalid argument)]: TEST_ERRNO=???(95): Operation not supported
+-----
 
-Thanks
--Rishi
-> -Garrett
+Following patch fixed this bug. and, passed on 2.6.32-rc1, 2.6.33-rc6, 2.6.23.1-42.fc8.
+
+Signed-off-by: Shi Weihua<shiwh@cn.fujitsu.com>
+---
+--- testcases/kernel/timers/include/common_timers.h.orig	2010-02-10 16:44:56.000000000 -0500
++++ testcases/kernel/timers/include/common_timers.h	2010-02-10 17:33:25.000000000 -0500
+@@ -28,12 +28,20 @@
+ #ifndef CLOCK_MONOTONIC_RAW
+ #define CLOCK_MONOTONIC_RAW 4
+ #endif
++#ifndef CLOCK_REALTIME_COARSE
++#define CLOCK_REALTIME_COARSE 5
++#endif
++#ifndef CLOCK_MONOTONIC_COARSE
++#define CLOCK_MONOTONIC_COARSE 6
++#endif
+ clock_t clock_list[] = {
+ 	CLOCK_REALTIME,
+ 	CLOCK_MONOTONIC,
+ 	CLOCK_PROCESS_CPUTIME_ID,
+ 	CLOCK_THREAD_CPUTIME_ID,
+ 	CLOCK_MONOTONIC_RAW,
++	CLOCK_REALTIME_COARSE,
++	CLOCK_MONOTONIC_COARSE,
+ };
+ #define MAX_CLOCKS (sizeof(clock_list) / sizeof(*clock_list))
+ 
+@@ -50,6 +58,10 @@ const char *get_clock_str(const int cloc
+ 		return "CLOCK_THREAD_CPUTIME_ID";
+ 	case CLOCK_MONOTONIC_RAW:
+ 		return "CLOCK_MONOTONIC_RAW";
++	case CLOCK_REALTIME_COARSE:
++		return "CLOCK_REALTIME_COARSE";
++	case CLOCK_MONOTONIC_COARSE:
++		return "CLOCK_MONOTONIC_COARSE";
+ 	default:
+ 		return "CLOCK_!?!?!?";
+ 	}
 
 ------------------------------------------------------------------------------
 SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
