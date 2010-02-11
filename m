@@ -1,19 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NcE9W-0008Sp-M9
-	for ltp-list@lists.sourceforge.net; Tue, 02 Feb 2010 08:30:30 +0000
-Received: from mail-pz0-f192.google.com ([209.85.222.192])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NcE9V-0004J5-JD
-	for ltp-list@lists.sourceforge.net; Tue, 02 Feb 2010 08:30:30 +0000
-MIME-Version: 1.0
-Date: Tue, 2 Feb 2010 00:30:23 -0800
-Message-ID: <364299f41002020030u527224adsb87f33ba4119551c@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] [IMPORTANT] Clean target regression [was Re: [ANNOUNCE] The
-	Linux Test Project has been released for JANUARY 2010]
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mpradeep@linux.vnet.ibm.com>) id 1NfYdA-0001WT-R1
+	for ltp-list@lists.sourceforge.net; Thu, 11 Feb 2010 12:58:52 +0000
+Received: from e23smtp09.au.ibm.com ([202.81.31.142])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NfYd9-0001Ro-50
+	for ltp-list@lists.sourceforge.net; Thu, 11 Feb 2010 12:58:52 +0000
+Received: from d23relay04.au.ibm.com (d23relay04.au.ibm.com [202.81.31.246])
+	by e23smtp09.au.ibm.com (8.14.3/8.13.1) with ESMTP id o1BCU8mu029250
+	for <ltp-list@lists.sourceforge.net>; Thu, 11 Feb 2010 23:30:08 +1100
+Received: from d23av03.au.ibm.com (d23av03.au.ibm.com [9.190.234.97])
+	by d23relay04.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o1BCOx0o1638466
+	for <ltp-list@lists.sourceforge.net>; Thu, 11 Feb 2010 23:24:59 +1100
+Received: from d23av03.au.ibm.com (loopback [127.0.0.1])
+	by d23av03.au.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o1BCU7ie007138
+	for <ltp-list@lists.sourceforge.net>; Thu, 11 Feb 2010 23:30:08 +1100
+From: Munipradeep Beerakam <mpradeep@linux.vnet.ibm.com>
+Date: Thu, 11 Feb 2010 18:00:06 +0530
+Message-ID: <1265891406.10768.10.camel@munipradeep-laptop>
+Mime-Version: 1.0
+Subject: [LTP] memory_hotplug tests are not compiling properly
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,65 +36,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sf.net>, Mike Frysinger <vapier@gentoo.org>, linux-kernel <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>
+To: risrajak@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net
 
-T24gTW9uLCBGZWIgMSwgMjAxMCBhdCA4OjAxIEFNLCBHYXJyZXR0IENvb3BlciA8eWFuZWdvbWlA
-Z21haWwuY29tPiB3cm90ZToKPiBPbiBNb24sIEZlYiAxLCAyMDEwIGF0IDI6NTcgQU0sIFN1YnJh
-dGEgTW9kYWsKPiA8c3VicmF0YUBsaW51eC52bmV0LmlibS5jb20+IHdyb3RlOgo+PiBIaSwKPj4K
-Pj4gVGhlIExpbnV4IFRlc3QgUHJvamVjdCB0ZXN0IHN1aXRlIGhhcyBiZWVuIHJlbGVhc2VkIGZv
-ciB0aGUgbW9udGggb2YKPj4gSkFOVUFSWSAyMDEwLiBQbGVhc2Ugc2VlIGx0cC9JTlNUQUxMIGZp
-bGUgY2FyZWZ1bGx5LCBhcywgdGhlcmUgaGFzCj4+IGJlZW4gbXVsdGlwbGUgY2hhbmdlcyBmb3Ig
-YnVpbGRpbmcvaW5zdGFsbGluZyB0aGUgdGVzdCBzdWl0ZSBhZnRlciB0aGUKPj4gcmVjZW50IGNo
-YW5nZXMgaW4gTWFrZWZpbGUgaW5mcmFzdHJ1Y3R1cmUuCj4+Cj4+IFRoZSBsYXRlc3QgdmVyc2lv
-biBvZiB0aGUgdGVzdC1zdWl0ZSBjb250YWlucyAzMDAwKyB0ZXN0cyBmb3IgdGhlIExpbnV4Cj4+
-IE9TIGFuZCBjYW4gYmUgZm91bmQgYXQ6Cj4+IGh0dHA6Ly9sdHAuc291cmNlZm9yZ2UubmV0LywK
-Pj4gTGF0ZXN0IGhhcHBlbmluZ3MgaW4gTFRQIGNhbiBhbHNvIGJlIGZvdW5kIGF0Ogo+PiBodHRw
-Oi8vbHRwLnNvdXJjZWZvcmdlLm5ldC93aWtpLywKPj4gaHR0cDovL2x0cC5zb3VyY2Vmb3JnZS5u
-ZXQvd2lraUFyY2hpdmVzLnBocCwgYW5kLAo+PiBJUkM6IGlyYy5mcmVlbm9kZS5vcmcgI2x0cC4K
-Pj4KPj4gT3VyIHdlYiBzaXRlIGFsc28gY29udGFpbnMgb3RoZXIgaW5mb3JtYXRpb24gc3VjaCBh
-czoKPj4gLSBBIExpbnV4IHRlc3QgdG9vbHMgbWF0cml4Cj4+IC0gVGVjaG5pY2FsIHBhcGVycwo+
-PiAtIEhvdyBUbydzIG9uIExpbnV4IHRlc3RpbmcKPj4gLSBDb2RlIGNvdmVyYWdlIGFuYWx5c2lz
-IHRvb2wuCj4+Cj4+IFdlIHdvdWxkIGVuY291cmFnZSB0aGUgY29tbXVuaXR5IHRvIHBvc3QgcmVz
-dWx0cyB0bwo+PiBsdHAtcmVzdWx0c0BsaXN0cy5zZi5uZXQsCj4+IHBhdGNoZXMsIG5ldyB0ZXN0
-cywgYnVncyBvciBjb21tZW50cy9xdWVzdGlvbnMgdG8gbHRwLWxpc3RAbGlzdHMuc2YubmV0LAo+
-PiBodHRwOi8vc291cmNlZm9yZ2UubmV0L3RyYWNrZXIvP2Z1bmM9YWRkJmdyb3VwX2lkPTMzODIm
-YXRpZD0xMDMzODIgKGZvcgo+PiBOZXcgQnVnKHMpKSwKPj4gaHR0cDovL3NvdXJjZWZvcmdlLm5l
-dC90cmFja2VyLz9mdW5jPWFkZCZncm91cF9pZD0zMzgyJmF0aWQ9MzAzMzgyIChmb3IKPj4gTmV3
-IFBhdGNoKHMpKSwKPj4gaHR0cDovL3NvdXJjZWZvcmdlLm5ldC90cmFja2VyLz9mdW5jPWFkZCZn
-cm91cF9pZD0zMzgyJmF0aWQ9MzUzMzgyIChmb3IKPj4gTmV3IEZlYXR1cmUgUmVxdWVzdChzKSkK
-Pj4KPj4gKipOb3RlOiBTb21lIHBlbmRpbmcgcGF0Y2hlcyB3aWxsIGJlIGNoZWNrZWQgaW4gZm9y
-IG5leHQgbW9udGjFmyByZWxlYXNlLgo+Cj4gwqAgwqBGb3IgdGhvc2Ugd2hvIGhhdmUgYmVlbiBo
-b2xkaW5nIG9mZiBvbiB1cGdyYWRpbmcgc2luY2UgdGhlIE1ha2UKPiBpbmZyYXN0cnVjdHVyZSBy
-ZXZpc2lvbiB3YXMgZG9uZSBiYWNrIGluIE9jdG9iZXIsIEkgaGlnaGx5IHN1Z2dlc3QKPiB0aGF0
-IHRoZXkgZXZhbHVhdGUgdGhpcyByZWxlYXNlIGFzIGEgc2V2ZXJhbCBpc3N1ZXMgaGF2ZSBiZWVu
-Cj4gcmVzb2x2ZWQsIGkuZS4gc2VsaW51eC10ZXN0c3VpdGUgYmVpbmcgZml4ZWQgdG8gbWVldCB0
-aGUgbWFrZQo+IGluZnJhc3RydWN0dXJlIGNoYW5nZXMgKHRoZXJlJ3MganVzdCBhIG1pbm9yIGlz
-c3VlIHRoYXQncyBiZWVuCj4gcmVwb3J0ZWQgb24gUkhFTCA1LjQgd2l0aCB0aGUgcG9saWN5IGZp
-bGVzIC0tIFN0ZXBoZW4gc2hvdWxkIGJlCj4gd29ya2luZyB3aXRoIE1pdGFuaS1zYW4gdG8gcmVz
-b2x2ZSB0aGUgaXNzdWUpLCBhbmQgYSBmZXcgYXV0b2NvbmYKPiByZWxhdGVkIGl0ZW1zIGhhdmUg
-YmVlbiByZXNvbHZlZC4gRnVydGhlcm1vcmUsIG1ha2UgMy44MCBzdXBwb3J0IGhhcwo+IGJlZW4g
-aW50ZWdyYXRlZCBpbnRvIHRoZSBwcm9qZWN0IHNvIGZvbGtzIGNhbiBvbmNlIGFnYWluIHVzZSBt
-YWtlIDMuODAKPiB3aGVuIGJ1aWxkaW5nIExUUC4KPiBBbGwgdGhlIGJlc3QsCgogICAgTk9URSAt
-LSBwbGVhc2UgY29tbWVudCBvdXQgdGhlIGZvbGxvd2luZyB0aHJlZSBsaW5lcyBpbiB0aGUKdG9w
-LWxldmVsIE1ha2VmaWxlIC0tIG5vdCBkb2luZyBzbyB3aWxsIHJlc3VsdCBpbiB5b3UgcG90ZW50
-aWFsbHkKb2JsaXRlcmF0aW5nIGFsbCBvZiB0aGUgd3JpdGFibGUgZmlsZXMgb24geW91ciBidWls
-ZCB0YXJnZXQsIGFzIHRoaXMKd2lsbCBlZmZlY3RpdmVseSBwZXJmb3JtIGFuIHJtIC1SZiAvIHVu
-ZGVyIGNlcnRhaW4gY29uZGl0aW9ucy4KCmlmZXEgKCQoZmlsdGVyICQoQlVJTERfVFJFRV9TVEFU
-RSksJChCVUlMRF9UUkVFX1NSQ0RJUl9JTlNUQUxMKQokKEJVSUxEX1RSRUVfVU5DT05GSUdVUkVE
-KSksKQpDTEVBTl9UQVJHRVRTICAgICAgICArPSBjbGVhbl9pbnN0YWxsX2RpcgplbmRpZgoKICAg
-IEkgZGVlcGx5IGFwb2xvZ2l6ZSBmb3IgdGhlIGluY29udmVuaWVuY2U7IEknbSB3b3JraW5nIG9u
-CnJlY3RpZnlpbmcgdGhlIGlzc3VlIEFTQVAgYW5kIHdpbGwgZW1haWwgYWdhaW4gb25jZSBpdCdz
-IHJlc29sdmVkOyBJCndpbGwgYWRkIGEgcmVncmVzc2lvbiB0ZXN0IGZvciB0aGlzIEFTQVAgaW4g
-dGhlIGJ1aWxkIHRlc3Qgc2NyaXB0cwpJJ3ZlIHJlY2VudGx5IGF1dGhvcmVkIHNvIHRoaXMgZG9l
-c24ndCBoYXBwZW4gYWdhaW4uClRoYW5rcywKLUdhcnJldHQKCi0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LQpUaGUgUGxhbmV0OiBkZWRpY2F0ZWQgYW5kIG1hbmFnZWQgaG9zdGluZywgY2xvdWQgc3RvcmFn
-ZSwgY29sb2NhdGlvbgpTdGF5IG9ubGluZSB3aXRoIGVudGVycHJpc2UgZGF0YSBjZW50ZXJzIGFu
-ZCB0aGUgYmVzdCBuZXR3b3JrIGluIHRoZSBidXNpbmVzcwpDaG9vc2UgZmxleGlibGUgcGxhbnMg
-YW5kIG1hbmFnZW1lbnQgc2VydmljZXMgd2l0aG91dCBsb25nLXRlcm0gY29udHJhY3RzClBlcnNv
-bmFsIDI0eDcgc3VwcG9ydCBmcm9tIGV4cGVyaWVuY2UgaG9zdGluZyBwcm9zIGp1c3QgYSBwaG9u
-ZSBjYWxsIGF3YXkuCmh0dHA6Ly9wLnNmLm5ldC9zZnUvdGhlcGxhbmV0LWNvbQpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxp
-c3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9y
-Z2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+SGkgUmlzaGksCgpJIGFtIHVuYWJsZSB0byBjb21waWxlIHRoZSBtZW1vcnlfaG90cGx1ZyB0ZXN0
+cyBpbiBMVFAgU2VwIDIwMDkgcmVsZWFzZS4KSSBhbSBnZXR0aW5nIHRoZSBiZWxvdyBlcnJvci4K
+CiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIwpjYyAtc3Rk
+PWdudTk5IC1PMiAgLURfR05VX1NPVVJDRSAtRF9ORUVEX01JR1JBVEVfUEFHRVMgICAgIC1jIC1v
+Cm1lbXRveS5vIG1lbXRveS5jCmNjIC1zdGQ9Z251OTkgLU8yICAtRF9HTlVfU09VUkNFIC1EX05F
+RURfTUlHUkFURV9QQUdFUyAgICAgLWMgLW8KY29tbWFuZHMubyBjb21tYW5kcy5jCkluIGZpbGUg
+aW5jbHVkZWQgZnJvbSBjb21tYW5kcy5jOjQ1OgptaWdyYXRlX3BhZ2VzLmg6MTA6IGVycm9yOiBj
+b25mbGljdGluZyB0eXBlcyBmb3Ig4oCYbWlncmF0ZV9wYWdlc+KAmQovdXNyL2luY2x1ZGUvbnVt
+YWlmLmg6MTc6IGVycm9yOiBwcmV2aW91cyBkZWNsYXJhdGlvbiBvZiDigJhtaWdyYXRlX3BhZ2Vz
+4oCZCndhcyBoZXJlCm1ha2U6ICoqKiBbY29tbWFuZHMub10gRXJyb3IgMQojIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKCkV2ZW4gdGhlIHBhdGNoIGlzIG5v
+dCBhcHBseWluZyBwcm9wZXJseS4gCgpAQWxsLCBBbnkgaGVscCBpcyBhcHByZWNpYXRlZC4KClRo
+YW5rcwpNdW5pCgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpTT0xBUklTIDEwIGlzIHRoZSBPUyBm
+b3IgRGF0YSBDZW50ZXJzIC0gcHJvdmlkZXMgZmVhdHVyZXMgc3VjaCBhcyBEVHJhY2UsClByZWRp
+Y3RpdmUgU2VsZiBIZWFsaW5nIGFuZCBBd2FyZCBXaW5uaW5nIFpGUy4gR2V0IFNvbGFyaXMgMTAg
+Tk9XCmh0dHA6Ly9wLnNmLm5ldC9zZnUvc29sYXJpcy1kZXYyZGV2Cl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAt
+bGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQv
+bGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
