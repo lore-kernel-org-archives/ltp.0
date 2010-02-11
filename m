@@ -1,24 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NiWqO-0002XR-Pp
-	for ltp-list@lists.sourceforge.net; Fri, 19 Feb 2010 17:40:48 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NiWqN-0007zy-UC
-	for ltp-list@lists.sourceforge.net; Fri, 19 Feb 2010 17:40:48 +0000
-Received: by pwi5 with SMTP id 5so288462pwi.34
+	(envelope-from <michal.simek@petalogix.com>) id 1NfYld-00029s-O1
+	for ltp-list@lists.sourceforge.net; Thu, 11 Feb 2010 13:07:37 +0000
+Received: from mail-fx0-f216.google.com ([209.85.220.216])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NfYlc-0007NO-5u
+	for ltp-list@lists.sourceforge.net; Thu, 11 Feb 2010 13:07:37 +0000
+Received: by fxm8 with SMTP id 8so1225364fxm.6
 	for <ltp-list@lists.sourceforge.net>;
-	Fri, 19 Feb 2010 09:40:41 -0800 (PST)
+	Thu, 11 Feb 2010 05:07:19 -0800 (PST)
+Message-ID: <4B73FA14.9030403@petalogix.com>
+Date: Thu, 11 Feb 2010 13:37:40 +0100
+From: Michal Simek <michal.simek@petalogix.com>
 MIME-Version: 1.0
-In-Reply-To: <9debc4411002181050u1a041f7cm72ed35337513834c@mail.gmail.com>
-References: <9debc4411002181050u1a041f7cm72ed35337513834c@mail.gmail.com>
-Date: Fri, 19 Feb 2010 09:40:39 -0800
-Message-ID: <364299f41002190940m320d1d8ft45fdc626b5a2ca7f@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] fix for 'stress_floppy' not getting installed
-	properly
+References: <4B712BBF.3060704@linux.vnet.ibm.com>
+	<20100209143008.GA13854@us.ibm.com>
+In-Reply-To: <20100209143008.GA13854@us.ibm.com>
+Subject: Re: [LTP] container_test.sh failure
+Reply-To: michal.simek@petalogix.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,97 +29,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Maxin John <maxin.john@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: "Serge E. Hallyn" <serue@us.ibm.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-On Thu, Feb 18, 2010 at 10:50 AM, Maxin John <maxin.john@gmail.com> wrote:
-> Hi,
->
-> I have tried to execute the 'io_floppy' test in =A0LTP Version: =A0LTP-20=
-100131.1
->
-> maxin@maxin-laptop:/opt/ltp$ ./runltp -f io_floppy
->
-> This test failed since the 'stress_floppy' script was not installed prope=
-rly.
-> Please find the below given log:
-> -----------------------------------------------------------
-> ....
-> Running tests.......
-> <<<test_start>>>
-> tag=3Dstress_floppy stime=3D1266516562
-> cmdline=3D"export TCdat=3D$LTPROOT/testcases/kernel/io/stress_floppy; str=
-ess_floppy"
-> contacts=3D""
-> analysis=3Dexit
-> <<<test_output>>>
-> sh: stress_floppy: not found
-> incrementing stop
-> <<<execution_status>>>
-> initiation_status=3D"ok"
-> duration=3D0 termination_type=3Dexited termination_id=3D127 corefile=3Dno
-> cutime=3D0 cstime=3D0
-> <<<test_end>>>
-> INFO: ltp-pan reported some tests FAIL
-> LTP Version: LTP-20100131.1
->
-> =A0 =A0 =A0 #############################################################=
-##"
->
-> =A0 =A0 =A0 =A0 =A0 =A0Done executing testcases."
-> =A0 =A0 =A0 =A0 =A0 =A0LTP Version: =A0LTP-20100131.1
-> =A0 =A0 =A0 #############################################################=
-##"
-> -----------------------------------------------------------
->
-> Attached patch(stress_floppy_Makefile.patch) fixes Makefile and the
-> 'stress_floppy' script gets installed properly.
->
-> -----------------------------------------------------------
-> Running tests.......
-> <<<test_start>>>
-> tag=3Dstress_floppy stime=3D1266518427
-> cmdline=3D"export TCdat=3D$LTPROOT/testcases/kernel/io/stress_floppy; str=
-ess_floppy"
-> contacts=3D""
-> analysis=3Dexit
-> <<<test_output>>>
-> incrementing stop
-> Testing format...
-> /dev/fd0: No such file or directory
-> Format failed!
-> <<<execution_status>>>
-> initiation_status=3D"ok"
-> duration=3D0 termination_type=3Dexited termination_id=3D1 corefile=3Dno
-> cutime=3D0 cstime=3D0
-> <<<test_end>>>
-> INFO: ltp-pan reported some tests FAIL
-> LTP Version: LTP-20100131.1
-> -----------------------------------------------------------
->
-> Well, after applying this patch, the 'io_floppy' test fails successfully =
-:)
-> (Expected failure as I don't have a floppy drive)
->
-> Signed-off-by: Maxin B. John <maxin.john@gmail.com>
+Serge E. Hallyn wrote:
+> Quoting Rishikesh (risrajak@linux.vnet.ibm.com):
+>> Hi Garret,
+>>
+>> With today's cvs getting following error while running the container 
+> 
+> What about today's *git* ?
 
-Hmmm... not sure how this ended up in my spam folder... gg gmail.
+What git repo do you mean?
 
-I've committed your patch -- thanks for the help!
+Michal
 
-Cheers!
--Garrett
+> 
+> -serge
+> 
+> ------------------------------------------------------------------------------
+> The Planet: dedicated and managed hosting, cloud storage, colocation
+> Stay online with enterprise data centers and the best network in the business
+> Choose flexible plans and management services without long-term contracts
+> Personal 24x7 support from experience hosting pros just a phone call away.
+> http://p.sf.net/sfu/theplanet-com
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
----------------------------------------------------------------------------=
----
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
+
+-- 
+Michal Simek, Ing. (M.Eng)
+PetaLogix - Linux Solutions for a Reconfigurable World
+w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+
+------------------------------------------------------------------------------
+SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
+Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
+http://p.sf.net/sfu/solaris-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
