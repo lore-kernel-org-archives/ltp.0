@@ -1,33 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <y_yao@ryobi.co.jp>) id 1NeJtg-0000Qz-9Y
-	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 03:02:48 +0000
-Received: from out01.sjc.mx.trendmicro.com ([216.99.131.5])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NeJtf-0002oF-03
-	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 03:02:48 +0000
-Received: from relay04.sjc.mx.trendmicro.com (unknown [10.30.239.6])
-	by out01.sjc.mx.trendmicro.com (Postfix) with ESMTP id E78E1239C40
+	(envelope-from <mitani@ryobi.co.jp>) id 1NfqIC-0004ak-C0
+	for ltp-list@lists.sourceforge.net; Fri, 12 Feb 2010 07:50:24 +0000
+Received: from out03.sjc.mx.trendmicro.com ([216.99.131.7])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NfqIA-0002yn-0k
+	for ltp-list@lists.sourceforge.net; Fri, 12 Feb 2010 07:50:23 +0000
+Received: from relay03.sjc.mx.trendmicro.com (unknown [10.30.239.6])
+	by out03.sjc.mx.trendmicro.com (Postfix) with ESMTP id 3EF36211019
 	for <ltp-list@lists.sourceforge.net>;
-	Mon,  8 Feb 2010 03:02:35 +0000 (UTC)
+	Fri, 12 Feb 2010 07:50:09 +0000 (UTC)
 Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay04.sjc.mx.trendmicro.com (Postfix) with ESMTP id 480ED1D7837
+	by relay03.sjc.mx.trendmicro.com (Postfix) with ESMTP id 8B2903DD01A
 	for <ltp-list@lists.sourceforge.net>;
-	Mon,  8 Feb 2010 03:02:35 +0000 (UTC)
-Received: from 5108637 ([10.113.10.201]) by po.rsoa.ryobi.co.jp
+	Fri, 12 Feb 2010 07:50:08 +0000 (UTC)
+Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
 	(Post.Office MTA v4.1.1 release 20090730
 	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Mon, 8 Feb 2010 12:02:33 +0900
-From: "Yuki Yao" <y_yao@ryobi.co.jp>
-References: <000501caa869$41be6670$c53b3350$@co.jp>
-In-Reply-To: <000501caa869$41be6670$c53b3350$@co.jp>
-Date: Mon, 8 Feb 2010 12:02:33 +0900
-Message-ID: <001801caa86b$290aef70$7b20ce50$@co.jp>
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Feb 2010 16:50:06 +0900
+From: "Mitani" <mitani@ryobi.co.jp>
+Date: Fri, 12 Feb 2010 16:50:06 +0900
+Message-ID: <000001caabb7$fe895b60$fb9c1220$@co.jp>
 MIME-Version: 1.0
 Content-Language: ja
-Subject: Re: [LTP] [PATCH]logrotate: /var/log/messages* disappeared
+Subject: [LTP] "pidns17" problem in "2010-02-11" cvs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,92 +40,82 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Sorry, line breaks is mistake; resend.
-----------------------------------------------------
 Hi,
 
-I found a problem on LTP when I execute ./runltp.
-After execute ./runltp, all log files such as /var/log/messages*
-disappeared, 
-and there is only new log files that were created after the test...
+I tried to test with "2010-02-11" cvs in RHEL5.4 system.
+But the test brings termination of connection.
 
-This seems a problem that occurs after the "logrotate01" test. 
-I found that the past log files disappeared by forcing a rotate (logrotate
--fv $LTPTMP/tst_logrotate.conf).
+I examined the phenomenon and discovered that "pidns17" test made 
+accident and sshd stopped after the test.
 
-Besides, "logrotate"'s shell script
-./testcases/commands/logrotate/logrotate_tests.sh creats 
-logrotate configuration file ($LTPTMP/tst_logrotate.conf) for the test, and
-this config file includes 
-/etc/logrotate.d as follows:
-[ ./testcases/commands/logrotate/logrotate_tests.sh line:156~ ]
-----------
-# create config file.
-	cat >$LTPTMP/tst_logrotate.conf <<-EOF
-	#****** Begin Config file *******
-	# create new (empty) log files after rotating old ones
-	create
 
-	# compress the log files
-	compress
+I had some problems.
 
-	# RPM packages drop log rotation information into this directory
-	include /etc/logrotate.d
+1. I think that "tst_exit()" must be added last of "cleanup()"
+   function.
+============
+--- ./testcases/kernel/containers/pidns/pidns17.c       2009-12-07
+05:55:16.000000000 +0900
++++ ./testcases/kernel/containers/pidns/pidns17.c.new   2010-02-12
+16:26:31.000000000 +0900
+@@ -104,7 +104,6 @@
 
-	/var/log/tst_logfile {
-		rotate 5
-		weekly
-	}
-	#****** End Config file *******
-	EOF
-----------
+        /* cleanup and exit */
+        CLEANUP();
+-       tst_exit();
+ }
 
-By this, not only a log file for the test (/var/log/tst_logfile), but also
-30 fies in my system 
-such as /var/log/messages* become "logrotate" command target.
-Therefore, only a log file for this test must be made a target of the forced
-execution of "logrotate".
+ /***********************************************************************
+@@ -136,7 +135,6 @@
 
-To resolve this problem, we have to change this not to include
-/etc/logrotate.d, I think.
+        /* cleanup and exit */
+        CLEANUP();
+-       tst_exit();
+ }      /* End main */
 
-Index: testcases/commands/logrotate/logrotate_tests.sh
-==============================
---- logrotate_tests.sh	2008-10-21 15:54:15.000000000 +0900
-+++ logrotate_tests.sh.new	2010-02-05 18:56:14.000000000 +0900
-@@ -163,7 +163,7 @@
- 	compress
- 
- 	# RPM packages drop log rotation information into this directory
--	include /etc/logrotate.d
-+	# include /etc/logrotate.d
- 
- 	/var/log/tst_logfile {
- 		rotate 5
-@@ -200,7 +200,7 @@
- 		# check if  /etc/logrotate.d is included/
- 		# check if 5 rotations are forced.
-         # check if compression is done.
--		grep "including /etc/logrotate.d" $LTPTMP/tst_logrotate.out
-\
-+		# grep "including /etc/logrotate.d"
-$LTPTMP/tst_logrotate.out \
- 			> $LTPTMP/tst_logrotate.err 2>&1 || RC=$?
- 		grep "reading config file $LTPTMP/tst_logrotate.conf" \
- 			$LTPTMP/tst_logrotate.out   >
-$LTPTMP/tst_logrotate.err 2>&1 || RC=$?
+ /*
+@@ -147,4 +145,5 @@
+ {
+        /* Clean the test testcase as LTP wants*/
+        TEST_CLEANUP;
++       tst_exit();
+ }
+============
 
-Thank you,
-  --Yuki Yao
+After revision, connection termination didn't occur.
+
+
+2. I cannot understand the purpose that "kill()" function whose 
+   first parameter is "-1" is called.
+------------
+        if (kill(-1, SIGUSR1) == -1) {
+                tst_resm(TBROK | TERRNO, "cinit: kill(-1, SIGUSR1) failed");
+                CLEANUP();
+        }
+------------
+
+If kill()'s first option is "-1", "man kill" says that
+"All processes with pid larger than 1 will be signaled."
+
+Therefore, not only the "sshd" but also the other processes were 
+affected, I think.
+
+
+I'm glad if I could get some opinions.
+
+
+Thank you--
+
+
+-Tomonori Mitani
+
 
 
 
 ------------------------------------------------------------------------------
-The Planet: dedicated and managed hosting, cloud storage, colocation
-Stay online with enterprise data centers and the best network in the business
-Choose flexible plans and management services without long-term contracts
-Personal 24x7 support from experience hosting pros just a phone call away.
-http://p.sf.net/sfu/theplanet-com
+SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
+Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
+http://p.sf.net/sfu/solaris-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
