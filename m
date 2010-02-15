@@ -1,21 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Nbyn2-0001T7-Bo
-	for ltp-list@lists.sourceforge.net; Mon, 01 Feb 2010 16:06:16 +0000
-Received: from mail-pz0-f176.google.com ([209.85.222.176])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Nbyn0-00033m-5E
-	for ltp-list@lists.sourceforge.net; Mon, 01 Feb 2010 16:06:16 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <y_yao@ryobi.co.jp>) id 1NguWj-0002mT-TX
+	for ltp-list@lists.sourceforge.net; Mon, 15 Feb 2010 06:33:49 +0000
+Received: from out02.sjc.mx.trendmicro.com ([216.99.131.6])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NguWi-0000jP-An
+	for ltp-list@lists.sourceforge.net; Mon, 15 Feb 2010 06:33:49 +0000
+Received: from relay02.sjc.mx.trendmicro.com (unknown [10.30.239.25])
+	by out02.sjc.mx.trendmicro.com (Postfix) with ESMTP id 3859C58C507
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 15 Feb 2010 06:33:40 +0000 (UTC)
+Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
+	by relay02.sjc.mx.trendmicro.com (Postfix) with ESMTP id 975C09583C
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 15 Feb 2010 06:33:39 +0000 (UTC)
+Received: from 5108637 ([10.113.10.201]) by po.rsoa.ryobi.co.jp
+	(Post.Office MTA v4.1.1 release 20090730
+	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Feb 2010 15:33:38 +0900
+From: "Yuki Yao" <y_yao@ryobi.co.jp>
+Date: Mon, 15 Feb 2010 15:33:37 +0900
+Message-ID: <000f01caae08$ce91e640$6bb5b2c0$@co.jp>
 MIME-Version: 1.0
-In-Reply-To: <1265021838.5234.21.camel@subratamodak.linux.ibm.com>
-References: <1265021838.5234.21.camel@subratamodak.linux.ibm.com>
-Date: Mon, 1 Feb 2010 08:01:01 -0800
-Message-ID: <364299f41002010801w178b2d75yc4840adcf8e0f64c@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [ANNOUNCE] The Linux Test Project has been released for
-	JANUARY 2010
+Content-Language: ja
+Subject: [LTP] "logrotate01" has problem
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,54 +35,103 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: subrata@linux.vnet.ibm.com
-Cc: ltp-list <ltp-list@lists.sf.net>, Mike Frysinger <vapier@gentoo.org>, linux-kernel <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>
+To: ltp-list@lists.sourceforge.net
 
-T24gTW9uLCBGZWIgMSwgMjAxMCBhdCAyOjU3IEFNLCBTdWJyYXRhIE1vZGFrCjxzdWJyYXRhQGxp
-bnV4LnZuZXQuaWJtLmNvbT4gd3JvdGU6Cj4gSGksCj4KPiBUaGUgTGludXggVGVzdCBQcm9qZWN0
-IHRlc3Qgc3VpdGUgaGFzIGJlZW4gcmVsZWFzZWQgZm9yIHRoZSBtb250aCBvZgo+IEpBTlVBUlkg
-MjAxMC4gUGxlYXNlIHNlZSBsdHAvSU5TVEFMTCBmaWxlIGNhcmVmdWxseSwgYXMsIHRoZXJlIGhh
-cwo+IGJlZW4gbXVsdGlwbGUgY2hhbmdlcyBmb3IgYnVpbGRpbmcvaW5zdGFsbGluZyB0aGUgdGVz
-dCBzdWl0ZSBhZnRlciB0aGUKPiByZWNlbnQgY2hhbmdlcyBpbiBNYWtlZmlsZSBpbmZyYXN0cnVj
-dHVyZS4KPgo+IFRoZSBsYXRlc3QgdmVyc2lvbiBvZiB0aGUgdGVzdC1zdWl0ZSBjb250YWlucyAz
-MDAwKyB0ZXN0cyBmb3IgdGhlIExpbnV4Cj4gT1MgYW5kIGNhbiBiZSBmb3VuZCBhdDoKPiBodHRw
-Oi8vbHRwLnNvdXJjZWZvcmdlLm5ldC8sCj4gTGF0ZXN0IGhhcHBlbmluZ3MgaW4gTFRQIGNhbiBh
-bHNvIGJlIGZvdW5kIGF0Ogo+IGh0dHA6Ly9sdHAuc291cmNlZm9yZ2UubmV0L3dpa2kvLAo+IGh0
-dHA6Ly9sdHAuc291cmNlZm9yZ2UubmV0L3dpa2lBcmNoaXZlcy5waHAsIGFuZCwKPiBJUkM6IGly
-Yy5mcmVlbm9kZS5vcmcgI2x0cC4KPgo+IE91ciB3ZWIgc2l0ZSBhbHNvIGNvbnRhaW5zIG90aGVy
-IGluZm9ybWF0aW9uIHN1Y2ggYXM6Cj4gLSBBIExpbnV4IHRlc3QgdG9vbHMgbWF0cml4Cj4gLSBU
-ZWNobmljYWwgcGFwZXJzCj4gLSBIb3cgVG8ncyBvbiBMaW51eCB0ZXN0aW5nCj4gLSBDb2RlIGNv
-dmVyYWdlIGFuYWx5c2lzIHRvb2wuCj4KPiBXZSB3b3VsZCBlbmNvdXJhZ2UgdGhlIGNvbW11bml0
-eSB0byBwb3N0IHJlc3VsdHMgdG8KPiBsdHAtcmVzdWx0c0BsaXN0cy5zZi5uZXQsCj4gcGF0Y2hl
-cywgbmV3IHRlc3RzLCBidWdzIG9yIGNvbW1lbnRzL3F1ZXN0aW9ucyB0byBsdHAtbGlzdEBsaXN0
-cy5zZi5uZXQsCj4gaHR0cDovL3NvdXJjZWZvcmdlLm5ldC90cmFja2VyLz9mdW5jPWFkZCZncm91
-cF9pZD0zMzgyJmF0aWQ9MTAzMzgyIChmb3IKPiBOZXcgQnVnKHMpKSwKPiBodHRwOi8vc291cmNl
-Zm9yZ2UubmV0L3RyYWNrZXIvP2Z1bmM9YWRkJmdyb3VwX2lkPTMzODImYXRpZD0zMDMzODIgKGZv
-cgo+IE5ldyBQYXRjaChzKSksCj4gaHR0cDovL3NvdXJjZWZvcmdlLm5ldC90cmFja2VyLz9mdW5j
-PWFkZCZncm91cF9pZD0zMzgyJmF0aWQ9MzUzMzgyIChmb3IKPiBOZXcgRmVhdHVyZSBSZXF1ZXN0
-KHMpKQo+Cj4gKipOb3RlOiBTb21lIHBlbmRpbmcgcGF0Y2hlcyB3aWxsIGJlIGNoZWNrZWQgaW4g
-Zm9yIG5leHQgbW9udGjFmyByZWxlYXNlLgoKICAgIEZvciB0aG9zZSB3aG8gaGF2ZSBiZWVuIGhv
-bGRpbmcgb2ZmIG9uIHVwZ3JhZGluZyBzaW5jZSB0aGUgTWFrZQppbmZyYXN0cnVjdHVyZSByZXZp
-c2lvbiB3YXMgZG9uZSBiYWNrIGluIE9jdG9iZXIsIEkgaGlnaGx5IHN1Z2dlc3QKdGhhdCB0aGV5
-IGV2YWx1YXRlIHRoaXMgcmVsZWFzZSBhcyBhIHNldmVyYWwgaXNzdWVzIGhhdmUgYmVlbgpyZXNv
-bHZlZCwgaS5lLiBzZWxpbnV4LXRlc3RzdWl0ZSBiZWluZyBmaXhlZCB0byBtZWV0IHRoZSBtYWtl
-CmluZnJhc3RydWN0dXJlIGNoYW5nZXMgKHRoZXJlJ3MganVzdCBhIG1pbm9yIGlzc3VlIHRoYXQn
-cyBiZWVuCnJlcG9ydGVkIG9uIFJIRUwgNS40IHdpdGggdGhlIHBvbGljeSBmaWxlcyAtLSBTdGVw
-aGVuIHNob3VsZCBiZQp3b3JraW5nIHdpdGggTWl0YW5pLXNhbiB0byByZXNvbHZlIHRoZSBpc3N1
-ZSksIGFuZCBhIGZldyBhdXRvY29uZgpyZWxhdGVkIGl0ZW1zIGhhdmUgYmVlbiByZXNvbHZlZC4g
-RnVydGhlcm1vcmUsIG1ha2UgMy44MCBzdXBwb3J0IGhhcwpiZWVuIGludGVncmF0ZWQgaW50byB0
-aGUgcHJvamVjdCBzbyBmb2xrcyBjYW4gb25jZSBhZ2FpbiB1c2UgbWFrZSAzLjgwCndoZW4gYnVp
-bGRpbmcgTFRQLgpBbGwgdGhlIGJlc3QsCi1HYXJyZXR0CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
-VGhlIFBsYW5ldDogZGVkaWNhdGVkIGFuZCBtYW5hZ2VkIGhvc3RpbmcsIGNsb3VkIHN0b3JhZ2Us
-IGNvbG9jYXRpb24KU3RheSBvbmxpbmUgd2l0aCBlbnRlcnByaXNlIGRhdGEgY2VudGVycyBhbmQg
-dGhlIGJlc3QgbmV0d29yayBpbiB0aGUgYnVzaW5lc3MKQ2hvb3NlIGZsZXhpYmxlIHBsYW5zIGFu
-ZCBtYW5hZ2VtZW50IHNlcnZpY2VzIHdpdGhvdXQgbG9uZy10ZXJtIGNvbnRyYWN0cwpQZXJzb25h
-bCAyNHg3IHN1cHBvcnQgZnJvbSBleHBlcmllbmNlIGhvc3RpbmcgcHJvcyBqdXN0IGEgcGhvbmUg
-Y2FsbCBhd2F5LgpodHRwOi8vcC5zZi5uZXQvc2Z1L3RoZXBsYW5ldC1jb20KX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0
-Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdl
-Lm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+Hi,
+
+I contributed following problem previously, but it's not yet revised.
+So, I contribute this again.
+
+After "./runltp" execution, all log files such as "/var/log/messages*" 
+disappeared, and there is only new log file created after the test.
+
+This seems a problem that occurs after the "logrotate01" test. 
+I found that the past log files were deleted by forcing a "logrotate"
+(logrotate -fv $LTPTMP/tst_logrotate.conf).
+
+Besides, logrotate01's shell script "./testcases/commands/logrotate
+/logrotate_tests.sh" creats logrotate configuration file ($LTPTMP
+/tst_logrotate.conf) for the test, and this configration file includes
+"/etc/logrotate.d" as follows:
+
+[ ./testcases/commands/logrotate/logrotate_tests.sh line:156~ ]
+----------
+# create config file.
+	cat >$LTPTMP/tst_logrotate.conf <<-EOF
+	#****** Begin Config file *******
+	# create new (empty) log files after rotating old ones
+	create
+
+	# compress the log files
+	compress
+
+	# RPM packages drop log rotation information into this directory
+	include /etc/logrotate.d
+
+	/var/log/tst_logfile {
+		rotate 5
+		weekly
+	}
+	#****** End Config file *******
+	EOF
+----------
+
+By This, not only a log file for the test (/var/log/tst_logfile) 
+but also 30 fies such as "/var/log/messages*" become "logrotate" 
+command target.
+Only a log file for this test must become a target of the forced 
+execution of "logrotate".
+
+To resolve this problem, we must change "/logrotate_tests.sh" not to 
+include "/etc/logrotate.d", I think.
+
+Signed-off-by: Yuki Yao<y_yao@ryobi.co.jp>
+
+Index: ./testcases/commands/logrotate/logrotate_tests.sh
+============
+--- ./testcases/commands/logrotate/logrotate_tests.sh.orig	2008-10-21
+15:54:15.000000000 +0900
++++ ./testcases/commands/logrotate/logrotate_tests.sh	2010-02-15
+13:32:02.000000000 +0900
+@@ -163,7 +163,7 @@
+ 	compress
+ 
+ 	# RPM packages drop log rotation information into this directory
+-	include /etc/logrotate.d
++	# include /etc/logrotate.d
+ 
+ 	/var/log/tst_logfile {
+ 		rotate 5
+@@ -200,7 +200,7 @@
+ 		# check if  /etc/logrotate.d is included/
+ 		# check if 5 rotations are forced.
+         # check if compression is done.
+-		grep "including /etc/logrotate.d" $LTPTMP/tst_logrotate.out
+\
++		# grep "including /etc/logrotate.d"
+$LTPTMP/tst_logrotate.out \
+ 			> $LTPTMP/tst_logrotate.err 2>&1 || RC=$?
+ 		grep "reading config file $LTPTMP/tst_logrotate.conf" \
+ 			$LTPTMP/tst_logrotate.out   >
+$LTPTMP/tst_logrotate.err 2>&1 || RC=$?
+============
+
+
+I'm glad if I got some opinion about this.
+
+Thank you,
+-Yuki Yao
+
+
+
+------------------------------------------------------------------------------
+SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
+Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
+http://p.sf.net/sfu/solaris-dev2dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
