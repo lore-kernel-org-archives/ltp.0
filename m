@@ -1,25 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gang.chen@asianux.com>) id 1T8heS-0000KG-Ok
-	for ltp-list@lists.sourceforge.net; Tue, 04 Sep 2012 01:10:00 +0000
-Received: from intranet.asianux.com ([58.214.24.6])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1T8heS-0007u4-1m
-	for ltp-list@lists.sourceforge.net; Tue, 04 Sep 2012 01:10:00 +0000
-Received: from [192.168.50.26] (unknown [219.143.36.82])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by intranet.asianux.com (Postfix) with ESMTP id 0FDF418402D1
-	for <ltp-list@lists.sourceforge.net>;
-	Tue,  4 Sep 2012 09:09:52 +0800 (CST)
-Message-ID: <50455523.8070509@asianux.com>
-Date: Tue, 04 Sep 2012 09:10:59 +0800
-From: Chen Gang <gang.chen@asianux.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chrubis@suse.de>) id 1TEgHq-0001Eh-89
+	for ltp-list@lists.sourceforge.net; Thu, 20 Sep 2012 12:55:22 +0000
+Date: Tue, 16 Feb 2010 04:25:42 +0100
+From: chrubis@suse.cz
+Message-ID: <20100216032542.GB7902@saboteur.suse.cz>
+References: <4FF3EE1B.1060508@windriver.com>
 MIME-Version: 1.0
-Subject: [LTP] [CONFIRM] if use /opt/ltp/testscripts/ltpstress.sh directly,
- it will test nfs with local mounted ?
+Content-Disposition: inline
+In-Reply-To: <4FF3EE1B.1060508@windriver.com>
+Subject: Re: [LTP] POSIX: does case mmap/27-1 valid?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,30 +24,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Kang Kai <Kai.Kang@windriver.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi ltp-list@lists.sourceforge.net
+Hi!
+> The posix test case mmap/27-1 try to test c lib implementation which
+> doesn't support MAP_FIXED and MAP_PRIVATE.
+> When MAP_FIXED is defined then the case quits  with  UNTESTED.
+> If MAP_FIXED and other flags are not defined, then the case try to
+> test mmap with MAP_FIXED.
+> But at this time MAP_FIXED is not defined, how the case can be
+> compiled? Then I suppose this case is NOT valid.
 
-Please help to confirm just what subject says.
-
-The confirmation from Red Hat that:
-
-If NFS server and client under the same machine, it will deadlock.
-
-thanks
+There are several invalid testcases in the mmap directory. I've started
+to cleanup the testcases but haven't had time finish yet (I've got more
+important work meanwhile). So stay tuned I'll get to them again
+hopefully soon.
 
 -- 
-Chen Gang
-
-Asianux Corporation
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Live Security Virtual Conference
-Exclusive live event will cover all the ways today's security and 
-threat landscape has changed and how IT managers can respond. Discussions 
-will include endpoint security, mobile security and the latest in malware 
-threats. http://www.accelacomm.com/jaw/sfrnl04242012/114/50122263/
+Everyone hates slow websites. So do we.
+Make your web apps faster with AppDynamics
+Download AppDynamics Lite for free today:
+http://ad.doubleclick.net/clk;258768047;13503038;j?
+http://info.appdynamics.com/FreeJavaPerformanceDownload.html
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
