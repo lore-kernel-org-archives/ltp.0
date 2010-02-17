@@ -1,27 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <maxin.john@gmail.com>) id 1NiAWd-0001qU-Bl
-	for ltp-list@lists.sourceforge.net; Thu, 18 Feb 2010 17:50:55 +0000
-Received: from mail-px0-f201.google.com ([209.85.216.201])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NiAWc-0007F4-AC
-	for ltp-list@lists.sourceforge.net; Thu, 18 Feb 2010 17:50:55 +0000
-Received: by pxi40 with SMTP id 40so1156586pxi.22
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 18 Feb 2010 09:50:47 -0800 (PST)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NhewM-0007pq-Qs
+	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 08:07:22 +0000
+Received: from e23smtp05.au.ibm.com ([202.81.31.147])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NhewL-0008PC-CA
+	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 08:07:22 +0000
+Received: from d23relay05.au.ibm.com (d23relay05.au.ibm.com [202.81.31.247])
+	by e23smtp05.au.ibm.com (8.14.3/8.13.1) with ESMTP id o1H83ll7022148
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 19:03:47 +1100
+Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
+	by d23relay05.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o1H81snJ1143012
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 19:01:54 +1100
+Received: from d23av02.au.ibm.com (loopback [127.0.0.1])
+	by d23av02.au.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o1H87D8A016436
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 19:07:13 +1100
+Message-ID: <4B7BA3B0.4070306@linux.vnet.ibm.com>
+Date: Wed, 17 Feb 2010 13:37:12 +0530
+From: Rishikesh <risrajak@linux.vnet.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20100218040850.GB13013@rishikesh.in.ibm.com>
-References: <4B7BA709.8080306@linux.vnet.ibm.com>
-	<70aae6bd1002170035j6b8ad2a3la26a90d13b7b800e@mail.gmail.com>
-	<20100217120746.GA5966@rishikesh.in.ibm.com>
-	<70aae6bd1002171928r7b86a5c2g568117a65dc462fe@mail.gmail.com>
-	<20100218040850.GB13013@rishikesh.in.ibm.com>
-Date: Thu, 18 Feb 2010 23:20:45 +0530
-Message-ID: <9debc4411002180950r16a98d89n64b8eba7ed16113d@mail.gmail.com>
-From: Maxin John <maxin.john@gmail.com>
-Subject: Re: [LTP] CAN LTP BE CROSS COMPILED FOR ANDROID PLATFORM
+Subject: Re: [LTP]
+	=?iso-8859-1?q?FS_Tests_4x_Slower_on_CentOS_5=2E3/HP_ProLia?=
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,67 +37,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Cc: Rishikesh <risrajak@in.ibm.com>, ltp-list@lists.sourceforge.net, md zafar ziya <md.zafar.ziya@gmail.com>
+To: gadi.golan@rnanetworks.com
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-Hi Rishikesh,
+Hi Gadi,
 
->> 1.All LTP application has to compiled against Android bionic library.
->> 2.Use Android Target Cross compiler for building Testcases executables(That
->> use compiler builtin API also).
->> 3.Android libraray dont have -lrt and -lpthread library,Real time
->> library(rt) and Thread library(pthread) are not defined inside Bionic,so
->> just remove these entries from Makefile because these library function are
->> being moved to bionic C library and for thread API include proper header
->> file only.
->> 4.Header files are placed to different location in bionic ,So update the
->> source as per requirement.
->> 5.to run LTP on android based target,use busybox(Cross compiled for
->> android:Path-http://benno.id.au/blog/2007/11/14/android-busybox).Push to
->> target and use.
->> 6.Modify script as per requirement because android based target has
->> different interpretation.
->> 7.Push only scripts and binary of the executables(because of memory
->> constraints) inside target.
->> 8.Run runltp
+Can you reproduce this problem mentioned in following thread with latest 
+cvs or jan'10 ltp release and post your result here ?
 
-Adding some more comments:
+http://marc.info/?l=ltp-list&m=126411635808521&w=2
 
-  1. I have observed that the 'ash' shell present in the busybox will
-not be supporting all the functionalities required for running LTP on
-Android. To resolve this, we need to cross compile the bash-4.1 for
-Android.  This change is working fine for me.
+-- 
+Thanks&  Regards
+Rishi Kesh K Rajak
+IBM LTC, Bangalore
+LTP Maintainer
+Please join IRC: #ltp @ freenode.net
 
-2 . Remount the '/' in read write mode in Android. Create /bin and
-/tmp directories (most of the LTP test cases depends on the existence
-of these directories ie: #!/bin/sh ). Push the cross compiled bash to
-/bin directory and create the symbolic link 'sh' from 'bash'. We can
-also place the above mentioned busybox in the /bin directory and
-create the required links.
-
-3. Bionic header files are placed in different directories eg: in LTP
-<wait.h> should be modified as <sys/wait.h> , <sys/fcntl.h> should be
-modified as <fcntl.h> ... etc :)
-
-4. Some syscalls should be modified using
-"syscall(__N_syscallname,parameters...)" which is present in
-<sys/syscall.h>
-
-5. Better to have cross compiled 'perl' binary since we need to run
-some perl scripts also.
-
-Finally push all the above mentioned binaries along with cross
-compiled LTP binaries to Android for the 'real test'.
-
-Best Regards,
-Maxin B. John
 
 ------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
+SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
+Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
+http://p.sf.net/sfu/solaris-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
