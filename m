@@ -1,29 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NlE2u-0003pB-4j
-	for ltp-list@lists.sourceforge.net; Sat, 27 Feb 2010 04:12:52 +0000
-Received: from mail-pz0-f202.google.com ([209.85.222.202])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NlE2t-00071S-Br
-	for ltp-list@lists.sourceforge.net; Sat, 27 Feb 2010 04:12:52 +0000
-Received: by pzk40 with SMTP id 40so627036pzk.6
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 26 Feb 2010 20:12:45 -0800 (PST)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NheyT-00081I-Q2
+	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 08:09:33 +0000
+Received: from e23smtp05.au.ibm.com ([202.81.31.147])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NheyS-0004cX-0W
+	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 08:09:33 +0000
+Received: from d23relay03.au.ibm.com (d23relay03.au.ibm.com [202.81.31.245])
+	by e23smtp05.au.ibm.com (8.14.3/8.13.1) with ESMTP id o1H85wp2023551
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 19:05:58 +1100
+Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
+	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o1H89P6x1826942
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 19:09:25 +1100
+Received: from d23av02.au.ibm.com (loopback [127.0.0.1])
+	by d23av02.au.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o1H89OjF018111
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 19:09:24 +1100
+Message-ID: <4B7BA433.3030206@linux.vnet.ibm.com>
+Date: Wed, 17 Feb 2010 13:39:23 +0530
+From: Rishikesh <risrajak@linux.vnet.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <4B87173E.2040609@cn.fujitsu.com>
-References: <4B82143D.5050006@cn.fujitsu.com>
-	<364299f41002212356g2a4ceb09o3d271e31b388fe51@mail.gmail.com>
-	<4B8249A7.3040401@cn.fujitsu.com>
-	<364299f41002221005l7df3ceafhaeb6a49b17ee0fed@mail.gmail.com>
-	<4B832856.3050305@cn.fujitsu.com> <4B862614.5020401@cn.fujitsu.com>
-	<364299f41002250200xd1d81d5g6d96521df9235e4f@mail.gmail.com>
-	<4B87173E.2040609@cn.fujitsu.com>
-Date: Fri, 26 Feb 2010 20:12:45 -0800
-Message-ID: <364299f41002262012r1743270cla2547efc87b71af7@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] syscalls: fix some failure on arch X86_64
+Subject: Re: [LTP] [PATCH] mail_tests.sh: fix a version problem of Heirloom
+ Mail
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,41 +34,31 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: liubo <liubo2009@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Shi Weihua <shiwh@cn.fujitsu.com>, LTP <ltp-list@lists.sourceforge.net>
 
-On Thu, Feb 25, 2010 at 4:35 PM, liubo <liubo2009@cn.fujitsu.com> wrote:
-> On 02/25/2010 06:00 PM, Garrett Cooper wrote:
->
-> On Wed, Feb 24, 2010 at 11:26 PM, liubo <liubo2009@cn.fujitsu.com> wrote:
->
->
-> Hi Garrett,
->
-> =A0=A0=A0 I figured that this patch has not been merged into ltp-cvs.
-> =A0=A0=A0 Is there some else problems about this patch?
->
->     I tried looking at it this weekend and got sidetracked (hint:
-> please provide me with a complete patchable diff, preferably as a file
-> attachment).
->
-> Sure, see attachment.
+Hi Shi,
 
-    All of these fixes have been merged into mainline ltp-dev.git.
-Thank you very much for the help in tackling this issue!
-Cheers,
--Garrett
+Thanks for your patch . It will be merged in feb 2010 release.
 
----------------------------------------------------------------------------=
----
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
+Acked-By: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+
+http://marc.info/?l=ltp-list&m=126440546415559&w=2
+
+-- 
+Thanks&  Regards
+Rishi Kesh K Rajak
+IBM LTC, Bangalore
+LTP Maintainer
+Please join IRC: #ltp @ freenode.net
+
+
+------------------------------------------------------------------------------
+SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
+Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
+http://p.sf.net/sfu/solaris-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
