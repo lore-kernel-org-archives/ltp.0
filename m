@@ -1,34 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <iranna.ankad@in.ibm.com>) id 1NjaZK-0005fU-5M
-	for ltp-list@lists.sourceforge.net; Mon, 22 Feb 2010 15:51:34 +0000
-Received: from e28smtp04.in.ibm.com ([122.248.162.4])
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NhecC-00062g-V0
+	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 07:46:32 +0000
+Received: from e28smtp09.in.ibm.com ([122.248.162.9])
 	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NjaZG-0005jc-PI
-	for ltp-list@lists.sourceforge.net; Mon, 22 Feb 2010 15:51:34 +0000
-Received: from d28relay03.in.ibm.com (d28relay03.in.ibm.com [9.184.220.60])
-	by e28smtp04.in.ibm.com (8.14.3/8.13.1) with ESMTP id o1MFpJir016379
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Feb 2010 21:21:19 +0530
-Received: from d28av06.in.ibm.com (d28av06.in.ibm.com [9.184.220.48])
-	by d28relay03.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o1MFpIet3096782
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Feb 2010 21:21:18 +0530
-Received: from d28av06.in.ibm.com (loopback [127.0.0.1])
-	by d28av06.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o1MFpIkw026461
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Feb 2010 21:21:18 +0530
-Received: from d23ml063.in.ibm.com (d23ml063.in.ibm.com [9.124.105.25])
-	by d28av06.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVin) with ESMTP id
-	o1MFpI0G026458
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Feb 2010 21:21:18 +0530
-In-Reply-To: <4B823681.7010300@linux.vnet.ibm.com>
+	(Exim 4.69) id 1NhecA-0002Rp-6t
+	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 07:46:32 +0000
+Received: from d28relay01.in.ibm.com (d28relay01.in.ibm.com [9.184.220.58])
+	by e28smtp09.in.ibm.com (8.14.3/8.13.1) with ESMTP id o1H78kgt004866
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 12:38:46 +0530
+Received: from d28av04.in.ibm.com (d28av04.in.ibm.com [9.184.220.66])
+	by d28relay01.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o1H7kBIA897082
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 13:16:11 +0530
+Received: from d28av04.in.ibm.com (loopback [127.0.0.1])
+	by d28av04.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o1H7kBe0013916
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 18:46:11 +1100
+Message-ID: <4B7B9EC2.1010004@linux.vnet.ibm.com>
+Date: Wed, 17 Feb 2010 13:16:10 +0530
+From: Rishikesh <risrajak@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Message-ID: <OF7B2672AC.4ABA3E07-ON652576D2.005673AB-652576D2.005717E8@in.ibm.com>
-From: Iranna D Ankad <iranna.ankad@in.ibm.com>
-Date: Mon, 22 Feb 2010 21:18:04 +0530
-Subject: Re: [LTP] [ANNOUNCEMENT]: Intermediate release for FEB'10
+References: <4B728073.3070209@cn.fujitsu.com>
+In-Reply-To: <4B728073.3070209@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] timers: support clockid of
+	CLOCK_REALTIME_COARSE/CLOCK_MONOTONIC_COARSE
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,212 +36,94 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4078894252532377558=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Rishikesh <risrajak@linux.vnet.ibm.com>
-Cc: Rishikesh K Rajak <risrajak@in.ibm.com>, LTP <ltp-list@lists.sourceforge.net>, Vishukumar S Shetty <svishuku@in.ibm.com>
-
-This is a multipart message in MIME format.
---===============4078894252532377558==
-Content-Type: multipart/alternative;
-	boundary="=_alternative 005717C0652576D2_="
-
-This is a multipart message in MIME format.
---=_alternative 005717C0652576D2_=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-
-SGVsbG8gUmlzaGksDQpMVFAgY29tcGlsYXRpb24gb24gbXkgc3lzdGVtIGhhbHRlZCB3aXRoIGJl
-bG93IGJ1aWxkIGVycm9ycywgcGxlYXNlIGNoZWNrIA0KdGhpcyBvdXQuICAgIFRoYW5rcyENCg0K
-Z2NjIC1nIC1PMiAtZyAtTzIgLWZuby1zdHJpY3QtYWxpYXNpbmcgLXBpcGUgLVdhbGwgDQotSS9y
-b290L2x0cC1pbnRlcm1lZGlhdGUtMjAxMDAyMjgvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlIA0K
-LUkvcm9vdC9sdHAtaW50ZXJtZWRpYXRlLTIwMTAwMjI4L3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
-bHMvbWJpbmQvLi4vdXRpbHMvIA0KLUkuLi8uLi8uLi8uLi9pbmNsdWRlIC1JLi4vLi4vLi4vLi4v
-aW5jbHVkZSAgIC1MLi4vLi4vLi4vLi4vbGliICBtYmluZDAxLmMgDQogIC1sbHRwIC1sbnVtYSAt
-byBtYmluZDAxDQptYmluZDAxLmM6MTg0OiBlcnJvcjog4oCYTVBPTF9ERUZBVUxU4oCZIHVuZGVj
-bGFyZWQgaGVyZSAobm90IGluIGEgZnVuY3Rpb24pDQptYmluZDAxLmM6MTk2OiBlcnJvcjog4oCY
-TVBPTF9CSU5E4oCZIHVuZGVjbGFyZWQgaGVyZSAobm90IGluIGEgZnVuY3Rpb24pDQptYmluZDAx
-LmM6MjA4OiBlcnJvcjog4oCYTVBPTF9JTlRFUkxFQVZF4oCZIHVuZGVjbGFyZWQgaGVyZSAobm90
-IGluIGEgDQpmdW5jdGlvbikNCm1iaW5kMDEuYzoyMjA6IGVycm9yOiDigJhNUE9MX1BSRUZFUlJF
-ROKAmSB1bmRlY2xhcmVkIGhlcmUgKG5vdCBpbiBhIGZ1bmN0aW9uKQ0KbWJpbmQwMS5jOiBJbiBm
-dW5jdGlvbiDigJhkb190ZXN04oCZOg0KbWJpbmQwMS5jOjMwOTogZXJyb3I6IOKAmE1QT0xfRl9B
-RERS4oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0aGlzIA0KZnVuY3Rpb24pDQptYmluZDAx
-LmM6MzA5OiBlcnJvcjogKEVhY2ggdW5kZWNsYXJlZCBpZGVudGlmaWVyIGlzIHJlcG9ydGVkIG9u
-bHkgb25jZQ0KbWJpbmQwMS5jOjMwOTogZXJyb3I6IGZvciBlYWNoIGZ1bmN0aW9uIGl0IGFwcGVh
-cnMgaW4uKQ0KbWJpbmQwMS5jOjMxNzogd2FybmluZzogY29tcGFyaXNvbiBiZXR3ZWVuIHBvaW50
-ZXIgYW5kIGludGVnZXINCm1iaW5kMDEuYzozMTk6IHdhcm5pbmc6IGNvbXBhcmlzb24gYmV0d2Vl
-biBwb2ludGVyIGFuZCBpbnRlZ2VyDQptYWtlWzRdOiAqKiogW21iaW5kMDFdIEVycm9yIDENCm1h
-a2VbNF06IExlYXZpbmcgZGlyZWN0b3J5IA0KYC9yb290L2x0cC1pbnRlcm1lZGlhdGUtMjAxMDAy
-MjgvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tYmluZCcNCm1ha2VbM106ICoqKiBbYWxsXSBF
-cnJvciAyDQptYWtlWzNdOiBMZWF2aW5nIGRpcmVjdG9yeSANCmAvcm9vdC9sdHAtaW50ZXJtZWRp
-YXRlLTIwMTAwMjI4L3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMnDQptYWtlWzJdOiAqKiogW2Fs
-bF0gRXJyb3IgMg0KbWFrZVsyXTogTGVhdmluZyBkaXJlY3RvcnkgDQpgL3Jvb3QvbHRwLWludGVy
-bWVkaWF0ZS0yMDEwMDIyOC90ZXN0Y2FzZXMva2VybmVsJw0KbWFrZVsxXTogKioqIFthbGxdIEVy
-cm9yIDINCm1ha2VbMV06IExlYXZpbmcgZGlyZWN0b3J5IGAvcm9vdC9sdHAtaW50ZXJtZWRpYXRl
-LTIwMTAwMjI4L3Rlc3RjYXNlcycNCm1ha2U6ICoqKiBbdGVzdGNhc2VzLWFsbF0gRXJyb3IgMg0K
-W3Jvb3RAbXgzNjU1IGx0cC1pbnRlcm1lZGlhdGUtMjAxMDAyMjhdIyANCg0KSGVyZSBhcmUgdGhl
-IG1ha2UgJiBhdXRvY29uZiB2ZXJzaW9ucyBJIGFtIHJ1bm5pbmcuDQoNCltyb290QG14MzY1NSBs
-dHAtaW50ZXJtZWRpYXRlLTIwMTAwMjI4XSMgcnBtIC1xYSB8IGdyZXAgbWFrZQ0KYXV0b21ha2Ux
-NC0xLjRwNi0xMw0KaW1ha2UtMS4wLjItMw0KYXV0b21ha2UxNy0xLjcuOS03DQphdXRvbWFrZTE1
-LTEuNS0xNg0KYXV0b21ha2UxNi0xLjYuMy04DQptYWtlLTMuODEtMy5lbDUNCmF1dG9tYWtlLTEu
-OS42LTIuMQ0KW3Jvb3RAbXgzNjU1IGx0cC1pbnRlcm1lZGlhdGUtMjAxMDAyMjhdIyBycG0gLXFh
-IHwgZ3JlcCBhdXRvY29uZg0KYXV0b2NvbmYtMi41OS0xMg0KW3Jvb3RAbXgzNjU1IGx0cC1pbnRl
-cm1lZGlhdGUtMjAxMDAyMjhdIw0KDQoNCi1JcmFubmEgRCBBbmthZA0KLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KTGludXgtVGVjaG5vbG9neSBDZW50ZXIsIElC
-TSBJbmRpYSBTb2Z0d2FyZSBMYWJzDQpNYW55YXRhIEVtYmFzc3kgUGFyaywgQkVOR0FMVVJVIC0g
-NTYwMDQ1LA0KUGg6ICs5MS0wODAtMjgwNTUwMDcgICBFeHRuOiA1NTAwNw0KLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KIklmIHlvdSBkb24ndCBoYXZlIHBhdGll
-bmNlIHRvIHRlc3QgdGhlIHNvZnR3YXJlLCB0aGUgc29mdHdhcmUgd2lsbCB0ZXN0IA0KeW91ciBw
-YXRpZW5jZSAhISINCg0KDQoNClJpc2hpa2VzaCA8cmlzcmFqYWtAbGludXgudm5ldC5pYm0uY29t
-PiANCjAyLzIyLzEwIDAxOjE3IFBNDQoNClRvDQpMVFAgPGx0cC1saXN0QGxpc3RzLnNvdXJjZWZv
-cmdlLm5ldD4NCmNjDQpHYXJyZXR0IENvb3BlciA8eWFuZWdvbWlAZ21haWwuY29tPiwgUmlzaGlr
-ZXNoIEsgUmFqYWsvSW5kaWEvSUJNQElCTUlOLCANClZpc2h1a3VtYXIgUyBTaGV0dHkvSW5kaWEv
-SUJNQElCTUlOLCBJcmFubmEgRCBBbmthZC9JbmRpYS9JQk1ASUJNSU4NClN1YmplY3QNCltBTk5P
-VU5DRU1FTlRdOiBJbnRlcm1lZGlhdGUgcmVsZWFzZSBmb3IgRkVCJzEwDQoNCg0KDQoNCg0KDQpI
-aSBBbGwsDQoNCldlbGNvbWUgdG8gbHRwIGNvbW11bml0eS4NCg0KVGhlIEZlYnJ1YXJ5IDIwMTAg
-SW50ZXJtZWRpYXRlIHJlbGVhc2UgaXMgb3V0IG5vdy4gVGhpcyBidWlsZCBjb250YWlucw0KbWFu
-eSBmaXhlcy4gQ2hhbmdlbG9nIHlvdSBjYW4gZmluZCBhcyBhdHRhY2hlZC4NCg0KWW91IGNhbiBk
-aXJlY3RseSBkb3dubG9hZCBmcm9tOg0KaHR0cHM6Ly9zb3VyY2Vmb3JnZS5uZXQvcHJvamVjdHMv
-bHRwL2ZpbGVzL0xUUCUyMFNvdXJjZS9sdHAtMjAxMDAyMjgvbHRwLWludGVybWVkaWF0ZS0yMDEw
-MDIyOC50Z3ovZG93bmxvYWQNCg0KDQpBbmQgZm9yIG1vcmUgZGV0YWlscyB5b3UgY2FuIGp1c3Qg
-aGF2ZSBhIGxvb2sgdG8gbHRwIEhvbWUgUGFnZTogDQpodHRwOi8vbHRwLnNvdXJjZWZvcmdlLm5l
-dC8NCg0KLS0gDQpUaGFua3MmICBSZWdhcmRzDQpSaXNoaSBLZXNoIEsgUmFqYWsNCklCTSBMVEMs
-IEJhbmdhbG9yZQ0KTFRQIE1haW50YWluZXINClBsZWFzZSBqb2luIElSQzogI2x0cCBAIGZyZWVu
-b2RlLm5ldA0KDQpbYXR0YWNobWVudCAiQ2hhbmdlTG9nLm5ldyIgZGVsZXRlZCBieSBJcmFubmEg
-RCBBbmthZC9JbmRpYS9JQk1dIA0KDQo=
---=_alternative 005717C0652576D2_=
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: base64
-
-DQo8YnI+PGZvbnQgc2l6ZT0yIGZhY2U9InNhbnMtc2VyaWYiPkhlbGxvIFJpc2hpLDwvZm9udD4N
-Cjxicj48Zm9udCBzaXplPTIgZmFjZT0ic2Fucy1zZXJpZiI+TFRQIGNvbXBpbGF0aW9uIG9uIG15
-IHN5c3RlbSBoYWx0ZWQNCndpdGggYmVsb3cgYnVpbGQgZXJyb3JzLCBwbGVhc2UgY2hlY2sgdGhp
-cyBvdXQuICZuYnNwOyAmbmJzcDtUaGFua3MhPC9mb250Pg0KPGJyPg0KPGJyPjxmb250IHNpemU9
-MiBmYWNlPSJzYW5zLXNlcmlmIj5nY2MgLWcgLU8yIC1nIC1PMiAtZm5vLXN0cmljdC1hbGlhc2lu
-Zw0KLXBpcGUgLVdhbGwgJm5ic3A7LUkvcm9vdC9sdHAtaW50ZXJtZWRpYXRlLTIwMTAwMjI4L3Rl
-c3RjYXNlcy9rZXJuZWwvaW5jbHVkZQ0KLUkvcm9vdC9sdHAtaW50ZXJtZWRpYXRlLTIwMTAwMjI4
-L3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbWJpbmQvLi4vdXRpbHMvDQotSS4uLy4uLy4uLy4u
-L2luY2x1ZGUgLUkuLi8uLi8uLi8uLi9pbmNsdWRlICZuYnNwOyAtTC4uLy4uLy4uLy4uL2xpYiAm
-bmJzcDttYmluZDAxLmMNCiZuYnNwOyAtbGx0cCAtbG51bWEgLW8gbWJpbmQwMTwvZm9udD4NCjxi
-cj48Zm9udCBzaXplPTIgZmFjZT0ic2Fucy1zZXJpZiI+bWJpbmQwMS5jOjE4NDogZXJyb3I6IOKA
-mE1QT0xfREVGQVVMVOKAmQ0KdW5kZWNsYXJlZCBoZXJlIChub3QgaW4gYSBmdW5jdGlvbik8L2Zv
-bnQ+DQo8YnI+PGZvbnQgc2l6ZT0yIGZhY2U9InNhbnMtc2VyaWYiPm1iaW5kMDEuYzoxOTY6IGVy
-cm9yOiDigJhNUE9MX0JJTkTigJkNCnVuZGVjbGFyZWQgaGVyZSAobm90IGluIGEgZnVuY3Rpb24p
-PC9mb250Pg0KPGJyPjxmb250IHNpemU9MiBmYWNlPSJzYW5zLXNlcmlmIj5tYmluZDAxLmM6MjA4
-OiBlcnJvcjog4oCYTVBPTF9JTlRFUkxFQVZF4oCZDQp1bmRlY2xhcmVkIGhlcmUgKG5vdCBpbiBh
-IGZ1bmN0aW9uKTwvZm9udD4NCjxicj48Zm9udCBzaXplPTIgZmFjZT0ic2Fucy1zZXJpZiI+bWJp
-bmQwMS5jOjIyMDogZXJyb3I6IOKAmE1QT0xfUFJFRkVSUkVE4oCZDQp1bmRlY2xhcmVkIGhlcmUg
-KG5vdCBpbiBhIGZ1bmN0aW9uKTwvZm9udD4NCjxicj48Zm9udCBzaXplPTIgZmFjZT0ic2Fucy1z
-ZXJpZiI+bWJpbmQwMS5jOiBJbiBmdW5jdGlvbiDigJhkb190ZXN04oCZOjwvZm9udD4NCjxicj48
-Zm9udCBzaXplPTIgZmFjZT0ic2Fucy1zZXJpZiI+bWJpbmQwMS5jOjMwOTogZXJyb3I6IOKAmE1Q
-T0xfRl9BRERS4oCZDQp1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbik8L2Zv
-bnQ+DQo8YnI+PGZvbnQgc2l6ZT0yIGZhY2U9InNhbnMtc2VyaWYiPm1iaW5kMDEuYzozMDk6IGVy
-cm9yOiAoRWFjaCB1bmRlY2xhcmVkDQppZGVudGlmaWVyIGlzIHJlcG9ydGVkIG9ubHkgb25jZTwv
-Zm9udD4NCjxicj48Zm9udCBzaXplPTIgZmFjZT0ic2Fucy1zZXJpZiI+bWJpbmQwMS5jOjMwOTog
-ZXJyb3I6IGZvciBlYWNoIGZ1bmN0aW9uDQppdCBhcHBlYXJzIGluLik8L2ZvbnQ+DQo8YnI+PGZv
-bnQgc2l6ZT0yIGZhY2U9InNhbnMtc2VyaWYiPm1iaW5kMDEuYzozMTc6IHdhcm5pbmc6IGNvbXBh
-cmlzb24gYmV0d2Vlbg0KcG9pbnRlciBhbmQgaW50ZWdlcjwvZm9udD4NCjxicj48Zm9udCBzaXpl
-PTIgZmFjZT0ic2Fucy1zZXJpZiI+bWJpbmQwMS5jOjMxOTogd2FybmluZzogY29tcGFyaXNvbiBi
-ZXR3ZWVuDQpwb2ludGVyIGFuZCBpbnRlZ2VyPC9mb250Pg0KPGJyPjxmb250IHNpemU9MiBmYWNl
-PSJzYW5zLXNlcmlmIj5tYWtlWzRdOiAqKiogW21iaW5kMDFdIEVycm9yIDE8L2ZvbnQ+DQo8YnI+
-PGZvbnQgc2l6ZT0yIGZhY2U9InNhbnMtc2VyaWYiPm1ha2VbNF06IExlYXZpbmcgZGlyZWN0b3J5
-IGAvcm9vdC9sdHAtaW50ZXJtZWRpYXRlLTIwMTAwMjI4L3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
-bHMvbWJpbmQnPC9mb250Pg0KPGJyPjxmb250IHNpemU9MiBmYWNlPSJzYW5zLXNlcmlmIj5tYWtl
-WzNdOiAqKiogW2FsbF0gRXJyb3IgMjwvZm9udD4NCjxicj48Zm9udCBzaXplPTIgZmFjZT0ic2Fu
-cy1zZXJpZiI+bWFrZVszXTogTGVhdmluZyBkaXJlY3RvcnkgYC9yb290L2x0cC1pbnRlcm1lZGlh
-dGUtMjAxMDAyMjgvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscyc8L2ZvbnQ+DQo8YnI+PGZvbnQg
-c2l6ZT0yIGZhY2U9InNhbnMtc2VyaWYiPm1ha2VbMl06ICoqKiBbYWxsXSBFcnJvciAyPC9mb250
-Pg0KPGJyPjxmb250IHNpemU9MiBmYWNlPSJzYW5zLXNlcmlmIj5tYWtlWzJdOiBMZWF2aW5nIGRp
-cmVjdG9yeSBgL3Jvb3QvbHRwLWludGVybWVkaWF0ZS0yMDEwMDIyOC90ZXN0Y2FzZXMva2VybmVs
-JzwvZm9udD4NCjxicj48Zm9udCBzaXplPTIgZmFjZT0ic2Fucy1zZXJpZiI+bWFrZVsxXTogKioq
-IFthbGxdIEVycm9yIDI8L2ZvbnQ+DQo8YnI+PGZvbnQgc2l6ZT0yIGZhY2U9InNhbnMtc2VyaWYi
-Pm1ha2VbMV06IExlYXZpbmcgZGlyZWN0b3J5IGAvcm9vdC9sdHAtaW50ZXJtZWRpYXRlLTIwMTAw
-MjI4L3Rlc3RjYXNlcyc8L2ZvbnQ+DQo8YnI+PGZvbnQgc2l6ZT0yIGZhY2U9InNhbnMtc2VyaWYi
-Pm1ha2U6ICoqKiBbdGVzdGNhc2VzLWFsbF0gRXJyb3IgMjwvZm9udD4NCjxicj48Zm9udCBzaXpl
-PTIgZmFjZT0ic2Fucy1zZXJpZiI+W3Jvb3RAbXgzNjU1IGx0cC1pbnRlcm1lZGlhdGUtMjAxMDAy
-MjhdIw0KPC9mb250Pg0KPGJyPg0KPGJyPjxmb250IHNpemU9MiBmYWNlPSJzYW5zLXNlcmlmIj5I
-ZXJlIGFyZSB0aGUgbWFrZSAmYW1wOyBhdXRvY29uZiB2ZXJzaW9ucw0KSSBhbSBydW5uaW5nLjwv
-Zm9udD4NCjxicj4NCjxicj48Zm9udCBzaXplPTIgZmFjZT0ic2Fucy1zZXJpZiI+W3Jvb3RAbXgz
-NjU1IGx0cC1pbnRlcm1lZGlhdGUtMjAxMDAyMjhdIw0KcnBtIC1xYSB8IGdyZXAgbWFrZTwvZm9u
-dD4NCjxicj48Zm9udCBzaXplPTIgZmFjZT0ic2Fucy1zZXJpZiI+YXV0b21ha2UxNC0xLjRwNi0x
-MzwvZm9udD4NCjxicj48Zm9udCBzaXplPTIgZmFjZT0ic2Fucy1zZXJpZiI+aW1ha2UtMS4wLjIt
-MzwvZm9udD4NCjxicj48Zm9udCBzaXplPTIgZmFjZT0ic2Fucy1zZXJpZiI+YXV0b21ha2UxNy0x
-LjcuOS03PC9mb250Pg0KPGJyPjxmb250IHNpemU9MiBmYWNlPSJzYW5zLXNlcmlmIj5hdXRvbWFr
-ZTE1LTEuNS0xNjwvZm9udD4NCjxicj48Zm9udCBzaXplPTIgZmFjZT0ic2Fucy1zZXJpZiI+YXV0
-b21ha2UxNi0xLjYuMy04PC9mb250Pg0KPGJyPjxmb250IHNpemU9MiBmYWNlPSJzYW5zLXNlcmlm
-Ij5tYWtlLTMuODEtMy5lbDU8L2ZvbnQ+DQo8YnI+PGZvbnQgc2l6ZT0yIGZhY2U9InNhbnMtc2Vy
-aWYiPmF1dG9tYWtlLTEuOS42LTIuMTwvZm9udD4NCjxicj48Zm9udCBzaXplPTIgZmFjZT0ic2Fu
-cy1zZXJpZiI+W3Jvb3RAbXgzNjU1IGx0cC1pbnRlcm1lZGlhdGUtMjAxMDAyMjhdIw0KcnBtIC1x
-YSB8IGdyZXAgYXV0b2NvbmY8L2ZvbnQ+DQo8YnI+PGZvbnQgc2l6ZT0yIGZhY2U9InNhbnMtc2Vy
-aWYiPmF1dG9jb25mLTIuNTktMTI8L2ZvbnQ+DQo8YnI+PGZvbnQgc2l6ZT0yIGZhY2U9InNhbnMt
-c2VyaWYiPltyb290QG14MzY1NSBsdHAtaW50ZXJtZWRpYXRlLTIwMTAwMjI4XSM8L2ZvbnQ+DQo8
-YnI+DQo8YnI+DQo8YnI+PGZvbnQgc2l6ZT0yIGZhY2U9InNhbnMtc2VyaWYiPi1JcmFubmEgRCBB
-bmthZDxicj4NCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS08YnI+
-DQpMaW51eC1UZWNobm9sb2d5IENlbnRlciwgSUJNIEluZGlhIFNvZnR3YXJlIExhYnM8YnI+DQpN
-YW55YXRhIEVtYmFzc3kgUGFyaywgQkVOR0FMVVJVIC0gNTYwMDQ1LDxicj4NClBoOiArOTEtMDgw
-LTI4MDU1MDA3ICZuYnNwOyBFeHRuOiA1NTAwNzxicj4NCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS08YnI+DQomcXVvdDtJZiB5b3UgZG9uJ3QgaGF2ZSBwYXRpZW5j
-ZSB0byB0ZXN0IHRoZSBzb2Z0d2FyZSwgdGhlIHNvZnR3YXJlIHdpbGwNCnRlc3QgeW91ciBwYXRp
-ZW5jZSAhISZxdW90OzwvZm9udD4NCjxicj4NCjxicj4NCjxicj4NCjx0YWJsZSB3aWR0aD0xMDAl
-Pg0KPHRyIHZhbGlnbj10b3A+DQo8dGQgd2lkdGg9NDAlPjxmb250IHNpemU9MSBmYWNlPSJzYW5z
-LXNlcmlmIj48Yj5SaXNoaWtlc2ggJmx0O3Jpc3JhamFrQGxpbnV4LnZuZXQuaWJtLmNvbSZndDs8
-L2I+DQo8L2ZvbnQ+DQo8cD48Zm9udCBzaXplPTEgZmFjZT0ic2Fucy1zZXJpZiI+MDIvMjIvMTAg
-MDE6MTcgUE08L2ZvbnQ+DQo8dGQgd2lkdGg9NTklPg0KPHRhYmxlIHdpZHRoPTEwMCU+DQo8dHIg
-dmFsaWduPXRvcD4NCjx0ZD4NCjxkaXYgYWxpZ249cmlnaHQ+PGZvbnQgc2l6ZT0xIGZhY2U9InNh
-bnMtc2VyaWYiPlRvPC9mb250PjwvZGl2Pg0KPHRkPjxmb250IHNpemU9MSBmYWNlPSJzYW5zLXNl
-cmlmIj5MVFAgJmx0O2x0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldCZndDs8L2ZvbnQ+DQo8
-dHIgdmFsaWduPXRvcD4NCjx0ZD4NCjxkaXYgYWxpZ249cmlnaHQ+PGZvbnQgc2l6ZT0xIGZhY2U9
-InNhbnMtc2VyaWYiPmNjPC9mb250PjwvZGl2Pg0KPHRkPjxmb250IHNpemU9MSBmYWNlPSJzYW5z
-LXNlcmlmIj5HYXJyZXR0IENvb3BlciAmbHQ7eWFuZWdvbWlAZ21haWwuY29tJmd0OywNClJpc2hp
-a2VzaCBLIFJhamFrL0luZGlhL0lCTUBJQk1JTiwgVmlzaHVrdW1hciBTIFNoZXR0eS9JbmRpYS9J
-Qk1ASUJNSU4sDQpJcmFubmEgRCBBbmthZC9JbmRpYS9JQk1ASUJNSU48L2ZvbnQ+DQo8dHIgdmFs
-aWduPXRvcD4NCjx0ZD4NCjxkaXYgYWxpZ249cmlnaHQ+PGZvbnQgc2l6ZT0xIGZhY2U9InNhbnMt
-c2VyaWYiPlN1YmplY3Q8L2ZvbnQ+PC9kaXY+DQo8dGQ+PGZvbnQgc2l6ZT0xIGZhY2U9InNhbnMt
-c2VyaWYiPltBTk5PVU5DRU1FTlRdOiBJbnRlcm1lZGlhdGUgcmVsZWFzZQ0KZm9yIEZFQicxMDwv
-Zm9udD48L3RhYmxlPg0KPGJyPg0KPHRhYmxlPg0KPHRyIHZhbGlnbj10b3A+DQo8dGQ+DQo8dGQ+
-PC90YWJsZT4NCjxicj48L3RhYmxlPg0KPGJyPg0KPGJyPg0KPGJyPjx0dD48Zm9udCBzaXplPTI+
-SGkgQWxsLDxicj4NCjxicj4NCldlbGNvbWUgdG8gbHRwIGNvbW11bml0eS48YnI+DQo8YnI+DQpU
-aGUgRmVicnVhcnkgMjAxMCBJbnRlcm1lZGlhdGUgcmVsZWFzZSBpcyBvdXQgbm93LiBUaGlzIGJ1
-aWxkIGNvbnRhaW5zPGJyPg0KbWFueSBmaXhlcy4gQ2hhbmdlbG9nIHlvdSBjYW4gZmluZCBhcyBh
-dHRhY2hlZC48YnI+DQo8YnI+DQpZb3UgY2FuIGRpcmVjdGx5IGRvd25sb2FkIGZyb206PGJyPg0K
-aHR0cHM6Ly9zb3VyY2Vmb3JnZS5uZXQvcHJvamVjdHMvbHRwL2ZpbGVzL0xUUCUyMFNvdXJjZS9s
-dHAtMjAxMDAyMjgvbHRwLWludGVybWVkaWF0ZS0yMDEwMDIyOC50Z3ovZG93bmxvYWQ8YnI+DQo8
-YnI+DQpBbmQgZm9yIG1vcmUgZGV0YWlscyB5b3UgY2FuIGp1c3QgaGF2ZSBhIGxvb2sgdG8gbHRw
-IEhvbWUgUGFnZTogPGJyPg0KaHR0cDovL2x0cC5zb3VyY2Vmb3JnZS5uZXQvPGJyPg0KPGJyPg0K
-LS0gPGJyPg0KVGhhbmtzJmFtcDsgJm5ic3A7UmVnYXJkczxicj4NClJpc2hpIEtlc2ggSyBSYWph
-azxicj4NCklCTSBMVEMsIEJhbmdhbG9yZTxicj4NCkxUUCBNYWludGFpbmVyPGJyPg0KUGxlYXNl
-IGpvaW4gSVJDOiAjbHRwIEAgZnJlZW5vZGUubmV0PGJyPg0KPGJyPg0KW2F0dGFjaG1lbnQgJnF1
-b3Q7Q2hhbmdlTG9nLm5ldyZxdW90OyBkZWxldGVkIGJ5IElyYW5uYSBEIEFua2FkL0luZGlhL0lC
-TV0NCjwvZm9udD48L3R0Pg0KPGJyPg0K
---=_alternative 005717C0652576D2_=--
-
-
---===============4078894252532377558==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Shi Weihua <shiwh@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
+
+On 02/10/2010 03:16 PM, Shi Weihua wrote:
+> mainline commit da15cfdae03351c689736f8d142618592e3cebc3
+>   (subject: time: Introduce CLOCK_REALTIME_COARSE)
+> added two clocks (CLOCK_REALTIME_COARSE/CLOCK_MONOTONIC_COARSE) in
+> 2.6.32-rc1, but it has not been responded in ltp. then, the following
+> error message occured.
+> -----
+> clock_gettime03    3  TFAIL  :  failed to produce expected error [expected errno = 22 (Invalid argument), TEST_RETURN = 0]: TEST_ERRNO=???(0): Success
+> clock_gettime03    4  TFAIL  :  failed to produce expected error [expected errno = 22 (Invalid argument), TEST_RETURN = 0]: TEST_ERRNO=???(0): Success
+> timer_create04    1  TFAIL  :  didn't fail as expected [expected errno = 22 (Invalid argument)]: TEST_ERRNO=???(95): Operation not supported
+> timer_create04    2  TFAIL  :  didn't fail as expected [expected errno = 22 (Invalid argument)]: TEST_ERRNO=???(95): Operation not supported
+> -----
+>
+> Following patch fixed this bug. and, passed on 2.6.32-rc1, 2.6.33-rc6, 2.6.23.1-42.fc8.
+>    
+
+Can anyone provide their review & Acked ?
+
+Thanks "Shi Weihua" for patch.
+
+-Rishi
+> Signed-off-by: Shi Weihua<shiwh@cn.fujitsu.com>
+> ---
+> --- testcases/kernel/timers/include/common_timers.h.orig	2010-02-10 16:44:56.000000000 -0500
+> +++ testcases/kernel/timers/include/common_timers.h	2010-02-10 17:33:25.000000000 -0500
+> @@ -28,12 +28,20 @@
+>   #ifndef CLOCK_MONOTONIC_RAW
+>   #define CLOCK_MONOTONIC_RAW 4
+>   #endif
+> +#ifndef CLOCK_REALTIME_COARSE
+> +#define CLOCK_REALTIME_COARSE 5
+> +#endif
+> +#ifndef CLOCK_MONOTONIC_COARSE
+> +#define CLOCK_MONOTONIC_COARSE 6
+> +#endif
+>   clock_t clock_list[] = {
+>   	CLOCK_REALTIME,
+>   	CLOCK_MONOTONIC,
+>   	CLOCK_PROCESS_CPUTIME_ID,
+>   	CLOCK_THREAD_CPUTIME_ID,
+>   	CLOCK_MONOTONIC_RAW,
+> +	CLOCK_REALTIME_COARSE,
+> +	CLOCK_MONOTONIC_COARSE,
+>   };
+>   #define MAX_CLOCKS (sizeof(clock_list) / sizeof(*clock_list))
+>
+> @@ -50,6 +58,10 @@ const char *get_clock_str(const int cloc
+>   		return "CLOCK_THREAD_CPUTIME_ID";
+>   	case CLOCK_MONOTONIC_RAW:
+>   		return "CLOCK_MONOTONIC_RAW";
+> +	case CLOCK_REALTIME_COARSE:
+> +		return "CLOCK_REALTIME_COARSE";
+> +	case CLOCK_MONOTONIC_COARSE:
+> +		return "CLOCK_MONOTONIC_COARSE";
+>   	default:
+>   		return "CLOCK_!?!?!?";
+>   	}
+>
+> ------------------------------------------------------------------------------
+> SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
+> Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
+> http://p.sf.net/sfu/solaris-dev2dev
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>    
+
+
+-- 
+Thanks&  Regards
+Rishi Kesh K Rajak
+IBM LTC, Bangalore
+LTP Maintainer
+Please join IRC: #ltp @ freenode.net
+
 
 ------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
---===============4078894252532377558==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
+Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
+http://p.sf.net/sfu/solaris-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4078894252532377558==--
-
