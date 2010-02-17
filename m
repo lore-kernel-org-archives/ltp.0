@@ -1,29 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NkaKp-0000Ax-5m
-	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 09:48:43 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Nhnp8-0006M1-HI
+	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 17:36:30 +0000
 Received: from mail-pw0-f47.google.com ([209.85.160.47])
 	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NkaKo-0005Aj-7P
-	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 09:48:43 +0000
-Received: by pwi5 with SMTP id 5so4846361pwi.34
+	id 1Nhnp7-0000IK-Ns
+	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 17:36:30 +0000
+Received: by pwi5 with SMTP id 5so1026398pwi.34
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 25 Feb 2010 01:48:36 -0800 (PST)
+	Wed, 17 Feb 2010 09:36:23 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20100225093304.GA23984@linux.vnet.ibm.com>
-References: <41c7690d1002240410y3f132792he5460c69891a0976@mail.gmail.com>
-	<364299f41002241314u28cec7e9h7334685f6f82a8a@mail.gmail.com>
-	<41c7690d1002242240m787a1e8bj4640341ec09ff61c@mail.gmail.com>
-	<364299f41002242307i6256a0f1v9fbc4a2197049270@mail.gmail.com>
-	<364299f41002242311j2c97cf8fm2894f00b3640d1ef@mail.gmail.com>
-	<41c7690d1002250109r5e35b35cw2b10c0e270bc273a@mail.gmail.com>
-	<20100225093304.GA23984@linux.vnet.ibm.com>
-Date: Thu, 25 Feb 2010 01:48:35 -0800
-Message-ID: <364299f41002250148q42f2d468y5c21919eeed3ce51@mail.gmail.com>
+In-Reply-To: <20100217150214.GB9825@rishikesh.in.ibm.com>
+References: <000f01caae08$ce91e640$6bb5b2c0$@co.jp>
+	<20100217150214.GB9825@rishikesh.in.ibm.com>
+Date: Wed, 17 Feb 2010 09:36:23 -0800
+Message-ID: <364299f41002170936q1f0c4723qd7ad7f10df6745af@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH][RESEND] RTC Device Driver Tests
+Subject: Re: [LTP] "logrotate01" has problem
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,75 +31,115 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Silesh C V <saileshcv@gmail.com>, Garrett Cooper <yanegomi@gmail.com>, subrata@linux.vnet.ibm.com, ltp-list@lists.sourceforge.net, Arun.sudhilal@lntinfotech.com, Mohamed.Rasheed@lntinfotech.com
+To: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Feb 25, 2010 at 1:33 AM, Rishikesh K Rajak
+On Wed, Feb 17, 2010 at 7:02 AM, Rishikesh K Rajak
 <risrajak@linux.vnet.ibm.com> wrote:
-> On Thu, Feb 25, 2010 at 02:39:37PM +0530, Silesh C V wrote:
->> >>
->> >> =A0 =A0The end goal is to have these tests fit directly into LTP with=
-out
->> >> having to fudge around writing a secondary driver, thus maintaining
->> >> two pieces of dependent code [which is of course more complicated than
->> >> one piece of code], and thus is more of a pain to maintain longterm.
->> >> There's a lot of code in the repository like this that was ported and
->> >> subsequently not properly adapted to the existing infrastructure, thus
->> >> creating additional headache for maintainers and end-users.
->> >
->> > Ok -- I take that back. I have no idea wtf is going on in this
->> > directory nor the ultimate intent of the tests in here, apart from
->> > being a lot of ad hoc pain in the arse-ness.
+> On Mon, Feb 15, 2010 at 03:33:37PM +0900, Yuki Yao wrote:
+>> Hi,
 >>
->> The README in testcases/kernel/device-drivers/ says that these tests
->> should not be run with the other tests, and they have to be built
->> separately. I agree that this is because they have a kernel space part
->> also. But this prevents us from =A0building =A0device_driver tests that
->> have only user space part (as in RTC tests), along with the overall
->> build. And these tests does not belong in any other directory other
->> than kernel/device-drivers. So as long as other tests are there we
->> will have to live with building new device driver tests separately.I
->> can re-send =A0the patch with Garrett's suggestions =A0incorporated.
+>> I contributed following problem previously, but it's not yet revised.
+>> So, I contribute this again.
 >>
->> Subrata, suggestions ?
+>> After "./runltp" execution, all log files such as "/var/log/messages*"
+>> disappeared, and there is only new log file created after the test.
+>>
+>> This seems a problem that occurs after the "logrotate01" test.
+>> I found that the past log files were deleted by forcing a "logrotate"
+>> (logrotate -fv $LTPTMP/tst_logrotate.conf).
+>>
+>> Besides, logrotate01's shell script "./testcases/commands/logrotate
+>> /logrotate_tests.sh" creats logrotate configuration file ($LTPTMP
+>> /tst_logrotate.conf) for the test, and this configration file includes
+>> "/etc/logrotate.d" as follows:
+>>
+>> [ ./testcases/commands/logrotate/logrotate_tests.sh line:156~ ]
+>> ----------
+>> # create config file.
+>> =A0 =A0 =A0 cat >$LTPTMP/tst_logrotate.conf <<-EOF
+>> =A0 =A0 =A0 #****** Begin Config file *******
+>> =A0 =A0 =A0 # create new (empty) log files after rotating old ones
+>> =A0 =A0 =A0 create
+>>
+>> =A0 =A0 =A0 # compress the log files
+>> =A0 =A0 =A0 compress
+>>
+>> =A0 =A0 =A0 # RPM packages drop log rotation information into this direc=
+tory
+>> =A0 =A0 =A0 include /etc/logrotate.d
+>>
+>> =A0 =A0 =A0 /var/log/tst_logfile {
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 rotate 5
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 weekly
+>> =A0 =A0 =A0 }
+>> =A0 =A0 =A0 #****** End Config file *******
+>> =A0 =A0 =A0 EOF
+>> ----------
+>>
+>> By This, not only a log file for the test (/var/log/tst_logfile)
+>> but also 30 fies such as "/var/log/messages*" become "logrotate"
+>> command target.
+>> Only a log file for this test must become a target of the forced
+>> execution of "logrotate".
+>>
+>> To resolve this problem, we must change "/logrotate_tests.sh" not to
+>> include "/etc/logrotate.d", I think.
+>>
+>> Signed-off-by: Yuki Yao<y_yao@ryobi.co.jp>
 >
-> Hi Silesh,
+> Hello Garret,
 >
-> How about porting this on new makefile infrastructure ? I think this is
-> time where we can look back and can make one piece of code as garret
-> said is correct. Please see your fesibility. Let me know if you still
-> want this to be integrated. Before that can you please little more
-> descriptive with your patch e,g: what it is doing.
+> Any input for this patch ?
 >
-> And also it is always good if you include more documentation for each
-> function as coding style suggests.
+> Thanks
+> -Rishi
+>>
+>> Index: ./testcases/commands/logrotate/logrotate_tests.sh
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> --- ./testcases/commands/logrotate/logrotate_tests.sh.orig =A0 =A02008-1=
+0-21
+>> 15:54:15.000000000 +0900
+>> +++ ./testcases/commands/logrotate/logrotate_tests.sh 2010-02-15
+>> 13:32:02.000000000 +0900
+>> @@ -163,7 +163,7 @@
+>> =A0 =A0 =A0 compress
+>>
+>> =A0 =A0 =A0 # RPM packages drop log rotation information into this direc=
+tory
+>> - =A0 =A0 include /etc/logrotate.d
+>> + =A0 =A0 # include /etc/logrotate.d
+>>
+>> =A0 =A0 =A0 /var/log/tst_logfile {
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 rotate 5
+>> @@ -200,7 +200,7 @@
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 # check if =A0/etc/logrotate.d is included/
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 # check if 5 rotations are forced.
+>> =A0 =A0 =A0 =A0 =A0# check if compression is done.
+>> - =A0 =A0 =A0 =A0 =A0 =A0 grep "including /etc/logrotate.d" $LTPTMP/tst_=
+logrotate.out
+>> \
+>> + =A0 =A0 =A0 =A0 =A0 =A0 # grep "including /etc/logrotate.d"
+>> $LTPTMP/tst_logrotate.out \
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 > $LTPTMP/tst_logrotate.err =
+2>&1 || RC=3D$?
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 grep "reading config file $LTPTMP/tst_logrot=
+ate.conf" \
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 $LTPTMP/tst_logrotate.out =
+=A0 >
+>> $LTPTMP/tst_logrotate.err 2>&1 || RC=3D$?
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-Regardless of whether or not this can fit within the new makefile
-infrastructure -- please at least consider adding in the bits to use
-tst_res(3). It will make maintenance considerably easier in the long
-run. I can port a Makefile over in < 30 mins -- it's the C code that
-I'd have to fumble around with as I'm not the original developer, I
-may not understand all the nuances of what's trying to be tested, etc.
-
-More documentation would be extremely helpful, in particular pointers
-to additional reference material so that someone who has _zero_
-understanding in how the rtc driver typically works in Linux can at
-least look up additional materials to develop a better understanding
-of what's going on...
-
->> >
->> > I've learned enough to keep my hands off this because it looks like a =
-mess.
-
+The problem statement isn't clearly worded, thus I'm confused whether
+or not the patch is fixing a symptom or the root cause itself.
 Thanks,
 -Garrett
 
 ---------------------------------------------------------------------------=
 ---
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
+SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
+Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
+http://p.sf.net/sfu/solaris-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
