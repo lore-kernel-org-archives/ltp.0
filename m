@@ -1,27 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NkaWY-0001o3-9V
-	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 10:00:50 +0000
-Received: from mail-pz0-f194.google.com ([209.85.222.194])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NkaWX-0000GT-Ft
-	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 10:00:50 +0000
-Received: by pzk32 with SMTP id 32so561300pzk.4
+	(envelope-from <yanegomi@gmail.com>) id 1Nhni0-00018H-Qe
+	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 17:29:08 +0000
+Received: from mail-pz0-f187.google.com ([209.85.222.187])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Nhni0-0006Wi-3Z
+	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 17:29:08 +0000
+Received: by pzk17 with SMTP id 17so6533641pzk.4
 	for <ltp-list@lists.sourceforge.net>;
-	Thu, 25 Feb 2010 02:00:44 -0800 (PST)
+	Wed, 17 Feb 2010 09:29:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <4B862614.5020401@cn.fujitsu.com>
-References: <4B82143D.5050006@cn.fujitsu.com>
-	<364299f41002212356g2a4ceb09o3d271e31b388fe51@mail.gmail.com>
-	<4B8249A7.3040401@cn.fujitsu.com>
-	<364299f41002221005l7df3ceafhaeb6a49b17ee0fed@mail.gmail.com>
-	<4B832856.3050305@cn.fujitsu.com> <4B862614.5020401@cn.fujitsu.com>
-Date: Thu, 25 Feb 2010 02:00:43 -0800
-Message-ID: <364299f41002250200xd1d81d5g6d96521df9235e4f@mail.gmail.com>
+In-Reply-To: <4B7BA2D8.6000107@linux.vnet.ibm.com>
+References: <4B7BA2D8.6000107@linux.vnet.ibm.com>
+Date: Wed, 17 Feb 2010 09:29:00 -0800
+Message-ID: <364299f41002170929l5d1e381ei4050567b60b178e7@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] syscalls: fix some failure on arch X86_64
+Subject: Re: [LTP] Noise from `parameters.sh'
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,34 +27,28 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: liubo <liubo2009@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Rishikesh <risrajak@linux.vnet.ibm.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-On Wed, Feb 24, 2010 at 11:26 PM, liubo <liubo2009@cn.fujitsu.com> wrote:
-> Hi Garrett,
+On Wed, Feb 17, 2010 at 12:03 AM, Rishikesh <risrajak@linux.vnet.ibm.com> wrote:
+> Hi garret,
 >
-> =A0=A0=A0 I figured that this patch has not been merged into ltp-cvs.
-> =A0=A0=A0 Is there some else problems about this patch?
->
-> Thanks,
-> Liubo
+> Any idea if this has got fixed with current CVS ?
 
-    I tried looking at it this weekend and got sidetracked (hint:
-please provide me with a complete patchable diff, preferably as a file
-attachment).
-Thanks!
+No. I don't touch that stuff because it's not my code and the
+maintainer in IBM is semi-particular about how things get done from
+what I've seen (he's backed out changes I've made in the past to `fix'
+things)...
+Thanks,
 -Garrett
 
----------------------------------------------------------------------------=
----
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
+------------------------------------------------------------------------------
+SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
+Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
+http://p.sf.net/sfu/solaris-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
