@@ -1,41 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NjZEa-0006Yc-Bs
-	for ltp-list@lists.sourceforge.net; Mon, 22 Feb 2010 14:26:04 +0000
-Received: from e4.ny.us.ibm.com ([32.97.182.144])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NjZEY-0000MC-Ro
-	for ltp-list@lists.sourceforge.net; Mon, 22 Feb 2010 14:26:04 +0000
-Received: from d01relay05.pok.ibm.com (d01relay05.pok.ibm.com [9.56.227.237])
-	by e4.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1MEFK4w003915
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Feb 2010 09:15:20 -0500
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay05.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o1MEPuXC094078
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Feb 2010 09:25:56 -0500
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o1MEPu08012302
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Feb 2010 11:25:56 -0300
-Received: from rishikesh.in.ibm.com ([9.77.207.138])
-	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVin) with ESMTP id
-	o1MEPtdk012092
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Feb 2010 11:25:56 -0300
-Received: from rishikesh.in.ibm.com (rishikesh.in.ibm.com [127.0.0.1])
-	by rishikesh.in.ibm.com (Postfix) with ESMTP id 5A7516069D
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Nhnm2-0005zz-TY
+	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 17:33:18 +0000
+Received: from mail-pz0-f187.google.com ([209.85.222.187])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Nhnm2-0002hc-2M
+	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 17:33:18 +0000
+Received: by pzk17 with SMTP id 17so6538119pzk.4
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 22 Feb 2010 19:55:41 +0530 (IST)
-Received: (from rishikesh@localhost)
-	by rishikesh.in.ibm.com (8.14.3/8.14.3/Submit) id o1MEPdkG015964
-	for ltp-list@lists.sourceforge.net; Mon, 22 Feb 2010 19:55:39 +0530
-Date: Mon, 22 Feb 2010 19:55:39 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100222142539.GA15818@linux.vnet.ibm.com>
+	Wed, 17 Feb 2010 09:33:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] Container Testcase problem with feb intermediate release
+In-Reply-To: <20100217161452.GB10848@rishikesh.in.ibm.com>
+References: <20100217161452.GB10848@rishikesh.in.ibm.com>
+Date: Wed, 17 Feb 2010 09:33:10 -0800
+Message-ID: <364299f41002170933v25a0160ev7b7021007511ca30@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] acl_test01 cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -48,47 +30,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP <ltp-list@lists.sourceforge.net>
+To: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,
+On Wed, Feb 17, 2010 at 8:14 AM, Rishikesh K Rajak
+<risrajak@linux.vnet.ibm.com> wrote:
+> Hi Garret,
+>
+> I am not finding this patch (
+> http://marc.info/?l=ltp-list&m=126538672221964&w=2 ) as committed to
+> repo.
 
-Ran ltp full testcase today with feb ltp intermediate release, but it
-hangs at running network namespace testcase.
-
-It is recreatable just after running this:
-
-#./runltp -f containers
-====================================================================
-...
-pidns20     0  TINFO  :  parent: signalled SIGUSR1 to container
-Running POSIX message queue tests.
-mq_open: Permission denied
-posixmq_namespace_01    0  TINFO  :  Testing posix mq namespaces through
-unshare(2).
-
-posixmq_namespace_01    1  TFAIL  :  mq_open failed
-
-Running netns tests.
---: childns.sh '/opt/ltp': No such file or directory
-
-<------- Stuck here
-==================================================================
-
-Let me know if someone is aware about this prob.
-
--- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
+Done.
+-Garrett
 
 ------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
-See why Intel Parallel Studio got high marks during beta.
-http://p.sf.net/sfu/intel-sw-dev
+SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
+Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
+http://p.sf.net/sfu/solaris-dev2dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
