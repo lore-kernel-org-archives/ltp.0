@@ -1,34 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NhxWp-0007DJ-T9
-	for ltp-list@lists.sourceforge.net; Thu, 18 Feb 2010 03:58:15 +0000
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NhxhV-0001TA-WB
+	for ltp-list@lists.sourceforge.net; Thu, 18 Feb 2010 04:09:18 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
 	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NhxWo-0004oT-Ik
-	for ltp-list@lists.sourceforge.net; Thu, 18 Feb 2010 03:58:15 +0000
-Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
-	by e5.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1I3ifit002725
-	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 22:44:41 -0500
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o1I3w8kZ111204
-	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 22:58:08 -0500
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o1I3w8ee016037
-	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 22:58:08 -0500
-Date: Thu, 18 Feb 2010 09:27:56 +0530
+	(Exim 4.69) id 1NhxhR-0006ZD-O9
+	for ltp-list@lists.sourceforge.net; Thu, 18 Feb 2010 04:09:17 +0000
+Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
+	[9.17.195.226])
+	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1I41XQU004549
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 21:01:33 -0700
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o1I49385102978
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 21:09:03 -0700
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o1I492ju013311
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 21:09:03 -0700
+Date: Thu, 18 Feb 2010 09:38:50 +0530
 From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100218035756.GA13013@rishikesh.in.ibm.com>
-References: <4B7BA433.3030206@linux.vnet.ibm.com>
-	<364299f41002170908p302cc665g874c89a109ddfd1f@mail.gmail.com>
+Message-ID: <20100218040850.GB13013@rishikesh.in.ibm.com>
+References: <4B7BA709.8080306@linux.vnet.ibm.com>
+	<70aae6bd1002170035j6b8ad2a3la26a90d13b7b800e@mail.gmail.com>
+	<20100217120746.GA5966@rishikesh.in.ibm.com>
+	<70aae6bd1002171928r7b86a5c2g568117a65dc462fe@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <364299f41002170908p302cc665g874c89a109ddfd1f@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] mail_tests.sh: fix a version problem of Heirloom
- Mail
+In-Reply-To: <70aae6bd1002171928r7b86a5c2g568117a65dc462fe@mail.gmail.com>
+Subject: Re: [LTP] CAN LTP BE CROSS COMPILED FOR ANDROID PLATFORM
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,38 +43,108 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>, Shi Weihua <shiwh@cn.fujitsu.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: md zafar ziya <md.zafar.ziya@gmail.com>
+Cc: Rishikesh <risrajak@in.ibm.com>, ltp-list@lists.sourceforge.net
 
-On Wed, Feb 17, 2010 at 09:08:39AM -0800, Garrett Cooper wrote:
-> On Wed, Feb 17, 2010 at 12:09 AM, Rishikesh <risrajak@linux.vnet.ibm.com> wrote:
-> > Hi Shi,
-> >
-> > Thanks for your patch . It will be merged in feb 2010 release.
-> >
-> > Acked-By: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-> >
-> > http://marc.info/?l=ltp-list&m=126440546415559&w=2
+On Thu, Feb 18, 2010 at 08:58:48AM +0530, md zafar ziya wrote:
+> Hello Rishikesh,
 > 
-> There's a lot of noise in the patch because of if-else behavior in
-> trying to determine the mail app. That's why I didn't commit this (it
-> requires verification of previous mail applications as well).
-
-Thanks Garret, Still i have not committed this to CVS repo.
-
-Shi, can you please verify if this patch does not break with any other
-mail application.
-
-Thanks for your support.
--Rishi
+> 1.All LTP application has to compiled against Android bionic library.
+> 2.Use Android Target Cross compiler for building Testcases executables(That
+> use compiler builtin API also).
+> 3.Android libraray dont have -lrt and -lpthread library,Real time
+> library(rt) and Thread library(pthread) are not defined inside Bionic,so
+> just remove these entries from Makefile because these library function are
+> being moved to bionic C library and for thread API include proper header
+> file only.
+> 4.Header files are placed to different location in bionic ,So update the
+> source as per requirement.
+> 5.to run LTP on android based target,use busybox(Cross compiled for
+> android:Path-http://benno.id.au/blog/2007/11/14/android-busybox).Push to
+> target and use.
+> 6.Modify script as per requirement because android based target has
+> different interpretation.
+> 7.Push only scripts and binary of the executables(because of memory
+> constraints) inside target.
+> 8.Run runltp
 > 
-> The mail test should be resistant to changes like these as a lot of
-> developers in the FOSS community have different opinions on how to do
-> things and don't follow any particular standard. This `heirloom mailx'
-> support is just one said example that needs to be fixed.
 > 
-> Thanks,
-> -Garrett
+> The above steps anyone can follow to cross compile LTP to ANDROID and run on
+> target.
+
+Thanks for your time and metioning the steps , i am sure it will help
+others too.
+> 
+> My Job was not to add new test cases(To check kernel stability only),so i
+> didnt think about that so far.
+> 
+> But i would like to contribute new test case to LTP in the future.LTP is
+> very good project,If any one would add test cases that can show benchmark of
+> different interrupt latency ,that will be big advantage for LTP future and
+> it can make LTP popular among developers.
+
+Very well said, and we are looking forward for your contributions.
+
+Thanks
+Rishi
+> 
+> Thank you
+> 
+> Regards
+> 
+> md zafar ziya
+> 
+> 
+> On Wed, Feb 17, 2010 at 5:37 PM, Rishikesh K Rajak <
+> rishikesh@rishikesh.in.ibm.com> wrote:
+> 
+> > On Wed, Feb 17, 2010 at 02:05:38PM +0530, md zafar ziya wrote:
+> > > Hello Rishikesh,
+> > >
+> > > Thanks for support.
+> > >
+> > > LTP cross compilation is being done(Specific test cases for Testing linux
+> > > kernel features only).
+> > >
+> > > If any one want assistance, Contact on zafar.ziya@samsung.com or
+> > > md.zafar.ziya@gmail.com
+> > Hi Zafar,
+> >
+> > Good to know that it worked for you. It will helpful if you could
+> > explain the steps here so that everyone over can take the advantage. Also
+> > let
+> > us know if you have have faced some hurdles while solving this issue.
+> >
+> > And also any plans for new contribution to ltp with new testcases ?
+> >
+> > Thanks
+> > -Rishi
+> > >
+> > > Thank you again.
+> > >
+> > > regards
+> > >
+> > > Zafar ziya
+> > >
+> > > On Wed, Feb 17, 2010 at 1:51 PM, Rishikesh <risrajak@linux.vnet.ibm.com
+> > >wrote:
+> > >
+> > > > Hi All,
+> > > >
+> > > > Please help Zafar, if anyone has compiled LTP on andriod .
+> > > >
+> > > > Ref Mail:
+> > > > http://marc.info/?l=ltp-list&m=126286998319361&w=2
+> > > >
+> > > > --
+> > > > Thanks&  Regards
+> > > > Rishi Kesh K Rajak
+> > > > IBM LTC, Bangalore
+> > > > LTP Maintainer
+> > > > Please join IRC: #ltp @ freenode.net
+> > > >
+> > > >
+> >
 
 ------------------------------------------------------------------------------
 Download Intel&reg; Parallel Studio Eval
