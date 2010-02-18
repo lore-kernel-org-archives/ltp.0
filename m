@@ -1,19 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1Nbu72-0001vf-4k
-	for ltp-list@lists.sourceforge.net; Mon, 01 Feb 2010 11:06:36 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nhxxj-0008HW-7D
+	for ltp-list@lists.sourceforge.net; Thu, 18 Feb 2010 04:26:03 +0000
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
 	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Nbu71-0005ey-0C
-	for ltp-list@lists.sourceforge.net; Mon, 01 Feb 2010 11:06:36 +0000
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Mon, 01 Feb 2010 16:36:22 +0530
-Message-Id: <1265022382.5234.30.camel@subratamodak.linux.ibm.com>
-Mime-Version: 1.0
-Subject: [LTP] [MAINTAINERSHIP] Change in Responsibility
-Reply-To: subrata@linux.vnet.ibm.com
+	(Exim 4.69) id 1Nhxxg-0003JD-U5
+	for ltp-list@lists.sourceforge.net; Thu, 18 Feb 2010 04:26:03 +0000
+Received: from d01relay07.pok.ibm.com (d01relay07.pok.ibm.com [9.56.227.147])
+	by e4.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1I4FFsW002411
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 23:15:15 -0500
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay07.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o1I4PjVf1732678
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 23:25:45 -0500
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o1I4PjmR022090
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 23:25:45 -0500
+Date: Thu, 18 Feb 2010 09:55:32 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100218042532.GC13013@rishikesh.in.ibm.com>
+References: <4B7BA24F.2010705@linux.vnet.ibm.com>
+	<364299f41002170910i336abf6eh72acbcbec9b72e7b@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <364299f41002170910i336abf6eh72acbcbec9b72e7b@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] sysctl03: sysctl returns EACCES after 2.6.33-rc1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,61 +37,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sf.net>
-Cc: Nathan Straz <nstraz@redhat.com>, Mike Frysinger <vapier@gentoo.org>, Michael Reed <mreed10@us.ibm.com>, Sudarshan Rao <rsudarsh@in.ibm.com>, "manoj.iyer" <manoj.iyer@canonical.com>, "paul.larson" <paul.larson@ubuntu.com>
+To: Garrett Cooper <yanegomi@gmail.com>, Shi Weihua <shiwh@cn.fujitsu.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-SGVsbG8gRXZlcnlib2R5LAoKQWZ0ZXIgYWxtb3N0IDMgeWVhcnMgb2Ygd29ya2luZyB3aXRoIHRo
-ZSBMVFAgY29tbXVuaXR5LCBpIGhhdmUgZmluYWxseQpkZWNpZGVkIHRvIGhhbmQgb3ZlciB0aGUg
-cmVzcG9uc2liaWxpdHkgb2YgTWFpbnRhaW5lcnNoaXAgdG8gUmlzaGlrZXNoLgpIZSB3aWxsIHRh
-a2Ugb3ZlciBhbGwgdGhlIGZ1dHVyZSBPZmZpY2lhbCByZWxlYXNlcyBhbmQgd29yayB3aXRoIHRo
-ZQpjb21tdW5pdHkgdG8gZnVydGhlciBMVFDFmyBBZ2VuZGEuCgpIYXZpbmcgc2FpZCB0aGF0LCBp
-IGNvbmZpcm0gdG8gcmVtYWluIGFjdGl2ZSBhbmQga2VlcCBkZXZlbG9waW5nIExUUCBmb3IKYmV0
-dGVybWVudCBvZiBMaW51eCB0ZXN0aW5nLiBJIHdvdWxkIGhlbHAgdG8gcmVzb2x2ZSBhbGwgaXNz
-dWVzIGFzIHdlbGwKYW5kIHdpbGwgc3RpbGwgYmUgc2VlbiBvbiB0aGUgTWFpbGluZyBMaXN0LgoK
-SSB3b3VsZCByZXF1ZXN0IHlvdSB0byBleHRlbmQgeW91ciBzdXBwb3J0IHRvIFJpc2hpa2VzaCBh
-cyB5b3UgaGF2ZSBiZWVuCmRvaW5nIHVucXVlc3Rpb25hYmx5IHRvIG1lIGFsbCB0aGVzZSB5ZWFy
-cy4gVGhhbmtzIGZvciBhbGwgeW91ciBzdXBwb3J0LgoKUmVnYXJkcy0tClN1YnJhdGEKCi0tLS0t
-LS0tIEZvcndhcmRlZCBNZXNzYWdlIC0tLS0tLS0tCkZyb206IFN1YnJhdGEgTW9kYWsgPHN1YnJh
-dGFAbGludXgudm5ldC5pYm0uY29tPgpSZXBseS1Ubzogc3VicmF0YUBsaW51eC52bmV0LmlibS5j
-b20KVG86IGx0cC1saXN0IDxsdHAtbGlzdEBsaXN0cy5zZi5uZXQ+LCBsaW51eC1rZXJuZWwKPGxp
-bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+CkNjOiBHYXJyZXR0IENvb3BlciA8eWFuZWdvbWlA
-Z21haWwuY29tPiwgTWlrZSBGcnlzaW5nZXIKPHZhcGllckBnZW50b28ub3JnPiwgTGludXMgVG9y
-dmFsZHMgPHRvcnZhbGRzQGxpbnV4LWZvdW5kYXRpb24ub3JnPiwKQW5kcmV3IE1vcnRvbiA8YWtw
-bUBsaW51eC1mb3VuZGF0aW9uLm9yZz4sIFJpc2hpa2VzaCBLIFJhamFrCjxyaXNyYWpha0BsaW51
-eC52bmV0LmlibS5jb20+ClN1YmplY3Q6IFtBTk5PVU5DRV0gVGhlIExpbnV4IFRlc3QgUHJvamVj
-dCBoYXMgYmVlbiByZWxlYXNlZCBmb3IgSkFOVUFSWQoyMDEwCkRhdGU6IE1vbiwgMDEgRmViIDIw
-MTAgMTY6Mjc6MjMgKzA1MzAKCkhpLAoKVGhlIExpbnV4IFRlc3QgUHJvamVjdCB0ZXN0IHN1aXRl
-IGhhcyBiZWVuIHJlbGVhc2VkIGZvciB0aGUgbW9udGggb2YKSkFOVUFSWSAyMDEwLiBQbGVhc2Ug
-c2VlIGx0cC9JTlNUQUxMIGZpbGUgY2FyZWZ1bGx5LCBhcywgdGhlcmUgaGFzCmJlZW4gbXVsdGlw
-bGUgY2hhbmdlcyBmb3IgYnVpbGRpbmcvaW5zdGFsbGluZyB0aGUgdGVzdCBzdWl0ZSBhZnRlciB0
-aGUKcmVjZW50IGNoYW5nZXMgaW4gTWFrZWZpbGUgaW5mcmFzdHJ1Y3R1cmUuCgpUaGUgbGF0ZXN0
-IHZlcnNpb24gb2YgdGhlIHRlc3Qtc3VpdGUgY29udGFpbnMgMzAwMCsgdGVzdHMgZm9yIHRoZSBM
-aW51eApPUyBhbmQgY2FuIGJlIGZvdW5kIGF0OgpodHRwOi8vbHRwLnNvdXJjZWZvcmdlLm5ldC8s
-CkxhdGVzdCBoYXBwZW5pbmdzIGluIExUUCBjYW4gYWxzbyBiZSBmb3VuZCBhdDoKaHR0cDovL2x0
-cC5zb3VyY2Vmb3JnZS5uZXQvd2lraS8sCmh0dHA6Ly9sdHAuc291cmNlZm9yZ2UubmV0L3dpa2lB
-cmNoaXZlcy5waHAsIGFuZCwKSVJDOiBpcmMuZnJlZW5vZGUub3JnICNsdHAuCgpPdXIgd2ViIHNp
-dGUgYWxzbyBjb250YWlucyBvdGhlciBpbmZvcm1hdGlvbiBzdWNoIGFzOgotIEEgTGludXggdGVz
-dCB0b29scyBtYXRyaXgKLSBUZWNobmljYWwgcGFwZXJzCi0gSG93IFRvJ3Mgb24gTGludXggdGVz
-dGluZwotIENvZGUgY292ZXJhZ2UgYW5hbHlzaXMgdG9vbC4KCldlIHdvdWxkIGVuY291cmFnZSB0
-aGUgY29tbXVuaXR5IHRvIHBvc3QgcmVzdWx0cyB0bwpsdHAtcmVzdWx0c0BsaXN0cy5zZi5uZXQs
-CnBhdGNoZXMsIG5ldyB0ZXN0cywgYnVncyBvciBjb21tZW50cy9xdWVzdGlvbnMgdG8gbHRwLWxp
-c3RAbGlzdHMuc2YubmV0LApodHRwOi8vc291cmNlZm9yZ2UubmV0L3RyYWNrZXIvP2Z1bmM9YWRk
-Jmdyb3VwX2lkPTMzODImYXRpZD0xMDMzODIgKGZvcgpOZXcgQnVnKHMpKSwKaHR0cDovL3NvdXJj
-ZWZvcmdlLm5ldC90cmFja2VyLz9mdW5jPWFkZCZncm91cF9pZD0zMzgyJmF0aWQ9MzAzMzgyIChm
-b3IKTmV3IFBhdGNoKHMpKSwKaHR0cDovL3NvdXJjZWZvcmdlLm5ldC90cmFja2VyLz9mdW5jPWFk
-ZCZncm91cF9pZD0zMzgyJmF0aWQ9MzUzMzgyIChmb3IKTmV3IEZlYXR1cmUgUmVxdWVzdChzKSkK
-CioqTm90ZTogU29tZSBwZW5kaW5nIHBhdGNoZXMgd2lsbCBiZSBjaGVja2VkIGluIGZvciBuZXh0
-IG1vbnRoxZsgcmVsZWFzZS4KCkhhcHB5IHRlc3RpbmcsIApSZWdhcmRzLS0gClN1YnJhdGEsCgoK
-Ci0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpUaGUgUGxhbmV0OiBkZWRpY2F0ZWQgYW5kIG1hbmFnZWQg
-aG9zdGluZywgY2xvdWQgc3RvcmFnZSwgY29sb2NhdGlvbgpTdGF5IG9ubGluZSB3aXRoIGVudGVy
-cHJpc2UgZGF0YSBjZW50ZXJzIGFuZCB0aGUgYmVzdCBuZXR3b3JrIGluIHRoZSBidXNpbmVzcwpD
-aG9vc2UgZmxleGlibGUgcGxhbnMgYW5kIG1hbmFnZW1lbnQgc2VydmljZXMgd2l0aG91dCBsb25n
-LXRlcm0gY29udHJhY3RzClBlcnNvbmFsIDI0eDcgc3VwcG9ydCBmcm9tIGV4cGVyaWVuY2UgaG9z
-dGluZyBwcm9zIGp1c3QgYSBwaG9uZSBjYWxsIGF3YXkuCmh0dHA6Ly9wLnNmLm5ldC9zZnUvdGhl
-cGxhbmV0LWNvbQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0
-dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+On Wed, Feb 17, 2010 at 09:10:48AM -0800, Garrett Cooper wrote:
+> On Wed, Feb 17, 2010 at 12:01 AM, Rishikesh <risrajak@linux.vnet.ibm.com> wrote:
+> > Hi Shi,
+> >
+> > Thanks for your patch, still i am finding time to look into your patch.
+> > Will reply you soon.
+> >
+> > http://marc.info/?l=ltp-list&m=126502355614857&w=2
+> 
+> I looked at the patch finally.
+
+Thanks garret.
+> 
+> Please use TTERRNO instead of strerror(...) for the reported value.
+> There's no reason why you should use strerror(...) there as that's
+> already done with tst_res(3).
+
+Shi, can you please incorporate changes which garret has suggested and
+resend the patch again to ltp-list@ .
+
+Thanks for your support.
+- Rishi
+
+> Thanks,
+> -Garrett
+
+------------------------------------------------------------------------------
+Download Intel&reg; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs 
+proactively, and fine-tune applications for parallel performance. 
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
