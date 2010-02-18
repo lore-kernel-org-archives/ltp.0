@@ -1,29 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nhf7o-00033E-14
-	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 08:19:12 +0000
-Received: from e23smtp09.au.ibm.com ([202.81.31.142])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Nhf7m-00073R-6K
-	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 08:19:12 +0000
-Received: from d23relay03.au.ibm.com (d23relay03.au.ibm.com [202.81.31.245])
-	by e23smtp09.au.ibm.com (8.14.3/8.13.1) with ESMTP id o1H8J3En032083
-	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 19:19:03 +1100
-Received: from d23av01.au.ibm.com (d23av01.au.ibm.com [9.190.234.96])
-	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o1H8J3uQ1704028
-	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 19:19:03 +1100
-Received: from d23av01.au.ibm.com (loopback [127.0.0.1])
-	by d23av01.au.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o1H8J2DJ019932
-	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 19:19:02 +1100
-Message-ID: <4B7BA674.4090703@linux.vnet.ibm.com>
-Date: Wed, 17 Feb 2010 13:49:00 +0530
-From: Rishikesh <risrajak@linux.vnet.ibm.com>
+	(envelope-from <oberpar@linux.vnet.ibm.com>) id 1NiCGb-00025I-7s
+	for ltp-list@lists.sourceforge.net; Thu, 18 Feb 2010 19:42:29 +0000
+Received: from mtagate6.de.ibm.com ([195.212.17.166])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NiCGZ-0007nu-Sf
+	for ltp-list@lists.sourceforge.net; Thu, 18 Feb 2010 19:42:29 +0000
+Received: from d12nrmr1607.megacenter.de.ibm.com
+	(d12nrmr1607.megacenter.de.ibm.com [9.149.167.49])
+	by mtagate6.de.ibm.com (8.13.1/8.13.1) with ESMTP id o1IJgKAW000311
+	for <ltp-list@lists.sourceforge.net>; Thu, 18 Feb 2010 19:42:20 GMT
+Received: from d12av03.megacenter.de.ibm.com (d12av03.megacenter.de.ibm.com
+	[9.149.165.213])
+	by d12nrmr1607.megacenter.de.ibm.com (8.13.8/8.13.8/NCO v10.0) with
+	ESMTP id o1IJgKLR1380482
+	for <ltp-list@lists.sourceforge.net>; Thu, 18 Feb 2010 20:42:20 +0100
+Received: from d12av03.megacenter.de.ibm.com (loopback [127.0.0.1])
+	by d12av03.megacenter.de.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
+	id o1IJgK9B030705
+	for <ltp-list@lists.sourceforge.net>; Thu, 18 Feb 2010 20:42:20 +0100
+Message-ID: <4B7D981B.1070005@linux.vnet.ibm.com>
+Date: Thu, 18 Feb 2010 20:42:19 +0100
+From: Peter Oberparleiter <oberpar@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] fix the bug of sched_getaffinity
+References: <EB1A7C66AD0C92419BFFC785A947865A09EAE44689@BLRINMSMBX01.bglrodc.lntinfotech.com>	<20100218101440.GA21750@rishikesh.in.ibm.com>	<EB1A7C66AD0C92419BFFC785A947865A09EAE448A4@BLRINMSMBX01.bglrodc.lntinfotech.com>
+	<20100218104715.GB21750@rishikesh.in.ibm.com>
+In-Reply-To: <20100218104715.GB21750@rishikesh.in.ibm.com>
+Subject: Re: [LTP] not able to generate HTML output
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,28 +41,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: miaox@cn.fujitsu.com
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, Pramendra Singh <Pramendra.Singh@lntinfotech.com>
 
-Hi Miao,
+If you're cross-compiling your kernel and want to run lcov on the build 
+machine, you need to specify the full path to the cross-compiler gcov 
+tool, otherwise lcov will attempt to use the gcov tool of the locally 
+installed gcc package.
 
-This patch (ref: http://marc.info/?l=ltp-list&m=126345572828526&w=2 ) 
-will be committed to Feb'10 release. Please test once it is out.
+Example:
 
-Reviewed-By: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+   lcov -c -d /path/to/files --gcov-tool /path/to/ppc_85xx-gcov -o x.info
 
--- 
-Thanks&  Regards
-Rishi Kesh K Rajak
-IBM LTC, Bangalore
-LTP Maintainer
-Please join IRC: #ltp @ freenode.net
+Also note that lcov can do the copying of .gcda files for you if a perl 
+interpreter and the lcov file is available. On the test machine, run:
+
+   lcov -c --to-package package
+
+Copy the package file to the build machine. On the build machine, run:
+
+   lcov -c --from-package package --gcov-tool ...
+
+
+Regards,
+   Peter Oberparleiter
 
 
 ------------------------------------------------------------------------------
-SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
-Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
-http://p.sf.net/sfu/solaris-dev2dev
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
