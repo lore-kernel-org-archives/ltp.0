@@ -1,19 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mwenzel@novell.com>) id 1NjbpF-0001DJ-VV
-	for ltp-list@lists.sourceforge.net; Mon, 22 Feb 2010 17:12:05 +0000
-Received: from sinclair.provo.novell.com ([137.65.248.137])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NjbpE-0006cn-VM
-	for ltp-list@lists.sourceforge.net; Mon, 22 Feb 2010 17:12:05 +0000
-Message-Id: <4B82586C020000E80005EC9E@sinclair.provo.novell.com>
-Date: Mon, 22 Feb 2010 10:11:56 -0700
-From: "Murlin Wenzel" <mwenzel@novell.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=__PartD7FD13CC.0__="
-Subject: [LTP] January interim build test failures
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NhxWp-0007DJ-T9
+	for ltp-list@lists.sourceforge.net; Thu, 18 Feb 2010 03:58:15 +0000
+Received: from e5.ny.us.ibm.com ([32.97.182.145])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NhxWo-0004oT-Ik
+	for ltp-list@lists.sourceforge.net; Thu, 18 Feb 2010 03:58:15 +0000
+Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
+	by e5.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1I3ifit002725
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 22:44:41 -0500
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o1I3w8kZ111204
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 22:58:08 -0500
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o1I3w8ee016037
+	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 22:58:08 -0500
+Date: Thu, 18 Feb 2010 09:27:56 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100218035756.GA13013@rishikesh.in.ibm.com>
+References: <4B7BA433.3030206@linux.vnet.ibm.com>
+	<364299f41002170908p302cc665g874c89a109ddfd1f@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <364299f41002170908p302cc665g874c89a109ddfd1f@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] mail_tests.sh: fix a version problem of Heirloom
+ Mail
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,68 +38,49 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---=__PartD7FD13CC.0__=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-I've lost track of which test cases currently have issues.  These are the =
-failures from running ltplite on January interim build.  Could someone =
-give me a quick idea which cases are known issues and which ones I need to =
-investigate further.  These were from system with 2.6.32-7 kernel.
-
-Thanks
-Murlin
-
-
---=__PartD7FD13CC.0__=
-Content-Type: application/octet-stream; name="LTP_RUN_ON-20100222-out.failed"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="LTP_RUN_ON-20100222-out.failed"
-
-Y2hkaXIwMUEgc3ltbGluazAxIC1UIGNoZGlyMDEKbXNnY3RsMTAgbXNnY3RsMTAKbXNnY3RsMTEg
-bXNnY3RsMTEKcnRfc2lnYWN0aW9uMDEgcnRfc2lnYWN0aW9uMDEKcnRfc2lncHJvY21hc2swMSBy
-dF9zaWdwcm9jbWFzazAxCnJ0X3NpZ3N1c3BlbmQwMSBydF9zaWdzdXNwZW5kMDEKc3dhcG9mZjAx
-IHN3YXBvZmYwMQpzd2Fwb2ZmMDIgc3dhcG9mZjAyCnN3YXBvbjAxIHN3YXBvbjAxCnN3YXBvbjAy
-IHN3YXBvbjAyCnN3YXBvbjAzIHN3YXBvbjAzCnByb2MwMSBwcm9jMDEKY2dyb3VwIAljZ3JvdXBf
-cmVncmVzc2lvbl90ZXN0LnNoCmNvbnRyb2xsZXJzIHRlc3RfY29udHJvbGxlcnMuc2gKc3UwMSBl
-eHBvcnQgVENiaW49JExUUFJPT1QvdGVzdGNhc2VzL2JpbjtzdTAxCmNyb25fZGVueTAxIGNyb25f
-ZGVueTAxCmNyb25fYWxsb3cwMSBjcm9uX2FsbG93MDEKY2xvY2tfZ2V0dGltZTAzIGNsb2NrX2dl
-dHRpbWUwMwp0aW1lcl9jcmVhdGUwNCB0aW1lcl9jcmVhdGUwNApQT1dFUl9NQU5BR0VNRU5UIHJ1
-bnB3dGVzdHMuc2gKTnVtYS10ZXN0Y2FzZXMgbnVtYTAxLnNoCmh1Z2VtbWFwMDQgaHVnZW1tYXAw
-NCAtSC90bXAKaHVnZXNobWF0MDEgaHVnZXNobWF0MDEgLWkgNQpodWdlc2htYXQwMiBodWdlc2ht
-YXQwMiAtaSA1Cmh1Z2VzaG1hdDAzIGh1Z2VzaG1hdDAzIC1pIDUKaHVnZXNobWN0bDAxIGh1Z2Vz
-aG1jdGwwMSAtaSA1IC1jIDMKaHVnZXNobWN0bDAyIGh1Z2VzaG1jdGwwMiAtaSA1IC1jIDMKaHVn
-ZXNobWN0bDAzIGh1Z2VzaG1jdGwwMyAtaSA1IC1jIDMKaHVnZXNobWR0MDEgaHVnZXNobWR0MDEg
-LUkgNSAtYzEwCmh1Z2VzaG1nZXQwMSBodWdlc2htZ2V0MDEgLWMgMTAgLWkgMTAKaHVnZXNobWdl
-dDAyIGh1Z2VzaG1nZXQwMiAtYyAxMCAtaSAxMApodWdlc2htZ2V0MDMgaHVnZXNobWdldDAzIC1j
-IDEwIC1pIDEwCmh1Z2VzaG1nZXQwNSBodWdlc2htZ2V0MDUgLWMgMTAgLWkgMTAK
-
---=__PartD7FD13CC.0__=
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>, Shi Weihua <shiwh@cn.fujitsu.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
+
+On Wed, Feb 17, 2010 at 09:08:39AM -0800, Garrett Cooper wrote:
+> On Wed, Feb 17, 2010 at 12:09 AM, Rishikesh <risrajak@linux.vnet.ibm.com> wrote:
+> > Hi Shi,
+> >
+> > Thanks for your patch . It will be merged in feb 2010 release.
+> >
+> > Acked-By: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+> >
+> > http://marc.info/?l=ltp-list&m=126440546415559&w=2
+> 
+> There's a lot of noise in the patch because of if-else behavior in
+> trying to determine the mail app. That's why I didn't commit this (it
+> requires verification of previous mail applications as well).
+
+Thanks Garret, Still i have not committed this to CVS repo.
+
+Shi, can you please verify if this patch does not break with any other
+mail application.
+
+Thanks for your support.
+-Rishi
+> 
+> The mail test should be resistant to changes like these as a lot of
+> developers in the FOSS community have different opinions on how to do
+> things and don't follow any particular standard. This `heirloom mailx'
+> support is just one said example that needs to be fixed.
+> 
+> Thanks,
+> -Garrett
 
 ------------------------------------------------------------------------------
-Download Intel&#174; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs
-proactively, and fine-tune applications for parallel performance.
+Download Intel&reg; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs 
+proactively, and fine-tune applications for parallel performance. 
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
---=__PartD7FD13CC.0__=
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---=__PartD7FD13CC.0__=--
-
