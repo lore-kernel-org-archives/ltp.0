@@ -1,31 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1Nf61s-0002Db-2P
-	for ltp-list@lists.sourceforge.net; Wed, 10 Feb 2010 06:26:28 +0000
-Received: from out03.sjc.mx.trendmicro.com ([216.99.131.7])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Nf61q-0005Cc-NW
-	for ltp-list@lists.sourceforge.net; Wed, 10 Feb 2010 06:26:27 +0000
-Received: from relay01.sjc.mx.trendmicro.com (unknown [10.30.239.28])
-	by out03.sjc.mx.trendmicro.com (Postfix) with ESMTP id 4BBA42113AA
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <maxin.john@gmail.com>) id 1NiBSb-0004fB-Qd
+	for ltp-list@lists.sourceforge.net; Thu, 18 Feb 2010 18:50:49 +0000
+Received: from mail-px0-f201.google.com ([209.85.216.201])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NiBSb-0005Je-0q
+	for ltp-list@lists.sourceforge.net; Thu, 18 Feb 2010 18:50:49 +0000
+Received: by pxi40 with SMTP id 40so1189225pxi.22
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 10 Feb 2010 06:26:20 +0000 (UTC)
-Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay01.sjc.mx.trendmicro.com (Postfix) with ESMTP id 99B93114B839
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 10 Feb 2010 06:26:19 +0000 (UTC)
-Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Wed, 10 Feb 2010 15:26:17 +0900
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Wed, 10 Feb 2010 15:26:17 +0900
-Message-ID: <000101caaa19$f3feb220$dbfc1660$@co.jp>
+	Thu, 18 Feb 2010 10:50:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Language: ja
-Subject: [LTP] "check_netns_enabled.c" build failed with "2010-02-10" cvs
+Date: Fri, 19 Feb 2010 00:20:41 +0530
+Message-ID: <9debc4411002181050u1a041f7cm72ed35337513834c@mail.gmail.com>
+From: Maxin John <maxin.john@gmail.com>
+Content-Type: multipart/mixed; boundary=0016368e23e091a230047fe471c9
+Subject: [LTP] [PATCH] fix for 'stress_floppy' not getting installed properly
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,75 +26,118 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
+--0016368e23e091a230047fe471c9
+Content-Type: text/plain; charset=ISO-8859-1
+
 Hi,
 
-I tried to build with "2010-02-10" cvs in my systems.
-I tried in RHEL5.4 (2.6.18-164.el5) and RHEL4.8 (2.6.9-89.ELsmp).
-But "make" failed in "check_netns_enabled.c" as follows in RHEL4.8:
-------------
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
--I/home/LTP/ltp-2010-02-10/testcases/kernel/include
--I/home/LTP/ltp-2010-02-10/testcases/kernel/containers/netns/../libclone
--I../../../../include -I../../../../include
--L/home/LTP/ltp-2010-02-10/testcases/kernel/containers/netns/../libclone
--L../../../../lib  check_netns_enabled.c   -lltp -o check_netns_enabled
-check_netns_enabled.c: In function `main':
-check_netns_enabled.c:40: warning: implicit declaration of function
-`unshare'
-/tmp/cciXlXlf.o(.text+0x2c): In function `main':
-/home/LTP/ltp-2010-02-10/testcases/kernel/containers/netns/check_netns_enabl
-ed.c:40: undefined reference to `unshare'
-collect2: ld returned 1 exit status
-make[4]: *** [check_netns_enabled] Error 1
-make[4]: Leaving directory
-`/home/LTP/ltp-2010-02-10/testcases/kernel/containers/netns'
-------------
+I have tried to execute the 'io_floppy' test in  LTP Version:  LTP-20100131.1
 
-"unshare()" function was supported after kernel 2.6.16.
-Therefore, "make" of "check_netns_enabled.c" failed in RHEL4.8, I think.
+maxin@maxin-laptop:/opt/ltp$ ./runltp -f io_floppy
 
-I made patch and "make" succeeded:
-============
---- ./testcases/kernel/containers/netns/check_netns_enabled.c   2008-09-19
-21:17:10.000000000 +0900
-+++ ./testcases/kernel/containers/netns/check_netns_enabled.c.new
-2010-02-10 14:59:53.000000000 +0900
-@@ -37,10 +37,12 @@
-        if (tst_kvercmp(2,6,24) < 0)
-                return 1;
+This test failed since the 'stress_floppy' script was not installed properly.
+Please find the below given log:
+-----------------------------------------------------------
+....
+Running tests.......
+<<<test_start>>>
+tag=stress_floppy stime=1266516562
+cmdline="export TCdat=$LTPROOT/testcases/kernel/io/stress_floppy; stress_floppy"
+contacts=""
+analysis=exit
+<<<test_output>>>
+sh: stress_floppy: not found
+incrementing stop
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=127 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: LTP-20100131.1
 
-+#ifdef HAVE_UNSHARE
-         ret = unshare(flags);
-        if ( ret < 0 ) {
-                printf ("Error:Unshare syscall failed for network
-namespace\n");
-                return 3;
-        }
-+#endif
-        return 0;
- }
-============
+       ###############################################################"
 
-I'm glad if I could get some opinions.
+            Done executing testcases."
+            LTP Version:  LTP-20100131.1
+       ###############################################################"
+-----------------------------------------------------------
 
+Attached patch(stress_floppy_Makefile.patch) fixes Makefile and the
+'stress_floppy' script gets installed properly.
 
-Thank you--
+-----------------------------------------------------------
+Running tests.......
+<<<test_start>>>
+tag=stress_floppy stime=1266518427
+cmdline="export TCdat=$LTPROOT/testcases/kernel/io/stress_floppy; stress_floppy"
+contacts=""
+analysis=exit
+<<<test_output>>>
+incrementing stop
+Testing format...
+/dev/fd0: No such file or directory
+Format failed!
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=1 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: LTP-20100131.1
+-----------------------------------------------------------
 
+Well, after applying this patch, the 'io_floppy' test fails successfully :)
+(Expected failure as I don't have a floppy drive)
 
--Tomonori Mitani
+Signed-off-by: Maxin B. John <maxin.john@gmail.com>
 
+--
+Warm Regards,
+Maxin B. John
+www.maxinbjohn.info
 
+--0016368e23e091a230047fe471c9
+Content-Type: text/x-patch; charset=US-ASCII;
+	name="stress_floppy_Makefile.patch"
+Content-Disposition: attachment; filename="stress_floppy_Makefile.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g5tvvdnh0
+
+ZGlmZiAtdU5yIGx0cC1mdWxsLTIwMTAwMTMxLjEtb3JpZy90ZXN0Y2FzZXMva2VybmVsL2lvL3N0
+cmVzc19mbG9wcHkvTWFrZWZpbGUgbHRwLWZ1bGwtMjAxMDAxMzEuMS90ZXN0Y2FzZXMva2VybmVs
+L2lvL3N0cmVzc19mbG9wcHkvTWFrZWZpbGUKLS0tIGx0cC1mdWxsLTIwMTAwMTMxLjEtb3JpZy90
+ZXN0Y2FzZXMva2VybmVsL2lvL3N0cmVzc19mbG9wcHkvTWFrZWZpbGUJMjAwOS0xMC0wOSAyMzoy
+NTo0OC4wMDAwMDAwMDAgKzA1MzAKKysrIGx0cC1mdWxsLTIwMTAwMTMxLjEvdGVzdGNhc2VzL2tl
+cm5lbC9pby9zdHJlc3NfZmxvcHB5L01ha2VmaWxlCTIwMTAtMDItMTggMjM6NTE6NDIuMDAwMDAw
+MDAwICswNTMwCkBAIC0yNCw2ICsyNCw4IEBACiAKIElOU1RBTExfREVQUwkJOj0gZHVtcGRpciAK
+IAorSU5TVEFMTF9UQVJHRVRTCQk6PSBzdHJlc3NfZmxvcHB5IAorCiBNQUtFX1RBUkdFVFMJCTo9
+CiAKICMgZHVtcGRpcidzIGEgZGlyZWN0b3J5Lgo=
+--0016368e23e091a230047fe471c9
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
-Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
-http://p.sf.net/sfu/solaris-dev2dev
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
+--0016368e23e091a230047fe471c9
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--0016368e23e091a230047fe471c9--
+
