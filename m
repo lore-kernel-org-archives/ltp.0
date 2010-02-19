@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Nlg7z-0007Bq-EI
-	for ltp-list@lists.sourceforge.net; Sun, 28 Feb 2010 10:11:59 +0000
-Received: from mail-px0-f203.google.com ([209.85.216.203])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Nlg7x-0006Sl-UF
-	for ltp-list@lists.sourceforge.net; Sun, 28 Feb 2010 10:11:58 +0000
-Received: by pxi41 with SMTP id 41so514273pxi.23
+	(envelope-from <yanegomi@gmail.com>) id 1NiWtk-00007u-9q
+	for ltp-list@lists.sourceforge.net; Fri, 19 Feb 2010 17:44:16 +0000
+Received: from mail-px0-f201.google.com ([209.85.216.201])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NiWtj-0004IT-4J
+	for ltp-list@lists.sourceforge.net; Fri, 19 Feb 2010 17:44:16 +0000
+Received: by pxi40 with SMTP id 40so160063pxi.22
 	for <ltp-list@lists.sourceforge.net>;
-	Sun, 28 Feb 2010 02:11:28 -0800 (PST)
+	Fri, 19 Feb 2010 09:44:08 -0800 (PST)
 MIME-Version: 1.0
-Date: Sun, 28 Feb 2010 02:11:21 -0800
-Message-ID: <364299f41002280211i5ab0e74dr4d9693ed40f2b4b5@mail.gmail.com>
+In-Reply-To: <20100219112904.27416.55542.sendpatchset@subratamodak.linux.ibm.com>
+References: <20100219112904.27416.55542.sendpatchset@subratamodak.linux.ibm.com>
+Date: Fri, 19 Feb 2010 09:44:08 -0800
+Message-ID: <364299f41002190944x7f001194h3e980e41db03a29b@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: [LTP] RFC : refactor LTP execution model
+Subject: Re: [LTP] [PATCH] Fix LTP Scritps as per the new build/install
+	system in place
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,219 +28,434 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4748578905264789321=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP list <ltp-list@lists.sourceforge.net>
+To: Subrata Modak <subrata@linux.vnet.ibm.com>
+Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
 
---===============4748578905264789321==
-Content-Type: multipart/alternative; boundary=000e0cd1aa68b4efed0480a65a76
+On Fri, Feb 19, 2010 at 3:29 AM, Subrata Modak
+<subrata@linux.vnet.ibm.com> wrote:
+> Hi,
+>
+> Scripts under LTPROOT/testscripts/ need to access ltp-pan from some
+> other loaction now. Moreover there are scripts to run MATH and SYSCALL
+> tests which are not required as they can be directly run through
+> ./runltp -f <math/runltp>
+> This patch fixes them. Probably the scripts need to be looked on
+> more to fix such anomalies.
+>
+> Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>
+> ---
+>
+> diff -uprN ltp-full-20100131/testscripts.orig/diskio.sh ltp-full-20100131=
+/testscripts/diskio.sh
+> --- ltp-full-20100131/testscripts.orig/diskio.sh =A0 =A0 =A0 =A02010-02-1=
+9 16:20:05.000000000 +0530
+> +++ ltp-full-20100131/testscripts/diskio.sh =A0 =A0 2010-02-19 16:20:27.0=
+00000000 +0530
+> @@ -27,7 +27,7 @@ export PATH=3D"${PATH}:${LTPROOT}/testcase
+>
+> =A0${LTPROOT}/ver_linux
+>
+> -${LTPROOT}/pan/ltp-pan -e -l /tmp/diskiopan.log -S -a ltpdiskio -n ltpdi=
+skio -f ${LTPROOT}/runtest/io_floppy -f ${LTPROOT}/runtest/io_cd
+> +${LTPROOT}/bin/ltp-pan -e -l /tmp/diskiopan.log -S -a ltpdiskio -n ltpdi=
+skio -f ${LTPROOT}/runtest/io_floppy -f ${LTPROOT}/runtest/io_cd
+>
+> =A0if [ $? -eq "0" ]; then
+> =A0 echo ltp-pan reported PASS
+> diff -uprN ltp-full-20100131/testscripts.orig/ltp-aiodio.sh ltp-full-2010=
+0131/testscripts/ltp-aiodio.sh
+> --- ltp-full-20100131/testscripts.orig/ltp-aiodio.sh =A0 =A02010-02-19 16=
+:20:05.000000000 +0530
+> +++ ltp-full-20100131/testscripts/ltp-aiodio.sh 2010-02-19 16:25:53.00000=
+0000 +0530
+> @@ -227,9 +227,9 @@ dd if=3D$file1 of=3D/test/aiodio/junkfile bs
+> =A0date
+> =A0echo "************ Running aio-stress tests "
+> =A0echo "current working dir =3D ${PWD}"
+> -${LTPROOT}/bin/rand_lines -g ${LTPROOT}/runtest/ltp-aio-stress.part1 > $=
+{TMPBASE}/ltp-aio-stress.part1
+> +${LTPROOT}/tools/rand_lines -g ${LTPROOT}/runtest/ltp-aio-stress.part1 >=
+ ${TMPBASE}/ltp-aio-stress.part1
+>
+> -${LTPROOT}/pan/ltp-pan -e -S -a ltpaiostresspart1 -n ltp-aiostresspart1 =
+-l ltpaiostress.logfile -o ltpaiostress.outfile -p -f ${TMPBASE}/ltp-aio-st=
+ress.part1 &
+> +${LTPROOT}/bin/ltp-pan -e -S -a ltpaiostresspart1 -n ltp-aiostresspart1 =
+-l ltpaiostress.logfile -o ltpaiostress.outfile -p -f ${TMPBASE}/ltp-aio-st=
+ress.part1 &
+>
+> =A0wait $!
+>
+> @@ -239,9 +239,9 @@ echo ""
+>
+> =A0if [ "$runExtendedStress" -eq 1 ];then
+> =A0echo "************ Running EXTENDED aio-stress tests "
+> -${LTPROOT}/bin/rand_lines -g ${LTPROOT}/runtest/ltp-aio-stress.part2 > $=
+{TMPBASE}/ltp-aio-stress.part2
+> +${LTPROOT}/tools/rand_lines -g ${LTPROOT}/runtest/ltp-aio-stress.part2 >=
+ ${TMPBASE}/ltp-aio-stress.part2
+>
+> -${LTPROOT}/pan/ltp-pan -e -S -a ltpaiostresspart2 -n ltp-aiostresspart2 =
+-l ltpaiostress.logfile -o ltpaiostress.outfile -p -f ${TMPBASE}/ltp-aio-st=
+ress.part2 &
+> +${LTPROOT}/bin/ltp-pan -e -S -a ltpaiostresspart2 -n ltp-aiostresspart2 =
+-l ltpaiostress.logfile -o ltpaiostress.outfile -p -f ${TMPBASE}/ltp-aio-st=
+ress.part2 &
+>
+> =A0wait $!
+> =A0sync
+> @@ -254,9 +254,9 @@ dd if=3D$file1 of=3D/test/aiodio/ff2 =A0 =A0 =A0bs
+> =A0dd if=3D$file1 of=3D/test/aiodio/ff3 =A0 =A0 =A0bs=3D512 =A0conv=3Dblo=
+ck,sync
+>
+> =A0echo "************ Running aiocp tests "
+> -${LTPROOT}/bin/rand_lines -g ${LTPROOT}/runtest/ltp-aiodio.part1 > ${TMP=
+BASE}/ltp-aiodio.part1
+> +${LTPROOT}/tools/rand_lines -g ${LTPROOT}/runtest/ltp-aiodio.part1 > ${T=
+MPBASE}/ltp-aiodio.part1
+>
+> -${LTPROOT}/pan/ltp-pan -e -S -a ltpaiodiopart1 -n ltp-aiodiopart1 -l ltp=
+aiodio1.logfile -o ltpaiodio1.outfile -p -f ${TMPBASE}/ltp-aiodio.part1 &
+> +${LTPROOT}/bin/ltp-pan -e -S -a ltpaiodiopart1 -n ltp-aiodiopart1 -l ltp=
+aiodio1.logfile -o ltpaiodio1.outfile -p -f ${TMPBASE}/ltp-aiodio.part1 &
+>
+> =A0wait $!
+> =A0sync
+> @@ -264,9 +264,9 @@ echo "************ End Running aiocp tes
+> =A0echo ""
+>
+> =A0echo "************ Running aiodio_sparse tests "
+> -${LTPROOT}/bin/rand_lines -g ${LTPROOT}/runtest/ltp-aiodio.part2 > ${TMP=
+BASE}/ltp-aiodio.part2
+> +${LTPROOT}/tools/rand_lines -g ${LTPROOT}/runtest/ltp-aiodio.part2 > ${T=
+MPBASE}/ltp-aiodio.part2
+>
+> -${LTPROOT}/pan/ltp-pan -e -S -a ltpaiodiopart2 -n ltp-aiodiopart2 -l ltp=
+aiodio2.logfile -o ltpaiodio2.outfile -p -f ${TMPBASE}/ltp-aiodio.part2 &
+> +${LTPROOT}/bin/ltp-pan -e -S -a ltpaiodiopart2 -n ltp-aiodiopart2 -l ltp=
+aiodio2.logfile -o ltpaiodio2.outfile -p -f ${TMPBASE}/ltp-aiodio.part2 &
+>
+> =A0wait $!
+> =A0sync
+> @@ -276,9 +276,9 @@ echo ""
+>
+> =A0if [ "$runExtendedStress" -eq 1 ];then
+> =A0echo "************ Running fsx-linux tests "
+> -${LTPROOT}/bin/rand_lines -g ${LTPROOT}/runtest/ltp-aiodio.part3 > ${TMP=
+BASE}/ltp-aiodio.part3
+> +${LTPROOT}/tools/rand_lines -g ${LTPROOT}/runtest/ltp-aiodio.part3 > ${T=
+MPBASE}/ltp-aiodio.part3
+>
+> -${LTPROOT}/pan/ltp-pan -e -S -a ltpaiodiopart3 -n ltp-aiodiopart3 -l ltp=
+aiodio3.logfile -o ltpaiodio3.outfile -p -f ${TMPBASE}/ltp-aiodio.part3 &
+> +${LTPROOT}/bin/ltp-pan -e -S -a ltpaiodiopart3 -n ltp-aiodiopart3 -l ltp=
+aiodio3.logfile -o ltpaiodio3.outfile -p -f ${TMPBASE}/ltp-aiodio.part3 &
+>
+>
+>
+> @@ -295,8 +295,8 @@ dd if=3D$file1 of=3D/test/aiodio/file5
+>
+>
+> =A0echo "************ Running dio_sparse & miscellaneous tests "
+> -${LTPROOT}/bin/rand_lines -g ${LTPROOT}/runtest/ltp-aiodio.part4 > ${TMP=
+BASE}/ltp-aiodio.part4
+> -${LTPROOT}/pan/ltp-pan -e -S -a ltpaiodiopart4 -n ltp-aiodiopart4 -l ltp=
+aiodio4.logfile -o ltpaiodio4.outfile -p -f ${TMPBASE}/ltp-aiodio.part4 &
+> +${LTPROOT}/tools/rand_lines -g ${LTPROOT}/runtest/ltp-aiodio.part4 > ${T=
+MPBASE}/ltp-aiodio.part4
+> +${LTPROOT}/bin/ltp-pan -e -S -a ltpaiodiopart4 -n ltp-aiodiopart4 -l ltp=
+aiodio4.logfile -o ltpaiodio4.outfile -p -f ${TMPBASE}/ltp-aiodio.part4 &
+>
+> =A0wait $!
+> =A0sync
+> diff -uprN ltp-full-20100131/testscripts.orig/ltpfslvm.sh ltp-full-201001=
+31/testscripts/ltpfslvm.sh
+> --- ltp-full-20100131/testscripts.orig/ltpfslvm.sh =A0 =A0 =A02010-02-19 =
+16:20:05.000000000 +0530
+> +++ ltp-full-20100131/testscripts/ltpfslvm.sh =A0 2010-02-19 16:26:27.000=
+000000 +0530
+> @@ -156,9 +156,9 @@ mount -v /dev/ltp_test_vg2/ltp_test_lv4
+> =A0mount -v /dev/ram =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /test/gr=
+owfiles/ramdisk
+>
+> =A0echo "************ Running tests "
+> -${LTPROOT}/bin/rand_lines -g ${LTPROOT}/runtest/lvm.part1 > ${TMPBASE}/l=
+vm.part1
+> +${LTPROOT}/tools/rand_lines -g ${LTPROOT}/runtest/lvm.part1 > ${TMPBASE}=
+/lvm.part1
+>
+> -${LTPROOT}/pan/ltp-pan -e -S -a lvmpart1 -n lvmpart1 -l lvmlogfile -f ${=
+TMPBASE}/lvm.part1 &
+> +${LTPROOT}/bin/ltp-pan -e -S -a lvmpart1 -n lvmpart1 -l lvmlogfile -f ${=
+TMPBASE}/lvm.part1 &
+>
+> =A0wait $!
+>
+> @@ -188,9 +188,9 @@ mount -v -t ext3 =A0 /dev/$part4 =A0 =A0 =A0 =A0 /
+> =A0mount -v -t jfs =A0 =A0/dev/hdc1 =A0 =A0 =A0 =A0 =A0 /test/growfiles/j=
+fs
+>
+> =A0echo "************ Running EXT3 & JFS tests... =A0"
+> -${LTPROOT}/bin/rand_lines -g ${LTPROOT}/runtest/lvm.part2 > ${TMPBASE}/l=
+vm.part2
+> +${LTPROOT}/tools/rand_lines -g ${LTPROOT}/runtest/lvm.part2 > ${TMPBASE}=
+/lvm.part2
+>
+> -${LTPROOT}/pan/ltp-pan -e -S -a lvmpart2 -n lvmpart2 -l lvmlogfile -f ${=
+TMPBASE}/lvm.part2 &
+> +${LTPROOT}/bin/ltp-pan -e -S -a lvmpart2 -n lvmpart2 -l lvmlogfile -f ${=
+TMPBASE}/lvm.part2 &
+>
+> =A0wait $!
+>
+> diff -uprN ltp-full-20100131/testscripts.orig/ltpfsnolvm.sh ltp-full-2010=
+0131/testscripts/ltpfsnolvm.sh
+> --- ltp-full-20100131/testscripts.orig/ltpfsnolvm.sh =A0 =A02010-02-19 16=
+:20:05.000000000 +0530
+> +++ ltp-full-20100131/testscripts/ltpfsnolvm.sh 2010-02-19 16:28:03.00000=
+0000 +0530
+> @@ -116,9 +116,9 @@ mount -v /dev/$part4
+> =A0mount -v /dev/ram =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /test/gr=
+owfiles/ramdisk
+>
+> =A0echo "************ Running tests "
+> -${LTPROOT}/../bin/rand_lines -g ${LTPROOT}/../runtest/lvm.part1 > ${TMPB=
+ASE}/lvm.part1
+> +${LTPROOT}/../tools/rand_lines -g ${LTPROOT}/../runtest/lvm.part1 > ${TM=
+PBASE}/lvm.part1
+>
+> -${LTPROOT}/../pan/ltp-pan -e -S -a lvmpart1 -n lvmpart1 -l lvmlogfile -f=
+ ${TMPBASE}/lvm.part1 &
+> +${LTPROOT}/../bin/ltp-pan -e -S -a lvmpart1 -n lvmpart1 -l lvmlogfile -f=
+ ${TMPBASE}/lvm.part1 &
+>
+> =A0wait $!
+>
+> @@ -138,9 +138,9 @@ mount -v -t ext3 =A0 /dev/$part4 =A0 =A0 =A0 =A0 /
+> =A0mount -v -t jfs =A0 =A0/dev/$part1 =A0 =A0 =A0 =A0 /test/growfiles/jfs
+>
+> =A0echo "************ Running EXT3 & JFS tests... =A0"
+> -${LTPROOT}/../bin/rand_lines -g ${LTPROOT}/../runtest/lvm.part2 > ${TMPB=
+ASE}/lvm.part2
+> +${LTPROOT}/../tools/rand_lines -g ${LTPROOT}/../runtest/lvm.part2 > ${TM=
+PBASE}/lvm.part2
+>
+> -${LTPROOT}/../pan/ltp-pan -e -S -a lvmpart2 -n lvmpart2 -l lvmlogfile -f=
+ ${TMPBASE}/lvm.part2 &
+> +${LTPROOT}/../bin/ltp-pan -e -S -a lvmpart2 -n lvmpart2 -l lvmlogfile -f=
+ ${TMPBASE}/lvm.part2 &
+>
+> =A0wait $!
+>
+> diff -uprN ltp-full-20100131/testscripts.orig/ltp-scsi_debug.sh ltp-full-=
+20100131/testscripts/ltp-scsi_debug.sh
+> --- ltp-full-20100131/testscripts.orig/ltp-scsi_debug.sh =A0 =A0 =A0 =A02=
+010-02-19 16:20:05.000000000 +0530
+> +++ ltp-full-20100131/testscripts/ltp-scsi_debug.sh =A0 =A0 2010-02-19 16=
+:31:51.000000000 +0530
+> @@ -204,9 +204,9 @@ mount /dev/$part4 /test/growfiles/msdos
+>
+> =A0echo "----- Running tests ----- "
+> =A0echo "The test may take about 2 hours to finish..."
+> -${LTPROOT}/bin/rand_lines -g ${LTPROOT}/runtest/scsi_debug.part1 > ${TMP=
+BASE}/scsi_debug
+> +${LTPROOT}/tools/rand_lines -g ${LTPROOT}/runtest/scsi_debug.part1 > ${T=
+MPBASE}/scsi_debug
+>
+> -${LTPROOT}/pan/ltp-pan -e -S -a scsi_debug -n scsi_debug -l ${TMPBASE}/f=
+s-scsi_debug.log -o ${TMPBASE}/fs-scsi_debug.out -f ${TMPBASE}/scsi_debug
+> +${LTPROOT}/bin/ltp-pan -e -S -a scsi_debug -n scsi_debug -l ${TMPBASE}/f=
+s-scsi_debug.log -o ${TMPBASE}/fs-scsi_debug.out -f ${TMPBASE}/scsi_debug
+>
+> =A0wait $!
+>
+> diff -uprN ltp-full-20100131/testscripts.orig/ltpstress.sh ltp-full-20100=
+131/testscripts/ltpstress.sh
+> --- ltp-full-20100131/testscripts.orig/ltpstress.sh =A0 =A0 2010-02-19 16=
+:20:05.000000000 +0530
+> +++ ltp-full-20100131/testscripts/ltpstress.sh =A02010-02-19 16:32:24.000=
+000000 +0530
+> @@ -275,9 +275,9 @@ output1=3D${TMPBASE}/ltpstress.$$.output1
+> =A0output2=3D${TMPBASE}/ltpstress.$$.output2
+> =A0output3=3D${TMPBASE}/ltpstress.$$.output3
+>
+> -${LTPROOT}/pan/ltp-pan -e -p -q -S -t ${hours}h -a stress1 -n stress1 -l=
+ $logfile -f ${TMP}/stress.part1 -o $output1 &
+> -${LTPROOT}/pan/ltp-pan -e -p -q -S -t ${hours}h -a stress2 -n stress2 -l=
+ $logfile -f ${TMP}/stress.part2 -o $output2 &
+> -${LTPROOT}/pan/ltp-pan -e -p -q -S -t ${hours}h -a stress3 -n stress3 -l=
+ $logfile -f ${TMP}/stress.part3 -o $output3 &
+> +${LTPROOT}/bin/ltp-pan -e -p -q -S -t ${hours}h -a stress1 -n stress1 -l=
+ $logfile -f ${TMP}/stress.part1 -o $output1 &
+> +${LTPROOT}/bin/ltp-pan -e -p -q -S -t ${hours}h -a stress2 -n stress2 -l=
+ $logfile -f ${TMP}/stress.part2 -o $output2 &
+> +${LTPROOT}/bin/ltp-pan -e -p -q -S -t ${hours}h -a stress3 -n stress3 -l=
+ $logfile -f ${TMP}/stress.part3 -o $output3 &
+>
+> =A0echo "Running LTP Stress for $hours hour(s) using $(($memsize/1024)) M=
+b"
+> =A0echo ""
+> diff -uprN ltp-full-20100131/testscripts.orig/math.sh ltp-full-20100131/t=
+estscripts/math.sh
+> --- ltp-full-20100131/testscripts.orig/math.sh =A02010-02-19 16:20:05.000=
+000000 +0530
+> +++ ltp-full-20100131/testscripts/math.sh =A0 =A0 =A0 1970-01-01 05:30:00=
+.000000000 +0530
+> @@ -1,4 +0,0 @@
+> -#!/bin/sh
+> -cd `dirname $0`
+> -cd ..
+> -./runltp -f ${PWD}/runtest/math -q "$@"
+> diff -uprN ltp-full-20100131/testscripts.orig/networkstress.sh ltp-full-2=
+0100131/testscripts/networkstress.sh
+> --- ltp-full-20100131/testscripts.orig/networkstress.sh 2010-02-19 16:20:=
+05.000000000 +0530
+> +++ ltp-full-20100131/testscripts/networkstress.sh =A0 =A0 =A02010-02-19 =
+16:38:21.000000000 +0530
+> @@ -124,10 +124,10 @@ if [ ${VERBOSE} =3D "yes" ]; then
+> =A0 =A0 =A0 =A0cat $TMPDIR/network_stress.tests
+> =A0 =A0 =A0 =A0${LTPROOT}/ver_linux
+> =A0 =A0 =A0 =A0echo ""
+> - =A0 =A0 =A0 echo ${LTPROOT}/pan/ltp-pan -e -l /tmp/netstress.log -S -a =
+netstress -n netstress -f ${TMPDIR}/network_stress.tests
+> + =A0 =A0 =A0 echo ${LTPROOT}/bin/ltp-pan -e -l /tmp/netstress.log -S -a =
+netstress -n netstress -f ${TMPDIR}/network_stress.tests
+> =A0fi
+>
+> -${LTPROOT}/pan/ltp-pan -e -l /tmp/netstress.log -S -a netstress -n netst=
+ress -f ${TMPDIR}/network_stress.tests
+> +${LTPROOT}/bin/ltp-pan -e -l /tmp/netstress.log -S -a netstress -n netst=
+ress -f ${TMPDIR}/network_stress.tests
+>
+> =A0if [ $? -eq "0" ]; then
+> =A0 echo ltp-pan reported PASS
+> diff -uprN ltp-full-20100131/testscripts.orig/networktests.sh ltp-full-20=
+100131/testscripts/networktests.sh
+> --- ltp-full-20100131/testscripts.orig/networktests.sh =A02010-02-19 16:2=
+0:05.000000000 +0530
+> +++ ltp-full-20100131/testscripts/networktests.sh =A0 =A0 =A0 2010-02-19 =
+16:38:55.000000000 +0530
+> @@ -119,10 +119,10 @@ if [ ${VERBOSE} =3D "yes" ]; then
+> =A0 =A0 cat $CMDFILE
+> =A0 =A0 ${LTPROOT}/ver_linux
+> =A0 =A0 echo ""
+> - =A0 =A0echo ${LTPROOT}/pan/ltp-pan -e -l /tmp/netpan.log -S -a ltpnet -=
+n ltpnet -f $CMDFILE
+> + =A0 =A0echo ${LTPROOT}/bin/ltp-pan -e -l /tmp/netpan.log -S -a ltpnet -=
+n ltpnet -f $CMDFILE
+> =A0fi
+>
+> -${LTPROOT}/pan/ltp-pan -e -l /tmp/netpan.log -S -a ltpnet -n ltpnet -f $=
+CMDFILE
+> +${LTPROOT}/bin/ltp-pan -e -l /tmp/netpan.log -S -a ltpnet -n ltpnet -f $=
+CMDFILE
+>
+> =A0if [ $? -eq "0" ]; then
+> =A0 echo ltp-pan reported PASS
+> diff -uprN ltp-full-20100131/testscripts.orig/runEALtests.sh ltp-full-201=
+00131/testscripts/runEALtests.sh
+> --- ltp-full-20100131/testscripts.orig/runEALtests.sh =A0 2010-02-19 16:2=
+0:05.000000000 +0530
+> +++ ltp-full-20100131/testscripts/runEALtests.sh =A0 =A0 =A0 =A02010-02-1=
+9 16:42:25.000000000 +0530
+> @@ -186,14 +186,14 @@ fi
+> =A0# to execute.
+> =A0if [ -z $cmdfile ]
+> =A0then
+> - =A0 =A0 =A0 cat ${LTPROOT}/../runtest/admin_tools > ${TMP}/alltests
+> + =A0 =A0 =A0 cat ${LTPROOT}/runtest/admin_tools > ${TMP}/alltests
+> =A0else
+> =A0 =A0 cat $cmdfile > ${TMP}/alltests
+> =A0fi
+>
+> =A0if [ $run_netest -eq 1 ]
+> =A0then
+> - =A0 =A0 =A0 cat ${LTPROOT}/../runtest/network_commands >> ${TMP}/alltes=
+ts
+> + =A0 =A0 =A0 cat ${LTPROOT}/runtest/network_commands >> ${TMP}/alltests
+> =A0fi
+>
+> =A0# The fsx-linux tests use the SCRATCHDEV environment variable as a loc=
+ation
+> @@ -201,13 +201,13 @@ fi
+> =A0# these tests. =A0As a safeguard, this is disabled.
+> =A0unset SCRATCHDEV
+> =A0if [ -n "$SCRATCHDEV" ]; then
+> - =A0cat ${LTPROOT}/../runtest/fsx >> ${TMP}/alltests
+> + =A0cat ${LTPROOT}/runtest/fsx >> ${TMP}/alltests
+> =A0fi
+>
+> =A0# display versions of installed software
+> -${LTPROOT}/../ver_linux
+> +${LTPROOT}/ver_linux
+>
+> -${LTPROOT}/../pan/ltp-pan $quiet_mode -e -S $instances $duration -a $$ -=
+n $$ $pretty_prt -f ${TMP}/alltests $logfile
+> +${LTPROOT}/bin/ltp-pan $quiet_mode -e -S $instances $duration -a $$ -n $=
+$ $pretty_prt -f ${TMP}/alltests $logfile
+>
+> =A0if [ $? -eq 0 ]; then
+> =A0 echo ltp-pan reported PASS
+> diff -uprN ltp-full-20100131/testscripts.orig/runpan.sh ltp-full-20100131=
+/testscripts/runpan.sh
+> --- ltp-full-20100131/testscripts.orig/runpan.sh =A0 =A0 =A0 =A02010-02-1=
+9 16:20:05.000000000 +0530
+> +++ ltp-full-20100131/testscripts/runpan.sh =A0 =A0 2010-02-19 16:42:45.0=
+00000000 +0530
+> @@ -14,7 +14,7 @@ cd /tmp/runpan-$$
+>
+> =A0export PATH=3D"${PATH}:${LTPROOT}/doio:${LTPROOT}/testcases/bin"
+>
+> -${LTPROOT}/pan/ltp-pan -e $@ -a ltp -n ltp -f ${LTPROOT}/runtest/quickhit
+> +${LTPROOT}/bin/ltp-pan -e $@ -a ltp -n ltp -f ${LTPROOT}/runtest/quickhit
+>
+> =A0if [ $? -eq "0" ]; then
+> =A0 echo ltp-pan reported PASS
+> diff -uprN ltp-full-20100131/testscripts.orig/syscalls.sh ltp-full-201001=
+31/testscripts/syscalls.sh
+> --- ltp-full-20100131/testscripts.orig/syscalls.sh =A0 =A0 =A02010-02-19 =
+16:20:05.000000000 +0530
+> +++ ltp-full-20100131/testscripts/syscalls.sh =A0 1970-01-01 05:30:00.000=
+000000 +0530
+> @@ -1,4 +0,0 @@
+> -#!/bin/sh
+> -cd `dirname $0`
+> -cd ..
+> -./runltp -f ${PWD}/runtest/syscalls -q "$@"
+> diff -uprN ltp-full-20100131/testscripts.orig/tpm_tools.sh ltp-full-20100=
+131/testscripts/tpm_tools.sh
+> --- ltp-full-20100131/testscripts.orig/tpm_tools.sh =A0 =A0 2010-02-19 16=
+:20:05.000000000 +0530
+> +++ ltp-full-20100131/testscripts/tpm_tools.sh =A02010-02-19 16:47:38.000=
+000000 +0530
+> @@ -167,7 +167,7 @@ export P11_USER_PWD=3D"P11 USER PWD"
+> =A0export NEW_P11_USER_PWD=3D"NEW P11 USER PWD"
+>
+> =A0echo "Running the tpm-tools testsuite..."
+> -$LTPROOT/pan/ltp-pan -d 5 -S -a $LTPROOT/results/tpm_tools -n ltp-tpm-to=
+ols -l $LTPROOT/results/tpm_tools.logfile -o $LTPROOT/results/tpm_tools.out=
+file -p -f $LTPROOT/runtest/tpm_tools
+> +$LTPROOT/bin/ltp-pan -d 5 -S -a $LTPROOT/results/tpm_tools -n ltp-tpm-to=
+ols -l $LTPROOT/results/tpm_tools.logfile -o $LTPROOT/results/tpm_tools.out=
+file -p -f $LTPROOT/runtest/tpm_tools
+>
+> =A0echo "Done."
+> =A0exit 0
 
---000e0cd1aa68b4efed0480a65a76
-Content-Type: text/plain; charset=ISO-8859-1
-
-Hi all,
-
-   Currently LTP's execution scripts are split into 5 discrete blocks:
-
-   1. execltp - python wrapper which invokes runltp and processes output to
-expedite execution and reporting (provides summary and context for test
-PASSes, and all non-PASSes).
-   2. runalltests.sh - a semi-dynamic user-customizable execution wrapper
-that executes runltp after performing needed setup for each section;
-performs needed teardown after each section. Uses a number of scripts inside
-testscripts/*.
-   3. runltp - the primary end-user execution wrapper on top of ltp-pan.
-   4. runltplite.sh - an abbreviated form of runltp (minus the email / html
-output driver,
-   5. testscripts/* - a number of ad hoc ltp-pan callers.
-
-   If you take a look at the caller hierarchy, it's something similar to the
-following:
-
-| execltp |                     | runalltests.sh |
-     |                                  |
-| runltp  |  | runltplite.sh |  | testscripts/*  |
-      \             |                  /
-                | pan |
-
-   Now, analyzing the layers in more detail:
-
-   1. runltplite.sh contains the guts of runltp, but isn't maintained as
-readily as runltp, thus needed bug fixes or feature enhancements aren't
-making it into runltplite.sh as quickly, if at all, and as such there's some
-unnecessary code divergence.
-   2.  testscripts/* contains a lot of setup and teardown logic that could
-be sorted out and properly handled inline before and after the test is
-executed, unlike what's available currently.
-   3. It would be nice if the commands and blocks of code were modularized,
-s.t. outside groups could pre-process and/or post-process the tests to
-
-   My proposal is as follows:
-
-   1. A discrete set of reporting functions should be created (error, info,
-warning, etc). This messages should adhere to the following basic paradigm:
-       error - always displayed.
-       info - only displayed when quiet isn't used.
-       warning - only displayed when quiet isn't used.
-       That way folks could
-   2. runltp be split into discrete functional blocks, as follows:
-       i.   Parse core options. Parse any additional options for
-functionality like email, HTML output, etc.
-       ii.  Prepare the tests based on the runtests files and options passed
-in (run valgrind on the tests, etc).
-       iii. Basic setup.
-       iv.  Execute the tests.
-       v.   Basic teardown.
-       vi.  Output methods for email, HTML, etc.
-   2. The testscripts/* setup and teardown logic be moved to a separate
-script, which looks like the following:
-
-<testname>_setup()
-{
-# Do setup here.
-}
-
-<testname>_test()
-{
-# Execute runtest file via pan.
-}
-
-<testname>_teardown()
-{
-# Do teardown here.
-}
-
-    So when runltp is executed, it does something like the following:
-    1. source testscript [if it exists].
-    2. Change the test ``execution plan'' so that they setup and teardown
-inexplicably executed in the following manner (following Java's unit-test
-and python unittest):
-
-    Setup the test; if successful, continue on with the test(s) and teardown
-at the end.
-
-    The purpose for making this into a script as opposed to any other sort
-of metadata, is that anyone executing the tests standalone will only need to
-source the script to set everything up, then execute the test itself.
-    The only thing that might be a problem is that runtest files are mashed
-together if multiple runtest scenario files are specified. This shouldn't be
-an issue though if everything is strung together properly via the calls
-above (setup, test, teardown).
-    Thoughts?
-Thanks,
+Committed -- cheers!
 -Garrett
 
---000e0cd1aa68b4efed0480a65a76
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,<br> <br>=A0=A0 Currently LTP&#39;s execution scripts are split into=
- 5 discrete blocks:<br><br> =A0 =A01. execltp - python wrapper which invoke=
-s runltp and processes output to expedite execution and reporting (provides=
- summary and context for test PASSes, and all non-PASSes).<br>
-
- =A0 =A02. runalltests.sh - a semi-dynamic user-customizable execution wrap=
-per that executes runltp after performing needed setup for each section; pe=
-rforms needed teardown after each section. Uses a number of scripts inside =
-testscripts/*.<br>
-
- =A0 =A03. runltp - the primary end-user execution wrapper on top of ltp-pa=
-n.<br> =A0 =A04. runltplite.sh - an abbreviated form of runltp (minus the e=
-mail / html output driver, <br> =A0 =A05. testscripts/* - a number of ad ho=
-c ltp-pan callers.<br>
-
-<br> =A0=A0 If you take a look at the caller hierarchy, it&#39;s something =
-similar to the following:<br><br><span style=3D"font-family: courier new,mo=
-nospace;">| execltp | =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | runalltests=
-.sh |</span><br style=3D"font-family: courier new,monospace;">
-
-<span style=3D"font-family: courier new,monospace;"> =A0 =A0 | =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0|</span><br style=3D=
-"font-family: courier new,monospace;"><span style=3D"font-family: courier n=
-ew,monospace;">| runltp =A0| =A0| runltplite.sh | =A0| testscripts/* =A0|</=
-span><br style=3D"font-family: courier new,monospace;">
-
-<span style=3D"font-family: courier new,monospace;"> =A0 =A0 =A0\ =A0 =A0 =
-=A0 =A0 =A0 =A0 | =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/</span><br style=3D"f=
-ont-family: courier new,monospace;"><span style=3D"font-family: courier new=
-,monospace;"> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | pan |</span><br>
-
-<br>=A0=A0 Now, analyzing the layers in more detail:<br><br>=A0=A0 1. runlt=
-plite.sh contains the guts of runltp, but isn&#39;t maintained as readily a=
-s runltp, thus needed bug fixes or feature enhancements aren&#39;t making i=
-t into runltplite.sh as quickly, if at all, and as such there&#39;s some un=
-necessary code divergence.<br>
-
- =A0=A0 2.=A0 testscripts/* contains a lot of setup and teardown logic that=
- could be sorted out and properly handled inline before and after the test =
-is executed, unlike what&#39;s available currently.<br>=A0=A0 3. It would b=
-e nice if the commands and blocks of code were modularized, s.t. outside gr=
-oups could pre-process and/or post-process the tests to <br>
-<br>=A0=A0 My proposal is as follows:<br>
-<br>=A0=A0 1. A discrete set of reporting functions should be created (erro=
-r, info, warning, etc). This messages should adhere to the following basic =
-paradigm:<br>=A0=A0=A0=A0=A0=A0 error - always displayed.<br>=A0=A0=A0=A0=
-=A0=A0 info - only displayed when quiet isn&#39;t used.<br>
-
-=A0=A0=A0=A0=A0=A0 warning - only displayed when quiet isn&#39;t used.<br>=
-=A0=A0=A0=A0=A0=A0 That way folks could<br>=A0=A0 2. runltp be split into d=
-iscrete functional blocks, as follows:<br>=A0=A0=A0=A0=A0=A0 i.=A0=A0 Parse=
- core options. Parse any additional options for functionality like email, H=
-TML output, etc.<br>
-=A0=A0=A0=A0=A0=A0 ii.=A0 Prepare the tests based on the runtests files and=
- options passed in (run valgrind on the tests, etc).<br>=A0=A0=A0=A0=A0=A0 =
-iii. Basic setup.<br>=A0=A0=A0=A0=A0=A0 iv.=A0 Execute the tests.<br>=A0=A0=
-=A0=A0=A0=A0 v. =A0 Basic teardown.<br>
-=A0=A0=A0=A0=A0=A0 vi.=A0 Output methods for email, HTML, etc.<br>=A0=A0 2.=
- The testscripts/* setup and teardown logic be moved to a separate script, =
-which looks like the following:<br><br>&lt;testname&gt;_setup()<br>{<br># D=
-o setup here.<br>
-}<br><br>&lt;testname&gt;_test()<br>{<br># Execute runtest file via pan.<br=
->}<br><br>&lt;testname&gt;_teardown()<br>
-
-{<br>
-# Do teardown here.<br>
-}<br><br>=A0=A0=A0 So when runltp is executed, it does something like the f=
-ollowing:<br>=A0=A0=A0 1. source testscript [if it exists].<br>=A0=A0=A0 2.=
- Change the test ``execution plan&#39;&#39; so that they setup and teardown=
- inexplicably executed in the following manner (following Java&#39;s unit-t=
-est and python unittest):<br>
-<br>=A0 =A0 Setup the test; if successful, continue on with the test(s) and=
- teardown at the end.<br><br>=A0=A0=A0 The purpose for making this into a s=
-cript as opposed to any other sort of metadata, is that anyone executing th=
-e tests standalone will only need to source the script to set everything up=
-, then execute the test itself.<br>
-=A0=A0=A0 The only thing that might be a problem is that runtest files are =
-mashed together if multiple runtest scenario files are specified. This shou=
-ldn&#39;t be an issue though if everything is strung together properly via =
-the calls above (setup, test, teardown).<br>
-=A0=A0=A0 Thoughts?<br>Thanks,<br>-Garrett<br>
-
---000e0cd1aa68b4efed0480a65a76--
-
-
---===============4748578905264789321==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
---===============4748578905264789321==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4748578905264789321==--
-
