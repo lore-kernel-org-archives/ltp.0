@@ -1,28 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <vishwa.hochihally@gmail.com>) id 1NhHoc-0000RT-TU
-	for ltp-list@lists.sourceforge.net; Tue, 16 Feb 2010 07:25:50 +0000
-Received: from mail-pz0-f187.google.com ([209.85.222.187])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NhHob-000841-RB
-	for ltp-list@lists.sourceforge.net; Tue, 16 Feb 2010 07:25:50 +0000
-Received: by pzk17 with SMTP id 17so4779230pzk.4
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 15 Feb 2010 23:25:43 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <364299f41002150018p1a6888b6r4cb95731deffcd0b@mail.gmail.com>
-References: <4b9fdcd01002142251l2cb9036fvde4fbc60bbae85a4@mail.gmail.com>
-	<364299f41002142303t19a2dd85ve9d87245084ff4ff@mail.gmail.com>
-	<4b9fdcd01002142309p2bc18e0yfaa0876694cc4f57@mail.gmail.com>
-	<364299f41002142320p24b3e50fj8b56bb15dad2a524@mail.gmail.com>
-	<4b9fdcd01002142359w4b275c73s91ea258eee1de146@mail.gmail.com>
-	<364299f41002150018p1a6888b6r4cb95731deffcd0b@mail.gmail.com>
-Date: Tue, 16 Feb 2010 12:55:43 +0530
-Message-ID: <4b9fdcd01002152325w6bee8349t173c6f0afd935070@mail.gmail.com>
-From: vishwanath govind <vishwa.hochihally@gmail.com>
-Subject: Re: [LTP] facing issue "TBROK : nobody not in /etc/passwd"
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NiR2y-0004ba-6R
+	for ltp-list@lists.sourceforge.net; Fri, 19 Feb 2010 11:29:24 +0000
+Received: from e7.ny.us.ibm.com ([32.97.182.137])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NiR2t-0004xO-SV
+	for ltp-list@lists.sourceforge.net; Fri, 19 Feb 2010 11:29:24 +0000
+Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
+	by e7.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1JBLh2P017217
+	for <ltp-list@lists.sourceforge.net>; Fri, 19 Feb 2010 06:21:43 -0500
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o1JBT8bs1540180
+	for <ltp-list@lists.sourceforge.net>; Fri, 19 Feb 2010 06:29:08 -0500
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o1JBT8ZR012079
+	for <ltp-list@lists.sourceforge.net>; Fri, 19 Feb 2010 09:29:08 -0200
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
+Date: Fri, 19 Feb 2010 16:59:04 +0530
+Message-Id: <20100219112904.27416.55542.sendpatchset@subratamodak.linux.ibm.com>
+Subject: [LTP] [PATCH] Fix LTP Scritps as per the new build/install system
+	in place
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,342 +33,317 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8388180450734127553=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
-
---===============8388180450734127553==
-Content-Type: multipart/alternative; boundary=000e0cd1186a4248af047fb2a43f
-
---000e0cd1186a4248af047fb2a43f
-Content-Type: text/plain; charset=ISO-8859-1
-
-I have initramfs file system built using Busybox-1.16.0 and didn't setup the
-ldap/nis. I have few files in /etc like passwd,group and syslogd conf
-files.But getpwnam() should search local repository(/etc/passwd file) and
-returns a pointer to a *struct passwd*, correct?. Do i really need to setup
-ldap/NIS to make it work getpwnam() funtion? The device i am using has
-memory restriction to add more stuff to filesystem and its very minimal. So
-please guide me what are the minimal things need to setup to get getpwnam()
-function working? Please correct me if i am wrong here.
-
-Regards
-Vishwa
-
-On Mon, Feb 15, 2010 at 1:48 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-
-> On Sun, Feb 14, 2010 at 11:59 PM, vishwanath govind
-> <vishwa.hochihally@gmail.com> wrote:
-> > Yes, I checked this before, It return errorno "0". Somehow mknod02 won't
-> > display the errorno when it exit with "tst_brkm(TBROK, cleanup, "%s not
-> in
-> > /etc/passwd", LTPUSER)" but I have similar tests return errorno 0. I see
-> > "nobody" user and uid/gid -99 is present in /etc/passwd file. Do I need
-> to
-> > enable anything in KERNEL config or /etc?
-> >
-> > ============================log===============================
-> > <<<test_start>>>
-> > tag=nftw01 stime=1170483127
-> > cmdline="nftw01"
-> > contacts=""
-> > analysis=exit
-> > <<<test_output>>>
-> > nobody not found in /etc/passwd: No such file or directory
-> > <<<execution_status>>>
-> > initiation_status="ok"
-> > duration=0 termination_type=exited termination_id=1 corefile=no
-> > cutime=1 cstime=2
-> > <<<test_end>>>
-> > <<<test_start>>>
-> > tag=nftw6401 stime=1170483127
-> > cmdline="nftw6401"
-> > contacts=""
-> > analysis=exit
-> > <<<test_output>>>
-> > change_owner: nobody not found in /etc/passwd: No such file or directory
-> > <<<execution_status>>>
-> > initiation_status="ok"
-> > duration=0 termination_type=exited termination_id=1 corefile=no
-> > cutime=2 cstime=1
-> > <<<test_end>>>
-> > ==============================end==================================
-> > Regards
-> > Vishwa
-> >
-> > On Mon, Feb 15, 2010 at 12:50 PM, Garrett Cooper <yanegomi@gmail.com>
-> wrote:
-> >>
-> >> On Sun, Feb 14, 2010 at 11:09 PM, vishwanath govind
-> >> <vishwa.hochihally@gmail.com> wrote:
-> >> > Garrett,
-> >> >  Thanks for your quick reply. I am using "ltp-full-20091231".
-> >> > Regards
-> >> > Vishwa
-> >> >
-> >> > On Mon, Feb 15, 2010 at 12:33 PM, Garrett Cooper <yanegomi@gmail.com>
-> >> > wrote:
-> >> >>
-> >> >> On Sun, Feb 14, 2010 at 10:51 PM, vishwanath govind
-> >> >> <vishwa.hochihally@gmail.com> wrote:
-> >> >> >
-> >> >> > Hi,
-> >> >> > I am facing common issue which causing many of the LTP syscalls
-> test
-> >> >> > cases
-> >> >> > to fail. I have taken mknod02 test to show this issue here.
-> >> >> > Definitely I
-> >> >> > am
-> >> >> > missing something out here, could you guys please point me to right
-> >> >> > direction?  Please let me know if you need some more info/log
-> >> >> >
-> >> >> > ======================log================================
-> >> >> > # ls /etc
-> >> >> > group   passwd
-> >> >> >
-> >> >> > # ./IDcheck.sh
-> >> >> > Checking for required user/group ids
-> >> >> > 'nobody' user id and group found.
-> >> >> > 'bin' user id and group found.
-> >> >> > 'daemon' user id and group found.
-> >> >> > Users group found.
-> >> >> > Sys group found.
-> >> >> > Required users/groups exist.
-> >> >> >
-> >> >> > # cat /etc/passwd
-> >> >> > root:x:0:0:root::
-> >> >> > nobody:x:99:99:nobody::
-> >> >> > bin:x:1:1:bin::
-> >> >> > daemon:x:2:2:daemon::
-> >> >> >
-> >> >> > #uname -a
-> >> >> > Linux (none) 2.6.29 #4 PREEMPT Thu Feb 11 23:37:46 PST 2010 armv6l
-> >> >> > GNU/Linux
-> >> >> >
-> >> >> > # ./mknod02
-> >> >> > mknod02     1  TBROK  :  nobody not in /etc/passwd
-> >> >>
-> >> >> What version of LTP is this?
-> >>
-> >> That's a lousy diagnostic, as any one of the following errors could be
-> >> the culprit:
-> >>
-> >> ERRORS
-> >>       0 or ENOENT or ESRCH or EBADF or EPERM or ...
-> >>              The given name or uid was not found.
-> >>
-> >>       EINTR  A signal was caught.
-> >>
-> >>       EIO    I/O error.
-> >>
-> >>       EMFILE The maximum number (OPEN_MAX) of files was open already
-> >> in the calling process.
-> >>
-> >>       ENFILE The maximum number of files was open already in the system.
-> >>
-> >>       ENOMEM Insufficient memory to allocate passwd structure.
-> >>
-> >>       ERANGE Insufficient buffer space supplied.
-> >>
-> >> What are the permissions on the file and is there any way where you
-> >> could grab the latest copy of the file from git and try that out (the
-> >> patch is available at:
->
-> Nope... you sure your ldap / nis isn't busted?
-> -Garrett
->
-
---000e0cd1186a4248af047fb2a43f
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-I have initramfs file system built using Busybox-1.16.0 and didn&#39;t setu=
-p the ldap/nis. I have few files in /etc like passwd,group and syslogd conf=
- files.But getpwnam() should search local repository(/etc/passwd file) and =
-returns a pointer to a
-<b>struct passwd</b>, correct?. Do i really need to setup ldap/NIS to make =
-it work getpwnam() funtion? The device i am using has memory restriction to=
- add more stuff to filesystem and its very minimal. So please guide me what=
- are the minimal things need to setup to get getpwnam() function working? P=
-lease correct me if i am wrong here. <br>
-<br>Regards<br>Vishwa<br><br><div class=3D"gmail_quote">On Mon, Feb 15, 201=
-0 at 1:48 PM, Garrett Cooper <span dir=3D"ltr">&lt;<a href=3D"mailto:yanego=
-mi@gmail.com">yanegomi@gmail.com</a>&gt;</span> wrote:<br><blockquote class=
-=3D"gmail_quote" style=3D"border-left: 1px solid rgb(204, 204, 204); margin=
-: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
-On Sun, Feb 14, 2010 at 11:59 PM, vishwanath govind<br>
-<div><div></div><div class=3D"h5">&lt;<a href=3D"mailto:vishwa.hochihally@g=
-mail.com">vishwa.hochihally@gmail.com</a>&gt; wrote:<br>
-&gt; Yes, I checked this before, It return errorno &quot;0&quot;. Somehow m=
-knod02 won&#39;t<br>
-&gt; display the errorno when it=A0exit with &quot;tst_brkm(TBROK, cleanup,=
- &quot;%s not in<br>
-&gt; /etc/passwd&quot;, LTPUSER)&quot;=A0but I have similar tests return er=
-rorno 0. I see<br>
-&gt; &quot;nobody&quot; user=A0and uid/gid -99=A0is present in /etc/passwd =
-file. Do=A0I need to<br>
-&gt; enable anything in KERNEL config or /etc?<br>
-&gt;<br>
-&gt; =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3Dlog=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D<br>
-&gt; &lt;&lt;&lt;test_start&gt;&gt;&gt;<br>
-&gt; tag=3Dnftw01 stime=3D1170483127<br>
-&gt; cmdline=3D&quot;nftw01&quot;<br>
-&gt; contacts=3D&quot;&quot;<br>
-&gt; analysis=3Dexit<br>
-&gt; &lt;&lt;&lt;test_output&gt;&gt;&gt;<br>
-&gt; nobody not found in /etc/passwd: No such file or directory<br>
-&gt; &lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>
-&gt; initiation_status=3D&quot;ok&quot;<br>
-&gt; duration=3D0 termination_type=3Dexited termination_id=3D1 corefile=3Dn=
-o<br>
-&gt; cutime=3D1 cstime=3D2<br>
-&gt; &lt;&lt;&lt;test_end&gt;&gt;&gt;<br>
-&gt; &lt;&lt;&lt;test_start&gt;&gt;&gt;<br>
-&gt; tag=3Dnftw6401 stime=3D1170483127<br>
-&gt; cmdline=3D&quot;nftw6401&quot;<br>
-&gt; contacts=3D&quot;&quot;<br>
-&gt; analysis=3Dexit<br>
-&gt; &lt;&lt;&lt;test_output&gt;&gt;&gt;<br>
-&gt; change_owner: nobody not found in /etc/passwd: No such file or directo=
-ry<br>
-&gt; &lt;&lt;&lt;execution_status&gt;&gt;&gt;<br>
-&gt; initiation_status=3D&quot;ok&quot;<br>
-&gt; duration=3D0 termination_type=3Dexited termination_id=3D1 corefile=3Dn=
-o<br>
-&gt; cutime=3D2 cstime=3D1<br>
-&gt; &lt;&lt;&lt;test_end&gt;&gt;&gt;<br>
-&gt; =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3Dend=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D<br>
-&gt; Regards<br>
-&gt; Vishwa<br>
-&gt;<br>
-&gt; On Mon, Feb 15, 2010 at 12:50 PM, Garrett Cooper &lt;<a href=3D"mailto=
-:yanegomi@gmail.com">yanegomi@gmail.com</a>&gt; wrote:<br>
-&gt;&gt;<br>
-&gt;&gt; On Sun, Feb 14, 2010 at 11:09 PM, vishwanath govind<br>
-&gt;&gt; &lt;<a href=3D"mailto:vishwa.hochihally@gmail.com">vishwa.hochihal=
-ly@gmail.com</a>&gt; wrote:<br>
-&gt;&gt; &gt; Garrett,<br>
-&gt;&gt; &gt; =A0Thanks for your quick reply. I am using &quot;ltp-full-200=
-91231&quot;.<br>
-&gt;&gt; &gt; Regards<br>
-&gt;&gt; &gt; Vishwa<br>
-&gt;&gt; &gt;<br>
-&gt;&gt; &gt; On Mon, Feb 15, 2010 at 12:33 PM, Garrett Cooper &lt;<a href=
-=3D"mailto:yanegomi@gmail.com">yanegomi@gmail.com</a>&gt;<br>
-&gt;&gt; &gt; wrote:<br>
-&gt;&gt; &gt;&gt;<br>
-&gt;&gt; &gt;&gt; On Sun, Feb 14, 2010 at 10:51 PM, vishwanath govind<br>
-&gt;&gt; &gt;&gt; &lt;<a href=3D"mailto:vishwa.hochihally@gmail.com">vishwa=
-.hochihally@gmail.com</a>&gt; wrote:<br>
-&gt;&gt; &gt;&gt; &gt;<br>
-&gt;&gt; &gt;&gt; &gt; Hi,<br>
-&gt;&gt; &gt;&gt; &gt; I am facing common issue which causing many of the L=
-TP syscalls test<br>
-&gt;&gt; &gt;&gt; &gt; cases<br>
-&gt;&gt; &gt;&gt; &gt; to fail. I have taken mknod02 test to show this issu=
-e here.<br>
-&gt;&gt; &gt;&gt; &gt; Definitely I<br>
-&gt;&gt; &gt;&gt; &gt; am<br>
-&gt;&gt; &gt;&gt; &gt; missing something out here, could you guys please po=
-int me to right<br>
-&gt;&gt; &gt;&gt; &gt; direction?=A0 Please let me know if you need some mo=
-re info/log<br>
-&gt;&gt; &gt;&gt; &gt;<br>
-&gt;&gt; &gt;&gt; &gt; =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3Dlog=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D<br>
-&gt;&gt; &gt;&gt; &gt; # ls /etc<br>
-&gt;&gt; &gt;&gt; &gt; group=A0=A0 passwd<br>
-&gt;&gt; &gt;&gt; &gt;<br>
-&gt;&gt; &gt;&gt; &gt; # ./IDcheck.sh<br>
-&gt;&gt; &gt;&gt; &gt; Checking for required user/group ids<br>
-&gt;&gt; &gt;&gt; &gt; &#39;nobody&#39; user id and group found.<br>
-&gt;&gt; &gt;&gt; &gt; &#39;bin&#39; user id and group found.<br>
-&gt;&gt; &gt;&gt; &gt; &#39;daemon&#39; user id and group found.<br>
-&gt;&gt; &gt;&gt; &gt; Users group found.<br>
-&gt;&gt; &gt;&gt; &gt; Sys group found.<br>
-&gt;&gt; &gt;&gt; &gt; Required users/groups exist.<br>
-&gt;&gt; &gt;&gt; &gt;<br>
-&gt;&gt; &gt;&gt; &gt; # cat /etc/passwd<br>
-&gt;&gt; &gt;&gt; &gt; root:x:0:0:root::<br>
-&gt;&gt; &gt;&gt; &gt; nobody:x:99:99:nobody::<br>
-&gt;&gt; &gt;&gt; &gt; bin:x:1:1:bin::<br>
-&gt;&gt; &gt;&gt; &gt; daemon:x:2:2:daemon::<br>
-&gt;&gt; &gt;&gt; &gt;<br>
-&gt;&gt; &gt;&gt; &gt; #uname -a<br>
-&gt;&gt; &gt;&gt; &gt; Linux (none) 2.6.29 #4 PREEMPT Thu Feb 11 23:37:46 P=
-ST 2010 armv6l<br>
-&gt;&gt; &gt;&gt; &gt; GNU/Linux<br>
-&gt;&gt; &gt;&gt; &gt;<br>
-&gt;&gt; &gt;&gt; &gt; # ./mknod02<br>
-&gt;&gt; &gt;&gt; &gt; mknod02=A0=A0=A0=A0 1=A0 TBROK=A0 :=A0 nobody not in=
- /etc/passwd<br>
-&gt;&gt; &gt;&gt;<br>
-&gt;&gt; &gt;&gt; What version of LTP is this?<br>
-&gt;&gt;<br>
-&gt;&gt; That&#39;s a lousy diagnostic, as any one of the following errors =
-could be<br>
-&gt;&gt; the culprit:<br>
-&gt;&gt;<br>
-&gt;&gt; ERRORS<br>
-&gt;&gt; =A0 =A0 =A0 0 or ENOENT or ESRCH or EBADF or EPERM or ...<br>
-&gt;&gt; =A0 =A0 =A0 =A0 =A0 =A0 =A0The given name or uid was not found.<br=
->
-&gt;&gt;<br>
-&gt;&gt; =A0 =A0 =A0 EINTR =A0A signal was caught.<br>
-&gt;&gt;<br>
-&gt;&gt; =A0 =A0 =A0 EIO =A0 =A0I/O error.<br>
-&gt;&gt;<br>
-&gt;&gt; =A0 =A0 =A0 EMFILE The maximum number (OPEN_MAX) of files was open=
- already<br>
-&gt;&gt; in the calling process.<br>
-&gt;&gt;<br>
-&gt;&gt; =A0 =A0 =A0 ENFILE The maximum number of files was open already in=
- the system.<br>
-&gt;&gt;<br>
-&gt;&gt; =A0 =A0 =A0 ENOMEM Insufficient memory to allocate passwd structur=
-e.<br>
-&gt;&gt;<br>
-&gt;&gt; =A0 =A0 =A0 ERANGE Insufficient buffer space supplied.<br>
-&gt;&gt;<br>
-&gt;&gt; What are the permissions on the file and is there any way where yo=
-u<br>
-&gt;&gt; could grab the latest copy of the file from git and try that out (=
-the<br>
-&gt;&gt; patch is available at:<br>
-<br>
-</div></div>Nope... you sure your ldap / nis isn&#39;t busted?<br>
-<font color=3D"#888888">-Garrett<br>
-</font></blockquote></div><br>
-
---000e0cd1186a4248af047fb2a43f--
-
-
---===============8388180450734127553==
-Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: LTP Mailing List <ltp-list@lists.sourceforge.net>
+
+Hi,
+
+Scripts under LTPROOT/testscripts/ need to access ltp-pan from some
+other loaction now. Moreover there are scripts to run MATH and SYSCALL
+tests which are not required as they can be directly run through
+./runltp -f <math/runltp>
+This patch fixes them. Probably the scripts need to be looked on
+more to fix such anomalies.
+
+Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>
+---
+
+diff -uprN ltp-full-20100131/testscripts.orig/diskio.sh ltp-full-20100131/testscripts/diskio.sh
+--- ltp-full-20100131/testscripts.orig/diskio.sh	2010-02-19 16:20:05.000000000 +0530
++++ ltp-full-20100131/testscripts/diskio.sh	2010-02-19 16:20:27.000000000 +0530
+@@ -27,7 +27,7 @@ export PATH="${PATH}:${LTPROOT}/testcase
+  
+ ${LTPROOT}/ver_linux
+ 
+-${LTPROOT}/pan/ltp-pan -e -l /tmp/diskiopan.log -S -a ltpdiskio -n ltpdiskio -f ${LTPROOT}/runtest/io_floppy -f ${LTPROOT}/runtest/io_cd
++${LTPROOT}/bin/ltp-pan -e -l /tmp/diskiopan.log -S -a ltpdiskio -n ltpdiskio -f ${LTPROOT}/runtest/io_floppy -f ${LTPROOT}/runtest/io_cd
+ 
+ if [ $? -eq "0" ]; then
+   echo ltp-pan reported PASS
+diff -uprN ltp-full-20100131/testscripts.orig/ltp-aiodio.sh ltp-full-20100131/testscripts/ltp-aiodio.sh
+--- ltp-full-20100131/testscripts.orig/ltp-aiodio.sh	2010-02-19 16:20:05.000000000 +0530
++++ ltp-full-20100131/testscripts/ltp-aiodio.sh	2010-02-19 16:25:53.000000000 +0530
+@@ -227,9 +227,9 @@ dd if=$file1 of=/test/aiodio/junkfile bs
+ date
+ echo "************ Running aio-stress tests " 
+ echo "current working dir = ${PWD}"
+-${LTPROOT}/bin/rand_lines -g ${LTPROOT}/runtest/ltp-aio-stress.part1 > ${TMPBASE}/ltp-aio-stress.part1
++${LTPROOT}/tools/rand_lines -g ${LTPROOT}/runtest/ltp-aio-stress.part1 > ${TMPBASE}/ltp-aio-stress.part1
+ 
+-${LTPROOT}/pan/ltp-pan -e -S -a ltpaiostresspart1 -n ltp-aiostresspart1 -l ltpaiostress.logfile -o ltpaiostress.outfile -p -f ${TMPBASE}/ltp-aio-stress.part1 &
++${LTPROOT}/bin/ltp-pan -e -S -a ltpaiostresspart1 -n ltp-aiostresspart1 -l ltpaiostress.logfile -o ltpaiostress.outfile -p -f ${TMPBASE}/ltp-aio-stress.part1 &
+ 
+ wait $!
+ 
+@@ -239,9 +239,9 @@ echo ""
+ 
+ if [ "$runExtendedStress" -eq 1 ];then
+ echo "************ Running EXTENDED aio-stress tests " 
+-${LTPROOT}/bin/rand_lines -g ${LTPROOT}/runtest/ltp-aio-stress.part2 > ${TMPBASE}/ltp-aio-stress.part2
++${LTPROOT}/tools/rand_lines -g ${LTPROOT}/runtest/ltp-aio-stress.part2 > ${TMPBASE}/ltp-aio-stress.part2
+ 
+-${LTPROOT}/pan/ltp-pan -e -S -a ltpaiostresspart2 -n ltp-aiostresspart2 -l ltpaiostress.logfile -o ltpaiostress.outfile -p -f ${TMPBASE}/ltp-aio-stress.part2 &
++${LTPROOT}/bin/ltp-pan -e -S -a ltpaiostresspart2 -n ltp-aiostresspart2 -l ltpaiostress.logfile -o ltpaiostress.outfile -p -f ${TMPBASE}/ltp-aio-stress.part2 &
+ 
+ wait $!
+ sync
+@@ -254,9 +254,9 @@ dd if=$file1 of=/test/aiodio/ff2      bs
+ dd if=$file1 of=/test/aiodio/ff3      bs=512  conv=block,sync
+ 
+ echo "************ Running aiocp tests " 
+-${LTPROOT}/bin/rand_lines -g ${LTPROOT}/runtest/ltp-aiodio.part1 > ${TMPBASE}/ltp-aiodio.part1
++${LTPROOT}/tools/rand_lines -g ${LTPROOT}/runtest/ltp-aiodio.part1 > ${TMPBASE}/ltp-aiodio.part1
+ 
+-${LTPROOT}/pan/ltp-pan -e -S -a ltpaiodiopart1 -n ltp-aiodiopart1 -l ltpaiodio1.logfile -o ltpaiodio1.outfile -p -f ${TMPBASE}/ltp-aiodio.part1 &
++${LTPROOT}/bin/ltp-pan -e -S -a ltpaiodiopart1 -n ltp-aiodiopart1 -l ltpaiodio1.logfile -o ltpaiodio1.outfile -p -f ${TMPBASE}/ltp-aiodio.part1 &
+ 
+ wait $!
+ sync
+@@ -264,9 +264,9 @@ echo "************ End Running aiocp tes
+ echo ""
+ 
+ echo "************ Running aiodio_sparse tests " 
+-${LTPROOT}/bin/rand_lines -g ${LTPROOT}/runtest/ltp-aiodio.part2 > ${TMPBASE}/ltp-aiodio.part2
++${LTPROOT}/tools/rand_lines -g ${LTPROOT}/runtest/ltp-aiodio.part2 > ${TMPBASE}/ltp-aiodio.part2
+ 
+-${LTPROOT}/pan/ltp-pan -e -S -a ltpaiodiopart2 -n ltp-aiodiopart2 -l ltpaiodio2.logfile -o ltpaiodio2.outfile -p -f ${TMPBASE}/ltp-aiodio.part2 &
++${LTPROOT}/bin/ltp-pan -e -S -a ltpaiodiopart2 -n ltp-aiodiopart2 -l ltpaiodio2.logfile -o ltpaiodio2.outfile -p -f ${TMPBASE}/ltp-aiodio.part2 &
+ 
+ wait $!
+ sync
+@@ -276,9 +276,9 @@ echo ""
+ 
+ if [ "$runExtendedStress" -eq 1 ];then
+ echo "************ Running fsx-linux tests "
+-${LTPROOT}/bin/rand_lines -g ${LTPROOT}/runtest/ltp-aiodio.part3 > ${TMPBASE}/ltp-aiodio.part3
++${LTPROOT}/tools/rand_lines -g ${LTPROOT}/runtest/ltp-aiodio.part3 > ${TMPBASE}/ltp-aiodio.part3
+ 
+-${LTPROOT}/pan/ltp-pan -e -S -a ltpaiodiopart3 -n ltp-aiodiopart3 -l ltpaiodio3.logfile -o ltpaiodio3.outfile -p -f ${TMPBASE}/ltp-aiodio.part3 &
++${LTPROOT}/bin/ltp-pan -e -S -a ltpaiodiopart3 -n ltp-aiodiopart3 -l ltpaiodio3.logfile -o ltpaiodio3.outfile -p -f ${TMPBASE}/ltp-aiodio.part3 &
+ 
+ 
+ 
+@@ -295,8 +295,8 @@ dd if=$file1 of=/test/aiodio/file5      
+ 
+  
+ echo "************ Running dio_sparse & miscellaneous tests "
+-${LTPROOT}/bin/rand_lines -g ${LTPROOT}/runtest/ltp-aiodio.part4 > ${TMPBASE}/ltp-aiodio.part4
+-${LTPROOT}/pan/ltp-pan -e -S -a ltpaiodiopart4 -n ltp-aiodiopart4 -l ltpaiodio4.logfile -o ltpaiodio4.outfile -p -f ${TMPBASE}/ltp-aiodio.part4 &
++${LTPROOT}/tools/rand_lines -g ${LTPROOT}/runtest/ltp-aiodio.part4 > ${TMPBASE}/ltp-aiodio.part4
++${LTPROOT}/bin/ltp-pan -e -S -a ltpaiodiopart4 -n ltp-aiodiopart4 -l ltpaiodio4.logfile -o ltpaiodio4.outfile -p -f ${TMPBASE}/ltp-aiodio.part4 &
+ 
+ wait $!
+ sync
+diff -uprN ltp-full-20100131/testscripts.orig/ltpfslvm.sh ltp-full-20100131/testscripts/ltpfslvm.sh
+--- ltp-full-20100131/testscripts.orig/ltpfslvm.sh	2010-02-19 16:20:05.000000000 +0530
++++ ltp-full-20100131/testscripts/ltpfslvm.sh	2010-02-19 16:26:27.000000000 +0530
+@@ -156,9 +156,9 @@ mount -v /dev/ltp_test_vg2/ltp_test_lv4 
+ mount -v /dev/ram                       /test/growfiles/ramdisk                              
+ 
+ echo "************ Running tests " 
+-${LTPROOT}/bin/rand_lines -g ${LTPROOT}/runtest/lvm.part1 > ${TMPBASE}/lvm.part1
++${LTPROOT}/tools/rand_lines -g ${LTPROOT}/runtest/lvm.part1 > ${TMPBASE}/lvm.part1
+ 
+-${LTPROOT}/pan/ltp-pan -e -S -a lvmpart1 -n lvmpart1 -l lvmlogfile -f ${TMPBASE}/lvm.part1 &
++${LTPROOT}/bin/ltp-pan -e -S -a lvmpart1 -n lvmpart1 -l lvmlogfile -f ${TMPBASE}/lvm.part1 &
+ 
+ wait $!
+ 
+@@ -188,9 +188,9 @@ mount -v -t ext3   /dev/$part4         /
+ mount -v -t jfs    /dev/hdc1           /test/growfiles/jfs
+ 
+ echo "************ Running EXT3 & JFS tests...  " 
+-${LTPROOT}/bin/rand_lines -g ${LTPROOT}/runtest/lvm.part2 > ${TMPBASE}/lvm.part2
++${LTPROOT}/tools/rand_lines -g ${LTPROOT}/runtest/lvm.part2 > ${TMPBASE}/lvm.part2
+ 
+-${LTPROOT}/pan/ltp-pan -e -S -a lvmpart2 -n lvmpart2 -l lvmlogfile -f ${TMPBASE}/lvm.part2 &
++${LTPROOT}/bin/ltp-pan -e -S -a lvmpart2 -n lvmpart2 -l lvmlogfile -f ${TMPBASE}/lvm.part2 &
+ 
+ wait $!
+ 
+diff -uprN ltp-full-20100131/testscripts.orig/ltpfsnolvm.sh ltp-full-20100131/testscripts/ltpfsnolvm.sh
+--- ltp-full-20100131/testscripts.orig/ltpfsnolvm.sh	2010-02-19 16:20:05.000000000 +0530
++++ ltp-full-20100131/testscripts/ltpfsnolvm.sh	2010-02-19 16:28:03.000000000 +0530
+@@ -116,9 +116,9 @@ mount -v /dev/$part4                    
+ mount -v /dev/ram                       /test/growfiles/ramdisk                              
+ 
+ echo "************ Running tests " 
+-${LTPROOT}/../bin/rand_lines -g ${LTPROOT}/../runtest/lvm.part1 > ${TMPBASE}/lvm.part1
++${LTPROOT}/../tools/rand_lines -g ${LTPROOT}/../runtest/lvm.part1 > ${TMPBASE}/lvm.part1
+ 
+-${LTPROOT}/../pan/ltp-pan -e -S -a lvmpart1 -n lvmpart1 -l lvmlogfile -f ${TMPBASE}/lvm.part1 &
++${LTPROOT}/../bin/ltp-pan -e -S -a lvmpart1 -n lvmpart1 -l lvmlogfile -f ${TMPBASE}/lvm.part1 &
+ 
+ wait $!
+ 
+@@ -138,9 +138,9 @@ mount -v -t ext3   /dev/$part4         /
+ mount -v -t jfs    /dev/$part1         /test/growfiles/jfs
+ 
+ echo "************ Running EXT3 & JFS tests...  " 
+-${LTPROOT}/../bin/rand_lines -g ${LTPROOT}/../runtest/lvm.part2 > ${TMPBASE}/lvm.part2
++${LTPROOT}/../tools/rand_lines -g ${LTPROOT}/../runtest/lvm.part2 > ${TMPBASE}/lvm.part2
+ 
+-${LTPROOT}/../pan/ltp-pan -e -S -a lvmpart2 -n lvmpart2 -l lvmlogfile -f ${TMPBASE}/lvm.part2 &
++${LTPROOT}/../bin/ltp-pan -e -S -a lvmpart2 -n lvmpart2 -l lvmlogfile -f ${TMPBASE}/lvm.part2 &
+ 
+ wait $!
+ 
+diff -uprN ltp-full-20100131/testscripts.orig/ltp-scsi_debug.sh ltp-full-20100131/testscripts/ltp-scsi_debug.sh
+--- ltp-full-20100131/testscripts.orig/ltp-scsi_debug.sh	2010-02-19 16:20:05.000000000 +0530
++++ ltp-full-20100131/testscripts/ltp-scsi_debug.sh	2010-02-19 16:31:51.000000000 +0530
+@@ -204,9 +204,9 @@ mount /dev/$part4 /test/growfiles/msdos
+ 
+ echo "----- Running tests ----- " 
+ echo "The test may take about 2 hours to finish..."
+-${LTPROOT}/bin/rand_lines -g ${LTPROOT}/runtest/scsi_debug.part1 > ${TMPBASE}/scsi_debug
++${LTPROOT}/tools/rand_lines -g ${LTPROOT}/runtest/scsi_debug.part1 > ${TMPBASE}/scsi_debug
+  
+-${LTPROOT}/pan/ltp-pan -e -S -a scsi_debug -n scsi_debug -l ${TMPBASE}/fs-scsi_debug.log -o ${TMPBASE}/fs-scsi_debug.out -f ${TMPBASE}/scsi_debug 
++${LTPROOT}/bin/ltp-pan -e -S -a scsi_debug -n scsi_debug -l ${TMPBASE}/fs-scsi_debug.log -o ${TMPBASE}/fs-scsi_debug.out -f ${TMPBASE}/scsi_debug 
+ 
+ wait $!
+ 
+diff -uprN ltp-full-20100131/testscripts.orig/ltpstress.sh ltp-full-20100131/testscripts/ltpstress.sh
+--- ltp-full-20100131/testscripts.orig/ltpstress.sh	2010-02-19 16:20:05.000000000 +0530
++++ ltp-full-20100131/testscripts/ltpstress.sh	2010-02-19 16:32:24.000000000 +0530
+@@ -275,9 +275,9 @@ output1=${TMPBASE}/ltpstress.$$.output1
+ output2=${TMPBASE}/ltpstress.$$.output2
+ output3=${TMPBASE}/ltpstress.$$.output3
+ 
+-${LTPROOT}/pan/ltp-pan -e -p -q -S -t ${hours}h -a stress1 -n stress1 -l $logfile -f ${TMP}/stress.part1 -o $output1 & 
+-${LTPROOT}/pan/ltp-pan -e -p -q -S -t ${hours}h -a stress2 -n stress2 -l $logfile -f ${TMP}/stress.part2 -o $output2 &
+-${LTPROOT}/pan/ltp-pan -e -p -q -S -t ${hours}h -a stress3 -n stress3 -l $logfile -f ${TMP}/stress.part3 -o $output3 &
++${LTPROOT}/bin/ltp-pan -e -p -q -S -t ${hours}h -a stress1 -n stress1 -l $logfile -f ${TMP}/stress.part1 -o $output1 & 
++${LTPROOT}/bin/ltp-pan -e -p -q -S -t ${hours}h -a stress2 -n stress2 -l $logfile -f ${TMP}/stress.part2 -o $output2 &
++${LTPROOT}/bin/ltp-pan -e -p -q -S -t ${hours}h -a stress3 -n stress3 -l $logfile -f ${TMP}/stress.part3 -o $output3 &
+ 
+ echo "Running LTP Stress for $hours hour(s) using $(($memsize/1024)) Mb"
+ echo ""
+diff -uprN ltp-full-20100131/testscripts.orig/math.sh ltp-full-20100131/testscripts/math.sh
+--- ltp-full-20100131/testscripts.orig/math.sh	2010-02-19 16:20:05.000000000 +0530
++++ ltp-full-20100131/testscripts/math.sh	1970-01-01 05:30:00.000000000 +0530
+@@ -1,4 +0,0 @@
+-#!/bin/sh
+-cd `dirname $0`
+-cd ..
+-./runltp -f ${PWD}/runtest/math -q "$@"
+diff -uprN ltp-full-20100131/testscripts.orig/networkstress.sh ltp-full-20100131/testscripts/networkstress.sh
+--- ltp-full-20100131/testscripts.orig/networkstress.sh	2010-02-19 16:20:05.000000000 +0530
++++ ltp-full-20100131/testscripts/networkstress.sh	2010-02-19 16:38:21.000000000 +0530
+@@ -124,10 +124,10 @@ if [ ${VERBOSE} = "yes" ]; then
+ 	cat $TMPDIR/network_stress.tests
+ 	${LTPROOT}/ver_linux
+ 	echo ""
+-	echo ${LTPROOT}/pan/ltp-pan -e -l /tmp/netstress.log -S -a netstress -n netstress -f ${TMPDIR}/network_stress.tests
++	echo ${LTPROOT}/bin/ltp-pan -e -l /tmp/netstress.log -S -a netstress -n netstress -f ${TMPDIR}/network_stress.tests
+ fi
+ 
+-${LTPROOT}/pan/ltp-pan -e -l /tmp/netstress.log -S -a netstress -n netstress -f ${TMPDIR}/network_stress.tests
++${LTPROOT}/bin/ltp-pan -e -l /tmp/netstress.log -S -a netstress -n netstress -f ${TMPDIR}/network_stress.tests
+ 
+ if [ $? -eq "0" ]; then
+   echo ltp-pan reported PASS
+diff -uprN ltp-full-20100131/testscripts.orig/networktests.sh ltp-full-20100131/testscripts/networktests.sh
+--- ltp-full-20100131/testscripts.orig/networktests.sh	2010-02-19 16:20:05.000000000 +0530
++++ ltp-full-20100131/testscripts/networktests.sh	2010-02-19 16:38:55.000000000 +0530
+@@ -119,10 +119,10 @@ if [ ${VERBOSE} = "yes" ]; then
+     cat $CMDFILE
+     ${LTPROOT}/ver_linux
+     echo ""
+-    echo ${LTPROOT}/pan/ltp-pan -e -l /tmp/netpan.log -S -a ltpnet -n ltpnet -f $CMDFILE
++    echo ${LTPROOT}/bin/ltp-pan -e -l /tmp/netpan.log -S -a ltpnet -n ltpnet -f $CMDFILE
+ fi
+ 
+-${LTPROOT}/pan/ltp-pan -e -l /tmp/netpan.log -S -a ltpnet -n ltpnet -f $CMDFILE
++${LTPROOT}/bin/ltp-pan -e -l /tmp/netpan.log -S -a ltpnet -n ltpnet -f $CMDFILE
+ 
+ if [ $? -eq "0" ]; then
+   echo ltp-pan reported PASS
+diff -uprN ltp-full-20100131/testscripts.orig/runEALtests.sh ltp-full-20100131/testscripts/runEALtests.sh
+--- ltp-full-20100131/testscripts.orig/runEALtests.sh	2010-02-19 16:20:05.000000000 +0530
++++ ltp-full-20100131/testscripts/runEALtests.sh	2010-02-19 16:42:25.000000000 +0530
+@@ -186,14 +186,14 @@ fi
+ # to execute.
+ if [ -z $cmdfile ]
+ then
+-	cat ${LTPROOT}/../runtest/admin_tools > ${TMP}/alltests
++	cat ${LTPROOT}/runtest/admin_tools > ${TMP}/alltests
+ else
+     cat $cmdfile > ${TMP}/alltests
+ fi
+ 
+ if [ $run_netest -eq 1 ]
+ then
+-	cat ${LTPROOT}/../runtest/network_commands >> ${TMP}/alltests
++	cat ${LTPROOT}/runtest/network_commands >> ${TMP}/alltests
+ fi
+ 
+ # The fsx-linux tests use the SCRATCHDEV environment variable as a location
+@@ -201,13 +201,13 @@ fi
+ # these tests.  As a safeguard, this is disabled.
+ unset SCRATCHDEV
+ if [ -n "$SCRATCHDEV" ]; then
+-  cat ${LTPROOT}/../runtest/fsx >> ${TMP}/alltests
++  cat ${LTPROOT}/runtest/fsx >> ${TMP}/alltests
+ fi
+ 
+ # display versions of installed software
+-${LTPROOT}/../ver_linux
++${LTPROOT}/ver_linux
+ 
+-${LTPROOT}/../pan/ltp-pan $quiet_mode -e -S $instances $duration -a $$ -n $$ $pretty_prt -f ${TMP}/alltests $logfile 
++${LTPROOT}/bin/ltp-pan $quiet_mode -e -S $instances $duration -a $$ -n $$ $pretty_prt -f ${TMP}/alltests $logfile 
+ 
+ if [ $? -eq 0 ]; then
+   echo ltp-pan reported PASS
+diff -uprN ltp-full-20100131/testscripts.orig/runpan.sh ltp-full-20100131/testscripts/runpan.sh
+--- ltp-full-20100131/testscripts.orig/runpan.sh	2010-02-19 16:20:05.000000000 +0530
++++ ltp-full-20100131/testscripts/runpan.sh	2010-02-19 16:42:45.000000000 +0530
+@@ -14,7 +14,7 @@ cd /tmp/runpan-$$
+ 
+ export PATH="${PATH}:${LTPROOT}/doio:${LTPROOT}/testcases/bin"
+  
+-${LTPROOT}/pan/ltp-pan -e $@ -a ltp -n ltp -f ${LTPROOT}/runtest/quickhit
++${LTPROOT}/bin/ltp-pan -e $@ -a ltp -n ltp -f ${LTPROOT}/runtest/quickhit
+ 
+ if [ $? -eq "0" ]; then
+   echo ltp-pan reported PASS
+diff -uprN ltp-full-20100131/testscripts.orig/syscalls.sh ltp-full-20100131/testscripts/syscalls.sh
+--- ltp-full-20100131/testscripts.orig/syscalls.sh	2010-02-19 16:20:05.000000000 +0530
++++ ltp-full-20100131/testscripts/syscalls.sh	1970-01-01 05:30:00.000000000 +0530
+@@ -1,4 +0,0 @@
+-#!/bin/sh
+-cd `dirname $0`
+-cd ..
+-./runltp -f ${PWD}/runtest/syscalls -q "$@"
+diff -uprN ltp-full-20100131/testscripts.orig/tpm_tools.sh ltp-full-20100131/testscripts/tpm_tools.sh
+--- ltp-full-20100131/testscripts.orig/tpm_tools.sh	2010-02-19 16:20:05.000000000 +0530
++++ ltp-full-20100131/testscripts/tpm_tools.sh	2010-02-19 16:47:38.000000000 +0530
+@@ -167,7 +167,7 @@ export P11_USER_PWD="P11 USER PWD"
+ export NEW_P11_USER_PWD="NEW P11 USER PWD"
+ 
+ echo "Running the tpm-tools testsuite..."
+-$LTPROOT/pan/ltp-pan -d 5 -S -a $LTPROOT/results/tpm_tools -n ltp-tpm-tools -l $LTPROOT/results/tpm_tools.logfile -o $LTPROOT/results/tpm_tools.outfile -p -f $LTPROOT/runtest/tpm_tools
++$LTPROOT/bin/ltp-pan -d 5 -S -a $LTPROOT/results/tpm_tools -n ltp-tpm-tools -l $LTPROOT/results/tpm_tools.logfile -o $LTPROOT/results/tpm_tools.outfile -p -f $LTPROOT/runtest/tpm_tools
+ 
+ echo "Done."
+ exit 0
+
+---
+Regards--
+Subrata
+
 
 ------------------------------------------------------------------------------
-SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
-Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
-http://p.sf.net/sfu/solaris-dev2dev
---===============8388180450734127553==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============8388180450734127553==--
-
