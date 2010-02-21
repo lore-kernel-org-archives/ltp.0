@@ -1,23 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NlIGc-00063E-GQ
-	for ltp-list@lists.sourceforge.net; Sat, 27 Feb 2010 08:43:18 +0000
-Received: from mail-pz0-f202.google.com ([209.85.222.202])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NlIGb-0007aK-Ls
-	for ltp-list@lists.sourceforge.net; Sat, 27 Feb 2010 08:43:18 +0000
-Received: by pzk40 with SMTP id 40so728146pzk.6
+	(envelope-from <naufal11@gmail.com>) id 1Nj6dS-0006FZ-GN
+	for ltp-list@lists.sourceforge.net; Sun, 21 Feb 2010 07:53:50 +0000
+Received: from mail-px0-f171.google.com ([209.85.216.171])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Nj6dR-0005ap-D1
+	for ltp-list@lists.sourceforge.net; Sun, 21 Feb 2010 07:53:50 +0000
+Received: by pxi1 with SMTP id 1so907792pxi.23
 	for <ltp-list@lists.sourceforge.net>;
-	Sat, 27 Feb 2010 00:43:12 -0800 (PST)
+	Sat, 20 Feb 2010 23:53:43 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20100227075348.GA3077@linux.vnet.ibm.com>
-References: <20100227075348.GA3077@linux.vnet.ibm.com>
-Date: Sat, 27 Feb 2010 00:43:11 -0800
-Message-ID: <364299f41002270043n3a29e299ld223bbe97f7cfd32@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] A note from Maintainer
+In-Reply-To: <20100128041619.GB16209@malik-laptop.in.ibm.com>
+References: <d270b4400912250122y371c4d4dq6fa729b60e03f8a5@mail.gmail.com>
+	<20100111162256.GB19010@saboteur.suse.cz>
+	<20100128041619.GB16209@malik-laptop.in.ibm.com>
+Date: Sun, 21 Feb 2010 13:23:42 +0530
+Message-ID: <d270b4401002202353pec0431w4a2bb947544ff444@mail.gmail.com>
+From: Mohamed Naufal <naufal11@gmail.com>
+Content-Type: multipart/mixed; boundary=00504502ad008cfa4e0480179ddb
+Subject: Re: [LTP] Testcase to validate the memory usage limit imposed by
+	the topmost memory cgroup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,161 +31,379 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, yanegomi@gmail.com, risrajak@in.ibm.com, "Serge E. Hallyn" <serue@us.ibm.com>, Kumar Gala <galak@kernel.crashing.org>, Balbir Singh <balbir@linux.vnet.ibm.com>, Cai Qian <qcai@redhat.com>, Masatake YAMATO <yamato@redhat.com>, jburke@redhat.com, sachinp@linux.vnet.ibm.com, paul.larson@canonical.com, Mike Frysinger <vapier@gentoo.org>, Khem Raj <kraj@mvista.com>, carmelo.amoroso@st.com, Nadia Derbey <Nadia.Derbey@bull.net>, doug.chapman@hp.com, ambar.seksena@calsoftinc.com, aneesh.kumar@linux.vnet.ibm.com, kamaleshb@in.ibm.com
+To: ltp-list@lists.sourceforge.net, skumar@linux.vnet.ibm.com
 
-On Fri, Feb 26, 2010 at 11:53 PM, Rishikesh K Rajak
-<risrajak@linux.vnet.ibm.com> wrote:
-> Welcome to ltp community.
->
-> We are in process of changing our sf.net host repository to
-> GIT from CVS.[ Any input/discussion on this is highly appreciable ]. If
-> possible this month end release may get delayed based on responses from
-> list or next month end (i.e: March ) release will be based on git tree.
->
-> I usually try to read all patches posted to ltp mailing list, and follow
-> almost all discussions on list, unless the topic is about an obscure
-> corner that i do not personally use. But i am obviously not perfect.If
-> you sent a patch that you did not hear from anybody for three days,
-> that is a very good indication that it was dropped on the floor --- please
-> do not hesitate to remind me.
->
-> The list archive is available at:
->
-> http://marc.info/?l=3Dltp-list&r=3D1&w=3D2
->
->
-> Please use this public site to point out messages in mailing list if you
-> want to remind someone or again start same thread without altering
-> subject line.
->
-> Now coming to git transformation this month, you can find gitweb
-> interface at :
->
-> http://ltp.git.sourceforge.net/git/gitweb.cgi?p=3Dltp/ltp-dev.git;a=3Dsum=
-mary
->
-> There are four branches in ltp-dev.git repository that track the source t=
-ree
-> of ltp: "master", "maint", "next", "pu". I may add more maintanance
-> branch if we have huge backward of incompatible feature updates in the
-> future to keep an older release alive.
->
-> The master branch is meant to contain what are very well tested and
-> ready to be used in production environment. There could occassionaly be
-> minor breakage but they are not expected to be anything major, and more
-> importantly those will be quickly and trivially fixable.
->
-> So if some hotfixes has gone with this branch, you can find one more
-> digit has been added to version release (e.g: YYYYMMDD.1 ), So it means
-> it is more stable than YYYYMMDD release. I may be changing this format
-> if i can see a better format or if you have some suggestion then it is
-> most welcome.
->
-> The "maint" branch is called one step before master branch, which will
-> contain all features or patches that are going to following month end
-> release.
-> (e.g: If this month end ltp-full-YYYYMMDD is going be to released
-> then all the stable patches you can find in this branch through out the
-> month, and one important point for this branch is all the patches which
-> has gone to this branch will be well tested and make sure that there is
-> no regression or breakage and Acked/Reviewed by Someone from mailing
-> list.)
->
-> "next" branch will contain all the patches which has been sent on
-> ltp-mailing list after getting "Acked-By" and/or "Reviewed-By" anyone
-> from list. This branch is quite unstable but user can find their
-> immediate patches over here to see the stability.You can find most
-> unstable about this branch w.r.t feature wise or may be sometime build wi=
-se.
->
->
-> NOTE:
-> =3D=3D=3D=3D=3D
-> So i always encourage testcase developer/ltp-list member to send me the
-> patches against this branch. And it will be closely reviewed and
-> acknowledged by any member from ltp-list community members. Once it gets
-> Acked/Reveiwed-By then it will promoted to maint branch for maintainer
-> testing and checking for stability, otherwise it will go to "pu" branch
-> for further discussion and decision. These pending patch can be worked
-> on following month and once it is mature enough to meet the stability
-> then it can be directly jump to maint branch, here i may ask the
-> submitter to submit the patch once again against maint branch.
->
-> "pu" branch is basically "proposed update" branch which will contain all
-> the remainder of above branches. By the above definition of how "next"
-> works, you can tell that this branch will contain quite experimental and
-> obviosuly broken stuff.
->
-> I would like to thanks everybody who helped me to release ltp-dev git into
-> current shape. Especially i would like to thank following:
-> =A0 =A0- git.git from where actually i picked up this branch
-> =A0 =A0 =A0identification.
-> =A0 =A0- Garret, who has worked with me step by step to release this git
-> =A0 =A0 =A0tree implementation to ltp-list@.
-> =A0 =A0- All my team member from IBM who basically gave encourageable
-> =A0 =A0 =A0input and specially Aneesh, Subrata, Iranna & kamalesh.
-> =A0 =A0- And finally to Linux kernel, who motivated me to maintain such a
-> =A0 =A0 =A0testsuits with git.
->
-> This Maintainer Note will be available under doc/MaintNotes of
-> month end release.
->
->
-> Usage:
->
-> #git clone git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev.git ltp-dev
-> (Make sure you have the latest autoconf/automake before running make
-> autotools )
-> #make autotools
-> #./configure
-> #make
-> #make install
-> #cd /opt/ltp
-> #./runltp
->
-> Please do not hesitate to reply this mail if you have any query in your
-> mind, it may help me to generate a good FAQ :) .
+--00504502ad008cfa4e0480179ddb
+Content-Type: multipart/alternative; boundary=00504502ad008cfa420480179dd9
 
-Hello all,
-    I highly encourage folks to also use the testscripts/build scripts
-as well [as I have in the past] before submitting patches back to us,
-so that you can test out the three identified build and test
-scenarios:
+--00504502ad008cfa420480179dd9
+Content-Type: text/plain; charset=ISO-8859-1
 
-1. install-in-build-tree
-2. install-out-of-build-tree
-3. [build and install] out-of-build-tree
+On 28 January 2010 09:46, Sudhir Kumar <skumar@linux.vnet.ibm.com> wrote:
 
-    Please read the README before executing the scripts though (in the
-same directory).
-    I request that folks run these scripts periodically (say once a
-month, or bi-monthly) using different distros so that we can establish
-a gauge for how stable things are across the board, as opposed to
-having an unrealistic view of how Fedora 12~ish, Gentoo Linux, RHEL [,
-SuSe?, and Ubuntu?] are faring, especially because the project in and
-of itself is complex, as-is the amount of code and flux that occurs
-due to package versioning of the underlying software between releases
-(a new API gets added, and there's a certain degree of lag between
-when the system headers get updated and the glibc headers get updated
-to accommodate the new API, etc, etc).
-    Much appreciated as always, and I have a good feeling that the
-project is starting to reach a good equilibrium state again, like it
-was pre-October '09 when I committed the Makefile infrastructure
-changes.
-Happy testing as always :),
--Garrett
+> On Mon, Jan 11, 2010 at 05:22:56PM +0100, Cyril Hrubis wrote:
+> > Hi!
+> >
+>
+>
+[...]
 
----------------------------------------------------------------------------=
----
+
+
+> >
+> > You can't allocate memory from signal handler. There is a list of signal
+> safe
+> > functions in 'man 7 signal'. The correct solution for this is to create
+> > something like named pipe and sleep in read() on it (instead of
+> > 'while(!flag_exit) sleep(1)').
+> Naufel,
+> You might like to address the comments by Cyril. For named pipes you can
+> see man mkfifo in bash or open in c where you can specify the file as a
+> pipe or FIFO. A busy wait like you implemented is not a good practice.
+> Repost your patches with the comments addressed.
+>
+>
+[...]
+
+These are the testcases I plan to implement (taken from
+http://workouts.foss.in/2009/index.php/Hacking_Linux_Kernel_Through_testing)
+
+1. Validate the upper limit imposed by the topmost hierarchy.
+
+2. Test the testcase no 1 for subgroups far below in hierarchy.
+
+3. A group has n siblings. They start consuming memory and the total
+increases to more than parent's limit. Check if the group with max memory
+consumption gets it's task killed.
+
+4. Write a test which uses lots of memory, reaches swap limits and ensure it
+gets killed.
+
+5. A task is running in a group which has a limit N on memory.limit_in_bytes
+but no limit on memory.memsw.limit_in_bytes. The system has swap memory in
+use and the task's memory consumption is >> N. Therefore the task should be
+using a big amount of swap memory(say M) > N. Try to set the
+memory.memsw.limit_in_bytes to a low value say N. It should fail to change
+the limits.
+
+6. In test no 5 instead of changing the mem+swap limits turn the swap off.
+Since the memory usage of the task is more than the current limits the task
+should be killed.
+
+The first testcase has been attached. Reimplemented using named pipes.
+
+Naufal
+
+--00504502ad008cfa420480179dd9
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<br><br><div class=3D"gmail_quote">On 28 January 2010 09:46, Sudhir Kumar <=
+span dir=3D"ltr">&lt;<a href=3D"mailto:skumar@linux.vnet.ibm.com">skumar@li=
+nux.vnet.ibm.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote"=
+ style=3D"border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.=
+8ex; padding-left: 1ex;">
+<div><div></div><div class=3D"h5">On Mon, Jan 11, 2010 at 05:22:56PM +0100,=
+ Cyril Hrubis wrote:<br>
+&gt; Hi!<br>
+&gt;<br>
+<br></div></div></blockquote><div><br>[...]<br><br>=A0<br></div><blockquote=
+ class=3D"gmail_quote" style=3D"border-left: 1px solid rgb(204, 204, 204); =
+margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;"><div><div class=3D"h5">
+&gt;<br>
+&gt; You can&#39;t allocate memory from signal handler. There is a list of =
+signal safe<br>
+&gt; functions in &#39;man 7 signal&#39;. The correct solution for this is =
+to create<br>
+&gt; something like named pipe and sleep in read() on it (instead of<br>
+&gt; &#39;while(!flag_exit) sleep(1)&#39;).<br>
+</div></div>Naufel,<br>
+You might like to address the comments by Cyril. For named pipes you can<br=
+>
+see man mkfifo in bash or open in c where you can specify the file as a<br>
+pipe or FIFO. A busy wait like you implemented is not a good practice.<br>
+Repost your patches with the comments addressed.<br>
+<div class=3D"im"><br></div></blockquote><div><br>[...]<br><br>These are th=
+e testcases I plan to implement (taken from <a href=3D"http://workouts.foss=
+.in/2009/index.php/Hacking_Linux_Kernel_Through_testing">http://workouts.fo=
+ss.in/2009/index.php/Hacking_Linux_Kernel_Through_testing</a>)<br>
+<p>1. Validate the upper limit imposed by the topmost hierarchy.
+</p><p>2. Test the testcase no 1 for subgroups far below in hierarchy.
+</p><p>3. A group has n siblings. They start consuming memory and the
+total increases to more than parent&#39;s limit. Check if the group with
+max memory consumption gets it&#39;s task killed.
+</p><p>4. Write a test which uses lots of memory, reaches swap limits and e=
+nsure it gets killed.
+</p><p>5. A task is running in a group which has a limit N on
+memory.limit_in_bytes but no limit on memory.memsw.limit_in_bytes. The
+system has swap memory in use and the task&#39;s memory consumption is
+&gt;&gt; N. Therefore the task should be using a big amount of swap
+memory(say M) &gt; N. Try to set the memory.memsw.limit_in_bytes to a
+low value say N. It should fail to change the limits.
+</p><p>6. In test no 5 instead of changing the mem+swap limits turn
+the swap off. Since the memory usage of the task is more than the
+current limits the task should be killed.</p><p>The first testcase has been=
+ attached. Reimplemented using named pipes.</p><p>Naufal<br></p></div></div=
+>
+
+--00504502ad008cfa420480179dd9--
+
+--00504502ad008cfa4e0480179ddb
+Content-Type: text/x-patch; charset=US-ASCII; name="memcg_control.patch"
+Content-Disposition: attachment; filename="memcg_control.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g5xjesbt0
+
+ZGlmZiAtTmFyVTMgbHRwdi9ydW50ZXN0L2NvbnRyb2xsZXJzIGx0cHQvcnVudGVzdC9jb250cm9s
+bGVycwotLS0gbHRwdi9ydW50ZXN0L2NvbnRyb2xsZXJzCTIwMDktMDktMTQgMTI6NDQ6MjUuMDAw
+MDAwMDAwICswNTMwCisrKyBsdHB0L3J1bnRlc3QvY29udHJvbGxlcnMJMjAxMC0wMi0yMSAxMjox
+ODo0Mi43Mzg5MzM1MzMgKzA1MzAKQEAgLTMsNSArMyw2IEBACiBtZW1jZ19yZWdyZXNzaW9uCW1l
+bWNnX3JlZ3Jlc3Npb25fdGVzdC5zaAogbWVtY2dfZnVuY3Rpb24JCW1lbWNnX2Z1bmN0aW9uX3Rl
+c3Quc2gKIG1lbWNnX3N0cmVzcwkJbWVtY2dfc3RyZXNzX3Rlc3Quc2gKK21lbWNnX2NvbnRyb2wg
+ICAgICAgICAgUEFHRVNJWkU9JCguL21lbV9wcm9jZXNzIC1wKTttZW1jZ19jb250cm9sX3Rlc3Qu
+c2ggJFBBR0VTSVpFICRQQUdFU0laRSAkKChQQUdFU0laRSoyKSkKIGNncm91cF9maglydW5fY2dy
+b3VwX3Rlc3RfZmouc2gKIGNvbnRyb2xsZXJzCXRlc3RfY29udHJvbGxlcnMuc2gKZGlmZiAtTmFy
+VTMgbHRwdi90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL21lbWNnL2NvbnRyb2wvTWFrZWZp
+bGUgbHRwdC90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL21lbWNnL2NvbnRyb2wvTWFrZWZp
+bGUKLS0tIGx0cHYvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9tZW1jZy9jb250cm9sL01h
+a2VmaWxlCTE5NzAtMDEtMDEgMDU6MzA6MDAuMDAwMDAwMDAwICswNTMwCisrKyBsdHB0L3Rlc3Rj
+YXNlcy9rZXJuZWwvY29udHJvbGxlcnMvbWVtY2cvY29udHJvbC9NYWtlZmlsZQkyMDA5LTEwLTA5
+IDIzOjI1OjQ3LjAwMDAwMDAwMCArMDUzMApAQCAtMCwwICsxLDMzIEBACisjCisjICAgIGtlcm5l
+bC9jb250cm9sbGVycy9tZW1jZy9zdHJlc3MgdGVzdGNhc2Ugc3VpdGUgTWFrZWZpbGUuCisjCisj
+ICAgIENvcHlyaWdodCAoQykgMjAwOSwgQ2lzY28gU3lzdGVtcyBJbmMuCisjCisjICAgIFRoaXMg
+cHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3Ig
+bW9kaWZ5CisjICAgIGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGlj
+IExpY2Vuc2UgYXMgcHVibGlzaGVkIGJ5CisjICAgIHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRp
+b247IGVpdGhlciB2ZXJzaW9uIDIgb2YgdGhlIExpY2Vuc2UsIG9yCisjICAgIChhdCB5b3VyIG9w
+dGlvbikgYW55IGxhdGVyIHZlcnNpb24uCisjCisjICAgIFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmli
+dXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLAorIyAgICBidXQgV0lUSE9V
+VCBBTlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZgorIyAg
+ICBNRVJDSEFOVEFCSUxJVFkgb3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UuICBT
+ZWUgdGhlCisjICAgIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGZvciBtb3JlIGRldGFpbHMu
+CisjCisjICAgIFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5l
+cmFsIFB1YmxpYyBMaWNlbnNlIGFsb25nCisjICAgIHdpdGggdGhpcyBwcm9ncmFtOyBpZiBub3Qs
+IHdyaXRlIHRvIHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24sIEluYy4sCisjICAgIDUxIEZy
+YW5rbGluIFN0cmVldCwgRmlmdGggRmxvb3IsIEJvc3RvbiwgTUEgMDIxMTAtMTMwMSBVU0EuCisj
+CisjIEdhcnJldHQgQ29vcGVyLCBTZXB0ZW1iZXIgMjAwOQorIworCit0b3Bfc3JjZGlyCQk/PSAu
+Li8uLi8uLi8uLi8uLgorCitpbmNsdWRlICQodG9wX3NyY2RpcikvaW5jbHVkZS9tay90ZXN0Y2Fz
+ZXMubWsKKworQ1BQRkxBR1MJCSs9IC1JJChhYnNfc3JjZGlyKS8uLi8uLi9saWJjb250cm9sbGVy
+cworCitJTlNUQUxMX1RBUkdFVFMJCTo9ICouc2gKKworTERMSUJTCQkJKz0gLWxtCisKK2luY2x1
+ZGUgJCh0b3Bfc3JjZGlyKS9pbmNsdWRlL21rL2dlbmVyaWNfbGVhZl90YXJnZXQubWsKZGlmZiAt
+TmFyVTMgbHRwdi90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL21lbWNnL2NvbnRyb2wvbWVt
+Y2dfY29udHJvbF90ZXN0LnNoIGx0cHQvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9tZW1j
+Zy9jb250cm9sL21lbWNnX2NvbnRyb2xfdGVzdC5zaAotLS0gbHRwdi90ZXN0Y2FzZXMva2VybmVs
+L2NvbnRyb2xsZXJzL21lbWNnL2NvbnRyb2wvbWVtY2dfY29udHJvbF90ZXN0LnNoCTE5NzAtMDEt
+MDEgMDU6MzA6MDAuMDAwMDAwMDAwICswNTMwCisrKyBsdHB0L3Rlc3RjYXNlcy9rZXJuZWwvY29u
+dHJvbGxlcnMvbWVtY2cvY29udHJvbC9tZW1jZ19jb250cm9sX3Rlc3Quc2gJMjAxMC0wMi0yMSAx
+MTowNzozMC40OTI5MzM1MTMgKzA1MzAKQEAgLTAsMCArMSwxNTkgQEAKKyMhL2Jpbi9zaAorCisj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIworIyMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyMKKyMjICAgQ29w
+eXJpZ2h0IChjKSAyMDEwIE1vaGFtZWQgTmF1ZmFsIEJhc2hlZXIgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICMjCisjIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAjIworIyMgICBUaGlzIHByb2dy
+YW0gaXMgZnJlZSBzb2Z0d2FyZTsgIHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2Rp
+ZnkgICAgIyMKKyMjICAgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJs
+aWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkgICAgICMjCisjIyAgIHRoZSBGcmVlIFNvZnR3YXJl
+IEZvdW5kYXRpb247IGVpdGhlciB2ZXJzaW9uIDIgb2YgdGhlIExpY2Vuc2UsIG9yICAgICAgICAj
+IworIyMgICAoYXQgeW91ciBvcHRpb24pIGFueSBsYXRlciB2ZXJzaW9uLiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIyMKKyMjICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMjCisjIyAg
+IFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUg
+dXNlZnVsLCAgICAgICAgICAjIworIyMgICBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7ICB3aXRo
+b3V0IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFudHkgb2YgICAgICAgICAgIyMKKyMjICAgTUVSQ0hB
+TlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2VlICAgICAg
+ICAgICAgICAgICMjCisjIyAgIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9y
+ZSBkZXRhaWxzLiAgICAgICAgICAgICAgICAgICAgICAgICAjIworIyMgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIyMKKyMjICAgWW91IHNob3VsZCBoYXZlIHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05VIEdl
+bmVyYWwgUHVibGljIExpY2Vuc2UgICAgICAgICMjCisjIyAgIGFsb25nIHdpdGggdGhpcyBwcm9u
+cmFtOyAgaWYgbm90LCB3cml0ZSB0byB0aGUgRnJlZSBTb2Z0d2FyZSAgICAgICAgICAgICAjIwor
+IyMgICBGb3VuZGF0aW9uLCBJbmMuLCA1OSBUZW1wbGUgUGxhY2UsIFN1aXRlIDMzMCwgQm9zdG9u
+LCBNQSAwMjExMS0xMzA3IFVTQSAgIyMKKyMjICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMjCisjIyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAjIworIyMgICBGaWxlOiAgICBtZW1jZ19jb250cm9sX3Rlc3Quc2ggICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyMKKyMjICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICMjCisjIyAgIFB1cnBvc2U6IEltcGxlbWVudCB2YXJpb3VzIG1lbW9yeSBjb250cm9s
+bGVyIHRlc3RzICAgICAgICAgICAgICAgICAgICAgICAjIworIyMgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IyMKKyMjICAgQXV0aG9yOiAgTW9oYW1lZCBOYXVmYWwgQmFzaGVlciA8bmF1ZmFsMTFAZ21haWwu
+Y29tPiAgICAgICAgICAgICAgICAgICAgICMjCisjIyAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAjIworIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMKK2NkICRMVFBST09UL3Rlc3RjYXNlcy9iaW4KKworaWYgWyAh
+ICQoZ3JlcCAtdyBtZW1vcnkgL3Byb2MvY2dyb3VwcyB8IGN1dCAtZjQpID09ICIxIiBdCit0aGVu
+CisgICAgICAgIGVjaG8gIldBUk5JTkc6IjsKKyAgICAgICAgZWNobyAiRWl0aGVyIEtlcm5lbCBk
+b2VzIG5vdCBzdXBwb3J0IGZvciBtZW1vcnkgcmVzb3VyY2UgY29udHJvbGxlciBvciBmZWF0dXJl
+IG5vdCBlbmFibGVkIjsKKyAgICAgICAgZWNobyAiU2tpcHBpbmcgYWxsIG1lbWNnX2NvbnRyb2wg
+dGVzdGNhc2VzLi4uLiI7CisgICAgICAgIGV4aXQgMAorZmkKKworZXhwb3J0IFRDSUQ9Im1lbWNn
+X2NvbnRyb2wiCitleHBvcnQgVFNUX1RPVEFMPTEKK2V4cG9ydCBUU1RfQ09VTlQ9MAorCitUT1Rf
+TUVNX0xJTUlUPSQxCitBQ1RJVkVfTUVNX0xJTUlUPSQyCitQUk9DX01FTT0kMworCitUU1RfUEFU
+SD0kUFdECisKK1BBU1M9MAorRkFJTD0xCisKKyMgQ2hlY2sgaWYgdGhlIHRlc3QgcHJvY2VzcyBp
+cyBraWxsZWQgb24gY3Jvc3NpbmcgYm91bmRhcnkKK3Rlc3RfcHJvY19raWxsKCkgeworICAgICRU
+U1RfUEFUSC9tZW1fcHJvY2VzcyAtbSAkUFJPQ19NRU0gICYKKyAgICBzbGVlcCAxCisgICAgZWNo
+byAkISA+IHRhc2tzCisgCisgICAgI0luc3RydWN0IHRoZSB0ZXN0IHByb2Nlc3MgdG8gc3RhcnQg
+YWNxdWlyaW5nIG1lbW9yeQorICAgIGVjaG8gbSA+IC90bXAvc3RhdHVzX3BpcGUKKyAgICBzbGVl
+cCAxCisKKyAgICAjQ2hlY2sgaWYga2lsbGVkCisgICAgcHMgLXAgJCEgPiAvZGV2L251bGwgMj4g
+L2Rldi9udWxsCisgICAgaWYgWyAkPyAtZXEgMCBdOyB0aGVuCisgICAgICAgIGVjaG8gbSA+IC90
+bXAvc3RhdHVzX3BpcGUKKyAgICAgICAgZWNobyB4ID4gL3RtcC9zdGF0dXNfcGlwZQorICAgIGVs
+c2UKKyAgICAJS0lMTEVEX0NOVD0kKCgkS0lMTEVEX0NOVCArIDEpKQorICAgIGZpCit9CisgICAg
+CisjIFZhbGlkYXRlIHRoZSBtZW1vcnkgdXNhZ2UgbGltaXQgaW1wb3NlZCBieSB0aGUgaGllcmFy
+Y2hpY2FsbHkgdG9wbW9zdCBncm91cAordGVzdGNhc2VfMSgpIHsKKyAgICBUU1RfQ09VTlQ9MQor
+ICAgIHRzdF9yZXNtIFRJTkZPICJUZXN0ICMxOiBDaGVja2luZyBpZiB0aGUgbWVtb3J5IHVzYWdl
+IGxpbWl0IGltcG9zZWQgYnkgdGhlIHRvcG1vc3QgZ3JvdXAgaXMgZW5mb3JjZWQiCisKKyAgICBl
+Y2hvICIkQUNUSVZFX01FTV9MSU1JVCIgPiAkVFNUX1BBVEgvbW50LyRpL21lbW9yeS5saW1pdF9p
+bl9ieXRlcworICAgIGVjaG8gIiRUT1RfTUVNX0xJTUlUIiA+ICRUU1RfUEFUSC9tbnQvJGkvbWVt
+b3J5Lm1lbXN3LmxpbWl0X2luX2J5dGVzCisKKyAgICBta2RpciBzdWIgMj4gL2Rldi9udWxsCisg
+ICAgcHVzaGQgc3ViID4gL2Rldi9udWxsCisKKyAgICBLSUxMRURfQ05UPTAKKyAgICB0ZXN0X3By
+b2Nfa2lsbDsKKworICAgIGlmIFsgJFBST0NfTUVNIC1ndCAkVE9UX01FTV9MSU1JVCBdICYmIFsg
+JEtJTExFRF9DTlQgLWVxIDAgXTsgdGhlbgorCSAgICByZXN1bHQgJEZBSUwgIlRlc3QgIzE6IGZh
+aWxlZCIKKyAgICBlbHNlCisJICAgIHJlc3VsdCAkUEFTUyAiVGVzdCAjMTogcGFzc2VkIgorICAg
+IGZpCisKKyAgICBwb3BkID4gL2Rldi9udWxsCisgICAgcm1kaXIgc3ViIDI+IC9kZXYvbnVsbAor
+fQorCisKKyMgUmVjb3JkIHRoZSB0ZXN0IHJlc3VsdHMKKyMKKyMgJDE6IFJlc3VsdCBvZiB0aGUg
+dGVzdCBjYXNlLCAkUEFTUyBvciAkRkFJTAorIyAkMjogT3V0cHV0IGluZm9ybWF0aW9uCityZXN1
+bHQoKSB7CisgICAgUkVTPSQxCisgICAgSU5GTz0kMgorCisgICAgaWYgWyAkUkVTIC1lcSAkUEFT
+UyBdOyB0aGVuCisgICAgCXRzdF9yZXNtIFRQQVNTICIkSU5GTyIKKyAgICBlbHNlCisgICAgCUZB
+SUxFRF9DTlQ9JCgoJEZBSUxFRF9DTlQgKyAxKSkKKyAgICAJdHN0X3Jlc20gVEZBSUwgIiRJTkZP
+IgorICAgIGZpCit9CisKK2NsZWFudXAoKSB7CisgICAgaWYgWyAtZSBtbnQgXTsgdGhlbgorICAg
+IAl1bW91bnQgJFRTVF9QQVRIL21udCAyPiAvZGV2L251bGwKKyAgICAJcm0gLXJmIG1udCAyPiAv
+ZGV2L251bGwKKyAgICBmaQorfQorCitkb19tb3VudCgpIHsKKyAgICBjbGVhbnVwOworCisgICAg
+bWtkaXIgJFRTVF9QQVRIL21udCAyPiAvZGV2L251bGwKKyAgICBtb3VudCAtdCBjZ3JvdXAgLW8g
+bWVtb3J5IGNncm91cCAkVFNUX1BBVEgvbW50IDI+IC9kZXYvbnVsbAorICAgIGlmIFsgJD8gLW5l
+IDAgXTsgdGhlbgorICAgIAl0c3RfYnJrbSBUQlJPSyBOVUxMICJNb3VudGluZyBjZ3JvdXAgdG8g
+dGVtcCBkaXIgZmFpbGVkIgorICAgIAlybWRpciAkVFNUX1BBVEgvbW50IDI+IC9kZXYvbnVsbAor
+ICAgIAlleGl0IDEKKyAgICBmaQorfQorCitkb19tb3VudDsKKworZWNobyAxID4gbW50L21lbW9y
+eS51c2VfaGllcmFyY2h5IDI+IC9kZXYvbnVsbAorCitGQUlMRURfQ05UPTAKKworZm9yIGkgaW4g
+JChzZXEgMSAkVFNUX1RPVEFMKQorZG8KKyAgICBwdXNoZCAkVFNUX1BBVEgvbW50ID4gL2Rldi9u
+dWxsCisgICAgbWtkaXIgJFRTVF9QQVRIL21udC8kaSAyPiAvZGV2L251bGwKKyAgICBwdXNoZCAk
+aSA+IC9kZXYvbnVsbAorCisgICAgdGVzdGNhc2VfJGk7CisKKyAgICBwb3BkID4gL2Rldi9udWxs
+CisgICAgcm1kaXIgJGkgMj4gL2Rldi9udWxsCisgICAgcG9wZCA+IC9kZXYvbnVsbAorZG9uZQor
+CitjbGVhbnVwOworCitpZiBbICIkRkFJTEVEX0NOVCIgLW5lIDAgXTsgdGhlbgorICAgIHRzdF9y
+ZXNtIFRGQUlMICJtZW1jZ19jb250cm9sOiBmYWlsZWQiCisgICAgZXhpdCAxCitlbHNlCisgICAg
+dHN0X3Jlc20gVFBBU1MgIm1lbWNnX2NvbnRyb2w6IHBhc3NlZCIKKyAgICBleGl0IDAKK2ZpCmRp
+ZmYgLU5hclUzIGx0cHYvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9tZW1jZy9jb250cm9s
+L21lbV9wcm9jZXNzLmMgbHRwdC90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL21lbWNnL2Nv
+bnRyb2wvbWVtX3Byb2Nlc3MuYwotLS0gbHRwdi90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJz
+L21lbWNnL2NvbnRyb2wvbWVtX3Byb2Nlc3MuYwkxOTcwLTAxLTAxIDA1OjMwOjAwLjAwMDAwMDAw
+MCArMDUzMAorKysgbHRwdC90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL21lbWNnL2NvbnRy
+b2wvbWVtX3Byb2Nlc3MuYwkyMDEwLTAyLTIxIDExOjEwOjU5LjQzNjkzMjM4MiArMDUzMApAQCAt
+MCwwICsxLDE0MCBAQAorLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCisvKiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgKi8KKy8qICBDb3B5cmlnaHQgKGMpIDIwMTAgTW9oYW1lZCBOYXVmYWwgQmFzaGVlciAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAqLworLyogICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICovCisvKiAgVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7ICB5b3UgY2FuIHJlZGlzdHJp
+YnV0ZSBpdCBhbmQvb3IgbW9kaWZ5ICAgICAgKi8KKy8qICBpdCB1bmRlciB0aGUgdGVybXMgb2Yg
+dGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieSAgICAgICAqLwor
+LyogIHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJzaW9uIDIgb2YgdGhl
+IExpY2Vuc2UsIG9yICAgICAgICAgICovCisvKiAgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIg
+dmVyc2lvbi4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KKy8qICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAqLworLyogIFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0
+aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLCAgICAgICAgICAgICovCisvKiAgYnV0IFdJ
+VEhPVVQgQU5ZIFdBUlJBTlRZOyAgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9m
+ICAgICAgICAgICAgKi8KKy8qICBNRVJDSEFOVEFCSUxJVFkgb3IgRklUTkVTUyBGT1IgQSBQQVJU
+SUNVTEFSIFBVUlBPU0UuICBTZWUgICAgICAgICAgICAgICAgICAqLworLyogIHRoZSBHTlUgR2Vu
+ZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICovCisvKiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KKy8qICBZb3Ugc2hvdWxkIGhhdmUg
+cmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSAgICAgICAg
+ICAqLworLyogIGFsb25nIHdpdGggdGhpcyBwcm9ncmFtOyAgaWYgbm90LCB3cml0ZSB0byB0aGUg
+RnJlZSBTb2Z0d2FyZSAgICAgICAgICAgICAgICovCisvKiAgRm91bmRhdGlvbiwgSW5jLiwgNTkg
+VGVtcGxlIFBsYWNlLCBTdWl0ZSAzMzAsIEJvc3RvbiwgTUEgMDIxMTEtMTMwNyBVU0EgICAgKi8K
+Ky8qICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAqLworLyogIEZpbGU6ICAgIG1lbV9wcm9jZXNzLmMgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICovCisvKiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgKi8KKy8qICBQdXJwb3NlOiBhY3QgYXMgYSBtZW1vcnkgaG9nIGZv
+ciB0aGUgbWVtY2dfY29udHJvbCB0ZXN0cyAgICAgICAgICAgICAgICAgICAqLworLyogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICovCisvKiAgQXV0aG9yOiAgTW9oYW1lZCBOYXVmYWwgQmFzaGVlciA8bmF1
+ZmFsMTFAZ21haWwuY29tID4gICAgICAgICAgICAgICAgICAgICAgKi8KKy8qICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAqLworLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovCisjaW5jbHVkZSA8c3RkaW8uaD4K
+KyNpbmNsdWRlIDxlcnJuby5oPgorI2luY2x1ZGUgPGZjbnRsLmg+CisjaW5jbHVkZSA8c3RkbGli
+Lmg+CisjaW5jbHVkZSA8dW5pc3RkLmg+CisjaW5jbHVkZSA8c3lzL21tYW4uaD4KKworLyogCisg
+KiBOYW1lZCBwaXBlIHRvIGFjdCBhcyBhIGNvbW11bmljYXRpb24gY2hhbm5lbCBiZXR3ZWVuCisg
+KiBzaGVsbCBzY3JpcHQgJiB0aGlzIHByb2Nlc3MKKyAqLworI2RlZmluZSBTVEFUVVNfUElQRSAi
+L3RtcC9zdGF0dXNfcGlwZSIKKworaW50IGZsYWdfZXhpdDsKK2ludCBmbGFnX2FsbG9jYXRlZDsK
+K3Vuc2lnbmVkIGxvbmcgbWVtc2l6ZTsKKworLyoKKyAqIHByb2Nlc3Nfb3B0aW9uczogcHJvY2Vz
+cyB1c2VyIHNwZWNpZmllZCBvcHRpb25zCisgKi8KK3ZvaWQgcHJvY2Vzc19vcHRpb25zKGludCBh
+cmdjLCBjaGFyICoqYXJndikKK3sKKyAgICBpbnQgYzsKKyAgICBjaGFyICplbmQ7CisKKyAgICBv
+cHRlcnIgPSAwOworICAgIHdoaWxlICgoYyA9IGdldG9wdChhcmdjLCBhcmd2LCAicG06IikpICE9
+IC0xKSB7CisgICAgICAgIHN3aXRjaChjKSB7CisgICAgICAgICAgICBjYXNlICdwJzoKKyAgICAg
+ICAgICAgICAgICBwcmludGYoIiVkXG4iLGdldHBhZ2VzaXplKCkpOworICAgICAgICAgICAgICAg
+IGV4aXQoMCk7CisgICAgICAgICAgICBjYXNlICdtJzoKKyAgICAgICAgICAgICAgICBtZW1zaXpl
+ID0gc3RydG91bChvcHRhcmcsICZlbmQsIDEwKTsKKyAgICAgICAgICAgICAgICBpZiAoKmVuZCkK
+KyAgICAgICAgICAgICAgICAgICBlcnJ4KDIsICJJbnZhbGlkIC1tIHVzYWdlIik7CisgICAgICAg
+ICAgICAgICAgYnJlYWs7CisgICAgICAgICAgICBkZWZhdWx0OgorICAgICAgICAgICAgICAgIGVy
+cngoMiwgIkludmFsaWQgb3B0aW9uIHNwZWNpZmVkIik7CisgICAgICAgIH0KKyAgICB9CisKKyAg
+aWYoIW1lbXNpemUpCisgICAgICBlcnJ4KDMsICJJbnZhbGlkIHVzYWdlIik7Cit9CisKKy8qCisg
+KiB0b3VjaF9tZW1vcnk6IGZvcmNlIHBoeXNpY2FsIG1lbW9yeSBhbGxvY2F0aW9uCisgKi8KK3Zv
+aWQgdG91Y2hfbWVtb3J5KGNoYXIgKnAsIHVuc2lnbmVkIGxvbmcgc2l6ZSkKK3sKKyAgICBpbnQg
+aTsKKyAgICBpbnQgcGFnZXNpemUgPSBnZXRwYWdlc2l6ZSgpOworCisgICAgZm9yIChpID0gMDsg
+aSA8IHNpemU7IGkgKz0gcGFnZXNpemUpCisgICAgICAgIHBbaV0gPSAweGVmOworfQorCit2b2lk
+IG1lbV9tYXAoKQoreworICAgIHN0YXRpYyBjaGFyICpwOworCisgICAgaWYgKCFmbGFnX2FsbG9j
+YXRlZCkgeworICAgICAgICBpZiAoKHAgPSBtbWFwKE5VTEwsIG1lbXNpemUsIFBST1RfUkVBRCB8
+IFBST1RfV1JJVEUsIE1BUF9TSEFSRUQgfCBNQVBfQU5PTllNT1VTLCAwLCAwKSkgPT0gTUFQX0ZB
+SUxFRCkKKyAgICAgICAgICAgIGVycngoNCwgIm1tYXAgZmFpbGVkIik7CisgICAgICAgIHRvdWNo
+X21lbW9yeShwLCBtZW1zaXplKTsKKyAgICB9ZWxzZSB7CisgICAgICAgIGlmIChtdW5tYXAocCwg
+bWVtc2l6ZSkgPT0gLTEpCisgICAgICAgICAgICBlcnJ4KDUsICJtdW5tYXAgZmFpbGVkIik7Cisg
+ICAgfQorICAgIGZsYWdfYWxsb2NhdGVkIF49IDE7Cit9CisKKy8qCisgKiBkb25lOiByZXRyaWV2
+ZSBpbnN0cnVjdGlvbnMgZnJvbSB0aGUgbmFtZWQgcGlwZQorICovCitjaGFyIGFjdGlvbigpCit7
+CisgICAgY2hhciBjaDsKKyAgICBpbnQgZmQ7CisKKyAgICBmZCA9IG9wZW4oU1RBVFVTX1BJUEUs
+IE9fUkRPTkxZKTsKKyAgICBpZiAoZmQgPCAwKQorICAgICAgICBlcnJ4KDYsICJFcnJvciBvcGVu
+aW5nIG5hbWVkIHBpcGUiKTsKKworICAgIGlmIChyZWFkKGZkLCAmY2gsIDEpIDwgMCkKKyAgICAg
+ICAgZXJyeCg3LCAiRXJyb3IgcmVhZGluZyBuYW1lZCBwaXBlIik7CisKKyAgICBjbG9zZShmZCk7
+CisKKyAgICByZXR1cm4gY2g7Cit9CisKK2ludCBtYWluKGludCBhcmdjLCBjaGFyICoqYXJndikK
+K3sKKyAgICBpbnQgcmV0OworICAgIGNoYXIgY2g7CisKKyAgICBwcm9jZXNzX29wdGlvbnMoYXJn
+YywgYXJndik7CisKKyAgICByZXQgPSBta2ZpZm8oU1RBVFVTX1BJUEUsIDA2NjYpOworCisgICAg
+aWYgKHJldCA9PSAtMSAmJiBlcnJubyAhPSBFRVhJU1QpCisgICAgICAgIGVycngoMSwgIkVycm9y
+IGNyZWF0aW5nIG5hbWVkIHBpcGUiKTsKKworICAgIGRvIHsKKyAgICAgICAgY2ggPSBhY3Rpb24o
+KTsKKworICAgICAgICBpZiAoY2ggPT0gJ20nKQorICAgICAgICAgICAgbWVtX21hcCgpOworICAg
+IH13aGlsZShjaCAhPSAneCcpOworCisgICAgcmVtb3ZlKFNUQVRVU19QSVBFKTsKKworICAgIHJl
+dHVybiAwOworfQpkaWZmIC1OYXJVMyBsdHB2L3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMv
+bWVtY2cvUkVBRE1FIGx0cHQvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9tZW1jZy9SRUFE
+TUUKLS0tIGx0cHYvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9tZW1jZy9SRUFETUUJMjAw
+OS0wOS0xNCAxMjo0NDoyNS4wMDAwMDAwMDAgKzA1MzAKKysrIGx0cHQvdGVzdGNhc2VzL2tlcm5l
+bC9jb250cm9sbGVycy9tZW1jZy9SRUFETUUJMjAxMC0wMi0yMSAwMjoxNjowMC40MDY0ODEwMDAg
+KzA1MzAKQEAgLTE1LDYgKzE1LDE2IEBACiAKIEZJTEVTIERFU0NSSVBUSU9OOgogCitjb250cm9s
+L21lbWNnX2NvbnRyb2xfdGVzdC5zaAorLS0tLS0tLS0tLS0tLS0tLS0tLS0KK1RoaXMgc2NyaXB0
+IHJ1bnMgdGhlIHRlc3RjYXNlcyBvZiBjb250cm9sIHRlc3QuCisKK2NvbnRyb2wvbWVtX3Byb2Nl
+c3MuYworLS0tLS0tLS0tLS0tLS0tLS0tLS0KK1RoZSBwcm9ncmFtIGFsbG9jYXRlcyBtZW1vcnkg
+c3BlY2lmaWVkIHVzaW5nIHRoZSAnLW0nIG9wdGlvbiB3aGVuICdtJyBpcyByZWNpZXZlZCAKK3Ro
+cm91Z2ggdGhlIG5hbWVkIHBpcGUgL3RtcC9zdGF0dXNfcGlwZSBhbmQgZnJlZXMgaXQgb24gcmVj
+ZWl2aW5nICdtJyBhZ2Fpbi4gCitJdCBleGl0cyBvbiByZWNlaXZlaW5nICd4Jy4gSXQgZ2V0cyB0
+aGUgcGFnZSBzaXplIG9uIHNwZWNpZnlpbmcgdGhlICctcCcgb3B0aW9uLgorCiBmdW5jdGlvbmFs
+L21lbWNncm91cF9mdW5jdGlvbl90ZXN0LnNoCiAtLS0tLS0tLS0tLS0tLS0tLS0tLQogVGhpcyBz
+Y3JpcHQgcnVucyBhbGwgdGhlIDM4IHRlc3RjYXNlcyBvZiBiYXNpcyBvcGVyYXRpb24uCg==
+--00504502ad008cfa4e0480179ddb
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
+--00504502ad008cfa4e0480179ddb
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--00504502ad008cfa4e0480179ddb--
+
