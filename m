@@ -1,26 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <crosslonelyover@gmail.com>) id 1NePPW-0006op-6O
-	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 08:56:02 +0000
-Received: from mail-pz0-f199.google.com ([209.85.222.199])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NePPU-0005G8-SF
-	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 08:56:02 +0000
-Received: by pzk37 with SMTP id 37so3932803pzk.10
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 08 Feb 2010 00:55:55 -0800 (PST)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NjZYK-0005KV-KR
+	for ltp-list@lists.sourceforge.net; Mon, 22 Feb 2010 14:46:28 +0000
+Received: from e7.ny.us.ibm.com ([32.97.182.137])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NjZYJ-0004c3-DR
+	for ltp-list@lists.sourceforge.net; Mon, 22 Feb 2010 14:46:28 +0000
+Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
+	by e7.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1MEcnl0018106
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Feb 2010 09:38:49 -0500
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o1MEkKYi112452
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Feb 2010 09:46:20 -0500
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o1MEkKrx021533
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Feb 2010 07:46:20 -0700
+Date: Mon, 22 Feb 2010 20:15:37 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100222144536.GB15818@linux.vnet.ibm.com>
+References: <4B824C61.9050401@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <4B6FBD49.6050605@linux.vnet.ibm.com>
-References: <5a774f4c1002060734v174f790ah976977edf6aa50a4@mail.gmail.com>
-	<4B6FA757.2010309@linux.vnet.ibm.com>
-	<5a774f4c1002072302n4eaf5c6fycbabbbe4524a483d@mail.gmail.com>
-	<4B6FBD49.6050605@linux.vnet.ibm.com>
-Date: Mon, 8 Feb 2010 16:55:55 +0800
-Message-ID: <5a774f4c1002080055o36ee92f5te92a1c67f26856d@mail.gmail.com>
-From: shenghui <crosslonelyover@gmail.com>
-Subject: Re: [LTP] about "hugetlbshmget03"
+Content-Disposition: inline
+In-Reply-To: <4B824C61.9050401@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] syscalls: fix some failure on arch X86_64
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,407 +36,419 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2258817057536793696=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Rishikesh <risrajak@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: liubo <liubo2009@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
---===============2258817057536793696==
-Content-Type: multipart/alternative; boundary=0016e6461288167275047f12f80f
+On Mon, Feb 22, 2010 at 05:20:33PM +0800, liubo wrote:
 
---0016e6461288167275047f12f80f
-Content-Type: text/plain; charset=ISO-8859-1
+Hi Liu,
 
-2010/2/8 Rishikesh <risrajak@linux.vnet.ibm.com>
+> - rt_sigaction01
+> On arch x86_64, if we directly get to call syscall 
+> rt_sigaction, there will be "segment fault".
+> 1) One reason is that we must supply the flag of 
+> "SA_RESTORER" and the correct pointer to the fuction 
+> "restorer", according to the kernel code.
+> 2) The other reason is that default syscall rt_sigaction 
+> use kernel "sigaction" structure, which is different 
+> with normal "sigaction" structure.
+> 
+> So, 
+> 1) We manage to find the address of the function 
+> "restorer" by using glibc function "sigaction", 
+> which might be something tricky. Then we add these 
+> arguments to make test run correctly.
+> 2) We also use kernel "sigaction" structure to fit 
+> realtime syscall __NR_rt_sigaction.
+> 
+> - rt_sigprocmask01
+> First, there exsits the same problem as rt_sigaction01.
+> Second, this testcase uses a unchanged signal number 33, 
+> which may diff among different archs and lead to error
+> "unknown signal".
+> 
+> So, we use a macro TEST_SIG which refers to SIGRTMIN+1 
+> to replace 33.
+> 
+> - rt_sigsuspend01
+> There exists the same problem as rt_sigaction01.
+> 
+> This patch fixed these failure.
+> 
+> Signed-off-by: Liu Bo <liubo2009@cn.fujitsu.com>
 
->  On 02/08/2010 12:32 PM, shenghui wrote:
->
->
->
-> 2010/2/8 Rishikesh <risrajak@linux.vnet.ibm.com>
->
->>  On 02/06/2010 09:04 PM, shenghui wrote:
->>
->> Hi all,
->>
->>        I want to know how to run hugetlbshmget03? Does it need some
->> arguments?
->> For I have run it several times, always got error "NOMEM" for cannot get
->> hugetlb
->> page. But "cat /proc/meminfo" shows that free hugetlb pages are enough for
->> its
->> request.
->>        Does anyone know how to handle this problem?
->>
->>  Hi Shenghui,
->>
->> Have you run this testcase after setting up nr_hugepages ? You need to set
->> the pages accordingly and then you need to run the testcase.
->>
->> e.g:
->>
->> echo 10 > /proc/sys/vm/nr_hugepages
->>
->> Please post your result if you still finding issue.
->>
->> Thanks
->> Rishi
->>
->>
->> --
->>
->>
->> Thanks and Best Regards,
->> shenghui
->>
->>
->> ------------------------------------------------------------------------------
->> The Planet: dedicated and managed hosting, cloud storage, colocation
->> Stay online with enterprise data centers and the best network in the business
->> Choose flexible plans and management services without long-term contracts
->> Personal 24x7 support from experience hosting pros just a phone call away.
->> http://p.sf.net/sfu/theplanet-com
->>
->>
->> _______________________________________________
->> Ltp-list mailing listLtp-list@lists.sourceforge.nethttps://lists.sourceforge.net/lists/listinfo/ltp-list
->>
->>
->>
-> Hi Rishi,
->
->        Please refer to the following for my error info. And will you please
-> try it on your workstation and send me
-> your result?
->
-> Hi Shengui,
->
-> Yes i am also facing this different issue on my TP. Let me investigate more
-> on that. Meanwhile if you know the solution can you please post your thought
-> on this problem ?
->
-> Thanks
-> Rishi
->
->
->
->        Thanks!
->
->
-> ===============================================================================
->
-> root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
-> ls
-> hugeshmget01    hugeshmget02    hugeshmget03    hugeshmget05    Makefile
-> hugeshmget01.c  hugeshmget02.c  hugeshmget03.c  hugeshmget05.c
->
-> root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
-> echo 10 > /proc/sys/vm/nr_hugepages
->
-> root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
-> cat /proc/meminfo
-> MemTotal:        4048440 kB
-> MemFree:         1576656 kB
-> Buffers:          122652 kB
-> Cached:          1487772 kB
-> SwapCached:            0 kB
-> Active:          1225860 kB
-> Inactive:        1043268 kB
-> Active(anon):     684228 kB
-> Inactive(anon):       16 kB
-> Active(file):     541632 kB
-> Inactive(file):  1043252 kB
-> Unevictable:           0 kB
-> Mlocked:               0 kB
-> HighTotal:       3211696 kB
-> HighFree:        1044060 kB
-> LowTotal:         836744 kB
-> LowFree:          532596 kB
-> SwapTotal:       3903752 kB
-> SwapFree:        3903752 kB
-> Dirty:               204 kB
-> Writeback:             0 kB
-> AnonPages:        658692 kB
-> Mapped:           239928 kB
-> Slab:             109460 kB
-> SReclaimable:      93676 kB
-> SUnreclaim:        15784 kB
-> PageTables:         8332 kB
-> NFS_Unstable:          0 kB
-> Bounce:                0 kB
-> WritebackTmp:          0 kB
-> CommitLimit:     5917732 kB
-> Committed_AS:    1389392 kB
-> VmallocTotal:     122880 kB
-> VmallocUsed:       44644 kB
-> VmallocChunk:      75956 kB
-> HugePages_Total:      10
-> HugePages_Free:       10
-> HugePages_Rsvd:        0
-> HugePages_Surp:        0
-> Hugepagesize:       2048 kB
-> DirectMap4k:        8184 kB
-> DirectMap2M:      903168 kB
->
-> root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
-> ./hugeshmget03
-> hugeshmget03    0  TINFO  :  errno = 12 : Cannot allocate memory
-> hugeshmget03    1  TBROK  :  Didn't get ENOSPC in test setup
->
-> root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
-> echo 32 > /proc/sys/vm/nr_hugepages
->
-> root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
-> ./hugeshmget03
-> hugeshmget03    0  TINFO  :  errno = 12 : Cannot allocate memory
-> hugeshmget03    1  TBROK  :  Didn't get ENOSPC in test setup
->
->
-> --
->
->
-> Thanks and Best Regards,
-> shenghui
->
->
->
-Sure.  : )
+
+Acked/Tested-By: Rishikesh K Rajak<risrajak@linux.vnet.ibm.com>
+
+Before patch:
+rt_sigaction01                 FAIL       11   
+rt_sigprocmask01               FAIL       11   
+rt_sigsuspend01                FAIL       11   
+
+After patch:
+
+mhs21a:/opt/ltp/testcases/bin # ./rt_sigprocmask01
+rt_sigprocmask01    1  TPASS  :  rt_sigprocmask() PASSED
+mhs21a:/opt/ltp/testcases/bin # ./rt_sigsuspend01
+rt_sigsuspend01    1  TPASS  :  rt_sigsuspend PASSED
+rt_sigsuspend01    2  TPASS  :  rt_sigsuspend PASSED
+rt_sigsuspend01    3  TPASS  :  rt_sigsuspend PASSED
+rt_sigsuspend01    4  TPASS  :  rt_sigsuspend PASSED
+mhs21a:/opt/ltp/testcases/bin # ./rt_sigprocmask01 
+rt_sigprocmask01    1  TPASS  :  rt_sigprocmask() PASSED
+mhs21a:/opt/ltp/testcases/bin # 
+
+Thanks
+-Rishi
+> 
+> ---
+>  include/rt_signal.h                                |   60 +++++++++++++++++
+>  .../kernel/syscalls/rt_sigaction/rt_sigaction01.c  |   69 ++++++++++++--------
+>  .../syscalls/rt_sigprocmask/rt_sigprocmask01.c     |   32 +++++++---
+>  .../syscalls/rt_sigsuspend/rt_sigsuspend01.c       |   13 ++++-
+>  4 files changed, 136 insertions(+), 38 deletions(-)
+>  create mode 100644 include/rt_signal.h
+> 
+> diff --git a/include/rt_signal.h b/include/rt_signal.h
+> new file mode 100644
+> index 0000000..ea1e7e3
+> --- /dev/null
+> +++ b/include/rt_signal.h
+> @@ -0,0 +1,60 @@
+> +/******************************************************************************/
+> +/*                                                                            */
+> +/* Copyright (c) 2009 FUJITSU LIMITED                                         */
+> +/*                                                                            */
+> +/* This program is free software;  you can redistribute it and/or modify      */
+> +/* it under the terms of the GNU General Public License as published by       */
+> +/* the Free Software Foundation; either version 2 of the License, or          */
+> +/* (at your option) any later version.                                        */
+> +/*                                                                            */
+> +/* This program is distributed in the hope that it will be useful,            */
+> +/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
+> +/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
+> +/* the GNU General Public License for more details.                           */
+> +/*                                                                            */
+> +/* You should have received a copy of the GNU General Public License          */
+> +/* along with this program;  if not, write to the Free Software               */
+> +/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA    */
+> +/*                                                                            */
+> +/* Author: Liu Bo <liubo2009@cn.fujitsu.com>                                  */
+> +/*                                                                            */
+> +/******************************************************************************/
+> +
+> +#ifndef __LTP_SIGNAL_H
+> +#define __LTP_SIGNAL_H
+> +
+> +/* We do not globally define the SA_RESTORER flag so do it here.  */
+> +#define HAVE_SA_RESTORER
+> +#define SA_RESTORER 0x04000000
+> +
+> +struct kernel_sigaction {
+> +	__sighandler_t k_sa_handler;
+> +	unsigned long sa_flags;
+> +	void (*sa_restorer) (void);
+> +	sigset_t sa_mask;
+> +};
+> +
+> +void (*restore_rt) (void);
+> +
+> +void
+> +handler_h(void)
+> +{
+> +	return;
+> +}
+> +
+> +/* initial restore_rt for x86_64 */
+> +void
+> +sig_initial(int sig)
+> +{
+> +	struct sigaction act, oact;
+> +
+> +	act.sa_handler = (void *)handler_h;
+> +	sigemptyset(&act.sa_mask);
+> +	sigaddset(&act.sa_mask, sig);
+> +	/* copy act.sa_restorer to kernel */
+> +	sigaction(sig, &act, &oact);
+> +	/* copy oact.sa_restorer from kernel */
+> +	sigaction(sig, &act, &oact);
+> +	restore_rt = oact.sa_restorer;
+> +}
+> +#endif
+> diff --git a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
+> index ffc5fa2..c8f5d5f 100644
+> --- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
+> +++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
+> @@ -55,6 +55,10 @@
+>  #include "usctest.h"
+>  #include "linux_syscall_numbers.h"
+> 
+> +#ifdef __x86_64__
+> +#include "rt_signal.h"
+> +#endif
+> +
+>  /*
+>   * For all but __mips__:
+>   *
+> @@ -101,13 +105,14 @@ int  TST_TOTAL = 1;                   /* total number of tests in this file.   *
+>  /*              On success - Exits calling tst_exit(). With '0' return code.  */
+>  /*                                                                            */
+>  /******************************************************************************/
+> -extern void cleanup() {
+> -        /* Remove tmp dir and all files in it */
+> -        TEST_CLEANUP;
+> -        tst_rmdir();
+> +extern void cleanup() 
+> +{
+> +	/* Remove tmp dir and all files in it */
+> +	TEST_CLEANUP;
+> +	tst_rmdir();
+> 
+> -        /* Exit with appropriate return code. */
+> -        tst_exit();
+> +	/* Exit with appropriate return code. */
+> +	tst_exit();
+>  }
+> 
+>  /* Local  Functions */
+> @@ -128,11 +133,12 @@ extern void cleanup() {
+>  /*              On success - returns 0.                                       */
+>  /*                                                                            */
+>  /******************************************************************************/
+> -void setup() {
+> -        /* Capture signals if any */
+> -        /* Create temporary directories */
+> -        TEST_PAUSE;
+> -        tst_tmpdir();
+> +void setup() 
+> +{
+> +	/* Capture signals if any */
+> +	/* Create temporary directories */
+> +	TEST_PAUSE;
+> +	tst_tmpdir();
+>  }
+> 
+>  int test_flags[] = {SA_RESETHAND|SA_SIGINFO, SA_RESETHAND, SA_RESETHAND|SA_SIGINFO, SA_RESETHAND|SA_SIGINFO, SA_NOMASK};
+> @@ -144,22 +150,23 @@ handler(int sig)
+>          tst_resm(TINFO,"Signal Handler Called with signal number %d\n",sig);
+>          return;
+>  }
+> -
+>  int
+> -set_handler(int sig, int sig_to_mask, int mask_flags)
+> +set_handler(int sig, int mask_flags)
+>  {
+> -        struct sigaction sa, oldaction;
+> -
+> -                sa.sa_sigaction = (void *)handler;
+> -                sa.sa_flags = mask_flags;
+> -                sigemptyset(&sa.sa_mask);
+> -                sigaddset(&sa.sa_mask, sig_to_mask);
+> -                TEST(syscall(__NR_rt_sigaction,sig, &sa, &oldaction,SIGSETSIZE));
+> -        if (TEST_RETURN == 0) {
+> -                return 0;
+> -        } else {
+> -                        return TEST_RETURN;
+> -        }
+> +#ifdef __x86_64__
+> +	struct kernel_sigaction sa, oldaction;
+> +	mask_flags |= SA_RESTORER;
+> +	sa.sa_restorer = restore_rt;
+> +	sa.k_sa_handler = (void *)handler;
+> +#else
+> +	struct sigaction sa, oldaction;
+> +	sa.sa_handler = (void *)handler;
+> +#endif
+> +	sa.sa_flags = mask_flags;
+> +	sigemptyset(&sa.sa_mask);
+> +	sigaddset(&sa.sa_mask, sig);
+> +	TEST(syscall(__NR_rt_sigaction,sig, &sa, &oldaction,SIGSETSIZE));
+> +	return TEST_RETURN;
+>  }
+> 
+> 
+> @@ -167,6 +174,7 @@ int main(int ac, char **av) {
+>  	int signal, flag;
+>          int lc;                 /* loop counter */
+>          char *msg;              /* message returned from parse_opts */
+> +	int fc;			/* flag counter */
+>  	
+>          /* parse standard options */
+>          if ((msg = parse_opts(ac, av, (option_t *)NULL, NULL)) != (char *)NULL){
+> @@ -179,11 +187,16 @@ int main(int ac, char **av) {
+>          /* Check looping state if -i option given */
+>          for (lc = 0; TEST_LOOPING(lc); ++lc) {
+>                  Tst_count = 0;
+> -                for (testno = 0; testno < TST_TOTAL; ++testno) {
+> +		fc = sizeof (test_flags) / sizeof (test_flags[0]);
+> +
+> +		for (testno = 0; testno < TST_TOTAL; ++testno) {
+>                  
+>  			for (signal = SIGRTMIN; signal <= (SIGRTMAX ); signal++){//signal for 34 to 65 
+> -			 	for(flag=0; flag<5;flag++) {
+> -	                        	 TEST(set_handler(signal, 0, test_flags[flag]));
+> +#ifdef __x86_64__
+> +				sig_initial(signal);
+> +#endif
+> +				for(flag=0; flag<fc;flag++) {
+> +	                        	 TEST(set_handler(signal, test_flags[flag]));
+>  						 if (TEST_RETURN == 0) {
+>          					tst_resm(TINFO,"signal: %d ", signal);
+>          					tst_resm(TPASS, "rt_sigaction call succeeded: result = %ld ",TEST_RETURN );
+> diff --git a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
+> index 6398a28..5b292b2 100644
+> --- a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
+> +++ b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
+> @@ -62,6 +62,12 @@
+>  #include "usctest.h"
+>  #include "linux_syscall_numbers.h"
+> 
+> +#ifdef __x86_64__
+> +#include "rt_signal.h"
+> +#endif
+> +
+> +#define TEST_SIG SIGRTMIN+1
+> +
+>  /* Extern Global Variables */
+>  extern int Tst_count;           /* counter for tst_xxx routines.         */
+>  extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
+> @@ -131,7 +137,16 @@ void sig_handler(int sig)
+>  }
+> 
+>  int main(int ac, char **av) {
+> -	struct sigaction act, oact;
+> +#ifdef __x86_64__
+> +	struct kernel_sigaction act, oact;
+> +	sig_initial(TEST_SIG);
+> +	act.sa_flags |= SA_RESTORER;
+> +        act.sa_restorer = restore_rt;
+> +        act.k_sa_handler = sig_handler;
+> +#else
+> +        struct sigaction act, oact;
+> +        act.sa_handler = sig_handler;
+> +#endif
+>          sigset_t set, oset;
+>          int lc;                 /* loop counter */
+>          char *msg;              /* message returned from parse_opts */
+> @@ -154,22 +169,21 @@ int main(int ac, char **av) {
+>                          	cleanup();
+>  				tst_exit();
+>  			}
+> -			TEST(sigaddset(&set, 33));
+> +			TEST(sigaddset(&set, TEST_SIG));
+>  			if(TEST_RETURN == -1){
+>  				tst_resm(TFAIL,"Call to sigaddset() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+>                          	cleanup();
+>  				tst_exit();
+>  			}
+> -			
+> +				
+>  			/* call rt_sigaction() */
+> -			act.sa_handler = sig_handler;
+> -                        TEST(syscall(__NR_rt_sigaction, 33, &act, &oact, 8));
+> +                        TEST(syscall(__NR_rt_sigaction, TEST_SIG, &act, &oact, 8));
+>  			if(TEST_RETURN != 0){
+>  				tst_resm(TFAIL,"Call to rt_sigaction() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+>                          	cleanup();
+>  				tst_exit();
+>  			}
+> -			/* call rt_sigprocmask() to block signal#33 */
+> +			/* call rt_sigprocmask() to block signal#SIGRTMIN */
+>                          TEST(syscall(__NR_rt_sigprocmask, SIG_BLOCK, &set, &oset, 8));
+>  			if(TEST_RETURN == -1){
+>  				tst_resm(TFAIL,"Call to rt_sigprocmask()**** Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> @@ -178,7 +192,7 @@ int main(int ac, char **av) {
+>  			}
+>  			
+>  			else {
+> -				TEST(kill(getpid(), 33));
+> +				TEST(kill(getpid(), TEST_SIG));
+>  				if(TEST_RETURN != 0){
+>  					tst_resm(TFAIL,"Call to kill() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+>                          		cleanup();
+> @@ -198,13 +212,13 @@ int main(int ac, char **av) {
+>                          			cleanup();
+>  						tst_exit();
+>  					}
+> -					TEST(sigismember(&oset, 33));
+> +					TEST(sigismember(&oset, TEST_SIG));
+>  					if(TEST_RETURN == 0 ){
+>  						tst_resm(TFAIL,"call sigismember() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+>                          			cleanup();
+>  						tst_exit();
+>  					}
+> -					/* call rt_sigprocmask() to unblock signal#33 */
+> +					/* call rt_sigprocmask() to unblock signal#SIGRTMIN */
+>  					TEST(syscall(__NR_rt_sigprocmask, SIG_UNBLOCK, &set, &oset, 8));
+>  					if(TEST_RETURN == -1){
+>  						tst_resm(TFAIL,"Call to rt_sigprocmask() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> diff --git a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
+> index 416a7c9..84f2967 100644
+> --- a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
+> +++ b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
+> @@ -47,6 +47,10 @@
+>  #include "usctest.h"
+>  #include "linux_syscall_numbers.h"
+> 
+> +#ifdef __x86_64__
+> +#include "rt_signal.h"
+> +#endif
+> +
+>  /* Extern Global Variables */
+>  extern int Tst_count;           /* counter for tst_xxx routines.         */
+>  extern char *TESTDIR;           /* temporary dir created by tst_tmpdir() */
+> @@ -139,9 +143,16 @@ int main(int ac, char **av) {
+>  				cleanup();
+>  				tst_exit();
+>  			}
+> +#ifdef __x86_64__
+> +		        struct kernel_sigaction act, oact;
+> +			sig_initial(SIGALRM);
+> +			act.sa_flags |= SA_RESTORER;
+> +			act.sa_restorer = restore_rt;
+> +			act.k_sa_handler = sig_handler;			
+> +#else
+>  			struct sigaction act, oact;
+>  		        act.sa_handler = sig_handler;
+> -			
+> +#endif
+>  			TEST(syscall(__NR_rt_sigaction, SIGALRM, &act, &oact, 8));
+>  			if(TEST_RETURN == -1){
+>  		        	tst_resm(TFAIL,"rt_sigaction() Failed, errno=%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> -- 
+> 1.6.2.2
+> 
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Download Intel&#174; Parallel Studio Eval
+> Try the new software tools for yourself. Speed compiling, find bugs
+> proactively, and fine-tune applications for parallel performance.
+> See why Intel Parallel Studio got high marks during beta.
+> http://p.sf.net/sfu/intel-sw-dev
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 -- 
-
-
-Thanks and Best Regards,
-shenghui
-
---0016e6461288167275047f12f80f
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<br><br><div class=3D"gmail_quote">2010/2/8 Rishikesh <span dir=3D"ltr">&lt=
-;<a href=3D"mailto:risrajak@linux.vnet.ibm.com">risrajak@linux.vnet.ibm.com=
-</a>&gt;</span><br><blockquote class=3D"gmail_quote" style=3D"border-left: =
-1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;=
-">
-
-
-
- =20
-
-<div text=3D"#000000" bgcolor=3D"#ffffff"><div><div></div><div class=3D"h5"=
->
-On 02/08/2010 12:32 PM, shenghui wrote:
-<blockquote type=3D"cite"><br>
-  <br>
-  <div class=3D"gmail_quote">2010/2/8 Rishikesh <span dir=3D"ltr">&lt;<a hr=
-ef=3D"mailto:risrajak@linux.vnet.ibm.com" target=3D"_blank">risrajak@linux.=
-vnet.ibm.com</a>&gt;</span><br>
-  <blockquote class=3D"gmail_quote" style=3D"border-left: 1px solid rgb(204=
-, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
-    <div text=3D"#000000" bgcolor=3D"#ffffff">
-    <div>On 02/06/2010 09:04 PM, shenghui wrote:
-    <blockquote type=3D"cite">Hi all,<br>
-=A0<br>
-=A0=A0=A0=A0=A0=A0 I want to know how to run hugetlbshmget03? Does it need =
-some
-arguments?<br>
-For I have run it several times, always got error &quot;NOMEM&quot; for can=
-not
-get hugetlb<br>
-page. But &quot;cat /proc/meminfo&quot; shows that free hugetlb pages are e=
-nough
-for its<br>
-request.<br>
-=A0=A0=A0=A0=A0=A0 Does anyone know how to handle this problem?<br clear=3D=
-"all">
-    </blockquote>
-    </div>
-Hi Shenghui,<br>
-    <br>
-Have you run this testcase after setting up nr_hugepages ? You need to
-set the pages accordingly and then you need to run the testcase.<br>
-    <br>
-e.g:<br>
-    <br>
-echo 10 &gt; /proc/sys/vm/nr_hugepages<br>
-    <br>
-Please post your result if you still finding issue.<br>
-    <br>
-Thanks<br>
-Rishi<br>
-    <br>
-    <blockquote type=3D"cite">
-      <div><br>
--- <br>
-      <br>
-      <br>
-Thanks and Best Regards,<br>
-shenghui<br>
-      </div>
-      <pre><fieldset></fieldset>
----------------------------------------------------------------------------=
----
-The Planet: dedicated and managed hosting, cloud storage, colocation
-Stay online with enterprise data centers and the best network in the busine=
-ss
-Choose flexible plans and management services without long-term contracts
-Personal 24x7 support from experience hosting pros just a phone call away.
-<div><a href=3D"http://p.sf.net/sfu/theplanet-com" target=3D"_blank">http:/=
-/p.sf.net/sfu/theplanet-com</a></div></pre>
-      <div>
-      <pre><fieldset></fieldset>
-_______________________________________________
-Ltp-list mailing list
-<a href=3D"mailto:Ltp-list@lists.sourceforge.net" target=3D"_blank">Ltp-lis=
-t@lists.sourceforge.net</a>
-<a href=3D"https://lists.sourceforge.net/lists/listinfo/ltp-list" target=3D=
-"_blank">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
-  </pre>
-      </div>
-    </blockquote>
-    <br>
-    </div>
-  </blockquote>
-  </div>
-  <br>
-Hi Rishi,<br>
-  <br>
-=A0=A0=A0=A0=A0=A0 Please refer to the following for my error info. And wil=
-l you
-please try it on your workstation and send me <br>
-your result?<br>
-</blockquote></div></div>
-Hi Shengui,<br>
-<br>
-Yes i am also facing this different issue on my TP. Let me investigate
-more on that. Meanwhile if you know the solution can you please post
-your thought on this problem ?<br>
-<br>
-Thanks<br>
-Rishi<div><div></div><div class=3D"h5"><br>
-<br>
-<br>
-<blockquote type=3D"cite">=A0=A0=A0=A0=A0=A0 Thanks!<br>
-  <br>
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D<br>
-  <br>
-root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/=
-testcases/kernel/mem/hugetlb/hugeshmget#
-ls<br>
-hugeshmget01=A0=A0=A0 hugeshmget02=A0=A0=A0 hugeshmget03=A0=A0=A0 hugeshmge=
-t05=A0=A0=A0 Makefile<br>
-hugeshmget01.c=A0 hugeshmget02.c=A0 hugeshmget03.c=A0 hugeshmget05.c<br>
-  <br>
-root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/=
-testcases/kernel/mem/hugetlb/hugeshmget#
-echo 10 &gt; /proc/sys/vm/nr_hugepages<br>
-  <br>
-root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/=
-testcases/kernel/mem/hugetlb/hugeshmget#
-cat /proc/meminfo <br>
-MemTotal:=A0=A0=A0=A0=A0=A0=A0 4048440 kB<br>
-MemFree:=A0=A0=A0=A0=A0=A0=A0=A0 1576656 kB<br>
-Buffers:=A0=A0=A0=A0=A0=A0=A0=A0=A0 122652 kB<br>
-Cached:=A0=A0=A0=A0=A0=A0=A0=A0=A0 1487772 kB<br>
-SwapCached:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0 kB<br>
-Active:=A0=A0=A0=A0=A0=A0=A0=A0=A0 1225860 kB<br>
-Inactive:=A0=A0=A0=A0=A0=A0=A0 1043268 kB<br>
-Active(anon):=A0=A0=A0=A0 684228 kB<br>
-Inactive(anon):=A0=A0=A0=A0=A0=A0 16 kB<br>
-Active(file):=A0=A0=A0=A0 541632 kB<br>
-Inactive(file):=A0 1043252 kB<br>
-Unevictable:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0 kB<br>
-Mlocked:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0 kB<br>
-HighTotal:=A0=A0=A0=A0=A0=A0 3211696 kB<br>
-HighFree:=A0=A0=A0=A0=A0=A0=A0 1044060 kB<br>
-LowTotal:=A0=A0=A0=A0=A0=A0=A0=A0 836744 kB<br>
-LowFree:=A0=A0=A0=A0=A0=A0=A0=A0=A0 532596 kB<br>
-SwapTotal:=A0=A0=A0=A0=A0=A0 3903752 kB<br>
-SwapFree:=A0=A0=A0=A0=A0=A0=A0 3903752 kB<br>
-Dirty:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 204 kB<br>
-Writeback:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0 kB<br>
-AnonPages:=A0=A0=A0=A0=A0=A0=A0 658692 kB<br>
-Mapped:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 239928 kB<br>
-Slab:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 109460 kB<br>
-SReclaimable:=A0=A0=A0=A0=A0 93676 kB<br>
-SUnreclaim:=A0=A0=A0=A0=A0=A0=A0 15784 kB<br>
-PageTables:=A0=A0=A0=A0=A0=A0=A0=A0 8332 kB<br>
-NFS_Unstable:=A0=A0=A0=A0=A0=A0=A0=A0=A0 0 kB<br>
-Bounce:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0 kB<br>
-WritebackTmp:=A0=A0=A0=A0=A0=A0=A0=A0=A0 0 kB<br>
-CommitLimit:=A0=A0=A0=A0 5917732 kB<br>
-Committed_AS:=A0=A0=A0 1389392 kB<br>
-VmallocTotal:=A0=A0=A0=A0 122880 kB<br>
-VmallocUsed:=A0=A0=A0=A0=A0=A0 44644 kB<br>
-VmallocChunk:=A0=A0=A0=A0=A0 75956 kB<br>
-HugePages_Total:=A0=A0=A0=A0=A0 10<br>
-HugePages_Free:=A0=A0=A0=A0=A0=A0 10<br>
-HugePages_Rsvd:=A0=A0=A0=A0=A0=A0=A0 0<br>
-HugePages_Surp:=A0=A0=A0=A0=A0=A0=A0 0<br>
-Hugepagesize:=A0=A0=A0=A0=A0=A0 2048 kB<br>
-DirectMap4k:=A0=A0=A0=A0=A0=A0=A0 8184 kB<br>
-DirectMap2M:=A0=A0=A0=A0=A0 903168 kB<br>
-  <br>
-root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/=
-testcases/kernel/mem/hugetlb/hugeshmget#
-./hugeshmget03<br>
-hugeshmget03=A0=A0=A0 0=A0 TINFO=A0 :=A0 errno =3D 12 : Cannot allocate mem=
-ory<br>
-hugeshmget03=A0=A0=A0 1=A0 TBROK=A0 :=A0 Didn&#39;t get ENOSPC in test setu=
-p<br>
-  <br>
-root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/=
-testcases/kernel/mem/hugetlb/hugeshmget#
-echo 32 &gt; /proc/sys/vm/nr_hugepages<br>
-  <br>
-root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/=
-testcases/kernel/mem/hugetlb/hugeshmget#
-./hugeshmget03<br>
-hugeshmget03=A0=A0=A0 0=A0 TINFO=A0 :=A0 errno =3D 12 : Cannot allocate mem=
-ory<br>
-hugeshmget03=A0=A0=A0 1=A0 TBROK=A0 :=A0 Didn&#39;t get ENOSPC in test setu=
-p<br>
-  <br clear=3D"all">
-  <br>
--- <br>
-  <br>
-  <br>
-Thanks and Best Regards,<br>
-shenghui<br>
-</blockquote>
-<br>
-</div></div></div>
-
-</blockquote></div><br>Sure.=A0 : )<br clear=3D"all"><br>-- <br><br><br>Tha=
-nks and Best Regards,<br>shenghui<br>
-
---0016e6461288167275047f12f80f--
-
-
---===============2258817057536793696==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
-The Planet: dedicated and managed hosting, cloud storage, colocation
-Stay online with enterprise data centers and the best network in the business
-Choose flexible plans and management services without long-term contracts
-Personal 24x7 support from experience hosting pros just a phone call away.
-http://p.sf.net/sfu/theplanet-com
---===============2258817057536793696==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============2258817057536793696==--
-
