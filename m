@@ -1,19 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mwenzel@novell.com>) id 1NkQzI-0005v4-Kk
-	for ltp-list@lists.sourceforge.net; Wed, 24 Feb 2010 23:49:52 +0000
-Received: from sinclair.provo.novell.com ([137.65.248.137])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NkQzH-0001tq-8t
-	for ltp-list@lists.sourceforge.net; Wed, 24 Feb 2010 23:49:52 +0000
-Message-Id: <4B8558A6020000E80005EF62@sinclair.provo.novell.com>
-Date: Wed, 24 Feb 2010 16:49:42 -0700
-From: "Murlin Wenzel" <mwenzel@novell.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=__Part1B31D806.0__="
-Subject: [LTP] [patch] swapon03 cleanup v2
+	(envelope-from <shiwh@cn.fujitsu.com>) id 1NjT9J-0006aB-Qu
+	for ltp-list@lists.sourceforge.net; Mon, 22 Feb 2010 07:56:13 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NjT9I-0007Rc-0f
+	for ltp-list@lists.sourceforge.net; Mon, 22 Feb 2010 07:56:13 +0000
+Message-ID: <4B823884.4000100@cn.fujitsu.com>
+Date: Mon, 22 Feb 2010 15:55:48 +0800
+From: Shi Weihua <shiwh@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <4B728073.3070209@cn.fujitsu.com>	
+	<4B7B9EC2.1010004@linux.vnet.ibm.com>
+	<364299f41002170914u3a0d0b02o936a81d1ee601ecc@mail.gmail.com>
+In-Reply-To: <364299f41002170914u3a0d0b02o936a81d1ee601ecc@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] timers: support clockid of
+	CLOCK_REALTIME_COARSE/CLOCK_MONOTONIC_COARSE
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,71 +27,94 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---=__Part1B31D806.0__=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-Added clean_swap() to cleanup routine.  This makes sure all leftover swap =
-files are removed.
-
-Signed-off-By:  Murlin Ray Wenzel mwenzel@novell.com
-
-
-Murlin Ray Wenzel
-Sr. Engineer
-mwenzel@novell.com
-Office: 801 861 5748
-Cell: 801 380 4520
-
-Novell
-Making IT Work As One.
-www.novell.com
-
-
-
-
-
-
-
---=__Part1B31D806.0__=
-Content-Type: text/plain; name="swapon03-cleanup-v2.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment; filename="swapon03-cleanup-v2.patch"
-
---- ltp-intermediate-20100228-orig/testcases/kernel/syscalls/swapon/swapon0=
-3.c	2010-02-24 09:00:53.000000000 -0700=0A+++ ltp-intermediate-20100228=
-/testcases/kernel/syscalls/swapon/swapon03.c	2010-02-24 16:36:38.0000000=
-00 -0700=0A@@ -461,6 +461,9 @@=0A 	 */=0A 	TEST_CLEANUP;=0A =0A+	/* =
-remove any remaining swap files */=0A+	clean_swap();=0A+=0A 	/* Remove =
-tmp dir and all files inside it */=0A 	tst_rmdir();=0A =0A
---=__Part1B31D806.0__=
-Content-Type: application/octet-stream; name="Murlin Wenzel.vcf"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="Murlin Wenzel.vcf"
-
-QkVHSU46VkNBUkQNClZFUlNJT046Mi4xDQpQUk9ESUQ6LS8vTm92ZWxsIEluYy8vR3JvdXB3aXNl
-IDguMC4xIA0KWC1HV1RZUEU6VVNFUg0KRk46TXVybGluIFdlbnplbA0KTjpXZW56ZWw7TXVybGlu
-OztTci4gRW5naW5lZXINCkVNQUlMO0lOVEVSTkVUO1BSRUY6TVdFTlpFTEBub3ZlbGwuY29tDQpB
-RFI7V09SSztQUkVGOjtQUlYtRC0xMzE7MTgwMCBTb3V0aCBOb3ZlbGwgUGxhY2U7UHJvdm87VVQ7
-ODQ2MDY7DQpMQUJFTDtXT1JLO1BSRUY7RU5DT0RJTkc9UVVPVEVELVBSSU5UQUJMRToxODAwIFNv
-dXRoIE5vdmVsbCBQbGFjZT0wRD0wQT0NClByb3ZvPTBEPTBBPQ0KVVQ9MEQ9MEE9DQo4NDYwNg0K
-VUlEOjEzRDRCNTIwLTA5MkYtMDAwMC04NkRFLTAwODA1RjhBMDlDNQ0KVEVMO1ZPSUNFO1BSRUY6
-MS04MDEtODYxLTU3NDgNClRFTDtWT0lDRTtXT1JLOjEtODAxLTg2MS01NzQ4DQpURUw7RkFYO1BS
-RUY6ODAxLzg2MS01NDE1DQpUSVRMRTpTci4gRW5naW5lZXINClJFVjoyMDEwMDIyMlQxMTA5NTda
-DQpYLUdXVURGOjkoTWFpbCBTdG9wKVBSVi1ELTEzMQ0KWC1HV1VERjoxMShFbXBsb3llZSBJRCkw
-MjY2MQ0KWC1HV1VERjo4KE1haWxzdG9wKVBSVi1FLTE0MQ0KWC1HV1VERjoxMihXb3JrZm9yY2Ug
-SUQpMDI2NjENClgtR1dVREY6NyhDb3VudHJ5KVVTQQ0KWC1HV1VERjoyNChBT0wgSW5zdGFudCBN
-ZXNzYWdpbmcgSUQpbXdlbnplbHNlcw0KRU5EOlZDQVJEDQoNCg==
-
---=__Part1B31D806.0__=
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
+
+at 2010-2-18 1:14, Garrett Cooper wrote:
+> On Tue, Feb 16, 2010 at 11:46 PM, Rishikesh <risrajak@linux.vnet.ibm.com> wrote:
+>> On 02/10/2010 03:16 PM, Shi Weihua wrote:
+>>> mainline commit da15cfdae03351c689736f8d142618592e3cebc3
+>>>   (subject: time: Introduce CLOCK_REALTIME_COARSE)
+>>> added two clocks (CLOCK_REALTIME_COARSE/CLOCK_MONOTONIC_COARSE) in
+>>> 2.6.32-rc1, but it has not been responded in ltp. then, the following
+>>> error message occured.
+>>> -----
+>>> clock_gettime03    3  TFAIL  :  failed to produce expected error [expected errno = 22 (Invalid argument), TEST_RETURN = 0]: TEST_ERRNO=???(0): Success
+>>> clock_gettime03    4  TFAIL  :  failed to produce expected error [expected errno = 22 (Invalid argument), TEST_RETURN = 0]: TEST_ERRNO=???(0): Success
+>>> timer_create04    1  TFAIL  :  didn't fail as expected [expected errno = 22 (Invalid argument)]: TEST_ERRNO=???(95): Operation not supported
+>>> timer_create04    2  TFAIL  :  didn't fail as expected [expected errno = 22 (Invalid argument)]: TEST_ERRNO=???(95): Operation not supported
+>>> -----
+>>>
+>>> Following patch fixed this bug. and, passed on 2.6.32-rc1, 2.6.33-rc6, 2.6.23.1-42.fc8.
+>>>
+>>
+>> Can anyone provide their review & Acked ?
+>>
+>> Thanks "Shi Weihua" for patch.
+> 
+> 1. Please provide before and after (once the items were fixed) output.
+
+before:
+------
+clock_gettime03    1  TPASS  :  got expected failure: TEST_ERRNO=EFAULT(14): Bad address
+clock_gettime03    2  TPASS  :  got expected failure: TEST_ERRNO=EFAULT(14): Bad address
+clock_gettime03    3  TFAIL  :  failed to produce expected error [expected errno = 22 (Invalid argument), TEST_RETURN = 0]: TEST_ERRNO=???(0): Success
+clock_gettime03    4  TFAIL  :  failed to produce expected error [expected errno = 22 (Invalid argument), TEST_RETURN = 0]: TEST_ERRNO=???(0): Success
+clock_gettime03    5  TPASS  :  got expected failure: TEST_ERRNO=EFAULT(14): Bad address
+clock_gettime03    6  TPASS  :  got expected failure: TEST_ERRNO=EFAULT(14): Bad address
+<snip>
+timer_create04    1  TFAIL  :  didn't fail as expected [expected errno = 22 (Invalid argument)]: TEST_ERRNO=???(95): Operation not supported
+timer_create04    2  TFAIL  :  didn't fail as expected [expected errno = 22 (Invalid argument)]: TEST_ERRNO=???(95): Operation not supported
+timer_create04    3  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+timer_create04    4  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+timer_create04    5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+timer_create04    6  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+------
+
+after ( patch merged )
+------
+clock_gettime03    1  TPASS  :  got expected failure: TEST_ERRNO=EFAULT(14): Bad address
+clock_gettime03    2  TPASS  :  got expected failure: TEST_ERRNO=EFAULT(14): Bad address
+clock_gettime03    3  TPASS  :  got expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+clock_gettime03    4  TPASS  :  got expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
+clock_gettime03    5  TPASS  :  got expected failure: TEST_ERRNO=EFAULT(14): Bad address
+clock_gettime03    6  TPASS  :  got expected failure: TEST_ERRNO=EFAULT(14): Bad address
+<snip>
+timer_create04    1  TPASS  :  failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
+timer_create04    2  TPASS  :  failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
+timer_create04    3  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+timer_create04    4  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+timer_create04    5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+timer_create04    6  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
+------
+
+> 2. *sigh* These constants should be autoconf conditionalized --
+> otherwise when Linux devs decide to change their minds about the
+> values of the constants or the values are different on different
+> architectures you'll run into red-herring errors. The test should be
+> resistant to this behavior, but currently isn't. This would also
+> prevent `ENOSYS'-like errors from showing up on kernels < 2.6.32-rc1.
+
+i checked the frequency of adding clock in include/linux/time.h.
+  2005-04-16	CLOCK_REALTIME/CLOCK_MONOTONIC/CLOCK_PROCESS_CPUTIME_ID/CLOCK_THREAD_CPUTIME_ID
+                (when git initialized) 
+  2008-08-21	CLOCK_MONOTONIC_RAW added
+  2009-08-21	CLOCK_REALTIME_COARSE/CLOCK_MONOTONIC_COARSE added
+  (from http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=history;f=include/linux/time.h;h=6e026e45a179e2c66b347eb3834501a13be7ee2e;hb=aea187c46f7d03ce985e55eb1398d0776a15b928)
+so, the frequency is slow, i think.
+And, should to accept my patch at first. ;-)
+
+> 
+> Thanks,
+> -Garrett
+> 
+> 
+
+-- 
+Shi Weihua
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
@@ -95,16 +122,7 @@ Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
---=__Part1B31D806.0__=
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---=__Part1B31D806.0__=--
-
