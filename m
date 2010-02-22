@@ -1,33 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NlOom-0007Cs-On
-	for ltp-list@lists.sourceforge.net; Sat, 27 Feb 2010 15:43:00 +0000
-Received: from e35.co.us.ibm.com ([32.97.110.153])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NlOoj-0000on-9l
-	for ltp-list@lists.sourceforge.net; Sat, 27 Feb 2010 15:42:59 +0000
-Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
-	[9.17.195.226])
-	by e35.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1RFcgRH023234
-	for <ltp-list@lists.sourceforge.net>; Sat, 27 Feb 2010 08:38:42 -0700
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o1RFgXTR175664
-	for <ltp-list@lists.sourceforge.net>; Sat, 27 Feb 2010 08:42:33 -0700
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o1RFgXYw022950
-	for <ltp-list@lists.sourceforge.net>; Sat, 27 Feb 2010 08:42:33 -0700
-Date: Sat, 27 Feb 2010 21:12:24 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100227154224.GA3211@linux.vnet.ibm.com>
-References: <d270b4401002270600w15c1e895w6c4642caebf3dd85@mail.gmail.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <y_yao@ryobi.co.jp>) id 1NjNgt-0006bK-GH
+	for ltp-list@lists.sourceforge.net; Mon, 22 Feb 2010 02:06:31 +0000
+Received: from out04.sjc.mx.trendmicro.com ([216.99.131.8])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NjNgr-0006aB-S2
+	for ltp-list@lists.sourceforge.net; Mon, 22 Feb 2010 02:06:31 +0000
+From: "Yuki Yao" <y_yao@ryobi.co.jp>
+References: <000f01caae08$ce91e640$6bb5b2c0$@co.jp>	
+	<20100217150214.GB9825@rishikesh.in.ibm.com>
+	<364299f41002170936q1f0c4723qd7ad7f10df6745af@mail.gmail.com>
+In-Reply-To: <364299f41002170936q1f0c4723qd7ad7f10df6745af@mail.gmail.com>
+Date: Mon, 22 Feb 2010 11:06:19 +0900
+Message-ID: <001801cab363$9ff5a2d0$dfe0e870$@co.jp>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <d270b4401002270600w15c1e895w6c4642caebf3dd85@mail.gmail.com>
-Subject: Re: [LTP] Typos
+Content-Language: ja
+Subject: Re: [LTP] "logrotate01" has problem
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,756 +27,181 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mohamed Naufal <naufal11@gmail.com>
+To: 'Garrett Cooper' <yanegomi@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Sat, Feb 27, 2010 at 07:30:20PM +0530, Mohamed Naufal wrote:
-> Hi
-> 
-> Here's a patch to correct some typos.
+> -----Original Message-----
+> From: Garrett Cooper [mailto:yanegomi@gmail.com]
+> Sent: Thursday, February 18, 2010 2:36 AM
+> To: Rishikesh K Rajak
+> Cc: Yuki Yao; ltp-list@lists.sourceforge.net
+> Subject: Re: [LTP] "logrotate01" has problem
+> =
 
-Good catch of typos.
+> On Wed, Feb 17, 2010 at 7:02 AM, Rishikesh K Rajak
+> <risrajak@linux.vnet.ibm.com> wrote:
+> > On Mon, Feb 15, 2010 at 03:33:37PM +0900, Yuki Yao wrote:
+> >> Hi,
+> >>
+> >> I contributed following problem previously, but it's not yet revised.
+> >> So, I contribute this again.
+> >>
+> >> After "./runltp" execution, all log files such as "/var/log/messages*"
+> >> disappeared, and there is only new log file created after the test.
+> >>
+> >> This seems a problem that occurs after the "logrotate01" test.
+> >> I found that the past log files were deleted by forcing a "logrotate"
+> >> (logrotate -fv $LTPTMP/tst_logrotate.conf).
+> >>
+> >> Besides, logrotate01's shell script "./testcases/commands/logrotate
+> >> /logrotate_tests.sh" creats logrotate configuration file ($LTPTMP
+> >> /tst_logrotate.conf) for the test, and this configration file includes
+> >> "/etc/logrotate.d" as follows:
+> >>
+> >> [ ./testcases/commands/logrotate/logrotate_tests.sh line:156~ ]
+> >> ----------
+> >> # create config file.
+> >> =A0 =A0 =A0 cat >$LTPTMP/tst_logrotate.conf <<-EOF
+> >> =A0 =A0 =A0 #****** Begin Config file *******
+> >> =A0 =A0 =A0 # create new (empty) log files after rotating old ones
+> >> =A0 =A0 =A0 create
+> >>
+> >> =A0 =A0 =A0 # compress the log files
+> >> =A0 =A0 =A0 compress
+> >>
+> >> =A0 =A0 =A0 # RPM packages drop log rotation information into this dir=
+ectory
+> >> =A0 =A0 =A0 include /etc/logrotate.d
+> >>
+> >> =A0 =A0 =A0 /var/log/tst_logfile {
+> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 rotate 5
+> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 weekly
+> >> =A0 =A0 =A0 }
+> >> =A0 =A0 =A0 #****** End Config file *******
+> >> =A0 =A0 =A0 EOF
+> >> ----------
+> >>
+> >> By This, not only a log file for the test (/var/log/tst_logfile)
+> >> but also 30 fies such as "/var/log/messages*" become "logrotate"
+> >> command target.
+> >> Only a log file for this test must become a target of the forced
+> >> execution of "logrotate".
+> >>
+> >> To resolve this problem, we must change "/logrotate_tests.sh" not to
+> >> include "/etc/logrotate.d", I think.
+> >>
+> >> Signed-off-by: Yuki Yao<y_yao@ryobi.co.jp>
+> >
+> > Hello Garret,
+> >
+> > Any input for this patch ?
+> >
+> > Thanks
+> > -Rishi
+> >>
+> >> Index: ./testcases/commands/logrotate/logrotate_tests.sh
+> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >>
+> --- ./testcases/commands/logrotate/logrotate_tests.sh.orig =A0 =A02008-10-
+> 21
+> >> 15:54:15.000000000 +0900
+> >> +++ ./testcases/commands/logrotate/logrotate_tests.sh 2010-02-15
+> >> 13:32:02.000000000 +0900
+> >> @@ -163,7 +163,7 @@
+> >> =A0 =A0 =A0 compress
+> >>
+> >> =A0 =A0 =A0 # RPM packages drop log rotation information into this dir=
+ectory
+> >> - =A0 =A0 include /etc/logrotate.d
+> >> + =A0 =A0 # include /etc/logrotate.d
+> >>
+> >> =A0 =A0 =A0 /var/log/tst_logfile {
+> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 rotate 5
+> >> @@ -200,7 +200,7 @@
+> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 # check if =A0/etc/logrotate.d is included/
+> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 # check if 5 rotations are forced.
+> >> =A0 =A0 =A0 =A0 =A0# check if compression is done.
+> >> - =A0 =A0 =A0 =A0 =A0 =A0 grep "including /etc/logrotate.d"
+> $LTPTMP/tst_logrotate.out
+> >> \
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 # grep "including /etc/logrotate.d"
+> >> $LTPTMP/tst_logrotate.out \
+> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 > $LTPTMP/tst_logrotate.er=
+r 2>&1 || RC=3D$?
+> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 grep "reading config file $LTPTMP/tst_logr=
+otate.conf"
+> \
+> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 $LTPTMP/tst_logrotate.out =
+=A0 >
+> >> $LTPTMP/tst_logrotate.err 2>&1 || RC=3D$?
+> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =
 
-> 
-> Signed-off-by Mohamed Naufal Basheer <naufal11@gmail.com>
+> The problem statement isn't clearly worded, thus I'm confused whether
+> or not the patch is fixing a symptom or the root cause itself.
 
-Acked-By: Rishikesh K Rajak<risrajak@linux.vnet.ibm.com>
+Hi,
 
-Thanks
-Rishi
-> 
-> <patch>
-> diff -Naru ltpv/testcases/commands/ade/ar/ar01
-> ltpvt/testcases/commands/ade/ar/ar01
-> --- ltpv/testcases/commands/ade/ar/ar01	2010-02-20 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/commands/ade/ar/ar01	2010-02-27 19:17:30.726549095 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/commands/ade/ld/ld01
-> ltpvt/testcases/commands/ade/ld/ld01
-> --- ltpv/testcases/commands/ade/ld/ld01	2010-02-20 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/commands/ade/ld/ld01	2010-02-27 19:15:04.685550993 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/commands/ade/ldd/ldd01
-> ltpvt/testcases/commands/ade/ldd/ldd01
-> --- ltpv/testcases/commands/ade/ldd/ldd01	2010-02-20 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/commands/ade/ldd/ldd01	2010-02-27 19:18:09.603300770 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/commands/ade/nm/nm01
-> ltpvt/testcases/commands/ade/nm/nm01
-> --- ltpv/testcases/commands/ade/nm/nm01	2010-02-20 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/commands/ade/nm/nm01	2010-02-27 19:15:25.172215055 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/commands/ade/objdump/objdump01
-> ltpvt/testcases/commands/ade/objdump/objdump01
-> --- ltpv/testcases/commands/ade/objdump/objdump01	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/commands/ade/objdump/objdump01	2010-02-27
-> 19:15:48.850550888 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/commands/ade/size/size01
-> ltpvt/testcases/commands/ade/size/size01
-> --- ltpv/testcases/commands/ade/size/size01	2010-02-20 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/commands/ade/size/size01	2010-02-27 19:17:47.420300769 +0530
-> @@ -14,7 +14,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/commands/at/at_allow01
-> ltpvt/testcases/commands/at/at_allow01
-> --- ltpv/testcases/commands/at/at_allow01	2010-02-20 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/commands/at/at_allow01	2010-02-27 19:18:55.520300443 +0530
-> @@ -14,7 +14,7 @@
->  #   General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram; if not, write to the Free Software
-> +#   along with this program; if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
->  #   USA
->  #
-> diff -Naru ltpv/testcases/commands/at/at_deny01
-> ltpvt/testcases/commands/at/at_deny01
-> --- ltpv/testcases/commands/at/at_deny01	2010-02-20 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/commands/at/at_deny01	2010-02-27 19:18:35.193175781 +0530
-> @@ -14,7 +14,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram; if not, write to the Free Software
-> +#   along with this program; if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
->  #   USA
->  #
-> diff -Naru ltpv/testcases/commands/cron/cron02
-> ltpvt/testcases/commands/cron/cron02
-> --- ltpv/testcases/commands/cron/cron02	2010-02-20 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/commands/cron/cron02	2010-02-27 19:13:22.834299823 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #  FILE   : cron02
-> diff -Naru ltpv/testcases/commands/cron/cron03
-> ltpvt/testcases/commands/cron/cron03
-> --- ltpv/testcases/commands/cron/cron03	2010-02-20 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/commands/cron/cron03	2010-02-27 19:14:06.712175698 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #  FILE   : cron
-> diff -Naru ltpv/testcases/commands/cron/cron_allow01
-> ltpvt/testcases/commands/cron/cron_allow01
-> --- ltpv/testcases/commands/cron/cron_allow01	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/commands/cron/cron_allow01	2010-02-27
-> 19:14:27.000175168 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  # 	FILE: /var/spool/cron/allow
-> diff -Naru ltpv/testcases/commands/cron/cron_deny01
-> ltpvt/testcases/commands/cron/cron_deny01
-> --- ltpv/testcases/commands/cron/cron_deny01	2010-02-20 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/commands/cron/cron_deny01	2010-02-27
-> 19:13:58.001175855 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  # 	FILE: /var/spool/cron/allow
-> diff -Naru ltpv/testcases/commands/cron/cron_dirs_checks01
-> ltpvt/testcases/commands/cron/cron_dirs_checks01
-> --- ltpv/testcases/commands/cron/cron_dirs_checks01	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/commands/cron/cron_dirs_checks01	2010-02-27
-> 19:13:38.385175164 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #  FILE   : cron
-> diff -Naru ltpv/testcases/commands/su/su01 ltpvt/testcases/commands/su/su01
-> --- ltpv/testcases/commands/su/su01	2010-02-20 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/commands/su/su01	2010-02-27 19:12:42.357300409 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #  FILE   : su
-> diff -Naru ltpv/testcases/commands/su/su01_s1
-> ltpvt/testcases/commands/su/su01_s1
-> --- ltpv/testcases/commands/su/su01_s1	2010-02-20 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/commands/su/su01_s1	2010-02-27 19:13:02.748175821 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #  FILE   : su
-> diff -Naru ltpv/testcases/kernel/fs/acls/acl_test01
-> ltpvt/testcases/kernel/fs/acls/acl_test01
-> --- ltpv/testcases/kernel/fs/acls/acl_test01	2010-02-20 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/kernel/fs/acls/acl_test01	2010-02-27
-> 18:55:38.749300804 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/kernel/io/direct_io/README
-> ltpvt/testcases/kernel/io/direct_io/README
-> --- ltpv/testcases/kernel/io/direct_io/README	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/kernel/io/direct_io/README	2010-02-27
-> 18:57:04.996612931 +0530
-> @@ -11,7 +11,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
-> 
-> diff -Naru ltpv/testcases/kernel/io/stress_floppy/stress_floppy
-> ltpvt/testcases/kernel/io/stress_floppy/stress_floppy
-> --- ltpv/testcases/kernel/io/stress_floppy/stress_floppy	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/kernel/io/stress_floppy/stress_floppy	2010-02-27
-> 18:56:36.393298895 +0530
-> @@ -14,7 +14,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/kernel/sched/sched_stress/sched_stress.sh
-> ltpvt/testcases/kernel/sched/sched_stress/sched_stress.sh
-> --- ltpv/testcases/kernel/sched/sched_stress/sched_stress.sh	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/kernel/sched/sched_stress/sched_stress.sh	2010-02-27
-> 18:56:10.427176059 +0530
-> @@ -14,7 +14,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/generate.sh
-> ltpvt/testcases/network/generate.sh
-> --- ltpv/testcases/network/generate.sh	2010-02-20 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/generate.sh	2010-02-27 19:11:34.097300637 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/multicast/mc_opts/mc_opts
-> ltpvt/testcases/network/multicast/mc_opts/mc_opts
-> --- ltpv/testcases/network/multicast/mc_opts/mc_opts	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/multicast/mc_opts/mc_opts	2010-02-27
-> 19:12:18.206300409 +0530
-> @@ -15,7 +15,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/tcp_cmds/arp/arp01
-> ltpvt/testcases/network/tcp_cmds/arp/arp01
-> --- ltpv/testcases/network/tcp_cmds/arp/arp01	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/arp/arp01	2010-02-27
-> 19:03:33.474299412 +0530
-> @@ -14,7 +14,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/tcp_cmds/echo/echo01
-> ltpvt/testcases/network/tcp_cmds/echo/echo01
-> --- ltpv/testcases/network/tcp_cmds/echo/echo01	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/echo/echo01	2010-02-27
-> 19:01:03.643550739 +0530
-> @@ -14,7 +14,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/tcp_cmds/finger/finger01
-> ltpvt/testcases/network/tcp_cmds/finger/finger01
-> --- ltpv/testcases/network/tcp_cmds/finger/finger01	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/finger/finger01	2010-02-27
-> 19:04:36.012301522 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/tcp_cmds/ftp/ftp01
-> ltpvt/testcases/network/tcp_cmds/ftp/ftp01
-> --- ltpv/testcases/network/tcp_cmds/ftp/ftp01	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/ftp/ftp01	2010-02-27
-> 18:57:44.182550643 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/tcp_cmds/ftp/ftp02
-> ltpvt/testcases/network/tcp_cmds/ftp/ftp02
-> --- ltpv/testcases/network/tcp_cmds/ftp/ftp02	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/ftp/ftp02	2010-02-27
-> 18:58:22.141301651 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/tcp_cmds/ftp/ftp02_s1
-> ltpvt/testcases/network/tcp_cmds/ftp/ftp02_s1
-> --- ltpv/testcases/network/tcp_cmds/ftp/ftp02_s1	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/ftp/ftp02_s1	2010-02-27
-> 18:58:30.995426399 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/tcp_cmds/ftp/ftp03
-> ltpvt/testcases/network/tcp_cmds/ftp/ftp03
-> --- ltpv/testcases/network/tcp_cmds/ftp/ftp03	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/ftp/ftp03	2010-02-27
-> 18:58:05.189608876 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/tcp_cmds/ftp/ftp04
-> ltpvt/testcases/network/tcp_cmds/ftp/ftp04
-> --- ltpv/testcases/network/tcp_cmds/ftp/ftp04	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/ftp/ftp04	2010-02-27
-> 18:59:12.417175948 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/tcp_cmds/ftp/ftp05
-> ltpvt/testcases/network/tcp_cmds/ftp/ftp05
-> --- ltpv/testcases/network/tcp_cmds/ftp/ftp05	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/ftp/ftp05	2010-02-27
-> 18:59:01.002377426 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/tcp_cmds/host/host01
-> ltpvt/testcases/network/tcp_cmds/host/host01
-> --- ltpv/testcases/network/tcp_cmds/host/host01	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/host/host01	2010-02-27
-> 19:04:02.810301818 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/tcp_cmds/netstat/netstat01
-> ltpvt/testcases/network/tcp_cmds/netstat/netstat01
-> --- ltpv/testcases/network/tcp_cmds/netstat/netstat01	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/netstat/netstat01	2010-02-27
-> 19:00:03.959175588 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/tcp_cmds/perf_lan/perf_lan
-> ltpvt/testcases/network/tcp_cmds/perf_lan/perf_lan
-> --- ltpv/testcases/network/tcp_cmds/perf_lan/perf_lan	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/perf_lan/perf_lan	2010-02-27
-> 19:01:55.401300695 +0530
-> @@ -14,7 +14,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/tcp_cmds/ping/ping01
-> ltpvt/testcases/network/tcp_cmds/ping/ping01
-> --- ltpv/testcases/network/tcp_cmds/ping/ping01	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/ping/ping01	2010-02-27
-> 19:02:51.181424784 +0530
-> @@ -14,7 +14,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/tcp_cmds/rcp/rcp01
-> ltpvt/testcases/network/tcp_cmds/rcp/rcp01
-> --- ltpv/testcases/network/tcp_cmds/rcp/rcp01	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/rcp/rcp01	2010-02-27
-> 19:05:25.461175926 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/tcp_cmds/rdist/rdist01
-> ltpvt/testcases/network/tcp_cmds/rdist/rdist01
-> --- ltpv/testcases/network/tcp_cmds/rdist/rdist01	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/rdist/rdist01	2010-02-27
-> 19:04:57.543301095 +0530
-> @@ -14,7 +14,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/tcp_cmds/rlogin/rlogin01
-> ltpvt/testcases/network/tcp_cmds/rlogin/rlogin01
-> --- ltpv/testcases/network/tcp_cmds/rlogin/rlogin01	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/rlogin/rlogin01	2010-02-27
-> 19:01:28.114300559 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/tcp_cmds/rsh/rsh01
-> ltpvt/testcases/network/tcp_cmds/rsh/rsh01
-> --- ltpv/testcases/network/tcp_cmds/rsh/rsh01	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/rsh/rsh01	2010-02-27
-> 19:03:20.525300877 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/tcp_cmds/rwho/rwho01
-> ltpvt/testcases/network/tcp_cmds/rwho/rwho01
-> --- ltpv/testcases/network/tcp_cmds/rwho/rwho01	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/rwho/rwho01	2010-02-27
-> 19:02:38.166299639 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/tcp_cmds/sendfile/sendfile01
-> ltpvt/testcases/network/tcp_cmds/sendfile/sendfile01
-> --- ltpv/testcases/network/tcp_cmds/sendfile/sendfile01	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/sendfile/sendfile01	2010-02-27
-> 18:59:46.136251716 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/tcp_cmds/ssh/ssh01
-> ltpvt/testcases/network/tcp_cmds/ssh/ssh01
-> --- ltpv/testcases/network/tcp_cmds/ssh/ssh01	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/ssh/ssh01	2010-02-27
-> 19:08:02.036301243 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #  FILE   : ssh
-> diff -Naru ltpv/testcases/network/tcp_cmds/ssh/ssh01_s1
-> ltpvt/testcases/network/tcp_cmds/ssh/ssh01_s1
-> --- ltpv/testcases/network/tcp_cmds/ssh/ssh01_s1	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/ssh/ssh01_s1	2010-02-27
-> 19:07:39.765425628 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #  FILE   : ssh
-> diff -Naru ltpv/testcases/network/tcp_cmds/ssh/ssh02
-> ltpvt/testcases/network/tcp_cmds/ssh/ssh02
-> --- ltpv/testcases/network/tcp_cmds/ssh/ssh02	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/ssh/ssh02	2010-02-27
-> 19:06:42.010300454 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #  FILE   : ssh
-> diff -Naru ltpv/testcases/network/tcp_cmds/ssh/ssh02_s1
-> ltpvt/testcases/network/tcp_cmds/ssh/ssh02_s1
-> --- ltpv/testcases/network/tcp_cmds/ssh/ssh02_s1	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/ssh/ssh02_s1	2010-02-27
-> 19:07:26.550300364 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #  FILE   : ssh
-> diff -Naru ltpv/testcases/network/tcp_cmds/ssh/ssh03
-> ltpvt/testcases/network/tcp_cmds/ssh/ssh03
-> --- ltpv/testcases/network/tcp_cmds/ssh/ssh03	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/ssh/ssh03	2010-02-27
-> 19:08:11.108296671 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #  FILE   : ssh
-> diff -Naru ltpv/testcases/network/tcp_cmds/ssh/ssh03_s1
-> ltpvt/testcases/network/tcp_cmds/ssh/ssh03_s1
-> --- ltpv/testcases/network/tcp_cmds/ssh/ssh03_s1	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/ssh/ssh03_s1	2010-02-27
-> 19:07:52.284300192 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #  FILE   : ssh
-> diff -Naru ltpv/testcases/network/tcp_cmds/tcpdump/tcpdump01
-> ltpvt/testcases/network/tcp_cmds/tcpdump/tcpdump01
-> --- ltpv/testcases/network/tcp_cmds/tcpdump/tcpdump01	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/tcpdump/tcpdump01	2010-02-27
-> 19:04:18.018247144 +0530
-> @@ -14,7 +14,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/testcases/network/tcp_cmds/telnet/telnet01
-> ltpvt/testcases/network/tcp_cmds/telnet/telnet01
-> --- ltpv/testcases/network/tcp_cmds/telnet/telnet01	2010-02-20
-> 15:42:13.000000000 +0530
-> +++ ltpvt/testcases/network/tcp_cmds/telnet/telnet01	2010-02-27
-> 19:00:42.408065623 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> diff -Naru ltpv/tools/make-file.sh ltpvt/tools/make-file.sh
-> --- ltpv/tools/make-file.sh	2010-02-20 15:42:13.000000000 +0530
-> +++ ltpvt/tools/make-file.sh	2010-02-27 18:54:46.472367453 +0530
-> @@ -13,7 +13,7 @@
->  #   the GNU General Public License for more details.
->  #
->  #   You should have received a copy of the GNU General Public License
-> -#   along with this pronram;  if not, write to the Free Software
-> +#   along with this program;  if not, write to the Free Software
->  #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
->  #
->  #
-> </patch>
-> 
-> Naufal
-> 
-> ------------------------------------------------------------------------------
-> Download Intel&#174; Parallel Studio Eval
-> Try the new software tools for yourself. Speed compiling, find bugs
-> proactively, and fine-tune applications for parallel performance.
-> See why Intel Parallel Studio got high marks during beta.
-> http://p.sf.net/sfu/intel-sw-dev
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+I want to explain about the problem and patch.
 
--- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
+<About Problem>
+After "logrotate01" test, log files (such as "/var/log/messages*")
+--which are important to system administration-- are disappeared.
 
-------------------------------------------------------------------------------
+*** In the following explanation, I will call these important files =
+
+    "System-Logs" for convenience.
+
+The following explain about the problem.
+1. "logrotate01" tests the forced rotation "logrotate -f <config_file>".
+   This rotation deletes the past log files which stored until now, =
+
+   and creates the new log file.
+   The target of this forced rotation is /var/log/tst_logfile which =
+
+   created for this test.
+
+2. $LTPTMP/tst_logrotate.conf is created as logrotate configuration =
+
+   file for this test.
+   This config-file includes /etc/logrotate.d, and all files under =
+
+   /etc/logrotate.d are loaded.
+
+3. In the files under the /etc/logrotate.d, the rotation of =
+
+   "System-Logs" are set.
+
+4. Because, "System-Logs" also became a target for forced rotation.
+   Therefore, after this test, all past "System-Logs" are disappeared.
+
+Only /var/log/tst_logfile should be the target of this test, I think.
+What is the reason why actual "System-Logs" becomes the target?
+In a system for exclusive use of the LTP test, this may not be problem.
+But, it will be troubled that important logs disappeared when general
+users execute runltp in the system which is operating.
+
+<About Patch>
+The contributed patch doesn't load the file under the /etc/logrotate.d
+by commenting-out "include /etc/logrotate.d" in $LTPTMP/tst_logrotate.conf.
+And it can let only /var/log/tst_logfile be the target of the forced =
+
+rotation.
+
+
+Thank you,
+-Yuki Yao
+
+> Thanks,
+> -Garrett
+
+
+
+---------------------------------------------------------------------------=
+---
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
