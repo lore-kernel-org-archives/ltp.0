@@ -1,31 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <y_yao@ryobi.co.jp>) id 1NePP7-0006vk-MK
-	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 08:55:37 +0000
-Received: from out07.sjc.mx.trendmicro.com ([216.99.131.23])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NePP5-0005gp-8D
-	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 08:55:37 +0000
-Received: from relay02.sjc.mx.trendmicro.com (unknown [10.30.239.5])
-	by out07.sjc.mx.trendmicro.com (Postfix) with ESMTP id C27EFB7A432
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  8 Feb 2010 08:55:21 +0000 (UTC)
-Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay02.sjc.mx.trendmicro.com (Postfix) with ESMTP id 253A395835
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  8 Feb 2010 08:55:21 +0000 (UTC)
-Received: from 5108637 ([10.113.10.201]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Mon, 8 Feb 2010 17:55:19 +0900
-From: "Yuki Yao" <y_yao@ryobi.co.jp>
-Date: Mon, 8 Feb 2010 17:55:18 +0900
-Message-ID: <003e01caa89c$70944450$51bcccf0$@co.jp>
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NjbTm-0006w5-AS
+	for ltp-list@lists.sourceforge.net; Mon, 22 Feb 2010 16:49:54 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NjbTi-00021b-HS
+	for ltp-list@lists.sourceforge.net; Mon, 22 Feb 2010 16:49:53 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1MGmDOW032653
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Feb 2010 09:48:13 -0700
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o1MGnSvM046976
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Feb 2010 09:49:28 -0700
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o1MGnRnO031402
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Feb 2010 09:49:27 -0700
+Date: Mon, 22 Feb 2010 22:19:21 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100222164921.GC2992@linux.vnet.ibm.com>
+References: <4B823681.7010300@linux.vnet.ibm.com>
+	<OF7B2672AC.4ABA3E07-ON652576D2.005673AB-652576D2.005717E8@in.ibm.com>
 MIME-Version: 1.0
-Content-Language: ja
-Subject: Re: [LTP] [PATCH]logrotate: /var/log/messages* disappeared
+Content-Disposition: inline
+In-Reply-To: <OF7B2672AC.4ABA3E07-ON652576D2.005673AB-652576D2.005717E8@in.ibm.com>
+Subject: Re: [LTP] [ANNOUNCEMENT]: Intermediate release for FEB'10
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,130 +41,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Iranna D Ankad <iranna.ankad@in.ibm.com>
+Cc: Rishikesh K Rajak <risrajak@in.ibm.com>, LTP <ltp-list@lists.sourceforge.net>, Vishukumar S Shetty <svishuku@in.ibm.com>
 
-Rishikesh,
-
-Unintentionally,
-http://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg09451.html 
-was sent again.  Please ignore it.
-
-And I reflected the point, resend.
-
-Thank you,
-  --Yuki Yao
-----------------------------------------------------
-Hi,
-
-I found a problem on LTP when I execute ./runltp.
-After execute ./runltp, all log files such as /var/log/messages*
-disappeared, 
-and there is only new log files that were created after the test...
-
-This seems a problem that occurs after the "logrotate01" test. 
-I found that the past log files disappeared by forcing a rotate (logrotate
--fv $LTPTMP/tst_logrotate.conf).
-
-Besides, "logrotate"'s shell script
-./testcases/commands/logrotate/logrotate_tests.sh creats 
-logrotate configuration file ($LTPTMP/tst_logrotate.conf) for the test, and
-this config file includes 
-/etc/logrotate.d as follows:
-[ ./testcases/commands/logrotate/logrotate_tests.sh line:156~ ]
-----------
-# create config file.
-        cat >$LTPTMP/tst_logrotate.conf <<-EOF
-        #****** Begin Config file *******
-        # create new (empty) log files after rotating old ones
-        create
-
-        # compress the log files
-        compress
-
-        # RPM packages drop log rotation information into this directory
-        include /etc/logrotate.d
-
-        /var/log/tst_logfile {
-                rotate 5
-                weekly
-        }
-        #****** End Config file *******
-        EOF
-----------
-
-By this, not only a log file for the test (/var/log/tst_logfile), but also
-30 fies in my system 
-such as /var/log/messages* become "logrotate" command target.
-Therefore, only a log file for this test must be made a target of the forced
-execution of "logrotate".
-
-To resolve this problem, we have to change this not to include
-/etc/logrotate.d, I think.
-
-Signed-off-by: Yuki Yao<y_yao@ryobi.co.jp>
-
-Index:
-/home/LTP/ltp-2010-02-02/testcases/commands/logrotate/logrotate_tests.sh
-==============================
---- /home/LTP/ltp-2010-02-02/testcases/commands/logrotate/logrotate_tests.sh
-2008-10-21 15:54:15.000000000 +0900
-+++
-/home/LTP/ltp-2010-02-02/testcases/commands/logrotate/logrotate_tests.sh.new
-2010-02-05 18:56:14.000000000 +0900
-@@ -163,7 +163,7 @@
-        compress
-
-        # RPM packages drop log rotation information into this directory
--       include /etc/logrotate.d
-+       # include /etc/logrotate.d
-
-        /var/log/tst_logfile {
-                rotate 5
-@@ -200,7 +200,7 @@
-                # check if  /etc/logrotate.d is included/
-                # check if 5 rotations are forced.
-         # check if compression is done.
--               grep "including /etc/logrotate.d" $LTPTMP/tst_logrotate.out
-\
-+               # grep "including /etc/logrotate.d"
-$LTPTMP/tst_logrotate.out \
-                        > $LTPTMP/tst_logrotate.err 2>&1 || RC=$?
-                grep "reading config file $LTPTMP/tst_logrotate.conf" \
-                        $LTPTMP/tst_logrotate.out   >
-$LTPTMP/tst_logrotate.err 2>&1 || RC=$?
+Hi Iranna,
 
 
-> -----Original Message-----
-> From: Rishikesh [mailto:risrajak@linux.vnet.ibm.com]
-> Sent: Monday, February 08, 2010 3:04 PM
-> To: Yuki Yao
-> Cc: ltp-list@lists.sourceforge.net
-> Subject: Re: [LTP] [PATCH]logrotate: /var/log/messages* disappeared
-> 
-> On 02/08/2010 08:32 AM, Yuki Yao wrote:
-> > Sorry, line breaks is mistake; resend.
-> >
-> Hi Yuki Yao,
-> 
-> Few nits:
-> 
-> I would appreciate if you append your Signed-off and resend once again.
-> 
-> Then i will provide my review comment. And in future please create your
-> patch against LTPROOT/ dir.
-> 
-> Thanks
-> Rishi
+Thanks for reporting this build failure and helping, as it will
+really help to make ltp more stable.
 
+Here is the quick patch i am attaching which solves the problem.
 
+Signed-off By: Rishikesh K Rajak<risrajak@linux.vnet.ibm.com>
+Tested By: Rishikesh K Rajak<risrajak@linux.vnet.ibm.com>
+---
+diff --git a/testcases/kernel/syscalls/mbind/mbind01.c
+b/testcases/kernel/syscalls/mbind/mbind01.c
+index 5d7eb69..847186a 100644
+--- a/testcases/kernel/syscalls/mbind/mbind01.c
++++ b/testcases/kernel/syscalls/mbind/mbind01.c
+@@ -74,6 +74,7 @@ int  TST_TOTAL = 2;           /* total number of tests
+in this file.   */
+ #include <unistd.h>
+ #include "include_j_h.h"
+ #include "numa_helpers.h"
++#include <linux/mempolicy.h>
+ 
+ #if ! defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
+ 
 
+-- 
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
-The Planet: dedicated and managed hosting, cloud storage, colocation
-Stay online with enterprise data centers and the best network in the business
-Choose flexible plans and management services without long-term contracts
-Personal 24x7 support from experience hosting pros just a phone call away.
-http://p.sf.net/sfu/theplanet-com
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
