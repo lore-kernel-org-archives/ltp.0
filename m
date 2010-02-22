@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <chrubis@suse.de>) id 1NdRum-0005OD-Cn
-	for ltp-list@lists.sourceforge.net; Fri, 05 Feb 2010 17:24:20 +0000
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx1.suse.de (Postfix) with ESMTP id 88F3C74609
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NjcfG-0007GP-CE
+	for ltp-list@lists.sourceforge.net; Mon, 22 Feb 2010 18:05:50 +0000
+Received: from mail-pw0-f47.google.com ([209.85.160.47])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NjcfE-0000C7-Uf
+	for ltp-list@lists.sourceforge.net; Mon, 22 Feb 2010 18:05:50 +0000
+Received: by pwi5 with SMTP id 5so2494727pwi.34
 	for <ltp-list@lists.sourceforge.net>;
-	Fri,  5 Feb 2010 18:24:11 +0100 (CET)
-Date: Fri, 5 Feb 2010 18:24:38 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20100205172438.GA2333@saboteur.suse.cz>
+	Mon, 22 Feb 2010 10:05:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="17pEHd4RhPHOinZp"
-Content-Disposition: inline
-Subject: [LTP] [PATCH] fix buffer overflow in sem_getvalue tests
+In-Reply-To: <4B8249A7.3040401@cn.fujitsu.com>
+References: <4B82143D.5050006@cn.fujitsu.com>
+	<364299f41002212356g2a4ceb09o3d271e31b388fe51@mail.gmail.com>
+	<4B8249A7.3040401@cn.fujitsu.com>
+Date: Mon, 22 Feb 2010 10:05:37 -0800
+Message-ID: <364299f41002221005l7df3ceafhaeb6a49b17ee0fed@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [PATCH] syscalls: fix some failure on arch X86_64
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,395 +29,534 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: liubo <liubo2009@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
+On Mon, Feb 22, 2010 at 1:08 AM, liubo <liubo2009@cn.fujitsu.com> wrote:
+> On 02/22/2010 03:56 PM, Garrett Cooper wrote:
+>
+> By and large this diff looks really good. My comments...
+>
+> On Sun, Feb 21, 2010 at 9:21 PM, liubo <liubo2009@cn.fujitsu.com> wrote:
+>
+>
+> - rt_sigaction01
+> On arch x86_64, if we directly get to call syscall
+> rt_sigaction, there will be "segment fault".
+> 1) One reason is that we must supply the flag of
+> "SA_RESTORER" and the correct pointer to the fuction
+> "restorer", according to the kernel code.
+> 2) The other reason is that default syscall rt_sigaction
+> use kernel "sigaction" structure, which is different
+> with normal "sigaction" structure.
+>
+> So,
+> 1) We manage to find the address of the function
+> "restorer" by using glibc function "sigaction",
+> which might be something tricky. Then we add these
+> arguments to make test run correctly.
+> 2) We also use kernel "sigaction" structure to fit
+> realtime syscall __NR_rt_sigaction.
+>
+> - rt_sigprocmask01
+> First, there exsits the same problem as rt_sigaction01.
+> Second, this testcase uses a unchanged signal number 33,
+> which may diff among different archs and lead to error
+> "unknown signal".
+>
+> So, we use a macro TEST_SIG which refers to SIGRTMIN
+> to replace 33.
+>
+>
+> The problem is that SIGRTMIN is actually signal 32, not signal 33, and
+> here's a problematic comment to ponder over (from bits/signum.h):
+>
+> /* These are the hard limits of the kernel.  These values should not be
+>    used directly at user level.  */
+> #define __SIGRTMIN      32
+> #define __SIGRTMAX      (_NSIG - 1)
+>
+> I think the proper resolution would be to make the value SIGRTMIN+1.
+>
+>
+>
+> Hi, Garrett,
+>
+> In fact, I'm confused about whether #33 signal is particularly needed her=
+e,
+> in some of my boxes, SIGRTMIN actually refers #34 signal, that is,
+> #33 is unreachable.
+>
+> IMO, any realtime reachable signal can be used to pass the case here, and
+> I pick SIGRTMIN by define a macro: #define TEST_SIG SIGRTMIN.
+>
+> Of course, the value "SIGRTMIN+1" also pass the case, so I'll pick your
+> value.
+>
+> If you are free, looking forward to your explaination ...
 
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Several signals between the non-RT and non-reserved RT signals are
+used by [the now defunct] linuxthreads and nptl. See the following
+page which refers to a very old school copy of LTP :]...:
 
-Hi!
-Attached patch fixes possible buffer oveflow in sem_getvalue tests (the buffer
-overflow happens when getpid() returns number that couldn't fit into buffer)
-and also cleans coding style.
+http://www.redhat.com/archives/phil-list/2003-April/msg00049.html
 
-Signed-off-by: Cyril Hrubis chrubis@suse.cz
+> - rt_sigsuspend01
+> There exists the same problem as rt_sigaction01.
+>
+> This patch fixed these failure.
+>
+> Signed-off-by: Liu Bo <liubo2009@cn.fujitsu.com>
+>
+> ---
+> =A0include/rt_signal.h =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0| =A0 60
+> ++++++++++++++++++
+> =A0.../kernel/syscalls/rt_sigaction/rt_sigaction01.c =A0| =A0 64
+> +++++++++++--------
+> =A0.../syscalls/rt_sigprocmask/rt_sigprocmask01.c =A0 =A0 | =A0 32 ++++++=
++---
+> =A0.../syscalls/rt_sigsuspend/rt_sigsuspend01.c =A0 =A0 =A0 | =A0 13 ++++-
+> =A04 files changed, 132 insertions(+), 37 deletions(-)
+> =A0create mode 100644 include/rt_signal.h
+>
+> diff --git a/include/rt_signal.h b/include/rt_signal.h
+> new file mode 100644
+> index 0000000..ea1e7e3
+> --- /dev/null
+> +++ b/include/rt_signal.h
+> @@ -0,0 +1,60 @@
+> +/***********************************************************************=
+*******/
+> +/*
+> =A0 =A0*/
+> +/* Copyright (c) 2009 FUJITSU LIMITED
+> =A0 */
+> +/*
+> =A0 =A0*/
+> +/* This program is free software; =A0you can redistribute it and/or modi=
+fy
+> =A0 =A0*/
+> +/* it under the terms of the GNU General Public License as published by
+> =A0 */
+> +/* the Free Software Foundation; either version 2 of the License, or
+> =A0 =A0*/
+> +/* (at your option) any later version.
+> =A0 =A0*/
+> +/*
+> =A0 =A0*/
+> +/* This program is distributed in the hope that it will be useful,
+> =A0 =A0*/
+> +/* but WITHOUT ANY WARRANTY; =A0without even the implied warranty of
+> =A0 =A0*/
+> +/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. =A0See
+> =A0 =A0*/
+> +/* the GNU General Public License for more details.
+> =A0 */
+> +/*
+> =A0 =A0*/
+> +/* You should have received a copy of the GNU General Public License
+> =A0 =A0*/
+> +/* along with this program; =A0if not, write to the Free Software
+> =A0 */
+> +/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 U=
+SA
+> =A0 =A0*/
+> +/*
+> =A0 =A0*/
+> +/* Author: Liu Bo <liubo2009@cn.fujitsu.com>
+> =A0 =A0*/
+> +/*
+> =A0 =A0*/
+> +/***********************************************************************=
+*******/
+> +
+> +#ifndef __LTP_SIGNAL_H
+> +#define __LTP_SIGNAL_H
+> +
+> +/* We do not globally define the SA_RESTORER flag so do it here. =A0*/
+> +#define HAVE_SA_RESTORER
+> +#define SA_RESTORER 0x04000000
+> +
+> +struct kernel_sigaction {
+> + =A0 =A0 =A0 __sighandler_t k_sa_handler;
+> + =A0 =A0 =A0 unsigned long sa_flags;
+> + =A0 =A0 =A0 void (*sa_restorer) (void);
+> + =A0 =A0 =A0 sigset_t sa_mask;
+> +};
+> +
+> +void (*restore_rt) (void);
+> +
+> +void
+> +handler_h(void)
+> +{
+> + =A0 =A0 =A0 return;
+> +}
+> +
+> +/* initial restore_rt for x86_64 */
+> +void
+> +sig_initial(int sig)
+> +{
+> + =A0 =A0 =A0 struct sigaction act, oact;
+> +
+> + =A0 =A0 =A0 act.sa_handler =3D (void *)handler_h;
+> + =A0 =A0 =A0 sigemptyset(&act.sa_mask);
+> + =A0 =A0 =A0 sigaddset(&act.sa_mask, sig);
+> + =A0 =A0 =A0 /* copy act.sa_restorer to kernel */
+> + =A0 =A0 =A0 sigaction(sig, &act, &oact);
+> + =A0 =A0 =A0 /* copy oact.sa_restorer from kernel */
+> + =A0 =A0 =A0 sigaction(sig, &act, &oact);
+> + =A0 =A0 =A0 restore_rt =3D oact.sa_restorer;
+> +}
+> +#endif
+> diff --git a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
+> b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
+> index ffc5fa2..d30f204 100644
+> --- a/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
+> +++ b/testcases/kernel/syscalls/rt_sigaction/rt_sigaction01.c
+> @@ -55,6 +55,10 @@
+> =A0#include "usctest.h"
+> =A0#include "linux_syscall_numbers.h"
+>
+> +#ifdef __x86_64__
+> +#include "rt_signal.h"
+> +#endif
+> +
+> =A0/*
+> =A0* For all but __mips__:
+> =A0*
+> @@ -101,13 +105,14 @@ int =A0TST_TOTAL =3D 1; =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0 /* total number
+> of tests in this file. =A0 *
+> =A0/* =A0 =A0 =A0 =A0 =A0 =A0 =A0On success - Exits calling tst_exit(). W=
+ith '0' return
+> code. =A0*/
+> =A0/*
+> =A0 =A0*/
+> =A0/*********************************************************************=
+*********/
+> -extern void cleanup() {
+> - =A0 =A0 =A0 =A0/* Remove tmp dir and all files in it */
+> - =A0 =A0 =A0 =A0TEST_CLEANUP;
+> - =A0 =A0 =A0 =A0tst_rmdir();
+> +extern void cleanup()
+> +{
+> + =A0 =A0 =A0 /* Remove tmp dir and all files in it */
+> + =A0 =A0 =A0 TEST_CLEANUP;
+> + =A0 =A0 =A0 tst_rmdir();
+>
+> - =A0 =A0 =A0 =A0/* Exit with appropriate return code. */
+> - =A0 =A0 =A0 =A0tst_exit();
+> + =A0 =A0 =A0 /* Exit with appropriate return code. */
+> + =A0 =A0 =A0 tst_exit();
+> =A0}
+>
+> =A0/* Local =A0Functions */
+> @@ -128,11 +133,12 @@ extern void cleanup() {
+> =A0/* =A0 =A0 =A0 =A0 =A0 =A0 =A0On success - returns 0.
+> =A0 */
+> =A0/*
+> =A0 =A0*/
+> =A0/*********************************************************************=
+*********/
+> -void setup() {
+> - =A0 =A0 =A0 =A0/* Capture signals if any */
+> - =A0 =A0 =A0 =A0/* Create temporary directories */
+> - =A0 =A0 =A0 =A0TEST_PAUSE;
+> - =A0 =A0 =A0 =A0tst_tmpdir();
+> +void setup()
+> +{
+> + =A0 =A0 =A0 /* Capture signals if any */
+> + =A0 =A0 =A0 /* Create temporary directories */
+> + =A0 =A0 =A0 TEST_PAUSE;
+> + =A0 =A0 =A0 tst_tmpdir();
+> =A0}
+>
+> =A0int test_flags[] =3D {SA_RESETHAND|SA_SIGINFO, SA_RESETHAND,
+> SA_RESETHAND|SA_SIGINFO, SA_RESETHAND|SA_SIGINFO, SA_NOMASK};
+> @@ -144,22 +150,23 @@ handler(int sig)
+> =A0 =A0 =A0 =A0 tst_resm(TINFO,"Signal Handler Called with signal number =
+%d\n",sig);
+> =A0 =A0 =A0 =A0 return;
+> =A0}
+> -
+> =A0int
+> -set_handler(int sig, int sig_to_mask, int mask_flags)
+> +set_handler(int sig, int mask_flags)
+> =A0{
+> - =A0 =A0 =A0 =A0struct sigaction sa, oldaction;
+> -
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0sa.sa_sigaction =3D (void *)handler;
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0sa.sa_flags =3D mask_flags;
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0sigemptyset(&sa.sa_mask);
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0sigaddset(&sa.sa_mask, sig_to_mask);
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0TEST(syscall(__NR_rt_sigaction,sig, &sa,
+> &oldaction,SIGSETSIZE));
+> - =A0 =A0 =A0 =A0if (TEST_RETURN =3D=3D 0) {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return 0;
+> - =A0 =A0 =A0 =A0} else {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return TEST_RETURN;
+> - =A0 =A0 =A0 =A0}
+> +#ifdef __x86_64__
+> + =A0 =A0 =A0 struct kernel_sigaction sa, oldaction;
+> + =A0 =A0 =A0 mask_flags |=3D SA_RESTORER;
+> + =A0 =A0 =A0 sa.sa_restorer =3D restore_rt;
+> + =A0 =A0 =A0 sa.k_sa_handler =3D (void *)handler;
+> +#else
+> + =A0 =A0 =A0 struct sigaction sa, oldaction;
+> + =A0 =A0 =A0 sa.sa_handler =3D (void *)handler;
+> +#endif
+> + =A0 =A0 =A0 sa.sa_flags =3D mask_flags;
+> + =A0 =A0 =A0 sigemptyset(&sa.sa_mask);
+> + =A0 =A0 =A0 sigaddset(&sa.sa_mask, sig);
+> + =A0 =A0 =A0 TEST(syscall(__NR_rt_sigaction,sig, &sa, &oldaction,SIGSETS=
+IZE));
+> + =A0 =A0 =A0 return TEST_RETURN;
+> =A0}
+>
+>
+> @@ -182,8 +189,11 @@ int main(int ac, char **av) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 for (testno =3D 0; testno < TST_TOTAL; ++=
+testno) {
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0for (signal =3D SIGRTMIN; =
+signal <=3D (SIGRTMAX );
+> signal++){//signal for 34 to 65
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 for(flag=3D=
+0; flag<5;flag++) {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0TEST(set_handler(signal, 0,
+> test_flags[flag]));
+> +#ifdef __x86_64__
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sig_initial=
+(signal);
+> +#endif
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 for(flag=3D=
+0; flag<5;flag++) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 =A0TEST(set_handler(signal,
+> test_flags[flag]));
+>
+>
+> I know this isn't your code change, but since you're here.. a better
+> way to do this would be:
+>
+> sizeof (test_flags) / sizeof (test_flags[0])
+>
+> as this is a fixed array buffer.
+>
+>
+> Sure, this can increase codes's portability.
+>
+> I'm generating a new version patch.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+The less we have to modify code in the future, the better... Cheers!
 
---17pEHd4RhPHOinZp
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="sem_getvalue_buffer_overflow.patch"
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0 if (TEST_RETURN =3D=3D 0) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0tst_resm(TINFO,"signal: %d ",
+> signal);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0tst_resm(TPASS, "rt_sigaction
+> call succeeded: result =3D %ld ",TEST_RETURN );
+> diff --git a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
+> b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
+> index 6398a28..8bcdc78 100644
+> --- a/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
+> +++ b/testcases/kernel/syscalls/rt_sigprocmask/rt_sigprocmask01.c
+> @@ -62,6 +62,12 @@
+> =A0#include "usctest.h"
+> =A0#include "linux_syscall_numbers.h"
+>
+> +#ifdef __x86_64__
+> +#include "rt_signal.h"
+> +#endif
+> +
+> +#define TEST_SIG SIGRTMIN
+> +
+> =A0/* Extern Global Variables */
+> =A0extern int Tst_count; =A0 =A0 =A0 =A0 =A0 /* counter for tst_xxx routi=
+nes. =A0 =A0 =A0 =A0 */
+> =A0extern char *TESTDIR; =A0 =A0 =A0 =A0 =A0 /* temporary dir created by =
+tst_tmpdir() */
+> @@ -131,7 +137,16 @@ void sig_handler(int sig)
+> =A0}
+>
+> =A0int main(int ac, char **av) {
+> - =A0 =A0 =A0 struct sigaction act, oact;
+> +#ifdef __x86_64__
+> + =A0 =A0 =A0 struct kernel_sigaction act, oact;
+> + =A0 =A0 =A0 sig_initial(TEST_SIG);
+> + =A0 =A0 =A0 act.sa_flags |=3D SA_RESTORER;
+> + =A0 =A0 =A0 =A0act.sa_restorer =3D restore_rt;
+> + =A0 =A0 =A0 =A0act.k_sa_handler =3D sig_handler;
+> +#else
+> + =A0 =A0 =A0 =A0struct sigaction act, oact;
+> + =A0 =A0 =A0 =A0act.sa_handler =3D sig_handler;
+> +#endif
+> =A0 =A0 =A0 =A0 sigset_t set, oset;
+> =A0 =A0 =A0 =A0 int lc; =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* loop counter */
+> =A0 =A0 =A0 =A0 char *msg; =A0 =A0 =A0 =A0 =A0 =A0 =A0/* message returned=
+ from parse_opts */
+> @@ -154,22 +169,21 @@ int main(int ac, char **av) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0cleanup();
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_exit();
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TEST(sigaddset(&set, 33));
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TEST(sigaddset(&set, TEST_S=
+IG));
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if(TEST_RETURN =3D=3D -1){
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(T=
+FAIL,"Call to sigaddset() Failed,
+> errno=3D%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0cleanup();
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_exit();
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+> -
+> +
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* call rt_sigaction() */
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 act.sa_handler =3D sig_hand=
+ler;
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0TEST(syscall(__NR_rt_sig=
+action, 33, &act, &oact,
+> 8));
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0TEST(syscall(__NR_rt_sig=
+action, TEST_SIG, &act,
+> &oact, 8));
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if(TEST_RETURN !=3D 0){
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(T=
+FAIL,"Call to rt_sigaction()
+> Failed, errno=3D%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0cleanup();
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_exit();
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* call rt_sigprocmask() to=
+ block signal#33 */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* call rt_sigprocmask() to=
+ block signal#SIGRTMIN */
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TEST(syscall(__NR_rt_sigp=
+rocmask, SIG_BLOCK, &set,
+> &oset, 8));
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if(TEST_RETURN =3D=3D -1){
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(T=
+FAIL,"Call to rt_sigprocmask()****
+> Failed, errno=3D%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> @@ -178,7 +192,7 @@ int main(int ac, char **av) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0else {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TEST(kill(g=
+etpid(), 33));
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 TEST(kill(g=
+etpid(), TEST_SIG));
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if(TEST_RE=
+TURN !=3D 0){
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0tst_resm(TFAIL,"Call to kill()
+> Failed, errno=3D%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0cleanup();
+> @@ -198,13 +212,13 @@ int main(int ac, char **av) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0cleanup();
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0tst_exit();
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0}
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 TEST(sigismember(&oset, 33));
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 TEST(sigismember(&oset, TEST_SIG));
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0if(TEST_RETURN =3D=3D 0 ){
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0tst_resm(TFAIL,"call
+> sigismember() Failed, errno=3D%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0cleanup();
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0tst_exit();
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0}
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 /* call rt_sigprocmask() to unblock
+> signal#33 */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 /* call rt_sigprocmask() to unblock
+> signal#SIGRTMIN */
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0TEST(syscall(__NR_rt_sigprocmask,
+> SIG_UNBLOCK, &set, &oset, 8));
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0if(TEST_RETURN =3D=3D -1){
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0tst_resm(TFAIL,"Call to
+> rt_sigprocmask() Failed, errno=3D%d : %s",TEST_ERRNO, strerror(TEST_ERRNO=
+));
+> diff --git a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
+> b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
+> index 416a7c9..84f2967 100644
+> --- a/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
+> +++ b/testcases/kernel/syscalls/rt_sigsuspend/rt_sigsuspend01.c
+> @@ -47,6 +47,10 @@
+> =A0#include "usctest.h"
+> =A0#include "linux_syscall_numbers.h"
+>
+> +#ifdef __x86_64__
+> +#include "rt_signal.h"
+> +#endif
+> +
+> =A0/* Extern Global Variables */
+> =A0extern int Tst_count; =A0 =A0 =A0 =A0 =A0 /* counter for tst_xxx routi=
+nes. =A0 =A0 =A0 =A0 */
+> =A0extern char *TESTDIR; =A0 =A0 =A0 =A0 =A0 /* temporary dir created by =
+tst_tmpdir() */
+> @@ -139,9 +143,16 @@ int main(int ac, char **av) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0cleanup();
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_exit();
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+> +#ifdef __x86_64__
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 struct kernel_sigaction act=
+, oact;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sig_initial(SIGALRM);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 act.sa_flags |=3D SA_RESTOR=
+ER;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 act.sa_restorer =3D restore=
+_rt;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 act.k_sa_handler =3D sig_ha=
+ndler;
+> +#else
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0struct sigaction act, oact;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0act.sa_handler =3D sig_han=
+dler;
+> -
+> +#endif
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0TEST(syscall(__NR_rt_sigac=
+tion, SIGALRM, &act, &oact,
+> 8));
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if(TEST_RETURN =3D=3D -1){
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0tst_resm(T=
+FAIL,"rt_sigaction() Failed,
+> errno=3D%d : %s",TEST_ERRNO, strerror(TEST_ERRNO));
+> --
+> 1.6.2.2
+>
+>
+>
+>
 
-Index: ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/5-1.c
-===================================================================
---- ltp-full-20090930.orig/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/5-1.c
-+++ ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/5-1.c
-@@ -9,8 +9,7 @@
- /*
-  * This test case verifies that calling sem_getvalue doesn't change the 
-  * state of the semaphore.
--*/
--
-+ */
- 
- #include <stdio.h>
- #include <errno.h>
-@@ -24,34 +23,33 @@
- #define FUNCTION "sem_getvalue"
- #define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
- 
--
--int main() {
--
--	char semname[20];
-+int main(void)
-+{
-+	char semname[64];
- 	sem_t *mysemp;
- 	int val;
- 
--	sprintf(semname, "/" FUNCTION "_" TEST "_%d", getpid());
-+	snprintf(semname, 64, "/" FUNCTION "_" TEST "_%d", getpid());
- 
- 	mysemp = sem_open(semname, O_CREAT, 0777, 4);
- 
--	if( mysemp == SEM_FAILED || mysemp == NULL ) {
-+	if (mysemp == SEM_FAILED || mysemp == NULL) {
- 		perror(ERROR_PREFIX "sem_open");
- 		return PTS_UNRESOLVED;
- 	}
- 
- 
--	if( sem_getvalue(mysemp, &val) == -1 ) {
-+	if (sem_getvalue(mysemp, &val) == -1) {
- 		perror(ERROR_PREFIX "sem_getvalue");
- 		return PTS_UNRESOLVED; 
- 	}
- 
--	if ( sem_trywait(mysemp) == -1 ) {
-+	if (sem_trywait(mysemp) == -1) {
- 		perror(ERROR_PREFIX "sem_trywait");
- 		return PTS_UNRESOLVED;
- 	}
- 
--	if( sem_getvalue(mysemp, &val) == -1 ) {
-+	if (sem_getvalue(mysemp, &val) == -1) {
- 		perror(ERROR_PREFIX "sem_getvalue");
- 		return PTS_UNRESOLVED; 
- 	}
-@@ -60,7 +58,7 @@ int main() {
- 	printf("Current value is: %d\n", val);
- 	*/
- 
--	if (val == 3 ) {
-+	if (val == 3) {
- 		puts("TEST PASSED");
- 		sem_close(mysemp);
- 		sem_unlink(semname);
-Index: ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/1-1.c
-===================================================================
---- ltp-full-20090930.orig/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/1-1.c
-+++ ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/1-1.c
-@@ -10,9 +10,7 @@
-  * This test case will call sem_getvalue to update the location referenced
-  * by the semaphpre without effecting the state of the semaphore.  The 
-  * updated value represents the actual semaphore value when it was called.
--*/
--
--
-+ */
- 
- #include <stdio.h>
- #include <errno.h>
-@@ -26,23 +24,22 @@
- #define FUNCTION "sem_getvalue"
- #define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
- 
--
--int main() {
--
--	char semname[28];
-+int main(void)
-+{
-+	char semname[64];
- 	sem_t *mysemp;
- 	int val;
- 
--	sprintf(semname, "/" FUNCTION "_" TEST "_%d", getpid());
-+	snprintf(semname, 64, "/" FUNCTION "_" TEST "_%d", getpid());
- 
- 	mysemp = sem_open(semname, O_CREAT, 0777, 1);
- 
--	if( mysemp == SEM_FAILED || mysemp == NULL ) {
-+	if (mysemp == SEM_FAILED || mysemp == NULL) {
- 		perror(ERROR_PREFIX "sem_open");
- 		return PTS_UNRESOLVED;
- 	}
- 
--	if( sem_getvalue(mysemp, &val) == -1 ) {
-+	if (sem_getvalue(mysemp, &val) == -1) {
- 		perror(ERROR_PREFIX "sem_getvalue");
- 		return PTS_UNRESOLVED; 
- 	}
-@@ -50,7 +47,8 @@ int main() {
- 	/*
- 	printf("Current value is: %d\n", val);
- 	*/
--	if (val == 1 ) {
-+
-+	if (val == 1) {
- 		puts("TEST PASSED");
- 		sem_close(mysemp);
- 		sem_unlink(semname);
-Index: ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/2-1.c
-===================================================================
---- ltp-full-20090930.orig/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/2-1.c
-+++ ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/2-1.c
-@@ -8,8 +8,7 @@
- 
- /*
-  * When semaphore is locked, then the value returned by sem_getvalue is zero.
--*/
--
-+ */
- 
- #include <stdio.h>
- #include <errno.h>
-@@ -23,29 +22,28 @@
- #define FUNCTION "sem_getvalue"
- #define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
- 
--
--int main() {
--
--	char semname[28];
-+int main(void)
-+{
-+	char semname[64];
- 	sem_t *mysemp;
- 	int val;
- 
--	sprintf(semname, "/" FUNCTION "_" TEST "_%d", getpid());
-+	snprintf(semname, 64, "/" FUNCTION "_" TEST "_%d", getpid());
- 
- 	mysemp = sem_open(semname, O_CREAT, 0777, 1);
- 
--	if( mysemp == SEM_FAILED || mysemp == NULL ) {
-+	if (mysemp == SEM_FAILED || mysemp == NULL) {
- 		perror(ERROR_PREFIX "sem_open");
- 		return PTS_UNRESOLVED;
- 	}
- 
- 	/* Lock Semaphore */
--	if (sem_trywait(mysemp) == -1 ) {
-+	if (sem_trywait(mysemp) == -1) {
- 		perror(ERROR_PREFIX "trywait");
- 		return PTS_UNRESOLVED;
- 	}
- 
--	if( sem_getvalue(mysemp, &val) < 0 ) {
-+	if (sem_getvalue(mysemp, &val) < 0) {
- 		perror(ERROR_PREFIX "sem_getvalue");
- 		return PTS_UNRESOLVED; 
- 	}
-Index: ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/2-2.c
-===================================================================
---- ltp-full-20090930.orig/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/2-2.c
-+++ ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/2-2.c
-@@ -83,18 +83,15 @@
- /***************************    Test case   ***********************************/
- /******************************************************************************/
- 
--void * threaded ( void * arg )
-+void *threaded(void * arg)
- {
- 	int ret;
- 
--	do
--	{
-+	do {
- 		ret = sem_wait( arg );
--	}
--	while ( ( ret != 0 ) && ( errno == EINTR ) );
-+	} while (( ret != 0 ) && (errno == EINTR));
- 
--	if ( ret != 0 )
--	{
-+	if (ret != 0) {
- 		UNRESOLVED( errno, "Failed to wait for the semaphore" );
- 	}
- 
-@@ -103,7 +100,7 @@ void * threaded ( void * arg )
- 
- 
- /* The main test function. */
--int main( int argc, char * argv[] )
-+int main(int argc, char *argv[])
- {
- 	int ret, val;
- 	sem_t sem;
-@@ -113,71 +110,61 @@ int main( int argc, char * argv[] )
- 	output_init();
- 
- 	/* Initialize semaphore */
--	ret = sem_init( &sem, 0, 0 );
-+	ret = sem_init(&sem, 0, 0);
- 
--	if ( ret != 0 )
--	{
-+	if (ret != 0) {
- 		UNRESOLVED( errno, "Failed to init semaphore" );
- 	}
- 
- 	/* Create the thread */
--	ret = pthread_create( &th, NULL, threaded, &sem );
-+	ret = pthread_create(&th, NULL, threaded, &sem);
- 
--	if ( ret != 0 )
--	{
-+	if (ret != 0) {
- 		UNRESOLVED( ret, "Failed to create the thread" );
- 	}
- 
- 	/* Sleep 1 sec so the thread enters the sem_wait call */
--	sleep( 1 );
-+	sleep(1);
- 
- 	/* Check value */
--	ret = sem_getvalue( &sem, &val );
-+	ret = sem_getvalue(&sem, &val);
- 
--	if ( ret != 0 )
--	{
-+	if (ret != 0) {
- 		UNRESOLVED( errno, "Failed to get semaphore value" );
- 	}
- 
--	if ( ( val != 0 ) && ( val != -1 ) )
--	{
--		output( "Val: %d\n", val );
--		FAILED( "Semaphore count is neither 0 nor # of waiting processes" );
-+	if ((val != 0) && (val != -1)) {
-+		output("Val: %d\n", val );
-+		FAILED("Semaphore count is neither 0 nor # of waiting processes");
- 	}
- 
- 	/* Post the semaphore */
--	ret = sem_post( &sem );
-+	ret = sem_post(&sem);
- 
--	if ( ret != 0 )
--	{
--		UNRESOLVED( errno, "Failed to post the semaphore" );
-+	if (ret != 0) {
-+		UNRESOLVED(errno, "Failed to post the semaphore");
- 	}
- 
- 	/* Join the thread */
--	ret = pthread_join( th, NULL );
-+	ret = pthread_join(th, NULL);
- 
--	if ( ret != 0 )
--	{
-+	if (ret != 0) {
- 		UNRESOLVED( ret, "Failed to join the thread" );
- 	}
- 
--
- 	/* Destroy the semaphore */
--	ret = sem_destroy( &sem );
-+	ret = sem_destroy(&sem);
- 
--	if ( ret != 0 )
--	{
-+	if (ret != 0) {
- 		UNRESOLVED( errno, "Failed to sem_destroy" );
- 	}
- 
- 	/* Test passed */
- #if VERBOSE > 0
- 
--	output( "Test passed\n" );
-+	output("Test passed\n");
- 
- #endif
- 
- 	PASSED;
- }
--
--
-Index: ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/4-1.c
-===================================================================
---- ltp-full-20090930.orig/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/4-1.c
-+++ ltp-full-20090930/testcases/open_posix_testsuite/conformance/interfaces/sem_getvalue/4-1.c
-@@ -9,9 +9,7 @@
- /*
-  * Upon successful completion of calling sem_getvalue, it shall return a value
-  * of zero.
--*/
--
--
-+ */
- 
- #include <stdio.h>
- #include <errno.h>
-@@ -25,23 +23,22 @@
- #define FUNCTION "sem_getvalue"
- #define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
- 
--
--int main() {
--
--	char semname[28];
-+int main(void)
-+{
-+	char semname[64];
- 	sem_t *mysemp;
- 	int val;
- 
--	sprintf(semname, "/" FUNCTION "_" TEST "_%d", getpid());
-+	snprintf(semname, 64, "/" FUNCTION "_" TEST "_%d", getpid());
- 
- 	mysemp = sem_open(semname, O_CREAT, 0777, 1);
- 
--	if( mysemp == SEM_FAILED || mysemp == NULL ) {
-+	if (mysemp == SEM_FAILED || mysemp == NULL) {
- 		perror(ERROR_PREFIX "sem_open");
- 		return PTS_UNRESOLVED;
- 	}
- 
--	if( sem_getvalue(mysemp, &val) != 0 ) {
-+	if (sem_getvalue(mysemp, &val) != 0) {
- 		puts("TEST FAILED");
- 		return PTS_FAIL;
- 	} else {
-
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-------------------------------------------------------------------------------
-The Planet: dedicated and managed hosting, cloud storage, colocation
-Stay online with enterprise data centers and the best network in the business
-Choose flexible plans and management services without long-term contracts
-Personal 24x7 support from experience hosting pros just a phone call away.
-http://p.sf.net/sfu/theplanet-com
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+---------------------------------------------------------------------------=
+---
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---17pEHd4RhPHOinZp--
-
