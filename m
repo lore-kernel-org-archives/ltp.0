@@ -2,29 +2,33 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naufal11@gmail.com>) id 1NlNJd-0003Ob-0T
-	for ltp-list@lists.sourceforge.net; Sat, 27 Feb 2010 14:06:45 +0000
-Received: from mail-pv0-f175.google.com ([74.125.83.175])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NlNJc-0007D4-04
-	for ltp-list@lists.sourceforge.net; Sat, 27 Feb 2010 14:06:44 +0000
-Received: by pvf33 with SMTP id 33so306040pvf.34
-	for <ltp-list@lists.sourceforge.net>;
-	Sat, 27 Feb 2010 06:06:37 -0800 (PST)
+	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NjnMn-0000B7-Sv
+	for ltp-list@lists.sourceforge.net; Tue, 23 Feb 2010 05:31:29 +0000
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NjnMl-0006il-Ml
+	for ltp-list@lists.sourceforge.net; Tue, 23 Feb 2010 05:31:29 +0000
+Received: from d01relay05.pok.ibm.com (d01relay05.pok.ibm.com [9.56.227.237])
+	by e4.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1N5KYrk011896
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Feb 2010 00:20:34 -0500
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay05.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o1N5VBht132380
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Feb 2010 00:31:11 -0500
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o1N5VBOO032685
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Feb 2010 02:31:11 -0300
+Message-ID: <4B836817.6030103@linux.vnet.ibm.com>
+Date: Tue, 23 Feb 2010 11:01:03 +0530
+From: Subrata Modak <subrata@linux.vnet.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <d270b4401002270505n59e448eev69b6f7b263ecd61d@mail.gmail.com>
-References: <d270b4400912250122y371c4d4dq6fa729b60e03f8a5@mail.gmail.com>
-	<20100111162256.GB19010@saboteur.suse.cz>
-	<20100128041619.GB16209@malik-laptop.in.ibm.com>
-	<d270b4401002202353pec0431w4a2bb947544ff444@mail.gmail.com>
-	<364299f41002261213q24890454jac60233bd8f92ded@mail.gmail.com>
-	<d270b4401002270505n59e448eev69b6f7b263ecd61d@mail.gmail.com>
-Date: Sat, 27 Feb 2010 19:36:37 +0530
-Message-ID: <d270b4401002270606y1f695cc8u3afaefb8b722528c@mail.gmail.com>
-From: Mohamed Naufal <naufal11@gmail.com>
-Content-Type: multipart/mixed; boundary=0016e64ee6983c284c0480958687
-Subject: Re: [LTP] Testcase to validate the memory usage limit imposed by
-	the topmost memory cgroup
+References: <4B823681.7010300@linux.vnet.ibm.com>
+	<OF7B2672AC.4ABA3E07-ON652576D2.005673AB-652576D2.005717E8@in.ibm.com>
+	<20100222164921.GC2992@linux.vnet.ibm.com>
+	<364299f41002221017y4b49a212qd81ebc248d4b89d2@mail.gmail.com>
+In-Reply-To: <364299f41002221017y4b49a212qd81ebc248d4b89d2@mail.gmail.com>
+Subject: Re: [LTP] [ANNOUNCEMENT]: Intermediate release for FEB'10
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,241 +38,164 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============7263549873488897432=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Iranna D Ankad <iranna.ankad@in.ibm.com>, Rishikesh K Rajak <risrajak@in.ibm.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>, Vishukumar S Shetty <svishuku@in.ibm.com>
 
---0016e64ee6983c284c0480958687
-Content-Type: text/plain; charset=ISO-8859-1
+This is a multi-part message in MIME format.
+--===============7263549873488897432==
+Content-Type: multipart/alternative;
+	boundary="------------020701090908060903030301"
 
-It seems my mailer screws up the formatting. Attaching the patch.
+This is a multi-part message in MIME format.
+--------------020701090908060903030301
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Naufal
+Garrett Cooper wrote:
+> On Mon, Feb 22, 2010 at 8:49 AM, Rishikesh K Rajak
+> <risrajak@linux.vnet.ibm.com> wrote:
+>   
+>> Hi Iranna,
+>>
+>>
+>> Thanks for reporting this build failure and helping, as it will
+>> really help to make ltp more stable.
+>>
+>> Here is the quick patch i am attaching which solves the problem.
+>>
+>> Signed-off By: Rishikesh K Rajak<risrajak@linux.vnet.ibm.com>
+>> Tested By: Rishikesh K Rajak<risrajak@linux.vnet.ibm.com>
+>> ---
+>> diff --git a/testcases/kernel/syscalls/mbind/mbind01.c
+>> b/testcases/kernel/syscalls/mbind/mbind01.c
+>> index 5d7eb69..847186a 100644
+>> --- a/testcases/kernel/syscalls/mbind/mbind01.c
+>> +++ b/testcases/kernel/syscalls/mbind/mbind01.c
+>> @@ -74,6 +74,7 @@ int  TST_TOTAL = 2;           /* total number of tests
+>> in this file.   */
+>>  #include <unistd.h>
+>>  #include "include_j_h.h"
+>>  #include "numa_helpers.h"
+>> +#include <linux/mempolicy.h>
+>>     
+And also, including <linux/*.h> in any application(s) other than the 
+kernel itself is better avoided.
 
---0016e64ee6983c284c0480958687
-Content-Type: text/x-patch; charset=US-ASCII; name="mem.patch"
-Content-Disposition: attachment; filename="mem.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g66hk13b0
+Regards--
+Subrata
+>>  #if ! defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
+>>     
+>
+> No. This patch shouldn't be committed because of namespace collisions
+> between numa and mempolicy (thank the developers for just copy-pasting
+> constants, macros, etc instead of properly requiring numa on the
+> target system in order for mempolicy to work...).
+>
+> Thanks,
+> -Garrett
+>
+> ------------------------------------------------------------------------------
+> Download Intel&#174; Parallel Studio Eval
+> Try the new software tools for yourself. Speed compiling, find bugs
+> proactively, and fine-tune applications for parallel performance.
+> See why Intel Parallel Studio got high marks during beta.
+> http://p.sf.net/sfu/intel-sw-dev
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>   
 
-ZGlmZiAtTmFydSBsdHB2L3J1bnRlc3QvY29udHJvbGxlcnMgbHRwZC9ydW50ZXN0L2NvbnRyb2xs
-ZXJzCi0tLSBsdHB2L3J1bnRlc3QvY29udHJvbGxlcnMJMjAxMC0wMi0yMCAxNTo0MjoxMy4wMDAw
-MDAwMDAgKzA1MzAKKysrIGx0cGQvcnVudGVzdC9jb250cm9sbGVycwkyMDEwLTAyLTI3IDE3OjUx
-OjEwLjM1ODU1MzM5OSArMDUzMApAQCAtMyw1ICszLDYgQEAKIG1lbWNnX3JlZ3Jlc3Npb24JbWVt
-Y2dfcmVncmVzc2lvbl90ZXN0LnNoCiBtZW1jZ19mdW5jdGlvbgkJbWVtY2dfZnVuY3Rpb25fdGVz
-dC5zaAogbWVtY2dfc3RyZXNzCQltZW1jZ19zdHJlc3NfdGVzdC5zaAorbWVtY2dfY29udHJvbCAg
-ICAgICAgICBQQUdFU0laRT0kKG1lbV9wcm9jZXNzIC1wKTttZW1jZ19jb250cm9sX3Rlc3Quc2gg
-JFBBR0VTSVpFICRQQUdFU0laRSAkKChQQUdFU0laRSAqIDIpKQogY2dyb3VwX2ZqCXJ1bl9jZ3Jv
-dXBfdGVzdF9mai5zaAogY29udHJvbGxlcnMJdGVzdF9jb250cm9sbGVycy5zaApkaWZmIC1OYXJ1
-IGx0cHYvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9tZW1jZy9jb250cm9sL01ha2VmaWxl
-IGx0cGQvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9tZW1jZy9jb250cm9sL01ha2VmaWxl
-Ci0tLSBsdHB2L3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvbWVtY2cvY29udHJvbC9NYWtl
-ZmlsZQkxOTcwLTAxLTAxIDA1OjMwOjAwLjAwMDAwMDAwMCArMDUzMAorKysgbHRwZC90ZXN0Y2Fz
-ZXMva2VybmVsL2NvbnRyb2xsZXJzL21lbWNnL2NvbnRyb2wvTWFrZWZpbGUJMjAxMC0wMi0yNyAx
-Nzo1MToxMC4zNTk1NTU4MDYgKzA1MzAKQEAgLTAsMCArMSwzMyBAQAorIworIyAgICBrZXJuZWwv
-Y29udHJvbGxlcnMvbWVtY2cvc3RyZXNzIHRlc3RjYXNlIHN1aXRlIE1ha2VmaWxlLgorIworIyAg
-ICBDb3B5cmlnaHQgKEMpIDIwMDksIENpc2NvIFN5c3RlbXMgSW5jLgorIworIyAgICBUaGlzIHBy
-b2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29yIG1v
-ZGlmeQorIyAgICBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBM
-aWNlbnNlIGFzIHB1Ymxpc2hlZCBieQorIyAgICB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9u
-OyBlaXRoZXIgdmVyc2lvbiAyIG9mIHRoZSBMaWNlbnNlLCBvcgorIyAgICAoYXQgeW91ciBvcHRp
-b24pIGFueSBsYXRlciB2ZXJzaW9uLgorIworIyAgICBUaGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0
-ZWQgaW4gdGhlIGhvcGUgdGhhdCBpdCB3aWxsIGJlIHVzZWZ1bCwKKyMgICAgYnV0IFdJVEhPVVQg
-QU5ZIFdBUlJBTlRZOyB3aXRob3V0IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFudHkgb2YKKyMgICAg
-TUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2Vl
-IHRoZQorIyAgICBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgor
-IworIyAgICBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJh
-bCBQdWJsaWMgTGljZW5zZSBhbG9uZworIyAgICB3aXRoIHRoaXMgcHJvZ3JhbTsgaWYgbm90LCB3
-cml0ZSB0byB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uLCBJbmMuLAorIyAgICA1MSBGcmFu
-a2xpbiBTdHJlZXQsIEZpZnRoIEZsb29yLCBCb3N0b24sIE1BIDAyMTEwLTEzMDEgVVNBLgorIwor
-IyBHYXJyZXR0IENvb3BlciwgU2VwdGVtYmVyIDIwMDkKKyMKKwordG9wX3NyY2RpcgkJPz0gLi4v
-Li4vLi4vLi4vLi4KKworaW5jbHVkZSAkKHRvcF9zcmNkaXIpL2luY2x1ZGUvbWsvdGVzdGNhc2Vz
-Lm1rCisKK0NQUEZMQUdTCQkrPSAtSSQoYWJzX3NyY2RpcikvLi4vLi4vbGliY29udHJvbGxlcnMK
-KworSU5TVEFMTF9UQVJHRVRTCQk6PSAqLnNoCisKK0xETElCUwkJCSs9IC1sbQorCitpbmNsdWRl
-ICQodG9wX3NyY2RpcikvaW5jbHVkZS9tay9nZW5lcmljX2xlYWZfdGFyZ2V0Lm1rCmRpZmYgLU5h
-cnUgbHRwdi90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL21lbWNnL2NvbnRyb2wvbWVtY2df
-Y29udHJvbF90ZXN0LnNoIGx0cGQvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9tZW1jZy9j
-b250cm9sL21lbWNnX2NvbnRyb2xfdGVzdC5zaAotLS0gbHRwdi90ZXN0Y2FzZXMva2VybmVsL2Nv
-bnRyb2xsZXJzL21lbWNnL2NvbnRyb2wvbWVtY2dfY29udHJvbF90ZXN0LnNoCTE5NzAtMDEtMDEg
-MDU6MzA6MDAuMDAwMDAwMDAwICswNTMwCisrKyBsdHBkL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJv
-bGxlcnMvbWVtY2cvY29udHJvbC9tZW1jZ19jb250cm9sX3Rlc3Quc2gJMjAxMC0wMi0yNyAxODox
-NzowOC42NjgzMDA3MTEgKzA1MzAKQEAgLTAsMCArMSwxNjYgQEAKKyMhL2Jpbi9zaAorCisjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIworIyMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyMKKyMjICAgQ29weXJp
-Z2h0IChjKSAyMDEwIE1vaGFtZWQgTmF1ZmFsIEJhc2hlZXIgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICMjCisjIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAjIworIyMgICBUaGlzIHByb2dyYW0g
-aXMgZnJlZSBzb2Z0d2FyZTsgIHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkg
-ICAgIyMKKyMjICAgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMg
-TGljZW5zZSBhcyBwdWJsaXNoZWQgYnkgICAgICMjCisjIyAgIHRoZSBGcmVlIFNvZnR3YXJlIEZv
-dW5kYXRpb247IGVpdGhlciB2ZXJzaW9uIDIgb2YgdGhlIExpY2Vuc2UsIG9yICAgICAgICAjIwor
-IyMgICAoYXQgeW91ciBvcHRpb24pIGFueSBsYXRlciB2ZXJzaW9uLiAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIyMKKyMjICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMjCisjIyAgIFRo
-aXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNl
-ZnVsLCAgICAgICAgICAjIworIyMgICBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7ICB3aXRob3V0
-IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFudHkgb2YgICAgICAgICAgIyMKKyMjICAgTUVSQ0hBTlRB
-QklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2VlICAgICAgICAg
-ICAgICAgICMjCisjIyAgIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBk
-ZXRhaWxzLiAgICAgICAgICAgICAgICAgICAgICAgICAjIworIyMgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IyMKKyMjICAgWW91IHNob3VsZCBoYXZlIHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05VIEdlbmVy
-YWwgUHVibGljIExpY2Vuc2UgICAgICAgICMjCisjIyAgIGFsb25nIHdpdGggdGhpcyBwcm9ncmFt
-OyAgaWYgbm90LCB3cml0ZSB0byB0aGUgRnJlZSBTb2Z0d2FyZSAgICAgICAgICAgICAjIworIyMg
-ICBGb3VuZGF0aW9uLCBJbmMuLCA1OSBUZW1wbGUgUGxhY2UsIFN1aXRlIDMzMCwgQm9zdG9uLCBN
-QSAwMjExMS0xMzA3IFVTQSAgIyMKKyMjICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMjCisjIyAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAjIworIyMgICBGaWxlOiAgICBtZW1jZ19jb250cm9sX3Rlc3Quc2ggICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyMKKyMjICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICMjCisjIyAgIFB1cnBvc2U6IEltcGxlbWVudCB2YXJpb3VzIG1lbW9yeSBjb250cm9sbGVy
-IHRlc3RzICAgICAgICAgICAgICAgICAgICAgICAjIworIyMgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyMK
-KyMjICAgQXV0aG9yOiAgTW9oYW1lZCBOYXVmYWwgQmFzaGVlciA8bmF1ZmFsMTFAZ21haWwuY29t
-PiAgICAgICAgICAgICAgICAgICAgICMjCisjIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAjIworIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMjIyMKKworaWYgWyAiJChncmVwIC13IG1lbW9yeSAvcHJvYy9jZ3JvdXBz
-IHwgY3V0IC1mNCkiIC1uZSAiMSIgXTsgdGhlbgorCWVjaG8gIldBUk5JTkc6IgorCWVjaG8gIkVp
-dGhlciBrZXJuZWwgZG9lcyBub3Qgc3VwcG9ydCBtZW1vcnkgcmVzb3VyY2UgY29udHJvbGxlciBv
-ciBmZWF0dXJlIG5vdCBlbmFibGVkIgorCWVjaG8gIlNraXBwaW5nIGFsbCBtZW1jZ19jb250cm9s
-IHRlc3RjYXNlcy4uLi4iCisJZXhpdCAwCitmaQorCitleHBvcnQgVENJRD0ibWVtY2dfY29udHJv
-bCIKK2V4cG9ydCBUU1RfVE9UQUw9MQorZXhwb3J0IFRTVF9DT1VOVD0wCisKK2V4cG9ydCBUTVA9
-JHtUTVA6LS90bXB9CitjZCAkVE1QCisKK1RPVF9NRU1fTElNSVQ9JDEKK0FDVElWRV9NRU1fTElN
-SVQ9JDIKK1BST0NfTUVNPSQzCisKK1RTVF9QQVRIPSRQV0QKK1NUQVRVU19QSVBFPSIkVE1QL3N0
-YXR1c19waXBlIgorCitQQVNTPTAKK0ZBSUw9MQorCisjIENoZWNrIGlmIHRoZSB0ZXN0IHByb2Nl
-c3MgaXMga2lsbGVkIG9uIGNyb3NzaW5nIGJvdW5kYXJ5Cit0ZXN0X3Byb2Nfa2lsbCgpCit7CisJ
-cHVzaGQgJFRNUCA+IC9kZXYvbnVsbAorCW1lbV9wcm9jZXNzIC1tICRQUk9DX01FTSAmCisJcG9w
-ZCA+IC9kZXYvbnVsbAorCXNsZWVwIDEKKwllY2hvICQhID4gdGFza3MKKyAKKwkjSW5zdHJ1Y3Qg
-dGhlIHRlc3QgcHJvY2VzcyB0byBzdGFydCBhY3F1aXJpbmcgbWVtb3J5CisJZWNobyBtID4gJFNU
-QVRVU19QSVBFCisJc2xlZXAgNQorCisJI0NoZWNrIGlmIGtpbGxlZAorCXBzIC1wICQhID4gL2Rl
-di9udWxsIDI+IC9kZXYvbnVsbAorCWlmIFsgJD8gLWVxIDAgXTsgdGhlbgorCQllY2hvIG0gPiAk
-U1RBVFVTX1BJUEUKKwkJZWNobyB4ID4gJFNUQVRVU19QSVBFCisJZWxzZQorCQk6ICQoKEtJTExF
-RF9DTlQgKz0gMSkpCisJZmkKK30KKyAgICAKKyMgVmFsaWRhdGUgdGhlIG1lbW9yeSB1c2FnZSBs
-aW1pdCBpbXBvc2VkIGJ5IHRoZSBoaWVyYXJjaGljYWxseSB0b3Btb3N0IGdyb3VwCit0ZXN0Y2Fz
-ZV8xKCkKK3sKKwlUU1RfQ09VTlQ9MQorCXRzdF9yZXNtIFRJTkZPICJUZXN0ICMxOiBDaGVja2lu
-ZyBpZiB0aGUgbWVtb3J5IHVzYWdlIGxpbWl0IGltcG9zZWQgYnkgdGhlIHRvcG1vc3QgZ3JvdXAg
-aXMgZW5mb3JjZWQiCisKKwllY2hvICIkQUNUSVZFX01FTV9MSU1JVCIgPiAkVFNUX1BBVEgvbW50
-LyRUU1RfTlVNL21lbW9yeS5saW1pdF9pbl9ieXRlcworCWVjaG8gIiRUT1RfTUVNX0xJTUlUIiA+
-ICRUU1RfUEFUSC9tbnQvJFRTVF9OVU0vbWVtb3J5Lm1lbXN3LmxpbWl0X2luX2J5dGVzCisKKwlt
-a2RpciBzdWIKKwlwdXNoZCBzdWIgPiAvZGV2L251bGwKKworCUtJTExFRF9DTlQ9MAorCXRlc3Rf
-cHJvY19raWxsCisKKwlpZiBbICRQUk9DX01FTSAtZ3QgJFRPVF9NRU1fTElNSVQgXSAmJiBbICRL
-SUxMRURfQ05UIC1lcSAwIF07IHRoZW4KKwkJcmVzdWx0ICRGQUlMICJUZXN0ICMxOiBmYWlsZWQi
-CisJZWxzZQorCQlyZXN1bHQgJFBBU1MgIlRlc3QgIzE6IHBhc3NlZCIKKwlmaQorCisJcG9wZCA+
-IC9kZXYvbnVsbAorCXJtZGlyIHN1YgorfQorCisjIFJlY29yZCB0aGUgdGVzdCByZXN1bHRzCisj
-CisjICQxOiBSZXN1bHQgb2YgdGhlIHRlc3QgY2FzZSwgJFBBU1Mgb3IgJEZBSUwKKyMgJDI6IE91
-dHB1dCBpbmZvcm1hdGlvbgorcmVzdWx0KCkKK3sKKwlSRVM9JDEKKwlJTkZPPSQyCisKKwlpZiBb
-ICRSRVMgLWVxICRQQVNTIF07IHRoZW4KKwkJdHN0X3Jlc20gVFBBU1MgIiRJTkZPIgorCWVsc2UK
-KwkJOiAkKChGQUlMRURfQ05UICs9IDEpKQorCQl0c3RfcmVzbSBURkFJTCAiJElORk8iCisJZmkK
-K30KKworY2xlYW51cCgpCit7CisJaWYgWyAtZSAkVFNUX1BBVEgvbW50IF07IHRoZW4KKwkJdW1v
-dW50ICRUU1RfUEFUSC9tbnQgMj4gL2Rldi9udWxsCisJCXJtIC1yZiAkVFNUX1BBVEgvbW50CisJ
-ZmkKK30KKworZG9fbW91bnQoKQoreworCWNsZWFudXAKKworCW1rZGlyICRUU1RfUEFUSC9tbnQK
-Kwltb3VudCAtdCBjZ3JvdXAgLW8gbWVtb3J5IGNncm91cCAkVFNUX1BBVEgvbW50IDI+IC9kZXYv
-bnVsbAorCWlmIFsgJD8gLW5lIDAgXTsgdGhlbgorCQl0c3RfYnJrbSBUQlJPSyBOVUxMICJNb3Vu
-dGluZyBjZ3JvdXAgdG8gdGVtcCBkaXIgZmFpbGVkIgorCQlybWRpciAkVFNUX1BBVEgvbW50CisJ
-CWV4aXQgMQorCWZpCit9CisKK2RvX21vdW50CisKK2VjaG8gMSA+IG1udC9tZW1vcnkudXNlX2hp
-ZXJhcmNoeSAyPiAvZGV2L251bGwKKworRkFJTEVEX0NOVD0wCisKK1RTVF9OVU09MQord2hpbGUg
-WyAkVFNUX05VTSAtbGUgJFRTVF9UT1RBTCBdOyBkbworCW1rZGlyICRUU1RfUEFUSC9tbnQvJFRT
-VF9OVU0KKwlwdXNoZCAkVFNUX1BBVEgvbW50LyRUU1RfTlVNID4gL2Rldi9udWxsCisKKwl0ZXN0
-Y2FzZV8kVFNUX05VTTsKKworCXBvcGQgPiAvZGV2L251bGwKKwlybWRpciAkVFNUX1BBVEgvbW50
-LyRUU1RfTlVNCisJOiAkKChUU1RfTlVNICs9IDEpKQorZG9uZQorCitjbGVhbnVwCisKK2lmIFsg
-IiRGQUlMRURfQ05UIiAtbmUgMCBdOyB0aGVuCisJdHN0X3Jlc20gVEZBSUwgIm1lbWNnX2NvbnRy
-b2w6IGZhaWxlZCIKKwlleGl0IDEKK2Vsc2UKKwl0c3RfcmVzbSBUUEFTUyAibWVtY2dfY29udHJv
-bDogcGFzc2VkIgorCWV4aXQgMAorZmkKZGlmZiAtTmFydSBsdHB2L3Rlc3RjYXNlcy9rZXJuZWwv
-Y29udHJvbGxlcnMvbWVtY2cvY29udHJvbC9tZW1fcHJvY2Vzcy5jIGx0cGQvdGVzdGNhc2VzL2tl
-cm5lbC9jb250cm9sbGVycy9tZW1jZy9jb250cm9sL21lbV9wcm9jZXNzLmMKLS0tIGx0cHYvdGVz
-dGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9tZW1jZy9jb250cm9sL21lbV9wcm9jZXNzLmMJMTk3
-MC0wMS0wMSAwNTozMDowMC4wMDAwMDAwMDAgKzA1MzAKKysrIGx0cGQvdGVzdGNhc2VzL2tlcm5l
-bC9jb250cm9sbGVycy9tZW1jZy9jb250cm9sL21lbV9wcm9jZXNzLmMJMjAxMC0wMi0yNyAxODoy
-Mjo0My4yNDYxNzg3OTQgKzA1MzAKQEAgLTAsMCArMSwxNDEgQEAKKy8qKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqLworLyogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICovCisvKiAgQ29weXJpZ2h0IChjKSAyMDEw
-IE1vaGFtZWQgTmF1ZmFsIEJhc2hlZXIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-Ki8KKy8qICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAqLworLyogIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNv
-ZnR3YXJlOyAgeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29yIG1vZGlmeSAgICAgICovCisv
-KiAgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBh
-cyBwdWJsaXNoZWQgYnkgICAgICAgKi8KKy8qICB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9u
-OyBlaXRoZXIgdmVyc2lvbiAyIG9mIHRoZSBMaWNlbnNlLCBvciAgICAgICAgICAqLworLyogIChh
-dCB5b3VyIG9wdGlvbikgYW55IGxhdGVyIHZlcnNpb24uICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICovCisvKiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KKy8qICBUaGlzIHBy
-b2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBpdCB3aWxsIGJlIHVzZWZ1bCwg
-ICAgICAgICAgICAqLworLyogIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgIHdpdGhvdXQgZXZl
-biB0aGUgaW1wbGllZCB3YXJyYW50eSBvZiAgICAgICAgICAgICovCisvKiAgTUVSQ0hBTlRBQklM
-SVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2VlICAgICAgICAgICAg
-ICAgICAgKi8KKy8qICB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0
-YWlscy4gICAgICAgICAgICAgICAgICAgICAgICAgICAqLworLyogICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICovCisvKiAgWW91IHNob3VsZCBoYXZlIHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05VIEdlbmVy
-YWwgUHVibGljIExpY2Vuc2UgICAgICAgICAgKi8KKy8qICBhbG9uZyB3aXRoIHRoaXMgcHJvZ3Jh
-bTsgIGlmIG5vdCwgd3JpdGUgdG8gdGhlIEZyZWUgU29mdHdhcmUgICAgICAgICAgICAgICAqLwor
-LyogIEZvdW5kYXRpb24sIEluYy4sIDU5IFRlbXBsZSBQbGFjZSwgU3VpdGUgMzMwLCBCb3N0b24s
-IE1BIDAyMTExLTEzMDcgVVNBICAgICovCisvKiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KKy8qICBG
-aWxlOiAgICBtZW1fcHJvY2Vzcy5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAqLworLyogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICovCisvKiAgUHVycG9z
-ZTogYWN0IGFzIGEgbWVtb3J5IGhvZyBmb3IgdGhlIG1lbWNnX2NvbnRyb2wgdGVzdHMgICAgICAg
-ICAgICAgICAgICAgKi8KKy8qICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAqLworLyogIEF1dGhvcjogIE1v
-aGFtZWQgTmF1ZmFsIEJhc2hlZXIgPG5hdWZhbDExQGdtYWlsLmNvbSA+ICAgICAgICAgICAgICAg
-ICAgICAgICovCisvKiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKi8KKy8qKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqLworI2luY2x1ZGUgPHN0ZGlvLmg+CisjaW5jbHVkZSA8ZXJybm8uaD4KKyNpbmNsdWRlIDxm
-Y250bC5oPgorI2luY2x1ZGUgPHN0ZGxpYi5oPgorI2luY2x1ZGUgPHVuaXN0ZC5oPgorI2luY2x1
-ZGUgPHN5cy9tbWFuLmg+CisKKy8qIAorICogTmFtZWQgcGlwZSB0byBhY3QgYXMgYSBjb21tdW5p
-Y2F0aW9uIGNoYW5uZWwgYmV0d2VlbgorICogc2hlbGwgc2NyaXB0ICYgdGhpcyBwcm9jZXNzCisg
-Ki8KKyNkZWZpbmUgU1RBVFVTX1BJUEUgInN0YXR1c19waXBlIgorCitpbnQgZmxhZ19leGl0Owor
-aW50IGZsYWdfYWxsb2NhdGVkOwordW5zaWduZWQgbG9uZyBtZW1zaXplOworCisvKgorICogcHJv
-Y2Vzc19vcHRpb25zOiBwcm9jZXNzIHVzZXIgc3BlY2lmaWVkIG9wdGlvbnMKKyAqLwordm9pZCBw
-cm9jZXNzX29wdGlvbnMoaW50IGFyZ2MsIGNoYXIgKiphcmd2KQoreworCWludCBjOworCWNoYXIg
-KmVuZDsKKworCW9wdGVyciA9IDA7CisJd2hpbGUgKChjID0gZ2V0b3B0KGFyZ2MsIGFyZ3YsICJw
-bToiKSkgIT0gLTEpIHsKKwkJc3dpdGNoKGMpIHsKKwkJCWNhc2UgJ3AnOgorCQkJCXByaW50Zigi
-JWRcbiIsZ2V0cGFnZXNpemUoKSk7CisJCQkJZXhpdCgwKTsKKwkJCWNhc2UgJ20nOgorCQkJCW1l
-bXNpemUgPSBzdHJ0b3VsKG9wdGFyZywgJmVuZCwgMTApOworCQkJCWlmICgqZW5kKQorCQkJCQll
-cnJ4KDIsICJJbnZhbGlkIC1tIHVzYWdlIik7CisJCQkJYnJlYWs7CisJCQlkZWZhdWx0OgorCQkJ
-CWVycngoMiwgIkludmFsaWQgb3B0aW9uIHNwZWNpZmVkIik7CisgICAgICAgIAl9CisgICAgCX0K
-KworCWlmKG1lbXNpemUgPD0gMCkKKwkJZXJyeCgzLCAiSW52YWxpZCB1c2FnZSIpOworfQorCisv
-KgorICogdG91Y2hfbWVtb3J5OiBmb3JjZSBwaHlzaWNhbCBtZW1vcnkgYWxsb2NhdGlvbgorICov
-Cit2b2lkIHRvdWNoX21lbW9yeShjaGFyICpwKQoreworCWludCBpOworCWludCBwYWdlc2l6ZSA9
-IGdldHBhZ2VzaXplKCk7CisKKwlmb3IgKGkgPSAwOyBpIDwgbWVtc2l6ZTsgaSArPSBwYWdlc2l6
-ZSkKKwkJcFtpXSA9IDB4ZWY7Cit9CisKK3ZvaWQgbWVtX21hcCgpCit7CisJc3RhdGljIGNoYXIg
-KnA7CisKKwlpZiAoIWZsYWdfYWxsb2NhdGVkKSB7CisJCXAgPSBtbWFwKE5VTEwsIG1lbXNpemUs
-IFBST1RfUkVBRCB8IFBST1RfV1JJVEUsIE1BUF9TSEFSRUQgfCBNQVBfQU5PTllNT1VTLCAwLCAw
-KTsKKwkJaWYocCA9PSBNQVBfRkFJTEVEKQorCQkJZXJyeCg0LCAibW1hcCBmYWlsZWQiKTsKKwkJ
-dG91Y2hfbWVtb3J5KHApOworCX1lbHNlIHsKKwkJaWYgKG11bm1hcChwLCBtZW1zaXplKSA9PSAt
-MSkKKwkJCWVycngoNSwgIm11bm1hcCBmYWlsZWQiKTsKKwl9CisJZmxhZ19hbGxvY2F0ZWQgXj0g
-MTsKK30KKworLyoKKyAqIGRvbmU6IHJldHJpZXZlIGluc3RydWN0aW9ucyBmcm9tIHRoZSBuYW1l
-ZCBwaXBlCisgKi8KK2NoYXIgYWN0aW9uKCkKK3sKKwljaGFyIGNoOworCWludCBmZDsKKworCWZk
-ID0gb3BlbihTVEFUVVNfUElQRSwgT19SRE9OTFkpOworCWlmIChmZCA8IDApCisJCWVycngoNiwg
-IkVycm9yIG9wZW5pbmcgbmFtZWQgcGlwZSIpOworCisJaWYgKHJlYWQoZmQsICZjaCwgMSkgPCAw
-KQorCQllcnJ4KDcsICJFcnJvciByZWFkaW5nIG5hbWVkIHBpcGUiKTsKKworCWNsb3NlKGZkKTsK
-KworCXJldHVybiBjaDsKK30KKworaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKiphcmd2KQorewor
-CWludCByZXQ7CisJY2hhciBjaDsKKworCXByb2Nlc3Nfb3B0aW9ucyhhcmdjLCBhcmd2KTsKKwor
-CXJldCA9IG1rZmlmbyhTVEFUVVNfUElQRSwgMDY2Nik7CisKKwlpZiAocmV0ID09IC0xICYmIGVy
-cm5vICE9IEVFWElTVCkKKwkJZXJyeCgxLCAiRXJyb3IgY3JlYXRpbmcgbmFtZWQgcGlwZSIpOwor
-CisJZG8geworCQljaCA9IGFjdGlvbigpOworCisJCWlmIChjaCA9PSAnbScpCisJCQltZW1fbWFw
-KCk7CisJfXdoaWxlKGNoICE9ICd4Jyk7CisKKwlyZW1vdmUoU1RBVFVTX1BJUEUpOworCisJcmV0
-dXJuIDA7Cit9CmRpZmYgLU5hcnUgbHRwdi90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL21l
-bWNnL1JFQURNRSBsdHBkL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvbWVtY2cvUkVBRE1F
-Ci0tLSBsdHB2L3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvbWVtY2cvUkVBRE1FCTIwMTAt
-MDItMjAgMTU6NDI6MTMuMDAwMDAwMDAwICswNTMwCisrKyBsdHBkL3Rlc3RjYXNlcy9rZXJuZWwv
-Y29udHJvbGxlcnMvbWVtY2cvUkVBRE1FCTIwMTAtMDItMjcgMTc6NTE6MTAuMzYxNTU0OTY4ICsw
-NTMwCkBAIC0xNSw2ICsxNSwxNiBAQAogCiBGSUxFUyBERVNDUklQVElPTjoKIAorY29udHJvbC9t
-ZW1jZ19jb250cm9sX3Rlc3Quc2gKKy0tLS0tLS0tLS0tLS0tLS0tLS0tCitUaGlzIHNjcmlwdCBy
-dW5zIHRoZSB0ZXN0Y2FzZXMgb2YgY29udHJvbCB0ZXN0LgorCitjb250cm9sL21lbV9wcm9jZXNz
-LmMKKy0tLS0tLS0tLS0tLS0tLS0tLS0tCitUaGUgcHJvZ3JhbSBhbGxvY2F0ZXMgbWVtb3J5IHNw
-ZWNpZmllZCB1c2luZyB0aGUgJy1tJyBvcHRpb24gd2hlbiAnbScgaXMgcmVjZWl2ZWQgCit0aHJv
-dWdoIHRoZSBuYW1lZCBwaXBlICJzdGF0dXNfcGlwZSIgYW5kIGZyZWVzIGl0IG9uIHJlY2Vpdmlu
-ZyAnbScgYWdhaW4uIAorSXQgZXhpdHMgb24gcmVjZWl2aW5nICd4Jy4gSXQgZ2V0cyB0aGUgcGFn
-ZSBzaXplIG9uIHNwZWNpZnlpbmcgdGhlICctcCcgb3B0aW9uLgorCiBmdW5jdGlvbmFsL21lbWNn
-cm91cF9mdW5jdGlvbl90ZXN0LnNoCiAtLS0tLS0tLS0tLS0tLS0tLS0tLQogVGhpcyBzY3JpcHQg
-cnVucyBhbGwgdGhlIDM4IHRlc3RjYXNlcyBvZiBiYXNpcyBvcGVyYXRpb24uCg==
---0016e64ee6983c284c0480958687
+
+--------------020701090908060903030301
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+  <title></title>
+</head>
+<body bgcolor="#ffffff" text="#000000">
+Garrett Cooper wrote:
+<blockquote
+ cite="mid:364299f41002221017y4b49a212qd81ebc248d4b89d2@mail.gmail.com"
+ type="cite">
+  <pre wrap="">On Mon, Feb 22, 2010 at 8:49 AM, Rishikesh K Rajak
+<a class="moz-txt-link-rfc2396E" href="mailto:risrajak@linux.vnet.ibm.com">&lt;risrajak@linux.vnet.ibm.com&gt;</a> wrote:
+  </pre>
+  <blockquote type="cite">
+    <pre wrap="">Hi Iranna,
+
+
+Thanks for reporting this build failure and helping, as it will
+really help to make ltp more stable.
+
+Here is the quick patch i am attaching which solves the problem.
+
+Signed-off By: Rishikesh K Rajak<a class="moz-txt-link-rfc2396E" href="mailto:risrajak@linux.vnet.ibm.com">&lt;risrajak@linux.vnet.ibm.com&gt;</a>
+Tested By: Rishikesh K Rajak<a class="moz-txt-link-rfc2396E" href="mailto:risrajak@linux.vnet.ibm.com">&lt;risrajak@linux.vnet.ibm.com&gt;</a>
+---
+diff --git a/testcases/kernel/syscalls/mbind/mbind01.c
+b/testcases/kernel/syscalls/mbind/mbind01.c
+index 5d7eb69..847186a 100644
+--- a/testcases/kernel/syscalls/mbind/mbind01.c
++++ b/testcases/kernel/syscalls/mbind/mbind01.c
+@@ -74,6 +74,7 @@ int &nbsp;TST_TOTAL = 2; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /* total number of tests
+in this file. &nbsp; */
+&nbsp;#include &lt;unistd.h&gt;
+&nbsp;#include "include_j_h.h"
+&nbsp;#include "numa_helpers.h"
++#include &lt;linux/mempolicy.h&gt;
+    </pre>
+  </blockquote>
+</blockquote>
+And also, including &lt;linux/*.h&gt; in any application(s) other than
+the kernel itself is better avoided.<br>
+<br>
+Regards--<br>
+Subrata<br>
+<blockquote
+ cite="mid:364299f41002221017y4b49a212qd81ebc248d4b89d2@mail.gmail.com"
+ type="cite">
+  <blockquote type="cite">
+    <pre wrap="">
+&nbsp;#if ! defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION &lt; 2
+    </pre>
+  </blockquote>
+  <pre wrap=""><!---->
+No. This patch shouldn't be committed because of namespace collisions
+between numa and mempolicy (thank the developers for just copy-pasting
+constants, macros, etc instead of properly requiring numa on the
+target system in order for mempolicy to work...).
+
+Thanks,
+-Garrett
+
+------------------------------------------------------------------------------
+Download Intel&amp;#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+<a class="moz-txt-link-freetext" href="http://p.sf.net/sfu/intel-sw-dev">http://p.sf.net/sfu/intel-sw-dev</a>
+_______________________________________________
+Ltp-list mailing list
+<a class="moz-txt-link-abbreviated" href="mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforge.net</a>
+<a class="moz-txt-link-freetext" href="https://lists.sourceforge.net/lists/listinfo/ltp-list">https://lists.sourceforge.net/lists/listinfo/ltp-list</a>
+  </pre>
+</blockquote>
+<br>
+</body>
+</html>
+
+--------------020701090908060903030301--
+
+
+
+--===============7263549873488897432==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -280,7 +207,7 @@ Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
---0016e64ee6983c284c0480958687
+--===============7263549873488897432==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -291,5 +218,6 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---0016e64ee6983c284c0480958687--
+--===============7263549873488897432==--
+
 
