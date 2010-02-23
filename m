@@ -1,36 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NgtrX-0001VN-7Z
-	for ltp-list@lists.sourceforge.net; Mon, 15 Feb 2010 05:51:15 +0000
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NgtrW-0007CO-93
-	for ltp-list@lists.sourceforge.net; Mon, 15 Feb 2010 05:51:15 +0000
-Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
-	by e6.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1F5lkpx031390
-	for <ltp-list@lists.sourceforge.net>; Mon, 15 Feb 2010 00:47:46 -0500
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o1F5p83M1560722
-	for <ltp-list@lists.sourceforge.net>; Mon, 15 Feb 2010 00:51:08 -0500
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o1F5p78G032114
-	for <ltp-list@lists.sourceforge.net>; Mon, 15 Feb 2010 03:51:07 -0200
-Date: Mon, 15 Feb 2010 11:21:02 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100215055102.GA21277@rishikesh.in.ibm.com>
-References: <5a774f4c1002060734v174f790ah976977edf6aa50a4@mail.gmail.com>
-	<4B6FA757.2010309@linux.vnet.ibm.com>
-	<5a774f4c1002072302n4eaf5c6fycbabbbe4524a483d@mail.gmail.com>
-	<4B6FBD49.6050605@linux.vnet.ibm.com>
-	<5a774f4c1002141937n4eb1033bx3c64ed5618869716@mail.gmail.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NjodD-0007cp-Gq
+	for ltp-list@lists.sourceforge.net; Tue, 23 Feb 2010 06:52:31 +0000
+Received: from mail-pv0-f175.google.com ([74.125.83.175])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NjodB-0005QR-CW
+	for ltp-list@lists.sourceforge.net; Tue, 23 Feb 2010 06:52:31 +0000
+Received: by pvf33 with SMTP id 33so238839pvf.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 22 Feb 2010 22:52:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5a774f4c1002141937n4eb1033bx3c64ed5618869716@mail.gmail.com>
-Subject: Re: [LTP] about "hugetlbshmget03"
+In-Reply-To: <OFDC4137DB.DFEF0244-ON652576D3.0022D5C8-652576D3.002504C8@in.ibm.com>
+References: <364299f41002221015q76fb174eq268c7badb9ce8031@mail.gmail.com>
+	<OFDC4137DB.DFEF0244-ON652576D3.0022D5C8-652576D3.002504C8@in.ibm.com>
+Date: Mon, 22 Feb 2010 22:52:23 -0800
+Message-ID: <364299f41002222252h327ea723wd1500698072dd7a8@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [ANNOUNCEMENT]: Intermediate release for FEB'10
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,134 +28,628 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7246569460279385420=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: shenghui <crosslonelyover@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Iranna D Ankad <iranna.ankad@in.ibm.com>
+Cc: Rishikesh K Rajak <risrajak@in.ibm.com>, LTP <ltp-list@lists.sourceforge.net>
 
-On Mon, Feb 15, 2010 at 11:37:03AM +0800, shenghui wrote:
-> 2010/2/8 Rishikesh <risrajak@linux.vnet.ibm.com>
-> 
-> > Hi Rishi,
-> >
-> >        Please refer to the following for my error info. And will you please
-> > try it on your workstation and send me
-> > your result?
-> >
-> > Hi Shengui,
-> >
-> > Yes i am also facing this different issue on my TP. Let me investigate more
-> > on that. Meanwhile if you know the solution can you please post your thought
-> > on this problem ?
-> >
-> > Thanks
-> > Rishi
-> >
-> >
-> >
-> >        Thanks!
-> >
-> >
-> > ===============================================================================
-> >
-> > root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
-> > ls
-> > hugeshmget01    hugeshmget02    hugeshmget03    hugeshmget05    Makefile
-> > hugeshmget01.c  hugeshmget02.c  hugeshmget03.c  hugeshmget05.c
-> >
-> > root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
-> > echo 10 > /proc/sys/vm/nr_hugepages
-> >
-> > root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
-> > cat /proc/meminfo
-> > MemTotal:        4048440 kB
-> > MemFree:         1576656 kB
-> > Buffers:          122652 kB
-> > Cached:          1487772 kB
-> > SwapCached:            0 kB
-> > Active:          1225860 kB
-> > Inactive:        1043268 kB
-> > Active(anon):     684228 kB
-> > Inactive(anon):       16 kB
-> > Active(file):     541632 kB
-> > Inactive(file):  1043252 kB
-> > Unevictable:           0 kB
-> > Mlocked:               0 kB
-> > HighTotal:       3211696 kB
-> > HighFree:        1044060 kB
-> > LowTotal:         836744 kB
-> > LowFree:          532596 kB
-> > SwapTotal:       3903752 kB
-> > SwapFree:        3903752 kB
-> > Dirty:               204 kB
-> > Writeback:             0 kB
-> > AnonPages:        658692 kB
-> > Mapped:           239928 kB
-> > Slab:             109460 kB
-> > SReclaimable:      93676 kB
-> > SUnreclaim:        15784 kB
-> > PageTables:         8332 kB
-> > NFS_Unstable:          0 kB
-> > Bounce:                0 kB
-> > WritebackTmp:          0 kB
-> > CommitLimit:     5917732 kB
-> > Committed_AS:    1389392 kB
-> > VmallocTotal:     122880 kB
-> > VmallocUsed:       44644 kB
-> > VmallocChunk:      75956 kB
-> > HugePages_Total:      10
-> > HugePages_Free:       10
-> > HugePages_Rsvd:        0
-> > HugePages_Surp:        0
-> > Hugepagesize:       2048 kB
-> > DirectMap4k:        8184 kB
-> > DirectMap2M:      903168 kB
-> >
-> > root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
-> > ./hugeshmget03
-> > hugeshmget03    0  TINFO  :  errno = 12 : Cannot allocate memory
-> > hugeshmget03    1  TBROK  :  Didn't get ENOSPC in test setup
-> >
-> > root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
-> > echo 32 > /proc/sys/vm/nr_hugepages
-> >
-> > root@crossover-laptop:/home/crossover/repository/ltp-intermediate-20100119/testcases/kernel/mem/hugetlb/hugeshmget#
-> > ./hugeshmget03
-> > hugeshmget03    0  TINFO  :  errno = 12 : Cannot allocate memory
-> > hugeshmget03    1  TBROK  :  Didn't get ENOSPC in test setup
-> >
-> >
-> > --
-> >
-> >
-> > Thanks and Best Regards,
-> > shenghui
-> >
-> >
-> >
-> Hi Rishi,
-> 
->       I found hugetlbshmget01 has the same problem. Seems we need do
-> further investigation on these two programs. :)
+--===============7246569460279385420==
+Content-Type: multipart/alternative; boundary=000e0cd1b7e6ed8ca704803efd9e
 
-Hi Shenghui,
-Sure i will have a look into it soon. 
-Thanks
-Rishi
-> 
-> 
-> -- 
-> 
-> 
-> Thanks and Best Regards,
-> shenghui
+--000e0cd1b7e6ed8ca704803efd9e
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Feb 22, 2010 at 10:41 PM, Iranna D Ankad <iranna.ankad@in.ibm.com>w=
+rote:
+
+>
+> << Iranna,
+> <<I've stumbled down this bloody hole too many times to know that we shou=
+ld
+> NOT be too hasty in jumping down here again.
+> << 1. How did you compile everything (STEP BY STEP... from scratch after
+> getting autotools, etc)?
+> << 2. If you are running autotools, you DO realize that you're running wi=
+th
+> an incompatible copy of autoconf, correct? INSTALL explicitly states:
+>
+> Hi Garrett,
+> I am running one of the RHEL distro's with default versions of make,
+> automake & autoconf. As you pointed out may be my OS has older versions o=
+f
+> automake & autoconf than recommended but I am running right version of ma=
+ke
+> (i.e make-3.81-3.el5). I think, when I am just building LTP using make, I=
+ do
+> not think autoconf will interfere here?
+>
+> Here are the steps I am using to compile LTP:
+> #./configure
+> # make
+> ........... hitting reported build errors here ............
+>
+
+    Please run `make ac-clean', then run `./configure ; make' . It looks
+like the tarball wasn't purged of all configure generated files.
+Thanks,
+-Garrett
+
+
+>
+> Thanks!
+> -Iranna D Ankad
+>
+> -------------------------------------------------------------------------=
+---------------------------
+> Linux-Technology Center, IBM India Software Labs
+> Manyata Embassy Park, BENGALURU - 560045,
+> Ph: +91-080-28055007   Extn: 55007
+>
+> -------------------------------------------------------------------------=
+---------------------------
+> "If you don't have patience to test the software, the software will test
+> your patience !!"
+>
+>
+>  *Garrett Cooper <yanegomi@gmail.com>*
+>
+> 02/22/10 11:45 PM
+>   To
+> Iranna D Ankad/India/IBM@IBMIN
+>  cc
+> Rishikesh <risrajak@linux.vnet.ibm.com>, LTP <
+> ltp-list@lists.sourceforge.net>, Rishikesh K Rajak/India/IBM@IBMIN,
+> Vishukumar S Shetty/India/IBM@IBMIN
+> Subject
+> Re: [ANNOUNCEMENT]: Intermediate release for FEB'10
+>
+>
+>
+>
+> On Mon, Feb 22, 2010 at 7:48 AM, Iranna D Ankad <*iranna.ankad@in.ibm.com=
+*<iranna.ankad@in.ibm.com>>
+> wrote:
+>
+> Hello Rishi,
+> LTP compilation on my system halted with below build errors, please check
+> this out.    Thanks!
+>
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+>  -I/root/ltp-intermediate-20100228/testcases/kernel/include
+> -I/root/ltp-intermediate-20100228/testcases/kernel/syscalls/mbind/../util=
+s/
+> -I../../../../include -I../../../../include   -L../../../../lib  mbind01.=
+c
+> -lltp -lnuma -o mbind01
+> mbind01.c:184: error: =91MPOL_DEFAULT=92 undeclared here (not in a functi=
+on)
+> mbind01.c:196: error: =91MPOL_BIND=92 undeclared here (not in a function)
+> mbind01.c:208: error: =91MPOL_INTERLEAVE=92 undeclared here (not in a fun=
+ction)
+> mbind01.c:220: error: =91MPOL_PREFERRED=92 undeclared here (not in a func=
+tion)
+> mbind01.c: In function =91do_test=92:
+> mbind01.c:309: error: =91MPOL_F_ADDR=92 undeclared (first use in this fun=
+ction)
+> mbind01.c:309: error: (Each undeclared identifier is reported only once
+> mbind01.c:309: error: for each function it appears in.)
+> mbind01.c:317: warning: comparison between pointer and integer
+> mbind01.c:319: warning: comparison between pointer and integer
+> make[4]: *** [mbind01] Error 1
+> make[4]: Leaving directory
+> `/root/ltp-intermediate-20100228/testcases/kernel/syscalls/mbind'
+> make[3]: *** [all] Error 2
+> make[3]: Leaving directory
+> `/root/ltp-intermediate-20100228/testcases/kernel/syscalls'
+> make[2]: *** [all] Error 2
+> make[2]: Leaving directory
+> `/root/ltp-intermediate-20100228/testcases/kernel'
+> make[1]: *** [all] Error 2
+> make[1]: Leaving directory `/root/ltp-intermediate-20100228/testcases'
+> make: *** [testcases-all] Error 2
+> [root@mx3655 ltp-intermediate-20100228]#
+>
+> Here are the make & autoconf versions I am running.
+>
+> [root@mx3655 ltp-intermediate-20100228]# rpm -qa | grep make
+> automake14-1.4p6-13
+> imake-1.0.2-3
+> automake17-1.7.9-7
+> automake15-1.5-16
+> automake16-1.6.3-8
+> make-3.81-3.el5
+> automake-1.9.6-2.1
+> [root@mx3655 ltp-intermediate-20100228]# rpm -qa | grep autoconf
+> autoconf-2.59-12
+> [root@mx3655 ltp-intermediate-20100228]#
+>
+>
+> -Iranna D Ankad
+>
+> -------------------------------------------------------------------------=
+---------------------------
+> Linux-Technology Center, IBM India Software Labs
+> Manyata Embassy Park, BENGALURU - 560045,
+> Ph: +91-080-28055007   Extn: 55007
+>
+> -------------------------------------------------------------------------=
+---------------------------
+> "If you don't have patience to test the software, the software will test
+> your patience !!"
+>
+>   *Rishikesh <**risrajak@linux.vnet.ibm.com* <risrajak@linux.vnet.ibm.com=
+>
+> *>*
+>
+> 02/22/10 01:17 PM
+>
+>   To
+> LTP <*ltp-list@lists.sourceforge.net* <ltp-list@lists.sourceforge.net>>
+> cc
+> Garrett Cooper <*yanegomi@gmail.com* <yanegomi@gmail.com>>, Rishikesh K
+> Rajak/India/IBM@IBMIN, Vishukumar S Shetty/India/IBM@IBMIN, Iranna D
+> Ankad/India/IBM@IBMIN
+> Subject
+> [ANNOUNCEMENT]: Intermediate release for FEB'10
+>
+>
+>
+>
+>
+>
+> Hi All,
+>
+> Welcome to ltp community.
+>
+> The February 2010 Intermediate release is out now. This build contains
+> many fixes. Changelog you can find as attached.
+>
+> You can directly download from:*
+> **
+> https://sourceforge.net/projects/ltp/files/LTP%20Source/ltp-20100228/ltp-=
+intermediate-20100228.tgz/download
+> *<https://sourceforge.net/projects/ltp/files/LTP%20Source/ltp-20100228/lt=
+p-intermediate-20100228.tgz/download>
+>
+> And for more details you can just have a look to ltp Home Page: *
+> **http://ltp.sourceforge.net/* <http://ltp.sourceforge.net/>
+>
+> --
+> Thanks&  Regards
+> Rishi Kesh K Rajak
+> IBM LTC, Bangalore
+> LTP Maintainer
+> Please join IRC: #ltp @ *freenode.net* <http://freenode.net/>
+>
+> [attachment "ChangeLog.new" deleted by Iranna D Ankad/India/IBM]
+>
+> Iranna,
+>
+> I've stumbled down this bloody hole too many times to know that we should
+> NOT be too hasty in jumping down here again.
+> 1. How did you compile everything (STEP BY STEP... from scratch after
+> getting autotools, etc)?
+> 2. If you are running autotools, you DO realize that you're running with =
+an
+> incompatible copy of autoconf, correct? INSTALL explicitly states:
+>
+> make 3.81 can be obtained here:
+> - *http://ftp.gnu.org/gnu/make/make-3.81.tar.bz2*<http://ftp.gnu.org/gnu/=
+make/make-3.81.tar.bz2>
+>
+> ------------------------> If you want to use auto configuration, be sure
+> autoconf-2.61+ & automake-1.10+ <------------------------
+> are installed.
+>
+> automake-1.10.2's sources can be downloaded from:
+> - *ftp://ftp.gnu.org/gnu/automake/automake-1.10.2.tar.bz2*<ftp://ftp.gnu.=
+org/gnu/automake/automake-1.10.2.tar.bz2>
+> - *ftp://ftp.gnu.org/gnu/automake/automake-1.10.2.tar.gz*<ftp://ftp.gnu.o=
+rg/gnu/automake/automake-1.10.2.tar.gz>
+>
+> autoconf-2.61's sources can be downloaded from:
+> - *ftp://ftp.gnu.org/gnu/autoconf/autoconf-2.61.tar.bz2*<ftp://ftp.gnu.or=
+g/gnu/autoconf/autoconf-2.61.tar.bz2>
+> - *ftp://ftp.gnu.org/gnu/autoconf/autoconf-2.61.tar.gz*<ftp://ftp.gnu.org=
+/gnu/autoconf/autoconf-2.61.tar.gz>
+>
+> autoconf-2.61 also requires m4-1.4.7+ be installed. Its sources can be
+> downloaded from:
+> - *http://ftp.gnu.org/gnu/m4/m4-1.4.7.tar.bz2*<http://ftp.gnu.org/gnu/m4/=
+m4-1.4.7.tar.bz2>
+> - *http://ftp.gnu.org/gnu/m4/m4-1.4.7.tar.gz*<http://ftp.gnu.org/gnu/m4/m=
+4-1.4.7.tar.gz>
+>
+> The default autoconfed files were made available for folks to tune so the=
+y
+> could avoid issues with having to write everything from scratch. As such,=
+ it
+> is your job to a) download and setup appropriate software versions of
+> autotools so the configuration is done correctly, automatically, or b)
+> properly configure the file(s) so that everything "works".
+>
+> Thanks,
+> -Garrett
+>
+
+--000e0cd1b7e6ed8ca704803efd9e
+Content-Type: text/html; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
+
+<div class=3D"gmail_quote">On Mon, Feb 22, 2010 at 10:41 PM, Iranna D Ankad=
+ <span dir=3D"ltr">&lt;<a href=3D"mailto:iranna.ankad@in.ibm.com">iranna.an=
+kad@in.ibm.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" s=
+tyle=3D"border-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8e=
+x; padding-left: 1ex;">
+<div class=3D"im">
+<br><font size=3D"3">&lt;&lt; Iranna,<br>
+&lt;&lt;I&#39;ve stumbled down this bloody hole too many times to know that
+we should NOT be too hasty in jumping down here again.<br>
+&lt;&lt; 1. How did you compile everything (STEP BY STEP... from scratch
+after getting autotools, etc)?</font>
+<br><font size=3D"3">&lt;&lt; 2. If you are running autotools, you DO reali=
+ze
+that you&#39;re running with an incompatible copy of autoconf, correct? INS=
+TALL
+explicitly states:<br>
+</font>
+<br></div><font face=3D"sans-serif" size=3D"2">Hi Garrett,</font>
+<br><font face=3D"sans-serif" size=3D"2">I am running one of the RHEL distr=
+o&#39;s
+with default versions of make, automake &amp; autoconf. As you pointed
+out may be my OS has older versions of automake &amp; autoconf than recomme=
+nded
+but I am running right version of make (i.e make-3.81-3.el5). I think,
+when I am just building LTP using make, I do not think autoconf will interf=
+ere
+here?</font>
+<br>
+<br><font face=3D"sans-serif" size=3D"2">Here are the steps I am using to c=
+ompile
+LTP:</font>
+<br><font face=3D"sans-serif" size=3D"2">#./configure</font>
+<br><font face=3D"sans-serif" size=3D"2"># make</font>
+<br><font face=3D"sans-serif" size=3D"2">........... hitting reported build=
+ errors
+here ............</font><br></blockquote><div><br>=A0=A0=A0 Please run `mak=
+e ac-clean&#39;, then run `./configure ; make&#39; . It looks like the tarb=
+all wasn&#39;t purged of all configure generated files.<br>Thanks,<br>-Garr=
+ett<br>
+=A0</div><blockquote class=3D"gmail_quote" style=3D"border-left: 1px solid =
+rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
+<br><font face=3D"sans-serif" size=3D"2">Thanks!</font>
+<br><div class=3D"im"><font face=3D"sans-serif" size=3D"2">-Iranna D Ankad<=
+br>
+---------------------------------------------------------------------------=
+-------------------------<br>
+Linux-Technology Center, IBM India Software Labs<br>
+Manyata Embassy Park, BENGALURU - 560045,<br>
+Ph: +91-080-28055007 =A0 Extn: 55007<br>
+---------------------------------------------------------------------------=
+-------------------------<br>
+&quot;If you don&#39;t have patience to test the software, the software wil=
+l
+test your patience !!&quot;</font>
+<br>
+<br>
+<br>
+</div><table width=3D"100%">
+<tbody><tr valign=3D"top">
+<td width=3D"40%"><div class=3D"im"><font face=3D"sans-serif" size=3D"1"><b=
+>Garrett Cooper &lt;<a href=3D"mailto:yanegomi@gmail.com" target=3D"_blank"=
+>yanegomi@gmail.com</a>&gt;</b>
+</font>
+</div><p><font face=3D"sans-serif" size=3D"1">02/22/10 11:45 PM</font>
+</p></td><td width=3D"59%">
+<table width=3D"100%">
+<tbody><tr valign=3D"top">
+<td>
+<div align=3D"right"><font face=3D"sans-serif" size=3D"1">To</font></div>
+</td><td><div class=3D"im"><font face=3D"sans-serif" size=3D"1">Iranna D An=
+kad/India/IBM@IBMIN</font>
+</div></td></tr><tr valign=3D"top">
+<td>
+<div align=3D"right"><font face=3D"sans-serif" size=3D"1">cc</font></div>
+</td><td><font face=3D"sans-serif" size=3D"1">Rishikesh &lt;<a href=3D"mail=
+to:risrajak@linux.vnet.ibm.com" target=3D"_blank">risrajak@linux.vnet.ibm.c=
+om</a>&gt;,
+LTP &lt;<a href=3D"mailto:ltp-list@lists.sourceforge.net" target=3D"_blank"=
+>ltp-list@lists.sourceforge.net</a>&gt;, Rishikesh K Rajak/India/IBM@IBMIN,
+Vishukumar S Shetty/India/IBM@IBMIN</font>
+</td></tr><tr valign=3D"top">
+<td>
+<div align=3D"right"><font face=3D"sans-serif" size=3D"1">Subject</font></d=
+iv>
+</td><td><font face=3D"sans-serif" size=3D"1">Re: [ANNOUNCEMENT]: Intermedi=
+ate release
+for FEB&#39;10</font></td></tr></tbody></table>
+<br>
+<table>
+<tbody><tr valign=3D"top">
+<td>
+</td><td></td></tr></tbody></table>
+<br></td></tr></tbody></table><div><div></div><div class=3D"h5">
+<br>
+<br>
+<br><font size=3D"3">On Mon, Feb 22, 2010 at 7:48 AM, Iranna D Ankad &lt;</=
+font><a href=3D"mailto:iranna.ankad@in.ibm.com" target=3D"_blank"><font col=
+or=3D"blue" size=3D"3"><u>iranna.ankad@in.ibm.com</u></font></a><font size=
+=3D"3">&gt;
+wrote:</font>
+<br><font face=3D"sans-serif" size=3D"2"><br>
+Hello Rishi,</font><font size=3D"3"> </font><font face=3D"sans-serif" size=
+=3D"2"><br>
+LTP compilation on my system halted with below build errors, please check
+this out. =A0 =A0Thanks!</font><font size=3D"3"> <br>
+</font><font face=3D"sans-serif" size=3D"2"><br>
+gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall =A0-I/root/ltp-intermedi=
+ate-20100228/testcases/kernel/include
+-I/root/ltp-intermediate-20100228/testcases/kernel/syscalls/mbind/../utils/
+-I../../../../include -I../../../../include =A0 -L../../../../lib =A0mbind0=
+1.c
+=A0 -lltp -lnuma -o mbind01</font><font size=3D"3"> </font><font face=3D"sa=
+ns-serif" size=3D"2"><br>
+mbind01.c:184: error: =91MPOL_DEFAULT=92 undeclared here (not in a function=
+)</font><font size=3D"3">
+</font><font face=3D"sans-serif" size=3D"2"><br>
+mbind01.c:196: error: =91MPOL_BIND=92 undeclared here (not in a function)</=
+font><font size=3D"3">
+</font><font face=3D"sans-serif" size=3D"2"><br>
+mbind01.c:208: error: =91MPOL_INTERLEAVE=92 undeclared here (not in a funct=
+ion)</font><font size=3D"3">
+</font><font face=3D"sans-serif" size=3D"2"><br>
+mbind01.c:220: error: =91MPOL_PREFERRED=92 undeclared here (not in a functi=
+on)</font><font size=3D"3">
+</font><font face=3D"sans-serif" size=3D"2"><br>
+mbind01.c: In function =91do_test=92:</font><font size=3D"3"> </font><font =
+face=3D"sans-serif" size=3D"2"><br>
+mbind01.c:309: error: =91MPOL_F_ADDR=92 undeclared (first use in this funct=
+ion)</font><font size=3D"3">
+</font><font face=3D"sans-serif" size=3D"2"><br>
+mbind01.c:309: error: (Each undeclared identifier is reported only once</fo=
+nt><font size=3D"3">
+</font><font face=3D"sans-serif" size=3D"2"><br>
+mbind01.c:309: error: for each function it appears in.)</font><font size=3D=
+"3">
+</font><font face=3D"sans-serif" size=3D"2"><br>
+mbind01.c:317: warning: comparison between pointer and integer</font><font =
+size=3D"3">
+</font><font face=3D"sans-serif" size=3D"2"><br>
+mbind01.c:319: warning: comparison between pointer and integer</font><font =
+size=3D"3">
+</font><font face=3D"sans-serif" size=3D"2"><br>
+make[4]: *** [mbind01] Error 1</font><font size=3D"3"> </font><font face=3D=
+"sans-serif" size=3D"2"><br>
+make[4]: Leaving directory `/root/ltp-intermediate-20100228/testcases/kerne=
+l/syscalls/mbind&#39;</font><font size=3D"3">
+</font><font face=3D"sans-serif" size=3D"2"><br>
+make[3]: *** [all] Error 2</font><font size=3D"3"> </font><font face=3D"san=
+s-serif" size=3D"2"><br>
+make[3]: Leaving directory `/root/ltp-intermediate-20100228/testcases/kerne=
+l/syscalls&#39;</font><font size=3D"3">
+</font><font face=3D"sans-serif" size=3D"2"><br>
+make[2]: *** [all] Error 2</font><font size=3D"3"> </font><font face=3D"san=
+s-serif" size=3D"2"><br>
+make[2]: Leaving directory `/root/ltp-intermediate-20100228/testcases/kerne=
+l&#39;</font><font size=3D"3">
+</font><font face=3D"sans-serif" size=3D"2"><br>
+make[1]: *** [all] Error 2</font><font size=3D"3"> </font><font face=3D"san=
+s-serif" size=3D"2"><br>
+make[1]: Leaving directory `/root/ltp-intermediate-20100228/testcases&#39;<=
+/font><font size=3D"3">
+</font><font face=3D"sans-serif" size=3D"2"><br>
+make: *** [testcases-all] Error 2</font><font size=3D"3"> </font><font face=
+=3D"sans-serif" size=3D"2"><br>
+[root@mx3655 ltp-intermediate-20100228]# </font><font size=3D"3"><br>
+</font><font face=3D"sans-serif" size=3D"2"><br>
+Here are the make &amp; autoconf versions I am running.</font><font size=3D=
+"3">
+<br>
+</font><font face=3D"sans-serif" size=3D"2"><br>
+[root@mx3655 ltp-intermediate-20100228]# rpm -qa | grep make</font><font si=
+ze=3D"3">
+</font><font face=3D"sans-serif" size=3D"2"><br>
+automake14-1.4p6-13</font><font size=3D"3"> </font><font face=3D"sans-serif=
+" size=3D"2"><br>
+imake-1.0.2-3</font><font size=3D"3"> </font><font face=3D"sans-serif" size=
+=3D"2"><br>
+automake17-1.7.9-7</font><font size=3D"3"> </font><font face=3D"sans-serif"=
+ size=3D"2"><br>
+automake15-1.5-16</font><font size=3D"3"> </font><font face=3D"sans-serif" =
+size=3D"2"><br>
+automake16-1.6.3-8</font><font size=3D"3"> </font><font face=3D"sans-serif"=
+ size=3D"2"><br>
+make-3.81-3.el5</font><font size=3D"3"> </font><font face=3D"sans-serif" si=
+ze=3D"2"><br>
+automake-1.9.6-2.1</font><font size=3D"3"> </font><font face=3D"sans-serif"=
+ size=3D"2"><br>
+[root@mx3655 ltp-intermediate-20100228]# rpm -qa | grep autoconf</font><fon=
+t size=3D"3">
+</font><font face=3D"sans-serif" size=3D"2"><br>
+autoconf-2.59-12</font><font size=3D"3"> </font><font face=3D"sans-serif" s=
+ize=3D"2"><br>
+[root@mx3655 ltp-intermediate-20100228]#</font><font size=3D"3"> <br>
+<br>
+</font><font face=3D"sans-serif" size=3D"2"><br>
+-Iranna D Ankad<br>
+---------------------------------------------------------------------------=
+-------------------------<br>
+Linux-Technology Center, IBM India Software Labs<br>
+Manyata Embassy Park, BENGALURU - 560045,<br>
+Ph: +91-080-28055007 =A0 Extn: 55007<br>
+---------------------------------------------------------------------------=
+-------------------------<br>
+&quot;If you don&#39;t have patience to test the software, the software wil=
+l
+test your patience !!&quot;</font><font size=3D"3"> <br>
+<br>
+</font>
+<table width=3D"100%">
+<tbody><tr valign=3D"top">
+<td width=3D"22%"><font face=3D"sans-serif" size=3D"1"><b>Rishikesh &lt;</b=
+></font><a href=3D"mailto:risrajak@linux.vnet.ibm.com" target=3D"_blank"><f=
+ont color=3D"blue" face=3D"sans-serif" size=3D"1"><b><u>risrajak@linux.vnet=
+.ibm.com</u></b></font></a><font face=3D"sans-serif" size=3D"1"><b>&gt;</b>
+</font>
+<p><font face=3D"sans-serif" size=3D"1">02/22/10 01:17 PM</font><font size=
+=3D"3">
+</font>
+</p></td><td width=3D"77%">
+<br>
+<table width=3D"100%">
+<tbody><tr valign=3D"top">
+<td width=3D"6%">
+<div align=3D"right"><font face=3D"sans-serif" size=3D"1">To</font></div>
+</td><td width=3D"93%"><font face=3D"sans-serif" size=3D"1">LTP &lt;</font>=
+<a href=3D"mailto:ltp-list@lists.sourceforge.net" target=3D"_blank"><font c=
+olor=3D"blue" face=3D"sans-serif" size=3D"1"><u>ltp-list@lists.sourceforge.=
+net</u></font></a><font face=3D"sans-serif" size=3D"1">&gt;</font><font siz=
+e=3D"3">
+</font>
+</td></tr><tr valign=3D"top">
+<td>
+<div align=3D"right"><font face=3D"sans-serif" size=3D"1">cc</font></div>
+</td><td><font face=3D"sans-serif" size=3D"1">Garrett Cooper &lt;</font><a =
+href=3D"mailto:yanegomi@gmail.com" target=3D"_blank"><font color=3D"blue" f=
+ace=3D"sans-serif" size=3D"1"><u>yanegomi@gmail.com</u></font></a><font fac=
+e=3D"sans-serif" size=3D"1">&gt;,
+Rishikesh K Rajak/India/IBM@IBMIN, Vishukumar S Shetty/India/IBM@IBMIN,
+Iranna D Ankad/India/IBM@IBMIN</font><font size=3D"3"> </font>
+</td></tr><tr valign=3D"top">
+<td>
+<div align=3D"right"><font face=3D"sans-serif" size=3D"1">Subject</font></d=
+iv>
+</td><td><font face=3D"sans-serif" size=3D"1">[ANNOUNCEMENT]: Intermediate =
+release
+for FEB&#39;10</font></td></tr></tbody></table>
+<br>
+<br>
+<table width=3D"100%">
+<tbody><tr valign=3D"top">
+<td width=3D"50%">
+</td><td width=3D"50%"></td></tr></tbody></table>
+<br></td></tr></tbody></table>
+<br><font size=3D"3"><br>
+<br>
+</font>
+<br><tt><font size=3D"2">Hi All,<br>
+<br>
+Welcome to ltp community.<br>
+<br>
+The February 2010 Intermediate release is out now. This build contains<br>
+many fixes. Changelog you can find as attached.<br>
+<br>
+You can directly download from:</font></tt><tt><font color=3D"blue" size=3D=
+"2"><u><br>
+</u></font></tt><a href=3D"https://sourceforge.net/projects/ltp/files/LTP%2=
+0Source/ltp-20100228/ltp-intermediate-20100228.tgz/download" target=3D"_bla=
+nk"><tt><font color=3D"blue" size=3D"2"><u>https://sourceforge.net/projects=
+/ltp/files/LTP%20Source/ltp-20100228/ltp-intermediate-20100228.tgz/download=
+</u></font></tt></a><tt><font size=3D"2"><br>
+
+<br>
+And for more details you can just have a look to ltp Home Page: </font></tt=
+><tt><font color=3D"blue" size=3D"2"><u><br>
+</u></font></tt><a href=3D"http://ltp.sourceforge.net/" target=3D"_blank"><=
+tt><font color=3D"blue" size=3D"2"><u>http://ltp.sourceforge.net/</u></font=
+></tt></a><tt><font size=3D"2"><br>
+<br>
+-- <br>
+Thanks&amp; =A0Regards<br>
+Rishi Kesh K Rajak<br>
+IBM LTC, Bangalore<br>
+LTP Maintainer<br>
+Please join IRC: #ltp @ </font></tt><a href=3D"http://freenode.net/" target=
+=3D"_blank"><tt><font color=3D"blue" size=3D"2"><u>freenode.net</u></font><=
+/tt></a><tt><font size=3D"2"><br>
+</font></tt>
+<br><tt><font size=3D"2">[attachment &quot;ChangeLog.new&quot; deleted by I=
+ranna
+D Ankad/India/IBM] </font></tt>
+<br><font size=3D"3"><br>
+Iranna,<br>
+<br>
+I&#39;ve stumbled down this bloody hole too many times to know that we shou=
+ld
+NOT be too hasty in jumping down here again.<br>
+1. How did you compile everything (STEP BY STEP... from scratch after getti=
+ng
+autotools, etc)?<br>
+2. If you are running autotools, you DO realize that you&#39;re running wit=
+h
+an incompatible copy of autoconf, correct? INSTALL explicitly states:<br>
+<br>
+make 3.81 can be obtained here:<br>
+- </font><a href=3D"http://ftp.gnu.org/gnu/make/make-3.81.tar.bz2" target=
+=3D"_blank"><font color=3D"blue" size=3D"3"><u>http://ftp.gnu.org/gnu/make/=
+make-3.81.tar.bz2</u></font></a><font size=3D"3"><br>
+<br>
+------------------------&gt; If you want to use auto configuration, be
+sure autoconf-2.61+ &amp; automake-1.10+ &lt;------------------------<br>
+are installed.<br>
+<br>
+automake-1.10.2&#39;s sources can be downloaded from:<br>
+- </font><a href=3D"ftp://ftp.gnu.org/gnu/automake/automake-1.10.2.tar.bz2"=
+ target=3D"_blank"><font color=3D"blue" size=3D"3"><u>ftp://ftp.gnu.org/gnu=
+/automake/automake-1.10.2.tar.bz2</u></font></a><font size=3D"3"><br>
+- </font><a href=3D"ftp://ftp.gnu.org/gnu/automake/automake-1.10.2.tar.gz" =
+target=3D"_blank"><font color=3D"blue" size=3D"3"><u>ftp://ftp.gnu.org/gnu/=
+automake/automake-1.10.2.tar.gz</u></font></a><font size=3D"3"><br>
+<br>
+autoconf-2.61&#39;s sources can be downloaded from:<br>
+- </font><a href=3D"ftp://ftp.gnu.org/gnu/autoconf/autoconf-2.61.tar.bz2" t=
+arget=3D"_blank"><font color=3D"blue" size=3D"3"><u>ftp://ftp.gnu.org/gnu/a=
+utoconf/autoconf-2.61.tar.bz2</u></font></a><font size=3D"3"><br>
+- </font><a href=3D"ftp://ftp.gnu.org/gnu/autoconf/autoconf-2.61.tar.gz" ta=
+rget=3D"_blank"><font color=3D"blue" size=3D"3"><u>ftp://ftp.gnu.org/gnu/au=
+toconf/autoconf-2.61.tar.gz</u></font></a><font size=3D"3"><br>
+<br>
+autoconf-2.61 also requires m4-1.4.7+ be installed. Its sources can be<br>
+downloaded from:<br>
+- </font><a href=3D"http://ftp.gnu.org/gnu/m4/m4-1.4.7.tar.bz2" target=3D"_=
+blank"><font color=3D"blue" size=3D"3"><u>http://ftp.gnu.org/gnu/m4/m4-1.4.=
+7.tar.bz2</u></font></a><font size=3D"3"><br>
+- </font><a href=3D"http://ftp.gnu.org/gnu/m4/m4-1.4.7.tar.gz" target=3D"_b=
+lank"><font color=3D"blue" size=3D"3"><u>http://ftp.gnu.org/gnu/m4/m4-1.4.7=
+.tar.gz</u></font></a><font size=3D"3"><br>
+<br>
+The default autoconfed files were made available for folks to tune so they
+could avoid issues with having to write everything from scratch. As such,
+it is your job to a) download and setup appropriate software versions of
+autotools so the configuration is done correctly, automatically, or b)
+properly configure the file(s) so that everything &quot;works&quot;.<br>
+<br>
+Thanks,<br>
+-Garrett</font>
+<br>
+</div></div></blockquote></div><br>
+
+--000e0cd1b7e6ed8ca704803efd9e--
+
+
+--===============7246569460279385420==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
-Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
-http://p.sf.net/sfu/solaris-dev2dev
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
+--===============7246569460279385420==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============7246569460279385420==--
+
