@@ -1,24 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <saileshcv@gmail.com>) id 1NkXOX-0004Ot-W0
-	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 06:40:21 +0000
-Received: from mail-iw0-f176.google.com ([209.85.223.176])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NkXOW-0002pD-VU
-	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 06:40:21 +0000
-Received: by iwn6 with SMTP id 6so4933291iwn.10
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 24 Feb 2010 22:40:15 -0800 (PST)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NjmzN-0000GG-MW
+	for ltp-list@lists.sourceforge.net; Tue, 23 Feb 2010 05:07:17 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NjmzM-0005bN-Dq
+	for ltp-list@lists.sourceforge.net; Tue, 23 Feb 2010 05:07:17 +0000
+Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
+	[9.17.195.226])
+	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1N4xVgJ010281
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Feb 2010 21:59:31 -0700
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o1N575AB121034
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Feb 2010 22:07:05 -0700
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o1N574bZ017702
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Feb 2010 22:07:04 -0700
+Date: Tue, 23 Feb 2010 10:37:01 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100223050701.GB11102@linux.vnet.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <364299f41002241314u28cec7e9h7334685f6f82a8a@mail.gmail.com>
-References: <41c7690d1002240410y3f132792he5460c69891a0976@mail.gmail.com>
-	<364299f41002241314u28cec7e9h7334685f6f82a8a@mail.gmail.com>
-Date: Thu, 25 Feb 2010 12:10:15 +0530
-Message-ID: <41c7690d1002242240m787a1e8bj4640341ec09ff61c@mail.gmail.com>
-From: Silesh C V <saileshcv@gmail.com>
-Subject: Re: [LTP] [PATCH][RESEND] RTC Device Driver Tests
+Content-Disposition: inline
+Subject: [LTP] Container Test should not run on older distro kernel
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,394 +38,107 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Arun.sudhilal@lntinfotech.com, Mohamed.Rasheed@lntinfotech.com
+To: LTP <ltp-list@lists.sourceforge.net>
 
-Hi Garrett,
+Hi All,
 
-Thanks for the review and suggestions.
+I ran feb'10 intermediate release on RHEL5.4. And found that it is
+running pidns testcase which is not at all require.
 
-On 2/25/10, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Wed, Feb 24, 2010 at 4:10 AM, Silesh C V <saileshcv@gmail.com> wrote:
->>
->> Hi ,
->>
->> This patch contains tests for the linux RTC driver.The patch is taken
->> against feb intermediate release.I have also attached the patch.Please
->> find
->> the test log at the end of this mail.Build/Run instructions are explained
->> in
->> the README.
->>
->>
->> Signed-off-By: Silesh C V <Silesh.Vellattu@lntinfotech.com>
->> --
->> diff -purN ltp-intermediate-20100228.
->> orig/testcases/kernel/device-drivers/rtc/Makefile
->> ltp-intermediate-20100228/testcases/kernel/device-drivers/rtc/Makefile
->> ---
->> ltp-intermediate-20100228.orig/testcases/kernel/device-drivers/rtc/Makefile
->> 1970-01-01 05:30:00.000000000 +0530
->> +++ ltp-intermediate-20100228/testcases/kernel/device-drivers/rtc/Makefile
->>    2010-02-24 15:21:33.000000000 +0530
->> @@ -0,0 +1,28 @@
->> +#
->> +#  Copyright (c) Larsen & Toubro Infotech Ltd., 2010
->> +#
->> +#  This program is free software;  you can redistribute it and/or modify
->> +#  it under the terms of the GNU General Public License as published by
->> +#  the Free Software Foundation; either version 2 of the License, or
->> +#  (at your option) any later version.
->> +#
->> +#  This program is distributed in the hope that it will be useful,
->> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
->> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
->> +#  the GNU General Public License for more details.
->> +#
->> +#  You should have received a copy of the GNU General Public License
->> +#  along with this program;  if not, write to the Free Software
->> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301
->>  USA
->> +#
->> +#
->> +
->> +CFLAGS = -O2 -Wall
->> +SRC = test_rtc.c
->> +
->> +
->> +all: $(SRC)
->> +       $(CC) $(CFLAGS) $(SRC) -o rtc-test
->> +
->> +clean:
->> +       rm -f rtc-test
->
-> Please integrate into the Makefile infrastructure. See README.mk-devel
-> for more details.
+Garret is it require to disable check_pidns_enabled.c which has been
+masked for now ? I think we will need this file as it does more than
+kernel version comparison.
 
-I can see that under kernel/ directory, the device-drivers  directory
-does not follow the new Makefile infrastructure. I tried adding
-device-drivers SUBDIRS  to   testcases/kernel/Makefile. As none of the
-other device driver test cases follow this Makefile approach, the
-build breaks .
+can someone look into it please ?
 
->
->> diff -purN
->> ltp-intermediate-20100228.orig/testcases/kernel/device-drivers/rtc/README
->> ltp-intermediate-20100228/testcases/kernel/device-drivers/rtc/README
->> ---
->> ltp-intermediate-20100228.orig/testcases/kernel/device-drivers/rtc/README
->> 1970-01-01 05:30:00.000000000 +0530
->> +++ ltp-intermediate-20100228/testcases/kernel/device-drivers/rtc/README
->>    2010-02-24 14:34:01.000000000 +0530
->> @@ -0,0 +1,29 @@
->> +test_rtc.c : Test the Real Time Clock driver
->> +
->> +Tests supported as of now
->> +--------------------------
->> +1. Read test : This reads the time/date from the RTC
->> +   ioctls tested :- RTC_RD_TIME.
->> +
->> +2. Alarm Test: Sets the alarm to 5 seconds in future and makes sure it
->> rings.
->> +   ioctls tested :- RTC_ALM_SET, RTC_ALM_READ,  RTC_AIE_ON, RTC_AIE_OFF.
->> +
->> +3. Update interrupts test : Sets Update interrupts enable on, waits for
->> five
->> +   interrupts and then turns it off.
->> +   ioctls tested :- RTC_UIE_ON, RTC_UIE_OFF.
->> +
->> +
->> +How to Build
->> +------------
->> +
->> +Enter rtc directory and issue a 'make' .
->> +
->> +How to Run
->> +----------
->> +
->> +       The tests assume the rtc device node to be "/dev/rtc". If you have
->> a
->> +different node run the test with the name of the node as a parameter.
->> +
->> +Eg. If your node is /dev/rtc0, then run the test as
->> +
->> +       $ ./rtc-test /dev/rtc0
->> diff -purN
->> ltp-intermediate-20100228.orig/testcases/kernel/device-drivers/rtc/test_rtc.c
->> ltp-intermediate-20100228/testcases/kernel/device-drivers/rtc/test_rtc.c
->> ---
->> ltp-intermediate-20100228.orig/testcases/kernel/device-drivers/rtc/test_rtc.c
->>       1970-01-01 05:30:00.000000000 +0530
->> +++
->> ltp-intermediate-20100228/testcases/kernel/device-drivers/rtc/test_rtc.c
->>    2010-02-24 15:17:59.000000000 +0530
->> @@ -0,0 +1,175 @@
->> +/*   test_rtc.c
->> + *
->> + *   Copyright (c) Larsen & Toubro Infotech Ltd., 2010
->> + *
->> + *   Contact : Silesh C V <Silesh.Vellattu@lntinfotech.com>
->> + *
->> + *   This program is free software;  you can redistribute it and/or
->> modify
->> + *   it under the terms of the GNU General Public License as published by
->> + *   the Free Software Foundation; either version 2 of the License, or
->> + *   (at your option) any later version.
->> + *
->> + *   This program is distributed in the hope that it will be useful,
->> + *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
->> + *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
->> + *   the GNU General Public License for more details.
->> + *
->> + *   You should have received a copy of the GNU General Public License
->> + *   along with this program;  if not, write to the Free Software
->> + *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
->> USA
->> + *
->> + */
->> +
->> +#include <sys/ioctl.h>
->> +#include <stdio.h>
->> +#include <stdlib.h>
->> +#include <fcntl.h>
->> +#include <unistd.h>
->> +#include <linux/rtc.h>
->> +#include <errno.h>
->> +
->> +int rtc_fd = -1;
->> +
->> +void read_alarm_test(void)
->> +{
->> +       struct rtc_time rtc_tm;
->> +       int ret;
->> +       unsigned long data;
->> +
->> +       printf("\nRTC READ TEST:\n");
->> +
->> +        /*Read RTC Time*/
->> +        ret = ioctl(rtc_fd, RTC_RD_TIME, &rtc_tm);
->> +        if (ret == -1) {
->> +                perror("RTC_RD_TIME ioctl");
->> +                printf("RTC READ TEST Failed\n");
->> +                return;
->> +        }
->> +
->> +        printf("RTC READ TEST Passed");
->> +        printf("\nCurrent RTC date/time is %d-%d-%d, %02d:%02d:%02d.\n",
->> +                rtc_tm.tm_mday, rtc_tm.tm_mon + 1, rtc_tm.tm_year + 1900,
->> +                rtc_tm.tm_hour, rtc_tm.tm_min, rtc_tm.tm_sec);
->
-> strftime(3) ?
+Here are the failures which i am getting:
 
+=====================================================================
+...
+COMMAND:    /opt/ltp/bin/ltp-pan  -e -S   -a 31429     -n 31429  -p  -f
+/tmp/ltp-wcBkk31437/alltests -l
+/opt/ltp/results/LTP_RUN_ON-2010_Feb_23-04h_51m_27s.log  -C
+/opt/ltp/output/LTP_RUN_ON-2010_Feb_23-04h_51m_27s.failed
+LOG File: /opt/ltp/results/LTP_RUN_ON-2010_Feb_23-04h_51m_27s.log
+FAILED COMMAND File:
+/opt/ltp/output/LTP_RUN_ON-2010_Feb_23-04h_51m_27s.failed
+Running tests.......
+<<<test_start>>>
+tag=Containers stime=1266918687
+cmdline="container_test.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+incrementing stop
+/opt/ltp/testcases/bin/container_test.sh: line 13: check_for_unshare:
+command not found
+Uts namespaces not enabled in kernel.  Not running utsns tests.
+ipc namespaces not enabled in kernel.  Not running ipcns tests.
+Running pidns tests.
+pid_namespace1    0  TINFO  :  PIDNS test is running inside container
 
-OK. Coming in the next patch.
+pid_namespace1    1  TFAIL  :  FAIL: Got unexpected result of cpid=31542
+ppid=31541
 
+pid_namespace2    0  TINFO  :  Checking session id & group id inside
+container
 
->
->> +        printf("\nRTC ALARM TEST :\n");
->> +
->> +        /*set Alarm to 5 Seconds*/
->> +        rtc_tm.tm_sec += 5;
->> +        if (rtc_tm.tm_sec >= 60) {
->> +                rtc_tm.tm_sec %= 60;
->> +                rtc_tm.tm_min++;
->> +        }
->> +
->> +        if (rtc_tm.tm_min == 60) {
->> +                rtc_tm.tm_min = 0;
->> +                rtc_tm.tm_hour++;
->> +        }
->> +
->> +        if (rtc_tm.tm_hour == 24)
->> +                rtc_tm.tm_hour = 0;
->> +
->> +       ret = ioctl(rtc_fd, RTC_ALM_SET, &rtc_tm);
->> +        if (ret == -1) {
->> +                perror("RTC_ALM_SET ioctl");
->> +                printf("RTC ALARM TEST Failed\n");
->> +                return;
->> +        }
->> +
->> +        /*Read current alarm time*/
->> +        ret = ioctl(rtc_fd, RTC_ALM_READ, &rtc_tm);
->> +        if (ret == -1) {
->> +                perror("RTC_ALM_READ ioctl");
->> +                printf("RTC ALARM TEST Failed\n");
->> +                return;
->> +        }
->> +
->> +        printf("Alarm time set to %02d:%02d:%02d.\n",
->> +                rtc_tm.tm_hour, rtc_tm.tm_min, rtc_tm.tm_sec);
->> +        /* Enable alarm interrupts */
->> +        ret = ioctl(rtc_fd, RTC_AIE_ON, 0);
->> +        if (ret == -1) {
->> +                perror("RTC_AIE_ON ioctl");
->> +                printf("RTC ALARM TEST Failed\n");
->> +                return;
->> +        }
->> +
->> +        printf("Waiting 5 seconds for the alarm...\n");
->> +        ret = read(rtc_fd, &data, sizeof(unsigned long));
->> +        if (ret == -1) {
->> +                perror("read");
->> +                printf("RTC ALARM TEST Failed\n");
->> +                return;
->> +        }
->> +
->> +       printf("Alarm rang.\n");
->> +        /* Disable alarm interrupts */
->> +        ret = ioctl(rtc_fd, RTC_AIE_OFF, 0);
->> +        if (ret == -1) {
->> +                perror("RTC_AIE_OFF ioctl");
->> +                printf("RTC ALARM TEST Failed\n");
->> +                return;
->> +        }
->> +
->> +        printf("RTC ALARM TEST Passed\n");
->> +}
->> +
->> +void update_interrupts_test(void)
->> +{
->> +       int ret, i;
->> +       unsigned long data;
->> +
->> +       printf("\nRTC UPDATE INTERRUPTS TEST :\n");
->> +        /*Turn on update interrupts*/
->> +        ret = ioctl(rtc_fd, RTC_UIE_ON, 0);
->> +        if (ret == -1) {
->> +                perror("RTC_UIE_ON ioctl");
->> +                printf("RTC UPDATE INTERRUPTS TEST Failed\n");
->> +               return;
->> +        }
->> +
->> +        printf("Waiting for  5 update interrupts...\n");
->> +        for (i = 1; i < 6; i++) {
->> +                ret = read(rtc_fd, &data, sizeof(unsigned long));
->> +                if (ret == -1) {
->> +                        perror("read");
->> +                        printf("RTC UPDATE INTERRUPTS TEST Failed\n");
->> +                        return;
->> +                }
->> +                printf("Update interrupt %d\n", i);
->> +        }
->> +
->> +         /* Turn off update interrupts */
->> +        ret = ioctl(rtc_fd, RTC_UIE_OFF, 0);
->> +        if (ret == -1) {
->> +                perror("RTC_UIE_OFF ioctl");
->> +                printf("RTC UPDATE INTERRUPTS TEST Failed\n");
->> +                return;
->> +        }
->> +        printf("RTC UPDATE INTERRUPTS TEST Passed\n");
->
-> tst_resm(ret == -1 ? TFAIL : TPASS, "RTC update interrupts test %s",
-> ret == -1 ? "failed" : "passed");
->
+pid_namespace2    1  TFAIL  :  Got unexpected result ofGroup ID = 31544
+& Session ID = 31544
 
-This can be done only when we build the test along with LTP .But as
-the problem I mentioned
-earlier the device-driver directory is still out of the overall LTP build .
+pid_namespace3    0  TINFO  :   Checking pid for parent ns and
+container-init
+		Parent namespace pid = 31545,container parent pid =
+31545,and container pid = 31546
+pid_namespace3    1  TFAIL  :  mount failed : 
 
->> +}
->> +
->> +int main(int argc, char **argv)
->> +{
->> +       char *rtc_dev = "/dev/rtc"
->> +
->> +
->> +       if (argc == 2)
->> +               rtc_dev = argv[1];
->> +
->> +       rtc_fd = open(rtc_dev, O_RDONLY);
->> +       if (rtc_fd < 0) {
->> +               perror(rtc_dev);
->
-> tst_brkm(TBROK | TERRNO, tst_exit, "couldn't open %s", rtc_dev);
+pid_namespace3    2  TPASS  :  Got the proc file directory created by
+parent ns 31545
+pid_namespace4    1  TFAIL  :  got unexpected result of cpid=31548
+ppid=31547
+pid_namespace4    1  TFAIL  :  Container init is killed by SIGKILL !!!
+pidns05     1  TFAIL  :  FAIL: Got unexpected result of cpid=31551
+ppid=31550
 
-Same here.
+pidns05     1  TFAIL  :  Unable to create 5 containers
 
->
->> +               exit(errno);
->> +       }
->> +
->> +       /*Read and alarm tests*/
->> +       read_alarm_test();
->> +
->> +       /*Update interrupts test*/
->> +       update_interrupts_test();
->> +
->> +       close(rtc_fd);
->> +
->> +       printf("\nRTC Tests Done!\n");
->> +       return 0;
->> +}
->
-> 1. Please rename the test sourcefile to rtc-test.c because the current
-> naming is unnecessarily inconsistent.
+pidns06     0  TINFO  :  Parent: Passing the pid of the process 31552
+pidns06     1  TFAIL  :  Unexpected result for Container:  init
+pid=31553 parent pid=31552
 
-OK.
+pidns30     1  TBROK  :  parent: mq_open() failed (Permission denied)
+pidns31     1  TBROK  :  parent: mq_open() failed (Permission denied)
+pidns10     1  TBROK  :  cinit: pidns is not created.
+pidns10     1  TBROK  :  parent: container was terminated by Unknown
+signal 0
+pidns12     0  TINFO  :  parent: PID is 31558
+pidns12     1  TBROK  :  cinit: pidns is not created.
+pidns12     1  TBROK  :  parent: container did not respond!
+pidns13     1  TBROK  :  cinit1: pidns is not created.
+pidns13     1  TBROK  :  cinit2: pidns is not created.
+pidns16     1  TBROK  :  pidns is not created.
+pidns16     0  TINFO  :  sig_handler is signalled from pid  31563
+pidns16     0  TINFO  :  Container: Resumed after receiving SIGUSR1 from
+parentNS 
+pidns16     2  TBROK  :  Unexpected value for Sending-ProcessID when
+signal handler called 31564
 
-> 2. Please replace printfs with tst_res(3) calls so this can be
-> properly integrated into LTP.
+pidns16     0  TINFO  :  Container: Resumed after sending SIGUSR1 from
+container itself
+pidns16     1  TPASS  :  container init continued successfuly, after
+handling signal -USR1
 
-Same issue as I explained earlier.
+pidns17     1  TBROK  :  cinit: pidns is not created.
 
->
-> Thanks!
-> -Garrett
-
-Thanks,
-
-Silesh.
-
->
->> --
->> test log
->> ------------------------------
->> RTC READ TEST:
->> RTC READ TEST Passed
->> Current RTC date/time is 24-2-2010, 17:03:05.
->>
->> RTC ALARM TEST :
->> Alarm time set to 17:03:10.
->> Waiting 5 seconds for the alarm...
->> Alarm rang.
->> RTC ALARM TEST Passed
->>
->> RTC UPDATE INTERRUPTS TEST :
->> Waiting for  5 update interrupts...
->> Update interrupt 1
->> Update interrupt 2
->> Update interrupt 3
->> Update interrupt 4
->> Update interrupt 5
->> RTC UPDATE INTERRUPTS TEST Passed
->>
->> RTC Tests Done!
->> ---------------------------------------------------------
->>
->>
->> Thanks .
->> Silesh
->>
->>
->> ------------------------------------------------------------------------------
->> Download Intel&#174; Parallel Studio Eval
->> Try the new software tools for yourself. Speed compiling, find bugs
->> proactively, and fine-tune applications for parallel performance.
->> See why Intel Parallel Studio got high marks during beta.
->> http://p.sf.net/sfu/intel-sw-dev
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>
->>
->
-
+<----- stuck here, i never get the shell back here :(.
+============================================================
 
 -- 
-Silesh
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
