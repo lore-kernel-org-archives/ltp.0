@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <shiwh@cn.fujitsu.com>) id 1NjT9J-0006aB-Qu
-	for ltp-list@lists.sourceforge.net; Mon, 22 Feb 2010 07:56:13 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NjT9I-0007Rc-0f
-	for ltp-list@lists.sourceforge.net; Mon, 22 Feb 2010 07:56:13 +0000
-Message-ID: <4B823884.4000100@cn.fujitsu.com>
-Date: Mon, 22 Feb 2010 15:55:48 +0800
-From: Shi Weihua <shiwh@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Njolz-0007Z7-Rt
+	for ltp-list@lists.sourceforge.net; Tue, 23 Feb 2010 07:01:35 +0000
+Received: from mail-pv0-f175.google.com ([74.125.83.175])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Njoly-0007P5-NT
+	for ltp-list@lists.sourceforge.net; Tue, 23 Feb 2010 07:01:35 +0000
+Received: by pvf33 with SMTP id 33so239909pvf.34
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 22 Feb 2010 23:01:29 -0800 (PST)
 MIME-Version: 1.0
-References: <4B728073.3070209@cn.fujitsu.com>	
-	<4B7B9EC2.1010004@linux.vnet.ibm.com>
-	<364299f41002170914u3a0d0b02o936a81d1ee601ecc@mail.gmail.com>
-In-Reply-To: <364299f41002170914u3a0d0b02o936a81d1ee601ecc@mail.gmail.com>
-Subject: Re: [LTP] [PATCH] timers: support clockid of
-	CLOCK_REALTIME_COARSE/CLOCK_MONOTONIC_COARSE
+In-Reply-To: <364299f41002222252h327ea723wd1500698072dd7a8@mail.gmail.com>
+References: <364299f41002221015q76fb174eq268c7badb9ce8031@mail.gmail.com>
+	<OFDC4137DB.DFEF0244-ON652576D3.0022D5C8-652576D3.002504C8@in.ibm.com>
+	<364299f41002222252h327ea723wd1500698072dd7a8@mail.gmail.com>
+Date: Mon, 22 Feb 2010 23:01:28 -0800
+Message-ID: <364299f41002222301v5100329bk3e2d2b2a092515a4@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] [ANNOUNCEMENT]: Intermediate release for FEB'10
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,94 +29,117 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4003727404561269698=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Iranna D Ankad <iranna.ankad@in.ibm.com>
+Cc: Rishikesh K Rajak <risrajak@in.ibm.com>, LTP <ltp-list@lists.sourceforge.net>
 
-at 2010-2-18 1:14, Garrett Cooper wrote:
-> On Tue, Feb 16, 2010 at 11:46 PM, Rishikesh <risrajak@linux.vnet.ibm.com> wrote:
->> On 02/10/2010 03:16 PM, Shi Weihua wrote:
->>> mainline commit da15cfdae03351c689736f8d142618592e3cebc3
->>>   (subject: time: Introduce CLOCK_REALTIME_COARSE)
->>> added two clocks (CLOCK_REALTIME_COARSE/CLOCK_MONOTONIC_COARSE) in
->>> 2.6.32-rc1, but it has not been responded in ltp. then, the following
->>> error message occured.
->>> -----
->>> clock_gettime03    3  TFAIL  :  failed to produce expected error [expected errno = 22 (Invalid argument), TEST_RETURN = 0]: TEST_ERRNO=???(0): Success
->>> clock_gettime03    4  TFAIL  :  failed to produce expected error [expected errno = 22 (Invalid argument), TEST_RETURN = 0]: TEST_ERRNO=???(0): Success
->>> timer_create04    1  TFAIL  :  didn't fail as expected [expected errno = 22 (Invalid argument)]: TEST_ERRNO=???(95): Operation not supported
->>> timer_create04    2  TFAIL  :  didn't fail as expected [expected errno = 22 (Invalid argument)]: TEST_ERRNO=???(95): Operation not supported
->>> -----
->>>
->>> Following patch fixed this bug. and, passed on 2.6.32-rc1, 2.6.33-rc6, 2.6.23.1-42.fc8.
->>>
+--===============4003727404561269698==
+Content-Type: multipart/alternative; boundary=000e0cd17a127214cf04803f1e04
+
+--000e0cd17a127214cf04803f1e04
+Content-Type: text/plain; charset=ISO-8859-1
+
+On Mon, Feb 22, 2010 at 10:52 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+
+> On Mon, Feb 22, 2010 at 10:41 PM, Iranna D Ankad <iranna.ankad@in.ibm.com>wrote:
+>
 >>
->> Can anyone provide their review & Acked ?
+>> << Iranna,
+>> <<I've stumbled down this bloody hole too many times to know that we
+>> should NOT be too hasty in jumping down here again.
+>> << 1. How did you compile everything (STEP BY STEP... from scratch after
+>> getting autotools, etc)?
+>> << 2. If you are running autotools, you DO realize that you're running
+>> with an incompatible copy of autoconf, correct? INSTALL explicitly states:
 >>
->> Thanks "Shi Weihua" for patch.
-> 
-> 1. Please provide before and after (once the items were fixed) output.
-
-before:
-------
-clock_gettime03    1  TPASS  :  got expected failure: TEST_ERRNO=EFAULT(14): Bad address
-clock_gettime03    2  TPASS  :  got expected failure: TEST_ERRNO=EFAULT(14): Bad address
-clock_gettime03    3  TFAIL  :  failed to produce expected error [expected errno = 22 (Invalid argument), TEST_RETURN = 0]: TEST_ERRNO=???(0): Success
-clock_gettime03    4  TFAIL  :  failed to produce expected error [expected errno = 22 (Invalid argument), TEST_RETURN = 0]: TEST_ERRNO=???(0): Success
-clock_gettime03    5  TPASS  :  got expected failure: TEST_ERRNO=EFAULT(14): Bad address
-clock_gettime03    6  TPASS  :  got expected failure: TEST_ERRNO=EFAULT(14): Bad address
-<snip>
-timer_create04    1  TFAIL  :  didn't fail as expected [expected errno = 22 (Invalid argument)]: TEST_ERRNO=???(95): Operation not supported
-timer_create04    2  TFAIL  :  didn't fail as expected [expected errno = 22 (Invalid argument)]: TEST_ERRNO=???(95): Operation not supported
-timer_create04    3  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-timer_create04    4  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-timer_create04    5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-timer_create04    6  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-------
-
-after ( patch merged )
-------
-clock_gettime03    1  TPASS  :  got expected failure: TEST_ERRNO=EFAULT(14): Bad address
-clock_gettime03    2  TPASS  :  got expected failure: TEST_ERRNO=EFAULT(14): Bad address
-clock_gettime03    3  TPASS  :  got expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
-clock_gettime03    4  TPASS  :  got expected failure: TEST_ERRNO=EINVAL(22): Invalid argument
-clock_gettime03    5  TPASS  :  got expected failure: TEST_ERRNO=EFAULT(14): Bad address
-clock_gettime03    6  TPASS  :  got expected failure: TEST_ERRNO=EFAULT(14): Bad address
-<snip>
-timer_create04    1  TPASS  :  failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
-timer_create04    2  TPASS  :  failed as expected: TEST_ERRNO=EINVAL(22): Invalid argument
-timer_create04    3  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-timer_create04    4  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-timer_create04    5  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-timer_create04    6  TPASS  :  failed as expected: TEST_ERRNO=EFAULT(14): Bad address
-------
-
-> 2. *sigh* These constants should be autoconf conditionalized --
-> otherwise when Linux devs decide to change their minds about the
-> values of the constants or the values are different on different
-> architectures you'll run into red-herring errors. The test should be
-> resistant to this behavior, but currently isn't. This would also
-> prevent `ENOSYS'-like errors from showing up on kernels < 2.6.32-rc1.
-
-i checked the frequency of adding clock in include/linux/time.h.
-  2005-04-16	CLOCK_REALTIME/CLOCK_MONOTONIC/CLOCK_PROCESS_CPUTIME_ID/CLOCK_THREAD_CPUTIME_ID
-                (when git initialized) 
-  2008-08-21	CLOCK_MONOTONIC_RAW added
-  2009-08-21	CLOCK_REALTIME_COARSE/CLOCK_MONOTONIC_COARSE added
-  (from http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=history;f=include/linux/time.h;h=6e026e45a179e2c66b347eb3834501a13be7ee2e;hb=aea187c46f7d03ce985e55eb1398d0776a15b928)
-so, the frequency is slow, i think.
-And, should to accept my patch at first. ;-)
-
-> 
+>> Hi Garrett,
+>> I am running one of the RHEL distro's with default versions of make,
+>> automake & autoconf. As you pointed out may be my OS has older versions of
+>> automake & autoconf than recommended but I am running right version of make
+>> (i.e make-3.81-3.el5). I think, when I am just building LTP using make, I do
+>> not think autoconf will interfere here?
+>>
+>> Here are the steps I am using to compile LTP:
+>> #./configure
+>> # make
+>> ........... hitting reported build errors here ............
+>>
+>
+>     Please run `make ac-clean', then run `./configure ; make' . It looks
+> like the tarball wasn't purged of all configure generated files.
 > Thanks,
 > -Garrett
-> 
-> 
+>
 
--- 
-Shi Weihua
+Make sure to save aclocal.m4 though -- it shouldn't be cleaned out by
+ac-clean, but is with the tarball (fixed on HEAD).
+Thanks,
+-GArrett
+
+--000e0cd17a127214cf04803f1e04
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<div class=3D"gmail_quote">On Mon, Feb 22, 2010 at 10:52 PM, Garrett Cooper=
+ <span dir=3D"ltr">&lt;<a href=3D"mailto:yanegomi@gmail.com">yanegomi@gmail=
+.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" style=3D"bo=
+rder-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding=
+-left: 1ex;">
+<div class=3D"gmail_quote"><div class=3D"im">On Mon, Feb 22, 2010 at 10:41 =
+PM, Iranna D Ankad <span dir=3D"ltr">&lt;<a href=3D"mailto:iranna.ankad@in.=
+ibm.com" target=3D"_blank">iranna.ankad@in.ibm.com</a>&gt;</span> wrote:<br=
+><blockquote class=3D"gmail_quote" style=3D"border-left: 1px solid rgb(204,=
+ 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-left: 1ex;">
+
+<div>
+<br><font size=3D"3">&lt;&lt; Iranna,<br>
+&lt;&lt;I&#39;ve stumbled down this bloody hole too many times to know that
+we should NOT be too hasty in jumping down here again.<br>
+&lt;&lt; 1. How did you compile everything (STEP BY STEP... from scratch
+after getting autotools, etc)?</font>
+<br><font size=3D"3">&lt;&lt; 2. If you are running autotools, you DO reali=
+ze
+that you&#39;re running with an incompatible copy of autoconf, correct? INS=
+TALL
+explicitly states:<br>
+</font>
+<br></div><font face=3D"sans-serif" size=3D"2">Hi Garrett,</font>
+<br><font face=3D"sans-serif" size=3D"2">I am running one of the RHEL distr=
+o&#39;s
+with default versions of make, automake &amp; autoconf. As you pointed
+out may be my OS has older versions of automake &amp; autoconf than recomme=
+nded
+but I am running right version of make (i.e make-3.81-3.el5). I think,
+when I am just building LTP using make, I do not think autoconf will interf=
+ere
+here?</font>
+<br>
+<br><font face=3D"sans-serif" size=3D"2">Here are the steps I am using to c=
+ompile
+LTP:</font>
+<br><font face=3D"sans-serif" size=3D"2">#./configure</font>
+<br><font face=3D"sans-serif" size=3D"2"># make</font>
+<br><font face=3D"sans-serif" size=3D"2">........... hitting reported build=
+ errors
+here ............</font><br></blockquote></div><div><br>=A0=A0=A0 Please ru=
+n `make ac-clean&#39;, then run `./configure ; make&#39; . It looks like th=
+e tarball wasn&#39;t purged of all configure generated files.<br>Thanks,<br=
+>
+<font color=3D"#888888">-Garrett </font><br></div></div></blockquote><div><=
+br>Make sure to save aclocal.m4 though -- it shouldn&#39;t be cleaned out b=
+y ac-clean, but is with the tarball (fixed on HEAD).<br>Thanks,<br>-GArrett=
+ <br>
+</div></div>
+
+--000e0cd17a127214cf04803f1e04--
+
+
+--===============4003727404561269698==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
@@ -122,7 +147,16 @@ Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
+--===============4003727404561269698==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============4003727404561269698==--
+
