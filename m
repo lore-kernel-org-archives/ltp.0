@@ -1,29 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nhest-0007eY-F0
-	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 08:03:47 +0000
-Received: from e23smtp03.au.ibm.com ([202.81.31.145])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Nhesr-0007r9-KX
-	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 08:03:47 +0000
-Received: from d23relay05.au.ibm.com (d23relay05.au.ibm.com [202.81.31.247])
-	by e23smtp03.au.ibm.com (8.14.3/8.13.1) with ESMTP id o1H80ac0028972
-	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 19:00:36 +1100
-Received: from d23av04.au.ibm.com (d23av04.au.ibm.com [9.190.235.139])
-	by d23relay05.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o1H7wIPa1593454
-	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 18:58:18 +1100
-Received: from d23av04.au.ibm.com (loopback [127.0.0.1])
-	by d23av04.au.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o1H83bum004324
-	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 19:03:38 +1100
-Message-ID: <4B7BA2D8.6000107@linux.vnet.ibm.com>
-Date: Wed, 17 Feb 2010 13:33:36 +0530
-From: Rishikesh <risrajak@linux.vnet.ibm.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] Noise from `parameters.sh'
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mwenzel@novell.com>) id 1NkP2F-00027O-9I
+	for ltp-list@lists.sourceforge.net; Wed, 24 Feb 2010 21:44:47 +0000
+Received: from sinclair.provo.novell.com ([137.65.248.137])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NkP2E-0007BV-3T
+	for ltp-list@lists.sourceforge.net; Wed, 24 Feb 2010 21:44:47 +0000
+Message-Id: <4B853B55020000E80005EF2F@sinclair.provo.novell.com>
+Date: Wed, 24 Feb 2010 14:44:37 -0700
+From: "Murlin Wenzel" <mwenzel@novell.com>
+References: <4B8502D7020000E80005EEE6@sinclair.provo.novell.com>
+	<364299f41002241316h549d84c6j366b7fff764e9b71@mail.gmail.com>
+	<4B85364D020000E80005EF28@sinclair.provo.novell.com>
+	<364299f41002241325g6a18ea10s60fea894ab2d7302@mail.gmail.com>
+In-Reply-To: <364299f41002241325g6a18ea10s60fea894ab2d7302@mail.gmail.com>
+Mime-Version: 1.0
+Content-Disposition: inline
+Subject: Re: [LTP] [PATCH] swapon03 cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,26 +32,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi garret,
+>>> On 2/24/2010 at 02:25 PM, in message
+<364299f41002241325g6a18ea10s60fea894ab2d7302@mail.gmail.com>, Garrett Cooper
+<yanegomi@gmail.com> wrote: 
+> On Wed, Feb 24, 2010 at 1:23 PM, Murlin Wenzel <mwenzel@novell.com> wrote:
+>>>>> On 2/24/2010 at 02:16 PM, in message
+>> <364299f41002241316h549d84c6j366b7fff764e9b71@mail.gmail.com>, Garrett Cooper
+>> <yanegomi@gmail.com> wrote:
+>>> On Wed, Feb 24, 2010 at 9:43 AM, Murlin Wenzel <mwenzel@novell.com> wrote:
+>>>> This cleans up existing swap files in swapon03 test in failing test case.
+>>> Otherwise, deleted swap files would still exist in /proc/swaps.
+>>>>
+>>>> Signed-off-by: Murlin Ray Wenzel mwenzel@novell.com
+>>>
+>>> Why not implement this as part of cleanup?
+>>> Thanks,
+>>> -Garrett
+>>
+>> I can look at doing that.  I just grabbed the closest place that worked for 
+> me.  BTW I'm still looking at a possible kernel bug where you can't allocate 
+> the maximum number of swap files.
+> 
+> What kernel version are you working with?
+> -Garrett
 
-Any idea if this has got fixed with current CVS ?
+I'm testing on 2.6.32.7, but I've been told that the same problem doesn't happen on 2.6.33 and it shouldn't happen on some as yet unknown previous versions.
 
-http://marc.info/?l=ltp-list&m=126489215311387&w=2
-
--- 
-Thanks&  Regards
-Rishi Kesh K Rajak
-IBM LTC, Bangalore
-LTP Maintainer
-Please join IRC: #ltp @ freenode.net
+Murlin
 
 
 ------------------------------------------------------------------------------
-SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
-Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
-http://p.sf.net/sfu/solaris-dev2dev
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
