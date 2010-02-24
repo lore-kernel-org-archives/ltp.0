@@ -1,27 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naufal11@gmail.com>) id 1Nj6pG-0008OI-D1
-	for ltp-list@lists.sourceforge.net; Sun, 21 Feb 2010 08:06:02 +0000
-Received: from mail-px0-f171.google.com ([209.85.216.171])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Nj6pE-0006GU-7y
-	for ltp-list@lists.sourceforge.net; Sun, 21 Feb 2010 08:06:01 +0000
-Received: by pxi1 with SMTP id 1so910437pxi.23
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 21 Feb 2010 00:05:54 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <d270b4401002202353pec0431w4a2bb947544ff444@mail.gmail.com>
-References: <d270b4400912250122y371c4d4dq6fa729b60e03f8a5@mail.gmail.com>
-	<20100111162256.GB19010@saboteur.suse.cz>
-	<20100128041619.GB16209@malik-laptop.in.ibm.com>
-	<d270b4401002202353pec0431w4a2bb947544ff444@mail.gmail.com>
-Date: Sun, 21 Feb 2010 13:35:54 +0530
-Message-ID: <d270b4401002210005i400c2c02vbf971a8af126f575@mail.gmail.com>
-From: Mohamed Naufal <naufal11@gmail.com>
-Subject: Re: [LTP] Testcase to validate the memory usage limit imposed by
-	the topmost memory cgroup
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <mwenzel@novell.com>) id 1NkQ6C-0005GK-QX
+	for ltp-list@lists.sourceforge.net; Wed, 24 Feb 2010 22:52:56 +0000
+Received: from sinclair.provo.novell.com ([137.65.248.137])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NkQ6B-0004LV-Q3
+	for ltp-list@lists.sourceforge.net; Wed, 24 Feb 2010 22:52:56 +0000
+Message-Id: <4B854698020000E80005EF39@sinclair.provo.novell.com>
+Date: Wed, 24 Feb 2010 15:32:40 -0700
+From: "Murlin Wenzel" <mwenzel@novell.com>
+References: <4B8502D7020000E80005EEE6@sinclair.provo.novell.com>
+	<364299f41002241316h549d84c6j366b7fff764e9b71@mail.gmail.com>
+	<4B85364D020000E80005EF28@sinclair.provo.novell.com>
+	<364299f41002241325g6a18ea10s60fea894ab2d7302@mail.gmail.com>
+	<4B853B55020000E80005EF2F@sinclair.provo.novell.com>
+	<364299f41002241422h5a2b76b6t681015c0c7cb1197@mail.gmail.com>
+In-Reply-To: <364299f41002241422h5a2b76b6t681015c0c7cb1197@mail.gmail.com>
+Mime-Version: 1.0
+Content-Disposition: inline
+Subject: Re: [LTP] [PATCH] swapon03 cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,11 +33,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, skumar@linux.vnet.ibm.com
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by Mohamed Naufal Basheer <naufal11@gmail.com>
+>>> On 2/24/2010 at 03:22 PM, in message
+<364299f41002241422h5a2b76b6t681015c0c7cb1197@mail.gmail.com>, Garrett Cooper
+<yanegomi@gmail.com> wrote: 
+> On Wed, Feb 24, 2010 at 1:44 PM, Murlin Wenzel <mwenzel@novell.com> wrote:
+>>>>> On 2/24/2010 at 02:25 PM, in message
+>> <364299f41002241325g6a18ea10s60fea894ab2d7302@mail.gmail.com>, Garrett Cooper
+>> <yanegomi@gmail.com> wrote:
+>>> On Wed, Feb 24, 2010 at 1:23 PM, Murlin Wenzel <mwenzel@novell.com> wrote:
+>>>>>>> On 2/24/2010 at 02:16 PM, in message
+>>>> <364299f41002241316h549d84c6j366b7fff764e9b71@mail.gmail.com>, Garrett Cooper
+>>>> <yanegomi@gmail.com> wrote:
+>>>>> On Wed, Feb 24, 2010 at 9:43 AM, Murlin Wenzel <mwenzel@novell.com> wrote:
+>>>>>> This cleans up existing swap files in swapon03 test in failing test case.
+>>>>> Otherwise, deleted swap files would still exist in /proc/swaps.
+>>>>>>
+>>>>>> Signed-off-by: Murlin Ray Wenzel mwenzel@novell.com
+>>>>>
+>>>>> Why not implement this as part of cleanup?
+>>>>> Thanks,
+>>>>> -Garrett
+>>>>
+>>>> I can look at doing that.  I just grabbed the closest place that worked for
+>>> me.  BTW I'm still looking at a possible kernel bug where you can't allocate
+>>> the maximum number of swap files.
+>>>
+>>> What kernel version are you working with?
+>>> -Garrett
+>>
+>> I'm testing on 2.6.32.7, but I've been told that the same problem doesn't 
+> happen on 2.6.33 and it shouldn't happen on some as yet unknown previous 
+> versions.
+> 
+>     If they changed the maximum number of swap files, then this would
+> be the cause for the problem as it's set to 30 since 2.6.18. See
+> include/swaponoff.h .
+> HTH,
+> -Garrett
 
-Naufal
+The problem is MAX_SWAPFILES reports 30 but you only get 29.
+
+Murlin
+
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
