@@ -1,31 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <mitani@ryobi.co.jp>) id 1NbrLX-0005LB-H6
-	for ltp-list@lists.sourceforge.net; Mon, 01 Feb 2010 08:09:23 +0000
-Received: from out01.sjc.mx.trendmicro.com ([216.99.131.5])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NbrLV-0002Jw-SH
-	for ltp-list@lists.sourceforge.net; Mon, 01 Feb 2010 08:09:23 +0000
-Received: from relay01.sjc.mx.trendmicro.com (unknown [10.30.239.5])
-	by out01.sjc.mx.trendmicro.com (Postfix) with ESMTP id 8B52B239E2F
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  1 Feb 2010 08:09:14 +0000 (UTC)
-Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay01.sjc.mx.trendmicro.com (Postfix) with ESMTP id 7C20E114B83B
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  1 Feb 2010 08:09:08 +0000 (UTC)
-Received: from 5109496 ([10.113.10.40]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Mon, 1 Feb 2010 17:09:06 +0900
-From: "Mitani" <mitani@ryobi.co.jp>
-Date: Mon, 1 Feb 2010 17:09:06 +0900
-Message-ID: <001201caa315$d351baf0$79f530d0$@co.jp>
-MIME-Version: 1.0
-Content-Language: ja
-Subject: [LTP] 2010-02-01 cvs make problem
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <rdunlap@xenotime.net>) id 1NkNJi-0006JX-N9
+	for ltp-list@lists.sourceforge.net; Wed, 24 Feb 2010 19:54:42 +0000
+Received: from xenotime.net ([72.52.64.118])
+	by sfi-mx-2.v28.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1NkNJh-0005ow-Bs
+	for ltp-list@lists.sourceforge.net; Wed, 24 Feb 2010 19:54:42 +0000
+Received: from chimera.site ([71.245.98.113]) by xenotime.net for
+	<ltp-list@lists.sourceforge.net>; Wed, 24 Feb 2010 11:54:15 -0800
+Date: Wed, 24 Feb 2010 11:54:15 -0800
+From: Randy Dunlap <rdunlap@xenotime.net>
+Message-Id: <20100224115415.77cffc1e.rdunlap@xenotime.net>
+Mime-Version: 1.0
+Subject: [LTP] [patch] clean up docs and scripts
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,145 +29,121 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Hi,
+From: Randy Dunlap <randy.dunlap@oracle.com>
 
-I tried to build 2010-02-01 cvs in RHEL5.4 system.
-(Archecture : x86 and x86_64)
+Clean up some typos.
+Update LTP maintainer name/email address.
+Replace runalltests.sh with runltp in a few places.
+Don't use quotation marks in here-documents in shell script.
 
+Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
+---
+ INSTALL               |   10 +++++-----
+ README                |    2 +-
+ doc/ltp-run-files.txt |    4 ++--
+ runltp                |    8 ++++----
+ 4 files changed, 12 insertions(+), 12 deletions(-)
 
-"make" failed with following message:
-------------
-[...]
-make[5]: Entering directory
-`/home/LTP/ltp-2010-02-01/testcases/kernel/security/selinux-testsuite/refpol
-icy'
-(cd
-"/home/LTP/ltp-2010-02-01/testcases/kernel/security/selinux-testsuite/refpol
-icy/policy_files/generic" && cat test_global.te test_bounds.te
-test_capable_file.te test_capable_net.te test_capable_sys.te
-test_dyntrace.te test_dyntrans.te test_entrypoint.te test_execshare.te
-test_exectrace.te test_execute_no_trans.te test_fdreceive.te test_file.te
-test_inherit.te test_ioctl.te test_ipc.te test_link.te test_mkdir.te
-test_open.te test_ptrace.te test_readlink.te test_relabel.te test_rename.te
-test_rxdir.te test_setattr.te test_setnice.te test_sigkill.te test_stat.te
-test_sysctl.te test_task_create.te test_task_getpgid.te
-test_task_getsched.te test_task_getsid.te test_task_setpgid.te
-test_task_setsched.te test_transition.te test_wait.te) > test_policy.te
-cat: /selinux/mls: No such file or directory
-make[6]: Entering directory
-`/home/LTP/ltp-2010-02-01/testcases/kernel/security/selinux-testsuite/refpol
-icy'
-Compiling targeted test_policy module
-test_policy.te:129:ERROR 'syntax error' at token 'typebounds' on line 93991:
-# Definition of boundary relationship
-typebounds test_bounds_parent_t test_bounds_child_t;
-/usr/bin/checkmodule:  error(s) encountered while parsing configuration
-/usr/bin/checkmodule:  loading policy configuration from tmp/test_policy.tmp
-make[6]: *** [tmp/test_policy.mod] Error 1
-make[6]: Leaving directory
-`/home/LTP/ltp-2010-02-01/testcases/kernel/security/selinux-testsuite/refpol
-icy'
-make[5]: *** [test_policy.pp] Error 2
-[...]
-------------
-
-Similar failure occurred in 2010-01-29 cvs "make".
-
-
-I got "strace" of "make" command. I think that "${LTPROOT}/testcases/
-kernel/security/selinux-testsuite/refpolicy/tmptest_policy.tmp" may be
-related to this failure:
-------------
-[...]
-20659 open("tmp/test_policy.tmp", O_RDONLY) = 3
-20659 ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbf972518) = -1 ENOTTY
-(Inappropriate ioctl
- for device)
-20659 fstat64(3, {st_mode=S_IFREG|0644, st_size=2564625, ...}) = 0
-20659 mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
-0) = 0xb7f400
-00
-20659 read(3, "#line 1 \"/usr/share/selinux/deve"..., 8192) = 8192
-20659 read(3, "\n\n\n\n\n\n\n\n\n#\n# Block device nodes "..., 8192) = 8192
-20659 read(3, "################################"..., 8192) = 8192
-20659 read(3, "der configuration file.\n## </sum"..., 8192) = 8192
-[...]
-20659 read(3, "1\n#line 52\n \t\n#line 52\n\t\n#line 5"..., 8192) = 8192
-20659 read(3, "\n\tallow testdomain security_t:se"..., 8192) = 8192
-20659 read(3, "optional\n#line 104\n\t\n#line 104\n\n"..., 8192) = 8192
-20659 read(3, "_t testdomain;\n\nallow test_bound"..., 8192) = 8192
-20659 write(2, "test_policy.te:129:", 19) = 19
-20659 write(2, "ERROR 'syntax error' at token 't"..., 149) = 149
-20659 write(2, "/usr/bin/checkmodule:  error(s) "..., 72) = 72
-[...]
-------------
-
-
-"${LTPROOT}/testcases/kernel/security/selinux-testsuite/refpolicy/
-test_policy.te" is follows:
-------------
-[...]
-allow test_bounds_unbound_t test_bounds_file_t : file { rw_file_perms };
-
-# Definition of boundary relationship
-typebounds test_bounds_parent_t test_bounds_child_t;		...Line129
-typebounds test_bounds_file_t test_bounds_file_red_t,
-test_bounds_file_blue_t;
-
-# Allow the test_bounds_parent_t to dyntrans
-allow test_bounds_parent_t test_bounds_child_t   : process { dyntransition
-};
-allow test_bounds_parent_t test_bounds_unbound_t : process { dyntransition
-};
-[...]
-------------
-
-
-"${LTPROOT}/testcases/kernel/security/selinux-testsuite/refpolicy/tmp
-test_policy.tmp" is follows:
-------------
-[...]
-allow test_bounds_unbound_t test_bounds_file_t : file { { getattr read write
-append ioctl
-lock } };
-...Line93988
-
-# Definition of boundary relationship
-typebounds test_bounds_parent_t test_bounds_child_t;		...Line93991
-typebounds test_bounds_file_t test_bounds_file_red_t,
-test_bounds_file_blue_t;
-
-# Allow the test_bounds_parent_t to dyntrans
-allow test_bounds_parent_t test_bounds_child_t   : process { dyntransition
-};
-allow test_bounds_parent_t test_bounds_unbound_t : process { dyntransition
-};
-[...]
-------------
-
-In "test_policy.te", Line129's syntax is right, I think.
-
-In "test_policy.tmp", Line93991 is same as "test_policy.te".
-But Line93988 is different.
-
-
-I investigated like above, but I couldn't specify a cause after all.
-Do you have any good idea?
-
-
-Thank you--
-
-
--Tomonori Mitani
-
-
+--- ltp-full-20100131.1.orig/doc/ltp-run-files.txt
++++ ltp-full-20100131.1/doc/ltp-run-files.txt
+@@ -1,5 +1,5 @@
+ List of scripts or executables that need to be run for complete LTP execution. 
+-The tests listed are NOT executed with the runalltest.sh script
++The tests listed are NOT executed with the runalltests.sh script
+ 
+ runalltests.sh
+  - syscalls  (except epoll, see below)
+@@ -23,7 +23,7 @@ To test filesystem with LVM 
+ w/o LVM
+ - ltpfsnolvm.sh
+ 
+-Deveice Mapper tests
++Device Mapper tests
+  - ltpdmmapper.sh
+ 
+ Network tests
+--- ltp-full-20100131.1.orig/INSTALL
++++ ltp-full-20100131.1/INSTALL
+@@ -97,7 +97,7 @@ objects, generated files) outside of the
+ reside. This is typically used when cross-compiling for multiple targets.
+ 
+ NOTE: This is by and large correctly implemented, but there are several corner
+-case, where this isn't implemented properly. Please see TODO for a list of items
++cases, where this isn't implemented properly. Please see TODO for a list of items
+ which need fixing in the LTP tree.
+ 
+ 	$ mkdir "$OUT_OF_BUILD_TREE_DIR"
+@@ -129,12 +129,12 @@ Quick Start
+ 4> make all
+ 5> make install
+ 6> cd /opt/ltp
+-7> ./runalltests.sh
++7> ./runltp
+ 
+ *NOTE:
+ - LTP assumes the existence of the nobody, bin, and daemon users and their
+ groups.  If these IDs do not exist, certain tests will fail. The users and
+-groups IDs should be the same, i.e. if user "nobody" is 99, then it's group
++groups IDs should be the same, i.e. if user "nobody" is 99, then its group
+ should also be "99". The names of the groups are irrelevant.
+ - The installation directory is /opt/ltp by default. Please see "Using autoconf" above and specify the appropriate path via --prefix. DESTDIR= is also honored for install and will install into $DESTDIR/$prefix, if you want to install into a chroot or a rootfs for instance.
+ 
+@@ -159,11 +159,11 @@ contributions are welcome.
+    requirements above before doing so.
+ 
+ 4. You can run all of the tests sequentially using the example test script
+-   runalltests.sh.  The script is provided to get you started.
++   runltp.  The script is provided to get you started.
+    See ltp-pan(1) for more information on the test driver we have provided.
+    It is simple, but it can do a lot of stuff.
+ 
+-   NOTE: The diskio and network tests will NOT be run by the runalltests.sh
++   NOTE: The diskio and network tests will NOT be run by the runltp
+    script. They are separate from the other tests because of the additional
+    required setup overhead.
+ 
+--- ltp-full-20100131.1.orig/README
++++ ltp-full-20100131.1/README
+@@ -1,5 +1,5 @@
+ Linux Test Project
+-(Maintained by: Subrata Modak<subrata@linux.vnet.ibm.com>)
++(Maintained by: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>)
+ 
+ The latest image is always available at http://ltp.sf.net
+ 
+--- ltp-full-20100131.1.orig/runltp
++++ ltp-full-20100131.1/runltp
+@@ -403,7 +403,7 @@ main()
+             WARNING: The use of -x can cause unpredictable failures, as a
+                      result of concurrently running multiple tests designed
+                      to be ran exclusively.
+-                     Pausing for 10 seconds..."
++                     Pausing for 10 seconds...
+ 	EOF
+             sleep 10 
+             INSTANCES="-x $OPTARG";;
+@@ -935,11 +935,11 @@ main()
+     {
+     cat <<-EOF >&1
+         
+-       ###############################################################"
++       ###############################################################
+         
+-            Done executing testcases."
++            Done executing testcases.
+             LTP Version:  $version_date
+-       ###############################################################"
++       ###############################################################
+        
+ 	EOF
+     }
 
 ------------------------------------------------------------------------------
-The Planet: dedicated and managed hosting, cloud storage, colocation
-Stay online with enterprise data centers and the best network in the business
-Choose flexible plans and management services without long-term contracts
-Personal 24x7 support from experience hosting pros just a phone call away.
-http://p.sf.net/sfu/theplanet-com
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
