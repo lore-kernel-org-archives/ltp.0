@@ -1,32 +1,38 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Ni3PU-0006TX-84
-	for ltp-list@lists.sourceforge.net; Thu, 18 Feb 2010 10:15:04 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Ni3PR-0005Si-QB
-	for ltp-list@lists.sourceforge.net; Thu, 18 Feb 2010 10:15:04 +0000
-Received: from d01relay05.pok.ibm.com (d01relay05.pok.ibm.com [9.56.227.237])
-	by e8.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1IA7PGg005761
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Feb 2010 05:07:25 -0500
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay05.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o1IAEk6J114078
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Feb 2010 05:14:46 -0500
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o1IAEkQD010998
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Feb 2010 08:14:46 -0200
-Date: Thu, 18 Feb 2010 15:44:40 +0530
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NkZaV-0002MB-ME
+	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 09:00:51 +0000
+Received: from e32.co.us.ibm.com ([32.97.110.150])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NkZaS-0007LE-Eb
+	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 09:00:50 +0000
+Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
+	[9.17.195.226])
+	by e32.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1P8sHKZ007935
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Feb 2010 01:54:17 -0700
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o1P90WxM007996
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Feb 2010 02:00:32 -0700
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o1P90VVb009154
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Feb 2010 02:00:32 -0700
+Date: Thu, 25 Feb 2010 14:30:27 +0530
 From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100218101440.GA21750@rishikesh.in.ibm.com>
-References: <EB1A7C66AD0C92419BFFC785A947865A09EAE44689@BLRINMSMBX01.bglrodc.lntinfotech.com>
+Message-ID: <20100225090027.GC3377@linux.vnet.ibm.com>
+References: <4B728073.3070209@cn.fujitsu.com>
+	<4B7B9EC2.1010004@linux.vnet.ibm.com>
+	<364299f41002170914u3a0d0b02o936a81d1ee601ecc@mail.gmail.com>
+	<4B823884.4000100@cn.fujitsu.com>
+	<364299f41002241922h31f32a1em6f12a2999fd931f8@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <EB1A7C66AD0C92419BFFC785A947865A09EAE44689@BLRINMSMBX01.bglrodc.lntinfotech.com>
-Subject: Re: [LTP] not able to generate HTML output
+In-Reply-To: <364299f41002241922h31f32a1em6f12a2999fd931f8@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] timers: support clockid of
+ CLOCK_REALTIME_COARSE/CLOCK_MONOTONIC_COARSE
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,74 +45,83 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Pramendra Singh <Pramendra.Singh@lntinfotech.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hi Pramendra,
-Can you let us know on which kernel/distro you are trying to take coverage ?
+On Wed, Feb 24, 2010 at 07:22:09PM -0800, Garrett Cooper wrote:
+>     I've added the autoconf-conditionalized variables along with your
+> changes, and some other minor cleanups to git just moments ago.
+Hi Garret,
+
+Getting the build error on today's tree as:
+
+gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+-I/root/temp/testcases/kernel/include -D_GNU_SOURCE
+-I/root/temp/testcases/kernel/timers/clock_gettime/../include
+-I../../../../include -I../../../../include   -L../../../../lib
+clock_gettime02.c   -lltp -lpthread -lrt -o clock_gettime02
+In file included from clock_gettime02.c:73:
+/root/temp/testcases/kernel/timers/clock_gettime/../include/common_timers.h:22:
+error: `CLOCK_MONOTONIC_RAW' undeclared here (not in a function)
+/root/temp/testcases/kernel/timers/clock_gettime/../include/common_timers.h:22:
+error: initializer element is not constant
+/root/temp/testcases/kernel/timers/clock_gettime/../include/common_timers.h:22:
+error: (near initialization for `clock_list[4]')
+make[4]: *** [clock_gettime02] Error 1
+make[4]: Leaving directory
+`/root/temp/testcases/kernel/timers/clock_gettime'
+make[3]: *** [all] Error 2
+make[3]: Leaving directory `/root/temp/testcases/kernel/timers'
+make[2]: *** [all] Error 2
+make[2]: Leaving directory `/root/temp/testcases/kernel'
+make[1]: *** [all] Error 2
+make[1]: Leaving directory `/root/temp/testcases'
+make: *** [testcases-all] Error 2
+[root@elm17d44 temp]# vim
+/root/temp/testcases/kernel/timers/clock_gettime/../include/common_timers.h
+
+
+And this patch solves the problem, please Ack it if it is correct
+solution, so that i can merge to tree.
+
+    Signed-off-by: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+
+diff --git a/testcases/kernel/timers/include/common_timers.h
+b/testcases/kernel/timers/include/common_timers.h
+index cae9626..1e103b1 100644
+--- a/testcases/kernel/timers/include/common_timers.h
++++ b/testcases/kernel/timers/include/common_timers.h
+@@ -19,7 +19,6 @@ clock_t clock_list[] = {
+        CLOCK_MONOTONIC,
+        CLOCK_PROCESS_CPUTIME_ID,
+        CLOCK_THREAD_CPUTIME_ID,
+-       CLOCK_MONOTONIC_RAW,
+ #if HAVE_CLOCK_REALTIME_COARSE
+        CLOCK_REALTIME_COARSE,
+ #endif
+@@ -40,7 +39,6 @@ const char *get_clock_str(const int clock_id)
+        CLOCK_TO_STR(CLOCK_MONOTONIC);
+        CLOCK_TO_STR(CLOCK_PROCESS_CPUTIME_ID);
+        CLOCK_TO_STR(CLOCK_THREAD_CPUTIME_ID);
+-       CLOCK_TO_STR(CLOCK_MONOTONIC_RAW);
+ #if HAVE_CLOCK_REALTIME_COARSE
+        CLOCK_TO_STR(CLOCK_REALTIME_COARSE);
+ #endif
 
 Thanks
-Rishikesh
+Rishi
 
-On Thu, Feb 18, 2010 at 12:30:03PM +0530, Pramendra Singh wrote:
-> Hi everyone,
-> 
-> Good afternoon!
-> 
-> I am new to LTP and using it to test my code for PPC architecture.
-> I have patched my kernel with GCOV and it seems working fine. But
-> I  am not able to get the HTML of code coverage/
-> 
-> I am cross compiling the kernel on my server for PPC and putting the image
-> to my PPC target board. After test I am able to get .gcda file for my .c file
-> and I take it back to my server where my kernel  source is there.
-> 
-> I use ppc_85xx-gcov for generating coverage and after that I use
-> "geninfo "  utiliy available in lcov-1.8 but I get error "not able to open
-> Basic block .bb files."
-> 
-> Problem is that in my source code there is no .bb files but .gcno files are there
-> and I think that is because my gcc compiler version is  3.4.1 but "geninfo" binary
-> is compiled with some low version gcc.
-> 
-> So please let me know where to get source code for geninfo and genhtml so
-> That I can compile them for  PPC architecture with my gcc version.
-> 
-> Or let me know if I am doing anything wrong is code coverage process.
-> 
-> Thanks in advance!
-> 
-> Thanks and Regards
-> Pramendra Singh (Sr. Software Engg)
-> L&T  InfoTech Ltd, Plot No # 25 ~31
-> EPIP 2nd Phase, KIADB, Whitefield,
-> Bangalore - 560066, Phone: 080-66242424, Extn: 2106,
-> Mobile No:  9449718250
-> 
-> 
-> 
-> ________________________________
-> This Email may contain confidential or privileged information for the intended recipient (s) If you are not the intended recipient, please do not use or disseminate the information, notify the sender and delete it from your system.
-> 
-> ______________________________________________________________________
-
-> ------------------------------------------------------------------------------
-> Download Intel&reg; Parallel Studio Eval
-> Try the new software tools for yourself. Speed compiling, find bugs 
-> proactively, and fine-tune applications for parallel performance. 
-> See why Intel Parallel Studio got high marks during beta.
-> http://p.sf.net/sfu/intel-sw-dev
-
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
+-- 
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
-Download Intel&reg; Parallel Studio Eval
-Try the new software tools for yourself. Speed compiling, find bugs 
-proactively, and fine-tune applications for parallel performance. 
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
