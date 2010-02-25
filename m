@@ -1,29 +1,40 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NemSv-0000ey-F6
-	for ltp-list@lists.sourceforge.net; Tue, 09 Feb 2010 09:33:05 +0000
-Received: from e28smtp03.in.ibm.com ([122.248.162.3])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NemSt-0003zS-U8
-	for ltp-list@lists.sourceforge.net; Tue, 09 Feb 2010 09:33:05 +0000
-Received: from d28relay03.in.ibm.com (d28relay03.in.ibm.com [9.184.220.60])
-	by e28smtp03.in.ibm.com (8.14.3/8.13.1) with ESMTP id o199WlZr026367
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Feb 2010 15:02:47 +0530
-Received: from d28av05.in.ibm.com (d28av05.in.ibm.com [9.184.220.67])
-	by d28relay03.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o199WlYK2777102
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Feb 2010 15:02:47 +0530
-Received: from d28av05.in.ibm.com (loopback [127.0.0.1])
-	by d28av05.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o199WlBN000901
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Feb 2010 20:32:47 +1100
-Message-ID: <4B712BBF.3060704@linux.vnet.ibm.com>
-Date: Tue, 09 Feb 2010 15:02:47 +0530
-From: Rishikesh <risrajak@linux.vnet.ibm.com>
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nkab4-00022r-Gp
+	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 10:05:30 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Nkab3-00013r-CU
+	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 10:05:30 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1P9vdWx007032
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Feb 2010 02:57:39 -0700
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id
+	o1PA5C0m176342
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Feb 2010 03:05:13 -0700
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o1PA5AMH020103
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Feb 2010 03:05:10 -0700
+Date: Thu, 25 Feb 2010 15:35:07 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100225100507.GB23984@linux.vnet.ibm.com>
+References: <4B728073.3070209@cn.fujitsu.com>
+	<4B7B9EC2.1010004@linux.vnet.ibm.com>
+	<364299f41002170914u3a0d0b02o936a81d1ee601ecc@mail.gmail.com>
+	<4B823884.4000100@cn.fujitsu.com>
+	<364299f41002241922h31f32a1em6f12a2999fd931f8@mail.gmail.com>
+	<20100225090027.GC3377@linux.vnet.ibm.com>
+	<364299f41002250152u78dfacc3mab2d355b1f50baa9@mail.gmail.com>
 MIME-Version: 1.0
-Subject: [LTP] container_test.sh failure
+Content-Disposition: inline
+In-Reply-To: <364299f41002250152u78dfacc3mab2d355b1f50baa9@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] timers: support clockid of
+ CLOCK_REALTIME_COARSE/CLOCK_MONOTONIC_COARSE
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,55 +48,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: LTP <ltp-list@lists.sourceforge.net>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hi Garret,
+On Thu, Feb 25, 2010 at 01:52:23AM -0800, Garrett Cooper wrote:
+> 
+>     What version of Linux is this? I specifically took out the #ifndef
+> ... #define ... #endif blocks because I'm trying to avoid these ad hoc
+> #define's scattered around the tree.
 
-With today's cvs getting following error while running the container 
-testcases.
+The kernel version: 2.6.9-89.ELsmp , which RHEL4.8GA.
 
-...
-/opt/ltp/testcases/bin/container_test.sh: line 52: check_mqns_enabled: 
-command not found
-Posix message queues or ipc namespaces not enabled in kernel.
-Not running mqns tests.
-/opt/ltp/testcases/bin/container_test.sh: line 61: check_netns_enabled: 
-command not found
-Network namespaces not enabled in kernel.  Not running netns tests.
-<<<execution_status>>>
-initiation_status="ok"
-duration=10 termination_type=exited termination_id=0 corefile=no
-cutime=7 cstime=22
-<<<test_end>>>
-INFO: ltp-pan reported all tests PASS
-LTP Version: LTP-20100131
+-Rishi
 
-        ###############################################################"
-
-             Done executing testcases."
-             LTP Version:  LTP-20100131
-        ###############################################################"
-
-x440:/opt/ltp #
-
-Do you think we need to just do the fix as you did for pidns ? I feel 
-check_*_enabled.c does more a lot than just checking kernel version. So 
-keeping that file will be a good idea. Please let me know your thought.
+> Thanks,
+> -Garrett
+> 
+> ------------------------------------------------------------------------------
+> Download Intel&#174; Parallel Studio Eval
+> Try the new software tools for yourself. Speed compiling, find bugs
+> proactively, and fine-tune applications for parallel performance.
+> See why Intel Parallel Studio got high marks during beta.
+> http://p.sf.net/sfu/intel-sw-dev
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 -- 
-Thanks&  Regards
-Rishi Kesh K Rajak
-IBM LTC, Bangalore
+Thanks & Regards
+Rishi
 LTP Maintainer
-Please join IRC: #ltp @ freenode.net
-
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
-The Planet: dedicated and managed hosting, cloud storage, colocation
-Stay online with enterprise data centers and the best network in the business
-Choose flexible plans and management services without long-term contracts
-Personal 24x7 support from experience hosting pros just a phone call away.
-http://p.sf.net/sfu/theplanet-com
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
