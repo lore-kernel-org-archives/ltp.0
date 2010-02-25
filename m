@@ -1,25 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Njcqv-0000Ea-2u
-	for ltp-list@lists.sourceforge.net; Mon, 22 Feb 2010 18:17:53 +0000
-Received: from mail-px0-f171.google.com ([209.85.216.171])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NkaOU-0004tx-Bn
+	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 09:52:30 +0000
+Received: from mail-pw0-f47.google.com ([209.85.160.47])
 	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Njcqu-0004U4-5J
-	for ltp-list@lists.sourceforge.net; Mon, 22 Feb 2010 18:17:53 +0000
-Received: by pxi1 with SMTP id 1so1653423pxi.23
+	id 1NkaOT-000616-Ff
+	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 09:52:30 +0000
+Received: by pwi5 with SMTP id 5so4847903pwi.34
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 22 Feb 2010 10:17:46 -0800 (PST)
+	Thu, 25 Feb 2010 01:52:24 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20100222164921.GC2992@linux.vnet.ibm.com>
-References: <4B823681.7010300@linux.vnet.ibm.com>
-	<OF7B2672AC.4ABA3E07-ON652576D2.005673AB-652576D2.005717E8@in.ibm.com>
-	<20100222164921.GC2992@linux.vnet.ibm.com>
-Date: Mon, 22 Feb 2010 10:17:46 -0800
-Message-ID: <364299f41002221017y4b49a212qd81ebc248d4b89d2@mail.gmail.com>
+In-Reply-To: <20100225090027.GC3377@linux.vnet.ibm.com>
+References: <4B728073.3070209@cn.fujitsu.com>
+	<4B7B9EC2.1010004@linux.vnet.ibm.com>
+	<364299f41002170914u3a0d0b02o936a81d1ee601ecc@mail.gmail.com>
+	<4B823884.4000100@cn.fujitsu.com>
+	<364299f41002241922h31f32a1em6f12a2999fd931f8@mail.gmail.com>
+	<20100225090027.GC3377@linux.vnet.ibm.com>
+Date: Thu, 25 Feb 2010 01:52:23 -0800
+Message-ID: <364299f41002250152u78dfacc3mab2d355b1f50baa9@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [ANNOUNCEMENT]: Intermediate release for FEB'10
+Subject: Re: [LTP] [PATCH] timers: support clockid of
+	CLOCK_REALTIME_COARSE/CLOCK_MONOTONIC_COARSE
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,41 +36,77 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Iranna D Ankad <iranna.ankad@in.ibm.com>, LTP <ltp-list@lists.sourceforge.net>, Rishikesh K Rajak <risrajak@in.ibm.com>, Vishukumar S Shetty <svishuku@in.ibm.com>, Garrett Cooper <yanegomi@gmail.com>
+To: Garrett Cooper <yanegomi@gmail.com>, Shi Weihua <shiwh@cn.fujitsu.com>, ltp-list <ltp-list@lists.sourceforge.net>
 
-On Mon, Feb 22, 2010 at 8:49 AM, Rishikesh K Rajak
+On Thu, Feb 25, 2010 at 1:00 AM, Rishikesh K Rajak
 <risrajak@linux.vnet.ibm.com> wrote:
-> Hi Iranna,
+> On Wed, Feb 24, 2010 at 07:22:09PM -0800, Garrett Cooper wrote:
+>> =A0 =A0 I've added the autoconf-conditionalized variables along with your
+>> changes, and some other minor cleanups to git just moments ago.
+> Hi Garret,
+>
+> Getting the build error on today's tree as:
+>
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall
+> -I/root/temp/testcases/kernel/include -D_GNU_SOURCE
+> -I/root/temp/testcases/kernel/timers/clock_gettime/../include
+> -I../../../../include -I../../../../include =A0 -L../../../../lib
+> clock_gettime02.c =A0 -lltp -lpthread -lrt -o clock_gettime02
+> In file included from clock_gettime02.c:73:
+> /root/temp/testcases/kernel/timers/clock_gettime/../include/common_timers=
+.h:22:
+> error: `CLOCK_MONOTONIC_RAW' undeclared here (not in a function)
+> /root/temp/testcases/kernel/timers/clock_gettime/../include/common_timers=
+.h:22:
+> error: initializer element is not constant
+> /root/temp/testcases/kernel/timers/clock_gettime/../include/common_timers=
+.h:22:
+> error: (near initialization for `clock_list[4]')
+> make[4]: *** [clock_gettime02] Error 1
+> make[4]: Leaving directory
+> `/root/temp/testcases/kernel/timers/clock_gettime'
+> make[3]: *** [all] Error 2
+> make[3]: Leaving directory `/root/temp/testcases/kernel/timers'
+> make[2]: *** [all] Error 2
+> make[2]: Leaving directory `/root/temp/testcases/kernel'
+> make[1]: *** [all] Error 2
+> make[1]: Leaving directory `/root/temp/testcases'
+> make: *** [testcases-all] Error 2
+> [root@elm17d44 temp]# vim
+> /root/temp/testcases/kernel/timers/clock_gettime/../include/common_timers=
+.h
 >
 >
-> Thanks for reporting this build failure and helping, as it will
-> really help to make ltp more stable.
+> And this patch solves the problem, please Ack it if it is correct
+> solution, so that i can merge to tree.
 >
-> Here is the quick patch i am attaching which solves the problem.
+> =A0 =A0Signed-off-by: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
 >
-> Signed-off By: Rishikesh K Rajak<risrajak@linux.vnet.ibm.com>
-> Tested By: Rishikesh K Rajak<risrajak@linux.vnet.ibm.com>
-> ---
-> diff --git a/testcases/kernel/syscalls/mbind/mbind01.c
-> b/testcases/kernel/syscalls/mbind/mbind01.c
-> index 5d7eb69..847186a 100644
-> --- a/testcases/kernel/syscalls/mbind/mbind01.c
-> +++ b/testcases/kernel/syscalls/mbind/mbind01.c
-> @@ -74,6 +74,7 @@ int =A0TST_TOTAL =3D 2; =A0 =A0 =A0 =A0 =A0 /* total nu=
-mber of tests
-> in this file. =A0 */
-> =A0#include <unistd.h>
-> =A0#include "include_j_h.h"
-> =A0#include "numa_helpers.h"
-> +#include <linux/mempolicy.h>
->
-> =A0#if ! defined(LIBNUMA_API_VERSION) || LIBNUMA_API_VERSION < 2
+> diff --git a/testcases/kernel/timers/include/common_timers.h
+> b/testcases/kernel/timers/include/common_timers.h
+> index cae9626..1e103b1 100644
+> --- a/testcases/kernel/timers/include/common_timers.h
+> +++ b/testcases/kernel/timers/include/common_timers.h
+> @@ -19,7 +19,6 @@ clock_t clock_list[] =3D {
+> =A0 =A0 =A0 =A0CLOCK_MONOTONIC,
+> =A0 =A0 =A0 =A0CLOCK_PROCESS_CPUTIME_ID,
+> =A0 =A0 =A0 =A0CLOCK_THREAD_CPUTIME_ID,
+> - =A0 =A0 =A0 CLOCK_MONOTONIC_RAW,
+> =A0#if HAVE_CLOCK_REALTIME_COARSE
+> =A0 =A0 =A0 =A0CLOCK_REALTIME_COARSE,
+> =A0#endif
+> @@ -40,7 +39,6 @@ const char *get_clock_str(const int clock_id)
+> =A0 =A0 =A0 =A0CLOCK_TO_STR(CLOCK_MONOTONIC);
+> =A0 =A0 =A0 =A0CLOCK_TO_STR(CLOCK_PROCESS_CPUTIME_ID);
+> =A0 =A0 =A0 =A0CLOCK_TO_STR(CLOCK_THREAD_CPUTIME_ID);
+> - =A0 =A0 =A0 CLOCK_TO_STR(CLOCK_MONOTONIC_RAW);
+> =A0#if HAVE_CLOCK_REALTIME_COARSE
+> =A0 =A0 =A0 =A0CLOCK_TO_STR(CLOCK_REALTIME_COARSE);
+> =A0#endif
 
-No. This patch shouldn't be committed because of namespace collisions
-between numa and mempolicy (thank the developers for just copy-pasting
-constants, macros, etc instead of properly requiring numa on the
-target system in order for mempolicy to work...).
-
+    What version of Linux is this? I specifically took out the #ifndef
+... #define ... #endif blocks because I'm trying to avoid these ad hoc
+#define's scattered around the tree.
 Thanks,
 -Garrett
 
