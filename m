@@ -1,32 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NhecC-00062g-V0
-	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 07:46:32 +0000
-Received: from e28smtp09.in.ibm.com ([122.248.162.9])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NhecA-0002Rp-6t
-	for ltp-list@lists.sourceforge.net; Wed, 17 Feb 2010 07:46:32 +0000
-Received: from d28relay01.in.ibm.com (d28relay01.in.ibm.com [9.184.220.58])
-	by e28smtp09.in.ibm.com (8.14.3/8.13.1) with ESMTP id o1H78kgt004866
-	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 12:38:46 +0530
-Received: from d28av04.in.ibm.com (d28av04.in.ibm.com [9.184.220.66])
-	by d28relay01.in.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o1H7kBIA897082
-	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 13:16:11 +0530
-Received: from d28av04.in.ibm.com (loopback [127.0.0.1])
-	by d28av04.in.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o1H7kBe0013916
-	for <ltp-list@lists.sourceforge.net>; Wed, 17 Feb 2010 18:46:11 +1100
-Message-ID: <4B7B9EC2.1010004@linux.vnet.ibm.com>
-Date: Wed, 17 Feb 2010 13:16:10 +0530
-From: Rishikesh <risrajak@linux.vnet.ibm.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NkXBJ-0007To-4M
+	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 06:26:41 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NkXBI-0005ss-45
+	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 06:26:41 +0000
+Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
+	[9.17.195.226])
+	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1P6OswU017499
+	for <ltp-list@lists.sourceforge.net>; Wed, 24 Feb 2010 23:24:54 -0700
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o1P6QJSP174890
+	for <ltp-list@lists.sourceforge.net>; Wed, 24 Feb 2010 23:26:19 -0700
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o1P6QJV0012007
+	for <ltp-list@lists.sourceforge.net>; Wed, 24 Feb 2010 23:26:19 -0700
+Date: Thu, 25 Feb 2010 11:56:15 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100225062615.GB3377@linux.vnet.ibm.com>
+References: <4B8558A6020000E80005EF62@sinclair.provo.novell.com>
+	<364299f41002241708g1cd33c48k5f1e0e4553c02bec@mail.gmail.com>
 MIME-Version: 1.0
-References: <4B728073.3070209@cn.fujitsu.com>
-In-Reply-To: <4B728073.3070209@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] timers: support clockid of
-	CLOCK_REALTIME_COARSE/CLOCK_MONOTONIC_COARSE
+Content-Disposition: inline
+In-Reply-To: <364299f41002241708g1cd33c48k5f1e0e4553c02bec@mail.gmail.com>
+Subject: Re: [LTP] [patch] swapon03 cleanup v2
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,93 +38,55 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shi Weihua <shiwh@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 02/10/2010 03:16 PM, Shi Weihua wrote:
-> mainline commit da15cfdae03351c689736f8d142618592e3cebc3
->   (subject: time: Introduce CLOCK_REALTIME_COARSE)
-> added two clocks (CLOCK_REALTIME_COARSE/CLOCK_MONOTONIC_COARSE) in
-> 2.6.32-rc1, but it has not been responded in ltp. then, the following
-> error message occured.
-> -----
-> clock_gettime03    3  TFAIL  :  failed to produce expected error [expected errno = 22 (Invalid argument), TEST_RETURN = 0]: TEST_ERRNO=???(0): Success
-> clock_gettime03    4  TFAIL  :  failed to produce expected error [expected errno = 22 (Invalid argument), TEST_RETURN = 0]: TEST_ERRNO=???(0): Success
-> timer_create04    1  TFAIL  :  didn't fail as expected [expected errno = 22 (Invalid argument)]: TEST_ERRNO=???(95): Operation not supported
-> timer_create04    2  TFAIL  :  didn't fail as expected [expected errno = 22 (Invalid argument)]: TEST_ERRNO=???(95): Operation not supported
-> -----
->
-> Following patch fixed this bug. and, passed on 2.6.32-rc1, 2.6.33-rc6, 2.6.23.1-42.fc8.
->    
+On Wed, Feb 24, 2010 at 05:08:56PM -0800, Garrett Cooper wrote:
+> On Wed, Feb 24, 2010 at 3:49 PM, Murlin Wenzel <mwenzel@novell.com> wrote:
+> > Added clean_swap() to cleanup routine. =A0This makes sure all leftover =
+swap files are removed.
+> >
+> > Signed-off-By: =A0Murlin Ray Wenzel mwenzel@novell.com
+> =
 
-Can anyone provide their review & Acked ?
+> Committed -- thanks!
+> -Garrett
 
-Thanks "Shi Weihua" for patch.
+Thanks Garret & Murlin.
 
 -Rishi
-> Signed-off-by: Shi Weihua<shiwh@cn.fujitsu.com>
-> ---
-> --- testcases/kernel/timers/include/common_timers.h.orig	2010-02-10 16:44:56.000000000 -0500
-> +++ testcases/kernel/timers/include/common_timers.h	2010-02-10 17:33:25.000000000 -0500
-> @@ -28,12 +28,20 @@
->   #ifndef CLOCK_MONOTONIC_RAW
->   #define CLOCK_MONOTONIC_RAW 4
->   #endif
-> +#ifndef CLOCK_REALTIME_COARSE
-> +#define CLOCK_REALTIME_COARSE 5
-> +#endif
-> +#ifndef CLOCK_MONOTONIC_COARSE
-> +#define CLOCK_MONOTONIC_COARSE 6
-> +#endif
->   clock_t clock_list[] = {
->   	CLOCK_REALTIME,
->   	CLOCK_MONOTONIC,
->   	CLOCK_PROCESS_CPUTIME_ID,
->   	CLOCK_THREAD_CPUTIME_ID,
->   	CLOCK_MONOTONIC_RAW,
-> +	CLOCK_REALTIME_COARSE,
-> +	CLOCK_MONOTONIC_COARSE,
->   };
->   #define MAX_CLOCKS (sizeof(clock_list) / sizeof(*clock_list))
->
-> @@ -50,6 +58,10 @@ const char *get_clock_str(const int cloc
->   		return "CLOCK_THREAD_CPUTIME_ID";
->   	case CLOCK_MONOTONIC_RAW:
->   		return "CLOCK_MONOTONIC_RAW";
-> +	case CLOCK_REALTIME_COARSE:
-> +		return "CLOCK_REALTIME_COARSE";
-> +	case CLOCK_MONOTONIC_COARSE:
-> +		return "CLOCK_MONOTONIC_COARSE";
->   	default:
->   		return "CLOCK_!?!?!?";
->   	}
->
-> ------------------------------------------------------------------------------
-> SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
-> Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
-> http://p.sf.net/sfu/solaris-dev2dev
+> =
+
+> -------------------------------------------------------------------------=
+-----
+> Download Intel&#174; Parallel Studio Eval
+> Try the new software tools for yourself. Speed compiling, find bugs
+> proactively, and fine-tune applications for parallel performance.
+> See why Intel Parallel Studio got high marks during beta.
+> http://p.sf.net/sfu/intel-sw-dev
 > _______________________________________________
 > Ltp-list mailing list
 > Ltp-list@lists.sourceforge.net
 > https://lists.sourceforge.net/lists/listinfo/ltp-list
->    
 
+-- =
 
--- 
-Thanks&  Regards
-Rishi Kesh K Rajak
-IBM LTC, Bangalore
+Thanks & Regards
+Rishi
 LTP Maintainer
-Please join IRC: #ltp @ freenode.net
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
-
-------------------------------------------------------------------------------
-SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
-Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
-http://p.sf.net/sfu/solaris-dev2dev
+---------------------------------------------------------------------------=
+---
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
