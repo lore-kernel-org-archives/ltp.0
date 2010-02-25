@@ -1,29 +1,37 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <shiwh@cn.fujitsu.com>) id 1NbuPD-0001M7-N4
-	for ltp-list@lists.sourceforge.net; Mon, 01 Feb 2010 11:25:23 +0000
-Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NbuPA-000886-HU
-	for ltp-list@lists.sourceforge.net; Mon, 01 Feb 2010 11:25:23 +0000
-Received: from tang.cn.fujitsu.com (tang.cn.fujitsu.com [10.167.250.3])
-	by song.cn.fujitsu.com (Postfix) with ESMTP id 3CCEC170028
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  1 Feb 2010 19:25:09 +0800 (CST)
-Received: from fnst.cn.fujitsu.com (tang.cn.fujitsu.com [127.0.0.1])
-	by tang.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id o11BOVjT020462
-	for <ltp-list@lists.sourceforge.net>; Mon, 1 Feb 2010 19:24:31 +0800
-Received: from [10.167.141.106] (unknown [10.167.141.106])
-	by fnst.cn.fujitsu.com (Postfix) with ESMTPA id 1E277D47AE
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  1 Feb 2010 19:26:30 +0800 (CST)
-Message-ID: <4B66BA12.1050707@cn.fujitsu.com>
-Date: Mon, 01 Feb 2010 19:25:06 +0800
-From: Shi Weihua <shiwh@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nka5r-0006qq-26
+	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 09:33:15 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Nka5q-0004fw-3G
+	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 09:33:15 +0000
+Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
+	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1P9MBME027441
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Feb 2010 04:22:11 -0500
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o1P9X7DZ1847514
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Feb 2010 04:33:07 -0500
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o1P9X7cV023578
+	for <ltp-list@lists.sourceforge.net>; Thu, 25 Feb 2010 04:33:07 -0500
+Date: Thu, 25 Feb 2010 15:03:04 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100225093304.GA23984@linux.vnet.ibm.com>
+References: <41c7690d1002240410y3f132792he5460c69891a0976@mail.gmail.com>
+	<364299f41002241314u28cec7e9h7334685f6f82a8a@mail.gmail.com>
+	<41c7690d1002242240m787a1e8bj4640341ec09ff61c@mail.gmail.com>
+	<364299f41002242307i6256a0f1v9fbc4a2197049270@mail.gmail.com>
+	<364299f41002242311j2c97cf8fm2894f00b3640d1ef@mail.gmail.com>
+	<41c7690d1002250109r5e35b35cw2b10c0e270bc273a@mail.gmail.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] sysctl03: sysctl returns EACCES after 2.6.33-rc1
+Content-Disposition: inline
+In-Reply-To: <41c7690d1002250109r5e35b35cw2b10c0e270bc273a@mail.gmail.com>
+Subject: Re: [LTP] [PATCH][RESEND] RTC Device Driver Tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,128 +44,72 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: Silesh C V <saileshcv@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, Arun.sudhilal@lntinfotech.com, Mohamed.Rasheed@lntinfotech.com
 
-The syscall of sysctl has been changed function call process on 2.6.33-rc1.
-So we should change some code about sysctl.
+On Thu, Feb 25, 2010 at 02:39:37PM +0530, Silesh C V wrote:
+> >>
+> >>    The end goal is to have these tests fit directly into LTP without
+> >> having to fudge around writing a secondary driver, thus maintaining
+> >> two pieces of dependent code [which is of course more complicated than
+> >> one piece of code], and thus is more of a pain to maintain longterm.
+> >> There's a lot of code in the repository like this that was ported and
+> >> subsequently not properly adapted to the existing infrastructure, thus
+> >> creating additional headache for maintainers and end-users.
+> >
+> > Ok -- I take that back. I have no idea wtf is going on in this
+> > directory nor the ultimate intent of the tests in here, apart from
+> > being a lot of ad hoc pain in the arse-ness.
+> 
+> The README in testcases/kernel/device-drivers/ says that these tests
+> should not be run with the other tests, and they have to be built
+> separately. I agree that this is because they have a kernel space part
+> also. But this prevents us from  building  device_driver tests that
+> have only user space part (as in RTC tests), along with the overall
+> build. And these tests does not belong in any other directory other
+> than kernel/device-drivers. So as long as other tests are there we
+> will have to live with building new device driver tests separately.I
+> can re-send  the patch with Garrett's suggestions  incorporated.
+> 
+> Subrata, suggestions ?
 
-Before 2.6.33-rc1:
-do_sysctl
-	->parse_table
-		->sysctl_perm		(will return EPERM sometime)
-		->do_sysctl_strategy
-			->sysctl_perm	(will return EPERM sometime)
-...
+Hi Silesh,
 
-After 2.6.33-rc1:
-do_sysctl
-	->binary_sysctl
-		check enable to access or not	(will return EACCES some time)
-...
+How about porting this on new makefile infrastructure ? I think this is
+time where we can look back and can make one piece of code as garret
+said is correct. Please see your fesibility. Let me know if you still
+want this to be integrated. Before that can you please little more
+descriptive with your patch e,g: what it is doing. 
 
-I fixed sysctl03, other cases of sysctl are OK.
-This patch works on 2.6.31.5-127.fc12.x86_64, 2.6.32, 2.6.33-rc1, 
-and 2.6.33-rc6.
+And also it is always good if you include more documentation for each 
+function as coding style suggests.
 
-Signed-off-by: Shi Weihua <shiwh@cn.fujitsu.com>
----
---- testcases/kernel/syscalls/sysctl/sysctl03.c.orig	2010-02-02 18:15:56.000000000 +0800
-+++ testcases/kernel/syscalls/sysctl/sysctl03.c	2010-02-02 18:49:40.000000000 +0800
-@@ -22,15 +22,18 @@
-  *	sysctl03.c
-  *
-  * DESCRIPTION
-- *	Testcase to check that sysctl(2) sets errno to EPERM correctly.
-+ *	Testcase to check that sysctl(2) sets errno to EPERM or EACCES 
-+ *	correctly. But it will return EACCES on kernels that are 2.6.33-rc1 
-+ *	and higher.  
-  *
-  * ALGORITHM
-  *	a.	Call sysctl(2) as a root user, and attempt to write data
-  *		to the kernel_table[]. Since the table does not have write
-- *		permissions even for the root, it should fail EPERM.
-+ *		permissions even for the root, it should fail EPERM or EACCES.
-  *	b.	Call sysctl(2) as a non-root user, and attempt to write data
-  *		to the kernel_table[]. Since the table does not have write
-- *		permission for the regular user, it should fail with EPERM.
-+ *		permission for the regular user, it should fail with EPERM 
-+ *		or EACCES.
-  *
-  * USAGE:  <for command-line>
-  *  sysctl03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-@@ -43,6 +46,7 @@
-  *
-  * HISTORY
-  *	07/2001 Ported by Wayne Boyer
-+ *	02/2010 Updated by shiwh@cn.fujitsu.com
-  *
-  * RESTRICTIONS
-  *	Test must be run as root.
-@@ -82,6 +86,7 @@ int main(int ac, char **av)
- {
- 	int lc;
- 	char *msg;
-+	int exp_eno;
- 
- 	char osname[OSNAMESZ];
- 	int osnamelth, status;
-@@ -96,6 +101,13 @@ int main(int ac, char **av)
- 
- 	setup();
- 
-+	if ((tst_kvercmp(2, 6, 32)) <= 0){
-+		exp_eno = EPERM;
-+	} else {
-+		exp_eno = EACCES;
-+		exp_enos[0] = EACCES;
-+	}
-+
- 	TEST_EXP_ENOS(exp_enos);
- 
- 	/* check looping state if -i option is given */
-@@ -114,13 +126,13 @@ int main(int ac, char **av)
- 		} else {
- 			TEST_ERROR_LOG(TEST_ERRNO);
- 
--			if (TEST_ERRNO != EPERM) {
-+			if (TEST_ERRNO != exp_eno) {
- 				tst_resm(TFAIL,
--					 "Expected EPERM (%d), got %d: %s",
--					 EPERM, TEST_ERRNO,
-+					 "Expected %s (%d), got %d: %s",
-+					 strerror(exp_eno), exp_eno, TEST_ERRNO,
- 					 strerror(TEST_ERRNO));
- 			} else {
--				tst_resm(TPASS, "Got expected EPERM error");
-+				tst_resm(TPASS, "Got expected %s error", strerror(exp_eno));
- 			}
- 		}
- 
-@@ -147,12 +159,12 @@ int main(int ac, char **av)
- 			} else {
- 				TEST_ERROR_LOG(TEST_ERRNO);
- 
--				if (TEST_ERRNO != EPERM) {
--					tst_resm(TFAIL, "Expected EPERM, got "
--						 "%d", TEST_ERRNO);
-+				if (TEST_ERRNO != exp_eno) {
-+					tst_resm(TFAIL, "Expected %s, got "
-+						 "%d", strerror(exp_eno), TEST_ERRNO);
- 				} else {
--					tst_resm(TPASS, "Got expected EPERM "
--						 "error");
-+					tst_resm(TPASS, "Got expected %s "
-+						 "error", strerror(exp_eno));
- 				}
- 			}
- 
+Thanks
+Rishi
+> 
+> 
+> Thanks,
+> Silesh
+> >
+> > I've learned enough to keep my hands off this because it looks like a mess.
+> >
+> > Thanks,
+> > -Garrett
+> >
+
+-- 
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
-The Planet: dedicated and managed hosting, cloud storage, colocation
-Stay online with enterprise data centers and the best network in the business
-Choose flexible plans and management services without long-term contracts
-Personal 24x7 support from experience hosting pros just a phone call away.
-http://p.sf.net/sfu/theplanet-com
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
