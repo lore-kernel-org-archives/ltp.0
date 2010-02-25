@@ -1,25 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NkXod-0006tS-Mi
-	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 07:07:19 +0000
-Received: from mail-pz0-f194.google.com ([209.85.222.194])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NkXoc-0002UX-Ge
-	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 07:07:19 +0000
-Received: by pzk32 with SMTP id 32so481854pzk.4
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naresh.kernel@gmail.com>) id 1NkePn-0005nH-04
+	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 14:10:07 +0000
+Received: from mail-pv0-f175.google.com ([74.125.83.175])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NkePj-0002Ax-Qp
+	for ltp-list@lists.sourceforge.net; Thu, 25 Feb 2010 14:10:06 +0000
+Received: by pvf33 with SMTP id 33so1073096pvf.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 24 Feb 2010 23:07:12 -0800 (PST)
+	Thu, 25 Feb 2010 06:09:58 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <41c7690d1002242240m787a1e8bj4640341ec09ff61c@mail.gmail.com>
-References: <41c7690d1002240410y3f132792he5460c69891a0976@mail.gmail.com>
-	<364299f41002241314u28cec7e9h7334685f6f82a8a@mail.gmail.com>
-	<41c7690d1002242240m787a1e8bj4640341ec09ff61c@mail.gmail.com>
-Date: Wed, 24 Feb 2010 23:07:12 -0800
-Message-ID: <364299f41002242307i6256a0f1v9fbc4a2197049270@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH][RESEND] RTC Device Driver Tests
+Date: Thu, 25 Feb 2010 19:15:42 +0530
+Message-ID: <f5a7b3811002250545x3d5288cfqd114d3bcd79581f2@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Content-Type: multipart/mixed; boundary=000e0cd116f0c695b804806cffab
+Subject: [LTP] [PATCH] Synchronization required before release the lock:
+	sem_post/8-1.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,428 +27,164 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Silesh C V <saileshcv@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Arun.sudhilal@lntinfotech.com, Mohamed.Rasheed@lntinfotech.com
+To: ltp-list <ltp-list@lists.sourceforge.net>
+Cc: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2010 at 10:40 PM, Silesh C V <saileshcv@gmail.com> wrote:
-> Hi Garrett,
->
-> Thanks for the review and suggestions.
->
-> On 2/25/10, Garrett Cooper <yanegomi@gmail.com> wrote:
->> On Wed, Feb 24, 2010 at 4:10 AM, Silesh C V <saileshcv@gmail.com> wrote:
->>>
->>> Hi ,
->>>
->>> This patch contains tests for the linux RTC driver.The patch is taken
->>> against feb intermediate release.I have also attached the patch.Please
->>> find
->>> the test log at the end of this mail.Build/Run instructions are explain=
-ed
->>> in
->>> the README.
->>>
->>>
->>> Signed-off-By: Silesh C V <Silesh.Vellattu@lntinfotech.com>
->>> --
->>> diff -purN ltp-intermediate-20100228.
->>> orig/testcases/kernel/device-drivers/rtc/Makefile
->>> ltp-intermediate-20100228/testcases/kernel/device-drivers/rtc/Makefile
->>> ---
->>> ltp-intermediate-20100228.orig/testcases/kernel/device-drivers/rtc/Make=
-file
->>> 1970-01-01 05:30:00.000000000 +0530
->>> +++ ltp-intermediate-20100228/testcases/kernel/device-drivers/rtc/Makef=
-ile
->>> =A0 =A02010-02-24 15:21:33.000000000 +0530
->>> @@ -0,0 +1,28 @@
->>> +#
->>> +# =A0Copyright (c) Larsen & Toubro Infotech Ltd., 2010
->>> +#
->>> +# =A0This program is free software; =A0you can redistribute it and/or =
-modify
->>> +# =A0it under the terms of the GNU General Public License as published=
- by
->>> +# =A0the Free Software Foundation; either version 2 of the License, or
->>> +# =A0(at your option) any later version.
->>> +#
->>> +# =A0This program is distributed in the hope that it will be useful,
->>> +# =A0but WITHOUT ANY WARRANTY; =A0without even the implied warranty of
->>> +# =A0MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. =A0See
->>> +# =A0the GNU General Public License for more details.
->>> +#
->>> +# =A0You should have received a copy of the GNU General Public License
->>> +# =A0along with this program; =A0if not, write to the Free Software
->>> +# =A0Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA =A00211=
-0-1301
->>> =A0USA
->>> +#
->>> +#
->>> +
->>> +CFLAGS =3D -O2 -Wall
->>> +SRC =3D test_rtc.c
->>> +
->>> +
->>> +all: $(SRC)
->>> + =A0 =A0 =A0 $(CC) $(CFLAGS) $(SRC) -o rtc-test
->>> +
->>> +clean:
->>> + =A0 =A0 =A0 rm -f rtc-test
->>
->> Please integrate into the Makefile infrastructure. See README.mk-devel
->> for more details.
->
-> I can see that under kernel/ directory, the device-drivers =A0directory
-> does not follow the new Makefile infrastructure. I tried adding
-> device-drivers SUBDIRS =A0to =A0 testcases/kernel/Makefile. As none of the
-> other device driver test cases follow this Makefile approach, the
-> build breaks .
+--000e0cd116f0c695b804806cffab
+Content-Type: text/plain; charset=ISO-8859-1
 
-Because those are kernel modules, and don't yet have an appropriate
-template for LTP with the new Makefile infrastructure. Your test uses
-straight ioctl(2) calls and doesn't need to be built with kernel
-sources, s.t. it can be built perfectly fine within the new makefile
-infrastructure.
+Hi,
 
->>> diff -purN
->>> ltp-intermediate-20100228.orig/testcases/kernel/device-drivers/rtc/READ=
-ME
->>> ltp-intermediate-20100228/testcases/kernel/device-drivers/rtc/README
->>> ---
->>> ltp-intermediate-20100228.orig/testcases/kernel/device-drivers/rtc/READ=
-ME
->>> 1970-01-01 05:30:00.000000000 +0530
->>> +++ ltp-intermediate-20100228/testcases/kernel/device-drivers/rtc/README
->>> =A0 =A02010-02-24 14:34:01.000000000 +0530
->>> @@ -0,0 +1,29 @@
->>> +test_rtc.c : Test the Real Time Clock driver
->>> +
->>> +Tests supported as of now
->>> +--------------------------
->>> +1. Read test : This reads the time/date from the RTC
->>> + =A0 ioctls tested :- RTC_RD_TIME.
->>> +
->>> +2. Alarm Test: Sets the alarm to 5 seconds in future and makes sure it
->>> rings.
->>> + =A0 ioctls tested :- RTC_ALM_SET, RTC_ALM_READ, =A0RTC_AIE_ON, RTC_AI=
-E_OFF.
->>> +
->>> +3. Update interrupts test : Sets Update interrupts enable on, waits for
->>> five
->>> + =A0 interrupts and then turns it off.
->>> + =A0 ioctls tested :- RTC_UIE_ON, RTC_UIE_OFF.
->>> +
->>> +
->>> +How to Build
->>> +------------
->>> +
->>> +Enter rtc directory and issue a 'make' .
->>> +
->>> +How to Run
->>> +----------
->>> +
->>> + =A0 =A0 =A0 The tests assume the rtc device node to be "/dev/rtc". If=
- you have
->>> a
->>> +different node run the test with the name of the node as a parameter.
->>> +
->>> +Eg. If your node is /dev/rtc0, then run the test as
->>> +
->>> + =A0 =A0 =A0 $ ./rtc-test /dev/rtc0
->>> diff -purN
->>> ltp-intermediate-20100228.orig/testcases/kernel/device-drivers/rtc/test=
-_rtc.c
->>> ltp-intermediate-20100228/testcases/kernel/device-drivers/rtc/test_rtc.c
->>> ---
->>> ltp-intermediate-20100228.orig/testcases/kernel/device-drivers/rtc/test=
-_rtc.c
->>> =A0 =A0 =A0 1970-01-01 05:30:00.000000000 +0530
->>> +++
->>> ltp-intermediate-20100228/testcases/kernel/device-drivers/rtc/test_rtc.c
->>> =A0 =A02010-02-24 15:17:59.000000000 +0530
->>> @@ -0,0 +1,175 @@
->>> +/* =A0 test_rtc.c
->>> + *
->>> + * =A0 Copyright (c) Larsen & Toubro Infotech Ltd., 2010
->>> + *
->>> + * =A0 Contact : Silesh C V <Silesh.Vellattu@lntinfotech.com>
->>> + *
->>> + * =A0 This program is free software; =A0you can redistribute it and/or
->>> modify
->>> + * =A0 it under the terms of the GNU General Public License as publish=
-ed by
->>> + * =A0 the Free Software Foundation; either version 2 of the License, =
-or
->>> + * =A0 (at your option) any later version.
->>> + *
->>> + * =A0 This program is distributed in the hope that it will be useful,
->>> + * =A0 but WITHOUT ANY WARRANTY; =A0without even the implied warranty =
-of
->>> + * =A0 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. =A0See
->>> + * =A0 the GNU General Public License for more details.
->>> + *
->>> + * =A0 You should have received a copy of the GNU General Public Licen=
-se
->>> + * =A0 along with this program; =A0if not, write to the Free Software
->>> + * =A0 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-=
-1307
->>> USA
->>> + *
->>> + */
->>> +
->>> +#include <sys/ioctl.h>
->>> +#include <stdio.h>
->>> +#include <stdlib.h>
->>> +#include <fcntl.h>
->>> +#include <unistd.h>
->>> +#include <linux/rtc.h>
->>> +#include <errno.h>
->>> +
->>> +int rtc_fd =3D -1;
->>> +
->>> +void read_alarm_test(void)
->>> +{
->>> + =A0 =A0 =A0 struct rtc_time rtc_tm;
->>> + =A0 =A0 =A0 int ret;
->>> + =A0 =A0 =A0 unsigned long data;
->>> +
->>> + =A0 =A0 =A0 printf("\nRTC READ TEST:\n");
->>> +
->>> + =A0 =A0 =A0 =A0/*Read RTC Time*/
->>> + =A0 =A0 =A0 =A0ret =3D ioctl(rtc_fd, RTC_RD_TIME, &rtc_tm);
->>> + =A0 =A0 =A0 =A0if (ret =3D=3D -1) {
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0perror("RTC_RD_TIME ioctl");
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf("RTC READ TEST Failed\n");
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return;
->>> + =A0 =A0 =A0 =A0}
->>> +
->>> + =A0 =A0 =A0 =A0printf("RTC READ TEST Passed");
->>> + =A0 =A0 =A0 =A0printf("\nCurrent RTC date/time is %d-%d-%d, %02d:%02d=
-:%02d.\n",
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0rtc_tm.tm_mday, rtc_tm.tm_mon + 1, rtc=
-_tm.tm_year + 1900,
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0rtc_tm.tm_hour, rtc_tm.tm_min, rtc_tm.=
-tm_sec);
->>
->> strftime(3) ?
->
->
-> OK. Coming in the next patch.
+I have found abnormal behavior of sem_post/8-1.c test case under posix.
+This test case passes in some times and failed in many times :-(
 
-Awesome :).
+After my investigation found synchronization is missing between the
+child processes.
+Made a patch to fix this issue.
 
->>> + =A0 =A0 =A0 =A0printf("\nRTC ALARM TEST :\n");
->>> +
->>> + =A0 =A0 =A0 =A0/*set Alarm to 5 Seconds*/
->>> + =A0 =A0 =A0 =A0rtc_tm.tm_sec +=3D 5;
->>> + =A0 =A0 =A0 =A0if (rtc_tm.tm_sec >=3D 60) {
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0rtc_tm.tm_sec %=3D 60;
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0rtc_tm.tm_min++;
->>> + =A0 =A0 =A0 =A0}
->>> +
->>> + =A0 =A0 =A0 =A0if (rtc_tm.tm_min =3D=3D 60) {
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0rtc_tm.tm_min =3D 0;
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0rtc_tm.tm_hour++;
->>> + =A0 =A0 =A0 =A0}
->>> +
->>> + =A0 =A0 =A0 =A0if (rtc_tm.tm_hour =3D=3D 24)
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0rtc_tm.tm_hour =3D 0;
->>> +
->>> + =A0 =A0 =A0 ret =3D ioctl(rtc_fd, RTC_ALM_SET, &rtc_tm);
->>> + =A0 =A0 =A0 =A0if (ret =3D=3D -1) {
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0perror("RTC_ALM_SET ioctl");
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf("RTC ALARM TEST Failed\n");
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return;
->>> + =A0 =A0 =A0 =A0}
->>> +
->>> + =A0 =A0 =A0 =A0/*Read current alarm time*/
->>> + =A0 =A0 =A0 =A0ret =3D ioctl(rtc_fd, RTC_ALM_READ, &rtc_tm);
->>> + =A0 =A0 =A0 =A0if (ret =3D=3D -1) {
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0perror("RTC_ALM_READ ioctl");
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf("RTC ALARM TEST Failed\n");
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return;
->>> + =A0 =A0 =A0 =A0}
->>> +
->>> + =A0 =A0 =A0 =A0printf("Alarm time set to %02d:%02d:%02d.\n",
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0rtc_tm.tm_hour, rtc_tm.tm_min, rtc_tm.=
-tm_sec);
->>> + =A0 =A0 =A0 =A0/* Enable alarm interrupts */
->>> + =A0 =A0 =A0 =A0ret =3D ioctl(rtc_fd, RTC_AIE_ON, 0);
->>> + =A0 =A0 =A0 =A0if (ret =3D=3D -1) {
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0perror("RTC_AIE_ON ioctl");
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf("RTC ALARM TEST Failed\n");
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return;
->>> + =A0 =A0 =A0 =A0}
->>> +
->>> + =A0 =A0 =A0 =A0printf("Waiting 5 seconds for the alarm...\n");
->>> + =A0 =A0 =A0 =A0ret =3D read(rtc_fd, &data, sizeof(unsigned long));
->>> + =A0 =A0 =A0 =A0if (ret =3D=3D -1) {
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0perror("read");
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf("RTC ALARM TEST Failed\n");
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return;
->>> + =A0 =A0 =A0 =A0}
->>> +
->>> + =A0 =A0 =A0 printf("Alarm rang.\n");
->>> + =A0 =A0 =A0 =A0/* Disable alarm interrupts */
->>> + =A0 =A0 =A0 =A0ret =3D ioctl(rtc_fd, RTC_AIE_OFF, 0);
->>> + =A0 =A0 =A0 =A0if (ret =3D=3D -1) {
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0perror("RTC_AIE_OFF ioctl");
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf("RTC ALARM TEST Failed\n");
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return;
->>> + =A0 =A0 =A0 =A0}
->>> +
->>> + =A0 =A0 =A0 =A0printf("RTC ALARM TEST Passed\n");
->>> +}
->>> +
->>> +void update_interrupts_test(void)
->>> +{
->>> + =A0 =A0 =A0 int ret, i;
->>> + =A0 =A0 =A0 unsigned long data;
->>> +
->>> + =A0 =A0 =A0 printf("\nRTC UPDATE INTERRUPTS TEST :\n");
->>> + =A0 =A0 =A0 =A0/*Turn on update interrupts*/
->>> + =A0 =A0 =A0 =A0ret =3D ioctl(rtc_fd, RTC_UIE_ON, 0);
->>> + =A0 =A0 =A0 =A0if (ret =3D=3D -1) {
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0perror("RTC_UIE_ON ioctl");
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf("RTC UPDATE INTERRUPTS TEST Fai=
-led\n");
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return;
->>> + =A0 =A0 =A0 =A0}
->>> +
->>> + =A0 =A0 =A0 =A0printf("Waiting for =A05 update interrupts...\n");
->>> + =A0 =A0 =A0 =A0for (i =3D 1; i < 6; i++) {
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ret =3D read(rtc_fd, &data, sizeof(uns=
-igned long));
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (ret =3D=3D -1) {
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0perror("read");
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf("RTC UPDATE INT=
-ERRUPTS TEST Failed\n");
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return;
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf("Update interrupt %d\n", i);
->>> + =A0 =A0 =A0 =A0}
->>> +
->>> + =A0 =A0 =A0 =A0 /* Turn off update interrupts */
->>> + =A0 =A0 =A0 =A0ret =3D ioctl(rtc_fd, RTC_UIE_OFF, 0);
->>> + =A0 =A0 =A0 =A0if (ret =3D=3D -1) {
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0perror("RTC_UIE_OFF ioctl");
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printf("RTC UPDATE INTERRUPTS TEST Fai=
-led\n");
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return;
->>> + =A0 =A0 =A0 =A0}
->>> + =A0 =A0 =A0 =A0printf("RTC UPDATE INTERRUPTS TEST Passed\n");
->>
->> tst_resm(ret =3D=3D -1 ? TFAIL : TPASS, "RTC update interrupts test %s",
->> ret =3D=3D -1 ? "failed" : "passed");
->>
->
-> This can be done only when we build the test along with LTP .But as
-> the problem I mentioned
-> earlier the device-driver directory is still out of the overall LTP build=
- .
+Patch includes
+1.	Reverting back changes made by mreed on Sep 25 2006. Making sure
+child has been waiting for the lock (below Refs).
+2.	using sleep in while loop is not a good idea, so sleep is removed
+from while loop
+3.	For the synchronization I have added sleep before releasing the lock.
 
-As said before, getting this in the standard build is trivial and the
-other pieces aren't in the standard build because of the reasons I
-mentioned earlier.
 
->>> +}
->>> +
->>> +int main(int argc, char **argv)
->>> +{
->>> + =A0 =A0 =A0 char *rtc_dev =3D "/dev/rtc"
->>> +
->>> +
->>> + =A0 =A0 =A0 if (argc =3D=3D 2)
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 rtc_dev =3D argv[1];
->>> +
->>> + =A0 =A0 =A0 rtc_fd =3D open(rtc_dev, O_RDONLY);
->>> + =A0 =A0 =A0 if (rtc_fd < 0) {
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 perror(rtc_dev);
->>
->> tst_brkm(TBROK | TERRNO, tst_exit, "couldn't open %s", rtc_dev);
->
-> Same here.
->
->>
->>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 exit(errno);
->>> + =A0 =A0 =A0 }
->>> +
->>> + =A0 =A0 =A0 /*Read and alarm tests*/
->>> + =A0 =A0 =A0 read_alarm_test();
->>> +
->>> + =A0 =A0 =A0 /*Update interrupts test*/
->>> + =A0 =A0 =A0 update_interrupts_test();
->>> +
->>> + =A0 =A0 =A0 close(rtc_fd);
->>> +
->>> + =A0 =A0 =A0 printf("\nRTC Tests Done!\n");
->>> + =A0 =A0 =A0 return 0;
->>> +}
->>
->> 1. Please rename the test sourcefile to rtc-test.c because the current
->> naming is unnecessarily inconsistent.
->
-> OK.
->
->> 2. Please replace printfs with tst_res(3) calls so this can be
->> properly integrated into LTP.
->
-> Same issue as I explained earlier.
->
->>
->> Thanks!
->> -Garrett
->
-> Thanks,
->
-> Silesh.
->
->>
->>> --
->>> test log
->>> ------------------------------
->>> RTC READ TEST:
->>> RTC READ TEST Passed
->>> Current RTC date/time is 24-2-2010, 17:03:05.
->>>
->>> RTC ALARM TEST :
->>> Alarm time set to 17:03:10.
->>> Waiting 5 seconds for the alarm...
->>> Alarm rang.
->>> RTC ALARM TEST Passed
->>>
->>> RTC UPDATE INTERRUPTS TEST :
->>> Waiting for =A05 update interrupts...
->>> Update interrupt 1
->>> Update interrupt 2
->>> Update interrupt 3
->>> Update interrupt 4
->>> Update interrupt 5
->>> RTC UPDATE INTERRUPTS TEST Passed
->>>
->>> RTC Tests Done!
+After applying this patch I have tested this test case 1000 times continuously.
+All the times test case reported as Test Pass :-)
 
-    The end goal is to have these tests fit directly into LTP without
-having to fudge around writing a secondary driver, thus maintaining
-two pieces of dependent code [which is of course more complicated than
-one piece of code], and thus is more of a pain to maintain longterm.
-There's a lot of code in the repository like this that was ported and
-subsequently not properly adapted to the existing infrastructure, thus
-creating additional headache for maintainers and end-users.
-Thanks!
--Garrett
 
----------------------------------------------------------------------------=
+Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
 ---
+ testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.c
+|   15    8 +     7 -     0 !
+ 1 file changed, 8 insertions(+), 7 deletions(-)
+
+Index: b/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.c
+===================================================================
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.c
+@@ -161,7 +161,6 @@ int main()
+        }
+        fprintf(stderr, "P: child_1:%d forked\n", c_1);
+
+-       sleep(1);
+        c_2 = fork();
+        if (c_2 == 0)
+        {
+@@ -176,13 +175,13 @@ int main()
+        }
+        fprintf(stderr, "P: child_2: %d forked\n", c_2);
+
++        /* Step 3 Implementation */
+        /* Make sure the two children has been waiting */
+-       /*do {
+-               sleep(1);
++       do {
+                sem_getvalue(sem_1, &val);
+                //printf("val = %d\n", val);
+        } while (val != 1);
+-       */
++
+        c_3 = fork();
+        if (c_3 == 0)
+        {
+@@ -191,13 +190,15 @@ int main()
+        }
+        fprintf(stderr, "P: child_3: %d forked\n", c_3);
+
++        /* Step 3 Implementation */
+        /* Make sure child 3 has been waiting for the lock */
+-       /*do {
+-               sleep(1);
++       do {
+                sem_getvalue(sem_1, &val);
+                //printf("val = %d\n", val);
+        } while (val != 0);
+-       */
++
++       /* Synchronization required before release the lock */
++       sleep(1);
+        /* Ok, let's release the lock */
+        fprintf(stderr, "P: release lock\n");
+        sem_post(sem);
+
+
+Test script to test 1000 times:
+/*****************************************************/
+#!/bin/sh
+
+for ((  i = 0 ;  i < 1000;  i++  ))
+
+do
+
+./8-1.test >> /tmp/sem-post-8-1.log
+done
+/*****************************************************/
+
+Refs:
+http://ltp.cvs.sourceforge.net/viewvc/ltp/ltp/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.c?view=log
+
+Please review this patch and let me know if you have any issues.
+
+Best regards
+Naresh Kamboju
+
+--000e0cd116f0c695b804806cffab
+Content-Type: application/octet-stream; 
+	name="posix-sem-post-unstable-fix.patch"
+Content-Disposition: attachment; filename="posix-sem-post-unstable-fix.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g63lfu7i0
+
+LS0tCiB0ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNl
+cy9zZW1fcG9zdC84LTEuYyB8ICAgMTUgCTggKwk3IC0JMCAhCiAxIGZpbGUgY2hhbmdlZCwgOCBp
+bnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQoKSW5kZXg6IGIvdGVzdGNhc2VzL29wZW5fcG9z
+aXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvc2VtX3Bvc3QvOC0xLmMKPT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PQotLS0gYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50
+ZXJmYWNlcy9zZW1fcG9zdC84LTEuYworKysgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3Vp
+dGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9zZW1fcG9zdC84LTEuYwpAQCAtMTYxLDcgKzE2MSw2
+IEBAIGludCBtYWluKCkgCiAJfQogCWZwcmludGYoc3RkZXJyLCAiUDogY2hpbGRfMTolZCBmb3Jr
+ZWRcbiIsIGNfMSk7CiAJCi0Jc2xlZXAoMSk7CiAJY18yID0gZm9yaygpOwogCWlmIChjXzIgPT0g
+MCkKIAl7CkBAIC0xNzYsMTMgKzE3NSwxMyBAQCBpbnQgbWFpbigpIAogCX0KIAlmcHJpbnRmKHN0
+ZGVyciwgIlA6IGNoaWxkXzI6ICVkIGZvcmtlZFxuIiwgY18yKTsKIAorICAgICAgICAvKiBTdGVw
+IDMgSW1wbGVtZW50YXRpb24gKi8KIAkvKiBNYWtlIHN1cmUgdGhlIHR3byBjaGlsZHJlbiBoYXMg
+YmVlbiB3YWl0aW5nICovCQotCS8qZG8geyAKLQkJc2xlZXAoMSk7CisJZG8gewogCQlzZW1fZ2V0
+dmFsdWUoc2VtXzEsICZ2YWwpOwogCQkvL3ByaW50ZigidmFsID0gJWRcbiIsIHZhbCk7CiAJfSB3
+aGlsZSAodmFsICE9IDEpOwotCSovCisKIAljXzMgPSBmb3JrKCk7CiAJaWYgKGNfMyA9PSAwKQog
+CXsKQEAgLTE5MSwxMyArMTkwLDE1IEBAIGludCBtYWluKCkgCiAJfQogCWZwcmludGYoc3RkZXJy
+LCAiUDogY2hpbGRfMzogJWQgZm9ya2VkXG4iLCBjXzMpOwogCQorICAgICAgICAvKiBTdGVwIDMg
+SW1wbGVtZW50YXRpb24gKi8KIAkvKiBNYWtlIHN1cmUgY2hpbGQgMyBoYXMgYmVlbiB3YWl0aW5n
+IGZvciB0aGUgbG9jayAqLwkKLQkvKmRvIHsgCi0JCXNsZWVwKDEpOworCWRvIHsKIAkJc2VtX2dl
+dHZhbHVlKHNlbV8xLCAmdmFsKTsKIAkJLy9wcmludGYoInZhbCA9ICVkXG4iLCB2YWwpOwogCX0g
+d2hpbGUgKHZhbCAhPSAwKTsKLQkqLworCisJLyogU3luY2hyb25pemF0aW9uIHJlcXVpcmVkIGJl
+Zm9yZSByZWxlYXNlIHRoZSBsb2NrICovCisJc2xlZXAoMSk7CiAJLyogT2ssIGxldCdzIHJlbGVh
+c2UgdGhlIGxvY2sgKi8KIAlmcHJpbnRmKHN0ZGVyciwgIlA6IHJlbGVhc2UgbG9ja1xuIik7CiAJ
+c2VtX3Bvc3Qoc2VtKTsK
+--000e0cd116f0c695b804806cffab
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
+--000e0cd116f0c695b804806cffab
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--000e0cd116f0c695b804806cffab--
+
