@@ -1,35 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1Ng1OL-0005Mr-WE
-	for ltp-list@lists.sourceforge.net; Fri, 12 Feb 2010 19:41:30 +0000
-Received: from e35.co.us.ibm.com ([32.97.110.153])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Ng1OJ-0005OG-MM
-	for ltp-list@lists.sourceforge.net; Fri, 12 Feb 2010 19:41:29 +0000
-Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
-	[9.17.195.107])
-	by e35.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o1CJbv2G005639
-	for <ltp-list@lists.sourceforge.net>; Fri, 12 Feb 2010 12:37:57 -0700
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o1CJfGQY022322
-	for <ltp-list@lists.sourceforge.net>; Fri, 12 Feb 2010 12:41:17 -0700
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o1CJfFPa017569
-	for <ltp-list@lists.sourceforge.net>; Fri, 12 Feb 2010 12:41:16 -0700
-Date: Fri, 12 Feb 2010 13:41:14 -0600
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20100212194114.GB23537@us.ibm.com>
-References: <000001caabb7$fe895b60$fb9c1220$@co.jp>
-	<20100212175125.GC15333@us.ibm.com>
-	<364299f41002121117i4fcc7b5bua47579a6ee2d661a@mail.gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NlTDl-0005lA-Gg
+	for ltp-list@lists.sourceforge.net; Sat, 27 Feb 2010 20:25:05 +0000
+Received: from mail-px0-f203.google.com ([209.85.216.203])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NlTDk-0007U9-U7
+	for ltp-list@lists.sourceforge.net; Sat, 27 Feb 2010 20:25:05 +0000
+Received: by pxi41 with SMTP id 41so411135pxi.23
+	for <ltp-list@lists.sourceforge.net>;
+	Sat, 27 Feb 2010 12:24:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <364299f41002121117i4fcc7b5bua47579a6ee2d661a@mail.gmail.com>
-Subject: Re: [LTP] "pidns17" problem in "2010-02-11" cvs
+In-Reply-To: <d270b4401002270606y1f695cc8u3afaefb8b722528c@mail.gmail.com>
+References: <d270b4400912250122y371c4d4dq6fa729b60e03f8a5@mail.gmail.com>
+	<20100111162256.GB19010@saboteur.suse.cz>
+	<20100128041619.GB16209@malik-laptop.in.ibm.com>
+	<d270b4401002202353pec0431w4a2bb947544ff444@mail.gmail.com>
+	<364299f41002261213q24890454jac60233bd8f92ded@mail.gmail.com>
+	<d270b4401002270505n59e448eev69b6f7b263ecd61d@mail.gmail.com>
+	<d270b4401002270606y1f695cc8u3afaefb8b722528c@mail.gmail.com>
+Date: Sat, 27 Feb 2010 12:24:58 -0800
+Message-ID: <364299f41002271224x2aef49b0i4079babd986403e7@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Testcase to validate the memory usage limit imposed by
+	the topmost memory cgroup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,77 +34,67 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============7995020444112094970=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Mitani <mitani@ryobi.co.jp>
+To: Mohamed Naufal <naufal11@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Quoting Garrett Cooper (yanegomi@gmail.com):
-> On Fri, Feb 12, 2010 at 9:51 AM, Serge E. Hallyn <serue@us.ibm.com> wrote:
-> > Quoting Mitani (mitani@ryobi.co.jp):
-> >> Hi,
-> >>
-> >> I tried to test with "2010-02-11" cvs in RHEL5.4 system.
-> >> But the test brings termination of connection.
-> >>
-> >> I examined the phenomenon and discovered that "pidns17" test made
-> >> accident and sshd stopped after the test.
-> >>
-> >>
-> >> I had some problems.
-> >>
-> >> 1. I think that "tst_exit()" must be added last of "cleanup()"
-> >> =A0 =A0function.
-> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >> --- ./testcases/kernel/containers/pidns/pidns17.c =A0 =A0 =A0 2009-12-=
-07
-> >> 05:55:16.000000000 +0900
-> >> +++ ./testcases/kernel/containers/pidns/pidns17.c.new =A0 2010-02-12
-> >> 16:26:31.000000000 +0900
-> >> @@ -104,7 +104,6 @@
-> >>
-> >> =A0 =A0 =A0 =A0 /* cleanup and exit */
-> >> =A0 =A0 =A0 =A0 CLEANUP();
-> >> - =A0 =A0 =A0 tst_exit();
-> >> =A0}
-> >>
-> >> =A0/******************************************************************=
-*****
-> >> @@ -136,7 +135,6 @@
-> >>
-> >> =A0 =A0 =A0 =A0 /* cleanup and exit */
-> >> =A0 =A0 =A0 =A0 CLEANUP();
-> >> - =A0 =A0 =A0 tst_exit();
-> >> =A0} =A0 =A0 =A0/* End main */
-> >>
-> >> =A0/*
-> >> @@ -147,4 +145,5 @@
-> >> =A0{
-> >> =A0 =A0 =A0 =A0 /* Clean the test testcase as LTP wants*/
-> >> =A0 =A0 =A0 =A0 TEST_CLEANUP;
-> >> + =A0 =A0 =A0 tst_exit();
-> >> =A0}
-> >
-> > Yeah I'm afraid I don't understand what CLEANUP and tst_exit exactly
-> > do. =A0Hopefully Garrett can give an educated answer.
-> =
+--===============7995020444112094970==
+Content-Type: multipart/alternative; boundary=000e0cd1b77c54d83404809acf73
 
-> Mitani's correct -- this is what should be done... CLEANUP is a
-> constant that maps to cleanup in the event that tst_brkm is called,
-> because linux_syscall_numbers.h's copy of syscall calls tst_brkm
-> internally if ENOSYS is returned...
+--000e0cd1b77c54d83404809acf73
+Content-Type: text/plain; charset=ISO-8859-1
 
-Cool, thanks
+On Sat, Feb 27, 2010 at 6:06 AM, Mohamed Naufal <naufal11@gmail.com> wrote:
 
--serge
+> It seems my mailer screws up the formatting. Attaching the patch.
+>
 
----------------------------------------------------------------------------=
----
-SOLARIS 10 is the OS for Data Centers - provides features such as DTrace,
-Predictive Self Healing and Award Winning ZFS. Get Solaris 10 NOW
-http://p.sf.net/sfu/solaris-dev2dev
+    This looks good (minus the unnecessary dependency on libcontrollers,
+that I'll yank after commit). Rishi, are we ready for commit?
+Thanks,
+-Garrett
+
+--000e0cd1b77c54d83404809acf73
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<div class=3D"gmail_quote">On Sat, Feb 27, 2010 at 6:06 AM, Mohamed Naufal =
+<span dir=3D"ltr">&lt;<a href=3D"mailto:naufal11@gmail.com">naufal11@gmail.=
+com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" style=3D"bor=
+der-left: 1px solid rgb(204, 204, 204); margin: 0pt 0pt 0pt 0.8ex; padding-=
+left: 1ex;">
+<div><div></div><div class=3D"h5">It seems my mailer screws up the formatti=
+ng. Attaching the patch.<br></div></div></blockquote><div><br>=A0 =A0 This =
+looks good (minus the unnecessary dependency on libcontrollers, that I&#39;=
+ll yank after commit). Rishi, are we ready=A0for commit?<br>
+Thanks,<br>-Garrett</div></div>
+
+--000e0cd1b77c54d83404809acf73--
+
+
+--===============7995020444112094970==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
+--===============7995020444112094970==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============7995020444112094970==--
+
