@@ -1,35 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <y_yao@ryobi.co.jp>) id 1NeIwk-000865-Jc
-	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 02:01:54 +0000
-Received: from out05.sjc.mx.trendmicro.com ([216.99.131.18])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NeIwi-0000Ll-IX
-	for ltp-list@lists.sourceforge.net; Mon, 08 Feb 2010 02:01:54 +0000
-Received: from out07.sjc.mx.trendmicro.com (unknown [216.99.131.23])
-	by out05.sjc.mx.trendmicro.com (Postfix) with ESMTP id ACD3239DAFC
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Nlg7z-0007Bq-EI
+	for ltp-list@lists.sourceforge.net; Sun, 28 Feb 2010 10:11:59 +0000
+Received: from mail-px0-f203.google.com ([209.85.216.203])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Nlg7x-0006Sl-UF
+	for ltp-list@lists.sourceforge.net; Sun, 28 Feb 2010 10:11:58 +0000
+Received: by pxi41 with SMTP id 41so514273pxi.23
 	for <ltp-list@lists.sourceforge.net>;
-	Mon,  8 Feb 2010 01:33:04 +0000 (UTC)
-Received: from relay03.sjc.mx.trendmicro.com (unknown [10.30.239.5])
-	by out07.sjc.mx.trendmicro.com (Postfix) with ESMTP id 1E1A1B7A458
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  8 Feb 2010 01:33:04 +0000 (UTC)
-Received: from smtp-gate.ryobi.co.jp (unknown [210.163.224.132])
-	by relay03.sjc.mx.trendmicro.com (Postfix) with ESMTP id 2160C3DD020
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  8 Feb 2010 01:33:02 +0000 (UTC)
-Received: from 5108637 ([10.113.10.201]) by po.rsoa.ryobi.co.jp
-	(Post.Office MTA v4.1.1 release 20090730
-	ID# 201-058U1200L1200S0V41J) with ESMTP id jp
-	for <ltp-list@lists.sourceforge.net>; Mon, 8 Feb 2010 10:33:00 +0900
-From: "Yuki Yao" <y_yao@ryobi.co.jp>
-Date: Mon, 8 Feb 2010 10:33:00 +0900
-Message-ID: <000001caa85e$a6855ab0$f3901010$@co.jp>
+	Sun, 28 Feb 2010 02:11:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Language: ja
-Subject: [LTP] [PATCH]logrotate: /var/log/messages* disappeared
+Date: Sun, 28 Feb 2010 02:11:21 -0800
+Message-ID: <364299f41002280211i5ab0e74dr4d9693ed40f2b4b5@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: [LTP] RFC : refactor LTP execution model
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,560 +25,210 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0475950240629306715=="
+Content-Type: multipart/mixed; boundary="===============4748578905264789321=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-This is a multi-part message in MIME format.
-
---===============0475950240629306715==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0001_01CAA8AA.166D02B0"
-Content-Language: ja
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0001_01CAA8AA.166D02B0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-
-Hi,
-
- 
-
-I found a problem on LTP when I execute ./runltp.
-
-After execute ./runltp, all log files such as /var/log/messages*
-disappeared, 
-
-and there is only new log files that were created after the test...
-
- 
-
-This seems a problem that occurs after the "logrotate01" test. 
-
-I found that the past log files disappeared by forcing a rotate (logrotate
--fv $LTPTMP/tst_logrotate.conf).
-
- 
-
-Besides, "logrotate"'s shell script
-./testcases/commands/logrotate/logrotate_tests.sh creats 
-
-logrotate configuration file ($LTPTMP/tst_logrotate.conf) for the test, and
-this config file includes 
-
-/etc/logrotate.d as follows:
-
-[ ./testcases/commands/logrotate/logrotate_tests.sh line:156~ ]
-
-----------
-
-# create config file.
-
-              cat >$LTPTMP/tst_logrotate.conf <<-EOF
-
-              #****** Begin Config file *******
-
-              # create new (empty) log files after rotating old ones
-
-              create
-
- 
-
-              # compress the log files
-
-              compress
-
- 
-
-              # RPM packages drop log rotation information into this
-directory
-
-              include /etc/logrotate.d
-
- 
-
-              /var/log/tst_logfile {
-
-                            rotate 5
-
-                            weekly
-
-              }
-
-              #****** End Config file *******
-
-              EOF
-
-----------
-
- 
-
-By this, not only a log file for the test (/var/log/tst_logfile), but also
-30 fies in my system 
-
-such as /var/log/messages* become "logrotate" command target.
-
-Therefore, only a log file for this test must be made a target of the forced
-execution of "logrotate".
-
- 
-
-To resolve this problem, we have to change this not to include
-/etc/logrotate.d, I think.
-
- 
-
-Index: testcases/commands/logrotate/logrotate_tests.sh
-
-==============================
-
---- logrotate_tests.sh           2008-10-21 15:54:15.000000000 +0900
-
-+++ logrotate_tests.sh.new  2010-02-05 18:56:14.000000000 +0900
-
-@@ -163,7 +163,7 @@
-
-             compress
-
- 
-
-             # RPM packages drop log rotation information into this
-directory
-
--             include /etc/logrotate.d
-
-+            # include /etc/logrotate.d
-
- 
-
-             /var/log/tst_logfile {
-
-                           rotate 5
-
-@@ -200,7 +200,7 @@
-
-                           # check if  /etc/logrotate.d is included/
-
-                           # check if 5 rotations are forced.
-
-         # check if compression is done.
-
--                           grep "including /etc/logrotate.d"
-$LTPTMP/tst_logrotate.out \
-
-+                          # grep "including /etc/logrotate.d"
-$LTPTMP/tst_logrotate.out \
-
-                                         > $LTPTMP/tst_logrotate.err 2>&1 ||
-RC=$?
-
-                           grep "reading config file
-$LTPTMP/tst_logrotate.conf" \
-
-                                         $LTPTMP/tst_logrotate.out   >
-$LTPTMP/tst_logrotate.err 2>&1 || RC=$?
-
- 
-
-Thank you,
-
-  --Yuki Yao
-
-
-------=_NextPart_000_0001_01CAA8AA.166D02B0
-Content-Type: text/html;
-	charset="us-ascii"
+To: LTP list <ltp-list@lists.sourceforge.net>
+
+--===============4748578905264789321==
+Content-Type: multipart/alternative; boundary=000e0cd1aa68b4efed0480a65a76
+
+--000e0cd1aa68b4efed0480a65a76
+Content-Type: text/plain; charset=ISO-8859-1
+
+Hi all,
+
+   Currently LTP's execution scripts are split into 5 discrete blocks:
+
+   1. execltp - python wrapper which invokes runltp and processes output to
+expedite execution and reporting (provides summary and context for test
+PASSes, and all non-PASSes).
+   2. runalltests.sh - a semi-dynamic user-customizable execution wrapper
+that executes runltp after performing needed setup for each section;
+performs needed teardown after each section. Uses a number of scripts inside
+testscripts/*.
+   3. runltp - the primary end-user execution wrapper on top of ltp-pan.
+   4. runltplite.sh - an abbreviated form of runltp (minus the email / html
+output driver,
+   5. testscripts/* - a number of ad hoc ltp-pan callers.
+
+   If you take a look at the caller hierarchy, it's something similar to the
+following:
+
+| execltp |                     | runalltests.sh |
+     |                                  |
+| runltp  |  | runltplite.sh |  | testscripts/*  |
+      \             |                  /
+                | pan |
+
+   Now, analyzing the layers in more detail:
+
+   1. runltplite.sh contains the guts of runltp, but isn't maintained as
+readily as runltp, thus needed bug fixes or feature enhancements aren't
+making it into runltplite.sh as quickly, if at all, and as such there's some
+unnecessary code divergence.
+   2.  testscripts/* contains a lot of setup and teardown logic that could
+be sorted out and properly handled inline before and after the test is
+executed, unlike what's available currently.
+   3. It would be nice if the commands and blocks of code were modularized,
+s.t. outside groups could pre-process and/or post-process the tests to
+
+   My proposal is as follows:
+
+   1. A discrete set of reporting functions should be created (error, info,
+warning, etc). This messages should adhere to the following basic paradigm:
+       error - always displayed.
+       info - only displayed when quiet isn't used.
+       warning - only displayed when quiet isn't used.
+       That way folks could
+   2. runltp be split into discrete functional blocks, as follows:
+       i.   Parse core options. Parse any additional options for
+functionality like email, HTML output, etc.
+       ii.  Prepare the tests based on the runtests files and options passed
+in (run valgrind on the tests, etc).
+       iii. Basic setup.
+       iv.  Execute the tests.
+       v.   Basic teardown.
+       vi.  Output methods for email, HTML, etc.
+   2. The testscripts/* setup and teardown logic be moved to a separate
+script, which looks like the following:
+
+<testname>_setup()
+{
+# Do setup here.
+}
+
+<testname>_test()
+{
+# Execute runtest file via pan.
+}
+
+<testname>_teardown()
+{
+# Do teardown here.
+}
+
+    So when runltp is executed, it does something like the following:
+    1. source testscript [if it exists].
+    2. Change the test ``execution plan'' so that they setup and teardown
+inexplicably executed in the following manner (following Java's unit-test
+and python unittest):
+
+    Setup the test; if successful, continue on with the test(s) and teardown
+at the end.
+
+    The purpose for making this into a script as opposed to any other sort
+of metadata, is that anyone executing the tests standalone will only need to
+source the script to set everything up, then execute the test itself.
+    The only thing that might be a problem is that runtest files are mashed
+together if multiple runtest scenario files are specified. This shouldn't be
+an issue though if everything is strung together properly via the calls
+above (setup, test, teardown).
+    Thoughts?
+Thanks,
+-Garrett
+
+--000e0cd1aa68b4efed0480a65a76
+Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
-xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" =
-xmlns=3D"http://www.w3.org/TR/REC-html40">
-
-<head>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<meta name=3DGenerator content=3D"Microsoft Word 12 (filtered medium)">
-<style>
-<!--
- /* Font Definitions */
- @font-face
-	{font-family:"\FF2D\FF33 \30B4\30B7\30C3\30AF";
-	panose-1:2 11 6 9 7 2 5 8 2 4;}
-@font-face
-	{font-family:"\FF2D\FF33 \30B4\30B7\30C3\30AF";
-	panose-1:2 11 6 9 7 2 5 8 2 4;}
-@font-face
-	{font-family:"\@\FF2D\FF33 \30B4\30B7\30C3\30AF";
-	panose-1:2 11 6 9 7 2 5 8 2 4;}
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0mm;
-	margin-bottom:.0001pt;
-	text-align:justify;
-	text-justify:inter-ideograph;
-	font-size:10.5pt;
-	font-family:"Arial","sans-serif";}
-a:link, span.MsoHyperlink
-	{mso-style-priority:99;
-	color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{mso-style-priority:99;
-	color:purple;
-	text-decoration:underline;}
-span.17
-	{mso-style-type:personal-compose;
-	font-family:"Arial","sans-serif";
-	color:windowtext;}
-.MsoChpDefault
-	{mso-style-type:export-only;}
- /* Page Definitions */
- @page Section1
-	{size:612.0pt 792.0pt;
-	margin:99.25pt 30.0mm 30.0mm 30.0mm;}
-div.Section1
-	{page:Section1;}
--->
-</style>
-<!--[if gte mso 9]><xml>
- <o:shapedefaults v:ext=3D"edit" spidmax=3D"1026">
-  <v:textbox inset=3D"5.85pt,.7pt,5.85pt,.7pt" />
- </o:shapedefaults></xml><![endif]--><!--[if gte mso 9]><xml>
- <o:shapelayout v:ext=3D"edit">
-  <o:idmap v:ext=3D"edit" data=3D"1" />
- </o:shapelayout></xml><![endif]-->
-</head>
-
-<body lang=3DJA link=3Dblue vlink=3Dpurple =
-style=3D'text-justify-trim:punctuation'>
-
-<div class=3DSection1>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>Hi,<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>I =
-found a problem
-on LTP when I execute ./runltp.<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>After =
-execute
-./runltp, all log files such as /var/log/messages* disappeared, =
-<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>and =
-there is only
-new log files that were created after the test...<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>This =
-seems a
-problem that occurs after the &quot;logrotate01&quot; test. =
-<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>I =
-found that the
-past log files disappeared by forcing a rotate (logrotate -fv
-$LTPTMP/tst_logrotate.conf).<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>Besides,
-&quot;logrotate&quot;'s shell script
-./testcases/commands/logrotate/logrotate_tests.sh creats =
-<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>logrotate
-configuration file ($LTPTMP/tst_logrotate.conf) for the test, and this =
-config
-file includes <o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>/etc/logrotate.d
-as follows:<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>[
-./testcases/commands/logrotate/logrotate_tests.sh line:156~ =
-]<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>----------<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'># =
-create config
-file.<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cat
-&gt;$LTPTMP/tst_logrotate.conf &lt;&lt;-EOF<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #******
-Begin Config file *******<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #
-create new (empty) log files after rotating old =
-ones<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; create<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #
-compress the log files<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; compress<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #
-RPM packages drop log rotation information into this =
-directory<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; include
-/etc/logrotate.d<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /var/log/tst_logfile
-{<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rotate
-5<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; weekly<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #******
-End Config file *******<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EOF<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>----------<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>By =
-this, not only
-a log file for the test (/var/log/tst_logfile), but also 30 fies in my =
-system <o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>such =
-as
-/var/log/messages* become &quot;logrotate&quot; command =
-target.<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>Therefore, only a
-log file for this test must be made a target of the forced execution of
-&quot;logrotate&quot;.<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>To =
-resolve this
-problem, we have to change this not to include /etc/logrotate.d, I =
-think.<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>Index:
-testcases/commands/logrotate/logrotate_tests.sh<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>---
-logrotate_tests.sh&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
-nbsp; 2008-10-21
-15:54:15.000000000 +0900<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>+++
-logrotate_tests.sh.new&nbsp; 2010-02-05 18:56:14.000000000 =
-+0900<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>@@ =
--163,7 +163,7
-@@<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp; compress<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp; #
-RPM packages drop log rotation information into this =
-directory<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp; include
-/etc/logrotate.d<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp; #
-include /etc/logrotate.d<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp; /var/log/tst_logfile
-{<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rotate
-5<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>@@ =
--200,7 +200,7
-@@<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #
-check if&nbsp; /etc/logrotate.d is included/<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #
-check if 5 rotations are forced.<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;# check if compression is done.<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; grep
-&quot;including /etc/logrotate.d&quot; $LTPTMP/tst_logrotate.out =
-\<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nb=
-sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #
-grep &quot;including /etc/logrotate.d&quot; $LTPTMP/tst_logrotate.out =
-\<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &gt;
-$LTPTMP/tst_logrotate.err 2&gt;&amp;1 || RC=3D$?<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; grep
-&quot;reading config file $LTPTMP/tst_logrotate.conf&quot; =
-\<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
-;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
-$LTPTMP/tst_logrotate.out&nbsp;&nbsp;
-&gt; $LTPTMP/tst_logrotate.err 2&gt;&amp;1 || =
-RC=3D$?<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'><o:p>&nbsp;</o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US style=3D'font-size:10.0pt'>Thank =
-you,<o:p></o:p></span></p>
-
-<p class=3DMsoNormal><span lang=3DEN-US =
-style=3D'font-size:10.0pt'>&nbsp; --Yuki Yao<o:p></o:p></span></p>
-
-</div>
-
-</body>
-
-</html>
-
-------=_NextPart_000_0001_01CAA8AA.166D02B0--
-
-
-
-
---===============0475950240629306715==
+Hi all,<br> <br>=A0=A0 Currently LTP&#39;s execution scripts are split into=
+ 5 discrete blocks:<br><br> =A0 =A01. execltp - python wrapper which invoke=
+s runltp and processes output to expedite execution and reporting (provides=
+ summary and context for test PASSes, and all non-PASSes).<br>
+
+ =A0 =A02. runalltests.sh - a semi-dynamic user-customizable execution wrap=
+per that executes runltp after performing needed setup for each section; pe=
+rforms needed teardown after each section. Uses a number of scripts inside =
+testscripts/*.<br>
+
+ =A0 =A03. runltp - the primary end-user execution wrapper on top of ltp-pa=
+n.<br> =A0 =A04. runltplite.sh - an abbreviated form of runltp (minus the e=
+mail / html output driver, <br> =A0 =A05. testscripts/* - a number of ad ho=
+c ltp-pan callers.<br>
+
+<br> =A0=A0 If you take a look at the caller hierarchy, it&#39;s something =
+similar to the following:<br><br><span style=3D"font-family: courier new,mo=
+nospace;">| execltp | =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | runalltests=
+.sh |</span><br style=3D"font-family: courier new,monospace;">
+
+<span style=3D"font-family: courier new,monospace;"> =A0 =A0 | =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0|</span><br style=3D=
+"font-family: courier new,monospace;"><span style=3D"font-family: courier n=
+ew,monospace;">| runltp =A0| =A0| runltplite.sh | =A0| testscripts/* =A0|</=
+span><br style=3D"font-family: courier new,monospace;">
+
+<span style=3D"font-family: courier new,monospace;"> =A0 =A0 =A0\ =A0 =A0 =
+=A0 =A0 =A0 =A0 | =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/</span><br style=3D"f=
+ont-family: courier new,monospace;"><span style=3D"font-family: courier new=
+,monospace;"> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | pan |</span><br>
+
+<br>=A0=A0 Now, analyzing the layers in more detail:<br><br>=A0=A0 1. runlt=
+plite.sh contains the guts of runltp, but isn&#39;t maintained as readily a=
+s runltp, thus needed bug fixes or feature enhancements aren&#39;t making i=
+t into runltplite.sh as quickly, if at all, and as such there&#39;s some un=
+necessary code divergence.<br>
+
+ =A0=A0 2.=A0 testscripts/* contains a lot of setup and teardown logic that=
+ could be sorted out and properly handled inline before and after the test =
+is executed, unlike what&#39;s available currently.<br>=A0=A0 3. It would b=
+e nice if the commands and blocks of code were modularized, s.t. outside gr=
+oups could pre-process and/or post-process the tests to <br>
+<br>=A0=A0 My proposal is as follows:<br>
+<br>=A0=A0 1. A discrete set of reporting functions should be created (erro=
+r, info, warning, etc). This messages should adhere to the following basic =
+paradigm:<br>=A0=A0=A0=A0=A0=A0 error - always displayed.<br>=A0=A0=A0=A0=
+=A0=A0 info - only displayed when quiet isn&#39;t used.<br>
+
+=A0=A0=A0=A0=A0=A0 warning - only displayed when quiet isn&#39;t used.<br>=
+=A0=A0=A0=A0=A0=A0 That way folks could<br>=A0=A0 2. runltp be split into d=
+iscrete functional blocks, as follows:<br>=A0=A0=A0=A0=A0=A0 i.=A0=A0 Parse=
+ core options. Parse any additional options for functionality like email, H=
+TML output, etc.<br>
+=A0=A0=A0=A0=A0=A0 ii.=A0 Prepare the tests based on the runtests files and=
+ options passed in (run valgrind on the tests, etc).<br>=A0=A0=A0=A0=A0=A0 =
+iii. Basic setup.<br>=A0=A0=A0=A0=A0=A0 iv.=A0 Execute the tests.<br>=A0=A0=
+=A0=A0=A0=A0 v. =A0 Basic teardown.<br>
+=A0=A0=A0=A0=A0=A0 vi.=A0 Output methods for email, HTML, etc.<br>=A0=A0 2.=
+ The testscripts/* setup and teardown logic be moved to a separate script, =
+which looks like the following:<br><br>&lt;testname&gt;_setup()<br>{<br># D=
+o setup here.<br>
+}<br><br>&lt;testname&gt;_test()<br>{<br># Execute runtest file via pan.<br=
+>}<br><br>&lt;testname&gt;_teardown()<br>
+
+{<br>
+# Do teardown here.<br>
+}<br><br>=A0=A0=A0 So when runltp is executed, it does something like the f=
+ollowing:<br>=A0=A0=A0 1. source testscript [if it exists].<br>=A0=A0=A0 2.=
+ Change the test ``execution plan&#39;&#39; so that they setup and teardown=
+ inexplicably executed in the following manner (following Java&#39;s unit-t=
+est and python unittest):<br>
+<br>=A0 =A0 Setup the test; if successful, continue on with the test(s) and=
+ teardown at the end.<br><br>=A0=A0=A0 The purpose for making this into a s=
+cript as opposed to any other sort of metadata, is that anyone executing th=
+e tests standalone will only need to source the script to set everything up=
+, then execute the test itself.<br>
+=A0=A0=A0 The only thing that might be a problem is that runtest files are =
+mashed together if multiple runtest scenario files are specified. This shou=
+ldn&#39;t be an issue though if everything is strung together properly via =
+the calls above (setup, test, teardown).<br>
+=A0=A0=A0 Thoughts?<br>Thanks,<br>-Garrett<br>
+
+--000e0cd1aa68b4efed0480a65a76--
+
+
+--===============4748578905264789321==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-The Planet: dedicated and managed hosting, cloud storage, colocation
-Stay online with enterprise data centers and the best network in the business
-Choose flexible plans and management services without long-term contracts
-Personal 24x7 support from experience hosting pros just a phone call away.
-http://p.sf.net/sfu/theplanet-com
---===============0475950240629306715==
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
+--===============4748578905264789321==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -603,7 +239,5 @@ Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
 
---===============0475950240629306715==--
-
-
+--===============4748578905264789321==--
 
