@@ -1,26 +1,43 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <saileshcv@gmail.com>) id 1NnRQu-0004cH-0n
-	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 06:54:48 +0000
-Received: from mail-yx0-f190.google.com ([209.85.210.190])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NnRQt-0006QG-4A
-	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 06:54:47 +0000
-Received: by yxe28 with SMTP id 28so1738119yxe.13
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 04 Mar 2010 22:54:41 -0800 (PST)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nly48-0005gn-1U
+	for ltp-list@lists.sourceforge.net; Mon, 01 Mar 2010 05:21:12 +0000
+Received: from e38.co.us.ibm.com ([32.97.110.159])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Nly46-0004P8-PJ
+	for ltp-list@lists.sourceforge.net; Mon, 01 Mar 2010 05:21:11 +0000
+Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
+	[9.17.195.226])
+	by e38.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o215FSDn020720
+	for <ltp-list@lists.sourceforge.net>; Sun, 28 Feb 2010 22:15:28 -0700
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o215L4IJ150578
+	for <ltp-list@lists.sourceforge.net>; Sun, 28 Feb 2010 22:21:04 -0700
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o215L4nd017827
+	for <ltp-list@lists.sourceforge.net>; Sun, 28 Feb 2010 22:21:04 -0700
+Date: Mon, 1 Mar 2010 10:51:00 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100301052100.GA3860@linux.vnet.ibm.com>
+References: <d270b4400912250122y371c4d4dq6fa729b60e03f8a5@mail.gmail.com>
+	<20100111162256.GB19010@saboteur.suse.cz>
+	<20100128041619.GB16209@malik-laptop.in.ibm.com>
+	<d270b4401002202353pec0431w4a2bb947544ff444@mail.gmail.com>
+	<364299f41002261213q24890454jac60233bd8f92ded@mail.gmail.com>
+	<d270b4401002270505n59e448eev69b6f7b263ecd61d@mail.gmail.com>
+	<d270b4401002270606y1f695cc8u3afaefb8b722528c@mail.gmail.com>
+	<364299f41002271224x2aef49b0i4079babd986403e7@mail.gmail.com>
+	<20100228181445.GB4850@linux.vnet.ibm.com>
+	<d270b4401002281837x589df62ds4ce246066c3d9442@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <364299f41003042214g5501130bj114db6695e762044@mail.gmail.com>
-References: <41c7690d1003032130i6b61968bjc175698937dc0051@mail.gmail.com>
-	<20100304125514.GA21634@linux.vnet.ibm.com>
-	<41c7690d1003042154s68cd8416hf6ebf17f96e50a8b@mail.gmail.com>
-	<364299f41003042214g5501130bj114db6695e762044@mail.gmail.com>
-Date: Fri, 5 Mar 2010 12:24:40 +0530
-Message-ID: <41c7690d1003042254w301c8056nd553b46c970ee473@mail.gmail.com>
-From: Silesh C V <saileshcv@gmail.com>
-Subject: Re: [LTP] [PATCH-v3] RTC Device Driver Tests
+Content-Disposition: inline
+In-Reply-To: <d270b4401002281837x589df62ds4ce246066c3d9442@mail.gmail.com>
+Subject: Re: [LTP] Testcase to validate the memory usage limit imposed by
+ the topmost memory cgroup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,131 +47,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Arun.sudhilal@lntinfotech.com, Mohamed.Rasheed@lntinfotech.com
+To: Mohamed Naufal <naufal11@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 3/5/10, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Thu, Mar 4, 2010 at 9:54 PM, Silesh C V <saileshcv@gmail.com> wrote:
->> On 3/4/10, Rishikesh K Rajak <risrajak@linux.vnet.ibm.com> wrote:
->>>>Rishi,
->>>
->>>>Can you test this patch on the machine on which the tests got stuck
->>>>earlier?
->>>
->>> Yes i tested and found that, it is failing.
->>
->> It is supposed to fail :) . What we  wanted was a way to come out of
->> the tests if the
->> alarm fails to ring.
->>
->>
->>>
->>> [root@x335a rtc]# ./rtc-test /dev/rtc
->>> rtc01       0  TINFO  :  RTC READ TEST:
->>> rtc01       1  TPASS  :  RTC READ TEST Passed
->>> rtc01       0  TINFO  :  Current Date/time is  03/03/10 12:38:26 PM
->>> rtc01       0  TINFO  :  RTC ALARM TEST :
->>> rtc01       0  TINFO  :  Alarm time set to 12:38:31.
->>> rtc01       0  TINFO  :  Waiting 5 seconds for the alarm...
->>> rtc01       2  TFAIL  :  Timed out waiting for the alarm
->>> rtc01       0  TINFO  :  RTC UPDATE INTERRUPTS TEST :
->>> rtc01       0  TINFO  :  Waiting for  5 update interrupts...
->>> rtc01       0  TINFO  :  Update interrupt 1
->>> rtc01       0  TINFO  :  Update interrupt 2
->>> rtc01       0  TINFO  :  Update interrupt 3
->>> rtc01       0  TINFO  :  Update interrupt 4
->>> rtc01       0  TINFO  :  Update interrupt 5
->>> rtc01       3  TPASS  :  RTC UPDATE INTERRUPTS TEST Passed
->>> rtc01       0  TINFO  :  RTC Tests Done!
->>> [root@x335a rtc]# ls -l /dev/rtc*
->>> crw-r--r-- 1 root root 10, 135 Feb 20 13:51 /dev/rtc
->>> [root@x335a rtc]#
->>>
->>>
->>>
->>> In fact while compiling there is some warning also.
->>> [root@x335a rtc]# make
->>> cc rtc-test.c -O2 -Wall -I ../../../../include/ -L ../../../../lib/
->>> -lltp  -o rtc-test
->>> rtc-test.c: In function =91read_alarm_test=92:
->>> rtc-test.c:64: warning: dereferencing type-punned pointer will break
->>> strict-aliasing rules
->>
->> I did not get this warning on gcc-4.3.0 . Anyways I think we can get rid
->> of this
->> warning by using -fno-strict-aliasing option at the cost of some
->> optimizations.
->> I will send you another patch.
->>
->
-> Or maybe just fix the code to not type-pun by converting everything to
-> struct tm on the fly?
->
-> Let's look at the difference between the two structures:
->
-> struct rtc_time {
->         int tm_sec;
->         int tm_min;
->         int tm_hour;
->         int tm_mday;
->         int tm_mon;
->         int tm_year;
->         int tm_wday;
->         int tm_yday;
->         int tm_isdst;
-> };
->
-> struct tm
-> {
->   int tm_sec;                   /* Seconds.     [0-60] (1 leap second) */
->   int tm_min;                   /* Minutes.     [0-59] */
->   int tm_hour;                  /* Hours.       [0-23] */
->   int tm_mday;                  /* Day.         [1-31] */
->   int tm_mon;                   /* Month.       [0-11] */
->   int tm_year;                  /* Year - 1900.  */
->   int tm_wday;                  /* Day of week. [0-6] */
->   int tm_yday;                  /* Days in year.[0-365] */
->   int tm_isdst;                 /* DST.         [-1/0/1]*/
->
-> #ifdef  __USE_BSD
->   long int tm_gmtoff;           /* Seconds east of UTC.  */
->   __const char *tm_zone;        /* Timezone abbreviation.  */
-> #else
->   long int __tm_gmtoff;         /* Seconds east of UTC.  */
->   __const char *__tm_zone;      /* Timezone abbreviation.  */
-> #endif
-> };
->
-> Note the extra fields down below -- they increase the structure size
-> by a non-trivial amount (12 bytes on 32-bit, 16 bytes on 64-bit),
-> which means that if one of the following two cases are made in
-> strftime tomorrow:
->
-> 1. They use one of the timezone fields and it isn't properly cleared
-> (not the case today, but it could be on some older versions of Linux).
-> 2. They make assumptions about the size of the memory allocated and
-> thus go out of bounds.
->
-> BOOM! Segfault... could worse happen in this case after the ioctl is
-> written out to /dev/rtc ?
+On Mon, Mar 01, 2010 at 08:07:50AM +0530, Mohamed Naufal wrote:
+> On 28 February 2010 23:44, Rishikesh K Rajak
+> <risrajak@linux.vnet.ibm.com> wrote:
+> >>>Rishi, are we ready=A0for commit?
+> >
+> > Yes committed to next branch, let me test for any regression, and then
+> > will commit to maint/master branch.
+> >
+> >
+> =
 
-OK. Can we drop strftime then ?
+> [...]
+> =
+
+> Hi
+> =
+
+> The new source files in my patch doesn't appear in the next branch.
 
 
->
->>> Please solve these problems and please send me a revised patch.
->
-> Thanks,
-> -Garrett
->
+Something really has got screwed with your patch can you please resend
+your patch against next branch as attachment ?
 
+Thanks
+Rishi
+> =
+
+> Naufal
 
 -- =
 
-Silesh
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ---------------------------------------------------------------------------=
 ---
