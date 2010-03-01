@@ -1,30 +1,11 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <subrata@linux.vnet.ibm.com>) id 1NuQcg-0003zK-UI
-	for ltp-list@lists.sourceforge.net; Wed, 24 Mar 2010 13:27:50 +0000
-Received: from e32.co.us.ibm.com ([32.97.110.150])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NuQcf-0007jX-DZ
-	for ltp-list@lists.sourceforge.net; Wed, 24 Mar 2010 13:27:50 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e32.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o2ODL7D8032592
-	for <ltp-list@lists.sourceforge.net>; Wed, 24 Mar 2010 07:21:07 -0600
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id
-	o2ODRgp2250506
-	for <ltp-list@lists.sourceforge.net>; Wed, 24 Mar 2010 07:27:42 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o2ODRfIv003709
-	for <ltp-list@lists.sourceforge.net>; Wed, 24 Mar 2010 07:27:41 -0600
-From: Subrata Modak <subrata@linux.vnet.ibm.com>
-Date: Wed, 24 Mar 2010 19:06:45 +0530
-Message-Id: <20100324133645.23583.48891.sendpatchset@subratamodak.linux.ibm.com>
-Subject: [LTP] [PATCH] Fix fallocate() build issue for EXT4 Online
-	Defragmentation Test
+Date: Mon, 1 Mar 2010 21:09:23 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100301153923.GA16885@linux.vnet.ibm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+Subject: [LTP] [ANNOUNCEMENT]: The Linux Test Project has been released for
+ FEBRUARY 2010
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,66 +15,234 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5251094633875162891=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>, Miao Xie <miaox@cn.fujitsu.com>
-Cc: LTP Mailing List <ltp-list@lists.sourceforge.net>
-
---===============5251094633875162891==
-
-Earlier Subject: Re: [LTP] ext4/e4defrag.c testcases compilation error,
-
-Hi Garret/Miao,
-
-On PPC systems, fallocate() seems to be already defined at /usr/include/bits/fcntl.h,
-so building EXT4 test cases on PPC64 machines will create build problems even if the
-pre-requisite packages:
-
-e2fsprogs*
-e2fsprogs-libs*
-e2fsprogs-devel*
-
-are present. So, this patch adds an extra check. Please let me know your thoughts.
-
-Errors bound to occur:
-[
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall  -I/root/subrata/ltp/ltp-dev/testcases/kernel/include -I../../../../../include -I../../../../../include   -L../../../../../lib  e4defrag.c   -lltp -lm -o e4defrag
-e4defrag.c:388: error: conflicting types for ���fallocate���
-/usr/include/bits/fcntl.h:240: note: previous declaration of ���fallocate��� was here
-make[1]: *** [e4defrag] Error 1
-]
-
-Signed-off-by: Subrata Modak <subrata@linux.vnet.ibm.com>
----
-
---- ltp-dev/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/e4defrag.c	2010-03-15 19:32:12.000000000 +0530
-+++ ltp-dev.modified/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/e4defrag.c	2010-03-24 18:09:14.336793513 +0530
-@@ -383,10 +383,13 @@ int sync_file_range(int fd, loff_t offse
-  * @offset:		file offset.
-  * @len:		file size.
-  */
-+
-+#ifndef __NR_fallocate
- int fallocate(int fd, int mode, loff_t offset, loff_t len)
- {
- 	return syscall(__NR_fallocate, fd, mode, offset, len);
- }
-+#endif
- 
- /*
-  * get_mount_point() -	Get device's mount point.
-
----
-Regards--
-Subrata Modak
-
-
-
---===============5251094633875162891==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net, ltp-announce@lists.sourceforge.net, ltp-results@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>
+
+Hi All,
+
+The Linux Test Project test suite has been released for the month of
+FEB 2010. Please see ltp/INSTALL file carefully, as, there has
+been multiple changes for building/installing the test suite after the
+recent changes in Makefile infrastructure.
+
+The latest version of the test-suite contains 3000+ tests for the Linux
+OS and can be found at:
+http://ltp.sourceforge.net/,
+Latest happenings in LTP can also be found at:
+http://ltp.sourceforge.net/wiki/,
+http://ltp.sourceforge.net/wikiArchives.php, and,
+IRC: irc.freenode.org #ltp.
+
+========================
+FEBRUARY 2010 Highlights:
+======================== 
+      * Conversion of CVS repository to GIT repository. CVS will be
+freeze from now onwards.
+      * Created four branch for git tree as master, maint, next and pu.
+
+==============================
+FEBRUARY 2010 LTP Contributors:
+============================== 
+     1. Garrett Cooper, 
+     2. liubo,
+     3. Randy Dunlap
+     4. Rishikesh K Rajak
+     5. Subrata Modak
+     6. Jiri Palecek
+     7. Shi Weihua
+------------------------------
+
+
+==============================
+Note(s) from the Maintainer:
+==============================
+
+http://marc.info/?l=ltp-list&m=126725787515756&w=2
+
+After referring this above link, please try to take advantage of this
+git tree.
+
+git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev.git .
+
+
+
+We would encourage the community to post results to 
+ltp-results@lists.sf.net,
+patches, new tests, bugs or comments/questions to ltp-list@lists.sf.net,
+http://sourceforge.net/tracker/?func=add&group_id=3382&atid=103382 
+<http://sourceforge.net/tracker/?func=add&group_id=3382&atid=103382>
+(for
+New Bug(s)),
+http://sourceforge.net/tracker/?func=add&group_id=3382&atid=303382 
+<http://sourceforge.net/tracker/?func=add&group_id=3382&atid=303382>
+(for
+New Patch(s)),
+http://sourceforge.net/tracker/?func=add&group_id=3382&atid=353382 
+<http://sourceforge.net/tracker/?func=add&group_id=3382&atid=353382>
+(for
+New Feature Request(s))
+
+Happy Testing !!
+
+Here are the changes file since 6th feb 2010:
+
+ INSTALL                                            |   26 +-
+ Makefile                                           |    2 +-
+ Makefile.release                                   |   46 ++
+ README                                             |   10 +-
+ TODO                                               |   68 +--
+ configure.ac                                       |    1 +
+ doc/ltp-run-files.txt                              |    4 +-
+ include/ltp_signal.h                               |  131 ++----
+ include/mk/automake.mk                             |    2 +-
+ include/mk/lib.mk                                  |    4 +-
+ lib/Makefile                                       |    2 +
+ m4/ltp-time.m4                                     |   35 ++
+ runtest/controllers                                |    1 +
+ runtest/syscalls                                   |    2 +
+ scratch/cache_leak                                 |  174 -------
+ scratch/googlemmtest.txt                           |  269 ----------
+ scratch/hackbench.c                                |  261 ----------
+ scratch/lat-sched.c                                |  346 -------------
+ scratch/runltp.orig                                |  541
+--------------------
+ scratch/runltp.robbie                              |  413
+---------------
+ testcases/commands/ade/ar/ar01                     |    2 +-
+ testcases/commands/ade/ld/ld01                     |    2 +-
+ testcases/commands/ade/ldd/ldd01                   |    2 +-
+ testcases/commands/ade/nm/nm01                     |    2 +-
+ testcases/commands/ade/objdump/objdump01           |    2 +-
+ testcases/commands/ade/size/size01                 |    2 +-
+ testcases/commands/at/at_allow01                   |    2 +-
+ testcases/commands/at/at_deny01                    |    2 +-
+ testcases/commands/cron/cron02                     |    2 +-
+ testcases/commands/cron/cron03                     |    2 +-
+ testcases/commands/cron/cron_allow01               |    2 +-
+ testcases/commands/cron/cron_deny01                |    2 +-
+ testcases/commands/cron/cron_dirs_checks01         |    2 +-
+ testcases/commands/mail/00_Descriptions.txt        |    2 +-
+ testcases/commands/mail/mail_tests.sh              |  526
+++++++++++----------
+ testcases/commands/su/su01                         |    2 +-
+ testcases/commands/su/su01_s1                      |    2 +-
+ testcases/kernel/containers/Makefile               |    2 +-
+ testcases/kernel/containers/Makefile.inc           |    2 +-
+ testcases/kernel/containers/container_test.sh      |   20 +-
+ .../kernel/containers/mqns/check_mqns_enabled.c    |   55 ++
+ .../kernel/containers/netns/check_netns_enabled.c  |   35 +-
+ .../kernel/containers/pidns/check_pidns_enabled.c  |   70 +++
+ testcases/kernel/containers/pidns/pidns17.c        |   28 +-
+ testcases/kernel/controllers/Makefile              |    2 +-
+ testcases/kernel/controllers/Makefile.inc          |    2 +-
+ testcases/kernel/controllers/cpuset/Makefile       |    2 +-
+ testcases/kernel/controllers/cpuset/Makefile.inc   |    2 +-
+ testcases/kernel/controllers/memcg/README          |   10 +
+ .../kernel/controllers/memcg/control/Makefile      |   33 ++
+ .../kernel/controllers/memcg/control/mem_process.c |  141 +++++
+ .../memcg/control/memcg_control_test.sh            |  166 ++++++
+ testcases/kernel/fs/acls/acl_test01                |  199 ++++----
+ testcases/kernel/fs/ftest/ftest08.c                |   17 +-
+ testcases/kernel/fs/ftest/libftest.c               |   21 +-
+ testcases/kernel/io/direct_io/README               |    2 +-
+ testcases/kernel/io/stress_floppy/Makefile         |    2 +
+ testcases/kernel/io/stress_floppy/stress_floppy    |    2 +-
+ testcases/kernel/mem/Makefile                      |    2 +-
+ testcases/kernel/mem/Makefile.inc                  |    2 +-
+ testcases/kernel/mem/hugetlb/Makefile              |    2 +-
+ testcases/kernel/mem/hugetlb/Makefile.inc          |    2 +-
+ .../kernel/sched/sched_stress/sched_stress.sh      |    2 +-
+ .../kernel/security/cap_bound/exec_without_inh.c   |    3 +
+ .../integrity/ima/tests/ima_measurements.sh        |    4 +-
+ testcases/kernel/syscalls/ipc/Makefile             |    2 +-
+ testcases/kernel/syscalls/ipc/Makefile.inc         |    2 +-
+ testcases/kernel/syscalls/mbind/mbind01.c          |    1 +
+ testcases/kernel/syscalls/mknod/mknod02.c          |    3 +-
+ testcases/kernel/syscalls/mq_notify/mq_notify01.c  |   15 +-
+ .../kernel/syscalls/rt_sigaction/rt_sigaction01.c  |  143 +++---
+ testcases/kernel/syscalls/rt_sigprocmask/Makefile  |    1 -
+ .../syscalls/rt_sigprocmask/rt_sigprocmask01.c     |  211 ++++----
+ .../syscalls/rt_sigsuspend/rt_sigsuspend01.c       |  281 +++++-----
+ testcases/kernel/syscalls/stime/stime01.c          |  114 +++--
+ testcases/kernel/syscalls/swapon/swapon03.c        |   97 +++--
+ .../kernel/syscalls/utimensat/utimensat_tests.sh   |   30 +-
+ testcases/kernel/timers/include/common_timers.h    |   51 +-
+ testcases/network/generate.sh                      |    2 +-
+ testcases/network/multicast/mc_opts/mc_opts        |    2 +-
+ testcases/network/tcp_cmds/Makefile                |    2 +-
+ testcases/network/tcp_cmds/Makefile.inc            |    9 +-
+ testcases/network/tcp_cmds/arp/arp01               |    2 +-
+ testcases/network/tcp_cmds/echo/echo01             |    2 +-
+ testcases/network/tcp_cmds/finger/finger01         |    2 +-
+ testcases/network/tcp_cmds/ftp/ftp01               |    2 +-
+ testcases/network/tcp_cmds/ftp/ftp02               |    2 +-
+ testcases/network/tcp_cmds/ftp/ftp02_s1            |    2 +-
+ testcases/network/tcp_cmds/ftp/ftp03               |    2 +-
+ testcases/network/tcp_cmds/ftp/ftp04               |    2 +-
+ testcases/network/tcp_cmds/ftp/ftp05               |    2 +-
+ testcases/network/tcp_cmds/host/host01             |    2 +-
+ testcases/network/tcp_cmds/netstat/netstat01       |    2 +-
+ testcases/network/tcp_cmds/perf_lan/perf_lan       |    2 +-
+ testcases/network/tcp_cmds/ping/ping01             |    2 +-
+ testcases/network/tcp_cmds/rcp/rcp01               |    2 +-
+ testcases/network/tcp_cmds/rdist/rdist01           |    2 +-
+ testcases/network/tcp_cmds/rlogin/rlogin01         |    2 +-
+ testcases/network/tcp_cmds/rsh/rsh01               |    2 +-
+ testcases/network/tcp_cmds/rwho/rwho01             |    2 +-
+ testcases/network/tcp_cmds/sendfile/sendfile01     |    2 +-
+ testcases/network/tcp_cmds/ssh/ssh01               |    2 +-
+ testcases/network/tcp_cmds/ssh/ssh01_s1            |    2 +-
+ testcases/network/tcp_cmds/ssh/ssh02               |    2 +-
+ testcases/network/tcp_cmds/ssh/ssh02_s1            |    2 +-
+ testcases/network/tcp_cmds/ssh/ssh03               |    2 +-
+ testcases/network/tcp_cmds/ssh/ssh03_s1            |    2 +-
+ testcases/network/tcp_cmds/tcpdump/tcpdump01       |    2 +-
+ testcases/network/tcp_cmds/telnet/telnet01         |    2 +-
+ testscripts/build/README                           |   19 +
+ testscripts/build/build_test_function.sh           |   67 ++-
+ testscripts/build/test_install_in_build_tree.sh    |   26 +-
+ .../build/test_install_out_of_build_tree.sh        |   26 +-
+ testscripts/build/test_out_of_build_tree.sh        |   26 +-
+ testscripts/diskio.sh                              |    2 +-
+ testscripts/ltp-aiodio.sh                          |   12 +-
+ testscripts/ltp-scsi_debug.sh                      |    2 +-
+ testscripts/ltpfslvm.sh                            |    4 +-
+ testscripts/ltpfsnolvm.sh                          |    4 +-
+ testscripts/ltpstress.sh                           |    6 +-
+ testscripts/networkstress.sh                       |    4 +-
+ testscripts/networktests.sh                        |    4 +-
+ testscripts/runEALtests.sh                         |    2 +-
+ testscripts/runpan.sh                              |    2 +-
+ testscripts/tpm_tools.sh                           |    2 +-
+ tools/make-file.sh                                 |    2 +-
+ 126 files changed, 1814 insertions(+), 3142 deletions(-)
+ create mode 100644 Makefile.release
+ create mode 100644 m4/ltp-time.m4
+ delete mode 100644 scratch/cache_leak
+ delete mode 100644 scratch/googlemmtest.txt
+ delete mode 100644 scratch/hackbench.c
+ delete mode 100644 scratch/lat-sched.c
+ delete mode 100755 scratch/runltp.orig
+ delete mode 100755 scratch/runltp.robbie
+ create mode 100644
+testcases/kernel/containers/mqns/check_mqns_enabled.c
+ create mode 100644
+testcases/kernel/containers/pidns/check_pidns_enabled.c
+ create mode 100644 testcases/kernel/controllers/memcg/control/Makefile
+ create mode 100644
+testcases/kernel/controllers/memcg/control/mem_process.c
+ create mode 100644
+testcases/kernel/controllers/memcg/control/memcg_control_test.sh
+
+-- 
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
@@ -101,15 +250,7 @@ Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
---===============5251094633875162891==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5251094633875162891==--
