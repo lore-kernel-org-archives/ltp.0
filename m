@@ -1,23 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NmlBp-0002ZJ-Py
-	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 09:48:25 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NmlBp-0008WL-08
-	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 09:48:25 +0000
-Received: by pwi5 with SMTP id 5so689319pwi.34
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 03 Mar 2010 01:48:19 -0800 (PST)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nlziz-0001B0-2z
+	for ltp-list@lists.sourceforge.net; Mon, 01 Mar 2010 07:07:29 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Nlziy-0004WO-1s
+	for ltp-list@lists.sourceforge.net; Mon, 01 Mar 2010 07:07:29 +0000
+Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
+	[9.17.195.107])
+	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o2175urH006493
+	for <ltp-list@lists.sourceforge.net>; Mon, 1 Mar 2010 00:05:56 -0700
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o2177LsX091210
+	for <ltp-list@lists.sourceforge.net>; Mon, 1 Mar 2010 00:07:21 -0700
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o2177LQb010234
+	for <ltp-list@lists.sourceforge.net>; Mon, 1 Mar 2010 00:07:21 -0700
+Date: Mon, 1 Mar 2010 12:37:19 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100301070718.GE3860@linux.vnet.ibm.com>
+References: <364299f41002280211i5ab0e74dr4d9693ed40f2b4b5@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20100302092116.3409.1130.sendpatchset@localhost.localdomain>
-References: <20100302092116.3409.1130.sendpatchset@localhost.localdomain>
-Date: Wed, 3 Mar 2010 01:48:17 -0800
-Message-ID: <364299f41003030148g4a7665cfi5de1afc0768e2738@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH] Fix memcg test scripts
+Content-Disposition: inline
+In-Reply-To: <364299f41002280211i5ab0e74dr4d9693ed40f2b4b5@mail.gmail.com>
+Subject: Re: [LTP] RFC : refactor LTP execution model
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,86 +37,84 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sachin Sant <sachinp@in.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
-On Tue, Mar 2, 2010 at 1:21 AM, Sachin Sant <sachinp@in.ibm.com> wrote:
-> Inspite of memcg kernel support being available, memcg_[functional|regres=
-sion
-> |stress] test script fails to execute with message
->
-> "Either Kernel does not support for memory resource controller or feature=
- not enabled"
-> "Skipping all memcgroup testcases...."
->
-> Fix the scripts to use proper if []; then .. fi statements.
->
-> Signed-off-by : Sachin Sant <sachinp@in.ibm.com>
-> ---
->
-> diff -Naurp a/testcases/kernel/controllers/memcg/functional/memcg_functio=
-n_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_function_te=
-st.sh
-> --- a/testcases/kernel/controllers/memcg/functional/memcg_function_test.s=
-h =A0 =A0 =A02010-03-02 12:23:27.000000000 +0530
-> +++ b/testcases/kernel/controllers/memcg/functional/memcg_function_test.s=
-h =A0 =A0 =A02010-03-02 12:23:33.000000000 +0530
-> @@ -30,8 +30,7 @@ export TCID=3D"memcg_function_test"
-> =A0export TST_TOTAL=3D38
-> =A0export TST_COUNT=3D0
->
-> -if [ ! "grep -w memory /proc/cgroups | cut -f4" =3D=3D "1" ]
-> -then
-> +if [ "$(grep -w memory /proc/cgroups | cut -f4)" !=3D "1" ]; then
-> =A0 =A0 =A0 =A0 echo "WARNING:";
-> =A0 =A0 =A0 =A0 echo "Either Kernel does not support for memory resource =
-controller or feature not enabled";
-> =A0 =A0 =A0 =A0 echo "Skipping all memcgroup testcases....";
-> diff -Naurp a/testcases/kernel/controllers/memcg/regression/memcg_regress=
-ion_test.sh b/testcases/kernel/controllers/memcg/regression/memcg_regressio=
-n_test.sh
-> --- a/testcases/kernel/controllers/memcg/regression/memcg_regression_test=
-.sh =A0 =A02010-03-02 12:23:27.000000000 +0530
-> +++ b/testcases/kernel/controllers/memcg/regression/memcg_regression_test=
-.sh =A0 =A02010-03-02 12:23:33.000000000 +0530
-> @@ -35,8 +35,7 @@ if [ "$(id -ru)" !=3D 0 ]; then
-> =A0 =A0 =A0 =A0exit 0
-> =A0fi
->
-> -if [ "$(grep -w memory /proc/cgroups | cut -f4)" !=3D "1" ]
-> -then
-> +if [ "$(grep -w memory /proc/cgroups | cut -f4)" !=3D "1" ]; then
-> =A0 =A0 =A0 =A0tst_resm TCONF "Either memory resource controller kernel s=
-upport absent"
-> =A0 =A0 =A0 =A0tst_resm TCONF "or feature is not enabled; skipping all me=
-mcgroup testcases."
-> =A0 =A0 =A0 =A0 exit 0
-> diff -Naurp a/testcases/kernel/controllers/memcg/stress/memcg_stress_test=
-.sh b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
-> --- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh =A0 =
-=A02010-03-02 12:23:27.000000000 +0530
-> +++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh =A0 =
-=A02010-03-02 12:23:33.000000000 +0530
-> @@ -30,8 +30,7 @@ export TCID=3D"memcg_stress_test"
-> =A0export TST_TOTAL=3D2
-> =A0export TST_COUNT=3D0
->
-> -if [ ! "grep -w memory /proc/cgroups | cut -f4" =3D=3D "1" ]
-> -then
-> +if [ "$(grep -w memory /proc/cgroups | cut -f4)" !=3D "1" ]; then
-> =A0 =A0 =A0 =A0 echo "WARNING:";
-> =A0 =A0 =A0 =A0 echo "Either Kernel does not support for memory resource =
-controller or feature not enabled";
-> =A0 =A0 =A0 =A0 echo "Skipping all memcgroup testcases....";
+Hi Garret,
 
-Good catch -- thanks!
--Garrett
+My point will still not be so much useful for you but i tried to understand your
+proposal last weekend and thought to reply you. May be Subrata can give
+you much input here as he is with this project from long time.
 
----------------------------------------------------------------------------=
----
+>   My proposal is as follows:
+>
+>   1. A discrete set of reporting functions should be created (error,
+>info,
+>warning, etc). This messages should adhere to the following basic
+>paradigm:
+>       error - always displayed.
+>       info - only displayed when quiet isn't used.
+>       warning - only displayed when quiet isn't used.
+>       That way folks could
+>
+
+Hmm.... that's way we can give crisp info to user, but what about TBROK
+tetscases ? Are we going to categorize that in error ?
+
+>   2. runltp be split into discrete functional blocks, as follows:
+>       i.   Parse core options. Parse any additional options for
+>functionality like email, HTML output, etc.
+>       ii.  Prepare the tests based on the runtests files and options
+>passed
+>in (run valgrind on the tests, etc).
+>       iii. Basic setup.
+>       iv.  Execute the tests.
+>       v.   Basic teardown.
+>       vi.  Output methods for email, HTML, etc.
+>
+So are you proposing for writing all new scripts ? Did not quite
+understand what could be the motive behind it. We are already having
+runalltest.sh , which does this segregation for user whether he wants an
+email, HTML or not.
+
+>    So when runltp is executed, it does something like the following:
+>    1. source testscript [if it exists].
+>    2. Change the test ``execution plan'' so that they setup and
+>teardown
+>inexplicably executed in the following manner (following Java's
+>unit-test
+>and python unittest):
+>
+>    Setup the test; if successful, continue on with the test(s) and
+>teardown
+>at the end.
+>
+    The purpose for making this into a script as opposed to any other
+>sort
+>of metadata, is that anyone executing the tests standalone will only
+>need to
+>source the script to set everything up, then execute the test itself.
+>    The only thing that might be a problem is that runtest files are
+>mashed
+>together if multiple runtest scenario files are specified. This
+>shouldn't be
+>an issue though if everything is strung together properly via the calls
+>above (setup, test, teardown).
+>    Thoughts?
+
+Overall nice proposal, i also could not understand this "teardown" concept.
+
+-- 
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
+
+------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
