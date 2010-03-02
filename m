@@ -1,32 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NtbKx-0001AZ-Hc
-	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 06:42:07 +0000
-Received: from e9.ny.us.ibm.com ([32.97.182.139])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NtbKv-0000PE-Aj
-	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 06:42:07 +0000
-Received: from d01relay05.pok.ibm.com (d01relay05.pok.ibm.com [9.56.227.237])
-	by e9.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o2M6V5ZJ003024
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 02:31:05 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay05.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o2M6fxva166642
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 02:41:59 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o2M6fxjt023717
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Mar 2010 02:41:59 -0400
-Date: Mon, 22 Mar 2010 12:11:57 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100322064157.GB20606@linux.vnet.ibm.com>
-References: <E0B6230F32558E43951AF1B0DEBF98102119D20EDD@EUSAACMS0714.eamcs.ericsson.se>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <naresh.kernel@gmail.com>) id 1NmTi0-0000Mj-2h
+	for ltp-list@lists.sourceforge.net; Tue, 02 Mar 2010 15:08:28 +0000
+Received: from mail-px0-f203.google.com ([209.85.216.203])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NmThz-0004me-7n
+	for ltp-list@lists.sourceforge.net; Tue, 02 Mar 2010 15:08:28 +0000
+Received: by pxi41 with SMTP id 41so106388pxi.23
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 02 Mar 2010 07:08:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <E0B6230F32558E43951AF1B0DEBF98102119D20EDD@EUSAACMS0714.eamcs.ericsson.se>
-Subject: Re: [LTP] tcore.exp
+In-Reply-To: <20100302085046.GA27023@linux.vnet.ibm.com>
+References: <f5a7b3811002250545x3d5288cfqd114d3bcd79581f2@mail.gmail.com>
+	<20100302085046.GA27023@linux.vnet.ibm.com>
+Date: Tue, 2 Mar 2010 20:38:20 +0530
+Message-ID: <f5a7b3811003020708wdd0710fv4c3e1dcf1992935c@mail.gmail.com>
+From: naresh kamboju <naresh.kernel@gmail.com>
+Subject: Re: [LTP] [PATCH] Synchronization required before release the lock:
+	sem_post/8-1.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,34 +29,93 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Anthony Ton <anthony.ton@ericsson.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, linux-kernel@vger.kernel.org
 
->It appears that the proc check_fpu in tcore.exp has an error when the expect
->can't \
->find the expected string "xmm$num ...".  In the timeout block, the code read
+On Tue, Mar 2, 2010 at 2:20 PM, Rishikesh K Rajak
+<risrajak@linux.vnet.ibm.com> wrote:
+> On Thu, Feb 25, 2010 at 07:15:42PM +0530, naresh kamboju wrote:
+>> Hi,
+>>
+>> I have found abnormal behavior of sem_post/8-1.c test case under posix.
+>> This test case passes in some times and failed in many times :-(
+>> Patch includes
+>> 1. =A0 =A0Reverting back changes made by mreed on Sep 25 2006. Making su=
+re
+>> child has been waiting for the lock (below Refs).
+>> 2. =A0 =A0using sleep in while loop is not a good idea, so sleep is remo=
+ved
+>> from while loop
+>> 3. =A0 =A0For the synchronization I have added sleep before releasing th=
+e lock.
+>>
+>> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
 >
->fail "fail to check the xmm value(timeout)"
+> Looks good to me though i needed few clarification below.
 >
->In my humble opinion, it should be
+> Acked-By: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
 >
->send_user "fail to check the xmm value(timeout)"
+>> ---
+>> =A0testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.c
+>> | =A0 15 =A0 =A08 + =A0 =A0 7 - =A0 =A0 0 !
+>> =A01 file changed, 8 insertions(+), 7 deletions(-)
+>>
+>> Index: b/testcases/open_posix_testsuite/conformance/interfaces/sem_post/=
+8-1.c
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>> --- a/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1=
+.c
+>> +++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1=
+.c
+>> @@ -161,7 +161,6 @@ int main()
+>> =A0 =A0 =A0 =A0 }
+>> =A0 =A0 =A0 =A0 fprintf(stderr, "P: child_1:%d forked\n", c_1);
+>>
+>> - =A0 =A0 =A0 sleep(1);
+>> =A0 =A0 =A0 =A0 c_2 =3D fork();
+>> =A0 =A0 =A0 =A0 if (c_2 =3D=3D 0)
+>> =A0 =A0 =A0 =A0 {
+>> @@ -176,13 +175,13 @@ int main()
+>> =A0 =A0 =A0 =A0 }
+>> =A0 =A0 =A0 =A0 fprintf(stderr, "P: child_2: %d forked\n", c_2);
+>>
+>> + =A0 =A0 =A0 =A0/* Step 3 Implementation */
+>> =A0 =A0 =A0 =A0 /* Make sure the two children has been waiting */
+>> - =A0 =A0 =A0 /*do {
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 sleep(1);
+> I feel before getting semaphore value, we need to sync first so here
+> sleep is require,though your point is valid that there is no use of
+> using sleep inside while loop.
+I agree with you.
+AFAIU, we should call sleep() before calling getting semaphore
+value.when we don't have while loop here. Because while loop condition
+is depends on val so when ever we call sem_getvalue() it will get
+latest value of val.
+In addition to this, we are ensuring val is decremented before we do
+unlock the sem by while loop condition.
 
-Hi Anthony,
+Having sleep() in while loop will not effect the final output. IIUC
 
-Send us a patch with the correct changes and then someone can review here.
+Best regards,
+Naresh Kamboju
+>> Please review this patch and let me know if you have any issues.
+>>
+>> Best regards
+>> Naresh Kamboju
+> --
+> Thanks & Regards
+> Rishi
+> LTP Maintainer
+> IBM, LTC, Bangalore
+> Please join IRC #ltp @ irc.freenode.net
 
--- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
-
-------------------------------------------------------------------------------
+---------------------------------------------------------------------------=
+---
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
