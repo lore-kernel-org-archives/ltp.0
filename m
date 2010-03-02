@@ -1,15 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <noreply@sourceforge.net>) id 1Ns0G9-0004uS-WF
-	for ltp-list@lists.sourceforge.net; Wed, 17 Mar 2010 20:54:34 +0000
-From: "SourceForge.net" <noreply@sourceforge.net>
-Mime-Version: 1.0
-Message-Id: <E1Ns0G9-0002Hk-RL@sfs-web-3.v29.ch3.sourceforge.com>
-Date: Wed, 17 Mar 2010 20:54:33 +0000
-Subject: [LTP] [ ltp-Patches-2972206 ] PbHNT8 Hi! and <a
-	href="http://hoodia-patch-fda.socialgo.com
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NmUp3-0005mN-Me
+	for ltp-list@lists.sourceforge.net; Tue, 02 Mar 2010 16:19:49 +0000
+Received: from mail-fx0-f214.google.com ([209.85.220.214])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NmUp2-0006gE-RC
+	for ltp-list@lists.sourceforge.net; Tue, 02 Mar 2010 16:19:49 +0000
+Received: by fxm6 with SMTP id 6so493274fxm.2
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 02 Mar 2010 08:19:42 -0800 (PST)
+References: <4B7BA433.3030206@linux.vnet.ibm.com>
+	<364299f41002170908p302cc665g874c89a109ddfd1f@mail.gmail.com>
+	<20100218035756.GA13013@rishikesh.in.ibm.com>
+	<4B824029.7070609@cn.fujitsu.com>
+	<20100302144613.GA8623@linux.vnet.ibm.com>
+Message-Id: <6260305A-E6D0-4D10-9627-6D83C022588E@gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <20100302144613.GA8623@linux.vnet.ibm.com>
+Mime-Version: 1.0 (iPhone Mail 7E18)
+Date: Tue, 2 Mar 2010 08:19:31 -0800
+Subject: Re: [LTP] [PATCH] mail_tests.sh: fix a version problem of Heirloom
+	Mail
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,33 +35,92 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: noreply@sourceforge.net
+To: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-Patches item #2972206, was opened at 2010-03-17 20:54
-Message generated for change (Tracker Item Submitted) made by nobody
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=303382&aid=2972206&group_id=3382
+On Mar 2, 2010, at 6:46 AM, Rishikesh K Rajak <risrajak@linux.vnet.ibm.com 
+ > wrote:
 
-Please note that this message will contain a full copy of the comment thread,
-including the initial issue submission, for this request,
-not just the latest update.
-Category: Test Driver
-Group: Miscellaneous
-Status: Open
-Resolution: None
-Priority: 5
-Private: No
-Submitted By: Nobody/Anonymous (nobody)
-Assigned to: Nobody/Anonymous (nobody)
-Summary: PbHNT8 Hi! and <a href="http://hoodia-patch-fda.socialgo.com
+> On Mon, Feb 22, 2010 at 04:28:25PM +0800, Shi Weihua wrote:
+>>>> There's a lot of noise in the patch because of if-else behavior in
+>>>> trying to determine the mail app. That's why I didn't commit this  
+>>>> (it
+>>>> requires verification of previous mail applications as well).
+>>>
+>>> Thanks Garret, Still i have not committed this to CVS repo.
+>>>
+>>> Shi, can you please verify if this patch does not break with any  
+>>> other
+>>> mail application.
+>>
+>>  In fact, i don't know any other mail application.
+>>  When i tested RHEL's alpha version, this ltp bug catched. so tried  
+>> to fix it.
+>>
+>>  Maybe, you should knock FOSS community(?).
+> Hi Shi,
+>
+> With Feb release still i am seeing some failure with mail file.
+>
+> cmdline="export TCdat=$LTPROOT/testcases/bin; mail_tests.sh"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> mail_tests::setup    0  TINFO  :  INIT: Removing all mails for  
+> mail_test
+> and root
+> mail_tests::mail01    0  TINFO  :  Test #1: mail root@localhost will
+> send mail to root
+> mail_tests::mail01    0  TINFO  :  Test #1: user on local machine.
+> mail_tests::mail01    1  TPASS  :  Test #1: Mail was sent to root &  
+> was
+> received
+> mail_tests::mail02    0  TINFO  :  Test #2: mail user@bad-domain will
+> result in failure
+> mail_tests::mail02    0  TINFO  :  Test #2: to deliver the mail.  
+> Mailer
+> daemon should
+> mail_tests::mail02    0  TINFO  :  Test #2: report this failure.
+> mail_tests::mail02    2  TFAIL  :  Test #2: No new mail for root.
+> Reason:
+> No mail for root
+> mail_tests::mail03    0  TINFO  :  Test #3: mail
+> non_existent_user@localhost will fail
+> mail_tests::mail03    0  TINFO  :  Test #3: to deliver the mail.  
+> Mailer
+> daemon should
+> mail_tests::mail03    0  TINFO  :  Test #3: report this failure.
+> mail_tests::mail03    3  TFAIL  :  Test #3: No new mail for root.
+> Reason:
+> No mail for root
+> mail_tests::mail04    0  TINFO  :  Test #4: Test that mail -c
+> user@domain will
+> mail_tests::mail04    0  TINFO  :  Test #4: carbon copy user@domain
+> mail_tests::mail04    4  TPASS  :  Test #4: Mail was carbon copied to
+> user mail_test
+> mail_tests::mail05    0  TINFO  :  Test #5: Test that mail -b
+> user@domain will
+> mail_tests::mail05    0  TINFO  :  Test #5: blind carbon copy
+> user@domain
+> mail_tests::mail05    5  TPASS  :  Test #5: Mail was carbon copied to
+> user mail_test
+> mail_tests::cleanup    0  TINFO  :  Test CLEAN: Removing temporary  
+> files
+> from /tmp
+> mail_tests::cleanup    0  TINFO  :  Test CLEAN: Removing temporary  
+> user
+> mail_test
+> <<<execution_status>>>
+>
+> Can you please look into it if possible? I have run this testcase on
+> SLES10.SP3GA & RHEL5.4 GA on x86_64 , ppc64 & s390x and everywhere  
+> same
+> result.
 
-Initial Comment:
-PbHNT8 Hi! and <a href="http://hoodia-patch-fda.socialgo.com">buy hoodia patch</a> and http://hoodia-patch-fda.socialgo.com buy hoodia patch and  xeljhk and 
+Same here on Gentoo Linux before and after my cleanup to the test.
 
-----------------------------------------------------------------------
-
-You can respond by visiting: 
-https://sourceforge.net/tracker/?func=detail&atid=303382&aid=2972206&group_id=3382
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
