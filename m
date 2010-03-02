@@ -1,33 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NpDEE-000765-8b
-	for ltp-list@lists.sourceforge.net; Wed, 10 Mar 2010 04:09:02 +0000
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NpDED-0004bB-9I
-	for ltp-list@lists.sourceforge.net; Wed, 10 Mar 2010 04:09:02 +0000
-Received: from d01relay01.pok.ibm.com (d01relay01.pok.ibm.com [9.56.227.233])
-	by e2.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o2A3wRRg013443
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Mar 2010 22:58:27 -0500
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay01.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o2A48tJo167904
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Mar 2010 23:08:55 -0500
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o2A48t4D025104
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Mar 2010 23:08:55 -0500
-Date: Wed, 10 Mar 2010 09:38:52 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100310040852.GA2825@linux.vnet.ibm.com>
-References: <E1Np2Dh-0002cm-OF@sfp-scmshell-1.v30.ch3.sourceforge.com>
-	<364299f41003091247j3b7113dalc3d3e18a177731b9@mail.gmail.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <saileshcv@gmail.com>) id 1NmOnW-0000Fv-Bf
+	for ltp-list@lists.sourceforge.net; Tue, 02 Mar 2010 09:53:50 +0000
+Received: from mail-iw0-f195.google.com ([209.85.223.195])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NmOnV-00036C-F8
+	for ltp-list@lists.sourceforge.net; Tue, 02 Mar 2010 09:53:50 +0000
+Received: by iwn33 with SMTP id 33so46017iwn.23
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 02 Mar 2010 01:53:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <364299f41003091247j3b7113dalc3d3e18a177731b9@mail.gmail.com>
-Subject: Re: [LTP] [Git] ltp updated.
+In-Reply-To: <20100301062917.GD3860@linux.vnet.ibm.com>
+References: <364299f41002242307i6256a0f1v9fbc4a2197049270@mail.gmail.com>
+	<41c7690d1002250109r5e35b35cw2b10c0e270bc273a@mail.gmail.com>
+	<20100225093304.GA23984@linux.vnet.ibm.com>
+	<364299f41002250148q42f2d468y5c21919eeed3ce51@mail.gmail.com>
+	<41c7690d1002251906w7b54d7a8w13fa60dcea22a4b3@mail.gmail.com>
+	<41c7690d1002252055t5956a652ta173641c1860eedd@mail.gmail.com>
+	<20100226053452.GA3800@linux.vnet.ibm.com>
+	<20100226085136.GA9407@linux.vnet.ibm.com>
+	<20100226091119.GB9407@linux.vnet.ibm.com>
+	<20100301062917.GD3860@linux.vnet.ibm.com>
+Date: Tue, 2 Mar 2010 15:17:01 +0530
+Message-ID: <41c7690d1003020147l3811c35dl26306923c3420e18@mail.gmail.com>
+From: Silesh C V <saileshcv@gmail.com>
+Subject: Re: [LTP] [PATCH-v2] RTC Device Driver Tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,30 +36,88 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: risrajak@linux.vnet.ibm.com
+Cc: ltp-list@lists.sourceforge.net, Arun.sudhilal@lntinfotech.com, Mohamed.Rasheed@lntinfotech.com
 
-On Tue, Mar 09, 2010 at 12:47:44PM -0800, Garrett Cooper wrote:
-> On Tue, Mar 9, 2010 at 8:23 AM, Rishi kesh K Rajak
-> <risrajak@linux.vnet.ibm.com> wrote:
-> > +LIB =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0:=3D -ld
-> > +
-> =
+On 3/1/10, Rishikesh K Rajak <risrajak@linux.vnet.ibm.com> wrote:
+> On Fri, Feb 26, 2010 at 02:41:19PM +0530, Rishikesh K Rajak wrote:
+>> On Fri, Feb 26, 2010 at 02:21:36PM +0530, Rishikesh K Rajak wrote:
+>> > > >Hi,
+>> >
+>> > Looks like some issue with your code, can you please relook once again ?
+>>
+>> I have other system Which has SLES11 and i could see it has
+>>
+>> mls41:/home/test/ltp-full-20100131/testcases/kernel/device-drivers/rtc #
+>> ls -l /dev/rtc*
+>> lrwxrwxrwx 1 root root      4 2010-02-26 13:04 /dev/rtc -> rtc0
+>> crw-r--r-- 1 root root 252, 0 2010-02-26 13:04 /dev/rtc0
+>> mls41:/home/test/ltp-full-20100131/testcases/kernel/device-drivers/rtc #
+>>
+>> And here testcase passes. So can you check what could be the reason for
+>> failing on RHEL5.4 where it has only.
+>>
+>> [root@mx3655 ~]# ls -l /dev/rtc*
+>> crw-r--r-- 1 root root 10, 135 Feb 18 06:42 /dev/rtc
+>> [root@mx3655 ~]#
+>>
+>> Thanks for your support.
+>
+> HI Silesh,
+>
+> Any input here, so that i can push this to upstream.
 
-> Wrong. Should be: LDLIBS +=3D -ldl
+Hi Rishi,
 
-oops My mistake, thanks. One good advantage of sending mail to ltp-list aut=
-omatically after
-each commit.
+Sorry for the late reply. I was out of the office for the past few
+days.AFAIK alarm not ringing usually happens because of the absence of
+an IRQ line from the RTC.I should be able to make the test report a
+FAIL when this happens by using select(2) so that a time out occurs. I
+will send another patch soon.
 
-Thanks
--Rishi
 
----------------------------------------------------------------------------=
----
+Thanks,
+Silesh.
+
+>
+> Thanks
+> Rishi
+>
+>>
+>> --
+>> Thanks & Regards
+>> Rishi
+>> LTP Maintainer
+>> IBM, LTC, Bangalore
+>> Please join IRC #ltp @ irc.freenode.net
+>>
+>> ------------------------------------------------------------------------------
+>> Download Intel&#174; Parallel Studio Eval
+>> Try the new software tools for yourself. Speed compiling, find bugs
+>> proactively, and fine-tune applications for parallel performance.
+>> See why Intel Parallel Studio got high marks during beta.
+>> http://p.sf.net/sfu/intel-sw-dev
+>> _______________________________________________
+>> Ltp-list mailing list
+>> Ltp-list@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>
+> --
+> Thanks & Regards
+> Rishi
+> LTP Maintainer
+> IBM, LTC, Bangalore
+> Please join IRC #ltp @ irc.freenode.net
+>
+
+
+-- 
+Silesh
+
+------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
