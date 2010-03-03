@@ -1,26 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NmkjI-0000B4-VV
-	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 09:18:56 +0000
-Received: from mail-pv0-f175.google.com ([74.125.83.175])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NmkjI-0003X5-2L
-	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 09:18:56 +0000
-Received: by pvf33 with SMTP id 33so327259pvf.34
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NmnBB-0000A0-Df
+	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 11:55:53 +0000
+Received: from mail-pw0-f47.google.com ([209.85.160.47])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NmnBA-0006co-He
+	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 11:55:53 +0000
+Received: by pwi5 with SMTP id 5so735078pwi.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 03 Mar 2010 01:18:50 -0800 (PST)
+	Wed, 03 Mar 2010 03:55:47 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20100303070342.GB19084@linux.vnet.ibm.com>
+In-Reply-To: <f5a7b3811003030349s2d279fcdx8b74cff2e3a875ab@mail.gmail.com>
 References: <f5a7b3811002250545x3d5288cfqd114d3bcd79581f2@mail.gmail.com>
-	<20100302085046.GA27023@linux.vnet.ibm.com>
 	<f5a7b3811003020708wdd0710fv4c3e1dcf1992935c@mail.gmail.com>
 	<20100303045624.GB10185@linux.vnet.ibm.com>
 	<f5a7b3811003022200r32a0e108g8eaf5d9a2ce66b4a@mail.gmail.com>
 	<20100303070342.GB19084@linux.vnet.ibm.com>
-Date: Wed, 3 Mar 2010 01:18:50 -0800
-Message-ID: <364299f41003030118x6136dda6u7017054febea4b96@mail.gmail.com>
+	<364299f41003030118x6136dda6u7017054febea4b96@mail.gmail.com>
+	<20100303094541.GB23601@linux.vnet.ibm.com>
+	<f5a7b3811003030333n4b0b4045sff5795d99cd7da00@mail.gmail.com>
+	<364299f41003030342m7bf4a44ey897b7d2ca365a318@mail.gmail.com>
+	<f5a7b3811003030349s2d279fcdx8b74cff2e3a875ab@mail.gmail.com>
+Date: Wed, 3 Mar 2010 03:55:46 -0800
+Message-ID: <364299f41003030355y5a921691vdde6baafbe8439cd@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
 Subject: Re: [LTP] [PATCH] Synchronization required before release the lock:
 	sem_post/8-1.c
@@ -33,122 +37,65 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: naresh kamboju <naresh.kernel@gmail.com>, ltp-list@lists.sourceforge.net
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Uh, hold on a sec before we call it good...
-
-On Tue, Mar 2, 2010 at 11:03 PM, Rishikesh K Rajak
-<risrajak@linux.vnet.ibm.com> wrote:
-> On Wed, Mar 03, 2010 at 11:30:42AM +0530, naresh kamboju wrote:
->> On Wed, Mar 3, 2010 at 10:26 AM, Rishikesh K Rajak
->> <risrajak@linux.vnet.ibm.com> wrote:
->> > On Tue, Mar 02, 2010 at 08:38:20PM +0530, naresh kamboju wrote:
->> >> On Tue, Mar 2, 2010 at 2:20 PM, Rishikesh K Rajak
->> >> <risrajak@linux.vnet.ibm.com> wrote:
->> >> > I feel before getting semaphore value, we need to sync first so here
->> >> > sleep is require,though your point is valid that there is no use of
->> >> > using sleep inside while loop.
->> >> I agree with you.
->> >> AFAIU, we should call sleep() before calling getting semaphore
->> >> value.when we don't have while loop here. Because while loop condition
->> >> is depends on val so when ever we call sem_getvalue() it will get
->> >> latest value of val.
->> >> In addition to this, we are ensuring val is decremented before we do
->> >> unlock the sem by while loop condition.
->> >>
->> >> Having sleep() in while loop will not effect the final output. IIUC
->> >>
->> >
->> > Hi Naresh,
->> >
->> > I am not able to apply your patch against ltp next branch. can you
->> > please send me patch against next branch of ltp ?
->> Here I have posted and attached to this e-mail.
->
->
-> Apllied to next branch . Thanks for your patch, i will test in
-> production environment, if it is not creating any regression will merge
-> with master branch and it will available to next month release.
->
-> Thanks
-> -Rishi
+On Wed, Mar 3, 2010 at 3:49 AM, naresh kamboju <naresh.kernel@gmail.com> wr=
+ote:
+> On Wed, Mar 3, 2010 at 5:12 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
+>> On Wed, Mar 3, 2010 at 3:33 AM, naresh kamboju <naresh.kernel@gmail.com>=
+ wrote:
+>>> On Wed, Mar 3, 2010 at 3:15 PM, Rishikesh K Rajak
+>>> <risrajak@linux.vnet.ibm.com> wrote:
+>>>> On Wed, Mar 03, 2010 at 01:18:50AM -0800, Garrett Cooper wrote:
+>>>>> Uh, hold on a sec before we call it good...
+>>>>
+>>>> oh ok, holiding on for bit.
+>>>>
+>>>> Naresh, can you please send a patch with incorporating garret's comment
+>>>> ?
+>>>>>>> + =A0 =A0 =A0 =A0/* Step 3 Implementation */
+>>>>>>> =A0 =A0 =A0 /* Make sure the two children has been waiting */
+>>>>>>> - =A0 =A0 /*do {
+>>>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 sleep(1);
+>>>>>>> + =A0 =A0 do {
+>>>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 sem_getvalue(sem_1, &val);
+>>>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 //printf("val =3D %d\n", val);
+>>>>>>> =A0 =A0 =A0 } while (val !=3D 1);
+>>>>>>> - =A0 =A0 */
+>>>>>
+>>>>> Please provide another patch with a limit to this --
+>>>
+>>> Garrett,
+>>>
+>>> When sem_wait is called 'val' value will be decremented by one.
+>>> To ensure that sem_wait is called, we are checking 'val' value by
+>>> calling sem_getvalue(). in this case we don=92t need to decrement the
+>>> values by --. IIUC.
+>>> (snip)
+>>> OTOH,
+>>>>> I get annoyed
+>>>>> with tests that have infinite loops in them because the underlying
+>>>>> functionality is broken.
+>>> I agree with you, having infinite loops in test case is not a good.
+>>> However, in this patch while loop is not infinite loop. It is a
+>>> conditional loop with finite value.
+>>>
+>>> Please let me know if you have any issues.
 >>
->> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
->>
->> ---
->> =A0testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.c
->> | =A0 15 =A0 =A0 =A0 =A08 + =A0 =A0 7 - =A0 =A0 0 !
->> =A01 file changed, 8 insertions(+), 7 deletions(-)
->>
->> Index: b/testcases/open_posix_testsuite/conformance/interfaces/sem_post/=
-8-1.c
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> --- a/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1=
-.c
->> +++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1=
-.c
->> @@ -161,7 +161,6 @@ int main()
->> =A0 =A0 =A0 }
->> =A0 =A0 =A0 fprintf(stderr, "P: child_1:%d forked\n", c_1);
->>
->> - =A0 =A0 sleep(1);
->> =A0 =A0 =A0 c_2 =3D fork();
->> =A0 =A0 =A0 if (c_2 =3D=3D 0)
->> =A0 =A0 =A0 {
->> @@ -176,13 +175,13 @@ int main()
->> =A0 =A0 =A0 }
->> =A0 =A0 =A0 fprintf(stderr, "P: child_2: %d forked\n", c_2);
->>
->> + =A0 =A0 =A0 =A0/* Step 3 Implementation */
->> =A0 =A0 =A0 /* Make sure the two children has been waiting */
->> - =A0 =A0 /*do {
->> - =A0 =A0 =A0 =A0 =A0 =A0 sleep(1);
->> + =A0 =A0 do {
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 sem_getvalue(sem_1, &val);
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 //printf("val =3D %d\n", val);
->> =A0 =A0 =A0 } while (val !=3D 1);
->> - =A0 =A0 */
+>> =A0 =A0The problem was that it wasn't failing properly as stated in the
+>> manpage on mips* (was decrementing past 0) and it was blocking
+>> indefinitely. Hence I had to yank those tests from the default run.
+> do you mean, after applying above patch you have noticed these kind of be=
+havior?
 
-Please provide another patch with a limit to this -- I get annoyed
-with tests that have infinite loops in them because the underlying
-functionality is broken. Some architectures like mips* will
-potentially be affected by this depending on how buggy their
-implementation of POSIX semaphores is (this was definitely a problem
-with my previous group and certain semctl calls being made on Cavium
-hardware with our version of glibc / linux kernel).
-
->> +
->> =A0 =A0 =A0 c_3 =3D fork();
->> =A0 =A0 =A0 if (c_3 =3D=3D 0)
->> =A0 =A0 =A0 {
->> @@ -191,13 +190,15 @@ int main()
->> =A0 =A0 =A0 }
->> =A0 =A0 =A0 fprintf(stderr, "P: child_3: %d forked\n", c_3);
->>
->> + =A0 =A0 =A0 =A0/* Step 3 Implementation */
->> =A0 =A0 =A0 /* Make sure child 3 has been waiting for the lock */
->> - =A0 =A0 /*do {
->> - =A0 =A0 =A0 =A0 =A0 =A0 sleep(1);
->> + =A0 =A0 do {
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 sem_getvalue(sem_1, &val);
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 //printf("val =3D %d\n", val);
->> =A0 =A0 =A0 } while (val !=3D 0);
->> - =A0 =A0 */
->> +
-
-Same as above.
-
->> + =A0 =A0 /* Synchronization required before release the lock */
->> + =A0 =A0 sleep(1);
->> =A0 =A0 =A0 /* Ok, let's release the lock */
->> =A0 =A0 =A0 fprintf(stderr, "P: release lock\n");
->> =A0 =A0 =A0 sem_post(sem);
-
+Not with this patch; I've seen this kind of behavior in general under
+odd conditions with my former team's embedded setup running tests with
+POSIX semaphores, so I don't doubt that others could run into the
+similar functional issues given the right conditions.
 Thanks,
 -Garrett
 
