@@ -1,34 +1,38 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1Ntmi0-0007iB-JD
-	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 18:50:40 +0000
-Received: from mail-pw0-f47.google.com ([209.85.160.47])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Ntmhz-00041L-KB
-	for ltp-list@lists.sourceforge.net; Mon, 22 Mar 2010 18:50:40 +0000
-Received: by pwi2 with SMTP id 2so437750pwi.34
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 22 Mar 2010 11:50:33 -0700 (PDT)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nmicl-0000HS-GO
+	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 07:04:03 +0000
+Received: from e33.co.us.ibm.com ([32.97.110.151])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Nmick-0005lC-4w
+	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 07:04:03 +0000
+Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
+	[9.17.195.107])
+	by e33.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o2370IUr030856
+	for <ltp-list@lists.sourceforge.net>; Wed, 3 Mar 2010 00:00:18 -0700
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o2373lKd124552
+	for <ltp-list@lists.sourceforge.net>; Wed, 3 Mar 2010 00:03:47 -0700
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o2373kOx017080
+	for <ltp-list@lists.sourceforge.net>; Wed, 3 Mar 2010 00:03:46 -0700
+Date: Wed, 3 Mar 2010 12:33:42 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100303070342.GB19084@linux.vnet.ibm.com>
+References: <f5a7b3811002250545x3d5288cfqd114d3bcd79581f2@mail.gmail.com>
+	<20100302085046.GA27023@linux.vnet.ibm.com>
+	<f5a7b3811003020708wdd0710fv4c3e1dcf1992935c@mail.gmail.com>
+	<20100303045624.GB10185@linux.vnet.ibm.com>
+	<f5a7b3811003022200r32a0e108g8eaf5d9a2ce66b4a@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20100322082528.GF20606@linux.vnet.ibm.com>
-References: <f5a7b3811003022200r32a0e108g8eaf5d9a2ce66b4a@mail.gmail.com>
-	<364299f41003030118x6136dda6u7017054febea4b96@mail.gmail.com>
-	<20100303094541.GB23601@linux.vnet.ibm.com>
-	<f5a7b3811003030333n4b0b4045sff5795d99cd7da00@mail.gmail.com>
-	<364299f41003030342m7bf4a44ey897b7d2ca365a318@mail.gmail.com>
-	<f5a7b3811003030349s2d279fcdx8b74cff2e3a875ab@mail.gmail.com>
-	<364299f41003030355y5a921691vdde6baafbe8439cd@mail.gmail.com>
-	<f5a7b3811003030545l30efa927tb377f113da30a0bd@mail.gmail.com>
-	<f5a7b3811003080257n43d1af67o2942f4d8de2dc5b1@mail.gmail.com>
-	<20100322082528.GF20606@linux.vnet.ibm.com>
-Date: Tue, 23 Mar 2010 00:20:33 +0530
-Message-ID: <f5a7b3811003221150w11edbf02xade0f97ecb98a6ff@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Content-Type: multipart/mixed; boundary=000e0cd13bd4046b3e0482682c4a
+Content-Disposition: inline
+In-Reply-To: <f5a7b3811003022200r32a0e108g8eaf5d9a2ce66b4a@mail.gmail.com>
 Subject: Re: [LTP] [PATCH] Synchronization required before release the lock:
-	sem_post/8-1.c
+ sem_post/8-1.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,257 +42,126 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
-
---000e0cd13bd4046b3e0482682c4a
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Mar 22, 2010 at 1:55 PM, Rishikesh K Rajak
-<risrajak@linux.vnet.ibm.com> wrote:
-> On Mon, Mar 08, 2010 at 04:27:36PM +0530, naresh kamboju wrote:
->> Hi Rishi and Garrett,
->>
->> On Wed, Mar 3, 2010 at 7:15 PM, naresh kamboju <naresh.kernel@gmail.com>=
- wrote:
->> > On Wed, Mar 3, 2010 at 5:25 PM, Garrett Cooper <yanegomi@gmail.com> wr=
-ote:
->> >> On Wed, Mar 3, 2010 at 3:49 AM, naresh kamboju <naresh.kernel@gmail.c=
-om> wrote:
->> >>> On Wed, Mar 3, 2010 at 5:12 PM, Garrett Cooper <yanegomi@gmail.com> =
-wrote:
->> >>>> On Wed, Mar 3, 2010 at 3:33 AM, naresh kamboju <naresh.kernel@gmail=
-.com> wrote:
->> >>>>> On Wed, Mar 3, 2010 at 3:15 PM, Rishikesh K Rajak
->> >>>>> <risrajak@linux.vnet.ibm.com> wrote:
->> >>>>>> On Wed, Mar 03, 2010 at 01:18:50AM -0800, Garrett Cooper wrote:
->> >>>>>>> Uh, hold on a sec before we call it good...
->> >>>>>>
->> >>>>>> oh ok, holiding on for bit.
->> >>>>>>
->> >>>>>> Naresh, can you please send a patch with incorporating garret's c=
-omment
->> >>>>>> ?
->> >>>>>>>>> + =A0 =A0 =A0 =A0/* Step 3 Implementation */
->> >>>>>>>>> =A0 =A0 =A0 /* Make sure the two children has been waiting */
->> >>>>>>>>> - =A0 =A0 /*do {
->> >>>>>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 sleep(1);
->> >>>>>>>>> + =A0 =A0 do {
->> >>>>>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 sem_getvalue(sem_1, &val);
->> >>>>>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 //printf("val =3D %d\n", val);
->> >>>>>>>>> =A0 =A0 =A0 } while (val !=3D 1);
->> >>>>>>>>> - =A0 =A0 */
->> >>>>>>>
->> >>>>>>> Please provide another patch with a limit to this --
->> >>>>>
->> >>>>> Garrett,
->> >>>>>
->> >>>>> When sem_wait is called 'val' value will be decremented by one.
->> >>>>> To ensure that sem_wait is called, we are checking 'val' value by
->> >>>>> calling sem_getvalue(). in this case we don=92t need to decrement =
-the
->> >>>>> values by --. IIUC.
->> >>>>> (snip)
->> >>>>> OTOH,
->> >>>>>>> I get annoyed
->> >>>>>>> with tests that have infinite loops in them because the underlyi=
-ng
->> >>>>>>> functionality is broken.
->> >>>>> I agree with you, having infinite loops in test case is not a good=
-.
->> >>>>> However, in this patch while loop is not infinite loop. It is a
->> >>>>> conditional loop with finite value.
->> >>>>>
->> >>>>> Please let me know if you have any issues.
->> >>>>
->> >>>> =A0 =A0The problem was that it wasn't failing properly as stated in=
- the
->> >>>> manpage on mips* (was decrementing past 0) and it was blocking
->> >>>> indefinitely. Hence I had to yank those tests from the default run.
->> >>> do you mean, after applying above patch you have noticed these kind =
-of behavior?
->> >>
->> >> Not with this patch; I've seen this kind of behavior in general under
->> >> odd conditions with my former team's embedded setup running tests wit=
-h
->> >> POSIX semaphores, so I don't doubt that others could run into the
->> >> similar functional issues given the right conditions.
->> >
->> > Hey Garrett,
->> >
->> > Thanks for you information :-)
->> >
->> > I have tested these on MIPS architecture and =A0reproduced infinite
->> > waiting situation after applying this patch. (with strace no issue
->> > found ex: #strace ./8-1.test)
->> > As you said there may be issues in MIPS-POSIX library. it may take
->> > some time to fix these issues or may not be fixed.
->> > However, I=92ll discuss this issue with MIPS folks in different thread=
-.
->> >
->> > ATM, my patch is not a good idea for MIPS architectures.
->> > So, after your comments I have modified my patch and tested.
->> > Here in this latest patch i did not change any thing regarding while l=
-oop.
->> > I replaced sleep() in an appropriate place.
->> > It is working fine on X86, ARM and MIPS.
->>
->> please review the patch.
->> I have tested this patch on X86, ARM and MIPS and results are good.
->>
->> If you feel ok. please commit. otherwise give me your comments.
->
-> Hi Naresh,
->
-Hi Rishi,
-> can you send your patch against today's git ?
-please find the patch below and attached to this e-mail.
-Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
-
----
- testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.c
-|   11 	6 +	5 -	0 !
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-Index: b/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1=
-.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- a/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.c
-@@ -175,13 +175,13 @@ int main()
- 	}
- 	fprintf(stderr, "P: child_2: %d forked\n", c_2);
-
--        /* Step 3 Implementation */
- 	/* Make sure the two children has been waiting */=09
--	do {
-+	/*do {
-+		sleep();
- 		sem_getvalue(sem_1, &val);
- 		//printf("val =3D %d\n", val);
- 	} while (val !=3D 1);
--
-+	*/
- 	c_3 =3D fork();
- 	if (c_3 =3D=3D 0)
- 	{
-@@ -190,12 +190,13 @@ int main()
- 	}
- 	fprintf(stderr, "P: child_3: %d forked\n", c_3);
- =09
--        /* Step 3 Implementation */
- 	/* Make sure child 3 has been waiting for the lock */=09
--	do {
-+	/*do {
-+		sleep();
- 		sem_getvalue(sem_1, &val);
- 		//printf("val =3D %d\n", val);
- 	} while (val !=3D 0);
-+	*/
-
- 	/* Synchronization required before release the lock */
- 	sleep(1);
-
-
-Best regards
-Naresh Kamboju
->
-> -Rishi
->>
->> Best regards
->> Naresh Kamboju
->> >
->> > Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
->> > ---
->> > =A0testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.=
-c
->> > | =A0 =A02 =A01 + =A0 =A0 1 - =A0 =A0 0 !
->> > =A01 file changed, 1 insertion(+), 1 deletion(-)
->> >
->> > Index: b/testcases/open_posix_testsuite/conformance/interfaces/sem_pos=
-t/8-1.c
->> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> > --- a/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8=
--1.c
->> > +++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8=
--1.c
->> > @@ -161,7 +161,6 @@ int main()
->> > =A0 =A0 =A0 =A0}
->> > =A0 =A0 =A0 =A0fprintf(stderr, "P: child_1:%d forked\n", c_1);
->> >
->> > - =A0 =A0 =A0 sleep(1);
->> > =A0 =A0 =A0 =A0c_2 =3D fork();
->> > =A0 =A0 =A0 =A0if (c_2 =3D=3D 0)
->> > =A0 =A0 =A0 =A0{
->> > @@ -198,6 +197,7 @@ int main()
->> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0//printf("val =3D %d\n", val);
->> > =A0 =A0 =A0 =A0} while (val !=3D 0);
->> > =A0 =A0 =A0 =A0*/
->> > + =A0 =A0 =A0 sleep(1);
->> > =A0 =A0 =A0 =A0/* Ok, let's release the lock */
->> > =A0 =A0 =A0 =A0fprintf(stderr, "P: release lock\n");
->> > =A0 =A0 =A0 =A0sem_post(sem);
->> >
->> >
->> > please let me know if you have any issues.
->> >
->> > Best regards,
->> > Naresh Kamboju
->> >> Thanks,
->> >> -Garrett
->> >>
->> >
->
->
->
-> --
-> Thanks & Regards
-> Rishi
-> LTP Maintainer
-> IBM, LTC, Bangalore
-> Please join IRC #ltp @ irc.freenode.net
->
-
---000e0cd13bd4046b3e0482682c4a
-Content-Type: application/octet-stream; 
-	name="reverse-posix-sem-post-unstable-fix.patch"
-Content-Disposition: attachment; 
-	filename="reverse-posix-sem-post-unstable-fix.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g73mrtmo0
-
-LS0tCiB0ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50ZXJmYWNl
-cy9zZW1fcG9zdC84LTEuYyB8ICAgMTEgCTYgKwk1IC0JMCAhCiAxIGZpbGUgY2hhbmdlZCwgNiBp
-bnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQoKSW5kZXg6IGIvdGVzdGNhc2VzL29wZW5fcG9z
-aXhfdGVzdHN1aXRlL2NvbmZvcm1hbmNlL2ludGVyZmFjZXMvc2VtX3Bvc3QvOC0xLmMKPT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PQotLS0gYS90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3VpdGUvY29uZm9ybWFuY2UvaW50
-ZXJmYWNlcy9zZW1fcG9zdC84LTEuYworKysgYi90ZXN0Y2FzZXMvb3Blbl9wb3NpeF90ZXN0c3Vp
-dGUvY29uZm9ybWFuY2UvaW50ZXJmYWNlcy9zZW1fcG9zdC84LTEuYwpAQCAtMTc1LDEzICsxNzUs
-MTMgQEAgaW50IG1haW4oKSAKIAl9CiAJZnByaW50ZihzdGRlcnIsICJQOiBjaGlsZF8yOiAlZCBm
-b3JrZWRcbiIsIGNfMik7CiAKLSAgICAgICAgLyogU3RlcCAzIEltcGxlbWVudGF0aW9uICovCiAJ
-LyogTWFrZSBzdXJlIHRoZSB0d28gY2hpbGRyZW4gaGFzIGJlZW4gd2FpdGluZyAqLwkKLQlkbyB7
-CisJLypkbyB7CisJCXNsZWVwKCk7CiAJCXNlbV9nZXR2YWx1ZShzZW1fMSwgJnZhbCk7CiAJCS8v
-cHJpbnRmKCJ2YWwgPSAlZFxuIiwgdmFsKTsKIAl9IHdoaWxlICh2YWwgIT0gMSk7Ci0KKwkqLwog
-CWNfMyA9IGZvcmsoKTsKIAlpZiAoY18zID09IDApCiAJewpAQCAtMTkwLDEyICsxOTAsMTMgQEAg
-aW50IG1haW4oKSAKIAl9CiAJZnByaW50ZihzdGRlcnIsICJQOiBjaGlsZF8zOiAlZCBmb3JrZWRc
-biIsIGNfMyk7CiAJCi0gICAgICAgIC8qIFN0ZXAgMyBJbXBsZW1lbnRhdGlvbiAqLwogCS8qIE1h
-a2Ugc3VyZSBjaGlsZCAzIGhhcyBiZWVuIHdhaXRpbmcgZm9yIHRoZSBsb2NrICovCQotCWRvIHsK
-KwkvKmRvIHsKKwkJc2xlZXAoKTsKIAkJc2VtX2dldHZhbHVlKHNlbV8xLCAmdmFsKTsKIAkJLy9w
-cmludGYoInZhbCA9ICVkXG4iLCB2YWwpOwogCX0gd2hpbGUgKHZhbCAhPSAwKTsKKwkqLwogCiAJ
-LyogU3luY2hyb25pemF0aW9uIHJlcXVpcmVkIGJlZm9yZSByZWxlYXNlIHRoZSBsb2NrICovCiAJ
-c2xlZXAoMSk7Cg==
---000e0cd13bd4046b3e0482682c4a
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: naresh kamboju <naresh.kernel@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
+
+On Wed, Mar 03, 2010 at 11:30:42AM +0530, naresh kamboju wrote:
+> On Wed, Mar 3, 2010 at 10:26 AM, Rishikesh K Rajak
+> <risrajak@linux.vnet.ibm.com> wrote:
+> > On Tue, Mar 02, 2010 at 08:38:20PM +0530, naresh kamboju wrote:
+> >> On Tue, Mar 2, 2010 at 2:20 PM, Rishikesh K Rajak
+> >> <risrajak@linux.vnet.ibm.com> wrote:
+> >> > I feel before getting semaphore value, we need to sync first so here
+> >> > sleep is require,though your point is valid that there is no use of
+> >> > using sleep inside while loop.
+> >> I agree with you.
+> >> AFAIU, we should call sleep() before calling getting semaphore
+> >> value.when we don't have while loop here. Because while loop condition
+> >> is depends on val so when ever we call sem_getvalue() it will get
+> >> latest value of val.
+> >> In addition to this, we are ensuring val is decremented before we do
+> >> unlock the sem by while loop condition.
+> >>
+> >> Having sleep() in while loop will not effect the final output. IIUC
+> >>
+> >
+> > Hi Naresh,
+> >
+> > I am not able to apply your patch against ltp next branch. can you
+> > please send me patch against next branch of ltp ?
+> Here I have posted and attached to this e-mail.
+
+
+Apllied to next branch . Thanks for your patch, i will test in
+production environment, if it is not creating any regression will merge
+with master branch and it will available to next month release.
+
+Thanks
+-Rishi
+> 
+> Signed-off-by: Naresh Kamboju < naresh.kernel@gmail.com >
+> 
+> ---
+>  testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.c
+> |   15 	8 +	7 -	0 !
+>  1 file changed, 8 insertions(+), 7 deletions(-)
+> 
+> Index: b/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.c
+> ===================================================================
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_post/8-1.c
+> @@ -161,7 +161,6 @@ int main()
+>  	}
+>  	fprintf(stderr, "P: child_1:%d forked\n", c_1);
+>  	
+> -	sleep(1);
+>  	c_2 = fork();
+>  	if (c_2 == 0)
+>  	{
+> @@ -176,13 +175,13 @@ int main()
+>  	}
+>  	fprintf(stderr, "P: child_2: %d forked\n", c_2);
+> 
+> +        /* Step 3 Implementation */
+>  	/* Make sure the two children has been waiting */	
+> -	/*do {
+> -		sleep(1);
+> +	do {
+>  		sem_getvalue(sem_1, &val);
+>  		//printf("val = %d\n", val);
+>  	} while (val != 1);
+> -	*/
+> +
+>  	c_3 = fork();
+>  	if (c_3 == 0)
+>  	{
+> @@ -191,13 +190,15 @@ int main()
+>  	}
+>  	fprintf(stderr, "P: child_3: %d forked\n", c_3);
+>  	
+> +        /* Step 3 Implementation */
+>  	/* Make sure child 3 has been waiting for the lock */	
+> -	/*do {
+> -		sleep(1);
+> +	do {
+>  		sem_getvalue(sem_1, &val);
+>  		//printf("val = %d\n", val);
+>  	} while (val != 0);
+> -	*/
+> +
+> +	/* Synchronization required before release the lock */
+> +	sleep(1);
+>  	/* Ok, let's release the lock */
+>  	fprintf(stderr, "P: release lock\n");
+>  	sem_post(sem);
+> 
+> Best regards
+> Naresh Kamboju
+> >
+> > #git clone -b next
+> > git://ltp.git.sourceforge.net/gitroot/ltp/ltp-dev.git ltp
+> >
+> > And then create your patch and send it to ltp-list@
+> >
+> > --
+> > Thanks & Regards
+> > Rishi
+> > LTP Maintainer
+> > IBM, LTC, Bangalore
+> > Please join IRC #ltp @ irc.freenode.net
+> >
+
+
+
+-- 
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
@@ -296,16 +169,7 @@ Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
---000e0cd13bd4046b3e0482682c4a
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---000e0cd13bd4046b3e0482682c4a--
-
