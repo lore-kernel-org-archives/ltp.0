@@ -1,27 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NnRaT-0002Oa-MZ
-	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 07:04:41 +0000
-Received: from mail-pv0-f175.google.com ([74.125.83.175])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NnRaS-0001OQ-Pw
-	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 07:04:41 +0000
-Received: by pvf33 with SMTP id 33so967668pvf.34
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 04 Mar 2010 23:04:34 -0800 (PST)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nmnvy-0003aY-OB
+	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 12:44:14 +0000
+Received: from e7.ny.us.ibm.com ([32.97.182.137])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Nmnvx-0003H6-JC
+	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 12:44:14 +0000
+Received: from d01relay06.pok.ibm.com (d01relay06.pok.ibm.com [9.56.227.116])
+	by e7.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o23CaGwS004522
+	for <ltp-list@lists.sourceforge.net>; Wed, 3 Mar 2010 07:36:16 -0500
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay06.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o23Ci75X1867800
+	for <ltp-list@lists.sourceforge.net>; Wed, 3 Mar 2010 07:44:07 -0500
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o23Ci6f0008259
+	for <ltp-list@lists.sourceforge.net>; Wed, 3 Mar 2010 07:44:07 -0500
+Date: Wed, 3 Mar 2010 18:13:52 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100303124352.GD23601@linux.vnet.ibm.com>
+References: <4B8E3B7F.8050301@calsoftinc.com>
 MIME-Version: 1.0
-In-Reply-To: <41c7690d1003042254w301c8056nd553b46c970ee473@mail.gmail.com>
-References: <41c7690d1003032130i6b61968bjc175698937dc0051@mail.gmail.com>
-	<20100304125514.GA21634@linux.vnet.ibm.com>
-	<41c7690d1003042154s68cd8416hf6ebf17f96e50a8b@mail.gmail.com>
-	<364299f41003042214g5501130bj114db6695e762044@mail.gmail.com>
-	<41c7690d1003042254w301c8056nd553b46c970ee473@mail.gmail.com>
-Date: Thu, 4 Mar 2010 23:04:34 -0800
-Message-ID: <364299f41003042304p1ddc6a2cy5769aaaeb7bd729c@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] [PATCH-v3] RTC Device Driver Tests
+Content-Disposition: inline
+In-Reply-To: <4B8E3B7F.8050301@calsoftinc.com>
+Subject: Re: [LTP] Missing test tools in recent ltp builds
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,152 +36,107 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Silesh C V <saileshcv@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, Arun.sudhilal@lntinfotech.com, Mohamed.Rasheed@lntinfotech.com
+To: Shwetabh <shwetabh.goel@calsoftinc.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Mar 4, 2010 at 10:54 PM, Silesh C V <saileshcv@gmail.com> wrote:
-> On 3/5/10, Garrett Cooper <yanegomi@gmail.com> wrote:
->> On Thu, Mar 4, 2010 at 9:54 PM, Silesh C V <saileshcv@gmail.com> wrote:
->>> On 3/4/10, Rishikesh K Rajak <risrajak@linux.vnet.ibm.com> wrote:
->>>>>Rishi,
->>>>
->>>>>Can you test this patch on the machine on which the tests got stuck
->>>>>earlier?
->>>>
->>>> Yes i tested and found that, it is failing.
->>>
->>> It is supposed to fail :) . What we =A0wanted was a way to come out of
->>> the tests if the
->>> alarm fails to ring.
->>>
->>>
->>>>
->>>> [root@x335a rtc]# ./rtc-test /dev/rtc
->>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0RTC READ TEST:
->>>> rtc01 =A0 =A0 =A0 1 =A0TPASS =A0: =A0RTC READ TEST Passed
->>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Current Date/time is =A003/03/10 =
-12:38:26 PM
->>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0RTC ALARM TEST :
->>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Alarm time set to 12:38:31.
->>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Waiting 5 seconds for the alarm...
->>>> rtc01 =A0 =A0 =A0 2 =A0TFAIL =A0: =A0Timed out waiting for the alarm
->>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0RTC UPDATE INTERRUPTS TEST :
->>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Waiting for =A05 update interrupt=
-s...
->>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Update interrupt 1
->>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Update interrupt 2
->>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Update interrupt 3
->>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Update interrupt 4
->>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0Update interrupt 5
->>>> rtc01 =A0 =A0 =A0 3 =A0TPASS =A0: =A0RTC UPDATE INTERRUPTS TEST Passed
->>>> rtc01 =A0 =A0 =A0 0 =A0TINFO =A0: =A0RTC Tests Done!
->>>> [root@x335a rtc]# ls -l /dev/rtc*
->>>> crw-r--r-- 1 root root 10, 135 Feb 20 13:51 /dev/rtc
->>>> [root@x335a rtc]#
->>>>
->>>>
->>>>
->>>> In fact while compiling there is some warning also.
->>>> [root@x335a rtc]# make
->>>> cc rtc-test.c -O2 -Wall -I ../../../../include/ -L ../../../../lib/
->>>> -lltp =A0-o rtc-test
->>>> rtc-test.c: In function =91read_alarm_test=92:
->>>> rtc-test.c:64: warning: dereferencing type-punned pointer will break
->>>> strict-aliasing rules
->>>
->>> I did not get this warning on gcc-4.3.0 . Anyways I think we can get rid
->>> of this
->>> warning by using -fno-strict-aliasing option at the cost of some
->>> optimizations.
->>> I will send you another patch.
->>>
->>
->> Or maybe just fix the code to not type-pun by converting everything to
->> struct tm on the fly?
->>
->> Let's look at the difference between the two structures:
->>
->> struct rtc_time {
->> =A0 =A0 =A0 =A0 int tm_sec;
->> =A0 =A0 =A0 =A0 int tm_min;
->> =A0 =A0 =A0 =A0 int tm_hour;
->> =A0 =A0 =A0 =A0 int tm_mday;
->> =A0 =A0 =A0 =A0 int tm_mon;
->> =A0 =A0 =A0 =A0 int tm_year;
->> =A0 =A0 =A0 =A0 int tm_wday;
->> =A0 =A0 =A0 =A0 int tm_yday;
->> =A0 =A0 =A0 =A0 int tm_isdst;
->> };
->>
->> struct tm
->> {
->> =A0 int tm_sec; =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* Seconds. =A0 =A0 =
-[0-60] (1 leap second) */
->> =A0 int tm_min; =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* Minutes. =A0 =A0 =
-[0-59] */
->> =A0 int tm_hour; =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* Hours. =A0 =A0 =
-=A0 [0-23] */
->> =A0 int tm_mday; =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* Day. =A0 =A0 =A0 =
-=A0 [1-31] */
->> =A0 int tm_mon; =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* Month. =A0 =A0 =
-=A0 [0-11] */
->> =A0 int tm_year; =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* Year - 1900. =A0*/
->> =A0 int tm_wday; =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* Day of week. [0-6=
-] */
->> =A0 int tm_yday; =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* Days in year.[0-3=
-65] */
->> =A0 int tm_isdst; =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* DST. =A0 =A0 =A0 =
-=A0 [-1/0/1]*/
->>
->> #ifdef =A0__USE_BSD
->> =A0 long int tm_gmtoff; =A0 =A0 =A0 =A0 =A0 /* Seconds east of UTC. =A0*/
->> =A0 __const char *tm_zone; =A0 =A0 =A0 =A0/* Timezone abbreviation. =A0*/
->> #else
->> =A0 long int __tm_gmtoff; =A0 =A0 =A0 =A0 /* Seconds east of UTC. =A0*/
->> =A0 __const char *__tm_zone; =A0 =A0 =A0/* Timezone abbreviation. =A0*/
->> #endif
->> };
->>
->> Note the extra fields down below -- they increase the structure size
->> by a non-trivial amount (12 bytes on 32-bit, 16 bytes on 64-bit),
->> which means that if one of the following two cases are made in
->> strftime tomorrow:
->>
->> 1. They use one of the timezone fields and it isn't properly cleared
->> (not the case today, but it could be on some older versions of Linux).
->> 2. They make assumptions about the size of the memory allocated and
->> thus go out of bounds.
->>
->> BOOM! Segfault... could worse happen in this case after the ioctl is
->> written out to /dev/rtc ?
->
-> OK. Can we drop strftime then ?
+On Wed, Mar 03, 2010 at 04:05:43PM +0530, Shwetabh wrote:
+> Hi,
+> 
+Hi Shwetabh,
 
-Why couldn't you memset ( , 0, ) the value and set the individual
-fields? One of the awesome things about strftime is that it's
-localization aware if you use the right format strings (I know -- a
-functional nice to have, not necessarily a need to have).
+Few queries:
+    - Tell us the complete steps of execution/compiling
+    - OS version ?
+    - automake & autoconf version ?
+    - Arch ?
 
-Unfortunately one of 'em is American friendly only :/ :
+Thanks
+-Rishi
 
-       %D     Equivalent  to  %m/%d/%y.  (Yecch -- for Americans only.  Ame=
-ri-
-              cans should note that in other countries %d/%m/%y is rather c=
-om-
-              mon.   This  means  that in international context this format=
- is
-              ambiguous and should not be used.) (SU)
+> In recent ltp releases, I see quite a few test cases breaking since 
+> their required tools
+> are not being copied over to /opt/ltp/testcases/. I believe this 
+> behaviour started since
+> ltp started compiling and copying the files to /opt/ltp. Here is an example:
+> 
+> ----<<snip>>-----------
+> remove test cases which require the block device.
+> You can specify it with option -b
+> COMMAND:    /opt/ltp/bin/ltp-pan  -e -S   -a 27204     -n 27204  -p  -f 
+> /tmp/ltp-gcfmm27210/alltests -l 
+> /opt/ltp/results/LTP_RUN_ON-2010_Mar_02-22h_24m_38s.log  -C 
+> /opt/ltp/output/LTP_RUN_ON-2010_Mar_02-22h_24m_38s.failed
+> LOG File: /opt/ltp/results/LTP_RUN_ON-2010_Mar_02-22h_24m_38s.log
+> FAILED COMMAND File: 
+> /opt/ltp/output/LTP_RUN_ON-2010_Mar_02-22h_24m_38s.failed
+> Running tests.......
+> <<<test_start>>>
+> tag=CPUHOTPLUG stime=1267586681
+> cmdline="(cd $LTPROOT/testcases/kernel/hotplug/cpu_hotplug/; ./runtests.sh)"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> incrementing stop
+> sh: line 0: cd: /opt/ltp/testcases/kernel/hotplug/cpu_hotplug/: No such 
+> file or directory
+> sh: ./runtests.sh: No such file or directory
+> <<<execution_status>>>
+> initiation_status="ok"
+> duration=0 termination_type=exited termination_id=127 corefile=no
+> cutime=0 cstime=0
+> <<<test_end>>>
+> INFO: ltp-pan reported some tests FAIL
+> LTP Version: LTP-20100228
+> 
+>         ###############################################################"
+> 
+>              Done executing testcases."
+>              LTP Version:  LTP-20100228
+>         ###############################################################"
+> 
+> [root@localhost runtest]# cd /opt/ltp/testcases/
+> [root@localhost testcases]# ls
+> bin  data
+> [root@localhost testcases]# pwd
+> /opt/ltp/testcases
+> [root@localhost testcases]# ls -l
+> total 76
+> drwxr-xr-x 7 root root 69632 Mar  2 22:24 bin
+> drwxr-xr-x 2 root root  4096 Mar  2 22:19 data
+> 
+> --------------------
+> 
+> Please advice if I am doing something wrong here. Do I manually have to 
+> copy the tools from tarballs' testcases/kernel directory?
+> If so, shouldn't this be done by make install?
+> 
+> -- 
+> Regards,
+> Shwetabh
+> 
+> 
+> ------------------------------------------------------------------------------
+> Download Intel&#174; Parallel Studio Eval
+> Try the new software tools for yourself. Speed compiling, find bugs
+> proactively, and fine-tune applications for parallel performance.
+> See why Intel Parallel Studio got high marks during beta.
+> http://p.sf.net/sfu/intel-sw-dev
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
->>>> Please solve these problems and please send me a revised patch.
+-- 
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
-Thanks,
--Garrett
-
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
