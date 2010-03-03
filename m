@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Npa3q-0001z7-Fx
-	for ltp-list@lists.sourceforge.net; Thu, 11 Mar 2010 04:31:50 +0000
-Received: from mail-iw0-f191.google.com ([209.85.223.191])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Npa3p-000322-JR
-	for ltp-list@lists.sourceforge.net; Thu, 11 Mar 2010 04:31:50 +0000
-Received: by iwn29 with SMTP id 29so5289795iwn.10
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Nmnt8-0002LV-PN
+	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 12:41:18 +0000
+Received: from mail-pv0-f175.google.com ([74.125.83.175])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Nmnt8-00036p-24
+	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 12:41:18 +0000
+Received: by pvf33 with SMTP id 33so362522pvf.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 10 Mar 2010 20:31:44 -0800 (PST)
+	Wed, 03 Mar 2010 04:41:12 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <001901cac0d2$697152a0$3c53f7e0$@co.jp>
-References: <001901cac0d2$697152a0$3c53f7e0$@co.jp>
-Date: Wed, 10 Mar 2010 20:31:44 -0800
-Message-ID: <364299f41003102031j2e659d19o2e245bdf9f56d431@mail.gmail.com>
+In-Reply-To: <4B8E3B7F.8050301@calsoftinc.com>
+References: <4B8E3B7F.8050301@calsoftinc.com>
+Date: Wed, 3 Mar 2010 04:41:12 -0800
+Message-ID: <364299f41003030441m55fd43f2nf8f8b991573ad97c@mail.gmail.com>
 From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] fixing memcg_control
+Subject: Re: [LTP] Missing test tools in recent ltp builds
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,66 +30,93 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yuki Yao <y_yao@ryobi.co.jp>
+To: Shwetabh <shwetabh.goel@calsoftinc.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On Wed, Mar 10, 2010 at 8:22 PM, Yuki Yao <y_yao@ryobi.co.jp> wrote:
-> Hi,
->
-> I found following problem about "memcg_control" test.
-> ---------
-> /opt/ltp/testcases/bin/memcg_control_test.sh: line 30: [: : integer
-> expression expected
-> ----------
->
-> This happens because of following process.
-> [ memcg_control_test.sh: line 30 ]
-> ---------
-> if [ "$(grep -w memory /proc/cgroups | cut -f4)" -ne "1" ]; then
-> =A0 =A0 =A0 =A0echo "WARNING:"
-> =A0 =A0 =A0 =A0echo "Either kernel does not support memory resource contr=
-oller or
-> feature not ena bled"
-> =A0 =A0 =A0 =A0echo "Skipping all memcg_control testcases...."
-> =A0 =A0 =A0 =A0exit 0
-> fi
-> ---------
->
-> "$(grep -w memory /proc/cgroups | cut -f4)" can't comparable with "1"
-> if "$(grep -w memory /proc/cgroups | cut -f4)" =3D nothing.
->
-> How about fixing like the other "memcg" tests?
->
-> Signed-off-by: Yuki Yao<y_yao@ryobi.co.jp>
->
-> Index: ./testcases/kernel/controllers/memcg/control/memcg_control_test.sh
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> ---
-> /home/LTP/ltp-dev-20100311/testcases/kernel/controllers/memcg/control/mem=
-cg_
-> control_test.sh.org =A0 =A0 2010-03-11 11:31:07.000000000 +0900
-> +++
-> /home/LTP/ltp-dev-20100311/testcases/kernel/controllers/memcg/control/mem=
-cg_
-> control_test.sh 2010-03-11 11:32:21.000000000 +0900
-> @@ -27,7 +27,7 @@
-> =A0##
-> ##
->
-> #########################################################################=
-###
-> ####
->
-> -if [ "$(grep -w memory /proc/cgroups | cut -f4)" -ne "1" ]; then
-> +if [ "x$(grep -w memory /proc/cgroups | cut -f4)" !=3D "x1" ]; then
-> =A0 =A0 =A0 =A0echo "WARNING:"
-> =A0 =A0 =A0 =A0echo "Either kernel does not support memory resource contr=
-oller or
-> feature not enabled"
-> =A0 =A0 =A0 =A0echo "Skipping all memcg_control testcases...."
+Hi,
 
-Ack, I knew I missed a spot. Committed...
+On Wed, Mar 3, 2010 at 2:35 AM, Shwetabh <shwetabh.goel@calsoftinc.com> wro=
+te:
+>
+> In recent ltp releases, I see quite a few test cases breaking since
+> their required tools
+> are not being copied over to /opt/ltp/testcases/. I believe this
+> behaviour started since
+> ltp started compiling and copying the files to /opt/ltp. Here is an examp=
+le:
+
+Please provide more concrete examples and patches wherever possible.
+We'll get it fixed as soon as feasibly possible, but it helps if
+others contribute back as well. Also, not providing examples is
+counterproductive and I won't waste my time worrying about issues that
+supposedly exist if I don't have a means to reproduce the problem, or
+at least a fundamental understanding of what the problem is.
+
+> ----<<snip>>-----------
+> remove test cases which require the block device.
+> You can specify it with option -b
+> COMMAND: =A0 =A0/opt/ltp/bin/ltp-pan =A0-e -S =A0 -a 27204 =A0 =A0 -n 272=
+04 =A0-p =A0-f
+> /tmp/ltp-gcfmm27210/alltests -l
+> /opt/ltp/results/LTP_RUN_ON-2010_Mar_02-22h_24m_38s.log =A0-C
+> /opt/ltp/output/LTP_RUN_ON-2010_Mar_02-22h_24m_38s.failed
+> LOG File: /opt/ltp/results/LTP_RUN_ON-2010_Mar_02-22h_24m_38s.log
+> FAILED COMMAND File:
+> /opt/ltp/output/LTP_RUN_ON-2010_Mar_02-22h_24m_38s.failed
+> Running tests.......
+> <<<test_start>>>
+> tag=3DCPUHOTPLUG stime=3D1267586681
+> cmdline=3D"(cd $LTPROOT/testcases/kernel/hotplug/cpu_hotplug/; ./runtests=
+.sh)"
+> contacts=3D""
+> analysis=3Dexit
+> <<<test_output>>>
+> incrementing stop
+> sh: line 0: cd: /opt/ltp/testcases/kernel/hotplug/cpu_hotplug/: No such
+> file or directory
+> sh: ./runtests.sh: No such file or directory
+
+And the reason why this is failing is that
+/opt/ltp/testcases/kernel/hotplug/cpu_hotplug doesn't exist; the test
+still works -- it's just the runtest file itself that's broken. The
+tests haven't been touched for months, if not almost 2 years...
+
+> <<<execution_status>>>
+> initiation_status=3D"ok"
+> duration=3D0 termination_type=3Dexited termination_id=3D127 corefile=3Dno
+> cutime=3D0 cstime=3D0
+> <<<test_end>>>
+> INFO: ltp-pan reported some tests FAIL
+> LTP Version: LTP-20100228
+>
+> =A0 =A0 =A0 =A0##########################################################=
+#####"
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 Done executing testcases."
+> =A0 =A0 =A0 =A0 =A0 =A0 LTP Version: =A0LTP-20100228
+> =A0 =A0 =A0 =A0##########################################################=
+#####"
+>
+> [root@localhost runtest]# cd /opt/ltp/testcases/
+> [root@localhost testcases]# ls
+> bin =A0data
+> [root@localhost testcases]# pwd
+> /opt/ltp/testcases
+> [root@localhost testcases]# ls -l
+> total 76
+> drwxr-xr-x 7 root root 69632 Mar =A02 22:24 bin
+> drwxr-xr-x 2 root root =A04096 Mar =A02 22:19 data
+>
+> --------------------
+>
+> Please advice if I am doing something wrong here. Do I manually have to
+> copy the tools from tarballs' testcases/kernel directory?
+> If so, shouldn't this be done by make install?
+
+Just leave it as-is and execute like before, or feel free to submit
+patches to fix this (it's a non-blocking issue so it's not a high
+priority on my list to `fix').
+
 Thanks,
 -Garrett
 
