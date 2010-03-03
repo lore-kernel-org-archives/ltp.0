@@ -1,27 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1Nq7nH-0005Bi-Kw
-	for ltp-list@lists.sourceforge.net; Fri, 12 Mar 2010 16:32:59 +0000
-Received: from mail-iw0-f176.google.com ([209.85.223.176])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Nq7nG-0004pd-Rn
-	for ltp-list@lists.sourceforge.net; Fri, 12 Mar 2010 16:32:59 +0000
-Received: by iwn6 with SMTP id 6so912183iwn.4
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 12 Mar 2010 08:32:53 -0800 (PST)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <sachinp@in.ibm.com>) id 1NmqNl-0004ll-Dq
+	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 15:21:05 +0000
+Received: from e23smtp09.au.ibm.com ([202.81.31.142])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NmqNi-0003jN-T7
+	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 15:21:05 +0000
+Received: from d23relay04.au.ibm.com (d23relay04.au.ibm.com [202.81.31.246])
+	by e23smtp09.au.ibm.com (8.14.3/8.13.1) with ESMTP id o23FKtxH027318
+	for <ltp-list@lists.sourceforge.net>; Thu, 4 Mar 2010 02:20:55 +1100
+Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
+	by d23relay04.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o23FFLYO1024110
+	for <ltp-list@lists.sourceforge.net>; Thu, 4 Mar 2010 02:15:21 +1100
+Received: from d23av02.au.ibm.com (loopback [127.0.0.1])
+	by d23av02.au.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o23FKtjM011940
+	for <ltp-list@lists.sourceforge.net>; Thu, 4 Mar 2010 02:20:55 +1100
+Received: from sachinp.in.ibm.com ([9.77.214.27])
+	by d23av02.au.ibm.com (8.14.3/8.13.1/NCO v10.0 AVin) with ESMTP id
+	o23FKrZh011931
+	for <ltp-list@lists.sourceforge.net>; Thu, 4 Mar 2010 02:20:54 +1100
+Message-ID: <4B8E7E53.3010907@in.ibm.com>
+Date: Wed, 03 Mar 2010 20:50:51 +0530
+From: Sachin Sant <sachinp@in.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <4B9A01B8.6040008@in.ibm.com>
-References: <4B97AA99.7050406@in.ibm.com>
-	<364299f41003102015j42667189x9adbc23f48121e87@mail.gmail.com>
-	<4B99CC90.90204@in.ibm.com>
-	<364299f41003112333v3c9e5e7wb6160c2c59395b68@mail.gmail.com>
-	<4B9A01B8.6040008@in.ibm.com>
-Date: Fri, 12 Mar 2010 08:32:53 -0800
-Message-ID: <364299f41003120832g4efc1136sf430dd0bd8f831cd@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] LTP Containers netns test failure.
+References: <4B8E3C08.2080901@in.ibm.com>
+	<20100303105028.GC23601@linux.vnet.ibm.com>
+In-Reply-To: <20100303105028.GC23601@linux.vnet.ibm.com>
+Subject: Re: [LTP] Version file from Feb LTP release still contains 20100131
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,75 +40,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sachin Sant <sachinp@in.ibm.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Fri, Mar 12, 2010 at 12:56 AM, Sachin Sant <sachinp@in.ibm.com> wrote:
-> Garrett Cooper wrote:
->>>
->>> Hmm .. i am still not able to execute the test even after exporting the
->>> PATH.
->>>
->>> lp5:/opt/ltp # export LTPROOT=3D/opt/ltp
->>> lp5:/opt/ltp # export PATH=3D$PATH:$LTPROOT/testcases/bin
->>> lp5:/opt/ltp # ./runltp -f containers
->>> ........<SNIP>..........
->>> <<<test_start>>>
->>> tag=3DContainers stime=3D1268369850
->>> cmdline=3D"container_test.sh"
->>> contacts=3D""
->>> analysis=3Dexit
->>> <<<test_output>>>
->>> incrementing stop
->>> Running netns tests.
->>> --: childns.sh '/opt/ltp': No such file or directory
->>>
->>> I feel the problem is: the code is searching childns.sh in LTPROOT
->>> directory instead of LTPROOT/testcases/bin
->>>
+Rishikesh K Rajak wrote:
+> On Wed, Mar 03, 2010 at 04:08:00PM +0530, Sachin Sant wrote:
+>   
+>> Not a major issue, but noticed something with latest LTP tarball
+>> from Feb.
+>>     
+>
+> Actually the script design is like that, it will update the version file
+> once you compiled and build, reading from Changelog.
+>
+> Can you confirm if you are not having Changelog starting from :
+> LTP-20100228 .
+>
+> Mostly it will not be there as you would have extracted next branch. But
+> it will be always available with master branch.
+>   
+Ah thanks for the explanation. I took a fresh copy of Feb LTP and the version
+did show 20100228.
+
+Thanks
+-Sachin
+
+> Thanks
+> Rishi
+>   
+>> The Version file still contains 20100131.
 >>
->> =A0 =A0Please test your claim by calling env in the script -- what happe=
-ns?
->> =A0 =A0Something doesn't necessarily add up with the claim.
+>> :/home/sachin/work # cat ltp-full-20100228/Version LTP-20100131
+>> :/home/sachin/work #
 >>
->
-> You meant calling env from childns.sh or some other script ?
->
-> I printed env o/p (just before calling netns tests) from container_test.sh
->
-> contacts=3D""
-> analysis=3Dexit
-> <<<test_output>>>
-> incrementing stop
-> --- Start env o/p ---
-> LESSKEY=3D/etc/lesskey.bin
-> NNTPSERVER=3Dnews
-> .... SNIP ...
-> MAIL=3D/var/mail/root
-> PATH=3D/sbin:/usr/sbin:/usr/local/sbin:/root/bin:/usr/local/bin:/usr/bin:=
-/bin:/usr/bin/X11:/usr/X11R6/bin:/usr/games:/usr/lib/mit/bin:/usr/lib/mit/s=
-bin:/opt/ltp/testcases/bin:/opt/ltp/testcases/bin
-> CPU=3Dppc64
-> _=3D/usr/bin/env
-> SSH_SENDS_LOCALE=3Dyes
-> INPUTRC=3D/etc/inputrc
-> PWD=3D/opt/ltp/testcases/bin
-> LANG=3Den_US.UTF-8
-> PYTHONSTARTUP=3D/etc/pythonstart
-> LTPROOT=3D/opt/ltp
-> .... SNIP ...
->
-> So the values look okay, but the run still fails.
+>> Should this be 20100228 ?
+>>
+>>     
 
-    Could you also add a check within childns.sh please?
-Thanks,
--Garrett
 
----------------------------------------------------------------------------=
----
+-- 
+
+---------------------------------
+Sachin Sant
+IBM Linux Technology Center
+India Systems and Technology Labs
+Bangalore, India
+---------------------------------
+
+
+------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
