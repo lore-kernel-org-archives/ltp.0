@@ -1,33 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <serge@us.ibm.com>) id 1NsGtb-0000du-BU
-	for ltp-list@lists.sourceforge.net; Thu, 18 Mar 2010 14:40:23 +0000
-Received: from e39.co.us.ibm.com ([32.97.110.160])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NsGtY-0001Lg-Nw
-	for ltp-list@lists.sourceforge.net; Thu, 18 Mar 2010 14:40:21 +0000
-Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
-	[9.17.195.107])
-	by e39.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o2IEWJXr014782
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Mar 2010 08:32:19 -0600
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NmmA5-00016i-Hl
+	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 10:50:41 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1NmmA4-0003Qr-BD
+	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 10:50:41 +0000
+Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
+	[9.17.195.226])
+	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o23An6sG013593
+	for <ltp-list@lists.sourceforge.net>; Wed, 3 Mar 2010 03:49:06 -0700
 Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o2IEdv2P105820
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Mar 2010 08:39:59 -0600
+	by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o23AoV52055326
+	for <ltp-list@lists.sourceforge.net>; Wed, 3 Mar 2010 03:50:31 -0700
 Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
 	by d03av04.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
-	id o2IEdsGj022342
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Mar 2010 08:39:54 -0600
-Date: Thu, 18 Mar 2010 09:39:53 -0500
-From: "Serge E. Hallyn" <serue@us.ibm.com>
-Message-ID: <20100318143953.GA6287@us.ibm.com>
-References: <E0B6230F32558E43951AF1B0DEBF98102119CEC9EF@EUSAACMS0714.eamcs.ericsson.se>
+	id o23AoULJ002230
+	for <ltp-list@lists.sourceforge.net>; Wed, 3 Mar 2010 03:50:31 -0700
+Date: Wed, 3 Mar 2010 16:20:28 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100303105028.GC23601@linux.vnet.ibm.com>
+References: <4B8E3C08.2080901@in.ibm.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <E0B6230F32558E43951AF1B0DEBF98102119CEC9EF@EUSAACMS0714.eamcs.ericsson.se>
-Subject: Re: [LTP] FW: LTP check_mqns_enable.c missing mqueue.h file
+In-Reply-To: <4B8E3C08.2080901@in.ibm.com>
+Subject: Re: [LTP] Version file from Feb LTP release still contains 20100131
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,19 +40,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Anthony Ton <anthony.ton@ericsson.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Sachin Sant <sachinp@in.ibm.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Quoting Anthony Ton (anthony.ton@ericsson.com):
-> Hi,
+On Wed, Mar 03, 2010 at 04:08:00PM +0530, Sachin Sant wrote:
+> Not a major issue, but noticed something with latest LTP tarball
+> from Feb.
+
+Actually the script design is like that, it will update the version file
+once you compiled and build, reading from Changelog.
+
+Can you confirm if you are not having Changelog starting from :
+LTP-20100228 .
+
+Mostly it will not be there as you would have extracted next branch. But
+it will be always available with master branch.
+
+Thanks
+Rishi
 > 
-> I am using the latest version of LTP ltp-full-20100228.  During make all, the compile check_mqns_enable.c complains "mqueue.h: No such file or directory."  Could you please tell me how to fix this?
-> I am greatly appreciate your help.
-
-# rpm -q --whatprovides /usr/include/mqueue.h
-glibc-devel-2.9-13.3.1
-
--serge
+> The Version file still contains 20100131.
+> 
+> :/home/sachin/work # cat ltp-full-20100228/Version LTP-20100131
+> :/home/sachin/work #
+> 
+> Should this be 20100228 ?
+> 
+-- 
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
