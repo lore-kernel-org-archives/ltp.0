@@ -1,21 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NsFlJ-00075r-An
-	for ltp-list@lists.sourceforge.net; Thu, 18 Mar 2010 13:27:45 +0000
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NsFlH-0005k8-4R
-	for ltp-list@lists.sourceforge.net; Thu, 18 Mar 2010 13:27:45 +0000
-Date: Thu, 18 Mar 2010 18:57:32 +0530
-From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100318132732.GA27760@linux.vnet.ibm.com>
-References: <1268903717.12801.30.camel@lishuang-desktop>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <sachinp@in.ibm.com>) id 1Nmmlw-0001F1-H8
+	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 11:29:48 +0000
+Received: from e23smtp08.au.ibm.com ([202.81.31.141])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Nmmlv-0000nm-Cp
+	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 11:29:48 +0000
+Received: from d23relay04.au.ibm.com (d23relay04.au.ibm.com [202.81.31.246])
+	by e23smtp08.au.ibm.com (8.14.3/8.13.1) with ESMTP id o23Ac4Pw003486
+	for <ltp-list@lists.sourceforge.net>; Wed, 3 Mar 2010 21:38:04 +1100
+Received: from d23av02.au.ibm.com (d23av02.au.ibm.com [9.190.235.138])
+	by d23relay04.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o23AWUSE1786000
+	for <ltp-list@lists.sourceforge.net>; Wed, 3 Mar 2010 21:32:30 +1100
+Received: from d23av02.au.ibm.com (loopback [127.0.0.1])
+	by d23av02.au.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o23Ac3tV021982
+	for <ltp-list@lists.sourceforge.net>; Wed, 3 Mar 2010 21:38:04 +1100
+Message-ID: <4B8E3C08.2080901@in.ibm.com>
+Date: Wed, 03 Mar 2010 16:08:00 +0530
+From: Sachin Sant <sachinp@in.ibm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1268903717.12801.30.camel@lishuang-desktop>
-Subject: Re: [LTP] LTP clock_nanosleep01 testcase fail
+Subject: [LTP] Version file from Feb LTP release still contains 20100131
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,86 +36,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Henry xu <feng.xu@windriver.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: ltp-list@lists.sourceforge.net
 
-On Thu, Mar 18, 2010 at 05:15:17PM +0800, Henry xu wrote:
-> Hi,all
-> 
-> summary:
-> ===================================================================
-> When I execute nanosleep01 testcase in mips board,the case01 is fail.
+Not a major issue, but noticed something with latest LTP tarball
+from Feb.
 
+The Version file still contains 20100131.
 
-Hi Henry,
+:/home/sachin/work # cat ltp-full-20100228/Version 
+LTP-20100131
+:/home/sachin/work #
 
-Can you please send me the strace of execution of this testcase ?
+Should this be 20100228 ?
 
--Rishi
-> 
-> Environment
-> ================================================================
-> linux version:2.6.27.45
-> hardware platform:mips
-> 
-> 
-> 
-> symptom Details
-> =====================================================================
-> clock_nanosleep01    0  TINFO  :  (case00) START
-> clock_nanosleep01    0  TINFO  :  check sleep time: (min:480) < 500 <
-> (max:520) (msec)
-> clock_nanosleep01    0  TINFO  :  remain time: 0 1
-> EXPECT: return value(ret)=0 errno=0 (Success)
-> RESULT: return value(ret)=0 errno=0 (Success)
-> clock_nanosleep01    0  TINFO  :  (case00) END => OK
-> clock_nanosleep01    0  TINFO  :  (case01) START
-> clock_nanosleep01    0  TINFO  :  remain time: 0 1
-> EXPECT: return value(ret)=0 errno=0 (Success)
-> RESULT: return value(ret)=122 errno=0 (Success)
-> clock_nanosleep01    0  TINFO  :  (case01) END => NG
-> clock_nanosleep01    0  TINFO  :  (case02) START
-> clock_nanosleep01    0  TINFO  :  remain time: 0 1
-> EXPECT: return value(ret)=22 errno=0 (Success)
-> RESULT: return value(ret)=22 errno=0 (Success)
-> clock_nanosleep01    0  TINFO  :  (case02) END => OK
-> clock_nanosleep01    0  TINFO  :  (case03) START
-> clock_nanosleep01    0  TINFO  :  remain time: 0 1
-> EXPECT: return value(ret)=22 errno=0 (Success)
-> RESULT: return value(ret)=22 errno=0 (Success)
-> clock_nanosleep01    0  TINFO  :  (case03) END => OK
-> clock_nanosleep01    0  TINFO  :  (case04) START
-> clock_nanosleep01    0  TINFO  :  remain time: 0 1
-> EXPECT: return value(ret)=22 errno=0 (Success)
-> RESULT: return value(ret)=22 errno=0 (Success)
-> clock_nanosleep01    0  TINFO  :  (case04) END => OK
-> clock_nanosleep01    0  TINFO  :  (case05) START
-> clock_nanosleep01    0  TINFO  :  remain time: 9 499708701
-> EXPECT: return value(ret)=4 errno=0 (Success)
-> RESULT: return value(ret)=4 errno=0 (Success)
-> clock_nanosleep01    0  TINFO  :  (case05) END => OK
-> clock_nanosleep01    1  TFAIL  :  clock_nanosleep failed
-> clock_nanosleep01    0  TINFO  :  NG
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Download Intel&#174; Parallel Studio Eval
-> Try the new software tools for yourself. Speed compiling, find bugs
-> proactively, and fine-tune applications for parallel performance.
-> See why Intel Parallel Studio got high marks during beta.
-> http://p.sf.net/sfu/intel-sw-dev
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+Thanks
+-Sachin
 
 -- 
-Thanks & Regards
-Rishi
-LTP Maintainer
-IBM, LTC, Bangalore
-Please join IRC #ltp @ irc.freenode.net
+
+---------------------------------
+Sachin Sant
+IBM Linux Technology Center
+India Systems and Technology Labs
+Bangalore, India
+---------------------------------
+
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
