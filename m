@@ -1,22 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@users.sourceforge.net>) id 1NpEZ4-00079C-Jd
-	for ltp-list@lists.sourceforge.net; Wed, 10 Mar 2010 05:34:38 +0000
-Received: from sfp-scmshell-4.v30.ch3.sourceforge.com ([172.29.30.126])
-	by sfi-mx-2.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1NpEZ4-0003e8-IK
-	for ltp-list@lists.sourceforge.net; Wed, 10 Mar 2010 05:34:38 +0000
-Received: from localhost ([127.0.0.1]
-	helo=sfp-scmshell-4.v30.ch3.sourceforge.com)
-	by sfp-scmshell-4.v30.ch3.sourceforge.com with smtp (Exim 4.69)
-	(envelope-from <risrajak@users.sourceforge.net>) id 1NpEYo-00083m-FE
-	for ltp-list@lists.sourceforge.net; Wed, 10 Mar 2010 05:34:38 +0000
-From: "Rishi kesh K Rajak" <risrajak@linux.vnet.ibm.com>
-Date: Wed, 10 Mar 2010 05:34:21 +0000
-Message-Id: <E1NpEYo-00083m-FE@sfp-scmshell-4.v30.ch3.sourceforge.com>
-Subject: [LTP] [Git] ltp updated.
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1NmxoU-0003Sq-GQ
+	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 23:17:10 +0000
+Received: from mail-pw0-f47.google.com ([209.85.160.47])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NmxoR-0003jj-Ti
+	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 23:17:10 +0000
+Received: by pwi5 with SMTP id 5so1128982pwi.34
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 03 Mar 2010 15:17:01 -0800 (PST)
+References: <4B8E3B7F.8050301@calsoftinc.com>
+	<20100303124352.GD23601@linux.vnet.ibm.com>
+	<4B8E5DF3.7090502@calsoftinc.com>
+	<9debc4411003030900t971da33pfbe9ea4e994d74d4@mail.gmail.com>
+Message-Id: <BD77C355-AF47-4A92-8231-145DDBC8F54D@gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+In-Reply-To: <9debc4411003030900t971da33pfbe9ea4e994d74d4@mail.gmail.com>
+Mime-Version: 1.0 (iPhone Mail 7E18)
+Date: Wed, 3 Mar 2010 15:16:47 -0800
+Subject: Re: [LTP] Missing test tools in recent ltp builds
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,186 +30,276 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Maxin John <maxin.john@gmail.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, Shwetabh <shwetabh.goel@calsoftinc.com>
 
-The branch, maint, has been updated
-       via  b8ed5460176838d9b714dddbc17685983b4a8b9b (commit)
-       via  1a5506c97dcfda0bd16f83ca855bb633c47eea4c (commit)
-       via  48c52fcd4e7668bc36bbe080f53462d410712b69 (commit)
-       via  c962f51674b971496e14ac4be0cc75da98b75fca (commit)
-       via  17905ceabf2dc20e978dfa4ea3682197ad01bf9a (commit)
-       via  bdfe0b2a9dd720c3013225cc4aa1628e77888b24 (commit)
-       via  716d29883b11107c32313b1836bea447fecbaf1e (commit)
-       via  58854395050b8a3bb2fa4e5e4401546925f6aad8 (commit)
-       via  886918830ae73a7f4b5cc2d9bf8554ee9f393ed8 (commit)
-       via  039e4bbd522168a5145d236faa4e13f402037390 (commit)
-      from  e8e3c7598b82b54a7770c48a2422d5d6fa127045 (commit)
+On Mar 3, 2010, at 9:00 AM, Maxin John <maxin.john@gmail.com> wrote:
 
+> Hi Shwetabh,
+>
+>> 3. Went to /opt/ltp directory and tried to execute cpuhotplug test:
+>> [root@localhost ~]# cd /opt/ltp/
+>> [root@localhost ltp]# ./runltp -f cpuhotplug
+>>
+>
+> Please find attached the quick 'n' dirty patch
+> (cpu_hotplugin_makefile.patch) to execute cpuhotplugin test.
+> I have observed that the 'hotplug' directory is not included in
+> "testcases/kernel/Makefile". I have also
+> created a Makefile in 'hotplug/cpu_hotplug' directory.
+>
+> After applying this patch, I have followed the usual ./configure;
+> make; sudo make install steps and executed
+> the cpuhotplug test and observed the below given output . It seems
+> like the test execution is "not so good" in
+> my machine. Your mileage may vary.
+>
+> Garret,Rishi, please review the patch and let me know your comments.
+>
+> Signed-off-by: Maxin B. John <maxin.john@gmail.com>
+>
+> ---
+> ---
+> ---
+> ---
+> ---
+> ---
+> ---
+> ---
+> ---
+> ---
+> ---
+> ---
+> ---
+> ---
+> ---
+> ---
+> ---
+> ---
+> ---
+> ---
+> ---
+> ---
+> ---
+> ---------------------------------------------------------------------
+> maxin@maxin-laptop:/opt/ltp$ sudo ./runltp -f cpuhotplug
+> INFO: creating /opt/ltp/output directory
+> INFO: creating /opt/ltp/results directory
+> Checking for required user/group ids
+>
+> If some fields are empty or look unusual you may have an old version.
+> Compare to the current minimal requirements in Documentation/Changes.
+>
+> DISTRIB_ID=Ubuntu
+> DISTRIB_RELEASE=9.10
+> DISTRIB_CODENAME=karmic
+> DISTRIB_DESCRIPTION="Ubuntu 9.10"
+> Linux maxin-laptop 2.6.31-19-generic #56-Ubuntu SMP Thu Jan 28
+> 01:26:53 UTC 2010 i686 GNU/Linux
+>
+> 'nobody' user id and group found.
+> 'bin' user id and group found.
+> 'daemon' user id and group found.
+> Users group found.
+> Sys group found.
+> Required users/groups exist.
+> Gnu C                  gcc (Ubuntu 4.4.1-4ubuntu9) 4.4.1
+> Gnu make               3.81
+> util-linux             ng 2.16)
+> mount                  ng 2.16 (with libblkid and selinux support)
+> modutils               3.10
+> e2fsprogs              1.41.9
+> PPP                    2.4.5
+> Linux C Library        2.10.1
+> Dynamic linker (ldd)   2.10.1
+> Procps                 3.2.8
+> Net-tools              1.60
+> iproute2              iproute2-ss090324
+> Kbd                    1.15
+> Sh-utils               7.4
+> Modules Loaded         usb_storage binfmt_misc ppdev
+> snd_hda_codec_conexant snd_hda_intel snd_hda_codec snd_hwdep
+> snd_pcm_oss snd_mixer_oss snd_pcm snd_seq_dummy joydev snd_seq_oss
+> snd_seq_midi arc4 snd_rawmidi snd_seq_midi_event snd_seq ecb snd_timer
+> snd_seq_device iptable_filter snd soundcore snd_page_alloc b43
+> ip_tables psmouse mac80211 x_tables serio_raw cfg80211 led_class lp
+> parport fbcon tileblit font bitblit softcursor i915 drm i2c_algo_bit
+> ssb 8139too 8139cp mii intel_agp agpgart video output
+>
+> free reports:
+>             total       used       free     shared    buffers      
+> cached
+> Mem:        241116     235908       5208          0      10116       
+> 87660
+> -/+ buffers/cache:     138132     102984
+> Swap:      1028152     154292     873860
+>
+> /proc/cpuinfo
+> processor    : 0
+> vendor_id    : GenuineIntel
+> cpu family    : 6
+> model        : 14
+> model name    : Intel(R) Celeron(R) M CPU        420  @ 1.60GHz
+> stepping    : 8
+> cpu MHz        : 1596.045
+> cache size    : 1024 KB
+> fdiv_bug    : no
+> hlt_bug        : no
+> f00f_bug    : no
+> coma_bug    : no
+> fpu        : yes
+> fpu_exception    : yes
+> cpuid level    : 10
+> wp        : yes
+> flags        : fpu vme de pse tsc msr pae mce cx8 apic mtrr pge mca  
+> cmov
+> clflush dts acpi mmx fxsr sse sse2 ss tm pbe nx constant_tsc up
+> arch_perfmon bts pni monitor tm2 xtpr pdcm
+> bogomips    : 3192.09
+> clflush size    : 64
+> power management:
+>
+> remove test cases which require the block device.
+> You can specify it with option -b
+> COMMAND:    /opt/ltp/bin/ltp-pan  -e -S   -a 7506     -n 7506  -p  -f
+> /tmp/ltp-07KEC2Bcm4/alltests -l
+> /opt/ltp/results/LTP_RUN_ON-2010_Mar_03-22h_14m_34s.log  -C
+> /opt/ltp/output/LTP_RUN_ON-2010_Mar_03-22h_14m_34s.failed
+> -e LOG File: /opt/ltp/results/LTP_RUN_ON-2010_Mar_03-22h_14m_34s.log
+> -e FAILED COMMAND File:
+> /opt/ltp/output/LTP_RUN_ON-2010_Mar_03-22h_14m_34s.failed
+> Running tests.......
+> <<<test_start>>>
+> tag=CPUHOTPLUG stime=1267634676
+> cmdline="(cd $LTPROOT/testcases/kernel/hotplug/cpu_hotplug/; ./ 
+> runtests.sh)"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> cd: 1: can't cd to /opt/ltp/testcases/kernel/hotplug/cpu_hotplug/
+> incrementing stop
+> CPU:        1
+> LOOPS:      1
+> LHCS_PATH:  /opt/ltp/testcases/bin
+> Name:   hotplug01
+> Date:   Wed Mar  3 22:14:36 IST 2010
+> Desc:   What happens to disk controller interrupts when offlining  
+> CPUs?
+>
+> CPU is 1
+> Error: cpu1 not found
+> hotplug01      FAIL: cpu1 not found!
+> Wed Mar  3 22:14:37 IST 2010
+> Name:   hotplug02
+> Date:   Wed Mar  3 22:14:37 IST 2010
+> Desc:   What happens to a process when its CPU is offlined?
+>
+> CPU is 1
+> Error: cpu1 not found
+> hotplug02      FAIL: cpu1 not found!
+> Wed Mar  3 22:14:37 IST 2010
+> exit: 35: Illegal number: -1
+> Name:   hotplug03
+> Date:   Wed Mar  3 22:14:37 IST 2010
+> Desc:   Do tasks get scheduled to a newly on-lined CPU?
+>
+> CPU is 1
+> Error: CPU1 not found
+> hotplug03      FAIL: CPU1 not found!
+> Wed Mar  3 22:14:37 IST 2010
+> exit: 31: Illegal number: -1
+> Name:   hotplug04
+> Date:   Wed Mar  3 22:14:37 IST 2010
+> Desc:   Does it prevent us from offlining the last CPU?
+>
+> functional/hotplug04.sh: 65: on[1]=cpuidle: not found
+> functional/hotplug04.sh: 65: Bad substitution
 
-- Log -----------------------------------------------------------------
-commit b8ed5460176838d9b714dddbc17685983b4a8b9b
-Merge: e8e3c7598b82b54a7770c48a2422d5d6fa127045 1a5506c97dcfda0bd16f83ca855bb633c47eea4c
-Author: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Date:   Wed Mar 10 11:03:55 2010 +0530
+Double ouch. Most likely involves a bashism...
 
-    Merge branches 'master' and 'maint' into maint
+> Name:   Hotplug Test - Test Case 6
+> Date:   Wed Mar  3 22:14:37 IST 2010
+> Desc:   Verify user tools can handle adding and removing CPUs.
+>
+> Name:   hotplug06.top
+> Date:   Wed Mar  3 22:14:37 IST 2010
+> Desc:   Does top work properly when CPU hotplug events occur?
+>
+> CPU is 1
+> Error: CPU1 not found
+> hotplug06.top      FAIL: CPU1 not found!
+> Wed Mar  3 22:14:37 IST 2010
+> exit: 31: Illegal number: -1
 
------------------------------------------------------------------------
+Incorrect (*ash hates explicitly signed numbers; signedness not  
+mentioned in POSIX spec).
 
-Summary of changes:
- TODO                                               |    2 +-
- testcases/kernel/containers/Makefile               |    2 +
- .../check_netns_enabled.c => check_for_unshare.c}  |   60 +++++++++++---------
- .../kernel/controllers/freezer/run_freezer.sh      |    3 +-
- testcases/kernel/syscalls/libevent/Makefile.in     |    3 +-
- 5 files changed, 40 insertions(+), 30 deletions(-)
- copy testcases/kernel/containers/{netns/check_netns_enabled.c => check_for_unshare.c} (52%)
- 
-diff --git a/TODO b/TODO
-index 9eec828..1756168 100644
---- a/TODO
-+++ b/TODO
-@@ -1,4 +1,4 @@
--The following things need to be rewritten // fixed:
-+The following things need to be rewritten // fixed
- 
- get_mempolicy01 // mbind01: They're using numa v1 calls which means that all
- versions of Linux / numa as of a few years ago aren't compatible with the API
-diff --git a/testcases/kernel/containers/Makefile b/testcases/kernel/containers/Makefile
-index 6a7810e..75eda63 100644
---- a/testcases/kernel/containers/Makefile
-+++ b/testcases/kernel/containers/Makefile
-@@ -26,6 +26,8 @@ FILTER_OUT_DIRS		:= $(LIBDIR)
- 
- LIB			:= $(LIBDIR)/libclone.a
- 
-+LDLIBS			:= -ldl
-+
- INSTALL_TARGETS		:= *.sh 
- 
- $(LIBDIR):
-diff --git a/testcases/kernel/containers/netns/check_netns_enabled.c b/testcases/kernel/containers/check_for_unshare.c
-similarity index 52%
-copy from testcases/kernel/containers/netns/check_netns_enabled.c
-copy to testcases/kernel/containers/check_for_unshare.c
-index f6add06..06bdfd7 100644
---- a/testcases/kernel/containers/netns/check_netns_enabled.c
-+++ b/testcases/kernel/containers/check_for_unshare.c
-@@ -13,37 +13,43 @@
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *
--* Author: Veerendra C <vechandr@in.ibm.com>
-+**************************************************************************/
-+/*
-+* Description:
-+* This program verifies the kernel version to be no later than 2.6.16
-+* And checks if the unshare() system call is defined using dlsym(),
-+* in the Dynamically Linked Libraries.
- *
--* Net namespaces were introduced around 2.6.25.  Kernels before that,
--* assume they are not enabled.  Kernels after that, check for -EINVAL
--* when trying to use CLONE_NEWNET and CLONE_NEWNS.
--***************************************************************************/
--#include <stdio.h>
--#include <sched.h>
--#include "config.h"
--#include "libclone.h"
--#include "linux_syscall_numbers.h"
--#include "test.h"
-+* Date : 26-11-2008
-+* Author : Veerendra C <vechandr@in.ibm.com>
-+*/
- 
--char *TCID = "check_netns_enabled";
--int TST_COUNT = 1;
--int TST_TOTAL = 1; 
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <dlfcn.h>
-+#include <linux/version.h>
- 
--#ifndef CLONE_NEWNET
--#define CLONE_NEWNET -1
--#endif
-+int main(int argc, char **argv)
-+{
-+	void *handle;
-+	void *ret;
-+	char *error;
-+	if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 16))
-+	return 1;
- 
--#ifndef CLONE_NEWNS
--#define CLONE_NEWNS -1
--#endif
-+	handle = dlopen(NULL, RTLD_LAZY);
-+	if (!handle) {
-+		fprintf(stderr, "%s\n", dlerror());
-+		exit(1);
-+	}
- 
--int
--main()
--{
--	/* Checking if the kernel supports unshare with netns capabilities. */
--        if (syscall(__NR_unshare, CLONE_NEWNET | CLONE_NEWNS) < 0) {
--		tst_resm (TFAIL | TERRNO, "unshare syscall smoke test failed");
-+	dlerror();    /* Clear any existing error */
-+	ret = dlsym(handle, "unshare");
-+	if ((error = dlerror()) != NULL)  {
-+		fprintf(stderr, "Error: %s\n", error);
-+		exit(1);
- 	}
--	tst_exit();
-+
-+	dlclose(handle);
-+	return 0;
- }
-diff --git a/testcases/kernel/controllers/freezer/run_freezer.sh b/testcases/kernel/controllers/freezer/run_freezer.sh
-index 3baf968..f66e321 100755
---- a/testcases/kernel/controllers/freezer/run_freezer.sh
-+++ b/testcases/kernel/controllers/freezer/run_freezer.sh
-@@ -69,7 +69,8 @@ function test_setup()
- 	export LTPBIN PATH TCID TST_COUNT TST_TOTAL CGROUPS_TESTROOT
- 	tst_resm TINFO "Preparing to run: ${P} $@"
- 
--	make all
-+	# this is not require here
-+	#make all
- }
- 
- function test_prereqs()
-diff --git a/testcases/kernel/syscalls/libevent/Makefile.in b/testcases/kernel/syscalls/libevent/Makefile.in
-index d1d9af7..dd0138d 100644
---- a/testcases/kernel/syscalls/libevent/Makefile.in
-+++ b/testcases/kernel/syscalls/libevent/Makefile.in
-@@ -99,6 +99,7 @@ LIBS = @LIBS@
- libevent_a_DEPENDENCIES =  @LIBOBJS@
- libevent_a_OBJECTS =  event.o buffer.o evbuffer.o
- AR = ar
-+AR_FLAGS = cr
- COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
- CCLD = $(CC)
- LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-@@ -219,7 +220,7 @@ maintainer-clean-compile:
- 
- libevent.a: $(libevent_a_OBJECTS) $(libevent_a_DEPENDENCIES)
- 	-rm -f libevent.a
--	$(AR) cru libevent.a $(libevent_a_OBJECTS) $(libevent_a_LIBADD)
-+	$(AR) $(AR_FLAGS) libevent.a $(libevent_a_OBJECTS) $(libevent_a_LIBADD)
- 	$(RANLIB) libevent.a
- 
- install-man3:
+> Name:   hotplug06.sar
+> Date:   Wed Mar  3 22:14:37 IST 2010
+> Desc:   Does sar behave properly during CPU hotplug events?
+>
+> CPU is 1
+> Error: CPU1 not found
+> hotplug06.sar      FAIL: CPU1 not found!
+> Wed Mar  3 22:14:37 IST 2010
+> exit: 31: Illegal number: -1
+>
+> Name:   HotPlug Test - Test Case 7
+> Date:   Wed Mar  3 22:14:37 IST 2010
+> Desc:   What happens when hotplugging during a heavy workload?
+> Issue:  Hotplug bugs have been found during kernel compiles
+>
+> get_affinity_mask 7652
+> cat: /sys/devices/system/cpu/cpu1/online: No such file or directory
+> [: 57: =: unexpected operator
 
+Noise.
 
-hooks/post-receive
--- 
-ltp
+> Error:  CPU1 cannot be onlined
+> Wed Mar  3 22:14:37 IST 2010
+> functional/hotplug07.sh: 64: disown: not found
+
+Missing command or bad path set.
+
+> <<<execution_status>>>
+> initiation_status="ok"
+> duration=1 termination_type=exited termination_id=1 corefile=no
+> cutime=3 cstime=3
+> <<<test_end>>>
+> INFO: ltp-pan reported some tests FAIL
+> LTP Version: LTP-20100228
+>
+>       ###############################################################"
+>
+>            Done executing testcases."
+>            LTP Version:  LTP-20100228
+>       ###############################################################"
+>
+> maxin@maxin-laptop:/opt/ltp$ cd results/
+> maxin@maxin-laptop:/opt/ltp/results$ cat  
+> LTP_RUN_ON-2010_Mar_03-22h_14m_34s.log
+> Test Start Time: Wed Mar  3 22:14:36 2010
+> -----------------------------------------
+> Testcase                       Result     Exit Value
+> --------                       ------     ----------
+> CPUHOTPLUG                     FAIL       1
+>
+> -----------------------------------------------
+> Total Tests: 1
+> Total Failures: 1
+> Kernel Version: 2.6.31-19-generic
+> Machine Architecture: i686
+> Hostname: maxin-laptop
+> <cpu_hotplug_makefile.patch>
+
+It looks better but it's going to need a minor amount of fudging in  
+the scripts to source the appropriate scripts to execute cpuhotplug's  
+tests... I'll pick this up tomorrow if it's not done by then...
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
