@@ -1,20 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <Feng.Xu@windriver.com>) id 1Nukd7-0005Ru-LE
-	for ltp-list@lists.sourceforge.net; Thu, 25 Mar 2010 10:49:37 +0000
-Received: from mail.windriver.com ([147.11.1.11])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Nukd1-00012a-SB
-	for ltp-list@lists.sourceforge.net; Thu, 25 Mar 2010 10:49:37 +0000
-From: Henry xu <feng.xu@windriver.com>
-In-Reply-To: <1269412945.15210.41.camel@lishuang-desktop>
-References: <1269412945.15210.41.camel@lishuang-desktop>
-Date: Thu, 25 Mar 2010 18:53:29 +0800
-Message-Id: <1269514409.15210.67.camel@lishuang-desktop>
-Mime-Version: 1.0
-Subject: Re: [LTP] ltp clock_nanosleep2 testcase failed
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Nmkeq-000323-03
+	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 09:14:20 +0000
+Received: from mail-pz0-f203.google.com ([209.85.222.203])
+	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Nmkep-00030H-09
+	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 09:14:19 +0000
+Received: by pzk41 with SMTP id 41so807490pzk.23
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 03 Mar 2010 01:14:12 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20100303055619.GA19084@linux.vnet.ibm.com>
+References: <OF3DD1AE6A.65D45C56-ON652576DA.002F585D-652576DA.00384F54@in.ibm.com>
+	<20100302152135.GA6691@us.ibm.com>
+	<B02F7096-7406-4AAE-8BBF-AD16D5228F47@gmail.com>
+	<20100302173535.GA14556@us.ibm.com>
+	<5EEDD2C4-6C6C-4008-81AA-65B78FA3E7C8@gmail.com>
+	<20100303055619.GA19084@linux.vnet.ibm.com>
+Date: Wed, 3 Mar 2010 01:14:12 -0800
+Message-ID: <364299f41003030114x30e251d6x7cd7993f8f75792f@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] LTP's filecaps test gives false positive results
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,131 +32,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sf.net>
+To: Garrett Cooper <yanegomi@gmail.com>, "Serge E. Hallyn" <serue@us.ibm.com>, Rishikesh K Rajak <risrajak@in.ibm.com>, Iranna D Ankad <iranna.ankad@in.ibm.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-5ZyoIDIwMTAtMDMtMjTkuInnmoQgMTQ6NDIgKzA4MDDvvIxIZW5yeSB4deWGmemBk++8mgo+IEhp
-LGFsbAo+IAo+IHN1bW1hcnk6Cj4gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQo+IFdoZW4gSSBleGVjdXRlIGNsb2NrX25h
-bm9zbGVlcDIgdGVzdGNhc2UgaW4gbWlwcyBib2FyZCx0aGUgY2FzZSBmYWlsZWQuCj4gCj4gRW52
-aXJvbm1lbnQKPiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09Cj4gbGludXggdmVyc2lvbjoyLjYuMjcuNDUKPiBoYXJkd2FyZSBw
-bGF0Zm9ybTptaXBzCj4gCj4gCj4gCj4gc3ltcHRvbSBEZXRhaWxzCj4gPT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KPiBy
-b290QGxvY2FsaG9zdDovb3B0L215dGVzdD4gc3RyYWNlIC4vY2xvY2tfbmFub3NsZWVwMl8wMSAK
-PiBleGVjdmUoIi4vY2xvY2tfbmFub3NsZWVwMl8wMSIsIFsiLi9jbG9ja19uYW5vc2xlZXAyXzAx
-Il0sIFsvKiAxMyB2YXJzCj4gKi9dKSA9IDAKPiBicmsoMCkgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgPSAweDQxZDAwMAo+IHVuYW1lKHtzeXM9IkxpbnV4Iiwgbm9kZT0ibG9jYWxo
-b3N0IiwgLi4ufSkgPSAwCj4gb2xkX21tYXAoTlVMTCwgNDA5NiwgUFJPVF9SRUFEfFBST1RfV1JJ
-VEUsIE1BUF9QUklWQVRFfE1BUF9BTk9OWU1PVVMsCj4gLTEsIDApID0gMHgyYWFhODAwMAo+IGFj
-Y2VzcygiL2V0Yy9sZC5zby5wcmVsb2FkIiwgUl9PSykgICAgICA9IC0xIEVOT0VOVCAoTm8gc3Vj
-aCBmaWxlIG9yCj4gZGlyZWN0b3J5KQo+IG9wZW4oIi9ldGMvbGQuc28uY2FjaGUiLCBPX1JET05M
-WSkgICAgICA9IC0xIEVOT0VOVCAoTm8gc3VjaCBmaWxlIG9yCj4gZGlyZWN0b3J5KQo+IG9wZW4o
-Ii9saWIvdGxzL2xpYnB0aHJlYWQuc28uMCIsIE9fUkRPTkxZKSA9IC0xIEVOT0VOVCAoTm8gc3Vj
-aCBmaWxlIG9yCj4gZGlyZWN0b3J5KQo+IHN0YXQ2NCgweDdmZTBhMTc4LCAweDdmZTBhMWE4KSAg
-ICAgICAgICA9IC0xIEVOT0VOVCAoTm8gc3VjaCBmaWxlIG9yCj4gZGlyZWN0b3J5KQo+IG9wZW4o
-Ii9saWIvbGlicHRocmVhZC5zby4wIiwgT19SRE9OTFkpICA9IDMKPiByZWFkKDMsICJcMTc3RUxG
-XDFcMlwxXDBcMFwwXDBcMFwwXDBcMFwwXDBcM1wwXDEwXDBcMFwwXDEsXDMwNUoiLi4uLAo+IDUx
-MikgPSA1MTIKPiBsc2VlaygzLCA2NzYsIFNFRUtfU0VUKSAgICAgICAgICAgICAgICAgPSA2NzYK
-PiByZWFkKDMsICJcMFwwXDBcNFwwXDBcMFwyMFwwXDBcMFwxR05VXDBcMFwwXDBcMFwwXDBcMFwy
-XDBcMFwwXDYiLi4uLCAzMikKPiA9IDMyCj4gZnN0YXQ2NCgzLCB7c3RfbW9kZT1TX0lGUkVHfDA3
-NTUsIHN0X3NpemU9MTA3NTA4LCAuLi59KSA9IDAKPiBvbGRfbW1hcCgweDJjYzUwMDAwLCAxNjky
-NjQsIFBST1RfUkVBRHxQUk9UX0VYRUMsIE1BUF9QUklWQVRFfAo+IE1BUF9ERU5ZV1JJVEUsIDMs
-IDApID0gMHgyY2M1MDAwMAo+IG1wcm90ZWN0KDB4MmNjNjYwMDAsIDY1NTM2LCBQUk9UX05PTkUp
-ICA9IDAKPiBvbGRfbW1hcCgweDJjYzc2MDAwLCA4MTkyLCBQUk9UX1JFQUR8UFJPVF9XUklURSwg
-TUFQX1BSSVZBVEV8TUFQX0ZJWEVEfAo+IE1BUF9ERU5ZV1JJVEUsIDMsIDB4MTYwMDApID0gMHgy
-Y2M3NjAwMAo+IG9sZF9tbWFwKDB4MmNjNzgwMDAsIDU0MjQsIFBST1RfUkVBRHxQUk9UX1dSSVRF
-LCBNQVBfUFJJVkFURXxNQVBfRklYRUR8Cj4gTUFQX0FOT05ZTU9VUywgLTEsIDApID0gMHgyY2M3
-ODAwMAo+IGNsb3NlKDMpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA9IDAKPiBvcGVu
-KCIvbGliL2xpYnJ0LnNvLjEiLCBPX1JET05MWSkgICAgICAgPSAzCj4gcmVhZCgzLCAiXDE3N0VM
-RlwxXDJcMVwwXDBcMFwwXDBcMFwwXDBcMFwwXDNcMFwxMFwwXDBcMFwxLFwzMjBcMzAiLi4uLAo+
-IDUxMikgPSA1MTIKPiBsc2VlaygzLCA2NzYsIFNFRUtfU0VUKSAgICAgICAgICAgICAgICAgPSA2
-NzYKPiByZWFkKDMsICJcMFwwXDBcNFwwXDBcMFwyMFwwXDBcMFwxR05VXDBcMFwwXDBcMFwwXDBc
-MFwyXDBcMFwwXDYiLi4uLCAzMikKPiA9IDMyCj4gZnN0YXQ2NCgzLCB7c3RfbW9kZT1TX0lGUkVH
-fDA3NTUsIHN0X3NpemU9MzUxNjAsIC4uLn0pID0gMAo+IG9sZF9tbWFwKDB4MmNkMDAwMDAsIDk0
-ODk2LCBQUk9UX1JFQUR8UFJPVF9FWEVDLCBNQVBfUFJJVkFURXwKPiBNQVBfREVOWVdSSVRFLCAz
-LCAwKSA9IDB4MmNkMDAwMDAKPiBtcHJvdGVjdCgweDJjZDA3MDAwLCA2MTQ0MCwgUFJPVF9OT05F
-KSAgPSAwCj4gb2xkX21tYXAoMHgyY2QxNjAwMCwgODE5MiwgUFJPVF9SRUFEfFBST1RfV1JJVEUs
-IE1BUF9QUklWQVRFfE1BUF9GSVhFRHwKPiBNQVBfREVOWVdSSVRFLCAzLCAweDYwMDApID0gMHgy
-Y2QxNjAwMAo+IGNsb3NlKDMpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA9IDAKPiBv
-cGVuKCIvbGliL2xpYmMuc28uNiIsIE9fUkRPTkxZKSAgICAgICAgPSAzCj4gcmVhZCgzLCAiXDE3
-N0VMRlwxXDJcMVwwXDBcMFwwXDBcMFwwXDBcMFwwXDNcMFwxMFwwXDBcMFwxLFwyMzNqIi4uLiwK
-PiA1MTIpID0gNTEyCj4gbHNlZWsoMywgNjkyLCBTRUVLX1NFVCkgICAgICAgICAgICAgICAgID0g
-NjkyCj4gcmVhZCgzLCAiXDBcMFwwXDRcMFwwXDBcMjBcMFwwXDBcMUdOVVwwXDBcMFwwXDBcMFww
-XDBcMlwwXDBcMFw2Ii4uLiwgMzIpCj4gPSAzMgo+IGZzdGF0NjQoMywge3N0X21vZGU9U19JRlJF
-R3wwNzU1LCBzdF9zaXplPTE0NzQ1NDgsIC4uLn0pID0gMAo+IG9sZF9tbWFwKDB4MmM5YTAwMDAs
-IDE0NTMyOTYsIFBST1RfUkVBRHxQUk9UX0VYRUMsIE1BUF9QUklWQVRFfAo+IE1BUF9ERU5ZV1JJ
-VEUsIDMsIDApID0gMHgyYzlhMDAwMAo+IG1wcm90ZWN0KDB4MmNhZTcwMDAsIDYxNDQwLCBQUk9U
-X05PTkUpICA9IDAKPiBvbGRfbW1hcCgweDJjYWY2MDAwLCA0MDk2MCwgUFJPVF9SRUFEfFBST1Rf
-V1JJVEUsIE1BUF9QUklWQVRFfE1BUF9GSVhFRHwKPiBNQVBfREVOWVdSSVRFLCAzLCAweDE0NjAw
-MCkgPSAweDJjYWY2MDAwCj4gb2xkX21tYXAoMHgyY2IwMDAwMCwgMTE1MDQsIFBST1RfUkVBRHxQ
-Uk9UX1dSSVRFLCBNQVBfUFJJVkFURXxNQVBfRklYRUR8Cj4gTUFQX0FOT05ZTU9VUywgLTEsIDAp
-ID0gMHgyY2IwMDAwMAo+IGNsb3NlKDMpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA9
-IDAKPiBvbGRfbW1hcChOVUxMLCA0MDk2LCBQUk9UX1JFQUR8UFJPVF9XUklURSwgTUFQX1BSSVZB
-VEV8TUFQX0FOT05ZTU9VUywKPiAtMSwgMCkgPSAweDJhYWE5MDAwCj4gc2V0X3RocmVhZF9hcmVh
-KDB4MmFhYjA4MDApICAgICAgICAgICAgID0gMAo+IG1wcm90ZWN0KDB4MmNhZjYwMDAsIDMyNzY4
-LCBQUk9UX1JFQUQpICA9IDAKPiBtcHJvdGVjdCgweDJjZDE2MDAwLCA0MDk2LCBQUk9UX1JFQUQp
-ICAgPSAwCj4gbXByb3RlY3QoMHgyY2M3NjAwMCwgNDA5NiwgUFJPVF9SRUFEKSAgID0gMAo+IG1w
-cm90ZWN0KDB4MmM5OGUwMDAsIDQwOTYsIFBST1RfUkVBRCkgICA9IDAKPiBzZXRfdGlkX2FkZHJl
-c3MoMHgyYWFhOTNkOCkgICAgICAgICAgICAgPSAyNzYzCj4gU1lTXzQzMDkoKSAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgID0gMAo+IGZ1dGV4KDB4N2ZlMGFhOTAsIDB4ODEgLyogRlVURVhf
-Pz8/ICovLCAxKSA9IDAKPiBydF9zaWdhY3Rpb24oU0lHUlRfMCwgezB4OCwgW10sIFNBX1NUQUNL
-fFNBX0lOVEVSUlVQVHxTQV9OT0NMRFdBSVR8Cj4gMHg0YzQ0OWEwfSwgTlVMTCwgMTYpID0gMAo+
-IHJ0X3NpZ2FjdGlvbihTSUdSVF8xLCB7MHgxMDAwMDAwOCwgW10sIFNBX1NUQUNLfFNBX0lOVEVS
-UlVQVHwKPiBTQV9OT0NMRFdBSVR8MHg0YzQ0NTIwfSwgTlVMTCwgMTYpID0gMAo+IHJ0X3NpZ3By
-b2NtYXNrKFNJR19VTkJMT0NLLCBbUlRfMCBSVF8xXSwgTlVMTCwgMTYpID0gMAo+IGdldHJsaW1p
-dChSTElNSVRfU1RBQ0ssIHtybGltX2N1cj04MTkyKjEwMjQsIHJsaW1fbWF4PVJMSU1fSU5GSU5J
-VFl9KSA9Cj4gMAo+IGJyaygwKSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA9IDB4
-NDFkMDAwCj4gYnJrKDB4NDNlMDAwKSAgICAgICAgICAgICAgICAgICAgICAgICAgID0gMHg0M2Uw
-MDAKPiBnZXR0aW1lb2ZkYXkoezE1OTIzLCAxNDU5NTh9LCBOVUxMKSAgICAgPSAwCj4gbWtkaXIo
-Ii90bXAvY2xvYzc1dkJrIiwgMDcwMCkgICAgICAgICAgID0gMAo+IGdldGdpZCgpICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICA9IDAKPiBjaG93bigiL3RtcC9jbG9jNzV2QmsiLCAtMSwg
-MCkgICAgICAgICAgPSAwCj4gY2htb2QoIi90bXAvY2xvYzc1dkJrIiwgMDc3NykgICAgICAgICAg
-ID0gMAo+IGNoZGlyKCIvdG1wL2Nsb2M3NXZCayIpICAgICAgICAgICAgICAgICA9IDAKPiBjbG9j
-a19nZXR0aW1lKENMT0NLX01PTk9UT05JQywgezE1OTIzLCAxNDg3NDExOTR9KSA9IDAKPiBzeXNj
-YWxsKDB4MTBhOSwgMHgxLCAweDEsIDB4N2ZlMGFhZjgsIDAsIDB4NDA2MGFjLCAweDNlMzQsIDB4
-OGRkOWM0YSkgPQo+IC0xIEVPUE5PVFNVUFAgKE9wZXJhdGlvbiBub3Qgc3VwcG9ydGVkKQo+IGZz
-dGF0NjQoMSwge3N0X21vZGU9U19JRkNIUnwwNjIwLCBzdF9yZGV2PW1ha2VkZXYoNSwgMSksIC4u
-Ln0pID0gMAo+IGlvY3RsKDEsIFRJT0NOWENMLCB7QjM4NDAwIG9wb3N0IGlzaWcgaWNhbm9uIGVj
-aG8gLi4ufSkgPSAwCj4gb2xkX21tYXAoTlVMTCwgNjU1MzYsIFBST1RfUkVBRHxQUk9UX1dSSVRF
-LCBNQVBfUFJJVkFURXxNQVBfQU5PTllNT1VTLAo+IC0xLCAwKSA9IDB4MmFhYWEwMDAKPiB3cml0
-ZSgxLCAiY2xvY2tfbmFub3NsZWVwMl8wMSAgICAxICBURkFJTCAiLi4uLCAxMDNjbG9ja19uYW5v
-c2xlZXAyXzAxCj4gMSAgVEZBSUwgIDogIGNsb2NrX25hbm9zbGVlcDJfMDEgZmFpbGVkIC0gZXJy
-bm8gPSAxMjIgOiBPcGVyYXRpb24gbm90Cj4gc3VwcG9ydGVkCj4gKSA9IDEwMwo+IGNoZGlyKCIv
-dG1wIikgICAgICAgICAgICAgICAgICAgICAgICAgICA9IDAKPiBsc3RhdCgiL3RtcC9jbG9jNzV2
-QmsiLCB7c3RfbW9kZT1TX0lGRElSfDA3NzcsIHN0X3NpemU9NDA5NiwgLi4ufSkgPSAwCj4gb3Bl
-bigiL3RtcC9jbG9jNzV2QmsiLCBPX1JET05MWXxPX05PTkJMT0NLfE9fTEFSR0VGSUxFfE9fRElS
-RUNUT1JZfAo+IDB4ODAwMDApID0gMwo+IGZzdGF0NjQoMywge3N0X21vZGU9U19JRkRJUnwwNzc3
-LCBzdF9zaXplPTQwOTYsIC4uLn0pID0gMAo+IGZjbnRsNjQoMywgRl9HRVRGRCkgICAgICAgICAg
-ICAgICAgICAgICA9IDB4MSAoZmxhZ3MgRkRfQ0xPRVhFQykKPiBnZXRkZW50cygzLCAvKiAyIGVu
-dHJpZXMgKi8sIDQwOTYpICAgICAgPSAzMgo+IGdldGRlbnRzKDMsIC8qIDAgZW50cmllcyAqLywg
-NDA5NikgICAgICA9IDAKPiBjbG9zZSgzKSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-PSAwCj4gbHN0YXQoIi90bXAvY2xvYzc1dkJrIiwge3N0X21vZGU9U19JRkRJUnwwNzc3LCBzdF9z
-aXplPTQwOTYsIC4uLn0pID0gMAo+IHVubGluaygiL3RtcC9jbG9jNzV2QmsiKSAgICAgICAgICAg
-ICAgICA9IC0xIEVJU0RJUiAoSXMgYSBkaXJlY3RvcnkpCj4gcm1kaXIoIi90bXAvY2xvYzc1dkJr
-IikgICAgICAgICAgICAgICAgID0gMAo+IGV4aXRfZ3JvdXAoMSkgICAgICAgICAgICAgICAgICAg
-ICAgICAgICA9ID8KPiBQcm9jZXNzIDI3NjMgZGV0YWNoZWQKPiAKPiBjb21tZW50czoKd2hldGhl
-ciB0aGUgbWlwcyBhcmNoIGRvZXMgbm90IHN1cHBvcnQgTU9OT1RPTklDIGNsb2NrIG9yIG5vdD8K
-YW5kIEkgZ2V0IHRoZSBzYW1lIHJlc3VsdCB3aGVuIEkgdGVzdCB0aGUgY2FzZSBpbiB4ODYuCkl0
-IHNlZW1zIHRvIHBhc3MgaW4gdGhlIHBwYyBhcmNoLGJ1dCBJIGRvbm5vdCB0ZXN0IGluIHRoaXMg
-YXJjaC4KPiAKPiAKPiAKPiAKPiAKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBEb3dubG9hZCBJ
-bnRlbCYjMTc0OyBQYXJhbGxlbCBTdHVkaW8gRXZhbAo+IFRyeSB0aGUgbmV3IHNvZnR3YXJlIHRv
-b2xzIGZvciB5b3Vyc2VsZi4gU3BlZWQgY29tcGlsaW5nLCBmaW5kIGJ1Z3MKPiBwcm9hY3RpdmVs
-eSwgYW5kIGZpbmUtdHVuZSBhcHBsaWNhdGlvbnMgZm9yIHBhcmFsbGVsIHBlcmZvcm1hbmNlLgo+
-IFNlZSB3aHkgSW50ZWwgUGFyYWxsZWwgU3R1ZGlvIGdvdCBoaWdoIG1hcmtzIGR1cmluZyBiZXRh
-Lgo+IGh0dHA6Ly9wLnNmLm5ldC9zZnUvaW50ZWwtc3ctZGV2Cj4gX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QKPiBM
-dHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdl
-Lm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkRvd25s
-b2FkIEludGVsJiMxNzQ7IFBhcmFsbGVsIFN0dWRpbyBFdmFsClRyeSB0aGUgbmV3IHNvZnR3YXJl
-IHRvb2xzIGZvciB5b3Vyc2VsZi4gU3BlZWQgY29tcGlsaW5nLCBmaW5kIGJ1Z3MKcHJvYWN0aXZl
-bHksIGFuZCBmaW5lLXR1bmUgYXBwbGljYXRpb25zIGZvciBwYXJhbGxlbCBwZXJmb3JtYW5jZS4K
-U2VlIHdoeSBJbnRlbCBQYXJhbGxlbCBTdHVkaW8gZ290IGhpZ2ggbWFya3MgZHVyaW5nIGJldGEu
-Cmh0dHA6Ly9wLnNmLm5ldC9zZnUvaW50ZWwtc3ctZGV2Cl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBs
-aXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMv
-bGlzdGluZm8vbHRwLWxpc3QK
+On Tue, Mar 2, 2010 at 9:56 PM, Rishikesh K Rajak
+<risrajak@linux.vnet.ibm.com> wrote:
+> On Tue, Mar 02, 2010 at 10:25:23AM -0800, Garrett Cooper wrote:
+>> On Mar 2, 2010, at 9:35 AM, "Serge E. Hallyn" <serue@us.ibm.com> wrote:
+>>
+>> > Quoting Garrett Cooper (yanegomi@gmail.com):
+>> >>
+>> >> That would be from me; I do that via autoconf and they probably
+>> >> fubared the headers on Redhat or something... Do you have
+>> >
+>> > Oh, ok. =A0Well I suspect we can ditch the check_simple_capset.c
+>> > altogether if autoconf is (eventually :) doing the detection for
+>> > us. =A0The only point of check_simple_capset.c was to check whether
+>> > libcap is there and whether we should run the real tests.
+>> >
+>> >> libcap-devel installed?
+>> >
+>> > yup:
+>> >
+>> > [root@oracer4b ltp-dev]# rpm -qa|grep libcap
+>> > libcap-2.10-2.fc10.x86_64
+>> > libcap-devel-2.10-2.fc10.x86_64
+>> >
+>> > [root@oracer4b ltp-dev]# grep CAP_LIB *
+>> > config.log:CAP_LIBS=3D''
+>> > config.status:S["CAP_LIBS"]=3D""
+>> > configure:CAP_LIBS'
+>> > configure: =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0CAP_LIBS=3D"-lcap"
+>> >
+>> > so somehow -lcap was not detected by configure?
+>>
+>> Well some of the definitions are there but maybe not all of them.
+>> config.log would help...
+>>
+>
+> Here is the config.log snapshot, it seems it has some error:
+>
+> ...
+> configure:5543: checking whether CAP_BSET_DROP is declared
+> configure:5574: gcc -c -g -O2 =A0conftest.c >&5
+> conftest.c: In function 'main':
+> conftest.c:38: error: 'CAP_BSET_DROP' undeclared (first use in this
+> function)
+> conftest.c:38: error: (Each undeclared identifier is reported only once
+> conftest.c:38: error: for each function it appears in.)
+
+    Yes -- and I think this is because the constants no longer have
+the same name:
+
+http://fxr.watson.org/fxr/source/include/linux/prctl.h?v=3Dlinux-2.6#L68
+
+    Note -- CAP_BSET_DROP should be: PR_CAPBSET_DROP, etc.
+
+    Which is why I stress _not_ putting these hardcoded constants in
+test files (POLLHDRDUP -- or whatever it was in ppoll01 -- is the only
+real violation I can remember OTOH that I need to clean up
+eventually). We need to be consistent with any and all documentation
+provided to end-developers or we [LTP] are going to shoot ourselves in
+the foot if and when the underlying functionality changes.
+    I'll update the tests this weekend, but I would like it if someone
+test the tests on an outdated distro (RHEL 4.x?) once I provide a
+patch to ensure that nothing's being regressed. Based on some really
+simple inspection it appears that these tests are compatible only with
+libcapability 2.x+, but I could be wrong...
+Thanks,
+-Garrett
+
+---------------------------------------------------------------------------=
+---
+Download Intel&#174; Parallel Studio Eval
+Try the new software tools for yourself. Speed compiling, find bugs
+proactively, and fine-tune applications for parallel performance.
+See why Intel Parallel Studio got high marks during beta.
+http://p.sf.net/sfu/intel-sw-dev
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
