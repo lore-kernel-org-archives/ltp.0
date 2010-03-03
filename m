@@ -1,34 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <sachinp@in.ibm.com>) id 1Nq0fe-0005o6-Sh
-	for ltp-list@lists.sourceforge.net; Fri, 12 Mar 2010 08:56:38 +0000
-Received: from e23smtp06.au.ibm.com ([202.81.31.148])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Nq0fd-0007Yx-C6
-	for ltp-list@lists.sourceforge.net; Fri, 12 Mar 2010 08:56:38 +0000
-Received: from d23relay03.au.ibm.com (d23relay03.au.ibm.com [202.81.31.245])
-	by e23smtp06.au.ibm.com (8.14.3/8.13.1) with ESMTP id o2C8uMrA020484
-	for <ltp-list@lists.sourceforge.net>; Fri, 12 Mar 2010 19:56:22 +1100
-Received: from d23av01.au.ibm.com (d23av01.au.ibm.com [9.190.234.96])
-	by d23relay03.au.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o2C8uR2p1863762
-	for <ltp-list@lists.sourceforge.net>; Fri, 12 Mar 2010 19:56:28 +1100
-Received: from d23av01.au.ibm.com (loopback [127.0.0.1])
-	by d23av01.au.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o2C8uR1u019649
-	for <ltp-list@lists.sourceforge.net>; Fri, 12 Mar 2010 19:56:27 +1100
-Message-ID: <4B9A01B8.6040008@in.ibm.com>
-Date: Fri, 12 Mar 2010 14:26:24 +0530
-From: Sachin Sant <sachinp@in.ibm.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <shwetabh.goel@calsoftinc.com>) id 1NmmLQ-0001za-Ql
+	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 11:02:24 +0000
+Received: from inbox235.nyi.net ([66.111.15.35])
+	by sfi-mx-3.v28.ch3.sourceforge.com with smtp (Exim 4.69)
+	id 1NmmLP-0004PS-Ql
+	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 11:02:24 +0000
+Received: from imss.calsofthq.com (imss.calsofthq.com [172.16.0.44])
+	by mail.calsofthq.com (8.13.6/8.13.6) with ESMTP id o23AZY5k029719
+	for <ltp-list@lists.sourceforge.net>; Wed, 3 Mar 2010 16:05:34 +0530
+Received: from imss.calsofthq.com (localhost.localdomain [127.0.0.1])
+	by localhost.calsofthq.com (Postfix) with ESMTP id AE4A21BE10AB
+	for <ltp-list@lists.sourceforge.net>;
+	Wed,  3 Mar 2010 16:10:27 +0530 (IST)
+Received: from mail.calsofthq.com (mail.calsofthq.com [172.16.0.7])
+	by imss.calsofthq.com (Postfix) with ESMTP id 933AC1BE1092
+	for <ltp-list@lists.sourceforge.net>;
+	Wed,  3 Mar 2010 16:10:27 +0530 (IST)
+Received: from [172.17.6.83] (shwetabhg.calsofthq.com [172.17.6.83])
+	(authenticated bits=0)
+	by mail.calsofthq.com (8.13.6/8.13.6) with ESMTP id o23AZXCR029710
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 3 Mar 2010 16:05:33 +0530
+Message-ID: <4B8E3B7F.8050301@calsoftinc.com>
+Date: Wed, 03 Mar 2010 16:05:43 +0530
+From: Shwetabh <shwetabh.goel@calsoftinc.com>
 MIME-Version: 1.0
-References: <4B97AA99.7050406@in.ibm.com>
-	<364299f41003102015j42667189x9adbc23f48121e87@mail.gmail.com>
-	<4B99CC90.90204@in.ibm.com>
-	<364299f41003112333v3c9e5e7wb6160c2c59395b68@mail.gmail.com>
-In-Reply-To: <364299f41003112333v3c9e5e7wb6160c2c59395b68@mail.gmail.com>
-Subject: Re: [LTP] LTP Containers netns test failure.
+Subject: [LTP] Missing test tools in recent ltp builds
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,71 +41,70 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Garrett Cooper wrote:
->> Hmm .. i am still not able to execute the test even after exporting the
->> PATH.
->>
->> lp5:/opt/ltp # export LTPROOT=/opt/ltp
->> lp5:/opt/ltp # export PATH=$PATH:$LTPROOT/testcases/bin
->> lp5:/opt/ltp # ./runltp -f containers
->> ........<SNIP>..........
->> <<<test_start>>>
->> tag=Containers stime=1268369850
->> cmdline="container_test.sh"
->> contacts=""
->> analysis=exit
->> <<<test_output>>>
->> incrementing stop
->> Running netns tests.
->> --: childns.sh '/opt/ltp': No such file or directory
->>
->> I feel the problem is: the code is searching childns.sh in LTPROOT
->> directory instead of LTPROOT/testcases/bin
->>     
->
->     Please test your claim by calling env in the script -- what happens?
->     Something doesn't necessarily add up with the claim.
->   
-You meant calling env from childns.sh or some other script ?
+Hi,
 
-I printed env o/p (just before calling netns tests) from container_test.sh
+In recent ltp releases, I see quite a few test cases breaking since 
+their required tools
+are not being copied over to /opt/ltp/testcases/. I believe this 
+behaviour started since
+ltp started compiling and copying the files to /opt/ltp. Here is an example:
 
+----<<snip>>-----------
+remove test cases which require the block device.
+You can specify it with option -b
+COMMAND:    /opt/ltp/bin/ltp-pan  -e -S   -a 27204     -n 27204  -p  -f 
+/tmp/ltp-gcfmm27210/alltests -l 
+/opt/ltp/results/LTP_RUN_ON-2010_Mar_02-22h_24m_38s.log  -C 
+/opt/ltp/output/LTP_RUN_ON-2010_Mar_02-22h_24m_38s.failed
+LOG File: /opt/ltp/results/LTP_RUN_ON-2010_Mar_02-22h_24m_38s.log
+FAILED COMMAND File: 
+/opt/ltp/output/LTP_RUN_ON-2010_Mar_02-22h_24m_38s.failed
+Running tests.......
+<<<test_start>>>
+tag=CPUHOTPLUG stime=1267586681
+cmdline="(cd $LTPROOT/testcases/kernel/hotplug/cpu_hotplug/; ./runtests.sh)"
 contacts=""
 analysis=exit
 <<<test_output>>>
 incrementing stop
---- Start env o/p ---
-LESSKEY=/etc/lesskey.bin
-NNTPSERVER=news
-.... SNIP ...
-MAIL=/var/mail/root
-PATH=/sbin:/usr/sbin:/usr/local/sbin:/root/bin:/usr/local/bin:/usr/bin:/bin:/usr/bin/X11:/usr/X11R6/bin:/usr/games:/usr/lib/mit/bin:/usr/lib/mit/sbin:/opt/ltp/testcases/bin:/opt/ltp/testcases/bin
-CPU=ppc64
-_=/usr/bin/env
-SSH_SENDS_LOCALE=yes
-INPUTRC=/etc/inputrc
-PWD=/opt/ltp/testcases/bin
-LANG=en_US.UTF-8
-PYTHONSTARTUP=/etc/pythonstart
-LTPROOT=/opt/ltp
-.... SNIP ...
+sh: line 0: cd: /opt/ltp/testcases/kernel/hotplug/cpu_hotplug/: No such 
+file or directory
+sh: ./runtests.sh: No such file or directory
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=127 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: LTP-20100228
 
-So the values look okay, but the run still fails.
+        ###############################################################"
 
-Thanks
--Sachin
+             Done executing testcases."
+             LTP Version:  LTP-20100228
+        ###############################################################"
+
+[root@localhost runtest]# cd /opt/ltp/testcases/
+[root@localhost testcases]# ls
+bin  data
+[root@localhost testcases]# pwd
+/opt/ltp/testcases
+[root@localhost testcases]# ls -l
+total 76
+drwxr-xr-x 7 root root 69632 Mar  2 22:24 bin
+drwxr-xr-x 2 root root  4096 Mar  2 22:19 data
+
+--------------------
+
+Please advice if I am doing something wrong here. Do I manually have to 
+copy the tools from tarballs' testcases/kernel directory?
+If so, shouldn't this be done by make install?
 
 -- 
-
----------------------------------
-Sachin Sant
-IBM Linux Technology Center
-India Systems and Technology Labs
-Bangalore, India
----------------------------------
+Regards,
+Shwetabh
 
 
 ------------------------------------------------------------------------------
