@@ -2,35 +2,36 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nn4om-0002cV-QJ
-	for ltp-list@lists.sourceforge.net; Thu, 04 Mar 2010 06:45:56 +0000
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1NmhZO-0000lw-3n
+	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 05:56:30 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
 	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.69) id 1Nn4ol-00021k-PL
-	for ltp-list@lists.sourceforge.net; Thu, 04 Mar 2010 06:45:56 +0000
-Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
-	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o246Yhnc016131
-	for <ltp-list@lists.sourceforge.net>; Thu, 4 Mar 2010 01:34:43 -0500
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
-	o246jnGC112134
-	for <ltp-list@lists.sourceforge.net>; Thu, 4 Mar 2010 01:45:49 -0500
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
-	o246jnpK026300
-	for <ltp-list@lists.sourceforge.net>; Thu, 4 Mar 2010 03:45:49 -0300
-Date: Thu, 4 Mar 2010 12:15:44 +0530
+	(Exim 4.69) id 1NmhZN-0006uq-6R
+	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 05:56:30 +0000
+Received: from d03relay05.boulder.ibm.com (d03relay05.boulder.ibm.com
+	[9.17.195.107])
+	by e37.co.us.ibm.com (8.14.3/8.13.1) with ESMTP id o235suJ0021618
+	for <ltp-list@lists.sourceforge.net>; Tue, 2 Mar 2010 22:54:56 -0700
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay05.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o235uNDt117264
+	for <ltp-list@lists.sourceforge.net>; Tue, 2 Mar 2010 22:56:23 -0700
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP
+	id o235uMkj002925
+	for <ltp-list@lists.sourceforge.net>; Tue, 2 Mar 2010 22:56:23 -0700
+Date: Wed, 3 Mar 2010 11:26:19 +0530
 From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
-Message-ID: <20100304064544.GA11885@linux.vnet.ibm.com>
-References: <4B8E3B7F.8050301@calsoftinc.com>
-	<20100303124352.GD23601@linux.vnet.ibm.com>
-	<4B8E5DF3.7090502@calsoftinc.com>
-	<9debc4411003030900t971da33pfbe9ea4e994d74d4@mail.gmail.com>
-	<BD77C355-AF47-4A92-8231-145DDBC8F54D@gmail.com>
+Message-ID: <20100303055619.GA19084@linux.vnet.ibm.com>
+References: <OF3DD1AE6A.65D45C56-ON652576DA.002F585D-652576DA.00384F54@in.ibm.com>
+	<20100302152135.GA6691@us.ibm.com>
+	<B02F7096-7406-4AAE-8BBF-AD16D5228F47@gmail.com>
+	<20100302173535.GA14556@us.ibm.com>
+	<5EEDD2C4-6C6C-4008-81AA-65B78FA3E7C8@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <BD77C355-AF47-4A92-8231-145DDBC8F54D@gmail.com>
-Subject: Re: [LTP] Missing test tools in recent ltp builds
+In-Reply-To: <5EEDD2C4-6C6C-4008-81AA-65B78FA3E7C8@gmail.com>
+Subject: Re: [LTP] LTP's filecaps test gives false positive results
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -44,49 +45,99 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, Shwetabh <shwetabh.goel@calsoftinc.com>
+Cc: Rishikesh K Rajak <risrajak@in.ibm.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, Iranna D Ankad <iranna.ankad@in.ibm.com>
 
-On Wed, Mar 03, 2010 at 03:16:47PM -0800, Garrett Cooper wrote:
-> On Mar 3, 2010, at 9:00 AM, Maxin John <maxin.john@gmail.com> wrote:
+On Tue, Mar 02, 2010 at 10:25:23AM -0800, Garrett Cooper wrote:
+> On Mar 2, 2010, at 9:35 AM, "Serge E. Hallyn" <serue@us.ibm.com> wrote:
 > 
-> > Hi Shwetabh,
-> >
-> >> 3. Went to /opt/ltp directory and tried to execute cpuhotplug test:
-> >> [root@localhost ~]# cd /opt/ltp/
-> >> [root@localhost ltp]# ./runltp -f cpuhotplug
+> > Quoting Garrett Cooper (yanegomi@gmail.com):
 > >>
+> >> That would be from me; I do that via autoconf and they probably
+> >> fubared the headers on Redhat or something... Do you have
 > >
-> > Please find attached the quick 'n' dirty patch
-> > (cpu_hotplugin_makefile.patch) to execute cpuhotplugin test.
-> > I have observed that the 'hotplug' directory is not included in
-> > "testcases/kernel/Makefile". I have also
-> > created a Makefile in 'hotplug/cpu_hotplug' directory.
+> > Oh, ok.  Well I suspect we can ditch the check_simple_capset.c
+> > altogether if autoconf is (eventually :) doing the detection for
+> > us.  The only point of check_simple_capset.c was to check whether
+> > libcap is there and whether we should run the real tests.
 > >
-> > After applying this patch, I have followed the usual ./configure;
-> > make; sudo make install steps and executed
-> > the cpuhotplug test and observed the below given output . It seems
-> > like the test execution is "not so good" in
-> > my machine. Your mileage may vary.
+> >> libcap-devel installed?
 > >
-> > Garret,Rishi, please review the patch and let me know your comments.
+> > yup:
 > >
-> > Signed-off-by: Maxin B. John <maxin.john@gmail.com>
+> > [root@oracer4b ltp-dev]# rpm -qa|grep libcap
+> > libcap-2.10-2.fc10.x86_64
+> > libcap-devel-2.10-2.fc10.x86_64
+> >
+> > [root@oracer4b ltp-dev]# grep CAP_LIB *
+> > config.log:CAP_LIBS=''
+> > config.status:S["CAP_LIBS"]=""
+> > configure:CAP_LIBS'
+> > configure:                    CAP_LIBS="-lcap"
+> >
+> > so somehow -lcap was not detected by configure?
 > 
-> It looks better but it's going to need a minor amount of fudging in  
-> the scripts to source the appropriate scripts to execute cpuhotplug's  
-> tests... I'll pick this up tomorrow if it's not done by then...
+> Well some of the definitions are there but maybe not all of them.  
+> config.log would help...
+> 
 
-Yes it looks better, i have tested it and true there are still some
-problem with testcase, can you look very closely and try to find the
-root cause for that ? Since this patch is important to run cpuhotplug
-testcases, i have included this to master branch.
+Here is the config.log snapshot, it seems it has some error:
 
-Acked & Tested-By: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+...
+configure:5543: checking whether CAP_BSET_DROP is declared
+configure:5574: gcc -c -g -O2  conftest.c >&5
+conftest.c: In function 'main':
+conftest.c:38: error: 'CAP_BSET_DROP' undeclared (first use in this
+function)
+conftest.c:38: error: (Each undeclared identifier is reported only once
+conftest.c:38: error: for each function it appears in.)
+configure:5581: $? = 1
+configure: failed program was:
+| /* confdefs.h.  */
+| #define PACKAGE_NAME "ltp"
+| #define PACKAGE_TARNAME "ltp"
+| #define PACKAGE_VERSION "LTP_VERSION"
+| #define PACKAGE_STRING "ltp LTP_VERSION"
+| #define PACKAGE_BUGREPORT "ltp-results@lists.sourceforge.net"
+| #define PACKAGE "ltp"
+| #define VERSION "LTP_VERSION"
+| #define YYTEXT_POINTER 1
+| #define STDC_HEADERS 1
+| #define HAVE_SYS_TYPES_H 1
+| #define HAVE_SYS_STAT_H 1
+| #define HAVE_STDLIB_H 1
+| #define HAVE_STRING_H 1
+| #define HAVE_MEMORY_H 1
+| #define HAVE_STRINGS_H 1
+| #define HAVE_INTTYPES_H 1
+| #define HAVE_STDINT_H 1
+| #define HAVE_UNISTD_H 1
+| #define HAVE_IFADDRS_H 1
+| #define HAVE_PTHREAD_H 1
+| #define HAVE_LINUX_GENETLINK_H 1
+| #define HAVE_LINUX_MEMPOLICY_H 1
+| #define HAVE_LINUX_NETLINK_H 1
+| #define HAVE_SYS_EPOLL_H 1
+| #define HAVE_SYS_INOTIFY_H 1
+| #define HAVE_SYS_PRCTL_H 1
+| #define HAVE_SYS_CAPABILITY_H 1
+| #define HAVE_ATTR_XATTR_H 1
+| /* end confdefs.h.  */
+| #include <sys/capability.h>
+|
+|
+| int
+| main ()
+| {
+| #ifndef CAP_BSET_DROP
+|   (void) CAP_BSET_DROP;
+| #endif
+|
+|   ;
+|   return 0;
+                                                                                                                                                          2879,13
 
--Rishi
+Which file will contains this macro definition ?
 
-> Thanks,
-> -Garrett
 -- 
 Thanks & Regards
 Rishi
