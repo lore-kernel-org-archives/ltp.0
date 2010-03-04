@@ -1,20 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-4.v28.ch3.sourceforge.com ([172.29.28.124]
+Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <yanegomi@gmail.com>) id 1NndeB-00075n-Ou
-	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 19:57:19 +0000
-Received: from mail-px0-f199.google.com ([209.85.216.199])
-	by sfi-mx-4.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NndeA-0000He-HA
-	for ltp-list@lists.sourceforge.net; Fri, 05 Mar 2010 19:57:19 +0000
+	(envelope-from <maxin.john@gmail.com>) id 1NnAkT-0003ww-S8
+	for ltp-list@lists.sourceforge.net; Thu, 04 Mar 2010 13:05:53 +0000
+Received: from mail-pw0-f47.google.com ([209.85.160.47])
+	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1NnAkS-0006gZ-Vr
+	for ltp-list@lists.sourceforge.net; Thu, 04 Mar 2010 13:05:53 +0000
+Received: by pwi5 with SMTP id 5so1458606pwi.34
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 04 Mar 2010 05:05:47 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <A69FA2915331DC488A831521EAE36FE4016A4F5195@dlee06.ent.ti.com>
-References: <A69FA2915331DC488A831521EAE36FE4016A4F5195@dlee06.ent.ti.com>
-Date: Fri, 5 Mar 2010 11:57:11 -0800
-Message-ID: <364299f41003051157h5ac36e43pd6aab7478850b7fe@mail.gmail.com>
-From: Garrett Cooper <yanegomi@gmail.com>
-Subject: Re: [LTP] LTP compile errors
+In-Reply-To: <4B8F5FB8.103@calsoftinc.com>
+References: <4B8E3B7F.8050301@calsoftinc.com>
+	<20100303124352.GD23601@linux.vnet.ibm.com>
+	<4B8E5DF3.7090502@calsoftinc.com>
+	<9debc4411003030900t971da33pfbe9ea4e994d74d4@mail.gmail.com>
+	<BD77C355-AF47-4A92-8231-145DDBC8F54D@gmail.com>
+	<20100304064544.GA11885@linux.vnet.ibm.com>
+	<364299f41003032250i78c201fesc5ce55d6d2c2794f@mail.gmail.com>
+	<4B8F5FB8.103@calsoftinc.com>
+Date: Thu, 4 Mar 2010 18:35:46 +0530
+Message-ID: <9debc4411003040505y39cd5324o598871cae7cc8841@mail.gmail.com>
+From: Maxin John <maxin.john@gmail.com>
+Subject: Re: [LTP] Missing test tools in recent ltp builds
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,26 +37,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Gaur, Alok" <a-gaur2@ti.com>
-Cc: "ltp-list@lists.sf.net" <ltp-list@lists.sf.net>
+To: Shwetabh <shwetabh.goel@calsoftinc.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On Fri, Mar 5, 2010 at 7:42 AM, Gaur, Alok <a-gaur2@ti.com> wrote:
-> Hi,
->
-> I am trying to compile LTP using my ubuntu machine and get the errors as in
-> the error_logs file attached herewith. Please help to resolve this issue. I
-> have attached config.mk.in, config.h.in and config.log also. If any think
-> else also required to debug this issue please let me know.
+Hi Shwetabh,
 
-Your toolchain is broken:
+> There is one possible problem with the current solution provided by Maxin.
+> The patch takes care
+> only of cpuhotplug tests. However, judging by the number of files that are
+> missing in /opt/ltp/testcases,
+> it is quite possible that many other tests might have been broken. So,
+> perhaps a generic solution to this
+> problem would be to modify the Makefile to ensure that it copies all
+> directories from ltp-full-20100228/testcases/
+> to /opt/ltp/testcases/.
 
-configure:2849: checking for C compiler default output file name
-configure:2871: gcc    conftest.c  >&5
-/usr/bin/ld: crt1.o: No such file: No such file or directory
-collect2: ld returned 1 exit status
+Yes, I do agree with you. This patch is intented only for the cpuhotplug tests.
 
-Thanks,
--Garrett
+Another solution (old school method) will be to have a look into the
+LTP's "TODO" file :)
+In that file, we can locate a number of "items missing from LTP
+install based on the output log provided by runltp[lite.sh]".  Please
+have a look into the "testscripts/ltp-missing-install-files.py" script
+for the logic behind it.
+
+Best Regards,
+Maxin B. John
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
