@@ -1,33 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-1.v28.ch3.sourceforge.com ([172.29.28.121]
+Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <naresh.kernel@gmail.com>) id 1Nmn5R-0004zx-Op
-	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 11:49:57 +0000
-Received: from mail-pz0-f203.google.com ([209.85.222.203])
-	by sfi-mx-1.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Nmn5R-0005e7-1m
-	for ltp-list@lists.sourceforge.net; Wed, 03 Mar 2010 11:49:57 +0000
-Received: by pzk41 with SMTP id 41so878218pzk.23
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 03 Mar 2010 03:49:51 -0800 (PST)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <shiwh@cn.fujitsu.com>) id 1Nn6ZX-0008Qb-JG
+	for ltp-list@lists.sourceforge.net; Thu, 04 Mar 2010 08:38:19 +0000
+Received: from [222.73.24.84] (helo=song.cn.fujitsu.com)
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Nn6ZV-0004DR-Ag
+	for ltp-list@lists.sourceforge.net; Thu, 04 Mar 2010 08:38:19 +0000
+Message-ID: <4B8F716E.5070207@cn.fujitsu.com>
+Date: Thu, 04 Mar 2010 16:38:06 +0800
+From: Shi Weihua <shiwh@cn.fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <364299f41003030342m7bf4a44ey897b7d2ca365a318@mail.gmail.com>
-References: <f5a7b3811002250545x3d5288cfqd114d3bcd79581f2@mail.gmail.com>
-	<20100302085046.GA27023@linux.vnet.ibm.com>
-	<f5a7b3811003020708wdd0710fv4c3e1dcf1992935c@mail.gmail.com>
-	<20100303045624.GB10185@linux.vnet.ibm.com>
-	<f5a7b3811003022200r32a0e108g8eaf5d9a2ce66b4a@mail.gmail.com>
-	<20100303070342.GB19084@linux.vnet.ibm.com>
-	<364299f41003030118x6136dda6u7017054febea4b96@mail.gmail.com>
-	<20100303094541.GB23601@linux.vnet.ibm.com>
-	<f5a7b3811003030333n4b0b4045sff5795d99cd7da00@mail.gmail.com>
-	<364299f41003030342m7bf4a44ey897b7d2ca365a318@mail.gmail.com>
-Date: Wed, 3 Mar 2010 17:19:51 +0530
-Message-ID: <f5a7b3811003030349s2d279fcdx8b74cff2e3a875ab@mail.gmail.com>
-From: naresh kamboju <naresh.kernel@gmail.com>
-Subject: Re: [LTP] [PATCH] Synchronization required before release the lock:
-	sem_post/8-1.c
+References: <4B7BA24F.2010705@linux.vnet.ibm.com>	
+	<364299f41002170910i336abf6eh72acbcbec9b72e7b@mail.gmail.com>	
+	<20100218042532.GC13013@rishikesh.in.ibm.com>	
+	<4B822F2E.9030609@cn.fujitsu.com>	
+	<364299f41002212344v4873843ej986f1b39ec3494df@mail.gmail.com>	
+	<4B8333ED.5080709@cn.fujitsu.com>
+	<364299f41002241718g4be216d1pbec918821b7027b0@mail.gmail.com>
+In-Reply-To: <364299f41002241718g4be216d1pbec918821b7027b0@mail.gmail.com>
+Subject: Re: [LTP] [PATCH] sysctl03: sysctl returns EACCES after 2.6.33-rc1
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,68 +30,263 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Garrett Cooper <yanegomi@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-On Wed, Mar 3, 2010 at 5:12 PM, Garrett Cooper <yanegomi@gmail.com> wrote:
-> On Wed, Mar 3, 2010 at 3:33 AM, naresh kamboju <naresh.kernel@gmail.com> =
-wrote:
->> On Wed, Mar 3, 2010 at 3:15 PM, Rishikesh K Rajak
->> <risrajak@linux.vnet.ibm.com> wrote:
->>> On Wed, Mar 03, 2010 at 01:18:50AM -0800, Garrett Cooper wrote:
->>>> Uh, hold on a sec before we call it good...
+at 2010-2-25 9:18, Garrett Cooper wrote:
+> On Mon, Feb 22, 2010 at 5:48 PM, Shi Weihua <shiwh@cn.fujitsu.com> wrote:
+>> at 2010-2-22 15:44, Garrett Cooper wrote:
+>>> Ok.. one last thing.
 >>>
->>> oh ok, holiding on for bit.
->>>
->>> Naresh, can you please send a patch with incorporating garret's comment
->>> ?
->>>>>> + =A0 =A0 =A0 =A0/* Step 3 Implementation */
->>>>>> =A0 =A0 =A0 /* Make sure the two children has been waiting */
->>>>>> - =A0 =A0 /*do {
->>>>>> - =A0 =A0 =A0 =A0 =A0 =A0 sleep(1);
->>>>>> + =A0 =A0 do {
->>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 sem_getvalue(sem_1, &val);
->>>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 //printf("val =3D %d\n", val);
->>>>>> =A0 =A0 =A0 } while (val !=3D 1);
->>>>>> - =A0 =A0 */
+>>> On Sun, Feb 21, 2010 at 11:15 PM, Shi Weihua <shiwh@cn.fujitsu.com> wrote:
+>>>> at 2010-2-18 12:25, Rishikesh K Rajak wrote:
+>>>>> On Wed, Feb 17, 2010 at 09:10:48AM -0800, Garrett Cooper wrote:
+>>>>>> On Wed, Feb 17, 2010 at 12:01 AM, Rishikesh <risrajak@linux.vnet.ibm.com> wrote:
+>>>>>>> Hi Shi,
+>>>>>>>
+>>>>>>> Thanks for your patch, still i am finding time to look into your patch.
+>>>>>>> Will reply you soon.
+>>>>>>>
+>>>>>>> http://marc.info/?l=ltp-list&m=126502355614857&w=2
+>>>>>>
+>>>>>> I looked at the patch finally.
+>>>>>
+>>>>> Thanks garret.
+>>>>>>
+>>>>>> Please use TTERRNO instead of strerror(...) for the reported value.
+>>>>>> There's no reason why you should use strerror(...) there as that's
+>>>>>> already done with tst_res(3).
+>>>>>
+>>>>> Shi, can you please incorporate changes which garret has suggested and
+>>>>> resend the patch again to ltp-list@ .
 >>>>
->>>> Please provide another patch with a limit to this --
+>>>>  Ok, i recreated the patch based on garret's suggestion.
+>>>>
+>>>> Signed-off-by: Shi Weihua <shiwh@cn.fujitsu.com>
+>>>> ---
+>>>> --- testcases/kernel/syscalls/sysctl/sysctl03.c.orig    2010-02-22 14:38:26.000000000 -0500
+>>>> +++ testcases/kernel/syscalls/sysctl/sysctl03.c 2010-02-22 15:08:03.000000000 -0500
+>>>> @@ -22,15 +22,18 @@
+>>>>  *     sysctl03.c
+>>>>  *
+>>>>  * DESCRIPTION
+>>>> - *     Testcase to check that sysctl(2) sets errno to EPERM correctly.
+>>>> + *     Testcase to check that sysctl(2) sets errno to EPERM or EACCES
+>>>> + *     correctly. But it will return EACCES on kernels that are 2.6.33-rc1
+>>>> + *     and higher.
+>>>>  *
+>>>>  * ALGORITHM
+>>>>  *     a.      Call sysctl(2) as a root user, and attempt to write data
+>>>>  *             to the kernel_table[]. Since the table does not have write
+>>>> - *             permissions even for the root, it should fail EPERM.
+>>>> + *             permissions even for the root, it should fail EPERM or EACCES.
+>>>>  *     b.      Call sysctl(2) as a non-root user, and attempt to write data
+>>>>  *             to the kernel_table[]. Since the table does not have write
+>>>> - *             permission for the regular user, it should fail with EPERM.
+>>>> + *             permission for the regular user, it should fail with EPERM
+>>>> + *             or EACCES.
+>>>>  *
+>>>>  * USAGE:  <for command-line>
+>>>>  *  sysctl03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+>>>> @@ -43,6 +46,7 @@
+>>>>  *
+>>>>  * HISTORY
+>>>>  *     07/2001 Ported by Wayne Boyer
+>>>> + *     02/2010 Updated by shiwh@cn.fujitsu.com
+>>>>  *
+>>>>  * RESTRICTIONS
+>>>>  *     Test must be run as root.
+>>>> @@ -82,6 +86,7 @@ int main(int ac, char **av)
+>>>>  {
+>>>>        int lc;
+>>>>        char *msg;
+>>>> +       int exp_eno;
+>>>>
+>>>>        char osname[OSNAMESZ];
+>>>>        int osnamelth, status;
+>>>> @@ -96,6 +101,13 @@ int main(int ac, char **av)
+>>>>
+>>>>        setup();
+>>>>
+>>>> +       if ((tst_kvercmp(2, 6, 32)) <= 0){
+>>>> +               exp_eno = EPERM;
+>>>> +       } else {
+>>>> +               exp_eno = EACCES;
+>>>> +               exp_enos[0] = EACCES;
+>>>> +       }
+>>>> +
+>>>>        TEST_EXP_ENOS(exp_enos);
+>>>>
+>>>>        /* check looping state if -i option is given */
+>>>> @@ -114,13 +126,10 @@ int main(int ac, char **av)
+>>>>                } else {
+>>>>                        TEST_ERROR_LOG(TEST_ERRNO);
+>>>>
+>>>> -                       if (TEST_ERRNO != EPERM) {
+>>>> -                               tst_resm(TFAIL,
+>>>> -                                        "Expected EPERM (%d), got %d: %s",
+>>>> -                                        EPERM, TEST_ERRNO,
+>>>> -                                        strerror(TEST_ERRNO));
+>>>> +                       if (TEST_ERRNO != exp_eno) {
+>>>> +                               tst_resm(TFAIL|TTERRNO, "Got unxpected error");
+>>>>                        } else {
+>>>> -                               tst_resm(TPASS, "Got expected EPERM error");
+>>>> +                               tst_resm(TPASS|TTERRNO, "Got expected error");
+>>>>                        }
+>>>>                }
+>>>>
+>>>> @@ -147,12 +156,10 @@ int main(int ac, char **av)
+>>>>                        } else {
+>>>>                                TEST_ERROR_LOG(TEST_ERRNO);
+>>>>
+>>>> -                               if (TEST_ERRNO != EPERM) {
+>>>> -                                       tst_resm(TFAIL, "Expected EPERM, got "
+>>>> -                                                "%d", TEST_ERRNO);
+>>>> +                               if (TEST_ERRNO != exp_eno) {
+>>>
+>>> Why can't this be exp_enos[0] ?
 >>
->> Garrett,
+>> Using exp_enos[0] is ok. pls check the latest patch in this mail.
 >>
->> When sem_wait is called 'val' value will be decremented by one.
->> To ensure that sem_wait is called, we are checking 'val' value by
->> calling sem_getvalue(). in this case we don=92t need to decrement the
->> values by --. IIUC.
->> (snip)
->> OTOH,
->>>> I get annoyed
->>>> with tests that have infinite loops in them because the underlying
->>>> functionality is broken.
->> I agree with you, having infinite loops in test case is not a good.
->> However, in this patch while loop is not infinite loop. It is a
->> conditional loop with finite value.
+>>>
+>>>> +                                       tst_resm(TFAIL|TTERRNO, "Got unxpected error");
+>>>
+>>> Typo.
+>>>
+>>>>                                } else {
+>>>> -                                       tst_resm(TPASS, "Got expected EPERM "
+>>>> -                                                "error");
+>>>> +                                       tst_resm(TPASS|TTERRNO, "Got expected error");
+>>>>                                }
+>>>>                        }
+>>>>
+>>>>
+>>>> Thank you.
+>>>> - Shi Weihua
+>>>
+>>>     It always helps to understand what's expected vs unexpected
+>>> without having to look at the source code. Could you please revise the
+>>> tst_resm format strings to be something like the following?
+>>>
+>>> tst_resm (TPASS | TERRNO, "Got expected error (errno = %d, ret_code =
+>>> %d", exp_errno_blah, exp_ret_code_blah);
+>>>
+>>> OR:
+>>>
+>>> tst_resm (TPASS | TERRNO, "Got unexpected error (expected errno = %d,
+>>> ret_code = %d - got errno = %d, ret_code = %d", exp_errno_blah,
+>>> exp_ret_code_blah, errno_blah, ret_code_blah);
 >>
->> Please let me know if you have any issues.
->
-> =A0 =A0The problem was that it wasn't failing properly as stated in the
-> manpage on mips* (was decrementing past 0) and it was blocking
-> indefinitely. Hence I had to yank those tests from the default run.
-do you mean, after applying above patch you have noticed these kind of beha=
-vior?
+>> ret_code has not been defined in sysctl03.c, i think it's unnecessarily to
+>> import a new parameter. maybe, we can use your macro when it created. ;-)
+>>
+>> --- testcases/kernel/syscalls/sysctl/sysctl03.c.orig    2010-02-22 14:38:26.000000000 -0500
+>> +++ testcases/kernel/syscalls/sysctl/sysctl03.c 2010-02-23 09:35:20.000000000 -0500
+>> @@ -22,15 +22,18 @@
+>>  *     sysctl03.c
+>>  *
+>>  * DESCRIPTION
+>> - *     Testcase to check that sysctl(2) sets errno to EPERM correctly.
+>> + *     Testcase to check that sysctl(2) sets errno to EPERM or EACCES
+>> + *     correctly. But it will return EACCES on kernels that are 2.6.33-rc1
+>> + *     and higher.
+>>  *
+>>  * ALGORITHM
+>>  *     a.      Call sysctl(2) as a root user, and attempt to write data
+>>  *             to the kernel_table[]. Since the table does not have write
+>> - *             permissions even for the root, it should fail EPERM.
+>> + *             permissions even for the root, it should fail EPERM or EACCES.
+>>  *     b.      Call sysctl(2) as a non-root user, and attempt to write data
+>>  *             to the kernel_table[]. Since the table does not have write
+>> - *             permission for the regular user, it should fail with EPERM.
+>> + *             permission for the regular user, it should fail with EPERM
+>> + *             or EACCES.
+>>  *
+>>  * USAGE:  <for command-line>
+>>  *  sysctl03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+>> @@ -43,6 +46,7 @@
+>>  *
+>>  * HISTORY
+>>  *     07/2001 Ported by Wayne Boyer
+>> + *     02/2010 Updated by shiwh@cn.fujitsu.com
+>>  *
+>>  * RESTRICTIONS
+>>  *     Test must be run as root.
+>> @@ -96,6 +100,12 @@ int main(int ac, char **av)
+>>
+>>        setup();
+>>
+>> +       if ((tst_kvercmp(2, 6, 32)) <= 0){
+>> +               exp_enos[0] = EPERM;
+>> +       } else {
+>> +               exp_enos[0] = EACCES;
+>> +       }
+>> +
+>>        TEST_EXP_ENOS(exp_enos);
+>>
+>>        /* check looping state if -i option is given */
+>> @@ -114,13 +124,12 @@ int main(int ac, char **av)
+>>                } else {
+>>                        TEST_ERROR_LOG(TEST_ERRNO);
+>>
+>> -                       if (TEST_ERRNO != EPERM) {
+>> -                               tst_resm(TFAIL,
+>> -                                        "Expected EPERM (%d), got %d: %s",
+>> -                                        EPERM, TEST_ERRNO,
+>> -                                        strerror(TEST_ERRNO));
+>> +                       if (TEST_ERRNO != exp_enos[0]) {
+>> +                               tst_resm(TFAIL|TTERRNO, "Got unxpected error "
+>> +                                       "(expected error = %d)", exp_enos[0]);
+>>                        } else {
+>> -                               tst_resm(TPASS, "Got expected EPERM error");
+>> +                               tst_resm(TPASS|TTERRNO, "Got expected error "
+>> +                                       "(errno = %d)", exp_enos[0]);
+>>                        }
+>>                }
+>>
+>> @@ -147,12 +156,12 @@ int main(int ac, char **av)
+>>                        } else {
+>>                                TEST_ERROR_LOG(TEST_ERRNO);
+>>
+>> -                               if (TEST_ERRNO != EPERM) {
+>> -                                       tst_resm(TFAIL, "Expected EPERM, got "
+>> -                                                "%d", TEST_ERRNO);
+>> +                               if (TEST_ERRNO != exp_enos[0]) {
+>> +                                       tst_resm(TFAIL|TTERRNO, "Got unxpected error "
+>> +                                               "(expected error = %d)", exp_enos[0]);
+>>                                } else {
+>> -                                       tst_resm(TPASS, "Got expected EPERM "
+>> -                                                "error");
+>> +                                       tst_resm(TPASS|TTERRNO, "Got expected error "
+>> +                                                "(errno = %d)",  exp_enos[0]);
+>>                                }
+>>                        }
+> 
+> Ok, before I go and commit this, there are two things I need to know
+> (because trusty Google didn't turn up any results for this behavioral
+> change):
+> 
+> 1. The change is legitimate.
+> 2. The documentation is up to date, or a bug has been filed for the
+> documentation change.
+> 
+> If you can provide these two things, I'll commit the change.
 
-Thanks
-naresh
+At this time of day, I can not find any documentation about EPERM->EACCES.
+But, i caught the kernel commit which caused ltp bug:
+http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=26a7034b40ba80f82f64fa251a2cbf49f9971c6a
+Maybe it can help you to judge.
 
+> 
 > Thanks,
 > -Garrett
->
+> 
+> 
 
----------------------------------------------------------------------------=
----
+------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
 Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
