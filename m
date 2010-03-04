@@ -1,27 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <michal.simek@petalogix.com>) id 1NoLKD-0004CO-T5
-	for ltp-list@lists.sourceforge.net; Sun, 07 Mar 2010 18:35:37 +0000
-Received: from mail-fx0-f214.google.com ([209.85.220.214])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1NoLKC-0004NT-Mo
-	for ltp-list@lists.sourceforge.net; Sun, 07 Mar 2010 18:35:37 +0000
-Received: by fxm6 with SMTP id 6so843819fxm.2
-	for <ltp-list@lists.sourceforge.net>;
-	Sun, 07 Mar 2010 10:35:30 -0800 (PST)
-Message-ID: <4B93EBBC.5070004@petalogix.com>
-Date: Sun, 07 Mar 2010 19:09:00 +0100
-From: Michal Simek <michal.simek@petalogix.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <risrajak@linux.vnet.ibm.com>) id 1Nn4om-0002cV-QJ
+	for ltp-list@lists.sourceforge.net; Thu, 04 Mar 2010 06:45:56 +0000
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by sfi-mx-3.v28.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.69) id 1Nn4ol-00021k-PL
+	for ltp-list@lists.sourceforge.net; Thu, 04 Mar 2010 06:45:56 +0000
+Received: from d01relay03.pok.ibm.com (d01relay03.pok.ibm.com [9.56.227.235])
+	by e3.ny.us.ibm.com (8.14.3/8.13.1) with ESMTP id o246Yhnc016131
+	for <ltp-list@lists.sourceforge.net>; Thu, 4 Mar 2010 01:34:43 -0500
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay03.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+	o246jnGC112134
+	for <ltp-list@lists.sourceforge.net>; Thu, 4 Mar 2010 01:45:49 -0500
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.14.3/8.13.1/NCO v10.0 AVout) with ESMTP id
+	o246jnpK026300
+	for <ltp-list@lists.sourceforge.net>; Thu, 4 Mar 2010 03:45:49 -0300
+Date: Thu, 4 Mar 2010 12:15:44 +0530
+From: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
+Message-ID: <20100304064544.GA11885@linux.vnet.ibm.com>
+References: <4B8E3B7F.8050301@calsoftinc.com>
+	<20100303124352.GD23601@linux.vnet.ibm.com>
+	<4B8E5DF3.7090502@calsoftinc.com>
+	<9debc4411003030900t971da33pfbe9ea4e994d74d4@mail.gmail.com>
+	<BD77C355-AF47-4A92-8231-145DDBC8F54D@gmail.com>
 MIME-Version: 1.0
-References: <20100227075348.GA3077@linux.vnet.ibm.com>
-	<201003051635.50233.vapier@gentoo.org>
-	<4B922D86.70704@petalogix.com>
-	<201003061633.16026.vapier@gentoo.org>
-In-Reply-To: <201003061633.16026.vapier@gentoo.org>
-Subject: Re: [LTP] A note from Maintainer
-Reply-To: michal.simek@petalogix.com
+Content-Disposition: inline
+In-Reply-To: <BD77C355-AF47-4A92-8231-145DDBC8F54D@gmail.com>
+Subject: Re: [LTP] Missing test tools in recent ltp builds
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,73 +43,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: sachinp@linux.vnet.ibm.com, ltp-list@lists.sourceforge.net, jburke@redhat.com, ambar.seksena@calsoftinc.com, kamaleshb@in.ibm.com, doug.chapman@hp.com, risrajak@in.ibm.com, Cai Qian <qcai@redhat.com>, Khem Raj <kraj@mvista.com>, aneesh.kumar@linux.vnet.ibm.com, carmelo.amoroso@st.com, Nadia Derbey <Nadia.Derbey@bull.net>, Balbir Singh <balbir@linux.vnet.ibm.com>
+To: Garrett Cooper <yanegomi@gmail.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, Shwetabh <shwetabh.goel@calsoftinc.com>
 
-Mike Frysinger wrote:
-> On Saturday 06 March 2010 05:25:10 Michal Simek wrote:
->> Mike Frysinger wrote:
->>> On Saturday 27 February 2010 02:53:48 Rishikesh K Rajak wrote:
->>>> We are in process of changing our sf.net host repository to
->>>> GIT from CVS.[ Any input/discussion on this is highly appreciable ].
->>> the authorship info really should be fixed before anything is finalized. 
->>> and a git hook added to reject people pushing patches that lack proper
->>> author/committer fields.  these commits by "root" are a good example of
->>> things that should not be happening.
->> Agree. Do you know about any manual how to fix it by any script or setup
->> that conversion? I mean to have any convert table where for example will
->> be written conversion:
->> vampier -> Mike Frysinger.
->> root -> Subrata Modak
+On Wed, Mar 03, 2010 at 03:16:47PM -0800, Garrett Cooper wrote:
+> On Mar 3, 2010, at 9:00 AM, Maxin John <maxin.john@gmail.com> wrote:
 > 
-> i use this script:
-> #!/bin/bash
+> > Hi Shwetabh,
+> >
+> >> 3. Went to /opt/ltp directory and tried to execute cpuhotplug test:
+> >> [root@localhost ~]# cd /opt/ltp/
+> >> [root@localhost ltp]# ./runltp -f cpuhotplug
+> >>
+> >
+> > Please find attached the quick 'n' dirty patch
+> > (cpu_hotplugin_makefile.patch) to execute cpuhotplugin test.
+> > I have observed that the 'hotplug' directory is not included in
+> > "testcases/kernel/Makefile". I have also
+> > created a Makefile in 'hotplug/cpu_hotplug' directory.
+> >
+> > After applying this patch, I have followed the usual ./configure;
+> > make; sudo make install steps and executed
+> > the cpuhotplug test and observed the below given output . It seems
+> > like the test execution is "not so good" in
+> > my machine. Your mileage may vary.
+> >
+> > Garret,Rishi, please review the patch and let me know your comments.
+> >
+> > Signed-off-by: Maxin B. John <maxin.john@gmail.com>
 > 
-> tmp=$(mktemp)
-> cat << \EOF > ${tmp}
-> decode() {
-> 	awk -vid="$1" -vtype="$2" '$1 == id {
-> 		print "export GIT_"type"_NAME='\''" $3 " " $4 "'\'';"
-> 		print "export GIT_"type"_EMAIL='\''" $5 "'\'';"
-> 	}' ${author_file}
-> }
-> EOF
-> 
-> for x in cvs-authors authors ; do
-> 	export author_file=${PWD}/.git/$x
-> 	[ -e ${author_file} ] && break
-> done
-> git filter-branch \
-> 	--env-filter ". ${tmp};"' \
-> 		eval `decode "${GIT_AUTHOR_NAME}" AUTHOR`; \
-> 		eval `decode "${GIT_COMMITTER_NAME}" COMMITTER`; \
-> ' "$@"
-> 
-> rm -f $tmp
-> 
-> use a normal authors file in like .git/authors and run it.  the authors format 
-> looks something like:
-> vapier = Mike Frysinger <vapier@gentoo.org>
+> It looks better but it's going to need a minor amount of fudging in  
+> the scripts to source the appropriate scripts to execute cpuhotplug's  
+> tests... I'll pick this up tomorrow if it's not done by then...
 
-Anyway don't you have another script which will check commit message and 
-if is there Signed-off-by line then change author name?
-There are a lot of commits with that line and will be good to fix this too.
-Adding some new lines to commit messages (At least before Sign-off-by 
-line) make sense too.
+Yes it looks better, i have tested it and true there are still some
+problem with testcase, can you look very closely and try to find the
+root cause for that ? Since this patch is important to run cpuhotplug
+testcases, i have included this to master branch.
 
-Thanks,
-Michal
+Acked & Tested-By: Rishikesh K Rajak <risrajak@linux.vnet.ibm.com>
 
+-Rishi
 
-
-> ...
-> -mike
-
-
+> Thanks,
+> -Garrett
 -- 
-Michal Simek, Ing. (M.Eng)
-PetaLogix - Linux Solutions for a Reconfigurable World
-w: www.petalogix.com p: +61-7-30090663,+42-0-721842854 f: +61-7-30090663
+Thanks & Regards
+Rishi
+LTP Maintainer
+IBM, LTC, Bangalore
+Please join IRC #ltp @ irc.freenode.net
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
