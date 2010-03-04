@@ -1,21 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sfi-mx-3.v28.ch3.sourceforge.com ([172.29.28.123]
+Received: from sfi-mx-2.v28.ch3.sourceforge.com ([172.29.28.122]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
-	(envelope-from <kdlucas@gmail.com>) id 1Ns3VR-0003sU-8h
-	for ltp-list@lists.sourceforge.net; Thu, 18 Mar 2010 00:22:33 +0000
-Received: from mail-gw0-f47.google.com ([74.125.83.47])
-	by sfi-mx-3.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
-	id 1Ns3VQ-00042j-Fl
-	for ltp-list@lists.sourceforge.net; Thu, 18 Mar 2010 00:22:33 +0000
-Received: by gwj23 with SMTP id 23so637378gwj.34
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.69)
+	(envelope-from <yanegomi@gmail.com>) id 1Nn4tk-0002u2-Kf
+	for ltp-list@lists.sourceforge.net; Thu, 04 Mar 2010 06:51:04 +0000
+Received: from mail-pv0-f175.google.com ([74.125.83.175])
+	by sfi-mx-2.v28.ch3.sourceforge.com with esmtp (Exim 4.69)
+	id 1Nn4tj-0008ML-P7
+	for ltp-list@lists.sourceforge.net; Thu, 04 Mar 2010 06:51:04 +0000
+Received: by pvf33 with SMTP id 33so636657pvf.34
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 17 Mar 2010 17:21:32 -0700 (PDT)
+	Wed, 03 Mar 2010 22:50:57 -0800 (PST)
 MIME-Version: 1.0
-Date: Wed, 17 Mar 2010 17:21:32 -0700
-Message-ID: <b9d696241003171721w10512579waabdc19c253218ae@mail.gmail.com>
-From: "K.D. Lucas" <kdlucas@gmail.com>
-Subject: [LTP] Compiling and running on ARM
+In-Reply-To: <20100304064544.GA11885@linux.vnet.ibm.com>
+References: <4B8E3B7F.8050301@calsoftinc.com>
+	<20100303124352.GD23601@linux.vnet.ibm.com>
+	<4B8E5DF3.7090502@calsoftinc.com>
+	<9debc4411003030900t971da33pfbe9ea4e994d74d4@mail.gmail.com>
+	<BD77C355-AF47-4A92-8231-145DDBC8F54D@gmail.com>
+	<20100304064544.GA11885@linux.vnet.ibm.com>
+Date: Wed, 3 Mar 2010 22:50:57 -0800
+Message-ID: <364299f41003032250i78c201fesc5ce55d6d2c2794f@mail.gmail.com>
+From: Garrett Cooper <yanegomi@gmail.com>
+Subject: Re: [LTP] Missing test tools in recent ltp builds
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,41 +32,53 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4927175250009516287=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP-ML <ltp-list@lists.sourceforge.net>
-
---===============4927175250009516287==
-Content-Type: multipart/alternative; boundary=0016e646922c8325de0482083632
-
---0016e646922c8325de0482083632
-Content-Type: text/plain; charset=ISO-8859-1
-
-Does anyone compile and run the suite of LTP test for ARM devices? If so, do
-you run all of the tests or some subset of them? I'm guessing some or most
-of the code will compile on ARM, but maybe not all of it.
-
-Kelly
-
--- 
-K.D. Lucas
-kdlucas@gmail.com
-
---0016e646922c8325de0482083632
-Content-Type: text/html; charset=ISO-8859-1
-
-Does anyone compile and run the suite of LTP test for ARM devices? If so, do you run all of the tests or some subset of them? I&#39;m guessing some or most of the code will compile on ARM, but maybe not all of it.<div><br>
-</div><div>Kelly<br clear="all"><br>-- <br>K.D. Lucas<br><a href="mailto:kdlucas@gmail.com">kdlucas@gmail.com</a><br>
-</div>
-
---0016e646922c8325de0482083632--
-
-
---===============4927175250009516287==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Garrett Cooper <yanegomi@gmail.com>, Maxin John <maxin.john@gmail.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, Shwetabh <shwetabh.goel@calsoftinc.com>
+
+On Wed, Mar 3, 2010 at 10:45 PM, Rishikesh K Rajak
+<risrajak@linux.vnet.ibm.com> wrote:
+> On Wed, Mar 03, 2010 at 03:16:47PM -0800, Garrett Cooper wrote:
+>> On Mar 3, 2010, at 9:00 AM, Maxin John <maxin.john@gmail.com> wrote:
+>>
+>> > Hi Shwetabh,
+>> >
+>> >> 3. Went to /opt/ltp directory and tried to execute cpuhotplug test:
+>> >> [root@localhost ~]# cd /opt/ltp/
+>> >> [root@localhost ltp]# ./runltp -f cpuhotplug
+>> >>
+>> >
+>> > Please find attached the quick 'n' dirty patch
+>> > (cpu_hotplugin_makefile.patch) to execute cpuhotplugin test.
+>> > I have observed that the 'hotplug' directory is not included in
+>> > "testcases/kernel/Makefile". I have also
+>> > created a Makefile in 'hotplug/cpu_hotplug' directory.
+>> >
+>> > After applying this patch, I have followed the usual ./configure;
+>> > make; sudo make install steps and executed
+>> > the cpuhotplug test and observed the below given output . It seems
+>> > like the test execution is "not so good" in
+>> > my machine. Your mileage may vary.
+>> >
+>> > Garret,Rishi, please review the patch and let me know your comments.
+>> >
+>> > Signed-off-by: Maxin B. John <maxin.john@gmail.com>
+>>
+>> It looks better but it's going to need a minor amount of fudging in
+>> the scripts to source the appropriate scripts to execute cpuhotplug's
+>> tests... I'll pick this up tomorrow if it's not done by then...
+>
+> Yes it looks better, i have tested it and true there are still some
+> problem with testcase, can you look very closely and try to find the
+> root cause for that ? Since this patch is important to run cpuhotplug
+> testcases, i have included this to master branch.
+
+    I'm not arguing that it's a good step towards getting the task
+solved; I'm arguing that the change wasn't complete. I'm cleaning it
+up right now...
+Thanks,
+-Garrett
 
 ------------------------------------------------------------------------------
 Download Intel&#174; Parallel Studio Eval
@@ -67,16 +86,7 @@ Try the new software tools for yourself. Speed compiling, find bugs
 proactively, and fine-tune applications for parallel performance.
 See why Intel Parallel Studio got high marks during beta.
 http://p.sf.net/sfu/intel-sw-dev
---===============4927175250009516287==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============4927175250009516287==--
-
